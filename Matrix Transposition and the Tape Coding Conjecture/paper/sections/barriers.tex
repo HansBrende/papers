@@ -1,69 +1,49 @@
 \section{Barriers}\label{sec:barriers}
 
-This section explains why the Tape Coding Conjecture is hard to prove and why a proof must use the
-shape of tape networks. Its results are not formalized; each gets a complete proof.
+This section relates (T) to the formulation of Harvey and van der Hoeven, and explains why the Tape Coding Conjecture is hard to prove and why a proof must use the shape of tape networks. Its results are not formalized; each gets a complete proof.
 
 \subsection{Multiplication}\label{sec:multiplication}
 
 By Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a multiplication machine running in time
 $M(m)$ yields a transposition machine for $d\times d$ matrices with $b$-bit entries running in time
 $O(\ell_0\,\overline M(m))$, where $m\ge d^2b$, $\ell_0=\max(1,\lg^*d-\lg^*b)$ and
-$\overline M(m)=m\max_{k\le m}M(k)/k$; here $\lg x=\max(1,\lceil\log_2x\rceil)$, and $\lg^*x$ is the number of applications of $\lg$ needed to reach $1$. For $b=b(d)=\lg d$ we have $\lg^*b=\lg^*d-1$ (if $d\ge3$), so $\ell_0=1$, so a linear-time multiplication machine gives a linear-time transposer (their transposition machine receives $d$, $b$ and $m$ as part of its input; computing them from the input length takes linear time). Hence $\neg$(T), and in particular
+$\overline M(m)=m\max_{k\le m}M(k)/k$; here $\lg x=\max(1,\lceil\log_2x\rceil)$, and $\lg^*x$ is the number of applications of $\lg$ needed to reach $1$. For $b=b(d)=\lg d$ we have $\lg^*b=\lg^*d-1$ for $d\ge2$ (and $\lg^*b=\lg^*d=0$ for $d=1$), so $\ell_0=1$ for every $d$, so a linear-time multiplication machine gives a linear-time transposer (their transposition machine receives $d$, $b$ and $m$ as part of its input; computing them from the input length takes linear time). Hence $\neg$(T), and in particular
 the Tape Coding Conjecture, implies that integer multiplication cannot be done in linear time on
 multitape Turing machines. No superlinear lower bound for off-line multiplication on multitape
 machines is known; the classical $\Omega(n\log n)$ bound of Paterson, Fischer and Meyer is for
 on-line multiplication~\cite{PFM1974}.
 
-\paragraph{The entry width.} Harvey and van der Hoeven state the results of their introduction for binary matrices ($b=1$; their Theorems~1.2--1.4). There their reduction loses the factor $\lg^*m$: from a linear-time multiplication machine it yields binary transposition in time $O(m\lg^*m)$, not $O(m)$. Their linear-time statement is the case $f=1$ of their Theorem~6.11: fix
-$l\ge1$, and for a size parameter $m$ let $b=\lg^{\circ l}m$ (the $l$-fold iterate of $\lg$) and
-$n=\lfloor(m/b)^{1/2}\rfloor$; if no machine transposes $n\times n$ matrices with $b$-bit entries
-(\emph{$l$-logarithmic transposition}) in time $O(m)$, then no machine multiplies in linear time. Its proof
-applies Corollary~6.9 with these parameters, for which $\ell_0\le l$. Statement~(T) applies the same corollary
-with $b=\lg d$, the logarithm of the side length, instead of $b=\lg m$, the logarithm of the total size. Up to
-linear time it is the case $l=1$ of Theorem~6.11.
+\paragraph{The entry width.} Harvey and van der Hoeven state the results of their introduction for binary matrices ($b=1$; their Theorems~1.2--1.4). In the binary case their reduction loses a factor $\lg^*m$ (their Theorem~1.4 with $f=1$; Corollary~6.9 has $\ell_0=\lg^*\lfloor m^{1/2}\rfloor$ there): from a linear-time multiplication machine it yields binary transposition in time $O(m\lg^*m)$, not $O(m)$. Their linear-time statement is the case $f=1$ of their Theorem~6.11: fix $\ell\ge1$, and for a size parameter $m$ let $b=\lg^{\circ\ell}m$ (the $\ell$-fold iterate of $\lg$) and $n=\lfloor(m/b)^{1/2}\rfloor$; if no machine transposes $n\times n$ matrices with $b$-bit entries (\emph{$\ell$-logarithmic transposition}) in time $O(m)$, then no machine multiplies in linear time. Its proof applies Corollary~6.9 with these parameters, for which $\ell_0\le\ell$. Statement~(T) applies the same corollary
+with $b=\lg d$, the logarithm of the side length, instead of $b=\lg m$, the logarithm of the total size. Up to linear time, (T) says that the hypothesis of Theorem~6.11 fails for $\ell=1$ and $f=1$ (\cref{prop:entry-width}).
 
 \begin{proposition}[(T) and $1$-logarithmic transposition]\label{prop:entry-width}
 \notformalized
-For $m\ge2$ let $B=\lg m$ and $n=\lfloor(m/B)^{1/2}\rfloor$. Call \emph{$1$-logarithmic transposition} the
-problem of computing, from $m$ in binary followed by a separator and the row-major encoding of an $n\times n$
-matrix with $B$-bit entries, the encoding of its transpose. Then (T) holds if and only if some multitape
-Turing machine performs $1$-logarithmic transposition in time $O(m)$.
+For $m\ge2$ let $B=\lg m$ and $n=\lfloor(m/B)^{1/2}\rfloor$, and let $\langle m\rangle$ be the binary word that writes each bit of $m$ twice, most significant first, followed by $01$. Call \emph{$1$-logarithmic transposition} the problem of computing, from the word $\langle m\rangle x$, where $x$ is the row-major encoding of an $n\times n$ matrix with $B$-bit entries, the encoding of its transpose. Then (T) holds if and only if some machine as in \cref{sec:model} performs $1$-logarithmic transposition within $c\,m$ steps, for a constant $c$ and all $m\ge2$.
 \end{proposition}
 
 \begin{informalproof}
 Both directions are simulations with a constant number of extra work tapes, and every extra step below is a
-pass over $O(m)$ (respectively $O(L)$) cells or arithmetic on numbers of $O(\log m)$ bits. Positions within an
-entry are tracked with \emph{rulers}: work tapes marked at every $b$-th (or $B$-th) cell, scanned in step with
-the data and rewound after each entry, at a cost of $O(1)$ steps per data bit. A machine whose input lies on a
+pass over $O(m)$ (respectively $O(L)$) cells or arithmetic on numbers of $O(\log m)$ bits. Positions within an entry are tracked with \emph{rulers}: work tapes holding a block of $b$ (or $B$) marked cells, scanned in step with the data and rewound after each chunk (or entry), at a cost of $O(1)$ steps per data bit. A machine whose input lies on a
 work tape instead of the input tape (blank cells playing the end marker) is simulated step by step, and its
-one-way output tape by a work tape written from left to right. Harvey and van der Hoeven also supply $n$ and
-$B$ to their machines; these are computable from $m$ in time polylogarithmic in $m$, so this changes nothing.
+one-way output tape by a work tape written from left to right. Harvey and van der Hoeven also supply $n$ and $B$ to their machines; these are computable from $m$ in time polylogarithmic in $m$, as is the conversion between $\langle m\rangle$ and any other self-delimiting binary encoding of $m$, so such conventions change nothing.
 
-($\Rightarrow$) Let $M$ transpose within $c_M(L+1)$ steps as in (T). Given $m$ and the matrix, compute $B$,
-$n$ and $b=b(n)=\lg n$. From $n+1>(m/B)^{1/2}$ we get $m<(n+1)^2B$, hence $B\le2\log_2(n+1)+\log_2B+1$,
-so $k=\lceil B/b\rceil\le3$ once $n$ is larger than an absolute constant $n_0$. If $n\le n_0$, the folklore
-algorithm transposes in time $O(m\log n)=O(m)$. Otherwise cut every entry into $k$ chunks of $b$ bits,
-padding the last chunk with zeros, and write chunk $c$ of every entry, in row-major order, onto work tape
-$c$ ($c<k$). Tape $c$ now holds the encoding of an $n\times n$ matrix $A_c$ with $b(n)$-bit entries, of
-length $L=n^2b\le n^2B\le m$. Run $M$ on each tape in turn; this takes at most $3c_M(m+1)$ steps and
-produces the encodings of $A_0^{\T},\dots,A_{k-1}^{\T}$. Finally read these $k$ outputs in step, entry by
-entry, and write the first $B$ of the $kb$ bits of each entry to the output tape: entry $(j,i)$ of the
-outputs is chunk $c$ of entry $(i,j)$ of the input, for $c<k$. The total time is $O(m)$.
+($\Rightarrow$) Let $M$ transpose within $c_M(L+1)$ steps as in (T). Given $\langle m\rangle x$, read $m$ and compute $B$, $n$ and $b=b(n)=\lg n$. From $n+1>(m/B)^{1/2}$ we get $m<(n+1)^2B$, hence $B\le2\log_2(n+1)+\log_2B+1$,
+so $K=\lceil B/b\rceil\le3$ once $n$ is larger than an absolute constant $n_0$. If $n\le n_0$, the folklore
+algorithm transposes in time $O(m\log n)=O(m)$. Otherwise cut every entry into $K$ chunks of $b$ bits,
+padding the last chunk with zeros, and write chunk $c$ of every entry, in row-major order, onto work tape $c$ ($c<K$). Tape $c$ now holds the encoding of an $n\times n$ matrix $A_c$ with $b(n)$-bit entries, of length $L=n^2b\le n^2B\le m$ (as $m\ge n^2B\ge n^2$, we have $B=\lg m\ge\lg n=b$). Run $M$ on each tape in turn, each run with its own blank copies of $M$'s work tapes and its own output work tape (at most three copies); this takes at most $3c_M(m+1)$ steps and produces the encodings of $A_0^{\T},\dots,A_{K-1}^{\T}$. Finally read these $K$ outputs in step, entry by entry, and write the first $B$ of the $Kb$ bits of each entry to the output tape: entry $(j,i)$ of the outputs is chunk $c$ of entry $(i,j)$ of the input, for $c<K$. The total time is $O(m)$.
 
 ($\Leftarrow$) Let $M'$ perform $1$-logarithmic transposition within $c'm$ steps. Given the encoding of a
 $d\times d$ matrix with $b$-bit entries, $b=b(d)$, first compute $L$, $d$ and $b$ from the input length
 (count the input in binary, then try $d=1,2,\dots$), in $O(L)$ steps. If $d=1$, the transpose is the input itself. Otherwise choose $m$ with $n=d$: the map
 $g(x)=\lg(d^2x)$ is non-decreasing on the positive integers and satisfies $g(x)\le x$ for all large $x$, so the sequence $x_0=1$, $x_{i+1}=g(x_i)$ is non-decreasing (as $x_1\ge x_0$) and bounded (by induction, $x_i\le\hat x$ for the least $\hat x$ with $g(\hat x)\le\hat x$), and reaches a fixed point $B=\lg(d^2B)$
 after finitely many steps. Then $m=d^2B\ge2$ has $\lg m=B$ and $\lfloor(m/B)^{1/2}\rfloor=d$, and
-$b\le B\le2\log_2d+\log_2B+2$, so $B=O(b)$. Pad every entry with zeros from $b$ to $B$ bits, write $m$, a
-separator and the padded matrix on a work tape, and run $M'$ on it, within $c'm=c'd^2B=O(L)$ steps. Its
+$b\le B\le2\log_2d+\log_2B+2$, so $B=O(b)$. Pad every entry with zeros from $b$ to $B$ bits, write $\langle m\rangle$ followed by the padded matrix on a work tape, and run $M'$ on it, within $c'm=c'd^2B=O(L)$ steps. Its
 output is the transpose with $B$-bit entries; write the first $b$ bits of each entry to the output tape. The
 total time is $O(L)$, which is (T).
 \end{informalproof}
 
-For $l\ge2$ the entries are narrower ($\lg\lg m$ bits for $l=2$), and we do not know whether these problems
-are equivalent to (T). This does not affect the consequence above: by Theorem~6.11 a superlinear lower bound
-for one fixed $l$ already shows that multiplication is not linear time, and by Corollary~6.9 so does
+For $\ell\ge2$ the entries are narrower ($\lg\lg m$ bits for $\ell=2$), and we do not know whether these problems
+are equivalent to (T). This does not affect the consequence above: by Theorem~6.11 a superlinear lower bound for one fixed $\ell$ already shows that multiplication is not linear time, and by Corollary~6.9 so does
 $\neg$(T).
 
 \subsection{General graphs: the circuit barrier}

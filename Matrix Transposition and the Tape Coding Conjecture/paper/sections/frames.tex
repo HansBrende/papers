@@ -192,10 +192,10 @@ In every valid run as in \cref{thm:coarsening}, every frame-changing move whose 
 
 \begin{theorem}[Mixing lemma]\label{thm:mixing}
 \formal{Frames/GadgetMixing.lean}{Transpose.ShearFrame.mixed_move_forces_extra_hop, Transpose.ShearFrame.mixing_lemma, Transpose.ShearFrame.mixing_lemma_matrix}
-Weight frames by a function $\delta:F\times F\to\N$ with $\delta(f,f)=0$, $\delta(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
-matrices, $\delta(A,B)=\rank(B-A)$), and let $\delta(S_u,\mathrm{tgt}(u))\ge m$ for every item $u$. Suppose a
+Weight frames by a function $\Delta:F\times F\to\N$ with $\Delta(f,f)=0$, $\Delta(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
+matrices, $\Delta(A,B)=\rank(B-A)$), and let $\Delta(S_u,\mathrm{tgt}(u))\ge m$ for every item $u$. Suppose a
 valid run as in \cref{thm:coarsening} (with targets $\mathrm{tgt}(u)$) contains a frame-changing move whose cargo contains two distinct items, and every other frame-changing move carries a single item. Then some item of that cargo has
-$\delta$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
+$\Delta$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
 \end{theorem}
 
 \begin{outline}[Outline of the formal proofs of \cref{thm:tight,thm:itineraries,thm:carrying,thm:mixing}]
@@ -206,7 +206,7 @@ a tight run both move in lockstep, which forces the split and the cargo rule. Ch
 item backwards (and forwards) through the moves whose cargo contains it, using that an item is present at a
 frame only if some move carried it there. Admissibility (\cref{thm:itineraries}) is the cargo rule of the coarsened two-class run. For the mixing
 lemma, suppose every item of the mixed cargo $x$, moved into frame $g$, has hop count at most $m$. An item
-present at a frame after (before) a segment was (will be) present at a frame within $\delta$-distance of it
+present at a frame after (before) a segment was (will be) present at a frame within $\Delta$-distance of it
 bounded by the segment's hop count; with the triangle inequality, no item of the support of $x$ is present at
 $g$ before the mixed move, and no later frame-changing move into $g$ carries one. As the later moves out of
 $g$ carry unit vectors, every wire at $g$ stays constant on the support of $x$ while some wire at $g$ keeps

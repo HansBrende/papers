@@ -65,8 +65,7 @@ Fix a run with a pass partition $p$ into $r$ passes and an output segment $[o_1,
 \begin{definition}[Dependency forest]\label{def:forest}
 \formal{Tape/DefsP.lean}{rootNode, sSet, childNode, forestNode, addrsBelow, addresses, forest, readSet, combSet}
 \begin{itemize}[leftmargin=2em]
-\item The \emph{root node} in pass $P_0$ is the set of steps of pass $P_0$ during which the output
-length moves inside $[o_1,o_2)$.
+\item The \emph{root node} in pass $P_0$ is the set of steps $\tau$ of pass $P_0$ with $\operatorname{len}(\tau)<o_2$ and $o_1<\operatorname{len}(\tau+1)$, where $\operatorname{len}(\tau)$ is the number of output bits appended before time $\tau$. When $o_1<o_2$ and output bit $o_2-1$ is appended, the roots of all passes together are the steps from the append of output bit $o_1$ to the append of output bit $o_2-1$.
 \item For a node $J$, an earlier pass $P'$ and a work tape $t$, the \emph{S-set} consists of the
 cells that head $t$ occupies during $J$, other than its cell at the first step of $J$, whose last
 visit before that first step lies in pass $P'$. The \emph{child} of $J$ at $(P',t)$ is the set of
@@ -238,7 +237,7 @@ $(2T+1)^{k+4}$ values (\lean{structCount} is this bound; the count is part of th
 \cref{lem:forest-agree}).
 
 \begin{lemma}[Forests of different inputs]\label{lem:forest-agree}
-\formal{Tape/Statements/Adaptive.lean}{locality_anchored, forest_agree, forest_comb_agree, kraft_group}
+\formal{Tape/Statements/Adaptive.lean}{forest_agree, forest_comb_agree, kraft_group}
 Let $w,w'$ be inputs of the same length $L$, with pass partitions of $[0,T)$ and of $[0,T')$ into $r$
 passes (each its own), and suppose their forests of a segment have equal structure and side codes at every
 address, and that $w$ and $w'$ agree on every input position $<L$ read by both forests. Then the two
@@ -310,6 +309,9 @@ not $o(b)$; if $\gamma_T\le c'b$ (for instance $T\le\poly(L)$), (b) gives
 $\Haddr\ge(Cn-2C^2)b/(2C(2C+1)b+2(\sigma_M+\gamma_T))$ and, for $k\ge1$, $r\ge\log_{k+1}n-O(\log(C+c'))$. If $M$ transposes within $c(L+1)$ steps (\cref{def:T}) and every run on an
 $n\times n$ input has greedy pass count at most $r$, then
 $n^2b(n)\le\Haddr\,n\bigl(2b(n)+\sigma_M+(k+4)\clog{(2c(L+1)+1)}\bigr)$.
+The comb agreement and the Kraft inequality of \cref{lem:forest-agree} hold with correctness required only on
+the inputs involved, at the ends of their pass partitions, and without halting; the bound with $\gamma=1$ also
+holds when the pass partitions are replaced by greedy pass counts at most $r$.
 \end{theorem}
 
 \begin{outline}

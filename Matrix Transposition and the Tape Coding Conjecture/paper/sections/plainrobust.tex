@@ -88,7 +88,7 @@ decoded bits: on every input at most one copy errs.
 \begin{theorem}[Selection among candidates]\label{thm:pr-select}
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_hintConst_of_noCode, PlainRobust.noCode_iff_hintConst, PlainRobust.noCode_netCover_of_noCode, PlainRobust.noCode_netHint_of_noCode}
 Under the plain conjecture, no hint code with a constant number of hint bits exists; equivalently, the
-plain conjecture is unchanged by a constant oracle hint. More generally, no code exists on a set $F$
+plain conjecture is unchanged by a constant oracle hint. Moreover, no code exists on a set $F$
 for which a \emph{network-computable} hint of $O(nw)$ bits (computed by a causal code within the profile capacities of
 a linear-length prefix diagram) together with $O(1)$ shift tables moves every input into $F$; and no
 family of codes indexed by a network-computable hint of $O(nw)$ bits solves complete exchange on every
@@ -133,7 +133,7 @@ family of quadratic forms each of whose monomials joins two different parts.
 \end{theorem}
 
 \begin{outline}
-If $f$ vanishes identically there is nothing to prove. Otherwise let $D'\le D$ be the largest order of a
+If $f$ vanishes identically, the empty list of directions will do. Otherwise let $D'\le D$ be the largest order of a
 discrete derivative of $f$ that is not identically zero, along directions $u_1,\dots,u_{D'}$; it is constant
 (its own derivatives vanish), hence equal to $1$, and $D'\ge1$ because the zero set is nonempty. At every
 $x$ the $2^{D'}$ values $f(x\oplus\sum_{i\in S}u_i)$ then sum to $1$, so one of them is $0$: the translates of
@@ -183,8 +183,7 @@ We record, without formal proofs, why these methods stop short of the general im
 argument over (automaton, shift table) pairs shows that a random set of density $2^{-m}$ has no
 streaming covering hint of $O(nw)$ bits.
 \item \emph{A hint is cheap in information but not in flow.} An $s$-bit broadcast tells at most $s$
-bits about all outputs together, but delivering it to $\Theta(n)$ nodes costs $\Theta(L)$ bits of
-capacity in aggregate; edge-removal style arguments do not apply as they stand. The first rung of the
+bits about all outputs together, but delivering it to $\Theta(n)$ nodes costs $\Theta(ns)$ bits of capacity in aggregate, which is $\Theta(L)$ for $s=\Theta(nw)$; edge-removal style arguments do not apply as they stand. The first rung of the
 ladder is a one-shot instance of zero error versus constant error, related to the edge-removal problem
 and to the continuity of network capacity under dependent sources~\cite{LangbergEffros2021}.
 \item \emph{The machine-side view.} Plain would refute (T) if (T) implied oblivious (T), or merely a

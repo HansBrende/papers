@@ -65,8 +65,7 @@ of at most one chord.
 
 \begin{outline}
 For pair residency, a block enters the resident pair only at a pair change, as the current block, and
-leaves only at a pair change, as the previous block; two blocks entering (or leaving) at one slot boundary
-would need two pair changes within one slot, contradicting (S). For touched residency, two blocks touched
+leaves only at a pair change, as the previous block; two blocks entering at one slot boundary would need two distinct pair changes in slot $y+1$, and two blocks leaving after slot $y$ two distinct pair changes in $[yr+1,(y+1)r]$; in both cases they would be fewer than $r$ steps apart, contradicting (S). For touched residency, two blocks touched
 in slot $y+1$ but not in slot $y$ differ by one from the block at the last step of slot $y$ and by at most
 one from each other, so they coincide (similarly for leaving). The chord statements follow: a chord from
 $x$ is determined by the unique block that stops being resident after $x$ (its target slot is nonempty, so
@@ -127,7 +126,7 @@ constant $c$, and $\chicross$ the number of chords whose two endpoints carry dif
   b\sum_{\ell}\abs{S_{J_\ell}}\;\le\;\Mb\bigl(\clog{(q+1)}+c\,k\,r\,G'\bigr)+r\,G'\,\chicross,
 \]
 where $J_\ell$ is the set of steps in slots labelled $\ell$; and if $b\ge1$, at most $\Mb$
-columns are not sinks of a single class (for any run that has appended $n^2b$ bits by time $T$).
+columns are not sinks of a single class (for any run that has appended at least $n^2b$ bits by time $T$).
 \end{corollary}
 
 \begin{outline}

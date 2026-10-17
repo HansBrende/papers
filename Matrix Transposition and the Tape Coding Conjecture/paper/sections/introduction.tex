@@ -32,7 +32,7 @@ that accepts a proof of~(T) or of its negation.
 
 \subsection{Results}
 
-We do not decide~(T). We prove everything we can about it, formally, and isolate one precise conjecture
+We do not decide~(T). We prove what we can about it, formally, and isolate one precise conjecture
 whose proof would refute~(T).
 
 \paragraph{Locality, counting and isoperimetry (\cref{sec:locality,sec:blocks,sec:traces}).} If a set of time steps
@@ -55,8 +55,7 @@ machine does with its data, and this remains true if the machine is correct only
 \paragraph{Macroscopic motion (\cref{sec:mstar}).} \emph{Theorem~M*.} Rescale the work-head trajectories of a
 linear-time transposer (for adaptive machines, along its popular trace classes) by $n$ in space (in blocks) and in
 time (in slots). Along subsequences they converge to
-$1$-Lipschitz paths, and every limit satisfies an isoperimetric inequality~$(\star)$: for every partition of
-macroscopic time into pieces of measure at most $\theta$, the heads return to their positions across different
+$1$-Lipschitz paths, and every limit satisfies an isoperimetric inequality~$(\star)$: for every partition of macroscopic time into finitely many intervals, grouped into classes of measure at most $\theta$, the heads return to their positions across different
 pieces with total multiplicity at least $1-2\theta$. Consequently the limits are not all monotone, and the heads
 together waste at least one unit of range (\cref{thm:mstar,thm:mstar-adaptive,thm:excess}). The theorem holds for
 non-uniform machines and for machines correct on a $2^{-o(L)}$ fraction of the inputs (\cref{thm:mstar-robust}), and
@@ -92,9 +91,7 @@ the shape of tapes; and, since the plain form already excludes oblivious linear-
 techniques do not provide.
 
 \paragraph{XOR-frame recursions and constructions (\cref{sec:frames,sec:construction}).} In an abstract model of the recursion of the
-OpenAI preprint (the correspondence is informal, \cref{sec:frames}), every gadget makes at least one frame change per
-wire, so its cost is $s\ge W$ (\cref{thm:frame-change}), while linear time would need $s<W$; integer frames cost
-more. We record the conditions a construction must meet and the one architecture that we could not rule out; its open
+OpenAI preprint (the correspondence is informal, \cref{sec:frames}), every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}); by a translation from gadgets to runs, which we prove in full but have not formalized, every gadget has cost $s\ge W$ (\cref{prop:gadget-runs}), while linear time would need $s<W$; integer frames cost more. We record the conditions a construction must meet and the one architecture that we could not rule out; its open
 cores are index-coding questions on bounded-degree expanders.
 
 \subsection{How to read this paper: the formal proofs}
@@ -108,8 +105,7 @@ Declarations are in the namespace \texttt{Transpose.Tape} unless written with th
 \leanfile{lean/Transpose/}. The text after a statement, labelled \emph{Outline of the formal proof}, is a faithful and
 straightforward guide to the formal proof, written for human readers; it is a convenience, not a proof. Where the
 English statement simplifies (for instance by omitting harmless edge cases), the Lean statement is authoritative, and
-the formal statements are often slightly stronger. The two results that are not formalized
-(\cref{prop:circuit-barrier,prop:rotation-barrier}) are marked as such and come with complete proofs. Results from the
+the formal statements are often slightly stronger. The three results that are not formalized (\cref{prop:circuit-barrier,prop:rotation-barrier,prop:gadget-runs}) are marked as such and come with complete proofs. Results from the
 literature are cited and not reproved.
 
 The library depends only on Lean~4 and Mathlib (both v4.34.1). It contains no \texttt{sorry}, no unsafe or native code
@@ -133,7 +129,7 @@ do not imply it.
 \paragraph{External memory and network coding.} Aggarwal and Vitter determined the I/O complexity of sorting and
 transposition for algorithms that move indivisible items~\cite{AggarwalVitter1988}. Whether coding can help is the
 question behind the network coding conjecture of Li and Li~\cite{LiLi2004}, which would have implied lower bounds for
-multiplication circuits~\cite{AFKL2019}, external-memory sorting~\cite{FHLS2019} and oblivious machines~\cite{AHJKL2006}.
+multiplication circuits~\cite{AFKL2019}, external-memory sorting~\cite{FHLS2019} and two-tape oblivious machines~\cite{AHJKL2006}.
 Braverman and He~\cite{BravermanHe2026} and, concurrently, Zhang, Li and Li~\cite{ZhangLiLi2026} refuted it: in
 undirected networks coding can beat multicommodity flow, by a factor $(\log n)^{\varepsilon}$ after
 amplification~\cite{BGS2017}. Our conjecture is a version of the network coding

@@ -99,6 +99,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.ComputesWithin
 #print axioms Transpose.LinearTimeTransposable
 #print axioms Transpose.ShearFrame.Cfg
+#print axioms Transpose.ShearFrame.Cfg.allValid
 #print axioms Transpose.ShearFrame.Event
 #print axioms Transpose.ShearFrame.Gadget
 #print axioms Transpose.ShearFrame.Gadget.cost
@@ -117,6 +118,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.ShearFrame.chain_itinerary_matrix
 #print axioms Transpose.ShearFrame.cost_ge_W
 #print axioms Transpose.ShearFrame.det_ne_zero_of_moves_le
+#print axioms Transpose.ShearFrame.init
 #print axioms Transpose.ShearFrame.itinerary_condition
 #print axioms Transpose.ShearFrame.itinerary_condition_matrix
 #print axioms Transpose.ShearFrame.mixed_move_forces_extra_hop

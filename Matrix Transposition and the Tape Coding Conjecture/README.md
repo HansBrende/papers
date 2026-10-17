@@ -22,7 +22,7 @@ paper states each result with its Lean declarations and file.
 
 - **Locality and counting.** A cut lemma for every set of time steps, and a discrete isoperimetric inequality
   on the block network of a run (paper §§3–4).
-- **Theorem P and Theorem P′.** Every transposer needs Ω(log n) passes in which all heads move monotonically,
+- **Theorem P and Theorem P′.** Every transposer with at least one work tape needs Ω(log n) passes in which all heads move monotonically,
   whatever it does with its data: oblivious machines (P) and every machine running in time poly(L) (P′), also
   when correct only on a 2^(−O(n log n)) fraction of the inputs (§5).
 - **Adaptive machines.** Block-level traces, the popular trace, and the cut lemmas on trace classes (§6).
@@ -38,12 +38,15 @@ paper states each result with its Lean declarations and file.
 - **Plain versus robust.** The robust conjecture is the plain one plus an oracle hint of O(n log n) bits; the
   plain conjecture implies the robust one for linear and nearly linear codes, affine and low-degree sets, codes
   with few error patterns, constant hints and several covering families (§10).
-- **XOR-frame recursions.** In an abstract model of the recursion behind the only claimed sub-(L log n)
-  construction (an unrefereed preprint), every gadget makes at least one frame change per wire, so the recursion
-  cannot give linear time; integer frames cost more (§12).
+- **XOR-frame recursions.** In the run model of an abstract XOR-frame recursion (the recursion behind the only
+  claimed sub-(L log n) construction, an unrefereed preprint), every run realizing a gadget makes at least as many
+  frame changes as the gadget has wires; with integer frames the runs' total jump rank is larger still (§12).
 
-Two barrier results (§11: shift circuits and oblivious rotation give coding gains of order log n over routing)
-are not formalized; the paper proves them in full.
+Three results are not formalized; the paper proves them in full. Two are barrier results (§11): a shift
+circuit with s gates, and an oblivious machine rotating in T steps, yield coding gains over routing of order
+n log n/(s+n) and L log L/T respectively, which is of order log n for linear-size circuits and linear-time
+machines. The third is the translation from gadgets to runs (§12), which gives every gadget cost at least W and
+so, within the XOR-frame template, excludes linear time.
 
 ## What is open
 

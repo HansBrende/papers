@@ -25,8 +25,7 @@ on a set of co-entropy $O(n)$, at the profile capacities (\cref{thm:reduction,th
 \cref{thm:code-gap} this code beats routing by a factor $\Omega(\log n)$. For an oblivious machine the code works
 on all inputs (\cref{thm:oblivious}); for oblivious I/O machines the analogous statement, at the level of pages, is
 \cite[Thm.~6.2]{AHJKL2006}.
-\item \emph{Not an XOR-frame recursion.} Within the abstract model of \cref{sec:frames}, every gadget makes at least
-one frame change per wire, so its cost is $s\ge W$ (\cref{thm:frame-change}), while linear time would need $s<W$; the
+\item \emph{Not an XOR-frame recursion.} Within the abstract model of \cref{sec:frames}, every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}), so every gadget has cost $s\ge W$ (\cref{prop:gadget-runs}, not formalized), while linear time would need $s<W$; the
 model captures the preprint's template only informally.
 \end{enumerate}
 
@@ -34,10 +33,9 @@ Condition~(N4) is the heart of the matter. Coding gains over routing in undirect
 multiple-unicast (network coding) conjecture is false~\cite{BravermanHe2026,ZhangLiLi2026}. But the known growing
 gains are of order $(\log n)^{\varepsilon}$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017}, and
 they concern sparse demands; we do not expect tensoring a constant gap to produce a gain of order $\log n$ for dense
-demands (a heuristic, not a theorem). Braverman and He also observe that the unrefereed sub-$n\log n$ Fourier circuits
+demands (a heuristic, not a theorem). Braverman and He also observe~\cite{BravermanHe2026} that the unrefereed sub-$n\log n$ Fourier circuits
 of~\cite{OpenAI2026fourier} would give a coding gain over routing; such gains would not come from tensoring, but they
-live on circuit graphs, not on networks shaped by tapes. A linear-time transposer needs a \emph{native} gain of order
-$\log n$ for the densest demand, on a network shaped by tapes.
+live on circuit graphs, not on networks shaped by tapes. A linear-time transposer needs a gain of order $\log n$ for the densest demand, on a network shaped by tapes, which by the heuristic above would have to be \emph{native}.
 
 \subsection{An architecture that survives}
 
@@ -88,8 +86,7 @@ choreographies along expanders (Theorems~P and~P$'$).
 \item \emph{Regular or one-way motion.} Machines whose macroscopic head motions (along the popular trace) are all
 stationary or monotone (\cref{thm:excess,thm:mstar-adaptive}).
 \item \emph{XOR-frame recursions} in the abstract model of \cref{sec:frames}, which captures the template
-of~\cite{OpenAI2026mult} informally: every gadget makes at least one frame change per wire, so linear time is out of
-reach (\cref{thm:frame-change}).
+of~\cite{OpenAI2026mult} informally: every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}), so every gadget has cost at least $W$ (\cref{prop:gadget-runs}, not formalized) and linear time is out of reach.
 \end{itemize}
 Some classes of codes are moreover no easier than plain codes: linear codes, codes correct off a small set, and codes
 that are linear outside $O(nw)$ bits of capacity exist only if plain codes exist (\cref{thm:pr-linear,thm:pr-vote});

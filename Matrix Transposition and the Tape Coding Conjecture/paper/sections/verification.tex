@@ -7,7 +7,7 @@ v4.34.1 (\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-man
 \begin{center}
 \texttt{lake exe cache get \&\& lake build}
 \end{center}
-The first command downloads the compiled Mathlib; the second compiles the library (about ninety modules).
+The first command downloads the compiled Mathlib; the second compiles the library (86 modules).
 
 \paragraph{The frozen files.} \leanfile{Transpose/Statement.lean} (the statement (T)) and \leanfile{Verify.lean} (the
 checker of a future \leanfile{Transpose/Answer.lean}) are byte-identical to the files fixed before this work began;
@@ -20,8 +20,9 @@ missing-module error.
 \begin{center}
 \texttt{lake env lean PaperAxioms.lean}
 \end{center}
-Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file
-contains \texttt{sorry}, \texttt{admit}, \texttt{native\_decide} or an \texttt{axiom} declaration.
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file uses
+\texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom} (the words occur only in
+comments of the frozen files).
 
 \paragraph{Where things are.} The public statements are in four files. They are proved from theorems in \texttt{Impl}
 namespaces, usually of the same name, which the other files of the library prove:
@@ -30,7 +31,8 @@ namespaces, usually of the same name, which the other files of the library prove
 Theorem~M* for oblivious machines (\cref{sec:mstar});
 \item \leanfile{Tape/Statements/Adaptive.lean}: Theorem~P$'$, trace classes, and Theorem~M* for adaptive, robust and
 non-uniform machines (\cref{sec:passes,sec:traces,sec:mstar});
-\item \leanfile{Tape/Statements/Coding.lean}: codes, the Tape Coding Conjecture and its consequences
+\item \leanfile{Tape/Statements/Coding.lean}: codes, Theorem~M* for walks and for code-carrying diagrams, the Tape
+Coding Conjecture and its consequences
 (\cref{sec:codes,sec:conjecture,sec:plainrobust});
 \item \leanfile{Tape/Statements/PlainRobust.lean}: the partial results of \cref{sec:plainrobust}.
 \end{itemize}

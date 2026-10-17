@@ -26,9 +26,10 @@ paper states each result with its Lean declarations and file.
   whatever it does with its data: oblivious machines (P) and every machine running in time poly(L) (P′), also
   when correct only on a 2^(−O(n log n)) fraction of the inputs (§5).
 - **Adaptive machines.** Block-level traces, the popular trace, and the cut lemmas on trace classes (§6).
-- **Theorem M\*.** The rescaled work-head trajectories of every linear-time transposer converge, along
-  subsequences, to 1-Lipschitz paths that satisfy an isoperimetric inequality: the heads must fold back. Also
-  for non-uniform machines and for machines correct on a 2^(−o(L)) fraction of the inputs (§7).
+- **Theorem M\*.** Along its most popular block-level trace, the rescaled work-head trajectories of every
+  linear-time transposer converge, along subsequences, to 1-Lipschitz paths that satisfy an isoperimetric
+  inequality: the heads must fold back. Also for non-uniform machines and for machines correct on a 2^(−o(L))
+  fraction of the inputs (§7).
 - **The Tape Coding Conjecture as a formal target.** Codes on time–space diagrams and their block networks; the
   conjecture (`Transpose.Tape.RobustNoCode_TM`) in no-code, flow and distance forms, proved equivalent; a proof of
   the conjecture refutes (T) (`not_linearTimeTransposable_of_robustNoCode`); weaker sufficient conditions
@@ -37,11 +38,12 @@ paper states each result with its Lean declarations and file.
 - **Plain versus robust.** The robust conjecture is the plain one plus an oracle hint of O(n log n) bits; the
   plain conjecture implies the robust one for linear and nearly linear codes, affine and low-degree sets, codes
   with few error patterns, constant hints and several covering families (§10).
-- **XOR-frame recursions.** The recursion technique of the only known sub-(L log n) construction cannot give
-  linear time: every gadget makes at least W frame changes, with sharper bounds for integer frames (§12).
+- **XOR-frame recursions.** In an abstract model of the recursion behind the only claimed sub-(L log n)
+  construction (an unrefereed preprint), every gadget makes at least one frame change per wire, so the recursion
+  cannot give linear time; integer frames cost more (§12).
 
-Two barrier results (§11: shift circuits and oblivious rotation give maximal coding gains) are not formalized;
-the paper proves them in full.
+Two barrier results (§11: shift circuits and oblivious rotation give coding gains of order log n over routing)
+are not formalized; the paper proves them in full.
 
 ## What is open
 

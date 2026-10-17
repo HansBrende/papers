@@ -10,8 +10,10 @@ On a random-access machine, or on a machine with a two-dimensional work tape, tr
 Boolean circuit transposes with no gates at all. On one-dimensional tapes the problem is open. Recursive block
 exchange gives time $O(L\log n)$. The best upper bound claimed is $O(L(\log n)^{1-\kappa})$ for a very small
 $\kappa>0$, in an unrefereed preprint of OpenAI~\cite{OpenAI2026mult} whose transposition primitive mixes data by
-XOR in sheared address frames. No superlinear lower bound is known; indeed none is known for any explicit problem
-on machines with two or more work tapes, and the classical lower bounds hold for restricted models only: one work
+XOR in sheared address frames. No superlinear lower bound is known; indeed none is known on machines with two or more work tapes for
+off-line multiplication, sorting or the DFT either~\cite[\S1.4]{HvdH2025} (the superlinear lower bounds that
+follow from~\cite{PPST1983} concern problems that are hard for nondeterministic linear time~\cite{Grandjean1988}).
+The classical lower bounds for transposition hold for restricted models only: one work
 tape~\cite{DMS1991,DietzfelbingerMaass1993}, data movement without coding~\cite{Stoss1973}, and reversal-bounded
 conservative machines~\cite{Kirchherr1988}.
 
@@ -30,16 +32,16 @@ that accepts a proof of~(T) or of its negation.
 
 \subsection{Results}
 
-We do not decide~(T). We prove everything we can about it, formally, and reduce what remains to one precise
-conjecture.
+We do not decide~(T). We prove everything we can about it, formally, and isolate one precise conjecture
+whose proof would refute~(T).
 
 \paragraph{Locality, counting and isoperimetry (\cref{sec:locality,sec:blocks,sec:traces}).} If a set of time steps
 must output bits of the input that it never reads, those bits must enter through its entry data: the states at its
 entry points and the work symbols it inherits (the Cut Lemma, \cref{lem:cut}). Cutting tapes into blocks of a row's
-size and time into slots of the same length turns every run into a bounded-degree network on $O(n)$ slots, the
+size and time into slots of the same length turns every run of linear length into a bounded-degree network on $O(n)$ slots, the
 \emph{block network}, and the Cut Lemma into an isoperimetric inequality on it (\cref{cor:isoperimetry}). For machines
-whose head motion depends on the data, inputs with the same coarse trace of head motion behave like an oblivious
-machine; some trace is shared by a $2^{-O(nb)}$ fraction of the inputs (the popular trace, \cref{thm:popular}), and the
+whose head motion depends on the data, inputs with the same block-level trace (a coarse record of head motion) behave like
+an oblivious machine; for a linear-time machine some trace is shared by a $2^{-O(nb)}$ fraction of the inputs (the popular trace, \cref{thm:popular}), and the
 inequalities hold on it (\cref{lem:cut-trace,cor:isoperimetry-trace}).
 
 \paragraph{Passes (\cref{sec:passes}).} \emph{Theorem~P.} An oblivious transposer whose run splits into $r$ passes, in
@@ -51,7 +53,8 @@ machine does with its data, and this remains true if the machine is correct only
 (\cref{thm:P-on,thm:Pprime-on}).
 
 \paragraph{Macroscopic motion (\cref{sec:mstar}).} \emph{Theorem~M*.} Rescale the work-head trajectories of a
-linear-time transposer by $n$ in space (in blocks) and in time (in slots). Along subsequences they converge to
+linear-time transposer (for adaptive machines, along its popular trace classes) by $n$ in space (in blocks) and in
+time (in slots). Along subsequences they converge to
 $1$-Lipschitz paths, and every limit satisfies an isoperimetric inequality~$(\star)$: for every partition of
 macroscopic time into pieces of measure at most $\theta$, the heads return to their positions across different
 pieces with total multiplicity at least $1-2\theta$. Consequently the limits are not all monotone, and the heads
@@ -84,13 +87,15 @@ for codes with few error patterns, and for constant-size hints (\cref{sec:plainr
 \paragraph{Barriers (\cref{sec:barriers}).} The same statement on general bounded-degree graphs would imply superlinear
 circuit lower bounds for multiplication (\cref{prop:circuit-barrier}), and its bit-level analogue on tape networks
 would separate oblivious from non-oblivious machines off-line (\cref{prop:rotation-barrier}). A proof must therefore use
-the shape of tapes, and must go beyond known techniques for oblivious computation.
+the shape of tapes; and, since the plain form already excludes oblivious linear-time transposers
+(\cref{thm:oblivious}), a proof would give a superlinear lower bound for oblivious transposition, which known
+techniques do not provide.
 
-\paragraph{XOR-frame recursions and constructions (\cref{sec:frames,sec:construction}).} The recursion of the OpenAI
-preprint cannot give linear time: every gadget it could use makes at least as many frame changes as the trivial one
-(\cref{thm:frame-change}), with sharper bounds for integer frames. We record the conditions a construction must meet
-and the one architecture we know that meets them; its open core is a question about index coding on bounded-degree
-expanders.
+\paragraph{XOR-frame recursions and constructions (\cref{sec:frames,sec:construction}).} In an abstract model of the recursion of the
+OpenAI preprint (the correspondence is informal, \cref{sec:frames}), every gadget makes at least one frame change per
+wire, so its cost is $s\ge W$ (\cref{thm:frame-change}), while linear time would need $s<W$; integer frames cost
+more. We record the conditions a construction must meet and the one architecture that we could not rule out; its open
+cores are index-coding questions on bounded-degree expanders.
 
 \subsection{How to read this paper: the formal proofs}
 
@@ -129,14 +134,16 @@ do not imply it.
 transposition for algorithms that move indivisible items~\cite{AggarwalVitter1988}. Whether coding can help is the
 question behind the network coding conjecture of Li and Li~\cite{LiLi2004}, which would have implied lower bounds for
 multiplication circuits~\cite{AFKL2019}, external-memory sorting~\cite{FHLS2019} and oblivious machines~\cite{AHJKL2006}.
-Braverman and He refuted it~\cite{BravermanHe2026}: in undirected networks coding can beat multicommodity flow, by a
-factor $(\log n)^{\varepsilon}$ after amplification~\cite{BGS2017}. Our conjecture is a version of the network coding
+Braverman and He~\cite{BravermanHe2026} and, concurrently, Zhang, Li and Li~\cite{ZhangLiLi2026} refuted it: in
+undirected networks coding can beat multicommodity flow, by a factor $(\log n)^{\varepsilon}$ after
+amplification~\cite{BGS2017}. Our conjecture is a version of the network coding
 conjecture restricted to tape networks and to the densest demand, where a gain of order $\log n$ is at stake.
 
 \paragraph{Multiplication.} Integer multiplication in time $O(n\log n)$ on multitape machines is due to Harvey and van der
 Hoeven~\cite{HvdH2021}, after Sch\"onhage and Strassen~\cite{SchonhageStrassen1971} and F\"urer~\cite{Furer2009}. The
-OpenAI preprints~\cite{OpenAI2026mult,OpenAI2026fourier} claim multiplication and transposition below $n\log n$; we use
-them only as motivation, and \cref{sec:frames} shows the limits of their transposition technique.
+OpenAI preprints claim multiplication and transposition below $n\log n$ on multitape machines~\cite{OpenAI2026mult}
+and exact complex linear circuits for the DFT of size $o(n\log n)$ for infinitely many lengths~\cite{OpenAI2026fourier};
+we use them only as motivation, and \cref{sec:frames} shows the limits of their transposition technique.
 
 \subsection{Organization}
 

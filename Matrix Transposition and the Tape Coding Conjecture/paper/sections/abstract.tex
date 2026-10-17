@@ -1,18 +1,18 @@
 Can a deterministic multitape Turing machine transpose an $n\times n$ matrix with $\lceil\log_2n\rceil$-bit
-entries in time linear in the input length $L=n^2\lceil\log_2n\rceil$? Transposition is the data-movement
-bottleneck of FFT-based integer multiplication on tapes, and by a reduction of Harvey and van der Hoeven a
+entries in time linear in the input length $L=n^2\lceil\log_2n\rceil$? Transposition is the data-movement step of FFT-based integer multiplication on tapes, and by a reduction of Harvey and van der Hoeven a
 linear-time multiplier would give a linear-time transposer. The question is open. We study it against a
 frozen formal statement in Lean~4, and every theorem in this paper except two explicitly marked barrier
 results is machine-checked.
 
-We prove that every transposer needs $\Omega(\log n)$ passes in which all heads move monotonically, whatever it
-does with its data (Theorem~P); that the macroscopic work-head motion of every linear-time transposer satisfies
-an isoperimetric inequality that forces it to fold back (Theorem~M*); and that both statements survive when the
+We prove that every transposer running in time polynomial in $L$ needs $\Omega(\log n)$ passes in which all heads
+move monotonically, whatever it does with its data (Theorems~P and~P$'$); that, along its most popular block-level
+trace, the macroscopic work-head motion of every linear-time transposer satisfies an isoperimetric inequality that
+forces it to fold back (Theorem~M*); and that both statements survive when the
 machine is correct only on a $2^{-O(n\log n)}$ fraction of the inputs. We then isolate the remaining obstacle as
 a statement about network coding: the \emph{Tape Coding Conjecture} asserts that complete exchange admits no
 causal code on the block networks of linear-length tape diagrams, equivalently that coding beats multicommodity
 flow there by a factor $o(\log n)$. We prove that the conjecture implies that no linear-time transposer exists,
 give equivalent and weaker sufficient forms, prove that its plain form implies its robust form for several
-classes of codes, and show why a proof must use the shape of tapes. Finally we show that XOR-frame recursion, the
-only known technique that beats $O(L\log n)$, cannot reach linear time, and we describe what a construction would
-need.
+classes of codes, and show why a proof must use the shape of tapes. Finally we show that, in an abstract model of XOR-frame recursion (the only technique claimed to beat
+$O(L\log n)$), every gadget makes at least one frame change per wire, so that the recursion cannot reach linear
+time; and we describe what a construction would need.

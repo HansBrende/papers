@@ -9,30 +9,35 @@ the results above, a citation, or explicitly labelled as a heuristic.
 
 A machine witnessing~(T) must have all of the following properties.
 \begin{enumerate}[label=(N\arabic*),leftmargin=3em]
-\item \emph{Coding.} It cannot only move data: machines that move indivisible items need time
-$\Omega(L\log n)$ (Stoß~\cite{Stoss1973} for Turing machines, Aggarwal and Vitter~\cite{AggarwalVitter1988}
-in external memory). Cells must hold functions of several entries.
+\item \emph{Coding.} It cannot only move data along an input-independent pattern: oblivious data movement needs
+time $\Omega(L\log n)$ (Sto\ss~\cite{Stoss1973} for Turing machines, Aggarwal and Vitter~\cite{AggarwalVitter1988} in
+external memory; both bounds concern a fixed permutation of distinct items). For data movement that depends on the
+entries, which repeat because $b=\clog n$, no such bound is known.
 \item \emph{Many passes, at every scale.} Its run has $\Omega(\log n)$ passes (Theorem~P$'$,
-\cref{thm:Pprime}), even on a $2^{-O(nb)}$ fraction of the inputs (\cref{thm:Pprime-on}); the grouped form
-(\cref{thm:Pgamma}) gives the same at coarser column scales.
+\cref{thm:Pprime}), even on a $2^{-O(nb)}$ fraction of the inputs (\cref{thm:Pprime-on}); the grouped form of
+\cref{thm:Pprime} gives the same at coarser column scales.
 \item \emph{Folding motion.} Along the popular trace, the macroscopic work-head trajectories satisfy $(\star)$
 (\cref{cor:mstar-T}): some head makes a macroscopic U-turn, and the heads together waste at least one unit of
 range (\cref{thm:excess}).
-\item \emph{A large coding gain.} The block network of its run carries a causal code for complete exchange,
+\item \emph{A large coding gain.} The block network of the run of a slightly modified machine (output buffered at
+the end; state and head positions carried on extra stationary tapes) carries a causal code for complete exchange,
 on a set of co-entropy $O(n)$, at the profile capacities (\cref{thm:reduction,thm:coent-linear}); by
-\cref{thm:code-gap} this code beats routing by a factor $\Omega(\log n)$. For an oblivious machine the code
-works on all inputs (\cref{thm:oblivious}); compare the analogous statement for computation graphs
-in~\cite[Thm.~6.2]{AHJKL2006}.
-\item \emph{Not an XOR-frame recursion.} It cannot be built from the gadgets of \cref{sec:frames}, which make at least
-as many frame changes as the trivial gadget.
+\cref{thm:code-gap} this code beats routing by a factor $\Omega(\log n)$. For an oblivious machine the code works
+on all inputs (\cref{thm:oblivious}); for oblivious I/O machines the analogous statement, at the level of pages, is
+\cite[Thm.~6.2]{AHJKL2006}.
+\item \emph{Not an XOR-frame recursion.} Within the abstract model of \cref{sec:frames}, every gadget makes at least
+one frame change per wire, so its cost is $s\ge W$ (\cref{thm:frame-change}), while linear time would need $s<W$; the
+model captures the preprint's template only informally.
 \end{enumerate}
 
 Condition~(N4) is the heart of the matter. Coding gains over routing in undirected networks do exist: the
-multiple-unicast (network coding) conjecture is false~\cite{BravermanHe2026}. But the known growing gains are
-of order $(\log n)^{\varepsilon}$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017,ZhangLiLi2026},
-and they concern sparse demands; we know of no way to reach a gain of order $\log n$ for dense demands by
-tensoring (a heuristic, not a theorem). A linear-time transposer needs a \emph{native} gain of order $\log n$ for
-the densest demand, on a network shaped by tapes.
+multiple-unicast (network coding) conjecture is false~\cite{BravermanHe2026,ZhangLiLi2026}. But the known growing
+gains are of order $(\log n)^{\varepsilon}$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017}, and
+they concern sparse demands; we do not expect tensoring a constant gap to produce a gain of order $\log n$ for dense
+demands (a heuristic, not a theorem). Braverman and He also observe that the unrefereed sub-$n\log n$ Fourier circuits
+of~\cite{OpenAI2026fourier} would give a coding gain over routing; such gains would not come from tensoring, but they
+live on circuit graphs, not on networks shaped by tapes. A linear-time transposer needs a \emph{native} gain of order
+$\log n$ for the densest demand, on a network shaped by tapes.
 
 \subsection{An architecture that survives}
 
@@ -45,10 +50,12 @@ level's problem. The total time is $\sum_\ell O(\theta^\ell L)=O(L)$, and the pa
 Theorem~P requires.
 
 \paragraph{Expanding choreography.} The heads of each level are driven along prepared \emph{rulers} that realize
-two non-commuting monotone maps of the interval, so that the relation graph between the encoder's input and
-output rows is a bounded-degree expander. Bourgain and Yehudayoff's monotone expanders~\cite{BourgainYehudayoff2013}
-provide such maps; the rulers can be written in linear time, since their marks are computed with
-$O(\log L)$-bit arithmetic. Near-identity generators are needed: integer or dyadic M\"obius pairs generate
+a constant number of monotone maps of the interval, so that the relation graph between the encoder's input and
+output rows is a bounded-degree expander. The monotone expanders of Bourgain and
+Yehudayoff~\cite{BourgainYehudayoff2013} provide such maps (near-identity M\"obius maps from a suitable free
+generating set, together with translations and the identity); at least three monotone maps are needed, since a union
+of two monotone matchings is planar~\cite{DSW2016}. The rulers can be written in linear time, since their marks are
+computed with $O(\log L)$-bit arithmetic (a design computation, not included here). Near-identity generators are needed: integer or dyadic M\"obius pairs generate
 discrete groups whose relation graphs are not expanders (a heuristic supported by numerical spectral gaps).
 Repeating each choreography a constant number of times should make the macroscopic motion satisfy the
 quantitative inequality $(\star)$; this is a cost constraint, not an obstruction (heuristic).
@@ -67,9 +74,10 @@ have size $(1-\varepsilon)n^2$ for a fixed $\varepsilon>0$?
 
 Without the degree bound, $\varepsilon=\tfrac12$ is achievable: broadcast $A+A^{\T}$ above the diagonal. With the
 degree bound, routing-type codes save only $O(n^2/\log n)$ on expanders, and hyperfinite (amenable) graphs save
-$o(n^2)$ (heuristic arguments; not included here). A positive answer on expanders would be the first
-constant-fraction coded saving in a tape-relevant model. A negative answer, together with its decoder analogue
-(restricted-view index coding), would rule out every geometric recursion with $O(1)$-pass levels.
+$o(n^2)$ (heuristic arguments; not included here). A positive answer on expanders would be, to our knowledge, the first
+constant-fraction coded saving in a tape-relevant model. A negative answer, together with a negative answer to the
+analogous decoder problem, would rule out every geometric recursion of the form above with $O(1)$-pass levels
+(heuristic: the necessity of both savings is argued here only informally).
 
 \subsection{Mechanisms that fail}
 
@@ -77,14 +85,15 @@ The following classes of constructions fail for reasons proved in this paper.
 \begin{itemize}[leftmargin=2em]
 \item \emph{Few passes.} Any schedule with $o(\log n)$ passes, with any coding, including constant-pass
 choreographies along expanders (Theorems~P and~P$'$).
-\item \emph{Regular or one-way motion.} Machines whose macroscopic head motion is stationary or monotone on every
-tape (\cref{thm:excess,thm:mstar-adaptive}).
-\item \emph{XOR-frame recursions,} including the template of~\cite{OpenAI2026mult}, which cannot reach linear time
-(\cref{sec:frames}).
-\item \emph{Codes whose linear structure covers the input set.} For a construction aimed at the plain conjecture's
-counterexamples, linear codes, codes correct off a small set, and codes that are linear outside $O(nw)$ bits of
-capacity reduce to plain codes (\cref{sec:plainrobust}).
+\item \emph{Regular or one-way motion.} Machines whose macroscopic head motions (along the popular trace) are all
+stationary or monotone (\cref{thm:excess,thm:mstar-adaptive}).
+\item \emph{XOR-frame recursions} in the abstract model of \cref{sec:frames}, which captures the template
+of~\cite{OpenAI2026mult} informally: every gadget makes at least one frame change per wire, so linear time is out of
+reach (\cref{thm:frame-change}).
 \end{itemize}
+Some classes of codes are moreover no easier than plain codes: linear codes, codes correct off a small set, and codes
+that are linear outside $O(nw)$ bits of capacity exist only if plain codes exist (\cref{thm:pr-linear,thm:pr-vote});
+a counterexample to the robust conjecture from these classes would refute the plain one.
 Many further attempts failed for reasons we could only argue informally: flat schemes that code across a constant
 number of whole streams (they save at most a constant factor), window-local recursions whose levels read only
 nearby data, static coding certificates on Ramanujan-type graphs that resist conversion into causal codes, and

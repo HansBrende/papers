@@ -16,8 +16,7 @@ stream from $A$ to $B$ costs $\rank(B-A)$ recursive interchanges of narrower chu
 \begin{definition}[Gadget]\label{def:gadget}
 \formal{Frames/Gadget.lean}{Transpose.ShearFrame.Gadget, Transpose.ShearFrame.Gadget.cost}
 A \emph{gadget} has $W$ wires; wire $w$ starts in a source frame $S_w$, passes through the frames of its
-gates in time order, and ends in a sink frame $T_w$. Gates are XOR operations between wires in a common
-frame. The scalar network permutes the wires by a permutation $\rho$ (G1), and
+gates in time order, and ends in a sink frame $T_w$. Gates are XOR operations $i\leftarrow i+j$ between two distinct wires in a common frame. The scalar network permutes the wires by a permutation $\rho$ (G1), and
 $T_{\rho(w)}=S_w+I$ (G2): every wire ends sheared by the identity. The \emph{cost} $s$ of the gadget is
 the sum over wires of the ranks of consecutive frame differences along the wire, from source to sink.
 Formally, \lean{Transpose.ShearFrame.Gadget} records $\rho$, the source frames and the frame paths subject to
@@ -29,7 +28,7 @@ change being a recursive interchange of narrower chunks. Its cost per unit of da
 $F_k\le(s/W)F_{k-1}+O(1)$ at width $m^k$, and every implementation in the template also satisfies
 $F_k\ge(s/W)F_{k-1}+c_0$. A gadget with $s<W$ would therefore give linear-time transposition, a gadget
 with $s/W=m^\tau$, $0<\tau<1$, would give $O(L(\log n)^\tau)$, and $s\ge W$ excludes linear time within the
-template; $s=W$ gives $\Theta(L\log\log n)$ (for rational frames with $m\ge2$ and $W\ge1$ the value $s=W$ is not attained, by \cref{prop:gadget-runs}). (This reading of the template is informal: it rests on the
+template; $s=W$ would give $\Theta(L\log\log n)$, but for rational frames with $m\ge2$ and $W\ge1$ no gadget has $s\le W$ (\cref{prop:gadget-runs}(b)). (This reading of the template is informal: it rests on the
 preprint's construction~\cite{OpenAI2026mult}, which we use only to motivate the model.)
 
 \subsection{Cost bounds}
@@ -43,7 +42,7 @@ idempotent (a projection, as in the preprint), then $2s\ge Wm$.
 \end{theorem}
 
 \begin{outline}
-Rank is subadditive, so the cost of a wire is at least $\rank(T_w-S_w)$, and over a $\rho$-invariant set $C$,
+Rank is subadditive, so the cost of a wire is at least $\rank(T_w-S_w)$, and over a nonempty $\rho$-invariant set $C$,
 $\sum_{w\in C}(T_w-S_w)=\abs{C}I$ has rank $m$. For idempotent frames, $\rank(P_V-P_U)\ge\abs{\dim V-\dim
 U}$ and $\rank(P_A+P_B)\ge\max(\dim A,\dim B)$; pairing the source term of $w$ with the sink term of
 $\rho(w)$ and optimizing gives $2s\ge Wm$.
@@ -54,19 +53,20 @@ The general lower bound uses a run model in which frames are arbitrary and only 
 \begin{definition}[Runs]\label{def:frame-runs}
 \formal{Frames/GadgetRuns.lean}{Transpose.ShearFrame.Cfg, Transpose.ShearFrame.Event, Transpose.ShearFrame.init, Transpose.ShearFrame.Cfg.allValid, Transpose.ShearFrame.moves}
 A configuration assigns to each of $W$ wires a frame (from any set $F$) and a vector in $\F_2^W$. An
-event is either a gate $i\leftarrow i+j$, allowed only for $i\ne j$ at a common frame, or a move of one wire to a frame (a move to the wire's current frame changes nothing; the others are \emph{frame-changing}). A run is a sequence of events applied to the configuration in which wire $u$ is at frame $S_u$ holding the unit vector $e_u$; it is \emph{valid} if every gate is allowed when it occurs. The number of moves of a run counts all its moves, frame-changing or not.
+event is either a gate $i\leftarrow i+j$, allowed only for $i\ne j$ at a common frame, or a move of one wire to a frame (a move to the wire's current frame changes nothing; the others are \emph{frame-changing}). A run is a sequence of events applied to the configuration in which wire $u$ is at frame $S_u$ holding the unit vector $e_u$; it is \emph{valid} if every gate is allowed when it occurs. The number of moves of a run counts all its moves, frame-changing or not. For matrix frames, the \emph{jump} of a move is its new frame minus its old frame.
 \end{definition}
 
 \begin{theorem}[At least $W$ frame changes]\label{thm:frame-change}
 \formal{Frames/GadgetRuns.lean}{Transpose.ShearFrame.moves_ge_W, Transpose.ShearFrame.cost_ge_W, Transpose.ShearFrame.moves_ge_W_matrix}
+\formal{Frames/GadgetCoarse.lean}{Transpose.ShearFrame.vmoves_ge_W}
 Let $\mathrm{shift}:F\to F$ have no fixed point. Every valid run that ends with wire $\rho(u)$ at frame
-$\mathrm{shift}(S_u)$ holding $e_u$, for every $u$, contains at least $W$ moves; so, if every move costs at least $1$, its total cost is at least $W$. For rational $m\times m$ matrix frames with $m\ge1$ this applies with $\mathrm{shift}(S)=S+I$.
+$\mathrm{shift}(S_u)$ holding $e_u$, for every $u$, contains at least $W$ frame-changing moves, hence at least $W$ moves; so, if every move costs at least $1$, its total cost is at least $W$. For rational $m\times m$ matrix frames with $m\ge1$ this applies with $\mathrm{shift}(S)=S+I$.
 \end{theorem}
 
 \begin{outline}
 Let $\sigma_f$ be the span of the vectors on the wires at frame $f$, and $N_f$ the span of the $e_u$ with
 $\mathrm{shift}(S_u)=f$. The potential $\sum_f\dim(\sigma_f\cap N_f)$ is unchanged by gates (they act
-within one frame by transvections), grows by at most one per move, is $0$ initially (no unit vector starts
+within one frame by transvections), grows by at most one per frame-changing move (a move to the current frame changes nothing), is $0$ initially (no unit vector starts
 at its target, since $\mathrm{shift}$ has no fixed point), and is $W$ at the end.
 \end{outline}
 
@@ -132,7 +132,7 @@ Every gadget has a valid run, in the sense of \cref{def:frame-runs}, that ends w
 $S_u+I$ holding $e_u$ for every $u$, has at most $s$ moves, and whose jumps have total rank $s$. Consequently:
 \begin{enumerate}[label=(\alph*)]
 \item every gadget has cost $s\ge W$;
-\item a gadget whose wires make at most $W$ frame changes in total has cost $s\ge Wm$; in particular, if
+\item a gadget whose wires make at most $W$ frame changes in total (pairs of distinct consecutive frames along their frame paths) has cost $s\ge Wm$; in particular, if
 $m\ge2$ and $W\ge1$, no gadget has $s\le W$;
 \item a gadget with integer frames satisfies $s\ge2W$ if $m=2$, and $2(2^m-1)W\le2^ms$ and
 $2(2^m-1)W\le(2^{m-1}+1)s$ for every $m$.
@@ -164,10 +164,10 @@ Lean structure \lean{Transpose.ShearFrame.Gadget}, which omits the gates and (G1
 \subsection{Tight runs}
 
 A valid run as in \cref{thm:coarsening}, with $\mathrm{tgt}(u)\ne S_u$ for all $u$, that makes at most $W$ frame-changing moves is \emph{tight}; by \cref{thm:coarsening} it makes exactly $W$ such moves.
-Tight runs are rigid.
+Over a finite set of frames, tight runs are rigid.
 
 \begin{theorem}[Structure of tight runs]\label{thm:tight}
-\formal{Frames/GadgetCargo.lean}{Transpose.ShearFrame.tight_potentials, Transpose.ShearFrame.tight_sigma_split, Transpose.ShearFrame.cargo_rule, Transpose.ShearFrame.cargo_rule_bool}
+\formal{Frames/GadgetCargo.lean}{Transpose.ShearFrame.tight_potentials, Transpose.ShearFrame.tight_sigma_split, Transpose.ShearFrame.targetI_inf_eq_bot, Transpose.ShearFrame.cargo_rule, Transpose.ShearFrame.cargo_rule_bool}
 Let the set $F$ of frames be finite. In a tight run, let $\sigma_f$ be the span of the vectors on the wires at frame $f$, $N_f$ the span of the $e_u$ with $\mathrm{tgt}(u)=f$, and $N'_f$ the span of the $e_u$ with $S_u=f$. After any prefix with $t$ frame-changing moves the ``arrived'' potential $\sum_f\dim(\sigma_f\cap N_f)$ is $t$ and the ``not yet departed'' potential $\sum_f\dim(\sigma_f\cap N'_f)$ is $W-t$, and at every frame $\sigma_f=(\sigma_f\cap N_f)\oplus(\sigma_f\cap N'_f)$. If moreover each item has only two frames (every frame other than $S_u$ is
 $\mathrm{tgt}(u)$, as after a two-class coarsening), then every frame-changing move carries a vector lying in the
 span of the items whose target is its destination and in the span of the items born at its origin (the cargo rule).
@@ -192,7 +192,7 @@ In every valid run as in \cref{thm:coarsening}, every frame-changing move whose 
 
 \begin{theorem}[Mixing lemma]\label{thm:mixing}
 \formal{Frames/GadgetMixing.lean}{Transpose.ShearFrame.mixed_move_forces_extra_hop, Transpose.ShearFrame.mixing_lemma, Transpose.ShearFrame.mixing_lemma_matrix}
-Weight frames by a function $d$ with $d(f,f)=0$, $d(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
+Weight frames by a function $d:F\times F\to\N$ with $d(f,f)=0$, $d(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
 matrices, $d(A,B)=\rank(B-A)$), and let $d(S_u,\mathrm{tgt}(u))\ge m$ for every item $u$. Suppose a
 valid run as in \cref{thm:coarsening} (with targets $\mathrm{tgt}(u)$) contains a frame-changing move whose cargo contains two distinct items, and every other frame-changing move carries a single item. Then some item of that cargo has
 $d$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
@@ -213,5 +213,5 @@ $g$ carry unit vectors, every wire at $g$ stays constant on the support of $x$ w
 coordinate $s_0$; at the end that wire holds $e_{s_0}$, which is not constant on a support of two items.
 \end{outline}
 
-Together with \cref{prop:gadget-runs}, these say that, within the XOR-frame template, every gadget costs at least $W$ (so linear time is out of reach), gadgets with integer frames cost substantially more than $W$, and runs that make exactly $W$ frame changes (tight runs), or exactly $W$ changes of class at a two-class coarsening, are rigid; for rational matrix frames, a run with at most $W$ moves has total jump rank at least the baseline $Wm$ (\cref{thm:coarsening}). Whether some gadget has $s/W$ substantially below $m$, which would give an improvement
+Together with \cref{prop:gadget-runs}, these say that, within the XOR-frame template, every gadget costs at least $W$ (so linear time is out of reach), gadgets with integer frames cost substantially more than $W$, and runs over a finite set of frames that make exactly $W$ frame changes (tight runs, \cref{thm:tight}), as well as runs that make exactly $W$ changes of class at a two-class coarsening (\cref{thm:itineraries,thm:carrying}), are rigid; for rational matrix frames, a run with at most $W$ moves has total jump rank at least the baseline $Wm$ (\cref{thm:coarsening}). Whether some gadget has $s/W$ substantially below $m$, which would give an improvement
 over $O(L\log n)$ much larger than the claimed $\kappa$, is open (\cref{sec:open}).

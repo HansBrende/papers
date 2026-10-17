@@ -17,7 +17,7 @@ machine would give a linear-time transposer. (T) is open, and this work does not
 
 ## What is proved
 
-Everything below is proved in Lean, with no axioms beyond `propext`, `Classical.choice` and `Quot.sound`. The
+Everything in the following list is proved in Lean, with no axioms beyond `propext`, `Classical.choice` and `Quot.sound`. The
 paper states each result with its Lean declarations and file.
 
 - **Locality and counting.** A cut lemma for every set of time steps, and a discrete isoperimetric inequality
@@ -43,9 +43,9 @@ paper states each result with its Lean declarations and file.
   frame changes as the gadget has wires; with integer frames the runs' total jump rank is larger still (§12).
 
 Three results are not formalized; the paper proves them in full. Two are barrier results (§11): a shift
-circuit with s gates, and an oblivious machine rotating in T steps, yield coding gains over routing of order
-n log n/(s+n) and L log L/T respectively, which is of order log n for linear-size circuits and linear-time
-machines. The third is the translation from gadgets to runs (§12), which gives every gadget cost at least W and
+circuit with s gates, and an oblivious machine rotating in T steps, yield coding gains over routing of order at
+least n log n/(s+n) and L log L/T (for T ≤ L log₂ L) respectively, that is, of order at least log n for
+linear-size circuits and log L for linear-time machines. The third is the translation from gadgets to runs (§12), which gives every gadget cost at least W and
 so, within the XOR-frame template, excludes linear time.
 
 ## What is open

@@ -129,6 +129,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.ShearFrame.moves_ge_W_matrix
 #print axioms Transpose.ShearFrame.one_sided_bound
 #print axioms Transpose.ShearFrame.rank_sum_of_moves_le
+#print axioms Transpose.ShearFrame.targetI_inf_eq_bot
 #print axioms Transpose.ShearFrame.tight_potentials
 #print axioms Transpose.ShearFrame.tight_sigma_split
 #print axioms Transpose.ShearFrame.two_mul_le_rank_sum

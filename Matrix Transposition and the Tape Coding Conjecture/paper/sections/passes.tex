@@ -65,7 +65,7 @@ Fix a run with a pass partition $p$ into $r$ passes and an output segment $[o_1,
 \begin{definition}[Dependency forest]\label{def:forest}
 \formal{Tape/DefsP.lean}{rootNode, sSet, childNode, forestNode, addrsBelow, addresses, forest, readSet, combSet}
 \begin{itemize}[leftmargin=2em]
-\item The \emph{root node} in pass $P_0$ is the set of steps $\tau$ of pass $P_0$ with $\operatorname{len}(\tau)<o_2$ and $o_1<\operatorname{len}(\tau+1)$, where $\operatorname{len}(\tau)$ is the number of output bits appended before time $\tau$. When $o_1<o_2$ and output bit $o_2-1$ is appended, the roots of all passes together are the steps from the append of output bit $o_1$ to the append of output bit $o_2-1$.
+\item The \emph{root node} in pass $P_0$ is the set of steps $\tau$ of pass $P_0$ with $\operatorname{len}(\tau)<o_2$ and $o_1<\operatorname{len}(\tau+1)$, where $\operatorname{len}(\tau)$ is the number of output bits appended before time $\tau$.
 \item For a node $J$, an earlier pass $P'$ and a work tape $t$, the \emph{S-set} consists of the
 cells that head $t$ occupies during $J$, other than its cell at the first step of $J$, whose last
 visit before that first step lies in pass $P'$. The \emph{child} of $J$ at $(P',t)$ is the set of
@@ -80,8 +80,7 @@ of the segment is the set of input positions $d<n^2b$ with $\operatorname{tpos}(
 \end{itemize}
 \end{definition}
 
-Nodes are intervals of time, because heads are monotone within a pass and the output length is
-monotone.
+Nodes are intervals of time, because heads are monotone within a pass and the output length is monotone. (If $o_1<o_2$ and output bit $o_2-1$ is appended before time $T$, the roots of all passes together are the steps from the append of output bit $o_1$ to the append of output bit $o_2-1$, since $\operatorname{len}$ is non-decreasing with steps of at most one.)
 
 \begin{lemma}[Forest]\label{lem:forest}
 \formal{Tape/Statements/Core.lean}{forest_subset, forest_entryPoints_subset, forest_entryCells_subset, forest_entryPoints_card_le, forest_entryCells_card_le, card_addresses_le, forest_info}

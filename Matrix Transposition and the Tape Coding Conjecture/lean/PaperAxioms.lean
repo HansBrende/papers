@@ -112,6 +112,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.ShearFrame.cargo_rule_bool
 #print axioms Transpose.ShearFrame.carrying_move_on_admissible_chain
 #print axioms Transpose.ShearFrame.carrying_move_on_chain
+#print axioms Transpose.ShearFrame.chain_exists_visible
 #print axioms Transpose.ShearFrame.chain_itinerary
 #print axioms Transpose.ShearFrame.chain_itinerary_matrix
 #print axioms Transpose.ShearFrame.cost_ge_W
@@ -183,6 +184,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.Tape.RobustCE_TM
 #print axioms Transpose.Tape.RobustCE_TM_dist
 #print axioms Transpose.Tape.RobustNoCode_TM
+#print axioms Transpose.Tape.RobustNoCode_TM_bits
 #print axioms Transpose.Tape.Routing
 #print axioms Transpose.Tape.SameTrace
 #print axioms Transpose.Tape.TSDiagram
@@ -280,6 +282,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.Tape.entryCells_slotSteps_card
 #print axioms Transpose.Tape.entryPoints
 #print axioms Transpose.Tape.entryPoints_slotSteps_card
+#print axioms Transpose.Tape.entryTimes
 #print axioms Transpose.Tape.entryTimes_card_le
 #print axioms Transpose.Tape.entryTimes_charged
 #print axioms Transpose.Tape.excess_add_range_le
@@ -547,6 +550,7 @@ Every declaration should depend on no axioms beyond `propext`, `Classical.choice
 #print axioms Transpose.Tape.weak_duality
 #print axioms Transpose.Tape.work_eq_blank
 #print axioms Transpose.Tape.work_eq_written
+#print axioms Transpose.Tape.writtenSym
 #print axioms Transpose.TransposesWithin
 #print axioms Transpose.encode
 #print axioms Transpose.entryBits

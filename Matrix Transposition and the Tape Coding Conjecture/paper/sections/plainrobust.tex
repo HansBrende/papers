@@ -20,7 +20,7 @@ quantifiers as the conjecture.
 \begin{enumerate}[label=(\alph*)]
 \item On a fixed diagram and at fixed capacities: a hint code with $2^s$ values gives a code on a set
 of co-entropy $s$; a code on a set of co-entropy $m$ gives a hint code with $2^m(L+1)$ values.
-\item The Tape Coding Conjecture is equivalent to: for every $C$, no hint code with an $Cnw$-bit
+\item The Tape Coding Conjecture is equivalent to: for every $C$, no hint code with a $Cnw$-bit
 hint exists. With a constant hint this gives the plain form. (T) yields, for every large $n$, a single
 valid diagram with codes indexed by an $O(nw)$-bit hint solving complete exchange on every input.
 \item The co-entropy ladder: $\mathrm{NoCode}(0)$ is the plain form, $\mathrm{NoCode}(Cnw)$ for every
@@ -34,7 +34,8 @@ plain form with $s$ extra bits on every memory edge is equivalent to the plain f
 (a) In one direction take the most popular hint value. In the other, a code for $F$ is a code for
 every shift $F\oplus z$ (each node XORs its visible rows with $z$, and each output bit is XORed back),
 and $2^m(L+1)$ shifts of $F$ cover every input, by counting with Bernoulli's inequality. (b) and (c)
-follow from (a). (d) Extra memory bits become stationary tapes, as in \cref{thm:profile}.
+follow from (a), from \cref{thm:coent-linear} for the statement about (T), and from monotonicity in the
+co-entropy (a set of co-entropy $0$ is the set of all inputs). (d) Extra memory bits become stationary tapes, as in \cref{thm:profile}.
 \end{outline}
 
 So the entire gap between plain and robust is whether an $O(nw)$-bit oracle broadcast can be
@@ -65,8 +66,8 @@ such an affine set from which a set $E$ with $2^s\cdot2\abs{E}^2<2^L$ is removed
 Prepend an input sweep: the input head goes from $0$ to $L-1$ and back while the work heads are
 parked, so every row is read in the prefix and the original diagram follows unchanged. The prefix
 computes the additive hint along its spine, and the original part runs the code shifted by the shift
-table entry of the hint, which it reads from the low $s$ bits of its memory edges. This is the
-\emph{syndrome trick} of external-memory coding in the language of tape diagrams. The version with
+table entry of the hint, which it reads from the low $s$ bits of its memory edges. This is a syndrome trick (decoding the coset of the input from its syndrome), in the language of tape
+diagrams. The version with
 $K$ shifts adds a selection among the $K$ shifted codes (\cref{thm:pr-select}), and the version with
 exceptions adds voting (\cref{thm:pr-vote}).
 \end{outline}
@@ -79,15 +80,16 @@ $2\abs{E}^2<2^L$.
 
 \begin{outline}
 Triple every work walk; the block network is unchanged and the profile capacities triple. Run three
-shifted copies of the code, with shifts $0,z_1,z_2$ such that $z_i\oplus z_j\notin E\oplus E$, and
-output the majority of the three decoded bits: on every input at most one copy errs.
+shifted copies of the code side by side, each clamped to its capacities (so a copy that errs still fits),
+with shifts $0,z_1,z_2$ such that $z_i\oplus z_j\notin E\oplus E$, and output the majority of the three
+decoded bits: on every input at most one copy errs.
 \end{outline}
 
 \begin{theorem}[Selection among candidates]\label{thm:pr-select}
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_hintConst_of_noCode, PlainRobust.noCode_iff_hintConst, PlainRobust.noCode_netCover_of_noCode, PlainRobust.noCode_netHint_of_noCode}
 Under the plain conjecture, no hint code with a constant number of hint bits exists; equivalently, the
 plain conjecture is unchanged by a constant oracle hint. More generally, no code exists on a set $F$
-for which a \emph{network-computable} hint (computed by a causal code within the profile capacities of
+for which a \emph{network-computable} hint of $O(nw)$ bits (computed by a causal code within the profile capacities of
 a linear-length prefix diagram) together with $O(1)$ shift tables moves every input into $F$; and no
 family of codes indexed by a network-computable hint of $O(nw)$ bits solves complete exchange on every
 input.
@@ -109,7 +111,7 @@ concatenate the prefix computation with the diagram and carry the hint along the
 Under the plain conjecture, no $\F_2$-linear code solves complete exchange on a set of co-entropy at
 most $Cnw$. The same holds for codes that are linear outside a set of edges carrying $O(nw)$ bits, for
 codes that are linear plus nonlinear corrections of $O(nw)$ bits in total, and for codes that are
-linear plus corrections taking at most $2^{O(nw)}$ joint values.
+linear plus corrections whose values on the inputs of $F$ take at most $2^{O(nw)}$ joint values.
 \end{theorem}
 
 \begin{outline}
@@ -131,9 +133,12 @@ family of quadratic forms each of whose monomials joins two different parts.
 \end{theorem}
 
 \begin{outline}
-The zero set of a function of degree at most $D$ is covered by $2^D$ translates of itself: if a
-derivative of order $D'\le D$ is nonzero at $x$, some translate of $x$ by a sum of a sub-list of the
-directions lies in the zero set, by a parity argument; so selection among $2^D$ shifted codes applies.
+If $f$ vanishes identically there is nothing to prove. Otherwise let $D'\le D$ be the largest order of a
+discrete derivative of $f$ that is not identically zero, along directions $u_1,\dots,u_{D'}$; it is constant
+(its own derivatives vanish), hence equal to $1$, and $D'\ge1$ because the zero set is nonempty. At every
+$x$ the $2^{D'}$ values $f(x\oplus\sum_{i\in S}u_i)$ then sum to $1$, so one of them is $0$: the translates of
+the zero set by these $2^{D'}\le2^D$ vectors cover all inputs, and selection among the $2^D$ shifted codes
+(\cref{thm:pr-select}) applies.
 For a decomposition, run $K$ copies of the code, copy $j$ on the input masked outside part $j$, which
 lies in $F$, and XOR the outputs: transposition is linear.
 \end{outline}
@@ -183,7 +188,7 @@ capacity in aggregate; edge-removal style arguments do not apply as they stand. 
 ladder is a one-shot instance of zero error versus constant error, related to the edge-removal problem
 and to the continuity of network capacity under dependent sources~\cite{LangbergEffros2021}.
 \item \emph{The machine-side view.} Plain would refute (T) if (T) implied oblivious (T), or merely a
-linear-time transposer whose block-level trace does not depend on the input. Codes of trace classes are
+linear-time transposer whose block-level trace and halting time do not depend on the input. Codes of trace classes are
 self-detecting: at every slot the simulation knows whether the run still follows the popular trace. A
 hint-removal argument restricted to self-detecting codes would suffice; none is known.
 \end{itemize}

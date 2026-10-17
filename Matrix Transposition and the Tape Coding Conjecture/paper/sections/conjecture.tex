@@ -13,8 +13,7 @@ set of inputs of co-entropy at most $Cnw$.
 In words: on the block network of any linear-length tape diagram, complete exchange cannot be
 realized by any coding scheme, even if the scheme only has to work for a $2^{-O(n\log n)}$ fraction
 of the inputs. By \cref{thm:code-gap}, a solving code would beat multicommodity flow by a factor
-$\Omega(\log n)$, which is the largest coding gain that cut bounds allow on bounded-degree undirected
-networks. The conjecture can therefore be read as ``on tape networks, coding beats routing by
+$\Omega(\log n)$. The conjecture can therefore be read as ``on tape networks, coding beats routing by
 $o(\log n)$'', and this reading is one of its equivalent forms (\cref{thm:tcc-forms}). The internal
 name of the conjecture in the Lean library is \lean{RobustNoCode_TM} (``no code for \emph{complete
 exchange} on \emph{tape-machine} networks, robust form'').
@@ -27,11 +26,12 @@ the subject of \cref{sec:plainrobust}.
 
 \begin{theorem}[The Tape Coding Conjecture refutes (T)]\label{thm:reduction}
 \formal{Tape/Statements/Coding.lean}{not_linearTimeTransposable_of_robustNoCode, not_linearTimeTransposable_of_robustCE_TM, not_linearTimeTransposable_of_robustCE_TM_dist, codes_of_linearTimeTransposable, not_robustCE_TM_of_linearTimeTransposable}
-If the Tape Coding Conjecture holds (in any of its forms of \cref{thm:tcc-forms}), then
-$\neg\,$\lean{Transpose.LinearTimeTransposable}. Equivalently, a linear-time transposer yields
-constants $k$, $G\ge1$, $c$, $C$ such that for every large $n$ there is a valid $k$-tape diagram of
-length at most $cL$ whose block network carries a causal code, within capacities in the block
-profile, solving complete exchange on a set of co-entropy at most $Cnw$.
+If the Tape Coding Conjecture holds (in any of its robust forms of \cref{thm:tcc-forms}), then
+$\neg\,$\lean{Transpose.LinearTimeTransposable}. In contrapositive form, and more strongly, a linear-time
+transposer yields constants $k$, $G\ge1$, $c$, $C$ such that for \emph{every} large $n$ there is a valid
+$k$-tape diagram of length at most $cL$ whose block network carries a causal code, within capacities in the
+block profile, solving complete exchange on a set of co-entropy at most $Cnw$ (a refutation of the
+conjecture needs such codes only for infinitely many $n$).
 \end{theorem}
 
 \begin{outline}
@@ -49,10 +49,11 @@ Concretely, a proof \texttt{h} of \lean{RobustNoCode_TM} resolves~(T) by the fil
 \texttt{theorem Transpose.answer : $\neg$ Transpose.LinearTimeTransposable :=}\\
 \texttt{\ \ Transpose.Tape.not\_linearTimeTransposable\_of\_robustNoCode h}
 \end{center}
-which \leanfile{Verify.lean} accepts. The reduction is one-way. A refutation of the conjecture is a
-family of codes for infinitely many $n$; nothing makes these codes uniform, finite-state, or local to
-slots, as a machine's code would be. So a refutation removes the coding obstruction without deciding
-(T).
+which \leanfile{Verify.lean} (in \texttt{lean/}) accepts, once \leanfile{Transpose/Answer.lean} also imports
+\leanfile{Transpose.Tape.Statements.Coding}. The reduction is one-way. A refutation of the conjecture is a
+choice of constants $k$, $G$, $c$, $C$ with codes for infinitely many $n$; nothing makes these codes uniform,
+finite-state, or local to slots, as a machine's code would be, and no converse of \cref{thm:reduction} is
+proved. So a refutation would remove this coding obstruction but would not by itself decide (T).
 
 \begin{theorem}[Consequences for every machine]\label{thm:tcc-consequences}
 \formal{Tape/Statements/Coding.lean}{linearTime_fails_of_robustNoCode, no_fast_transposer_of_robustNoCode, no_fast_transposer_of_robustNoCode_bits, linearTime_fails_of_robustNoCode_logBits, not_linearTimeTransposable_of_robustNoCode_logBits}
@@ -64,6 +65,11 @@ transposed within $c(L+1)$ steps: every machine fails at \emph{every} large size
 with $k$ work tapes, $g+1$ work symbols and at most $2^{C_1nw}$ states (its transition table may
 depend on $n$) halts within $cL$ steps with the transposed output on every input of a set of
 co-entropy at most $C_0nw$.
+\item (Extra bits.) For every $s$, if no code exists at the block capacities with $s(k,n)$ extra bits on
+every memory edge (\lean{RobustNoCode_TM_bits}), then for all $k$, $g$, $c$, $C_0$ and all large $n$ no
+machine with $k$ work tapes, $g+1$ work symbols and $\clog{(q+1)}+(k+1)\clog{(2cL+1)}\le s(k,n)$ halts
+within $cL$ steps with the transposed output on every input of a set of co-entropy at most $C_0nw$.
+For $s(k,n)=(3k+4)\clog n$ this hypothesis also implies (a) and $\neg$(T).
 \end{enumerate}
 \end{theorem}
 
@@ -84,14 +90,15 @@ multicommodity flow by a factor of at most $\varepsilon\log n$. The \emph{distan
 $\sum_d\mathrm{rowDist}(d)\le\varepsilon w\sum_e\mathrm{cap}(e)$.
 
 \begin{theorem}[Equivalent forms]\label{thm:tcc-forms}
-\formal{Tape/Statements/Coding.lean}{robust_tfae, robustCE_TM_iff_robustNoCode, robustCE_TM_dist_iff_robustNoCode, robustCE_TM_gamma_iff, robustCE_TM_gamma_per_iff, robustNoCode_of_gainBound, plain_tfae, ce_TM_iff_noCode, ce_TM_dist_iff_noCode, noCode_of_robustNoCode, ce_TM_of_robustCE_TM, ce_TM_dist_of_robustCE_TM_dist}
+\formal{Tape/Statements/Coding.lean}{robust_tfae, robustCE_TM_iff_robustNoCode, robustCE_TM_dist_iff_robustNoCode, robustNoCode_iff_attached, robustCE_TM_att_iff, robustCE_TM_att_iff_robustCE_TM, robustCE_TM_gamma_iff, robustCE_TM_gamma_per_iff, robustNoCode_of_gainBound, plain_tfae, ce_TM_iff_noCode, ce_TM_dist_iff_noCode, noCode_of_robustNoCode, ce_TM_of_robustCE_TM, ce_TM_dist_of_robustCE_TM_dist}
 The following are equivalent: the Tape Coding Conjecture; its flow form; its distance form; the
 no-code and flow forms restricted to diagrams whose input walk attaches every row; the no-code form
 with the uniform profile of $3k$ blocks on every memory edge; and the no-code form with
-$(3k+4)\clog n$ extra bits on every memory edge. The flow form with $\varepsilon w$ replaced by any
-$\gamma(n)=o(\log n)$ (one $\gamma$ for all constants, or one per choice of constants) is equivalent as
-well, and so is the explicit gain bound ``every solving code has
-$E\sum_d\mathrm{rowDist}(d)\le w\sum_e\mathrm{cap}(e)$'' with $E$ as in \cref{thm:code-gap}. The plain
+$(3k+4)\clog n$ extra bits on every memory edge. The $\gamma$-form ``for some $\gamma(n)=o(\log n)$ with
+$\gamma>0$ (one $\gamma$ for all constants, or one per choice of constants), every solving code's demand is
+routable at rate $1/\gamma(n)$'' is equivalent as well. The explicit gain bound ``every code solving complete
+exchange at the profile capacities has $E\sum_d\mathrm{rowDist}(d)\le w\sum_e\mathrm{cap}(e)$'', with $E$ as in
+\cref{thm:code-gap}, implies the conjecture (the converse holds vacuously but is not formalized). The plain
 forms (flow, distance, no code, for codes correct on all inputs) are equivalent to each other, and are
 implied by the robust ones.
 \end{theorem}
@@ -106,13 +113,13 @@ The profile forms are \cref{thm:profile}.
 \end{outline}
 
 \begin{theorem}[The capacity profile is immaterial]\label{thm:profile}
-\formal{Tape/Statements/Coding.lean}{robustNoCode_with_iff, robustNoCode_with_k_iff, exists_shift_iff_unbounded, robustNoCode_with_of_robustNoCode, robustNoCode_bits_iff, robustNoCode_logBits_iff, robustNoCode_iff_forall_cap, noCode_iff_forall_cap, robustNoCode_iff_attached, robustCE_TM_att_iff, robustCE_TM_att_iff_robustCE_TM}
+\formal{Tape/Statements/Coding.lean}{robustNoCode_with_iff, robustNoCode_with_k_iff, exists_shift_iff_unbounded, robustNoCode_with_of_robustNoCode, robustNoCode_bits_iff, robustNoCode_logBits_iff, robustNoCode_iff_forall_cap, noCode_iff_forall_cap}
 For every unbounded memory profile $m$ (equivalently, $3k\le m(k+a)$ for some $a$, for every $k$; for
 instance $m(k)=3k$, $3k+1$, or one block per tape), the no-code statement with $m(k)$ blocks on every
 memory edge is equivalent to the Tape Coding Conjecture. So is the no-code statement with $s(k,n)$
 extra bits on every memory edge, for every $s$ with $s(k,n)\le C(k)\,nw$; for instance
 $s=(3k+4)\clog n$. The conjecture stated at the profile capacities is equivalent to ruling out codes
-within every capacity in the profile.
+within every capacity in the profile, and the same holds for the plain form.
 \end{theorem}
 
 \begin{outline}
@@ -148,7 +155,8 @@ First make the machine write its output only at the end (\lean{Impl.bufTM}): it 
 extra tape, rewinds, and copies it out, halting at $T+2L+2$ with the same output. Then the output length
 at every slot is fixed by the halting time, and a \emph{coarse trace} suffices: block and row moves in
 $\{-1,0,1\}$ together with the resident-block and touched-row patterns within $\pm1$, at most
-$24^{k+1}$ values per slot by (V1) and (V2), which determine the block-level trace. The popular coarse
+$24^{k+1}$ values per slot by (V1) and (V2) of \cref{lem:residency} (for the input head: a slot is at most
+one row long), which determine the block-level trace. The popular coarse
 class therefore has co-entropy $O(n)$, and the class code applies unchanged.
 \end{outline}
 
@@ -157,14 +165,20 @@ class therefore has co-entropy $O(n)$, and the class code applies unchanged.
 If $f(n)\ge Cn$ eventually for every $C$ (for instance $f(n)=nw$), then $\mathrm{NoCode}(f)$ refutes
 (T); so does $\mathrm{NoCode}(f)$ for infinitely many $n$. The infinitely-often forms of the conjecture
 (flow, distance, no code) are equivalent to each other, formally weaker than the conjecture, and still
-refute (T). Under $\mathrm{NoCode}(m)$, every trace class on which a fast machine with $2^{O(nw)}$
-states is correct has co-entropy larger than $m(n)$.
+refute (T). For infinitely many $n$, the single superlinear level and the linear family are equivalent:
+$\mathrm{NoCode}(Cn)$ holds for infinitely many $n$, for every $C$, if and only if $\mathrm{NoCode}(f)$
+holds for infinitely many $n$ for some $f$ with $f(n)\ge Cn$ eventually for every $C$. Under
+$\mathrm{NoCode}(m)$, for all large $n$: no machine with $k$ work tapes, $g+1$ symbols and $2^{O(nw)}$
+states is correct within $cL$ steps on a set of co-entropy $m_0$ with $m_0+Kn\le m(n)$, for a constant $K$
+depending only on $k$, $g$ and $c$; and every trace class on which such a machine is correct within $cL$
+steps has co-entropy larger than $m(n)$.
 \end{theorem}
 
 \begin{outline}
 (T) gives codes at every large $n$, so a single failing size per choice of constants contradicts it.
-For a single level, $Cn\le f(n)$ from some point on. The equivalence of the single-level and the
-linear infinitely-often families is a diagonal argument.
+For a single level, $Cn\le f(n)$ from some point on. Of the equivalence of the single-level and the
+linear infinitely-often families, one direction is monotonicity in the level and the other a diagonal
+argument.
 \end{outline}
 
 \begin{theorem}[Further equivalent and sufficient forms]\label{thm:rungs}
@@ -187,10 +201,11 @@ As in \cref{thm:tcc-forms}, at the linear rung; hints and co-entropy are interch
 Let \lean{ObliviousLinearTimeTransposable} be (T) for a machine that is oblivious at every size. An
 oblivious linear-time transposer gives codes for independent uniform sources (all inputs). Hence the
 plain form of the conjecture, in any of its forms, refutes oblivious (T); so does the plain no-code
-form for infinitely many $n$.
+form for infinitely many $n$. The robust infinitely-often form implies the plain one.
 \end{theorem}
 
 \begin{outline}
 For an oblivious machine all inputs form one trace class with $D=0$ (\cref{lem:trace-obl}), so the
-class code works on all inputs.
+class code works on all inputs, with the state and the head positions on one extra stationary tape
+(\cref{thm:fast-codes}(b)).
 \end{outline}

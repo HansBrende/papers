@@ -66,7 +66,8 @@ The run need not be live: either run may halt during $J$, since halted runs are 
 
 \begin{outline}
 Induction over the steps of $J$ in increasing order. At $\tau\in J$, the state is given by~(i)
-if $\tau$ is an entry point, and otherwise is produced by the common transition at $\tau-1\in J$.
+if $\tau$ is an entry point, is the initial state if $\tau=0$, and otherwise is produced by the common
+transition at $\tau-1\in J$.
 The symbol under work head $t$ is given by~(ii) if $(t,\tau)$ is an entry cell; is blank in both
 runs if the cell was never visited (\cref{lem:cells}); and otherwise was written at its last visit
 $\sigma\in J$, where by induction both runs took the same transition at the same head position.
@@ -80,22 +81,27 @@ forms the head positions are not assumed equal; they are derived.
 
 \begin{lemma}[Locality, data-dependent heads]\label{lem:locality-core}
 \formal{Tape/Statements/Core.lean}{locality_core, locality_interval}
-Let $J$ be a set of steps and $A$ a set of \emph{anchors} such that every non-anchor step of $J$
+Let $J$ be a finite set of steps and $A$ a set of \emph{anchors} such that every non-anchor step of $J$
 has its predecessor in $J$. Suppose that two runs agree, at every anchor in $J$, on the state, all
 head positions and the symbols under the work heads; that the input symbols agree wherever the
 input heads agree; and that whenever the work heads agree at a non-anchor step $\tau\in J$, each
 cell they read has, at some time $a\le\tau$, the same content in both runs, with the last visits
 to that cell during $[a,\tau)$ in both runs lying in $J$. Then the runs agree at every step of $J$
 on the state, all head positions, the symbols under the work heads and the transition taken. In
-particular, two runs that agree at time $a$ on the state and all head positions, on the contents
-at time $a$ of every work cell visited during $[a,b)$, and on the input bits read during $[a,b)$,
-agree on all of this at every time in $[a,b]$ (transitions for $\tau<b$).
+particular, if two runs agree at time $a$ on the state and all head positions, on the contents at
+time $a$ of every work cell that the first run visits during $[a,b)$, and on the input bits at the
+positions that the first run reads during $[a,b)$, then they have the same state and the same head
+positions at every time in $[a,b]$, and take the same transition at every step of $[a,b)$.
 \end{lemma}
 
 \begin{outline}
 The induction of \cref{lem:locality}, carrying the head positions along: at a non-anchor step the
-positions agree because the previous transitions agree. The interval form is the case
-$J=[a,b)$, $A=\{a\}$.
+positions agree because the previous transitions agree. For a cell read at a non-anchor step $\tau$, take
+the time $a$ of the hypothesis: if the cell was visited during $[a,\tau)$, the last visits of the two runs
+lie in $J$, where the positions already agree, so they are the same step and wrote the same symbol;
+otherwise neither run visited it and both keep their common content from time $a$. The interval form is
+the case $J=[a,b)$, $A=\{a\}$ (taking the time $a$ itself in the read condition), followed by one more
+step, from $b-1$ to $b$, for the state and head positions at time $b$.
 \end{outline}
 
 \subsection{The Cut Lemma}
@@ -110,6 +116,11 @@ matrices with $b$-bit entries. Let $w_0\in\mathrm{Mat}(n,b)$ and $J\subseteq[0,T
   2^{b\abs{S_J}}\le(q+1)^{\eone(J)}(g+1)^{\etwo(J)}
 \]
 and $b\abs{S_J}\le\eone(J)\clog{(q+1)}+\etwo(J)\clog{(g+1)}$.
+More generally (\lean{card_le_entryData}),
+if $M$ is oblivious on a set $W$ with halting time $T$, $w_0\in W$ and $J\subseteq[0,T)$, then a finite
+family of members of $W$ that agree at every input position read during $J$, and of which any two that
+append the same bits at every step of $J$ coincide, has at most $(q+1)^{\eone(J)}(g+1)^{\etwo(J)}$
+members.
 \end{lemma}
 
 The lemma has a form for machines that are oblivious and correct only on a subset of the inputs.
@@ -146,11 +157,12 @@ Applying the Cut Lemma to several step sets and multiplying gives the form used 
 \formal{Tape/Statements/Core.lean}{cut_bound_sum, cut_bound_sum_bits, cut_bound_sum_on, sum_cutPairs_ge, uncovered_cols_le, uncovered_cols_le_len}
 Under the hypotheses of \cref{lem:cut}, for every finite family $(J_u)_{u\in I}$ of subsets of
 $[0,T)$ (not necessarily disjoint),
-\[
-  b\sum_{u}\abs{S_{J_u}}\;\le\;\clog{(q+1)}\sum_u\eone(J_u)+\clog{(g+1)}\sum_u\etwo(J_u),
-\]
-and under the hypotheses of \cref{lem:cut-on} with co-entropy $m$ the right side of the
-exponential form gains a factor $2^{\abs{I}m}$. Moreover:
+\begin{gather*}
+  2^{\sum_u\abs{\mathrm{cut}(J_u)}}\le(q+1)^{\sum_u\eone(J_u)}(g+1)^{\sum_u\etwo(J_u)},\\
+  b\sum_{u}\abs{S_{J_u}}\le\clog{(q+1)}\sum_u\eone(J_u)+\clog{(g+1)}\sum_u\etwo(J_u),
+\end{gather*}
+and under the hypotheses of \cref{lem:cut-on} with co-entropy $m$ the right side of the first
+inequality gains a factor $2^{\abs{I}m}$. Moreover:
 \begin{enumerate}[label=(\alph*)]
 \item if every $J_u$ reads at most $\rho$ rows, then
 $\bigl|\bigcup_u\snk(J_u)\bigr|\,(n-\rho)\le\sum_u\abs{S_{J_u}}$;
@@ -163,7 +175,8 @@ assumption.
 \end{corollary}
 
 \begin{outline}
-The first part multiplies the bounds of \cref{lem:cut} and \cref{lem:cut-on}. For~(a), a sink
+The exponential forms multiply the bounds of \cref{lem:cut-on} over the family (the plain form is
+its case $W=\mathrm{Mat}(n,b)$, $m=0$); the bits form adds the bits forms of \cref{lem:cut}. For~(a), a sink
 column of $J_u$ pairs with each of the at least $n-\rho$ rows not read by $J_u$. For~(b), the
 output bits of a column are appended during an interval of time; if they are not all appended in
 one label class, the label changes inside that interval, and the intervals of distinct columns

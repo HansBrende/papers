@@ -125,22 +125,28 @@ constant.
 
 \subsection{Tight runs}
 
-A run is \emph{tight} at a two-class coarsening if it makes exactly $W$ visible moves. Tight runs are
-rigid.
+A valid run that takes every item $u$ from its source frame $S_u$ to a target frame $\mathrm{tgt}(u)\ne S_u$
+with at most $W$ frame-changing moves is \emph{tight}; by \cref{thm:coarsening} it makes exactly $W$ such moves.
+Tight runs are rigid.
 
 \begin{theorem}[Structure of tight runs]\label{thm:tight}
 \formal{Frames/GadgetCargo.lean}{Transpose.ShearFrame.tight_potentials, Transpose.ShearFrame.tight_sigma_split, Transpose.ShearFrame.cargo_rule, Transpose.ShearFrame.cargo_rule_bool}
-In a tight run, after any prefix with $t$ visible moves the ``arrived'' potential is $t$ and the ``not yet
-departed'' potential is $W-t$; the span of the vectors at each frame splits into its arrived and its
-not-departed parts; and (cargo rule) every visible move carries a vector lying in the span of the items whose
-home is the destination class.
+In a tight run, after any prefix with $t$ frame-changing moves the ``arrived'' potential is $t$ and the ``not yet
+departed'' potential is $W-t$, and at every frame the span of the vectors there splits into its arrived and its
+not-departed parts. If moreover each item has only two frames (every frame other than $S_u$ is
+$\mathrm{tgt}(u)$, as after a two-class coarsening), then every frame-changing move carries a vector lying in the
+span of the items whose target is its destination and in the span of the items born at its origin (the cargo
+rule).
 \end{theorem}
 
 \begin{theorem}[Item itineraries]\label{thm:itineraries}
-\formal{Frames/GadgetItinerary.lean}{Transpose.ShearFrame.itinerary_condition, Transpose.ShearFrame.chain_itinerary, Transpose.ShearFrame.itinerary_condition_matrix, Transpose.ShearFrame.chain_itinerary_matrix}
-Every item has a chain of frame-changing hops from its source to its target along the run. In a tight run
-at a two-class coarsening, every visible hop of an item starts on the item's birth side, and the item has a
-chain from its source to its target all of whose visible hops are admissible in this sense.
+\formal{Frames/GadgetItinerary.lean}{Transpose.ShearFrame.chain_exists_visible, Transpose.ShearFrame.itinerary_condition, Transpose.ShearFrame.chain_itinerary, Transpose.ShearFrame.itinerary_condition_matrix, Transpose.ShearFrame.chain_itinerary_matrix}
+In every valid run as in \cref{thm:coarsening}, every item has a chain of frame-changing hops (moves whose cargo
+contains the item) from its source to its target. Let $\pi$ be a two-class coarsening with
+$\pi(\mathrm{tgt}(u))\ne\pi(S_u)$ for all $u$, and suppose the run makes exactly $W$ moves that change the
+$\pi$-class. Then every such move carrying an item starts on the item's birth side ($\pi$ of its origin equals
+$\pi(S_u)$), and every item has a chain from its source to its target all of whose $\pi$-visible hops are
+admissible in this sense.
 \end{theorem}
 
 \begin{theorem}[Every carrying move lies on an admissible chain]\label{thm:carrying}

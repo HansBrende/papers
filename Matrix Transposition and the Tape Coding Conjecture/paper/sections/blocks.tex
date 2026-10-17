@@ -5,7 +5,7 @@ into \emph{blocks} of $r$ consecutive cells and time into \emph{slots} of $r$ co
 In one slot a head moves at most $r$ cells, so it touches at most two blocks; the entry data of a
 union of slots is then carried by a few blocks per slot boundary and by blocks that the head
 leaves and later revisits. The result is a bounded-degree network on the slots, the
-\emph{block network}, and the Cut Lemma becomes an isoperimetric inequality on it. In the
+\emph{block network} (\cref{def:blocknet}), and the Cut Lemma becomes an isoperimetric inequality on it. In the
 applications $r=\lceil nb/G\rceil$ with $G=\max(1,\clog{(g+1)})$, so that a block holds about one
 matrix row.
 
@@ -45,10 +45,13 @@ block at the first step of some slot in $[y_1,y_2]$.
 
 \begin{outline}
 In $r$ steps a unit-step walk moves at most $r$ cells, hence crosses at most one block
-boundary; this gives (V2) and its crossing form (a discrete intermediate value argument). For
-(V1), induct over the steps of the slot: the head's block stays within $\pm1$ of
-$\mathrm{cur}_{yr}$, and the other block of a resident pair is adjacent to the block the head
-entered at its last block change. For (S), a change of the resident pair means that the head
+boundary; this gives (V2) and its crossing form (a discrete intermediate value argument). For (V1), induct over the steps of the slot. At its first step the resident pair is
+$\{\mathrm{cur}_{yr},\mathrm{prev}_{yr}\}$, and $\mathrm{prev}_{yr}$, when defined, is adjacent to
+$\mathrm{cur}_{yr}$. At a later step $\tau$ of the slot the pair is unchanged unless the head changes
+block at $\tau$, and then it is $\{\mathrm{cur}_\tau,\mathrm{cur}_{\tau-1}\}$, two blocks occupied
+during the slot; these lie within $\pm1$ of $\mathrm{cur}_{yr}$ because within a slot the head moves
+at most $r-1$ cells. For the same reason two blocks touched in one slot are at most one apart, so the
+touched residency has at most two blocks. For (S), a change of the resident pair means that the head
 enters a block outside the current pair, which requires crossing a whole block.
 \end{outline}
 
@@ -61,8 +64,13 @@ of at most one chord.
 \end{lemma}
 
 \begin{outline}
-By (V1), (V2) and the spacing of pair changes: two blocks entering at the same slot boundary would
-require two pair changes within $r$ steps, or a jump of two blocks.
+For pair residency, a block enters the resident pair only at a pair change, as the current block, and
+leaves only at a pair change, as the previous block; two blocks entering (or leaving) at one slot boundary
+would need two pair changes within one slot, contradicting (S). For touched residency, two blocks touched
+in slot $y+1$ but not in slot $y$ differ by one from the block at the last step of slot $y$ and by at most
+one from each other, so they coincide (similarly for leaving). The chord statements follow: a chord from
+$x$ is determined by the unique block that stops being resident after $x$ (its target slot is nonempty, so
+$(x+1)r<T$), and a chord into $z$ by the unique block that becomes resident at $z$.
 \end{outline}
 
 \subsection{Charging and the Slot Cut Bound}
@@ -71,7 +79,10 @@ For a set $U$ of slots let $J=J(U)$ be the steps lying in slots of $U$. A \emph{
 of $U$ is a slot $z\ge1$ in $U$ with $z-1\notin U$; we write $\mu(U)$ for their number. For an
 admissible residency $R$ let $\chi(U)$ be the number of pairs $(z,\beta)$ such that some chord of
 $R$ for $\beta$ enters $U$ at $z$, from a slot outside $U$ (\lean{chordsInto}), summed over the
-work tapes.
+work tapes. An \emph{external read} of $J(U)$ on tape $t$ is a step $\tau$ of $J(U)$ such that $(t,\tau)$ is
+an entry cell of $J(U)$ (\cref{def:entry}), that is, the cell under head $t$ at time $\tau$ was last visited
+in a slot outside $U$ (\lean{entryTimes}); summed over the tapes, the external reads number $\etwo(J(U))$
+(\lean{entryCells_slotSteps_card}).
 
 \begin{lemma}[Charging]\label{lem:charging}
 \formal{Tape/Statements/Core.lean}{entryTimes_charged, entryTimes_card_le, entryCells_slotSteps_card, entryPoints_slotSteps_card, charging_bound, srcRows_slotSteps_card_le}
@@ -81,8 +92,8 @@ $U$ be a set of slots. Then:
 \item every external read of $J(U)$ on a tape, at a step $\tau$ on block $\beta=\mathrm{cur}_\tau$,
 is charged to a slot $z\le\tau/r$ that comes after the cell's last write, and either $z$ is a
 memory boundary of $U$ with $\beta\in R_z\cap R_{z-1}$, or a chord for $\beta$ enters $U$ at $z$;
-\item the entry points of $J(U)$ are exactly the first steps of its memory boundaries:
-$\eone(J(U))=\mu(U)$;
+\item $\eone(J(U))=\mu(U)$: the entry points of $J(U)$ are the first steps $zr$ of the memory boundaries $z$
+of $U$ (the formal statement is the equality of the counts);
 \item $\etwo(J(U))\le r\,\chi(U)+c\,k\,r\,\mu(U)$;
 \item[(P1)] if $r\le nb$, every slot reads at most two input rows, so $J(U)$ reads at most
 $2\abs{U}$ rows.
@@ -127,7 +138,8 @@ class from another class are crossing chords, and apply \cref{cor:cut-family}(b)
 
 \subsection{Discrete isoperimetry}
 
-Combining the Slot Cut Bound with (P1) gives the inequality behind all results on head motion.
+Combining the product form of the Cut Lemma for families with the Charging Lemma and (P1) gives the
+inequality behind all results on head motion.
 Read it as follows: if time is cut into label classes of at most $m$ slots each, then about
 $n^2b$ bits must cross between classes, and the only channels are the label changes (each worth
 $O(k)$ blocks plus a state) and the chords between classes (one block each).
@@ -139,20 +151,29 @@ $1\le r\le nb$, let each work tape have an admissible residency with constant $c
 $\lambda$ be a labelling of the slots with $\Mb$ label changes and at most $m$ slots per label.
 Then
 \[
-  2^{(n-\Mb)(n-2m)b}\;\le\;(q+1)^{\Mb}\,(g+1)^{r\,(c\,k\,\Mb+\chicross)} .
+  2^{(n\dotminus\Mb)(n\dotminus 2m)\,b}\;\le\;(q+1)^{\Mb}\,(g+1)^{r\,(c\,k\,\Mb+\chicross)},
 \]
+where $x\dotminus y=\max(x-y,0)$ is truncated subtraction, as in Lean.
 Pair residency gives $c=3$ and touched residency $c=2$. If $M$ is oblivious and correct only on
 a set $W$ of co-entropy at most $m_c$, the right side gains the factor $2^{(\Mb+1)m_c}$: each
 label class pays $m_c$ bits.
 \end{corollary}
 
 \begin{outline}
-By (P1) each class reads at most $2m$ rows, so by \cref{cor:cut-family}(a),(b) the cut pairs of
-the classes number at least $(n-\Mb)(n-2m)$; the Slot Cut Bound bounds them from above. For the
-robust form, apply \cref{lem:cut-on} to each class.
+The formal proof shows the robust form first; the plain form is its case $W=\mathrm{Mat}(n,b)$,
+$m_c=0$, and pair and touched residency give $c=3$ and $c=2$ by \cref{lem:residency}. Lower side: by
+(P1) each class reads at most $2m$ rows, and by \cref{cor:slot-cut} at most $\Mb$ columns are not
+sinks of a single class, so by \cref{cor:cut-family}(a) the cut pairs of the classes number at least
+$(n\dotminus\Mb)(n\dotminus2m)$, and each contributes $b$ bits to the cut set of its class. Upper
+side: the product form of \cref{lem:cut-on} over the at most $\Mb+1$ classes gives
+$2^{\sum_\ell\abs{\mathrm{cut}(J_\ell)}}\le2^{(\Mb+1)m_c}(q+1)^{\sum_\ell\eone(J_\ell)}(g+1)^{\sum_\ell\etwo(J_\ell)}$,
+and \cref{lem:charging}(b),(c), summed over the classes (memory boundaries of the classes are label
+changes; chords entering a class are crossing chords), give $\sum_\ell\eone(J_\ell)\le\Mb$ and
+$\sum_\ell\etwo(J_\ell)\le r(ck\Mb+\chicross)$. (The bits form of \cref{cor:slot-cut} would only give
+the weaker bound with $2^{\clog{(q+1)}}$ and $2^{\clog{(g+1)}}$ in place of $q+1$ and $g+1$.)
 \end{outline}
 
-When $m=o(n)$ and $\Mb=o(n)$, with $r\approx nb/G$, the inequality forces
-$\chicross=\Omega(n)$: the work heads must carry information between distant times through
-revisited blocks. \Cref{sec:mstar} turns this into a constraint on the macroscopic motion of the
+When $m=o(n)$ and $\Mb=o(n)$, with $r=\lceil nb/G\rceil$ (so $r\log_2(g+1)\le nb+G$), taking logarithms
+gives $(1-o(1))n^2b\le\Mb\log_2(q+1)+(nb+G)(ck\Mb+\chicross)$, which forces $\chicross\ge(1-o(1))n$: the work
+heads must carry information between distant times through revisited blocks. \Cref{sec:mstar} turns this into a constraint on the macroscopic motion of the
 heads.

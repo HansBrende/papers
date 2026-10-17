@@ -6,7 +6,7 @@ In one slot a head moves at most $r$ cells, so it touches at most two blocks; th
 union of slots is then carried by a few blocks per slot boundary and by blocks that the head
 leaves and later revisits. The result is a bounded-degree network on the slots, the
 \emph{block network} (\cref{def:blocknet}), and the Cut Lemma becomes an isoperimetric inequality on it. In the
-applications $r=\lceil nb/G\rceil$ with $G=\max(1,\clog{(g+1)})$, so that a block holds about one
+applications $r=\lceil db/G\rceil$ with $G=\max(1,\clog{(g+1)})$, so that a block holds about one
 matrix row.
 
 \subsection{Blocks and residency}
@@ -94,7 +94,7 @@ memory boundary of $U$ with $\beta\in R_z\cap R_{z-1}$, or a chord for $\beta$ e
 \item $\eone(J(U))=\mu(U)$: the entry points of $J(U)$ are the first steps $zr$ of the memory boundaries $z$
 of $U$ (the formal statement is the equality of the counts);
 \item $\etwo(J(U))\le r\,\chi(U)+c\,k\,r\,\mu(U)$;
-\item[(P1)] if $r\le nb$, every slot reads at most two input rows, so $J(U)$ reads at most
+\item[(P1)] if $r\le db$, every slot reads at most two input rows, so $J(U)$ reads at most
 $2\abs{U}$ rows.
 \end{enumerate}
 \end{lemma}
@@ -108,13 +108,13 @@ enters $U$ at $z$. For~(c), charge each external read to its event $(z,\beta)$ t
 offset of its cell in the block. Two reads with the same charge read the same cell; the later
 read's last write is then no earlier than the earlier read, which does not precede slot $z$,
 contradicting~(a). So the charge is injective, and there are at most $r(\chi(U)+c\,\mu(U))$ external reads per tape. Part~(b) is a
-direct computation, and (P1) holds because a slot reads at most $r\le nb$ consecutive input
+direct computation, and (P1) holds because a slot reads at most $r\le db$ consecutive input
 cells.
 \end{outline}
 
 \begin{corollary}[Slot Cut Bound]\label{cor:slot-cut}
 \formal{Tape/Statements/Core.lean}{slot_cut_bound, slot_cut_bound_partition, uncovered_cols_le_slots, uncovered_cols_le_slots_len}
-Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transpose, let $r\ge1$, and
+Let $M$ be oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$ and transpose, let $r\ge1$, and
 let $G'=\clog{(g+1)}$. For every set $U$ of slots, with pair residency,
 \[
   b\,\abs{S_{J(U)}}\;\le\;\mu(U)\clog{(q+1)}+r\,G'\bigl(\chi(U)+3k\,\mu(U)\bigr).
@@ -126,7 +126,7 @@ constant $c$, and $\chicross$ the number of chords whose two endpoints carry dif
   b\sum_{\ell}\abs{S_{J_\ell}}\;\le\;\Mb\bigl(\clog{(q+1)}+c\,k\,r\,G'\bigr)+r\,G'\,\chicross,
 \]
 where $J_\ell$ is the set of steps in slots labelled $\ell$; and if $b\ge1$, at most $\Mb$
-columns are not sinks of a single class (for any run that has appended at least $n^2b$ bits by time $T$).
+columns are not sinks of a single class (for any run that has appended at least $d^2b$ bits by time $T$).
 \end{corollary}
 
 \begin{outline}
@@ -140,17 +140,17 @@ class from another class are crossing chords, and apply \cref{cor:cut-family}(b)
 Combining the product form of the Cut Lemma for families with the Charging Lemma and (P1) gives the
 inequality behind all results on head motion.
 Read it as follows: if time is cut into label classes of at most $m$ slots each, then about
-$n^2b$ bits must cross between classes, and the only channels are the label changes (each worth
+$d^2b$ bits must cross between classes, and the only channels are the label changes (each worth
 $O(k)$ blocks plus a state) and the chords between classes (one block each).
 
 \begin{corollary}[Discrete Isoperimetry]\label{cor:isoperimetry}
 \formal{Tape/Statements/Core.lean}{isoperimetry_res, isoperimetry, isoperimetry_touch, isoperimetry_res_on}
-Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transpose, let
-$1\le r\le nb$, let each work tape have an admissible residency with constant $c$, and let
+Let $M$ be oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$ and transpose, let
+$1\le r\le db$, let each work tape have an admissible residency with constant $c$, and let
 $\lambda$ be a labelling of the slots with $\Mb$ label changes and at most $m$ slots per label.
 Then
 \[
-  2^{(n\dotminus\Mb)(n\dotminus 2m)\,b}\;\le\;(q+1)^{\Mb}\,(g+1)^{r\,(c\,k\,\Mb+\chicross)},
+  2^{(d\dotminus\Mb)(d\dotminus 2m)\,b}\;\le\;(q+1)^{\Mb}\,(g+1)^{r\,(c\,k\,\Mb+\chicross)},
 \]
 where $x\dotminus y=\max(x-y,0)$ is truncated subtraction, as in Lean.
 Pair residency gives $c=3$ and touched residency $c=2$. If $M$ is oblivious and correct only on
@@ -159,11 +159,11 @@ label class pays $m_c$ bits.
 \end{corollary}
 
 \begin{outline}
-The formal proof shows the robust form first; the plain form is its case $W=\mathrm{Mat}(n,b)$,
+The formal proof shows the robust form first; the plain form is its case $W=\mathrm{Mat}(d,b)$,
 $m_c=0$, and pair and touched residency give $c=3$ and $c=2$ by \cref{lem:residency}. Lower side: by
 (P1) each class reads at most $2m$ rows, and by \cref{cor:slot-cut} at most $\Mb$ columns are not
 sinks of a single class, so by \cref{cor:cut-family}(a) the cut pairs of the classes number at least
-$(n\dotminus\Mb)(n\dotminus2m)$, and each contributes $b$ bits to the cut set of its class. Upper
+$(d\dotminus\Mb)(d\dotminus2m)$, and each contributes $b$ bits to the cut set of its class. Upper
 side: the product form of \cref{lem:cut-on} over the at most $\Mb+1$ classes gives
 $2^{\sum_\ell\abs{\mathrm{cut}(J_\ell)}}\le2^{(\Mb+1)m_c}(q+1)^{\sum_\ell\eone(J_\ell)}(g+1)^{\sum_\ell\etwo(J_\ell)}$,
 and \cref{lem:charging}(b),(c), summed over the classes (memory boundaries of the classes are label
@@ -172,7 +172,7 @@ $\sum_\ell\etwo(J_\ell)\le r(ck\Mb+\chicross)$. (The bits form of \cref{cor:slot
 the weaker bound with $2^{\clog{(q+1)}}$ and $2^{\clog{(g+1)}}$ in place of $q+1$ and $g+1$.)
 \end{outline}
 
-When $m=o(n)$ and $\Mb=o(n)$, with $r=\lceil nb/G\rceil$ (so $r\log_2(g+1)\le nb+G$), taking logarithms
-gives $(1-o(1))n^2b\le\Mb\log_2(q+1)+(nb+G)(ck\Mb+\chicross)$, which forces $\chicross\ge(1-o(1))n$: the work
+When $m=o(d)$ and $\Mb=o(d)$, with $r=\lceil db/G\rceil$ (so $r\log_2(g+1)\le db+G$), taking logarithms
+gives $(1-o(1))d^2b\le\Mb\log_2(q+1)+(db+G)(ck\Mb+\chicross)$, which forces $\chicross\ge(1-o(1))d$: the work
 heads must carry information between distant times through revisited blocks. \Cref{sec:mstar} turns this into a constraint on the macroscopic motion of the
 heads.

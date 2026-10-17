@@ -25,7 +25,7 @@ up to time $T$ consists of its head trajectories and output lengths.
 
 \begin{definition}[Block network]\label{def:blocknet}
 \formal{Tape/DefsCE.lean}{TSDiagram.blockSize, TSDiagram.nodes, TSDiagram.memEdges, TSDiagram.chordEdges, TSDiagram.edges, TSDiagram.rowsAt, TSDiagram.outNode, TSDiagram.visible}
-Let $w=b(n)$, $L=n^2w$, $G\ge1$ and $r=\lceil nw/G\rceil$. The block network of a diagram has as
+Let $w=b(d)$, $L=d^2w$, $G\ge1$ and $r=\lceil dw/G\rceil$. The block network of a diagram has as
 nodes the slots $y<\lceil T/r\rceil$, in their causal order; \emph{memory edges} $y\to y+1$; and a
 \emph{chord edge} $x\to z$ whenever some work tape has a chord from $x$ to $z$ of its pair
 residency. The rows \emph{attached} at node $y$ (its sources) are the input rows that the input walk
@@ -69,7 +69,7 @@ transposed position has its sink in $U$. Then
 so if $F$ has co-entropy at most $D$, then $\abs{B_U}\le D+\sum_{e\text{ entering }U}\mathrm{cap}(e)$.
 In particular $2^{w\abs{S_U}}\abs{F}\le2^L2^{\sum\mathrm{cap}}$, where $S_U$ is the set of pairs of a row
 not attached in $U$ and a column all of whose positions have their sinks in $U$. Taking $U$ to be all
-nodes: rows attached nowhere cost co-entropy, $2^{u\,nw}\abs{F}\le2^L$ for $u$ such rows.
+nodes: rows attached nowhere cost co-entropy, $2^{u\,dw}\abs{F}\le2^L$ for $u$ such rows.
 \end{lemma}
 
 \begin{outline}
@@ -85,7 +85,7 @@ Let a causal code solve complete exchange on a set of co-entropy at most $D$, on
 of a valid diagram with $r\ge1$. For every labelling of the nodes with $\Mb$ label changes and at
 most $m$ nodes per label,
 \[
-  (n\dotminus\Mb)(n\dotminus2m)\,w\;\le\;(\Mb+1)D+\sum_{e:\;\text{labels of the ends differ}}\mathrm{cap}(e),
+  (d\dotminus\Mb)(d\dotminus2m)\,w\;\le\;(\Mb+1)D+\sum_{e:\;\text{labels of the ends differ}}\mathrm{cap}(e),
 \]
 where $x\dotminus y=\max(x-y,0)$.
 At the block capacities with $s$ extra bits, the right-hand sum is at most
@@ -103,8 +103,8 @@ label change or a crossing chord.
 
 \begin{definition}[Distances and routings]\label{def:routing}
 \formal{Tape/DefsCE.lean}{ball, netDist, TSDiagram.rowDist, IsWalk, Routing, TSDiagram.RoutesAt}
-$\mathrm{dist}$ is the undirected hop distance in the block network. For an input bit $d$,
-$\mathrm{rowDist}(d)$ is the distance from the nearest node at which its row is attached to the sink
+$\mathrm{dist}$ is the undirected hop distance in the block network. For an input bit $\alpha$,
+$\mathrm{rowDist}(\alpha)$ is the distance from the nearest node at which its row is attached to the sink
 of its transposed position ($0$ if the row is attached nowhere). A \emph{routing at rate $\lambda$}
 within $\mathrm{cap}$ is a fractional multicommodity flow, one commodity per input bit whose row is
 attached somewhere, sending $\lambda$ units of each commodity along walks from a node attaching its
@@ -113,17 +113,17 @@ row to its sink, with total traversals of every edge at most its capacity.
 
 \begin{lemma}[Weak duality and volume]\label{lem:volume}
 \formal{Tape/Statements/Coding.lean}{weak_duality, rowDist_sum_ge, card_chordEdges_le, sum_cap_le}
-A routing at rate $\lambda$ satisfies $\lambda\sum_d\mathrm{rowDist}(d)\le\sum_e\mathrm{cap}(e)$. For a
-valid diagram with $1\le r\le nw$ and every $j$,
+A routing at rate $\lambda$ satisfies $\lambda\sum_\alpha\mathrm{rowDist}(\alpha)\le\sum_e\mathrm{cap}(e)$. For a
+valid diagram with $1\le r\le dw$ and every $j$,
 \[
-  j\,L\;\le\;\sum_d\mathrm{rowDist}(d)+j\bigl(4N(2k+3)^{j-1}w+u\,nw\bigr),
+  j\,L\;\le\;\sum_\alpha\mathrm{rowDist}(\alpha)+j\bigl(4N(2k+3)^{j-1}w+u\,dw\bigr),
 \]
 where $N$ is the number of nodes and $u$ the number of rows attached nowhere. There are at most $kN$
 chord edges, and capacities within the profile sum to at most $4kNrG$.
 \end{lemma}
 
 \begin{outline}
-Weak duality: each unit of commodity $d$ traverses at least $\mathrm{rowDist}(d)$ edges. For the
+Weak duality: each unit of commodity $\alpha$ traverses at least $\mathrm{rowDist}(\alpha)$ edges. For the
 distance bound, the ball of radius $j-1$ around a node attaching a row has at most $(2k+3)^{j-1}$ nodes
 (degree at most $2k+2$), each node attaches at most two rows, and a sink receives at most $2w$ bits of a
 row, so few bits are within distance $j-1$ of their sinks.
@@ -131,26 +131,26 @@ row, so few bits are within distance $j-1$ of their sinks.
 
 \begin{theorem}[The code gap]\label{thm:code-gap}
 \formal{Tape/Statements/Coding.lean}{volume_gap, flow_rate_lt, code_gap}
-Fix $k$, $G\ge1$, $c$ and $C$, and let $E=4\clog{(2k+3)}(4k+1)G(c+1)$. For all large $n$, on every valid
+Fix $k$, $G\ge1$, $c$ and $C$, and let $E=4\clog{(2k+3)}(4k+1)G(c+1)$. For all large $d$, on every valid
 $k$-tape diagram of length at most $cL$ with capacities within the profile and at most $C$ rows
 attached nowhere,
 \[
-  w\sum_e\mathrm{cap}(e)\;<\;E\sum_d\mathrm{rowDist}(d),
+  w\sum_e\mathrm{cap}(e)\;<\;E\sum_\alpha\mathrm{rowDist}(\alpha),
 \]
 so every routing has rate $<E/w$. In particular, if a causal code solves complete exchange on a set of
-co-entropy at most $Cnw$ within such capacities, the inequality holds: the code (rate~$1$) beats
-multicommodity flow by a factor larger than $w/E=\Omega(\log n)$.
+co-entropy at most $Cdw$ within such capacities, the inequality holds: the code (rate~$1$) beats
+multicommodity flow by a factor larger than $w/E=\Omega(\log d)$.
 \end{theorem}
 
 \begin{outline}
-Take $j=\lfloor(w-1)/(2\clog{(2k+3)})\rfloor$, so that $(2k+3)^{2j}\le n-1$. By \cref{lem:volume}, all
+Take $j=\lfloor(w-1)/(2\clog{(2k+3)})\rfloor$, so that $(2k+3)^{2j}\le d-1$. By \cref{lem:volume}, all
 but $o(L)$ bits are at distance at least $j=\Omega(w)$ from their sinks, while
-$\sum\mathrm{cap}\le4kG(c+1)L$. Weak duality bounds the rate. For a solving code, co-entropy $Cnw$
+$\sum\mathrm{cap}\le4kG(c+1)L$. Weak duality bounds the rate. For a solving code, co-entropy $Cdw$
 leaves at most $C$ rows attached nowhere (\cref{lem:cutset}).
 \end{outline}
 
 So a code on a block network of a linear-time diagram, if it exists, beats routing by a factor
-$\Omega(\log n)$. The connection goes back to Adler, Harvey, Jain, Kleinberg and
+$\Omega(\log d)$. The connection goes back to Adler, Harvey, Jain, Kleinberg and
 Lehman~\cite[Thm.~6.2]{AHJKL2006}, who turn an oblivious algorithm for transposition into a network code on
 its computation graph; here \cref{lem:class-code,thm:fast-codes} turn every linear-time transposer into such a
 code on its own block network (one way only: a code need not come from a machine). The Tape Coding
@@ -160,7 +160,7 @@ Conjecture says that no such code exists.
 
 \begin{lemma}[Class codes]\label{lem:class-code}
 \formal{Tape/Statements/Coding.lean}{traceClass_code}
-Let $n\ge1$, let $F$ be a trace class with representative $w_0$ (slot length $r=\lceil nw/G\rceil$,
+Let $d\ge1$, let $F$ be a trace class with representative $w_0$ (slot length $r=\lceil dw/G\rceil$,
 $G=\max(1,\clog{(g+1)})$) on which $M$ is correct. Then the diagram of the run on $w_0$ up to $T$ is
 valid, and its block network carries a causal code that solves complete exchange on $F$, where a
 memory edge $y\to y+1$ carries the state, the $k+1$ head positions and the contents of the resident
@@ -180,22 +180,22 @@ input's own payload.
 
 \begin{theorem}[Fast machines give codes]\label{thm:fast-codes}
 \formal{Tape/Statements/Coding.lean}{exists_popular_traceClass_on, codes_of_fastOn_bits, solves_profileCap_addTapes, codes_of_fastOn}
-Let $M$ be correct within $cL$ steps on every input of a set $F_0$ of co-entropy at most $C_0nw$.
+Let $M$ be correct within $cL$ steps on every input of a set $F_0$ of co-entropy at most $C_0dw$.
 \begin{enumerate}[label=(\alph*)]
 \item If $s\ge\clog{(q+1)}+(k+1)\clog{(2cL+1)}$, then there are a valid $k$-tape diagram of length at most
 $cL$ (in the proof, the diagram of $M$'s run on the representative of a popular class) and a causal code on
-it at the block capacities with $s$ extra bits ($G=\max(1,\clog{(g+1)})$, $r=\lceil nw/G\rceil$), solving
-complete exchange on a set of co-entropy at most $(C_0+C_M)nw$, where $C_M$ depends only on $M$ and $c$.
+it at the block capacities with $s$ extra bits ($G=\max(1,\clog{(g+1)})$, $r=\lceil dw/G\rceil$), solving
+complete exchange on a set of co-entropy at most $(C_0+C_M)dw$, where $C_M$ depends only on $M$ and $c$.
 \item Extra bits become tapes: a code at the block capacities with $s\le a\,rG$ extra bits is a code at
 the profile capacities of the diagram with $a$ additional stationary tapes.
-\item Hence, if $2\clog{(q+1)}\le nw$ and $n$ is large enough, there is such a code at the profile
+\item Hence, if $2\clog{(q+1)}\le dw$ and $d$ is large enough, there is such a code at the profile
 capacities on a diagram with $k+1$ tapes.
 \end{enumerate}
 \end{theorem}
 
 \begin{outline}
 (a) The popular trace inside $F_0$ (\cref{thm:popular}, which holds within any set of inputs) is a
-class of co-entropy at most $(C_0+C_M)nw$; apply \cref{lem:class-code}. (b) A stationary tape changes
+class of co-entropy at most $(C_0+C_M)dw$; apply \cref{lem:class-code}. (b) A stationary tape changes
 no node, edge, source, sink or chord, and its single resident block carries the extra bits on every
 memory edge. (c) Combine (a) and (b) with $a=1$.
 \end{outline}
@@ -206,7 +206,7 @@ Theorem~M* holds for codes: its proof uses the machine only through the cut ineq
 
 \begin{theorem}[Theorem M* for code-carrying diagrams]\label{thm:mstar-diagram}
 \formal{Tape/Statements/Coding.lean}{theoremMStar_level_diagram, theoremMStar_diagram, theoremMStar_diagram_profile}
-Let $n_i\to\infty$, and let valid $k$-tape diagrams $D_i$ of length at most $cL_i$ carry causal codes
+Let $d_i\to\infty$, and let valid $k$-tape diagrams $D_i$ of length at most $cL_i$ carry causal codes
 solving complete exchange on sets of co-entropy $m_i$, at the block capacities with $s_i$ extra bits,
 where $(m_i+s_i)/L_i\to0$. Then the rescaled work walks of the $D_i$ have a uniformly convergent
 subsequence on $[0,cG+1]$, and every subsequential limit is $1$-Lipschitz and satisfies $(\star)$. At
@@ -222,12 +222,12 @@ $s_i$; apply Theorem~M* for walks (\cref{thm:mstar-walk}).
 \begin{corollary}[Counterexamples to the conjecture obey $(\star)$]\label{cor:cex-star}
 \formal{Tape/Statements/Coding.lean}{mstar_of_robustNoCode_counterexamples, mstar_of_not_robustNoCode}
 Every family of counterexamples to the Tape Coding Conjecture (\cref{conj:TCC}): valid diagrams of
-length at most $cL$ with codes at the profile capacities on sets of co-entropy $Cnw$, along
-$n_i\to\infty$, has rescaled work walks whose subsequential limits are $1$-Lipschitz, satisfy $(\star)$,
+length at most $cL$ with codes at the profile capacities on sets of co-entropy $Cdw$, along
+$d_i\to\infty$, has rescaled work walks whose subsequential limits are $1$-Lipschitz, satisfy $(\star)$,
 have total excess at least $1$ and total range at most $k(cG+1)-1$, and are not all monotone. If the
 conjecture fails, such a family exists, with a convergent subsequence.
 \end{corollary}
 
 \begin{outline}
-\Cref{thm:mstar-diagram} with $m_i=Cn_iw_i=o(L_i)$ and $s_i=0$.
+\Cref{thm:mstar-diagram} with $m_i=Cd_iw_i=o(L_i)$ and $s_i=0$.
 \end{outline}

@@ -1,15 +1,15 @@
 \section{Open problems}\label{sec:open}
 
 \begin{enumerate}[label=\arabic*.,leftmargin=2em]
-\item \emph{Decide (T).} Either construct a machine transposing $n\times n$ matrices with $\lceil\log_2n\rceil$-bit
-entries in time $O(n^2\log n)$, or prove that none exists. A proof is accepted by the frozen checker in the form
+\item \emph{Decide (T).} Either construct a machine transposing $d\times d$ matrices with $\lceil\log_2d\rceil$-bit
+entries in time $O(d^2\log d)$, or prove that none exists. A proof is accepted by the frozen checker in the form
 described in \cref{sec:model}.
 
 \item \emph{The Tape Coding Conjecture} (\cref{conj:TCC}). A proof refutes~(T) (\cref{thm:reduction}). It suffices to
-rule out codes at co-entropy $Cn$ for every $C$, for infinitely many $n$, on diagrams that write their output at the
+rule out codes at co-entropy $Cd$ for every $C$, for infinitely many $d$, on diagrams that write their output at the
 end (\cref{thm:coent-linear,thm:io}). By \cref{sec:barriers}, a proof must use the shape of tape networks, and by \cref{thm:oblivious} it
 would show that oblivious machines cannot transpose in linear time. A refutation would be a family of codes with a
-coding gain $\Omega(\log n)$ (\cref{thm:code-gap}) for complete exchange on tape networks; it would not by itself give
+coding gain $\Omega(\log d)$ (\cref{thm:code-gap}) for complete exchange on tape networks; it would not by itself give
 a machine.
 
 \item \emph{Plain versus robust.} Does the plain conjecture (codes correct on all inputs) imply the robust one? Already
@@ -23,9 +23,9 @@ so that a negative answer would also rule out oblivious linear-time multiplicati
 control flow and data layout in their construction depend only on the sizes. Does (T) imply oblivious~(T)?
 
 \item \emph{Locally encoded index coding} (\cref{sec:construction}). On bounded-degree expanders, can a broadcast of
-two-row functionals of size $(1-\varepsilon)n^2$ let every receiver, knowing its own row, recover its column?
+two-row functionals of size $(1-\varepsilon)d^2$ let every receiver, knowing its own row, recover its column?
 
-\item \emph{Sharper passes.} Remove the dependence on $T$ from Theorem~P$'$, whose bound gives $\Omega(\log n)$ passes only
+\item \emph{Sharper passes.} Remove the dependence on $T$ from Theorem~P$'$, whose bound gives $\Omega(\log d)$ passes only
 for $T\le\poly(L)$ (for example through the run-length lemma of Grohe and Schweikardt~\cite{GroheSchweikardt2005}), and extend Theorems~P and~P$'$ to passes that may move
 back by a bounded number of cells.
 
@@ -33,5 +33,5 @@ back by a bounded number of cells.
 information inequalities that are not cut bounds, are needed to go further; is there a tape-specific non-cut inequality
 for oblivious machines?
 
-\item \emph{XOR-frame gadgets.} Is there a gadget (\cref{def:gadget}) with $s/W\le m^{\tau}$ for some fixed $\tau<1$? This would improve the exponent of the sub-$n\log n$ transposition claim substantially, though not to linear time (\cref{prop:gadget-runs}(a), not formalized). For integer frames the lower bounds of \cref{prop:gadget-runs}(c), which come from \cref{thm:mod2,thm:mod2m}, stay below $4W$, while the trivial gadget costs $mW$; close this gap.
+\item \emph{XOR-frame gadgets.} Is there a gadget (\cref{def:gadget}) with $s/W\le m^{\tau}$ for some fixed $\tau<1$? This would improve the exponent of the sub-$L\log d$ transposition claim substantially, though not to linear time (\cref{prop:gadget-runs}(a), not formalized). For integer frames the lower bounds of \cref{prop:gadget-runs}(c), which come from \cref{thm:mod2,thm:mod2m}, stay below $4W$, while the trivial gadget costs $mW$; close this gap.
 \end{enumerate}

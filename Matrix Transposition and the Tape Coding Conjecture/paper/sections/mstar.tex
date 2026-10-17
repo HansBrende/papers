@@ -1,8 +1,8 @@
 \section{Theorem M*: the macroscopic motion of the work heads}\label{sec:mstar}
 
 Discrete Isoperimetry (\cref{cor:isoperimetry,cor:isoperimetry-trace}) says that, for every
-partition of time into small classes with few boundaries, $\Omega(n)$ revisited blocks must link
-different classes. This section passes to the limit $n\to\infty$. Rescaled, the head trajectories of
+partition of time into small classes with few boundaries, $\Omega(d)$ revisited blocks must link
+different classes. This section passes to the limit $d\to\infty$. Rescaled, the head trajectories of
 a linear-time transposer converge (along subsequences) to $1$-Lipschitz paths, and the counting
 inequality becomes an integral inequality~$(\star)$ for these paths: in every partition of macroscopic time into finitely many intervals, grouped into classes of measure at most $\theta$, the heads must return to the same
 positions in different classes with total multiplicity at least $1-2\theta$. In particular the
@@ -15,24 +15,24 @@ non-uniform) and, in \cref{sec:codes}, the form for network codes as corollaries
 
 \subsection{Rescaled walks and their limits}
 
-Fix $G\ge1$. At size $n$ the block size is $r=\lceil nb(n)/G\rceil$ (\lean{TSDiagram.blockSize}), so a
+Fix $G\ge1$. At size $d$ the block size is $r=\lceil db(d)/G\rceil$ (\lean{TSDiagram.blockSize}), so a
 block holds a row. For a walk $h:\N\to\Z$ the \emph{rescaled walk} is
 \[
-  P^{(n)}(u)=\frac{1}{n}\,\Bigl\lfloor \frac{h(\lfloor un\rfloor r)}{r}\Bigr\rfloor ,
+  P^{(d)}(u)=\frac{1}{d}\,\Bigl\lfloor \frac{h(\lfloor ud\rfloor r)}{r}\Bigr\rfloor ,
 \]
-the block at the first step of slot $\lfloor un\rfloor$, in units of $n$ blocks
-(\lean{blockTraj}). For a machine, $P^{(n)}_t$ is the rescaled trajectory of work head $t$ on the
+the block at the first step of slot $\lfloor ud\rfloor$, in units of $d$ blocks
+(\lean{blockTraj}). For a machine, $P^{(d)}_t$ is the rescaled trajectory of work head $t$ on the
 all-zero input (\lean{rescaledTraj}), or on an input $w$ (\lean{rescaledTrajOf}). If $T\le cL$,
 macroscopic time runs over $[0,c_0]$ with $c_0=cG+1$.
 
 \begin{lemma}[Compactness and regularity]\label{lem:walk-basics}
 \formal{Tape/Statements/Coding.lean}{blockTraj_limit_lipschitz, exists_subseq_blockTraj, numSlots_le_of, frozen_V2, pairRes_congr}
-Let $n_i\to\infty$ and let $h_i$ be walks with unit steps and block sizes $r_i\ge1$.
+Let $d_i\to\infty$ and let $h_i$ be walks with unit steps and block sizes $r_i\ge1$.
 \begin{enumerate}[label=(\alph*)]
 \item Every uniform limit on $[0,c_0]$ of the rescaled walks is $1$-Lipschitz.
 \item If the walks start at $0$, then for any $k$ walks per size some subsequence of the rescaled
 walks converges uniformly on $[0,c_0]$.
-\item If $T\le cn^2b$ and a block holds a row ($nb\le rG$), there are at most $(cG+1)n$ slots.
+\item If $T\le cd^2b$ and a block holds a row ($db\le rG$), there are at most $(cG+1)d$ slots.
 \item[(V2$'$)] For a walk frozen at time $T$, every block strictly between its blocks at the first
 steps of two slots $y_1\le y_2$ is pair-resident at some slot of $[y_1,y_2]$; and the pair residency
 depends only on the walk before $T$.
@@ -40,7 +40,7 @@ depends only on the walk before $T$.
 \end{lemma}
 
 \begin{outline}
-(a) A unit-step walk moves at most $r$ cells per slot, that is at most one block per $1/n$ of
+(a) A unit-step walk moves at most $r$ cells per slot, that is at most one block per $1/d$ of
 macroscopic time, up to rounding that vanishes in the limit. (b) Arzelà--Ascoli in the form of a
 diagonal argument at rational times (a countable product of compact intervals is compact and
 metrizable) together with asymptotic equicontinuity; the classical statement does not apply
@@ -50,9 +50,9 @@ directly because the rescaled walks are step functions. (c) Arithmetic. (V2$'$) 
 
 \begin{lemma}[Machine instances]\label{lem:machine-walks}
 \formal{Tape/Statements/Core.lean}{pairRes_V2, numSlots_le_horizon, rescaledTraj_limit_lipschitz, exists_subseq_tendstoUniformlyOn}
-For every machine $M$, time constant $c$ and $n_i\to\infty$: some subsequence of the rescaled
+For every machine $M$, time constant $c$ and $d_i\to\infty$: some subsequence of the rescaled
 work-head trajectories converges uniformly on $[0,c_0]$, every such limit is $1$-Lipschitz, and if
-$T\le cL$ there are at most $c_0n$ slots. If $M$ halts at $T$ on $w$, its work heads satisfy
+$T\le cL$ there are at most $c_0d$ slots. If $M$ halts at $T$ on $w$, its work heads satisfy
 (V2$'$).
 \end{lemma}
 
@@ -78,16 +78,16 @@ another. For $k$ paths $P_t$ on $[0,c_0]$, a number $\theta\ge0$, an excised set
 labelling $\beta$ whose classes off $S$ have measure at most $\theta$, the inequality is
 \[
   (\star)\qquad
-  1\;\le\;\sum_{t<k}\int\kappa_t(p)\,dp\;+\;2\theta\;+\;2k\,\bigl|S\cap[0,c_0]\bigr| .
+  1\;\le\;\sum_{t<k}\int\kappa_t(p)\,\mathrm{d}p\;+\;2\theta\;+\;2k\,\bigl|S\cap[0,c_0]\bigr| .
 \]
 
 \begin{definition}[The cut inequality]\label{def:cutineq}
 \formal{Tape/DefsM.lean}{CutIneq}
-Walks $h_t$ ($t<k$) of length $T$ satisfy the \emph{cut inequality} at size $n$ with block size
+Walks $h_t$ ($t<k$) of length $T$ satisfy the \emph{cut inequality} at size $d$ with block size
 $r$, $G$ bits per cell, slack $D$ and boundary cost $s$, if for every labelling of the
 $N=\lceil T/r\rceil$ slots with at most $m$ slots per label and $\Mb$ label changes,
 \[
-  (n\dotminus\Mb)(n\dotminus2m)\,b(n)\;\le\;(\Mb+1)D+\Mb\,s+rG\,\bigl(3k\Mb+\chicross\bigr),
+  (d\dotminus\Mb)(d\dotminus2m)\,b(d)\;\le\;(\Mb+1)D+\Mb\,s+rG\,\bigl(3k\Mb+\chicross\bigr),
 \]
 where $\chicross$ counts the chords of the pair residencies whose endpoints carry different labels, and
 $x\dotminus y=\max(x-y,0)$.
@@ -102,8 +102,8 @@ proofs obtain it through the class code and the cut-set bound for codes (\cref{l
 
 \begin{theorem}[Theorem M* for walks]\label{thm:mstar-walk}
 \formal{Tape/Statements/Coding.lean}{theoremMStar_walk, theoremMStar_level_walk}
-Let $n_i\to\infty$ and, eventually, let $k$ walks $h_{i,t}$ have unit steps before $T_i\le cL_i$
-and satisfy the cut inequality at size $n_i$ with block size $\lceil n_ib(n_i)/G\rceil$, slack
+Let $d_i\to\infty$ and, eventually, let $k$ walks $h_{i,t}$ have unit steps before $T_i\le cL_i$
+and satisfy the cut inequality at size $d_i$ with block size $\lceil d_ib(d_i)/G\rceil$, slack
 $D_i$ and boundary cost $s_i$, where $(D_i+s_i)/L_i\to0$. Let $c_0=cG+1$ and consider the rescaled
 walks frozen at $T_i$.
 \begin{enumerate}[label=(\alph*)]
@@ -111,7 +111,7 @@ walks frozen at $T_i$.
 \item Every subsequential uniform limit $(P_t)_{t<k}$ consists of $1$-Lipschitz paths and
 satisfies $(\star)$ for every $\theta$, $S$ and $\beta$. Moreover
 \[
-  \sum_t\int(\#\Lambda_t(p)-1)\,dp\;\ge1,\qquad
+  \sum_t\int(\#\Lambda_t(p)-1)\,\mathrm{d}p\;\ge1,\qquad
   1+\sum_t\bigl|P_t([0,c_0])\bigr|\;\le\;k\,c_0,
 \]
 and the paths are not all monotone.
@@ -122,12 +122,12 @@ and the paths are not all monotone.
 The discrete part works at one size. From $S$ and $\beta$ build a slot labelling: the label of a
 slot off $S$ is determined by $\beta$, and slots in $S$ are cut into short pieces. Its label changes
 and class sizes are bounded by counting good and bad slots. The \emph{chord split}
-(\lean{crossChords_split}) bounds the crossing chords by the label changes times $(\lceil\eta n\rceil+1)$, plus
-twice the slots in $S$, plus the \emph{long} crossing chords, those spanning at least $\eta n$
+(\lean{crossChords_split}) bounds the crossing chords by the label changes times $(\lceil\eta d\rceil+1)$, plus
+twice the slots in $S$, plus the \emph{long} crossing chords, those spanning at least $\eta d$
 slots. Long chords are counted by levels (\lean{levelChords_limsup_le}): for a good level $p$, the
-long crossing chords at block $\lfloor pn\rfloor$ inject, for large $n$, into the pairs counted by
+long crossing chords at block $\lfloor pd\rfloor$ inject, for large $d$, into the pairs counted by
 $\kappa(p)$, by uniform closeness, (V1) and (V2$'$). Reverse Fatou then gives
-$\limsup_n\#\{\text{long crossing chords}\}/n\le\int\kappa(p)\,dp$, with an explicit integrable
+$\limsup_d\#\{\text{long crossing chords}\}/d\le\int\kappa(p)\,\mathrm{d}p$, with an explicit integrable
 majorant and no measurability assumption on $\kappa$. If $(\star)$ failed, the cut inequality would
 fail at a single large size for explicit $\eta$ and $\delta$; the arithmetic is isolated in one
 lemma. The remaining claims are the labelling-free consequences of \cref{thm:excess} below.
@@ -144,11 +144,11 @@ For every path, excised set and labelling, $\kappa(p)\le\#\Lambda(p)-1$. Let $P_
 $(\star)$ for every $\theta\in(0,\tfrac12)$, $S$ and $\beta$. Then:
 \begin{enumerate}[label=(\alph*)]
 \item the total excess multiplicity is at least one:
-$\sum_t\int(\#\Lambda_t(p)-1)\,dp\ge1$;
+$\sum_t\int(\#\Lambda_t(p)-1)\,\mathrm{d}p\ge1$;
 \item if the $P_t$ are $1$-Lipschitz on $[0,c_0]$, then
-$\int(\#\Lambda(p)-1)\,dp+\abs{P([0,c_0])}\le c_0$ for each $t$, and hence
+$\int(\#\Lambda(p)-1)\,\mathrm{d}p+\abs{P([0,c_0])}\le c_0$ for each $t$, and hence
 $1+\sum_t\abs{P_t([0,c_0])}\le kc_0$;
-\item a monotone path has total excess $\int(\#\Lambda(p)-1)\,dp=0$, so the $P_t$ are not all monotone.
+\item a monotone path has total excess $\int(\#\Lambda(p)-1)\,\mathrm{d}p=0$, so the $P_t$ are not all monotone.
 \end{enumerate}
 \end{theorem}
 
@@ -164,18 +164,18 @@ values.
 \formal{Tape/Statements/Core.lean}{countable_localExtr_values, levelSet_encard_majorant, lintegral_encard_levelSet_le, ae_finite_levelSet, levelChords_limsup_le, crossChords_split}
 For every $P:\R\to\R$ the values at local extrema form a countable set. For $P$ that is
 $K$-Lipschitz on $[0,c_0]$, $\#\Lambda(p)$ has a measurable majorant with integral at most $Kc_0$;
-hence $\int\#\Lambda(p)\,dp\le Kc_0$ and almost every level set is finite. Moreover:
+hence $\int\#\Lambda(p)\,\mathrm{d}p\le Kc_0$ and almost every level set is finite. Moreover:
 \begin{enumerate}[label=(\alph*)]
 \item (Chord split.) Let a residency $R$ satisfy (P2), let $\eta\ge0$, and let a slot labelling
-$\lambda$ satisfy $\beta(y/n)\ne\beta(y'/n)$ whenever $y/n,y'/n\notin S$ and $\lambda(y)\ne\lambda(y')$.
+$\lambda$ satisfy $\beta(y/d)\ne\beta(y'/d)$ whenever $y/d,y'/d\notin S$ and $\lambda(y)\ne\lambda(y')$.
 Then the chords of $R$ with target $<N$ whose ends carry different labels number at most
-$\Mb(\lceil\eta n\rceil+1)+2\,\#\{y<N:y/n\in S\}+\#\mathcal X$, where $\mathcal X$ is the set of
-long chords $x\to z$: $z<N$, $z-x\ge\eta n$, $x/n,z/n\notin S$, $\beta(x/n)\ne\beta(z/n)$.
-\item (Long chords by levels.) Let $n_i\to\infty$, $\eta>0$ and $d\in\N$, let $P$ be $1$-Lipschitz on $[0,c_0]$,
-and for large $i$ let $W_i:\N\to\Z$, residencies $R_i$ and $N_i\le c_0n_i$ satisfy $\abs{W_i(y)-\sigma}\le d$ for
+$\Mb(\lceil\eta d\rceil+1)+2\,\#\{y<N:y/d\in S\}+\#\mathcal X$, where $\mathcal X$ is the set of
+long chords $x\to z$: $z<N$, $z-x\ge\eta d$, $x/d,z/d\notin S$, $\beta(x/d)\ne\beta(z/d)$.
+\item (Long chords by levels.) Let $d_i\to\infty$, $\eta>0$ and $B\in\N$, let $P$ be $1$-Lipschitz on $[0,c_0]$,
+and for large $i$ let $W_i:\N\to\Z$, residencies $R_i$ and $N_i\le c_0d_i$ satisfy $\abs{W_i(y)-\sigma}\le B$ for
 $\sigma\in R_i(y)$ and (V2$'$) for $W_i$ and $R_i$ (if $W_i$ passes strictly over $\sigma$ between slots $y_1\le y_2$,
-then $\sigma\in R_i(y)$ for some $y\in[y_1,y_2]$), with $u\mapsto W_i(\lfloor un_i\rfloor)/n_i\to P$ uniformly on $[0,c_0]$.
-Then $\limsup_i\#\mathcal X_i/n_i\le\int\kappa(p)\,dp$ for every excised set $S$ and labelling $\beta$.
+then $\sigma\in R_i(y)$ for some $y\in[y_1,y_2]$), with $u\mapsto W_i(\lfloor ud_i\rfloor)/d_i\to P$ uniformly on $[0,c_0]$.
+Then $\limsup_i\#\mathcal X_i/d_i\le\int\kappa(p)\,\mathrm{d}p$ for every excised set $S$ and labelling $\beta$.
 \end{enumerate}
 \end{lemma}
 
@@ -185,8 +185,8 @@ majorant is $\liminf_mN_m(p)$, where $N_m(p)$ counts the dyadic subintervals $I$
 lies within $K\abs{I}/2$ of the value of $P$ at the centre of $I$ (an interval of values containing $P(I)$).
 Each $N_m$ is measurable with integral $Kc_0$; once $c_02^{-m}$ is below the gaps of a finite subset of
 $\Lambda(p)$, $N_m(p)$ is at least its size, so $\liminf_mN_m\ge\#\Lambda$ at every level, and Fatou's lemma
-bounds the integral. For~(a), a crossing chord shorter than $\eta n$ has its source among the
-$\lceil\eta n\rceil$ slots before a label change; a chord touching $S$ is charged to its source or target slot
+bounds the integral. For~(a), a crossing chord shorter than $\eta d$ has its source among the
+$\lceil\eta d\rceil$ slots before a label change; a chord touching $S$ is charged to its source or target slot
 in $S$; by (P2) both charges are injective, and the remaining crossing chords are long. Part~(b) is the level
 count in the outline of \cref{thm:mstar-walk}.
 \end{outline}
@@ -195,7 +195,7 @@ count in the outline of \cref{thm:mstar-walk}.
 
 \begin{theorem}[Theorem M*, oblivious machines]\label{thm:mstar}
 \formal{Tape/Statements/Core.lean}{theoremMStar_level, theoremMStar_level_sub, theoremMStar_level_subseq, theoremMStar_excess, no_stationary_limits}
-Let $n_i\to\infty$ and let $M$ be, eventually, oblivious on $\mathrm{Mat}(n_i,b(n_i))$ with halting
+Let $d_i\to\infty$ and let $M$ be, eventually, oblivious on $\mathrm{Mat}(d_i,b(d_i))$ with halting
 time $T_i\le cL_i$ and transpose. If the rescaled work-head trajectories converge uniformly on
 $[0,c_0]$ to $P_t$, then the $P_t$ satisfy $(\star)$ for every $\theta$, $S$, $\beta$ (equivalently,
 $\sum_t\int\kappa_t\ge1-2\theta-2k\abs{S\cap[0,c_0]}$ for $\theta\ge0$), and the conclusions of
@@ -205,16 +205,16 @@ identically $0$.
 
 \begin{theorem}[Theorem M* for trace classes and adaptive machines]\label{thm:mstar-adaptive}
 \formal{Tape/Statements/Adaptive.lean}{rescaledTrajOf_close, tendstoUniformlyOn_of_mem, mstar_discrete_class_on, theoremMStar_level_class, theoremMStar_level_class_on, theoremMStar_class_nonuniform, theoremMStar_level_adaptive, no_stationary_limits_class_on}
-Let $n_i\to\infty$.
+Let $d_i\to\infty$.
 \begin{enumerate}[label=(\alph*)]
-\item Members of one trace class have rescaled trajectories within $4/n$ of each other, so limits
+\item Members of one trace class have rescaled trajectories within $4/d$ of each other, so limits
 along trace classes do not depend on the representatives.
 \item Along trace classes $F_i$ with halting times $T_i\le cL_i$ and co-entropies $D_i=o(L_i)$ on which $M$
 is correct, the rescaled trajectories of the representatives satisfy the conclusion of \cref{thm:mstar-walk}
-(the labelling-free parts by \cref{thm:excess}); the underlying finite-$n$ inequality holds at every size. The same holds for non-uniform machines
+(the labelling-free parts by \cref{thm:excess}); the underlying finite-$d$ inequality holds at every size. The same holds for non-uniform machines
 $M_i$ with $k$ tapes, $G$ bits per cell and $o(L_i)$ state bits.
 \item If every matrix input halts within $cL_i$ steps and $M$ transposes, then the popular classes
-(\cref{thm:popular}) have $D_i\le Cn_ib(n_i)$, with $C=C(M,c)$ the constant of \cref{thm:popular}
+(\cref{thm:popular}) have $D_i\le Cd_ib(d_i)$, with $C=C(M,c)$ the constant of \cref{thm:popular}
 (\lean{traceConst}), a convergent subsequence of the representatives'
 trajectories exists, and every subsequential limit is $1$-Lipschitz and satisfies $(\star)$.
 \end{enumerate}
@@ -222,10 +222,10 @@ trajectories exists, and every subsequential limit is $1$-Lipschitz and satisfie
 
 \begin{theorem}[Robust and non-uniform M*]\label{thm:mstar-robust}
 \formal{Tape/Statements/Adaptive.lean}{theoremMStar_level_robust, theoremMStar_level_nonuniform, theoremMStar_excess_robust, theoremMStar_excess_nonuniform}
-Let $n_i\to\infty$ and suppose that, eventually, $M$ halts within $cL_i$ steps with the
+Let $d_i\to\infty$ and suppose that, eventually, $M$ halts within $cL_i$ steps with the
 transposed output on every input of a set $W_i$ of co-entropy $m_i$, with $m_i/L_i\to0$; inputs
 outside $W_i$ are unconstrained. Then the popular trace classes inside $W_i$ have co-entropy at most
-$m_i+Cn_ib(n_i)$, convergent subsequences of the representatives' trajectories exist, and every
+$m_i+Cd_ib(d_i)$, convergent subsequences of the representatives' trajectories exist, and every
 subsequential limit is $1$-Lipschitz, satisfies $(\star)$, has total excess at least $1$ and total
 range at most $kc_0-1$, and its paths are not all monotone; here $C=C(M,c)$ is the constant of
 \cref{thm:popular}. The same holds for machines $M_i$ depending on $i$, with $k$ work tapes, $G$ bits per cell
@@ -248,14 +248,14 @@ after.
 \begin{corollary}[Theorem M* under (T)]\label{cor:mstar-T}
 \formal{Tape/Statements/Adaptive.lean}{adaptive_hyps_of_linearTime, linearTimeTransposable_popular_limits}
 If (T) holds, then some machine $M$ and constant $c$ have the following property along every
-$n_i\to\infty$: there are trace classes of co-entropy $o(L_i)$ (the popular traces), a convergent
+$d_i\to\infty$: there are trace classes of co-entropy $o(L_i)$ (the popular traces), a convergent
 subsequence of their representatives' rescaled trajectories, and every subsequential limit is
 $1$-Lipschitz and satisfies $(\star)$ on $[0,(2c)G+1]$.
 \end{corollary}
 
 \begin{outline}
 A machine meeting \cref{def:T} with constant $c$ halts within $2cL$ steps on every matrix input of every
-size $n\ge1$ and transposes (\cref{lem:bridge}); apply \cref{thm:mstar-adaptive}(c).
+size $d\ge1$ and transposes (\cref{lem:bridge}); apply \cref{thm:mstar-adaptive}(c).
 \end{outline}
 
 So a linear-time transposer must move its work heads in a macroscopically folding way. The

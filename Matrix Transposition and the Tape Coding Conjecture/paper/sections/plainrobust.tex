@@ -1,7 +1,7 @@
 \section{Plain versus robust}\label{sec:plainrobust}
 
 The plain conjecture rules out codes that are correct on \emph{all} inputs; the robust one rules out
-codes correct on a $2^{-O(nw)}$ fraction of the inputs. Robust implies plain trivially. The plain
+codes correct on a $2^{-O(dw)}$ fraction of the inputs. Robust implies plain trivially. The plain
 form already refutes oblivious linear-time transposers (\cref{thm:oblivious}); if plain implied
 robust, it would refute~(T). This section isolates the exact gap and proves the implication for
 several natural classes of codes and sets. The general case is open.
@@ -12,7 +12,7 @@ A \emph{hint code} with $2^s$ hint values consists of a function $h$ of the whol
 of causal codes $(C_v)_v$ such that on every input $x$ the code $C_{h(x)}$ solves complete exchange
 for $x$. It models an oracle that sees the whole input and tells every node $s$ bits; the hint is
 uncharged (no edge carries it and no node computes it). Write $\mathrm{NoCode}^{\mathrm{hint}}(s)$
-for ``no hint code with $2^{s(n)}$ values exists'' (\lean{NoCode_TM_hintBits}), with the same
+for ``no hint code with $2^{s(d)}$ values exists'' (\lean{NoCode_TM_hintBits}), with the same
 quantifiers as the conjecture.
 
 \begin{theorem}[Robust is plain with an oracle hint]\label{thm:hint}
@@ -20,12 +20,12 @@ quantifiers as the conjecture.
 \begin{enumerate}[label=(\alph*)]
 \item On a fixed diagram and at fixed capacities: a hint code with $2^s$ values gives a code on a set
 of co-entropy $s$; a code on a set of co-entropy $m$ gives a hint code with $2^m(L+1)$ values.
-\item The Tape Coding Conjecture is equivalent to: for every $C$, no hint code with a $Cnw$-bit
-hint exists. With a constant hint this gives the plain form. (T) yields, for every large $n$, a single
-valid diagram with codes indexed by an $O(nw)$-bit hint solving complete exchange on every input.
-\item The co-entropy ladder: $\mathrm{NoCode}(0)$ is the plain form, $\mathrm{NoCode}(Cnw)$ for every
+\item The Tape Coding Conjecture is equivalent to: for every $C$, no hint code with a $Cdw$-bit
+hint exists. With a constant hint this gives the plain form. (T) yields, for every large $d$, a single
+valid diagram with codes indexed by an $O(dw)$-bit hint solving complete exchange on every input.
+\item The co-entropy ladder: $\mathrm{NoCode}(0)$ is the plain form, $\mathrm{NoCode}(Cdw)$ for every
 $C$ is the robust form, the rungs are monotone, and hints and co-entropy agree up to $3w+1$ bits.
-\item A side channel whose contents the code computes itself is free: for $s(k,n)\le C(k)\,nw$, the
+\item A side channel whose contents the code computes itself is free: for $s(k,d)\le C(k)\,dw$, the
 plain form with $s$ extra bits on every memory edge is equivalent to the plain form.
 \end{enumerate}
 \end{theorem}
@@ -38,9 +38,9 @@ follow from (a), from \cref{thm:coent-linear} for the statement about (T), and f
 co-entropy (a set of co-entropy $0$ is the set of all inputs). (d) Extra memory bits become stationary tapes, as in \cref{thm:profile}.
 \end{outline}
 
-So the entire gap between plain and robust is whether an $O(nw)$-bit oracle broadcast can be
-replaced by one that the network computes itself. For the application to~(T), co-entropy $O(n)$
-suffices (\cref{thm:coent-linear}), so only hints of $O(n)$ bits matter; this is still $\omega(1)$
+So the entire gap between plain and robust is whether an $O(dw)$-bit oracle broadcast can be
+replaced by one that the network computes itself. For the application to~(T), co-entropy $O(d)$
+suffices (\cref{thm:coent-linear}), so only hints of $O(d)$ bits matter; this is still $\omega(1)$
 bits. The first rung of the ladder is already open: does ``no code on all inputs'' imply ``no code
 on half of the inputs''? This is a one-shot question of zero error versus constant error for this
 class of networks.
@@ -48,7 +48,7 @@ class of networks.
 \subsection{Partial results}
 
 Throughout this subsection we assume the plain conjecture \lean{NoCode_TM} and conclude, for all
-constants and all large $n$, that certain codes do not exist at the profile capacities. The
+constants and all large $d$, that certain codes do not exist at the profile capacities. The
 constructions prepend or append computations to the diagram (an input sweep, a selection phase,
 copies of the work walks), so they change $k$ and $c$ by constant factors; this is harmless because
 the plain conjecture quantifies over all constants.
@@ -57,8 +57,8 @@ the plain conjecture quantifies over all constants.
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_affine_of_noCode, PlainRobust.noCode_of_affine_subset, PlainRobust.noCode_additive_of_noCode, PlainRobust.noCode_additiveCover_of_noCode, PlainRobust.noCode_affine_exc_of_noCode}
 Under the plain conjecture, no code exists on a set $F$ that contains a nonempty affine set
 $\{x:\sum_ig_i(\text{row }i\text{ of }x)=b\}$, where the $g_i$ are $\F_2$-linear maps to $\F_2^s$ with
-$s\le Cnw$; more generally, on a set $F$ such that, for an additive hint $\sum_ig_i(\text{row }i)$ of
-$s\le Cnw$ bits and $K=O(1)$ shift tables, every input is moved into $F$ by one of the shifts; and on
+$s\le Cdw$; more generally, on a set $F$ such that, for an additive hint $\sum_ig_i(\text{row }i)$ of
+$s\le Cdw$ bits and $K=O(1)$ shift tables, every input is moved into $F$ by one of the shifts; and on
 such an affine set from which a set $E$ with $2^s\cdot2\abs{E}^2<2^L$ is removed.
 \end{theorem}
 
@@ -89,9 +89,9 @@ decoded bits: on every input at most one copy errs.
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_hintConst_of_noCode, PlainRobust.noCode_iff_hintConst, PlainRobust.noCode_netCover_of_noCode, PlainRobust.noCode_netHint_of_noCode}
 Under the plain conjecture, no hint code with a constant number of hint bits exists; equivalently, the
 plain conjecture is unchanged by a constant oracle hint. Moreover, no code exists on a set $F$
-for which a \emph{network-computable} hint of $O(nw)$ bits (computed by a causal code within the profile capacities of
+for which a \emph{network-computable} hint of $O(dw)$ bits (computed by a causal code within the profile capacities of
 a linear-length prefix diagram) together with $O(1)$ shift tables moves every input into $F$; and no
-family of codes indexed by a network-computable hint of $O(nw)$ bits solves complete exchange on every
+family of codes indexed by a network-computable hint of $O(dw)$ bits solves complete exchange on every
 input.
 \end{theorem}
 
@@ -109,17 +109,17 @@ concatenate the prefix computation with the diagram and carry the hint along the
 \begin{theorem}[Linear and nearly linear codes]\label{thm:pr-linear}
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_linear_of_noCode, PlainRobust.noCode_linearExcept_of_noCode, PlainRobust.noCode_linearPlus_of_noCode, PlainRobust.noCode_linearPlusImage_of_noCode}
 Under the plain conjecture, no $\F_2$-linear code solves complete exchange on a set of co-entropy at
-most $Cnw$. The same holds for codes that are linear outside a set of edges carrying $O(nw)$ bits, for
-codes that are linear plus nonlinear corrections of $O(nw)$ bits in total, and for codes that are
-linear plus corrections whose values on the inputs of $F$ take at most $2^{O(nw)}$ joint values.
+most $Cdw$. The same holds for codes that are linear outside a set of edges carrying $O(dw)$ bits, for
+codes that are linear plus nonlinear corrections of $O(dw)$ bits in total, and for codes that are
+linear plus corrections whose values on the inputs of $F$ take at most $2^{O(dw)}$ joint values.
 \end{theorem}
 
 \begin{outline}
 For a linear code the set of inputs on which it is correct is closed under XOR, hence a subspace; if it
-contains a set of co-entropy $Cnw$ it has codimension at most $Cnw$, so it is the kernel of an additive
+contains a set of co-entropy $Cdw$ it has codimension at most $Cdw$, so it is the kernel of an additive
 syndrome map, and \cref{thm:pr-affine} applies. For the nearly linear codes, the nonlinear values form
-an internally computed hint of $O(nw)$ bits: replacing them by constants gives an affine code, a
-$2^{-O(nw)}$ fraction of the good inputs share their nonlinear values by pigeonhole, and XOR-ing these
+an internally computed hint of $O(dw)$ bits: replacing them by constants gives an affine code, a
+$2^{-O(dw)}$ fraction of the good inputs share their nonlinear values by pigeonhole, and XOR-ing these
 inputs with one of them gives inputs on which the linear part is correct.
 \end{outline}
 
@@ -146,14 +146,14 @@ lies in $F$, and XOR the outputs: transposition is linear.
 \begin{theorem}[Errors]\label{thm:pr-errors}
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_fewErrors_of_noCode, PlainRobust.noCode_sparseErrors_of_noCode, PlainRobust.noCode_sparseEntryErrors_of_noCode, PlainRobust.noCode_fewErrorsCover_of_noCode}
 Under the plain conjecture, every code that stays within the profile capacities on every input has
-more than $2^{Hnw}$ distinct error vectors $C(x)^{\T}\oplus x$, for every constant $H$. In particular,
-no such code gets all but at most $An$ output bits right on every input (transposition with $O(n)$
-wrong bits is as hard as exact transposition); the same holds for $O(n)$ wrong entries, and for a
+more than $2^{Hdw}$ distinct error vectors $C(x)^{\T}\oplus x$, for every constant $H$. In particular,
+no such code gets all but at most $Ad$ output bits right on every input (transposition with $O(d)$
+wrong bits is as hard as exact transposition); the same holds for $O(d)$ wrong entries, and for a
 choice among $O(1)$ such codes per input.
 \end{theorem}
 
 \begin{outline}
-Syndrome correction. Fix a check matrix $\Phi$ with $t=2Hnw+1$ rows that is injective on the possible
+Syndrome correction. Fix a check matrix $\Phi$ with $t=2Hdw+1$ rows that is injective on the possible
 error vectors (a random one is). Run the code; every output bit equal to $1$ adds the corresponding
 column of $\Phi$ on the spine; an appended input sweep adds the column of every input bit equal to $1$,
 so the spine carries the syndrome $\Phi e(x)$; a second run of the code XORs each output bit with the
@@ -164,7 +164,7 @@ error bit decoded from the syndrome. The $t$ extra bits are paid for by stationa
 \formal{Tape/Statements/PlainRobust.lean}{PlainRobust.noCode_colCover_of_noCode, PlainRobust.noCode_rowMapCover_of_noCode, PlainRobust.noCode_colAggregate_of_noCode}
 Under the plain conjecture, no code exists on a set $F$ for which $K=O(1)$ locally computable maps
 $\Phi_\kappa$ into $F$ exist, each keeping the input columns of its class $\kappa$ (the classes
-partitioning the columns); in particular for maps acting on rows. For even $n$, no code exists on a set
+partitioning the columns); in particular for maps acting on rows. For even $d$, no code exists on a set
 containing $\{x:\sum_jv(\text{column }j\text{ of }x)=0\}$ for a fixed $v$ with values in $\F_2^m$.
 \end{theorem}
 
@@ -181,9 +181,9 @@ We record, without formal proofs, why these methods stop short of the general im
 \begin{itemize}[leftmargin=2em]
 \item \emph{A general hint-removal theorem must use the code, not only the size of $F$.} A counting
 argument over (automaton, shift table) pairs shows that a random set of density $2^{-m}$ has no
-streaming covering hint of $O(nw)$ bits.
+streaming covering hint of $O(dw)$ bits.
 \item \emph{A hint is cheap in information but not in flow.} An $s$-bit broadcast tells at most $s$
-bits about all outputs together, but delivering it to $\Theta(n)$ nodes costs $\Theta(ns)$ bits of capacity in aggregate, which is $\Theta(L)$ for $s=\Theta(nw)$; edge-removal style arguments do not apply as they stand. The first rung of the
+bits about all outputs together, but delivering it to $\Theta(d)$ nodes costs $\Theta(ds)$ bits of capacity in aggregate, which is $\Theta(L)$ for $s=\Theta(dw)$; edge-removal style arguments do not apply as they stand. The first rung of the
 ladder is a one-shot instance of zero error versus constant error, related to the edge-removal problem
 and to the continuity of network capacity under dependent sources~\cite{LangbergEffros2021}.
 \item \emph{The machine-side view.} Plain would refute (T) if (T) implied oblivious (T), or merely a

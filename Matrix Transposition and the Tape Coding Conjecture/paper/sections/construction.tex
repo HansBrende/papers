@@ -10,19 +10,19 @@ the results above, a citation, or explicitly labelled as a heuristic.
 A machine witnessing~(T) must have all of the following properties.
 \begin{enumerate}[label=(N\arabic*),leftmargin=3em]
 \item \emph{Coding.} It cannot only move data along an input-independent pattern: oblivious data movement needs
-time $\Omega(L\log n)$ (Sto\ss~\cite{Stoss1973} for Turing machines, Aggarwal and Vitter~\cite{AggarwalVitter1988} in
+time $\Omega(L\log d)$ (Sto\ss~\cite{Stoss1973} for Turing machines, Aggarwal and Vitter~\cite{AggarwalVitter1988} in
 external memory; both bounds concern a fixed permutation of distinct items). For data movement that depends on the
-entries, which repeat because $b=\clog n$, no such bound is known.
-\item \emph{Many passes, at every scale.} Its run has $\Omega(\log n)$ passes (Theorem~P$'$,
-\cref{thm:Pprime}), even on a $2^{-O(nb)}$ fraction of the inputs (\cref{thm:Pprime-on}); the grouped form of
+entries, which repeat because $b=\clog d$, no such bound is known.
+\item \emph{Many passes, at every scale.} Its run has $\Omega(\log d)$ passes (Theorem~P$'$,
+\cref{thm:Pprime}), even on a $2^{-O(db)}$ fraction of the inputs (\cref{thm:Pprime-on}); the grouped form of
 \cref{thm:Pprime} gives the same at coarser column scales.
 \item \emph{Folding motion.} Along the popular trace, the macroscopic work-head trajectories satisfy $(\star)$
 (\cref{cor:mstar-T}): some head makes a macroscopic U-turn, and the heads together waste at least one unit of
 range (\cref{thm:excess}).
 \item \emph{A large coding gain.} The block network of the run of a slightly modified machine (output buffered at
 the end; state and head positions carried on extra stationary tapes) carries a causal code for complete exchange,
-on a set of co-entropy $O(n)$, at the profile capacities (\cref{thm:reduction,thm:coent-linear}); by
-\cref{thm:code-gap} this code beats routing by a factor $\Omega(\log n)$. For an oblivious machine the code works
+on a set of co-entropy $O(d)$, at the profile capacities (\cref{thm:reduction,thm:coent-linear}); by
+\cref{thm:code-gap} this code beats routing by a factor $\Omega(\log d)$. For an oblivious machine the code works
 on all inputs (\cref{thm:oblivious}); for oblivious I/O machines the analogous statement, at the level of pages, is
 \cite[Thm.~6.2]{AHJKL2006}.
 \item \emph{Not an XOR-frame recursion.} Within the abstract model of \cref{sec:frames}, every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}), so every gadget has cost $s\ge W$ (\cref{prop:gadget-runs}, not formalized), while linear time would need $s<W$; the
@@ -31,20 +31,20 @@ model captures the preprint's template only informally.
 
 Condition~(N4) is the heart of the matter. Coding gains over routing in undirected networks do exist: the
 multiple-unicast (network coding) conjecture is false~\cite{BravermanHe2026,ZhangLiLi2026}. But the known growing
-gains are of order $(\log n)^{\varepsilon}$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017}, and
+gains are of order $(\log n)^{\varepsilon}$ on networks of size $n$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017}, and
 they concern sparse demands; we do not expect tensoring a constant gap to produce a gain of order $\log n$ for dense
 demands (a heuristic, not a theorem). Braverman and He also observe~\cite{BravermanHe2026} that the unrefereed sub-$n\log n$ Fourier circuits
 of~\cite{OpenAI2026fourier} would give a coding gain over routing; such gains would not come from tensoring, but they
-live on circuit graphs, not on networks shaped by tapes. A linear-time transposer needs a gain of order $\log n$ for the densest demand, on a network shaped by tapes, which by the heuristic above would have to be \emph{native}, that is, not obtained by amplifying a constant gap.
+live on circuit graphs, not on networks shaped by tapes. A linear-time transposer needs a gain of order $\log d$ for the densest demand, on a network shaped by tapes, which by the heuristic above would have to be \emph{native}, that is, not obtained by amplifying a constant gap.
 
 \subsection{An architecture that survives}
 
 We describe, as a design and not as a result, the one architecture that we could not rule out.
 
-\paragraph{Geometric recursion.} The transposer runs $\Theta(\log n)$ levels. Level $\ell$ works on data of
+\paragraph{Geometric recursion.} The transposer runs $\Theta(\log d)$ levels. Level $\ell$ works on data of
 volume $\theta^\ell L$ for a constant $\theta<1$, with $O(1)$ passes of an encoder $E_\ell$ and a decoder
 $D_\ell$: it computes its output as $D_\ell(X_\ell,f_{\ell+1}(E_\ell(X_\ell)))$, where $f_{\ell+1}$ is the next
-level's problem. The total time is $\sum_\ell O(\theta^\ell L)=O(L)$, and the pass count is $\Theta(\log n)$, as
+level's problem. The total time is $\sum_\ell O(\theta^\ell L)=O(L)$, and the pass count is $\Theta(\log d)$, as
 Theorem~P requires.
 
 \paragraph{Expanding choreography.} The heads of each level are driven along prepared \emph{rulers} that realize
@@ -65,14 +65,14 @@ encoder core is the following problem.
 
 \begin{quote}
 \emph{Locally encoded index coding with own-row side information.} Let $\Gamma$ be a bounded-degree graph on
-$[n]$. A broadcast consists of linear functionals of an $n\times n$ matrix, each supported on the two rows of an
+$[d]$. A broadcast consists of linear functionals of a $d\times d$ matrix, each supported on the two rows of an
 edge of $\Gamma$. Receiver $j$ sees the broadcast and knows row $j$, and must recover column $j$. Can the broadcast
-have size $(1-\varepsilon)n^2$ for a fixed $\varepsilon>0$?
+have size $(1-\varepsilon)d^2$ for a fixed $\varepsilon>0$?
 \end{quote}
 
 Without the degree bound, $\varepsilon=\tfrac12$ is achievable: broadcast $A+A^{\T}$ above the diagonal. With the
-degree bound, routing-type codes save only $O(n^2/\log n)$ on expanders, and hyperfinite (amenable) graphs save
-$o(n^2)$ (heuristic arguments; not included here). A positive answer on expanders would be, to our knowledge, the first
+degree bound, routing-type codes save only $O(d^2/\log d)$ on expanders, and hyperfinite (amenable) graphs save
+$o(d^2)$ (heuristic arguments; not included here). A positive answer on expanders would be, to our knowledge, the first
 constant-fraction coded saving in a tape-relevant model. A negative answer, together with a negative answer to the
 analogous decoder problem, would rule out every geometric recursion of the form above with $O(1)$-pass levels
 (heuristic: the necessity of both savings is argued here only informally).
@@ -81,7 +81,7 @@ analogous decoder problem, would rule out every geometric recursion of the form 
 
 The following classes of constructions fail for reasons proved in this paper.
 \begin{itemize}[leftmargin=2em]
-\item \emph{Few passes.} Any schedule with $o(\log n)$ passes, with any coding, including constant-pass
+\item \emph{Few passes.} Any schedule with $o(\log d)$ passes, with any coding, including constant-pass
 choreographies along expanders (Theorems~P and~P$'$).
 \item \emph{Regular or one-way motion.} Machines whose macroscopic head motions (along the popular trace) are all
 stationary or monotone (\cref{thm:excess,thm:mstar-adaptive}).
@@ -89,7 +89,7 @@ stationary or monotone (\cref{thm:excess,thm:mstar-adaptive}).
 of~\cite{OpenAI2026mult} informally: every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}), so every gadget has cost at least $W$ (\cref{prop:gadget-runs}, not formalized) and linear time is out of reach.
 \end{itemize}
 Some classes of codes are moreover no easier than plain codes: linear codes, codes correct off a small set, and codes
-that are linear outside $O(nw)$ bits of capacity exist only if plain codes exist (\cref{thm:pr-linear,thm:pr-vote});
+that are linear outside $O(dw)$ bits of capacity exist only if plain codes exist (\cref{thm:pr-linear,thm:pr-vote});
 a counterexample to the robust conjecture from these classes would refute the plain one.
 Many further attempts failed for reasons we could only argue informally: flat schemes that code across a constant
 number of whole streams (they save at most a constant factor), window-local recursions whose levels read only

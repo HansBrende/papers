@@ -1,7 +1,7 @@
 \section{Limits of XOR-frame recursions}\label{sec:frames}
 
-The only technique claimed to beat $O(L\log n)$ for transposition on tapes is an unrefereed
-construction of OpenAI~\cite{OpenAI2026mult}, which claims $O(L(\log n)^{1-\kappa})$ for a tiny
+The only technique claimed to beat $O(L\log d)$ for transposition on tapes is an unrefereed
+construction of OpenAI~\cite{OpenAI2026mult}, which claims $O(L(\log d)^{1-\kappa})$ for a tiny
 $\kappa>0$. Its core is an address-interchange primitive that mixes data by XOR in sheared address
 frames, applied recursively. This section abstracts the recursion and shows that it cannot give linear time: every run realizing a gadget makes at least as many frame changes as the gadget has wires (\cref{thm:frame-change}), so every gadget has cost at least $W$ (\cref{prop:gadget-runs}, a translation from gadgets to runs that we prove in full but have not formalized). The results are about an
 abstract model, so they rule out a class of constructions, not linear-time transposition.
@@ -27,8 +27,8 @@ The recursion built on a gadget distributes a stream over the $W$ wires and runs
 change being a recursive interchange of narrower chunks. Its cost per unit of data satisfies
 $F_k\le(s/W)F_{k-1}+O(1)$ at width $m^k$, and every implementation in the template also satisfies
 $F_k\ge(s/W)F_{k-1}+c_0$. A gadget with $s<W$ would therefore give linear-time transposition, a gadget
-with $s/W=m^\tau$, $0<\tau<1$, would give $O(L(\log n)^\tau)$, and $s\ge W$ excludes linear time within the
-template; $s=W$ would give $\Theta(L\log\log n)$, but for rational frames with $m\ge2$ and $W\ge1$ no gadget has $s\le W$ (\cref{prop:gadget-runs}(b)). (This reading of the template is informal: it rests on the
+with $s/W=m^\tau$, $0<\tau<1$, would give $O(L(\log d)^\tau)$, and $s\ge W$ excludes linear time within the
+template; $s=W$ would give $\Theta(L\log\log d)$, but for rational frames with $m\ge2$ and $W\ge1$ no gadget has $s\le W$ (\cref{prop:gadget-runs}(b)). (This reading of the template is informal: it rests on the
 preprint's construction~\cite{OpenAI2026mult}, which we use only to motivate the model.)
 
 \subsection{Cost bounds}
@@ -192,10 +192,10 @@ In every valid run as in \cref{thm:coarsening}, every frame-changing move whose 
 
 \begin{theorem}[Mixing lemma]\label{thm:mixing}
 \formal{Frames/GadgetMixing.lean}{Transpose.ShearFrame.mixed_move_forces_extra_hop, Transpose.ShearFrame.mixing_lemma, Transpose.ShearFrame.mixing_lemma_matrix}
-Weight frames by a function $d:F\times F\to\N$ with $d(f,f)=0$, $d(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
-matrices, $d(A,B)=\rank(B-A)$), and let $d(S_u,\mathrm{tgt}(u))\ge m$ for every item $u$. Suppose a
+Weight frames by a function $\delta:F\times F\to\N$ with $\delta(f,f)=0$, $\delta(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
+matrices, $\delta(A,B)=\rank(B-A)$), and let $\delta(S_u,\mathrm{tgt}(u))\ge m$ for every item $u$. Suppose a
 valid run as in \cref{thm:coarsening} (with targets $\mathrm{tgt}(u)$) contains a frame-changing move whose cargo contains two distinct items, and every other frame-changing move carries a single item. Then some item of that cargo has
-$d$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
+$\delta$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
 \end{theorem}
 
 \begin{outline}[Outline of the formal proofs of \cref{thm:tight,thm:itineraries,thm:carrying,thm:mixing}]
@@ -206,7 +206,7 @@ a tight run both move in lockstep, which forces the split and the cargo rule. Ch
 item backwards (and forwards) through the moves whose cargo contains it, using that an item is present at a
 frame only if some move carried it there. Admissibility (\cref{thm:itineraries}) is the cargo rule of the coarsened two-class run. For the mixing
 lemma, suppose every item of the mixed cargo $x$, moved into frame $g$, has hop count at most $m$. An item
-present at a frame after (before) a segment was (will be) present at a frame within $d$-distance of it
+present at a frame after (before) a segment was (will be) present at a frame within $\delta$-distance of it
 bounded by the segment's hop count; with the triangle inequality, no item of the support of $x$ is present at
 $g$ before the mixed move, and no later frame-changing move into $g$ carries one. As the later moves out of
 $g$ carry unit vectors, every wire at $g$ stays constant on the support of $x$ while some wire at $g$ keeps
@@ -214,4 +214,4 @@ coordinate $s_0$; at the end that wire holds $e_{s_0}$, which is not constant on
 \end{outline}
 
 Together with \cref{prop:gadget-runs}, these say that, within the XOR-frame template, every gadget costs at least $W$ (so linear time is out of reach), gadgets with integer frames cost substantially more than $W$, and runs over a finite set of frames that make exactly $W$ frame changes (tight runs, \cref{thm:tight}), as well as runs that make exactly $W$ changes of class at a two-class coarsening (\cref{thm:itineraries,thm:carrying}), are rigid; for rational matrix frames, a run with at most $W$ moves has total jump rank at least the baseline $Wm$ (\cref{thm:coarsening}). Whether some gadget has $s/W$ substantially below $m$, which would give an improvement
-over $O(L\log n)$ much larger than the claimed $\kappa$, is open (\cref{sec:open}).
+over $O(L\log d)$ much larger than the claimed $\kappa$, is open (\cref{sec:open}).

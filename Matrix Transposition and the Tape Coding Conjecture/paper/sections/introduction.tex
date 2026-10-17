@@ -2,13 +2,13 @@
 
 \subsection{The problem}
 
-A matrix of $n\times n$ entries of $b=\lceil\log_2n\rceil$ bits, written row by row on the input tape of a
-deterministic multitape Turing machine, occupies $L=n^2b$ cells. The machine must write the same matrix column
+A matrix of $d\times d$ entries of $b=\lceil\log_2d\rceil$ bits, written row by row on the input tape of a
+deterministic multitape Turing machine, occupies $L=d^2b$ cells. The machine must write the same matrix column
 by column on its output tape. Can it do so in time $O(L)$?
 
 On a random-access machine, or on a machine with a two-dimensional work tape, transposition is trivial, and a
 Boolean circuit transposes with no gates at all. On one-dimensional tapes the problem is open. Recursive block
-exchange gives time $O(L\log n)$. The best upper bound claimed is $O(L(\log n)^{1-\kappa})$ for a very small
+exchange gives time $O(L\log d)$. The best upper bound claimed is $O(L(\log d)^{1-\kappa})$ for a very small
 $\kappa>0$, in an unrefereed preprint of OpenAI~\cite{OpenAI2026mult} whose transposition primitive mixes data by
 XOR in sheared address frames. No superlinear lower bound is known; indeed none is known on machines with two or more work tapes for
 off-line multiplication, sorting or the DFT either~\cite[\S1.4]{HvdH2025} (the superlinear lower bounds that
@@ -20,7 +20,7 @@ conservative machines~\cite{Kirchherr1988}.
 The question matters because of integer multiplication. Fast multiplication on Turing machines runs through
 multidimensional discrete Fourier transforms~\cite{SchonhageStrassen1971,HvdH2021}, and on tapes such transforms
 need transpositions to bring the data of each dimension together. Harvey and van der Hoeven proved a converse:
-transposition reduces to multiplication, with no overhead for entries of $\lceil\log_2n\rceil$
+transposition reduces to multiplication, with no overhead for entries of $\lceil\log_2d\rceil$
 bits~\cite[Cor.~6.9]{HvdH2025}. So a
 linear-time multiplication machine would give a linear-time transposer, and a proof that transposition needs
 superlinear time would be the first superlinear lower bound for off-line multiplication on multitape Turing
@@ -38,22 +38,22 @@ whose proof would refute~(T).
 \paragraph{Locality, counting and isoperimetry (\cref{sec:locality,sec:blocks,sec:traces}).} If a set of time steps
 must output bits of the input that it never reads, those bits must enter through its entry data: the states at its
 entry points and the work symbols it inherits (the Cut Lemma, \cref{lem:cut}). Cutting tapes into blocks of a row's
-size and time into slots of the same length turns every run of linear length into a bounded-degree network on $O(n)$ slots, the
+size and time into slots of the same length turns every run of linear length into a bounded-degree network on $O(d)$ slots, the
 \emph{block network}, and the Cut Lemma into an isoperimetric inequality on it (\cref{cor:isoperimetry}). For machines
 whose head motion depends on the data, inputs with the same block-level trace (a coarse record of head motion) behave like
-an oblivious machine; for a linear-time machine some trace is shared by a $2^{-O(nb)}$ fraction of the inputs (the popular trace, \cref{thm:popular}), and the
+an oblivious machine; for a linear-time machine some trace is shared by a $2^{-O(db)}$ fraction of the inputs (the popular trace, \cref{thm:popular}), and the
 inequalities hold on it (\cref{lem:cut-trace,cor:isoperimetry-trace}).
 
 \paragraph{Passes (\cref{sec:passes}).} \emph{Theorem~P.} An oblivious transposer whose run splits into $r$ passes, in
-each of which every head moves monotonically, satisfies $(k+1)^r\ge1+kn/(2+\sigma_M/b)$, where $\sigma_M$ is the number
-of bits of a state plus $k$ work symbols (\cref{thm:P}); \emph{Theorem~P$'$} gives $(k+1)^r\ge1+kn/(2+(\sigma_M+\gamma_T)/b)$ for every
+each of which every head moves monotonically, satisfies $(k+1)^r\ge1+kd/(2+\sigma_M/b)$, where $\sigma_M$ is the number
+of bits of a state plus $k$ work symbols (\cref{thm:P}); \emph{Theorem~P$'$} gives $(k+1)^r\ge1+kd/(2+(\sigma_M+\gamma_T)/b)$ for every
 machine halting within $T$ steps, where $\gamma_T=(k+4)\clog{(2T+1)}$ is $O(kb)$ when $T\le\poly(L)$
-(\cref{thm:Pprime}). So, for $k\ge1$ and $T\le\poly(L)$, $\Omega(\log n)$ passes are necessary, whatever the
-machine does with its data, and this remains true if the machine is correct only on a $2^{-O(nb)}$ fraction of the inputs
+(\cref{thm:Pprime}). So, for $k\ge1$ and $T\le\poly(L)$, $\Omega(\log d)$ passes are necessary, whatever the
+machine does with its data, and this remains true if the machine is correct only on a $2^{-O(db)}$ fraction of the inputs
 (\cref{thm:P-on,thm:Pprime-on}).
 
 \paragraph{Macroscopic motion (\cref{sec:mstar}).} \emph{Theorem~M*.} Rescale the work-head trajectories of a
-linear-time transposer (for adaptive machines, along its popular trace classes) by $n$ in space (in blocks) and in
+linear-time transposer (for adaptive machines, along its popular trace classes) by $d$ in space (in blocks) and in
 time (in slots). Along subsequences they converge to
 $1$-Lipschitz paths, and every limit satisfies an isoperimetric inequality~$(\star)$: for every partition of macroscopic time into finitely many intervals, grouped into classes of measure at most $\theta$, the heads return to their positions across different classes with total multiplicity at least $1-2\theta$. Consequently the limits are not all monotone, and the heads
 together waste at least one unit of range (\cref{thm:mstar,thm:mstar-adaptive,thm:excess}). The theorem holds for
@@ -64,18 +64,18 @@ it is a statement about walks satisfying a cut inequality, not about machines (\
 through the flow of information along its block network. A run yields a \emph{causal network code} on the block
 network of its time--space diagram that solves \emph{complete exchange}: every row must reach every column
 (\cref{lem:class-code,thm:fast-codes}). On these networks almost every source--sink pair is at distance
-$\Omega(\log n)$ while the total capacity is $O(L)$, so a solving code beats multicommodity flow by a factor
-$\Omega(\log n)$ (\cref{thm:code-gap}). The \emph{Tape Coding Conjecture}
-(\cref{conj:TCC}) asserts that such codes do not exist, even if they need to be correct only on a $2^{-O(n\log n)}$
-fraction of the inputs; equivalently, coding beats routing on tape networks by $o(\log n)$ (\cref{thm:tcc-forms}). We
+$\Omega(\log d)$ while the total capacity is $O(L)$, so a solving code beats multicommodity flow by a factor
+$\Omega(\log d)$ (\cref{thm:code-gap}). The \emph{Tape Coding Conjecture}
+(\cref{conj:TCC}) asserts that such codes do not exist, even if they need to be correct only on a $2^{-O(d\log d)}$
+fraction of the inputs; equivalently, coding beats routing on tape networks by $o(\log d)$ (\cref{thm:tcc-forms}). We
 prove:
 \begin{itemize}[leftmargin=2em]
 \item the conjecture implies $\neg$(T); a proof of it yields the frozen checker's answer file directly
 (\cref{thm:reduction}). The reduction is one-way: a refutation gives codes, not machines;
-\item much less suffices: no codes at co-entropy $Cn$ for every $C$, for infinitely many $n$, on diagrams that write
+\item much less suffices: no codes at co-entropy $Cd$ for every $C$, for infinitely many $d$, on diagrams that write
 their output at the end (\cref{thm:coent-linear,thm:io});
-\item under the conjecture every machine fails at every large size, and no non-uniform machine with $2^{O(n\log n)}$
-states is fast and correct on a $2^{-O(n\log n)}$ fraction of the inputs (\cref{thm:tcc-consequences});
+\item under the conjecture every machine fails at every large size, and no non-uniform machine with $2^{O(d\log d)}$
+states is fast and correct on a $2^{-O(d\log d)}$ fraction of the inputs (\cref{thm:tcc-consequences});
 \item every counterexample to the conjecture obeys Theorem~M* (\cref{cor:cex-star});
 \item its plain form (codes correct on all inputs), which already refutes oblivious linear-time transposers
 (\cref{thm:oblivious}), implies the robust form for linear and nearly linear codes, for affine and low-degree sets,
@@ -117,8 +117,8 @@ cited in the paper.
 Hennie~\cite{Hennie1965} and Maass~\cite{Maass1985}; for matrix transposition on one-tape off-line machines they are due
 to Dietzfelbinger, Maass and Schnitger~\cite{DMS1991,DietzfelbingerMaass1993}. For multitape machines the strongest
 general result is the separation of deterministic and nondeterministic linear time by Paul, Pippenger, Szemer\'edi and
-Trotter~\cite{PPST1983}. Restricted models give more: Stoß proved $\Omega(L\log n)$ for permutations by data
-movement~\cite{Stoss1973}, Kirchherr $\Omega(\log n)$ reversals for transposition on conservative
+Trotter~\cite{PPST1983}. Restricted models give more: Stoß proved $\Omega(L\log d)$ for permutations by data
+movement~\cite{Stoss1973}, Kirchherr $\Omega(\log d)$ reversals for transposition on conservative
 machines~\cite{Kirchherr1988}, and Pippenger and Fischer simulated multitape machines obliviously with a logarithmic
 overhead~\cite{PippengerFischer1979}. Our Theorem~P is a reversal lower bound that allows arbitrary coding; lower bounds
 for streams with few passes over external memory~\cite{GroheSchweikardt2005,GHS2009} need long or index-tagged items and
@@ -129,14 +129,12 @@ transposition for algorithms that move indivisible items~\cite{AggarwalVitter198
 question behind the network coding conjecture of Li and Li~\cite{LiLi2004}, which would have implied lower bounds for
 multiplication circuits~\cite{AFKL2019}, external-memory sorting~\cite{FHLS2019} and two-tape oblivious machines~\cite{AHJKL2006}.
 Braverman and He~\cite{BravermanHe2026} and, concurrently, Zhang, Li and Li~\cite{ZhangLiLi2026} refuted it: in
-undirected networks coding can beat multicommodity flow, by a factor $(\log n)^{\varepsilon}$ after
-amplification~\cite{BGS2017}. Our conjecture is a version of the network coding
-conjecture restricted to tape networks and to the densest demand, where a gain of order $\log n$ is at stake.
+undirected networks coding can beat multicommodity flow, by a factor $(\log n)^{\varepsilon}$ on networks of size $n$ after amplification~\cite{BGS2017}. Our conjecture is a version of the network coding
+conjecture restricted to tape networks and to the densest demand, where a gain of order $\log d$ is at stake.
 
-\paragraph{Multiplication.} Integer multiplication in time $O(n\log n)$ on multitape machines is due to Harvey and van der
+\paragraph{Multiplication.} Multiplication of $n$-bit integers in time $O(n\log n)$ on multitape machines is due to Harvey and van der
 Hoeven~\cite{HvdH2021}, after Sch\"onhage and Strassen~\cite{SchonhageStrassen1971} and F\"urer~\cite{Furer2009}. The
-OpenAI preprints claim multiplication and transposition below $n\log n$ on multitape machines~\cite{OpenAI2026mult}
-and exact complex linear circuits for the DFT of size $o(n\log n)$ for infinitely many lengths~\cite{OpenAI2026fourier};
+OpenAI preprints claim multiplication below $n\log n$ and transposition below $L\log d$ on multitape machines~\cite{OpenAI2026mult} and exact complex linear circuits of size $o(n\log n)$ for the DFT of length $n$ for infinitely many lengths~\cite{OpenAI2026fourier};
 we use them only as motivation, and \cref{sec:frames} shows the limits of their transposition technique.
 
 \subsection{Organization}

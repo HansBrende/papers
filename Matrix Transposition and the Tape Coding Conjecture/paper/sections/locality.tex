@@ -27,16 +27,16 @@ Step $0$ is never an entry point: the state at time $0$ is the initial state for
 
 \begin{definition}[Cut set, sources, sinks, cut pairs]\label{def:cut}
 \formal{Tape/Defs.lean}{cutSet, srcRows, snkCols, cutPairs, tpos}
-Let $w_0$ be an input of length $n^2b$. Relative to the run of $M$ on $w_0$:
+Let $w_0$ be an input of length $d^2b$. Relative to the run of $M$ on $w_0$:
 \begin{itemize}[leftmargin=2em]
-\item the \emph{cut set} of $J$ is the set of input positions $d<n^2b$ that the input head visits
-at no step of $J$ but whose transposed copy, output bit $\operatorname{tpos}(d)$, is appended at a
+\item the \emph{cut set} of $J$ is the set of input positions $\alpha<d^2b$ that the input head visits
+at no step of $J$ but whose transposed copy, output bit $\operatorname{tpos}(\alpha)$, is appended at a
 step of $J$;
-\item the \emph{source rows} $\src(J)$ are the rows $i<n$ such that the input head lies in the
-row's interval $[inb,(i+1)nb)$ at some step of $J$;
-\item the \emph{sink columns} $\snk(J)$ are the columns $j<n$ all of whose output bits
-$[jnb,(j+1)nb)$ are appended at steps of $J$;
-\item the \emph{cut pairs} are $S_J=([n]\setminus\src(J))\times\snk(J)$.
+\item the \emph{source rows} $\src(J)$ are the rows $i<d$ such that the input head lies in the
+row's interval $[i\,db,(i+1)db)$ at some step of $J$;
+\item the \emph{sink columns} $\snk(J)$ are the columns $j<d$ all of whose output bits
+$[j\,db,(j+1)db)$ are appended at steps of $J$;
+\item the \emph{cut pairs} are $S_J=([d]\setminus\src(J))\times\snk(J)$.
 \end{itemize}
 \end{definition}
 
@@ -108,8 +108,8 @@ step, from $b-1$ to $b$, for the state and head positions at time $b$.
 
 \begin{lemma}[Cut Lemma]\label{lem:cut}
 \formal{Tape/Statements/Core.lean}{cut_bound, cut_bound_pairs, cut_bound_bits, card_le_entryData}
-Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transpose $n\times n$
-matrices with $b$-bit entries. Let $w_0\in\mathrm{Mat}(n,b)$ and $J\subseteq[0,T)$. Then
+Let $M$ be oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$ and transpose $d\times d$
+matrices with $b$-bit entries. Let $w_0\in\mathrm{Mat}(d,b)$ and $J\subseteq[0,T)$. Then
 \[
   2^{\abs{\mathrm{cut}(J)}}\;\le\;(q+1)^{\eone(J)}\,(g+1)^{\etwo(J)},
   \qquad\text{hence}\qquad
@@ -131,7 +131,7 @@ Nothing is assumed about inputs outside the subset.
 Let $M$ be oblivious on a set $W$ with halting time $T$ and correct on $W$ at time $T$, let
 $w_0\in W$ and $J\subseteq[0,T)$. Then
 \[
-  2^{\abs{\mathrm{cut}(J)}}\,\abs{W}\;\le\;2^{n^2b}\,(q+1)^{\eone(J)}(g+1)^{\etwo(J)} .
+  2^{\abs{\mathrm{cut}(J)}}\,\abs{W}\;\le\;2^{d^2b}\,(q+1)^{\eone(J)}(g+1)^{\etwo(J)} .
 \]
 In particular, if $W$ has co-entropy at most $m$, then
 $2^{\abs{\mathrm{cut}(J)}}\le 2^m(q+1)^{\eone(J)}(g+1)^{\etwo(J)}$.
@@ -139,12 +139,12 @@ $2^{\abs{\mathrm{cut}(J)}}\le 2^m(q+1)^{\eone(J)}(g+1)^{\etwo(J)}$.
 
 \begin{outline}
 Group the inputs of $W$ by their bits outside the cut set: there are at most
-$2^{n^2b-\abs{\mathrm{cut}(J)}}$ groups. Within a group the inputs agree on every input bit read
+$2^{d^2b-\abs{\mathrm{cut}(J)}}$ groups. Within a group the inputs agree on every input bit read
 during $J$, because the cut set is read at no step of $J$ and all inputs of $W$ share the input
 trajectory. By \cref{lem:locality} the transitions during $J$, and hence the output bits appended
 during $J$, are a function of the entry data. These output bits contain the transposed copy of
 every cut-set bit, and by correctness they equal it; so distinct inputs of a group have distinct
-entry data. Hence each group has at most $(q+1)^{\eone}(g+1)^{\etwo}$ members. The formal proof packages this injection as an abstract counting core, shared with \cref{lem:cut-trace}; the case $W=\mathrm{Mat}(n,b)$ gives \cref{lem:cut}. The abstract form \lean{card_le_entryData} maps each member of the family to its entry data; by \cref{lem:locality}, members with equal entry data append the same bits during $J$, so the map is injective.
+entry data. Hence each group has at most $(q+1)^{\eone}(g+1)^{\etwo}$ members. The formal proof packages this injection as an abstract counting core, shared with \cref{lem:cut-trace}; the case $W=\mathrm{Mat}(d,b)$ gives \cref{lem:cut}. The abstract form \lean{card_le_entryData} maps each member of the family to its entry data; by \cref{lem:locality}, members with equal entry data append the same bits during $J$, so the map is injective.
 \end{outline}
 
 \subsection{Families of step sets}
@@ -163,19 +163,19 @@ and under the hypotheses of \cref{lem:cut-on} with co-entropy $m$ the right side
 inequality gains a factor $2^{\abs{I}m}$. Moreover:
 \begin{enumerate}[label=(\alph*)]
 \item if every $J_u$ reads at most $\rho$ rows, then
-$\bigl|\bigcup_u\snk(J_u)\bigr|\,(n-\rho)\le\sum_u\abs{S_{J_u}}$;
+$\bigl|\bigcup_u\snk(J_u)\bigr|\,(d-\rho)\le\sum_u\abs{S_{J_u}}$;
 \item if the $J_u$ are the label classes of a labelling $\lambda$ of the steps $<T$ and $b\ge1$,
 then the number of columns that are not sinks of a single class is at most the number of label
 changes $\#\{1\le\tau<T:\lambda(\tau)\ne\lambda(\tau-1)\}$. This holds for any run that has
-appended at least $n^2b$ output bits by time $T$, with no obliviousness, correctness or halting
+appended at least $d^2b$ output bits by time $T$, with no obliviousness, correctness or halting
 assumption.
 \end{enumerate}
 \end{corollary}
 
 \begin{outline}
 The exponential forms multiply the bounds of \cref{lem:cut-on} over the family (the plain form is
-its case $W=\mathrm{Mat}(n,b)$, $m=0$); the bits form adds the bits forms of \cref{lem:cut}. For~(a), a sink
-column of $J_u$ pairs with each of the at least $n-\rho$ rows not read by $J_u$. For~(b), the
+its case $W=\mathrm{Mat}(d,b)$, $m=0$); the bits form adds the bits forms of \cref{lem:cut}. For~(a), a sink
+column of $J_u$ pairs with each of the at least $d-\rho$ rows not read by $J_u$. For~(b), the
 output bits of a column are appended during an interval of time; if they are not all appended in
 one label class, the label changes inside that interval, and the intervals of distinct columns
 are disjoint.

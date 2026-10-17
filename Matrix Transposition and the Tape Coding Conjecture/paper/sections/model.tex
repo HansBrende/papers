@@ -30,27 +30,27 @@ on the input.
 
 \subsection{Matrices and their encoding}
 
-For $n\ge1$ let
+For $d\ge1$ (the side length of the matrix, written $n$ in the Lean files) let
 \[
-  b(n)=\max\bigl(1,\lceil\log_2 n\rceil\bigr)
-  \qquad\text{(formally } \lfloor\log_2(n-1)\rfloor+1\text{ with }\lfloor\log_2 0\rfloor:=0\text{, \lean{Transpose.entryBits})}.
+  b(d)=\max\bigl(1,\lceil\log_2 d\rceil\bigr)
+  \qquad\text{(formally } \lfloor\log_2(d-1)\rfloor+1\text{ with }\lfloor\log_2 0\rfloor:=0\text{, \lean{Transpose.entryBits})}.
 \]
-An $n\times n$ matrix $A$ with $b$-bit entries is encoded row-major
-(\lean{Transpose.encode}): the $n^2$ entries $(0,0),(0,1),\dots,(0,n-1),(1,0),\dots$ are written
+A $d\times d$ matrix $A$ with $b$-bit entries is encoded row-major
+(\lean{Transpose.encode}): the $d^2$ entries $(0,0),(0,1),\dots,(0,d-1),(1,0),\dots$ are written
 as consecutive fixed-width blocks of $b$ bits, bit $0$ first, with no delimiters. The input length
-is $L=n^2b$, and $n$ is determined by $L$. Bit $t$ of entry $(i,j)$ sits at position
-$d=(in+j)b+t$, and in the encoding of the transpose $A^{\T}$ the same bit sits at position
+is $L=d^2b$, and $d$ is determined by $L$. Bit $t$ of entry $(i,j)$ sits at position
+$\alpha=(di+j)b+t$, and in the encoding of the transpose $A^{\T}$ the same bit sits at position
 \[
-  \operatorname{tpos}(d)=(jn+i)b+t .
+  \operatorname{tpos}(\alpha)=(dj+i)b+t .
 \]
 
 \subsection{The statement}
 
 \begin{definition}[Statement (T)]\label{def:T}
 \formal{Statement.lean}{Transpose.TransposesWithin, Transpose.LinearTimeTransposable}
-A machine $M$ \emph{transposes within $T(\cdot)$} if for every $n\ge1$ and every $n\times n$
-matrix $A$ with $b(n)$-bit entries, $M$ computes the encoding of $A^{\T}$ on the encoding of $A$
-within $T(L)$ steps, where $L=n^2b(n)$. Statement~(T), \lean{Transpose.LinearTimeTransposable},
+A machine $M$ \emph{transposes within $T(\cdot)$} if for every $d\ge1$ and every $d\times d$
+matrix $A$ with $b(d)$-bit entries, $M$ computes the encoding of $A^{\T}$ on the encoding of $A$
+within $T(L)$ steps, where $L=d^2b(d)$. Statement~(T), \lean{Transpose.LinearTimeTransposable},
 says that some machine $M$ and some constant $c$ satisfy this with $T(L)=c\,(L+1)$.
 \end{definition}
 
@@ -83,8 +83,8 @@ succeeds with $c$ if and only if no step before $\tau$ halts and $\mathrm{run}(M
 $T\le t$ and the output of $\mathrm{run}(M,w,T)$ is $\mathit{out}$. The halting time is unique.
 \item The output after $\tau$ steps is the list of the bits appended at steps $0,\dots,\tau-1$, in
 order.
-\item If $M$ transposes within any $T(\cdot)$, then for every $n\ge1$ it transposes $n\times n$
-matrices with $b(n)$-bit entries in the sense of \cref{def:obl} below.
+\item If $M$ transposes within any $T(\cdot)$, then for every $d\ge1$ it transposes $d\times d$
+matrices with $b(d)$-bit entries in the sense of \cref{def:obl} below.
 \end{enumerate}
 \end{lemma}
 
@@ -112,23 +112,23 @@ Induction on $\tau$: a step changes only the cells under the work heads.
 Let $W$ be a set of inputs and $T\in\N$. The machine $M$ is \emph{oblivious on $W$ with halting
 time $T$} if every $w\in W$ halts at $T$, and any two inputs of $W$ give the same input-head
 position, the same work-head positions and the same decision whether to append an output bit, at
-every time $\tau$ (including $\tau\ge T$). We write $\mathrm{Mat}(n,b)$ for the set of encodings of
-$n\times n$ matrices with $b$-bit entries, and say that $M$ \emph{transposes $n\times n$ matrices
+every time $\tau$ (including $\tau\ge T$). We write $\mathrm{Mat}(d,b)$ for the set of encodings of
+$d\times d$ matrices with $b$-bit entries, and say that $M$ \emph{transposes $d\times d$ matrices
 with $b$-bit entries} if on each of them it computes the encoding of the transpose within some
 number of steps (no time bound).
 \end{definition}
 
 Since time $T$ is included, obliviousness also fixes the head moves of the last step; every
 theorem below that assumes obliviousness assumes this (slightly stronger) form. By
-\lean{matrixInputs_eq}, $\mathrm{Mat}(n,b)$ is exactly the set of words of length $n^2b$, so
-``oblivious on $\mathrm{Mat}(n,b)$'' means oblivious at input length $L=n^2b$.
+\lean{matrixInputs_eq}, $\mathrm{Mat}(d,b)$ is exactly the set of words of length $d^2b$, so
+``oblivious on $\mathrm{Mat}(d,b)$'' means oblivious at input length $L=d^2b$.
 
 Many results hold for machines that are correct, or fast, only on a subset of the inputs. We
 measure the size of such a subset by its co-entropy.
 
-\paragraph{Co-entropy.}\label{def:coent} A set $W\subseteq\mathrm{Mat}(n,b)$ has \emph{co-entropy at most $m$} if
-$2^{n^2b}\le 2^m\,\abs{W}$, that is, if $W$ contains at least a $2^{-m}$ fraction of all inputs. In the formal
-statements this is written out as the hypothesis $2^{n^2b}\le2^m\cdot\abs{W}$ (named \texttt{hco}), with
+\paragraph{Co-entropy.}\label{def:coent} A set $W\subseteq\mathrm{Mat}(d,b)$ has \emph{co-entropy at most $m$} if
+$2^{d^2b}\le 2^m\,\abs{W}$, that is, if $W$ contains at least a $2^{-m}$ fraction of all inputs. In the formal
+statements this is written out as the hypothesis $2^{d^2b}\le2^m\cdot\abs{W}$ (named \texttt{hco}), with
 $\abs{W}$ the cardinality \texttt{W.ncard}.
 
 A machine is \emph{correct on $W$} (at time $T$) if every $w\in W$ encodes some matrix $A$ and the
@@ -138,8 +138,8 @@ hypothesis is written out explicitly (it is the hypothesis \texttt{hcorr} of, fo
 
 \begin{lemma}[Encoding facts]\label{lem:encoding}
 \formal{Tape/Statements/Core.lean}{matrixInputs_eq, tpos_spec}
-The encodings of $n\times n$ matrices with $b$-bit entries are exactly the words of length $n^2b$.
-For $j<n$ and $t<b$, $\operatorname{tpos}((in+j)b+t)=(jn+i)b+t$.
+The encodings of $d\times d$ matrices with $b$-bit entries are exactly the words of length $d^2b$.
+For $j<d$ and $t<b$, $\operatorname{tpos}((di+j)b+t)=(dj+i)b+t$.
 \end{lemma}
 
 \begin{outline}
@@ -170,6 +170,6 @@ For the copy machine, by induction on time, for inputs of every length $\ell$: a
 the input head is at cell $\tau$ and the output is the first $\tau$ input bits, and at time $\ell$ the
 machine reads the end marker and halts. For \lean{Witness.tr2} and \lean{Witness.tr2k}, by evaluating
 (with \texttt{decide}) the runs on all $16$ inputs of length $4$: the input-head positions $0,1,2,3,3,3$ (and, for \lean{Witness.tr2k}, the work-head position $0$) and the output schedule are common, the machine halts at time $5$, and the output on
-$a,b,c,d$ is $a,c,b,d$. The cut pairs follow from the input-head positions $2,3,3$ at steps $2,3,4$ of the
+$x_1x_2x_3x_4$ is $x_1x_3x_2x_4$. The cut pairs follow from the input-head positions $2,3,3$ at steps $2,3,4$ of the
 all-zero run and the output positions $1,2,3$ appended at these steps.
 \end{outline}

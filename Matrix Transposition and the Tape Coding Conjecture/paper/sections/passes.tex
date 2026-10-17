@@ -1,13 +1,13 @@
 \section{Passes}\label{sec:passes}
 
 A \emph{pass} is a stretch of time during which every head moves monotonically, each in its own
-direction. Transposition by recursive block exchange uses $O(\log n)$ passes (folklore), and the
+direction. Transposition by recursive block exchange uses $O(\log d)$ passes (folklore), and the
 external-memory intuition is that fewer passes cannot suffice. This section proves this for every
 machine of the model whose running time is polynomial in $L$, whatever it does with its data. For
-oblivious machines $r$ passes force $(k+1)^r\ge1+kn/(2+\sigma_M/b)$ (Theorem~P); for all machines
-halting within $T$ steps they force $(k+1)^r\ge1+kn/(2+(\sigma_M+\gamma_T)/b)$ with
+oblivious machines $r$ passes force $(k+1)^r\ge1+kd/(2+\sigma_M/b)$ (Theorem~P); for all machines
+halting within $T$ steps they force $(k+1)^r\ge1+kd/(2+(\sigma_M+\gamma_T)/b)$ with
 $\gamma_T=(k+4)\clog{(2T+1)}$, which is $O(kb)$ for $T\le\poly(L)$ (Theorem~P$'$). In both cases
-$r\ge\log_{k+1}n-O(1)$ for $k\ge1$. Throughout,
+$r\ge\log_{k+1}d-O(1)$ for $k\ge1$. Throughout,
 \[
   \sigma_M=\clog{(q+1)}+k\,\clog{(g+1)}
 \]
@@ -76,7 +76,7 @@ $P_0>P_1>\dots>P_j$ and tapes $t_i$; the node at an address is obtained from the
 $P_0$ by taking successive children. There are at most $\Haddr$ addresses
 (\lean{card_addresses_le}). The \emph{forest} of the segment is the union of all its nodes.
 \item $\mathrm{read}(J)$ is the set of input positions $<L$ read during $J$, and the \emph{comb}
-of the segment is the set of input positions $d<n^2b$ with $\operatorname{tpos}(d)\in[o_1,o_2)$.
+of the segment is the set of input positions $\alpha<d^2b$ with $\operatorname{tpos}(\alpha)\in[o_1,o_2)$.
 \end{itemize}
 \end{definition}
 
@@ -88,7 +88,7 @@ For every run with a pass partition into $r$ passes and every output segment, th
 of steps $<T$; every entry point of the forest is the first step of a node; and every entry cell
 of the forest is a read, at the first step of a node, of the cell under a work head. Hence
 $\eone(\mathrm{forest})\le\Haddr$ and $\etwo(\mathrm{forest})\le k\Haddr$. Consequently, if $M$ is
-oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transposes, then for the common run
+oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$ and transposes, then for the common run
 \[
   2^{\abs{\mathrm{comb}\setminus\mathrm{read}(\mathrm{forest})}}\;\le\;
   \bigl((q+1)(g+1)^k\bigr)^{\#\mathrm{addresses}} .
@@ -130,37 +130,37 @@ nodes in at most one position (the input cell at its first step), so
 $\sum_s\abs{\mathrm{read}(J_s)}\le\abs{\bigcup_s\mathrm{read}(J_s)}+\#\{s\}-1\le L+\#\{s\}-1$.
 \end{outline}
 
-Group the columns into $\lceil n/\gamma\rceil$ groups of $\gamma$ consecutive columns (the last may be
+Group the columns into $\lceil d/\gamma\rceil$ groups of $\gamma$ consecutive columns (the last may be
 smaller); group $s$ owns the output segment of its columns, and its comb consists of at most $\gamma b$
-consecutive input bits in each of the $n$ rows.
+consecutive input bits in each of the $d$ rows.
 
 \begin{lemma}[Coverage]\label{lem:coverage}
 \formal{Tape/Statements/Core.lean}{coverage_per_address, coverage_grouped}
 For every run with a pass partition into $r$ passes and every $\gamma\ge1$, at a fixed address the comb
-bits read by the nodes of the $\lceil n/\gamma\rceil$ groups number at most $(\gamma+1)nb$ in total.
+bits read by the nodes of the $\lceil d/\gamma\rceil$ groups number at most $(\gamma+1)db$ in total.
 Over all addresses, the comb bits read by the group forests number at most
-$\#\mathrm{addresses}\cdot(\gamma+1)nb$.
+$\#\mathrm{addresses}\cdot(\gamma+1)db$.
 \end{lemma}
 
 \begin{outline}
 At a fixed address the read sets of the groups form a time-ordered chain of intervals of input
 positions (\cref{lem:disjoint}). An exact residue count bounds what such a chain can collect from
-the combs: with $m=nb$, the positions $d$ of a set $R$ of consecutive positions with $d\bmod m$ in
+the combs: with $m=db$, the positions $\alpha$ of a set $R$ of consecutive positions with $\alpha\bmod m$ in
 a set $\mathrm{Res}$ number at most $\abs{\mathrm{Res}}(\abs{R}+m)/m$; summing over the chain with
-the true group widths gives $(\gamma+1)nb$.
+the true group widths gives $(\gamma+1)db$.
 \end{outline}
 
 \subsection{Theorem P}
 
 \begin{theorem}[Theorem P$_\gamma$, grouped columns]\label{thm:Pgamma}
 \formal{Tape/Statements/Core.lean}{theoremP_grouped, theoremP_grouped_bits}
-Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$, transpose $n\times n$ matrices
+Let $M$ be oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$, transpose $d\times d$ matrices
 with $b$-bit entries, and let the common run have a pass partition into $r$ passes. Then for every
 $\gamma\ge1$
 \[
-  2^{n^2b}\le 2^{\Haddr(\gamma+1)nb}\bigl((q+1)(g+1)^k\bigr)^{\lceil n/\gamma\rceil\Haddr},
+  2^{d^2b}\le 2^{\Haddr(\gamma+1)db}\bigl((q+1)(g+1)^k\bigr)^{\lceil d/\gamma\rceil\Haddr},
   \qquad
-  n^2b\le\Haddr\bigl((\gamma+1)nb+\lceil n/\gamma\rceil\,\sigma_M\bigr).
+  d^2b\le\Haddr\bigl((\gamma+1)db+\lceil d/\gamma\rceil\,\sigma_M\bigr).
 \]
 \end{theorem}
 
@@ -168,32 +168,32 @@ $\gamma\ge1$
 \formal{Tape/Statements/Core.lean}{theoremP, theoremP_bits, theoremP_bits_add_one, theoremP_div, theoremP_pow, theoremP_greedy}
 Under the hypotheses of \cref{thm:Pgamma},
 \[
-  2^{n^2b}\le 2^{2nb\Haddr}\bigl((q+1)(g+1)^k\bigr)^{n\Haddr},\qquad
-  nb\le\Haddr\,(2b+\sigma_M),\qquad
-  k\,nb\le\bigl((k+1)^r-1\bigr)(2b+\sigma_M),
+  2^{d^2b}\le 2^{2db\Haddr}\bigl((q+1)(g+1)^k\bigr)^{d\Haddr},\qquad
+  db\le\Haddr\,(2b+\sigma_M),\qquad
+  k\,db\le\bigl((k+1)^r-1\bigr)(2b+\sigma_M),
 \]
-also in the weaker form $n^2b\le\Haddr(n(2b+\sigma_M)+1)$, and the same holds with $r$ the greedy pass
+also in the weaker form $d^2b\le\Haddr(d(2b+\sigma_M)+1)$, and the same holds with $r$ the greedy pass
 count (the greedy passes form a pass partition,
 \cref{lem:greedy}; \lean{theoremP_greedy} states the bits form). In particular, for $k\ge1$ and
-$b=\lceil\log_2n\rceil$, a fixed machine needs $r\ge\log_{k+1}n-O(1)$ passes.
+$b=\lceil\log_2d\rceil$, a fixed machine needs $r\ge\log_{k+1}d-O(1)$ passes.
 \end{theorem}
 
 \begin{outline}
 Theorem~P is the case $\gamma=1$ of Theorem~P$_\gamma$. For each group $s$, \cref{lem:forest}
 bounds the comb bits of $s$ not read by the group's forest:
 $2^{\abs{\mathrm{comb}_s\setminus U_s}}\le((q+1)(g+1)^k)^{\Haddr}$. \Cref{lem:coverage} bounds
-the comb bits that are read: $\sum_s\abs{\mathrm{comb}_s\cap U_s}\le\Haddr(\gamma+1)nb$. The combs
-partition the $n^2b$ input positions, so
-$n^2b\le\sum_s\abs{\mathrm{comb}_s\setminus U_s}+\Haddr(\gamma+1)nb$. The per-group bounds are summed,
-$\sum_s2^{\abs{\mathrm{comb}_s\setminus U_s}}\le\lceil n/\gamma\rceil((q+1)(g+1)^k)^{\Haddr}$, and the
+the comb bits that are read: $\sum_s\abs{\mathrm{comb}_s\cap U_s}\le\Haddr(\gamma+1)db$. The combs
+partition the $d^2b$ input positions, so
+$d^2b\le\sum_s\abs{\mathrm{comb}_s\setminus U_s}+\Haddr(\gamma+1)db$. The per-group bounds are summed,
+$\sum_s2^{\abs{\mathrm{comb}_s\setminus U_s}}\le\lceil d/\gamma\rceil((q+1)(g+1)^k)^{\Haddr}$, and the
 inequality of arithmetic and geometric means (the final step shared with Theorem~P$'$) gives
-$2^{\sum_s\abs{\mathrm{comb}_s\setminus U_s}}\le((q+1)(g+1)^k)^{\lceil n/\gamma\rceil\Haddr}$, hence the
+$2^{\sum_s\abs{\mathrm{comb}_s\setminus U_s}}\le((q+1)(g+1)^k)^{\lceil d/\gamma\rceil\Haddr}$, hence the
 claim. The other forms are arithmetic, using $k\Haddr+1=(k+1)^r$.
 \end{outline}
 
 Theorem~P allows arbitrary coding: the machine may combine bits in its finite control and on its
 tapes in any way, dwell, and move its heads at arbitrary relative speeds. The closest previous lower
-bound for transposition is Kirchherr's $\Omega(\log n)$ reversals for \emph{conservative} machines, which
+bound for transposition is Kirchherr's $\Omega(\log d)$ reversals for \emph{conservative} machines, which
 only move bits~\cite{Kirchherr1988}; the stream lower bounds~\cite{GroheSchweikardt2005,GHS2009} need long or
 index-tagged items (\cref{sec:intro}).
 
@@ -205,23 +205,23 @@ Let $M$ be oblivious on a set $W$ with halting time $T$ and correct on $W$, let 
 have a pass partition into $r$ passes, and let $W$ have co-entropy at most $m$. Then for every
 $\gamma\ge1$
 \[
-  n^2b\le\lceil n/\gamma\rceil\,m+\Haddr\bigl((\gamma+1)nb+\lceil n/\gamma\rceil\,\sigma_M\bigr):
+  d^2b\le\lceil d/\gamma\rceil\,m+\Haddr\bigl((\gamma+1)db+\lceil d/\gamma\rceil\,\sigma_M\bigr):
 \]
 each group of $\gamma$ columns pays $m$ bits. In particular:
 \begin{enumerate}[label=(\alph*)]
-\item at co-entropy $Cn$ ($C\in\N$): $nb\le Cn+\Haddr(2b+\sigma_M)$, so $\Haddr\ge n(b-C)/(2b+\sigma_M)$, and
-$k\,nb\le kCn+((k+1)^r-1)(2b+\sigma_M)$;
-\item at co-entropy $Cnb$ ($C\in\N$), for every $\gamma\ge1$:
-$(\gamma-C)\,n^2b\le\gamma C\,nb+\Haddr\bigl(\gamma(\gamma+1)nb+(n+\gamma)\sigma_M\bigr)$; with
-$\gamma=2C$, $Cnb\le 2C^2b+\Haddr\bigl(2C(2C+1)b+2\sigma_M\bigr)$, so
-$\Haddr\gtrsim n/(2(2C+1))$ and, for $k\ge1$, still $r\ge\log_{k+1}n-O(\log C)$.
+\item at co-entropy $Cd$ ($C\in\N$): $db\le Cd+\Haddr(2b+\sigma_M)$, so $\Haddr\ge d(b-C)/(2b+\sigma_M)$, and
+$k\,db\le kCd+((k+1)^r-1)(2b+\sigma_M)$;
+\item at co-entropy $Cdb$ ($C\in\N$), for every $\gamma\ge1$:
+$(\gamma-C)\,d^2b\le\gamma C\,db+\Haddr\bigl(\gamma(\gamma+1)db+(d+\gamma)\sigma_M\bigr)$; with
+$\gamma=2C$, $Cdb\le 2C^2b+\Haddr\bigl(2C(2C+1)b+2\sigma_M\bigr)$, so
+$\Haddr\gtrsim d/(2(2C+1))$ and, for $k\ge1$, still $r\ge\log_{k+1}d-O(\log C)$.
 \end{enumerate}
 \end{theorem}
 
 \begin{outline}
 As for Theorem~P$_\gamma$, with the co-entropy term of the Cut Lemma on a set (\cref{lem:cut-on}) kept in
 each group's bound: each group's forest pays the co-entropy $m$ once. In the formal development this robust
-form is the only direct proof; Theorem~P$_\gamma$ is its case $W=\mathrm{Mat}(n,b)$, $m=0$. The
+form is the only direct proof; Theorem~P$_\gamma$ is its case $W=\mathrm{Mat}(d,b)$, $m=0$. The
 corollaries are arithmetic.
 \end{outline}
 
@@ -241,13 +241,13 @@ Let $w,w'$ be inputs of the same length $L$, with pass partitions of $[0,T)$ and
 passes (each its own), and suppose their forests of a segment have equal structure and side codes at every
 address, and that $w$ and $w'$ agree on every input position $<L$ read by both forests. Then the two
 forests have the same nodes, and the runs agree on them (state, positions, output length, symbols under the
-heads, transitions). If $M$ transposes $n\times n$ matrices with $b$-bit entries, $L=n^2b$, and $w,w'$ halt
+heads, transitions). If $M$ transposes $d\times d$ matrices with $b$-bit entries, $L=d^2b$, and $w,w'$ halt
 at $T$ and $T'$ respectively, they agree on the segment's comb. Consequently, if $M$ transposes and every
-$v\in\{0,1\}^{n^2b}$ halts at some $T_v\le T$ with a pass partition of $[0,T_v)$ into $r$ passes, then for
+$v\in\{0,1\}^{d^2b}$ halts at some $T_v\le T$ with a pass partition of $[0,T_v)$ into $r$ passes, then for
 every segment
 \[
-  \sum_{v\in\{0,1\}^{n^2b}}2^{\abs{\mathrm{comb}\setminus\mathrm{read}_v(\mathrm{forest}_v)}}
-  \;\le\;2^{n^2b}\Bigl((2T+1)^{k+4}(q+1)(g+1)^k\Bigr)^{\Haddr}.
+  \sum_{v\in\{0,1\}^{d^2b}}2^{\abs{\mathrm{comb}\setminus\mathrm{read}_v(\mathrm{forest}_v)}}
+  \;\le\;2^{d^2b}\Bigl((2T+1)^{k+4}(q+1)(g+1)^k\Bigr)^{\Haddr}.
 \]
 \end{lemma}
 
@@ -268,32 +268,32 @@ forests, hence (by the first part) on the comb, hence everywhere.
 
 \begin{theorem}[Theorem P$'$]\label{thm:Pprime}
 \formal{Tape/Statements/Adaptive.lean}{theoremPprime_grouped, theoremPprime_grouped_bits, theoremPprime, theoremPprime_bits, theoremPprime_div, theoremPprime_pow, theoremPprime_greedy, theoremPprime_gamma, theoremPprime_ratio}
-Let $M$ transpose $n\times n$ matrices with $b$-bit entries, and suppose every matrix input halts
+Let $M$ transpose $d\times d$ matrices with $b$-bit entries, and suppose every matrix input halts
 within $T$ steps with a pass partition of its own run into $r$ passes. Let
 $\gamma_T=(k+4)\clog{(2T+1)}$. Then for every $\gamma\ge1$
 \[
-  n^2b\le\Haddr\bigl((\gamma+1)nb+\lceil n/\gamma\rceil(\sigma_M+\gamma_T)\bigr),
-  \qquad\text{in particular}\qquad nb\le\Haddr\,(2b+\sigma_M+\gamma_T),
+  d^2b\le\Haddr\bigl((\gamma+1)db+\lceil d/\gamma\rceil(\sigma_M+\gamma_T)\bigr),
+  \qquad\text{in particular}\qquad db\le\Haddr\,(2b+\sigma_M+\gamma_T),
 \]
-and $k\,nb\le((k+1)^r-1)(2b+\sigma_M+\gamma_T)$; these hold also in log-free form and with greedy pass
+and $k\,db\le((k+1)^r-1)(2b+\sigma_M+\gamma_T)$; these hold also in log-free form and with greedy pass
 counts. The bound also holds with
 $\gamma'=\clog r+2(k+2)\clog{(2T+3)}\ge\gamma_T$ in place of $\gamma_T$, in the forms
-$n^2b\le\Haddr(n(2b+\sigma_M+\gamma')+1)$ and, for $b\ge1$,
-$\Haddr\ge n/(2+(\sigma_M+\gamma'+1)/b)$.
+$d^2b\le\Haddr(d(2b+\sigma_M+\gamma')+1)$ and, for $b\ge1$,
+$\Haddr\ge d/(2+(\sigma_M+\gamma'+1)/b)$.
 \end{theorem}
 
 \begin{outline}
 By \cref{lem:coverage}, which holds run by run,
-$\sum_s\abs{\mathrm{comb}_s\setminus U_s(v)}\ge n^2b-\Haddr(\gamma+1)nb$ for every input $v$. Sum
-the inequality of \cref{lem:forest-agree} over the groups and average over the $2^{n^2b}$ inputs:
-some $v_0$ has $\sum_s2^{m_s(v_0)}\le\lceil n/\gamma\rceil K$, where $m_s(v)$ is the number of
+$\sum_s\abs{\mathrm{comb}_s\setminus U_s(v)}\ge d^2b-\Haddr(\gamma+1)db$ for every input $v$. Sum
+the inequality of \cref{lem:forest-agree} over the groups and average over the $2^{d^2b}$ inputs:
+some $v_0$ has $\sum_s2^{m_s(v_0)}\le\lceil d/\gamma\rceil K$, where $m_s(v)$ is the number of
 unread comb bits of group $s$ and $K=((2T+1)^{k+4}(q+1)(g+1)^k)^{\Haddr}$. The inequality of
-arithmetic and geometric means gives $2^{\sum_sm_s(v_0)}\le K^{\lceil n/\gamma\rceil}$. The
+arithmetic and geometric means gives $2^{\sum_sm_s(v_0)}\le K^{\lceil d/\gamma\rceil}$. The
 remaining forms are arithmetic.
 \end{outline}
 
-If $T\le\poly(L)$ and $b=\lceil\log_2n\rceil$, then $\gamma_T=O(kb)$ and Theorem~P$'$ again gives
-$r\ge\log_{k+1}n-O(1)$; this covers every machine allowed by~(T). Theorem~P$'$ also has the robust
+If $T\le\poly(L)$ and $b=\lceil\log_2d\rceil$, then $\gamma_T=O(kb)$ and Theorem~P$'$ again gives
+$r\ge\log_{k+1}d-O(1)$; this covers every machine allowed by~(T). Theorem~P$'$ also has the robust
 form of \cref{thm:P-on}.
 
 \begin{theorem}[Theorem P$'$ on a set, and against the frozen statement]\label{thm:Pprime-on}
@@ -301,13 +301,12 @@ form of \cref{thm:P-on}.
 Suppose that on every input of a set $W$ of co-entropy at most $m$, the machine $M$ has, at some
 time $T'\le T$, the transposed output together with a pass partition of $[0,T')$ into $r$ passes
 (it need not halt; other inputs are unconstrained). Then
-$n^2b\le\lceil n/\gamma\rceil m+\Haddr((\gamma+1)nb+\lceil n/\gamma\rceil(\sigma_M+\gamma_T))$ for
+$d^2b\le\lceil d/\gamma\rceil m+\Haddr((\gamma+1)db+\lceil d/\gamma\rceil(\sigma_M+\gamma_T))$ for
 every $\gamma\ge1$, and the inequalities of \cref{thm:P-on}(a),(b) hold with $\sigma_M+\gamma_T$ in place
-of $\sigma_M$. Their asymptotic consequences change: $T\ge L$ forces $\gamma_T\ge2(k+4)\log_2n$, which is
+of $\sigma_M$. Their asymptotic consequences change: $T\ge L$ forces $\gamma_T\ge2(k+4)\log_2d$, which is
 not $o(b)$; if $\gamma_T\le c'b$ (for instance $T\le\poly(L)$), (b) gives
-$\Haddr\ge(Cn-2C^2)b/(2C(2C+1)b+2(\sigma_M+\gamma_T))$ and, for $k\ge1$, $r\ge\log_{k+1}n-O(\log(C+c'))$. If $M$ transposes within $c(L+1)$ steps (\cref{def:T}) and every run on an
-$n\times n$ input has greedy pass count at most $r$, then
-$n^2b(n)\le\Haddr\,n\bigl(2b(n)+\sigma_M+(k+4)\clog{(2c(L+1)+1)}\bigr)$.
+$\Haddr\ge(Cd-2C^2)b/(2C(2C+1)b+2(\sigma_M+\gamma_T))$ and, for $k\ge1$, $r\ge\log_{k+1}d-O(\log(C+c'))$. If $M$ transposes within $c(L+1)$ steps (\cref{def:T}) and every run on a $d\times d$ input has greedy pass count at most $r$, then
+$d^2b(d)\le\Haddr\,d\bigl(2b(d)+\sigma_M+(k+4)\clog{(2c(L+1)+1)}\bigr)$.
 The comb agreement and the Kraft inequality of \cref{lem:forest-agree} hold with correctness required only on
 the inputs involved, at the ends of their pass partitions, and without halting; the bound with $\gamma=1$ also
 holds when the pass partitions are replaced by greedy pass counts at most $r$.
@@ -315,7 +314,7 @@ holds when the pass partitions are replaced by greedy pass counts at most $r$.
 
 \begin{outline}
 As for Theorem~P$'$, with the Kraft sum over $W$: the injectivity step uses correctness only on
-the two inputs it compares, and the averaging step uses $\abs{W}\ge2^{n^2b-m}$, which charges $m$
+the two inputs it compares, and the averaging step uses $\abs{W}\ge2^{d^2b-m}$, which charges $m$
 once per group. The last statement instantiates $T=c(L+1)$.
 \end{outline}
 
@@ -323,7 +322,7 @@ once per group. The last statement instantiates $T=c(L+1)$.
 
 \begin{proposition}\label{prop:P-witness}
 \formal{Tape/Statements/Core.lean}{theoremP_hyps_tr2, theoremP_hyps_tr2k}
-The hypotheses of Theorem~P are satisfiable, with $k=0$ (\lean{Witness.tr2}, $n=2$, $b=1$) and
+The hypotheses of Theorem~P are satisfiable, with $k=0$ (\lean{Witness.tr2}, $d=2$, $b=1$) and
 with $k=1$ (\lean{Witness.tr2k}).
 \end{proposition}
 
@@ -335,7 +334,7 @@ Evaluation of the concrete machines on all inputs; the greedy passes give the pa
 \begin{proposition}\label{prop:Pprime-witness}
 \formal{Tape/Statements/Adaptive.lean}{theoremPprime_hyps_of_oblivious, theoremPprime_hyps_tr2dd, theoremPprime_no_five_pass}
 \begin{enumerate}[label=(\alph*)]
-\item Every machine that is oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and whose common run
+\item Every machine that is oblivious on $\mathrm{Mat}(d,b)$ with halting time $T$ and whose common run
 has a pass partition into $r$ passes satisfies the run hypothesis of Theorem~P$'$ (every matrix input halts
 within $T$ steps with a pass partition into $r$ passes). In particular the machines of Theorem~P satisfy all
 hypotheses of Theorem~P$'$, with the same $T$ and $r$.

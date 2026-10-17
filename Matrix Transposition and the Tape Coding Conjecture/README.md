@@ -12,7 +12,7 @@ Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
 Can a deterministic multitape Turing machine transpose a d × d matrix with ⌈log₂ d⌉-bit entries, written
 row by row, in time linear in the input length L = d²⌈log₂ d⌉? This statement, (T), is fixed in the frozen
 Lean file [`lean/Transpose/Statement.lean`](lean/Transpose/Statement.lean) as `Transpose.LinearTimeTransposable` (the Lean files call the side length n). By a reduction of Harvey and van der Hoeven, a linear-time multiplication
-machine would give a linear-time transposer. (T) is open, and this work does not decide it.
+machine would give a linear-time transposer (their Corollary 6.9, which has no overhead at this entry width). (T) is open, and this work does not decide it.
 
 ## What is proved
 
@@ -41,9 +41,11 @@ paper states each result with its Lean declarations and file.
   claimed sub-(L log d) construction, an unrefereed preprint), every run realizing a gadget makes at least as many
   frame changes as the gadget has wires; with integer frames the runs' total jump rank is larger still (§12).
 
-Three results are not formalized; the paper proves them in full. Two are barrier results (§11): a shift circuit on n bits with s gates, and an oblivious machine rotating in T steps, yield coding gains over routing of order at
+Four results are not formalized; the paper proves them in full. One (§11) shows that (T) is equivalent, up
+to linear time, to the linear-time formulation of Harvey and van der Hoeven (their Theorem 6.11 with l = 1,
+which takes entries of ⌈log₂ m⌉ bits for matrices of m bits). Two are barrier results (§11): a shift circuit on n bits with s gates, and an oblivious machine rotating in T steps, yield coding gains over routing of order at
 least n log n/(s+n) and L log L/T (for T ≤ L log₂ L) respectively, that is, of order at least log n for
-linear-size circuits and log L for linear-time machines. The third is the translation from gadgets to runs (§12), which gives every gadget cost at least W and
+linear-size circuits and log L for linear-time machines. The fourth is the translation from gadgets to runs (§12), which gives every gadget cost at least W and
 so, within the XOR-frame template, excludes linear time.
 
 ## What is open

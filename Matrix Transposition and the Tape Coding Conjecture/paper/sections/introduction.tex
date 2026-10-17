@@ -20,9 +20,7 @@ conservative machines~\cite{Kirchherr1988}.
 The question matters because of integer multiplication. Fast multiplication on Turing machines runs through
 multidimensional discrete Fourier transforms~\cite{SchonhageStrassen1971,HvdH2021}, and on tapes such transforms
 need transpositions to bring the data of each dimension together. Harvey and van der Hoeven proved a converse:
-transposition reduces to multiplication, with no overhead for entries of $\lceil\log_2d\rceil$
-bits~\cite[Cor.~6.9]{HvdH2025}. So a
-linear-time multiplication machine would give a linear-time transposer, and a proof that transposition needs
+transposition reduces to multiplication, with no overhead for entries of $\lceil\log_2d\rceil$ bits~\cite[Cor.~6.9]{HvdH2025}. (Their own linear-time statement~\cite[Thm.~6.11]{HvdH2025}, in its simplest case, takes entries of $\lceil\log_2m\rceil$ bits for matrices of $m$ bits; up to linear time this is the same problem, \cref{prop:entry-width}.) So a linear-time multiplication machine would give a linear-time transposer, and a proof that transposition needs
 superlinear time would be the first superlinear lower bound for off-line multiplication on multitape Turing
 machines.
 
@@ -95,7 +93,7 @@ cores are index-coding questions on bounded-degree expanders.
 
 \subsection{How to read this paper: the formal proofs}
 
-The proofs are the Lean proofs. Every numbered theorem, lemma, corollary, proposition and definition, except the three propositions marked as not formalized, names its Lean declarations and the file that contains them, in a line of the form
+The proofs are the Lean proofs. Every numbered theorem, lemma, corollary, proposition and definition, except the four propositions marked as not formalized, names its Lean declarations and the file that contains them, in a line of the form
 \begin{center}
 {\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
 \end{center}
@@ -103,7 +101,7 @@ Declarations are in the namespace \texttt{Transpose.Tape} unless written with th
 \leanfile{lean/Transpose/}. The text after a statement, labelled \emph{Outline of the formal proof}, is a faithful and
 straightforward guide to the formal proof, written for human readers; it is a convenience, not a proof. Where the
 English statement simplifies (for instance by omitting harmless edge cases), the Lean statement is authoritative, and
-the formal statements are often slightly stronger. The three results that are not formalized (\cref{prop:circuit-barrier,prop:rotation-barrier,prop:gadget-runs}) are marked as such and come with complete proofs. Results from the
+the formal statements are often slightly stronger. The four results that are not formalized (\cref{prop:entry-width,prop:circuit-barrier,prop:rotation-barrier,prop:gadget-runs}) are marked as such and come with complete proofs. Results from the
 literature are cited and not reproved.
 
 The library depends only on Lean~4 and Mathlib (both v4.34.1). It contains no \texttt{sorry}, no unsafe or native code

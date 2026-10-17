@@ -1,0 +1,148 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+A matrix of $n\times n$ entries of $b=\lceil\log_2n\rceil$ bits, written row by row on the input tape of a
+deterministic multitape Turing machine, occupies $L=n^2b$ cells. The machine must write the same matrix column
+by column on its output tape. Can it do so in time $O(L)$?
+
+On a random-access machine, or on a machine with a two-dimensional work tape, transposition is trivial, and a
+Boolean circuit transposes with no gates at all. On one-dimensional tapes the problem is open. Recursive block
+exchange gives time $O(L\log n)$. The best upper bound claimed is $O(L(\log n)^{1-\kappa})$ for a very small
+$\kappa>0$, in an unrefereed preprint of OpenAI~\cite{OpenAI2026mult} whose transposition primitive mixes data by
+XOR in sheared address frames. No superlinear lower bound is known; indeed none is known for any explicit problem
+on machines with two or more work tapes, and the classical lower bounds hold for restricted models only: one work
+tape~\cite{DMS1991,DietzfelbingerMaass1993}, data movement without coding~\cite{Stoss1973}, and reversal-bounded
+conservative machines~\cite{Kirchherr1988}.
+
+The question matters because of integer multiplication. Fast multiplication on Turing machines runs through
+multidimensional discrete Fourier transforms~\cite{SchonhageStrassen1971,HvdH2021}, and on tapes such transforms
+need transpositions to bring the data of each dimension together. Harvey and van der Hoeven proved a converse:
+transposition reduces to multiplication, with no overhead for entries of $\lceil\log_2n\rceil$
+bits~\cite[Cor.~6.9]{HvdH2025}. So a
+linear-time multiplication machine would give a linear-time transposer, and a proof that transposition needs
+superlinear time would be the first superlinear lower bound for off-line multiplication on multitape Turing
+machines.
+
+We write~(T) for the statement that a linear-time transposer exists. Its formal version,
+\lean{Transpose.LinearTimeTransposable}, is fixed in a frozen Lean file (\cref{sec:model}), together with a checker
+that accepts a proof of~(T) or of its negation.
+
+\subsection{Results}
+
+We do not decide~(T). We prove everything we can about it, formally, and reduce what remains to one precise
+conjecture.
+
+\paragraph{Locality, counting and isoperimetry (\cref{sec:locality,sec:blocks,sec:traces}).} If a set of time steps
+must output bits of the input that it never reads, those bits must enter through its entry data: the states at its
+entry points and the work symbols it inherits (the Cut Lemma, \cref{lem:cut}). Cutting tapes into blocks of a row's
+size and time into slots of the same length turns every run into a bounded-degree network on $O(n)$ slots, the
+\emph{block network}, and the Cut Lemma into an isoperimetric inequality on it (\cref{cor:isoperimetry}). For machines
+whose head motion depends on the data, inputs with the same coarse trace of head motion behave like an oblivious
+machine; some trace is shared by a $2^{-O(nb)}$ fraction of the inputs (the popular trace, \cref{thm:popular}), and the
+inequalities hold on it (\cref{lem:cut-trace,cor:isoperimetry-trace}).
+
+\paragraph{Passes (\cref{sec:passes}).} \emph{Theorem~P.} An oblivious transposer whose run splits into $r$ passes, in
+each of which every head moves monotonically, satisfies $(k+1)^r\ge1+kn/(2+\sigma_M/b)$, where $\sigma_M$ is the number
+of bits of a state plus $k$ work symbols (\cref{thm:P}); \emph{Theorem~P$'$} gives the same for every machine whose
+running time is polynomial in $L$ (\cref{thm:Pprime}). So $\Omega(\log n)$ passes are necessary, whatever the machine
+does with its data, and this remains true if the machine is correct only on a $2^{-O(nb)}$ fraction of the inputs
+(\cref{thm:P-on,thm:Pprime-on}).
+
+\paragraph{Macroscopic motion (\cref{sec:mstar}).} \emph{Theorem~M*.} Rescale the work-head trajectories of a
+linear-time transposer by $n$ in space (in blocks) and in time (in slots). Along subsequences they converge to
+$1$-Lipschitz paths, and every limit satisfies an isoperimetric inequality~$(\star)$: for every partition of
+macroscopic time into pieces of measure at most $\theta$, the heads return to their positions across different
+pieces with total multiplicity at least $1-2\theta$. Consequently the limits are not all monotone, and the heads
+together waste at least one unit of range (\cref{thm:mstar,thm:mstar-adaptive,thm:excess}). The theorem holds for
+non-uniform machines and for machines correct on a $2^{-o(L)}$ fraction of the inputs (\cref{thm:mstar-robust}), and
+it is a statement about walks satisfying a cut inequality, not about machines (\cref{thm:mstar-walk}).
+
+\paragraph{The Tape Coding Conjecture (\cref{sec:codes,sec:conjecture}).} Every result above uses the machine only
+through the flow of information along its block network. A run yields a \emph{causal network code} on the block
+network of its time--space diagram that solves \emph{complete exchange}: every row must reach every column
+(\cref{lem:class-code,thm:fast-codes}). On these networks almost every source--sink pair is at distance
+$\Omega(\log n)$ while the total capacity is $O(L)$, so a solving code beats multicommodity flow by a factor
+$\Omega(\log n)$, the largest gain that cut bounds allow (\cref{thm:code-gap}). The \emph{Tape Coding Conjecture}
+(\cref{conj:TCC}) asserts that such codes do not exist, even if they need to be correct only on a $2^{-O(n\log n)}$
+fraction of the inputs; equivalently, coding beats routing on tape networks by $o(\log n)$ (\cref{thm:tcc-forms}). We
+prove:
+\begin{itemize}[leftmargin=2em]
+\item the conjecture implies $\neg$(T); a proof of it yields the frozen checker's answer file directly
+(\cref{thm:reduction}). The reduction is one-way: a refutation gives codes, not machines;
+\item much less suffices: no codes at co-entropy $Cn$ for every $C$, for infinitely many $n$, on diagrams that write
+their output at the end (\cref{thm:coent-linear,thm:io});
+\item under the conjecture every machine fails at every large size, and no non-uniform machine with $2^{O(n\log n)}$
+states is fast and correct on a $2^{-O(n\log n)}$ fraction of the inputs (\cref{thm:tcc-consequences});
+\item every counterexample to the conjecture obeys Theorem~M* (\cref{cor:cex-star});
+\item its plain form (codes correct on all inputs), which already refutes oblivious linear-time transposers
+(\cref{thm:oblivious}), implies the robust form for linear and nearly linear codes, for affine and low-degree sets,
+for codes with few error patterns, and for constant-size hints (\cref{sec:plainrobust}).
+\end{itemize}
+
+\paragraph{Barriers (\cref{sec:barriers}).} The same statement on general bounded-degree graphs would imply superlinear
+circuit lower bounds for multiplication (\cref{prop:circuit-barrier}), and its bit-level analogue on tape networks
+would separate oblivious from non-oblivious machines off-line (\cref{prop:rotation-barrier}). A proof must therefore use
+the shape of tapes, and must go beyond known techniques for oblivious computation.
+
+\paragraph{XOR-frame recursions and constructions (\cref{sec:frames,sec:construction}).} The recursion of the OpenAI
+preprint cannot give linear time: every gadget it could use makes at least as many frame changes as the trivial one
+(\cref{thm:frame-change}), with sharper bounds for integer frames. We record the conditions a construction must meet
+and the one architecture we know that meets them; its open core is a question about index coding on bounded-degree
+expanders.
+
+\subsection{How to read this paper: the formal proofs}
+
+The proofs are the Lean proofs. Every numbered theorem, lemma, corollary, proposition and definition names its Lean
+declarations and the file that contains them, in a line of the form
+\begin{center}
+{\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
+\end{center}
+Declarations are in the namespace \texttt{Transpose.Tape} unless written with their full name, and files are relative to
+\leanfile{lean/Transpose/}. The text after a statement, labelled \emph{Outline of the formal proof}, is a faithful and
+straightforward guide to the formal proof, written for human readers; it is a convenience, not a proof. Where the
+English statement simplifies (for instance by omitting harmless edge cases), the Lean statement is authoritative, and
+the formal statements are often slightly stronger. The two results that are not formalized
+(\cref{prop:circuit-barrier,prop:rotation-barrier}) are marked as such and come with complete proofs. Results from the
+literature are cited and not reproved.
+
+The library depends only on Lean~4 and Mathlib (both v4.34.1). It contains no \texttt{sorry}, no unsafe or native code
+evaluation, and no axioms beyond Lean's standard ones (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}).
+\Cref{app:verify} explains how to build it and how to check these claims, and \cref{app:index} lists every declaration
+cited in the paper.
+
+\subsection{Related work}
+
+\paragraph{Lower bounds on Turing machines.} Superlinear lower bounds are known for one-tape machines, starting with
+Hennie~\cite{Hennie1965} and Maass~\cite{Maass1985}; for matrix transposition on one-tape off-line machines they are due
+to Dietzfelbinger, Maass and Schnitger~\cite{DMS1991,DietzfelbingerMaass1993}. For multitape machines the strongest
+general result is the separation of deterministic and nondeterministic linear time by Paul, Pippenger, Szemer\'edi and
+Trotter~\cite{PPST1983}. Restricted models give more: Stoß proved $\Omega(L\log n)$ for permutations by data
+movement~\cite{Stoss1973}, Kirchherr $\Omega(\log n)$ reversals for transposition on conservative
+machines~\cite{Kirchherr1988}, and Pippenger and Fischer simulated multitape machines obliviously with a logarithmic
+overhead~\cite{PippengerFischer1979}. Our Theorem~P is a reversal lower bound that allows arbitrary coding; lower bounds
+for streams with few passes over external memory~\cite{GroheSchweikardt2005,GHS2009} need long or index-tagged items and
+do not imply it.
+
+\paragraph{External memory and network coding.} Aggarwal and Vitter determined the I/O complexity of sorting and
+transposition for algorithms that move indivisible items~\cite{AggarwalVitter1988}. Whether coding can help is the
+question behind the network coding conjecture of Li and Li~\cite{LiLi2004}, which would have implied lower bounds for
+multiplication circuits~\cite{AFKL2019}, external-memory sorting~\cite{FHLS2019} and oblivious machines~\cite{AHJKL2006}.
+Braverman and He refuted it~\cite{BravermanHe2026}: in undirected networks coding can beat multicommodity flow, by a
+factor $(\log n)^{\varepsilon}$ after amplification~\cite{BGS2017}. Our conjecture is a version of the network coding
+conjecture restricted to tape networks and to the densest demand, where the maximal gain $\Theta(\log n)$ is at stake.
+
+\paragraph{Multiplication.} Integer multiplication in time $O(n\log n)$ on multitape machines is due to Harvey and van der
+Hoeven~\cite{HvdH2021}, after Sch\"onhage and Strassen~\cite{SchonhageStrassen1971} and F\"urer~\cite{Furer2009}. The
+OpenAI preprints~\cite{OpenAI2026mult,OpenAI2026fourier} claim multiplication and transposition below $n\log n$; we use
+them only as motivation, and \cref{sec:frames} shows the limits of their transposition technique.
+
+\subsection{Organization}
+
+\Cref{sec:model} fixes the model and the frozen statement. \Cref{sec:locality,sec:blocks} prove the cut lemmas,
+\cref{sec:passes} Theorems~P and~P$'$, \cref{sec:traces} the extension to adaptive machines, and \cref{sec:mstar}
+Theorem~M*. \Cref{sec:codes,sec:conjecture,sec:plainrobust} develop codes on tape diagrams, the Tape Coding Conjecture,
+and the relation between its plain and robust forms. \Cref{sec:barriers} explains why the conjecture is hard,
+\cref{sec:frames} treats XOR-frame recursions, \cref{sec:construction} the construction side, and \cref{sec:open} lists
+open problems. The appendices give the index of Lean declarations and instructions for building and verifying the
+library.

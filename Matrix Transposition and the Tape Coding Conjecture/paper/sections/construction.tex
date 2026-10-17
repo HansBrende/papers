@@ -1,0 +1,92 @@
+\section{The construction side}\label{sec:construction}
+
+Our aim at the outset was a linear-time transposer. We did not find one. This section records what the
+results above require of any construction, describes the one architecture we know that passes every
+test, and summarizes the mechanisms that fail. It contains no new theorems: every claim is either one of
+the results above, a citation, or explicitly labelled as a heuristic.
+
+\subsection{Necessary conditions}
+
+A machine witnessing~(T) must have all of the following properties.
+\begin{enumerate}[label=(N\arabic*),leftmargin=3em]
+\item \emph{Coding.} It cannot only move data: machines that move indivisible items need time
+$\Omega(L\log n)$ (Stoß~\cite{Stoss1973} for Turing machines, Aggarwal and Vitter~\cite{AggarwalVitter1988}
+in external memory). Cells must hold functions of several entries.
+\item \emph{Many passes, at every scale.} Its run has $\Omega(\log n)$ passes (Theorem~P$'$,
+\cref{thm:Pprime}), even on a $2^{-O(nb)}$ fraction of the inputs (\cref{thm:Pprime-on}); the grouped form
+(\cref{thm:Pgamma}) gives the same at coarser column scales.
+\item \emph{Folding motion.} Along the popular trace, the macroscopic work-head trajectories satisfy $(\star)$
+(\cref{cor:mstar-T}): some head makes a macroscopic U-turn, and the heads together waste at least one unit of
+range (\cref{thm:excess}).
+\item \emph{A maximal coding gain.} The block network of its run carries a causal code for complete exchange,
+on a set of co-entropy $O(n)$, at the profile capacities (\cref{thm:reduction,thm:coent-linear}); by
+\cref{thm:code-gap} this code beats routing by a factor $\Omega(\log n)$, the largest gain that cut bounds
+allow. For an oblivious machine the code works on all inputs (\cref{thm:oblivious}); the same then holds on
+the bit-level network~\cite[Thm.~6.2]{AHJKL2006}.
+\item \emph{Not an XOR-frame recursion.} It cannot be built from the gadgets of \cref{sec:frames}, which cost at
+least the trivial gadget.
+\end{enumerate}
+
+Condition~(N4) is the heart of the matter. Coding gains over routing in undirected networks do exist: the
+multiple-unicast (network coding) conjecture is false~\cite{BravermanHe2026}. But the known growing gains are
+of order $(\log n)^{\varepsilon}$, obtained by amplifying a constant gap by tensoring~\cite{BGS2017}, and they
+concern sparse demands; tensoring a constant gap cannot produce the maximal gain $\Theta(\log n)$ for dense
+demands (heuristically, and as observed by Zhang, Li and Li~\cite{ZhangLiLi2026}). A linear-time transposer
+needs a \emph{native} maximal gain for the densest demand, on a network shaped by tapes.
+
+\subsection{An architecture that survives}
+
+We describe, as a design and not as a result, the one architecture that we could not rule out.
+
+\paragraph{Geometric recursion.} The transposer runs $\Theta(\log n)$ levels. Level $\ell$ works on data of
+volume $\theta^\ell L$ for a constant $\theta<1$, with $O(1)$ passes of an encoder $E_\ell$ and a decoder
+$D_\ell$: it computes its output as $D_\ell(X_\ell,f_{\ell+1}(E_\ell(X_\ell)))$, where $f_{\ell+1}$ is the next
+level's problem. The total time is $\sum_\ell O(\theta^\ell L)=O(L)$, and the pass count is $\Theta(\log n)$, as
+Theorem~P requires.
+
+\paragraph{Expanding choreography.} The heads of each level are driven along prepared \emph{rulers} that realize
+two non-commuting monotone maps of the interval, so that the relation graph between the encoder's input and
+output rows is a bounded-degree expander. Bourgain and Yehudayoff's monotone expanders~\cite{BourgainYehudayoff2013}
+provide such maps; the rulers can be written in linear time, since their marks are computed with
+$O(\log L)$-bit arithmetic. Near-identity generators are needed: integer or dyadic M\"obius pairs generate
+discrete groups whose relation graphs are not expanders (a heuristic supported by numerical spectral gaps).
+Repeating each choreography a constant number of times should make the macroscopic motion satisfy the
+quantitative inequality $(\star)$; this is a cost constraint, not an obstruction (heuristic).
+
+\paragraph{Two coding cores.} The geometry is the easy part. Each level needs a constant-fraction coding saving at
+the encoder, so that $\abs{E_\ell(X_\ell)}\le\theta\abs{X_\ell}$, and, because the decoder writes the level's whole
+output from $O(1)$-pass views of the next level's output, also at the decoder. In the simplest linear form the
+encoder core is the following problem.
+
+\begin{quote}
+\emph{Locally encoded index coding with own-row side information.} Let $\Gamma$ be a bounded-degree graph on
+$[n]$. A broadcast consists of linear functionals of an $n\times n$ matrix, each supported on the two rows of an
+edge of $\Gamma$. Receiver $j$ sees the broadcast and knows row $j$, and must recover column $j$. Can the broadcast
+have size $(1-\varepsilon)n^2$ for a fixed $\varepsilon>0$?
+\end{quote}
+
+Without the degree bound, $\varepsilon=\tfrac12$ is achievable: broadcast $A+A^{\T}$ above the diagonal. With the
+degree bound, routing-type codes save only $O(n^2/\log n)$ on expanders, and hyperfinite (amenable) graphs save
+$o(n^2)$ (heuristic arguments; not included here). A positive answer on expanders would be the first
+constant-fraction coded saving in a tape-relevant model. A negative answer, together with its decoder analogue
+(restricted-view index coding), would rule out every geometric recursion with $O(1)$-pass levels.
+
+\subsection{Mechanisms that fail}
+
+The following classes of constructions fail for reasons proved in this paper.
+\begin{itemize}[leftmargin=2em]
+\item \emph{Few passes.} Any schedule with $o(\log n)$ passes, with any coding, including constant-pass
+choreographies along expanders (Theorems~P and~P$'$).
+\item \emph{Regular or one-way motion.} Machines whose macroscopic head motion is stationary or monotone on every
+tape (\cref{thm:excess,thm:mstar-adaptive}).
+\item \emph{XOR-frame recursions,} including the template of~\cite{OpenAI2026mult}, which cannot reach linear time
+(\cref{sec:frames}).
+\item \emph{Codes whose linear structure covers the input set.} For a construction aimed at the plain conjecture's
+counterexamples, linear codes, codes correct off a small set, and codes that are linear outside $O(nw)$ bits of
+capacity reduce to plain codes (\cref{sec:plainrobust}).
+\end{itemize}
+Many further attempts failed for reasons we could only argue informally: flat schemes that code across a constant
+number of whole streams (they save at most a constant factor), window-local recursions whose levels read only
+nearby data, static coding certificates on Ramanujan-type graphs that resist conversion into causal codes, and
+re-indexings that turn transposition into a cheap map only through a transposition-hard change of basis. We
+mention them as warnings, not as results.

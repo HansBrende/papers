@@ -1,0 +1,141 @@
+\section{Barriers}\label{sec:barriers}
+
+This section explains why the Tape Coding Conjecture is hard to prove and why a proof must use the
+shape of tape networks. Its results are not formalized; each gets a complete proof.
+
+\subsection{Multiplication}
+
+By Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a multiplication machine running in time
+$M(m)$ yields a transposition machine for $n\times n$ matrices with $b$-bit entries running in time
+$O(\ell_0\,\overline M(m))$, where $m\ge n^2b$, $\ell_0=\max(1,\lg^*n-\lg^*b)$ and
+$\overline M(m)=m\max_{k\le m}M(k)/k$. For $b=\lceil\log_2n\rceil$ we have $\ell_0=1$, so a
+linear-time multiplication machine gives a linear-time transposer. Hence $\neg$(T), and in particular
+the Tape Coding Conjecture, implies that integer multiplication cannot be done in linear time on
+multitape Turing machines. No superlinear lower bound for off-line multiplication on multitape
+machines is known; the classical $\Omega(n\log n)$ bound of Paterson, Fischer and Meyer is for
+on-line multiplication~\cite{PFM1974}.
+
+\subsection{General graphs: the circuit barrier}
+
+We use the following elementary model. Let $H$ be an undirected graph with source vertices
+$a_0,\dots,a_{n-1}$ and sink vertices $b_0,\dots,b_{n-1}$, every edge of unit capacity. The
+\emph{complete bipartite demand} asks to deliver, for every pair $(i,j)$, a message from $a_i$ to $b_j$.
+\begin{itemize}[leftmargin=2em]
+\item A \emph{routing at rate $\lambda$} is a fractional multicommodity flow that sends $\lambda$ units
+from $a_i$ to $b_j$ for every pair, with total flow at most $1$ on every edge.
+\item A \emph{causal code with $N$ rounds} fixes an acyclic orientation of $H$ and, in each round, sends
+one bit along every edge in its orientation, each bit being a function of the bits that entered the
+tail in the same round and, at a source $a_i$, of $a_i$'s messages. Each pair $(i,j)$ is assigned a
+round in which $b_j$ must output the message bit $m_{ij}$, a function of the bits entering $b_j$ in
+that round; the messages $m_{ij}$ are arbitrary bits, and the code must work for all of them. Its
+\emph{rate} is $1/N$ per pair and round.
+\end{itemize}
+The ratio of the rate of a causal code to the largest routing rate is its \emph{coding gain}. A routing
+needs one unit of capacity per edge traversed, so for every routing,
+\begin{equation}\label{eq:weak-duality-graph}
+  \lambda\sum_{i,j}\dist_H(a_i,b_j)\;\le\;\abs{E(H)} .
+\end{equation}
+
+\begin{proposition}[Shift circuits are coding gains]\label{prop:circuit-barrier}
+\notformalized
+Let $C$ be a Boolean circuit with $s$ gates of fan-in at most two (arbitrary gate functions) whose
+inputs are $x\in\{0,1\}^n$ and a shift input, such that for every $k<n$ some value of the shift input
+makes the outputs equal the cyclic shift $x_{i-k\bmod n}$ at output $i$. Then there is a graph $H$ of
+maximum degree at most $4$ with $O(s+n)$ vertices and a causal code with $n$ rounds for the complete
+bipartite demand on $H$ whose coding gain is at least $c\,n\log n/(s+n)$, for an absolute constant
+$c>0$ and all large $n$.
+\end{proposition}
+
+For example, a circuit multiplying two $n$-bit integers, followed by $n$ OR gates, is such a circuit:
+for $y=2^k$ the $2n$-bit product $p=x\,2^k$ has $p_j$ and $p_{j+n}$ never both equal to $1$, so the
+cyclic shift is $p_j\vee p_{j+n}$.
+
+\begin{informalproof}
+\emph{The graph.} Take the circuit as a directed acyclic graph on its input and gate vertices. Replace
+every vertex of fan-out $f>2$ by a binary tree of $f-1$ copy vertices, so that in-degrees and
+out-degrees are at most $2$; this adds at most $2s+n$ vertices. Let $H$ be the underlying undirected
+graph, with $a_i$ the input vertex of $x_i$ and $b_j$ the vertex of output $j$. Its maximum degree is
+at most $4$ and it has $O(s+n)$ vertices.
+
+\emph{One code per shift.} Fix $k<n$ and fix the shift input to a value realizing the shift by $k$.
+Every vertex then computes a fixed function of its in-edges, so the circuit, read in topological order
+with one bit per edge, is a causal code on $H$ (with the circuit's orientation) that delivers $x_i$ from
+$a_i$ to $b_{i+k\bmod n}$.
+
+\emph{Time-sharing.} Run $n$ rounds; in round $k$ use the code for shift $k$ with the source $a_i$ sending
+the message $m_{i,i+k\bmod n}$ as $x_i$. Every pair $(i,j)$ is served in round $j-i\bmod n$, and every edge
+carries one bit per round. This is a causal code with $n$ rounds, of rate $1/n$.
+
+\emph{The flow bound.} In a graph of maximum degree $4$ at most $4^{t+1}$ vertices lie within distance $t$
+of a vertex. With $t=\lfloor\tfrac12\log_4n\rfloor-1$, at most $\sqrt n$ sinks lie within distance $t$ of
+$a_i$, so
+$\sum_{i,j}\dist(a_i,b_j)\ge n(n-\sqrt n)(t+1)\ge\tfrac15n^2\log_4n$ for large $n$. By
+\eqref{eq:weak-duality-graph}, every routing has rate $\lambda\le5\abs{E(H)}/(n^2\log_4n)=O((s+n)/(n^2\log n))$.
+The coding gain is therefore at least $(1/n)/\lambda=\Omega(n\log n/(s+n))$.
+\end{informalproof}
+
+So if, on every bounded-degree graph, complete bipartite exchange had coding gain at most $\gamma(n)$,
+then every circuit computing all cyclic shifts, and every multiplication circuit, would have size
+$\Omega(n\log n/\gamma(n))$. With $\gamma=o(\log n)$ this is a superlinear circuit lower bound for an
+explicit function, which is far beyond current techniques: the best lower bounds for explicit functions
+are $3.1n-o(n)$ over the full binary basis~\cite{LiYang2022}. A proof of the Tape Coding Conjecture must
+therefore use the structure of tape networks; it cannot be a statement about bounded-degree networks in
+general. The single-shift version of this argument, conditional on the network coding conjecture, is due
+to Afshani, Freksen, Kamma and Larsen~\cite{AFKL2019}, and the step from a small circuit to a coding gain
+is also observed by Braverman and He~\cite{BravermanHe2026}.
+
+Tape networks are not simple either: a tape network with two work tapes can contain a bounded-degree
+expander, since expanders admit book embeddings with a bounded number of pages~\cite{DSW2016}, and each
+work tape contributes two pages ordered by the time spine. Cut arguments alone therefore cannot prove the
+conjecture.
+
+\subsection{Tape networks: an oblivious separation}
+
+\emph{Programmable rotation} takes $x\in\{0,1\}^L$ and $k<L$ (in binary, appended to $x$) and outputs $x$
+rotated by $k$. A non-oblivious machine computes it in time $O(L)$: copy $x$ to a work tape, then count
+$k$ down in binary while moving a head $k$ cells (amortized $O(1)$ per decrement), and output the work
+tape cyclically from that head. Oblivious machines can rotate in time $O(L\log L)$, by a barrel shifter or
+by the oblivious simulation of Pippenger and Fischer~\cite{PippengerFischer1979}.
+
+The \emph{bit-level network} of an oblivious machine $M$ at input length $L+\clog L$ has a vertex for every
+step $\tau<T$; a spine edge $\tau\to\tau+1$; and, for every work tape and every pair of consecutive visits
+$\sigma<\tau$ of its head to one cell, an edge $\sigma\to\tau$. The source of input bit $x_i$ is attached
+at the steps where the input head reads cell $i$, and the sink of output bit $o$ is the step that appends
+it. All of this is the same for every input, because $M$ is oblivious.
+
+\begin{proposition}[Rotation codes on oblivious tape networks]\label{prop:rotation-barrier}
+\notformalized
+Let $M$ be an oblivious machine with $k$ work tapes that computes programmable rotation within $T(L)\le
+L\log_2L$ steps. Then its bit-level network carries a causal code with $L$ rounds for the complete
+bipartite demand between the input bits and the output bits whose coding gain over routing, with edge
+capacities $\max(\clog{(q+1)},\clog{(g+1)})$, is at least $c\,L\log L/T(L)$ for a constant $c>0$
+depending only on $k$, $q$ and $g$, and all large $L$.
+\end{proposition}
+
+\begin{informalproof}
+Fix $k<L$. With the bits of $k$ fixed, the run of $M$ is a causal code on its bit-level network: the spine
+edge out of step $\tau$ carries the state, and the edge from one visit of a cell to the next carries the
+symbol written at the first visit; every step computes its outgoing values from its incoming ones and the
+input bit it reads. It delivers $x_i$ to output position $i+k\bmod L$. Time-sharing over the $L$ values of
+$k$, as in \cref{prop:circuit-barrier}, serves every pair (input bit, output bit) once in $L$ rounds.
+
+For the flow bound, every vertex has degree at most $D=2k+2$. Let $\mu_i$ be the number of steps at which
+the input head reads cell $i$; then $\sum_i\mu_i\le T$. Within distance $t$ of the steps attaching $x_i$
+lie at most $\mu_iD^{t+1}$ steps, hence at most $\mu_iD^{t+1}$ sinks. With
+$t=\lfloor\tfrac12\log_DL\rfloor-1$, at most $T\sqrt L\le L^{3/2}\log_2L=o(L^2)$ pairs are within distance
+$t$, so $\sum_{i,o}\dist\ge\tfrac12L^2(t+1)$ for large $L$. The network has at most $(k+1)T$ edges, each of
+the stated capacity $\kappa$, so a routing has rate $\lambda\le(k+1)T\kappa/(\tfrac12L^2(t+1))=O(T/(L^2\log L))$,
+while the code has rate $1/L$. The gain is $\Omega(L\log L/T)$.
+\end{informalproof}
+
+So a bit-level analogue of the Tape Coding Conjecture, asserting that complete exchange on bit-level
+networks of oblivious machines has coding gain $o(\log L)$, would imply that oblivious machines need time
+$\omega(L)$ for programmable rotation, while non-oblivious machines need only $O(L)$. No superlinear
+\emph{off-line} separation of oblivious and non-oblivious multitape machines is known: the optimality
+claimed by Pippenger and Fischer is for on-line simulation~\cite{PippengerFischer1979}, and the known
+superlinear lower bounds for oblivious machines are on-line or for one tape~\cite{Vitanyi1984}. The block
+version used for transposition and the bit version used here are not known to imply each other; the
+calibration is nevertheless the same: proving the conjecture would require lower-bound techniques for
+oblivious computation that do not exist today. By contrast, Theorem~P and Theorem~M* are unconditional, and
+the network coding conjecture, which would have given such bounds directly~\cite{AHJKL2006}, is
+false~\cite{BravermanHe2026}.

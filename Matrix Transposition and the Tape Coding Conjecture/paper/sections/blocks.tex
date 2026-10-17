@@ -1,0 +1,158 @@
+\section{Blocks, slots and the block network}\label{sec:blocks}
+
+To apply the Cut Lemma to long stretches of a run we coarsen space and time. Cut each work tape
+into \emph{blocks} of $r$ consecutive cells and time into \emph{slots} of $r$ consecutive steps.
+In one slot a head moves at most $r$ cells, so it touches at most two blocks; the entry data of a
+union of slots is then carried by a few blocks per slot boundary and by blocks that the head
+leaves and later revisits. The result is a bounded-degree network on the slots, the
+\emph{block network}, and the Cut Lemma becomes an isoperimetric inequality on it. In the
+applications $r=\lceil nb/G\rceil$ with $G=\max(1,\clog{(g+1)})$, so that a block holds about one
+matrix row.
+
+\subsection{Blocks and residency}
+
+Let $h:\N\to\Z$ be a head trajectory with unit steps (every head of the frozen model has unit
+steps, \lean{unitSteps_inTraj}, \lean{unitSteps_workTraj}) and let $r\ge1$.
+
+\begin{definition}[Blocks, slots, residency]\label{def:residency}
+\formal{Tape/Defs.lean}{blockOf, curBlock, slotOf, numSlots, residentPair, pairRes, touchRes, AdmissibleRes, IsChord}
+The block of a cell $p$ is $\lfloor p/r\rfloor$, and $\mathrm{cur}_\tau$ is the block of the head
+at time $\tau$. Slot $y$ is the set of steps $[yr,(y+1)r)\cap[0,T)$; there are
+$N=\lceil T/r\rceil$ slots. At time $\tau$ the \emph{resident pair} consists of $\mathrm{cur}_\tau$
+and the block the head occupied just before its last block change at or before $\tau$ (if there
+was one). The \emph{pair residency} $R_y$ is the union of the resident pairs over the steps of
+slot $y$; the \emph{touched residency} is the set of blocks the head occupies during slot $y$. A
+family $R_y$ of sets of blocks is an \emph{admissible residency with constant $c$} if the head's
+block at every step $\tau<T$ is resident at the slot of $\tau$, and no slot has more than $c$
+resident blocks. A \emph{chord} of $R$ for block $\beta$ from slot $x$ to slot $z$ is a pair
+$x+1<z$ with $\beta\in R_x$, $\beta\in R_z$ and $\beta\notin R_y$ for $x<y<z$: the block stops
+being resident after slot $x$ and becomes resident again at slot $z$.
+\end{definition}
+
+\begin{lemma}[Residency]\label{lem:residency}
+\formal{Tape/Statements/Core.lean}{pairRes_subset, pairRes_admissible, touchRes_admissible, slot_block_step, exists_slot_block_eq, pairChange_spacing}
+Let $h$ have unit steps and $r\ge1$.
+\begin{itemize}[leftmargin=3em]
+\item[(V1)] $R_y\subseteq\{\mathrm{cur}_{yr}-1,\mathrm{cur}_{yr},\mathrm{cur}_{yr}+1\}$. Pair residency
+is admissible with $c=3$, and touched residency is admissible with $c=2$ and also lies within
+$\pm1$ of $\mathrm{cur}_{yr}$.
+\item[(V2)] $\abs{\mathrm{cur}_{(y+1)r}-\mathrm{cur}_{yr}}\le1$; consequently, for slots
+$y_1\le y_2$, every block between $\mathrm{cur}_{y_1r}$ and $\mathrm{cur}_{y_2r}$ is the head's
+block at the first step of some slot in $[y_1,y_2]$.
+\item[(S)] Two changes of the resident pair are at least $r$ steps apart.
+\end{itemize}
+\end{lemma}
+
+\begin{outline}
+In $r$ steps a unit-step walk moves at most $r$ cells, hence crosses at most one block
+boundary; this gives (V2) and its crossing form (a discrete intermediate value argument). For
+(V1), induct over the steps of the slot: the head's block stays within $\pm1$ of
+$\mathrm{cur}_{yr}$, and the other block of a resident pair is adjacent to the block the head
+entered at its last block change. For (S), a change of the resident pair means that the head
+enters a block outside the current pair, which requires crossing a whole block.
+\end{outline}
+
+\begin{lemma}[Uniqueness of visit ends and chord endpoints (P2)]\label{lem:P2}
+\formal{Tape/Statements/Core.lean}{pairRes_begin_unique, pairRes_end_unique, pairRes_chord_source_unique, pairRes_chord_target_unique, touchRes_begin_unique, touchRes_end_unique, touchRes_chord_source_unique, touchRes_chord_target_unique}
+For pair residency and for touched residency, with $h$ of unit steps and $r\ge1$:
+at most one block becomes resident at each slot $y+1$; at most one block stops being resident
+after each slot $y$ with $(y+1)r<T$; each slot is the source of at most one chord, and the target
+of at most one chord.
+\end{lemma}
+
+\begin{outline}
+By (V1), (V2) and the spacing of pair changes: two blocks entering at the same slot boundary would
+require two pair changes within $r$ steps, or a jump of two blocks.
+\end{outline}
+
+\subsection{Charging and the Slot Cut Bound}
+
+For a set $U$ of slots let $J=J(U)$ be the steps lying in slots of $U$. A \emph{memory boundary}
+of $U$ is a slot $z\ge1$ in $U$ with $z-1\notin U$; we write $\mu(U)$ for their number. For an
+admissible residency $R$ let $\chi(U)$ be the number of pairs $(z,\beta)$ such that some chord of
+$R$ for $\beta$ enters $U$ at $z$, from a slot outside $U$ (\lean{chordsInto}), summed over the
+work tapes.
+
+\begin{lemma}[Charging]\label{lem:charging}
+\formal{Tape/Statements/Core.lean}{entryTimes_charged, entryTimes_card_le, entryCells_slotSteps_card, entryPoints_slotSteps_card, charging_bound, srcRows_slotSteps_card_le}
+Let $r\ge1$, let each work tape $t$ have an admissible residency $R_t$ with constant $c$, and let
+$U$ be a set of slots. Then:
+\begin{enumerate}[label=(\alph*)]
+\item every external read of $J(U)$ on a tape, at a step $\tau$ on block $\beta=\mathrm{cur}_\tau$,
+is charged to a slot $z\le\tau/r$ that comes after the cell's last write, and either $z$ is a
+memory boundary of $U$ with $\beta\in R_z\cap R_{z-1}$, or a chord for $\beta$ enters $U$ at $z$;
+\item the entry points of $J(U)$ are exactly the first steps of its memory boundaries:
+$\eone(J(U))=\mu(U)$;
+\item $\etwo(J(U))\le r\,\chi(U)+c\,k\,r\,\mu(U)$;
+\item[(P1)] if $r\le nb$, every slot reads at most two input rows, so $J(U)$ reads at most
+$2\abs{U}$ rows.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+For~(a), the slot of the cell's last write lies outside $U$ and $\beta$ is resident there. Let
+$y^*$ be the last slot before $\tau$'s slot that lies outside $U$ and at which $\beta$ is
+resident, and $z$ the first slot after $y^*$ at which $\beta$ is resident again; then $z\in U$,
+and either $z=y^*+1$ is a memory boundary with $\beta\in R_z\cap R_{z-1}$, or a chord for $\beta$
+enters $U$ at $z$. For~(c), charge each external read to its event $(z,\beta)$ together with the
+offset of its cell in the block. Two reads with the same charge read the same cell; the later
+read's last write is then no earlier than the earlier read, which does not precede slot $z$,
+contradicting~(a). So the charge is injective, and there are at most $r(\chi(U)+c\,\mu(U))$ external reads per tape. Part~(b) is a
+direct computation, and (P1) holds because a slot reads at most $r\le nb$ consecutive input
+cells.
+\end{outline}
+
+\begin{corollary}[Slot Cut Bound]\label{cor:slot-cut}
+\formal{Tape/Statements/Core.lean}{slot_cut_bound, slot_cut_bound_partition, uncovered_cols_le_slots, uncovered_cols_le_slots_len}
+Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transpose, let $r\ge1$, and
+let $G'=\clog{(g+1)}$. For every set $U$ of slots, with pair residency,
+\[
+  b\,\abs{S_{J(U)}}\;\le\;\mu(U)\clog{(q+1)}+r\,G'\bigl(\chi(U)+3k\,\mu(U)\bigr).
+\]
+For a labelling $\lambda$ of the slots with $\Mb$ label changes, any admissible residency with
+constant $c$, and $\chicross$ the number of chords whose two endpoints carry different labels
+(summed over tapes),
+\[
+  b\sum_{\ell}\abs{S_{J_\ell}}\;\le\;\Mb\bigl(\clog{(q+1)}+c\,k\,r\,G'\bigr)+r\,G'\,\chicross,
+\]
+where $J_\ell$ is the set of steps in slots labelled $\ell$; and if $b\ge1$, at most $\Mb$
+columns are not sinks of a single class (for any run that has appended $n^2b$ bits by time $T$).
+\end{corollary}
+
+\begin{outline}
+\Cref{lem:cut} applied to $J(U)$ with \cref{lem:charging}(b),(c); for a labelling, sum over the
+classes, observe that memory boundaries of the classes are label changes and chords entering a
+class from another class are crossing chords, and apply \cref{cor:cut-family}(b).
+\end{outline}
+
+\subsection{Discrete isoperimetry}
+
+Combining the Slot Cut Bound with (P1) gives the inequality behind all results on head motion.
+Read it as follows: if time is cut into label classes of at most $m$ slots each, then about
+$n^2b$ bits must cross between classes, and the only channels are the label changes (each worth
+$O(k)$ blocks plus a state) and the chords between classes (one block each).
+
+\begin{corollary}[Discrete Isoperimetry]\label{cor:isoperimetry}
+\formal{Tape/Statements/Core.lean}{isoperimetry_res, isoperimetry, isoperimetry_touch, isoperimetry_res_on}
+Let $M$ be oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transpose, let
+$1\le r\le nb$, let each work tape have an admissible residency with constant $c$, and let
+$\lambda$ be a labelling of the slots with $\Mb$ label changes and at most $m$ slots per label.
+Then
+\[
+  2^{(n-\Mb)(n-2m)b}\;\le\;(q+1)^{\Mb}\,(g+1)^{r\,(c\,k\,\Mb+\chicross)} .
+\]
+Pair residency gives $c=3$ and touched residency $c=2$. If $M$ is oblivious and correct only on
+a set $W$ of co-entropy at most $m_c$, the right side gains the factor $2^{(\Mb+1)m_c}$: each
+label class pays $m_c$ bits.
+\end{corollary}
+
+\begin{outline}
+By (P1) each class reads at most $2m$ rows, so by \cref{cor:cut-family}(a),(b) the cut pairs of
+the classes number at least $(n-\Mb)(n-2m)$; the Slot Cut Bound bounds them from above. For the
+robust form, apply \cref{lem:cut-on} to each class.
+\end{outline}
+
+When $m=o(n)$ and $\Mb=o(n)$, with $r\approx nb/G$, the inequality forces
+$\chicross=\Omega(n)$: the work heads must carry information between distant times through
+revisited blocks. \Cref{sec:mstar} turns this into a constraint on the macroscopic motion of the
+heads.

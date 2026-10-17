@@ -1,0 +1,168 @@
+\section{The model and the frozen statement}\label{sec:model}
+
+This section fixes the machine model and the statement~(T) exactly as they are formalized in the
+frozen file \leanfile{Transpose/Statement.lean}, and introduces the vocabulary used in the rest of
+the paper: total runs, obliviousness, correctness on a set of inputs, and co-entropy.
+
+\subsection{Machines}
+
+A machine $M$ has a finite state set $Q=\{0,\dots,q\}$ with initial state $0$, a read-only
+two-way input tape, $k\ge 0$ read/write work tapes, and a write-only one-way output tape.
+\begin{itemize}[leftmargin=2em]
+\item The input tape holds the input word $w\in\{0,1\}^*$ in cells $0,\dots,\abs{w}-1$; every
+other cell reads as an end marker.
+\item Each work tape is two-way infinite over the alphabet $\Gamma=\{0,\dots,g\}$, where $0$ is the
+blank.
+\item In each step the machine may append at most one bit to the output.
+\end{itemize}
+The transition function $\delta$ maps the current state, the input symbol under the input head and
+the $k$ work symbols under the work heads either to ``halt'' or to a new state, an input-head move,
+a symbol to write and a head move for each work tape, and optionally one output bit. Head moves
+are $-1$, $0$ or $+1$. All heads start at cell $0$, the work tapes start blank, and the output
+starts empty. A configuration records the state, the head positions, the work-tape contents and the
+output written so far. The machine \emph{computes $\mathit{out}$ on $w$ within $t$ steps}
+(\lean{Transpose.ComputesWithin}) if, for some $s\le t$, the $s$-th configuration exists, is
+halting, and has output exactly $\mathit{out}$.
+
+Every step writes the cell under each work head (possibly rewriting the old symbol). The machine
+is deterministic, and its transition table is finite; in particular $q$, $g$ and $k$ do not depend
+on the input.
+
+\subsection{Matrices and their encoding}
+
+For $n\ge1$ let
+\[
+  b(n)=\max\bigl(1,\lceil\log_2 n\rceil\bigr)
+  \qquad\text{(formally } \lfloor\log_2(n-1)\rfloor+1\text{, \lean{Transpose.entryBits})}.
+\]
+An $n\times n$ matrix $A$ with $b$-bit entries is encoded row-major
+(\lean{Transpose.encode}): the $n^2$ entries $(0,0),(0,1),\dots,(0,n-1),(1,0),\dots$ are written
+as consecutive fixed-width blocks of $b$ bits, bit $0$ first, with no delimiters. The input length
+is $L=n^2b$, and $n$ is determined by $L$. Bit $t$ of entry $(i,j)$ sits at position
+$d=(in+j)b+t$, and in the encoding of the transpose $A^{\T}$ the same bit sits at position
+\[
+  \operatorname{tpos}(d)=(jn+i)b+t .
+\]
+
+\subsection{The statement}
+
+\begin{definition}[Statement (T)]\label{def:T}
+\formal{Statement.lean}{Transpose.TransposesWithin, Transpose.LinearTimeTransposable}
+A machine $M$ \emph{transposes within $T(\cdot)$} if for every $n\ge1$ and every $n\times n$
+matrix $A$ with $b(n)$-bit entries, $M$ computes the encoding of $A^{\T}$ on the encoding of $A$
+within $T(L)$ steps, where $L=n^2b(n)$. Statement~(T), \lean{Transpose.LinearTimeTransposable},
+says that some machine $M$ and some constant $c$ satisfy this with $T(L)=c\,(L+1)$.
+\end{definition}
+
+The file \leanfile{Transpose/Statement.lean} depends on Lean core only and is frozen: its SHA-256
+hash, together with that of the checker \leanfile{Verify.lean}, is recorded in
+\leanfile{FROZEN.sha256}. A resolution of~(T) is, by definition, a file
+\leanfile{Transpose/Answer.lean} containing \texttt{theorem Transpose.answer} whose type is exactly
+\lean{Transpose.LinearTimeTransposable} or its negation; \leanfile{Verify.lean} re-checks every
+declaration it depends on with the kernel and rejects \texttt{sorry}, \texttt{native\_decide} and
+new axioms. This paper does \emph{not} resolve~(T), so no \leanfile{Answer.lean} exists and
+\leanfile{Verify.lean} does not compile yet; \cref{sec:conjecture} shows the exact form a proof of
+the Tape Coding Conjecture would take as such a file.
+
+\subsection{Runs}\label{sec:runs}
+
+Throughout, the semantics of the frozen model is accessed through the \emph{total run}
+\lean{run}: $\mathrm{run}(M,w,\tau)$ is the configuration after $\tau$ steps, frozen once the
+machine halts. We write $\delta_\tau(w)$ for the transition taken at step $\tau$
+(\lean{transAt}; it is ``halt'' exactly when the configuration at time $\tau$ is halting), and
+say that $M$ \emph{halts at $T$ on $w$} (\lean{HaltsAt}) if steps $0,\dots,T-1$ execute and the
+configuration at time $T$ is halting.
+
+\begin{lemma}[The total run agrees with the frozen semantics]\label{lem:bridge}
+\formal{Tape/Statements/Core.lean}{stepN_init_eq_some_iff, computesWithin_iff, haltsAt_unique, outRev_reverse_eq, transposes_of_transposesWithin}
+\begin{enumerate}[label=(\alph*)]
+\item The $\tau$-step iteration of the frozen step function from the initial configuration
+succeeds with $c$ if and only if no step before $\tau$ halts and $\mathrm{run}(M,w,\tau)=c$.
+\item $M$ computes $\mathit{out}$ on $w$ within $t$ steps if and only if $M$ halts on $w$ at some
+$T\le t$ and the output of $\mathrm{run}(M,w,T)$ is $\mathit{out}$. The halting time is unique.
+\item The output after $\tau$ steps is the list of the bits appended at steps $0,\dots,\tau-1$, in
+order.
+\item If $M$ transposes within any $T(\cdot)$, then for every $n\ge1$ it transposes $n\times n$
+matrices with $b(n)$-bit entries in the sense of \cref{def:obl} below.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+By induction on the number of steps, comparing one step of the frozen semantics with one step of
+the total run. Part~(d) is a restatement of the definitions.
+\end{outline}
+
+\begin{lemma}[Cell contents]\label{lem:cells}
+\formal{Tape/Statements/Core.lean}{work_eq_written, work_eq_blank}
+If work head $t$ is at cell $p$ at time $\sigma<\tau$ and not at $p$ at any time strictly between
+$\sigma$ and $\tau$, then at time $\tau$ cell $p$ holds the symbol written at step $\sigma$. A cell
+not visited by its head before time $\tau$ is blank at time $\tau$.
+\end{lemma}
+
+\begin{outline}
+Induction on $\tau$: a step changes only the cells under the work heads.
+\end{outline}
+
+\subsection{Obliviousness, correctness and co-entropy}\label{sec:obl}
+
+\begin{definition}[Oblivious sets, transposers]\label{def:obl}
+\formal{Tape/Defs.lean}{ObliviousOn, matrixInputs, Transposes}
+Let $W$ be a set of inputs and $T\in\N$. The machine $M$ is \emph{oblivious on $W$ with halting
+time $T$} if every $w\in W$ halts at $T$, and any two inputs of $W$ give the same input-head
+position, the same work-head positions and the same decision whether to append an output bit, at
+every time $\tau$ (including $\tau\ge T$). We write $\mathrm{Mat}(n,b)$ for the set of encodings of
+$n\times n$ matrices with $b$-bit entries, and say that $M$ \emph{transposes $n\times n$ matrices
+with $b$-bit entries} if on each of them it computes the encoding of the transpose within some
+number of steps (no time bound).
+\end{definition}
+
+Since time $T$ is included, obliviousness also fixes the head moves of the last step; every
+theorem below that assumes obliviousness assumes this (slightly stronger) form. By
+\lean{matrixInputs_eq}, $\mathrm{Mat}(n,b)$ is exactly the set of words of length $n^2b$, so
+``oblivious on $\mathrm{Mat}(n,b)$'' means oblivious at input length $L=n^2b$.
+
+Many results hold for machines that are correct, or fast, only on a subset of the inputs. We
+measure the size of such a subset by its co-entropy.
+
+\begin{definition}[Co-entropy]\label{def:coent}
+A set $W\subseteq\mathrm{Mat}(n,b)$ has \emph{co-entropy at most $m$} if
+$2^{n^2b}\le 2^m\,\abs{W}$, that is, if $W$ contains at least a $2^{-m}$ fraction of all inputs.
+\end{definition}
+
+A machine is \emph{correct on $W$} (at time $T$) if every $w\in W$ encodes some matrix $A$ and the
+output of $\mathrm{run}(M,w,T)$ is the encoding of $A^{\T}$. In the formal statements this
+hypothesis is written out explicitly (it is the hypothesis \texttt{hcorr} of, for example,
+\lean{cut_bound_on}).
+
+\begin{lemma}[Encoding facts]\label{lem:encoding}
+\formal{Tape/Statements/Core.lean}{matrixInputs_eq, tpos_spec}
+The encodings of $n\times n$ matrices with $b$-bit entries are exactly the words of length $n^2b$.
+For $j<n$ and $t<b$, $\operatorname{tpos}((in+j)b+t)=(jn+i)b+t$.
+\end{lemma}
+
+\begin{outline}
+Induction on the nested concatenation defining the encoding, and integer division.
+\end{outline}
+
+\subsection{Non-vacuity}
+
+The hypotheses of the lower bounds below (obliviousness together with correctness) are
+satisfiable, and the counting quantities they involve are non-trivial on concrete machines.
+
+\begin{proposition}[Witness machines]\label{prop:witnesses}
+\formal{Tape/Statements/Core.lean}{copyTM_obliviousOn, copyTM_transposes, tr2_obliviousOn, tr2_transposes, tr2_cutPairs, tr2k_obliviousOn, tr2k_transposes}
+\begin{enumerate}[label=(\alph*)]
+\item The copy machine (which copies its input to its output) is oblivious on the inputs of every
+length $\ell$, with halting time $\ell$, and transposes $1\times1$ matrices with $b$-bit entries
+for every $b$.
+\item A $9$-state machine \lean{Witness.tr2} without work tapes is oblivious on $\mathrm{Mat}(2,1)$
+with halting time $5$ and transposes $2\times2$ matrices with $1$-bit entries. For the all-zero
+input and the step set $J=\{2,3,4\}$ the set of cut pairs (\cref{def:cut}) is $\{(0,1)\}$.
+\item The same machine with one idle work tape, \lean{Witness.tr2k}, has the same two
+properties with $k=1$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+By evaluation of the concrete machines on all inputs.
+\end{outline}

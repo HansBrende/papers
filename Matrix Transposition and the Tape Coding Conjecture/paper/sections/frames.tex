@@ -1,0 +1,174 @@
+\section{Limits of XOR-frame recursions}\label{sec:frames}
+
+The only technique known to beat $O(L\log n)$ for transposition on tapes is an unrefereed
+construction of OpenAI~\cite{OpenAI2026mult}, which claims $O(L(\log n)^{1-\kappa})$ for a tiny
+$\kappa>0$. Its core is an address-interchange primitive that mixes data by XOR in sheared address
+frames, applied recursively. This section abstracts the recursion and shows that it cannot give linear
+time: every gadget it could use costs at least as much as the trivial one. The results are about an
+abstract model, so they rule out a class of constructions, not linear-time transposition.
+
+\subsection{The framework}
+
+Fix $m\ge2$. Two address chunks $H$ and $D$ are to be interchanged; write each as a vector of $m$
+fields. For a rational $m\times m$ matrix $M$ the \emph{frame} $\Phi_M$ is the address map
+$(H,D)\mapsto(H+MD,D)$; frames compose additively, $\Phi_A\Phi_B=\Phi_{A+B}$. Changing the frame of a
+stream from $A$ to $B$ costs $\rank(B-A)$ recursive interchanges of narrower chunks.
+
+\begin{definition}[Gadget]\label{def:gadget}
+\formal{Frames/Gadget.lean}{Transpose.ShearFrame.Gadget, Transpose.ShearFrame.Gadget.cost}
+A \emph{gadget} has $W$ wires; wire $w$ starts in a source frame $S_w$, passes through the frames of its
+gates in time order, and ends in a sink frame $T_w$. Gates are XOR operations between wires in a common
+frame. The scalar network permutes the wires by a permutation $\rho$ (G1), and
+$T_{\rho(w)}=S_w+I$ (G2): every wire ends sheared by the identity. The \emph{cost} $s$ of the gadget is
+the sum over wires of the ranks of consecutive frame differences along the wire, from source to sink.
+\end{definition}
+
+The recursion built on a gadget distributes a stream over the $W$ wires and runs the gadget, each frame
+change being a recursive interchange of narrower chunks. Its cost per unit of data satisfies
+$F_k\le(s/W)F_{k-1}+O(1)$ at width $m^k$, and every implementation in the template also satisfies
+$F_k\ge(s/W)F_{k-1}+c_0$. A gadget with $s<W$ would therefore give linear-time transposition, a gadget
+with $s/W=m^\tau$, $0<\tau<1$, would give $O(L(\log n)^\tau)$, and $s\ge W$ excludes linear time within the
+template; $s=W$ gives $\Theta(L\log\log n)$. (This reading of the template is informal: it rests on the
+preprint's construction~\cite{OpenAI2026mult}, which we use only to motivate the model.)
+
+\subsection{Cost bounds}
+
+\begin{theorem}[Cycle bound and projection bound]\label{thm:cycle}
+\formal{Frames/Gadget.lean}{Transpose.ShearFrame.Gadget.invariant_cost_ge, Transpose.ShearFrame.Gadget.cost_ge_of_invariant_family, Transpose.ShearFrame.Gadget.cost_ge_m, Transpose.ShearFrame.PGadget.two_mul_cost_ge}
+Every nonempty $\rho$-invariant set of wires has total cost at least $m$, so $s\ge c\,m$ for $c$ disjoint
+such sets, and $s\ge m$. If every gate frame is idempotent (a projection, as in the preprint), then
+$2s\ge Wm$.
+\end{theorem}
+
+\begin{outline}
+Rank is subadditive, so the cost of a wire is at least $\rank(T_w-S_w)$, and over a cycle $C$ of $\rho$,
+$\sum_{w\in C}(T_w-S_w)=\abs{C}I$ has rank $m$. For idempotent frames, $\rank(P_V-P_U)\ge\abs{\dim V-\dim
+U}$ and $\rank(P_A+P_B)\ge\max(\dim A,\dim B)$; pairing the source term of $w$ with the sink term of
+$\rho(w)$ and optimizing gives $2s\ge Wm$.
+\end{outline}
+
+The general lower bound uses a run model in which frames are arbitrary and only frame changes are counted.
+
+\begin{definition}[Runs]\label{def:frame-runs}
+\formal{Frames/GadgetRuns.lean}{Transpose.ShearFrame.Cfg, Transpose.ShearFrame.Event, Transpose.ShearFrame.moves}
+A configuration assigns to each of $W$ wires a frame (from any set $F$) and a vector in $\F_2^W$. An
+event is either a gate $i\leftarrow i+j$, allowed only for $i\ne j$ at a common frame, or a move of one
+wire to a new frame. A run starts with wire $u$ at frame $S_u$ holding the unit vector $e_u$.
+\end{definition}
+
+\begin{theorem}[At least $W$ frame changes]\label{thm:frame-change}
+\formal{Frames/GadgetRuns.lean}{Transpose.ShearFrame.moves_ge_W, Transpose.ShearFrame.cost_ge_W, Transpose.ShearFrame.moves_ge_W_matrix}
+Let $\mathrm{shift}:F\to F$ have no fixed point. Every valid run that ends with wire $\rho(u)$ at frame
+$\mathrm{shift}(S_u)$ holding $e_u$, for every $u$, contains at least $W$ moves. Hence every gadget has
+cost $s\ge W$ (for matrix frames, $\mathrm{shift}(S)=S+I$), and the framework cannot give linear time.
+\end{theorem}
+
+\begin{outline}
+Let $\sigma_f$ be the span of the vectors on the wires at frame $f$, and $N_f$ the span of the $e_u$ with
+$\mathrm{shift}(S_u)=f$. The potential $\sum_f\dim(\sigma_f\cap N_f)$ is unchanged by gates (they act
+within one frame by transvections), grows by at most one per move, is $0$ initially (no unit vector starts
+at its target, since $\mathrm{shift}$ has no fixed point), and is $W$ at the end.
+\end{outline}
+
+\begin{theorem}[Mixing across frames does not help]\label{thm:group-algebra}
+\formal{Frames/GroupAlgebraRuns.lean}{Transpose.ShearFrame.GroupAlgebra.changes_ge_W, Transpose.ShearFrame.GroupAlgebra.cost_ge_W}
+In the group-algebra model, where each wire holds a formal sum of sheared items (a function from an
+additive group of frames to $\F_2^W$), gates $i\leftarrow i+j$ are allowed between any wires, and a change
+shifts the content of one wire, every run taking item $u$ from frame $S_u$ on wire $u$ to frame $S_u+I$
+($I\ne0$) on wire $\rho(u)$ makes at least $W$ changes.
+\end{theorem}
+
+\begin{outline}
+The span of the vectors $w\mapsto(\text{content of }w\text{ at frame }I+S_u)_u$ has dimension $0$ at the
+start and $W$ at the end; gates do not increase it and each change increases it by at most one.
+\end{outline}
+
+\subsection{Coarsening and integer frames}
+
+\begin{theorem}[Coarsening]\label{thm:coarsening}
+\formal{Frames/GadgetCoarse.lean}{Transpose.ShearFrame.vmoves_ge_W, Transpose.ShearFrame.visible_ge_W_of_coarse, Transpose.ShearFrame.det_ne_zero_of_moves_le, Transpose.ShearFrame.rank_sum_of_moves_le}
+For every map $\pi:F\to F'$ with $\pi(\mathrm{tgt}(u))\ne\pi(S_u)$ for all $u$, every valid run as in
+\cref{thm:frame-change} (with targets $\mathrm{tgt}(u)$) makes at least $W$ moves that change the
+$\pi$-class of the moved wire. For rational matrix frames with targets $S_u+I$, a run with at most $W$
+moves changes every frame by a matrix of nonzero determinant, and the total rank of its jumps is at least
+$Wm$: a gadget whose wires each change frame once costs at least the baseline $Wm$.
+\end{theorem}
+
+\begin{outline}
+The potential of \cref{thm:frame-change} needs only a target frame per item and survives coarsening: a move
+that does not change the $\pi$-class of the wire does not change the coarsened run. For single jumps, apply
+the coarsening $M\mapsto\ell^{\T}Mv$ for every pair of vectors with $\ell^{\T}v\ne0$.
+\end{outline}
+
+\begin{theorem}[Mod-$2$ bounds for integer frames]\label{thm:mod2}
+\formal{Frames/GadgetMod2.lean}{Transpose.ShearFrame.two_mul_le_rank_sum}
+For integer $2\times2$ frames, the total rank of the frame jumps of every valid run is at least $2W$:
+gadgets with $2\times2$ integer frames never beat the baseline.
+\end{theorem}
+
+\begin{theorem}[Mod-$2$ bounds, every $m$]\label{thm:mod2m}
+\formal{Frames/GadgetTwoSided.lean}{Transpose.ShearFrame.one_sided_bound, Transpose.ShearFrame.two_sided_bound}
+For integer $m\times m$ frames, the total rank $s$ of the jumps of every valid run satisfies
+$2(2^m-1)W\le2^ms$ and $2(2^m-1)W\le(2^{m-1}+1)s$. In particular $s\ge2.8W$ for $m=3$ and
+$s\ge(4-o(1))W$ as $m\to\infty$.
+\end{theorem}
+
+\begin{outline}[Outline of the formal proofs of \cref{thm:mod2,thm:mod2m}]
+Average \cref{thm:coarsening} over a family of coarsenings: $M\mapsto\ell^{\T}(M\bmod2)$ for nonzero
+$\ell\in\F_2^m$ (one-sided), or $M\mapsto\ell^{\T}(M\bmod2)v$ for pairs with $\ell^{\T}v=1$ (two-sided). Each
+coarsening separates every source from its target, so it sees at least $W$ jumps. A jump of rank $r$ over
+$\F_2$ is seen by $2^m-2^{m-r}$ of the one-sided coarsenings, and by a bounded number of the two-sided ones,
+computed from the left kernel and the fixed vectors of the jump; and the rank over $\F_2$ is at most the
+rank over $\Q$ (\leanfile{Frames/RankMod.lean}). For $m=2$ a finite check over $\F_2^{2\times2}$ gives the
+constant.
+\end{outline}
+
+\subsection{Tight runs}
+
+A run is \emph{tight} at a two-class coarsening if it makes exactly $W$ visible moves. Tight runs are
+rigid.
+
+\begin{theorem}[Structure of tight runs]\label{thm:tight}
+\formal{Frames/GadgetCargo.lean}{Transpose.ShearFrame.tight_potentials, Transpose.ShearFrame.tight_sigma_split, Transpose.ShearFrame.cargo_rule, Transpose.ShearFrame.cargo_rule_bool}
+In a tight run, after any prefix with $t$ visible moves the ``arrived'' potential is $t$ and the ``not yet
+departed'' potential is $W-t$; the span of the vectors at each frame splits into its arrived and its
+not-departed parts; and (cargo rule) every visible move carries a vector lying in the span of the items whose
+home is the destination class.
+\end{theorem}
+
+\begin{theorem}[Item itineraries]\label{thm:itineraries}
+\formal{Frames/GadgetItinerary.lean}{Transpose.ShearFrame.itinerary_condition, Transpose.ShearFrame.chain_itinerary, Transpose.ShearFrame.itinerary_condition_matrix, Transpose.ShearFrame.chain_itinerary_matrix}
+Every item has a chain of frame-changing hops from its source to its target along the run. In a tight run
+at a two-class coarsening, every visible hop of an item starts on the item's birth side, and the item has a
+chain from its source to its target all of whose visible hops are admissible in this sense.
+\end{theorem}
+
+\begin{theorem}[Every carrying move lies on an admissible chain]\label{thm:carrying}
+\formal{Frames/GadgetItineraryC.lean}{Transpose.ShearFrame.carrying_move_on_chain, Transpose.ShearFrame.carrying_move_on_admissible_chain, Transpose.ShearFrame.visible_move_on_admissible_chain}
+Every frame-changing move whose cargo contains an item lies on a chain of visible hops of that item from its
+source to its target; under tightness, every visible move lies on an admissible chain of some item.
+\end{theorem}
+
+\begin{theorem}[Mixing lemma]\label{thm:mixing}
+\formal{Frames/GadgetMixing.lean}{Transpose.ShearFrame.mixed_move_forces_extra_hop, Transpose.ShearFrame.mixing_lemma, Transpose.ShearFrame.mixing_lemma_matrix}
+Weight frames by a function $d$ with $d(f,f)=0$, $d(f,g)=0\Rightarrow f=g$ and the triangle inequality (for
+matrices, $d(A,B)=\rank(B-A)$), and let every item be at distance at least $m$ from its target. Suppose a
+valid run as in \cref{thm:frame-change} contains a frame-changing move whose cargo contains two distinct
+items, and every other frame-changing move carries a single item. Then some item of that cargo has
+$d$-weighted hop count at least $m+1$: a mixed move forces an extra hop.
+\end{theorem}
+
+\begin{outline}[Outline of the formal proofs of \cref{thm:tight,thm:itineraries,thm:carrying,thm:mixing}]
+The vectors of a configuration reached by a valid run are linearly independent, since gates are
+transvections; so the spans at distinct frames are independent and their dimensions add up to $W$. The
+arrived and not-departed potentials each change by at most one per visible move and sum to at most $W$, so in
+a tight run both move in lockstep, which forces the split and the cargo rule. Chains are found by following an
+item backwards (and forwards) through the moves whose cargo contains it, using that an item is present at a
+frame only if some move carried it there. For the mixing lemma, a mixed move delivers two items whose
+subsequent hops cannot all be charged to their distances.
+\end{outline}
+
+Together these say that, within the XOR-frame template, every gadget costs at least $W$ (so linear time is
+out of reach), gadgets with integer frames cost substantially more than $W$, and gadgets that come close to
+the bound are rigid. Whether some gadget has $s/W$ substantially below $m$, which would give an improvement
+over $O(L\log n)$ much larger than the claimed $\kappa$, is open (\cref{sec:open}).

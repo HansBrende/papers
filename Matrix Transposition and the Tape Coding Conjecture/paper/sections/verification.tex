@@ -1,0 +1,39 @@
+\section{Building and verifying the formalization}\label{app:verify}
+
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version
+v4.34.1 (\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}).
+
+\paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library (about ninety modules).
+
+\paragraph{The frozen files.} \leanfile{Transpose/Statement.lean} (the statement (T)) and \leanfile{Verify.lean} (the
+checker of a future \leanfile{Transpose/Answer.lean}) are byte-identical to the files fixed before this work began;
+\texttt{shasum -a 256 -c FROZEN.sha256} checks them. \leanfile{Verify.lean} imports
+\leanfile{Transpose/Answer.lean}, which does not exist because (T) is not decided; running it therefore fails with a
+missing-module error.
+
+\paragraph{Axioms.} The file \leanfile{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper, runs
+\texttt{\#print axioms} on every declaration cited here (\cref{app:index}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file
+contains \texttt{sorry}, \texttt{admit}, \texttt{native\_decide} or an \texttt{axiom} declaration.
+
+\paragraph{Where things are.} The public statements are in four files. They are proved from theorems in \texttt{Impl}
+namespaces, usually of the same name, which the other files of the library prove:
+\begin{itemize}[leftmargin=2em]
+\item \leanfile{Tape/Statements/Core.lean}: \cref{sec:model,sec:locality,sec:blocks}, Theorem~P (\cref{sec:passes}) and
+Theorem~M* for oblivious machines (\cref{sec:mstar});
+\item \leanfile{Tape/Statements/Adaptive.lean}: Theorem~P$'$, trace classes, and Theorem~M* for adaptive, robust and
+non-uniform machines (\cref{sec:passes,sec:traces,sec:mstar});
+\item \leanfile{Tape/Statements/Coding.lean}: codes, the Tape Coding Conjecture and its consequences
+(\cref{sec:codes,sec:conjecture,sec:plainrobust});
+\item \leanfile{Tape/Statements/PlainRobust.lean}: the partial results of \cref{sec:plainrobust}.
+\end{itemize}
+The results on XOR-frame recursions (\cref{sec:frames}) are in \leanfile{Frames/}. Definitions are in
+\leanfile{Tape/Defs.lean}, \leanfile{Tape/DefsP.lean}, \leanfile{Tape/DefsPP.lean}, \leanfile{Tape/DefsTrace.lean},
+\leanfile{Tape/DefsM.lean} and \leanfile{Tape/DefsCE.lean}.

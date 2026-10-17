@@ -1,0 +1,158 @@
+\section{Adaptive machines: trace classes and the popular trace}\label{sec:traces}
+
+The cut lemmas of \cref{sec:locality,sec:blocks} assume obliviousness: all inputs share one head
+trajectory, so the entry data of a step set is a well-defined finite object. A general machine
+moves its heads depending on the data. The way around this is to group the inputs by their
+\emph{block-level trace}, a coarse record of the head motion that costs only $O(nb)=o(L)$ bits.
+Some trace is shared by a $2^{-O(nb)}$ fraction of all inputs (the \emph{popular trace}), and on
+that set the machine behaves like an oblivious one at the level of blocks. The cut lemmas then hold
+with an additive loss of $O(nb)$ bits per label class.
+
+\subsection{Block-level traces}
+
+Let $r\ge1$ be the block size.
+
+\begin{definition}[Block-level trace, trace class]\label{def:trace}
+\formal{Tape/DefsTrace.lean}{blockTrace, SameTrace, TraceClass}
+The \emph{block-level trace} of the run of $M$ on $w$ at slot $y$ consists of the pair residency of
+every work tape at slot $y$, the set of input rows touched during slot $y$, and the output length
+at the first step $yr$ of the slot. Two inputs have the \emph{same trace} (for a parameter $T$) if
+their traces agree at all slots $y\le\lceil T/r\rceil$. A \emph{trace class} with representative
+$w_0$ is a set $F$ of matrix inputs containing $w_0$, all of which halt after exactly $T$ steps and
+have the trace of $w_0$.
+\end{definition}
+
+\begin{lemma}[Trace classes generalize oblivious sets]\label{lem:trace-obl}
+\formal{Tape/Statements/Adaptive.lean}{traceClass_of_oblivious, traceClass_of_obliviousOn, traceClass_of_mem}
+If $M$ is oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$, all matrix inputs form one trace
+class, of size $2^{n^2b}$. More generally, every set of matrix inputs on which $M$ is oblivious is a
+trace class, with any of its members as representative; and any member of a trace class is a
+representative.
+\end{lemma}
+
+\begin{outline}
+The trace is a function of the head trajectories and the output schedule.
+\end{outline}
+
+\subsection{Block locality}
+
+For a trace class the entry data of a union of slots must record, at each memory boundary, the
+\emph{full} head positions: two inputs with the same trace have their heads in the same resident
+blocks, but not necessarily at the same cells.
+
+\begin{lemma}[Block Locality]\label{lem:block-locality}
+\formal{Tape/Statements/Adaptive.lean}{locality_entry, block_locality}
+Let $r\ge1$ and let $w,w'$ be inputs of length $n^2b$ with the same trace. Let $U$ be a set of
+slots, and suppose that
+\begin{enumerate}[label=(\roman*)]
+\item at the first step $zr$ of every memory boundary $z$ of $U$ the two runs agree on the state,
+the positions of all heads, and the contents of every cell of every block resident at $z$;
+\item for every chord of the pair residency of $w$ entering $U$ at a slot $z$ for a block $\beta$,
+the two runs agree at time $zr$ on the contents of the cells of $\beta$; and
+\item $w$ and $w'$ agree on every input bit in a row touched during $U$.
+\end{enumerate}
+Then at every step of the slots of $U$ the two runs agree on the state, all head positions, the
+output length, the symbols under the work heads and the transition taken.
+\end{lemma}
+
+No halting time and no correctness are assumed.
+
+\begin{outline}
+This is the entry form of the Locality Lemma (\lean{locality_entry}, a corollary of
+\cref{lem:locality-core}), with step $0$ and the first steps of the memory boundaries as anchors.
+For a read of a cell in block $\beta$ at a step $\tau$ of the slots of $U$, the charging argument
+of \cref{lem:charging} provides the time $a$: either $a=0$, when $\beta$ is resident at no slot
+outside $U$ before $\tau$'s slot, or $a=zr$, where $z$ is the first slot after the last such slot
+at which $\beta$ is resident, a memory boundary or the target of a chord entering $U$. Every visit
+to the cell during $[a,\tau)$, in either run, lies in $U$, because the head's block is always
+resident and the residencies of the two runs coincide.
+\end{outline}
+
+Recording only the offsets of the work heads within their blocks does not suffice:
+
+\begin{proposition}[Offsets are not enough]\label{prop:offsets}
+\formal{Tape/Statements/Adaptive.lean}{block_locality_offsets_counterexample}
+There are a machine $M$ that transposes $1\times1$ matrices with $1$-bit entries and two inputs
+$w,w'$, both halting at time $9$ with the same trace for $r=4$, such that slot $2$ is a memory
+boundary of $U=\{2\}$, the runs agree at time $8$ on the state, the input-head position, the
+work-head offsets modulo $4$ and the contents of the resident blocks, no chord enters slot $2$, and
+no input row is touched during slot $2$; yet the work heads are in different blocks at time $8$
+and the transitions at step $8$ differ.
+\end{proposition}
+
+\begin{outline}
+An explicit machine, evaluated on both inputs.
+\end{outline}
+
+\subsection{The Cut Lemma on trace classes}
+
+Write $G'=\clog{(g+1)}$, and let $D$ be such that $2^{n^2b}\le 2^D\abs{F}$ (the co-entropy of the
+class).
+
+\begin{lemma}[Cut Lemma on a trace class]\label{lem:cut-trace}
+\formal{Tape/Statements/Adaptive.lean}{cut_bound_trace, cut_bound_trace_bits, cut_bound_trace_on, cut_bound_trace_bits_on}
+Let $r\ge1$, let $F$ be a trace class with representative $w_0$, and let $M$ be correct on $F$ (for
+instance, let $M$ transpose). For every set $U$ of slots, with $\mu=\mu(U)$ and $\chi=\chi(U)$ taken
+for the pair residency of the representative,
+\[
+  2^{b\abs{S_{J(U)}}}\,\abs{F}\;\le\;2^{n^2b}\Bigl((q+1)(2T+1)^{k+1}\Bigr)^{\mu}(g+1)^{r(3k\mu+\chi)},
+\]
+\[
+  b\,\abs{S_{J(U)}}\;\le\;D+\mu\bigl(\clog{(q+1)}+(k+1)\clog{(2T+1)}\bigr)+r\,G'\,(3k\mu+\chi).
+\]
+\end{lemma}
+
+\begin{outline}
+Inject the class into pairs (entry data, input bits outside the cut set) through the counting core
+of \cref{lem:cut-on}. The entry data now consist of the state and the head positions (clamped to
+$[-T,T]$) at each memory boundary, together with the contents of the resident blocks there and of
+the blocks entering along chords. The sources, the sinks and the output positions appended during
+$U$ are class invariants, since output lengths at slot starts are part of the trace and all members
+halt at $T$. Injectivity follows from \cref{lem:block-locality} and correctness on $F$.
+\end{outline}
+
+\begin{corollary}[Discrete Isoperimetry on a trace class]\label{cor:isoperimetry-trace}
+\formal{Tape/Statements/Adaptive.lean}{isoperimetry_trace, isoperimetry_trace_on}
+Under the hypotheses of \cref{lem:cut-trace}, with $1\le r\le nb$ and a labelling of the slots with
+$\Mb$ label changes and at most $m$ slots per label,
+\[
+  (n-\Mb)(n-2m)\,b\;\le\;(\Mb+1)D+\Mb\bigl(\clog{(q+1)}+(k+1)\clog{(2T+1)}\bigr)
+  +r\,G'\,(3k\Mb+\chicross).
+\]
+\end{corollary}
+
+\begin{outline}
+Sum the bits form of \cref{lem:cut-trace} over the at most $\Mb+1$ label classes and bound the left
+side as in \cref{cor:isoperimetry}.
+\end{outline}
+
+\subsection{The popular trace}
+
+\begin{definition}[Slot length and trace count]\label{def:slotlen}
+\formal{Tape/DefsM.lean}{cellBits, slotLen, horizon}
+For a machine $M$ let $G=\max(1,\clog{(g+1)})$ be the number of bits per work cell. The slot
+length at size $n$ is $r=\lceil nb(n)/G\rceil$, so that a block of $r$ cells holds one matrix row.
+For a time constant $c$ the \emph{horizon} is $c_0=cG+1$; if $T\le cL$ there are at most $c_0n$
+slots (\lean{numSlots_le_horizon}).
+\end{definition}
+
+\begin{theorem}[Popular trace]\label{thm:popular}
+\formal{Tape/Statements/Adaptive.lean}{exists_popular_traceClass, traceBits_le}
+Let $1\le r\le nb$ and suppose every matrix input halts within $T_{\max}$ steps. Then for some
+$T\le T_{\max}$ there is a trace class $F$ with $2^{n^2b}\le\mathcal{N}\cdot\abs{F}$, where
+$\mathcal{N}=\mathcal{N}(k,n,\lceil T_{\max}/r\rceil,T_{\max})$ is an explicit bound on the number
+of pairs (halting time, trace) (\lean{traceCount}). If $T_{\max}\le cL$ and $r$ is the slot length,
+then $\clog{\mathcal{N}}\le C\,n\,b(n)$ for an explicit constant $C$ depending only on $M$ and $c$
+(\lean{traceConst}). So the popular class has co-entropy $D=O(nb)=o(L)$.
+\end{theorem}
+
+\begin{outline}
+Pigeonhole over the pairs (halting time, trace): block indices lie in $[-N,N]$, each residency has
+at most three blocks, each slot touches at most two rows, and output lengths are at most
+$T_{\max}$. The bound on $\clog{\mathcal{N}}$ is arithmetic from $T\le cn^2b$ and $b\le n\le2^b$.
+\end{outline}
+
+The trace used here records output lengths and rows per slot, which costs $O(n\log n)$ bits. For
+machines that write their whole output at the end, a coarser trace with $O(1)$ bits per slot
+suffices, and the popular class then has co-entropy $O(n)$; \cref{sec:conjecture} uses this to show
+that the coding conjecture is needed only at co-entropy $O(n)$.

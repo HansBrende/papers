@@ -3,7 +3,7 @@
 The cut lemmas of \cref{sec:locality,sec:blocks} assume obliviousness: all inputs share one head
 trajectory, so the entry data of a step set is a well-defined finite object. A general machine
 moves its heads depending on the data. The way around this is to group the inputs by their
-\emph{block-level trace}, a coarse record of the head motion that costs only $O(nb)=o(L)$ bits.
+\emph{block-level trace}, a coarse record of the head motion that costs only $O(nb)=o(L)$ bits when the running time is $O(L)$.
 Some trace is shared by a $2^{-O(nb)}$ fraction of all inputs (the \emph{popular trace}), and on
 that set the machine behaves like an oblivious one at the level of blocks. The cut lemmas then hold
 with an additive loss of $O(nb)$ bits per label class.
@@ -36,9 +36,10 @@ The trace is a function of the head trajectories and the output schedule.
 
 \subsection{Block locality}
 
-For a trace class the entry data of a union of slots must record, at each memory boundary, the
-\emph{full} head positions: two inputs with the same trace have their heads in the same resident
-blocks, but not necessarily at the same cells.
+For a trace class the entry data of a union of slots must record, at each memory boundary, more than
+the offsets of the heads within their blocks: two inputs with the same trace have the same resident blocks,
+but a head need not stand in the same one of them in both runs (\cref{prop:offsets}). We record the full
+head positions.
 
 \begin{lemma}[Block Locality]\label{lem:block-locality}
 \formal{Tape/Statements/Adaptive.lean}{locality_entry, block_locality}
@@ -103,12 +104,15 @@ for the pair residency of the representative,
 \end{lemma}
 
 \begin{outline}
-Inject the class into pairs (entry data, input bits outside the cut set) through the counting core
-of \cref{lem:cut-on}. The entry data now consist of the state and the head positions (clamped to
-$[-T,T]$) at each memory boundary, together with the contents of the resident blocks there and of
-the blocks entering along chords. The sources, the sinks and the output positions appended during
-$U$ are class invariants, since output lengths at slot starts are part of the trace and all members
-halt at $T$. Injectivity follows from \cref{lem:block-locality} and correctness on $F$.
+Inject the class into pairs (entry data, input bits outside a row-based cut set) through the counting core
+of \cref{lem:cut-on}: since members read different positions but the same rows, the cut set is replaced by
+the bits of the rows not touched during $J(U)$ whose transposed copies are appended during $J(U)$; it
+contains the $b\abs{S_{J(U)}}$ bits of the cut pairs. The entry data consist of the state and the head
+positions (which lie in $[-T,T]$) at each memory boundary, together with the contents of the resident blocks
+there and of the blocks entering along chords. The rows touched and the output positions appended during
+$U$ are class invariants, since the rows of each slot and the output lengths at slot starts are part of the
+trace and all members halt at $T$. Injectivity follows from \cref{lem:block-locality} and correctness on
+$F$.
 \end{outline}
 
 \begin{corollary}[Discrete Isoperimetry on a trace class]\label{cor:isoperimetry-trace}
@@ -116,9 +120,10 @@ halt at $T$. Injectivity follows from \cref{lem:block-locality} and correctness 
 Under the hypotheses of \cref{lem:cut-trace}, with $1\le r\le nb$ and a labelling of the slots with
 $\Mb$ label changes and at most $m$ slots per label,
 \[
-  (n-\Mb)(n-2m)\,b\;\le\;(\Mb+1)D+\Mb\bigl(\clog{(q+1)}+(k+1)\clog{(2T+1)}\bigr)
-  +r\,G'\,(3k\Mb+\chicross).
+  (n\dotminus\Mb)(n\dotminus2m)\,b\;\le\;(\Mb+1)D+\Mb\bigl(\clog{(q+1)}+(k+1)\clog{(2T+1)}\bigr)
+  +r\,G'\,(3k\Mb+\chicross),
 \]
+where $x\dotminus y=\max(x-y,0)$ and $\chicross$ is taken for the representative's pair residency.
 \end{corollary}
 
 \begin{outline}
@@ -128,10 +133,10 @@ side as in \cref{cor:isoperimetry}.
 
 \subsection{The popular trace}
 
-\begin{definition}[Slot length and trace count]\label{def:slotlen}
+\begin{definition}[Slot length and horizon]\label{def:slotlen}
 \formal{Tape/DefsM.lean}{cellBits, slotLen, horizon}
 For a machine $M$ let $G=\max(1,\clog{(g+1)})$ be the number of bits per work cell. The slot
-length at size $n$ is $r=\lceil nb(n)/G\rceil$, so that a block of $r$ cells holds one matrix row.
+length at size $n$ is $r=\lceil nb(n)/G\rceil$, so that a block of $r$ cells holds about one matrix row.
 For a time constant $c$ the \emph{horizon} is $c_0=cG+1$; if $T\le cL$ there are at most $c_0n$
 slots (\lean{numSlots_le_horizon}).
 \end{definition}
@@ -152,7 +157,7 @@ at most three blocks, each slot touches at most two rows, and output lengths are
 $T_{\max}$. The bound on $\clog{\mathcal{N}}$ is arithmetic from $T\le cn^2b$ and $b\le n\le2^b$.
 \end{outline}
 
-The trace used here records output lengths and rows per slot, which costs $O(n\log n)$ bits. For
-machines that write their whole output at the end, a coarser trace with $O(1)$ bits per slot
-suffices, and the popular class then has co-entropy $O(n)$; \cref{sec:conjecture} uses this to show
+The trace used here records absolute block indices, rows and output lengths per slot, which costs
+$O(n\log n)$ bits for running time $O(L)$. For machines that write their whole output at the end, a coarser
+trace that records only block and row moves and residency patterns, $O(1)$ bits per slot, suffices, and the popular class then has co-entropy $O(n)$; \cref{sec:conjecture} uses this to show
 that the coding conjecture is needed only at co-entropy $O(n)$.

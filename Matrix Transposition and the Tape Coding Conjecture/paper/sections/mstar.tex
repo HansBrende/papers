@@ -88,13 +88,16 @@ Walks $h_t$ ($t<k$) of length $T$ satisfy the \emph{cut inequality} at size $n$ 
 $r$, $G$ bits per cell, slack $D$ and boundary cost $s$, if for every labelling of the
 $N=\lceil T/r\rceil$ slots with at most $m$ slots per label and $\Mb$ label changes,
 \[
-  (n-\Mb)(n-2m)\,b(n)\;\le\;(\Mb+1)D+\Mb\,s+rG\,\bigl(3k\Mb+\chicross\bigr),
+  (n\dotminus\Mb)(n\dotminus2m)\,b(n)\;\le\;(\Mb+1)D+\Mb\,s+rG\,\bigl(3k\Mb+\chicross\bigr),
 \]
-where $\chicross$ counts the chords of the pair residencies whose endpoints carry different labels.
+where $\chicross$ counts the chords of the pair residencies whose endpoints carry different labels, and
+$x\dotminus y=\max(x-y,0)$.
 \end{definition}
 
-This is the conclusion of \cref{cor:isoperimetry-trace}, with $D$ the co-entropy of the class and
-$s=\clog{(q+1)}+(k+1)\clog{(2T+1)}$.
+For the work heads of a machine on a trace class it follows from \cref{cor:isoperimetry-trace} (since
+$\clog{(g+1)}\le G$), with $D$ the co-entropy of the class and $s=\clog{(q+1)}+(k+1)\clog{(2T+1)}$; the formal
+proofs obtain it through the class code and the cut-set bound for codes (\cref{lem:class-code},
+\cref{cor:isoperimetry-code}).
 
 \subsection{Theorem M* for walks}
 
@@ -120,7 +123,7 @@ and the paths are not all monotone.
 The discrete part works at one size. From $S$ and $\beta$ build a slot labelling: the label of a
 slot off $S$ is determined by $\beta$, and slots in $S$ are cut into short pieces. Its label changes
 and class sizes are bounded by counting good and bad slots. The \emph{chord split}
-(\lean{crossChords_split}) bounds the crossing chords by the label changes times $(\eta n+1)$, plus
+(\lean{crossChords_split}) bounds the crossing chords by the label changes times $(\lceil\eta n\rceil+1)$, plus
 twice the slots in $S$, plus the \emph{long} crossing chords, those spanning at least $\eta n$
 slots. Long chords are counted by levels (\lean{levelChords_limsup_le}): for a good level $p$, the
 long crossing chords at block $\lfloor pn\rfloor$ inject, for large $n$, into the pairs counted by
@@ -146,12 +149,12 @@ $\sum_t\int(\#\Lambda_t(p)-1)\,dp\ge1$;
 \item if the $P_t$ are $1$-Lipschitz on $[0,c_0]$, then
 $\int(\#\Lambda(p)-1)\,dp+\abs{P([0,c_0])}\le c_0$ for each $t$, and hence
 $1+\sum_t\abs{P_t([0,c_0])}\le kc_0$;
-\item a monotone path has excess zero, so the $P_t$ are not all monotone.
+\item a monotone path has total excess $\int(\#\Lambda(p)-1)\,dp=0$, so the $P_t$ are not all monotone.
 \end{enumerate}
 \end{theorem}
 
 \begin{outline}
-For~(a), take $S=\emptyset$ and the labelling $\lfloor mu\rfloor$ with $\theta=1/m$, and let
+For~(a), take $S=\emptyset$ and the labelling $\max(0,\lfloor mu\rfloor)$ with $\theta=1/m$, and let
 $m\to\infty$. Part~(b) is the easy half of Banach's indicatrix~\cite{Banach1925} for $1$-Lipschitz
 paths, proved by dyadic counting with the range split off. For~(c), a level with two preimages
 under a monotone path is a value on an interval of constancy, and there are countably many such
@@ -162,15 +165,30 @@ values.
 \formal{Tape/Statements/Core.lean}{countable_localExtr_values, levelSet_encard_majorant, lintegral_encard_levelSet_le, ae_finite_levelSet, levelChords_limsup_le, crossChords_split}
 For every $P:\R\to\R$ the values at local extrema form a countable set. For $P$ that is
 $K$-Lipschitz on $[0,c_0]$, $\#\Lambda(p)$ has a measurable majorant with integral at most $Kc_0$;
-hence $\int\#\Lambda(p)\,dp\le Kc_0$ and almost every level set is finite. Together with the chord
-split and the level count of long chords used above, these are the analytic ingredients of
-Theorem~M*.
+hence $\int\#\Lambda(p)\,dp\le Kc_0$ and almost every level set is finite. Moreover:
+\begin{enumerate}[label=(\alph*)]
+\item (Chord split.) Let a residency $R$ satisfy (P2), let $\eta\in\R$, and let a slot labelling
+$\lambda$ satisfy $\beta(y/n)\ne\beta(y'/n)$ whenever $y/n,y'/n\notin S$ and $\lambda(y)\ne\lambda(y')$.
+Then the chords of $R$ with target $<N$ whose ends carry different labels number at most
+$\Mb(\lceil\eta n\rceil+1)+2\,\#\{y<N:y/n\in S\}+\#\mathcal X$, where $\mathcal X$ is the set of
+long chords $x\to z$: $z<N$, $z-x\ge\eta n$, $x/n,z/n\notin S$, $\beta(x/n)\ne\beta(z/n)$.
+\item (Long chords by levels.) Let $\eta>0$, let $P$ be $1$-Lipschitz on $[0,c_0]$, and for large $i$ let
+$W_i:\N\to\Z$, residencies $R_i$ and $N_i\le c_0n_i$ satisfy $\abs{W_i(y)-\sigma}\le D$ for
+$\sigma\in R_i(y)$ and (V2$'$), with $u\mapsto W_i(\lfloor un_i\rfloor)/n_i\to P$ uniformly on $[0,c_0]$.
+Then $\limsup_i\#\mathcal X_i/n_i\le\int\kappa(p)\,dp$ for every excised set $S$ and labelling $\beta$.
+\end{enumerate}
 \end{lemma}
 
 \begin{outline}
 Each value at a local extremum is the minimum or maximum of $P$ over a rational interval. The
-majorant is $\liminf_m N_m(p)$, where $N_m(p)$ counts the dyadic intervals of order $m$ whose image
-contains $p$; it is measurable and dominates $\#\Lambda(p)$ at every level.
+majorant is $\liminf_mN_m(p)$, where $N_m(p)$ counts the dyadic subintervals $I$ of order $m$ such that $p$
+lies within $K\abs{I}/2$ of the value of $P$ at the centre of $I$ (an interval of values containing $P(I)$).
+Each $N_m$ is measurable with integral $Kc_0$; once $c_02^{-m}$ is below the gaps of a finite subset of
+$\Lambda(p)$, $N_m(p)$ is at least its size, so $\liminf_mN_m\ge\#\Lambda$ at every level, and Fatou's lemma
+bounds the integral. For~(a), a crossing chord shorter than $\eta n$ has its source among the
+$\lceil\eta n\rceil$ slots before a label change; a chord touching $S$ is charged to its source or target slot
+in $S$; by (P2) both charges are injective, and the remaining crossing chords are long. Part~(b) is the level
+count in the outline of \cref{thm:mstar-walk}.
 \end{outline}
 
 \subsection{Machine forms}
@@ -191,12 +209,13 @@ Let $n_i\to\infty$.
 \begin{enumerate}[label=(\alph*)]
 \item Members of one trace class have rescaled trajectories within $4/n$ of each other, so limits
 along trace classes do not depend on the representatives.
-\item Along trace classes $F_i$ with co-entropies $D_i=o(L_i)$ on which $M$ is correct, the
-rescaled trajectories of the representatives satisfy the conclusion of \cref{thm:mstar-walk}; the
-underlying finite-$n$ inequality holds at every size. The same holds for non-uniform machines
+\item Along trace classes $F_i$ with halting times $T_i\le cL_i$ and co-entropies $D_i=o(L_i)$ on which $M$
+is correct, the rescaled trajectories of the representatives satisfy the conclusion of \cref{thm:mstar-walk}
+(the labelling-free parts by \cref{thm:excess}); the underlying finite-$n$ inequality holds at every size. The same holds for non-uniform machines
 $M_i$ with $k$ tapes, $G$ bits per cell and $o(L_i)$ state bits.
 \item If every matrix input halts within $cL_i$ steps and $M$ transposes, then the popular classes
-(\cref{thm:popular}) have $D_i\le Cn_ib(n_i)$, a convergent subsequence of the representatives'
+(\cref{thm:popular}) have $D_i\le Cn_ib(n_i)$, with $C=C(M,c)$ the constant of \cref{thm:popular}
+(\lean{traceConst}), a convergent subsequence of the representatives'
 trajectories exists, and every subsequential limit is $1$-Lipschitz and satisfies $(\star)$.
 \end{enumerate}
 \end{theorem}
@@ -208,8 +227,9 @@ transposed output on every input of a set $W_i$ of co-entropy $m_i$, with $m_i/L
 outside $W_i$ are unconstrained. Then the popular trace classes inside $W_i$ have co-entropy at most
 $m_i+Cn_ib(n_i)$, convergent subsequences of the representatives' trajectories exist, and every
 subsequential limit is $1$-Lipschitz, satisfies $(\star)$, has total excess at least $1$ and total
-range at most $kc_0-1$, and is not monotone on every tape. The same holds for machines $M_i$
-depending on $i$, with $k$ work tapes, $G$ bits per cell and $o(L_i)$ state bits.
+range at most $kc_0-1$, and its paths are not all monotone; here $C=C(M,c)$ is the constant of
+\cref{thm:popular}. The same holds for machines $M_i$ depending on $i$, with $k$ work tapes, $G$ bits per cell
+and $o(L_i)$ state bits (then $C$ depends only on $k$, $G$ and $c$).
 \end{theorem}
 
 \begin{outline}[Outline of the formal proofs of \cref{thm:mstar,thm:mstar-adaptive,thm:mstar-robust}]
@@ -219,7 +239,8 @@ hence to Theorem~M* for walks. For a trace class, the class code on the represen
 $\clog{(q+1)}+(k+1)\clog{(2T+1)}=o(L)$ extra bits per memory edge, and the cut-set bound for codes
 gives the cut inequality. The oblivious machine is the case of one class with $D=0$
 (\cref{lem:trace-obl}); the adaptive form is the robust form with $W_i$ all inputs; the robust form
-extracts the popular class inside $W_i$ (\cref{thm:popular}). Representative independence holds
+extracts the popular class inside $W_i$ (\cref{thm:popular}, in its form within a set of inputs,
+\lean{exists_popular_traceClass_on}). Representative independence holds
 because the work-head blocks of two members of a class differ by at most $2$ before halting and $4$
 after.
 \end{outline}
@@ -233,18 +254,21 @@ $1$-Lipschitz and satisfies $(\star)$ on $[0,(2c)G+1]$.
 \end{corollary}
 
 \begin{outline}
-A machine meeting \cref{def:T} with constant $c$ halts within $2cL$ steps on every input and
-transposes (\cref{lem:bridge}); apply \cref{thm:mstar-adaptive}(c).
+A machine meeting \cref{def:T} with constant $c$ halts within $2cL$ steps on every matrix input of every
+size $n\ge1$ and transposes (\cref{lem:bridge}); apply \cref{thm:mstar-adaptive}(c).
 \end{outline}
 
 So a linear-time transposer must move its work heads in a macroscopically folding way. The
-condition is far from sufficient: zig-zag motions satisfy~$(\star)$. Its value is as a test that
-any candidate construction must pass, and as the limit object behind the coding results of
+condition is far from sufficient: it constrains only the macroscopic shape of the head motion. It does
+exclude simple zig-zags: if every head follows the same triangle wave $P\ge0$ of slope $\pm1$, the labelling
+$\beta(u)=\lfloor mP(u)\rfloor$ with $m$ large has classes of measure at most $\tfrac14$ and keeps every level
+set inside one class, so $\kappa_t\equiv0$ and $(\star)$ fails at $\theta=\tfrac14$, $S=\emptyset$. Its value
+is as a test that any candidate construction must pass, and as the limit object behind the coding results of
 \cref{sec:codes}.
 
 \begin{proposition}[$(\star)$ is a real constraint]\label{prop:star-fails}
 \formal{Tape/Statements/Core.lean}{theoremMStar_conclusion_can_fail}
-For the constant path $P=0$, $S=\emptyset$, $\beta(u)=\lfloor4u\rfloor$ and $\theta=\tfrac14$, the
+For the constant path $P=0$, $S=\emptyset$, $\beta(u)=\max(0,\lfloor4u\rfloor)$ and $\theta=\tfrac14$, the
 hypotheses on $S$, $\beta$ and $\theta$ hold and $(\star)$ fails, for every $k$ and $c_0$.
 \end{proposition}
 

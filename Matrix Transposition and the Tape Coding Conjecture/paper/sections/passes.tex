@@ -1,11 +1,13 @@
 \section{Passes}\label{sec:passes}
 
 A \emph{pass} is a stretch of time during which every head moves monotonically, each in its own
-direction. Transposition by recursive block exchange uses $\Theta(\log n)$ passes, and the
-external-memory intuition is that fewer passes cannot suffice. This section proves this for
-every machine of the model, whatever it does with its data: $r$ passes force
-$(k+1)^r\ge 1+kn/(2+\sigma_M/b)$, so $r\ge\log_{k+1}n-O(1)$ (Theorem~P for oblivious machines,
-Theorem~P$'$ for all machines whose running time is polynomial in $L$). Throughout,
+direction. Transposition by recursive block exchange uses $O(\log n)$ passes (folklore), and the
+external-memory intuition is that fewer passes cannot suffice. This section proves this for every
+machine of the model whose running time is polynomial in $L$, whatever it does with its data. For
+oblivious machines $r$ passes force $(k+1)^r\ge1+kn/(2+\sigma_M/b)$ (Theorem~P); for all machines
+halting within $T$ steps they force $(k+1)^r\ge1+kn/(2+(\sigma_M+\gamma_T)/b)$ with
+$\gamma_T=(k+4)\clog{(2T+1)}$, which is $O(kb)$ for $T\le\poly(L)$ (Theorem~P$'$). In both cases
+$r\ge\log_{k+1}n-O(1)$ for $k\ge1$. Throughout,
 \[
   \sigma_M=\clog{(q+1)}+k\,\clog{(g+1)}
 \]
@@ -29,14 +31,14 @@ as possible. We write
 \formal{Tape/Statements/Core.lean}{greedy_passPartition, greedyPasses_le, passPartition_iff, passPartition_indep, greedyPasses_indep, addrCount_mul}
 The greedy passes form a pass partition, and a pass partition into $r$ passes exists if and only
 if the greedy count is at most $r$. If $M$ is oblivious on $W$, the pass partitions of the runs on
-the inputs of $W$ are the same for all inputs, and so is the greedy count.
+the inputs of $W$ are the same for all inputs, and so is the greedy count. Moreover $k\Haddr+1=(k+1)^r$.
 \end{lemma}
 
 \begin{outline}
-Minimality of the greedy partition is an exchange argument: by induction, the $i$-th greedy
-boundary is at least the $i$-th boundary of any pass partition, since monotonicity on an interval
-is inherited by subintervals. Independence holds because pass partitions depend only on the head
-trajectories.
+Minimality: the greedy partition stays ahead. By induction, the $i$-th greedy boundary is at least
+the $i$-th boundary of any pass partition, since monotonicity on an interval is inherited by
+subintervals. Conversely, a greedy partition with fewer passes is padded with empty passes. Independence
+holds because pass partitions depend only on the head trajectories.
 \end{outline}
 
 \subsection{Where accessed cells come from}
@@ -52,9 +54,9 @@ cell occupied at time $a$, was not occupied earlier in the stretch.
 Monotonicity: $h(\rho)\le h(a)\le h(\tau)$ (or the reverse) with $h(a)\ne h(\tau)$.
 \end{outline}
 
-So, inside a pass, a work head that reads a cell other than its starting cell reads either a cell
-written earlier in the same node interval or a cell last written in an \emph{earlier pass}. This
-is what makes the dependency structure of a pass schedule a forest of bounded size.
+So, inside a pass, a work head that at time $\tau\ge a$ reads a cell other than the one it occupied at
+time $a$ reads a cell last visited during $[a,\tau)$, a cell last visited in an \emph{earlier pass}, or a
+blank cell. This is what makes the dependency structure of a pass schedule a forest of bounded size.
 
 \subsection{The dependency forest}
 
@@ -83,7 +85,7 @@ Nodes are intervals of time, because heads are monotone within a pass and the ou
 monotone.
 
 \begin{lemma}[Forest]\label{lem:forest}
-\formal{Tape/Statements/Core.lean}{forest_subset, forest_entryPoints_subset, forest_entryCells_subset, forest_entryPoints_card_le, forest_entryCells_card_le, forest_info}
+\formal{Tape/Statements/Core.lean}{forest_subset, forest_entryPoints_subset, forest_entryCells_subset, forest_entryPoints_card_le, forest_entryCells_card_le, card_addresses_le, forest_info}
 For every run with a pass partition into $r$ passes and every output segment, the forest consists
 of steps $<T$; every entry point of the forest is the first step of a node; and every entry cell
 of the forest is a read, at the first step of a node, of the cell under a work head. Hence
@@ -97,12 +99,12 @@ oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and transposes, then for 
 
 \begin{outline}
 Entry points of a union of intervals are first steps of the intervals. For entry cells, take a
-read by head $t$ at a step $\tau$ of a node $J$ that is not its first step $a$. If the cell is the
-one occupied at time $a$, the head has stayed on it since $a$ (monotonicity), so its last visit is
-in $J$. Otherwise, by \cref{lem:fresh}, the cell was not visited earlier in the current pass; if
-its last visit before $\tau$ is not in $J$, it lies in an earlier pass $P'$, the cell belongs to
-the S-set at $(P',t)$, and the last visit is a step of the child at $(P',t)$, which is part of the
-forest. So the read is not external. For the last inequality, every output bit of the segment is
+read by head $t$ at a step $\tau$ of a node $J$ that is not its first step $a$, of a cell whose last visit
+before $\tau$ is at $\sigma$. If $\sigma\ge a$ then $\sigma\in J$, since $J$ is an interval. Otherwise the
+cell is not the one occupied at time $a$ (that visit would come after $\sigma$), so by \cref{lem:fresh} it
+was not visited earlier in the current pass: $\sigma$ lies in an earlier pass $P'$, the cell belongs to the
+S-set at $(P',t)$, and $\sigma$ is a step of the child at $(P',t)$, which is part of the forest. So the read
+is not external. For the last inequality, every output bit of the segment is
 appended in some root node, so the comb bits that the forest does not read are in its cut set,
 and the Cut Lemma on a set (\cref{lem:cut-on}) applies to the forest.
 \end{outline}
@@ -112,27 +114,31 @@ and the Cut Lemma on a set (\cref{lem:cut-on}) applies to the forest.
 \begin{lemma}[Disjointness]\label{lem:disjoint}
 \formal{Tape/Statements/Core.lean}{forestNode_disjoint, read_chain}
 At a fixed address, the nodes of two output segments, the first ending before the second starts,
-are disjoint. If finitely many segments have pairwise disjoint output ranges, the input positions
-read by their nodes at a fixed address satisfy $\sum_s\abs{\mathrm{read}(J_s)}+1\le L+\#\{s\}$.
+are disjoint. If finitely many (at least one) segments have pairwise ordered output ranges (of any two,
+one ends before the other starts), the input positions read by their nodes at a fixed address satisfy
+$\sum_s\abs{\mathrm{read}(J_s)}+1\le L+\#\{s\}$.
 \end{lemma}
 
 \begin{outline}
 By induction on the depth of the address, the nodes of an earlier and a later segment are
 \emph{time-separated}, one lying entirely before the other: for the roots this is the monotonicity
-of the output length. If two nodes of one pass are time-separated, their S-sets lie strictly on the
-two sides of the cell under the head at the later node's start, so their hulls are disjoint, and
-monotonicity in the earlier pass makes the children time-separated. For the second part, the
-input head is monotone within each pass, so the read sets of time-separated nodes overlap in at
-most one position.
+of the output length. If two nodes of one pass are time-separated, then, the head being monotone in
+that pass, every cell of the earlier node lies weakly on one side of the cell $c$ under the head at the
+later node's start, while the S-set of the later node, which excludes $c$, lies strictly on the other side;
+so the hulls of the two S-sets are disjoint, and monotonicity in the earlier pass makes the children
+time-separated. For the second part, all nodes at a fixed address lie in one pass, in which the input head
+is monotone; ordered in time, the read set of each node meets the union of the read sets of the earlier
+nodes in at most one position (the input cell at its first step), so
+$\sum_s\abs{\mathrm{read}(J_s)}\le\abs{\bigcup_s\mathrm{read}(J_s)}+\#\{s\}-1\le L+\#\{s\}-1$.
 \end{outline}
 
-Group the columns into $\lceil n/\gamma\rceil$ groups of $\gamma$ consecutive columns; group $s$
-owns the output segment of its columns, and its comb consists of $\gamma b$ consecutive input bits
-in each of the $n$ rows.
+Group the columns into $\lceil n/\gamma\rceil$ groups of $\gamma$ consecutive columns (the last may be
+smaller); group $s$ owns the output segment of its columns, and its comb consists of at most $\gamma b$
+consecutive input bits in each of the $n$ rows.
 
 \begin{lemma}[Coverage]\label{lem:coverage}
 \formal{Tape/Statements/Core.lean}{coverage_per_address, coverage_grouped}
-For every run with a pass partition into $r$ passes and every $\gamma$, at a fixed address the comb
+For every run with a pass partition into $r$ passes and every $\gamma\ge1$, at a fixed address the comb
 bits read by the nodes of the $\lceil n/\gamma\rceil$ groups number at most $(\gamma+1)nb$ in total.
 Over all addresses, the comb bits read by the group forests number at most
 $\#\mathrm{addresses}\cdot(\gamma+1)nb$.
@@ -168,7 +174,9 @@ Under the hypotheses of \cref{thm:Pgamma},
   nb\le\Haddr\,(2b+\sigma_M),\qquad
   k\,nb\le\bigl((k+1)^r-1\bigr)(2b+\sigma_M),
 \]
-and the same holds with $r$ the greedy pass count. In particular, for $k\ge1$ and
+also in the weaker form $n^2b\le\Haddr(n(2b+\sigma_M)+1)$, and the same holds with $r$ the greedy pass
+count (the greedy passes form a pass partition,
+\cref{lem:greedy}; \lean{theoremP_greedy} states the bits form). In particular, for $k\ge1$ and
 $b=\lceil\log_2n\rceil$, a fixed machine needs $r\ge\log_{k+1}n-O(1)$ passes.
 \end{theorem}
 
@@ -178,14 +186,18 @@ bounds the comb bits of $s$ not read by the group's forest:
 $2^{\abs{\mathrm{comb}_s\setminus U_s}}\le((q+1)(g+1)^k)^{\Haddr}$. \Cref{lem:coverage} bounds
 the comb bits that are read: $\sum_s\abs{\mathrm{comb}_s\cap U_s}\le\Haddr(\gamma+1)nb$. The combs
 partition the $n^2b$ input positions, so
-$n^2b\le\sum_s\abs{\mathrm{comb}_s\setminus U_s}+\Haddr(\gamma+1)nb$, and multiplying the
-per-group bounds gives the claim. The other forms are arithmetic, using $k\Haddr+1=(k+1)^r$.
+$n^2b\le\sum_s\abs{\mathrm{comb}_s\setminus U_s}+\Haddr(\gamma+1)nb$. The per-group bounds are summed,
+$\sum_s2^{\abs{\mathrm{comb}_s\setminus U_s}}\le\lceil n/\gamma\rceil((q+1)(g+1)^k)^{\Haddr}$, and the
+inequality of arithmetic and geometric means (the final step shared with Theorem~P$'$) gives
+$2^{\sum_s\abs{\mathrm{comb}_s\setminus U_s}}\le((q+1)(g+1)^k)^{\lceil n/\gamma\rceil\Haddr}$, hence the
+claim. The other forms are arithmetic, using $k\Haddr+1=(k+1)^r$.
 \end{outline}
 
 Theorem~P allows arbitrary coding: the machine may combine bits in its finite control and on its
-tapes in any way, dwell, and move its heads at arbitrary relative speeds. The previous lower bound
-in this direction is Kirchherr's $\Omega(\log n)$ reversals for \emph{conservative} machines,
-which only move bits~\cite{Kirchherr1988}.
+tapes in any way, dwell, and move its heads at arbitrary relative speeds. The closest previous lower
+bound for transposition is Kirchherr's $\Omega(\log n)$ reversals for \emph{conservative} machines, which
+only move bits~\cite{Kirchherr1988}; the stream lower bounds~\cite{GroheSchweikardt2005,GHS2009} need long or
+index-tagged items (\cref{sec:intro}).
 
 \subsection{Machines correct on part of the input}
 
@@ -199,17 +211,18 @@ $\gamma\ge1$
 \]
 each group of $\gamma$ columns pays $m$ bits. In particular:
 \begin{enumerate}[label=(\alph*)]
-\item at co-entropy $Cn$: $nb\le Cn+\Haddr(2b+\sigma_M)$, so $\Haddr\ge n(b-C)/(2b+\sigma_M)$;
-\item at co-entropy $Cnb$, for every $\gamma\ge1$:
+\item at co-entropy $Cn$ ($C\in\N$): $nb\le Cn+\Haddr(2b+\sigma_M)$, so $\Haddr\ge n(b-C)/(2b+\sigma_M)$, and
+$k\,nb\le kCn+((k+1)^r-1)(2b+\sigma_M)$;
+\item at co-entropy $Cnb$ ($C\in\N$), for every $\gamma\ge1$:
 $(\gamma-C)\,n^2b\le\gamma C\,nb+\Haddr\bigl(\gamma(\gamma+1)nb+(n+\gamma)\sigma_M\bigr)$; with
 $\gamma=2C$, $Cnb\le 2C^2b+\Haddr\bigl(2C(2C+1)b+2\sigma_M\bigr)$, so
-$\Haddr\gtrsim n/(2(2C+1))$ and still $r\ge\log_{k+1}n-O(\log C)$.
+$\Haddr\gtrsim n/(2(2C+1))$ and, for $k\ge1$, still $r\ge\log_{k+1}n-O(\log C)$.
 \end{enumerate}
 \end{theorem}
 
 \begin{outline}
-As for Theorem~P$_\gamma$, with the Cut Lemma on a set (\cref{lem:cut-on}) in place of the Cut
-Lemma: each group's forest pays the co-entropy $m$ once. In the formal development this robust
+As for Theorem~P$_\gamma$, with the co-entropy term of the Cut Lemma on a set (\cref{lem:cut-on}) kept in
+each group's bound: each group's forest pays the co-entropy $m$ once. In the formal development this robust
 form is the only direct proof; Theorem~P$_\gamma$ is its case $W=\mathrm{Mat}(n,b)$, $m=0$. The
 corollaries are arithmetic.
 \end{outline}
@@ -221,16 +234,19 @@ and dependency forests. A forest is then described by a \emph{structure code} pe
 and last steps, the positions of all heads and the output length at its first step
 (\lean{nodeCode}); and by a \emph{side code}: the state and the symbols under the work heads at its
 first step (\lean{sideCode}). The structure codes of nodes inside $[0,T)$ take at most
-$(2T+1)^{k+4}$ values (\lean{structCount}).
+$(2T+1)^{k+4}$ values (\lean{structCount} is this bound; the count is part of the proof of
+\cref{lem:forest-agree}).
 
 \begin{lemma}[Forests of different inputs]\label{lem:forest-agree}
 \formal{Tape/Statements/Adaptive.lean}{locality_anchored, forest_agree, forest_comb_agree, kraft_group}
-Let $w,w'$ have pass partitions into $r$ passes (each its own), and suppose their forests of a
-segment have equal structure and side codes at every address, and that $w$ and $w'$ agree on every
-input position read by both forests. Then the two forests have the same nodes, and the runs agree
-on them (state, positions, output length, symbols under the heads, transitions). If $M$ transposes
-and both inputs halt, they agree on the segment's comb. Consequently, if every input $v$ halts at
-some time $T_v\le T$ and has a pass partition into $r$ passes, then for every segment
+Let $w,w'$ be inputs of the same length $L$, with pass partitions of $[0,T)$ and of $[0,T')$ into $r$
+passes (each its own), and suppose their forests of a segment have equal structure and side codes at every
+address, and that $w$ and $w'$ agree on every input position $<L$ read by both forests. Then the two
+forests have the same nodes, and the runs agree on them (state, positions, output length, symbols under the
+heads, transitions). If $M$ transposes $n\times n$ matrices with $b$-bit entries, $L=n^2b$, and $w,w'$ halt
+at $T$ and $T'$ respectively, they agree on the segment's comb. Consequently, if $M$ transposes and every
+$v\in\{0,1\}^{n^2b}$ halts at some $T_v\le T$ with a pass partition of $[0,T_v)$ into $r$ passes, then for
+every segment
 \[
   \sum_{v\in\{0,1\}^{n^2b}}2^{\abs{\mathrm{comb}\setminus\mathrm{read}_v(\mathrm{forest}_v)}}
   \;\le\;2^{n^2b}\Bigl((2T+1)^{k+4}(q+1)(g+1)^k\Bigr)^{\Haddr}.
@@ -238,10 +254,14 @@ some time $T_v\le T$ and has a pass partition into $r$ passes, then for every se
 \end{lemma}
 
 \begin{outline}
-The first part is an anchored form of the Locality Lemma (\lean{locality_anchored}, a corollary
-of \cref{lem:locality-core}) with the first steps of the nodes as anchors: the structure and side
-codes give agreement at the anchors, and \cref{lem:forest} shows that every other read inside the
-forest was last written inside the forest, in both runs. The comb then agrees by correctness. For
+Nodes are intervals and the structure code records their first and last steps, so equal codes give equal
+nodes at every address: the two forests are the same set of steps. The first part is then an anchored form
+of the Locality Lemma (\lean{locality_anchored}, a corollary of \cref{lem:locality-core}) with the first
+steps of the nodes as anchors: the structure and side codes give agreement at the anchors, and
+\cref{lem:forest}, applied to each run, shows that every other step of the forest has its predecessor in
+the forest and that every cell read there was last written inside the forest (or never); the input symbols
+agree at commonly read positions because the inputs have the same length. The comb then agrees by
+correctness. For
 the Kraft-type inequality, fix the codes: within a class of inputs with equal codes, overwriting
 the unread comb bits of $v$ by arbitrary values is injective, because two overwritten inputs that
 coincide agree off the union of their free positions, hence on every position read by both
@@ -257,14 +277,15 @@ $\gamma_T=(k+4)\clog{(2T+1)}$. Then for every $\gamma\ge1$
   n^2b\le\Haddr\bigl((\gamma+1)nb+\lceil n/\gamma\rceil(\sigma_M+\gamma_T)\bigr),
   \qquad\text{in particular}\qquad nb\le\Haddr\,(2b+\sigma_M+\gamma_T),
 \]
-and $k\,nb\le((k+1)^r-1)(2b+\sigma_M+\gamma_T)$. The bound also holds with
+and $k\,nb\le((k+1)^r-1)(2b+\sigma_M+\gamma_T)$; these hold also in log-free form and with greedy pass
+counts. The bound also holds with
 $\gamma'=\clog r+2(k+2)\clog{(2T+3)}\ge\gamma_T$ in place of $\gamma_T$, in the forms
 $n^2b\le\Haddr(n(2b+\sigma_M+\gamma')+1)$ and, for $b\ge1$,
 $\Haddr\ge n/(2+(\sigma_M+\gamma'+1)/b)$.
 \end{theorem}
 
 \begin{outline}
-Fix a column group $s$. By \cref{lem:coverage}, which holds run by run,
+By \cref{lem:coverage}, which holds run by run,
 $\sum_s\abs{\mathrm{comb}_s\setminus U_s(v)}\ge n^2b-\Haddr(\gamma+1)nb$ for every input $v$. Sum
 the inequality of \cref{lem:forest-agree} over the groups and average over the $2^{n^2b}$ inputs:
 some $v_0$ has $\sum_s2^{m_s(v_0)}\le\lceil n/\gamma\rceil K$, where $m_s(v)$ is the number of
@@ -283,8 +304,10 @@ Suppose that on every input of a set $W$ of co-entropy at most $m$, the machine 
 time $T'\le T$, the transposed output together with a pass partition of $[0,T')$ into $r$ passes
 (it need not halt; other inputs are unconstrained). Then
 $n^2b\le\lceil n/\gamma\rceil m+\Haddr((\gamma+1)nb+\lceil n/\gamma\rceil(\sigma_M+\gamma_T))$ for
-every $\gamma\ge1$, with the corollaries of \cref{thm:P-on}(a),(b) for $\sigma_M+\gamma_T$ in place
-of $\sigma_M$. If $M$ transposes within $c(L+1)$ steps (\cref{def:T}) and every run on an
+every $\gamma\ge1$, and the inequalities of \cref{thm:P-on}(a),(b) hold with $\sigma_M+\gamma_T$ in place
+of $\sigma_M$. Their asymptotic consequences change: $T\ge L$ forces $\gamma_T\ge2(k+4)\log_2n$, which is
+not $o(b)$; if $\gamma_T\le c'b$ (for instance $T\le\poly(L)$), (b) gives
+$\Haddr\ge(Cn-2C^2)b/(2C(2C+1)b+2(\sigma_M+\gamma_T))$ and, for $k\ge1$, $r\ge\log_{k+1}n-O(\log(C+c'))$. If $M$ transposes within $c(L+1)$ steps (\cref{def:T}) and every run on an
 $n\times n$ input has greedy pass count at most $r$, then
 $n^2b(n)\le\Haddr\,n\bigl(2b(n)+\sigma_M+(k+4)\clog{(2c(L+1)+1)}\bigr)$.
 \end{theorem}
@@ -304,14 +327,17 @@ with $k=1$ (\lean{Witness.tr2k}).
 \end{proposition}
 
 \begin{outline}
-Evaluation of the concrete machines and their greedy passes.
+Evaluation of the concrete machines on all inputs; the greedy passes give the pass partition
+(\cref{lem:greedy}).
 \end{outline}
 
 \begin{proposition}\label{prop:Pprime-witness}
 \formal{Tape/Statements/Adaptive.lean}{theoremPprime_hyps_of_oblivious, theoremPprime_hyps_tr2dd, theoremPprime_no_five_pass}
 \begin{enumerate}[label=(\alph*)]
-\item Every oblivious machine whose common run has a pass partition into $r$ passes satisfies the
-hypotheses of Theorem~P$'$.
+\item Every machine that is oblivious on $\mathrm{Mat}(n,b)$ with halting time $T$ and whose common run
+has a pass partition into $r$ passes satisfies the run hypothesis of Theorem~P$'$ (every matrix input halts
+within $T$ steps with a pass partition into $r$ passes). In particular the machines of Theorem~P satisfy all
+hypotheses of Theorem~P$'$, with the same $T$ and $r$.
 \item A machine \lean{Witness.tr2dd} transposes $2\times2$ matrices with $1$-bit entries, is
 oblivious for no halting time (its running time is $5$ or $6$ depending on the input), and every
 input halts within $6$ steps in a single pass.

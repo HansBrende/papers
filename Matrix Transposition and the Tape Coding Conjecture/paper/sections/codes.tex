@@ -1,13 +1,15 @@
 \section{Codes on time--space diagrams}\label{sec:codes}
 
-The lower bounds of the previous sections never use the transition function beyond locality: what
-they use is that information flows along the block network of the run, with bounded capacity per
-edge. This section makes that structure explicit. A \emph{time--space diagram} records only head
-motions and an output schedule; its block network is a directed acyclic graph with bounded degree;
-and a \emph{causal network code} on it is an arbitrary assignment of functions to edges. A machine
-that is correct on a trace class yields such a code (\cref{lem:class-code}), and conversely
-everything proved so far about machines holds for codes. \Cref{sec:conjecture} then asks whether
-such codes exist at all.
+The block-level lower bounds of the previous sections (the cut lemmas for unions of slots, Discrete
+Isoperimetry and Theorem~M*) use the transition function only through block locality: what they use is
+that information flows along the block network of the run, with bounded capacity per edge. This section
+makes that structure explicit. A \emph{time--space diagram} records only head motions and an output
+schedule; its block network is a directed acyclic graph with bounded degree; and a \emph{causal network
+code} on it is an arbitrary assignment of functions to edges. A machine that is correct on a trace class
+yields such a code (\cref{lem:class-code}), and conversely these block-level results hold for codes
+(\cref{lem:cutset,cor:isoperimetry-code,thm:mstar-diagram}); the cell-level results (the Locality Lemma,
+Theorems~P and~P$'$) are not claimed for codes. \Cref{sec:conjecture} then asks whether such codes exist
+at all.
 
 \subsection{Diagrams and block networks}
 
@@ -83,8 +85,9 @@ Let a causal code solve complete exchange on a set of co-entropy at most $D$, on
 of a valid diagram with $r\ge1$. For every labelling of the nodes with $\Mb$ label changes and at
 most $m$ nodes per label,
 \[
-  (n-\Mb)(n-2m)\,w\;\le\;(\Mb+1)D+\sum_{e:\;\text{labels of the ends differ}}\mathrm{cap}(e).
+  (n\dotminus\Mb)(n\dotminus2m)\,w\;\le\;(\Mb+1)D+\sum_{e:\;\text{labels of the ends differ}}\mathrm{cap}(e),
 \]
+where $x\dotminus y=\max(x-y,0)$.
 At the block capacities with $s$ extra bits, the right-hand sum is at most
 $\Mb s+rG(3k\Mb+\chicross)$, so the walks of the diagram satisfy the cut inequality
 (\cref{def:cutineq}) with slack $D$ and boundary cost $s$.
@@ -115,15 +118,15 @@ valid diagram with $1\le r\le nw$ and every $j$,
 \[
   j\,L\;\le\;\sum_d\mathrm{rowDist}(d)+j\bigl(4N(2k+3)^{j-1}w+u\,nw\bigr),
 \]
-where $N$ is the number of nodes and $u$ the number of rows attached nowhere; and capacities within
-the profile sum to at most $4kNrG$.
+where $N$ is the number of nodes and $u$ the number of rows attached nowhere. There are at most $kN$
+chord edges, and capacities within the profile sum to at most $4kNrG$.
 \end{lemma}
 
 \begin{outline}
 Weak duality: each unit of commodity $d$ traverses at least $\mathrm{rowDist}(d)$ edges. For the
-distance bound, the ball of radius $j-1$ around a sink has at most $(2k+3)^{j-1}$ nodes (degree at most
-$2k+2$), each node attaches at most two rows, and a sink receives at most $2w$ bits of a row, so few
-bits are within distance $j-1$ of their sinks.
+distance bound, the ball of radius $j-1$ around a node attaching a row has at most $(2k+3)^{j-1}$ nodes
+(degree at most $2k+2$), each node attaches at most two rows, and a sink receives at most $2w$ bits of a
+row, so few bits are within distance $j-1$ of their sinks.
 \end{outline}
 
 \begin{theorem}[The code gap]\label{thm:code-gap}
@@ -146,10 +149,12 @@ $\sum\mathrm{cap}\le4kG(c+1)L$. Weak duality bounds the rate. For a solving code
 leaves at most $C$ rows attached nowhere (\cref{lem:cutset}).
 \end{outline}
 
-So a code on a block network of a linear-time diagram, if it exists, realizes the largest possible
-coding gain over routing, $\Theta(\log n)$. By Adler, Harvey, Jain, Kleinberg and
-Lehman~\cite[Thm.~6.2]{AHJKL2006}, an oblivious linear-time transposer is exactly such a code on its own
-network; the Tape Coding Conjecture says that no such code exists.
+So a code on a block network of a linear-time diagram, if it exists, beats routing by a factor
+$\Omega(\log n)$. The connection goes back to Adler, Harvey, Jain, Kleinberg and
+Lehman~\cite[Thm.~6.2]{AHJKL2006}, who turn an oblivious algorithm for transposition into a network code on
+its computation graph; here \cref{lem:class-code,thm:fast-codes} turn every linear-time transposer into such a
+code on its own block network (one way only: a code need not come from a machine). The Tape Coding
+Conjecture says that no such code exists.
 
 \subsection{Machines give codes}
 
@@ -164,19 +169,23 @@ carries $r\clog{(g+1)}$ bits per tape having that chord, and no other pair carri
 \end{lemma}
 
 \begin{outline}
-This is the Block Locality Lemma in functional form. The code at a node simulates the machine
-during its slot, starting from the configuration data received on its memory edge and the blocks
-received on its chords; the member of the class is chosen by consistency, and correctness of the
-simulation is proved by induction over the slots with \cref{lem:block-locality}.
+This is the Block Locality Lemma in functional form. A memory edge $y\to y+1$ carries the state, the head
+positions and the contents of the resident blocks at time $(y+1)r$, and a chord edge the contents of its
+blocks at the time of its target slot. The code at a node chooses a member of $F$ consistent with the values
+it receives and its visible input bits, and sends that member's payloads; the decoder outputs that member's
+bit. By \cref{lem:block-locality} for the single slot, all consistent members have the same outgoing payloads
+and output bits, and an induction over the slots shows that on every input of $F$ each edge carries that
+input's own payload.
 \end{outline}
 
 \begin{theorem}[Fast machines give codes]\label{thm:fast-codes}
 \formal{Tape/Statements/Coding.lean}{exists_popular_traceClass_on, codes_of_fastOn_bits, solves_profileCap_addTapes, codes_of_fastOn}
 Let $M$ be correct within $cL$ steps on every input of a set $F_0$ of co-entropy at most $C_0nw$.
 \begin{enumerate}[label=(\alph*)]
-\item If $s\ge\clog{(q+1)}+(k+1)\clog{(2cL+1)}$, then on a diagram of $M$'s own with $k$ tapes and length
-at most $cL$ there is a causal code at the block capacities with $s$ extra bits, solving complete
-exchange on a set of co-entropy at most $(C_0+C_M)nw$, where $C_M$ depends only on $M$ and $c$.
+\item If $s\ge\clog{(q+1)}+(k+1)\clog{(2cL+1)}$, then there are a valid $k$-tape diagram of length at most
+$cL$ (in the proof, the diagram of $M$'s run on the representative of a popular class) and a causal code on
+it at the block capacities with $s$ extra bits ($G=\max(1,\clog{(g+1)})$, $r=\lceil nw/G\rceil$), solving
+complete exchange on a set of co-entropy at most $(C_0+C_M)nw$, where $C_M$ depends only on $M$ and $c$.
 \item Extra bits become tapes: a code at the block capacities with $s\le a\,rG$ extra bits is a code at
 the profile capacities of the diagram with $a$ additional stationary tapes.
 \item Hence, if $2\clog{(q+1)}\le nw$ and $n$ is large enough, there is such a code at the profile
@@ -193,8 +202,7 @@ memory edge. (c) Combine (a) and (b) with $a=1$.
 
 \subsection{Theorem M* for code-carrying diagrams}
 
-Everything in \cref{sec:mstar} holds for codes: the hypothesis that a machine runs is never used
-beyond the cut inequality.
+Theorem~M* holds for codes: its proof uses the machine only through the cut inequality.
 
 \begin{theorem}[Theorem M* for code-carrying diagrams]\label{thm:mstar-diagram}
 \formal{Tape/Statements/Coding.lean}{theoremMStar_level_diagram, theoremMStar_diagram, theoremMStar_diagram_profile}
@@ -203,7 +211,7 @@ solving complete exchange on sets of co-entropy $m_i$, at the block capacities w
 where $(m_i+s_i)/L_i\to0$. Then the rescaled work walks of the $D_i$ have a uniformly convergent
 subsequence on $[0,cG+1]$, and every subsequential limit is $1$-Lipschitz and satisfies $(\star)$. At
 the profile capacities ($s_i=0$) every limit also has total excess at least $1$, total range at most
-$k(cG+1)-1$, and is not monotone on every tape.
+$k(cG+1)-1$, and its paths are not all monotone.
 \end{theorem}
 
 \begin{outline}

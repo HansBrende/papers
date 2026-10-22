@@ -9,10 +9,10 @@ Start here
   completion.json              Final artifact and review receipt
 
 The six theorem families are the adaptive separator/treewidth bounds, fixed
-coordinate-XOR bounds after nonlinear row recoding, affine-motion barriers,
+two-coordinate Boolean packet bounds, including helper-selected global recoding, affine-motion barriers,
 fully paid native padding, two-stage helper toll, and scan-palette/recursive
-stage exclusions. There are 31 numbered definitions/results and 149 explicitly
-cited formal declarations. The unrestricted canonical transposition question
+stage exclusions. The generated declarations.json records the current counts of numbered
+definitions/results and explicitly cited formal declarations. The unrestricted canonical transposition question
 remains open. Exact Lean statements and proofs take precedence over the prose.
 
 Reproduce from the follow-up folder
@@ -36,12 +36,19 @@ and --check for an already installed copy. The installer verifies the pinned
 204-module source closure and retains its attribution and license. Network
 access is required only when dependencies are absent and must be fetched.
 
-verify.py runs prepare.py, verifies the preserved mathematical code and upstream
-sources (with the explicit comment/editorial amendments described below), performs an ordinary full library build, builds every explicitly
+verify.py runs prepare.py, verifies the mathematical source inventory and upstream
+sources (with the explicit comment/editorial and proof-refactor records described
+below), checks the additional packet-proof manifest, performs an ordinary full
+library build, builds every explicitly
 cited module, and runs lean/PaperAxioms.lean. The latter is generated from the
 manuscript rather than maintained as a separate subset. It audits every cited
 declaration and rejects axioms other than propext, Classical.choice, Quot.sound.
-For the broader SupportAxioms.lean audit, run from the follow-up folder:
+The generated PacketAxioms.lean additionally checks every declaration in the
+new packet and refactored original modules against the same axiom whitelist.
+The proof-refactor audit compares every original declaration in those modules
+with its captured pre-refactor elaborated type; names, universe parameters and
+expression structure are preserved, disregarding only bound-variable labels.
+For the broader historical SupportAxioms.lean audit, run from the follow-up folder:
   python3 verification/run_axiom_audit.py support
 The helper builds all imports first, including audit-only first-paper modules.
 Use both instead of support to run both audits. A bare lake build need not
@@ -91,11 +98,18 @@ new empty-environment kernel replay of every imported expression. Source and
 visual reviews were performed by AI agents. They are not external human peer
 review, and source attribution checks do not establish exhaustive novelty.
 
-The manuscript review changes two complete documentation comments in
-UnconditionalPaidPadding.lean and no mathematical code. source_guard.py
-reverses those exact replacements and requires recovery of the original
-audited hash; it rejects other changes. Historical proof receipts are not
-rewritten. upstream-editorial-amendment.json in the parent verification folder
+The earlier manuscript review changed two complete documentation comments in
+UnconditionalPaidPadding.lean and no mathematical code. The current packet
+extension adds new mathematical modules listed in
+packet-strengthening/source-extension.json; their hashes are checked by the
+current verifier, separately from the immutable original baseline.
+The second review refactors old XOR endpoints into specializations of the
+Boolean-packet results and the unweighted cover into the weighted cover.
+The proof-refactor manifest records exact reversible edits to the four affected
+baseline files, moved shared declarations and preserved elaborated types.
+source_guard.py reconstructs original audited bytes from the recorded changes
+and rejects unrecorded changes. Fresh builds, type comparisons and axiom audits
+check the refactored sources. Historical proof receipts are not rewritten. upstream-editorial-amendment.json in the parent verification folder
 records a separate committed first-paper editorial update. The upstream
 check verifies the frozen proof files and the documented editorial revision,
 ignoring generated artifacts; tracked or nonignored added files still fail. PaperAxioms.lean is the new generated audit

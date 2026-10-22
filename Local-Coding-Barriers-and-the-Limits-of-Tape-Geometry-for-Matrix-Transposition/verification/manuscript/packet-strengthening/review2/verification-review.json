@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "scope": "Reviewed proof-refactor verification tooling, exact original contract preservation, and targeted compiled ownership/axiom audit. Repository-wide verification is recorded separately.",
+  "sources": {
+    "verification/manuscript/source_guard.py": "7fd99c0331fe9b0db7fd0aa7307eed02379700492d078114c365248e0b8fc0ca",
+    "verification/manuscript/verify.py": "de39af44adf0baf4e68291e46e25e69288e7c1a5056c534f3d4c508d1dcb95b4",
+    "verification/manuscript/completion_check.py": "4c4ae1e33b004aaa2fb52968e1d09f5c3be0dd4bd1f2c283d1f1bdd6a5b1131d",
+    "verification/manuscript/packet-strengthening/proof-refactors.json": "65df34c67847d22293d1964eba08c3cdd2d3c29105f001cb6032a9ee1c403a67",
+    "lean/ProofRefactorAxioms.lean": "2b9dc037d91e40251fde15b0da45f50620731dc247306035d332f016e1375ba3"
+  },
+  "checks": {
+    "python_syntax": "All three modified verification scripts parsed successfully.",
+    "baseline_sources": {
+      "total": 888,
+      "byte_identical": 883,
+      "existing_comment_only_amendment": 1,
+      "explicit_reversible_proof_refactors": 4
+    },
+    "original_contracts": {
+      "count": 26,
+      "source_headers": "Exact original source headers preserved, including the three relocated helper declarations.",
+      "definitions": "The original non-theorem definition body is preserved.",
+      "compiled_types": "All original elaborated Expr representations agree after erasing only forall/lam/let bound-variable labels; all constants, arguments, binder kinds, other constructors, and ordered universe parameters remain exact."
+    },
+    "compiled_axiom_audit": {
+      "status": "passed",
+      "owned_declarations": 36,
+      "modules": [
+        "TransposeFollowup.XorComponentCount",
+        "TransposeFollowup.XorDegreeBound",
+        "TransposeFollowup.XorPathCycleBound",
+        "TransposeFollowup.SubmodularCover",
+        "TransposeFollowup.DisjointFamilyCount",
+        "TransposeFollowup.DistanceNumerics"
+      ],
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "extra_axioms_or_sorryAx": false
+    },
+    "audit_ownership": "The new audit checks every declaration owned by the four modified baseline modules and both moved-helper modules. PacketAxioms separately continues auditing all 25 extension modules in the current full verifier.",
+    "guard_controls": {
+      "status": "passed",
+      "total": 13,
+      "rejections": 12,
+      "positive_acceptances": 1,
+      "cases": [
+        {
+          "case": "unrecorded_source_change",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "corrupt_reverse_patch",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "changed_historical_hash",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "unapproved_source_path",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "omitted_original_contract",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "header_change_despite_valid_reverse_patch",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "definition_change_despite_valid_reverse_patch",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "valid_four_file_reverse_patch_and_all_headers",
+          "status": "accepted"
+        },
+        {
+          "case": "elaborated_type_changed",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "universe_parameters_changed",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "missing_type_audit",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "missing_original_axiom_coverage",
+          "status": "rejected_as_required"
+        },
+        {
+          "case": "forbidden_axiom",
+          "status": "rejected_as_required"
+        }
+      ],
+      "scope": "Isolated copies only; no live mathematical sources altered. Negative audit payloads test rejection, not Lean theorem construction."
+    },
+    "receipt_semantics": "Current verification/completion receipts distinguish proof refactors from comment amendments and unchanged code; each modified source remains bound to its historical digest by exact patch reversal.",
+    "portability": "The manifest and this review contain project-relative public paths only; no private paths or raw console logs."
+  },
+  "private_evidence_digests": [
+    {
+      "role": "Original 26-type capture, including raw and binder-label-erased Expr representations",
+      "sha256": "4ceb3c2fda883f8339c52cbbdd32ef5188e8f2e1418bff4f3cc583c3cacf964f"
+    },
+    {
+      "role": "Successful compiled current type and axiom audit output",
+      "sha256": "3b8d515e51a87e980a4fcc1eab09458cba030f612d825b1c9638795432b5ef9b"
+    },
+    {
+      "role": "Isolated source-guard rejection and acceptance controls",
+      "sha256": "769f55df6c217ecf4d31be62a60e658ed7016729d03cebcc8221cd0adbc5b414"
+    }
+  ],
+  "historical_records": "No historical baseline or verification records were edited by this work.",
+  "limitations": [
+    "This receipt does not claim completion of the repository-wide build, final PDF verification, or the separate manuscript faithfulness reviews.",
+    "The rejection controls use isolated copies and altered audit payloads; they do not construct or execute invalid Lean theorems.",
+    "The Lean audit is an ordinary compiled-environment check, not a new empty-environment replay of all imported expressions."
+  ],
+  "unresolved_findings": []
+}

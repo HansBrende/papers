@@ -28,8 +28,13 @@ runs \texttt{\#print axioms} on all explicitly cited formal declarations,
 including definitions and imported endpoints. It checks that every requested
 declaration has an audit result and that no other axiom occurs. The formal
 source guard additionally checks preservation of the audited mathematical
-sources and trust settings; the review records separately identify two
-comment-only corrections in the padding module. This is an ordinary build and transitive axiom audit, not a fresh
+sources and trust settings. The review records distinguish two padding-comment
+corrections, the new packet modules, and proof refactors that derive the old
+XOR and unweighted-cover statements from their generalizations. The original
+baseline is retained; each refactor is recorded against it, and the old
+declaration types are checked against their pre-refactor elaborations. A
+separate axiom audit covers every declaration owned by the new and refactored
+modules. This is an ordinary build and transitive axiom audit, not a fresh
 empty-environment replay of every imported proof term.
 
 \subsection{Reproduction}

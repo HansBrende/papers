@@ -87,6 +87,31 @@ def main():
     audit += [f'import {module}' for module in modules]
     audit += [''] + [f'#print axioms {name}' for name in names]
     (ROOT / 'lean/PaperAxioms.lean').write_text('\n'.join(audit)+'\n')
+    extension = json.loads((OUT / 'packet-strengthening/source-extension.json').read_text())
+    packet_modules = sorted(Path(path).with_suffix('').relative_to('lean').as_posix().replace('/', '.')
+                            for path in extension['files'])
+    packet_audit = ['-- Generated audit of every declaration in the additive packet modules.',
+                    '-- This is verification tooling, not a mathematical axiom or proof source.',
+                    'import Lean', *['import ' + module for module in packet_modules], '',
+                    'open Lean Elab Command', '', 'set_option maxHeartbeats 0 in',
+                    'run_cmd do',
+                    '  let env ← getEnv',
+                    '  let modules : Array Name := #[' + ', '.join('`' + m for m in packet_modules) + ']',
+                    '  let allowed : Array Name := #[`propext, `Classical.choice, `Quot.sound]',
+                    '  let mut count : Nat := 0',
+                    '  let mut actual : Array Name := #[]',
+                    '  for (name, _) in env.constants.toList do',
+                    '    if let some idx := env.getModuleIdxFor? name then',
+                    '      if modules.contains env.header.moduleNames[idx]! then',
+                    '        let axioms ← collectAxioms name',
+                    '        for ax in axioms do',
+                    '          unless allowed.contains ax do',
+                    '            throwError "Forbidden axiom {ax} in {name}"',
+                    '          if !actual.contains ax then actual := actual.push ax',
+                    '        count := count + 1',
+                    '  if count == 0 then throwError "Empty packet declaration audit"',
+                    '  logInfo m!"Packet declaration audit: {count} declarations; axioms {actual}"']
+    (ROOT / 'lean/PacketAxioms.lean').write_text('\n'.join(packet_audit)+'\n')
     lines = [r'\section{Declaration and dependency index}\label{app:index}',
              'The primary endpoints of every numbered result are listed below. The',
              r'complete inventory, including definitions and imported results cited in the',
@@ -101,7 +126,7 @@ def main():
     lines += [r'\end{description}', r'\paragraph{Dependency structure.}',
               r'The original model and $M^*$ theorem feed the native motion and approximation',
               r'obstructions, which feed the scan-palette and recursion exclusions. The',
-              r'finite original-row, coordinate-XOR and two-stage interfaces support the',
+              r'finite original-row, two-coordinate packet and two-stage interfaces support the',
               r'three local-coding families independently of the analytic padding chain.',
               r'For padding, rational expansion feeds finite overlap graphs and their',
               r'paid excursion implementation; cleanup and payload composition preserve',

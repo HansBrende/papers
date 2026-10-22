@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "reviewer": "GPT-6 Astra AI subagent",
+  "scope": "Authored XOR-to-Boolean proof reuse and shared-numerics refactor, with targeted compilation, preserved-contract checks and dependency audit. No mathematical strengthening or weakening is introduced by this refactor.",
+  "changes": [
+    "The original XOR scaled and real distance theorems directly apply the strengthened Boolean-packet endpoints through toRecodedPacketCode, its correctness adapter and its locality adapter.",
+    "The original XOR degree theorems apply the packet consequences. Ball, path and cycle consequences use the same PacketDistanceBudget proof family through the adapter.",
+    "The generic disjoint-family count moved unchanged to DisjointFamilyCount. The two generic logarithmic helpers moved unchanged to DistanceNumerics. These new modules import only Mathlib.",
+    "Packet component counting, packet distance consequences and robust packet numerics no longer import any original XOR bound module."
+  ],
+  "validation": {
+    "targeted_build": "lake build TransposeFollowup.XorDegreeBound TransposeFollowup.XorPathCycleBound TransposeFollowup.PacketRobustNumerics",
+    "build_result": "passed, including all changed dependency modules",
+    "original_contracts": "All 25 original XOR/helper theorem and definition names remain available. Their printed headers are byte-identical to the pre-edit capture.",
+    "exact_type_check": "The companion compiled contract audit passed for these 25 declarations and the separately refactored submodular theorem: every Expr constructor, constant, argument and ordered universe list is preserved, erasing only bound-variable labels.",
+    "header_and_source_preservation": "The reversible proof-refactor manifest restores original source bytes and all 26 original declaration headers exactly.",
+    "focused_axiom_audit": "All 25 declarations checked here use only propext, Classical.choice and Quot.sound. The companion audit additionally checked all 36 declarations owned by the four refactored baseline modules and two moved-helper modules, with the same whitelist.",
+    "dependency_check": "The complete transitive project import closures of PacketDistanceBound, PacketDistanceConsequences, PacketComponentCount, DisjointFamilyCount, DistanceNumerics and PacketRobustNumerics contain none of XorComponentCount, XorDegreeBound or XorPathCycleBound."
+  },
+  "retained_results": [
+    "XOR component partitions, unanchored components and their size bounds retain their public contracts.",
+    "The free-flip orbit and small-unanchored-component distance results remain: an XOR-unanchored component can contain cycles and redundant packets and need not be deficient in the general packet model. These express an independently useful invariant rather than duplicate the new collision argument.",
+    "The standalone comparison between the shifted path/cycle error and the former square-root error is retained unchanged."
+  ],
+  "size_change": {
+    "counted_modules": [
+      "XorComponentCount",
+      "XorDegreeBound",
+      "XorPathCycleBound",
+      "PacketComponentCount",
+      "PacketDistanceConsequences",
+      "PacketRobustNumerics",
+      "DisjointFamilyCount",
+      "DistanceNumerics"
+    ],
+    "source_lines_before": 857,
+    "source_lines_after": 796,
+    "net_source_lines_removed": 61,
+    "nonempty_declaration_body_lines_before": 471,
+    "nonempty_declaration_body_lines_after": 374,
+    "net_nonempty_declaration_body_lines_removed": 97,
+    "body_count_method": "Nonempty lines after each top-level theorem/definition assignment, stopping at the next declaration or documentation block. Both totals include relocated bodies in the new shared modules; the source-line total includes all imports, statements, comments and blank lines."
+  },
+  "unresolved_required_corrections": [],
+  "limitations": [
+    "This report is an AI-agent review, not external human peer review.",
+    "No novelty, native runtime or unrestricted transposition claim is made.",
+    "Full publication verification is recorded separately and must bind these current sources."
+  ],
+  "reviewed_sources": {
+    "lean/TransposeFollowup/XorComponentCount.lean": "cc70145e6faab05292fe94558936ec9ca41b1622cf384252bfa893e682f8ab33",
+    "lean/TransposeFollowup/XorDegreeBound.lean": "a864b87bba43580e4735bbf827677ca9f1737f707ff15db038885b932b372711",
+    "lean/TransposeFollowup/XorPathCycleBound.lean": "5d86f8405f92cc0c3a57991785b9da54ad28f153454d1028ef0ec9737fac8c32",
+    "lean/TransposeFollowup/PacketComponentCount.lean": "f7249f671b1c118aebf44a445647f5439d58c5877a0b026c570d281e1e891451",
+    "lean/TransposeFollowup/PacketDistanceConsequences.lean": "a2db30d00c41c2c5f54bbbb1fb8e1190301a42bc3e87cc67aeb79a7efbe9d4d6",
+    "lean/TransposeFollowup/PacketRobustNumerics.lean": "6ec44570b9b58245c5dfd07a658aa4862f9b8f907421b3b353ff24fe8f1332e8",
+    "lean/TransposeFollowup/DisjointFamilyCount.lean": "9b7aa1b7b09a782f1e9426e97241bd72f510d7bad5ab0de97d647edcdff1ba66",
+    "lean/TransposeFollowup/DistanceNumerics.lean": "ebef50662d1414c0054fb1b9336d3b4b5a5a53564ade3cc26106d9bb2f9cf114",
+    "lean/TransposeFollowup/PacketDistanceBound.lean": "1c91858b2115e6eb1885edb9fec17df59e9ee57da87a217796525d4826a26291",
+    "lean/TransposeFollowup/RecodedPackets.lean": "facdc2e13409913d1635804c7d208895425d234bed0f477a6799b730936758e5",
+    "lean/TransposeFollowup/SubmodularCover.lean": "49b06e6e75952da8f05125968df3cc08dc957bd1d492324d37d6c773348b7f60",
+    "lean/TransposeFollowup/ConditionalCoordinateEntropy.lean": "197e4e47940340849126764d5ab22401866da0e17fb5874a052e591e608f60d9",
+    "lean/TransposeFollowup/HelperPacketDegreeBound.lean": "9b2c2ad2f9efbff56f2d737bc86dbb01d8e30410a562d92cdcfcce0e0fbac9c4",
+    "lean/TransposeFollowup/WeightedSubmodularCover.lean": "8da342a7e3991b78e2e02838d3e7141afc5607d6ca2a505d48c6d21b7960a148",
+    "paper/sections/local-coding.tex": "18ef25cd66c7bb3870b34c2b3b071416af971a417809852b86bc8bca221ef5c9"
+  },
+  "root_changes_independent_review": {
+    "status": "passed",
+    "scope": "Read-only independent check of the root-authored cover specializations and every-radius helper endpoint; separate from the reviewer-authored 61-source-line refactor counted above.",
+    "source_statement_comparison": "All 14 preexisting theorem/definition headers across SubmodularCover, ConditionalCoordinateEntropy and HelperPacketDegreeBound are byte-identical to the review-start snapshot. Only degree_broadcast_bound_scaled is added.",
+    "cover_specializations": "Both unweighted covering inequalities specialize the weighted theorem with every weight equal to one. Nonnegative weights are discharged by zero_le_one; arbitrary real covering multiplicity and the original entropy hypotheses are retained without additional normalization assumptions.",
+    "every_radius_endpoint": "The new actual-code endpoint exposes the already derived radius-k budget with no A or small-deficit hypothesis. It retains normalized nonnegative input weights, selected-code correctness, inverse width/reuse and graph degree assumptions. Nonnegative aggregate information justifies the coefficient enlargement. The old explicit degree theorem derives directly from this endpoint and keeps its prior statement.",
+    "manuscript_comparison": "The sublinear-information paragraph divides the finite bound by (k+2)P correctly: its near term is 2ce delta^k/d and its information term is (1+64c^2e^2 delta^(2k)) I/P. For each fixed k both vanish under d tending to infinity, I/P tending to zero and fixed c,e,delta. The resulting limsup bound for every k excludes a fixed positive saving fraction, uniformly in b>0. This qualitative limiting argument is presented as a consequence of the finite theorem, not a separately formalized limit theorem.",
+    "validation_scope": "Independent complete source read and source-header comparison. Targeted compilation was already completed by the parent; no redundant build or mathematical edit was performed for this review.",
+    "unresolved_required_corrections": []
+  }
+}

@@ -72,45 +72,63 @@ strategies, while leaving globally coupled coded computation open.
 
 Lean: GraphSeparatorBound, SeparatorSharpness, Treewidth, AdaptiveTreewidth.
 
-2. NONLINEAR ROW RECODING FOLLOWED BY FIXED PAIRWISE XOR [source181B]
+2. FIXED TWO-COORDINATE BOOLEAN PACKETS AND INVERSE-LOCAL RECODING
 
-Apply an arbitrary bijection independently to each row. Broadcast B fixed
-single-coordinate or two-coordinate XOR packets of the recoded data,
-with pairwise supports local to a fixed row graph G. Each receiver has its
-own ORIGINAL row and the broadcasts, and must recover its column for EVERY
-input. Repetitions, same-row pairs, self-XORs and disconnected graphs are
-permitted. Let Q_ell be the number of raw bit positions whose row and column
-vertices are joined by a walk shorter than ell. For every integer ell>=0,
+The original XOR result is retained and strengthened in two steps.
 
-  B >= P - (P+ell*Q_ell)/(ell+1).
+(a) Independently apply an arbitrary bijection to each row. Each fixed packet
+may now be ANY Boolean function of at most two stored coordinates. Receivers
+retain their original rows; correctness holds on the full input cube. The
+original exact bounds are unchanged, with P=d*d*b and Q_ell counting raw bit
+positions whose source and receiver are joined by a walk shorter than ell:
 
-For maximum degree at most Delta and d>=2,
+  B >= P - (P+ell*Q_ell)/(ell+1)  (ell>=0).
+  B >= P - 6*log(max(2,Delta))*P/log(d)  (d>=2, degree<=Delta).
+  B >= P - b*d*(sqrt(8*(d+3))-4)  (d>0, linear ball bound).
 
-  B >= P - 6*log(max(2,Delta))*P/log(d).
+The last bound applies to paths, cycles and injectively cycle-embedded graphs.
+The original-row separator theorem also applies and gives a better path/cycle
+leading constant. The distance method's additional reach is bounded-degree
+expanders, even with arbitrary nonlinear two-coordinate packets.
 
-For d>0 and any injective graph homomorphism into a cycle (including paths,
-cycles, arbitrary relabelings and their subgraphs),
+(b) A deterministic finite-alphabet helper selects an arbitrary full-cube
+bijection, a fixed two-coordinate Boolean packet list, graph and decoder.
+Original row i must be recoverable from a declared set S_i of stored rows on
+the FULL cube, though code correctness is required only on a declared family.
+Receivers still retain their original rows. No further adaptivity is allowed.
+For any input law, put D=P-H(X), with entropies in bits. At radius ell>=1,
+join distinct original rows when their inverse supports contain stored rows
+at walk distance less than ell. Let K bound that conflict graph's degree in
+every helper branch, and Q count raw diagonal or conflict-near bit positions.
+With L=min(d,16*(K+1)^2),
 
-  B >= P - b*d*(sqrt(8*(d+3))-4).
+  (ell+1)*(P-E B) <= P+ell*E Q+ell*(1+L)*(D+H(helper)).
 
-The path/cycle inequality illustrates the XOR distance method. It is not the
-strongest bound available here: the separator theorem also applies and yields
-loss 2*b*d^(3/2)+O(b*d), rather than leading constant 2*sqrt(2). On a 100-cycle,
-ten evenly spaced separator vertices leave ten components of size nine,
-giving separator loss 1810*b. The degree bound is useful even on bounded-degree
-expander families, for which small-component separators are not available.
+For d>=2,b>=1, inverse supports of size<=c, reuse<=e, c,e>=1, graph degree
+<=delta with delta>=2, and D+H(helper)<=A*d*b (A>=0),
 
-Strengthening/precision: explicit finite constants and all stated graph
-edge cases; no linearity restriction on the row bijections. The core result
-matches the written finite bound. All-input correctness and fixed XOR
-packets remain essential; this does not cover arbitrary adaptive nonlinear
-broadcasts or noninvertible row recodings.
+  E B >= P - 4*(1+2*c*e+A+64*c*c*e*e*A)*log(delta)*P/log(d).
 
-Use: independently recoding rows does not produce a constant-fraction saving
-when the subsequent fixed XOR network has bounded degree. A useful coding
-construction must escape this architecture or its graph constraints.
+For fixed c,e,delta,A the error is O(P/log d), uniformly in positive b.
+More generally, the every-radius finite budget excludes any fixed fractional
+saving whenever D+H(helper)=o(P) and c,e,delta are fixed: hold the radius
+fixed, let d tend to infinity, then let the radius grow. This weaker
+information hypothesis does not assert the same O(P/log d) error rate.
+Both bounded inverse support and bounded reuse are needed for this consequence.
+The finite Q/K bound still covers arbitrarily large declared inverse supports;
+the useful degree corollaries require bounded support and reuse. The model
+does not include arbitrary functions of two entire rows, nonbijective banks,
+or further adaptive packet selection.
+These are coding bounds, not tape-runtime bounds. No unrestricted transposition
+or multiplication bound follows without proving model applicability.
 
-Lean: XorComponentCount, XorDegreeBound, XorPathCycleBound.
+Lean: PacketDistanceBound, PacketDistanceConsequences, RobustPacketBound,
+HelperRobustPacketBound, HelperPacketDegreeBound. Original XorComponentCount,
+XorDegreeBound and XorPathCycleBound theorem statements are unchanged; their
+main distance, degree and path/cycle bounds now follow directly from the
+Boolean-packet bounds. Shared counting and numerical lemmas live below both
+models. The unweighted submodular cover similarly specializes the weighted
+cover, eliminating a separate induction.
 
 3. AFFINE HEAD MOTION AND QUANTITATIVE EXCEPTIONAL TIME [sources200/210]
 

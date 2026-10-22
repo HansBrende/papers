@@ -14,7 +14,8 @@ import shutil
 import subprocess
 import sys
 import time
-from source_guard import verify_digest
+from source_guard import (verify_digest, load_proof_refactors, refactor_audit_source,
+                          check_refactor_audit, PROOF_MANIFEST, PROOF_PATHS)
 from portable_paths import command_record
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,12 +78,38 @@ def main():
         baseline = json.loads((OUT / 'formal-baseline.json').read_text())['files']
         actual = {str(f.relative_to(ROOT)):sha(f) for base in ('lean/TransposeFollowup','lean/FixedTapeCompiler')
                   for f in (ROOT/base).rglob('*.lean')}
-        if set(actual) != set(baseline):
-            raise RuntimeError('Mathematical source inventory differs from manuscript-start baseline')
+        extension_path = OUT / 'packet-strengthening/source-extension.json'
+        extension = json.loads(extension_path.read_text())
+        added = extension['files']
+        original_labels = set(extension['original_numbered_labels'])
+        added_labels = set(extension['added_numbered_labels'])
+        if original_labels & added_labels or {i['label'] for i in inv['numbered_results']} != original_labels | added_labels:
+            raise RuntimeError('Numbered results differ from original inventory plus explicit extension')
+        if extension.get('schema_version') != 1 or set(added) & set(baseline):
+            raise RuntimeError('Invalid additive mathematical source manifest')
+        if set(actual) != set(baseline) | set(added):
+            raise RuntimeError('Mathematical inventory differs from baseline plus explicit extension')
+        for path, digest in added.items():
+            if actual[path] != digest:
+                raise RuntimeError('Strengthening source differs from its recorded digest')
+        receipt['source_extension'] = {
+            'manifest': str(extension_path.relative_to(ROOT)),
+            'manifest_sha256': sha(extension_path),
+            'files': added,
+            'scope': 'New proofs checked by this build; explicit original proof refactors are separately guarded and audited.'}
+        refactors = load_proof_refactors()
+        if refactors is not None:
+            audit = ROOT / 'lean/ProofRefactorAxioms.lean'
+            audit.write_text(refactor_audit_source(refactors))
+            receipt['proof_refactor_manifest'] = {
+                'path': PROOF_MANIFEST, 'sha256': sha(ROOT / PROOF_MANIFEST),
+                'audit_source': str(audit.relative_to(ROOT)), 'audit_source_sha256': sha(audit)}
         preservation = [verify_digest(ROOT/path, digest) for path,digest in baseline.items()]
         receipt['formal_sources_unchanged'] = sum(x['status'] == 'byte_unchanged' for x in preservation)
-        receipt['comment_only_amendments'] = [x for x in preservation if x['status'] != 'byte_unchanged']
-        receipt['mathematical_code_unchanged'] = len(preservation)
+        receipt['comment_only_amendments'] = [x for x in preservation if x['status'] == 'comment_only_amendment']
+        receipt['proof_refactors'] = [x for x in preservation if x['status'] == 'proof_refactor']
+        receipt['mathematical_code_unchanged'] = len(preservation) - len(receipt['proof_refactors'])
+        receipt['baseline_sources_verified'] = len(preservation)
         step('upstream', [sys.executable, 'verification/check_upstream.py'], executable_label='python3')
         step('openai-source', [sys.executable, 'verification/fetch_openai_metric.py', '--check'],
              executable_label='python3')
@@ -91,8 +118,8 @@ def main():
         prior_path = ROOT/'verification/support-build.json'
         prior = json.loads(prior_path.read_text())
         guard = {'basis': str(prior_path.relative_to(ROOT)), 'basis_sha256': sha(prior_path),
-                 'scope': 'R1916 source/configuration/external preservation, with an explicitly verified comment-only amendment and documented provenance-path normalization',
-                 'groups': {}, 'metadata_path_amendments': []}
+                 'scope': 'R1916 source/configuration/external preservation, with exact comment, proof-refactor and provenance-path amendments; original proof contracts are audited below.',
+                 'groups': {}, 'metadata_path_amendments': [], 'proof_refactors': []}
         for group in ('source_sha256', 'configuration_sha256', 'external_source_sha256'):
             expected_hashes = prior[group]
             for relative, expected in expected_hashes.items():
@@ -102,6 +129,8 @@ def main():
                 result = verify_digest(path, expected)
                 if result['status'] == 'publication_metadata_normalization':
                     guard['metadata_path_amendments'].append(result)
+                elif result['status'] == 'proof_refactor':
+                    guard['proof_refactors'].append(result)
             guard['groups'][group] = len(expected_hashes)
         guard['status'] = 'passed'
         (OUT/'formal-guard.json').write_text(json.dumps(guard, indent=2)+'\n')
@@ -109,7 +138,23 @@ def main():
         lake = shutil.which('lake') or str(Path.home()/'.elan/bin/lake')
         step('lake-build', [lake, 'build'], ROOT/'lean', executable_label='lake')
         step('paper-imports', [lake, 'build', *inv['modules']], ROOT/'lean', executable_label='lake')
+        if refactors is not None:
+            modules = [p.removeprefix('lean/').removesuffix('.lean').replace('/', '.') for p in PROOF_PATHS]
+            step('proof-refactor-build', [lake, 'build', *modules], ROOT/'lean', executable_label='lake')
+            step('proof-refactor-audit', [lake, 'env', 'lean', 'ProofRefactorAxioms.lean'],
+                 ROOT/'lean', executable_label='lake')
+            receipt['proof_refactor_types'] = check_refactor_audit(
+                (OUT/'proof-refactor-audit.log').read_text(), refactors)
+            save()
         step('paper-axioms', [lake, 'env', 'lean', 'PaperAxioms.lean'], ROOT/'lean', executable_label='lake')
+        step('packet-axioms', [lake, 'env', 'lean', 'PacketAxioms.lean'], ROOT/'lean', executable_label='lake')
+        packet_output = (OUT/'packet-axioms.log').read_text()
+        packet_match = re.search(r'Packet declaration audit: (\d+) declarations; axioms', packet_output)
+        if packet_match is None or int(packet_match.group(1)) == 0:
+            raise RuntimeError('Missing packet declaration audit')
+        receipt['packet_axioms'] = {'declarations': int(packet_match.group(1)),
+                                    'scope': 'Every declaration owned by an extension module; standard axiom whitelist enforced in Lean.',
+                                    'audit_source_sha256': sha(ROOT/'lean/PacketAxioms.lean')}
         output = (OUT/'paper-axioms.log').read_text()
         parsed = {}
         for name, values in re.findall(r"'([^']+)' depends on axioms:\s*\[([^\]]*)\]", output):

@@ -19,10 +19,14 @@ excludes a larger class of input sets at every sufficiently large size.
 
 Applying our local-coding bounds to this target requires a structural
 argument: one must prove that the extracted tape codes satisfy the relevant
-locality or factorization hypotheses. An evolving coded bank is not an
-original row, and an arbitrary execution need not factor into the two stages
-of our helper theorem. Improving constants in those bounds does not
-supply this missing argument.
+locality or factorization hypotheses. The packet theorem already permits a
+globally recoded bank. Its bounded-degree consequence applies to fixed
+two-coordinate packets after a full-cube bijection, with bounded stored-row
+degree, inverse support and reuse, and sublinear combined input deficit and
+helper entropy. Fast tape execution alone does not supply these properties.
+Likewise, an evolving coded bank is not an original row, and an
+arbitrary execution need not factor into the two stages of our helper theorem.
+Improving constants in the local bounds does not supply this missing argument.
 
 \paragraph{A lower-bound invariant to test.}
 A further lower bound must use more than the aggregate cut and $M^*$
@@ -47,11 +51,17 @@ routing on the relevant tape networks. A code with this gain would still need
 a uniform finite-state implementation with linear total cost.
 \upformal{Transpose.Tape.Statements.Coding}{Transpose.Tape.code_gap}
 
-Several possibilities remain outside our exclusions: high-treewidth queries
-on original rows, more general broadcasts than fixed coordinate XORs,
-more than two nonlinear stages, and recursive updates that fail the stated
-affine-regularity hypotheses. None is thereby shown feasible. The padding
-construction supplies motion, not an encoder or decoder for complete exchange.
+Several possibilities remain beyond the stated corollaries: high-treewidth queries
+on original rows that do not fit the two-coordinate packet model; larger
+packet supports; global recodings with unbounded inverse support or reuse;
+more than two nonlinear stages; and recursive updates that fail the stated
+affine-regularity hypotheses. A preliminary global bijection with bounded
+inverse support and reuse is already covered: on bounded-degree packet
+graphs it cannot produce a fixed fractional broadcast saving with
+$D_w+H(Z)=o(P)$. None of the remaining possibilities is thereby shown feasible.
+Larger inverse supports must still be tested against the finite packet bound.
+The padding construction supplies motion, not an encoder or decoder for
+complete exchange.
 
 \paragraph{Evaluating a candidate.}
 State its information access, helper costs, correctness set and actual tape

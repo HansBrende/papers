@@ -15,14 +15,21 @@ import TransposeFollowup.BitPlaneRun
 import TransposeFollowup.BoundedAffineCovers
 import TransposeFollowup.CanonicalTimeNormalization
 import TransposeFollowup.ContractingStageClock
+import TransposeFollowup.CoordinatePackets
 import TransposeFollowup.CountableAffinePathLabels
 import TransposeFollowup.ExceptionalRecursiveLimits
 import TransposeFollowup.ExceptionalStageClock
 import TransposeFollowup.FiniteAffineLabels
 import TransposeFollowup.FiniteAffineTimeBound
+import TransposeFollowup.FractionalIndependentCover
 import TransposeFollowup.GraphSeparatorBound
+import TransposeFollowup.HelperPacketAveraging
+import TransposeFollowup.HelperPacketDegreeBound
+import TransposeFollowup.HelperRobustPacketBound
 import TransposeFollowup.IntegerMatrixGeometry
 import TransposeFollowup.IntegerMatrixPalette
+import TransposeFollowup.InverseLocalPackets
+import TransposeFollowup.InverseRowBank
 import TransposeFollowup.LocalProtocol
 import TransposeFollowup.MaskedStrideScan
 import TransposeFollowup.MatrixPaletteObstructions
@@ -35,6 +42,9 @@ import TransposeFollowup.NativeRegularRecursion
 import TransposeFollowup.NativeRunLimits
 import TransposeFollowup.OmittedVisitBound
 import TransposeFollowup.OpenAffineTimeBound
+import TransposeFollowup.PacketDistanceBound
+import TransposeFollowup.PacketDistanceConsequences
+import TransposeFollowup.PacketInformation
 import TransposeFollowup.PaidPaddingLimits
 import TransposeFollowup.PhysicalAffineApproximationObstruction
 import TransposeFollowup.ProtocolTruncation
@@ -53,8 +63,9 @@ import TransposeFollowup.RawSymbolWordApproximation
 import TransposeFollowup.RawTernaryMatrixHorizontal
 import TransposeFollowup.RawTernaryVertical
 import TransposeFollowup.RawUnitArithmeticData
-import TransposeFollowup.RecodedXor
+import TransposeFollowup.RecodedPackets
 import TransposeFollowup.SeparatorSharpness
+import TransposeFollowup.SharedDemandEntropy
 import TransposeFollowup.StageClockAccounting
 import TransposeFollowup.StationaryTapesRun
 import TransposeFollowup.TernaryMatrixGeometry
@@ -66,10 +77,6 @@ import TransposeFollowup.TwoStageHelper
 import TransposeFollowup.TwoStageHelperEntropy
 import TransposeFollowup.TwoStageRows
 import TransposeFollowup.UnconditionalPaidPadding
-import TransposeFollowup.XorComponentCount
-import TransposeFollowup.XorDegreeBound
-import TransposeFollowup.XorPackets
-import TransposeFollowup.XorPathCycleBound
 
 #print axioms Transpose.ComputesWithin
 #print axioms Transpose.LinearTimeTransposable
@@ -111,12 +118,24 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.BitPlaneMachine.run_embed
 #print axioms TransposeFollowup.CausalRows
 #print axioms TransposeFollowup.CausalRows.apply
+#print axioms TransposeFollowup.CoordinatePacket
+#print axioms TransposeFollowup.CoordinateSystem
+#print axioms TransposeFollowup.CoordinateSystem.selected_conditional_entropy_lower
+#print axioms TransposeFollowup.CoordinateSystem.selected_tc_le_deficit
 #print axioms TransposeFollowup.FiniteBoundary.exists_affine_small_boundary
+#print axioms TransposeFollowup.HelperInverseLocalPacketCode
+#print axioms TransposeFollowup.HelperInverseLocalPacketCode.CorrectOn
+#print axioms TransposeFollowup.HelperInverseLocalPacketCode.degree_broadcast_bound_scaled
+#print axioms TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound
+#print axioms TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound
 #print axioms TransposeFollowup.IntegerMatrixPalette.Operation
 #print axioms TransposeFollowup.IntegerMatrixPalette.approximation_cover
 #print axioms TransposeFollowup.IntegerMatrixPalette.approximation_error
 #print axioms TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose
 #print axioms TransposeFollowup.IntegerMatrixPalette.value
+#print axioms TransposeFollowup.InverseLocalPacketCode
+#print axioms TransposeFollowup.InverseLocalPacketCode.LocalTo
+#print axioms TransposeFollowup.InverseRowBank
 #print axioms TransposeFollowup.LocalQuery
 #print axioms TransposeFollowup.MaskedStrideScan.buffer
 #print axioms TransposeFollowup.MaskedStrideScan.output
@@ -151,17 +170,18 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.RawTernaryMatrixHorizontal.value_entry
 #print axioms TransposeFollowup.RawTernaryVertical.value_entry
 #print axioms TransposeFollowup.RawUnitArithmetic.output_value
-#print axioms TransposeFollowup.RecodedXorCode
-#print axioms TransposeFollowup.RecodedXorCode.Correct
-#print axioms TransposeFollowup.RecodedXorCode.LocalTo
-#print axioms TransposeFollowup.RecodedXorCode.broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled
-#print axioms TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound
-#print axioms TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode
+#print axioms TransposeFollowup.RecodedPacketCode.Correct
+#print axioms TransposeFollowup.RecodedPacketCode.LocalTo
+#print axioms TransposeFollowup.RecodedPacketCode.broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled
+#print axioms TransposeFollowup.RecodedPacketCode.cycle_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.cycle_embedding_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.path_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedPacketCode.subcycle_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.toRecodedPacketCode
 #print axioms TransposeFollowup.RegularMotion.ContractingStageClock
 #print axioms TransposeFollowup.RegularMotion.HasFlaggedRecursiveExecutions
 #print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions
@@ -208,15 +228,17 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.TwoStageRows.apply
 #print axioms TransposeFollowup.TwoStageRows.correct_family_card
 #print axioms TransposeFollowup.TwoStageRows.inverse_block_injective
-#print axioms TransposeFollowup.XorPacket
-#print axioms TransposeFollowup.XorSystem
 #print axioms TransposeFollowup.average_treewidth_lower_bound
 #print axioms TransposeFollowup.average_treewidth_lower_bound_of_distribution
 #print axioms TransposeFollowup.blockInjective_inverse
 #print axioms TransposeFollowup.blockInjective_rowwise
+#print axioms TransposeFollowup.exists_fractional_independent_cover_scaled
 #print axioms TransposeFollowup.exists_rational_continuous_expander
 #print axioms TransposeFollowup.graph_expected_separator_bound
 #print axioms TransposeFollowup.graph_expected_separator_bound_of_distribution
 #print axioms TransposeFollowup.graph_worst_case_separator_bound
+#print axioms TransposeFollowup.inverseNearBits
+#print axioms TransposeFollowup.inverseSupportGraph
+#print axioms TransposeFollowup.sharedDemand_conditionalEntropy_le_min
 #print axioms TransposeFollowup.treewidth_fragmentation
 #print axioms TransposeFollowup.treewidth_separator_loss

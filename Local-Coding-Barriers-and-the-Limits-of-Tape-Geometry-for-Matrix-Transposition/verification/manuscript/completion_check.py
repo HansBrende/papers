@@ -12,7 +12,8 @@ import re
 import subprocess
 import sys
 from pypdf import PdfReader
-from source_guard import verify_digest
+from source_guard import (verify_digest, load_proof_refactors, refactor_audit_source,
+                          check_refactor_audit, PROOF_MANIFEST)
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'verification/manuscript'
@@ -44,7 +45,32 @@ def main():
     require(public_check.returncode == 0, 'Public-path check failed: ' + public_check.stdout)
     ver, inv = read('verification.json'), read('declarations.json')
     require(ver['status'] == 'passed', 'Formal verification failed')
-    groups = [ver['sources'], inv['sources'], read('formal-baseline.json')['files']]
+    refactors = load_proof_refactors()
+    if refactors is not None:
+        evidence = ver.get('proof_refactor_manifest', {})
+        require(evidence.get('path') == PROOF_MANIFEST, 'Missing proof-refactor verification evidence')
+        binding({'path': evidence['path'], 'sha256': evidence['sha256']})
+        binding({'path': evidence['audit_source'], 'sha256': evidence['audit_source_sha256']})
+        require((ROOT / evidence['audit_source']).read_text() == refactor_audit_source(refactors),
+                'Proof-refactor audit source does not match its declared scope')
+        require(check_refactor_audit((OUT / 'proof-refactor-audit.log').read_text(), refactors)
+                == ver.get('proof_refactor_types'), 'Original type audit evidence differs')
+        require({r['path'] for r in ver.get('proof_refactors', [])}
+                == {r['path'] for r in refactors['files']}, 'Proof-refactor source coverage differs')
+    extension = ver['source_extension']
+    binding({'path': extension['manifest'], 'sha256': extension['manifest_sha256']})
+    manifest = json.loads((ROOT / extension['manifest']).read_text())
+    require(extension['files'] == manifest['files'], 'Extension receipt/manifest mismatch')
+    expected_inventory = set(read('formal-baseline.json')['files']) | set(manifest['files'])
+    current_inventory = {str(p.relative_to(ROOT)) for base in ('lean/TransposeFollowup', 'lean/FixedTapeCompiler')
+                         for p in (ROOT / base).rglob('*.lean')}
+    require(current_inventory == expected_inventory, 'Mathematical source inventory changed after verification')
+    original_labels = set(manifest['original_numbered_labels'])
+    added_labels = set(manifest['added_numbered_labels'])
+    require(not original_labels & added_labels and
+            {i['label'] for i in inv['numbered_results']} == original_labels | added_labels,
+            'Numbered results differ from original inventory plus explicit extension')
+    groups = [ver['sources'], inv['sources'], read('formal-baseline.json')['files'], extension['files']]
     support = json.loads((ROOT / 'verification/support-build.json').read_text())
     groups += [support[g] for g in ['source_sha256', 'configuration_sha256', 'external_source_sha256']]
     for group in groups:
@@ -55,12 +81,13 @@ def main():
         require(step['exit_code'] == 0, 'Failed verification step')
         binding({'path': step['log'], 'sha256': step['log_sha256']})
     binding({'path': 'lean/PaperAxioms.lean', 'sha256': ver['paper_axioms_sha256']})
+    binding({'path': 'lean/PacketAxioms.lean', 'sha256': ver['packet_axioms']['audit_source_sha256']})
     binding({'path': 'verification/manuscript/declarations.json', 'sha256': ver['inventory_sha256']})
     for item in inv['annotations']:
         binding({'path': item['source'], 'sha256': item['source_sha256']})
     contract_files = ['parent-contracts.json', 'local-coding-contracts.json', 'motion-contracts.json']
     contracts = sum((read(name) for name in contract_files), [])
-    require(len(contracts) == len(inv['numbered_results']) == 31, 'Numbered-result count changed')
+    require(len(contracts) == len(inv['numbered_results']), 'Numbered-result count mismatch')
     require({c['label'] for c in contracts} == {c['label'] for c in inv['numbered_results']}, 'Contract coverage mismatch')
     require(all(n in inv['unique_declarations'] for c in contracts for n in c['declarations']), 'Unaudited contract declaration')
     review_set = read('review-set.json')
@@ -121,6 +148,12 @@ def main():
         'axioms': ver['axioms'], 'mathematical_sources_unchanged': ver['formal_sources_unchanged'],
         'comment_only_amendments': ver.get('comment_only_amendments', []),
         'mathematical_code_unchanged': ver['mathematical_code_unchanged'],
+        'baseline_sources_verified': ver.get('baseline_sources_verified', ver['mathematical_code_unchanged']),
+        'proof_refactors': ver.get('proof_refactors', []),
+        'proof_refactor_manifest': ver.get('proof_refactor_manifest'),
+        'proof_refactor_types': ver.get('proof_refactor_types'),
+        'source_extension': extension,
+        'packet_axioms': ver['packet_axioms'],
         'sources': ver['sources'], 'review_receipts': {name: sha(OUT / name) for name in receipts},
         'reproduction_scripts': {name: sha(OUT / name) for name in ['prepare.py', 'verify.py', 'build_paper.py', 'completion_check.py', 'source_guard.py', 'portable_paths.py']},
         'limitations': ['Unrestricted canonical transposition remains open.',

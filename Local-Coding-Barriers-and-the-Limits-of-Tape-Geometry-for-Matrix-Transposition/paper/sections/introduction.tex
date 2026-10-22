@@ -16,16 +16,18 @@ from the unresolved coding computation. This paper develops both sides of that
 separation.
 
 Our results fall into two connected groups. The first concerns abstract local
-information access. Adaptive nonlinear broadcasts confined to original rows
-obey separator bounds; bijective nonlinear row recodings still require near-full
-broadcasts for bounded-degree fixed coordinate XORs under all-input correctness;
-and a particular two-stage architecture
-requires substantial global helper information. The second concerns actual
-tape execution. Theorem~$M^*$ imposes a positive lower bound on total time
+information access, with $P=d^2b$ input bits. Adaptive nonlinear broadcasts confined to original rows
+obey separator bounds. Fixed two-coordinate Boolean packets obey exact distance
+bounds after arbitrary bijective row recoding. An entropy extension permits
+correlated inputs and helper-selected global bijections: bounded stored-row
+degree, inverse support and inverse reuse exclude a fixed fractional saving
+when input deficit plus helper entropy is $o(P)$. With an $O(db)$ information
+budget, the error is explicitly $O(P/\log d)$. A particular two-stage
+architecture also requires substantial global helper information.
+The second group concerns actual tape execution. Theorem~$M^*$ imposes a positive lower bound on total time
 outside locally affine regions of the limiting head paths. This excludes
-specified operations and
-regular recursions. Nevertheless, a fully paid prefix supplies the original
-cut condition for any payload computation and the limiting-motion conditions
+specified operations and regular recursions. A fully paid prefix supplies the
+original cut condition for any payload computation and the limiting-motion conditions
 for any linear-time payload.
 
 \paragraph{What the padding construction shows.}
@@ -46,9 +48,12 @@ describe abstract broadcasts or row transformations; they are not automatic
 properties of arbitrary tape computations. The native asymptotic theorems use
 the canonical logarithmic width and the original finite-state machine model.
 The motion results and their applications allow negligible entropy deficit
-and, where stated, negligible size-dependent control information. The XOR
-theorems, in contrast, require all-input correctness. Each change of model is
-made explicit at the relevant statement.
+and, where stated, negligible size-dependent control information. The packet
+theorems distinguish all-input row recoding from helper-selected global
+recoding with locally recoverable original rows. Their restrictions concern
+the inverse dependencies and the subsequent packet list; the forward
+bijection may mix the whole input. Each change of model is made explicit at
+the relevant statement.
 
 \paragraph{Relation to the earlier paper.}
 The local coding results turn parts of the earlier construction programme into

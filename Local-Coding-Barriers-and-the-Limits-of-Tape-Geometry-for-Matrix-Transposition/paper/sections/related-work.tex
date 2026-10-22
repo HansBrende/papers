@@ -40,9 +40,9 @@ sender knowledge constrains the permitted encoders. Sadeghi, Arbabjolfaei,
 and Kim study distributed servers holding prescribed message subsets
 \cite{SadeghiArbabjolfaeiKim2016}. Li, Ong, and Johnson develop cooperative
 composite coding and a sender-constrained rank-minimization formulation
-\cite{LiOngJohnson2019,LiOngJohnsonRank2019}. Our fixed original-row packet
-models can be interpreted in this setting after specifying the entry-level
-messages and column demands. Adaptive queries additionally choose their
+\cite{LiOngJohnson2019,LiOngJohnsonRank2019}. Our fixed packet model after
+independent row recoding can be interpreted in this setting after specifying
+the entry-level messages and column demands. Adaptive queries additionally choose their
 access supports from the public history; a fixed sender allocation does not
 by itself express this interface.
 
@@ -63,11 +63,19 @@ partial-message demands; splitting the rows into entries changes the
 single-uniprior hypothesis. Thus that characterization cannot simply be
 substituted for the original-row locality argument.
 
-Our second family permits arbitrary bijective nonlinear recoding within
-rows but restricts the subsequent packets to fixed single-coordinate or
-pairwise XORs. This restriction is substantial: nonlinear index codes can
-outperform linear ones~\cite{LubetzkyStav2008}. The component-flip and graph-distance arguments apply to this fixed-packet
-architecture. Similarly, the two-stage helper theorem counts fibers of a specific
+Our second family allows arbitrary Boolean functions of at most two stored
+coordinates per fixed packet. Independent bijective row recodings preserve
+the original distance bound. A further entropy argument covers correlated
+inputs, public helper selection and global bijections with declared inverse
+supports. Bounded support and reuse give the degree consequences. A packet
+of a global recoding may depend on
+many original rows, so its stored-coordinate support does not give the same
+sender restriction on the raw input. The inverse-dependency argument is
+needed for this extension. The coordinate restriction remains
+substantial: it does not allow arbitrary functions of two entire rows.
+Nonlinear index codes can outperform linear ones~\cite{LubetzkyStav2008};
+our obstruction is therefore stated directly for its nonlinear packet model.
+Similarly, the two-stage helper theorem counts fibers of a specific
 triangular--causal composition. Its helper selects the whole composition; no additional uncharged
 global operation is allowed between the stages.
 

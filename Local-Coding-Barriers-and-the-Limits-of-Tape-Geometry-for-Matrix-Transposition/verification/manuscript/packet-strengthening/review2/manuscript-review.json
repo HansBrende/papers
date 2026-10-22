@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "reviewed_at_utc": "2026-10-22T19:28:37.374284+00:00",
+  "scope": {
+    "edited_manuscript_sources": [
+      "paper/main.tex",
+      "paper/sections/introduction.tex",
+      "paper/sections/related-work.tex",
+      "paper/sections/local-coding.tex",
+      "paper/sections/roadmap.tex"
+    ],
+    "unchanged_sections_read_in_full": [
+      "paper/sections/model.tex",
+      "paper/sections/motion.tex",
+      "paper/sections/padding.tex"
+    ],
+    "description": "Whole-paper consistency review following the Boolean-packet and helper/inverse-local strengthening, with a detailed English-to-Lean comparison for subsection 4.2 and its impact statements. The unchanged model, motion and padding sections were read for compatibility and scope; this is not a new proof audit of every native theorem.",
+    "excluded": [
+      "Final kernel builds, transitive axiom audit, declaration-index generation and PDF rendering are recorded separately."
+    ],
+    "read_only_updated_sections_read_in_full": [
+      "paper/sections/verification.tex"
+    ]
+  },
+  "remaining_findings": [],
+  "checks": [
+    {
+      "topic": "Exact all-input Boolean theorem and old XOR special cases",
+      "status": "pass",
+      "assessment": "The manuscript states arbitrary fixed Boolean functions of at most two stored coordinates after independent bijective row recoding, with full-cube correctness and original-row receiver knowledge. The exact all-ell distance inequality, degree constant 6, and shifted path/cycle square-root constant are preserved. The current XOR distance and degree endpoints directly call the Boolean adapter; the path/ball endpoints use the same generic distance budget. The manuscript claims mathematical preservation and reuse, not unchanged proof bytes.",
+      "declarations": [
+        "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled",
+        "TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound",
+        "TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound",
+        "TransposeFollowup.RecodedXorCode.toRecodedPacketCode"
+      ]
+    },
+    {
+      "topic": "Actual helper-selected code and full-cube inverse premise",
+      "status": "pass",
+      "assessment": "Each helper value fixes a full-cube bijection, a packet list, packet count and decoder; the locality graph also depends only on that value. Inverse row recovery is required for all stored inputs. Correctness is required only for the selected branch on the declared family, including zero-weight members. The helper is deterministic and its actual entropy is charged. There is no later uncharged adaptive support or stopping decision. The finite theorem retains min(d,16(K+1)^2) and imposes no hidden conditional entropy or per-fiber budget premise.",
+      "declarations": [
+        "TransposeFollowup.InverseRowBank",
+        "TransposeFollowup.HelperInverseLocalPacketCode.CorrectOn",
+        "TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound"
+      ]
+    },
+    {
+      "topic": "Zero-deficit global-bank interpretation",
+      "status": "pass",
+      "assessment": "The unnumbered paragraph explicitly assumes a fixed bank correct on the full cube, uniform input and a constant helper. Substituting zero combined deficit and helper entropy in the finite theorem gives (ell+1)(P-B_a) <= P+ell*Q_{a,ell}, with ell >= 1 inherited from the theorem. A finite conflict graph always has a degree cap, which disappears from this specialization. The argument does not impose forward locality."
+    },
+    {
+      "topic": "Quantitative rate versus qualitative sublinear information budget",
+      "status": "pass",
+      "assessment": "The explicit 4*(1+2*c*e+A+64*c^2*e^2*A)*log(delta)*P/log(d) error remains tied to d >= 2, b > 0, fixed positive inverse-support and reuse caps c,e, delta >= 2, A >= 0, and I <= A*d*b. Separately, the newly exported every-radius actual-code bound needs no small-I premise. The manuscript divides it by (k+2)P, keeps k fixed while d tends to infinity and I/P tends to zero, then lets k grow. This proves the stated qualitative exclusion of a fixed fractional saving for I=o(P), uniformly for positive entry width. It is presented as an algebraic and limiting consequence, not as a separately Lean-formalized asymptotic theorem.",
+      "declarations": [
+        "TransposeFollowup.HelperInverseLocalPacketCode.degree_broadcast_bound_scaled",
+        "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound"
+      ]
+    },
+    {
+      "topic": "Finite theorem scope beyond the bounded-inverse corollary",
+      "status": "pass",
+      "assessment": "An earlier sentence incorrectly described unrestricted inverse dependence as outside all of the bounds. The current text correctly distinguishes the finite inequality, which accepts arbitrary declared inverse supports but may become weak, from the near-full bounded-support/reuse corollaries. Nonbijective banks, arbitrary functions of two entire rows, and post-helper adaptive packet selection remain outside this packet model."
+    },
+    {
+      "topic": "Proof outlines and attribution",
+      "status": "pass",
+      "assessment": "The all-input proof uses actual component collisions, not a linear flip symmetry. The robust outline matches component information budgets, conditional total correlation, endpoint recovery, the independent-set fractional cover, receiver grouping, near-coordinate charging and helper-fiber averaging. The global-bank comparison with multi-sender index coding is qualified because stored-coordinate locality need not be raw-row locality. Existing source credit and the warning against exhaustive novelty claims are preserved."
+    },
+    {
+      "topic": "Whole-paper consistency and ultimate target",
+      "status": "pass",
+      "assessment": "Abstract, introduction, local-coding discussion and roadmap now state the broader packet impact consistently. The manuscript uses d for matrix dimension, retains the original native model and canonical width, and keeps Lean statements authoritative with human-readable outlines. No unrestricted transposition-time or multiplication-time improvement is asserted. Motion and padding still concern their original independent hypotheses and do not establish coding or decoding."
+    },
+    {
+      "topic": "Verification appendix preservation claims",
+      "status": "pass",
+      "assessment": "The updated appendix distinguishes retained baseline source records from current proof refactors, preservation of original declaration types from preservation of proof bytes, and ordinary builds with transitive axiom audits from a fresh empty-environment replay. It identifies AI source reviews as distinct from external human peer review. This review checks the wording against the stated workflow; final build and audit receipts remain separately owned."
+    }
+  ],
+  "source_sha256": {
+    "paper/main.tex": "4144c4482d79c77e8b864d2570fa1f0de5634fbcd6a1add0570e7dbb348bcd0d",
+    "paper/sections/introduction.tex": "4b4052d1be4003f6488a43e00f11255a4df03be2a8398aa9600e4c7c654e5fb3",
+    "paper/sections/related-work.tex": "83e6cb5abb04c5c56330a64f1e425fc6aaff2818d40287a862461aadf3dad479",
+    "paper/sections/local-coding.tex": "18ef25cd66c7bb3870b34c2b3b071416af971a417809852b86bc8bca221ef5c9",
+    "paper/sections/roadmap.tex": "15cccb8c2a27512ad7e9c07c37c8d3803fcf654a4bcbf4e93346b418aad09f75",
+    "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
+    "paper/sections/motion.tex": "3cf0f5552b7422d11939c9ed88ef6ca8ed801445d5720e15325bf50b4a1af52a",
+    "paper/sections/padding.tex": "59db6099b7c559eb120c8b8529ce53236d4df08bb62dd9f799082af83ff61fef",
+    "lean/TransposeFollowup/HelperPacketDegreeBound.lean": "9b2c2ad2f9efbff56f2d737bc86dbb01d8e30410a562d92cdcfcce0e0fbac9c4",
+    "lean/TransposeFollowup/HelperRobustPacketBound.lean": "2b2be538d5a7b3e9a667279394f39ec03e384e63e330329b7be04487eff7e391",
+    "lean/TransposeFollowup/HelperPacketAveraging.lean": "2fb70c4bcfc85d3f6b2b1e2e45dd44fdc61bc5c88c1f390de39aca3087390008",
+    "lean/TransposeFollowup/RobustPacketBound.lean": "84733913f8a49a6ab93e42f9d1ee23b76eb1cee20f7ba5f56e616c2e0578ad00",
+    "lean/TransposeFollowup/InverseRowBank.lean": "99a5606080adc288d8a18eb639466479bc9bbffd6dd5fa4ffb1726db801df91a",
+    "lean/TransposeFollowup/InverseLocalPackets.lean": "ec1d7c62e46363256326529f78a1ba10571ee5f18a0ab4df363fcca6f8b70acf",
+    "lean/TransposeFollowup/CoordinatePackets.lean": "8203935043625dd66f0603740ff92e91f8764ae8e9307adaf18d52019d4e6aea",
+    "lean/TransposeFollowup/RecodedPackets.lean": "facdc2e13409913d1635804c7d208895425d234bed0f477a6799b730936758e5",
+    "lean/TransposeFollowup/PacketCollisionCube.lean": "49ceb112d7f9fa26cd44f72c8f53e37e3d6941e7da979771c053aef31c90f009",
+    "lean/TransposeFollowup/PacketDistanceBound.lean": "1c91858b2115e6eb1885edb9fec17df59e9ee57da87a217796525d4826a26291",
+    "lean/TransposeFollowup/PacketDistanceConsequences.lean": "a2db30d00c41c2c5f54bbbb1fb8e1190301a42bc3e87cc67aeb79a7efbe9d4d6",
+    "lean/TransposeFollowup/PacketRobustNumerics.lean": "6ec44570b9b58245c5dfd07a658aa4862f9b8f907421b3b353ff24fe8f1332e8",
+    "lean/TransposeFollowup/SharedDemandEntropy.lean": "a54d3beba46855a65cf2132ab940f00d0af15dbdc318f0dec22c5afced3bf46d",
+    "lean/TransposeFollowup/PacketInformation.lean": "34bf29c6ca0a92753d8dd8701c703be64ef901f0e9003a015d3bbf5b62f24b94",
+    "lean/TransposeFollowup/XorComponentCount.lean": "cc70145e6faab05292fe94558936ec9ca41b1622cf384252bfa893e682f8ab33",
+    "lean/TransposeFollowup/XorDegreeBound.lean": "a864b87bba43580e4735bbf827677ca9f1737f707ff15db038885b932b372711",
+    "lean/TransposeFollowup/XorPathCycleBound.lean": "5d86f8405f92cc0c3a57991785b9da54ad28f153454d1028ef0ec9737fac8c32",
+    "paper/sections/verification.tex": "6a6b2fee53e5aa1dde58bb50288f88479ccf2900e90319b87708b4bf87bc232a"
+  },
+  "historical_reports": "First-review records were retained without modification; this report binds the review2 source versions.",
+  "validation_note": "This receipt records semantic source review. The aggregate reviewer performs final compilation, axiom and artifact validation."
+}

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "reviewed_at_utc": "2026-10-22T19:05:10+00:00",
+  "scope": "Independent comparison of the actual helper and bounded-degree endpoints with the abstract, introduction, and full fixed-packet subsection 4.2. Relevant definitions, averaging, collision, entropy, and numerical dependencies were checked. This report is a source review, not a replacement for the separate build and axiom audit.",
+  "blocking_findings": [],
+  "findings": [
+    {
+      "check": "English statements do not exceed the formal endpoints",
+      "status": "pass",
+      "detail": "The helper theorem retains ell >= 1, a uniform conflict-degree cap K, arbitrary nonnegative normalized input weights, and the exact coefficient 1 + min(d, 16(K+1)^2). Its final hypotheses concern actual banks, packet locality, and correctness; no conditional entropy or fiber-budget premise remains.",
+      "references": [
+        "lean/TransposeFollowup/HelperRobustPacketBound.lean",
+        "paper/sections/local-coding.tex"
+      ]
+    },
+    {
+      "check": "Full-cube inverse locality and actual packet supports",
+      "status": "pass",
+      "detail": "Each branch contains a bijection on the entire raw cube. Inverse row recovery is required for all stored inputs, while decoding is required only on the selected correct family. Every packet has a declared support of at most two stored Boolean coordinates and an evaluation-congruence proof on that support. Arbitrary functions of two whole rows are not included.",
+      "references": [
+        "lean/TransposeFollowup/InverseRowBank.lean",
+        "lean/TransposeFollowup/InverseLocalPackets.lean",
+        "lean/TransposeFollowup/CoordinatePackets.lean",
+        "paper/sections/local-coding.tex"
+      ]
+    },
+    {
+      "check": "Helper selection and averaging",
+      "status": "pass",
+      "detail": "The helper is a deterministic function of the raw input. Its value fixes the branch length, bijection, packet list and decoder; the supplied graph also depends only on that value. Correctness on each normalized positive-mass fiber is derived from actual selected-branch correctness. Zero-mass fibers vanish. Averaging gives exactly input deficit plus actual helper entropy, with no uncharged subsequent adaptivity.",
+      "references": [
+        "lean/TransposeFollowup/HelperPacketAveraging.lean",
+        "lean/TransposeFollowup/HelperRobustPacketBound.lean"
+      ]
+    },
+    {
+      "check": "Explicit bounded-degree constant",
+      "status": "pass",
+      "detail": "The endpoint requires d >= 2, b > 0, positive integer inverse width c and reuse e, stored degree delta >= 2, A >= 0, and deficit plus helper entropy <= A*d*b. It proves the stated error 4*(1+2*c*e+A+64*c^2*e^2*A)*log(delta)*P/log(d). The conflict bound uses K = 2*c*e*delta^k - 1, so 16*(K+1)^2 = 64*c^2*e^2*delta^(2*k). The quarter-log radius and both power budgets agree with the proof outline.",
+      "references": [
+        "lean/TransposeFollowup/HelperPacketDegreeBound.lean",
+        "lean/TransposeFollowup/PacketRobustNumerics.lean",
+        "paper/sections/local-coding.tex"
+      ]
+    },
+    {
+      "check": "Abstract and introduction retain the useful regime",
+      "status": "pass",
+      "detail": "Both explicitly state bounded stored-row degree, bounded inverse support and reuse, and combined input deficit and helper entropy O(d*b). The near-full conclusion is restricted to the fixed two-coordinate packet model. Neither passage claims an unrestricted transposition or multiplication bound.",
+      "references": [
+        "paper/main.tex",
+        "paper/sections/introduction.tex"
+      ]
+    },
+    {
+      "check": "Original all-input XOR bounds remain special cases",
+      "status": "pass",
+      "detail": "The XOR-to-Boolean adapter preserves correctness and locality. The Boolean collision proof retains the exact all-radius distance inequality and the sharper original degree and path/cycle constants. Those constants are retained by this separate all-input theorem, rather than claimed to follow with the same constants from the more general helper-degree estimate. No changes to the original XOR distance, degree or path/cycle source files were reported by the scoped working-tree diff.",
+      "references": [
+        "lean/TransposeFollowup/RecodedPackets.lean",
+        "lean/TransposeFollowup/PacketCollisionCube.lean",
+        "lean/TransposeFollowup/PacketDistanceBound.lean",
+        "lean/TransposeFollowup/PacketDistanceConsequences.lean",
+        "paper/sections/local-coding.tex"
+      ]
+    },
+    {
+      "check": "Human-readable proof fidelity and limitations",
+      "status": "pass",
+      "detail": "The outlines faithfully use component collisions for all-input row recoding and conditional total correlation plus double recovery for the robust theorem. The minimum coefficient comes from both the fractional independent-set cover and receiver grouping. The current text correctly says each revealed packet depends on at most one component. It explicitly excludes nonbijective banks, unrestricted inverse dependence, arbitrary two-row functions and post-helper adaptive packet selection, and asserts no encoding, decoding or tape-runtime bound.",
+      "references": [
+        "lean/TransposeFollowup/RobustPacketBound.lean",
+        "lean/TransposeFollowup/SharedDemandEntropy.lean",
+        "paper/sections/local-coding.tex"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "paper/main.tex": "df12b99f1514ab63b69b9c72adc0f3eeb3e17cafc434f99f9de0756add6b61ab",
+    "paper/sections/introduction.tex": "deea1b75b5325a027d745dd802a9cdc159459b55f653e873897793d85607ed12",
+    "paper/sections/local-coding.tex": "d2463033f3381e564b44a0a35d18d347ca110f79595c895501d396031179598e",
+    "lean/TransposeFollowup/HelperRobustPacketBound.lean": "2b2be538d5a7b3e9a667279394f39ec03e384e63e330329b7be04487eff7e391",
+    "lean/TransposeFollowup/HelperPacketDegreeBound.lean": "47cebe64fe9177b2339423ab2a8a2bdc45a5aa2b3c4bd5b4df65494c6c69d659",
+    "lean/TransposeFollowup/HelperPacketAveraging.lean": "2fb70c4bcfc85d3f6b2b1e2e45dd44fdc61bc5c88c1f390de39aca3087390008",
+    "lean/TransposeFollowup/RobustPacketBound.lean": "84733913f8a49a6ab93e42f9d1ee23b76eb1cee20f7ba5f56e616c2e0578ad00",
+    "lean/TransposeFollowup/InverseRowBank.lean": "99a5606080adc288d8a18eb639466479bc9bbffd6dd5fa4ffb1726db801df91a",
+    "lean/TransposeFollowup/InverseLocalPackets.lean": "ec1d7c62e46363256326529f78a1ba10571ee5f18a0ab4df363fcca6f8b70acf",
+    "lean/TransposeFollowup/CoordinatePackets.lean": "8203935043625dd66f0603740ff92e91f8764ae8e9307adaf18d52019d4e6aea",
+    "lean/TransposeFollowup/PacketRobustNumerics.lean": "2574bcceacd2b280994aebaf4e5423519363075aed0c32c5a9e65a4ae6bf25f9",
+    "lean/TransposeFollowup/RecodedPackets.lean": "facdc2e13409913d1635804c7d208895425d234bed0f477a6799b730936758e5",
+    "lean/TransposeFollowup/PacketCollisionCube.lean": "49ceb112d7f9fa26cd44f72c8f53e37e3d6941e7da979771c053aef31c90f009",
+    "lean/TransposeFollowup/PacketDistanceBound.lean": "1c91858b2115e6eb1885edb9fec17df59e9ee57da87a217796525d4826a26291",
+    "lean/TransposeFollowup/PacketDistanceConsequences.lean": "5dad8eeb5249bc1898800b625f3fef50d6077ae4102b66cdd1faf8da4a0741f5",
+    "lean/TransposeFollowup/SharedDemandEntropy.lean": "a54d3beba46855a65cf2132ab940f00d0af15dbdc318f0dec22c5afced3bf46d"
+  },
+  "review_limitations": [
+    "No novelty or completeness-of-literature claim is certified by this source review.",
+    "Full-project compilation and final transitive axiom auditing are recorded separately."
+  ],
+  "edits_performed": [
+    "verification/manuscript/packet-strengthening/independent-endpoint-review.json"
+  ]
+}

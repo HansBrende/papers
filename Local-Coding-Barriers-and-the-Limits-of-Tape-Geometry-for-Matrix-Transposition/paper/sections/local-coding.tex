@@ -5,8 +5,9 @@ transmit fewer bits than the uncoded data.  To test a proposed stage, one must
 specify what each operation reads, what each receiver knows, and what
 input-dependent information selects the operations.  This section gives three
 obstructions: a separator bound for adaptive queries of original rows; a
-distance bound for fixed coordinate-XOR broadcasts after bijective row
-recoding; and a helper-or-deficit bound for two ordered nonlinear stages.
+distance bound for fixed two-coordinate Boolean broadcasts after bijective
+recoding, including helper-selected global recodings with local inverses; and
+a helper-or-deficit bound for two ordered nonlinear stages.
 
 Each result concerns its stated finite coding model.  None asserts that every
 fast tape transposer has that form.  In particular, the first model reads
@@ -303,29 +304,33 @@ Conjecture.  They also apply to finite-field data after an explicit binary
 encoding: query answers and costs must be counted in bits, and any deficit
 from restricting to valid encodings must be retained.
 
-\subsection{Bijective row recoding and fixed XOR packets}\label{subsec:local-xor}
+\subsection{Fixed two-coordinate Boolean packets}\label{subsec:local-xor}
 
 The preceding separator argument leaves highly connected row graphs open.
 For a more restrictive broadcast format, an independent obstruction applies
 even when the row graph has bounded degree and large treewidth.
 
-\begin{definition}[Recoded fixed-XOR code]\label{def:local-recoded-xor}
+\begin{definition}[Recoded two-coordinate packet code]\label{def:local-recoded-xor}
 For each $i\in[d]$, choose an arbitrary bijection $A_i:Q\to Q$ and write
-$y_i=A_i(x_i)$.  Fix $B\in\mathbb N$ packets, each either one coordinate
-$y_{ijt}$ or the XOR of two coordinates of $y$.  Packet choices are fixed
-before the input is supplied.  For a simple graph $G$ on $[d]$, locality means
-that the row indices of a pair packet are equal or adjacent in $G$; singleton
-packets impose no additional edge condition.  Receiver $j$ receives the
-complete $B$-bit broadcast and its own \emph{original} row $x_j$, and must
-recover $(x^{\mathsf T})_j$ for every $x\in\mathcal X$.
+$y_i=A_i(x_i)$. Fix $B\in\mathbb N$ one-bit packets. Each packet is an
+arbitrary Boolean function of a specified set of at most two coordinates of
+$y$. The supports and functions are fixed before the input is supplied.
+For a simple graph $G$ on $[d]$, locality means that the row indices of the
+two supported coordinates are equal or adjacent in $G$. Receiver $j$
+receives the complete broadcast and its own \emph{original} row $x_j$, and
+must recover $(x^{\mathsf T})_j$ for every $x\in\mathcal X$.
 \end{definition}
-\formal{RecodedXor}{TransposeFollowup.RecodedXorCode,TransposeFollowup.RecodedXorCode.Correct,TransposeFollowup.RecodedXorCode.LocalTo}
-\formal{XorPackets}{TransposeFollowup.XorPacket,TransposeFollowup.XorSystem}
+\formal{RecodedPackets}{TransposeFollowup.RecodedPacketCode,TransposeFollowup.RecodedPacketCode.Correct,TransposeFollowup.RecodedPacketCode.LocalTo}
+\formal{CoordinatePackets}{TransposeFollowup.CoordinatePacket,TransposeFollowup.CoordinateSystem}
 
-The bijections and the decoders need not be linear.  Repeated packets,
-same-row pairs, and self-XORs are allowed.  A self-XOR is a permitted constant
-zero packet.  There is no helper in this model, and correctness is on the
-entire input cube, not merely a high-entropy subfamily.
+The bijections, packets and decoders need not be linear. Repetitions,
+same-row pairs, unary functions and constant packets are allowed; every
+packet occurrence costs one bit. Coordinate XORs are a special case. Their
+formal adapter preserves the broadcast, correctness and locality, so the
+XOR bounds follow from the Boolean-packet results below. There is no helper
+in this first model, and correctness is on the entire input cube. We relax these two
+requirements below.
+\formal{RecodedPackets}{TransposeFollowup.RecodedXorCode.toRecodedPacketCode}
 
 For $\ell\in\mathbb N$, call $(i,j)$ \emph{$\ell$-near} if there exists a
 walk in $G$ from $i$ to $j$ of length strictly below $\ell$, and let
@@ -345,7 +350,7 @@ $G$ satisfies, for all $\ell\in\mathbb N$,
 \end{equation}
 No positivity or connectedness hypothesis is needed for the integral form.
 \end{theorem}
-\formal{XorComponentCount}{TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled,TransposeFollowup.RecodedXorCode.broadcast_lower_bound}
+\formal{PacketDistanceBound}{TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled,TransposeFollowup.RecodedPacketCode.broadcast_lower_bound}
 
 Small graph neighborhoods limit the savings even after nonlinear row
 recoding.  The bounded-degree corollary below adds an obstruction on
@@ -353,41 +358,35 @@ expanders.  The path/cycle corollary illustrates the distance argument, but
 the earlier separator bound gives a better constant on those graphs.
 
 \begin{proofoutline}
-Form the variable graph on the $P$ transformed bit coordinates: distinct
-endpoints of a pair packet are adjacent.  A coordinate appearing as a
-singleton packet is an anchor.  Let $u$ be the number of components containing
-no anchor.  The broadcast together with one transformed bit from each
-unanchored component determines every transformed bit: equal broadcasts make
-the difference of two assignments constant on each component, and anchors or
-chosen representative bits determine that constant.  Injective finite counting
-therefore gives $P\le B+u$.
+Form the variable graph on the $P$ stored coordinates, joining distinct
+coordinates in a packet support. Assign each nonempty-support packet to its
+component. A component with $v$ coordinates needs at least $v-1$ packets to
+connect it. Call it \emph{deficient} if it has fewer than $v$ assigned
+packets; it then has exactly $v-1$. If there are $u$ deficient components,
+summing these counts gives $P\le B+u$. Empty-support packets only increase $B$.
 
-An unanchored component can be flipped simultaneously without changing the
-broadcast.  Pull this flip back through the row bijections.  If its represented
-row set is $R$, original rows outside $R$ do not change.  Their receivers have
-the same side information and broadcast before and after the flip, so all
-columns indexed outside $R$ also stay fixed.  The raw change is therefore
-confined to $R\times R\times[b]$.  This holds at every basepoint, despite
-nonlinearity of the row bijections.
+On each deficient component, pigeonhole counting gives two distinct local
+assignments with identical local packet values. Choose one such pair per
+component and fix all other coordinates. The choices on different components
+are independent: a packet never meets two components. Thus $s$ selected
+deficient components yield $2^s$ distinct stored inputs with the same complete
+broadcast. The row bijections preserve distinctness.
 
-If the variable component contains at most $\ell$ coordinates, any two of
-its coordinates are joined by a simple path of length below $\ell$.
-Projection to row indices collapses same-row edges and maps other edges to
-edges of $G$.  Thus its raw changes are confined to the $Q_\ell$ near bits.
-Let $u_{\mathrm{small}}$ count such unanchored components.  Their disjoint
-nonempty flips generate $2^{u_{\mathrm{small}}}$ distinct transformed
-assignments and hence the same number of raw assignments.  Because each flip
-fixes every far bit at every basepoint, their compositions do so as well.
-The orbit fits into $Q_\ell$ binary coordinates, giving
-$u_{\mathrm{small}}\le Q_\ell$.
+Changing only one component changes raw rows only in its represented row set
+$R$. Receivers outside $R$ have unchanged original rows and broadcast, so
+correctness also fixes their columns. The raw change lies in
+$R\times R\times[b]$. If the component has at most $\ell$ coordinates,
+a simple path within it projects to a row walk of length below $\ell$.
+Its raw changes are therefore confined to the $Q_\ell$ near coordinates.
+Changing the small components one at a time shows that their entire binary
+choice family agrees outside those coordinates. Hence their number
+$u_{\rm small}$ satisfies $u_{\rm small}\le Q_\ell$.
 
-Disjointness and nonemptiness of all unanchored components imply
-\[
-  (\ell+1)u\le P+\ell u_{\mathrm{small}}.
-\]
-Indeed, a large component pays at least $\ell+1$ coordinates, while a small
-one pays at least one and receives the additional allowance $\ell$.
-Combining these inequalities proves \eqref{eq:local-xor-distance}.
+The deficient components are disjoint and nonempty, so
+$(\ell+1)u\le P+\ell u_{\rm small}$: a large component contains at least
+$\ell+1$ coordinates and a small one at least one. Combining the three
+inequalities proves the claim. This uses component collisions, without any
+linearity assumption or global flip symmetry.
 \end{proofoutline}
 
 \begin{corollary}[Bounded degree]\label{cor:local-xor-degree}
@@ -400,7 +399,7 @@ The logarithm base is immaterial to this ratio.  For fixed $\Delta$ and
 $b>0$, no code in this model achieves a fixed positive fractional saving as
 $d$ grows.
 \end{corollary}
-\formal{XorDegreeBound}{TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound}
+\formal{PacketDistanceConsequences}{TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound}
 \begin{proofoutline}
 Put $\delta=\max\{2,\Delta\}$ and
 $k=\lfloor\lfloor\log_\delta d\rfloor/2\rfloor$.  Counting walks bounds each
@@ -422,7 +421,7 @@ In particular this holds for paths, cycles, and their subgraphs, with arbitrary
 vertex labels.  The same bound holds whenever every $\ell$-near ball has at
 most $2\ell-1$ vertices for every integer $\ell\ge1$.
 \end{corollary}
-\formal{XorPathCycleBound}{TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound}
+\formal{PacketDistanceConsequences}{TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound,TransposeFollowup.RecodedPacketCode.cycle_embedding_broadcast_lower_bound,TransposeFollowup.RecodedPacketCode.subcycle_broadcast_lower_bound,TransposeFollowup.RecodedPacketCode.cycle_broadcast_lower_bound,TransposeFollowup.RecodedPacketCode.path_broadcast_lower_bound}
 For these graphs, the saving is at most $O(P/\sqrt d)$, improving
 the $O(P/\log d)$ error supplied by the bounded-degree estimate.
 \begin{proofoutline}
@@ -444,7 +443,7 @@ Then $k\le t<j$, $j\ge2$, and
 The estimate includes $d=1$.
 \end{proofoutline}
 
-Every recoded fixed-XOR code also gives an original-row strategy: transmit
+Every code of Definition~\ref{def:local-recoded-xor} also gives an original-row strategy: transmit
 its fixed packets in order, with a constant helper and correctness on the
 full cube.  Its interaction graph is a subgraph of $G$, so the separator
 bound gives $B\ge P-\mathcal L(G,S)$ for every $S$.  On a path or cycle,
@@ -476,7 +475,183 @@ the specified common recoding and packet format.
 The first paper's XOR-frame model concerns changes of address frame in a
 gadget, a different restriction.  The bounded-degree corollary rules out a
 fixed fractional saving through independent bijective row preprocessing
-followed by a fixed coordinate-XOR broadcast local to a bounded-degree graph.
+followed by fixed two-coordinate Boolean packets local to a bounded-degree graph.
+
+\subsubsection{Correlated inputs, public helpers, and global recoding}
+
+Independent row recoding is not needed if original rows can be recovered
+from a controlled set of stored rows. The next theorem makes that condition
+explicit and charges the input-dependent selection of the code.
+
+\begin{definition}[Helper-selected bank with local inverse]\label{def:local-inverse-packets}
+A deterministic helper $z:\mathcal X\to\mathcal Z$, with $\mathcal Z$ finite,
+selects a branch. Branch $a$ consists of a bijection
+$A_a:\mathcal X\to\mathcal X$, a fixed list of $B_a$ one-bit packets of at
+most two coordinates of $A_a(x)$, a locality graph $G_a$ on stored rows,
+and decoders. The rows in every two-coordinate packet support must be equal
+or adjacent in $G_a$. For each original row $i$, fix $S_{a,i}\subseteq[d]$ such that
+$x_i$ is determined by the stored rows $A_a(x)|_{S_{a,i}}$ on the
+\emph{entire input cube}. No locality is imposed on the forward bijection.
+Receiver $j$ knows $a$, its original row $x_j$, and the broadcast, and must
+recover $(x^{\mathsf T})_j$ whenever $x\in F$ and $z(x)=a$.
+All branch data are fixed once $a$ is given; there is no further adaptive
+choice of packet supports, functions or stopping time.
+\end{definition}
+\formal{InverseRowBank}{TransposeFollowup.InverseRowBank}
+\formal{HelperPacketAveraging}{TransposeFollowup.HelperInverseLocalPacketCode,TransposeFollowup.HelperInverseLocalPacketCode.CorrectOn}
+\formal{InverseLocalPackets}{TransposeFollowup.InverseLocalPacketCode,TransposeFollowup.InverseLocalPacketCode.LocalTo}
+
+Fix $\ell\ge1$. Define the inverse conflict graph $J_{a,\ell}$ on original
+rows: distinct $i,j$ are adjacent when some $u\in S_{a,i}$ and
+$v\in S_{a,j}$ are joined in $G_a$ by a walk of length below $\ell$.
+Put
+\[
+ Q_{a,\ell}=b\,\bigl|\{(i,j):i=j\ \text{or}\
+                 J_{a,\ell}\text{ joins }i\text{ and }j\}\bigr|.
+\]
+Thus diagonal positions are always charged, and disconnected stored-row
+pairs do not count as near. For $X\sim w$ on $F$, set $Z=z(X)$ as before.
+\formal{InverseRowBank}{TransposeFollowup.inverseSupportGraph,TransposeFollowup.inverseNearBits}
+
+\begin{theorem}[Packet bound with inverse locality and helper entropy]\label{thm:local-robust-packets}
+For a code of Definition~\ref{def:local-inverse-packets}, any probability law
+$w$ on $F$, and any $\ell\ge1$, suppose every $J_{a,\ell}$ has maximum
+degree at most $K\in\mathbb N$. Set $L=\min\{d,16(K+1)^2\}$. Then
+\begin{equation}\label{eq:local-robust-packets}
+ (\ell+1)(P-\mathbb E B_Z)
+ \le P+\ell\mathbb E Q_{Z,\ell}+\ell(1+L)\bigl(D_w+H(Z)\bigr).
+\end{equation}
+The branch lengths, graphs, bijections and inverse supports may all depend
+on the helper. Its actual entropy is charged; the code need not be correct
+outside $F$.
+\end{theorem}
+\formal{HelperRobustPacketBound}{TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound}
+
+This extends the obstruction to correlated correct inputs and globally mixed
+stored banks. Bounded inverse support alone is insufficient for the useful
+degree consequence below: a stored row must also occur in only boundedly
+many inverse supports.
+
+For a fixed bank correct on the full cube, take uniform input and a constant
+helper selecting branch $a$. Then $D_w+H(Z)=0$, so
+\eqref{eq:local-robust-packets} becomes
+\[
+  (\ell+1)(P-B_a)\le P+\ell Q_{a,\ell}
+\]
+with nearness determined by the inverse supports. This specialization permits
+global nonlinear mixing by the forward bijection. The degree cap drops out
+of the formula; at each finite dimension such a cap always exists.
+
+\begin{proofoutline}
+First fix a branch and an input law with deficit $D'$. Let $U$ be its
+family of deficient variable components of size at most $\ell$, and let
+$E$ be the coordinates outside these components. Condition on
+$W=(E,\text{broadcast})$. A deficient component has one fewer packet than
+coordinates. Together with $E$, the packets assigned to $U$ determine the
+complete broadcast. Thus $H(W)\le P-|U|$ and
+\[
+ H(X\mid W)\ge |U|-D'.
+\]
+Let $V_S$ be the stored coordinates of component $S\in U$. The conditional
+total correlation is
+\[
+ \operatorname{TC}(V\mid W)
+   =\sum_{S\in U}H(V_S\mid W)-H((V_S)_{S\in U}\mid W).
+\]
+Before revealing packets, $\operatorname{TC}(V\mid E)\le D'$ by the
+coordinate entropy bounds and bijectivity of the bank. Each additional
+revealed packet depends on at most one component after $E$ is fixed.
+Revealing such local observations does not increase total correlation,
+so $\operatorname{TC}(V\mid W)\le D'$.
+
+Original row $i$ is determined by $W$ and the components containing
+coordinates in the stored rows $S_{a,i}$. If $i,j$ are distinct and nonadjacent in $J_{a,\ell}$, these two
+component sets are disjoint. Each far raw bit $x_{ijt}$ is recoverable from
+either endpoint's component view: from the source's original row, and from
+the receiver's decoder.
+
+For an independent set of $J_{a,\ell}$, the endpoint component views are
+pairwise disjoint. The far demands internal to that set are covered twice;
+conditional entropy submodularity bounds their joint entropy by
+$\operatorname{TC}(V\mid W)$. Mark each graph vertex independently with
+probability $1/(2(K+1))$ and retain marked vertices with no marked neighbor.
+Every pair of distinct nonadjacent vertices is retained with probability at least
+$1/(16(K+1)^2)$. The resulting fractional independent-set cover gives
+$H(\text{far bits}\mid W)\le16(K+1)^2D'$.
+Alternatively, group demands by receiver. Each group's source view is
+disjoint from its receiver view, giving the bound $dD'$ after summation.
+Using the smaller coefficient, and charging the near bits individually,
+yields $H(X\mid W)\le Q_{a,\ell}+LD'$. Consequently
+$|U|\le Q_{a,\ell}+(1+L)D'$.
+
+The same deficient-component counts as before now give
+$(\ell+1)(P-B_a)\le P+\ell Q_{a,\ell}+\ell(1+L)D'$.
+Apply this to every positive-mass helper fiber and average.
+Since $Z$ is a deterministic function of $X$,
+$\mathbb E[P-H(X\mid Z=a)]=D_w+H(Z)$, proving the theorem.
+\end{proofoutline}
+\formal{PacketInformation}{TransposeFollowup.CoordinateSystem.selected_tc_le_deficit,TransposeFollowup.CoordinateSystem.selected_conditional_entropy_lower}
+\formal{SharedDemandEntropy}{TransposeFollowup.sharedDemand_conditionalEntropy_le_min}
+\formal{FractionalIndependentCover}{TransposeFollowup.exists_fractional_independent_cover_scaled}
+
+\begin{corollary}[Bounded inverse support and reuse]\label{cor:local-robust-degree}
+In Definition~\ref{def:local-inverse-packets}, suppose $d\ge2$, $b\ge1$,
+and fix integers $c,e\ge1$ and $\delta\ge2$. In every branch, assume
+\[
+ |S_{a,i}|\le c,\qquad
+ |\{i:u\in S_{a,i}\}|\le e,\qquad
+ \deg_{G_a}(u)\le\delta.
+\]
+If $D_w+H(Z)\le A db$ for a real $A\ge0$, then
+\[
+ \mathbb E B_Z\ge P-
+  4(1+2ce+A+64c^2e^2A)\frac{\log\delta}{\log d}\,P.
+\]
+For fixed $c,e,\delta,A$, the saving is therefore at most $O(P/\log d)$,
+uniformly in $b$. The constant is explicit; no optimality is claimed.
+\end{corollary}
+\formal{HelperPacketDegreeBound}{TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound}
+\begin{proofoutline}
+At radius $\ell=k+1$, a stored-row ball has at most $2\delta^k$ vertices.
+Inverse support and reuse give
+$\deg J_{a,k+1}+1\le2ce\delta^k$ and
+$Q_{a,k+1}\le2cedb\delta^k$. The finite theorem therefore applies with
+$L\le64c^2e^2\delta^{2k}$. Choose
+$k=\lfloor\lfloor\log_\delta d\rfloor/4\rfloor$.
+The integer estimates $(k+1)\delta^k\le d$ and
+$(k+1)\delta^{2k}\le d$, together with
+$\log d\le4(k+2)\log\delta$, give the displayed constant.
+\end{proofoutline}
+
+\paragraph{A sublinear information budget.}
+The $O(db)$ assumption gives the explicit $O(P/\log d)$ error above.
+The finite bound also has a useful qualitative consequence under the weaker
+assumption $I:=D_w+H(Z)=o(P)$. With the same fixed bounds $c,e,\delta$ on
+inverse support, reuse and degree, the estimate holds at every integer
+radius $k+1$. Dividing it by $(k+2)P$, for $d\ge1$ and $b>0$, gives
+\[
+ \frac{P-\mathbb E B_Z}{P}
+ \le \frac1{k+2}+\frac{k+1}{k+2}
+ \left(\frac{2ce\delta^k}{d}
+       +(1+64c^2e^2\delta^{2k})\frac I P\right).
+\]
+For each fixed $k$, both terms inside parentheses tend to zero as
+$d\to\infty$ and $I/P\to0$, uniformly in the positive entry width $b$.
+The saving fraction therefore has limit superior at most
+$1/(k+2)$ for every $k$, and hence no fixed positive fractional saving is
+possible. This is an algebraic and limiting consequence of the finite
+estimate, with no $O(db)$ assumption.
+\formal{HelperPacketDegreeBound}{TransposeFollowup.HelperInverseLocalPacketCode.degree_broadcast_bound_scaled}
+
+Coordinate XORs inherit the sharper all-input distance, degree and path/cycle
+bounds above. The robust bounds show that an initial global bijection, even
+when selected by a helper, cannot restore a fixed fractional saving while
+the stated inverse locality, reuse and information bounds hold.
+The finite inequality also applies to larger inverse supports, but its near
+term or information coefficient may then make it too weak to exclude a
+saving. Arbitrary two-row functions, nonbijective banks and adaptive packet
+selection beyond the initial helper remain outside the model. No encoding,
+decoding or tape-runtime bound is asserted.
 
 \subsection{Two nonlinear ordered stages and a global helper}\label{subsec:local-two-stage}
 

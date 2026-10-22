@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "scope": "Four explicitly approved proof refactors; historical sources are recovered by exact reverse patches. Current proofs and original elaborated contracts require a fresh Lean audit.",
+  "baseline_type_capture_sha256": "4ceb3c2fda883f8339c52cbbdd32ef5188e8f2e1418bff4f3cc583c3cacf964f",
+  "type_comparison": "Erase only forall/lam/let bound-variable labels; retain all other Expr structure and the ordered universe-parameter list.",
+  "files": [
+    {
+      "path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "before_sha256": "1f704c22eaaf8cdc1d4265fabcf6c1dd2bd19fba536693628f178867505b66e7",
+      "after_sha256": "cc70145e6faab05292fe94558936ec9ca41b1622cf384252bfa893e682f8ab33",
+      "reverse_unified_diff": "--- a/lean/TransposeFollowup/XorComponentCount.lean\n+++ b/lean/TransposeFollowup/XorComponentCount.lean\n@@ -1,9 +1,10 @@\n import TransposeFollowup.DisjointFlipOrbit\n import TransposeFollowup.ComponentDistance\n+import TransposeFollowup.PacketDistanceBound\n \n-/-! Exact finite broadcast lower bound after arbitrary nonlinear row recoding.\n-Large unanchored components consume many transformed coordinates; small ones\n-have a free orbit confined to the near raw coordinates. -/\n+/-! The original XOR distance bounds specialize the arbitrary Boolean-packet\n+theorem. The XOR-specific component and free-flip statements remain available\n+independently. -/\n \n namespace TransposeFollowup\n \n@@ -11,27 +12,6 @@\n open Classical\n set_option autoImplicit false\n universe u\n-\n-theorem disjoint_family_size_bound {V : Type u} [Fintype V] [DecidableEq V]\n-    (U : Finset (Finset V)) (hne : ∀ S ∈ U, S.Nonempty)\n-    (hdis : (U : Set (Finset V)).PairwiseDisjoint id) (ell : ℕ) :\n-    (ell + 1) * U.card ≤ Fintype.card V + ell * (U.filter (fun S => S.card ≤ ell)).card := by\n-  have hpoint (S : Finset V) (hS : S ∈ U) :\n-      ell + 1 ≤ S.card + if S.card ≤ ell then ell else 0 := by\n-    have hp := Finset.card_pos.mpr (hne S hS)\n-    split_ifs <;> omega\n-  have hsum := Finset.sum_le_sum hpoint\n-  have hcards : ∑ S ∈ U, S.card ≤ Fintype.card V := by\n-    calc\n-      _ = (U.biUnion id).card := by simpa only [id_eq] using (Finset.card_biUnion hdis).symm\n-      _ ≤ _ := Finset.card_le_univ _\n-  have hsmall : (∑ S ∈ U, if S.card ≤ ell then ell else 0) =\n-      ell * (U.filter (fun S => S.card ≤ ell)).card := by\n-    rw [← Finset.sum_filter]\n-    simp [Nat.mul_comm]\n-  simp only [Finset.sum_const, smul_eq_mul, Finset.sum_add_distrib] at hsum\n-  rw [hsmall] at hsum\n-  nlinarith\n \n namespace XorSystem\n \n@@ -85,30 +65,18 @@\n theorem broadcast_lower_bound_scaled (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G) (ell : ℕ) :\n     (ell + 1) * (n * n * b) ≤ (ell + 1) * B + n * n * b +\n-      ell * (nearBits (b := b) G ell).card := by\n-  have hcoord := C.system.coordinate_count_le_broadcast_add_unanchored\n-  have hsize := C.system.unanchored_size_bound ell\n-  have hsmall := C.small_component_count_le_near hc G hG ell\n-  simp only [MatrixBit, Fintype.card_prod, Fintype.card_fin, ← Nat.mul_assoc] at hcoord hsize\n-  have hmul := Nat.mul_le_mul_left (ell + 1) hcoord\n-  have hmulSmall := Nat.mul_le_mul_left ell hsmall\n-  nlinarith\n+      ell * (nearBits (b := b) G ell).card :=\n+  C.toRecodedPacketCode.broadcast_lower_bound_scaled\n+    (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG) ell\n \n /-- B >= P-(P+ell Q_ell)/(ell+1), with Q_ell counted in raw bit coordinates.\n The complete decoding and nonlinear recoding assumptions are explicit. -/\n theorem broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G) (ell : ℕ) :\n     (B : ℝ) ≥ (n * n * b : ℕ) -\n-      (((n * n * b : ℕ) : ℝ) + ell * (nearBits (b := b) G ell).card) / (ell + 1) := by\n-  have hs : ((ell : ℝ) + 1) * (n * n * b : ℕ) ≤\n-      ((ell : ℝ) + 1) * B + (n * n * b : ℕ) + ell * (nearBits (b := b) G ell).card := by\n-    exact_mod_cast C.broadcast_lower_bound_scaled hc G hG ell\n-  have hd : 0 < (ell : ℝ) + 1 := by positivity\n-  have hdiv : ((n * n * b : ℕ) : ℝ) - B ≤\n-      (((n * n * b : ℕ) : ℝ) + ell * (nearBits (b := b) G ell).card) / (ell + 1) := by\n-    apply (le_div_iff₀ hd).mpr\n-    nlinarith\n-  linarith\n+      (((n * n * b : ℕ) : ℝ) + ell * (nearBits (b := b) G ell).card) / (ell + 1) :=\n+  C.toRecodedPacketCode.broadcast_lower_bound\n+    (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG) ell\n \n end RecodedXorCode\n end TransposeFollowup\n"
+    },
+    {
+      "path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "before_sha256": "ac478b9804c122f2fed766923b5c1af474bb9a846480bfba25a60a082d8df6bc",
+      "after_sha256": "a864b87bba43580e4735bbf827677ca9f1737f707ff15db038885b932b372711",
+      "reverse_unified_diff": "--- a/lean/TransposeFollowup/XorDegreeBound.lean\n+++ b/lean/TransposeFollowup/XorDegreeBound.lean\n@@ -1,7 +1,5 @@\n import TransposeFollowup.XorComponentCount\n-import TransposeFollowup.GraphNearCount\n-import Mathlib.Data.Nat.Log\n-import Mathlib.Analysis.SpecialFunctions.Log.Basic\n+import TransposeFollowup.PacketDistanceConsequences\n \n /-! An explicit fixed-degree consequence of the recoded-XOR bound. The error\n is at most 6 log(max(2,Delta)) P/log n for every n>=2 and every entry width.\n@@ -13,28 +11,6 @@\n open Classical\n set_option autoImplicit false\n \n-theorem half_log_power_budget (D n : ℕ) (hD : 2 ≤ D) (hn : 0 < n) :\n-    (Nat.log D n / 2 + 1) * D ^ (Nat.log D n / 2) ≤ n := by\n-  let k := Nat.log D n / 2\n-  have hk : k + 1 ≤ D ^ k :=\n-    (Nat.succ_le_of_lt (show k < 2 ^ k from Nat.lt_two_pow_self)).trans (Nat.pow_le_pow_left hD k)\n-  have hexp : 2 * k ≤ Nat.log D n := by dsimp [k]; omega\n-  calc\n-    _ ≤ D ^ k * D ^ k := Nat.mul_le_mul_right _ hk\n-    _ = D ^ (2 * k) := by rw [← pow_add]; congr 1; omega\n-    _ ≤ D ^ Nat.log D n := Nat.pow_le_pow_right (by omega) hexp\n-    _ ≤ n := Nat.pow_log_le_self D (Nat.ne_of_gt hn)\n-\n-theorem log_le_twice_half_log (D n : ℕ) (hD : 2 ≤ D) (hn : 0 < n) :\n-    Real.log (n : ℝ) ≤ 2 * ((Nat.log D n / 2 : ℕ) + 2 : ℝ) * Real.log (D : ℝ) := by\n-  have hnat := Nat.lt_pow_succ_log_self (by omega : 1 < D) n\n-  have hlog := (Real.log_lt_log (by exact_mod_cast hn : 0 < (n : ℝ))\n-    (by exact_mod_cast hnat : (n : ℝ) < (D : ℝ) ^ (Nat.log D n + 1))).le\n-  rw [Real.log_pow] at hlog\n-  have hindex : ((Nat.log D n + 1 : ℕ) : ℝ) ≤ 2 * ((Nat.log D n / 2 : ℕ) + 2 : ℝ) := by\n-    exact_mod_cast (show Nat.log D n + 1 ≤ 2 * (Nat.log D n / 2 + 2) by omega)\n-  exact hlog.trans (mul_le_mul_of_nonneg_right hindex (Real.log_natCast_nonneg D))\n-\n namespace RecodedXorCode\n \n variable {n b B : ℕ} (C : RecodedXorCode n b B)\n@@ -43,22 +19,9 @@\n     [DecidableRel G.Adj] (hG : C.LocalTo G) (D : ℕ) (hD : 2 ≤ D)\n     (hdegree : ∀ i, G.degree i ≤ D) (hn : 0 < n) :\n     (Nat.log D n / 2 + 2) * (n * n * b) ≤\n-      (Nat.log D n / 2 + 2) * B + 3 * (n * n * b) := by\n-  let k := Nat.log D n / 2\n-  have hnear : (nearBits (b := b) G (k + 1)).card ≤ b * n * (2 * D ^ k) :=\n-    card_nearBits_le_of_balls G (k + 1) (2 * D ^ k)\n-      (nearVertices_card_le_power G D hD hdegree k)\n-  have hbudget := half_log_power_budget D n hD hn\n-  change (k + 1) * D ^ k ≤ n at hbudget\n-  have hterm : (k + 1) * (nearBits (b := b) G (k + 1)).card ≤ 2 * (n * n * b) := by\n-    calc\n-      _ ≤ (k + 1) * (b * n * (2 * D ^ k)) := Nat.mul_le_mul_left _ hnear\n-      _ = (2 * b * n) * ((k + 1) * D ^ k) := by ring\n-      _ ≤ (2 * b * n) * n := Nat.mul_le_mul_left _ hbudget\n-      _ = _ := by ring\n-  have hs := C.broadcast_lower_bound_scaled hc G hG (k + 1)\n-  change (k + 2) * (n * n * b) ≤ (k + 2) * B + 3 * (n * n * b)\n-  nlinarith\n+      (Nat.log D n / 2 + 2) * B + 3 * (n * n * b) :=\n+  C.toRecodedPacketCode.degree_broadcast_bound_scaled\n+    (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG) D hD hdegree hn\n \n /-- Explicit fixed-degree theorem. In contrast with a qualitative big-O\n statement, this gives a uniform constant and holds for every n>=2 and b>=0. -/\n@@ -66,40 +29,17 @@\n     [DecidableRel G.Adj] (hG : C.LocalTo G) (D : ℕ) (hD : 2 ≤ D)\n     (hdegree : ∀ i, G.degree i ≤ D) (hn : 2 ≤ n) :\n     (B : ℝ) ≥ (n * n * b : ℕ) -\n-      6 * Real.log (D : ℝ) * (n * n * b : ℕ) / Real.log (n : ℝ) := by\n-  let k := Nat.log D n / 2\n-  let P : ℝ := (n * n * b : ℕ)\n-  have hs : ((k : ℝ) + 2) * P ≤ ((k : ℝ) + 2) * B + 3 * P := by\n-    dsimp [k, P]\n-    exact_mod_cast C.degree_broadcast_bound_scaled hc G hG D hD hdegree (by omega)\n-  have hk : 0 < (k : ℝ) + 2 := by positivity\n-  have hln : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < n by omega))\n-  have hlog := log_le_twice_half_log D n hD (by omega)\n-  change Real.log (n : ℝ) ≤ 2 * ((k : ℝ) + 2) * Real.log (D : ℝ) at hlog\n-  have hratio : (3 : ℝ) / ((k : ℝ) + 2) ≤ 6 * Real.log (D : ℝ) / Real.log (n : ℝ) := by\n-    apply (div_le_div_iff₀ hk hln).mpr\n-    nlinarith\n-  have hgap : P - B ≤ 3 * P / ((k : ℝ) + 2) := by\n-    apply (le_div_iff₀ hk).mpr\n-    nlinarith\n-  have hP : 0 ≤ P := by dsimp [P]; positivity\n-  have hbound : P - B ≤ 6 * Real.log (D : ℝ) * P / Real.log (n : ℝ) := by\n-    calc\n-      _ ≤ 3 * P / ((k : ℝ) + 2) := hgap\n-      _ = P * (3 / ((k : ℝ) + 2)) := by ring\n-      _ ≤ P * (6 * Real.log (D : ℝ) / Real.log (n : ℝ)) :=\n-        mul_le_mul_of_nonneg_left hratio hP\n-      _ = _ := by ring\n-  change (B : ℝ) ≥ P - _\n-  linarith\n+      6 * Real.log (D : ℝ) * (n * n * b : ℕ) / Real.log (n : ℝ) :=\n+  C.toRecodedPacketCode.degree_broadcast_lower_bound\n+    (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG) D hD hdegree hn\n \n theorem fixed_degree_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n     [DecidableRel G.Adj] (hG : C.LocalTo G) (Delta : ℕ)\n     (hdegree : ∀ i, G.degree i ≤ Delta) (hn : 2 ≤ n) :\n     (B : ℝ) ≥ (n * n * b : ℕ) -\n       6 * Real.log (max 2 Delta : ℕ) * (n * n * b : ℕ) / Real.log (n : ℝ) :=\n-  C.degree_broadcast_lower_bound hc G hG (max 2 Delta) (le_max_left _ _)\n-    (fun i => (hdegree i).trans (le_max_right _ _)) hn\n+  C.toRecodedPacketCode.fixed_degree_broadcast_lower_bound\n+    (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG) Delta hdegree hn\n \n end RecodedXorCode\n end TransposeFollowup\n"
+    },
+    {
+      "path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "before_sha256": "b5b89547896c19bade9b0c76652bd9174310a077473adc5bcac8ff12b9b7c199",
+      "after_sha256": "5d86f8405f92cc0c3a57991785b9da54ad28f153454d1028ef0ec9737fac8c32",
+      "reverse_unified_diff": "--- a/lean/TransposeFollowup/XorPathCycleBound.lean\n+++ b/lean/TransposeFollowup/XorPathCycleBound.lean\n@@ -1,7 +1,5 @@\n import TransposeFollowup.XorComponentCount\n-import TransposeFollowup.CyclicNearCount\n-import Mathlib.Data.Nat.Sqrt\n-import Mathlib.Analysis.SpecialFunctions.Sqrt\n+import TransposeFollowup.PacketDistanceConsequences\n \n /-! The path/cycle consequence, with an explicit uniform square-root error.\n The theorem covers every subgraph of a cycle, so includes the standard path\n@@ -22,41 +20,28 @@\n     (hG : C.LocalTo G) (k q : ℕ) (e : ℝ)\n     (hballs : ∀ i, (nearVertices G k i).card ≤ q)\n     (hbudget : (n : ℝ) + k * q ≤ (k + 1) * e) :\n-    (n * n * b : ℕ) ≤ (B : ℝ) + (b : ℝ) * n * e := by\n-  have hnear : ((nearBits (b := b) G k).card : ℝ) ≤ (b : ℝ) * n * q := by\n-    exact_mod_cast card_nearBits_le_of_balls (b := b) G k q hballs\n-  have hs : ((k : ℝ) + 1) * (n * n * b : ℕ) ≤\n-      ((k : ℝ) + 1) * B + (n * n * b : ℕ) +\n-        k * (nearBits (b := b) G k).card := by\n-    exact_mod_cast C.broadcast_lower_bound_scaled hc G hG k\n-  have hscaled : ((k : ℝ) + 1) * (n * n * b : ℕ) ≤\n-      ((k : ℝ) + 1) * ((B : ℝ) + (b : ℝ) * n * e) := by\n-    push_cast at hs ⊢\n-    nlinarith [mul_le_mul_of_nonneg_left hbudget\n-      (by positivity : 0 ≤ (b : ℝ) * n),\n-      mul_le_mul_of_nonneg_left hnear (by positivity : 0 ≤ (k : ℝ))]\n-  exact (mul_le_mul_iff_right₀ (by positivity : 0 < (k : ℝ) + 1)).mp hscaled\n+    (n * n * b : ℕ) ≤ (B : ℝ) + (b : ℝ) * n * e :=\n+  PacketDistanceBudget.broadcast_bound_of_ball_budget_real G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) k q e hballs hbudget\n \n /-- Integral specialization of the shared real ball-budget estimate. -/\n theorem broadcast_bound_of_ball_budget (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G) (k q e : ℕ)\n     (hballs : ∀ i, (nearVertices G k i).card ≤ q)\n     (hbudget : n + k * q ≤ (k + 1) * e) :\n-    n * n * b ≤ B + b * n * e := by\n-  have h := C.broadcast_bound_of_ball_budget_real hc G hG k q (e : ℝ) hballs\n-    (by exact_mod_cast hbudget)\n-  exact_mod_cast h\n+    n * n * b ≤ B + b * n * e :=\n+  PacketDistanceBudget.broadcast_bound_of_ball_budget G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) k q e hballs hbudget\n \n theorem linear_ball_broadcast_bound_nat (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G)\n     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :\n-    n * n * b ≤ B + b * n * (3 * Nat.sqrt n) := by\n-  let k := Nat.sqrt n\n-  have hk : 1 ≤ k := Nat.sqrt_pos.mpr hn\n-  apply C.broadcast_bound_of_ball_budget hc G hG k (2 * k) (3 * k)\n-    (fun i => (hballs k hk i).trans (Nat.sub_le _ _))\n-  have hnSq : n ≤ (k + 1) * (k + 1) := (Nat.lt_succ_sqrt n).le\n-  nlinarith\n+    n * n * b ≤ B + b * n * (3 * Nat.sqrt n) :=\n+  PacketDistanceBudget.linear_ball_broadcast_bound_nat G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) hballs hn\n \n /-- The shifted square-root error is no larger than the former square-root\n error. This certifies that the new finite bound implies the previous one. -/\n@@ -79,65 +64,39 @@\n     (hG : C.LocalTo G)\n     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :\n     (B : ℝ) ≥ (n * n * b : ℕ) -\n-      (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) := by\n-  let k := Nat.sqrt ((n + 3) / 2)\n-  let t : ℝ := Real.sqrt (((n : ℝ) + 3) / 2)\n-  have hk : 1 ≤ k := Nat.sqrt_pos.mpr (by omega : 0 < (n + 3) / 2)\n-  have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hk\n-  have ht : 0 ≤ t := Real.sqrt_nonneg _\n-  have ht2 : t ^ 2 = ((n : ℝ) + 3) / 2 := Real.sq_sqrt (by positivity)\n-  have hlow : 2 * k ^ 2 ≤ n + 3 := by\n-    have h : k ^ 2 ≤ (n + 3) / 2 := Nat.sqrt_le' ((n + 3) / 2)\n-    nlinarith [Nat.div_mul_le_self (n + 3) 2]\n-  have hupper : n + 3 < (k + 1) * (k + 1) * 2 :=\n-    (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mp (Nat.lt_succ_sqrt ((n + 3) / 2))\n-  have hlowR : 2 * (k : ℝ) ^ 2 ≤ (n : ℝ) + 3 := by exact_mod_cast hlow\n-  have hupperR : (n : ℝ) + 3 < ((k : ℝ) + 1) * ((k : ℝ) + 1) * 2 := by\n-    exact_mod_cast hupper\n-  have hkt : (k : ℝ) ≤ t := Real.le_sqrt_of_sq_le (by nlinarith)\n-  have htk : t ≤ (k : ℝ) + 1 := by\n-    apply Real.sqrt_le_iff.mpr\n-    exact ⟨by positivity, by nlinarith⟩\n-  have hdelta : ((k : ℝ) + 1 - t) ^ 2 ≤ 1 := by\n-    nlinarith [mul_nonneg (sub_nonneg.mpr htk) (sub_nonneg.mpr hkt)]\n-  have hq : (2 * k - 1 : ℕ) + 1 = 2 * k := Nat.sub_add_cancel (by omega)\n-  have hqR : ((2 * k - 1 : ℕ) : ℝ) + 1 = 2 * (k : ℝ) := by exact_mod_cast hq\n-  have hbudget : (n : ℝ) + k * (2 * k - 1 : ℕ) ≤ ((k : ℝ) + 1) * (4 * t - 4) := by\n-    nlinarith\n-  have hbound := C.broadcast_bound_of_ball_budget_real hc G hG k (2 * k - 1)\n-    (4 * t - 4) (fun i => hballs k hk i) hbudget\n-  have hroot : Real.sqrt (8 * ((n : ℝ) + 3)) = 4 * t := by\n-    apply (Real.sqrt_eq_iff_eq_sq (by positivity) (by positivity)).mpr\n-    nlinarith\n-  rw [hroot]\n-  linarith\n+      (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) :=\n+  PacketDistanceBudget.linear_ball_broadcast_lower_bound G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) hballs hn\n \n /-- Includes arbitrary row labels and arbitrary subgraphs of a cycle: the\n placement in the cycle need only be an injective graph homomorphism. -/\n theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G) {m : ℕ} [NeZero m]\n     (f : G →g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :\n-    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) := by\n-  apply C.linear_ball_broadcast_lower_bound hc G hG _ hn\n-  intro ell hell i\n-  exact (nearVertices_card_le_of_embedding f hf ell i).trans\n-    (nearVertices_card_subcycle _ le_rfl ell hell (f i))\n+    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) :=\n+  PacketDistanceBudget.cycle_embedding_broadcast_lower_bound G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) f hf hn\n \n theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n     (hG : C.LocalTo G) (hcycle : G ≤ SimpleGraph.cycleGraph n) (hn : 0 < n) :\n-    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) := by\n-  let : NeZero n := ⟨Nat.ne_of_gt hn⟩\n-  exact C.cycle_embedding_broadcast_lower_bound hc G hG (.ofLE hcycle) Function.injective_id hn\n+    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) :=\n+  PacketDistanceBudget.subcycle_broadcast_lower_bound G\n+    (C.toRecodedPacketCode.distanceBudget\n+      (C.toRecodedPacketCode_correct hc) G (C.toRecodedPacketCode_local G hG)) hcycle hn\n \n theorem cycle_broadcast_lower_bound (hc : C.Correct)\n     (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :\n     (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) :=\n-  C.subcycle_broadcast_lower_bound hc _ hG le_rfl hn\n+  C.toRecodedPacketCode.cycle_broadcast_lower_bound (C.toRecodedPacketCode_correct hc)\n+    (C.toRecodedPacketCode_local (SimpleGraph.cycleGraph n) hG) hn\n \n theorem path_broadcast_lower_bound (hc : C.Correct)\n     (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :\n     (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) :=\n-  C.subcycle_broadcast_lower_bound hc _ hG SimpleGraph.pathGraph_le_cycleGraph hn\n+  C.toRecodedPacketCode.path_broadcast_lower_bound (C.toRecodedPacketCode_correct hc)\n+    (C.toRecodedPacketCode_local (SimpleGraph.pathGraph n) hG) hn\n \n end RecodedXorCode\n end TransposeFollowup\n"
+    },
+    {
+      "path": "lean/TransposeFollowup/SubmodularCover.lean",
+      "before_sha256": "1b61d78d458727dd535d73c81e7178ff09ff13384b4c6b215284abe403e56269",
+      "after_sha256": "49b06e6e75952da8f05125968df3cc08dc957bd1d492324d37d6c773348b7f60",
+      "reverse_unified_diff": "--- a/lean/TransposeFollowup/SubmodularCover.lean\n+++ b/lean/TransposeFollowup/SubmodularCover.lean\n@@ -1,4 +1,4 @@\n-import Mathlib.Tactic\n+import TransposeFollowup.WeightedSubmodularCover\n \n /-! The finite covering inequality needed for the coordinate two-cover proof.\n Its hypotheses will be proved for entropy, rather than assumed by a coding\n@@ -20,60 +20,8 @@\n     (k : ℝ)\n     (hcover : ∀ i ∈ U, k ≤ ∑ a, if i ∈ S a then (1 : ℝ) else 0) :\n     k * f U ≤ ∑ a, f (S a) := by\n-  classical\n-  induction U using Finset.induction_on generalizing f S with\n-  | empty =>\n-      have hempty : ∀ a, S a = ∅ := fun a => Finset.subset_empty.mp (hS a)\n-      simp [hempty, hzero]\n-  | @insert i U hi ih =>\n-      let f' := fun A => f (insert i A) - f {i}\n-      have hz' : f' ∅ = 0 := by simp [f']\n-      have hm' : Monotone f' := by\n-        intro A B hAB\n-        exact sub_le_sub_right (hmono (Finset.insert_subset_insert i hAB)) _\n-      have hs' : ∀ A B, f' (A ∪ B) + f' (A ∩ B) ≤ f' A + f' B := by\n-        intro A B\n-        have h := hsub (insert i A) (insert i B)\n-        have hu : insert i A ∪ insert i B = insert i (A ∪ B) := by ext; simp\n-        have hn : insert i A ∩ insert i B = insert i (A ∩ B) := by ext; simp; tauto\n-        rw [hu, hn] at h\n-        dsimp only [f']\n-        linarith\n-      have hSU : ∀ a, (S a).erase i ⊆ U := by\n-        intro a j hj\n-        have hj' := hS a (Finset.mem_of_mem_erase hj)\n-        rcases Finset.mem_insert.mp hj' with hji | hjU\n-        · exact False.elim ((Finset.mem_erase.mp hj).1 hji)\n-        · exact hjU\n-      have hc' : ∀ j ∈ U, k ≤ ∑ a, if j ∈ (S a).erase i then (1 : ℝ) else 0 := by\n-        intro j hj\n-        have hji : j ≠ i := by rintro rfl; exact hi hj\n-        simpa [Finset.mem_erase, hji] using\n-          hcover j (Finset.mem_insert_of_mem hj)\n-      have hind := ih f' hz' hm' hs' (fun a => (S a).erase i) hSU hc'\n-      have hpoint : ∀ a, f' ((S a).erase i) ≤\n-          f (S a) - (if i ∈ S a then f {i} else 0) := by\n-        intro a\n-        by_cases hia : i ∈ S a\n-        · simp [f', hia, Finset.insert_erase hia]\n-        · have h := hsub (S a) {i}\n-          have hinter : S a ∩ {i} = ∅ := by\n-            ext j\n-            simp_all\n-          rw [hinter, hzero, Finset.union_singleton] at h\n-          have herase : (S a).erase i = S a := by ext j; simp; aesop\n-          simp only [f', herase, hia, ite_false, sub_zero]\n-          linarith\n-      have hsum := Finset.sum_le_sum (s := Finset.univ) (fun a _ => hpoint a)\n-      change (∑ a, f' ((S a).erase i)) ≤ _ at hsum\n-      simp only [Finset.sum_sub_distrib] at hsum\n-      have hsingle : 0 ≤ f {i} := by\n-        simpa only [hzero] using hmono (Finset.empty_subset ({i} : Finset ι))\n-      have hcount := mul_le_mul_of_nonneg_right\n-        (hcover i (Finset.mem_insert_self i U)) hsingle\n-      simp only [Finset.sum_mul, ite_mul, one_mul, zero_mul] at hcount\n-      dsimp only [f'] at hind hsum\n-      simp only [Finset.sum_sub_distrib] at hind hsum\n-      nlinarith\n+  simpa only [one_mul] using\n+    weighted_submodular_cover U f hzero hmono hsub S hS\n+      (fun _ => 1) (fun _ => zero_le_one) k hcover\n \n end TransposeFollowup\n"
+    }
+  ],
+  "contracts": [
+    {
+      "name": "TransposeFollowup.RecodedXorCode.broadcast_bound_of_ball_budget",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem broadcast_bound_of_ball_budget (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (k q e : ℕ)\n    (hballs : ∀ i, (nearVertices G k i).card ≤ q)\n    (hbudget : n + k * q ≤ (k + 1) * e) :\n    n * n * b ≤ B + b * n * e ",
+      "header_sha256": "f819f2856a3c02e935d0641e588e8e32d89a91bb1f00b76de409b8f1e3cab346",
+      "raw_type_sha256": "b451f1a427be6e9ec9b5bf75cd6b1dcc0c3e57768828618f954e19873a395c8c",
+      "canonical_type_sha256": "5f5682e97141c316b863c1008aae42491ca1609864f402168f28510ef12da268",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.broadcast_bound_of_ball_budget_real",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem broadcast_bound_of_ball_budget_real (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (k q : ℕ) (e : ℝ)\n    (hballs : ∀ i, (nearVertices G k i).card ≤ q)\n    (hbudget : (n : ℝ) + k * q ≤ (k + 1) * e) :\n    (n * n * b : ℕ) ≤ (B : ℝ) + (b : ℝ) * n * e ",
+      "header_sha256": "b9af86ea317620c82fb5eadc7eba4567e1a666f46c9f23fa856e3c5497c443ef",
+      "raw_type_sha256": "fef1599d7a5b52a3f77e53d3e51bc5b1929e4344bbd6096608ae433d3790ed0e",
+      "canonical_type_sha256": "35ba990ffa4c1445d831a8941d6fee7b5ed31af0288d956c73a06de87a5d8214",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (ell : ℕ) :\n    (B : ℝ) ≥ (n * n * b : ℕ) -\n      (((n * n * b : ℕ) : ℝ) + ell * (nearBits (b := b) G ell).card) / (ell + 1) ",
+      "header_sha256": "00973be6204601c9a898acfd0b5dc194a1e8ebe87db19e5f9e834ba35653b959",
+      "raw_type_sha256": "ea9f4084d4fc636e38a567682a66d37b42449c2ee6b2cc87ae8095809f6815ac",
+      "canonical_type_sha256": "5b5ab5bec00fb8c00e1d34182fe666441462f3323dbfd60c7333ce9ff40c0de8",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem broadcast_lower_bound_scaled (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (ell : ℕ) :\n    (ell + 1) * (n * n * b) ≤ (ell + 1) * B + n * n * b +\n      ell * (nearBits (b := b) G ell).card ",
+      "header_sha256": "36cdb2065a0cd84b6cfa63ec63f9e58bf99ddb77d1b5276644f0b5a70b68f989",
+      "raw_type_sha256": "e4b2a15c935a723eb07971550f05c81439c3cde191ea9467af79ae205a03dfea",
+      "canonical_type_sha256": "e90f47ed676580d672b6cda8f369e3b91d140b8c3d3798558d9bbad3a55e559a",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem cycle_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) ",
+      "header_sha256": "a810d9844309d87c118536b0eef51fcbf03dbdf11f50a9b67a54d49febf7a397",
+      "raw_type_sha256": "2cd9f17bb17db9bc3347302fcbcb417671c4293b8ed6e62048de645f7b5387e2",
+      "canonical_type_sha256": "845aa4b1028136b82f8fac1a5262f84bbe9129aeff410993aefa98b734026ad0",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) {m : ℕ} [NeZero m]\n    (f : G →g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) ",
+      "header_sha256": "75e8fe3700bddbb7a84729e6068e482b79fcc28c3d7c4eb5c8cd576b111bd5a7",
+      "raw_type_sha256": "a74fddb612e1755ee63d7ec4181f70505ecf205952c37b0674e8596a3b10c19f",
+      "canonical_type_sha256": "3d20d43757238f562cfdba3d1b8ace565ea3120e174c54c7996066fd6f6ceba3",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.degree_broadcast_bound_scaled",
+      "original_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "current_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "header": "theorem degree_broadcast_bound_scaled (hc : C.Correct) (G : SimpleGraph (Fin n))\n    [DecidableRel G.Adj] (hG : C.LocalTo G) (D : ℕ) (hD : 2 ≤ D)\n    (hdegree : ∀ i, G.degree i ≤ D) (hn : 0 < n) :\n    (Nat.log D n / 2 + 2) * (n * n * b) ≤\n      (Nat.log D n / 2 + 2) * B + 3 * (n * n * b) ",
+      "header_sha256": "a56daea9048d515290a152362cb327eb25f5f69f7b6e6331f2f2033a7b587293",
+      "raw_type_sha256": "b8fb7e05488767ccf4d26cd567c3ebe42944772fa3c52ca95445f0943b9fca9a",
+      "canonical_type_sha256": "d26bb21280d6c82e6ce064f68a304da70ab41ddd16e661f0fd3f70e37d7bf0bf",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.degree_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "current_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "header": "theorem degree_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    [DecidableRel G.Adj] (hG : C.LocalTo G) (D : ℕ) (hD : 2 ≤ D)\n    (hdegree : ∀ i, G.degree i ≤ D) (hn : 2 ≤ n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) -\n      6 * Real.log (D : ℝ) * (n * n * b : ℕ) / Real.log (n : ℝ) ",
+      "header_sha256": "fb4da2eee4384fcddf720897e7e0f9232652c7387fd0ddad7cca2bf2603c699c",
+      "raw_type_sha256": "194392f64880e4d17bc04550ffba3bb7cf143b972a5dada77a5e0055c8aadc72",
+      "canonical_type_sha256": "2652d862d13d8b9d8a21d0c678ee9eeb0ce24b6a68093b54af0659326a85d2ae",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "current_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "header": "theorem fixed_degree_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    [DecidableRel G.Adj] (hG : C.LocalTo G) (Delta : ℕ)\n    (hdegree : ∀ i, G.degree i ≤ Delta) (hn : 2 ≤ n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) -\n      6 * Real.log (max 2 Delta : ℕ) * (n * n * b : ℕ) / Real.log (n : ℝ) ",
+      "header_sha256": "8d87bd2d3af3b22bf68e4348853672a46215255503d0a4bc78992a0b766b6a0b",
+      "raw_type_sha256": "dc5a7ea5a550310589c37d1e572b1f4b3ef0db33522df8d57b29a05817fdc94a",
+      "canonical_type_sha256": "d998aa5c465f34b3ea542d02b563cf07b460c6e16f7f97439e839c76ebcdafad",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_bound_nat",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem linear_ball_broadcast_bound_nat (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G)\n    (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :\n    n * n * b ≤ B + b * n * (3 * Nat.sqrt n) ",
+      "header_sha256": "bf747133edd073f57bbad785f8b6b592218ce2121b7482469071cebb080338b2",
+      "raw_type_sha256": "0ab61d79b2df32371a3510f788193a05b53b4aebae439151f9ca4f5575c779c7",
+      "canonical_type_sha256": "91b47341c5ea75eac321aed911cc8a2e061b6ad33d3449ab9598b62a869356b6",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G)\n    (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) -\n      (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) ",
+      "header_sha256": "4667ee77fcb18b8346567858b9a58f3c0afd08766d5b9b6a7b6e0528b7e599de",
+      "raw_type_sha256": "03c830df4abfc5c5e4cb56647bce633cdf476e4ced974facff58724196b78b1c",
+      "canonical_type_sha256": "3e00642bf4263092efe6e02f8faabae84ab2f18aad9d240642f7aba6f9838024",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.linear_ball_error_le_sqrt",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem linear_ball_error_le_sqrt (n : ℕ) (hn : 0 < n) :\n    Real.sqrt (8 * ((n : ℝ) + 3)) - 4 ≤ Real.sqrt (8 * (n : ℝ)) ",
+      "header_sha256": "cdfa5d743ccda35d7ec246557360b93d917c5f127a3bef51420473a220ccf13d",
+      "raw_type_sha256": "1c8208c2a25ce30340c6336e357070f39feace807877990af9e9c14e01f5280b",
+      "canonical_type_sha256": "d17116d3dd2d90625bf85899daf34419fe0c3f811455d152b45b045d3cb2f1cc",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem path_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) ",
+      "header_sha256": "1ea7f97de0189ea7f5695009b8b61068251ecc8f5b956f0f3af9bfe47271c83d",
+      "raw_type_sha256": "22936dbac197ba48dca25bd0f679499b0f5f1456f0acaadcb19fd6c095bd14b6",
+      "canonical_type_sha256": "f15d54a0fff1fa06a67860a373f5dd36bf661914642887faea2bcafe0b3ad16d",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.small_component_count_le_near",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem small_component_count_le_near (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (ell : ℕ) :\n    (C.system.smallComponents ell).card ≤ (nearBits (b := b) G ell).card ",
+      "header_sha256": "d2360f58483cec46c3ee6a953b2ad2b2bb092a099220f7c62baa406603f1f580",
+      "raw_type_sha256": "4faf758c885460426c17f0bb23739854b0de5d9d1997c4e80bf9df2a6683a1f9",
+      "canonical_type_sha256": "ac6ab4e450f9d090cb6792393cafed095ef61e7c9777b1f965ece35ffc14c4fe",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
+      "original_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "current_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "header": "theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (hcycle : G ≤ SimpleGraph.cycleGraph n) (hn : 0 < n) :\n    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * (Real.sqrt (8 * ((n : ℝ) + 3)) - 4) ",
+      "header_sha256": "1003df2ad2ccf3f327672d6eefc5e2290a41123fe26722dc5beae413df7f7188",
+      "raw_type_sha256": "89b8c4007c7205843ba3cd3d8646812d7582d76b4b419e87d3215d94ff49fbb3",
+      "canonical_type_sha256": "6bf857bd31ad19639064bedb49dd6c46486c8a8e0eb13798f13f3fe6dee3e988",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.components_disjoint",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem components_disjoint : (C.components : Set (Finset V)).PairwiseDisjoint id ",
+      "header_sha256": "aa20aca5398dce7938978c53a712fb45e3184c038c387065d06c740aaf8fc116",
+      "raw_type_sha256": "9ac2458cb7805909cf4e72c94c065081b07ba8a76615529cf718d51220bbe9c7",
+      "canonical_type_sha256": "e33116b25cbe0e4ce0d97c72b00ae1b9fcc24ca3ca3d2cd03816365cf53b9a2c",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.mem_smallComponents",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem mem_smallComponents (ell : ℕ) (S : Finset V) :\n    S ∈ C.smallComponents ell ↔ S ∈ C.unanchored ∧ S.card ≤ ell ",
+      "header_sha256": "6369e095e71b686f1c203f0bd565de084c3754d46db449983de33bbbff9e71ba",
+      "raw_type_sha256": "91a7981dad87c0543de6d90d23ce877042a65a07f9ed63b218d61246383833e4",
+      "canonical_type_sha256": "3486d5f1a1f747866cde7aaa99a66070fbd10d57291ff563c28b71b9e0def10e",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.smallComponents",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "noncomputable def smallComponents (ell : ℕ) : Finset (Finset V) ",
+      "header_sha256": "472cea5bcbbdd6e0551b5b7e2959377878b4b9c9430a62da7d26965cc120d43f",
+      "raw_type_sha256": "38bfe9d57f4f7353e9aeb471c30af43b4e662c5debab1af3d639acba4828c791",
+      "canonical_type_sha256": "3dc99f85887ebeb851e5bfa264d69e9d9f849d4b095bddf2a30d4817dd71ceb2",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.smallComponents_disjoint",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem smallComponents_disjoint (ell : ℕ) :\n    (C.smallComponents ell : Set (Finset V)).PairwiseDisjoint id ",
+      "header_sha256": "16c87b209e39fc77d60cf0afc60243cf0b50b3b037ea49119a260954232cab85",
+      "raw_type_sha256": "cd2f3408d2aa1ec81b0c830f4083830d4acaf684b7524825168247679228c05e",
+      "canonical_type_sha256": "670f45df41df90081c0694bbb2f86328322ec46169fab88efb7dbc7aca6fa14c",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.unanchored_disjoint",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem unanchored_disjoint : (C.unanchored : Set (Finset V)).PairwiseDisjoint id ",
+      "header_sha256": "54c7591cbbcf35721a946b4f40646b65fecb3b3bebd9c2b55187f1f15f3d2bd2",
+      "raw_type_sha256": "7ad6821568d692111f55a5eba775b5fbc467630b73b0023e6e62e00e7d996861",
+      "canonical_type_sha256": "b615d36c6a4fa13a32c84a14858c77ef2abe2467bde2fe15a5425a604e26cfe9",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.unanchored_nonempty",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem unanchored_nonempty {S : Finset V} (hS : S ∈ C.unanchored) : S.Nonempty ",
+      "header_sha256": "5c83b2d0300ce85d763df2de2ddcdb1dfb1a47c46b851736a5a293e4b9ceaf24",
+      "raw_type_sha256": "13121fe726679cca10f0e49afd7fe675c17064e9a49e45ec4648eca0133ab747",
+      "canonical_type_sha256": "ecf965ec422fabb312ee5e982ff2524b50675c4de7df8dda0a416b7da1bfea66",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.XorSystem.unanchored_size_bound",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "header": "theorem unanchored_size_bound (ell : ℕ) :\n    (ell + 1) * C.unanchored.card ≤ Fintype.card V + ell * (C.smallComponents ell).card ",
+      "header_sha256": "6d9ef635f0bfe4e3d45c54142d499c78bd625b7d6c2bc3424d94799fcb661757",
+      "raw_type_sha256": "2c9574c3477a1e37199b360747bd16f8c56937eab4a014754ce183e4f1ad30ce",
+      "canonical_type_sha256": "717242bb370febaaa6c262549eb7bffab224a40da2b22b5b149f33f9c58097a4",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.disjoint_family_size_bound",
+      "original_path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "current_path": "lean/TransposeFollowup/DisjointFamilyCount.lean",
+      "header": "theorem disjoint_family_size_bound {V : Type u} [Fintype V] [DecidableEq V]\n    (U : Finset (Finset V)) (hne : ∀ S ∈ U, S.Nonempty)\n    (hdis : (U : Set (Finset V)).PairwiseDisjoint id) (ell : ℕ) :\n    (ell + 1) * U.card ≤ Fintype.card V + ell * (U.filter (fun S => S.card ≤ ell)).card ",
+      "header_sha256": "1cae77ff46da003855f9afb1ce3f1d98e9f56862fa91451ce11e7c5a203c34ea",
+      "raw_type_sha256": "bd636c7e04851759b432edfada032871bdaad74cf3077f240b12361b540d5697",
+      "canonical_type_sha256": "30cbc58b3db0a8cd33261b6ce302d7dcfc207339b1f6f9b595b29e607bfb03cc",
+      "level_params": [
+        "u"
+      ]
+    },
+    {
+      "name": "TransposeFollowup.half_log_power_budget",
+      "original_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "current_path": "lean/TransposeFollowup/DistanceNumerics.lean",
+      "header": "theorem half_log_power_budget (D n : ℕ) (hD : 2 ≤ D) (hn : 0 < n) :\n    (Nat.log D n / 2 + 1) * D ^ (Nat.log D n / 2) ≤ n ",
+      "header_sha256": "261261937217bc4e7fbe4b1351702e4a410d236eb301f8d0aca66b3babd9c20d",
+      "raw_type_sha256": "2de5d333193b42020d91dc78e47dca80f5d6694ba530872d36810bafaee1599a",
+      "canonical_type_sha256": "0b55b3418069b0cdbe22cdb56b06849518638fa477b87d312505658efd28ab74",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.log_le_twice_half_log",
+      "original_path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "current_path": "lean/TransposeFollowup/DistanceNumerics.lean",
+      "header": "theorem log_le_twice_half_log (D n : ℕ) (hD : 2 ≤ D) (hn : 0 < n) :\n    Real.log (n : ℝ) ≤ 2 * ((Nat.log D n / 2 : ℕ) + 2 : ℝ) * Real.log (D : ℝ) ",
+      "header_sha256": "38823dc378c520aedee02c6b0966dbd5a8175fa9a35a41904f1c67afe484e48d",
+      "raw_type_sha256": "cdade6442b1fe2db00d25083d174c68d236acf7999dfddb1e23611cecf6e4f25",
+      "canonical_type_sha256": "c79b5bb47811f24ff3620e088224481ce8bac61a5e55347e7e93e90d057f29f6",
+      "level_params": []
+    },
+    {
+      "name": "TransposeFollowup.submodular_cover",
+      "original_path": "lean/TransposeFollowup/SubmodularCover.lean",
+      "current_path": "lean/TransposeFollowup/SubmodularCover.lean",
+      "header": "theorem submodular_cover {ι κ : Type*} [DecidableEq ι] [Fintype κ]\n    (U : Finset ι) (f : Finset ι → ℝ)\n    (hzero : f ∅ = 0)\n    (hmono : Monotone f)\n    (hsub : ∀ A B, f (A ∪ B) + f (A ∩ B) ≤ f A + f B)\n    (S : κ → Finset ι) (hS : ∀ a, S a ⊆ U)\n    (k : ℝ)\n    (hcover : ∀ i ∈ U, k ≤ ∑ a, if i ∈ S a then (1 : ℝ) else 0) :\n    k * f U ≤ ∑ a, f (S a) ",
+      "header_sha256": "b9347798b0da64798aa6c9310aaf7f4020b5658d7145aee1246ac69ecf200e47",
+      "raw_type_sha256": "ba49d39a006c0e336ba5d3adb8d6277658ae3e19c825e6893f246cc746130b2f",
+      "canonical_type_sha256": "ea13e022d28bad5db4ee81ad280e8b619f991c881b9d27582a42935cff407ca0",
+      "level_params": [
+        "u_1",
+        "u_2"
+      ]
+    }
+  ]
+}

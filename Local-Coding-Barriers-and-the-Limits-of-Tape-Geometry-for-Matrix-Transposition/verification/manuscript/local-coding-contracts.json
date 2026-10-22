@@ -262,177 +262,125 @@
   {
     "label": "def:local-recoded-xor",
     "kind": "definition",
-    "module": "RecodedXor",
+    "module": "RecodedPackets",
     "declarations": [
-      "TransposeFollowup.RecodedXorCode",
-      "TransposeFollowup.RecodedXorCode.Correct",
-      "TransposeFollowup.RecodedXorCode.LocalTo"
+      "TransposeFollowup.RecodedPacketCode",
+      "TransposeFollowup.RecodedPacketCode.Correct",
+      "TransposeFollowup.RecodedPacketCode.LocalTo"
     ],
     "hypotheses": [
-      "Each original row is recoded by an arbitrary fixed bijection of the full row alphabet.",
-      "A fixed natural B packets, each a singleton transformed bit or XOR of two transformed bits.",
-      "Each pair uses either one row or two rows adjacent in G.",
-      "Each decoder knows its own original row and the full broadcast; correctness holds on the entire input cube."
+      "Independent full-row bijections; each fixed one-bit packet has declared support of size at most two stored coordinates.",
+      "Two distinct supported row indices must be adjacent in G; receivers retain their original rows.",
+      "Correctness holds on the whole raw cube. Constant, unary, nonlinear and repeated packets are allowed."
     ],
-    "prose_scope": "Exact recoded fixed-XOR model, allowing nonlinear bijective preprocessing/decoding, repetitions, same-row pairs and self-XORs, but no helper or adaptive packet selection.",
+    "prose_scope": "Exact fixed two-coordinate Boolean model with independent full-row bijections, full-cube correctness and original-row side information.",
     "proof_sources": [
       {
-        "module": "RecodedXor",
+        "module": "RecodedPackets",
         "declarations": [
-          "TransposeFollowup.RecodedXorCode",
-          "TransposeFollowup.RecodedXorCode.Correct",
-          "TransposeFollowup.RecodedXorCode.LocalTo"
+          "TransposeFollowup.RecodedPacketCode",
+          "TransposeFollowup.RecodedPacketCode.Correct",
+          "TransposeFollowup.RecodedPacketCode.LocalTo"
         ]
-      },
-      {
-        "module": "XorPackets",
-        "declarations": [
-          "TransposeFollowup.XorPacket",
-          "TransposeFollowup.XorSystem"
-        ]
-      },
-      {
-        "source": "RecodedXor"
-      },
-      {
-        "source": "XorPackets"
       }
     ],
     "review_notes": [
-      "No claim that arbitrary two-row-supported linear functionals can all be converted to this packet format by one common row recoding.",
-      "Additional immediately adjacent formal call(s) cover the other definitions or closure lemmas, recorded in proof_sources."
+      "Current packet extension replaces the XOR-only prose by arbitrary Boolean coordinate packets; original XOR Lean declarations remain unchanged."
     ],
-    "program_role": "Defines the bounded-packet format tested by the XOR obstruction, allowing nonlinear preprocessing and decoding.",
-    "final_english_lean_comparison": "Matches RecodedXorCode, Correct, LocalTo and XorPacket/XorSystem: independent row bijections; fixed singleton/pair coordinate packets; original-row side information; all-input correctness; no helper; same-row and self-pairs allowed.",
-    "final_outline_assessment": "No proof outline; compared primitive structures and evaluation definitions directly."
+    "program_role": "Defines the fixed two-coordinate Boolean model; old XOR codes embed without changing broadcasts.",
+    "final_english_lean_comparison": "Direct comparison of CoordinatePacket support/cardinality/eval locality and RecodedPacketCode. The row recodings remain bijections; there is no helper in this model.",
+    "final_outline_assessment": "Direct comparison of CoordinatePacket support/cardinality/eval locality and RecodedPacketCode. The row recodings remain bijections; there is no helper in this model."
   },
   {
     "label": "thm:local-xor-distance",
     "kind": "theorem",
-    "module": "XorComponentCount",
+    "module": "PacketDistanceBound",
     "declarations": [
-      "TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled",
-      "TransposeFollowup.RecodedXorCode.broadcast_lower_bound"
+      "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled",
+      "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound"
     ],
     "hypotheses": [
-      "A correct RecodedXorCode local to a simple row graph G.",
-      "Any natural ell; no positivity or connectedness condition."
+      "Correct RecodedPacketCode local to a simple row graph.",
+      "Any natural ell, including zero; d and b may be zero."
     ],
     "prose_scope": "(ell+1)P <= (ell+1)B + P + ell*Q_ell, equivalently B >= P-(P+ell*Q_ell)/(ell+1), where Q_ell counts raw bits whose owner/receiver are joined by a walk of length < ell.",
     "proof_sources": [
       {
-        "module": "XorComponentCount",
+        "module": "PacketDistanceBound",
         "declarations": [
-          "TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled",
-          "TransposeFollowup.RecodedXorCode.broadcast_lower_bound"
+          "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled",
+          "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound"
         ]
-      },
-      {
-        "source": "XorComponentCount"
-      },
-      {
-        "source": "XorPackets"
-      },
-      {
-        "source": "RecodedXor"
-      },
-      {
-        "source": "ComponentDistance"
-      },
-      {
-        "source": "BitFlips"
-      },
-      {
-        "source": "DisjointFlipOrbit"
       }
     ],
     "review_notes": [
-      "Disconnected row pairs are never near. The proof uses free orbits of disjoint component flips, not linearity of raw coordinates after nonlinear row recoding."
+      "Current packet extension replaces the XOR-only prose by arbitrary Boolean coordinate packets; original XOR Lean declarations remain unchanged."
     ],
-    "program_role": "Limits savings via graph-neighborhood volume and supplies both the bounded-degree and path/cycle obstructions.",
-    "final_english_lean_comparison": "Matches both scaled natural and divided real broadcast_lower_bound endpoints for all natural ell. Near means a walk of length <ell, so disconnected pairs are excluded and ell=0 is admitted.",
-    "final_outline_assessment": "Read transformed bijection, component difference/recovery, raw-square confinement, unanchored size count and their orbit-bound calls. Nonlinear recoding is handled by bijective conjugation of disjoint flips, not an unjustified raw linear-kernel claim."
+    "program_role": "Limits savings through graph-neighborhood volume even for nonlinear Boolean packets.",
+    "final_english_lean_comparison": "Exact original finite inequality. Component collisions replace XOR flips; independent component choices remain distinct under the inverse rowwise bijection.",
+    "final_outline_assessment": "Exact original finite inequality. Component collisions replace XOR flips; independent component choices remain distinct under the inverse rowwise bijection."
   },
   {
     "label": "cor:local-xor-degree",
     "kind": "corollary",
-    "module": "XorDegreeBound",
+    "module": "PacketDistanceConsequences",
     "declarations": [
-      "TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound"
+      "TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound"
     ],
     "hypotheses": [
-      "A correct RecodedXorCode local to G on d>=2 rows.",
-      "A natural maximum-degree bound Delta."
+      "Correct RecodedPacketCode local to G.",
+      "d>=2 and degree<=Delta, with Delta natural."
     ],
     "prose_scope": "B >= P - 6*log(max(2,Delta))/log(d)*P, uniform in entry width b.",
     "proof_sources": [
       {
-        "module": "XorDegreeBound",
+        "module": "PacketDistanceConsequences",
         "declarations": [
-          "TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound"
+          "TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound"
         ]
-      },
-      {
-        "source": "XorDegreeBound"
-      },
-      {
-        "source": "GraphNearCount"
-      },
-      {
-        "source": "XorComponentCount"
       }
     ],
     "review_notes": [
-      "Excludes fixed fractional savings for fixed Delta only within the recoded fixed-XOR format; does not decide the first paper general local linear coding problem.",
-      "Asymptotic fractional-saving interpretation assumes b>0; the exact finite inequality still permits b=0."
+      "Current packet extension replaces the XOR-only prose by arbitrary Boolean coordinate packets; original XOR Lean declarations remain unchanged."
     ],
-    "program_role": "Rules out fixed fractional savings for fixed maximum degree, including bounded-degree expander support graphs.",
-    "final_english_lean_comparison": "Matches fixed_degree_broadcast_lower_bound for d>=2, Delta natural, degree bound and exact error 6 log(max(2,Delta)) P/log d. No connectedness or positive-width premise omitted.",
-    "final_outline_assessment": "Half-integer-log radius, walk-count ball estimate, (k+1)*delta^k<=d and logarithm conversion match XorDegreeBound. Renamed local delta to avoid shadowing the deficit D."
+    "program_role": "Excludes fixed fractional savings on any bounded-degree graph, including expanders.",
+    "final_english_lean_comparison": "Same 6 log(max(2,Delta)) P/log d error; generic numeric lemma instantiated with the new concrete distance theorem.",
+    "final_outline_assessment": "Same 6 log(max(2,Delta)) P/log d error; generic numeric lemma instantiated with the new concrete distance theorem."
   },
   {
     "label": "cor:local-xor-cycle",
     "kind": "corollary",
-    "module": "XorPathCycleBound",
+    "module": "PacketDistanceConsequences",
     "declarations": [
-      "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
-      "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
-      "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
-      "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
-      "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound"
+      "TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound",
+      "TransposeFollowup.RecodedPacketCode.cycle_embedding_broadcast_lower_bound",
+      "TransposeFollowup.RecodedPacketCode.subcycle_broadcast_lower_bound",
+      "TransposeFollowup.RecodedPacketCode.cycle_broadcast_lower_bound",
+      "TransposeFollowup.RecodedPacketCode.path_broadcast_lower_bound"
     ],
     "hypotheses": [
-      "A correct RecodedXorCode local to G, with d>0.",
-      "Either every ell-near ball has at most 2*ell-1 vertices for all integers ell>=1, or an injective graph homomorphism of G into cycleGraph m with m>0."
+      "Correct RecodedPacketCode local to G, d>0.",
+      "All positive-radius balls have size<=2ell-1, or an injective graph homomorphism into a positive-length cycle."
     ],
     "prose_scope": "B >= P - b*d*(sqrt(8*(d+3))-4), including standard paths, cycles, subcycles and relabelled embedded subgraphs.",
     "proof_sources": [
       {
-        "module": "XorPathCycleBound",
+        "module": "PacketDistanceConsequences",
         "declarations": [
-          "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
-          "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
-          "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
-          "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
-          "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound"
+          "TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound",
+          "TransposeFollowup.RecodedPacketCode.cycle_embedding_broadcast_lower_bound",
+          "TransposeFollowup.RecodedPacketCode.subcycle_broadcast_lower_bound",
+          "TransposeFollowup.RecodedPacketCode.cycle_broadcast_lower_bound",
+          "TransposeFollowup.RecodedPacketCode.path_broadcast_lower_bound"
         ]
-      },
-      {
-        "source": "XorPathCycleBound"
-      },
-      {
-        "source": "CyclicNearCount"
-      },
-      {
-        "source": "XorComponentCount"
       }
     ],
     "review_notes": [
-      "R1916 strengthened finite correction is the checked current endpoint; the leading coefficient remains sqrt(8)."
+      "Current packet extension replaces the XOR-only prose by arbitrary Boolean coordinate packets; original XOR Lean declarations remain unchanged."
     ],
-    "program_role": "Strengthens the negligible-saving error from O(P/log d) to O(P/sqrt d) on paths, cycles and graphs with the stated linear ball cap.",
-    "final_english_lean_comparison": "Matches linear_ball_broadcast_lower_bound and cycle embedding/subcycle/path endpoints: d>0, cycle m>0, injective graph homomorphism or all-radius cap 2ell-1, and exact shifted-square-root error.",
-    "final_outline_assessment": "Read radius choice Nat.sqrt((d+3)/2), ball count via integer offsets, and real-budget optimization. Displayed rational identity is algebraically exact and k<=t<k+1 yields the required bound."
+    "program_role": "Retains the O(P/sqrt d) distance-method error for nonlinear packets; separator theorem still has the better leading constant on paths/cycles.",
+    "final_english_lean_comparison": "Same b*d*(sqrt(8*(d+3))-4) correction. Graph counting and numerical optimization are reused through PacketDistanceBudget.",
+    "final_outline_assessment": "Same b*d*(sqrt(8*(d+3))-4) correction. Graph counting and numerical optimization are reused through PacketDistanceBudget."
   },
   {
     "label": "def:local-triangular-causal",
@@ -684,5 +632,92 @@
     "program_role": "For high-entropy input laws forces actual helper entropy near P/4 as d grows, so a heavily skewed helper distribution does not avoid the obstruction.",
     "final_english_lean_comparison": "Matches arbitrary-law and uniform helper_entropy_deficit_bound endpoints and their quarter specializations. All-F correctness, normalized nonnegative law, zero masses allowed, arbitrary ambient helper with entropy on finite attained subtype, exact b floor(d^2/4) charge.",
     "final_outline_assessment": "Branch fiber-cardinality bound feeds entropy_le_observation_add_log_fiber_bound; normalization gives H(X)<=H(Z)+log C; exact exponent identity and half-product identity give both charges. Asymptotic d growth and b>0 are now explicit."
+  },
+  {
+    "label": "def:local-inverse-packets",
+    "kind": "definition",
+    "module": "InverseRowBank",
+    "declarations": [
+      "TransposeFollowup.InverseRowBank"
+    ],
+    "hypotheses": [
+      "A deterministic finite-alphabet helper selects a full-cube bijection, a fixed two-coordinate Boolean list and a locality graph.",
+      "Every original row is recoverable from its declared stored-row support on the entire cube. No forward locality is required.",
+      "The packet support rows are equal or graph-adjacent. Receiver knows helper, original row and complete branch broadcast.",
+      "Correctness holds on every selected input in F; no further adaptive support/function/length selection."
+    ],
+    "prose_scope": "Global bijective bank with inverse-local original rows and helper-selected fixed packet data.",
+    "proof_sources": [
+      {
+        "module": "InverseRowBank",
+        "declarations": [
+          "TransposeFollowup.InverseRowBank"
+        ]
+      }
+    ],
+    "review_notes": [
+      "Packet-strengthening extension; separate source manifest and current audit."
+    ],
+    "program_role": "Extends the restricted impossibility test to globally mixed storage while recording the precise inverse-recovery obligation.",
+    "final_english_lean_comparison": "InverseRowBank recode is an Equiv on the full raw cube; inverse_local has all-input quantifiers. HelperInverseLocalPacketCode selects length and branch by helper. CorrectOn intersects F with the selected fiber.",
+    "final_outline_assessment": "InverseRowBank recode is an Equiv on the full raw cube; inverse_local has all-input quantifiers. HelperInverseLocalPacketCode selects length and branch by helper. CorrectOn intersects F with the selected fiber."
+  },
+  {
+    "label": "thm:local-robust-packets",
+    "kind": "theorem",
+    "module": "HelperRobustPacketBound",
+    "declarations": [
+      "TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound"
+    ],
+    "hypotheses": [
+      "The preceding concrete helper-selected code is correct on F; any normalized nonnegative law on F is permitted.",
+      "ell>=1 and the inverse conflict graph has maximum degree<=K in every branch.",
+      "Q counts diagonal or inverse-support-near raw bit coordinates. Entropies are in bits."
+    ],
+    "prose_scope": "(ell+1)(P-E B)<=P+ell E Q+ell(1+min(d,16(K+1)^2))(P-H(X)+H(Z)).",
+    "proof_sources": [
+      {
+        "module": "HelperRobustPacketBound",
+        "declarations": [
+          "TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound"
+        ]
+      }
+    ],
+    "review_notes": [
+      "Packet-strengthening extension; separate source manifest and current audit.",
+      "Arbitrarily large declared inverse supports remain covered by this finite Q/K inequality; bounded support/reuse are needed for the useful degree consequences, not for membership in the finite model."
+    ],
+    "program_role": "Excludes savings when neighborhood volume and the amplified entropy deficit/helper charge are small; it is not a tape-runtime bound.",
+    "final_english_lean_comparison": "The concrete theorem discharges per-fiber inequalities from packet supports, full-cube inverse locality and correct decoding. It charges actual deterministic helper entropy and allows noninjective sample maps and zero masses.",
+    "final_outline_assessment": "The concrete theorem discharges per-fiber inequalities from packet supports, full-cube inverse locality and correct decoding. It charges actual deterministic helper entropy and allows noninjective sample maps and zero masses."
+  },
+  {
+    "label": "cor:local-robust-degree",
+    "kind": "corollary",
+    "module": "HelperPacketDegreeBound",
+    "declarations": [
+      "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound"
+    ],
+    "hypotheses": [
+      "d>=2,b>=1; fixed natural c,e>=1 and delta>=2 bound inverse support size, stored-row reuse and every branch graph degree.",
+      "The concrete helper code is correct on F under any normalized nonnegative input law.",
+      "A>=0 and P-H(X)+H(Z)<=A*d*b."
+    ],
+    "prose_scope": "E B>=P-4(1+2ce+A+64c^2e^2 A) log(delta) P/log(d).",
+    "proof_sources": [
+      {
+        "module": "HelperPacketDegreeBound",
+        "declarations": [
+          "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound"
+        ]
+      }
+    ],
+    "review_notes": [
+      "Packet-strengthening extension; separate source manifest and current audit.",
+      "Review2 exposes the every-radius actual-code budget separately. Its elementary normalized limiting consequence excludes fixed fractional savings for I=D+H(Z)=o(P) at fixed c,e,delta, without asserting the O(P/log d) rate under this weaker premise."
+    ],
+    "program_role": "Explicit O(P/log d) saving bound for I<=A*d*b at fixed c,e,delta,A; the every-radius family also excludes fixed fractional saving under I=o(P). No native-runtime conclusion.",
+    "final_english_lean_comparison": "Actual graph degree/volume bounds imply the finite budget; quarter-log optimization yields the displayed constant. No assumed numerical budget remains in the advertised theorem.",
+    "final_outline_assessment": "Actual graph degree/volume bounds imply the finite budget; quarter-log optimization yields the displayed constant. No assumed numerical budget remains in the advertised theorem."
   }
 ]

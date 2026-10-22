@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "review": "Packet strengthenings: numerical consequence, actual-code degree endpoint, and supporting entropy-cover review",
+  "status": "accepted",
+  "sources": [
+    {
+      "path": "lean/TransposeFollowup/PacketRobustNumerics.lean",
+      "sha256": "2574bcceacd2b280994aebaf4e5423519363075aed0c32c5a9e65a4ae6bf25f9"
+    },
+    {
+      "path": "lean/TransposeFollowup/HelperPacketDegreeBound.lean",
+      "sha256": "47cebe64fe9177b2339423ab2a8a2bdc45a5aa2b3c4bd5b4df65494c6c69d659"
+    },
+    {
+      "path": "lean/TransposeFollowup/WeightedSubmodularCover.lean",
+      "sha256": "8da342a7e3991b78e2e02838d3e7141afc5607d6ca2a505d48c6d21b7960a148"
+    },
+    {
+      "path": "lean/TransposeFollowup/SharedDemandEntropy.lean",
+      "sha256": "a54d3beba46855a65cf2132ab940f00d0af15dbdc318f0dec22c5afced3bf46d"
+    },
+    {
+      "path": "lean/TransposeFollowup/FractionalIndependentCover.lean",
+      "sha256": "acb81b958a16a6d83a95c02c84c87ecfc91da91de809419ff54d53ecc26d0d87"
+    },
+    {
+      "path": "paper/sections/local-coding.tex",
+      "sha256": "d2463033f3381e564b44a0a35d18d347ca110f79595c895501d396031179598e"
+    }
+  ],
+  "notation": {
+    "P": "d*d*b",
+    "entropy": "observationEntropy uses natural logarithms; division by log(2) converts to bits",
+    "error": "4*(1+2*c*e+A+64*c^2*e^2*A)*log(D)*P/log(d)"
+  },
+  "numerical_theorem": {
+    "name": "TransposeFollowup.robust_packet_lower_bound",
+    "path": "lean/TransposeFollowup/PacketRobustNumerics.lean",
+    "role": "Internal numerical lemma; its budget must be discharged by an actual code theorem.",
+    "parameters": "d,b,c,e,D : Nat; A,B,L : Real",
+    "hypotheses": [
+      "D >= 2; d >= 2; A >= 0; L <= A*d*b.",
+      "For every natural k: (k+2)*(P-B) <= P+(k+1)*(2*c*e*d*b*D^k)+(k+1)*(1+64*c^2*e^2*D^(2*k))*L."
+    ],
+    "conclusion": "B >= P - error",
+    "checks": [
+      "The proof selects k = Nat.log D d / 4.",
+      "The existing half-log power and real-log lemmas are reused at the squared base D^2.",
+      "The proof establishes k+1 <= d, (k+1)*D^k <= d, (k+1)*D^(2*k) <= d, and log(d) <= 4*(k+2)*log(D).",
+      "No lower bound on B or L is assumed; the coefficient multiplying L is nonnegative."
+    ]
+  },
+  "actual_code_theorems": {
+    "primary": "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound",
+    "degree_cap_wrapper": "TransposeFollowup.HelperInverseLocalPacketCode.fixed_degree_expected_length_lower_bound",
+    "path": "lean/TransposeFollowup/HelperPacketDegreeBound.lean",
+    "parameters": "Finite sample and helper types; a HelperInverseLocalPacketCode; a normalized nonnegative sample law p; a matrix observation X; branch locality graphs; positive natural c,e,b; d,D >= 2; real A >= 0.",
+    "hypotheses": [
+      "The actual helper-selected code is CorrectOn (Set.range X).",
+      "Every branch is LocalTo its declared stored-row graph.",
+      "Every inverse raw-row support has cardinality at most c; each stored row belongs to at most e such supports.",
+      "Every branch graph has degree at most D.",
+      "P-H(X)/log(2)+H(helper(X))/log(2) <= A*d*b."
+    ],
+    "conclusion": "Sum over samples x of p(x)*length(helper(X(x))) >= P - error.",
+    "wrapper_difference": "An arbitrary degree cap Delta is replaced by max(2,Delta) in the logarithmic error.",
+    "assumed_numeric_budget": false,
+    "assumed_fiber_bound": false,
+    "checks": [
+      "The actual robust_broadcast_bound is invoked at every radius k+1.",
+      "Support nonemptiness, actual graph balls, inverse width and inverse reuse imply conflict degree plus one <= 2*c*e*D^k and near-coordinate count <= 2*c*e*d*b*D^k.",
+      "K = 2*c*e*D^k-1 is justified before converting 16*(K+1)^2 to 64*c^2*e^2*D^(2*k).",
+      "The expected near-coordinate bound uses p >= 0 and sum p = 1.",
+      "The aggregate entropy deficit is separately proved nonnegative before enlarging the min-based coefficient.",
+      "The input observation X need not be injective; the bank may be nonlinear and helper dependent.",
+      "A separate reviewer read the complete actual-code module and accepted the premises, budget discharge, coefficient replacement, and wrapper without corrections."
+    ]
+  },
+  "completed_targeted_verification": {
+    "timing_scope": "Previously completed target-build times; no build was repeated for this metadata-only review.",
+    "builds": [
+      {
+        "command": "lake build TransposeFollowup.PacketRobustNumerics",
+        "status": "passed",
+        "target_seconds": 4.2,
+        "local_warnings": []
+      },
+      {
+        "command": "lake build TransposeFollowup.HelperPacketDegreeBound",
+        "status": "passed",
+        "target_seconds": 4.9,
+        "local_warnings": []
+      },
+      {
+        "command": "lake build TransposeFollowup.FractionalIndependentCover",
+        "status": "passed",
+        "target_seconds": 2.4,
+        "local_warnings": []
+      }
+    ],
+    "axiom_audit": {
+      "method": "Lean #print axioms on compiled declarations",
+      "declarations": [
+        "TransposeFollowup.quarter_log_power_budget",
+        "TransposeFollowup.log_le_four_quarter_log",
+        "TransposeFollowup.robust_packet_scaled_bound",
+        "TransposeFollowup.robust_packet_lower_bound",
+        "TransposeFollowup.helper_matrix_deficit_nonneg",
+        "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound",
+        "TransposeFollowup.HelperInverseLocalPacketCode.fixed_degree_expected_length_lower_bound",
+        "TransposeFollowup.exists_fractional_independent_cover",
+        "TransposeFollowup.exists_fractional_independent_cover_scaled"
+      ],
+      "axioms_for_each": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "extra_axioms_or_sorryAx": false
+    },
+    "repository_wide_verification": "Recorded separately; this review does not claim its completion."
+  },
+  "independent_supporting_source_reviews": [
+    {
+      "path": "lean/TransposeFollowup/WeightedSubmodularCover.lean",
+      "scope": "Complete WeightedSubmodularCover module.",
+      "status": "accepted",
+      "checks": [
+        "Normalized, monotone, submodular set functions; nonnegative real weights; weighted coordinate coverage.",
+        "The induction removes a pivot, uses the submodularity increment bound, and uses nonnegative singleton increments with the weighted coverage inequality.",
+        "No source-independence hypothesis is silently introduced."
+      ]
+    },
+    {
+      "path": "lean/TransposeFollowup/SharedDemandEntropy.lean",
+      "scope": "Selected sections: two-cover/common-observation argument, independent-set application, sharedDemand_conditionalEntropy_le_fractionalCover, and commonObservation_conditionalEntropy_le; not a complete-module audit.",
+      "status": "accepted",
+      "checks": [
+        "The common observation is recoverable from two explicitly disjoint latent views.",
+        "The entropy argument bounds joint common information, rather than replacing it by an unjustified sum of separate edge entropies.",
+        "The fractional-cover application uses the constructed independent-set weights, deals with zero weights, and applies the weighted conditional coordinate cover.",
+        "No independence of the underlying source distribution or demanded outputs is assumed."
+      ]
+    },
+    {
+      "path": "lean/TransposeFollowup/FractionalIndependentCover.lean",
+      "scope": "Constructed finite fractional independent-set cover and its scaled form.",
+      "status": "accepted",
+      "checks": [
+        "Weights are constructed from independent random marks followed by isolation; no cover certificate is assumed.",
+        "The normalized weights sum to one and cover every distinct nonadjacent pair with weight at least 1/(16*(K+1)^2).",
+        "The scaled cover has total weight 16*(K+1)^2 and covers each such pair with weight at least one.",
+        "The construction includes degree cap K=0 and the empty vertex type."
+      ]
+    }
+  ],
+  "manuscript_comparison": {
+    "path": "paper/sections/local-coding.tex",
+    "label": "cor:local-robust-degree",
+    "formal_annotation": "degree_expected_length_lower_bound",
+    "status": "faithful to the formal endpoint",
+    "checks": [
+      "The stated d,b,c,e,D,A restrictions and actual per-branch graph/support hypotheses match Lean.",
+      "The stated deficit plus helper-entropy allowance and the exact constant match Lean.",
+      "The nested floor choice is Nat.log D d / 4; its power and real-log estimates match the squared-base reuse.",
+      "The finite proof retains the additional 1 in the entropy-loss coefficient, yielding A+64*c^2*e^2*A in the final constant.",
+      "The O(P/log d) interpretation fixes c,e,D,A and is uniform in entry width.",
+      "The theorem annotation was corrected to the existing primary declaration."
+    ],
+    "unresolved_findings": []
+  },
+  "limits": [
+    "These are packet-code bounds under the stated inverse-support and branch-locality hypotheses, not native tape-runtime or unrestricted matrix-transposition lower bounds.",
+    "The review does not extend the endpoint to arbitrary two-row functions, adaptivity after the helper, nonbijective banks, or unrestricted inverse support.",
+    "No claim of literature novelty or external human peer review is made."
+  ],
+  "metadata_change_scope": "Only this review receipt was written; no mathematical source edits, commits, or pushes were performed for this task."
+}

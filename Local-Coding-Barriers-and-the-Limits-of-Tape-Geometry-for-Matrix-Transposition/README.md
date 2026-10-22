@@ -13,11 +13,19 @@ ties the final sources and PDF to the declaration, attribution, semantic and
 rendered-page reviews. No unrestricted transposition or multiplication bound
 is claimed, and novelty qualifications remain explicit.
 
-All **six target theorem families are formalized, independently reviewed by AI agents at
-source level, and kernel checked after strengthening and cleanup**. This
-completes the formalization task; unrestricted transposition complexity remains
-open in this work. The source reviews do not replace human peer review or
-establish literature novelty.
+The six theorem families are formalized in Lean. The current packet extension
+replaces the XOR-only manuscript result by arbitrary fixed two-coordinate
+Boolean packets and adds helper-selected global banks with bounded inverse
+support and reuse. At fixed degree and inverse-incidence bounds, a sublinear
+combined input-deficit/helper-entropy budget excludes a fixed fractional
+saving; an O(db) budget gives the explicit O(P/log d) error.
+Original XOR statements and constants are preserved as direct corollaries of
+the Boolean-packet results. Shared counting, numerical and covering proofs
+replace the duplicate arguments.
+The [extension record](verification/manuscript/packet-strengthening/README.txt)
+separates the new proof sources from the historical audits below. The current
+version is prepared for further review; no unrestricted complexity improvement
+or exhaustive novelty claim is made.
 
 The [fresh R1909 audit](verification/r1909-audit.txt) compares every target
 against the recovered original specification, discloses unformalized side claims,
@@ -61,7 +69,8 @@ The six families are:
 
 - [Adaptive separators and average treewidth](lean/TransposeFollowup/AdaptiveTreewidth.lean),
   now allowing arbitrary input laws and finite original-row query supports.
-- [Nonlinear row recoding with fixed pairwise XOR](lean/TransposeFollowup/XorDegreeBound.lean).
+- [Fixed two-coordinate Boolean packets](lean/TransposeFollowup/PacketDistanceBound.lean),
+  extended to [helper-selected global banks with local inverses](lean/TransposeFollowup/HelperRobustPacketBound.lean).
 - [Affine motion and physical approximation barriers](lean/TransposeFollowup/PhysicalAffineApproximationObstruction.lean).
 - [Unconditional fully paid padding](lean/TransposeFollowup/UnconditionalPaidPadding.lean),
   with universal runtime, state and tape overhead constants preceding the payload machine.

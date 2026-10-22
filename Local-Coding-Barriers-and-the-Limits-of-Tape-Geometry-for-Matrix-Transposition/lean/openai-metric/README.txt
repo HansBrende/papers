@@ -18,5 +18,7 @@ live in .lake/ and are ignored by Git. Do not edit downloaded sources; the
 verifier refuses digest mismatches. The original paper is not changed.
 
 Imported headline: OAI.Falconer.Regularization.scalar_weak_radius_projection.
-Its local-concentration assumptions still have to be proved for our matrix
-construction. Library verification alone does not complete paid padding.
+The follow-up discharges its local-concentration hypotheses in the analytic
+development leading to TransposeFollowup/UnconditionalPaidPadding.lean.
+See paper/sections/padding.tex, relative to the follow-up folder, for the
+dependence chain and the scope of the fully paid padding theorem.

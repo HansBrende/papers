@@ -59,8 +59,13 @@ the visual-review receipts identify the actual rendered pages examined. The
 completion receipt binds these to the delivered files. The final editorial
 pass uses final-pass-*-cross-review.json and final-pass-visual-part*.json;
 older receipts are retained as history. final-pass-program-roles.json records
-the contribution of each numbered statement to the research programs. Rebuilding a PDF can
-change its timestamp/hash, so an old visual receipt must not be relabeled as
+the contribution of each numbered statement to the research programs.
+Historical audit records and one-off research scripts retain the paths used
+when they ran, including the folder's earlier capitalization. The reproduction
+commands above locate the current folder automatically; paths within this
+paper in the current attribution ledger are relative to that folder.
+
+Rebuilding a PDF can change its timestamp/hash, so an old visual receipt must not be relabeled as
 a review of a newly changed document without comparison or inspection.
 
 With pypdf available in the chosen Python environment, run

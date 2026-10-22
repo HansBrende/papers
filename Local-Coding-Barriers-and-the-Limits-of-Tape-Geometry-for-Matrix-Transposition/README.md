@@ -1,7 +1,7 @@
-# Local coding barriers and the limits of tape geometry for matrix transposition
+# Local Coding Barriers and the Limits of Tape Geometry for Matrix Transposition
 
 The follow-up manuscript by **Hans Brende and GPT-6 Astra (OpenAI)** is in
-[paper/main.pdf](paper/main.pdf); its complete LaTeX source starts at
+[paper/main.pdf](https://hansbrende.github.io/papers/Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/paper/main.pdf); its complete LaTeX source starts at
 [paper/main.tex](paper/main.tex). It uses **d** for the matrix dimension.
 The paper presents the six theorem families, exact scopes, proof outlines,
 connections to the first paper, attribution and a roadmap. Lean statements
@@ -48,7 +48,7 @@ two checks of exact archived theorem headers. The full build and
 This target measurement is not a whole-project speedup claim. Use the
 [module guide](verification/r1912-module-guide.txt) to locate moved proofs.
 
-The [R1914 analytic build pass](verification/r1914-audit.txt) reduces the clean paired target proof check from **14.39s to 5.33s**. All6306 original audited contracts and all six theorem families are preserved. See the report for the distinct matched-workload evidence and its limits.
+The [R1914 analytic build pass](verification/r1914-audit.txt) reduces the clean paired target proof check from **14.39s to 5.33s**. All 6306 original audited contracts and all six theorem families are preserved. See the report for the distinct matched-workload evidence and its limits.
 
 The [R1915 spectral build pass](verification/r1915-audit.txt) reduces the matched cached proof-edit rebuild from **75.061s to 17.189s** in one observed pair. All 6306 original audited contracts and all six theorem families are preserved. See the report for the distinct matched-workload evidence and its limits.
 
@@ -94,5 +94,3 @@ From this paper directory, verify or fetch the pinned external dependency with
 installation). Then run `lake build` and `lake env lean SupportAxioms.lean`
 from `lean/`. `python3 verification/check_upstream.py` verifies that the original
 paper's 117 files and directory inventory remain unchanged.
-
-Development branch: `codex/transpose-followup-formalization`.

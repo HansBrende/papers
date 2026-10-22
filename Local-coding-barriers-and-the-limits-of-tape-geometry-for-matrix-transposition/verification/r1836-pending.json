@@ -1,0 +1,70 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1835",
+  "target": "Weighted-trace uniform separation and near-identity geometry for both actual nilpotent word families.",
+  "new_modules": [
+    "NilpotentWordGeometry"
+  ],
+  "modified_modules": [
+    "NilpotentArithmeticWords"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.two_source_word_distances",
+    "TransposeFollowup.SL2Projection.weighted_trace_error_le",
+    "TransposeFollowup.SL2Projection.nilpotent_weighted_trace_words",
+    "TransposeFollowup.SL2Projection.weighted_trace_distance_lower_bound",
+    "TransposeFollowup.SL2Projection.nilpotent_actual_words_far",
+    "TransposeFollowup.SL2Projection.nilpotent_trace_coordinate_range",
+    "TransposeFollowup.SL2Projection.nilpotent_actual_word_families_geometry"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 75546,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1836-dev1.log",
+      "reason": "Scope scalarAffine rewrites to avoid replacing the generator; identify the positive factor for abs_of_nonneg."
+    },
+    "development_2": {
+      "session_id": 40003,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1836-dev2.log",
+      "reason": "Add mul_zero to simplify the nilpotent determinant correction."
+    },
+    "development_3": {
+      "session_id": 62664,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1836-dev3.log",
+      "reason": "Remove no-op dsimp after scalar coordinate let already reduced."
+    },
+    "build": {
+      "session_id": 92514,
+      "status": "terminal",
+      "exit_code": 0,
+      "jobs": 10095,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 39201,
+      "status": "terminal",
+      "exit_code": 0,
+      "declarations": 4567,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All R1836 handles terminal. Development1(75546),2(40003),3(62664) failed and repaired. Full build92514 passed10095 jobs; audit39201 passed4567 declarations; no warnings. No live Lake handle.",
+  "updated_at": "2026-10-20T07:15:58.513821+00:00",
+  "formal_checkpoint": "R1836 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:914 local sources,204 external sources,4567 declarations,8 configurations,115 artifacts",
+  "proof_scope": "In progress. R1836 verifies a weighted-trace certificate giving uniform separation from the identity for BOTH actual nilpotent arithmetic word families, with source errors charged. It also derives the positive scalar interval from actual near-identity source words and supplies whole-family near/far geometry. One new module and one refactored module add seven theorems. The old trace-error calculation now reuses its exposed distance estimate. Scalar separation, normalized distribution, retained mass and the full trace-cubic comparison remain application obligations; nonnilpotent cases remain open.",
+  "next": "The preceding goal turn is PROGRESS. R1836 is recorded; never replay its checkpoint. Full 10095-job build and 4567-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1836-nilpotent-word-geometry.txt and library-reuse-audit-r1836.json. The weighted-trace certificate, actual-word uniform near/far geometry and scalar range are verified. Do not redo them or the shared word-error chain.\n\nNEXT CONCRETE TARGET: audit retained scalar size and separation against the FULL R1832 cubic threshold. Start with the actual source representation (unnormalized or re-centered), its correct word length and charged epsilon. Reuse exists_coarse_source_sample. In the nilpotent case, write out the exact coordinate-distance comparison u_i-u_j=(t_i-t_j)b, x_i=(2/3)(tau+ell*t_i). The new note records a candidate spacing budget and the existing coarsening loss. Quantify whether enough cardinality survives to satisfy (K|X|)^3>=250^3*max(U_add,U_mul), with every envelope and rho=L/(4B) loss present. Native cover radius monotonicity is already in mathlib as Metric.externalCoveringNumber_anti; use it rather than reprove it.\n\nDRIFT GATE: do not merely formalize another tautological contradiction wrapper with the desired inequality assumed. First determine which scale/retention/profile inequality remains genuinely missing. If the available extracted cardinality/profile cannot meet the target, record the obstruction and change the input selection, not the constants in a detached lemma. If the source-to-scalar separation/retention bridge is quantitatively useful, formalize it by reusing the existing sampler and native norms. The positive range and near/far geometry are now available under explicit budgets and require no arbitrary scalar zoom.\n\nINPUT PROFILE remains unresolved. scalar_maximal_density_zoom and positive-zoom lemmas ALREADY exist; do not rebuild density selection. An affine scalar zoom changes actual trace-product readouts and can lose too much mass. Preserve the concentrated-case matrix alternative. Nonnilpotent cases are still required; near identity alone does not justify erasing determinant corrections.\n\nREPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. This is not a local-lemma percentage or a time estimate. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1836 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NilpotentWordGeometry.lean": "42e029b5b9874336d3e4218eb6be919aae3edf20ddc797640572f79d909101fc",
+    "lean/TransposeFollowup/NilpotentArithmeticWords.lean": "59b6af1bb03efae89e58ed7c7d46f60786636f320d7daf653b2c32e491ebffa9"
+  }
+}

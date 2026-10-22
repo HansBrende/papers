@@ -1,0 +1,55 @@
+R1828 — ACTUAL QUANTITATIVE ADJOINT FRAME SELECTION
+
+In progress. R1828 proves quantitative selection of a conjugation frame for the same actual near-identity generator used in commuting extraction. An existing I,p,q,pq spanning certificate yields conjugating words in A^34 and A^68, with an explicit positive frame determinant. The proof handles nilpotent directions without dividing by a discriminant: a nilpotent bracket-volume identity, bounded coordinates in the existing frame, and finite multilinear selection suffice. Five modules add15 theorems and3 definitions. This closes the frame-selection dependency of R1827; localization, packing transfer and the fourth original theorem family remain incomplete.
+
+EXACT STATEMENTS
+Write Ad_g(b)=g b g^-1, [e,b]=e b-b e, and D(b,x,y)=det(I,b,x,y), with columns given by row-major matrix coordinates. These are real two-by-two matrices; D is a four-by-four determinant.
+
+1. EXACT IDENTITIES AND TEST SELECTION.
+For g in SL2(R) and arbitrary b,
+  Ad_g(b)-Ad_(g^-1)(b)=tr(g)[g,b].
+For trace-free b,e with det(e)=0,
+  D(b,[e,b],[e,[e,b]])=4 tr(e b)^3.
+If a noncentral coordinate (b00-b11,b01,b10) has absolute value at least rho>0, one of
+  e= [[0,1],[0,0]], [[0,0],[1,0]], [[1,1],[-1,-1]]
+has trace0, determinant0, entries bounded by1, and |tr(e b)|>=rho/3. The proof has no inverse discriminant or semisimple hypothesis.
+
+2. BOUNDED CONJUGATION EXPANSION.
+Let g_0,...,g_3 be in SL2(R), all entries bounded by M>=1, with absolute determinant of their four coordinate columns at least d>0. If |tr(g_i)|>=tau>0, every matrix e with entries bounded by1 admits a single coefficient family (a_i) and eight actual words v_i, each one a g_j or g_j^-1, such that
+  [e,x]=sum_i a_i Ad_(v_i)(x) for every real matrix x,
+  |a_i|<=C:=96 M^4/(d tau).
+This reuses the existing MatrixFour inverse bound and mathlib Cramer's identity. No generic inverse or basis theorem is re-proved.
+
+3. QUANTITATIVE ADJOINT FRAME.
+If the g_i lie in A^n for a symmetric A, b is trace-free, and a noncentral coordinate of b is at least rho>0, then there exist u in A^n and v in A^(2n) with
+  |D(b,Ad_u(b),Ad_v(b))|>=rho^3/[3456 C^3].
+The exact bracket-volume lower bound is combined with the bilinear expansion into8^3 terms. This is a finite selection from actual words; no abstract existential basis is substituted for those words.
+
+4. ACTUAL EXTRACTED GENERATOR.
+Assume A is symmetric, contains I, lies in the identity ball of radius alpha, 0<alpha<=1, and
+  2*5^34*alpha<=1.
+Let p,q,pq belong to A^34, with |det(I,p,q,pq)|>=d>0. Let z belong to the identity ball of radius1/2 and satisfy dist(z,I)>=r>0. Define
+  b=z-(tr(z)/2)I.
+Then b is trace-free and has the same noncentral coordinates as z. There exist u in A^34 and v in A^68 such that
+  |D(b,Ad_u(b),Ad_v(b))|
+    >=(r/8)^3/[3456*(96*(4^34)^4/d)^3].
+The trace budget follows from the EXISTING set_pow_dist_from_one_le bound and entry_error_le_frobenius_dist. The noncentral pivot is supplied by the EXISTING exists_near_identity_noncentral_pivot. Thus the generator is the one supplied by the actual extraction, and the conjugating words come from the same A.
+
+The extraction already uses the stronger radius budget8*H0*(1+5^34)*alpha<=1, H0=4^34, which implies the displayed trace radius condition by elementary arithmetic. That final full-profile composition is still to be written; the standalone theorem keeps all premises explicit.
+
+BOUNDARY
+R1828 selects the actual two conjugating words and proves the determinant bound; it does not yet compose the frame-entry/norm bounds with R1827, localize the commuting sample with a proved retained cardinality, or transfer the normalized product packing back to approximate actual words. Right translation, conjugation norms, parameter spacing, approximation radius and word lengths must be charged. If V is represented by A^m words, the unnormalized product V u V (u^-1 v) V has length3m+136; its right normalization by v^-1 has length3m+204. The37-factor envelope is not sufficient automatically. The earlier mixed-sum bound remains relative to an ambient matrix power, not automatically to the extracted scalar sample. Full fixed-family budget composition, scalar-growth hypotheses, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain. These algebraic/analytic supporting results carry no novelty claim.
+
+NEXT
+The preceding goal turn is PROGRESS. R1828 is recorded; never replay its checkpoint. Read verification/r1828-adjoint-frame.txt and verification/library-reuse-audit-r1828.json. Full10071-job build and4509-declaration audit passed; standard axioms only; no live Lake handle. The actual adjoint-frame selection theorem is complete. Do not re-prove its algebra or add another abstract escape condition.
+
+NEXT CONCRETE TARGET: compose the actual frame with the R1827 cubic packing theorem for a quantitatively localized part of the extracted commuting family, retaining an explicitly bounded fraction/covering size. Use b=z-(tr(z)/2)I from the SAME extracted z; select u in A^34 and v in A^68 using exists_adjoint_frame_from_actual_spanning. Bound the entries/norms of I,b,Ad_u(b),Ad_v(b) and determinants using existing entry-box and Frobenius estimates. Then choose a center and radius for a finite commuting sample and prove the retained-size cost. Normalize that cluster by a chosen member so its positive-trace chart satisfies c>=1/2, |t|<=r_chart,3M r_chart<=1 and36864M^6 r_chart<=d_frame. Prove the coefficient spacing needed for packing; do not discard its coarsening cost.
+
+The normalized product is w0*(u w1 u^-1)*(v w2 v^-1). Right multiplication by v gives w0 u w1 (u^-1 v) w2. For actual approximating words w_i in A^m, this last word has length3m+136 (142 if m=2); the normalized one has length3m+204. Charge the right-translation metric distortion and the extraction error12800 B0^6 eta/r0. Apply the arbitrary fixed-power envelope to the ACTUAL word length rather than the old37-factor specialization.
+
+R1825 normalized concentration is for A itself and does not automatically descend to the much smaller V. R1826 gives scalar mixed sums with an ambient-power upper bound. R1827 gives local cubic packing under explicit chart/frame/separation assumptions. R1828 supplies the actual determinant frame. The next result must connect these data, not substitute a new conditional generic theorem. Before selecting parameters, check that all new localization/spacing losses leave a useful inequality; cubic packing alone at the existing cube-root size does not prove strict product growth. Keep the concentrated and spread branches and their quantitative hypotheses explicit.
+
+All six original families remain required. Reuse pinned204-source scalar projection and existing local geometry. No protected original edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current actual adjoint-frame selection proof is100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only the family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.

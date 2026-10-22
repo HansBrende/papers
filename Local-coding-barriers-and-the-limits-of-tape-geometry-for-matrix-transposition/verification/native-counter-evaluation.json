@@ -1,0 +1,12 @@
+{
+  "purpose": "Fixed physical decrement compared with independent Nat subtraction/underflow on all words of widths0..10, plus a concrete countdown program with a paid jump on success on all words of widths0..7. Checks full final word, exit, absolute heads and amortized bound. Universal prepared-call and conditional native-body loop theorems are separately kernel checked.",
+  "command": "lake env lean /private/tmp/native_counter_examples.lean",
+  "exit_code": 0,
+  "checks": [
+    "(2047, 0)",
+    "(255, 0)"
+  ],
+  "source_sha256": "ba7ae04cf7f5e082911dc2d696622cf16061cd01945a9dc7d000b00a4e99e0dd",
+  "source": "import TransposeFollowup.NativeCounter\nopen TransposeFollowup FixedTapeCompiler\nopen Microcode.DecrementFamily\n\ndef bits (m a : Nat) : List Bool := (List.range m).map a.testBit\n\ndef counterChecks : Nat \u00d7 Nat := Id.run do\n  let mut count := 0\n  let mut failed := 0\n  for m in List.range 11 do\n    for a in List.range (2^m) do\n      let xs := bits m a\n      let final := NativeZipper.run program (2*Counter.stepCost xs)\n        (NativeCounter.cfg 0 xs (fun _ => -19))\n      let expected := bits m (if a = 0 then 2^m-1 else a-1)\n      count := count + 1\n      if !(decide (final.core.pc = if a = 0 then 12 else 11) &&\n          decide (final.core.tapes 0 = Counter.marked expected) &&\n          decide (final.pos 0 = -19)) then failed := failed + 1\n  return (count, failed)\n\ndef countdown : Microcode.Program (Fin 1) Label :=\n  fun pc => if pc = 11 then .jump 0 else program pc\n\ndef loopChecks : Nat \u00d7 Nat := Id.run do\n  let mut count := 0\n  let mut failed := 0\n  for m in List.range 8 do\n    for a in List.range (2^m) do\n      let xs := bits m a\n      let steps := 2 * Counter.totalCost (a+1) xs + a\n      let final := NativeZipper.run countdown steps (NativeCounter.cfg 0 xs (fun _ => 23))\n      count := count + 1\n      if !(decide (final.core.pc = 12) &&\n          decide (final.core.tapes 0 = Counter.marked (List.replicate m true)) &&\n          decide (final.pos 0 = 23) && decide (steps \u2264 9*a+8+4*m)) then failed := failed + 1\n  return (count, failed)\n#eval counterChecks\n#eval loopChecks\n",
+  "observed_output": "(2047, 0)\n(255, 0)\n"
+}

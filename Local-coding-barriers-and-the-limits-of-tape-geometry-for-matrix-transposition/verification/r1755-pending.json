@@ -1,0 +1,95 @@
+{
+  "checkpoint": "R1755",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn_classification": "R1754 PROGRESS",
+  "new_modules": [
+    "PaidCleanup",
+    "PaidCleanMachine",
+    "PaidCleanRun",
+    "PaidCleanGeometry"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.PaidCleanup.generator_code",
+    "TransposeFollowup.PaidCleanup.clock_code",
+    "TransposeFollowup.PaidCleanup.embed_generator",
+    "TransposeFollowup.PaidCleanup.embed_clock",
+    "TransposeFollowup.PaidCleanup.blank_join",
+    "TransposeFollowup.PaidCleanup.transfer_trace",
+    "TransposeFollowup.PaidCleanup.complete_trace",
+    "TransposeFollowup.PaidCleanup.initial_tapes",
+    "TransposeFollowup.PaidCleanup.initial_positions",
+    "TransposeFollowup.PaidCleanup.linear_trace",
+    "TransposeFollowup.PaidCleanup.native_linear",
+    "TransposeFollowup.PaidCleanup.fixed_resources",
+    "TransposeFollowup.PaidReady.selected_next_ne_done",
+    "TransposeFollowup.PaidClean.prefix_code_except",
+    "TransposeFollowup.PaidClean.prefix_code",
+    "TransposeFollowup.PaidClean.prefix_read_code",
+    "TransposeFollowup.PaidClean.cleanup_code",
+    "TransposeFollowup.PaidClean.embed_prefix",
+    "TransposeFollowup.PaidClean.embed_cleanup",
+    "TransposeFollowup.PaidClean.prefix_trace",
+    "TransposeFollowup.PaidClean.prefix_run",
+    "TransposeFollowup.PaidClean.cleanup_trace",
+    "TransposeFollowup.PaidClean.cleanup_entry",
+    "TransposeFollowup.PaidClean.transfer_trace",
+    "TransposeFollowup.PaidClean.complete_trace",
+    "TransposeFollowup.PaidClean.total_linear",
+    "TransposeFollowup.PaidClean.linear_trace",
+    "TransposeFollowup.PaidClean.final_halts",
+    "TransposeFollowup.PaidClean.native_complete",
+    "TransposeFollowup.PaidClean.reset_contract",
+    "TransposeFollowup.PaidClean.native_reset_contract",
+    "TransposeFollowup.PaidClean.fixed_resources",
+    "TransposeFollowup.PaidClean.prefix_stepN",
+    "TransposeFollowup.PaidClean.prefix_positions",
+    "TransposeFollowup.PaidPayload.prefix_blank_frame",
+    "TransposeFollowup.PaidPayload.execute_with_blank_prefix"
+  ],
+  "modified_modules": [
+    "PaidPayload",
+    "PaidPayloadGeometry",
+    "PaidPayloadCut",
+    "PaidPayloadComplete"
+  ],
+  "modified_source_before_sha256": {
+    "lean/TransposeFollowup/PaidPayload.lean": "c273c37fcd982a11f93ecaf5b49cb3591a4fd4af8d95d2a822e29128a33e6120",
+    "lean/TransposeFollowup/PaidPayloadGeometry.lean": "7d7244fb2689d43e2f078ce3d8170daa8d3da09ac11c03564bb048d6135c3e48",
+    "lean/TransposeFollowup/PaidPayloadCut.lean": "deebe2bc0f291c3cc891757fbc2d2bcbbacc97ca6d7037fdb9e87ec0d3f8260a",
+    "lean/TransposeFollowup/PaidPayloadComplete.lean": "afc1dd8e44ef1fbe25ed6d692466a269da727e0fc7f6b1886ac8b0b14191ed8f"
+  },
+  "checks": {
+    "targeted": {
+      "session_id": 6416,
+      "exit_code": 0,
+      "jobs": 9451
+    },
+    "build": {
+      "session_id": 70812,
+      "exit_code": 0,
+      "jobs": 9524
+    },
+    "axioms": {
+      "session_id": 27063,
+      "exit_code": 0,
+      "declarations": 2811
+    }
+  },
+  "updated_at": "2026-10-19T10:20:00.514256+00:00",
+  "boundary": "Complete paid cleanup, blank-start cleaned prefix, payload simulation with frozen blank prefix bank, actual cuts and MStar now compile. Expansion-family existence and dimension parity/finite-exception alignment remain; motion/recursion and final referees remain.",
+  "formal_checkpoint": "R1755 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1755,547 sources,2811 declarations,86 artifacts",
+  "proof_scope": "In progress. R1755 discharges paid workspace cleanup through the complete native computation/cut/MStar chain. PaidCleanup combines the42-tape generator cleanup with physical radius-clock erasure on the existing53+Q tapes;it has5 symbols and100 states. Its initial tape contents and absolute heads match PaidReady.finalConfig exactly,and its cost is at most(GeneratorCleanup.coefficient(F)+28K+5)*P. PaidClean extends the actual blank-start prefix with this paid cleanup,preserves every original successful-prefix head position,and halts with every work cell blank,all work and input heads zero,and no output. It adds100 states and no tapes. Four existing PaidPayload modules were updated in place to use PaidClean. Their arbitrary-computation preservation,excursion layout,zero-slack CutIneq,and the existing PaidPadding fixed-parameter/MStar theorems now concern this same cleaned machine. execute_with_blank_prefix proves that every successful payload segment runs with the prefix bank frozen wholly blank and all its heads zero. The original201 sections8/12 cleanup obligation is therefore discharged; no duplicate parallel payload implementation was introduced.",
+  "next": "Audit and discharge the expansion dependency next. Read the exact Bourgain\u2013Yehudayoff Monotone expansion theorem referenced by unit156 section2 and research/03-coded-transforms/packet-stack/records/budget-uniformity-proof.txt;match its fixed rational coefficients,interval domains and measurable-set expansion to RationalMobius and rationalSymmetric_vertex_expansion. Inspect existing Mathlib/local proofs before constructing new machinery;no unproved external theorem may be installed as an axiom. The current continuous-to-discrete bridge uses even grids2*h. Reconcile that restriction with the original201 even-m choice and current native generator/input-dimension relationship,including finite exceptional sizes. Preserve the now-complete paid cleanup and actual payload/cut/MStar chain. After full201/202,complete full nonsingular affine-motion200/210 and regular recursion206/208,then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly50% (40\u201360%,high uncertainty) of the full formalization goal,with3/6 original families complete:adaptive separators181/186/188,recoded pairwise-XOR181B,two-stage helper216. The entire paid cleanup and its computation/geometric integration are now discharged. The fourth family201/202 still needs expanding-family existence and parity/finite-size alignment. Motion200/210,recursion206/208 and final referees remain. This estimate is not proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/PaidCleanup.lean": "b8a0873369f0e153a29a42370736cab2c4a65a5a56a5c2b00cccd2ba36ad305a",
+    "lean/TransposeFollowup/PaidCleanMachine.lean": "4caa38e40783ca6d62172f8d128e146399983e29df3047acd938857ccae5fa9b",
+    "lean/TransposeFollowup/PaidCleanRun.lean": "99a2f2defbab4dc152cb5cc221d96e0898fe55b9196a55e2b7b08bba674edd75",
+    "lean/TransposeFollowup/PaidCleanGeometry.lean": "81afee4bdb368c29f2275416edfa5abb1806c393be3fdae3cc6e865552cdaa0b",
+    "lean/TransposeFollowup/PaidPayload.lean": "6a0c65c9a180fed85cb15d6ddc6d94b18609e4258469a8b7c7821c135d7da819",
+    "lean/TransposeFollowup/PaidPayloadGeometry.lean": "5c9815c40eda1b4d5b7d54b5a5924b5e35c14bd64e51f6a15022059597c16ba2",
+    "lean/TransposeFollowup/PaidPayloadCut.lean": "4dc9fd08d6bb2be7001aa55926e974cdd0a65aa17703d476189dbdb43c99ed03",
+    "lean/TransposeFollowup/PaidPayloadComplete.lean": "d742d4579afc670e01ead90b35c3aebec521fdabb00332f5f81a24f36716ac28"
+  }
+}

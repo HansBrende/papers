@@ -1,0 +1,27 @@
+Fresh independent source audit: audit_trust_semantics, 21 October 2026.
+No edits or Lean executions by reviewer. Selective source review, not a line-by-line check of the entire analytic library.
+
+No correctness/trust defect found in inspected padding201/202 and affine200/210 chains. No weakening of the six-target M*/Cut and affine-motion conclusions found.
+
+Explicit source omissions:
+- Source201 sections9-10: actual return-measure convergence/identification and nonhyperfinite relation are not formal endpoints. Current proof derives full M* through the original walk theorem; source202 section17 explicitly permits that route.
+- Source201 section8: opcode generation O(d polylog d)=o(P) is not proved by the dense implementation. Formal generator cost is O(P). This weaker supporting complexity bound still suffices for the full additive-O(P) padding target.
+- Source200 section3: no measured-hyperfinite equivalence relation or CFW formalization. Direct finite affine-boundary/small-label proofs establish the intended obstruction and quantitative inequalities.
+
+Interfaces inspected:
+- UnconditionalPaidPadding selects rational family/stretch/universal overhead before payload M.
+- PaidPayloadComplete establishes output, actual halt and original CutIneq at the same horizon.
+- PaidCleanRun starts from original Transpose.init; native_reset_contract establishes blank cells, zero heads and empty output before handoff.
+- NativeIOFusion requires active transitions. Halted frozen configurations cannot count as paid work.
+- Five-symbol simulation uses synchronized bit planes on additional tapes allowed by the original multitape model, with step-for-step simulation.
+- Noncomputable finite choices select fixed transition tables, not a size-dependent oracle.
+- Rational expander family precedes scales/walk lengths; full parameterized gap is discharged.
+- CountableAffinePathLabels preserves source200 full small-class/small-crossing result.
+- Open overlapping branches generalize disjoint intervals; positive/negative/zero slopes included.
+- Exact exceptional-time constants1/2,1/(2G),1/(2kG), nonuniform state bits and every eligible limit retained.
+- Restricting obstruction premise SatisfiesStar to theta<1/2 weakens its hypothesis; it does not weaken full padding M* conclusion.
+
+Further strengthening candidate, not implemented in R1909:
+Expose uniform H,K0,E selected before M with q(M')+1=H+(q(M)+1) and
+k(M')=K0+(k(M)+E)*max(1,size(g(M))). Existing resource identities support this,
+but no new combined resource theorem is claimed in the completed audit.

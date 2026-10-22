@@ -1,0 +1,112 @@
+{
+  "checkpoint": "R1775",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "DyadicBandOverlapEnergy",
+    "DyadicBandRegularityCost",
+    "DyadicMaskedCorrelation",
+    "DyadicRegularityDiscard",
+    "DyadicTailReconstruction",
+    "FiniteSymmetricCorrelation",
+    "GridDyadicTail",
+    "RetainedCorrelationLimit",
+    "UniformRegularBandIsolation",
+    "UniformRetainedBandIsolation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.dyadic_annular_norm_sum_sq_le",
+    "TransposeFollowup.dyadicBand_sum_norm_sq_le_three_energy",
+    "TransposeFollowup.dyadicBandRegularityCost",
+    "TransposeFollowup.dyadicBandRegularityCost_nonneg",
+    "TransposeFollowup.dyadicBandRegularityConstant",
+    "TransposeFollowup.dyadicBandRegularityConstant_nonneg",
+    "TransposeFollowup.dyadicBandRegularityCost_sum_le",
+    "TransposeFollowup.dyadicMaskedBand",
+    "TransposeFollowup.dyadicMaskedBand_of_true",
+    "TransposeFollowup.dyadicMaskedBand_of_false",
+    "TransposeFollowup.dyadicMaskedBand_inner_abs_le",
+    "TransposeFollowup.dyadicMaskedBand_small_ratio_offset_sum_le",
+    "TransposeFollowup.RealMobius.dyadicMaskedBand_small_ratio_finite_correlation_le",
+    "TransposeFollowup.dyadicRegularityThreshold",
+    "TransposeFollowup.dyadicRegularityThreshold_pos",
+    "TransposeFollowup.dyadicBadBand_sum_norm_le",
+    "TransposeFollowup.dyadicMaskedBand_sum_sub_inter",
+    "TransposeFollowup.dyadicMaskedBand_regular_discard_norm_le",
+    "TransposeFollowup.smoothHighFrequencyFrom",
+    "TransposeFollowup.smoothHighFrequencyFrom_zero",
+    "TransposeFollowup.dyadicBand_toLp_tail_sum",
+    "TransposeFollowup.dyadicBand_tail_sum_tendsto",
+    "TransposeFollowup.dyadicMaskedBand_tail_sum",
+    "TransposeFollowup.smoothHighFrequencyFrom_fourier_coe",
+    "TransposeFollowup.smoothHighFrequencyFrom_norm_le",
+    "TransposeFollowup.smoothHighFrequencyFrom_fourier_zero_on",
+    "TransposeFollowup.smoothHighFrequencyFrom_distance_le_lowFrequency",
+    "TransposeFollowup.symmetric_finite_correlation_le_of_offset_bounds",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom_distance",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom_correlation",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom_reconstruction",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom_finite_correlation_eventually",
+    "TransposeFollowup.exists_retained_finite_correlation",
+    "TransposeFollowup.RealMobius.exists_uniform_grid_regular_high_band",
+    "TransposeFollowup.RealMobius.exists_uniform_retained_dyadic_band_norm_ratio",
+    "TransposeFollowup.RealMobius.exists_uniform_grid_high_dyadic_band_norm_ratio"
+  ],
+  "new_theorems": 31,
+  "new_definitions": [
+    "TransposeFollowup.dyadicBandRegularityCost",
+    "TransposeFollowup.dyadicBandRegularityConstant",
+    "TransposeFollowup.dyadicMaskedBand",
+    "TransposeFollowup.dyadicRegularityThreshold",
+    "TransposeFollowup.smoothHighFrequencyFrom",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequencyFrom"
+  ],
+  "modified_mathematical_sources": [
+    "lean/TransposeFollowup/DyadicSmallRatioCorrelation.lean"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 51463,
+      "exit_code": 0,
+      "jobs": 9543,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 56356,
+      "exit_code": 0,
+      "jobs": 9617,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 31253,
+      "exit_code": 0,
+      "declarations": 3451,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary APIs for finite Cauchy\u2013Schwarz, Fourier transform of finite sums, Plancherel, integral monotonicity, filter limits and correlation stability. Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 Claims 3.3\u20133.4 and Proposition 3.5 (https://arxiv.org/html/1108.2555#S3), read in R1774 and retained in this context. R1775 supplies arbitrary-high-start isolation and a simultaneous relative moment/derivative cost bound; the quantitative group-parameter perturbation estimate is still unproved. No novelty claimed for this analytical support.",
+  "updated_at": "2026-10-19T15:09:59.487019+00:00",
+  "formal_checkpoint": "R1775 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1775, 640 sources, 3451 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1775 extends actual dyadic reconstruction to every starting level J and proves the corresponding grid correlation estimate under K^2>=16384*pi^2*2^(3J). A reusable finite correlation lemma and arbitrary band masks extend the universal norm-ratio theorem to any retained family; the old level-zero proof now reuses this more general result. Finite sums of actual bands satisfy ||sum u_j||^2<=3*sum||u_j||^2 by their bounded Fourier overlap. A concrete nonnegative regularity cost M_j, combining ||u_j||^2, ||x*u_j||^2 and 2^(-2j)*(||u_j'||^2+||x^2*u_j'||^2), has a fixed summed bound C*||f||^2. Discarding bands with M_j>R*||u_j||^2 for the fixed R=3*1024^2*(C+1) costs at most 1/1024 in L2 for every finite subfamily of a unit input. The retained sums preserve sufficient correlation, so a band j>=J is selected with u_j!=0, ||T u_j||>r*||u_j|| and M_j<=R*||u_j||^2, simultaneously. Both r and R are independent of J, the input, the grid and the bounded generator family.",
+  "next": "Normalize the jointly selected actual Schwartz band and extract its concrete moment and derivative bounds. With F=u_j/||u_j||, the R1775 relative cost gives ||F||=1, ||T F||>r, ||x*F||<=sqrt(R), ||F'||<=2^j*sqrt(R), and ||x^2*F'||<=2^j*sqrt(R). Derive the first derivative moment from x^2<=(1+x^4)/2. Preserve the band's actual Fourier annulus and j>=J. Prove the scalar-homogeneity and L2 identities rather than silently dividing an absolute estimate by a small band norm.\n\nThen prove a quantitative near-identity action estimate, with a fixed constant depending only on the selected regularity threshold: for entrywise ||g-I||<=eta<=1/20, target ||W_g F-F||_2<=C*2^j*eta. A concrete route is Gauss factorization into translations, a positive diagonal factor and a lower unipotent factor. Bound their parameters by eta and their action differences through the generators F', F+2*x*F', and x^2*F'+x*F. For the lower unipotent flow, consider conjugation by inversion and the already proved global L2 derivative of a Mobius-transformed Schwartz input. Check the W_g versus actionCLM(g^-1) composition order explicitly. Do not assume a near-identity Mobius map is uniformly close to identity on all of R, or that the selected band is spatially supported. This route and the final perturbation inequality are proposals, not verified results.\n\nKeep flattening/product growth, Proposition 3.5, rational free generators, full motion and recursion, and final referees in scope. Do not start referee subagents before all formalization. Preserve original files and avoid commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1775 proves arbitrary-high-start isolation and joint selection of a nonzero high band with both a uniform norm ratio and a fixed relative regularity-cost bound. No fourth family is complete. Paid padding still requires normalized-band quantitative group perturbation, restricted spectral-gap, flattening/product growth and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/DyadicBandOverlapEnergy.lean": "1dfdab1fb3333799a1a4d6d7dc3f9b8b7fcf9514c494beac725005b78e58860b",
+    "lean/TransposeFollowup/DyadicBandRegularityCost.lean": "6f4f53b370184a26fd98b84b64cea251622091abd55b6b490d1c8657b212de53",
+    "lean/TransposeFollowup/DyadicMaskedCorrelation.lean": "b6798bcf6b719f61d38083fcda183544f01df1cbc102727113f8e091c392e4ad",
+    "lean/TransposeFollowup/DyadicRegularityDiscard.lean": "7065a30926931a70d5ef7eaa31a2d90f67843be5da00febca9d3149e7650f238",
+    "lean/TransposeFollowup/DyadicTailReconstruction.lean": "cafb7cab5686b38d0bdd10f3771a87ee68d6c9c984e04660bcb5d10d3d4eaf5b",
+    "lean/TransposeFollowup/FiniteSymmetricCorrelation.lean": "4f2679f2bc2dc40b5cb8c39e34d15540960e5b99903e81a43ec79320fbed8672",
+    "lean/TransposeFollowup/GridDyadicTail.lean": "acd5a7195f7e4c03c961782ad73b9478bd7007c95c642b1857f3138f2d6e0f70",
+    "lean/TransposeFollowup/RetainedCorrelationLimit.lean": "8e83db296b275291caa96c260ee241810d7f1a90ac8dcac0d30cffbffee744a3",
+    "lean/TransposeFollowup/UniformRegularBandIsolation.lean": "d10276a9d88e5ce476dbedebeb618ed6d010e52eabec3720bd96f578e0582fe7",
+    "lean/TransposeFollowup/UniformRetainedBandIsolation.lean": "6afb2319b2bd2ee690d536f18d63e670541ff6e5409d02217cf70122ac0a8c44"
+  }
+}

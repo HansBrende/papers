@@ -1,0 +1,139 @@
+\section{Related work and attribution}\label{sec:related-work}
+
+\subsection{The shared tape model and the scope of the question}
+
+This paper continues Brende and Claude Opus 5.5's \emph{Matrix Transposition
+and the Tape Coding Conjecture}~\cite{FirstPaper2026}. We use its native
+machine model, canonical entry width, cut inequality, and limiting path
+condition. These are imported directly from the original
+source package, together with its locality, counting and pass bounds and its
+reduction to causal coding on tape networks.
+
+Harvey and van der Hoeven's reduction relates multiplication to
+transposition in the multitape model~\cite{HvdH2025}. Its coefficient-width
+qualification matters here: their binary-matrix consequence of linear-time
+multiplication has an iterated-logarithm loss, whereas their larger-coefficient
+results yield the linear-time implication used for the canonical logarithmic
+entry width. We do not replace the binary conclusion by a linear bound.
+Classical transposition lower bounds for one-work-tape machines, including
+the version with a separate output tape, concern restricted models
+\cite{DMS1991,DietzfelbingerMaass1993}; they do not establish the unrestricted
+fixed-multitape lower bound sought here.
+
+Network coding has also been used to derive conditional multiplication
+lower bounds~\cite{AFKL2019}. The general assertion that coding never improves
+undirected multiple-unicast throughput has since been refuted
+\cite{BravermanHe2026,ZhangLiLi2026}. Applying such a code to transposition would still require a tape
+implementation with all preparation and access costs charged.
+
+\subsection{Local coding, nonlinear recoding, and helper information}
+
+Index coding provides the natural comparison for receivers that combine a
+public message with their original rows. Bar-Yossef, Birk, Jayram, and Kol
+relate index-code length to minrank and acyclic subgraphs~\cite{BBJK2011};
+Blasiak, Kleinberg, and Lubetzky develop entropy-based bounds for broadcast
+rate~\cite{BKL2011}. We also use established entropy methods, including Shearer's covering
+inequality~\cite{CGFS1986}, and bounds obtained by counting code fibers.
+
+The adaptive separator theorem addresses a different interface: each query
+has specified access to \emph{original} rows, its support and subsequent
+queries may depend on the public history, and the correct-input law can be
+correlated and nonuniform. Its graph records which rows a query accesses
+jointly; it is not the receiver side-information graph of standard index
+coding. The theorem charges both the helper and source entropy deficit and
+allows a separator chosen from the completed public history. The original-row access and public-history hypotheses distinguish this
+statement from the cited index-coding bounds.
+
+Even multi-sender results require care. In the single-uniprior model of
+Ong, Ho, and Lim~\cite{OngHoLim2016}, each receiver initially knows one
+message, known to no other receiver, and its demands consist of whole
+messages. Bundling each row into a message changes our column demands into
+partial-message demands; splitting the rows into entries changes the
+single-uniprior hypothesis. Thus that characterization cannot simply be
+substituted for the original-row locality argument.
+
+Our second family permits arbitrary bijective nonlinear recoding within
+rows but restricts the subsequent packets to fixed single-coordinate or
+pairwise XORs. This restriction is substantial: nonlinear index codes can
+outperform linear ones~\cite{LubetzkyStav2008}. The component-flip and graph-distance arguments apply to this fixed-packet
+architecture. Similarly, the two-stage helper theorem counts fibers of a specific
+triangular--causal composition. Its helper selects the whole composition; no additional uncharged
+global operation is allowed between the stages.
+
+\subsection{Affine geometry, expanders, and paid computation}
+
+There is a longstanding distinction between simple one-dimensional affine
+constructions and expansion. Klawe ruled out several proposed expander
+constructions, including one-dimensional analogues of the Gabber--Galil
+construction~\cite{Klawe1984}. Our affine-motion theorem has a different
+statement: it concerns countably many local affine branches of normalized
+head paths, measures exceptional time, and applies the original limiting
+cut condition. The approximation version retains the stated subsequence
+and bounded-cover hypotheses. We do not identify these conclusions with
+Klawe's finite-graph theorem.
+
+Monotone expanders and their connections to page and pushdown graphs were
+studied by Dvir and Wigderson~\cite{DvirWigderson2010}.
+Bourgain and Yehudayoff constructed a continuous monotone expander using
+M\"obius transformations and proved the associated growth and restricted
+spectral-gap results~\cite{BourgainYehudayoff2013}. Our analytic development follows this established work, proving the
+rational-family, growth, flattening and spectral statements needed for the
+native implementation.
+
+One analytic input is reused directly from the pinned OpenAI formal library:
+the scalar projection theorem
+\texttt{scalar\_weak\_radius\_projection}~\cite{OAIProjection2026}.
+The local argument verifies its hypotheses and derives the statements used
+in the expansion proof. The bibliography identifies the exact formal source
+and revision; the imported proof is checked in the same dependency chain.
+
+The padding theorem adds a computational conclusion: the walk is generated,
+executed, cleaned up, and followed by the original computation at additive
+linear cost, with the stated fixed-machine and resource quantifiers.
+These costs do not follow merely from a graph's expansion or a formula for
+its maps. The scan-palette and recursion exclusions also account for actual
+execution, under the stated affine regularity and exceptional-time hypotheses.
+
+\subsection{The transpose prediction conjecture is already false}
+
+Conjecture~36 of Mittal and Raz~\cite{MittalRaz2021} proposed an exponentially
+small success bound for a matrix-transpose prediction game. Its failure is
+explicitly recorded in Mittal's dissertation~\cite[\S10.8.2, Proposition~10.8.3
+and Lemma~10.8.5]{Mittal2025}, which credits a proof of Braverman and Forbes
+from their 2022 personal communication. We cite the dissertation as the
+accessible proof and claim no new refutation.
+
+Related counterexamples also follow from earlier coded-caching constructions:
+placement delivery arrays of Yan et al.~\cite{YanEtAl2017}, induced-matching
+schemes of Shanmugam, Tulino, and Dimakis~\cite{ShanmugamEtAl2017}, and the
+projective-geometric schemes of Chittoor et al.~\cite{ChittoorEtAl2021}.
+These papers do not themselves state a disproof of Conjecture~36.
+Their induced-matching classes give XOR prediction strategies with success
+probability $2^{-r}$, where $r$ is the number of nonempty classes. Suitable
+square conversions give $o(d)$ observed rows per player and $r=o(d^2)$.
+For the dense-graph route, the construction of Alon, Moitra, and
+Sudakov~\cite{AMS2013} is combined with minimum-degree pruning. This avoids a
+fixed-vertex degree estimate in the supplied v1 caching preprint. The
+conversions and version-specific caveat are detailed in
+\lean{paper/prior-art.txt}; they are background arguments, not new Lean
+results claimed here.
+
+The game does not charge for acquiring or combining the observed rows.
+Its counterexamples close that prediction-game route to a lower bound but
+do not supply a causal tape implementation.
+
+\subsection{Formal dependencies and novelty boundaries}
+
+The formal proofs use Lean~4~\cite{Lean4} and the pinned Mathlib4 library
+\cite{Mathlib2020,Mathlib4}, in addition to the two explicit source dependencies
+above. Standard finite-set, entropy, measure, topology, and arithmetic
+results are reused. We distinguish proving the present endpoints from
+claiming new underlying analytic or information-theoretic principles.
+
+The literature comparison covers the cited primary sources and targeted
+searches for local index coding, two-stage causal maps, affine motion and
+recursive tape schedules. It does not establish exhaustive priority. We
+claim the stated local-coding bounds, motion consequences and native
+implementations, while crediting their analytic and information-theoretic
+ingredients. Supporting lemmas are included for their role in these arguments,
+without a blanket novelty claim.

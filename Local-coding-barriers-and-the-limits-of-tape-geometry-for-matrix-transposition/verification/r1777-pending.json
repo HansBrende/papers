@@ -1,0 +1,84 @@
+{
+  "checkpoint": "R1777",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "MobiusActionContinuity",
+    "MobiusGroupAverage",
+    "MobiusGroupSmoothing",
+    "MobiusPairwiseComparison"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.complexPullbackL2_isometry",
+    "TransposeFollowup.RealMobius.schwartz_complexPullbackL2_continuous",
+    "TransposeFollowup.RealMobius.complexPullbackL2_joint_continuous",
+    "TransposeFollowup.RealMobius.complexPullbackL2_continuous",
+    "TransposeFollowup.RealMobius.instGroupSecondCountableTopology",
+    "TransposeFollowup.RealMobius.complexPullbackL2_inverse_continuous",
+    "TransposeFollowup.RealMobius.complexPullbackL2_inverse_difference",
+    "TransposeFollowup.RealMobius.groupActionAverage",
+    "TransposeFollowup.RealMobius.integrable_complexPullbackL2_inverse",
+    "TransposeFollowup.RealMobius.groupActionAverage_norm_le_measure",
+    "TransposeFollowup.RealMobius.groupActionAverage_norm_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_sub",
+    "TransposeFollowup.RealMobius.groupActionAverage_norm_sub_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_difference_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_nearIdentity_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_mconv",
+    "TransposeFollowup.RealMobius.groupActionAverage_smoothing_difference_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_smoothing_nearIdentity_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_smoothing_norm_lower",
+    "TransposeFollowup.RealMobius.mobius_relative_entry_identities",
+    "TransposeFollowup.RealMobius.abs_two_products_sub_le",
+    "TransposeFollowup.RealMobius.mobius_relative_entries_le",
+    "TransposeFollowup.RealMobius.complexPullbackL2_pairwise_difference",
+    "TransposeFollowup.RealMobius.schwartz_pairwise_norm_le",
+    "TransposeFollowup.RealMobius.schwartz_bounded_pairwise_norm_le"
+  ],
+  "new_theorems": 23,
+  "new_definitions": [
+    "TransposeFollowup.RealMobius.groupActionAverage"
+  ],
+  "new_instances": [
+    "TransposeFollowup.RealMobius.instGroupSecondCountableTopology"
+  ],
+  "modified_mathematical_sources": [],
+  "checks": {
+    "targeted": {
+      "session_id": 3219,
+      "exit_code": 0,
+      "jobs": 9527,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 39657,
+      "exit_code": 0,
+      "jobs": 9630,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 69255,
+      "exit_code": 0,
+      "declarations": 3530,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary APIs for dense Schwartz-to-Lp range, continuity from dense fibers and uniform Lipschitz control, matrix group topology, strongly measurable continuous functions, Bochner integration and multiplicative convolution of measures. Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 Claims 3.3\u20133.4, equation (3.2) and Proposition 3.5 (https://arxiv.org/html/1108.2555#S3), re-read in R1777. R1777 proves pairwise comparison, joint continuity, integrable probability averages and exact right-convolution smoothing in the representation convention T_g=W_(g^-1). The error bound is independent of the original measure support, by contraction and the exact convolution identity. The finite generator-measure bridge, dyadic power lower bound, concrete Haar kernel and asymptotic parameter choice are still explicit obligations. No novelty claimed for standard representation or analytic support.",
+  "updated_at": "2026-10-19T15:53:30.263509+00:00",
+  "formal_checkpoint": "R1777 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1777, 653 sources, 3530 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1777 extends the local perturbation bound to pairs g,h with arbitrary reference-entry bound B: if |h_ik|<=B, |g_ik-h_ik|<=eta and 2*B*eta<=1/2, then ||W_g u-W_h u||<=58*B*2^j*sqrt(R)*eta for Q_j(u)<=R. The B=2 case gives constant 116. This proves continuity of every Schwartz orbit, and density plus isometry proves joint continuity on actual complex L2 times SL(2,R). Finite Borel measures give integrable actual representation orbits T_g=W_(g^-1). Their Bochner averages contract for probability measures and satisfy the exact convolution identity A_(mu*nu)=A_mu o A_nu. Consequently right-convolution smoothing changes A_mu u by at most ||A_nu u-u||, and by at most 29*2^j*sqrt(R)*eta for a kernel nu supported almost everywhere in the stated near-identity entry neighborhood. The error is independent of mu's support size or word length. A corresponding half-norm lower bound is proved whenever the error is at most half a known original lower bound.",
+  "next": "Build the exact bridge from the existing finite symmetric generator average to a Borel probability measure. For G:Fin c->SL(2,R), c>0, define rho=(2*c)^(-1)*sum_i(delta_(G_i)+delta_(G_i^-1)), counting repeated generators with their multiplicities. Prove rho is a probability measure and groupActionAverage rho f=complexAverage G f for every actual complex L2 f, reusing ComplexAverageActionSum rather than rebuilding complexification. Define the actual convolution walk, starting at delta_identity, and prove its average is the corresponding iterate/power of complexAverage.\n\nNext prove the source power lower bound with explicit hypotheses: a symmetric real Hilbert-space contraction T, ||F||=1 and ||TF||>=r>0 imply ||T^(2^m)F||>=r^(2^m). Use <TF,TF>=<T^2F,F> and Cauchy\u2013Schwarz, together with symmetry of powers, without importing an unproved spectral argument. Apply it to the already selected normalized regular band, then combine with R1777 smoothing to obtain the stated half-lower-bound for actual walk measures. The group convolution identity eliminates any additional support-size factor in this right-smoothing estimate; preserve its T_g=W_(g^-1) convention.\n\nAfter that, instantiate the smoothing kernel as normalized Haar measure on a genuine near-identity neighborhood, prove positivity and finiteness of its mass and identify the density of the smoothed walk. Check squared-distance versus entry-distance conventions. Make the asymptotic choice of radius, starting frequency and power-of-two walk length explicit before claiming all of Claim 3.4. Keep flattening/product growth, Proposition 3.5, rational free generators, full motion and recursion, and final referees in scope. Do not start referee subagents before all formalization. Preserve original files and avoid commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1777 proves pairwise action comparison, joint L2 continuity, integrability of finite-measure orbit averages and quantitative right-convolution smoothing. No fourth family is complete. Paid padding still requires the concrete generator-walk bridge, dyadic power lower bounds, a concrete Haar smoothing kernel, restricted spectral-gap, flattening/product growth and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. This percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusActionContinuity.lean": "d244d9e64935bfe2003e480c736a56452a7ba8fc6a1700539f28490cc8e43d10",
+    "lean/TransposeFollowup/MobiusGroupAverage.lean": "b37411d295f44485bfd28545cea7cf0f884f0cb509ebb164937a6c3f6e0da77f",
+    "lean/TransposeFollowup/MobiusGroupSmoothing.lean": "9a2e69b1a637f17735f2eb502a024e8af034ab7d950f958fff4806e28dfb134c",
+    "lean/TransposeFollowup/MobiusPairwiseComparison.lean": "0084d3261969c67c25e09cf1d1570e5bdf7583a02d7fef8cd962267b75b2b52e"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "status": "In progress. R1845 selects a quantitatively nonnilpotent generator during the actual spanning extraction. Universal n0, alpha0 and C are fixed before the set and scale. A frame determinant lower bound d yields an actual commuting family with centered generator determinant greater than d/32, original source witnesses, approximation error 26214400 eta/d, and the covering cube d^11 N_eta(A)^4 <= C[9 N_eta(A D A^-1) H N_eta(V)]^3. This uses geometry and the spanning frame; distribution and an approximate-group profile are not hypotheses of this extraction. Five modules and fifteen declarations reuse mathlib Hales-Jewett, finite continuity, existing trace projections and the original conjugacy-fiber extraction. Scalar amplification and the rest of the original paid-padding family remain open.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Combinatorics.Line.exists_mono_in_high_dimension",
+    "geom_sum_mul",
+    "Matrix.det_mul",
+    "Metric.eventually_nhds_iff",
+    "Filter.eventually_all_finset",
+    "ContinuousAt.eventually",
+    "Finset.exists_max_image",
+    "fun_prop"
+  ],
+  "reused_local": [
+    "SL2Escape.pairSpanMatrix_det_commutator",
+    "traceFrame_pair_det",
+    "set_pow_dist_from_one_le",
+    "exists_coordinate_refinement",
+    "coveringNumber_le_sum_of_cover",
+    "exists_large_trace_of_frame",
+    "exists_trace_commuting_extraction",
+    "normalized_mixed_product_subset_power"
+  ],
+  "searched": [
+    "Mathlib.Combinatorics.HalesJewett",
+    "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+    "Mathlib.LinearAlgebra.Matrix.Charpoly",
+    "Mathlib.LinearAlgebra.Matrix.Trace",
+    "Mathlib.Algebra.Ring.GeomSum",
+    "bounded text search in Mathlib/LinearAlgebra,GroupTheory,Analysis for nonnilpotent, escape-subvariety/hypersurface, trace-gap and commutator-trace terms",
+    "local centralizer, inverse-final identity and fixed-product profile modules"
+  ],
+  "alternatives": [
+    "exists_mono_homothetic_copy gives the standard progression consequence; the finite Hales-Jewett dimension was used directly to make the uniform bound explicit in the quantifier order",
+    "Matrix.det_one_add_smul is a general 2x2 determinant API; the short specialized centered determinant normalization remains local"
+  ],
+  "result": "No drop-in complete quantitative extraction endpoint found in the searched pinned sources. This is a bounded library audit, not proof that no equivalent result exists elsewhere. Standard combinatorics, topology and covering tools are reused.",
+  "next_reuse": [
+    "sl2_scalarAffine_product_coordinates",
+    "sl2_inverse_final_scalar_identity",
+    "SL2NearIdentityAdjointFrame",
+    "localized_fixed_power_coveringNumber_envelope",
+    "existing metric Ruzsa and scalar sum/product infrastructure"
+  ],
+  "literature": {
+    "source": "https://arxiv.org/html/1108.2555",
+    "scope": "Section5.2 suggests a fixed-matrix scalar sum/product route; do not treat a varying-coefficient projection API as obligatory."
+  },
+  "novelty": "None claimed. This is a quantitative supporting step in the current analytic chain.",
+  "drift_check": "DRIFT AND EXPONENT AUDIT\n\nThe preceding qualitative det!=0 result did not control inversion near the\nnilpotent locus. R1845 instead arranges a quantitative gap during selection.\nFor d=eta^theta, all displayed inverse-determinant costs are powers of\neta^-theta. The extraction error is exactly 26214400 eta/d. The old coarse\nnear-nilpotent perturbation route needed an eta-scale determinant threshold;\nthe new selection avoids that route for the family we will actually use.\nIt is not a uniform perturbation theorem for arbitrary existing families.\n\nThe fixed word length is a genuine new cost, not free. Reuse\nlocalized_fixed_power_coveringNumber_envelope at n=n0+2:\n N_eta(A^(n0+3)) <= h^(8802(n0+2)+4427) N_eta(A).\nIf h<=eta^-tau, choose tau after n0 so that\n (8802(n0+2)+4427)tau<=theta.\nSince n0 is universal, this is an admissible fixed positive tau constraint.\nThe previous wrapper profile_power_exponent_bound assumes n<=283 and\nmust not be used here. Later longer words require their own explicit fixed\nmaximum and margin. This bookkeeping observation is not a formalized\ncompletion of the new growth argument.\n\nFor d<=1, H <= (419430400+17)^4 d^-4. Thus the new cube and a paid mixed\nprofile bound would give N_eta(A) <= K d^-26 N_eta(V)^3 for a fixed K.\nThis is an arithmetic budget check, not a newly verified sample theorem.\nScalar separation, retained cardinality, nonconcentration and readout\nerrors remain obligations for the actual family.\n\nDo not start a separate varying-coefficient projection theory merely\nbecause an existing API accepts a coefficient distribution. A fixed-matrix\nsum/product route is available for audit. The Bourgain-Yehudayoff source\n(Monotone expansion, Section5.2, Propositions5.6/5.7)\nhttps://arxiv.org/html/1108.2555\nuses fixed-matrix scalar amplification and product identities. Reuse the\nexisting real coordinate identities below; no new spectral diagonalization\nis needed for this proposed route.\n",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

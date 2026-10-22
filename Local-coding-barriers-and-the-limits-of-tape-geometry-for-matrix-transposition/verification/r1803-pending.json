@@ -1,0 +1,105 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "MobiusNearIdentityLocalization",
+    "MobiusFrobeniusCoverVolume",
+    "SmoothedIterateLocalizedCover"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.exists_near_identity_translate_cover",
+    "TransposeFollowup.RealMobius.near_identity_square_geometry",
+    "TransposeFollowup.RealMobius.near_identity_square_volume_bounds",
+    "TransposeFollowup.RealMobius.entry_error_lt_of_frobenius",
+    "TransposeFollowup.RealMobius.haar_le_frobenius_cover_card",
+    "TransposeFollowup.RealMobius.haar_identityBall_sixteen",
+    "TransposeFollowup.RealMobius.haar_le_frobenius_cover_card_at_scale",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_localized_cube_cover"
+  ],
+  "declaration_counts": {
+    "theorem": 8
+  },
+  "checks": {
+    "development_1": {
+      "exit_code": 1,
+      "log": "/private/tmp/r1803-dev1.log",
+      "reason": "Lake launched from paper root, outside configured Lean directory; no compilation occurred."
+    },
+    "development_2": {
+      "session_id": 35227,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev2.log"
+    },
+    "development_3": {
+      "session_id": 85387,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev3.log"
+    },
+    "development_4": {
+      "session_id": 74708,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev4.log"
+    },
+    "development_5": {
+      "session_id": 46188,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev5.log"
+    },
+    "development_6": {
+      "session_id": 90311,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev6.log"
+    },
+    "development_7": {
+      "session_id": 37364,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1803-dev7.log"
+    },
+    "preliminary_build": {
+      "session_id": 90804,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9765,
+      "log": "/private/tmp/r1803-preliminary-build.log"
+    },
+    "preliminary_axioms": {
+      "session_id": 26989,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4232,
+      "log": "/private/tmp/r1803-preliminary-axioms.log"
+    },
+    "build": {
+      "session_id": 63109,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9765,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 89996,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4232,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1803 proves quantitative near-identity localization and the finite-cover analogue of the small-tripling comparison used in Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1/Theorem4.4, re-read this turn. Our explicit A=U^2 intersect Ball(alpha) differs from their quotient-set construction, so multiscale distribution and escape must be proved for this actual A; they are not inherited from a name or analogy. The product theorem, its premises, and strict flattening remain unproved. Supporting known-analysis formalization, not a new impossibility result.",
+  "cleanup": "No definitions or edits to pre-existing mathematical modules. Reused coordinate refinement, existing inverse/quotient entry geometry, finite left-cover volume, compact entry boxes, right Haar invariance, and the existing ball-doubling theorem. Strengthened the cover-volume and final comparison to permit arbitrary real 2x2 matrix centers, not only SL2 centers. All eight new theorems are used or public compositions. No metric or entropy definition duplicated.",
+  "updated_at": "2026-10-19T22:16:48.219997+00:00",
+  "formal_checkpoint": "R1803 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1803, 788 sources, 4232 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1803 localizes A=U^2 intersect Ball(alpha), 0<alpha<=1. It proves that A is open, symmetric, contains1, has compact closure in Box(2), positive finite Haar volume and A^3 subset U^6. An actual finite translate cover proves H(U)<=M H(A), M=ofReal(33^4 Q^8/alpha^4), while H(A)<=512K^16 H(U). Every ordinary Frobenius eta-cover F of A, with arbitrary real 2x2 matrix centers, satisfies H(A)<=393216^4 card(F) v_eta when 0<eta<=1/32. The actual nonflattening composition retains all original geometry, volume and probability conclusions and the absolute E6 cardinality bound, and yields card(E6)*q^2<=D card(F) for EVERY such F, where E6 externally eta-covers A^3 and D=393216^4 ofReal((2^21+1)^4 Q^52) 2^68 K0 L^2 K^100 M. Native covering-number conversion, intermediate size, multiscale distribution, quantitative escape, product growth, strict flattening and unconditional paid padding remain unproved. Supporting formalizations of known analysis, not new transposition bounds.",
+  "next": "The preceding turn is PROGRESS. R1803 proves the planned near-identity localization and actual finite cube-cover comparison. Do not redo BSG, smoothing, ordinary cover refinement, localization or Haar patch comparison. Start from SmoothedIterateLocalizedCover.exists_smoothedIterate_localized_cube_cover. For the actual nonflattening data and 0<eta<=1/32,0<alpha<=1 it returns the same N,U,Y,x, plus A=U^2 intersect Ball(alpha), and E6 subset U^6 externally eta-covering A^3. All original U geometry/probability/volume bounds are retained. A is open symmetric contains1, compact closure in Box(2), positive finite volume. Write q=ofReal(theta), R=(4B^2)^(2^k), Q=32(R+1)^6, M=ofReal(33^4 Q^8/alpha^4), K0=64N^4,L=8(K0^2/q^2),K=2^55L^21, v_eta=H(Ball(eta)), A6=ofReal((2^21+1)^4 Q^52), C6=2^68K0 L^2K^100, d=393216^4, D=d*A6*C6*M. Checked outputs include\n H(U)<=M H(A), H(A)<=512K^16 H(U),\n q<=128K0 K L^2 M V H(A), q V H(A)<=8192K0 K^23,\n card(E6)*q^2*v_eta<=A6*C6*H(U),\n card(E6)*q^2<=D card(F) for EVERY finite strict ordinary eta-cover F of A.\nHere F can have arbitrary real matrix centers, not just group elements. E6 centers are in U^6, not A^3. The absolute E6 bound is explicitly retained in the FINAL statement so next steps can use the same witnesses.\n\nNEXT CONCRETE TARGET (unproved): establish the native Frobenius external-covering-number profile of this actual A and A^3, including a quantitative intermediate-size interface in terms of V. This is not an invitation to recreate a covering-number definition or to assume the source product theorem. IMPORTANT NEW REUSE FINDING: Mathlib/Analysis/Matrix/Normed.lean already supplies the EXACT native Frobenius matrix metric using open scoped Matrix.Norms.Frobenius. Matrix.frobenius_norm_def gives the square root/rpow of the sum of entry norm squares. Use this scope for the ambient matrix image of A; do not default to the pi metric or invent a metric. The scope declarations are at the end of that file. Prove the distance/squared-entry equivalence. Mathlib/Topology/MetricSpace/CoveringNumbers.lean already provides Metric.externalCoveringNumber : NNReal -> Set X -> ENat, Metric.IsCover, and IsCover.externalCoveringNumber_le_encard. IsCover uses CLOSED balls. Mathlib/Basic/Real/ENatENNReal.lean provides the existing ENat.toENNReal coercion and monotonicity. Do not create an entropy definition or a new coercion.\n\nBridge the open/closed radius convention with an explicit finite refinement: for eta>0, a finite CLOSED Frobenius eta-cover F of a matrix target gives entry error<=eta. Apply exists_coordinate_refinement with X=Matrix(Fin2)(Fin2)Real, N=eta, delta=eta/4, to select E inside the target. binCount eta (eta/4)<=9, so card(E)<=9^4 card(F)=6561 card(F). Entry errors<eta/4 give strict Frobenius eta-covering. Reuse existing sum-of-squares and bin lemmas, adding only the missing weak inequality helper if needed. This handles arbitrary ambient centers without imposing determinant1. Check the constant in Lean. No need to change any existing global metric instance.\n\nUsing E6 and 1 in A gives finite external covers of both A and A^3, so their native covering numbers are finite and positive. For a minimizing finite external cover, reuse native ENat.exists_eq_iInf just as the existing exists_set_encard_eq_coveringNumber proof does. There is no external counterpart in the inspected file; add only the missing external finite-attainment lemma if necessary, not a parallel framework. Alternatively use the universal finite-cover inequality directly through the native infimum, with the infinite-cardinality cases handled honestly.\n\nLet nA and n3 be the native external covering numbers of the ambient matrix images, cast to ENNReal. Proposed checked-numerical targets:\n n3*q^2 <=6561*D*nA,\n q <=128*6561*d*K0*K*L^2*M*V*nA*v_eta,\n nA*q^3*V*v_eta <=A6*2^72*K0^2*L^2*K^107.\nFirst follows from the new refinement and R1803. Lower-size inequality follows from q<=128K0 K L^2 M V H(A) and the cover-volume lower bound applied to the refined cover. Upper-size inequality uses nA<=card(E6), the retained absolute E6 bound, and original q V H(U)<=16K^7K0. Verify association/constants instead of assuming. Use existing positive finite v_eta; V positivity follows from LevelEnergyNormalization.lintegral_sq_ne_zero_of_mass_ne_zero and smoothedAutocorrelationIterate_lintegral=1, V finite from smoothedAutocorrelationIterate_lintegral_sq_le. This should yield an explicit conditional power-law interval when bounds on V and the losses are supplied, without claiming those losses are already absorbed uniformly.\n\nOnly after this quantitative profile, specialize to the actual rational generator walk and prove the exponent bookkeeping plus multiscale distribution/quantitative escape. Re-read Bourgain\u2013Yehudayoff https://arxiv.org/pdf/1108.2555 Section4.1/Theorem4.4 (read again R1803). Their localized set is built from BOTH left and right quotients of a level-set intersection, whereas ours is U^2 intersect Ball(alpha). Source conditions may need a larger controlled set or a separate argument for ours. Preserve that distinction. Existing R1800 probability concentration in xU is available; do not assert that A inherits discrete mass or subgroup escape automatically. The actual iterate has interleaved smoothing and must be factorized into genuine probability measures if extracting a shorter rational walk. Product theorem proof itself remains unformalized.\n\nUltimate fixed-iterate target remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), with k before N,J0,epsilon0. Its actual dyadic radius eta=(1/4)^j requires an ae density cap D with D^2<=2^j (thus scale eta^-1/4), in the specified walk-length range. Do not silently replace that by an easier flatness statement. Preserve all six theorem families. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1803 completes near-identity localization and an actual finite cube-cover comparison, including arbitrary ambient matrix centers. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusNearIdentityLocalization.lean": "6c5e83a9217585ff1f42373c2f84195e97b02b43e8cf750c09ecc54d3b2238b8",
+    "lean/TransposeFollowup/MobiusFrobeniusCoverVolume.lean": "ac12af4b3029d35af4a040ec3ff286c34e0559bd65771d9b3785710b590d8fd5",
+    "lean/TransposeFollowup/SmoothedIterateLocalizedCover.lean": "d93e0914e16aa6bbe565eae304804813627fc55ed3bf9db7b7b8920d611cea30"
+  }
+}

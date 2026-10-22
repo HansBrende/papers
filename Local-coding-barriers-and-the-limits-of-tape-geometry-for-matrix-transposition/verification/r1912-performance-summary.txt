@@ -1,0 +1,49 @@
+R1912 PERFORMANCE SUMMARY — FINAL RESTORED TARGET MEASURED
+
+Same-five-body checks:
+  Three alternating scratch pairs: median 73.840 -> 15.798 s,
+  4.674x faster / 78.60% less wall time.
+  Median reported maximum RSS: 6.086 -> 6.117 GB (+0.515%).
+  Ordinary Lake pilot: 62.774 -> 16.731 s,
+  3.752x faster / 73.35% less wall time.
+  Reported maximum RSS: 6.083 -> 6.119 GB (+0.591%).
+
+Final combined architecture, restored source:
+  SourceEndpointsMeaning alone rebuilt successfully in 13.3034 s;
+  reported maximum RSS 3.553 GB. It now contains twenty original source
+  bodies (2,226 physical source lines), including guarded clipping and endpoint
+  construction, whereas the original 62.774 s pilot rebuilt five source bodies.
+  The observed workflow ratio is 4.719x / 78.81% less elapsed time, with
+  41.60% lower reported maximum RSS. This is a broader final target,
+  not an equal-body comparison or a whole-project speedup measurement.
+
+The preceding 97.391 s run is repair-inclusive: its log shows eighteen rebuilt
+modules TOTAL, comprising seventeen prerequisites plus SourceEndpointsMeaning.
+Do not put that run into the clean target timing comparison. Both runs passed.
+The baseline unchanged lake build took 4.013 s; the final unchanged build took
+5.740 s. This cache-overhead check did not improve. No matched whole-project
+speed ratio has been measured.
+
+Static explanation after the final source repairs:
+  1,157 -> 896 mathematical modules; no cycles or missing local imports.
+  NativeMicrocode implementation: 566 -> 306 affected modules, serial path
+  176 -> 36. Global longest local path: 188 -> 81, now in the analytic branch.
+  SourceEndpointsMeaning parsed dependency vertices: 8,941 -> 3,282;
+  Mathlib vertices: 8,530 -> 2,989; the full Mathlib aggregator is absent.
+These are graph measurements, not elapsed-time ratios or loaded-memory counts.
+
+Limits: scratch checks compile the same original five proof bodies sequentially
+or concatenated, using validated predecessor artifacts. Three alternating pairs
+are modest replication. The ordinary Lake pilot is one paired target rebuild.
+Normal filesystem caches were used. wait4 maximum RSS is a reported child usage
+metric, not a sum across modules or aggregate simultaneous system-memory peak.
+The import-only invocation took 14.790 s; it includes startup and artifact output
+as well as import cost, so it is not a precise tactic/import-time decomposition.
+
+The final full build passed 10,071 jobs in 1321.040 s; this is validation cost
+for the changed sources, with cached jobs included, not a whole-project speed
+comparison. The 6,306-declaration axiom audit passed. Original-contract semantic
+preservation checks remain pending: 269 raw expression differences must not be
+reported as literal identity. No more source edits or benchmark perturbations
+are needed for these performance measurements. Full paths, raw receipts, workload
+qualifications, and graph data are in the companion JSON.

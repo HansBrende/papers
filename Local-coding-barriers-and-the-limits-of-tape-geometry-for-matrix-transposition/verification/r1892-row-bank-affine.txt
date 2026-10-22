@@ -1,0 +1,151 @@
+
+R1892 — ALL-PREFIX ROW BANK AFFINE APPROXIMATION
+PROGRESS at R1892: all-prefix affine approximation of the actual clean integer-row bank is checked, including row interiors, paid cleanup and frozen stopped tail. Native prefixes have error<=8W; real-time sampling error<=8W+4. Rescaling gives error(8W+4)/P and a9-interval affine cover, vanishing when W/P->0 and P->infinity. Five of six original families formalized; regular recursion206/208 best estimate87% complete (low confidence). Shared raw IO and remaining integer/F3 operations and bounded-word assembly remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1892 CHECKED RESULTS
+1. ScheduledNativeIO.repeat_block_error / repeat_linear_error: if each
+   length-N scheduled block has endpoint displacement D on a chosen head,
+   for every starting state, then r repetitions at every n<=rN lie within
+   N of floor(n/N)*D, and within N+|D| of nD/N. N>0 is explicit. The proof
+   uses the existing unit-step displacement bound and scheduled append.
+   It permits data-dependent motion inside a block. This is a geometry
+   lemma; physical active execution is supplied separately by the actual
+   bank's proved activity and native-prefix compilation, not assumed free.
+   repeat_endpoint gives the exact displacementrD at the block boundary.
+
+2. CoupledRowMotion proves actual seek/cell/row endpoint positions for
+   arbitrary work states, independent of payload validity. RawRowArithmetic
+   rows_endpoint and rows_linear_error then give bank drift at speed1/7,
+   stationary-buffer approximation, and uniform error<=8W for every row
+   loop prefix, using the SAME checked executor. W>0 is explicit.
+
+3. ScheduledBankCleanup.schedule_position states the exact path of the
+   paid erase/rewind passes. Buffer position is its two clipped W-step
+   excursions and lies in[0,W]; bank rewind starts after2W local steps.
+   It reuses erase_position, rewind_position and append_position.
+
+4. RowBankCurve.curve(P,W,head,time) is zero for the local buffer and,
+   for the bank, the outward clipped ramp of speed1/7 minus its final
+   speed1 rewind starting at7P+2W. cover imports the existing clipped-ramp
+   covers and their subtraction rule, giving9 affine-cover intervals,
+   independent of row count/width. before/cleanup/after verify exact
+   phase values. sample_stability bounds floor-time error by4, using
+   the EXISTING clippedRamp_sample_error, itself based on mathlib's
+   floor estimate and Lipschitz clipping. Constants are not optimized.
+
+5. bank_curve_error covers EVERY n for the actual clean schedule run
+   up to min(n,bankTicks): error<=8W relative to the starting position.
+   It includes row interiors, both buffer cleanup passes, bank rewind
+   and the frozen tail after the native stopping time. bank_endpoint
+   proves head restoration even for arbitrary starting tape contents.
+   bank_native_prefix_error transfers the bound to an actual original-TM
+   stepN configuration for every n<=bankTicks, using native_prefix and
+   bank_active. No halted state is counted as further paid execution.
+   bank_real_curve_error has bound8W+4 for every real sampled time.
+
+6. bank_scaled_cover / bank_scaled_error give a9-interval cover after
+   scaling time and positions byP=rW, with error(8W+4)/P. PositiveP is
+   explicit. bank_error_vanishes imports standard limit algebra to prove
+   this error tends to0 wheneverP->infinity andW/P->0. The arithmetic
+   bank's eventual row geometry can therefore use the existing physical
+   affine obstruction once raw IO and bounded operation words are wired.
+
+Seven new leaf modules;25 additional audited declarations, not25 research
+results. Previous mathematical sources unchanged. The prior native bank
+runtime8P+2W,2 tapes,5 symbols and50*(bankTicks+1) states remain unchanged.
+
+REUSE / DRIFT CHECK
+All R1891 receipt hashes were revalidated before edits. Inspected pinned
+mathlib/core natural division, iteration, casts, floor bounds and limit
+algebra, plus local ScheduledWord, append_position, native displacement,
+clipped-ramp covers, raw IO geometry and state-bit interfaces.
+Reused ScheduledWord.schedule, ScheduledNativeIO.append_exact/append_prefix/
+append_position/trajectory_displacement/native_prefix, CoupledRowCell.
+cell_positions, CoupledRowScan.schedule_exact, RawRowArithmetic.bank_active,
+bank_exact/ticks_eq, ScheduledTapeAction.erase_position/rewind_position,
+clippedRamp_cover/clippedRamp_sample_error and HasAffineIntervalCover.
+sub/mono/rescale. Reused mathlib iteration, Nat.add_div_left/div_add_mod',
+Nat.mod_lt, standard cast and limit lemmas. No new arithmetic controller,
+native compiler, compactness chain, lower-bound theorem, tape semantics,
+or floor-estimate proof was built. The repeated-block estimate is shared
+and does not require common internal head paths across different inputs.
+Development errors: cast normalization (including explicitly preserving
+NATURAL truncated subtraction), a named argument, Bool/Prop condition
+conversion, eta-expansion for the cover, and abs_zero normalization.
+A temporary trace_state diagnostic was removed. Final sources contain no
+proof escapes, increased limits, disabled linters or diagnostic traces.
+Drift: actual row-bank geometry is a required premise for the full palette
+exclusion; it now closes that premise. It does not by itself complete the
+raw input/output wrapper or all other primitive operations.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1892 proves geometry for the complete clean BANK subroutine, uniformly over arbitrary starting work states, and transfers it to actual native prefixes. Its frozen trajectory is capped at the proved stopping time. It does not yet supply raw external loading/emission, finish other integer/F3 operations, or prove their complete bounded-word exclusion. Five of six families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1892 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate87%, low confidence.
+
+NEXT: SHARE THE RAW INPUT/OUTPUT WRAPPER ACROSS FINITE MODE TYPES.
+The clean arithmetic bank AND its all-prefix affine approximation are
+DONE. Do not reopen their row loop, cleanup, rescaling, finite affine cover,
+rounded-time estimate or native-prefix bounds. See RawRowBankMotion,
+RawRowBankApproximation and RowBankCurve. P=rW; W>0; normalized error
+(8W+4)/P,9-interval cover; P->infinity,W/P->0 imply vanishing error.
+RepeatedScheduleMotion is generic and permits data-dependent internal
+motion at fixed endpoint displacement; reuse it for later local blocks.
+The prior runtime is8P+2W<=10P for nonempty banks;2 tapes,5 symbols,
+50*(bankTicks+1) states. Use state_bits_of_linear_count when full time
+is linear; do not duplicate state-bit/compactness/lower-bound chains.
+
+Existing ScheduledRawInput/Output and RawBankProgram use Bool*Bool mode;
+CoupledRowCell.Mode is Bool*Sym Bool*Sym Bool. NativeIOEmbedding already
+has instruction, step_embed, active_embed and trace_embed for label maps
+and port embeddings. A small shared schedule/mode relabeling interface
+can lift the old IO into the coupled mode while sharing its proofs.
+For example, an injective encoding of the4 IO modes into the50 coupled
+modes exists (store the second Boolean in .data and use a blank third
+symbol); a left inverse lets the lifted controller dispatch. This is a
+suggested implementation, NOT a checked interface yet. Prove its actual
+step/trajectory correspondence using the existing embedding theorem.
+Any reset needed between differently represented modes is a PAID native
+jump. Keep both tapes, all cell contents, heads and external IO framed.
+
+Then factor/generalize the raw-bank wrapper sufficiently that the old
+binary client and new row client share loading, rewind, emission, native
+initialization/halting and resource/approximation reasoning. Preserve the
+old public API/theorems, and build their dependents after any refactor.
+Do not copy the whole RawBankProgram chain into a parallel controller.
+Its old Motion interface requires an exact input-independent path;
+our new bank has a proved uniform approximation and endpoints. Use the
+existing physical approximation obstruction at the appropriate level;
+do not replace the general shared block bound with unnecessary exact
+carry-path enumeration just to fit an overly strong wrapper interface.
+BankWord.Interface/Represents already parameterizes mode and value types.
+R1891 bank_spec accepts arbitrary bank prefix/suffix and incoming mode,
+so no empty-surroundings restriction has been imposed on future words.
+
+Remaining source206(a): row XOR/difference, row-order reversal, entry-order
+reversal preserving within-entry bits, row-dependent rotations, whole-bank
+increment/decrement modulo2^P. Source206(b): exact F3 row/column prefix/
+difference, row/column reversal, row rotations, diagonal signs and whole-
+entry-stream rotation. Reuse CoupledRowCell arbitrary-symbol tables,
+ScheduledBankCleanup and symbol-preserving ScheduledTransfer. Check and
+factor shared row interfaces before duplicating wrapper proofs. Trit2
+can use .start on unmarked public-clock banks; binary decoders erase it.
+No new work alphabet/compiler is required merely for trits.
+
+Source206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and
+210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,
+bounded operation words and correctness sets of coentropy o(P). Referees
+only after all six original families complete. Original read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate87% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1892 completes clean integer-row-bank geometry with an explicit vanishing normalized error and bounded affine cover. Raw IO, remaining integer/F3 operations, bounded-word assembly and final independent referees remain.
+
+VERIFICATION
+Full lake build passed10293 jobs without warnings/errors; SupportAxioms audited5668 unique declarations using only propext,Classical.choice,Quot.sound. There are1112 local sources (1111 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and227 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

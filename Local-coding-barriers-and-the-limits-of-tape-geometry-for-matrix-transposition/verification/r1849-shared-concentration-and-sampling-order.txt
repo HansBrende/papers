@@ -1,0 +1,188 @@
+R1849 — SHARED CONCENTRATION AND SAMPLING-ORDER OBSTRUCTION
+
+In progress. R1849 generalizes the existing scalar-concentration proof and recovers the nilpotent theorem with its statement unchanged. It proves exact normalization and trimming-ratio lemmas, and discovers and verifies an obstruction to trimming AFTER the final scalar-driven coarsening. That ordering is abandoned: trim at the fine matrix scale first, then coarsen the retained branch. Two modules add four audited declarations; the old nilpotent proof is shortened by reuse. The actual two-stage sample and its parameter closure remain next.
+
+R1849 EXACT VERIFIED STATEMENTS
+
+SourceScalarConcentration.lean (1 theorem)
+
+source_scalar_sample_concentration is the generalized proof previously
+specialized to the nilpotent coordinate. Its input is a finite actual
+source family f_i,X_i,c_i,t_i,base with ALL original matrix/frame/localization,
+source approximation, entry, separation, multiscale distribution and
+A^142/A^284 cover hypotheses from finite_source_cluster_cubic_bound.
+The original distribution window2eta<eta^gamma is retained.
+The coordinate-specific inputs are:
+ - a:indices->R is injective;
+ - Kinv>=0;
+ - indices i,j in ANY scalar interval |a_i-w|,|a_j-w|<=rho, rho>=0,
+   have matrix distance<=2Kinv*rho;
+ - the already normalized global count satisfies N<=W*n^3,
+   where N=N_eta(A) and n is the finite index count.
+
+Let Z=image(a), Bpow=4^142, L=binCount(B,delta)^4,
+ E=[4(20(2R)^10 epsilon+2R eta)/eta+1]^4,
+ Gprofile=(8Bpow+1)^4(8Bpow^2+4Bpow+1)^kappa K J eta^(-gamma*kappa),
+ Dloc=40(2R)^11(Kinv+2),
+ Q=4L^3(E Gprofile Dloc^kappa+2^kappa).
+Then for C>=0 with QW<=C^3, EVERY rho>=max(eta,epsilon) satisfies
+ scalarBallMass(Z,w,rho) <= C*rho^(kappa/3)*|Z|.
+There is no conclusion below the source-error radius epsilon.
+
+The proof retains the actual source subtype in each scalar interval,
+uses the EXISTING cubic source-cluster theorem, uses the original
+separated distribution to absorb the additive1, and reuses
+normalized_count_of_cubic. No nilpotency or trace formula remains in the
+shared concentration kernel.
+
+NilpotentScalarConcentration.lean (modified, same declaration)
+The declaration nilpotent_scalar_sample_concentration has EXACTLY its
+previous statement, checked byte-for-byte against the pre-refactor source.
+Its proof now derives the original global normalization and supplies
+nilpotent_scalar_ball_diameter with Kinv=3Bg/(2L) to the shared theorem.
+The full module is124 lines, compared with the previous181 lines.
+All original callers are rebuilt. Constants and radius restrictions are
+unchanged; this refactor is not a weakening of the previous endpoint.
+
+ScalarSampleNormalization.lean (3 theorems)
+
+coefficient_cube_normalization:
+For a,C,N>0,T,V,P,H>=0,
+ a*N^4 <= C*(9*T*H*V)^3, T<=P*N
+imply
+ N <= [C*(9*P*H)^3/a]*V^3.
+This reuses spanning_cube_sample_normalization with eta=a/C, exponent1,
+and retention factor1. It handles R1845's fixed trace-gap constant exactly.
+In that application a=d^11; no constant is silently dropped.
+
+trim_budget_of_global_normalization:
+For N0>0,N>=N0,V,L,C,A>=0, if
+ N<=W*V^3, U<=A*N,
+ 32L^3 C^3 W(A+1/N0)<=1,
+then
+ 32L^3(U+1)C^3<=V^3.
+This removes unknown native cover counts from the trimming condition.
+The lower bound N0 comes from the original separated distribution.
+The statement does not choose the parameters that make the ratio small.
+
+coarsening_trim_budget_obstruction:
+For0<s<=1,kappa<=12, if
+ C*s^4>=1, A>=s^kappa, W>=1,L>=1,
+then
+ 1 < 32L^3 C^3 W A.
+Proof:1<=(C*s^4)^3=C^3*s^12<=C^3*s^kappa<=C^3*A;
+the remaining factors are>=1 and the prefactor is32.
+Consequently the trimming ratio with A+1/N0 cannot be<=1 for N0>0.
+This is a proved obstruction to an ESTIMATE, not an impossibility theorem
+for the algorithm, coding, matrix growth, or transposition.
+
+DECISIVE DRIFT / FEASIBILITY AUDIT
+
+A single-pass concentration endpoint was implemented and passed targeted
+Lean builds. It correctly constructs the R1848 sample and applies the
+shared concentration theorem under explicit trimming and concentration
+budgets. An independent algebraic check of the simultaneous budgets then
+showed that this ORDER of operations is unsuitable for the intended scales.
+The conditional theorem was true, but its required trimming inequality
+could not be made small in that regime. The unused specialization was
+removed from active Lean sources; diagnostic source is saved locally at
+/private/tmp/r1849_single_pass_prototype.lean. The shared proof and the
+normalization lemmas remain useful and are audited here.
+
+Why the budget fails:
+For the trace-square inverse, Kinv=3072/(lambda*s), lambda<=32.
+The final scalar spacing requires2sigma>=Kinv*delta_s. In the intended
+regime delta_s>=eta this forces sigma/eta>=48/s. Hence the coarse
+retention factor C=6561(4sigma/eta+1)^4 satisfies C*s^4>=1.
+Its CUBIC normalization cost therefore contains s^-12.
+Meanwhile Anear has decay only s^kappa. With the usual nonnegative profile
+bounds E>=1,K,J>=1,eta<=1,gamma,kappa>=0,R>=1, one has Anear>=s^kappa.
+Taking the harmless larger fixed constants/envelopes ensures W,L>=1.
+The newly proved obstruction applies for kappa<=12, covering our range.
+Thus decreasing s to remove the trace-square critical point cannot make
+this single-pass trimming estimate succeed. Earlier optimism about just
+choosing smaller exponents overlooked that sigma itself depends on1/s.
+
+This DOES NOT refute the R1848 conditional sampler. It also does not rule
+out special inputs or spacings outside the stated regime. It says not to
+try to close the main argument with this coupled single-pass budget.
+
+Repair: TRIM FIRST, COARSEN SECOND.
+The initial fine scale sigma0 only has to meet cubic packing. Its trimming
+factor C0 is independent of1/s. After choosing a far, single-sign branch,
+a second coarse sampling at sigma1 pays the trace-square inverse loss.
+The factor C1(s) then enters the FINAL cardinality/concentration budget,
+not the earlier condition that creates the far branch. This is the next
+construction to prove; it is not yet formalized in this checkpoint.
+
+BOUNDARY
+The shared source concentration theorem is proved and the previous nilpotent endpoint is preserved. R1848 remains a correct conditional sampler, but its single-pass trimming budget cannot close under the intended final-spacing regime: the cubic coarsening loss contains s^-12 and overwhelms s^kappa decay. The verified obstruction is to this displayed budget, not to matrix growth or transposition. A compiled conditional single-pass concentration specialization was removed from active sources after this audit. No actual final trace-square concentration application or simultaneous scale choice is claimed. The next source sample must trim at a finer scale before final coarsening. Dilated-base cells, product/quotient source errors, length420 second extraction, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty claimed.
+
+NEXT
+R1849 recorded; never replay its checkpoint script. Full10125-job build
+and4671-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: two-stage actual source sampling. Reuse the R1848 sampler
+at a FINE scale sigma0 independent of the far cutoff s, trim there, then
+resample the retained far branch at the FINAL scalar-driven scale sigma1.
+Do not return to the incompatible single-pass trimming budget.
+
+Concrete construction:
+1. Choose sigma0>=eta with2sigma0>=the cubic packing threshold.
+   Set an AUXILIARY positive scalar spacing, e.g.
+   delta0=(lambda*s/3072)*sigma0, so Kinv*delta0=sigma0.
+   Apply exists_actual_trace_square_source_sample with sigma0,delta0.
+   Its original-space source tuple, far branch and matrix separation are
+   useful even though delta0 is too fine for final scalar growth.
+   C0=6561(4sigma0/eta+1)^4 has NO inverse-cutoff loss.
+   Use coefficient_cube_normalization and trim_budget_of_global_normalization
+   to discharge this FINE trimming budget from the original cube and
+   distribution. Its numerical ratio is
+   32L^3 C0^3 W0(Anear+1/N0)<=1.
+   This no longer contains a forced s^-12 factor through C0.
+2. Let T0 be that retained original index set. Matrix separation>2sigma0
+   and sigma0>=eta give |T0|<=N_eta(f(T0)), by the existing separated
+   matrix-cardinality bound. The first stage gives V<=4C0|T0|.
+3. Apply exists_coarse_source_sample to the restricted family f:T0->G
+   at sigma1>=eta with2sigma1>=Kinv*delta_s. Preserve the witness map
+   into T0 and then into the original index type; injectivity follows
+   from equality with the sampled matrices, exactly as in R1848.
+   With C1=6561(4sigma1/eta+1)^4,
+     |T0|<=N_eta(f(T0))<=C1|T1|,
+   so V<=4C0 C1 |T1|. Obtain T1 subset T0 explicitly; it inherits the
+   far condition, one sign, near1/64, and actual source witnesses.
+   Its new matrix spacing and the R1848 inverse estimate give final
+   scalar spacing delta_s, injectivity, and the[1,2] interval.
+   A generic finite-source resampling lemma may package this step; reuse
+   exists_coarse_source_sample and separated_matrix_card_le_coveringNumber.
+4. Apply the R1849 source_scalar_sample_concentration kernel on T1.
+   The scalar interval inverse uses Kinv=3072/(lambda*s). Derive its
+   interval diameter from the returned pairwise inverse bound and the
+   scalar triangle inequality. The final global factor is
+     W=W0*(4C0 C1)^3.
+   C1 enters QW<=Cscalar^3, NOT the fine trimming ratio in step1.
+   Do not duplicate the old nilpotent concentration proof; it is now a
+   wrapper around the shared kernel. Its old statement is unchanged.
+
+Then check FEASIBILITY of the complete exponents before building another
+large conditional endpoint. There is no claim yet that all final budgets
+close. Choose the small frame exponent much smaller than the cutoff decay
+exponent; audit all C0,C1,localization,source-error and mixed-cover losses.
+The radius for scalar growth must satisfy delta>=max(eta,epsilon), since
+concentration is only proved in that window.
+
+Next remaining bridges: choose the coefficient with abs>=3/4 for the
+enlargement, pay the other coefficient's lower bound3rho/256 in the
+retained-base cells, use the existing product/quotient enlargement identity
+and range lemma, transfer enlarged factors to their actual A^4 sources,
+and check R1847's mixed-source far budget. Generalize the old n<=283
+second-extraction wrapper to word length420 using the existing fixed-power
+coefficient h^(8802n+4427). R1845's initial universal n0+3 cost is separate.
+Only after all these numeric losses are listed choose theta,tau and dyadic
+thresholds. Original profile/frame and analytic/machine endpoints remain.
+Three of six original families formalized; paid padding about60%, low
+confidence. Original paper read-only; no commits/pushes/subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

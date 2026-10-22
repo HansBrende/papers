@@ -1,0 +1,51 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1851",
+  "target": "Explicit two-stage sampling, normalization, trimming and concentration power budgets with coefficient-dependent spacing.",
+  "new_modules": [
+    "TraceSquarePowerBounds",
+    "TraceSquareConcentrationBudget"
+  ],
+  "modified_modules": [
+    "NilpotentExtractionParameters"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.two_stage_sampling_power_bounds",
+    "TransposeFollowup.SL2Projection.trace_square_scalar_spacing",
+    "TransposeFollowup.SL2Projection.trace_square_normalization_power_bound",
+    "TransposeFollowup.SL2Projection.trace_square_near_power_bound",
+    "TransposeFollowup.SL2Projection.fine_trim_ratio_power_bound",
+    "TransposeFollowup.SL2Projection.exists_fine_trim_ratio_threshold",
+    "TransposeFollowup.SL2Projection.trace_square_concentration_power_budget",
+    "TransposeFollowup.SL2Projection.concentration_budget_of_power_bounds"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9610,
+      "log": "/private/tmp/r1852-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10130,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4685,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 15171 exit1; dev2 21999 exit1; dev3 25372 exit1; dev4 93318 exit0/9610, no warnings/errors; full95441 exit0/10130, no warnings/errors; audit71396 exit0/4685, no warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T18:52:10.769503+00:00",
+  "formal_checkpoint": "R1852 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:949 local sources,204 external sources,4685 declarations,8 configurations,147 artifacts",
+  "proof_scope": "In progress. R1852 proves explicit power envelopes for two-stage coarsening, inverse localization, scalar spacing, quantitative normalization and the near-identity trimming factor. It proves a dyadic threshold for the fine trimming ratio and the concentration budget with the original extraction constant and d^11 denominator retained. The final concentration-budget calculation is extracted from the old proof and reused; its previous endpoint statement is unchanged. Eight audited declarations are added across two new modules and one refactored module. A joint instantiation on the actual source sample remains next.",
+  "next": "R1852 recorded; never replay its checkpoint script. Full10130-job build\nand4685-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: one simultaneous constant/threshold instantiation for the\nactual trace-square sample, then apply source_scalar_sample_concentration.\nDo not re-prove R1852's power bounds or the old scalar concentration chain.\nThe exact R1851 exponent choice and ledger remain authoritative.\n\nFixed choices to use before eta:\n Theta=min(e,kappa0)/16384,theta=kappa0*Theta/1024,a=5Theta/16.\n l0=1/32,cutoff s=eta^a,Lgap=l0 eta^theta.\n Fine extraction parameters: call exists_scaled_extraction_parameters\n with fixed distance coefficient1/32 and exponenttheta; weaken the\n distance to eta^(2theta)/32, while retaining the stronger eta^theta/32\n for R1846's readout selector. Use B=2 or9 consistently; all fixed\n entry bounds/R values can be enlarged independently of eta.\n The source error bound26214400 eta^(1-theta) is dominated by the\n chosen epsilon=e0 eta^(1-2theta). Prove this comparison explicitly.\n\n1. Specialize exists_actual_two_readout_coefficients at original\n   frame gap eta^theta and distance eta^theta/32. Its Gamma is\n   Gamma_c eta^(6theta),rho=rho_c eta^(12theta),rho_c>0 fixed.\n   Both normalized coefficients have magnitude>=c eta^(12theta),\n   c=3rho_c/256. Choose t0=max1(1/c),s1=3072t0/l0.\n   Then c*t0>=1,t0>=1, and the constant hypotheses of\n   trace_square_scalar_spacing hold. The larger coefficient (abs>=3/4)\n   belongs on the enlarged scalar factor; either orientation is allowed.\n2. For delta<=2eta^(1-3Theta), set\n   delta_s=t0 delta eta^(-12theta),\n   sigma1=s1 eta^(1-(3Theta+13theta+a)).\n   trace_square_scalar_spacing pays final scalar and matrix spacing;\n   two_stage_sampling_power_bounds pays Sret=4C0C1 and Dloc.\n3. first_extraction_cost_bounds at theta supplies H,C0,L,E envelopes.\n   Compare R1845's actual H with the weakened-distance H. Apply\n   coefficient_cube_normalization then trace_square_normalization_power_bound:\n   N<=W0 V^3,W0<=Wc eta^(-38theta),Wc=Cext(9Hc)^3.\n4. Use epsilon<=eta^a at a uniform threshold (1-2theta-a>0 follows\n   from the R1851 error margin). trace_square_near_power_bound supplies Ac.\n   Apply fine_trim_ratio_power_bound and exists_fine_trim_ratio_threshold;\n   use N0=(2eta)^(-kappa0), coveringNumber_lower_of_distribution and\n   trim_budget_of_global_normalization to discharge the ACTUAL fine\n   sample budget. No final coarsening factor in this condition.\n5. Apply exists_actual_trace_square_two_stage_sample to the original\n   source indices. Retention is4C0C1 and both matrix separations survive.\n   Weaken the first-stage H,L,E/profile envelopes from theta toTheta,\n   and use trace_square_concentration_power_budget with the ACTUAL\n   Cext/(eta^theta)^11 normalization. This gives Cscalar eta^(-100Theta).\n6. Apply source_scalar_sample_concentration on the returned original\n   index subtype. Use the returned fine matrix separation, inverse\n   scalar estimate and image-card equality. The interval diameter\n   follows by the real triangle inequality; do not assume it.\n   Keep radius>=max(eta,epsilon). Reuse the size bound at fine sigma0\n   via commuting_family_cubic_bound and exists_first_extraction_size_constant.\n\nCombine the finite thresholds for epsilon<=s, near1/64, the distribution\nwindow2eta<eta^(theta/2), native/source spacing, trimming and scalar growth.\nChoose alpha0 small enough before eta. Avoid a large conditional wrapper\nthat merely assumes these budget inequalities instead of discharging them.\nAfter the actual sample/concentration result, finish the scalar-to-word\ncell bridge, including the square-root loss2gain<g (gain=e/32), and\nsource error512R^7 epsilon. Mixed words have length420 and far exponent\n12theta+a<=3Theta. Generalize the FULL second-extraction wrapper by\nprofile_power_exponent_bound_of_cost; it currently still has k<=282.\nThe length420 cover uses n421,cost3710069, while the initial n0+3 cover\nuses n0+2. The old548Theta and143Theta costs fit691Theta<3gain.\n\nOriginal profile/frame, strict flattening and analytic/machine endpoints\nremain. Three of six original families formalized. Paid padding remains\nabout60%, LOW CONFIDENCE; continue numeric progress reports.\nOriginal paper read-only; no commits/pushes/subagents at this stage.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceSquarePowerBounds.lean": "d0e5c1c20b12d5d343f6c303f818409d9b339361cfd4399b01086dff5268cab3",
+    "lean/TransposeFollowup/TraceSquareConcentrationBudget.lean": "08f1c1e8315d80e555a02e0fcaeab171c0eb8452e2a54ef1ce0f6eb8fc15f828",
+    "lean/TransposeFollowup/NilpotentExtractionParameters.lean": "7a62d02f1290c7249bdfd734646ae42e111d0f7d2671298bf0764bcd346bdcbf"
+  }
+}

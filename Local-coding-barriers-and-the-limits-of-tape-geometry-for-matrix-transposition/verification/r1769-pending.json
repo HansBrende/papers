@@ -1,0 +1,92 @@
+{
+  "checkpoint": "R1769",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "SchwartzL2Derivative",
+    "SchwartzFourierDerivativeTest",
+    "L2FourierDerivative",
+    "L2DerivativeFrequencyTail",
+    "MobiusSchwartzL2Derivative",
+    "MobiusSchwartzFrequencyTail",
+    "FrequencySeparatedCorrelation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.schwartz_L2_integration_by_parts",
+    "TransposeFollowup.toLp_derivative_pairing",
+    "TransposeFollowup.schwartzFrequencyDerivative_apply",
+    "TransposeFollowup.schwartz_fourier_deriv_test",
+    "TransposeFollowup.L2_fourier_weak_derivative_pairing",
+    "TransposeFollowup.L2_fourier_weak_derivative_ae",
+    "TransposeFollowup.toLp_fourier_derivative_ae",
+    "TransposeFollowup.frequency_derivative_symbol_norm_sq",
+    "TransposeFollowup.frequency_derivative_symbol_norm",
+    "TransposeFollowup.L2_fourier_weak_derivative_energy",
+    "TransposeFollowup.L2_fourier_weak_derivative_integrable",
+    "TransposeFollowup.highFrequency_scaled_norm_le_weak_derivative",
+    "TransposeFollowup.highFrequency_norm_le_weak_derivative",
+    "TransposeFollowup.highFrequency_energy_le_weak_derivative",
+    "TransposeFollowup.toLp_highFrequency_norm_le_derivative",
+    "TransposeFollowup.RealMobius.scaledPullback_ae_congr",
+    "TransposeFollowup.RealMobius.schwartzActionL2_coe",
+    "TransposeFollowup.RealMobius.schwartzActionL2_norm_sq",
+    "TransposeFollowup.RealMobius.schwartzActionL2_derivative_pairing",
+    "TransposeFollowup.RealMobius.schwartzActionL2_fourier_derivative",
+    "TransposeFollowup.RealMobius.schwartzActionL2_fourier_derivative_energy",
+    "TransposeFollowup.RealMobius.schwartzActionL2_fourier_iterated_derivative",
+    "TransposeFollowup.RealMobius.schwartzActionL2_highFrequency_energy_le",
+    "TransposeFollowup.RealMobius.schwartzActionL2_highFrequency_four_moments",
+    "TransposeFollowup.complexL2_real_inner_fourier",
+    "TransposeFollowup.lowFrequency_real_inner_eq_zero",
+    "TransposeFollowup.real_inner_eq_highFrequency",
+    "TransposeFollowup.abs_real_inner_le_highFrequency",
+    "TransposeFollowup.separated_correlation_le_weak_derivative",
+    "TransposeFollowup.RealMobius.schwartzActionL2_norm",
+    "TransposeFollowup.RealMobius.schwartzActionL2_separated_correlation",
+    "TransposeFollowup.schwartzFrequencyDerivative",
+    "TransposeFollowup.RealMobius.schwartzActionL2"
+  ],
+  "new_theorems": 31,
+  "proof_carrying_definitions": [
+    "TransposeFollowup.schwartzFrequencyDerivative",
+    "TransposeFollowup.RealMobius.schwartzActionL2"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 86810,
+      "exit_code": 0,
+      "jobs": 9501
+    },
+    "build": {
+      "session_id": 14933,
+      "exit_code": 0,
+      "jobs": 9578
+    },
+    "axioms": {
+      "session_id": 92601,
+      "exit_code": 0,
+      "declarations": 3245
+    }
+  },
+  "boundary": "3/6 families complete. Weak L2 Fourier differentiation, exact derivative energy, high-frequency tail bounds, and separated-frequency correlation for the actual Mobius action now proved. Smooth band construction and square-summed moment bounds, band isolation, restricted spectral gap, generator existence, motion, recursion and final referees remain.",
+  "source_audit": {
+    "primary_source": "https://arxiv.org/html/1108.2555#S3",
+    "scope": "Standard Fourier/Sobolev support for the band localization step. Mathlib integration by parts for integrable products, L2 Fourier/Schwartz compatibility, and uniqueness against smooth compactly supported tests are reused. No L1 assumption on transformed functions and no claim that Mobius images remain Schwartz. The new separated-correlation estimate retains the actual transported derivative norm. Quantitative summability over bands is not proved.",
+    "next_route": "Direct smooth frequency multipliers: Real.contDiff_fourier and Real.iteratedDeriv_fourier apply to unit-supported L1/L2 inputs; a smooth compact cutoff times their Fourier transform embeds in Schwartz space, and inverse Fourier preserves Schwartz. Prefer this to constructing a new mixed L1-L2 convolution library. The key remaining estimates are square sums over bands of normalized transported derivative energies, not a uniform band-by-band relative derivative bound."
+  },
+  "updated_at": "2026-10-19T13:32:43.745197+00:00",
+  "formal_checkpoint": "R1769 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1769, 601 sources, 3245 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1769 proves integration by parts against Schwartz tests for functions and derivatives in L2 without an L1 assumption. A weak derivative represented by an L2 class gives the actual Fourier representative identity F(df)(xi)=2*pi*i*xi*F(f)(xi), exact derivative energy, and integrability of the weighted Fourier energy. The actual high-frequency component satisfies (2*pi*R)||P_high f||<=||df|| for R>=0 and the divided bound for R>0. These results are connected to the existing complexified Mobius action on Schwartz inputs, with null-set transport proved for arbitrary real normed target spaces. Iterated transported derivatives have the expected Fourier powers. The high-frequency energy is bounded by the four explicit spatial moments from R1768. Low-frequency orthogonality gives |<W_g u,h>_real|<=||D_g u||_2*||h||_2/(2*pi*R) whenever Fh vanishes on [-R,R]. Smooth band construction, square-summed moment estimates and band isolation remain.",
+  "next": "Construct actual smooth frequency-band pieces directly as inverse Fourier transforms of chi_j times the classical Fourier transform of the original unit-supported L2 input. First prove all spatial moments of that input are L1 and L2 with bounds inherited from support in [0,1]; use Real.contDiff_fourier and Real.iteratedDeriv_fourier to make its transform smooth. Multiplication by a smooth compactly supported cutoff then embeds in Schwartz space via HasCompactSupport.toSchwartzMap; inverse Fourier preserves Schwartz. Identify the resulting L2 class with the intended frequency multiplier using the proved L1/L2 bridge. This avoids building an unnecessary mixed L1-L2 convolution library.\n\nFor quantitative localization, exploit Fourier derivatives of chi_j*Ff and the finite-overlap dyadic supports. The key target is a square-sum bound on 2^(-2j)*||D_g u_j||_2^2 in terms of ||f||_2^2 and bounded matrix/cutoff constants, using the L2 bounds on Ff and its first two derivatives. Keep the actual norm dependence: no uniform estimate ||D_g u_j||<=C*2^j*||u_j|| is assumed. Combine the new separated-correlation bound with Cauchy-Schwarz over bands and the summable 2^(j-k) factor for k well above j; use symmetry for the other half. Obtain an explicit finite separation width making the far-band total small, then isolate a band with substantial action. Reuse all verified action, derivative, pole and Fourier support results. Flattening, generator existence, full motion/recursion and final referees remain required.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1769 proves weak L2 Fourier differentiation, derivative-energy identities, high-frequency tail estimates and a separated-frequency correlation bound for the actual Mobius action. No fourth family is complete. Paid padding still needs restricted spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage describes provisional formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SchwartzL2Derivative.lean": "bc00805e24b68d5adf5d67cd5462cb489d8ee6f153ccdf1707a650cfae064f98",
+    "lean/TransposeFollowup/SchwartzFourierDerivativeTest.lean": "da6ed006ccfa6e0390bc2bd448a4f39bb3dd9a6f443d4483a61d95511bad602a",
+    "lean/TransposeFollowup/L2FourierDerivative.lean": "434d44bd7bf0b5c122400fe46d645d7c30099a4aa4b9b487f524c2f25bd28f06",
+    "lean/TransposeFollowup/L2DerivativeFrequencyTail.lean": "cd9745c25f79c19236f604be60296cbcf0b742490f5388e49ec2f294d7c95a3c",
+    "lean/TransposeFollowup/MobiusSchwartzL2Derivative.lean": "5e72559325481e332f812a7d280645fa7b8ff2fb2bd4fb735b76389550b82a2c",
+    "lean/TransposeFollowup/MobiusSchwartzFrequencyTail.lean": "e6291eb70bd69ef305521a00332576a64fefb7a10d3f9dd2b6a3669c425722c9",
+    "lean/TransposeFollowup/FrequencySeparatedCorrelation.lean": "d65059bfa294774c55613a14b0e15d7c4b2fef0cecf82fbb643a5a4512950a41"
+  }
+}

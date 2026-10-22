@@ -1,0 +1,139 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "ContinuousDensityConvolution",
+    "FiniteEnergyExtraction",
+    "DyadicDensityLevels",
+    "DensityTailEnergy",
+    "DensityLevelEnergy",
+    "NonflatteningLevelPair",
+    "SmoothedIterateLevelEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.densityConvolution",
+    "TransposeFollowup.densityConvolution_measurable",
+    "TransposeFollowup.densityConvolution_eq_leftConvolutionDensity",
+    "TransposeFollowup.autocorrelationDensity_eq_densityConvolution",
+    "TransposeFollowup.densityConvolution_mono",
+    "TransposeFollowup.densityConvolution_lintegral",
+    "TransposeFollowup.densityConvolution_le_of_right_le",
+    "TransposeFollowup.densityConvolution_le_of_left_le",
+    "TransposeFollowup.densityConvolution_add_left",
+    "TransposeFollowup.densityConvolution_add_right",
+    "TransposeFollowup.densityConvolution_sum_left",
+    "TransposeFollowup.densityConvolution_sum_right",
+    "TransposeFollowup.densityConvolution_const_mul",
+    "TransposeFollowup.ennreal_sum_sq_le_card_mul_sum_sq",
+    "TransposeFollowup.ennreal_add_sq_le_two_mul_sq_add_sq",
+    "TransposeFollowup.lintegral_sq_le_bound_mul_lintegral",
+    "TransposeFollowup.lintegral_sum_sq_le",
+    "TransposeFollowup.lintegral_add_sq_le",
+    "TransposeFollowup.ennreal_le_two_mul_of_small_add",
+    "TransposeFollowup.densityLow",
+    "TransposeFollowup.densityHigh",
+    "TransposeFollowup.dyadicDensityLevel",
+    "TransposeFollowup.dyadicDensityMajorant",
+    "TransposeFollowup.densityLow_add_densityHigh",
+    "TransposeFollowup.densityLow_le",
+    "TransposeFollowup.densityHigh_le",
+    "TransposeFollowup.densityLow_le_threshold",
+    "TransposeFollowup.exists_dyadicDensityLevel",
+    "TransposeFollowup.densityHigh_le_dyadicDensityMajorant",
+    "TransposeFollowup.dyadicDensityLevel_inv",
+    "TransposeFollowup.densityLow_measurable",
+    "TransposeFollowup.densityHigh_measurable",
+    "TransposeFollowup.dyadicDensityLevel_measurableSet",
+    "TransposeFollowup.dyadicDensityMajorant_measurable",
+    "TransposeFollowup.dyadicDensityLevel_mass_le",
+    "TransposeFollowup.densityConvolution_tail_energy",
+    "TransposeFollowup.haarMultiplicativeEnergy",
+    "TransposeFollowup.densityConvolution_sum_sum",
+    "TransposeFollowup.exists_densityConvolution_sum_energy",
+    "TransposeFollowup.weighted_indicator_convolution_energy",
+    "TransposeFollowup.exists_dyadicDensityLevel_energy",
+    "TransposeFollowup.exists_dyadicDensityLevel_large_energy",
+    "TransposeFollowup.exists_logarithmic_dyadic_cutoff",
+    "TransposeFollowup.exists_nonflattening_level_pair",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_succ_eq_densityConvolution",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_nonflattening_level_pair"
+  ],
+  "declaration_counts": {
+    "def": 6,
+    "theorem": 40
+  },
+  "checks": {
+    "convolution": {
+      "session_id": 20292,
+      "exit_code": 0,
+      "jobs": 2196,
+      "warnings": false
+    },
+    "tail": {
+      "session_id": 2349,
+      "module_built": true,
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 26440
+    },
+    "level_energy": {
+      "session_id": 68634,
+      "exit_code": 0,
+      "jobs": 2199,
+      "warnings": false
+    },
+    "large_energy": {
+      "session_id": 80859,
+      "exit_code": 0,
+      "jobs": 2199,
+      "warnings": true,
+      "warning_fixed": true,
+      "final_dependency_build": 30197
+    },
+    "nonflattening": {
+      "session_id": 30197,
+      "exit_code": 0,
+      "jobs": 2202,
+      "warnings": false
+    },
+    "smoothed_levels": {
+      "session_id": 26440,
+      "exit_code": 0,
+      "jobs": 9576,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 74853,
+      "exit_code": 0,
+      "jobs": 9710,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 89542,
+      "exit_code": 0,
+      "declarations": 4092,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "This formalizes the continuous dyadic-level extraction step in the Bourgain\u2013Yehudayoff Monotone expansion flattening strategy (https://arxiv.org/pdf/1108.2555, proof of Lemma4.1, equations4.3\u20134.5). The extraction is proved directly for Haar integrals, with explicit constants and a support-volume-free low-tail estimate, and applied to the actual R1791 symmetric autocorrelation densities. No novelty claim is made for these analytic support lemmas. The reference is motivation, not an axiom. No exact finite-group energy or metric discretization is silently substituted for continuous energy. Normalizing mixed energy, self-energy conversion, metric BSG and SL2 product growth/escape remain open formalization obligations.",
+  "development_checks": "Convolution83510 failed on a fragile integral simplification and unavailable monotonicity names, with unused-hypothesis warnings. Replaced with an explicit Tonelli/invariance calculation, mul_le_mul inequalities and removal of unused hypotheses;20292 passed warning-free. Dyadic level builds98471 and20910 failed on indicator signatures, the zero-level base case and finite-sum type inference; repaired explicitly.9355 built DyadicDensityLevels but failed in the final tail inequality due to an add_le_add_right convention;2349 built DensityTailEnergy after repair but failed in the range-nonempty hypothesis (N!=0 versus0<N).68634 passed level extraction.80859 passed the strengthened large-energy version with one unnecessary sequencing warning; removed it and30197 passed warning-free.26440 passed the actual smoothed-iterate application. No old mathematical-source edits, placeholders, new axioms, raised proof limits or disabled linters. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T19:48:35.338897+00:00",
+  "formal_checkpoint": "R1792 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1792, 733 sources, 4092 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1792 proves that a bounded nonnegative subprobability density whose self-convolution has squared L2 mass at least tau>0 contains a pair of dyadic level sets with quantitatively large weighted Haar multiplicative energy. The low tail costs at most8a in squared energy, with factor2 on the high part, without a finite-volume support hypothesis. Choosing a=tau/16 yields at most1+log2(max(1,16C/tau)) levels and a fourth-power loss in their number. The theorem is instantiated for the actual symmetric smoothed-autocorrelation iterate rho_k when integral rho_(k+1)^2>=tau; measurability, inverse symmetry and weighted level masses are included. Relative-energy normalization, self-energy conversion, metric BSG, SL2 product growth/escape, strict flattening and unconditional paid padding remain unproved.",
+  "next": "Use the checked R1792 NonflatteningLevelPair.exists_nonflattening_level_pair and RealMobius.exists_smoothedIterate_nonflattening_level_pair; do not repeat the scalar analytic reduction, convolution-power identities, or weighted level extraction. The latter applies to f=rho_k, whose actual next iterate equals f*f, and returns symmetric measurable levels A_i,A_j at a=tau/16 with N<=1+log2(max(1,16C/tau)), lower level weights a_i=a*2^i, upper weights b_i=2a_i, a_i*H(A_i)<=1, and tau<=4*N^4*b_i^2*b_j^2*E(A_i,A_j). Here E(A,B)=integral(1_A*1_B)^2 dH is CONTINUOUS Haar multiplicative energy.\n\nNext concrete mathematical target: normalize this weighted mixed-energy statement relative to the level volumes and convert it to a high self-energy set suitable for metric BSG. The missing elementary second-moment estimate is a_i^2*H(A_i)<=integral f^2. Together with a_i*H(A_i)<=1 and tau=beta^2*integral f^2, it should yield E(A_i,A_j)>=beta^2/(64*N^4) times both H(A_i)^2*H(A_j) and H(A_i)*H(A_j)^2. Check constants, positivity/finiteness and cancellation rather than assuming them. Young/Cauchy\u2013Schwarz can then supply comparable volumes and the cross-to-self conversion, with correct noncommutative adjoints. These statements are a means to the actual approximate-group extraction, not a reason to keep extending generic infrastructure indefinitely.\n\nBefore introducing metric covering numbers, make the support representative precise: the R1791 support theorem is Haar-almost-everywhere. Either prove pointwise support for the canonical densities or explicitly restrict to a symmetric compact entry box and prove the unchanged density/convolution/energy statements up to null sets. Do not treat null outliers as harmless for covering numbers. Do not replace continuous near-product geometry at scale eta with exact finite-group energy without a validated discretization and radius-loss proof. Library components already audited: Finset.mulEnergy, noncommutative Ruzsa covering, SmallTripling and IsApproximateSubgroup.of_small_tripling; these do not by themselves supply metric BSG. Primary reference: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, proof of Lemma4.1, in particular4.3\u20134.5.\n\nUltimate analytic interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k). Some FIXED k must give rho_k<=D with D^2<=2^j at eta=4^(-j), for dyadic base lengths n=2^m in C*log(1/eta)/log(1/epsilon)<n<=j/(2N). Choose k before N,J0,epsilon0. Initial C=eta^(-3+1/61440) is only initialization. Preserve all six theorem families, original directory, same Haar normalization and actual measures/action. No commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1792 proves continuous nonflattening-to-level-pair energy extraction with explicit logarithmic loss and applies it to the actual symmetric iterates. This supports the paid-padding proof but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The percentage estimates formalization scope, not remaining time, success probability, or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ContinuousDensityConvolution.lean": "63bed7b91339ca7fb5d1bdc3f4e0519ee95e41887fbce27bba2d8b1bc4e14a6b",
+    "lean/TransposeFollowup/FiniteEnergyExtraction.lean": "e469374700c8770e828d92c3f8829f36dc7b88c675530a055b1862e6e672e63b",
+    "lean/TransposeFollowup/DyadicDensityLevels.lean": "e6ffdd4eb5076844322560b6e28ff921de5d438f746427ac3dc9d0eca5c415af",
+    "lean/TransposeFollowup/DensityTailEnergy.lean": "2411973df5ddd7d6eec5ff3c3dff23d1a7d17a1676120d8c10ab0f50151b0816",
+    "lean/TransposeFollowup/DensityLevelEnergy.lean": "18d3de40f840f62094537f34ae8001e452af740872c772eea3787daafa07fc3d",
+    "lean/TransposeFollowup/NonflatteningLevelPair.lean": "7bc159132326af083dcb89087bbb3424fb19259c3ee9626a3440f497424977c8",
+    "lean/TransposeFollowup/SmoothedIterateLevelEnergy.lean": "85430e33ddb5db5710706238caa8b123cac2a6f82863efa219043f31d7a2a5c5"
+  }
+}

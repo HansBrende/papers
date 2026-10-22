@@ -1,0 +1,133 @@
+BUILD SPEED: NEXT-ROUND EXECUTION PLAN
+Prepared 21 October 2026 during R1911. No benchmark or compiler regrouping has
+been run. Finish R1911 proof cleanup, full build, and axiom audit first.
+
+OBJECTIVE
+Reduce measured verification wall time while preserving all six theorem
+families, every audited declaration, and the usual Lean kernel checks.
+Optimize organization first; do not redesign the mathematics for file counts.
+
+EVIDENCE AND UNCERTAINTY
+The local compiler import graph has a 178-module dependency path ending at
+ClosedNativePadding. Many late modules take 14-16 seconds apiece despite
+containing few lines. More workers cannot execute dependent steps in parallel.
+The current log includes cached jobs: 10,332 jobs does NOT mean 10,332 modules
+were recompiled. This pass invalidated roughly 680 local modules in total.
+A large fixed import/startup cost is plausible but has not yet been isolated
+by profiling. Do not equate the total of overlapping job timings with wall time.
+The final entropy/treewidth cleanup rebuilt only 10 modules, each in 3.9-4.3
+seconds, while reusing the compiler artifacts. This contrast supports keeping
+independent analytic branches separate; it does not alone isolate import cost.
+
+The five SourceEndpoints modules below total 448 lines and each took 15 seconds
+in this build. Their 75-second serial total provides a concrete baseline.
+NativeMicrocode also inherits a full Mathlib import through the original
+paper's Transpose.Tape.Run -> Transpose.Tape.Defs. Merely narrowing our own
+Mathlib.Tactic imports cannot remove that inherited dependency. The original
+paper remains unchanged. A shared-framework import refactor would be a later,
+separate decision if profiling shows it necessary.
+
+STAGE 1: A SMALL CONTROLLED EXPERIMENT
+Use these five modules, in order:
+  SourceEndpointsMachine -> SourceEndpointsCalls -> SourceEndpointsStages
+  -> SourceEndpointsRun -> SourceEndpointsMeaning.
+Only SourceEndpointsData is needed as an external prerequisite. Each of the
+first four has only the next member as a local direct importer. The downstream
+SignedLinearFormMeaning and SupportAxioms already import the final module.
+
+The prepared script is verification/r1911-source-endpoints-benchmark.py.
+It copies sources into a fresh scratch directory, preserves every declaration
+and proof body, and concatenates the five bodies into one comparison file.
+It invokes the pinned Lake environment, with an explicit scratch --root and
+scratch .olean outputs. Source hashes are checked before and after each run.
+No repository Lean source is modified. Python syntax is checked; the Lean
+benchmark itself has not run and may still require ordinary driver repairs.
+
+Once all Lean/Lake handles are terminal, run from this paper's root:
+  python3 verification/r1911-source-endpoints-benchmark.py --run --confirm-idle
+The idle flag is an operator assertion, not a process detector. Record every
+live execution handle and wait for its terminal response before source edits.
+
+If the pilot works, confirm using three paired trials in alternating order:
+  python3 verification/r1911-source-endpoints-benchmark.py --run --confirm-idle --pairs 3 --probe
+Compare elapsed time, CPU, maximum resident memory, warnings, and exit codes.
+The import-only probe estimates how much cost precedes the new declarations.
+Normal warm filesystem caches are acceptable; use comparable conditions for
+both arms. Do not clear or rewrite shared caches to manufacture a speedup.
+The split arm uses the current validated predecessor artifacts; this is a
+proof-check benchmark, not yet a complete Lake rebuild measurement.
+
+DECISION GATE
+Proceed if the merged group passes all checks, saves at least 35% median
+elapsed time in the paired experiment, and has no material memory regression.
+Otherwise stop consolidation and use the import-only probe/profiler to identify
+the actual cost. Four eliminated 15-second steps suggest a possible saving
+near one minute in this group, not a promised result.
+
+STAGE 2: ADOPT ONLY THE PILOT AND CHECK THE REAL BUILD
+If the gate passes, archive the five exact original sources and merge their
+implementation into SourceEndpointsMeaning. Keep all public declaration names,
+statements, definitions, resource constants, and proof obligations unchanged.
+Check namespace scopes, attributes, private declarations and definitional
+unfolding explicitly; these are the main risks of concatenating other groups.
+
+Preferred structure: remove the four redundant implementation modules after
+confirming they are internal and updating any remaining imports. If preserving
+old import paths is useful, make those four files independent one-line wrappers
+importing Meaning. Do not chain the wrappers together. Under the current .+
+glob they still consume compilation work, but can run in parallel and are no
+longer on the main dependent chain. Measure this tradeoff rather than assuming
+wrappers cost nothing or destroy the benefit.
+
+Run the normal full Lake build and the complete axiom audit. Compare both a
+no-change incremental build and a controlled proof-only rebuild against baseline
+on identical dependency versions. The proof-only rebuild must be triggered by
+a harmless, reversible proof-body edit and then restored; never fake artifact
+hashes or modify timestamps to evade invalidation. Recheck the restored state.
+Measure the rebuilt-module count, serial path and whole wall time, including
+wrappers. All six theorem contracts and the R1911 6,297-declaration audit must
+remain covered, allowing only justified name-preserving audit-import updates.
+
+STAGE 3: SCALE ONLY AFTER THE REAL BUILD IMPROVES
+Use a few coherent groups, typically 300-1,000 lines, rather than one giant
+compiler file. Initial candidates from the same path:
+  RowStreamMachine / Calls / Run / Meaning / Budget (5 modules, 476 lines)
+  SourceImagesData / Machine / Calls / Stages / Run / Resources / Meaning
+    (7 modules, 675 lines)
+  VertexScheduler pages/arithmetic/reset/descending/ascending/budget/run
+    (7 modules, 469 lines).
+There are 34 strictly linear blocks on the sampled critical path, with up to
+112 removable boundaries. This is an opportunity count, not an instruction to
+merge all blocks or a measured total speedup. Large files can make unrelated
+edits rebuild more code, so keep boundaries serving real independent consumers.
+
+Keep the proof-edit/full-build baseline and measure after each small batch.
+Stop when improvements flatten or the dependency graph gets less maintainable.
+Separate operational proof machinery from analytic consumers where an import is
+accidental, following the R1910 split that removed compiler dependencies from
+232 analytic modules. Genuine logical dependencies cannot simply be removed.
+
+SECONDARY OPTIONS, ONLY IF MEASUREMENTS WARRANT THEM
+- Profile import time versus tactic/elaboration time before optimizing tactics.
+- Review unnecessary imports using tools supported by the pinned Lean release.
+- Investigate Lean's public/private module system as a separate migration,
+  including definitional unfolding and full axiom inspection. Do not assume
+  proof-only edits automatically stop invalidating clients in our legacy setup.
+- Consider reducing the shared original framework's Mathlib import only with
+  an explicit cross-paper change and validation of both papers.
+- Add hardware/parallelism only after determining whether CPU, memory, or the
+  serial dependency path limits the measured workload.
+
+DELIVERABLES NEXT ROUND
+A before/after timing table, the isolated pilot and its decision, any adopted
+source grouping with an archive, a full ordinary build and axiom audit, and an
+updated import-graph report. A negative pilot is a useful stopping result;
+do not broaden the refactor merely to produce a change.
+
+SUPPORTING MATERIAL
+verification/r1911-build-bottleneck-review.txt (read-only independent review)
+verification/r1911-build-graph.json (sampled graph and timing data)
+verification/r1911-build-graph.py (analysis generator; inspect paths before reuse)
+verification/r1911-source-endpoints-benchmark.py (prepared, not executed)
+The review's original temporary script path is superseded by the saved script,
+which also explicitly sets Lean's scratch package root.

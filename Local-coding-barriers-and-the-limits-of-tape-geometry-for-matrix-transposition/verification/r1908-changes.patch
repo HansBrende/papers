@@ -1,0 +1,3252 @@
+--- before/lean/SupportAxioms.lean
++++ after/lean/SupportAxioms.lean
+@@ -30,11 +30,7 @@
+ import TransposeFollowup.BufferedRowRule
+ import TransposeFollowup.TernaryBufferedRule
+ import TransposeFollowup.CoupledRowScanInvariant
+-import TransposeFollowup.RawTernaryHorizontal
+-import TransposeFollowup.RawTernaryHorizontalApproximation
+ import TransposeFollowup.TernaryBankData
+-import TransposeFollowup.TernaryHorizontal
+-import TransposeFollowup.TernaryRowScan
+ import TransposeFollowup.BankSymbolRotationMotion
+ import TransposeFollowup.BankSymbolRotationApproximation
+ import TransposeFollowup.RawSymbolRotation
+@@ -223,7 +219,6 @@
+ import TransposeFollowup.MixedReadoutSourceTransfer
+ import TransposeFollowup.CentralizerScalarSumProduct
+ import TransposeFollowup.QuantitativeSpanningExtraction
+-import TransposeFollowup.NonnilpotentSpanningExtraction
+ import TransposeFollowup.NilpotentProfileExclusion
+ import TransposeFollowup.NilpotentDyadicTraceGrowth
+ import TransposeFollowup.NilpotentExtractionParameters
+@@ -248,7 +243,6 @@
+ import TransposeFollowup.TraceReextractionCubicBound
+ import TransposeFollowup.CommutingFamilyCubicBound
+ import TransposeFollowup.InverseFinalScalarIdentity
+-import TransposeFollowup.CommutingCubicEnvelope
+ import TransposeFollowup.NormalizedCubicProductError
+ import TransposeFollowup.CubicSourceWordTransfer
+ import TransposeFollowup.ActualCentralizerSourcePacking
+@@ -268,13 +262,9 @@
+ import TransposeFollowup.CentralizerProductInverse
+ import TransposeFollowup.CentralizerCubicPacking
+ import TransposeFollowup.SL2CentralizerTrace
+-import TransposeFollowup.SL2TraceProductTransfer
+-import TransposeFollowup.CentralizerMixedSumCover
+ import TransposeFollowup.SL2LocalConcentration
+ import TransposeFollowup.SeparatedMatrixSample
+-import TransposeFollowup.SL2SampleConcentration
+ import TransposeFollowup.ScalarMetricBridge
+-import TransposeFollowup.ScalarProjectionReuse
+ import TransposeFollowup.FiniteTranslateCover
+ import TransposeFollowup.ApproximatePowerCover
+ import TransposeFollowup.LocalizedFixedProductEnvelope
+@@ -297,7 +287,6 @@
+ import TransposeFollowup.RealDeterminantNormalization
+ import TransposeFollowup.SL2CommutingApproximation
+ import TransposeFollowup.SL2SpanningTrace
+-import TransposeFollowup.InitialWalkTraceProfile
+ import TransposeFollowup.MatrixFourBounds
+ import TransposeFollowup.SL2TraceProjection
+ import TransposeFollowup.SL2TraceCover
+@@ -316,17 +305,14 @@
+ import TransposeFollowup.SL2QuantitativeEscape
+ import TransposeFollowup.SL2ComplexConjugation
+ import TransposeFollowup.RationalComplexEscape
+-import TransposeFollowup.SmoothedIterateComplexEscape
+ import TransposeFollowup.SL2TriangularBicommutator
+ import TransposeFollowup.SL2TraceCertificate
+ import TransposeFollowup.RationalTraceCertificate
+-import TransposeFollowup.SmoothedIterateTraceCertificate
+ import TransposeFollowup.FreeWordPowerNorm
+ import TransposeFollowup.FreeGroupCentralizer
+ import TransposeFollowup.ShortWordCounting
+ import TransposeFollowup.ShortWordBicommutator
+ import TransposeFollowup.ShortWordGrowthThreshold
+-import TransposeFollowup.SmoothedIterateBicommutator
+ import TransposeFollowup.RationalBicommutator
+ import TransposeFollowup.SmoothedWalkShortWords
+ import TransposeFollowup.NormalizedShortWords
+@@ -394,12 +380,10 @@
+ import TransposeFollowup.ProductDensityPairs
+ import TransposeFollowup.PopularProductEnergy
+ import TransposeFollowup.MobiusPopularProducts
+-import TransposeFollowup.SmoothedIteratePopularProducts
+ import TransposeFollowup.DensityEnergyCongruence
+ import TransposeFollowup.SymmetricOpenSuperset
+ import TransposeFollowup.MobiusOpenEntryBox
+ import TransposeFollowup.MobiusSetEnergyRegularization
+-import TransposeFollowup.SmoothedIterateOpenEnergy
+ import TransposeFollowup.LevelEnergyNormalization
+ import TransposeFollowup.HaarSetEnergyBounds
+ import TransposeFollowup.RelativeNonflatteningEnergy
+@@ -461,8 +445,6 @@
+ import TransposeFollowup.MobiusDensityAverage
+ import TransposeFollowup.MobiusWalkEntrySupport
+ import TransposeFollowup.DyadicDensityBarrier
+-import TransposeFollowup.MobiusSmoothedWalkUpper
+-import TransposeFollowup.RestrictedGapFromFlatness
+ import TransposeFollowup.MobiusComplexInner
+ import TransposeFollowup.PositiveAffineMeasure
+ import TransposeFollowup.MobiusPolarCoefficient
+@@ -628,7 +610,6 @@
+ import TransposeFollowup.PaidReadyRun
+ import TransposeFollowup.NativeIOFusionRecover
+ import TransposeFollowup.PaidReadyGeometry
+-import TransposeFollowup.PaidReadyCut
+ import TransposeFollowup.PaidGeneratorEntry
+ import TransposeFollowup.PaidGeneratorTrajectory
+ import TransposeFollowup.PaidGeneratorGeometry
+@@ -665,8 +646,6 @@
+ import TransposeFollowup.CountedFillMachine
+ import TransposeFollowup.CountedFillRun
+ import TransposeFollowup.ExcursionIntervalTransfer
+-import TransposeFollowup.NativeTimedCut
+-import TransposeFollowup.NativeTimedLayout
+ import TransposeFollowup.NativeTimedWalk
+ import TransposeFollowup.TimedMatchingLayout
+ import TransposeFollowup.TimedMatchingSchedule
+@@ -930,9 +909,7 @@
+ import TransposeFollowup.ExcursionChordCount
+ import TransposeFollowup.GadgetLabels
+ import TransposeFollowup.PaddingCutInequality
+-import TransposeFollowup.PaddingMStar
+ import TransposeFollowup.MonotoneOverlapGraph
+-import TransposeFollowup.ContinuousPaddingFamily
+ import TransposeFollowup.RationalSymmetricGraph
+ import TransposeFollowup.RationalOpcodeWalk
+ import TransposeFollowup.IntegerNeighbors
+@@ -1181,9 +1158,6 @@
+ #print axioms TransposeFollowup.BoundedMonotoneMap.inverse_overlap
+ #print axioms TransposeFollowup.mem_symmetrized_overlap
+ #print axioms TransposeFollowup.symmetrizedGraph_vertex_expansion
+-#print axioms TransposeFollowup.ContinuouslyExpandingMaps.canonicalPages
+-#print axioms TransposeFollowup.ContinuouslyExpandingMaps.pageFamily
+-#print axioms TransposeFollowup.ContinuouslyExpandingMaps.exists_canonical_cut_walks
+ 
+ #print axioms TransposeFollowup.TriangularRows.block_injective
+ #print axioms TransposeFollowup.TriangularRows.injective
+@@ -1246,8 +1220,6 @@
+ #print axioms TransposeFollowup.NestedMatchingPages.paddedWalk_cutIneq
+ #print axioms TransposeFollowup.NestedMatchingPages.horizon_with_setup
+ #print axioms TransposeFollowup.canonical_padding_cutIneq
+-#print axioms TransposeFollowup.ExpandingPageFamily.paths_cutIneq
+-#print axioms TransposeFollowup.ExpandingPageFamily.macrostar
+ #print axioms TransposeFollowup.eq_of_same_residue_close
+ #print axioms TransposeFollowup.ResidueMatchingInput.same_color_row_injective
+ #print axioms TransposeFollowup.ResidueMatchingInput.same_color_column_injective
+@@ -3471,10 +3443,6 @@
+ 
+ -- R1742: actual native row timing, excursion layout and zero-slack CutIneq.
+ #print axioms TransposeFollowup.NestedExcursion.congr_on
+-#print axioms TransposeFollowup.GeneratorRows.prepared_cutIneq
+-#print axioms TransposeFollowup.GeneratorRows.native_horizon_linear
+-#print axioms TransposeFollowup.GeneratorRows.prepared_canonical_cut
+-#print axioms TransposeFollowup.GeneratorRows.prepared_layout
+ #print axioms TransposeFollowup.GeneratorRows.prepared_row_walk
+ #print axioms TransposeFollowup.GeneratorRows.generated_walk_eq
+ #print axioms TransposeFollowup.NestedMatchingPages.timed_nestedExcursion
+@@ -3721,9 +3689,6 @@
+ #print axioms TransposeFollowup.NativeIOFusion.trace_of_stepN
+ #print axioms TransposeFollowup.PaidReady.prefix_positions
+ #print axioms TransposeFollowup.PaidReady.native_row_walk
+-#print axioms TransposeFollowup.PaidReady.native_layout
+-#print axioms TransposeFollowup.PaidReady.native_cutIneq
+-#print axioms TransposeFollowup.PaidReady.native_canonical_cut
+ 
+ #print axioms TransposeFollowup.BitPlaneAlphabet.width_positive
+ #print axioms TransposeFollowup.BitPlaneAlphabet.encode_zero
+@@ -4853,12 +4818,6 @@
+ #print axioms TransposeFollowup.RealMobius.generatorWalk_smoothed_ae_entryBox
+ #print axioms TransposeFollowup.RealMobius.mobiusSmoothedWalkDensity_ae_zero_outside
+ #print axioms TransposeFollowup.exists_dyadic_density_barrier
+-#print axioms TransposeFollowup.RealMobius.smoothedWalk_action_norm_sq_le
+-#print axioms TransposeFollowup.RealMobius.smoothedWalk_action_norm_sq_le_crude
+-#print axioms TransposeFollowup.RealMobius.smoothedWalk_high_band_density_constraint
+-#print axioms TransposeFollowup.RealMobius.generatorWalk_dyadic_density_constraint
+-#print axioms TransposeFollowup.RealMobius.exists_smoothedWalk_density_barrier
+-#print axioms TransposeFollowup.RealMobius.exists_restricted_gap_from_dyadic_flatness
+ 
+ -- R1784: actual small-ball volume and normalized Haar kernel.
+ #print axioms TransposeFollowup.RealMobius.identityColumnBox
+@@ -5274,7 +5233,6 @@
+ #print axioms TransposeFollowup.RealMobius.matrixEntryBox_inv_iff
+ #print axioms TransposeFollowup.RealMobius.exists_symmetric_open_energy_superset_add
+ #print axioms TransposeFollowup.RealMobius.exists_symmetric_open_energy_superset
+-#print axioms TransposeFollowup.RealMobius.exists_smoothedIterate_nonflattening_open_energy
+ 
+ #print axioms TransposeFollowup.lowerSemicontinuous_lintegral_family
+ #print axioms TransposeFollowup.popularProductSet
+@@ -5291,7 +5249,6 @@
+ #print axioms TransposeFollowup.popularProductSet_bounds
+ #print axioms TransposeFollowup.RealMobius.popularProductSet_subset_entryBox
+ #print axioms TransposeFollowup.RealMobius.popularProductSet_geometry
+-#print axioms TransposeFollowup.RealMobius.exists_smoothedIterate_popular_product_relation
+ 
+ #print axioms TransposeFollowup.exists_large_weight_small_error
+ #print axioms TransposeFollowup.edgeFiberMass
+@@ -5479,7 +5436,6 @@
+ #print axioms TransposeFollowup.FreeWordFamily.exists_nontrivial_bicommutator
+ #print axioms TransposeFollowup.FreeWordFamily.exists_short_word_count_threshold
+ #print axioms TransposeFollowup.FreeWordFamily.exists_short_word_bicommutator_threshold
+-#print axioms TransposeFollowup.RationalFreePair.exists_iterate_short_word_bicommutator_threshold
+ #print axioms TransposeFollowup.RationalFreePair.denominatorCarrier_commutator
+ #print axioms TransposeFollowup.RationalFreePair.rational_bicommutator_separated
+ 
+@@ -5494,8 +5450,6 @@
+ #print axioms TransposeFollowup.RationalFreePair.denominatorCarrier_trace_separated
+ #print axioms TransposeFollowup.RationalFreePair.real_trace_difference_units_conj
+ #print axioms TransposeFollowup.RationalFreePair.rational_bicommutator_trace_certificate
+-#print axioms TransposeFollowup.RationalFreePair.exists_word_trace_certificate
+-#print axioms TransposeFollowup.RationalFreePair.exists_iterate_short_word_trace_certificate_threshold
+ 
+ -- R1813: quantitative off-diagonal escape in the actual A^4 witness.
+ #print axioms TransposeFollowup.SL2Escape.complex_norm_le_of_sum_mul
+@@ -5524,7 +5478,6 @@
+ #print axioms TransposeFollowup.SL2Escape.sl2_trace_conjugate
+ #print axioms TransposeFollowup.SL2Escape.complexify_trace
+ #print axioms TransposeFollowup.RationalFreePair.rational_family_complex_escape
+-#print axioms TransposeFollowup.RationalFreePair.exists_iterate_complex_escape_threshold
+ 
+ -- R1814: arbitrary positive escape exponents in the full fixed-family witness.
+ #print axioms TransposeFollowup.quarter_scale_le_of_index_ge
+@@ -5585,7 +5538,6 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_large_trace_of_frame
+ #print axioms TransposeFollowup.SL2Projection.exists_large_trace_of_spanning
+ #print axioms TransposeFollowup.SL2Projection.exists_large_trace_at_dyadic_scale
+-#print axioms TransposeFollowup.RationalFreePair.exists_initial_walk_trace
+ 
+ -- R1818: quantitative determinant-one commuting approximants without diagonalization.
+ #print axioms TransposeFollowup.SL2Projection.scalarAffine
+@@ -5664,15 +5616,12 @@
+ -- R1824: pinned scalar analytic reuse, native covering comparison and quarter scales.
+ #print axioms TransposeFollowup.ScalarMetric.externalCoveringNumber_le_scalarCells
+ #print axioms TransposeFollowup.ScalarMetric.scalarCells_card_le_externalCoveringNumber
+-#print axioms TransposeFollowup.ScalarMetric.exists_scalar_projection_growth_at_quarter_scale
+ #print axioms OAI.Falconer.Regularization.scalar_weak_radius_projection
+ 
+ -- R1825: normalized local concentration for actual separated matrix samples.
+ #print axioms TransposeFollowup.SL2Projection.cluster_coveringNumber_le_of_multiscale
+ #print axioms TransposeFollowup.SL2Projection.exists_separated_matrix_sample
+ #print axioms TransposeFollowup.SL2Projection.separated_matrix_card_le_coveringNumber
+-#print axioms TransposeFollowup.SL2Projection.exists_matrix_sample_local_concentration
+-#print axioms TransposeFollowup.SL2Projection.exists_matrix_sample_power_concentration
+ 
+ -- R1826: exact centralizer scalar algebra and charged transfer to actual words.
+ #print axioms TransposeFollowup.SL2Projection.scalarAffine_mul
+@@ -5683,10 +5632,6 @@
+ #print axioms TransposeFollowup.SL2Projection.sl2_scalarAffine_inv
+ #print axioms TransposeFollowup.SL2Projection.sl2_scalarAffine_product_coordinates
+ #print axioms TransposeFollowup.SL2Projection.sl2_scalarAffine_trace_separation
+-#print axioms TransposeFollowup.SL2Projection.alternating_trace_error
+-#print axioms TransposeFollowup.SL2Projection.centralizer_trace_approximation
+-#print axioms TransposeFollowup.SL2Projection.exists_trace_word_of_centralizer_approximation
+-#print axioms TransposeFollowup.SL2Projection.centralizer_mixed_sum_coveringNumber
+ 
+ -- R1827: explicit centralizer chart, inverse estimate, and cubic packing.
+ #print axioms TransposeFollowup.SL2Projection.scalarAffine_eq_smul_add
+@@ -5749,7 +5694,6 @@
+ #print axioms TransposeFollowup.SL2Projection.sl2_inverse_final_scalar_identity
+ #print axioms TransposeFollowup.SL2Projection.sl2_inverse_final_scaled_projection
+ #print axioms TransposeFollowup.SL2Projection.sl2_inverse_final_nilpotent_identity
+-#print axioms TransposeFollowup.SL2Projection.commuting_cubic_bound_with_envelope
+ 
+ -- R1832: second extraction, actual product envelopes and trace-cubic threshold.
+ #print axioms TransposeFollowup.SL2Projection.trace_reextraction_cubic_bound
+@@ -5850,7 +5794,6 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_nilpotent_first_extraction_exclusion
+ 
+ -- R1844: produce the original family and exclude its nilpotent generator.
+-#print axioms TransposeFollowup.SL2Projection.exists_nonnilpotent_spanning_extraction
+ 
+ -- R1845: quantitative trace avoidance and an actual nonnilpotent extraction.
+ #print axioms TransposeFollowup.SL2Projection.exists_bounded_four_color_progression
+@@ -7468,27 +7411,6 @@
+ #print axioms TransposeFollowup.CoupledRowScan.run_io
+ #print axioms TransposeFollowup.CoupledRowMoves.right_cells
+ #print axioms TransposeFollowup.CoupledRowMoves.right_io
+-#print axioms TransposeFollowup.RawTernaryHorizontal.internalTicks
+-#print axioms TransposeFollowup.RawTernaryHorizontal.schedule
+-#print axioms TransposeFollowup.RawTernaryHorizontal.value
+-#print axioms TransposeFollowup.RawTernaryHorizontal.value_row
+-#print axioms TransposeFollowup.RawTernaryHorizontal.value_congr
+-#print axioms TransposeFollowup.RawTernaryHorizontal.schedule_active
+-#print axioms TransposeFollowup.RawTernaryHorizontal.represents
+-#print axioms TransposeFollowup.RawTernaryHorizontal.update_cost
+-#print axioms TransposeFollowup.RawTernaryHorizontal.internal_ticks_eq
+-#print axioms TransposeFollowup.RawTernaryHorizontal.ticks
+-#print axioms TransposeFollowup.RawTernaryHorizontal.machine
+-#print axioms TransposeFollowup.RawTernaryHorizontal.output
+-#print axioms TransposeFollowup.RawTernaryHorizontal.ticks_eq
+-#print axioms TransposeFollowup.RawTernaryHorizontal.native_correct
+-#print axioms TransposeFollowup.RawTernaryHorizontal.resources
+-#print axioms TransposeFollowup.RawTernaryHorizontal.curve
+-#print axioms TransposeFollowup.RawTernaryHorizontal.curve_cover
+-#print axioms TransposeFollowup.RawTernaryHorizontal.curve_error
+-#print axioms TransposeFollowup.RawTernaryHorizontal.scaled_approximation
+-#print axioms TransposeFollowup.RawTernaryHorizontal.error_vanishes
+-#print axioms TransposeFollowup.RawTernaryHorizontal.state_bits_vanish
+ #print axioms TransposeFollowup.TernaryBank.Trit
+ #print axioms TransposeFollowup.TernaryBank.Carry
+ #print axioms TransposeFollowup.TernaryBank.encode
+@@ -7507,54 +7429,7 @@
+ #print axioms TransposeFollowup.TernaryBank.rowResult_length
+ #print axioms TransposeFollowup.TernaryBank.horizontalUpdate
+ #print axioms TransposeFollowup.TernaryBank.horizontal_evaluate
+-#print axioms TransposeFollowup.TernaryBank.horizontal_evaluate_scratch
+ #print axioms TransposeFollowup.TernaryBank.modes
+-#print axioms TransposeFollowup.TernaryHorizontal.scanCode
+-#print axioms TransposeFollowup.TernaryHorizontal.scanRun
+-#print axioms TransposeFollowup.TernaryHorizontal.scan_exact
+-#print axioms TransposeFollowup.TernaryHorizontal.scan_active
+-#print axioms TransposeFollowup.TernaryHorizontal.scan_position
+-#print axioms TransposeFollowup.TernaryHorizontal.scan_represents
+-#print axioms TransposeFollowup.TernaryHorizontal.scan_frame
+-#print axioms TransposeFollowup.TernaryHorizontal.reverseValue
+-#print axioms TransposeFollowup.TernaryHorizontal.reverse_congr
+-#print axioms TransposeFollowup.TernaryHorizontal.reverse_represents
+-#print axioms TransposeFollowup.TernaryHorizontal.value
+-#print axioms TransposeFollowup.TernaryHorizontal.value_congr
+-#print axioms TransposeFollowup.TernaryHorizontal.reverse_word
+-#print axioms TransposeFollowup.TernaryHorizontal.value_eq
+-#print axioms TransposeFollowup.TernaryHorizontal.ticks
+-#print axioms TransposeFollowup.TernaryHorizontal.schedule
+-#print axioms TransposeFollowup.TernaryHorizontal.result
+-#print axioms TransposeFollowup.TernaryHorizontal.schedule_exact
+-#print axioms TransposeFollowup.TernaryHorizontal.schedule_active
+-#print axioms TransposeFollowup.TernaryHorizontal.ticks_eq
+-#print axioms TransposeFollowup.TernaryHorizontal.result_position
+-#print axioms TransposeFollowup.TernaryHorizontal.represents
+-#print axioms TransposeFollowup.TernaryHorizontal.result_frame
+-#print axioms TransposeFollowup.TernaryHorizontal.update
+-#print axioms TransposeFollowup.TernaryRowScan.State
+-#print axioms TransposeFollowup.TernaryRowScan.Mode
+-#print axioms TransposeFollowup.TernaryRowScan.reset
+-#print axioms TransposeFollowup.TernaryRowScan.seed
+-#print axioms TransposeFollowup.TernaryRowScan.prepared
+-#print axioms TransposeFollowup.TernaryRowScan.result
+-#print axioms TransposeFollowup.TernaryRowScan.ticks
+-#print axioms TransposeFollowup.TernaryRowScan.schedule
+-#print axioms TransposeFollowup.TernaryRowScan.schedule_exact
+-#print axioms TransposeFollowup.TernaryRowScan.schedule_active
+-#print axioms TransposeFollowup.TernaryRowScan.ticks_eq
+-#print axioms TransposeFollowup.TernaryRowScan.result_position
+-#print axioms TransposeFollowup.TernaryRowScan.result_scratch
+-#print axioms TransposeFollowup.TernaryRowScan.result_io
+-#print axioms TransposeFollowup.TernaryRowScan.result_frame
+-#print axioms TransposeFollowup.TernaryRowScan.result_pair
+-#print axioms TransposeFollowup.TernaryRowScan.resultWord
+-#print axioms TransposeFollowup.TernaryRowScan.resultWord_length
+-#print axioms TransposeFollowup.TernaryRowScan.bank_spec
+-#print axioms TransposeFollowup.TernaryRowScan.value
+-#print axioms TransposeFollowup.TernaryRowScan.value_congr
+-#print axioms TransposeFollowup.TernaryRowScan.represents
+ 
+ -- R1904: shared buffered rows and exact componentwise F3 rule.
+ #print axioms TransposeFollowup.BufferedRows.bankTicks
+@@ -7777,3 +7652,8 @@
+ #print axioms TransposeFollowup.TernaryMatrixPalette.correct
+ #print axioms TransposeFollowup.TernaryMatrixPalette.cost_le
+ #print axioms TransposeFollowup.TernaryMatrixPalette.output
++
++#print axioms TransposeFollowup.RegularMotion.exceptionalTicks_node_budget
++#print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions
++#print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions.to_global
++#print axioms TransposeFollowup.RegularMotion.native_node_budget_recursion_bound
+--- before/lean/TransposeFollowup/AdaptiveTreewidth.lean
++++ after/lean/TransposeFollowup/AdaptiveTreewidth.lean
+@@ -19,11 +19,10 @@
+     (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
+     (decode : H → Fin n → Row n b → List Bool → Row n b)
+     (M : FiniteMatrix n b → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
+     (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
+ 
+-include hpair hrun hcorrect
++include hrun hcorrect
+ 
+ /-- A family of integral tests, before choosing the common component threshold.
+ No graph restriction or separator hypothesis remains in this statement. -/
+@@ -38,7 +37,7 @@
+         L * (L + 1)) := by
+   let graphs := fun z m => (strategy z).interactionGraph [] m
+   let S := fun z m => treewidthLossSeparator b (graphs z m) L
+-  have hcode := graph_expected_separator_bound F helper strategy decode M hpair hrun hcorrect S
++  have hcode := graph_expected_separator_bound F helper strategy decode M hrun hcorrect S
+   have hsep := mean_treewidth_separator_loss (uniformWeight F)
+     (uniformWeight_nonneg F) (sum_uniformWeight F)
+     (fun x : F => graphs (helper x.val) (M x.val)) b L
+@@ -56,7 +55,8 @@
+ /-- With P=n²b, D=P-log₂|F| and η=(D+H(Z))/P, expected cost at most
+ (1-ε)P forces E tw(G) ≥ (n/4)(ε-2η)₊²-1. This strengthens the written
+ 188 corollary's coefficient 1/9 and removes its additive 1/n rounding loss.
+-This remains a theorem for the public original-row, two-row-query model. -/
++Queries may depend on arbitrarily many original rows; each support contributes
++a clique to the public interaction graph. Coded-workspace access is not assumed. -/
+ theorem average_treewidth_lower_bound (hn : 0 < n) (hb : 0 < b) (ε : ℝ)
+     (hcost : (∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)) ≤
+       (1 - ε) * (n * n * b : ℕ)) :
+@@ -88,7 +88,7 @@
+     nlinarith
+   have htests (L : ℕ) : (n : ℝ) * ((L : ℝ) + 1) * a ≤
+       (n : ℝ) * (E + 1) + L * (L + 1) := by
+-    have hraw := expected_treewidth_test F helper strategy decode M hpair hrun hcorrect L
++    have hraw := expected_treewidth_test F helper strategy decode M hrun hcorrect L
+     change ((L : ℝ) + 1) * (P - cost - 2 * D - 2 * HZ) ≤
+       (b : ℝ) * n * (n * (E + 1) + L * (L + 1)) at hraw
+     have hscaled := (mul_le_mul_of_nonneg_left hsaving
+--- before/lean/TransposeFollowup/CentralizerMixedSumCover.lean
++++ after/lean/TransposeFollowup/CentralizerMixedSumCover.lean
+@@ -1,69 +0,0 @@
+-import TransposeFollowup.SL2TraceProductTransfer
+-import TransposeFollowup.SeparatedScalarCover
+-import TransposeFollowup.TraceBucketCover
+-
+-/-! A native covering-number bound for the actual mixed scalar sum
+-represented by alternating matrix words. The approximant error, covering
+-radius, and matrix word length remain explicit. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set SL2Escape
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem centralizer_mixed_sum_coveringNumber {ι : Type*}
+-    (a : RMat) (u z : ι → G) (s t : ι → ℝ) (g : G)
+-    {A : Set G} {m n : ℕ} {R δ : ℝ} {η : ℝ≥0}
+-    (hAi : A⁻¹ = A) (hzA : ∀ i, z i ∈ A ^ m) (hgA : g ∈ A ^ n)
+-    (hR : 1 ≤ R) (hδ : 0 ≤ δ) (hη : 0 < η)
+-    (hform : ∀ i, (u i : RMat) = scalarAffine a (s i) (t i))
+-    (hu : ∀ i j k, |u i j k| ≤ R) (hz : ∀ i j k, |z i j k| ≤ R)
+-    (hg : ∀ j k, |g j k| ≤ R)
+-    (he : ∀ i j k, |z i j k - u i j k| ≤ δ)
+-    (hfin : Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ (4 * m + 2 * n))) ≠ ⊤) :
+-    let S := Set.range fun ij : ι × ι =>
+-      Matrix.trace ((u ij.2 * g * u ij.2 * g : G) : RMat) +
+-        (t ij.1) ^ 2 * (pairSpanMatrix a (g : RMat)).det
+-    Metric.externalCoveringNumber η S ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber η S : ℝ≥0∞).toReal ≤
+-        (24 * (2 * R) ^ 6 * δ / (η : ℝ) + 5) *
+-          (Metric.externalCoveringNumber η
+-            ((fun x : G => (x : RMat)) '' (A ^ (4 * m + 2 * n))) : ℝ≥0∞).toReal := by
+-  let S := Set.range fun ij : ι × ι =>
+-    Matrix.trace ((u ij.2 * g * u ij.2 * g : G) : RMat) +
+-      (t ij.1) ^ 2 * (pairSpanMatrix a (g : RMat)).det
+-  obtain ⟨F, hF, hcard⟩ := Metric.exists_finset_card_eq_externalCoveringNumber hfin
+-  let E := F.image Matrix.trace
+-  have hcover : ∀ x ∈ S, ∃ c ∈ E, |x - c| ≤ 12 * (2 * R) ^ 6 * δ + 2 * (η : ℝ) := by
+-    rintro x ⟨⟨i, j⟩, rfl⟩
+-    obtain ⟨w, hw, herror⟩ := exists_trace_word_of_centralizer_approximation
+-      a (u i) (u j) (z i) (z j) g hAi (hzA i) (hzA j) hgA hR hδ
+-        (hform i) (hform j) (hu i) (hu j) (hz i) (hz j) hg (he i) (he j)
+-    obtain ⟨c, hc, hdist⟩ := hF ⟨w, hw, rfl⟩
+-    have hdistR : dist (w : RMat) c ≤ (η : ℝ) := by exact_mod_cast edist_le_coe.mp hdist
+-    have htrace := (trace_error_le_frobenius_dist (w : RMat) c).trans
+-      (mul_le_mul_of_nonneg_left hdistR (by norm_num : (0 : ℝ) ≤ 2))
+-    refine ⟨Matrix.trace c, Finset.mem_image.mpr ⟨c, hc, rfl⟩, ?_⟩
+-    rw [abs_sub_comm] at herror
+-    exact (abs_sub_le _ (Matrix.trace (w : RMat)) _).trans (add_le_add herror htrace)
+-  obtain ⟨hSfin, hbound⟩ := scalar_coveringNumber_le_patches E
+-    (by positivity : 0 ≤ 12 * (2 * R) ^ 6 * δ + 2 * (η : ℝ)) hη hcover
+-  have hcoeff : 2 * (12 * (2 * R) ^ 6 * δ + 2 * (η : ℝ)) / (η : ℝ) + 1 =
+-      24 * (2 * R) ^ 6 * δ / (η : ℝ) + 5 := by
+-    have hηR : 0 < (η : ℝ) := hη
+-    field_simp
+-    ring
+-  rw [hcoeff] at hbound
+-  have hcardR : (F.card : ℝ) = (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ (4 * m + 2 * n))) : ℝ≥0∞).toReal := by
+-    have hc : (F.card : ℝ≥0∞) = Metric.externalCoveringNumber η
+-        ((fun x : G => (x : RMat)) '' (A ^ (4 * m + 2 * n))) := by exact_mod_cast hcard
+-    simpa only [ENNReal.toReal_natCast] using congrArg ENNReal.toReal hc
+-  refine ⟨hSfin, hbound.trans ?_⟩
+-  rw [← hcardR]
+-  apply mul_le_mul_of_nonneg_left _ (by positivity)
+-  exact_mod_cast (Finset.card_image_le (s := F) (f := Matrix.trace))
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/ClosedRationalExpansion.lean
++++ after/lean/TransposeFollowup/ClosedRationalExpansion.lean
+@@ -133,9 +133,10 @@
+         Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) w d=none ∧
+         d.outRev.reverse=out ∧
+         CutIneq n 3 (blockSize 3 n) T 0 0
+-          (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra w) :=
+-  continuous_uniform_computation_with_cut (clippedFamily F) (clippedFamily_mapsTo F)
+-    eps heps (restricted_expansion_to_open F eps hexp) M
++          (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra w) := by
++  obtain ⟨K, extra, h⟩ := continuous_uniform_computation_with_cut (clippedFamily F)
++    (clippedFamily_mapsTo F) eps heps (restricted_expansion_to_open F eps hexp)
++  exact ⟨K, extra, h M⟩
+ 
+ theorem restricted_uniform_linear_tasks_macrostar (F : Fin (c+1) → RationalUnitMobius)
+     (eps : ℝ) (heps : 0<eps)
+--- before/lean/TransposeFollowup/CommutingCubicEnvelope.lean
++++ after/lean/TransposeFollowup/CommutingCubicEnvelope.lean
+@@ -1,40 +0,0 @@
+-import TransposeFollowup.CommutingFamilyCubicBound
+-import TransposeFollowup.ApproximatePowerCover
+-
+-/-! Apply the existing arbitrary-power envelope at the actual word length,
+-without replacing it by the shorter envelope used during extraction. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem commuting_cubic_bound_with_envelope (V : Set RMat) {U : Set G} (Y : Finset G)
+-    {Q α K E : ℝ} {η : ℝ≥0}
+-    (hQ : 1 ≤ Q) (hα : 0 < α) (hαone : α ≤ 1) (hη : 0 < η)
+-    (hU : U ⊆ matrixEntryBox Q) (hUi : U⁻¹ = U)
+-    (hY : (Y : Set G) ⊆ U ^ 2) (hdouble : U ^ 2 ⊆ (Y : Set G) * U)
+-    (hK : 0 ≤ K) (hE : 0 ≤ E) :
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    let T := (fun g : G => (g : RMat)) '' (A ^ 142)
+-    let A' := (fun g : G => (g : RMat)) '' A
+-    let P := (8 * (2 * Q) ^ 567 + 1) ^ 4 * (Y.card : ℝ) ^ 283 *
+-      (33 ^ 4 * Q ^ 8 / α ^ 4)
+-    (Metric.externalCoveringNumber η V : ℝ≥0∞).toReal ^ 3 ≤
+-        K * (E * (Metric.externalCoveringNumber η T : ℝ≥0∞).toReal + 1) →
+-      Metric.externalCoveringNumber η A' ≠ ⊤ ∧
+-        (Metric.externalCoveringNumber η V : ℝ≥0∞).toReal ^ 3 ≤
+-          K * (E * P * (Metric.externalCoveringNumber η A' : ℝ≥0∞).toReal + 1) := by
+-  dsimp only
+-  intro hfamily
+-  obtain ⟨hAfin, _hTfin, hbound⟩ := localized_set_pow_coveringNumber Y 141
+-    hQ hα hαone hη hU hUi hY hdouble
+-  simp only [show 141 + 1 = 142 by norm_num, show 4 * 141 + 3 = 567 by norm_num,
+-    show 2 * 141 + 1 = 283 by norm_num] at hbound
+-  refine ⟨hAfin, hfamily.trans ?_⟩
+-  apply mul_le_mul_of_nonneg_left _ hK
+-  apply add_le_add _ le_rfl
+-  simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hbound hE
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/ContinuousNativePadding.lean
++++ after/lean/TransposeFollowup/ContinuousNativePadding.lean
+@@ -31,8 +31,7 @@
+     (eps : ℝ) (heps : 0<eps)
+     (hforward : ∀ S : Set ℝ,MeasurableSet S → S⊆Icc (0:ℝ) 1 → volume.real S≤1/2 →
+       (1+eps)*volume.real S≤volume.real (mapImageUnion (rationalFamilyMaps F) S))
+-    (M : Transpose.TM) :
+-    ∃ K extra : ℕ,∀ (n : ℕ),1≤n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
++    : ∃ K extra : ℕ,∀ (M : Transpose.TM) (n : ℕ),1≤n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
+       ∀ (t : ℕ),Transpose.ComputesWithin M w out t →
+       ∃ T ≤ PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily F) K*w.length+t,
+       ∃ d : Transpose.Config (machine (c:=c+1+c) (rationalSymmetricFamily F) K M extra),
+@@ -40,10 +39,10 @@
+           (Transpose.init (machine (c:=c+1+c) (rationalSymmetricFamily F) K M extra))=some d ∧
+         Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily F) K M extra) w d=none ∧ d.outRev.reverse=out ∧
+         CutIneq n 3 (blockSize 3 n) T 0 0 (paths (c:=c+1+c) (rationalSymmetricFamily F) K M extra w) := by
+-  obtain ⟨K,extra,h⟩:=uniform_computation_with_cut (c:=c+1+c) (rationalSymmetricFamily F) M (eps/2) (by positivity)
++  obtain ⟨K,extra,h⟩:=uniform_computation_with_cut (c:=c+1+c) (rationalSymmetricFamily F) (eps/2) (by positivity)
+   refine ⟨K,extra,?_⟩
+-  intro n hn w out hw t ht
+-  apply h n hn w out hw ?_ t ht
++  intro M n hn w out hw t ht
++  apply h M n hn w out hw ?_ t ht
+   intro S hS
+   exact rationalSymmetricGraph_vertex_expansion_all_sizes F (by omega) hmap eps heps.le hforward S
+     (by simpa only [Fintype.card_fin] using hS)
+--- before/lean/TransposeFollowup/ContinuousPaddingFamily.lean
++++ after/lean/TransposeFollowup/ContinuousPaddingFamily.lean
+@@ -1,73 +0,0 @@
+-import TransposeFollowup.SymmetricOverlap
+-import TransposeFollowup.PaddingMStar
+-
+-/-! Connect a continuously expanding fixed map family to the canonical padding
+-interface. This is conditional: constructing a value of ContinuouslyExpandingMaps
+-and implementing its rational overlap tests on a paid native machine remain
+-separate proof obligations. -/
+-
+-namespace TransposeFollowup
+-
+-open Classical MeasureTheory Set
+-set_option autoImplicit false
+-
+-structure ContinuouslyExpandingMaps (c B : ℕ) (eps : ℝ) where
+-  maps : Fin c → BoundedMonotoneMap B
+-  range_unit : ∀ p, MapsTo (maps p).map (maps p).domain (Icc (0 : ℝ) 1)
+-  expansion : ∀ S : Set ℝ, MeasurableSet S → S ⊆ Icc (0 : ℝ) 1 →
+-    volume.real S ≤ 1 / 2 → (1 + eps) * volume.real S ≤ volume.real (mapImageUnion maps S)
+-
+-structure ExpandingPageGraph (v k : ℕ) (eta : ℝ) where
+-  graph : SimpleGraph (Fin v)
+-  pages : NestedMatchingPages graph k
+-  expansion : ∀ S : Finset (Fin v), 2 * S.card ≤ v →
+-    eta * S.card ≤ (outsideNeighbors graph S).card
+-
+-namespace ContinuouslyExpandingMaps
+-
+-variable {c B : ℕ} {eps : ℝ} (F : ContinuouslyExpandingMaps c B eps)
+-
+-def pageCount (c B : ℕ) : ℕ := (c + c) * ((B + 1) * (B + 1))
+-
+-noncomputable def canonicalPages (heps : 0 ≤ eps) (n : ℕ) (hn : 4 ≤ n) :
+-    ExpandingPageGraph (paddingVertices n) (pageCount c B) (eps / 2) := by
+-  have hv : paddingVertices n = 2 * (2 * (n / 4)) := by unfold paddingVertices; omega
+-  rw [hv]
+-  exact {
+-    graph := overlapGraph (symmetrizedMaps F.maps) (2 * (n / 4))
+-    pages := overlapPages (symmetrizedMaps F.maps) (2 * (n / 4))
+-    expansion := fun S hS => symmetrizedGraph_vertex_expansion F.maps (by omega)
+-      F.range_unit eps heps F.expansion S (by simpa only [Fintype.card_fin] using hS)
+-  }
+-
+-/-- The graph family is produced at every canonical size n>=4, without a
+-sparse-subsequence or isolated-dummy-vertex assumption. -/
+-noncomputable def pageFamily (heps : 0 ≤ eps) (size : ℕ → ℕ) (hsize : ∀ i, 4 ≤ size i) :
+-    ExpandingPageFamily (pageCount c B) (pageCount c B) (eps / 2) where
+-  size := size
+-  large := hsize
+-  graph i := (F.canonicalPages heps (size i) (hsize i)).graph
+-  pages i := (F.canonicalPages heps (size i) (hsize i)).pages
+-  degree i := (F.canonicalPages heps (size i) (hsize i)).pages.degree_le_pages
+-  expansion i := (F.canonicalPages heps (size i) (hsize i)).expansion
+-
+-theorem pageFamily_size (heps : 0 ≤ eps) (size : ℕ → ℕ) (hsize : ∀ i, 4 ≤ size i) :
+-    (F.pageFamily heps size hsize).size = size := rfl
+-
+-/-- Fixed stretch and extra-tape counts make the previously constructed walks
+-obey the literal original zero-slack cut inequality at every size. -/
+-theorem exists_canonical_cut_walks (heps : 0 < eps) (size : ℕ → ℕ) (hsize : ∀ i, 4 ≤ size i)
+-    (cellBits : ℕ) (hG : 1 ≤ cellBits) (offset : ℕ → ℕ) :
+-    ∃ K extra : ℕ, ∃ hK : 0 < K, ∀ i,
+-      Transpose.Tape.CutIneq (size i) cellBits
+-        (Transpose.Tape.TSDiagram.blockSize cellBits (size i))
+-        ((F.pageFamily heps.le size hsize).times cellBits K offset i) 0 0
+-        ((F.pageFamily heps.le size hsize).paths cellBits K extra offset hG hK i) := by
+-  have heta : 0 < eps / 2 := by positivity
+-  obtain ⟨K, extra, hK, hs, hh⟩ := exists_padding_parameters (eps / 2) heta
+-    (pageCount c B) (pageCount c B)
+-  exact ⟨K, extra, hK, fun i =>
+-    (F.pageFamily heps.le size hsize).paths_cutIneq cellBits K extra offset hG hK heta hs hh i⟩
+-
+-end ContinuouslyExpandingMaps
+-end TransposeFollowup
+--- before/lean/TransposeFollowup/DisjointFlipOrbit.lean
++++ after/lean/TransposeFollowup/DisjointFlipOrbit.lean
+@@ -40,9 +40,9 @@
+     (U : Finset (Finset V)) (hdis : (U : Set (Finset V)).PairwiseDisjoint id)
+     {K : Finset (Finset V)} (hK : K ⊆ U) {S : Finset V}
+     (hS : S ∈ U) (hSK : S ∉ K) : Disjoint S (K.biUnion id) := by
+-  apply Finset.disjoint_left.mpr
+-  intro v hvS hvK
+-  exact hSK (disjoint_family_member_of_union U hdis hK hS hvS hvK)
++  apply (Finset.disjoint_biUnion_right S K id).mpr
++  intro T hT
++  exact hdis hS (hK hT) (fun he => hSK (he.symm ▸ hT))
+ 
+ namespace RecodedXorCode
+ 
+--- before/lean/TransposeFollowup/ExceptionalStageClock.lean
++++ after/lean/TransposeFollowup/ExceptionalStageClock.lean
+@@ -10,6 +10,26 @@
+     (clock : ContractingStageClock B J rho a C P T)
+     (good : List (Fin B) × Fin J → Bool) : ℕ :=
+   (Finset.univ.filter (fun t : Fin T => good (clock.label t) ≠ true)).card
++
++/-- Exceptional work charged per node gives a global physical-time budget.
++The existing tree charge theorem counts each exceptional tick exactly once. -/
++theorem exceptionalTicks_node_budget {B J T : ℕ} {rho a C P eta : ℝ}
++    (clock : ContractingStageClock B J rho a C P T)
++    (hr : 0 ≤ rho) (hr1 : rho < 1) (heta : 0 ≤ eta) (hP : 0 < P)
++    (good : List (Fin B) × Fin J → Bool)
++    (hnode : ∀ w, (((Finset.univ.filter (fun t : Fin T => good (clock.label t) ≠ true)).filter
++      (fun t => (clock.label t).1=w)).card : ℝ) ≤ eta*clock.V w) :
++    (exceptionalTicks clock good : ℝ)/P ≤ eta*C/(1-rho) := by
++  have h := assigned_tick_bound clock.nonneg hr hr1 heta clock.children
++    (Finset.univ.filter (fun t : Fin T => good (clock.label t) ≠ true))
++    (fun t => (clock.label t).1) 0 hnode (fun _ _ => Nat.zero_le _)
++  simp only [pow_zero,mul_one] at h
++  apply (div_le_iff₀ hP).mpr
++  calc
++    (exceptionalTicks clock good : ℝ) ≤ eta*clock.V []/(1-rho) := h
++    _ ≤ eta*(C*P)/(1-rho) := div_le_div_of_nonneg_right
++      (mul_le_mul_of_nonneg_left clock.root heta) (sub_pos.mpr hr1).le
++    _ = eta*C/(1-rho)*P := by ring
+ 
+ theorem regular_shallow_stage_omission {B J T : ℕ} {rho a C P : ℝ}
+     (clock : ContractingStageClock B J rho a C P T)
+--- before/lean/TransposeFollowup/FiniteAffineTimeBound.lean
++++ after/lean/TransposeFollowup/FiniteAffineTimeBound.lean
+@@ -2,7 +2,9 @@
+ import TransposeFollowup.AffineBranchCuts
+ 
+ /-! Quantitative omitted-time obstruction. The abbreviation below packages
+-the original full M* inequality verbatim, with its original definitions. -/
++the restriction of the original M* inequality to 0 < θ < 1/2, retaining
++its original crossing and labeling definitions. This restriction suffices
++for the omitted-time obstruction; full M* implies it. -/
+ namespace TransposeFollowup.AffineMotion
+ open Classical Set Finset MeasureTheory Transpose.Tape
+ open scoped ENNReal BigOperators
+--- before/lean/TransposeFollowup/GraphSeparatorBound.lean
++++ after/lean/TransposeFollowup/GraphSeparatorBound.lean
+@@ -27,14 +27,14 @@
+ 
+ /-- Expected separator theorem using the actual graph components. The
+ separator may be any function of the helper and completed public transcript;
+-there are no additional compatibility, entropy, or fiber assumptions. -/
++each finite query support contributes a clique. There are no additional
++compatibility, support-size, entropy, or fiber assumptions. -/
+ theorem graph_expected_separator_bound {n b : ℕ} {H : Type*} [Fintype H]
+     (F : Finset (FiniteMatrix n b)) [Nonempty F]
+     (helper : FiniteMatrix n b → H)
+     (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
+     (decode : H → Fin n → Row n b → List Bool → Row n b)
+     (M : FiniteMatrix n b → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
+     (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
+     (S : H → List Bool → Finset (Fin n)) :
+@@ -46,7 +46,7 @@
+       2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+       2 * (observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) := by
+   classical
+-  have h := strategy_expected_separator_bound F helper strategy decode M hpair hrun hcorrect S
++  have h := strategy_expected_separator_bound F helper strategy decode M hrun hcorrect S
+     (fun z m => componentSet ((strategy z).interactionGraph [] m) (S z m))
+     (fun x hx => (strategy (helper x)).along_componentSet x (hrun x hx) (S (helper x) (M x)))
+   simp only [card_internalFreeBits_components] at h
+@@ -60,7 +60,6 @@
+     (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
+     (decode : H → Fin n → Row n b → List Bool → Row n b)
+     (M : FiniteMatrix n b → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
+     (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
+     (S : H → List Bool → Finset (Fin n))
+@@ -71,7 +70,7 @@
+     (B : ℝ) ≥ (n * n * b : ℕ) - L -
+       2 * (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) + g) := by
+   classical
+-  apply strategy_worst_case_separator_bound F helper strategy decode M hpair hrun hcorrect S
++  apply strategy_worst_case_separator_bound F helper strategy decode M hrun hcorrect S
+     (fun z m => componentSet ((strategy z).interactionGraph [] m) (S z m))
+     (fun x hx => (strategy (helper x)).along_componentSet x (hrun x hx) (S (helper x) (M x)))
+     B L g hB _ hg
+--- before/lean/TransposeFollowup/Imports.lean
++++ after/lean/TransposeFollowup/Imports.lean
+@@ -1,6 +0,0 @@
+-import Transpose.Statement
+-import Transpose.Tape.Statements.Adaptive
+-
+-/-! Shared framework import check. This file proves no new mathematical result. -/
+-#check Transpose.TM
+-#check Transpose.LinearTimeTransposable
+--- before/lean/TransposeFollowup/InitialWalkTraceProfile.lean
++++ after/lean/TransposeFollowup/InitialWalkTraceProfile.lean
+@@ -1,138 +0,0 @@
+-import TransposeFollowup.InitialWalkDistribution
+-import TransposeFollowup.SL2SpanningTrace
+-
+-/-! The same fixed rational family supplies a large scalar trace image,
+-with any requested positive power loss, in addition to every previous
+-covering, distribution, escape and spanning conclusion. -/
+-namespace TransposeFollowup.RationalFreePair
+-open Classical MeasureTheory Set RealMobius
+-open scoped ENNReal NNReal Pointwise Matrix.Norms.Frobenius
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace RealMobius.Group] [BorelSpace RealMobius.Group]
+-
+-theorem exists_initial_walk_trace {α γ β ε ζ τ : ℝ}
+-    (hα : 0 < α) (hαhalf : α ≤ 1 / 2) (hγ : 0 < γ) (hβ : 0 < β) (hε : 0 < ε) (hζ : 0 < ζ) (hτ : 0 < τ) :
+-    ∃ s : ℝ, 0 < s ∧ s ≤ 1 ∧ 30000 * s ≤ (1 / 61440 : ℝ) / 2 ∧
+-      30000 * s ≤ γ / 2 ∧ 30000 * s ≤ β ∧ 1140 * s ≤ ε / 61440 ∧
+-    ∀ k : ℕ, ∃ N₀ J₀ : ℕ, 0 < N₀ ∧
+-    ∀ r : ℕ, 5 ≤ r → ∃ g : Fin (2 ^ (3 * r)) → Group,
+-      Function.Injective (FreeGroup.lift g) ∧
+-      Function.Injective (FreeGroup.lift (realEmbedding ∘ g)) ∧
+-      (Finset.univ.image g).card = 2 ^ (3 * r) ∧
+-      (Finset.univ.image (realEmbedding ∘ g)).card = 2 ^ (3 * r) ∧
+-      (∀ t, HasDenominator (dyadicDenominator r) (g t) ∧
+-        realEmbedding (g t) ∈ mobiusIdentityBall (dyadicRadius r) ∧
+-        (realEmbedding (g t))⁻¹ ∈ mobiusIdentityBall (dyadicRadius r)) ∧
+-    ∃ Jr : ℕ, max J₀ (7680 * r) ≤ Jr ∧
+-    ∀ N j ell i : ℕ, N₀ ≤ N → Jr ≤ j → 2 * N * ell ≤ j →
+-      Real.log (1 / (1 / 4 : ℝ) ^ j) / Real.log (1 / dyadicRadius r) < (ell : ℝ) → i ≤ k →
+-    let η := (1 / 4 : ℝ) ^ j
+-    let μ := generatorWalkMeasure (realEmbedding ∘ g) ell
+-    let B := 4 * (4 : ℝ) ^ ell
+-    let C := η ^ (-3 + 1 / 61440 : ℝ)
+-    ENNReal.ofReal (η ^ (-γ)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    ENNReal.ofReal (η ^ s) *
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η (i + 1) x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    let θ := η ^ s
+-    let H : Measure RealMobius.Group := Measure.haar
+-    let f := smoothedAutocorrelationIterate μ η i
+-    let V := ∫⁻ x, f x ^ 2 ∂H
+-    let q := ENNReal.ofReal θ
+-    let R := (4 * B ^ 2) ^ (2 ^ i)
+-    let Q := 32 * (R + 1) ^ 6
+-    let M := ENNReal.ofReal (33 ^ 4 * Q ^ 8 / α ^ 4)
+-    let ι := fun g : RealMobius.Group => (g : Matrix (Fin 2) (Fin 2) ℝ)
+-    0 < V ∧ V < ⊤ ∧
+-    ∃ N_level : ℕ, 0 < N_level ∧ (N_level : ℝ) ≤ 1 + Real.logb 2 (max 1 (16 * C / (θ * V.toReal))) ∧
+-      let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-      let L := 8 * (K₀ ^ 2 / q ^ 2)
+-      let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-      let A₆ := ENNReal.ofReal ((2 ^ 21 + 1) ^ 4 * Q ^ 52)
+-      let D := 393216 ^ 4 * A₆ * (2 ^ 68 * K₀ * L ^ 2 * K ^ 100) * M
+-      ∃ (U : Set RealMobius.Group) (Y : Finset RealMobius.Group) (x : RealMobius.Group),
+-        1 ∈ U ∧ IsOpen U ∧ U⁻¹ = U ∧ IsCompact (closure U) ∧
+-        closure U ⊆ matrixEntryBox Q ∧ 0 < H U ∧ H U < ⊤ ∧
+-        (Y : Set RealMobius.Group) ⊆ U ^ 2 ∧ (Y : Set RealMobius.Group)⁻¹ = (Y : Set RealMobius.Group) ∧
+-        (Y.card : ℝ≥0∞) ≤ 512 * K ^ 16 ∧ U ^ 2 ⊆ (Y : Set RealMobius.Group) * U ∧
+-        IsApproximateSubgroup (512 * K ^ 16).toReal U ∧ x ∈ matrixEntryBox (R + 1) ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * V * H U ∧ q * V * H U ≤ 16 * K ^ 7 * K₀ ∧
+-        q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (H.withDensity f) (x • U) ∧
+-        let A := U ^ 2 ∩ mobiusIdentityBall α
+-        let nA : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' A)
+-        let n₃ : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' (A ^ 3))
+-        1 ∈ A ∧ IsOpen A ∧ A⁻¹ = A ∧ IsCompact (closure A) ∧
+-        closure A ⊆ matrixEntryBox 2 ∧ 0 < H A ∧ H A < ⊤ ∧ A ^ 3 ⊆ U ^ 6 ∧
+-        H U ≤ M * H A ∧ H A ≤ 512 * K ^ 16 * H U ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * M * V * H A ∧ q * V * H A ≤ 8192 * K₀ * K ^ 23 ∧
+-        0 < nA ∧ nA ≤ n₃ ∧ n₃ < ⊤ ∧
+-        n₃ * q ^ 2 ≤ 6561 * D * nA ∧
+-        q ≤ 128 * 6561 * 393216 ^ 4 * K₀ * K * L ^ 2 * M * V * nA * H (mobiusIdentityBall η) ∧
+-        nA * q ^ 3 * V * H (mobiusIdentityBall η) ≤ A₆ * 2 ^ 72 * K₀ ^ 2 * L ^ 2 * K ^ 107 ∧
+-        η ^ (-(1 / 61440 : ℝ) / 2) ≤ nA.toReal ∧ nA.toReal ≤ η ^ (-3 + γ / 2) ∧
+-        n₃.toReal ≤ η ^ (-β) * nA.toReal ∧
+-        (∀ t : ℕ, t ≤ ell → ∃ w ∈ matrixEntryBox (4 * R * (R + 1) * Q),
+-          q ^ 2 ≤ 16384 * K₀ * L ^ 2 * K ^ 4 * M *
+-            (generatorWalkMeasure (realEmbedding ∘ g) t ∗ₘ mobiusHaarKernel η) (w • A)) ∧
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ F : Finset RealMobius.Group, (F : Set RealMobius.Group) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) (ι '' (F : Set RealMobius.Group)) ∧
+-            ρ ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ)) ∧
+-        (∀ P : (Matrix (Fin 2) (Fin 2) ℂ)ˣ, ∃ h ∈ A ^ 4, η ^ ζ ≤
+-          ‖SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 0 1 *
+-            SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 1 0‖) ∧
+-        ∃ p q : RealMobius.Group, p ∈ A ^ 34 ∧ q ∈ A ^ 34 ∧ p * q ∈ A ^ 34 ∧
+-          η ^ ζ ≤ |(SL2Escape.pairSpanMatrix
+-            (p : Matrix (Fin 2) (Fin 2) ℝ) (q : Matrix (Fin 2) (Fin 2) ℝ)).det| ∧
+-          LinearIndependent ℝ (SL2Escape.pairSpanMatrix
+-            (p : Matrix (Fin 2) (Fin 2) ℝ) (q : Matrix (Fin 2) (Fin 2) ℝ)).col ∧
+-          ∃ h ∈ A ^ 34,
+-            η ^ τ * nA.toReal ≤ (Metric.externalCoveringNumber ⟨η, by positivity⟩
+-              ((fun x : RealMobius.Group => Matrix.trace
+-                ((h⁻¹ * x : RealMobius.Group) : Matrix (Fin 2) (Fin 2) ℝ)) '' A) : ℝ≥0∞).toReal ^ 3 := by
+-  let ζ' := min ζ (τ / 8)
+-  have hζ' : 0 < ζ' := lt_min hζ (by positivity)
+-  obtain ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, hall⟩ :=
+-    exists_initial_walk_spanning hα (by linarith) hγ hβ hε hζ'
+-  obtain ⟨Jt, htrace⟩ := SL2Projection.exists_large_trace_at_dyadic_scale hζ'
+-  refine ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, ?_⟩
+-  intro k
+-  obtain ⟨N₀, J₀, hN₀, hfamily⟩ := hall k
+-  refine ⟨N₀, J₀, hN₀, ?_⟩
+-  intro r hr
+-  obtain ⟨g, hg, hgr, hcard, hcardr, hnear, Jr, hJr, hprofile⟩ := hfamily r hr
+-  refine ⟨g, hg, hgr, hcard, hcardr, hnear, max Jr Jt,
+-    hJr.trans (le_max_left _ _), ?_⟩
+-  intro N j ell i hN hj hell hlog hi
+-  dsimp only
+-  intro henergy hnonflat
+-  obtain ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-      hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-      hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-      hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort,
+-      hdistribution, hescape, p, q, hp, hq, hpq, hdet, hind⟩ :=
+-    hprofile N j ell i hN ((le_max_left _ _).trans hj) hell hlog hi henergy hnonflat
+-  let η := (1 / 4 : ℝ) ^ j
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  have hζweak : η ^ ζ ≤ η ^ ζ' :=
+-    Real.rpow_le_rpow_of_exponent_ge hη hηone (min_le_left _ _)
+-  have hτweak : η ^ τ ≤ η ^ (8 * ζ') :=
+-    Real.rpow_le_rpow_of_exponent_ge hη hηone (by
+-      have hh : ζ' ≤ τ / 8 := min_le_right _ _
+-      linarith)
+-  refine ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-    hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-    hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-    hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort,
+-    hdistribution, ?_, p, q, hp, hq, hpq, hζweak.trans hdet, hind, ?_⟩
+-  · intro P
+-    obtain ⟨h, hh, hbound⟩ := hescape P
+-    exact ⟨h, hh, hζweak.trans hbound⟩
+-  · obtain ⟨h, hh, hbound⟩ := htrace j ((le_max_right _ _).trans hj)
+-      hA1 hα hαhalf Set.inter_subset_right hp hq hpq hdet
+-    exact ⟨h, hh, (mul_le_mul_of_nonneg_right hτweak ENNReal.toReal_nonneg).trans hbound⟩
+-
+-end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/LocalProtocol.lean
++++ after/lean/TransposeFollowup/LocalProtocol.lean
+@@ -8,7 +8,7 @@
+ 
+ The transcript determines every queried support and the stopping decision.
+ The query functions may be nonlinear. The input type is dependent, so a row
+-may contain any fixed finite block; finiteness is not needed for the splicing
++may contain any fixed finite block; finiteness is not needed for the component gluing
+ lemmas. A public helper is represented later by a family of these protocols.
+ 
+ These are protocol-interface lemmas, not a normalization of arbitrary tape
+@@ -52,11 +52,6 @@
+   | .query _ _, [] => True
+   | .query q next, a :: m => P q.support ∧ Along P (next a) m
+ 
+-/-- The intended row-local model allows at most two original rows per bit. -/
+-def Pairwise : PublicProtocol ι V → Prop
+-  | .halt => True
+-  | .query q next => q.support.card ≤ 2 ∧ ∀ a, Pairwise (next a)
+-
+ theorem run_eq_iff_consistent (p : PublicProtocol ι V) (m : List Bool)
+     (x : (i : ι) → V i) : p.run x = m ↔ p.Consistent m x := by
+   induction p generalizing m with
+@@ -93,68 +88,6 @@
+     InformationTheory.IsPrefixFree (Set.range p.run) := by
+   rintro _ ⟨x, rfl⟩ _ ⟨y, rfl⟩ h
+   exact run_eq_of_prefix p x y h
+-
+-/-- Select whole original blocks; no input bits are identified or copied. -/
+-def splice (choose : ι → Bool) (x y : (i : ι) → V i) : (i : ι) → V i :=
+-  fun i => if choose i then x i else y i
+-
+-/-- Every support lies on one side, apart from blocks already equal. -/
+-def CompatibleSplit (choose : ι → Bool) (x y : (i : ι) → V i)
+-    (s : Finset ι) : Prop :=
+-  (∀ i ∈ s, choose i = true ∨ x i = y i) ∨
+-  (∀ i ∈ s, choose i = false ∨ x i = y i)
+-
+-theorem read_splice_eq_left (q : LocalQuery ι V) (choose : ι → Bool)
+-    (x y : (i : ι) → V i)
+-    (h : ∀ i ∈ q.support, choose i = true ∨ x i = y i) :
+-    q.read (splice choose x y) = q.read x := by
+-  apply q.locality
+-  intro i hi
+-  rcases h i hi with hc | he
+-  · simp [splice, hc]
+-  · simp [splice, he]
+-
+-theorem read_splice_eq_right (q : LocalQuery ι V) (choose : ι → Bool)
+-    (x y : (i : ι) → V i)
+-    (h : ∀ i ∈ q.support, choose i = false ∨ x i = y i) :
+-    q.read (splice choose x y) = q.read y := by
+-  apply q.locality
+-  intro i hi
+-  rcases h i hi with hc | he
+-  · simp [splice, hc]
+-  · simp [splice, he]
+-
+-/-- Fixed-path fibers are closed under component splicing. Equal separator
+-blocks can occur on both sides of a query without affecting the conclusion. -/
+-theorem consistent_splice (p : PublicProtocol ι V) (m : List Bool)
+-    (choose : ι → Bool) (x y : (i : ι) → V i)
+-    (hx : p.Consistent m x) (hy : p.Consistent m y)
+-    (hs : p.Along (CompatibleSplit choose x y) m) :
+-    p.Consistent m (splice choose x y) := by
+-  induction p generalizing m with
+-  | halt => exact hx
+-  | query q next ih =>
+-    cases m with
+-    | nil => exact hx.elim
+-    | cons a m =>
+-      rcases hx with ⟨hx, hxs⟩
+-      rcases hy with ⟨hy, hys⟩
+-      rcases hs with ⟨hs, hss⟩
+-      refine ⟨?_, ih a m hxs hys hss⟩
+-      rcases hs with hs | hs
+-      · exact (read_splice_eq_left q choose x y hs).trans hx
+-      · exact (read_splice_eq_right q choose x y hs).trans hy
+-
+-/-- The same statement for the actual transcript, including stopping. -/
+-theorem run_splice (p : PublicProtocol ι V) (m : List Bool)
+-    (choose : ι → Bool) (x y : (i : ι) → V i)
+-    (hx : p.run x = m) (hy : p.run y = m)
+-    (hs : p.Along (CompatibleSplit choose x y) m) :
+-    p.run (splice choose x y) = m := by
+-  apply (run_eq_iff_consistent p m _).mpr
+-  exact consistent_splice p m choose x y
+-    ((run_eq_iff_consistent p m x).mp hx)
+-    ((run_eq_iff_consistent p m y).mp hy) hs
+ 
+ /-- A support meets at most one component outside the separator. The first
+ case handles an empty complement without requiring a nonempty component type. -/
+--- before/lean/TransposeFollowup/MobiusSmoothedWalkUpper.lean
++++ after/lean/TransposeFollowup/MobiusSmoothedWalkUpper.lean
+@@ -1,118 +0,0 @@
+-import TransposeFollowup.MobiusDensityAverage
+-import TransposeFollowup.MobiusWalkEntrySupport
+-import TransposeFollowup.DyadicDensityBarrier
+-
+-/-! Upper bounds for the same actual Haar-smoothed walk used in the lower
+-bound. The last theorem states a necessary density-flatness constraint;
+-it does not assume or assert a flattening theorem. -/
+-namespace TransposeFollowup.RealMobius
+-open Classical MeasureTheory Set SchwartzMap
+-open scoped FourierTransform ENNReal
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace Group] [BorelSpace Group]
+-
+-theorem smoothedWalk_action_norm_sq_le {c : ℕ} (G : Fin c → Group) (hc : 0 < c)
+-    {A η : ℝ} (hG : ∀ i, G i ∈ matrixEntryBox A) (hη : 0 < η) (hηone : η ≤ 1)
+-    (n : ℕ) (u : 𝓢(ℝ, ℂ)) {D M : ℝ} (hD : 0 ≤ D) (hM : 0 < M)
+-    (hbound : ∀ᵐ g ∂(Measure.haar : Measure Group),
+-      mobiusSmoothedDensity (generatorWalkMeasure G n) η g ≤ ENNReal.ofReal D)
+-    (hzero : ∀ ξ : ℝ, |ξ| < M → (𝓕 u : 𝓢(ℝ, ℂ)) ξ = 0) :
+-    ‖∫ g, (mobiusSmoothedDensity (generatorWalkMeasure G n) η g).toReal •
+-      complexPullbackL2 g⁻¹ (u.toLp 2 volume) ∂(Measure.haar : Measure Group)‖ ^ 2 ≤
+-      32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ) *
+-        (2 * A) ^ (2 * n) * D * M⁻¹ * ‖u.toLp 2 volume‖ ^ 2 := by
+-  have : IsProbabilityMeasure (generatorWalkMeasure G n) := generatorWalkMeasure_probability G hc n
+-  have hb := density_action_integral_norm_sq_le (mobiusSmoothedDensity_measurable _ η)
+-    (mobiusSmoothedDensity_lintegral _ hη) u (4 * (2 * A) ^ n) hD hM hbound
+-    (mobiusSmoothedWalkDensity_ae_zero_outside G hc hG hη hηone n) hzero
+-  calc
+-    _ ≤ _ := hb
+-    _ = _ := by
+-      rw [show (2 * A) ^ (2 * n) = ((2 * A) ^ n) ^ 2 by
+-        rw [Nat.mul_comm 2 n, pow_mul]]
+-      ring
+-
+-theorem smoothedWalk_action_norm_sq_le_crude {c : ℕ} (G : Fin c → Group) (hc : 0 < c)
+-    {A η : ℝ} (hG : ∀ i, G i ∈ matrixEntryBox A) (hη : 0 < η) (hηone : η ≤ 1)
+-    (n : ℕ) (u : 𝓢(ℝ, ℂ)) {M : ℝ} (hM : 0 < M)
+-    (hzero : ∀ ξ : ℝ, |ξ| < M → (𝓕 u : 𝓢(ℝ, ℂ)) ξ = 0) :
+-    ‖∫ g, (mobiusSmoothedDensity (generatorWalkMeasure G n) η g).toReal •
+-      complexPullbackL2 g⁻¹ (u.toLp 2 volume) ∂(Measure.haar : Measure Group)‖ ^ 2 ≤
+-      32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ) *
+-        (2 * A) ^ (2 * n) *
+-          (((Measure.haar : Measure Group) (mobiusIdentityBall η))⁻¹).toReal *
+-            M⁻¹ * ‖u.toLp 2 volume‖ ^ 2 := by
+-  have : IsProbabilityMeasure (generatorWalkMeasure G n) := generatorWalkMeasure_probability G hc n
+-  apply smoothedWalk_action_norm_sq_le G hc hG hη hηone n u ENNReal.toReal_nonneg hM _ hzero
+-  apply Filter.Eventually.of_forall
+-  intro g
+-  rw [ENNReal.ofReal_toReal (ENNReal.inv_ne_top.mpr (mobiusIdentityBall_haar_pos hη).ne')]
+-  exact mobiusSmoothedDensity_le _ η g
+-
+-theorem smoothedWalk_high_band_density_constraint {c : ℕ} (G : Fin c → Group) (hc : 0 < c)
+-    (hG : ∀ i, G i ∈ matrixEntryBox 2) {η r D : ℝ}
+-    (hη : 0 < η) (hηone : η ≤ 1) (hr : 0 ≤ r) (hD : 0 ≤ D)
+-    (n j : ℕ) (u : 𝓢(ℝ, ℂ)) (hu : ‖u.toLp 2 volume‖ = 1)
+-    (hzero : ∀ ξ : ℝ, |ξ| < (2 : ℝ) ^ j → (𝓕 u : 𝓢(ℝ, ℂ)) ξ = 0)
+-    (hbound : ∀ᵐ g ∂(Measure.haar : Measure Group),
+-      mobiusSmoothedDensity (generatorWalkMeasure G n) η g ≤ ENNReal.ofReal D)
+-    (hlower : r ^ n / 2 ≤ ‖∫ g,
+-      (mobiusSmoothedDensity (generatorWalkMeasure G n) η g).toReal •
+-        complexPullbackL2 g⁻¹ (u.toLp 2 volume) ∂(Measure.haar : Measure Group)‖) :
+-    (r ^ n / 2) ^ 2 ≤
+-      32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ) *
+-        (16 : ℝ) ^ n * D / (2 : ℝ) ^ j := by
+-  have hb := smoothedWalk_action_norm_sq_le G hc hG hη hηone n u hD
+-    (by positivity : (0 : ℝ) < 2 ^ j) hbound hzero
+-  rw [hu, one_pow, mul_one] at hb
+-  have hl := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ r ^ n / 2) hlower 2
+-  calc
+-    _ ≤ _ := hl.trans hb
+-    _ = _ := by
+-      rw [pow_mul]
+-      norm_num
+-      rfl
+-
+-theorem generatorWalk_dyadic_density_constraint {c : ℕ} (G : Fin c → Group) (hc : 0 < c)
+-    (hG : ∀ i, G i ∈ matrixEntryBox 2) (j : ℕ) (u : 𝓢(ℝ, ℂ))
+-    (hu : ‖u.toLp 2 volume‖ = 1) {R r η D : ℝ}
+-    (hr : 0 ≤ r) (hlarge : r ≤ ‖complexAverage G (u.toLp 2 volume)‖)
+-    (hR : schwartzDyadicRegularityCost j u ≤ R) (hη : 0 < η) (hηhalf : η ≤ 1 / 2)
+-    (m : ℕ) (he : 29 * (2 : ℝ) ^ j * Real.sqrt R * η ≤ r ^ (2 ^ m) / 2)
+-    (hzero : ∀ ξ : ℝ, |ξ| < (2 : ℝ) ^ j → (𝓕 u : 𝓢(ℝ, ℂ)) ξ = 0)
+-    (hD : 0 ≤ D) (hbound : ∀ᵐ g ∂(Measure.haar : Measure Group),
+-      mobiusSmoothedDensity (generatorWalkMeasure G (2 ^ m)) η g ≤ ENNReal.ofReal D) :
+-    (r ^ (2 ^ m) / 2) ^ 2 ≤
+-      32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ) *
+-        (16 : ℝ) ^ (2 ^ m) * D / (2 : ℝ) ^ j :=
+-  smoothedWalk_high_band_density_constraint G hc hG hη (by linarith) hr hD (2 ^ m) j u hu hzero
+-    hbound (generatorWalk_haar_integral_dyadic_norm_lower G hc j u hu hr hlarge hR hη hηhalf m he)
+-
+-theorem exists_smoothedWalk_density_barrier (Nmin : ℕ) {r : ℝ} (hr : 0 < r) :
+-    ∃ N₀ J₀ : ℕ, 0 < N₀ ∧ Nmin ≤ N₀ ∧ 0 < J₀ ∧
+-      ∀ N j ell : ℕ, N₀ ≤ N → J₀ ≤ j → 2 * N * ell ≤ j →
+-      ∀ {c : ℕ} (G : Fin c → Group), 0 < c → (∀ i, G i ∈ matrixEntryBox 2) →
+-      ∀ η : ℝ, 0 < η → η ≤ 1 → ∀ u : 𝓢(ℝ, ℂ), ‖u.toLp 2 volume‖ = 1 →
+-      (∀ ξ : ℝ, |ξ| < (2 : ℝ) ^ j → (𝓕 u : 𝓢(ℝ, ℂ)) ξ = 0) →
+-      ∀ D : ℝ, 0 ≤ D → D ^ 2 ≤ (2 : ℝ) ^ j →
+-      (∀ᵐ g ∂(Measure.haar : Measure Group),
+-        mobiusSmoothedDensity (generatorWalkMeasure G ell) η g ≤ ENNReal.ofReal D) →
+-      ‖∫ g, (mobiusSmoothedDensity (generatorWalkMeasure G ell) η g).toReal •
+-        complexPullbackL2 g⁻¹ (u.toLp 2 volume) ∂(Measure.haar : Measure Group)‖ < r ^ ell / 2 := by
+-  obtain ⟨N₀, J₀, hN₀, hmin, hJ₀, hbarrier⟩ := exists_dyadic_density_barrier Nmin
+-    (C := 32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ)) hr
+-  refine ⟨N₀, J₀, hN₀, hmin, hJ₀, ?_⟩
+-  intro N j ell hN hj hell c G hc hG η hη hηone u hu hzero D hD hDsq hbound
+-  have hb := smoothedWalk_action_norm_sq_le G hc hG hη hηone ell u hD
+-    (by positivity : (0 : ℝ) < 2 ^ j) hbound hzero
+-  have hb' : ‖∫ g, (mobiusSmoothedDensity (generatorWalkMeasure G ell) η g).toReal •
+-        complexPullbackL2 g⁻¹ (u.toLp 2 volume) ∂(Measure.haar : Measure Group)‖ ^ 2 ≤
+-      32 * Real.pi * (Measure.haarScalarFactor Measure.haar columnChartMeasure : ℝ) *
+-        (16 : ℝ) ^ ell * D / (2 : ℝ) ^ j := by
+-    simpa only [hu, one_pow, mul_one, pow_mul, show (2 * (2 : ℝ)) ^ 2 = 16 by norm_num,
+-      div_eq_mul_inv] using hb
+-  exact (sq_lt_sq₀ (norm_nonneg _) (by positivity)).mp
+-    (hb'.trans_lt (hbarrier N j ell hN hj hell D hDsq))
+-
+-end TransposeFollowup.RealMobius
+--- before/lean/TransposeFollowup/NativeExceptionalRecursion.lean
++++ after/lean/TransposeFollowup/NativeExceptionalRecursion.lean
+@@ -21,6 +21,36 @@
+       (∀ i, (exceptionalTicks (clocks i) (good i) : ℝ)/inputLength (ns (φ i)) ≤ eta+eps (φ i)) ∧
+       ∀ t : Fin k, RegularFlaggedClockHead clocks good
+         (fun i m => workTraj (Ms (φ i)) (ws i) m (Fin.cast (hk (φ i)).symm t))
++
++/-- The same executions, with exceptional ticks charged at each tree node. -/
++def HasNodeBudgetRecursiveExecutions {k : ℕ} (B J : ℕ) (rho a C eta : ℝ)
++    (ns : ℕ → ℕ) (Ms : ℕ → TM) (Ws : ℕ → Set (List Bool))
++    (hk : ∀ i, (Ms i).k=k) : Prop :=
++  ∃ N : ℕ, ∀ φ : ℕ → ℕ, StrictMono φ → (∀ i, N ≤ φ i) →
++    ∀ (ws : ℕ → List Bool) (T : ℕ → ℕ),
++    (∀ i, ws i ∈ Ws (φ i)) → (∀ i, HaltsAt (Ms (φ i)) (ws i) (T i)) →
++    (∀ i, 0 < (inputLength (ns (φ i)) : ℝ)) →
++    ∃ (clocks : ∀ i, ContractingStageClock B J rho a C (inputLength (ns (φ i))) (T i))
++      (good : ℕ → List (Fin B) × Fin J → Bool),
++      (∀ i w, (((Finset.univ.filter (fun t : Fin (T i) => good i ((clocks i).label t) ≠ true)).filter
++        (fun t => ((clocks i).label t).1=w)).card : ℝ) ≤ eta*(clocks i).V w) ∧
++      ∀ t : Fin k, RegularFlaggedClockHead clocks good
++        (fun i m => workTraj (Ms (φ i)) (ws i) m (Fin.cast (hk (φ i)).symm t))
++
++theorem HasNodeBudgetRecursiveExecutions.to_global
++    {B J k : ℕ} {rho a C eta : ℝ} {ns : ℕ → ℕ} {Ms : ℕ → TM}
++    {Ws : ℕ → Set (List Bool)} {hk : ∀ i, (Ms i).k=k}
++    (h : HasNodeBudgetRecursiveExecutions B J rho a C eta ns Ms Ws hk)
++    (hr : 0 ≤ rho) (hr1 : rho < 1) (heta : 0 ≤ eta) :
++    HasFlaggedRecursiveExecutions B J rho a C (eta*C/(1-rho)) (fun _ => 0) ns Ms Ws hk := by
++  obtain ⟨N,h⟩ := h
++  refine ⟨N,?_⟩
++  intro φ hφ hN ws T hw hT hP
++  obtain ⟨clocks,good,hnode,hregular⟩ := h φ hφ hN ws T hw hT hP
++  refine ⟨clocks,good,?_,hregular⟩
++  intro i
++  simpa only [add_zero] using
++    exceptionalTicks_node_budget (clocks i) hr hr1 heta (hP i) (good i) (hnode i)
+ 
+ theorem native_fast_flagged_recursion_budget
+     {B J k G : ℕ} {rho a C c eta : ℝ} {ns : ℕ → ℕ} {eps : ℕ → ℝ}
+@@ -119,4 +149,25 @@
+   native_flagged_recursion_budget hns (fun _ => rfl) (fun _ => rfl)
+     (tendsto_const_nhds.div_atTop (inputLength_tendsto hns)) hm hmL hr hr1 ha hcorrect heps hrec
+ 
++/-- Source210 §35: per-node exceptional work must have a positive total coefficient. -/
++theorem native_node_budget_recursion_bound
++    {B J k G : ℕ} {rho a C eta : ℝ} {ns : ℕ → ℕ}
++    (hns : Tendsto ns atTop atTop) {Ms : ℕ → TM}
++    (hk : ∀ i, (Ms i).k=k) (hG : ∀ i, cellBits (Ms i)=G)
++    (hq : Tendsto (fun i => (Nat.clog 2 ((Ms i).q+1) : ℝ)/inputLength (ns i)) atTop (𝓝 0))
++    {Ws : ℕ → Set (List Bool)} {ms : ℕ → ℕ}
++    (hm : ∀ᶠ i in atTop, 2^inputLength (ns i) ≤ 2^ms i*(Ws i).ncard)
++    (hmL : Tendsto (fun i => (ms i : ℝ)/inputLength (ns i)) atTop (𝓝 0))
++    (hr : 0 ≤ rho) (hr1 : rho < 1) (ha : 0 ≤ a)
++    (hcorrect : ∀ᶠ i in atTop, ∀ w ∈ Ws i, ∃ T : ℕ, HaltsAt (Ms i) w T ∧
++      (∃ A : Matrix, w=encode (ns i) (entryBits (ns i)) A ∧
++        (run (Ms i) w T).outRev.reverse=encode (ns i) (entryBits (ns i)) (transpose A)) ∧
++      Nonempty (ContractingStageClock B J rho a C (inputLength (ns i)) T))
++    (heta : 0 ≤ eta)
++    (hrec : HasNodeBudgetRecursiveExecutions B J rho a C eta ns Ms Ws hk) :
++    1/(2*(G : ℝ)) ≤ (k : ℝ)*(eta*C/(1-rho)) ∧
++      1/(2*(k : ℝ)*G) ≤ eta*C/(1-rho) :=
++  native_flagged_recursion_budget hns hk hG hq hm hmL hr hr1 ha hcorrect
++    tendsto_const_nhds (hrec.to_global hr hr1 heta)
++
+ end TransposeFollowup.RegularMotion
+--- before/lean/TransposeFollowup/NativeTimedCut.lean
++++ after/lean/TransposeFollowup/NativeTimedCut.lean
+@@ -1,59 +0,0 @@
+-import TransposeFollowup.NativeTimedLayout
+-
+-/-! The native geometry gives the literal zero-slack cut inequality on its
+-actual 2n-vertex graph. Expansion and the fixed head/stretch budgets remain
+-explicit hypotheses. The auxiliary clock is still prepared at entry. -/
+-namespace TransposeFollowup.GeneratorRows
+-open Classical FixedTapeCompiler Transpose.Tape Transpose.Tape.Impl Transpose.Tape.TSDiagram
+-set_option autoImplicit false
+-variable {c : ℕ}
+-
+-theorem prepared_cutIneq (F : Fin (c+1) → RationalMobius) (r K cellBits : ℕ) (hr : 0<r) (hK : 0<K)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n)
+-    (gpos : OpcodeGenerator.Port → ℤ) (outRev : List Bool)
+-    (eta : ℝ) (heta : 0<eta)
+-    (hexp : ∀ S : Finset (Fin (2*n)),2*S.card ≤ 2*n →
+-      eta*S.card ≤ (outsideNeighbors (overlapGraph (rationalFamilyMaps F) n) S).card)
+-    (hstretch : 4 ≤ (4*K-1:ℕ)*eta) (hheads : 4*(rationalPageCount F:ℝ) ≤ 3*(nativeMachine F).k*eta)
+-    (hscale : n*Transpose.entryBits n ≤ r*cellBits) :
+-    ∃ a ≤ OpcodeGenerator.coefficient F*w.length+8*n*rationalPageCount F+5,
+-      CutIneq n cellBits r (a+stride F (K*r)*(2*n)) 0 0 (preparedPaths F (K*r) w gpos outRev) := by
+-  obtain ⟨a,ha,⟨A⟩⟩:=prepared_layout F r K hr hK w n hn hw gpos outRev
+-  refine ⟨a,ha,?_⟩
+-  exact A.cutIneq eta heta (by simpa only [Fintype.card_fin] using hexp) (rationalPageCount F)
+-    (overlapPages (rationalFamilyMaps F) n).degree_le_pages hstretch hheads
+-    (by simpa only [Fintype.card_fin] using (show 2 ≤ 2*n by omega)) n cellBits
+-    (by simpa only [Fintype.card_fin] using (show n ≤ 2*(2*n) by omega)) hscale
+-
+-theorem native_horizon_linear (F : Fin (c+1) → RationalMobius) (cellBits K n a : ℕ)
+-    (hG : 1 ≤ cellBits) (hn : 1 ≤ n)
+-    (ha : a ≤ OpcodeGenerator.coefficient F*Transpose.inputLength n+8*n*rationalPageCount F+5) :
+-    a+stride F (K*blockSize cellBits n)*(2*n) ≤
+-      (OpcodeGenerator.coefficient F+28*K+16*rationalPageCount F+17)*Transpose.inputLength n := by
+-  have hr:=blockSize_le (n:=n) hG
+-  have hm:=Nat.mul_le_mul_left (n*K) hr
+-  have hnP:=DimensionCandidate.dimension_le_length n hn
+-  have hP : 1 ≤ Transpose.inputLength n:=hn.trans hnP
+-  have hq:=Nat.mul_le_mul_left (rationalPageCount F) hnP
+-  unfold stride
+-  unfold Transpose.inputLength at ha hnP hP hq ⊢
+-  nlinarith
+-
+-theorem prepared_canonical_cut (F : Fin (c+1) → RationalMobius) (K cellBits : ℕ) (hK : 0<K) (hG : 1 ≤ cellBits)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n)
+-    (gpos : OpcodeGenerator.Port → ℤ) (outRev : List Bool)
+-    (eta : ℝ) (heta : 0<eta)
+-    (hexp : ∀ S : Finset (Fin (2*n)),2*S.card ≤ 2*n →
+-      eta*S.card ≤ (outsideNeighbors (overlapGraph (rationalFamilyMaps F) n) S).card)
+-    (hstretch : 4 ≤ (4*K-1:ℕ)*eta) (hheads : 4*(rationalPageCount F:ℝ) ≤ 3*(nativeMachine F).k*eta) :
+-    ∃ T ≤ (OpcodeGenerator.coefficient F+28*K+16*rationalPageCount F+17)*w.length,
+-      CutIneq n cellBits (blockSize cellBits n) T 0 0
+-        (preparedPaths F (K*blockSize cellBits n) w gpos outRev) := by
+-  have hr : 0<blockSize cellBits n:=by have := one_le_blockSize hG hn;omega
+-  obtain ⟨a,ha,hcut⟩:=prepared_cutIneq F (blockSize cellBits n) K cellBits hr hK w n hn hw gpos outRev
+-    eta heta hexp hstretch hheads (blockSize_mul_ge hG)
+-  refine ⟨a+stride F (K*blockSize cellBits n)*(2*n),?_,hcut⟩
+-  rw [hw] at ha ⊢
+-  exact native_horizon_linear F cellBits K n a hG hn ha
+-
+-end TransposeFollowup.GeneratorRows
+--- before/lean/TransposeFollowup/NativeTimedLayout.lean
++++ after/lean/TransposeFollowup/NativeTimedLayout.lean
+@@ -1,28 +0,0 @@
+-import TransposeFollowup.NativeTimedWalk
+-import TransposeFollowup.ExcursionIntervalTransfer
+-
+-namespace TransposeFollowup.GeneratorRows
+-open Classical FixedTapeCompiler
+-set_option autoImplicit false
+-variable {c : ℕ}
+-
+-theorem prepared_layout (F : Fin (c+1) → RationalMobius) (r K : ℕ) (hr : 0<r) (hK : 0<K)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n)
+-    (gpos : OpcodeGenerator.Port → ℤ) (outRev : List Bool) :
+-    ∃ a ≤ OpcodeGenerator.coefficient F*w.length+8*n*rationalPageCount F+5,
+-      Nonempty (ExcursionLayout (overlapGraph (rationalFamilyMaps F) n) r K (nativeMachine F).k
+-        (a+stride F (K*r)*(2*n)) (preparedPaths F (K*r) w gpos outRev)) := by
+-  obtain ⟨a,ha,hwalk⟩:=prepared_row_walk F (K*r) w n hn hw gpos outRev
+-  have hs : fetchDelay F+7*(K*r) ≤ stride F (K*r):=by unfold fetchDelay stride;omega
+-  let D:=overlapPages (rationalFamilyMaps F) n
+-  let A:=D.timedLayout r K (stride F (K*r)) a (fetchDelay F) hr hK hs
+-  refine ⟨a,ha,⟨A.transfer_on_excursions (pagePorts F) (le_refl _) ?_⟩⟩
+-  intro e t hl hu
+-  have hlow : a ≤ t := by
+-    change a+stride F (K*r)*(D.src e).val+fetchDelay F+K*r ≤ t at hl
+-    omega
+-  have hhigh : t ≤ a+stride F (K*r)*(2*n):=le_of_lt (lt_of_le_of_lt hu (A.close_before_end e))
+-  rw [hwalk (A.page e) t hlow hhigh]
+-  exact generated_walk_eq F n (K*r) (stride F (K*r)) a (fetchDelay F) (Nat.mul_pos hK hr) (by omega) (A.page e) t
+-
+-end TransposeFollowup.GeneratorRows
+--- before/lean/TransposeFollowup/NonnilpotentSpanningExtraction.lean
++++ after/lean/TransposeFollowup/NonnilpotentSpanningExtraction.lean
+@@ -1,126 +0,0 @@
+-import TransposeFollowup.NilpotentProfileExclusion
+-import TransposeFollowup.SpanningCommutingExtraction
+-
+-/-! Produce the original commuting family from the localized profile and
+-exclude its nilpotent centered generator. The extraction and the branch
+-exclusion share the original source witnesses and covering cube. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-local notation "H₀" => (4 : ℝ) ^ 34
+-local notation "B₀" => 4 * H₀
+-
+-theorem exists_nonnilpotent_spanning_extraction {κ : ℝ} (hκ : 0 < κ) (hκone : κ ≤ 1) :
+-    ∃ θ α₀ τ : ℝ, ∃ J : ℕ,
+-      0 < θ ∧ θ < 1 / 2 ∧ θ ≤ κ / 4096 ∧ 0 < α₀ ∧ 0 < τ ∧
+-      3000000 * τ ≤ θ ∧ 3000000 * τ ≤ θ * κ / 2 ∧
+-      ∀ j : ℕ, J ≤ j →
+-        let η := (1 / 4 : ℝ) ^ j
+-        let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-        let r := η ^ (2 * θ) / (2 * H₀)
+-        ∀ {U A : Set G} (Y : Finset G) {h Q α q₀ : ℝ} {Nprofile : ℕ},
+-        (2 : ℝ) ^ 100 ≤ h → (Nprofile : ℝ) ≤ h → 1 ≤ Q → Q ≤ h →
+-        0 < α → α ≤ α₀ → α⁻¹ ^ 4 ≤ h → 0 < q₀ → q₀⁻¹ ≤ h → h ≤ η ^ (-τ) →
+-        (Y.card : ℝ) ≤ 512 * ((2 : ℝ) ^ 55 * (8 * ((64 * (Nprofile : ℝ) ^ 4) ^ 2 / q₀ ^ 2)) ^ 21) ^ 16 →
+-        U ⊆ matrixEntryBox Q → U⁻¹ = U → (Y : Set G) ⊆ U ^ 2 → U ^ 2 ⊆ (Y : Set G) * U →
+-        A = U ^ 2 ∩ mobiusIdentityBall α → 1 ∈ A → A⁻¹ = A →
+-        ∀ {p q : G}, p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-        η ^ θ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ (θ / 2) →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-          η ^ (-(3 - κ)) →
+-        ∃ R : Set G, R ⊆ A ∧ R.Nonempty ∧ ∃ h ∈ A ^ 34,
+-          let D := (fun x : G => h⁻¹ * x) '' R
+-          D ⊆ mobiusIdentityBall (1 / 2) ∧ (∀ z ∈ D, r ≤ dist (z : RMat) 1) ∧
+-          ∃ z ∈ D, ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det ≠ 0 ∧
+-            ∃ v : RMat,
+-            let S := {x : G | x ∈ A ∧ dist ((x * z * x⁻¹ : G) : RMat) v ≤ η}
+-            ∃ x₀ ∈ S, ∃ f : S → G,
+-              (∀ x : S, ∃ c t : ℝ, (f x : RMat) = scalarAffine (z : RMat) c t) ∧
+-              (∀ x : S, x₀⁻¹ * x ∈ A⁻¹ * A ∧
+-                dist ((x₀⁻¹ * x : G) : RMat) (f x : RMat) ≤ 12800 * B₀ ^ 6 * η / r) ∧
+-              (∀ x y : S, Commute (f x) (f y)) ∧
+-              Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-              Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A * D * A⁻¹)) ≠ ⊤ ∧
+-              Metric.externalCoveringNumber ηn (Set.range (fun x : S => (f x : RMat))) ≠ ⊤ ∧
+-              η ^ (8 * θ) * (Metric.externalCoveringNumber ηn
+-                ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ^ 4 ≤
+-                (9 * (Metric.externalCoveringNumber ηn
+-                  ((fun x : G => (x : RMat)) '' (A * D * A⁻¹)) : ℝ≥0∞).toReal *
+-                    (102400 * B₀ ^ 7 / r + 8 * B₀ + 1) ^ 4 *
+-                      (Metric.externalCoveringNumber ηn
+-                        (Set.range (fun x : S => (f x : RMat))) : ℝ≥0∞).toReal) ^ 3 := by
+-  classical
+-  obtain ⟨θ, αe, a, e, Je, hθ, hθhalf, hθκ, hαe, ha, he, haeq, heeq, hexclude⟩ :=
+-    exists_nilpotent_first_extraction_exclusion hκ hκone
+-  let β := θ * κ / 2
+-  have hβ : 0 < β := by dsimp only [β]; positivity
+-  have hβbudget : β < θ * κ := by dsimp only [β]; nlinarith only [hθ, hκ]
+-  let τ := min θ β / 3000000
+-  have hτ : 0 < τ := by dsimp only [τ]; positivity
+-  have hτθ : 3000000 * τ ≤ θ := by
+-    dsimp only [τ]
+-    nlinarith only [min_le_left θ β]
+-  have hτβ : 3000000 * τ ≤ β := by
+-    dsimp only [τ]
+-    nlinarith only [min_le_right θ β]
+-  let α₀ := min αe (min (1 / 2) (1 / (8 * H₀ * (1 + (5 : ℝ) ^ 34))))
+-  have hα₀ : 0 < α₀ := by dsimp only [α₀]; positivity
+-  obtain ⟨Jx, hextract⟩ := exists_spanning_commuting_extraction_at_dyadic_scale
+-    hθ hθhalf (show θ / 2 < θ by linarith only [hθ]) hβbudget hθ
+-  refine ⟨θ, α₀, τ, max Je Jx, hθ, hθhalf, hθκ, hα₀, hτ, hτθ, hτβ, ?_⟩
+-  intro j hj η ηn r U A Y h Q α q₀ Nprofile hlarge hNprofile hQ hQh hα hαbound hαinv
+-    hq₀ hq₀inv hprofile hYcard hU hUi hY hdouble hAloc hA1 hAi p q hp hq hpq hspan hdistribution hNbound
+-  have hje : Je ≤ j := (le_max_left _ _).trans hj
+-  have hjx : Jx ≤ j := (le_max_right _ _).trans hj
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  have hαe' : α ≤ αe := hαbound.trans (min_le_left _ _)
+-  have hαhalf : α ≤ 1 / 2 := hαbound.trans ((min_le_right _ _).trans (min_le_left _ _))
+-  have hαnorm : α ≤ 1 / (8 * H₀ * (1 + (5 : ℝ) ^ 34)) :=
+-    hαbound.trans ((min_le_right _ _).trans (min_le_right _ _))
+-  have hαsmall : 8 * H₀ * (1 + (5 : ℝ) ^ 34) * α ≤ 1 :=
+-    (mul_le_mul_of_nonneg_left hαnorm (by positivity)).trans (by norm_num)
+-  have hA : A ⊆ mobiusIdentityBall α := by rw [hAloc]; exact Set.inter_subset_right
+-  obtain ⟨_, _, htrip⟩ := localized_set_pow_coveringNumber (η := ηn) Y 2
+-    hQ hα (by linarith only [hαhalf]) hη hU hUi hY hdouble
+-  rw [← hAloc] at htrip
+-  have hcoef := (fixed_power_coefficient_bound 2 hlarge hNprofile (zero_le_one.trans hQ) hQh
+-    hα hαinv hq₀ hq₀inv (Nat.cast_nonneg _) hYcard).trans
+-    (profile_power_exponent_bound hη hηone hτ.le
+-      ((by norm_num : (0 : ℝ) ≤ 2 ^ 100).trans hlarge) hprofile hτβ (by norm_num : 2 ≤ 283))
+-  have htrip' := htrip.trans (mul_le_mul_of_nonneg_right hcoef ENNReal.toReal_nonneg)
+-  obtain ⟨R, hRA, hRn, w, hw, hDnear, hDfar, z, hz, v, x₀, hx₀, f,
+-      hform, hclose, hcomm, hAfin, hCfin, hVfin, hcube⟩ :=
+-    hextract j hjx hA1 hα hαhalf hαsmall hA htrip' hdistribution hp hq hpq hspan
+-  let D := (fun x : G => w⁻¹ * x) '' R
+-  let S := {x : G | x ∈ A ∧ dist ((x * z * x⁻¹ : G) : RMat) v ≤ η}
+-  choose c t hct using hform
+-  have hr_eq : a * η ^ (2 * θ) = r := by
+-    rw [haeq]
+-    dsimp only [r]
+-    ring
+-  have hr_eq' : a * ((1 / 4 : ℝ) ^ j) ^ (2 * θ) = ((1 / 4 : ℝ) ^ j) ^ (2 * θ) / (2 * H₀) := hr_eq
+-  have herr_eq : 12800 * B₀ ^ 6 * η / r = e * η ^ (1 - 2 * θ) := by
+-    rw [heeq, Real.rpow_sub hη, Real.rpow_one, haeq]
+-    dsimp only [r]
+-    field_simp
+-  have hfn : (Set.range (fun x : S => (f x : RMat))).Nonempty :=
+-    Set.range_nonempty_iff_nonempty.mpr ⟨⟨x₀, hx₀⟩⟩
+-  have hdet := hexclude j hje Y hlarge hNprofile hQ hQh hα hαe' hαinv hq₀ hq₀inv
+-    hτ.le hτθ hprofile hYcard hU hUi hY hdouble hAloc hA1 hAi hp hq hpq hspan hdistribution
+-    hNbound f (fun x : S => (x : G)) c t x₀ z (A * D * A⁻¹)
+-    (normalized_mixed_product_subset_power hAi hRA hw) (hDnear hz)
+-    (by simpa only [hr_eq'] using hDfar z hz) hx₀.1 (fun x => x.property.1) hct hfn
+-    (fun x => by rw [dist_comm, ← herr_eq]; exact (hclose x).2)
+-    (by simpa only [hr_eq'] using hcube)
+-  exact ⟨R, hRA, hRn, w, hw, hDnear, hDfar, z, hz, hdet, v, x₀, hx₀, f,
+-    (fun x => ⟨c x, t x, hct x⟩), hclose, hcomm, hAfin, hCfin, hVfin, hcube⟩
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/PaddingMStar.lean
++++ after/lean/TransposeFollowup/PaddingMStar.lean
+@@ -1,104 +0,0 @@
+-import TransposeFollowup.CanonicalExcursion
+-import Transpose.Tape.MStarWalk
+-
+-/-! Apply the original M* theorem to the constructed walk family. Existence
+-and uniform generation of an expanding nested-page family are explicit
+-remaining inputs; this file asserts no unconditional existence result. -/
+-
+-namespace TransposeFollowup
+-
+-open Classical Transpose Transpose.Tape Transpose.Tape.Impl Transpose.Tape.TSDiagram
+-open MeasureTheory Filter Topology
+-open scoped ENNReal BigOperators
+-set_option autoImplicit false
+-
+-structure ExpandingPageFamily (k q : ℕ) (eta : ℝ) where
+-  size : ℕ → ℕ
+-  large : ∀ i, 4 ≤ size i
+-  graph : (i : ℕ) → SimpleGraph (Fin (paddingVertices (size i)))
+-  pages : ∀ i, NestedMatchingPages (graph i) k
+-  degree : ∀ i v, (graph i).degree v ≤ q
+-  expansion : ∀ i (S : Finset (Fin (paddingVertices (size i)))),
+-    2 * S.card ≤ paddingVertices (size i) → eta * S.card ≤ (outsideNeighbors (graph i) S).card
+-
+-namespace ExpandingPageFamily
+-
+-variable {k q : ℕ} {eta : ℝ} (F : ExpandingPageFamily k q eta)
+-
+-def times (cellBits K : ℕ) (offset : ℕ → ℕ) (i : ℕ) : ℕ :=
+-  NestedMatchingPages.horizon (v := paddingVertices (F.size i))
+-    (blockSize cellBits (F.size i)) K (offset i)
+-
+-noncomputable def paths (cellBits K extra : ℕ) (offset : ℕ → ℕ)
+-    (hG : 1 ≤ cellBits) (hK : 0 < K) (i : ℕ) : Fin (k + extra) → ℕ → ℤ :=
+-  (F.pages i).paddedWalk (blockSize cellBits (F.size i)) K (offset i) extra
+-    (by have := one_le_blockSize hG (show 1 ≤ F.size i by have := F.large i; omega); omega) hK
+-
+-theorem paths_unitSteps (cellBits K extra : ℕ) (offset : ℕ → ℕ)
+-    (hG : 1 ≤ cellBits) (hK : 0 < K) (i : ℕ) (p : Fin (k + extra)) :
+-    UnitSteps (F.paths cellBits K extra offset hG hK i p) :=
+-  (F.pages i).paddedWalk_unitSteps _ _ _ _ _ _ p
+-
+-theorem paths_zero (cellBits K extra : ℕ) (offset : ℕ → ℕ)
+-    (hG : 1 ≤ cellBits) (hK : 0 < K) (i : ℕ) (p : Fin (k + extra)) :
+-    F.paths cellBits K extra offset hG hK i p 0 = 0 :=
+-  (F.pages i).paddedWalk_zero _ _ _ _ _ _ p
+-
+-theorem times_linear (cellBits K a : ℕ) (offset : ℕ → ℕ) (hG : 1 ≤ cellBits)
+-    (hoff : ∀ i, offset i ≤ a * inputLength (F.size i)) (i : ℕ) :
+-    F.times cellBits K offset i ≤ (a + 7 * K) * inputLength (F.size i) := by
+-  exact NestedMatchingPages.horizon_with_setup hG (paddingVertices_bounds (F.large i)).2.1
+-    K (offset i) a (hoff i)
+-
+-theorem paths_cutIneq (cellBits K extra : ℕ) (offset : ℕ → ℕ)
+-    (hG : 1 ≤ cellBits) (hK : 0 < K) (heta : 0 < eta)
+-    (hstretch : 4 ≤ (4 * K - 1 : ℕ) * eta)
+-    (hheads : 4 * (q : ℝ) ≤ 3 * (k + extra : ℕ) * eta) (i : ℕ) :
+-    CutIneq (F.size i) cellBits (blockSize cellBits (F.size i))
+-      (F.times cellBits K offset i) 0 0 (F.paths cellBits K extra offset hG hK i) :=
+-  canonical_padding_cutIneq (F.pages i) (F.large i) cellBits K (offset i) extra hG hK
+-    eta heta (F.expansion i) q (F.degree i) hstretch hheads
+-
+-/-- Every subsequential limit has all the original M* conclusions. This is
+-an application of the first paper's theorem, not a second limit proof. -/
+-theorem macrostar (hsize : Tendsto F.size atTop atTop)
+-    (cellBits K extra a : ℕ) (offset : ℕ → ℕ)
+-    (hG : 1 ≤ cellBits) (hK : 0 < K) (heta : 0 < eta)
+-    (hstretch : 4 ≤ (4 * K - 1 : ℕ) * eta)
+-    (hheads : 4 * (q : ℝ) ≤ 3 * (k + extra : ℕ) * eta)
+-    (hoff : ∀ i, offset i ≤ a * inputLength (F.size i)) :
+-    let hs := F.paths cellBits K extra offset hG hK
+-    let Ts := F.times cellBits K offset
+-    let c₀ : ℝ := (a + 7 * K : ℕ) * cellBits + 1
+-    (∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ P : Fin (k + extra) → ℝ → ℝ, ∀ t,
+-      TendstoUniformlyOn (fun i => blockTraj (blockSize cellBits (F.size (φ i))) (F.size (φ i))
+-        (fun τ => hs (φ i) t (min τ (Ts (φ i))))) (P t) atTop (Set.Icc 0 c₀)) ∧
+-    ∀ φ : ℕ → ℕ, StrictMono φ → ∀ P : Fin (k + extra) → ℝ → ℝ,
+-      (∀ t, TendstoUniformlyOn (fun i => blockTraj (blockSize cellBits (F.size (φ i))) (F.size (φ i))
+-        (fun τ => hs (φ i) t (min τ (Ts (φ i))))) (P t) atTop (Set.Icc 0 c₀)) →
+-      (∀ t, LipschitzOnWith 1 (P t) (Set.Icc 0 c₀)) ∧
+-      (∀ (θ : ℝ≥0∞) (S : Set ℝ) (β : ℝ → ℕ), FinUnionIcc S → PiecewiseConstOn β S c₀ →
+-        (∀ ell, volume {u | u ∈ Set.Icc 0 c₀ ∧ u ∉ S ∧ β u = ell} ≤ θ) →
+-        1 ≤ (∑ t, ∫⁻ p, levelCross (P t) S β c₀ p) + 2 * θ +
+-          2 * (k + extra : ℕ) * volume (S ∩ Set.Icc 0 c₀)) ∧
+-      1 ≤ ∑ t, ∫⁻ p, levelExcess (P t) c₀ p ∧
+-      1 + ∑ t, volume (P t '' Set.Icc 0 c₀) ≤ (k + extra : ℕ) * ENNReal.ofReal c₀ ∧
+-      ¬ ∀ t, MonotoneOn (P t) (Set.Icc 0 c₀) ∨ AntitoneOn (P t) (Set.Icc 0 c₀) := by
+-  dsimp only
+-  have hunit : ∀ᶠ i in atTop, ∀ t, ∀ τ < F.times cellBits K offset i,
+-      |F.paths cellBits K extra offset hG hK i t (τ + 1) -
+-        F.paths cellBits K extra offset hG hK i t τ| ≤ 1 :=
+-    Eventually.of_forall (fun i t τ _ => F.paths_unitSteps cellBits K extra offset hG hK i t τ)
+-  have htime : ∀ᶠ i in atTop, (F.times cellBits K offset i : ℝ) ≤
+-      (a + 7 * K : ℕ) * (inputLength (F.size i) : ℝ) := by
+-    apply Eventually.of_forall
+-    intro i
+-    exact_mod_cast F.times_linear cellBits K a offset hG hoff i
+-  have hcut := Eventually.of_forall (f := atTop)
+-    (F.paths_cutIneq cellBits K extra offset hG hK heta hstretch hheads)
+-  have hm := theoremMStar_walk (c := ((a + 7 * K : ℕ) : ℝ))
+-    (Ds := fun _ => 0) (ss := fun _ => 0) hsize hunit htime hcut (by simp)
+-  exact ⟨hm.1 (Eventually.of_forall (F.paths_zero cellBits K extra offset hG hK)), hm.2⟩
+-
+-end ExpandingPageFamily
+-end TransposeFollowup
+--- before/lean/TransposeFollowup/PaidPaddingLimits.lean
++++ after/lean/TransposeFollowup/PaidPaddingLimits.lean
+@@ -32,10 +32,10 @@
+             Transpose.step (machine F K M extra) (ws i) d=none ∧ d.outRev.reverse=outs i ∧
+             CutIneq (ns i) 3 (blockSize 3 (ns i)) (Ts i) 0 0 (paths F K M extra (ws i))) ∧
+         NativeRunLimits.Conclusion (machine F K M extra) ns ws Ts (PaidPayload.coefficient F K+a) := by
+-  obtain ⟨K,extra,hcompile⟩:=uniform_computation_with_cut F M eta heta
++  obtain ⟨K,extra,hcompile⟩:=uniform_computation_with_cut F eta heta
+   refine ⟨K,extra,?_⟩
+   intro ns hns hn ws outs hw a hc he
+-  have hr:=fun i => hcompile (ns i) (hn i) (ws i) (outs i) (hw i) (he i)
++  have hr:=fun i => hcompile M (ns i) (hn i) (ws i) (outs i) (hw i) (he i)
+     (a*Transpose.inputLength (ns i)) (hc i)
+   choose Ts ht ds hs hh ho hcut using hr
+   have htime : ∀ i,Ts i ≤ (PaidPayload.coefficient F K+a)*Transpose.inputLength (ns i) := by
+--- before/lean/TransposeFollowup/PaidPaddingParameters.lean
++++ after/lean/TransposeFollowup/PaidPaddingParameters.lean
+@@ -27,15 +27,17 @@
+   have h : 1 ≤ max 1 M.g.size:=Nat.le_max_left _ _
+   nlinarith
+ 
+-theorem exists_parameters (F : Fin (c+1) → RationalMobius) (M : Transpose.TM)
++theorem exists_parameters (F : Fin (c+1) → RationalMobius)
+     (eta : ℝ) (heta : 0<eta) :
+     ∃ K extra : ℕ,0<K ∧ 4 ≤ (4*K-1:ℕ)*eta ∧
+-      4*(rationalPageCount F:ℝ) ≤ 3*(machine F K M extra).k*eta := by
++      ∀ M : Transpose.TM, 4*(rationalPageCount F:ℝ) ≤ 3*(machine F K M extra).k*eta := by
+   obtain ⟨K,extra,hK,hs,he⟩:=exists_padding_parameters eta heta (rationalPageCount F) 0
+   simp only [Nat.zero_add] at he
++  refine ⟨K,extra,hK,hs,?_⟩
++  intro M
+   have hk : (extra:ℝ) ≤ (machine F K M extra).k:=by exact_mod_cast extra_le_heads F K M extra
+   have hm:=mul_le_mul_of_nonneg_right hk (by positivity : 0 ≤ 3*eta)
+-  exact ⟨K,extra,hK,hs,by nlinarith⟩
++  nlinarith
+ 
+ theorem preserves_computation (F : Fin (c+1) → RationalMobius) (K : ℕ)
+     (M : Transpose.TM) (extra : ℕ) (w out : List Bool) (n : ℕ)
+@@ -51,11 +53,11 @@
+   PaidPayload.preserves_transposesWithin F K (StationaryTapes.machine M extra) T
+     (StationaryTapes.transposesWithin M extra T h)
+ 
+-/-- K and the extra tape count are selected before the dimension, input,
++/-- K and the extra tape count are selected before the payload machine, dimension, input,
+ output, expansion check and time bound. Only expansion remains a premise. -/
+-theorem uniform_computation_with_cut (F : Fin (c+1) → RationalMobius) (M : Transpose.TM)
++theorem uniform_computation_with_cut (F : Fin (c+1) → RationalMobius)
+     (eta : ℝ) (heta : 0<eta) :
+-    ∃ K extra : ℕ,∀ (n : ℕ),1 ≤ n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
++    ∃ K extra : ℕ,∀ (M : Transpose.TM) (n : ℕ),1 ≤ n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
+       (∀ S : Finset (Fin (2*n)),2*S.card ≤ 2*n →
+         eta*S.card ≤ (outsideNeighbors (overlapGraph (rationalFamilyMaps F) n) S).card) →
+       ∀ (t : ℕ),Transpose.ComputesWithin M w out t →
+@@ -63,10 +65,10 @@
+         Transpose.stepN (machine F K M extra) w T (Transpose.init (machine F K M extra))=some d ∧
+         Transpose.step (machine F K M extra) w d=none ∧ d.outRev.reverse=out ∧
+         CutIneq n 3 (blockSize 3 n) T 0 0 (paths F K M extra w) := by
+-  obtain ⟨K,extra,hK,hs,hh⟩:=exists_parameters F M eta heta
++  obtain ⟨K,extra,hK,hs,hh⟩:=exists_parameters F eta heta
+   refine ⟨K,extra,?_⟩
+-  intro n hn w out hw hexp t ht
++  intro M n hn w out hw hexp t ht
+   exact PaidPayload.preserves_computation_with_cut F K (StationaryTapes.machine M extra) hK
+-    w out n hn hw eta heta hexp hs hh t (StationaryTapes.computesWithin M extra w out t ht)
++    w out n hn hw eta heta hexp hs (hh M) t (StationaryTapes.computesWithin M extra w out t ht)
+ 
+ end TransposeFollowup.PaidPadding
+--- before/lean/TransposeFollowup/PaidReadyCut.lean
++++ after/lean/TransposeFollowup/PaidReadyCut.lean
+@@ -1,60 +0,0 @@
+-import TransposeFollowup.PaidReadyGeometry
+-import TransposeFollowup.PaidTimedCut
+-import TransposeFollowup.ExcursionIntervalTransfer
+-
+-namespace TransposeFollowup.PaidReady
+-open Classical FixedTapeCompiler Transpose.Tape Transpose.Tape.Impl Transpose.Tape.TSDiagram
+-set_option autoImplicit false
+-variable {c : ℕ}
+-
+-theorem native_layout (F : Fin (c+1) → RationalMobius) (K : ℕ) (hK : 0<K)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n) :
+-    ∃ a ≤ (OpcodeGenerator.coefficient F+RadiusClock.linearConstant K)*w.length+8*n*rationalPageCount F+6,
+-      Nonempty (ExcursionLayout (overlapGraph (rationalFamilyMaps F) n) (blockSize 3 n) K (nativeMachine F K).k
+-        (a+GeneratorRows.stride F (K*blockSize 3 n)*(2*n)) (paths F K w)) := by
+-  obtain ⟨a,ha,hwalk⟩:=native_row_walk F K w n hn hw
+-  have hr : 0<blockSize 3 n:=by have := one_le_blockSize (by omega : 1 ≤ 3) hn;omega
+-  have hs : GeneratorRows.fetchDelay F+7*(K*blockSize 3 n) ≤ GeneratorRows.stride F (K*blockSize 3 n) := by
+-    unfold GeneratorRows.fetchDelay GeneratorRows.stride
+-    omega
+-  let D:=overlapPages (rationalFamilyMaps F) n
+-  let A:=D.timedLayout (blockSize 3 n) K (GeneratorRows.stride F (K*blockSize 3 n)) a (GeneratorRows.fetchDelay F) hr hK hs
+-  refine ⟨a,ha,⟨A.transfer_on_excursions (pagePorts F K) (le_refl _) ?_⟩⟩
+-  intro e t hl hu
+-  have hlow : a ≤ t := by
+-    change a+GeneratorRows.stride F (K*blockSize 3 n)*(D.src e).val+GeneratorRows.fetchDelay F+K*blockSize 3 n ≤ t at hl
+-    omega
+-  have hhigh : t ≤ a+GeneratorRows.stride F (K*blockSize 3 n)*(2*n) :=
+-    le_of_lt (lt_of_le_of_lt hu (A.close_before_end e))
+-  rw [hwalk (A.page e) t hlow hhigh]
+-  exact GeneratorRows.generated_walk_eq F n (K*blockSize 3 n) (GeneratorRows.stride F (K*blockSize 3 n)) a
+-    (GeneratorRows.fetchDelay F) (Nat.mul_pos hK hr) (by omega) (A.page e) t
+-
+-theorem native_cutIneq (F : Fin (c+1) → RationalMobius) (K : ℕ) (hK : 0<K)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n)
+-    (eta : ℝ) (heta : 0<eta)
+-    (hexp : ∀ S : Finset (Fin (2*n)),2*S.card ≤ 2*n →
+-      eta*S.card ≤ (outsideNeighbors (overlapGraph (rationalFamilyMaps F) n) S).card)
+-    (hstretch : 4 ≤ (4*K-1:ℕ)*eta) (hheads : 4*(rationalPageCount F:ℝ) ≤ 3*(nativeMachine F K).k*eta) :
+-    ∃ a ≤ (OpcodeGenerator.coefficient F+RadiusClock.linearConstant K)*w.length+8*n*rationalPageCount F+6,
+-      CutIneq n 3 (blockSize 3 n) (a+GeneratorRows.stride F (K*blockSize 3 n)*(2*n)) 0 0 (paths F K w) := by
+-  obtain ⟨a,ha,⟨A⟩⟩:=native_layout F K hK w n hn hw
+-  refine ⟨a,ha,?_⟩
+-  exact A.cutIneq eta heta (by simpa only [Fintype.card_fin] using hexp) (rationalPageCount F)
+-    (overlapPages (rationalFamilyMaps F) n).degree_le_pages hstretch hheads
+-    (by simpa only [Fintype.card_fin] using (show 2 ≤ 2*n by omega)) n 3
+-    (by simpa only [Fintype.card_fin] using (show n ≤ 2*(2*n) by omega)) (blockSize_mul_ge (by omega : 1 ≤ 3))
+-
+-theorem native_canonical_cut (F : Fin (c+1) → RationalMobius) (K : ℕ) (hK : 0<K)
+-    (w : List Bool) (n : ℕ) (hn : 1 ≤ n) (hw : w.length=Transpose.inputLength n)
+-    (eta : ℝ) (heta : 0<eta)
+-    (hexp : ∀ S : Finset (Fin (2*n)),2*S.card ≤ 2*n →
+-      eta*S.card ≤ (outsideNeighbors (overlapGraph (rationalFamilyMaps F) n) S).card)
+-    (hstretch : 4 ≤ (4*K-1:ℕ)*eta) (hheads : 4*(rationalPageCount F:ℝ) ≤ 3*(nativeMachine F K).k*eta) :
+-    ∃ T ≤ PaidGeneratorRows.coefficient F K*w.length,CutIneq n 3 (blockSize 3 n) T 0 0 (paths F K w) := by
+-  obtain ⟨a,ha,hcut⟩:=native_cutIneq F K hK w n hn hw eta heta hexp hstretch hheads
+-  refine ⟨a+GeneratorRows.stride F (K*blockSize 3 n)*(2*n),?_,hcut⟩
+-  rw [hw] at ha ⊢
+-  exact PaidGeneratorRows.native_horizon_linear F K n a hn ha
+-
+-end TransposeFollowup.PaidReady
+--- before/lean/TransposeFollowup/PhysicalAffineApproximationObstruction.lean
++++ after/lean/TransposeFollowup/PhysicalAffineApproximationObstruction.lean
+@@ -36,7 +36,8 @@
+   exact (not_le_of_gt hp) hb
+ 
+ /-- Geometry may depend on the selected inputs and on a further
+-subsequence. All native heads, all executed phases and the physical
++subsequence. It is required only for sequences eventually in the correct sets.
++All native heads, all executed phases and the physical
+ horizon are included in the approximation premise. -/
+ theorem no_subsequential_physical_affine_fast_approximation
+     {k G : ℕ} {c : ℝ} {ns : ℕ → ℕ} (hns : Tendsto ns atTop atTop)
+@@ -49,6 +50,7 @@
+       HaltsAt (Ms i) w T ∧ ∃ A : Matrix, w = encode (ns i) (entryBits (ns i)) A ∧
+         (run (Ms i) w T).outRev.reverse = encode (ns i) (entryBits (ns i)) (transpose A))
+     (hgeometry : ∀ (φ : ℕ → ℕ), StrictMono φ → ∀ (ws : ℕ → List Bool),
++      (∀ᶠ i in atTop, ws i ∈ Ws i) →
+       ∃ ψ : ℕ → ℕ, StrictMono ψ ∧ ∃ (J : ℕ) (e : ℕ → ℝ) (q : ℕ → Fin k → ℝ → ℝ),
+         Tendsto e atTop (𝓝 0) ∧ ∀ᶠ i in atTop,
+           (∀ t, HasAffineIntervalCover J (q i t) ((c*G+1)/G)) ∧
+@@ -57,13 +59,14 @@
+               ⌊(inputLength (ns (φ (ψ i))) : ℝ)*x⌋₊
+               (Fin.cast (hk (φ (ψ i))).symm t) : ℝ)/inputLength (ns (φ (ψ i))))
+               (q i t x) ≤ e i) : False := by
+-  obtain ⟨Ts,Ds,Fs,ws,_,_,_,⟨φ,hφ,P,hconv⟩,hlim⟩ :=
++  obtain ⟨Ts,Ds,Fs,ws,hclasses,_,_,⟨φ,hφ,P,hconv⟩,hlim⟩ :=
+     popular_affine_time_nonuniform hns hk hG hq hm hmL hfast
+   have hrequired := (hlim φ hφ P hconv).2
+   have hphys := RegularMotion.native_sampled_physical_limit (hns.comp hφ.tendsto_atTop)
+     (fun i => Ms (φ i)) (fun i => hk (φ i)) (fun i => hG (φ i))
+     (fun i => ws (φ i)) P hconv
+   obtain ⟨ψ,hψ,J,e,q,he,ha⟩ := hgeometry φ hφ ws
++    (hclasses.mono fun _ hi => hi.2.1 hi.1.1)
+   have hG1 : 1 ≤ G := hG 0 ▸ cellBits_pos (Ms 0)
+   have hGp : (0 : ℝ) < G := by exact_mod_cast (show 0 < G by omega)
+   apply hrequired.not_physical_pointwise_bounded_covers hGp q (ha.mono fun i hi => hi.1)
+--- before/lean/TransposeFollowup/ProtocolTruncation.lean
++++ after/lean/TransposeFollowup/ProtocolTruncation.lean
+@@ -29,9 +29,6 @@
+       | none => .halt
+       | some q => .query q (fun a => truncate s k (h ++ [a]))
+ 
+-def Pairwise (s : PublicStrategy ι V) : Prop :=
+-  ∀ h q, s h = some q → q.support.card ≤ 2
+-
+ def Along (s : PublicStrategy ι V) (P : Finset ι → Prop) :
+     List Bool → List Bool → Prop
+   | _, [] => True
+@@ -52,17 +49,6 @@
+           simp only [List.length_cons, Nat.add_le_add_iff_right] at hk
+           simpa only [truncate, hn, PublicProtocol.run] using
+             congrArg (List.cons (q.read x)) (ih k hk)
+-
+-theorem truncate_pairwise (s : PublicStrategy ι V) (hs : s.Pairwise) (k : ℕ) (h : List Bool) :
+-    (s.truncate k h).Pairwise := by
+-  induction k generalizing h with
+-  | zero => trivial
+-  | succ k ih =>
+-      cases hn : s h with
+-      | none => simp [truncate, hn, PublicProtocol.Pairwise]
+-      | some q =>
+-          simp only [truncate, hn, PublicProtocol.Pairwise]
+-          exact ⟨hs h q hn, fun a => ih (h ++ [a])⟩
+ 
+ theorem truncate_along (s : PublicStrategy ι V) (P : Finset ι → Prop)
+     (k : ℕ) (h m : List Bool) (hs : s.Along P h m) :
+@@ -104,17 +90,13 @@
+ theorem finite_family_truncation {H : Type*}
+     (F : Finset ((i : ι) → V i)) (helper : ((i : ι) → V i) → H)
+     (strategy : H → PublicStrategy ι V) (M : ((i : ι) → V i) → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x)) :
+     ∃ p : H → PublicProtocol ι V,
+-      (∀ z, (p z).Pairwise) ∧
+       (∀ x ∈ F, (p (helper x)).run x = M x) ∧
+       ∀ x ∈ F, ∀ P, (strategy (helper x)).Along P [] (M x) →
+         (p (helper x)).Along P (M x) := by
+   let B := F.sup (fun x => (M x).length)
+-  refine ⟨fun z => (strategy z).truncate B [], ?_, ?_, ?_⟩
+-  · intro z
+-    exact truncate_pairwise _ (hpair z) B []
++  refine ⟨fun z => (strategy z).truncate B [], ?_, ?_⟩
+   · intro x hx
+     exact truncate_run_eq _ x (hrun x hx) B (Finset.le_sup (f := fun x => (M x).length) hx)
+   · intro x _ P hP
+--- before/lean/TransposeFollowup/RawMaskedStrideObstruction.lean
++++ after/lean/TransposeFollowup/RawMaskedStrideObstruction.lean
+@@ -59,7 +59,7 @@
+       (ticks (inputLength (ns i)) (S i))).outRev.reverse = _
+     rw [hr,houtput,List.reverse_reverse]
+     exact hout
+-  · intro φ hφ ws
++  · intro φ hφ ws _
+     have hp (i : ℕ) : 0 < inputLength (ns (φ i)) := lt_of_lt_of_le (hS (φ i)) (hSP (φ i))
+     obtain ⟨ψ,hψ,J,e,q,he,ha⟩ := full_affine_approximation_subsequence hp
+       (fun i => hS (φ i)) (fun i => hSP (φ i))
+--- before/lean/TransposeFollowup/RawMixedBinaryWordObstruction.lean
++++ after/lean/TransposeFollowup/RawMixedBinaryWordObstruction.lean
+@@ -33,7 +33,7 @@
+     have ht := bounded_ticks (inputLength (ns i)) K hp (ops i) hvi hki
+     have hn := native_correct (inputLength (ns i)) hp (ops i) hvi w
+     exact ⟨ticks (inputLength (ns i)) (ops i),by exact_mod_cast ht,hn.2.1,A,hA,hn.2.2.1.trans hout⟩
+-  · intro φ hφ ws
++  · intro φ hφ ws _
+     have hinf := (inputLength_tendsto hns).comp hφ.tendsto_atTop
+     have hp : ∀ᶠ i in atTop, 0 < inputLength (ns (φ i)) :=
+       (hinf.eventually_gt_atTop 0).mono (fun i hi => by
+--- before/lean/TransposeFollowup/RawSymbolWordObstruction.lean
++++ after/lean/TransposeFollowup/RawSymbolWordObstruction.lean
+@@ -51,7 +51,7 @@
+         (body_active hci (ops i)) w
+     · rw [hr.2,ho,List.reverse_reverse]
+       exact hout
+-  · intro φ hφ ws
++  · intro φ hφ ws _
+     let H : ℝ := ((7+(C : ℝ)*K)*3+1)/3
+     have hH : 0 ≤ H := by dsimp [H]; positivity
+     have hpinf := (inputLength_tendsto hns).comp hφ.tendsto_atTop
+--- before/lean/TransposeFollowup/RawTernaryHorizontal.lean
++++ after/lean/TransposeFollowup/RawTernaryHorizontal.lean
+@@ -1,88 +0,0 @@
+-import TransposeFollowup.TernaryHorizontal
+-import TransposeFollowup.ScheduledBankRowsInvariant
+-
+-/-! Apply scalar-trit Q/q to every row on one shared symbol bank. The internal value
+-keeps all ternary symbols. The raw shell emits its existing Boolean
+-projection; the final word theorem must justify Boolean output endpoints.
+-This is not the general b-trit-entry operation: adjacent scalar prefixes
+-would mix lanes. A lane-preserving buffer implementation remains required. -/
+-namespace TransposeFollowup.RawTernaryHorizontal
+-open Classical FixedTapeCompiler ScheduledNativeIO
+-open CopyMachine (Sym)
+-set_option autoImplicit false
+-
+-def internalTicks (W r : ℕ) : ℕ := r*(TernaryHorizontal.ticks W+W)+r*W
+-
+-noncomputable def schedule (sub : Bool) (W r : ℕ) : ℕ → NativeIO.Program (Fin 2) SharedRowBank.Mode :=
+-  ScheduledBankRows.schedule (TernaryHorizontal.update sub W) r
+-
+-def value (sub : Bool) (W : ℕ) (x : ℕ → Sym Bool) (j : ℕ) : Sym Bool :=
+-  TernaryHorizontal.value sub W (fun i => x ((j/W)*W+i)) (j%W)
+-
+-theorem value_row (sub : Bool) (W k j : ℕ) (x : ℕ → Sym Bool) (hj : j<W) :
+-    value sub W x (k*W+j)=
+-      ((TernaryBank.rowResult sub 0 ((RawCarryBank.word W (fun i => x (k*W+i))).map TernaryBank.decode)).map
+-        TernaryBank.encode).getI j := by
+-  have hW : 0<W := Nat.zero_lt_of_lt hj
+-  have hd : (k*W+j)/W=k := by
+-    rw [Nat.add_comm,Nat.add_mul_div_right _ _ hW,Nat.div_eq_of_lt hj,zero_add]
+-  rw [value,hd,Nat.mul_add_mod_self_right,Nat.mod_eq_of_lt hj]
+-  exact TernaryHorizontal.value_eq sub W _ j hj
+-
+-theorem value_congr (sub : Bool) (W r : ℕ) : BankWord.Congruent (r*W) (value sub W) :=
+-  ScheduledBankRows.value_congr (TernaryHorizontal.update sub W) r
+-
+-theorem schedule_active (sub : Bool) (W r i : ℕ) (c : SharedRowBank.State) :
+-    NativeIO.Active (schedule sub W r i) c :=
+-  ScheduledBankRows.schedule_active (TernaryHorizontal.update sub W) r i c
+-
+-theorem represents (sub : Bool) (W r : ℕ) (w : List Bool) (c : SharedRowBank.State)
+-    (hc : BankWord.symbols.clean c) :
+-    BankWord.Represents BankWord.symbols (r*W) c
+-      (trajectory (schedule sub W r) w c (internalTicks W r))
+-      (value sub W (BankWord.input BankWord.symbols c)) := by
+-  change BankWord.Represents BankWord.symbols (r*W) c
+-    (trajectory (ScheduledBankRows.schedule (TernaryHorizontal.update sub W) r) w c
+-      (ScheduledBankRows.ticks (TernaryHorizontal.update sub W) r)) _
+-  rw [ScheduledBankRows.schedule_exact]
+-  exact ScheduledBankRows.represents (TernaryHorizontal.update sub W) r w c hc
+-
+-theorem update_cost (sub : Bool) (W : ℕ) (hW : 0<W) :
+-    (TernaryHorizontal.update sub W).cost+W=27*W := by
+-  change TernaryHorizontal.ticks W+W=27*W
+-  rw [TernaryHorizontal.ticks_eq W hW]
+-  omega
+-
+-theorem internal_ticks_eq (W r : ℕ) (hW : 0<W) : internalTicks W r=28*(r*W) := by
+-  rw [internalTicks,TernaryHorizontal.ticks_eq W hW]
+-  ring
+-
+-def ticks (W r : ℕ) : ℕ := RawProgramShell.ticks (r*W) (internalTicks W r)
+-
+-noncomputable def machine (sub : Bool) (W r : ℕ) :=
+-  RawProgramShell.machine SharedRowBank.initialRowMode (r*W) (internalTicks W r) (schedule sub W r)
+-
+-def output (sub : Bool) (W r : ℕ) (w : List Bool) : List Bool :=
+-  (List.range (r*W)).map (fun j => MaskedStrideCell.bit
+-    (value sub W (fun i => .data (ScheduledRawInput.inputBit w i)) j))
+-
+-theorem ticks_eq (W r : ℕ) (hW : 0<W) : ticks W r=35*(r*W) := by
+-  rw [ticks,RawProgramShell.ticks_eq,internal_ticks_eq W r hW]
+-  omega
+-
+-theorem native_correct (sub : Bool) (W r : ℕ) (w : List Bool) :
+-    ∃ c : Transpose.Config (machine sub W r),
+-      Transpose.stepN (machine sub W r) w (ticks W r) (Transpose.init (machine sub W r))=some c ∧
+-      Transpose.step (machine sub W r) w c=none ∧ c.outRev=(output sub W r w).reverse ∧
+-      ∀ z, c.work ((RawProgramShell.encoding SharedRowBank.initialRowMode (r*W) (internalTicks W r)).port 1) z=0 := by
+-  exact RawProgramShell.native_correct SharedRowBank.initialRowMode (r*W) (internalTicks W r)
+-    (schedule sub W r) (schedule_active sub W r) (value sub W) (value_congr sub W r)
+-    (fun w c hc => represents sub W r w c hc) w
+-
+-theorem resources (sub : Bool) (W r : ℕ) :
+-    (machine sub W r).k=2 ∧ (machine sub W r).g+1=5 ∧ (machine sub W r).q+1=(ticks W r+1)*200 := by
+-  have h := RawProgramShell.fixed_resources SharedRowBank.initialRowMode (r*W) (internalTicks W r) (schedule sub W r)
+-  rw [show Fintype.card CoupledRowCell.Mode=50 by decide +kernel] at h
+-  exact h
+-
+-end TransposeFollowup.RawTernaryHorizontal
+--- before/lean/TransposeFollowup/RawTernaryHorizontalApproximation.lean
++++ after/lean/TransposeFollowup/RawTernaryHorizontalApproximation.lean
+@@ -1,89 +0,0 @@
+-import TransposeFollowup.RawTernaryHorizontal
+-import TransposeFollowup.ScheduledBankRowsMotion
+-import TransposeFollowup.RawShellNativeMotion
+-import TransposeFollowup.RawShellResources
+-
+-/-! Reuse the existing row-update motion theorem and raw shell estimates for
+-ternary Q/q. Every row is a paid 27W-step block, followed by the bank
+-rewind. The all-time error is 28W+6, including raw IO and halted tails. -/
+-namespace TransposeFollowup.RawTernaryHorizontal
+-open Classical Filter Topology FixedTapeCompiler ScheduledNativeIO AffineMotion
+-open Transpose Transpose.Tape Transpose.Tape.Impl
+-set_option autoImplicit false
+-
+-noncomputable def curve (W r : ℕ) (t : Fin 2) (x : ℝ) : ℝ :=
+-  ScheduledBankRows.curve (r*W) 27 (4*(r*W)) t x+
+-    RawBankProgram.ioCurve (r*W) (internalTicks W r) t x
+-
+-theorem curve_cover (W r : ℕ) {H : ℝ} (hH : 0 ≤ H) (t : Fin 2) :
+-    HasAffineIntervalCover 243 (curve W r t) H :=
+-  (ScheduledBankRows.curve_cover (r*W) 27 (4*(r*W)) (by norm_num) hH t).add
+-    (RawBankProgram.ioCurve_cover (r*W) (internalTicks W r) hH t)
+-
+-theorem curve_error (sub : Bool) (W r : ℕ) (hW : 0<W) (w : List Bool) (x : ℝ) (t : Fin 2) :
+-    |(Transpose.Tape.workTraj (machine sub W r) w ⌊x⌋₊
+-      ((RawProgramShell.encoding SharedRowBank.initialRowMode (r*W) (internalTicks W r)).port t) : ℝ)-
+-      curve W r t x| ≤ 28*(W : ℕ)+6 := by
+-  let c := RawProgramShell.prepared SharedRowBank.initialRowMode (r*W) w
+-  have hpos : c.work.pos t=0 :=
+-    (ScheduledModeRawIO.prepared_spec (Equiv.refl SharedRowBank.Mode) SharedRowBank.initialRowMode (r*W) w).1 t
+-  have hc := update_cost sub W hW
+-  have hb := ScheduledBankRows.schedule_curve_error (TernaryHorizontal.update sub W) r 27 (4*(r*W)) hc (by norm_num) hW w c x t
+-  rw [hpos,Int.cast_zero,sub_zero] at hb
+-  have hbody : |((trajectory (schedule sub W r) w c
+-      (min (⌊x⌋₊-4*(r*W)) (internalTicks W r))).work.pos t : ℝ)-
+-      ScheduledBankRows.curve (r*W) 27 (4*(r*W)) t x| ≤ 28*(W : ℕ)+2 := by
+-    simpa only [schedule,internalTicks,ScheduledBankRows.ticks,TernaryHorizontal.update,Nat.cast_ofNat,show (27 : ℝ)+1=28 by norm_num] using hb
+-  have hi := RawBankProgram.ioPath_curve_error (r*W) (internalTicks W r) t x
+-  change |(Transpose.Tape.workTraj
+-    (RawProgramShell.machine SharedRowBank.initialRowMode (r*W) (internalTicks W r) (schedule sub W r))
+-    w ⌊x⌋₊ ((RawProgramShell.encoding SharedRowBank.initialRowMode (r*W) (internalTicks W r)).port t) : ℝ)-
+-    curve W r t x| ≤ 28*(W : ℕ)+6
+-  rw [RawProgramShell.workTraj_decomposition SharedRowBank.initialRowMode (r*W)
+-    (internalTicks W r) (schedule sub W r) (schedule_active sub W r)]
+-  simp only [curve,Int.cast_add]
+-  rw [abs_le] at hbody hi ⊢
+-  constructor <;> linarith
+-
+-theorem scaled_approximation (sub : Bool) (W r : ℕ) (hW : 0<W) (hP : 0<r*W)
+-    {H : ℝ} (hH : 0 ≤ H) (w : List Bool) (t : Fin 2) :
+-    HasAffineIntervalCover 243 (fun x => curve W r t ((r*W : ℕ)*x)/(r*W : ℕ)) H ∧
+-    ∀ x : ℝ,
+-      |(Transpose.Tape.workTraj (machine sub W r) w ⌊(r*W : ℕ)*x⌋₊
+-        ((RawProgramShell.encoding SharedRowBank.initialRowMode (r*W) (internalTicks W r)).port t) : ℝ)/(r*W : ℕ)-
+-        curve W r t ((r*W : ℕ)*x)/(r*W : ℕ)| ≤ (28*(W : ℕ)+6 : ℝ)/(r*W : ℕ) := by
+-  have hp : (0 : ℝ)<(r*W : ℕ) := by exact_mod_cast hP
+-  refine ⟨(curve_cover W r (mul_nonneg hp.le hH) t).rescale hp,?_⟩
+-  intro x
+-  rw [← sub_div,abs_div,abs_of_pos hp]
+-  exact div_le_div_of_nonneg_right (curve_error sub W r hW w ((r*W : ℕ)*x) t) hp.le
+-
+-theorem error_vanishes {P W : ℕ → ℕ}
+-    (hP : Tendsto (fun i => (P i : ℝ)) atTop atTop)
+-    (hW : Tendsto (fun i => (W i : ℝ)/P i) atTop (𝓝 0)) :
+-    Tendsto (fun i => (28*W i+6 : ℝ)/P i) atTop (𝓝 0) := by
+-  have hb : Tendsto (fun i => (6 : ℝ)/P i) atTop (𝓝 0) := tendsto_const_nhds.div_atTop hP
+-  simpa only [mul_zero,add_zero,add_div,mul_div_assoc] using (hW.const_mul (28 : ℝ)).add hb
+-
+-theorem state_bits_vanish {ns : ℕ → ℕ} (hns : Tendsto ns atTop atTop)
+-    (sub : ℕ → Bool) (W r : ℕ → ℕ)
+-    (hP : ∀ᶠ i in atTop, r i*W i=inputLength (ns i)) :
+-    Tendsto (fun i => (Nat.clog 2 ((machine (sub i) (W i) (r i)).q+1) : ℝ)
+-      /inputLength (ns i)) atTop (𝓝 0) := by
+-  have ht : ∀ᶠ i in atTop,
+-      RawProgramShell.ticks (inputLength (ns i)) (internalTicks (W i) (r i)) ≤
+-        35*inputLength (ns i) := by
+-    filter_upwards [hP,(inputLength_tendsto hns).eventually_ge_atTop 1] with i hi hp
+-    have hn : 1 ≤ inputLength (ns i) := by exact_mod_cast hp
+-    have hw : 0<W i := by
+-      have hpos : 0<r i*W i := by omega
+-      exact Nat.pos_of_mul_pos_left hpos
+-    rw [← hi]
+-    exact (ticks_eq (W i) (r i) hw).le
+-  have h := RawProgramShell.state_bits_vanish hns SharedRowBank.initialRowMode
+-    (fun i => internalTicks (W i) (r i)) (fun i => schedule (sub i) (W i) (r i)) ht
+-  apply h.congr'
+-  filter_upwards [hP] with i hi
+-  simp only [machine,hi]
+-
+-end TransposeFollowup.RawTernaryHorizontal
+--- before/lean/TransposeFollowup/RefinedPrefix.lean
++++ after/lean/TransposeFollowup/RefinedPrefix.lean
+@@ -1,4 +1,4 @@
+-import TransposeFollowup.TranscriptEntropy
++import Mathlib.InformationTheory.Coding.Kraft
+ 
+ /-! Appending a leaf-dependent, fixed-width separator record to a prefix-free
+ transcript preserves prefix freedom. The separator choice itself is already
+@@ -28,18 +28,6 @@
+   apply h.eq_of_length
+   simp only [List.length_append, hxy, hlen x y hxy]
+ 
+-theorem refinement_injective {L α : Type*} (first suffix : L → List α)
+-    (hfirst : InformationTheory.IsPrefixFree (Set.range first))
+-    (hinj : Function.Injective (fun x => (first x, suffix x))) :
+-    Function.Injective (fun x => first x ++ suffix x) := by
+-  intro x y h
+-  change first x ++ suffix x = first y ++ suffix y at h
+-  have hp : first x ++ suffix x <+: first y ++ suffix y := by rw [h]
+-  have hf := prefix_refinement_first first suffix hfirst hp
+-  rw [hf] at h
+-  apply hinj
+-  exact Prod.ext hf (List.append_cancel_left h)
+-
+ theorem kraft_indexed {L : Type*} [Fintype L]
+     (code : L → List Bool) (hinj : Function.Injective code)
+     (hprefix : InformationTheory.IsPrefixFree (Set.range code)) :
+--- before/lean/TransposeFollowup/RestrictedGapFromFlatness.lean
++++ after/lean/TransposeFollowup/RestrictedGapFromFlatness.lean
+@@ -1,50 +0,0 @@
+-import TransposeFollowup.UniformSmoothedBandWitness
+-import TransposeFollowup.MobiusSmoothedWalkUpper
+-
+-/-! The analytic reduction to a precise flatness hypothesis for the actual
+-Haar-smoothed generator walk. Flatness remains an explicit assumption;
+-the restricted quadratic-form gap is deduced, not assumed. -/
+-namespace TransposeFollowup.RealMobius
+-open Classical MeasureTheory Set SchwartzMap
+-open scoped FourierTransform ENNReal
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace Group] [BorelSpace Group]
+-
+-theorem exists_restricted_gap_from_dyadic_flatness :
+-    ∃ N J₀ : ℕ, 0 < N ∧ 0 < J₀ ∧
+-      ∀ C : ℝ, 0 < C → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ε₀ < 1 ∧
+-      ∀ ε : ℝ, 0 < ε → ε ≤ ε₀ → ∀ J : ℕ, J₀ ≤ J →
+-      ∀ {c : ℕ} (G : Fin c → Group), 0 < c → (∀ i, G i ∈ matrixEntryBox 2) →
+-      ∀ K : ℕ, 0 < K → 16384 * Real.pi ^ 2 * (2 : ℝ) ^ (3 * J) ≤ (K : ℝ) ^ 2 →
+-      (∀ j : ℕ, J ≤ j → ∀ m : ℕ, 2 * N * 2 ^ m ≤ j →
+-        C * Real.log (1 / (1 / 4 : ℝ) ^ j) / Real.log (1 / ε) < (2 : ℝ) ^ m →
+-        ∃ D : ℝ, 0 ≤ D ∧ D ^ 2 ≤ (2 : ℝ) ^ j ∧
+-          ∀ᵐ g ∂(Measure.haar : Measure Group),
+-            mobiusSmoothedDensity (generatorWalkMeasure G (2 ^ m)) ((1 / 4 : ℝ) ^ j) g ≤
+-              ENNReal.ofReal D) →
+-      ∀ f : RealL2, ‖f‖ = 1 →
+-        (∀ᵐ x ∂volume, x ∉ Icc (0 : ℝ) 1 → f x = 0) →
+-        (∀ i : Fin K, (∫ x in Icc ((i.val : ℝ) / K) (((i.val : ℝ) + 1) / K), f x) = 0) →
+-        inner ℝ (averageOperator G f) f < 1 / 2 := by
+-  obtain ⟨r, hr, hselect⟩ := exists_uniform_smoothed_regular_high_band
+-  obtain ⟨Nbar, Jbar, _, _, _, hbarrier⟩ := exists_smoothedWalk_density_barrier 0 hr
+-  obtain ⟨N, Jselect, hN, hNbar, hJselect, hscales⟩ := hselect Nbar
+-  refine ⟨N, max Jselect Jbar, hN, hJselect.trans_le (le_max_left _ _), ?_⟩
+-  intro C hC
+-  obtain ⟨ε₀, hε₀, hε₀one, hwitness⟩ := hscales C hC
+-  refine ⟨ε₀, hε₀, hε₀one, ?_⟩
+-  intro ε hε hεsmall J hJ c G hc hG K hK hgrid hflat f hf hs hmeans
+-  by_contra hnot
+-  have hcorr : 1 / 2 ≤ inner ℝ (averageOperator G f) f := le_of_not_gt hnot
+-  obtain ⟨j, F, m, hj, hF, _, _, hfreq, hm, hthreshold, hlower⟩ :=
+-    hwitness ε hε hεsmall J ((le_max_left _ _).trans hJ) G hc
+-      (fun i => ⟨hG i 0 0, hG i 1 0, hG i 1 1⟩) hK f hf hs hmeans hgrid hcorr
+-  obtain ⟨D, hD, hDsq, hbound⟩ := hflat j hj m hm hthreshold
+-  have hupper := hbarrier N j (2 ^ m) hNbar (((le_max_right _ _).trans hJ).trans hj) hm
+-    G hc hG ((1 / 4 : ℝ) ^ j) (by positivity)
+-    (pow_le_one₀ (by norm_num) (by norm_num)) F hF
+-    (fun ξ hξ => hfreq ξ (Or.inl hξ.le)) D hD hDsq hbound
+-  exact (not_lt_of_ge hlower) hupper
+-
+-end TransposeFollowup.RealMobius
+--- before/lean/TransposeFollowup/RowCode.lean
++++ after/lean/TransposeFollowup/RowCode.lean
+@@ -6,7 +6,8 @@
+ 
+ The helper may be any deterministic function of the input. Once it is fixed,
+ all support choices and stopping are determined by the public transcript.
+-Every receiver has only its own original row, the helper, and that transcript.
++Query supports may have any finite size; their interaction graph completes each
++support to a clique. Every receiver has only its own original row, the helper, and that transcript.
+ Correctness can be restricted to an arbitrary, possibly correlated family.
+ -/
+ 
+@@ -17,7 +18,6 @@
+ structure RowCode (n b : ℕ) (H : Type*) where
+   helper : FiniteMatrix n b → H
+   protocol : H → PublicProtocol (Fin n) (fun _ => Row n b)
+-  pairwise : ∀ z, (protocol z).Pairwise
+   decode : H → Fin n → Row n b → List Bool → Row n b
+ 
+ namespace RowCode
+--- before/lean/TransposeFollowup/SL2SampleConcentration.lean
++++ after/lean/TransposeFollowup/SL2SampleConcentration.lean
+@@ -1,158 +0,0 @@
+-import TransposeFollowup.SL2LocalConcentration
+-import TransposeFollowup.SeparatedMatrixSample
+-import TransposeFollowup.MobiusApproximateRefinement
+-import TransposeFollowup.DyadicCenterTrimming
+-
+-/-! Produce a genuine finite matrix sample with normalized local ball
+-counts from the actual small-tripling and multiscale-distribution hypotheses.
+-No scalar projection or change of normalization is included implicitly. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Matrix.Norms.Frobenius Pointwise ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem exists_matrix_sample_local_concentration {A : Set G} {B K κ ε : ℝ}
+-    {η : ℝ≥0} (hB : 1 ≤ B) (hK : 1 ≤ K) (hκ : 0 ≤ κ) (hε : 0 ≤ ε)
+-    (hη : 0 < η) (hηone : (η : ℝ) ≤ 1) (hA1 : 1 ∈ A)
+-    (hA : ∀ x ∈ A, ∀ i j, |x i j| ≤ B)
+-    (htripling : (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ 3)) : ℝ≥0∞).toReal ≤
+-        K * (Metric.externalCoveringNumber η
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal)
+-    (hdistribution : ∀ ρ : ℝ, (η : ℝ) < ρ → ρ < (η : ℝ) ^ ε →
+-      ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-        Metric.IsSeparated (ENNReal.ofReal ρ)
+-          ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-        ρ ^ (-κ) ≤ (T.card : ℝ)) :
+-    ∃ F : Finset RMat, F.Nonempty ∧
+-      (F : Set RMat) ⊆ (fun x : G => (x : RMat)) '' A ∧
+-      (∀ x ∈ F, ∀ y ∈ F, x ≠ y → 2 * (η : ℝ) < dist x y) ∧
+-      Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-        6561 * (F.card : ℝ) ∧
+-      ∀ c : RMat, ∀ r : ℝ, (η : ℝ) ≤ r →
+-        ((F.filter fun x => dist x c ≤ r).card : ℝ) ≤
+-          6561 * (8 * B + 1) ^ 4 * (2 * (8 * B ^ 2 + 4 * B + 1)) ^ κ *
+-            K * (η : ℝ) ^ (-(ε * κ)) * r ^ κ * (F.card : ℝ) := by
+-  have hB0 : 0 ≤ B := by linarith
+-  have hK0 : 0 ≤ K := by linarith
+-  have hηR : 0 < (η : ℝ) := hη
+-  have h3fin : Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ 3)) ≠ ⊤ := by
+-    apply finite_coveringNumber_of_entry_bound (by positivity : 0 ≤ (2 * B) ^ 3) hη
+-    rintro z ⟨x, hx, rfl⟩
+-    exact matrixEntryBox_set_pow hA 3 hx
+-  have h23 : A ^ 2 ⊆ A ^ 3 := by
+-    intro x hx
+-    rw [show (3 : ℕ) = 2 + 1 by norm_num, pow_succ]
+-    simpa only [mul_one] using Set.mul_mem_mul hx hA1
+-  have hproduct : (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ 2)) : ℝ≥0∞).toReal ≤
+-        K * (Metric.externalCoveringNumber η
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal := by
+-    apply le_trans ?_ htripling
+-    exact ENNReal.toReal_mono (ENat.toENNReal_ne_top.mpr h3fin)
+-      (ENat.toENNReal_mono (Metric.externalCoveringNumber_mono_set (Set.image_mono h23)))
+-  obtain ⟨F, hFn, hFA, hFsep, hAfin, hFcard⟩ := exists_separated_matrix_sample hB0 hη
+-    (Set.Nonempty.image _ ⟨1, hA1⟩) (by rintro z ⟨x, hx, rfl⟩; exact hA x hx)
+-  refine ⟨F, hFn, hFA, hFsep, hAfin, hFcard, ?_⟩
+-  intro c r hr
+-  have hr0 : 0 < r := hηR.trans_le hr
+-  let D := F.filter fun x => dist x c ≤ r
+-  by_cases hDn : D.Nonempty
+-  · obtain ⟨z, hz⟩ := hDn
+-    obtain ⟨h, hh, rfl⟩ := hFA (Finset.mem_filter.mp hz).1
+-    let S := {x : G | x ∈ A ∧ dist (x : RMat) (h : RMat) ≤ 2 * r}
+-    have hDsub : (D : Set RMat) ⊆ (fun x : G => (x : RMat)) '' S := by
+-      intro x hx
+-      obtain ⟨g, hg, rfl⟩ := hFA (Finset.mem_filter.mp hx).1
+-      refine ⟨g, ⟨hg, ?_⟩, rfl⟩
+-      have hxc := (Finset.mem_filter.mp hx).2
+-      have hhc := (Finset.mem_filter.mp hz).2
+-      have ht := dist_triangle (g : RMat) c (h : RMat)
+-      rw [dist_comm c (h : RMat)] at ht
+-      linarith
+-    obtain ⟨hSfin, hlocal⟩ := cluster_coveringNumber_le_of_multiscale hB hK hκ hε hη
+-      hηone (by linarith : (η : ℝ) ≤ 2 * r) hA hproduct hdistribution h hh
+-    have hDcard := separated_matrix_card_le_coveringNumber D hDsub
+-      (fun x hx y hy hne => hFsep x (Finset.mem_filter.mp hx).1 y
+-        (Finset.mem_filter.mp hy).1 hne) hSfin
+-    have hfactor : 0 ≤ (8 * B + 1) ^ 4 * (8 * B ^ 2 + 4 * B + 1) ^ κ * K *
+-        (η : ℝ) ^ (-(ε * κ)) * (2 * r) ^ κ := by positivity
+-    have hbound := hDcard.trans (hlocal.trans (mul_le_mul_of_nonneg_left hFcard hfactor))
+-    rw [Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) hr0.le] at hbound
+-    rw [Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) (by positivity : 0 ≤ 8 * B ^ 2 + 4 * B + 1)]
+-    convert hbound using 1; ring
+-  · have he : D = ∅ := Finset.not_nonempty_iff_eq_empty.mp hDn
+-    change (D.card : ℝ) ≤ _
+-    rw [he, Finset.card_empty, Nat.cast_zero]
+-    positivity
+-
+-theorem exists_matrix_sample_power_concentration {κ ε β ν : ℝ}
+-    (hκ : 0 ≤ κ) (hε : 0 ≤ ε) (hβ : 0 ≤ β) (hmargin : β + ε * κ < ν) :
+-    ∃ J : ℕ, ∀ j : ℕ, J ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-      ∀ {A : Set G}, 1 ∈ A →
+-      (∀ x ∈ A, ∀ i k, |x i k| ≤ 2) →
+-      (Metric.externalCoveringNumber ηn
+-        ((fun x : G => (x : RMat)) '' (A ^ 3)) : ℝ≥0∞).toReal ≤
+-          η ^ (-β) * (Metric.externalCoveringNumber ηn
+-            ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal →
+-      (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-        ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-          Metric.IsSeparated (ENNReal.ofReal ρ)
+-            ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-          ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-      ∃ F : Finset RMat, F.Nonempty ∧
+-        (F : Set RMat) ⊆ (fun x : G => (x : RMat)) '' A ∧
+-        (∀ x ∈ F, ∀ y ∈ F, x ≠ y → 2 * η < dist x y) ∧
+-        Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-          6561 * (F.card : ℝ) ∧
+-        ∀ c : RMat, ∀ r : ℝ, η ≤ r →
+-          ((F.filter fun x => dist x c ≤ r).card : ℝ) ≤
+-            η ^ (-ν) * r ^ κ * (F.card : ℝ) := by
+-  let D : ℝ := 6561 * 17 ^ 4 * 82 ^ κ
+-  obtain ⟨J, hJ⟩ := exists_dyadic_scaled_rpow_bound
+-    (by dsimp only [D]; positivity : 0 < D) (by linarith : 0 < ν - (β + ε * κ))
+-  refine ⟨J, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro A hA1 hA htrip hdistribution
+-  let η := (1 / 4 : ℝ) ^ j
+-  let ηn : ℝ≥0 := ⟨η, by dsimp only [η]; positivity⟩
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηn : 0 < ηn := hη
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  have hK : 1 ≤ η ^ (-β) :=
+-    Real.one_le_rpow_of_pos_of_le_one_of_nonpos hη hηone (neg_nonpos.mpr hβ)
+-  obtain ⟨F, hFn, hFA, hFsep, hAfin, hFcard, hlocal⟩ :=
+-    exists_matrix_sample_local_concentration (η := ηn) (B := 2)
+-      (by norm_num) hK hκ hε hηn hηone hA1 hA htrip hdistribution
+-  refine ⟨F, hFn, hFA, hFsep, hAfin, hFcard, ?_⟩
+-  intro c r hr
+-  have hpower : η ^ (ν - (β + ε * κ)) * η ^ (-ν) = η ^ (-β) * η ^ (-(ε * κ)) := by
+-    rw [← Real.rpow_add hη, ← Real.rpow_add hη]
+-    congr 1
+-    ring
+-  have hcoef : D * η ^ (-β) * η ^ (-(ε * κ)) ≤ η ^ (-ν) := by
+-    calc
+-      _ = (D * η ^ (ν - (β + ε * κ))) * η ^ (-ν) := by
+-        simpa only [mul_assoc] using (congrArg (D * ·) hpower).symm
+-      _ ≤ 1 * η ^ (-ν) := mul_le_mul_of_nonneg_right (hJ j hj) (by positivity)
+-      _ = _ := one_mul _
+-  have hl : ((F.filter fun x => dist x c ≤ r).card : ℝ) ≤
+-      D * η ^ (-β) * η ^ (-(ε * κ)) * r ^ κ * (F.card : ℝ) := by
+-    have hl := hlocal c r hr
+-    change ((F.filter fun x => dist x c ≤ r).card : ℝ) ≤
+-      6561 * (8 * (2 : ℝ) + 1) ^ 4 * (2 * (8 * (2 : ℝ) ^ 2 + 4 * 2 + 1)) ^ κ *
+-        η ^ (-β) * η ^ (-(ε * κ)) * r ^ κ * (F.card : ℝ) at hl
+-    simpa only [D, show (8 * (2 : ℝ) + 1) = 17 by norm_num,
+-      show (2 * (8 * (2 : ℝ) ^ 2 + 4 * 2 + 1)) = 82 by norm_num] using hl
+-  exact hl.trans (mul_le_mul_of_nonneg_right
+-    (mul_le_mul_of_nonneg_right hcoef (Real.rpow_nonneg (hη.le.trans hr) κ)) (Nat.cast_nonneg _))
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/SL2TraceProductTransfer.lean
++++ after/lean/TransposeFollowup/SL2TraceProductTransfer.lean
+@@ -1,98 +0,0 @@
+-import TransposeFollowup.SL2CentralizerTrace
+-
+-/-! Quantitative transfer of the exact centralizer trace identity to
+-actual matrix words. Reuses the existing six-factor product-error machinery;
+-the approximation radius is charged explicitly. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix SL2Escape
+-open scoped Pointwise
+-set_option autoImplicit false
+-local notation "CMat" => Matrix (Fin 2) (Fin 2) ℂ
+-local notation "CG" => Matrix.SpecialLinearGroup (Fin 2) ℂ
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem alternating_trace_error {u u' v v' g : CG} {R δ : ℝ}
+-    (hR : 1 ≤ R) (hδ : 0 ≤ δ)
+-    (hu : EntryApprox R δ u u') (hv : EntryApprox R δ v v')
+-    (hg : ∀ i j, ‖g i j‖ ≤ R) :
+-    ‖Matrix.trace ((v * u⁻¹ * g * (v * u) * g : CG) : CMat) -
+-      Matrix.trace ((v' * u'⁻¹ * g * (v' * u') * g : CG) : CMat)‖ ≤
+-        12 * (2 * R) ^ 6 * δ := by
+-  have hgg : EntryApprox R δ g g := ⟨hg, hg, by simpa using fun _ _ : Fin 2 => hδ⟩
+-  have hui := hu.inv
+-  let l : List (CG × CG) := [(v, v'), (u⁻¹, u'⁻¹), (g, g), (v, v'), (u, u'), (g, g)]
+-  have hl : ∀ p ∈ l, EntryApprox R δ p.1 p.2 := by
+-    intro p hp
+-    simp only [l, List.mem_cons, List.not_mem_nil, or_false] at hp
+-    rcases hp with rfl | rfl | rfl | rfl | rfl | rfl <;> assumption
+-  have he := complex_matrix_list_prod_error l (fun p => (p.1 : CMat))
+-    (fun p => (p.2 : CMat)) hR hδ
+-    (fun p hp => (hl p hp).1) (fun p hp => (hl p hp).2.1) (fun p hp => (hl p hp).2.2)
+-  have he' : ∀ i j, ‖(v * u⁻¹ * g * (v * u) * g : CG) i j -
+-      (v' * u'⁻¹ * g * (v' * u') * g : CG) i j‖ ≤ 6 * (2 * R) ^ 6 * δ := by
+-    simpa [l, Matrix.SpecialLinearGroup.coe_mul, mul_assoc] using he
+-  simp only [Matrix.trace, Matrix.diag, Fin.sum_univ_two]
+-  have hsum := norm_add_le
+-    ((v * u⁻¹ * g * (v * u) * g : CG) 0 0 - (v' * u'⁻¹ * g * (v' * u') * g : CG) 0 0)
+-    ((v * u⁻¹ * g * (v * u) * g : CG) 1 1 - (v' * u'⁻¹ * g * (v' * u') * g : CG) 1 1)
+-  rw [show ∀ a b c d : ℂ, a + b - (c + d) = (a - c) + (b - d) by intros; ring]
+-  linarith [he' 0 0, he' 1 1]
+-
+-theorem centralizer_trace_approximation (a : RMat) (u v u' v' g : G)
+-    {s t p q R δ : ℝ} (hR : 1 ≤ R) (hδ : 0 ≤ δ)
+-    (hu : (u : RMat) = scalarAffine a s t) (hv : (v : RMat) = scalarAffine a p q)
+-    (hub : ∀ i j, |u i j| ≤ R) (hvb : ∀ i j, |v i j| ≤ R)
+-    (hu'b : ∀ i j, |u' i j| ≤ R) (hv'b : ∀ i j, |v' i j| ≤ R)
+-    (hg : ∀ i j, |g i j| ≤ R)
+-    (heu : ∀ i j, |u' i j - u i j| ≤ δ) (hev : ∀ i j, |v' i j - v i j| ≤ δ) :
+-    |Matrix.trace ((v' * u'⁻¹ * g * (v' * u') * g : G) : RMat) -
+-      (Matrix.trace ((v * g * v * g : G) : RMat) +
+-        t ^ 2 * (SL2Escape.pairSpanMatrix a (g : RMat)).det)| ≤ 12 * (2 * R) ^ 6 * δ := by
+-  let e : G →* CG := Matrix.SpecialLinearGroup.map Complex.ofRealHom
+-  have heb (x : G) (hx : ∀ i j, |x i j| ≤ R) : ∀ i j, ‖e x i j‖ ≤ R := by
+-    intro i j
+-    change ‖Complex.ofReal (x i j)‖ ≤ R
+-    simpa only [Complex.norm_real, Real.norm_eq_abs] using hx i j
+-  have hee (x y : G) (hxy : ∀ i j, |x i j - y i j| ≤ δ) :
+-      ∀ i j, ‖e x i j - e y i j‖ ≤ δ := by
+-    intro i j
+-    change ‖Complex.ofReal (x i j) - Complex.ofReal (y i j)‖ ≤ δ
+-    simpa only [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs] using hxy i j
+-  have he := alternating_trace_error hR hδ
+-    (show EntryApprox R δ (e u') (e u) from ⟨heb u' hu'b, heb u hub, hee u' u heu⟩)
+-    (show EntryApprox R δ (e v') (e v) from ⟨heb v' hv'b, heb v hvb, hee v' v hev⟩) (heb g hg)
+-  simp only [← map_inv, ← map_mul] at he
+-  simp only [e, complexify_trace] at he
+-  rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs,
+-    sl2_scalarAffine_trace_separation a u v g hu hv] at he
+-  exact he
+-
+-theorem exists_trace_word_of_centralizer_approximation (a : RMat) (u v u' v' g : G)
+-    {A : Set G} {m n : ℕ} {s t p q R δ : ℝ} (hAi : A⁻¹ = A)
+-    (hu'A : u' ∈ A ^ m) (hv'A : v' ∈ A ^ m) (hgA : g ∈ A ^ n)
+-    (hR : 1 ≤ R) (hδ : 0 ≤ δ)
+-    (hu : (u : RMat) = scalarAffine a s t) (hv : (v : RMat) = scalarAffine a p q)
+-    (hub : ∀ i j, |u i j| ≤ R) (hvb : ∀ i j, |v i j| ≤ R)
+-    (hu'b : ∀ i j, |u' i j| ≤ R) (hv'b : ∀ i j, |v' i j| ≤ R)
+-    (hg : ∀ i j, |g i j| ≤ R)
+-    (heu : ∀ i j, |u' i j - u i j| ≤ δ) (hev : ∀ i j, |v' i j - v i j| ≤ δ) :
+-    ∃ w ∈ A ^ (4 * m + 2 * n),
+-      |Matrix.trace (w : RMat) -
+-        (Matrix.trace ((v * g * v * g : G) : RMat) +
+-          t ^ 2 * (SL2Escape.pairSpanMatrix a (g : RMat)).det)| ≤
+-            12 * (2 * R) ^ 6 * δ := by
+-  have hui : u'⁻¹ ∈ A ^ m := by
+-    have hi := Set.inv_mem_inv.mpr hu'A
+-    rwa [← inv_pow, hAi] at hi
+-  have hm {x y : G} {i j : ℕ} (hx : x ∈ A ^ i) (hy : y ∈ A ^ j) :
+-      x * y ∈ A ^ (i + j) := by
+-    rw [pow_add]
+-    exact Set.mul_mem_mul hx hy
+-  refine ⟨v' * u'⁻¹ * g * (v' * u') * g, ?_, ?_⟩
+-  · have hh := hm (hm (hm (hm hv'A hui) hgA) (hm hv'A hu'A)) hgA
+-    simpa only [show m + m + n + (m + m) + n = 4 * m + 2 * n by omega] using hh
+-  · exact centralizer_trace_approximation a u v u' v' g hR hδ hu hv
+-      hub hvb hu'b hv'b hg heu hev
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/ScalarProjectionReuse.lean
++++ after/lean/TransposeFollowup/ScalarProjectionReuse.lean
+@@ -1,58 +0,0 @@
+-import TransposeFollowup.ScalarMetricBridge
+-import OAI.MeasureTheory.Falconer.Geometry.ScalarWeakRadiusProjection
+-
+-/-! The imported weak scalar projection theorem at our quarter-power
+-scales and with native external covering numbers. All local concentration
+-premises remain explicit; this is not yet an application to matrix sets. -/
+-namespace TransposeFollowup.ScalarMetric
+-open Classical Set OAI.Falconer
+-open scoped ENNReal NNReal Pointwise
+-set_option autoImplicit false
+-
+-theorem exists_scalar_projection_growth_at_quarter_scale {κ : ℝ}
+-    (hκ : 0 < κ) (hκone : κ ≤ 1) :
+-    ∃ ε : ℝ, ∃ J : ℕ, 0 < ε ∧ 0 < J ∧ ∀ j : ℕ, J ≤ j →
+-      let δ := (1 / 4 : ℝ) ^ j
+-      let δn : ℝ≥0 := ⟨δ, by positivity⟩
+-      let W := δ ^ (-ε)
+-      ∀ X : Finset ℝ, X.Nonempty → (∀ x ∈ X, |x| ≤ 1) →
+-      (∀ x ∈ X, ∀ y ∈ X, x ≠ y → δ ≤ |x - y|) →
+-      Real.log (X.card : ℝ) ≤ (1 - κ) * Real.log (1 / δ) →
+-      5 * (Metric.externalCoveringNumber δn ((X + X : Finset ℝ) : Set ℝ) : ℝ≥0∞).toReal ≤
+-        W * (X.card : ℝ) →
+-      (∀ u r : ℝ, δ ≤ r → r ≤ 1 →
+-        scalarBallMass X u r ≤ W * r ^ κ * (X.card : ℝ)) →
+-      ∀ E : Finset ℝ, E.Nonempty → (∀ a ∈ E, |a| ≤ W) →
+-      (∀ u r : ℝ, δ ≤ r → r ≤ 1 →
+-        scalarBallMass E u r ≤ W * r ^ (2 * κ) * (E.card : ℝ)) →
+-      ∃ a ∈ E, W * (X.card : ℝ) <
+-        5 * (Metric.externalCoveringNumber δn
+-          ((X + X.image (fun x => a * x) : Finset ℝ) : Set ℝ) : ℝ≥0∞).toReal := by
+-  obtain ⟨ε, J, hε, hJ, hgrowth⟩ := Regularization.scalar_weak_radius_projection hκ hκone
+-  refine ⟨ε, J, hε, hJ, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro X hX hXbound hsep hsize hdouble hXball E hE hEbound hEball
+-  have hscale : (1 / 2 : ℝ) ^ (2 * j) = (1 / 4 : ℝ) ^ j := by
+-    rw [pow_mul]
+-    norm_num
+-  have hW : Real.exp (ε * ((2 * j : ℕ) : ℝ) * Real.log 2) =
+-      ((1 / 4 : ℝ) ^ j) ^ (-ε) := by
+-    simpa only [neg_neg, hscale] using (scalar_dyadic_power (2 * j) (-ε)).symm
+-  have hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) = ((2 * j : ℕ) : ℝ) * Real.log 2 := by
+-    rw [one_div, Real.log_inv, ← hscale, Real.log_pow]
+-    rw [show (1 / 2 : ℝ) = (2 : ℝ)⁻¹ by norm_num, Real.log_inv]
+-    ring
+-  have hsize' : Real.log (X.card : ℝ) ≤ (1 - κ) * ((2 * j : ℕ) : ℝ) * Real.log 2 := by
+-    simpa only [hlog, mul_assoc] using hsize
+-  have hd : 0 < (⟨(1 / 4 : ℝ) ^ j, by positivity⟩ : ℝ≥0) := by
+-    change 0 < (1 / 4 : ℝ) ^ j
+-    positivity
+-  have hcells := (scalarCells_card_le_externalCoveringNumber hd (X + X)).trans hdouble
+-  have hp := hgrowth (2 * j) (by omega)
+-  dsimp only at hp
+-  rw [hscale, hW] at hp
+-  obtain ⟨a, ha, hgain⟩ := hp X hX hXbound hsep hsize' hcells hXball E hE hEbound hEball
+-  exact ⟨a, ha, hgain.trans_le (scalarCells_card_le_externalCoveringNumber hd _)⟩
+-
+-end TransposeFollowup.ScalarMetric
+--- before/lean/TransposeFollowup/SeparatorSharpness.lean
++++ after/lean/TransposeFollowup/SeparatorSharpness.lean
+@@ -64,7 +64,6 @@
+ def symmetryCode (b : ℕ) : RowCode 2 b PUnit where
+   helper := fun _ => PUnit.unit
+   protocol := fun _ => .halt
+-  pairwise := fun _ => trivial
+   decode := fun _ _ row _ => row
+ 
+ theorem symmetryCode_correct (b : ℕ) :
+@@ -122,7 +121,6 @@
+ def xorCode (b : ℕ) : RowCode 2 b (Word b) where
+   helper := fun x t => x 0 1 t ^^ x 1 0 t
+   protocol := fun _ => .halt
+-  pairwise := fun _ => trivial
+   decode := fun z j row _ i t => if i = j then row i t else row i t ^^ z t
+ 
+ theorem xorCode_correct (b : ℕ) : (xorCode b).CorrectOn (fullFamily b : Set _) := by
+--- before/lean/TransposeFollowup/SmoothedIterateBicommutator.lean
++++ after/lean/TransposeFollowup/SmoothedIterateBicommutator.lean
+@@ -1,78 +0,0 @@
+-import TransposeFollowup.SmoothedIterateWordDistribution
+-import TransposeFollowup.ShortWordGrowthThreshold
+-import TransposeFollowup.RationalBicommutator
+-
+-/-! A fixed absolute scale cutoff forces a nontrivial rational-word
+-bicommutator in the actual localized witness. Every word, denominator,
+-common conjugation and cardinality conclusion is retained. -/
+-namespace TransposeFollowup.RationalFreePair
+-open Classical MeasureTheory Set RealMobius
+-open scoped ENNReal NNReal Pointwise commutatorElement
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace RealMobius.Group] [BorelSpace RealMobius.Group]
+-
+-theorem exists_iterate_short_word_bicommutator_threshold :
+-    ∃ J : ℕ, ∀ {r j ell : ℕ} {s Q α X : ℝ} {N_level : ℕ}
+-    (_hJj : J ≤ j) (_hr : 5 ≤ r) (_hj : 7680 * r ≤ j)
+-    (_hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) /
+-      Real.log (1 / dyadicRadius r) < (ell : ℝ))
+-    (g : Fin (2 ^ (3 * r)) → Group)
+-    (_hg : ∀ a, HasDenominator (dyadicDenominator r) (g a))
+-    (_hfree : Function.Injective (FreeGroup.lift (realEmbedding ∘ g)))
+-    (_hG : ∀ a, realEmbedding (g a) ∈ matrixEntryBox 2) (i : ℕ)
+-    {U : Set RealMobius.Group} (_hU1 : 1 ∈ U) (_hUo : IsOpen U) (_hUi : U⁻¹ = U)
+-    (_hUb : U ⊆ matrixEntryBox Q) (_hQ : 1 ≤ Q) (_hα : 0 < α) (_hαone : α ≤ 1)
+-    (x : RealMobius.Group) (_hx : x ∈ matrixEntryBox X)
+-    (_hmargin : 1140 * s ≤ 1 / 61440)
+-    (_hlarge : 2 ^ 100 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hlevel : (N_level : ℝ) ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hQscale : Q ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hαscale : α⁻¹ ^ 4 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s)),
+-    let η := (1 / 4 : ℝ) ^ j
+-    let q := ENNReal.ofReal (η ^ s)
+-    let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    let t := initialWalkLength r j
+-    q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (Measure.haar : Measure RealMobius.Group).withDensity
+-      (smoothedAutocorrelationIterate (generatorWalkMeasure (realEmbedding ∘ g) ell) η i) (x • U) →
+-    ∃ u ∈ mobiusIdentityBall η, ∃ F : Finset (FreeGroup (Fin (2 ^ (3 * r)))), 1 ∈ F ∧
+-      (∀ v ∈ F, FreeGroup.norm v ≤ 2 * t ∧
+-        FreeGroup.lift (realEmbedding ∘ g) v ∈ denominatorCarrier ((dyadicDenominator r) ^ (2 * t)) ∧
+-        u⁻¹ * FreeGroup.lift (realEmbedding ∘ g) v * u ∈ A ^ 2) ∧
+-      η ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ) ∧
+-      ∃ a ∈ F, ∃ x ∈ F, ∃ y ∈ F, ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.norm ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≤ 32 * t ∧
+-        ∃ i₀ j₀ : Fin 2, 1 / (dyadicDenominator r : ℝ) ^ (32 * t) ≤
+-          |(FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆) i₀ j₀ -
+-            (1 : RealMobius.Group) i₀ j₀| := by
+-  obtain ⟨J, hJ⟩ := FreeWordFamily.exists_short_word_bicommutator_threshold
+-    (by norm_num : (0 : ℝ) < 1 / 122880)
+-  refine ⟨J, ?_⟩
+-  intro r j ell s Q α X N_level hJj hr hj hlog g hg hfree hG i U
+-    hU1 hUo hUi hUb hQ hα hαone x hx hmargin hlarge hlevel hQscale hαscale
+-  dsimp only
+-  intro hmass
+-  obtain ⟨u, hu, F, hF1, hF, hsize⟩ := exists_iterate_large_short_words hr hj hlog g hg hfree hG i
+-    hU1 hUo hUi hUb hQ hα hαone x hx hmargin hlarge hlevel hQscale hαscale hmass
+-  have ht : 2 * initialWalkLength r j ≤ 2 * j := Nat.mul_le_mul_left 2 (Nat.div_le_self _ _)
+-  obtain ⟨a, ha, v, hv, z, hz, hne, hlen⟩ := hJ j hJj F (2 * initialWalkLength r j) ht
+-    (fun v hv => (hF v hv).1) hsize
+-  have hneR : FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, v⁆, ⁅a, z⁆⁆ ≠ 1 := by
+-    intro he
+-    exact hne (hfree (by simpa only [map_one] using he))
+-  refine ⟨u, hu, F, hF1, hF, hsize, a, ha, v, hv, z, hz, hne, hneR, ?_, ?_⟩
+-  · simpa only [show 16 * (2 * initialWalkLength r j) = 32 * initialWalkLength r j by omega] using hlen
+-  · obtain ⟨_, i₀, j₀, hsep⟩ := rational_bicommutator_separated
+-      (pow_pos (dyadicDenominator_pos r) (2 * initialWalkLength r j))
+-      (hF a ha).2.1 (hF v hv).2.1 (hF z hz).2.1
+-      (by simpa only [map_commutatorElement] using hneR)
+-    refine ⟨i₀, j₀, ?_⟩
+-    simpa only [Nat.cast_pow, ← pow_mul,
+-      show (2 * initialWalkLength r j) * 16 = 32 * initialWalkLength r j by omega,
+-      map_commutatorElement] using hsep
+-
+-end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/SmoothedIterateComplexEscape.lean
++++ after/lean/TransposeFollowup/SmoothedIterateComplexEscape.lean
+@@ -1,87 +0,0 @@
+-import TransposeFollowup.SmoothedIterateTraceCertificate
+-import TransposeFollowup.HomFamilyComplexEscape
+-
+-/-! Quantitative complex-basis escape in the SAME actual A^4 witness.
+-The absolute cutoff and all prior word, cardinality and trace outputs
+-are retained. The small requested scale exponent is a separate obligation. -/
+-namespace TransposeFollowup.RationalFreePair
+-open Classical MeasureTheory Set RealMobius
+-open scoped ENNReal NNReal Pointwise commutatorElement
+-set_option autoImplicit false
+-variable [MeasurableSpace RealMobius.Group] [BorelSpace RealMobius.Group]
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "CMat" => Matrix (Fin 2) (Fin 2) ℂ
+-
+-theorem exists_iterate_complex_escape_threshold :
+-    ∃ J : ℕ, ∀ {r j ell : ℕ} {s Q α X : ℝ} {N_level : ℕ}
+-    (_hJj : J ≤ j) (_hr : 5 ≤ r) (_hj : 7680 * r ≤ j)
+-    (_hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) /
+-      Real.log (1 / dyadicRadius r) < (ell : ℝ))
+-    (g : Fin (2 ^ (3 * r)) → Group)
+-    (_hg : ∀ a, HasDenominator (dyadicDenominator r) (g a))
+-    (_hfree : Function.Injective (FreeGroup.lift (realEmbedding ∘ g)))
+-    (_hG : ∀ a, realEmbedding (g a) ∈ matrixEntryBox 2) (i : ℕ)
+-    {U : Set RealMobius.Group} (_hU1 : 1 ∈ U) (_hUo : IsOpen U) (_hUi : U⁻¹ = U)
+-    (_hUb : U ⊆ matrixEntryBox Q) (_hQ : 1 ≤ Q) (_hα : 0 < α) (_hαone : α ≤ 1)
+-    (x : RealMobius.Group) (_hx : x ∈ matrixEntryBox X)
+-    (_hmargin : 1140 * s ≤ 1 / 61440)
+-    (_hlarge : 2 ^ 100 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hlevel : (N_level : ℝ) ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hQscale : Q ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hαscale : α⁻¹ ^ 4 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s)),
+-    let η := (1 / 4 : ℝ) ^ j
+-    let q := ENNReal.ofReal (η ^ s)
+-    let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    let t := initialWalkLength r j
+-    q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (Measure.haar : Measure RealMobius.Group).withDensity
+-      (smoothedAutocorrelationIterate (generatorWalkMeasure (realEmbedding ∘ g) ell) η i) (x • U) →
+-    ∃ u ∈ mobiusIdentityBall η, ∃ F : Finset (FreeGroup (Fin (2 ^ (3 * r)))), 1 ∈ F ∧
+-      (∀ v ∈ F, FreeGroup.norm v ≤ 2 * t ∧
+-        FreeGroup.lift (realEmbedding ∘ g) v ∈ denominatorCarrier ((dyadicDenominator r) ^ (2 * t)) ∧
+-        u⁻¹ * FreeGroup.lift (realEmbedding ∘ g) v * u ∈ A ^ 2) ∧
+-      η ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ) ∧
+-      ∃ a ∈ F, ∃ x ∈ F, ∃ y ∈ F, ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.norm ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≤ 32 * t ∧
+-        (∃ i₀ j₀ : Fin 2, 1 / (dyadicDenominator r : ℝ) ^ (32 * t) ≤
+-          |(FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆) i₀ j₀ -
+-            (1 : RealMobius.Group) i₀ j₀|) ∧
+-        ∃ v ∈ F, (v = 1 ∨ v = a ∨ v = x ∨ v = y) ∧
+-          (∀ P : CMatˣ, 1 / (dyadicDenominator r : ℝ) ^ (34 * t) ≤
+-            ‖Matrix.trace ((P : CMat) *
+-                ((FreeGroup.lift (realEmbedding ∘ g) (⁅⁅a, x⁆, ⁅a, y⁆⁆ * v)) : RMat).map
+-                  Complex.ofReal * (↑P⁻¹ : CMat)) -
+-              Matrix.trace ((P : CMat) *
+-                (FreeGroup.lift (realEmbedding ∘ g) v : RMat).map Complex.ofReal * (↑P⁻¹ : CMat))‖) ∧
+-          ∀ P : CMatˣ, ∃ h ∈ A ^ 4,
+-            min (1 / (32 * (18 : ℝ) ^ 4))
+-                ((1 / (dyadicDenominator r : ℝ) ^ (34 * t)) / ((2 : ℝ) ^ 44 * 18 ^ 21)) ≤
+-              ‖SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 0 1 *
+-                SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 1 0‖ := by
+-  obtain ⟨J, hJ⟩ := exists_iterate_short_word_trace_certificate_threshold
+-  refine ⟨J, ?_⟩
+-  intro r j ell s Q α X N_level hJj hr hj hlog g hg hfree hG i U
+-    hU1 hUo hUi hUb hQ hα hαone x hx hmargin hlarge hlevel hQscale hαscale
+-  dsimp only
+-  intro hmass
+-  obtain ⟨u, hu, F, hF1, hF, hsize, a, ha, v, hv, z, hz, hne, hneR, hlen, hsep,
+-      w, hw, hchoice, htrace⟩ :=
+-    hJ hJj hr hj hlog g hg hfree hG i hU1 hUo hUi hUb hQ hα hαone x hx
+-      hmargin hlarge hlevel hQscale hαscale hmass
+-  let f := FreeGroup.lift (realEmbedding ∘ g)
+-  have hA1 : (1 : RealMobius.Group) ∈ U ^ 2 ∩ mobiusIdentityBall α :=
+-    ⟨Set.one_mem_pow hU1, one_mem_mobiusIdentityBall hα⟩
+-  have hAb : U ^ 2 ∩ mobiusIdentityBall α ⊆ matrixEntryBox 2 :=
+-    fun q hq => mobiusIdentityBall_subset_entryBox_two hα hαone hq.2
+-  have hescape := hom_family_complex_escape f
+-    (pow_pos (dyadicDenominator_pos r) (2 * initialWalkLength r j)) hA1 hAb F hF1
+-    (fun v hv => (hF v hv).2.1) u (fun v hv => (hF v hv).2.2) ha hv hz hneR
+-  refine ⟨u, hu, F, hF1, hF, hsize, a, ha, v, hv, z, hz, hne, hneR, hlen, hsep,
+-    w, hw, hchoice, htrace, ?_⟩
+-  simpa only [Nat.cast_pow, ← pow_mul,
+-    show (2 * initialWalkLength r j) * 17 = 34 * initialWalkLength r j by omega] using hescape
+-
+-end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/SmoothedIterateOpenEnergy.lean
++++ after/lean/TransposeFollowup/SmoothedIterateOpenEnergy.lean
+@@ -1,85 +0,0 @@
+-import TransposeFollowup.SmoothedIterateSelfEnergy
+-import TransposeFollowup.MobiusSetEnergyRegularization
+-import TransposeFollowup.AutocorrelationIterateCoefficient
+-
+-/-! An actual nonflattening step produces a nonempty symmetric open
+-precompact set of controlled volume and high self-energy. The volume
+-added to the selected level can be made arbitrarily small. -/
+-namespace TransposeFollowup.RealMobius
+-open Classical MeasureTheory Set
+-open scoped ENNReal
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace Group] [BorelSpace Group]
+-
+-theorem exists_smoothedIterate_nonflattening_open_energy
+-    (μ : Measure Group) [IsProbabilityMeasure μ] {η B : ℝ} (hη : 0 < η) (k : ℕ)
+-    (hs : ∀ᵐ g ∂μ ∗ₘ mobiusHaarKernel η, g ∈ matrixEntryBox B)
+-    {C θ : ℝ} (hθ : 0 < θ) (hC : ∀ x, mobiusSmoothedDensity μ η x ≤ ENNReal.ofReal C)
+-    (hnonflat : ENNReal.ofReal θ *
+-        (∫⁻ x, smoothedAutocorrelationIterate μ η k x ^ 2 ∂(Measure.haar : Measure Group)) ≤
+-      ∫⁻ x, smoothedAutocorrelationIterate μ η (k + 1) x ^ 2 ∂(Measure.haar : Measure Group))
+-    {δ : ℝ≥0∞} (hδ : 0 < δ) (hδone : δ ≤ 1) :
+-    let H : Measure Group := Measure.haar
+-    let f := smoothedAutocorrelationIterate μ η k
+-    let U := ∫⁻ x, f x ^ 2 ∂H
+-    let τ := θ * U.toReal
+-    let a := ENNReal.ofReal (τ / 16)
+-    let R := (4 * B ^ 2) ^ (2 ^ k)
+-    ∃ N : ℕ, 0 < N ∧ (N : ℝ) ≤ 1 + Real.logb 2 (max 1 (16 * C / τ)) ∧
+-      ∃ i < N, let A := dyadicDensityLevel f a i
+-        ∃ O : Set Group, A ∩ matrixEntryBox R ⊆ O ∧ O.Nonempty ∧ IsOpen O ∧
+-          (∀ x, x⁻¹ ∈ O ↔ x ∈ O) ∧ IsCompact (closure O) ∧
+-          closure O ⊆ matrixEntryBox (R + 1) ∧
+-          0 < H O ∧ H O < ⊤ ∧ H A ≤ H O ∧ H O ≤ (1 + δ) * H A ∧
+-          ENNReal.ofReal θ ≤ 64 * (N : ℝ≥0∞) ^ 4 * U * H O ∧
+-          ENNReal.ofReal θ * U * H O ≤ 2 * (64 * (N : ℝ≥0∞) ^ 4) ∧
+-          ENNReal.ofReal θ ^ 2 * H O ^ 3 ≤
+-            8 * (64 * (N : ℝ≥0∞) ^ 4) ^ 2 * haarMultiplicativeEnergy H O O := by
+-  dsimp only
+-  let H : Measure Group := Measure.haar
+-  let f := smoothedAutocorrelationIterate μ η k
+-  let U := ∫⁻ x, f x ^ 2 ∂H
+-  let a := ENNReal.ofReal (θ * U.toReal / 16)
+-  let R := (4 * B ^ 2) ^ (2 ^ k)
+-  have hU0 : U ≠ 0 := lintegral_sq_ne_zero_of_mass_ne_zero H
+-    (smoothedAutocorrelationIterate_measurable μ η k)
+-    (by rw [smoothedAutocorrelationIterate_lintegral μ hη k]; simp)
+-  have hUt : U ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+-    (smoothedAutocorrelationIterate_lintegral_sq_le μ hη hC k)
+-  have ha : 0 < a := ENNReal.ofReal_pos.mpr
+-    (div_pos (mul_pos hθ (ENNReal.toReal_pos hU0 hUt)) (by norm_num))
+-  obtain ⟨N, hN, hlog, i, hi, _, hAs, hA0, hAt, hlo, hhi, he⟩ :=
+-    exists_smoothedIterate_nonflattening_self_energy μ hη k hθ hC hnonflat
+-  let A := dyadicDensityLevel f a i
+-  have hae : (A ∩ matrixEntryBox R) =ᵐ[H] A := dyadicDensityLevel_inter_support_ae H
+-    (smoothedAutocorrelationIterate_ae_zero_outside μ hη hs k) ha i
+-  obtain ⟨O, hAO, hOn, hOo, hOs, hOc, hOb, hOl, hOu, hOE⟩ :=
+-    exists_symmetric_open_energy_superset_add hAs hae hA0 hAt
+-      (ENNReal.mul_pos hδ.ne' hA0.ne')
+-  have hclose : H O ≤ (1 + δ) * H A := by
+-    simpa only [add_mul, one_mul] using hOu
+-  have htwo : H O ≤ 2 * H A := by
+-    calc
+-      H O ≤ (1 + δ) * H A := hclose
+-      _ ≤ (1 + 1) * H A := mul_le_mul' (add_le_add le_rfl hδone) le_rfl
+-      _ = _ := by norm_num
+-  refine ⟨N, hN, hlog, i, hi, O, hAO, hOn, hOo, hOs, hOc, hOb,
+-    hA0.trans_le hOl, ?_, hOl, hclose, ?_, ?_, ?_⟩
+-  · exact lt_of_le_of_lt htwo (ENNReal.mul_lt_top (by simp) hAt)
+-  · exact hlo.trans (mul_le_mul' le_rfl hOl)
+-  · calc
+-      ENNReal.ofReal θ * U * H O ≤ ENNReal.ofReal θ * U * (2 * H A) := mul_le_mul' le_rfl htwo
+-      _ = 2 * (ENNReal.ofReal θ * U * H A) := by ring
+-      _ ≤ 2 * (64 * (N : ℝ≥0∞) ^ 4) := mul_le_mul' le_rfl hhi
+-  · calc
+-      ENNReal.ofReal θ ^ 2 * H O ^ 3 ≤ ENNReal.ofReal θ ^ 2 * (2 * H A) ^ 3 :=
+-        mul_le_mul' le_rfl (pow_le_pow_left' htwo 3)
+-      _ = 8 * (ENNReal.ofReal θ ^ 2 * H A ^ 3) := by ring
+-      _ ≤ 8 * ((64 * (N : ℝ≥0∞) ^ 4) ^ 2 * haarMultiplicativeEnergy H A A) :=
+-        mul_le_mul' le_rfl he
+-      _ ≤ 8 * ((64 * (N : ℝ≥0∞) ^ 4) ^ 2 * haarMultiplicativeEnergy H O O) :=
+-        mul_le_mul' le_rfl (mul_le_mul' le_rfl hOE)
+-      _ = _ := by ring
+-
+-end TransposeFollowup.RealMobius
+--- before/lean/TransposeFollowup/SmoothedIteratePopularProducts.lean
++++ after/lean/TransposeFollowup/SmoothedIteratePopularProducts.lean
+@@ -1,77 +0,0 @@
+-import TransposeFollowup.SmoothedIterateOpenEnergy
+-import TransposeFollowup.MobiusPopularProducts
+-
+-/-! The actual nonflattening iterates supply a dense relation of pairs
+-whose products lie in a quantitatively controlled open precompact set. -/
+-namespace TransposeFollowup.RealMobius
+-open Classical MeasureTheory Set
+-open scoped ENNReal
+-set_option autoImplicit false
+-
+-variable [MeasurableSpace Group] [BorelSpace Group]
+-
+-theorem exists_smoothedIterate_popular_product_relation
+-    (μ : Measure Group) [IsProbabilityMeasure μ] {η B : ℝ} (hη : 0 < η) (k : ℕ)
+-    (hs : ∀ᵐ g ∂μ ∗ₘ mobiusHaarKernel η, g ∈ matrixEntryBox B)
+-    {M θ : ℝ} (hθ : 0 < θ) (hM : ∀ x, mobiusSmoothedDensity μ η x ≤ ENNReal.ofReal M)
+-    (hnonflat : ENNReal.ofReal θ *
+-        (∫⁻ x, smoothedAutocorrelationIterate μ η k x ^ 2 ∂(Measure.haar : Measure Group)) ≤
+-      ∫⁻ x, smoothedAutocorrelationIterate μ η (k + 1) x ^ 2 ∂(Measure.haar : Measure Group))
+-    {δ : ℝ≥0∞} (hδ : 0 < δ) (hδone : δ ≤ 1) :
+-    let H : Measure Group := Measure.haar
+-    let f := smoothedAutocorrelationIterate μ η k
+-    let U := ∫⁻ x, f x ^ 2 ∂H
+-    let τ := θ * U.toReal
+-    let a := ENNReal.ofReal (τ / 16)
+-    let R := (4 * B ^ 2) ^ (2 ^ k)
+-    ∃ N : ℕ, 0 < N ∧ (N : ℝ) ≤ 1 + Real.logb 2 (max 1 (16 * M / τ)) ∧
+-      ∃ i < N, let A := dyadicDensityLevel f a i
+-        let K := 64 * (N : ℝ≥0∞) ^ 4
+-        let L := 8 * K ^ 2 / ENNReal.ofReal θ ^ 2
+-        ∃ O : Set Group, A ∩ matrixEntryBox R ⊆ O ∧ O.Nonempty ∧ IsOpen O ∧
+-          (∀ x, x⁻¹ ∈ O ↔ x ∈ O) ∧ IsCompact (closure O) ∧
+-          closure O ⊆ matrixEntryBox (R + 1) ∧ 0 < H O ∧ H O < ⊤ ∧
+-          H A ≤ H O ∧ H O ≤ (1 + δ) * H A ∧
+-          ENNReal.ofReal θ ≤ K * U * H O ∧ ENNReal.ofReal θ * U * H O ≤ 2 * K ∧
+-          1 ≤ L ∧ L ≠ ⊤ ∧
+-          let C := popularProductSet H O O (H O / (2 * L))
+-          C.Nonempty ∧ IsOpen C ∧ IsCompact (closure C) ∧
+-            closure C ⊆ matrixEntryBox (2 * (R + 1) ^ 2) ∧ 0 < H C ∧ H C < ⊤ ∧
+-            H C ≤ 2 * L * H O ∧ H O ^ 2 ≤ 2 * L *
+-              (H.prod H) {p : Group × Group | p.1 ∈ O ∧ p.2 ∈ O ∧ p.1 * p.2 ∈ C} := by
+-  dsimp only
+-  obtain ⟨N, hN, hlog, i, hi, O, hAO, hOn, hOo, hOs, hOc, hOb,
+-    hO0, hOt, hAl, hAu, hlo, hhi, he⟩ :=
+-    exists_smoothedIterate_nonflattening_open_energy μ hη k hs hθ hM hnonflat hδ hδone
+-  let H : Measure Group := Measure.haar
+-  let K := 64 * (N : ℝ≥0∞) ^ 4
+-  let q := ENNReal.ofReal θ
+-  let L := 8 * K ^ 2 / q ^ 2
+-  have hq0 : q ≠ 0 := (ENNReal.ofReal_pos.mpr hθ).ne'
+-  have hqt : q ≠ ⊤ := ENNReal.ofReal_ne_top
+-  have hK0 : K ≠ 0 := by dsimp [K]; positivity
+-  have hKt : K ≠ ⊤ := by dsimp [K]; finiteness
+-  have hL0 : 0 < L := ENNReal.div_pos (by positivity) (by finiteness)
+-  have hLt : L ≠ ⊤ := by dsimp [L]; finiteness
+-  have hcancel : q ^ 2 * L = 8 * K ^ 2 :=
+-    ENNReal.mul_div_cancel (pow_ne_zero 2 hq0) (by finiteness)
+-  have hratio : H O ^ 3 ≤ L * haarMultiplicativeEnergy H O O := by
+-    apply (ENNReal.mul_le_mul_iff_right (pow_ne_zero 2 hq0) (by finiteness)).mp
+-    calc
+-      q ^ 2 * H O ^ 3 ≤ 8 * K ^ 2 * haarMultiplicativeEnergy H O O := he
+-      _ = q ^ 2 * (L * haarMultiplicativeEnergy H O O) := by rw [← mul_assoc, hcancel]
+-  have hLone : 1 ≤ L := by
+-    have hpow0 : H O ^ 3 ≠ 0 := pow_ne_zero 3 hO0.ne'
+-    apply (ENNReal.mul_le_mul_iff_left hpow0 (by finiteness)).mp
+-    calc
+-      1 * H O ^ 3 = H O ^ 3 := one_mul _
+-      _ ≤ L * haarMultiplicativeEnergy H O O := hratio
+-      _ ≤ L * H O ^ 3 := by
+-        apply mul_le_mul' le_rfl
+-        simpa only [pow_succ, pow_one, mul_assoc] using
+-          haarMultiplicativeEnergy_le_left H hOo.measurableSet hOo.measurableSet
+-  refine ⟨N, hN, hlog, i, hi, O, hAO, hOn, hOo, hOs, hOc, hOb,
+-    hO0, hOt, hAl, hAu, hlo, hhi, hLone, hLt, ?_⟩
+-  exact popularProductSet_geometry hOo (fun _ hx => hOb (subset_closure hx)) hO0 hOt hL0 hLt hratio
+-
+-end TransposeFollowup.RealMobius
+--- before/lean/TransposeFollowup/SmoothedIterateTraceCertificate.lean
++++ after/lean/TransposeFollowup/SmoothedIterateTraceCertificate.lean
+@@ -1,103 +0,0 @@
+-import TransposeFollowup.SmoothedIterateBicommutator
+-import TransposeFollowup.RationalTraceCertificate
+-
+-/-! The actual localized bounded-word family has a quantitative trace
+-certificate whose witness is fixed before every complex change of basis.
+-All outputs of the original bicommutator extraction are retained. -/
+-namespace TransposeFollowup.RationalFreePair
+-open Classical MeasureTheory Set RealMobius
+-open scoped ENNReal NNReal Pointwise commutatorElement
+-set_option autoImplicit false
+-
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "CMat" => Matrix (Fin 2) (Fin 2) ℂ
+-
+-theorem exists_word_trace_certificate {ι : Type*} (f : FreeGroup ι →* RealMobius.Group)
+-    {D : ℕ} (hD : 0 < D) {F : Finset (FreeGroup ι)} (hF1 : 1 ∈ F)
+-    (hF : ∀ v ∈ F, f v ∈ denominatorCarrier D)
+-    {a x y : FreeGroup ι} (ha : a ∈ F) (hx : x ∈ F) (hy : y ∈ F)
+-    (hne : f ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1) :
+-    ∃ v ∈ F, (v = 1 ∨ v = a ∨ v = x ∨ v = y) ∧
+-      ∀ P : CMatˣ, 1 / (D : ℝ) ^ 17 ≤
+-        ‖Matrix.trace ((P : CMat) * ((f (⁅⁅a, x⁆, ⁅a, y⁆⁆ * v)) : RMat).map Complex.ofReal *
+-            (↑P⁻¹ : CMat)) -
+-          Matrix.trace ((P : CMat) * (f v : RMat).map Complex.ofReal * (↑P⁻¹ : CMat))‖ := by
+-  obtain ⟨g, hg, _, hsep⟩ := rational_bicommutator_trace_certificate hD
+-    (hF a ha) (hF x hx) (hF y hy) (by simpa only [map_commutatorElement] using hne)
+-  have hw : ∃ v ∈ F, (v = 1 ∨ v = a ∨ v = x ∨ v = y) ∧ f v = g := by
+-    rcases hg with rfl | rfl | rfl | rfl
+-    · exact ⟨1, hF1, Or.inl rfl, map_one f⟩
+-    · exact ⟨a, ha, Or.inr (Or.inl rfl), rfl⟩
+-    · exact ⟨x, hx, Or.inr (Or.inr (Or.inl rfl)), rfl⟩
+-    · exact ⟨y, hy, Or.inr (Or.inr (Or.inr rfl)), rfl⟩
+-  obtain ⟨v, hv, hchoice, he⟩ := hw
+-  refine ⟨v, hv, hchoice, ?_⟩
+-  intro P
+-  simpa only [map_mul, map_commutatorElement, he] using hsep P
+-
+-variable [MeasurableSpace RealMobius.Group] [BorelSpace RealMobius.Group]
+-
+-theorem exists_iterate_short_word_trace_certificate_threshold :
+-    ∃ J : ℕ, ∀ {r j ell : ℕ} {s Q α X : ℝ} {N_level : ℕ}
+-    (_hJj : J ≤ j) (_hr : 5 ≤ r) (_hj : 7680 * r ≤ j)
+-    (_hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) /
+-      Real.log (1 / dyadicRadius r) < (ell : ℝ))
+-    (g : Fin (2 ^ (3 * r)) → Group)
+-    (_hg : ∀ a, HasDenominator (dyadicDenominator r) (g a))
+-    (_hfree : Function.Injective (FreeGroup.lift (realEmbedding ∘ g)))
+-    (_hG : ∀ a, realEmbedding (g a) ∈ matrixEntryBox 2) (i : ℕ)
+-    {U : Set RealMobius.Group} (_hU1 : 1 ∈ U) (_hUo : IsOpen U) (_hUi : U⁻¹ = U)
+-    (_hUb : U ⊆ matrixEntryBox Q) (_hQ : 1 ≤ Q) (_hα : 0 < α) (_hαone : α ≤ 1)
+-    (x : RealMobius.Group) (_hx : x ∈ matrixEntryBox X)
+-    (_hmargin : 1140 * s ≤ 1 / 61440)
+-    (_hlarge : 2 ^ 100 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hlevel : (N_level : ℝ) ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hQscale : Q ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hαscale : α⁻¹ ^ 4 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s)),
+-    let η := (1 / 4 : ℝ) ^ j
+-    let q := ENNReal.ofReal (η ^ s)
+-    let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    let t := initialWalkLength r j
+-    q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (Measure.haar : Measure RealMobius.Group).withDensity
+-      (smoothedAutocorrelationIterate (generatorWalkMeasure (realEmbedding ∘ g) ell) η i) (x • U) →
+-    ∃ u ∈ mobiusIdentityBall η, ∃ F : Finset (FreeGroup (Fin (2 ^ (3 * r)))), 1 ∈ F ∧
+-      (∀ v ∈ F, FreeGroup.norm v ≤ 2 * t ∧
+-        FreeGroup.lift (realEmbedding ∘ g) v ∈ denominatorCarrier ((dyadicDenominator r) ^ (2 * t)) ∧
+-        u⁻¹ * FreeGroup.lift (realEmbedding ∘ g) v * u ∈ A ^ 2) ∧
+-      η ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ) ∧
+-      ∃ a ∈ F, ∃ x ∈ F, ∃ y ∈ F, ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≠ 1 ∧
+-        FreeGroup.norm ⁅⁅a, x⁆, ⁅a, y⁆⁆ ≤ 32 * t ∧
+-        (∃ i₀ j₀ : Fin 2, 1 / (dyadicDenominator r : ℝ) ^ (32 * t) ≤
+-          |(FreeGroup.lift (realEmbedding ∘ g) ⁅⁅a, x⁆, ⁅a, y⁆⁆) i₀ j₀ -
+-            (1 : RealMobius.Group) i₀ j₀|) ∧
+-        ∃ v ∈ F, (v = 1 ∨ v = a ∨ v = x ∨ v = y) ∧
+-          ∀ P : CMatˣ, 1 / (dyadicDenominator r : ℝ) ^ (34 * t) ≤
+-            ‖Matrix.trace ((P : CMat) *
+-                ((FreeGroup.lift (realEmbedding ∘ g) (⁅⁅a, x⁆, ⁅a, y⁆⁆ * v)) : RMat).map
+-                  Complex.ofReal * (↑P⁻¹ : CMat)) -
+-              Matrix.trace ((P : CMat) *
+-                (FreeGroup.lift (realEmbedding ∘ g) v : RMat).map Complex.ofReal * (↑P⁻¹ : CMat))‖ := by
+-  obtain ⟨J, hJ⟩ := exists_iterate_short_word_bicommutator_threshold
+-  refine ⟨J, ?_⟩
+-  intro r j ell s Q α X N_level hJj hr hj hlog g hg hfree hG i U
+-    hU1 hUo hUi hUb hQ hα hαone x hx hmargin hlarge hlevel hQscale hαscale
+-  dsimp only
+-  intro hmass
+-  obtain ⟨u, hu, F, hF1, hF, hsize, a, ha, v, hv, z, hz, hne, hneR, hlen, hsep⟩ :=
+-    hJ hJj hr hj hlog g hg hfree hG i hU1 hUo hUi hUb hQ hα hαone x hx
+-      hmargin hlarge hlevel hQscale hαscale hmass
+-  obtain ⟨w, hw, hchoice, htrace⟩ := exists_word_trace_certificate
+-    (FreeGroup.lift (realEmbedding ∘ g))
+-    (pow_pos (dyadicDenominator_pos r) (2 * initialWalkLength r j)) hF1
+-    (fun v hv => (hF v hv).2.1) ha hv hz hneR
+-  refine ⟨u, hu, F, hF1, hF, hsize, a, ha, v, hv, z, hz, hne, hneR, hlen, hsep,
+-    w, hw, hchoice, ?_⟩
+-  intro P
+-  simpa only [Nat.cast_pow, ← pow_mul,
+-    show (2 * initialWalkLength r j) * 17 = 34 * initialWalkLength r j by omega] using htrace P
+-
+-end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/StrategySeparator.lean
++++ after/lean/TransposeFollowup/StrategySeparator.lean
+@@ -17,7 +17,6 @@
+     (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
+     (decode : H → Fin n → Row n b → List Bool → Row n b)
+     (M : FiniteMatrix n b → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
+     (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
+     (S : H → List Bool → Finset (Fin n)) (component : H → List Bool → Fin n → κ)
+@@ -31,8 +30,8 @@
+             (component (helper x.val) (M x.val))).card : ℕ) : ℝ)) -
+       2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+       2 * (observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) := by
+-  obtain ⟨p, hp, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hpair hrun
+-  let C : RowCode n b H := ⟨helper, p, hp, decode⟩
++  obtain ⟨p, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hrun
++  let C : RowCode n b H := ⟨helper, p, decode⟩
+   have htrans : ∀ x ∈ F, C.transcript x = M x := hM
+   have hc : C.CorrectOn (F : Set _) := by
+     intro x hx j
+@@ -71,7 +70,6 @@
+     (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
+     (decode : H → Fin n → Row n b → List Bool → Row n b)
+     (M : FiniteMatrix n b → List Bool)
+-    (hpair : ∀ z, (strategy z).Pairwise)
+     (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
+     (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
+     (S : H → List Bool → Finset (Fin n)) (component : H → List Bool → Fin n → κ)
+@@ -83,8 +81,8 @@
+     (hg : (F.image helper).card ≤ 2 ^ g) :
+     (B : ℝ) ≥ (n * n * b : ℕ) - L -
+       2 * (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) + g) := by
+-  obtain ⟨p, hp, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hpair hrun
+-  let C : RowCode n b H := ⟨helper, p, hp, decode⟩
++  obtain ⟨p, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hrun
++  let C : RowCode n b H := ⟨helper, p, decode⟩
+   have htrans : ∀ x ∈ F, C.transcript x = M x := hM
+   have hc : C.CorrectOn (F : Set _) := by
+     intro x hx j
+--- before/lean/TransposeFollowup/TernaryBankData.lean
++++ after/lean/TransposeFollowup/TernaryBankData.lean
+@@ -70,18 +70,6 @@
+       simp only [CoupledRowScan.evaluate,horizontalUpdate,uncarry_carry prev,List.map_cons,rowResult_cons]
+       rw [ih (stored sub (decode a) prev) ys (by simpa using h)]
+ 
+-theorem horizontal_evaluate_scratch (sub : Bool) (c : Carry) (xs ys : List (Sym Bool))
+-    (h : xs.length=ys.length) :
+-    (CoupledRowScan.evaluate (horizontalUpdate sub) c xs ys).2.2=ys := by
+-  induction xs generalizing c ys with
+-  | nil => have hy : ys=[] := List.length_eq_zero_iff.mp h.symm; subst ys; rfl
+-  | cons a xs ih =>
+-    cases ys with
+-    | nil => simp at h
+-    | cons b ys =>
+-      simp only [CoupledRowScan.evaluate,horizontalUpdate]
+-      rw [ih _ ys (by simpa using h)]
+-
+ /-- Rearrange the same 200 control states; no extra state or instruction. -/
+ def modes : SharedRowBank.Mode ≃ CoupledRowCell.Mode Carry × Bool where
+   toFun m := ((m.1,m.2.2.1,m.2.2.2),m.2.1)
+--- before/lean/TransposeFollowup/TernaryHorizontal.lean
++++ after/lean/TransposeFollowup/TernaryHorizontal.lean
+@@ -1,147 +0,0 @@
+-import TransposeFollowup.TernaryRowScan
+-import TransposeFollowup.BankSymbolRotation
+-
+-/-! Scalar-trit Q/q on a single row: paid reversal, the existing leftward ternary
+-scan, then paid reversal. The controller is still the shared 200 modes.
+-The resulting list is exactly the forward prefix/difference definition.
+-For source168 entries containing b trits, this supplies the b=1 case;
+-independent lanes for general b still require an explicit b-trit buffer. -/
+-namespace TransposeFollowup.TernaryHorizontal
+-open Classical FixedTapeCompiler ScheduledNativeIO ScheduledTapeAction
+-open CopyMachine (Sym)
+-set_option autoImplicit false
+-
+-noncomputable def scanCode (sub : Bool) (P : ℕ) (i : ℕ) : NativeIO.Program (Fin 2) SharedRowBank.Mode :=
+-  NativeIOModeProduct.program TernaryBank.modes (TernaryRowScan.schedule sub P i)
+-
+-def scanRun (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) : SharedRowBank.State :=
+-  NativeIOModeProduct.attach TernaryBank.modes (TernaryBank.modes c.work.core.pc).2
+-    (TernaryRowScan.result sub P w (NativeIOModeProduct.project TernaryBank.modes c))
+-
+-theorem scan_exact (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) :
+-    trajectory (scanCode sub P) w c (TernaryRowScan.ticks P)=scanRun sub P w c := by
+-  unfold scanCode
+-  rw [NativeIOModeProduct.trajectory_eq,TernaryRowScan.schedule_exact]
+-  rfl
+-
+-theorem scan_active (sub : Bool) (P i : ℕ) (c : SharedRowBank.State) :
+-    NativeIO.Active (scanCode sub P i) c :=
+-  NativeIOModeProduct.active TernaryBank.modes _ (TernaryRowScan.schedule_active sub P i) c
+-
+-theorem scan_position (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) (t : Fin 2) :
+-    (scanRun sub P w c).work.pos t=c.work.pos t :=
+-  TernaryRowScan.result_position sub P w (NativeIOModeProduct.project TernaryBank.modes c) t
+-
+-theorem scan_represents (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State)
+-    (hc : BankWord.symbols.clean c) :
+-    BankWord.Represents BankWord.symbols P c (scanRun sub P w c)
+-      (TernaryRowScan.value sub P (BankWord.input BankWord.symbols c)) :=
+-  TernaryRowScan.represents sub P w (NativeIOModeProduct.project TernaryBank.modes c) hc
+-
+-theorem scan_frame (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) (z : ℤ)
+-    (hz : z<c.work.pos 0 ∨ c.work.pos 0+P ≤ z) :
+-    cells (scanRun sub P w c) 0 z=cells c 0 z :=
+-  TernaryRowScan.result_frame sub P w (NativeIOModeProduct.project TernaryBank.modes c) z hz
+-
+-def reverseValue (P : ℕ) (x : ℕ → Sym Bool) (j : ℕ) : Sym Bool := x (P-1-j)
+-
+-theorem reverse_congr (P : ℕ) : BankWord.Congruent P (reverseValue P) := by
+-  intro x y hxy j hj
+-  exact hxy (P-1-j) (by omega)
+-
+-theorem reverse_represents (P : ℕ) (w : List Bool) (c : SharedRowBank.State)
+-    (hc : BankWord.symbols.clean c) :
+-    BankWord.Represents BankWord.symbols P c (BankSymbolRotation.reverse P w c)
+-      (reverseValue P (BankWord.input BankWord.symbols c)) := by
+-  have h := BankSymbolRotation.reverse_spec P w c hc
+-  exact ⟨BankSymbolRotation.reverse_position P w c,h.1,h.2⟩
+-
+-def value (sub : Bool) (P : ℕ) (x : ℕ → Sym Bool) : ℕ → Sym Bool :=
+-  reverseValue P (TernaryRowScan.value sub P (reverseValue P x))
+-
+-theorem value_congr (sub : Bool) (P : ℕ) : BankWord.Congruent P (value sub P) := by
+-  intro x y hxy
+-  exact reverse_congr P _ _ (TernaryRowScan.value_congr sub P _ _ (reverse_congr P x y hxy))
+-
+-theorem reverse_word (P : ℕ) (x : ℕ → Sym Bool) :
+-    RawCarryBank.word P (reverseValue P x)=(RawCarryBank.word P x).reverse := by
+-  apply List.ext_getElem
+-  · simp [RawCarryBank.word]
+-  · intro j hj hj'
+-    simp only [RawCarryBank.word,List.getElem_ofFn,reverseValue,List.getElem_reverse,List.length_ofFn]
+-
+-theorem value_eq (sub : Bool) (P : ℕ) (x : ℕ → Sym Bool) (j : ℕ) (hj : j<P) :
+-    value sub P x j=
+-      ((TernaryBank.rowResult sub 0 ((RawCarryBank.word P x).map TernaryBank.decode)).map
+-        TernaryBank.encode).getI j := by
+-  let ys := (TernaryBank.rowResult sub 0 ((RawCarryBank.word P x).map TernaryBank.decode)).map TernaryBank.encode
+-  have hl : ys.length=P := by simp [ys,TernaryBank.rowResult_length,RawCarryBank.word]
+-  change TernaryRowScan.value sub P (reverseValue P x) (P-1-j)=ys.getI j
+-  rw [TernaryRowScan.value,reverse_word,TernaryRowScan.resultWord,List.reverse_reverse]
+-  change ys.reverse.getI (P-1-j)=ys.getI j
+-  rw [List.getI_eq_getElem _ (by simp only [List.length_reverse,hl]; omega),List.getElem_reverse]
+-  simpa only [show ys.length-1-(P-1-j)=j by omega] using
+-    (List.getI_eq_getElem ys (by omega : j<ys.length)).symm
+-
+-def ticks (P : ℕ) : ℕ := 10*P+(TernaryRowScan.ticks P+10*P)
+-
+-noncomputable def schedule (sub : Bool) (P : ℕ) : ℕ → NativeIO.Program (Fin 2) SharedRowBank.Mode :=
+-  append (RawBlockReversal.schedule 1 P)
+-    (append (scanCode sub P) (RawBlockReversal.schedule 1 P) (TernaryRowScan.ticks P)) (10*P)
+-
+-def result (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) : SharedRowBank.State :=
+-  BankSymbolRotation.reverse P w (scanRun sub P w (BankSymbolRotation.reverse P w c))
+-
+-theorem schedule_exact (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) :
+-    trajectory (schedule sub P) w c (ticks P)=result sub P w c := by
+-  simp only [schedule,ticks,append_exact,BankSymbolRotation.reverse_exact,scan_exact]
+-  rfl
+-
+-theorem schedule_active (sub : Bool) (P i : ℕ) (c : SharedRowBank.State) :
+-    NativeIO.Active (schedule sub P i) c := by
+-  unfold schedule
+-  apply append_active
+-  · intro j; exact RawBlockReversal.schedule_active 1 P j c
+-  · intro j
+-    apply append_active
+-    · intro k; exact scan_active sub P k c
+-    · intro k; exact RawBlockReversal.schedule_active 1 P k c
+-
+-theorem ticks_eq (P : ℕ) (hP : 0<P) : ticks P=26*P := by
+-  rw [ticks,TernaryRowScan.ticks_eq P hP]
+-  omega
+-
+-theorem result_position (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) (t : Fin 2) :
+-    (result sub P w c).work.pos t=c.work.pos t := by
+-  rw [result,BankSymbolRotation.reverse_position,scan_position,BankSymbolRotation.reverse_position]
+-
+-theorem represents (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State)
+-    (hc : BankWord.symbols.clean c) :
+-    BankWord.Represents BankWord.symbols P c (result sub P w c)
+-      (value sub P (BankWord.input BankWord.symbols c)) := by
+-  have h1 := reverse_represents P w c hc
+-  have h2 := scan_represents sub P w (BankSymbolRotation.reverse P w c) h1.2.2.1
+-  have h12 := BankWord.represents_step BankWord.symbols P (TernaryRowScan.value sub P)
+-    _ _ _ _ h1 h2 (TernaryRowScan.value_congr sub P)
+-  have h3 := reverse_represents P w (scanRun sub P w (BankSymbolRotation.reverse P w c)) h2.2.2.1
+-  exact BankWord.represents_step BankWord.symbols P (reverseValue P) _ _ _ _ h12 h3 (reverse_congr P)
+-
+-theorem result_frame (sub : Bool) (P : ℕ) (w : List Bool) (c : SharedRowBank.State) (z : ℤ)
+-    (hz : z<c.work.pos 0 ∨ c.work.pos 0+P ≤ z) :
+-    cells (result sub P w c) 0 z=cells c 0 z := by
+-  rw [result,BankSymbolRotation.reverse_frame P w _ z (by
+-    rw [scan_position,BankSymbolRotation.reverse_position]; exact hz)]
+-  rw [scan_frame sub P w _ z (by rw [BankSymbolRotation.reverse_position]; exact hz)]
+-  exact BankSymbolRotation.reverse_frame P w c z hz
+-
+-noncomputable def update (sub : Bool) (P : ℕ) : ScheduledBankRows.Update SharedRowBank.Mode P where
+-  cost := ticks P
+-  code := schedule sub P
+-  value := value sub P
+-  congruent := value_congr sub P
+-  active := schedule_active sub P
+-  endpoint := by intro w c t; rw [schedule_exact]; exact result_position sub P w c t
+-  represents := by intro w c hc; rw [schedule_exact]; exact represents sub P w c hc
+-  frame := by intro w c z hz; rw [schedule_exact]; exact result_frame sub P w c z hz
+-
+-end TransposeFollowup.TernaryHorizontal
+--- before/lean/TransposeFollowup/TernaryRowScan.lean
++++ after/lean/TransposeFollowup/TernaryRowScan.lean
+@@ -1,168 +0,0 @@
+-import TransposeFollowup.TernaryBankData
+-import TransposeFollowup.CoupledRowScanInvariant
+-import TransposeFollowup.RawCarryBank
+-
+-/-! A paid ternary carry pass from right to left. It resets two retained
+-control bits, seeks both heads, uses the existing four-instruction cell,
+-and pads to six steps per symbol for positive width. Scratch is preserved
+-exactly. Horizontal prefix order will use paid reversal on either side. -/
+-namespace TransposeFollowup.TernaryRowScan
+-open Classical FixedTapeCompiler ScheduledNativeIO ScheduledTapeAction
+-open CopyMachine (Sym Tape)
+-open TernaryBank (Carry carry horizontalUpdate)
+-set_option autoImplicit false
+-
+-abbrev State := CoupledRowCell.State Carry
+-abbrev Mode := CoupledRowCell.Mode Carry
+-
+-def reset : NativeIO.Program (Fin 2) Mode := fun _ => .work (.jump (carry 0,.blank,.blank))
+-
+-def seed (c : State) : State :=
+-  ⟨⟨⟨(carry 0,.blank,.blank),c.work.core.tapes⟩,c.work.pos⟩,c.inputPos,c.outRev⟩
+-
+-def prepared (P : ℕ) (w : List Bool) (c : State) : State :=
+-  trajectory (fun _ => CoupledRowMoves.right (fun _ => true)) w (seed c) P
+-
+-def result (sub : Bool) (P : ℕ) (w : List Bool) (c : State) : State :=
+-  CoupledRowScan.run (horizontalUpdate sub) P (prepared P w c)
+-
+-def ticks (P : ℕ) : ℕ := 1+(P+(4*P+(P-1)))
+-
+-def schedule (sub : Bool) (P : ℕ) : ℕ → NativeIO.Program (Fin 2) Mode :=
+-  append (fun _ => reset)
+-    (append (fun _ => CoupledRowMoves.right (fun _ => true))
+-      (append (CoupledRowScan.schedule (horizontalUpdate sub) P) (fun _ => CoupledRowScan.idle) (4*P)) P) 1
+-
+-theorem schedule_exact (sub : Bool) (P : ℕ) (w : List Bool) (c : State) :
+-    trajectory (schedule sub P) w c (ticks P)=result sub P w c := by
+-  simp only [schedule,ticks,append_exact,CoupledRowScan.idle_exact,CoupledRowScan.schedule_exact]
+-  rfl
+-
+-theorem schedule_active (sub : Bool) (P i : ℕ) (c : State) :
+-    NativeIO.Active (schedule sub P i) c := by
+-  unfold schedule
+-  apply append_active
+-  · intro _; simp [reset,NativeIO.Active]
+-  · intro _
+-    apply append_active
+-    · intro _; exact CoupledRowMoves.right_active _ _
+-    · intro _
+-      apply append_active
+-      · intro j; exact CoupledRowScan.schedule_active _ _ j c
+-      · intro _; simp [CoupledRowScan.idle,NativeIO.Active]
+-
+-theorem ticks_eq (P : ℕ) (hP : 0<P) : ticks P=6*P := by unfold ticks; omega
+-
+-theorem result_position (sub : Bool) (P : ℕ) (w : List Bool) (c : State) (t : Fin 2) :
+-    (result sub P w c).work.pos t=c.work.pos t := by
+-  simp only [result,CoupledRowScan.run_position,prepared,CoupledRowMotion.right_position,
+-    ite_true,add_sub_cancel_right,seed]
+-
+-theorem result_scratch (sub : Bool) (P : ℕ) (w : List Bool) (c : State) (z : ℤ) :
+-    cells (result sub P w c) 1 z=cells c 1 z := by
+-  rw [result,CoupledRowScan.run_scratch (horizontalUpdate sub) (fun _ => rfl),
+-    prepared,CoupledRowMoves.right_cells]
+-  rfl
+-
+-theorem result_io (sub : Bool) (P : ℕ) (w : List Bool) (c : State) :
+-    (result sub P w c).inputPos=c.inputPos ∧ (result sub P w c).outRev=c.outRev := by
+-  have h := CoupledRowScan.run_io (horizontalUpdate sub) P (prepared P w c)
+-  have hr := CoupledRowMoves.right_io (fun _ => true) w (seed c) P
+-  exact ⟨h.1.trans hr.1,h.2.trans hr.2⟩
+-
+-theorem result_frame (sub : Bool) (P : ℕ) (w : List Bool) (c : State) (z : ℤ)
+-    (hz : z<c.work.pos 0 ∨ c.work.pos 0+P ≤ z) :
+-    cells (result sub P w c) 0 z=cells c 0 z := by
+-  rw [result,CoupledRowScan.run_frame]
+-  · rw [prepared,CoupledRowMoves.right_cells]; rfl
+-  · simpa only [prepared,CoupledRowMotion.right_position,ite_true,seed,add_sub_cancel_right] using hz
+-
+-theorem result_pair (sub : Bool) (m : Mode) (xs ys pre spre tail stail : List (Sym Bool))
+-    (h : xs.length=ys.length) (pos : Fin 2 → ℤ) (ip : ℤ) (out w : List Bool) :
+-    result sub xs.length w (RawRowArithmetic.initial m xs ys pre spre tail stail pos ip out)=
+-      let r := CoupledRowScan.evaluate (horizontalUpdate sub) (carry 0) xs.reverse ys.reverse
+-      CoupledRowCell.cfg (r.1,.blank,.blank)
+-        ![⟨pre,r.2.1.reverse++tail⟩,⟨spre,r.2.2.reverse++stail⟩] pos ip out := by
+-  unfold result prepared
+-  change CoupledRowScan.run (horizontalUpdate sub) xs.length
+-    (trajectory (fun _ => CoupledRowMoves.right (fun _ => true)) w
+-      (RawRowArithmetic.initial (carry 0,.blank,.blank) xs ys pre spre tail stail pos ip out) xs.length)=_
+-  rw [RawRowArithmetic.seek_pair (carry 0) xs ys pre spre tail stail h pos ip out w]
+-  simpa only [List.length_reverse,add_sub_cancel_right] using
+-    CoupledRowScan.run_pair (horizontalUpdate sub) (carry 0) xs.reverse ys.reverse
+-      (by simpa using h) pre spre tail stail (fun t => pos t+xs.length) ip out
+-
+-def resultWord (sub : Bool) (xs : List (Sym Bool)) : List (Sym Bool) :=
+-  ((TernaryBank.rowResult sub 0 (xs.reverse.map TernaryBank.decode)).map TernaryBank.encode).reverse
+-
+-theorem resultWord_length (sub : Bool) (xs : List (Sym Bool)) :
+-    (resultWord sub xs).length=xs.length := by
+-  simp only [resultWord,List.length_reverse,List.length_map,TernaryBank.rowResult_length]
+-
+-theorem bank_spec (sub : Bool) (m : Mode) (xs pre tail : List (Sym Bool))
+-    (pos : Fin 2 → ℤ) (ip : ℤ) (out w : List Bool) :
+-    let c := RawRowArithmetic.bankStart m [xs] pre tail pos ip out
+-    let d := result sub xs.length w c
+-    (∀ t, d.work.pos t=pos t) ∧
+-    (∀ z, cells d 0 z=AbsoluteTape.cells
+-      (⟨pre,resultWord sub xs++tail⟩ : Tape Bool).denote (pos 0) z) ∧
+-    (∀ z, cells d 1 z=.blank) ∧ d.inputPos=ip ∧ d.outRev=out := by
+-  let c := RawRowArithmetic.bankStart m [xs] pre tail pos ip out
+-  have hseed : c=RawRowArithmetic.initial m xs (List.replicate xs.length .blank)
+-      pre [] tail [] pos ip out := by
+-    unfold c RawRowArithmetic.bankStart RawRowArithmetic.initial CoupledRowCell.cfg
+-    simp only [List.flatten_cons,List.flatten_nil,List.append_nil]
+-    congr 2
+-    congr 1
+-    funext t
+-    fin_cases t
+-    · rfl
+-    · exact (ZipperListCells.blank_front xs.length).symm
+-  have hs := result_pair sub m xs (List.replicate xs.length .blank) pre [] tail []
+-    (by simp) pos ip out w
+-  rw [← hseed] at hs
+-  have he := TernaryBank.horizontal_evaluate sub 0 xs.reverse
+-    (List.replicate xs.length .blank).reverse (by simp)
+-  refine ⟨result_position sub xs.length w c,?_,?_,(result_io sub xs.length w c).1,
+-    (result_io sub xs.length w c).2⟩
+-  · intro z
+-    change cells (result sub xs.length w c) 0 z=_
+-    rw [hs]
+-    simp only [cells,CoupledRowCell.cfg,Matrix.cons_val_zero,he,resultWord]
+-  · intro z
+-    rw [result_scratch]
+-    exact AbsoluteTape.blank_cells (pos 1) z
+-
+-def value (sub : Bool) (P : ℕ) (x : ℕ → Sym Bool) (j : ℕ) : Sym Bool :=
+-  (resultWord sub (RawCarryBank.word P x)).getI j
+-
+-theorem value_congr (sub : Bool) (P : ℕ) : BankWord.Congruent P (value sub P) := by
+-  intro x y hxy j _
+-  have hw : RawCarryBank.word P x=RawCarryBank.word P y := by
+-    unfold RawCarryBank.word
+-    congr 1
+-    funext i
+-    exact hxy i i.isLt
+-  rw [value,value,hw]
+-
+-theorem represents (sub : Bool) (P : ℕ) (w : List Bool) (c : State)
+-    (hc : BankWord.symbols.clean c) :
+-    BankWord.Represents BankWord.symbols P c (result sub P w c)
+-      (value sub P (BankWord.input BankWord.symbols c)) := by
+-  let xs := RawCarryBank.word P (BankWord.input BankWord.symbols c)
+-  have hl : xs.length=P := List.length_ofFn
+-  obtain ⟨pre,tail,he⟩ := RawRowArithmetic.clean_representation P 1 c hc
+-  have he' : c=RawRowArithmetic.bankStart c.work.core.pc [xs] pre tail
+-      c.work.pos c.inputPos c.outRev := by
+-    simpa [TapeWindow.rows,List.ofFn_succ,xs,RawCarryBank.word] using he
+-  have h := bank_spec sub c.work.core.pc xs pre tail c.work.pos c.inputPos c.outRev w
+-  dsimp only at h
+-  rw [hl,← he'] at h
+-  refine ⟨h.1,?_,h.2.2.1,h.2.2.2.1,h.2.2.2.2⟩
+-  intro j hj
+-  change cells (result sub P w c) 0 (c.work.pos 0+j)=_
+-  rw [h.2.1]
+-  exact TapeWindow.window_cell pre (resultWord sub xs) tail (c.work.pos 0) j
+-    (by rw [resultWord_length,hl]; exact hj)
+-
+-end TransposeFollowup.TernaryRowScan
+--- before/lean/TransposeFollowup/TwoStageRows.lean
++++ after/lean/TransposeFollowup/TwoStageRows.lean
+@@ -73,13 +73,12 @@
+     ∀ i ∉ T.outputSuffix r, T.finalMap x i = T.finalMap y i := by
+   intro i hi
+   apply congrArg (T.outputMap i)
+-  apply T.second.prefix_eq
+-  intro j hj
+-  apply h
+-  simp only [outputSuffix, mem_rowSuffix, Equiv.trans_apply, not_le] at hi
+-  simp only [intermediateSuffix, mem_rowSuffix, Equiv.trans_apply,
+-    T.middlePerm.symm_apply_apply, not_le]
+-  exact lt_of_le_of_lt hj hi
++  apply T.second.suffix_support r
++  · intro j hj
++    apply h
++    simpa only [intermediateSuffix, mem_rowSuffix, Equiv.trans_apply,
++      T.middlePerm.symm_apply_apply] using hj
++  · simpa only [outputSuffix, mem_rowSuffix, Equiv.trans_apply] using hi
+ 
+ /-- Exact branch count; no helper conditioning or independence assumption is
+ used. The correct family can be empty or arbitrarily correlated. -/
+--- before/lean/TransposeFollowup/UnconditionalPaidPadding.lean
++++ after/lean/TransposeFollowup/UnconditionalPaidPadding.lean
+@@ -9,8 +9,10 @@
+ open Filter Topology
+ set_option autoImplicit false
+ 
+-theorem exists_uniform_paid_padding (M : Transpose.TM) :
+-    ∃ (M' : Transpose.TM) (A : ℕ), cellBits M'=3 ∧
++/-- One absolute overhead coefficient works for every payload machine. The
++compiled machine, unlike that coefficient, may depend on the payload. -/
++theorem exists_uniform_paid_padding :
++    ∃ A : ℕ, ∀ M : Transpose.TM, ∃ M' : Transpose.TM, cellBits M'=3 ∧
+       (∀ n : ℕ, 1 ≤ n → ∀ w out : List Bool, w.length=Transpose.inputLength n →
+         ∀ t : ℕ, Transpose.ComputesWithin M w out t →
+         ∃ T ≤ A*w.length+t, ∃ d : Transpose.Config M',
+@@ -31,9 +33,11 @@
+                 (fun p τ => workTraj M' (ws i) τ p)) ∧
+           NativeRunLimits.Conclusion M' ns ws Ts (A+a) := by
+   obtain ⟨c, F, eps, heps, hmap, hexp⟩ := exists_rational_continuous_expander
+-  obtain ⟨K, extra, hcompile⟩ := continuous_uniform_computation_with_cut F hmap eps heps hexp M
++  obtain ⟨K, extra, hcompile⟩ := continuous_uniform_computation_with_cut F hmap eps heps hexp
++  let A := PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily F) K
++  refine ⟨A, ?_⟩
++  intro M
+   let M' := machine (c:=c+1+c) (rationalSymmetricFamily F) K M extra
+-  let A := PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily F) K
+   have hbits : cellBits M'=3 := cellBits_eq _ _ _ _
+   have hrun (n : ℕ) (hn : 1 ≤ n) (w out : List Bool) (hw : w.length=Transpose.inputLength n)
+       (t : ℕ) (ht : Transpose.ComputesWithin M w out t) :
+@@ -43,8 +47,8 @@
+         CutIneq n (cellBits M') (blockSize (cellBits M') n) T 0 0
+           (fun p τ => workTraj M' w τ p) := by
+     rw [hbits]
+-    exact hcompile n hn w out hw t ht
+-  refine ⟨M', A, hbits, hrun, ?_⟩
++    exact hcompile M n hn w out hw t ht
++  refine ⟨M', hbits, hrun, ?_⟩
+   intro ns hns hn ws outs hw a hc
+   choose Ts ht ds hs hh ho hcut using
+     (fun i => hrun (ns i) (hn i) (ws i) (outs i) (hw i)

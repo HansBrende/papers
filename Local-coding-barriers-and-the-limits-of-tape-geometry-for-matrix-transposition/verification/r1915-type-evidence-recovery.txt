@@ -1,0 +1,16 @@
+R1915 evidence recovery
+
+The byte-verified archive is /Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1915-spectral-build-speed/full-type-evidence.tar.gz
+Bytes: 46713123
+SHA256: d70d4feb40c31e3367f3fbfa07105176befe7f71958c0228106b1367eca93ec4
+Members: 200 (including inventory.json).
+
+The archive contains both full 79-chunk type captures, compact manifests, exact comparison, source snapshot, baseline-reuse chain, and semantic checker evidence. R1914's completed final capture is the reused baseline, explicitly bound to the R1915 frozen source snapshot; no new baseline Lean capture is claimed. The R1914 archive remains intact.
+
+All 6,306 original audited contracts are covered: 6,302 literal matches, three native-kernel conversions of exact original Expr types, and one separately labeled exact archived-source-header check. The initial missing generated helper failure and the successful revised checker are both retained. No alias or environment patch was introduced.
+
+Recover by extracting into an empty directory, reading inventory.json, and verifying each member against its recorded byte count and SHA256. The inventory maps each archive member to its original absolute path, including temporary paths. Restore only absent paths or paths already containing identical bytes; never overwrite a conflict or rewrite frozen provenance. The original paths in copied compact receipts are intentional and remain recoverable through this mapping.
+
+The archive proves preservation of evidence bytes; the separate type-preservation receipt records the semantic validation. Raw differences remain recorded rather than being relabeled literal equality. No raw input has been deleted.
+
+Executable metadata tools are in verification/r1915-preservation-tools, indexed by r1915-preservation-tools.json. Parent publication must run finalize.py with --config verification/r1915-finalization-inputs.json, inspect the preview, then explicitly use --apply; this preparation did not publish a new support-build receipt.

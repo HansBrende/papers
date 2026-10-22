@@ -1,0 +1,63 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1868",
+  "target": "Regular recursion206/208: exact real interval geometry and derived physical shallow coverage.",
+  "new_modules": [
+    "UnitTickRegions",
+    "StageRealGeometry",
+    "PhysicalStageCoverage"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.tickCells",
+    "TransposeFollowup.RegularMotion.tickCells_subset_clock",
+    "TransposeFollowup.RegularMotion.mem_tickCells_iff",
+    "TransposeFollowup.RegularMotion.tickCells_measurable",
+    "TransposeFollowup.RegularMotion.tickCells_volume_real",
+    "TransposeFollowup.RegularMotion.tickCells_compl",
+    "TransposeFollowup.RegularMotion.stageRegion",
+    "TransposeFollowup.RegularMotion.real_stage_iff_label",
+    "TransposeFollowup.RegularMotion.real_stage_subset_clock",
+    "TransposeFollowup.RegularMotion.real_stages_pairwise_disjoint",
+    "TransposeFollowup.RegularMotion.real_stages_scaled_pairwise_disjoint",
+    "TransposeFollowup.RegularMotion.stageRegion_eq_tickCells",
+    "TransposeFollowup.RegularMotion.stageRegion_measurable",
+    "TransposeFollowup.RegularMotion.stageRegion_volume_real",
+    "TransposeFollowup.RegularMotion.stageRegion_omission_volume",
+    "TransposeFollowup.RegularMotion.stageRegion_scale",
+    "TransposeFollowup.RegularMotion.volume_real_preimage_pos_mul",
+    "TransposeFollowup.RegularMotion.stageRegion_scaled_omission_volume",
+    "TransposeFollowup.RegularMotion.finite_shallow_stage_keys",
+    "TransposeFollowup.RegularMotion.stage_clock_physical_omission",
+    "TransposeFollowup.RegularMotion.stage_clock_physical_omission_of_root_bound"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 3268,
+      "log": "/private/tmp/r1869-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10185,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4914,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All terminal:dev1:8212 exit1;dev2:99697 exit1;dev3:22326 exit1;dev4:5603 exit0 (3268 jobs);fullbuild:90853 exit0 (10185 jobs);axioms:54152 exit0 (4914 declarations).",
+  "formal_checkpoint": "R1869 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1004 local sources,204 external sources,4914 declarations,8 configurations,181 artifacts",
+  "proof_scope": "PROGRESS at R1869: the exact real-time stage geometry and physical shallow-coverage bound for regular recursion206/208 are formalized. Actual tick labels imply disjoint real stage intervals, measurable selected-stage regions, exact uncovered volume, and the bound a*C*rho^h/(1-rho) after physical scaling. Five of six original families remain formalized; the sixth is about20% complete, low confidence. Common-limit/native exclusion and exact206 executors remain open.",
+  "next": "R1869 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:\nregular recursion206/208, best estimate20%, low confidence.\n\nNext concrete target: finite-family interval coverage under a common limit,\nthen actual simultaneous extraction of all tree/stage coordinates. Use the\nR1869 stageRegion with real endpoints; its physical shallow omission estimate\nis already derived from the exact integer clock, contraction and root bound.\nDo not assume a limiting disjoint cover or a limiting coverage defect.\n\nUseful next reuse route: mathlib Set.Ico_disjoint_Ico characterizes disjointness\nby min(right endpoints)<=max(left endpoints). This closed inequality can pass\nto endpoint limits using existing closed-set/continuous min/max lemmas, even\nwhen intervals collapse. Finite disjoint interval-union volume is a sum of\nlengths, so ordinary finite-sum limit rules can transfer the shallow omission\nbound along convergent endpoints/halt times. No general measure-convergence\nor dominated-convergence framework should be needed. Keep A<=E<=T in the\nactual source interface so endpoints remain in the bounded physical horizon.\n\nFor extraction, all padded addresses List(Fin B) x Fin J are countable, and\nfixed-depth sets are finite by finite_shallow_stage_keys. Put normalized\nstarts/ends, volumes and halt time in a countable product of compact intervals;\nreuse CompactSpace.tendsto_subseq. This refinement preserves the previously\nobtained physical uniform head-path limit. Obtain bounds from the verified\nclock/tree costs and V(root)<=C*P; do not postulate compactness of unbounded\nphysical quantities. A uniform bound V(w)/P<=C/(1-rho) already follows from\nsum_deep_charge_le with the singleton address, if a sharper node bound is\nunnecessary for compactness.\n\nAt positive-volume nodes, reuse native_positive_stage_affine (R1867) and the\nraw/continuous frozen-profile equivalence. For a padded missing stage, do not\nassume the source local-regularity condition applies to a nonexistent occurrence.\nA positive limiting stage duration makes the stage present eventually; discard\nthat proved finite prefix before applying the actual-occurrence hypothesis.\nZero-length limiting stages need no open affine region. Zero-duration padded\nprofiles can alternatively be handled directly as constant functions. At zero-volume nodes, apply the\nactual contiguous call bound (R1868) and squeeze its normalized duration to0.\nUse the finite-depth physical omission bound (R1869), let rho^h->0, and add\nthe actual frozen post-halt tail. Then apply the completed native/popular-class\nmotion obstruction without weakening high-entropy, state-bit or fixed-head\nhypotheses. Exceptional work still must give eta>=1/(2kG).\n\nR1869 modules:UnitTickRegions,StageRealGeometry,PhysicalStageCoverage.\nThe first is half-open unit tick geometry; the second gives exact label,\nmeasure and scaling identities; the third supplies the actual physical-time\nshallow-coverage estimate. No common-limit conclusion has yet been proved.\n\nSource206 still requires exact row/entry/F3/stride palettes, growing-stride\nlimit cases, bounded composition and native nonuniform clock compilation,\nincluding all copies, seeks, clearing and I/O. Source206 permits O(P) states;\ndo not reopen uniform parameter generation or the five completed families.\nNo fresh subagents until all six initial formalizations; then user-authorized\nimpartial referees and cleanup. Original read-only; no commits/pushes.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate20% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. Estimates refer to the entire sixth family, not the current geometry module.",
+  "updated_at": "2026-10-20T23:00:50.856317+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/UnitTickRegions.lean": "242a69dcb998a349adebeb9d23309618a970b97a1cc0d9b2593e17dca0fa0510",
+    "lean/TransposeFollowup/StageRealGeometry.lean": "829a1ec6ee78cd66777aec6ced64d7987402075bacb29b683c433411564194cd",
+    "lean/TransposeFollowup/PhysicalStageCoverage.lean": "03417392e41d5aae2bdb76f3383af8e53c1013f1e5efa5ac2c9d458726832c68"
+  }
+}

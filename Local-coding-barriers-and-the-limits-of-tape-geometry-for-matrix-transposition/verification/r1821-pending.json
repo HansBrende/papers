@@ -1,0 +1,106 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1820 receipts revalidated;863 sources,5 configurations,86 artifacts;117 protected files and directory inventory unchanged.",
+  "new_modules": [
+    "FinitePieceCoverBounds",
+    "SL2TranslatedCluster",
+    "SL2FiniteCenterTrimming",
+    "DyadicCenterTrimming"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.coveringNumber_le_sum_of_cover",
+    "TransposeFollowup.sum_coveringNumber_le_of_separated",
+    "TransposeFollowup.coveringNumber_le_remainder_add_sum",
+    "TransposeFollowup.SL2Projection.frobenius_dist_right_mul",
+    "TransposeFollowup.SL2Projection.coveringNumber_le_left_translate",
+    "TransposeFollowup.SL2Projection.translated_clusters_separated",
+    "TransposeFollowup.SL2Projection.cluster_coveringNumber_mul_card_le",
+    "TransposeFollowup.SL2Projection.finite_center_trimming",
+    "TransposeFollowup.SL2Projection.exists_dyadic_scaled_rpow_bound",
+    "TransposeFollowup.SL2Projection.exists_finite_center_trimming_at_dyadic_scale"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 36118,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev1.log"
+    },
+    "development_2": {
+      "session_id": 48839,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev2.log"
+    },
+    "development_3": {
+      "session_id": 92421,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev3.log"
+    },
+    "development_4": {
+      "session_id": 52171,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1821-dev4.log"
+    },
+    "development_5": {
+      "session_id": 50861,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev5.log"
+    },
+    "development_6": {
+      "session_id": 25468,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev6.log"
+    },
+    "development_7": {
+      "session_id": 44566,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev7.log"
+    },
+    "development_8": {
+      "session_id": 40068,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev8.log"
+    },
+    "development_9": {
+      "session_id": 25287,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1821-dev9.log"
+    },
+    "build": {
+      "session_id": 18831,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9844,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 83487,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4445,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Direct finite-cover proofs, native Frobenius multiplication bounds, and existing explicit coordinate refinement. The actual cluster translates lie in A^2; separation of cover centers is proved rather than assumed. Finite subadditivity and a uniform dyadic exponent comparison then retain half the original covering complexity outside arbitrary finitely many prescribed matrix neighborhoods. This fills the quantitative trimming obligation motivated by Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Corollary5.3. No pairwise separation of the forbidden centers is assumed. The theorem takes small tripling and intermediate-scale separated subsets as explicit inputs, matching existing walk-profile conclusions; composition with that same profile and its spanning frame remains to be written. No literature novelty or product-growth theorem is asserted.",
+  "updated_at": "2026-10-20T02:50:50.809853+00:00",
+  "formal_checkpoint": "R1821 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1821, 867 sources, 4445 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1821 proves that many separated translates force a small cluster to have low covering complexity, with explicit Frobenius distortion and covering-refinement costs. It then proves that deleting neighborhoods of finitely many prescribed centers leaves a nonempty subset carrying at least half the original covering complexity. A uniform dyadic theorem derives the required inequalities from small tripling and the intermediate-scale separated-subset condition, under the explicit budget beta<zeta*kappa and epsilon<zeta<1. Four new modules add10 theorems and no definitions; existing mathematical modules are unchanged. Application to the same walk profile and spanning frame, separated near-identity trace candidates, product growth and paid padding remain unfinished. No fourth original family or new transposition result is claimed.",
+  "next": "The preceding turn is PROGRESS. R1821 closes finite covering subadditivity, the reverse sum bound for strongly separated pieces, the remainder-cover inequality, matrix translation covering distortion, translated-cluster separation, cluster nonconcentration, finite-center trimming and its uniform dyadic version. Do not redo them. Main interfaces: DyadicCenterTrimming.exists_finite_center_trimming_at_dyadic_scale and SL2FiniteCenterTrimming.finite_center_trimming. The dyadic theorem takes fixed B,H>=1,m,0<zeta<1,epsilon<zeta,beta<zeta*kappa; for every fine enough eta=4^(-j), small tripling and the existing separated-subset distribution imply that deleting eta^(2zeta) balls around at most m entry-H-bounded centers retains a nonempty R with N_eta(A)<=2N_eta(R). The cutoff is uniform in A and F. For our actual distribution kappa=1/122880. R1820's two-set commuting extraction remains available unchanged.\n\nNEXT CONCRETE TARGET: compose the trimming theorem with the SAME spanning frame and the trace projection, then derive suitable candidates for the commuting extraction. Work first with a clean generic interface for a near-identity A containingI, small tripling, separated-subset distribution and a frame {I,p,q,pq} contained in A^34. Use F={I,p,q,pq}, |F|<=4, B=2 and H=4^34 from actual matrixEntryBox bounds. Choose the trimming exponent0<zeta_t<1/2, the distribution exponent epsilon<zeta_t and beta<zeta_t/122880 BEFORE calling the family theorem. If other requested exponents must be preserved, decrease them internally using explicit minima as in earlier profile theorems. The new threshold only enlarges the later fixed cutoff.\n\nApply exists_large_trace_of_frame to the retained R using the original frame, the original entry bound and the near-identity diagonal-coordinate bound. Do NOT apply exists_large_trace_of_spanning directly to R: that wrapper assumesI in its input, whereas R removes the identity. The lower-level frame theorem works for arbitrary R. Combine N_eta(A)<=2N_eta(R) with its determinant loss C/d^7 to retain a large trace image of h^-1*R for some h from the SAME frame. Choose the spanning determinant exponent small enough and absorb the fixed factor2C at the fixed dyadic threshold. Keep the chosen h as a member of F, so trimming gives its required distance from every x in R.\n\nFor D=h^-1*R, prove from actual matrix multiplication that dist_F(h^-1*x,I)>=dist_F(x,h)/(2H). Thus its separation is at least eta^(2zeta_t)/(2H). Derive entry bounds for D and a common B' for the original A and D; B'=2HB suffices. Prove the required near-identity bound for D from products of at most34 elements of A and an initially sufficiently small positive alpha. A crude fixed-power multiplication constant is acceptable; choose alpha through the existing quantified family theorem, rather than assuming A^34 lies in the original alpha-ball. With zeta_t<1/2, absorb the fixed constants to ensure1536(B')^4*eta<=eta^(2zeta_t)/(2H).\n\nThen invoke TraceCommutingExtraction.exists_trace_commuting_extraction with the original A as conjugating set and D as the independent candidate set. This preserves the approximation inside A^-1*A and obtains the retained trace factor without requiring A itself to avoidI. The mixed product A*D*A^-1 lies in a fixed bounded power (A^37 when A is symmetric and h in A^34); derive its covering bound using the ACTUAL U,Y witness, U^2 subset Y*U and the existing covers of U,U^6. Keep all distortion and scale refinements explicit. Combine fixed losses and small exponents before the quantifier s is chosen; preserve s before k and the same fixed rational family.\n\nThe later product-growth argument still requires discretized ring/sum-product expansion, which is not an axiom or verified import. Handling or conditioning of the resulting commuting families in that later step remains separate; the real extraction includes unipotents and does not justify a quantitative eigenvalue gap. After actual product growth, prove strict flattening, fixed-iterate density cap with D^2<=2^j, unconditional restricted gap and paid padding. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1821 adds quantitative cluster nonconcentration, finite-center trimming retaining half the covering complexity, and a uniform dyadic version with an explicit exponent budget. Paid padding remains unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. This estimate concerns formalization scope, not time, success probability or progress toward deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FinitePieceCoverBounds.lean": "907c5b2ec450a82f2e3a45385170852ed20ec30a8550ac0db68ea5ee1ec94173",
+    "lean/TransposeFollowup/SL2TranslatedCluster.lean": "ac7091fad0ca035e530f43e880368b5759c9c22344382609c4627e6ba0638797",
+    "lean/TransposeFollowup/SL2FiniteCenterTrimming.lean": "6764380c5762bddddbb5a4026c56e1ec034108d411d2b47d6a9383666a9a2143",
+    "lean/TransposeFollowup/DyadicCenterTrimming.lean": "92ae46a2e290a914efa9417d74702946fe7a2fead1fe1937c121dba32d993cb6"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "status": "In progress. R1852 proves explicit power envelopes for two-stage coarsening, inverse localization, scalar spacing, quantitative normalization and the near-identity trimming factor. It proves a dyadic threshold for the fine trimming ratio and the concentration budget with the original extraction constant and d^11 denominator retained. The final concentration-budget calculation is extracted from the old proof and reused; its previous endpoint statement is unchanged. Eight audited declarations are added across two new modules and one refactored module. A joint instantiation on the actual source sample remains next.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Real.rpow_add",
+    "Real.rpow_sub",
+    "Real.rpow_neg",
+    "Real.mul_rpow",
+    "Real.rpow_mul_natCast",
+    "Real.rpow_le_rpow_of_exponent_ge",
+    "Real.one_le_rpow_of_pos_of_le_one_of_nonpos"
+  ],
+  "reused_local": [
+    "first_extraction_cost_bounds (twice, including p/9)",
+    "scalar_concentration_power_bounds",
+    "exists_dyadic_scaled_rpow_bound"
+  ],
+  "refactored_local": [
+    "exists_first_extraction_concentration_constant -> concentration_budget_of_power_bounds; exact old statement preserved"
+  ],
+  "inspected": [
+    "NilpotentExtractionParameters.lean",
+    "ScalarSampleNormalization.lean",
+    "TraceSquareExponentMargins.lean",
+    "DyadicCenterTrimming.lean",
+    "Mathlib/Analysis/SpecialFunctions/Pow/Real.lean"
+  ],
+  "finding": "Shared first-stage and scalar concentration estimates suffice for the new explicit costs. Only new spacing/normalization/trimming envelopes are proved; no parallel packing or concentration chain is introduced.",
+  "boundary": "The numerical expressions for sampling, normalization, near trimming and concentration now have verified power bounds. The coefficient-dependent scalar-spacing condition and a threshold for both fine-trimming terms are also proved. They are not yet assembled into one actual-source scalar-sample/concentration theorem with all fixed constants and hypotheses discharged. The readout selector still needs its eta^(12theta) coefficient specialization, and all radius/error/profile thresholds must be combined. Scalar-to-actual-word growth, the generalized full second-extraction wrapper, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty claimed.",
+  "novelty": "None claimed; no fourth original theorem family completed.",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

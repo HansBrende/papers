@@ -1,0 +1,91 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "DyadicWalkSupportScale",
+    "DyadicWalkLengthThreshold",
+    "InitialWalkCoveringInterval"
+  ],
+  "modified_modules": [
+    "RestrictedGapFromAutocorrelation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.quarter_pow_rpow_neg",
+    "TransposeFollowup.dyadic_walk_support_power_bound",
+    "TransposeFollowup.exists_dyadic_walk_support_threshold",
+    "TransposeFollowup.exists_quarter_scale_threshold",
+    "TransposeFollowup.RationalFreePair.initialWalkLength_le_of_log_threshold",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_covering_interval",
+    "TransposeFollowup.RealMobius.exists_restricted_gap_from_autocorrelation_flatness_above"
+  ],
+  "declaration_counts": {
+    "theorem": 7
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 8556,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1806-dev1.log"
+    },
+    "development_2": {
+      "session_id": 32599,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1806-dev2.log"
+    },
+    "development_3": {
+      "session_id": 13697,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1806-dev3.log"
+    },
+    "development_4": {
+      "session_id": 38924,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1806-dev4.log"
+    },
+    "build_first": {
+      "session_id": 24598,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9778,
+      "log": "/private/tmp/r1806-first-build.log"
+    },
+    "axioms_first": {
+      "session_id": 82484,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4256,
+      "log": "/private/tmp/r1806-first-axioms.log"
+    },
+    "build": {
+      "session_id": 37060,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9778,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 46954,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4256,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "The actual rational walk now supplies the support-growth and initial-density conditions in the uniform covering interval, simultaneously for every iterate up to a fixed bound. Existing native support, initial free-family construction, logarithmic band-length regime, and covering profile are reused. The conditional spectral-gap theorem is strengthened to accept any prescribed lower bound Nmin, and the original theorem reuses it. Its original statement is byte-identical. No product-growth, escape, distribution or flatness premise is disguised as a proved fact. The positive loss exponent is chosen before the maximum iterate, which precedes the walk-selection bound and scale thresholds. This order is explicit in the final theorem statement.",
+  "cleanup": "Three new modules with six theorems; one new generalized theorem in an existing follow-up module; no definitions. The old conditional-gap proof is moved to the generalization and reused by the unchanged old statement. Removed a style warning and renamed the existential density level count N_level to distinguish it from the walk-selection constant N. No proof limits or linters changed. The original paper directory is untouched. The actual-walk theorem exposes the loss exponent before the maximum iterate, to permit choosing the iterate bound as a function of that exponent without circularity.",
+  "updated_at": "2026-10-19T22:59:33.662411+00:00",
+  "formal_checkpoint": "R1806 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1806, 801 sources, 4256 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1806 proves the covering-number interval and small-tripling bound for a fixed rational free family at each dyadic generator radius, for every admissible walk length and every bounded iterate. The previous support-growth and initial-density assumptions are derived from the actual walk. Only the lower energy threshold and nonflattening remain as analytic premises. The positive loss exponent is chosen BEFORE the maximum iterate; support/scale thresholds follow that iterate; the family is fixed before the smoothing scale and walk length. The conditional restricted-gap theorem now accepts any prescribed lower bound on the walk-selection constant, and the unchanged old statement reuses the strengthened proof. Distribution, escape, product growth, strict flattening, and unconditional paid padding remain. Supporting formalization, not a new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1806 finishes actual rational-walk support, length, scale, and initial-density specialization. Do not redo the support arithmetic or initial density gain. InitialWalkCoveringInterval.exists_initial_walk_covering_interval chooses the positive loss exponent s BEFORE the maximum iterate k, then gives Nmin,J0 and a fixed rational free family per generator radius. It applies simultaneously to every i<=k and every admissible ell, including ell=2^m. Only energy-above-threshold and nonflattening remain analytic premises. All R1805 witness outputs are retained, not just a size-compatible abstract set. N_level is explicitly distinct from the walk-selection N.\n\nThe conditional gap is now strengthened: RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness_above(k,Nmin) returns N>=Nmin. The old statement reuses this result at Nmin=0. This is the one pre-existing follow-up mathematical module edited; the protected original paper directory remains unchanged. To combine the interfaces, choose C=1 in the band/gap theorem, then a sufficiently small dyadic generator radius; enlarge the fixed scale cutoff J to include the covering cutoff and7680r. The loss exponent must precede choosing k (which may eventually need to exceed a constant/s); k precedes N,J0,epsilon0. Do not revert to an existential s that depends on a previously chosen k.\n\nNEXT CONCRETE TARGET: transfer the existing probability concentration from xU to a translate of the ACTUAL localized set A, then expose a terminal short-walk factor in the actual autocorrelation measure. This prepares the missing multiscale distribution and escape statements, rather than adding more size wrappers.\n\nFirst reuse MobiusNearIdentityLocalization.exists_near_identity_translate_cover: for Q>=1 it gives Z finite subset U, cardZ<=M=ofReal(33^4Q^8/alpha^4), and U subset Z*A. The checked profile gives q^2<=8192*K0*L^2*K^4*(H.withDensity rho_i)(xU). A finite-cover pigeonhole argument should produce z in Z, y=xz, with\n q^2<=8192*K0*L^2*K^4*M*(H.withDensity rho_i)(yA),\nretaining y in Box(2*(R+1)*Q). This claim is NOT YET CHECKED. Do not infer probability concentration of A merely from Haar-volume comparison. Keep the actual witness and explicit coefficient.\n\nSecond inspect and REUSE existing identities before writing another convolution framework: AutocorrelationIterates.smoothedAutocorrelationIterate_withDensity identifies rho_i with a genuine power of sigma.inv*sigma, sigma=mu*P_eta. SmoothedIterateEndpoint.smoothedAutocorrelationIterate_right_kernel already retains the last P_eta, but hides the last mu inside its prefix. Its proof explicitly has beta*(sigma.inv*(mu*P_eta)), beta=(sigma.inv*sigma)^(2^i-1). Expose the stronger terminal-input factorization, then use GeneratorWalkSymmetry.generatorWalkMeasure_add: for EVERY t<=ell, the actual rho_i measure should factor as nu*(walk_t*P_eta), with nu a probability measure. This is NOT YET FORMALIZED. No commutation of kernels and walks is needed, and replacing rho_i by an unsmoothed walk power would be invalid. Transfer the mass of yA through this probability mixture (an explicit factor2 slack is acceptable if it avoids a false supremum-attainment claim), retaining whatever prefix support controls the next geometric step needs.\n\nFor coarse scales rho>=eta, choose an appropriate shorter length t using the existing rational denominator separation and atom bounds (RationalWalkIsolation, RationalWalkNonconcentration, GeneratorWalkAtoms). Prove all t<=ell and kernel/metric-distortion estimates; do not assume the source paper's multiscale distribution or escape premises for our different set. Consult the exact Bourgain\u2013Yehudayoff https://arxiv.org/pdf/1108.2555 Section4.1/Theorem4.4 hypotheses before fixing the final quantitative distribution statement. The source uses a different localized quotient-set union. After distribution/escape, product growth itself and strict flattening still need proof. The final conditional gap requires a FIXED iterate with ae cap D and D^2<=2^j, i.e. eta^-1/4. Keep all six families in scope; no referees, original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1806 discharges the actual rational walk's support-growth, initial-density, and length/scale conditions for the covering interval, uniformly over bounded iterates. It also exposes the required order of choices: loss exponent first, then maximum iterate, then a sufficiently large walk-selection constant. This advances paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/DyadicWalkSupportScale.lean": "511ba6fed9d723d77dbc0c55bcf080d65a20548269507e126bd111f4cb8a856f",
+    "lean/TransposeFollowup/DyadicWalkLengthThreshold.lean": "ec532faef356c695d9b57f78d0ec7d4503ca3c33a638ae99b8cbe58f45542833",
+    "lean/TransposeFollowup/InitialWalkCoveringInterval.lean": "4f51d5a22faf66e85ccfd6de2a3e9ede1dff0f21afa59dae066c90d61c997f6c",
+    "lean/TransposeFollowup/RestrictedGapFromAutocorrelation.lean": "ffbd2e8efabcdbd412f9ce807220c8b10d0e5115449750bd60b5f5c3b3c859e6"
+  }
+}

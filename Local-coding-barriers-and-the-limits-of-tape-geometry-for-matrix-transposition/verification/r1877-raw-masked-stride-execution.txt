@@ -1,0 +1,165 @@
+
+R1877 — COMPLETE RAW MASKED-STRIDE NATIVE EXECUTOR
+PROGRESS at R1877: the forward arbitrary masked binary stride primitive now has a complete raw-input native executor. It loads the input, performs the proved prefix/difference recurrence, erases all scratch cells, emits the correct raw bits and halts. Exact total time is8*P+4*S*(floor(P/S)+1)+2*S, at most18*P for1<=S<=P. It uses two work tapes, five work symbols and4*(T+1) states. Five of six original families formalized; regular recursion206/208 best estimate62% complete (low confidence). Arbitrary-stride limits, backward/rotation/reversal variants, all row/integer/F3 palettes and bounded composition remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1877 RESULTS
+1. ScheduledTapeAction wraps the existing Microcode.single/native action
+   refinement. Exact selected-tape rewind and erasure passes prove all
+   absolute-cell updates/preservation, all head positions and preserved
+   input/output fields. No new tape semantics or compiler is introduced.
+2. ScheduledRawInput loads P bits in exactly3*P scheduled native steps:
+   read the actual external input, write/advance bank, advance input.
+   All written cells, untouched cells, both head positions, input position
+   and preserved output are proved. inputBit_get directly reuses the
+   ORIGINAL paper's readInput_natCast and nth_eq_getElem? theorems.
+3. ScheduledRawOutput reads a bank cell, emits its decoded bit, then moves
+   the bank head. Exactly3*P steps emit P bits in the correct order, with
+   all bank/scratch cells and the external input position preserved.
+   The statement explicitly uses the native reversed output list.
+4. ScheduledSegments concatenates public instruction schedules before
+   compilation, reusing trajectory_add/congr. Linking introduces no free
+   semantic call: the one global clock selects every actual instruction.
+5. MaskedStrideInterfaces proves preserved input/output fields through all
+   groups; scratch writes remain inside the original S-cell interval; and
+   the stride output at n depends only on input indices at most n.
+   The last fact connects loaded bank values to the actual raw input.
+6. RawMaskedStrideExecution builds a SINGLE native machine that starts at
+   Transpose.init, loads raw input, rewinds the bank, executes every scan
+   group, erases S scratch cells, rewinds scratch, rewinds bank, emits P
+   raw output bits and halts. native_complete uses NativeIO.blank_denote,
+   so no prepared bank or initialized scratch is an assumed resource.
+   Every scheduled instruction is proved active before the final halt.
+   Its exact time is
+       T = 8*P + 4*S*(floor(P/S)+1) + 2*S,
+   with T<=18*P for1<=S<=P. fixed_resources gives two work tapes, five work
+   symbols and q+1=4*(T+1). All masks/strides remain public size-dependent
+   parameters of a nonuniform finite transition table, not data oracles.
+7. RawMaskedStrideCorrectness discharges every prepared-bank hypothesis
+   and connects the final native output to
+       y_j = x_j XOR (a_j AND previous_j),
+   previous_j=0 for j<S; otherwise previous_j is y_(j-S) in prefix mode
+   and x_(j-S) in difference mode. For inputs of length P, x is exactly
+   the actual input bit sequence, as checked by inputBit_get. The theorem
+   also supports arbitrary input lengths by zero-extending missing bits.
+   result_output proves the final output list, result_scratch proves every
+   absolute scratch cell blank, and native_correct packages actual execution,
+   halt, <=18*P time, correct raw output and native scratch symbol0 at every
+   coordinate. Scratch heads restore through the paid pass position lemmas.
+
+SCOPE / REMAINING OBLIGATION
+The forward arbitrary masked binary prefix/difference primitive is complete
+as a native raw-input algorithm. Its time/path LIMIT theorem is not yet
+proved. Both S/P->0 homogenization and positive-limit bounded-group cases
+remain, followed by all other source206 palettes and bounded composition.
+This is a concrete component of the scoped impossibility proof, not a
+linear transposition algorithm or a decision of unrestricted transposition.
+
+FILES
+Seven new modules: ScheduledTapeAction, ScheduledRawInput,
+ScheduledRawOutput, ScheduledSegments, MaskedStrideInterfaces,
+RawMaskedStrideExecution, RawMaskedStrideCorrectness. Eighty-seven audited
+named declarations, including definitions, not87 new research theorems.
+All prior mathematical sources unchanged; original paper unchanged.
+
+DRIFT / REUSE
+Inspected RawInputCopy, NativeSpanErase, NativeSpanRewind, NativeMappedCopy,
+NativeIOOnlyWork and the existing input/output/rewind/erase modules before
+implementing these interfaces. The old raw loader uses marked words and
+boundary detection; its loop interface does not supply the exact public
+schedule required here. Reused its underlying NativeIO/Microcode/native
+refinement instead of adding marker conversion and another controller.
+Public-length passes preserve the already chosen four-value local mode and
+provide exact affine head motion needed by the next limit proof.
+The original Transpose.Tape.Impl.readInput_natCast and nth_eq_getElem? are
+IMPORTED and used directly. NativeIO.blank_denote, ScheduledNativeIO's
+compiler/state count/exact execution, NativeMicrocode.action_cells,
+Microcode.single, AbsoluteTape.scanned, and standard List.range/map/reverse
+lemmas are reused. No copied original definitions, replacement simulator,
+uniform parameter generator or new generic list theory was introduced.
+The R1876 stride recurrence, full bank semantics, group execution and
+geometry are reused without changes. Existing native recursion/exceptional
+lower bounds were not reopened. This closes their next concrete executor
+interface obligation; no finite word search or unrelated proof undertaking.
+
+
+BOUNDARY
+The forward masked binary primitive is now verified from the ORIGINAL native blank-tape initial state, with actual external input reads and output writes, both bank rewinds and complete scratch erasure. Its correctness is the standard zero-filled prefix/difference recurrence. This completes one concrete primitive, not source206 as a whole. No native execution costs remain hidden for this primitive. Its arbitrary-stride limiting head geometry remains to be proved and transferred; backward variants, all other declared palettes and bounded-word composition remain required. Source208 and global exceptional-work threshold210.5 are complete. Final referees follow all six. No unrestricted transpose result or novelty claim.
+
+NEXT
+R1877 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five of six original families
+formalized; sixth regular recursion206/208 best estimate62%, low confidence.
+
+NEXT: the ARBITRARY-STRIDE LIMIT of the completed forward binary primitive.
+Do not rebuild raw IO, the group invariant, or the native compiler. The
+entire raw algorithm now has correct output, actual blank initialization,
+paid scratch erasure/rewinds and halt, all within18P native transitions.
+
+First derive the needed intermediate-head formulas from existing APIs:
+- R1875 Group.group_positions: within each4*S slab, bank advances one per
+  three ticks for the first3*S ticks (only g real coordinates); scratch
+  advances through S slots then physically rewinds for S ticks.
+- R1876 Scan.full_prefix/schedule_prefix and ScheduledNativeIO.native_prefix
+  connect every intermediate group configuration to actual native steps.
+  R1877 ScheduledSegments.append_prefix/append_exact localize outer passes.
+- ScheduledRawInput.cellSchedule/loaded_position and schedule_exact give
+  the3*P load pass; derive its short cell prefixes if needed (the write is
+  second, so bank displacement at tickt is floor((t+1)/3)). Input head is
+  not a work head. ScheduledRawOutput emits then moves at each third tick,
+  so bank displacement is floor(t/3). Scratch stays still in these passes.
+- ScheduledTapeAction.erase_position/rewind_position apply at EVERY tick.
+  Erasure and rewinds are exact affine paths. Every pause and transition
+  already belongs to a public schedule; do not discard its time.
+
+Then split by a convergent subsequence of S/P:
+* zero limit: processing bank is O(S)-close to an affine slope1/4 between
+  slab endpoints; scratch excursions and final partial/empty slab are O(S).
+  Setup/cleanup of S-cell scratch vanishes after division by P. Outer raw
+  passes contribute finitely many affine pieces.
+* positive limit: floor(P/S) is bounded. Select fixed group count and
+  convergent normalized endpoints; finitely many affine phases suffice.
+Do not demand a uniform piece-count bound across these two cases.
+Inspect/reuse PhysicalWalkNormalization, NativePhysicalLimits,
+CanonicalTimeNormalization, FiniteStageLimits, BoundedAffineCovers,
+AffinePointwiseClosure and existing compactness/composition results before
+adding limit machinery. Preserve the paper's block-time/space normalization
+and frozen halt tails. Native q+1=4*(T+1)=O(P) supplies o(P) state bits.
+
+R1877 APIs (all in new modules, all earlier math unchanged):
+ScheduledTapeAction.action/step_position/step_cells/step_io,
+rewind/rewind_position/rewind_cells/rewind_io,
+erase/erase_position/erase_cells/erase_io.
+ScheduledRawInput.inputBit/inputBit_get, cellSchedule/cellResult/cell_exact,
+cell_active/cell_position/cell_cells, loaded/loaded_io/loaded_position,
+loaded_written/loaded_outside, schedule/schedule_exact.
+ScheduledRawOutput counterparts: emitted_position, emitted_cells,
+emitted_input, emitted_output; actual output is reversed in native Config.
+ScheduledNativeIO.append/append_prefix/append_exact/append_active.
+MaskedStrideGroup.result_io; MaskedStrideScan.groups_io/result_io,
+groups_scratch_outside/result_scratch_outside/value_congr_upto.
+RawMaskedStride namespace: initial, prepared, processed, cleared, ready,
+result, ticks, schedule, schedule_active/exact, ticks_le, encoding, machine,
+native_complete, fixed_resources. Correctness module: prepared_position/io,
+prepared_scratch/zero/input, processed_correct/io/scratch_outside,
+cleared_position/bank/scratch/io, ready_position/io/bank, outputWord,
+result_output/result_scratch/native_correct. These require only explicit
+hS:0<S and, for <=18P, hSP:S<=P. No unverified prepared-state hypothesis.
+Native_correct also proves the entire encoded scratch tape is symbol0.
+
+After binary stride limits, backward variants, full-bank rotation/reversal,
+all exact row/integer and F3 palettes, then bounded-word composition remain
+required. Source200 sections20-24 is the full scope. Public parameters may
+vary nonuniformly with size; no uniform generator is needed. Keep fixed
+heads/alphabet, O(log P) state bits and high-entropy raw correctness.
+No fresh subagents until all six; then authorized impartial referees and
+cleanup. Original paper read-only; no commits/pushes. No unrestricted
+transpose decision or literature-novelty claim. Source208/global210.5 are
+complete and should not be reopened to defer the remaining source206 work.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate62% complete (low confidence). This is an estimate for the full sixth family, not the raw-scan helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and global exceptional-work extension are complete within family6; exact206 still requires the full palette and limit/composition proof. Final independent referees remain pending.
+
+VERIFICATION
+Full lake build passed10214 jobs without warnings/errors; SupportAxioms audited5145 unique declarations using only propext,Classical.choice,Quot.sound. There are1033 local sources (1032 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and197 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

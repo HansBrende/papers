@@ -1,0 +1,142 @@
+In progress. R1855 generalizes the full reextraction bound to arbitrary word lengths with their actual profile costs, retaining the old theorem as a specialization. It then excludes the spanning localized approximate-group profile at sufficiently fine scales. The original commuting source family, quantitative determinant gap, approximation bound, extraction cube, power covers and actual trace-growth family are constructed inside this proof. The remaining hypotheses are the explicit primitive profile, spanning-frame, distribution and ambient-size conditions. Two declarations reuse the existing long proofs; no fourth original family is completed.
+
+R1855 EXACT VERIFIED STATEMENTS
+
+1. exists_reextracted_trace_power_bound_of_cost (ReextractionPowerBounds).
+For0<=theta<1/4,0<a<=1, there existU0>0 andJ0 BEFORE the scale,
+word length and all inputs. Forj>=J0,eta=4^-j, assume:
+ - arbitrary word lengthk;
+ - h>=2^100,Nprofile<=h,1<=Q<=h;
+ - 0<alpha<=1,alpha^-4<=h,q0>0,q0^-1<=h;
+ - tau>=0,h<=eta^-tau and
+   [8802 max(k+1,141)+4427]tau<=theta;
+ - finiteY with
+   |Y|<=512[2^55(8((64Nprofile^4)^2/q0^2))^21]^16;
+ - U insideentryBoxQ,U^-1=U,Y subsetU^2,U^2 subsetYU;
+ - A=U^2 intersectidentityBallalpha,1 inA,A^-1=A,
+   2*5^34 alpha<=1;
+ - p,q,pq inA^34 with frame determinant>=eta^theta;
+ - D nonempty,D subsetA^k,D inhalf identity ball,
+   everyw inD hasdist(w,I)>=a eta^(3theta).
+Then N_eta(A) isfinite and, forEVERYdelta>=eta,
+N_delta(traceD) isfinite and
+ [N_delta(traceD)]^3<=U0 eta^(-548theta) N_eta(A).
+
+The entire previous chart, cubic extraction and coefficient comparison
+proof was factored into this theorem. Its only relevant cover indices
+are k+1 and141. The original exists_reextracted_trace_power_bound
+statement (k<=282,3000000tau<=theta) is unchanged and now follows by
+bounding the generic cost by3000000. All four previous theorem
+statements in ReextractionPowerBounds are byte-for-byte preserved.
+
+2. exists_spanning_profile_exclusion (SpanningProfileExclusion).
+For every0<kappa<=1, there existtheta,alpha0>0 andpositive integerL,
+andJ, withtheta<1/4,alpha0<=1, all chosen BEFOREeta and the input.
+Forj>=J,eta=4^-j, the following conditions cannot hold simultaneously:
+ - h>=2^100,Nprofile<=h,1<=Q<=h;
+ - 0<alpha<=alpha0,alpha^-4<=h,q0>0,q0^-1<=h;
+ - tau>=0,L tau<=theta,h<=eta^-tau;
+ - finiteY with the same explicit cardinality bound as above;
+ - U insideentryBoxQ,U^-1=U,Y subsetU^2,U^2 subsetYU;
+ - A=U^2 intersectidentityBallalpha,1 inA,A^-1=A;
+ - p,q,pq inA^34 with frame determinant>=eta^theta;
+ - for EVERY eta<rho<eta^(theta/2), there is a finite subsetT ofA
+   whose matrix image isrho-separated and|T|>=rho^-kappa;
+ - N_eta(A)<=eta^(-(3-kappa)).
+
+PROOF AND QUANTIFIERS
+The universal quantitative extraction theorem first fixesn0,alphaExt,Cext.
+The actual dyadic growth theorem then fixesTheta,theta,gain,alphaG,a2,Ws,
+withtheta<=Theta<1/4 and691Theta<3gain.
+Usea=min(a2,1) in the generic upper bound.
+SetB=max(421,n0+2),L=8802B+4427; NO boundn0<=420 is assumed.
+Setalpha0=min(alphaExt,min(alphaG,1/[2*5^34])).
+One common threshold pays the source error
+786432 eta<=eta^theta and the contradiction budget
+250^3 U0 Ws eta^(3gain-691Theta)<=1.
+
+The quantitative extraction constructsD0 subsetA^(n0+1), thenz inD0,
+a conjugacy-fiber sourceS,base inS and actual affine approximantsf:S->SL2.
+It suppliesdistance and centered determinant gaps>eta^theta/32,
+sourceerror<=26214400eta^(1-theta), and the originald^11 extraction cube.
+The fixed-cost profile coversA^284,A^142 andA D0 A^-1 subsetA^(n0+3).
+Thus the actual growth theorem applies WITHOUT an assumed source family
+or extraction cube, and givesm>0,D subsetA^420 with
+ N_eta(A)<=Ws eta^-143Theta m^3,
+ eta^-gain m<25N_delta(traceD),
+ D inhalf identity ball anddist(D,I)>=a2 eta^(3Theta).
+The generic upper bound usesindex421,cost3710069; its margin follows
+fromL tau<=theta<=Theta. Weaken25T to250T usingT>=0 and invoke the
+existing cubic_trace_budget_contradiction. No copied cubic contradiction.
+
+REUSE / DRIFT CHECK
+This closes the previous concrete target and also supplies the initial
+source family instead of retaining it as an input hypothesis.
+It is a profile-exclusion dependency for paid padding, not an unconditional
+transposition impossibility result or a fourth completed original family.
+
+The pinned mathlib and imported-library audit from R1854 remains applicable.
+This turn searches the existing project for profile/power-cover wrappers
+and reuses fixed_power_coefficient_bound, profile_power_exponent_bound_of_cost,
+localized_set_pow_coveringNumber, exists_quantitative_spanning_commuting_extraction,
+exists_trace_square_dyadic_trace_growth and cubic_trace_budget_contradiction.
+The long upper-bound proof is factored once, with the old API a short wrapper.
+No new projection, sampling, packing, sum-product or analytic proof chain.
+Source searches are bounded evidence, not a proof of universal library absence.
+
+NEXT
+R1855 recorded; never replay its checkpoint script. All handles terminal.
+Full10138-job build and4699-declaration standard-axiom audit passed.
+Goal ACTIVE; previous turn PROGRESS.
+
+NEXT TARGET: strict flattening for the ACTUAL fixed rational walk family.
+Do not reprove the spanning exclusion, source extraction or scalar chain.
+
+1. Read InitialWalkDistribution.exists_initial_walk_spanning. It already
+   supplies primitive U,Y,A, finite ENNReal cardinality, distribution,
+   actual p,q,pq inA^34 and the spanning determinant under high energy
+   and nonflattening. InitialWalkTraceProfile is stronger than needed;
+   avoid its extra trace projection.
+2. For requestedgamma>0 setkappa=min(gamma/2,1/122880)>0,<=1.
+   Obtain theta,alpha0,L,J fromexists_spanning_profile_exclusion.
+   Usealpha=alpha0 (<=1). Invoke initial_walk_spanning with
+   epsilon=theta/2,zeta=theta and beta chosen to makeL*s<=theta:
+   beta=30000*theta/(2*(L:Real)) works, since it returns30000s<=beta.
+   s>0 is chosen BEFORE the bounded iterate cutoffk, preserving quantifiers.
+3. Do not introduce an assumed profile coefficient bound. Recover the
+   actual common envelopeh=eta^-s using the existing APIs:
+   exists_uniform_covering_loss_threshold hs (max(2^100,alpha^-4))
+   inCoveringLevelScale; exists_quarter_scale_threshold;
+   covering_level_log_bound_of_powers using the originallevel-count bound,
+   actualenergy>=eta^-gamma ands<=1;
+   exists_dyadic_walk_support_threshold hs k inDyadicWalkSupportScale
+   gives actualQ<=eta^-s. q0=eta^s hasq0^-1=h exactly.
+   Increase the commonN0,J0,Jr thresholds without changing the fixedg.
+   These same bounds are already proved locally inside the initial
+   profile proof; reuse their helper lemmas, not the long proofs.
+4. Convert the ENNReal |Y| bound toReal withfiniteK. Use U subsetclosureU
+   to getU subsetentryBoxQ. Distribution exponent1/122880 weakens to
+   kappa because0<rho<1. Its range isrho<eta^(theta/2).
+   The ambient upper boundeta^(-3+gamma/2) weakens toeta^(-(3-kappa)).
+   All other assumptions ofexists_spanning_profile_exclusion are literal
+   outputs ofthe sameactualprofile. Apply it withtau=s,h=eta^-s.
+5. Conclude strict flattening by contradiction:
+   energy_i>=ofReal(eta^-gamma) implies
+   energy_(i+1)<ofReal(eta^s)*energy_i
+   at all admissiblej,ell,i<=k for the ONE selectedfree rational family.
+   Keepfreedom, denominators, nearidentitybounds, familycardinality and
+   ordering s beforek,g beforej/ell as needed by the laterdensitycap.
+6. Then finite-iterate density cap and the existing spectral/gap/padding
+   composition remain. Audit hypotheses against the actualdensitycap
+   consumer before inventing a new target.
+
+Current original paid-padding proofabout65%,LOW CONFIDENCE;3/6 done.
+Original paper read-only. No commits/pushes. Referees after all six.
+
+BOUNDARY
+The spanning localized profile is now excluded from its explicit primitive approximate-group, frame, distribution and size assumptions. Source extraction, scalar amplification and the length-420 upper/lower comparison are discharged. The existing actual rational-walk profile/frame must still be connected to this exclusion with its common coefficient envelope; strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain unfinished. No fourth original family, new transposition bound or novelty claim.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about65% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a claim that the remaining analytic and machine integration is routine or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.
+
+VERIFICATION
+Full lake build passed10138 jobs without warnings/errors; SupportAxioms audited4699 unique declarations using only propext,Classical.choice,Quot.sound. There are957 local sources (956 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and153 validation artifacts. Original117 files and inventory unchanged. Four preexisting ReextractionPowerBounds statements preserved. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged.

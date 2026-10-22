@@ -1,0 +1,133 @@
+
+R1891 — CLEAN NATIVE INTEGER ROW BANK
+PROGRESS at R1891: the complete clean integer-row bank subroutine is checked in the original native TM. Its exact cost is8P+2W for nonempty W-bit rows,P=rW, hence at most10P for a nonempty bank; it restores both heads, clears scratch, preserves arbitrary surrounding bank cells and external IO. Two tapes,five symbols,50*(bankTicks+1) control states. Five of six original families formalized; regular recursion206/208 best estimate86% complete (low confidence). Whole-bank affine approximation, shared raw IO and the remaining integer/F3 operations still remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1891 CHECKED RESULTS
+1. ScheduledBankCleanup composes the existing paid buffer eraseW,
+   buffer rewindW and bank rewindP. For ANY finite mode type, it executes
+   in exactly2W+P native-IO schedule steps, fixes external IO, changes
+   only the W buffer cells to blank and shifts only the bank head by-P.
+   If the buffer was blank outside those W cells, it is now entirely blank.
+   No fresh erase/rewind algorithm or induction over those passes was built.
+
+2. ZipperListCells bridges existing list-based tape representations to
+   absolute cell coordinates. blank_front imports EraseStream.blanks_eq_nil
+   to prove that W explicitly represented blank cells ARE the same tape
+   as an empty blank tape. No initial allocation/write is silently assumed.
+   front_outside proves finite support; front_nat gives the indexed data.
+   end_cells reuses the checked rightward zipper seek and absolute-motion
+   invariance to identify a bank at its end with the same absolute word.
+   It is a representation identity, not an unpaid executable rewind.
+
+3. RawRowArithmetic.bank_spec composes the previously proved row loop
+   with ScheduledBankCleanup. For all equal-width rows, arbitrary finite
+   bank prefix/suffix, starting positions, finite mode and external IO,
+   the result contains bankOutput in the SAME absolute bank interval,
+   preserves every surrounding bank cell, restores both absolute heads,
+   makes the second tape completely blank and preserves external IO.
+   The seed is the actual blank tape, decoding to zero. The row recurrence
+   retains preceding outputs for addition and preceding originals for
+   subtraction, with the already-proved modulo2^W arithmetic.
+   bank_exact proves the complete schedule/run correspondence.
+   bank_ticks_eq: for W>0 and r rows,P=rW, cost=8P+2W.
+   bank_ticks_linear: for W>0,r>0, cost<=10P.
+   Width0/empty-row-list execution remains defined with its explicit cost;
+   the linear bound is not incorrectly claimed for those degenerate cases.
+
+4. bank_native_complete and bank_native_spec compile this SAME schedule
+   through ScheduledNativeIO into the original TM and prove exact active
+   execution and halting, all absolute cell values, clean scratch, head
+   restoration and unchanged input position/output accumulator. The entry
+   bank is explicitly present in the initial configuration; raw external
+   input loading/output emission is NOT part of this subroutine.
+   bank_resources:2 work tapes,5 symbols,50*(bankTicks+1) states.
+
+Four new leaf modules;28 additional audited named declarations, not28
+research results. All previous mathematical sources unchanged.
+
+REUSE / DRIFT CHECK
+Verified every R1890 receipt hash before edits. Searched the pinned local
+mathlib Turing tape/list APIs and the local scheduled actions, zipper,
+copy/erase and native IO interfaces. Reused ScheduledTapeAction.erase,
+erase_position/erase_cells/erase_io, rewind_position/rewind_cells/rewind_io,
+ScheduledNativeIO.append_exact/append_active/native_run_and_halt/
+native_state_count, RawRowArithmetic.rows_exact/rows_lengths/ticks_eq,
+EraseStream.blanks_eq_nil, CoupledRowMoves.right_word,
+CopyMachine.denote_right, AbsoluteTape.move_cells, mathlib Tape.mk'_nth_nat,
+ListBlank.nth_mk, List.getI_eq_default and Function.iterate_succ_apply.
+No duplicate arithmetic, cleanup passes, compiler or tape model was added.
+The only new tape reasoning connects the EXISTING zipper endpoint to the
+EXISTING absolute-cell semantics used by the reusable bank interface.
+Development fixes concerned an import name, integer-constructor cast
+normalization, explicit structure congruence and unfolding abbreviations.
+No theorem scope was weakened; no new axioms, proof escapes, raised limits
+or disabled linters. Final development build passed without warnings.
+Drift: this closes a complete paid bank-operation dependency, not the full
+regular-recursion theorem. Raw IO, affine geometry and both remaining
+operation palettes still require explicit verified implementation.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1891 proves a complete clean BANK subroutine from a bank already containing the rows and an actually blank buffer. It does not yet load external raw input, emit the result, prove the bank head-path approximation, or complete the remaining palette(a)/palette(b) operations. The native endpoint quantifies all cells, restores absolute heads and clears scratch; it is not only an abstract recurrence. Five of six families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1891 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate86%, low confidence.
+
+NEXT: THE ACTUAL CLEAN BANK'S HEAD-PATH APPROXIMATION, THEN SHARED RAW IO.
+RawRowArithmetic.bank_spec/bank_native_spec are DONE, including actual
+blank seed, all surrounding bank cells, buffer clearing, both head resets
+and external IO preservation. bankTicks=8P+2W<=10P for W,r>0,P=rW.
+Do not rebuild row arithmetic, repeated rows, cleanup or native endpoints.
+The resource count is2 tapes,5 symbols,50*(bankTicks+1) states. Once
+complete raw-body time is linear, reuse state_bits_of_linear_count; do not
+copy the state-bit chain from RawBankProgramResources.
+
+1. Prove the actual row-loop paths are withinO(W) of the bank's straight
+   scan and buffer's stationary path. Each row costs7W, advances bankW
+   and restores buffer; ScheduledNativeIO.trajectory_displacement bounds
+   all intermediate motion. The schedule's movement is independent of
+   the carry data. CoupledRowCell.cell_positions and the existing seek
+   refinements can establish endpoint movement for arbitrary states if
+   useful. Reuse ScheduledWord/append trajectory identities and the
+   already checked row endpoints. Do not require a second growing-stride
+   compactness chain. W/P=1/d->0 supplies the approximation error.
+   Cleanup is three existing affine scan phases: buffer rightW,leftW,
+   bank leftP. Reuse clippedRamp and HasAffineIntervalCover operations.
+   Keep all prefix times and the frozen halted tail in the final statement.
+2. Share raw loading/emission. ScheduledRawInput/Output and RawBankProgram
+   use the earlier Bool*Bool mode; the coupled row mode is
+   Bool*Sym Bool*Sym Bool. NativeIOEmbedding.step_embed/trace_embed are
+   already proved. Lift the old finite IO mode into the larger mode or
+   factor a small generic mode interface so both clients share the IO
+   proofs. Any required reset is a paid native jump. Do not copy the entire
+   raw IO, halting, state-bit or affine wrapper chain into a parallel one.
+   Existing bank_spec accepts arbitrary bank prefix/suffix, all positions
+   and all incoming modes, so it has not restricted the bank to empty
+   surroundings. Existing BankWord.Interface/Represents is generic in
+   mode and alphabet value. Use it when composing operation words.
+
+Remaining source206(a): row XOR/difference, row-order reversal, entry-order
+reversal preserving within-entry bits, row-dependent entry rotations,
+whole-bank increment/decrement modulo2^P. Source206(b): exact F3 row/column
+prefix/difference, row/column reversal, row rotations, diagonal signs and
+whole-entry-stream rotation. Use CoupledRowCell's arbitrary work-symbol
+update table and symbol-preserving ScheduledTransfer where possible.
+The existing5-symbol alphabet represents trits0,1,2 on unmarked banks;
+no new alphabet/compiler is needed. Avoid binary decoders on trit2.
+Check shared row interfaces before repeating arithmetic-wrapper proofs.
+
+Source206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and
+210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,
+bounded operation words and correctness sets of coentropy o(P). Referees
+only after all six original families complete. Original read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate86% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1891 closes initialization/cleanup/rewind and native execution for integer row-prefix/difference bank updates. Complete operation families and final impartial referees remain.
+
+VERIFICATION
+Full lake build passed10286 jobs without warnings/errors; SupportAxioms audited5643 unique declarations using only propext,Classical.choice,Quot.sound. There are1105 local sources (1104 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and225 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

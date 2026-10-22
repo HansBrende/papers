@@ -1,0 +1,10 @@
+{
+  "purpose": "Executable three-tape fixed carry controller checked against independent Nat modular arithmetic for widths0..7, every operand pair and both mode/carry flags. Checks numerical result, carry flag, both source words, result tape and all three absolute head positions. Universal correctness/native bounds are proved in BinaryCarryRun.",
+  "command": "lake env lean /private/tmp/binary_carry_examples.lean",
+  "checks": [
+    "(87380, 0)"
+  ],
+  "source_sha256": "37d7dd354cc8c23d4b19f371f9d95986f7d4aef094f6533421f6f4f77e18872b",
+  "source": "import TransposeFollowup.BinaryCarryRun\nopen TransposeFollowup TransposeFollowup.BinaryCarry\nopen FixedTapeCompiler.CopyMachine\n\ndef inputWord (m a : Nat) : List Bool := (List.range m).map (fun j => a.testBit j)\ndef initialHeads (i : Fin 3) : Int := if i = 0 then 7 else if i = 1 then -11 else 19\n\ndef checkArithmetic : Nat \u00d7 Nat := Id.run do\n  let mut tested := 0\n  let mut failed := 0\n  for m in List.range 8 do\n    for a in List.range (2^m) do\n      for b in List.range (2^m) do\n        for sub in [false, true] do\n          for cin in [false, true] do\n            let ta := marked (inputWord m a)\n            let tb := marked (inputWord m b)\n            let final := execute (5*m+7) (cfg (.scan sub cin) ta tb preparedOutput initialHeads)\n            let total := a + (if sub then 2^m-1-b else b) + cin.toNat\n            let word := marked (inputWord m (total % 2^m))\n            let cout := decide (2^m \u2264 total)\n            tested := tested + 1\n            if !(decide (final.core.pc = .done cout) &&\n              decide (final.core.tapes 0 = ta) && decide (final.core.tapes 1 = tb) &&\n              decide (final.core.tapes 2 = word) &&\n              decide (final.pos 0 = 7) && decide (final.pos 1 = -11) && decide (final.pos 2 = 19)) then\n              failed := failed + 1\n  return (tested, failed)\n#eval checkArithmetic\n",
+  "observed_output": "(87380, 0)\n"
+}

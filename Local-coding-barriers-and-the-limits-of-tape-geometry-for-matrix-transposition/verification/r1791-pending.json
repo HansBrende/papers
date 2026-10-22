@@ -1,0 +1,138 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "AutocorrelationSupport",
+    "AutocorrelationCoefficient",
+    "ProbabilityConvolutionPowers",
+    "AutocorrelationPowerAction",
+    "AutocorrelationIterates",
+    "AutocorrelationIterateCoefficient",
+    "AutocorrelationFlatnessBarrier",
+    "RestrictedGapFromAutocorrelation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.inv_ae_matrixEntryBox",
+    "TransposeFollowup.RealMobius.autocorrelation_ae_matrixEntryBox",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelation_ae_zero_outside",
+    "TransposeFollowup.RealMobius.generatorWalkAutocorrelation_ae_zero_outside",
+    "TransposeFollowup.RealMobius.smoothedAction_norm_four_le_of_autocorrelation",
+    "TransposeFollowup.RealMobius.smoothedWalk_norm_four_le_of_autocorrelation",
+    "TransposeFollowup.measureConvolutionPower",
+    "TransposeFollowup.measureConvolutionPower_probability",
+    "TransposeFollowup.measureConvolutionPower_one",
+    "TransposeFollowup.measureConvolutionPower_add",
+    "TransposeFollowup.measureConvolutionPower_comm",
+    "TransposeFollowup.measureConvolutionPower_succ_right",
+    "TransposeFollowup.measureConvolutionPower_inv",
+    "TransposeFollowup.RealMobius.groupActionAverageCLM",
+    "TransposeFollowup.RealMobius.groupActionAverageCLM_apply",
+    "TransposeFollowup.RealMobius.groupActionAverage_convolutionPower",
+    "TransposeFollowup.RealMobius.autocorrelation_dyadic_power_norm_lower",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_measurable",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_inv",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_withDensity",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_probability",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_lintegral",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_le",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_energy",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_lintegral_sq_le",
+    "TransposeFollowup.RealMobius.measureConvolutionPower_ae_entryBox",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_ae_zero_outside",
+    "TransposeFollowup.RealMobius.smoothedAction_norm_power_le_of_autocorrelationIterate",
+    "TransposeFollowup.RealMobius.smoothedWalk_norm_power_le_of_autocorrelationIterate",
+    "TransposeFollowup.exists_iterated_density_barrier",
+    "TransposeFollowup.RealMobius.exists_autocorrelationIterate_action_barrier",
+    "TransposeFollowup.RealMobius.exists_restricted_gap_from_autocorrelation_flatness"
+  ],
+  "declaration_counts": {
+    "theorem": 30,
+    "def": 3
+  },
+  "checks": {
+    "support_initial": {
+      "session_id": 62794,
+      "exit_code": 0,
+      "jobs": 9567,
+      "warnings": true,
+      "warning_fixed": true,
+      "final_dependency_build": 15628
+    },
+    "coefficient": {
+      "session_id": 15628,
+      "exit_code": 0,
+      "jobs": 9582,
+      "warnings": false
+    },
+    "probability_powers": {
+      "session_id": 69220,
+      "module_built": true,
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 17911
+    },
+    "iterates_and_action": {
+      "session_id": 10962,
+      "modules_built": [
+        "AutocorrelationIterates",
+        "AutocorrelationPowerAction"
+      ],
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 17911
+    },
+    "iterate_coefficient": {
+      "session_id": 17911,
+      "exit_code": 0,
+      "jobs": 9587,
+      "warnings": false
+    },
+    "barrier": {
+      "session_id": 11496,
+      "exit_code": 0,
+      "jobs": 9590,
+      "warnings": false
+    },
+    "restricted_gap": {
+      "session_id": 44658,
+      "exit_code": 0,
+      "jobs": 9620,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 82034,
+      "exit_code": 0,
+      "jobs": 9703,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 6420,
+      "exit_code": 0,
+      "declarations": 4046,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "This turn reuses the already proved Haar coefficient estimate, actual smoothed high-band witness, symmetric-power norm inequality and scalar dyadic barrier, together with the R1790 autocorrelation identities. It proves a new analytic interface to the intended Bourgain\u2013Yehudayoff flattening program, not a new flattening theorem or a novel transposition lower bound. The canonical symmetric iterates are identified with actual convolution powers, including their mass, support, operator action and inherited initial bounds. Flatness of a fixed iterate remains an explicit premise of the final restricted-gap theorem. No source theorem is assumed as an axiom.",
+  "development_checks": "Support62794 passed with two redundant-tactic warnings; removed the no-op congr tactic and final coefficient15628 passed warning-free including its dependency. Probability powers75337 failed because rewriting mu as its first convolution power also rewrote the base parameter inside other powers; replaced this with an explicitly specialized commutation identity, and69220 built the repaired module warning-free. That combined command failed in iterates (wrong withDensity_apply namespace) and power action (RingHom.id coercion needed simplification). After these local repairs10962 built both modules warning-free but failed in final coefficient normalization, where congr left a real-power goal rather than the intended Nat equality. Replaced it with explicit exponent commutation;17911 passed. Scalar/action barrier11496 and final restricted gap44658 passed first builds. No old mathematical-source edits, placeholders, raised proof limits, disabled linters or new axioms. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T19:31:41.801248+00:00",
+  "formal_checkpoint": "R1791 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1791, 726 sources, 4046 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1791 proves the direct restricted-gap reduction for symmetric autocorrelation iterates. For the actual one-sided smoothed probability mu, let alpha=mu.inv*mu. Canonical pointwise symmetric probability densities rho_k are constructed for alpha^(2^k), preserving the initial density/squared-L2 bounds. The original action satisfies norm(A_mu f)^(2*2^k)<=norm(A_(alpha^(2^k))f) for unit f. Matrix-entry support and the existing coefficient estimate yield an explicit power bound. For every fixed k, sufficient flatness rho_k<=D with D^2<=2^j in the stated logarithmic walk-length window implies the required restricted quadratic-form gap. No comparison back to the original one-sided density is a premise of this reduction. The flatness premise itself, full product growth/metric BSG and unconditional paid padding remain unproved.",
+  "next": "The direct analytic bridge is complete. Do not spend another turn reproving a scalar iteration that assumes flatness. Use RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k) as the current target interface. We need some fixed k for which the canonical rho_k density is at most D with D^2<=2^j at eta=4^(-j), for the precise dyadic base lengths n=2^m above C*log(1/eta)/log(1/epsilon) and below j/(2N). The fixed iteration count is chosen before N,J0 and epsilon0 in the checked reduction. Preserve this quantifier order.\n\nNext mathematical target: a concrete one-scale nonflattening-to-multiplicative-energy lemma for the canonical symmetric densities, then the metric Balog\u2013Szemeredi\u2013Gowers extraction and SL2 product growth/escape. Start by formulating the level-set/energy statement with explicit measurable sets, Haar integrals, support bounds and radius loss. Reuse the exact energy recursion rho_(k+1)(1)=integral rho_k^2, probability normalization and symmetric level sets; do not replace near-products at scale eta by exact product equalities without a discretization proof. The inherited initial bound is eta^(-3+1/61440), independent of k. It gives initialization only and does not prove any strict improvement at a doubling step.\n\nLibrary audit this turn: mathlib has Finset.mulEnergy in Combinatorics/Additive/Energy.lean (defined for arbitrary multiplication), noncommutative Ruzsa covering in RuzsaCovering.lean, SmallTripling.lean, and IsApproximateSubgroup with of_small_tripling in ApproximateSubgroup.lean. The latter converts a finite symmetric set containing1 with #(A^3)<=K#A into a K^3-approximate subgroup A^2. Reuse these exact hypotheses where applicable. The limited search did not find a ready metric BSG theorem; it is not a proof of global absence. Do not duplicate these libraries or silently treat finite cardinality as Haar volume/metric covering number. Primary reference remains Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, accessible in R1790.\n\nRetain the full six-family goal, actual measures, T_g=W_(g^-1), same Haar normalization, logarithmic thresholds and L2-versus-squared-L2 distinction. No original-directory edits, commits/pushes or final referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1791 completes the analytic restricted-gap reduction for a fixed dyadic iterate of the actual symmetric autocorrelation. The density flatness premise remains unproved, so paid padding is not a fourth completed family. Motion200/210 and recursion206/208 are unstarted. This estimate concerns formalization scope, not time, success probability or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/AutocorrelationSupport.lean": "19127133d8542e77a8f805bc06fc380de771b4babe02b573fee3d0373f1136fe",
+    "lean/TransposeFollowup/AutocorrelationCoefficient.lean": "2e646aaabdf2f64122c19f7b1487ef31fd393248216e84043db8193eae728805",
+    "lean/TransposeFollowup/ProbabilityConvolutionPowers.lean": "d705d94e073d37a01d36641a40ac6aabc600d6ffd258c3916883907cafe766df",
+    "lean/TransposeFollowup/AutocorrelationPowerAction.lean": "3327d98b68dab7649dee8c6e49333d5a4a931f380bf78d51b14e8ea1f3887be7",
+    "lean/TransposeFollowup/AutocorrelationIterates.lean": "c9d58aa47c1ad96cbe76feb6e0285b558fd207c7da32974d3ddbd37c23bcaba9",
+    "lean/TransposeFollowup/AutocorrelationIterateCoefficient.lean": "84e5c8355949d1369d517a6d6dd18c6f1b189501551861e45f4d11ccb2db8d70",
+    "lean/TransposeFollowup/AutocorrelationFlatnessBarrier.lean": "facd90ea443a528d1fab148536159c8536cb86ff2773479f06fc4c3200af91e0",
+    "lean/TransposeFollowup/RestrictedGapFromAutocorrelation.lean": "2044cb6a68045d0551428a2219f5b06d5f41eca4ab64ada1103a9da0dc1ffd61"
+  }
+}

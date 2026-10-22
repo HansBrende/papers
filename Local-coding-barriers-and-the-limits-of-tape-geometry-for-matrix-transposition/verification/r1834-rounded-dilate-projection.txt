@@ -1,0 +1,100 @@
+R1834 — VERIFIED SCALAR SUM/PRODUCT ALTERNATIVE BY PROJECTION REUSE
+
+In progress. R1834 completes the rounded-dilate overlap/Ruzsa bridge and composes it with the already imported scalar projection theorem. Four modules add10 theorems, including a scalar sum/product alternative for a separated set in[1,2] with an explicitly assumed scalar distribution and explicit loss budgets. All incidence counts, repeated row indices, floor quantization, dilation, coefficient selection, distribution transfer, normalization and finer-scale losses are charged. This closes the missing scalar counting/projection connection; it does not establish that our extracted matrix family satisfies the premises or complete paid padding.
+
+NOTATION. For a finite real set S and delta>0, cells_delta(S) is the number of integer cells {floor(x/delta):x in S}. This is the imported floor-cell count, not a native external covering number; the previously proved metric comparison is still needed when changing conventions. N below is |X|. The new scalar ring theorem is a consequence of the imported projection theorem, not a new claim of mathematical novelty.
+
+1. INDEXED ROW ENERGY AND POPULAR OVERLAPS.
+For finite index set I, finite universe P, and rows R_i subset P, including repeated rows,
+  (sum_i |R_i|)^2 <= |P| * sum_i sum_j |R_i intersect R_j|.
+This composes mathlib Cauchy--Schwarz with finite indicator double counting. Retaining indices is essential; replacing the row family by a set of distinct rows would lose multiplicity.
+If I is nonempty, K>0, every row has |I| elements and |P|<=K|I|, there exist i in I and E subset I such that
+  |I| <= 2K|E|,
+  |I| <= 2K|R_i intersect R_j| for every j in E.
+The bounds are stated without division, so there is no unrecorded integer rounding loss.
+
+2. TWO IMPORTED RUZSA INEQUALITIES.
+For finite A,B in any additive commutative group,
+  |A+B| * |A intersect B| * |A| <= |A+A|^2 * |B+B|.
+For A nonempty and K>0, if both |A+A| and |B+B| are at most L|A| and |A|<=2K|A intersect B|, then
+  |A+B| <= 2K L^3 |A|.
+No independent sign assumption on L is needed: the meaningful size hypotheses already constrain it. This is a short composition of mathlib's sub/add/add and add/sub/add Ruzsa inequalities, not a reproof of Ruzsa.
+
+3. ROUNDED DILATES GIVE MANY SMALL PROJECTIONS.
+Let delta>0,K>0 and X be a nonempty finite delta-separated subset of[1,2]. Assume
+  cells_delta(X+X) <= K N,
+  cells_delta(X*X) <= K N.
+There exist a in X and E subset X with N<=2K|E| and, for every b in E,
+  cells_delta(X+(b/a)X) <= 54880 K^4 N.
+Actual rounded rows are R_a=cells_delta(aX). The imported separated-cell injectivity gives |R_a|=N, and all rows lie in the actual product-cell universe. The imported dilation bound and carry lemma give
+  |R_a+R_a| <= 14 K N.
+Popular overlap and item2 give
+  |R_a+R_b| <= 5488 K^4 N.
+Returning to real sum cells and dividing by a costs at most10, giving54880. This uses the existing conservative dilation bound rather than starting a sharper rounding proof; the former note's speculative6,432 and subsequent constants are superseded by these verified14,5488,54880 constants.
+
+4. DISTRIBUTION OF THE ACTUAL COEFFICIENT FAMILY.
+In addition to3, let C>=1,s>=0 and assume the PROVED-OR-TO-BE-PROVED input profile
+  ballMass(X,u,r) <= C r^s N for every delta<=r<=1 and every real u.
+There is a nonempty coefficient family F of the form {b/a:b in E}, with
+  N <= 2K|F|,
+  |f|<=2 for every f in F,
+  ballMass(F,u,r) <= (2K C 2^s) r^s |F| for every r>=delta,
+  cells_delta(X+fX) <= 54880 K^4 N for every f in F.
+The existing scalar_ratio_family_ball is reused with denominator -a, so -b/(-a)=b/a. It already handles subset retention, dilation and radii larger than1. This avoids reproducing that chain. The theorem does NOT infer the input profile from cardinality or from the distribution of the original matrix set.
+
+5. SCALAR SUM/PRODUCT ALTERNATIVE, BY REUSING THE IMPORTED ENDPOINT.
+For every 0<kappa<=1, there exist epsilon>0 and an integer J>0 such that the following holds for every n>=J. Put
+  delta=2^(-n),
+  W=exp(epsilon*(n+1)*log(2)).
+Let K,C>=1 satisfy ALL THREE explicit budgets
+  109760 K^4 <= W,
+  2^(2 kappa) C <= W,
+  2^(2 kappa) * (2K C 2^(2 kappa)) <= W.
+Let X be a nonempty finite delta-separated subset of[1,2] satisfying
+  log N <= (1-kappa)*n*log(2),
+  ballMass(X,u,r) <= C r^(2 kappa) N for every delta<=r<=1 and every real u.
+Then at least one strict growth conclusion holds:
+  K N < cells_delta(X+X), OR K N < cells_delta(X*X).
+
+Proof interface: if both counts were small, item4 supplies F. Normalize Y=X/2 using the imported scalarZoom lemmas and apply scalar_weak_radius_projection to Y,F at scale delta/2, i.e. dyadic depth n+1. The cardinality logarithm, point range, separation, small doubling, scalar point distribution, coefficient range and coefficient distribution all have formal checks. The imported refinement lemma charges the coefficient profile's extension from radii>=delta down to radii>=delta/2. Each normalized projection count is at most twice its original count. The first budget109760=2*54880 therefore contradicts the strict projection gain. The second and third budgets respectively cover point and coefficient concentration after scaling.
+The conclusion uses the SAME original delta as the sum/product input. The finer scale is internal to the proof. The three budgets are explicit hypotheses, not an unproved statement that K and C automatically fit. They can be met by sufficiently small power losses; a simplified power-law corollary is not needed before checking the actual matrix application.
+
+FORMAL DECLARATIONS.
+TransposeFollowup.ScalarMetric.indexed_row_intersection_energy
+TransposeFollowup.ScalarMetric.exists_popular_row_intersections
+TransposeFollowup.ScalarMetric.card_mixed_sum_intersection_bound
+TransposeFollowup.ScalarMetric.mixed_sum_le_of_popular_overlap
+TransposeFollowup.ScalarMetric.rounded_dilate_card
+TransposeFollowup.ScalarMetric.rounded_dilate_doubling
+TransposeFollowup.ScalarMetric.ratio_projection_cells_le
+TransposeFollowup.ScalarMetric.small_sum_product_gives_small_projections
+TransposeFollowup.ScalarMetric.small_sum_product_coefficient_family
+TransposeFollowup.ScalarMetric.scalar_sum_product_alternative
+
+WHAT THIS DOES NOT PROVE.
+The matrix-derived scalar set is not yet supplied with the profile in5. Near-nilpotent error terms, the shift to a positive interval, separation after normalization, the allowed scale/cardinality range and comparison with R1832's final trace-cubic threshold remain. The alternative that an extracted scalar family is concentrated must still be handled; it cannot be discarded because the original matrix set was well distributed. No new transposition bound or fourth original theorem family is claimed.
+
+DRIFT CHECK.
+The previous counting target is now completed all the way to the existing projection theorem, rather than merely restating it as an assumption. R1834 adds no new projection theorem proof, no alternative additive-energy framework and no new scalar regularization chain. The finite coefficients and their distribution are actual outputs. The remaining risk has shifted to APPLICATION: whether the scalar sets produced by bounded matrix words satisfy the range, separation, concentration and three budget hypotheses with enough retained size to exceed the R1832 trace-cubic threshold. Do not keep refining constants or formalizing a separate ring theorem. Audit the concrete matrix application before starting additional support chains.
+
+BOUNDARY
+R1834 proves a scalar sum/product alternative from the imported projection endpoint, including actual rounded-dilate counts and coefficient distribution. The matrix-derived input profile, concentrated-case alternative, positive-interval trace normalization, near-nilpotent and actual-word error budgets, nondegenerate amplification, center separation and full exponent budget remain. Group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1834 is recorded; never replay its checkpoint. Full10091-job build and4554-declaration audit passed; standard axioms only; no live Lake handle. Read verification/r1834-rounded-dilate-projection.txt and library-reuse-audit-r1834.json. The entire rounded-dilate/Ruzsa-to-projection bridge is now verified; do not redo it.
+
+NEXT SUBSTANTIVE TARGET: audit and then realize an actual matrix-to-scalar application of scalar_sum_product_alternative. First write a concrete parameter ledger linking the source chart's t-range, generator determinant Delta, coefficient ell=tr(bg), tau=tr(g), source approximation epsilon, retained cardinality and target trace resolution. Use the actual g selected by R1833. The scalar endpoint needs X subset[1,2], delta separation, log-cardinality upper bound, normalized ball profile exponent2*kappa, and its three explicit K,C budgets. Compare the gain needed with the FINAL R1832 trace-cubic threshold, not just the initial commuting-family size.
+
+The first missing algebraic interface, if the ledger is viable, is the shifted positive scalar Y(t)=tau+ell*t. In the exact nilpotent case its products satisfy Y(t)Y(q)=tr(u(t)g u(q)g)+2 and sums satisfy Y(t)+Y(q)=tr(u(t)u(q)g)+tau. These shifted identities are written but not yet formalized. For a small nonzero determinant, derive and charge the error using R1833's centered_trace_arithmetic_error, rather than pretending the generator is nilpotent. Transfer to actual source words with their proper lengths and existing Frobenius errors. Check positive interval and center separation before calling the trace-reextraction theorem.
+
+The scalar input distribution remains a genuine obligation. Do NOT assert that a cube-root-sized extracted family inherits the original A's normalized nonconcentration. Retain the concentrated-case alternative using the existing translated-cluster machinery and source argument. If the parameter ledger fails, record the exact inequality/failure and choose a different integration route before producing another long formal chain. Nondegenerate centralizers may still use the existing exact coefficient mechanisms; do not silently assume all generators are near nilpotent.
+
+REUSE: scalar_sum_product_alternative is ready, as are scalar_ratio_family_ball, scalar_zoom_ball_bound, scalar_refined_ball_bound, scalar_zoom_linear_sum and scalar_zoom_cells. No new library import or copied analytic endpoint is needed. No additional standalone scalar power-law normalization is necessary until the matrix budgets are known.
+
+REPORTING: Current ORIGINAL proof is paid padding201/202; best rough estimate about60%, low confidence. The numerical estimate concerns that whole proof, not local lemmas and not remaining wall time. Three of six original families are formalized; final referees pending. Motion and recursion are unstarted. Goal ACTIVE; no protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1834 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.
+
+VERIFICATION
+Full lake build passed10091 jobs without warnings; SupportAxioms audited4554 unique declarations using only propext, Classical.choice and Quot.sound. There are909 mathematical modules plus SupportAxioms(910 local sources),204 pinned external modules,8 configurations and111 validation artifacts. All384 archive hashes and117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.

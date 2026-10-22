@@ -1,0 +1,165 @@
+R1910 — STRENGTHENING, SIMPLIFICATION AND REUSE PASS
+21 October 2026. Complete.
+
+OUTCOME
+All six main theorem families remain proved, with no weakened main statement.
+Three families now have stronger endpoints. Mathematical source shrank from
+106282 to 105589 lines: a net reduction of 693 lines. This includes
+all additions, not just gross deletions. Current source: 1157 mathematical
+modules plus SupportAxioms. No commits or pushes; original sibling unchanged.
+All six theorem families were already complete before this pass; this report
+records improvements to them.
+
+Six-family status in this pass:
+  1. Adaptive separators/treewidth: main statements preserved.
+  2. Nonlinear row recoding plus fixed XOR: path/cycle constant improved.
+  3. Affine-motion obstructions: main statements preserved.
+  4. Fully paid padding: universal state/tape resource formulas added.
+  5. Two-stage nonlinear helper: arbitrary input distributions added.
+  6. Concrete palettes and contracting recursion: main statements preserved.
+
+1. ARBITRARY-DISTRIBUTION TWO-STAGE TOLL
+For ANY probability law X on a correct family F, not just its uniform law,
+let Z be the attained helper and P=n^2*b. In bits:
+
+  P - H(X) + H(Z) >= b*r*(n-r), for every 0<=r<=n;
+  P - H(X) + H(Z) >= b*floor(n^2/4).
+
+Weights may vanish and be correlated. The ambient helper type can be infinite;
+its attained finite subtype is used. Correctness is exact on F, and the same
+deterministic two-stage primitive architecture is retained. The original uniform
+D=P-log2|F| statements and range/density bounds remain available unchanged.
+This broadens input laws, not the excluded computational architecture, and does
+not improve the quarter coefficient.
+
+Lean: TwoStageHelper.helper_entropy_deficit_bound_of_distribution and
+quarter_helper_entropy_deficit_bound_of_distribution.
+
+A shared fiber-cap lemma proves H(p)<=H(f_*p)+(sum p)log C for C>0 whenever
+every fiber has cardinality<=C, for arbitrary nonnegative weights. This
+unnormalized bound uses the development's entropy functional and natural logs.
+The existing conditional Gibbs lemma no longer assumes normalization. Two adaptive aggregation call sites
+reuse this more general lemma without changing their conclusions. The natural
+exponent decomposition is shared between counting and entropy proofs.
+These abstract entropy facts are standard tools; no novelty is claimed for them.
+
+2. UNIVERSAL PADDING RESOURCE FORMULAS
+The existing exists_uniform_paid_padding endpoint now chooses absolute integers
+A,H,K0,E BEFORE the payload machine M. Besides every previous runtime, exact
+output, actual halt, zero-slack CutIneq and full-limit conclusion, it supplies
+
+  number of states(M') = H + number of states(M),
+  tapes(M') = K0 + (tapes(M)+E)*max(1,Nat.size(M.g)),
+  cellBits(M') = 3.
+
+The constructed machine uses five work symbols; cellBits=3 is the bit charge
+exposed by the endpoint. M.g is one less than the source work-alphabet size.
+State counts are q+1.
+A is the universal additive linear runtime coefficient. The formulas follow
+from the existing fixed-resource compiler contracts, with no new machine
+construction or extra assumption. Constants are existential, not a practical
+numerical table. No finite-state uniformity claim has been dropped.
+Lean: TransposeFollowup.PaidPadding.exists_uniform_paid_padding, in the
+UnconditionalPaidPadding module.
+
+3. SHARPER PATH/CYCLE XOR CONSTANT
+For n>0, the five real-valued path/cycle endpoints now give
+
+  B >= P - b*n*sqrt(8*n),
+
+improving the real error coefficient from 3 to 2*sqrt(2). Arbitrary nonlinear
+row bijections, fixed singleton/pairwise XOR packets, all-input correctness
+and the same graph-locality/embedding hypotheses are retained.
+
+The proof uses k=floor(sqrt(n/2)) and keeps the exact ball cap 2k-1; n=1 is
+handled separately. The existing natural-number bound with error
+3*b*n*floor(sqrt(n)) is preserved unchanged because it can be sharper at some
+small n. No new imports or public declarations are needed. This adds 21 lines
+and improves a finite constant, not the asymptotic order or architecture scope.
+Lean: RecodedXorCode.linear_ball_broadcast_lower_bound and its four graph
+specializations in XorPathCycleBound.
+
+4. SHARED PROOFS
+- 47 specialized one-step jump proofs now apply two generic rules: work-tape
+ and input/output versions. All previous specialized statements remain intact.
+ A jump still consumes exactly one charged active transition and preserves
+ tapes, head positions, and (where applicable) input/output state.
+- NativeIO's work-instruction compiler proof now reuses the existing complete
+ NativeMicrocode proof through a field-preserving configuration lift. It no
+ longer repeats the five instruction cases. No semantics or cost changes.
+- Three manual range/image arguments use pinned mathlib Set.image_eq_range.
+- Entropy estimates and the exact two-stage exponent algebra are shared as
+ described above. Generalization here removes repeated reasoning.
+
+5. SEPARATE ANALYTIC GEOMETRY FROM NATIVE COMPILATION
+Three unchanged bridge declarations moved from ClosedRationalExpansion to the
+new ClosedNativePadding module. This removes native-compiler dependencies from
+232 existing analytic modules. For example, the local import closure of
+RationalContinuousExpander falls from 859 to 415 modules; the closure of
+ConjugacyFiberCovering falls from 582 to 138. UnconditionalPaidPadding still
+imports the compiler it actually needs. All moved names, statements, proofs
+and axiom-audit coverage are preserved.
+
+The split adds 16 mathematical source lines and one audit import, included in
+the net footprint accounting above. It reduces unnecessary rebuilds and permits
+analysis and native compilation to proceed independently. It does not remove
+any mathematical obligation from the full padding theorem.
+
+6. RETIRED SUPPORT AND RECOVERABILITY
+Archived one obsolete finite-center-trimming module and eight unused older
+specializations/endpoints superseded by live general statements; saved 448
+mathematical lines before other changes. Corrected the remaining dyadic helper's
+module description and removed obsolete namespace setup. Also archived two
+independent standard entropy normalization/chain-rule identities (49 lines,
+including separating whitespace) which had no consumer in any main proof. Useful mathematics remains recoverable.
+
+Archives under research/10-linear-decision/archive:
+  r1910-retired-analytic-support (original hashes and full before-files),
+  r1910-retired-entropy-support (original full file and inventory),
+  r1910-import-split (before-files and move hashes).
+All before/after edits are in verification/r1910-changes.patch. No final main
+target endpoint was removed. Ten audit entries retired; six added; 6289 remain.
+
+VALIDATION
+Full lake build: 10332 jobs, exit 0, no warnings or errors. Axiom audit: 6289
+unique declarations, exit 0, only propext, Classical.choice and Quot.sound.
+Local executable-token scan: no sorry/admit, extra axiom, unsafe/native_decide,
+custom elaborator/environment mutation, raised limits or disabled linters.
+Only autoImplicit false is set. Original 117 files and directory inventory,
+204 external sources and 8 configurations unchanged.
+
+Initial jump-only build was intentionally interrupted after shared lemmas and
+representative callers passed, to batch remaining edits before the final full
+build. The core build then passed 8948 jobs. A full build was subsequently
+interrupted to apply the import split; its completed work was reused. Both
+cancelled logs are retained and neither is claimed as a successful full build.
+The subsequent integration build finished with one elaboration error in
+SL2TranslatedCluster:
+Set.image_eq_range needed its function argument made explicit. The repair
+preserves the mathematical statement and source line count. The failed log is
+retained. The isolated XOR constant improvement was added at the same stopping
+point. Its n=1 branch required an explicit real-number cast annotation; the
+intermediate build was stopped to make that local repair. The padding resource
+proof then needed explicit family indices and compiler-program arguments to
+avoid failed inference and excessive unfolding. No proof limit was changed.
+After those local elaboration repairs, the final full build passed the
+10332-job target set. One pre-existing harmless ring-tactic
+info message was replayed; it is not a warning or failed build target.
+The expensive all-dependency fresh replay from R1909 is not claimed as a replay
+of this revision. This revision's new/rebuilt proofs were kernel checked during
+the full Lean build, followed by the axiom audit. Baseline replay provenance is
+preserved in r1910-before-receipt.json. No execution handle remains live.
+
+Two independent source reviewers checked the implemented entropy and padding/
+compiler changes. Their scope and signoffs are recorded separately. This is
+selective semantic review plus automated checks, not exhaustive human review
+of every line or a literature-novelty certification.
+
+DEFERRED LEADS AND SCOPE
+Further arbitrary-distribution adaptive separator generalization remains
+unimplemented. The XOR constant candidate was subsequently adopted after its
+compact proof passed Lean; it is described as a verified result above.
+
+All scope limitations disclosed in r1909-audit.txt still apply. No claim of an
+unrestricted transposition or multiplication bound follows. The six original
+formalization goals remain complete; this was a user-requested improvement pass.

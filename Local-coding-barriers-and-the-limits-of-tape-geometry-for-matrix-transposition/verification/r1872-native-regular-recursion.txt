@@ -1,0 +1,158 @@
+
+R1872 — NATIVE HIGH-ENTROPY CONTRACTING-RECURSION EXCLUSION
+PROGRESS at R1872: the native source208 contracting-recursion exclusion is formalized for high-entropy correct sets, fixed work-head count/cell bits, and nonuniform o(P) state bits, with a fixed-machine corollary. Actual clock budgets derive the linear time bound, and arbitrary eligible execution sequences include popular representatives. Finite initial exceptions are allowed. Five of six original families remain formalized; regular recursion206/208 is about40% complete, low confidence. Exceptional-work integration and exact206 executors remain open.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1872 RESULTS
+1. ContractingStageClock bundles only actual finite-clock data: nonnegative
+   node charges, fixed finite address branching and stage index set, integer
+   stage starts/ends with A<=E<=T, exact labels partitioning EVERY tick,
+   total own-stage cost<=a*V, child sum<=rho*parent, root<=C*P. It contains
+   no affine, limiting-path or coverage premise. RegularClockHead is the
+   already defined actual-occurrence regularity for every address/stage of
+   one raw physical head. The clock-family affine-cover wrapper simply
+   imports regular_physical_limit_locally_affine.
+2. native_regular_limit_not_affine_required proves the contradiction for an
+   actual simultaneous native block limit Q satisfying AffineTimeRequired.
+   It derives the physical limit Q_t(G*s)/G on [0,(c*G+1)/G], imports exact
+   unit-Lipschitz extensions of workTraj and native HaltsAt freezing, and
+   applies the geometric theorem for every fixed physical head. Transport
+   back to Q is exact. Zero omitted physical volume contradicts the proved
+   lower bound 1/(2G). All head casts and normalization units are checked.
+3. HasRegularRecursiveExecutions is an explicit ALL-SEQUENCES property:
+   there is a finite onset N, and for every strictly increasing size-index
+   sequence staying beyond N, every sequence of inputs from the prescribed
+   W_i, and their actual HaltsAt times with positive input lengths, there
+   is a family of actual contracting clocks for which every physical head
+   satisfies the occurrence-regularity predicate. Trees/clocks may depend
+   on the actual executions; their labels partition exactly their paid ticks.
+   This property does not select one favorable sequence. It does not permit
+   a different machine per input; Ms is fixed before these quantifiers.
+4. no_native_fast_regular_recursion excludes such executions for native
+   families with fixed k work heads and fixed cell bits G, state-bit cost
+   clog2(q_i+1)=o(P_i), and correct sets W_i with
+     2^P_i <= 2^m_i * |W_i|,  m_i/P_i ->0.
+   Here P_i=inputLength(n_i), n_i->infinity, and raw input/output use the
+   original encode/transpose semantics and canonical logarithmic entry bits.
+   The imported popular-trace theorem supplies actual representatives inside
+   W_i, their halting times, the common block limit and its affine-time
+   requirement. The proof drops one verified finite prefix for class validity,
+   positive input lengths and the regularity onset, then invokes item2.
+5. no_native_regular_recursion removes the separately assumed running-time
+   bound. For every eligible correct-set input assume its actual halt has a
+   ContractingStageClock and produces the raw encoded transpose, together
+   with the all-sequences regularity property. The verified clock theorem
+   gives T<=a*C*P/(1-rho), and item4 yields False. Thus the linear time bound
+   is a consequence of paid execution data. Nonuniform state bits and
+   high-entropy conditions remain exactly the original ones.
+6. no_uniform_regular_recursion is the fixed-machine specialization, with
+   the state-bit ratio discharged by constant divided by growing input length.
+
+SCOPE
+The source208 native impossibility result is now proved. Its source joint
+all-head regularity implies the weaker per-head subsequence regularity used
+here. The clock interfaces retain fixed B,J and global-time stage contiguity;
+whole-subtree call contiguity is unnecessary for the affine-cover argument.
+Finite exceptional initial sizes are permitted. The source's actual regular
+clock assignment implies the all-sequences property; the negative statement
+allows even sequence-dependent choices of clock decompositions of the same
+actual runs. No algorithmic access, new tape, input-dependent transition table,
+or omitted cost is granted by a mathematical decomposition witness.
+This is an architecture exclusion, not a general transpose lower bound.
+
+DEPENDENCIES
+Three new modules: ContractingStageClock, NativeRecursiveLimit,
+NativeRegularRecursion. Twenty new audited declarations, including the clock
+structure, its constructor and all eleven fields. No existing mathematical
+module changed. A redundant unused clock-subsequence wrapper was removed
+before the full build. The native/popular limit machinery, geometric result,
+physical normalization, frozen-run theorem and total-time budget are imported.
+
+DRIFT / REUSE: This turn reaches an original native impossibility theorem.
+It does not replace source208 with an assumed affine-cover condition. The
+universal execution quantifier is explicit and the popular representatives
+are proved to belong to the prescribed correct sets. The actual running-time
+bound is derived, not postulated in the final theorem. The original paper's
+popular nonuniform theorem, TraceClass definition, workTraj_frozen, and the
+completed follow-up physical affine-time bound are reused directly. No new
+trace-class counting, M* proof, entropy bound or geometric limit chain was
+introduced. The remaining work is exceptional-stage integration and exact206
+executors, not further polishing of the already complete source208 chain.
+
+
+BOUNDARY
+The full native contracting-recursion contradiction is now proved, not merely an analytic not-star condition. It imports the original popular nonuniform trace theorem through NativeAffineMotion, derives representative membership and HaltsAt, preserves the actual block/physical normalization, includes every work head and frozen tail, and derives total linear running time from the charged stage clocks. Its execution regularity is universal over eligible actual execution sequences beyond a finite onset; neither a shared adaptive tree nor entropy charges for tree choices are assumed. Remaining in the sixth family: source210 section35 exceptional-stage tick-budget integration and all exact206 palette semantics, growing-stride limits, bounded composition and native nonuniform executors. Final referees follow all six. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1872 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate40%, low confidence.
+
+The native source208 contracting-recursion theorem is now complete in
+NativeRegularRecursion.no_native_regular_recursion, with a fixed-machine
+corollary. Do not re-prove or weaken this endpoint. The sixth family still
+includes exact206 executors and source210 section35 exceptional recursive work.
+
+Next concrete target: formalize the exceptional-stage extension with the
+GLOBAL exceptional-tick budget eta*P+o(P), obtaining eta>=1/(2*k*G).
+Read source200-affine-return-motion.txt section35 (around1060-1110). All own
+stages, regular and exceptional, still count toward the same node budget;
+regularity applies to regular actual positive-duration occurrences only.
+The error term must be uniform over the correct input family. Per-node
+eta*V only implies eta*C/(1-rho)>=1/(2*k*G); do not confuse the two units.
+
+Reuse path: add a Boolean regular/exceptional designation at each padded
+stage key. Extract one common subsequence of flags, endpoints, volumes and
+halting times by the same countable compact-product theorem. Boolean limits
+are eventually constant at each fixed key, hence simultaneously on every
+finite shallow set. Do not require a shared designation across inputs.
+The real omission outside shallow regular stages is bounded by actual
+exceptional ticks/P plus the already proved geometric deep-work tail.
+Pass that finite-family bound to the limit using FiniteStageLimits and
+finite flag stabilization. The required limiting cover defect is <=eta,
+not an assumed measure bound or setwise convergence of exceptional sets.
+
+Generalize the cover assembly as needed to preserve a nonzero omission bound:
+local finite-affine stage subdivisions discard only null sets; the deep tail
+vanishes. The post-halt interval remains constant. A separate cover for each
+head with omitted volume<=eta suffices: sum_t omission<=k*eta combined with
+AffineTimeRequired.physical_omission yields the desired threshold. A common
+finite subdivision across heads is unnecessary. Reuse mathlib measureReal
+monotonicity/null-sdiff identities and countable null unions; do not recreate
+measure regularity/area-formula infrastructure. Retain actual-stage presence
+when invoking local regularity, and allow finite initial size exceptions.
+
+Native interfaces now available:
+- ContractingStageClock B J rho a C P T contains V,label,A,E and exact
+  nonneg/children/root/ordered/bounded/partition/budget fields.
+- RegularClockHead clocks hs quantifies existing HasRegularStageSubsequences
+  over each fixed address/stage for one actual raw physical head.
+- HasRegularRecursiveExecutions B J rho a C ns Ms Ws hk includes a finite
+  onset and universal eligible size/input/halting-time sequences; chosen
+  clock families cover all heads. It is not a one-sequence hypothesis.
+- no_native_fast_regular_recursion uses the imported popular trace theorem;
+  no_native_regular_recursion derives fast correctness from pointwise actual
+  clocks. Preserve fixed heads/cell bits, o(P) state bits, high entropy,
+  correct-set membership, and the original raw encode/transpose semantics.
+
+After the exceptional-stage theorem, implement exact206 palettes and their
+native nonuniform executors: row/entry/F3 operations and arbitrary masked bit
+strides; zero versus positive normalized stride; bounded word composition;
+all copying, seeks, clearing, reset and input/output paid. Source206 allows
+O(P) clock states/O(log P) state bits; public size-dependent schedules need
+no uniform parameter generator. Search existing FixedTapeCompiler/semantic
+routines before adding machinery. A flat root-only stage clock may reuse the
+new recursion endpoint once exact executor correctness and regularity hold;
+alternatively the completed finite-affine native obstruction applies directly.
+Do not invent a primitive-classification or search project outside206.
+
+No fresh subagents until all six formalizations; then user-authorized
+impartial referees and cleanup. Original read-only; no commits/pushes.
+No unrestricted transpose decision or novelty claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate40% complete (low confidence). The native source208 impossibility result is now formalized; the full sixth family remains incomplete because exceptional-work integration and exact206 executors remain. The five completed families are adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six.
+
+VERIFICATION
+Full lake build passed10195 jobs without warnings/errors; SupportAxioms audited4951 unique declarations using only propext,Classical.choice,Quot.sound. There are1014 local sources (1013 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and187 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

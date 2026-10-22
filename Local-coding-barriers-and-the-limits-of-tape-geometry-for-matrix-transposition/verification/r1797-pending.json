@@ -1,0 +1,120 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "StrictDegreeTrimming",
+    "OpenRelationDegrees",
+    "ProductNeighborOverlap",
+    "MobiusHighDegreeRows",
+    "MobiusProductTrimming",
+    "MobiusSmallProductBSG"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.lintegral_le_threshold_add_tail",
+    "TransposeFollowup.strict_good_degree_trim",
+    "TransposeFollowup.relationRowDegree",
+    "TransposeFollowup.relationRowDegree_measurable",
+    "TransposeFollowup.relationRowDegree_lowerSemicontinuous",
+    "TransposeFollowup.relationRowDegree_le",
+    "TransposeFollowup.relationRowDegree_add_compl",
+    "TransposeFollowup.relationRowDegree_lintegral",
+    "TransposeFollowup.relationRowDegree_restrict_lintegral",
+    "TransposeFollowup.densityConvolution_product_neighbor_eq",
+    "TransposeFollowup.productNeighbor_degree_le_density_add_bad",
+    "TransposeFollowup.RealMobius.high_product_degree_rows",
+    "TransposeFollowup.RealMobius.exists_open_product_trim",
+    "TransposeFollowup.RealMobius.exists_small_product_from_self_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 13,
+    "def": 1
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 84386,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev1.log"
+    },
+    "development_2": {
+      "session_id": 39124,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev2.log"
+    },
+    "development_3": {
+      "session_id": 80201,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1797-dev3.log"
+    },
+    "development_4": {
+      "session_id": 91916,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev4.log"
+    },
+    "development_5": {
+      "session_id": 2607,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev5.log"
+    },
+    "development_6": {
+      "session_id": 54584,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev6.log"
+    },
+    "development_7": {
+      "session_id": 88595,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev7.log"
+    },
+    "development_8": {
+      "session_id": 82958,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1797-dev8.log"
+    },
+    "development_9": {
+      "session_id": 4250,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1797-dev9.log"
+    },
+    "build": {
+      "session_id": 78236,
+      "exit_code": 0,
+      "jobs": 9738,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 1192,
+      "exit_code": 0,
+      "declarations": 4182,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Adaptation of Terence Tao, Product set estimates for non-commutative groups, arXiv:math/0601431v3, Theorem 5.2 (read again R1797); https://arxiv.org/pdf/math/0601431v3. Self-energy specialization with deliberately relaxed constants: row volume loss L^2 and product volume loss 2^23 L^9. This does not reproduce the source's sharper L^8 bound. Strict superlevels of good degree justify openness. Source Theorem 4.6 and Proposition 4.5 were also read for the next approximate-group extraction target. These are supporting formalizations of known arguments, not new transposition bounds or novelty claims.",
+  "cleanup": "Deleted the unused new degree_tail_le_bound_measure helper; removed the unused hO0 assumption from exists_open_product_trim. No changes to pre-existing mathematical modules.",
+  "updated_at": "2026-10-19T20:58:04.651566+00:00",
+  "formal_checkpoint": "R1797 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1797, 761 sources, 4182 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1797 proves full continuous small-product BSG for the self-energy input. If O is open in SL2(R), O subset Box(Q), w=H(O)>0, 1<=L<infinity and w^3<=L E(O,O), there exist open positive-volume A,B subset O with H(A)>=w/(64L^2), H(B)>=w/(8L), and H(AB)<=2^23 L^9 w. Their closures are compact in Box(Q), and closure(AB) is compact in Box(2Q^2). The proof constructs high-degree rows, applies the earlier weak-BSG selection, trims through strict good-degree superlevels, and proves a representation bound for EVERY selected product. This completes the R1796 next target. It is a supporting formalization of a known BSG argument with conservative constants, not a new transposition bound. Approximate-group extraction, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved.",
+  "next": "Start from RealMobius.exists_small_product_from_self_energy in MobiusSmallProductBSG.lean. Do not redo weak BSG, strict degree trimming, actual pair-mass identities, or the all-product representation bound. It takes open O subset Box(Q), positive w=H(O), finite L>=1 and w^3<=L E(O,O). It returns open positive finite-volume A,B subset O, compact closures in Box(Q), w<=64L^2 H(A), w<=8L H(B), H(AB)<=2^23 L^9 w, and compact closure(AB) in Box(2Q^2). R1795's actual nonflattening data supply such O and L=8(64N^4)^2/theta^2. Carry these explicit polynomial losses, not the sharper source constants.\n\nNext concrete structural target: extract a symmetric positive-volume open core T with controlled tripling and a controlled A-T sandwich, as preparation for the approximate-group step. Use Tao, Product set estimates for non-commutative groups, https://arxiv.org/pdf/math/0601431v3, Proposition4.5 and Theorem4.6, read R1797. First prove the continuous Ruzsa inequality H(AA^-1)H(B)<=H(AB)^2 by Haar representation counting. From the current bounds it should give H(AA^-1)<=K H(A) with the conservative K=2^55 L^21 (UNPROVED derived constant; verify). Then prove the actual popular-overlap construction T={x:H(A intersect A*x)>H(A)/(2K)}, its symmetry, openness, positivity and entry bounds, and the n=1 and n=3 instances H(A*T^n*A^-1)<=2^n K^(2n+1) H(A). This gives H(T)>=H(A)/(2K), H(T^3)<=8K^7 H(A)<=16K^8 H(T) and H(A*T)<=2K^3 H(A). Do not stop with a wrapper assuming T or the sandwich bound. Prove only the general n version if induction is genuinely simpler than the two needed cases.\n\nDependency audit: DensityConvolutionTrace already proves associativity, commutativity at the identity and the inverse-at-identity square-integral identity. Reuse these for E(A,A^-1)=E(A^-1,A); do not rederive the entire convolution library. Existing OpenProductDensity gives lower semicontinuity and open popular products; existing neighbor/Markov infrastructure may support the sandwich representations. No Ruzsa/approximate-group formalization was found in TransposeFollowup by the R1797 name search. Keep actual Haar volume, noncommutative multiplication order and all finite cancellation hypotheses explicit. Never infer small tripling directly from small doubling.\n\nAfter this core: quantitative finite covering into an approximate group, retaining large overlap with a translate of O (and eventually the original density level); metric/covering transfer with bounded-entry dependence; then SL2 growth/escape and strict flattening. The ultimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), with a FIXED k selected before N,J0,epsilon0. Preserve all six families and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1797 completes the continuous small-product BSG extraction, including open subsets, explicit polynomial volume losses and closure bounds. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 remain unstarted. This estimate describes formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/StrictDegreeTrimming.lean": "ac29065c304d68db4be0e40d5e9cf1af5f0eef97b66a6026fcbfa99a7c21813d",
+    "lean/TransposeFollowup/OpenRelationDegrees.lean": "b4d20c7db60d687b35c269db30dd1ef9691c99e1b5fe803e731d918c0112a0aa",
+    "lean/TransposeFollowup/ProductNeighborOverlap.lean": "44ebcaaa3f4571787ef3ef10a36b6f7a07085eaba2f2a7c9ebcf149c86c4425a",
+    "lean/TransposeFollowup/MobiusHighDegreeRows.lean": "0a117fb1d0500b2a6321a53b179abb349b2c7960516fa54cb0006a8056f1e083",
+    "lean/TransposeFollowup/MobiusProductTrimming.lean": "fd681f6fa328e2bc0a7c7e2886bd8b2b4475d0704f8602ed62fa65aabbb02fe6",
+    "lean/TransposeFollowup/MobiusSmallProductBSG.lean": "30cf0cdacc7279721c69455ef9768ea5c85001ac17d94dabda34904cfb9a3378"
+  }
+}

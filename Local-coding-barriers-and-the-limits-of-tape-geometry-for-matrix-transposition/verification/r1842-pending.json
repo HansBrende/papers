@@ -1,0 +1,49 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1841",
+  "target": "Apply actual nilpotent source sampling, concentration and cardinality to trace growth at a uniform dyadic scale.",
+  "new_modules": [
+    "NilpotentSampleApplication",
+    "NilpotentDyadicTraceGrowth"
+  ],
+  "modified_modules": [
+    "NilpotentActualTraceGrowth"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_nilpotent_sample_bounds",
+    "TransposeFollowup.SL2Projection.exists_nilpotent_dyadic_trace_growth"
+  ],
+  "checks": {
+    "sample_application": {
+      "exit_code": 0,
+      "log": "/private/tmp/r1842-dev5.log"
+    },
+    "development": {
+      "exit_code": 0,
+      "jobs": 9865,
+      "log": "/private/tmp/r1842-dev8.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10105,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4601,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "51254/dev1 exit0;17785/dev2 exit1;10127/dev3 exit1;55409/dev4 exit1;89830/dev5 exit0;29682/dev6 exit1;45713/dev7 exit0 with an unnecessarySeqFocus warning, then fixed;99109/dev8 exit0/9865 jobs with no warnings. All terminal. Full build/audit not started. Full10430 exit0/10105 jobs; then strengthened gain bound and full58779 exit0/10105 jobs without warnings. Audit35881 exit0/4601 declarations. All handles terminal.",
+  "updated_at": "2026-10-20T09:17:49.976206+00:00",
+  "formal_checkpoint": "R1842 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:924 local sources,204 external sources,4601 declarations,8 configurations,127 artifacts",
+  "proof_scope": "In progress. R1842 composes actual source sampling with the proved concentration and size estimates, then derives actual-word trace growth at one scalar dyadic radius uniform over all source families. The same retained sample supplies every scalar hypothesis. The resulting finite word families lie in A^38 and A^72, stay near identity and stay a quantified positive distance from identity. The gain exponent satisfies256theta<gain. The existing trace-growth theorem is strengthened to use a growth exponent in(0,1] uniform in the index type. Two new modules add two declarations; one existing module is strengthened. The full second-extraction upper comparison and original profile/extraction assembly remain open.",
+  "next": "The preceding goal turn is PROGRESS. R1842 is recorded; never replay its checkpoint. Full10105-job build and4601-declaration audit passed without warnings; no live Lake handles. Read verification/r1842-actual-nilpotent-growth.txt and library-reuse-audit-r1842.json. The actual source-to-scalar-to-word-growth chain is now composed. Do not rebuild it or introduce another scalar sample/budget framework.\n\nNEXT CONCRETE TARGET: close the full second-extraction upper comparison for the actual Dadd/Dmul from exists_nilpotent_dyadic_trace_growth, then assemble the original profile and first extraction.\nA reuse route avoids a new bespoke second-extraction coefficient chain:\n1. Generalize R1841 exists_first_extraction_parameters to accept any fixed0<a<=1, retaining Hgeo,B,M>=1. Its proof only uses a>0,a<=1 after the initial definition a=1/(2Hgeo). Keep the existing theorem as a wrapper choosing that a. Share the proof; do not copy it. This allows the second extraction radius coefficient a2=l/128, where l is returned by R1842. Derive a2<=1 from l=a/(9216H0^4) and a=1/(2H0).\n2. Use the generalized geometry with B=9,Hgeo=4^34,M=128*(4^68)^2 and theta_second=2theta. This deliberately weakens the actual far radius: the words are at distance>=a2 eta^(3theta), hence also>=r_second=a2 eta^(4theta), since eta<=1. The actual original frame determinant>=eta^theta also implies>=eta^(2theta). Thus the existing geometry lemma supplies frame, chart and sampling obligations for the second extraction without new exponent algebra.\n3. Keep its actual SECOND error epsilon2=819200eta/r_second, so e2=819200/a2 and exponent1-4theta. The geometry lemma's returned error constant is not the second error; ignore that component. Invoke first_extraction_cost_bounds with a=a2, B=9, B0=2, theta=2theta, e=e2 and its fixed chart/sample constants. It yields H2 loss16theta, S2 loss72theta, L2 loss88theta, E2 loss16theta. These are proposed applications of existing lemmas, not yet a proved full comparison. They intentionally use slack to maximize reuse.\n4. Apply FULL trace_reextraction_cubic_bound to the actual finite Dadd or Dmul, using U,Y,Q,alpha from the same localized approximate-group profile. The P(k+1) and P141 factors must be bounded from the real profile by the existing fixed_power_coefficient_bound; k is38 or72. The actual A^37/A^142/A^284 envelopes likewise come from localized_fixed_power_coveringNumber_envelope. Needed n values are36,39,73,141,283; the largest coefficient exponent2495393 allows the existing profile-loss<=theta/3000000 hierarchy. Supply the profile controls and actual Y-cardinality bound; do not assume the final coefficient inequalities as substitutes.\n5. Proposed exponent arithmetic: full trace cube loss is3theta(P)+48theta(H2^3)+216theta(S2^3)+264theta(L2^3)+16theta(E2)+theta(P141)=548theta, times N. Absorb the additive1 using N>=1 and eta<=1. From the original cube, retained sample and first-extraction factors, N<=W0 eta^(-143theta)|Z|^3. Thus trace cube<=U0W0 eta^(-691theta)|Z|^3. R1842 now states256theta<gain, so3gain>768theta>691theta. A single uniform threshold absorbing250^3 U0W0 should contradict the derived growth. These final inequalities and constants MUST still be formalized; this is a plan, not a completed contradiction.\n6. The chosen delta>=eta permits N_delta(trD)<=N_eta(trD); use existing externalCoveringNumber radius monotonicity and prove finite-cover toReal conditions (D is finite). Preserve the250 factor and positivity of|Z|. No new resampling.\n7. Once the nilpotent contradiction is complete, invoke the original exists_spanning_commuting_extraction_at_dyadic_scale with zeta=sigma=theta, distribution gamma=theta/2 and beta<theta*kappa0. Extract c,t by choice from its scalarAffine witnesses and use the same source subset/base. The mixed set is contained in A^37 by normalized_mixed_product_subset_power. This original extraction/profile assembly remains required; the new growth theorem takes those actual cube/envelope premises, not a completed original-profile contradiction.\n\nNonnilpotent branches and the later analytic/machine construction remain open. Report current ORIGINAL proof paid padding201/202 about60%, low confidence;3/6 original families complete, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NilpotentSampleApplication.lean": "cf052a77619313468247f756b41f7a6f3ec854fd0e3aa8a95cb350bc6e233ab9",
+    "lean/TransposeFollowup/NilpotentDyadicTraceGrowth.lean": "0cf1dcaabe79a390e799d65df6374a20e1d1938508100214032ca97b4dd7dabb",
+    "lean/TransposeFollowup/NilpotentActualTraceGrowth.lean": "eab6cb35f963f205ec6a59ad11c0d6109b80e90b6a7095630b1062434ddb2429"
+  }
+}

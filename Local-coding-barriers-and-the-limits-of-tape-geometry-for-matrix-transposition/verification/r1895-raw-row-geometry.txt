@@ -1,0 +1,149 @@
+
+R1895 — FULL RAW ROW GEOMETRY AND SHARED RESOURCE BOUNDS
+PROGRESS at R1895: the complete raw integer-row program now has all-time native motion decomposition, including the frozen halted tail, a243-interval affine approximation with normalized error(8W+8)/P, and derived o(P) state bits for linear time. The error vanishes forP->infinity,W/P->0. Five of six original families formalized; regular recursion206/208 best estimate89% complete (low confidence). Remaining exact integer/F3 primitives and their bounded-word exclusions remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1895 CHECKED RESULTS
+1. RawBankProgram.ioPath/ioPath_curve_error factor the existing raw-IO
+   path formula and its <=4 real-time rounding estimate out of the older
+   binary Body/Motion interface. The old ioCurve_error now calls this
+   common estimate; its statement/API is unchanged. The prior ioCurve
+   and27-interval cover are reused. Old binary-word obstruction dependents
+   were rebuilt successfully, so the refactor does not bypass them.
+
+2. ScheduledNativeIO.append_position_right requires only a known suffix
+   displacement and retains the actual arbitrary prefix trajectory.
+   RawProgramShell.prepare_position reuses old raw input/rewind paths.
+   position_decomposition, for every prefix up to the full time, states
+   full head position = actual body head at min(n-4P,N) from the prepared
+   state + ioPath(P,N,n). There is no common body path assumption.
+   ioPath_after/ioPath_frozen handle the public stopped clock explicitly.
+
+3. RawProgramShell.native_halts uses the original run/stepN equivalence.
+   workTraj_decomposition uses the actual native compiler prefix theorem
+   and original workTraj_frozen to prove the same formula for ALL times,
+   including after halt. Actual body data remain explicit throughout.
+   This generic theorem serves later finite-mode operation words too.
+
+4. RowBankCurve.shift_cover reuses clippedRamp_shift and the existing
+   clipped-ramp covers. SharedRowBank.rawCurve is the row-bank curve
+   shifted by its paid4P preparation time, plus the existing raw IO curve.
+   rawCurve_cover has9*27=243 intervals. rawCurve_error for the actual
+   original-TM workTraj at floor(x) is <=8W+8, for all realx and all inputs,
+   withW>0. Mathlib Nat.floor_sub_natCast transports the old bank estimate
+   at x-4P, whose error is8W+4; common IO adds4. The proof includes the
+   actual output motion and frozen halted tail, not just the bank.
+   raw_scaled_approximation gives243 intervals and error(8W+8)/P after
+   time/position scaling byP=rW>0. raw_error_vanishes reuses the prior bank
+   limit and adds4/P, forP->infinity andW/P->0. Constants not optimized.
+
+5. RawProgramShell.cellBits_eq gives3 bits for the5-symbol alphabet.
+   state_bits_vanish applies existing state_bits_of_linear_count to any
+   fixed finite auxiliary mode and size-dependent body schedules with
+   eventual total time<=C*inputLength. No public generator premise.
+   SharedRowBank.raw_state_bits_vanish specializes this to the exact
+   row program with eventualW>0,r>0,rW=inputLength and its17P time bound.
+   The original native count200*(time+1) and rawtime15P+2W are unchanged.
+
+Four new leaf modules, one existing proof factored;18 new audited
+additional declarations, not18 research results. All other existing
+mathematical sources and all previous theorem statements unchanged.
+
+REUSE / DRIFT CHECK
+Revalidated R1894 receipt before edits. Inspected scheduled concatenation,
+raw IO paths, native frozen trajectories, prior affine covers and shifted
+stride proofs. Reused Mathlib Nat.floor_sub_natCast, standard casts and
+limit algebra. Reused NativeIOModeProduct.trajectory_eq, append_exact/
+append_prefix/append_position, original input/rewind/output position
+formulas, native_prefix, original stepN_init_eq_some_iff and workTraj_frozen,
+existing bank_real_curve_error/bank_error_vanishes, clippedRamp_shift,
+ioCurve_cover, affine-cover add/sub/rescale and state_bits_of_linear_count.
+Factored RawBankProgramApproximation.ioCurve_error instead of copying its
+rounding argument into the new mode. Its old callers now share the same
+pure IO estimate. No duplicate compactness, floor, native compiler,
+arithmetic or lower-bound argument was created.
+Development fixes: open-namespace syntax, preserving NATURAL divisions
+and casts through if-expressions, explicit unfolding of prepared-state
+aliases, Int.cast_zero, and whitespace in1 <= inputLength to avoid Lean's
+InitialSeg notation. No proof weakening, limits or linter changes.
+Next-source audit read206's exact palette and017. Existing BankReversal
+is a BIT reversal with Boolean decoding; it is not the requested row-
+block reversal and would erase trit2. ScheduledTransfer is already generic
+in mode/read/write and preserves exact symbols when write(read s)=s.
+That is the right shared primitive for the next missing row/entry reversal.
+Drift: complete row-program native geometry/resource premises now closed.
+Do not keep polishing this completed chain. Move to the next required
+primitive; no new research bound or unrestricted transpose claim.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1895 finishes the complete raw row-prefix/difference machine geometry and the required state-bit resource bound, using its previously checked raw native execution. This does not finish the other exact integer/F3 primitives or the entire bounded-word exclusion for palettes(a,b). The generic shell decomposition retains the actual data-dependent body trajectory and makes no extra exact-common-path assumption. Five of six original families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1895 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate89%, low confidence.
+
+NEXT: SYMBOL-PRESERVING BLOCK REVERSAL, SHARED BY PALETTES(a,b).
+Integer-row arithmetic is DONE through actual raw execution, arbitrary
+clean-bank composition, all-time native geometry and sublinear state bits.
+Do not rederive those layers. Read RawRowProgram, RawShellPosition,
+RawShellNativeMotion, RawRowProgramApproximation and RawShellResources.
+For P=rW: rawtime15P+2W<=17P ifW,r>0;2 tapes,5 symbols,
+200*(time+1) states;243 affine intervals; error(8W+8)/P->0 forW/P->0,
+P->infinity. Generic workTraj_decomposition keeps data-dependent body
+motion. Generic raw shell takes actual schedules and symbol invariants.
+The pure IO path/rounding estimate is now shared in
+RawBankProgramApproximation. Existing binary clients were rebuilt.
+
+The next missing shared permutation should reverse the ORDER of equal-
+length blocks while preserving symbol order INSIDE each block. It must
+preserve all5 symbols; this can serve integer row reversal, F3 row
+reversal and inner entry-order reversal. Existing BankReversal reverses
+individual BITS and decodes through Bool, so do not treat it as the same
+operation. ScheduledTransfer already supports arbitrary finite read/write
+maps, forward/backward reads, source erasure, exact positions/cells and
+native scheduled execution. A possible shared transfer mode uses the
+coupled controller's symbol field, read s=(false,s,blank), write m=m.2.1;
+write(read s)=s. Reuse product-mode transport if composing with shared IO.
+
+A concrete paid block-reversal route to inspect: for P=nB, seek the bank
+head toP. For each block, rewind bankB to its start, copy forwardB symbols
+to advancing scratch, then rewind bankB again. Each block costs4B and
+ends with bank displacement-B,scratch+B. After all blocks, bank is back
+at0 and scratch atP. Rewind scratchP, copy its P symbols forward back to
+bank while erasing source, then rewind both heads. With separate final
+rewinds this has total cost10P (initial seekP,4P block loop, scratch
+rewindP, return copy2P, two final rewinds2P). This is a proposed execution,
+NOT yet proved. Check zero-width/count edge cases and all frame/scratch
+obligations. It is a constant-tape, symbol-preserving permutation, not
+free random access. RepeatedScheduleMotion can bound block interiors by
+O(B) around their endpoint drift; larger setup/return passes have existing
+exact affine motion. For row reversalB=W=db, B/P->0.
+Apply the same primitive per row to reverse b-symbol entries inside each
+row while preserving within-entry bit order. An outer fixed-width row
+loop then uses the existing repeated-block endpoint estimate O(W).
+This can close both R and C in palettes(a,b). Keep proofs generic enough
+for exact-symbol BankWord.symbols, without duplicating a separate trit
+reversal. Any refinements to this proposal must retain paid head motion.
+
+After R/C, remaining source206(a): row XOR/difference, public row-dependent
+cyclic rotations and whole-bank increment/decrement modulo2^P.
+Source206(b): F3 row/column prefix/difference, row rotations, diagonal
+signs and whole-entry-stream rotation. Reuse existing MaskedStride,
+CoupledRowCell, ScheduledTransfer, cleanup and BankWord.word_spec.
+For trits2 use .start on public-clock banks; Boolean decoders erase it.
+Preserve exact declared data types; no integer operation on trit states.
+Then assemble the FULL bounded-word high-entropy exclusions, with arbitrary
+public nonuniform choices and correctness sets of coentropy o(P).
+Use PhysicalAffineApproximationObstruction (already done) for the physical
+trajectory scaling; rescaledTrajOf is a different slot/block convention.
+Source206(c), source208 and210.5 remain DONE. Referees after all six.
+Original read-only; no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate89% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1895 completes full raw-program geometry/state-bit premises for integer row arithmetic. Remaining integer/F3 operations, bounded words and final referees remain.
+
+VERIFICATION
+Full lake build passed10304 jobs without warnings/errors, including refactored binary-word dependents; SupportAxioms audited5770 unique declarations using only propext,Classical.choice,Quot.sound. There are1123 local sources (1122 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and233 validation artifacts. Original117 files and directory inventory unchanged. Existing RawBankProgramApproximation was factored; all other baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

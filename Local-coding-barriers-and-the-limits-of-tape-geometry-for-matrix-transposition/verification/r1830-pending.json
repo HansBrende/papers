@@ -1,0 +1,79 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1829",
+  "previous_turn_classification": "PROGRESS; actual-frame localized cubic packing verified",
+  "target": "Transfer exact localized cubic packing to actual shared-center source words in A^142, using existing finite-product errors and bounded cover transport; charge all errors and metric distortion.",
+  "new_modules": [
+    "NormalizedCubicProductError",
+    "CubicSourceWordTransfer",
+    "ActualCentralizerSourcePacking",
+    "CoarsenedSourceSample"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 32170,
+      "status": "terminal",
+      "log": "/private/tmp/r1830-dev1.log",
+      "exit_code": 0,
+      "reason": "Ten-factor error and real Frobenius specialization compiled without warnings."
+    },
+    "development_2": {
+      "session_id": 34174,
+      "exit_code": 1,
+      "log": "/private/tmp/r1830-dev2.log",
+      "reason": "Explicit matrix-distance annotation needed for the right-translation norm bound."
+    },
+    "development_3": {
+      "session_id": 77222,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1830-dev3.log"
+    },
+    "development_4": {
+      "session_id": 81032,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1830-dev4.log"
+    },
+    "build": {
+      "session_id": 75129,
+      "status": "terminal",
+      "log": "verification/build.log",
+      "exit_code": 0,
+      "jobs": 10080,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 48465,
+      "exit_code": 0,
+      "status": "terminal",
+      "declarations": 4528,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "completed_families": "3/6; final referees pending",
+  "constraints": "No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.complex_normalized_cubic_product_error",
+    "TransposeFollowup.SL2Projection.normalized_cubic_product_dist_error",
+    "TransposeFollowup.SL2Projection.shared_center_cubic_word_mem_pow",
+    "TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer",
+    "TransposeFollowup.SL2Projection.actual_localized_source_packing",
+    "TransposeFollowup.SL2Projection.matrix_coveringNumber_change_radius",
+    "TransposeFollowup.SL2Projection.exists_coarse_source_sample"
+  ],
+  "terminal_handles": "All R1830 handles terminal. Development1(32170),3(77222),4(81032) passed;2(34174) failed once and was repaired. Full build75129 and audit48465 passed:10080 jobs,4528 declarations, no warnings. No live Lake process.",
+  "updated_at": "2026-10-20T05:33:53.382901+00:00",
+  "formal_checkpoint": "R1830 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:899 local sources,204 external sources,4528 declarations,8 configurations,103 artifacts",
+  "proof_scope": "In progress. R1830 transfers the exact normalized cubic product to actual shared-center source words in A^142, including the error of the normalization center, conjugation factors and Frobenius right-translation distortion. It composes this transfer with R1829 to prove an actual-power covering lower bound. A separate source-preserving coarsening theorem explicitly pays for the larger input spacing. Four modules add7 theorems. Strict amplification, full budget composition and the fourth original theorem family remain incomplete.",
+  "next": "The preceding goal turn is PROGRESS. R1830 is recorded; never replay its checkpoint. Read verification/r1830-source-word-transfer.txt and verification/library-reuse-audit-r1830.json. Full10080-job build and4528-declaration audit passed, standard axioms only; no live Lake handle.\n\nREUSE THE NEW ENDPOINTS: actual_localized_source_packing now bounds m^3 by the explicit transfer cost times N_eta(A^142), and exists_coarse_source_sample retains both cardinality and original source witnesses. Reuse them rather than rebuilding inverse errors, product errors, cover transfer or sampling.\n\nNEXT WORK, WITH A DRIFT GATE:\n1. Complete the finite source reindexing and integer m composition, paying6561[7680BM^5/d+1]^4 for coarsening and binCount(B,delta)^4 for localization. Handle small cardinality explicitly. Apply ApproximatePowerCover.localized_set_pow_coveringNumber with n=141 for A^142; it gives coefficient (8*(2Q)^567+1)^4*|Y|^283*(33^4 Q^8/alpha^4). Do not apply the37-factor specialization or spend a long chain optimizing a fixed exponent.\n2. Compare that resulting cubic upper bound against the existing extraction lower bound BEFORE starting more geometric lemmas. They control the cube-root size but do not by themselves contradict small growth. The next substantive target is scalar amplification and a proved conversion of its gain to matrix growth, not another cubic-packing reformulation.\n3. Investigate a concrete bridge for the mixed-sum obstacle. The current R1826 identity gives a variable base set Y_g plus D_g X, where X={t^2}; it is not directly X+aX. A promising exact identity to CHECK (not yet a proved Lean theorem) replaces the last g by g^-1. For trace-free b, u=cI+t b, v=pI+q b, D_g=det(bg-gb), determinant-one u,v, the candidate is\n   tr(v u^-1 g v u g^-1)=2+(D_g-4det(b))*q^2-D_g*t^2.\nIf valid and D_g!=0, this represents a scaled X+lambda_g X with lambda_g=4det(b)/D_g-1, using actual words. It would remove the moving-base-set issue. However lambda_g is identically-1 when det(b)=0, so a nonconcentrated coefficient family cannot be assumed. Check the regular-semisimple and nilpotent/near-nilpotent branches separately and connect any gain back to matrix covering, not merely to an ambient trace upper bound. This is a candidate next attack, not a discovery or completion claim.\n\nReuse the pinned204-module scalar projection endpoint and existing trace algebra. Keep all hypotheses and scale losses visible. All six original theorem families remain required. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.",
+  "checkpoint_reporting": "The current actual source-word transfer, composition with cubic packing, and source-preserving coarsening lemmas are100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NormalizedCubicProductError.lean": "f3a46c826cc34bf7c15f4a5e25631e035b2f203f878542d937b8daea84dca838",
+    "lean/TransposeFollowup/CubicSourceWordTransfer.lean": "67a2e0d46262102a701900b520ea254fcaafd0c17529ad10a67b2e37c5d899ac",
+    "lean/TransposeFollowup/ActualCentralizerSourcePacking.lean": "570de4c1c2720086a5bd6cc5c521d334b5f71037aa6c6742dd712d2823966dd6",
+    "lean/TransposeFollowup/CoarsenedSourceSample.lean": "77161c015e9ee1f6a8d76f5b6fb6170943989c08ff8fc333400c9278ca606653"
+  }
+}

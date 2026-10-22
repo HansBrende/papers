@@ -1,0 +1,63 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1861",
+  "target": "Affine return motion200/210: actual finite affine-branch cuts, omitted visits and finite-cover M* obstruction.",
+  "new_modules": [
+    "AffineHeightPairs",
+    "ConsecutiveDeletion",
+    "AffineBranchCuts",
+    "FiniteAffineObstruction"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.AffineMotion.heightPair",
+    "TransposeFollowup.AffineMotion.measurable_heightPair",
+    "TransposeFollowup.AffineMotion.heightPair_on_domain",
+    "TransposeFollowup.AffineMotion.heightPairMeasure",
+    "TransposeFollowup.AffineMotion.heightPairMeasure_apply",
+    "TransposeFollowup.AffineMotion.heightPairMeasure_source",
+    "TransposeFollowup.AffineMotion.heightPairMeasure_cut",
+    "TransposeFollowup.AffineMotion.exists_small_height_pair_cut",
+    "TransposeFollowup.AffineMotion.consecIn_fst_unique",
+    "TransposeFollowup.AffineMotion.consecIn_restrict",
+    "TransposeFollowup.AffineMotion.consecutive_pairs_delete_le",
+    "TransposeFollowup.AffineMotion.levelCross_delete_le",
+    "TransposeFollowup.AffineMotion.inverseVisit",
+    "TransposeFollowup.AffineMotion.inverseVisit_eq",
+    "TransposeFollowup.AffineMotion.retained_pairs_card_le",
+    "TransposeFollowup.AffineMotion.exists_finite_branch_small_cut",
+    "TransposeFollowup.AffineMotion.exists_finite_affine_branch_small_cut",
+    "TransposeFollowup.AffineMotion.exists_finite_affine_path_small_cut",
+    "TransposeFollowup.AffineMotion.not_star_of_finite_affine_cover"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8947,
+      "log": "/private/tmp/r1862-dev5.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10161,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4801,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 78227 exit1 and dev2 27451 exit1 (projection arguments, typed measurable sets and syntax repaired); dev3 36119 exit1 (height-pair module passed, missing ENNReal scope in deletion module repaired); dev4 51376 exit0/8947; dev5 27541 exit0/8947 (constant branches included); intermediate full63889 exit0/10160 and audit82969 exit0/4799; dev6 8773 exit1 and dev7 56801 exit1 (finite-cover endgame elaboration/ENNReal arithmetic repaired); final full44706 exit0/10161; final audit15196 exit0/4801. All handles terminal; final build and audit have no warnings/errors. An early read-only preflight saw the still-running audit and failed its entry-count assertion; the complete preflight was rerun after terminal audit and passed before any checkpoint mutation.",
+  "formal_checkpoint": "R1862 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:980 local sources,204 external sources,4801 declarations,8 configurations,167 artifacts",
+  "proof_scope": "R1862 formalizes actual finite affine-branch crossing control, including constant branches, the exact two-pair omitted-visit charge, and a closed finite-affine-cover contradiction to the original full M* condition. The full countable-branch and quantitative exceptional-time statements remain open; four of six original families are formalized.",
+  "next": "R1862 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; previous turn PROGRESS. Full original motion200/210 about45%\nformalized (best estimate, low confidence); four of six families complete.\n\nNEXT: integrated omitted-visit bound and finite approximation of affine time.\n1. Do not reopen CFW, finite minimum labels, the countable affine-measure\n   labeling ingredient, or the actual finite-branch cut construction. These\n   are verified. Do not construct an unnecessary countable consecutive-return\n   measure: finite branch truncation plus the omitted-visit charge suffices.\n2. Prove an omitted-time bound. For compact E subset I and 1-Lipschitz P on I,\n   obtain measurable F dominating encard {x in E:P x=p}, with integral at most\n   volume(E)+delta. Reuse original levelSet_encard_majorant on translated\n   intervals; mathlib LipschitzOnWith.extend_real avoids intervals leaving I.\n   Find/reuse finite interval covers of compact E with total length <=|E|+delta.\n   Candidate direct library route: Real.volume_eq_stieltjes_id, StieltjesFunction\n   measure/outer/length, OuterMeasure.ofFunction_apply. Expand half-open covers\n   slightly to open covers then take a finite subcover; no disjoint merging\n   is needed. Original Stieltjes.outer_Ioc proof shows this cover maneuver.\n   Mathlib has finite union cardinal bounds in Data/Set/Card/Arithmetic and\n   MeasurableSet.exists_isOpen_sdiff_lt/Set.exists_isOpen_lt_add.\n   No general restricted-fiber area formula was found in the targeted search.\n3. Apply ConsecutiveDeletion.levelCross_delete_le with R equal the selected\n   finite union of affine branch intervals. AffineBranchCuts supplies ONE\n   beta for all paths, arbitrarily small classes and retained cut. Constants\n   are already handled by deleting only finitely many HEIGHT values.\n4. Increase the finite subfamily. Measure continuity gives |I minus R_N| ->\n   |E| for the original countable branches/open regular region. Keep E_N\n   compact by using finitely many open intervals. Countability/components\n   must be derived from the original hypotheses, not inserted as an axiom.\n   Obtain inf_beta sum integral levelCross <= 2 sum_t |E_t|, then use full M*\n   to prove sum_t |E_t|>=1/2. Recover common-E and physical-time factors,200\n   null-exception obstruction and stated native/approximation consequences.\n5. Regular recursion206/208 remains, including actual bounded-stage scans,\n   contracting contiguous trees, local-limit and exceptional-work hypotheses.\n   Authorized independent final referees/cleanup follow all six formalizations.\n\nNew modules:AffineHeightPairs,ConsecutiveDeletion,AffineBranchCuts,\nFiniteAffineObstruction (19 declarations). Original read-only; no commits,\npushes or fresh subagents. Paid padding/SL2 complete; do not reopen.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: affine return motion200/210. Best estimate:45% formalized, low confidence. The finite-affine-cover path obstruction is formalized, but the countable and quantitative exceptional-time endpoints and native consequences remain. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No completion-time guarantee.",
+  "updated_at": "2026-10-20T21:22:08.949421+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/AffineHeightPairs.lean": "4b3df94570f94db7200daed67f1b9a3e6d4e96c86418ee2d219395fdb0010b95",
+    "lean/TransposeFollowup/ConsecutiveDeletion.lean": "40b43c007931108de9a17ed658ff618171230d5b38683b04c27da30d6b01aa2f",
+    "lean/TransposeFollowup/AffineBranchCuts.lean": "9c4a57b0f14753fb177fe9fe3d279efb5cab5036f6dd15a29e3aa94e6dea1038",
+    "lean/TransposeFollowup/FiniteAffineObstruction.lean": "55cf73fa5bc3cbd6f99dcc91d50339cf58193b6ee271197b2aab238622149322"
+  }
+}

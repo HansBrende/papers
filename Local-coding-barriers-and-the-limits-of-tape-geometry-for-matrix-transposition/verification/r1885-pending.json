@@ -1,0 +1,68 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1884",
+  "target": "Regular recursion206/208: paid rotation and uniform affine geometry.",
+  "new_modules": [
+    "ScheduledAdvance",
+    "BankRotation",
+    "BankRotationMotion",
+    "BankRotationApproximation"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledTapeAction.advance",
+    "TransposeFollowup.ScheduledTapeAction.advance_position",
+    "TransposeFollowup.ScheduledTapeAction.advance_cells",
+    "TransposeFollowup.ScheduledTapeAction.advance_io",
+    "TransposeFollowup.BankRotation.value",
+    "TransposeFollowup.BankRotation.value_congr",
+    "TransposeFollowup.BankRotation.prepared",
+    "TransposeFollowup.BankRotation.result",
+    "TransposeFollowup.BankRotation.ticks",
+    "TransposeFollowup.BankRotation.schedule",
+    "TransposeFollowup.BankRotation.schedule_active",
+    "TransposeFollowup.BankRotation.schedule_exact",
+    "TransposeFollowup.BankRotation.ticks_eq",
+    "TransposeFollowup.BankRotation.ticks_le",
+    "TransposeFollowup.BankRotation.result_spec",
+    "TransposeFollowup.BankRotation.result_bank_outside",
+    "TransposeFollowup.BankRotation.path",
+    "TransposeFollowup.BankRotation.schedule_position",
+    "TransposeFollowup.BankRotation.path_zero",
+    "TransposeFollowup.BankRotation.path_after",
+    "TransposeFollowup.BankRotation.path_frozen",
+    "TransposeFollowup.BankRotation.approximation",
+    "TransposeFollowup.BankRotation.approximation_cover",
+    "TransposeFollowup.BankRotation.approximation_error"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8967,
+      "log": "/private/tmp/r1885-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10251,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5389,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All R1885 execution handles terminal.\ndev1 73858 exit0 (8960 jobs; unused tactic warning fixed); dev2 56355 exit1 (rotation semantics clean; conditional cast motion mismatch corrected); dev3 24797 exit0 (8967 jobs; unused simp warning fixed); dev4 73165 exit0 (8967 jobs, no warnings).\nFull build 89301 exit0 (10251 jobs). Axiom audit 39361 exit0 (5389 unique declarations).",
+  "formal_checkpoint": "R1885 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1070 local sources,204 external sources,5389 declarations,8 configurations,213 artifacts",
+  "proof_scope": "PROGRESS at R1885: paid left rotation by any public offset0<=R<=P is now proved on the actual raw work bank, with modular output x[(j+R)%P], exact time14P-2R+6 (<=20P for P>0), both heads restored, full scratch clearing, IO preservation and outside-bank preservation. Every intermediate head position is proved. Arbitrary-start affine comparison has fixed cover81^3*9 and error<=14, uniform in bank size and rotation offset. All individual operations of source206 binary palette(c) are implemented; mixed-word compiler/geometry assembly is not yet proved. Five of six original families formalized; regular recursion206/208 best estimate79% complete (low confidence). Exact row/integer/F3 palettes and final exclusion remain.",
+  "next": "R1885 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate79%, low confidence.\n\nNEXT: assemble the mixed binary palette(c), reusing the existing compiler.\nAll needed individual stages are now proved; stop making more variants.\nAn operation type can contain forward/backward(prefix-or-difference,\npublic mask,stride), reversal and rotation. Require1<=S<=P,0<=R<=P.\nFor P>0, every stage costs<=27P (forward11P, backward27P,\nreversal6P+2<=8P, rotation<=20P). Therefore a length<=K word should\ncompile with total raw time<=(7+27K)P, fixed2 tapes/5 symbols and\nq+1=4(T+1). Preserve the existing sharper forward-only11P interfaces.\n\nREUSE/REFACTOR PLAN (not yet executed)\nAlso inspected List.rel_foldl (Mathlib/Data/List/Forall2), and core\nList.foldl_hom/foldlRecOn. They supply relational fold simulation and\nmembership-aware invariant induction. Prefer these for the upcoming\ncommon bank-word proof if the existing recursive definitions can be\nidentified with foldl cleanly. These are reuse candidates, not yet imported\ninto a new mixed compiler at this checkpoint.\n\n- Extract/generalize the existing MaskedStrideWord composition proof\n  over a supplied concrete operation interpretation: value transform,\n  ticks, scheduled program, result, validity and their established proofs.\n  Congruence must be on the whole P-bit bank, since reversal/backward\n  operations are not prefix-local. Every concrete operation must discharge\n  the interface; do not count a theorem assuming all missing obligations\n  as the desired mixed-word result.\n- Reuse the old forward definitions/theorems through that common lemma\n  or specialization, preserving their statements and semantics. Avoid\n  cloning its list induction into another almost identical word module.\n- Similarly generalize the RawMaskedStrideWord wrapper at the bank-program\n  interface: one raw input load/rewind, internal word, one raw output.\n  Reuse actual blank init, native prefix/halt, resource and frozen paths.\n  Refactor the old proof bodies to call the common result where practical;\n  do not weaken existing old bounds just to make reuse easier.\n- Existing LinearStateCount.state_bits_of_linear_count handles o(P)\n  state bits directly. No new logarithm/asymptotic chain is needed.\n\nFINITE-WORD GEOMETRY\nThe native obstruction only needs uniformly bounded affine covers and\nvanishing error on a further subsequence. It does NOT require proving\nconvergence of the approximants independently. For each of finitely many\nstage slots select a stride/P limit (dummy stride for non-stride types).\nUse the corresponding small-ratio or bounded-group comparison. Primitive\ntypes and masks may still vary: choose each type's comparison at that i,\nand use a common maximum cover bound over the finite types. Rotation has\nconstant cover/error independently of offset. Shifted estimates hold at\narbitrary public start times, so no start-time subsequence is needed.\nBounded word length can use identity padding or existing finite-list\nlemmas; search mathlib before adding that machinery. Combine the finitely\nmany errors/covers via existing add/sum/rescale, then reuse R1881\nno_subsequential_physical_affine_fast_approximation. Preserve the full\nnonuniform masks/parameters, raw high-entropy correct sets, original\ninputLength/entryBits and all paid work. This assembly is NOT yet proved.\n\nNEW R1885 APIs\n- ScheduledTapeAction.advance/advance_position/advance_cells/advance_io.\n- BankRotation.value P R x j=x((j+R)%P), value_congr for P>0.\n- prepared/result/ticks/schedule, schedule_active/exact,\n  ticks_eq14P-2R+6 forR<=P, ticks_le20P forP>0,\n  result_spec and result_bank_outside (full bank interface).\n- BankRotation.path/schedule_position/path_zero/path_after/path_frozen.\n- approximation_cover J=81*81*81*9, approximation_error<=14 against\n  path(P,R,head,floor(t)-A), all real t, arbitrary P,R,A.\nKeep R1883 reversal/transfer, R1884 backward and R1882 forward-word APIs.\n\nAfter palette(c), exact row/integer/F3 palettes(a,b) remain. Do not treat\npalette(c) alone as completion of source206 or family6. Source208/global\n210.5 complete; do not reopen them to defer source206. No new subagents\nuntil all six; then authorized impartial referees/cleanup. Original paper\nread-only; no commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate79% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 includes native recursion/global exceptional-work, single-stride exclusion, forward-word native semantics/resources/paths, all individual binary palette operations and their paid exact/affine geometry. Mixed-word integration, exact row/integer/F3 palettes and final bounded-word exclusion remain; final independent referees pending.",
+  "updated_at": "2026-10-21T03:46:34.849577+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScheduledAdvance.lean": "639dda4a87f80f884bc90e01bd3cae143383aaf905b2e6751fc448c4c6798641",
+    "lean/TransposeFollowup/BankRotation.lean": "fbcf9b9e4a2f7f3411948b7538386aace9bc66d5779384e37a6e0122cd2e8ab3",
+    "lean/TransposeFollowup/BankRotationMotion.lean": "0d26b4843926e12f747306e6035ed4fbe790ed8e455e6665e55299cfec45e58b",
+    "lean/TransposeFollowup/BankRotationApproximation.lean": "cdb57a356f5b984b93743cdcf96a9c097f1e10aeab2cb431f7480e7f0aefa3c3"
+  }
+}

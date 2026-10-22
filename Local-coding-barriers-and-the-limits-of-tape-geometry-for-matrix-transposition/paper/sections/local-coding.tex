@@ -1,0 +1,623 @@
+\section{Local coding obstructions}\label{sec:local-coding}
+
+The construction programme of~\cite{FirstPaper2026} needs coding stages that
+transmit fewer bits than the uncoded data.  To test a proposed stage, one must
+specify what each operation reads, what each receiver knows, and what
+input-dependent information selects the operations.  This section gives three
+obstructions: a separator bound for adaptive queries of original rows; a
+distance bound for fixed coordinate-XOR broadcasts after bijective row
+recoding; and a helper-or-deficit bound for two ordered nonlinear stages.
+
+Each result concerns its stated finite coding model.  None asserts that every
+fast tape transposer has that form.  In particular, the first model reads
+original rows, not stored rows of coded workspace.
+
+Throughout this section, $d,b\in\mathbb N$, $[d]=\{0,\ldots,d-1\}$,
+\[
+  \mathcal X=\{0,1\}^{[d]\times[d]\times[b]},\qquad P=d^2b.
+\]
+A row belongs to $Q=\{0,1\}^{[d]\times[b]}$, and
+$(x^{\mathsf T})_{ijt}=x_{jit}$.  The finite-coordinate adapter in
+\texttt{MatrixView} uses the transpose and encoding of the first paper; it
+does not replace their specification.  Except where positivity is stated,
+zero dimensions and zero entry widths are permitted.
+
+For a probability law $w$ on a finite correct-input family $F\subseteq\mathcal X$,
+write $X\sim w$ and
+\[
+  H(X)=-\sum_{x\in F}w(x)\log_2 w(x),\qquad D_w=P-H(X),
+\]
+with the usual zero-mass convention.  The weights may vanish and need not be
+independent across rows, entries, or bits.  Under the uniform law on nonempty
+$F$, write $D=P-\log_2|F|$.  All entropies in this section are in bits; the Lean
+entropy functional uses natural logarithms and is divided by $\log 2$ at the
+endpoints.
+
+\subsection{Adaptive queries of original rows}\label{subsec:local-adaptive}
+
+\begin{definition}[Public original-row strategy]\label{def:local-public-strategy}
+A local query consists of a support $A\subseteq[d]$ and a function
+$q:\mathcal X\to\{0,1\}$ such that
+\[
+  x|_A=y|_A\quad\Longrightarrow\quad q(x)=q(y).
+\]
+The support may have any finite size.  A public strategy assigns, to every
+finite binary history $h$, either a local query or a halt instruction.  When
+it selects $q$, the next transmitted bit is $q(x)$ and the history becomes
+$h\,q(x)$.  An execution is complete only if the strategy then halts; the
+halt instruction adds no bit.
+
+A helper $z:\mathcal X\to\mathcal Z$, with $\mathcal Z$ finite, selects a
+strategy $s_{z(x)}$.  Receiver $j$ has a decoding function of precisely
+$z(x)$, its own original row $x_j$, and the completed transcript $M(x)$.
+For a declared family $F$, the correctness requirement is that, for every
+$x\in F$, the selected strategy terminates with transcript $M(x)$ and every
+receiver returns $(x^{\mathsf T})_j$.  There is no termination or correctness
+requirement outside $F$.
+\end{definition}
+\formal{ProtocolTruncation}{TransposeFollowup.PublicStrategy,TransposeFollowup.PublicStrategy.Executes}
+\formal{LocalProtocol}{TransposeFollowup.LocalQuery}
+
+Thus the helper and public history determine the next support and the
+stopping decision.  Any further input-dependent control must be conveyed by
+query answers.  Query evaluation and decoding are unrestricted; the cost is
+the number of transmitted bits, including those used for control.
+
+For a completed transcript $m$ under helper value $z$, let $G(z,m)$ be the
+simple graph on $[d]$ obtained by completing each queried support to a clique.
+Only the queries actually encountered along $m$ contribute edges.  In Lean,
+this graph is obtained from the strategy truncated at $|m|$; the execution
+hypothesis ensures that no query of the completed run is lost.  A separator
+selection is any function $S(z,m)\subseteq[d]$.  No balance condition is
+assumed.  If $\mathcal C(G-S)$ denotes the components of the induced graph
+outside $S$, define
+\begin{equation}\label{eq:local-separator-loss}
+  \mathcal L(G,S)=db|S|+b\sum_{C\in\mathcal C(G-S)}|C|^2.
+\end{equation}
+For random input $X$, abbreviate $Z=z(X)$, $G_X=G(Z,M(X))$, and
+$S_X=S(Z,M(X))$.
+
+\begin{theorem}[Adaptive separator bound]\label{thm:local-adaptive-separator}
+For the strategy of Definition~\ref{def:local-public-strategy}, correct on
+$F$, and every probability law $w$ on $F$,
+\begin{equation}\label{eq:local-adaptive-separator}
+  \mathbb E_w|M(X)|
+  \ \ge\ P-\mathbb E_w\mathcal L(G_X,S_X)-2D_w-2H(Z).
+\end{equation}
+The separator may depend arbitrarily on the helper and completed transcript.
+Correctness is required on all of the declared family $F$, including its
+zero-probability inputs.  For uniform $X$ on nonempty $F$, the same statement
+holds with $D_w=D$.
+\end{theorem}
+\formal{GraphSeparatorBound}{TransposeFollowup.graph_expected_separator_bound_of_distribution,TransposeFollowup.graph_expected_separator_bound}
+
+The bound excludes a fixed fractional saving whenever expected separator loss, input
+deficit, and helper entropy are all $o(P)$.  It therefore tests a proposed
+coding stage without imposing linearity on its queries or decoders.
+
+\begin{proofoutline}
+First replace the possibly infinite strategies by finite protocols, truncating
+all of them at the maximum transcript length attained on $F$.  Finiteness of
+$F$ makes this maximum finite, and the truncation preserves every specified
+execution, its cost, and its queried supports.  This step imposes no assumption
+on the original strategies outside $F$.
+
+Fix a helper value $z$, transcript $m$, and separator assignment $u$ attained
+on $F$.  Let $R$ be the \emph{virtual full fiber}: all
+inputs producing $m$ in the fixed finite protocol for $z$ and having separator
+assignment $u$.  Membership in $R$ does not require the input's actual helper
+to be $z$, nor does it require correctness.  Every query along $m$ meets at
+most one component of $G(z,m)-S(z,m)$ outside the separator.  Consequently,
+component assignments taken from different elements of $R$ can be combined
+freely while keeping $u$ fixed.  The locality equation for each query shows,
+one step at a time, that the combined input follows the same transcript.
+Thus $R$ is exactly the product of its component projections, with the
+separator coordinates fixed.
+
+Let $A$ be a nonempty correct subfamily with this helper, transcript, and
+separator assignment.  No product structure is asserted for $A$.  On $A$,
+each component's original rows determine the columns requested by its
+receivers.  Fixed separator rows likewise determine the separator receivers'
+columns, so those rows and columns have zero entropy.
+
+For the remaining coordinates, each component's owned-and-demanded set
+covers an intercomponent bit twice and an internal bit once.  Adding one
+copy of each internal bit gives a twofold entropy cover.  Decoding reduces
+each owned-and-demanded entropy to the owned-row entropy.  The product
+structure of $R$ bounds the sum of these entropies by $\log_2|R|$; the
+internal bits contribute at most $b\sum_C|C|^2$.  Under the uniform law on
+$A$, this gives
+\begin{equation}\label{eq:local-leaf-count}
+  2\log_2|A|\le \log_2|R|+
+        b\sum_{C\in\mathcal C(G-S)}|C|^2.
+\end{equation}
+The product property is used only for $R$, not for the correlated family $A$.
+
+For the aggregation, append the separator rows, in a fixed order, to each
+transcript.  A leaf label $a$ consists of the helper and this augmented
+transcript.  Write $f_a$ for its correct-fiber size, $V_a$ for its virtual
+full-fiber size, $q_a=|m|+db|S|$ for the augmented length, and
+$r_a=b\sum_C|C|^2$ for the internal loss.  For each fixed helper $z$, the
+virtual fibers are disjoint, and the augmented transcripts form a prefix-free
+code.  The latter follows because completed public transcripts are
+prefix-free and, once $m$ is known, the appended row-string length is fixed.
+Hence
+\[
+  \sum_{a:\,z(a)=z} V_a\le 2^P,
+  \qquad
+  \sum_{a:\,z(a)=z}2^{-q_a}\le 1.
+\]
+Let $A_*$ be the random leaf label.  Conditional Gibbs inequalities for these
+two budgets and the finite-fiber entropy inequality give
+\begin{align*}
+ H(X)&\le H(A_*)+\mathbb E\log_2 f_{A_*},\\
+ H(A_*)&\le H(Z)+P-\mathbb E\log_2 V_{A_*},\\
+ H(A_*)&\le H(Z)+\mathbb E q_{A_*}.
+\end{align*}
+Adding the last two inequalities and using twice the first together with
+\eqref{eq:local-leaf-count} yields
+$2H(X)\le P+2H(Z)+\mathbb E(q_{A_*}+r_{A_*})$.
+Since $q_{A_*}+r_{A_*}=|M(X)|+\mathcal L(G_X,S_X)$, rearrangement proves
+\eqref{eq:local-adaptive-separator}.  All averaging uses the supplied law;
+zero-mass fibers contribute zero.
+\end{proofoutline}
+
+\begin{corollary}[Worst-case cost and attained helper range]\label{cor:local-separator-worst}
+Under the same strategy assumptions, let $F\ne\varnothing$ and let
+$B,L,g\in\mathbb N$.  If every $x\in F$ satisfies
+$|M(x)|\le B$ and $\mathcal L(G_x,S_x)\le L$, and
+$|z(F)|\le 2^g$, then
+\[
+  B\ge P-L-2(D+g).
+\]
+Only helper values attained on $F$ are charged; the ambient helper alphabet
+is still required to be finite.
+\end{corollary}
+\formal{GraphSeparatorBound}{TransposeFollowup.graph_worst_case_separator_bound}
+This form gives a direct rejection test from worst-case bounds on a candidate's
+broadcast, separator loss, and attained helper range.
+\begin{proofoutline}
+Use the uniform law in Theorem~\ref{thm:local-adaptive-separator}, bound both
+expectations by their pointwise bounds, and use $H(Z)\le\log_2|z(F)|\le g$.
+\end{proofoutline}
+
+\begin{theorem}[Separate sharpness of the two information charges]\label{thm:local-separator-sharpness}
+In the stated original-row model, the coefficient of $D$ and the coefficient
+of $H(Z)$ in \eqref{eq:local-adaptive-separator} cannot separately be replaced
+by a constant smaller than $2$, with the other terms unchanged.  Each assertion
+has a zero-transcript witness with $d=2$, empty separator, and every $b>0$.
+\end{theorem}
+\formal{SeparatorSharpness}{TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two,TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two}
+Thus a stronger obstruction must use further structure or change other terms
+of the bound; reducing either information coefficient alone is impossible.
+\begin{proofoutline}
+The empty interaction graph has two singleton components, so its loss is
+$2b$, while $P=4b$.  For the deficit coefficient, take the family
+$x_{01}=x_{10}$, of cardinality $2^{3b}$, and a constant helper.  Each receiver
+already has its column in its own row.  The transcript has length zero,
+$D=b$, and a coefficient $c$ would require $0\ge 2b-cb$.
+For the helper coefficient, take the full input cube and the helper
+$Z=x_{01}\oplus x_{10}$.  Each receiver recovers the other off-diagonal
+entry from its own row and $Z$, again with no transcript.  Here $D=0$ and,
+under the uniform input law, $H(Z)=b$.  The same inequality forces $c\ge2$.
+\end{proofoutline}
+
+\subsubsection{A treewidth consequence}
+
+Use ordinary finite tree decompositions, with the natural-valued convention
+$\operatorname{tw}(\varnothing)=0$: $\operatorname{tw}(G)$ is the least
+$t\in\mathbb N$ for which a tree decomposition has bags of size at most
+$t+1$.  The decomposition tree has arbitrary finite shape.
+
+\begin{lemma}[Integral fragmentation]\label{lem:local-treewidth-fragmentation}
+For every finite simple graph $G$ on $d$ vertices and every $L\in\mathbb N$,
+there is $S\subseteq V(G)$ such that
+\[
+  (L+1)|S|\le (\operatorname{tw}(G)+1)d,
+  \qquad |C|\le L\quad(C\in\mathcal C(G-S)).
+\]
+For a graph on $[d]$, a separator can consequently be chosen so that
+\[
+  (L+1)\mathcal L(G,S)
+       \le bd\bigl((\operatorname{tw}(G)+1)d+L(L+1)\bigr).
+\]
+\end{lemma}
+\formal{Treewidth}{TransposeFollowup.treewidth_fragmentation,TransposeFollowup.treewidth_separator_loss}
+\begin{proofoutline}
+Assign each graph vertex to one bag that contains it, giving integer weights
+of total $d$ to the decomposition tree.  The weighted-tree fragmentation
+lemma removes a set of tree vertices whose number, multiplied by $L+1$, is
+at most $d$, leaving weight at most $L$ in each remaining tree component.
+Remove their bags from $G$.  The running-intersection and edge-cover
+properties transfer the component bound to $G$, while each removed bag costs
+at most $\operatorname{tw}(G)+1$ vertices.  Finally,
+$\sum_C|C|^2\le L\sum_C|C|\le Ld$ gives the loss estimate.  This is a
+standard tree-decomposition argument; its role here is to provide the exact
+integral budget used in the next optimization.
+\end{proofoutline}
+
+\begin{corollary}[Savings force large average treewidth]\label{cor:local-treewidth}
+Assume $d,b>0$ and the strategy hypotheses of
+Theorem~\ref{thm:local-adaptive-separator}.  For any probability law $w$ on
+$F$, suppose
+$\mathbb E_w|M(X)|\le(1-\varepsilon)P$, where $\varepsilon\in\mathbb R$.
+Put
+\[
+  \eta=\frac{D_w+H(Z)}{P},\qquad
+  a=\max\{\varepsilon-2\eta,0\}.
+\]
+Then
+\begin{equation}\label{eq:local-treewidth}
+  \mathbb E_w\operatorname{tw}(G_X)
+       \ge \frac d4 a^2+\frac a2-1.
+\end{equation}
+\end{corollary}
+\formal{AdaptiveTreewidth}{TransposeFollowup.average_treewidth_lower_bound_of_distribution,TransposeFollowup.average_treewidth_lower_bound}
+\begin{proofoutline}
+For each integer $L\ge0$, choose the separator supplied by
+Lemma~\ref{lem:local-treewidth-fragmentation}.  It is a function of the public
+leaf graph, so it is an allowed separator.  Average its loss bound and apply
+the separator theorem.  With $E=\mathbb E\operatorname{tw}(G_X)$ and
+$a_0=\varepsilon-2\eta$, the resulting family of tests is
+\[
+  d(L+1)a_0\le d(E+1)+L(L+1)\qquad(L\in\mathbb N).
+\]
+If $a_0\le0$, nonnegativity of treewidth suffices.  Otherwise set
+$r=da_0/2$ and $L=\lfloor r\rfloor$.  The elementary identity
+\[
+  (L+1)(2r-L)-(r^2+r)=(r-L)(L+1-r)\ge0
+\]
+gives $d(E+1)\ge r^2+r$ from the test at this $L$, which is
+\eqref{eq:local-treewidth}.
+\end{proofoutline}
+
+As $d\to\infty$, with $b>0$ and $D_w+H(Z)=o(P)$, a fixed fractional saving
+therefore requires average treewidth $\Omega(d)$.  Alternatively, separators
+of size $o(d)$ whose remaining components all have size $o(d)$ have loss
+$o(P)$, provided these estimates hold uniformly over the completed runs.
+Such original-row strategies cannot yield a fixed fractional saving.
+Graphs without such separators remain candidates for this model.
+
+The first paper's construction discussion asks for locally encoded index
+coding and suggests, heuristically, that hyperfinite interaction graphs offer
+only negligible savings~\cite[section ``The construction side'']{FirstPaper2026}.
+The separator and treewidth bounds make this restriction quantitative for
+nonlinear queries, public adaptivity, helpers, and correlated correct sets.
+They leave the coding problem on bounded-degree expanders open and do not
+strengthen Theorem~P or prove the Tape Coding Conjecture.
+
+\subsection{Bijective row recoding and fixed XOR packets}\label{subsec:local-xor}
+
+The preceding separator argument leaves highly connected row graphs open.
+For a more restrictive broadcast format, an independent obstruction applies
+even when the row graph has bounded degree and large treewidth.
+
+\begin{definition}[Recoded fixed-XOR code]\label{def:local-recoded-xor}
+For each $i\in[d]$, choose an arbitrary bijection $A_i:Q\to Q$ and write
+$y_i=A_i(x_i)$.  Fix $B\in\mathbb N$ packets, each either one coordinate
+$y_{ijt}$ or the XOR of two coordinates of $y$.  Packet choices are fixed
+before the input is supplied.  For a simple graph $G$ on $[d]$, locality means
+that the row indices of a pair packet are equal or adjacent in $G$; singleton
+packets impose no additional edge condition.  Receiver $j$ receives the
+complete $B$-bit broadcast and its own \emph{original} row $x_j$, and must
+recover $(x^{\mathsf T})_j$ for every $x\in\mathcal X$.
+\end{definition}
+\formal{RecodedXor}{TransposeFollowup.RecodedXorCode,TransposeFollowup.RecodedXorCode.Correct,TransposeFollowup.RecodedXorCode.LocalTo}
+\formal{XorPackets}{TransposeFollowup.XorPacket,TransposeFollowup.XorSystem}
+
+The bijections and the decoders need not be linear.  Repeated packets,
+same-row pairs, and self-XORs are allowed.  A self-XOR is a permitted constant
+zero packet.  There is no helper in this model, and correctness is on the
+entire input cube, not merely a high-entropy subfamily.
+
+For $\ell\in\mathbb N$, call $(i,j)$ \emph{$\ell$-near} if there exists a
+walk in $G$ from $i$ to $j$ of length strictly below $\ell$, and let
+\[
+  Q_\ell=b\,\bigl|\{(i,j)\in[d]^2:(i,j)\text{ is $\ell$-near}\}\bigr|.
+\]
+This walk-based definition excludes disconnected pairs; it does not assign
+them distance zero.  In particular $Q_0=0$.
+
+\begin{theorem}[Distance bound after arbitrary row recoding]\label{thm:local-xor-distance}
+Every correct code of Definition~\ref{def:local-recoded-xor} that is local to
+$G$ satisfies, for all $\ell\in\mathbb N$,
+\begin{equation}\label{eq:local-xor-distance}
+  (\ell+1)P\le(\ell+1)B+P+\ell Q_\ell,
+  \qquad
+  B\ge P-\frac{P+\ell Q_\ell}{\ell+1}.
+\end{equation}
+No positivity or connectedness hypothesis is needed for the integral form.
+\end{theorem}
+\formal{XorComponentCount}{TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled,TransposeFollowup.RecodedXorCode.broadcast_lower_bound}
+
+Small graph neighborhoods limit the savings even after nonlinear row
+recoding.  The next two corollaries turn this bound into explicit restrictions
+on bounded-degree graphs and on paths and cycles.
+
+\begin{proofoutline}
+Form the variable graph on the $P$ transformed bit coordinates: distinct
+endpoints of a pair packet are adjacent.  A coordinate appearing as a
+singleton packet is an anchor.  Let $u$ be the number of components containing
+no anchor.  The broadcast together with one transformed bit from each
+unanchored component determines every transformed bit: equal broadcasts make
+the difference of two assignments constant on each component, and anchors or
+chosen representative bits determine that constant.  Injective finite counting
+therefore gives $P\le B+u$.
+
+An unanchored component can be flipped simultaneously without changing the
+broadcast.  Pull this flip back through the row bijections.  If its represented
+row set is $R$, original rows outside $R$ do not change.  Their receivers have
+the same side information and broadcast before and after the flip, so all
+columns indexed outside $R$ also stay fixed.  The raw change is therefore
+confined to $R\times R\times[b]$.  This holds at every basepoint, despite
+nonlinearity of the row bijections.
+
+If the variable component contains at most $\ell$ coordinates, any two of
+its coordinates are joined by a simple path of length below $\ell$.
+Projection to row indices collapses same-row edges and maps other edges to
+edges of $G$.  Thus its raw changes are confined to the $Q_\ell$ near bits.
+Let $u_{\mathrm{small}}$ count such unanchored components.  Their disjoint
+nonempty flips generate $2^{u_{\mathrm{small}}}$ distinct transformed
+assignments and hence the same number of raw assignments.  Because each flip
+fixes every far bit at every basepoint, their compositions do so as well.
+The orbit fits into $Q_\ell$ binary coordinates, giving
+$u_{\mathrm{small}}\le Q_\ell$.
+
+Disjointness and nonemptiness of all unanchored components imply
+\[
+  (\ell+1)u\le P+\ell u_{\mathrm{small}}.
+\]
+Indeed, a large component pays at least $\ell+1$ coordinates, while a small
+one pays at least one and receives the additional allowance $\ell$.
+Combining these inequalities proves \eqref{eq:local-xor-distance}.
+\end{proofoutline}
+
+\begin{corollary}[Bounded degree]\label{cor:local-xor-degree}
+For a correct code local to $G$, if $d\ge2$ and $G$ has maximum degree at
+most $\Delta\in\mathbb N$, then
+\[
+ B\ge P-\frac{6\log(\max\{2,\Delta\})}{\log d}\,P.
+\]
+The logarithm base is immaterial to this ratio.  For fixed $\Delta$ and
+$b>0$, no code in this model achieves a fixed positive fractional saving as
+$d$ grows.
+\end{corollary}
+\formal{XorDegreeBound}{TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound}
+\begin{proofoutline}
+Put $\delta=\max\{2,\Delta\}$ and
+$k=\lfloor\lfloor\log_\delta d\rfloor/2\rfloor$.  Counting walks bounds each
+radius-$k$ ball by $2\delta^k$, so $Q_{k+1}\le2bd\delta^k$.
+The integer estimate $(k+1)\delta^k\le d$ yields
+$(k+2)P\le(k+2)B+3P$ from the distance theorem.
+Finally $\log d\le2(k+2)\log\delta$ converts this to the displayed bound.
+The argument is uniform in $b$ and does not assume regularity or
+connectedness of $G$.
+\end{proofoutline}
+
+\begin{corollary}[Paths, cycles, and their embedded subgraphs]\label{cor:local-xor-cycle}
+For a correct code local to $G$, assume $d>0$.  If there is an injective graph
+homomorphism from $G$ into a cycle on $m\ge1$ vertices, then
+\begin{equation}\label{eq:local-xor-cycle}
+  B\ge P-bd\bigl(\sqrt{8(d+3)}-4\bigr).
+\end{equation}
+In particular this holds for paths, cycles, and their subgraphs, with arbitrary
+vertex labels.  The same bound holds whenever every $\ell$-near ball has at
+most $2\ell-1$ vertices for every integer $\ell\ge1$.
+\end{corollary}
+\formal{XorPathCycleBound}{TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound}
+For these graphs, the maximum possible saving is $O(P/\sqrt d)$, improving
+the $O(P/\log d)$ error supplied by the bounded-degree estimate.
+\begin{proofoutline}
+An injective graph homomorphism sends a near ball into the corresponding
+cycle ball.  Walking fewer than $\ell$ steps in a cycle gives at most
+$2\ell-1$ possible integer offsets; collisions can only reduce this number.
+Hence $Q_k\le bd(2k-1)$ for every $k\ge1$.  The distance theorem gives
+\[
+  P-B\le bd\,\frac{d+k(2k-1)}{k+1}.
+\]
+Choose $k=\lfloor\sqrt{\lfloor(d+3)/2\rfloor}\rfloor$, put $j=k+1$, and
+let $t=\sqrt{(d+3)/2}$, where the quotient defining $t$ is real.
+Then $k\le t<j$, $j\ge2$, and
+\[
+ \frac{d+k(2k-1)}{k+1}
+    =4t-5+\frac{2(j-t)^2}{j}\le4t-4
+    =\sqrt{8(d+3)}-4.
+\]
+The estimate includes $d=1$.
+\end{proofoutline}
+
+The bounded-degree conclusion applies even to expanders, but only for the
+specified packet format.  It does not answer the first paper's question about
+\emph{arbitrary} linear functionals supported on two rows: one such functional
+may involve many coordinates, and a single common row bijection need not
+convert a whole family of them into pairwise coordinate XORs.
+The first paper's XOR-frame model concerns changes of address frame in a
+gadget, a different restriction.  The bounded-degree corollary rules out a
+fixed fractional saving through independent bijective row preprocessing
+followed by a fixed coordinate-XOR broadcast local to a bounded-degree graph.
+
+\subsection{Two nonlinear ordered stages and a global helper}\label{subsec:local-two-stage}
+
+A different construction strategy lets later stages act on coded rows.
+The following model allows two coupled stages on one bank of $d$ rows.
+Its obstruction is independent of runtime: all allowed maps are granted as
+primitives.
+
+\begin{definition}[Triangular and causal row maps]\label{def:local-triangular-causal}
+For a finite row alphabet $Q$ and a permutation $\sigma$ of $[d]$, a triangular
+row map has the form
+\[
+  T(u)_i=\phi_{i,u_{<i}}(u_i),\qquad
+  u_{<i}=(u_j)_{\sigma(j)<\sigma(i)},
+\]
+where $\phi_{i,v}:Q\to Q$ is a bijection for every fixed earlier-row tuple
+$v$.  Dependence on $v$ is arbitrary.  A causal row map in an order $\tau$ has
+the form
+\[
+  C(p)_j=\gamma_j\bigl((p_l)_{\tau(l)\le\tau(j)}\bigr),
+\]
+with arbitrary functions $\gamma_j$; no injectivity is required.
+These formulas refer to the incoming row tuple of each stage.
+\end{definition}
+\formal{TriangularRows}{TransposeFollowup.TriangularRows,TransposeFollowup.TriangularRows.apply,TransposeFollowup.CausalRows,TransposeFollowup.CausalRows.apply}
+
+\begin{definition}[Two-stage branch and helper selection]\label{def:local-two-stage}
+A two-stage branch consists of three row permutations
+$\pi_{\mathrm{in}},\pi_{\mathrm{mid}},\pi_{\mathrm{out}}$, arbitrary local
+maps $a_i,c_i:Q\to Q$, a triangular map $T$, local bijections
+$\lambda_i:Q\to Q$, and a causal map $C$.  It acts by
+\begin{align*}
+ u_i&=a_i(x_{\pi_{\mathrm{in}}(i)}),&
+ v_i&=T(u)_i,& w_i&=\lambda_i(v_i),\\
+ p_j&=w_{\pi_{\mathrm{mid}}(j)},&
+ q_j&=C(p)_j,& \Phi(x)_i&=c_i(q_{\pi_{\mathrm{out}}(i)}).
+\end{align*}
+A helper-selected architecture is a function $z:\mathcal X\to\mathcal Z$
+and a branch $\Phi_z$ for each $z\in\mathcal Z$.  Here $\mathcal Z$ may be
+infinite.  For $Q=\{0,1\}^{[d]\times[b]}$, correctness on $F$ means
+$\Phi_{z(x)}(x)=x^{\mathsf T}$ for every $x\in F$.
+\end{definition}
+\formal{TwoStageRows}{TransposeFollowup.TwoStageRows,TransposeFollowup.TwoStageRows.apply}
+\formal{TwoStageHelper}{TransposeFollowup.TwoStageHelper,TransposeFollowup.TwoStageHelper.CorrectOn}
+
+All maps and both stage orders may depend on the single helper value.
+Once that value is fixed, they are fixed functions of the displayed inputs.
+The first stage is required to be bijective in its own row argument, and the
+middle local maps are bijections.  The input maps, output maps, and second
+stage may discard information.  An extra bank, a global operation between the
+stages, or another input-dependent controller is not part of this definition.
+
+\begin{lemma}[Block injectivity]\label{lem:local-block-injective}
+A triangular map $T$ is block-injective: for every $I\subseteq[d]$,
+\[
+  u|_{I^c}=u'|_{I^c},\qquad T(u)|_I=T(u')|_I
+       \quad\Longrightarrow\quad u=u'.
+\]
+It is a bijection on the finite row space.  Postcomposition by rowwise
+bijections preserves block injectivity, and the inverse of a block-injective
+bijection is block-injective.  In particular, the inverse of
+$W(u)_i=\lambda_i(T(u)_i)$ has this property.
+\end{lemma}
+\formal{TriangularRows}{TransposeFollowup.TriangularRows.block_injective,TransposeFollowup.TriangularRows.equiv,TransposeFollowup.blockInjective_rowwise,TransposeFollowup.blockInjective_inverse}
+\formal{TwoStageRows}{TransposeFollowup.TwoStageRows.inverse_block_injective}
+This supplies the recovery property used in the next counting lemma directly
+from the allowed row maps, without imposing it as an extra hypothesis.
+\begin{proofoutline}
+Induct on the triangular order.  Outside $I$ the two incoming rows already
+agree.  Inside $I$, earlier rows agree by induction, so the same bijection
+$\phi_{i,u_{<i}}$ is applied to both own-row inputs; equality of the outputs
+forces equality of those inputs.  Taking $I=[d]$ gives global injectivity,
+and finiteness gives bijectivity.  Rowwise postcomposition is cancelled one
+row at a time.  For the inverse statement, apply block injectivity of the
+forward map with $I^c$ in place of $I$.
+\end{proofoutline}
+
+\begin{lemma}[A record for one branch]\label{lem:local-branch-count}
+If one fixed two-stage branch is correct on an arbitrary family
+$F\subseteq\mathcal X$, then for every integer $0\le r\le d$,
+\begin{equation}\label{eq:local-branch-count}
+  |F|\le 2^{(d-r)db+r^2b}=2^{P-br(d-r)}.
+\end{equation}
+The family may be empty or correlated.
+\end{lemma}
+\formal{TwoStageRows}{TransposeFollowup.TwoStageRows.correct_family_card}
+This bounds how many inputs one branch can handle; partitioning by the helper
+will then bound both its required range and its entropy.
+\begin{proofoutline}
+Let $\tau$ be the second-stage order.  Its last $r$ incoming rows determine
+sets
+\begin{align*}
+ I&=\{i:\tau(\pi_{\mathrm{mid}}^{-1}(i))\ge d-r\},\\
+ R&=\pi_{\mathrm{in}}(I),\qquad
+ J=\{i:\tau(\pi_{\mathrm{out}}(i))\ge d-r\}.
+\end{align*}
+All three sets have size $r$.  The input rows $u_I$ depend only on the original
+rows $x_R$.  By causality, the final output rows outside $J$ depend only on
+$w_{I^c}$.
+
+Record $w_{I^c}$ and the raw rectangle $x_{R\times J\times[b]}$.  There are
+$2^{(d-r)db+r^2b}$ possible records.  To prove injectivity on $F$, suppose two
+correct inputs have the same record.  Equality of $w_{I^c}$ gives equality of
+their final output rows outside $J$, hence equality of their raw columns
+outside $J$.  The recorded rectangle supplies the remaining entries of the
+original rows in $R$, so those complete rows agree.  Therefore $u_I$ agrees.
+Block injectivity of $W^{-1}$, together with equality of $w_{I^c}$, now gives
+equality of all of $w$.  The two complete outputs coincide; correctness and
+injectivity of transpose imply that the original inputs coincide.
+
+The support sets come from the specified permutations and causal stage, as
+implemented in \texttt{FixedSupportSandwich}.  The exponent identity uses
+$r\le d$.
+\end{proofoutline}
+
+\begin{theorem}[Exact helper-or-deficit toll]\label{thm:local-helper-count}
+For a helper-selected two-stage architecture correct on $F\subseteq\mathcal X$
+and every integer $0\le r\le d$,
+\begin{equation}\label{eq:local-helper-count}
+  |F|\,2^{br(d-r)}\le |z(F)|\,2^P.
+\end{equation}
+In particular,
+\[
+  |F|\,2^{b\lfloor d^2/4\rfloor}\le |z(F)|\,2^P.
+\]
+If $D\in\mathbb R$, $g\in\mathbb N$, $|F|\ge2^{P-D}$, and
+$|z(F)|\le2^g$, then
+\begin{equation}\label{eq:local-helper-deficit}
+  D+g\ge b\lfloor d^2/4\rfloor.
+\end{equation}
+The counting statements include $F=\varnothing$; the density premise in the
+last assertion implies $F\ne\varnothing$.  Only the finite attained helper
+image is counted.
+\end{theorem}
+\formal{TwoStageHelper}{TransposeFollowup.TwoStageHelper.correct_family_count_toll,TransposeFollowup.TwoStageHelper.quarter_count_toll,TransposeFollowup.TwoStageHelper.quarter_helper_bound_of_density}
+A small helper range therefore forces a large correct-family deficit.
+For example, a branch architecture correct on the full cube needs at least
+$2^{b\lfloor d^2/4\rfloor}$ attained helper values.
+\begin{proofoutline}
+Partition $F$ by its helper value.  On each part the architecture is one fixed
+branch, so Lemma~\ref{lem:local-branch-count} bounds its cardinality by
+$2^{P-br(d-r)}$.  Sum over the attained helper values and multiply by
+$2^{br(d-r)}$.  Choosing $r=\lfloor d/2\rfloor$ uses the integer identity
+$r(d-r)=\lfloor d^2/4\rfloor$.  The density conclusion follows by taking
+logarithms of positive quantities.  No rounding of the real deficit $D$ is
+needed, and no factorization of $F$ is used.
+\end{proofoutline}
+
+\begin{theorem}[Actual helper entropy under arbitrary input laws]\label{thm:local-helper-entropy}
+Under the same architecture and correctness hypotheses, let $X$ have any
+probability law on $F$ and put $Z=z(X)$ and $D_w=P-H(X)$.  Then, for every
+integer $0\le r\le d$,
+\begin{equation}\label{eq:local-helper-entropy}
+  D_w+H(Z)\ge br(d-r),
+  \qquad D_w+H(Z)\ge b\lfloor d^2/4\rfloor.
+\end{equation}
+The ambient helper alphabet may be infinite.  Its entropy is computed on the
+finite attained subtype.  Uniform input gives the corresponding inequalities
+with $D_w=P-\log_2|F|$.
+\end{theorem}
+\formal{TwoStageHelperEntropy}{TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution,TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution,TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound,TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound}
+\begin{proofoutline}
+Every fiber of the attained-helper map on $F$ has size at most
+$C=2^{P-br(d-r)}$ by the branch-count lemma.  The shared finite-fiber entropy
+inequality gives $H(X)\le H(Z)+\log_2 C$.  In Lean this inequality follows
+from conditional Gibbs with comparison weight $C^{-1}$ on each input of a
+helper fiber; each such fiber has comparison mass at most one.  It is valid
+for arbitrary nonnegative weights, so specializing to a normalized law does
+not require positive mass at every input.  Rearrangement gives the first
+inequality, and $r=\lfloor d/2\rfloor$ gives the second.
+\end{proofoutline}
+
+For $d\to\infty$, $b>0$, and $D_w=o(P)$, the entropy bound requires
+$H(Z)\ge(1/4-o(1))P$.  A construction in this model must therefore supply
+that much helper information even if its helper values are very unevenly
+distributed.  The theorem does not cover more stages, extra banks, or an
+unrestricted causal network.
+
+The first paper identifies a global oracle hint in the plain-versus-robust
+gap, and its proposed recursion needs savings at both encoder and
+decoder~\cite[sections ``Plain versus robust'' and ``The construction
+side'']{FirstPaper2026}.  The two-stage results quantify a helper-or-deficit
+toll for one explicit architecture; they neither remove the general hint nor
+strengthen the native pass lower bound.  The three coding models in this
+section impose different restrictions.  A construction escaping one
+obstruction must still be checked against the hypotheses of the others.

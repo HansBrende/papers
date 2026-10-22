@@ -1,0 +1,109 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "FreeWordPowerNorm",
+    "FreeGroupCentralizer",
+    "ShortWordCounting",
+    "ShortWordBicommutator",
+    "ShortWordGrowthThreshold",
+    "SmoothedIterateBicommutator",
+    "RationalBicommutator"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.FreeWordFamily.exponent_le_norm_pow",
+    "TransposeFollowup.FreeWordFamily.exponent_le_norm_zpow",
+    "TransposeFollowup.FreeWordFamily.letter_eq_of_commute_generator",
+    "TransposeFollowup.FreeWordFamily.isCyclic_of_central_nonidentity",
+    "TransposeFollowup.FreeWordFamily.centralizer_isCyclic",
+    "TransposeFollowup.FreeWordFamily.cyclic_short_words_card_le",
+    "TransposeFollowup.FreeWordFamily.centralizer_short_words_card_le",
+    "TransposeFollowup.FreeWordFamily.commuting_short_words_card_le",
+    "TransposeFollowup.FreeWordFamily.commutator_norm_le",
+    "TransposeFollowup.FreeWordFamily.commutator_fiber_card_le",
+    "TransposeFollowup.FreeWordFamily.vanishing_bicommutator_card_le",
+    "TransposeFollowup.FreeWordFamily.exists_nontrivial_bicommutator",
+    "TransposeFollowup.FreeWordFamily.exists_short_word_count_threshold",
+    "TransposeFollowup.FreeWordFamily.exists_short_word_bicommutator_threshold",
+    "TransposeFollowup.RationalFreePair.exists_iterate_short_word_bicommutator_threshold",
+    "TransposeFollowup.RationalFreePair.denominatorCarrier_commutator",
+    "TransposeFollowup.RationalFreePair.rational_bicommutator_separated"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 81111,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1811-dev1.log"
+    },
+    "development_2": {
+      "session_id": 51640,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 3107,
+      "log": "/private/tmp/r1811-dev2.log"
+    },
+    "development_3": {
+      "session_id": 17373,
+      "exit_code": 0,
+      "warnings": true,
+      "jobs": 3108,
+      "log": "/private/tmp/r1811-dev3.log"
+    },
+    "development_4": {
+      "session_id": 6180,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 3109,
+      "log": "/private/tmp/r1811-dev4.log"
+    },
+    "development_5": {
+      "session_id": 18094,
+      "exit_code": 0,
+      "warnings": true,
+      "jobs": 9637,
+      "log": "/private/tmp/r1811-dev5.log"
+    },
+    "development_6": {
+      "session_id": 51505,
+      "exit_code": 0,
+      "warnings": true,
+      "jobs": 9638,
+      "log": "/private/tmp/r1811-dev6.log"
+    },
+    "build": {
+      "session_id": 19711,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9804,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 97281,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4306,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Native FreeGroup reduced-word letter-position lemmas and Nielsen--Schreier prove cyclic centralizers; native cyclic reduction of powers proves exponent<=word length. Finite intervals and native finite fiber counting give the commuting and quadratic bicommutator exceptional counts. Native quadratic-over-exponential convergence supplies a cutoff independent of alphabet/family. Existing actual-profile word extraction and denominator arithmetic yield the actual nontrivial rational certificate. No centralizer/cyclic/polynomial-count hypothesis is assumed, and no arbitrary complex-basis invariance of entries is claimed. Novelty of the elementary quadratic count has not been externally audited.",
+  "declaration_counts": {
+    "theorem": 17
+  },
+  "cleanup": "Seven new modules,17 theorems,0 definitions; no existing mathematical modules edited. Reuses native free-group words, cyclic reduction, Nielsen--Schreier, finite fiber counting, limits, prior actual word extraction and denominator lemmas. Fixed namespace disambiguation and association; replaced deprecated push_neg with push Not. Nondependent forall hypothesis binders use underscore-prefixed names; all hypotheses remain and are introduced/used in the proof. No disabled linters, raised limits, placeholders or new axioms.",
+  "updated_at": "2026-10-20T00:11:12.678511+00:00",
+  "formal_checkpoint": "R1811 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1811, 827 sources, 4306 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1811 proves cyclic centralizers of nontrivial free words using native letter-position lemmas and Nielsen--Schreier, the bound norm(z^n)>=|n|, and the sharp commuting-word cardinal bound2L+1. If the shared-first-argument bicommutators all vanish in a word-radius-L set F, then |F|<=(8L+1)(4L+1). A larger set contains a nontrivial bicommutator of norm<=16L. A fixed scale threshold makes the actual power-law cardinality exceed this quadratic count. Composing with the actual profile produces three retained words a,x,y with nontrivial rational bicommutator, length<=32t, denominator D_r^(32t), and some original-coordinate entry differing from identity by at least D_r^(-32t). Every common-conjugation/word/cardinality output remains. Complex-basis escape, product growth, strict flattening, unconditional gap and paid padding remain. No new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1811 closes the bounded-word exceptional count and composes it with the actual profile. Do not repeat centralizer proofs, cyclic-power length bounds, commuting-set counts, the fiber argument, polynomial-vs-exponential thresholds, or actual short-word extraction. Main interfaces: ShortWordBicommutator.vanishing_bicommutator_card_le and exists_nontrivial_bicommutator; ShortWordGrowthThreshold.exists_short_word_bicommutator_threshold; SmoothedIterateBicommutator.exists_iterate_short_word_bicommutator_threshold. The last has a fixed absolute J and supplies actual a,x,y in the retained normalized F, a nontrivial rational bicommutator B of norm<=32t, and an original-coordinate entry gap>=D_r^(-32t). All prior u,F geometry and cardinality remain. The R1809 full uniform family theorem is unchanged.\n\nNEXT CONCRETE TARGET: quantitative algebraic escape under the specified complex basis changes. Start with the exact 2x2 algebraic obstruction: three matrices with a common invariant complex line are simultaneously triangularizable, so their pairwise commutators are upper-unitriangular and the bicommutator vanishes. Our verified nontrivial B therefore rules out that configuration. Turn this into a basis-INVARIANT quantitative certificate, preferably a nonzero determinant/trace-form quantity from a bounded family of the actual rational matrices and their short products. A conjugation-invariant determinant of four matrix vectors would retain an arithmetic lower bound, unlike individual entries in an arbitrary complex basis. Prove its existence and its exact word/product degree; do not merely cite irreducibility or assume the spanning certificate. A targeted search in pinned Mathlib LinearAlgebra/RingTheory found no ready Burnside/irreducible-subalgebra theorem.\n\nThen relate the certificate quantitatively to the off-diagonal products required by Bourgain--Yehudayoff. Keep every set power explicit: our normalized word images lie in A^2; their products lie in A^4, and enlarging further cannot be silently substituted for the stated escape condition. A nonidentity SL2 matrix can have trace2, so nontrivial B alone does not supply a nonzero trace gap. Do NOT assume arbitrary complex conjugation preserves rational denominators or is unitary/well-conditioned. Investigate trace/determinant invariants or a proved normalization instead.\n\nSCALE OBLIGATION: the current t=initialWalkLength(r,j) gives only D_r^(-32t), approximately an eta power of order8 from the existing denominator budget. This does NOT by itself meet a requested eta^epsilon escape lower bound for arbitrarily small epsilon. Select a shorter terminal walk at a fixed fractional intermediate scale v of j, then absorb its reduced atom decay against the fine-scale coefficient loss. The every-short-walk actual mass theorem and R1809 exponent margins are available. Preserve s-before-k and the fixed-family quantifier order; enlarge fixed cutoffs as needed. Full-family output composition can reuse the already derived budgets once the correct escape statement is settled.\n\nProduct growth, strict flattening and unconditional gap remain after escape. The final conditional gap needs a fixed iterate with a proved cap D and D^2<=2^j. Motion200/210 and recursion206/208 remain in scope. No final referees, protected original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1811 proves the quadratic bounded-word exceptional count and forces an actual nontrivial rational bicommutator from the localized profile, with an explicit original-coordinate lower bound. This advances the escape argument for paid padding; that fourth family is not complete. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FreeWordPowerNorm.lean": "a83e59785b8a952bf1e667e5471e7796a7172a2ce76988ed0e659936b7c16c04",
+    "lean/TransposeFollowup/FreeGroupCentralizer.lean": "5495f24dd362bf914cf8d3a9042e1cc342e0ec6167e61cc62a8b4eb9770331e7",
+    "lean/TransposeFollowup/ShortWordCounting.lean": "53d0ad4edc95d82926bb002112bbe03ba317f56b9c9e5eea06eb5efd8ab672d0",
+    "lean/TransposeFollowup/ShortWordBicommutator.lean": "5e8d0b7119b9d39904b98331f121b98ed869af4128b1c0c7fb383abc80fdcc04",
+    "lean/TransposeFollowup/ShortWordGrowthThreshold.lean": "110ca3e778742f923bcbd2d1830eabb7ff8b8f71062ad192ab83f2c1b36201a7",
+    "lean/TransposeFollowup/SmoothedIterateBicommutator.lean": "80d1cf64f7b40c9833d401dcc2c73f3369f74297d2c8ec69494c2ce71c75da58",
+    "lean/TransposeFollowup/RationalBicommutator.lean": "c0bc7bb97293d0971cb006a79737e3645a1ab2f4c6f52f108a340a3c243db543"
+  }
+}

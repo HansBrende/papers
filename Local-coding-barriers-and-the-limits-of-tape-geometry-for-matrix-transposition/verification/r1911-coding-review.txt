@@ -1,0 +1,43 @@
+R1911 coding/entropy strengthening review
+Status: source-level draft and mathematical review only; no Lean/Lake was executed and no repository files were edited by this reviewer.
+
+Ready plan: /private/tmp/r1911-coding-plan.json
+Full proposed replacements: /private/tmp/r1911-coding-drafts/*.lean
+Seven files, net +120 source lines, including six lines saved in XOR threshold reuse.
+The plan records each original SHA-256; apply only after checking those guards and after all Lean/Lake handles are terminal.
+
+Main strengthening:
+For any normalized nonnegative law w on the finite exact-correct family F, the same adaptive original-row strategy satisfies
+  E_w[length] >= P - E_w[separatorLoss] - 2(P-H_w(X)) - 2H_w(helper).
+All entropies in this displayed formula are bits. The source uses natural logarithms divided by log 2.
+The same replacement D=P-H_w(X) and expectations under w propagates to
+  E_w[treewidth] >= (n/4)*max(epsilon-2(D+H_w(helper))/P,0)^2
+                    + max(epsilon-2(D+H_w(helper))/P,0)/2 - 1
+when E_w[length] <= (1-epsilon)P and n,b>0.
+No new graph, locality, decoding, volume, factorization or prefix-code assumptions are introduced. Exact correctness and original-row query locality remain unchanged. Source weights may vanish. Weighted aggregation/RowCode/strategy/graph statements need no Nonempty F assumption; normalization already makes the empty case impossible. Existing uniform endpoints retain their exact hypotheses and conclusions.
+
+Core proof:
+1. For a deterministic observation f and arbitrary nonnegative weights w, set comparison weights q(x)=1/|f^{-1}(f(x))|. Each occupied fiber has q-mass one; each empty fiber has mass zero. Conditional Gibbs therefore gives
+     H(w) <= H(f_*w) + sum_a (f_*w)(a) log|f^{-1}(a)|.
+   This holds without normalization and uses no chain-rule axiom. Every attained fiber is nonempty.
+2. The old pointwise leaf inequality, disjoint volume budget and helper-conditioned prefix-code budget are unchanged. Averaging under p=leaf_*w rather than the uniform leaf law replaces the old mean-log-fiber equality by the preceding inequality. The exact same final linear combination gives 2H(w) <= P log2 + 2H(helper) + E(charge+loss) log2.
+3. Finite truncation, separator graph components and treewidth fragmentation are pointwise/deterministic and independent of the law. Their proofs carry over unchanged after replacing uniform weights and log|F| by w and H(w). The treewidth integer-threshold optimization is identical.
+4. Each old uniform theorem is a short corollary using entropy_uniformWeight. A script verified that every retained old theorem declaration header appears verbatim in its replacement file. Only the unconsumed uniform mean_log_fiberCard support identity is removed; archive its original source before retiring it.
+5. The strategy proof now rewrites transcripts once on subtype F, replacing two separately proved sum equalities (14 lines saved). The supporting uniform pushforward identity remains intact even though the new proof does not consume it.
+6. XOR: the new broadcast_bound_of_ball_budget isolates the common implication from one radius k, a ball bound q, and n+kq <= (k+1)e to P <= B+bne. Both existing natural and real square-root endpoint statements are byte-for-byte preserved. This is reuse, not another constant improvement.
+
+Retired axiom-audit declaration (also archive original source):
+TransposeFollowup.mean_log_fiberCard
+
+New axiom-audit declarations:
+TransposeFollowup.entropy_le_observation_add_mean_log_fiberCard
+TransposeFollowup.aggregate_leaf_bounds_of_distribution
+TransposeFollowup.RowCode.expected_separator_bound_log_of_distribution
+TransposeFollowup.RowCode.expected_separator_bound_of_distribution
+TransposeFollowup.strategy_expected_separator_bound_of_distribution
+TransposeFollowup.graph_expected_separator_bound_of_distribution
+TransposeFollowup.expected_treewidth_test_of_distribution
+TransposeFollowup.average_treewidth_lower_bound_of_distribution
+TransposeFollowup.RecodedXorCode.broadcast_bound_of_ball_budget
+
+Validation still required: actual Lean compilation, final full Lake build, and axiom closure audit. No claim that the source draft is already accepted by Lean. Possible elaboration repairs are confined to finite-fiber sums/casts in the new entropy helper; all main transformations follow already-built proof templates. No new axioms, sorry, unsafe code, limits or option changes are proposed.

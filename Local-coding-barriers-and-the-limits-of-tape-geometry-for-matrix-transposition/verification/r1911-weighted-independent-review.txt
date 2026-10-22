@@ -1,0 +1,86 @@
+R1911 — Independent weighted-chain source audit
+Result: no mathematical issue or weakened original main endpoint found.
+No Lean/Lake executed and no repository edits made; root integration build remains authoritative.
+
+Reviewed current six modules against /private/tmp/r1911-baseline.json.
+All pre-existing theorem signatures in LeafAggregation, AdaptiveSeparator,
+StrategySeparator, GraphSeparatorBound, and AdaptiveTreewidth are textually
+unchanged after whitespace normalization. Section protocol parameters in
+AdaptiveTreewidth are unchanged. Worst-case consequences retain their old
+premises and conclusions. New weighted endpoints supplement, rather than
+replace, each original uniform endpoint.
+
+ENTROPY AND ZERO CASES
+The new fiber-card inequality is valid for arbitrary nonnegative weights
+without normalization. Each attained fiber has at least the current input,
+so its reciprocal size is strictly positive. An empty fiber contributes zero
+to its comparison budget. Conditional Gibbs only expands logarithms where
+the source weight is positive; zero source weights require no logarithm
+positivity. Hence no implicit full-support, independence, or positive-fiber
+hypothesis is introduced.
+
+The aggregate theorem explicitly requires total source mass one. Its
+pushforward leaf weights retain both nonnegativity and total mass one.
+Normalization is used where the constant P*log(2) is extracted. Positive
+leaf probability implies a nonempty fiber, so the existing geometric
+volume positivity and count inequalities apply. Zero-mass leaves are
+handled separately. An empty input type cannot satisfy sum(w)=1; this
+exclusion is semantic, not an extra unexplained Nonempty premise.
+
+The aggregation algebra is sound:
+H(X) <= H(L) + E log |fiber(L)|;
+2 E log |fiber(L)| <= E log volume(L) + E loss*log(2);
+H(L) <= H(Z) + P log(2) - E log volume(L);
+H(L) <= H(Z) + E charge*log(2).
+Adding these yields the stated weighted bound, with coefficient two on
+the helper entropy. All expectations use the same supplied source law.
+
+PROTOCOL / GRAPH / TREEWIDTH SCOPE
+Finite-family truncation is unchanged and needs execution only on F.
+Correctness and separation are still required on all of F, including any
+zero-weight inputs; the new theorem should be described as arbitrary laws
+on a correct family F, not as correctness merely on positive-mass inputs
+within an otherwise arbitrary declared F. Choosing F to be the support
+gives that usual formulation. Arbitrary finite original-row query supports
+and the clique interaction graph remain unchanged. No coded-workspace
+access is added. The ambient helper type remains finite in this chain.
+
+The graph bound removes separator compatibility by the same actual-graph
+component argument. The average treewidth proof uses the existing weighted
+mean separator lemma, preserving the coefficient n/4 and correction alpha/2.
+Only weights replace uniformWeight, D becomes P-H(X), and H(Z) is computed
+under those weights. The same n>0, b>0 assumptions justify divisions.
+
+SUPPORT RETIREMENT TO DISCLOSE
+EntropyFibers.mean_log_fiberCard, an exact uniform-source identity, has
+been removed. Its replacement is a more generally applicable inequality;
+it does not assert that original equality for arbitrary distributions.
+No remaining source consumer uses the retired identity. This is retirement
+of a support result, not a weakening of any original main theorem; preserve
+its baseline source in the archive and describe it as such.
+
+Source snapshot hashes:
+b8740deb146b744007cf2496b2cb29a61f1a1fe75c8924cd4f6c627cdafcfcdc  lean/TransposeFollowup/EntropyFibers.lean
+abfdca53db8ff3b1d734f882cd4f198a80fa60223e18896844971e60d16351b3  lean/TransposeFollowup/LeafAggregation.lean
+a47c7affd0579a7b3e3f36fcc261fd288956be09034b86e78b9bbce0f408f691  lean/TransposeFollowup/AdaptiveSeparator.lean
+6e86987ac755be2c5b5aaf04f785eede81b886e0f27f50d010c56174959e4126  lean/TransposeFollowup/StrategySeparator.lean
+777abe5e76993fad65ca1fec784ed0060fae28bf995610a49c4bd784283195b9  lean/TransposeFollowup/GraphSeparatorBound.lean
+ccf2449c720dc19bc96258d0cc5363078f5f2cf3908b777d62e511303e13dacf  lean/TransposeFollowup/AdaptiveTreewidth.lean
+
+APPENDIX — UNREFERENCED UNIFORM AGGREGATION WRAPPER
+Recommend retiring aggregate_leaf_bounds from active LeafAggregation.lean,
+with baseline source archived and its #print axioms entry removed. Repository
+search finds only its own declaration and SupportAxioms print; no executable
+consumer or named original-requirement obligation refers to this intermediate
+API. Its full mathematical statement is an immediate uniformWeight
+specialization of aggregate_leaf_bounds_of_distribution via
+entropy_uniformWeight. Thus retiring the duplicate wrapper loses no
+mathematical scope of the six main results. Their original uniform endpoints
+remain live. Distinguish this archived intermediate API from the preserved
+main APIs in the report. Do not retire expected_separator_bound_log, used by
+SeparatorSharpness. No edits or Lean runs made during this review.
+
+Removing the inherited Nonempty F instance from the two weighted treewidth
+endpoints is valid: normalization sum(w)=1 already makes an empty F
+impossible, and their source proofs call only arbitrary-law statements and
+weighted geometric averaging, none of which needs a Nonempty instance.

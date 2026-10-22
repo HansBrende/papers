@@ -1,0 +1,57 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1873",
+  "target": "Regular recursion206/208: native threshold eta>=1/(2*k*G) from global exceptional tick budgets.",
+  "new_modules": [
+    "ExceptionalRecursiveLimits",
+    "NativeExceptionalRecursion"
+  ],
+  "modified_modules": [
+    "StageAffineAssembly",
+    "NativeRecursiveLimit",
+    "NativeRegularRecursion"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.assemble_stage_local_affinity_ae",
+    "TransposeFollowup.RegularMotion.extend_affine_cover_by_constant_le",
+    "TransposeFollowup.RegularMotion.RegularFlaggedClockHead",
+    "TransposeFollowup.RegularMotion.flagged_clock_limit_locally_affine",
+    "TransposeFollowup.RegularMotion.native_flagged_limit_budget",
+    "TransposeFollowup.RegularMotion.HasFlaggedRecursiveExecutions",
+    "TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget",
+    "TransposeFollowup.RegularMotion.native_flagged_recursion_budget",
+    "TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget",
+    "TransposeFollowup.RegularMotion.HasRegularRecursiveExecutions.flagged"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9017,
+      "log": "/private/tmp/r1874-dev6.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10200,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4969,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All checkpoint sessions terminal. dev1:72482 exit1; dev2:58925 exit1; dev3:60096 exit0 (9012 jobs); dev4:48152 exit1; dev5:61285 exit0 (9016 jobs); dev6:48604 exit0 (9017 jobs). Fullbuild83860 exit0 (10200 jobs); axiom audit41206 exit0 (4969 declarations). No further Lean edits after these final checks.",
+  "formal_checkpoint": "R1874 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1019 local sources,204 external sources,4969 declarations,8 configurations,191 artifacts",
+  "proof_scope": "PROGRESS at R1874: the native exceptional-recursion theorem of source210 section35 is formalized. A global exceptional-tick budget eta*P+o(P), uniform over the correct input family, forces 1/(2G)<=k*eta and eta>=1/(2kG). Adaptive clocks/designations, high-entropy correct sets, nonuniform o(P) state bits, all physical heads, actual halting and a fixed-machine corollary are included. Running time is derived from actual clocks. Five of six original families formalized; regular recursion206/208 best estimate55% complete (low confidence). Exact206 palette compilation remains.",
+  "next": "R1874 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five of six original families\nformalized; sixth regular recursion206/208 best estimate55%, low confidence.\n\nThe native source208 theorem and global exceptional-work theorem (210.5)\nare complete. Read NativeExceptionalRecursion.native_flagged_recursion_budget\nand its uniform specialization. Existing source208 results are zero-budget\ncorollaries. Do not re-prove the native limit, popular-class or cover chain.\n\nNext target: exact206 bounded scan-palette compilation. Read source\n200-affine-return-motion.txt sections20-24 (lines~550-740) and exact primitive\nnotes017,144,168. Preserve ALL palettes, arbitrary size-dependent public\nmasks/offsets/strides, fixed word length K, high-entropy correct sets and raw\nbit transpose output. Native nonuniform O(P)-state clocks are permitted;\nO(log P)=o(P) state bits suffice. A uniform parameter generator is not needed.\n\nStart with the arbitrary masked binary stride routine, which exposes the\nremaining executor/geometry issue. Define its exact zero-filled recurrence\ny_j=x_j XOR a_j*y_(j-S) and the input-difference variant, 1<=S<=P; construct\nthe paid two-buffer group executor with fixed C*S slabs, including the last\npartial group and both buffer rewinds/clearing. Public masks are prescribed\nclock transitions, never input-dependent state tables or free work storage.\nProve exact bank output, all-head movement, O(P) total steps and O(P) states.\nFor S/P->0 use O(S) deviations from affine slab interpolation; for a positive\nlimit use bounded group count and finite affine phases. Do not require a\nuniform piece-count bound across these two cases. Then add backward scans,\nrotations/reversal, the row/integer and ternary palettes and bounded composition.\nThis is a first concrete target, not a reduction of the full required scope.\n\nReuse inventory checked this turn:\n- FixedTapeCompiler/Microcode, MicroMappedAppend, MicroCopy, MicroRewind and\n  OperationalTrace already implement finite symbol reads/actions and exact\n  paid traces. Do not reimplement the elementary tape or trace semantics.\n- NativeMicrocode/NativeMicrocodeRun compile one active microinstruction to\n  one original native transition, preserve absolute heads and prove actual\n  run/trace/halt transfer. The finite Encoding is instantiated separately\n  at each size; its comment about fixed enumerations does not impose a\n  common state count on the nonuniform family.\n- NativeIO extends this to input reads/moves and output writes, with\n  step_denote, trace_stepN, lift_work_trace and blank_denote.\n- NativeIOFusion is available but no fusion is necessary for an O(P) bound.\n- NativePrefixRewind supplies an existing paid mixed-symbol rewind trace.\n- Searches found no existing generic unrolled public schedule theorem or\n  exact arbitrary masked-stride executor. Check narrow semantic helpers\n  before adding code; this is not an exhaustive absence claim.\n\nDo not turn this into a new primitive classification, search campaign or\nuniform generator project. The exact206 palette/native compilation and\nall its cost/limit obligations remain required. Keep progress estimates\nfor the sixth ORIGINAL family. No fresh subagents until all six; then\nauthorized impartial referees and cleanup. Original paper read-only;\nno commits/pushes. No unrestricted transpose decision or novelty claim.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate55% complete (low confidence). The full native contracting-recursion and global exceptional-work results are proved; the exact bounded scan-palette exclusion remains. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final referees remain pending.",
+  "updated_at": "2026-10-21T00:05:03.481434+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ExceptionalRecursiveLimits.lean": "5738b3f9282e9f618d73655da0e76110afc4309f8f75b937f657fbed7b4211eb",
+    "lean/TransposeFollowup/NativeExceptionalRecursion.lean": "252767f7c7930212f33004cd434d61f4abd8a4f377af6c014767b5da132c1472",
+    "lean/TransposeFollowup/StageAffineAssembly.lean": "ff7afc217bcb6fd00b881fe0c539bb773042cd07b2ea0211aa520b1b5146546c",
+    "lean/TransposeFollowup/NativeRecursiveLimit.lean": "309846f525def7aa95c42bd963c4212509e0216d73c399dd38fce8887cfbff4d",
+    "lean/TransposeFollowup/NativeRegularRecursion.lean": "77060287983fdb19fdbb3870680e117819bab4d307c01c42c99a8e8b582f302a"
+  }
+}

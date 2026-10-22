@@ -1,0 +1,56 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1858",
+  "target": "Affine return motion200/210: actual finite grid universe, original interval admissibility and natural priority labels.",
+  "new_modules": [
+    "AffineGridIntervals",
+    "AffinePriorityLabels"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.AffineMotion.exists_finite_continuous_floor_range",
+    "TransposeFollowup.AffineMotion.exists_finite_affine_grid_range",
+    "TransposeFollowup.AffineMotion.affine_grid_threshold_mem",
+    "TransposeFollowup.AffineMotion.affine_grid_eq_of_avoids",
+    "TransposeFollowup.AffineMotion.exists_affine_grid_breakpoints",
+    "TransposeFollowup.AffineMotion.piecewiseConstOn_affine_grid",
+    "TransposeFollowup.AffineMotion.gridSample",
+    "TransposeFollowup.AffineMotion.gridPriority",
+    "TransposeFollowup.AffineMotion.gridSample_nonempty",
+    "TransposeFollowup.AffineMotion.gridPriority_eq_first",
+    "TransposeFollowup.AffineMotion.encoded_gridPriority_ne_iff",
+    "TransposeFollowup.AffineMotion.gridPriority_selects",
+    "TransposeFollowup.AffineMotion.measurable_affine_grid_postprocess",
+    "TransposeFollowup.AffineMotion.encoded_selected_grid_label_mass",
+    "TransposeFollowup.AffineMotion.affine_priority_label_properties",
+    "TransposeFollowup.AffineMotion.exists_affine_priority_universe"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8934,
+      "log": "/private/tmp/r1859-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10151,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4755,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 92508 exit1 (integer/real binder coercion repaired); dev2 70400 exit0/8931; dev3 7519 exit1 (deprecated aliases and postprocessing elaboration repaired); dev4 71984 exit0/8934; full28570 exit0/10151; audit21802 exit0/4755. All handles terminal; final build/audit clean.",
+  "formal_checkpoint": "R1859 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:970 local sources,204 external sources,4755 declarations,8 configurations,161 artifacts",
+  "proof_scope": "R1859 proves actual finite affine-grid universes and finite breakpoint sets, then constructs concrete natural-valued priority labels. Every ordering gives a measurable label satisfying the original PiecewiseConstOn definition and the uniform grid-cell mass bound. Natural encoding preserves selected-minimum disagreement exactly. Small weighted cut and the full motion200/210 theorem remain. Four of six original families formalized; final referees pending.",
+  "next": "R1859 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; previous turn PROGRESS. Full motion200/210 about15% (best estimate,\nlow confidence); four of six original families formalized.\n\nNEXT bounded target: small weighted cut for the ACTUAL priority labels, for a\nfinite affine-return family and finite measure supported on I x I whose source\nmarginal is <=k*Lebesgue. No interval-admissibility premise is now needed.\n1. Reuse AffinePriorityLabels.exists_affine_priority_universe and\n   encoded_gridPriority_ne_iff, AffineFiniteBoundary, WeightedMinimumCoupling\n   and AffineGridMass. Inspect finite-image/InjOn, measure finite union,\n   measurability and ENNReal transfer APIs before proving generic helpers.\n2. Prove a small uniform collision-volume bound for finite distinct affine\n   maps. For unequal slopes use2h/|a-c|; for equal slopes use offset separation.\n   Choose the same h for collisions and the already-proved class-mass bound.\n3. Transfer union/symmetric-difference cardinalities through collision-free\n   evaluation on F union Fs, paying for all maps in ONE finite collision set.\n   Check right composition using affineRight_apply and sample universes.\n4. Ensure the weighted lemma's samples are nonempty at EVERY point in its\n   domain, not merely on I. Including0 in C and totalizing empty samples by\n   singleton0 matches the current gridPriority fallback; alternatively prove\n   the needed measure restriction to the subtype I x I. Pay support exceptions.\n   Select ONE ordering using the weighted lemma; establish actual label cut.\n5. Then construct the actual countable-branch good consecutive-return measure,\n   both marginals, finite truncation and levelCross identity. Retain constant\n   branches, phase accumulation, negative slopes and infinite full fibers.\n6. For210 prove omitted-visit incidence <=2 and reuse the original level-count\n   majorant on compact exceptional-set covers. Keep sum_t|E_t|>=1/2 and full\n   native scope. Regular recursion206/208 and final referees still follow.\n\nNew modules:AffineGridIntervals,AffinePriorityLabels (16 declarations).\nOriginal definition:Transpose.Tape.PiecewiseConstOn from Transpose.Tape.DefsM.\nOriginal remains read-only.\nNo paid-padding/SL2 reopening, no commits/pushes, no new unapproved subagents.\nOptional unaudited CFW source access is not a blocker; no source imported.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: affine return motion200/210. Best estimate:15% formalized, low confidence. This estimate covers the entire countably affine obstruction and quantitative exceptional-time conclusion, not only grid labeling. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.",
+  "updated_at": "2026-10-20T20:44:17.098627+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/AffineGridIntervals.lean": "b32b2cd62d38944aa4adc5155ded634cc2844ad25c203ceee0be623e77a9a5a4",
+    "lean/TransposeFollowup/AffinePriorityLabels.lean": "eb5aae4a01d39df3408ba5e8fceb2b8b13df91fa98c3b6ad47f86bad7ec2be33"
+  }
+}

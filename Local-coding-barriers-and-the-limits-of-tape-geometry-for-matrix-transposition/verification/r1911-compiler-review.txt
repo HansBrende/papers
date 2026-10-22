@@ -1,0 +1,29 @@
+R1911 bounded compiler simplification review
+Status: DRAFT, source-only independent review. No repository edit or Lean/Lake invocation.
+
+Recommended package: /private/tmp/r1911-compiler-plan.json
+The plan records complete before/after text, per-file before SHA-256, and line counts.
+1. NativeReadFusion.step_denote reuses NativeMicrocode.step_denote under the effective program evaluated at the current tape heads. A same-field configuration lift handles the TM parameter of Transpose.Config. Removes 23 lines.
+2. NativeIOFusion.step_denote reuses NativeReadFusion.step_denote in its work branch and NativeIO.step_denote in all three non-work branches. The same-field lift preserves every configuration field. Removes 35 lines.
+3. NativeIO.step_denote shares its identical readInput/moveInput/output proof body using one wildcard branch. Removes 16 lines.
+4. NativeMicrocode.step_denote shares the read/jump argument, and the halt/reject argument. Removes 12 lines.
+Total: 86 mathematical source lines removed, no new declarations, imports, definitions, assumptions, costs, options, or theorem signatures.
+
+Semantic audit:
+- Effective microinstructions use exactly current scanned symbols; decoding/encoding cancellation is discharged by existing symbolDecode_code and AbsoluteTape.scanned.
+- No effective program is presumed constant across steps. This reuse occurs at a single fixed configuration only, where NativeReadFusion.step was already defined by that effective program.
+- The configuration lift copies state, input position, work tapes, work-head positions, and output identically. It does not discard a field.
+- Fused versus unfused machine step costs remain unchanged: each step_denote still establishes one native transition for one respective semantic step.
+- The original six main theorem statements and all compiler intermediate APIs are textually preserved.
+
+Dependencies:
+Static local descendants including changed modules are 566 for NativeMicrocode,345 for NativeIO,79 for NativeReadFusion,71 for NativeIOFusion. Applying only fusion reuse costs79 modules; the full86-line reduction costs566. R1910's analytic split prevents those purely analytic consumers from joining this rebuild.
+Run targeted lake build TransposeFollowup.NativeIOFusion first, then the full project and existing axiom audit. No build was run by this reviewer.
+
+Other investigated opportunities:
+- OperationalTrace.Trace mapping could replace about ten trace-lifting inductions, but most still need local code-preservation hypotheses; introducing and maintaining an additional abstraction yields only modest net savings. Deferred.
+- A generic one-step Trace theorem could shorten small read/write wrappers, but unlike jump_trace it does not remove the substantive local symbol or position proof. Deferred.
+- NativeReadFusion.step_none_iff already has a compact five-case proof; replacing it via cast-aware option comparison is longer or no simpler. Retained.
+- No new cheap resource strengthening found beyond R1910's exact universal state/tape formulas. No assertion of a stronger resource bound is made.
+
+All proposed proofs need the parent's Lean validation before acceptance. The draft's 'convert ... using 1; split <;> rfl' branches follow the already validated R1910 NativeIO work proof, but remain unverified here.

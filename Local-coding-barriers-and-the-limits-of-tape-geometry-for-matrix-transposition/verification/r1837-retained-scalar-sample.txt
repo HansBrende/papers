@@ -1,0 +1,107 @@
+R1837 — VERIFIED RETAINED SCALAR SAMPLE
+
+In progress. R1837 samples the exact nilpotent commuting approximants while preserving their actual source indices. The scalar image is injective, quantitatively separated, and retains the native commuting-cover size up to the existing explicit coarsening loss; its cardinality is also bounded above by that covering number. One new module adds three theorems. A written exponent audit finds no forced ambient-size loss in this sampling step, but normalized scalar concentration is still missing. Localizing the OUTPUT of cubic packing provides the next direct route to that missing hypothesis.
+
+1. EXACT DISTANCE ON A FIXED AFFINE MATRIX LINE.
+For any real 2x2 matrix b and real c,t,q,
+  dist(cI+tb,cI+qb)=|t-q|*||b||.
+This elementary result needs neither nilpotence nor determinant one. The proof uses existing scalarAffine_eq_smul_add and mathlib norm_smul; it does not reprove norm or matrix component machinery.
+
+2. NILPOTENT SCALAR SPACING.
+Let tr(b)=det(b)=0, u=cI+tb,v=pI+qb in SL2(R), c,p>=1/2, and g in SL2(R). Put ell=tr(bg),tau=tr(g). Suppose B>0, ||b||<=B, L>0, L<=|ell|. If
+  2sigma<dist(u,v), and 3B delta<=4L sigma,
+then
+  delta<|(2/3)(tau+ell*t)-(2/3)(tau+ell*q)|.
+The determinant-one equation already proved forces c=p=1. The argument then uses the exact distance in1. It samples exact approximants: no epsilon subtraction is needed for this scalar spacing step. Approximation error still must be charged in the later actual-word transfer.
+
+3. SOURCE-PRESERVING SCALAR SAMPLE WITH BOTH CARDINALITY BOUNDS.
+Let f_i=c_i I+t_i b be an arbitrary nonempty family of exact SL2 commuting approximants, with tr(b)=det(b)=0,c_i>=1/2 and entry bound H>=0. Let V=range(f). Retain g,B,L from2. Given eta>0, sigma>=eta, delta>0 and 3B delta<=4L sigma, there are a finite nonempty matrix set F and an index map s:F->original index type such that f_(s(y))=y for every y in F. Define
+  X={(2/3)(tau+ell*t_(s(y))):y in F}.
+Then X is nonempty, |X|=|F|, and distinct x,y in X satisfy delta<|x-y|. Native-cover finiteness is proved and
+  |X| <= N_eta(V) <= S * |X|,
+  S=6561*(4sigma/eta+1)^4.
+The left inequality uses the existing separated-matrix cardinality theorem and sigma>=eta. The right inequality reuses exists_coarse_source_sample. Every actual source word associated with the original index s(y) is retained; no new source selection, perturbation or additional error is introduced.
+The theorem does NOT assert normalized scalar ball counts or invent an upper dimension gap. Its upper cardinality inequality allows the existing commuting cubic bound and the ambient dimension gap to be used for that later obligation.
+
+DECLARATIONS.
+TransposeFollowup.SL2Projection.scalarAffine_dist_same_constant
+TransposeFollowup.SL2Projection.nilpotent_scalar_spacing
+TransposeFollowup.SL2Projection.exists_nilpotent_scalar_sample
+
+ACTUAL SOURCE REPRESENTATION AUDIT.
+Use the first spanning commuting extraction with its witnesses base,X_i in A and z_i=base^-1 X_i in A^2. In exists_spanning_commuting_extraction_at_dyadic_scale, the ACTUAL returned approximation error is
+  epsilon=12800*B0^6*eta/r_initial,
+  B0=4*4^34, r_initial=eta^(2zeta)/(2*4^34).
+Do not silently replace B0 by2 or substitute the second-extraction error819200*eta/rho. The former B0 is a fixed constant, so the first error has exponent1-2zeta, but its coefficient must be preserved in an eventual formal composition. One could separately strengthen/reapply the extraction using the near-I entry bound2; that is not done here.
+After centering the generator via the already proved scalarAffine_recenter, the exact-nilpotent case permits the positive branch to be obtained from f_i being near the actual z_i near I. With dist(f_i,I)<=1/2, the trace bound gives c_i>=1/2. This last application to the first extraction is written here, not claimed as part of theorem3. No re-centering of the source family is necessary in that positive nilpotent case. Actual arithmetic word lengths remain38 and72 when g is in A^34. If sources are instead re-centered by a chosen source, use their correct representation and error rather than these numbers.
+The sample is chosen from f_i, not z_i. Its spacing budget therefore avoids the additional2epsilon loss in the prospective R1836 source-spacing argument. All R1835/R1836 actual-word error and geometry budgets are still required.
+
+EXPONENT AUDIT: A DIAGNOSTIC, NOT A CLOSED APPLICATION THEOREM.
+Write N=N_eta(A), and suppress ONLY fixed positive constants while tracking all scale exponents. Assume the fixed-power envelopes used in the first mixed product, winning trace upper bound and A^142 bound have losses eta^(-p0),eta^(-p1),eta^(-p2), respectively. This audit is conditional on those actual envelope bounds and on choosing earlier parameters in the permitted order.
+From SpanningCommutingExtraction, cancellation of the positive N against the actual mixed-product envelope gives
+  N_eta(V) >= constant * eta^(v) * N^(1/3),
+  v=p0+8zeta+(8/3)sigma0,
+where d0>=eta^sigma0 is the actual spanning determinant and H_initial contributes8zeta. The coefficient test gives L>=constant*eta^ellExp with ellExp=2zeta+sigma0 and B fixed.
+Choose scalar delta at scale eta^(1-a), a=3zeta. An actual dyadic radius must be chosen within a constant factor of this scale before using R1835; that floor/ceiling choice is not formalized in this turn. Its error budget has a strict exponent margin over epsilon of order eta^(1-2zeta). Scalar sampling alone permits sigma_sample at scale eta^(1-a-ellExp), so its loss S has exponent4(a+ellExp). Thus
+  |X| >= constant * eta^(p0+28zeta+(20/3)sigma0) * N^(1/3).
+For the planned localized cubic argument, ALSO require the sample spacing to dominate the first-frame cubic spacing. The first frame may have determinant scale eta^(6zeta+3sigma0). Taking the maximum of the two spacings gives the conservative retention exponent
+  v_sample=p0+32zeta+(44/3)sigma0.
+This extra spacing has not been omitted from the proposed next route.
+For the SECOND trace-cubic upper bound, rho=L/(4B) has exponent ellExp. The second frame determinant can be chosen at scale eta^dExp, dExp=3(ellExp+sigma0)=6zeta+6sigma0, with fixed coefficients small enough to satisfy the frame inequalities. The chart parameter r_chart has that exponent; its binning radius has exponent ellExp+dExp. The root of the full R1832 threshold therefore has the following exponent contributions:
+  P(k+1): p1;
+  H: 4ellExp;
+  Cchart: 4dExp;
+  Lchart: 4(ellExp+dExp);
+  E^(1/3): (4/3)ellExp;
+  P(141)^(1/3): p2/3.
+Together these give u=p1+p2/3+(200/3)zeta+(172/3)sigma0, multiplying N^(1/3). The additive1 in E*P(141)*N+1 is harmless only after using N>=1 and the actual positive coefficient bounds; it must be handled in Lean, not erased by notation.
+Thus K=eta^(-gExp) can beat the full threshold if
+  gExp > p0+p1+p2/3+(296/3)zeta+72sigma0,
+with a strict margin to absorb fixed constants and all other scalar-profile budgets.
+For illustration ONLY: if p0=p1=p2=zeta=sigma0=theta, the displayed total is173theta. With a scalar exponent0<e<=1, theta=e/4096 and gExp=e/8 leave margin339e/4096. The scalar K^4 budget also has a strict margin because4gExp=e/2<(1-3theta)e. Rational arithmetic for these coefficients was checked in Python. This is not a proof that the original hypotheses supply all these choices simultaneously: the scalar concentration constant C, dimension gap, dyadic radius, earlier parameter dependencies and every fixed constant still need composition.
+The audit shows why sampling is a useful next step: its losses remain small powers when prior geometric and envelope losses are small powers. It does NOT repair normalized scalar concentration. Applying the ambient A profile directly to a cube-root-size family would still incur the unjustified factor N^(2/3).
+
+NEXT DIRECT ROUTE TO NORMALIZED CONCENTRATION: OUTPUT-LOCALIZED CUBIC PACKING.
+This is a written proof plan, not a verified theorem in R1837.
+The key is to retain the radius of the actual output of cubic packing. Apply the existing packing argument to a cluster of f_i rather than forget its location and bound by all A^142. If the f_i are within radius s of a common center, selected pairs are within2s. Their actual sources a_i=base^-1 X_i satisfy dist(a_i,a_j)<=2(s+epsilon). For the actual word
+  q=(X_i0^-1 X_i)*u*(X_i0^-1 X_j)*(u^-1 v)*(X_i0^-1 X_k),
+we still have q in A^142, and it should lie near v in A^68.
+REUSE, DO NOT BUILD ANOTHER TELESCOPING CHAIN: normalized_cubic_product_dist_error already proves the needed local word bound. Apply it with all three exact f factors equal to a_i0, both normalizing centers equal to a_i0, and actual factors a_i,a_j,a_k. The exact normalized product is I. The error input2(s+epsilon) gives
+  dist(q*v^-1,I)<=40*(2R)^10*(s+epsilon).
+Right multiplication by v, whose norm is at most2R, gives
+  dist(q,v)<=40*(2R)^11*(s+epsilon).
+R is the same fixed entry bound, e.g.4^68. These are fixed norm constants, not new scale-exponent losses.
+The current cubic_source_word_covering_transfer internally proves a bound through range(q) but then forgets the location by enlarging to all A^142. Expose/reuse the internal range transport, or parameterize the final target set and preserve the current theorem as a wrapper. Then take the target
+  A^142 intersect closedBall(v,40*(2R)^11*(s+epsilon)).
+Do not copy the existing metric/error/cover chain.
+For its ambient local cover bound, reuse cluster_coveringNumber_le_of_multiscale with Bset=A^142. The multiscale separated subsets of A are also in Bset. Its product is A^284, whose global cover has the already available P(283) envelope. A subset Bset and the P(141) envelope transfer the normalization back to N_eta(A). Bset has fixed entry bound4^142, and v in A^68 is in Bset since identity belongs to A. Prove these containments and finiteness; do not assume a new local profile for Bset.
+The desired outcome is a radius-dependent bound of the form
+  |cluster|^3 <= charged_loss * ((s+epsilon)^kappa0 * N_eta(A) + 1).
+The global lower bound for |X|^3 is already a small-power multiple of N_eta(A). Dividing the two would cancel the ambient N, giving a normalized profile with exponent about kappa0/3, rather than losing N^(2/3).
+For scalar balls of radius r, the exact coordinate distance from1 gives matrix diameter at most3B*r/L. Since scalar r>=delta and delta dominates epsilon, the additive epsilon can be absorbed with a charged constant. Large radii beyond the packing chart use the trivial count and the chart-radius loss. The additive1 and very small clusters need the lower cardinality bound, not an implicit asymptotic omission. Choose the scalar theorem exponent sufficiently below kappa0/6 and reserve quantitative margins.
+This route preserves the existing scalar coordinate and actual word readout. An arbitrary density zoom is not used. The required localized cubic bound and its full normalization have NOT yet been proved.
+
+DRIFT CHECK.
+The new sampler discharges a concrete scalar-interface obligation while preserving actual source witnesses and using an existing sampler. The exponent audit includes both scalar spacing and the stricter planned cubic spacing, as well as every factor in the full trace-cubic threshold. It identifies normalized concentration as the substantive missing hypothesis. Do not add a contradiction wrapper that assumes the missing inequality. The next target is OUTPUT locality of cubic packing, reusing its existing product-error and cover transport; this may convert the ambient concentration into a correctly normalized commuting profile. No fourth original family or unconditional expansion result has been completed.
+
+BOUNDARY
+R1837 proves a source-preserving, quantitatively separated scalar sample with explicit lower and upper cardinality bounds relative to the commuting family. The full numerical application, positive-branch composition with the first extraction, scalar dimension gap and normalized concentration remain open. A written output-localized cubic-packing route targets concentration without the ambient N^(2/3) loss. Nonnilpotent amplification, the concentrated-case treatment if that route fails, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1837 is recorded; never replay its checkpoint. Full10096-job build and4570-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1837-retained-scalar-sample.txt and library-reuse-audit-r1837.json. The exact-approximant scalar sample, cardinality sandwich and separation are proved. No extra epsilon spacing loss is needed; the actual-word error remains charged separately.
+
+NEXT CONCRETE TARGET: output-localized cubic packing, aimed at the missing NORMALIZED concentration of the extracted scalar family. Do not return to an arbitrary scalar density zoom. The R1837 note contains the full written mechanism and the audited constants.
+1. Reuse normalized_cubic_product_dist_error with all exact factors and both centers equal to a_i0=base^-1 X_i0. If the approximant cluster has radius s, actual sources have diameter<=2(s+epsilon). This should give the actual cubic word q in A^142 the radius bound dist(q,v)<=40*(2R)^11*(s+epsilon), where v in A^68. No new telescoping/norm chain is needed.
+2. Refactor cubic_source_word_covering_transfer only as needed to expose its existing internal transport to range(q), or to a specified containing target. Preserve the old theorem as a wrapper. Use the radius-refined target A^142 intersect closedBall(v,...), not the whole A^142. Keep all approximation and right-translation costs.
+3. Reuse cluster_coveringNumber_le_of_multiscale on A^142: its separated distribution inherits from A; its product A^284 has the P(283) envelope; its size has P(141). Prove the normalizations and inclusions, then combine with cubic packing. Seek |cluster|^3<=loss*((s+epsilon)^kappa0*N_eta(A)+1). Only after that, use the global retained-size cube lower bound to cancel N and obtain the scalar profile. Account for the small-cluster/additive1 case and large radii outside the chart.
+The fixed coordinate map is inverse Lipschitz in the nilpotent case: a scalar ball of radius r corresponds to matrix diameter<=3B*r/L. Use the already proved distance and spacing lemmas. If the selected sample will be used for cubic packing, its sigma must also dominate that packing input-spacing threshold; the R1837 exponent audit includes this stricter choice.
+
+PARAMETER/SCOPE CAUTIONS: the first spanning-extraction error is12800*B0^6*eta/r_initial with B0=4*4^34, not automatically819200*eta/rho from the second extraction. Keep the actual source representation z_i=base^-1 X_i in A^2. The illustrative exponent margin173theta<e/8 is a diagnostic, not a formal closure or a license to choose earlier parameters after later witnesses. Nonnilpotent cases remain necessary. Do not redo the global cubic threshold, scalar ring theorem, trace readouts, weighted separation or sampler.
+
+REPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1837 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.
+
+VERIFICATION
+Full lake build passed 10096 jobs without warnings; SupportAxioms audited 4570 unique declarations using only propext, Classical.choice and Quot.sound. There are 914 mathematical modules plus SupportAxioms (915 local sources), 204 pinned external modules, 8 configurations and 117 validation artifacts. All 384 archive hashes and 117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD 5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.

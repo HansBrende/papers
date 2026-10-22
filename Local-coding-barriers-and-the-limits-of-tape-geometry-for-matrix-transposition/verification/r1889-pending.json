@@ -1,0 +1,85 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1888",
+  "target": "Regular recursion206/208: shared prepared modular row update.",
+  "new_modules": [
+    "ModularRowWord",
+    "PaddedWorkSchedule",
+    "RowArithmeticUpdate"
+  ],
+  "modified_modules": [
+    "RepeatedAddCalls",
+    "RepeatedAddBody"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.ModularRowWord.operation",
+    "TransposeFollowup.ModularRowWord.operation_length",
+    "TransposeFollowup.ModularRowWord.subtract_value",
+    "TransposeFollowup.ModularRowWord.operation_value",
+    "TransposeFollowup.ModularRowWord.rawValue",
+    "TransposeFollowup.ModularRowWord.rawOperation",
+    "TransposeFollowup.ModularRowWord.rawOperation_length",
+    "TransposeFollowup.ModularRowWord.rawOperation_value",
+    "TransposeFollowup.PaddedWorkSchedule.code",
+    "TransposeFollowup.PaddedWorkSchedule.active",
+    "TransposeFollowup.PaddedWorkSchedule.step_eq",
+    "TransposeFollowup.PaddedWorkSchedule.trajectory_eq",
+    "TransposeFollowup.PaddedWorkSchedule.trajectory_of_trace",
+    "TransposeFollowup.PaddedWorkSchedule.step_displacement",
+    "TransposeFollowup.PaddedWorkSchedule.run_displacement",
+    "TransposeFollowup.PaddedWorkSchedule.trajectory_displacement",
+    "TransposeFollowup.RowArithmeticUpdate.program",
+    "TransposeFollowup.RowArithmeticUpdate.start",
+    "TransposeFollowup.RowArithmeticUpdate.ticks",
+    "TransposeFollowup.RowArithmeticUpdate.schedule",
+    "TransposeFollowup.RowArithmeticUpdate.initial",
+    "TransposeFollowup.RowArithmeticUpdate.final",
+    "TransposeFollowup.RowArithmeticUpdate.body_trace",
+    "TransposeFollowup.RowArithmeticUpdate.schedule_active",
+    "TransposeFollowup.RowArithmeticUpdate.schedule_exact",
+    "TransposeFollowup.RowArithmeticUpdate.schedule_excursion",
+    "TransposeFollowup.RowArithmeticUpdate.encoding",
+    "TransposeFollowup.RowArithmeticUpdate.machine",
+    "TransposeFollowup.RowArithmeticUpdate.fixed_resources",
+    "TransposeFollowup.RowArithmeticUpdate.native_complete",
+    "TransposeFollowup.RowArithmeticUpdate.native_prefix_excursion",
+    "TransposeFollowup.RowArithmeticUpdate.ticks_linear",
+    "TransposeFollowup.RepeatedAdd.Trace",
+    "TransposeFollowup.RepeatedAdd.jump_trace_to",
+    "TransposeFollowup.RepeatedAdd.arithmetic_call_to",
+    "TransposeFollowup.RepeatedAdd.copy_call_to",
+    "TransposeFollowup.RepeatedAdd.recycle_call_to",
+    "TransposeFollowup.RepeatedAdd.update_trace_to"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8969,
+      "log": "/private/tmp/r1889-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10274,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5560,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All terminal. dev1 47806 exit0 (8957 jobs); dev2 2894 exit0 (8968 jobs, unused-tactic warning removed); dev3 49647 exit1 (two wrapper elaboration mismatches corrected); dev4 94840 exit0 (8969 jobs, no warnings); full build 2725 exit0 (10274 jobs, no warnings); axiom audit 76752 exit0 (5560 unique declarations, only propext/Classical.choice/Quot.sound). Monitor cell12544 completed.",
+  "formal_checkpoint": "R1889 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1093 local sources,204 external sources,5560 declarations,8 configurations,221 artifacts",
+  "proof_scope": "PROGRESS at R1889: a prepared W-bit modular add/subtract-and-recycle block now has exact native execution in18W+30 paid public-clock steps, five work tapes/five symbols, restored heads, preserved second operand and scratch reset. The original repeated-addition calls/body now specialize shared generalized proofs; no duplicate carry/copy/cleanup chain. Five of six original families formalized; regular recursion206/208 best estimate85% complete (low confidence). Raw row staging, complete row/integer palette(a), and F3 palette(b) remain.",
+  "next": "R1889 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate85%, low confidence.\n\nNEXT: DIRECT RAW-ROW CARRY SCAN FOR INTEGER PREFIX/DIFFERENCE.\nThe prepared add/subtract/recycle block is DONE at RowArithmeticUpdate.\nFor the raw interface, a simpler direct scan appears to avoid the loader,\nmarker and reversal composition. Implement ONE such row first, using the\nalready proved BinaryCarry digit/carry/operandBit/result identities and\nModularRowWord.rawOperation_value. Do not reprove carry arithmetic.\n\nPREFER THE MOVE-BEFORE-READ VARIANT (7W), to simplify the zipper proof.\nThe6W sanity-check variant is not worth optimizing or formalizing as well.\nConcrete schedule for W>=1, bank at row MSB and accumulator at its MSB:\n- One actual jump initializes carry=sub.\n- Move both heads rightW ticks, just beyond their respective rows.\n- Repeat W times, FOUR paid ticks each:\n  1.move both heads left;\n  2.read bank a into finite mode, keeping carryc;\n  3.read accumulator x, set u=x XOR sub, y=a XOR u XOR c,\n    c'=majority(a,u,c), saved=(a if sub else y);\n  4.write banky and accumulatorsaved, stay in place, retain c'.\n- Move only bank rightW to the next row; accumulator is already at0.\n- Pad W-1 stationary ticks. Total1+W+4W+W+(W-1)=7W exactly.\nStarting just beyond a field gives the inner scan a simple zipper invariant:\nits left lists begin with the LSB-first operands. Each cycle pops one cell\nfrom each left list, then writes its result at the new head; induction\nconcatenates the reversed outputs on the right. Reuse existing zipper\nwrite/move denotation lemmas rather than reprove tape semantics.\n\nUse only a small finite-update interface if it immediately helps reuse:\nMode := Bool x Sym Bool x Sym Bool (50 modes, with existing Fintype Sym).\nA public fixed truth table maps (carry,bank symbol,buffer symbol) to\n(new carry,bank output,buffer output). This four-step cell can serve binary\ncarry and later pointwise F3 arithmetic. Instantiate binary carry with\nMaskedStrideCell.bit and BinaryCarry.digit/carry/operandBit. Do not build\nan elaborate general transducer framework before proving the first row.\nScheduledNativeIO already supplies the native refinement; a separate\nstandalone native-machine theorem for every tiny cell is unnecessary.\n\nFor addition the buffer holds the current prefix result; for difference\nit holds the ORIGINAL current row. Its next-row initial carry is reset\nexplicitly. Initially blank accumulator cells decode as0; after the first\nrow the accumulator has W data bits. This uses the existing five-symbol\nnative alphabet with no row markers. Finish by physically clearing and\nrewinding this W-cell buffer and resetting the whole bank head; charge\nthose steps and the existing raw endpoint IO. No gratis row reversal.\n\nBoth finite prototypes passed2728 cases each (widths1..5, both flags/all\noperand pairs): /private/tmp/r1889-direct-row-prototype.json (6W) and\n/private/tmp/r1889-direct-row-prototype-7w.json (preferred7W). They check\nmodular results, retained buffer, duration and positions; neither is a\nformal proof. Formalize only the preferred7W variant. The Lean controller, its actual exact execution,\nalltime head bounds and whole-bank semantics remain to be proved.\nThe mode reset/read/write steps must be actual native instructions.\nUse existing ScheduledNativeIO trajectory/append/native_prefix machinery;\nScheduledTapeAction/Transfer and native embedding already handle movement,\ncells and fixed finite modes. Review for a reusable generic finite-update\ninterface before copying their loops. Raw wrapper/generalization must keep\nold binary proofs shared; do not clone all native IO/halting/state-bit code.\n\nFixed7W row slabs with net bank advanceW and a returned local head give\nO(W) deviation from affine/stationary curves. W/P=1/d ->0. The existing\nno_subsequential_physical_affine_fast_approximation permits input-dependent\ngeometry; no common exact carry-head path is required for that endpoint.\nReuse the row-slab/affine estimates after concrete execution is verified.\n\nIf the direct route has a genuine interface obstacle, existing checked\nfallback components are NativeFieldCopy.append_call/seal_call,\nBankReversal.result_spec/result_bank_outside, ScheduledTransfer and the\nR1889 prepared RowArithmeticUpdate. Do not rebuild their algorithms.\nRemember: NativeFieldCopy.copy_trace initially needs a completely blank\ntarget, while recycled arithmetic scratch retains a START marker; these\nstates are not interchangeable. A dedicated blank reversal scratch is fine.\n\nRemaining source206(a): integer row-prefix add/difference, XOR/difference,\nrow-order reversal, entry-order reversal preserving within-entry bits,\nrow-dependent entry rotations, whole-bank increment/decrement modulo2^P.\nSource206(b): specified F3 row/column prefix/difference, row/column reversal,\nrow rotations, diagonal signs and whole-bank entry rotation. Bit inputs\nembed in trits0/1; final correctness remains raw BIT transpose. Keep\ninteger and trit intermediate types distinct. Types/parameters may vary\nnonuniformly with size; correctness sets have coentropy o(P).\n\nSource206(c) is DONE at RawMixedBinaryWord.no_high_entropy_transpose;\nsource208/global210.5 are also done. Do not reopen their raw IO, state-bit,\ncompactness, affine geometry or native normalization chains. All exact\npalettes are required for family6. Expected later simplifications, to verify\nwhen relevant: ordinary row/entry slabs have W/P or b/P ->0, while the\nwhole-bank increment/decrement has only finitely many scan phases. Thus\npalettes(a,b) should not need a new growing-stride compactness chain.\nFor F3 a trit2 can use the existing .start work symbol, alongside .data0\nand .data1, on clocked UNMARKED banks. The existing five-symbol compiler\ntherefore need not be generalized to a new alphabet. Permutation transfers\nmust preserve symbols (the current binary bit decoder would erase trit2).\nUse ScheduledTransfer's already generic read/write parameters and factor\nonly the shared interfaces actually needed. These are plans, not verified\npalette executors or new impossibility results. Referees only after all six complete.\nOriginal read-only; no commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate85% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. The sixth includes source208/global210.5 and complete binary palette(c); this checkpoint provides the shared prepared modular-row block for palette(a). Full row/integer and F3 palettes remain; final independent referees pending.",
+  "updated_at": "2026-10-21T05:55:00.192235+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ModularRowWord.lean": "24238c42fe94b22aceb53a19809afe704133c75e821d7e87c7dde1f0f1ee3188",
+    "lean/TransposeFollowup/PaddedWorkSchedule.lean": "6ea4b99b90bc545ea91b46f4104677da3312c06da5fb3c61d4a483861a736937",
+    "lean/TransposeFollowup/RowArithmeticUpdate.lean": "de0886b60e31e9cc81e288bb8c96091f7e26e72640d810f2dfcb5c4ce2c8f462",
+    "lean/TransposeFollowup/RepeatedAddCalls.lean": "05adb3c08c60c262f71d9cdc0a4dfb936e20811b1f509284c3b76185c2ebe694",
+    "lean/TransposeFollowup/RepeatedAddBody.lean": "f2b7c01d5086ded6b472a817ab3d14d0382a4622a562667ee56060a1733b0f52"
+  }
+}

@@ -1,0 +1,219 @@
+R1848 — ACTUAL TRACE-SQUARE SOURCE SAMPLE
+
+In progress. R1848 constructs the retained trace-square sample from actual original sources, conditional on explicit numerical trimming and spacing budgets. It proves an inverse-distance estimate on one sign branch away from the identity, reuses the existing cubic cluster bound to discard at most half the finite sample, retains one sign, and reuses the coarse sampler to retain covering complexity with loss26244*(4sigma/eta+1)^4. Four modules add seven audited declarations; one earlier commutativity proof is simplified by reuse. Scalar concentration, verification of the parameter budgets, second extraction and exponent closure remain open.
+
+R1848 EXACT VERIFIED STATEMENTS
+
+TraceSquareScalarSeparation.lean (3 theorems)
+
+For b traceless and u=sI+t b in SL2(R), with Delta=det(b),
+ X(u)=(2/3)tr(u)^2-4/3 = 4/3-(8/3)Delta t^2.
+For v=pI+q b in the same span,
+ |X(u)-X(v)|=(8/3)|Delta||t-q||t+q|.
+
+traceSquareScalar_inverse_distance:
+Assume M>=1, lambda>0,0<r<=1,
+ ||b||<=M,lambda<=|Delta|<=M,
+ u=sI+t b,v=pI+q b in SL2(R),
+ dist(u,I),dist(v,I)<=1/2,
+ dist(u,I)>=r, and t*q>=0.
+Then
+ dist(u,v) <= [3M^2/(lambda*r)] |X(u)-X(v)|.
+Only ONE of the two inputs has to be away from I for this inverse estimate.
+No bound |t|,|q|<=1 is assumed. Near I gives scalar parts s,p>=1/2.
+The existing centered_near_one_distance_coefficient bounds r<=3M|t|.
+Same sign gives |t+q|>=|t|. The trace-square identity bounds both the
+noncentral difference and the scalar difference; norm addition finishes.
+
+FarSignSubsample.lean (1 theorem)
+
+For any finite index set F, matrices f_i, real coordinates t_i and r,
+if F is nonempty and at most half its indices satisfy dist(f_i,I)<=r,
+there is S subset F, S nonempty, |F|<=4|S|, with
+ dist(f_i,I)>r for all i in S,
+ t_i*t_j>=0 for all i,j in S.
+This uses mathlib's card_filter_add_card_filter_not twice. No pigeonhole
+or finite partition theory is reimplemented.
+
+ActualTraceSquareSubsample.lean (1 theorem)
+
+Input is an ACTUAL finite source family f_i,X_i with
+ X_i,base in A, dist(f_i,base^-1 X_i)<=epsilon,
+ f_i=scalarAffine(z,c_i,t_i),z near I, original p,q,pq in A^34
+with a quantitative spanning bound, and the existing cubic-packing
+localization, entry, source-error, multiscale-distribution and A^142/A^284
+cover bounds. The complete Lean signature preserves every hypothesis of
+finite_source_cluster_cubic_bound except its diameter assumption, which is
+proved for the discarded subset. In addition:
+ b=z-(tr(z)/2)I, lambda>0,lambda<=|det b|,
+ 0<s<=1,25alpha+epsilon<=1/64,delta_s>0,
+ original finite index count n>0,
+ pairwise matrix separation is greater than BOTH
+ Hpack=10 B M*(384 M^4/d*eta), and
+ [3072/(lambda*s)]delta_s.
+Here s is the distance cutoff, distinct from the cubic chart radius r;
+delta_s is scalar spacing, distinct from the chart-cell width delta.
+
+Let N=N_eta(A), using native external covering numbers, and define
+ Bpow=4^142,
+ rho=40(2R)^11(s+epsilon),
+ E=[4(20(2R)^10 epsilon+2R eta)/eta+1]^4,
+ L=binCount(B,delta)^4,
+ U=E(8Bpow+1)^4(8Bpow^2+4Bpow+1)^kappa K J
+     eta^(-gamma*kappa) rho^kappa N.
+K and J are the supplied A^284 and A^142 covering ratios; the original
+multiscale separated-distribution hypothesis has exponent kappa and
+window gamma. The outer-radius condition eta<=rho is retained.
+
+If the NUMERICAL budget
+ 32 L^3(U+1)<=n^3
+holds, the theorem PRODUCES S of original indices with n<=4|S|,
+S nonempty, dist(f_i,I)>s, common coordinate sign, and all f_i near1/64.
+For all selected pairs,
+ dist(f_i,f_j)<=[3072/(lambda*s)]|X(f_i)-X(f_j)|.
+Z={X(f_i):i in S} is nonempty, |Z|=|S|, Z subset[1,2], and distinct
+members of Z have distance>delta_s.
+
+The original cubic theorem is applied to the actual subtype of indices
+with dist(f_i,I)<=s. Their diameter is<=2s. It yields
+ n_near^3<=4L^3(U+1). The displayed32 budget gives2n_near<=n.
+The finite sign trimming then proves all retained-set properties.
+No scalar concentration conclusion is asserted at this stage.
+
+TraceSquareSourceSample.lean (2 theorems)
+
+exists_actual_trace_square_source_sample starts with the original,
+possibly infinite indexed family of approximants and their source witnesses.
+It retains the SAME original source/frame/distribution assumptions as the
+finite theorem. Instead of a given finite separated sample it assumes:
+ original approximant range nonempty; eta,sigma>0; eta<=sigma;
+ Hpack<=2sigma;
+ [3072/(lambda*s)]delta_s<=2sigma.
+The two spacing budgets are independent; scalar spacing is NOT artificially
+bounded by the cubic-packing threshold.
+Set
+ C=6561(4sigma/eta+1)^4,
+ V=N_eta(range f).
+The numerical trimming budget becomes
+ 32 L^3(U+1) C^3 <= V^3.
+The EXISTING exists_coarse_source_sample supplies a finite sample F and
+original index witnesses with V<=C|F|. The numerical budget therefore
+implies the finite trimming budget. Original witnesses are injective
+because their matrix images equal the sampled matrices.
+
+The conclusion PRODUCES a finite set T of ORIGINAL indices such that:
+ - T is nonempty;
+ - each selected matrix has distance>s from I and distance<=1/64;
+ - all selected noncentral coordinates have the same sign;
+ - distinct selected matrices are separated by>2sigma;
+ - the inverse-distance estimate above holds on T;
+ - Z={X(f_i):i in T} is nonempty, |Z|=|T|, Z subset[1,2], and
+   distinct scalar values are separated by>delta_s;
+ - the original approximant range has finite native covering number;
+ - |Z| <= V <= 26244(4sigma/eta+1)^4 |Z|.
+No ideal-sample premise replaces the original source family.
+
+traceSquareScalar_enlargement_range:
+If F is ANY finite SL2(R) family with dist(u,I)<=1/64 for every member,
+then X(F union FF union FF^-1) is contained in[1,2].
+Each product or quotient is within1/16 of I, by native Frobenius product
+bounds and the R1847 exact inverse isometry. Quotients may equal I.
+No centralizer or away-from-I assumption is needed for this range result.
+
+REUSE CLEANUP
+MixedReadoutDistance.lean now invokes the already proved
+scalarAffine_commute instead of repeating the affine product expansion.
+Its statement and proof dependencies remain standard; its full rebuild
+and axiom audit are included in this checkpoint.
+
+DRIFT / REUSE CHECK
+
+The original-source endpoint now provides the actual scalar sample that
+R1846's combinatorial reduction was missing, subject to named numerical
+budgets. It proves the retained count, interval, matrix spacing, scalar
+spacing, branch inverse and source witnesses together. This is stronger
+than a theorem assuming a suitable scalar sample as input.
+
+The cubic source-cluster machinery and coarse sampling are reused without
+copying their proofs. The inverse estimate avoids a second chart or an
+upper bound on the noncentral coordinate. The finite trimming loss is4,
+which multiplies the already proved6561 cover-refinement loss to26244.
+The scalar Pluennecke and sum-product theory is still imported/reused.
+
+Still missing: normalized scalar concentration, showing the sample budgets
+hold for the extracted family, the dilated-base cell lower bound, second
+extraction for length420, and the final simultaneous exponent/error budget.
+This is not yet a scalar-growth application or a fourth original theorem.
+
+BOUNDARY
+The sample is now constructed from the original indexed approximants and sources, not supplied as an ideal sample. Its existence still requires the displayed numerical trimming budget, the two independent coarse-spacing budgets, and the existing actual-source/frame/distribution hypotheses. Those numerical budgets have not yet been derived from the final dyadic parameter choice. Scalar interval membership and separation do not imply the normalized concentration needed by sum-product. The source-error threshold in R1847, the small dilated-base coefficient, and the new length420 second-extraction application also remain to be paid for. Original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty is claimed.
+
+NEXT
+R1848 recorded; never replay its checkpoint script. Full10123-job build
+and4667-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: normalized scalar concentration for the SAME actual retained
+trace-square sample, reusing the existing nilpotent_scalar_sample_concentration
+proof through a general scalar-readout lemma. Do not duplicate that long
+proof or assume concentration from separation.
+
+Concrete refactor to consider:
+The existing NilpotentScalarConcentration proof uses its nilpotent hypotheses
+ONLY to derive the diameter of indices in a scalar interval. Generalize
+that proof to an arbitrary injective scalar map a on a finite source family,
+with a proved interval inverse constant Kinv>=0 (or a pairwise inverse
+bound), and a general retained-cover factor Sret>=0. Then recover the
+old nilpotent theorem by instantiating Kinv=3Bg/(2L) and
+Sret=6561(4sigma/eta+1)^4. This preserves the original endpoint and reuses
+all cubic source packing, distribution, and normalization arithmetic.
+
+For the new sample, restrict the original index family to T. R1848 RETURNS
+both original matrix spacing>2sigma and the inverse estimate
+ Kinv=3072/(lambda*s).
+Therefore a scalar ball of radius r has matrix diameter<=2Kinv*r.
+The existing proof's localization factor can be
+ Dloc=40(2R)^11*(Kinv+2),
+using epsilon<=r and eta<=r, exactly as in the nilpotent proof.
+Use Sret=26244(4sigma/eta+1)^4. The extra factor4 in retention costs64
+in the cubic normalization. Preserve source indices, entries, original
+span witnesses and every numerical profile hypothesis when restricting.
+Do not transfer the nilpotent coordinate itself to the new case.
+
+Then discharge the R1848 trimming budget
+ 32L^3(U+1) C^3<=V^3,
+using the R1845 global cube, the original mixed-profile cover bound,
+and coveringNumber_lower_of_distribution to pay the additive1. Here
+C is the UNTRIMMED coarse factor6561(...); final retention is4C.
+The two spacing budgets independently require
+2sigma >= max(cubic packing threshold,Kinv*delta_s).
+No requirement Kinv*delta_s<=cubic threshold remains.
+
+Pay for the smaller readout coefficient: R1846 gives both gaps>=rho,
+|det b|<=32, so each normalized coefficient has abs>=3rho/256.
+Their sum is3/2, so choose one with abs>=3/4 for the enlargement coefficient
+(the inverse bound<=2 needed by Pluennecke). Use scalar spacing delta_s
+large enough that multiplying the retained base by the other coefficient
+preserves the final scalar cell spacing. Search existing OAI scalarCells
+separation/dilation lemmas before writing new finite-cell proofs.
+If swapping the coefficients swaps which input is the base, R1847's
+max-distance bound and length420 apply equally to either orientation.
+
+Use traceSquareScalar_enlargement_range for Y=F union FF union FF^-1.
+Transfer products and quotients to the original A^4 sources; pay their
+approximation errors before R1847's mixed-readout source_far theorem.
+The current formal source sampler assumes 25alpha+epsilon<=1/64.
+The final scalar cover radius should cover the source-error/concentration
+window as well; do not silently apply the scalar estimate below epsilon.
+
+Apply scalar_sum_product_alternative and the112/560 bounds only after
+these inputs are verified. Generalize the old n<=283 second-extraction
+wrapper to the actual length420 using the existing fixed-power proof
+(coefficient h^(8802n+4427)). R1845's universal initial n0+3 is a separate
+word cost. List every eta,d loss before choosing theta,tau and dyadic
+thresholds. Original profile/frame and analytic/machine endpoints remain.
+Three of six original families formalized; paid padding about60%, low
+confidence. Original paper read-only; no commits/pushes/subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

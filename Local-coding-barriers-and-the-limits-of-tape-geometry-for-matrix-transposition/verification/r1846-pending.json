@@ -1,0 +1,66 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1845",
+  "target": "Actual fixed readout coefficients and trace-square sum/product reduction, reusing existing Pluennecke and scalar growth infrastructure.",
+  "new_modules": [
+    "AdjointCoefficientSelection",
+    "ActualScalarReadoutCoefficients",
+    "CentralizerTraceSquareScalar",
+    "CentralizerScalarSumProduct"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.directionFrame_sq_eq_trace_gram",
+    "TransposeFollowup.SL2Projection.trace_mul_entry_bound",
+    "TransposeFollowup.SL2Projection.trace_gram_rank_one_perturbation_bound",
+    "TransposeFollowup.SL2Projection.exists_large_trace_gram_deviation",
+    "TransposeFollowup.SL2Projection.matrixConjugationLinear_trace",
+    "TransposeFollowup.SL2Projection.matrixConjugationLinear_product",
+    "TransposeFollowup.SL2Projection.trace_adjoint_pair_coefficient",
+    "TransposeFollowup.SL2Projection.exists_large_adjoint_coefficient",
+    "TransposeFollowup.SL2Projection.commutator_square_det",
+    "TransposeFollowup.SL2Projection.scalar_coefficient_two_choice",
+    "TransposeFollowup.SL2Projection.exists_two_coefficient_word",
+    "TransposeFollowup.SL2Projection.exists_actual_two_readout_coefficients",
+    "TransposeFollowup.SL2Projection.traceSquareScalar",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_centered",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_near_identity",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_product",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_inverse_final",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_linear_readout",
+    "TransposeFollowup.SL2Projection.commutator_conjugate_det",
+    "TransposeFollowup.ScalarMetric.scalar_double_cells_of_mixed",
+    "TransposeFollowup.ScalarMetric.scalar_ring_cells_of_two_term_readout",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_finite_product_enlargement"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9802,
+      "log": "/private/tmp/r1846-dev9.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10117,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4646,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 4485 exit1;dev2 33264 exit1;dev3 14414 exit1;dev4 42987 exit1;dev5 97700 exit1;dev6 10692 exit1;dev7 26471 exit1;dev8 45158 exit0;dev9 76049 exit0/9802 jobs, no warnings. Full66499 exit0/10117 jobs; audit50039 exit0/4646 declarations. No warnings. All handles terminal.",
+  "updated_at": "2026-10-20T17:27:01.967911+00:00",
+  "formal_checkpoint": "R1846 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:936 local sources,204 external sources,4646 declarations,8 configurations,135 artifacts",
+  "proof_scope": "In progress. R1846 selects an actual word g in A^204 with both inverse-final readout coefficients quantitatively nonzero, using the existing adjoint frame and a new trace-Gram calculation. It proves exact sum/product identities for the positive trace-square scalar coordinate and reuses the imported scalar Pluennecke inequality to control sums and products from one mixed readout. The scalar family is enlarged explicitly by products and quotients; closure is not assumed. Four modules add twenty-two audited declarations. Actual sample selection, readout geometry, source errors and the final exponent comparison remain open.",
+  "next": "R1846 is recorded; never replay its checkpoint script. Full10117-job\nbuild and4646-declaration standard-axiom audit passed without warnings.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: a quantitative distance-from-I theorem for the actual mixed\nword W=v u^-1 g(vu)g^-1, with u,v in the SAME centered centralizer,\nboth near I, g an actual selected bounded word, and at least one of u,v\naway from I. Use both gaps |D(g)|,|D(g)-4Delta|>=rho, not merely D(g)!=0.\nDo this before claiming that the old second-extraction trace bound\ncontrols the whole new mixed readout.\n\nConcrete proof route to audit:\n Set a=vu, q=uv^-1. Then E=Ad_g(a)-q=q(W-I).\n Write a=s_a I+t_a b, q=s_q I+t_q b.\n The verified commutator_conjugate_det gives\n |det(pairSpanMatrix(b,Ad_g b))|>=rho^2.\n Reuse MatrixFourBounds.mulVec_inverse_bound on the frame\n {I,b,Ad_g b,b Ad_g b} to bound t_a,t_q by\n a fixed polynomial in the matrix entry bounds times ||E||/rho^2.\n The centralizer input forms and product/inverse formulas already exist.\n For a centered SL2 element near I, positive scalar part and determinant1\n imply ||a-I||<=C_B |t_a| when ||b||,|detb|<=B>=1:\n if |t_a|<=1 use |s_a-1|<=B t_a^2, otherwise use the near-I bound.\n Apply the same to q. Commutativity gives u^2=aq and\n v^2=a q^-1. Near I, ||u-I||<=||u^2-I|| follows from\n ||2(u-I)+(u-I)^2||>=2||u-I||-||u-I||^2.\n This suggests ||u-I||,||v-I||<=C rho^-2 ||W-I||.\n This paragraph is a PROPOSED proof, not yet a Lean theorem.\n For R1845/1846, rho is a fixed constant times d^12, so the cost is\n still a power of d^-1. Keep every fixed constant and word length explicit.\n\nThen select an actual retained finite base F away from I using the\nEXISTING general source-cluster concentration/cubic packing results.\nEnsure F and its two-factor enlargement have the required small geometry.\nThe trace-square map has a critical point at I; positivity in[1,2]\ndoes NOT imply separation or a scalar concentration profile.\nUse the determinant gap, retained distance and a sign choice to obtain a\nquantitative inverse on the sample, or record why this fails.\nPay for the smaller of the two normalized linear coefficients when\nobtaining the base cell lower bound m<=N_delta(aX).\n\nTransfer the finite enlargement and mixed readouts to original source\nwords, including approximation errors. Reuse scalar_sum_product_alternative,\nthe new112/560 bounds, and the general second-extraction/fixed-power\ncoefficient proofs with word bound>=420. Rechoose theta,tau and dyadic\nthresholds only after listing all exponent losses. Do not add another\nideal-sample input theorem as a substitute for this actual application.\n\nOriginal profile/frame construction and remaining analytic/machine\nendpoints remain. Three of six original families formalized; paid padding\nbest estimate about60%, low confidence. Original paper read-only, no\ncommits/pushes, no unsolicited subagents.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/AdjointCoefficientSelection.lean": "f3f09baa80bb59bf1ee6abc4479951e5a565ece3920ff741273d9bd2b7131849",
+    "lean/TransposeFollowup/ActualScalarReadoutCoefficients.lean": "fbb0747d046a552a93916a21cdd07824d0b897e3a43a5957e86e4208afa75916",
+    "lean/TransposeFollowup/CentralizerTraceSquareScalar.lean": "2cffd970b175dc9b35c9dcc2173353365633a0a9fbf90f3bf1658a324eadb75d",
+    "lean/TransposeFollowup/CentralizerScalarSumProduct.lean": "b3605bbb6a247983c09b6f9255036b2d993636a13bb208494210b531e05e76ea"
+  }
+}

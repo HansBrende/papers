@@ -1,0 +1,62 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1844",
+  "target": "Produce quantitative determinant separation during actual spanning extraction, with polynomial covering cost.",
+  "new_modules": [
+    "FiniteTraceAvoidance",
+    "BoundedPowerTraceGap",
+    "ShiftedTraceFrame",
+    "RetainedTraceGap",
+    "QuantitativeSpanningExtraction"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_bounded_four_color_progression",
+    "TransposeFollowup.SL2Projection.exists_simultaneous_recurrence_escape",
+    "TransposeFollowup.SL2Projection.sl2_det_sub_one",
+    "TransposeFollowup.SL2Projection.sl2_trace_power_difference_factor",
+    "TransposeFollowup.SL2Projection.exists_uniform_bounded_power_trace_gap",
+    "TransposeFollowup.SL2Projection.sl2_trace_arithmetic_progression",
+    "TransposeFollowup.SL2Projection.exists_simultaneous_matrix_trace_gap",
+    "TransposeFollowup.SL2Projection.traceFrame_det_right_translate",
+    "TransposeFollowup.SL2Projection.exists_shifted_trace_frame",
+    "TransposeFollowup.SL2Projection.exists_actual_frame_away_trace_two",
+    "TransposeFollowup.SL2Projection.exists_retained_entry_patch",
+    "TransposeFollowup.SL2Projection.exists_retained_trace_gap",
+    "TransposeFollowup.SL2Projection.sl2_centered_det_factor",
+    "TransposeFollowup.SL2Projection.trace_gap_gives_centered_det_gap",
+    "TransposeFollowup.SL2Projection.exists_quantitative_spanning_commuting_extraction"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9583,
+      "log": "/private/tmp/r1845-dev12.log",
+      "note": "One unnecessarySeqFocus warning repaired before full build."
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10113,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4624,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 25127 exit1;dev2 58877 exit0/3104;dev3 79102 exit1;dev4 99099 exit1;dev5 97561 exit0/9571;dev6 8589 exit1;dev7 62477 exit0;dev8 14099 exit1;dev9 91753 exit0;dev10 93139 exit1;dev11 96571 exit1;dev12 42158 exit0/9583 with one subsequently repaired linter warning. Full93064 exit0/10113 no warnings. Audit61234 exit0/4624 declarations. All handles terminal.",
+  "updated_at": "2026-10-20T16:58:30.320307+00:00",
+  "formal_checkpoint": "R1845 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:932 local sources,204 external sources,4624 declarations,8 configurations,133 artifacts",
+  "proof_scope": "In progress. R1845 selects a quantitatively nonnilpotent generator during the actual spanning extraction. Universal n0, alpha0 and C are fixed before the set and scale. A frame determinant lower bound d yields an actual commuting family with centered generator determinant greater than d/32, original source witnesses, approximation error 26214400 eta/d, and the covering cube d^11 N_eta(A)^4 <= C[9 N_eta(A D A^-1) H N_eta(V)]^3. This uses geometry and the spanning frame; distribution and an approximate-group profile are not hypotheses of this extraction. Five modules and fifteen declarations reuse mathlib Hales-Jewett, finite continuity, existing trace projections and the original conjugacy-fiber extraction. Scalar amplification and the rest of the original paid-padding family remain open.",
+  "next": "R1845 is recorded; never replay its checkpoint script. Full10113-job\nbuild and4624-declaration standard-axiom audit passed without warnings.\nAll Lake handles are terminal. Read r1845-quantitative-spanning-extraction.txt\nand library-reuse-audit-r1845.json. The goal is ACTIVE.\n\nNEXT CONCRETE TARGET: audit and implement a single fixed-matrix sum/product\namplification using the quantitatively separated ACTUAL family, with a\ncomplete exponent budget before a long new formal chain. The extraction\nand determinant bound are conclusions already; do not assume another\nideal sample or redo this assembly.\n\nLet b=z-(tr(z)/2)I, Delta=det b, u=sI+tb, v=pI+qb. Existing\nsl2_scalarAffine_product_coordinates gives\n t_uv^2+t_uvInv^2=2(t^2+q^2)-4Delta t^2q^2.\nExisting sl2_inverse_final_scalar_identity gives, for an actual fixed g,\n tr(v u^-1 g (v u) g^-1)=2+(Dg-4Delta)q^2-Dg t^2,\n Dg=det(bg-gb).\nSeek one bounded word g with quantitative lower bounds on both\n|Dg| and |Dg-4Delta|. Check the existing adjoint-frame selection first.\nA possible two-choice repair is g or g^2: Cayley-Hamilton predicts\nD(g^2)=(tr g)^2 Dg. Near I, (tr g)^2 is bounded away from1, so a\nnear-cancellation Dg~4Delta cannot persist for both choices.\nThis is a proposed argument, NOT part of the R1845 Lean result.\n\nThen audit the available metric Ruzsa/Pluennecke and scalar sum/product\nAPIs. A small linear combination of two copies of the squared-coordinate\nset, together with the exact product identity and |Delta|>d/32, may\ncontrol its sums and products through actual bounded-word traces.\nA fixed nonzero coefficient alone is not a scalar projection theorem.\nUse the product identity to justify the sum/product alternative.\nInclude an actual positive, separated scalar sample and inherited\nnonconcentration. The centralizer family is not assumed closed under\nproducts and need not contain I; any enlargement by I or products must\nbe explicit, with source witnesses and errors accounted for.\n\nAccount for n0 and every longer actual word using the general fixed-power\ncoefficient bound. If this route does not furnish the actual retained\nsample and compatible gain budget, record that specific failure before\nformalizing further detached identities. Original profile/frame\nconstruction, strict flattening and the remaining analytic/machine\nendpoints are still open. Three of six original families formalized;\npaid padding best estimate about60%, low confidence. Original paper\nunchanged; no commits/pushes or unsolicited subagents.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FiniteTraceAvoidance.lean": "a4541b5eb01f948758383a3d79528977c3cb043f8760e191404a6de4e9eb1d5f",
+    "lean/TransposeFollowup/BoundedPowerTraceGap.lean": "21cb8328dab91a140d4fda63a3db37a984e3990c0fece47ce945b6674fce0583",
+    "lean/TransposeFollowup/ShiftedTraceFrame.lean": "6716089723a0bbf08ab29657e330b647d06ec446843e33d3f83bef7a521b6a1b",
+    "lean/TransposeFollowup/RetainedTraceGap.lean": "f0232bcd6a10289fc4ec78c2a1659b88869d12ef83cd5cfbbc08554d6d51c9af",
+    "lean/TransposeFollowup/QuantitativeSpanningExtraction.lean": "5b7efd21686f9fc2233b5205ae2efc1775b85a981ac84a231f2fb9efd37e2e01"
+  }
+}

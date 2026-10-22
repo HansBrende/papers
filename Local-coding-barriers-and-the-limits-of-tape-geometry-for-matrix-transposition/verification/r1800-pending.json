@@ -1,0 +1,76 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "MeasureOverlapTransfer",
+    "MobiusMeasurableApproximate",
+    "SmoothedIterateApproximate"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.measure_inter_le_of_ae_core",
+    "TransposeFollowup.measure_overlap_survives_enlargement",
+    "TransposeFollowup.RealMobius.exists_approximate_group_from_measurable_self_energy",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_approximate_group"
+  ],
+  "declaration_counts": {
+    "theorem": 4
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 41094,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1800-dev1.log"
+    },
+    "development_2": {
+      "session_id": 50667,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1800-dev2.log"
+    },
+    "development_3": {
+      "session_id": 34018,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1800-dev3.log"
+    },
+    "development_4": {
+      "session_id": 60798,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1800-dev4.log"
+    },
+    "development_5": {
+      "session_id": 97837,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1800-dev5.log"
+    },
+    "build": {
+      "session_id": 51419,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9752,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 96239,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4209,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1800 preserves original measurable-level overlap through an explicit regularization budget, then composes with the actual smoothed autocorrelation nonflattening theorem. This is supporting formalization, not a new impossibility theorem. Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1, equations4.11\u20134.12 and Theorem4.4 rechecked R1800: after approximate-group concentration, the source obtains local small-ball overlap and a scale-sensitive covering bound before invoking product growth. The source product theorem requires intermediate size, multiscale distribution and quantitative escape; finite covering alone does not prove flattening. Our conservative explicit constants and actual autocorrelation densities remain in force.",
+  "cleanup": "No new definitions. The dyadic mass estimate is reused on a restricted measure, rather than reproved. Removed an unused local index-bound binder. All four declarations are used or are public compositions. No pre-existing mathematical-source edits.",
+  "updated_at": "2026-10-19T21:36:19.351653+00:00",
+  "formal_checkpoint": "R1800 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1800, 775 sources, 4209 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1800 removes the regularization-overlap gap: a measurable symmetric level with essentially bounded support and high self-energy yields an actual approximate group whose translate overlaps the ORIGINAL level. The regularization error is chosen after the level's loss parameter, with an exact half-budget absorption. Composition with actual smoothed autocorrelation nonflattening gives U, finite symmetric Y subset U^2 and x, all with explicit entry bounds, volume bounds and a positive probability bound for x*U under H.withDensity(rho_k). The logarithmic dyadic-level count is retained. No small-ball thickness or scale-sensitive cover is assumed. The original-density concentration target is complete; smoothing-scale local overlap and finite covering, product growth/escape, strict flattening and unconditional paid padding remain unproved. These are supporting formalizations of known arguments, not new transposition bounds.",
+  "next": "The preceding turn is PROGRESS: R1800 proves all of the original-density concentration target. Start from exists_smoothedIterate_approximate_group in SmoothedIterateApproximate.lean. Inputs are a probability measure mu, eta>0, actual smoothed support mu*P_eta in Box(B) almost everywhere, fixed k, theta>0, pointwise initial density cap ofReal(C), and q V_k<=V_(k+1). Here H is Haar, f=rho_k, V=integral f^2, q=ofReal(theta), R=(4B^2)^(2^k). It returns N>0 with N<=1+logb2(max1(16C/(theta V.toReal))). Put K0=64N^4, L=8(K0^2/q^2), K=2^55 L^21. Actual witnesses U,Y,x satisfy:\n 1 in U, U open and inversion-symmetric, closure(U) compact in Box(Q), Q=32(R+1)^6;\n 0<H(U)<infinity; Y finite symmetric subset U^2; card(Y)<=512K^16; U^2 subset Y*U;\n IsApproximateSubgroup (512K^16).toReal U; x in Box(R+1);\n q<=128K0 K L^2 V H(U), q V H(U)<=16K^7 K0;\n q^2<=8192K0 L^2K^4 (H.withDensity f)(x*U).\nDo not redo BSG, regularization, original-level overlap, all sandwich powers or approximate-group extraction. R1800 also supplies the generic measure-overlap transfer and a measurable self-energy composition if a later application needs the actual level.\n\nNext concrete target: obtain an actual finite cover of U at the smoothing scale from this probability concentration, with all bounded-entry distortion and cardinality losses explicit. Avoid a general metric-entropy framework before proving the needed concrete cover. Do not infer metric covering from volume alone or assume U contains a ball at the smoothing scale.\n\nProposed route (UNPROVED; verify constants and multiplication order in Lean):\n1. Endpoint smoothing identity. Set sigma=mu*P_eta and alpha=sigma.inv*sigma. For every m>=1, alpha^m=(alpha^(m-1)*sigma.inv*mu)*P_eta. The first factor nu is a probability measure. Use measureConvolutionPower_succ_right, Measure.mconv_assoc and smoothedAutocorrelationIterate_withDensity with m=2^k. No inversion invariance of P_eta is needed for this factorization. The current support theorem for rho_k remains in force; no separate support bound on nu is required for local selection.\n2. Right-smoothed mass to local Haar overlap. For S=mobiusIdentityBall eta, v=H(S)>0 finite, any probability nu and measurable Z, derive (nu*P_eta)(Z)=v^-1 integral H(Z intersect g*S) dnu(g). Reuse mconv_withDensity_right/leftConvolutionDensity and Haar invariance or the native convolution integral formula. If p=(nu*P_eta)(x*U)>0, the averaging identity gives a g with H(x*U intersect g*S)>=p*v/2. Left translate by x^-1 to obtain z=x^-1*g and T=U intersect z*S, with H(T)>=p*v/2. Prove actual witnesses; do not assume this local intersection or uniform thickness.\n3. Use the checked finite cover U^2 subset Y*U to prove H(U^2)<=c H(U), c=512K^16. Since T subset U, H(U*T)<=c H(U). Apply exists_finite_haar_translate_cover with packed set T and B=U to obtain F finite subset U, U subset F*T*T^-1 and card(F)*p*v<=2c H(U). A finite ratio cH(U)/H(T) can be used internally; all positivity/finiteness cancellations must be explicit.\n4. Geometry. For 0<eta<=1 and U subset Box(Q), Q>=1, use an element t in T to bound z=t*s^-1 in Box(4Q). For t,t' in T, entrywise estimates suggest T*T^-1 subset mobiusIdentityBall(64Q^2 eta): t-t'=z(s-s'), each error entry <16Q eta, and (t*t'^-1)-1=(t-t')t'^-1 has each entry <32Q^2 eta. Check strict inequalities and constants. Thus U subset F*mobiusIdentityBall(64Q^2 eta). Converting to ordinary Frobenius balls centered at F can conservatively use radius256Q^3 eta by entrywise estimates. These radii are planned, not yet formalized. Use existing mobiusIdentityBall_entry_bounds, matrixEntryBox_inv/mul, mobiusIdentityBall_subset_entryBox_two and small-ball Haar bounds; do not conflate the ambient pi metric with the Frobenius radius used by mobiusIdentityBall.\n5. Compose the actual concentration bound with the finite cover. If Bc=8192K0 L^2K^4 and q^2<=Bc*p, the proposed cardinal bound becomes card(F)*q^2*v<=2^23 K0 L^2K^20 H(U). The exact Haar-ball volume is preferable initially; haar_identityBall_lower later supplies its cubic eta dependence, retaining the Haar scalar factor. Do not replace the actual cover with a statement conditional on its existence.\n\nSource audit: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1, equations4.11\u20134.12 and Theorem4.4 rechecked R1800. Their route also needs local overlap before scale-sensitive covering; product growth then needs intermediate size, multiscale distribution and quantitative escape. Our endpoint-factorization route adapts that bridge to the actual autocorrelation iterates and carries explicit conservative constants. Product theorem/escape, localization near identity and strict flattening remain substantial subsequent targets, not consequences already proved here.\n\nAfter the concrete smoothing-scale cover: localize a suitable symmetric product set near identity, establish the product theorem's volume/distribution/escape premises for the actual rational free walk, prove growth and then strict flattening of a FIXED iterate. Ultimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), choosing k before N,J0,epsilon0. Preserve all six original families and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1800 completes original-level overlap transfer and actual nonflattening approximate-group concentration. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MeasureOverlapTransfer.lean": "9c7e80dc86c607f8f8cbac823fbf3b0c64e2ba79fc4997c50b07e83d5ae2207b",
+    "lean/TransposeFollowup/MobiusMeasurableApproximate.lean": "249c9ca52a712517428afe54a5d3785d4a1c91b3f0816f211d466221d663a6d3",
+    "lean/TransposeFollowup/SmoothedIterateApproximate.lean": "c2554b629f955fbc3bff4632c3f2cb431f2f8de33078c655c44797ba8eb95694"
+  }
+}

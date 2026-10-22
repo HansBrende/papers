@@ -1,0 +1,116 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1834",
+  "target": "Actual nilpotent trace amplification with charged scalar-cell transfer; keep determinant and concentration limitations explicit.",
+  "new_modules": [
+    "ShiftedCentralizerTrace",
+    "NilpotentTraceCells",
+    "NilpotentActualTraceGrowth"
+  ],
+  "modified_modules": [
+    "NilpotentArithmeticWords"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.two_source_trace_word_errors",
+    "TransposeFollowup.SL2Projection.scalarAffine_repeated_trace",
+    "TransposeFollowup.SL2Projection.nilpotent_shifted_trace_arithmetic",
+    "TransposeFollowup.SL2Projection.scalar_cells_le_affine_near",
+    "TransposeFollowup.SL2Projection.nilpotent_actual_trace_cells",
+    "TransposeFollowup.SL2Projection.nilpotent_actual_trace_growth"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 44483,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1835-dev1.log",
+      "warnings": false
+    },
+    "development_2": {
+      "session_id": 68812,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1835-dev2.log",
+      "reason": "Remove no-op simplification after destructuring already reduced trace identities."
+    },
+    "development_3": {
+      "session_id": 62634,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1835-dev3.log",
+      "warnings": false
+    },
+    "development_4": {
+      "session_id": 13877,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1835-dev4.log",
+      "reason": "Remove no-op simplification of already reduced scalar-set let binder."
+    },
+    "development_5": {
+      "session_id": 36252,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1835-dev5.log",
+      "reason": "Annotate trace-image binders as group elements to avoid an implicit lifted Finset coercion to matrices."
+    },
+    "development_6": {
+      "session_id": 3125,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1835-dev6.log",
+      "warnings": true,
+      "reason": "Cell-growth proof passed; consecutive-intro style warning removed in development8."
+    },
+    "development_7": {
+      "session_id": 27123,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1835-dev7.log",
+      "reason": "Native-cover conversion requires explicit multiplication and definitional alignment of NNReal radius, not opaque arithmetic atoms."
+    },
+    "development_8": {
+      "session_id": 74289,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1835-dev8.log",
+      "reason": "Close NNReal coercion identities by reflexivity before polynomial normalization."
+    },
+    "development_9": {
+      "session_id": 74958,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1835-dev9.log",
+      "warnings": false
+    },
+    "build": {
+      "session_id": 64658,
+      "status": "terminal",
+      "exit_code": 0,
+      "jobs": 10094,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 59468,
+      "status": "terminal",
+      "exit_code": 0,
+      "declarations": 4560,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1835 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.",
+  "terminal_handles": "All R1835 handles terminal. Development1(44483),3(62634),6(3125),9(74958) passed. Development6 intro-style warning was removed. Development2(68812),4(13877),5(36252),7(27123),8(74289) failed and were repaired. Full build64658 and audit59468 passed:10094 jobs,4560 declarations,no warnings. No live Lake handle.",
+  "updated_at": "2026-10-20T07:01:44.305358+00:00",
+  "formal_checkpoint": "R1835 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:913 local sources,204 external sources,4560 declarations,8 configurations,113 artifacts",
+  "proof_scope": "In progress. R1835 composes the scalar sum/product alternative with exact nilpotent centralizer arithmetic and actual source-word approximation. It proves growth of a native trace covering number for an actual word family, under explicit scalar range, separation, cardinality, distribution and error budgets. Three new modules and one refactored module add6 theorems; the old inverse-final-word error calculation and the new repeated-word calculation share one proof. Nilpotence remains an explicit case assumption. The resulting word family is not yet proved to satisfy all near/far and retained-mass hypotheses of the final trace-cubic contradiction.",
+  "next": "The preceding goal turn is PROGRESS. R1835 is recorded; never replay its checkpoint. Full10094-job build and4560-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1835-actual-nilpotent-trace-growth.txt and library-reuse-audit-r1835.json. The nilpotent scalar-to-actual-word amplification is now formalized, including native covers and word lengths. Do not redo the scalar ring theorem, shifted trace identities, affine cell transfer or source-word error chain.\n\nNEXT CONCRETE TARGET: prove the weighted-trace separation certificate written in the R1835 note. In the exact nilpotent case, test tr(bw) on the two candidate word families: it should equal ell for u v g and ell*(tau+q ell) for u g v g. Use the already positive scalar range and actual nonzero ell from R1833. Transfer to actual z_i words with a proved source-error budget, obtaining a uniform distance-from-I lower bound for BOTH families. This may avoid discarding the trace gain in a center-trimming step. Reuse the native product-distance calculation: if its internal distance bounds must be exposed, refactor that shared helper rather than copying it. Combine the original set_pow_dist_from_one_le with the actual word lengths for the near-I requirement.\n\nThen compare the resulting native trace lower bound K|X|/250 with R1832's full trace-cubic upper threshold, including all scale, envelope and retained-size losses. The parameter ledger in the note records the necessary source error, scalar normalization, separation and profile obligations. Do not replace that comparison by the weaker statement that a trace set is larger than the first commuting family.\n\nINPUT PROFILE remains unresolved. The imported scalar_maximal_density_zoom and positive-zoom lemmas ALREADY exist; do not build another density-selection chain. An affine scalar zoom changes the actual trace-product readout and can lose too much mass, so it is not by itself an application of R1835. Preserve the concentrated-case matrix alternative and audit its word costs. Nonnilpotent cases are also still required: near identity alone does not justify erasing the determinant correction.\n\nREPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. This is not the percentage for a local lemma or a time estimate. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ShiftedCentralizerTrace.lean": "204875febd5f415203df326e19fb27aa3a97c2348f3863d3d2b2327a7fd5eaa3",
+    "lean/TransposeFollowup/NilpotentTraceCells.lean": "362bc9f5648eb4e96122a2c127ffcd8d2845bb385e92197749a98470acc1e354",
+    "lean/TransposeFollowup/NilpotentActualTraceGrowth.lean": "8adda2d103360fb11a78f5f823646c56b1a3e9e0bb8c4dc5eb024b54f2fadcbf",
+    "lean/TransposeFollowup/NilpotentArithmeticWords.lean": "fda87e7200f9b10cc67a95fcbc3e6c881f1294a300f7d8267035f9f46e077086"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1832",
+  "previous_turn_classification": "PROGRESS",
+  "target": "Select one actual bounded word with a quantitative trace coefficient; encode nilpotent scalar addition and multiplication and charge actual-word approximation.",
+  "new_modules": [
+    "ActualTraceCoefficient",
+    "NilpotentScalarArithmetic",
+    "NilpotentArithmeticWords"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_quantitative_frame_trace_test",
+    "TransposeFollowup.SL2Projection.exists_actual_noncentral_trace_test",
+    "TransposeFollowup.SL2Projection.scalarAffine_trace_right",
+    "TransposeFollowup.SL2Projection.scalarAffine_sandwich_trace",
+    "TransposeFollowup.SL2Projection.centered_trace_arithmetic",
+    "TransposeFollowup.SL2Projection.nilpotent_positive_trace_arithmetic",
+    "TransposeFollowup.SL2Projection.centered_trace_arithmetic_error",
+    "TransposeFollowup.SL2Projection.frobenius_product_distance",
+    "TransposeFollowup.SL2Projection.centered_actual_arithmetic_words"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 11016,
+      "exit_code": 1,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev1.log",
+      "reason": "Reserved lambda binder and looping symmetric trace simplifier; replaced with ordinary coefficient notation and one directed rewrite."
+    },
+    "development_2": {
+      "session_id": 68795,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev2.log",
+      "warnings": false
+    },
+    "development_3": {
+      "session_id": 18261,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev3.log",
+      "exit_code": 1,
+      "reason": "The exact nilpotent specialization needed directed rewriting before ring normalization."
+    },
+    "development_4": {
+      "session_id": 59761,
+      "exit_code": 1,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev4.log",
+      "reason": "Lean does not accept the subscript-plus word identifier; renamed the two word variables."
+    },
+    "development_5": {
+      "session_id": 33458,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev5.log",
+      "exit_code": 1,
+      "reason": "Two Frobenius comparisons needed explicit SL2-to-matrix multiplication coercions."
+    },
+    "development_6": {
+      "session_id": 77103,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1833-dev6.log",
+      "warnings": false
+    },
+    "build": {
+      "session_id": 35756,
+      "status": "terminal",
+      "exit_code": 0,
+      "jobs": 10087,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 74724,
+      "status": "terminal",
+      "exit_code": 0,
+      "declarations": 4544,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "completed_families": "3/6; final referees pending",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1833 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.",
+  "constraints": "No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "terminal_handles": "All R1833 handles terminal. Development1(11016),3(18261),4(59761),5(33458) failed and were repaired; development2(68795),6(77103) passed. Full build35756 and audit74724 passed:10087 jobs,4544 declarations,no warnings. No live Lake handle.",
+  "updated_at": "2026-10-20T06:25:05.559897+00:00",
+  "formal_checkpoint": "R1833 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:906 local sources,204 external sources,4544 declarations,8 configurations,109 artifacts",
+  "proof_scope": "In progress. R1833 verifies selection of one actual bounded-word trace coefficient, fixed-matrix scalar addition and multiplication in the nilpotent centralizer, explicit stability for a small nonzero determinant, and transfer to actual words with lengths2m+n and2m+2n. Three modules add9 theorems, reusing the existing frame expansion, coordinate equation and native Frobenius bounds. This removes the algebraic collapse of the earlier varying-coefficient mechanism in the nilpotent case. It does not yet prove scalar amplification or finish paid padding.",
+  "next": "The preceding goal turn is PROGRESS. R1833 is recorded; never replay its checkpoint. Full10087-job build and4544-declaration audit passed; standard axioms only; no live Lake handle. Read verification/r1833-fixed-matrix-arithmetic.txt and verification/library-reuse-audit-r1833.json. The note contains a written, NOT yet Lean-formalized, rounded-dilate overlap/Ruzsa route to the imported projection theorem.\n\nNEXT SUBSTANTIVE TARGET: prove the rounded-dilate overlap/projection bridge under actual small-sum and small-product cell hypotheses. Reuse mathlib Cauchy--Schwarz, finite double counting and Ruzsa, plus imported ScalarSumCells/ScalarCoverCount/ScalarRuzsa. Do not re-prove the full scalar projection theorem. Start with X subset[1,2], delta-separated, N=|X|, both cell sets bounded by K*N. The written route selects a0 and E with |E|>=N/(2K), common rounded overlap>=N/(2K), and polynomially small projections for b/a0. Formalize the actual incidence counts, not an assumed energy inequality. Validate all rounding/rescaling constants.\n\nAfter that, connect the verified family of small projections to the imported growth theorem with nonconcentration inherited from a PROVED scalar distribution. The extracted family need not inherit A's normalized mass bound; retain the concentrated-case branch rather than silently assuming it away.\n\nThe matrix interface is now available: exists_actual_noncentral_trace_test selects g in A^34; centered_trace_arithmetic_error and centered_actual_arithmetic_words retain both determinant and source approximation errors. For the positive scalar interval, verify the shifted identity Y(t)Y(q)=tr(u(t)g u(q)g)+2 (nilpotent case), with Y(t)=tr(u(t)g). Use existing SL2 trace algebra and actual word estimates. Do not substitute the unshifted t*q identity for the shifted product without proof. Ensure near-identity and separation from I for the actual candidate D before invoking trace_reextraction_cubic_bound.\n\nDo not redo cubic packing, second extraction, coefficient selection or the native multiplication error chain. No unquantified diagonalization or inverse-discriminant assumption. A result larger than the first commuting family alone is insufficient; compare the FINAL trace lower bound with R1832's explicit threshold, including all losses.\n\nREPORTING: The user requires our best estimate for the CURRENT ORIGINAL proof, paid padding201/202. Current rough estimate60%, low confidence; explain uncertainty and update only when the overall dependency picture warrants it. Do not report percentages for isolated local lemmas as progress on paid padding. Three original families are formalized. Referees follow all six. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ActualTraceCoefficient.lean": "a128c6ea199d5c0023e270205ae2780a49b6cedb61bc68a7f554f73374b388ea",
+    "lean/TransposeFollowup/NilpotentScalarArithmetic.lean": "fde268034c963f19e7ca7defe4530e89eb9a3f70e43aa93893e22c6127f9ccbb",
+    "lean/TransposeFollowup/NilpotentArithmeticWords.lean": "4704105f4c7164a643a985156651893b6888bb21b74bdb96bc8a9fd6e8bb651e"
+  }
+}

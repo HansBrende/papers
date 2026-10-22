@@ -1,0 +1,41 @@
+[
+  {
+    "name": "axioms",
+    "command": [
+      "/Users/hansbrende/.elan/bin/lake",
+      "env",
+      "lean",
+      "SupportAxioms.lean"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 24.188
+  },
+  {
+    "name": "kernel-import",
+    "command": [
+      "/Users/hansbrende/.elan/bin/lake",
+      "env",
+      "lean",
+      "-R",
+      "/private/tmp",
+      "-o",
+      ".lake/build/lib/lean/R1909KernelAudit.olean",
+      "/private/tmp/R1909KernelAudit.lean"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 19.968
+  },
+  {
+    "name": "kernel-replay",
+    "command": [
+      "/Users/hansbrende/.elan/bin/lake",
+      "env",
+      "leanchecker",
+      "--fresh",
+      "--verbose",
+      "R1909KernelAudit"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1155.553
+  }
+]

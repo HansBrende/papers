@@ -1,0 +1,56 @@
+{
+  "checkpoint": "R1748",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "PaidGeneratorEntry",
+    "PaidGeneratorTrajectory",
+    "PaidGeneratorGeometry",
+    "PaidTimedWalk",
+    "PaidTimedLayout",
+    "PaidTimedCut"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.PaidGeneratorRows.rewind_to_guard",
+    "TransposeFollowup.PaidGeneratorRows.entry_trace",
+    "TransposeFollowup.PaidGeneratorRows.row_prefix",
+    "TransposeFollowup.PaidGeneratorRows.stream_prefix",
+    "TransposeFollowup.PaidGeneratorRows.native_stream_trajectory",
+    "TransposeFollowup.PaidGeneratorRows.native_geometry",
+    "TransposeFollowup.PaidGeneratorRows.native_row_walk",
+    "TransposeFollowup.PaidGeneratorRows.native_layout",
+    "TransposeFollowup.PaidGeneratorRows.native_cutIneq",
+    "TransposeFollowup.PaidGeneratorRows.native_horizon_linear",
+    "TransposeFollowup.PaidGeneratorRows.native_canonical_cut"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 1433,
+      "exit_code": 0,
+      "jobs": 9414
+    },
+    "build": {
+      "session_id": 16376,
+      "exit_code": 0,
+      "jobs": 9487
+    },
+    "axioms": {
+      "session_id": 55092,
+      "exit_code": 0,
+      "declarations": 2620
+    }
+  },
+  "updated_at": "2026-10-19T08:38:25.143164+00:00",
+  "formal_checkpoint": "R1748 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1748,510 sources,2620 declarations,86 artifacts",
+  "proof_scope": "In progress. R1748 proves literal zero-slack CutIneq for the actual PaidGeneratorRows native run from Transpose.init with blank work tapes. For every fixed nonempty rational map family F, K>0, n>=1 and raw w of length P=inputLength(n), set Q=rationalPageCount(F), r=blockSize(3,n), and C=OpcodeGenerator.coefficient(F)+RadiusClock.linearConstant(K)+28K+16Q+19. Under positive vertex expansion eta of the 2n-vertex overlap graph, (4K-1)*eta>=4 and 3*(53+Q)*eta>=4Q, there exists T<=C*P with CutIneq(n,3,r,T,0,0,actual native paths). The machine has53+Q tapes and5 symbols. All opcode generation, physical clock setup, both transfers, rewind, row decoding and intermediate head pauses are paid. No clock or opcode stream is preloaded. The same actual entry offset is at most(C_gen+D_K)*P+8nQ+6; row stride is14Kr+4Q+6 and fetch delay4Q+2. This extends R1747 execution, not the completed paid-padding theorem.",
+  "next": "Prove a fixed physical input-head rewind as the next payload-composition primitive. Starting at external input position length(w), move left and read until the first left blank, then move right to0. A four-state NativeIO program can do this in exactly2*length(w)+3 transitions, including the empty input, with every work tape and work-head position and outRev unchanged. Prove a framed native-call theorem so it can follow PaidGeneratorRows.consume.done through a paid transfer. Then compose that reset with the actual prefix, preserving the already proved prefix page paths; retain all additional transfers and the enlarged machine head count. Do not claim arbitrary payload composition or workspace cleanup merely from the standalone rewind. Afterward address payload integration/cleanup and the remaining unconditional expansion/MStar obligations.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. Native blank-start geometry is support for paid padding201/202, not completion. Motion200/210, recursion206/208 and final referees remain. The percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/PaidGeneratorEntry.lean": "8303c5be09d97c972805aeb9cfd15b2a671d40c52571e96d26ca1c36a172ec85",
+    "lean/TransposeFollowup/PaidGeneratorTrajectory.lean": "922757ae73112b1880170abf74f533ea3c7f6c6a956ca38accb987308b62c377",
+    "lean/TransposeFollowup/PaidGeneratorGeometry.lean": "83c47f70f003c0c77e3e3a78919b6ffbf9b2dbd22fb419bace892500976b1895",
+    "lean/TransposeFollowup/PaidTimedWalk.lean": "15749e6bbd0d9de8e22d2daf161e452104693d5f07309e24cad4a1aedc3cb83e",
+    "lean/TransposeFollowup/PaidTimedLayout.lean": "23ec392bfda6398664c869d221d06fa79854cb41bebaaff18ddba1dae257a821",
+    "lean/TransposeFollowup/PaidTimedCut.lean": "57d0eca1662287ac7c881cb1201dad9a580e436ea83e74f3a24707441d394db9"
+  }
+}

@@ -1,0 +1,149 @@
+
+R1894 — ARBITRARY CLEAN BANKS AND COMPLETE RAW ROW EXECUTION
+PROGRESS at R1894: the integer-row bank now has an arbitrary-clean-bank symbol invariant and complete raw-input native execution. Shared IO assembly loads, executes, emits and halts in15P+2W steps forW>0,P=rW, at most17P forr>0, with2 tapes,5 symbols and200*(time+1) states. Five of six original families formalized; regular recursion206/208 best estimate88% complete (low confidence). Full raw-program geometry, remaining integer/F3 operations and bounded-word exclusion remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1894 CHECKED RESULTS
+1. TapeWindow uses Mathlib ListBlank.ext, induction_on, cons_head_tail and
+   List.ofFn_mul. tape_ext/cells_ext recover equality of actual relative
+   tapes from their symbol functions. half_window/tape_window give finite
+   list representatives of any requested window with arbitrary surrounding
+   contents. rows groups rW symbols into r rows of W symbols; rows_length,
+   row_lengths, rows_flatten, rows_congr and rows_window are proved. This
+   is semantic representation equality, not an uncharged tape operation.
+   window_cell reads an entry from a framed finite window.
+
+2. BankWord.symbols is a shared mode-generic interface with IDENTITY symbol
+   decoding and globally blank scratch. This preserves trits/markers;
+   binary bit decoding is used only where its actual semantics requires it.
+   RawRowArithmetic.bankValue is the already checked bankOutput recurrence
+   applied to grouped input symbols, indexed by List.getI. bankValue_congr
+   proves dependence only on the P=rW input window.
+   clean_representation represents EVERY clean actual configuration by
+   bankStart with some arbitrary prefix/suffix. bank_represents therefore
+   proves the existing BankWord.Represents predicate for bankRun on every
+   clean starting state, with heads and external IO restored. No initial
+   blank-surroundings hypothesis or symbolic oracle is introduced.
+
+3. RawProgramShell assembles any active finite-product body schedule with
+   the existing raw loader/rewind/emitter. It uses the source schedule
+   directly, without a second functional-run field or an extra execution
+   obligation. schedule_exact and native_complete reuse append_exact,
+   prepare_exact, output_exact, native_run_and_halt and blank_denote.
+   The actual native machine starts at original TM.init and halts after
+   exactly7P+N steps, with2 tapes,5 symbols and(time+1)*(4*card F) states.
+   output_spec derives its raw output and blank scratch from a supplied
+   symbol-bank invariant and bank-value congruence. prepared_symbol proves
+   exact .data input symbols, not just equality after Boolean decoding.
+   The old fixed-mode binary wrapper remains unchanged; this shared shell
+   serves the integer/F3 clients without copying their loader/compiler or
+   adding an exact-input-independent-path premise.
+
+4. SharedRowBank.represents transports the arbitrary-clean-bank invariant
+   through the previous product-mode wiring. RawRowProgram instantiates
+   the shell with the existing200-state arithmetic/IO controller.
+   raw_native_correct is an original-TM stepN/halts/output/scratch theorem
+   from blank work tapes, for every external input list. It writes P bits
+   equal to rawOutput, whose value is the prior modular row recurrence;
+   short external inputs follow the existing inputBit zero extension.
+   raw_ticks_eq: forW>0,P=rW, time=15P+2W. raw_ticks_linear: ifr>0,
+   time<=17P. raw_resources:2 tapes,5 symbols,200*(time+1) states.
+   No raw-input preparation assumption remains. Motion approximation is
+   still the previous bank theorem; the full raw-machine motion bound is
+   the next separate obligation.
+
+Four new leaf modules;42 newly audited declarations, not42 research
+results. Previous mathematical sources and public APIs unchanged.
+
+REUSE / DRIFT CHECK
+Revalidated all R1893 source, external, configuration and artifact hashes.
+Searched local sources for tape extensionality/surjectivity/denotation and
+Mathlib Tape/List APIs for finite windows, grouping, lookup and quotient
+representatives. Reused Turing.ListBlank.ext/induction_on/nth_succ/
+cons_head_tail/cons_mk, Tape.right0_nth/mk'_left_right0 and List.ofFn_mul,
+mem_ofFn,getI_append. The thin TapeWindow adapter matches our actual
+absolute-coordinate tape representation; it does not define new semantics.
+Reused RawRowArithmetic.bank_spec/rows_lengths, BankWord.Interface/
+Represents/Congruent, NativeIOModeProduct project/attach transport,
+ScheduledModeRawIO preparation/emission and the original raw loader's
+loaded_written, plus generic native compilation/initialization and count.
+No new row arithmetic, carry recurrence, physical copy loop, raw loading
+loop, output loop, native compiler, compactness proof or lower bound.
+The new generic shell uses identity symbol decoding for exact symbols and
+arbitrary product controller types. Existing binary wrapper APIs and their
+proofs remain intact; current clients share existing low-level routines.
+Avoid copying its further geometry/resource chains: use existing ioCurve,
+clipped-ramp bounds and state_bits_of_linear_count for the next premises.
+First window build had unused Inhabited section parameters; removed using
+explicit omit, not linter suppression. Shell development failures were two
+representation-normalization mismatches, fixed with typed intermediate
+statements, not weakened conclusions. Full build/audit have no warnings.
+Drift: raw native correctness and arbitrary-clean-bank composition are
+required obligations for the original exact palettes. This step closes
+those obligations for row prefix/difference; it does not complete all
+palettes or improve the central research bound.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1894 closes clean-bank composition and raw-input/output execution for integer-row prefix/difference only. Arbitrary surrounding cells and incoming modes are allowed in the bank invariant; the raw machine starts from original TM.init. Its semantic value is the prior checked row recurrence using modular addition/subtraction and original-row retention for difference. Full raw-program affine geometry and the exact remaining integer/F3 palettes and bounded words are not yet finished. Five of six original families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1894 recorded; NEVER replay its checkpoint script. All retained checkpoint
+Lake handles terminal. Goal ACTIVE; PROGRESS. Five original families
+formalized; sixth regular recursion206/208 best estimate88%, low confidence.
+
+NEXT: FULL RAW-PROGRAM GEOMETRY FOR THE CHECKED INTEGER-ROW MACHINE.
+The row arithmetic, clean bank, arbitrary-clean-bank composition, shared
+finite modes and COMPLETE RAW NATIVE INPUT/OUTPUT EXECUTION are DONE.
+Do not reopen these layers. Read RawRowProgram.raw_native_correct,
+raw_ticks_eq,raw_ticks_linear,raw_resources and RawProgramShell.
+Full time is15P+2W (<=17P forW>0,r>0,P=rW),2 tapes,5 symbols,
+200*(time+1)states. Start is actual original TM.init, output is exactly
+rawOutput via the prior bankOutput modular recurrence, scratch is blank.
+BankWord.symbols is mode-generic with IDENTITY symbol decode, preserving
+all5 work symbols. bank_represents and bankValue_congr hold for all clean
+banks with arbitrary surrounding contents, all modes and external IO.
+RawProgramShell.output_spec connects such invariants to raw output.
+RawProgramShell is generic in the auxiliary finite mode and body schedule,
+so use it for other integer/F3 clients. It deliberately has no exact
+input-independent body-path requirement. Keep existing binary APIs intact.
+
+Combine the old bank all-prefix affine approximation with the already
+checked shared raw IO paths. prepareSchedule is exactly4P steps, body
+begins at4P, output begins at4P+bankTicks. Source SharedRowBank.run has
+zero net head displacement on any starting tape (derive from prior
+RawRowArithmetic.bank_endpoint or its generic transport), and the body
+curve is zero before/after its active span. RowBankCurve/RawRowBankMotion/
+RawRowBankApproximation already give9 affine intervals and error(8W+4)/P
+vanishing forW/P->0,P->infinity. RawBankProgram.ioCurve and ioCurve_cover
+already give the loader/rewind/output curve with27 affine intervals.
+Its ioCurve_error currently uses the old binary Body/Motion arguments;
+prefer extracting/factoring the shared pure rounding estimate over copying
+that chain or forcing exact carry paths into its stronger Motion interface.
+ScheduledModeRawIO.input_position/output_position, trajectory_attach and
+append_position supply actual prefixes. Native prefix/halting and frozen
+workTraj are existing compiler/original results; reuse them. The final
+native raw-machine path must include raw IO and its frozen stopped tail,
+not only the clean bank. Then use state_bits_of_linear_count for this
+linear runtime, preserving arbitrary nonuniform public parameters.
+
+After that, complete exact source206(a) remaining row XOR/difference,
+row-order reversal, entry-order reversal preserving within-entry bits,
+row-dependent rotations and whole-bank increment/decrement modulo2^P.
+Complete source206(b) F3 row/column prefix/difference, row/column reversal,
+row rotations, diagonal signs and whole-entry-stream rotation. Use the
+existing shared finite schedules, arbitrary-symbol CoupledRowCell tables,
+ScheduledTransfer and BankWord.word_spec. Binary decoders erase trit2;
+use identity symbol banks and decode only at the actual raw output.
+Then assemble full bounded-word native high-entropy exclusions.
+Source206(c), source208 and210.5 are DONE. Preserve public nonuniform
+choices, bounded words and correctness sets of coentropy o(P). Referees
+only after all six families complete. Original read-only; no commits/pushes.
+Research236/full080 unchanged. No unrestricted transpose decision.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate88% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1894 completes raw native row arithmetic and its arbitrary-clean-bank invariant. Full-program geometry, remaining integer/F3 operations, bounded words and final referees remain.
+
+VERIFICATION
+Full lake build passed10300 jobs without warnings/errors; SupportAxioms audited5752 unique declarations using only propext,Classical.choice,Quot.sound. There are1119 local sources (1118 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and231 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All retained checkpoint execution handles terminal.

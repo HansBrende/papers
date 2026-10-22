@@ -1,0 +1,84 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1819 receipts revalidated;860 sources,5 configurations,86 artifacts;117 protected files and directory inventory unchanged.",
+  "new_modules": [
+    "TraceBucketCover",
+    "SeparatedScalarCover",
+    "TraceCommutingExtraction"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.trace_error_le_frobenius_dist",
+    "TransposeFollowup.SL2Projection.exists_small_trace_bucket",
+    "TransposeFollowup.SL2Projection.conjugate_mem_mixed_product",
+    "TransposeFollowup.SL2Projection.exists_small_conjugacy_orbit_cover",
+    "TransposeFollowup.scalar_coveringNumber_le_patches",
+    "TransposeFollowup.exists_separated_scalar_cover",
+    "TransposeFollowup.SL2Projection.exists_trace_commuting_extraction",
+    "TransposeFollowup.SL2Projection.trace_commuting_loss_le"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 17580,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev1.log"
+    },
+    "development_2": {
+      "session_id": 31369,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev2.log"
+    },
+    "development_3": {
+      "session_id": 15719,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev3.log"
+    },
+    "development_4": {
+      "session_id": 53371,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev4.log"
+    },
+    "development_5": {
+      "session_id": 58173,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev5.log"
+    },
+    "development_6": {
+      "session_id": 8217,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1820-dev6.log"
+    },
+    "build": {
+      "session_id": 14126,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9840,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 78233,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4435,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Direct proof from trace invariance and its Frobenius Lipschitz bound, finite disjoint-bucket counting, native maximal separated sets, explicit one-dimensional cover refinement, and the verified R1819 conjugacy-fiber extraction. The trace candidate set D and conjugating set A are independent; all D are assumed near the identity and separated from it. This supplies the trace-counting and commuting-cover extraction step in the route associated with Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2. It does not establish suitable candidate sets for the actual walk profile, product growth, paid padding or literature novelty. Corollary5.3 was re-read this turn: it motivates trimming near finitely many frame centers. Our quantitative retained-complexity argument for that trimming is still required; pairwise separation of the centers alone is not used as a substitute for it.",
+  "updated_at": "2026-10-20T02:31:49.457345+00:00",
+  "formal_checkpoint": "R1820 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1820, 863 sources, 4435 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1820 selects a conjugacy orbit with a small cover by counting disjoint trace buckets, controls the number of separated traces by the native scalar covering number, and composes these with the actual large-fiber approximation. The resulting theorem uses an independent trace candidate set D and conjugating set A, so A may contain the identity. It produces exact pairwise commuting real SL2 matrices near A^-1*A, and bounds their covering complexity using N_eta(tr D), N_eta(A) and N_eta(A*D*A^-1), with explicit loss polynomial in the inverse distance of D from the identity. Three new modules add8 theorems and no definitions; existing mathematical modules are unchanged. Suitable candidates for the actual walk profile, product growth and paid padding remain unfinished. No fourth original family or new transposition result is claimed.",
+  "next": "The preceding turn is PROGRESS. R1820 closes low-cost trace-bucket selection, scalar separated-cover comparison and their composition with the exact commuting-fiber theorem. Do not redo them. Main interface: TraceCommutingExtraction.exists_trace_commuting_extraction. For independent bounded nonempty A,D, with D nearI and dist_F(D,I)>=r, and1536B^4*eta<=r, it supplies an actual fiber of A and a pairwise commuting SL2 image V within12800B^6*eta/r of A^-1*A, satisfying N_eta(trD)*N_eta(A)<=9*N_eta(A*D*A^-1)*(102400B^7/r+8B+1)^4*N_eta(V). All covers are native and derived. trace_commuting_loss_le bounds the coefficient by9*(102400B^7+8B+1)^4/r^4 for r<=1. There is no diagonalization or eigenvalue-gap assumption. Previous full-family interface remains InitialWalkTraceProfile.exists_initial_walk_trace.\n\nNEXT CONCRETE TARGET: derive quantitative nonconcentration of the ACTUAL localized A from its small tripling and its intermediate-scale separated subsets, then trim neighborhoods of the finite spanning-frame centers while retaining covering complexity. The source Corollary5.3 was re-read this turn. Its trimming sentence must not be substituted for our missing estimate: pairwise separation of finitely many forbidden centers alone does not control how much of an arbitrary A lies near them.\n\nA concrete route is to fix a small cluster S=A intersect B_rho0(h), choose many well-separated t in A at a larger radius rho, and place the translates t*S inside A^2. Bounded matrix norms and inverse norms give a quantitative separation of the centers t*h and bound the radii of translated clusters. Choose rho as a fixed constant multiple of rho0, and require eta sufficiently smaller than rho, so one eta-cover ball cannot meet two different translated clusters. Pull the assigned covers back using t^-1 and use the proved coordinate refinements to pay the fixed radius change. This should yield N_eta(S) <= C*N_eta(A^2)/|T|, hence at most C*eta^(-beta)*rho^(1/122880)*N_eta(A) using the actual small-tripling and distribution hypotheses. Derive every distortion and disjointness bound; do not assume isometries or disjoint centers imply disjoint cover balls. Select beta and the distribution exponent before s,k so this fraction is small at rho=eta^zeta for a suitably small positive zeta. Prove a finite-cover union/removal estimate to retain a constant fraction of N_eta(A) after deleting the required finitely many neighborhoods. This is a proposed next proof, not a verified result.\n\nThen reapply the existing three-trace projection to the retained subset A' using the SAME spanning frame. Choose h from that frame and D=h^-1*A'. Use the mixed-set theorem with the original A as conjugating set. Derive distance(D,I), bounded entries, and the near-identity radius from actual product bounds (frame elements lie in A^34). Tighten the initially chosen alpha if necessary through the quantified family theorem. Do not assume the whole A stays away fromI; it containsI. Do not claim that a large trace image by itself supplies a small-power distance bound. Compare N_eta(A*D*A^-1) using actual bounded-product entropy, reusing U^2 subset Y*U and the existing covers of U,U^6. All exponent choices and constant absorption must preserve s chosen before k and the fixed-family quantifiers.\n\nAfter the candidate-set application, actual product growth still needs discretized ring/sum-product expansion; it is not available as an axiom or verified import. Further conditioning or handling of commuting families in that later step remains separate. Then prove strict flattening, fixed-iterate density cap with D^2<=2^j, unconditional restricted gap and paid padding. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1820 adds trace-driven extraction of exact commuting matrices with a native covering-number bound and an explicit polynomial loss. Paid padding remains unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. This estimate concerns formalization scope, not time, success probability or progress toward deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceBucketCover.lean": "cc3670bc52662d6896173b11824c084da32cc486211c12055b2cac8e5a12d53e",
+    "lean/TransposeFollowup/SeparatedScalarCover.lean": "27f66870d4c454819ac2dbfaff98c386089fad96b76c974eb45e55d72fb9c8b6",
+    "lean/TransposeFollowup/TraceCommutingExtraction.lean": "05519d61b99a894e2604bd89545fd17966feb7020078fdd02d51516c43a2b50f"
+  }
+}

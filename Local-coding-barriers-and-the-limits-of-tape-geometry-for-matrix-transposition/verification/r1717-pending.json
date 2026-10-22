@@ -1,0 +1,119 @@
+{
+  "unit": "R1717",
+  "previous_turn": "PROGRESS;R1716 recorded via checkpoint_followup_r1716_pending_exec.py;all old R1716 scripts MUST NOT RUN AGAIN",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "updated_at": "2026-10-18T18:01:59.634707+00:00",
+  "authoritative_receipt": "support-build.json:R1717,259sources,1236declarations,67artifacts,2olderexecution suites still pending",
+  "new_modules": [
+    "RecordedRowMachine",
+    "RecordedRowRun",
+    "RecordedRowResources",
+    "RowEnumerationData",
+    "RowEnumerationMachine",
+    "RowEnumerationCalls",
+    "RowEnumerationRun",
+    "RowEnumerationResources",
+    "RowEnumerationMeaning",
+    "SeededEnumerationMachine",
+    "SeededEnumerationCalls",
+    "SeededEnumerationRun",
+    "SeededEnumerationResources"
+  ],
+  "source_sha256": {
+    "lean/TransposeFollowup/RecordedRowMachine.lean": "97cec88867be41ab7c6bd7f3d348dc969469cf6d78f79debea596c46f1b31487",
+    "lean/TransposeFollowup/RecordedRowRun.lean": "08395af9d1890cfc41690554fdf9b44ab58a0c386a3d87959412abda0f1666ed",
+    "lean/TransposeFollowup/RecordedRowResources.lean": "2c1205e46aac4204fe8300e1702323c9388e27ca61625f56fb29241a1daeb407",
+    "lean/TransposeFollowup/RowEnumerationData.lean": "14b9230bf1aeb735bdf4eec5234ba7e36668f8e8f7716becbcd57f54f86ea0b5",
+    "lean/TransposeFollowup/RowEnumerationMachine.lean": "ea084d02363f5929075e1f6257aa34ec98f7d7b4358182cf1803f8490bc89bde",
+    "lean/TransposeFollowup/RowEnumerationCalls.lean": "022b48904f068b27b74212a37dbfcfd849b5fb68adab71d8b74b2e371693bb7f",
+    "lean/TransposeFollowup/RowEnumerationRun.lean": "84d84278414c6665015ea601c87a84f2e3c004e4e77679b794b052e5a8bc7ad5",
+    "lean/TransposeFollowup/RowEnumerationResources.lean": "b25e9b0d9e1c51121fd252a3424b3d1b017549b03a1677eded09966452bcd14a",
+    "lean/TransposeFollowup/RowEnumerationMeaning.lean": "cef616aca2f30659bd3764d658cd36b89f4f320730ad947719fde496e0e26025",
+    "lean/TransposeFollowup/SeededEnumerationMachine.lean": "cdf622996fcd9ab81459bb32ffa220ad480bd10fa9c3db943230a54bfc1dac4c",
+    "lean/TransposeFollowup/SeededEnumerationCalls.lean": "6b4b81b49dbfefd216047688a6ede3ad1951f6cd0332b51a34eb75a7fd7f237f",
+    "lean/TransposeFollowup/SeededEnumerationRun.lean": "54639315aae0484cdb351af32e9ce4e727682bfb90eca127a2c347c42a415c80",
+    "lean/TransposeFollowup/SeededEnumerationResources.lean": "59f2cf03546b05a371b34b5c06a2a551aa0123af7dbb2b4d3fb9c66e49ea76a0"
+  },
+  "checks": {
+    "recorded_row_build": {
+      "session": 40079,
+      "exit_code": 0,
+      "jobs": 9224
+    },
+    "recorded_row_audit": {
+      "session": 41006,
+      "exit_code": 0,
+      "declarations": 1166
+    },
+    "all_rows_build": {
+      "session": 56943,
+      "exit_code": 0,
+      "jobs": 9230
+    },
+    "outer_loop_standalone": {
+      "session": 32227,
+      "exit_code": 0
+    },
+    "outer_resources_standalone": {
+      "session": 56634,
+      "exit_code": 0
+    },
+    "empty_case_execution": {
+      "session": 1223,
+      "exit_code": 0,
+      "output": "true",
+      "scope": "Original40-tape program,zero-row case only;40heads,halt,old prefix,all cells checked;exact marked index allowing redundant blank tail."
+    },
+    "semantics_standalone": {
+      "session": 56196,
+      "exit_code": 0,
+      "log": "/private/tmp/row-enumeration-meaning-5.log"
+    },
+    "all_rows_audit": {
+      "session": 9911,
+      "exit_code": 0,
+      "declarations": 1209
+    },
+    "seeded_trace_standalone": {
+      "session": 2054,
+      "exit_code": 0,
+      "log": "/private/tmp/seeded-enumeration-run.log"
+    },
+    "seeded_trace_build": {
+      "session": 91435,
+      "exit_code": 0,
+      "jobs": 9233
+    },
+    "seeded_resources_standalone": {
+      "session": 81264,
+      "exit_code": 0,
+      "warning": "one unused simp argument,removed before full production build"
+    },
+    "final_build": {
+      "session": 41469,
+      "exit_code": 0,
+      "jobs": 9234
+    },
+    "final_audit": {
+      "session": 31469,
+      "exit_code": 0,
+      "declarations": 1236
+    },
+    "seeded_empty_execution": {
+      "session": 2840,
+      "exit_code": 0,
+      "output": "true",
+      "scope": "zero-row only;41heads,source,prefix and all blank work cells"
+    }
+  },
+  "still_running": {
+    "row_cleanup": 26978,
+    "reusable_row": 64928
+  },
+  "proof_scope": "In progress. R1717 closes row-to-record composition,all-row enumeration,and seed setup/cleanup. RecordedRow physically combines reusable row generation with the consumer on40fixed tapes. RowEnumeration uses the same40tapes for every row,physically compares/increments the row index and resets it after the final comparison;no separate countdown tape. Its exact output is the fixed-width encoding of precisely the supplied rational maps directed neighbor relation,without duplicates or out-of-range pairs. SeededEnumeration uses41fixed tapes,starting from one marked dimension word,an arbitrary prior output prefix,and39blank work tapes. It runs the existing8-tape ArithmeticSeed,clears the temporary marker,enumerates all rows,erases all5seed words and removes the remaining scratch marker. At return the source and prior prefix survive,all39work tapes are blank and all heads except the record output are restored. Every link is charged. Native trace,stepN,halt,framed caller,exact record meaning and inputLength allowance proved. Fullbuild9234jobs;1236declarations audited with standard axioms only. Two zero-row interpreter checks pass;the prior18-case cleanup and integrated row interpreters remain pending,explicitly not verified by execution. Raw input dimension recovery,common multi-map record normalization,clock/fetch/payload/full generator,unconditional BY existence,motion and recursion remain.",
+  "cost": "N*(rowAllowance+23m+60)+15m+27;rowAllowance=RecordedRow.budget F n(alltrueN flags). <=((1876+72T)*size(E^2)+23118+928T)*inputLength forN>=1,sourcevalueN,length<=size(N+1).",
+  "resources": "40tapes,5symbols,198Slo+396Shi+396K+12566states",
+  "next": "Close the raw-input dimension-loading boundary and common multi-map record interface. Original Transpose.encode has no size header:derive a short marked dimension word from input length within O(inputLength N),with all source scanning,markers,head positions and workspace paid. Reuse SeededEnumeration.native_call;it already handles seeds,all row-index updates,record meanings and cleanup. For fixed multiple maps,derive a common record-width policy and actual normalization/tag/symmetrization/dedup/color pipeline;do not assume heterogeneous map-dependent record widths are parseable for free. Then complete the clock/fetch/payload/full generator. Unconditional BY existence,motion200/210,recursion206/208 remain. Preserve all6families,no commits/pushes,referees only after ALL.",
+  "loader_plan": "verification/dimension-loader-plan.txt;design only",
+  "formal_checkpoint": "R1717 recorded;this checkpoint script MUST NOT RUN AGAIN"
+}

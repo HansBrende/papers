@@ -1,0 +1,136 @@
+R1911 — SECOND STRENGTHENING, SIMPLIFICATION AND REUSE PASS
+21 October 2026. Complete.
+
+OUTCOME
+All six original main theorem families remain proved. Family 1 now covers
+arbitrary input distributions. The affine approximation support endpoint in
+family 3 assumes pointwise convergence instead of uniform convergence.
+Families 2, 4, 5 and 6 retain their previous statements and constants.
+The pass changes 15 mathematical files; all 1157 mathematical modules remain.
+Active mathematical source: 105589 -> 105579 lines (net -10).
+This is a small net source-size reduction: broader statements and retained
+main uniform APIs consume most proof savings. No large safe deletion was found.
+No commits or pushes. The original sibling paper and dependency pins are unchanged.
+
+1. ADAPTIVE SEPARATORS FOR ARBITRARY LAWS
+Let X have any normalized nonnegative probability law w on the finite correct
+family F. Let P=n^2*b, Z=helper(X), and D_w=P-H_w(X), with entropy in bits.
+For the same deterministic adaptive original-row strategy and any separator
+chosen from the helper and completed public transcript, put
+  L(X)=n*b*|S(X)|+b*sum_C |C|^2,
+where C ranges over components of the actual interaction graph minus S(X).
+Then
+  E_w[length] >= P - E_w[L] - 2D_w - 2H_w(Z).
+For n,b>0, if E_w[length]<=(1-epsilon)P, put
+  alpha=max(epsilon-2(D_w+H_w(Z))/P,0).
+Then
+  E_w[treewidth] >= (n/4)*alpha^2 + alpha/2 - 1.
+
+Weights may vanish; no independence or uniformity is required. The protocol
+must be exactly correct on all of the declared F, including zero-weight
+members; alternatively F may be chosen as the support. Query supports may
+contain any finite number of original rows, with each support contributing
+a clique. Public control, original-row access, and the finite helper type
+remain as before. There is no new permission to query coded workspace.
+This widens allowed input laws, not the excluded computational architecture,
+and does not improve the coefficients. All original uniform main theorem names and
+statements are retained as direct specializations.
+
+Main Lean declarations:
+  TransposeFollowup.graph_expected_separator_bound_of_distribution
+  TransposeFollowup.average_treewidth_lower_bound_of_distribution
+Intermediate RowCode, strategy, aggregation and integer-threshold endpoints
+also have arbitrary-law versions. The uniform implementations reuse these.
+
+The common entropy estimate, for ANY nonnegative finite weights p, is
+  H(p) <= H(f_*p) + sum_a (f_*p)(a)*log|f^(-1)(a)|.
+It uses natural logs and needs no normalization. Apply conditional Gibbs
+with q(x)=1/|f^(-1)(f(x))|; occupied fibers have q-mass one and empty fibers
+mass zero. Averaging the existing leaf inequality and the unchanged volume
+and prefix-code budgets proves the weighted adaptive result. This abstract
+entropy tool is standard mathematics; no literature novelty is claimed.
+
+2. POINTWISE AFFINE APPROXIMATION OBSTRUCTION
+AffineTimeRequired.not_bounded_affine_approximation now needs only
+  for each head t and each x in [0,H], u_n(t,x) -> P(t,x),
+instead of uniform convergence on [0,H]. The conclusion remains False under
+the same bounded affine-cover assumptions. The separate eventual uniform
+error bound dist(u_n(t,x),q_n(t,x))<=e_n, e_n->0, is unchanged. Thus this is
+not a claim that arbitrary almost-everywhere or merely average error suffices.
+The two existing native callers supply pointwise convergence from their
+already-proved uniform limits. Their theorem statements do not change.
+
+3. REUSE AND PROOF COMPRESSION
+- Four compiler proofs remove 86 lines. NativeReadFusion reuses the base
+  microcode one-step correctness proof; NativeIOFusion reuses the fused
+  work proof and ordinary IO proof. Two base proofs combine identical
+  instruction cases. Every configuration field, machine definition,
+  state/resource formula, and charged transition count is unchanged.
+  Effective-program reuse occurs at a single fixed configuration; it does
+  not assume the effective instruction remains fixed across a whole run.
+- A generic finite-code representative lemma replaces two repeated
+  finite-label selection arguments, removing 12 net lines. Only the code
+  alphabet must be finite; the input domain may be infinite. Existing
+  geometric cover conclusions and constants are unchanged.
+- The finite affine contradiction reuses one_le_of_star_small_cuts,
+  removing 14 lines without altering its statement.
+- A shared one-radius XOR ball-budget lemma removes 6 net lines from the
+  two square-root proofs. The existing real and natural bounds are unchanged.
+- The unused uniform-only aggregation wrapper is retired (21 lines); every
+  active consumer now uses the stronger arbitrary-law aggregation theorem.
+- Direct transcript rewriting removes 14 lines of duplicate sum equalities.
+
+The compiler, finite-code, finite-affine, XOR and transcript refactors listed
+above save 132 net lines. Generalizing aggregation also makes the old uniform
+wrapper unnecessary. After including every new statement, retained main
+corollary, scoping line and retirement, the total change is -10 lines.
+Counts include ordinary source whitespace and documentation and exclude
+SupportAxioms.lean, which adds eight net audit commands. The source reduction
+is modest.
+
+4. PRESERVATION AND RETIREMENT
+All six original main theorem statements remain available. The only changed
+old theorem hypothesis is the deliberately weaker pointwise convergence
+premise of the affine support lemma. All other retained old theorem headers
+in the changed files are unchanged. Two support declarations are retired: the unused uniform mean_log_fiberCard
+identity and the now-unconsumed uniform aggregate_leaf_bounds wrapper. The
+exact identity is archived, not claimed to be identical to the new arbitrary-law
+inequality. The aggregation wrapper follows immediately by specialization.
+Neither retired name is an original main-theorem obligation.
+Their original sources and all other edited source snapshots are preserved with
+hashes in research/10-linear-decision/archive/r1911-reuse-pass. Independent
+unused mathematical endpoints were retained rather than deleted for counts.
+
+5. VALIDATION AND LIMITATIONS
+- Core target set passed: 8945 Lake jobs.
+- Full target set passed: 10332 jobs, no warnings or errors.
+- Axiom closure passed for all 6297 unique audit declarations: only
+  propext, Classical.choice and Quot.sound.
+- Static lexical inspection of all 1158 local Lean sources finds no sorry,
+  admit, added axioms, unsafe/native_decide, custom trust mechanisms, raised
+  proof limits, or disabled linters. Only autoImplicit=false is set.
+- 117 original files and directory inventory, 204 external source hashes,
+  and 8 configuration hashes unchanged. Archive hashes verified.
+- Independent read-only source reviews checked weighted normalization,
+  zero fibers, original endpoint preservation, compiler field/cost semantics,
+  the pointwise strengthening, and finite-code assumptions.
+- The first core check found an unqualified symbolDecode_code name in a
+  fusion proof. Qualifying it as NativeMicrocode.symbolDecode_code fixed
+  elaboration; the failed log is retained. An unused-section-variable warning
+  was fixed by explicitly omitting the redundant inherited nonemptiness
+  assumption in the two new weighted treewidth endpoints. No axiom, limit
+  workaround or linter suppression.
+- No fresh whole-environment replay was repeated. The normal Lean build
+  kernel-checks new/rebuilt proofs. R1909's separate fresh replay belongs
+  to that historical snapshot and is not represented as a new replay.
+
+Validation cost matters for further cleanup: this pass invalidated roughly
+680 dependent modules across its compiler and analytic changes. Even after direct checks passed,
+a late snapshot still had a 123-module serial dependency chain to rebuild.
+Another broad pass of small local edits is likely to have diminishing returns;
+a worthwhile next reduction should target a larger shared abstraction.
+The separate next-round build-speed plan is verification/r1911-build-speed-plan.txt.
+Its controlled five-module consolidation benchmark is prepared but has not run.
+
+These remain restricted-model results. The pass neither decides unrestricted
+transposition complexity nor establishes novelty by kernel verification.

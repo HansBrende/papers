@@ -1,0 +1,67 @@
+{
+  "checkpoint": "R1754",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn_classification": "R1753 PROGRESS",
+  "new_modules": [
+    "GeneratorCleanupMachine",
+    "GeneratorCleanupRun",
+    "GeneratorCleanupCost"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.GeneratorCleanup.batch_code",
+    "TransposeFollowup.GeneratorCleanup.marker_code",
+    "TransposeFollowup.GeneratorCleanup.stream_code",
+    "TransposeFollowup.GeneratorCleanup.embed_batch",
+    "TransposeFollowup.GeneratorCleanup.batch_call",
+    "TransposeFollowup.GeneratorCleanup.embed_single",
+    "TransposeFollowup.GeneratorCleanup.marker_call",
+    "TransposeFollowup.GeneratorCleanup.stream_call",
+    "TransposeFollowup.GeneratorCleanup.jump_trace",
+    "TransposeFollowup.GeneratorCleanup.reset_zero",
+    "TransposeFollowup.GeneratorCleanup.reset_future",
+    "TransposeFollowup.GeneratorCleanup.reset_step",
+    "TransposeFollowup.GeneratorCleanup.marker_from",
+    "TransposeFollowup.GeneratorCleanup.streamBudget_step",
+    "TransposeFollowup.GeneratorCleanup.streams_retained",
+    "TransposeFollowup.GeneratorCleanup.stream_from",
+    "TransposeFollowup.GeneratorCleanup.final_bank_blank",
+    "TransposeFollowup.GeneratorCleanup.final_positions_zero",
+    "TransposeFollowup.GeneratorCleanup.complete_trace",
+    "TransposeFollowup.GeneratorCleanup.native_complete",
+    "TransposeFollowup.GeneratorCleanup.fixed_resources",
+    "TransposeFollowup.GeneratorCleanup.word_eq_of_value_length",
+    "TransposeFollowup.GeneratorCleanup.stream_lengths",
+    "TransposeFollowup.GeneratorCleanup.marked_lengths",
+    "TransposeFollowup.GeneratorCleanup.budget_linear",
+    "TransposeFollowup.GeneratorCleanup.linear_trace",
+    "TransposeFollowup.GeneratorCleanup.native_linear"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 72340,
+      "exit_code": 0,
+      "jobs": 9360
+    },
+    "build": {
+      "session_id": 58344,
+      "exit_code": 0,
+      "jobs": 9520
+    },
+    "axioms": {
+      "session_id": 31230,
+      "exit_code": 0
+    }
+  },
+  "updated_at": "2026-10-19T10:06:25.629339+00:00",
+  "boundary": "Fixed42-tape generator cleanup and linear total cost proved. Clock erasure, attachment to paid prefix and geometry transfer remain, as do expansion existence and motion/recursion.",
+  "formal_checkpoint": "R1754 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1754,543 sources,2775 declarations,86 artifacts",
+  "proof_scope": "In progress. R1754 constructs and verifies the fixed generator cleanup machine:42 existing tapes,5 symbols,92 states,independent of the map family and input. It invokes the seven marked-word erasers,the two marker removals and four bare-stream erasers with every transfer paid. From the exact OpcodeGenerator endpoint it halts with every tape wholly blank and all42 absolute heads at zero,preserving input position and output. Its exact budget is the sum of marked-word and stream erasure costs plus paid transfers. For a canonical input of length P=inputLength(n),n>=1,and a dimension word of value n and length n.size,the total cost is at most C_F*P,where C_F depends only on the fixed rational map family. Stream lengths are bounded using previously proved paid generation traces; equal-length binary value uniqueness identifies their dimension words. Thus no uncharged length oracle or implicit erasure is used. This is a prepared-endpoint cleanup theorem,not yet the integrated blank-start paid prefix.",
+  "next": "Compose GeneratorCleanup.linear_trace with NativeErase.erase_trace for the marked RadiusClock.word on the existing PaidReady.Port=(OpcodeGenerator.Port+Option(Fin Q))+Fin10. Reuse PaidGeneratorRows.genBinding Q; the clock port is inl(inr none). A small cleanup wrapper can use labels GeneratorCleanup.Label+NativeErase.Label,100 states,with one paid jump from generator done to eraser2. PaidReady.final_page_positions/final_scratch give the exact unchanged blank complement and head zeros. RadiusClock.word_length/radius_le bound the clock erasure by O(P). Establish the actual PaidReady.finalConfig endpoint equality and an all-blank/all-head-zero cleanup trace; then append it to PaidReady using its identity wiring and NativeIOFusionEmbedding,retaining selected-read code equations and forward-prefix trajectories. Transfer the existing computation/cut/MStar theorems to the cleaned prefix. Expansion existence and full motion/recursion still remain;final referees after all formalization.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly50% (40\u201360%,high uncertainty) of the full formalization goal,with3/6 original families complete:adaptive separators181/186/188,recoded pairwise-XOR181B,two-stage helper216. The fixed generator cleanup and its linear cost materially advance paid padding201/202 but do not complete that family. Clock cleanup,prefix integration,expansion existence,motion200/210,recursion206/208 and final referees remain. This percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/GeneratorCleanupMachine.lean": "89ad5bc3940b77cc71efc01a1257ca94a7c540f6ced18c3e3909ff84610d14e6",
+    "lean/TransposeFollowup/GeneratorCleanupRun.lean": "481f0c4a6d373de9b1f2dfad16c9981b5d1a933869179bb0c066f279ba8da677",
+    "lean/TransposeFollowup/GeneratorCleanupCost.lean": "65724809acba8522f8d49ea2ff7cb59042027de980db8b6cdf1770b1a3ebf49d"
+  }
+}

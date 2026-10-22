@@ -1,0 +1,181 @@
+Formalized; R1856 proves actual rational-walk strict flattening and a fixed-iterate pointwise density cap, then an unconditional restricted spectral gap and a finite rational continuous expander. Applying the existing native compiler yields one fixed fully paid padding machine for every input machine, preserving arbitrary computations with additive linear overhead, literal zero-slack CutIneq at every positive canonical dimension, and the full imported M* conclusion for every eligible subsequential limit. Final impartial referees and cleanup pending.
+
+R1856 EXACT VERIFIED STATEMENTS
+
+1. exists_initial_walk_strict_flattening (InitialWalkFlattening).
+For each gamma>0 there is s in(0,1], chosen BEFORE the iterate cutoffk.
+For eachk there are positiveN0 and a scale thresholdJ0. For everyr>=5,
+there is a rational free familyg:Fin(2^(3r))->SL2(Q), chosen BEFOREj,ell.
+Both the rational and embedded free-group lifts are injective; image
+cardinalities are exactly2^(3r); every generator hasdyadicDenominatorr
+and it and its inverse lie in the identity ball ofdyadicRadiusr.
+There is Jr>=max(J0,7680r). ForN>=N0,j>=Jr,2Nell<=j and
+ log(1/eta)/log(1/dyadicRadiusr)<ell, eta=4^-j,
+write mu for the actual ell-step symmetric generator walk and E_i for
+the Haar integral of the square of its i-th smoothed autocorrelation.
+For everyi<=k,
+ E_i>=ofReal(eta^-gamma) => E_(i+1)<ofReal(eta^s)*E_i.
+The common profile envelope is derived, not assumed. The actual same-walk
+profile and spanning frame from InitialWalkDistribution contradict R1855.
+
+2. antitone_energy_threshold_descent (AutocorrelationEnergyDescent).
+For ANY antitoneV:N->ENNReal, q,B,C:ENNReal andk:N, ifV0<=C,
+q^k C<=B and (i<k and B<=Vi => V(i+1)<=q Vi), thenVk<=B.
+No positivity, finiteness orq<=1 assumption is needed.
+
+3. smoothedAutocorrelationIterate_succ_le_energy.
+ForSFinite mu, anyeta,i,x, rho_(i+1)(x)<=integral rho_i^2.
+This uses the already proved autocorrelation maximum and energy identity.
+
+4. smoothedAutocorrelationIterate_energy_antitone.
+For probabilitymu andeta>0, i->integral rho_i^2 is antitone.
+This uses existing probability, inverse measure and convolution bounds,
+and mathlib antitone_nat_of_succ_le. No parallel integral estimate.
+
+5. exists_initial_walk_density_cap (InitialWalkDensityCap).
+For eachgamma>0 there arek>0,N0>0,J0, chosen BEFOREr, and for everyr>=5
+one free rational family with the SAME properties as in1 andJr as above,
+such that at every admissibleN,j,ell and EVERYx,
+ rho_k(mu,eta)(x)<=ofReal(eta^-gamma).
+There is NO high-energy, nonflattening or density hypothesis.
+Choose n>3/s andk=n+1. The SAME family's denominator/freeness estimate
+gives E0<=eta^-3. Finite threshold descent boundsEn, and3 boundsrho_(n+1).
+The selected family is not replaced by an independently chosen family.
+
+6. exists_rational_restricted_gap (RationalRestrictedGap).
+For EVERYepsilon>0, there arer>=5,K>=10000 andg:Fin(2^(3r))->SL2(Q),
+with the same freeness/cardinality/denominator properties andg,g^-1 in
+the epsilon identity ball, such thatRestrictedL2Gap(realEmbedding o g,K).
+Explicitly, every realL2 function ofnorm1, supported a.e. in[0,1],
+whose integral on everyK-grid cell iszero, satisfies
+ inner(averageOperator(realEmbedding o g) f,f)<1/2.
+Use5 withgamma=1/4, then the existing autocorrelation-flatness consumer.
+The choices keep the SAME family fixed before all scales and walk lengths.
+D=eta^-1/4 satisfiesD^2=2^j exactly. Grid sizeK pays the existing frequency
+threshold. No flatness or gap assumption remains.
+
+7. exists_rational_continuous_expander (RationalContinuousExpander).
+There arec:N, F:Fin(c+1)->RationalMobius andeps>0 such that each actual
+open-domain map maps into[0,1], and for every measurableS subset[0,1]
+with Lebesgue mass<=1/2,
+ (1+eps)|S|<=|union_p F_p(domain_p intersectS)|.
+Instantiate the canonical Borel structure internally. Convert the actual
+rationalSL2 coefficients from6 to existingRationalUnitMobius data, with
+EXACT compatibility of the realSL2 matrices. Reuse the proved correlation
+conversion, auxiliary translations, clipping and endpoint-removal theorem.
+No measurable-structure, expander or spectral-gap premise in the endpoint.
+
+8. exists_uniform_paid_padding (UnconditionalPaidPadding).
+For EVERY native machineM, there is ONE native machineM' andintegerA,
+chosen BEFORE every dimension,input,output,time coefficient andsequence,
+withcellBits(M')=3, satisfying BOTH conclusions below.
+
+FINITE RUNS. For everyn>=1, w,out withlength(w)=inputLength(n), andt
+such thatM computesout fromw within t steps, there areT andconfigurationd:
+ T<=A*length(w)+t;
+ stepN(M',w,T,init(M'))=some d;
+ step(M',w,d)=none;
+ reverse(d.outRev)=out;
+ CutIneq(n,cellBits(M'),blockSize(cellBits(M'),n),T,0,0,actualWorkTrajM'w).
+Thus the cutoff is an ACTUAL halting time, the demanded output is preserved,
+and the literal imported inequality has both numerical slackszero.
+
+LINEAR TASK SEQUENCES. For EVERYns tending to infinity withns_i>=1,
+EVERYws,outs of the matching canonical lengths, andEVERYa:N for which
+M computesouts_i fromws_i within a*inputLength(ns_i), there areactual
+halting timesTs_i<= (A+a)*inputLength(ns_i), correct outputs andthe same
+zero-slackCutIneq on the SAME fixed machineM'. In addition,
+ NativeRunLimits.Conclusion M' ns ws Ts (A+a).
+This includes existence of uniformly convergent subsequences and, for
+EVERY such subsequential limit,1-Lipschitz paths, the full originalM*
+finite-excision/label inequality, level-excess and range bounds, and failure
+of simultaneous global monotonicity of all head paths.
+
+IMPLEMENTATION AND SCOPE
+The witness is the existingPaidPadding.machine applied to the symmetrized
+family in7. Its original native blank-start generator, clocks, scratch
+cleanup,input-head reset,payload simulation and fixed parameters are reused.
+All work begins at the native init state. No free prepared operands,
+external input-dependent table or precomputed head trace is assumed.
+NativeRunLimits.of_cut imports the original paper's limit theorem unchanged.
+The first paper's entire117-file inventory is unchanged.
+
+Comparison with written201/202: the final theorem covers EVERY positive
+canonical dimension, not merely sufficiently large dimensions. The earlier
+formalized sufficient geometric thresholds improve BOTH8s to4s. It also
+states actual halting/output witnesses and a single machine and overhead
+constant fixed before all task sequences and their linear coefficients.
+The expensive analytic existence dependency is proved, not postulated.
+This formalization does not claim the published expander theorem as new.
+The new follow-up contribution is the exact paid-padding/scope result.
+Novelty of that contribution still requires the planned final review.
+
+REUSE / DRIFT CHECK
+R1856 closes the current original paid-padding family rather than opening
+another local projection or coefficient target. Six new modules contain
+eight endpoint/composition theorems; no preexisting mathematical source
+was changed. SupportAxioms alone changed among baseline Lean sources.
+
+Pinned mathlib source search in Analysis,Probability,Combinatorics for
+spectral gap,flattening,Bourgain-Gamburd,Mobius,expander,autocorrelation
+found no matching completeSL2 gap theorem. A search of all204 pinnedOAI
+sources forSL2,SpecialLinearGroup,spectral gap andflattening found no match.
+These are bounded source searches, not a universal absence claim.
+The existing power/order/integral lemmas and local full spectral/expansion/
+compiler/limit chain were reused. The original paper's native definitions,
+CutIneq and theoremMStar_walk are imported read-only.
+
+No new scan of known-failed research approaches or unrelated proof project.
+The remaining two families are distinct motion/recursion claims, not a
+reason to continue the now-complete paid-padding analytic chain.
+
+NEXT
+R1856 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Full10144-job build and4707-declaration standard-axiom audit passed.
+Goal ACTIVE; previous turn PROGRESS. Paid padding201/202 FORMALIZED.
+Four of six original families complete; final referees after all six.
+
+NEXT CURRENT ORIGINAL PROOF: affine return motion200/210 (0% formalized).
+Do NOT keep proving paid-padding/SL2 lemmas or re-open that completed chain.
+
+1. Read the original exact statements and proof in
+   research/10-linear-decision/units/200-affine-return-motion.txt:
+   sections1-5 and later210 quantitative exceptional-time sections.
+   Addenda201/202,206/208/210 are INSIDE this same file, not separate files.
+   Compare the actual imported levelCross/PiecewiseConstOn/M* interfaces.
+2. Before building a large new dependency, inspect pinned mathlib and local
+   imports for nonsingular countable affine actions,amenability,measured
+   hyperfiniteness,finite-equivalence quotients,nonatomic finite partitions,
+   interval approximation and the originallevelSet_encard_majorant.
+   Record exact matching APIs. Prior bounded audit found no readyCFW theorem;
+   do not interpret that as permission to copy generic measure theory.
+3. Give an explicit minimal dependency map for the needed SPECIAL CASE of
+   Connes-Feldman-Weiss: countable affine action onR, nonsingular for a
+   finite probability measure equivalent toLebesgue. Decide whether a direct
+   affine argument avoids formalizing the fullgeneralCFW theorem. No axiom,
+   assumed hyperfiniteness or false invariant-Lebesgue-probability shortcut.
+4. Connect the eventual approach to the ACTUAL weighted return measure:
+   both marginals bounded byk*Lebesgue; good affine visits; finite-class
+   quotient labels; interval approximation. For210 retain exceptional time,
+   charging at mosttwo incident returns per exceptional visit and reuse the
+   source's measurable level-count majorant rather than a new area formula.
+5. Make a bounded concrete proof target after the reuse/dependency audit.
+   Maintain the full countably affine/quantitative statement; a finite-piece
+   special case or assumed measured-hyperfinite relation does not complete200.
+6. Regular recursion206/208 remains required after motion, including actual
+   native scan/local-limit and contracting contiguous-tree obligations.
+   Do not replace either original family by an abstract hypothesis wrapper.
+
+Give numeric best completion estimates for the current ORIGINAL proof at
+stopping points. Paid paddingformalization100%; nextmotion0%. Do not claim
+100% overall; referees/strengthening/cleanup still follow all six families.
+Original paper read-only. No commits/pushes. No new subagents before the
+user-authorized final referee phase unless fresh authorization applies.
+
+BOUNDARY
+The full paid-padding201/202 theorem is now formalized with no assumed expander, flattening, density, spectral gap, native generator, setup budget or trajectory oracle. Rational coefficients and machine parameters are fixed before dimensions and inputs. This is an existence theorem for a fixed finite native machine; no practical numerical coefficient table or executable extraction is claimed. Affine motion200/210, regular recursion206/208 and final independent referees remain. No decision of transposition complexity or new literature-novelty claim.
+
+Current ORIGINAL theorem family: paid padding201/202. Formalization is100% complete at R1856; full build and standard-axiom audit passed. Final independent referees, strengthening, simplification and cleanup remain pending as requested after all six families. Four of six original families are now formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, and paid padding201/202. Next current original proof: affine return motion200/210,0% formalized (best estimate); regular recursion206/208 remains unstarted. These percentages are for the original theorem families, not a claim that the overall goal or transpose question is complete.
+
+VERIFICATION
+Full lake build passed10144 jobs without warnings/errors; SupportAxioms audited4707 unique declarations using only propext,Classical.choice,Quot.sound. There are963 local sources (962 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and155 validation artifacts. Original117 files and directory inventory unchanged. Every baseline mathematical source is unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged.

@@ -1,0 +1,64 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1867",
+  "target": "Regular recursion206/208: geometric charge bounds and complete finite-stage tick accounting.",
+  "new_modules": [
+    "ContractingTreeCharge",
+    "ContractingTickBudget",
+    "StageClockAccounting"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.levelCharge",
+    "TransposeFollowup.RegularMotion.levelCharge_zero",
+    "TransposeFollowup.RegularMotion.levelCharge_succ",
+    "TransposeFollowup.RegularMotion.levelCharge_nonneg",
+    "TransposeFollowup.RegularMotion.levelCharge_le",
+    "TransposeFollowup.RegularMotion.summable_levelCharge",
+    "TransposeFollowup.RegularMotion.summable_descendant_charge",
+    "TransposeFollowup.RegularMotion.tsum_deep_charge_eq_levels",
+    "TransposeFollowup.RegularMotion.tsum_deep_charge_le",
+    "TransposeFollowup.RegularMotion.sum_deep_charge_le",
+    "TransposeFollowup.RegularMotion.assigned_tick_bound",
+    "TransposeFollowup.RegularMotion.deep_assigned_tick_bound",
+    "TransposeFollowup.RegularMotion.subtree_assigned_tick_bound",
+    "TransposeFollowup.RegularMotion.card_fin_time_interval",
+    "TransposeFollowup.RegularMotion.contiguous_call_duration_bound",
+    "TransposeFollowup.RegularMotion.finite_addresses_lt_depth",
+    "TransposeFollowup.RegularMotion.stage_clock_own_ticks",
+    "TransposeFollowup.RegularMotion.stage_clock_shallow_coverage",
+    "TransposeFollowup.RegularMotion.stage_clock_deep_work_bound",
+    "TransposeFollowup.RegularMotion.stage_clock_total_time_bound",
+    "TransposeFollowup.RegularMotion.stage_clock_call_duration_bound",
+    "TransposeFollowup.RegularMotion.stage_clock_shallow_deficit"
+  ],
+  "checks": {
+    "development": {
+      "last_exit_code": 1,
+      "last_log": "/private/tmp/r1868-dev5.log",
+      "note": "Last simp correction verified by the successful full build; pure charge module passed dev3."
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10182,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4893,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All terminal:dev1:28924 exit1;dev2:31264 exit1;dev3:3977 exit0 (3092 jobs);dev4:45899 exit1;dev5:76771 exit1;fullbuild:24973 exit0 (10182 jobs);axioms:44128 exit0 (4893 declarations). The final stage-clock simplification was verified in the full build.",
+  "formal_checkpoint": "R1868 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1001 local sources,204 external sources,4893 declarations,8 configurations,179 artifacts",
+  "proof_scope": "PROGRESS at R1868: regular recursion206/208 now has geometric depth-charge bounds, actual assigned-tick and contiguous-call bounds, exact finite-stage clock accounting, and the shallow-stage uncovered-tick bound. Five of six original families remain formalized; the sixth family is about15% complete, low confidence. Native global-limit exclusion and source206 executors remain open; final referees follow all six.",
+  "next": "R1868 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:\nregular recursion206/208, best estimate15%, low confidence.\n\nNext concrete target: actual finite-stage intervals in real physical time,\nthen simultaneous endpoint/volume limits. Reuse the finite-clock interface\nin StageClockAccounting: label:Fin T->node x Fin J and exact stage membership\niff label equality, every tick included. For actual source stages also retain\nA<=E<=T, and actual calls must satisfy the contiguous prefix-owner equivalence.\nDo not assume a limit-level disjoint cover or a tail defect directly.\n\nSuggested immediate bridge: extend each tick label to real time t in[0,T)\nusing floor(t). Prove real stage membership in[A,E) equivalent to that tick\nlabel, with actual integer endpoints. This derives pairwise disjoint stage\ninteriors and exact real-time coverage. Fixed B,J make the shallow family\nfinite by finite_addresses_lt_depth. Relate its union volume to the actual\nstage lengths /P and pass the already derived uncovered-tick bound to the\nreal-time deficit, including boundaries of measure zero. Use existing\nmathlib interval-measure, finite-union and affine-scaling results.\n\nThen encode ALL padded node/stage endpoints, volumes and halt times in a\ncountable product of compact bounded coordinates. Import mathlib compact\nsubsequence extraction instead of a bespoke diagonal theory. Preserve the\nalready existing uniform physical path limit. The native_positive_stage_affine\nendpoint from R1867 handles positive-volume nodes; subtree duration bounds\nfrom R1868 plus squeezing handle zero-volume subtrees. Cover time with finite\ndepth prefixes, let the geometric tail vanish and add frozen post-halt tails.\nApply the completed native affine-motion/popular-class obstruction; retain\nall adaptive, state-bit, fixed-tape and high-entropy hypotheses. Exceptional\nwork must still yield eta>=1/(2kG) in absolute physical units.\n\nR1868 modules:ContractingTreeCharge,ContractingTickBudget,StageClockAccounting\n(22 declarations). Their finite-clock cost proof is complete; it is not yet\na common-limit coverage theorem or native recursion impossibility. The root\ncharge remains V[] in the verified endpoints; root<=C*P supplies the source\nconstants by multiplication/division with the proved positive denominators.\n\nSource206 remains: exact scan palettes, fixed words, nonuniform O(P)-state\nclocks, growing-stride zero/positive limit cases and ALL movement/I/O. Do not\nreopen uniform parameter generation or the other completed families. Source\nlocal regularity must still be established for these explicit executors.\n\nNo fresh subagents until all six initial formalizations; then run the user-\nauthorized impartial referees and cleanup. Original read-only; no commits/pushes.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate15% complete (low confidence). Completed initial formalizations remain5/6: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and fully paid padding201/202. Final independent referees and cleanup remain after all six. Percentages refer to the full sixth family, not its helper modules.",
+  "updated_at": "2026-10-20T22:49:37.633148+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ContractingTreeCharge.lean": "8d1793d3030e547df5d311a41a19a888321f91347672a5c6b653311430de2fd8",
+    "lean/TransposeFollowup/ContractingTickBudget.lean": "6bd2c00fde89f34fdaff3365c1858d0df8f418562c39d1f9192424fbf0756d89",
+    "lean/TransposeFollowup/StageClockAccounting.lean": "5703260f3317d5e46d6264865d1067d38b4fd4dd9c399e58fcd99ca6bd00a96a"
+  }
+}

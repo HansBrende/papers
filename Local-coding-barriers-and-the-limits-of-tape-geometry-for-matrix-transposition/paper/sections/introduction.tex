@@ -1,0 +1,81 @@
+\section{Introduction}\label{sec:introduction}
+
+An input in row-major order already contains every bit of its transpose.
+The difficulty on a tape machine is to deliver those bits in column-major
+order while paying for every movement and operation. Routing follows the bits
+through their successive locations. Coding instead allows a cell or message
+to depend on several input bits, with the desired bits recovered later. A
+routing lower bound therefore need not be a computational lower bound.
+
+Brende and Claude Opus 5.5~\cite{FirstPaper2026} formulate the Tape Coding
+Conjecture and give sufficient conditions for excluding linear-time
+transposition. They also prove head-pass lower bounds and a macroscopic
+isoperimetric condition, Theorem~$M^*$, for the work-head trajectories of fast
+transposers. Their construction discussion separates complicated head motion
+from the unresolved coding computation. This paper develops both sides of that
+separation.
+
+Our results fall into two connected groups. The first concerns local
+information access. Adaptive nonlinear broadcasts confined to original rows
+obey separator bounds; bijective nonlinear row recodings still require near-full
+broadcasts for bounded-degree fixed coordinate XORs under all-input correctness;
+and a particular two-stage architecture
+requires substantial global helper information. The second concerns actual
+tape execution. Theorem~$M^*$ imposes a positive lower bound on total time
+outside locally affine regions of the limiting head paths. This excludes
+specified operations and
+regular recursions. Nevertheless, a fully paid prefix supplies the original
+cut condition for any payload computation and the limiting-motion conditions
+for any linear-time payload.
+
+\paragraph{What the padding construction shows.}
+The padding theorem does not contradict the affine-motion obstruction: its
+motion escapes the excluded class. Nor does it refute the Tape Coding
+Conjecture, whose demand and causal-code requirements are additional
+conditions. It establishes that the particular geometric inequalities under
+consideration can be satisfied without performing the transpose. To obtain a transposition lower bound, these inequalities must be combined
+with an additional restriction, such as one tracking the information required
+at the outputs. For a construction, satisfying them leaves encoding and
+decoding to be implemented.
+
+\paragraph{Six families, with different scopes.}
+The finite coding theorems permit general entry width $b$. Their hypotheses
+describe abstract broadcasts or row transformations; they are not automatic
+properties of arbitrary tape computations. The native asymptotic theorems use
+the canonical logarithmic width and the original finite-state machine model.
+The motion results and their applications allow negligible entropy deficit
+and, where stated, negligible size-dependent control information. The XOR
+theorems, in contrast, require all-input correctness. Each change of model is
+made explicit at the relevant statement.
+
+\paragraph{Relation to the earlier paper.}
+The local coding results turn parts of the earlier construction programme into
+proved restrictions; they are not improvements to an existing separator or
+two-stage theorem there. The affine results strengthen consequences of
+Theorem~$M^*$. The paid construction resolves the geometric and cost obligations
+of an expanding-motion mechanism, without supplying its missing encoder and
+decoder. The scan and recursion results give applications in the actual
+machine model. None improves an unrestricted transposition time bound.
+
+\subsection{Proofs and their interpretation}\label{sec:proof-policy}
+
+\textbf{The proofs of our new results are the Lean proofs.} Every numbered
+formal statement names its declarations and source modules. The Lean statements
+are authoritative; the English statements are consequences of them, with any
+specialization stated explicitly. Each \emph{Outline of the formal proof}
+explains the checked argument for human readers. The declaration index in
+\cref{app:index} collects these links.
+
+Formal verification establishes propositions about the stated definitions;
+model applicability and novelty require separate arguments. Our review checks
+the English hypotheses, quantifiers, conclusions and proof outlines against
+the formal source. Imported theorems are proved dependencies. The original
+paper's four explicitly unformalized background propositions retain that
+status when cited here.
+
+The machine definitions and original theorems are imported directly from the
+sibling project. The analytic chain additionally uses an unmodified pinned
+OpenAI formal source, as specified in \cref{app:verification}. The established
+expander mathematics and imported projection theorem are credited in
+\cref{sec:related-work}, together with the literature comparisons for our
+contributions.

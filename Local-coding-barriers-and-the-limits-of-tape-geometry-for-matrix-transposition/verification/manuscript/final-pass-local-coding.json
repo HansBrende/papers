@@ -1,0 +1,308 @@
+{
+  "format": "manuscript-final-editorial-review-v1",
+  "reviewer": "/root/final_local_coding",
+  "status": "passed",
+  "date": "2026-10-21",
+  "scope": "Final editorial and statement/outline comparison against actual Lean source; no mathematical Lean changes or build execution.",
+  "manuscript": {
+    "path": "paper/sections/local-coding.tex",
+    "sha256": "4213fdeb588c168db0daed0e247c4e3f36f60c7d8d91db5eacc4f991a1f8e51b",
+    "bytes": 32645
+  },
+  "contracts": {
+    "path": "verification/manuscript/local-coding-contracts.json",
+    "sha256": "f86e638d0712bced968abbdd833d872dc405e3da333e44958544b7a55531252e",
+    "bytes": 33484
+  },
+  "numbered_items": 16,
+  "items": [
+    {
+      "label": "def:local-public-strategy",
+      "status": "matches_lean",
+      "exact_comparison": "LocalQuery support/read/locality and PublicStrategy List Bool -> Option LocalQuery match. Executes requires none at terminal history and transmits only query answers. Helper finite; decoders know helper, own original row and completed transcript; all-F correctness and no off-F assumptions retained.",
+      "outline_assessment": "No proof outline; definition compared directly with LocalProtocol, ProtocolTruncation, and GraphSeparatorBound hypotheses.",
+      "program_role": "Defines exactly the original-row interface to which the separator obstruction applies."
+    },
+    {
+      "label": "thm:local-adaptive-separator",
+      "status": "matches_lean",
+      "exact_comparison": "Matches graph_expected_separator_bound_of_distribution and its uniform specialization exactly: arbitrary normalized nonnegative law, all-F execution/correctness, arbitrary leaf-dependent separators, loss d*b*|S|+b*sum|C|^2, charges 2D_w and 2H(Z).",
+      "outline_assessment": "Finite-family truncation, nonempty virtual-fiber component factorization, correct-subfamily entropy cover, and two conditional Gibbs budgets follow ProtocolTruncation, AdaptiveLeaves, SeparatorLeaf/Count, AdaptiveSeparator and EntropyFibers. Attained-leaf nonemptiness and fixed separator columns are now explicit.",
+      "program_role": "Excludes a fixed fractional broadcast saving when expected separator loss, input deficit and helper entropy are all negligible relative to P."
+    },
+    {
+      "label": "cor:local-separator-worst",
+      "status": "matches_lean",
+      "exact_comparison": "Matches graph_worst_case_separator_bound: natural B,L,g, nonempty F, finite ambient helper, attained-image cardinal <=2^g, and exact B >= P-L-2(D+g).",
+      "outline_assessment": "Uniform-law averaging and entropy <= logarithm of attained support are exactly the formal argument.",
+      "program_role": "Converts the separator inequality to a candidate rejection test from pointwise broadcast/loss bounds and the attained helper range."
+    },
+    {
+      "label": "thm:local-separator-sharpness",
+      "status": "matches_lean",
+      "exact_comparison": "Both coefficient endpoints quantify over real c and arbitrary positive b for d=2. Zero-message symmetry family has deficit b; full-cube XOR-helper example has helper entropy b. No simultaneous optimality of all other terms is claimed.",
+      "outline_assessment": "Read both explicit RowCode constructions, their correctness proofs, cardinality lemmas, and exact helper-entropy lemma. Outline describes the same witnesses; direct substitution forces c>=2.",
+      "program_role": "Shows that stronger separator barriers need additional structure or different terms; neither coefficient can be reduced alone."
+    },
+    {
+      "label": "lem:local-treewidth-fragmentation",
+      "status": "matches_lean",
+      "exact_comparison": "Matches treewidth_fragmentation and treewidth_separator_loss, including L=0 and empty graphs, arbitrary finite decomposition trees, and natural treewidth convention.",
+      "outline_assessment": "Read TreeFragmentation and the calls to weighted_tree_fragmentation, ownership-weight total, and transfer. Bag removal followed by sum|C|^2<=L*d is the implemented argument.",
+      "program_role": "Supplies the integral separator-loss budget used to turn communication savings into a treewidth lower bound."
+    },
+    {
+      "label": "cor:local-treewidth",
+      "status": "matches_lean",
+      "exact_comparison": "Matches average_treewidth_lower_bound_of_distribution: d,b positive; epsilon any real; a=max(epsilon-2(D_w+H(Z))/P,0); lower bound d*a^2/4+a/2-1. Uniform specialization retained.",
+      "outline_assessment": "Formal proof first obtains all natural-L tests then applies quadratic_bound_of_integer_tests. The floor choice and displayed nonnegative rounding identity give the same correction. Asymptotic prose explicitly specifies d->infinity and b>0.",
+      "program_role": "For high-entropy inputs and small helper entropy, forces linear average treewidth whenever an original-row strategy saves a fixed fraction."
+    },
+    {
+      "label": "def:local-recoded-xor",
+      "status": "matches_lean",
+      "exact_comparison": "Matches RecodedXorCode, Correct, LocalTo and XorPacket/XorSystem: independent row bijections; fixed singleton/pair coordinate packets; original-row side information; all-input correctness; no helper; same-row and self-pairs allowed.",
+      "outline_assessment": "No proof outline; compared primitive structures and evaluation definitions directly.",
+      "program_role": "Defines the bounded-packet format tested by the XOR obstruction, allowing nonlinear preprocessing and decoding."
+    },
+    {
+      "label": "thm:local-xor-distance",
+      "status": "matches_lean",
+      "exact_comparison": "Matches both scaled natural and divided real broadcast_lower_bound endpoints for all natural ell. Near means a walk of length <ell, so disconnected pairs are excluded and ell=0 is admitted.",
+      "outline_assessment": "Read transformed bijection, component difference/recovery, raw-square confinement, unanchored size count and their orbit-bound calls. Nonlinear recoding is handled by bijective conjugation of disjoint flips, not an unjustified raw linear-kernel claim.",
+      "program_role": "Limits savings via graph-neighborhood volume and supplies both the bounded-degree and path/cycle obstructions."
+    },
+    {
+      "label": "cor:local-xor-degree",
+      "status": "matches_lean",
+      "exact_comparison": "Matches fixed_degree_broadcast_lower_bound for d>=2, Delta natural, degree bound and exact error 6 log(max(2,Delta)) P/log d. No connectedness or positive-width premise omitted.",
+      "outline_assessment": "Half-integer-log radius, walk-count ball estimate, (k+1)*delta^k<=d and logarithm conversion match XorDegreeBound. Renamed local delta to avoid shadowing the deficit D.",
+      "program_role": "Rules out fixed fractional savings for fixed maximum degree, including bounded-degree expander support graphs."
+    },
+    {
+      "label": "cor:local-xor-cycle",
+      "status": "matches_lean",
+      "exact_comparison": "Matches linear_ball_broadcast_lower_bound and cycle embedding/subcycle/path endpoints: d>0, cycle m>0, injective graph homomorphism or all-radius cap 2ell-1, and exact shifted-square-root error.",
+      "outline_assessment": "Read radius choice Nat.sqrt((d+3)/2), ball count via integer offsets, and real-budget optimization. Displayed rational identity is algebraically exact and k<=t<k+1 yields the required bound.",
+      "program_role": "Strengthens the negligible-saving error from O(P/log d) to O(P/sqrt d) on paths, cycles and graphs with the stated linear ball cap."
+    },
+    {
+      "label": "def:local-triangular-causal",
+      "status": "matches_lean",
+      "exact_comparison": "Matches TriangularRows and CausalRows: orders are permutations; triangular update depends on earlier incoming rows and is bijective in own input; causal update depends on the inclusive incoming prefix and may discard information.",
+      "outline_assessment": "No proof outline; direct comparison with each structure and apply definition.",
+      "program_role": "Specifies the primitive row updates of the two-stage architecture; the own-row bijection condition is the source of block recovery."
+    },
+    {
+      "label": "def:local-two-stage",
+      "status": "matches_lean",
+      "exact_comparison": "Matches TwoStageRows.apply composition including all three permutations, arbitrary end maps, bijective first/middle maps, and causal second map. TwoStageHelper has arbitrary ambient helper type and selects all branch data.",
+      "outline_assessment": "No proof outline; direct comparison of input, forward, finalMap, apply, and CorrectOn. One row bank and no extra global operation are explicit limitations.",
+      "program_role": "Defines exactly which coupled nonlinear construction attempts the helper-or-deficit obstruction excludes."
+    },
+    {
+      "label": "lem:local-block-injective",
+      "status": "matches_lean",
+      "exact_comparison": "Matches TriangularRows.block_injective/equiv, blockInjective_rowwise/inverse and TwoStageRows.inverse_block_injective. Equality outside I at input plus inside I at output implies full equality; finite Q only needed for bijectivity.",
+      "outline_assessment": "Induction on order, finite injectivity-to-bijectivity, cancellation of rowwise bijections, and complement I in the inverse argument match the formal proofs.",
+      "program_role": "Derives the recovery property needed for branch counting from the primitive update rules, rather than assuming that property."
+    },
+    {
+      "label": "lem:local-branch-count",
+      "status": "matches_lean",
+      "exact_comparison": "Matches TwoStageRows.correct_family_card for all finite F, including empty/correlated, and every natural r<=d: cardinal <=2^((d-r)db+r^2b). Alternative exponent P-br(d-r) follows the formal exponent_decomposition.",
+      "outline_assessment": "Read TwoStageRows derived suffix supports and FixedSupportSandwich injection. Middle rows outside I plus raw R-by-J rectangle recover all raw rows in R, then all middle rows by inverse block injectivity, then input by correct transpose output. No extra block property is imposed.",
+      "program_role": "Bounds each fixed branch correctness family, which is the common input to the helper-range and helper-entropy lower bounds."
+    },
+    {
+      "label": "thm:local-helper-count",
+      "status": "matches_lean",
+      "exact_comparison": "Matches correct_family_count_toll, quarter_count_toll and quarter_helper_bound_of_density. Ambient helper unrestricted; counts include empty F; density D real and g natural. Exact odd-d floor retained.",
+      "outline_assessment": "Partition into attained-helper fibers, apply branch count, multiply by exact exponent complement, and optimize at floor(d/2). Density premise implies nonempty F before logs. Full-cube consequence follows by cancelling 2^P.",
+      "program_role": "Forces a large attained helper range or a large correct-family deficit; full-cube correctness needs at least 2^(b floor(d^2/4)) helper values."
+    },
+    {
+      "label": "thm:local-helper-entropy",
+      "status": "matches_lean",
+      "exact_comparison": "Matches arbitrary-law and uniform helper_entropy_deficit_bound endpoints and their quarter specializations. All-F correctness, normalized nonnegative law, zero masses allowed, arbitrary ambient helper with entropy on finite attained subtype, exact b floor(d^2/4) charge.",
+      "outline_assessment": "Branch fiber-cardinality bound feeds entropy_le_observation_add_log_fiber_bound; normalization gives H(X)<=H(Z)+log C; exact exponent identity and half-product identity give both charges. Asymptotic d growth and b>0 are now explicit.",
+      "program_role": "For high-entropy input laws forces actual helper entropy near P/4 as d grows, so a heavily skewed helper distribution does not avoid the obstruction."
+    }
+  ],
+  "scope_corrections": [
+    {
+      "id": "FINAL-LC-1",
+      "status": "resolved",
+      "classification": "proof-outline premise clarification",
+      "change": "Virtual-fiber product reasoning now starts with helper/transcript/separator data attained on F, making the needed nonempty witness explicit."
+    },
+    {
+      "id": "FINAL-LC-2",
+      "status": "resolved",
+      "classification": "execution-cost clarification",
+      "change": "Halting is a required terminal condition but transmits no additional bit; input-dependent public control uses charged query answers."
+    },
+    {
+      "id": "FINAL-LC-3",
+      "status": "resolved",
+      "classification": "summary scope clarification",
+      "change": "Generic sparse fixed-XOR summary replaced with bounded-degree row-graph restriction, matching the actual corollary."
+    },
+    {
+      "id": "FINAL-LC-4",
+      "status": "resolved",
+      "classification": "asymptotic premise clarification",
+      "change": "Treewidth and quarter-helper consequences explicitly use d tending to infinity and positive entry width. Exact finite helper toll retains both deficit and floor(d^2/4)."
+    },
+    {
+      "id": "FINAL-LC-5",
+      "status": "resolved_after_cross_review",
+      "classification": "asymptotic precision",
+      "change": "Adaptive consequence explicitly charges expected separator loss; bounded-degree fractional-saving prose explicitly assumes b>0, while its finite theorem still allows b=0."
+    }
+  ],
+  "change_summary": [
+    "Added or sharpened concrete program roles for all 12 proved numbered results and the interfaces in which they apply.",
+    "Explained fixed separator columns and the twofold entropy cover; retained the distinction between full virtual fibers and correlated correct subfamilies.",
+    "Removed redundant disclaimers, repeated summary language, and comparison to an older path/cycle error.",
+    "Preserved all 16 numbered labels and all formal annotations; mathematical theorem statements and Lean source files are unchanged."
+  ],
+  "rough_wordcount": {
+    "method": "whitespace-delimited LaTeX source tokens",
+    "before": 4002,
+    "after": 3891,
+    "delta": -111
+  },
+  "actual_source_reads": [
+    {
+      "path": "lean/TransposeFollowup/GraphSeparatorBound.lean",
+      "sha256": "777abe5e76993fad65ca1fec784ed0060fae28bf995610a49c4bd784283195b9",
+      "bytes": 5382
+    },
+    {
+      "path": "lean/TransposeFollowup/ProtocolTruncation.lean",
+      "sha256": "3eaf8a4924d49627042cdfacba4b35f34d2e28724996fc796818fdc894e52b4f",
+      "bytes": 4410
+    },
+    {
+      "path": "lean/TransposeFollowup/LocalProtocol.lean",
+      "sha256": "ae0ce033794b6a5f4d2cd2f3a21b6f4897b6033d895e8404b6fa6e1652163790",
+      "bytes": 6674
+    },
+    {
+      "path": "lean/TransposeFollowup/Treewidth.lean",
+      "sha256": "a8905675901da630322d126ae0d36303f3dc01be250146c5db5b8ecb7371362c",
+      "bytes": 3032
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveTreewidth.lean",
+      "sha256": "49548ac30685269b9d5fc1ed2f567a378c2f36fddbd6669100a38ecd48a83c5b",
+      "bytes": 7234
+    },
+    {
+      "path": "lean/TransposeFollowup/SeparatorSharpness.lean",
+      "sha256": "5b04ef83d3a8033312174fe4ffa84933c258c13c73917061fe846583c2b191f4",
+      "bytes": 8877
+    },
+    {
+      "path": "lean/TransposeFollowup/RecodedXor.lean",
+      "sha256": "7e1e696812522ee8e58f3263a77996c750b61e660e2fc55622ea664c76b3a27d",
+      "bytes": 4446
+    },
+    {
+      "path": "lean/TransposeFollowup/XorPackets.lean",
+      "sha256": "7c473d2fe0443ffea6cd339841c7b011f7eb0a38057c9b92899b59ef651b5b85",
+      "bytes": 6286
+    },
+    {
+      "path": "lean/TransposeFollowup/XorComponentCount.lean",
+      "sha256": "1f704c22eaaf8cdc1d4265fabcf6c1dd2bd19fba536693628f178867505b66e7",
+      "bytes": 5081
+    },
+    {
+      "path": "lean/TransposeFollowup/XorDegreeBound.lean",
+      "sha256": "ac478b9804c122f2fed766923b5c1af474bb9a846480bfba25a60a082d8df6bc",
+      "bytes": 5010
+    },
+    {
+      "path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+      "sha256": "b5b89547896c19bade9b0c76652bd9174310a077473adc5bcac8ff12b9b7c199",
+      "bytes": 7151
+    },
+    {
+      "path": "lean/TransposeFollowup/CyclicNearCount.lean",
+      "sha256": "c7cd85cbca7f01978a22a6175609d5d013479df8723207b5ef4957222fdd0cd3",
+      "bytes": 3061
+    },
+    {
+      "path": "lean/TransposeFollowup/TriangularRows.lean",
+      "sha256": "61fe1e7841a240e68a04f15f1721c5823055a7d80c2a8f2f5eddd64febf3b81d",
+      "bytes": 3701
+    },
+    {
+      "path": "lean/TransposeFollowup/TwoStageRows.lean",
+      "sha256": "0d7c389dbd2ed3ded393fd4eb908d676af646db8aa2349315feee69e8438271c",
+      "bytes": 3798
+    },
+    {
+      "path": "lean/TransposeFollowup/TwoStageHelper.lean",
+      "sha256": "c0bc742d8c70537f0963f7aba30fcea06d9d2fe959aad12eb60db056ad1b4d6a",
+      "bytes": 5888
+    },
+    {
+      "path": "lean/TransposeFollowup/TwoStageHelperEntropy.lean",
+      "sha256": "9729154fde246667d1a199f6f3d60bafaa9007f10c7a763a3cd2d621ea109567",
+      "bytes": 3896
+    },
+    {
+      "path": "lean/TransposeFollowup/FixedSupportSandwich.lean",
+      "sha256": "a510758dc40157f4eaa45f2da2cdc96fc607db298265b77abc2bd7b92ee0bd25",
+      "bytes": 3650
+    },
+    {
+      "path": "lean/TransposeFollowup/StrategySeparator.lean",
+      "sha256": "6e86987ac755be2c5b5aaf04f785eede81b886e0f27f50d010c56174959e4126",
+      "bytes": 6069
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveSeparator.lean",
+      "sha256": "a47c7affd0579a7b3e3f36fcc261fd288956be09034b86e78b9bbce0f408f691",
+      "bytes": 10032
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveLeaves.lean",
+      "sha256": "8cf67d68a42d904541849e82cb717f7aed96d64e5075474b90efe6851e19e255",
+      "bytes": 8292
+    },
+    {
+      "path": "lean/TransposeFollowup/TreeFragmentation.lean",
+      "sha256": "93517a85e4682efbcd15eb5dfee50a199df61567a0009e7cc85d02de22870510",
+      "bytes": 3232
+    },
+    {
+      "path": "lean/TransposeFollowup/EntropyFibers.lean",
+      "sha256": "b8740deb146b744007cf2496b2cb29a61f1a1fe75c8924cd4f6c627cdafcfcdc",
+      "bytes": 5171
+    },
+    {
+      "path": "lean/TransposeFollowup/SeparatorLeaf.lean",
+      "sha256": "a1110f211ae02969ec99c63d1efd8f7285b6511df93479e402e3e40e3c006df7",
+      "bytes": 4040
+    },
+    {
+      "path": "lean/TransposeFollowup/SeparatorCount.lean",
+      "sha256": "94557655361626d1983f162bd565e6271e3f4ea9a2b66e91469e6bf7511793a3",
+      "bytes": 3645
+    }
+  ],
+  "unresolved_mathematical_findings": [],
+  "limitations": [
+    "Source-level semantic review is not a fresh Lean kernel check.",
+    "No claim of exhaustive novelty verification or of reduction of arbitrary tape computations to these finite models."
+  ],
+  "independent_cross_review": {
+    "path": "verification/manuscript/final-pass-local-coding-cross-review.json",
+    "status": "passed",
+    "reviewer": "/root/final_padding_model"
+  }
+}

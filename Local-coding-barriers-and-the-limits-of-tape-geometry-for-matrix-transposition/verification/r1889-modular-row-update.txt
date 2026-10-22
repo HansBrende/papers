@@ -1,0 +1,238 @@
+
+R1889 — SHARED PREPARED MODULAR ROW UPDATE
+PROGRESS at R1889: a prepared W-bit modular add/subtract-and-recycle block now has exact native execution in18W+30 paid public-clock steps, five work tapes/five symbols, restored heads, preserved second operand and scratch reset. The original repeated-addition calls/body now specialize shared generalized proofs; no duplicate carry/copy/cleanup chain. Five of six original families formalized; regular recursion206/208 best estimate85% complete (low confidence). Raw row staging, complete row/integer palette(a), and F3 palette(b) remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1889 RESULTS
+1. ModularRowWord.operation_value: for equal-width little-endian Boolean
+   lists a,x of length W, the checked carry machine returns a W-bit word
+   whose value is (value(a)+value(x)) mod2^W for addition, or
+   (value(a)+2^W-value(x)) mod2^W for subtraction. Addition imports the
+   previous RepeatedAdd.addWord_value; subtraction is a short consequence
+   of BinaryCarry.subtraction_identity and value_lt using Nat modular laws.
+   rawOperation_value reverses the lists to state the exact MSB-first
+   semantics of017. These semantic reversals do NOT claim unpaid physical
+   bit-order conversion. Width0 is included in the arithmetic statements.
+
+2. PaddedWorkSchedule: a generic work routine may be run for a fixed public
+   budget N. Its halt/reject instructions become actual stationary
+   self-jumps, and its trajectory equals the existing frozen work run.
+   A checked active trace of length t<=N to a stopped state therefore
+   reaches the same work state after exactly N paid scheduled steps.
+   The schedule is active at every tick; the existing scheduled compiler
+   then halts at its external public clock N. No input-dependent stopping
+   duration or uncharged wait is introduced. At every prefix n, each head
+   is at distance<=n from its initial coordinate.
+
+3. RepeatedAddCalls/RepeatedAddBody now contain the shared caller proofs:
+   arithmetic_call_to handles both addition and subtraction; copy_call_to,
+   recycle_call_to and jump_trace_to accept an actual target program with
+   the required checked instruction equations. update_trace_to composes
+   the arithmetic, accumulator erase, result copy, scratch erase and four
+   linking jumps, giving a real trace of length<=18W+30. Existing public
+   addition_call/copy_call/recycle_call/jump_trace/body_trace statements
+   retain their previous bounds and specialize these shared proofs.
+   The old body still includes its paid entry jump, hence18W+31.
+
+4. RowArithmeticUpdate specializes that shared body to a controller that
+   stops at the return label, then applies PaddedWorkSchedule. For every
+   sub flag, equal-width a,x, fuel word, starting coordinates, external
+   input position and prior output, native_complete proves exact native
+   execution and halting at18W+30. The resulting acc is the modular result;
+   factor=x, fuel and the marked zero word are preserved; scratch is reset
+   to preparedOutput (a START marker and otherwise blank tape), and every
+   work head, input position and output accumulator is restored.
+   native_prefix_excursion proves the bound for actual native prefix
+   configurations, not only an abstract path. For W>=1,18W+30<=48W.
+   fixed_resources:5 tapes,5 alphabet symbols,99*(18W+31) control states.
+   The operands/zero/scratch are explicitly prepared in the initial
+   configuration. Raw loading and final output/cleanup are not included.
+
+Three new modules and two reused/refactored modules.37 new named
+mathematical declarations plus1 pre-existing abbreviation (RepeatedAdd.Trace)
+newly included in SupportAxioms:38 additional audited declarations total.
+These are support declarations, not38 research results. Old theorem
+statements/bounds are retained; no change to the original paper directory.
+
+DRIFT / REUSE
+R1888 receipt verified before edits:1090 local sources,204 external modules,
+8 configurations and219 artifact hashes all matched. Read the exact017
+oracle: raw rows are MSB-first, carry words are LSB-first; inverse prefix
+subtracts the preceding ORIGINAL row, not the preceding difference.
+Searched pinned mathlib Computability/TuringMachine and modular arithmetic,
+then read Mathlib/Data/BitVec.lean. The library has standard bitvector/ring
+facts and generic machine simulations, but no identified drop-in theorem
+for these exact native paid tape traces. This is not a claim of exhaustive
+absence from all Lean libraries. A wholesale switch to BitVec would still
+need a checked bridge to the existing actual carry controller; reusing its
+proved identities avoids that additional translation layer.
+Reused BinaryCarry.arithmetic_trace/result_length/value_lt/subtraction_identity,
+RepeatedAdd.addWord_value/copy_with_zero and existing bank/port embeddings,
+NativeBuffer.recycle_trace, MicrocodeEmbedding.trace_embed,
+OperationalTrace.trace_run/run_add/run_fixed, NativeMicrocode.inactive_fixed,
+NativeCountedLoop.trace_trans and ScheduledNativeIO.native_prefix,
+native_run_and_halt/native_state_count. No carry recurrence, tape compiler,
+copy algorithm, erase algorithm or exact activity-count induction was rebuilt.
+Changed RepeatedAddCalls/Body so old and new clients call the SAME proofs,
+instead of copying a second block with only its target program changed.
+Development: dev2 passed with one unused-change tactic warning; removed it.
+Dev3 found two wrapper-unfolding elaboration mismatches; explicit unfolding
+fixed them. Dev4 passed without warnings. No changed hypotheses, added
+axioms, proof escapes, proof-limit changes or disabled linters.
+Next reuse candidates found: NativeFieldCopy.copy_trace already stages an
+unmarked template-sized field into a marked buffer, with7W+14 paid steps,
+markers and output-head rewind included. BankReversal.result_spec and
+result_bank_outside already reverse a raw segment in6W+2 steps, preserve
+surrounding cells/markers, and clear scratch. ScheduledTransfer handles
+backward reads and forward writes, and NativeIOEmbedding.step_embed is
+available for embedding its two tapes into the larger caller. Generalize
+or specialize these interfaces; do not invent another copier/reverser.
+DRIFT CHECK: the new native block is a verified local palette(a) component,
+not the requested whole-palette exclusion. Keep the full remaining scope.
+
+Reviewed PhysicalAffineApproximationObstruction: its geometry quantifies over
+selected input sequences and allows input-dependent approximants. Exact
+intra-row trajectories common to all inputs are unnecessary if the slab
+endpoint and uniform O(W) excursion obligations are proved.
+
+A static signature comparison confirmed all9 pre-existing public theorem
+signatures in RepeatedAddCalls/Body are unchanged. Original117 files and
+directory inventory and all204 pinned external source modules also passed
+their checks during the build.
+
+During the full dependency rebuild, compared the marker-based assembly with
+a simpler direct raw-row schedule. A3-bit local carry mode reads the bank
+and row accumulator, writes both, and moves both heads left. Reset1,
+seek(W-1),3W processing ticks,right1,bank-only forwardW,pad(W-1) gives6W
+for W>=1. Addition writes the result into both bank and accumulator;
+difference writes the result to bank and ORIGINAL current bit to accumulator.
+A temporary finite prototype passed2728 cases: both flags, every operand
+pair for widths1..5, exact modular output, retained buffer,6W duration and
+endpoint(bank+W,acc unchanged). This is NOT a formal proof or timing test
+of an existing Lean program. Prefer this smaller raw-interface target next,
+reusing BinaryCarry truth tables/identities and the existing native/schedule
+compiler, before assembling several marked copying/reversal subroutines.
+The prepared R1889 block remains a checked reference/support result.
+
+After verification, the move-before-read variant also passed2728 finite
+cases, with four steps per bit and total7W per row. It is preferred because
+a zipper induction starts just past the row and pops one input cell from
+each left list before writing. Constant optimization is not the goal;
+formalize only this variant. Total finite prototype cases5456, not formal
+proofs. CopyMachine.Sym already derives Fintype; a small Bool x Sym x Sym
+mode can share a finite-update cell between binary carry and later F3
+operations. Existing MaskedStrideCell has the same read/read/write proof
+pattern, and ScheduledNativeIO supplies native refinement. Avoid another
+native compiler, arithmetic library or large transducer framework.
+
+
+BOUNDARY
+Source206(c) bounded mixed binary-word exclusion, source208 and global exceptional-work210.5 remain complete. R1889 adds a prepared-operand arithmetic block, NOT a full raw-row or full-bank executor. Row loading, marker setup, paid bit-order conversion, output transfer, previous-original-row retention for differences, full-bank initialization/cleanup, other exact palette(a) operations and palette(b) remain. Five of six original families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transposition decision or novelty claim.
+
+NEXT
+R1889 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate85%, low confidence.
+
+NEXT: DIRECT RAW-ROW CARRY SCAN FOR INTEGER PREFIX/DIFFERENCE.
+The prepared add/subtract/recycle block is DONE at RowArithmeticUpdate.
+For the raw interface, a simpler direct scan appears to avoid the loader,
+marker and reversal composition. Implement ONE such row first, using the
+already proved BinaryCarry digit/carry/operandBit/result identities and
+ModularRowWord.rawOperation_value. Do not reprove carry arithmetic.
+
+PREFER THE MOVE-BEFORE-READ VARIANT (7W), to simplify the zipper proof.
+The6W sanity-check variant is not worth optimizing or formalizing as well.
+Concrete schedule for W>=1, bank at row MSB and accumulator at its MSB:
+- One actual jump initializes carry=sub.
+- Move both heads rightW ticks, just beyond their respective rows.
+- Repeat W times, FOUR paid ticks each:
+  1.move both heads left;
+  2.read bank a into finite mode, keeping carryc;
+  3.read accumulator x, set u=x XOR sub, y=a XOR u XOR c,
+    c'=majority(a,u,c), saved=(a if sub else y);
+  4.write banky and accumulatorsaved, stay in place, retain c'.
+- Move only bank rightW to the next row; accumulator is already at0.
+- Pad W-1 stationary ticks. Total1+W+4W+W+(W-1)=7W exactly.
+Starting just beyond a field gives the inner scan a simple zipper invariant:
+its left lists begin with the LSB-first operands. Each cycle pops one cell
+from each left list, then writes its result at the new head; induction
+concatenates the reversed outputs on the right. Reuse existing zipper
+write/move denotation lemmas rather than reprove tape semantics.
+
+Use only a small finite-update interface if it immediately helps reuse:
+Mode := Bool x Sym Bool x Sym Bool (50 modes, with existing Fintype Sym).
+A public fixed truth table maps (carry,bank symbol,buffer symbol) to
+(new carry,bank output,buffer output). This four-step cell can serve binary
+carry and later pointwise F3 arithmetic. Instantiate binary carry with
+MaskedStrideCell.bit and BinaryCarry.digit/carry/operandBit. Do not build
+an elaborate general transducer framework before proving the first row.
+ScheduledNativeIO already supplies the native refinement; a separate
+standalone native-machine theorem for every tiny cell is unnecessary.
+
+For addition the buffer holds the current prefix result; for difference
+it holds the ORIGINAL current row. Its next-row initial carry is reset
+explicitly. Initially blank accumulator cells decode as0; after the first
+row the accumulator has W data bits. This uses the existing five-symbol
+native alphabet with no row markers. Finish by physically clearing and
+rewinding this W-cell buffer and resetting the whole bank head; charge
+those steps and the existing raw endpoint IO. No gratis row reversal.
+
+Both finite prototypes passed2728 cases each (widths1..5, both flags/all
+operand pairs): /private/tmp/r1889-direct-row-prototype.json (6W) and
+/private/tmp/r1889-direct-row-prototype-7w.json (preferred7W). They check
+modular results, retained buffer, duration and positions; neither is a
+formal proof. Formalize only the preferred7W variant. The Lean controller, its actual exact execution,
+alltime head bounds and whole-bank semantics remain to be proved.
+The mode reset/read/write steps must be actual native instructions.
+Use existing ScheduledNativeIO trajectory/append/native_prefix machinery;
+ScheduledTapeAction/Transfer and native embedding already handle movement,
+cells and fixed finite modes. Review for a reusable generic finite-update
+interface before copying their loops. Raw wrapper/generalization must keep
+old binary proofs shared; do not clone all native IO/halting/state-bit code.
+
+Fixed7W row slabs with net bank advanceW and a returned local head give
+O(W) deviation from affine/stationary curves. W/P=1/d ->0. The existing
+no_subsequential_physical_affine_fast_approximation permits input-dependent
+geometry; no common exact carry-head path is required for that endpoint.
+Reuse the row-slab/affine estimates after concrete execution is verified.
+
+If the direct route has a genuine interface obstacle, existing checked
+fallback components are NativeFieldCopy.append_call/seal_call,
+BankReversal.result_spec/result_bank_outside, ScheduledTransfer and the
+R1889 prepared RowArithmeticUpdate. Do not rebuild their algorithms.
+Remember: NativeFieldCopy.copy_trace initially needs a completely blank
+target, while recycled arithmetic scratch retains a START marker; these
+states are not interchangeable. A dedicated blank reversal scratch is fine.
+
+Remaining source206(a): integer row-prefix add/difference, XOR/difference,
+row-order reversal, entry-order reversal preserving within-entry bits,
+row-dependent entry rotations, whole-bank increment/decrement modulo2^P.
+Source206(b): specified F3 row/column prefix/difference, row/column reversal,
+row rotations, diagonal signs and whole-bank entry rotation. Bit inputs
+embed in trits0/1; final correctness remains raw BIT transpose. Keep
+integer and trit intermediate types distinct. Types/parameters may vary
+nonuniformly with size; correctness sets have coentropy o(P).
+
+Source206(c) is DONE at RawMixedBinaryWord.no_high_entropy_transpose;
+source208/global210.5 are also done. Do not reopen their raw IO, state-bit,
+compactness, affine geometry or native normalization chains. All exact
+palettes are required for family6. Expected later simplifications, to verify
+when relevant: ordinary row/entry slabs have W/P or b/P ->0, while the
+whole-bank increment/decrement has only finitely many scan phases. Thus
+palettes(a,b) should not need a new growing-stride compactness chain.
+For F3 a trit2 can use the existing .start work symbol, alongside .data0
+and .data1, on clocked UNMARKED banks. The existing five-symbol compiler
+therefore need not be generalized to a new alphabet. Permutation transfers
+must preserve symbols (the current binary bit decoder would erase trit2).
+Use ScheduledTransfer's already generic read/write parameters and factor
+only the shared interfaces actually needed. These are plans, not verified
+palette executors or new impossibility results. Referees only after all six complete.
+Original read-only; no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate85% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. The sixth includes source208/global210.5 and complete binary palette(c); this checkpoint provides the shared prepared modular-row block for palette(a). Full row/integer and F3 palettes remain; final independent referees pending.
+
+VERIFICATION
+Full lake build passed10274 jobs without warnings/errors; SupportAxioms audited5560 unique declarations using only propext,Classical.choice,Quot.sound. There are1093 local sources (1092 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and221 validation artifacts. Original117 files and directory inventory unchanged. RepeatedAddCalls and RepeatedAddBody refactored to shared caller proofs with old statements/bounds retained; other baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

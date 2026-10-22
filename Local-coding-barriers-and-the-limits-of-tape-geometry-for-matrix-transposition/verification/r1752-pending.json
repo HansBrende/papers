@@ -1,0 +1,74 @@
+{
+  "checkpoint": "R1752",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn_classification": "R1751 PROGRESS",
+  "new_modules": [
+    "StationaryTapes",
+    "StationaryTapesRun",
+    "PaidPaddingParameters",
+    "NativeRunLimits",
+    "PaidPaddingLimits"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.StationaryTapes.initial_embed",
+    "TransposeFollowup.StationaryTapes.step_embed",
+    "TransposeFollowup.StationaryTapes.fixed_resources",
+    "TransposeFollowup.StationaryTapes.stepN_embed",
+    "TransposeFollowup.StationaryTapes.halts_iff",
+    "TransposeFollowup.StationaryTapes.run_embed",
+    "TransposeFollowup.StationaryTapes.observations",
+    "TransposeFollowup.StationaryTapes.computesWithin",
+    "TransposeFollowup.StationaryTapes.computesWithin_iff",
+    "TransposeFollowup.StationaryTapes.transposesWithin",
+    "TransposeFollowup.PaidPadding.fixed_resources",
+    "TransposeFollowup.PaidPadding.extra_le_heads",
+    "TransposeFollowup.PaidPadding.exists_parameters",
+    "TransposeFollowup.PaidPadding.preserves_computation",
+    "TransposeFollowup.PaidPadding.preserves_transposesWithin",
+    "TransposeFollowup.PaidPadding.uniform_computation_with_cut",
+    "TransposeFollowup.NativeRunLimits.of_cut",
+    "TransposeFollowup.PaidPadding.cellBits_eq",
+    "TransposeFollowup.PaidPadding.uniform_linear_tasks_macrostar"
+  ],
+  "checks": {
+    "stationary": {
+      "session_id": 37503,
+      "exit_code": 0,
+      "jobs": 8931
+    },
+    "parameters": {
+      "session_id": 19467,
+      "exit_code": 0,
+      "jobs": 9437
+    },
+    "targeted": {
+      "session_id": 33906,
+      "exit_code": 0,
+      "jobs": 9439
+    },
+    "build": {
+      "session_id": 38745,
+      "exit_code": 0,
+      "jobs": 9512
+    },
+    "axioms": {
+      "session_id": 33484,
+      "exit_code": 0,
+      "declarations": 2720
+    }
+  },
+  "updated_at": "2026-10-19T09:40:38.592962+00:00",
+  "boundary": "Numerical conditions discharged and native-run MStar proved under map expansion. Original201 sections8/12 explicitly require scratch erasure and head resets; these are not yet implemented. Expansion existence and other families remain.",
+  "formal_checkpoint": "R1752 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1752,535 sources,2720 declarations,86 artifacts",
+  "proof_scope": "In progress. R1752 discharges the numerical stretch and head-count hypotheses and proves all original MStar conclusions for actual native runs. StationaryTapes adds any fixed number of blank stationary tapes to an arbitrary original TM with exact one-step,partial-run,output,halting and time preservation; ComputesWithin is equivalent at every time bound. PaidPadding uses this adapter and the prior paid-prefix/bit-plane composition. Its resources are53+Q+(M.k+extra)*max(1,M.g.size) tapes,5 symbols and cellBits=3. Given fixed rational maps F,any original payload M and eta>0,choose K and extra once before the dimension,input family and time coefficient. Assuming the overlap graphs have vertex expansion eta at the considered dimensions,each payload computation bounded by t is preserved with additive C*P time and zero-slack CutIneq at its actual halting time. For any dimension sequence tending to infinity and any task instances computed by M within a*P,uniform_linear_tasks_macrostar gives actual halting horizons at most(C+a)*P,correct outputs,the cut inequality,and NativeRunLimits.Conclusion for this same fixed machine. That conclusion explicitly includes uniformly convergent subsequences,every-subsequence1-Lipschitz limits,the full excised-label inequality,total excess>=1,range bound,and failure of simultaneous monotonicity. It reuses the first paper theoremMStar_walk; no limit proof was duplicated.",
+  "next": "Implement paid cleanup of the existing PaidReady endpoint before payload execution,retaining the already proved forward excursion trajectories. Start with a precise bank/head ledger from PaidReady.finalConfig and PaidReady.sourceFinal:10 radius scratch tapes are already blank;the clock is a marked word;the42 generator tapes comprise marked seed/payload words,raw/normalized/canonical streams,the opcode stream,and blank scratch;page tapes remain blank and their final displacement must be proved zero. Reuse NativeErase.erase_trace/native_call and NativeBatchErase for marked words. NativeClosedStream applies only to START/STOP-marked streams; bare nonblank streams require the corresponding paid eraser,with the correct start/end absolute head position. Source facts include SchedulerSeedMeaning.ready_*,OpcodeGeneratorMeaning.final_bank_eq_update/retained_heads,CanonicalReader.finalPositions,RowLoop.finish_clock,TimedRowWalk.finishPos_eq and rationalOpcodeWalk_reset. Prove an O(P) bound for all erasures and every transfer,and finish with every prefix work tape blank,all heads/input at0,and empty output. Insert this cleaned prefix into the existing sequential/parameter/limit framework. Keep the map-expansion existence proof separate until discharged;then complete motion/recursion and the authorized final referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. Actual native MStar under expansion advances paid padding201/202; that fourth family is not complete because paid scratch cleanup and expansion existence remain. Motion200/210, recursion206/208 and final referees remain. This percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/StationaryTapes.lean": "b38d3cee2a0b9dd4ea225c751c1908f427bfcf2581660c9f805cde09648acca7",
+    "lean/TransposeFollowup/StationaryTapesRun.lean": "1740305b4f0a4778e4947cc3b3812ee82d7212f98260544a190b7daee8881d1b",
+    "lean/TransposeFollowup/PaidPaddingParameters.lean": "519fa63cdc092bbecb3be3ffc2107cbd62478b41d6fc30e18061b686bd25d540",
+    "lean/TransposeFollowup/NativeRunLimits.lean": "b51a15eeb1beb28d880971f7adafcab2c2a7ef8ef8194ad0b27d28f19653e5eb",
+    "lean/TransposeFollowup/PaidPaddingLimits.lean": "f9aa7f32179af49522f2b1df6c6f84dd7943bdbb382ad7fdbf3bc6164790276b"
+  }
+}

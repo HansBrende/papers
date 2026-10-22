@@ -1,0 +1,114 @@
+{
+  "unit": "R1720",
+  "previous_turn": "PROGRESS;R1719receipt272sources1353audits77artifactsverifiedatentry",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "DimensionCandidateData",
+    "DimensionCandidateSearch",
+    "DimensionAdvanceMachine",
+    "DimensionAdvanceCalls",
+    "DimensionAdvanceWords",
+    "DimensionAdvanceRun",
+    "DimensionAdvanceMeaning"
+  ],
+  "older_live_sessions": {
+    "cleanup": 26978,
+    "reusable_row": 64928
+  },
+  "scope": "All6families unchanged;3complete. Integrate exact original-convention dimension arithmetic,prove search recurrence and native candidate update. No commits,pushes,original-paper changes or referee agents beforeALL.",
+  "checks": {
+    "dimension_data_build": {
+      "session": 37900,
+      "exit_code": 0,
+      "jobs": 9250
+    },
+    "advance_machine_standalone": {
+      "session": 36159,
+      "exit_code": 0,
+      "log": "/private/tmp/dimension-advance-machine.log"
+    },
+    "search_standalone": {
+      "session": 83402,
+      "exit_code": 0
+    },
+    "advance_calls_standalone": {
+      "session": 83760,
+      "exit_code": 0
+    },
+    "advance_words_standalone": {
+      "session": 82002,
+      "exit_code": 0
+    },
+    "four_module_build": {
+      "session": 6102,
+      "exit_code": 0,
+      "jobs": 9253
+    },
+    "advance_run_standalone": {
+      "session": 47894,
+      "exit_code": 0
+    },
+    "advance_meaning_standalone": {
+      "session": 21312,
+      "exit_code": 0
+    },
+    "final_build": {
+      "session": 43170,
+      "exit_code": 0,
+      "jobs": 9256
+    },
+    "final_audit": {
+      "session": 79650,
+      "exit_code": 0,
+      "declarations": 1411
+    },
+    "advance_execution": {
+      "session": 53688,
+      "exit_code": 0,
+      "output": "(10, 0)"
+    }
+  },
+  "staging": {
+    "search": {
+      "path": "/private/tmp/DimensionCandidateSearch.lean",
+      "session": 90184,
+      "status": "PASSED andpublished",
+      "log": "/private/tmp/dimension-candidate-search.log"
+    },
+    "advance_calls": {
+      "path": "/private/tmp/DimensionAdvanceCalls.lean",
+      "session": 52131,
+      "status": "PASSED83760andpublished",
+      "log": "/private/tmp/dimension-advance-calls.log"
+    },
+    "advance_words": {
+      "path": "/private/tmp/DimensionAdvanceWords.lean",
+      "fragment": "/private/tmp/DimensionAdvanceWords.fragment",
+      "session": 62350,
+      "status": "PASSED andpublished",
+      "log": "/private/tmp/dimension-advance-words.log"
+    },
+    "advance_run": {
+      "path": "/private/tmp/DimensionAdvanceRun.lean",
+      "fragment": "/private/tmp/DimensionAdvanceRun.fragment",
+      "status": "PASSED47894andpublished",
+      "log": "/private/tmp/dimension-advance-run.log"
+    }
+  },
+  "advance_plan": "Nine ports:candidate,square,bits,threshold,unit,zero,fuel,scratch,copyThreshold. Six reusable one-bit-fuel additions:0square+=candidate,1same,2square+=unit,3candidate+=unit;compare candidate tothreshold;greater branch4bits+=unit,copythreshold toblankcopyThreshold,5threshold+=copyThreshold,erasecopyThreshold. Normal branch4adds+compare+5jumps=77m+215. Growing branch6adds+compare+copy+erase+9jumps=123m+339. Both restore every head,scratch/fuel,leavecopyThresholdblank. State/value correctness and combined trace still required.",
+  "next_design": "Prepared search can use12tapes:the9advance ports plus product,repeatFuel and targetLength. Per candidate,copy zero toblankproduct,copybits toblankrepeatFuel,repeated-addsquare b times,compare producttoL,eraseproductandspentfuel. Less branchcalls9-tapeadvanceandloops;equalreturns;greaterrejects. Prospective evaluation cost b*(18m+39)+29m+56 including6links,plusadvance123m+339andone link onless gives b*(18m+39)+152m+396. No compiledloop or budget proved yet. ExistingArithmeticSeedC4 initializesm=2*sizeL+4;candidate,square,bitscopyunit1,thresholdcopy1thenadd1. ReusezeroB asproductafterpaidinitialerase,unprepareextrascratch. Finaltrimcandidateanderaseauxiliariesrequired. The fullrawloader could use15tapes includingretainedpayload,shortlengthsource,andArithmeticSeedextrascratch;exactwiring/resourcecountunproved.",
+  "updated_at": "2026-10-18T19:07:52.967624+00:00",
+  "formal_checkpoint": "R1720 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1720,279sources,1411declarations,79artifacts;2olderexecution suites pending",
+  "proof_scope": "In progress. R1720 formalizes the original-convention stopping-search arithmetic and one actual native candidate update. The search transition depends only on measuredL and current candidate state;forL=inputLength(N),it reachesN from1 afterN-1active abstract updates and then stops,with a unique equality match. Original entry-width/length bounds are imported through the read-only adapter. Atm=2*sizeL+4,the candidate arithmetic fits and N*entryBits(N)*m<=12L. DimensionAdvance is one9-tape5-symbol655-state program. Four paid additions update square by2k+1 and candidate by1;physical comparison triggers a bit-width increment and copied-threshold doubling when needed. Copy and erase are paid,all9heads restore,and scratch/fuel recycle. Native word-level trace,halt,framed call and sufficient-width integer correctness are proved in123m+339 transitions. At the original-convention search width,the exact k-to-k+1 theorem holds whenever1<=k<N. Ten complete executions pass across five power-of-two boundaries. Fullbuild9256jobs;1411declarations audited with standard axioms only. Native search product/comparison/cleanup loop,initialization and final dimension cleanup remain;the full goal remains3of6families complete.",
+  "next": "Build the actual stopping dimension-search loop around DimensionAdvance,using native repeated-addition to compute square*bits and physical comparison with the measured length.12prepared tapes suffice in the proposed layout:9advance ports plus product,repeatFuel,targetLength. Copyzero/product and bits/fuel,runRepeatedAdd,compare,eraseproduct andspentfuel;less callsadvanceandloops,equalreturns,greaterrejects. RepeatedAdd returns all-ones fuel,notzero;erase that exact word. Prospective evaluatecost b*(18m+39)+29m+56;less branch b*(18m+39)+152m+396 includingadvanceandtransfer. These combined costs are NOT proved yet. Prove the native loop and linear budget using DimensionCandidate.search_budget;do not supplyN as data or run fuel. Then initialize usingArithmeticSeedC4 from canonicalL,trimfinalcandidate,andcleartemporaries before composingwithCompactInputMeasure. See dimension-loader-plan.txt. All6families,no commits/pushes,originalpaperuntouched,refereesafterALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/DimensionCandidateData.lean": "cb18106b986c5fff709b03a3ad48fb7ad925e109ef1c13e767289caf05037dcf",
+    "lean/TransposeFollowup/DimensionCandidateSearch.lean": "68cfaf64ef057ab6247eca75bfc89239d690a700aea56bb231555c4723d4db4b",
+    "lean/TransposeFollowup/DimensionAdvanceMachine.lean": "3eb1ac5c7daa42a661937033ef7d5a4cdd9a8c02c56707060c3f0c09c0eec5cf",
+    "lean/TransposeFollowup/DimensionAdvanceCalls.lean": "b240aba798522c872833daca4c88acd37dcbb26997382212ce3242e6a20e17f0",
+    "lean/TransposeFollowup/DimensionAdvanceWords.lean": "bd5d583ef98d1169f9d03a5afc325fc188c1c4a3ee4c3f0560486c07238766de",
+    "lean/TransposeFollowup/DimensionAdvanceRun.lean": "92d981f6c6b0039d2ba5ee57940ecd4788f8a54da62eb5f52b48dfa1b157a80c",
+    "lean/TransposeFollowup/DimensionAdvanceMeaning.lean": "48cd18b623620c915073085cfba0b3548f13c4ffd24c7bcda85c7fd284248773"
+  }
+}

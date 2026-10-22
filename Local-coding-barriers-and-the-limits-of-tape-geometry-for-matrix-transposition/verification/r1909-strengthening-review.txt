@@ -1,0 +1,119 @@
+R1909 fresh strengthening and statement-fidelity audit
+Read-only source review; no Lean/Lake executed; no repository source edited.
+Reviewer domain: families1(adaptive181/186/188),2(recodedXOR181B),5(two-stage216),
+plus concise strengthening checks on treewidth and recursion.
+
+STRENGTHENINGS RECOMMENDED
+
+1. Two-stage helper: replace the log-cardinality helper charge g by the actual
+Shannon helper entropy under uniform F:
+  D + H(helper(X)) >= b*r*(n-r), for every0<=r<=n;
+  D + H(helper(X)) >= b*floor(n^2/4).
+Use the attained-helper subtype, so the ambient helper type remains arbitrary.
+All branch fibers already have size <=2^((n-r)*n*b+r*r*b). Existing
+EntropyFibers.mean_log_fiberCard proves log|F|-H(helper)<=that exponent*log2.
+Draft (uncompiled) is /private/tmp/r1909-strengthening-draft.txt.
+This is strictly sharper than charging log of the attained range when its
+frequencies differ. Concrete admissible example: n2,b1, all8 symmetric
+matrices, both branches identity, helper=X00 AND X11. Frequencies6/8,2/8,
+actual entropy≈0.811 bits versus log2(range)=1. This illustrates strict
+numerical strengthening; it does not claim an improved asymptotic quarter
+coefficient or a new construction. Helper=input with constant output maps
+also shows the full architecture is nonvacuous.
+
+2. Path/cycle XOR constant4 can become3:
+Current XorPathCycleBound.linear_ball_broadcast_bound_nat uses k=floor(sqrt n),
+k>=1, n<=(k+1)^2 and near<=2bnk. Then
+ (k+1)^2+2k^2 <= 3k(k+1), because k>=1.
+Replace nat error bn(3k+1) by3bnk, and real error4bn sqrt n by3bn sqrt n.
+All injective-cycle-embedding/path/subcycle corollaries follow without new
+hypotheses. This improves a finite sufficient constant only.
+
+3. Adaptive treewidth lower bound can include an additional alpha/2:
+ alpha=max(epsilon-2(D+H)/P,0).
+ Existing bound E tw>=n alpha^2/4-1 improves to
+ E tw>=n alpha^2/4+alpha/2-1.
+In TreewidthAverage.quadratic_bound_of_integer_tests, retain r=na/2,
+L=floor r. Its current product estimate discards the nonnegative factor
+ (r-L)(L+1-r)>=0.
+Exact identity gives (L+1)(2r-L)>=r^2+r, not merely>=r^2.
+Use mul_nonneg (sub_nonneg.mpr hlo) (sub_nonneg.mpr hhi), then nlinarith.
+The negative-a branch remains zero. No new fragmentation theorem is needed.
+
+Other directions assessed, not claimed proved:
+- Adaptive helper/deficit coefficients2 cannot be reduced universally: the
+  existing explicit equality witnesses survive enlarged query supports.
+- Dropping all-input correctness from181B is not a free generalization. Its
+  raw-coordinate orbit argument uses correctness at every component flip
+  and every basepoint. A correct subset need not contain adjacent orbit
+  points (one parity restriction already removes all single-flip pairs).
+- Replacing two-stage rowwise wrappers with bounded adaptive queries is a
+  distinct source216.2/216.5 extension, not a one-line weakening. No claim
+  that the existing restricted fixed-support lemma proves the adaptive form.
+- Head-specific exceptional-stage flags could strengthen family6 but require
+  a genuinely new quantified native assembly. Not recommended as audit cleanup.
+
+STATEMENT FIDELITY
+
+Baseline: parent recovered actual initial six-target requirements written
+2026-10-18 before the theorem proofs; their id/source/statement strings match
+current requirements.json. This review compared those named statements with
+the original written research sources and current Lean endpoint definitions.
+
+Family1: source units/181-local-code-separators-and-recoding.txt,188 lines888-1011.
+Original E2/E3: nonempty arbitrary correct F, deterministic public helper,
+public adaptive original-row binary queries, original-row receiver side info,
+helper/transcript-selected separator, actual graph components, variable cost.
+Current GraphSeparatorBound lines32-78 has these quantifiers and exact bound.
+Formal finite ambient helper type is a presentation restriction: the original
+finite-valued helper can always be represented by its attained finite alphabet.
+It does not require independent F, all-input correctness, or off-F termination.
+Original188 permits at most two rows/query; current arbitrary finite query
+support with clique interaction graph strictly generalizes this.
+Original E10 n/9*(epsilon-1/n-2eta)_+^2-1 is strengthened to n/4*(epsilon-2eta)_+^2-1
+(and can receive the additional alpha/2 above).
+Sharp coefficient2 controls are not weakened.
+No mismatch found in the inspected endpoint/definition chain.
+
+The separate source181A recursive K(G) theorem at lines45-132 is NOT implied
+by the current188 theorem and is NOT separately formalized. The ORIGINAL
+six-target adaptive statement explicitly named expected/worst-case separator,
+sharp constants and average treewidth, not every result in unit181. Thus this
+is an omitted neighboring result, not a weakened version of the stated target.
+The final report must continue explicitly identifying this omission.
+
+Family2: original181B lines148-231 explicitly requires all-input correctness,
+fixed singleton/pairwise XORs, arbitrary bijective db-bit row recodings, local
+row graph, individual own-raw-row/full-broadcast receivers. Lean uses those
+same exact conditions. Core B1 is identical; ell0 is additionally included,
+and the finite degree/path-cycle constants instantiate the stated big-O bounds.
+Disconnected graphs, same-row pairs and repeated packets are allowed.
+No replaced hypothesis or weaker conclusion found.
+
+Family5: original units/157-one-recurrence-sandwich.txt,216 section15,
+lines527-560, defines (216.3) and concludes (216.4).
+Lean TwoStageRows fields match the exact wrappers/orders: first triangular
+bijection, rowwise middle equivalences, arbitrary middle row permutation,
+second arbitrary causal triangular stage, initial/final local maps and row
+permutations. Each branch is selected by the one global helper. No new
+invertibility condition is imposed on initial/final wrappers or second stage.
+TwoStageHelper.quarter_helper_bound_of_density uses arbitrary real D and
+attained helper range <=2^g; its conclusion matches216.4. Natural n,b allow
+additional degenerate cases, while source assumed n,b>=1.
+The cardinal theorem includes empty/correlated F and infinite ambient H.
+No weakening of the targeted216.3/216.4 theorem found.
+
+Source216.2 (section14, adaptive original-row query block lemma, fiber-dependent
+common outgoing support and optional diameter variant) and216.5 (bounded-query
+wrappers/outgoing degree) are not full formal endpoints. Original sixth target
+specified exact two triangular stages with LOCAL wrappers and the QUARTER toll,
+so these neighboring extensions were not part of that target. They must not be
+claimed formalized merely because source216 was listed as an umbrella citation.
+The present verified-results.txt correctly disclaims them.
+
+REVIEW LIMITS
+This is a fresh statement/proof-structure/strengthening review, not an
+independent kernel build or line-by-line review of all6318 declarations.
+Parent handles build/axiom audit and the other three target families.
+No novelty claim, unrestricted transposition resolution, or proof of stronger
+asymptotic exponent follows from these finite improvements.

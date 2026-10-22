@@ -1,0 +1,1735 @@
+{
+  "modules": 1157,
+  "recorded_builds": 618,
+  "recorded_seconds": 17086.1,
+  "median_seconds": 30.0,
+  "longest_assuming14s_for_unbuilt": {
+    "endpoint": "TransposeFollowup.ClosedNativePadding",
+    "seconds": 3190.0,
+    "path": [
+      {
+        "module": "FixedTapeCompiler.OperationalTrace",
+        "lines": 53,
+        "seconds": null,
+        "direct_imports": [],
+        "direct_consumers": 4
+      },
+      {
+        "module": "FixedTapeCompiler.Microcode",
+        "lines": 145,
+        "seconds": null,
+        "direct_imports": [
+          "FixedTapeCompiler.CopyMachine",
+          "FixedTapeCompiler.OperationalTrace"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.NativeMicrocode",
+        "lines": 142,
+        "seconds": null,
+        "direct_imports": [
+          "FixedTapeCompiler.Microcode",
+          "TransposeFollowup.AbsoluteTape"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.NativeMicrocodeRun",
+        "lines": 150,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.NativeMicrocode"
+        ],
+        "direct_consumers": 4
+      },
+      {
+        "module": "TransposeFollowup.FiniteProgramEncoding",
+        "lines": 36,
+        "seconds": 17.0,
+        "direct_imports": [
+          "TransposeFollowup.NativeMicrocodeRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.NativeZipper",
+        "lines": 79,
+        "seconds": 21.0,
+        "direct_imports": [
+          "TransposeFollowup.FiniteProgramEncoding"
+        ],
+        "direct_consumers": 6
+      },
+      {
+        "module": "TransposeFollowup.BinaryCompareMachine",
+        "lines": 113,
+        "seconds": 26.0,
+        "direct_imports": [
+          "TransposeFollowup.BinaryCompareData",
+          "TransposeFollowup.NativeZipper"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.BinaryCompareRun",
+        "lines": 135,
+        "seconds": 22.0,
+        "direct_imports": [
+          "TransposeFollowup.BinaryCompareMachine"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.BinaryCarryRun",
+        "lines": 150,
+        "seconds": 36.0,
+        "direct_imports": [
+          "TransposeFollowup.BinaryCarryMachine",
+          "TransposeFollowup.BinaryCompareRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.NativeBuffer",
+        "lines": 185,
+        "seconds": 34.0,
+        "direct_imports": [
+          "FixedTapeCompiler.MicroEraseFamily",
+          "TransposeFollowup.BinaryCarryRun",
+          "TransposeFollowup.NativeCounter"
+        ],
+        "direct_consumers": 4
+      },
+      {
+        "module": "TransposeFollowup.RepeatedAddMachine",
+        "lines": 137,
+        "seconds": 38.0,
+        "direct_imports": [
+          "TransposeFollowup.FinitePortBinding",
+          "TransposeFollowup.NativeBuffer",
+          "TransposeFollowup.NativeCountedLoop",
+          "TransposeFollowup.RepeatedAddData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RepeatedAddCalls",
+        "lines": 138,
+        "seconds": 43.0,
+        "direct_imports": [
+          "TransposeFollowup.RepeatedAddMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RepeatedAddBody",
+        "lines": 76,
+        "seconds": 42.0,
+        "direct_imports": [
+          "TransposeFollowup.ModularRowWord",
+          "TransposeFollowup.RepeatedAddCalls"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.RepeatedAddRun",
+        "lines": 131,
+        "seconds": 42.0,
+        "direct_imports": [
+          "TransposeFollowup.RepeatedAddBody"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.InPlaceAdd",
+        "lines": 38,
+        "seconds": 32.0,
+        "direct_imports": [
+          "TransposeFollowup.RepeatedAddRun"
+        ],
+        "direct_consumers": 6
+      },
+      {
+        "module": "TransposeFollowup.RowCellMachine",
+        "lines": 133,
+        "seconds": 37.0,
+        "direct_imports": [
+          "TransposeFollowup.InPlaceAdd",
+          "TransposeFollowup.RowCellData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCellCalls",
+        "lines": 85,
+        "seconds": 29.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCellMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCellRun",
+        "lines": 87,
+        "seconds": 29.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCellCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCellMeaning",
+        "lines": 158,
+        "seconds": 31.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCellRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCellBudget",
+        "lines": 29,
+        "seconds": 32.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCellMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowStreamData",
+        "lines": 64,
+        "seconds": 33.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCellBudget"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.RowStreamMachine",
+        "lines": 103,
+        "seconds": 32.0,
+        "direct_imports": [
+          "TransposeFollowup.RowStreamData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowStreamCalls",
+        "lines": 130,
+        "seconds": 39.0,
+        "direct_imports": [
+          "TransposeFollowup.RowStreamMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowStreamRun",
+        "lines": 104,
+        "seconds": 41.0,
+        "direct_imports": [
+          "TransposeFollowup.RowStreamCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowStreamMeaning",
+        "lines": 94,
+        "seconds": 41.0,
+        "direct_imports": [
+          "TransposeFollowup.RowStreamRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowStreamBudget",
+        "lines": 45,
+        "seconds": 42.0,
+        "direct_imports": [
+          "TransposeFollowup.RowStreamMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaddedWordData",
+        "lines": 61,
+        "seconds": 32.0,
+        "direct_imports": [
+          "TransposeFollowup.NativeMappedCopy",
+          "TransposeFollowup.RowStreamBudget"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaddedWordMachine",
+        "lines": 93,
+        "seconds": 42.0,
+        "direct_imports": [
+          "TransposeFollowup.PaddedWordData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaddedWordCalls",
+        "lines": 139,
+        "seconds": 37.0,
+        "direct_imports": [
+          "TransposeFollowup.PaddedWordMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaddedWordRun",
+        "lines": 90,
+        "seconds": 33.0,
+        "direct_imports": [
+          "TransposeFollowup.PaddedWordCalls"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaddedWordWidth",
+        "lines": 168,
+        "seconds": 33.0,
+        "direct_imports": [
+          "TransposeFollowup.PaddedWordRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.ArithmeticSeedData",
+        "lines": 77,
+        "seconds": 27.0,
+        "direct_imports": [
+          "TransposeFollowup.PaddedWordWidth"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.ArithmeticSeedMachine",
+        "lines": 145,
+        "seconds": 27.0,
+        "direct_imports": [
+          "TransposeFollowup.ArithmeticSeedData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.ArithmeticSeedCalls",
+        "lines": 124,
+        "seconds": 19.0,
+        "direct_imports": [
+          "TransposeFollowup.ArithmeticSeedMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.ArithmeticSeedRun",
+        "lines": 125,
+        "seconds": 24.0,
+        "direct_imports": [
+          "TransposeFollowup.ArithmeticSeedCalls"
+        ],
+        "direct_consumers": 5
+      },
+      {
+        "module": "TransposeFollowup.SeedMultipleMachine",
+        "lines": 98,
+        "seconds": 17.0,
+        "direct_imports": [
+          "TransposeFollowup.ArithmeticSeedRun",
+          "TransposeFollowup.FixedMultipleRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SeedMultipleRun",
+        "lines": 135,
+        "seconds": 17.0,
+        "direct_imports": [
+          "TransposeFollowup.SeedMultipleMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SeedMultipleMeaning",
+        "lines": 132,
+        "seconds": 18.0,
+        "direct_imports": [
+          "TransposeFollowup.SeedMultipleRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipData",
+        "lines": 101,
+        "seconds": 20.0,
+        "direct_imports": [
+          "TransposeFollowup.SeedMultipleMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipMachine",
+        "lines": 137,
+        "seconds": 21.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipData"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipCalls",
+        "lines": 132,
+        "seconds": 21.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipStages",
+        "lines": 138,
+        "seconds": 20.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipRun",
+        "lines": 159,
+        "seconds": 20.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipStages"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipMeaning",
+        "lines": 125,
+        "seconds": 18.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointClipRational",
+        "lines": 115,
+        "seconds": 17.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipMeaning",
+          "TransposeFollowup.EndpointClipResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointGuardMachine",
+        "lines": 105,
+        "seconds": 17.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointClipRational"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointGuardRun",
+        "lines": 157,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointGuardMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointGuardMeaning",
+        "lines": 70,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointGuardRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.EndpointGuardRational",
+        "lines": 137,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointGuardMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.GuardedEndpoint",
+        "lines": 176,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.EndpointGuardRational"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.GuardedEndpointMeaning",
+        "lines": 50,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.GuardedEndpoint"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsData",
+        "lines": 120,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.GuardedEndpointMeaning",
+          "TransposeFollowup.NativeErase"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsMachine",
+        "lines": 140,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceEndpointsData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsCalls",
+        "lines": 75,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceEndpointsMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsStages",
+        "lines": 55,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceEndpointsCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsRun",
+        "lines": 74,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceEndpointsStages"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceEndpointsMeaning",
+        "lines": 104,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceEndpointsRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SignedLinearFormMeaning",
+        "lines": 109,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SignedLinearFormRun",
+          "TransposeFollowup.SourceEndpointsMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesData",
+        "lines": 162,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SignedLinearFormMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesMachine",
+        "lines": 119,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesCalls",
+        "lines": 91,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesStages",
+        "lines": 59,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesRun",
+        "lines": 73,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesStages"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesResources",
+        "lines": 86,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SourceImagesMeaning",
+        "lines": 85,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.DimensionScaleData",
+        "lines": 127,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.SourceImagesMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.DimensionScaleMachine",
+        "lines": 146,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.DimensionScaleData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.DimensionScaleCalls",
+        "lines": 86,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.DimensionScaleMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.DimensionScaleRun",
+        "lines": 80,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.DimensionScaleCalls"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.DimensionScaleMeaning",
+        "lines": 40,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.DimensionScaleRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationData",
+        "lines": 87,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.DimensionScaleMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationBank",
+        "lines": 139,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationMachine",
+        "lines": 110,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationBank"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationCalls",
+        "lines": 112,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationStages",
+        "lines": 62,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationRun",
+        "lines": 71,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationStages"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationResources",
+        "lines": 98,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowPreparationMeaning",
+        "lines": 86,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowExecutionMachine",
+        "lines": 135,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowPreparationMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowExecutionCalls",
+        "lines": 143,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowExecutionMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowExecutionRun",
+        "lines": 155,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowExecutionCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowExecutionMeaning",
+        "lines": 113,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowExecutionRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowExecutionResources",
+        "lines": 101,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowExecutionMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCleanupInventory",
+        "lines": 183,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowExecutionResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCleanupMachine",
+        "lines": 101,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.NativeBatchErase",
+          "TransposeFollowup.NativeUnprepare",
+          "TransposeFollowup.RowCleanupInventory"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowCleanupRun",
+        "lines": 138,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCleanupMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.ReusableRow",
+        "lines": 203,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowCleanupRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RecordedRowMachine",
+        "lines": 114,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.ReusableRow",
+          "TransposeFollowup.RowConsumerMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RecordedRowRun",
+        "lines": 108,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RecordedRowMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RecordedRowResources",
+        "lines": 120,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RecordedRowRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.RowEnumerationMachine",
+        "lines": 118,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RecordedRowResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowEnumerationCalls",
+        "lines": 142,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RowEnumerationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowEnumerationRun",
+        "lines": 123,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowEnumerationCalls",
+          "TransposeFollowup.RowEnumerationData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowEnumerationResources",
+        "lines": 123,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowEnumerationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RowEnumerationMeaning",
+        "lines": 143,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RowEnumerationResources"
+        ],
+        "direct_consumers": 3
+      },
+      {
+        "module": "TransposeFollowup.SeededEnumerationMachine",
+        "lines": 147,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.ArithmeticSeedRun",
+          "TransposeFollowup.RowEnumerationMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SeededEnumerationCalls",
+        "lines": 147,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.SeededEnumerationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SeededEnumerationRun",
+        "lines": 85,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.SeededEnumerationCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SeededEnumerationResources",
+        "lines": 91,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.SeededEnumerationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawEnumerationMachine",
+        "lines": 107,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.RawDimensionLoader",
+          "TransposeFollowup.SeededEnumerationResources"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawEnumerationCalls",
+        "lines": 74,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawEnumerationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawEnumerationRun",
+        "lines": 72,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RawEnumerationCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawEnumerationMeaning",
+        "lines": 55,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.RawEnumerationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyEnumerationMachine",
+        "lines": 72,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawEnumerationMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyEnumerationCalls",
+        "lines": 83,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyEnumerationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyEnumerationLoop",
+        "lines": 82,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyEnumerationCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyEnumerationRun",
+        "lines": 92,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyEnumerationLoop"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyEnumerationMeaning",
+        "lines": 141,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyEnumerationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyReaderMachine",
+        "lines": 81,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyEnumerationMeaning",
+          "TransposeFollowup.NativeHeadDisplacement",
+          "TransposeFollowup.NativeSpanRewind"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyReaderCalls",
+        "lines": 80,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyReaderMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyReaderRun",
+        "lines": 82,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyReaderCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyNormalizationMachine",
+        "lines": 95,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyReaderRun",
+          "TransposeFollowup.NormalizedBatchBudget"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyNormalizationLoop",
+        "lines": 87,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyNormalizationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FamilyNormalizationRun",
+        "lines": 73,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyNormalizationLoop"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawNormalizationMachine",
+        "lines": 107,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilyNormalizationRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawNormalizationCalls",
+        "lines": 40,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawNormalizationMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawNormalizationRun",
+        "lines": 94,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawNormalizationCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.RawNormalizationMeaning",
+        "lines": 51,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawNormalizationRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.NormalizedRecordsSize",
+        "lines": 51,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.RawNormalizationMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FirstWitnessTag",
+        "lines": 69,
+        "seconds": 13.0,
+        "direct_imports": [
+          "TransposeFollowup.NormalizedRecordsSize",
+          "TransposeFollowup.RationalPageOpcode"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FirstWitnessQuery",
+        "lines": 86,
+        "seconds": 13.0,
+        "direct_imports": [
+          "TransposeFollowup.FirstWitnessTag",
+          "TransposeFollowup.PrefixMembershipRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.FirstWitnessBatch",
+        "lines": 65,
+        "seconds": 13.0,
+        "direct_imports": [
+          "TransposeFollowup.FilteredBatchMeaning",
+          "TransposeFollowup.FirstWitnessQuery"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.NativeResidueColorMeaning",
+        "lines": 65,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FirstWitnessBatch",
+          "TransposeFollowup.NativeResidueColorRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageRecordTestMeaning",
+        "lines": 28,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.NativeResidueColorMeaning",
+          "TransposeFollowup.PageRecordTestRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageEventBatchMeaning",
+        "lines": 67,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageEventBatchRun",
+          "TransposeFollowup.PageRecordTestMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageEventProjection",
+        "lines": 73,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageEventBatchMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageEventBatchCanonical",
+        "lines": 71,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageEventProjection"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryMachine",
+        "lines": 108,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.NativeBatchSkipRun",
+          "TransposeFollowup.PageEventBatchCanonical"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryTrace",
+        "lines": 75,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryRun",
+        "lines": 73,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryTrace"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryStreams",
+        "lines": 53,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.FamilySelectorMeaning",
+          "TransposeFollowup.PageQueryRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryBudget",
+        "lines": 78,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryStreams"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryCanonical",
+        "lines": 77,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryBudget"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageQueryIterationBudget",
+        "lines": 37,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryCanonical"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageLoopMachine",
+        "lines": 95,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageQueryIterationBudget",
+          "TransposeFollowup.PortBindingFrame"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageLoopData",
+        "lines": 54,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageLoopMachine",
+          "TransposeFollowup.RationalOpcodeWalk"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PageLoopWrite",
+        "lines": 46,
+        "seconds": 15.0,
+        "direct_imports": [
+          "TransposeFollowup.PageLoopData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageLoopTrace",
+        "lines": 64,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.PageLoopWrite"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PageLoopRun",
+        "lines": 81,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageLoopTrace"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.SchedulerSeedMeaning",
+        "lines": 52,
+        "seconds": 14.0,
+        "direct_imports": [
+          "TransposeFollowup.PageLoopRun",
+          "TransposeFollowup.SchedulerSeedRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerMachine",
+        "lines": 120,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.InPlaceAdd",
+          "TransposeFollowup.SchedulerSeedMeaning"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerData",
+        "lines": 75,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerMachine"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerPages",
+        "lines": 47,
+        "seconds": 16.0,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerData"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerArithmetic",
+        "lines": 72,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerPages"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerReset",
+        "lines": 61,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerArithmetic"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerDescending",
+        "lines": 73,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerReset"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerAscending",
+        "lines": 80,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerDescending"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerBudget",
+        "lines": 46,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerAscending"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.VertexSchedulerRun",
+        "lines": 90,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerBudget"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.OpcodeGeneratorMachine",
+        "lines": 84,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.VertexSchedulerMeaning",
+          "TransposeFollowup.VertexSchedulerRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.OpcodeGeneratorRun",
+        "lines": 86,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.OpcodeGeneratorMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.OpcodeGeneratorMeaning",
+        "lines": 44,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.OpcodeGeneratorRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.GeneratorClockMachine",
+        "lines": 88,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.FusedPageClockIO",
+          "TransposeFollowup.OpcodeGeneratorMeaning"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.GeneratorRowsMachine",
+        "lines": 138,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratedRowLoop",
+          "TransposeFollowup.GeneratorClockMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.GeneratorRowsCalls",
+        "lines": 37,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorRowsMachine",
+          "TransposeFollowup.RowLoopOnlyWork"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.GeneratorRowsGeneration",
+        "lines": 43,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorRowsCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.GeneratorRowsRun",
+        "lines": 90,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorRowsGeneration"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.GeneratorRowsEntry",
+        "lines": 47,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorRowsRun"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorPorts",
+        "lines": 89,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorRowsEntry",
+          "TransposeFollowup.PortBindingFrame",
+          "TransposeFollowup.PortBindingValues",
+          "TransposeFollowup.RadiusClockRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorMachine",
+        "lines": 81,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidGeneratorPorts"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorCalls",
+        "lines": 113,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidGeneratorMachine"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorConsumer",
+        "lines": 80,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidGeneratorCalls"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorRun",
+        "lines": 107,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidGeneratorConsumer"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaidGeneratorSafety",
+        "lines": 52,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidGeneratorRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidReadyMachine",
+        "lines": 92,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.NativeIOFusionEmbedding",
+          "TransposeFollowup.NativeInputRewindCalls",
+          "TransposeFollowup.PaidGeneratorSafety"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidReadyRun",
+        "lines": 111,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidReadyMachine"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaidPageReset",
+        "lines": 51,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidReadyRun",
+          "TransposeFollowup.TimedRowWalk"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidCleanup",
+        "lines": 172,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.GeneratorCleanupCost",
+          "TransposeFollowup.PaidPageReset"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidCleanMachine",
+        "lines": 140,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidCleanup"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidCleanRun",
+        "lines": 121,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidCleanMachine"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.PaidPayload",
+        "lines": 88,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.BitPlaneRun",
+          "TransposeFollowup.PaidCleanRun",
+          "TransposeFollowup.SequentialFiveRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidPayloadGeometry",
+        "lines": 112,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidCleanGeometry",
+          "TransposeFollowup.PaidPayload",
+          "TransposeFollowup.PaidReadyGeometry"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidPayloadCut",
+        "lines": 56,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.ExcursionIntervalTransfer",
+          "TransposeFollowup.PaidPayloadGeometry",
+          "TransposeFollowup.PaidTimedCut",
+          "TransposeFollowup.SequentialFiveCompletion"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidPayloadComplete",
+        "lines": 31,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.PaidPayloadCut"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidPaddingParameters",
+        "lines": 74,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.CanonicalExcursion",
+          "TransposeFollowup.PaidPayloadComplete",
+          "TransposeFollowup.StationaryTapesRun"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.PaidPaddingLimits",
+        "lines": 50,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.NativeRunLimits",
+          "TransposeFollowup.PaidPaddingParameters"
+        ],
+        "direct_consumers": 1
+      },
+      {
+        "module": "TransposeFollowup.ContinuousNativePadding",
+        "lines": 78,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.AllSizeOverlapExpansion",
+          "TransposeFollowup.PaidPaddingLimits",
+          "TransposeFollowup.RationalSymmetricGraph"
+        ],
+        "direct_consumers": 2
+      },
+      {
+        "module": "TransposeFollowup.ClosedNativePadding",
+        "lines": 72,
+        "seconds": null,
+        "direct_imports": [
+          "TransposeFollowup.ClosedRationalExpansion",
+          "TransposeFollowup.ContinuousNativePadding"
+        ],
+        "direct_consumers": 0
+      }
+    ]
+  },
+  "biggest_fanin": [
+    {
+      "module": "TransposeFollowup.UnconditionalPaidPadding",
+      "closure": 873,
+      "lines": 67,
+      "descendants": 1
+    },
+    {
+      "module": "TransposeFollowup.ClosedNativePadding",
+      "closure": 488,
+      "lines": 72,
+      "descendants": 1
+    },
+    {
+      "module": "TransposeFollowup.ContinuousNativePadding",
+      "closure": 485,
+      "lines": 78,
+      "descendants": 3
+    },
+    {
+      "module": "TransposeFollowup.PaidPaddingLimits",
+      "closure": 482,
+      "lines": 50,
+      "descendants": 4
+    },
+    {
+      "module": "TransposeFollowup.PaidPaddingParameters",
+      "closure": 480,
+      "lines": 74,
+      "descendants": 5
+    },
+    {
+      "module": "TransposeFollowup.PaidPayloadComplete",
+      "closure": 476,
+      "lines": 31,
+      "descendants": 6
+    },
+    {
+      "module": "TransposeFollowup.PaidPayloadCut",
+      "closure": 475,
+      "lines": 56,
+      "descendants": 7
+    },
+    {
+      "module": "TransposeFollowup.PaidPayloadGeometry",
+      "closure": 470,
+      "lines": 112,
+      "descendants": 8
+    },
+    {
+      "module": "TransposeFollowup.PaidCleanGeometry",
+      "closure": 462,
+      "lines": 75,
+      "descendants": 9
+    },
+    {
+      "module": "TransposeFollowup.PaidPayload",
+      "closure": 456,
+      "lines": 88,
+      "descendants": 9
+    }
+  ]
+}

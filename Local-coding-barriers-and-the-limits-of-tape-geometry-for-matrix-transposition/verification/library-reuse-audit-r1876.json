@@ -1,0 +1,46 @@
+{
+  "status": "PROGRESS at R1876: the arbitrary masked binary stride processing phase now has exact cell semantics, a cross-group invariant, the full raw-index zero-filled recurrence, and a single paid native execution of every full/partial group. Its exact time is 4*S*(floor(P/S)+1), at most8*P for1<=S<=P, with4*(N+1) states. Five of six original families formalized; regular recursion206/208 best estimate59% complete (low confidence). Raw IO/final clearing, stride limits, other exact206 palettes and bounded composition remain.",
+  "boundary": "The new native execution starts from an explicit prepared bank and scratch whose firstS decoded bits are zero. It proves the entire processing phase, including group padding and physical buffer rewinds; it does not include raw input loading, final raw output, bank rewind or final scratch clearing. Those costs and correctness remain required. Source208 and the native global exceptional-work threshold (210.5) are complete. All source206 row/integer/F3 palettes and growing-stride limit cases remain in scope. Five of six original families formalized, final referees pending. No unrestricted transpose decision or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate59% complete (low confidence). This estimates the whole sixth family, not just the scan helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and its global exceptional extension are complete within the sixth family. Exact206 compilation remains, with the masked binary processing phase now complete. Final independent referees follow all six.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "searches": [
+    {
+      "scope": "Mathlib and Lean core: tape, scan, iteration, Nat division",
+      "finding": "Pure Vector.scanl and Function.iterate lemmas found; no matching paid masked-stride native executor found. Nat division/remainder and existing tape lemmas reused."
+    },
+    {
+      "scope": "Existing local stride, schedule and NativeIO chain",
+      "finding": "Reused R1875 scheduled compiler and exact slab. New code supplies the missing cell-preservation/cross-group semantics and composes one paid native processing schedule."
+    }
+  ],
+  "reused_mathlib": [
+    "Turing.Tape.move_left_nth through AbsoluteTape",
+    "Turing.Tape.move_right_nth through AbsoluteTape",
+    "Turing.Tape.write_nth through AbsoluteTape",
+    "Nat.mul_add_div",
+    "Nat.mul_add_mod_of_lt",
+    "Nat.div_add_mod'",
+    "Nat.mod_lt",
+    "Nat.div_le_div_right",
+    "Nat.div_mul_le_self"
+  ],
+  "reused_local": [
+    "NativeMicrocode.action_cells",
+    "AbsoluteTape.scanned",
+    "MaskedStrideCell.result_cells",
+    "MaskedStrideGroup.result_positions",
+    "MaskedStrideGroup.group_exact",
+    "MaskedStrideGroup.active_schedule",
+    "ScheduledNativeIO.trajectory_add",
+    "ScheduledNativeIO.trajectory_congr",
+    "ScheduledNativeIO.native_run_and_halt",
+    "ScheduledNativeIO.native_state_count"
+  ],
+  "reused_original": [
+    "Transpose.stepN",
+    "Transpose.step",
+    "Transpose.TM via the existing NativeIO compiler"
+  ],
+  "dependency_simplification": "DRIFT / REUSE\nThe user's renewed library-reuse request was applied to the active chain.\nSearched the pinned mathlib (including its Computability/TuringMachine,\nData/List, Data/Vector, Data/Nat and Logic/Function modules), Lean's Nat\narithmetic, and existing local stride/schedule/NativeIO modules. Found\nVector.scanl_get/scanl_cons and Function.iterate lemmas, but these are pure\nscan/iteration facts: they do not provide this paid native executor,\nabsolute-tape preservation or scratch reuse invariant. No matching complete\nexecutor was found in this search; this is not an exhaustive absence claim.\nReused the existing NativeMicrocode.action_cells, AbsoluteTape.scanned,\nScheduledNativeIO.trajectory_add/congr/native_run_and_halt/native_state_count,\nand all R1875 cell/group execution and position theorems. No new compiler,\nTuring tape model, generic list-scan theory or division algorithm was built.\nThe raw-index bridge directly reuses Nat.mul_add_div, mul_add_mod_of_lt,\ndiv_add_mod', mod_lt, div_le_div_right and div_mul_le_self from Lean/mathlib.\nThe lower-level tape model already imports Mathlib's Turing.Tape move/write\nlemmas. The small group recurrence is specific to the two executor modes.\nThis work closes the concrete semantic gap in source206 rather than\nreopening the completed recursion or exceptional-work lower-bound chains.\n",
+  "novelty": "No novelty claim. Exact prepared-bank processing is verified; raw IO/cleanup, limits, other palettes and final referees remain."
+}

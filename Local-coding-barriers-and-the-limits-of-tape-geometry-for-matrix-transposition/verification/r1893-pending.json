@@ -1,0 +1,84 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1892",
+  "target": "Regular recursion206/208: shared finite modes and raw IO reuse.",
+  "new_modules": [
+    "NativeIOModeProduct",
+    "ScheduledModeRawIO",
+    "SharedRowBank"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.NativeIOModeProduct.attach",
+    "TransposeFollowup.NativeIOModeProduct.project",
+    "TransposeFollowup.NativeIOModeProduct.project_attach",
+    "TransposeFollowup.NativeIOModeProduct.attach_project",
+    "TransposeFollowup.NativeIOModeProduct.embed_refl",
+    "TransposeFollowup.NativeIOModeProduct.program",
+    "TransposeFollowup.NativeIOModeProduct.program_attach",
+    "TransposeFollowup.NativeIOModeProduct.step_attach",
+    "TransposeFollowup.NativeIOModeProduct.active_attach",
+    "TransposeFollowup.NativeIOModeProduct.active",
+    "TransposeFollowup.NativeIOModeProduct.trajectory_attach",
+    "TransposeFollowup.NativeIOModeProduct.trajectory_eq",
+    "TransposeFollowup.ScheduledModeRawIO.inputSchedule",
+    "TransposeFollowup.ScheduledModeRawIO.outputSchedule",
+    "TransposeFollowup.ScheduledModeRawIO.loaded",
+    "TransposeFollowup.ScheduledModeRawIO.emitted",
+    "TransposeFollowup.ScheduledModeRawIO.input_active",
+    "TransposeFollowup.ScheduledModeRawIO.output_active",
+    "TransposeFollowup.ScheduledModeRawIO.input_exact",
+    "TransposeFollowup.ScheduledModeRawIO.output_exact",
+    "TransposeFollowup.ScheduledModeRawIO.loaded_spec",
+    "TransposeFollowup.ScheduledModeRawIO.emitted_spec",
+    "TransposeFollowup.ScheduledModeRawIO.input_position",
+    "TransposeFollowup.ScheduledModeRawIO.output_position",
+    "TransposeFollowup.ScheduledModeRawIO.initial",
+    "TransposeFollowup.ScheduledModeRawIO.prepared",
+    "TransposeFollowup.ScheduledModeRawIO.prepareSchedule",
+    "TransposeFollowup.ScheduledModeRawIO.prepare_active",
+    "TransposeFollowup.ScheduledModeRawIO.prepare_exact",
+    "TransposeFollowup.ScheduledModeRawIO.prepared_spec",
+    "TransposeFollowup.SharedRowBank.Mode",
+    "TransposeFollowup.SharedRowBank.State",
+    "TransposeFollowup.SharedRowBank.ioModes",
+    "TransposeFollowup.SharedRowBank.rowModes",
+    "TransposeFollowup.SharedRowBank.mode_card",
+    "TransposeFollowup.SharedRowBank.schedule",
+    "TransposeFollowup.SharedRowBank.run",
+    "TransposeFollowup.SharedRowBank.schedule_active",
+    "TransposeFollowup.SharedRowBank.schedule_exact",
+    "TransposeFollowup.SharedRowBank.bank_spec",
+    "TransposeFollowup.SharedRowBank.bank_curve_error",
+    "TransposeFollowup.SharedRowBank.native_resources"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8999,
+      "log": "/private/tmp/r1893-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10296,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5710,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1893 dev1 session56085: exit0,8952 jobs; generic product-mode transport built without warnings.\nR1893 dev2 session46511: exit1; partial-function unfolding and explicit cell-alias conversion required in lifted raw IO.\nR1893 dev3 session39048: exit0,8968 jobs; lifted raw IO/preparation built without warnings.\nR1893 dev4 session29743: exit0,8999 jobs; shared 200-state row bank built without warnings.\nR1893 fullbuild session97088: exit0,10296 jobs,no warnings/errors.\nR1893 axiom audit session10595: exit0,5710 unique declarations,no warnings/errors,standard axioms only.\nAll executions terminal. No Lean edits or overlapping Lake calls while a Lake handle was live.",
+  "formal_checkpoint": "R1893 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1115 local sources,204 external sources,5710 declarations,8 configurations,229 artifacts",
+  "proof_scope": "PROGRESS at R1893: generic product-mode transport reuses the existing native instruction embedding, preserving every step and all tapes/IO. The raw loader/emitter and the clean integer-row bank now share one 200-state controller; the bank retains its exact paid runtime, clean endpoint and all-prefix motion bound. Five of six original families formalized; regular recursion206/208 best estimate87% complete (low confidence). Complete raw row-program assembly, remaining integer/F3 operations and bounded-word exclusion remain.",
+  "next": "R1893 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate87%, low confidence.\n\nNEXT: CONNECT PREPARED RAW INPUT TO THE CLEAN ROW BANK, THEN ASSEMBLE IO.\nNativeIOModeProduct, ScheduledModeRawIO and SharedRowBank are DONE. Do not\nreimplement the product transport, raw IO loops, row arithmetic, cleanup,\nhead approximation or native compiler. SharedRowBank.Mode has200 states;\nioModes is the identity, rowModes is Equiv.prodComm. Both component modes\nare actual finite control, preserved by the other subroutine. No reset is\nneeded to switch the statically selected component at a public boundary.\nScheduledModeRawIO.prepare_exact is4P paid steps from blank work tapes;\nits prepared_spec gives heads0, raw input bank, scratch blank, inputP,out[].\noutput_exact is3P paid steps and emitted_spec gives exact output order.\nSharedRowBank.run/schedule_exact and bank_spec give the clean row update;\nits runtime is8P+2W, with P=rW and W>0. Total eventual raw execution would\ntherefore be15P+2W (<=17P for nonempty rows); this total is NOT yet proved\nas a full raw-input native program. Preserve the exact native cost.\n\nFirst obtain the representation bridge for a prepared P-bit bank versus\nrows of W symbols, using existing cell/zipper lemmas. bank_spec accepts\narbitrary surroundings, not only blank surrounding cells. For future\nbounded words, generalize its use to arbitrary clean starting banks via\nBankWord.Interface/Represents; do not impose an empty-surroundings premise\non all clients just because the first raw load starts blank. Reuse pinned\nmathlib Turing.ListBlank.ext if tape equality is needed. Tape.nth_zero,\nright0_nth and mk'_left_right0 may supply the other fields; searches did\nnot find an existing local tape-extensionality wrapper. The prepared-input\nstatement currently decodes bits; the loaded_spec also supplies exact\n.data symbols and preservation outside the range. They are different\nstrengths, so do not infer exact symbols from decoding alone.\n\nThen share the raw-bank program assembly sufficiently for integer/F3\nclients, reusing append_exact/active, native_run_and_halt, blank_denote,\nnative_state_count and state_bits_of_linear_count. RawBankProgram already\nhas the binary client and a working resource/initialization/halting chain;\npreserve its API and avoid copying the whole chain for a second mode.\nPrefer small common interfaces. If refactoring an existing source, rebuild\nits dependents after the change. Its Motion interface asks for exact\ninput-independent paths; the new row bank only needs its proved uniform\napproximation. Do not enumerate carry paths to meet an unnecessarily\nstrong interface. Actual BankWord interfaces already parameterize mode\nand value types.\n\nAll-prefix row-bank geometry is DONE: RowBankCurve, RawRowBankMotion and\nRawRowBankApproximation give9 affine-cover intervals and error(8W+4)/P\nvanishing for W/P->0,P->infinity. RepeatedScheduleMotion works for data-\ndependent interiors with fixed block endpoints. SharedRowBank already\ntransports the capped integer-prefix error. Reuse these results.\n\nRemaining source206(a): row XOR/difference, row-order reversal, entry-order\nreversal preserving within-entry bits, row-dependent rotations, whole-bank\nincrement/decrement modulo2^P. Source206(b): exact F3 row/column prefix/\ndifference, row/column reversal, row rotations, diagonal signs and whole-\nentry-stream rotation. Reuse CoupledRowCell arbitrary-symbol tables,\nScheduledBankCleanup and symbol-preserving ScheduledTransfer. Trit2 can\nuse .start on public-clock banks; binary bit decoders erase it. No new\nwork alphabet/compiler is required merely for trits.\nSource206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and\n210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,\nbounded operation words and correctness sets of coentropy o(P). Referees\nonly after all six original families complete. Original read-only;\nno commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate87% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1893 removes the finite-controller mismatch while reusing raw IO, row arithmetic and native transition proofs. Complete raw row-program assembly, remaining integer/F3 operations, bounded words and final referees remain.",
+  "updated_at": "2026-10-21T07:21:16.024527+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeIOModeProduct.lean": "2690ab83e6042d2f095cf9a67724adfc05ef32febd8659bc49d52af893575082",
+    "lean/TransposeFollowup/ScheduledModeRawIO.lean": "dd1eeee321fcd254f702ac517451ef9d056bf7066567b41aa2e96610da483592",
+    "lean/TransposeFollowup/SharedRowBank.lean": "9cba6b1386e785420319cf8d54c72b3f49268105eebc9c967ec88c64ce70d094"
+  }
+}

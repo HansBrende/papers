@@ -1,0 +1,82 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "SmoothedWalkShortWords",
+    "NormalizedShortWords",
+    "SmoothedIterateShortWords",
+    "SmoothedIterateWordDistribution"
+  ],
+  "modified_modules": [
+    "GeneratorWalkFiniteSupport",
+    "SmoothedWalkSeparatedSubset"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.generatorWalkMeasure_word_support",
+    "TransposeFollowup.RationalFreePair.exists_short_words_of_smoothed_walk_mass",
+    "TransposeFollowup.RationalFreePair.exists_normalized_short_words_of_smoothed_walk_mass",
+    "TransposeFollowup.RationalFreePair.exists_iterate_normalized_short_words",
+    "TransposeFollowup.RationalFreePair.exists_iterate_large_short_words"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 16381,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1810-dev1.log"
+    },
+    "development_2": {
+      "session_id": 14677,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1810-dev2.log",
+      "reason": "wrong output working directory left requested new target absent; three existing/new dependencies passed"
+    },
+    "development_3": {
+      "session_id": 20929,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1810-dev3.log",
+      "reason": "wrong multiplication-side injectivity lemma; replaced by direct cancellation"
+    },
+    "development_4": {
+      "session_id": 34632,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9631,
+      "log": "/private/tmp/r1810-dev4.log"
+    },
+    "build": {
+      "session_id": 15783,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9797,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 19167,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4289,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1810 uses native FreeGroup.norm, norm_inv_eq and norm_mul_le to retain actual bounded words. Existing probability slicing, walk finite-image support, atom bounds, rational denominator carriers, localized symmetry, initialWalkLength compatibility and coefficient/power absorption are reused. No new free-word data type or copied averaging/counting proof is introduced. No bicommutator counting or algebraic escape theorem is assumed or claimed. The pure power-law count is proved from the actual profile concentration with explicit coefficient budgets; full-family output composition remains to be attached when needed.",
+  "declaration_counts": {
+    "theorem": 5
+  },
+  "cleanup": "Four new modules plus two edited follow-up modules add5 theorems,0 definitions. Old finite support and separated-subset statements byte-identical; finite support reuses bounded-word support and separation reuses stronger extraction. Existing localization, geometry, atom decay, denominator arithmetic, coefficient absorption and powers are imported. Initial style warning fixed; no limits raised or linters disabled.",
+  "updated_at": "2026-10-19T23:56:58.241404+00:00",
+  "formal_checkpoint": "R1810 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1810, 820 sources, 4289 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1810 strengthens actual smoothed-walk extraction to retain a nonempty finite set of free words of length<=t, denominator D^t, and one common smoothing element. Normalization at one endpoint preserves cardinality, includes the identity, doubles word length/denominator exponent, and puts a common conjugate inside A^-1*A. For the actual symmetric localized witness this is A^2, for every short length t<=ell. Under the already specified actual profile budgets, the dyadic initial length yields at least eta^(-1/122880) such distinct normalized words. The older separated-subset theorem now reuses this extraction; all old public statements are unchanged. Quantitative algebraic escape, product growth, strict flattening, unconditional gap and paid padding remain. No new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1810 completes actual bounded-word extraction, exact normalization into the same A^2, and a pure power-law cardinal lower bound. Do not redo endpoint averaging, finite word support, denominator multiplication, translation cancellation, or coefficient absorption. Main interfaces: SmoothedWalkShortWords.exists_short_words_of_smoothed_walk_mass; NormalizedShortWords.exists_normalized_short_words_of_smoothed_walk_mass; SmoothedIterateShortWords.exists_iterate_normalized_short_words; SmoothedIterateWordDistribution.exists_iterate_large_short_words. The last supplies at least eta^(-1/122880) distinct words of norm<=2*initialWalkLength(r,j), including1, denominator D_r^(2t), and one common conjugation into A^2, from actual profile concentration and the explicit existing budgets. The R1809 full uniform family theorem is unchanged. Extend its output only when needed, reusing the already derived budgets and preserving the order of choices.\n\nNEXT CONCRETE TARGET: prove a bounded-word exceptional-set count strong enough to force a nontrivial bicommutator from these large sets. Reuse native FreeGroup.norm, CyclicallyReduced and NielsenSchreier before introducing new word machinery. First target the elementary count for a finite pairwise-commuting subset of word-radius L: at most2L+1. A route is that a commutative subgroup of a free group is cyclic (native subgroup freeness may help), together with norm(z^n)>=|n| for z!=1. Centralizers of nontrivial free words must also be shown commutative/cyclic; do not assume this merely from torsion-freeness or unique roots. Targeted searches in the pinned free-group files did not find ready centralizer or bounded-word counting theorems.\n\nPOTENTIAL SIMPLIFICATION, NOT PROVED: if those commuting/centralizer counts are available, fix a nonidentity a in a finite F of norm<=L. The map x -> [a,x] has images of norm<=4L. If all these images commute, there are at most8L+1 image values. A fiber, translated by one representative, sits in the centralizer of a at norm<=2L, suggesting at most4L+1 elements per fiber. Hence |F|<=(8L+1)(4L+1); exceeding this would force some [[a,x],[a,y]]!=1. Check conventions and every group identity before treating this as a result; no novelty claim. This could avoid reproducing a looser polynomial exceptional bound from the source. An alternative for proving centralizer commutativity in our represented free subgroup is elementary SL2 centralizer algebra plus exclusion of the scalar -I by torsion-freeness, if that is shorter than a general free-group argument.\n\nAfter the count, derive a fixed sufficiently-small-scale threshold so the actual power-law cardinality beats the polynomial bound. Then prove a quantitative basis-invariant escape certificate from the resulting bounded rational words. Do NOT assume arbitrary complex conjugation preserves rational denominators or is unitary/well-conditioned. A nonidentity SL2 matrix can have trace2. The Bourgain\u2013Yehudayoff complex-basis off-diagonal-product condition still requires a genuine transfer proof for our A.\n\nProduct growth, strict flattening and unconditional gap remain after escape. The final conditional gap needs a fixed iterate and a proved cap D with D^2<=2^j. Motion200/210 and recursion206/208 remain in scope. No final referees, original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1810 retains a power-law number of actual bounded free words, common smoothing, and controlled rational quotients inside the square of the same localized witness. This supports the escape step of paid padding; that fourth family is not complete. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SmoothedWalkShortWords.lean": "69070bf0ca2b6eef813c8ee9c63f9caa03048194478e7ea95fb48e42d1259599",
+    "lean/TransposeFollowup/NormalizedShortWords.lean": "7dc9029ecc50ee2943622bf5a9e4bab60a574996b682afcd0b680452bc95e36c",
+    "lean/TransposeFollowup/SmoothedIterateShortWords.lean": "e21243ac68dc6e4ec2710eb6a06def4b054ce3e503f45aa44dd6e55c9e7d075f",
+    "lean/TransposeFollowup/SmoothedIterateWordDistribution.lean": "a1ae759dc603b2e424134bf1c8749602eb8fdd146bee14cb3d59fb1a67622307",
+    "lean/TransposeFollowup/GeneratorWalkFiniteSupport.lean": "9a01d083e56fab5cacbabdf3166bcc823036e3a970573ecda32f1b0ee0dd9478",
+    "lean/TransposeFollowup/SmoothedWalkSeparatedSubset.lean": "d448de1c99f444e119d92c3836201aea6d041ab3b94797c7e96819b3dd041a68"
+  }
+}

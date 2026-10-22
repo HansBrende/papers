@@ -1,0 +1,72 @@
+{
+  "checkpoint": "R1753",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn_classification": "R1752 PROGRESS",
+  "new_modules": [
+    "NativeSpanErase",
+    "NativeSpanEraseInterface",
+    "PaidPageReset",
+    "GeneratorCleanupInventory",
+    "GeneratorCleanupPositions"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.NativeSpanErase.scan_pair",
+    "TransposeFollowup.NativeSpanErase.scan_run",
+    "TransposeFollowup.NativeSpanErase.erase_triple",
+    "TransposeFollowup.NativeSpanErase.empty_run",
+    "TransposeFollowup.NativeSpanErase.erase_run",
+    "TransposeFollowup.NativeSpanErase.erased_denote",
+    "TransposeFollowup.NativeSpanErase.cfg_erased_denote",
+    "TransposeFollowup.NativeSpanErase.from_end_trace",
+    "TransposeFollowup.NativeSpanErase.from_start_trace",
+    "TransposeFollowup.NativeSpanErase.complete_trace",
+    "TransposeFollowup.NativeSpanErase.fixed_resources",
+    "TransposeFollowup.NativeSpanErase.native_erase",
+    "TransposeFollowup.GeneratedRowClock.displacement_zero",
+    "TransposeFollowup.GeneratedRowClock.finish_positions",
+    "TransposeFollowup.PaidReady.final_page_positions",
+    "TransposeFollowup.PaidReady.final_page_tapes",
+    "TransposeFollowup.PaidReady.final_scratch",
+    "TransposeFollowup.GeneratorCleanup.marked_at",
+    "TransposeFollowup.GeneratorCleanup.marker_at",
+    "TransposeFollowup.GeneratorCleanup.stream_at",
+    "TransposeFollowup.GeneratorCleanup.categories_disjoint",
+    "TransposeFollowup.GeneratorCleanup.outside_blank",
+    "TransposeFollowup.GeneratorCleanup.head_eq",
+    "TransposeFollowup.GeneratorCleanup.marked_head_zero",
+    "TransposeFollowup.GeneratorCleanup.marker_head_zero",
+    "TransposeFollowup.GeneratorCleanup.stream_head",
+    "TransposeFollowup.GeneratorCleanup.outside_head_zero",
+    "TransposeFollowup.GeneratorCleanup.streams_nonblank"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 89109,
+      "exit_code": 0,
+      "jobs": 9412
+    },
+    "build": {
+      "session_id": 82509,
+      "exit_code": 0,
+      "jobs": 9517
+    },
+    "axioms": {
+      "session_id": 76842,
+      "exit_code": 0
+    }
+  },
+  "updated_at": "2026-10-19T09:56:56.565108+00:00",
+  "boundary": "Paid bare-stream eraser and exact generator tape/head inventory verified; global cleanup controller/composition and total linear cost remain,along with expansion existence and motion/recursion.",
+  "formal_checkpoint": "R1753 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1753,540 sources,2748 declarations,86 artifacts",
+  "proof_scope": "In progress. R1753 proves an exact cleanup inventory and a native eraser for bare nonblank streams. The generator has seven marked words, two lone START markers, four bare streams and 29 blank tapes. Their absolute head positions are now verified: marked words, lone markers and blank tapes have head zero; two streams start at zero and two end at their exact length. Every stream symbol is nonblank. The complete generated page schedule has zero net displacement, so all page heads and the clock head finish at zero. The page tapes and ten radius scratch tapes are already blank. NativeSpanErase physically erases an arbitrary nonblank span, including any START/STOP symbols as ordinary data, in at most 5m+4 steps from its left endpoint or 3m+3 from its right endpoint, restoring the left-end absolute position. Its fixed original-model machine has one tape, five symbols and seven states. Every step is paid; there is no implicit erasure or head reset. These facts prepare a concrete cleanup controller; they do not yet execute the complete cleanup.",
+  "next": "Build the fixed generator cleanup controller on its existing42 tapes: NativeBatchErase over the seven markedPorts, NativeUnprepare over the two markerPorts, and NativeSpanErase over the four streamPorts with atEnd only for raw and opcode outputs. Prove a complete active trace with paid transfers, all tapes blank and every head zero using GeneratorCleanupInventory/Positions. Compose this with the clock eraser on the existing53+Q-tape PaidReady prefix; PaidPageReset already handles pages and radius scratch. Bound word/stream erasures by O(P), preferably reusing paid generation bounds. Insert the cleaned prefix into the existing sequential/parameter/limit framework while preserving forward excursion trajectories. Expanding-family existence and then full motion/recursion remain; final referees after all formalization.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly50% (40\u201360%, high uncertainty) of the full formalization goal, with3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. The cleanup ledger and bare-stream eraser advance paid padding201/202 without completing that family. The composed paid cleanup, total linear cleanup bound, expansion existence, motion200/210, recursion206/208 and final referees remain. This percentage is not an estimate of proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeSpanErase.lean": "993bb5e02fb743f08d2f81b4c08c77d4e135d71fcd791437c9bfab020833c15a",
+    "lean/TransposeFollowup/NativeSpanEraseInterface.lean": "001b807c979e54648394e2bfc351186c8989e077d0d7c61b26ec41e16668ef5d",
+    "lean/TransposeFollowup/PaidPageReset.lean": "6733e20f0bab1ca2b034c38a3b04f1d107482d42ccc2fd9100c4f8bb6ff39d95",
+    "lean/TransposeFollowup/GeneratorCleanupInventory.lean": "e72c7d64a7a8cd017db1c91009b3b54a38c3e62bf16f49a1cc76aa13f7bde731",
+    "lean/TransposeFollowup/GeneratorCleanupPositions.lean": "aabffc070c8820f0e5e29528c9eafc4a3ae015ddd30a9b26a5baf239041c6083"
+  }
+}

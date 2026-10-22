@@ -1,0 +1,81 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1879",
+  "target": "Regular recursion206/208: complete raw masked-stride native geometry.",
+  "new_modules": [
+    "ScheduledRawIOMotion",
+    "ScheduledMotion",
+    "RawMaskedStrideScheduleMotion",
+    "RawMaskedStridePaths",
+    "RawMaskedStrideCurves",
+    "RawMaskedStrideSmallCurve",
+    "RawMaskedStrideRegularity"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledRawInput.cell_prefix_position",
+    "TransposeFollowup.ScheduledRawInput.schedule_position",
+    "TransposeFollowup.ScheduledRawOutput.cell_prefix_position",
+    "TransposeFollowup.ScheduledRawOutput.schedule_position",
+    "TransposeFollowup.ScheduledNativeIO.append_position",
+    "TransposeFollowup.RawMaskedStride.bankPrefix",
+    "TransposeFollowup.RawMaskedStride.scratchPrefix",
+    "TransposeFollowup.RawMaskedStride.schedule_position",
+    "TransposeFollowup.RawMaskedStride.bankPath",
+    "TransposeFollowup.RawMaskedStride.scratchPath",
+    "TransposeFollowup.RawMaskedStride.bankPrefix_frozen",
+    "TransposeFollowup.RawMaskedStride.scratchPrefix_frozen",
+    "TransposeFollowup.RawMaskedStride.native_halts",
+    "TransposeFollowup.RawMaskedStride.workTraj_prefix",
+    "TransposeFollowup.RawMaskedStride.workTraj_position",
+    "TransposeFollowup.RawMaskedStride.clippedRamp_shift",
+    "TransposeFollowup.RawMaskedStride.processing_curve_shift_covers",
+    "TransposeFollowup.RawMaskedStride.bankApproximation",
+    "TransposeFollowup.RawMaskedStride.scratchApproximation",
+    "TransposeFollowup.RawMaskedStride.loading_curve_error",
+    "TransposeFollowup.RawMaskedStride.bankApproximation_error",
+    "TransposeFollowup.RawMaskedStride.scratchApproximation_error",
+    "TransposeFollowup.RawMaskedStride.full_curve_covers",
+    "TransposeFollowup.RawMaskedStride.full_bounded_affine_approximation",
+    "TransposeFollowup.RawMaskedStride.clippedRamp_start_error",
+    "TransposeFollowup.RawMaskedStride.smallBankApproximation",
+    "TransposeFollowup.RawMaskedStride.smallBankApproximation_cover",
+    "TransposeFollowup.RawMaskedStride.smallBankApproximation_error",
+    "TransposeFollowup.RawMaskedStride.scratchPath_bound",
+    "TransposeFollowup.RawMaskedStride.full_small_affine_approximation",
+    "TransposeFollowup.RawMaskedStride.full_affine_approximation_subsequence"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9041,
+      "log": "/private/tmp/r1880-dev9.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10229,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5227,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 handle52789 exit1; dev2 handle41799 exit0 (8959 jobs); dev3 handle22182 exit1; dev4 handle48424 exit0 (9033 jobs); dev5 handle49811 exit0 (9039 jobs, two warnings later fixed); dev6 handle34591 exit1 (RawMaskedStrideCurves clean); dev7 handle71693 exit1; dev8 handle9925 exit1; dev9 handle78961 exit0 (9041 jobs). full handle86446 exit0 (10229 jobs); audit handle4976 exit0 (5227 declarations). All checkpoint handles terminal.",
+  "formal_checkpoint": "R1880 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1048 local sources,204 external sources,5227 declarations,8 configurations,203 artifacts",
+  "proof_scope": "PROGRESS at R1880: the complete forward raw masked-binary-stride executor now has exact native head paths at every time, including all input, cleanup, rewinds, output and frozen halt. For any sequence P->infinity and1<=S<=P, arbitrary modes/masks/inputs, and any finite nonnegative physical horizon, full_affine_approximation_subsequence supplies a strict subsequence, fixed finite affine-cover size and uniform error tending to zero for both actual native work heads. Five of six original families formalized; regular recursion206/208 best estimate70% complete (low confidence). Original block normalization, other exact palettes and bounded composition remain.",
+  "next": "R1880 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate70%, low confidence.\n\nNEXT: integrate this complete primitive geometry with the ORIGINAL native\napproximation obstruction, then make the reusable internal-bank stage\ninterface needed for bounded composition. Do not redo raw IO, the full\nhead paths, either stride regime or compactness of the stride ratio.\n\nNormalization route (reuse existing results):\n- NativePhysicalLimits.native_sampled_physical_limit already turns an\n  actual native blockTraj limit Phead into the physical sampled limit\n  Phead(G*t)/G. It uses the original UnitSteps and proven rounding bounds.\n- BoundedAffineCovers.local_affine_ae_of_eventual_bounded_covers and\n  AffineApproximationObstruction already turn fixed-cover approximants\n  with vanishing error into the forbidden affine limit behavior.\n- Alternatively scale covers via HasAffineIntervalCover.rescale with\n  scale1/G, obtaining G*q(u/G), and reuse the existing block obstruction.\n  CanonicalTimeNormalization.canonical_physical_error plus the existing\n  one-step sampling bound pays for the change of normalization. Do not\n  invent or assume a normalization identity.\n- Check for an existing physical-approximation wrapper before adding one.\n  Preserve high-entropy correct sets, fixed heads/alphabet, nonuniform\n  O(P) states/O(log P) state bits and native inputLength/entryBits sizes.\n- The new native path theorem uses encoded port indices. Convert actual\n  head indices with encoding.port.symm; approximants may be permuted per\n  index because their cover and error bounds hold for every head.\n\nComposition must use actual work-bank stages, not external IO piping.\nThe natural binary internal stage is Scan.result, scratch erase(S),\nscratch rewind(S), and bank rewind(P): duration N+2S+P, heads restored to0,\nfull scratch blank and bank transformed by the proved recurrence. Reuse\nScan.result_correct/result_scratch_outside and ScheduledTapeAction cell\npreservation/erase/rewind. Existing RawMaskedStride cleared/ready proofs\nshow this for the actual prepared bank; generalize through their underlying\nlemmas to an arbitrary correctly initialized bank. Keep raw load and emit\nonce at the ends of the whole word. A raw external output tape is write-only\nand cannot be read as the next primitive input without a paid conversion.\nCheck existing bank-stage/compiler APIs before adding new interfaces.\n\nR1880 APIs:\nInput/Output.cell_prefix_position, schedule_position.\nScheduledNativeIO.append_position (bounded displacement concatenation).\nRawMaskedStride.bankPrefix/scratchPrefix, schedule_position, bankPath,\nscratchPath, bankPrefix_frozen/scratchPrefix_frozen, native_halts,\nworkTraj_prefix, workTraj_position (all integer times, frozen tail).\nclippedRamp_shift, processing_curve_shift_covers, bankApproximation,\nscratchApproximation, loading_curve_error, bankApproximation_error,\nscratchApproximation_error, full_curve_covers,\nfull_bounded_affine_approximation. clippedRamp_start_error,\nsmallBankApproximation/cover/error, scratchPath_bound,\nfull_small_affine_approximation. full_affine_approximation_subsequence.\n\nAll exact backward/reversal/rotation variants, row/integer/F3 palettes and\nbounded-word composition remain required by source200 sections20-24.\nSource208/global210.5 complete; do not reopen them to defer source206.\nNo new subagents until all six, then authorized impartial referees/cleanup.\nOriginal paper read-only; no commits/pushes; no unrestricted transpose claim.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate70% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Within family6 the native recursion and global exceptional-work extension are complete. Exact source206 still needs the whole palette, original normalization and bounded-word composition. Final independent referees pending.",
+  "updated_at": "2026-10-21T02:06:50.515146+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScheduledRawIOMotion.lean": "62cf3296bb0b2371f6fc53616815d552a6c4364dc73643239661bcead1fe6777",
+    "lean/TransposeFollowup/ScheduledMotion.lean": "062584abd785ca6f3f5eecc877940e4a9a13757340aa9cfb2303507905461431",
+    "lean/TransposeFollowup/RawMaskedStrideScheduleMotion.lean": "3baacc43d863a80a8bc1d9ddc7e7f3cfbb6f2a1b0745565d151538c6e0cf05a7",
+    "lean/TransposeFollowup/RawMaskedStridePaths.lean": "213cb8222f457d55a1fe9f217fd08aa980f7617d0917e753561b55f0f507f578",
+    "lean/TransposeFollowup/RawMaskedStrideCurves.lean": "1c0e4e7384b03cda3a22d3722e5e2886717e86943291d8cd8e7d771be9672816",
+    "lean/TransposeFollowup/RawMaskedStrideSmallCurve.lean": "34c5c30d537edf4ae1262d34540d45ff3aff0c3999bd9d202f1d8830618167bf",
+    "lean/TransposeFollowup/RawMaskedStrideRegularity.lean": "313edd56cb2bb7cc97c135c67d5fd411de8f2e60c77244c0b942f13946da6664"
+  }
+}

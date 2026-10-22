@@ -1,0 +1,122 @@
+R1912 independent preservation and benchmark review — 21 October 2026
+READ ONLY. No Lean/Lake process started and no repository source edited.
+Scratch scripts and simulations are confined to /private/tmp.
+
+CONCLUSION
+The five-module SourceEndpoints pilot is safe to test and adopt subject to the
+measured decision gate, ordinary build and complete existing axiom audit.
+Both candidate consolidation plans pass independent exact-source and import-DAG
+simulation. This certifies organization-preservation conditions; it does not
+replace Lean elaboration/kernel checking or imply a measured timing benefit.
+
+VERIFIED BASELINE
+All 1,158 archived local source texts match R1911 receipt hashes. SupportAxioms
+contains exactly the same ordered 6,297 unique #print axioms names as the receipt.
+The six original endpoint contracts are therefore kept within the existing audit
+set, and all their source definitions/statements/proofs are preserved by the
+whole-source comparison. No mathematical endpoint is retired or weakened.
+
+SOURCE-PRESERVATION CHECK
+/private/tmp/r1912-preservation-check.py is read-only and has two modes:
+- Candidate review, no Lean execution: scans scopes and commands and checks the
+  baseline source hashes and complete exact audit-name list.
+- --check-current: requires exact concatenation of every original non-import
+  source body in planned order. Only whitespace may separate complete bodies.
+  All ungrouped non-import source text must be byte-for-byte identical. Deleted
+  files must be precisely the planned non-destination members. New target
+  imports must be the first-occurrence-ordered external union after remapping;
+  consumer imports must be the mapped/deduplicated old list. It rejects dangling
+  deleted imports, missing local imports, extra sources and cycles.
+- Optional --axioms-log verifies the exact 6,297-name set and allows only the
+  original standard axioms, propext/Classical.choice/Quot.sound.
+
+The checker deliberately rejects changed proof text rather than approximating
+semantic equivalence. A later import-splitting change requires a separate explicit
+preservation review and must not be hidden by relaxing this check indiscriminately.
+The lexical hazard scanner is conservative, not a full Lean parser.
+
+SIMULATIONS COMPLETED
+The conservative 37-group plan, removing 160 module boundaries, and the broader
+20-group plan, removing 271 boundaries, were both materialized as complete scratch
+source trees and checked. All declaration/proof bodies are unchanged, all audit
+commands are unchanged, and the remapped local import graphs are acyclic.
+No Lean execution was performed on these scratch trees.
+
+Conservative simulation: /private/tmp/r1912-preservation-simulation-5xv0f5wn
+Conservative report: /private/tmp/r1912-preservation-simulation.json
+Broader simulation: /private/tmp/r1912-preservation-simulation-qihqgoww
+Broader report: /private/tmp/r1912-broad-preservation-simulation.json
+Generator: /private/tmp/r1912-preservation-simulate.py
+To repeat broader simulation:
+  python3 /private/tmp/r1912-preservation-simulate.py --plan /private/tmp/r1912-broad-group-plan.json --label broad
+
+SCOPING AND GENERATED-NAME REVIEW
+The SourceEndpoints pilot contains independently balanced namespace/end blocks,
+only autoImplicit=false options, and no private/local/scoped declarations or
+standalone attributes. Repeated namespace blocks remain intact; declarations
+keep their original namespaces and names.
+
+The broader plan has ten anonymous instances in seven groups:
+RowCellData, ArithmeticSeedData, EndpointGuardMeaning, EndpointGuardRational,
+DimensionScaleMachine, OpcodeDecoderMachine, DimensionAdvanceMachine,
+DimensionSearchMachine, ClockBuilderMachine and RadiusBuilderMachine.
+These are flagged for conservative checking. Installed Lean 4.34.1 source
+Lean/Elab/DeclNameGen.lean lines224–259 computes an instance name from its type,
+adding a module-root suffix only when its type is not project-local, followed
+by an unused-name check. Every flagged instance contains an original project-local
+Port/Group/Phase/PageOpcode/predicate constant, and the project root and namespace
+are unchanged. Thus the module-root naming component does not change. There is no
+observed name collision; ordinary compilation is the final check.
+
+Most broader groups have multiple external imports or intermediate consumers.
+Their union imports appear earlier after consolidation. This is why exact source
+text plus an axiom-set check alone is not the strongest available signature test:
+instance/name resolution could in principle elaborate unchanged text differently.
+An exact exported-type comparison is prepared to close this operational gap.
+
+EXACT TYPE MANIFEST (PREPARED, NOT EXECUTED BY THIS REVIEWER)
+/private/tmp/r1912-prepare-type-manifest.py generates a scratch Lean command that
+imports the current audit roots, looks up each of the 6,297 original names and
+writes the exact Expr type representation and universe parameter names to JSON.
+It introduces no repository mathematical declarations or axioms. Root must run it
+sequentially after the benchmark is terminal, before adoption, and again after
+ordinary final build. Compare the JSON dictionaries exactly. Unlike pretty-printed
+signatures, Expr representations retain implicit arguments and binder information.
+Generated driver has not yet run and may need ordinary syntax/elaboration repairs;
+it must never be made to pass by raising proof limits or using trust bypasses.
+
+Initial generated driver: /private/tmp/r1912-type-manifest.lean
+Expected baseline output: /private/tmp/r1912-baseline-types.json
+Generate final driver after changes with:
+  python3 /private/tmp/r1912-prepare-type-manifest.py --label final
+Root executes each using its pinned lake env lean, only when no prior handle is live.
+
+BENCHMARK REVIEW
+verification/r1912-source-endpoints-benchmark.py preserves the five original bodies,
+uses the pinned Lake environment, explicitly isolates package root and outputs in
+scratch, checks live source hashes before and after every run, and alternates arm
+order for repeat trials. The wait4 replacement avoids the denied BSD time sysctl;
+wall time is perf_counter and CPU/RSS are OS child-resource data.
+
+The split arm imports previously validated original predecessor artifacts, whereas
+the merged arm has the same preceding declarations in the current file. This is a
+valid controlled measurement of repeated process/import/elaboration work, and every
+proof is elaborated and kernel-checked in both arms. It is not a scratch rebuild of
+the full predecessor graph and not a whole-Lake wall-time measurement. Sum of the
+five sequential split timings is meaningful here; sums of overlapping Lake jobs
+are not total build time.
+
+Use three paired alternating trials plus import-only probe, comparable warm-cache
+conditions, and the agreed >=35% median elapsed saving gate. Review stdout/stderr
+for warnings, return codes and memory as well as timing. One pilot pair or an old
+historical 15-second/module figure does not establish the production speedup.
+No shared cache deletion/trace rewriting/timestamp manipulation is warranted.
+
+FINAL VALIDATION
+After adoption: exact-body checker for selected groups; ordinary full Lake build;
+complete unchanged-name axiom audit; exported-type comparison; upstream/external
+configuration hash checks; forbidden-token scan; truthful before/after timing with
+rebuilt module counts and critical path. A no-change build, a target proof-edit
+rebuild and broad root-change rebuild answer different performance questions and
+must be labeled separately. Do not claim that reducing boundaries alone produces
+the desired small-fraction wall time before measuring an appropriate workload.

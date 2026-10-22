@@ -1,0 +1,141 @@
+R1913 READ-ONLY IMPORT/BOTTLENECK REVIEW
+No Lean/Lake invocation, source edit, configuration edit, or receipt mutation.
+
+PRIMARY BOTTLENECK
+The completed1321.040s run rebuilt347 local mathematical modules, not all896:
+its log starts at9724/10071 after earlier work had populated the cache. It is
+not a repeatable clean-build baseline. Summed overlapping job durations6075.2s
+are not wall time. A duration-weighted local dependency path accounts for1281s
+of logged job durations across72 actually rebuilt modules (~97% of1321s).
+The previously reported81-module source path is NOT the duration-weighted path.
+Cached ancestors contribute zero observed weight; tie choices among them vary.
+Current source hashes all match final-graph.json. Weighted-path jobs median17s,
+median100 source lines; entire72-job path contains7993 source lines.
+
+This points to repeated heavyweight environment loading along a serial chain,
+not one unusually difficult theorem. The log's slow centralizer jobs rise to
+23–32s under concurrent load, but tactic attribution cannot be inferred from
+that. Whole-run child CPU counters:1082.382s user +4968.275s system (~82% system).
+This is consistent with import/I/O/memory-management overhead, not a profile
+proving any particular OS cause. Do not infer peak total RAM from the reported
+maximum single-child RSS6.883GB. Prior controlled same-five-proof-body pilot
+already established a large repeated-process cost (median73.840→15.798s with
+one merged module); no need to repeat that old broad diagnosis before trying
+the specific unnecessary edge below.
+
+FIRST PILOT: TWO IMPORT EDGES, NO PROOF REWRITE
+1. RealMobiusAverage.lean:1 currently imports RationalMobiusAction.
+   Replace that prerequisite with RealMobiusL2.
+   Its51 source lines define actionCLM/averageOperator and prove averaging,
+   symmetry, and contraction using only the real action already in RealMobiusL2.
+   No RationalUnitMobius compatibility API occurs in its source.
+2. SpectralGapInterface.lean:1 currently imports RealMobiusAverage alone.
+   Add an explicit RationalMobiusAction import here: this is the true bridge
+   between rational maps/continuous expansion and the real L2 operator.
+   Keep its current RealMobiusAverage import.
+
+Actual direct consumers of RealMobiusAverage: ContractionCorrelation and
+SpectralGapInterface. The former has only generic real/complex correlation
+and averaging statements and does not use rational APIs. Searching every Lean
+source for ALL TEN exported RationalMobiusAction names finds mathematical
+uses only in SpectralGapInterface and RationalContinuousExpander; the latter
+already receives SpectralGapInterface via RationalRestrictedGap. SupportAxioms
+also prints those names and retains the full checked graph. Thus the exact
+named-API source evidence calls for one explicit rational bridge import:
+SpectralGapInterface. A compiler pass must still detect implicit instances,
+notation, tactic extensions, and any indirectly used earlier declarations.
+
+STATIC IMPACT OF THESE TWO EDGES (NOT A TIMING FORECAST)
+- Local modules reaching the full Mathlib aggregator456→245:211 lose it.
+- RealMobiusAverage Mathlib source vertices8530→2696; local closure54→5.
+- ComplexifiedL2Operator8530→3469 Mathlib vertices; local closure61→14.
+- MobiusSchwartzDerivative8530→3470; local closure66→19.
+- MobiusHaarKernel8530→3477; local closure106→59.
+- NormalizedCentralizerChart8530→3483; local closure144→97.
+- Terminal UnconditionalPaidPadding still needs full Mathlib and613 local
+  prerequisites through genuine final interfaces; this plan does not claim to
+  eliminate every broad dependency.
+- Holding ALL OLD observed job durations fixed, graph-only weighted path1281
+  becomes907s (72 rebuilt vertices→50). This is only a dependency sensitivity
+  calculation: new import sizes, scheduler contention, and readiness all change.
+- Rebuild fanout of ConditionalSpectralExpansion217→6 local modules;
+  MatchingPageDegree281→70. Fanout of RealMobiusAverage remains215: its benefit
+  is smaller loaded environments, not fewer descendants. MonotoneCellOverlap
+  fanout376→373 is a poor seed for isolating this particular cut.
+
+BENCHMARK DESIGN AND DECISION GATES
+First compile the two changed modules and genuine downstream bridge consumer,
+with exact source/header and axiom checks; repair missing direct imports only.
+Do not declare success merely because the source grep was clean.
+Use fully populated dependency caches for BOTH baseline and candidate. Rebuild
+same targets after exactly the same harmless proof-body edit on both variants;
+restore sources afterwards. Keep the hardware/job settings/toolchain fixed,
+record actual rebuilt module lists, and alternate arm order for3 matched pairs.
+Two distinct benchmark seeds answer two distinct questions:
+A. RealMobiusAverage: same215 potential descendants on both sides. Build an
+   explicit representative target such as NormalizedCentralizerChart after the
+   identical edit; this measures reduced import cost in a fixed analytic path.
+   First cheap isolated-module checks can compare RealMobiusAverage itself and
+   import-only probes for both actual prerequisite sets, with deps cached.
+B. ConditionalSpectralExpansion: same edit then full ordinary lake build tests
+   avoided rebuilding of211 unrelated analytic consumers (217→6 static fanout).
+   This is likely the most dramatic real edit-workflow improvement. Do not use
+   the earlier mixed347-module1321s run as its denominator.
+Keep the cut if preserved obligations/axioms pass and matched medians show a
+clear improvement (suggested practical gate≥20% on the target workflow), without
+an unacceptable isolated-edit or memory regression. For a tiny correct import
+cut a smaller reproducible improvement may still be worthwhile; report it
+honestly. Measure import-only vs full-module elapsed/user/system/RSS before
+spending time rewriting tactics. If narrow import-only still dominates, group
+coherent modules; if proof time dominates, use Lean's profiler on that target.
+No increased heartbeat/recursion limits or trust changes are needed.
+
+SECONDARY LOW-COST CUT
+ComplexifiedL2Operator imports ContractionCorrelation but its100 lines use
+RealMobiusAverage and ComplexL2Parts, not the generic correlation lemmas. A
+separate pilot could replace that import with RealMobiusAverage and add direct
+ContractionCorrelation imports to actual uses: GridHighFrequency, GridDyadicTail,
+GridSmoothHighFrequency, RetainedCorrelationLimit (the last already imports it).
+Graph-only old-weight path907→891s; no additional full-Mathlib reduction after
+first cut. Small benefit and larger consumer surface: do not bundle it into the
+first measurement.
+
+NEXT DISTINCT DECOUPLING CANDIDATE
+SL2SpanningTrace imports MobiusWalkEntrySupport even though its100-line proof
+uses only elementary matrix/identity-neighborhood facts:
+  matrixEntryBox, one_mem_matrixEntryBox, matrixEntryBox_mul,
+  mobiusIdentityBall, mobiusIdentityBall_entry_bounds,
+  mobiusIdentityBall_subset_entryBox_two.
+Those declarations currently sit in heavy Haar/walk files:
+  MobiusHaarKernel:19–45 identity distance/ball/basic bounds;
+  MobiusHaarEntryBox:10 matrixEntryBox definition;
+  MobiusWalkEntrySupport:12–58 identity/inverse/product/entry-bound lemmas.
+A coherent elementary geometry core preserving the SAME declarations could
+let SL2 trace/centralizer geometry start independently of much of the Fourier,
+Haar, and convolution pipeline. Existing heavy files would import/re-export
+that core; no duplicate model definitions. This requires a real split and
+consumer audit, so it is the SECOND phase after the two-edge pilot. Its benefit
+has NOT been quantified; merely changing SL2SpanningTrace's import to the old
+heavy files would not achieve the cut. Guard against relocating global
+instances unintentionally (the locally compact Group instance currently lives
+near the top of MobiusHaarKernel) and preserve exact namespaces/binder types.
+
+COHERENT GROUPING IF IMPORT CUTS STILL LEAVE A LONG SERIAL TAIL
+Two conservative pilot groups already recognized by the source graph:
+- SmallExpansionSymmDiff→IndicatorPullbackError→WeightedIndicatorError→
+  WeightedEnergyTransfer→UnitBoundaryError:5 modules,653 lines,84 logged seconds.
+- MobiusNearIdentity→MobiusPairwiseComparison→MobiusActionContinuity→
+  MobiusGroupAverage:4 modules,326 lines,62 logged seconds.
+The first remains on the true rational expansion path; the second remains on
+the narrowed analytic path. Benchmark each only AFTER narrowing so startup is
+measured under the new closure. Keep bodies, source namespace sections, and
+public names intact; compare semantic types where generated binder names
+change. Do not indiscriminately merge centralizer/trace branches: merging
+parallel prerequisites can serialize work and import unrelated heavy theories.
+
+EVIDENCE FILES
+- verification/r1912-build.log and r1912-build-timing.json.
+- verification/r1912-final-graph.json; hashes still match current sources.
+- /private/tmp/r1913-import-bottleneck-analysis.json: weighted path and jobs.
+- /private/tmp/r1913-import-candidates.json: static two-edge thought experiments.
+This is a plan, not an implemented or benchmarked candidate.

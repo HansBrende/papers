@@ -1,0 +1,19 @@
+{
+  "purpose": "Executable smoke checks of the same definitions whose all-size correctness is kernel-proved. Not a machine-time or expander-existence test.",
+  "command": "lake env lean /private/tmp/rational_padding_examples.lean",
+  "exit_code": 0,
+  "cases": [
+    "identity on(0,1)",
+    "2x on(0,1/2)",
+    "x/(1+x) on(0,1)"
+  ],
+  "n": 8,
+  "observed_output": [
+    "([[0], [1], [2], [3], [4], [5], [6], [7]], [[0], [1], [2], [3], [4], [5], [6], [7]])",
+    "([[0, 1], [2, 3], [4, 5], [6, 7], [], [], [], []], [[0], [0], [1], [1], [2], [2], [3], [3]])",
+    "([[0], [0, 1], [1, 2], [2], [2, 3], [3], [3], [3]], [[0, 1], [1, 2], [2, 3, 4], [4, 5, 6, 7], [], [], [], []])"
+  ],
+  "source_sha256": "1bae451be02f43a5299ca449b2e8cb41f8553564c892aad49de79d9ff3a8e0bc",
+  "source": "import TransposeFollowup.RationalInverse\nopen TransposeFollowup\n\ndef identityMap : RationalMobius where\n  a := 1\n  b := 0\n  c := 0\n  d := 1\n  lo := 0\n  hi := 1\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\ndef doubleMap : RationalMobius where\n  a := 2\n  b := 0\n  c := 0\n  d := 1\n  lo := 0\n  hi := 1 / 2\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\ndef fractionalMap : RationalMobius where\n  a := 1\n  b := 0\n  c := 1\n  d := 1\n  lo := 0\n  hi := 1\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\ndef outgoing (F : RationalMobius) : List (List Nat) :=\n  (List.finRange 8).map (fun i => ((F.neighbors i).image Fin.val).sort (\u00b7 \u2264 \u00b7))\ndef incoming (F : RationalMobius) : List (List Nat) :=\n  (List.finRange 8).map (fun i => ((F.incomingNeighbors i).image Fin.val).sort (\u00b7 \u2264 \u00b7))\n#eval (outgoing identityMap, incoming identityMap)\n#eval (outgoing doubleMap, incoming doubleMap)\n#eval (outgoing fractionalMap, incoming fractionalMap)\n",
+  "validation": "Observed outgoing/incoming lists match their expected exact interval intersections; all three pairs are transposes. Kernel theorems mem_neighbors and mem_incomingNeighbors cover arbitrary sizes."
+}

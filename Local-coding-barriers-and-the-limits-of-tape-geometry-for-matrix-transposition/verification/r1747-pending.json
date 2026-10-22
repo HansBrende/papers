@@ -1,0 +1,76 @@
+{
+  "unit": "R1747",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "PaidGeneratorPorts",
+    "PaidGeneratorMachine",
+    "PaidGeneratorCalls",
+    "PaidGeneratorConsumer",
+    "PaidGeneratorRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.PaidGeneratorRows.setupPort_injective",
+    "TransposeFollowup.PaidGeneratorRows.setup_decode_spec",
+    "TransposeFollowup.PaidGeneratorRows.retained_dimension",
+    "TransposeFollowup.PaidGeneratorRows.gen_code",
+    "TransposeFollowup.PaidGeneratorRows.setup_code",
+    "TransposeFollowup.PaidGeneratorRows.row_code",
+    "TransposeFollowup.PaidGeneratorRows.embed_gen",
+    "TransposeFollowup.PaidGeneratorRows.embed_setup",
+    "TransposeFollowup.PaidGeneratorRows.setup_initial",
+    "TransposeFollowup.PaidGeneratorRows.setup_final",
+    "TransposeFollowup.PaidGeneratorRows.generated_trace",
+    "TransposeFollowup.PaidGeneratorRows.setup_call",
+    "TransposeFollowup.PaidGeneratorRows.transfer_trace",
+    "TransposeFollowup.PaidGeneratorRows.row_trace",
+    "TransposeFollowup.PaidGeneratorRows.row_values",
+    "TransposeFollowup.PaidGeneratorRows.embed_row",
+    "TransposeFollowup.PaidGeneratorRows.rowJoin_eq",
+    "TransposeFollowup.PaidGeneratorRows.consume_trace",
+    "TransposeFollowup.PaidGeneratorRows.setup_budget_linear",
+    "TransposeFollowup.PaidGeneratorRows.complete_trace",
+    "TransposeFollowup.PaidGeneratorRows.initial_blank",
+    "TransposeFollowup.PaidGeneratorRows.final_halts",
+    "TransposeFollowup.PaidGeneratorRows.native_complete",
+    "TransposeFollowup.PaidGeneratorRows.fixed_resources"
+  ],
+  "current_build": 68526,
+  "expected": {
+    "jobs": 9481,
+    "declarations": 2609,
+    "sources": 504,
+    "math_sources": 503
+  },
+  "next": "Transfer the existing timed geometry to PaidGeneratorRows. First prove an entry_trace from the genuine blank initial execution through generation,clock setup,and opcode rewind to RowLoop.guard. Its offset bound should be(OpcodeGenerator.coefficient F+RadiusClock.linearConstant K)*P+8*n*Q+6. Reuse generated_trace,setup_call,transfer_trace,row_trace,embed_row,rowJoin_eq and RowLoop.rewind_trace/rewind_transfer;the normalized source width satisfies n.size<=n using Nat.size_le.mpr Nat.lt_two_pow_self. Rewrite RadiusClock.word K xs to SevenPhaseClock.word(K*blockSize 3 n) using value(xs)=n. Add the row-prefix/trajectory wrappers using NativeIOFusionCalls.work_prefix and the already proved RowLoop trajectories;reuse GeneratorRows.embed_row through the new row_values lift instead of unfolding the deep decoder. Define actual paths from Transpose.init and page ports(nativeEncoding F K).port(.inl(.inr(some p))). Then reuse TimedRowWalk.rowwise_eq,GeneratorRows.generated_walk_eq and ExcursionLayout.transfer_on_excursions to derive zero-slack CutIneq with cellBits3,r=blockSize3n,horizon at most the proved linear coefficient,53+Q heads, and the original expansion/stretch/head hypotheses. Keep every real setup/decoder pause. After this native geometry transfer,all reset/payload/cleanup/unconditional expansion/MStar obligations still remain.",
+  "checkpoint_reporting": "At each substantial proof checkpoint report roughly50%(40\u201360%,high uncertainty) of the full formalization goal and3/6 completed original families:adaptive separators181/186/188,recoded pairwise-XOR181B,two-stage helper216. Raw-input native execution is verified support for paid padding201/202,not its completion. Motion200/210,recursion206/208 and final referees remain. This percentage is not proximity to resolving multiplication/transposition.",
+  "checks": {
+    "targeted": {
+      "session_id": 24428,
+      "exit_code": 0,
+      "jobs": 9399
+    },
+    "build": {
+      "session_id": 93053,
+      "exit_code": 0,
+      "status": "passed",
+      "jobs": 9481
+    },
+    "axioms": {
+      "session_id": 22494,
+      "exit_code": 0,
+      "status": "passed",
+      "declarations": 2609
+    }
+  },
+  "updated_at": "2026-10-19T02:26:29.499568+00:00",
+  "formal_checkpoint": "R1747 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1747,504 sources,2609 declarations,86 artifacts",
+  "proof_scope": "In progress. R1747 proves one actual fixed native raw-input machine, PaidGeneratorRows: from Transpose.init with blank work tapes, for every n>=1 and raw w of length P=inputLength(n), it generates all opcodes, derives the clock radius from its retained dimension, builds the clock, consumes every row and halts. No clock, arithmetic operands or opcode stream is supplied. It uses53+Q tapes and5 symbols, where Q=rationalPageCount(F). With D=RadiusClock.linearConstant(K), total native time is at most(OpcodeGenerator.coefficient(F)+D+28K+16Q+19)*P. It retains a normalized dimension xs of value n and length n.size, preserves the generated stream across setup, returns all10 new scratch tapes blank, and pays both phase transfers. The final input head is at P and generator workspace/clock remain, so payload reset/cleanup are still needed.",
+  "source_sha256": {
+    "lean/TransposeFollowup/PaidGeneratorPorts.lean": "95a311ccb6a566dad4468dcad947f1af68718fcad914f092a3b0ed144a95ac20",
+    "lean/TransposeFollowup/PaidGeneratorMachine.lean": "26ff7eaceba01ef4182cac7cd1952cb1d5d8744fe519b904ad0eed6eb06b3c98",
+    "lean/TransposeFollowup/PaidGeneratorCalls.lean": "de7807c56775acb35b07c3727e2ce6e6ac7e40cebf4521b06398b346af474b20",
+    "lean/TransposeFollowup/PaidGeneratorConsumer.lean": "2c77b0c08f380bfd115d5d6b08f7afbc56503dd9453c9495f979f505dc059b93",
+    "lean/TransposeFollowup/PaidGeneratorRun.lean": "e62337b9269c855f60eef7d1ed960e994431560f669cbef5f5af0d596d4fa906"
+  }
+}

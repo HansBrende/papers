@@ -1,0 +1,136 @@
+
+R1890 — RAW ROW ARITHMETIC AND REPEATED ROW EXECUTION
+PROGRESS at R1890: direct raw modular row updates and arbitrary equal-width row loops are checked. One nonempty W-bit row costs exactly7W paid native steps, using2 work tapes,5 symbols and50*(7W+1) control states; addition retains its output and subtraction retains the original current row. Five of six original families formalized; regular recursion206/208 best estimate86% complete (low confidence). Complete initialization/cleanup/raw IO, other row/integer operations, F3 palette and their geometry remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1890 CHECKED RESULTS
+1. CoupledRowCell / CoupledRowScan execute an arbitrary finite two-cell
+   update with one Boolean carry in exactly4 paid instructions per cell:
+   move both heads left, read bank, read buffer and apply the finite table,
+   write both symbols without movement. Both old symbols are read before
+   either is overwritten. The mode has50 states; the alphabet remains5.
+   run_pair proves the exact zipper endpoint for any two equal-width
+   unmarked fields and arbitrary surrounding lists, positions and IO.
+   The shared ScheduledWord compiler supplies the repeated schedule.
+
+2. RawRowArithmetic.evaluate_eq identifies this cell table with the
+   ALREADY CHECKED BinaryCarry recurrence. output_value imports the exact
+   ModularRowWord MSB-first modular semantics: add or subtract modulo2^W.
+   Subtraction writes the original current row to the buffer; addition
+   writes its result. Semantic list reversal is realized by the actual
+   leftward carry scan, not treated as a free tape operation.
+
+3. RawRowArithmetic.schedule_exact / native_complete execute a row on
+   the original native TM, with all work paid: reset1, seekbothW,
+   carryscan4W, bankadvanceW, stationarypadding(W-1). Thus ticks=7W for
+   W>0 (the separately supported W=0 case costs1). The bank advancesW,
+   buffer returns, external input/output and surrounding cells are
+   preserved, and both final tape fields are specified exactly.
+   fixed_resources gives2 tapes,5 symbols and50*(ticks+1) states.
+   native_prefix_excursion bounds each actual prefix head displacement
+   by its elapsed native time. The generic ScheduledNativeIO displacement
+   proof reuses PaddedWorkSchedule.step_displacement for work instructions.
+
+4. RawRowArithmetic.rows_exact composes ANY number r of equal-width rows
+   with an arbitrary same-width seed buffer, in exactlyr*ticks(W) scheduled
+   native instructions. Its output is rowsResult, defined with List.foldr;
+   each step uses the previous output for addition and previous ORIGINAL
+   row for subtraction. The full output bank is on the left of its head,
+   which has advancedrW; buffer head returns to its starting position.
+   All surrounding lists and external IO are unchanged. rows_lengths
+   proves output lengthrW and final buffer widthW. The existential final
+   mode is irrelevant data left by the last paid row and is not an oracle.
+   This result is a native-IO schedule theorem; a whole-bank raw wrapper,
+   clean scratch/rewind endpoint and affine bounds remain to be assembled.
+
+Eight new leaf modules;55 new audited named declarations. These are
+support declarations, not55 research theorems. No previous mathematical
+source was changed. The prepared5-tape block fromR1889 remains verified,
+while the direct2-tape row avoids its staging/markers for this use case.
+
+REUSE / DRIFT CHECK
+Checked pinned mathlib list folds, iteration and Turing-tape representations,
+plus local carry arithmetic, native compilation, scheduled words, zipper
+refinement, selected-tape actions, head bounds and IO embedding. No drop-in
+paid raw-row execution theorem was found in the searched installed code;
+this is not an exhaustive absence claim about all Lean libraries.
+Reused List.foldl_const, Function.iterate_succ_apply/iterate_succ_apply',
+List.foldr and list reversal/length identities. Reused CopyMachine's
+existing zipper denotation facts, BinaryCarry's recurrence and modular
+identities via ModularRowWord, ScheduledWord.schedule_exact/active,
+ScheduledNativeIO.append_exact/active/native_run_and_halt/native_prefix/
+native_state_count, and PaddedWorkSchedule.step_displacement.
+No new carry arithmetic, tape semantics, native compiler or general
+scheduler was built. New CoupledRowMoves concerns simultaneous selected
+rightward seeks in the coupled mode; the existing ScheduledTapeAction
+already handles generic single-port rewind/erase and must be used next.
+Development errors were wrapper unfolding, cancellation, one simplified
+True goal, and unused tactic arguments. They were corrected without
+changing the theorem scope, proof limits, hypotheses or linters.
+The direct raw-row route and all-width row loop are now formally checked;
+finite prototype evidence is no longer the only evidence for them.
+This advances the concrete palette(a) implementation. It is not another
+review-only unit and is not the final impossibility theorem.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1890 proves a native single-row execution and a scheduled repeated-row execution, including both seeks and original-row retention. It does NOT yet prove a complete clean bank operation from raw external input, whole-bank affine approximation, the rest of palette(a), or palette(b). Five of six families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1890 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate86%, low confidence.
+
+NEXT: FINISH THE CLEAN INTEGER ROW PREFIX/DIFFERENCE BANK OPERATION.
+RawRowArithmetic.rows_exact is DONE for arbitrary equal-width raw rows
+and arbitrary same-width seed buffer. Reuse it; do not rebuild its cell,
+carry, seeks or repeated-row scheduler. For W>0,r rows cost7rW exactly.
+It leaves the bank head at its end and the W-cell buffer retained.
+
+1. Zero seed: represent the initially blank buffer as W blank symbols
+   with empty surrounding lists. The equality of these tape denotations
+   is already supplied by EraseStream.blanks_eq_nil / Turing.ListBlank.
+   NativeSpanErase.erased_denote shows the existing proof pattern. Do not
+   add a physical zero-fill pass unless a representation proof requires
+   it. Blanks decode to false in the proved RawRowArithmetic.update.
+2. Paid cleanup and rewind: reuse GENERIC ScheduledTapeAction.erase and
+   erase_cells/position/io for buffer1 overW cells, rewind1 forW, and
+   rewind0 forP=rW. They already accept arbitrary mode types. This gives
+   proposed total7P+2W+P for the body; prove the actual clean endpoint.
+   Derive absolute-cell bank semantics from the checked zipper endpoint,
+   using existing AbsoluteTape/CopyMachine denotation rather than a new
+   tape model. Zero-width edge cases retain their explicit costs.
+3. Row geometry: use exact endpoints every7W ticks plus the generic
+   ScheduledNativeIO.trajectory_displacement. Bank deviation from the
+   straight scan isO(W), buffer excursionO(W); W/P=1/d tends to0. Reuse
+   clipped-ramp covers and the existing physical affine obstruction.
+   No need for a shared exact data-independent carry path or a second
+   growing-stride compactness proof. Include paid cleanup/rewind curves.
+4. Raw IO: existing ScheduledRawInput/Output and RawBankProgram use the
+   older Bool*Bool mode. Their native semantics are proved. Reuse the
+   NativeIOEmbedding.step_embed/trace_embed interfaces or factor a small
+   shared mode interface; do not copy the raw compiler, state-bit estimates
+   or entire raw wrapper. Any inter-component reset is a paid instruction.
+   Control counts must include the finite modes and complete public clock.
+
+Remaining palette(a) operations: row XOR/difference, row-order reversal,
+entry-order reversal preserving within-entry bits, row-dependent rotations,
+whole-bank increment/decrement modulo2^P. Palette(b): F3 row/column
+prefix/difference, row/column reversal, row rotations, signs, whole-entry
+stream rotation. CoupledRowCell already accepts arbitrary work-symbol
+updates, so use its finite table for trits with0=.data false,1=.data true,
+2=.start on UNMARKED public-clock banks; no new alphabet/compiler needed.
+Binary bit-decoding permutations erase2; use symbol-preserving transfers
+from ScheduledTransfer. Keep integer and trit data types distinct.
+
+Source206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and
+210.5 are DONE. Preserve all nonuniform public parameters and high-entropy
+correctness sets. Referees only after all six original families complete.
+Original read-only; no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate86% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. The sixth already includes source208/global210.5 and complete binary palette(c). R1890 adds paid raw integer row scans and their repeated-row composition; full integer and F3 palettes remain. Final impartial referees pending.
+
+VERIFICATION
+Full lake build passed10282 jobs without warnings/errors; SupportAxioms audited5615 unique declarations using only propext,Classical.choice,Quot.sound. There are1101 local sources (1100 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and223 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

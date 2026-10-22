@@ -1,0 +1,79 @@
+R1914 FINALIZATION — DRAFT ONLY; not executed
+
+Files: finalize.py, validate-receipt.py, finalization-inputs.template.json.
+Root should review/adapt names after the adopted scope and final logs exist.
+The template deliberately contains invalid placeholders: it cannot publish yet.
+
+Actual final source-review schema:
+  format: r1914-independent-source-review-v1; status: passed
+  final_source_sha256: matches the guard and current sources
+  baseline, ordered stages, geometry_proposal: concrete hashed source evidence
+  geometry_relocations: exactly the eight proposal declaration names
+  optional_merge: five exact member body hashes and four retired source paths
+  explicit_approved_repairs: concrete receipts, empty when no repairs occurred
+  original_audit_names_preserved: 6306; original_audit_order_exact: true
+  forbidden_tokens/missing_local_imports: empty; local_imports_acyclic: true
+  set_options: only autoImplicit false, agreeing with the source guards
+The finalizer consumes the independent replay review's actual fields and hashes.
+Changed/added/removed paths are derived from the frozen and final source maps
+and cross-checked with the source guard and stage coverage. No placeholder
+all-six/shared-model success wrapper is required. Those two claims are derived
+from the 23 original theorem-family and 11 shared-model source-body records,
+checked directly against the archived baseline and final source locations.
+Module counts are derived, not hardcoded to a planned merge.
+
+Optional matched workflow config:
+  workflow: {
+    matched_same_proof_edit: true,
+    cached_prerequisites: true,
+    scope: precise measured workload description,
+    summary: verification/r1914-matched-workflow.json (absolute path),
+    baseline: {timing: absolute_path, log: absolute_path},
+    candidate: {timing: absolute_path, log: absolute_path}
+  }
+The summary timings and rebuilt-module counts must match both actual logs. Its
+single-pair scope and recorded startup-interference caveat are included in the
+report; glyph-independent Built counting includes both checkmark and info rows.
+Leave null until both measurements actually pass. Null causes explicit absence
+of a matched edit-workflow claim; there is never a cold-build speedup claim.
+
+All final paths should be durable. Copy the final evidence config and helper
+scripts into verification before publishing. Rename scripts if desired, then
+pass --finalizer to validate-receipt.py if its sibling is not named finalize.py.
+Type archive receipts must point to byte-verified archives inside the research
+archive. If the already verified baseline archive is copied there, preserve its
+original receipt, verify the copy hash, and create a new location receipt rather
+than silently editing historical evidence. Both baseline and final full types
+must be covered by one combined archive or two single-capture archives.
+
+Example finalizer preview (only after all evidence exists):
+  python3 finalize.py --config ABSOLUTE_FINAL_CONFIG
+Publishing additionally requires --apply. It requires all execution handles
+terminal, successful full build and axiom logs/timings, all6306 type contracts,
+exact source/model review, current source hashes, exact restored benchmark bytes,
+unchanged pins/original sibling/historical evidence and durable type archives.
+It also rejects source mtimes newer than the final full build or axiom audit.
+
+Before writing the3 current summaries, it copies their exact old bytes to
+archive/before-r1914-summary-update/. The old433-log receipt remains frozen;
+430 immutable log hashes remain identical. It updates only the3 mutable hashes,
+adds static R1913/R1914 evidence, and excludes in-progress state and generated
+validator output/log/timing files. The r1914-preservation-tools subdirectory
+is explicitly included recursively in both receipt collection and validation.
+Validator code itself is included if copied
+before finalization. No receipt self-hash is introduced.
+
+The report leads with the clean target confirmation14.3947->5.3344seconds.
+Config also supplies merge_target (actual three-pair summary) and
+optimization_build (244.300-second validation run timing/log). The report
+distinguishes these from the95.291-second restored build and22.073-second audit.
+It distinguishes that from any later paired edit workflow and from unpaired
+full-build validation cost. Ordinary kernel checking is not described as a new
+fresh whole-environment replay. No new mathematical strengthening is claimed.
+
+After publishing:
+  python3 validate-receipt.py --config ABSOLUTE_FINAL_CONFIG \
+    --finalizer ABSOLUTE_FINALIZER --output verification/r1914-final-receipt-check.json
+This is intentionally lightweight: it binds the exact type/source/archival
+receipts and actual logs, rather than expanding all~1.8GB of type JSON again.
+A discrepancy stops validation. No Lean/Lake process is launched by either tool.

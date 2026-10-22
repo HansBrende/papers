@@ -1,0 +1,54 @@
+R1913 READ-ONLY WEIGHTED BUILD REVIEW
+
+Final ordinary build: 1321.040s. Lake reports10071 jobs, but only347 local modules rebuilt.
+Summed displayed build actions: 6075.2 job-seconds, NOT elapsed build time.
+Distribution: min 4.0s; quartiles 16.0/17.0/22.0s; max 32.0s.
+
+The weighted dependency path contains 81 local nodes:72 rebuilt and9 cached.
+Its displayed action sum is1281s; because all72 are floored integer-second displays,
+1281s is a lower bound (96.97% of the observed1321.040s wall time).
+The display-derived upper bound is 1352.928s and may exceed actual build wall time because every
+node is independently rounded down. Do not identify the40.040s residual as scheduler overhead.
+The prior unweighted81-node path has72 rebuilt nodes and1278s displayed work.
+The weighted variant takes TraceSquareTwoStageSample and TraceSquareSampleApplication
+instead of TraceSquarePairedEnlargement and TraceSquareActualWordGrowth. Cached prefixes
+may tie; counting only rebuilt modules is essential.
+
+This is a mostly serial critical chain, from overlap expansion through analytic transport,
+Haar/centralizer estimates and trace-square sampling to UnconditionalPaidPadding.
+The natural next target is reducing repeated compiler/import/artifact cost on that chain.
+Parallelism alone cannot shorten dependencies; reducing interference may still shorten actions.
+
+Timing semantics verified against pinned Lean4.34.1:
+  Module.lean981-990 and1005-1010: own compile/artifact action runs after presetup.
+  Common.lean318-331: action timer starts after prerequisite handling.
+  Job/Register.lean20-21,28-32,38-44: downstream state reset removes dependency buildTime.
+  Run.lean123-138,153-156: displayed buildTime; >10s floor, smaller format inverted exactly.
+Thus dependent action durations may be added without double-counting dependency waits.
+
+Candidate groups (static candidates, no implementation or benchmark performed):
+  small_expansion_energy_pilot: 5 modules/653 lines/84s observed action sum; quotient acyclic=True; zero-cost fixed-weight path reduction ceiling 49s.
+  small_expansion_to_spectral_input: 10 modules/1266 lines/164s observed action sum; quotient acyclic=True; zero-cost fixed-weight path reduction ceiling 113s.
+  mobius_continuity_averaging: 5 modules/379 lines/77s observed action sum; quotient acyclic=True; zero-cost fixed-weight path reduction ceiling 77s.
+  centralizer_sampling_packing: 5 modules/494 lines/125s observed action sum; quotient acyclic=True; zero-cost fixed-weight path reduction ceiling 50s.
+  graph_to_rational_family: 6 modules/640 lines/106s observed action sum; quotient acyclic=True; zero-cost fixed-weight path reduction ceiling 101s.
+  haar_entry_support: 4 modules/417 lines/65s observed action sum; quotient acyclic=False; zero-cost fixed-weight path reduction ceiling 49s.
+
+Recommend first pilot: five error/energy modules (653 lines,84s in this run).
+Compare the same five bodies split versus concatenated with two alternating pairs
+and a cached-import-only probe, then ordinary targeted Lake validation. If useful,
+expand to ten coherent modules (1266 lines); do not promise the84s disappears.
+
+The largest single actions32s are not automatically best targets: many sit off the
+selected critical chain, while most chain modules are small15-19s files. Pilot
+cumulative repeated-loading costs on a critical chain before optimizing isolated tactics.
+
+A future fixed workload end-to-end A/B is required before claiming a whole-project
+speedup. The earlier1380.436s run failed and rebuilt553 modules; it is not a matched
+baseline for the successful1321.040s run. Its common-module timings are context only.
+
+No start timestamps exist, so this review cannot recover concurrency or blame RAM,
+CPU, disk or paging. Zero-cost model ceilings hold other node durations fixed; they
+are not promised wall-time savings. No Lean/Lake execution, sources, receipts or
+configuration changed. Full path, timing bounds, quotient checks, consumers and
+per-module data are in r1913-weighted-build-review.json.

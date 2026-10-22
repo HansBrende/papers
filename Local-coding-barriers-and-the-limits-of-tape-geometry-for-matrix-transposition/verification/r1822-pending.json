@@ -1,0 +1,78 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1821 receipts revalidated;867 sources,5 configurations,86 artifacts;117 protected files and directory inventory unchanged.",
+  "new_modules": [
+    "TrimmedSpanningTrace",
+    "SL2NearIdentityProducts",
+    "SpanningCommutingExtraction"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_trimmed_trace_at_dyadic_scale",
+    "TransposeFollowup.SL2Projection.mobiusIdentityBall_iff_frobenius_dist",
+    "TransposeFollowup.SL2Projection.set_pow_dist_from_one_le",
+    "TransposeFollowup.SL2Projection.dist_normalized_from_one_le",
+    "TransposeFollowup.SL2Projection.dist_le_normalized_from_one",
+    "TransposeFollowup.SL2Projection.normalized_subset_geometry",
+    "TransposeFollowup.SL2Projection.normalized_mixed_product_subset_power",
+    "TransposeFollowup.SL2Projection.exists_spanning_commuting_extraction_at_dyadic_scale"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 47583,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1822-dev1.log"
+    },
+    "development_2": {
+      "session_id": 18464,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1822-dev2.log"
+    },
+    "development_3": {
+      "session_id": 82101,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1822-dev3.log"
+    },
+    "development_4": {
+      "session_id": 1138,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1822-dev4.log"
+    },
+    "development_5": {
+      "session_id": 15157,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1822-dev5.log"
+    },
+    "build": {
+      "session_id": 40512,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9847,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 60075,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4453,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Composition of R1821 finite-center trimming with the original three-trace frame theorem, actual near-identity matrix word bounds, quantitative left normalization, and R1820 mixed-set commuting extraction. The selected frame center is chosen only after the retained subset excludes all four centers. Distance from identity and the small-error condition are derived for the actual candidate image, with explicit constants and a uniform dyadic cutoff. This supplies a generic quantitative real analogue of the route motivated by Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Corollary5.3, under the stated small-tripling, distribution and spanning hypotheses. The exact cube-form covering bound is recorded; no root/division equivalence or literature novelty is claimed. Fixed-family instantiation, mixed-product covering bounds, product growth and paid padding remain.",
+  "updated_at": "2026-10-20T03:06:08.510218+00:00",
+  "formal_checkpoint": "R1822 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1822, 870 sources, 4453 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1822 applies the original spanning frame to the retained subset, selects a trace representative separated from every point of that subset, and derives both near-identity and separation bounds for the normalized candidate set. It composes these results with the trace-driven exact commuting extraction, yielding a native cube-form covering bound under the original small-tripling, distribution and spanning hypotheses plus an explicit small initial radius. A separate product lemma places the mixed product in A^37 when A is symmetric. Three modules add8 theorems and no definitions; existing mathematical modules are unchanged. Fixed-family instantiation, fixed-product covering control, product growth and paid padding remain unfinished. No fourth original family or new transposition result is claimed.",
+  "next": "The preceding turn is PROGRESS. R1822 closes the same-frame trimmed trace theorem, actual near-identity word bounds, quantitative left normalization, normalized candidate geometry, fixed-product membership and a combined spanning-to-commuting extraction. Do not redo them. Main interface: SpanningCommutingExtraction.exists_spanning_commuting_extraction_at_dyadic_scale. For0<zeta<1/2,epsilon<zeta,beta<zeta*kappa,sigma>0, small-tripling/distribution/spanning A in a sufficiently small fixed identity ball yields a pairwise commuting real SL2 image V near A^-1*A. With H=4^34,B=4H,r=eta^(2zeta)/(2H),C=A*(h^-1*R)*A^-1, it proves eta^(8sigma)N_eta(A)^4 <= [9N_eta(C)(102400B^7/r+8B+1)^4N_eta(V)]^3. C subset A^37 when A is symmetric. The retained trace theorem and the general n-word normalization lemmas are separately available.\n\nNEXT CONCRETE TARGET: derive a fixed-product covering bound from the ACTUAL U,Y witness and instantiate the composed theorem with the SAME localized A. A direct route uses the already proved near_identity_translate_cover: U subset Z*A, Z subset U, |Z| bounded by M=33^4 Q^8/alpha^4, where A=U^2 intersect mobiusIdentityBall alpha. From U^2 subset Y*U, Y subset U^2, deduce for arbitrary fixed n that U^(n+1) subset Y^n*Z*A. The finite translation set W=Y^n*Z lies in U^(2n+1), hence has entry bound (2Q)^(2n+1) and cardinality at most |Y|^n|Z|. Transfer a minimal native cover of A through each translation, then use explicit coordinate refinement to pay its radius distortion. A candidate bound to PROVE is N_eta(U^(n+1)) <= (8*(2Q)^(2n+1)+1)^4*|Y|^n*|Z|*N_eta(A). For A^37 subset U^74, take n=73. This uses the existing generic transport and finite-cover tools; avoid importing an unproved Ruzsa or product-entropy estimate. Inspect MobiusNearIdentityLocalization.exists_near_identity_translate_cover, Set.pow_subset_pow_mul_of_sq_subset_mul, MobiusApproximateRefinement, FrobeniusCoverTransfer and FinitePieceCoverBounds. Existing U,U^6 covering work provides compatible conventions and budget ingredients.\n\nThen convert the coefficient to a fixed polynomial in the existing profile envelope. Q,|Y|,M and K already have explicit parameter bounds. Choose s sufficiently small BEFORE k so the fixed-product loss is any requested eta^(-nu). Choose the initial alpha small enough for8*4^34*(1+5^34)*alpha<=1 BEFORE selecting the walk-family witness; do not retroactively shrink an already selected A while claiming it is the same set. Use kappa=1/122880,0<zeta<1/2,epsilon<zeta,beta<zeta/122880 and small sigma. Preserve all earlier requested bounds via explicit internal minima and retain the same U,Y,A,p,q witness. The later cutoff can be enlarged by a fixed maximum; it must not change the fixed rational family or the s-before-k quantifier order.\n\nSimplify the extracted coefficient using r<=1 and the already proved trace_commuting_loss_le. With r=eta^(2zeta)/(2H), the coefficient is at most C0*eta^(-8zeta), where C0=9*(102400B^7+8B+1)^4*(2H)^4. Its cube has loss24zeta. Multiplying the cube-form inequality by eta^(24zeta) and absorbing C0^3 at an additional fixed threshold should give a clean positive-power bound; this simplification has NOT been formalized yet. Likewise the approximation radius is25600H*B^6*eta^(1-2zeta), so a further eta^zeta margin absorbs its fixed constant. Choose these exponents jointly with the trace factor8sigma before the family theorem. Do not claim an arbitrary-small loss before those inequalities are proved.\n\nThe later product-growth argument still requires discretized ring/sum-product expansion, which is not an axiom or verified import. Handling or conditioning of the resulting commuting families in that later step remains separate; real extraction includes unipotents and does not justify an eigenvalue gap. After actual product growth, prove strict flattening, fixed-iterate density cap with D^2<=2^j, unconditional restricted gap and paid padding. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.\n\nCleanup note for the final simplification pass: RealMobius.set_pow_subset_matrixEntryBox in SL2SpanningTrace and RealMobius.matrixEntryBox_set_pow in MobiusApproximateRefinement prove the same entry-bound statement. Reuse the earlier theorem when simplifying the former; do not maintain duplicate induction proofs. No protected original file needs modification.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1822 composes trimming, the same spanning frame, actual near-identity normalization and commuting extraction into one quantitative theorem. Paid padding remains unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. This estimate concerns formalization scope, not time, success probability or progress toward deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TrimmedSpanningTrace.lean": "a7c6940bdea8243f1a85a038774beaefdc1a373d5b588c4b3e5895fb8e1c6f92",
+    "lean/TransposeFollowup/SL2NearIdentityProducts.lean": "8ed3056add414cc86ea24f39e4b5410bf823c1f65deadce19b263ac1a8c19ae5",
+    "lean/TransposeFollowup/SpanningCommutingExtraction.lean": "2b6489ef45cd03acb7719642b7ca1e048e35a89cb9d6d2a75fa8058ae4d9cf1a"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "unit": "R1737",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1736 full proof receipt revalidated",
+  "scope": "ALL6families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "checkpoint_reporting": "At every good proof stopping point, report a ballpark percentage of the entire user goal and name the completed original theorem families. Current rough estimate 40\u201360%, with substantial uncertainty; this is not a verified effort fraction, probability of success, or time guarantee. Verified completion count is 3/6: adaptive separator181/186/188, recoded pairwise-XOR181B, two-stage global helper216. Paid padding201/202 is incomplete; affine return motion200/210 and regular recursion206/208 are unstarted; final referees and cleanup remain.",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "FusedPageClock",
+    "FusedPageClockRewind",
+    "FusedPageClockRun",
+    "FusedPageClockScan",
+    "FusedPageClockTrajectory",
+    "NativeReadFusion",
+    "NativeReadFusionBehavior"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.FusedPageClock.forward_step",
+    "TransposeFollowup.FusedPageClock.forward_trace",
+    "TransposeFollowup.FusedPageClock.stop_step",
+    "TransposeFollowup.FusedPageClock.stop_trace",
+    "TransposeFollowup.FusedPageClock.shiftClock_zero",
+    "TransposeFollowup.FusedPageClock.shiftClock_add",
+    "TransposeFollowup.FusedPageClock.rewind_step",
+    "TransposeFollowup.FusedPageClock.rewind_finish_step",
+    "TransposeFollowup.FusedPageClock.rewind_trace",
+    "TransposeFollowup.FusedPageClock.rewind_finish_trace",
+    "TransposeFollowup.FusedPageClock.rewind_tail",
+    "TransposeFollowup.FusedPageClock.rewind_complete",
+    "TransposeFollowup.FusedPageClock.complete_trace",
+    "TransposeFollowup.FusedPageClock.native_complete",
+    "TransposeFollowup.FusedPageClock.fixed_resources",
+    "TransposeFollowup.FusedPageClock.prefix_trace",
+    "TransposeFollowup.FusedPageClock.scan_trace",
+    "TransposeFollowup.FusedPageClock.prefix_run",
+    "TransposeFollowup.FusedPageClock.rewind_region_step",
+    "TransposeFollowup.FusedPageClock.rewind_page_step",
+    "TransposeFollowup.FusedPageClock.rewind_page_run",
+    "TransposeFollowup.FusedPageClock.page_trajectory",
+    "TransposeFollowup.FusedPageClock.native_page_trajectory",
+    "TransposeFollowup.FusedPageClock.native_record",
+    "TransposeFollowup.FusedPageClock.native_record_trajectory",
+    "TransposeFollowup.FusedPageClock.row_calls_linear",
+    "TransposeFollowup.NativeReadFusion.instruction_unselected",
+    "TransposeFollowup.NativeReadFusion.step_unselected",
+    "TransposeFollowup.NativeReadFusion.active_iff",
+    "TransposeFollowup.NativeReadFusion.step_read_act",
+    "TransposeFollowup.NativeReadFusion.step_read_jump",
+    "TransposeFollowup.NativeReadFusion.step_denote",
+    "TransposeFollowup.NativeReadFusion.step_none_iff",
+    "TransposeFollowup.NativeReadFusion.step_some_of_active",
+    "TransposeFollowup.NativeReadFusion.run_denote",
+    "TransposeFollowup.NativeReadFusion.trace_stepN",
+    "TransposeFollowup.NativeReadFusion.inactive_fixed",
+    "TransposeFollowup.NativeReadFusion.step_one_or_two"
+  ],
+  "checks": {
+    "build": {
+      "session_id": 9401,
+      "exit_code": 0
+    },
+    "axioms": {
+      "session_id": 31226,
+      "exit_code": 0
+    }
+  },
+  "updated_at": "2026-10-19T00:04:20.046844+00:00",
+  "formal_checkpoint": "R1737 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1737,432 sources,2271 declarations,86 artifacts",
+  "proof_scope": "In progress. R1737 verifies selected local read/action fusion in the original native TM model, and applies it to the existing reusable clock. Only currently scanned symbols determine the fused transition. Every fused step contracts one or two original microsteps; unselected labels retain their step semantics and the set of active configurations is unchanged. For a stored Boolean word of length L, the fused clock takes exactly2L+3 active native transitions, including STOP transfer and full rewind. It preserves the word, restores the absolute clock head, leaves all page tapes blank, and moves page head p by direction(op_p)*countTrue(word). The machine still has q+1 tapes,5 symbols,11 states,independent of L. At every native time s,including rewind and halted tail, pageHead_p(s)=z_p+direction(op_p)*countTrue(take(s,word)). For false^R true^(4R) false^(2R), the native trajectory is exactly recordRun(R,op_p,z_p,s), at unit speed, and total runtime is14R+3. For R=K*blockSize(G,n),2n calls cost at most(28K+6)*inputLength(n),n>=1,G>=1. Seven modules/38 theorems; full build9409 jobs;2271 audited declarations,standard axioms only. Three of six theorem families complete.",
+  "next": "Prove the selected-fusion embedding/call interface and extend it to the existing NativeIO compiler, so the actual opcode-generator computation and the clock can execute in one original-model machine. Preserve all unselected IO/work transitions exactly, and retain the fused clock pointwise trajectory at every prefix of a compatible call. Do not claim the old NativeMicrocode.native_call automatically handles this new compiler. Then rewind/decode one generated opcode row and perform one fused clock call with explicit total timing; this is the next composition milestone. Before claiming CutIneq, prove a start-spacing/layout bridge allowing the14R+3 reset duration plus fetch overhead. Pay R/clock-word preparation and the full row loop; explicitly resolve graph-grid parameters. Unconditional expansion, input reset, payload/cleanup, motion and recursion remain. Older supplemental62722/19934 remain live/unverified; do not restart solely for elapsed time. All six families required; three complete; original unchanged; no commits/pushes; referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FusedPageClock.lean": "55877cfe8045504ec8b99fe7b725b9c1b7c2ad42d1f8f5ddd8261960b336f30f",
+    "lean/TransposeFollowup/FusedPageClockRewind.lean": "8fceb462a550156456175a0646d70955c8c929ff836e7dd9828196496250abe0",
+    "lean/TransposeFollowup/FusedPageClockRun.lean": "3c18f385c7d7603d6e3e1985996faf09a5420dc788b88513bd5c8e6da3ffc6dd",
+    "lean/TransposeFollowup/FusedPageClockScan.lean": "8226493c18fcef1caec0d3fc2b519727d1a1b1fd6e2a2a03203e19e2e8d64472",
+    "lean/TransposeFollowup/FusedPageClockTrajectory.lean": "26abdc90c5367f7e0526136f0b157aef94c73213eb29dcae2696a3818a945de6",
+    "lean/TransposeFollowup/NativeReadFusion.lean": "0620169c4e5d2f0660e1d8baade4f5336a0735b254f3846d7890b697a858a33a",
+    "lean/TransposeFollowup/NativeReadFusionBehavior.lean": "a8c23ed426e81a72a37d51181fe8312f094f4666e07b04b64e068656a61c5690"
+  }
+}

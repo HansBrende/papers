@@ -1,0 +1,75 @@
+{
+  "unit": "R1746",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "RadiusClockData",
+    "RadiusClockMachine",
+    "RadiusClockCalls",
+    "RadiusClockRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RadiusClock.radius_le",
+    "TransposeFollowup.RadiusClock.budget_linear",
+    "TransposeFollowup.RadiusClock.word_length",
+    "TransposeFollowup.RadiusClock.radius_code",
+    "TransposeFollowup.RadiusClock.clock_code",
+    "TransposeFollowup.RadiusClock.erase_code",
+    "TransposeFollowup.RadiusClock.embed_radius",
+    "TransposeFollowup.RadiusClock.embed_clock",
+    "TransposeFollowup.RadiusClock.embed_erase",
+    "TransposeFollowup.RadiusClock.jump_trace",
+    "TransposeFollowup.RadiusClock.radius_call",
+    "TransposeFollowup.RadiusClock.clock_call",
+    "TransposeFollowup.RadiusClock.erase_call",
+    "TransposeFollowup.RadiusClock.complete_trace",
+    "TransposeFollowup.RadiusClock.native_clock",
+    "TransposeFollowup.RadiusClock.native_clock_linear",
+    "TransposeFollowup.RadiusClock.fixed_resources",
+    "TransposeFollowup.RadiusClock.output_contract",
+    "TransposeFollowup.RadiusClock.native_call"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 76158,
+      "exit_code": 0,
+      "jobs": 9162
+    },
+    "build": {
+      "session_id": 87574,
+      "status": "passed",
+      "exit_code": 0,
+      "jobs": 9476
+    },
+    "axioms": {
+      "session_id": 80329,
+      "status": "passed",
+      "exit_code": 0,
+      "declarations": 2585
+    },
+    "retained_dimension": {
+      "session_id": 35910,
+      "status": "passed",
+      "exit_code": 0,
+      "file": "/private/tmp/RetainedDimension.lean"
+    }
+  },
+  "expected": {
+    "jobs": 9476,
+    "declarations": 2585,
+    "sources": 499,
+    "math_sources": 498
+  },
+  "checkpoint_reporting": "At each substantial proof checkpoint report a rough overall40\u201360% estimate with high uncertainty and3/6 completed original families:adaptive separators181/186/188,recoded pairwise-XOR181B,two-stage helper216. Clock setup is verified support for the fourth family,not its completion. Paid padding201/202 remains incomplete;motion200/210,recursion206/208 and final referees remain. This is formalization progress,not proximity to resolving multiplication/transposition.",
+  "metadata_recovery": "Initial checkpoint stopped at stale README anchor after writing requirements,progress,map-plan only. Resume script verifies those exact contents and resumes from README;does not repeat append operations.",
+  "updated_at": "2026-10-19T02:10:51.423362+00:00",
+  "formal_checkpoint": "R1746 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1746,499 sources,2585 declarations,86 artifacts",
+  "proof_scope": "In progress. R1746 completes the actual native clock setup: given a positive marked dimension xs with value N, and all11 other tapes blank, a fixed12-tape,5-symbol controller computes R=K*ceil(N*entryBits(N)/3), builds the marked clock false^R ++ true^(4R) ++ false^(2R), then erases R. Only the original N word and clock remain;all10 other tapes are blank;every head and external IO restore. With m=2*xs.length+C,C=K.size+4, the bound is RadiusBuilder.budget+51R+46m+102. For xs.length<=N it is at most(876+143C+K*(139+18C))*N*entryBits(N). The construction reuses the complete radius, clock and erase routines with3 paid linking jumps.",
+  "next": "Insert the proved RadiusClock into raw opcode generation followed by RowLoop. The actual retained source is OpcodeGenerator.Port.enumeration.source: a direct Lean check proved OpcodeGenerator.finalBank F w xs (.enumeration .source)=Counter.marked xs and the corresponding GeneratorRows.last tape equality. Alias RadiusClock source there, its clock output to the existing row clock (GeneratorRows port.inr none), and its10 scratch tapes to10 new fixed ports. Suggested PaidGeneratorRows controller: generate OpcodeGenerator;setup RadiusClock;consume RowLoop, with two paid phase transfers and selection false during generation/setup. Reuse NativeIOFusionCalls.unselected_trace/work_trace and the existing fused row consumer. Prove generation from truly blank work tapes, exact retained dimension, native clock call, then rewind/consume the existing generated opcode stream. Derive the actual setup-time bound using xs.length=n.size<=n,retain all timing,transfer the existing page trajectories and zero-slack CutIneq with the larger fixed tape count. Do not reimplement arithmetic or clock construction. All remaining paid-padding/motion/recursion obligations stay required.",
+  "source_sha256": {
+    "lean/TransposeFollowup/RadiusClockData.lean": "a0e5cefcc824b33d2f72c9a4321ec96494822d470b8ceab0139c12148ce9ab66",
+    "lean/TransposeFollowup/RadiusClockMachine.lean": "59acd6d14acaf76e4ffa39c493bb54dad4ec8ef56cee39541e3f760a1f768cc2",
+    "lean/TransposeFollowup/RadiusClockCalls.lean": "78ce6ae0ec3a741e5fd0dc88a8d27fe4a016fa5cabf7c9c12211cc19cb017c3a",
+    "lean/TransposeFollowup/RadiusClockRun.lean": "7e2cb4ca721aecc83669b0b92b86ec77eff76474fce5b3a8af185a888b89e2f9"
+  }
+}

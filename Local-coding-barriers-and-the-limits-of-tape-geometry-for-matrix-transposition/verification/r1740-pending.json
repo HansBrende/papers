@@ -1,0 +1,106 @@
+{
+  "unit": "R1740",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1739 receipts revalidated450 sources,5 configurations,86 artifacts",
+  "scope": "ALL6 families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "checkpoint_reporting": "At each good proof stopping point report a ballpark percentage and name completed original theorem families. Current rough overall estimate40\u201360%,high uncertainty;not a time guarantee or probability of success. Verified completion3/6:adaptive separator181/186/188,recoded pairwise-XOR181B,two-stage global helper216. Paid padding201/202 incomplete;affine motion200/210 and regular recursion206/208 unstarted;final referees/cleanup remain.",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "GeneratedRowLoop",
+    "NativeIOOnlyWork",
+    "RowClockOnlyWork",
+    "RowLoopIteration",
+    "RowLoopMachine",
+    "RowLoopRewind",
+    "RowLoopRun",
+    "RowLoopStreamTrajectory",
+    "RowLoopTrajectory"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.GeneratedRowLoop.page_count_positive",
+    "TransposeFollowup.GeneratedRowLoop.native_all_rows",
+    "TransposeFollowup.GeneratedRowLoop.native_all_records",
+    "TransposeFollowup.NativeIOFusion.only_work_step",
+    "TransposeFollowup.NativeIOFusion.only_work_active",
+    "TransposeFollowup.NativeIOFusion.only_work_trace",
+    "TransposeFollowup.NativeIOFusion.only_work_run",
+    "TransposeFollowup.RowClock.only_work",
+    "TransposeFollowup.RowClock.selected_next_ne_return",
+    "TransposeFollowup.RowLoop.body_trace",
+    "TransposeFollowup.RowLoop.guard_data",
+    "TransposeFollowup.RowLoop.guard_row",
+    "TransposeFollowup.RowLoop.guard_blank",
+    "TransposeFollowup.RowLoop.return_trace",
+    "TransposeFollowup.RowLoop.iteration_trace",
+    "TransposeFollowup.RowLoop.body_code_except",
+    "TransposeFollowup.RowLoop.body_code",
+    "TransposeFollowup.RowLoop.body_read_code",
+    "TransposeFollowup.RowLoop.embed_body",
+    "TransposeFollowup.RowLoop.rewind_code",
+    "TransposeFollowup.RowLoop.embed_rewind",
+    "TransposeFollowup.RowLoop.fixed_tapes",
+    "TransposeFollowup.RowLoop.rewind_trace",
+    "TransposeFollowup.RowLoop.rewind_transfer",
+    "TransposeFollowup.RowLoop.rewound_stream",
+    "TransposeFollowup.RowLoop.native_rewound_stream",
+    "TransposeFollowup.RowLoop.bits_length",
+    "TransposeFollowup.RowLoop.finish_clock",
+    "TransposeFollowup.RowLoop.prefix_trace",
+    "TransposeFollowup.RowLoop.complete_trace",
+    "TransposeFollowup.RowLoop.native_stream",
+    "TransposeFollowup.RowLoop.final_halts",
+    "TransposeFollowup.RowLoop.stream_prefix",
+    "TransposeFollowup.RowLoop.native_boundary",
+    "TransposeFollowup.RowLoop.native_stream_trajectory",
+    "TransposeFollowup.RowLoop.native_record_trajectory",
+    "TransposeFollowup.RowLoop.body_page_trajectory",
+    "TransposeFollowup.RowLoop.iteration_page_trajectory",
+    "TransposeFollowup.RowLoop.native_iteration_trajectory"
+  ],
+  "checks": {
+    "generated_loop": {
+      "session_id": 68891,
+      "exit_code": 0,
+      "jobs": 9335
+    },
+    "build": {
+      "session_id": 45823,
+      "exit_code": 0,
+      "jobs": 9436
+    },
+    "axioms": {
+      "session_id": 93882,
+      "exit_code": 0,
+      "declarations": 2387
+    }
+  },
+  "next": "Compose the actual OpcodeGenerator and full RowLoop consumer in one finite native IO program,with the generated output port aliased to the consumer data port and the same prepared clock retained through generation. Reuse the existing unselected generator-call theorem and selected-fusion work embedding;do not duplicate their arithmetic or row proofs. The generator return should transfer directly to RowLoop.rewind.left;preserve every unused generator tape,absolute head,and external IO. Prove total generation plus16NQ+4NL+12N+5 consumer cost and the whole generated row boundary/path consequences. No opcode vector,row count,dimension,or clock length may be hardwired into finite labels. This next theorem may explicitly start with a prepared clock,but must retain that boundary;paid clock preparation remains required. Then prove the new layout bridge with iteration period14R+4Q+6 and fetch delay4Q+2 before invoking CutIneq. Explicitly resolve graph-grid parameters. Input reset,payload/cleanup,unconditional expansion,motion and recursion remain. Old supplemental62722/19934 remain live/unverified;do not restart solely for elapsed time. All six families required;three complete;no commits/pushes;original unchanged.",
+  "older_live_checks_verified": {
+    "cleanup_materialized": {
+      "session_id": 62722,
+      "status": "still running; no new output; not a pass"
+    },
+    "reusable_materialized": {
+      "session_id": 19934,
+      "status": "still running; no new output; not a pass"
+    }
+  },
+  "updated_at": "2026-10-19T00:47:53.947720+00:00",
+  "formal_checkpoint": "R1740 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1740,459 sources,2387 declarations,86 artifacts",
+  "proof_scope": "In progress. R1740 extends tape-driven RowClock to a fixed finite RowLoop consuming every row of a blank-terminated stream. For fixed Q>=1 and a prepared length-L clock,each row uses exactly4Q+2L+6 active native transitions,including guard and return. The machine rewinds once from the stored stream right end,uses no row counter in finite control,and stops on the terminating blank. For m rows it takes at most2B+m(4Q+2L+6)+5 transitions,where B=2Qm. All encoded bits are retained,the data head returns to its original right end,the clock word/head restore after every row, page tapes remain blank,and external input/output are preserved. It hasQ+2 work tapes and5 symbols;its program depends only on Q. Exact row boundaries and every per-row native page position are proved:after a prefix of rows, pageHead_p(s)=prefixPos_p+direction(op_p)*countTrue(take(s-(4Q+2),clockWord)),0<=s<=4Q+2L+6. For the seven-phase clock,the period is14R+4Q+6 and the path is recordRun(R,op_p,prefixPos_p,s-(4Q+2)). On the exact generated4NQ-bit stream of2N rows for a nonempty fixed map family,the total consumer bound is16NQ+4NL+12N+5, or16NQ+28NR+12N+5 for the seven-phase clock. The prepared-stream/prepared-clock entry remains explicit. Nine modules/39 supporting theorems;full build9436 jobs;2387 audited declarations,standard axioms only. Three of six families complete.",
+  "source_sha256": {
+    "lean/TransposeFollowup/GeneratedRowLoop.lean": "36694c292ec56be3543f261f0e4f175581690bf84424f91a4189848b1e8425bc",
+    "lean/TransposeFollowup/NativeIOOnlyWork.lean": "0b030258a3b82a69e294d7e421ac94aaa7915eccd41c80899691309f397667a3",
+    "lean/TransposeFollowup/RowClockOnlyWork.lean": "739af2c48ffe2aebce6d885e4cc008b661bdb08e648180cc70ba8cc702a16d30",
+    "lean/TransposeFollowup/RowLoopIteration.lean": "e455b32b099004bdd66de601c9ee8b976f7b136d36aa1fe7b6eae8b0a8dd4445",
+    "lean/TransposeFollowup/RowLoopMachine.lean": "95c35377d0a5cb078bc05b780a1144a9f64262a1f61d809a187cb224a9e35c68",
+    "lean/TransposeFollowup/RowLoopRewind.lean": "470184ed9bf14dfaf5907b43a7d7ae78f28da7bd299b98235f31ae46be58b0ec",
+    "lean/TransposeFollowup/RowLoopRun.lean": "9c8e8e948f27e87e27aa4910afed5ca6048fc576342511a934899b50e5adff19",
+    "lean/TransposeFollowup/RowLoopStreamTrajectory.lean": "be2467aa7aca43c9b95906c0ff248e3aee99e519c4ef541feb122c39111d14da",
+    "lean/TransposeFollowup/RowLoopTrajectory.lean": "c0a6cd3afb990868cf015988bfb2e5620c2109e19d0008708733bd140e1ab51f"
+  }
+}

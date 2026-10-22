@@ -1,0 +1,688 @@
+[
+  {
+    "label": "def:local-public-strategy",
+    "kind": "definition",
+    "module": "ProtocolTruncation",
+    "declarations": [
+      "TransposeFollowup.PublicStrategy",
+      "TransposeFollowup.PublicStrategy.Executes"
+    ],
+    "hypotheses": [
+      "d,b are natural numbers; queries return one bit and depend only on their declared original-row support.",
+      "A finite ambient helper alphabet selects a public history-dependent strategy; execution begins at the empty transcript.",
+      "The selected strategy halts and every receiver correctly decodes its transposed row on every input in the declared finite family F; no requirement outside F."
+    ],
+    "prose_scope": "Exact original-row public strategy model with arbitrary finite query supports, helper selection, public stopping and own-original-row side information.",
+    "proof_sources": [
+      {
+        "module": "ProtocolTruncation",
+        "declarations": [
+          "TransposeFollowup.PublicStrategy",
+          "TransposeFollowup.PublicStrategy.Executes"
+        ]
+      },
+      {
+        "module": "LocalProtocol",
+        "declarations": [
+          "TransposeFollowup.LocalQuery"
+        ]
+      },
+      {
+        "source": "ProtocolTruncation.PublicStrategy"
+      },
+      {
+        "source": "ProtocolTruncation.PublicStrategy.Executes"
+      },
+      {
+        "source": "LocalProtocol.LocalQuery"
+      },
+      {
+        "source": "RowCode.RowCode"
+      }
+    ],
+    "review_notes": [
+      "The helper/decode package is expressed in prose rather than replacing an existing native machine model. No coded-workspace query is assumed.",
+      "Additional immediately adjacent formal call(s) cover the other definitions or closure lemmas, recorded in proof_sources."
+    ],
+    "program_role": "Defines exactly the original-row interface to which the separator obstruction applies.",
+    "final_english_lean_comparison": "LocalQuery support/read/locality and PublicStrategy List Bool -> Option LocalQuery match. Executes requires none at terminal history and transmits only query answers. Helper finite; decoders know helper, own original row and completed transcript; all-F correctness and no off-F assumptions retained.",
+    "final_outline_assessment": "No proof outline; definition compared directly with LocalProtocol, ProtocolTruncation, and GraphSeparatorBound hypotheses."
+  },
+  {
+    "label": "thm:local-adaptive-separator",
+    "kind": "theorem",
+    "module": "GraphSeparatorBound",
+    "declarations": [
+      "TransposeFollowup.graph_expected_separator_bound_of_distribution",
+      "TransposeFollowup.graph_expected_separator_bound"
+    ],
+    "hypotheses": [
+      "The complete public strategy, execution and decoding hypotheses of def:local-public-strategy.",
+      "A nonnegative probability law w on F, summing to one; zero masses allowed.",
+      "An arbitrary separator S(z,m) depending only on the helper and completed transcript."
+    ],
+    "prose_scope": "E|M| >= P - E[d*b*|S| + b*sum_C |C|^2] - 2*(P-H(X)) - 2*H(Z), plus the uniform-input specialization. Components are those of the actual support-clique interaction graph outside S.",
+    "proof_sources": [
+      {
+        "module": "GraphSeparatorBound",
+        "declarations": [
+          "TransposeFollowup.graph_expected_separator_bound_of_distribution",
+          "TransposeFollowup.graph_expected_separator_bound"
+        ]
+      },
+      {
+        "source": "ProtocolTruncation"
+      },
+      {
+        "source": "AdaptiveSeparator"
+      },
+      {
+        "source": "GraphSeparatorBound"
+      },
+      {
+        "source": "SeparatorRecord"
+      },
+      {
+        "source": "SeparatorLeaf"
+      },
+      {
+        "source": "SeparatorCount"
+      },
+      {
+        "source": "RectangleEntropy"
+      },
+      {
+        "source": "TwoCover"
+      },
+      {
+        "source": "AdaptiveLeaves"
+      },
+      {
+        "source": "LeafAggregation"
+      },
+      {
+        "source": "EntropyFibers"
+      }
+    ],
+    "review_notes": [
+      "Correctness is required on all of F, including zero-mass inputs. Virtual fibers fix the helper as a protocol parameter and need not equal actual helper fibers.",
+      "The proof outline preserves both conditional budgets and the correlated correct-family distinction; it does not assert rectangle factorization of F.",
+      "This is a finite restricted-model contribution related to the first paper construction heuristic, not a strengthened native pass lower bound."
+    ],
+    "program_role": "Excludes a fixed fractional broadcast saving when expected separator loss, input deficit and helper entropy are all negligible relative to P.",
+    "final_english_lean_comparison": "Matches graph_expected_separator_bound_of_distribution and its uniform specialization exactly: arbitrary normalized nonnegative law, all-F execution/correctness, arbitrary leaf-dependent separators, loss d*b*|S|+b*sum|C|^2, charges 2D_w and 2H(Z).",
+    "final_outline_assessment": "Finite-family truncation, nonempty virtual-fiber component factorization, correct-subfamily entropy cover, and two conditional Gibbs budgets follow ProtocolTruncation, AdaptiveLeaves, SeparatorLeaf/Count, AdaptiveSeparator and EntropyFibers. Attained-leaf nonemptiness and fixed separator columns are now explicit."
+  },
+  {
+    "label": "cor:local-separator-worst",
+    "kind": "corollary",
+    "module": "GraphSeparatorBound",
+    "declarations": [
+      "TransposeFollowup.graph_worst_case_separator_bound"
+    ],
+    "hypotheses": [
+      "The public strategy hypotheses with nonempty F and finite ambient helper alphabet.",
+      "Natural B,L,g; every cost <= B, every graph separator loss <= L, and the attained helper image has size <= 2^g."
+    ],
+    "prose_scope": "B >= P-L-2*(P-log_2|F|+g). Only helper values attained on F are charged.",
+    "proof_sources": [
+      {
+        "module": "GraphSeparatorBound",
+        "declarations": [
+          "TransposeFollowup.graph_worst_case_separator_bound"
+        ]
+      },
+      {
+        "source": "GraphSeparatorBound.graph_worst_case_separator_bound"
+      },
+      {
+        "source": "AdaptiveSeparator"
+      }
+    ],
+    "review_notes": [
+      "The finite ambient helper requirement is retained even though the entropy/count term uses only the attained range."
+    ],
+    "program_role": "Converts the separator inequality to a candidate rejection test from pointwise broadcast/loss bounds and the attained helper range.",
+    "final_english_lean_comparison": "Matches graph_worst_case_separator_bound: natural B,L,g, nonempty F, finite ambient helper, attained-image cardinal <=2^g, and exact B >= P-L-2(D+g).",
+    "final_outline_assessment": "Uniform-law averaging and entropy <= logarithm of attained support are exactly the formal argument."
+  },
+  {
+    "label": "thm:local-separator-sharpness",
+    "kind": "theorem",
+    "module": "SeparatorSharpness",
+    "declarations": [
+      "TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two",
+      "TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two"
+    ],
+    "hypotheses": [
+      "d=2 and any positive natural b.",
+      "For each proposed real coefficient c, the respective universal separator inequality is assumed on the explicitly constructed correct zero-transcript example."
+    ],
+    "prose_scope": "The deficit and helper coefficients must each separately be at least two. Witnesses have empty interaction graph, empty separator, P=4b and separator loss 2b.",
+    "proof_sources": [
+      {
+        "module": "SeparatorSharpness",
+        "declarations": [
+          "TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two",
+          "TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two"
+        ]
+      },
+      {
+        "source": "SeparatorSharpness"
+      }
+    ],
+    "review_notes": [
+      "Two separate witness families, not a claim of simultaneous optimality of every term. The full-cube helper has actual uniform entropy b."
+    ],
+    "program_role": "Shows that stronger separator barriers need additional structure or different terms; neither coefficient can be reduced alone.",
+    "final_english_lean_comparison": "Both coefficient endpoints quantify over real c and arbitrary positive b for d=2. Zero-message symmetry family has deficit b; full-cube XOR-helper example has helper entropy b. No simultaneous optimality of all other terms is claimed.",
+    "final_outline_assessment": "Read both explicit RowCode constructions, their correctness proofs, cardinality lemmas, and exact helper-entropy lemma. Outline describes the same witnesses; direct substitution forces c>=2."
+  },
+  {
+    "label": "lem:local-treewidth-fragmentation",
+    "kind": "lemma",
+    "module": "Treewidth",
+    "declarations": [
+      "TransposeFollowup.treewidth_fragmentation",
+      "TransposeFollowup.treewidth_separator_loss"
+    ],
+    "hypotheses": [
+      "A finite simple graph G and any natural L.",
+      "For the loss specialization, G has d vertices and the entry width b is natural."
+    ],
+    "prose_scope": "(L+1)|S| <= (tw(G)+1)d and all components of G-S have at most L vertices; consequently (L+1)*loss <= b*d*((tw(G)+1)*d+L*(L+1)).",
+    "proof_sources": [
+      {
+        "module": "Treewidth",
+        "declarations": [
+          "TransposeFollowup.treewidth_fragmentation",
+          "TransposeFollowup.treewidth_separator_loss"
+        ]
+      },
+      {
+        "source": "Treewidth"
+      },
+      {
+        "source": "TreeFragmentation"
+      },
+      {
+        "source": "WeightedTree"
+      }
+    ],
+    "review_notes": [
+      "Ordinary finite tree decompositions and natural-valued treewidth, with the empty graph convention tw=0. Standard fragmentation argument; no independent novelty claim."
+    ],
+    "program_role": "Supplies the integral separator-loss budget used to turn communication savings into a treewidth lower bound.",
+    "final_english_lean_comparison": "Matches treewidth_fragmentation and treewidth_separator_loss, including L=0 and empty graphs, arbitrary finite decomposition trees, and natural treewidth convention.",
+    "final_outline_assessment": "Read TreeFragmentation and the calls to weighted_tree_fragmentation, ownership-weight total, and transfer. Bag removal followed by sum|C|^2<=L*d is the implemented argument."
+  },
+  {
+    "label": "cor:local-treewidth",
+    "kind": "corollary",
+    "module": "AdaptiveTreewidth",
+    "declarations": [
+      "TransposeFollowup.average_treewidth_lower_bound_of_distribution",
+      "TransposeFollowup.average_treewidth_lower_bound"
+    ],
+    "hypotheses": [
+      "The complete public strategy hypotheses.",
+      "d>0, b>0, and any normalized nonnegative law w on F.",
+      "epsilon is real and E|M| <= (1-epsilon)P."
+    ],
+    "prose_scope": "With eta=(P-H(X)+H(Z))/P and a=max(epsilon-2*eta,0), E tw(G_X) >= d*a^2/4+a/2-1. Includes the uniform-input specialization.",
+    "proof_sources": [
+      {
+        "module": "AdaptiveTreewidth",
+        "declarations": [
+          "TransposeFollowup.average_treewidth_lower_bound_of_distribution",
+          "TransposeFollowup.average_treewidth_lower_bound"
+        ]
+      },
+      {
+        "source": "AdaptiveTreewidth"
+      },
+      {
+        "source": "TreewidthAverage.quadratic_bound_of_integer_tests"
+      },
+      {
+        "source": "Treewidth"
+      },
+      {
+        "source": "GraphSeparatorBound"
+      }
+    ],
+    "review_notes": [
+      "The 1/4 coefficient and linear rounding correction are stated exactly. The earlier 1/9 comparison was an internal research corollary, not a theorem improvement over FirstPaper2026.",
+      "The asymptotic separator discussion additionally presumes negligible deficit/helper entropy when excluding fixed fractional savings."
+    ],
+    "program_role": "For high-entropy inputs and small helper entropy, forces linear average treewidth whenever an original-row strategy saves a fixed fraction.",
+    "final_english_lean_comparison": "Matches average_treewidth_lower_bound_of_distribution: d,b positive; epsilon any real; a=max(epsilon-2(D_w+H(Z))/P,0); lower bound d*a^2/4+a/2-1. Uniform specialization retained.",
+    "final_outline_assessment": "Formal proof first obtains all natural-L tests then applies quadratic_bound_of_integer_tests. The floor choice and displayed nonnegative rounding identity give the same correction. Asymptotic prose explicitly specifies d->infinity and b>0."
+  },
+  {
+    "label": "def:local-recoded-xor",
+    "kind": "definition",
+    "module": "RecodedXor",
+    "declarations": [
+      "TransposeFollowup.RecodedXorCode",
+      "TransposeFollowup.RecodedXorCode.Correct",
+      "TransposeFollowup.RecodedXorCode.LocalTo"
+    ],
+    "hypotheses": [
+      "Each original row is recoded by an arbitrary fixed bijection of the full row alphabet.",
+      "A fixed natural B packets, each a singleton transformed bit or XOR of two transformed bits.",
+      "Each pair uses either one row or two rows adjacent in G.",
+      "Each decoder knows its own original row and the full broadcast; correctness holds on the entire input cube."
+    ],
+    "prose_scope": "Exact recoded fixed-XOR model, allowing nonlinear bijective preprocessing/decoding, repetitions, same-row pairs and self-XORs, but no helper or adaptive packet selection.",
+    "proof_sources": [
+      {
+        "module": "RecodedXor",
+        "declarations": [
+          "TransposeFollowup.RecodedXorCode",
+          "TransposeFollowup.RecodedXorCode.Correct",
+          "TransposeFollowup.RecodedXorCode.LocalTo"
+        ]
+      },
+      {
+        "module": "XorPackets",
+        "declarations": [
+          "TransposeFollowup.XorPacket",
+          "TransposeFollowup.XorSystem"
+        ]
+      },
+      {
+        "source": "RecodedXor"
+      },
+      {
+        "source": "XorPackets"
+      }
+    ],
+    "review_notes": [
+      "No claim that arbitrary two-row-supported linear functionals can all be converted to this packet format by one common row recoding.",
+      "Additional immediately adjacent formal call(s) cover the other definitions or closure lemmas, recorded in proof_sources."
+    ],
+    "program_role": "Defines the bounded-packet format tested by the XOR obstruction, allowing nonlinear preprocessing and decoding.",
+    "final_english_lean_comparison": "Matches RecodedXorCode, Correct, LocalTo and XorPacket/XorSystem: independent row bijections; fixed singleton/pair coordinate packets; original-row side information; all-input correctness; no helper; same-row and self-pairs allowed.",
+    "final_outline_assessment": "No proof outline; compared primitive structures and evaluation definitions directly."
+  },
+  {
+    "label": "thm:local-xor-distance",
+    "kind": "theorem",
+    "module": "XorComponentCount",
+    "declarations": [
+      "TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled",
+      "TransposeFollowup.RecodedXorCode.broadcast_lower_bound"
+    ],
+    "hypotheses": [
+      "A correct RecodedXorCode local to a simple row graph G.",
+      "Any natural ell; no positivity or connectedness condition."
+    ],
+    "prose_scope": "(ell+1)P <= (ell+1)B + P + ell*Q_ell, equivalently B >= P-(P+ell*Q_ell)/(ell+1), where Q_ell counts raw bits whose owner/receiver are joined by a walk of length < ell.",
+    "proof_sources": [
+      {
+        "module": "XorComponentCount",
+        "declarations": [
+          "TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled",
+          "TransposeFollowup.RecodedXorCode.broadcast_lower_bound"
+        ]
+      },
+      {
+        "source": "XorComponentCount"
+      },
+      {
+        "source": "XorPackets"
+      },
+      {
+        "source": "RecodedXor"
+      },
+      {
+        "source": "ComponentDistance"
+      },
+      {
+        "source": "BitFlips"
+      },
+      {
+        "source": "DisjointFlipOrbit"
+      }
+    ],
+    "review_notes": [
+      "Disconnected row pairs are never near. The proof uses free orbits of disjoint component flips, not linearity of raw coordinates after nonlinear row recoding."
+    ],
+    "program_role": "Limits savings via graph-neighborhood volume and supplies both the bounded-degree and path/cycle obstructions.",
+    "final_english_lean_comparison": "Matches both scaled natural and divided real broadcast_lower_bound endpoints for all natural ell. Near means a walk of length <ell, so disconnected pairs are excluded and ell=0 is admitted.",
+    "final_outline_assessment": "Read transformed bijection, component difference/recovery, raw-square confinement, unanchored size count and their orbit-bound calls. Nonlinear recoding is handled by bijective conjugation of disjoint flips, not an unjustified raw linear-kernel claim."
+  },
+  {
+    "label": "cor:local-xor-degree",
+    "kind": "corollary",
+    "module": "XorDegreeBound",
+    "declarations": [
+      "TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound"
+    ],
+    "hypotheses": [
+      "A correct RecodedXorCode local to G on d>=2 rows.",
+      "A natural maximum-degree bound Delta."
+    ],
+    "prose_scope": "B >= P - 6*log(max(2,Delta))/log(d)*P, uniform in entry width b.",
+    "proof_sources": [
+      {
+        "module": "XorDegreeBound",
+        "declarations": [
+          "TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound"
+        ]
+      },
+      {
+        "source": "XorDegreeBound"
+      },
+      {
+        "source": "GraphNearCount"
+      },
+      {
+        "source": "XorComponentCount"
+      }
+    ],
+    "review_notes": [
+      "Excludes fixed fractional savings for fixed Delta only within the recoded fixed-XOR format; does not decide the first paper general local linear coding problem.",
+      "Asymptotic fractional-saving interpretation assumes b>0; the exact finite inequality still permits b=0."
+    ],
+    "program_role": "Rules out fixed fractional savings for fixed maximum degree, including bounded-degree expander support graphs.",
+    "final_english_lean_comparison": "Matches fixed_degree_broadcast_lower_bound for d>=2, Delta natural, degree bound and exact error 6 log(max(2,Delta)) P/log d. No connectedness or positive-width premise omitted.",
+    "final_outline_assessment": "Half-integer-log radius, walk-count ball estimate, (k+1)*delta^k<=d and logarithm conversion match XorDegreeBound. Renamed local delta to avoid shadowing the deficit D."
+  },
+  {
+    "label": "cor:local-xor-cycle",
+    "kind": "corollary",
+    "module": "XorPathCycleBound",
+    "declarations": [
+      "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
+      "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
+      "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
+      "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
+      "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound"
+    ],
+    "hypotheses": [
+      "A correct RecodedXorCode local to G, with d>0.",
+      "Either every ell-near ball has at most 2*ell-1 vertices for all integers ell>=1, or an injective graph homomorphism of G into cycleGraph m with m>0."
+    ],
+    "prose_scope": "B >= P - b*d*(sqrt(8*(d+3))-4), including standard paths, cycles, subcycles and relabelled embedded subgraphs.",
+    "proof_sources": [
+      {
+        "module": "XorPathCycleBound",
+        "declarations": [
+          "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
+          "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
+          "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
+          "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
+          "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound"
+        ]
+      },
+      {
+        "source": "XorPathCycleBound"
+      },
+      {
+        "source": "CyclicNearCount"
+      },
+      {
+        "source": "XorComponentCount"
+      }
+    ],
+    "review_notes": [
+      "R1916 strengthened finite correction is the checked current endpoint; the leading coefficient remains sqrt(8)."
+    ],
+    "program_role": "Strengthens the negligible-saving error from O(P/log d) to O(P/sqrt d) on paths, cycles and graphs with the stated linear ball cap.",
+    "final_english_lean_comparison": "Matches linear_ball_broadcast_lower_bound and cycle embedding/subcycle/path endpoints: d>0, cycle m>0, injective graph homomorphism or all-radius cap 2ell-1, and exact shifted-square-root error.",
+    "final_outline_assessment": "Read radius choice Nat.sqrt((d+3)/2), ball count via integer offsets, and real-budget optimization. Displayed rational identity is algebraically exact and k<=t<k+1 yields the required bound."
+  },
+  {
+    "label": "def:local-triangular-causal",
+    "kind": "definition",
+    "module": "TriangularRows",
+    "declarations": [
+      "TransposeFollowup.TriangularRows",
+      "TransposeFollowup.TriangularRows.apply",
+      "TransposeFollowup.CausalRows",
+      "TransposeFollowup.CausalRows.apply"
+    ],
+    "hypotheses": [
+      "A finite row alphabet Q and permutations specifying two row orders.",
+      "For a triangular stage, every fixed earlier-input-row tuple selects a bijection of the own-row alphabet.",
+      "A causal stage depends only on the prefix including its own input row; it need not be injective."
+    ],
+    "prose_scope": "Exact primitive triangular and causal row-map definitions, using each stage incoming rows rather than implicitly updated earlier rows.",
+    "proof_sources": [
+      {
+        "module": "TriangularRows",
+        "declarations": [
+          "TransposeFollowup.TriangularRows",
+          "TransposeFollowup.TriangularRows.apply",
+          "TransposeFollowup.CausalRows",
+          "TransposeFollowup.CausalRows.apply"
+        ]
+      },
+      {
+        "source": "TriangularRows"
+      }
+    ],
+    "review_notes": [
+      "The paper specializes Q to bit rows in the two-stage transpose architecture; primitive map evaluation is not assigned a time cost."
+    ],
+    "program_role": "Specifies the primitive row updates of the two-stage architecture; the own-row bijection condition is the source of block recovery.",
+    "final_english_lean_comparison": "Matches TriangularRows and CausalRows: orders are permutations; triangular update depends on earlier incoming rows and is bijective in own input; causal update depends on the inclusive incoming prefix and may discard information.",
+    "final_outline_assessment": "No proof outline; direct comparison with each structure and apply definition."
+  },
+  {
+    "label": "def:local-two-stage",
+    "kind": "definition",
+    "module": "TwoStageRows",
+    "declarations": [
+      "TransposeFollowup.TwoStageRows",
+      "TransposeFollowup.TwoStageRows.apply"
+    ],
+    "hypotheses": [
+      "Three row permutations; arbitrary input/output row-local maps; a triangular first stage; rowwise bijective middle maps; a causal second stage.",
+      "A single helper of arbitrary ambient type selects all branch data.",
+      "Correctness on every member of F."
+    ],
+    "prose_scope": "One row bank with the exact input-permutation/local-map, triangular stage, local-bijection/middle-permutation, causal stage, output-permutation/local-map composition. Helper alphabet may be infinite.",
+    "proof_sources": [
+      {
+        "module": "TwoStageRows",
+        "declarations": [
+          "TransposeFollowup.TwoStageRows",
+          "TransposeFollowup.TwoStageRows.apply"
+        ]
+      },
+      {
+        "module": "TwoStageHelper",
+        "declarations": [
+          "TransposeFollowup.TwoStageHelper",
+          "TransposeFollowup.TwoStageHelper.CorrectOn"
+        ]
+      },
+      {
+        "source": "TwoStageRows"
+      },
+      {
+        "source": "TwoStageHelper"
+      }
+    ],
+    "review_notes": [
+      "No extra bank, global intermediate operation or additional uncharged controller is admitted. The first-stage and middle bijectivity assumptions are explicit.",
+      "Additional immediately adjacent formal call(s) cover the other definitions or closure lemmas, recorded in proof_sources."
+    ],
+    "program_role": "Defines exactly which coupled nonlinear construction attempts the helper-or-deficit obstruction excludes.",
+    "final_english_lean_comparison": "Matches TwoStageRows.apply composition including all three permutations, arbitrary end maps, bijective first/middle maps, and causal second map. TwoStageHelper has arbitrary ambient helper type and selects all branch data.",
+    "final_outline_assessment": "No proof outline; direct comparison of input, forward, finalMap, apply, and CorrectOn. One row bank and no extra global operation are explicit limitations."
+  },
+  {
+    "label": "lem:local-block-injective",
+    "kind": "lemma",
+    "module": "TriangularRows",
+    "declarations": [
+      "TransposeFollowup.TriangularRows.block_injective",
+      "TransposeFollowup.TriangularRows.equiv",
+      "TransposeFollowup.blockInjective_rowwise",
+      "TransposeFollowup.blockInjective_inverse"
+    ],
+    "hypotheses": [
+      "A triangular row map on a finite alphabet.",
+      "For the general closure facts, the forward map is a block-injective bijection and postcomposition is rowwise bijective."
+    ],
+    "prose_scope": "Equality of inputs outside I and outputs inside I forces equality of all inputs; triangular maps are bijections; rowwise bijective postcomposition and inversion preserve block injectivity.",
+    "proof_sources": [
+      {
+        "module": "TriangularRows",
+        "declarations": [
+          "TransposeFollowup.TriangularRows.block_injective",
+          "TransposeFollowup.TriangularRows.equiv",
+          "TransposeFollowup.blockInjective_rowwise",
+          "TransposeFollowup.blockInjective_inverse"
+        ]
+      },
+      {
+        "module": "TwoStageRows",
+        "declarations": [
+          "TransposeFollowup.TwoStageRows.inverse_block_injective"
+        ]
+      },
+      {
+        "source": "TriangularRows"
+      },
+      {
+        "source": "TwoStageRows.inverse_block_injective"
+      }
+    ],
+    "review_notes": [
+      "The branch theorem derives the needed property from the primitive triangular stage. It is not added as an unproved model hypothesis.",
+      "Additional immediately adjacent formal call(s) cover the other definitions or closure lemmas, recorded in proof_sources."
+    ],
+    "program_role": "Derives the recovery property needed for branch counting from the primitive update rules, rather than assuming that property.",
+    "final_english_lean_comparison": "Matches TriangularRows.block_injective/equiv, blockInjective_rowwise/inverse and TwoStageRows.inverse_block_injective. Equality outside I at input plus inside I at output implies full equality; finite Q only needed for bijectivity.",
+    "final_outline_assessment": "Induction on order, finite injectivity-to-bijectivity, cancellation of rowwise bijections, and complement I in the inverse argument match the formal proofs."
+  },
+  {
+    "label": "lem:local-branch-count",
+    "kind": "lemma",
+    "module": "TwoStageRows",
+    "declarations": [
+      "TransposeFollowup.TwoStageRows.correct_family_card"
+    ],
+    "hypotheses": [
+      "A fixed TwoStageRows branch on bit rows, correct on any finite family F.",
+      "Natural r with r<=d."
+    ],
+    "prose_scope": "|F| <= 2^((d-r)*d*b+r*r*b) = 2^(P-b*r*(d-r)). A record of intermediate rows outside the derived suffix and the raw R-by-J rectangle is injective on F.",
+    "proof_sources": [
+      {
+        "module": "TwoStageRows",
+        "declarations": [
+          "TransposeFollowup.TwoStageRows.correct_family_card"
+        ]
+      },
+      {
+        "source": "TwoStageRows"
+      },
+      {
+        "source": "FixedSupportSandwich"
+      },
+      {
+        "source": "TriangularRows"
+      },
+      {
+        "source": "RowSuffix"
+      }
+    ],
+    "review_notes": [
+      "Includes empty and correlated F. The input/output support sets are derived from the actual permutations and causal order, each of size r."
+    ],
+    "program_role": "Bounds each fixed branch correctness family, which is the common input to the helper-range and helper-entropy lower bounds.",
+    "final_english_lean_comparison": "Matches TwoStageRows.correct_family_card for all finite F, including empty/correlated, and every natural r<=d: cardinal <=2^((d-r)db+r^2b). Alternative exponent P-br(d-r) follows the formal exponent_decomposition.",
+    "final_outline_assessment": "Read TwoStageRows derived suffix supports and FixedSupportSandwich injection. Middle rows outside I plus raw R-by-J rectangle recover all raw rows in R, then all middle rows by inverse block injectivity, then input by correct transpose output. No extra block property is imposed."
+  },
+  {
+    "label": "thm:local-helper-count",
+    "kind": "theorem",
+    "module": "TwoStageHelper",
+    "declarations": [
+      "TransposeFollowup.TwoStageHelper.correct_family_count_toll",
+      "TransposeFollowup.TwoStageHelper.quarter_count_toll",
+      "TransposeFollowup.TwoStageHelper.quarter_helper_bound_of_density"
+    ],
+    "hypotheses": [
+      "A TwoStageHelper architecture correct on F, with arbitrary ambient helper type.",
+      "Natural r<=d for the general count.",
+      "For the density corollary: D real, g natural, |F|>=2^(P-D), |z(F)|<=2^g."
+    ],
+    "prose_scope": "|F|*2^(b*r*(d-r)) <= |z(F)|*2^P; taking r=floor(d/2) gives toll b*floor(d^2/4), and the density corollary gives D+g at least this toll.",
+    "proof_sources": [
+      {
+        "module": "TwoStageHelper",
+        "declarations": [
+          "TransposeFollowup.TwoStageHelper.correct_family_count_toll",
+          "TransposeFollowup.TwoStageHelper.quarter_count_toll",
+          "TransposeFollowup.TwoStageHelper.quarter_helper_bound_of_density"
+        ]
+      },
+      {
+        "source": "TwoStageHelper"
+      },
+      {
+        "source": "TwoStageRows"
+      }
+    ],
+    "review_notes": [
+      "Counting includes empty F; the real density premise implies nonempty F. No rounding of D or finite ambient helper alphabet is assumed."
+    ],
+    "program_role": "Forces a large attained helper range or a large correct-family deficit; full-cube correctness needs at least 2^(b floor(d^2/4)) helper values.",
+    "final_english_lean_comparison": "Matches correct_family_count_toll, quarter_count_toll and quarter_helper_bound_of_density. Ambient helper unrestricted; counts include empty F; density D real and g natural. Exact odd-d floor retained.",
+    "final_outline_assessment": "Partition into attained-helper fibers, apply branch count, multiply by exact exponent complement, and optimize at floor(d/2). Density premise implies nonempty F before logs. Full-cube consequence follows by cancelling 2^P."
+  },
+  {
+    "label": "thm:local-helper-entropy",
+    "kind": "theorem",
+    "module": "TwoStageHelperEntropy",
+    "declarations": [
+      "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution",
+      "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution",
+      "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound",
+      "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound"
+    ],
+    "hypotheses": [
+      "A TwoStageHelper architecture correct on every member of F.",
+      "Any normalized nonnegative probability law on F, allowing zero masses.",
+      "Natural r<=d; arbitrary ambient helper type."
+    ],
+    "prose_scope": "P-H(X)+H(Z) >= b*r*(d-r), and >= b*floor(d^2/4). Uniform-law cardinality-deficit corollaries are included. H(Z) is entropy on the finite attained helper subtype.",
+    "proof_sources": [
+      {
+        "module": "TwoStageHelperEntropy",
+        "declarations": [
+          "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution",
+          "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution",
+          "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound",
+          "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound"
+        ]
+      },
+      {
+        "source": "TwoStageHelperEntropy"
+      },
+      {
+        "source": "TwoStageRows.correct_family_card"
+      },
+      {
+        "source": "TwoStageHelper.exponent_decomposition"
+      },
+      {
+        "source": "EntropyFibers.entropy_le_observation_add_log_fiber_bound"
+      }
+    ],
+    "review_notes": [
+      "Charges actual helper entropy, not merely log alphabet size. Does not extend the two-stage toll to arbitrary extra stages, banks or unrestricted causal networks.",
+      "Complementary restricted-architecture realization of the first paper hint issue, not general hint removal."
+    ],
+    "program_role": "For high-entropy input laws forces actual helper entropy near P/4 as d grows, so a heavily skewed helper distribution does not avoid the obstruction.",
+    "final_english_lean_comparison": "Matches arbitrary-law and uniform helper_entropy_deficit_bound endpoints and their quarter specializations. All-F correctness, normalized nonnegative law, zero masses allowed, arbitrary ambient helper with entropy on finite attained subtype, exact b floor(d^2/4) charge.",
+    "final_outline_assessment": "Branch fiber-cardinality bound feeds entropy_le_observation_add_log_fiber_bound; normalization gives H(X)<=H(Z)+log C; exact exponent identity and half-product identity give both charges. Asymptotic d growth and b>0 are now explicit."
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "checkpoint": "R1782",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "MobiusComplexInner",
+    "PositiveAffineMeasure",
+    "MobiusPolarCoefficient",
+    "MobiusBoxCoefficient"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.complexPullbackL2_I_smul",
+    "TransposeFollowup.RealMobius.complexPullbackL2_inner",
+    "TransposeFollowup.RealMobius.complexPullbackL2_inner_transfer",
+    "TransposeFollowup.RealMobius.complexPullbackL2_product_coefficient",
+    "TransposeFollowup.lintegral_positive_mul_parameter",
+    "TransposeFollowup.lintegral_positive_square_parameter",
+    "TransposeFollowup.lintegral_affine_parameter_change",
+    "TransposeFollowup.l2_wavelet_dilation_shear_lintegral_le",
+    "TransposeFollowup.RealMobius.polar_group_coefficient",
+    "TransposeFollowup.RealMobius.polar_group_coefficient_energy_le",
+    "TransposeFollowup.RealMobius.polarColumn_measurable",
+    "TransposeFollowup.RealMobius.polar_box_weight_le",
+    "TransposeFollowup.RealMobius.haar_entryBox_lintegral_le",
+    "TransposeFollowup.RealMobius.group_coefficient_energy_continuous",
+    "TransposeFollowup.RealMobius.group_coefficient_box_lintegral_le",
+    "TransposeFollowup.RealMobius.group_coefficient_box_energy_integrable",
+    "TransposeFollowup.RealMobius.group_coefficient_box_energy_le"
+  ],
+  "new_theorems": 17,
+  "new_definitions": [],
+  "new_instances": [],
+  "modified_mathematical_sources": [],
+  "checks": {
+    "targeted": {
+      "session_id": 25486,
+      "exit_code": 0,
+      "jobs": 9547,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 61892,
+      "exit_code": 0,
+      "jobs": 9653,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 31980,
+      "exit_code": 0,
+      "declarations": 3701,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary proofs: complex polarization, hasDerivAt_pow, the one-dimensional Jacobian lintegral formula, Tonelli with restricted product measures, Lebesgue interval volume, and lintegral_ofReal_ne_top_iff_integrable. R1780 supplies the proved arbitrary-L2 affine wavelet inequality; R1781 supplies the actual column/polar Haar measure and bounded-entry geometry. No further external claims or coordinate-density premises are assumed. The actual action convention is T_g=W_(g^-1), the same Haar measure H is retained, and the positive finite scalar c_H=haarScalarFactor(H,columnChartMeasure) remains explicit. No novelty is claimed for these standard analytical support results.",
+  "development_checks": "Complex-inner target80473 passed without warnings. PositiveAffineMeasure35639/7961 (prior context) and24650 failed on derivative elaboration/positivity;62304 built it warning-free after using hasDerivAt_pow, but that combined command failed in MobiusPolarCoefficient on an implicit change-of-variables function. Explicit function argument fixed it:10329 passed warning-free (9545 jobs). Box target83085 failed on beta reduction and integral monotonicity/associativity;16790 failed on a renamed multiplication lemma;81339 compiled with an unused-section-variable warning;25486 passed warning-free after omitting those variables (9547 jobs). No raised limits, disabled linters, new axioms, or old mathematical-source edits. Older supplemental handles62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T17:19:09.284855+00:00",
+  "formal_checkpoint": "R1782 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1782, 676 sources, 3701 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1782 proves the actual bounded-entry Haar coefficient estimate. For every real B, M>0, Schwartz u with Fourier(u)=0 on |xi|<M, and arbitrary complex L2 v, integral_box_B |<v,T_g u>|^2 dH(g) <= 2*pi*c_H*B^2*M^(-1)*||u||_2^2*||v||_2^2. Here T_g=W_(g^-1), box_B consists of actual SL2 matrices with every entry bounded in absolute value by B, and c_H=haarScalarFactor(H,columnChartMeasure) is the same proved positive finite Haar scalar from R1781. The nonnegative integral bound proves genuine integrability before the real integral is used. The proof establishes commutation with complex I and complex inner-product preservation, the exact changes s=a^2 and t=a^2*b giving affine density 2 da db/a, transfer of rotations to v, and the pointwise Haar-weight comparison a<=B^2*(2/a) on the entry box. Tonelli and the angular interval length 2*pi finish the estimate. The high-frequency Schwartz input retains its spatial tails.",
+  "next": "Use the now-proved arbitrary-test-vector coefficient bound to prove the direct average estimate. Work with the same Haar measure H, action T_g=W_(g^-1), and measurable extended-nonnegative density kappa as in MobiusSmoothedDensity. Assume integral kappa dH=1, kappa<=ofReal(D) almost everywhere for finite D>=0, and kappa=0 almost everywhere outside matrixEntryBox B. Derive the probability instance for H.withDensity kappa and genuine integrability of the weighted L2 orbit, rather than assuming that its Bochner integral is meaningful. The target is\n  ||integral kappa(g).toReal * T_g u dH(g)||_2^2\n    <= 2*pi*c_H*B^2*D*M^(-1)*||u||_2^2,\nfor Schwartz u with Fourier(u)=0 on |xi|<M, M>0. This inequality is NOT proved yet. Use probability Cauchy\u2013Schwarz or the variance/Jensen inequality for each scalar coefficient, dominate its second moment by D times the proved box energy, and choose the arbitrary test vector v to be the actual averaged vector. Justify integral_inner with the actual integrable orbit; handle the zero-vector case explicitly if cancelling its norm. The target avoids forming a double-convolution correlation density. Reuse group_coefficient_box_energy_le and its integrability theorem; preserve spatial tails and c_H.\n\nThen instantiate the result for mobiusSmoothedDensity(generatorWalkMeasure G ell,eta), deriving the entry support bound from actual generator products and the identity smoothing ball. Compare the resulting verified upper bound with exists_uniform_smoothed_regular_high_band: its normalized witness has M=2^j, eta=4^(-j), dyadic ell=2^m with 2*N*ell<=j, and average norm >=r^ell/2, with N arbitrarily large above a prescribed minimum. Establish the precise required density flatness before attempting an analytic contradiction; the crude inverse-small-ball density estimate alone is not a proved flattening theorem. Full small-ball geometry, flattening/product growth, rational free generators and restricted spectral-gap existence still remain. Full motion and regular-recursion scope is unchanged. No final referee subagents before all formalization; no original-directory edits or commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1782 completes the bounded-entry Haar coefficient bound for every complex L2 test vector, including all parameter changes, complex inner-product transfer and genuine finite integrability. This closes a concrete analytic support target within paid padding, not another original family. The density/average upper bound, small-ball asymptotics, flattening/product growth, rational free generators and restricted spectral-gap existence remain. Motion 200/210 and recursion 206/208 are unstarted. The percentage describes formalization scope, not elapsed time, probability of success, or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusComplexInner.lean": "13d9943bd37fe44dc3df3b86104fc2d4fa7c53036e5bbc6f5ea09855808ac34c",
+    "lean/TransposeFollowup/PositiveAffineMeasure.lean": "0ea67118794cfd32e4362c58949526eabda6a8e58056a2477d06a0bfdb3701f2",
+    "lean/TransposeFollowup/MobiusPolarCoefficient.lean": "93ec004b0501795ddaa125dc8334c9f3063a6db6b8a34d45a094bbf7674eee16",
+    "lean/TransposeFollowup/MobiusBoxCoefficient.lean": "4570d7bb7fa353cfd512ca776af9182b6d6a81e28e1f3b3bb9058b3b6b0b8bce"
+  }
+}

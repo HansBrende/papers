@@ -1,0 +1,132 @@
+
+R1887 — SHARED RAW WRAPPER AND COMPLETE MIXED NATIVE EXECUTION
+PROGRESS at R1887: arbitrary mixed binary words now have a complete raw native executor, exact output, fully blank scratch, native halting within(7+27K)P for P>0 and length<=K, two tapes/five symbols, o(P) state bits, and exact head trajectories at every time including the halted tail. Raw IO/native/resource/motion proofs are shared with the old forward-word executor, retaining all its named statements and(7+11K)P bound. Five of six original families formalized; regular recursion206/208 best estimate81% complete (low confidence). Finite-family affine assembly/exclusion and exact row/integer/F3 palettes remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1887 RESULTS
+1. RawBankProgram factors the existing raw wrapper over a binary Body:
+   its actual schedule, paid cost, actual run result and semantic transform.
+   Correct requires proved activity, exact execution, full BankWord
+   invariant and whole-bank congruence. It adds raw loading3P, rewindP,
+   and output3P, hence ticks=7P+body.cost. ready_spec/result_output and
+   native_complete/native_halts/native_correct derive actual blank-init
+   native execution, exact output and full scratch erasure. Fixed resources
+   are two work tapes, five work symbols and4*(ticks+1) native states.
+   No correctness field is admitted or substituted for an implementation.
+2. RawBankProgramMotion factors the full existing motion proof. Motion
+   requires exact internal head displacements from every initial state
+   and zero displacement after the internal horizon. The raw path is the
+   delayed internal path plus the three IO/rewind ramps. schedule_position
+   proves every scheduled prefix; workTraj_position proves ALL native
+   times, including the frozen halted tail, using the original paper's
+   stepN/run equivalence and workTraj_frozen.
+3. RawBankProgramResources shares cellBits=3 and the state-bit proof:
+   any eventual bound ticks<=C*P along unbounded Goal sizes implies
+   clog2(q+1)/P ->0. It uses the already proved state_bits_of_linear_count,
+   ultimately importing the original stateBits_div_tendsto.
+4. RawMixedBinaryWord instantiates every Body/Correct field with the
+   R1886 actual mixed-word compiler. For valid public forward/backward
+   masked scans, reversal and rotation, it emits the ordered composition
+   on the raw input. It halts, leaves the entire scratch tape blank, and
+   for P>0 has ticks<=(7+27*length)P. No free output feedback or prepared
+   input is assumed. Public masks and parameters may vary with size.
+5. RawMixedBinaryWordMotion supplies the actual mixed internal paths to
+   Motion, proving complete raw native head trajectories. Its Resources
+   module gives ticks<=(7+27K)P for length<=K and derives o(P) state bits
+   with only eventual validity/length bounds and unbounded Goal sizes.
+6. Existing RawMaskedStrideWord, RawStrideWordMotion and
+   RawStrideWordResources now call the same wrapper and resource/motion
+   proofs. All their previous named theorem statements remain, including
+   the sharper(7+11K)P bound. Only three mathematical baseline modules
+   are refactored; R1886 primitive and shared-word proofs are unchanged.
+
+Six new modules;57 newly audited named declarations, including three
+new packaging declarations in existing modules. These are not57 research
+results. The mixed palette's affine exclusion is not yet formalized.
+
+DRIFT / REUSE
+R1886 postcheck verified1502 paper hashes,384 archive hashes and5441
+unique audited declarations before editing. Reviewed mathlib fold and
+Turing-machine libraries and our original/local native interfaces. Mathlib
+provides generic TM/stack-TM simulation, not a direct drop-in theorem for
+this exact native IO model with its required charged head trajectories.
+No claim of exhaustive absence from all Lean libraries is made.
+The actual new proofs reuse existing append execution/motion, raw IO,
+blank_denote, native_run_and_halt/native_prefix, original stepN/run
+correspondence and workTraj_frozen. Generic resource asymptotics reuse
+state_bits_of_linear_count. Both concrete compilers actually call the
+shared proofs, replacing the old duplicated native plumbing.
+Development failures were ordinary refactor errors: one incorrect motion
+argument, a missing size argument in the mixed transform, unfolding a
+wrapper for arithmetic, and a whitespace parsing issue. No weakened
+statement, new axiom, proof escape or raised resource limit was used.
+For the next asymptotic assembly, located mathlib CompactSpace.tendsto_subseq,
+Pi.compactSpace, tendsto_pi_nhds and List.ofFn_get. Use these instead of
+proving fresh finite-dimensional compactness or list indexing machinery.
+The remaining obstacle is finite-family affine assembly and its exclusion,
+then exact other palettes. Do not reopen completed raw/native chains or
+count palette(c) as the whole sixth original theorem family.
+
+
+BOUNDARY
+The mixed binary palette now has a complete paid raw native implementation, not just internal bank semantics. Its exact output, scratch erasure, halting, resources, state bits and full head paths are proved. Bounded-family affine approximation and the native high-entropy contradiction still remain, as do exact row/integer/F3 palettes(a,b). Source208/global exceptional-work210.5 and the R1881 single-stride exclusion are complete. Five of six original families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transpose result or novelty claim.
+
+NEXT
+R1887 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate81%, low confidence.
+
+NEXT: FINITE-FAMILY AFFINE ASSEMBLY FOR THE MIXED BINARY PALETTE(c).
+The complete mixed raw native wrapper is now done. Do not reimplement its
+IO, blank initialization, native halting, resource counts or frozen paths.
+RawMixedBinaryWord has machine/outputWord/native_correct, ticks bound,
+cellBits=3, state_bits_vanish, and workTraj_position. All old forward raw
+proofs now specialize the same RawBankProgram machinery.
+
+Use the existing obstruction
+  AffineMotion.no_subsequential_physical_affine_fast_approximation
+in PhysicalAffineApproximationObstruction. It requires uniformly bounded
+covers and vanishing uniform error, not separate convergence of the
+approximants. RawMaskedStrideRegularity.full_affine_approximation_subsequence
+and RawMaskedStrideObstruction.no_high_entropy_transpose are the single
+stride worked examples. Reuse their original/native normalization.
+
+For fixedK, extract one subsequence on which each of at mostK normalized
+stride parameters converges. Mathlib CompactSpace.tendsto_subseq applies
+to FinK -> Icc(0,1) using Pi.compactSpace. Use tendsto_pi_nhds for each
+coordinate; do not write a fresh iterated compactness chain. Non-stride
+slots can use dummy ratio0. Variable word length<=K can use padded optional
+slots or existing finite-list/index lemmas; List.ofFn_get is available.
+Do not add unpaid operations to the actual executor to justify padding.
+An analytic zero-contribution slot needs no machine operation.
+
+Combine already proved shifted operation curves at the actual paid start
+times. Stage types/masks can vary withsize; no fixed type pattern is needed.
+- StrideStageApproximation: forward bounded-group curve cover9^(B+1)*9,
+  error<=2*(P/S+2), and small-stride curve cover9/error<=7S+2.
+- BackwardStrideApproximation: bounded curve cover81*(9^(B+1)*9)*81,
+  error<=2*(P/S+2)+8; small curve cover81*9*81/error<=7S+10.
+- BankReversalApproximation: shifted cover81/error<=4.
+- BankRotationApproximation: shifted cover81^3*9/error<=14.
+Public shifts and rotation offsets need not converge; all estimates are
+already uniform in these parameters. At ratio0 use the small curve and
+S/P->0. At positive ratio use bounded P/S and error/P->0. Choose common
+finite cover bounds across slots/types, add fixedK errors and the IO ramps,
+then rescale byP. The existing cover add/sum/rescale lemmas suffice.
+The paths from ScheduledWord/MixedBinaryWord are delayed sums of exact
+per-stage paths; reuse their proved composition, not another native proof.
+
+Instantiate the native obstruction with k2,G3,c=7+27K. Correctness should
+be arbitrary public size-dependent words on sets of coentropy o(P), with
+all setup/reset/IO paid. No uniform public generator or all-input-only
+restriction. Exact row/integer/F3 palettes(a,b) remain AFTER this exclusion;
+palette(c) alone is not source206/family6 completion. Source208/global210.5
+are complete. No new subagents until all six, then authorized referees.
+Original read-only; no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate81% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 now includes the complete mixed-word raw native executor and paths. Finite-family affine exclusion and exact row/integer/F3 palettes remain; final independent referees pending.
+
+VERIFICATION
+Full lake build passed10262 jobs without warnings/errors; SupportAxioms audited5498 unique declarations using only propext,Classical.choice,Quot.sound. There are1081 local sources (1080 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and217 validation artifacts. Original117 files and directory inventory unchanged. RawMaskedStrideWord, RawStrideWordMotion and RawStrideWordResources refactored to shared proofs with old statements/bounds retained; other baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

@@ -1,0 +1,50 @@
+{
+  "status": "PROGRESS at R1890: direct raw modular row updates and arbitrary equal-width row loops are checked. One nonempty W-bit row costs exactly7W paid native steps, using2 work tapes,5 symbols and50*(7W+1) control states; addition retains its output and subtraction retains the original current row. Five of six original families formalized; regular recursion206/208 best estimate86% complete (low confidence). Complete initialization/cleanup/raw IO, other row/integer operations, F3 palette and their geometry remain.",
+  "boundary": "Source206(c), source208 and global exceptional-work210.5 remain complete. R1890 proves a native single-row execution and a scheduled repeated-row execution, including both seeks and original-row retention. It does NOT yet prove a complete clean bank operation from raw external input, whole-bank affine approximation, the rest of palette(a), or palette(b). Five of six families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate86% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. The sixth already includes source208/global210.5 and complete binary palette(c). R1890 adds paid raw integer row scans and their repeated-row composition; full integer and F3 palettes remain. Final impartial referees pending.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "List.foldl_const",
+    "List.foldr",
+    "Function.iterate_succ_apply",
+    "Function.iterate_succ_apply'",
+    "List.reverse_cons",
+    "List.reverse_append",
+    "List.map_reverse",
+    "List.length_reverse",
+    "List.sum_replicate"
+  ],
+  "reused_local": [
+    "CopyMachine.denote_left",
+    "CopyMachine.denote_right",
+    "CopyMachine.denote_read",
+    "CopyMachine.denote_write",
+    "BinaryCarry.result",
+    "ModularRowWord.rawOperation_value",
+    "ModularRowWord.rawOperation_length",
+    "ScheduledWord.schedule_exact",
+    "ScheduledWord.schedule_active",
+    "ScheduledNativeIO.append_exact",
+    "ScheduledNativeIO.append_active",
+    "ScheduledNativeIO.native_run_and_halt",
+    "ScheduledNativeIO.native_prefix",
+    "ScheduledNativeIO.native_state_count",
+    "PaddedWorkSchedule.step_displacement"
+  ],
+  "inspected_next": [
+    "ScheduledTapeAction.erase_cells",
+    "ScheduledTapeAction.erase_position",
+    "ScheduledTapeAction.rewind_cells",
+    "ScheduledTapeAction.rewind_position",
+    "NativeIOEmbedding.step_embed",
+    "NativeIOEmbedding.trace_embed",
+    "EraseStream.blanks_eq_nil",
+    "NativeSpanErase.erased_denote",
+    "RawBankProgram",
+    "ScheduledRawInput",
+    "ScheduledRawOutput"
+  ],
+  "modified_existing": [],
+  "dependency_simplification": "REUSE / DRIFT CHECK\nChecked pinned mathlib list folds, iteration and Turing-tape representations,\nplus local carry arithmetic, native compilation, scheduled words, zipper\nrefinement, selected-tape actions, head bounds and IO embedding. No drop-in\npaid raw-row execution theorem was found in the searched installed code;\nthis is not an exhaustive absence claim about all Lean libraries.\nReused List.foldl_const, Function.iterate_succ_apply/iterate_succ_apply',\nList.foldr and list reversal/length identities. Reused CopyMachine's\nexisting zipper denotation facts, BinaryCarry's recurrence and modular\nidentities via ModularRowWord, ScheduledWord.schedule_exact/active,\nScheduledNativeIO.append_exact/active/native_run_and_halt/native_prefix/\nnative_state_count, and PaddedWorkSchedule.step_displacement.\nNo new carry arithmetic, tape semantics, native compiler or general\nscheduler was built. New CoupledRowMoves concerns simultaneous selected\nrightward seeks in the coupled mode; the existing ScheduledTapeAction\nalready handles generic single-port rewind/erase and must be used next.\nDevelopment errors were wrapper unfolding, cancellation, one simplified\nTrue goal, and unused tactic arguments. They were corrected without\nchanging the theorem scope, proof limits, hypotheses or linters.\nThe direct raw-row route and all-width row loop are now formally checked;\nfinite prototype evidence is no longer the only evidence for them.\nThis advances the concrete palette(a) implementation. It is not another\nreview-only unit and is not the final impossibility theorem.\n",
+  "novelty": "No novelty claim. Exact raw native row and scheduled repeated-row support for palette(a); full palettes(a,b) remain."
+}

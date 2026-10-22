@@ -1,0 +1,72 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "OpenProductDensity",
+    "ProductDensityPairs",
+    "PopularProductEnergy",
+    "MobiusPopularProducts",
+    "SmoothedIteratePopularProducts"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.lowerSemicontinuous_lintegral_family",
+    "TransposeFollowup.popularProductSet",
+    "TransposeFollowup.densityConvolution_indicator_lowerSemicontinuous",
+    "TransposeFollowup.popularProductSet_isOpen",
+    "TransposeFollowup.densityConvolution_indicator_eq_zero_of_not_mem_mul",
+    "TransposeFollowup.popularProductSet_subset_mul",
+    "TransposeFollowup.restrict_mconv_eq_withDensity",
+    "TransposeFollowup.setLIntegral_densityConvolution_eq_pair_measure",
+    "TransposeFollowup.densityConvolution_indicator_lintegral",
+    "TransposeFollowup.densityConvolution_indicator_le_left",
+    "TransposeFollowup.popularProductSet_threshold_measure_le",
+    "TransposeFollowup.haarEnergy_le_popular_tail_add",
+    "TransposeFollowup.popularProductSet_bounds",
+    "TransposeFollowup.RealMobius.popularProductSet_subset_entryBox",
+    "TransposeFollowup.RealMobius.popularProductSet_geometry",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_popular_product_relation"
+  ],
+  "declaration_counts": {
+    "theorem": 15,
+    "def": 1
+  },
+  "checks": {
+    "actual_popular_products": {
+      "session_id": 88194,
+      "exit_code": 0,
+      "jobs": 9610,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 21461,
+      "exit_code": 0,
+      "jobs": 9726,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 90749,
+      "exit_code": 0,
+      "declarations": 4144,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "R1795 formalizes the self-energy popular-product step of Tao, Product set estimates for non-commutative groups, arXiv math/0601431v3, proof of Theorem5.2, equations18-19 and the following product-mass identity (https://arxiv.org/pdf/math/0601431). Rechecked the primary source and Lemma5.1 for the next selection target. The proof here directly uses Fatou, Haar convolution identities, Markov and elementary energy splitting. It derives the openness, bounded support and exact pair-measure identity rather than assuming them. The actual smoothed-iterate application is checked. This is a supporting formalization, not a new impossibility theorem or novelty claim. Weak BSG, approximate-group extraction, product growth/escape and strict flattening remain unproved.",
+  "development_checks": "59648 failed on unreduced zero functions and membership in the defined superlevel set, and reported an unused section instance and deprecated alias.72539 built OpenProductDensity and ProductDensityPairs without warnings, but PopularProductEnergy failed on implicit indicator function constants and rewriting under unapplied lambdas. Typed measurability facts and explicit changes repaired these.90083 failed only on opaque membership in the Markov inclusion; an explicit inequality type repaired it.37451 built PopularProductEnergy but failed in geometry on generic pow_pos for ENNReal and the explicit measure argument of IsOpen.measure_pos. Using positivity and passing H repaired those.88194 passed the full actual application and all new dependencies. Replayed informational suggestions from unchanged AutocorrelationSupport are not warnings. No old mathematical-source edits, proof-limit changes, disabled linters, placeholders or new axioms. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T20:24:58.219721+00:00",
+  "formal_checkpoint": "R1795 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1795, 749 sources, 4144 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1795 proves that an open set O of finite positive Haar volume w, bounded in Box(Q), with E(O,O)>=w^3/L for positive finite L, has the explicit popular-product region C={1_O*1_O>w/(2L)}. It is nonempty open precompact, its closure lies in Box(2Q^2), H(C)<=2Lw, and the actual pairs in O x O with product in C have measure at least w^2/(2L). Lower semicontinuity follows directly from Fatou; product mass equals pair measure by a proved convolution-of-restrictions identity. The actual smoothed nonflattening iterates give this relation with L=8(64N^4)^2/theta^2 and prove L>=1 and finite, preserving the dyadic level, volume window and arbitrary small enlargement error. Weak BSG selection, small-product/approximate-group extraction, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved.",
+  "next": "Start from RealMobius.exists_smoothedIterate_popular_product_relation in SmoothedIteratePopularProducts.lean. Do not repeat regularization, lower semicontinuity, popular-product volume/mass bounds or the pair-measure identity. The actual nonflattening step gives N with its logarithmic bound, a density level A and symmetric open precompact O, keeping A intersect Box(R) inside O and H(A)<=H(O)<=(1+delta)H(A) for any chosen 0<delta<=1. Put K0=64N^4, L=8K0^2/theta^2, Q=R+1. L>=1 and finite are proved. C={1_O*1_O>H(O)/(2L)} is open precompact with closure in Box(2Q^2), H(C)<=2L H(O), and pair measure >=H(O)^2/(2L). This supplies weak-BSG input with A=B=O and K=K'=2L.\n\nNext concrete target: complete the weighted common-neighbor selection step of continuous weak BSG, not just a wrapper assuming a selected fiber. Reference: Tao, Product set estimates for non-commutative groups, https://arxiv.org/pdf/math/0601431v3, Lemma5.1, rechecked R1795. For open precompact A,B,C and at least H(A)H(B)/K product pairs, define S_b={a in A:ab in C} and c(a,a')=integral_B 1_C(ab)1_C(a'b). For 0<epsilon<1, use Cauchy\u2013Schwarz, Tonelli and weighted averaging to find b in B such that S_b has polynomially large volume and at most epsilon of its pairs have c below epsilon H(B)/(2K^2). A transparent relaxed size target H(S_b)>=H(A)/(2K) suffices; retain better constants if equally easy. Prove the full simultaneous selection, including measurability and nonempty open precompact S_b. Do not let isolated moment identities become the endpoint.\n\nUseful simplification to test: define D globally as {d: integral 1_C(dc)1_C(c) dc > epsilon H(B)/(2K^2)}, instead of as the image of only selected good pairs. Then each good pair quotient aa'^-1 belongs to D by the change of variables c=a'b and dropping the restriction to B. D can be identified with popularProductSet H C C^-1 at that threshold, so R1795 openness/support/Markov results should prove D open precompact and H(D)<=2K^2 H(C)^2/(epsilon H(B)). This avoids a new open-image theorem. This selection and quotient comparison remain UNPROVED. Afterwards proceed to the small-product subsets and approximate group; the later SL2 product-growth/escape task remains substantial.\n\nFor weighted selection, a slack threshold can avoid attainment subtleties: integral_B H(S_b)^2 is bounded below by Cauchy\u2013Schwarz, whereas the integrated number of low-codegree pairs is small. Select b with a simultaneous size and bad-pair bound, with all integrals finite. Do not subtract infinite ENNReal values. Keep an explicit coefficient loss rather than assuming a density theorem.\n\nUltimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k): choose FIXED k before N,J0,epsilon0, and prove rho_k<=D with D^2<=2^j at eta=4^(-j) for the specified dyadic base-walk range. Initial density eta^(-3+1/61440) is only initialization. Preserve all six families, actual measures and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1795 completes the continuous popular-product region and actual dense pair relation, including topology, support and normalization. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/OpenProductDensity.lean": "1274919b060d46fcad471fd39fb7b25fc0a248576b22624d9384d0edbaa9f4c8",
+    "lean/TransposeFollowup/ProductDensityPairs.lean": "daac0ff012e3b2684372e9619685a024965a462813583c0c5650535406c7d6c8",
+    "lean/TransposeFollowup/PopularProductEnergy.lean": "1e71cfb9398e9e660b6af769d1a54651634c3a4e94768d2353548cf28de5aa97",
+    "lean/TransposeFollowup/MobiusPopularProducts.lean": "b7e9ff2d112f328d595fcdfcf8e48dba2a2696676e2c324b5667eca6e775a24b",
+    "lean/TransposeFollowup/SmoothedIteratePopularProducts.lean": "32ceac31daffb9698f5a88f2bfca95678bf3e57501fcc0f7af69ba9a1a741a16"
+  }
+}

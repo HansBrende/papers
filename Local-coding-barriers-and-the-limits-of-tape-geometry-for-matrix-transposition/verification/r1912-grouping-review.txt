@@ -1,0 +1,156 @@
+R1912 READ-ONLY SOURCE GROUPING REVIEW
+21 October 2026. No Lean/Lake process started; no repository source edited.
+
+RECOMMENDATION
+After the saved pilot clears its measured correctness/performance gate, adopt
+19 complete native-subroutine groups from r1912-broad19-group-plan.json,
+subject to the independent declaration-type baseline and preservation review.
+Retain original NativeMicrocode/NativeMicrocodeRun/FiniteProgramEncoding/
+NativeZipper boundaries so the separate lightweight-core import refactor can
+remove the inherited full-Mathlib dependency. Do not also apply the earlier
+37-group alternative: it overlaps the broader groups and is superseded as an
+implementation candidate.
+
+This is a source organization change. Definitions, theorem statements, proof
+bodies, resource constants, section boundaries, and audit commands stay exact.
+It is not a new theorem, assumption, cache bypass, or trust-setting change.
+
+EXACT STRUCTURAL EFFECT, BEFORE THE INDEPENDENT IMPORT REFACTOR
+                                      Baseline       Broad19
+Local mathematical modules              1157            889
+NativeMicrocode rebuild descendants       566            299
+NativeMicrocode rebuild critical path     176             36
+NativeIO rebuild descendants              345            209
+NativeIO rebuild critical path             86             26
+NativeIOFusion rebuild descendants         71             20
+NativeIOFusion rebuild critical path       40             12
+SourceEndpointsMachine descendants        207             28
+SourceEndpointsMachine critical path      126             19
+Global longest unweighted module path     188             84
+
+The 19 groups consolidate 287 source modules / 26,096 original source lines
+into 19 modules, removing 268 file boundaries. Their sizes range from 360 to
+2,379 original lines. The NativeMicrocode scenario loses about 80% of its
+serial compilation boundaries and 47% of its affected modules. This supports
+trying for a small fraction of the former compiler rebuild wall time; it does
+not establish that measured gain. Elaboration work remains, larger modules
+may have higher memory cost, and global full-rebuild criticality shifts to an
+analytic chain. The import refactor is not included in these counts.
+
+The older R1911 report's 178-module path was a duration-weighted path in a
+partial build log. The fresh 188 count is the longest unweighted dependency
+path. These are different quantities, not a discrepancy in the source graph.
+All rebuild paths above are computed in the induced descendant subgraph of
+the named changed module, rather than counting already cached prerequisites.
+
+GROUPS (destination path preserved)
+  CellAndStream              12 -> 1, 1096 lines, RowStreamBudget
+  PaddedArithmeticSeed       12 -> 1, 1387 lines, SeedMultipleMeaning
+  GuardedSourceEndpoints     20 -> 1, 2227 lines, SourceEndpointsMeaning
+  ScaledSourceImages         12 -> 1, 1154 lines, DimensionScaleMeaning
+  RecordedReusableRow        20 -> 1, 2379 lines, RecordedRowResources
+  FamilyReader               22 -> 1, 2194 lines, FamilyReaderRun
+  FirstWitnessSelection      18 -> 1, 1255 lines, FamilySelectorMeaning
+  PageRecordInterpretation   19 -> 1, 1339 lines, PageEventBatchCanonical
+  PageAndVertexScheduler     26 -> 1, 1846 lines, OpcodeGeneratorMeaning
+  GeneratorRows              26 -> 1, 1737 lines, GeneratorRowsPreparedGeometry
+  PaidPaddingMachine         26 -> 1, 2105 lines, PaidPaddingLimits
+  DimensionLoader            14 -> 1, 1673 lines, DimensionLoaderRun
+  GeneratorCleanup            5 -> 1,  576 lines, GeneratorCleanupCost
+  RadiusConstruction         15 -> 1, 1474 lines, RadiusClockRun
+  Normalization               7 -> 1,  547 lines, RawNormalizationMeaning
+  SignedLinearForm            7 -> 1,  689 lines, SignedLinearFormRun
+  NativePairPreparation      11 -> 1, 1090 lines, PreparedPairCalls
+  ReaderSelection            11 -> 1,  968 lines, SchedulerSeedRun
+  EntryBits                   4 -> 1,  360 lines, EntryBitsRun
+All destination paths are under TransposeFollowup. These names retain existing
+file import paths and all declaration names; the group names are descriptive
+labels only. Old intermediate paths should be archived and imports rewritten,
+not replaced with costly default-glob compatibility wrapper chains.
+
+WHY THESE ARE COHERENT
+Each large group represents a complete routine and its obligations: machine,
+calls, execution, semantics, resource bound, and (where relevant) cleanup or
+geometry. For example RecordedReusableRow includes preparation, execution,
+cleanup and output recording. PaidPaddingMachine includes generation, safety,
+preparation, cleanup, payload geometry and the final resource limits. These
+are not arbitrary file-count buckets. Source namespaces and all nested section
+boundaries remain in the exact original per-file bodies, ordered topologically.
+The largest group is still under 2,400 lines.
+
+MULTIPLE CONSUMERS AND CYCLE CHECK
+The conservative 37-group variant required each intermediate to have only the
+next member as its sole mathematical direct consumer. That safely removed 160
+boundaries, but left a NativeMicrocode rebuild path of 92 nodes. The broader
+plan additionally absorbs full Data/Resources/Geometry branches and remaps
+intermediate consumers to the final module. Every individual group contraction
+is acyclic and the combined quotient is acyclic. The complete quotient edges
+are included in the JSON, not inferred merely from the endpoint path.
+The quotient check is performed over all 1,157 local mathematical modules;
+SupportAxioms root imports are listed separately and must be remapped too.
+No original sibling-paper import is changed.
+
+Acyclicity establishes there is no dependency path between two merged members
+that leaves their combined group and returns through an excluded intermediate.
+It does not by itself establish unchanged elaboration: new external imports
+are available earlier in a concatenated file, so exact declaration-type
+comparison, ordinary Lean proof checking and full axiom auditing are essential.
+
+SOURCE / INSTANCE PRESERVATION
+All original source hashes are recorded, with each member's exact mathematical
+consumers, external imports, root-audit imports, scope structure and options.
+All selected namespace/section stacks balance. The scope scan found no private,
+local-attribute, scoped-notation or syntax-extension declarations. The only
+set_option lines found are autoImplicit false, retained verbatim.
+
+This scan does not eliminate generated-name concerns. The independent
+preservation review found anonymous instances in seven broad groups; their
+class type/predicate constants are project-local. Installed Lean's naming rule
+therefore does not introduce a new module-root suffix for these moves. That
+narrows the risk but does not replace the full audited-type baseline/diff and
+ordinary build. Deriving-generated declarations should likewise be covered by
+normal elaboration plus the exact audit-name/type comparisons.
+
+Independent simulation is recorded in:
+  /private/tmp/r1912-broad-preservation-simulation.json
+It preserves every non-import source byte and all 6,297 audit commands, and
+finds no missing local imports or cycles. The exact candidate's normal build
+and post-build declaration-type/axiom checks remain root-owned work.
+
+MEASUREMENT / ROLLOUT
+The five-file SourceEndpoints experiment remains the first measured gate.
+For one larger zero-explicit-instance test, RecordedReusableRow is a natural
+2,379-line routine and removes 19 serial file boundaries. A bounded four-group
+batch (RecordedReusableRow, FamilyReader, PageAndVertexScheduler,
+PaidPaddingMachine) reduces the NativeMicrocode path 176 -> 121; its usefulness
+is testing larger bodies, not exhausting the available speedup.
+
+The strongest follow-on is the broad19 candidate plus the independently
+validated import refactor, rather than dozens of repeated full builds after
+small source moves. Root should capture exact declaration types first, apply
+one archived transformation, run targeted ordinary builds, then the full build
+and all-declaration axiom/type audit. Preserve the matching before/after
+controlled rebuild timing workload. Do not claim the graph ratios as wall-time
+ratios, and do not clear caches or rewrite artifact traces to manufacture gains.
+
+Maintainability tradeoff: editing an early definition in a complete routine
+now also rechecks its later declarations within that file. A former light
+intermediate importer may acquire later routine prerequisites. These costs
+are explicit in the quotient graph, whose cycle check alone cannot decide
+whether an individual file has become inconvenient. Keep the original source
+archive and group inventory so a particular module boundary can be restored
+if measured or editorial use warrants it.
+
+MACHINE-READABLE DELIVERABLES
+  /private/tmp/r1912-group-plan.json
+    Conservative 37-group alternative; retained for comparison, not cumulative.
+  /private/tmp/r1912-broad-group-plan.json
+    Optional broad20 plan and individual / combined DAG checks, includes core.
+  /private/tmp/r1912-broad19-group-plan.json
+    Recommended broad19 consolidation plan, leaves core boundaries untouched.
+  /private/tmp/r1912-analyze-grouping.py
+    Original read-only graph / scope analysis generator.
+  /private/tmp/r1912-broad-grouping.py
+    Original read-only broad20 graph generator; does not generate the broad19
+    omission or later annotation fields automatically. Do not replay it over
+    annotated plans without preserving those fields.

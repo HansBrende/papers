@@ -1,0 +1,133 @@
+R1825 — SCALAR APPLICABILITY AND LIBRARY REUSE AUDIT
+
+Status: matrix sampling proved and fully verified; scalar applicability incomplete.
+This is a dependency audit, not a new scalar product-growth theorem or a novelty claim.
+
+ENDPOINT ALREADY REUSED
+ScalarProjectionReuse.exists_scalar_projection_growth_at_quarter_scale wraps
+OAI.Falconer.Regularization.scalar_weak_radius_projection, imported unchanged
+from openai/math commit1581d4cbdd69a0faf34b2089614fe2a814316a6a.
+The204-module pinned source cone is installed and hash-checked. Do not reprove it.
+The factor-five scalar-cell/native-cover comparison is already proved in R1824.
+
+COMMON PARAMETERS
+The scalar endpoint chooses its loss exponent e>0 before the scale j and all
+witnesses. Let eta=4^(-j) and W=eta^(-e). Every later exponent budget and uniform
+threshold must respect that order. The matrix profile has its own distribution
+window exponent epsilon, tripling loss beta, and dimension kappa0=1/122880.
+These symbols are not automatically the scalar theorem's parameters.
+
+REQUIRED INTERFACES AND CURRENT EVIDENCE
+
+1. Actual matrix set A and its native covering number.
+   AVAILABLE: InitialWalkDistribution / InitialWalkTraceProfile give the same
+   localized A from U,Y, containing identity, entries<=2, small tripling,
+   and multiscale separated subsets. Keep the existing energy/nonflattening
+   premises; these are used in the eventual contradiction argument.
+
+2. A finite matrix sample with normalized local counts.
+   PROVED R1825: for any nu>beta+epsilon*kappa0 there is J chosen before A
+   such that, at eta=4^(-j), j>=J, the preceding tripling/distribution hypotheses
+   produce nonempty F subset A, pairwise Frobenius distances>2eta, and
+      N_eta(A) <= 6561 |F|,
+      |F intersect closedBall(c,r)| <= eta^(-nu) r^(kappa0) |F|
+   for every ambient matrix center c and r>=eta.
+   Native-cover finiteness is included. No scalar projection is asserted.
+   The unabsorbed coefficient for entry bound B and tripling K is
+      6561 (8B+1)^4 [2(8B^2+4B+1)]^kappa0 K eta^(-epsilon*kappa0).
+   This is derived from actual multiscale separated subsets and translated
+   clusters, not added as a concentration assumption.
+
+3. Common scalar scale and bounded scalar witnesses X,E.
+   OPEN: construct the actual finite scalar sets from the same matrix witnesses,
+   put X in[-1,1] and E in[-W,W], and choose a common quarter-power scale.
+   Exact commuting extraction approximates actual x0^(-1)x with radius
+      xi=12800 B0^6 eta/r0,
+      r0=eta^(2zeta)/(2*4^34), B0=4*4^34.
+   Thus xi is of order eta^(1-2zeta), not eta. A coarser-scale conversion needs
+   explicit covering, separation, and exponent losses.
+
+4. X nonempty, separated, and log|X|<=(1-kappa)log(1/eta).
+   OPEN for the actual scalar witness. Matrix packing and a globally large
+   commuting image do not by themselves give this scalar interface.
+
+5. Normalized scalar ball counts for X, exponent kappa.
+   OPEN. The new bound is relative to |F|. Projection may collapse fibers and
+   selection may retain a small fraction. A bound relative to N_eta(A) is not
+   automatically a bound relative to |X|. The known commuting-image lower bound
+   can be only a cube root of N_eta(A), up to power losses; multiplying by the
+   resulting ratio N_eta(A)/N_eta(V) can cost roughly N_eta(A)^(2/3).
+   That is not a justified arbitrarily small power loss.
+
+6. Small additive doubling: 5 N_eta(X+X) <= W |X|.
+   OPEN. Matrix product control does not equal scalar additive control in
+   the determinant-one centralizer. Scalar affine coordinates sI+tg satisfy a
+   determinant constraint; their multiplication is a bilinear operation on
+   that constraint, not automatically scalar addition. Treat unipotent,
+   elliptic, and real semisimple cases without an unproved eigenvalue gap.
+
+7. E nonempty and normalized scalar ball counts, exponent2*kappa.
+   OPEN. Global matrix distribution does not give the required distribution of
+   the actual coefficient map. Parameter exponents can be reduced in advance,
+   but a nonconcentration proof for the resulting map is still required.
+
+8. Scalar growth transfer to a bounded actual matrix product.
+   OPEN. Need an explicit representation of X+aX through bounded products of
+   the same A, with all approximation and covering multiplicities accounted for.
+   Fixed near-identity radius alpha does not make quadratic errors negligible
+   at eta tending to zero. No uncharged fine-scale linearization is valid.
+
+9. Upper envelope for the same product and family.
+   AVAILABLE R1823: N_eta(A^37)<=h^400000 N_eta(A), from actual finite translates
+   and the localized set, with the listed common profile bounds.
+   OPEN: compose it with the fixed family and R1822 extraction, selecting every
+   budget before k/family selection. In particular400000*s<=nu must be obtained
+   from a smaller input budget, never by retrospectively shrinking s.
+
+LIBRARY REUSE CHECK FOR THIS STEP
+Pinned mathlib d13f23b723b8a846827a245b89c10fc7d3f11612 provides and this proof uses:
+- Metric.maximalSeparatedSet, its subset/separation/cardinality/cover theorems;
+- Metric.packingNumber_two_mul_le_externalCoveringNumber;
+- Metric.IsSeparated.encard_le_packingNumber;
+- native covering-number monotonicity and extended-number casts;
+- Real.rpow identities and inequalities.
+Existing local coordinate-patch refinement and translated-cluster results are
+reused. No new notion of packing, covering number, or scalar entropy is defined.
+A source search in this mathlib for Frostman/nonconcentration/product-growth
+terminology found no direct theorem with the current matrix-to-scalar interface.
+This is a bounded source search, not a proof that no equivalent theorem exists.
+
+Two additional public source candidates were inspected at the same pinned
+openai/math revision, without importing or altering the installed source cone:
+- OAI.Falconer.choose_projected_frostman, Measures/ChooseProjectedFrostman.lean;
+- OAI.Falconer.normalized_projected_frostman,
+  Measures/NormalizedProjectedFrostman.lean.
+Sources:
+https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/lean/OAI/MeasureTheory/Falconer/Measures/ChooseProjectedFrostman.lean
+https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/lean/OAI/MeasureTheory/Falconer/Measures/NormalizedProjectedFrostman.lean
+These are continuous probability-measure statements requiring global Frostman
+bounds or finite positive-order Riesz energies. They produce a compact restricted
+law with some finite Frostman constant but no stated quantitative lower bound on
+retained mass or upper bound on the resulting constant. A finite atomic sample
+cannot satisfy the positive-exponent all-radii Frostman premise. Smoothing could
+supply continuous measures, but would require a quantitative finite-scale argument;
+it does not discharge our obligations by direct theorem application.
+Only the two source interfaces were inspected in this supplemental check; their
+full dependency cones were not newly built or imported. Do not claim otherwise.
+
+NEXT ACTION
+Before a new long proof chain, audit the algebraic X+aX-to-matrix-product map and
+its actual source of coefficient concentration. Identify one quantified finite
+projection/selection result applicable to that map. Generic matrix concentration
+is now available and must not be reproved. Avoid building a scalar-selection
+machine without first knowing that its output respects the required algebra.
+The fixed-family composition of the already-proved envelopes can proceed in
+parallel conceptually, but no parallel Lean executions or unsolicited agents.
+
+SCOPE
+Current R1825 local proof100% verified by full10059-job build and4469-declaration
+axiom audit. Three of six original theorem families complete, referees pending:
+adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216.
+Paid padding201/202 still incomplete; motion200/210 and recursion206/208 remain.
+No overall paid-padding effort percentage or completion-time estimate is justified.
+Protected original unchanged; no commits/pushes; goal ACTIVE.

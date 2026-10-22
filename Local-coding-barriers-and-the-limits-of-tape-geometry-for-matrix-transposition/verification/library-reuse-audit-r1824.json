@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED REPRODUCIBLE IMPORT AND NATIVE COVER BRIDGE; matrix applicability remains open",
+  "supersedes": "R1823 candidate-only assessment; the stronger weak-radius theorem already includes normalization and weak scale-dependent concentration constants",
+  "repo": "https://github.com/openai/math",
+  "commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+  "theorem": "OAI.Falconer.Regularization.scalar_weak_radius_projection",
+  "source": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/lean/OAI/MeasureTheory/Falconer/Geometry/ScalarWeakRadiusProjection.lean",
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "modules": 204,
+  "independent_build": {
+    "session_id": 74647,
+    "exit_code": 0,
+    "jobs": 3701,
+    "log": "verification/openai-metric-build.log"
+  },
+  "independent_audit": {
+    "session_id": 52196,
+    "exit_code": 0,
+    "declarations": 3,
+    "log": "verification/openai-metric-axioms.log",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "external_analytic_premises": false
+  },
+  "source_integrity": "All204 files verified against their pinned SHA-256 hashes; no extra OAI modules in installed source tree; import closure complete and all outside imports are Mathlib.",
+  "source_scan": "No sorry, unsafe, native_decide, explicit axiom declaration, raised heartbeat/recursion limit or disabled linter found in the204 source modules.",
+  "adapter": {
+    "package": "lean/openai-metric",
+    "manifest": "verification/openai-metric-source.json",
+    "installer": "verification/fetch_openai_metric.py",
+    "license": "lean/openai-metric/LICENSE",
+    "mechanism": "Unmodified source files retain their original namespace in an ignored .lake source cache. The checked-in manifest and installer reproduce the import without unrelated upstream Lake hooks."
+  },
+  "premises": {
+    "X": "Finite nonempty subset of[-1,1], delta-separated, log-cardinality at most(1-kappa)log(1/delta), small additive doubling, normalized local ball counts with exponent kappa.",
+    "E": "Finite nonempty coefficient set, radius at most delta^(-epsilon), normalized local ball counts with exponent2*kappa.",
+    "losses": "Both local concentration constants and the additive-doubling bound may be delta^(-epsilon), with epsilon fixed before the dyadic depth."
+  },
+  "conclusion": "Some a in E gives more than delta^(-epsilon)*|X| occupied grid cells of X+aX.",
+  "local_bridge": "Three local theorems verified: both native-cover comparisons with factor5 and the quarter-scale/native-cover projection-growth wrapper. Full10056-job build and4464-declaration axiom audit passed; standard axioms only.",
+  "remaining_gap": "Derive every scalar hypothesis for the actual matrix witnesses and transfer the resulting scalar growth to bounded matrix products with all approximation and exponent costs.",
+  "not_novelty": "The scalar analytic theorem, density selection and normalization are external reusable results, not new contributions of the follow-up paper."
+}

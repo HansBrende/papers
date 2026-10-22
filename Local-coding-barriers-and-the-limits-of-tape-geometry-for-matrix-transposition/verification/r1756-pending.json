@@ -1,0 +1,70 @@
+{
+  "checkpoint": "R1756",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1755 PROGRESS",
+  "new_modules": [
+    "HalfGridExpansion",
+    "AllSizeOverlapExpansion",
+    "ContinuousNativePadding"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.halfCells_card",
+    "TransposeFollowup.halfCell_subset",
+    "TransposeFollowup.halfCells_subset",
+    "TransposeFollowup.gridCells_half_subset",
+    "TransposeFollowup.mapImageUnion_mono",
+    "TransposeFollowup.overlap_right_large",
+    "TransposeFollowup.overlap_right_capped",
+    "TransposeFollowup.two_sided_capped_expansion_count",
+    "TransposeFollowup.OrderedBipartite.vertex_expansion_capped",
+    "TransposeFollowup.symmetrizedGraph_vertex_expansion_all_sizes",
+    "TransposeFollowup.rationalSymmetricGraph_vertex_expansion_all_sizes",
+    "TransposeFollowup.PaidPadding.continuous_uniform_computation_with_cut",
+    "TransposeFollowup.PaidPadding.continuous_uniform_linear_tasks_macrostar"
+  ],
+  "checks": {
+    "half_grid_and_graph": {
+      "session_id": 28881,
+      "exit_code": 0,
+      "jobs": 8960
+    },
+    "continuous_native_padding": {
+      "session_id": 22726,
+      "exit_code": 0,
+      "jobs": 9454
+    },
+    "build": {
+      "session_id": 73622,
+      "exit_code": 0,
+      "jobs": 9527
+    },
+    "axioms": {
+      "session_id": 56067,
+      "exit_code": 0,
+      "declarations": 2824
+    }
+  },
+  "updated_at": "2026-10-19T10:32:49.808059+00:00",
+  "boundary": "All positive dimensions now have the same epsilon/2 expansion constant, and the continuous-expansion premise feeds the complete native arbitrary-computation/cut/MStar chain. Fixed rational expanding-family existence remains unformalized. Motion/recursion and final referees remain.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555",
+    "version": "1108.2555v1",
+    "read_sections": [
+      "Theorem0 and introduction",
+      "Lemma1.1",
+      "Construction and Theorem1.2",
+      "Theorem1.3 and proof overview"
+    ],
+    "finding": "The actual construction uses fixed rational Mobius maps and inverses restricted to unit input/output intervals, rational translations and identity. Theorem1.2 is the continuous expansion obligation. Its proof uses a restricted spectral gap and deeper group-growth inputs; those are not provided by the native compiler. Targeted local Mathlib searches for the named inputs found no ready theorem. Do not treat citation as a kernel proof."
+  },
+  "formal_checkpoint": "R1756 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1756, 550 sources, 2824 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1756 removes the even-dimension restriction at the same epsilon/2 vertex-expansion constant for every positive grid size, including size 1. HalfGridExpansion selects exactly n half-cells inside any coarse grid-cell union of measure at least 1/2; the resulting subset has measure exactly 1/2. Continuous expansion and image monotonicity give neighbor expansion capped at the real half-size. AllSizeOverlapExpansion converts the two-sided capped inequalities to ordinary vertex expansion. ContinuousNativePadding connects the resulting symmetric rational graph to the complete paid native arbitrary-computation, zero-slack CutIneq and MStar chain. The refinement is proof-only: the generated graph, machine, runtime bound and fixed parameter order are unchanged. Fixed rational continuous expanding-family existence remains an explicit premise.",
+  "next": "Discharge the fixed rational continuous-expander existence dependency. The all-size continuous-to-discrete and actual native compiler bridges are complete; do not restart them or add parity handling. Translate the exact rational SL2 maps, unit input/output domain restrictions, inverses, translations and identity in Bourgain\u2013Yehudayoff Monotone expansion \u00a71 into RationalMobius. Prove the needed domain and measurable-image bridges, then address the continuous expansion theorem and its restricted spectral-gap/group-growth inputs using proved library results or full proofs, never new axioms or numerical spot checks. Keep the existence premise visible until discharged. After full 201/202, complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run the authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now has a complete native construction conditional on continuous rational expansion, valid at every positive dimension. Expanding-family existence is still a substantial unformalized dependency. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/HalfGridExpansion.lean": "7836375353fd73d38f42abb76db1695f24d59f8a5349530cf0e71e347bc3aca8",
+    "lean/TransposeFollowup/AllSizeOverlapExpansion.lean": "6cd67c67ce43da18b22242be09c33a1fd46c07dc7cc5c9ac3be3066420c45964",
+    "lean/TransposeFollowup/ContinuousNativePadding.lean": "4ff0da6c35791d1e54688cea353dbc61c3702159e83d1048fe12087351080e60"
+  }
+}

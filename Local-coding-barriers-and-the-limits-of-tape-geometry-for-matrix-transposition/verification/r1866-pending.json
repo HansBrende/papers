@@ -1,0 +1,56 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1865",
+  "target": "Regular recursion206/208: actual physical/block normalization and native raw sampled limits.",
+  "new_modules": [
+    "PhysicalWalkNormalization",
+    "CanonicalTimeNormalization",
+    "NativePhysicalLimits"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.exists_lipschitz_real_walk",
+    "TransposeFollowup.RegularMotion.physicalPath",
+    "TransposeFollowup.RegularMotion.physicalPath_lipschitz",
+    "TransposeFollowup.RegularMotion.block_physical_sample_error",
+    "TransposeFollowup.RegularMotion.real_walk_floor_error",
+    "TransposeFollowup.RegularMotion.physicalPath_sample_error",
+    "TransposeFollowup.RegularMotion.timeScale",
+    "TransposeFollowup.RegularMotion.timeScale_bounds",
+    "TransposeFollowup.RegularMotion.canonical_physical_error",
+    "TransposeFollowup.RegularMotion.uniform_limit_of_vanishing_error",
+    "TransposeFollowup.RegularMotion.block_limit_iff_scaled_physical_limit",
+    "TransposeFollowup.RegularMotion.physical_limit_of_block_limit",
+    "TransposeFollowup.RegularMotion.exists_native_physical_limits",
+    "TransposeFollowup.RegularMotion.native_sampled_physical_limit"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8989,
+      "log": "/private/tmp/r1866-dev9.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10176,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4859,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev8:13212 handle retired with successful log;dev9:87671 exit0;fullbuild:32094 exit0;axioms:15411 exit0. Earlier dev handles terminal as summarized in R1866 work notes.",
+  "formal_checkpoint": "R1866 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:995 local sources,204 external sources,4859 declarations,8 configurations,175 artifacts",
+  "proof_scope": "PROGRESS at R1866: the actual physical/block normalization bridge for regular recursion206/208 is formalized, including finite-size rounding estimates, uniform-limit equivalence, actual native Lipschitz representations, and raw sampled work-head limits. Five of six original families remain formalized; the current sixth family is about5% complete, low confidence. Final referees remain pending.",
+  "next": "R1866 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:\nregular recursion206/208, best estimate5%, low confidence.\n\nNext concrete target:208 equation(208.2), actual frozen local-profile\nstability. For globally unit-Lipschitz f_i uniformly converging on the\nbounded physical horizon, and stage starts alpha_i, positive volumes v_i,\nand frozen durations lambda_i with convergent parameters and v>0, prove\nuniform convergence of\n [f_i(alpha_i+v_i*min(s,lambda_i))-f_i(alpha_i)]/v_i\non[0,a]. Stage endpoints must actually lie within the horizon; do not\nreplace this with arbitrary extrapolated convergence. Derive the unique\nlimit and use local regularity along a subsequence to establish affinity\non the actual limiting stage interval. Two representations agreeing at\nactual integer ticks differ locally by at most2/V; this transfers the\nsource's linearly interpolated regularity to the imported extension.\n\nReuse findings: Mathlib.Topology.UniformSpace.Ascoli has\nEquicontinuous.tendsto_uniformFun_iff_pi on compact domains. Unit-Lipschitz\nprofiles give equicontinuity; pointwise moving-argument convergence uses\nTendstoUniformlyOn.tendsto_comp in UniformApproximation. This may avoid\nbespoke uniform error algebra or any new Arzela-Ascoli/diagonal theory.\nRead exact signatures first. Current native normalization modules:\nPhysicalWalkNormalization, CanonicalTimeNormalization, NativePhysicalLimits.\n\nAfter that:actual bounded-branching, bounded-stage contiguous call trees;\nderive depth/subtree work bounds and finite-depth coverage from all assigned\nticks, use compact countable endpoint products, and force an a.e. affine\ncover. Exceptional work must give eta>=1/(2kG) in absolute physical units.\nComplete206's actual scan palettes/native execution and zero/positive\nstride limit cases too. Source206 permits nonuniform O(P) clock states:\ndo not reopen uniform generator/paid-padding construction. Preserve all\nnative popular-class and high-entropy hypotheses; all heads and costs count.\n\nNo fresh subagents until all six initial formalizations; then run the\nuser-authorized impartial referees and cleanup. Original paper read-only.\nNo commits or pushes. Do not reopen other completed families.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate5% complete (low confidence). Completed initial formalizations remain5/6: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and fully paid padding201/202. Independent referees and cleanup follow all six. Progress percentages refer to the entire original family, not the current helper.",
+  "updated_at": "2026-10-20T22:24:14.196154+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/PhysicalWalkNormalization.lean": "16cad459da364f685595437d483820644c7736f2bcefe4576a91070fec303a88",
+    "lean/TransposeFollowup/CanonicalTimeNormalization.lean": "64581ff26c611c27f8338c18e6fd66463a619fffc8d892def07793ac2487e375",
+    "lean/TransposeFollowup/NativePhysicalLimits.lean": "3cf309f00c886a3984aa23c7fd2ac94982e27913d98191894a0d2c440e5739df"
+  }
+}

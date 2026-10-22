@@ -1,0 +1,25 @@
+R1915 independent import/consolidation review (read-only; no Lean/Lake)
+
+Recommendation: pilot the single six-module consolidation first. No import-only edit inside those six modules removes their inherited full-Mathlib closure, and the final native padding statement genuinely uses the protected original tape/M* model. A smaller Mathlib facade cannot hide an already imported dependency.
+
+Actual origin of the broad import:
+* ConditionalSpectralExpansion imports NormalizedCellCorrelation. A shortest route runs through CellCenteredSpectralInput, the grid/translation expansion files, RationalUnitRestriction, RationalFamilyGraph, the overlap/matching files, MatchingExcursion, PaddingCutInequality, and protected Transpose.Tape.DefsM -> Transpose.Tape.Defs -> Mathlib. Fresh reads confirm Defs.lean line1 is `import Mathlib`.
+* RationalMobiusAction, SpectralGapInterface, RationalRestrictedGap and RationalContinuousExpander inherit that same route. None directly imports Mathlib.
+* UnconditionalPaidPadding additionally imports ContinuousNativePadding -> PaidPaddingLimits. Its closure includes independent Mathlib roots Transpose.Tape.MStarAnalysis, BitPlaneAlphabet, SequentialFiveMachine and StationaryTapes, besides Tape.Defs. Fresh source confirms MStarAnalysis imports Mathlib directly. These are not eliminated by narrowing the analytic interface.
+* Tempting local import substitution MatchingExcursion: PaddingCutInequality -> ExcursionLayout does NOT solve the problem. Both NestedPulseSchedule (through ExcursionPulse -> protected Tape.Blocks) and ExcursionLayout independently import the broad tape environment. Its own pure matching-page structure could eventually be extracted, but this is a distinct multi-module separation, not a one-line import cut and not needed for the present six-module target.
+
+Static six-module merge check:
+Order: ConditionalSpectralExpansion, RationalMobiusAction, SpectralGapInterface, RationalRestrictedGap, RationalContinuousExpander, UnconditionalPaidPadding.
+Source length before temporary benchmark edits: 517 lines total, 28 explicitly named declarations by simple top-level lexical count (not a replacement for the6306-declaration audit).
+Each has exactly its next member as its only mathematical consumer; the final member has no mathematical consumer. SupportAxioms is the audit consumer outside this graph and must remap its imports.
+Union external prerequisites, in first occurrence order: NormalizedCellCorrelation, RealMobiusL2, RealMobiusAverage, InitialWalkDensityCap, RestrictedGapFromAutocorrelation, RationalNearIdentityFamily, ContinuousNativePadding.
+None transitively depends on a merge member, so contraction creates no local import cycle. No unrelated mathematical consumer acquires a broader import environment.
+Current local ancestor counts including self:48,53,55,411,412,610. All six inherit the same8530 Mathlib-source-module closure; consolidating amortizes repeated startup, not that closure's ultimate size.
+
+Risks/decision gates:
+* All external imports become visible before the first body. Instances/simp extensions from later imports may change earlier elaboration even when source bodies are identical. Successful compiled pilot plus exact contract preservation and the usual axiom audit are necessary.
+* Merging makes even an edit to the final short padding theorem re-elaborate all517lines; this may be slower than the previous one-file edit. Measure and state the actual workload. Conversely a ConditionalSpectralExpansion proof edit rebuilds one local module rather than six once prerequisites are cached.
+* A cold/partially cached build must wait for the union of prerequisites before checking the merged body. Static graph safety and cached-pilot success do not imply a universal whole-build improvement.
+* All six source blocks close their namespaces. Retain their complete non-import bodies, public declaration names, options and order; rewrite only imports. Do not duplicate or replace original model definitions, change protected sibling code or modify pinned packages.
+
+Evidence: /private/tmp/r1915-import-review.json and .py. Local source graph was freshly read; pinned Mathlib/upstream graph came from R1912 and the two relevant protected broad-import source headers were independently reread. This report predicts no unmeasured timing and is not a compilation result. Baseline benchmark now in progress is parent-owned; no Lean/Lake was run by this reviewer.

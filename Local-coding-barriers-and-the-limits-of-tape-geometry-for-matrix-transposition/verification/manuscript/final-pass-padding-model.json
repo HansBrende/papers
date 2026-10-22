@@ -1,0 +1,329 @@
+{
+  "status": "passed",
+  "reviewer": "final_padding_model",
+  "scope": "Final editorial and semantic review of model.tex and padding.tex, including actual Lean endpoint types, underlying definitions, and proof-outline interfaces.",
+  "reviewed_at_utc": "2026-10-22T01:57:02.542721+00:00",
+  "source_hashes": {
+    "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
+    "paper/sections/padding.tex": "5e6c53f441125d1193b59eb28d4cbd4e267be6b20dacf5f86a833ace6e27e88d",
+    "verification/manuscript/parent-contracts.json": "4a98ec8c6b16fbd03f02e31d0557a25192338dbadf55f3416785dbe1a6f5da7b"
+  },
+  "numbered_items": [
+    {
+      "label": "def:target",
+      "assessment": "Matches Transpose.LinearTimeTransposable and its raw encodings exactly; d>=1, entryBits=max(1,ceil log2 d), one machine and natural coefficient c(P+1).",
+      "outline_assessment": "Definition; no proof outline required.",
+      "program_relevance": {
+        "construction": "Defines the fixed uniform native transposition target that any positive construction must meet.",
+        "impossibility": "Defines the unchanged statement whose negation would settle the impossibility program; the multiplication implication is cited background."
+      }
+    },
+    {
+      "label": "thm:padding",
+      "assessment": "Matches exists_uniform_paid_padding: absolute A,H,K0,E chosen before M; single wrapper Mprime, exact state/tape equalities and cellBits=3; canonical lengths and actual halting, same output; every positive dimension, arbitrary payload time; sequence tends to infinity, fixed natural a, all eligible uniformly convergent subsequences satisfy the complete Conclusion.",
+      "outline_assessment": "Analytic existence, all-size graph expansion, native paid generation/cleanup/bit-plane simulation, and full-horizon cut followed by NativeRunLimits.of_cut each follow the named Lean interfaces. No extra limiting property is asserted.",
+      "program_relevance": {
+        "construction": "Supplies a single native wrapper with all schedule generation, execution, cleanup and handoff charged, satisfying the original cut and limit conditions for every canonical input. It supplies motion, not a transpose code.",
+        "impossibility": "Shows that the cut inequality and its full limiting consequences can be attached at additive linear cost to any prospective linear transposer, so an exclusion needs further information about the transpose computation."
+      }
+    },
+    {
+      "label": "lem:rational-expander",
+      "assessment": "Matches exists_rational_continuous_expander with Fin(c+1) family and eps>0. Nonempty open rational domains and positive determinant/endpoint denominators follow RationalMobius; strict increase follows strictMonoOn_eval. MapsTo and all measurable-set expansion quantifiers match.",
+      "outline_assessment": "The restricted gap for the same rational family implies the normalized correlation contradiction; augmented translations and clipped open domains use proved interfaces. Attribution and dependency role are explicit.",
+      "program_relevance": {
+        "construction": "Discharges the analytic expansion premise needed by continuous_uniform_computation_with_cut, leaving exists_uniform_paid_padding unconditional.",
+        "impossibility": "Supports the wrapper demonstrating the scope limit of the original geometric conditions. Continuous-expander existence is attributed to Bourgain–Yehudayoff, not claimed as novel."
+      }
+    }
+  ],
+  "corrections": [
+    {
+      "issue": "The entropy bound from the attained helper range did not explicitly require the input law to be supported on that range set F.",
+      "resolution": "Added X supported on F before |Z(F)|<=2^g implies H(Z)<=g.",
+      "materiality": "Clarifies a necessary hypothesis for background entropy statement; changes no numbered theorem."
+    },
+    {
+      "issue": "At most m slots per label could be read as applying to the entire infinite label function.",
+      "resolution": "Specified only slots 0,...,N-1.",
+      "materiality": "Aligns prose with the finite-range quantifier in CutIneq."
+    },
+    {
+      "issue": "Open rational interval was terse about nonemptiness and what is rational.",
+      "resolution": "Specified a nonempty open interval with rational endpoints, already supplied by RationalMobius.interval_nonempty.",
+      "materiality": "Clarification only."
+    },
+    {
+      "issue": "Repeated scope caveats obscured the concrete value of the wrapper.",
+      "resolution": "Shortened repetition; explicitly identified motion supplied to construction and the extra information needed by impossibility.",
+      "materiality": "Editorial."
+    },
+    {
+      "issue": "The shortened section opening could imply that the limiting conclusion holds for arbitrary superlinear payload families.",
+      "resolution": "Opening now separates the full-horizon cut inequality for any payload computation from the limiting conclusion for uniformly linear-time payload families.",
+      "materiality": "Scope correction to introductory summary; the numbered theorem already states the correct separate quantifiers.",
+      "identified_by": "Root and independent local-coding reviewer."
+    }
+  ],
+  "statement_strength_changes": [],
+  "lean_sources_edited": false,
+  "anchors": [
+    {
+      "source": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "name": "exists_rational_restricted_gap",
+      "declaration_lines": [
+        344
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "name": "exists_rational_continuous_expander",
+      "declaration_lines": [
+        411
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "name": "exists_uniform_paid_padding",
+      "declaration_lines": [
+        465
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "name": "expansion_of_restrictedCorrelationGap",
+      "declaration_lines": [
+        85
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "name": "open_expansion_of_restrictedCorrelationGap",
+      "declaration_lines": [
+        131
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/NativeRunLimits.lean",
+      "name": "Conclusion",
+      "declaration_lines": [
+        11
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/NativeRunLimits.lean",
+      "name": "of_cut",
+      "declaration_lines": [
+        27
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/RationalMobius.lean",
+      "name": "RationalMobius",
+      "declaration_lines": [
+        12
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/RationalMobius.lean",
+      "name": "strictMonoOn_eval",
+      "declaration_lines": [
+        81
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/RationalMobiusBounds.lean",
+      "name": "bounded",
+      "declaration_lines": [
+        64
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/RationalFamilyGraph.lean",
+      "name": "rationalFamilyMaps",
+      "declaration_lines": [
+        39
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/ContinuousNativePadding.lean",
+      "name": "rationalSymmetricGraph_vertex_expansion_all_sizes",
+      "declaration_lines": [
+        12
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/ContinuousNativePadding.lean",
+      "name": "continuous_uniform_computation_with_cut",
+      "declaration_lines": [
+        29
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "execute_with_blank_prefix",
+      "declaration_lines": [
+        1742
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "preserves_computation",
+      "declaration_lines": [
+        1755,
+        1958,
+        2019
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "preserves_transposesWithin",
+      "declaration_lines": [
+        1768,
+        2027
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "cut_after_prefix",
+      "declaration_lines": [
+        1930
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "exists_parameters",
+      "declaration_lines": [
+        2007
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/PaidPaddingLimits.lean",
+      "name": "uniform_computation_with_cut",
+      "declaration_lines": [
+        2035
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/BitPlaneRun.lean",
+      "name": "stepN_embed",
+      "declaration_lines": [
+        9
+      ]
+    },
+    {
+      "source": "lean/TransposeFollowup/BitPlaneRun.lean",
+      "name": "computesWithin",
+      "declaration_lines": [
+        42,
+        49
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "TM",
+      "declaration_lines": [
+        56
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "ComputesWithin",
+      "declaration_lines": [
+        118
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "entryBits",
+      "declaration_lines": [
+        126
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "encode",
+      "declaration_lines": [
+        140
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "transpose",
+      "declaration_lines": [
+        144
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "TransposesWithin",
+      "declaration_lines": [
+        153
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean",
+      "name": "LinearTimeTransposable",
+      "declaration_lines": [
+        160
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean",
+      "name": "pairRes",
+      "declaration_lines": [
+        214
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean",
+      "name": "prevBlock",
+      "declaration_lines": [
+        205
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean",
+      "name": "IsChord",
+      "declaration_lines": [
+        228
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean",
+      "name": "labelChanges",
+      "declaration_lines": [
+        268
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean",
+      "name": "crossChords",
+      "declaration_lines": [
+        274
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsM.lean",
+      "name": "cellBits",
+      "declaration_lines": [
+        60
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsM.lean",
+      "name": "blockTraj",
+      "declaration_lines": [
+        81
+      ]
+    },
+    {
+      "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsM.lean",
+      "name": "CutIneq",
+      "declaration_lines": [
+        89
+      ]
+    }
+  ],
+  "unresolved_findings": []
+}

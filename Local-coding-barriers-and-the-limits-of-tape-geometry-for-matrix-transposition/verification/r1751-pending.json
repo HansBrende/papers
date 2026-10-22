@@ -1,0 +1,78 @@
+{
+  "checkpoint": "R1751",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "SequentialFiveMachine",
+    "SequentialFiveSteps",
+    "SequentialFiveRun",
+    "SequentialFiveCompletion",
+    "PaidPayload",
+    "PaidPayloadGeometry",
+    "PaidPayloadCut",
+    "PaidPayloadComplete"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SequentialFive.states_zero",
+    "TransposeFollowup.SequentialFive.initial_embed",
+    "TransposeFollowup.SequentialFive.hold_cell",
+    "TransposeFollowup.SequentialFive.fixed_resources",
+    "TransposeFollowup.SequentialFive.step_left",
+    "TransposeFollowup.SequentialFive.step_right",
+    "TransposeFollowup.SequentialFive.transfer",
+    "TransposeFollowup.SequentialFive.stepN_add",
+    "TransposeFollowup.SequentialFive.stepN_left",
+    "TransposeFollowup.SequentialFive.stepN_right",
+    "TransposeFollowup.SequentialFive.execute",
+    "TransposeFollowup.SequentialFive.computesWithin",
+    "TransposeFollowup.SequentialFive.source_prefix",
+    "TransposeFollowup.SequentialFive.prefix_run",
+    "TransposeFollowup.SequentialFive.successful_time_le_halting",
+    "TransposeFollowup.PaidPayload.prefix_tm",
+    "TransposeFollowup.PaidPayload.payload_tm",
+    "TransposeFollowup.PaidPayload.preserves_computation",
+    "TransposeFollowup.PaidPayload.preserves_transposesWithin",
+    "TransposeFollowup.PaidPayload.fixed_resources",
+    "TransposeFollowup.PaidReady.prefix_stepN",
+    "TransposeFollowup.PaidPayload.operational_run",
+    "TransposeFollowup.PaidPayload.prefix_positions",
+    "TransposeFollowup.PaidPayload.original_prefix_positions",
+    "TransposeFollowup.PaidPayload.native_row_walk",
+    "TransposeFollowup.PaidPayload.native_layout",
+    "TransposeFollowup.PaidPayload.cut_after_prefix",
+    "TransposeFollowup.PaidPayload.preserves_computation_with_cut"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 38776,
+      "exit_code": 0,
+      "jobs": 9433
+    },
+    "build": {
+      "session_id": 78171,
+      "exit_code": 0,
+      "jobs": 9507
+    },
+    "axioms": {
+      "session_id": 43851,
+      "exit_code": 0,
+      "declarations": 2701
+    }
+  },
+  "updated_at": "2026-10-19T09:28:18.500924+00:00",
+  "boundary": "Conditional paid-prefix plus arbitrary original-TM payload; expansion existence, unconditional parameters and final MStar still open. Three of six families complete.",
+  "formal_checkpoint": "R1751 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1751,530 sources,2701 declarations,86 artifacts",
+  "proof_scope": "In progress. R1751 composes the paid blank-start prefix with every original Transpose.TM payload M. SequentialFive uses disjoint tape banks and the disjoint sum of state sets, with the original step semantics. All payload tapes/heads remain blank/zero throughout the prefix. The prefix ends at input position0 with no output, then one paid native transition enters payload state0. The prefix bank is retained and frozen; each payload step is simulated exactly, including input/output and halting. Using the R1750 bit-plane adapter, the combined machine has53+Q+M.k*max(1,M.g.size) tapes and5 symbols. For P=inputLength(n),n>=1, every payload computation in t steps is preserved within C*P+t, where C=PaidReady.coefficient(F,K)+1; TransposesWithin is preserved with that additive overhead. The native excursion layout is transferred to the combined run and extended to its actual halting horizon. Under explicit positive expansion,positive stretch parameter,and the stretch/head inequalities, preserves_computation_with_cut proves one actual time T<=C*P+t at which the combined machine halts with the demanded output and CutIneq(n,3,blockSize(3,n),T,0,0,paths) holds. All conditions use the actual combined head count. No prefix workspace is erased for free.",
+  "next": "Add an explicit stationary-work-tape padding adapter for arbitrary original TMs,prove exact step/output/halting/time preservation and stationary extra heads,and use it as the arbitrary payload. Reuse exists_padding_parameters to choose K and extra tape count independently of n,discharging the stretch and actual-head-count conditions for any fixed eta>0. Derive a family of actual halting runs for an arbitrary linear-time payload with linear total horizon and zero-slack CutIneq,then apply the original theoremMStar_walk to those actual trajectories; do not substitute the earlier abstract page walks for the machine run. Keep the existence of a fixed rational expanding map family separate and explicit until proved. Audit any stronger workspace-erasure obligation in the intended201/202 statement. Finish the unconditional existence proof and other two families separately.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. The conditional computation-plus-cut theorem advances paid padding201/202; that fourth family is not complete. Motion200/210, recursion206/208 and final referees remain. This percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SequentialFiveMachine.lean": "c7f1d0a658a1c8f9f00f6ea3c784b8d4a95eea38fa3362dfb48176e2d9a1b8ce",
+    "lean/TransposeFollowup/SequentialFiveSteps.lean": "878fd2467699e69cd4265c8e8a216c1db2cb67b370bf56ec40489321d1e7ae07",
+    "lean/TransposeFollowup/SequentialFiveRun.lean": "74a1b054e6cbf6c63add9b540dc7aabb75a1338b589bfecba37d95215d8530c4",
+    "lean/TransposeFollowup/SequentialFiveCompletion.lean": "158f555f4825838d7d0748fdc992451b2aca7bd40552fd535261ed9033f5d2d0",
+    "lean/TransposeFollowup/PaidPayload.lean": "c273c37fcd982a11f93ecaf5b49cb3591a4fd4af8d95d2a822e29128a33e6120",
+    "lean/TransposeFollowup/PaidPayloadGeometry.lean": "7d7244fb2689d43e2f078ce3d8170daa8d3da09ac11c03564bb048d6135c3e48",
+    "lean/TransposeFollowup/PaidPayloadCut.lean": "deebe2bc0f291c3cc891757fbc2d2bcbbacc97ca6d7037fdb9e87ec0d3f8260a",
+    "lean/TransposeFollowup/PaidPayloadComplete.lean": "afc1dd8e44ef1fbe25ed6d692466a269da727e0fc7f6b1886ac8b0b14191ed8f"
+  }
+}

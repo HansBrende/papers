@@ -1,0 +1,96 @@
+{
+  "checkpoint": "R1773",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "SmoothBandLinearIdentities",
+    "DyadicLowL2Convergence",
+    "DyadicL2Reconstruction",
+    "SmoothHighFrequencyBounds",
+    "GridSmoothHighFrequency",
+    "DyadicOffsetCorrelation",
+    "DyadicFarCorrelation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.smoothBand_congr",
+    "TransposeFollowup.smoothBandSpectrum_sub",
+    "TransposeFollowup.smoothBand_sub",
+    "TransposeFollowup.smoothBand_sub_input_fourier_coe",
+    "TransposeFollowup.smoothBand_sub_input_norm_sq",
+    "TransposeFollowup.dyadicLowCutoff_norm_le",
+    "TransposeFollowup.dyadicLowCutoff_eventually_eq_one",
+    "TransposeFollowup.dyadicLowCutoff_sub_one_norm_le",
+    "TransposeFollowup.dyadicLowCutoff_error_integral_tendsto_zero",
+    "TransposeFollowup.dyadicLowBand_tendsto",
+    "TransposeFollowup.smoothHighFrequency",
+    "TransposeFollowup.dyadicBand_schwartz_sum",
+    "TransposeFollowup.dyadicBand_toLp_sum",
+    "TransposeFollowup.dyadicBand_sum_tendsto",
+    "TransposeFollowup.smoothHighFrequency_fourier_coe",
+    "TransposeFollowup.norm_sub_smoothHighFrequency",
+    "TransposeFollowup.lowFrequencyCutoff_complement_norm_le",
+    "TransposeFollowup.smoothHighFrequency_norm_le",
+    "TransposeFollowup.smoothHighFrequency_fourier_zero_on",
+    "TransposeFollowup.smoothBand_norm_le_lowFrequency",
+    "TransposeFollowup.smoothHighFrequency_distance_le_lowFrequency",
+    "TransposeFollowup.RealMobius.ofRealL2_unit_supported",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency_distance",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency_correlation",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency_reconstruction",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency_witness",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency_finite_correlation_eventually",
+    "TransposeFollowup.dyadicBand_fourier_zero_on",
+    "TransposeFollowup.RealMobius.dyadicBand_offset_correlation",
+    "TransposeFollowup.RealMobius.dyadicBand_offset_sum_le",
+    "TransposeFollowup.dyadic_inverse_pow_sum",
+    "TransposeFollowup.dyadic_inverse_pow_tail_sum_le",
+    "TransposeFollowup.RealMobius.dyadicBand_upper_far_sum_le"
+  ],
+  "new_theorems": 32,
+  "new_definitions": [
+    "TransposeFollowup.smoothHighFrequency",
+    "TransposeFollowup.RealMobius.gridSmoothHighFrequency"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 75197,
+      "exit_code": 0,
+      "jobs": 9526,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 9922,
+      "exit_code": 0,
+      "jobs": 9600,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 63612,
+      "exit_code": 0,
+      "declarations": 3390,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary APIs for dominated convergence, continuous sqrt and inner products, L2 Fourier isometry, finite Cauchy\u2013Schwarz and finite sums. Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 Claims 3.2\u20133.4 (https://arxiv.org/html/1108.2555#S3) re-read in R1773. Claim 3.3 requires a uniform positive band norm ratio; universality is still to be proved when assembling bounded-matrix constants. No novelty claimed for standard analytical support.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SmoothBandLinearIdentities.lean": "d5fc5b17c945b49c7d30da87909e27b6f96573f2251d48a54e529f270132e2e5",
+    "lean/TransposeFollowup/DyadicLowL2Convergence.lean": "19596e86c539e7aba999a6635549cc780781b40f87190d454db747adef1d7663",
+    "lean/TransposeFollowup/DyadicL2Reconstruction.lean": "187451e43603caa26da4151c103a2e0c7c664838da507f2aee00c253e9d6a416",
+    "lean/TransposeFollowup/SmoothHighFrequencyBounds.lean": "e211831d2bddf672634f3b46423c80bb4dbc27ee7e40ee967524f8d517589398",
+    "lean/TransposeFollowup/GridSmoothHighFrequency.lean": "7e9b593925fa114555c8308474131da79781960c532cf1ef495fa1f9ce2e20d9",
+    "lean/TransposeFollowup/DyadicOffsetCorrelation.lean": "cd74182b90e499eb5098184aa8cfe458100c4e19da36fcb1da67c55c4f82510d",
+    "lean/TransposeFollowup/DyadicFarCorrelation.lean": "d0b029e380553a57907599e259204aaf1ef240e4eaffaf9d1f91b67c33507212"
+  },
+  "updated_at": "2026-10-19T14:34:25.244031+00:00",
+  "formal_checkpoint": "R1773 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1773, 623 sources, 3390 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1773 proves that the actual low-frequency Schwartz bands converge in L2 to the original unit-supported input, using an exact Fourier error identity and dominated convergence. The finite dyadic band sums telescope in Schwartz space and L2 and converge to h=F_inverse((1-rho)*Ff). This component has norm at most ||f||, Fourier transform zero on [-1,1], and distance from f bounded by its sharp [-2,2] low-frequency projection. For normalized real grid inputs with K^2>=16384*pi^2 and original average correlation at least 1/2, h is within 1/16, has correlation at least 95/256, and its finite band sums eventually have correlation at least 1/3. The actual band correlation at offset d has a summed bound proportional to 2^(-d). Summing offsets at least D gives an upper-triangular distant-band bound proportional to 2^(-D), uniform in both truncations. The symmetric average and band-isolation conclusion remain.",
+  "next": "Assemble the verified distant-band estimate for T=complexAverage G and obtain a uniform band-isolation theorem. First prove the explicit complex average representation as (2*c)^(-1) times the sum of W_(G_i) and W_(G_i^-1), respecting that schwartzActionL2 g equals complexify(actionCLM g^-1). Existing complexAverage_symmetric handles the reverse half by real-inner symmetry. Bound C_g by one fixed C_* whenever |g00|,|g10|<=2; require the analogous bounds for inverses (equivalently control g11 as well). This makes the constants independent of the number and choice of generators in that bounded class. The source Claim 3.3 requires a uniform positive band norm ratio, so do not stop with a constant that can degenerate with G or epsilon.\n\nUse the upper-far theorem with indices r=range(N-(D+r)), or a nonnegative overcount, to bound the far part of the finite quadratic correlation of sum_(j<N)u_j. Average the individual-action bounds; use symmetry for the other half. Choose D with the combined far contribution <=1/6. For the near part, a bounded-neighbor finite-sum inequality plus sum_j||u_j||^2<=B0 controls it under the contrary assumption ||T u_j||<=lambda||u_j|| for every nonzero band. With lambda chosen small relative to (2D+1)*(B0+1), the total contradicts the verified eventual correlation >=1/3. Extract a nonzero band with ||T u_j||>=lambda||u_j||. This direct quadratic-correlation route avoids introducing products of generators solely for band isolation.\n\nBefore proceeding to source Claim 3.4, audit the normalized selected band's quantitative moment/tail needs. The proved square-summed transport energy does not by itself give an arbitrary band's relative moment bound. If needed, select a band jointly by retained correlation and controlled moment cost, using small total energy of bad bands and bounded Fourier overlap. Preserve matrix-parameter regularity, flattening/product growth, Proposition 3.5, rational generator existence, full motion/recursion and referees as remaining obligations.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1773 proves actual L2 reconstruction, a smooth high-frequency grid witness with correlation at least 95/256, eventual finite-sum correlation at least 1/3, and geometric decay of summed upper distant-band correlations. No fourth family is complete. Paid padding still requires symmetric-average assembly, uniform band isolation, restricted spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication."
+}

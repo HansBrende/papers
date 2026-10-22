@@ -1,0 +1,83 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "SeparatedCardinalityPower",
+    "DyadicSeparationInterpolation",
+    "SeparatedPowerAbsorption",
+    "SmoothedIterateDistribution",
+    "InitialWalkDistribution"
+  ],
+  "modified_modules": [
+    "CoveringLevelScale",
+    "SmoothedIterateCoveringInterval"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.separated_cardinality_power_bound",
+    "TransposeFollowup.exists_quarter_scale_between",
+    "TransposeFollowup.exists_separation_window_threshold",
+    "TransposeFollowup.separated_power_absorption",
+    "TransposeFollowup.RationalFreePair.exists_iterate_separated_subset",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_distribution",
+    "TransposeFollowup.covering_level_log_bound_of_powers"
+  ],
+  "declaration_counts": {
+    "theorem": 7
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 42261,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1809-dev1.log"
+    },
+    "development_2": {
+      "session_id": 42407,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1809-dev2.log"
+    },
+    "development_3": {
+      "session_id": 10910,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1809-dev3.log"
+    },
+    "development_4": {
+      "session_id": 66476,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1809-dev4.log"
+    },
+    "build": {
+      "session_id": 94380,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9793,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 62461,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4284,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1809 composes the R1808 actual dyadic finite subsets and coefficient budget into the pure power-law distribution statement for every real eta<rho<eta^epsilon. Native geometric-scale interpolation, real powers and ENNReal.toReal operations are reused. The same actual witness retains all covering/tripling and short-walk mass outputs. The positive loss exponent precedes the maximum iterate and generator family; a radius-dependent scale cutoff is fixed before later inputs. Bourgain\u2013Yehudayoff arXiv1108.2555 Theorem4.4 and Section4.1 were reread: this matches the form of the distribution assumption. Their independent complex-basis escape condition and the product theorem itself are not assumed or claimed proved.",
+  "cleanup": "Five new modules add six theorems; one shared level-bound theorem is extracted into existing CoveringLevelScale and reused by the unchanged public statement in SmoothedIterateCoveringInterval. Seven new theorems total, no definitions. Previous statements in both modified modules are byte-identical. Removed deprecated import and syntax/style issues; no proof limits raised, disabled linters, placeholders or new axioms. Protected original untouched.",
+  "updated_at": "2026-10-19T23:43:19.206791+00:00",
+  "formal_checkpoint": "R1809 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1809, 816 sources, 4284 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1809 proves that the same actual localized witness has, for EVERY real eta<rho<eta^epsilon, a finite subset F with strict ambient Frobenius separation>rho and |F|>=rho^(-1/122880). All previous covering, small-tripling, geometry, and every-short-walk concentration outputs are retained. The explicit h^1140 coefficient loss is absorbed, dyadic interpolation is proved, and the fixed scale cutoffs are derived. The small positive loss exponent s is chosen before the maximum iterate k; the rational free family is fixed before all later scales and walks. Only the existing energy threshold and nonflattening remain analytic premises. The distribution obligation is complete. Quantitative escape, product growth, strict flattening, unconditional gap and paid padding remain. No new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1809 completes uniform pure power-law distribution at ALL real intermediate radii for the actual fixed rational family and SAME witness. Do not repeat dyadic interpolation, coefficient absorption, level thresholds, smoothing cancellation, or support arithmetic. Main interface: InitialWalkDistribution.exists_initial_walk_distribution. It retains every R1807 covering/mass output and adds, for every eta<rho<eta^epsilon, an actual F subset A with native strict Frobenius separation and |F|>=rho^-1/122880. The parameter order is alpha,gamma,beta,epsilon; s; k; N0,J0; r and fixed g,Jr; later N,j,ell,i and A; then rho and F. Jr is a fixed r-dependent cutoff. Only energy threshold and nonflattening remain analytic premises. The unchanged older covering theorem now reuses CoveringLevelScale.covering_level_log_bound_of_powers.\n\nNEXT CONCRETE TARGET: a quantitative algebraic escape witness derived from the actual short-walk concentration. First retain the underlying finite rational endpoint set and common smoothing element already constructed inside SmoothedWalkSeparatedSubset, rather than only its separated image. Expose a reusable stronger lemma and make the current theorem reuse it; do not copy the averaging/counting proof. Its endpoint images are y_a=w^-1*a*u in A. Normalizing at one endpoint cancels w again:\n y_a0^-1*y_a=u^-1*(a0^-1*a)*u in A^-1*A=A^2.\nThus rational short-word quotients occur in A^2 up to one controlled common conjugation. This identity and the proposed strengthened interface are NOT YET FORMALIZED. Retain cardinality, word-length/denominator information and the actual common u.\n\nThen prove a quantitative noncommutativity/escape certificate from a sufficiently large bounded-length subset of the free group, using actual atom decay to beat its polynomial exceptional size. Targeted pinned-Mathlib searches found NielsenSchreier.subgroupIsFreeOfIsFree, native reduced-word norms, and cyclically reduced powers, but no ready bounded-length centralizer/bicommutator counting result. Reuse these native results before writing another free-group framework. A useful certificate would be a nontrivial iterated commutator or a quantitatively nonzero determinant spanning the matrix algebra; neither is currently proved.\n\nSource check: Bourgain\u2013Yehudayoff https://arxiv.org/pdf/1108.2555, Theorem4.4 and Section4.1, requires an independent escape statement: in the specified complex bases diagonalizing a real near-identity matrix, some element of A^4 has an off-diagonal product bounded below. The proof uses a bounded-word bicommutator counting step. This source outline is not a substitute for a checked proof for our A.\n\nQuantitative caution from our audit: nonzero entries in an arbitrary complex basis need not be rational or retain the original denominator lower bound. Do not assume the basis is unitary, rational, or uniformly well-conditioned. Prove a basis-invariant algebraic certificate or a justified normalization/conditioning bound. Also, a nonidentity SL2 matrix need not have trace different from2. Keep this distinction explicit while choosing the escape certificate.\n\nAfter escape, product growth itself, strict flattening and the unconditional gap remain. The final conditional gap needs a FIXED iterate with ae cap D and D^2<=2^j. Keep motion200/210 and recursion206/208 in scope. No final referees, original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1809 completes the uniform all-radii distribution step for the SAME actual fixed-family witness, with a fixed exponent1/122880 and derived coefficient/support/scale budgets. This is a significant supporting step in paid padding; that fourth family is not complete. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SeparatedCardinalityPower.lean": "22434383d6d8a672cf5da98ec9985a01cba13b88e30f15a921bc3f3ffa765136",
+    "lean/TransposeFollowup/DyadicSeparationInterpolation.lean": "1afe4575e4faef8c954f8882c58a8eac8ebabd999d2aecdc1149430f8566ed01",
+    "lean/TransposeFollowup/SeparatedPowerAbsorption.lean": "dd5ed09287e95c8dfd2345642d7eaaa4d6333b95cce389fe10d1beb8bc91d544",
+    "lean/TransposeFollowup/SmoothedIterateDistribution.lean": "d942dffb5ffd88afef6bcdf639cc31a9144c43e6dd16fa7cf4879e363cd78d5a",
+    "lean/TransposeFollowup/InitialWalkDistribution.lean": "ad1e84430029ff5a942f50156a5f2b26b3bc5c74c6e288808066e03f7f993114",
+    "lean/TransposeFollowup/CoveringLevelScale.lean": "bfe253de2360cb9d1fe905010494eb6c459a911885f6c0d9bf4e9bd17145f66c",
+    "lean/TransposeFollowup/SmoothedIterateCoveringInterval.lean": "1891b98e21a2d6fbf39e37341a852324a5215944706743607371cc6c031a40a7"
+  }
+}

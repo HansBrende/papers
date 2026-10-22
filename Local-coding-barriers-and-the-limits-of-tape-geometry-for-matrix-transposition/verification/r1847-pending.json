@@ -1,0 +1,55 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1846",
+  "target": "Inverse-linear mixed-readout separation, actual word selection and source-error transfer.",
+  "new_modules": [
+    "MixedReadoutDistance",
+    "MixedReadoutSourceTransfer"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.sl2_inverse_frobenius_distance",
+    "TransposeFollowup.SL2Projection.sl2_inverse_distance_one",
+    "TransposeFollowup.SL2Projection.frobenius_norm_one_two",
+    "TransposeFollowup.SL2Projection.frobenius_norm_of_near_one",
+    "TransposeFollowup.SL2Projection.det_le_two_frobenius_sq",
+    "TransposeFollowup.SL2Projection.commutator_norm_bound",
+    "TransposeFollowup.SL2Projection.two_direction_error_coefficients",
+    "TransposeFollowup.SL2Projection.centered_near_one_distance_coefficient",
+    "TransposeFollowup.SL2Projection.near_one_distance_le_square",
+    "TransposeFollowup.SL2Projection.mixed_readout_distance_bound",
+    "TransposeFollowup.SL2Projection.mixed_readout_word_geometry",
+    "TransposeFollowup.SL2Projection.mixed_readout_source_error",
+    "TransposeFollowup.SL2Projection.mixed_readout_source_far",
+    "TransposeFollowup.SL2Projection.exists_actual_readout_distance"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9597,
+      "log": "/private/tmp/r1847-dev4.log",
+      "note": "Two lint warnings subsequently removed; final full build clean."
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10119,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4660,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 59751 exit1; dev2 77188 exit0/9596 jobs with two lint warnings; dev3 51130 exit0/9597 jobs with two lint warnings; dev4 97555 exit0/9597 jobs with two lint warnings. All warnings fixed before full build. Full47230 exit0/10119 jobs, no warnings/errors; audit19262 exit0/4660 declarations, no warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T17:40:46.013643+00:00",
+  "formal_checkpoint": "R1847 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:938 local sources,204 external sources,4660 declarations,8 configurations,137 artifacts",
+  "proof_scope": "In progress. R1847 proves quantitative separation of the inverse-final mixed readout, with inverse-linear rather than inverse-quadratic loss in the two coefficient gaps. It transfers this separation to actual source words with an explicit error budget, verifies their word lengths, and connects the bound to the existing actual coefficient selector. Two modules add fourteen audited declarations. Actual retained scalar sample selection, concentration, second-extraction application and final exponent closure remain open.",
+  "next": "R1847 recorded; never replay its checkpoint script. Full10119-job build\nand4660-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: construct the actual retained trace-square scalar sample,\nusing the existing coarse-source sampling and cubic cluster-concentration\nresults. Avoid another ideal-sample theorem with unproved sample inputs.\nRead NilpotentSourceSample, NilpotentScalarSample, NilpotentScalarConcentration,\nActualCentralizerSourcePacking and CoarsenedSourceSample for the reusable\nfinite selection/cardinality/concentration machinery; the nilpotent scalar\ncoordinate itself does NOT apply to this nonnilpotent case.\n\nA concrete next algebraic simplification to verify (not yet a Lean theorem):\nFor X(u)=(2/3)tr(u)^2-4/3, u=sI+t b,v=pI+q b, tr b=0,\n X(u)=4/3-(8/3)Delta t^2,\n |X(u)-X(v)|=(8/3)|Delta||t-q||t+q|.\nRetain one sign of t and an actual base away from I. The proved\ncentered_near_one_distance_coefficient gives |t|>=r/(3M) whenever\ndist(u,I)>=r. For two same-sign coordinates, |t+q|>=r/(3M)\nif just one input is that far. Since s,p>=1/2 on the near-identity branch,\n |s-p|<=|Delta||t-q||t+q|.\nHence an inverse bound on this branch follows DIRECTLY:\n dist(u,v)<=2|s-p|+M|t-q|\n <=[3/4+9M^2/(8|Delta|r)] |X(u)-X(v)|.\nThis avoids imposing |t|,|q|<=1 or building another chart-normalization\nchain. With |Delta|>=lambda>0,lambda<=M,0<r<=1,M>=1, a safe constant\nis3M^2/(lambda r). Verify the exact hypotheses before using it.\nThe two-sign loss and discarded neighborhood of I must be charged using\nfinite_source_cluster_cubic_bound/actual_localized_source_packing_concentration.\nPreserve original source indices and prove the retained cardinality.\n\nKeep F near1/64 so F union FF union FF^-1 is near1/16 and its trace-square\ncoordinates lie in[1,2]. The near-identity, source-error, and far-base\nrequirements must be checked simultaneously. R1847 only needs each input\nnear1/8. Enlargement elements need not be away from I.\n\nFor the scalar bridge, choose the readout coefficient of absolute value\nat least3/4 as the enlargement coefficient (their sum is3/2). Pay for the\nother nonzero coefficient in m<=N_delta(aX). The product identity and\n112/560 bounds are already proved. Apply scalar_sum_product_alternative\nonce actual separation, size and concentration have been obtained.\n\nThen reuse/generalize the second-extraction and fixed-power estimates:\nactual mixed source words have length420, beyond the old n<=283 wrapper.\nUse the general coefficient h^(8802n+4427) and an explicit larger fixed\nmargin. The initial R1845 extraction has its separate universal n0+3 cost.\nList all d,eta losses before choosing theta,tau or claiming exponent closure.\nOriginal profile/frame construction and the analytic/machine endpoints\nremain. Three of six original families formalized; paid padding about60%,\nlow confidence. Original paper read-only; no commits/pushes/subagents.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MixedReadoutDistance.lean": "eeae3e79c57a7535e6e036f061c980528a378f748fee478edf4f13e95ceffa81",
+    "lean/TransposeFollowup/MixedReadoutSourceTransfer.lean": "c9576ada2f02ae3470de16d098f86c90e5f7a98ff3f16fb36cf87e05068bab4d"
+  }
+}

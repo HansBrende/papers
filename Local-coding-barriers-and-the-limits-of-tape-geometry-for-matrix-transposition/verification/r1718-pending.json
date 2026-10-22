@@ -1,0 +1,83 @@
+{
+  "unit": "R1718",
+  "previous_turn": "PROGRESS;R1717 authoritative receipt verified at entry:259sources/1236audits/67artifacts",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "updated_at": "2026-10-18T18:18:46.525123+00:00",
+  "new_modules": [
+    "NativeIO",
+    "NativeIOZipper",
+    "RawInputCopy",
+    "MeasuredWord",
+    "MeasuredScan"
+  ],
+  "checks": {
+    "io_standalone": {
+      "session": 47289,
+      "exit_code": 0
+    },
+    "io_build": {
+      "session": 54675,
+      "exit_code": 0,
+      "jobs": 9235
+    },
+    "zipper_standalone": {
+      "session": 54045,
+      "exit_code": 0
+    },
+    "raw_copy_standalone": {
+      "session": 97051,
+      "exit_code": 0
+    },
+    "length_identity_standalone": {
+      "session": 94545,
+      "exit_code": 0
+    },
+    "four_module_build": {
+      "session": 81949,
+      "exit_code": 0,
+      "jobs": 9238
+    },
+    "raw_copy_execution": {
+      "session": 18123,
+      "exit_code": 0,
+      "output": "(384, 0)"
+    },
+    "measured_scan": {
+      "session": 89511,
+      "exit_code": 0,
+      "log": "/private/tmp/measured-scan-2.log"
+    },
+    "final_build": {
+      "session": 61745,
+      "exit_code": 0,
+      "jobs": 9239
+    },
+    "final_audit": {
+      "session": 50998,
+      "exit_code": 0,
+      "declarations": 1290
+    },
+    "measured_scan_execution": {
+      "session": 12118,
+      "exit_code": 0,
+      "output": "(32, 0)"
+    }
+  },
+  "older_live_sessions": {
+    "cleanup": 26978,
+    "reusable_row": 64928
+  },
+  "reused_archive_finding": "Archived RawLength counts via ones minus length then complement,which can reuse the existing native decrementer. Archived RawShape does NOT match the original matrix input-width convention:it uses CandidateWidth.payload N=max(1,clog2 N)*floor(sqrt(N/widthN))^2. Do not substitute that shape theorem for Transpose.inputLength n=n*n*entryBits n.",
+  "scope": "Actual raw external input copy now starts from Transpose.init;1tape5symbols21states,cost5L+10,marked payload exact,work head0,input headL,external outputempty. Generic IO semantics+native compiler and executable interpreter refinement proved;existing work traces lift. Length-word identity and amortized native decrement cost proved. MeasuredScan native all-input proof is being checked. Full length-controller composition,canonical trim,dimension recovery,common map records and all prior whole-goal boundaries remain.",
+  "next": "Reuse NativeIO,RawInputCopy,MeasuredWord and MeasuredScan;do not invent a new extensible counter. Add a general IO port/label frame embedding so RawInputCopy can run inside a3-tape caller. Compose raw copy(5L+10),ones copy(6L+14),MeasuredScan(16L+6),complement copy(6L+14),tally erase(4L+4),and5jumps:prospective37L+53 before trim. Prove the actual combined trace,then physically trim high zeros to get a short binary length word. Recover dimension for original inputLength(n)=n*n*entryBits(n);archived RawShape uses a different convention and is not a direct solution. See verification/dimension-loader-plan.txt. Then common-map record normalization and whole generator;unconditional BY,motion200/210,recursion206/208 remain. Preserve all6families,no commits/pushes,referees afterALL.",
+  "formal_checkpoint": "R1718 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1718,264sources,1290declarations,71artifacts;2olderexecution suites pending",
+  "proof_scope": "In progress. R1718 adds actual original-input access and a paid length-counting scan. NativeIO compiles input reads,moves and external output writes to single original TM transitions;existing pure work traces lift. NativeIOZipper is proved to refine the same program semantics. RawInputCopy.native_complete starts at Transpose.init,with no supplied marked data:one tape,five symbols,21states,cost5L+10,exact marked input word,work head restored,input headL,empty external output.384executions pass. MeasuredWord reuses the archived identity:decrement L ones L times and complement to represent L,still in L bits. MeasuredScan is an actual2-tape5-symbol22-state scan/counter/rewind program. Source and both heads restore;counter is decremented by source length L when its starting value is at leastL. Cost12L+4m+6 for m counter bits;withLones cost16L+6.32executions pass. Fullbuild9239jobs;1290declarations audited using standard axioms only. Combining raw loading,ones-copy,count,complement,erase and canonical trim into one length controller is still required,followed by dimension recovery and all previously open generator/math obligations. The archived RawShape selector has a different width convention and cannot be substituted for the original Transpose.inputLength contract. Two older interpreter suites remain pending.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeIO.lean": "0919dc9340cbbcc49af22c5613b856f2812cf28e7248fabbdd25aa1abe396b36",
+    "lean/TransposeFollowup/NativeIOZipper.lean": "408e2f4e33485039395b4560c5dbb98f2b1fc0c1d74de9854c75decd02a3935a",
+    "lean/TransposeFollowup/RawInputCopy.lean": "2b8be482d278a862b8a4eac33d448a7b0b5c0ee4ec21efc1cea0dc7102931598",
+    "lean/TransposeFollowup/MeasuredWord.lean": "78e847cc12e65e0218e702f9803c996862b565d9e58dd4e5a1e9f2da42ec3bf9",
+    "lean/TransposeFollowup/MeasuredScan.lean": "6b1955ae5866b184e269b10ff12fceb7c518a1883143e23ba3a319a12864fd11"
+  }
+}

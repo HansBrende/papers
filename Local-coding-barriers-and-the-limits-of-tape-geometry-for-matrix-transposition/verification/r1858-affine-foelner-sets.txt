@@ -1,0 +1,75 @@
+
+R1858 — VERIFIED FINITE AFFINE ALMOST-INVARIANT SETS
+R1858 formalizes finite simultaneous almost-invariant sets for arbitrary finite families of invertible real affine maps, including negative slopes. The proof constructs slope and translation sets using commutative exponent boxes and mathlib polynomial-versus-exponential growth. No amenability or hyperfiniteness premise remains in this algebraic step. Actual admissible labels, weighted returns and the full motion200/210 theorem remain. Four of six original families formalized; final referees pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+VERIFIED FINITE ALGEBRAIC ENDPOINT
+Let j range over any finite type, with s_j a nonzero real number and b_j real. Let delta>0. There exists a nonempty finite family F of invertible real affine maps such that, simultaneously for every j, writing H_j={f composed with (x -> s_j x+b_j):f in F},
+
+  |F triangle H_j| <= delta |F union H_j|.
+
+Lean represents a map by (a,t) in R^units x R. Its explicit right composition is (a,t) -> (a s_j,t+a b_j). affineRight_apply verifies the action formula; affineRight_injective proves this composition preserves distinct maps. The endpoint is exists_affine_small_symmetric_difference. It permits negative slopes, dependent/duplicate generators and an empty generator family. The family F and its size depend on the requested maps and tolerance; no uniform size or computational bound is claimed.
+
+PROOF COMPONENTS
+1. exists_small_growth_step: A real sequence with a(0)>=1 and a(n)<=(n+1)^m has some a(n+1)<=r a(n), for each r>1. Otherwise a(n)>=r^n contradicts mathlib isLittleO_pow_const_const_pow_of_one_lt. No fresh proof of the analytic asymptotic theorem.
+2. exponentBox g n is the image of exponent vectors with coordinates in{0,...,n}, under e -> product_i g_i^e_i, for any finite family in a commutative group. Its size is at most(n+1)^m even with arbitrary relations among the generators. It is nonempty, nested and contains each generator translate of the previous box.
+3. exists_small_mul_boundary: For every epsilon>0, there is one nonempty finite F with |F g_j minus F|<=epsilon|F| for all j. exists_small_add_boundary reuses the SAME proof through Multiplicative, rather than copying it for additive groups.
+4. affine_rectangle_escape_card: For finite slopes S and translations T, the number of maps leaving S x T under right composition is at most |{a in S:a s notin S}| |T| + sum_(a in S) |{t in T:t+a b notin T}|. The proof uses injective image/filter counting, product cardinality and mathlib's finite-union bound.
+5. Choose S with slope boundary at most epsilon/2. Then choose T with additive boundary at most epsilon/2 simultaneously for all shifts a b_j indexed by S x J. Their rectangle has one-sided boundary at most epsilon|S||T|. Equal cardinalities give equal one-sided differences. Applying epsilon=delta/2 and |F|<=|F union H_j| proves the endpoint.
+
+RELEVANCE AND NEXT BRIDGE
+This closes the finite affine Foelner existence obligation in the R1857 direct construction. With a fixed F, the earlier grid-cell estimates make every selected label class small. The earlier minimum-coupling theorem selects one global priority order with small weighted disagreement, once all grid collisions and measurability are paid. The remaining task is to construct the actual finite cell universe, prove original PiecewiseConstOn and small collision mass, and connect to the ACTUAL good-return measure for the original paths. Merely asserting these interfaces would not finish200/210.
+The approach may avoid a general CFW development, general amenable-extension theory, finite-equivalence quotients and quotient nonatomic partitions. This is a simplification of the formalization route, not a new amenability theorem or a stronger original motion exclusion.
+
+LIBRARY REUSE
+Pinned Mathlib d13f23b723b8a846827a245b89c10fc7d3f11612 was searched in finite groups/growth, additive combinatorics, Finset/Fintype and asymptotics. No matching full finite affine-set theorem was found by this bounded search. Matching existing APIs used include isLittleO_pow_const_const_pow_of_one_lt; IsLittleO.bound; Filter.eventually_atTop; Fintype.piFinset and its cardinality/membership; Finset.card_image_le; prod_mul_distrib; card_sdiff_add_card_eq_card; filter_image; card_image_of_injective; card_product; card_biUnion_le; card_sdiff_eq_card_sdiff_iff. The additive proof is a direct type-tag reuse. No protected original definition was copied or edited.
+The optional Prove2Me CFW source-link question has no reply yet. Actual proof source remains unverified; nothing from it was imported. That access is not needed for the new algebraic argument, and is not a blocker. Prior URL and access details remain in the R1857 reuse audit.
+
+ATTEMPTS AND REPAIRS
+The first development build exposed current Lean naming/normalization issues: Function.update_self, push Not, and explicit nonnegative norm reduction. The first affine builds exposed incompatible DecidableEq instances hidden in generic Finset images. These were fixed by explicit DecidableEq parameters, preserving the mathematical statements; the final modules compile without warnings. No mathematical counterexample, new axiom, relaxed proof limit or disabled linter was used.
+
+DRIFT CHECK: The new endpoint discharges the finite affine-set existence premise identified at R1857. It covers every finite affine return-map family, with no positive-slope or independent-generator restriction. The next step must assemble admissible labels rather than develop more general amenability machinery. All countable-return, robust exceptional-time and native scope obligations remain required.
+
+BOUNDARY
+Finite affine almost-invariant set existence is now unconditional in Lean. Still unproved: one actual finite interval label satisfying original PiecewiseConstOn and the mass/cut bounds; the actual countable affine-branch consecutive-return measure with both marginals; finite truncation and levelCross identity; omitted-visit charge and final M* contradiction yielding sum_t |E_t|>=1/2. General CFW is neither assumed nor proved. The finite labeling route still needs to be completed before claiming it replaces CFW for this application. No invariant-Lebesgue-probability assumption, transpose-complexity decision or novelty claim.
+
+NEXT
+R1858 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE. Previous turn PROGRESS. Current ORIGINAL proof200/210 is about10%
+formalized (best estimate, low confidence); four of six families complete.
+
+NEXT bounded target: actual finite interval labeling from the verified finite
+F of affine maps, for a finite weighted measure supported on finitely many
+affine return maps with a source marginal bounded by k*Lebesgue.
+1. Reuse FiniteBoundary.exists_affine_small_symmetric_difference and
+   affineRight_apply, FiniteMinimumCoupling.exists_small_weighted_disagreement,
+   and AffineMotion grid-cell/collision bounds. Inspect matching Mathlib
+   finite-image, bounded-floor range, measurability and interval APIs first.
+2. Build ONE finite universe containing all grid values f(x) for x in compactI.
+   Transfer exact relative boundaries through grid evaluation when it is
+   injective on F union Fs; bound collisions using distinct-slope estimates
+   and the zero-collision same-slope case. Pay the bad return-pair mass using
+   the marginal domination, not an assumed invariant Lebesgue measure.
+3. Prove the selected label is constant between finitely many actual grid
+   thresholds: ORIGINAL PiecewiseConstOn, natural-valued labels, small classes.
+   Do not leave interval admissibility or grid injectivity as final premises.
+4. Then construct the ACTUAL good consecutive-return measure for countably
+   many affine branches, both marginals and finite truncation; connect it to
+   original levelCross, retaining constant branches, phase accumulation,
+   negative slopes and infinite full fibers. For210 retain compact E_t and
+   the <=2 omitted-visit incidence charge. Reuse original level-count majorants.
+5. Keep the full endpoint sum_t|E_t|>=1/2 and original native scope. After200/210,
+   prove regular recursion206/208 with actual scan/local-limit/tree hypotheses.
+   Final authorized referees, strengthening and cleanup follow all six.
+
+New modules:CommutativeFiniteBoundary,AffineFiniteBoundary (15 declarations).
+Do not reopen paid-padding/SL2 work. Original remains read-only; no commits/pushes.
+Optional external CFW source access remains unverified and is not a blocker.
+No new subagents before authorized final referees without fresh authorization.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:10% formalized, low confidence. This estimate covers the full countably affine obstruction and quantitative exceptional-time theorem, not merely the finite affine-set helper. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.
+
+VERIFICATION
+Full lake build passed10149 jobs without warnings/errors; SupportAxioms audited4739 unique declarations using only propext,Classical.choice,Quot.sound. There are968 local sources (967 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and159 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

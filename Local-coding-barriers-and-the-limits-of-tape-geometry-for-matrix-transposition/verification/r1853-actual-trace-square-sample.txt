@@ -1,0 +1,179 @@
+In progress. R1853 supplies universal actual-readout constants and applies one joint dyadic threshold to an actual retained source sample. The same sample now has separation, range, global cubic normalization, cardinality and interval concentration proved together. The original extraction constant and d^11 loss are retained; no trimming or concentration budget is postulated. Four declarations in three modules reuse the existing coefficient selector, sampling, packing, concentration and size proofs.
+
+R1853 EXACT VERIFIED STATEMENTS
+
+1. normalized_trace_square_coefficients (TraceSquareReadoutParameters).
+For d!=0, |d|<=32, rho>=0, rho<=|D| and rho<=|D-4d|,
+ u=3D/(8d),v=3(4d-D)/(8d) satisfy
+ 3rho/256<=|u|,3rho/256<=|v|,u+v=3/2,max(|u|,|v|)>=3/4.
+This is normalization arithmetic, not a claim of novelty.
+
+2. exists_actual_trace_square_readout_parameters (same module).
+There exist UNIVERSAL rho_c,c,t0,s1, chosen before all scales and inputs,
+with rho_c>0,c=3rho_c/256>0,t0>=1,c*t0>=1,s1=3072t0/(1/32)>0.
+For0<eta<=1,theta>=0,delta>0,delta<=2eta^(1-3Theta),
+and the existing actual-selector assumptions on A,alpha,p,q,z:
+ 1 in A,A^-1=A,0<alpha<=1,A inside the alpha identity ball,
+ 4*5^102*alpha<=1,p,q,pq in A^34,frame determinant>=eta^theta,
+ z in the half identity ball,dist(z,I)>=eta^theta/32,
+ centered b=z-(trace(z)/2)I has det(b)!=0,
+put delta_s=t0 delta eta^(-12theta),
+ sigma1=s1 eta^(1-(3Theta+13theta+a)),Kinv=3072/[(eta^theta/32)eta^a].
+Then delta_s>0,delta<=delta_s,sigma1>0,Kinv delta_s<=2sigma1,
+and there is ONE actual g in A^204 with
+ rho_c eta^(12theta)<=|D_g| and <=|D_g-4det(b)|.
+Both normalized readout coefficients u,v are >=c eta^(12theta)
+in magnitude, sum to3/2, have maximum magnitude>=3/4, and satisfy
+ delta<=|u|delta_s and delta<=|v|delta_s.
+The exact selector frame identity Gamma=Gamma_c eta^(6theta) is proved,
+where Gamma_c=(1/256)^3/[3456(96(4^34)^4)^3];
+ rho_c=Gamma_c^2/[3328(128(4^68)^2)^4].
+REUSES exists_actual_two_readout_coefficients and trace_square_scalar_spacing.
+
+3. exists_trace_square_joint_budgets (TraceSquareJointBudgets).
+Given0<kappa,e<=1, fixed positive b,s0,s1,Cext,Ffar,
+ e0>=26214400,Cp,B,R>=0,Eerr>=1, choose
+ Theta=min(e,kappa)/16384,theta=kappa Theta/1024,a=5Theta/16.
+There exist Cscalar>=1,Wc>0,J0 BEFORE eta such that for EVERY j>=J0,
+ eta=(1/4)^j,epsilon=e0 eta^(1-2theta),s=eta^a,P=eta^-theta,
+ sigma0=s0 eta^(1-9theta),sigma1=s1 eta^(1-(3Theta+13theta+a)),
+ C_i=6561(4sigma_i/eta+1)^4,H=(419430400/eta^theta+17)^4,
+ L=binCount(B,b eta^(11theta))^4,
+ E=(4(20(2R)^10 epsilon+2R eta)/eta+1)^4,
+ Kinv=3072/[((1/32)eta^theta)s],Dloc=40(2R)^11(Kinv+2),
+ W0=Cext(9PH)^3/(eta^theta)^11,W=W0(4C0C1)^3,
+ Anear=E[Cp P P eta^(-(theta/2)kappa)] [40(2R)^11(s+epsilon)]^kappa,
+ Q=4L^3[E(Cp P P eta^(-(theta/2)kappa))Dloc^kappa+2^kappa],
+we have all of:
+ 0<eta<=1,0<s<=1,eta<=epsilon,
+ 26214400 eta^(1-theta)<=epsilon<=s,epsilon<=1/128,
+ Eerr epsilon<=eta^(1-3Theta),Eerr epsilon<=Ffar eta^(12theta+a),
+ 2eta<eta^(theta/2),
+ 32L^3 C0^3 W0[Anear+1/(2eta)^(-kappa)]<=1,
+ W<=Wc eta^(-143Theta),QW<=[Cscalar eta^(-100Theta)]^3.
+All cost formulas are instantiated; neither budget is a hypothesis.
+The six finite thresholds are combined with max. The proof REUSES
+R1851 margins, R1852 power/trim/concentration bounds and prior dyadic
+power-comparison lemmas. The actual H is compared with the weakened
+source-distance H supplied by first_extraction_cost_bounds.
+
+4. exists_trace_square_sample_bounds (TraceSquareSampleApplication).
+Given0<kappa,e<=1,Cext>0,t0>=1,Eerr>=1,Ffar>0, with the same
+Theta,theta,a as above, there exist e0,alpha0,Cs,Ws,Vs,J0 BEFORE eta,
+ e0,alpha0,Ws,Vs>0,alpha0<=1,4*5^102 alpha0<=1,Cs>=1.
+At eta=(1/4)^j,j>=J0,set epsilon=e0 eta^(1-2theta).
+For ANY delta with eta^(1-3Theta)<=delta<=2eta^(1-3Theta),
+assume the ACTUAL geometric/source input:
+ A symmetric with1,inside identity ball alpha,0<alpha<=alpha0;
+ p,q,pq in A^34 and frame determinant>=eta^theta;
+ z in half identity ball,dist(z,I)>=eta^theta/32 and
+ |det(z-(trace(z)/2)I)|>=eta^theta/32;
+ base and all X_i in A;nonempty family f_i=c_i I+t_i z in SL2;
+ dist(f_i,base^-1 X_i)<=26214400 eta^(1-theta);
+ the original kappa distribution at eta<rho<eta^(theta/2);
+ writing N=N_eta(A),NV=N_eta(range f),H=(419430400/eta^theta+17)^4,
+ N<=eta^(-(3-kappa)),N_eta(A^284),N_eta(A^142),N_eta(Dset)<=eta^-theta N,
+ and THE QUANTITATIVE EXTRACTION CUBE
+ (eta^theta)^11 N^4<=Cext[9N_eta(Dset)H NV]^3.
+Then eta<=delta,epsilon<=delta,Eerr epsilon<=Ffar eta^(12theta+a),
+and a nonempty finite set T OF ORIGINAL INDICES exists such that
+ every retained f_i is farther than eta^a fromI and within1/64 ofI,
+ all t_i have compatible sign;Z={traceSquareScalar(f_i):i in T} satisfies
+ Z nonempty,|Z|=|T|,Z subset[1,2],
+ distinct x,y in Z have |x-y|>t0 delta eta^(-12theta),
+ N<=[Ws eta^(-143Theta)]|Z|^3,
+ |Z|<=Vs eta^(-(1-kappa/3+83theta)),
+ and for EVERY w and rho>=delta,
+ scalarBallMass(Z,w,rho)<=[Cs eta^(-100Theta)]rho^(kappa/3)|Z|.
+
+Proof mechanism: existing fine chart parameters (B=2,H0=4^34,
+M0=128(4^68)^2,a0=1/32); use the weaker distance eta^(2theta)/32
+for that chart but retain the stronger distance for actual readout.
+The original source error is dominated by epsilon, with one alpha0
+and dyadic threshold ensuring the1/64 radius. Normalize the actual
+extraction cube, use distribution to pay the additive1, and APPLY
+exists_actual_trace_square_two_stage_sample with a PROVED trim budget.
+On its original index subtype, derive the interval diameter by triangle
+inequality, prove coordinate injectivity from fine separation, and APPLY
+source_scalar_sample_concentration with the PROVED QW budget.
+Reuse commuting_family_cubic_bound and exists_first_extraction_size_constant
+for the upper cardinality. No nilpotency assumption or scalar sample oracle.
+
+REUSE / DRIFT CHECK
+The current proof is still paid padding201/202, not a newly completed
+original family. This checkpoint closes the previously recorded actual
+source sample/concentration target: fixed constants, the joint threshold,
+real sampler, interval bound and size bound now refer to the same sample.
+The supplied frame/profile/extraction assumptions are still obligations
+of the later endpoint, not silently discharged here.
+
+The pinned mathlib source and the existing follow-up chain were searched
+before extension. Real powers, quotient/absolute-value inequalities,
+finite-image/subtype facts, multiplication and power identities are reused.
+The specialized application composes existing local theorems rather than
+rebuilding packing, sampling, concentration or additive combinatorics.
+No claim is made that an unrestricted literature search proves novelty.
+
+Development found a proof-checking blowup in a generic ring invocation
+on the global normalization. It was replaced with mul_pow and mul_assoc;
+the full application checks at default limits. Temporary diagnostic
+markers were removed. No increased limits, disabled linters or new axioms.
+
+NEXT
+R1853 recorded; never replay its checkpoint script. Full10133-job build
+and4689-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: scalar-to-ACTUAL-word cell growth using the new sample.
+Do not re-prove the sampling, numerical-budget or concentration chain.
+The exact R1851 exponents and R1853 APIs are authoritative.
+
+1. First obtain rho_c,c,t0,s1 from
+   exists_actual_trace_square_readout_parameters. Choose fixed Eerr>=1
+   large enough for the enlarged-source and mixed-word error bounds,
+   and Ffar>0 from rho_c/[288M^2],M=128(4^204)^2, as needed.
+   Pass t0,Eerr,Ffar,Cext into exists_trace_square_sample_bounds.
+   This gives all constants and one threshold BEFORE eta and any input.
+   For the actual frame/generator, select g in A^204 using the SAME
+   constants. The lower determinant gap implies det(centered z)!=0.
+2. Apply the existing scalar theorem to Z using its proved range,
+   cardinality, separation and concentration. Use the existing
+   exists_scalar_dyadic_radius / scalar budgets to choose delta at
+   eta^(1-3Theta)<=delta<2eta^(1-3Theta); combine finite thresholds.
+   Maintain Theta=min(e,kappa0)/16384,theta=kappa0 Theta/1024,
+   a=5Theta/16,g=e/8,gain=e/32. Do not forget the square-root loss:
+   the mixed-sum estimate controls scalar sum/product cells by T^2/m,
+   so actual trace growth needs2gain<g, already verified.
+3. Set F={f_i:i in T},Y=X(F union FF union FF^-1).
+   REUSE traceSquareScalar_finite_product_enlargement and
+   scalar_ring_cells_of_two_term_readout. Choose the larger readout
+   coefficient for Y: max(|u|,|v|)>=3/4 gives inverse magnitude<=2.
+   The other coefficient still has |coef|>=c eta^(12theta); the
+   sample spacing delta_s=t0 delta eta^(-12theta) pays it exactly.
+   Both orientations of the mixed word are allowed. Show the actual
+   scalar-cell-to-trace-cover bound rather than assuming it.
+4. Transfer the mixed readouts to original source words using
+   mixed_readout_source_error and mixed_readout_source_far, retaining
+   Eerr epsilon<=Ffar eta^(12theta+a). Original source words are inA^2,
+   enlarged words inA^4,g inA^204,so mixed length420. At least the base
+   factor is far>eta^a. The coefficient gap rho_c eta^(12theta) gives
+   distance exponent12theta+a<=3Theta. Choose alpha0 further down
+   before eta if near-radius control for length420 requires it.
+5. Generalize the FULL exists_reextracted_trace_power_bound wrapper,
+   which STILL assumes k<=282. Reuse profile_power_exponent_bound_of_cost;
+   do not duplicate its power arithmetic. Length420 uses cover index421,
+   cost8802*421+4427=3710069. The initial quantitative extraction's
+   universal n0+3 cover uses n0+2; choose a common fixed profile margin
+   for max(421,n0+2), without asserting n0<=420.
+   Its548Theta bound plus the actual sample's143Theta retention fits
+   691Theta<3gain. Reuse cubic_trace_budget_contradiction.
+
+Original profile/frame construction, strict flattening and the analytic/
+machine endpoint remain after these steps. Three of six families done;
+paid padding about60%, LOW CONFIDENCE. Continue numeric progress reports.
+Original paper read-only; no commits/pushes/subagents before referee phase.
+
+BOUNDARY
+The actual trace-square sample/concentration application is now proved for an input satisfying the stated frame, distribution, profile and quantitative extraction hypotheses. This is not yet scalar-to-actual-word growth or the original flattening theorem. The scalar-to-word cell bridge, the generalized full second-extraction wrapper, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original theorem families formalized; no fourth family or novelty claimed.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

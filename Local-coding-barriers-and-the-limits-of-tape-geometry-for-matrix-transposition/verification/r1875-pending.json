@@ -1,0 +1,92 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1874",
+  "target": "Regular recursion206/208: paid public-clock and masked-stride group execution.",
+  "new_modules": [
+    "ScheduledNativeIO",
+    "MaskedStrideCell",
+    "MaskedStrideGroup"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledNativeIO.trajectory",
+    "TransposeFollowup.ScheduledNativeIO.trajectory_add",
+    "TransposeFollowup.ScheduledNativeIO.trajectory_congr",
+    "TransposeFollowup.ScheduledNativeIO.lift",
+    "TransposeFollowup.ScheduledNativeIO.program",
+    "TransposeFollowup.ScheduledNativeIO.step_lift",
+    "TransposeFollowup.ScheduledNativeIO.active_lift",
+    "TransposeFollowup.ScheduledNativeIO.trace_prefix",
+    "TransposeFollowup.ScheduledNativeIO.halted_lift",
+    "TransposeFollowup.ScheduledNativeIO.native_prefix",
+    "TransposeFollowup.ScheduledNativeIO.native_run_and_halt",
+    "TransposeFollowup.ScheduledNativeIO.native_state_count",
+    "TransposeFollowup.MaskedStrideCell.Mode",
+    "TransposeFollowup.MaskedStrideCell.State",
+    "TransposeFollowup.MaskedStrideCell.bit",
+    "TransposeFollowup.MaskedStrideCell.output",
+    "TransposeFollowup.MaskedStrideCell.stored",
+    "TransposeFollowup.MaskedStrideCell.actions",
+    "TransposeFollowup.MaskedStrideCell.schedule",
+    "TransposeFollowup.MaskedStrideCell.readMode",
+    "TransposeFollowup.MaskedStrideCell.result",
+    "TransposeFollowup.MaskedStrideCell.trajectory_three",
+    "TransposeFollowup.MaskedStrideCell.active_schedule",
+    "TransposeFollowup.MaskedStrideCell.result_positions",
+    "TransposeFollowup.MaskedStrideCell.result_cells",
+    "TransposeFollowup.MaskedStrideCell.native_cell",
+    "TransposeFollowup.MaskedStrideCell.state_count",
+    "TransposeFollowup.MaskedStrideGroup.moveBuffer",
+    "TransposeFollowup.MaskedStrideGroup.moveBuffer_active",
+    "TransposeFollowup.MaskedStrideGroup.moveBuffer_positions",
+    "TransposeFollowup.MaskedStrideGroup.padding",
+    "TransposeFollowup.MaskedStrideGroup.padResult",
+    "TransposeFollowup.MaskedStrideGroup.padding_three",
+    "TransposeFollowup.MaskedStrideGroup.slotSchedule",
+    "TransposeFollowup.MaskedStrideGroup.slot_active",
+    "TransposeFollowup.MaskedStrideGroup.slots",
+    "TransposeFollowup.MaskedStrideGroup.processSchedule",
+    "TransposeFollowup.MaskedStrideGroup.process_exact",
+    "TransposeFollowup.MaskedStrideGroup.slots_positions",
+    "TransposeFollowup.MaskedStrideGroup.rewind_positions",
+    "TransposeFollowup.MaskedStrideGroup.schedule",
+    "TransposeFollowup.MaskedStrideGroup.result",
+    "TransposeFollowup.MaskedStrideGroup.group_exact",
+    "TransposeFollowup.MaskedStrideGroup.active_schedule",
+    "TransposeFollowup.MaskedStrideGroup.result_positions",
+    "TransposeFollowup.MaskedStrideGroup.native_group",
+    "TransposeFollowup.MaskedStrideGroup.slot_early_positions",
+    "TransposeFollowup.MaskedStrideGroup.process_positions",
+    "TransposeFollowup.MaskedStrideGroup.group_prefix",
+    "TransposeFollowup.MaskedStrideGroup.group_positions"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8953,
+      "log": "/private/tmp/r1875-dev9.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10203,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5019,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All checkpoint sessions terminal. dev1:81544 exit1; dev2:18218 exit1; dev3:61681 exit1; dev4:10998 exit1; dev5:15423 exit1; dev6:6945 exit0 (8952 jobs); dev7:24023 exit1; dev8:29320 exit0 (8953 jobs). Initial fullbuild77957 exit0 (10203 jobs) preceded the intermediate-head formulas. dev9:28065 exit0 (8953 jobs). After simplifying group_exact through group_prefix, final fullbuild32800 exit0 (10203 jobs); final axiom audit62409 exit0 (5019 declarations). No later Lean edits.",
+  "formal_checkpoint": "R1875 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1022 local sources,204 external sources,5019 declarations,8 configurations,193 artifacts",
+  "proof_scope": "PROGRESS at R1875: the exact206 executor work has begun with a verified native public-clock compiler, a three-transition masked binary cell update and a 4*S-transition group slab including partial-group padding and paid scratch rewind. Both head positions are proved at every intermediate tick. The group uses one scratch buffer, and both prefix/difference modes are supported. Five of six original families formalized; regular recursion206/208 best estimate57% complete (low confidence). Full stride recurrence, raw IO/cleanup, asymptotic limit and complete palette composition remain.",
+  "next": "R1875 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five of six original families\nformalized; sixth regular recursion206/208 best estimate57%, low confidence.\n\nCurrent concrete target: finish the arbitrary masked binary stride executor\nfrom source206. The public clock, exact scalar update and full4*S group\nwith partial padding/paid rewind are complete. Reuse them; do not build\nanother compiler or re-prove the stage/exceptional-time limit machinery.\n\nNext prove GROUP CELLWISE SEMANTICS, then the cross-group invariant.\nMaskedStrideCell.result_cells gives each old absolute tape function with\none precisely identified replacement. Group.slots_positions gives the\npositions after each processed slot. Show cells ahead of the current slot\nare untouched, so readMode still sees the original bank and previous-group\nbuffer bits there. Hence for0<=j<g the group writes\n  bank_j = x_j XOR(a_j AND prev_j),\n  buffer_j = bank_j in prefix mode, original x_j in difference mode.\nPadding writes nothing and rewind preserves absolute cells; reuse\nNativeMicrocode.action_cells / AbsoluteTape.move_cells for that fact.\nAn invariant expressed on absolute coordinate intervals avoids circular\nbuffer modulo arithmetic. After this, compose groups of size S and the\nlast partial group: first buffer is blank (zero), then each buffer stores\nexactly the preceding output/input group. This yields the exact raw index\nrecurrence y_j=x_j XOR a_j*y_(j-S), or the input-difference variant, with\nzero boundary values. Every public mask remains input-independent.\n\nThe single-buffer executor uses one full bank and one S-cell scratch tape.\nGroup schedule:3*S processing/padding ticks followed by S scratch-left ticks.\nFor1<=S<=P, ceil(P/S)*S<P+S<=2P, so group processing costs<=8P.\nPay final scratch clearing by S blank-write/right steps and S left steps.\nRaw input loading can use the existing NativeIO read/act/input-move pattern\nfollowed by a paid bank rewind; final output uses paid bank rewind and\nread/output/advance. These remain to prove and compose, not free interfaces.\nThe public clock compiler permits a prescribed schedule at each P; no\nuniform dimension/stride/mask generator is required. Its q+1=(N+1)*4 gives\nO(P) states once the full schedule has N=O(P) verified native steps.\n\nUseful APIs:\n- ScheduledNativeIO.trajectory_add/congr, trace_prefix, native_prefix,\n  native_run_and_halt, native_state_count. program sigma N halts exactly\n  at its global horizon. Compose schedules before compiling; standalone\n  subroutine halts do not magically become unpaid caller transitions.\n- MaskedStrideCell.schedule/result, trajectory_three, result_cells,\n  result_positions, native_cell. isPrefix=true stores y, false stores x.\n- MaskedStrideGroup.slotSchedule/slots, process_exact, slots_positions,\n  process_positions, group_prefix, group_positions, group_exact/native_group.\n  Exact intermediate positions are already independent of data.\n- FiniteProgramEncoding.initialEncoding maps a chosen start mode/clock to\n  native state0. NativeIO.blank_denote supports actual raw initialization.\n\nAfter the full primitive, arbitrary S/P has two cases: zero uses O(S)\nslab deviations, positive uses bounded group count and finitely affine\nphases (the exact formulas above include partial groups). Do not require\na uniform piece-count bound across those cases. Then backward scans,\nwhole-bank rotation/reversal, all exact row/integer and F3 palettes, and\nbounded-word composition remain required. Read source200 sections20-24 and\nprimitive notes017/144/168 for exact semantics and scope. Retain all costs,\nfixed work tapes/alphabet, O(log P) state bits and high-entropy raw correctness.\n\nNo fresh subagents until all six; then authorized impartial referees and\ncleanup. Original paper read-only; no commits/pushes. No unrestricted\ntranspose decision or literature-novelty claim. Source208 and global210.5\nare already complete and should not be reopened to defer executor work.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate57% complete (low confidence). This is the full sixth family, not the public-clock helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and its global exceptional extension are complete within the sixth family; exact206 compilation remains. Final independent referees are pending.",
+  "updated_at": "2026-10-21T00:26:42.649151+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScheduledNativeIO.lean": "dbefbc72a1e2142eb0efdb5adb653ebb50fcb8a6b1074625240b9bd0ba21e47f",
+    "lean/TransposeFollowup/MaskedStrideCell.lean": "a0ffbf11bd6c2da74904889b13f3300995ae041b79e88d0c6ef766d6f1f15129",
+    "lean/TransposeFollowup/MaskedStrideGroup.lean": "230ae6d316627b4f3ea44f69f9493d2c944f59e3464f92d715a957ec7d718e80"
+  }
+}

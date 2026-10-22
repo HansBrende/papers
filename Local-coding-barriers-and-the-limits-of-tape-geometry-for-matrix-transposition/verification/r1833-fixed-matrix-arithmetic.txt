@@ -1,0 +1,82 @@
+R1833 — ACTUAL FIXED-MATRIX SCALAR ARITHMETIC
+
+In progress. R1833 verifies selection of one actual bounded-word trace coefficient, fixed-matrix scalar addition and multiplication in the nilpotent centralizer, explicit stability for a small nonzero determinant, and transfer to actual words with lengths2m+n and2m+2n. Three modules add9 theorems, reusing the existing frame expansion, coordinate equation and native Frobenius bounds. This removes the algebraic collapse of the earlier varying-coefficient mechanism in the nilpotent case. It does not yet prove scalar amplification or finish paid padding.
+
+EXACT STATEMENTS
+1. A NONZERO COEFFICIENT FROM AN ACTUAL WORD.
+For a four-matrix frame g_i in SL2(R) with entries bounded by M>=1, coordinate determinant at least d>0, and a matrix b with some noncentral coordinate of absolute value at least rho>0, one frame element satisfies
+  |tr(b g_i)| >= rho*d/(1152*M^4).
+The proof reuses exists_nilpotent_trace_test and exists_bounded_matrix_frame_coordinates: a bounded test matrix e has |tr(eb)|>=rho/3 and is a bounded linear combination of the frame. Taking the largest of the four trace pairings gives the bound.
+For A inside the identity ball of radius0<alpha<=1, I in A, and p,q,pq in A^34 with spanning determinant at least d, this selects an ACTUAL g in A^34 with
+  |tr(bg)| >= rho*d/[1152*(4^34)^4].
+There is no assumption that an arbitrary noncommuting matrix is an allowed word. No nilpotence or trace condition on b is needed for coefficient selection. In the centralizer application tr(b)=0 and the earlier near-identity pivot lemma supplies rho.
+
+2. EXACT FIXED-g TRACE ARITHMETIC.
+Let tr(b)=0, u=cI+t b, v=pI+q b be in SL2(R), and let g be in SL2(R). Write
+  ell=tr(bg), tau=tr(g), Delta=det(b).
+Then
+  tr(u v g) = (cp-Delta*t*q)*tau + (c*q+t*p)*ell,
+  tr(u g v g^-1) = 2cp+t*q*((2-tau^2)*Delta-ell^2).
+The second formula is proved first as a polynomial identity retaining det(g), then specialized using the existing determinant-of-commutator trace polynomial. No diagonalization is used.
+If Delta=0 and c,p>=1/2, the existing determinant-one coordinate equation implies c=p=1, and the formulas become
+  tr(u v g) = tau+ell*(t+q),
+  tr(u g v g^-1) = 2-ell^2*(t*q).
+Thus the SAME quantitatively nonzero ell reads addition and multiplication. The coefficient lambda=-1 in R1831 was specific to its inverse-final projection expression; it does not remove these ring operations. These algebraic identities are supporting tools, not novel impossibility or expansion theorems.
+
+3. STABILITY NEAR NILPOTENCE.
+Assume0<=kappa,0<=r,|Delta|<=kappa,kappa*r^2<=1,|t|,|q|<=r,c,p>=1/2. Let |tau|<=T with T>=0 and |ell|<=L. Then
+  |tr(u v g)-(tau+ell*(t+q))| <=4*kappa*r^2*T+2*kappa*r^3*L,
+  |tr(u g v g^-1)-(2-ell^2*t*q)| <=kappa*r^2*(8+T^2).
+The prior positive-chart bound yields |c-1|,|p-1|<=kappa*r^2 and |cp-1|<=3*kappa*r^2. The new estimates use these bounds directly, without replacing b by an unproved nilpotent approximation and without division by Delta. They do not establish that these errors fit the eventual amplification scale; that budget remains.
+
+4. CHARGED ACTUAL WORDS.
+Let A be symmetric, u',v' belong to A^m, and g belong to A^n. Assume dist(u,u'),dist(v,v')<=epsilon in the native Frobenius metric, with epsilon>=0. Let R>=0 bound the entries of v,u',g. Bounds on u and v' are unnecessary in this asymmetric estimate.
+Under the hypotheses in3, actual words exist:
+  wAdd=u'v'g in A^(2m+n),
+  wMul=u'g v'g^-1 in A^(2m+2n),
+with
+  |tr(wAdd)-(tau+ell*(t+q))|
+    <=16*R^2*epsilon+4*kappa*r^2*T+2*kappa*r^3*L,
+  |tr(wMul)-(2-ell^2*t*q)|
+    <=32*R^3*epsilon+kappa*r^2*(8+T^2).
+These use existing left/right Frobenius multiplication and trace-Lipschitz bounds. There is no complexification or copied finite-product error chain. For kappa=0 only the actual-word approximation costs remain. Selecting g via1 gives n=34. For source words in A^2, the word lengths are38 and72; for re-centered source words in A^4, they are42 and76. Choose the actual source representation before using either specialization.
+
+Formal declarations: exists_quantitative_frame_trace_test,exists_actual_noncentral_trace_test,scalarAffine_trace_right,scalarAffine_sandwich_trace,centered_trace_arithmetic,nilpotent_positive_trace_arithmetic,centered_trace_arithmetic_error,frobenius_product_distance,centered_actual_arithmetic_words.
+
+NEXT BRIDGE — WRITTEN DERIVATION, NOT YET FORMALIZED.
+The imported scalar projection theorem is not itself a sum/product alternative. A concrete reduction can use popular intersections of rounded dilates and the existing Ruzsa inequalities. This is the next target to audit before any large additional chain.
+Let X be a finite delta-separated subset of[1,2], N=|X|>0, K>=1, and assume both scalarCells_delta(X+X) and scalarCells_delta(X*X) have at most K*N cells. For each a in X put R_a=scalarCells_delta(a*X). Since a>=1, floor quantization is injective on a*X, so |R_a|=N. All R_a lie in the common product-cell set P with |P|<=K*N.
+Let m(z) count the rows R_a containing z. Double counting and Cauchy--Schwarz give sum_z m(z)=N^2 and sum_z m(z)^2>=N^3/K. Consequently some a0 in X has sum_b |R_a0 intersect R_b|>=N^2/K. Since each intersection has at most N cells, the coefficients b with overlap at least N/(2K) form E subset X of size at least N/(2K).
+Bounded scaling a in[1,2] and the imported floor-carry lemmas should give |R_a+R_a|<=6*K*N. Mathlib Ruzsa then gives |R_a-R_a|<=36*K^2*N. Using C=R_a0 intersect R_b for b in E in another Ruzsa triangle yields |R_a0+R_b|<=432*K^4*N. Returning to real sumset cells and dividing by a0 introduces only bounded rounding factors. Thus many ratios b/a0 have small projection X+(b/a0)X. The explicit constants after rescaling have NOT yet been Lean verified.
+The ratio family is a large subset of X followed by bounded dilation, so a PROVED nonconcentration bound for X transfers with polynomial K losses. Apply the imported weak-radius projection theorem with a smaller exponent and a small enough power bound on K. The normalization of X, separation scale, cardinality upper bound and scale range must all be checked; none is automatic.
+
+POSITIVE-INTERVAL SCALAR INPUT.
+The nilpotent coordinates t are centered near0. Do NOT feed them into the[1,2] overlap argument without normalization. For exact unipotents, a useful shifted scalar is Y(t)=tau+ell*t=tr(u(t)g). The standard SL2 trace identity gives
+  tr(u(t)g u(q)g)=Y(t)Y(q)-2,
+  tr(u(t)u(q)g)+tau=Y(t)+Y(q).
+This shifted product identity and its actual-word/near-nilpotent error bound are not included among R1833's formal declarations. They are a short next application of the existing trace algebra. The small-word trace bound gives tau>=1 under its stated radius budget; sufficiently small |ell|r gives a positive interval of ratio at most2. Scaling that interval to[1,2] incurs explicit bounded factors. Do not discard these range or error obligations.
+
+WHY THIS IS THE NEXT TARGET.
+This supplies a possible direct connection to the already imported projection theorem, rather than starting an unrelated ring-theorem formalization. First verify the rounded-dilate intersection/Ruzsa implication. If a premise fails in the matrix application, identify that failure. Scalar nonconcentration still requires a genuine spread/concentration dichotomy for the extracted family; the concentration of A does not automatically transfer to a cube-root-sized family. The source concentrated branch and existing translated-cluster tools remain alternatives if the extracted scalar set is concentrated.
+
+DRIFT CHECK.
+R1833 discharges actual-word coefficient selection, exact nilpotent arithmetic, stability near nilpotence, and physical word/error transfer. It does not replace an amplification conclusion with an assumption. However, small sum and product sets do NOT immediately give the small projections in the imported theorem. The written overlap/Ruzsa bridge above is the next concrete obligation. Nor does the imported projection theorem automatically apply to extracted scalar sets; the nonconcentration and retained-size hypotheses remain essential. Do not keep adding trace identities without completing this counting/projection connection. No main transposition bound or additional original theorem family is claimed.
+
+BOUNDARY
+R1833 verifies a nonzero coefficient from actual bounded words, exact nilpotent scalar arithmetic, near-nilpotent error estimates and actual-word realization. The R1832 trace-cubic threshold remains available. Rounded-dilate/Ruzsa reduction to the imported projection theorem, scalar regularization/nonconcentration or the concentrated-case alternative, shifted positive-interval readouts and their errors, nondegenerate amplification, center separation and the quantitative exponent budget remain. Group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1833 is recorded; never replay its checkpoint. Full10087-job build and4544-declaration audit passed; standard axioms only; no live Lake handle. Read verification/r1833-fixed-matrix-arithmetic.txt and verification/library-reuse-audit-r1833.json. The note contains a written, NOT yet Lean-formalized, rounded-dilate overlap/Ruzsa route to the imported projection theorem.
+
+NEXT SUBSTANTIVE TARGET: prove the rounded-dilate overlap/projection bridge under actual small-sum and small-product cell hypotheses. Reuse mathlib Cauchy--Schwarz, finite double counting and Ruzsa, plus imported ScalarSumCells/ScalarCoverCount/ScalarRuzsa. Do not re-prove the full scalar projection theorem. Start with X subset[1,2], delta-separated, N=|X|, both cell sets bounded by K*N. The written route selects a0 and E with |E|>=N/(2K), common rounded overlap>=N/(2K), and polynomially small projections for b/a0. Formalize the actual incidence counts, not an assumed energy inequality. Validate all rounding/rescaling constants.
+
+After that, connect the verified family of small projections to the imported growth theorem with nonconcentration inherited from a PROVED scalar distribution. The extracted family need not inherit A's normalized mass bound; retain the concentrated-case branch rather than silently assuming it away.
+
+The matrix interface is now available: exists_actual_noncentral_trace_test selects g in A^34; centered_trace_arithmetic_error and centered_actual_arithmetic_words retain both determinant and source approximation errors. For the positive scalar interval, verify the shifted identity Y(t)Y(q)=tr(u(t)g u(q)g)+2 (nilpotent case), with Y(t)=tr(u(t)g). Use existing SL2 trace algebra and actual word estimates. Do not substitute the unshifted t*q identity for the shifted product without proof. Ensure near-identity and separation from I for the actual candidate D before invoking trace_reextraction_cubic_bound.
+
+Do not redo cubic packing, second extraction, coefficient selection or the native multiplication error chain. No unquantified diagonalization or inverse-discriminant assumption. A result larger than the first commuting family alone is insufficient; compare the FINAL trace lower bound with R1832's explicit threshold, including all losses.
+
+REPORTING: The user requires our best estimate for the CURRENT ORIGINAL proof, paid padding201/202. Current rough estimate60%, low confidence; explain uncertainty and update only when the overall dependency picture warrants it. Do not report percentages for isolated local lemmas as progress on paid padding. Three original families are formalized. Referees follow all six. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1833 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.

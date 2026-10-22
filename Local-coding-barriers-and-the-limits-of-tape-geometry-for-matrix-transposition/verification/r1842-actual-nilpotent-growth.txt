@@ -1,0 +1,60 @@
+R1842 — ACTUAL NILPOTENT SAMPLE AND UNIFORM TRACE GROWTH
+
+In progress. R1842 composes actual source sampling with the proved concentration and size estimates, then derives actual-word trace growth at one scalar dyadic radius uniform over all source families. The same retained sample supplies every scalar hypothesis. The resulting finite word families lie in A^38 and A^72, stay near identity and stay a quantified positive distance from identity. The gain exponent satisfies256theta<gain. The existing trace-growth theorem is strengthened to use a growth exponent in(0,1] uniform in the index type. Two new modules add two declarations; one existing module is strengthened. The full second-extraction upper comparison and original profile/extraction assembly remain open.
+
+1. Strengthened nilpotent_actual_trace_growth (existing declaration).
+For0<kappa<=1 there exist growth exponent eg in(0,1] and Jg>0 BEFORE the source index type, matrix families and scalar samples. Previously the index type appeared before the existential growth constants, and eg<=1 was not stated. The proof reuses scalar_sum_product_alternative, takes min(original exponent,1), and uses Real.exp_le_exp to transfer the three budgets. There is no second scalar sum-product proof.
+
+2. exists_nilpotent_sample_bounds (NilpotentSampleApplication.lean).
+Fix0<=kappa<=1. There exist positive a,s,l,e,V0 and C0>=1 before eta,theta and the source family, with
+ H0=4^34, B0=4H0, a=1/(2H0), l=a/(9216H0^4), e=12800B0^6/a.
+Let0<eta<=1,theta>=0 and0<delta_s<=2eta^(1-3theta). Put
+ r0=a eta^(2theta), epsilon=e eta^(1-2theta), L=l eta^(3theta),
+ H=(102400B0^7/r0+8B0+1)^4.
+Inputs are the actual original family f_i, X_i in A, base in A, scalarAffine representation relative to z, symmetric A containing identity and near identity, the actual p,q,pq in A^34 frame with determinant at least eta^theta, z near identity and at distance>=r0, nonempty approximant range, and dist(f_i,base^-1 X_i)<=epsilon. The two source proximity budgets and centered(z).det=0 are explicit. Also require epsilon<=delta_s, the distribution window2eta<eta^(theta/2), original multiscale distribution with exponent kappa, N_eta(A)<=eta^(-(3-kappa)), actual A^142/A^284 and mixed covering envelopes<=eta^(-theta)N, and the original cube eta^(8theta)N^4<=(9N_mixed H N_V)^3.
+Conclusion: choose an actual g in A^34, trace coefficient>=L, positive centered coordinates and entry bounds on ALL original approximants. Then choose F and source selectors preserving their original witnesses. The same scalar image Z is nonempty, lies in[1,2], has pairwise distances>delta_s and cardinality|F|. It satisfies
+ N_V<=6561(4s eta^(1-9theta)/eta+1)^4 |Z|,
+ |Z|<=V0 eta^(-(1-kappa/3+83theta)),
+ mass_Z(v,rho)<=C0 eta^(-100theta)rho^(kappa/3)|Z|
+for rho>=delta_s and rho>=eta (no upper-radius hypothesis is needed).
+The proof directly imports exists_actual_nilpotent_scalar_sample, nilpotent_scalar_sample_concentration, commuting_family_cubic_bound and the R1841 exact coefficient bounds. No new source geometry, packing or counting argument is copied.
+
+3. exists_nilpotent_dyadic_trace_growth (NilpotentDyadicTraceGrowth.lean).
+Fix0<kappa0<=1. It returns constants theta,gain,alpha0,a,s,l,e>0 and a matrix threshold J before the matrix scale and all source families, with
+ theta<1/2, theta<=kappa0/4096, 256theta<gain,
+ and the same a,l,e identities as item2. The proof uses scalar exponent kappa0/12, bounded eg from item1, theta=min(eg,kappa0)/4096, gain=eg/8 and alpha0=1/(8*5^72).
+For every j>=J, eta=4^-j, it chooses ONE k>0 BEFORE the source family, with delta=2^-k and
+ eta<=delta, eta^(1-3theta)<=delta<2eta^(1-3theta).
+The input family needs only the original geometric/form/source conditions, alpha<=alpha0, centered(z).det=0, original distribution, original N upper bound, original A^142/A^284/mixed envelopes and original spanning cube from item2. No source proximity budgets, scalar distribution, scalar cardinality/log-cardinality, scalar sample, scalar error budget, dyadic budget or positive trace coefficient is an additional input: these are derived at the uniform threshold.
+It returns actual g in A^34, nonempty retained F with its original source witnesses, nonempty scalar image Z and the same retention inequality. For source(y)=base^-1 X_sel(y), form
+ Dadd={source(x) source(y) g},
+ Dmul={source(x) g source(y) g}.
+These are nonempty finite sets contained in A^38 and A^72, respectively. Every word in both is in the identity half-ball and at distance at least L/128 from identity. For at least one D in{Dadd,Dmul},
+ eta^(-gain)|Z| <250 N_delta(tr(D)).
+All word geometry holds for the entire generated families; there is no second thinning or separate sample selection. The retained scalar cardinality, the projection budgets, source error and concentration all concern the same Z and delta.
+The quantifier order fixes the scalar radius after j but before all A, frame, source and approximant data. The proof makes no unresolved choice of a sample-dependent growth exponent.
+
+
+DRIFT CHECK.
+This turn moves from separate conditional lemmas to an actual composition: the original approximate family produces one scalar sample, which produces trace growth in concrete words of the original set. The two new theorems reuse the existing sampling, packing, scalar-growth, dyadic-budget and word-geometry interfaces. They do not restate existence of a suitable scalar sample as a hypothesis. The growth constants and scalar radius have the needed uniform quantifier order. The still-explicit original-family, distribution, power-envelope and cube inputs are the boundary; the second upper comparison and original extraction/profile assembly are not claimed. Next work should close that comparison using the generalized existing chart proof, not add another detached framework.
+
+BOUNDARY
+R1842 proves actual nilpotent trace growth under the stated original-family geometry, distribution, covering upper bound, actual power-envelope bounds and original spanning cube. It derives the scalar sample and all scalar hypotheses; no suitable scalar sample is assumed. It still does not prove the final nilpotent contradiction: the full second-extraction upper bound and its constants must be compared with the derived growth. The original spanning extraction and localized approximate-group profile still need to be assembled with those interfaces. Nonnilpotent amplification, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original family or new transposition bound is claimed.
+
+NEXT
+The preceding goal turn is PROGRESS. R1842 is recorded; never replay its checkpoint. Full10105-job build and4601-declaration audit passed without warnings; no live Lake handles. Read verification/r1842-actual-nilpotent-growth.txt and library-reuse-audit-r1842.json. The actual source-to-scalar-to-word-growth chain is now composed. Do not rebuild it or introduce another scalar sample/budget framework.
+
+NEXT CONCRETE TARGET: close the full second-extraction upper comparison for the actual Dadd/Dmul from exists_nilpotent_dyadic_trace_growth, then assemble the original profile and first extraction.
+A reuse route avoids a new bespoke second-extraction coefficient chain:
+1. Generalize R1841 exists_first_extraction_parameters to accept any fixed0<a<=1, retaining Hgeo,B,M>=1. Its proof only uses a>0,a<=1 after the initial definition a=1/(2Hgeo). Keep the existing theorem as a wrapper choosing that a. Share the proof; do not copy it. This allows the second extraction radius coefficient a2=l/128, where l is returned by R1842. Derive a2<=1 from l=a/(9216H0^4) and a=1/(2H0).
+2. Use the generalized geometry with B=9,Hgeo=4^34,M=128*(4^68)^2 and theta_second=2theta. This deliberately weakens the actual far radius: the words are at distance>=a2 eta^(3theta), hence also>=r_second=a2 eta^(4theta), since eta<=1. The actual original frame determinant>=eta^theta also implies>=eta^(2theta). Thus the existing geometry lemma supplies frame, chart and sampling obligations for the second extraction without new exponent algebra.
+3. Keep its actual SECOND error epsilon2=819200eta/r_second, so e2=819200/a2 and exponent1-4theta. The geometry lemma's returned error constant is not the second error; ignore that component. Invoke first_extraction_cost_bounds with a=a2, B=9, B0=2, theta=2theta, e=e2 and its fixed chart/sample constants. It yields H2 loss16theta, S2 loss72theta, L2 loss88theta, E2 loss16theta. These are proposed applications of existing lemmas, not yet a proved full comparison. They intentionally use slack to maximize reuse.
+4. Apply FULL trace_reextraction_cubic_bound to the actual finite Dadd or Dmul, using U,Y,Q,alpha from the same localized approximate-group profile. The P(k+1) and P141 factors must be bounded from the real profile by the existing fixed_power_coefficient_bound; k is38 or72. The actual A^37/A^142/A^284 envelopes likewise come from localized_fixed_power_coveringNumber_envelope. Needed n values are36,39,73,141,283; the largest coefficient exponent2495393 allows the existing profile-loss<=theta/3000000 hierarchy. Supply the profile controls and actual Y-cardinality bound; do not assume the final coefficient inequalities as substitutes.
+5. Proposed exponent arithmetic: full trace cube loss is3theta(P)+48theta(H2^3)+216theta(S2^3)+264theta(L2^3)+16theta(E2)+theta(P141)=548theta, times N. Absorb the additive1 using N>=1 and eta<=1. From the original cube, retained sample and first-extraction factors, N<=W0 eta^(-143theta)|Z|^3. Thus trace cube<=U0W0 eta^(-691theta)|Z|^3. R1842 now states256theta<gain, so3gain>768theta>691theta. A single uniform threshold absorbing250^3 U0W0 should contradict the derived growth. These final inequalities and constants MUST still be formalized; this is a plan, not a completed contradiction.
+6. The chosen delta>=eta permits N_delta(trD)<=N_eta(trD); use existing externalCoveringNumber radius monotonicity and prove finite-cover toReal conditions (D is finite). Preserve the250 factor and positivity of|Z|. No new resampling.
+7. Once the nilpotent contradiction is complete, invoke the original exists_spanning_commuting_extraction_at_dyadic_scale with zeta=sigma=theta, distribution gamma=theta/2 and beta<theta*kappa0. Extract c,t by choice from its scalarAffine witnesses and use the same source subset/base. The mixed set is contained in A^37 by normalized_mixed_product_subset_power. This original extraction/profile assembly remains required; the new growth theorem takes those actual cube/envelope premises, not a completed original-profile contradiction.
+
+Nonnilpotent branches and the later analytic/machine construction remain open. Report current ORIGINAL proof paid padding201/202 about60%, low confidence;3/6 original families complete, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

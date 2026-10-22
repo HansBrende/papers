@@ -1,0 +1,104 @@
+{
+  "unit": "R1731",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1730 canonical union from raw input revalidated",
+  "scope": "ALL6families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "NativeResidueColorMachine",
+    "NativeResidueColorMeaning",
+    "NativeResidueColorRun",
+    "NativeResidueData",
+    "NativeResidueMachine",
+    "NativeResiduePairMachine",
+    "NativeResiduePairRun",
+    "NativeResidueRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.NativeResidueColor.pair_code",
+    "TransposeFollowup.NativeResidueColor.embed_pair",
+    "TransposeFollowup.NativeResidueColor.color_trace",
+    "TransposeFollowup.NativeResidueColor.valueColor_spec",
+    "TransposeFollowup.NativeResidueColor.canonical_color",
+    "TransposeFollowup.NativeResidueColor.selected_width",
+    "TransposeFollowup.NativeResidueColor.selected_color_trace",
+    "TransposeFollowup.NativeResidueColor.native_selected",
+    "TransposeFollowup.NativeResidueColor.label_card",
+    "TransposeFollowup.NativeResidueColor.fixed_resources",
+    "TransposeFollowup.NativeResidueColor.native_color",
+    "TransposeFollowup.NativeResidueColor.native_call",
+    "TransposeFollowup.NativeResidue.result_cons",
+    "TransposeFollowup.NativeResidue.result_value",
+    "TransposeFollowup.NativeResidue.result_binary_value",
+    "TransposeFollowup.NativeResidue.forward_two",
+    "TransposeFollowup.NativeResidue.forward_run",
+    "TransposeFollowup.NativeResidue.back_two",
+    "TransposeFollowup.NativeResidue.back_empty",
+    "TransposeFollowup.NativeResidue.back_run",
+    "TransposeFollowup.NativeResidue.residue_run",
+    "TransposeFollowup.NativeResiduePair.scan_code",
+    "TransposeFollowup.NativeResiduePair.embed_scan",
+    "TransposeFollowup.NativeResiduePair.scan_call",
+    "TransposeFollowup.NativeResiduePair.jump_trace",
+    "TransposeFollowup.NativeResiduePair.pair_trace",
+    "TransposeFollowup.NativeResiduePair.label_card",
+    "TransposeFollowup.NativeResiduePair.fixed_resources",
+    "TransposeFollowup.NativeResiduePair.native_pair",
+    "TransposeFollowup.NativeResiduePair.native_call",
+    "TransposeFollowup.NativeResidue.residue_trace",
+    "TransposeFollowup.NativeResidue.label_card",
+    "TransposeFollowup.NativeResidue.fixed_resources",
+    "TransposeFollowup.NativeResidue.native_residue",
+    "TransposeFollowup.NativeResidue.native_call"
+  ],
+  "checks": {
+    "residue_machine": {
+      "session": 18136,
+      "exit_code": 0
+    },
+    "residue_native": {
+      "session": 40203,
+      "exit_code": 0
+    },
+    "residue_pair": {
+      "session": 45308,
+      "exit_code": 0
+    },
+    "residue_color": {
+      "session": 40227,
+      "exit_code": 0,
+      "jobs": 9263,
+      "log": "/private/tmp/native-residue-color-2.log"
+    },
+    "build": {
+      "session": 5745,
+      "exit_code": 0,
+      "jobs": 9351,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session": 67267,
+      "exit_code": 0,
+      "declarations": 1964,
+      "log": "verification/axioms.log"
+    }
+  },
+  "updated_at": "2026-10-18T22:24:23.534151+00:00",
+  "formal_checkpoint": "R1731 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1731,374sources,1964declarations,86artifacts",
+  "proof_scope": "In progress. R1731 proves a native fixed-modulus residue scanner and its two-coordinate/color composition. For fixed M=d+1, an m-bit marked little-endian word is scanned to STOP and backward, computing value mod M in at most 4m+4 native transitions while preserving the exact tape and absolute head. Arbitrary exterior tape contents and empty fields are covered. The one-tape scanner has 5 symbols and 4M+3 states. The two-tape pair caller pays both transfers, costs at most 4m1+4m2+10, and has 5M^2+7M+3 states. For a fixed c-map family and canonical batch tag, the color caller adds one paid jump, costs at most 4m1+4m2+11, and has (c+5)M^2+7M+3 states, with M=rationalFamilyBound F+1. Its returned finite color equals rationalResidueColor; on selected least-witness records it equals rationalColor. Canonical width m=2*ell+C gives the bound 16*ell+8*C+11. Native execution, halt, and generic caller framing are proved. Eight modules/35 theorems; full build 9351 jobs;1964 declarations audited with standard axioms only. Prepared-record coloring is complete; its physical linkage to canonical stream parsing and page scheduling is not yet built. Three of six intended theorem families complete.",
+  "next": "First compose RawSelector with a paid canonical-output rewind, reusing NativeSpanRewind, FamilySelector.output_nonblank and RawSelector.output_length_le_time. Use an actual NativeIO wrapper, not a free head reset. The anticipated coefficient is 3*RawSelector.coefficient F+4, from one transfer and a rewind of length at most the generating time; this coefficient is not yet proved. Then build actual page-event existence scans over the canonical map batches: read each pair into marked fields, test the requested outgoing/incoming coordinate and finite color, accumulate a Boolean, erase temporaries, and restore the canonical stream head. Reuse NativeResidueColor.native_call, BinaryCompare, PreparedPair, NativeErase and finite bindings. The canonical batch phase supplies the map tag. Preserve variable coordinates/vertex counters on tape; only fixed family tags/residues/page colors enter control. Connect the result to rationalOutgoingOn/rationalIncomingOn and rationalPageOpcode. Charge scans using the sparse record bound R<=N*sum_i(distortion(F_i)+1), with field width2*ell+C. Do not add global sorting or identify reversed/diagonal pairs. Pay eventual payload restart and retained-buffer cleanup. Clock/fetch/payload/full generator, unconditional expansion, motion and recursion remain in scope. Older supplemental checks62722/19934 remain live/unverified; do not restart solely for elapsed time. All six families required; three complete. Original unchanged; no commits/pushes; referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeResidueColorMachine.lean": "bfc24788bd5d4f7c38ef930e7b270e85989a3b4f85d7da07efeaa42512c27f8f",
+    "lean/TransposeFollowup/NativeResidueColorMeaning.lean": "9ef1eb776bc499c6f33429bea104bfa11893affc80c678ca468cdcd64116ec6a",
+    "lean/TransposeFollowup/NativeResidueColorRun.lean": "6ce12df6ab78901acfb433cf778d6613ba8594c9dcfd14bcd45cb6009ddcb41d",
+    "lean/TransposeFollowup/NativeResidueData.lean": "b0c002bf383c2fb3091b7b647f573c2c7c88c9ebf06af92074da7edb2fc3cee4",
+    "lean/TransposeFollowup/NativeResidueMachine.lean": "7f74e2d03f7b7401830704bf7cef0690bf27645064eceb1e3368d3efe808cc30",
+    "lean/TransposeFollowup/NativeResiduePairMachine.lean": "160210ab6088bca1f98fd8b98f15dfc782089d489d6f825cbe36e102f0cadbf4",
+    "lean/TransposeFollowup/NativeResiduePairRun.lean": "77bf852e1ab008a12f6a431857fc48efafc355a3146f89fe27af50be2d3a0af4",
+    "lean/TransposeFollowup/NativeResidueRun.lean": "e5b7e802b0c04cd6aa1b05de7b1d5aec453d0606fc785f74ba114b11e16bb593"
+  }
+}

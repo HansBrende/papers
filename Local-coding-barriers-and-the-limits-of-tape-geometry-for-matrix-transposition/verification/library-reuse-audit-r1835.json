@@ -1,0 +1,30 @@
+{
+  "status": "Three new modules,one refactored module,six new theorems. Actual nilpotent trace amplification reuses the scalar endpoint and existing metric/cell machinery.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_local": [
+    "nilpotent_positive_trace_arithmetic",
+    "frobenius_product_distance",
+    "frobenius_dist_left_mul/right_mul",
+    "frobenius_norm_le_of_entry_bound",
+    "trace_error_le_frobenius_dist",
+    "ScalarMetric.scalar_sum_product_alternative",
+    "ScalarMetric.scalarCells_card_le_externalCoveringNumber"
+  ],
+  "reused_imported": [
+    "scalarCells_translate_cover",
+    "scalar_dilation_cells"
+  ],
+  "refactor": "Moved existing metric product-error calculation to two_source_trace_word_errors with arbitrary last factor h. Existing centered_actual_arithmetic_words calls h=g^-1; new trace-cell transfer calls h=g. Existing theorem statement/constants preserved.",
+  "next_reuse": [
+    "scalar_maximal_density_zoom",
+    "scalar_positive_zoom_bounds",
+    "scalar_positive_zoom_local_mass",
+    "set_pow_dist_from_one_le",
+    "existing native product-distance bounds inside the shared helper"
+  ],
+  "search_scope": "Pinned mathlib matrix trace/adjugate/characteristic-polynomial and norm-product sources; local centralizer algebra, trace transfer, finite scalar patching and geometric bounds; imported scalar density zoom and positive zoom. No exact general repeated-centralizer trace formula found among the inspected sources. This is not an exhaustive claim about every Lean library.",
+  "novelty": "None claimed. Supporting trace algebra and quantitative composition; no fourth original family or new transposition bound completed.",
+  "drift_check": "DRIFT CHECK.\nR1835 now turns scalar growth into native trace-cover growth for actual words, instead of stopping at identities or scalar projections. The shared metric-error proof removes duplication. The integration is deliberately restricted by an explicit det(b)=0 hypothesis, so it must not be advertised as covering the nonnilpotent cases. The main unresolved application obligations are scalar distribution/retention, geometric near/far budgets, and enough gain to beat the full trace-cubic threshold. The next target is the concrete weighted-trace separation certificate above, not another standalone scalar theorem. Existing density zooming is already available and should be reused only with a valid word/readout transfer.",
+  "verification": "Full lake build passed10094 jobs without warnings; SupportAxioms audited4560 unique declarations using only propext, Classical.choice and Quot.sound. There are912 mathematical modules plus SupportAxioms(913 local sources),204 pinned external modules,8 configurations and113 validation artifacts. All384 archive hashes and117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1835 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted."
+}

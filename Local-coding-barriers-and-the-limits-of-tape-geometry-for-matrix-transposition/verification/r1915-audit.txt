@@ -1,0 +1,63 @@
+R1915 — SPECTRAL BUILD-SPEED IMPLEMENTATION
+The six-source target median falls from 87.6550s to 15.2454s
+in three alternating pairs. The split arm sums six sequential fresh source
+checks using cached original predecessor artifacts. This is a target workload,
+not a whole-project or cold-build speedup claim.
+
+Against checking only the final original module, the median changes from
+14.6559s to 15.2454s:
++0.5895s difference, within the
+predeclared 3.6640s allowed overhead.
+Median reported peak RSS: split arm 5.744 GiB,
+merged arm 5.817 GiB; final-only original
+5.744 GiB. Split RSS is the maximum
+per sequential child, not a sum or simultaneous whole-workflow memory measure.
+
+The fresh R1915 matched cached edit workload takes 75.061s
+before and 17.189s after (4.37 times faster),
+rebuilding 6 and 1 modules.
+Scope: Same apply id proof-only edit in weighted_correlation_integrableOn before and after relocating its unchanged proof to UnconditionalPaidPadding; ordinary lake build with populated prerequisite caches. Fresh R1915 baseline, one matched pair.
+Timing caveat: No overlapping Lean/Lake, source-guard scans, or heavy archive jobs during the timed pair. This is a single observed cached edit workload; timings vary with machine/cache conditions, as the fresh baseline differs from the prior round.
+This is one matched pair. R1914's historical 97.811s candidate is not the
+baseline for this round, and no cross-round or universal speedup is inferred.
+
+REMAINING COST
+An import-only profiling run took about 12s, while the recorded tactic and
+proof typechecking portions were small. Loading the broad imported environment
+is the next likely bottleneck. This diagnostic is not a pure import timer or
+another cold-build/whole-project speedup measurement.
+
+ADOPTED CHANGE
+Six consecutive spectral, expansion and paid-padding modules are consolidated into UnconditionalPaidPadding by exact ordered non-import body concatenation. The five internal source boundaries retire, audit imports are remapped, and all public declaration names, hypotheses, conclusions and proof bodies are retained.
+Mathematical module count: 893 -> 888.
+Counts reflect actual final sources, not the planned target.
+
+PRESERVATION
+All 6306 original audited contracts are preserved: 6302 literal
+matches, 3 exact-original-Expr kernel conversions,
+and 1 separately checked archived source headers.
+The baseline reuses the completed R1914 final capture, explicitly bound to the
+new frozen source/receipt snapshot. No new baseline Lean inspection occurred.
+All referenced raw chunks were verified and exactly compared with the new final
+capture; raw differences and their actual resolution remain recorded.
+The first type-check attempt encountered a retired generated proof helper in
+expansion_of_restrictedL2Gap. That single case is resolved by the exact archived
+original theorem header with every premise retained, proved using the current
+theorem and checked by the ordinary kernel. It is not labeled an original-Expr
+conversion. No alias, environment patch or library lemma was introduced, and
+the failed first attempt remains preserved alongside the successful check.
+The 23 theorem-family and 11 shared-model bodies are preserved. No mathematical
+theorem strengthening or new proof axiom is claimed by this organization change.
+
+The final restored build passes 10063 jobs, rebuilding 1
+modules in 16.902s. The final axiom audit checks all
+6306 names in 18.524s, using only propext,
+Classical.choice and Quot.sound. These are validation costs for actual cache
+states, not additional matched benchmark arms. Ordinary Lean kernel checking
+validates rebuilt proofs; fresh whole-environment kernel replay was not repeated.
+Historical replay remains evidence only for its own snapshot.
+
+Original sibling, source pins/configuration, and old immutable evidence are
+unchanged. No sorry, unsafe bypass, raised proof limit or disabled linter was
+added. Benchmark variants are exactly restored, all handles are terminal, and
+full type/checker evidence is durably archived without a giant aggregate file.

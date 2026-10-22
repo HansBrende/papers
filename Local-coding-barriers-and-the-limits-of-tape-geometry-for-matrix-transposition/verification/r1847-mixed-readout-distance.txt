@@ -1,0 +1,165 @@
+R1847 — MIXED-READOUT DISTANCE AND ACTUAL SOURCE TRANSFER
+
+In progress. R1847 proves quantitative separation of the inverse-final mixed readout, with inverse-linear rather than inverse-quadratic loss in the two coefficient gaps. It transfers this separation to actual source words with an explicit error budget, verifies their word lengths, and connects the bound to the existing actual coefficient selector. Two modules add fourteen audited declarations. Actual retained scalar sample selection, concentration, second-extraction application and final exponent closure remain open.
+
+R1847 EXACT VERIFIED STATEMENTS
+
+MixedReadoutDistance.lean (10 theorems)
+
+All distances and norms below are native real 2x2 Frobenius distances/norms.
+Inversion in SL2(R) is an exact distance isometry, proved using the imported
+adjugate formula and existing squared-distance formula. In particular,
+dist(u^-1,I)=dist(u,I). The proof reuses norm multiplication and addition
+inequalities, the existing centralizer chart, and the R1846 determinant
+identity; no general matrix inverse theorem is redeveloped.
+
+Auxiliary bounds:
+ |det a| <= 2||a||^2;
+ ||[b,E]|| <= 2||b||||E||;
+ if E=sI+t c-q b, ||b||,||c||<=M, rho>0 and
+ rho^2<=|det([b,c])|, then
+ |t|,|q| <= 4M||E||/rho.
+The scalar coefficient s needs no bound.
+For traceless b with ||b||,|det b|<=M and M>=1, if
+ u=sI+t b is in SL2 and dist(u,I)<=1/2, then
+ dist(u,I)<=3M|t|. This does NOT assume |t|<=1: the existing
+small chart handles that case, and the near-identity bound handles the rest.
+For dist(u,I)<=1, dist(u,I)<=dist(u^2,I).
+
+MAIN METRIC THEOREM: mixed_readout_distance_bound
+Let b be traceless, M>=1, rho>0, ||b||,|det b|<=M, and
+ ||Ad_g(b)||<=M. Let u=sI+t b and v=pI+q b be determinant-one
+matrices with dist(u,I),dist(v,I)<=1/8. Write
+ Delta=det b, D=det(bg-gb), W=v u^-1 g(vu)g^-1.
+If |D|>=rho and |D-4Delta|>=rho, then
+ max(dist(u,I),dist(v,I)) <= (144 M^2/rho) dist(W,I).
+The conclusion bounds BOTH inputs. Either input may equal I. No
+nonzero-determinant assumption on b is needed for this metric statement.
+
+Proof: a=vu,w=uv^-1,E=Ad_g(a)-w=w(W-I). Commutativity gives
+u^2=aw,v^2=aw^-1. The earlier identity gives
+|det([b,Ad_g b])|=|D||4Delta-D|>=rho^2.
+Instead of a 4x4 frame inverse, the norm bound gives
+||[b,Ad_g b]||>=rho/2. Commuting E with b and Ad_g b bounds the
+two noncentral coefficients by4M||E||/rho. The chart bounds a,w
+by12M^2||E||/rho; their norms and the inverse norm are<=3.
+Squaring costs4 and E costs3, yielding144M^2/rho.
+
+MixedReadoutSourceTransfer.lean (4 theorems)
+
+mixed_readout_word_geometry:
+For symmetric A in an alpha identity ball,0<alpha<=1,
+U in A^m,V in A^n,g in A^k implies
+ W'=V U^-1 g(VU)g^-1 in A^(2m+2n+2k),
+ dist(W',I)<=(5^(2m+2n+2k))alpha.
+The native distance estimate is imported from set_pow_dist_from_one_le.
+For m=2,n=4,k=204 the word length is420; reversed2/4 is also420.
+
+mixed_readout_source_error:
+For R>=1,epsilon>=0, if u,v,U,V,g all have entries bounded by R,
+ dist(u,U),dist(v,V)<=epsilon, then
+ dist(v u^-1 g(vu)g^-1,V U^-1 g(VU)g^-1)<=512 R^7 epsilon.
+No commutation or chart assumptions are imposed on U,V. The proof groups
+the two variable pairs, uses the inverse isometry, and reuses
+frobenius_product_distance and two_source_word_distances. The constant
+is deliberately coarse and independent of the small geometric parameters.
+
+mixed_readout_source_far:
+Under the main metric hypotheses, the above source/error hypotheses, and
+ r<=max(dist(u,I),dist(v,I)),
+ 512 R^7 epsilon <= rho*r/(288 M^2),
+one has
+ dist(V U^-1 g(VU)g^-1,I)>=rho*r/(288 M^2).
+This charges the source error before any second extraction.
+
+exists_actual_readout_distance:
+Under exactly the existing actual coefficient selector assumptions:
+ I in A,A^-1=A,0<alpha<=1,A subset identityBall(alpha),
+ 4*5^102*alpha<=1,p,q,pq in A^34,
+ d>0,|det(pairSpanMatrix(p,q))|>=d,
+ z in identityBall(1/2),r>0,dist(z,I)>=r,
+set b=z-(tr(z)/2)I and
+ Gamma=(r/8)^3/[3456(96(4^34)^4/d)^3],
+ B=128(4^68)^2, rho=Gamma^2/(3328 B^4),
+ M=128(4^204)^2.
+There EXISTS g in A^204 satisfying both coefficient gaps>=rho AND,
+UNIFORMLY for every u,v in the centered span of b with distances<=1/8,
+ max(dist(u,I),dist(v,I))<=(144M^2/rho)dist(v u^-1 g(vu)g^-1,I).
+The norm bound for Ad_g b is derived from actual word membership and the
+existing conjugation norm bound. It is not an extra input to this endpoint.
+For R1845's r=d/32, rho is a fixed constant times d^12, so the metric loss
+is O(d^-12). This specialization is arithmetic, not a separate declaration.
+
+DRIFT / REUSE CHECK
+
+This closes the specific geometric obstruction recorded at R1846: the
+product/quotient enlargement includes I, but the mixed readout only needs
+one retained input away from I. A two-coefficient norm argument proves
+exactly that and improves the proposed inverse-square loss to inverse-linear.
+It introduces no additional frame input or new direction-choice problem.
+
+The scalar Pluennecke and sum-product theory remains imported/reused.
+No new abstract inverse-frame chain or general matrix growth framework is
+added. The full supporting analytic endpoint is still NOT proved.
+The required source-error threshold and retained scalar sample must be
+satisfied together; the new source transfer does not silently assume them
+for the extracted family. Word420 is now checked, but the second-extraction
+wrapper must still be widened using its general fixed-power proof.
+
+BOUNDARY
+The mixed-readout geometry is now proved, including a uniform actual word selected from A^204 and a source-error transfer. It does not require both inputs away from the identity: a lower bound on the maximum of their distances suffices. The enlarged family may therefore contain the identity. The actual finite sample still has to supply a retained base away from the identity, near-identity geometry, source errors small enough for the displayed budget, scalar separation and concentration, and a lower bound on the cells of the dilated base. No scalar sample or mixed-trace upper bound is inferred merely from the new metric bound. The old n<=283 second-extraction wrapper remains too short for the new length420 readouts. Original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original theorem family or novelty is claimed.
+
+NEXT
+R1847 recorded; never replay its checkpoint script. Full10119-job build
+and4660-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: construct the actual retained trace-square scalar sample,
+using the existing coarse-source sampling and cubic cluster-concentration
+results. Avoid another ideal-sample theorem with unproved sample inputs.
+Read NilpotentSourceSample, NilpotentScalarSample, NilpotentScalarConcentration,
+ActualCentralizerSourcePacking and CoarsenedSourceSample for the reusable
+finite selection/cardinality/concentration machinery; the nilpotent scalar
+coordinate itself does NOT apply to this nonnilpotent case.
+
+A concrete next algebraic simplification to verify (not yet a Lean theorem):
+For X(u)=(2/3)tr(u)^2-4/3, u=sI+t b,v=pI+q b, tr b=0,
+ X(u)=4/3-(8/3)Delta t^2,
+ |X(u)-X(v)|=(8/3)|Delta||t-q||t+q|.
+Retain one sign of t and an actual base away from I. The proved
+centered_near_one_distance_coefficient gives |t|>=r/(3M) whenever
+dist(u,I)>=r. For two same-sign coordinates, |t+q|>=r/(3M)
+if just one input is that far. Since s,p>=1/2 on the near-identity branch,
+ |s-p|<=|Delta||t-q||t+q|.
+Hence an inverse bound on this branch follows DIRECTLY:
+ dist(u,v)<=2|s-p|+M|t-q|
+ <=[3/4+9M^2/(8|Delta|r)] |X(u)-X(v)|.
+This avoids imposing |t|,|q|<=1 or building another chart-normalization
+chain. With |Delta|>=lambda>0,lambda<=M,0<r<=1,M>=1, a safe constant
+is3M^2/(lambda r). Verify the exact hypotheses before using it.
+The two-sign loss and discarded neighborhood of I must be charged using
+finite_source_cluster_cubic_bound/actual_localized_source_packing_concentration.
+Preserve original source indices and prove the retained cardinality.
+
+Keep F near1/64 so F union FF union FF^-1 is near1/16 and its trace-square
+coordinates lie in[1,2]. The near-identity, source-error, and far-base
+requirements must be checked simultaneously. R1847 only needs each input
+near1/8. Enlargement elements need not be away from I.
+
+For the scalar bridge, choose the readout coefficient of absolute value
+at least3/4 as the enlargement coefficient (their sum is3/2). Pay for the
+other nonzero coefficient in m<=N_delta(aX). The product identity and
+112/560 bounds are already proved. Apply scalar_sum_product_alternative
+once actual separation, size and concentration have been obtained.
+
+Then reuse/generalize the second-extraction and fixed-power estimates:
+actual mixed source words have length420, beyond the old n<=283 wrapper.
+Use the general coefficient h^(8802n+4427) and an explicit larger fixed
+margin. The initial R1845 extraction has its separate universal n0+3 cost.
+List all d,eta losses before choosing theta,tau or claiming exponent closure.
+Original profile/frame construction and the analytic/machine endpoints
+remain. Three of six original families formalized; paid padding about60%,
+low confidence. Original paper read-only; no commits/pushes/subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

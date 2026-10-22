@@ -1,0 +1,62 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1871",
+  "target": "Regular recursion206/208: native high-entropy contracting-recursion exclusion with derived time and fixed-machine corollary.",
+  "new_modules": [
+    "ContractingStageClock",
+    "NativeRecursiveLimit",
+    "NativeRegularRecursion"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.ContractingStageClock",
+    "TransposeFollowup.RegularMotion.RegularClockHead",
+    "TransposeFollowup.RegularMotion.clock_family_limit_locally_affine",
+    "TransposeFollowup.RegularMotion.native_regular_limit_not_affine_required",
+    "TransposeFollowup.RegularMotion.HasRegularRecursiveExecutions",
+    "TransposeFollowup.RegularMotion.no_native_fast_regular_recursion",
+    "TransposeFollowup.RegularMotion.no_native_regular_recursion",
+    "TransposeFollowup.RegularMotion.no_uniform_regular_recursion",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.mk",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.V",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.label",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.A",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.E",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.nonneg",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.children",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.root",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.ordered",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.bounded",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.partition",
+    "TransposeFollowup.RegularMotion.ContractingStageClock.budget"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9012,
+      "log": "/private/tmp/r1872-dev3.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10195,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4951,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All terminal. dev1:32362 exit1; dev2:11526 exit0 (9012 jobs); dev3:88254 exit0 (9012 jobs); fullbuild after removing unused wrapper:67075 exit0 (10195 jobs); axioms:31043 exit0 (4951 declarations).",
+  "formal_checkpoint": "R1872 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1014 local sources,204 external sources,4951 declarations,8 configurations,187 artifacts",
+  "proof_scope": "PROGRESS at R1872: the native source208 contracting-recursion exclusion is formalized for high-entropy correct sets, fixed work-head count/cell bits, and nonuniform o(P) state bits, with a fixed-machine corollary. Actual clock budgets derive the linear time bound, and arbitrary eligible execution sequences include popular representatives. Finite initial exceptions are allowed. Five of six original families remain formalized; regular recursion206/208 is about40% complete, low confidence. Exceptional-work integration and exact206 executors remain open.",
+  "next": "R1872 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:\nregular recursion206/208, best estimate40%, low confidence.\n\nThe native source208 contracting-recursion theorem is now complete in\nNativeRegularRecursion.no_native_regular_recursion, with a fixed-machine\ncorollary. Do not re-prove or weaken this endpoint. The sixth family still\nincludes exact206 executors and source210 section35 exceptional recursive work.\n\nNext concrete target: formalize the exceptional-stage extension with the\nGLOBAL exceptional-tick budget eta*P+o(P), obtaining eta>=1/(2*k*G).\nRead source200-affine-return-motion.txt section35 (around1060-1110). All own\nstages, regular and exceptional, still count toward the same node budget;\nregularity applies to regular actual positive-duration occurrences only.\nThe error term must be uniform over the correct input family. Per-node\neta*V only implies eta*C/(1-rho)>=1/(2*k*G); do not confuse the two units.\n\nReuse path: add a Boolean regular/exceptional designation at each padded\nstage key. Extract one common subsequence of flags, endpoints, volumes and\nhalting times by the same countable compact-product theorem. Boolean limits\nare eventually constant at each fixed key, hence simultaneously on every\nfinite shallow set. Do not require a shared designation across inputs.\nThe real omission outside shallow regular stages is bounded by actual\nexceptional ticks/P plus the already proved geometric deep-work tail.\nPass that finite-family bound to the limit using FiniteStageLimits and\nfinite flag stabilization. The required limiting cover defect is <=eta,\nnot an assumed measure bound or setwise convergence of exceptional sets.\n\nGeneralize the cover assembly as needed to preserve a nonzero omission bound:\nlocal finite-affine stage subdivisions discard only null sets; the deep tail\nvanishes. The post-halt interval remains constant. A separate cover for each\nhead with omitted volume<=eta suffices: sum_t omission<=k*eta combined with\nAffineTimeRequired.physical_omission yields the desired threshold. A common\nfinite subdivision across heads is unnecessary. Reuse mathlib measureReal\nmonotonicity/null-sdiff identities and countable null unions; do not recreate\nmeasure regularity/area-formula infrastructure. Retain actual-stage presence\nwhen invoking local regularity, and allow finite initial size exceptions.\n\nNative interfaces now available:\n- ContractingStageClock B J rho a C P T contains V,label,A,E and exact\n  nonneg/children/root/ordered/bounded/partition/budget fields.\n- RegularClockHead clocks hs quantifies existing HasRegularStageSubsequences\n  over each fixed address/stage for one actual raw physical head.\n- HasRegularRecursiveExecutions B J rho a C ns Ms Ws hk includes a finite\n  onset and universal eligible size/input/halting-time sequences; chosen\n  clock families cover all heads. It is not a one-sequence hypothesis.\n- no_native_fast_regular_recursion uses the imported popular trace theorem;\n  no_native_regular_recursion derives fast correctness from pointwise actual\n  clocks. Preserve fixed heads/cell bits, o(P) state bits, high entropy,\n  correct-set membership, and the original raw encode/transpose semantics.\n\nAfter the exceptional-stage theorem, implement exact206 palettes and their\nnative nonuniform executors: row/entry/F3 operations and arbitrary masked bit\nstrides; zero versus positive normalized stride; bounded word composition;\nall copying, seeks, clearing, reset and input/output paid. Source206 allows\nO(P) clock states/O(log P) state bits; public size-dependent schedules need\nno uniform parameter generator. Search existing FixedTapeCompiler/semantic\nroutines before adding machinery. A flat root-only stage clock may reuse the\nnew recursion endpoint once exact executor correctness and regularity hold;\nalternatively the completed finite-affine native obstruction applies directly.\nDo not invent a primitive-classification or search project outside206.\n\nNo fresh subagents until all six formalizations; then user-authorized\nimpartial referees and cleanup. Original read-only; no commits/pushes.\nNo unrestricted transpose decision or novelty claim.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate40% complete (low confidence). The native source208 impossibility result is now formalized; the full sixth family remains incomplete because exceptional-work integration and exact206 executors remain. The five completed families are adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six.",
+  "updated_at": "2026-10-20T23:36:13.373693+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ContractingStageClock.lean": "871253bf8755af02da751d339a2732b3da9f7e3abf9834271aa968d60d19f91d",
+    "lean/TransposeFollowup/NativeRecursiveLimit.lean": "eb4e60d85b93888edf7420865ae05f89b1ad29069c709401c5ea60260365cabe",
+    "lean/TransposeFollowup/NativeRegularRecursion.lean": "5ee33dd6d7f3f8017fedd560bf146edd5c343598de5527d10a0f7581c3f7f048"
+  }
+}

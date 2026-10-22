@@ -1,0 +1,56 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1836",
+  "target": "Retained nilpotent scalar sampling and explicit quantitative comparison gate.",
+  "new_modules": [
+    "NilpotentScalarSample"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.scalarAffine_dist_same_constant",
+    "TransposeFollowup.SL2Projection.nilpotent_scalar_spacing",
+    "TransposeFollowup.SL2Projection.exists_nilpotent_scalar_sample"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 30060,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1837-dev1.log",
+      "reason": "Use definitional-aware rw for the cardinality of the scalar image; simp did not unfold the local coordinate map."
+    },
+    "development_2": {
+      "session_id": 3519,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1837-dev2.log",
+      "warnings": false
+    },
+    "build": {
+      "session_id": 12307,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "verification/build.log",
+      "jobs": 10096,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 61749,
+      "status": "terminal",
+      "log": "verification/axioms.log",
+      "exit_code": 0,
+      "declarations": 4570,
+      "warnings": false
+    }
+  },
+  "terminal_handles": "All R1837 handles terminal. Development1(30060) failed and repaired; development2(3519) passed without warnings. Full build12307 passed10096 jobs; audit61749 passed4570 declarations; no warnings. No live Lake handle.",
+  "updated_at": "2026-10-20T07:30:17.166350+00:00",
+  "formal_checkpoint": "R1837 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:915 local sources,204 external sources,4570 declarations,8 configurations,117 artifacts",
+  "proof_scope": "In progress. R1837 samples the exact nilpotent commuting approximants while preserving their actual source indices. The scalar image is injective, quantitatively separated, and retains the native commuting-cover size up to the existing explicit coarsening loss; its cardinality is also bounded above by that covering number. One new module adds three theorems. A written exponent audit finds no forced ambient-size loss in this sampling step, but normalized scalar concentration is still missing. Localizing the OUTPUT of cubic packing provides the next direct route to that missing hypothesis.",
+  "next": "The preceding goal turn is PROGRESS. R1837 is recorded; never replay its checkpoint. Full10096-job build and4570-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1837-retained-scalar-sample.txt and library-reuse-audit-r1837.json. The exact-approximant scalar sample, cardinality sandwich and separation are proved. No extra epsilon spacing loss is needed; the actual-word error remains charged separately.\n\nNEXT CONCRETE TARGET: output-localized cubic packing, aimed at the missing NORMALIZED concentration of the extracted scalar family. Do not return to an arbitrary scalar density zoom. The R1837 note contains the full written mechanism and the audited constants.\n1. Reuse normalized_cubic_product_dist_error with all exact factors and both centers equal to a_i0=base^-1 X_i0. If the approximant cluster has radius s, actual sources have diameter<=2(s+epsilon). This should give the actual cubic word q in A^142 the radius bound dist(q,v)<=40*(2R)^11*(s+epsilon), where v in A^68. No new telescoping/norm chain is needed.\n2. Refactor cubic_source_word_covering_transfer only as needed to expose its existing internal transport to range(q), or to a specified containing target. Preserve the old theorem as a wrapper. Use the radius-refined target A^142 intersect closedBall(v,...), not the whole A^142. Keep all approximation and right-translation costs.\n3. Reuse cluster_coveringNumber_le_of_multiscale on A^142: its separated distribution inherits from A; its product A^284 has the P(283) envelope; its size has P(141). Prove the normalizations and inclusions, then combine with cubic packing. Seek |cluster|^3<=loss*((s+epsilon)^kappa0*N_eta(A)+1). Only after that, use the global retained-size cube lower bound to cancel N and obtain the scalar profile. Account for the small-cluster/additive1 case and large radii outside the chart.\nThe fixed coordinate map is inverse Lipschitz in the nilpotent case: a scalar ball of radius r corresponds to matrix diameter<=3B*r/L. Use the already proved distance and spacing lemmas. If the selected sample will be used for cubic packing, its sigma must also dominate that packing input-spacing threshold; the R1837 exponent audit includes this stricter choice.\n\nPARAMETER/SCOPE CAUTIONS: the first spanning-extraction error is12800*B0^6*eta/r_initial with B0=4*4^34, not automatically819200*eta/rho from the second extraction. Keep the actual source representation z_i=base^-1 X_i in A^2. The illustrative exponent margin173theta<e/8 is a diagnostic, not a formal closure or a license to choose earlier parameters after later witnesses. Nonnilpotent cases remain necessary. Do not redo the global cubic threshold, scalar ring theorem, trace readouts, weighted separation or sampler.\n\nREPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1837 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NilpotentScalarSample.lean": "705174bbc0fe8f47a48c6578471c8e3975178cb386399750a91ab3d75324fd8a"
+  }
+}

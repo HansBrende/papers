@@ -1,0 +1,2355 @@
+--- before/lean/SupportAxioms.lean
++++ after/lean/SupportAxioms.lean
+@@ -1,3 +1,4 @@
++import TransposeFollowup.TwoStageHelperEntropy
+ import TransposeFollowup.BufferedRowShiftApproximation
+ import TransposeFollowup.IntegerMatrixGeometry
+ import TransposeFollowup.IntegerMatrixPalette
+@@ -220,19 +221,11 @@
+ import TransposeFollowup.CentralizerScalarSumProduct
+ import TransposeFollowup.QuantitativeSpanningExtraction
+ import TransposeFollowup.NilpotentProfileExclusion
+-import TransposeFollowup.NilpotentDyadicTraceGrowth
+ import TransposeFollowup.NilpotentExtractionParameters
+ import TransposeFollowup.ScalarDyadicBudgets
+-import TransposeFollowup.NilpotentSourceSample
+ import TransposeFollowup.CubicSampleNormalization
+-import TransposeFollowup.NilpotentScalarConcentration
+ import TransposeFollowup.CubicSourceWordLocality
+ import TransposeFollowup.PowerClusterConcentration
+-import TransposeFollowup.NilpotentScalarSample
+-import TransposeFollowup.NilpotentWordGeometry
+-import TransposeFollowup.ShiftedCentralizerTrace
+-import TransposeFollowup.NilpotentTraceCells
+-import TransposeFollowup.NilpotentActualTraceGrowth
+ import TransposeFollowup.PopularRowIntersections
+ import TransposeFollowup.OverlappingRowRuzsa
+ import TransposeFollowup.RoundedDilateProjections
+@@ -268,7 +261,6 @@
+ import TransposeFollowup.FiniteTranslateCover
+ import TransposeFollowup.ApproximatePowerCover
+ import TransposeFollowup.LocalizedFixedProductEnvelope
+-import TransposeFollowup.TrimmedSpanningTrace
+ import TransposeFollowup.SL2NearIdentityProducts
+ import TransposeFollowup.SpanningCommutingExtraction
+ import TransposeFollowup.FinitePieceCoverBounds
+@@ -5411,7 +5403,6 @@
+ #print axioms TransposeFollowup.exists_separation_window_threshold
+ #print axioms TransposeFollowup.separated_power_absorption
+ #print axioms TransposeFollowup.RationalFreePair.exists_iterate_separated_subset
+-#print axioms TransposeFollowup.RationalFreePair.exists_initial_walk_distribution
+ #print axioms TransposeFollowup.covering_level_log_bound_of_powers
+ 
+ -- R1810: actual bounded-word extraction and normalized power-law cardinality.
+@@ -5419,7 +5410,6 @@
+ #print axioms TransposeFollowup.RationalFreePair.exists_short_words_of_smoothed_walk_mass
+ #print axioms TransposeFollowup.RationalFreePair.exists_normalized_short_words_of_smoothed_walk_mass
+ #print axioms TransposeFollowup.RationalFreePair.exists_iterate_normalized_short_words
+-#print axioms TransposeFollowup.RationalFreePair.exists_iterate_large_short_words
+ 
+ -- R1811: cyclic centralizers, quadratic exceptional counts, and actual rational bicommutators.
+ #print axioms TransposeFollowup.FreeWordFamily.exponent_le_norm_pow
+@@ -5486,9 +5476,7 @@
+ #print axioms TransposeFollowup.RationalFreePair.initial_escape_gap_of_short_index
+ #print axioms TransposeFollowup.RationalFreePair.exists_escape_prefactor_threshold
+ #print axioms TransposeFollowup.RationalFreePair.hom_family_complex_escape
+-#print axioms TransposeFollowup.RationalFreePair.exists_iterate_small_exponent_escape
+ #print axioms TransposeFollowup.RationalFreePair.exists_iterate_scaled_short_words
+-#print axioms TransposeFollowup.RationalFreePair.exists_initial_walk_distribution_escape
+ 
+ -- R1815: quantitative spanning in the same localized set, including trace two.
+ #print axioms TransposeFollowup.SL2Escape.pairSpanMatrix
+@@ -5595,14 +5583,12 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_finite_center_trimming_at_dyadic_scale
+ 
+ -- R1822: same-frame trimming and actual separated near-identity commuting extraction.
+-#print axioms TransposeFollowup.SL2Projection.exists_trimmed_trace_at_dyadic_scale
+ #print axioms TransposeFollowup.SL2Projection.mobiusIdentityBall_iff_frobenius_dist
+ #print axioms TransposeFollowup.SL2Projection.set_pow_dist_from_one_le
+ #print axioms TransposeFollowup.SL2Projection.dist_normalized_from_one_le
+ #print axioms TransposeFollowup.SL2Projection.dist_le_normalized_from_one
+ #print axioms TransposeFollowup.SL2Projection.normalized_subset_geometry
+ #print axioms TransposeFollowup.SL2Projection.normalized_mixed_product_subset_power
+-#print axioms TransposeFollowup.SL2Projection.exists_spanning_commuting_extraction_at_dyadic_scale
+ 
+ -- R1823: actual finite-translate powers and the fixed-product polynomial envelope.
+ #print axioms TransposeFollowup.SL2Projection.left_translate_coveringNumber_le
+@@ -5723,25 +5709,11 @@
+ 
+ -- R1835: actual nilpotent trace amplification and shared word-error calculation.
+ #print axioms TransposeFollowup.SL2Projection.two_source_trace_word_errors
+-#print axioms TransposeFollowup.SL2Projection.scalarAffine_repeated_trace
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_shifted_trace_arithmetic
+-#print axioms TransposeFollowup.SL2Projection.scalar_cells_le_affine_near
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_actual_trace_cells
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_actual_trace_growth
+ 
+ -- R1836: uniform weighted-trace separation and scalar range from actual geometry.
+ #print axioms TransposeFollowup.SL2Projection.two_source_word_distances
+-#print axioms TransposeFollowup.SL2Projection.weighted_trace_error_le
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_weighted_trace_words
+-#print axioms TransposeFollowup.SL2Projection.weighted_trace_distance_lower_bound
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_actual_words_far
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_trace_coordinate_range
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_actual_word_families_geometry
+ 
+ -- R1837: retain source witnesses while sampling separated scalar coordinates.
+-#print axioms TransposeFollowup.SL2Projection.scalarAffine_dist_same_constant
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_scalar_spacing
+-#print axioms TransposeFollowup.SL2Projection.exists_nilpotent_scalar_sample
+ 
+ -- R1838: output-localized cubic packing and actual-power local concentration.
+ #print axioms TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer_to_set
+@@ -5754,14 +5726,11 @@
+ #print axioms TransposeFollowup.SL2Projection.finite_source_cluster_cubic_bound
+ 
+ -- R1839: normalize ball counts on the same retained nilpotent scalar sample.
+-#print axioms TransposeFollowup.SL2Projection.scalar_coordinate_abs_sub
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_scalar_ball_diameter
+ #print axioms TransposeFollowup.SL2Projection.scalarBallMass_image
+ #print axioms TransposeFollowup.SL2Projection.spanning_cube_sample_normalization
+ #print axioms TransposeFollowup.SL2Projection.coveringNumber_lower_of_distribution
+ #print axioms TransposeFollowup.SL2Projection.one_le_scaled_cover_of_lower
+ #print axioms TransposeFollowup.SL2Projection.normalized_count_of_cubic
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_scalar_sample_concentration
+ 
+ -- R1840: actual positive sample, upper size, uniform dyadic budgets and power envelopes.
+ #print axioms TransposeFollowup.SL2Projection.exists_dyadic_power_comparison
+@@ -5769,7 +5738,6 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_scalar_growth_budget_scale
+ #print axioms TransposeFollowup.SL2Projection.nilpotent_scalar_exponent_margins
+ #print axioms TransposeFollowup.SL2Projection.sample_cardinality_upper_of_cubic
+-#print axioms TransposeFollowup.SL2Projection.exists_actual_nilpotent_scalar_sample
+ #print axioms TransposeFollowup.SL2Projection.fixed_power_coefficient_bound
+ #print axioms TransposeFollowup.SL2Projection.localized_fixed_power_coveringNumber_envelope
+ 
+@@ -5781,17 +5749,13 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_first_extraction_size_constant
+ 
+ -- R1842: one actual sample and uniform actual-word trace growth.
+-#print axioms TransposeFollowup.SL2Projection.exists_nilpotent_sample_bounds
+-#print axioms TransposeFollowup.SL2Projection.exists_nilpotent_dyadic_trace_growth
+ 
+ -- R1843: full profile coefficients and actual nilpotent branch exclusion.
+ #print axioms TransposeFollowup.SL2Projection.exists_scaled_extraction_parameters
+ #print axioms TransposeFollowup.SL2Projection.profile_power_exponent_bound
+ #print axioms TransposeFollowup.SL2Projection.full_trace_coefficient_power_bound
+ #print axioms TransposeFollowup.SL2Projection.exists_reextracted_trace_power_bound
+-#print axioms TransposeFollowup.SL2Projection.exists_spanning_retention_power_constant
+ #print axioms TransposeFollowup.SL2Projection.cubic_trace_budget_contradiction
+-#print axioms TransposeFollowup.SL2Projection.exists_nilpotent_first_extraction_exclusion
+ 
+ -- R1844: produce the original family and exclude its nilpotent generator.
+ 
+@@ -7657,3 +7621,9 @@
+ #print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions
+ #print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions.to_global
+ #print axioms TransposeFollowup.RegularMotion.native_node_budget_recursion_bound
++
++#print axioms TransposeFollowup.TwoStageHelper.attainedHelper
++
++#print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound
++
++#print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound
+--- before/lean/TransposeFollowup/AdaptiveTreewidth.lean
++++ after/lean/TransposeFollowup/AdaptiveTreewidth.lean
+@@ -53,7 +53,7 @@
+   exact (mul_le_mul_of_nonneg_left hbase (by positivity : 0 ≤ (L : ℝ) + 1)).trans hsep
+ 
+ /-- With P=n²b, D=P-log₂|F| and η=(D+H(Z))/P, expected cost at most
+-(1-ε)P forces E tw(G) ≥ (n/4)(ε-2η)₊²-1. This strengthens the written
++(1-ε)P forces E tw(G) ≥ (n/4)(ε-2η)₊²+(ε-2η)₊/2-1. This strengthens the written
+ 188 corollary's coefficient 1/9 and removes its additive 1/n rounding loss.
+ Queries may depend on arbitrarily many original rows; each support contributes
+ a clique to the public interaction graph. Coded-workspace access is not assumed. -/
+@@ -65,7 +65,11 @@
+       (n : ℝ) / 4 * (max (ε - 2 *
+         (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
+           observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
+-            (n * n * b : ℕ))) 0) ^ 2 - 1 := by
++            (n * n * b : ℕ))) 0) ^ 2 +
++      max (ε - 2 *
++        (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
++          observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
++            (n * n * b : ℕ))) 0 / 2 - 1 := by
+   let P : ℝ := (n * n * b : ℕ)
+   let D : ℝ := P - Real.log (F.card : ℝ) / Real.log 2
+   let HZ : ℝ := observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2
+@@ -102,7 +106,7 @@
+     exact (mul_le_mul_iff_right₀ (mul_pos hbR hnR)).mp hcancel
+   have hfinal := quadratic_bound_of_integer_tests (n : ℝ) (E + 1) a hnR
+     (by linarith) htests
+-  change E ≥ (n : ℝ) / 4 * (max a 0) ^ 2 - 1
++  change E ≥ (n : ℝ) / 4 * (max a 0) ^ 2 + max a 0 / 2 - 1
+   linarith
+ 
+ end Protocol
+--- before/lean/TransposeFollowup/InitialWalkDistribution.lean
++++ after/lean/TransposeFollowup/InitialWalkDistribution.lean
+@@ -177,189 +177,5 @@
+       hU1 hUo hUi (fun a ha => hUb (subset_closure ha)) hQ hα hαone x hx hEscapeMargin
+       hlarge hlevelscale hQscale hαscale hmass
+ 
+-theorem exists_initial_walk_distribution_escape {α γ β ε ζ : ℝ}
+-    (hα : 0 < α) (hαone : α ≤ 1) (hγ : 0 < γ) (hβ : 0 < β) (hε : 0 < ε) (hζ : 0 < ζ) :
+-    ∃ s : ℝ, 0 < s ∧ s ≤ 1 ∧ 30000 * s ≤ (1 / 61440 : ℝ) / 2 ∧
+-      30000 * s ≤ γ / 2 ∧ 30000 * s ≤ β ∧ 1140 * s ≤ ε / 61440 ∧
+-    ∀ k : ℕ, ∃ N₀ J₀ : ℕ, 0 < N₀ ∧
+-    ∀ r : ℕ, 5 ≤ r → ∃ g : Fin (2 ^ (3 * r)) → Group,
+-      Function.Injective (FreeGroup.lift g) ∧
+-      Function.Injective (FreeGroup.lift (realEmbedding ∘ g)) ∧
+-      (Finset.univ.image g).card = 2 ^ (3 * r) ∧
+-      (Finset.univ.image (realEmbedding ∘ g)).card = 2 ^ (3 * r) ∧
+-      (∀ t, HasDenominator (dyadicDenominator r) (g t) ∧
+-        realEmbedding (g t) ∈ mobiusIdentityBall (dyadicRadius r) ∧
+-        (realEmbedding (g t))⁻¹ ∈ mobiusIdentityBall (dyadicRadius r)) ∧
+-    ∃ Jr : ℕ, max J₀ (7680 * r) ≤ Jr ∧
+-    ∀ N j ell i : ℕ, N₀ ≤ N → Jr ≤ j → 2 * N * ell ≤ j →
+-      Real.log (1 / (1 / 4 : ℝ) ^ j) / Real.log (1 / dyadicRadius r) < (ell : ℝ) → i ≤ k →
+-    let η := (1 / 4 : ℝ) ^ j
+-    let μ := generatorWalkMeasure (realEmbedding ∘ g) ell
+-    let B := 4 * (4 : ℝ) ^ ell
+-    let C := η ^ (-3 + 1 / 61440 : ℝ)
+-    ENNReal.ofReal (η ^ (-γ)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    ENNReal.ofReal (η ^ s) *
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η (i + 1) x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    let θ := η ^ s
+-    let H : Measure RealMobius.Group := Measure.haar
+-    let f := smoothedAutocorrelationIterate μ η i
+-    let V := ∫⁻ x, f x ^ 2 ∂H
+-    let q := ENNReal.ofReal θ
+-    let R := (4 * B ^ 2) ^ (2 ^ i)
+-    let Q := 32 * (R + 1) ^ 6
+-    let M := ENNReal.ofReal (33 ^ 4 * Q ^ 8 / α ^ 4)
+-    let ι := fun g : RealMobius.Group => (g : Matrix (Fin 2) (Fin 2) ℝ)
+-    0 < V ∧ V < ⊤ ∧
+-    ∃ N_level : ℕ, 0 < N_level ∧ (N_level : ℝ) ≤ 1 + Real.logb 2 (max 1 (16 * C / (θ * V.toReal))) ∧
+-      let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-      let L := 8 * (K₀ ^ 2 / q ^ 2)
+-      let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-      let A₆ := ENNReal.ofReal ((2 ^ 21 + 1) ^ 4 * Q ^ 52)
+-      let D := 393216 ^ 4 * A₆ * (2 ^ 68 * K₀ * L ^ 2 * K ^ 100) * M
+-      ∃ (U : Set RealMobius.Group) (Y : Finset RealMobius.Group) (x : RealMobius.Group),
+-        1 ∈ U ∧ IsOpen U ∧ U⁻¹ = U ∧ IsCompact (closure U) ∧
+-        closure U ⊆ matrixEntryBox Q ∧ 0 < H U ∧ H U < ⊤ ∧
+-        (Y : Set RealMobius.Group) ⊆ U ^ 2 ∧ (Y : Set RealMobius.Group)⁻¹ = (Y : Set RealMobius.Group) ∧
+-        (Y.card : ℝ≥0∞) ≤ 512 * K ^ 16 ∧ U ^ 2 ⊆ (Y : Set RealMobius.Group) * U ∧
+-        IsApproximateSubgroup (512 * K ^ 16).toReal U ∧ x ∈ matrixEntryBox (R + 1) ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * V * H U ∧ q * V * H U ≤ 16 * K ^ 7 * K₀ ∧
+-        q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (H.withDensity f) (x • U) ∧
+-        let A := U ^ 2 ∩ mobiusIdentityBall α
+-        let nA : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' A)
+-        let n₃ : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' (A ^ 3))
+-        1 ∈ A ∧ IsOpen A ∧ A⁻¹ = A ∧ IsCompact (closure A) ∧
+-        closure A ⊆ matrixEntryBox 2 ∧ 0 < H A ∧ H A < ⊤ ∧ A ^ 3 ⊆ U ^ 6 ∧
+-        H U ≤ M * H A ∧ H A ≤ 512 * K ^ 16 * H U ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * M * V * H A ∧ q * V * H A ≤ 8192 * K₀ * K ^ 23 ∧
+-        0 < nA ∧ nA ≤ n₃ ∧ n₃ < ⊤ ∧
+-        n₃ * q ^ 2 ≤ 6561 * D * nA ∧
+-        q ≤ 128 * 6561 * 393216 ^ 4 * K₀ * K * L ^ 2 * M * V * nA * H (mobiusIdentityBall η) ∧
+-        nA * q ^ 3 * V * H (mobiusIdentityBall η) ≤ A₆ * 2 ^ 72 * K₀ ^ 2 * L ^ 2 * K ^ 107 ∧
+-        η ^ (-(1 / 61440 : ℝ) / 2) ≤ nA.toReal ∧ nA.toReal ≤ η ^ (-3 + γ / 2) ∧
+-        n₃.toReal ≤ η ^ (-β) * nA.toReal ∧
+-        (∀ t : ℕ, t ≤ ell → ∃ w ∈ matrixEntryBox (4 * R * (R + 1) * Q),
+-          q ^ 2 ≤ 16384 * K₀ * L ^ 2 * K ^ 4 * M *
+-            (generatorWalkMeasure (realEmbedding ∘ g) t ∗ₘ mobiusHaarKernel η) (w • A)) ∧
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ F : Finset RealMobius.Group, (F : Set RealMobius.Group) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) (ι '' (F : Set RealMobius.Group)) ∧
+-            ρ ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ)) ∧
+-        ∀ P : (Matrix (Fin 2) (Fin 2) ℂ)ˣ, ∃ h ∈ A ^ 4, η ^ ζ ≤
+-          ‖SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 0 1 *
+-            SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 1 0‖ := by
+-  obtain ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, hall⟩ :=
+-    exists_initial_walk_spanning hα hαone hγ hβ hε hζ
+-  refine ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, ?_⟩
+-  intro k
+-  obtain ⟨N₀, J₀, hN₀, hfamily⟩ := hall k
+-  refine ⟨N₀, J₀, hN₀, ?_⟩
+-  intro r hr
+-  obtain ⟨g, hg, hgr, hcard, hcardr, hnear, Jr, hJr, hrest⟩ := hfamily r hr
+-  refine ⟨g, hg, hgr, hcard, hcardr, hnear, Jr, hJr, ?_⟩
+-  intro N j ell i hN hj hell hlog hi
+-  dsimp only
+-  intro henergy hnonflat
+-  obtain ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-      hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-      hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-      hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort, hsep, hescape, _hspan⟩ :=
+-    hrest N j ell i hN hj hell hlog hi henergy hnonflat
+-  exact ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-    hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-    hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-    hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort, hsep, hescape⟩
+-
+-theorem exists_initial_walk_distribution {α γ β ε : ℝ}
+-    (hα : 0 < α) (hαone : α ≤ 1) (hγ : 0 < γ) (hβ : 0 < β) (hε : 0 < ε) :
+-    ∃ s : ℝ, 0 < s ∧ s ≤ 1 ∧ 30000 * s ≤ (1 / 61440 : ℝ) / 2 ∧
+-      30000 * s ≤ γ / 2 ∧ 30000 * s ≤ β ∧ 1140 * s ≤ ε / 61440 ∧
+-    ∀ k : ℕ, ∃ N₀ J₀ : ℕ, 0 < N₀ ∧
+-    ∀ r : ℕ, 5 ≤ r → ∃ g : Fin (2 ^ (3 * r)) → Group,
+-      Function.Injective (FreeGroup.lift g) ∧
+-      Function.Injective (FreeGroup.lift (realEmbedding ∘ g)) ∧
+-      (Finset.univ.image g).card = 2 ^ (3 * r) ∧
+-      (Finset.univ.image (realEmbedding ∘ g)).card = 2 ^ (3 * r) ∧
+-      (∀ t, HasDenominator (dyadicDenominator r) (g t) ∧
+-        realEmbedding (g t) ∈ mobiusIdentityBall (dyadicRadius r) ∧
+-        (realEmbedding (g t))⁻¹ ∈ mobiusIdentityBall (dyadicRadius r)) ∧
+-    ∃ Jr : ℕ, max J₀ (7680 * r) ≤ Jr ∧
+-    ∀ N j ell i : ℕ, N₀ ≤ N → Jr ≤ j → 2 * N * ell ≤ j →
+-      Real.log (1 / (1 / 4 : ℝ) ^ j) / Real.log (1 / dyadicRadius r) < (ell : ℝ) → i ≤ k →
+-    let η := (1 / 4 : ℝ) ^ j
+-    let μ := generatorWalkMeasure (realEmbedding ∘ g) ell
+-    let B := 4 * (4 : ℝ) ^ ell
+-    let C := η ^ (-3 + 1 / 61440 : ℝ)
+-    ENNReal.ofReal (η ^ (-γ)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    ENNReal.ofReal (η ^ s) *
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η i x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) ≤
+-      (∫⁻ x, smoothedAutocorrelationIterate μ η (i + 1) x ^ 2 ∂(Measure.haar : Measure RealMobius.Group)) →
+-    let θ := η ^ s
+-    let H : Measure RealMobius.Group := Measure.haar
+-    let f := smoothedAutocorrelationIterate μ η i
+-    let V := ∫⁻ x, f x ^ 2 ∂H
+-    let q := ENNReal.ofReal θ
+-    let R := (4 * B ^ 2) ^ (2 ^ i)
+-    let Q := 32 * (R + 1) ^ 6
+-    let M := ENNReal.ofReal (33 ^ 4 * Q ^ 8 / α ^ 4)
+-    let ι := fun g : RealMobius.Group => (g : Matrix (Fin 2) (Fin 2) ℝ)
+-    0 < V ∧ V < ⊤ ∧
+-    ∃ N_level : ℕ, 0 < N_level ∧ (N_level : ℝ) ≤ 1 + Real.logb 2 (max 1 (16 * C / (θ * V.toReal))) ∧
+-      let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-      let L := 8 * (K₀ ^ 2 / q ^ 2)
+-      let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-      let A₆ := ENNReal.ofReal ((2 ^ 21 + 1) ^ 4 * Q ^ 52)
+-      let D := 393216 ^ 4 * A₆ * (2 ^ 68 * K₀ * L ^ 2 * K ^ 100) * M
+-      ∃ (U : Set RealMobius.Group) (Y : Finset RealMobius.Group) (x : RealMobius.Group),
+-        1 ∈ U ∧ IsOpen U ∧ U⁻¹ = U ∧ IsCompact (closure U) ∧
+-        closure U ⊆ matrixEntryBox Q ∧ 0 < H U ∧ H U < ⊤ ∧
+-        (Y : Set RealMobius.Group) ⊆ U ^ 2 ∧ (Y : Set RealMobius.Group)⁻¹ = (Y : Set RealMobius.Group) ∧
+-        (Y.card : ℝ≥0∞) ≤ 512 * K ^ 16 ∧ U ^ 2 ⊆ (Y : Set RealMobius.Group) * U ∧
+-        IsApproximateSubgroup (512 * K ^ 16).toReal U ∧ x ∈ matrixEntryBox (R + 1) ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * V * H U ∧ q * V * H U ≤ 16 * K ^ 7 * K₀ ∧
+-        q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (H.withDensity f) (x • U) ∧
+-        let A := U ^ 2 ∩ mobiusIdentityBall α
+-        let nA : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' A)
+-        let n₃ : ℝ≥0∞ := Metric.externalCoveringNumber ⟨η, (by positivity : 0 ≤ η)⟩ (ι '' (A ^ 3))
+-        1 ∈ A ∧ IsOpen A ∧ A⁻¹ = A ∧ IsCompact (closure A) ∧
+-        closure A ⊆ matrixEntryBox 2 ∧ 0 < H A ∧ H A < ⊤ ∧ A ^ 3 ⊆ U ^ 6 ∧
+-        H U ≤ M * H A ∧ H A ≤ 512 * K ^ 16 * H U ∧
+-        q ≤ 128 * K₀ * K * L ^ 2 * M * V * H A ∧ q * V * H A ≤ 8192 * K₀ * K ^ 23 ∧
+-        0 < nA ∧ nA ≤ n₃ ∧ n₃ < ⊤ ∧
+-        n₃ * q ^ 2 ≤ 6561 * D * nA ∧
+-        q ≤ 128 * 6561 * 393216 ^ 4 * K₀ * K * L ^ 2 * M * V * nA * H (mobiusIdentityBall η) ∧
+-        nA * q ^ 3 * V * H (mobiusIdentityBall η) ≤ A₆ * 2 ^ 72 * K₀ ^ 2 * L ^ 2 * K ^ 107 ∧
+-        η ^ (-(1 / 61440 : ℝ) / 2) ≤ nA.toReal ∧ nA.toReal ≤ η ^ (-3 + γ / 2) ∧
+-        n₃.toReal ≤ η ^ (-β) * nA.toReal ∧
+-        (∀ t : ℕ, t ≤ ell → ∃ w ∈ matrixEntryBox (4 * R * (R + 1) * Q),
+-          q ^ 2 ≤ 16384 * K₀ * L ^ 2 * K ^ 4 * M *
+-            (generatorWalkMeasure (realEmbedding ∘ g) t ∗ₘ mobiusHaarKernel η) (w • A)) ∧
+-        ∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ F : Finset RealMobius.Group, (F : Set RealMobius.Group) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) (ι '' (F : Set RealMobius.Group)) ∧
+-            ρ ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ) := by
+-  obtain ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, hall⟩ :=
+-    exists_initial_walk_distribution_escape hα hαone hγ hβ hε (by norm_num : (0 : ℝ) < 1)
+-  refine ⟨s, hs, hsone, hsk, hsg, hsb, hmargin, ?_⟩
+-  intro k
+-  obtain ⟨N₀, J₀, hN₀, hfamily⟩ := hall k
+-  refine ⟨N₀, J₀, hN₀, ?_⟩
+-  intro r hr
+-  obtain ⟨g, hg, hgr, hcard, hcardr, hnear, Jr, hJr, hrest⟩ := hfamily r hr
+-  refine ⟨g, hg, hgr, hcard, hcardr, hnear, Jr, hJr, ?_⟩
+-  intro N j ell i hN hj hell hlog hi
+-  dsimp only
+-  intro henergy hnonflat
+-  obtain ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-      hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-      hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-      hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort, hsep, _hescape⟩ :=
+-    hrest N j ell i hN hj hell hlog hi henergy hnonflat
+-  exact ⟨hV0, hVt, N_level, hNl, hlevel, U, Y, x, hU1, hUo, hUi, hUc, hUb, hU0, hUt,
+-    hYs, hYi, hYcard, hYcov, happrox, hx, hVlo, hVhi, hmass,
+-    hA1, hAo, hAi, hAc, hAb, hA0, hAt, hA3, hHlo, hHhi, hVAlo, hVAhi,
+-    hnA0, hnA3, hn3t, htrip, hlo, hhi, hsizeLo, hsizeHi, hsmalltrip, hshort, hsep⟩
+ 
+ end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/NilpotentActualTraceGrowth.lean
++++ after/lean/TransposeFollowup/NilpotentActualTraceGrowth.lean
+@@ -1,111 +0,0 @@
+-import TransposeFollowup.NilpotentTraceCells
+-import TransposeFollowup.ScalarMetricBridge
+-
+-/-! The scalar sum/product alternative yields growth in the trace cells
+-of actual bounded words in the nilpotent case. Scalar range, separation,
+-distribution and quantitative budgets remain explicit input obligations. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix OAI.Falconer
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem nilpotent_actual_trace_growth {κ : ℝ} (hκ : 0 < κ) (hκone : κ ≤ 1) :
+-    ∃ ε₀ : ℝ, ∃ J : ℕ, 0 < ε₀ ∧ ε₀ ≤ 1 ∧ 0 < J ∧ ∀ j : ℕ, J ≤ j →
+-      let δ := (1 / 2 : ℝ) ^ j
+-      let δn : ℝ≥0 := ⟨δ, by positivity⟩
+-      let W := Real.exp (ε₀ * ((j + 1 : ℕ) : ℝ) * Real.log 2)
+-      ∀ K C : ℝ, 1 ≤ K → 1 ≤ C →
+-      109760 * K ^ 4 ≤ W → (2 : ℝ) ^ (2 * κ) * C ≤ W →
+-      (2 : ℝ) ^ (2 * κ) * (2 * K * C * (2 : ℝ) ^ (2 * κ)) ≤ W →
+-      ∀ {ι : Type*} [DecidableEq ι] (I : Finset ι) (b : RMat) (u z : ι → G) (c t : ι → ℝ) (g : G)
+-        (A : Set G) (m n : ℕ) (R ε : ℝ), I.Nonempty →
+-      1 ≤ R → 0 ≤ ε → Matrix.trace b = 0 → b.det = 0 →
+-      (∀ i ∈ I, (u i : RMat) = scalarAffine b (c i) (t i)) →
+-      (∀ i ∈ I, 1 / 2 ≤ c i) →
+-      (∀ i ∈ I, ∀ l k, |u i l k| ≤ R) →
+-      (∀ i ∈ I, ∀ l k, |z i l k| ≤ R) → (∀ l k, |g l k| ≤ R) →
+-      (∀ i ∈ I, dist (u i : RMat) (z i : RMat) ≤ ε) →
+-      32 * R ^ 3 * ε ≤ δ → (∀ i ∈ I, z i ∈ A ^ m) → g ∈ A ^ n →
+-      let X := I.image (fun i => (2 / 3 : ℝ) *
+-        (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i))
+-      (∀ x ∈ X, 1 ≤ x ∧ x ≤ 2) →
+-      (∀ x ∈ X, ∀ y ∈ X, x ≠ y → δ ≤ |x - y|) →
+-      Real.log (X.card : ℝ) ≤ (1 - κ) * (j : ℝ) * Real.log 2 →
+-      (∀ v r : ℝ, δ ≤ r → r ≤ 1 →
+-        scalarBallMass X v r ≤ C * r ^ (2 * κ) * X.card) →
+-      let Dadd := (I ×ˢ I).image (fun ij => z ij.1 * z ij.2 * g)
+-      let Dmul := (I ×ˢ I).image (fun ij => z ij.1 * g * z ij.2 * g)
+-      (Dadd : Set G) ⊆ A ^ (2 * m + n) ∧ (Dmul : Set G) ⊆ A ^ (2 * m + 2 * n) ∧
+-        (K * X.card < 250 * (Metric.externalCoveringNumber δn
+-          ((Dadd.image (fun w : G => Matrix.trace (w : RMat))) : Set ℝ) : ℝ≥0∞).toReal ∨
+-          K * X.card < 250 * (Metric.externalCoveringNumber δn
+-            ((Dmul.image (fun w : G => Matrix.trace (w : RMat))) : Set ℝ) : ℝ≥0∞).toReal) := by
+-  classical
+-  obtain ⟨ε₀, J, hε₀, hJ, hscalar⟩ := ScalarMetric.scalar_sum_product_alternative hκ hκone
+-  let e := min ε₀ 1
+-  have he : 0 < e := lt_min hε₀ zero_lt_one
+-  have heε : e ≤ ε₀ := min_le_left _ _
+-  refine ⟨e, J, he, min_le_right _ _, hJ, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro K C hK hC hprojBudget hpointBudget hcoeffBudget
+-    ι _ I b u z c t g A m n R ε hI hR hε hb hbd hform hc hu hz hg he herror hzA hgA hbound hsep hsize hball
+-  let δ := (1 / 2 : ℝ) ^ j
+-  let X := I.image (fun i => (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i))
+-  let Dadd := (I ×ˢ I).image (fun ij => z ij.1 * z ij.2 * g)
+-  let Dmul := (I ×ˢ I).image (fun ij => z ij.1 * g * z ij.2 * g)
+-  have hW : Real.exp (e * ((j + 1 : ℕ) : ℝ) * Real.log 2) ≤
+-      Real.exp (ε₀ * ((j + 1 : ℕ) : ℝ) * Real.log 2) := by
+-    apply Real.exp_le_exp.mpr
+-    exact mul_le_mul_of_nonneg_right
+-      (mul_le_mul_of_nonneg_right heε (Nat.cast_nonneg _)) (Real.log_nonneg (by norm_num))
+-  have hgrowth := hscalar j hj K C hK hC
+-    (hprojBudget.trans hW) (hpointBudget.trans hW) (hcoeffBudget.trans hW)
+-    X (hI.image _) hbound hsep hsize hball
+-  obtain ⟨hadd, hmul⟩ := nilpotent_actual_trace_cells I b u z c t g
+-    (by positivity : 0 < δ) hR hε hb hbd hform hc hu hz hg he herror
+-  have hadd' : ((scalarCells δ (X + X)).card : ℝ) ≤
+-      50 * ((scalarCells δ (Dadd.image (fun w : G => Matrix.trace (w : RMat)))).card : ℝ) := by
+-    have hn : (scalarCells δ (X + X)).card ≤
+-        50 * (scalarCells δ (Dadd.image (fun w : G => Matrix.trace (w : RMat)))).card := by
+-      simpa only [X, Dadd, Finset.image_image, Function.comp_def] using hadd
+-    exact_mod_cast hn
+-  have hmul' : ((scalarCells δ (X * X)).card : ℝ) ≤
+-      50 * ((scalarCells δ (Dmul.image (fun w : G => Matrix.trace (w : RMat)))).card : ℝ) := by
+-    have hn : (scalarCells δ (X * X)).card ≤
+-        50 * (scalarCells δ (Dmul.image (fun w : G => Matrix.trace (w : RMat)))).card := by
+-      simpa only [X, Dmul, Finset.image_image, Function.comp_def] using hmul
+-    exact_mod_cast hn
+-  have hm {x y : G} {k l : ℕ} (hx : x ∈ A ^ k) (hy : y ∈ A ^ l) :
+-      x * y ∈ A ^ (k + l) := by
+-    rw [pow_add]
+-    exact Set.mul_mem_mul hx hy
+-  refine ⟨?_, ?_, ?_⟩
+-  · intro w hw
+-    obtain ⟨⟨i, l⟩, hil, rfl⟩ := Finset.mem_image.mp hw
+-    obtain ⟨hi, hl⟩ := Finset.mem_product.mp hil
+-    simpa only [show m + m + n = 2 * m + n by omega] using hm (hm (hzA i hi) (hzA l hl)) hgA
+-  · intro w hw
+-    obtain ⟨⟨i, l⟩, hil, rfl⟩ := Finset.mem_image.mp hw
+-    obtain ⟨hi, hl⟩ := Finset.mem_product.mp hil
+-    simpa only [show m + n + m + n = 2 * m + 2 * n by omega] using
+-      hm (hm (hm (hzA i hi) hgA) (hzA l hl)) hgA
+-  · have hd : 0 < (⟨δ, by positivity⟩ : ℝ≥0) := by
+-      change 0 < δ
+-      positivity
+-    rcases hgrowth with h | h
+-    · have hcells := ScalarMetric.scalarCells_card_le_externalCoveringNumber hd
+-        (Dadd.image (fun w : G => Matrix.trace (w : RMat)))
+-      apply Or.inl
+-      exact (h.trans_le hadd').trans_le (by
+-        convert mul_le_mul_of_nonneg_left hcells (by norm_num : (0 : ℝ) ≤ 50) using 1 <;> first | rfl | ring)
+-    · have hcells := ScalarMetric.scalarCells_card_le_externalCoveringNumber hd
+-        (Dmul.image (fun w : G => Matrix.trace (w : RMat)))
+-      apply Or.inr
+-      exact (h.trans_le hmul').trans_le (by
+-        convert mul_le_mul_of_nonneg_left hcells (by norm_num : (0 : ℝ) ≤ 50) using 1 <;> first | rfl | ring)
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentDyadicTraceGrowth.lean
++++ after/lean/TransposeFollowup/NilpotentDyadicTraceGrowth.lean
+@@ -1,236 +0,0 @@
+-import TransposeFollowup.NilpotentSampleApplication
+-import TransposeFollowup.NilpotentActualTraceGrowth
+-import TransposeFollowup.ScalarDyadicBudgets
+-
+-/-! Uniform actual-word trace growth from the first extracted nilpotent
+-family. All numerical, scalar concentration and sampling obligations are
+-paid before the matrix scale and source family are chosen. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-local notation "H₀" => (4 : ℝ) ^ 34
+-local notation "B₀" => 4 * H₀
+-local notation "R₀" => (4 : ℝ) ^ 68
+-
+-theorem exists_nilpotent_dyadic_trace_growth {κ₀ : ℝ}
+-    (hκ₀ : 0 < κ₀) (hκ₀one : κ₀ ≤ 1) :
+-    ∃ θ gain α₀ a s l e : ℝ, ∃ J : ℕ,
+-      0 < θ ∧ θ < 1 / 2 ∧ θ ≤ κ₀ / 4096 ∧ 256 * θ < gain ∧
+-      0 < α₀ ∧ 0 < a ∧ 0 < s ∧ 0 < l ∧ 0 < e ∧
+-      a = 1 / (2 * H₀) ∧ l = a / (9216 * H₀ ^ 4) ∧ e = 12800 * B₀ ^ 6 / a ∧
+-      ∀ j : ℕ, J ≤ j →
+-        let η := (1 / 4 : ℝ) ^ j
+-        let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-        let r₀ := a * η ^ (2 * θ)
+-        let ε := e * η ^ (1 - 2 * θ)
+-        let L := l * η ^ (3 * θ)
+-        let H := (102400 * B₀ ^ 7 / r₀ + 8 * B₀ + 1) ^ 4
+-        ∃ k : ℕ, 0 < k ∧
+-          let δ := (1 / 2 : ℝ) ^ k
+-          let δn : ℝ≥0 := ⟨δ, by positivity⟩
+-          η ≤ δ ∧ η ^ (1 - 3 * θ) ≤ δ ∧ δ < 2 * η ^ (1 - 3 * θ) ∧
+-        ∀ {ι : Type*} (f X : ι → G) (c t : ι → ℝ) (base z : G) (Dset : Set G)
+-          {A : Set G} {p q : G} {α : ℝ},
+-        1 ∈ A → A⁻¹ = A → 0 < α → α ≤ α₀ → A ⊆ mobiusIdentityBall α →
+-        p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-        η ^ θ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        z ∈ mobiusIdentityBall (1 / 2) → r₀ ≤ dist (z : RMat) 1 →
+-        base ∈ A → (∀ i, X i ∈ A) →
+-        (∀ i, (f i : RMat) = scalarAffine (z : RMat) (c i) (t i)) →
+-        (Set.range (fun i => (f i : RMat))).Nonempty →
+-        (∀ i, dist (f i : RMat) ((base⁻¹ * X i : G) : RMat) ≤ ε) →
+-        ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det = 0 →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ (θ / 2) →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ₀) ≤ (T.card : ℝ)) →
+-        let V := Set.range (fun i => (f i : RMat))
+-        let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-        let NV := (Metric.externalCoveringNumber ηn V : ℝ≥0∞).toReal
+-        N ≤ η ^ (-(3 - κ₀)) →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 284)) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 142)) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        η ^ (8 * θ) * N ^ 4 ≤
+-          (9 * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal * H * NV) ^ 3 →
+-        let b := (z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)
+-          ∃ g ∈ A ^ 34, ∃ F : Finset RMat, ∃ sel : ↥F → ι,
+-            F.Nonempty ∧ (∀ y, (f (sel y) : RMat) = (y : RMat)) ∧
+-            let Z := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-              (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (sel y)))
+-            let source := fun y : ↥F => base⁻¹ * X (sel y)
+-            let I : Finset ↥F := Finset.univ
+-            let Dadd := (I ×ˢ I).image (fun ij => source ij.1 * source ij.2 * g)
+-            let Dmul := (I ×ˢ I).image (fun ij => source ij.1 * g * source ij.2 * g)
+-            Z.Nonempty ∧
+-            NV ≤ 6561 * (4 * (s * η ^ (1 - 9 * θ)) / η + 1) ^ 4 * Z.card ∧
+-            (Dadd : Set G) ⊆ A ^ 38 ∧ (Dmul : Set G) ⊆ A ^ 72 ∧
+-            Dadd.Nonempty ∧ Dmul.Nonempty ∧
+-            (∀ w ∈ Dadd, w ∈ mobiusIdentityBall (1 / 2) ∧ L / 128 ≤ dist (w : RMat) 1) ∧
+-            (∀ w ∈ Dmul, w ∈ mobiusIdentityBall (1 / 2) ∧ L / 128 ≤ dist (w : RMat) 1) ∧
+-            (η ^ (-gain) * Z.card < 250 * (Metric.externalCoveringNumber δn
+-              ((Dadd.image (fun w : G => Matrix.trace (w : RMat))) : Set ℝ) : ℝ≥0∞).toReal ∨
+-              η ^ (-gain) * Z.card < 250 * (Metric.externalCoveringNumber δn
+-                ((Dmul.image (fun w : G => Matrix.trace (w : RMat))) : Set ℝ) : ℝ≥0∞).toReal) := by
+-  classical
+-  let κ := κ₀ / 12
+-  have hκ : 0 < κ := by dsimp only [κ]; positivity
+-  have hκone : κ ≤ 1 := by dsimp only [κ]; linarith only [hκ₀one]
+-  obtain ⟨eg, Jg, heg, hegone, hJg, hgrowth⟩ := nilpotent_actual_trace_growth hκ hκone
+-  let θ := min eg κ₀ / 4096
+-  let gain := eg / 8
+-  obtain ⟨hθ, hθeg, hθκ, hd, hdone, _hk, _hkone, hgain, hc, hfour, hjoint,
+-      hsizeMargin, herrorMargin, _hroot, _h83, _hgainMargin⟩ :=
+-    nilpotent_scalar_exponent_margins hκ₀ hκ₀one heg hegone
+-  have hθpos : 0 < θ := hθ
+-  have hgainStrong : 256 * θ < gain := by
+-    have ht : θ ≤ eg / 4096 := hθeg
+-    dsimp only [gain]
+-    linarith only [heg, ht]
+-  have hθsmall : θ ≤ 1 / 4096 := hθeg.trans (by linarith only [hegone])
+-  have hθhalf : θ < 1 / 2 := by linarith only [hθsmall]
+-  obtain ⟨a, s, l, e, C₀, V₀, ha, hs, hl, he, hC₀, hV₀, haeq, hleq, heeq, hsample⟩ :=
+-    exists_nilpotent_sample_bounds hκ₀.le hκ₀one
+-  obtain ⟨Jbudget, hbudget⟩ := exists_scalar_growth_budget_scale hd hdone heg hκone
+-    hgain hc (K₀ := 1) le_rfl hC₀ hV₀ (show 0 < 32 * R₀ ^ 3 * e by positivity)
+-    hfour hjoint hsizeMargin herrorMargin Jg
+-  obtain ⟨Jsmall, hsmall⟩ := exists_dyadic_scaled_rpow_bound
+-    (show 0 < 16 * H₀ * e by positivity) (show 0 < 1 - 2 * θ by linarith only [hθsmall])
+-  obtain ⟨Jfar, hfarerror⟩ := exists_dyadic_scaled_rpow_bound
+-    (show 0 < 2048 * R₀ ^ 3 * e / l by positivity)
+-    (show 0 < 1 - 5 * θ by linarith only [hθsmall])
+-  obtain ⟨Jwindow, hwindow⟩ := exists_dyadic_scaled_rpow_bound
+-    (by norm_num : (0 : ℝ) < 4) (show 0 < 1 - θ / 2 by linarith only [hθsmall])
+-  let α₀ := 1 / (8 * (5 : ℝ) ^ 72)
+-  have hα₀ : 0 < α₀ := by dsimp only [α₀]; positivity
+-  refine ⟨θ, gain, α₀, a, s, l, e, max Jbudget (max Jsmall (max Jfar Jwindow)),
+-    hθ, hθhalf, hθκ, hgainStrong, hα₀, ha, hs, hl, he, haeq, hleq, heeq, ?_⟩
+-  intro j hj η ηn r₀ ε L H
+-  have hjbudget : Jbudget ≤ j := le_trans (le_max_left _ _) hj
+-  have hjsmall : Jsmall ≤ j := by omega
+-  have hjfar : Jfar ≤ j := by omega
+-  have hjwindow : Jwindow ≤ j := by omega
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  have hε : 0 ≤ ε := by dsimp only [ε]; positivity
+-  have hL : 0 < L := by dsimp only [L]; positivity
+-  obtain ⟨k, hk, hηδ, hδlo, hδhi, hK, hC, hproj, hpoint, hcoeffBudget, herror, hlog⟩ :=
+-    hbudget j hjbudget
+-  simp only [one_mul] at hK hproj hcoeffBudget
+-  let δ := (1 / 2 : ℝ) ^ k
+-  let δn : ℝ≥0 := ⟨δ, by positivity⟩
+-  let K := η ^ (-gain)
+-  let C := C₀ * η ^ (-(100 * θ))
+-  have hδ : 0 < δ := by dsimp only [δ]; positivity
+-  have herror' : 32 * R₀ ^ 3 * ε ≤ δ := by
+-    simpa only [ε, mul_assoc] using herror
+-  have hεδ : ε ≤ δ :=
+-    (le_mul_of_one_le_left hε (by norm_num : (1 : ℝ) ≤ 32 * R₀ ^ 3)).trans herror'
+-  refine ⟨k, hJg.trans_le hk, hηδ, hδlo, hδhi, ?_⟩
+-  intro ι f X c t base z Dset A p q α
+-    hA1 hAi hα hαbound hA hp hq hpq hspan hz hzfar hbase hX hform hfn hclose hbd hdistribution
+-    V N NV hNbound h284 h142 hmixed hcube bg
+-  have hαone : α ≤ 1 := hαbound.trans (by norm_num [α₀])
+-  have hαsmall : 2 * (5 : ℝ) ^ 34 * α ≤ 1 :=
+-    (mul_le_mul_of_nonneg_left hαbound (by positivity)).trans (by norm_num [α₀])
+-  have hαnear : 25 * α ≤ 1 / 4 :=
+-    (mul_le_mul_of_nonneg_left hαbound (by norm_num)).trans (by norm_num [α₀])
+-  have hαinterval : (5 : ℝ) ^ 36 * α ≤ 1 / 8 :=
+-    (mul_le_mul_of_nonneg_left hαbound (by positivity)).trans (by norm_num [α₀])
+-  have hαwords : (5 : ℝ) ^ 72 * α ≤ 1 / 4 :=
+-    (mul_le_mul_of_nonneg_left hαbound (by positivity)).trans (by norm_num [α₀])
+-  have hεsmall : 16 * H₀ * ε ≤ 1 := by
+-    simpa only [ε, mul_assoc] using hsmall j hjsmall
+-  have hεquarter : ε ≤ 1 / 4 := by
+-    have hh := mul_le_mul_of_nonneg_right (by norm_num : (4 : ℝ) ≤ 16 * H₀) hε
+-    linarith only [hh, hεsmall]
+-  have hnear : 25 * α + ε ≤ 1 / 2 := by linarith only [hαnear, hεquarter]
+-  have hinterval : (5 : ℝ) ^ 36 * α + 2 * H₀ * ε ≤ 1 / 4 := by
+-    linarith only [hαinterval, hεsmall]
+-  have hwindow' : 2 * η < η ^ (θ / 2) := by
+-    have hh := mul_le_mul_of_nonneg_right (hwindow j hjwindow)
+-      (Real.rpow_pos_of_pos hη (θ / 2)).le
+-    have heq : η ^ (1 - θ / 2) * η ^ (θ / 2) = η := by
+-      rw [← Real.rpow_add hη, sub_add_cancel, Real.rpow_one]
+-    rw [mul_assoc, heq, one_mul] at hh
+-    linarith only [hh, hη]
+-  obtain ⟨g, hg, hcoeff, hc', hf, F, sel, hF, hsel, hZn, _hZcard, hZrange, hZsep,
+-      hretain, hsize, hball⟩ := hsample η θ δ hη hηone hθ.le hδ hδhi.le
+-    f X c t base z Dset hA1 hAi hα hαone hA hαsmall hp hq hpq hspan hz hzfar
+-    hbase hX hform hfn hclose hnear hinterval hbd hεδ hwindow' hdistribution
+-    hNbound h284 h142 hmixed hcube
+-  let I : Finset ↥F := Finset.univ
+-  let u := fun y : ↥F => f (sel y)
+-  let source := fun y : ↥F => base⁻¹ * X (sel y)
+-  let cs := fun y : ↥F => c (sel y) + t (sel y) * Matrix.trace (z : RMat) / 2
+-  let ts := fun y : ↥F => t (sel y)
+-  let Z := I.image (fun y => (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (bg * (g : RMat)) * ts y))
+-  have hI : I.Nonempty := by
+-    obtain ⟨y, hy⟩ := hF
+-    exact ⟨⟨y, hy⟩, Finset.mem_univ _⟩
+-  have hZpositive : 0 < (Z.card : ℝ) := by exact_mod_cast Finset.card_pos.mpr hZn
+-  have hsize' : (Z.card : ℝ) ≤ V₀ * η ^ (-(1 - κ₀ / 3 + 84 * θ)) :=
+-    hsize.trans (mul_le_mul_of_nonneg_left
+-      (Real.rpow_le_rpow_of_exponent_ge hη hηone (by linarith only [hθpos])) hV₀.le)
+-  have hlog' : Real.log (Z.card : ℝ) ≤ (1 - κ) * (k : ℝ) * Real.log 2 :=
+-    hlog Z.card hZpositive hsize'
+-  have hball' (v ρ : ℝ) (hδρ : δ ≤ ρ) (hρone : ρ ≤ 1) :
+-      OAI.Falconer.scalarBallMass Z v ρ ≤ C * ρ ^ (2 * κ) * Z.card := by
+-    have hpowers : ρ ^ (κ₀ / 3) ≤ ρ ^ (2 * κ) :=
+-      Real.rpow_le_rpow_of_exponent_ge (hδ.trans_le hδρ) hρone
+-        (by dsimp only [κ]; linarith only [hκ₀])
+-    exact (hball v ρ hδρ (hηδ.trans hδρ)).trans
+-      (mul_le_mul_of_nonneg_right
+-        (mul_le_mul_of_nonneg_left hpowers (zero_le_one.trans hC)) (Nat.cast_nonneg _))
+-  have hb : Matrix.trace bg = 0 := (centered_generator_coordinates (z : RMat)).1
+-  have hform' (y : ↥F) (_hy : y ∈ I) :
+-      (u y : RMat) = scalarAffine bg (cs y) (ts y) := by
+-    dsimp only [u, cs, ts, bg]
+-    rw [hform (sel y), scalarAffine_recenter]
+-  have hc'' (y : ↥F) (_hy : y ∈ I) : 1 / 2 ≤ cs y := hc' (sel y)
+-  have hsource (y : ↥F) : source y ∈ A ^ 2 := by
+-    have hi : base⁻¹ ∈ A := by simpa only [hAi] using Set.inv_mem_inv.mpr hbase
+-    simpa only [pow_two] using Set.mul_mem_mul hi (hX (sel y))
+-  have hAb : A ⊆ matrixEntryBox 2 :=
+-    hA.trans (mobiusIdentityBall_subset_entryBox_two hα hαone)
+-  have hu (y : ↥F) (_hy : y ∈ I) (i j : Fin 2) : |u y i j| ≤ R₀ :=
+-    (hf (sel y) i j).trans (by norm_num)
+-  have hsourceBound (y : ↥F) (_hy : y ∈ I) (i j : Fin 2) : |source y i j| ≤ R₀ :=
+-    (set_pow_subset_matrixEntryBox hAb 2 (hsource y) i j).trans (by norm_num)
+-  have hgBound (i j : Fin 2) : |g i j| ≤ R₀ :=
+-    (set_pow_subset_matrixEntryBox hAb 34 hg i j).trans (by norm_num)
+-  have he' (y : ↥F) (_hy : y ∈ I) : dist (u y : RMat) (source y : RMat) ≤ ε := hclose (sel y)
+-  obtain ⟨hadd, hmul, hgrow⟩ := hgrowth k hk K C hK hC hproj hpoint hcoeffBudget
+-    I bg u source cs ts g A 2 34 R₀ ε hI (by norm_num) hε hb hbd
+-    hform' hc'' hu hsourceBound hgBound he' herror' (fun y _ => hsource y) hg
+-    hZrange (fun x hx y hy hxy => (hZsep x hx y hy hxy).le) hlog' hball'
+-  have hfarError : 32 * 32 * R₀ ^ 3 * ε ≤ L / 2 := by
+-    have hp : η ^ (1 - 5 * θ) * η ^ (3 * θ) = η ^ (1 - 2 * θ) := by
+-      rw [← Real.rpow_add hη]
+-      congr 1
+-      ring
+-    have hh := mul_le_mul_of_nonneg_right (hfarerror j hjfar) (show 0 ≤ L / 2 by positivity)
+-    have heq : (2048 * R₀ ^ 3 * e / l * η ^ (1 - 5 * θ)) * (L / 2) =
+-        32 * 32 * R₀ ^ 3 * ε := by
+-      dsimp only [L, ε]
+-      rw [← hp]
+-      field_simp; ring
+-    change (2048 * R₀ ^ 3 * e / l * η ^ (1 - 5 * θ)) * (L / 2) ≤ 1 * (L / 2) at hh
+-    rw [heq, one_mul] at hh
+-    exact hh
+-  obtain ⟨_hr, hDadd, hDmul, hgeomAdd, hgeomMul⟩ := nilpotent_actual_word_families_geometry
+-    I bg u source cs ts g hI hα hαone hA hαwords hb hbd hform' hc''
+-    (by norm_num : 1 ≤ R₀) hε hu hsourceBound hgBound he'
+-    (by norm_num : (0 : ℝ) < 32) (centered_near_identity_generator_bounds z hz).1
+-    hL hcoeff
+-    (fun y hy => (hZrange _ (Finset.mem_image.mpr ⟨y, hy, rfl⟩)).1) hfarError hadd hmul
+-  refine ⟨g, hg, F, sel, hF, hsel,
+-    hZn, hretain, hadd, hmul, hDadd, hDmul, ?_, ?_, hgrow⟩
+-  · simpa only [show (4 : ℝ) * 32 = 128 by norm_num] using hgeomAdd
+-  · simpa only [show (4 : ℝ) * 32 = 128 by norm_num] using hgeomMul
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentProfileExclusion.lean
++++ after/lean/TransposeFollowup/NilpotentProfileExclusion.lean
+@@ -1,53 +1,12 @@
+ import TransposeFollowup.ReextractionPowerBounds
+-import TransposeFollowup.NilpotentDyadicTraceGrowth
+ 
+-/-! Compare actual nilpotent trace growth against the full trace upper
+-bound from the same localized approximate-group profile. Both sides use
+-the original sample and one scalar radius. -/
++/-! Cubic trace-budget contradiction reused by the final spanning-profile
++exclusion. The earlier nilpotent-only route is preserved in the research
++archive and is no longer part of the active proof chain. -/
+ namespace TransposeFollowup.SL2Projection
+ open Classical Matrix Set RealMobius
+ open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+ set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-local notation "H₀" => (4 : ℝ) ^ 34
+-local notation "B₀" => 4 * H₀
+-
+-theorem exists_spanning_retention_power_constant {a s B : ℝ}
+-    (ha : 0 < a) (hs : 0 < s) (hB : 0 ≤ B) :
+-    ∃ W₀ : ℝ, 0 < W₀ ∧ ∀ η θ N T V m : ℝ,
+-      0 < η → η ≤ 1 → 0 ≤ θ → 0 < N → 0 ≤ T → 0 ≤ V → 0 ≤ m →
+-      let H := (102400 * B ^ 7 / (a * η ^ (2 * θ)) + 8 * B + 1) ^ 4
+-      let S := 6561 * (4 * (s * η ^ (1 - 9 * θ)) / η + 1) ^ 4
+-      η ^ (8 * θ) * N ^ 4 ≤ (9 * T * H * V) ^ 3 →
+-      T ≤ η ^ (-θ) * N → V ≤ S * m →
+-      N ≤ W₀ * η ^ (-(143 * θ)) * m ^ 3 := by
+-  let Hc := (102400 * B ^ 7 / a + 8 * B + 1) ^ 4
+-  let Sc := 6561 * (4 * s + 1) ^ 4
+-  let Wc := (9 * Hc) ^ 3 * Sc ^ 3
+-  have hHc : 0 ≤ Hc := by dsimp only [Hc]; positivity
+-  have hSc : 0 ≤ Sc := by dsimp only [Sc]; positivity
+-  have hWc : 0 ≤ Wc := by dsimp only [Wc]; positivity
+-  refine ⟨1 + Wc, by positivity, ?_⟩
+-  intro η θ N T V m hη hηone hθ hN hT hV hm H S hcube hmixed hretain
+-  have hH : 0 ≤ H := by dsimp only [H]; positivity
+-  have hS : 0 ≤ S := by dsimp only [S]; positivity
+-  have hP : 0 ≤ η ^ (-θ) := Real.rpow_nonneg hη.le _
+-  obtain ⟨hHb, hSb, _, _, _⟩ := first_extraction_cost_bounds
+-    (b := 1) (l := 1) (e := 0) (B := 0) (R := 0)
+-    hη hηone hθ ha zero_lt_one hs le_rfl le_rfl hB le_rfl
+-  have hW := (scalar_concentration_power_bounds
+-    (κ := 0) (γ := 0) (L := 0) (E := 0) (D := 0) (P := η ^ (-θ))
+-    (K := 0) (J := 0) (Cp := 0) (Lc := 0) (Ec := 0) (Dc := 0)
+-    hη hηone hθ le_rfl (by norm_num) le_rfl hθ
+-    hH hS le_rfl le_rfl hP le_rfl le_rfl le_rfl hHc le_rfl le_rfl
+-    hHb hSb (by simp) (by simp) (by simp) le_rfl hP hP).2
+-  have hglobal := spanning_cube_sample_normalization hη hN hT hV hP hH hcube hmixed hretain
+-  calc
+-    N ≤ ((9 * η ^ (-θ) * H) ^ 3 * η ^ (-(8 * θ)) * S ^ 3) * m ^ 3 := hglobal
+-    _ ≤ (Wc * η ^ (-(143 * θ))) * m ^ 3 := mul_le_mul_of_nonneg_right hW (pow_nonneg hm _)
+-    _ ≤ _ := mul_le_mul_of_nonneg_right
+-      (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left zero_le_one) (by positivity)) (pow_nonneg hm _)
+ 
+ theorem cubic_trace_budget_contradiction {η θ gain U₀ W₀ N T m : ℝ}
+     (hη : 0 < η) (hU : 0 ≤ U₀) (hm : 0 ≤ m)
+@@ -79,128 +38,5 @@
+       _ = _ := one_mul _
+   exact (not_lt_of_ge hbound) (pow_lt_pow_left₀ hgrowth (by positivity) (by norm_num : (3 : ℕ) ≠ 0))
+ 
+-theorem exists_nilpotent_first_extraction_exclusion {κ : ℝ} (hκ : 0 < κ) (hκone : κ ≤ 1) :
+-    ∃ θ α₀ a e : ℝ, ∃ J : ℕ,
+-      0 < θ ∧ θ < 1 / 2 ∧ θ ≤ κ / 4096 ∧ 0 < α₀ ∧ 0 < a ∧ 0 < e ∧
+-      a = 1 / (2 * H₀) ∧ e = 12800 * B₀ ^ 6 / a ∧
+-      ∀ j : ℕ, J ≤ j →
+-        let η := (1 / 4 : ℝ) ^ j
+-        let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-        let r₀ := a * η ^ (2 * θ)
+-        let ε := e * η ^ (1 - 2 * θ)
+-        let H := (102400 * B₀ ^ 7 / r₀ + 8 * B₀ + 1) ^ 4
+-        ∀ {U A : Set G} (Y : Finset G) {h Q α q₀ τ : ℝ} {Nprofile : ℕ},
+-        (2 : ℝ) ^ 100 ≤ h → (Nprofile : ℝ) ≤ h → 1 ≤ Q → Q ≤ h →
+-        0 < α → α ≤ α₀ → α⁻¹ ^ 4 ≤ h → 0 < q₀ → q₀⁻¹ ≤ h →
+-        0 ≤ τ → 3000000 * τ ≤ θ → h ≤ η ^ (-τ) →
+-        (Y.card : ℝ) ≤ 512 * ((2 : ℝ) ^ 55 * (8 * ((64 * (Nprofile : ℝ) ^ 4) ^ 2 / q₀ ^ 2)) ^ 21) ^ 16 →
+-        U ⊆ matrixEntryBox Q → U⁻¹ = U → (Y : Set G) ⊆ U ^ 2 → U ^ 2 ⊆ (Y : Set G) * U →
+-        A = U ^ 2 ∩ mobiusIdentityBall α → 1 ∈ A → A⁻¹ = A →
+-        ∀ {p q : G}, p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-        η ^ θ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ (θ / 2) →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-        N ≤ η ^ (-(3 - κ)) →
+-        ∀ {ι : Type*} (f X : ι → G) (c t : ι → ℝ) (base z : G) (Dset : Set G),
+-        Dset ⊆ A ^ 37 → z ∈ mobiusIdentityBall (1 / 2) → r₀ ≤ dist (z : RMat) 1 →
+-        base ∈ A → (∀ i, X i ∈ A) →
+-        (∀ i, (f i : RMat) = scalarAffine (z : RMat) (c i) (t i)) →
+-        (Set.range (fun i => (f i : RMat))).Nonempty →
+-        (∀ i, dist (f i : RMat) ((base⁻¹ * X i : G) : RMat) ≤ ε) →
+-        let V := Set.range (fun i => (f i : RMat))
+-        let NV := (Metric.externalCoveringNumber ηn V : ℝ≥0∞).toReal
+-        η ^ (8 * θ) * N ^ 4 ≤
+-          (9 * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal * H * NV) ^ 3 →
+-        ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det ≠ 0 := by
+-  classical
+-  obtain ⟨θ, gain, αg, a, s, l, e, Jg, hθ, hθhalf, hθκ, hgain, hαg, ha, hs, hl, he,
+-      haeq, hleq, heeq, hgrowth⟩ := exists_nilpotent_dyadic_trace_growth hκ hκone
+-  have hθsmall : θ ≤ 1 / 4096 := hθκ.trans (by linarith only [hκone])
+-  have hθquarter : θ < 1 / 4 := by linarith only [hθsmall]
+-  let a₂ := l / 128
+-  have ha₂ : 0 < a₂ := by dsimp only [a₂]; positivity
+-  have ha₂one : a₂ ≤ 1 := by rw [show a₂ = l / 128 from rfl, hleq, haeq]; norm_num
+-  obtain ⟨U₀, hU₀, Ju, hupper⟩ := exists_reextracted_trace_power_bound hθ.le hθquarter ha₂ ha₂one
+-  obtain ⟨W₀, hW₀, hretention⟩ := exists_spanning_retention_power_constant ha hs (by positivity : 0 ≤ B₀)
+-  obtain ⟨Jc, hcharge⟩ := exists_dyadic_scaled_rpow_bound
+-    (show 0 < 250 ^ 3 * U₀ * W₀ by positivity)
+-    (show 0 < 3 * gain - 691 * θ by linarith only [hgain, hθ])
+-  let α₀ := min αg (1 / (8 * (5 : ℝ) ^ 72))
+-  have hα₀ : 0 < α₀ := by dsimp only [α₀]; positivity
+-  refine ⟨θ, α₀, a, e, max Jg (max Ju Jc), hθ, hθhalf, hθκ, hα₀, ha, he, haeq, heeq, ?_⟩
+-  intro j hj η ηn r₀ ε H U A Y h Q α q₀ τ Nprofile hlarge hNprofile hQ hQh hα hαbound hαinv
+-    hq₀ hq₀inv hτ hmargin hprofile hYcard hU hUi hY hdouble hAloc hA1 hAi p q hp hq hpq hspan
+-    hdistribution N hNbound ι f X c t base z Dset hDset hz hfar hbase hX hform hfn hclose V NV hcube hbd
+-  have hjg : Jg ≤ j := le_trans (le_max_left _ _) hj
+-  have hju : Ju ≤ j := by omega
+-  have hjc : Jc ≤ j := by omega
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  have hαg' : α ≤ αg := hαbound.trans (min_le_left _ _)
+-  have hαsafe : α ≤ 1 / (8 * (5 : ℝ) ^ 72) := hαbound.trans (min_le_right _ _)
+-  have hαone : α ≤ 1 := hαsafe.trans (by norm_num)
+-  have hαsmall : 2 * (5 : ℝ) ^ 34 * α ≤ 1 :=
+-    (mul_le_mul_of_nonneg_left hαsafe (by positivity)).trans (by norm_num)
+-  have hA : A ⊆ mobiusIdentityBall α := by rw [hAloc]; exact Set.inter_subset_right
+-  have hcoef (n : ℕ) (hn : n ≤ 283) :
+-      (8 * (2 * Q) ^ (4 * n + 3) + 1) ^ 4 * (Y.card : ℝ) ^ (2 * n + 1) *
+-        (33 ^ 4 * Q ^ 8 / α ^ 4) ≤ η ^ (-θ) :=
+-    (fixed_power_coefficient_bound n hlarge hNprofile (zero_le_one.trans hQ) hQh
+-      hα hαinv hq₀ hq₀inv (Nat.cast_nonneg _) hYcard).trans
+-      (profile_power_exponent_bound hη hηone hτ
+-        ((by norm_num : (0 : ℝ) ≤ 2 ^ 100).trans hlarge) hprofile hmargin hn)
+-  have hcover (n : ℕ) (hn : n ≤ 283) :
+-      Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-      Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ (n + 1))) ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ (n + 1))) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N := by
+-    obtain ⟨hAfin, hPfin, hPbound⟩ := localized_set_pow_coveringNumber (η := ηn) Y n
+-      hQ hα hαone hη hU hUi hY hdouble
+-    rw [← hAloc] at hAfin hPfin hPbound
+-    exact ⟨hAfin, hPfin, hPbound.trans (mul_le_mul_of_nonneg_right (hcoef n hn) ENNReal.toReal_nonneg)⟩
+-  obtain ⟨hAfin, h37fin, h37⟩ := hcover 36 (by norm_num)
+-  have h284 := (hcover 283 le_rfl).2.2
+-  have h142 := (hcover 141 (by norm_num)).2.2
+-  have hmixed : (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N :=
+-    (ENNReal.toReal_mono (ENat.toENNReal_ne_top.mpr h37fin)
+-      (ENat.toENNReal_mono (Metric.externalCoveringNumber_mono_set (ε := ηn) (Set.image_mono hDset)))).trans h37
+-  have hNpos : 0 < N := by
+-    have hp' := (Metric.externalCoveringNumber_pos_iff (ε := ηn)).mpr
+-      (show ((fun x : G => (x : RMat)) '' A).Nonempty from ⟨1, ⟨1, hA1, rfl⟩⟩)
+-    have hpR : (0 : ℝ≥0∞) < Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) := by
+-      simpa only [ENat.toENNReal_zero] using ENat.toENNReal_strictMono hp'
+-    exact ENNReal.toReal_pos hpR.ne' (ENat.toENNReal_ne_top.mpr hAfin)
+-  obtain ⟨k, _hk, hηδ, _hδlo, _hδhi, hfamily⟩ := hgrowth j hjg
+-  let δn : ℝ≥0 := ⟨(1 / 2 : ℝ) ^ k, by positivity⟩
+-  obtain ⟨g, hg, F, sel, _hF, _hsel, hZn, hretain, hadd, hmul, hDadd, hDmul,
+-      hgeomAdd, hgeomMul, hgrow⟩ := hfamily f X c t base z Dset
+-    hA1 hAi hα hαg' hA hp hq hpq hspan hz hfar hbase hX hform hfn hclose hbd hdistribution
+-    hNbound h284 h142 hmixed hcube
+-  let bg := (z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)
+-  let Z := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (bg * (g : RMat)) * t (sel y)))
+-  have hNretain : N ≤ W₀ * η ^ (-(143 * θ)) * (Z.card : ℝ) ^ 3 :=
+-    hretention η θ N
+-      (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal
+-      NV Z.card hη hηone hθ.le hNpos ENNReal.toReal_nonneg ENNReal.toReal_nonneg
+-      (Nat.cast_nonneg _) hcube hmixed hretain
+-  have fail (D : Finset G) (n : ℕ) (hn : n ≤ 282) (hDn : D.Nonempty)
+-      (hDpow : (D : Set G) ⊆ A ^ n)
+-      (hDgeom : ∀ w ∈ D, w ∈ mobiusIdentityBall (1 / 2) ∧ l * η ^ (3 * θ) / 128 ≤ dist (w : RMat) 1)
+-      (hgr : η ^ (-gain) * Z.card < 250 * (Metric.externalCoveringNumber δn
+-        ((D.image (fun w : G => Matrix.trace (w : RMat))) : Set ℝ) : ℝ≥0∞).toReal) : False := by
+-    obtain ⟨_, hbound⟩ := hupper j hju Y n hn hlarge hNprofile hQ hQh hα hαone hαinv hq₀ hq₀inv
+-      hτ hmargin hprofile hYcard hU hUi hY hdouble hAloc hA1 hAi hαsmall hp hq hpq hspan
+-      (show (D : Set G).Nonempty from hDn) hDpow (fun w hw => (hDgeom w hw).1)
+-      (fun w hw => by simpa only [a₂, div_mul_eq_mul_div] using (hDgeom w hw).2)
+-    have hTbound := (hbound δn (show ηn ≤ δn from hηδ)).2
+-    simp only [← Finset.coe_image] at hTbound
+-    exact cubic_trace_budget_contradiction hη hU₀.le (Nat.cast_nonneg _)
+-      hNretain hTbound (hcharge j hjc) hgr
+-  rcases hgrow with hgr | hgr
+-  · exact fail _ 38 (by norm_num) hDadd hadd hgeomAdd hgr
+-  · exact fail _ 72 (by norm_num) hDmul hmul hgeomMul hgr
+ 
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentSampleApplication.lean
++++ after/lean/TransposeFollowup/NilpotentSampleApplication.lean
+@@ -1,150 +0,0 @@
+-import TransposeFollowup.NilpotentExtractionParameters
+-import TransposeFollowup.NilpotentSourceSample
+-import TransposeFollowup.NilpotentScalarConcentration
+-import TransposeFollowup.CommutingFamilyCubicBound
+-
+-/-! Apply the numerical choices to the same actual source family.
+-The trace coefficient, scalar range, separated sample, upper cardinality
+-and concentration are derived together. No scalar sample is postulated. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius BoundedCoordinatePacking
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-local notation "H₀" => (4 : ℝ) ^ 34
+-local notation "B₀" => 4 * H₀
+-local notation "R₀" => (4 : ℝ) ^ 68
+-local notation "M₀" => 128 * R₀ ^ 2
+-
+-theorem exists_nilpotent_sample_bounds {κ : ℝ} (hκ : 0 ≤ κ) (hκone : κ ≤ 1) :
+-    ∃ a s l e C₀ V₀ : ℝ,
+-      0 < a ∧ 0 < s ∧ 0 < l ∧ 0 < e ∧ 1 ≤ C₀ ∧ 0 < V₀ ∧
+-      a = 1 / (2 * H₀) ∧ l = a / (9216 * H₀ ^ 4) ∧ e = 12800 * B₀ ^ 6 / a ∧
+-      ∀ η θ δs : ℝ, ∀ hη : 0 < η, η ≤ 1 → 0 ≤ θ → 0 < δs →
+-        δs ≤ 2 * η ^ (1 - 3 * θ) →
+-        let ηn : ℝ≥0 := ⟨η, hη.le⟩
+-        let r₀ := a * η ^ (2 * θ)
+-        let ε := e * η ^ (1 - 2 * θ)
+-        let L := l * η ^ (3 * θ)
+-        let H := (102400 * B₀ ^ 7 / r₀ + 8 * B₀ + 1) ^ 4
+-        ∀ {ι : Type*} (f X : ι → G) (c t : ι → ℝ) (base z : G) (Dset : Set G)
+-          {A : Set G} {p q : G} {α : ℝ},
+-        1 ∈ A → A⁻¹ = A → 0 < α → α ≤ 1 → A ⊆ mobiusIdentityBall α →
+-        2 * (5 : ℝ) ^ 34 * α ≤ 1 →
+-        p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-        η ^ θ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        z ∈ mobiusIdentityBall (1 / 2) → r₀ ≤ dist (z : RMat) 1 →
+-        base ∈ A → (∀ i, X i ∈ A) →
+-        (∀ i, (f i : RMat) = scalarAffine (z : RMat) (c i) (t i)) →
+-        (Set.range (fun i => (f i : RMat))).Nonempty →
+-        (∀ i, dist (f i : RMat) ((base⁻¹ * X i : G) : RMat) ≤ ε) →
+-        25 * α + ε ≤ 1 / 2 → (5 : ℝ) ^ 36 * α + 2 * H₀ * ε ≤ 1 / 4 →
+-        ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det = 0 →
+-        ε ≤ δs → 2 * η < η ^ (θ / 2) →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ (θ / 2) →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        let V := Set.range (fun i => (f i : RMat))
+-        let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-        let NV := (Metric.externalCoveringNumber ηn V : ℝ≥0∞).toReal
+-        N ≤ η ^ (-(3 - κ)) →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 284)) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 142)) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal ≤ η ^ (-θ) * N →
+-        η ^ (8 * θ) * N ^ 4 ≤
+-          (9 * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal * H * NV) ^ 3 →
+-        let b := (z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)
+-        ∃ g ∈ A ^ 34, L ≤ |Matrix.trace (b * (g : RMat))| ∧
+-          (∀ i, 1 / 2 ≤ c i + t i * Matrix.trace (z : RMat) / 2) ∧
+-          (∀ i j k, |f i j k| ≤ 2) ∧
+-          ∃ F : Finset RMat, ∃ sel : ↥F → ι,
+-            F.Nonempty ∧ (∀ y, (f (sel y) : RMat) = (y : RMat)) ∧
+-            let Z := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-              (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (sel y)))
+-            Z.Nonempty ∧ Z.card = F.card ∧
+-            (∀ x ∈ Z, 1 ≤ x ∧ x ≤ 2) ∧
+-            (∀ x ∈ Z, ∀ y ∈ Z, x ≠ y → δs < |x - y|) ∧
+-            NV ≤ 6561 * (4 * (s * η ^ (1 - 9 * θ)) / η + 1) ^ 4 * Z.card ∧
+-            (Z.card : ℝ) ≤ V₀ * η ^ (-(1 - κ / 3 + 83 * θ)) ∧
+-            (∀ v ρ : ℝ, δs ≤ ρ → η ≤ ρ →
+-              OAI.Falconer.scalarBallMass Z v ρ ≤
+-                (C₀ * η ^ (-(100 * θ))) * ρ ^ (κ / 3) * Z.card) := by
+-  obtain ⟨a, b, s, l, e, d, rc, ha, hb, hs, hl, he, hd, hrc, haeq, hleq, heeq, hparams⟩ :=
+-    exists_first_extraction_parameters (by norm_num : 1 ≤ H₀)
+-      (by norm_num : (1 : ℝ) ≤ 2) (by norm_num : 1 ≤ M₀)
+-  obtain ⟨C₀, hC₀, hCbudget⟩ := exists_first_extraction_concentration_constant
+-    ha hb hs hl he.le (by norm_num : (0 : ℝ) ≤ 2) (by positivity : 0 ≤ B₀)
+-    (by positivity : 0 ≤ R₀) hκ hκone
+-  obtain ⟨V₀, hV₀, hVbudget⟩ := exists_first_extraction_size_constant
+-    hb hs he.le (by norm_num : (0 : ℝ) ≤ 2) (by positivity : 0 ≤ R₀)
+-  refine ⟨a, s, l, e, C₀, V₀, ha, hs, hl, he, hC₀, hV₀, haeq, hleq, heeq, ?_⟩
+-  intro η θ δs hη hηone hθ hδs hδupper ηn r₀ ε L H
+-    ι f X c t base z Dset A p q α hA1 hAi hα hαone hA hαsmall hp hq hpq hspan
+-    hz hfar hbase hX hform hfn hclose hnear hinterval hbd hεδ hwindow hdistribution
+-    V N NV hNbound h284 h142 hmixed hcube bg
+-  let σ : ℝ≥0 := ⟨s * η ^ (1 - 9 * θ), by positivity⟩
+-  have hσ : 0 < σ := by change 0 < s * η ^ (1 - 9 * θ); positivity
+-  have hr₀ : 0 < r₀ := by dsimp only [r₀]; positivity
+-  have hε : 0 ≤ ε := by dsimp only [ε]; positivity
+-  have hL : 0 < L := by dsimp only [L]; positivity
+-  have hd₀ : 0 < η ^ θ := Real.rpow_pos_of_pos hη θ
+-  have hηγ : 0 ≤ θ / 2 := by positivity
+-  have hγθ : θ / 2 ≤ θ := by linarith only [hθ]
+-  have hpower : 1 ≤ η ^ (-θ) :=
+-    Real.one_le_rpow_of_pos_of_le_one_of_nonpos hη hηone (neg_nonpos.mpr hθ)
+-  obtain ⟨hrone, hrsmall, hrabsorb, hbranch, hradius, hframe, hspacing, hησ, hLeq, _hεeq, hscalarSpacing⟩ :=
+-    hparams η θ hη hηone hθ
+-  obtain ⟨g, hg, hcoeff, hc, hf, F, sel, hF, hsel, hsep, hinj, hZn, hZcard,
+-      hZrange, hZsep, _hVfin, hretain, hupper⟩ :=
+-    exists_actual_nilpotent_scalar_sample (η := ηn) (σ := σ) f X c t base z
+-      hA1 hAi hα hαone hA hp hq hpq hd₀ hspan hz hr₀ hfar hbase hX hform hfn
+-      hε hclose hnear hinterval hbd hδs hη (show ηn ≤ σ from hησ)
+-      (by rw [← hLeq]; exact hscalarSpacing δs hδupper)
+-  let Z := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (bg * (g : RMat)) * t (sel y)))
+-  have hcoeff' : L ≤ |Matrix.trace (bg * (g : RMat))| := by
+-    exact hLeq.le.trans hcoeff
+-  change NV ≤ 6561 * (4 * (σ : ℝ) / η + 1) ^ 4 * (Z.card : ℝ) at hretain
+-  have hZcard' : Z.card = F.card := hZcard
+-  have hretain' : NV ≤ 6561 * (4 * (σ : ℝ) / η + 1) ^ 4 * (Fintype.card ↥F : ℝ) := by
+-    simpa only [hZcard', Fintype.card_coe] using hretain
+-  have hpacksep (x y : ↥F) (hxy : x ≠ y) :
+-      10 * 2 * M₀ * (384 * M₀ ^ 4 / (d * η ^ (9 * θ)) * η) <
+-        dist (f (sel x) : RMat) (f (sel y) : RMat) := by
+-    rw [hsel x, hsel y]
+-    exact hspacing.trans_lt (hsep x x.property y y.property (fun hh => hxy (Subtype.ext hh)))
+-  have hCfull := hCbudget η θ (θ / 2) (η ^ (-θ)) (η ^ (-θ)) (η ^ (-θ))
+-    hη hηone hθ hηγ hγθ (zero_le_one.trans hpower) (zero_le_one.trans hpower)
+-    (zero_le_one.trans hpower) le_rfl le_rfl le_rfl
+-  have hball := nilpotent_scalar_sample_concentration (η := ηn) (σ := σ)
+-    (fun y : ↥F => f (sel y)) (fun y => X (sel y)) (fun y => c (sel y)) (fun y => t (sel y))
+-    base g V Dset hA1 hAi hα hαone hA hαsmall hp hq hpq hd₀ hspan hz hr₀ hfar
+-    (by norm_num : (1 : ℝ) ≤ 2) (by norm_num : 1 ≤ M₀) le_rfl
+-    (show 0 < b * η ^ (11 * θ) by positivity)
+-    (show 0 ≤ rc * η ^ (9 * θ) by positivity) hrone
+-    (fun y => hf (sel y)) (fun y => hform (sel y)) hbranch hradius.le
+-    (show 0 < d * η ^ (9 * θ) by positivity) hframe.le hrsmall hrabsorb hpacksep
+-    hbase (fun y => hX (sel y)) (by norm_num : 2 ≤ R₀) le_rfl hε hη (fun y => hclose (sel y))
+-    hpower (zero_le_one.trans hpower) hκ hηγ hηone h284 h142 hdistribution hwindow
+-    hbd (fun y => hc (sel y)) (by norm_num : (0 : ℝ) < 32)
+-    (centered_near_identity_generator_bounds z hz).1 hL hcoeff' hinj
+-    (zero_le_one.trans hpower) (by dsimp only [H]; positivity) hcube hmixed hretain'
+-    (C₀ * η ^ (-(100 * θ))) (by positivity) hCfull
+-  obtain ⟨_hVfin', _hTfin, hcubic⟩ := commuting_family_cubic_bound (η := ηn) (σ := σ) f X c t base
+-    hA1 hAi hα hαone hA hαsmall hp hq hpq hd₀ hspan hz hr₀ hfar
+-    (by norm_num : (1 : ℝ) ≤ 2) (by norm_num : 1 ≤ M₀) le_rfl
+-    (show 0 < b * η ^ (11 * θ) by positivity)
+-    (show 0 ≤ rc * η ^ (9 * θ) by positivity) hrone hf hform hbranch hradius.le
+-    (show 0 < d * η ^ (9 * θ) by positivity) hframe.le hrsmall hrabsorb
+-    hbase hX (by norm_num : 2 ≤ R₀) le_rfl hε hη hσ hclose hfn hspacing
+-  have hsize := hVbudget η θ κ N
+-    (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 142)) : ℝ≥0∞).toReal
+-    NV Z.card hη hηone hθ (hκone.trans (by norm_num)) (Nat.cast_nonneg _) ENNReal.toReal_nonneg
+-    hupper hcubic hNbound h142
+-  refine ⟨g, hg, hcoeff', hc, hf, F, sel, hF, hsel, hZn, hZcard, hZrange, hZsep, hretain, hsize, ?_⟩
+-  intro v ρ hδρ hηρ
+-  exact hball v ρ hηρ (hεδ.trans hδρ)
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentScalarConcentration.lean
++++ after/lean/TransposeFollowup/NilpotentScalarConcentration.lean
+@@ -1,124 +0,0 @@
+-import TransposeFollowup.SourceScalarConcentration
+-import TransposeFollowup.NilpotentScalarSample
+-import TransposeFollowup.CubicSampleNormalization
+-
+-/-! Scalar concentration for the same retained nilpotent sample. Matrix
+-packing, distribution, the spanning cube, mixed cover and sampling losses
+-are all used explicitly. The scalar loss budget is displayed, not asserted. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius BoundedCoordinatePacking
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem nilpotent_scalar_sample_concentration {ι : Type*} [Fintype ι]
+-    (f X : ι → G) (c t : ι → ℝ) (base g : G)
+-    (Vset : Set RMat) (Dset : Set G) {A : Set G} {p q z : G}
+-    {α d₀ r₀ B M r δ d R ε K J κ γ Bg L θ P H : ℝ} {η σ : ℝ≥0}
+-    (hA1 : 1 ∈ A) (hAi : A⁻¹ = A) (hα : 0 < α) (hαone : α ≤ 1)
+-    (hA : A ⊆ mobiusIdentityBall α) (hαsmall : 2 * (5 : ℝ) ^ 34 * α ≤ 1)
+-    (hp : p ∈ A ^ 34) (hq : q ∈ A ^ 34) (hpq : p * q ∈ A ^ 34)
+-    (hd₀ : 0 < d₀)
+-    (hspan : d₀ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det|)
+-    (hz : z ∈ mobiusIdentityBall (1 / 2)) (hr₀ : 0 < r₀)
+-    (hfar : r₀ ≤ dist (z : RMat) 1)
+-    (hB : 1 ≤ B) (hM : 1 ≤ M) (hscale : 128 * ((4 : ℝ) ^ 68) ^ 2 ≤ M)
+-    (hδ : 0 < δ) (hr : 0 ≤ r) (hr1 : r ≤ 1)
+-    (hf : ∀ x i j, |f x i j| ≤ B)
+-    (hform : ∀ x, (f x : RMat) = scalarAffine (z : RMat) (c x) (t x))
+-    (hbranch : 8 * B * δ ≤ 1) (hradius : 8 * B * δ ≤ (r₀ / 8) * r)
+-    (hd : 0 < d)
+-    (hframe : d ≤ (r₀ / 8) ^ 3 / (3456 * (96 * ((4 : ℝ) ^ 34) ^ 4 / d₀) ^ 3))
+-    (hsmall : 3 * M * r ≤ 1) (habsorb : 36864 * M ^ 6 * r ≤ d)
+-    (hsep : ∀ x y, x ≠ y →
+-      10 * B * M * (384 * M ^ 4 / d * (η : ℝ)) < dist (f x : RMat) (f y : RMat))
+-    (hbase : base ∈ A) (hX : ∀ i, X i ∈ A) (hBR : B ≤ R)
+-    (hHR : (4 : ℝ) ^ 68 ≤ R) (hε : 0 ≤ ε) (hη : 0 < η)
+-    (he : ∀ i, dist (f i : RMat) ((base⁻¹ * X i : G) : RMat) ≤ ε)
+-    (hK : 1 ≤ K) (hJ : 0 ≤ J) (hκ : 0 ≤ κ) (hγ : 0 ≤ γ) (hηone : (η : ℝ) ≤ 1)
+-    (hproduct : (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ 284)) : ℝ≥0∞).toReal ≤
+-        K * (Metric.externalCoveringNumber η
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal)
+-    (hsize : (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' (A ^ 142)) : ℝ≥0∞).toReal ≤
+-        J * (Metric.externalCoveringNumber η
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal)
+-    (hdistribution : ∀ ρ : ℝ, (η : ℝ) < ρ → ρ < (η : ℝ) ^ γ →
+-      ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-        Metric.IsSeparated (ENNReal.ofReal ρ)
+-          ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-        ρ ^ (-κ) ≤ (T.card : ℝ))
+-    (hwindow : 2 * (η : ℝ) < (η : ℝ) ^ γ)
+-    (hbd : ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det = 0)
+-    (hc : ∀ i, 1 / 2 ≤ c i + t i * Matrix.trace (z : RMat) / 2)
+-    (hBg : 0 < Bg)
+-    (hbn : ‖(z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)‖ ≤ Bg)
+-    (hL : 0 < L)
+-    (hcoeff : L ≤ |Matrix.trace
+-      (((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)) * (g : RMat))|)
+-    (hinj : Function.Injective (fun i => (2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-      Matrix.trace (((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)) *
+-        (g : RMat)) * t i)))
+-    (hP : 0 ≤ P) (hH : 0 ≤ H)
+-    (hcube : (η : ℝ) ^ θ * (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ^ 4 ≤
+-      (9 * (Metric.externalCoveringNumber η
+-        ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal * H *
+-          (Metric.externalCoveringNumber η Vset : ℝ≥0∞).toReal) ^ 3)
+-    (hmixed : (Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' Dset) : ℝ≥0∞).toReal ≤
+-        P * (Metric.externalCoveringNumber η
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal)
+-    (hretain : (Metric.externalCoveringNumber η Vset : ℝ≥0∞).toReal ≤
+-      6561 * (4 * (σ : ℝ) / (η : ℝ) + 1) ^ 4 * (Fintype.card ι : ℝ)) :
+-    let b := (z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)
+-    let Z := Finset.univ.image (fun i => (2 / 3 : ℝ) *
+-      (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i))
+-    let Bpow := (4 : ℝ) ^ 142
+-    let Dloc := 40 * (2 * R) ^ 11 * (3 * Bg / (2 * L) + 2)
+-    let E := (4 * (20 * (2 * R) ^ 10 * ε + 2 * R * (η : ℝ)) / (η : ℝ) + 1) ^ 4
+-    let Q := 4 * ((binCount B δ ^ 4 : ℕ) : ℝ) ^ 3 *
+-      (E * ((8 * Bpow + 1) ^ 4 * (8 * Bpow ^ 2 + 4 * Bpow + 1) ^ κ * K * J *
+-        (η : ℝ) ^ (-(γ * κ))) * Dloc ^ κ + (2 : ℝ) ^ κ)
+-    let W := (9 * P * H) ^ 3 * (η : ℝ) ^ (-θ) *
+-      (6561 * (4 * (σ : ℝ) / (η : ℝ) + 1) ^ 4) ^ 3
+-    ∀ C : ℝ, 0 ≤ C → Q * W ≤ C ^ 3 →
+-      ∀ w ρ : ℝ, (η : ℝ) ≤ ρ → ε ≤ ρ →
+-        OAI.Falconer.scalarBallMass Z w ρ ≤ C * ρ ^ (κ / 3) * (Z.card : ℝ) := by
+-  classical
+-  intro b Z Bpow Dloc E Q W C hC hbudget w ρ hηρ hερ
+-  let a (i : ι) := (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i)
+-  let N := (Metric.externalCoveringNumber η
+-    ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-  have hAfin : Metric.externalCoveringNumber η
+-      ((fun x : G => (x : RMat)) '' A) ≠ ⊤ :=
+-    finite_coveringNumber_of_entry_bound (by norm_num : (0 : ℝ) ≤ 2) hη
+-      (by rintro y ⟨x, hx, rfl⟩
+-          exact mobiusIdentityBall_subset_entryBox_two hα hαone (hA hx))
+-  have hNlower := coveringNumber_lower_of_distribution hη hwindow hAfin hdistribution
+-  have hN : 0 < N :=
+-    (Real.rpow_pos_of_pos (by positivity : 0 < 2 * (η : ℝ)) (-κ)).trans_le hNlower
+-  have hglobal : N ≤ W*(Fintype.card ι : ℝ)^3 :=
+-    spanning_cube_sample_normalization hη hN ENNReal.toReal_nonneg
+-      ENNReal.toReal_nonneg hP hH hcube hmixed hretain
+-  have hb : Matrix.trace b = 0 := (centered_generator_coordinates (z : RMat)).1
+-  have hcenter (i : ι) : (f i : RMat) =
+-      scalarAffine b (c i + t i * Matrix.trace (z : RMat) / 2) (t i) := by
+-    rw [hform i, scalarAffine_recenter]
+-  have hdiameter (w₀ ρ₀ : ℝ) (_hρ₀ : 0 ≤ ρ₀) (i j : ι)
+-      (hi : |a i-w₀| ≤ ρ₀) (hj : |a j-w₀| ≤ ρ₀) :
+-      dist (f i : RMat) (f j : RMat) ≤ 2*(3*Bg/(2*L))*ρ₀ := by
+-    have hh := nilpotent_scalar_ball_diameter b (f i) (f j) g hb hbd
+-      (hcenter i) (hcenter j) (hc i) (hc j) hBg.le hbn hL hcoeff hi hj
+-    convert hh using 1; ring
+-  exact source_scalar_sample_concentration f X c t a base
+-    hA1 hAi hα hαone hA hαsmall hp hq hpq hd₀ hspan hz hr₀ hfar
+-    hB hM hscale hδ hr hr1 hf hform hbranch hradius hd hframe hsmall habsorb
+-    hsep hbase hX hBR hHR hε hη he hK hJ hκ hγ hηone hproduct hsize hdistribution
+-    hwindow (by positivity : 0 ≤ 3*Bg/(2*L)) hdiameter hinj hglobal
+-    C hC hbudget w ρ hηρ hερ
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentScalarSample.lean
++++ after/lean/TransposeFollowup/NilpotentScalarSample.lean
+@@ -1,149 +0,0 @@
+-import TransposeFollowup.NilpotentWordGeometry
+-import TransposeFollowup.CoarsenedSourceSample
+-
+-/-! Sample the exact commuting approximants, retaining their original
+-source indices. Their nilpotent scalar coordinate is injective and
+-quantitatively separated. The coarsening loss is explicit; no normalized
+-scalar concentration is inferred from ambient matrix concentration. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set
+-open scoped Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem scalarAffine_dist_same_constant (b : RMat) (c t q : ℝ) :
+-    dist (scalarAffine b c t) (scalarAffine b c q) = |t - q| * ‖b‖ := by
+-  have he : scalarAffine b c t - scalarAffine b c q = (t - q) • b := by
+-    simp only [scalarAffine_eq_smul_add]
+-    module
+-  rw [dist_eq_norm, he, norm_smul, Real.norm_eq_abs]
+-
+-theorem scalar_coordinate_abs_sub (τ ℓ t q : ℝ) :
+-    |(2 / 3 : ℝ) * (τ + ℓ * t) - (2 / 3 : ℝ) * (τ + ℓ * q)| =
+-      (2 / 3 : ℝ) * |ℓ| * |t - q| := by
+-  rw [show (2 / 3 : ℝ) * (τ + ℓ * t) - (2 / 3 : ℝ) * (τ + ℓ * q) =
+-      (2 / 3 : ℝ) * ℓ * (t - q) by ring,
+-    abs_mul, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2 / 3)]
+-
+-theorem nilpotent_scalar_spacing (b : RMat) (u v g : G)
+-    {c t p q B L σ δ : ℝ}
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hv : (v : RMat) = scalarAffine b p q)
+-    (hc : 1 / 2 ≤ c) (hp : 1 / 2 ≤ p)
+-    (hB : 0 < B) (hbn : ‖b‖ ≤ B) (hL : 0 < L)
+-    (hcoeff : L ≤ |Matrix.trace (b * (g : RMat))|)
+-    (hsep : 2 * σ < dist (u : RMat) (v : RMat))
+-    (hbudget : 3 * B * δ ≤ 4 * L * σ) :
+-    δ < |(2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-        Matrix.trace (b * (g : RMat)) * t) -
+-      (2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-        Matrix.trace (b * (g : RMat)) * q)| := by
+-  obtain ⟨hc1, hp1, _, _⟩ := nilpotent_positive_trace_arithmetic b u v g hb hbd hu hv hc hp
+-  subst c p
+-  have hd : dist (u : RMat) (v : RMat) ≤ |t - q| * B := by
+-    rw [hu, hv, scalarAffine_dist_same_constant]
+-    exact mul_le_mul_of_nonneg_left hbn (abs_nonneg _)
+-  rw [scalar_coordinate_abs_sub]
+-  have hs := mul_lt_mul_of_pos_left (hsep.trans_le hd) hL
+-  have hl := mul_le_mul_of_nonneg_right hcoeff (mul_nonneg (abs_nonneg (t - q)) hB.le)
+-  nlinarith
+-
+-theorem nilpotent_scalar_ball_diameter (b : RMat) (u v g : G)
+-    {c t p q B L w r : ℝ}
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hv : (v : RMat) = scalarAffine b p q)
+-    (hc : 1 / 2 ≤ c) (hp : 1 / 2 ≤ p)
+-    (hB : 0 ≤ B) (hbn : ‖b‖ ≤ B) (hL : 0 < L)
+-    (hcoeff : L ≤ |Matrix.trace (b * (g : RMat))|)
+-    (hut : |(2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-      Matrix.trace (b * (g : RMat)) * t) - w| ≤ r)
+-    (hvt : |(2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-      Matrix.trace (b * (g : RMat)) * q) - w| ≤ r) :
+-    dist (u : RMat) (v : RMat) ≤ 2 * (3 * B / (2 * L) * r) := by
+-  obtain ⟨hc1, hp1, _, _⟩ := nilpotent_positive_trace_arithmetic b u v g hb hbd hu hv hc hp
+-  subst c p
+-  have hgap : (2 / 3 : ℝ) * |Matrix.trace (b * (g : RMat))| * |t - q| ≤ 2 * r := by
+-    rw [← scalar_coordinate_abs_sub (Matrix.trace (g : RMat))]
+-    have ht := abs_sub_le ((2 / 3 : ℝ) * (Matrix.trace (g : RMat) +
+-      Matrix.trace (b * (g : RMat)) * t)) w
+-      ((2 / 3 : ℝ) * (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * q))
+-    rw [abs_sub_comm w] at ht
+-    linarith
+-  have ht : |t - q| ≤ 3 * r / L := by
+-    apply (le_div_iff₀ hL).mpr
+-    have hcoef := mul_le_mul_of_nonneg_right hcoeff (abs_nonneg (t - q))
+-    nlinarith
+-  calc
+-    _ = |t - q| * ‖b‖ := by rw [hu, hv, scalarAffine_dist_same_constant]
+-    _ ≤ |t - q| * B := mul_le_mul_of_nonneg_left hbn (abs_nonneg _)
+-    _ ≤ (3 * r / L) * B := mul_le_mul_of_nonneg_right ht hB
+-    _ = _ := by ring
+-
+-/-- Both cardinality inequalities are relative to the exact commuting
+-image. The selected index map retains every actual source witness for
+-subsequent word transfer. Sampling introduces no additional error. -/
+-theorem exists_nilpotent_scalar_sample {ι : Type*}
+-    (f : ι → G) (c t : ι → ℝ) (b : RMat) (g : G)
+-    {H B L δ : ℝ} {η σ : ℝ≥0}
+-    (hH : 0 ≤ H) (hf : ∀ i l k, |f i l k| ≤ H)
+-    (hfn : (Set.range (fun i => (f i : RMat))).Nonempty)
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hform : ∀ i, (f i : RMat) = scalarAffine b (c i) (t i))
+-    (hc : ∀ i, 1 / 2 ≤ c i)
+-    (hB : 0 < B) (hbn : ‖b‖ ≤ B) (hL : 0 < L)
+-    (hcoeff : L ≤ |Matrix.trace (b * (g : RMat))|)
+-    (hδ : 0 < δ) (hη : 0 < η) (hησ : η ≤ σ)
+-    (hspacing : 3 * B * δ ≤ 4 * L * (σ : ℝ)) :
+-    ∃ F : Finset RMat, ∃ s : ↥F → ι,
+-      F.Nonempty ∧ (∀ y, (f (s y) : RMat) = (y : RMat)) ∧
+-      (∀ x ∈ F, ∀ y ∈ F, x ≠ y → 2 * (σ : ℝ) < dist x y) ∧
+-      let X := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-        (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (s y)))
+-      Function.Injective (fun y : ↥F => (2 / 3 : ℝ) *
+-        (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (s y))) ∧
+-      X.Nonempty ∧ X.card = F.card ∧
+-      (∀ x ∈ X, ∀ y ∈ X, x ≠ y → δ < |x - y|) ∧
+-      Metric.externalCoveringNumber η (Set.range (fun i => (f i : RMat))) ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber η (Set.range (fun i => (f i : RMat))) : ℝ≥0∞).toReal ≤
+-        6561 * (4 * (σ : ℝ) / (η : ℝ) + 1) ^ 4 * (X.card : ℝ) ∧
+-      (X.card : ℝ) ≤
+-        (Metric.externalCoveringNumber η (Set.range (fun i => (f i : RMat))) : ℝ≥0∞).toReal := by
+-  classical
+-  obtain ⟨F, s, hF, hs, hsep, hfin, hretain⟩ :=
+-    exists_coarse_source_sample (fun i => (f i : RMat)) hH hη (hη.trans_le hησ) hfn hf
+-  let a (y : ↥F) := (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (s y))
+-  have hscalar (x y : ↥F) (hne : x ≠ y) : δ < |a x - a y| := by
+-    apply nilpotent_scalar_spacing b (f (s x)) (f (s y)) g hb hbd
+-      (hform _) (hform _) (hc _) (hc _) hB hbn hL hcoeff
+-    · rw [hs x, hs y]
+-      exact hsep x x.property y y.property (fun he => hne (Subtype.ext he))
+-    · exact hspacing
+-  have hinj : Function.Injective a := by
+-    intro x y he
+-    by_contra hne
+-    have hh := hscalar x y hne
+-    rw [he, sub_self, abs_zero] at hh
+-    exact (not_lt_of_ge hδ.le) hh
+-  have hcard : (Finset.univ.image a).card = F.card := by
+-    rw [Finset.card_image_of_injective _ hinj]
+-    simp only [Finset.card_univ, Fintype.card_coe]
+-  have hI : (Finset.univ : Finset ↥F).Nonempty := by
+-    obtain ⟨x, hx⟩ := hF
+-    exact ⟨⟨x, hx⟩, Finset.mem_univ _⟩
+-  refine ⟨F, s, hF, hs, hsep, hinj, hI.image a, hcard, ?_, hfin, ?_, ?_⟩
+-  · intro x hx y hy hne
+-    obtain ⟨u, _, rfl⟩ := Finset.mem_image.mp hx
+-    obtain ⟨v, _, rfl⟩ := Finset.mem_image.mp hy
+-    exact hscalar u v (fun he => hne (congrArg a he))
+-  · rw [hcard]
+-    exact hretain
+-  · rw [hcard]
+-    apply separated_matrix_card_le_coveringNumber F
+-      (by intro x hx; exact ⟨s ⟨x, hx⟩, hs ⟨x, hx⟩⟩) _ hfin
+-    intro x hx y hy hne
+-    exact (mul_le_mul_of_nonneg_left (show (η : ℝ) ≤ σ from hησ)
+-      (by norm_num : (0 : ℝ) ≤ 2)).trans_lt (hsep x hx y hy hne)
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentSourceSample.lean
++++ after/lean/TransposeFollowup/NilpotentSourceSample.lean
+@@ -1,110 +0,0 @@
+-import TransposeFollowup.NilpotentScalarSample
+-import TransposeFollowup.ActualTraceCoefficient
+-import TransposeFollowup.ActualCentralizerPacking
+-
+-/-! Choose the trace readout and positive nilpotent sample from actual
+-sources. The sign, entry bound and scalar interval are consequences of
+-source proximity; none are new assumptions on the retained sample. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Pointwise Matrix.Norms.Frobenius ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem exists_actual_nilpotent_scalar_sample {ι : Type*}
+-    (f X : ι → G) (c t : ι → ℝ) (base z : G) {A : Set G} {p q : G}
+-    {α d₀ r₀ ε δ : ℝ} {η σ : ℝ≥0}
+-    (hA1 : 1 ∈ A) (hAi : A⁻¹ = A) (hα : 0 < α) (hαone : α ≤ 1)
+-    (hA : A ⊆ mobiusIdentityBall α)
+-    (hp : p ∈ A ^ 34) (hq : q ∈ A ^ 34) (hpq : p * q ∈ A ^ 34)
+-    (hd₀ : 0 < d₀)
+-    (hspan : d₀ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det|)
+-    (hz : z ∈ mobiusIdentityBall (1 / 2)) (hr₀ : 0 < r₀)
+-    (hfar : r₀ ≤ dist (z : RMat) 1)
+-    (hbase : base ∈ A) (hX : ∀ i, X i ∈ A)
+-    (hform : ∀ i, (f i : RMat) = scalarAffine (z : RMat) (c i) (t i))
+-    (hfn : (Set.range (fun i => (f i : RMat))).Nonempty)
+-    (hε : 0 ≤ ε) (he : ∀ i, dist (f i : RMat) ((base⁻¹ * X i : G) : RMat) ≤ ε)
+-    (hnear : 25 * α + ε ≤ 1 / 2)
+-    (hinterval : (5 : ℝ) ^ 36 * α + 2 * ((4 : ℝ) ^ 34) * ε ≤ 1 / 4)
+-    (hbd : ((z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)).det = 0)
+-    (hδ : 0 < δ) (hη : 0 < η) (hησ : η ≤ σ)
+-    (hspacing : 96 * δ ≤
+-      4 * ((r₀ / 8) * d₀ / (1152 * ((4 : ℝ) ^ 34) ^ 4)) * (σ : ℝ)) :
+-    let b := (z : RMat) - (Matrix.trace (z : RMat) / 2) • (1 : RMat)
+-    let L := (r₀ / 8) * d₀ / (1152 * ((4 : ℝ) ^ 34) ^ 4)
+-    ∃ g ∈ A ^ 34, L ≤ |Matrix.trace (b * (g : RMat))| ∧
+-      (∀ i, 1 / 2 ≤ c i + t i * Matrix.trace (z : RMat) / 2) ∧
+-      (∀ i l k, |f i l k| ≤ 2) ∧
+-      ∃ F : Finset RMat, ∃ s : ↥F → ι,
+-        F.Nonempty ∧ (∀ y, (f (s y) : RMat) = (y : RMat)) ∧
+-        (∀ x ∈ F, ∀ y ∈ F, x ≠ y → 2 * (σ : ℝ) < dist x y) ∧
+-        let Z := Finset.univ.image (fun y : ↥F => (2 / 3 : ℝ) *
+-          (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (s y)))
+-        Function.Injective (fun y : ↥F => (2 / 3 : ℝ) *
+-          (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t (s y))) ∧
+-        Z.Nonempty ∧ Z.card = F.card ∧
+-        (∀ x ∈ Z, 1 ≤ x ∧ x ≤ 2) ∧
+-        (∀ x ∈ Z, ∀ y ∈ Z, x ≠ y → δ < |x - y|) ∧
+-        Metric.externalCoveringNumber η (Set.range (fun i => (f i : RMat))) ≠ ⊤ ∧
+-        (Metric.externalCoveringNumber η
+-          (Set.range (fun i => (f i : RMat))) : ℝ≥0∞).toReal ≤
+-          6561 * (4 * (σ : ℝ) / (η : ℝ) + 1) ^ 4 * (Z.card : ℝ) ∧
+-        (Z.card : ℝ) ≤ (Metric.externalCoveringNumber η
+-          (Set.range (fun i => (f i : RMat))) : ℝ≥0∞).toReal := by
+-  classical
+-  intro b L
+-  have hb : Matrix.trace b = 0 := (centered_generator_coordinates (z : RMat)).1
+-  have hcenter : ∀ i, (f i : RMat) =
+-      scalarAffine b (c i + t i * Matrix.trace (z : RMat) / 2) (t i) := by
+-    intro i
+-    rw [hform i, scalarAffine_recenter]
+-  have hinv : base⁻¹ ∈ A := by simpa only [hAi] using Set.inv_mem_inv.mpr hbase
+-  have hsource (i : ι) : base⁻¹ * X i ∈ A ^ 2 := by
+-    simpa only [pow_two] using Set.mul_mem_mul hinv (hX i)
+-  have hdist (i : ι) : dist (f i : RMat) 1 ≤ 1 / 2 := by
+-    have hh := set_pow_dist_from_one_le hα hαone hA 2 (base⁻¹ * X i) (hsource i)
+-    norm_num only [show (5 : ℝ) ^ 2 = 25 by norm_num] at hh
+-    exact (dist_triangle _ ((base⁻¹ * X i : G) : RMat) 1).trans
+-      ((add_le_add (he i) hh).trans (by linarith only [hnear]))
+-  have hc (i : ι) : 1 / 2 ≤ c i + t i * Matrix.trace (z : RMat) / 2 := by
+-    have hh := (trace_error_le_frobenius_dist (f i : RMat) 1).trans
+-      (mul_le_mul_of_nonneg_left (hdist i) (by norm_num : (0 : ℝ) ≤ 2))
+-    rw [hcenter i, scalarAffine_trace, hb] at hh
+-    norm_num only [mul_zero, add_zero, Matrix.trace_one, Fintype.card_fin, Nat.cast_ofNat] at hh
+-    linarith only [(abs_le.mp hh).1]
+-  have hf (i : ι) (l k : Fin 2) : |f i l k| ≤ 2 := by
+-    have hh := (entry_error_le_frobenius_dist (f i : RMat) 1 l k).trans (hdist i)
+-    have hI : |(1 : RMat) l k| ≤ 1 := by fin_cases l <;> fin_cases k <;> norm_num
+-    have ht := abs_sub_le (f i l k) ((1 : RMat) l k) 0
+-    simp only [sub_zero] at ht
+-    linarith only [hh, hI, ht]
+-  have hpivot : ∃ i, r₀ / 8 ≤ |noncentralCoordinates b i| := by
+-    rw [show noncentralCoordinates b = noncentralCoordinates (z : RMat) from
+-      (centered_generator_coordinates (z : RMat)).2]
+-    exact exists_near_identity_noncentral_pivot z (by norm_num) (by norm_num) hz hfar
+-  obtain ⟨g, hgA, hcoeff⟩ := exists_actual_noncentral_trace_test b
+-    hA1 hα hαone hA hp hq hpq hd₀ (by positivity : 0 < r₀ / 8) hspan hpivot
+-  have hg : ∀ l k, |g l k| ≤ (4 : ℝ) ^ 34 := by
+-    intro l k
+-    simpa only [show (2 : ℝ) * 2 = 4 by norm_num] using
+-      set_pow_subset_matrixEntryBox
+-        (hA.trans (mobiusIdentityBall_subset_entryBox_two hα hαone)) 34 hgA l k
+-  have hbn : ‖b‖ ≤ 32 := (centered_near_identity_generator_bounds z hz).1
+-  have hL : 0 < L := by dsimp only [L]; positivity
+-  obtain ⟨F, s, hF, hs, hsep, hinj, hZn, hcard, hZsep, hfin, hretain, hupper⟩ :=
+-    exists_nilpotent_scalar_sample f
+-      (fun i => c i + t i * Matrix.trace (z : RMat) / 2) t b g
+-      (by norm_num) hf hfn hb hbd hcenter hc
+-      (by norm_num : (0 : ℝ) < 32) hbn hL hcoeff hδ hη hησ
+-      (by convert hspacing using 1; ring)
+-  refine ⟨g, hgA, hcoeff, hc, hf, F, s, hF, hs, hsep, hinj, hZn, hcard, ?_,
+-    hZsep, hfin, hretain, hupper⟩
+-  intro x hx
+-  obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp hx
+-  exact nilpotent_trace_coordinate_range b (f (s y)) (base⁻¹ * X (s y)) g
+-    hα hαone hA (hsource (s y)) hgA hb hbd (hcenter (s y)) (hc (s y))
+-    (by positivity) hε hg (he (s y)) hinterval
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentTraceCells.lean
++++ after/lean/TransposeFollowup/NilpotentTraceCells.lean
+@@ -1,100 +0,0 @@
+-import TransposeFollowup.ShiftedCentralizerTrace
+-import TransposeFollowup.NilpotentArithmeticWords
+-import TransposeFollowup.ScalarRingProjection
+-
+-/-! Transfer scalar sum/product cell growth to traces of actual words.
+-The shift and scaling are fixed, and the source approximation must fit the
+-stated dyadic resolution. No scalar distribution is inferred here. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix OAI.Falconer
+-open scoped Pointwise Matrix.Norms.Frobenius
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem scalar_cells_le_affine_near {δ a b : ℝ} (hδ : 0 < δ)
+-    (S T : Finset ℝ) (ha : |a| ≤ 1)
+-    (hcover : ∀ x ∈ S, ∃ y ∈ T, |x - (a * y + b)| ≤ δ) :
+-    (scalarCells δ S).card ≤ 50 * (scalarCells δ T).card := by
+-  have hnear := scalarCells_translate_cover hδ S {b} (T.image (fun y => a * y)) 1 (by
+-    intro x hx
+-    obtain ⟨y, hy, hxy⟩ := hcover x hx
+-    refine ⟨b, Finset.mem_singleton_self _, a * y, Finset.mem_image.mpr ⟨y, hy, rfl⟩, ?_⟩
+-    simpa only [Nat.cast_one, one_mul, add_comm b] using hxy)
+-  have hscale := scalar_dilation_cells hδ T 1 (by simpa using ha)
+-  simp only [Finset.card_singleton] at hnear
+-  omega
+-
+-theorem nilpotent_actual_trace_cells {ι : Type*} [DecidableEq ι]
+-    (I : Finset ι) (b : RMat) (u z : ι → G) (c t : ι → ℝ) (g : G)
+-    {δ R ε : ℝ} (hδ : 0 < δ) (hR : 1 ≤ R) (hε : 0 ≤ ε)
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hform : ∀ i ∈ I, (u i : RMat) = scalarAffine b (c i) (t i))
+-    (hc : ∀ i ∈ I, 1 / 2 ≤ c i)
+-    (hu : ∀ i ∈ I, ∀ j k, |u i j k| ≤ R)
+-    (hz : ∀ i ∈ I, ∀ j k, |z i j k| ≤ R)
+-    (hg : ∀ j k, |g j k| ≤ R)
+-    (he : ∀ i ∈ I, dist (u i : RMat) (z i : RMat) ≤ ε)
+-    (herror : 32 * R ^ 3 * ε ≤ δ) :
+-    let X := I.image (fun i => (2 / 3 : ℝ) *
+-      (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i))
+-    let Tadd := (I ×ˢ I).image (fun ij => Matrix.trace ((z ij.1 * z ij.2 * g : G) : RMat))
+-    let Tmul := (I ×ˢ I).image (fun ij => Matrix.trace ((z ij.1 * g * z ij.2 * g : G) : RMat))
+-    (scalarCells δ (X + X)).card ≤ 50 * (scalarCells δ Tadd).card ∧
+-      (scalarCells δ (X * X)).card ≤ 50 * (scalarCells δ Tmul).card := by
+-  let f : ι → ℝ := fun i => (2 / 3 : ℝ) *
+-    (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i)
+-  let X := I.image f
+-  let Tadd := (I ×ˢ I).image (fun ij => Matrix.trace ((z ij.1 * z ij.2 * g : G) : RMat))
+-  let Tmul := (I ×ˢ I).image (fun ij => Matrix.trace ((z ij.1 * g * z ij.2 * g : G) : RMat))
+-  have hR0 : 0 ≤ R := zero_le_one.trans hR
+-  have hAddBudget : 16 * R ^ 2 * ε ≤ δ := by
+-    have hh := mul_nonneg (mul_nonneg (sq_nonneg R) hε) (sub_nonneg.mpr hR)
+-    have hh' := mul_nonneg (sq_nonneg R) hε
+-    nlinarith
+-  have hpair (i : ι) (hi : i ∈ I) (j : ι) (hj : j ∈ I) :
+-      |f i + f j - ((2 / 3 : ℝ) * Matrix.trace ((z i * z j * g : G) : RMat) +
+-          (2 / 3 : ℝ) * Matrix.trace (g : RMat))| ≤ δ ∧
+-        |f i * f j - ((4 / 9 : ℝ) * Matrix.trace ((z i * g * z j * g : G) : RMat) +
+-          (8 / 9 : ℝ))| ≤ δ := by
+-    obtain ⟨ha, hm⟩ := nilpotent_shifted_trace_arithmetic b (u i) (u j) g hb hbd
+-      (hform i hi) (hform j hj) (hc i hi) (hc j hj)
+-    obtain ⟨hea, hem⟩ := two_source_trace_word_errors (u i) (u j) (z i) (z j) g g
+-      hR0 hε (hu j hj) (hz i hi) hg hg (he i hi) (he j hj)
+-    have hea' := hea.trans hAddBudget
+-    have hem' := hem.trans herror
+-    constructor
+-    · have heq : f i + f j - ((2 / 3 : ℝ) * Matrix.trace ((z i * z j * g : G) : RMat) +
+-          (2 / 3 : ℝ) * Matrix.trace (g : RMat)) =
+-        -(2 / 3 : ℝ) * (Matrix.trace ((z i * z j * g : G) : RMat) -
+-          Matrix.trace ((u i * u j * g : G) : RMat)) := by
+-        dsimp only [f]
+-        nlinarith only [ha]
+-      rw [heq, abs_mul, show |-(2 / 3 : ℝ)| = 2 / 3 by norm_num]
+-      linarith
+-    · have heq : f i * f j - ((4 / 9 : ℝ) * Matrix.trace ((z i * g * z j * g : G) : RMat) +
+-          (8 / 9 : ℝ)) =
+-        -(4 / 9 : ℝ) * (Matrix.trace ((z i * g * z j * g : G) : RMat) -
+-          Matrix.trace ((u i * g * u j * g : G) : RMat)) := by
+-        dsimp only [f]
+-        nlinarith only [hm]
+-      rw [heq, abs_mul, show |-(4 / 9 : ℝ)| = 4 / 9 by norm_num]
+-      linarith
+-  constructor
+-  · apply scalar_cells_le_affine_near hδ (X + X) Tadd (a := 2 / 3)
+-      (b := (2 / 3 : ℝ) * Matrix.trace (g : RMat)) (by norm_num)
+-    intro x hx
+-    obtain ⟨v, hv, w, hw, rfl⟩ := Finset.mem_add.mp hx
+-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hv
+-    obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hw
+-    exact ⟨_, Finset.mem_image.mpr ⟨(i, j), Finset.mem_product.mpr ⟨hi, hj⟩, rfl⟩,
+-      (hpair i hi j hj).1⟩
+-  · apply scalar_cells_le_affine_near hδ (X * X) Tmul (a := 4 / 9) (b := 8 / 9) (by norm_num)
+-    intro x hx
+-    obtain ⟨v, hv, w, hw, rfl⟩ := Finset.mem_mul.mp hx
+-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hv
+-    obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hw
+-    exact ⟨_, Finset.mem_image.mpr ⟨(i, j), Finset.mem_product.mpr ⟨hi, hj⟩, rfl⟩,
+-      (hpair i hi j hj).2⟩
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NilpotentWordGeometry.lean
++++ after/lean/TransposeFollowup/NilpotentWordGeometry.lean
+@@ -1,203 +0,0 @@
+-import TransposeFollowup.ShiftedCentralizerTrace
+-import TransposeFollowup.NilpotentArithmeticWords
+-import TransposeFollowup.SL2NearIdentityProducts
+-
+-/-! A weighted trace separates both nilpotent arithmetic word families
+-from the identity. Source approximation is charged before applying the
+-separation bound; no subfamily or trace mass is discarded. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Pointwise Matrix.Norms.Frobenius
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem weighted_trace_error_le (b x y : RMat) :
+-    |Matrix.trace (b * x) - Matrix.trace (b * y)| ≤ 2 * ‖b‖ * dist x y := by
+-  calc
+-    _ ≤ 2 * dist (b * x) (b * y) := trace_error_le_frobenius_dist _ _
+-    _ ≤ 2 * (‖b‖ * dist x y) :=
+-      mul_le_mul_of_nonneg_left (frobenius_dist_left_mul b x y) (by norm_num)
+-    _ = _ := by ring
+-
+-theorem nilpotent_weighted_trace_words (b : RMat) (u v g : G) {c t p q : ℝ}
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hv : (v : RMat) = scalarAffine b p q)
+-    (hc : 1 / 2 ≤ c) (hp : 1 / 2 ≤ p) :
+-    let ℓ := Matrix.trace (b * (g : RMat))
+-    Matrix.trace (b * ((u * v * g : G) : RMat)) = ℓ ∧
+-      Matrix.trace (b * ((u * g * v * g : G) : RMat)) =
+-        ℓ * (Matrix.trace (g : RMat) + q * ℓ) := by
+-  obtain ⟨hc1, hp1, _, _⟩ := nilpotent_positive_trace_arithmetic b u v g hb hbd hu hv hc hp
+-  subst c p
+-  have hbform : scalarAffine b 0 1 = b := by simp [scalarAffine_eq_smul_add]
+-  have hbu : b * (u : RMat) = b := by
+-    rw [hu]
+-    simpa only [hbd, hb, zero_mul, mul_zero, one_mul, sub_zero,
+-      zero_add, add_zero, hbform] using scalarAffine_mul b 0 1 1 t
+-  have hbv : b * (v : RMat) = b := by
+-    rw [hv]
+-    simpa only [hbd, hb, zero_mul, mul_zero, one_mul, sub_zero,
+-      zero_add, add_zero, hbform] using scalarAffine_mul b 0 1 1 q
+-  constructor
+-  · simp only [Matrix.SpecialLinearGroup.coe_mul, ← Matrix.mul_assoc, hbu, hbv]
+-  · simp only [Matrix.SpecialLinearGroup.coe_mul, ← Matrix.mul_assoc, hbu]
+-    rw [hv]
+-    simpa only [hbd, zero_mul, mul_zero, one_mul, zero_add, add_zero, sub_zero, hbform] using
+-      scalarAffine_repeated_trace b (g : RMat) 0 1 1 q hb
+-
+-/-- Transfer a nonzero weighted trace to a quantitative distance from `1`. -/
+-theorem weighted_trace_distance_lower_bound (b x y : RMat) {B L E : ℝ}
+-    (hb : Matrix.trace b = 0) (hB : 0 < B) (hbn : ‖b‖ ≤ B)
+-    (hL : L ≤ |Matrix.trace (b * x)|) (hxy : dist x y ≤ E)
+-    (herror : 2 * B * E ≤ L / 2) :
+-    L / (4 * B) ≤ dist y 1 := by
+-  have he : |Matrix.trace (b * x) - Matrix.trace (b * y)| ≤ 2 * B * E := by
+-    exact (weighted_trace_error_le b x y).trans
+-      (mul_le_mul (mul_le_mul_of_nonneg_left hbn (by norm_num)) hxy dist_nonneg
+-        (by positivity))
+-  have hy : |Matrix.trace (b * y)| ≤ 2 * B * dist y 1 := by
+-    have h := weighted_trace_error_le b y 1
+-    rw [mul_one, hb, sub_zero] at h
+-    exact h.trans (mul_le_mul_of_nonneg_right
+-      (mul_le_mul_of_nonneg_left hbn (by norm_num)) dist_nonneg)
+-  have htriangle := abs_sub_le (Matrix.trace (b * x)) (Matrix.trace (b * y)) 0
+-  simp only [sub_zero] at htriangle
+-  apply (div_le_iff₀ (by positivity : 0 < 4 * B)).mpr
+-  nlinarith
+-
+-theorem nilpotent_actual_words_far (b : RMat) (u v z w g : G)
+-    {c t p q R ε B L : ℝ}
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hv : (v : RMat) = scalarAffine b p q)
+-    (hc : 1 / 2 ≤ c) (hp : 1 / 2 ≤ p)
+-    (hR : 1 ≤ R) (hε : 0 ≤ ε)
+-    (hvb : ∀ i j, |v i j| ≤ R) (hzb : ∀ i j, |z i j| ≤ R)
+-    (hg : ∀ i j, |g i j| ≤ R)
+-    (heu : dist (u : RMat) (z : RMat) ≤ ε)
+-    (hev : dist (v : RMat) (w : RMat) ≤ ε)
+-    (hB : 0 < B) (hbn : ‖b‖ ≤ B)
+-    (hcoeff : L ≤ |Matrix.trace (b * (g : RMat))|)
+-    (hrange : 1 ≤ Matrix.trace (g : RMat) + q * Matrix.trace (b * (g : RMat)))
+-    (herror : 32 * B * R ^ 3 * ε ≤ L / 2) :
+-    L / (4 * B) ≤ dist ((z * w * g : G) : RMat) 1 ∧
+-      L / (4 * B) ≤ dist ((z * g * w * g : G) : RMat) 1 := by
+-  obtain ⟨hadd, hmul⟩ := nilpotent_weighted_trace_words b u v g hb hbd hu hv hc hp
+-  obtain ⟨haddDist, hmulDist⟩ := two_source_word_distances u v z w g g
+-    (by linarith) hε hvb hzb hg hg heu hev
+-  have hpow : R ^ 2 ≤ R ^ 3 := by
+-    nlinarith [sq_nonneg R, mul_nonneg (sq_nonneg R) (sub_nonneg.mpr hR)]
+-  have hcommon : 8 * R ^ 2 * ε ≤ 16 * R ^ 3 * ε := by
+-    have hh := mul_le_mul_of_nonneg_right hpow hε
+-    nlinarith [mul_nonneg (sq_nonneg R) hε]
+-  have hbudget : 2 * B * (16 * R ^ 3 * ε) ≤ L / 2 := by
+-    nlinarith only [herror]
+-  constructor
+-  · apply weighted_trace_distance_lower_bound b ((u * v * g : G) : RMat)
+-      ((z * w * g : G) : RMat) hb hB hbn
+-    · simpa only [hadd] using hcoeff
+-    · exact haddDist.trans hcommon
+-    · exact hbudget
+-  · apply weighted_trace_distance_lower_bound b ((u * g * v * g : G) : RMat)
+-      ((z * g * w * g : G) : RMat) hb hB hbn
+-    · rw [hmul, abs_mul, abs_of_nonneg (show 0 ≤
+-        Matrix.trace (g : RMat) + q * Matrix.trace (b * (g : RMat)) by linarith)]
+-      exact hcoeff.trans (le_mul_of_one_le_right (abs_nonneg _) hrange)
+-    · exact hmulDist
+-    · exact hbudget
+-
+-/-- Near-identity source words place the fixed scalar coordinate in the
+-positive interval needed by the sum/product theorem. No affine zoom is used. -/
+-theorem nilpotent_trace_coordinate_range (b : RMat) (u z g : G)
+-    {A : Set G} {m n : ℕ} {c t α R ε : ℝ}
+-    (hα : 0 < α) (hαone : α ≤ 1) (hA : A ⊆ mobiusIdentityBall α)
+-    (hzA : z ∈ A ^ m) (hgA : g ∈ A ^ n)
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hc : 1 / 2 ≤ c)
+-    (hR : 0 ≤ R) (hε : 0 ≤ ε) (hg : ∀ i j, |g i j| ≤ R)
+-    (he : dist (u : RMat) (z : RMat) ≤ ε)
+-    (hsmall : (5 : ℝ) ^ (m + n) * α + 2 * R * ε ≤ 1 / 4) :
+-    let x := (2 / 3 : ℝ) *
+-      (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t)
+-    1 ≤ x ∧ x ≤ 2 := by
+-  obtain ⟨hc1, _, _, _⟩ := nilpotent_positive_trace_arithmetic b u u g hb hbd hu hu hc hc
+-  subst c
+-  have hcoord : Matrix.trace ((u * g : G) : RMat) =
+-      Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t := by
+-    simp only [Matrix.SpecialLinearGroup.coe_mul, hu, scalarAffine_trace_right, one_mul]
+-    ring
+-  have hzg : z * g ∈ A ^ (m + n) := by
+-    rw [pow_add]
+-    exact Set.mul_mem_mul hzA hgA
+-  have hdist := set_pow_dist_from_one_le hα hαone hA (m + n) (z * g) hzg
+-  have herr : dist ((u * g : G) : RMat) ((z * g : G) : RMat) ≤ 2 * R * ε := by
+-    have hh := (frobenius_dist_right_mul (u : RMat) (z : RMat) (g : RMat)).trans
+-      (mul_le_mul he (frobenius_norm_le_of_entry_bound hR hg) (norm_nonneg _) hε)
+-    convert hh using 1; ring
+-  have hnear : dist ((u * g : G) : RMat) 1 ≤ 1 / 4 :=
+-    (dist_triangle _ ((z * g : G) : RMat) 1).trans
+-      ((add_le_add herr hdist).trans (by linarith only [hsmall]))
+-  have htrace := (trace_error_le_frobenius_dist ((u * g : G) : RMat) 1).trans
+-    (mul_le_mul_of_nonneg_left hnear (by norm_num : (0 : ℝ) ≤ 2))
+-  rw [hcoord] at htrace
+-  norm_num only [Matrix.trace_one, Fintype.card_fin, Nat.cast_ofNat] at htrace
+-  obtain ⟨hlo, hhi⟩ := abs_le.mp htrace
+-  constructor <;> linarith
+-
+-/-- Geometry of the entire finite families used by
+-`nilpotent_actual_trace_growth`. Their word containments are supplied by
+-that theorem; one smallness budget handles both word lengths. -/
+-theorem nilpotent_actual_word_families_geometry {ι : Type*} [DecidableEq ι]
+-    (I : Finset ι) (b : RMat) (u z : ι → G) (c t : ι → ℝ) (g : G)
+-    {A : Set G} {m n : ℕ} {α R ε B L : ℝ}
+-    (hI : I.Nonempty) (hα : 0 < α) (hαone : α ≤ 1)
+-    (hA : A ⊆ mobiusIdentityBall α)
+-    (hsmall : (5 : ℝ) ^ (2 * m + 2 * n) * α ≤ 1 / 4)
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hform : ∀ i ∈ I, (u i : RMat) = scalarAffine b (c i) (t i))
+-    (hc : ∀ i ∈ I, 1 / 2 ≤ c i)
+-    (hR : 1 ≤ R) (hε : 0 ≤ ε)
+-    (hu : ∀ i ∈ I, ∀ l k, |u i l k| ≤ R)
+-    (hz : ∀ i ∈ I, ∀ l k, |z i l k| ≤ R)
+-    (hg : ∀ l k, |g l k| ≤ R)
+-    (he : ∀ i ∈ I, dist (u i : RMat) (z i : RMat) ≤ ε)
+-    (hB : 0 < B) (hbn : ‖b‖ ≤ B) (hL : 0 < L)
+-    (hcoeff : L ≤ |Matrix.trace (b * (g : RMat))|)
+-    (hrange : ∀ i ∈ I, 1 ≤ (2 / 3 : ℝ) *
+-      (Matrix.trace (g : RMat) + Matrix.trace (b * (g : RMat)) * t i))
+-    (herror : 32 * B * R ^ 3 * ε ≤ L / 2) :
+-    let Dadd := (I ×ˢ I).image (fun ij => z ij.1 * z ij.2 * g)
+-    let Dmul := (I ×ˢ I).image (fun ij => z ij.1 * g * z ij.2 * g)
+-    (Dadd : Set G) ⊆ A ^ (2 * m + n) →
+-    (Dmul : Set G) ⊆ A ^ (2 * m + 2 * n) →
+-    0 < L / (4 * B) ∧ Dadd.Nonempty ∧ Dmul.Nonempty ∧
+-      (∀ w ∈ Dadd, w ∈ mobiusIdentityBall (1 / 2) ∧
+-        L / (4 * B) ≤ dist (w : RMat) 1) ∧
+-      (∀ w ∈ Dmul, w ∈ mobiusIdentityBall (1 / 2) ∧
+-        L / (4 * B) ≤ dist (w : RMat) 1) := by
+-  intro Dadd Dmul haddpow hmulpow
+-  have hnear {k : ℕ} (hk : k ≤ 2 * m + 2 * n) {w : G} (hw : w ∈ A ^ k) :
+-      w ∈ mobiusIdentityBall (1 / 2) := by
+-    apply (mobiusIdentityBall_iff_frobenius_dist w (by norm_num : (0 : ℝ) < 1 / 2)).mpr
+-    have hd := set_pow_dist_from_one_le hα hαone hA k w hw
+-    have hp := mul_le_mul_of_nonneg_right
+-      (pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 5) hk) hα.le
+-    linarith
+-  have hfar (i j : ι) (hi : i ∈ I) (hj : j ∈ I) :=
+-    nilpotent_actual_words_far b (u i) (u j) (z i) (z j) g hb hbd
+-      (hform i hi) (hform j hj) (hc i hi) (hc j hj) hR hε (hu j hj) (hz i hi) hg
+-      (he i hi) (he j hj) hB hbn hcoeff
+-      (by have hh := hrange j hj; nlinarith only [hh]) herror
+-  refine ⟨by positivity, (hI.product hI).image _, (hI.product hI).image _, ?_, ?_⟩
+-  · intro w hw
+-    refine ⟨hnear (by omega) (haddpow hw), ?_⟩
+-    obtain ⟨⟨i, j⟩, hij, rfl⟩ := Finset.mem_image.mp hw
+-    obtain ⟨hi, hj⟩ := Finset.mem_product.mp hij
+-    exact (hfar i j hi hj).1
+-  · intro w hw
+-    refine ⟨hnear le_rfl (hmulpow hw), ?_⟩
+-    obtain ⟨⟨i, j⟩, hij, rfl⟩ := Finset.mem_image.mp hw
+-    obtain ⟨hi, hj⟩ := Finset.mem_product.mp hij
+-    exact (hfar i j hi hj).2
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/ReextractionPowerBounds.lean
++++ after/lean/TransposeFollowup/ReextractionPowerBounds.lean
+@@ -1,3 +1,4 @@
++import TransposeFollowup.DyadicCenterTrimming
+ import TransposeFollowup.NilpotentExtractionParameters
+ import TransposeFollowup.LocalizedFixedProductEnvelope
+ import TransposeFollowup.TraceReextractionCubicBound
+--- before/lean/TransposeFollowup/ShiftedCentralizerTrace.lean
++++ after/lean/TransposeFollowup/ShiftedCentralizerTrace.lean
+@@ -1,44 +0,0 @@
+-import TransposeFollowup.NilpotentScalarArithmetic
+-
+-/-! Shifted trace coordinates read products of the same scalar set.
+-The general identity retains the determinant correction; nilpotence is
+-an explicit hypothesis of the exact ring interpretation. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => Matrix.SpecialLinearGroup (Fin 2) ℝ
+-
+-theorem scalarAffine_repeated_trace (b g : RMat) (c t p q : ℝ)
+-    (hb : Matrix.trace b = 0) :
+-    Matrix.trace (scalarAffine b c t * g * scalarAffine b p q * g) =
+-      (c * Matrix.trace g + t * Matrix.trace (b * g)) *
+-        (p * Matrix.trace g + q * Matrix.trace (b * g)) -
+-          2 * (c * p + b.det * t * q) * g.det := by
+-  have hb' : b 1 1 = -b 0 0 := by
+-    simp only [Matrix.trace, Matrix.diag, Fin.sum_univ_two] at hb
+-    linarith
+-  simp only [scalarAffine, Matrix.det_fin_two, Matrix.trace, Matrix.diag,
+-    Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
+-    Matrix.cons_val_zero, Matrix.cons_val_one, hb']
+-  ring
+-
+-theorem nilpotent_shifted_trace_arithmetic (b : RMat) (u v g : G) {c t p q : ℝ}
+-    (hb : Matrix.trace b = 0) (hbd : b.det = 0)
+-    (hu : (u : RMat) = scalarAffine b c t) (hv : (v : RMat) = scalarAffine b p q)
+-    (hc : 1 / 2 ≤ c) (hp : 1 / 2 ≤ p) :
+-    let ℓ := Matrix.trace (b * (g : RMat))
+-    let τ := Matrix.trace (g : RMat)
+-    Matrix.trace ((u * v * g : G) : RMat) + τ = (τ + ℓ * t) + (τ + ℓ * q) ∧
+-      Matrix.trace ((u * g * v * g : G) : RMat) + 2 = (τ + ℓ * t) * (τ + ℓ * q) := by
+-  obtain ⟨hc1, hp1, hadd, _⟩ := nilpotent_positive_trace_arithmetic b u v g hb hbd hu hv hc hp
+-  subst c p
+-  constructor
+-  · rw [hadd]
+-    ring
+-  · simp only [Matrix.SpecialLinearGroup.coe_mul, hu, hv]
+-    rw [scalarAffine_repeated_trace b (g : RMat) 1 t 1 q hb,
+-      hbd, Matrix.SpecialLinearGroup.det_coe]
+-    ring
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/SmoothedIterateSmallEscape.lean
++++ after/lean/TransposeFollowup/SmoothedIterateSmallEscape.lean
+@@ -112,44 +112,5 @@
+         congr 2
+         omega
+ 
+-theorem exists_iterate_small_exponent_escape {ε : ℝ} (hε : 0 < ε) :
+-    ∃ θ : ℝ, 0 < θ ∧ θ ≤ 1 / 2 ∧ ∀ r : ℕ, 5 ≤ r → ∃ J : ℕ,
+-    ∀ {j ell : ℕ} {s Q α X : ℝ} {N_level : ℕ} (_hJj : J ≤ j)
+-    (_hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) /
+-      Real.log (1 / dyadicRadius r) < (ell : ℝ))
+-    (g : Fin (2 ^ (3 * r)) → Group)
+-    (_hg : ∀ a, HasDenominator (dyadicDenominator r) (g a))
+-    (_hfree : Function.Injective (FreeGroup.lift (realEmbedding ∘ g)))
+-    (_hG : ∀ a, realEmbedding (g a) ∈ matrixEntryBox 2) (i : ℕ)
+-    {U : Set RealMobius.Group} (_hU1 : 1 ∈ U) (_hUo : IsOpen U) (_hUi : U⁻¹ = U)
+-    (_hUb : U ⊆ matrixEntryBox Q) (_hQ : 1 ≤ Q) (_hα : 0 < α) (_hαone : α ≤ 1)
+-    (x : RealMobius.Group) (_hx : x ∈ matrixEntryBox X)
+-    (_hmargin : 1140 * s ≤ θ / 61440)
+-    (_hlarge : 2 ^ 100 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hlevel : (N_level : ℝ) ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hQscale : Q ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (_hαscale : α⁻¹ ^ 4 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s)),
+-    let η := (1 / 4 : ℝ) ^ j
+-    let q := ENNReal.ofReal (η ^ s)
+-    let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (Measure.haar : Measure RealMobius.Group).withDensity
+-      (smoothedAutocorrelationIterate (generatorWalkMeasure (realEmbedding ∘ g) ell) η i) (x • U) →
+-    ∀ P : CMatˣ, ∃ h ∈ A ^ 4, η ^ ε ≤
+-      ‖SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 0 1 *
+-        SL2Escape.complexConjugation P (Matrix.SpecialLinearGroup.map Complex.ofRealHom h) 1 0‖ := by
+-  obtain ⟨θ, hθ, hθhalf, hall⟩ := exists_iterate_spanning_escape hε
+-  refine ⟨θ, hθ, hθhalf, ?_⟩
+-  intro r hr
+-  obtain ⟨J, hJ⟩ := hall r hr
+-  refine ⟨J, ?_⟩
+-  intro j ell s Q α X N_level hj hlog g hg hfree hG i U
+-    hU1 hUo hUi hUb hQ hα hαone x hx hmargin hlarge hlevel hQscale hαscale
+-  dsimp only
+-  intro hmass
+-  exact (hJ hj hlog g hg hfree hG i hU1 hUo hUi hUb hQ hα hαone x hx
+-    hmargin hlarge hlevel hQscale hαscale hmass).1
+ 
+ end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/SmoothedIterateWordDistribution.lean
++++ after/lean/TransposeFollowup/SmoothedIterateWordDistribution.lean
+@@ -90,39 +90,5 @@
+   refine ⟨u, hu, F, hF1, hF, ?_⟩
+   simpa only [show -(1 / 30720 : ℝ) / 4 = -(1 / 122880 : ℝ) by norm_num] using hsize
+ 
+-theorem exists_iterate_large_short_words {r j ell : ℕ} {s Q α X : ℝ} {N_level : ℕ}
+-    (hr : 5 ≤ r) (hj : 7680 * r ≤ j)
+-    (hlog : Real.log (1 / (1 / 4 : ℝ) ^ j) /
+-      Real.log (1 / dyadicRadius r) < (ell : ℝ))
+-    (g : Fin (2 ^ (3 * r)) → Group)
+-    (hg : ∀ a, HasDenominator (dyadicDenominator r) (g a))
+-    (hfree : Function.Injective (FreeGroup.lift (realEmbedding ∘ g)))
+-    (hG : ∀ a, realEmbedding (g a) ∈ matrixEntryBox 2) (i : ℕ)
+-    {U : Set RealMobius.Group} (hU1 : 1 ∈ U) (hUo : IsOpen U) (hUi : U⁻¹ = U)
+-    (hUb : U ⊆ matrixEntryBox Q) (hQ : 1 ≤ Q) (hα : 0 < α) (hαone : α ≤ 1)
+-    (x : RealMobius.Group) (hx : x ∈ matrixEntryBox X)
+-    (hmargin : 1140 * s ≤ 1 / 61440)
+-    (hlarge : 2 ^ 100 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (hlevel : (N_level : ℝ) ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (hQscale : Q ≤ ((1 / 4 : ℝ) ^ j) ^ (-s))
+-    (hαscale : α⁻¹ ^ 4 ≤ ((1 / 4 : ℝ) ^ j) ^ (-s)) :
+-    let η := (1 / 4 : ℝ) ^ j
+-    let q := ENNReal.ofReal (η ^ s)
+-    let K₀ := 64 * (N_level : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    let t := initialWalkLength r j
+-    q ^ 2 ≤ 8192 * K₀ * L ^ 2 * K ^ 4 * (Measure.haar : Measure RealMobius.Group).withDensity
+-      (smoothedAutocorrelationIterate (generatorWalkMeasure (realEmbedding ∘ g) ell) η i) (x • U) →
+-    ∃ u ∈ mobiusIdentityBall η, ∃ F : Finset (FreeGroup (Fin (2 ^ (3 * r)))), 1 ∈ F ∧
+-      (∀ v ∈ F, FreeGroup.norm v ≤ 2 * t ∧
+-        FreeGroup.lift (realEmbedding ∘ g) v ∈ denominatorCarrier ((dyadicDenominator r) ^ (2 * t)) ∧
+-        u⁻¹ * FreeGroup.lift (realEmbedding ∘ g) v * u ∈ A ^ 2) ∧
+-      η ^ (-(1 / 122880 : ℝ)) ≤ (F.card : ℝ) := by
+-  simpa only [Real.rpow_one] using exists_iterate_scaled_short_words hr hj le_rfl
+-    (by simp : (1 / 4 : ℝ) ^ j ≤ ((1 / 4 : ℝ) ^ j) ^ (1 : ℝ))
+-    hlog g hg hfree hG i hU1 hUo hUi hUb hQ hα hαone x hx
+-    hmargin hlarge hlevel hQscale hαscale
+ 
+ end TransposeFollowup.RationalFreePair
+--- before/lean/TransposeFollowup/SpanningCommutingExtraction.lean
++++ after/lean/TransposeFollowup/SpanningCommutingExtraction.lean
+@@ -1,19 +1,15 @@
+-import TransposeFollowup.TrimmedSpanningTrace
+ import TransposeFollowup.SL2NearIdentityProducts
+ import TransposeFollowup.TraceCommutingExtraction
+ 
+-/-! Compose actual trimming, the same spanning frame, quantitative
+-normalization and trace-driven commuting extraction. The cube form of
+-the covering bound avoids introducing roots or positivity assumptions
+-for division by a covering number. -/
++/-! The normalized mixed-product inclusion used by quantitative spanning
++extraction. The earlier trimmed-extraction route is preserved in the
++research archive and is no longer part of the active proof chain. -/
+ namespace TransposeFollowup.SL2Projection
+ open Classical Matrix Set RealMobius
+ open scoped Matrix.Norms.Frobenius Pointwise ENNReal NNReal
+ set_option autoImplicit false
+ local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+ local notation "G" => RealMobius.Group
+-local notation "H₀" => (4 : ℝ) ^ 34
+-local notation "B₀" => 4 * H₀
+ 
+ theorem normalized_mixed_product_subset_power {A R : Set G} {n : ℕ} {h : G}
+     (hAi : A⁻¹ = A) (hRA : R ⊆ A) (hh : h ∈ A ^ n) :
+@@ -31,98 +27,5 @@
+     _ = A ^ (1 + (n + 1) + 1) := by simp only [pow_add, pow_one, mul_assoc]
+     _ = _ := by congr 1; omega
+ 
+-theorem exists_spanning_commuting_extraction_at_dyadic_scale {κ ζ β ε σ : ℝ}
+-    (hζ : 0 < ζ) (hζhalf : ζ < 1 / 2) (hεζ : ε < ζ)
+-    (hbudget : β < ζ * κ) (hσ : 0 < σ) :
+-    ∃ J : ℕ, ∀ j : ℕ, J ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-      let r := η ^ (2 * ζ) / (2 * H₀)
+-      ∀ {A : Set G} {α : ℝ}, 1 ∈ A → 0 < α → α ≤ 1 / 2 →
+-        8 * H₀ * (1 + (5 : ℝ) ^ 34) * α ≤ 1 →
+-        A ⊆ mobiusIdentityBall α →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 3)) : ℝ≥0∞).toReal ≤
+-          η ^ (-β) * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        ∀ {p q : G}, p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-          η ^ σ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        ∃ R : Set G, R ⊆ A ∧ R.Nonempty ∧ ∃ h ∈ A ^ 34,
+-          let D := (fun x : G => h⁻¹ * x) '' R
+-          D ⊆ mobiusIdentityBall (1 / 2) ∧ (∀ z ∈ D, r ≤ dist (z : RMat) 1) ∧
+-          ∃ g ∈ D, ∃ c : RMat,
+-            let S := {x : G | x ∈ A ∧ dist ((x * g * x⁻¹ : G) : RMat) c ≤ η}
+-            ∃ x₀ ∈ S, ∃ f : S → G,
+-              (∀ x : S, ∃ s t : ℝ, (f x : RMat) = scalarAffine (g : RMat) s t) ∧
+-              (∀ x : S, x₀⁻¹ * x ∈ A⁻¹ * A ∧
+-                dist ((x₀⁻¹ * x : G) : RMat) (f x : RMat) ≤ 12800 * B₀ ^ 6 * η / r) ∧
+-              (∀ x y : S, Commute (f x) (f y)) ∧
+-              Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-              Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A * D * A⁻¹)) ≠ ⊤ ∧
+-              Metric.externalCoveringNumber ηn (Set.range (fun x : S => (f x : RMat))) ≠ ⊤ ∧
+-              η ^ (8 * σ) * (Metric.externalCoveringNumber ηn
+-                ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ^ 4 ≤
+-                (9 * (Metric.externalCoveringNumber ηn
+-                  ((fun x : G => (x : RMat)) '' (A * D * A⁻¹)) : ℝ≥0∞).toReal *
+-                    (102400 * B₀ ^ 7 / r + 8 * B₀ + 1) ^ 4 *
+-                      (Metric.externalCoveringNumber ηn
+-                        (Set.range (fun x : S => (f x : RMat))) : ℝ≥0∞).toReal) ^ 3 := by
+-  obtain ⟨Jt, hJt⟩ := exists_trimmed_trace_at_dyadic_scale hζ (by linarith) hεζ hbudget hσ
+-  obtain ⟨Js, hJs⟩ := exists_dyadic_scaled_rpow_bound
+-    (by norm_num : 0 < 3072 * H₀ * B₀ ^ 4) (by linarith : 0 < 1 - 2 * ζ)
+-  refine ⟨max Jt Js, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro A α hA1 hα hαhalf hαsmall hA htrip hdistribution p q hp hq hpq hdet
+-  let η := (1 / 4 : ℝ) ^ j
+-  let ηn : ℝ≥0 := ⟨η, by dsimp only [η]; positivity⟩
+-  let r := η ^ (2 * ζ) / (2 * H₀)
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hr : 0 < r := by dsimp only [r]; positivity
+-  have hpower : η ^ (1 - 2 * ζ) * η ^ (2 * ζ) = η := by
+-    rw [← Real.rpow_add hη, sub_add_cancel, Real.rpow_one]
+-  have hscale' : 3072 * H₀ * B₀ ^ 4 * η ≤ η ^ (2 * ζ) := by
+-    calc
+-      _ = (3072 * H₀ * B₀ ^ 4 * η ^ (1 - 2 * ζ)) * η ^ (2 * ζ) :=
+-        ((mul_assoc _ _ _).trans (congrArg (fun z : ℝ => 3072 * H₀ * B₀ ^ 4 * z) hpower)).symm
+-      _ ≤ 1 * η ^ (2 * ζ) := mul_le_mul_of_nonneg_right
+-        (hJs j ((le_max_right _ _).trans hj)) (by positivity)
+-      _ = _ := one_mul _
+-  have hsmall : 1536 * B₀ ^ 4 * (ηn : ℝ) ≤ r := by
+-    change 1536 * B₀ ^ 4 * η ≤ η ^ (2 * ζ) / (2 * H₀)
+-    apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 2 * H₀)).mpr
+-    convert hscale' using 1; ring
+-  obtain ⟨R, hRA, hRn, _hRfin, _hretain, h, hh, hfar, htrace⟩ :=
+-    hJt j ((le_max_left _ _).trans hj) hA1 hα hαhalf hA htrip hdistribution hp hq hpq hdet
+-  have hAb : A ⊆ matrixEntryBox 2 := hA.trans (mobiusIdentityBall_subset_entryBox_two hα (by linarith))
+-  have hpow : A ^ 34 ⊆ matrixEntryBox H₀ := by
+-    simpa only [show (2 : ℝ) * 2 = 4 by norm_num] using set_pow_subset_matrixEntryBox hAb 34
+-  obtain ⟨hDnear, hDb, hDfar⟩ := normalized_subset_geometry 34 h hα (by linarith) hA hRA hh
+-    (by norm_num) (hpow hh) hαsmall (fun x hx => (hfar x hx).le)
+-  let D := (fun x : G => h⁻¹ * x) '' R
+-  have hDn : D.Nonempty := hRn.image _
+-  have hAB : ∀ x ∈ A, ∀ i k, |x i k| ≤ B₀ :=
+-    fun x hx i k => (hAb hx i k).trans (by norm_num)
+-  obtain ⟨g, hg, c, x₀, hx₀, f, hform, hclose, hcomm, hAfin, _hTrfin, hCfin, hVfin, hbound⟩ :=
+-    exists_trace_commuting_extraction (A := A) (D := D) (α := 1 / 2) (r := r) (B := B₀) (η := ηn)
+-      (by norm_num) le_rfl hr (by norm_num) hη ⟨1, hA1⟩ hDn hAB hDb hDnear hDfar hsmall
+-  refine ⟨R, hRA, hRn, h, hh, hDnear, hDfar, g, hg, c, x₀, hx₀, f,
+-    hform, hclose, hcomm, hAfin, hCfin, hVfin, ?_⟩
+-  let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-  let T := (Metric.externalCoveringNumber ηn ((fun z : G => Matrix.trace (z : RMat)) '' D) : ℝ≥0∞).toReal
+-  have hT : η ^ (8 * σ) * N ≤ T ^ 3 := by
+-    simpa only [N, T, D, Set.image_image] using htrace
+-  let L := 9 * (Metric.externalCoveringNumber ηn
+-    ((fun x : G => (x : RMat)) '' (A * D * A⁻¹)) : ℝ≥0∞).toReal *
+-      (102400 * B₀ ^ 7 / r + 8 * B₀ + 1) ^ 4 *
+-        (Metric.externalCoveringNumber ηn (Set.range (fun x => (f x : RMat))) : ℝ≥0∞).toReal
+-  change η ^ (8 * σ) * N ^ 4 ≤ L ^ 3
+-  calc
+-    _ = (η ^ (8 * σ) * N) * N ^ 3 := by ring
+-    _ ≤ T ^ 3 * N ^ 3 := mul_le_mul_of_nonneg_right hT (pow_nonneg ENNReal.toReal_nonneg _)
+-    _ = (T * N) ^ 3 := (mul_pow _ _ _).symm
+-    _ ≤ L ^ 3 := pow_le_pow_left₀ (mul_nonneg ENNReal.toReal_nonneg ENNReal.toReal_nonneg) hbound 3
+ 
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/TreewidthAverage.lean
++++ after/lean/TransposeFollowup/TreewidthAverage.lean
+@@ -50,10 +50,11 @@
+       ring
+ 
+ /-- Optimizing the integral component threshold directly improves the earlier
+-coefficient 1/9 (and its 1/n rounding loss) to 1/4 with no rounding loss. -/
++coefficient 1/9 (and its 1/n rounding loss) to 1/4, with an additional
++positive finite-size correction a/2. -/
+ theorem quadratic_bound_of_integer_tests (n e a : ℝ) (hn : 0 < n) (he : 0 ≤ e)
+     (htest : ∀ L : ℕ, n * ((L : ℝ) + 1) * a ≤ n * e + L * (L + 1)) :
+-    n / 4 * (max a 0) ^ 2 ≤ e := by
++    n / 4 * (max a 0) ^ 2 + max a 0 / 2 ≤ e := by
+   by_cases ha : a ≤ 0
+   · simpa [max_eq_right ha] using he
+   · have ha0 : 0 < a := lt_of_not_ge ha
+@@ -63,9 +64,9 @@
+     have hr : 0 ≤ r := by dsimp [r]; positivity
+     have hlo : (L : ℝ) ≤ r := Nat.floor_le hr
+     have hhi : r ≤ (L : ℝ) + 1 := (Nat.lt_floor_add_one r).le
+-    have hprod : r ^ 2 ≤ ((L : ℝ) + 1) * (2 * r - L) := by
+-      rw [pow_two]
+-      exact mul_le_mul hhi (by linarith) hr (by positivity)
++    have hprod : r ^ 2 + r ≤ ((L : ℝ) + 1) * (2 * r - L) := by
++      have hnonneg := mul_nonneg (sub_nonneg.mpr hlo) (sub_nonneg.mpr hhi)
++      nlinarith
+     have hupper : ((L : ℝ) + 1) * (2 * r - L) ≤ n * e := by
+       have ht := htest L
+       dsimp [r]
+--- before/lean/TransposeFollowup/TrimmedSpanningTrace.lean
++++ after/lean/TransposeFollowup/TrimmedSpanningTrace.lean
+@@ -1,98 +0,0 @@
+-import TransposeFollowup.DyadicCenterTrimming
+-
+-/-! Apply the original spanning frame to a retained subset. The subset
+-need not contain the identity. Trimming excludes every frame center
+-before the trace projection selects one of them. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Matrix.Norms.Frobenius Pointwise ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem exists_trimmed_trace_at_dyadic_scale {κ ζ β ε σ : ℝ}
+-    (hζ : 0 < ζ) (hζ1 : ζ < 1) (hεζ : ε < ζ) (hbudget : β < ζ * κ) (hσ : 0 < σ) :
+-    ∃ J : ℕ, ∀ j : ℕ, J ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-      ∀ {A : Set G} {α : ℝ}, 1 ∈ A → 0 < α → α ≤ 1 / 2 →
+-        A ⊆ mobiusIdentityBall α →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 3)) : ℝ≥0∞).toReal ≤
+-          η ^ (-β) * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        ∀ {p q : G}, p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-          η ^ σ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-        ∃ R : Set G, R ⊆ A ∧ R.Nonempty ∧
+-          Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' R) ≠ ⊤ ∧
+-          (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-            2 * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' R) : ℝ≥0∞).toReal ∧
+-          ∃ h ∈ A ^ 34, (∀ x ∈ R, η ^ (2 * ζ) < dist (x : RMat) (h : RMat)) ∧
+-            η ^ (8 * σ) * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-              (Metric.externalCoveringNumber ηn
+-                ((fun x : G => Matrix.trace ((h⁻¹ * x : G) : RMat)) '' R) : ℝ≥0∞).toReal ^ 3 := by
+-  obtain ⟨Jr, hJr⟩ := exists_finite_center_trimming_at_dyadic_scale 4
+-    (B := 2) (H := (4 : ℝ) ^ 34) (by norm_num) (by norm_num) hζ hζ1 hεζ hbudget
+-  obtain ⟨Jc, hJc⟩ := exists_dyadic_scaled_rpow_bound
+-    (mul_pos (by norm_num : (0 : ℝ) < 2) spanningTraceLoss_pos) hσ
+-  refine ⟨max Jr Jc, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro A α hA1 hα hαhalf hA htrip hdistribution p q hp hq hpq hdet
+-  let η := (1 / 4 : ℝ) ^ j
+-  let ηn : ℝ≥0 := ⟨η, by dsimp only [η]; positivity⟩
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  let d := η ^ σ
+-  have hd : 0 < d := Real.rpow_pos_of_pos hη σ
+-  have hd1 : d ≤ 1 := Real.rpow_le_one hη.le hηone hσ.le
+-  have hAb : A ⊆ matrixEntryBox 2 := hA.trans
+-    (mobiusIdentityBall_subset_entryBox_two hα (by linarith))
+-  have hpow : A ^ 34 ⊆ matrixEntryBox ((4 : ℝ) ^ 34) := by
+-    simpa only [show (2 : ℝ) * 2 = 4 by norm_num] using set_pow_subset_matrixEntryBox hAb 34
+-  let g : Fin 4 → G := ![1, p, q, p * q]
+-  have hmem (i : Fin 4) : g i ∈ A ^ 34 := by
+-    fin_cases i
+-    · exact Set.one_mem_pow hA1
+-    · exact hp
+-    · exact hq
+-    · exact hpq
+-  let F := Finset.univ.image g
+-  have hFcard : F.card ≤ 4 := by
+-    simpa only [Finset.card_univ, Fintype.card_fin] using (Finset.card_image_le (s := Finset.univ) (f := g))
+-  have hF : ∀ h ∈ F, ∀ i k, |h i k| ≤ (4 : ℝ) ^ 34 := by
+-    intro h hh
+-    obtain ⟨i, _hi, rfl⟩ := Finset.mem_image.mp hh
+-    exact hpow (hmem i)
+-  let R := {x : G | x ∈ A ∧ ∀ h ∈ F, η ^ (2 * ζ) < dist (x : RMat) (h : RMat)}
+-  obtain ⟨hRn, hRfin, hretain⟩ := hJr j ((le_max_left _ _).trans hj) F hA1 hAb hF hFcard htrip hdistribution
+-  have hRA : R ⊆ A := fun _ hx => hx.1
+-  have hframe : d ≤ |(traceFrame g).det| := by
+-    simpa only [g, traceFrame_pair_det] using hdet
+-  obtain ⟨i, hi⟩ := exists_large_trace_of_frame g (A := R) (M := (4 : ℝ) ^ 34) (η := ηn)
+-    (by norm_num) hd hd1 hη (fun i => hpow (hmem i))
+-    (fun x hx a b => (hAb (hRA hx) a b).trans (by norm_num))
+-    (fun x hx => mobiusIdentityBall_entry_zero_lower hα hαhalf (hA (hRA hx))) hframe
+-  refine ⟨R, hRA, hRn, hRfin, hretain, g i, hmem i, ?_, ?_⟩
+-  · intro x hx
+-    exact hx.2 (g i) (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩)
+-  · let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-    let NR := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' R) : ℝ≥0∞).toReal
+-    let NT := (Metric.externalCoveringNumber ηn
+-      ((fun x : G => Matrix.trace (((g i)⁻¹ * x : G) : RMat)) '' R) : ℝ≥0∞).toReal
+-    have he : η ^ (8 * σ) = d ^ 8 := by
+-      simpa only [Nat.cast_ofNat, mul_comm] using Real.rpow_mul_natCast hη.le σ 8
+-    have hC : 2 * spanningTraceLoss * d ≤ 1 := hJc j ((le_max_right _ _).trans hj)
+-    change η ^ (8 * σ) * N ≤ NT ^ 3
+-    rw [he]
+-    calc
+-      _ ≤ d ^ 8 * (2 * NR) := mul_le_mul_of_nonneg_left hretain (by positivity)
+-      _ ≤ d ^ 8 * (2 * (spanningTraceLoss / d ^ 7 * NT ^ 3)) :=
+-        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hi (by norm_num)) (by positivity)
+-      _ = (2 * spanningTraceLoss * d) * NT ^ 3 := by field_simp
+-      _ ≤ 1 * NT ^ 3 := mul_le_mul_of_nonneg_right hC (pow_nonneg ENNReal.toReal_nonneg _)
+-      _ = _ := one_mul _
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/TwoStageHelperEntropy.lean
++++ after/lean/TransposeFollowup/TwoStageHelperEntropy.lean
+@@ -0,0 +1,98 @@
++import TransposeFollowup.TwoStageHelper
++import TransposeFollowup.EntropyFibers
++
++/-! The two-stage toll charges actual helper entropy under the uniform
++correct input distribution. This strengthens charging log of the helper range,
++including when the ambient helper type is infinite. -/
++set_option autoImplicit false
++
++namespace TransposeFollowup.TwoStageHelper
++open Classical
++open scoped BigOperators
++variable {n b : Nat} {H : Type*} (T : TwoStageHelper n b H)
++
++noncomputable def attainedHelper (F : Finset (FiniteMatrix n b))
++    (x : F) : F.image T.helper :=
++  ⟨T.helper x.val, Finset.mem_image.mpr ⟨x.val, x.property, rfl⟩⟩
++
++theorem helper_entropy_deficit_bound (F : Finset (FiniteMatrix n b)) [Nonempty F]
++    (hc : T.CorrectOn F) (r : Nat) (hr : r ≤ n) :
++    (n * n * b : Nat) - Real.log (F.card : Real) / Real.log 2 +
++      observationEntropy (uniformWeight F) (T.attainedHelper F) / Real.log 2 ≥
++        (b * r * (n-r) : Nat) := by
++  classical
++  let c := (n-r)*n*b + r*r*b
++  let f := T.attainedHelper F
++  have hfiber (z : F.image T.helper) : fiberCard f z ≤ 2^c := by
++    calc
++      _ ≤ (F.filter (fun x => T.helper x = z.val)).card := by
++        unfold fiberCard
++        apply Finset.card_le_card_of_injOn Subtype.val
++        · intro x hx
++          simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hx
++          have he := congrArg Subtype.val hx
++          exact Finset.mem_filter.mpr ⟨x.property, he⟩
++        · intro x hx y hy hxy
++          exact Subtype.ext hxy
++      _ ≤ 2^c := by
++        apply (T.branch z.val).correct_family_card _ _ r hr
++        intro x hx
++        obtain ⟨hx, he⟩ := Finset.mem_filter.mp hx
++        simpa only [apply, he] using hc x hx
++  let p := pushforward (uniformWeight F) f
++  have hp (z : F.image T.helper) : 0 ≤ p z :=
++    pushforward_nonneg _ (uniformWeight_nonneg F) f z
++  have hp1 : ∑ z, p z = 1 := by
++    dsimp only [p]
++    rw [sum_pushforward, sum_uniformWeight]
++  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
++  have hlog (z : F.image T.helper) :
++      Real.log (fiberCard f z : Real) ≤ (c : Real) * Real.log 2 := by
++    by_cases hz : fiberCard f z = 0
++    · simp only [hz, Nat.cast_zero, Real.log_zero]
++      exact mul_nonneg (Nat.cast_nonneg _) hlog2.le
++    · have hzpos : 0 < (fiberCard f z : Real) := by
++        exact_mod_cast Nat.pos_of_ne_zero hz
++      have hcast : (fiberCard f z : Real) ≤ (2 : Real)^c := by
++        exact_mod_cast hfiber z
++      calc
++        _ ≤ Real.log ((2 : Real)^c) := Real.log_le_log hzpos hcast
++        _ = _ := Real.log_pow 2 c
++  have hsum : (∑ z, p z * Real.log (fiberCard f z : Real)) ≤
++      (c : Real) * Real.log 2 := by
++    calc
++      _ ≤ ∑ z, p z * ((c : Real) * Real.log 2) := by
++        apply Finset.sum_le_sum
++        intro z hz
++        exact mul_le_mul_of_nonneg_left (hlog z) (hp z)
++      _ = _ := by rw [← Finset.sum_mul, hp1, one_mul]
++  have hmean := mean_log_fiberCard f
++  change (∑ z, p z * Real.log (fiberCard f z : Real)) =
++    Real.log (Fintype.card F : Real) - observationEntropy (uniformWeight F) f at hmean
++  rw [hmean] at hsum
++  simp only [Fintype.card_coe] at hsum
++  have hexp : c + b*r*(n-r) = n*n*b := by
++    dsimp [c]
++    have hn := Nat.sub_add_cancel hr
++    calc
++      _ = (n-r)*n*b + r*((n-r)+r)*b := by ring
++      _ = (n-r)*n*b + r*n*b := by rw [hn]
++      _ = ((n-r)+r)*n*b := by ring
++      _ = _ := by rw [hn]
++  have hexpR : (c : Real) + (b*r*(n-r) : Nat) = (n*n*b : Nat) := by
++    exact_mod_cast hexp
++  apply (mul_le_mul_iff_of_pos_right hlog2).mp
++  field_simp
++  dsimp only [f] at hsum
++  nlinarith
++
++/-- Entropy form of the exact quarter toll; the ambient helper type may be infinite. -/
++theorem quarter_helper_entropy_deficit_bound (F : Finset (FiniteMatrix n b)) [Nonempty F]
++    (hc : T.CorrectOn F) :
++    (n * n * b : Nat) - Real.log (F.card : Real) / Real.log 2 +
++      observationEntropy (uniformWeight F) (T.attainedHelper F) / Real.log 2 ≥
++        (b * (n * n / 4) : Nat) := by
++  have h := T.helper_entropy_deficit_bound F hc (n / 2) (Nat.div_le_self n 2)
++  rwa [mul_assoc b, half_product_eq_floor_quarter] at h
++
++end TransposeFollowup.TwoStageHelper
+--- before/lean/TransposeFollowup/XorPathCycleBound.lean
++++ after/lean/TransposeFollowup/XorPathCycleBound.lean
+@@ -19,7 +19,7 @@
+ theorem linear_ball_broadcast_bound_nat (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G)
+     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :
+-    n * n * b ≤ B + b * n * (3 * Nat.sqrt n + 1) := by
++    n * n * b ≤ B + b * n * (3 * Nat.sqrt n) := by
+   let k := Nat.sqrt n
+   have hk : 1 ≤ k := Nat.sqrt_pos.mpr hn
+   have hnear : (nearBits (b := b) G k).card ≤ b * n * (2 * k) := by
+@@ -29,34 +29,34 @@
+   have hs := C.broadcast_lower_bound_scaled hc G hG k
+   have hnSq : n ≤ (k + 1) * (k + 1) := (Nat.lt_succ_sqrt n).le
+   have hterm : n * n * b + k * (nearBits (b := b) G k).card ≤
+-      (k + 1) * (b * n * (3 * k + 1)) := by
++      (k + 1) * (b * n * (3 * k)) := by
+     calc
+       _ ≤ b * n * ((k + 1) * (k + 1)) + k * (b * n * (2 * k)) := by
+         apply Nat.add_le_add
+         · convert Nat.mul_le_mul_left (b * n) hnSq using 1
+           ring
+         · exact Nat.mul_le_mul_left k hnear
+-      _ ≤ (k + 1) * (b * n * (3 * k + 1)) := by nlinarith
++      _ ≤ (k + 1) * (b * n * (3 * k)) := by nlinarith
+   have hscaled : (k + 1) * (n * n * b) ≤
+-      (k + 1) * (B + b * n * (3 * k + 1)) := by nlinarith
++      (k + 1) * (B + b * n * (3 * k)) := by nlinarith
+   exact (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
+ 
+-/-- An explicit form of B>=P-O(b n^(3/2)): the error is at most4bn sqrt(n).
++/-- An explicit form of B>=P-O(b n^(3/2)): the error is at most3bn sqrt(n).
+ All recoding and decoding assumptions remain those of the full finite theorem. -/
+ theorem linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G)
+     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 4 * b * n * Real.sqrt (n : ℝ) := by
++    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
+   have hnat := C.linear_ball_broadcast_bound_nat hc G hG hballs hn
+   have hr : 0 ≤ Real.sqrt (n : ℝ) := Real.sqrt_nonneg _
+   have hrsq := Real.sq_sqrt (Nat.cast_nonneg n)
+   have hk : (1 : ℝ) ≤ (Nat.sqrt n : ℝ) := by exact_mod_cast Nat.sqrt_pos.mpr hn
+   have hksq : (Nat.sqrt n : ℝ) ^ 2 ≤ (n : ℝ) := by exact_mod_cast Nat.sqrt_le' n
+   have hkr : (Nat.sqrt n : ℝ) ≤ Real.sqrt (n : ℝ) := by nlinarith
+-  have hcoefficient : 3 * (Nat.sqrt n : ℝ) + 1 ≤ 4 * Real.sqrt (n : ℝ) := by linarith
++  have hcoefficient : 3 * (Nat.sqrt n : ℝ) ≤ 3 * Real.sqrt (n : ℝ) := by linarith
+   have hmul := mul_le_mul_of_nonneg_left hcoefficient
+     (by positivity : 0 ≤ (b : ℝ) * n)
+-  have hbound : ((n * n * b : ℕ) : ℝ) ≤ B + (b : ℝ) * n * (3 * (Nat.sqrt n : ℝ) + 1) := by
++  have hbound : ((n * n * b : ℕ) : ℝ) ≤ B + (b : ℝ) * n * (3 * (Nat.sqrt n : ℝ)) := by
+     exact_mod_cast hnat
+   nlinarith
+ 
+@@ -65,7 +65,7 @@
+ theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G) {m : ℕ} [NeZero m]
+     (f : G →g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 4 * b * n * Real.sqrt (n : ℝ) := by
++    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
+   apply C.linear_ball_broadcast_lower_bound hc G hG _ hn
+   intro ell hell i
+   exact (nearVertices_card_le_of_embedding f hf ell i).trans
+@@ -73,18 +73,18 @@
+ 
+ theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G) (hcycle : G ≤ SimpleGraph.cycleGraph n) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 4 * b * n * Real.sqrt (n : ℝ) := by
++    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
+   let : NeZero n := ⟨Nat.ne_of_gt hn⟩
+   exact C.cycle_embedding_broadcast_lower_bound hc G hG (.ofLE hcycle) Function.injective_id hn
+ 
+ theorem cycle_broadcast_lower_bound (hc : C.Correct)
+     (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 4 * b * n * Real.sqrt (n : ℝ) :=
++    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) :=
+   C.subcycle_broadcast_lower_bound hc _ hG le_rfl hn
+ 
+ theorem path_broadcast_lower_bound (hc : C.Correct)
+     (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 4 * b * n * Real.sqrt (n : ℝ) :=
++    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) :=
+   C.subcycle_broadcast_lower_bound hc _ hG SimpleGraph.pathGraph_le_cycleGraph hn
+ 
+ end RecodedXorCode

@@ -1,0 +1,43 @@
+{
+  "purpose": "Executable checks of materialized opcode records and exact within-record motion. All-size correctness is kernel-proved separately. No native machine-time or expanding-family existence claim.",
+  "command": "lake env lean /private/tmp/rational_opcode_examples.lean",
+  "exit_code": 0,
+  "family": [
+    "identity on(0,1)",
+    "2x on(0,1/2)",
+    "x/(1+x) on(0,1)"
+  ],
+  "summary_sizes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "summary_fields": [
+    "opcode tape length",
+    "opening count",
+    "closing count",
+    "distinct edge stream length"
+  ],
+  "trajectory_sizes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "trajectory_R": 2,
+  "trajectory_offset": 3,
+  "trajectory_checks": "For every page, every vertex and every s=0,...,7R, sequential native Dir.shift motion equals the pulse walk; all page positions vanish at the final horizon.",
+  "source_sha256": "cd1b15de12fad7dd8d8ce7ec5667eb3708ac792961db657c6d11d97d3b287d75",
+  "source": "import TransposeFollowup.RationalOpcodeWalk\nimport TransposeFollowup.RationalSymmetricGraph\nopen TransposeFollowup\n\ndef identityMap : RationalMobius where\n  a := 1\n  b := 0\n  c := 0\n  d := 1\n  lo := 0\n  hi := 1\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\ndef doubleMap : RationalMobius where\n  a := 2\n  b := 0\n  c := 0\n  d := 1\n  lo := 0\n  hi := 1 / 2\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\ndef fractionalMap : RationalMobius where\n  a := 1\n  b := 0\n  c := 1\n  d := 1\n  lo := 0\n  hi := 1\n  interval_nonempty := by norm_num\n  determinant_pos := by norm_num\n  denominator_lo_pos := by norm_num\n  denominator_hi_pos := by norm_num\n\n\ndef exampleFamily : Fin 3 \u2192 RationalMobius := ![identityMap, doubleMap, fractionalMap]\n\ndef recordSummary (n : Nat) : Nat \u00d7 Nat \u00d7 Nat \u00d7 Nat :=\n  let tape := rationalOpcodeTape exampleFamily n\n  (tape.length, (tape.filter (\u00b7 == PageOpcode.openEdge)).length,\n    (tape.filter (\u00b7 == PageOpcode.closeEdge)).length,\n    (rationalFamilyEdgeStream exampleFamily n).length)\n\ndef recordCheck (n : Nat) : Bool :=\n  let table := rationalOpcodeTable exampleFamily n\n  let ops := fun u p => (table.get u).get p\n  let R := 2\n  let offset := 3\n  let walk := opcodeRampWalk R offset ops\n  (List.finRange (rationalPageCount exampleFamily)).all (fun p =>\n    walk p (offset + 7 * R * (2 * n)) == 0 &&\n    (List.finRange (2 * n)).all (fun u =>\n      let t := offset + 7 * R * u.val\n      (List.range (7 * R + 1)).all (fun s =>\n        recordRun R (ops u p) (walk p t) s == walk p (t + s))))\n\n#eval (List.range 9).map recordSummary\n#eval (List.range 7).map recordCheck\n#eval ((rationalOpcodeTable (fun _ : Fin 1 => identityMap) 4).toList.map List.Vector.toList)\n",
+  "observed_output": "[(0, 0, 0, 0), (150, 1, 1, 1), (300, 4, 4, 4), (450, 7, 7, 7), (600, 10, 10, 10), (750, 14, 14, 14), (900, 16, 16, 16),\n  (1050, 20, 20, 20), (1200, 23, 23, 23)]\n[true, true, true, true, true, true, true]\n[[TransposeFollowup.PageOpcode.openEdge,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle],\n [TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.openEdge],\n [TransposeFollowup.PageOpcode.openEdge,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle],\n [TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.openEdge],\n [TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.closeEdge],\n [TransposeFollowup.PageOpcode.closeEdge,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle],\n [TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.closeEdge],\n [TransposeFollowup.PageOpcode.closeEdge,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle,\n  TransposeFollowup.PageOpcode.idle]]\n",
+  "validation": "All seven trajectory checks returned true. Every tested opening/closing count equals the distinct edge count. The n=4 identity example explicitly shows the reversed closing order."
+}

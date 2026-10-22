@@ -1,0 +1,85 @@
+{
+  "format": "r1916-original-xor-statements-v1",
+  "status": "prepared_not_executed",
+  "baseline_sources": {
+    "path": "/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse/baseline-sources.json",
+    "bytes": 6158283,
+    "sha256": "a5aa337102c0121d1e96701e0b030c6fe6be7b8ccf66ff86f13b5f6110b82f6f"
+  },
+  "original_source_path": "lean/TransposeFollowup/XorPathCycleBound.lean",
+  "original_source_sha256": "8682d383be919fd45a9f5428476fe5fd985bbd2b6695dbf1a72601a26b53237c",
+  "current_source": {
+    "path": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/lean/TransposeFollowup/XorPathCycleBound.lean",
+    "bytes": 7151,
+    "sha256": "b5b89547896c19bade9b0c76652bd9174310a077473adc5bcac8ff12b9b7c199"
+  },
+  "original_context": "namespace TransposeFollowup\n\nopen Classical\nset_option autoImplicit false\n\nnamespace RecodedXorCode\n\nvariable {n b B : \u2115} (C : RecodedXorCode n b B)\n",
+  "checker": {
+    "path": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/verification/r1916-xor-old-statements.lean",
+    "bytes": 2955,
+    "sha256": "da93f1856234d454bb31a5e75d5d85a2770a909f9d3ed478c29347314da15147"
+  },
+  "preparer": {
+    "path": "/private/tmp/r1916-affine-xor-review/prepare-old-xor.py",
+    "bytes": 3217,
+    "sha256": "06c4fb59ae55b5b3765cfa5edade554626950c24be71bade647d36e52ae53601"
+  },
+  "checks": [
+    {
+      "name": "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound",
+      "check_name": "TransposeFollowup.RecodedXorCode.r1916_original_linear_ball_broadcast_lower_bound",
+      "original_header": "theorem linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G)\n    (hballs : \u2200 ell, 1 \u2264 ell \u2192 \u2200 i, (nearVertices G ell i).card \u2264 2 * ell - 1) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d)) ",
+      "original_header_sha256": "f45f178e94f638b2b3cefb4110163d24d3cfde52ad9ecc6bc10ddc4a78d61910",
+      "current_header": "theorem linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G)\n    (hballs : \u2200 ell, 1 \u2264 ell \u2192 \u2200 i, (nearVertices G ell i).card \u2264 2 * ell - 1) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) -\n      (b : \u211d) * n * (Real.sqrt (8 * ((n : \u211d) + 3)) - 4) ",
+      "current_header_sha256": "4667ee77fcb18b8346567858b9a58f3c0afd08766d5b9b6a7b6e0528b7e599de",
+      "all_hypotheses_exact": true,
+      "source_check_text": "theorem r1916_original_linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G)\n    (hballs : \u2200 ell, 1 \u2264 ell \u2192 \u2200 i, (nearVertices G ell i).card \u2264 2 * ell - 1) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d))  := by\n  have hstrong := C.linear_ball_broadcast_lower_bound hc G hG hballs hn\n  have herror := linear_ball_error_le_sqrt n hn\n  have hmul := mul_le_mul_of_nonneg_left herror\n    (by positivity : 0 \u2264 (b : \u211d) * n)\n  linarith\n",
+      "source_check_sha256": "489aaa6b52750d8b40079fa05c9407ebb4f9632f93f4d95ba3f9e9a31524ad70"
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound",
+      "check_name": "TransposeFollowup.RecodedXorCode.r1916_original_cycle_embedding_broadcast_lower_bound",
+      "original_header": "theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) {m : \u2115} [NeZero m]\n    (f : G \u2192g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d)) ",
+      "original_header_sha256": "bb5c7bbca331d38686bb6e36d3b0766900bbb497beb18390b5923cbff3d93568",
+      "current_header": "theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) {m : \u2115} [NeZero m]\n    (f : G \u2192g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * (Real.sqrt (8 * ((n : \u211d) + 3)) - 4) ",
+      "current_header_sha256": "75e8fe3700bddbb7a84729e6068e482b79fcc28c3d7c4eb5c8cd576b111bd5a7",
+      "all_hypotheses_exact": true,
+      "source_check_text": "theorem r1916_original_cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) {m : \u2115} [NeZero m]\n    (f : G \u2192g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d))  := by\n  have hstrong := C.cycle_embedding_broadcast_lower_bound hc G hG f hf hn\n  have herror := linear_ball_error_le_sqrt n hn\n  have hmul := mul_le_mul_of_nonneg_left herror\n    (by positivity : 0 \u2264 (b : \u211d) * n)\n  linarith\n",
+      "source_check_sha256": "a9cfcce433617c72ab00d9524cf77a52a7ffb96364298f47bae3e5bc82aac7e2"
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound",
+      "check_name": "TransposeFollowup.RecodedXorCode.r1916_original_subcycle_broadcast_lower_bound",
+      "original_header": "theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (hcycle : G \u2264 SimpleGraph.cycleGraph n) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d)) ",
+      "original_header_sha256": "7858225947a115eaa2bb50d2ec73d81e9f195eba64a9c69b3413084c1c91c0bf",
+      "current_header": "theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (hcycle : G \u2264 SimpleGraph.cycleGraph n) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * (Real.sqrt (8 * ((n : \u211d) + 3)) - 4) ",
+      "current_header_sha256": "1003df2ad2ccf3f327672d6eefc5e2290a41123fe26722dc5beae413df7f7188",
+      "all_hypotheses_exact": true,
+      "source_check_text": "theorem r1916_original_subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))\n    (hG : C.LocalTo G) (hcycle : G \u2264 SimpleGraph.cycleGraph n) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d))  := by\n  have hstrong := C.subcycle_broadcast_lower_bound hc G hG hcycle hn\n  have herror := linear_ball_error_le_sqrt n hn\n  have hmul := mul_le_mul_of_nonneg_left herror\n    (by positivity : 0 \u2264 (b : \u211d) * n)\n  linarith\n",
+      "source_check_sha256": "7d0629fecd2fefdf72a1915b16775f354a1c1d39e30fc363cb5090f45a0bd022"
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound",
+      "check_name": "TransposeFollowup.RecodedXorCode.r1916_original_cycle_broadcast_lower_bound",
+      "original_header": "theorem cycle_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d)) ",
+      "original_header_sha256": "09c990ca834e25fcef43aa75c8b314feaaaa340e356c83ce143960a2e00ad8cc",
+      "current_header": "theorem cycle_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * (Real.sqrt (8 * ((n : \u211d) + 3)) - 4) ",
+      "current_header_sha256": "a810d9844309d87c118536b0eef51fcbf03dbdf11f50a9b67a54d49febf7a397",
+      "all_hypotheses_exact": true,
+      "source_check_text": "theorem r1916_original_cycle_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d))  := by\n  have hstrong := C.cycle_broadcast_lower_bound hc hG hn\n  have herror := linear_ball_error_le_sqrt n hn\n  have hmul := mul_le_mul_of_nonneg_left herror\n    (by positivity : 0 \u2264 (b : \u211d) * n)\n  linarith\n",
+      "source_check_sha256": "73987fa0333494e54160e6347900f1f8d8d1b5b100e5f1743af8cace20f4845f"
+    },
+    {
+      "name": "TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound",
+      "check_name": "TransposeFollowup.RecodedXorCode.r1916_original_path_broadcast_lower_bound",
+      "original_header": "theorem path_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d)) ",
+      "original_header_sha256": "0548a8c909f91f733a649a09a640a7eb47480b5531df7fcc56987e40b817519f",
+      "current_header": "theorem path_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * (Real.sqrt (8 * ((n : \u211d) + 3)) - 4) ",
+      "current_header_sha256": "1ea7f97de0189ea7f5695009b8b61068251ecc8f5b956f0f3af9bfe47271c83d",
+      "all_hypotheses_exact": true,
+      "source_check_text": "theorem r1916_original_path_broadcast_lower_bound (hc : C.Correct)\n    (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :\n    (B : \u211d) \u2265 (n * n * b : \u2115) - (b : \u211d) * n * Real.sqrt (8 * (n : \u211d))  := by\n  have hstrong := C.path_broadcast_lower_bound hc hG hn\n  have herror := linear_ball_error_le_sqrt n hn\n  have hmul := mul_le_mul_of_nonneg_left herror\n    (by positivity : 0 \u2264 (b : \u211d) * n)\n  linarith\n",
+      "source_check_sha256": "82d3ed7eed48fa3532a27800ce5f8a92e8dd1513e0844df0e6c45390e5506053"
+    }
+  ],
+  "method": "Exact original full headers, changed only at declaration name, in the original namespace/open/variable context; ordinary proofs from strengthened current theorems and the independently proved error comparison. No source or environment substitutions."
+}

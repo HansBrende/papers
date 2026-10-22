@@ -1,0 +1,45 @@
+R1912 apply-groups driver review — read-only, 21 October 2026
+Reviewed /private/tmp/r1912-apply-groups.py. Did not execute it.
+
+VERDICT
+The driver does not change any mathematical body. It requires an empty recorded
+live-handle list, takes a fresh full source snapshot, preserves changed/deleted
+sources in a separate archive, computes the whole prospective rewrite in memory,
+checks missing local imports and cycles before source mutations, and then verifies
+exact output text and unchanged audit commands. No theorem-trust or cache shortcut.
+
+ONE REQUIRED SEQUENCING FIX
+The original broad19 plan cannot run unchanged after the pilot: its
+GuardedSourceEndpoints member list still contains the four pilot-retired source
+files. The driver will fail safely on the missing before[rel(m)] before source
+mutation. Resolve broad19 against the already-applied pilot mapping, removing the
+four retired members and keeping the merged SourceEndpointsMeaning at its original
+position. Then take the fresh intermediate baseline after the Core/import stage.
+This retains every pilot body and yields the intended final broader group. An
+explicit source restoration before broad19 would also work but adds avoidable work.
+
+SAFE CONDITIONS CHECKED
+- All baseline imports match the driver's one-line plain-import regex.
+- No current TransposeFollowup source is nested below another subdirectory, so its
+  glob('*.lean') presently captures the full tree.
+- Explicit disjointness check prevents one source belonging to multiple groups.
+- Every destination belongs to its group; all member bodies appear in given order.
+- External imports retain first-occurrence order after remapping/deduplication.
+- Non-grouped bodies and all #print axioms lines are unchanged.
+- Deleted files are precisely non-destination members, not arbitrary directories.
+- The source snapshot and application record make changes reviewable/recoverable.
+
+OPTIONAL HARDENING, NOT BLOCKERS FOR THESE CHECKED PLANS
+Use rglob('*.lean') for TransposeFollowup so future nested modules are not missed.
+Assert every member path exists immediately after loading the plan and snapshot.
+Assert all import-command lines match the import parser, rather than silently
+leaving unsupported public/meta/multiline imports in a body. Re-read source hashes
+immediately before mutation to detect a simultaneous user edit. Files are written
+sequentially rather than as a filesystem transaction; the complete source snapshot
+is the recovery mechanism if an I/O error interrupts application.
+
+This review covers source application mechanics. It does not approve replacing
+future mathematical edits with import-only equality checks, and does not replace
+the final ordinary build, axiom audit, original exported-type comparison, or measured
+production timing. Pure grouping validation should use the fresh post-Core/import
+baseline; a separate explicit mapping validates the previously reviewed Core changes.

@@ -1,0 +1,86 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "CoordinateCoverRefinement",
+    "MobiusCoverRefinement",
+    "MobiusApproximateRefinement",
+    "SmoothedIterateFrobeniusCover"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.BoundedCoordinatePacking.exists_coordinate_refinement",
+    "TransposeFollowup.RealMobius.mobius_mul_ball_entry_error",
+    "TransposeFollowup.RealMobius.exists_frobenius_refinement",
+    "TransposeFollowup.RealMobius.matrixEntryBox_set_pow",
+    "TransposeFollowup.RealMobius.exists_frobenius_covers_of_approximate_cover",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_frobenius_covers"
+  ],
+  "declaration_counts": {
+    "theorem": 6
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 92120,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1802-dev1.log"
+    },
+    "development_2": {
+      "session_id": 95956,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1802-dev2.log"
+    },
+    "development_3": {
+      "session_id": 48229,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1802-dev3.log"
+    },
+    "development_4": {
+      "session_id": 70190,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1802-dev4.log"
+    },
+    "development_5": {
+      "session_id": 82918,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1802-dev5.log"
+    },
+    "development_6": {
+      "session_id": 97715,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1802-dev6.log"
+    },
+    "build": {
+      "session_id": 85966,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9762,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 6264,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4224,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1802 supplies explicit ordinary Frobenius eta-covers for the nonflattening approximate group U and U^6, following the bounded-coordinate refinement and approximate-group covering route used with Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section 4.1 and Theorem 4.4 (read R1800). It preserves the Haar-ball scale factor and records all polynomial Q losses. This is supporting formalization of known arguments, not a new impossibility theorem. Product growth and its application remain unproved.",
+  "cleanup": "No definitions or edits to pre-existing mathematical modules. Reused BoundedCoordinatePacking bins, native finite image representatives, native set power covering and finite product cardinality bounds, and existing matrix-entry geometry. Replaced Set.finite_range (inapplicable to an infinite domain) with Set.toFinite for the finite codomain; removed the unnecessary sequence-focus warning rather than disabling its linter. All six new theorems are used or public compositions.",
+  "updated_at": "2026-10-19T22:04:39.103055+00:00",
+  "formal_checkpoint": "R1802 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1802, 785 sources, 4224 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1802 refines the actual smoothing-scale cover to finite ordinary Frobenius eta-covers of U and U^6. Representatives belong to their respective target sets. The refinement costs at most 1025^4 Q^12 for U and (2^21+1)^4 Q^52 times card(Y)^5 for U^6. Composing with actual nonflattening retains the original geometry, volume and probability conclusions and gives card(E)*q^2*v_eta <= ofReal(1025^4 Q^12)*2^23 K0 L^2 K^20 H(U), and card(E6)*q^2*v_eta <= ofReal((2^21+1)^4 Q^52)*2^68 K0 L^2 K^100 H(U). Here v_eta=H(Ball(eta)). These explicit Q losses introduce no additional explicit inverse-eta power, but Q may itself depend on scale. Near-identity localization, product growth/escape, strict flattening, unconditional gap and paid padding remain unproved. These are supporting formalizations of known arguments, not new transposition bounds.",
+  "next": "The preceding turn is PROGRESS. R1802 proves actual ordinary Frobenius eta-covers of U and U^6. Do not redo smoothing, finite packing, bounded-coordinate refinement, BSG, or approximate-group extraction. Start from SmoothedIterateFrobeniusCover.exists_smoothedIterate_frobenius_covers. It has the R1801 hypotheses and returns all geometry, volume and probability conclusions with the same N,U,Y,x, plus E subset U and E6 subset U^6. Both are finite ordinary Frobenius eta-covers (indeed entry errors <eta/4). Write q=ofReal(theta), R=(4B^2)^(2^k), Q=32(R+1)^6, K0=64N^4, L=8(K0^2/q^2), K=2^55 L^21, v_eta=H(Ball(eta)), A1=ofReal(1025^4 Q^12), A6=ofReal((2^21+1)^4 Q^52). The checked bounds are\n card(E)*q^2*v_eta <= A1*(2^23 K0 L^2 K^20 H(U)),\n card(E6)*q^2*v_eta <= A6*(2^68 K0 L^2 K^100 H(U)).\nThe original finite coarse cover remains available in R1801. The new general exists_coordinate_refinement works for possibly infinite targets and uses native finite-image representatives. exists_frobenius_refinement constructs centers in the target even if coarse centers are outside it. matrixEntryBox_set_pow gives U^n subset Box((2Q)^n), including n=0. Native Set.pow_subset_pow_mul_of_sq_subset_mul and Finset.card_pow_le/card_mul_le provide the fixed-power cover; do not duplicate them.\n\nNEXT CONCRETE TARGET (all the following proposed statements/constants UNPROVED): localize A=U^2 intersect mobiusIdentityBall(alpha), 0<alpha<=1, and prove a small-tripling finite-cover comparison. A should be open, inversion symmetric, contain1, have compact closure in Box(2), and A^3 subset U^6. Thus the existing E6 externally eta-covers A^3; do not claim its centers lie in A^3.\n\nFirst construct Z finite subset U with U subset Z*A and card(Z)<=ofReal(M), M=33^4 Q^8/alpha^4. Use exists_coordinate_refinement with coarse F={1}, offsets bounded2Q (since Q>=1), and bin width delta=alpha/(8Q). The bin bound should be <=33Q^2/alpha. Reps z are in U; entry closeness <delta implies z^-1*g in Ball(alpha), by existing RationalFreePair.real_inv_mul_mem_identityBall, matrixEntryBox_inv, and 4Qdelta=alpha/2<alpha. Also z^-1*g in U^2. Apply existing measure_le_of_finite_left_cover to get H(U)<=ofReal(M)H(A). Conversely H(A)<=H(U^2)<=512K^16 H(U). Positivity follows from A open and containing1. Combined with R1800 this should give q<=128K0 K L^2 ofReal(M) V H(A), and q V H(A)<=8192 K0 K^23. Check rather than assume these constants and all compact-closure details.\n\nSecond prove H(A)<=card(F)*H(Ball(16eta)) for EVERY finite ordinary Frobenius eta-cover F of A subset Box(2), allowing centers outside A. Partition by patches A intersect FrobeniusBall(f,eta), choose a0 in each nonempty patch, and use sum-of-squares <eta^2 to get entry errors <eta. Two points in a patch have entry differences <2eta. Existing mobius_quotient_ball_of_entry_difference with Q=2, r=2eta gives g*a0^-1 in Ball(16eta). Right Haar invariance bounds each patch volume; finite subadditivity gives the claim. Empty patches have zero volume. Reuse measure_preimage_mul_right and finite-union tools; no duplicate metric/entropy definitions.\n\nThird for 0<eta<=1/32, four applications of haar_identityBall_doubling at eta,2eta,4eta,8eta should give v_(16eta)<=393216^4 v_eta. Cancel only finite positive Haar volumes. Combine with H(U)<=M H(A) and R1802 to show for EVERY finite eta-cover F of A:\n card(E6)*q^2 <=393216^4*A6*(2^68 K0 L^2 K^100)*ofReal(M)*card(F).\nThis is an actual small-tripling covering comparison with an external cover of A^3. Prove it for actual witnesses before any entropy interface. Metric.externalCoveringNumber/coveringNumber already exist and use closed balls; native matrix metric is pi metric, not automatically Frobenius. Explicit Frobenius witnesses suffice here.\n\nRelevant APIs: mobiusIdentityBall_isOpen, one_mem_mobiusIdentityBall, mobiusIdentityBall_inv, mobiusIdentityBall_subset_entryBox_two; matrixEntryBox_inv/mul/isCompact; mobiusIdentityBall_haar_pos/haar_lt_top; RationalFreePair.real_inv_mul_mem_identityBall; mobius_quotient_ball_of_entry_difference; measure_le_of_finite_left_cover; haar_identityBall_doubling. Do not infer compact closure subset an open ball; use closure in the CLOSED entry box. The near-identity restriction alpha is later fixed as in the source theorem, not scaled silently with eta.\n\nAfter this: the product theorem (Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1/Theorem4.4, read R1800), actual rational-walk intermediate size, multiscale distribution and quantitative escape, then strict flattening of a FIXED iterate. These remain substantial. Ultimate interface RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k) chooses k before N,J0,epsilon0. Preserve all six families and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1802 completes ordinary Frobenius eta-covers for U and U^6 with explicit polynomial losses in Q and no additional explicit inverse-eta power. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not elapsed or remaining time, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/CoordinateCoverRefinement.lean": "61bda30fc36cd9d5afc2ab15e1bf8740f249a74a08486edf1872adf8b1eddd5d",
+    "lean/TransposeFollowup/MobiusCoverRefinement.lean": "25a473581e0b93aa0055625ecd5d749613143bbd16492e10e0cd6475a6fc76a0",
+    "lean/TransposeFollowup/MobiusApproximateRefinement.lean": "0cff34a830e691593c3c2d3eeeb112d28856caf95fa9082418fc07bc8f2fcb56",
+    "lean/TransposeFollowup/SmoothedIterateFrobeniusCover.lean": "2a2c2040a3e28adc925b9f994342d5d799d66cefb9ca106840e8d2703acf79fd"
+  }
+}

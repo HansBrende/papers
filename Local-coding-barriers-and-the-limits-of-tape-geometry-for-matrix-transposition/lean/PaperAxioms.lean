@@ -1,0 +1,209 @@
+-- Generated from paper formal/upformal annotations; do not edit by hand.
+import Transpose.Statement
+import Transpose.Tape.Defs
+import Transpose.Tape.DefsM
+import Transpose.Tape.Statements.Coding
+import TransposeFollowup.ActualStageRegularity
+import TransposeFollowup.AdaptiveTreewidth
+import TransposeFollowup.AffineTimeScaling
+import TransposeFollowup.BackwardMaskedStride
+import TransposeFollowup.BinaryBankOperation
+import TransposeFollowup.BoundedAffineCovers
+import TransposeFollowup.CanonicalTimeNormalization
+import TransposeFollowup.ContractingStageClock
+import TransposeFollowup.CountableAffinePathLabels
+import TransposeFollowup.ExceptionalRecursiveLimits
+import TransposeFollowup.ExceptionalStageClock
+import TransposeFollowup.FiniteAffineLabels
+import TransposeFollowup.FiniteAffineTimeBound
+import TransposeFollowup.GraphSeparatorBound
+import TransposeFollowup.IntegerMatrixGeometry
+import TransposeFollowup.IntegerMatrixPalette
+import TransposeFollowup.LocalProtocol
+import TransposeFollowup.MaskedStrideScan
+import TransposeFollowup.MatrixPaletteObstructions
+import TransposeFollowup.MatrixPermutationPalette
+import TransposeFollowup.NativeAffineMotion
+import TransposeFollowup.NativeExceptionalRecursion
+import TransposeFollowup.NativePhysicalLimits
+import TransposeFollowup.NativeRecursiveLimit
+import TransposeFollowup.NativeRegularRecursion
+import TransposeFollowup.NativeRunLimits
+import TransposeFollowup.OmittedVisitBound
+import TransposeFollowup.OpenAffineTimeBound
+import TransposeFollowup.PhysicalAffineApproximationObstruction
+import TransposeFollowup.ProtocolTruncation
+import TransposeFollowup.RationalMobius
+import TransposeFollowup.RawEntryReversal
+import TransposeFollowup.RawEntryRotation
+import TransposeFollowup.RawEntryShift
+import TransposeFollowup.RawMixedBinaryWord
+import TransposeFollowup.RawMixedBinaryWordObstruction
+import TransposeFollowup.RawMixedBinaryWordRegularity
+import TransposeFollowup.RawMixedBinaryWordResources
+import TransposeFollowup.RawRowArithmeticData
+import TransposeFollowup.RawRowXor
+import TransposeFollowup.RawSymbolWord
+import TransposeFollowup.RawSymbolWordApproximation
+import TransposeFollowup.RawTernaryMatrixHorizontal
+import TransposeFollowup.RawTernaryVertical
+import TransposeFollowup.RawUnitArithmeticData
+import TransposeFollowup.RecodedXor
+import TransposeFollowup.SeparatorSharpness
+import TransposeFollowup.StageClockAccounting
+import TransposeFollowup.TernaryMatrixGeometry
+import TransposeFollowup.TernaryMatrixPalette
+import TransposeFollowup.TernaryPhase
+import TransposeFollowup.Treewidth
+import TransposeFollowup.TriangularRows
+import TransposeFollowup.TwoStageHelper
+import TransposeFollowup.TwoStageHelperEntropy
+import TransposeFollowup.TwoStageRows
+import TransposeFollowup.UnconditionalPaidPadding
+import TransposeFollowup.XorComponentCount
+import TransposeFollowup.XorDegreeBound
+import TransposeFollowup.XorPackets
+import TransposeFollowup.XorPathCycleBound
+
+#print axioms Transpose.ComputesWithin
+#print axioms Transpose.LinearTimeTransposable
+#print axioms Transpose.TM
+#print axioms Transpose.Tape.CutIneq
+#print axioms Transpose.Tape.cellBits
+#print axioms Transpose.Tape.code_gap
+#print axioms Transpose.Tape.codes_coentLinear_of_linearTimeTransposable
+#print axioms Transpose.Tape.crossChords
+#print axioms Transpose.Tape.labelChanges
+#print axioms Transpose.Tape.not_linearTimeTransposable_of_coentLinear_end_io
+#print axioms Transpose.Tape.pairRes
+#print axioms Transpose.TransposesWithin
+#print axioms Transpose.encode
+#print axioms Transpose.entryBits
+#print axioms Transpose.inputLength
+#print axioms Transpose.transpose
+#print axioms TransposeFollowup.AffineMotion.AffineTimeRequired
+#print axioms TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission
+#print axioms TransposeFollowup.AffineMotion.HasAffineIntervalCover
+#print axioms TransposeFollowup.AffineMotion.SatisfiesStar
+#print axioms TransposeFollowup.AffineMotion.exists_countable_affine_path_cut_bound
+#print axioms TransposeFollowup.AffineMotion.exists_finite_affine_small_cut
+#print axioms TransposeFollowup.AffineMotion.lintegral_levelCross_delete_le
+#print axioms TransposeFollowup.AffineMotion.local_affine_ae_of_eventual_bounded_covers
+#print axioms TransposeFollowup.AffineMotion.no_subsequential_physical_pointwise_affine_fast_approximation
+#print axioms TransposeFollowup.AffineMotion.popular_affine_time_nonuniform
+#print axioms TransposeFollowup.AffineMotion.popular_affine_time_robust
+#print axioms TransposeFollowup.AffineMotion.star_common_affine_omission
+#print axioms TransposeFollowup.AffineMotion.star_half_le_affine_component_omission
+#print axioms TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission
+#print axioms TransposeFollowup.AffineMotion.star_physical_common_affine_omission
+#print axioms TransposeFollowup.BackwardMaskedStride.value_recurrence
+#print axioms TransposeFollowup.BinaryBankOperation.Operation
+#print axioms TransposeFollowup.BinaryBankOperation.Valid
+#print axioms TransposeFollowup.BinaryBankOperation.value
+#print axioms TransposeFollowup.CausalRows
+#print axioms TransposeFollowup.CausalRows.apply
+#print axioms TransposeFollowup.IntegerMatrixPalette.Operation
+#print axioms TransposeFollowup.IntegerMatrixPalette.approximation_cover
+#print axioms TransposeFollowup.IntegerMatrixPalette.approximation_error
+#print axioms TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose
+#print axioms TransposeFollowup.IntegerMatrixPalette.value
+#print axioms TransposeFollowup.LocalQuery
+#print axioms TransposeFollowup.MaskedStrideScan.buffer
+#print axioms TransposeFollowup.MaskedStrideScan.output
+#print axioms TransposeFollowup.MatrixPermutationPalette.Operation
+#print axioms TransposeFollowup.MatrixPermutationPalette.value
+#print axioms TransposeFollowup.NativeRunLimits.Conclusion
+#print axioms TransposeFollowup.NativeRunLimits.of_cut
+#print axioms TransposeFollowup.PaidPadding.exists_uniform_paid_padding
+#print axioms TransposeFollowup.PublicStrategy
+#print axioms TransposeFollowup.PublicStrategy.Executes
+#print axioms TransposeFollowup.RationalMobius
+#print axioms TransposeFollowup.RawEntryReversal.index_entry
+#print axioms TransposeFollowup.RawEntryRotation.index_entry
+#print axioms TransposeFollowup.RawEntryShift.left_value_entry
+#print axioms TransposeFollowup.RawEntryShift.right_value_entry
+#print axioms TransposeFollowup.RawMixedBinaryWord.bounded_ticks
+#print axioms TransposeFollowup.RawMixedBinaryWord.fixed_resources
+#print axioms TransposeFollowup.RawMixedBinaryWord.full_affine_approximation_subsequence
+#print axioms TransposeFollowup.RawMixedBinaryWord.no_high_entropy_transpose
+#print axioms TransposeFollowup.RawMixedBinaryWord.state_bits_vanish
+#print axioms TransposeFollowup.RawRowArithmetic.output_value
+#print axioms TransposeFollowup.RawRowXor.bitValue_first
+#print axioms TransposeFollowup.RawRowXor.bitValue_next
+#print axioms TransposeFollowup.RawSymbolWord.native_correct
+#print axioms TransposeFollowup.RawSymbolWord.output
+#print axioms TransposeFollowup.RawSymbolWord.resources
+#print axioms TransposeFollowup.RawSymbolWord.scaled_approximation
+#print axioms TransposeFollowup.RawSymbolWord.state_bits_vanish
+#print axioms TransposeFollowup.RawSymbolWord.ticks_le
+#print axioms TransposeFollowup.RawTernaryMatrixHorizontal.value_entry
+#print axioms TransposeFollowup.RawTernaryVertical.value_entry
+#print axioms TransposeFollowup.RawUnitArithmetic.output_value
+#print axioms TransposeFollowup.RecodedXorCode
+#print axioms TransposeFollowup.RecodedXorCode.Correct
+#print axioms TransposeFollowup.RecodedXorCode.LocalTo
+#print axioms TransposeFollowup.RecodedXorCode.broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled
+#print axioms TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.fixed_degree_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound
+#print axioms TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound
+#print axioms TransposeFollowup.RegularMotion.ContractingStageClock
+#print axioms TransposeFollowup.RegularMotion.HasFlaggedRecursiveExecutions
+#print axioms TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions
+#print axioms TransposeFollowup.RegularMotion.HasRegularStageSubsequences
+#print axioms TransposeFollowup.RegularMotion.RegularFlaggedClockHead
+#print axioms TransposeFollowup.RegularMotion.canonical_physical_error
+#print axioms TransposeFollowup.RegularMotion.exceptionalTicks_node_budget
+#print axioms TransposeFollowup.RegularMotion.flagged_clock_limit_locally_affine
+#print axioms TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget
+#print axioms TransposeFollowup.RegularMotion.native_flagged_limit_budget
+#print axioms TransposeFollowup.RegularMotion.native_flagged_recursion_budget
+#print axioms TransposeFollowup.RegularMotion.native_node_budget_recursion_bound
+#print axioms TransposeFollowup.RegularMotion.native_sampled_physical_limit
+#print axioms TransposeFollowup.RegularMotion.no_native_regular_recursion
+#print axioms TransposeFollowup.RegularMotion.no_uniform_regular_recursion
+#print axioms TransposeFollowup.RegularMotion.positive_stage_affine_of_regular_occurrences
+#print axioms TransposeFollowup.RegularMotion.regular_shallow_stage_omission
+#print axioms TransposeFollowup.RegularMotion.stage_clock_deep_work_bound
+#print axioms TransposeFollowup.RegularMotion.stage_clock_total_time_bound
+#print axioms TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget
+#print axioms TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two
+#print axioms TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two
+#print axioms TransposeFollowup.TernaryMatrixPalette.Operation
+#print axioms TransposeFollowup.TernaryMatrixPalette.approximation_cover
+#print axioms TransposeFollowup.TernaryMatrixPalette.approximation_error
+#print axioms TransposeFollowup.TernaryMatrixPalette.no_high_entropy_transpose
+#print axioms TransposeFollowup.TernaryMatrixPalette.value
+#print axioms TransposeFollowup.TernaryPhase.value_encoded_entry
+#print axioms TransposeFollowup.TriangularRows
+#print axioms TransposeFollowup.TriangularRows.apply
+#print axioms TransposeFollowup.TriangularRows.block_injective
+#print axioms TransposeFollowup.TriangularRows.equiv
+#print axioms TransposeFollowup.TwoStageHelper
+#print axioms TransposeFollowup.TwoStageHelper.CorrectOn
+#print axioms TransposeFollowup.TwoStageHelper.correct_family_count_toll
+#print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound
+#print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution
+#print axioms TransposeFollowup.TwoStageHelper.quarter_count_toll
+#print axioms TransposeFollowup.TwoStageHelper.quarter_helper_bound_of_density
+#print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound
+#print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution
+#print axioms TransposeFollowup.TwoStageRows
+#print axioms TransposeFollowup.TwoStageRows.apply
+#print axioms TransposeFollowup.TwoStageRows.correct_family_card
+#print axioms TransposeFollowup.TwoStageRows.inverse_block_injective
+#print axioms TransposeFollowup.XorPacket
+#print axioms TransposeFollowup.XorSystem
+#print axioms TransposeFollowup.average_treewidth_lower_bound
+#print axioms TransposeFollowup.average_treewidth_lower_bound_of_distribution
+#print axioms TransposeFollowup.blockInjective_inverse
+#print axioms TransposeFollowup.blockInjective_rowwise
+#print axioms TransposeFollowup.exists_rational_continuous_expander
+#print axioms TransposeFollowup.graph_expected_separator_bound
+#print axioms TransposeFollowup.graph_expected_separator_bound_of_distribution
+#print axioms TransposeFollowup.graph_worst_case_separator_bound
+#print axioms TransposeFollowup.treewidth_fragmentation
+#print axioms TransposeFollowup.treewidth_separator_loss

@@ -1,0 +1,85 @@
+{
+  "checkpoint": "R1783",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "MobiusProbabilityCoefficient",
+    "MobiusDensityAverage",
+    "MobiusWalkEntrySupport",
+    "DyadicDensityBarrier",
+    "MobiusSmoothedWalkUpper",
+    "RestrictedGapFromFlatness"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.group_coefficient_energy_integrable",
+    "TransposeFollowup.RealMobius.groupActionAverage_inner_sq_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_norm_sq_le_of_coefficient_energy",
+    "TransposeFollowup.RealMobius.haar_withDensity_probability",
+    "TransposeFollowup.RealMobius.density_coefficient_lintegral_le",
+    "TransposeFollowup.RealMobius.density_coefficient_energy_le",
+    "TransposeFollowup.RealMobius.groupActionAverage_withDensity_norm_sq_le",
+    "TransposeFollowup.RealMobius.integrable_bounded_density_action",
+    "TransposeFollowup.RealMobius.density_action_integral_norm_sq_le",
+    "TransposeFollowup.RealMobius.one_mem_matrixEntryBox",
+    "TransposeFollowup.RealMobius.matrixEntryBox_inv",
+    "TransposeFollowup.RealMobius.matrixEntryBox_mul",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_subset_entryBox_two",
+    "TransposeFollowup.RealMobius.mconv_ae_matrixEntryBox",
+    "TransposeFollowup.RealMobius.symmetricGeneratorMeasure_ae_entryBox",
+    "TransposeFollowup.RealMobius.generatorWalkMeasure_ae_entryBox",
+    "TransposeFollowup.RealMobius.generatorWalk_smoothed_ae_entryBox",
+    "TransposeFollowup.RealMobius.mobiusSmoothedWalkDensity_ae_zero_outside",
+    "TransposeFollowup.exists_dyadic_density_barrier",
+    "TransposeFollowup.RealMobius.smoothedWalk_action_norm_sq_le",
+    "TransposeFollowup.RealMobius.smoothedWalk_action_norm_sq_le_crude",
+    "TransposeFollowup.RealMobius.smoothedWalk_high_band_density_constraint",
+    "TransposeFollowup.RealMobius.generatorWalk_dyadic_density_constraint",
+    "TransposeFollowup.RealMobius.exists_smoothedWalk_density_barrier",
+    "TransposeFollowup.RealMobius.exists_restricted_gap_from_dyadic_flatness"
+  ],
+  "new_theorems": 25,
+  "new_definitions": [],
+  "new_instances": [],
+  "modified_mathematical_sources": [],
+  "checks": {
+    "targeted": {
+      "session_id": 72523,
+      "exit_code": 0,
+      "jobs": 9585,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 2693,
+      "exit_code": 0,
+      "jobs": 9659,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 5094,
+      "exit_code": 0,
+      "declarations": 3726,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary proofs: convexity of the norm squared, probability Jensen (ConvexOn.map_integral_le), integral_inner for genuine Bochner-integrable vector orbits, withDensity probability/integral identities, matrix inversion/multiplication, almost-everywhere product and pushforward formulas, and elementary power inequalities. R1782 supplies the proved arbitrary-L2 bounded-box Haar coefficient bound. R1779 supplies the exact actual smoothed-walk lower witness and compatible dyadic windows. R1783 derives the bounded-density upper bound, actual matrix support, a uniform scalar density barrier, and a restricted quadratic-form gap conditional on a precisely quantified flatness hypothesis for the actual smoothed generator walk. Flatness is an explicit premise and is not established for any generator family. The same action T_g=W_(g^-1), Haar measure H and positive finite scalar c_H are retained. No novelty is claimed for this analytical support/reduction, and no external theorem is imported as an axiom.",
+  "development_checks": "ProbabilityCoefficient target97418 failed on the unspecified inner-product scalar, the implicit convexity binder, norm of the scalar coercion and the zero-norm case;87726 built it and DensityAverage warning-free (9549 jobs). WalkEntrySupport67771/67752 failed on explicit inverse-entry reduction, renamed abs_add, measurable predicate inference, product-measure namespace and a redundant congruence;39183 built repaired support and the initial SmoothedWalkUpper warning-free (9553 jobs). DyadicDensityBarrier63142 failed on the renamed inverse-product lemma;86322 compiled with an unused nonnegativity premise warning;43240 built the added uniform walk barrier but replayed that warning. The scalar theorem was strengthened to arbitrary real C,D by removing the unnecessary sign premises.77008 passed warning-free (9555 jobs), then72523 built the final RestrictedGapFromFlatness warning-free (9585 jobs). No raised proof limits or disabled linters; no old mathematical-source changes. Older supplemental handles62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T17:35:44.268236+00:00",
+  "formal_checkpoint": "R1783 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1783, 682 sources, 3726 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1783 proves the direct density-weighted upper bound ||integral kappa(g).toReal*T_g u dH||_2^2 <= 2*pi*c_H*B^2*D*M^(-1)*||u||_2^2 for measurable probability density kappa bounded by D and zero outside the actual entry box B. Probability, scalar second-moment integrability and the weighted Bochner integral are all verified. Actual generator products, inversion and convolution yield support radius 4*(2*A)^ell when generators have entries bounded by A and 0<eta<=1. Thus the actual smoothed walk satisfies the upper bound 32*pi*c_H*(2*A)^(2*ell)*D*M^(-1)*||u||_2^2. The crude inverse-small-ball density bound is also instantiated without a flatness assumption. For A=2, normalized high-band witnesses and the prior lower bound force (r^ell/2)^2 <= 32*pi*c_H*16^ell*D/2^j. A uniform scalar theorem shows that D^2<=2^j makes this impossible for large j and 2*N*ell<=j with sufficiently large N. Combining the actual lower witness with this barrier yields a restricted quadratic-form gap below 1/2, conditional on the explicitly quantified flatness of the actual smoothed generator walks. No generator family is proved to satisfy that hypothesis yet.",
+  "next": "Move from the now-complete analytic reduction to the actual flatness/existence obligation. Read the exact theorem exists_restricted_gap_from_dyadic_flatness in RestrictedGapFromFlatness.lean before selecting the next dependency. It supplies fixed N,J0 and, for each C>0, epsilon0>0. At any epsilon<=epsilon0 and J>=J0, a generator family with every entry bounded by2 has the restricted quadratic-form gap below1/2 if, for every j>=J and every dyadic ell=2^m in the window\n  C*log(1/eta)/log(1/epsilon) < ell,  2*N*ell<=j,  eta=4^(-j),\nits ACTUAL Haar-smoothed density is a.e. bounded by some D>=0 with D^2<=2^j. The same K condition is K^2>=16384*pi^2*2^(3J), and the actual f is normalized, supported in[0,1], with zero means on the K equal cells. The supplied theorem has explicit flatness as a hypothesis; never count it as unconditional gap existence.\n\nThe next concrete dependency is to identify and formalize a sufficient flattening theorem for a suitable fixed rational near-identity generating family, with all scale and arithmetic hypotheses tracked. Reconcile the precise quantitative statement in the primary Bourgain\u2013Yehudayoff source with the theorem above before coding another broad library layer. The required D threshold is D<=2^(j/2), corresponding to eta^(-1/4) at eta=4^(-j). A stronger exponent with multiplicative constants may suffice after raising J, which is allowed to depend on the generator family/epsilon. Prove that conversion if needed; do not silently absorb constants. Inventory what Mathlib and the protected original library already prove about product growth, non-concentration, rational free generators and small-ball volume; reuse via the adapter rather than copy. Select one actual missing theorem on that dependency chain. Do not rederive Jensen, Haar coordinates, wavelet energy, the actual walk support, or the scalar barrier.\n\nFull small-ball geometry, flattening/product growth and rational generator existence remain. Full motion and regular-recursion scope is unchanged. Preserve all six original targets, spatial Fourier tails, the action T_g=W_(g^-1), and the same c_H. No final referee subagents before all formalization; no original-directory edits or commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1783 proves the bounded-density average upper bound, derives actual smoothed-walk support, quantifies a sufficient density threshold, and assembles a restricted quadratic-form gap CONDITIONAL on precisely stated actual-walk flatness. This is progress within paid padding, not completion of a fourth family. Flatness/product growth, small-ball geometry and rational generator existence remain substantial obligations. Motion 200/210 and recursion 206/208 are unstarted. This percentage describes formalization scope, not elapsed time, probability of success or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusProbabilityCoefficient.lean": "a66d6567722fd2426432010f6f15e59bd0287ced1c1bd7c5f64fcf5778c4db3c",
+    "lean/TransposeFollowup/MobiusDensityAverage.lean": "65f3258e9bcf5a8e7a6e6cd27a029456713c96c2336d95180e767036c862219e",
+    "lean/TransposeFollowup/MobiusWalkEntrySupport.lean": "7672f284bf83c3052c3138920806826bf973d6327725a8b9c2ffefd53fa8aec2",
+    "lean/TransposeFollowup/DyadicDensityBarrier.lean": "4c133d13bc6215e21d8a7c3b881357d616c1f9c151edf9414beeeb28ea3f288b",
+    "lean/TransposeFollowup/MobiusSmoothedWalkUpper.lean": "cec6beb4172b3d178940972d2ab479142da25120fe8ab1c54b1744023d8c6dbb",
+    "lean/TransposeFollowup/RestrictedGapFromFlatness.lean": "75eb97967ba3c759198096e3e57005f32deb9d8b9a156b94322a5544217d5ef4"
+  }
+}

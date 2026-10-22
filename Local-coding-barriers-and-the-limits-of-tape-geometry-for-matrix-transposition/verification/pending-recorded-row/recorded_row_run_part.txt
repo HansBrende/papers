@@ -1,0 +1,112 @@
+
+namespace TransposeFollowup.RecordedRow
+open FixedTapeCompiler CopyMachine
+open NativeCountedLoop (trace_trans)
+set_option autoImplicit false
+
+theorem embed_row (F : RationalMobius) (pc : ReusableRow.Label F)
+    (s base : RowExecution.Bank) (pre : List (Sym Bool)) (rpos : RowExecution.Port → ℤ) (pos : Port → ℤ) :
+    MicrocodeEmbedding.embed rowBinding.ports (Label.row (F:=F)) (ReusableRow.cfg pc s rpos)
+      (frame (liftBank base pre) pos)=
+      cfg (.row pc) (liftBank s pre) (rowBinding.values rpos pos) := by
+  unfold MicrocodeEmbedding.embed ReusableRow.cfg cfg frame
+  simp only [← rowBinding.values_eq_extend]
+  congr 2
+  funext p; cases p <;> rfl
+
+theorem embed_consumer (F : RationalMobius) (saved : Bool) (pc : RowConsumer.Label)
+    (n iw : List Bool) (w : RowConsumer.Work) (pre : List (Sym Bool))
+    (cpos : RowConsumer.Port → ℤ) (pos : Port → ℤ) :
+    MicrocodeEmbedding.embed consumerBinding.ports (Label.consume (F:=F) saved)
+      (RowConsumer.cfg pc iw (ArithmeticSeed.one n.length) w cpos)
+      (frame (initial n iw pre) pos)=
+      cfg (.consume saved pc) (consumerBank n iw w) (consumerBinding.values cpos pos) := by
+  unfold MicrocodeEmbedding.embed RowConsumer.cfg cfg frame consumerBank
+  simp only [← consumerBinding.values_eq_extend]
+  congr 2
+  funext p; fin_cases p <;> rfl
+
+theorem row_positions_initial (pos : Port → ℤ) :
+    rowBinding.values (fun p => pos (.row p)) pos=pos := by
+  funext p; cases p <;> rfl
+
+theorem row_positions_final (pos : Port → ℤ) (flags : List Bool) :
+    rowBinding.values (RowExecution.positions (fun p => pos (.row p)) flags) pos=rowPositions pos flags := by
+  funext p
+  cases p with
+  | row p => cases p <;> simp [rowBinding,FinitePortBinding.values,RowExecution.positions,rowPositions]
+  | output => simp [rowBinding,FinitePortBinding.values,rowPositions]
+
+theorem consumer_positions_initial (pos : Port → ℤ) :
+    consumerBinding.values (fun p => pos (consumerPort p)) pos=pos := by
+  funext p; fin_cases p <;> rfl
+
+theorem consumer_positions_final (pos : Port → ℤ) (flags bits : List Bool) :
+    consumerBinding.values
+      (RowConsumer.positions (fun p => rowPositions pos flags (consumerPort p))
+        (-(flags.length : ℤ)) bits.length) (rowPositions pos flags)=finalPositions pos bits := by
+  funext p
+  fin_cases p <;>
+    dsimp only [Port.proxyTypeEquiv,RowExecution.Port.proxyTypeEquiv,RowPreparation.Port.proxyTypeEquiv,
+      SourceImages.Port.proxyTypeEquiv,SourceEndpoints.Port.proxyTypeEquiv,EndpointClip.Port.proxyTypeEquiv] <;>
+    simp [consumerBinding,consumerPort,FinitePortBinding.values,RowConsumer.positions,rowPositions,finalPositions]
+
+theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+  apply OperationalTrace.Trace.cons
+  · simp [NativeMicrocode.Active,cfg,h]
+  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+    rw [he]; exact .refl _
+
+def records (n iw flags : List Bool) : List Bool := RowConsumer.output iw (ArithmeticSeed.one n.length) flags
+
+def budget (F : RationalMobius) (n flags : List Bool) : ℕ :=
+  ReusableRow.budget F n+RowConsumer.budget n.length flags+2
+
+theorem consumer_call (F : RationalMobius) (saved : Bool) (n iw flags : List Bool)
+    (hm : 0<n.length) (hl : iw.length=n.length) (pre : List (Sym Bool)) (pos : Port → ℤ) :
+    ∃ t ≤ RowConsumer.budget n.length flags, Trace F t
+      (cfg (.consume saved RowConsumer.start)
+        (liftBank (RowCleanup.retainedRow n iw (RowStream.closedTape flags)) pre) (rowPositions pos flags))
+      (cfg (.consume saved .done) (initial n iw ((symbols (records n iw flags)).reverse++pre))
+        (finalPositions pos (records n iw flags))) := by
+  have hu := ArithmeticSeed.one_length n.length hm
+  obtain ⟨t,ht,htr⟩ := RowConsumer.complete_trace iw (ArithmeticSeed.one n.length) flags
+    (hl.trans hu.symm) pre (fun p => rowPositions pos flags (consumerPort p))
+  have he := MicrocodeEmbedding.trace_embed consumerBinding.ports (Label.consume (F:=F) saved)
+    RowConsumer.program (program F) (frame (initial n iw pre) (rowPositions pos flags)) (consumer_code F saved) htr
+  refine ⟨t,by simpa only [hu] using ht,?_⟩
+  simpa only [embed_consumer,consumer_initial n iw flags hm,consumer_final n iw hm,
+    consumer_positions_initial,consumer_positions_final,records] using he
+
+theorem rational_trace (F : RationalMobius) (source : List Bool) (i : Fin (Counter.value source))
+    (iw : List Bool) (hl : iw.length=(PaddedWord.word (PaddedWord.commonConstant F) id source).length)
+    (hv : Counter.value iw=i.val) (pre : List (Sym Bool)) (pos : Port → ℤ) :
+    let n := PaddedWord.word (PaddedWord.commonConstant F) id source
+    ∃ t ≤ budget F n (F.denseRow i), Trace F t (cfg (start F) (initial n iw pre) pos)
+      (cfg (.done (RowStream.rowGuard F i))
+        (initial n iw ((symbols (records n iw (F.denseRow i))).reverse++pre))
+        (finalPositions pos (records n iw (F.denseRow i)))) := by
+  let n := PaddedWord.word (PaddedWord.commonConstant F) id source
+  have hm : 0<n.length := by dsimp [n]; rw [PaddedWord.word_length]; unfold PaddedWord.commonConstant; omega
+  let saved := RowStream.rowGuard F i
+  let mid := liftBank (RowCleanup.retainedRow n iw (RowStream.closedTape (F.denseRow i))) pre
+  let midpos := rowPositions pos (F.denseRow i)
+  let out := initial n iw ((symbols (records n iw (F.denseRow i))).reverse++pre)
+  let outpos := finalPositions pos (records n iw (F.denseRow i))
+  obtain ⟨a,ha,ta⟩ := ReusableRow.rational_trace F source i iw hl hv (fun p => pos (.row p))
+  have ea := MicrocodeEmbedding.trace_embed rowBinding.ports (Label.row (F:=F))
+    (ReusableRow.program F) (program F) (frame (initial n iw pre) pos) (row_code F) ta
+  have ea' : Trace F a (cfg (start F) (initial n iw pre) pos) (cfg (.row (.done saved)) mid midpos) := by
+    simpa only [initial,embed_row,row_positions_initial,row_positions_final,start] using ea
+  have ja := jump_trace F (.row (.done saved)) (.consume saved RowConsumer.start) mid midpos rfl
+  obtain ⟨b,hb,tb⟩ := consumer_call F saved n iw (F.denseRow i) hm hl pre pos
+  have jb := jump_trace F (.consume saved .done) (.done saved) out outpos rfl
+  refine ⟨a+1+b+1,?_,trace_trans (trace_trans (trace_trans ea' ja) tb) jb⟩
+  change a+1+b+1 ≤ ReusableRow.budget F n+RowConsumer.budget n.length (F.denseRow i)+2
+  change a ≤ ReusableRow.budget F n at ha
+  omega
+
+end TransposeFollowup.RecordedRow

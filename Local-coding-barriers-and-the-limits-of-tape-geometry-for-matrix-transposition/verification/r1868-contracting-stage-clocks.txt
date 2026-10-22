@@ -1,0 +1,126 @@
+
+R1868 — CONTRACTING-TREE CHARGE DECAY AND COMPLETE FINITE-STAGE CLOCK ACCOUNTING
+PROGRESS at R1868: regular recursion206/208 now has geometric depth-charge bounds, actual assigned-tick and contiguous-call bounds, exact finite-stage clock accounting, and the shallow-stage uncovered-tick bound. Five of six original families remain formalized; the sixth family is about15% complete, low confidence. Native global-limit exclusion and source206 executors remain open; final referees follow all six.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1868 RESULTS
+1. levelCharge(V,w,n) is the sum of V(w++u) over ALL B-ary suffixes of
+   length n. Mathlib Fin.consEquiv proves its exact child recurrence.
+   If rho>=0 and sum_b V(w++[b])<=rho*V(w), then
+     levelCharge(V,w,n)<=V(w)*rho^n.
+   V>=0 and rho<1 imply summability over every descendant address, using
+   mathlib List.equivSigmaTuple and summable_sigma_of_nonneg.
+2. For any node w and depth h, the sum of descendant charges with relative
+   depth at least h is <=V(w)*rho^h/(1-rho). The same holds for any finite
+   collection of those suffixes. This follows from imported geometric sums,
+   summable indicators, sigma-sum rearrangement and finite-sum comparison.
+   No prior finite-depth cutoff is needed for these charge bounds.
+3. assigned_tick_bound: let S be a finite set of actual execution ticks and
+   owner(t) its node address. If each node owns at most a*V(node) ticks,
+   and every tick in S is owned at depth>=h, then
+     |S|<=a*V(root)*rho^h/(1-rho).
+   The proof sums the actual ownership fibres using mathlib cardinality
+   identities. deep_assigned_tick_bound derives the same bound for the
+   filtered deep ticks from the budget for the ENTIRE execution set.
+4. subtree_assigned_tick_bound: ticks whose owner has prefix w total at
+   most a*V(w)/(1-rho). The proof identifies each suffix-owner fibre with
+   the actual original fibre at w++u; unrelated ticks cannot be charged.
+5. card_fin_time_interval counts exactly the integer ticks in[A,E) inside
+   Fin T, giving E-A when E<=T. contiguous_call_duration_bound therefore
+   bounds an actual contiguous call interval whenever its membership is
+   equivalent to belonging to that node's descendant ownership fibres.
+6. finite_addresses_lt_depth proves the set of B-ary addresses at depth<h
+   finite, independently of execution length, using mathlib finite tuple
+   images and finite unions. Together with fixed J, shallow stage keys form
+   a fixed finite family for later limit extraction.
+7. stage_clock_own_ticks: label:Fin T->List(Fin B) x Fin J assigns EVERY
+   tick exactly one node and own-stage index. Stage endpoints A(w,j),E(w,j)
+   satisfy E<=T and the exact equivalence
+     A(w,j)<=t<E(w,j) iff label(t)=(w,j).
+   Then the actual number of ticks owned by w is exactly
+     sum_j (E(w,j)-A(w,j)).
+   These hypotheses include all work ticks; no operation category is omitted.
+8. stage_clock_deep_work_bound derives the geometric deep-work bound from
+   those exact stage intervals and their total own-stage budget<=a*V(w).
+   stage_clock_total_time_bound gives T<=a*V(root)/(1-rho).
+   stage_clock_call_duration_bound gives a*V(w)/(1-rho) for each actual
+   contiguous call described by the prefix-ownership equivalence.
+9. stage_clock_shallow_coverage identifies ticks covered by stages at depths
+   <h with ticks whose owner has depth<h. stage_clock_shallow_deficit proves
+     T - number_of_ticks_covered_by_shallow_stages
+       <= a*V(root)*rho^h/(1-rho).
+   This is the actual finite-clock precursor to208.1 and limiting coverage;
+   it does not assume a geometric coverage defect as an extra hypothesis.
+10. Root bounds V(root)<=C*P yield the written a*C*P*rho^h/(1-rho)
+   estimates by ordinary monotonicity. Subsequent work still must normalize
+   these finite-clock bounds, pass interval geometry to a common limit and
+   prove disappearance of zero-volume subtrees and the global affine cover.
+
+DRIFT / REUSE: This checkpoint supplies the exact cost accounting required
+by208 sections28-29. It derives total/subtree/deep-work bounds from actual
+stage clocks, rather than inserting them as premises of a geometric limit
+obstruction. Most underlying infrastructure already existed in mathlib:
+finite tuple decomposition, list/sigma equivalence, nonnegative summability,
+geometric series, ownership-fibre cardinality and interval cardinality.
+The custom proofs connect these to the recursive charges and paid ticks.
+Mathlib Descriptive.tree was identified as a suitable prefix-closed tree
+interface but was not needed for this stronger charge/tick calculation.
+No new general tree datatype, geometric-series theory or diagonal theorem
+was introduced. Full native exclusion and source206 semantics remain open.
+
+
+BOUNDARY
+The finite-clock cost and coverage identities are verified from child-charge contraction, exact ownership of every execution tick, and actual own-stage intervals/budgets. The geometric tail is derived, not assumed. This does not yet prove limiting real-time coverage, a common subsequence of all tree coordinates, zero-volume subtree disappearance in that limit, global affine regularity or the native recursion impossibility/exceptional-work corollary. Exact source206 palette executors/nonuniform clocks remain too. The local stage regularity hypothesis is substantive and not implied by finite polygonal traces. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1868 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate15%, low confidence.
+
+Next concrete target: actual finite-stage intervals in real physical time,
+then simultaneous endpoint/volume limits. Reuse the finite-clock interface
+in StageClockAccounting: label:Fin T->node x Fin J and exact stage membership
+iff label equality, every tick included. For actual source stages also retain
+A<=E<=T, and actual calls must satisfy the contiguous prefix-owner equivalence.
+Do not assume a limit-level disjoint cover or a tail defect directly.
+
+Suggested immediate bridge: extend each tick label to real time t in[0,T)
+using floor(t). Prove real stage membership in[A,E) equivalent to that tick
+label, with actual integer endpoints. This derives pairwise disjoint stage
+interiors and exact real-time coverage. Fixed B,J make the shallow family
+finite by finite_addresses_lt_depth. Relate its union volume to the actual
+stage lengths /P and pass the already derived uncovered-tick bound to the
+real-time deficit, including boundaries of measure zero. Use existing
+mathlib interval-measure, finite-union and affine-scaling results.
+
+Then encode ALL padded node/stage endpoints, volumes and halt times in a
+countable product of compact bounded coordinates. Import mathlib compact
+subsequence extraction instead of a bespoke diagonal theory. Preserve the
+already existing uniform physical path limit. The native_positive_stage_affine
+endpoint from R1867 handles positive-volume nodes; subtree duration bounds
+from R1868 plus squeezing handle zero-volume subtrees. Cover time with finite
+depth prefixes, let the geometric tail vanish and add frozen post-halt tails.
+Apply the completed native affine-motion/popular-class obstruction; retain
+all adaptive, state-bit, fixed-tape and high-entropy hypotheses. Exceptional
+work must still yield eta>=1/(2kG) in absolute physical units.
+
+R1868 modules:ContractingTreeCharge,ContractingTickBudget,StageClockAccounting
+(22 declarations). Their finite-clock cost proof is complete; it is not yet
+a common-limit coverage theorem or native recursion impossibility. The root
+charge remains V[] in the verified endpoints; root<=C*P supplies the source
+constants by multiplication/division with the proved positive denominators.
+
+Source206 remains: exact scan palettes, fixed words, nonuniform O(P)-state
+clocks, growing-stride zero/positive limit cases and ALL movement/I/O. Do not
+reopen uniform parameter generation or the other completed families. Source
+local regularity must still be established for these explicit executors.
+
+No fresh subagents until all six initial formalizations; then run the user-
+authorized impartial referees and cleanup. Original read-only; no commits/pushes.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate15% complete (low confidence). Completed initial formalizations remain5/6: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and fully paid padding201/202. Final independent referees and cleanup remain after all six. Percentages refer to the full sixth family, not its helper modules.
+
+VERIFICATION
+Full lake build passed10182 jobs without warnings/errors; SupportAxioms audited4893 unique declarations using only propext,Classical.choice,Quot.sound. There are1001 local sources (1000 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and179 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

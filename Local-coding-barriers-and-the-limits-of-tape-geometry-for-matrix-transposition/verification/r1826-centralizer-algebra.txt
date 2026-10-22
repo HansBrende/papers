@@ -1,0 +1,114 @@
+R1826 — EXACT CENTRALIZER ALGEBRA AND ACTUAL PRODUCT TRANSFER
+
+Status: three local Lean modules,12 theorems. Development builds passed;
+full verification is recorded separately in support-build.json.
+These are supporting algebra/analysis lemmas, not a fourth main theorem family.
+No novelty claim is made.
+
+NOTATION
+Use the existing real two-by-two matrix scalarAffine:
+  U(s,t)=s I+t a,
+where a is a fixed real matrix. Let T=tr(a), d=det(a), Delta=T^2-4d.
+Let D=det(a g-g a)=det(pairSpanMatrix(a,g)). The equality for D is reused
+from SL2SpanCertificate.pairSpanMatrix_det. Delta and D are DIFFERENT quantities.
+
+EXACT FORMULAS — NO DIAGONALIZATION
+1. U(s,t)U(p,q)=U(sp-tqd, sq+tp+tqT).
+2. adj(U(s,t))=U(s+tT,-t).
+3. tr(U(s,t))^2-4det(U(s,t))=t^2 Delta.
+4. If det(U(s,t))=det(U(p,q))=1, write t_plus=sq+tp+tqT and
+   t_minus=tp-sq. These are the actual affine coefficients of uv and uv^(-1),
+   and
+      t_plus^2+t_minus^2=2(t^2+q^2)+Delta*t^2*q^2.
+   The general determinant-weighted identity is also proved.
+5. For u=U(s,t), v=U(p,q) in SL2(R), and g in SL2(R),
+      tr(v u^(-1) g v u g)=tr(v g v g)+D*t^2.
+   The corresponding polynomial identity for arbitrary real matrices, with
+   the two determinants explicit, is proved first. There is no division by
+   Delta, no eigenbasis, and no positivity or nonzero assumption on Delta.
+   In particular, the trace separation identity includes the unipotent case.
+
+ACTUAL MATRIX WORDS AND THE ERROR COST
+Let u',v' be actual matrices approximating u,v entrywise to error delta>=0.
+Assume all entries of u,v,u',v',g have absolute value at most R>=1.
+Then
+  |tr(v' u'^(-1) g v' u' g) - (tr(v g v g)+D*t^2)|
+       <= 12(2R)^6 delta.
+This reuses ComplexMatrixProductError.complex_matrix_list_prod_error and
+EntryApprox.inv, followed by the existing real-to-complex trace map. No second
+matrix product-error chain is defined.
+
+If A^(-1)=A, u',v' belong to A^m, and g belongs to A^n, the witnessing word
+belongs to A^(4m+2n). Both inverse membership and the exact word length are
+proved. Thus m=2,n=4 costs16 factors; m=2,n=34 costs76 factors. Do not apply
+the37-factor upper envelope to the latter without an additional argument.
+The earlier arbitrary fixed-power envelope is available for the required length.
+
+NATIVE COVERING-NUMBER CONSEQUENCE
+For any indexed family u_i=U(s_i,t_i) with actual approximants z_i in A^m
+satisfying the same uniform bounds, define independent-pair scalar values
+  S={tr(u_j g u_j g)+D*t_i^2 : i,j}.
+At any eta>0 with finite N_eta(A^(4m+2n)), the proved statement is
+  N_eta(S) <= [24(2R)^6 delta/eta+5] N_eta(A^(4m+2n)),
+including finiteness of N_eta(S). Native Frobenius covers, the existing trace
+Lipschitz bound, and the existing one-dimensional patch refinement are reused.
+In particular, the commuting approximation radius from R1822 must be inserted
+as delta=12800 B0^6 eta/r0; the factor delta/eta is charged explicitly.
+It cannot simply be replaced by a constant.
+
+HOW THIS CHANGES THE PLAN
+The scalar object is a concrete MIXED sum Y+D X, with X={t_i^2} and
+Y={tr(u_j g u_j g)}. It is not yet the X+aX of the imported projection theorem.
+The algebra explains a route through small mixed sums, additive Ruzsa bounds,
+and the square-coordinate product identity, rather than assuming arbitrary
+matrix multiplication becomes scalar addition. For Delta=0, the latter identity
+loses its product term, so the generic division-by-Delta step would be invalid.
+For very small Delta, inverse powers of Delta must be budgeted. The trace
+separation formula itself has neither defect.
+
+The comparison is currently to N_eta(A^(4m+2n)), not to |X| or N_eta(V).
+Thus the cube-root normalization gap identified in R1825 remains real.
+A lower bound for a cubic alternating product of the commuting family would
+connect these scales and also permit a separate concentrated-cluster argument.
+The source route treats concentration by a second branch; it does not license
+inheriting normalized scalar bounds from those of the whole matrix set.
+
+NEXT CONCRETE TARGET — QUANTITATIVE CUBIC PACKING
+Study V g V h V for the actual exact commuting approximants, with g,h actual
+bounded words. Prefer an explicit real-coordinate inverse/derivative certificate
+and existing quantitative frame machinery over unconditioned diagonalization.
+Identify the exact determinant and the exceptional scalar parameters at which
+inversion degenerates. Prove any retained-subset and localization cost; do not
+assert that deleting a small neighborhood retains most of V without evidence.
+A possible route is to choose g,h so that the three conjugated traceless
+centralizer directions form a quantitatively nondegenerate frame, then localize
+V on a radius smaller than that determinant budget. This is a proposed route,
+not a proved frame-selection or inverse-function theorem.
+If reusing a qualitative inverse-function result, its arbitrary neighborhood
+radius is not automatically a uniform power-of-eta radius. Need a quantitative
+bound. Audit available sources before starting another generic analytic chain.
+
+Remaining scalar obligations include a nonvanishing D from the SAME generator
+a, quantitative coordinate separation/retained mass, additive Ruzsa conversion,
+the small-Delta branch, the two concentration bounds, and all parameter ordering.
+The existing frame for p,q does not automatically certify D(a,g) for the
+extracted generator a. The full group-growth/flattening/gap/paid-padding chain,
+affine motion, regular recursion, and final referees remain unfinished.
+
+SOURCE AND REUSE AUDIT
+Primary source re-read: Bourgain--Yehudayoff, Monotone expansion,
+https://arxiv.org/pdf/1108.2555, Section5 (especially5.2 and5.5).
+The coordinate-free polynomial identities above were proved directly in Lean,
+not inferred from a textual claim about a complex diagonalizing basis.
+We do not assume that a complex g with real trace and determinant1 has d/a real.
+No claim about an error in the published theorem is made here.
+
+Pinned mathlib source search covered matrix trace, adjugate, characteristic
+polynomials, special linear groups, and matrix product-error terminology.
+The library supplies adjugate_fin_two, SpecialLinearGroup.coe_inv, matrix trace
+algebra, pointwise powers, and arithmetic tactics used here. No matching mixed
+centralizer trace identity was found in that bounded search; this is not a
+claim of global nonexistence. Existing local scalarAffine, pairSpanMatrix,
+complex product errors, EntryApprox, real/complex trace compatibility, scalar
+patch refinement, and native cover attainment are reused unchanged.
+The pinned204-module external analytic source cone remains unchanged.

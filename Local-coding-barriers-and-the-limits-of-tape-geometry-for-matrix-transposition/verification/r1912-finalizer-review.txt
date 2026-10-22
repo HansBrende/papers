@@ -1,0 +1,57 @@
+R1912 finalizer review — read-only, 21 October 2026
+Reviewed /private/tmp/r1912-finalize.py without executing it. Full build remains
+root-owned; no Lean/Lake execution or repository edit by this reviewer.
+
+VERDICT
+No blocking mismatch with the independent receipt validator or source evidence.
+The finalizer follows the prior receipt schema, retains all original audited
+names, writes the9approved additions, and gates mutation on completed successful
+full-build/type/axiom timings and an empty live-handle list. The independent final
+receipt check must still run afterward as the script itself says.
+
+VERIFIED DETAILS
+- Exact current mathematical footprint is896modules /105723lines; including the
+  audit gives897sources. The baseline105579 and net+144 are correct.
+- Six target families and all6297original names/types are preserved; current audit
+  count6306 correctly includes eight core lemmas and totalStep.
+- All333old validation-log entries remain protected except exactly the3intentionally
+  mutable current summaries. Their prior archives exist at the validator's default
+  location, before-r1912-summary-update/{relative path}; finalizer rehashes new text.
+- Current final-source-review hash guard includes both reviewed repairs and the
+  restored benchmark source, so the temporary apply-id cannot enter the receipt.
+- Completion includes full_build, axiom_audit, original_exact_type_comparison,
+  all_six_main_targets_preserved and no_live_execution_handles as expected.
+- Historical R1909 fresh replay is correctly distinguished from the current normal
+  full build. No claim of a new fresh replay or new mathematical theorem appears.
+- Retired268module locations +7newCore modules explain1157->896. Nineteen final
+  routine groups encompass287former module locations, including the earlier pilot.
+
+TIMING CLAIMS CHECKED
+The three-pair scratch medians are73.8401009s and15.7984375s, a78.6045% saving;
+report rounding is correct. Measured original and pilot target timings are
+62.7739397s and16.7308154s (73.35% saving). The restored final target is13.3034040s,
+about4.72times faster /78.81%less elapsed /21.19%of baseline time. It contains20
+former bodies versus5before, and the report discloses the cached prerequisite
+workload. The97.3913825s repair-inclusive run is separated correctly. Child-process
+RSS is labeled as such, not total concurrent memory. No whole-project rebuild
+speedup ratio is asserted. The no-change timing and final validation elapsed time
+are explicitly separate workloads. Static graph counts are not presented as
+wall-time measurements.
+
+SMALL OPTIONAL HARDENING
+1. Before any finalization writes, assert the compressed archive's byte count and
+   SHA256 against types['archive'], and assert expected_original_declarations=6297,
+   chunk_pairs=79,mismatches=[]. The independent final receipt validator already
+   checks these and independently exactly compares all compressed chunk pairs, so
+   this is an early-failure improvement rather than a missing final check.
+2. Preflight that the two research-summary archive destinations do not already
+   exist before writing any completion files, avoiding a late partial finalization
+   on an archive collision. Current intended destinations are new.
+3. Use rglob('*.lean') for both source directories for future nested modules. All
+   current files are flat, so the present glob count/hash guard is correct.
+4. Add normal spaces in the appended progress/research summary prose (for example
+   'contains 20 former bodies versus 5 before'). This is readability, not validation.
+
+After copying the final validator and reports into verification/, do not modify
+any receipt-hashed artifact without refreshing the receipt. The final receipt
+check JSON is intentionally excluded to avoid a self-referential log hash.

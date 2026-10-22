@@ -1,0 +1,103 @@
+{
+  "unit": "R1733",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1732 paid canonical rewind/page-event batches revalidated",
+  "scope": "ALL6families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "NativeBatchSkipMachine",
+    "NativeBatchSkipRun",
+    "PageQueryBudget",
+    "PageQueryCanonical",
+    "PageQueryIterationBudget",
+    "PageQueryMachine",
+    "PageQueryRun",
+    "PageQueryStreams",
+    "PageQueryTrace"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.NativeBatchSkip.data_two",
+    "TransposeFollowup.NativeBatchSkip.stop_two",
+    "TransposeFollowup.NativeBatchSkip.batch_run",
+    "TransposeFollowup.NativeBatchSkip.batch_trace",
+    "TransposeFollowup.NativeBatchSkip.stream_nonblank",
+    "TransposeFollowup.NativeBatchSkip.rest_trace",
+    "TransposeFollowup.NativeBatchSkip.complete_trace",
+    "TransposeFollowup.NativeBatchSkip.label_card",
+    "TransposeFollowup.NativeBatchSkip.fixed_resources",
+    "TransposeFollowup.NativeBatchSkip.native_complete",
+    "TransposeFollowup.NativeBatchSkip.native_call",
+    "TransposeFollowup.PageQuery.input_bits_length",
+    "TransposeFollowup.PageQuery.selected_batch_length",
+    "TransposeFollowup.PageQuery.selected_total_count",
+    "TransposeFollowup.PageQuery.canonical_length_le",
+    "TransposeFollowup.PageQuery.map_density_le",
+    "TransposeFollowup.PageQuery.budget_le",
+    "TransposeFollowup.PageQuery.canonical_trace",
+    "TransposeFollowup.PageQuery.native_canonical",
+    "TransposeFollowup.PageQuery.canonical_call",
+    "TransposeFollowup.PageQuery.all_vertex_page_budget",
+    "TransposeFollowup.PageQuery.skip_code",
+    "TransposeFollowup.PageQuery.batch_code",
+    "TransposeFollowup.PageQuery.rewind_code",
+    "TransposeFollowup.PageQuery.bank_update",
+    "TransposeFollowup.PageQuery.advanced_positions",
+    "TransposeFollowup.PageQuery.embed_skip",
+    "TransposeFollowup.PageQuery.skip_call",
+    "TransposeFollowup.PageQuery.embed_batch",
+    "TransposeFollowup.PageQuery.batch_call",
+    "TransposeFollowup.PageQuery.jump_trace",
+    "TransposeFollowup.PageQuery.label_card",
+    "TransposeFollowup.PageQuery.fixed_resources",
+    "TransposeFollowup.PageQuery.native_complete",
+    "TransposeFollowup.PageQuery.native_call",
+    "TransposeFollowup.PageQuery.canonical_stream_eq",
+    "TransposeFollowup.PageQuery.before_eq",
+    "TransposeFollowup.PageQuery.visited_eq",
+    "TransposeFollowup.PageQuery.stream_split",
+    "TransposeFollowup.PageQuery.before_length_le",
+    "TransposeFollowup.PageQuery.batch_length_le",
+    "TransposeFollowup.PageQuery.embed_rewind",
+    "TransposeFollowup.PageQuery.rewind_call",
+    "TransposeFollowup.PageQuery.visited_nonblank",
+    "TransposeFollowup.PageQuery.complete_trace"
+  ],
+  "checks": {
+    "targeted_build": {
+      "session_id": 53444,
+      "exit_code": 0,
+      "jobs": 9289
+    },
+    "build": {
+      "session": 87766,
+      "exit_code": 0,
+      "jobs": 9373,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session": 14800,
+      "exit_code": 0,
+      "declarations": 2073,
+      "log": "verification/axioms.log"
+    }
+  },
+  "updated_at": "2026-10-18T22:54:19.637549+00:00",
+  "formal_checkpoint": "R1733 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1733,396sources,2073declarations,86artifacts",
+  "proof_scope": "In progress. R1733 proves a reusable native page query on7tapes with5symbols. From the first symbol of the full canonical stream,it physically skips preceding batches, tests the designated map batch and rewinds the visited prefix. Every transition and both linking jumps are paid;all tape contents and heads restore,with the exact outgoing/incoming event bit retained in control. Native halt and generic framed calls are proved. With N=Counter.value xs,ell=xs.length,c=r+1,C=FamilyNormalization.common F, S=sum_i(distortion(F_i)+1),the query bound is (N*S+c+1)*(120*ell+60*C+140). For N>=1 and ell<=size(N+1),the total of these query bounds over2Nvertices andQfixed pages is at most2*Q*(S+c+1)*(60*C+500)*inputLength(N). This bounds queries,not the separate scheduler. Nine modules/45theorems;full build9373jobs;2073audited declarations,standard axioms only. Three of six intended theorem families complete.",
+  "next": "Implement the actual outer scheduler,starting with its common-width vertex counter and the link to CanonicalReader on42tapes. Reuse native counter/padding/copy operations and PageQuery.canonical_call,with the fixed page set in control but input-dependent coordinates on tape. Prove the precise order A0..A(N-1),B(N-1)..B0 and connect each result through PageEventBatch.event_opcode to the native geometric page walk. Pay initialization,counter updates,page transfers and input-head reset;all_vertex_page_budget only pays query calls. Then compose clock/fetch/payload and clean retained buffers. Do not add another hypothetical query-bound layer now that the reusable query is complete. Expansion,motion and recursion remain in scope. Older supplemental checks62722/19934 remain live/unverified;do not restart solely for elapsed time. All six families required;three complete;original unchanged; no commits/pushes;referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeBatchSkipMachine.lean": "2fb8bb3876a2b4c3dfa7e7eb8913cfc61cfc1ca04455e007038cee8a84a31567",
+    "lean/TransposeFollowup/NativeBatchSkipRun.lean": "6c8ff78e900a409611103d77c97e60e2b259a02bd7bf919c789d13de1f6b8ecc",
+    "lean/TransposeFollowup/PageQueryBudget.lean": "0ea5be98c14e3350631585316579c8ce15432413634599cc48e0e9514eea56c9",
+    "lean/TransposeFollowup/PageQueryCanonical.lean": "8db6533155401c2ee95ed4e705ad8b3e47aa732a4ce1f22f374b6c3538e901ba",
+    "lean/TransposeFollowup/PageQueryIterationBudget.lean": "9019250ed37688704a4d5c3f1c80f29012e9d68c69e00bb3cd240693a4e8b396",
+    "lean/TransposeFollowup/PageQueryMachine.lean": "b9d26dffcd4188cffe3107a09b0d05adc15a385ea624c924fe5283703cd75daa",
+    "lean/TransposeFollowup/PageQueryRun.lean": "098f662948f7b94a206455b2f17509b0e32073c92e13dbd4e46853a32e29a446",
+    "lean/TransposeFollowup/PageQueryStreams.lean": "aef0b2d5ab2101458bd2b9b890e05690fe134cb8bf17df4399875527d470bdc8",
+    "lean/TransposeFollowup/PageQueryTrace.lean": "0cb01a546076ec35f0186abd2c74ff41a23585f2ffdc7af43947f21ecc221656"
+  }
+}

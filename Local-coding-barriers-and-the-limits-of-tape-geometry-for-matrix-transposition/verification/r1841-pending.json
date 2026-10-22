@@ -1,0 +1,43 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1840",
+  "target": "Exact first-extraction scale choices and coefficient power majorants, including the normalized concentration budget.",
+  "new_modules": [
+    "NilpotentExtractionParameters"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.first_extraction_cost_bounds",
+    "TransposeFollowup.SL2Projection.scalar_concentration_power_bounds",
+    "TransposeFollowup.SL2Projection.exists_first_extraction_concentration_constant",
+    "TransposeFollowup.SL2Projection.exists_first_extraction_parameters",
+    "TransposeFollowup.SL2Projection.exists_first_extraction_size_constant"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9607,
+      "log": "/private/tmp/r1841-dev6.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10103,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4599,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "93363/dev1 exit1,91391/dev2 exit1,45401/dev3 exit1,4519/dev4 exit0,16617/dev5 exit1,98308/dev6 exit0. All terminal; dev6 passed9607 jobs without warnings. Full build/audit not started. Full90456 exit0/10103 jobs; audit83265 exit0/4599 declarations; all handles terminal.",
+  "updated_at": "2026-10-20T08:54:49.925666+00:00",
+  "formal_checkpoint": "R1841 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:922 local sources,204 external sources,4599 declarations,8 configurations,125 artifacts",
+  "proof_scope": "In progress. R1841 proves fixed first-extraction chart and sampling parameters satisfying all frame, branch, localization, absorption, matrix-spacing and scalar-spacing inequalities simultaneously. It derives the five exact coefficient power bounds, the normalized concentration budget C0*eta^(-100theta), and the upper-size exponent1-kappa/3+83theta by reusing the existing cube theorem. One new module adds five declarations. Applying these bounds to the actual original extracted family, the common dyadic scalar radius and the full trace-growth comparison remains open.",
+  "next": "The preceding goal turn is PROGRESS. R1841 is recorded; never replay its checkpoint. Full10103-job build and4599-declaration audit passed without warnings, standard axioms only; no live Lake handles. Read verification/r1841-extraction-parameters.txt and library-reuse-audit-r1841.json. Do not redo parameter power algebra, scalar radius selection, cubic size normalization or scalar-growth budgets.\n\nNEXT CONCRETE TARGET: apply the existing FIRST extraction to its actual nilpotent scalar sample at one common threshold; then close the full trace-growth comparison.\n1. Fix0<kappa0<=1 and scalar exponent kappa0/12. Obtain the scalar-growth exponent e0 BEFORE theta. Prove a monotone restriction if normalizing e0<=1. R1840 nilpotent_scalar_exponent_margins gives theta=min(e,kappa0)/4096, d_scalar=1-3theta, gain g=e/8, concentration loss100theta, size exponent1-kappa0/3+84theta and error exponent1-2theta. Its margins are already checked.\n2. Instantiate exists_first_extraction_parameters with Hgeo=4^34, B=2, M=128*(4^68)^2. Choose a,b,s,l,e_first,f,rc BEFORE eta,theta. Set B0=4Hgeo and R>=4^68. Apply exists_first_extraction_concentration_constant with distribution exponent kappa0 and these constants, and exists_first_extraction_size_constant. They return C0,V0 before eta. Do not introduce assumptions asserting their power budgets: these are now proved.\n3. Set first-extraction zeta=sigma0=theta and distribution gamma strictly below zeta, e.g.theta/2. Keep beta<zeta*kappa0. R1840 arbitrary-power envelopes for n36,141,283 cost h^321299,h^1245509,h^2495393; choose actual profile loss s_profile<=theta/3000000 and sufficiently small for beta. The profile controls and this hierarchy still need application, not new envelope proofs.\n4. The actual frame has d0=eta^theta. First r_initial=a*eta^(2theta), FIRST error=e_first*eta^(1-2theta)=12800*(4Hgeo)^6*eta/r_initial. R1841 chooses frame coefficient d=f*eta^(9theta), chart radius rc*eta^(9theta), bin width b*eta^(11theta), sample spacing s*eta^(1-9theta), trace coefficient L=l*eta^(3theta). It proves all chart/spacing obligations, including96*delta_scalar<=4*L*sample_spacing for every delta_scalar<=2*eta^(1-3theta). Use the ONE scalar dyadic radius from R1840.\n5. Prove actual source proximity budgets25alpha+epsilon<=1/2 and5^36alpha+2*(4^34)*epsilon<=1/4. Apply exists_actual_nilpotent_scalar_sample to retain source indices, positive coordinates, entries<=2, actual g in A^34, scalar range[1,2], separation and both cardinality estimates. Apply nilpotent_scalar_sample_concentration using the original Vset/mixed Dset and cube exponent8theta. The R1841 concentration constant is for Bg=32. Weaken kappa0/3 to2*(kappa0/12) on radii<=1.\n6. Apply commuting_family_cubic_bound to the original family, then exists_first_extraction_size_constant. It gives exponent1-kappa0/3+83theta; weaken to the84theta R1840 budget with eta<=1. Its hypotheses still require the actual cube and product envelope. Combine with exists_scalar_growth_budget_scale; include32R^3 in the error constant.\n7. Compose actual trace growth with whole-word geometry and the FULL R1832 second-extraction upper bound, keeping sampling/binning/error constants and250. The strict margin173theta<e/8 is verified, but the second upper comparison and its fixed constants still need proof. Never substitute SECOND error819200eta/rho for the first error. Completed nilpotent contradiction remains the next substantive endpoint; other branches remain open.\n\nREPORTING: paid padding201/202 about60%, low confidence;3/6 original families formalized, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NilpotentExtractionParameters.lean": "3a100ec77a38bdaa2a6569b49fa8de4d015182357e9521ec9851a8893043f5c0"
+  }
+}

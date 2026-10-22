@@ -1,0 +1,97 @@
+{
+  "unit": "R1745",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "RadiusBuilderData",
+    "RadiusBuilderMachine",
+    "RadiusBuilderBanks",
+    "RadiusBuilderCalls",
+    "RadiusBuilderRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RadiusBuilder.width_positive",
+    "TransposeFollowup.RadiusBuilder.factor_length",
+    "TransposeFollowup.RadiusBuilder.factor_value",
+    "TransposeFollowup.RadiusBuilder.bitWord_length",
+    "TransposeFollowup.RadiusBuilder.bitWord_value",
+    "TransposeFollowup.RadiusBuilder.product_length",
+    "TransposeFollowup.RadiusBuilder.numerator_length",
+    "TransposeFollowup.RadiusBuilder.quotient_length",
+    "TransposeFollowup.RadiusBuilder.result_length",
+    "TransposeFollowup.RadiusBuilder.numerator_small",
+    "TransposeFollowup.RadiusBuilder.width_power",
+    "TransposeFollowup.RadiusBuilder.numerator_fit",
+    "TransposeFollowup.RadiusBuilder.product_fit",
+    "TransposeFollowup.RadiusBuilder.product_value",
+    "TransposeFollowup.RadiusBuilder.numerator_value",
+    "TransposeFollowup.RadiusBuilder.quotient_value",
+    "TransposeFollowup.RadiusBuilder.radius_fit",
+    "TransposeFollowup.RadiusBuilder.result_value",
+    "TransposeFollowup.RadiusBuilder.budget_linear",
+    "TransposeFollowup.RadiusBuilder.entry_code",
+    "TransposeFollowup.RadiusBuilder.seed_code",
+    "TransposeFollowup.RadiusBuilder.scale_code",
+    "TransposeFollowup.RadiusBuilder.add_code",
+    "TransposeFollowup.RadiusBuilder.divide_code",
+    "TransposeFollowup.RadiusBuilder.multiply_code",
+    "TransposeFollowup.RadiusBuilder.erase_code",
+    "TransposeFollowup.RadiusBuilder.clear_code",
+    "TransposeFollowup.RadiusBuilder.erase_words",
+    "TransposeFollowup.RadiusBuilder.erase_final",
+    "TransposeFollowup.RadiusBuilder.erase_budget",
+    "TransposeFollowup.RadiusBuilder.embed_bank",
+    "TransposeFollowup.RadiusBuilder.jump_trace",
+    "TransposeFollowup.RadiusBuilder.entry_call",
+    "TransposeFollowup.RadiusBuilder.seed_call",
+    "TransposeFollowup.RadiusBuilder.scale_call",
+    "TransposeFollowup.RadiusBuilder.add_call",
+    "TransposeFollowup.RadiusBuilder.divide_call",
+    "TransposeFollowup.RadiusBuilder.multiply_call",
+    "TransposeFollowup.RadiusBuilder.erase_call",
+    "TransposeFollowup.RadiusBuilder.clear_call",
+    "TransposeFollowup.RadiusBuilder.complete_trace",
+    "TransposeFollowup.RadiusBuilder.native_radius",
+    "TransposeFollowup.RadiusBuilder.native_radius_linear",
+    "TransposeFollowup.RadiusBuilder.fixed_resources",
+    "TransposeFollowup.RadiusBuilder.output_contract",
+    "TransposeFollowup.RadiusBuilder.native_call"
+  ],
+  "checks": {
+    "temporary_run": {
+      "session_id": 26529,
+      "exit_code": 0
+    },
+    "build": {
+      "session_id": 22521,
+      "status": "passed",
+      "exit_code": 0,
+      "jobs": 9472
+    },
+    "axioms": {
+      "session_id": 17866,
+      "exit_code": 0,
+      "status": "passed",
+      "declarations": 2566
+    }
+  },
+  "expected": {
+    "jobs": 9472,
+    "declarations": 2566,
+    "source_count": 495,
+    "mathematical_sources": 494
+  },
+  "scope": "11 fixed tapes;source and radius retained,9 auxiliary tapes blank;head positions/external IO preserved;radius formula and full native bound proved. Not yet inserted into GeneratorRows.",
+  "next": "Compose the proved RadiusBuilder K and ClockBuilder into one12-tape work routine. Bind the clock source to RadiusBuilder.result, its temporary counter to RadiusBuilder.counter, and its output to the new clock port. After clock construction erase the radius word, retaining only the original N word and marked clock. Three linking jumps give total bound RadiusBuilder.budget+51R+46m+102. With l<=N and R<=K*N*entryBits(N), the candidate linear coefficient is876+143C+K*(139+18C);prove it. Then embed this routine between raw opcode generation and the existing RowLoop consumer, aliasing its source to the actual retained dimension tape and its clock output to the actual row clock. Reuse the existing compiler, radius and clock routines;do not rebuild arithmetic. Transfer actual timing/trajectories and update tape-count constants. All other paid-padding/motion/recursion obligations remain.",
+  "checkpoint_reporting": "At each substantial proof checkpoint report a rough overall40\u201360% estimate, with high uncertainty, and3/6 completed original families:adaptive separators181/186/188,recoded pairwise-XOR181B,two-stage helper216. This is formalization progress, not proximity to resolving multiplication/transposition. Paid padding201/202 remains incomplete;motion200/210,recursion206/208 and final referees remain.",
+  "updated_at": "2026-10-19T02:01:56.929132+00:00",
+  "formal_checkpoint": "R1745 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1745,495 sources,2566 declarations,86 artifacts",
+  "proof_scope": "In progress. R1745 completes the actual native radius builder: for fixed K and positive marked source xs of value N and length l, it computes R=K*blockSize(3,N)=K*ceil(N*entryBits(N)/3). The11-tape,5-symbol controller preserves xs, returns a radius word of width m=2l+C with C=K.size+4, clears all9 other tapes and restores all heads/external IO. Every arithmetic operation, linking jump, marker and erasure is paid. Its exact upper bound is96l+17C+62m+b(18m+57)+K(18m+52)+369, where b=entryBits(N). If l<=N, this is at most(682+97C+K(88+18C))*N*b. This is a supporting component, not the complete paid-padding theorem.",
+  "source_sha256": {
+    "lean/TransposeFollowup/RadiusBuilderData.lean": "9b097810ad53e0b158251d17e6252fe318ab47dd36b4c4a5f1d42b8df167503f",
+    "lean/TransposeFollowup/RadiusBuilderMachine.lean": "5b0e7a8355f4633d302cb25d6b88359b60a0cb80d7d31b3d5179d612439dced4",
+    "lean/TransposeFollowup/RadiusBuilderBanks.lean": "93249adff9366efeb9374215ede89df08a39953e5f4b2de8073d0e2d520b82d1",
+    "lean/TransposeFollowup/RadiusBuilderCalls.lean": "79e02c6a6496d1db5fd6f6c7d40d0fd041c29e899c4178fb9114b0c9e33321dc",
+    "lean/TransposeFollowup/RadiusBuilderRun.lean": "96530b0fc7ef0157e144143cd0f4d52880a486626a43093bfd812b4368f7160e"
+  }
+}

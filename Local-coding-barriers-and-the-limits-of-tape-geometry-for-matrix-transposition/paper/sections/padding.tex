@@ -1,0 +1,219 @@
+\section{Fully paid padding and the limits of the motion test}\label{sec:padding}
+
+A native-machine prefix of linear cost enforces the original cut inequality
+through any payload computation. For uniformly linear-time payload families,
+the resulting runs also satisfy the full limiting conclusions. This supplies
+the required motion for the construction program and identifies what those
+conditions alone cannot exclude.
+
+\subsection{The exact geometric contract}
+
+We recall the discrete condition from~\cite{FirstPaper2026}. Let $k$ unit-step
+work-head paths $h_p:\N\to\Z$ run for $T$ steps. At dimension $d$, take
+$r=\ceil{db(d)/G}$ and split time into $N=\ceil{T/r}$ slots. A block is a
+length-$r$ interval of tape cells. The original \emph{pair residency} of a slot
+is the union, over every step of that slot before $T$, of the current block
+and its previous block under the original last-change convention. A chord
+joins resident slots $x<z$ only when $x+1<z$ and the block is absent from
+every intervening slot: it connects the last slot of one residency visit to
+the first slot of the next separated visit. Adjacent resident slots do not
+form chords. The theorem uses this original residency, not an arbitrary
+collection of convenient edges.
+
+Give the slots labels by $\lambda:\N\to\N$, with at most $m$ slots of any
+one label among $0,\ldots,N-1$. Let $B_\lambda$ be the number of adjacent label changes and
+$\chi_p(\lambda)$ the number of residency chords of head $p$ whose endpoints
+have different labels. The \emph{zero-slack cut inequality} is
+\begin{equation}\label{eq:zero-cut}
+ (d-B_\lambda)_+
+ (d-2m)_+b(d)
+ \le rG\left(3kB_\lambda+\sum_{p<k}\chi_p(\lambda)\right)
+\end{equation}
+for every such labelling and $m$, where $x_+=\max(x,0)$.
+It is precisely \texttt{CutIneq d G r T 0 0 h}; the two zero parameters are
+the entropy-deficit and boundary-information slack, not a restriction on the
+payload's input distribution.
+\upformal{Transpose.Tape.Defs}{Transpose.Tape.pairRes,Transpose.Tape.labelChanges,Transpose.Tape.crossChords}
+\upformal{Transpose.Tape.DefsM}{Transpose.Tape.CutIneq}
+
+For a linear time bound $T_i\le CP(d_i)$, freeze each path at $T_i$ and put
+\[
+ p_{i,t}(u)=\frac{1}{d_i}
+  \left\lfloor\frac{h_{i,t}(\min(\floor{ud_i}r_i,T_i))}{r_i}\right\rfloor,
+ \qquad 0\le u\le c_0:=CG+1.
+\]
+These are the original block trajectories. The full limiting conclusion means
+that some subsequence converges uniformly, and \emph{every} uniformly
+convergent subsequence has $1$-Lipschitz limit paths satisfying the original
+$M^*$ inequality for every $\theta\in[0,\infty]$, every finite union $S$ of
+closed intervals, and every piecewise-constant-off-$S$ labelling whose
+off-$S$ classes each have measure at most $\theta$. The inequality is
+\eqref{eq:motion-star} with this full range of $\theta$. In addition,
+their total integrated level excess is at least one, the sum of their range
+measures plus one is at most $kc_0$, and at least one limit path is neither
+monotone nor antitone.
+\formal{NativeRunLimits}{TransposeFollowup.NativeRunLimits.Conclusion,TransposeFollowup.NativeRunLimits.of_cut}
+
+\subsection{The wrapper theorem}
+
+\begin{theorem}[Universal fully paid padding]\label{thm:padding}
+There are absolute integers $A,H,K_0,E\ge0$ such that for every native
+machine $M$ there is a single native machine $M'$ with
+\begin{align*}
+ \#\mathrm{states}(M')&=H+\#\mathrm{states}(M),\\
+ k(M')&=K_0+(k(M)+E)\max(1,\operatorname{size}(g(M))),\\
+ \operatorname{cellBits}(M')&=3.
+\end{align*}
+Here $g(M)+1$ is the work-alphabet size and $\operatorname{size}$ is the
+binary length of a natural number, with $\operatorname{size}(0)=0$.
+The following hold for this same $M'$.
+\begin{enumerate}[label=(\alph*)]
+\item For every $d\ge1$, every word $w$ of length $P(d)$, every output
+$v$ and every $t$ for which $M$ computes $v$ on $w$ within $t$ steps, there
+is an actual halting time $T\le AP(d)+t$ of $M'$ on $w$, with output exactly
+$v$, whose entire execution satisfies \eqref{eq:zero-cut} with $G=3$ and
+$k=k(M')$.
+\item For every sequence $d_i\to\infty$ of positive dimensions, words
+$w_i$ of length $P(d_i)$, outputs $v_i$, and $a\in\N$ such that $M$ computes
+$v_i$ on $w_i$ within $aP(d_i)$ steps, there are actual halting times
+$T_i\le(A+a)P(d_i)$ for $M'$ with those same outputs and the cut inequality.
+The full limiting conclusion above holds with $C=A+a$.
+\end{enumerate}
+The constants precede the choice of $M$, and $M'$ precedes every choice of
+dimension, input sequence, output and time coefficient.
+\end{theorem}
+\formal{UnconditionalPaidPadding}{TransposeFollowup.PaidPadding.exists_uniform_paid_padding}
+
+\paragraph{What is paid.}
+The machine starts with blank work tapes. It derives the required dimension
+from the input length, generates its finite schedule, builds the clocks used
+to execute it, performs the scheduled excursions, clears the prefix workspace,
+resets the input head, and hands off to a faithful simulation of $M$.
+All transitions are included in $AP+t$. The implementation uses five work
+symbols; the headline contract states their three-bit cell charge. Parallel
+bit planes encode the source alphabet using additional tapes, which is why
+the displayed tape count depends on the source alphabet while the additive
+time coefficient can be chosen before $M$.
+
+The constants are existential; no numerical values are given here. Once the
+rational family and its parameters are fixed, the same transition table
+handles all positive canonical dimensions.
+
+\begin{proofoutline}
+The proof has four parts.
+
+\emph{Analytic existence.} A fixed finite rational family of increasing
+partial M\"obius maps expands measurable subsets of the unit interval.
+The development follows the continuous-expander strategy of
+Bourgain--Yehudayoff~\cite{BourgainYehudayoff2013}: rational free generators
+near the identity, flattening and a restricted spectral gap, then the passage
+from a gap to expansion. The formal chain uses the pinned scalar-projection
+result~\cite{OAIProjection2026} at its additive-combinatorial interface; its
+local concentration hypotheses are discharged in our analytic development.
+No spectral-gap or expansion hypothesis is left in the wrapper theorem.
+
+\emph{Finite graphs and excursions.} Divide the interval into $d$ cells.
+An edge records an overlap of a map image with a target cell. Symmetrization
+gives a graph on $2d$ ordered vertices with a fixed positive vertex-expansion
+constant. The estimates hold at every positive dimension. Monotonicity gives
+a fixed finite page decomposition of these edges. A page is implemented by
+one head's excursions, with a constant stretch chosen so that expanding edges
+force enough distinct crossing chords in every slot labelling. A fixed number
+of extra stationary tapes supplies the required head-count inequality.
+
+\emph{Actual generation and execution.} Rational comparisons determine the
+overlap edges and the corresponding finite operation stream. The generator
+and its consumer are compiled to finite transition tables. The row-clock and
+excursion proofs identify their actual head positions at the actual transition
+times, including fetching and setup delays. Their aggregate cost, including
+generation, is $O(P)$. Cleanup proves blank tape contents and zero head
+positions, and resetting the input head supplies the exact entry contract
+for the payload. The five-symbol bit-plane simulation preserves one source
+transition per payload transition. Sequential composition therefore preserves
+the output and gives the stated additive time bound.
+
+\emph{Extending the horizon and taking limits.} The prefix excursions witness
+the cut inequality through the payload's final halting time, using the full
+composed machine's head count and paths. Finally
+\lean{NativeRunLimits.of_cut} applies the original walk theorem with zero
+slack, giving existence of limits and the full assertion for every eligible
+limit. The construction parameters are chosen before the payload machine,
+as required by the outer quantifiers.
+\end{proofoutline}
+
+\subsection{The analytic interface and its attribution}
+
+The following analytic lemma removes the expansion hypothesis from the native
+construction. Continuous-expander existence and the proof strategy are due
+to Bourgain--Yehudayoff~\cite{BourgainYehudayoff2013}.
+
+\begin{lemma}[Rational continuous-expander interface]\label{lem:rational-expander}
+There are a finite nonempty family of rational increasing partial M\"obius
+maps $f_j$ and a real $\varepsilon>0$ such that each map has a nonempty open
+interval domain with rational endpoints, takes that domain into $[0,1]$, and
+\[
+ (1+\varepsilon)|S|\le
+ \left|\bigcup_j f_j(S\cap\operatorname{dom}f_j)\right|
+\]
+for every measurable $S\subseteq[0,1]$ with $|S|\le1/2$.
+Each map has rational coefficients, positive determinant and positive
+denominator at both endpoints of its defining closed interval.
+\end{lemma}
+\formal{UnconditionalPaidPadding}{TransposeFollowup.exists_rational_continuous_expander}
+\formal{RationalMobius}{TransposeFollowup.RationalMobius}
+
+\begin{proofoutline}
+The rational free family and a sufficiently fine fixed grid give a restricted
+$L^2$ gap for functions supported on $[0,1]$ whose integral on each grid cell
+is zero. If a measurable set expanded too little under the family and the
+auxiliary translations, its cell-centered, normalized indicator would have
+large correlation with every generator and inverse. Averaging contradicts
+the restricted gap. Clipping the augmented rational family supplies the
+open domains and removes endpoints of measure zero. The same rational
+coefficients pass through the gap and expansion interfaces; no separate
+unverified approximation of an expander is substituted.
+\end{proofoutline}
+
+The lemma and its analytic dependencies are proved in the checked library.
+The pinned OpenAI dependency is a formally proved scalar projection result;
+it is separate from the OpenAI multiplication source cited in the earlier paper.
+
+\noindent\begin{minipage}{\textwidth}
+\paragraph{A short dependency route.}
+The following links locate the construction without requiring the reader to
+follow the compiler's complete internal file graph.
+\begin{center}\small
+\begin{tabular}{p{0.31\linewidth}p{0.61\linewidth}}
+\toprule
+Obligation & Principal interface\\
+\midrule
+Rational gap and expansion & \lean{UnconditionalPaidPadding}\\
+All-size finite expansion & \lean{AllSizeOverlapExpansion}, \lean{ContinuousNativePadding}\\
+Generated actual trajectories & \lean{NativeTimedWalk}, \lean{PaidPaddingLimits}\\
+Cleanup and blank payload entry & \lean{GeneratorCleanupCost}, \lean{PaidPaddingLimits}\\
+Full-horizon cut inequality & \lean{PaidPayload.cut_after_prefix} in \lean{PaidPaddingLimits}\\
+Original limiting conclusion & \lean{NativeRunLimits.of_cut}\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{minipage}
+
+\subsection{What the construction establishes}
+
+The earlier paper's expanding-motion proposal~\cite[Construction
+programme]{FirstPaper2026} identified preparation and execution as obligations.
+Theorem~\ref{thm:padding} resolves those obligations for a wrapper, including
+all setup and execution costs. Its construction contribution is a uniform
+method for supplying the required motion. It still leaves complete exchange
+to the payload: the expander and the excursions do not specify how to recover
+the transpose's output bits from coded data.
+
+For the impossibility program, if a linear transposer exists, the theorem
+supplies another linear transposer satisfying the zero-slack cut inequality
+and the full $M^*$ conclusions. Those necessary conditions therefore cannot
+by themselves exclude a linear transposer. An exclusion must also use the
+transpose demand or another property not supplied by the wrapper.
+
+The theorem uses $O(P)$ schedule generation. It does not assert an $o(P)$
+generator, a particular weak-limit return measure, or a nonhyperfinite return
+relation.

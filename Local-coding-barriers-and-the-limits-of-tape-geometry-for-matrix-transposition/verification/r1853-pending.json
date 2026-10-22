@@ -1,0 +1,46 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1852",
+  "target": "Universal actual-readout constants and simultaneous budgets applied to one retained original source sample.",
+  "new_modules": [
+    "TraceSquareReadoutParameters",
+    "TraceSquareJointBudgets",
+    "TraceSquareSampleApplication"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.normalized_trace_square_coefficients",
+    "TransposeFollowup.SL2Projection.exists_actual_trace_square_readout_parameters",
+    "TransposeFollowup.SL2Projection.exists_trace_square_joint_budgets",
+    "TransposeFollowup.SL2Projection.exists_trace_square_sample_bounds"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9691,
+      "log": "/private/tmp/r1853-dev13.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10133,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4689,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 47783 exit1 (path error; no source written); dev2 83355 exit1; dev3 20631 exit1 (readout passed); dev4 42414 exit0/9633 (readout+joint budgets clean); dev5 98774 exit1; dev6 15968 exit1; dev7 3980 exit1; dev8 54596 exit1; dev9 65222 exit1; dev10 86962 exit1; dev11 15371 exit1; dev12 20932 exit1; dev13 67754 exit0/9691 (actual sample clean); full56182 exit0/10133; audit95076 exit0/4689. All handles terminal; no warnings/errors in final build or audit.",
+  "updated_at": "2026-10-20T19:17:05.263515+00:00",
+  "formal_checkpoint": "R1853 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:952 local sources,204 external sources,4689 declarations,8 configurations,149 artifacts",
+  "proof_scope": "In progress. R1853 supplies universal actual-readout constants and applies one joint dyadic threshold to an actual retained source sample. The same sample now has separation, range, global cubic normalization, cardinality and interval concentration proved together. The original extraction constant and d^11 loss are retained; no trimming or concentration budget is postulated. Four declarations in three modules reuse the existing coefficient selector, sampling, packing, concentration and size proofs.",
+  "next": "R1853 recorded; never replay its checkpoint script. Full10133-job build\nand4689-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: scalar-to-ACTUAL-word cell growth using the new sample.\nDo not re-prove the sampling, numerical-budget or concentration chain.\nThe exact R1851 exponents and R1853 APIs are authoritative.\n\n1. First obtain rho_c,c,t0,s1 from\n   exists_actual_trace_square_readout_parameters. Choose fixed Eerr>=1\n   large enough for the enlarged-source and mixed-word error bounds,\n   and Ffar>0 from rho_c/[288M^2],M=128(4^204)^2, as needed.\n   Pass t0,Eerr,Ffar,Cext into exists_trace_square_sample_bounds.\n   This gives all constants and one threshold BEFORE eta and any input.\n   For the actual frame/generator, select g in A^204 using the SAME\n   constants. The lower determinant gap implies det(centered z)!=0.\n2. Apply the existing scalar theorem to Z using its proved range,\n   cardinality, separation and concentration. Use the existing\n   exists_scalar_dyadic_radius / scalar budgets to choose delta at\n   eta^(1-3Theta)<=delta<2eta^(1-3Theta); combine finite thresholds.\n   Maintain Theta=min(e,kappa0)/16384,theta=kappa0 Theta/1024,\n   a=5Theta/16,g=e/8,gain=e/32. Do not forget the square-root loss:\n   the mixed-sum estimate controls scalar sum/product cells by T^2/m,\n   so actual trace growth needs2gain<g, already verified.\n3. Set F={f_i:i in T},Y=X(F union FF union FF^-1).\n   REUSE traceSquareScalar_finite_product_enlargement and\n   scalar_ring_cells_of_two_term_readout. Choose the larger readout\n   coefficient for Y: max(|u|,|v|)>=3/4 gives inverse magnitude<=2.\n   The other coefficient still has |coef|>=c eta^(12theta); the\n   sample spacing delta_s=t0 delta eta^(-12theta) pays it exactly.\n   Both orientations of the mixed word are allowed. Show the actual\n   scalar-cell-to-trace-cover bound rather than assuming it.\n4. Transfer the mixed readouts to original source words using\n   mixed_readout_source_error and mixed_readout_source_far, retaining\n   Eerr epsilon<=Ffar eta^(12theta+a). Original source words are inA^2,\n   enlarged words inA^4,g inA^204,so mixed length420. At least the base\n   factor is far>eta^a. The coefficient gap rho_c eta^(12theta) gives\n   distance exponent12theta+a<=3Theta. Choose alpha0 further down\n   before eta if near-radius control for length420 requires it.\n5. Generalize the FULL exists_reextracted_trace_power_bound wrapper,\n   which STILL assumes k<=282. Reuse profile_power_exponent_bound_of_cost;\n   do not duplicate its power arithmetic. Length420 uses cover index421,\n   cost8802*421+4427=3710069. The initial quantitative extraction's\n   universal n0+3 cover uses n0+2; choose a common fixed profile margin\n   for max(421,n0+2), without asserting n0<=420.\n   Its548Theta bound plus the actual sample's143Theta retention fits\n   691Theta<3gain. Reuse cubic_trace_budget_contradiction.\n\nOriginal profile/frame construction, strict flattening and the analytic/\nmachine endpoint remain after these steps. Three of six families done;\npaid padding about60%, LOW CONFIDENCE. Continue numeric progress reports.\nOriginal paper read-only; no commits/pushes/subagents before referee phase.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceSquareReadoutParameters.lean": "f68fb96183ebfb1aa3795da192d3e78a465964bdbae64c137e8a42d153821879",
+    "lean/TransposeFollowup/TraceSquareJointBudgets.lean": "e8f6eea7db14940f38707111b205949bc6c05541c743b45a204b994851bba9ad",
+    "lean/TransposeFollowup/TraceSquareSampleApplication.lean": "d5f89a8c555385d92c4e37993fd2eb8883dc60f020a00577df44428cb39e7810"
+  }
+}

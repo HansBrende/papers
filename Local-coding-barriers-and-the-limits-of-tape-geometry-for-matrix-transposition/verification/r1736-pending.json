@@ -1,0 +1,102 @@
+{
+  "unit": "R1736",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1735 opcode generator revalidated",
+  "scope": "ALL6families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "NativeClosedStreamExact",
+    "PageClockMachine",
+    "PageClockTrace",
+    "ReusablePageClockMachine",
+    "ReusablePageClockRun",
+    "ReusablePageClockTrajectory",
+    "SevenPhaseClock",
+    "TracePrefix"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.NativeClosedStream.rewind_pair",
+    "TransposeFollowup.NativeClosedStream.rewind_finish",
+    "TransposeFollowup.NativeClosedStream.rewind_tail_exact",
+    "TransposeFollowup.NativeClosedStream.rewind_exact",
+    "TransposeFollowup.PageClock.advance_zero",
+    "TransposeFollowup.PageClock.advance_add",
+    "TransposeFollowup.PageClock.blank_move",
+    "TransposeFollowup.PageClock.action_bank",
+    "TransposeFollowup.PageClock.tick_positions",
+    "TransposeFollowup.PageClock.read_data",
+    "TransposeFollowup.PageClock.tick_step",
+    "TransposeFollowup.PageClock.two_trace",
+    "TransposeFollowup.PageClock.stop_trace",
+    "TransposeFollowup.PageClock.prefix_trace",
+    "TransposeFollowup.PageClock.complete_trace",
+    "TransposeFollowup.PageClock.prefix_run",
+    "TransposeFollowup.PageClock.forward_positions",
+    "TransposeFollowup.ReusablePageClock.scan_code",
+    "TransposeFollowup.ReusablePageClock.rewind_code",
+    "TransposeFollowup.ReusablePageClock.embed_scan",
+    "TransposeFollowup.ReusablePageClock.embed_rewind",
+    "TransposeFollowup.ReusablePageClock.clock_positions",
+    "TransposeFollowup.ReusablePageClock.rewind_positions",
+    "TransposeFollowup.ReusablePageClock.scan_call",
+    "TransposeFollowup.ReusablePageClock.transfer_trace",
+    "TransposeFollowup.ReusablePageClock.rewind_call",
+    "TransposeFollowup.ReusablePageClock.complete_trace",
+    "TransposeFollowup.ReusablePageClock.native_complete",
+    "TransposeFollowup.ReusablePageClock.native_call",
+    "TransposeFollowup.ReusablePageClock.fixed_resources",
+    "TransposeFollowup.ReusablePageClock.forward_positions",
+    "TransposeFollowup.ReusablePageClock.rewind_region_step",
+    "TransposeFollowup.ReusablePageClock.rewind_page_step",
+    "TransposeFollowup.ReusablePageClock.rewind_page_run",
+    "TransposeFollowup.ReusablePageClock.page_trajectory",
+    "TransposeFollowup.ReusablePageClock.native_page_trajectory",
+    "TransposeFollowup.ReusablePageClock.framed_page_trajectory",
+    "TransposeFollowup.ReusablePageClock.native_framed_page_trajectory",
+    "TransposeFollowup.SevenPhaseClock.word_length",
+    "TransposeFollowup.SevenPhaseClock.word_count",
+    "TransposeFollowup.SevenPhaseClock.take_count",
+    "TransposeFollowup.SevenPhaseClock.count_ramp",
+    "TransposeFollowup.SevenPhaseClock.native_record",
+    "TransposeFollowup.SevenPhaseClock.record_trajectory",
+    "TransposeFollowup.SevenPhaseClock.native_record_trajectory",
+    "TransposeFollowup.SevenPhaseClock.row_calls_linear",
+    "FixedTapeCompiler.OperationalTrace.trace_run",
+    "FixedTapeCompiler.OperationalTrace.take_trace"
+  ],
+  "checks": {
+    "build": {
+      "session_id": 17097,
+      "exit_code": 0,
+      "jobs": 9402
+    },
+    "axioms": {
+      "session_id": 90278,
+      "exit_code": 0,
+      "declarations": 2233
+    },
+    "old_supplemental": {
+      "cleanup_session": 62722,
+      "reusable_session": 19934,
+      "status": "live/unverified;not counted as passes"
+    }
+  },
+  "updated_at": "2026-10-18T23:44:52.634342+00:00",
+  "formal_checkpoint": "R1736 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1736,425sources,2233declarations,86artifacts",
+  "proof_scope": "In progress. R1736 implements a physical Boolean clock driving all blank page tapes simultaneously. For a stored clock word xs of length L,ReusablePageClock executes exactly4*L+6 native transitions, preserves that word and restores its absolute head. All page tapes remain blank and their head displacements are direction(op_p)*countTrue(xs). For any fixed opcode vector on q pages,the program uses q+1tapes, 5symbols and11states,independently of L. Every scan read/action,transfer and rewind transition is charged. NativeClosedStreamExact proves the existing rewind takes exactly2*L+4 active transitions. At every native time s,the page displacement is direction(op_p)*countTrue(take(floor(s/2),xs)); the statement includes the rewind and frozen halted tail. It also holds at every prefix of an arbitrary native caller satisfying the actual code-embedding condition. SevenPhaseClock uses false^R true^(4R) false^(2R), takes exactly28*R+6 transitions and has page trajectory recordRun(R,op_p,z,floor(s/2)). For R=K*blockSize(G,n),2*n row-call costs are at most(56*K+12)*inputLength(n),n>=1,G>=1. Clock construction,opcode fetch and full row composition remain unproved. Eight modules/48theorems; full build9402jobs;2233audited declarations,standard axioms only. Three of six intended theorem families complete.",
+  "next": "Before extending the geometric proof to half-speed ramps,implement and verify a narrowly selected native read/action fusion for the physical clock. The original TM transition can inspect the current clock symbol and move all page heads in the same transition. Fuse only a clock read followed by its chosen action or jump;other compiled instructions must retain their existing step semantics. Use the proved exact two-step clock equations and existing rewind code to derive the fused actual run and pointwise trajectory. A candidate fused scan/reset should cost2*L+3 for Lclock cells and recover unit-speed recordRun during the forward scan;these are targets,not proved claims. Keep extra reset/fetch time in the inter-row gaps and prove the new start-spacing/layout interface before reusing CutIneq. Then pay opcode-stream rewind/finite-row decode and construction of R and its clock word. Resolve graph grid N versus2*floor(n/4) explicitly when composing with the canonical padding family; do not identify them. Full row loop,input reset,payload and cleanup,unconditional expansion,motion and recursion remain. Older supplemental62722/19934 are live/unverified;do not restart solely for elapsed time. All six families required;three complete;original unchanged;no commits/pushes;referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeClosedStreamExact.lean": "b5784d872b84add7ceb8c860359e3f04d490ccdeb0d40c9b9151673b1a16cfda",
+    "lean/TransposeFollowup/PageClockMachine.lean": "3aab2cffd39646d0024d6e4e96c714d4a8762208e0785d9440138d942a77e8f4",
+    "lean/TransposeFollowup/PageClockTrace.lean": "91bc5c0a7619b622d86d0932af4d57c5615731707a7914759cdb3510e2d6424d",
+    "lean/TransposeFollowup/ReusablePageClockMachine.lean": "be59e5007fe11cc3a9868dec4c53e8a11e9020c199cebac0b7494e615ff35c24",
+    "lean/TransposeFollowup/ReusablePageClockRun.lean": "d85a87087c55c45f500f0c6c4cc1d7c243fba83a81c35212d1e05552e83e2b3b",
+    "lean/TransposeFollowup/ReusablePageClockTrajectory.lean": "89c20dc4157f3bfa45a367dec7b49368039468cfaa1a4190784301cd2b4e67d2",
+    "lean/TransposeFollowup/SevenPhaseClock.lean": "b10e0a10a35f076ac912999dd5fe2502fe465f68982f0d17f89c93c03216505f",
+    "lean/TransposeFollowup/TracePrefix.lean": "baafc1ce0455dce4ef1a4bdc479bdd80353ab8cb730256f0b6712619af6fdaf0"
+  }
+}

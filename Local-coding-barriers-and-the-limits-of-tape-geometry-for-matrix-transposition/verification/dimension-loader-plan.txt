@@ -1,0 +1,238 @@
+R1722 UPDATE — DIMENSION LOADER COMPLETE FROM RAW INPUT
+DimensionLoaderMachine/Data/InitCalls/FinishCalls/Run andRawDimensionLoader
+close the initialization,search,trim,cleanup andraw-input composition target.
+The14-tape short-length controller costs<=8100L;the15-tape raw-input machine
+costs<=8300L and starts atTranspose.init. Final payload and short dimension
+are the only nonblank tapes.21executionspass. No new main complexity claim.
+
+NEXT: RAW INPUT TO ONE MAP'S RECORD STREAM
+Compose with R1717 SeededEnumeration,sharing freed work tapes and framing
+payload. The dimension word has lengthN.size<=size(N+1),matching the existing
+short-source budget. A42-tape layout is plausible (41enumerator+payload),
+but its precise wiring and resource count must be proved. Pay the linking
+transfer and preserve the exact record stream,source word and output head.
+Then address common map-family record width/tags and full generator.
+
+The rest of this plan is historical and not a statement of remaining
+loader obligations. Complete native dimension recovery has now been proved.
+
+----- R1721 PLAN (historical where superseded) -----
+R1721 UPDATE — PREPARED SEARCH LOOP PROVED
+DimensionSearchMachine/Calls/Evaluation/Loop implement and prove the native
+12-tape864-state search. Budget <=7260L, with all heads restored, product
+and fuel temporaries erased. Native halt and arbitrary framed call checked.
+Seven complete executions pass. See the R1721 progress section for exact
+budgets and the distinction between proof induction and runtime control.
+
+NEXT CONTROLLER STAGED — COMPLETE TRACE STILL OPEN
+/private/tmp/DimensionLoaderMachine.lean passes staging checks.14tapes,
+5symbols,1327states. The source and its hash are preserved in r1721-pending.
+No production theorem is claimed for its initialization/finalization yet.
+
+Sequence: ArithmeticSeed C4; four unit-word copies to candidate/square/bits/
+threshold; add unit to threshold; erase initial zeroB/product; unprepare
+extra scratch; DimensionSearch; NativeTrim oncandidate; batch-erase eight
+words (source,square,bits,threshold,unit,zero,fuel,length); unprepare scratch.
+All other ports start and end blank. The source starts as a canonical short
+length word. Frame the payload externally, then compose with CompactInputMeasure.
+
+Unproved budget target, ell=source.length,m=2ell+4:
+initialization <=46ell+46m+270 (including eight transfers);
+finalization <=4ell+28m+59 (including batch-erase internal transfers).
+Together with search: <=7260L+50ell+74m+329. Check each term against the
+actual trace before claiming it. Since ell=sizeL<=L for valid L>=1, an
+absolute linear bound follows. Do not assume any initialization is free.
+
+----- R1720 PLAN (historical where superseded) -----
+R1720 UPDATE — ABSTRACT SEARCH AND ACTUAL NATIVE ADVANCE PROVED
+DimensionCandidateData/Search now prove the original-convention recurrence,
+strictly increasing inputLength,unique equality,stopping atN from1,and
+all search-word fits. The control transition takes measuredL only;N occurs
+in the proof,not as runtimefuel. Common widthm=2*sizeL+4 obeys
+N*entryBits(N)*m<=12L using imported original-paper bounds.
+DimensionAdvance is an actual9-tape655-state body,in<=123m+339 transitions.
+It advances candidate/square/bits/threshold exactly,restoresallheads,
+recyclesone-bitfuel/scratch andclearsthresholdcopy.10executionspass.
+
+NEXT: NATIVE PRODUCT/STOP LOOP (DESIGN,NOT COMPILED OR PROVED)
+Use12prepared tapes:the9advance ports plus product,repeatFuel,targetLength.
+At eachcandidate,copyzero intoblankproduct andbits intoblankrepeatFuel.
+RepeatedAdd computes square*value(bits),preserving square,scratch andzero.
+Its exact final fuel is List.replicate m true,notzeros;erase that word.
+Compareproduct withtargetLength,eraseproduct andfuel in both valid branches.
+Less callsDimensionAdvance then loops;equalreturns;greatercanreject.
+No suppliedN,bounded outer loop counter or arithmetic oracle is allowed.
+Prospective evaluation budget,b=value(bits):
+2copies(12m+28)+repeatedadd(b*(18m+31)+8*(b+1)+4m)
++compare(5m+6)+2erasures(8m+8)+6transfers
+=b*(18m+39)+29m+56.
+A less iteration addsadvance123m+339 andone transfer:
+b*(18m+39)+152m+396. These are DESIGN budgets until combinednative traces.
+Use the already proved arithmetic invariant/search budget to sumcosts.
+
+PAID INITIALIZATION AND FINALIZATION AFTER THE LOOP
+ArithmeticSeed withconstant4 maps the canonical length source to common
+width2*sizeL+4. Bind number=targetLength,zeroA=zero,one=unit,left=scratch,
+fuel=theone-bitfuel,zeroB=product. PaytoeraseinitialzeroB beforeusing the
+blank-product loop contract,andunpreparetheunusedrights scratchmarker.
+Copyunit into candidate,square,bits,andthreshold;addunit tothreshold.
+Retain payload. This proposes15total tapes includingthe shortlengthsource,
+payload andtheextrascratch;exactfullwiring/countmuststillbeproved.
+At equality,physically trimcandidate toNat.sizeN andclear allother words/
+markers that the downstream contract doesnot allow. Thencomposewith the
+original-input CompactInputMeasure controller. No initial state is free.
+
+The raw length controller and per-map row enumerator are already complete
+components. Common recordwidth/tags,symmetrization,dedup/color,clock/fetch/
+payload,unconditionalBYexistence,motion200/210andrecursion206/208remain.
+
+----- R1719 PLAN (historical where superseded) -----
+R1719 UPDATE — COMPLETE CANONICAL LENGTH LOADER
+CompactInputMeasure.native_complete now starts at Transpose.init,with every
+work tape blank.3tapes,5symbols,115states,cost<=41L+65. It returns the exact
+marked original payload,blank tally,and a marked canonical length word of
+valueL and lengthNat.sizeL. All3work heads restore,input head ends atL,and
+external output remains empty. General framed calls preserve old output.
+130measurement,1536trim and184combined executions pass. The universal
+proofs and axiom audit pass. Input length is now available by a paid native computation.
+
+NEXT DESIGN: ORIGINAL-CONVENTION DIMENSION RECOVERY
+Do not use archived RawShape:its width convention is different. For valid
+L=inputLength(N)=N*N*entryBits(N),N>=1,the target is a markedN-word of
+length<=size(N+1),with retained payload and paid scratch cleanup.
+A candidate recurrence can avoid rescanning words to derive entryBits:
+start k=1,square=1,b=1,threshold=2. The intended invariant is
+square=k*k,b=entryBits(k),threshold=2^b. To advance,add2k+1 to square,
+increment k,and when the new k exceeds threshold,increment b and double
+threshold. Use the existing repeated-adder to compute square*b and compare
+withL. Stop at equality;there must be no suppliedN-sized loop counter.
+Prove strict increase of inputLength,termination atN,and all word fits.
+The recurrence was independently checked inPython for k=1..10000 against
+max(1,bit_length(k-1));this is a design check,not a native or Lean proof.
+A preliminary6-lemma arithmetic file at
+/private/tmp/DimensionCandidateData.lean passed standalone Lean90222
+with no warnings/errors after building the original CEHint lemma through
+the read-only adapter. It proves entry-width monotonicity and the exact
+threshold update,strict increase of inputLength,sizeL<=3*entryBits(N)+1,
+m=2*sizeL+4<=12*entryBits(N),and N*entryBits(N)*m<=12*inputLength(N).
+Its full source is saved in r1719-pending.json for the next integration.
+It is NOT part of this production source/axiom receipt yet;publish and
+audit it next,then prove the full search recurrence and native controller.
+
+With common widthm=2*sizeL+4,the prospective per-candidate cost isO(b*m),
+using b as actual physical repeat fuel. For k<=N,b<=entryBits(N),so the
+sum isO(N*entryBits(N)*sizeL). The original paper already proves
+inputLength(N)+1<=2^(3*entryBits(N)+1) and entryBits(N)<=N;these give an
+O(L) allowance after paying setup,each fuel copy/erase,all jumps and final
+trim/cleanup. These are DESIGN estimates,not new proved native bounds.
+Reuse those original lemmas through the adapter;do not duplicate them.
+The older O(N^2*sizeL) candidate search below also fits and remains a
+fallback if the threshold invariant makes the native controller harder.
+
+After dimension recovery,call SeededEnumeration from the resulting short
+word. Common map records,symmetrization,dedup/color,clock/fetch/payload,
+unconditional BY existence,motion200/210 and recursion206/208 remain.
+
+----- R1718 PLAN (historical where superseded) -----
+R1718 UPDATE — VERIFIED PIECES AND REUSE AUDIT
+NativeIO now compiles actual read-only input reads/moves and output writes,
+with each instruction costing one original TM step. Existing work traces
+lift without changing their programs. NativeIOZipper refines this compiler.
+RawInputCopy.native_complete starts at Transpose.init: one work tape,
+five symbols,21states,cost<=5L+10. It produces an exact marked payload,
+restores its work head,ends the input head atL,and preserves output.
+384 original-program executions pass over all words up to length6 at three
+head origins,plus lengths32/128/512. Full all-input proofs also pass.
+
+MeasuredWord checks the existing archive identity: m ones decremented m
+times then complemented represent m. Its result has widthm;no short-word
+claim is made before a paid trim. MeasuredScan is a native two-tape,
+five-symbol,22-state source scan plus physical decrement and source rewind.
+Both heads restore and the source survives. For L source bits,m counter
+bits and counter value>=L,cost<=12L+4m+6. With L ones,cost<=16L+6.
+A full length controller still has to compose these pieces.
+
+The archived RawLength approach is reusable. RawShape/ShapeSelect use a
+DIFFERENT dimension convention: CandidateWidth.width(N)=max(1,clog2 N),
+dimension(N)=floor(sqrt(N/width(N))),payload(N)=width(N)*dimension(N)^2.
+Their promised-input theorem is not the original Transpose.inputLength(n)
+contract n*n*entryBits(n). Do not silently substitute it. Relevant sources:
+/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/fixed-tape-compiler/lean/FixedTapeCompiler/RawLengthExecution.lean
+/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/fixed-tape-compiler/lean/FixedTapeCompiler/CandidateWidthMath.lean
+/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/fixed-tape-compiler/lean/FixedTapeCompiler/RawShapeExecution.lean
+
+NEXT PAID COMPOSITION
+Reuse RawInputCopy (5L+10), NativeMappedCopy to make L ones (6L+14),
+MeasuredScan (16L+6), NativeMappedCopy complement into a third tape
+(6L+14), and NativeErase to clear the tally (4L+4). Five caller jumps give
+37L+53 before trimming: this is a DESIGN BUDGET, not a proved combined
+controller yet. It would preserve the loaded payload and return a marked
+L-bit word of valueL,with tally blank and input head atL. Add a paid
+high-zero trim to obtain a short binary length word. General IO port/label
+embedding is the next interface needed to reuse the one-tape loader in
+that three-tape caller. Then implement dimension recovery for the original
+entryBits convention,not the archive convention.
+
+The prior extensible-counter proposal below is superseded by this reuse
+of the already native,amortized decrementer. The later candidate-search
+proposal remains a design only. All full-generator and other-family
+obligations remain unchanged.
+
+----- ORIGINAL R1717 PLAN (historical where superseded) -----
+NEXT CONSTRUCTION BOUNDARY: RECOVER DIMENSION FROM RAW INPUT
+Prepared after R1717. Design only; none of the new loader claims below are
+formalized yet. Existing SeededEnumeration covers the subsequent per-map
+computation, including seed setup, all rows, exact records and cleanup.
+
+INPUT CONTRACT
+The original Transpose.encode has no size header. For valid inputs its
+length is L(N)=N*N*entryBits(N), N>=1. The loader must produce a marked
+little-endian word of value N and length <= size(N+1), from the original
+blank initial workspace. It must retain input contents and account for
+input-head movement, every marker and all temporary tapes. A promise that
+the length is L(N) is legitimate for the final valid-input theorem; supplying
+N or a binary length word as extra data is not.
+
+PROPOSED ALGORITHM
+1. Scan the read-only input once. Maintain an extensible binary length
+   counter, paying physical carry scans and rewinds. Prove an amortized
+   O(L+1) bound: a fixed-width full scan for each input bit would instead
+   introduce a log L factor and is not adequate for this first phase.
+2. Starting with candidate k=1, compute k*k*entryBits(k) and compare with
+   the stored input length. Reuse paid addition/scaling primitives. Obtain
+   entryBits(k) from the significant bit count of k-1, with the k=1 case
+   handled exactly as the original definition.
+3. Increment k until equality; a greater-than result can reject invalid
+   lengths. Prove strict increase of L(k) for k>=1 and termination at N
+   on valid inputs. The algorithm must not contain a supplied loop bound N.
+4. Trim high zeroes of the candidate word by a paid scan/copy; restore the
+   promised marked representation and short-word length. A padded counter
+   is not automatically short enough for the current native cost theorem.
+5. Clear temporary arithmetic words and restore required heads before
+   calling SeededEnumeration.native_call.
+
+WHY THE SEARCH MAY FIT THE BUDGET
+Using k paid additions for k*k costs O(k log L) on O(log L)-bit words;
+summing k=1..N gives O(N^2 log L). Computing the extra entryBits(k) factor
+by O(log k) additions contributes O(N log^2 L). On valid inputs
+log L=O(entryBits(N)), so these terms are O(L). This is a prospective cost
+argument, not a completed native trace or proved formal bound. Every
+scratch reset and factor-width fit still needs checking. The N=1 case
+requires an explicit constant bound.
+
+REUSE / STOP RULE
+First inspect existing Counter/NativeCounter and the native compiler before
+adding code. The current arithmetic programs preserve the external input
+head; raw input reading needs an actual finite transition table/interface.
+Do not replace the length scan by a word-RAM primitive, free input-length
+oracle, supplied dimension header or uncharged width computation. Do not
+rebuild the already proved per-map record generator.
+
+AFTER LOADING
+Map-specific C gives map-specific record widths. Fixed multi-map assembly
+must choose and physically implement a common width/tag convention, or
+prove and pay for explicit parsing. Inverse symmetrization, graph records,
+dedup/color normalization, clocks/fetch/payload and full generator remain.
+Unconditional expanding-family existence, affine motion and contracting
+recursion are independent remaining theorem obligations. All six intended
+families remain in scope. Referee agents wait until all are formalized.

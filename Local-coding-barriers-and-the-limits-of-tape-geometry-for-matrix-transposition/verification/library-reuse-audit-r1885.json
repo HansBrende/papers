@@ -1,0 +1,70 @@
+{
+  "status": "PROGRESS at R1885: paid left rotation by any public offset0<=R<=P is now proved on the actual raw work bank, with modular output x[(j+R)%P], exact time14P-2R+6 (<=20P for P>0), both heads restored, full scratch clearing, IO preservation and outside-bank preservation. Every intermediate head position is proved. Arbitrary-start affine comparison has fixed cover81^3*9 and error<=14, uniform in bank size and rotation offset. All individual operations of source206 binary palette(c) are implemented; mixed-word compiler/geometry assembly is not yet proved. Five of six original families formalized; regular recursion206/208 best estimate79% complete (low confidence). Exact row/integer/F3 palettes and final exclusion remain.",
+  "boundary": "All individual binary palette(c) operations (forward/backward masked strides, raw reversal and rotation) now have paid two-tape implementations, exact semantics, head/reset/scratch/IO interfaces, microscopic paths and arbitrary-start affine estimates. Their mixed-word compiler and finite-family approximation/high-entropy contradiction remain. Forward-only words already have native IO/time/resource/path proofs, which must be generalized/reused without weakening their old statements. Exact row/integer/F3 palettes(a,b) remain. Source208/global exceptional-work210.5 and R1881 single-stride exclusion are complete. Five of six families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transpose result or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate79% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 includes native recursion/global exceptional-work, single-stride exclusion, forward-word native semantics/resources/paths, all individual binary palette operations and their paid exact/affine geometry. Mixed-word integration, exact row/integer/F3 palettes and final bounded-word exclusion remain; final independent referees pending.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "searches": [
+    {
+      "scope": "Current authoritative checkpoint",
+      "finding": "R1884 source receipt checked; all baseline sources unchanged before audit driver edits; previous turn classified PROGRESS."
+    },
+    {
+      "scope": "Mathlib List/Rotate",
+      "finding": "getElem_rotate and reverse_rotate already express list rotation. Native paid rotation built from verified bank reversal, using Nat modular arithmetic for its index map."
+    },
+    {
+      "scope": "Local scheduled seek/movement",
+      "finding": "Existing no-write action and rewind proofs reused. Added only the rightward public-length counterpart needed by rotation."
+    },
+    {
+      "scope": "Actual reversal semantics and geometry",
+      "finding": "Three existing paid reversals and outside-bank preservation provide rotation; no new copy engine."
+    },
+    {
+      "scope": "PhysicalAffineApproximationObstruction",
+      "finding": "Its interface needs bounded covers and vanishing error, not a separate convergence proof for approximants; use that to avoid unnecessary future subsequence chains."
+    },
+    {
+      "scope": "Mathlib/core list-fold reuse for next compiler",
+      "finding": "Inspected relational fold simulation and membership-aware invariant induction; potential way to reuse the general composition chain rather than duplicate list proofs."
+    }
+  ],
+  "reused_mathlib": [
+    "Nat.mod_eq_sub_mod",
+    "Nat.mod_eq_of_lt",
+    "Nat.mod_lt"
+  ],
+  "inspected_mathlib": [
+    "List.getElem_rotate",
+    "List.getElem?_rotate",
+    "List.reverse_rotate",
+    "List.rotate_reverse",
+    "List.rel_foldl",
+    "List.foldl_hom",
+    "List.foldlRecOn"
+  ],
+  "reused_local": [
+    "ScheduledTapeAction.step_position",
+    "ScheduledTapeAction.step_cells",
+    "ScheduledTapeAction.step_io",
+    "ScheduledTapeAction.rewind_position",
+    "ScheduledTapeAction.rewind_cells",
+    "ScheduledTapeAction.rewind_io",
+    "BankReversal.result_spec",
+    "BankReversal.result_bank_outside",
+    "BankReversal.schedule_exact",
+    "BankReversal.schedule_position",
+    "BankReversal.path_frozen",
+    "BankReversal.approximation_cover",
+    "BankReversal.approximation_error",
+    "ScheduledNativeIO.append_exact",
+    "ScheduledNativeIO.append_active",
+    "ScheduledNativeIO.append_position",
+    "clippedRamp_cover",
+    "clippedRamp_sample_error",
+    "HasAffineIntervalCover.add",
+    "HasAffineIntervalCover.sub"
+  ],
+  "dependency_simplification": "DRIFT / REUSE\nChecked the current R1884 receipt and source hashes; previous goal turn\nwas PROGRESS. Reused BankReversal.result_spec/result_bank_outside, schedule\nrefinement, exact paths and affine comparison for all three rotation\nreversals. No additional copying engine was written. The only new seek\ninterface is a short rightward counterpart of rewind, built directly on\nScheduledTapeAction.step_position/cells/io.\nSearched mathlib List/Rotate and local movement/advance interfaces.\nList.getElem_rotate/getElem?_rotate already describe modular rotation;\nreverse_rotate/rotate_reverse describe list identities. Those are not\nnative paid two-tape executions. The raw-bank semantic proof uses the\nexisting native reversal and Nat.mod_eq_sub_mod/Nat.mod_eq_of_lt, without\nrebuilding list permutation theory. A small value_congr lemma uses\nNat.mod_lt for the later shared-bank composition.\nAll exact composite paths use append_position and the existing reversal\nfreezing result. All covers/errors reuse BankReversal.approximation_cover/\nerror, clippedRamp_cover/sample_error and cover add/sub. No new compactness\nor original block/native normalization proof was introduced.\nReviewed no_subsequential_physical_affine_fast_approximation: it needs\nbounded-cover approximants with uniform vanishing error, not a separate\nlimit theorem for those approximants. This can simplify the next mixed-\nword proof: variable primitive types can use their own formulas with a\ncommon maximum cover/error bound. No rotation-offset convergence is needed;\nonly the finitely many stride/P ratios need the existing two-case analysis.\nThis assembly observation is a plan, not a newly formalized theorem.\nStop expanding individual binary primitives now. Reuse/generalize the\nexisting shared-bank word and raw IO compiler instead of copying it.\nPreserve the forward-only eleven-P bound and all old native statements.\nThe full row/integer/F3 palettes remain explicit requirements.\nAlso inspected List.rel_foldl (Mathlib/Data/List/Forall2), and core\nList.foldl_hom/foldlRecOn. They supply relational fold simulation and\nmembership-aware invariant induction. Prefer these for the upcoming\ncommon bank-word proof if the existing recursive definitions can be\nidentified with foldl cleanly. These are reuse candidates, not yet imported\ninto a new mixed compiler at this checkpoint.\n",
+  "novelty": "No novelty claim. Required paid rotation is proved; mixed-word assembly and full source206 remain."
+}

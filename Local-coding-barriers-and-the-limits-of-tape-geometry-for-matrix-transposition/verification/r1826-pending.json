@@ -1,0 +1,98 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1825",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "SL2CentralizerTrace",
+    "SL2TraceProductTransfer",
+    "CentralizerMixedSumCover"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.scalarAffine_mul",
+    "TransposeFollowup.SL2Projection.scalarAffine_adjugate",
+    "TransposeFollowup.SL2Projection.scalarAffine_discriminant",
+    "TransposeFollowup.SL2Projection.scalarAffine_coefficient_square_identity",
+    "TransposeFollowup.SL2Projection.scalarAffine_trace_separation",
+    "TransposeFollowup.SL2Projection.sl2_scalarAffine_inv",
+    "TransposeFollowup.SL2Projection.sl2_scalarAffine_product_coordinates",
+    "TransposeFollowup.SL2Projection.sl2_scalarAffine_trace_separation",
+    "TransposeFollowup.SL2Projection.alternating_trace_error",
+    "TransposeFollowup.SL2Projection.centralizer_trace_approximation",
+    "TransposeFollowup.SL2Projection.exists_trace_word_of_centralizer_approximation",
+    "TransposeFollowup.SL2Projection.centralizer_mixed_sum_coveringNumber"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 25930,
+      "exit_code": 1,
+      "log": "/private/tmp/r1826-dev1.log",
+      "reason": "Incorrect doubled lean/ path caused no source file; terminal build failed, then file created correctly."
+    },
+    "development_2": {
+      "session_id": 56557,
+      "exit_code": 0,
+      "log": "/private/tmp/r1826-dev2.log",
+      "reason": "Five polynomial identities compiled."
+    },
+    "development_3": {
+      "session_id": 46671,
+      "exit_code": 0,
+      "log": "/private/tmp/r1826-dev3.log",
+      "reason": "Three determinant-one corollaries compiled."
+    },
+    "development_4": {
+      "session_id": 44913,
+      "exit_code": 1,
+      "log": "/private/tmp/r1826-dev4.log",
+      "reason": "Needed explicit complexify_trace lemma; trace is not definitionally compatible with the real-to-complex map."
+    },
+    "development_5": {
+      "session_id": 59892,
+      "exit_code": 1,
+      "log": "/private/tmp/r1826-dev5.log",
+      "reason": "Trace error passed; needed explicit natural-number word-length equality."
+    },
+    "development_6": {
+      "session_id": 68597,
+      "exit_code": 0,
+      "log": "/private/tmp/r1826-dev6.log",
+      "reason": "Error estimate and actual word membership compiled."
+    },
+    "development_7": {
+      "session_id": 78843,
+      "exit_code": 0,
+      "log": "/private/tmp/r1826-dev7.log",
+      "reason": "Native mixed-sum covering bound compiled."
+    },
+    "build": {
+      "session_id": 15491,
+      "exit_code": 0,
+      "jobs": 10062,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 36939,
+      "exit_code": 0,
+      "declarations": 4481,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "target": "Exact real centralizer trace algebra, explicit approximation cost and native scalar mixed-sum covering bound from actual matrix words.",
+  "completed_families": "3/6; final referees pending",
+  "estimate": "Current exact centralizer algebra and actual-product transfer proof100% verified. Three original families complete; paid-padding effort and ETA not calibrated.",
+  "constraints": "No protected edits, commits, pushes, raised proof limits, placeholders or unsolicited subagents.",
+  "terminal_handles": "All R1826 handles terminal. Development1(25930),4(44913),5(59892) failed;2(56557),3(46671),6(68597),7(78843) passed. Full build15491 and audit36939 passed;10062 jobs,4481 declarations. No live Lake process.",
+  "updated_at": "2026-10-20T04:30:43.184963+00:00",
+  "formal_checkpoint": "R1826 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:881 local sources,204 external sources,4481 declarations,8 configurations,95 artifacts",
+  "proof_scope": "In progress. R1826 proves exact real centralizer multiplication, adjugate, discriminant and scalar-square identities, then an alternating-product trace separation formula whose coefficient is the existing four-column spanning determinant. It transfers that formula to actual approximate matrix words, with explicit error and word length, and bounds the resulting mixed scalar sum by the native covering number of the actual matrix power. Three modules add 12 theorems and no definitions. The identities require no diagonalization or eigenvalue gap and include unipotent centralizers. This completes the local algebra-and-transfer proof, not scalar amplification or a fourth original theorem family.",
+  "next": "The preceding goal turn is PROGRESS. R1826 is recorded; never replay its checkpoint. Read verification/r1826-centralizer-algebra.txt before new proof work. The exact centralizer algebra and native covering transfer are complete in SL2CentralizerTrace, SL2TraceProductTransfer and CentralizerMixedSumCover; do not reprove them. Full10062-job build and4481-declaration audit passed, standard axioms only. No live Lake handle.\n\nNEXT CONCRETE TARGET: establish quantitative cubic packing for an actual commuting family under alternating products V g V h V, with g,h selected from bounded words of the same A. Audit the precise invertibility determinant and exceptional middle parameters. Use the existing real scalarAffine coordinates and frame/entry estimates. A promising route is a quantitatively spanning triple of conjugated traceless centralizer directions, followed by localization of V and an explicit inverse/Taylor estimate. This is a proposed route, not an already-proved frame or inverse-function theorem. Prove any retained-fraction/localization cost; do not silently discard a parameter neighborhood. A qualitative inverse-function neighborhood is not automatically a uniform power-of-eta radius.\n\nWhy this target: the new mixed-sum cover is relative to the ambient matrix power, while scalar amplification needs control relative to the scalar/commuting sample. Cubic packing can bridge the cube-root scale and support the separate concentrated-cluster branch. Do not resume trying to infer the commuting set's normalized concentration from a bound relative to the much larger A. R1825 already proves a normalized sample of A itself; that lemma is complete.\n\nR1826 exact algebra: for u=sI+t a, v=pI+q a in SL2(R), D=det(a g-g a),\n  tr(v u^-1 g v u g)=tr(v g v g)+D*t^2.\nIf u',v' approximate u,v entrywise within delta and all five matrices have entries<=R, the trace error is<=12(2R)^6 delta. If u',v' are in A^m and g in A^n, the actual word is in A^(4m+2n). For all independent indexed pairs, the scalar mixed-sum covering number is<=[24(2R)^6 delta/eta+5]N_eta(A^(4m+2n)). Insert the actual commuting error12800 B0^6 eta/r0; do not make it free.\n\nThe product-coefficient identity is t_plus^2+t_minus^2=2(t^2+q^2)+Delta*t^2*q^2, Delta=tr(a)^2-4det(a). It suggests additive-Ruzsa/product closure for non-small Delta, but does not handle division at Delta=0. Keep that branch explicit. The spanning determinant D is different from Delta and must be certified for the SAME extracted generator a; the older p,q frame does not automatically do this.\n\nThe scalar analytic endpoint is already imported: ScalarProjectionReuse.exists_scalar_projection_growth_at_quarter_scale, from openai/math commit1581d4cbdd69a0faf34b2089614fe2a814316a6a through the unchanged204-source adapter. Audit existing source interfaces before any new long generic analytic chain. Read verification/library-reuse-audit-r1826.json for the latest reuse check.\n\nStill finish the R1822/R1823 fixed-family composition and all parameter budgeting before k/family selection, adapting the fixed-power envelope to the actual word length. Keep all six original families required. Motion200/210, recursion206/208 and final referee/cleanup remain. Goal ACTIVE; no protected edits, commits, pushes or unsolicited subagents.",
+  "checkpoint_reporting": "The current exact centralizer-algebra and actual-product transfer proof is 100% verified by the completed full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees are pending. Fifty percent describes only the family count, not effort or time. Paid padding remains incomplete and its remaining workload is not calibrated. Motion 200/210 and recursion 206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SL2CentralizerTrace.lean": "1eb276abc5466669380ff25c08588a21cd51565999f69b34a8367cae63f07703",
+    "lean/TransposeFollowup/SL2TraceProductTransfer.lean": "2bce88bcf33d1ca3e05ee25eca7095d3e886b9bd5a380fbc4c0e68f7fac81cc2",
+    "lean/TransposeFollowup/CentralizerMixedSumCover.lean": "0e199be792a986599014b1b14da0beb7b5d4e7d044ee1b0ad7d8a341013a4822"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "checkpoint": "R1766",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "GridCancellation",
+    "GridFourierCancellation",
+    "UnitSupportedL1",
+    "NormalizedGridFourier",
+    "ContractionCorrelation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.gridCells_univ_ae_unit",
+    "TransposeFollowup.integral_unit_eq_sum_gridCells",
+    "TransposeFollowup.integral_eq_sum_gridCells",
+    "TransposeFollowup.gridCell_pairing_sub_const",
+    "TransposeFollowup.norm_pairing_le_cell_oscillation",
+    "TransposeFollowup.norm_pairing_le_lipschitz_grid",
+    "TransposeFollowup.norm_exp_imaginary_sub_le",
+    "TransposeFollowup.fourierPhase_norm",
+    "TransposeFollowup.fourierPhase_continuous",
+    "TransposeFollowup.fourierPhase_difference",
+    "TransposeFollowup.integrable_mul_fourierPhase",
+    "TransposeFollowup.fourier_eq_pairing",
+    "TransposeFollowup.norm_fourier_le_grid",
+    "TransposeFollowup.classical_fourier_continuous",
+    "TransposeFollowup.integral_low_fourier_sq_le_grid",
+    "TransposeFollowup.integrable_of_unit_supported_L2",
+    "TransposeFollowup.integral_norm_sq_le_of_unit_supported_L2",
+    "TransposeFollowup.integral_norm_le_one_of_unit_normalized",
+    "TransposeFollowup.norm_fourier_le_unit_normalized_grid",
+    "TransposeFollowup.integral_low_fourier_sq_le_unit_normalized_grid",
+    "TransposeFollowup.integral_low_fourier_sq_le_real_grid",
+    "TransposeFollowup.RealMobius.normalized_realL2_low_fourier_sq",
+    "TransposeFollowup.RealMobius.normalized_realL2_low_fourier_small",
+    "TransposeFollowup.RealMobius.exists_grid_threshold_low_fourier_small",
+    "TransposeFollowup.abs_correlation_sub_le",
+    "TransposeFollowup.normalized_correlation_loss_le",
+    "TransposeFollowup.correlation_survives_small_change",
+    "TransposeFollowup.RealMobius.average_correlation_survives_small_change"
+  ],
+  "new_theorems": 28,
+  "checks": {
+    "targeted": {
+      "session_id": 94044,
+      "exit_code": 0,
+      "jobs": 9485
+    },
+    "build": {
+      "session_id": 39137,
+      "exit_code": 0,
+      "jobs": 9559
+    },
+    "axioms": {
+      "session_id": 37177,
+      "exit_code": 0,
+      "declarations": 3127
+    }
+  },
+  "boundary": "Three of six original families complete. Classical Fourier bounds and generic correlation stability are proved. The identification with L2 Fourier and actual frequency projection are still outstanding; restricted gap and generator existence are not proved. Motion, recursion and referees remain.",
+  "source_audit": {
+    "primary_source": "https://arxiv.org/html/1108.2555#S1",
+    "section3_reread": "R1765",
+    "scope": "Quantitative ingredients of Claim 3.2: exact zero-cell-mean cancellation and correlation stability. The classical Fourier integral uses exp(-2*pi*i*x*frequency). Mathlib L2 Fourier is defined separately by extension from Schwartz maps; its agreement on L1 intersection L2 is not assumed. No novelty claimed for these standard analytical steps."
+  },
+  "updated_at": "2026-10-19T12:47:45.566496+00:00",
+  "formal_checkpoint": "R1766 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1766, 582 sources, 3127 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1766 proves cancellation against tests with bounded cell oscillation, the explicit classical Fourier estimate |Ff(xi)| <= (2*pi*|xi|/K)*||f||_1, and the unit-support inequality ||f||_1^2 <= integral ||f||^2. For normalized real L2 representatives supported in [0,1] with zero closed-grid-cell means, the classical low-frequency squared integral on [-R,R] is at most 8*pi^2*R^3/K^2. A threshold uniform over these functions makes this at most 1/256. Separately, every real Hilbert-space linear contraction satisfies |<Tf,f>-<Tg,g>| <= ||f-g||*(||f||+||g||). If ||f||=1, ||f-g||<=1/16 and <Tf,f>>=1/2, then <Tg,g>>=95/256. This applies to the actual Mobius average. The identification of the classical integral with Mathlib's L2 Fourier transform and the actual high-frequency decomposition are still unproved here.",
+  "next": "Finish the missing L1-intersection-L2 Fourier bridge and the actual low/high-frequency decomposition before claiming source Claim 3.2. Reuse Mathlib.Analysis.Fourier.LpSpace: Lp.fourierTransform\u2097\u1d62 is the linear-isometric extension from Schwartz maps; SchwartzMap.toLp_fourier_eq and Lp.fourier_toTemperedDistribution_eq are available. A plausible route compares the classical Fourier integral and the L2 transform against compactly supported smooth tests using Fourier/Fubini, then invokes ae_eq_of_integral_contDiff_smul_eq for locally integrable functions. Inspect exact APIs and prove compatibility rather than assume it. Transfer R1766's classical interval energy <=1/256 to an actual low-frequency L2 component of norm <=1/16, construct the high-frequency component, and apply average_correlation_survives_small_change to obtain >=95/256>1/4. Keep the real-versus-complex action and representative issues explicit. Then continue band localization and the remaining quantitative spectral-gap dependencies. Preserve the full motion, recursion, generator-existence and final referee obligations.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees are pending. R1766 adds classical Fourier cancellation for exact normalized inputs and a contraction correlation-stability estimate. It does not complete a fourth family. Paid padding 201/202 remains conditional on actual spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage is a provisional scope estimate, not a time prediction or proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/GridCancellation.lean": "4061b667bcbf990e606676c3f992db67c966b6fe347ca74f4e73d8166eb4cf3b",
+    "lean/TransposeFollowup/GridFourierCancellation.lean": "32faf7235047d9d8e76ed0b4229c907b0aad756f19a9c1b99e4f6534bca76f22",
+    "lean/TransposeFollowup/UnitSupportedL1.lean": "a12ae003af5cf884cf76fc55dca23e53c8b182601acc867de55682af932fda2d",
+    "lean/TransposeFollowup/NormalizedGridFourier.lean": "1d335f0a1e52fb92d4230c5486e8545a344bd0fb3f9b67192271ec224fef681f",
+    "lean/TransposeFollowup/ContractionCorrelation.lean": "3e10dbc47dfff59e8fbd511c9f82db7e79bfd5f2fe06de8e9a5c94eb8cd2a433"
+  }
+}

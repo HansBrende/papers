@@ -1,0 +1,87 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "MobiusLocalizedProbability",
+    "ConvolutionTranslateMass",
+    "SmoothedIterateShortWalk",
+    "SmoothedIterateLocalizedMass",
+    "InitialWalkLocalizedMass"
+  ],
+  "modified_modules": [
+    "SmoothedIterateEndpoint"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.exists_near_identity_translate_mass",
+    "TransposeFollowup.mconv_apply_eq_lintegral_left_preimage",
+    "TransposeFollowup.exists_translate_mass_of_mconv",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_right_shortWalk",
+    "TransposeFollowup.RealMobius.exists_shortWalk_localized_mass",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_localized_mass",
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_split_last"
+  ],
+  "declaration_counts": {
+    "theorem": 7
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 99984,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1807-dev1.log"
+    },
+    "development_2": {
+      "session_id": 53057,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1807-dev2.log"
+    },
+    "development_3": {
+      "session_id": 24778,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1807-dev3.log"
+    },
+    "development_4": {
+      "session_id": 68925,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1807-dev4.log"
+    },
+    "development_5": {
+      "session_id": 78335,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1807-dev5.log"
+    },
+    "build": {
+      "session_id": 1202,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9783,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 81262,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4263,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1807 reuses the existing finite-cover maximum, near-identity translate cover, actual convolution-power identity, and native probability convolution/lintegral operations. It proves actual mass localization and an exact shorter terminal-walk factor with a controlled prefix support, then composes both with the fixed free-family covering witness. No kernel/walk commutation or supremum attainment is assumed. The source product theorem (Bourgain\u2013Yehudayoff, arXiv1108.2555, Theorem4.4 and Section4.1, reread this turn) requires separated subsets at intermediate scales, as well as a separate escape condition; neither is claimed proved here.",
+  "cleanup": "Five new modules add six theorems; one exact factorization theorem is added in the existing follow-up SmoothedIterateEndpoint module and reused by its unchanged original public statement. No definitions. Reused the existing finite-cover pigeonhole result rather than re-proving it. Removed an unnecessary BorelSpace assumption and replaced a noisy conversion with an explicit coefficient identity. Used native ENNReal.pow_pos. No raised limits or disabled linters; original paper untouched.",
+  "updated_at": "2026-10-19T23:14:27.797491+00:00",
+  "formal_checkpoint": "R1807 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1807, 806 sources, 4263 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1807 transfers the actual autocorrelation iterate's probability concentration to the localized set A=U^2 intersect Ball(alpha). For every t<=ell, the same A has a translate with quantitative mass under the actual t-step walk followed by the original smoothing kernel. The translating element has an explicit entry bound. The proof factors the actual iterate into a supported probability prefix and the shorter terminal smoothed walk, without commuting factors. The fixed rational family theorem retains every previous size, tripling, geometric, and probability output and its order of choices. Multiscale separated subsets, escape, product growth, strict flattening, and unconditional paid padding remain. Supporting formalization, not a new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1807 completes probability localization and terminal short-walk extraction. Do not redo the localization, support, exact factorization, or covering-size wrappers. InitialWalkLocalizedMass.exists_initial_walk_localized_mass retains every output and all quantifier ordering from R1806 and adds concentration on the SAME A for every t<=ell, with w in Box(4R(R+1)Q). ConvolutionTranslateMass proves an exact integral formula and a factor2 mixture selection lemma. SmoothedIterateEndpoint.split_last is now reused by its unchanged old endpoint theorem. No kernel/walk commutation is allowed.\n\nNEXT CONCRETE TARGET: turn this actual short-walk mass into a sufficiently large separated finite subset INSIDE A across a range of scales. Reuse RationalWalkIsolation, RationalWalkNonconcentration, GeneratorWalkAtoms, RationalWordArithmetic, and native Metric.IsSeparated/packingNumber/externalCoveringNumber. The metric must be the ambient matrix Frobenius metric, not a pi/group metric. Prove the chosen short length t<=ell from the actual length assumptions, and prove every smoothing/translation distortion bound.\n\nUseful but UNVERIFIED arithmetic for the next turn: with h=eta^-s and the already proved basic coefficient bounds, (16384*K0*L^2*K^4*M)*q^-2 should be <=h^1140 (or use the conservative exponent1200). This would give mass >=eta^(1140s). Existing CoveringPolynomialLoss internally proves K0<=h^5,L<=h^13,K<=h^274,M<=h^10; extract a reusable auxiliary lemma if needed rather than duplicate its huge expansion. From Q=32(R+1)^6<=h, R>=0 and4<=h, the translation bound should imply w in Box(h^4). These simplified powers are NOT yet checked and must not be counted as proved.\n\nUse rational denominator separation and the actual free-walk atom bound to limit the mass in a coarse ball after smoothing. Choose t at a given coarser scale rho, accounting for the rational denominator and the translation norm. First an explicit eta-power cutoff may be necessary: do not claim the smoothing error is negligible all the way down to rho near eta. If proving a smaller scale interval first, use packing monotonicity with a justified exponent margin to extend it. Native Mathlib Topology/MetricSpace/CoveringNumbers includes existence of finite extremizers when finite, coveringNumber<=packingNumber, and packingNumber at twice the radius<=externalCoveringNumber. Reuse them.\n\nBourgain\u2013Yehudayoff, https://arxiv.org/pdf/1108.2555, Theorem4.4 and Section4.1, was reread during R1807. Its distribution hypothesis requires separated subsets for delta<rho<delta^epsilon; its escape hypothesis is separate. The paper's localized quotient union differs from our A, so neither hypothesis transfers automatically. Escape, product growth itself, and strict flattening remain after distribution. The final conditional gap needs a FIXED iterate with an ae density cap D and D^2<=2^j. Preserve s before k, then N,J0 and generator selection; do not introduce circular choices. Keep all six families in scope. No referees, original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1807 proves concentration of every shorter actual smoothed walk on a controlled translate of the SAME localized set, retaining the covering profile and the order of choices. This is a supporting step in paid padding, not completion of that fourth family. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusLocalizedProbability.lean": "fb18e4d3f90481b3ace027b1f4aec8e2dde51f5f530cfae7fef4114070191e6e",
+    "lean/TransposeFollowup/ConvolutionTranslateMass.lean": "7d8b2e543d937968204370f99040183d7b32c13707a970873a083b5692ebac28",
+    "lean/TransposeFollowup/SmoothedIterateShortWalk.lean": "d33e5f85228c010e6aefd432e33f2d72520ed1ce995ea6494b5e9d62856fad80",
+    "lean/TransposeFollowup/SmoothedIterateLocalizedMass.lean": "2751169019a9891568fefb1bfbc1887b4ef54276de852d521bf441f54b14bc35",
+    "lean/TransposeFollowup/InitialWalkLocalizedMass.lean": "7f5167565174d858a25241db6c7b5059955c875523575cfe0df29952b3b6f57b",
+    "lean/TransposeFollowup/SmoothedIterateEndpoint.lean": "1d63ef4ae927600e770dc426bdc38f68ca088e2567ee6e706dc529db2155753e"
+  }
+}

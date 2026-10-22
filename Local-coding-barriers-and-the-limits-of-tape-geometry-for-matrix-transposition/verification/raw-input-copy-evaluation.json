@@ -1,0 +1,10 @@
+{
+  "purpose": "384 executions of the actual NativeIO program via the proved refining NativeIOZipper interpreter:all127words of lengths0..6 at origins-11,0,31,plus structured lengths32/128/512. Exact marked payload,halt,work-head reset,input-head end and old external output checked.",
+  "command": "lake env lean /private/tmp/raw_input_copy_examples.lean",
+  "exit_code": 0,
+  "source_sha256": "3796553f03cb900ad99c948ecd6171eb6b1aa94aa356c5aa7744625bdfca14e7",
+  "source": "import TransposeFollowup.RawInputCopy\nimport TransposeFollowup.NativeIOZipper\nopen TransposeFollowup FixedTapeCompiler CopyMachine\n\ndef allWords : Nat \u2192 List (List Bool)\n  | 0 => [[]]\n  | n+1 => (allWords n).flatMap (fun xs => [false::xs,true::xs])\n\ndef markedInputExact (word : Tape Bool) (xs : List Bool) : Bool :=\n  decide (word.left.headD .blank=.start) && word.left.tail.all (fun s => decide (s=.blank)) &&\n  decide (word.right.take (xs.length+1)=symbols xs++[.stop]) &&\n  (word.right.drop (xs.length+1)).all (fun s => decide (s=.blank))\n\ndef rawCopyCheck (xs : List Bool) (origin : Int) : Bool :=\n  let old : List Bool := [true,false,true]\n  let c : NativeIOZipper.Config (Fin 1) RawInputCopy.Label :=\n    \u27e8\u27e8\u27e8RawInputCopy.start,fun _ => \u27e8[],[]\u27e9\u27e9,fun _ => origin\u27e9,0,old\u27e9\n  let r := NativeIOZipper.run RawInputCopy.program xs (5*xs.length+10) c\n  decide (r.work.core.pc=.done) && decide (r.work.pos 0=origin) &&\n    decide (r.inputPos=(xs.length:Int)) && decide (r.outRev=old) && markedInputExact (r.work.core.tapes 0) xs\n\ndef rawCopyTests : List Bool :=\n  ((List.range 7).flatMap allWords).flatMap (fun xs => [-11,0,31].map (rawCopyCheck xs))++\n  [32,128,512].map (fun n => rawCopyCheck ((List.range n).map (fun i => decide (i%3=1))) 0)\n\n#eval (rawCopyTests.count true,rawCopyTests.count false)\n",
+  "observed_output": "(384, 0)\n",
+  "expected_output": "(384, 0)\n",
+  "status": "passed"
+}

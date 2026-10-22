@@ -1,0 +1,93 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1813 receipt revalidated;840 sources,5 configurations,86 artifacts.",
+  "new_modules": [
+    "FractionalDyadicIndex",
+    "EscapeExponentScales",
+    "HomFamilyComplexEscape",
+    "SmoothedIterateSmallEscape"
+  ],
+  "modified_modules": [
+    "SmoothedIterateWordDistribution",
+    "SmoothedIterateComplexEscape",
+    "InitialWalkDistribution"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.quarter_scale_le_of_index_ge",
+    "TransposeFollowup.exists_fractional_dyadic_index_threshold",
+    "TransposeFollowup.RationalFreePair.initial_escape_denominator_lower",
+    "TransposeFollowup.RationalFreePair.initial_escape_gap_of_short_index",
+    "TransposeFollowup.RationalFreePair.exists_escape_prefactor_threshold",
+    "TransposeFollowup.RationalFreePair.hom_family_complex_escape",
+    "TransposeFollowup.RationalFreePair.exists_iterate_small_exponent_escape",
+    "TransposeFollowup.RationalFreePair.exists_iterate_scaled_short_words",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_distribution_escape"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 2187,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1814-dev1.log"
+    },
+    "development_2": {
+      "session_id": 63265,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1814-dev2.log"
+    },
+    "development_3": {
+      "session_id": 84273,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1814-dev3.log"
+    },
+    "development_4": {
+      "session_id": 54618,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1814-dev4.log"
+    },
+    "development_5": {
+      "session_id": 27669,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1814-dev5.log"
+    },
+    "build": {
+      "session_id": 83204,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9821,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 32794,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4354,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Reuse of the verified two-scale absorption theorem and actual every-short-walk extraction. The task is shorter-scale selection and fixed-constant absorption for eta^epsilon escape, keeping the fine smoothing radius and fixed rational generator family.",
+  "preserved_statements": {
+    "SmoothedIterateWordDistribution": "exists_iterate_large_short_words",
+    "SmoothedIterateComplexEscape": "exists_iterate_complex_escape_threshold",
+    "InitialWalkDistribution": "exists_initial_walk_distribution"
+  },
+  "updated_at": "2026-10-20T01:08:15.206686+00:00",
+  "formal_checkpoint": "R1814 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1814, 844 sources, 4354 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1814 closes the requested small-exponent escape bound and its full fixed-family composition. A shorter terminal walk, at a coarse index v between theta*j and2theta*j, retains the original fine smoothing radius eta=(1/4)^j and the same localized A. The two-scale extraction produces enough rational short words to force a nontrivial bicommutator. Explicit denominator and constant absorption yield, for every invertible complex P, an h in the actual A^4 with off-diagonal-product magnitude at least eta^zeta, for any prescribed zeta>0. The full uniform family theorem derives all coefficient budgets, retains its covering, small-tripling, distribution and short-walk conclusions, and chooses s before k. No extra coefficient-budget assumption is added. Product growth, strict flattening, the unconditional restricted gap and paid padding remain. No fourth original family or new transposition bound is claimed.",
+  "next": "The preceding turn is PROGRESS. R1814 closes the requested small-exponent escape bound AND its full uniform family composition. Do not repeat fractional-index selection, two-scale word extraction, denominator/constant absorption or coefficient-budget composition. Primary interface: InitialWalkDistribution.exists_initial_walk_distribution_escape. It provides the same A with covering size, small tripling, intermediate-scale distribution, short-walk mass, and escape eta^zeta after every complex basis change. The s-before-k order and fixed generator family are preserved. Its remaining energy/nonflattening premises are explicit.\n\nNEXT CONCRETE TARGET: prove actual metric product growth for SL2 sets with these properties, then use it to contradict the small-tripling conclusion and prove strict flattening. First inventory reusable metric-covering and set-product lemmas, and write an exact product-growth interface with the current Frobenius norm, external covering number, radius conventions, and quantifier order. The source is Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Theorem4.4 and Section5. Theorem4.4 uses size bounds away from dimensions0 and3, separated subsets at intermediate scales, and complex-basis escape. Those inputs are now available. Do not assume the theorem as an axiom or describe the product-growth step as complete.\n\nFirst local certificate to investigate: quantitative spanning by the four matrices I,a,b,ab, followed by the large nearly commuting-set extraction. In a basis with a=diag(lambda,lambda^-1), the determinant magnitude of the four vectorized columns is |lambda-lambda^-1|^2*|b01*b10|. Prove the invariant coordinate identity and a quantitative trace-discriminant bound, rather than inferring an eigenvalue gap merely from distance to plus/minus I and a qualitative nonzero trace discriminant. Audit the quantitative hypotheses of source Claim5.9 before adopting it. Existing rational denominator/trace certificates may provide the needed quantitative choice in a bounded power of A; exact power bookkeeping must be proved. This is a candidate next proof step, not an established result.\n\nThe source proof additionally needs bounded-product entropy control, commuting-set extraction and a discretized sum-product/ring ingredient. These are substantial unformalized dependencies; inspect existing local/mathlib interfaces before expanding infrastructure. Preserve constants and the same A throughout; do not hide changed exponents or quantifier order under asymptotic notation. Once growth is proved, compose strict flattening, the fixed-iterate density cap with D^2<=2^j, the unconditional restricted gap, and paid padding. Motion200/210 and recursion206/208 remain in scope. No final referees, protected original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1814 proves escape at any requested positive eta exponent and incorporates it into the full uniform fixed-family theorem. Paid padding remains unfinished; motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FractionalDyadicIndex.lean": "2126f30e1e659972a893d59f869749c16361327f82e272768b87ef79330cb334",
+    "lean/TransposeFollowup/EscapeExponentScales.lean": "39ecdaec966b90eda5c1257e92162f6c27b825cc72770e7e71db0c9138c80f23",
+    "lean/TransposeFollowup/HomFamilyComplexEscape.lean": "22ed19d4298f4399771e7d8eff845d60257f078daae799671262018472614241",
+    "lean/TransposeFollowup/SmoothedIterateSmallEscape.lean": "90b5dd899f8ee62e8e890c8b7bf14534ff8927525ef0f94192a9f6ec35c829aa",
+    "lean/TransposeFollowup/SmoothedIterateWordDistribution.lean": "e119399800e3fb2ef9244697e6f7a0dc68064d592b2f17b170df009a816b8ba7",
+    "lean/TransposeFollowup/SmoothedIterateComplexEscape.lean": "aa498360651467142f472291132bf7d03301d642fc65048349d1ffbc299fb524",
+    "lean/TransposeFollowup/InitialWalkDistribution.lean": "72570e270ca38167c4a9b664e61035c9116ad9762a8e51b6ea8e7c5d1e0d05d6"
+  }
+}

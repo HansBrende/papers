@@ -1,0 +1,50 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1869",
+  "target": "Regular recursion206/208: common endpoint/volume limits, almost-everywhere stage coverage and zero-volume calls.",
+  "new_modules": [
+    "FiniteStageLimits",
+    "LimitingStageCoverage",
+    "CommonStageLimits"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.finite_stageRegion_omission",
+    "TransposeFollowup.RegularMotion.stage_intervals_disjoint_of_tendsto",
+    "TransposeFollowup.RegularMotion.finite_stage_omission_tendsto",
+    "TransposeFollowup.RegularMotion.geometric_stage_open_cover",
+    "TransposeFollowup.RegularMotion.stage_clock_limit_shallow_omission",
+    "TransposeFollowup.RegularMotion.exists_stage_clock_limit_cover",
+    "TransposeFollowup.RegularMotion.stage_duration_limit_bound",
+    "TransposeFollowup.RegularMotion.zero_volume_call_duration_tendsto"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 3271,
+      "log": "/private/tmp/r1870-dev8.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10188,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4922,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All terminal. dev1:10672 exit1; dev2:1494 exit0 (3265 jobs); dev3:57091 exit1; dev4:79850 exit1; dev5:8931 exit1; dev6:48330 exit0 (3271 jobs); dev7:3890 exit1; dev8:91425 exit0 (3271 jobs); fullbuild:98249 exit0 (10188 jobs); axioms:63795 exit0 (4922 declarations).",
+  "formal_checkpoint": "R1870 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1007 local sources,204 external sources,4922 declarations,8 configurations,183 artifacts",
+  "proof_scope": "PROGRESS at R1870: common stage endpoint/volume/halt limits, inherited geometric omission bounds, almost-everywhere open-stage coverage, and zero-volume call disappearance are formalized. The common subsequence is extracted from actual clock/tree budgets with mathlib compactness. Five of six original families remain formalized; regular recursion206/208 is about25% complete, low confidence. Global affine regularity, native exclusion and exact206 executors remain open.",
+  "next": "R1870 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:\nregular recursion206/208, best estimate25%, low confidence.\n\nNext concrete target: turn the common limiting stage cover into the actual\nhead-path affine cover, using R1867 native_positive_stage_affine. The required\ncommon coordinate extraction and almost-everywhere coverage are now proved\nin CommonStageLimits.exists_stage_clock_limit_cover, and stage duration is\nbounded by a*v. Keep the actual native all-head uniform limit on refinement:\nTendstoUniformlyOn.comp_tendsto with StrictMono.tendsto_atTop should suffice.\nDo not repeat diagonal extraction, geometric charge, tick accounting, or\nmeasure-limit theory.\n\nFor a limiting stage with l<r, stage_duration_limit_bound and v>=0 force v>0.\nThe extracted endpoint limits give (E-A)/P -> r-l and, after restricting to\nthe eventual V/P>0 tail, (E-A)/V -> (r-l)/v. This supplies the local duration\nparameter in native_positive_stage_affine. If P->infinity then V->infinity.\nA positive limiting duration also makes A<E eventually, so every remaining\nstage is an actual occurrence. Do not invoke the source regularity condition\non padded missing stages. Discard a proved finite prefix when necessary;\nno hypothesis of positivity for every original index should be silently added.\nUse the existing raw-sample/frozen-profile equivalence and actual Lipschitz\nextensions. Source regularity is for all fixed physical heads, including\nretained parent, scratch and control heads. Per-stage subdivisions may vary.\n\nAt v=0, ordered endpoints and stage_duration_limit_bound already imply l=r;\nzero_volume_call_duration_tendsto additionally proves whole contiguous\nsubtree duration/P ->0. A stronger common extraction of all call endpoints\nor finite existence patterns is unnecessary if the proof uses only these\nfacts, stage endpoints and eventual actual presence. Avoid extra obligations.\n\nObtain a.e. local affinity on each surviving global stage interval from the\nfinite-piecewise-affine local cover. Search/reuse BoundedAffineCovers and\nOpenAffineTimeBound before adding transfer helpers; a constant sequence in\nlocal_affine_ae_of_bounded_covers may suffice for the local finite subdivision.\nCountably many null stage exceptional sets plus the already proved null\ncoverage complement give the global affine cover. Add the constant frozen\npost-halt portion using actual workTraj halting semantics (or its proved\nraw-sample limit), not an assumption about arbitrary Lipschitz extensions.\nThen use NativeAffineMotion's completed class/popular/robust obstruction;\nretain high entropy, correct-set inclusion, fixed heads/alphabet and state bits.\nExceptional-work conclusion remains eta>=1/(2kG) in physical P-time units.\n\nExact source206 row/entry/F3/bit-stride palettes, growing-stride cases,\nbounded composition and native nonuniform executors still remain. They must\npay for every copy, seek, clear, I/O and parameter access. O(P) clock states\nare allowed by source206; do not reopen uniform parameter generation or the\nfive completed families. No fresh subagents until all six formalizations;\nthen user-authorized impartial referees and cleanup. Original read-only;\nno commits/pushes. No unrestricted transpose decision or novelty claim.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate25% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. Estimates refer to the entire sixth family, including exact206 executors, not just its geometric limit lemma.",
+  "updated_at": "2026-10-20T23:14:10.908675+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/FiniteStageLimits.lean": "3d3ec609b65546afa209c825f61f4c5712e24a747622f160ddca723ea57b5df1",
+    "lean/TransposeFollowup/LimitingStageCoverage.lean": "61f10438ed419ee20b7bcb34bae6b3bc67305d6ef94d1034a9749728d7a080d4",
+    "lean/TransposeFollowup/CommonStageLimits.lean": "bb7f43a0bd844d82e33f076e07cab77c62ae689f69adf776e5a5d720c74df410"
+  }
+}

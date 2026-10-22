@@ -1,0 +1,62 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1898",
+  "target": "Regular recursion206/208: native row XOR prefix/difference by reuse.",
+  "new_modules": [
+    "RawRowXor",
+    "RawRowXorApproximation"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RawRowXor.bitValue",
+    "TransposeFollowup.RawRowXor.bitValue_first",
+    "TransposeFollowup.RawRowXor.bitValue_next",
+    "TransposeFollowup.RawRowXor.value",
+    "TransposeFollowup.RawRowXor.value_congr",
+    "TransposeFollowup.RawRowXor.schedule",
+    "TransposeFollowup.RawRowXor.schedule_active",
+    "TransposeFollowup.RawRowXor.represents",
+    "TransposeFollowup.RawRowXor.ticks",
+    "TransposeFollowup.RawRowXor.machine",
+    "TransposeFollowup.RawRowXor.output",
+    "TransposeFollowup.RawRowXor.ticks_linear",
+    "TransposeFollowup.RawRowXor.native_correct",
+    "TransposeFollowup.RawRowXor.resources",
+    "TransposeFollowup.RawRowXor.schedule_position",
+    "TransposeFollowup.RawRowXor.schedule_curve_error",
+    "TransposeFollowup.RawRowXor.curve",
+    "TransposeFollowup.RawRowXor.curve_cover",
+    "TransposeFollowup.RawRowXor.curve_error",
+    "TransposeFollowup.RawRowXor.scaled_approximation",
+    "TransposeFollowup.RawRowXor.error_vanishes",
+    "TransposeFollowup.RawRowXor.state_bits_vanish"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9094,
+      "log": "/private/tmp/r1899-dev2.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10319,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5944,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1899 dev1 session22458: exit1; exact-symbol invariant and controller transport passed; corrected raw output natural-to-integer index coercion and removed an unused simp argument.\nR1899 dev2 session6354: exit0,9094 jobs; raw XOR prefix/difference correctness, motion and resource modules passed without warnings.\nR1899 fullbuild session40135: exit0,10319 jobs,no warnings/errors.\nR1899 axiom audit session96973: exit0,5944 unique declarations,standard axioms only.\nAll execution handles terminal. No Lean edits or overlapping Lake calls while a Lake handle was live.",
+  "formal_checkpoint": "R1899 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1138 local sources,204 external sources,5944 declarations,8 configurations,241 artifacts",
+  "proof_scope": "PROGRESS at R1899: integer row XOR prefix/difference X/x is complete by reusing the masked-stride executor on the shared200-mode controller. Exact row recurrences, arbitrary clean-bank symbol semantics, actual raw native input/output and halting, scratch cleanup, all-time physical motion and state-bit bounds are proved. Raw time<=18P whenW<=P;243-interval normalized motion error(7W+6)/P tends to0 whenP grows andW/P->0. Two integration modules add22 audited declarations; no scan, compiler or approximation proof is duplicated. Five of six original families formalized; regular recursion206/208 best estimate92% complete (low confidence). Remaining integer/F3 operations and full bounded-word exclusions remain.",
+  "next": "R1899 recorded; NEVER replay its checkpoint script. All checkpoint Lake handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized; sixth regular recursion206/208 best estimate92%, low confidence.\n\nNEXT: INTEGER WHOLE-BANK INCREMENT/DECREMENT I/i, REUSING CARRY SEMANTICS AND THE PAID CELL SCAN.\nX/x is DONE through exact arbitrary clean-bank composition, native raw correctness, all-time geometry and state-bit bounds. Do not rebuild it. RawRowXor uses mask=true,strideW in the existing masked-stride executor, embeds it in the shared200-mode controller, and obtains raw time<=18P,243 affine intervals,error(7W+6)/P->0 forW/P->0,P->infinity. The first/next row recurrence lemmas match source206(a). The bit decoder is for integer operations only, not F3.\n\nFor I/i first reuse RawRowArithmeticData.evaluate_eq: it ALREADY proves CoupledRowScan.evaluate(update sub) for an arbitrary initial carryc. BinaryCarry.result_identity supplies the numerical identity. With an all-blank scratch operand (decoded0), sub=false andcarry=true yields x+1; sub=true andcarry=false yields x+(2^P-1), i.e.x-1 modulo2^P. Existing RawRowArithmeticRun fixes its reset tosub; consider generalizing the shared one-row schedule/exact proof to arbitrary initial carry while preserving old wrappers/statements, instead of building another carry engine. CoupledRowScan.run_pair and exact4P-step schedule, CoupledRowMoves seek, RawRowArithmeticData.evaluate_eq, TapeWindow representation and ScheduledBankCleanup already cover most execution obligations. A finite paid reset, seeks, clearing and head rewind must all remain charged. Use SharedRowBank.rowModes and RawProgramShell for composition and actual native IO.\n\nIMPORTANT GEOMETRY: here the word widthW equalsP. The existing RawRowBankMotion bound8W is NOT an o(P) estimate in this case. Use fixed4-step CoupledRowCell updates with net displacement(-1,-1), existing repeat/block path lemmas, and the finitely many exact seek/cleanup ramps to get a constant affine cover and O(1) unscaled approximation error. Reuse native motion/IO decomposition and state-bit theorems once that is in place. Search the existing cell/repeated-schedule proofs before creating any helper.\n\nThen integer E/e row-dependent entry rotations, and F3 P/p,Q/q,E/e,D,S/s (R,C done). Existing BankRotation is binary; use full-symbol BankBlockReversal/SharedBankSymbols for shared integer/F3 rotations. ScheduledBankRows.Update is currently an independent identical-row operation, so varying public row offsets require an explicitly indexed wrapper or a justified generalization. Do not silently assume identical maps cover row-dependent rotations. Once all primitives are present assemble full source206(a,b) bounded-word high-entropy exclusions with arbitrary public nonuniform choices and correctness-set coentropy o(P), using PhysicalAffineApproximationObstruction on physical workTraj.\n\nCompleted: source208 native recursion, global exceptional-work210.5, source206(c), integer A/a and X/x, full R and C. Final impartial referees/cleanup after all six. Original read-only; no commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate92% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1899 completes integer X/x through native execution, composition interface, physical geometry and state-bit bounds. Remaining integer E/e,I/i and F3 P/p,Q/q,E/e,D,S/s, full bounded-word exclusions and final referees remain.",
+  "updated_at": "2026-10-21T08:53:46.062723+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/RawRowXor.lean": "118c75bb29a90b55442f64ee808bafe59fb144bf89e80b45716f898421d78007",
+    "lean/TransposeFollowup/RawRowXorApproximation.lean": "0a1b9ab8ae8c8912c067c8ece5a2df025b95c71124f03eed7789088f38f8fd0b"
+  }
+}

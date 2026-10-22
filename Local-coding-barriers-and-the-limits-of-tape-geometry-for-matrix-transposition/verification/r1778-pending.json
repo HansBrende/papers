@@ -1,0 +1,92 @@
+{
+  "checkpoint": "R1778",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "SymmetricDyadicPowers",
+    "SymmetricGeneratorMeasure",
+    "GeneratorConvolutionWalk",
+    "MobiusHaarKernel"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.symmetric_norm_sq_le_double_action",
+    "TransposeFollowup.symmetric_dyadic_power_norm_lower",
+    "TransposeFollowup.symmetric_dyadic_iterate_norm_lower",
+    "TransposeFollowup.RealMobius.symmetricGeneratorMeasure",
+    "TransposeFollowup.RealMobius.symmetricGeneratorMeasure_probability",
+    "TransposeFollowup.RealMobius.groupActionAverage_symmetricGeneratorMeasure",
+    "TransposeFollowup.RealMobius.generatorWalkMeasure",
+    "TransposeFollowup.RealMobius.generatorWalkMeasure_probability",
+    "TransposeFollowup.RealMobius.groupActionAverage_dirac",
+    "TransposeFollowup.RealMobius.groupActionAverage_generatorWalk",
+    "TransposeFollowup.RealMobius.generatorWalk_dyadic_norm_lower",
+    "TransposeFollowup.RealMobius.generatorWalk_smoothed_dyadic_norm_lower",
+    "TransposeFollowup.RealMobius.instGroupLocallyCompactSpace",
+    "TransposeFollowup.RealMobius.mobiusIdentityDistanceSq",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall",
+    "TransposeFollowup.RealMobius.mobiusIdentityDistanceSq_continuous",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_isOpen",
+    "TransposeFollowup.RealMobius.one_mem_mobiusIdentityBall",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_entry_bounds",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_subset_compact_box",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_haar_pos",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_haar_lt_top",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel_probability",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel_ae_mem",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel_ae_entry_bounds",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel_eq_withDensity",
+    "TransposeFollowup.RealMobius.generatorWalk_haar_smoothed_dyadic_norm_lower"
+  ],
+  "new_theorems": 22,
+  "new_definitions": [
+    "TransposeFollowup.RealMobius.symmetricGeneratorMeasure",
+    "TransposeFollowup.RealMobius.generatorWalkMeasure",
+    "TransposeFollowup.RealMobius.mobiusIdentityDistanceSq",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall",
+    "TransposeFollowup.RealMobius.mobiusHaarKernel"
+  ],
+  "new_instances": [
+    "TransposeFollowup.RealMobius.instGroupLocallyCompactSpace"
+  ],
+  "modified_mathematical_sources": [],
+  "checks": {
+    "targeted": {
+      "session_id": 76167,
+      "exit_code": 0,
+      "jobs": 9532,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 86274,
+      "exit_code": 0,
+      "jobs": 9634,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 90094,
+      "exit_code": 0,
+      "declarations": 3558,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Bourgain\u2013Yehudayoff, Monotone expansion, Section 3, equation (3.2), Claim 3.4 and the surrounding smoothing definitions (https://arxiv.org/html/1108.2555#S3), re-read in R1778. Local Mathlib primary sources for symmetric-map powers, measure convolution, closed-embedding compactness, Haar existence, restriction and withDensity. The direct dyadic proof needs symmetry and a unit vector, not contraction or completeness. The kernel uses ordinary Frobenius radius eta: the sum of four squared entry errors is <eta^2. A source convention using the sum itself as radius must be converted explicitly. No novelty claim for these standard analytic support results. No full Claim 3.4, flattening or spectral-gap existence claim yet.",
+  "development_checks": "GeneratorConvolutionWalk final targeted session87307 passed without warnings,9531jobs. Haar kernel sessions65989 and41791 failed during elaboration; final session76167 passed after explicit function-space codomain and corrected API names. No raised proof limits or disabled linters.",
+  "updated_at": "2026-10-19T16:07:18.964256+00:00",
+  "formal_checkpoint": "R1778 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1778, 657 sources, 3558 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1778 defines the multiplicity-preserving symmetric generator probability measure rho and its actual convolution walk, proving A_(rho^(*n))f=T^n f for the existing finite symmetric average T on actual complex L2. For any symmetric linear map on a real inner-product space, unit f and 0<=r<=||Tf|| imply r^(2^m)<=||T^(2^m)f||. Completeness, boundedness and contraction are unnecessary in the linear-map version. SL(2,R) is locally compact by its closed matrix embedding. The explicit Frobenius ball B_eta={g:sum of four squared entry errors<eta^2} is open, contains identity for eta>0, and lies in a compact matrix-entry box. Its Haar mass is positive and finite. The normalized restricted Haar measure P_eta is therefore an actual probability kernel, with the explicit indicator density and almost-everywhere entry bounds. If a unit Schwartz u has Q_j(u)<=R, ||Tu||>=r>=0, 0<eta<=1/2 and 29*2^j*sqrt(R)*eta<=r^(2^m)/2, then ||A_(rho^(*(2^m))*P_eta)u||>=r^(2^m)/2.",
+  "next": "Identify the Haar density of the actual right-smoothed walk. For a probability walk measure mu and P_eta with density p_eta=1_(B_eta)/haar(B_eta), prove mu*P_eta=haar.withDensity(k), where k(g)=integral p_eta(h^-1*g) dmu(h), using left Haar invariance and Tonelli with the verified product convention. Start with a general measurable nonnegative kernel or finite atomic walk, whichever reuses Mathlib most directly; do not assume the density identity or integrability that needs to be proved. Connect this density integral to groupActionAverage so the same quantity enters the lower and upper bounds.\n\nThen make the scale choices explicit: ordinary Frobenius radius eta=4^(-j), a power-of-two walk length above the flattening threshold, and sufficiently small fixed generator scale and sufficiently large J. Prove the scalar inequality 29*2^j*sqrt(R)*eta<=r^ell/2 uniformly for j>=J, with the universal r and R from the selected normalized regular band. Keep squared-distance versus ordinary-distance conversion explicit. Do not substitute an arbitrary smaller kernel to evade the source flattening scale.\n\nThe subsequent dependencies remain Haar small-ball estimates, flattening/product growth, the Proposition 3.5 upper bound, rational free generators and the restricted spectral gap, followed by the unconditional paid-padding conclusion. Full motion 200/210 and recursion 206/208 remain in scope. Do not start final referee subagents before all formalization. Preserve original files and avoid commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1778 proves the concrete symmetric generator-measure/iterate bridge, a dyadic power lower bound without a contraction hypothesis, and a genuine normalized Haar kernel on a Frobenius ball with a smoothed-walk lower bound. No fourth family is complete. Paid padding still requires the density of the smoothed walk, compatible asymptotic parameters, restricted spectral gap, flattening/product growth, Proposition 3.5 and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. This percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SymmetricDyadicPowers.lean": "18af92cf49e49d65672665d2db39a0e60e4b3e28fb6761b1fa8f08c80fb8159d",
+    "lean/TransposeFollowup/SymmetricGeneratorMeasure.lean": "3a03ae6adf56fe937c44648c69a3d7c8507563e256299e0ef702cb54f1c8e0cf",
+    "lean/TransposeFollowup/GeneratorConvolutionWalk.lean": "8c9886f400ee78af4db34d30349d4899b63d3bf4332b55e7dc126c77f4de16d5",
+    "lean/TransposeFollowup/MobiusHaarKernel.lean": "c18b46f0b0786e24c856aeec3d28a0139f2cb59b967a0956ebd62491422b5394"
+  }
+}

@@ -1,0 +1,144 @@
+
+R1893 — SHARED FINITE MODES AND RAW IO REUSE
+PROGRESS at R1893: generic product-mode transport reuses the existing native instruction embedding, preserving every step and all tapes/IO. The raw loader/emitter and the clean integer-row bank now share one 200-state controller; the bank retains its exact paid runtime, clean endpoint and all-prefix motion bound. Five of six original families formalized; regular recursion206/208 best estimate87% complete (low confidence). Complete raw row-program assembly, remaining integer/F3 operations and bounded-word exclusion remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1893 CHECKED RESULTS
+1. NativeIOModeProduct: for any equivalence J ~= L x F, attach/project
+   preserve all work tapes, absolute heads, input position and output.
+   The lifted program dispatches on L and preserves F. step_attach uses
+   NativeIOEmbedding.step_embed, and active_attach uses active_embed.
+   trajectory_attach/trajectory_eq transport EVERY scheduled prefix
+   with exactly the original number of steps. No additional transitions,
+   resets or free updates are assumed. No new instruction semantics.
+   Generic types are allowed here; native resource counts require the
+   finite concrete controller used below.
+
+2. ScheduledModeRawIO: the original 3n-tick loader/emitter are lifted to
+   any such product controller. input_exact/output_exact reuse the old
+   exact executions. loaded_spec transports written data, outside-cell
+   preservation, head positions, input advancement, unchanged output
+   and preserved auxiliary mode. emitted_spec transports read-only work
+   cells, exact reversed output-list order, input and auxiliary mode.
+   input_position/output_position reuse the existing ALL-PREFIX head
+   formulas. prepare_exact combines the original loader and paid bank
+   rewind in 4P steps from blank initial work tapes. prepared_spec gives
+   zero heads, the P decoded raw bits, globally blank scratch, input P,
+   empty output and unchanged auxiliary mode. No binary or trit arithmetic
+   has been substituted for these IO routines.
+
+3. SharedRowBank: one controller is IO.Mode x CoupledRowCell.Mode, with
+   exactly 4*50=200 states. The identity selects the IO component;
+   Equiv.prodComm selects the arithmetic component. This is static finite
+   label wiring, not an extra runtime operation. schedule_exact and
+   bank_spec reuse the prior arithmetic bank, including arbitrary equal-
+   width rows, incoming modes, bank prefix/suffix, positions and IO.
+   The other component remains unchanged; scratch is cleared and heads
+   restored. bank_curve_error preserves the old 8W error at every capped
+   prefix. Its native machine still has two tapes/five symbols, now with
+   200*(bankTicks+1) clock/controller states. Arithmetic duration remains
+   bankTicks=8P+2W for W>0, P=rW; this does NOT include raw IO yet.
+
+Three new leaf modules;42 newly audited declarations, not42 research
+results. All prior mathematical sources and public APIs are unchanged.
+
+REUSE / DRIFT CHECK
+Searched all local TransposeFollowup/FixedTapeCompiler sources for product
+modes, label maps, relabeling, mapConfig and prodComm. Inspected pinned
+mathlib Computability TM0 Machine.map_step/map_respects and Cfg.map,
+plus Equiv.prodComm and its inverse laws. TM0 mapping has a different
+machine model and does not directly replace the existing original-native
+IO transport. The LOCAL NativeIOEmbedding.step_embed/active_embed are
+exactly applicable and were reused, rather than proving instruction
+cases again. MicrocodeEmbedding.extend_at handles identity ports.
+Mathlib/core Equiv.apply_symm_apply and symm_apply_apply discharge the
+product wiring. No new native compiler, tape semantics, arithmetic loop,
+raw input/output loop, geometry estimate, state-bit estimate, compactness
+argument or impossibility theorem was created.
+The suggested 4-into-50 embedding was replaced by a finite product: this
+preserves both subroutine components without boundary resets. The larger
+constant 200 is accounted for explicitly in native_resources.
+Only new local glue was required. A first IO build exposed partial-function
+unfolding and two definitionally equivalent cell aliases; fixed by unfold
+and explicit change, without weakened statements or increased limits.
+All baseline source/artifact hashes were checked before updating the
+receipt. No existing mathematical source was edited. The larger raw-bank
+wrapper still needs shared assembly; do not copy its proof chain.
+Drift: these are necessary compositional premises for the already selected
+exact operation palettes, not new research targets or new lower bounds.
+
+
+BOUNDARY
+Source206(c), source208 and global exceptional-work210.5 remain complete. R1893 proves shared-mode execution, raw input preparation/output emission, and transport of the existing row-bank semantics/geometry. It does not yet identify a prepared raw input with the row-list representation, assemble its full native raw-IO program, finish the exact integer/F3 palettes, or prove their bounded-word exclusion. Five of six original families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1893 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate87%, low confidence.
+
+NEXT: CONNECT PREPARED RAW INPUT TO THE CLEAN ROW BANK, THEN ASSEMBLE IO.
+NativeIOModeProduct, ScheduledModeRawIO and SharedRowBank are DONE. Do not
+reimplement the product transport, raw IO loops, row arithmetic, cleanup,
+head approximation or native compiler. SharedRowBank.Mode has200 states;
+ioModes is the identity, rowModes is Equiv.prodComm. Both component modes
+are actual finite control, preserved by the other subroutine. No reset is
+needed to switch the statically selected component at a public boundary.
+ScheduledModeRawIO.prepare_exact is4P paid steps from blank work tapes;
+its prepared_spec gives heads0, raw input bank, scratch blank, inputP,out[].
+output_exact is3P paid steps and emitted_spec gives exact output order.
+SharedRowBank.run/schedule_exact and bank_spec give the clean row update;
+its runtime is8P+2W, with P=rW and W>0. Total eventual raw execution would
+therefore be15P+2W (<=17P for nonempty rows); this total is NOT yet proved
+as a full raw-input native program. Preserve the exact native cost.
+
+First obtain the representation bridge for a prepared P-bit bank versus
+rows of W symbols, using existing cell/zipper lemmas. bank_spec accepts
+arbitrary surroundings, not only blank surrounding cells. For future
+bounded words, generalize its use to arbitrary clean starting banks via
+BankWord.Interface/Represents; do not impose an empty-surroundings premise
+on all clients just because the first raw load starts blank. Reuse pinned
+mathlib Turing.ListBlank.ext if tape equality is needed. Tape.nth_zero,
+right0_nth and mk'_left_right0 may supply the other fields; searches did
+not find an existing local tape-extensionality wrapper. The prepared-input
+statement currently decodes bits; the loaded_spec also supplies exact
+.data symbols and preservation outside the range. They are different
+strengths, so do not infer exact symbols from decoding alone.
+
+Then share the raw-bank program assembly sufficiently for integer/F3
+clients, reusing append_exact/active, native_run_and_halt, blank_denote,
+native_state_count and state_bits_of_linear_count. RawBankProgram already
+has the binary client and a working resource/initialization/halting chain;
+preserve its API and avoid copying the whole chain for a second mode.
+Prefer small common interfaces. If refactoring an existing source, rebuild
+its dependents after the change. Its Motion interface asks for exact
+input-independent paths; the new row bank only needs its proved uniform
+approximation. Do not enumerate carry paths to meet an unnecessarily
+strong interface. Actual BankWord interfaces already parameterize mode
+and value types.
+
+All-prefix row-bank geometry is DONE: RowBankCurve, RawRowBankMotion and
+RawRowBankApproximation give9 affine-cover intervals and error(8W+4)/P
+vanishing for W/P->0,P->infinity. RepeatedScheduleMotion works for data-
+dependent interiors with fixed block endpoints. SharedRowBank already
+transports the capped integer-prefix error. Reuse these results.
+
+Remaining source206(a): row XOR/difference, row-order reversal, entry-order
+reversal preserving within-entry bits, row-dependent rotations, whole-bank
+increment/decrement modulo2^P. Source206(b): exact F3 row/column prefix/
+difference, row/column reversal, row rotations, diagonal signs and whole-
+entry-stream rotation. Reuse CoupledRowCell arbitrary-symbol tables,
+ScheduledBankCleanup and symbol-preserving ScheduledTransfer. Trit2 can
+use .start on public-clock banks; binary bit decoders erase it. No new
+work alphabet/compiler is required merely for trits.
+Source206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and
+210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,
+bounded operation words and correctness sets of coentropy o(P). Referees
+only after all six original families complete. Original read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate87% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1893 removes the finite-controller mismatch while reusing raw IO, row arithmetic and native transition proofs. Complete raw row-program assembly, remaining integer/F3 operations, bounded words and final referees remain.
+
+VERIFICATION
+Full lake build passed10296 jobs without warnings/errors; SupportAxioms audited5710 unique declarations using only propext,Classical.choice,Quot.sound. There are1115 local sources (1114 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and229 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

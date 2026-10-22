@@ -1,0 +1,61 @@
+\section{What remains to decide}\label{sec:roadmap}
+
+The results leave two questions: which coded updates can recover the required
+outputs, and whether those updates can be executed in linear time on tapes.
+The local-coding theorems exclude specific information-access patterns. The
+motion theorems exclude specific execution patterns. The padding construction
+supplies the cut condition, and for linear-time payloads the full limiting
+conditions, without requiring a transpose-specific computation.
+
+\paragraph{An impossibility target.}
+The earlier paper proves that \textup{(T)} gives causal complete-exchange codes
+on valid tape diagrams, at the prescribed block capacities, on input sets with
+cardinality deficit at most $Cd$ for a fixed $C$. The diagrams append their
+output in the last $P$ steps. It therefore suffices to show that, for every
+fixed choice of resource constants and $C$, arbitrarily large dimensions admit
+no such diagram and code. This requires less than the full robust Tape Coding Conjecture, which
+excludes a larger class of input sets at every sufficiently large size.
+\upformal{Transpose.Tape.Statements.Coding}{Transpose.Tape.codes_coentLinear_of_linearTimeTransposable,Transpose.Tape.not_linearTimeTransposable_of_coentLinear_end_io}
+
+Applying our local-coding bounds to this target requires a structural
+argument: one must prove that the extracted tape codes satisfy the relevant
+locality or factorization hypotheses. An evolving coded bank is not an
+original row, and an arbitrary execution need not factor into the two stages
+of our helper theorem. Improving constants in those bounds does not
+supply this missing argument.
+
+\paragraph{A lower-bound invariant to test.}
+A further lower bound must use more than the aggregate cut and $M^*$
+conditions supplied by the padding wrapper. One candidate is an invariant
+that tracks both causal availability of coded information and its use in
+recovering specified outputs. A useful test is whether adjoining irrelevant
+padding leaves the invariant unchanged. The next tests are whether it survives
+the correlated and nonlinear examples allowed by our local theorems, and
+whether its accumulated cost is superlinear in the full tape model.
+This is a proposed direction; we have not proved such an invariant exists.
+
+\paragraph{A construction target.}
+The next constructive step is an update and decoding identity with a proved
+saving. Its state invariant must specify what is stored, which data each
+update can access, and how the next outputs are recovered. The cost must
+include helper and layout generation, encoding, decoding, head movement,
+finite control and raw output. A saving in an abstract coding model alone
+does not establish \textup{(T)}.
+
+The first paper's code-gap theorem requires an $\Omega(\log d)$ advantage over
+routing on the relevant tape networks. A code with this gain would still need
+a uniform finite-state implementation with linear total cost.
+\upformal{Transpose.Tape.Statements.Coding}{Transpose.Tape.code_gap}
+
+Several possibilities remain outside our exclusions: high-treewidth queries
+on original rows, more general broadcasts than fixed coordinate XORs,
+more than two nonlinear stages, and recursive updates that fail the stated
+affine-regularity hypotheses. None is thereby shown feasible. The padding
+construction supplies motion, not an encoder or decoder for complete exchange.
+
+\paragraph{Evaluating a candidate.}
+State its information access, helper costs, correctness set and actual tape
+costs first. Then evaluate the applicable quantitative bounds. Discard the
+candidate when a bound contradicts its claimed cost; membership in a local
+model alone is not enough. If no exclusion applies, identify the exact
+hypothesis it escapes and test the remaining computation directly.

@@ -1,0 +1,64 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1883",
+  "target": "Regular recursion206/208: paid backward scans and both affine regimes.",
+  "new_modules": [
+    "BackwardMaskedStride",
+    "BackwardStrideMotion",
+    "BackwardStrideApproximation"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.BackwardMaskedStride.reflected",
+    "TransposeFollowup.BackwardMaskedStride.value",
+    "TransposeFollowup.BackwardMaskedStride.value_recurrence",
+    "TransposeFollowup.BackwardMaskedStride.value_congr",
+    "TransposeFollowup.BackwardMaskedStride.ticks",
+    "TransposeFollowup.BackwardMaskedStride.schedule",
+    "TransposeFollowup.BackwardMaskedStride.result",
+    "TransposeFollowup.BackwardMaskedStride.schedule_active",
+    "TransposeFollowup.BackwardMaskedStride.schedule_exact",
+    "TransposeFollowup.BackwardMaskedStride.ticks_le",
+    "TransposeFollowup.BackwardMaskedStride.result_spec",
+    "TransposeFollowup.BackwardMaskedStride.path",
+    "TransposeFollowup.BackwardMaskedStride.schedule_position",
+    "TransposeFollowup.BackwardMaskedStride.path_zero",
+    "TransposeFollowup.BackwardMaskedStride.path_after",
+    "TransposeFollowup.BackwardMaskedStride.path_frozen",
+    "TransposeFollowup.BackwardMaskedStride.approximation",
+    "TransposeFollowup.BackwardMaskedStride.approximation_cover",
+    "TransposeFollowup.BackwardMaskedStride.approximation_error",
+    "TransposeFollowup.BackwardMaskedStride.smallApproximation",
+    "TransposeFollowup.BackwardMaskedStride.smallApproximation_cover",
+    "TransposeFollowup.BackwardMaskedStride.smallApproximation_error"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9052,
+      "log": "/private/tmp/r1884-dev3.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10247,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5365,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All R1884 execution handles terminal.\ndev1 42725 exit0 (8971 jobs; unused simp warning fixed); dev2 29261 exit0 (8976 jobs; unused simp warning fixed); dev3 38346 exit0 (9052 jobs, no warnings).\nFull build 55792 exit0 (10247 jobs). Axiom audit 35769 exit0 (5365 unique declarations).",
+  "formal_checkpoint": "R1884 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1066 local sources,204 external sources,5365 declarations,8 configurations,211 artifacts",
+  "proof_scope": "PROGRESS at R1884: backward masked binary prefix/difference scans now have an explicit right-to-left zero-filled recurrence and a proved actual implementation by paid reversal, reflected-mask forward scan, and paid reversal. All bank semantics, scratch clearing, restored heads and IO are proved; time<=27P for1<=S<=P. Exact microscopic paths and arbitrary-start affine comparisons hold in both stride regimes, with only8 added error from the reversals. Five of six original families formalized; regular recursion206/208 best estimate78% complete (low confidence). Rotation, mixed-word integration, remaining palettes and final bounded-word exclusion remain.",
+  "next": "R1884 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate78%, low confidence.\n\nNEXT: paid whole-bank rotation, then mixed-word compiler integration.\nUse the verified reversal outside-bank preservation to avoid another\ncopying engine. A candidate for LEFT rotation by R,0<=R<=P, is:\n  reverse all P; reverse the first P-R; move bank head right P-R;\n  reverse the last R; move bank head left P-R.\nAll scratch heads stay/restored at their same scratch origin. Every local\nreversal has blank scratch before/after and preserves outside bank cells.\nThis yields x[R:P] followed by x[0:R], with total time\n  (6P+2)+(6(P-R)+2)+(P-R)+(6R+2)+(P-R)\n  =14P-2R+6 <=20P when P>=1.\nTHIS ROTATION CANDIDATE IS NOT YET PROVED. Prove its complete semantics,\nhead/IO/scratch interface, time and affine paths, including paid seeks.\nThe current ScheduledTapeAction already has arbitrary-length left rewind;\nits step_position/cells/io provide right-move proofs if no existing exact\npublic-length right-only helper fits. Targeted search found only unrelated\nadvance/specialized marked-word interfaces, not a ready scheduled seek.\nMathlib has Tape.move_right_n_head through the existing native cell layer.\n\nTHEN generalize/reuse MaskedStrideWord and RawMaskedStrideWord for the\nmixed binary palette; do not copy their IO/clock/state-bit/native-run\nproofs. Backwards can be an explicit operation or a proved macro. Preserve\nbounded word length up to a fixed expansion factor, arbitrary nonuniform\npublic parameters/masks, and exact all-input bank semantics before using\nthe prescribed high-entropy correct set.\n\nNEW R1884 APIS\n- BackwardMaskedStride.reflected/value/value_recurrence/value_congr.\n  Recurrence uses j+S and right-boundary zero fill, prefix/difference modes.\n- ticks/schedule/result, schedule_active/exact, ticks_le<=27P for1<=S<=P,\n  result_spec (same bank interface as forward stage/reversal).\n- path/schedule_position/path_zero/path_after/path_frozen: sum of delayed\n  reverse, forward and reverse excursions, all microscopic times.\n- approximation_cover J=81*(9^(B+1)*9)*81 for P/S<=B;\n  approximation_error<=2*(P/S+2)+8.\n- smallApproximation_cover J=81*9*81;\n  smallApproximation_error<=7S+10.\n  Both compare path(P,S,head,floor(t)-A) at arbitrary public start A.\n\nKeep R1883 reversal/transfer APIs and R1882 complete forward-word/native\nIO/resource/path proofs. Existing R1881 native physical approximation\nobstruction is the final endpoint; normalization is already proved.\nUse mathlib finite-vector compactness and existing cover sum/rescale and\nstride dichotomy when assembling the mixed fixed-K word argument. No\nseparate start-time convergence is required by the shifted estimates.\n\nAll exact row/integer/F3 palettes remain. Source208/global210.5 complete;\ndo not reopen them to defer source206. No new subagents until all six;\nthen authorized impartial referees/cleanup. Original paper read-only;\nno commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate78% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 includes native recursion/global exceptional-work, single-stride exclusion, forward-word native semantics/resources/paths, uniformly shifted stride estimates, paid reversal, and now backward scans with exact recurrence/semantics/motion/both affine regimes. Rotation, mixed-word integration, exact row/integer/F3 palettes and final bounded-word exclusion remain; final independent referees pending.",
+  "updated_at": "2026-10-21T03:34:26.100685+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/BackwardMaskedStride.lean": "cc4410a4f82aefe4f2d5c724b30aeaf711feddc97275f5a65afe75e5dc2204e3",
+    "lean/TransposeFollowup/BackwardStrideMotion.lean": "26c62d227ac293dba701b6bfe14750c1d921dee426d02382ee533f464238584e",
+    "lean/TransposeFollowup/BackwardStrideApproximation.lean": "46af119879361990611a84f33ef4966e7d8d5f4187181e2fefc7356586bf7c22"
+  }
+}

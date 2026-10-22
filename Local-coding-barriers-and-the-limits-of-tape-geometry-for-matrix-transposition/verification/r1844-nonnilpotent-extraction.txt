@@ -1,0 +1,52 @@
+R1844 — ACTUAL NONNILPOTENT SPANNING EXTRACTION
+
+In progress. R1844 constructs the original commuting family from primitive localized-profile, spanning-frame, distribution and ambient-cover hypotheses, then proves its centered generator has nonzero determinant. The original source witnesses, approximation bound, finite covers and spanning cube are preserved in the conclusion. The family and cube are no longer input assumptions. One new module adds one theorem by composing existing extraction and exclusion proofs. A quantitative determinant dichotomy, profile/frame construction and the remaining analytic/machine endpoints are still open.
+
+exists_nonnilpotent_spanning_extraction (NonnilpotentSpanningExtraction.lean).
+Fix0<kappa<=1. There exist theta,alpha0,tau>0 and J, all before scale and profile data, with
+ theta<1/2, theta<=kappa/4096,
+ 3000000tau<=theta and3000000tau<=theta*kappa/2.
+For j>=J,eta=4^-j and r=eta^(2theta)/(2*4^34), assume the same primitive localized approximate-group profile as R1843:
+ h>=2^100,Nprofile<=h,1<=Q<=h,0<alpha<=alpha0,alpha^-4<=h,
+ q0>0,q0^-1<=h,h<=eta^-tau,
+ |Y|<=512*[2^55*(8*(64Nprofile^4)^2/q0^2)^21]^16,
+ U entry-bounded by Q,symmetric,Y subset U^2,U^2 subset YU,
+ A=U^2 intersect identityBall(alpha),1 in A,A symmetric.
+Also assume actual p,q,pq in A^34 with spanning determinant>=eta^theta, the original distribution exponent kappa on eta<rho<eta^(theta/2), and N_eta(A)<=eta^(-(3-kappa)).
+
+Then the theorem PRODUCES R subset A,nonempty, w in A^34 and D=w^-1 R, with every z in D in the identity half-ball and at distance>=r from identity. It selects z in D with det(z-(tr(z)/2)I)!=0. It also produces a conjugacy center v, the actual source fiber
+ S={x in A:dist(x z x^-1,v)<=eta},
+ x0 in S, and a family f:S->SL2(R), with:
+ - each f(x) in scalarAffine(z,c,t) for some c,t;
+ - original source x0^-1x in A^-1A and dist(x0^-1x,f(x))<=12800B0^6 eta/r, B0=4*4^34;
+ - all f(x) commute;
+ - finite native eta-covering numbers for A,A D A^-1,and V=range(f);
+ - the original spanning cube
+   eta^(8theta)N_eta(A)^4 <=[9 N_eta(A D A^-1) H N_eta(V)]^3,
+   H=(102400B0^7/r+8B0+1)^4.
+
+The proof chooses beta=theta*kappa/2 and tau=min(theta,beta)/3000000. It derives the required triple-cover upper bound from localized_set_pow_coveringNumber at n=2, the real finite-translate coefficient bound and profile_power_exponent_bound. It shrinks alpha0 once to meet the original normalization geometry and takes the maximum of two uniform scale thresholds. The existing exists_spanning_commuting_extraction_at_dyadic_scale produces the entire original family and cube. Choice selects its affine coordinates; x0 supplies nonempty range; normalized_mixed_product_subset_power puts A D A^-1 in A^37. The exact first radius/error is normalized using mathlib real powers and the existing a,e identities. R1843 then rules out determinant zero. No new extraction, scalar theorem, packing theorem or approximate-group framework is copied.
+
+QUANTITATIVE NEXT-STEP AUDIT (not a new Lean theorem).
+Existing centered_scalar_constant_bounds already proves |c-1|<=Delta R^2 and a Lipschitz bound for c(t), assuming |det b|<=Delta,|t|<=R and positive c. centered_trace_arithmetic_error already bounds the additive readout error by4Delta R^2 T+2Delta R^3 L, and an inverse-final multiplicative readout byDelta R^2(8+T^2). scalarAffine_repeated_trace retains the exact determinant correction for the repeated-final word actually used in R1842. Reuse these; the inverse-final and repeated-final words are different and must not be interchanged.
+If one merely uses R=Cr eta^(-2theta), fixed upper bounds T,L, and the current scalar resolution delta~eta^(1-3theta), the displayed additive error estimate is at most a fixed constant times Delta eta^(-6theta). A sufficient uniform small-error budget is thus Delta<=C eta^(1+3theta). This follows only from that coarse estimate. It is NOT necessary, a lower bound on the true error, an impossibility result, or a verified extension of the whole nilpotent sampler. It shows why replacing det=0 by an unspecified 'small' determinant does not automatically close the remaining cases. Even a better eta^-4theta estimate still asks for Delta on an eta-scale under the unchanged resolution. Such an inverse determinant can cost an order-one exponent, while the present closed comparison only pays losses proportional to theta.
+A complete near-nilpotent application must also derive scalar separation/range, preserve retained cardinality and concentration, and prove whole-family distance from identity; those exact-nilpotent APIs currently use c=1. The local cubic packing and general centered chart bounds already exist and may be reusable without det=0, but reuse alone is not a proof of the required uniform budgets.
+For the complementary regime, sl2_inverse_final_scaled_projection already gives
+ tr(v u^-1 g (v u) g^-1)=2-Dg[t^2+(4 det(b)/Dg-1)q^2], Dg=det(bg-gb).
+One nonzero Dg is insufficient: the scalar projection endpoint requires a quantitatively distributed family of coefficients and controlled denominators. No such coefficient distribution follows from R1844 alone. A next-step proposal must state its determinant range, actual word/readout, sample retention and coefficient profile, and compare all losses to the full trace-cubic bound before formalizing it.
+
+DRIFT CHECK.
+This is a composition of existing endpoints, removing assumed family/cube inputs rather than growing an independent analytic framework. The exact nilpotent branch is now excluded for a family genuinely produced from the current profile. However, the nonzero determinant conclusion is not a quantitative spectral separation. Before starting another long formal chain, test a quantitative near/away determinant dichotomy against the already verified548theta+143theta trace budget and the retained scalar radius. Do not silently substitute a fixed inverse-discriminant constant.
+
+BOUNDARY
+R1844 removes the original-family and original-cube hypotheses from the nilpotent branch exclusion. It still assumes an actual localized approximate-group profile, a quantitative spanning frame, the original multiscale distribution and ambient cover upper bound. Its conclusion det(centered z)!=0 is qualitative: it does NOT provide a uniform inverse-determinant bound or justify treating all nonzero determinants as quantitatively bounded away from zero. Near-nilpotent and quantitatively nonnilpotent amplification, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original family, unrestricted transposition bound or novelty is claimed.
+
+NEXT
+R1844 is recorded; never replay its checkpoint. Full10108-job build and4609-declaration standard-axiom audit passed without warnings; no live Lake handles. Read verification/r1844-nonnilpotent-extraction.txt, including its quantitative audit, and library-reuse-audit-r1844.json.
+NEXT CONCRETE TARGET: a quantitative regime plan covering the nonzero centered determinant, with a demonstrated exponent budget BEFORE another long Lean chain. The actual original family/cube is now produced; do not redo that assembly. Current exact-nilpotent exclusion alone is not quantitatively useful for arbitrarily small nonzero determinants. Audit a robust extension using centered_scalar_constant_bounds, centered_matrix_linearization, centered_trace_arithmetic_error and scalarAffine_repeated_trace; preserve the same source sample and distinguish repeated-final from inverse-final words. Compare any proposed near-nilpotent threshold with the current scalar radius eta^(1-3theta), retained-cube loss143theta and second-extraction loss548theta. The coarse error audit in the note exposes an eta-scale threshold; do not dismiss that loss or claim the entire near-nilpotent case is already solved.
+For a quantitatively nonnilpotent regime, reuse sl2_inverse_final_scaled_projection and imported scalar projection. First produce a concrete distributed coefficient family g->4det(b)/det(bg-gb)-1 from actual bounded words, or give a different exact readout that avoids the inverse discriminant. A fixed nonzero determinant or isolated coefficient is not enough. Record a failure if the uniform profile/gain budgets cannot be supplied; do not formalize detached identities or another assumed-good-sample theorem.
+Original profile/frame construction and the remaining analytic/machine endpoints also remain. Three of six original families are formalized; paid padding best estimate about60%, low confidence. Original paper unchanged; no commits/pushes or unsolicited subagents.
+
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

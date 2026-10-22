@@ -1,0 +1,110 @@
+{
+  "unit": "R1734",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1733 reusable page query revalidated",
+  "scope": "ALL6families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "PageLoopData",
+    "PageLoopMachine",
+    "PageLoopRun",
+    "PageLoopTrace",
+    "PageLoopWrite",
+    "SchedulerSeedMachine",
+    "SchedulerSeedMeaning",
+    "SchedulerSeedRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.PageLoop.opcodeBits_injective",
+    "TransposeFollowup.PageLoop.bits_length",
+    "TransposeFollowup.PageLoop.record_opcode",
+    "TransposeFollowup.PageLoop.rowFrom_length",
+    "TransposeFollowup.PageLoop.row_length",
+    "TransposeFollowup.PageLoop.row_eq_table",
+    "TransposeFollowup.PageLoop.query_code",
+    "TransposeFollowup.PageLoop.advance_zero",
+    "TransposeFollowup.PageLoop.advance_add",
+    "TransposeFollowup.PageLoop.embed_query",
+    "TransposeFollowup.PageLoop.query_call",
+    "TransposeFollowup.PageLoop.jump_trace",
+    "TransposeFollowup.PageLoop.native_complete",
+    "TransposeFollowup.PageLoop.native_call",
+    "TransposeFollowup.PageLoop.label_card",
+    "TransposeFollowup.PageLoop.fixed_resources",
+    "TransposeFollowup.PageLoop.rest_trace",
+    "TransposeFollowup.PageLoop.complete_trace",
+    "TransposeFollowup.PageLoop.all_vertices_budget",
+    "TransposeFollowup.PageLoop.write_two_run",
+    "TransposeFollowup.PageLoop.write_trace",
+    "TransposeFollowup.PageLoop.page_trace",
+    "TransposeFollowup.SchedulerSeed.prepare_code",
+    "TransposeFollowup.SchedulerSeed.seed_code",
+    "TransposeFollowup.SchedulerSeed.embed_prepare",
+    "TransposeFollowup.SchedulerSeed.embed_seed",
+    "TransposeFollowup.SchedulerSeed.initial_bank",
+    "TransposeFollowup.SchedulerSeed.seed_call",
+    "TransposeFollowup.SchedulerSeed.transfer_trace",
+    "TransposeFollowup.SchedulerSeed.ready_seed",
+    "TransposeFollowup.SchedulerSeed.ready_payload",
+    "TransposeFollowup.SchedulerSeed.ready_raw",
+    "TransposeFollowup.SchedulerSeed.ready_normalized",
+    "TransposeFollowup.SchedulerSeed.ready_canonical",
+    "TransposeFollowup.SchedulerSeed.vertex_length",
+    "TransposeFollowup.SchedulerSeed.vertex_value",
+    "TransposeFollowup.SchedulerSeed.ready_pages",
+    "TransposeFollowup.SchedulerSeed.page_positions",
+    "TransposeFollowup.SchedulerSeed.complete_trace",
+    "TransposeFollowup.SchedulerSeed.native_complete",
+    "TransposeFollowup.SchedulerSeed.native_call",
+    "TransposeFollowup.SchedulerSeed.fixed_resources"
+  ],
+  "checks": {
+    "page_loop": {
+      "session": 90011,
+      "exit_code": 0,
+      "jobs": 9299,
+      "log": "/private/tmp/page-loop-run.log"
+    },
+    "scheduler_seed_machine": {
+      "session": 87524,
+      "exit_code": 0,
+      "jobs": 9272
+    },
+    "scheduler_seed": {
+      "session": 26785,
+      "exit_code": 0,
+      "jobs": 9311,
+      "log": "/private/tmp/scheduler-seed-meaning.log"
+    },
+    "build": {
+      "session": 4633,
+      "exit_code": 0,
+      "jobs": 9381,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session": 19921,
+      "exit_code": 0,
+      "declarations": 2115,
+      "log": "verification/axioms.log"
+    }
+  },
+  "updated_at": "2026-10-18T23:05:45.014261+00:00",
+  "formal_checkpoint": "R1734 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1734,404sources,2115declarations,86artifacts",
+  "proof_scope": "In progress. R1734 implements the actual finite page loop,not only its aggregate query bound. PageLoop uses8tapes and5symbols,queries each fixed page in order and physically appends2opcode bits. All7query tapes and heads restore;only the output head advances. The output equals the injective binary encoding of the exact rationalOpcodeTable row. Its bound is Q*(B+4),where B=PageQuery.canonicalBudget F xs;both transfers and both writes per page are charged. Across2Nvertices the row-call bounds total at most (PageQuery.iterationCoefficient F+8*Q)*inputLength(N). SchedulerSeed composes CanonicalReader and the existing ArithmeticSeed on the same42tapes. It starts at Transpose.init,retains all5previous streams/words,and pays initialization of7reused blank tapes for the padded dimension,zero vertex,zero word,unit word,fuel and2prepared buffers. Its coefficient is CanonicalReader.coefficient F+17*C+128. Exact page-bank projections identify the initialized zero vertex and blank output,with all page heads restored. Eight modules/42theorems; full build9381jobs;2115audited declarations,standard axioms only. The outer vertex loop is next. Three of six intended theorem families complete.",
+  "next": "Implement one42tape outer controller using SchedulerSeed and PageLoop. Keep the vertex on seedPort.zeroA,the padded N on seedPort.number,and output on pagePort7. Compare vertex with N:less calls PageLoop with incoming=false,then RepeatedAdd.single_add_trace with the existing unit/fuel/scratch/zero bank,and loops. Equal starts NativeCounter decrement:nonzero return11 calls PageLoop with incoming=true and loops through decrement;underflow return12 finishes after a paid erase/copy reset from the zero word. This yields A0..A(N-1),B(N-1)..B0. Reuse existing finite bindings,RowEnumeration index lemmas and native counter/addition/comparison calls. Prove exact concatenation to the binary encoding of rationalOpcodeTape,output length4*N*Q, all retained data/head invariants,and charge the actual comparisons,updates,branches and reset in addition to PageLoop.all_vertices_budget. Compose with SchedulerSeed from Transpose.init. Then connect stored opcodes to the geometric native walk and clock/fetch/payload phases,with paid input-head reset and cleanup. Expansion,motion and recursion remain required. Older supplemental checks62722/19934 are live/unverified;do not restart solely for elapsed time. All six families required;three complete;original unchanged;no commits/pushes;referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/PageLoopData.lean": "2a13a7191b301cf349176ab9e73868c7d34798f9f4f2d4a8c367dcde79f313b1",
+    "lean/TransposeFollowup/PageLoopMachine.lean": "7503b4507ffaabed60c1386702404d736fd29da133794022b14314ea6b112cc6",
+    "lean/TransposeFollowup/PageLoopRun.lean": "1f70c1e645dd0e09592676fdf9e16f0bc1a67ec4551ca8f7d46df1bad22b9ee1",
+    "lean/TransposeFollowup/PageLoopTrace.lean": "d69f575bc886f486d1f7507aa0784e9c856dd2e40c9d58868d4be0b2267c286c",
+    "lean/TransposeFollowup/PageLoopWrite.lean": "5ac4e952778ae640f597f674f771868808a9f2c21f589b5a89af30a12f0f403c",
+    "lean/TransposeFollowup/SchedulerSeedMachine.lean": "4e947f16fb301d4c80141de33488d330c925c6d5fda415ca48d54edee1653d1a",
+    "lean/TransposeFollowup/SchedulerSeedMeaning.lean": "8b190a7f397122384d228a6b2650b55a0cb3c1a501ea5f12883e5367fa1cd873",
+    "lean/TransposeFollowup/SchedulerSeedRun.lean": "0785214e2c9c8356da12442af57615eb145ec86f25d8c68089f5367544d75777"
+  }
+}

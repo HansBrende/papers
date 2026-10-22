@@ -1,0 +1,98 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1837",
+  "target": "Output-localized cubic packing and actual-power local concentration.",
+  "new_modules": [
+    "CubicSourceWordLocality",
+    "PowerClusterConcentration"
+  ],
+  "modified_modules": [
+    "CubicSourceWordTransfer",
+    "ActualCentralizerSourcePacking",
+    "CommutingFamilyCubicBound",
+    "NilpotentScalarSample"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer_to_set",
+    "TransposeFollowup.SL2Projection.shared_center_cubic_word_near",
+    "TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer_near",
+    "TransposeFollowup.SL2Projection.power_cluster_coveringNumber_le_of_multiscale",
+    "TransposeFollowup.SL2Projection.nat_cubic_bound_of_quotient",
+    "TransposeFollowup.SL2Projection.actual_localized_source_packing_near",
+    "TransposeFollowup.SL2Projection.actual_localized_source_packing_concentration",
+    "TransposeFollowup.SL2Projection.finite_source_cluster_cubic_bound"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 77157,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1838-dev1.log",
+      "warnings": true,
+      "reason": "Unused simp argument and unnecessary sequencing warnings subsequently removed."
+    },
+    "development_2": {
+      "session_id": 50099,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1838-dev2.log",
+      "warnings": true,
+      "reason": "Same locality warnings and one unnecessary sequencing warning subsequently removed."
+    },
+    "development_3": {
+      "session_id": 99458,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1838-dev3.log",
+      "warnings": true,
+      "reason": "Replayed warnings subsequently removed; finite cluster and shared rounding proofs passed."
+    },
+    "build_before_spacing": {
+      "session_id": 89428,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "verification/build.log",
+      "jobs": 10098,
+      "warnings": false
+    },
+    "axioms_before_spacing": {
+      "session_id": 47018,
+      "status": "terminal",
+      "log": "verification/axioms.log",
+      "exit_code": 0,
+      "declarations": 4578,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 39601,
+      "status": "terminal",
+      "log": "verification/build.log",
+      "exit_code": 0,
+      "jobs": 10098,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 11600,
+      "status": "terminal",
+      "exit_code": 0,
+      "declarations": 4578,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All R1838 handles terminal. Development1(77157),2(50099),3(99458) passed with style warnings subsequently removed. Pre-interface full build89428 and audit47018 passed. After strengthening the sampler matrix-spacing output, final full build39601 and audit11600 passed10098 jobs/4578 declarations without warnings. No live Lake handle.",
+  "updated_at": "2026-10-20T07:48:57.760447+00:00",
+  "formal_checkpoint": "R1838 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:917 local sources,204 external sources,4578 declarations,8 configurations,119 artifacts",
+  "proof_scope": "In progress. R1838 proves output-localized cubic packing and a radius-dependent bound for the whole finite commuting cluster. Actual cubic words remain in A^142 near the selected frame element; the local cover bound of A^142 is derived from the actual distribution of A and its A^142/A^284 envelopes. Integer rounding and small clusters are charged. Two new modules and four modified modules add eight theorems. Existing global interfaces retain their statements/constants; the scalar sampler is strengthened to return its already proved matrix spacing. Normalization by the retained scalar cardinality and the final exponent application remain open.",
+  "next": "The preceding goal turn is PROGRESS. R1838 is recorded; never replay its checkpoint. Full10098-job build and4578-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1838-local-cubic-concentration.txt and library-reuse-audit-r1838.json. The whole finite-cluster radius-dependent cubic bound is verified. Do not redo source-word locality, target cover transfer, fixed-power local concentration or integer rounding.\n\nNEXT CONCRETE TARGET: derive normalized scalar ball counts for the SAME retained nilpotent sample, using finite_source_cluster_cubic_bound. The R1838 note contains the exact constants and proposed normalization formula.\n- For a scalar ball of radius r, restrict the finite index type to |x_i-v|<=r. Use scalarAffine_dist_same_constant and the nonzero trace coefficient to prove diameter<=3Bgen*r/ell0; take s=3Bgen*r/(2ell0). Preserve actual source witnesses and their entry/error bounds. The sampler now explicitly returns matrix spacing>2sigma, so the SAME chosen sample can satisfy the cubic spacing threshold. Do not thin it again or infer the stronger matrix spacing merely from delta-separated scalar outputs.\n- Apply the whole finite-cluster bound and use injectivity/cardinality of the scalar image to identify its size with scalarBallMass. Bound rho_out by Dloc*r under epsilon<=r, with eta<=rho_out checked. This proves a cubic count bound relative to N_eta(A).\n- Derive N_eta(A)<=G*|X|^3 from the existing first spanning extraction, the actual mixed-product envelope and sampler retention. The note gives G explicitly. Prove positivity before cancelling powers of N. Derive the native lower size bound needed to absorb the additive1 from actual multiscale distribution at2eta, checking its window. Reuse native packing and separated-cardinality lemmas.\n- Combine to a normalized profile with exponent kappa0/3 and explicit constant; weaken to the scalar theorem exponent2*kappa_scalar only after checking the exponent order and r<=1. Reuse mathlib rpow/cube monotonicity rather than rebuilding real-power calculus. Then audit the Cscalar budget together with the upper cardinality gap and the full R1832 threshold.\n\nDo not assume a good normalized profile or an unexplained global factor G. The input interfaces already exist, but the composition and exponent budget remain real work. Keep the first error12800*B0^6*eta/r_initial (B0=4*4^34) distinct from the second-extraction error. Sources base^-1 X_i belong to A^2. Exact nilpotence is still the current arithmetic branch; the new local cubic bound itself has no nilpotence assumption, and nonnilpotent amplification remains necessary.\n\nREPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1838 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/CubicSourceWordLocality.lean": "efd924bbe65548180d5a9daae2bed9676f6cdaa11d489542d69356f86ab78e43",
+    "lean/TransposeFollowup/PowerClusterConcentration.lean": "a32e7b99edefdcfe4299247864ede14d45365bb63a27e610f31095a43fab4bae",
+    "lean/TransposeFollowup/CubicSourceWordTransfer.lean": "d2ae03964e75fc3417c193a7bd9af597b717dfb83de4d9c893adcbc1d2f82d9f",
+    "lean/TransposeFollowup/ActualCentralizerSourcePacking.lean": "a9b7dccb4d80ac0df6a6c4f8fb539cd598f681633d6dc50216a0426fde10c4d7",
+    "lean/TransposeFollowup/CommutingFamilyCubicBound.lean": "bdc0b61fec2e794fa463d257126e9a056a3097d1c1675ef274aa0d3116831d49",
+    "lean/TransposeFollowup/NilpotentScalarSample.lean": "0ac4badbc04def3c00c9f43332724ecf79c9ce7b6abf120ee4ec54fd224afab5"
+  }
+}

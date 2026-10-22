@@ -1,0 +1,83 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "MobiusIdentityCoordinates",
+    "MobiusSmallBallVolume",
+    "MobiusHaarKernelBounds"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.identityColumnBox",
+    "TransposeFollowup.RealMobius.identityColumnBox_eq_prod",
+    "TransposeFollowup.RealMobius.columnChart_identity_distance_le",
+    "TransposeFollowup.RealMobius.column_box_subset_mobiusIdentityBall",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_columnShear_le",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_subset_column_box",
+    "TransposeFollowup.RealMobius.identityColumnBox_measurableSet",
+    "TransposeFollowup.RealMobius.volume_identityColumnBox",
+    "TransposeFollowup.RealMobius.columnChartMeasure_preimage_identityColumnBox",
+    "TransposeFollowup.RealMobius.columnChartMeasure_identityBall_lower",
+    "TransposeFollowup.RealMobius.columnChartMeasure_identityBall_upper",
+    "TransposeFollowup.RealMobius.haar_identityBall_lower",
+    "TransposeFollowup.RealMobius.haar_identityBall_upper",
+    "TransposeFollowup.RealMobius.haar_identityBall_doubling",
+    "TransposeFollowup.RealMobius.haar_identityBall_inverse_le",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_lt_top",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_lintegral_sq",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_lintegral_ofReal_sq",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_integrable_sq",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_memLp_two",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_integral_sq",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_integral_sq_le",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_cubic_le"
+  ],
+  "checks": {
+    "identity_coordinates": {
+      "session_id": 31464,
+      "exit_code": 0,
+      "jobs": 9536,
+      "warnings": false
+    },
+    "small_ball_volume": {
+      "session_id": 23623,
+      "module_built": true,
+      "warnings": false,
+      "overall_build_exit_code": 1
+    },
+    "haar_kernel_bounds": {
+      "session_id": 6722,
+      "exit_code": 0,
+      "jobs": 9540,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 26530,
+      "exit_code": 0,
+      "jobs": 9662,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 33125,
+      "exit_code": 0,
+      "declarations": 3749,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/html/1108.2555, Lemma1.1 and Sections2\u20135 re-read in R1784. Theorem3.1 supplies the intended external flattening statement but is NOT assumed in Lean. The proof uses rational free families, nonconcentration, metric BSG and SL2 product growth. Local Mathlib provides Haar/Lebesgue box formulas, finite approximate-subgroup and covering-number tools, and free-group ping-pong; no ready applicable full flattening/product-growth theorem was located in the searched Mathlib or protected original sources. R1784 proves cubic small-ball volume bounds directly from the existing actual column Haar measure, then the normalized kernel L2 identity and a crude cubic upper bound. The explicit ordinary Frobenius radius convention and positive finite Haar scalar are retained. No novelty is claimed for these standard support facts. The source norm display and symmetry of a one-sided smoothed convolution require explicit convention/comparison audits in any future translation; neither is assumed here.",
+  "development_checks": "Identity-coordinate target31549 failed on conjunction shape, a triangle-inequality API and an implicit nonnegativity target;31464 passed warning-free. Small-ball target37627 built with an unused ht premise warning; that unnecessary premise was removed and the module rebuilt warning-free in23623. Combined23623 failed only in HaarKernelBounds on an implicit ENNReal.toReal_ofReal conversion; the coefficient was made explicit and6722 passed warning-free. No old mathematical-source changes. No raised proof limits or disabled linters. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T17:49:51.094427+00:00",
+  "formal_checkpoint": "R1784 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1784, 685 sources, 3749 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1784 proves actual Frobenius-ball volume bounds c_H*eta^3/512 <= H(B_eta) <= 96*c_H*eta^3 for 0<eta<=1/2, by explicit comparisons with ordinary three-dimensional boxes in the existing column/shear coordinates. It also proves H(B_(2eta)) <= 393216*H(B_eta) for 0<eta<=1/4. The normalized Haar-ball density P_eta is genuinely in L2 and has exact squared L2 mass 1/H(B_eta), hence at most 512/(c_H*eta^3). For any probability measure mu, its actual right-smoothed density is pointwise at most that same cubic bound. This supplies the geometric normalization input for flattening; the crude exponent3 is not the exponent1/4 required by the existing conditional restricted-gap theorem. No rational family satisfying the actual-walk flatness premise has been constructed yet.",
+  "next": "Advance an actual missing dependency of rational-family flatness; do not rederive the now-proved small-ball normalization. First retain the exact quantifiers in RestrictedGapFromFlatness.exists_restricted_gap_from_dyadic_flatness: fixed positive N,J0; for each C>0 a sufficiently small epsilon; J may be increased for the chosen family; eta=4^(-j), ell dyadic, 2*N*ell<=j and C*log(1/eta)/log(1/epsilon)<ell. Required actual density bound D>=0 satisfies D^2<=2^j. Bourgain\u2013Yehudayoff Theorem3.1 has the intended stronger small-exponent form, but is not yet formalized or assumed. Any constants from Haar normalization must be absorbed by a proved increase of J, preferably using an exponent strictly below1/4.\n\nNext concrete candidate: prove an explicit fixed rational free pair sufficiently close to identity, using the existing Mathlib FreeGroup.injective_lift_of_ping_pong instead of formalizing strong Tits wholesale. Audit the following proposed construction before coding: for a fixed sufficiently large odd prime p, a=(p+1)/p, A=diag(a,a^-1), M=[[1,1],[1,2]], B=M*A*M^-1. Over the p-adic projective line, A acts by z->a^2*z and |a|_p=p; the attracting/repelling regions for A lie around infinity/0, and their M-images around1/1/2 are disjoint when p is odd. Prove every domain/action/strict-inequality obligation rather than assuming ping-pong applies. This is a candidate route, NOT a proved result or a novelty claim. If successful, p must remain fixed while later word lengths grow like log(1/epsilon), preserving polynomial denominator growth. Choosing p depending on1/epsilon and then such word lengths would generally lose that bound. The subsequent many-generator word construction, packing, denominator/cardinality bounds, Kesten/free-walk estimate, nonconcentration and product-growth flattening remain separate obligations.\n\nUseful local APIs: Mathlib/GroupTheory/CoprodI.lean ping-pong theorem; Projectivization/Action, Projectivization/PSL/PSL2, OnePoint/ProjectiveLine, PadicNorm and PadicVal. Existing finite approximate-subgroup and covering-number tools do not by themselves prove metric BSG or the required SL2 product-growth theorem. The source norm display must be reconciled explicitly with our ordinary Frobenius radius. Inversion reverses convolution order, so do not silently declare the one-sided smoothing nu^ell*P_eta symmetric; prove any necessary comparison/symmetrization.\n\nPreserve all six original targets, spatial Fourier tails, T_g=W_(g^-1), and the same positive finite c_H. No final referee subagents before all formalization; no original-directory edits or commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1784 proves explicit cubic volume bounds for the actual smoothing ball and exact normalized-kernel L2 mass. These are supporting dependencies within paid padding, not completion of a fourth family. Actual-walk flattening/product growth and suitable rational generator existence remain substantial obligations. Motion 200/210 and recursion 206/208 are unstarted. This percentage describes formalization scope, not elapsed time, probability of success or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusIdentityCoordinates.lean": "0ff44a892b9ff397f598b468ee101d37df0f8ed7569d7412e62fe9884b7483be",
+    "lean/TransposeFollowup/MobiusSmallBallVolume.lean": "c6406e0e5cdb8830ce980f531d43db706a0b8d397e7c34d3a285f52e8de7f0a3",
+    "lean/TransposeFollowup/MobiusHaarKernelBounds.lean": "af0f448fb12eff507f26a327ec3311c676332f79d3e1bd15b44f35eb7ebcba8e"
+  }
+}

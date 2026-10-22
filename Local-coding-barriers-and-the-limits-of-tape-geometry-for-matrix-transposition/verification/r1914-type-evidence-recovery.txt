@@ -1,0 +1,51 @@
+R1914 FULL TYPE-EVIDENCE RECOVERY
+
+Durable archive: /Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1914-analytic-build-speed/full-type-evidence.tar.gz
+Bytes: 46668447
+SHA256: 0bac2a7a9fae06c27f0527749fbdafc17ce2963f6d72ef17ccfe2e9272df2069
+Verified members: 185
+
+This archive contains the bounded baseline/final full type captures for all6306
+original audited names, exact raw comparison and differences, compact manifests,
+baseline source/receipt/name inventories, both inspection scripts and their run
+records, and the successful semantic type-preservation receipt with every hashed
+checker/AST-input/output/plan/log/timing dependency it records. Some files occur
+once and are referenced by multiple records. Its inventory.json maps each member
+to its original absolute path, size and SHA256. The generated inventory itself
+is bound by the archive SHA256. No full capture inputs have been deleted.
+
+The raw comparison still records11 literal differences. The semantic receipt
+resolves all11 by exact-original-Expr kernel conversion;6295 are raw-identical.
+There are no source-header fallback cases. Archiving is evidence preservation,
+not an additional kernel check or a replacement for the preserved successful
+Lean execution, source review and axiom audit.
+
+Recovery procedure (only if temporary capture files have later disappeared):
+1. Verify the archive byte count and SHA256 against verification/r1914-type-archive.json.
+2. Extract it into a newly created empty recovery directory. Read inventory.json.
+   Archive names are relative member names; do not interpret original absolute
+   provenance paths as extraction destinations automatically.
+3. Check every extracted member's bytes/SHA256 against its inventory entry.
+   The original archive publication already compared all decompressed bytes with
+   their source files and frozen inventory hashes before publishing.
+4. The inventory's member-to-path mapping can reconstruct the original temporary
+   paths needed by the unchanged frozen receipts. Restore only absent files, or
+   accept an existing file only if its bytes/SHA256 already match. Do not overwrite
+   a conflicting file or silently rewrite captured provenance paths. Alternatively,
+   keep recovery in the new directory and resolve receipts through that mapping.
+5. Baseline/final compact receipts are also copied into verification, together
+   with the exact comparison/differences and semantic preservation receipt. Their
+   internal original paths are intentionally unchanged. Current durability does
+   not depend solely on /private/tmp: all type proof evidence is recoverable from
+   this archive and the durable published verification files.
+
+Reused parser/checker ancestor sources from R1912 remain in the repository's
+unchanged prior verification evidence; the actually executed R1914 checker and
+its exact inputs/outputs are in this archive. Helper source and recovery/report
+instructions are in verification/r1914-preservation-tools and are individually
+indexed by r1914-preservation-tools.json and the final support receipt. Python
+__pycache__ files are disposable and excluded from that source inventory.
+
+The earlier baseline-only archive is retained unchanged. The current combined
+archive is sufficient for both baseline/final raw captures and the semantic
+preservation evidence; no giant aggregate JSON is required.

@@ -1,0 +1,86 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1893",
+  "target": "Regular recursion206/208: arbitrary clean banks and complete raw row execution.",
+  "new_modules": [
+    "TapeWindow",
+    "RawRowBankInvariant",
+    "RawProgramShell",
+    "RawRowProgram"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.TapeWindow.tape_ext",
+    "TransposeFollowup.TapeWindow.cells_ext",
+    "TransposeFollowup.TapeWindow.half_window",
+    "TransposeFollowup.TapeWindow.tape_window",
+    "TransposeFollowup.TapeWindow.rows",
+    "TransposeFollowup.TapeWindow.rows_length",
+    "TransposeFollowup.TapeWindow.row_lengths",
+    "TransposeFollowup.TapeWindow.rows_flatten",
+    "TransposeFollowup.TapeWindow.rows_congr",
+    "TransposeFollowup.TapeWindow.rows_window",
+    "TransposeFollowup.TapeWindow.window_cell",
+    "TransposeFollowup.BankWord.symbols",
+    "TransposeFollowup.RawRowArithmetic.bankValue",
+    "TransposeFollowup.RawRowArithmetic.bankValue_congr",
+    "TransposeFollowup.RawRowArithmetic.clean_representation",
+    "TransposeFollowup.RawRowArithmetic.bank_represents",
+    "TransposeFollowup.RawProgramShell.Mode",
+    "TransposeFollowup.RawProgramShell.State",
+    "TransposeFollowup.RawProgramShell.initial",
+    "TransposeFollowup.RawProgramShell.prepared",
+    "TransposeFollowup.RawProgramShell.ticks",
+    "TransposeFollowup.RawProgramShell.schedule",
+    "TransposeFollowup.RawProgramShell.ready",
+    "TransposeFollowup.RawProgramShell.result",
+    "TransposeFollowup.RawProgramShell.ticks_eq",
+    "TransposeFollowup.RawProgramShell.schedule_active",
+    "TransposeFollowup.RawProgramShell.schedule_exact",
+    "TransposeFollowup.RawProgramShell.prepared_symbol",
+    "TransposeFollowup.RawProgramShell.output_spec",
+    "TransposeFollowup.RawProgramShell.encoding",
+    "TransposeFollowup.RawProgramShell.machine",
+    "TransposeFollowup.RawProgramShell.native_complete",
+    "TransposeFollowup.RawProgramShell.fixed_resources",
+    "TransposeFollowup.SharedRowBank.represents",
+    "TransposeFollowup.SharedRowBank.initialRowMode",
+    "TransposeFollowup.SharedRowBank.rawTicks",
+    "TransposeFollowup.SharedRowBank.rawMachine",
+    "TransposeFollowup.SharedRowBank.rawOutput",
+    "TransposeFollowup.SharedRowBank.raw_ticks_eq",
+    "TransposeFollowup.SharedRowBank.raw_ticks_linear",
+    "TransposeFollowup.SharedRowBank.raw_resources",
+    "TransposeFollowup.SharedRowBank.raw_native_correct"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9004,
+      "log": "/private/tmp/r1894-dev4.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10300,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5752,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1894 dev1 session73594: exit0,3097 jobs; TapeWindow proved, with unused Inhabited section warnings fixed before later builds.\nR1894 dev2 session88029: exit0,8977 jobs; arbitrary-clean-bank representation and invariant built without warnings.\nR1894 dev3 session82997: exit1; two shell representation-normalization mismatches fixed with typed intermediate statements.\nR1894 dev4 session31671: exit0,9004 jobs; generic raw shell and complete native row program built without warnings.\nR1894 initial fullbuild: successful10300-job completion verified in build.log; caller displayed only stdout and did not retain its session metadata. After the completion marker was confirmed, repeated the cached full build to obtain an explicit terminal receipt.\nR1894 fullbuild receipt session90488: exit0,10300 jobs,no warnings/errors.\nR1894 axiom audit session46989: exit0,5752 unique declarations,no warnings/errors,standard axioms only.\nAll retained execution handles terminal. No Lean edits or overlapping Lake calls while a retained Lake handle was live; initial fullbuild completion was verified before the receipt rerun.",
+  "formal_checkpoint": "R1894 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1119 local sources,204 external sources,5752 declarations,8 configurations,231 artifacts",
+  "proof_scope": "PROGRESS at R1894: the integer-row bank now has an arbitrary-clean-bank symbol invariant and complete raw-input native execution. Shared IO assembly loads, executes, emits and halts in15P+2W steps forW>0,P=rW, at most17P forr>0, with2 tapes,5 symbols and200*(time+1) states. Five of six original families formalized; regular recursion206/208 best estimate88% complete (low confidence). Full raw-program geometry, remaining integer/F3 operations and bounded-word exclusion remain.",
+  "next": "R1894 recorded; NEVER replay its checkpoint script. All retained checkpoint\nLake handles terminal. Goal ACTIVE; PROGRESS. Five original families\nformalized; sixth regular recursion206/208 best estimate88%, low confidence.\n\nNEXT: FULL RAW-PROGRAM GEOMETRY FOR THE CHECKED INTEGER-ROW MACHINE.\nThe row arithmetic, clean bank, arbitrary-clean-bank composition, shared\nfinite modes and COMPLETE RAW NATIVE INPUT/OUTPUT EXECUTION are DONE.\nDo not reopen these layers. Read RawRowProgram.raw_native_correct,\nraw_ticks_eq,raw_ticks_linear,raw_resources and RawProgramShell.\nFull time is15P+2W (<=17P forW>0,r>0,P=rW),2 tapes,5 symbols,\n200*(time+1)states. Start is actual original TM.init, output is exactly\nrawOutput via the prior bankOutput modular recurrence, scratch is blank.\nBankWord.symbols is mode-generic with IDENTITY symbol decode, preserving\nall5 work symbols. bank_represents and bankValue_congr hold for all clean\nbanks with arbitrary surrounding contents, all modes and external IO.\nRawProgramShell.output_spec connects such invariants to raw output.\nRawProgramShell is generic in the auxiliary finite mode and body schedule,\nso use it for other integer/F3 clients. It deliberately has no exact\ninput-independent body-path requirement. Keep existing binary APIs intact.\n\nCombine the old bank all-prefix affine approximation with the already\nchecked shared raw IO paths. prepareSchedule is exactly4P steps, body\nbegins at4P, output begins at4P+bankTicks. Source SharedRowBank.run has\nzero net head displacement on any starting tape (derive from prior\nRawRowArithmetic.bank_endpoint or its generic transport), and the body\ncurve is zero before/after its active span. RowBankCurve/RawRowBankMotion/\nRawRowBankApproximation already give9 affine intervals and error(8W+4)/P\nvanishing forW/P->0,P->infinity. RawBankProgram.ioCurve and ioCurve_cover\nalready give the loader/rewind/output curve with27 affine intervals.\nIts ioCurve_error currently uses the old binary Body/Motion arguments;\nprefer extracting/factoring the shared pure rounding estimate over copying\nthat chain or forcing exact carry paths into its stronger Motion interface.\nScheduledModeRawIO.input_position/output_position, trajectory_attach and\nappend_position supply actual prefixes. Native prefix/halting and frozen\nworkTraj are existing compiler/original results; reuse them. The final\nnative raw-machine path must include raw IO and its frozen stopped tail,\nnot only the clean bank. Then use state_bits_of_linear_count for this\nlinear runtime, preserving arbitrary nonuniform public parameters.\n\nAfter that, complete exact source206(a) remaining row XOR/difference,\nrow-order reversal, entry-order reversal preserving within-entry bits,\nrow-dependent rotations and whole-bank increment/decrement modulo2^P.\nComplete source206(b) F3 row/column prefix/difference, row/column reversal,\nrow rotations, diagonal signs and whole-entry-stream rotation. Use the\nexisting shared finite schedules, arbitrary-symbol CoupledRowCell tables,\nScheduledTransfer and BankWord.word_spec. Binary decoders erase trit2;\nuse identity symbol banks and decode only at the actual raw output.\nThen assemble full bounded-word native high-entropy exclusions.\nSource206(c), source208 and210.5 are DONE. Preserve public nonuniform\nchoices, bounded words and correctness sets of coentropy o(P). Referees\nonly after all six families complete. Original read-only; no commits/pushes.\nResearch236/full080 unchanged. No unrestricted transpose decision.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate88% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1894 completes raw native row arithmetic and its arbitrary-clean-bank invariant. Full-program geometry, remaining integer/F3 operations, bounded words and final referees remain.",
+  "updated_at": "2026-10-21T07:35:32.991478+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/TapeWindow.lean": "861280c5026811b714e8317ecd6aeb228b595779a60c272000504ca33409721e",
+    "lean/TransposeFollowup/RawRowBankInvariant.lean": "4d63688513deb7bafeab9dbd04131c9bfa82ebf6bdb9f4741b83dd2b2cffef23",
+    "lean/TransposeFollowup/RawProgramShell.lean": "c936239a0ef0e6ff66eac773eb6a87fdaf809af9236d955b8e3faec2b972bf7d",
+    "lean/TransposeFollowup/RawRowProgram.lean": "6298426eeb7050eeeaafa28c7c3d6910f06dcc9d1ed3f1987d7ea9115ce0ad0f"
+  }
+}

@@ -1,0 +1,64 @@
+R1829 — ACTUAL FRAME AND RETAINED CENTRALIZER CUBIC PACKING
+
+In progress. R1829 composes actual bounded-word adjoint-frame selection with finite commuting-cluster localization, scalar reindexing and native cubic packing. The same extracted generator is used throughout. The theorem retains at least m points under an explicit four-coordinate bin-count budget, preserves a source witness for each scalar parameter, and proves an m^3 covering lower bound for the exact normalized conjugated product. All chart, frame, input-spacing and localization costs are explicit. Five modules add12 theorems. Transfer to approximate actual words and the fourth original theorem family remain incomplete.
+
+EXACT STATEMENTS
+All matrices below use the native Frobenius norm and metric. Write Ad_g(b)=g b g^-1, and D(b,x,y)=det(I,b,x,y) with row-major coordinate columns.
+
+1. NORMALIZED SCALAR CHART.
+Let b be trace-free with norm and absolute determinant at most M>=1. Suppose some noncentral coordinate (b00-b11,b01,b10) has absolute value at least rho>0. If u=cI+t b and dist(u,I)<=R, then
+  |c-1|<=R, |t|<=2R/rho.
+If h has entries bounded by B>=0, h^-1*x=cI+t b, h^-1*y=pI+q b, c,p>=1/2, and |t|,|q|<=r<=1, then
+  dist(x,y)<=10 B M |t-q|.
+The scalar-affine recentering identity preserves t when replacing z by b=z-(tr(z)/2)I. These estimates reuse the R1827 chart and existing matrix-multiplication metric bounds.
+
+2. RETAINED FINITE COMMUTING SAMPLE.
+Let f_i=c_i I+t_i b be a finite indexed family in SL2(R), with every entry bounded by B>=1. Set
+  L=binCount(B,delta)=floor(2B/delta)+1, delta>0.
+Assume m>0, L^4*m<=number of indices, 8B delta<=1, 8B delta<=rho r, and 0<=r<=1. The existing four-coordinate cluster theorem provides S with |S|>=m and a chosen member i0. Writing
+  f_i0^-1 f_i=p_i I+q_i b,
+we prove, on S,
+  p_i>=1/2, |q_i|<=r, dist(f_i,f_i0)<=2delta,
+  dist(f_i,f_j)<=10 B M |q_i-q_j|.
+If distinct input indices satisfy dist(f_i,f_j)>10 B M sigma, sigma>=0, then q is injective on S and its image F has at least m points with scalar spacing greater than sigma. A source map s:R->indices is constructed using mathlib Function.extend; every x in F represents the actual normalized approximant f_i0^-1 f_(s(x)). Thus no source-witness or cardinality loss is hidden in reindexing.
+
+3. LOCALIZED CONJUGATED CUBIC PACKING.
+Let u,v have entries bounded by H>=1. Assume norm(b),|det(b)|<=N, N>=1, M>=1, and 4H^2 N<=M. Mathlib trace cyclicity, determinant multiplicativity, linearity and norm multiplication give trace(Ad_g b)=trace(b), det(Ad_g b)=det(b), and norm(Ad_g b)<=4H^2 N. Consequently all frame and direction bounds required by the existing cubic theorem hold.
+Assume d>0 and |D(b,Ad_u b,Ad_v b)|>=d, together with
+  3M r<=1, 36864 M^6 r<=d.
+Under the sample/localization hypotheses in2 and the explicit original-input spacing
+  dist(f_i,f_j)>10 B M * (384 M^4/d) * eta for i!=j,
+there exist i0,F,s with |F|>=m and dist(f_(s(x)),f_i0)<=2delta for x in F. Put w(x)=f_i0^-1 f_(s(x)). For
+  P={w(x0) * (u w(x1) u^-1) * (v w(x2) v^-1): x0,x1,x2 in F},
+the native external covering number is finite and
+  m^3<=N_eta(P).
+Eta is a nonnegative radius; inequalities are strict exactly where stated. This is a direct composition with R1827, not a second packing proof. The input-spacing hypothesis is a genuine coarsening requirement, not inferred for free from spacing at the original eta.
+
+4. FRAME SELECTED FROM ACTUAL WORDS.
+Assume A is symmetric, contains I, lies in the identity ball of radius alpha, 0<alpha<=1, and 2*5^34*alpha<=1. Let p,q,pq belong to A^34 and |det(I,p,q,pq)|>=d0>0. Let the SAME z used to represent f_i=c_i I+t_i z lie in the identity ball of radius1/2, with dist(z,I)>=r0>0.
+The centered b=z-(tr(z)/2)I is trace-free, has a pivot at least r0/8, and satisfies norm(b),|det(b)|<=32. Define H=4^68 and choose M>=128 H^2, M>=1. For any d>0 with
+  d<=(r0/8)^3/[3456*(96*(4^34)^4/d0)^3],
+R1828 selects u in A^34 and v in A^68 meeting the frame bound. Under the explicit sample, radius, cardinality and input-spacing conditions in3, with rho=r0/8, the same m^3 native-covering conclusion follows. The actual endpoint is exists_actual_localized_cubic_packing.
+
+The selected u,v are actual words. The f_i and w(x) are still exact commuting approximants, so the resulting product is NOT yet asserted to be contained in an actual power of A. That transfer and the approximation errors are the next obligation.
+
+BOUNDARY
+R1829 closes finite localization and cubic-packing composition for the actual selected frame. It does not yet transfer the product to actual approximate source words, derive the required coarser separated sample at a charged retained-size cost, or prove that all losses permit strict product growth. The exact approximant/source distinction remains explicit. Preserve the extraction witnesses a_i=x_base^-1*x_i, x_i in A: after choosing i0, a_i0^-1*a_i=x_i0^-1*x_i lies in A^2. Using only generic a_i in A^2 would unnecessarily yield A^4 and inflate the word budget. With these A^2 witnesses the unnormalized product has word length142; the normalized product has length210. Pay normalization error, conjugation norms, right-translation metric distortion and covering refinement. The earlier scalar mixed-sum upper bound is relative to ambient A, not automatically to the extracted scalar set, and A-concentration does not automatically descend to that set. Cubic packing at a cube-root-size extracted family alone does not imply strict growth. Full fixed-family budget composition, scalar-growth hypotheses, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain. No novelty is claimed for these supporting algebraic/analytic adaptations.
+
+NEXT
+The preceding goal turn is PROGRESS. R1829 is recorded; never replay its checkpoint. Read verification/r1829-localized-packing.txt and verification/library-reuse-audit-r1829.json. Full10076-job build and4521-declaration audit passed; standard axioms only; no live Lake handle. The actual frame, retained finite sample, scalar witnesses and exact cubic packing are now composed. Reuse exists_actual_localized_cubic_packing rather than re-proving its chain.
+
+NEXT CONCRETE TARGET: transfer the exact product packing to the actual source words, retaining the shared source center from SpanningCommutingExtraction. With a_i=x_base^-1*x_i and dist(f_i,a_i)<=epsilon, prove a quantitative error bound between w_i=f_i0^-1*f_i and a_i0^-1*a_i=x_i0^-1*x_i in A^2. Check/reuse existing inverse-entry and finite-product-error lemmas before adding anything. Then compare the normalized exact product with the right normalization by v^-1 of the actual word
+  W0 u W1 (u^-1 v) W2 in A^142.
+The normalized word has length210. Charge all error amplification by H and all Frobenius translation distortion; this metric is not invariant.
+
+A READY EXISTING TRANSFER TOOL was found: FrobeniusCoverTransfer.coveringNumber_le_bounded_transport. Given maps exact a and actual b and transport L(c)=c*v^-1, a bound dist(a(x),L(c))<=D+K*dist(b(x),c) yields
+  N_eta(exact)<= [4*(D+K*eta)/eta+1]^4 * N_eta(actual).
+Use K=2H when justified by the existing right-multiplication norm estimate. This avoids rebuilding cover perturbation/refinement. The actual-word image lies in A^142; apply ApproximatePowerCover/LocalizedFixedProductEnvelope for that actual exponent, not the obsolete37-factor specialization. The complex finite-product error and EntryApprox.inv machinery already exists; reuse or specialize it if cheaper than another general chain.
+
+Also connect the required input spacing 10BM*(384M^4/d)*eta to an actual separated sample from the extracted approximants. Explicitly pay that coarsening loss, and the localization loss binCount(B,delta)^4. Before adding more abstract lemmas, calculate whether the resulting inequality improves on the existing cube-root commuting-size estimate. Cubic packing alone at that size is compatible with the ambient upper bound. Keep the spread/concentrated branch distinction and scalar amplification hypotheses explicit; R1825 concentration of A is not concentration of V.
+
+All six original families remain required. Reuse pinned204-source scalar projection and local geometry. No protected original edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current actual-frame/localized-sample/cubic-packing composition is100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only the family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.

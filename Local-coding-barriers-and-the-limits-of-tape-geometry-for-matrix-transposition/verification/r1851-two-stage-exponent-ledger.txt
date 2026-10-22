@@ -1,0 +1,204 @@
+In progress. R1851 verifies a simultaneous exponent certificate for the two-stage trace-square ledger, including fine trimming, reused concentration bounds, scalar growth, mixed-source error and the final cubic contradiction margin. The numerical scalar-growth proof is generalized and reused; its previous theorem statement is unchanged. The profile-cost calculation now handles arbitrary fixed word lengths, with its old cutoff theorem preserved. Three audited declarations are added across one new and two refactored modules. Native quantity-to-power envelopes and the end-to-end application remain open.
+
+R1851 EXACT VERIFIED STATEMENTS
+
+ScalarDyadicBudgets.lean (one new theorem; old statement unchanged)
+scalar_exponent_margins_of_bounds:
+For0<kappa0,e<=1, any theta>0 with theta<=e/4096 and
+ theta<=kappa0/4096 has the same growth margins as the original choice:
+ d=1-3theta, k=kappa0/12, g=e/8, c=100theta,
+ u=1-kappa0/3+84theta, tau_error=1-2theta satisfy
+ 0<d<=1,0<k<=1,g,c>=0,4g<de,g+c<de,
+ u<d(1-k),d<tau_error,289theta/3<c,83theta<84theta,173theta<g.
+The old nilpotent_scalar_exponent_margins statement is BYTE-FOR-BYTE
+unchanged; its proof supplies the two upper bounds to this shared theorem.
+
+TraceSquareExponentMargins.lean (one theorem)
+trace_square_two_stage_exponent_margins:
+For0<kappa0,e<=1, define
+ Theta=min(e,kappa0)/16384,
+ theta=kappa0*Theta/1024,
+ a=5Theta/16,
+ gain=e/32,
+ d=1-3Theta,k=kappa0/12,g=e/8,c=100Theta,
+ u=1-kappa0/3+84Theta,tau_error=1-2Theta.
+The theorem proves ALL of:
+ 0<Theta<1/4,0<theta<=Theta,0<a;
+ kappa0*a=320theta,289theta<kappa0*a,278theta<kappa0;
+ 11theta<=8Theta;
+ 12Theta+88theta+4a<=36Theta;
+ theta+a<=3Theta,12theta+a<=3Theta;
+ 14theta+a<1,3Theta+13theta+a<1;
+ gain>0,2gain<g,691Theta<3gain;
+ and all shared scalar-growth margins above with Theta replacing theta.
+No matrix/source hypothesis is hidden in this theorem: it proves a
+numerical certificate. The actual matrix estimates still need applying.
+
+ReextractionPowerBounds.lean (one new theorem; old statement unchanged)
+profile_power_exponent_bound_of_cost:
+For0<eta<=1,h>=0,h<=eta^(-tau), any natural word parameter n, if
+ (8802n+4427)*tau<=theta,
+then h^(8802n+4427)<=eta^(-theta).
+There is no word-length cutoff and no need to assume tau>=0 in this
+more general implication. The previous profile_power_exponent_bound,
+including its n<=283 and3000000*tau<=theta statement, is unchanged;
+its proof now invokes the cost-based theorem.
+For actual words in A^420 the reextraction cover uses n=421, whose cost
+is3710069. The first extraction's A^(n0+3) cover uses n=n0+2, a separate
+fixed cost. Neither is silently treated as covered by the old cutoff.
+
+ALGEBRAIC LOSS LEDGER — NATIVE ENVELOPE APPLICATIONS STILL OPEN
+
+This ledger is derived from verified formulas and ordinary algebra. Only
+the exponent certificate and reusable profile-cost extension are newly
+Lean-verified here; do not present the ledger as an assembled native theorem.
+Constants below are fixed before eta and absorbed only using strict margins.
+Use eta=(1/4)^j, original density exponent kappa0 in(0,1], and e in(0,1]
+from scalar sum-product. Theta,theta,a,gain are as in the certificate.
+
+First extraction and fine trimming:
+ - Original frame gap d0=eta^theta. R1845 returns generator distance and
+   centered determinant gap>=eta^theta/32, with source error
+   26214400*eta^(1-theta) and cube eta^(11theta)*N^4<=Cext*(9T H V)^3.
+ - To REUSE exists_scaled_extraction_parameters, weaken the distance
+   lower bound to r0=eta^(2theta)/32. This permits the existing scales
+   frameGamma=f*eta^(9theta),chart_delta=b*eta^(11theta),
+   sigma0=s0*eta^(1-9theta),epsilon=e0*eta^(1-2theta).
+   Constants can enlarge e0 to cover the actual source error.
+ - first_extraction_cost_bounds then supplies
+   H<=Hc*eta^(-8theta), C0<=C0c*eta^(-36theta),
+   L<=Lc*eta^(-44theta), E<=Ec*eta^(-8theta).
+   The actual R1845 H, with distance eta^theta/32, is no larger than
+   this weakened-distance H. P,K,J<=eta^(-theta),gamma<=theta are the
+   profile budgets; they must be provided by the existing profile envelope.
+ - coefficient_cube_normalization gives N<=W0 V^3 with
+   W0=Cext*(9P H)^3*eta^(-11theta)<=fixed*eta^(-38theta).
+ - The far cutoff s=eta^a. Once epsilon<=s, the near factor obeys
+   Anear<=fixed*eta^(kappa0*a-11theta). Here E costs8theta and
+   K,J,eta^(-gamma*kappa0) cost at most3theta. Kappa0<=1 is used.
+ - The fine trimming ratio32L^3 C0^3 W0(Anear+1/N0),
+   N0=(2eta)^(-kappa0), has two decaying terms with exponents
+     kappa0*a-289theta=31theta>0,
+     kappa0-278theta>0.
+   Final coarsening C1 does NOT occur here.
+
+Final spacing and concentration:
+ - Use the STRONG distance eta^theta/32 in R1846's readout selector,
+   independently of the weakened fine-packing distance above.
+   Its Gamma is fixed*eta^(6theta), hence rho=rho_c*eta^(12theta).
+   Both normalized coefficients have magnitude>=3rho/256; their sum
+   is3/2, so the coefficient on the enlarged factor can have magnitude
+   at least3/4. Original centered determinant gap is eta^theta/32.
+ - Let the final dyadic scalar radius delta be comparable to eta^d,
+   d=1-3Theta. Choose delta_s>=delta, comparable to delta*eta^(-12theta),
+   with a fixed factor large enough that the SMALLER coefficient times
+   delta_s exceeds delta. Do not conflate delta_s with delta.
+ - Kinv=3072/(Lgap*s)=98304*eta^(-(theta+a)). Choose sigma1 to pay
+   Kinv*delta_s<=2sigma1. Thus
+   C1<=fixed*eta^(-(12Theta+52theta+4a)).
+ - Total retention Sret=4C0C1 has exponent12Theta+88theta+4a<=36Theta.
+   Dloc=40(2R)^11(Kinv+2) has exponenttheta+a<=3Theta.
+   H,L,E and P,K,J are bounded by the existing power envelopes with
+   Theta in place of theta; gamma<=theta<=Theta.
+ - The actual normalization exponent11theta is<=8Theta. Thus Wactual
+   is at most Cext times the W in scalar_concentration_power_bounds.
+   REUSE that theorem to get Q<=Qc eta^(-146Theta),
+   Wactual<=fixed eta^(-143Theta), QW<=fixed eta^(-289Theta).
+   A concentration coefficient Cscalar=Cc eta^(-100Theta) can pay this.
+   Keep the actual concentration window radius>=max(eta,epsilon).
+ - REUSE commuting_family_cubic_bound at sigma0 and
+   exists_first_extraction_size_constant. The R1850 sample has |Z|<=V,
+   so |Z|<=Vc eta^(-(1-kappa0/3+83theta)), and hence the same bound with
+   83Theta. The shared scalar-budget lemma uses u with84Theta.
+
+Growth and second extraction:
+ - Choose k=kappa0/12. Scalar concentration exponentkappa0/3 implies
+   the required2k exponent at radii<=1. The verified margins permit
+   reuse of exists_scalar_growth_budget_scale, including delta>=epsilon.
+ - Exact two-term readout and the existing112/560 cell inequalities give
+   a SQUARED trace-cell bound. Scalar growth eta^(-g)|Z| transfers to
+   actual trace growth eta^(-gain)|Z| only after paying a fixed constant
+   and the strict margin2gain<g. This square-root loss is included.
+ - Product/quotient approximation errors are fixed multiples of epsilon;
+   the matrix readout error is bounded by512R^7 times that error.
+   The mixed-source far condition follows eventually from
+   1-2theta>12theta+a, certified by14theta+a<1.
+ - Actual words have length420 and distance>=fixed*eta^(12theta+a).
+   Since12theta+a<=3Theta, they meet the old second-extraction distance
+   scale fixed*eta^(3Theta). Reuse its548Theta cost after generalizing
+   its length wrapper; no new second-extraction geometry is needed.
+ - Combined with retained normalization143Theta, the final cubic
+   contradiction costs691Theta. The certificate proves3gain>691Theta.
+ - To pay ALL word costs, let Ncap=max(421,n0+2), including the original
+   universal n0. Choose tau_profile>0 sufficiently small that
+   (8802Ncap+4427)*tau_profile<=theta. This pays first-extraction and
+   second-extraction profiles; theta<=Theta only makes the latter easier.
+
+Reuse finding: the new strategy can use the earlier scalar power-bound,
+size-bound, dyadic-growth and cubic-contradiction proofs. The only reason
+for a different original frame exponent is to pay the fine trimming
+budget. This avoids another parallel chain of numerical growth estimates.
+The hand derivation found no further power-exponent obstruction, but
+fixed-constant/native envelope applications are still required.
+
+NEXT
+R1851 recorded; never replay its checkpoint script. Full10128-job build
+and4677-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: turn the R1851 LOSS LEDGER into actual native power envelopes,
+reusing the existing proofs. Read verification/r1851-two-stage-exponent-ledger.txt.
+The numerical margins are now verified; do not re-prove them or choose
+a new unrelated parameter system. The remaining task is supplying their
+inputs from the actual quantities, then applying the shared concentration
+kernel on the R1850 sample.
+
+Use Theta=min(e,kappa0)/16384,theta=kappa0*Theta/1024,a=5Theta/16.
+Use fine extraction scales from exists_scaled_extraction_parameters at
+theta, with fixed a0=1/32, weakening generator distance to eta^(2theta)/32.
+Use the stronger eta^theta/32 distance for R1846's coefficient selector
+so rho scales as eta^(12theta). Keep determinant gap Lgap=eta^theta/32.
+
+Immediate reusable numerical pieces:
+ 1. first_extraction_cost_bounds at theta supplies H,C0,L,E envelopes.
+ 2. coefficient_cube_normalization pays the actual eta^(11theta) cube;
+    W0 has loss38theta using the weakened H. Fine trimming is paid by
+    kappa0*a-289theta>0 and kappa0-278theta>0. No C1 in that ratio.
+ 3. Prove C1 and Dloc envelopes from final scalar radius delta~eta^(1-3Theta),
+    delta_s~delta*eta^(-12theta),Kinv=98304 eta^(-(theta+a)).
+    Total Sret=4C0C1 fits eta^(-36Theta),Dloc fits eta^(-3Theta).
+ 4. Apply scalar_concentration_power_bounds at Theta; absorb Cext and
+    11theta<=8Theta in the fixed constant. This gives QW loss289Theta
+    and Cscalar loss100Theta. Do not duplicate its long proof.
+ 5. Apply source_scalar_sample_concentration to the ORIGINAL index subtype
+    returned by exists_actual_trace_square_two_stage_sample. Fine separation
+    pays packing; pairwise inverse plus triangle gives interval diameter;
+    image-card equality gives injectivity. Preserve radius>=epsilon,eta.
+ 6. Reuse commuting_family_cubic_bound and exists_first_extraction_size_constant
+    for |Z|, with |Z|<=V from R1850; the old83theta bound suffices.
+ 7. Existing exists_scalar_growth_budget_scale and the new margin certificate
+    cover scalar-growth budgets. Readout transfer still needs its explicit
+    source/cell bridge; pay square-root loss using2gain<g, gain=e/32.
+
+Generalize exists_reextracted_trace_power_bound to arbitrary fixed length
+by calling profile_power_exponent_bound_of_cost. Its old statement should
+remain a wrapper. Actual k=420 uses profile n=421,cost3710069. Initial
+n0+3 is separate: profile n=n0+2. Do not substitute the old n<=283 theorem.
+The old548Theta reextraction loss and143Theta normalization combine to
+691Theta, already dominated by3gain. This uses the actual mixed-source
+far bound and12theta+a<=3Theta; no stronger unproved geometry is assumed.
+
+After native power envelopes, obtain one maximum dyadic threshold for
+fixed constants, distribution window, error/near-identity conditions,
+trimming, scalar growth and contradiction. No claim yet that this native
+assembly or full paid padding is complete. Original profile/frame,
+strict flattening and analytic/machine endpoints remain.
+
+Continue numeric progress reports for the ORIGINAL paid-padding proof:
+about60%, LOW CONFIDENCE; three of six families formalized, referees pending.
+Original paper read-only; no commits/pushes/subagents at this stage.
+
+BOUNDARY
+The exponent inequalities are Lean-verified for every0<kappa0,e<=1. The ledger connecting actual geometric costs to those exponents has been checked algebraically and against existing theorem signatures, but its native envelope applications and simultaneous fixed-constant thresholds are not yet assembled in Lean. No full parameter-closure or scalar trace-growth theorem is claimed. The arbitrary-length profile coefficient is proved; the full second-extraction wrapper still has its old length cutoff and must be generalized by reuse. Original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty claimed.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

@@ -1,0 +1,115 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "BoundedCoordinatePacking",
+    "RationalPackedFamily",
+    "DyadicFreeFamilyScales",
+    "DyadicFreeFamily",
+    "RationalNearIdentityFamily"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.BoundedCoordinatePacking.binCount",
+    "TransposeFollowup.BoundedCoordinatePacking.binCount_pos",
+    "TransposeFollowup.BoundedCoordinatePacking.bin",
+    "TransposeFollowup.BoundedCoordinatePacking.bin_lt",
+    "TransposeFollowup.BoundedCoordinatePacking.same_bin_close",
+    "TransposeFollowup.BoundedCoordinatePacking.binCount_le",
+    "TransposeFollowup.BoundedCoordinatePacking.binCount_near_identity_le",
+    "TransposeFollowup.BoundedCoordinatePacking.exists_cluster",
+    "TransposeFollowup.RationalFreePair.exists_packed_free_family",
+    "TransposeFollowup.RationalFreePair.free_family_injective",
+    "TransposeFollowup.RationalFreePair.free_family_card",
+    "TransposeFollowup.RationalFreePair.dyadicRadius",
+    "TransposeFollowup.RationalFreePair.dyadicEntryBound",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator",
+    "TransposeFollowup.RationalFreePair.fixed_seed_growth",
+    "TransposeFollowup.RationalFreePair.fixed_seed_denominator",
+    "TransposeFollowup.RationalFreePair.dyadicRadius_pos",
+    "TransposeFollowup.RationalFreePair.dyadicRadius_le_one",
+    "TransposeFollowup.RationalFreePair.dyadicEntryBound_one_le",
+    "TransposeFollowup.RationalFreePair.dyadicEntryBound_pow_eight",
+    "TransposeFollowup.RationalFreePair.dyadic_bin_four_le",
+    "TransposeFollowup.RationalFreePair.dyadic_bin_budget",
+    "TransposeFollowup.RationalFreePair.dyadic_card_with_base",
+    "TransposeFollowup.RationalFreePair.dyadic_packing_budget",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_pos",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_lower",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_upper",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_card_bound",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_radius_lower",
+    "TransposeFollowup.RationalFreePair.dyadicDenominator_radius_upper",
+    "TransposeFollowup.RationalFreePair.exists_dyadic_free_family",
+    "TransposeFollowup.RationalFreePair.exists_dyadic_free_family_with_bounds",
+    "TransposeFollowup.RationalFreePair.exists_dyadic_radius_near",
+    "TransposeFollowup.RationalFreePair.inverse_dyadic_radius_le",
+    "TransposeFollowup.RationalFreePair.exists_rational_near_identity_free_family"
+  ],
+  "declaration_counts": {
+    "def": 5,
+    "theorem": 30
+  },
+  "checks": {
+    "packing": {
+      "session_id": 10172,
+      "exit_code": 0,
+      "jobs": 3094,
+      "warnings": false
+    },
+    "packed_family": {
+      "session_id": 67341,
+      "exit_code": 0,
+      "jobs": 9543,
+      "warnings": false
+    },
+    "dyadic_scales": {
+      "session_id": 58396,
+      "exit_code": 0,
+      "jobs": 9544,
+      "warnings": false
+    },
+    "dyadic_family": {
+      "session_id": 99084,
+      "exit_code": 0,
+      "jobs": 9545,
+      "warnings": false
+    },
+    "arbitrary_radius": {
+      "session_id": 62677,
+      "exit_code": 0,
+      "jobs": 9553,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 95247,
+      "exit_code": 0,
+      "jobs": 9676,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 94074,
+      "exit_code": 0,
+      "declarations": 3906,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/html/1108.2555, Lemma1.1 and Section2 packing/translation, previously read in R1784/R1785 and retained. R1787 proves the actual finite packing and all explicit arithmetic scales directly, reusing Mathlib natural floors, finite pigeonhole, finite subset/enumeration and Archimedean dyadic comparison. It combines the R1785 explicit fixed rational seed and R1786 positive-square free family/basis translation. The final family has common denominator Q, actual rational and real free-group lift injectivity, exact cardinality m, both generators and inverses in the ordinary Frobenius ball, and polynomial bounds in both m and the reciprocal radius. Constants640/1920/3840 are sufficient explicit values, not optimized. No strong Tits, packing, asymptotic cardinality or walk-flattening source theorem is assumed. No novelty claim is made for this standard generator-construction support.",
+  "development_checks": "Packing84389/12431 failed on a floor cast, uninstantiated numeral and addition orientation;10172 passed after explicit real expressions and elementary linear inequalities. Packed-family23348 failed on implicit matrix-coercion/index inference and the local Group abbreviation shadowing the class;67341 passed after explicitly typed entries and _root_.Group. Dyadic-scales96077/47139 failed on division-rewrite names;58396 passed with div_div_eq_mul_div. Dyadic-family99084 passed first build. Arbitrary-radius83633 failed on scalar division normalization, positivity of a defined radius and a Nat-to-Real power cast;62677 passed after explicit normalization/casts. No old mathematical-source edits, raised limits, disabled linters, new axioms or placeholders. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T18:35:31.791917+00:00",
+  "formal_checkpoint": "R1787 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1787, 699 sources, 3906 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1787 completes the unconditional generator construction. For every0<epsilon<=1/32, there are natural m,Q and actual m distinct freely generating rational SL2 matrices, with m>=epsilon^(-3), epsilon^(-1)<=Q<=epsilon^(-3840), and Q<=m^640. Q clears every matrix entry. Their real images also freely generate, and each generator and its inverse lie in the actual open Frobenius ball of radius epsilon about identity; all generator entries have absolute value<=2. The exact real/rational cardinalities are m. The construction uses the fixed seed n=9999, finite coordinate packing and the R1786 free-basis translation, with all arithmetic inequalities proved in Lean. No random-walk flattening premise is used in this generator theorem. The restricted-gap/paid-padding theorem still requires the unproved walk-flatness step.",
+  "next": "Start the actual-walk nonconcentration/initial-flattening step using the completed RationalNearIdentityFamily.exists_rational_near_identity_free_family interface. Do not rederive the seed, word freeness, packing, cardinality, recentering or polynomial scales. For each0<epsilon<=1/32, the theorem supplies m>=epsilon^(-3), common Q with epsilon^(-1)<=Q<=epsilon^(-3840) and Q<=m^640, actual g:Fin m->SL2(Q), injective rational and real free-group lifts, exact image cardinality m, and generators/inverses in the ordinary Frobenius epsilon-ball. Real generators lie in matrixEntryBox2. The dyadic version fixes r>=5, m=2^(3r), radius2^(-r), and Q=900030000^(64r), with2^r<=Q<=2^(1920r) and Q<=m^640.\n\nConcrete next target: prove the short-word rational separation and free-walk atom estimate needed for nonconcentration of the actual symmetric generator measure. Generalize/reuse HasDenominator.one/mul/inv and separated for evaluated words; do not infer matrix distinctness from unequal raw words without reduction/free-group injectivity. Translate separation into a correct small-ball bound and then an initial normalized Haar-kernel density bound. Track left/right translation, the actual Frobenius ball, Haar normalization c_H, word length and the exact smoothing radius. A one-sided smoothed measure is not automatically inversion-symmetric. Record the precise useful interval of scales and how it enters the later iterative flattening argument.\n\nThe substantial remaining source obligations are the initial estimate plus iterative L2 flattening, metric BSG and SL2 product growth. Keep the exact RestrictedGapFromFlatness quantifiers and actual density threshold D^2<=2^j at radius4^(-j). The source Theorem3.1 is not an axiom. A stronger flattening exponent and a large-J conversion must absorb Haar constants. Preserve all six original targets, spatial Fourier tails, T_g=W_(g^-1), and the same positive finite c_H. No final referee subagents before all formalization; no original-directory edits or commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1787 completes the rational near-identity free-generator construction with explicit polynomial denominator/cardinality/radius bounds. Walk nonconcentration and flattening remain; this is not a fourth completed family. Motion200/210 and recursion206/208 remain unstarted. The percentage concerns formalization scope, not time, success probability or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/BoundedCoordinatePacking.lean": "3a71962559b4ead66ec6df65af6abe9bac1cc705ca314b689abb51f2bf0bc41e",
+    "lean/TransposeFollowup/RationalPackedFamily.lean": "c31e6d1dee189bd7515442fb3bf31873ad450a82d9a15197815094f0998e5217",
+    "lean/TransposeFollowup/DyadicFreeFamilyScales.lean": "9276251393c497dd1b0bf254a6b4e4fa03872eb7ea19f591ef02915c9bb32571",
+    "lean/TransposeFollowup/DyadicFreeFamily.lean": "388499264c1e861723959bed6d847f219046402632fc76d19dcd0f575ff3cb2d",
+    "lean/TransposeFollowup/RationalNearIdentityFamily.lean": "f3607168bff8a27aecc1f70476a9bc4c145184b275b0a78fb60bbd0cf483731a"
+  }
+}

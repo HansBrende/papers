@@ -1,0 +1,86 @@
+{
+  "checkpoint": "R1774",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "ComplexAverageActionSum",
+    "UniformDyadicConstants",
+    "DyadicAverageFarCorrelation",
+    "DyadicNearCorrelation",
+    "SymmetricOffsetSum",
+    "DyadicSmallRatioCorrelation",
+    "UniformBandIsolation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.complexifyL2_zero",
+    "TransposeFollowup.complexifyL2_add",
+    "TransposeFollowup.complexifyL2_smul",
+    "TransposeFollowup.complexifyL2_sum",
+    "TransposeFollowup.RealMobius.complexAverage_schwartz_apply",
+    "TransposeFollowup.RealMobius.complexAverage_schwartz_inner_abs_le",
+    "TransposeFollowup.RealMobius.universalDyadicTransportConstant",
+    "TransposeFollowup.RealMobius.universalDyadicTransportConstant_nonneg",
+    "TransposeFollowup.RealMobius.dyadicTransportConstant_le_universal",
+    "TransposeFollowup.RealMobius.inverse_entry_zero_zero",
+    "TransposeFollowup.RealMobius.inverse_entry_one_zero",
+    "TransposeFollowup.RealMobius.universalDyadicFarConstant",
+    "TransposeFollowup.RealMobius.universalDyadicFarConstant_nonneg",
+    "TransposeFollowup.RealMobius.dyadicBand_upper_far_sum_le_universal",
+    "TransposeFollowup.RealMobius.dyadicBand_average_upper_far_sum_le",
+    "TransposeFollowup.RealMobius.dyadicBand_average_lower_far_sum_le",
+    "TransposeFollowup.dyadicBand_offset_norm_product_sum_le",
+    "TransposeFollowup.dyadicBand_small_ratio_offset_sum_le",
+    "TransposeFollowup.finite_upper_row_le_offset_sum",
+    "TransposeFollowup.finite_symmetric_sum_le_offset_sum",
+    "TransposeFollowup.RealMobius.dyadicBand_small_ratio_finite_correlation_le",
+    "TransposeFollowup.RealMobius.exists_universal_dyadic_isolation_constants",
+    "TransposeFollowup.RealMobius.exists_uniform_dyadic_band_norm_ratio",
+    "TransposeFollowup.RealMobius.exists_uniform_grid_dyadic_band_norm_ratio"
+  ],
+  "new_theorems": 22,
+  "new_definitions": [
+    "TransposeFollowup.RealMobius.universalDyadicTransportConstant",
+    "TransposeFollowup.RealMobius.universalDyadicFarConstant"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 67072,
+      "exit_code": 0,
+      "jobs": 9533,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 21457,
+      "exit_code": 0,
+      "jobs": 9607,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 59055,
+      "exit_code": 0,
+      "declarations": 3414,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary APIs for finite sums, finite injective reindexing, real inner products, powers and ordered-field estimates. Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 Claims 3.3\u20133.4 and Proposition 3.5 (https://arxiv.org/html/1108.2555#S3) re-read in R1774. The current actual-band isolation starts at level zero; arbitrary high starting level and normalized selected-band quantitative regularity remain. No novelty claimed for this analytical support.",
+  "updated_at": "2026-10-19T14:51:58.397483+00:00",
+  "formal_checkpoint": "R1774 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1774, 630 sources, 3414 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1774 assembles the exact symmetric complex average from the forward and inverse Mobius actions. The transport constant is bounded by one fixed constant when |g00| and |g10| are at most two; controlling |g11| also supplies the inverse bound. Thus upper and lower distant-band sums decay as 2^(-D) with a constant independent of the input, truncations, number of generators and generator choice within this bounded class. A finite symmetric-matrix reindexing and the shifted band-energy estimate control the near part. If every band has norm ratio at most r, the finite quadratic correlation is at most 2*(D*r*B0 + 2^(-D)*L)*||f||^2. Choosing universal D and r>0 makes this less than 1/3 for unit inputs. Hence a finite band sum with correlation at least 1/3 implies that the full decomposition has some nonzero band u_j with ||T u_j||>r*||u_j||; no bound j<N is asserted. The grid-input corollary uses the verified R1773 eventual finite correlation. This is currently a level-zero decomposition, not the arbitrary-high-start version needed later.",
+  "next": "First extend the verified isolation theorem to an arbitrary starting frequency J with the same positive ratio r. Prove the exact tail reconstruction sum_(j<N) u_(J+j)=v_(J+N)-v_J, where v_J=F_inverse(rho_J*Ff), and its L2 limit f-v_J. The existing sharp-low grid estimate with R=2^(J+1) gives distance at most 1/16 when K^2>=16384*pi^2*2^(3J). Retain correlation and extend the offset argument using shifted finite index sets; the existing far theorem already accepts arbitrary sets, so do not introduce a constant that grows with J. The current J=0 result must not be described as the full arbitrary-k0 source Claim 3.3.\n\nThen address the selected band's relative moments before importing the perturbation step in Claim 3.4. A concrete route is joint selection: form a nonnegative cost M_j from ||x^m u_j||^2 and 2^(-2j)||x^m u_j'||^2 for m=0,1,2; prove its summed bound from the existing cutoff estimates. Declare a band good when M_j<=R*||u_j||^2. Bad bands have small total squared norm for fixed sufficiently large R. Prove that the L2 norm of their sum is controlled by that energy using the bounded Fourier overlap, retain a positive correlation on the good-band sum, then isolate within that set. This is a proposed route, not a proved joint-selection theorem. Check the needed matrix-parameter perturbation estimate explicitly rather than assuming frequency localization gives spatial support or uniform moments.\n\nKeep flattening/product growth, Proposition 3.5, rational free generators, the full motion and recursion families, and final referees in scope. Do not start referee subagents before all formalization. Preserve original files and avoid commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1774 proves uniform distant-band estimates for the symmetric average and a universal positive norm ratio on a nonzero actual dyadic band, starting at level zero. No fourth family is complete. Paid padding still requires arbitrary-high-start band selection, quantitative normalized-band regularity, restricted spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. This percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ComplexAverageActionSum.lean": "96cd006f3a5df223c73f0bb6bcfa89ff063f954d5619c9ca47e0f3ba2ef3662c",
+    "lean/TransposeFollowup/UniformDyadicConstants.lean": "c3aaa957e25c9568b1880d571299657d9732d303ccf67d6b47ff01049d25aca1",
+    "lean/TransposeFollowup/DyadicAverageFarCorrelation.lean": "590ecf48a0f4b128a6e39370f5d1d96a140329936e119aa28c6af1c967d74684",
+    "lean/TransposeFollowup/DyadicNearCorrelation.lean": "290cb2b35bdb983f340840f3a28d2e052bbd4e117a63c6b975e7b3be251a2090",
+    "lean/TransposeFollowup/SymmetricOffsetSum.lean": "e3ef1b843f1567d9d4e39bba8897abddd8f5123bcf87740fac485272d88fdd95",
+    "lean/TransposeFollowup/DyadicSmallRatioCorrelation.lean": "b129b73e744a12fbb40af42824d9f5402214c4d29c5ec5d51ece7c4d720b57b2",
+    "lean/TransposeFollowup/UniformBandIsolation.lean": "d08f692401c9468d834a8f40b59d4ca6d9b7f051e36a75a7bb0fd9d3985bdcaf"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "checkpoint": "R1762",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1761 PROGRESS",
+  "new_modules": [
+    "SmallExpansionSymmDiff",
+    "IndicatorPullbackError",
+    "WeightedIndicatorError"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.symmDiff_common_cover",
+    "TransposeFollowup.RationalUnitMobius.generator_image_subset_restricted",
+    "TransposeFollowup.RationalUnitMobius.family_subset_augmented",
+    "TransposeFollowup.RationalUnitMobius.inverse_family_subset_augmented",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.symmDiff_bound",
+    "TransposeFollowup.RationalUnitMobius.augmented_small_expansion_symmDiff",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_trim_symmDiff",
+    "TransposeFollowup.indicator_difference_square",
+    "TransposeFollowup.indicator_difference_square_integrable",
+    "TransposeFollowup.indicator_difference_square_integral",
+    "TransposeFollowup.RationalUnitMobius.indicator_comp_eq_inverse_image",
+    "TransposeFollowup.RationalUnitMobius.indicator_comp_square_integrableOn",
+    "TransposeFollowup.RationalUnitMobius.indicator_comp_square_integral",
+    "TransposeFollowup.RationalUnitMobius.augmented_small_expansion_indicator_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_trim_indicator_error",
+    "TransposeFollowup.indicator_one_square",
+    "TransposeFollowup.indicator_one_square_integrable",
+    "TransposeFollowup.indicator_one_square_unit_integral",
+    "TransposeFollowup.RationalMobius.measurable_eval",
+    "TransposeFollowup.RationalMobius.measurable_derivative",
+    "TransposeFollowup.RationalMobius.measurable_weightedPullback",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_difference_pointwise",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_indicator_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_small_expansion_weighted_indicator_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_trim_weighted_indicator_error"
+  ],
+  "checks": {
+    "weighted_indicator": {
+      "session_id": 77306,
+      "exit_code": 0,
+      "jobs": 9464
+    },
+    "build": {
+      "session_id": 11150,
+      "exit_code": 0,
+      "jobs": 9540
+    },
+    "axioms": {
+      "session_id": 52458,
+      "exit_code": 0,
+      "declarations": 2979
+    }
+  },
+  "boundary": "Small expansion now controls symmetric differences and both unweighted and actual Jacobian-weighted trimmed-indicator energy on [0,1], with integrability proved. Global centering, boundary contributions, transfer to the normalized cell-centered input, operator/representation obligations, restricted spectral gap and rational generator existence remain. No additional complete original family is claimed.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "section": "Proof of Theorem 1.2: near-invariance of the trimmed indicator before centering and projection",
+    "scope": "The source was reread in R1761. This checkpoint supplies an explicit small-expansion error budget, including mass discarded by trimming and Jacobian distortion. The unweighted indicator energy is identified with a symmetric-difference measure. The weighted energy is proved integrable, then bounded for both each generator and its inverse. This is a local [0,1] statement for the uncentered indicator, not yet the normalized spectral input or a completed spectral-gap proof."
+  },
+  "updated_at": "2026-10-19T11:44:53.983969+00:00",
+  "formal_checkpoint": "R1762 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1762, 563 sources, 2979 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1762 converts small augmented-family expansion into actual unweighted and Jacobian-weighted indicator error. SmallExpansionSymmDiff proves a finite-measure common-cover inequality, inclusion of each generator/inverse image in the actual augmented cover, and the symmetric-difference bound B=2*sigma*M+2*(M-M_prime)+32*eta*M_prime for the centrally trimmed set T. It substitutes the existing trimming loss to give an explicit bound in sigma, delta, eta and m/K. IndicatorPullbackError proves the pointwise indicator/symmetric-difference identity, integrability of the square, and the exact unit-interval integral as the measure of the inverse-map image symmetric difference. Both generator and inverse corollaries are proved. WeightedIndicatorError proves measurability and a pointwise square-root-Jacobian error estimate, derives integrability of the actual weighted error before comparing integrals, and bounds its unit-interval energy by 2*(1+32*eta)*B+2*(32*eta)^2*M_prime. The central-trim corollary replaces B by C*M, where C=2*sigma+4*m/K*(1+delta)+32*eta, and M_prime by M. This proves almost-invariance of the uncentered trimmed indicator locally on [0,1]; global centering and the normalized spectral input remain separate obligations.",
+  "next": "Complete the centered-function almost-invariance estimate. First bound the set of unit-interval points sent outside [0,1] using the proved displacement estimate; charge its boundary-strip measure explicitly. Combine the weighted error of the unit indicator with the proved weighted error of the trimmed indicator to control H=1_T-M_prime*1_[0,1]. Use the actual change-of-variables theorem to prove that the weighted pullback on [0,1] does not increase the global squared integral of the projection error H-F, including integrability. Transfer to the actual cell-centered F and its normalization; derive a quantitative inner-product lower bound for each generator and inverse, with explicit compatible parameter choices. The local weighted estimate must not be treated as an already proved global unitary representation. Then establish the restricted spectral gap and rational-generator existence using library results or complete proofs, never new axioms or numerical tests. Preserve all six targets; after full 201/202 complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes the small-expansion symmetric-difference bound and actual Jacobian-weighted trimmed-indicator error on [0,1], with integrability proved. Global centering, boundary terms and transfer to the normalized cell-centered input remain before the restricted spectral-gap reduction; spectral gap and rational generator existence are still substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SmallExpansionSymmDiff.lean": "d4fc4344594e684e40db58009c3b718ad72869ac58008dd5aa68f12c26a505a7",
+    "lean/TransposeFollowup/IndicatorPullbackError.lean": "a5102f6e0f8281bc96139ed945669d81a7e7a6b3cc44244d8e0c82ebd7e4ab63",
+    "lean/TransposeFollowup/WeightedIndicatorError.lean": "dd5724566ac4e91ce1b907afef29f103b8ac94a30c2c0a89eae05ea069c9b1c5"
+  }
+}

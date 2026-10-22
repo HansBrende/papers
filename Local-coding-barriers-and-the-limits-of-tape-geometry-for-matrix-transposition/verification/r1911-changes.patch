@@ -1,0 +1,1002 @@
+--- before/lean/SupportAxioms.lean
++++ after/lean/SupportAxioms.lean
+@@ -1248,9 +1248,7 @@
+ #print axioms TransposeFollowup.protocolFiberBits_rectangle
+ #print axioms TransposeFollowup.RowCode.group_decoding
+ #print axioms TransposeFollowup.RowCode.separator_leaf_bound
+-#print axioms TransposeFollowup.mean_log_fiberCard
+ #print axioms TransposeFollowup.entropy_le_conditional_crossEntropy
+-#print axioms TransposeFollowup.aggregate_leaf_bounds
+ #print axioms TransposeFollowup.augmentedTranscript_prefixFree
+ #print axioms TransposeFollowup.RowCode.leafVolume_budget
+ #print axioms TransposeFollowup.RowCode.expected_separator_bound
+@@ -7625,3 +7623,13 @@
+ #print axioms TransposeFollowup.TwoStageHelper.exponent_decomposition
+ #print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution
+ #print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution
++#print axioms TransposeFollowup.entropy_le_observation_add_mean_log_fiberCard
++#print axioms TransposeFollowup.aggregate_leaf_bounds_of_distribution
++#print axioms TransposeFollowup.RowCode.expected_separator_bound_log_of_distribution
++#print axioms TransposeFollowup.RowCode.expected_separator_bound_of_distribution
++#print axioms TransposeFollowup.strategy_expected_separator_bound_of_distribution
++#print axioms TransposeFollowup.graph_expected_separator_bound_of_distribution
++#print axioms TransposeFollowup.expected_treewidth_test_of_distribution
++#print axioms TransposeFollowup.average_treewidth_lower_bound_of_distribution
++#print axioms TransposeFollowup.RecodedXorCode.broadcast_bound_of_ball_budget
++#print axioms TransposeFollowup.BoundedCoordinatePacking.exists_finite_code_representatives
+--- before/lean/TransposeFollowup/AdaptiveSeparator.lean
++++ after/lean/TransposeFollowup/AdaptiveSeparator.lean
+@@ -48,6 +48,30 @@
+ 
+ /-- Expected-cost inequality in natural-log units, directly for the given
+ correct family and adaptive support-compatible partitions. -/
++theorem expected_separator_bound_log_of_distribution {n b : ℕ} {H κ : Type*}
++    [Fintype H] [Fintype κ] [DecidableEq κ]
++    (C : RowCode n b H) (F : Finset (FiniteMatrix n b))
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1)
++    (hc : C.CorrectOn (F : Set _))
++    (S : H → List Bool → Finset (Fin n)) (component : H → List Bool → Fin n → κ)
++    (hsep : ∀ x ∈ F, (C.protocol (C.helper x)).Along
++      (PublicProtocol.Separated (S (C.helper x) (C.transcript x))
++        (component (C.helper x) (C.transcript x))) (C.transcript x)) :
++    2 * entropy w ≤ (n * n * b : ℕ) * Real.log 2 +
++      2 * observationEntropy w (fun x : F => C.helper x.val) +
++      (∑ x : F, w x *
++        (((C.transcript x.val).length + C.separatorLoss S component x.val : ℕ) : ℝ)) * Real.log 2 := by
++  have h := aggregate_leaf_bounds_of_distribution w hw hw1 (C.leafOf F S) (fun l => l.val.1)
++    (n * n * b) (C.leafVolume F S) (fun l => l.val.2.length) (C.leafLoss F S component)
++    (fun l _ => C.leafVolume_pos F S l) (C.leaf_log_bound F hc S component hsep)
++    (C.leafVolume_budget F S) (C.leafCode_budget F S)
++  rw [sum_pushforward_mul] at h
++  simp_rw [C.leaf_charge_loss F S component] at h
++  have hhelper : (fun l : C.Leaf F S => l.val.1) ∘ C.leafOf F S =
++      fun x : F => C.helper x.val := rfl
++  rw [hhelper] at h
++  exact h
++
+ theorem expected_separator_bound_log {n b : ℕ} {H κ : Type*}
+     [Fintype H] [Fintype κ] [DecidableEq κ]
+     (C : RowCode n b H) (F : Finset (FiniteMatrix n b)) [Nonempty F]
+@@ -60,19 +84,33 @@
+       2 * observationEntropy (uniformWeight F) (fun x : F => C.helper x.val) +
+       (∑ x : F, uniformWeight F x *
+         (((C.transcript x.val).length + C.separatorLoss S component x.val : ℕ) : ℝ)) * Real.log 2 := by
+-  have h := aggregate_leaf_bounds (C.leafOf F S) (fun l => l.val.1)
+-    (n * n * b) (C.leafVolume F S) (fun l => l.val.2.length) (C.leafLoss F S component)
+-    (fun l _ => C.leafVolume_pos F S l) (C.leaf_log_bound F hc S component hsep)
+-    (C.leafVolume_budget F S) (C.leafCode_budget F S)
+-  rw [sum_pushforward_mul] at h
+-  simp_rw [C.leaf_charge_loss F S component] at h
+-  have hhelper : (fun l : C.Leaf F S => l.val.1) ∘ C.leafOf F S =
+-      fun x : F => C.helper x.val := rfl
+-  rw [hhelper] at h
+-  simpa only [Fintype.card_coe] using h
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    C.expected_separator_bound_log_of_distribution F (uniformWeight F)
++      (uniformWeight_nonneg F) (sum_uniformWeight F) hc S component hsep
+ 
+-/-- The manuscript's expected bound: E length >= P - E L - 2D - 2H(Z),
+-where D=P-log2|F| and the helper entropy is measured under uniform F. -/
++/-- Arbitrary-distribution separator bound: E length >= P - E L - 2D - 2H(Z),
++where D=P-H(X) and both entropies are measured in bits under the supplied law. -/
++theorem expected_separator_bound_of_distribution {n b : ℕ} {H κ : Type*}
++    [Fintype H] [Fintype κ] [DecidableEq κ]
++    (C : RowCode n b H) (F : Finset (FiniteMatrix n b))
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1)
++    (hc : C.CorrectOn (F : Set _))
++    (S : H → List Bool → Finset (Fin n)) (component : H → List Bool → Fin n → κ)
++    (hsep : ∀ x ∈ F, (C.protocol (C.helper x)).Along
++      (PublicProtocol.Separated (S (C.helper x) (C.transcript x))
++        (component (C.helper x) (C.transcript x))) (C.transcript x)) :
++    (∑ x : F, w x * ((C.transcript x.val).length : ℝ)) ≥
++      (n * n * b : ℕ) - (∑ x : F, w x * (C.separatorLoss S component x.val : ℝ)) -
++      2 * ((n * n * b : ℕ) - entropy w / Real.log 2) -
++      2 * (observationEntropy w (fun x : F => C.helper x.val) / Real.log 2) := by
++  have h := C.expected_separator_bound_log_of_distribution F w hw hw1 hc S component hsep
++  simp_rw [Nat.cast_add, mul_add] at h
++  rw [Finset.sum_add_distrib] at h
++  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
++  apply (mul_le_mul_iff_of_pos_right hlog).mp
++  field_simp
++  nlinarith
++
+ theorem expected_separator_bound {n b : ℕ} {H κ : Type*}
+     [Fintype H] [Fintype κ] [DecidableEq κ]
+     (C : RowCode n b H) (F : Finset (FiniteMatrix n b)) [Nonempty F]
+@@ -85,13 +123,9 @@
+       (n * n * b : ℕ) - (∑ x : F, uniformWeight F x * (C.separatorLoss S component x.val : ℝ)) -
+       2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+       2 * (observationEntropy (uniformWeight F) (fun x : F => C.helper x.val) / Real.log 2) := by
+-  have h := C.expected_separator_bound_log F hc S component hsep
+-  simp_rw [Nat.cast_add, mul_add] at h
+-  rw [Finset.sum_add_distrib] at h
+-  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+-  apply (mul_le_mul_iff_of_pos_right hlog).mp
+-  field_simp
+-  nlinarith
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    C.expected_separator_bound_of_distribution F (uniformWeight F)
++      (uniformWeight_nonneg F) (sum_uniformWeight F) hc S component hsep
+ 
+ /-- Worst-case consequence, charging only helper values actually attained
+ on the correct family. The ambient helper type may be much larger. -/
+--- before/lean/TransposeFollowup/AdaptiveTreewidth.lean
++++ after/lean/TransposeFollowup/AdaptiveTreewidth.lean
+@@ -24,8 +24,36 @@
+ 
+ include hrun hcorrect
+ 
++omit [Nonempty F] in
+ /-- A family of integral tests, before choosing the common component threshold.
+ No graph restriction or separator hypothesis remains in this statement. -/
++theorem expected_treewidth_test_of_distribution
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1) (L : ℕ) :
++    ((L : ℝ) + 1) * ((n * n * b : ℕ) -
++      (∑ x : F, w x * ((M x.val).length : ℝ)) -
++      2 * ((n * n * b : ℕ) - entropy w / Real.log 2) -
++      2 * (observationEntropy w (fun x : F => helper x.val) / Real.log 2)) ≤
++      (b : ℝ) * n * (n *
++        ((∑ x : F, w x *
++          (treewidth ((strategy (helper x.val)).interactionGraph [] (M x.val)) : ℝ)) + 1) +
++        L * (L + 1)) := by
++  let graphs := fun z m => (strategy z).interactionGraph [] m
++  let S := fun z m => treewidthLossSeparator b (graphs z m) L
++  have hcode := graph_expected_separator_bound_of_distribution F w hw hw1 helper strategy decode M hrun hcorrect S
++  have hsep := mean_treewidth_separator_loss w
++    hw hw1
++    (fun x : F => graphs (helper x.val) (M x.val)) b L
++  have hbase : (n * n * b : ℕ) -
++      (∑ x : F, w x * ((M x.val).length : ℝ)) -
++      2 * ((n * n * b : ℕ) - entropy w / Real.log 2) -
++      2 * (observationEntropy w (fun x : F => helper x.val) / Real.log 2) ≤
++      ∑ x : F, w x *
++        (graphSeparatorLoss b (graphs (helper x.val) (M x.val))
++          (S (helper x.val) (M x.val)) : ℝ) := by
++    dsimp [graphs] at *
++    linarith
++  exact (mul_le_mul_of_nonneg_left hbase (by positivity : 0 ≤ (L : ℝ) + 1)).trans hsep
++
+ theorem expected_treewidth_test (L : ℕ) :
+     ((L : ℝ) + 1) * ((n * n * b : ℕ) -
+       (∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)) -
+@@ -35,53 +63,42 @@
+         ((∑ x : F, uniformWeight F x *
+           (treewidth ((strategy (helper x.val)).interactionGraph [] (M x.val)) : ℝ)) + 1) +
+         L * (L + 1)) := by
+-  let graphs := fun z m => (strategy z).interactionGraph [] m
+-  let S := fun z m => treewidthLossSeparator b (graphs z m) L
+-  have hcode := graph_expected_separator_bound F helper strategy decode M hrun hcorrect S
+-  have hsep := mean_treewidth_separator_loss (uniformWeight F)
+-    (uniformWeight_nonneg F) (sum_uniformWeight F)
+-    (fun x : F => graphs (helper x.val) (M x.val)) b L
+-  have hbase : (n * n * b : ℕ) -
+-      (∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)) -
+-      2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+-      2 * (observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) ≤
+-      ∑ x : F, uniformWeight F x *
+-        (graphSeparatorLoss b (graphs (helper x.val) (M x.val))
+-          (S (helper x.val) (M x.val)) : ℝ) := by
+-    dsimp [graphs] at *
+-    linarith
+-  exact (mul_le_mul_of_nonneg_left hbase (by positivity : 0 ≤ (L : ℝ) + 1)).trans hsep
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    expected_treewidth_test_of_distribution F helper strategy decode M hrun hcorrect
++      (uniformWeight F) (uniformWeight_nonneg F) (sum_uniformWeight F) L
+ 
+-/-- With P=n²b, D=P-log₂|F| and η=(D+H(Z))/P, expected cost at most
++omit [Nonempty F] in
++/-- For any input law, put P=n²b, D=P-H(X), and η=(D+H(Z))/P. Expected cost at most
+ (1-ε)P forces E tw(G) ≥ (n/4)(ε-2η)₊²+(ε-2η)₊/2-1. This strengthens the written
+ 188 corollary's coefficient 1/9 and removes its additive 1/n rounding loss.
+ Queries may depend on arbitrarily many original rows; each support contributes
+ a clique to the public interaction graph. Coded-workspace access is not assumed. -/
+-theorem average_treewidth_lower_bound (hn : 0 < n) (hb : 0 < b) (ε : ℝ)
+-    (hcost : (∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)) ≤
++theorem average_treewidth_lower_bound_of_distribution
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1) (hn : 0 < n) (hb : 0 < b) (ε : ℝ)
++    (hcost : (∑ x : F, w x * ((M x.val).length : ℝ)) ≤
+       (1 - ε) * (n * n * b : ℕ)) :
+-    (∑ x : F, uniformWeight F x *
++    (∑ x : F, w x *
+       (treewidth ((strategy (helper x.val)).interactionGraph [] (M x.val)) : ℝ)) ≥
+       (n : ℝ) / 4 * (max (ε - 2 *
+-        (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
+-          observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
++        (((n * n * b : ℕ) - entropy w / Real.log 2 +
++          observationEntropy w (fun x : F => helper x.val) / Real.log 2) /
+             (n * n * b : ℕ))) 0) ^ 2 +
+       max (ε - 2 *
+-        (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
+-          observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
++        (((n * n * b : ℕ) - entropy w / Real.log 2 +
++          observationEntropy w (fun x : F => helper x.val) / Real.log 2) /
+             (n * n * b : ℕ))) 0 / 2 - 1 := by
+   let P : ℝ := (n * n * b : ℕ)
+-  let D : ℝ := P - Real.log (F.card : ℝ) / Real.log 2
+-  let HZ : ℝ := observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2
+-  let cost : ℝ := ∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)
+-  let E : ℝ := ∑ x : F, uniformWeight F x *
++  let D : ℝ := P - entropy w / Real.log 2
++  let HZ : ℝ := observationEntropy w (fun x : F => helper x.val) / Real.log 2
++  let cost : ℝ := ∑ x : F, w x * ((M x.val).length : ℝ)
++  let E : ℝ := ∑ x : F, w x *
+     (treewidth ((strategy (helper x.val)).interactionGraph [] (M x.val)) : ℝ)
+   let a : ℝ := ε - 2 * ((D + HZ) / P)
+   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
+   have hbR : 0 < (b : ℝ) := by exact_mod_cast hb
+   have hP : 0 < P := by dsimp [P]; positivity
+   have hE : 0 ≤ E := Finset.sum_nonneg fun x _ =>
+-    mul_nonneg (uniformWeight_nonneg F x) (Nat.cast_nonneg _)
++    mul_nonneg (hw x) (Nat.cast_nonneg _)
+   have hPa : P * a = ε * P - 2 * D - 2 * HZ := by
+     dsimp [a]
+     field_simp
+@@ -92,7 +109,7 @@
+     nlinarith
+   have htests (L : ℕ) : (n : ℝ) * ((L : ℝ) + 1) * a ≤
+       (n : ℝ) * (E + 1) + L * (L + 1) := by
+-    have hraw := expected_treewidth_test F helper strategy decode M hrun hcorrect L
++    have hraw := expected_treewidth_test_of_distribution F helper strategy decode M hrun hcorrect w hw hw1 L
+     change ((L : ℝ) + 1) * (P - cost - 2 * D - 2 * HZ) ≤
+       (b : ℝ) * n * (n * (E + 1) + L * (L + 1)) at hraw
+     have hscaled := (mul_le_mul_of_nonneg_left hsaving
+@@ -109,5 +126,22 @@
+   change E ≥ (n : ℝ) / 4 * (max a 0) ^ 2 + max a 0 / 2 - 1
+   linarith
+ 
++theorem average_treewidth_lower_bound (hn : 0 < n) (hb : 0 < b) (ε : ℝ)
++    (hcost : (∑ x : F, uniformWeight F x * ((M x.val).length : ℝ)) ≤
++      (1 - ε) * (n * n * b : ℕ)) :
++    (∑ x : F, uniformWeight F x *
++      (treewidth ((strategy (helper x.val)).interactionGraph [] (M x.val)) : ℝ)) ≥
++      (n : ℝ) / 4 * (max (ε - 2 *
++        (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
++          observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
++            (n * n * b : ℕ))) 0) ^ 2 +
++      max (ε - 2 *
++        (((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
++          observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) /
++            (n * n * b : ℕ))) 0 / 2 - 1 := by
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    average_treewidth_lower_bound_of_distribution F helper strategy decode M hrun hcorrect
++      (uniformWeight F) (uniformWeight_nonneg F) (sum_uniformWeight F) hn hb ε hcost
++
+ end Protocol
+ end TransposeFollowup
+--- before/lean/TransposeFollowup/AffineApproximationObstruction.lean
++++ after/lean/TransposeFollowup/AffineApproximationObstruction.lean
+@@ -25,14 +25,14 @@
+ theorem AffineTimeRequired.not_bounded_affine_approximation {k J : ℕ} {H : ℝ}
+     {P : Fin k → ℝ → ℝ} (h : AffineTimeRequired P H)
+     (u q : ℕ → Fin k → ℝ → ℝ)
+-    (hconv : ∀ t, TendstoUniformlyOn (fun n => u n t) (P t) atTop (Icc 0 H))
++    (hconv : ∀ t x, x ∈ Icc 0 H → Tendsto (fun n => u n t x) atTop (𝓝 (P t x)))
+     (hcover : ∀ᶠ n in atTop, ∀ t, HasAffineIntervalCover J (q n t) H)
+     {e : ℕ → ℝ} (he : Tendsto e atTop (𝓝 0))
+     (happrox : ∀ᶠ n in atTop, ∀ t x, x ∈ Icc 0 H → dist (u n t x) (q n t x) ≤ e n) :
+     False := by
+   apply h.not_pointwise_bounded_covers q hcover
+   intro t x hx
+-  exact ((hconv t).tendsto_at hx).congr_dist
++  exact (hconv t x hx).congr_dist
+     (squeeze_zero' (Eventually.of_forall fun _ => dist_nonneg)
+       (happrox.mono fun n hn => hn t x hx) he)
+ 
+@@ -57,7 +57,7 @@
+     class_affine_time_nonuniform hns hk hG hq hF hD hDL hcorr htime
+   exact ((hlim φ hφ P hconv).2).not_bounded_affine_approximation
+     (fun n t => rescaledTrajOf (Ms (φ n)) (ns (φ n)) (ws (φ n))
+-      (Fin.cast (hk (φ n)).symm t)) (fun n t => q (φ n) t) hconv
++      (Fin.cast (hk (φ n)).symm t)) (fun n t => q (φ n) t) (fun t x hx => (hconv t).tendsto_at hx)
+     (hφ.tendsto_atTop.eventually hcover) (he.comp hφ.tendsto_atTop)
+     (hφ.tendsto_atTop.eventually happrox)
+ 
+@@ -91,7 +91,8 @@
+     (hw.and happrox).mono fun i hi => hi.2 (ws i) hi.1
+   exact ((hlim φ hφ P hconv).2).not_bounded_affine_approximation
+     (fun n t => rescaledTrajOf (Ms (φ n)) (ns (φ n)) (ws (φ n))
+-      (Fin.cast (hk (φ n)).symm t)) (fun n t => q (φ n) (ws (φ n)) t) hconv
++      (Fin.cast (hk (φ n)).symm t)) (fun n t => q (φ n) (ws (φ n)) t)
++    (fun t x hx => (hconv t).tendsto_at hx)
+     (hφ.tendsto_atTop.eventually hc) (he.comp hφ.tendsto_atTop)
+     (hφ.tendsto_atTop.eventually ha)
+ 
+--- before/lean/TransposeFollowup/CoordinateCoverRefinement.lean
++++ after/lean/TransposeFollowup/CoordinateCoverRefinement.lean
+@@ -6,6 +6,19 @@
+ namespace TransposeFollowup.BoundedCoordinatePacking
+ open Classical Set
+ set_option autoImplicit false
++
++/-- One representative for each attained finite code, without finiteness of the domain. -/
++theorem exists_finite_code_representatives {X L : Type*} [Fintype L] (code : X → L) :
++    ∃ P : Finset X, P.card ≤ Fintype.card L ∧ ∀ x, ∃ e ∈ P, code e = code x := by
++  classical
++  let rep : Set.range code → X := fun z => Classical.choose z.property
++  have hrep (z : Set.range code) : code (rep z) = z.val := Classical.choose_spec z.property
++  refine ⟨Finset.univ.image rep, ?_, ?_⟩
++  · exact Finset.card_image_le.trans
++      (Fintype.card_le_of_injective Subtype.val Subtype.val_injective)
++  · intro x
++    exact ⟨rep ⟨code x, ⟨x, rfl⟩⟩,
++      Finset.mem_image.mpr ⟨_, Finset.mem_univ _, rfl⟩, hrep _⟩
+ 
+ theorem exists_coordinate_refinement {X : Type*} (a : X → Fin 2 → Fin 2 → ℝ)
+     {A : Set X} (F : Finset X) {N δ : ℝ} (hδ : 0 < δ)
+@@ -21,28 +34,16 @@
+   let Label := F × (Fin 2 → Fin 2 → Fin K)
+   let code (x : A) : Label := (center x, fun i j =>
+     ⟨bin N δ (a x i j - a (center x) i j), bin_lt hδ (hcenter x i j)⟩)
+-  have hrange : (Set.range code).Finite := Set.toFinite _
+-  let labels := hrange.toFinset
+-  have hsurj : (Set.univ : Set A).SurjOn code (labels : Set Label) := by
+-    intro y hy
+-    obtain ⟨x, hx⟩ := hrange.mem_toFinset.mp hy
+-    exact ⟨x, Set.mem_univ _, hx⟩
+-  obtain ⟨P, _, hinj, himage⟩ := Finset.exists_subset_injOn_image_eq_of_surjOn Set.univ labels hsurj
+-  have hcard : P.card ≤ F.card * K ^ 4 := by
+-    calc
+-      P.card = (P.image code).card := (Finset.card_image_of_injOn hinj).symm
+-      _ = labels.card := congrArg Finset.card himage
+-      _ ≤ Fintype.card Label := Finset.card_le_univ _
+-      _ = F.card * K ^ 4 := by
+-        simp only [Label, Fintype.card_prod, Fintype.card_coe, Fintype.card_fun, Fintype.card_fin, ← pow_mul]
+-  refine ⟨P.image Subtype.val, ?_, (Finset.card_image_le).trans hcard, ?_⟩
++  obtain ⟨P, hcard, hrep⟩ := exists_finite_code_representatives code
++  have hsize : Fintype.card Label = F.card * K ^ 4 := by
++    simp only [Label, Fintype.card_prod, Fintype.card_coe, Fintype.card_fun,
++      Fintype.card_fin, ← pow_mul]
++  refine ⟨P.image Subtype.val, ?_, (Finset.card_image_le).trans (hcard.trans_eq hsize), ?_⟩
+   · intro x hx
+     obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp hx
+     exact y.2
+   · intro x hx
+-    have hlabel : code ⟨x, hx⟩ ∈ labels := hrange.mem_toFinset.mpr ⟨⟨x, hx⟩, rfl⟩
+-    rw [← himage] at hlabel
+-    obtain ⟨e, he, hcode⟩ := Finset.mem_image.mp hlabel
++    obtain ⟨e, he, hcode⟩ := hrep ⟨x, hx⟩
+     refine ⟨e, Finset.mem_image.mpr ⟨e, he, rfl⟩, ?_⟩
+     intro i j
+     have hcent : center e = center ⟨x, hx⟩ := congrArg Prod.fst hcode
+--- before/lean/TransposeFollowup/EntropyFibers.lean
++++ after/lean/TransposeFollowup/EntropyFibers.lean
+@@ -18,36 +18,6 @@
+   unfold pushforward uniformWeight fiberCard
+   rw [← Finset.sum_filter]
+   simp [div_eq_mul_inv]
+-
+-/-- Exact mean log-fiber size under a uniform source. It applies to variable
+-transcripts and to leaf-dependent separator records without any fixed-length
+-assumption. Empty fibers have zero probability. -/
+-theorem mean_log_fiberCard {Ω A : Type*}
+-    [Fintype Ω] [Nonempty Ω] [Fintype A] (f : Ω → A) :
+-    (∑ a, pushforward (uniformWeight Ω) f a * Real.log (fiberCard f a : ℝ)) =
+-      Real.log (Fintype.card Ω : ℝ) - observationEntropy (uniformWeight Ω) f := by
+-  have hN : (Fintype.card Ω : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+-  let p := pushforward (uniformWeight Ω) f
+-  have hp1 : ∑ a, p a = 1 := by
+-    dsimp only [p]
+-    rw [sum_pushforward, sum_uniformWeight]
+-  have hpoint : ∀ a, p a * Real.log (fiberCard f a : ℝ) =
+-      p a * Real.log (p a) + p a * Real.log (Fintype.card Ω : ℝ) := by
+-    intro a
+-    by_cases hz : fiberCard f a = 0
+-    · simp [p, pushforward_uniformWeight, hz]
+-    · have hz' : (fiberCard f a : ℝ) ≠ 0 := by exact_mod_cast hz
+-      have hlog : Real.log (p a) = Real.log (fiberCard f a : ℝ) -
+-          Real.log (Fintype.card Ω : ℝ) := by
+-        rw [show p a = _ from pushforward_uniformWeight f a, Real.log_div hz' hN]
+-      rw [hlog]
+-      ring
+-  change (∑ a, p a * Real.log (fiberCard f a : ℝ)) =
+-    Real.log (Fintype.card Ω : ℝ) - entropy p
+-  simp_rw [hpoint]
+-  rw [Finset.sum_add_distrib, ← Finset.sum_mul, hp1, one_mul]
+-  simp only [entropy, Real.negMulLog, neg_mul, Finset.sum_neg_distrib]
+-  ring
+ 
+ /-- Gibbs inequality conditioned on a deterministic helper. The comparison
+ weights need only sum to at most one separately for each helper value. -/
+@@ -92,6 +62,37 @@
+   simpa only [entropy, Real.negMulLog, neg_mul, Finset.sum_neg_distrib,
+     neg_add_rev, sub_eq_add_neg, add_comm] using h
+ 
++/-- Conditional support-size bound for arbitrary nonnegative weights. Fibers
++may have different sizes, and zero-probability inputs impose no restrictions. -/
++theorem entropy_le_observation_add_mean_log_fiberCard {Ω A : Type*}
++    [Fintype Ω] [Fintype A] (p : Ω → ℝ) (hp : ∀ x, 0 ≤ p x) (f : Ω → A) :
++    entropy p ≤ observationEntropy p f +
++      ∑ a, pushforward p f a * Real.log (fiberCard f a : ℝ) := by
++  classical
++  have hpos (x : Ω) : 0 < (fiberCard f (f x) : ℝ) := by
++    apply Nat.cast_pos.mpr
++    exact Finset.card_pos.mpr ⟨x, Finset.mem_filter.mpr ⟨Finset.mem_univ x, rfl⟩⟩
++  have hbudget (a : A) :
++      pushforward (fun x : Ω => (fiberCard f (f x) : ℝ)⁻¹) f a ≤ 1 := by
++    unfold pushforward
++    rw [← Finset.sum_filter]
++    calc
++      _ = ∑ _x ∈ Finset.univ.filter (fun x => f x = a), (fiberCard f a : ℝ)⁻¹ := by
++        apply Finset.sum_congr rfl
++        intro x hx
++        rw [(Finset.mem_filter.mp hx).2]
++      _ = (fiberCard f a : ℝ) * (fiberCard f a : ℝ)⁻¹ := by simp [fiberCard]
++      _ ≤ 1 := by
++        by_cases hz : fiberCard f a = 0
++        · simp [hz]
++        · rw [mul_inv_cancel₀ (by exact_mod_cast hz : (fiberCard f a : ℝ) ≠ 0)]
++  have h := entropy_le_conditional_crossEntropy p
++    (fun x => (fiberCard f (f x) : ℝ)⁻¹) hp
++    (fun _ => inv_nonneg.mpr (Nat.cast_nonneg _)) f hbudget
++    (fun x _ => inv_pos.mpr (hpos x))
++  rw [sum_pushforward_mul]
++  simpa only [Real.log_inv, mul_neg, Finset.sum_neg_distrib, sub_neg_eq_add] using h
++
+ /-- A deterministic observation loses at most log C entropy when every fiber
+ contains at most C inputs. This also covers unnormalized nonnegative weights. -/
+ theorem entropy_le_observation_add_log_fiber_bound {Ω A : Type*}
+--- before/lean/TransposeFollowup/FiniteAffineObstruction.lean
++++ after/lean/TransposeFollowup/FiniteAffineObstruction.lean
+@@ -1,4 +1,4 @@
+-import TransposeFollowup.AffineBranchCuts
++import TransposeFollowup.FiniteAffineTimeBound
+ 
+ /-! A closed finite-case consequence for the original M* condition. The
+ countable-branch and positive-exceptional-time endpoints remain separate
+@@ -50,25 +50,11 @@
+     (hstar : ∀ (θ : ℝ≥0∞), 0 < θ → θ < 1 / 2 → ∀ (S : Set ℝ) (β : ℝ → ℕ), FinUnionIcc S →
+       PiecewiseConstOn β S c₀ → (∀ ℓ, volume {u | u ∈ Icc 0 c₀ ∧ u ∉ S ∧ β u=ℓ} ≤ θ) →
+       1 ≤ (∑ t, ∫⁻ p, levelCross (P t) S β c₀ p)+2*θ+2*k*volume (S ∩ Icc 0 c₀)) : False := by
+-  obtain ⟨β,hβ,hpc,hm,hcut⟩ := exists_finite_affine_path_small_cut hc P a b J hJm hJi hcover hP
+-    (θ:=1/4) (ε:=1/4) (by norm_num) (by norm_num)
+-  have hq : ENNReal.ofReal (1/4)=(1/4 : ℝ≥0∞) := by
+-    norm_num [ENNReal.ofReal_div_of_pos]
+-  have hclass (ℓ : ℕ) : volume {u | u ∈ Icc 0 c₀ ∧ u ∉ (∅ : Set ℝ) ∧ β u=ℓ} ≤
+-      ENNReal.ofReal (1/4) := by simpa only [Set.mem_empty_iff_false,not_false_eq_true,true_and] using hm ℓ
+-  have hs := hstar (ENNReal.ofReal (1/4)) (by rw [hq]; norm_num) (by rw [hq]; norm_num) ∅ β
+-    Impl.finUnionIcc_empty hpc hclass
+-  simp only [Set.empty_inter,measure_empty,mul_zero,add_zero] at hs
+-  have hlt : (∑ t, ∫⁻ p, levelCross (P t) ∅ β c₀ p)+2*ENNReal.ofReal (1/4) < 1 := by
+-    calc
+-      _ < ENNReal.ofReal (1/4)+2*ENNReal.ofReal (1/4) :=
+-        ENNReal.add_lt_add_right (ENNReal.mul_ne_top (by norm_num) ENNReal.ofReal_ne_top) hcut
+-      _ < 1 := by
+-        rw [show (2 : ℝ≥0∞)=ENNReal.ofReal 2 by norm_num,
+-          ← ENNReal.ofReal_mul (by norm_num),
+-          ← ENNReal.ofReal_add (by norm_num) (by norm_num),← ENNReal.ofReal_one,
+-          ENNReal.ofReal_lt_ofReal_iff (by norm_num)]
+-        norm_num
+-  exact (not_lt_of_ge hs) hlt
++  have hbad : (1 : ℝ≥0∞) ≤ 0 := one_le_of_star_small_cuts hstar 0 (by
++    intro θ ε hθ hε
++    obtain ⟨β,_,hpc,hm,hcut⟩ := exists_finite_affine_path_small_cut
++      hc P a b J hJm hJi hcover hP hθ hε
++    exact ⟨β,hpc,hm,by simpa only [zero_add] using hcut.le⟩)
++  norm_num at hbad
+ 
+ end TransposeFollowup.AffineMotion
+--- before/lean/TransposeFollowup/GraphSeparatorBound.lean
++++ after/lean/TransposeFollowup/GraphSeparatorBound.lean
+@@ -29,6 +29,30 @@
+ separator may be any function of the helper and completed public transcript;
+ each finite query support contributes a clique. There are no additional
+ compatibility, support-size, entropy, or fiber assumptions. -/
++theorem graph_expected_separator_bound_of_distribution {n b : ℕ} {H : Type*} [Fintype H]
++    (F : Finset (FiniteMatrix n b))
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1)
++    (helper : FiniteMatrix n b → H)
++    (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
++    (decode : H → Fin n → Row n b → List Bool → Row n b)
++    (M : FiniteMatrix n b → List Bool)
++    (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
++    (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
++    (S : H → List Bool → Finset (Fin n)) :
++    (∑ x : F, w x * ((M x.val).length : ℝ)) ≥
++      (n * n * b : ℕ) -
++      (∑ x : F, w x *
++        (graphSeparatorLoss b ((strategy (helper x.val)).interactionGraph [] (M x.val))
++          (S (helper x.val) (M x.val)) : ℝ)) -
++      2 * ((n * n * b : ℕ) - entropy w / Real.log 2) -
++      2 * (observationEntropy w (fun x : F => helper x.val) / Real.log 2) := by
++  classical
++  have h := strategy_expected_separator_bound_of_distribution F w hw hw1 helper strategy decode M hrun hcorrect S
++    (fun z m => componentSet ((strategy z).interactionGraph [] m) (S z m))
++    (fun x hx => (strategy (helper x)).along_componentSet x (hrun x hx) (S (helper x) (M x)))
++  simp only [card_internalFreeBits_components] at h
++  exact h
++
+ theorem graph_expected_separator_bound {n b : ℕ} {H : Type*} [Fintype H]
+     (F : Finset (FiniteMatrix n b)) [Nonempty F]
+     (helper : FiniteMatrix n b → H)
+@@ -45,12 +69,9 @@
+           (S (helper x.val) (M x.val)) : ℝ)) -
+       2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+       2 * (observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) := by
+-  classical
+-  have h := strategy_expected_separator_bound F helper strategy decode M hrun hcorrect S
+-    (fun z m => componentSet ((strategy z).interactionGraph [] m) (S z m))
+-    (fun x hx => (strategy (helper x)).along_componentSet x (hrun x hx) (S (helper x) (M x)))
+-  simp only [card_internalFreeBits_components] at h
+-  exact h
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    graph_expected_separator_bound_of_distribution F (uniformWeight F)
++      (uniformWeight_nonneg F) (sum_uniformWeight F) helper strategy decode M hrun hcorrect S
+ 
+ open Classical in
+ /-- Worst-case graph-component form, with only attained helper values charged. -/
+--- before/lean/TransposeFollowup/LeafAggregation.lean
++++ after/lean/TransposeFollowup/LeafAggregation.lean
+@@ -12,8 +12,9 @@
+ /-- Abstract finite aggregation in natural-log units. `charge` will be the
+ transcript length plus the separator assignment width; `loss` is the exact
+ internal component count. Helper information is charged twice. -/
+-theorem aggregate_leaf_bounds {Ω L H : Type*}
+-    [Fintype Ω] [Nonempty Ω] [Fintype L] [Fintype H]
++theorem aggregate_leaf_bounds_of_distribution {Ω L H : Type*}
++    [Fintype Ω] [Fintype L] [Fintype H]
++    (w : Ω → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1)
+     (leaf : Ω → L) (helper : L → H)
+     (P : ℕ) (volume charge loss : L → ℕ)
+     (hvolpos : ∀ l, 0 < fiberCard leaf l → 0 < volume l)
+@@ -24,19 +25,25 @@
+       pushforward (fun l => (volume l : ℝ) / (2 : ℝ) ^ P) helper h ≤ 1)
+     (hcodebudget : ∀ h,
+       pushforward (fun l => (1 / 2 : ℝ) ^ charge l) helper h ≤ 1) :
+-    2 * Real.log (Fintype.card Ω : ℝ) ≤
++    2 * entropy w ≤
+       (P : ℝ) * Real.log 2 +
+-      2 * observationEntropy (uniformWeight Ω) (helper ∘ leaf) +
+-      (∑ l, pushforward (uniformWeight Ω) leaf l * ((charge l + loss l : ℕ) : ℝ)) *
++      2 * observationEntropy w (helper ∘ leaf) +
++      (∑ l, pushforward w leaf l * ((charge l + loss l : ℕ) : ℝ)) *
+         Real.log 2 := by
+-  let p := pushforward (uniformWeight Ω) leaf
+-  have hp : ∀ l, 0 ≤ p l := pushforward_nonneg _ (uniformWeight_nonneg Ω) leaf
+-  have hp1 : ∑ l, p l = 1 := (sum_pushforward _ leaf).trans (sum_uniformWeight Ω)
++  classical
++  let p := pushforward w leaf
++  have hp : ∀ l, 0 ≤ p l := pushforward_nonneg _ hw leaf
++  have hp1 : ∑ l, p l = 1 := (sum_pushforward _ leaf).trans hw1
+   have hfpos : ∀ l, 0 < p l → 0 < fiberCard leaf l := by
+     intro l hl
+     by_contra hn
+-    have hz : fiberCard leaf l = 0 := Nat.eq_zero_of_not_pos hn
+-    simp only [p, pushforward_uniformWeight, hz, Nat.cast_zero, zero_div, lt_self_iff_false] at hl
++    have hz : Finset.univ.filter (fun x => leaf x = l) = ∅ :=
++      Finset.card_eq_zero.mp (Nat.eq_zero_of_not_pos hn)
++    have hzero : p l = 0 := by
++      change pushforward w leaf l = 0
++      unfold pushforward
++      rw [← Finset.sum_filter, hz, Finset.sum_empty]
++    exact (ne_of_gt hl) hzero
+   have hvpos : ∀ l, 0 < p l → 0 < (volume l : ℝ) := by
+     intro l hl
+     exact_mod_cast hvolpos l (hfpos l hl)
+@@ -84,16 +91,14 @@
+       _ = _ := by
+         simp_rw [mul_add, ← mul_assoc]
+         rw [Finset.sum_add_distrib, ← Finset.sum_mul]
+-  have hmean := mean_log_fiberCard leaf
+-  change (∑ l, p l * Real.log (fiberCard leaf l : ℝ)) =
+-    Real.log (Fintype.card Ω : ℝ) - entropy p at hmean
+-  rw [hmean] at hleafsum
+-  have hhelper : observationEntropy (uniformWeight Ω) (helper ∘ leaf) =
++  have hmean := entropy_le_observation_add_mean_log_fiberCard w hw leaf
++  change entropy w ≤ entropy p + ∑ l, p l * Real.log (fiberCard leaf l : ℝ) at hmean
++  have hhelper : observationEntropy w (helper ∘ leaf) =
+       observationEntropy p helper := by
+     unfold observationEntropy
+     rw [← pushforward_comp]
+   rw [hhelper]
+-  change 2 * Real.log (Fintype.card Ω : ℝ) ≤ (P : ℝ) * Real.log 2 +
++  change 2 * entropy w ≤ (P : ℝ) * Real.log 2 +
+     2 * observationEntropy p helper +
+       (∑ l, p l * ((charge l + loss l : ℕ) : ℝ)) * Real.log 2
+   simp_rw [Nat.cast_add, mul_add]
+--- before/lean/TransposeFollowup/NativeIO.lean
++++ after/lean/TransposeFollowup/NativeIO.lean
+@@ -91,23 +91,7 @@
+         Equiv.symm_apply_apply, hp, lift]
+       split <;> rfl
+     · simp only [step, hp, Config.denote, lift, NativeMicrocode.Config.denote]
+-  | readInput next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+-      Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,setLabel,Transpose.Dir.shift]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z; simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | moveInput dir next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+-      Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,setLabel,Transpose.Dir.shift]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z; simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | output bit next =>
++  | _ =>
+     simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+       Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,setLabel,Transpose.Dir.shift]
+     congr 1
+--- before/lean/TransposeFollowup/NativeIOFusion.lean
++++ after/lean/TransposeFollowup/NativeIOFusion.lean
+@@ -59,63 +59,28 @@
+       denote e p selected (step p selected w c) := by
+   cases hp : p c.work.core.pc with
+   | work i =>
+-    cases he : NativeReadFusion.effective (workProgram p) selected (fun t => (c.work.core.tapes t).head) c.work.core.pc with
+-    | read t next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeReadFusion.delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,he,Option.getD_some,
+-        step,NativeReadFusion.step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      split_ifs with hz
+-      · subst z;simp [AbsoluteTape.scanned]
+-      · simp [hz]
+-    | act acts next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeReadFusion.delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,he,Option.getD_some,
+-        step,NativeReadFusion.step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      rw [NativeMicrocode.action_cells]
+-      split_ifs with hz
+-      · cases (acts (e.port.symm i)).write <;> simp [hz]
+-      · simp [hz]
+-    | jump next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeReadFusion.delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,he,Option.getD_some,
+-        step,NativeReadFusion.step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      split_ifs with hz
+-      · subst z;simp [AbsoluteTape.scanned]
+-      · simp [hz]
+-    | halt => simp [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeReadFusion.delta,NativeMicrocode.delta,
+-        hp,he,step,NativeReadFusion.step,NativeMicrocode.step,Microcode.actualStep,AbsoluteTape.scanned]
+-    | reject => simp [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeReadFusion.delta,NativeMicrocode.delta,
+-        hp,he,step,NativeReadFusion.step,NativeMicrocode.step,Microcode.actualStep,AbsoluteTape.scanned]
+-  | readInput next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeIO.delta,
+-      Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,NativeIO.step,NativeIO.setLabel,Transpose.Dir.shift]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z;simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | moveInput dir next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeIO.delta,
+-      Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,NativeIO.step,NativeIO.setLabel,Transpose.Dir.shift]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z;simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | output bit next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeIO.delta,
+-      Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,NativeIO.step,NativeIO.setLabel,Transpose.Dir.shift]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z;simp [AbsoluteTape.scanned]
+-    · simp [hz]
++    let lift : Transpose.Config (NativeReadFusion.machine e (workProgram p) selected) →
++        Transpose.Config (machine e p selected) :=
++      fun d => ⟨d.state, d.inPos, d.work, d.workPos, d.outRev⟩
++    have hh := congrArg lift
++      (NativeReadFusion.step_denote e (workProgram p) selected w c.inputPos c.outRev c.work)
++    convert hh using 1
++    · simp only [Transpose.Tape.Impl.next, Transpose.step, denote,
++        NativeReadFusion.denote, machine, NativeReadFusion.machine, delta,
++        Equiv.symm_apply_apply, hp, lift]
++      split <;> rfl
++    · simp only [step, hp, denote, lift, NativeReadFusion.denote]
++  | _ =>
++    let lift : Transpose.Config (NativeIO.machine e p) →
++        Transpose.Config (machine e p selected) :=
++      fun d => ⟨d.state, d.inPos, d.work, d.workPos, d.outRev⟩
++    have hh := congrArg lift (NativeIO.step_denote e p w c)
++    convert hh using 1
++    · simp only [Transpose.Tape.Impl.next, Transpose.step, denote,
++        NativeIO.Config.denote, machine, NativeIO.machine, delta,
++        Equiv.symm_apply_apply, hp, lift]
++      split <;> rfl
++    · simp only [step, hp, denote, lift, NativeIO.Config.denote]
+ 
+ theorem step_none_iff (e : Encoding T L k q) (p : Program T L) (selected : L → Bool)
+     (w : List Bool) (c : Config T L) :
+--- before/lean/TransposeFollowup/NativeMicrocode.lean
++++ after/lean/TransposeFollowup/NativeMicrocode.lean
+@@ -116,15 +116,6 @@
+     Transpose.Tape.Impl.next (machine e p) w (c.denote e p inputPos outRev) =
+       (step p c).denote e p inputPos outRev := by
+   cases hp : p c.core.pc with
+-  | read t next =>
+-    simp only [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
+-      Equiv.symm_apply_apply, hp, AbsoluteTape.scanned,
+-      symbolDecode_code, Option.getD_some, step, Microcode.actualStep]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z; simp [AbsoluteTape.scanned]
+-    · simp [hz]
+   | act actions next =>
+     simp only [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
+       Equiv.symm_apply_apply, hp, AbsoluteTape.scanned, Option.getD_some,
+@@ -135,20 +126,17 @@
+     split_ifs with hz
+     · cases (actions (e.port.symm i)).write <;> simp [hz]
+     · simp [hz]
+-  | jump next =>
++  | halt | reject =>
++    simp [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
++      hp, step, Microcode.actualStep]
++  | _ =>
+     simp only [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
+-      Equiv.symm_apply_apply, hp, AbsoluteTape.scanned, Option.getD_some,
+-      step, Microcode.actualStep]
++      Equiv.symm_apply_apply, hp, AbsoluteTape.scanned, symbolDecode_code,
++      Option.getD_some, step, Microcode.actualStep]
+     congr 1
+     funext i z
+     split_ifs with hz
+     · subst z; simp [AbsoluteTape.scanned]
+     · simp [hz]
+-  | halt =>
+-    simp [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
+-      hp, step, Microcode.actualStep]
+-  | reject =>
+-    simp [Transpose.Tape.Impl.next, Transpose.step, Config.denote, machine, delta,
+-      hp, step, Microcode.actualStep]
+ 
+ end TransposeFollowup.NativeMicrocode
+--- before/lean/TransposeFollowup/NativeReadFusion.lean
++++ after/lean/TransposeFollowup/NativeReadFusion.lean
+@@ -81,40 +81,17 @@
+     (w : List Bool) (ip : ℤ) (outRev : List Bool) (c : NativeMicrocode.Config T L) :
+     Transpose.Tape.Impl.next (machine e p selected) w (denote e p selected ip outRev c)=
+       denote e p selected ip outRev (step p selected c) := by
+-  cases hp:effective p selected (fun t => (c.core.tapes t).head) c.core.pc with
+-  | read t next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeMicrocode.delta,
+-      Equiv.symm_apply_apply,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,hp,Option.getD_some,
+-      step,
+-      NativeMicrocode.step,Microcode.actualStep]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z;simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | act acts next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeMicrocode.delta,
+-      Equiv.symm_apply_apply,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,hp,Option.getD_some,step,
+-      NativeMicrocode.step,Microcode.actualStep]
+-    congr 1
+-    funext i z
+-    rw [NativeMicrocode.action_cells]
+-    split_ifs with hz
+-    · cases (acts (e.port.symm i)).write <;> simp [hz]
+-    · simp [hz]
+-  | jump next =>
+-    simp only [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeMicrocode.delta,
+-      Equiv.symm_apply_apply,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,hp,Option.getD_some,step,
+-      NativeMicrocode.step,Microcode.actualStep]
+-    congr 1
+-    funext i z
+-    split_ifs with hz
+-    · subst z;simp [AbsoluteTape.scanned]
+-    · simp [hz]
+-  | halt => simp [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeMicrocode.delta,
+-      hp,step,NativeMicrocode.step,Microcode.actualStep,AbsoluteTape.scanned]
+-  | reject => simp [Transpose.Tape.Impl.next,Transpose.step,denote,machine,delta,NativeMicrocode.delta,
+-      hp,step,NativeMicrocode.step,Microcode.actualStep,AbsoluteTape.scanned]
++  let ep := effective p selected (fun t => (c.core.tapes t).head)
++  let lift : Transpose.Config (NativeMicrocode.machine e ep) →
++      Transpose.Config (machine e p selected) :=
++    fun d => ⟨d.state, d.inPos, d.work, d.workPos, d.outRev⟩
++  have hh := congrArg lift (NativeMicrocode.step_denote e ep w ip outRev c)
++  convert hh using 1
++  · simp only [Transpose.Tape.Impl.next, Transpose.step, denote,
++      NativeMicrocode.Config.denote, machine, NativeMicrocode.machine, delta,
++      Equiv.symm_apply_apply, AbsoluteTape.scanned, NativeMicrocode.symbolDecode_code, ep, lift]
++    split <;> rfl
++  · rfl
+ 
+ theorem step_none_iff (e : Encoding T L k q) (p : Microcode.Program T L) (selected : L → Bool)
+     (w : List Bool) (ip : ℤ) (outRev : List Bool) (c : NativeMicrocode.Config T L) :
+--- before/lean/TransposeFollowup/SL2TraceCover.lean
++++ after/lean/TransposeFollowup/SL2TraceCover.lean
+@@ -28,29 +28,16 @@
+   let Label := (k : Fin 3) → F k × Fin K
+   let code (x : A) : Label := fun k => (center x k,
+     ⟨bin η δ (f k x - (center x k : ℝ)), bin_lt hδ (hcenter x k)⟩)
+-  have hrange : (Set.range code).Finite := Set.toFinite _
+-  let labels := hrange.toFinset
+-  have hsurj : (Set.univ : Set A).SurjOn code (labels : Set Label) := by
+-    intro y hy
+-    obtain ⟨x, hx⟩ := hrange.mem_toFinset.mp hy
+-    exact ⟨x, Set.mem_univ _, hx⟩
+-  obtain ⟨P, _, hinj, himage⟩ := Finset.exists_subset_injOn_image_eq_of_surjOn Set.univ labels hsurj
+-  have hcard : P.card ≤ (∏ k : Fin 3, (F k).card) * K ^ 3 := by
+-    calc
+-      P.card = (P.image code).card := (Finset.card_image_of_injOn hinj).symm
+-      _ = labels.card := congrArg Finset.card himage
+-      _ ≤ Fintype.card Label := Finset.card_le_univ _
+-      _ = _ := by
+-        simp only [Label, Fintype.card_pi, Fintype.card_prod, Fintype.card_coe,
+-          Fintype.card_fin, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
+-  refine ⟨P.image Subtype.val, ?_, Finset.card_image_le.trans hcard, ?_⟩
++  obtain ⟨P, hcard, hrep⟩ := exists_finite_code_representatives code
++  have hsize : Fintype.card Label = (∏ k : Fin 3, (F k).card) * K ^ 3 := by
++    simp only [Label, Fintype.card_pi, Fintype.card_prod, Fintype.card_coe,
++      Fintype.card_fin, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
++  refine ⟨P.image Subtype.val, ?_, Finset.card_image_le.trans (hcard.trans_eq hsize), ?_⟩
+   · intro x hx
+     obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp hx
+     exact y.2
+   · intro x hx
+-    have hlabel : code ⟨x, hx⟩ ∈ labels := hrange.mem_toFinset.mpr ⟨⟨x, hx⟩, rfl⟩
+-    rw [← himage] at hlabel
+-    obtain ⟨e, he, hcode⟩ := Finset.mem_image.mp hlabel
++    obtain ⟨e, he, hcode⟩ := hrep ⟨x, hx⟩
+     refine ⟨e, Finset.mem_image.mpr ⟨e, he, rfl⟩, ?_⟩
+     have hclose (k : Fin 3) : |f k x - f k e| < δ := by
+       have hcent : center e k = center ⟨x, hx⟩ k := congrArg (fun z : Label => (z k).1) hcode
+--- before/lean/TransposeFollowup/StrategySeparator.lean
++++ after/lean/TransposeFollowup/StrategySeparator.lean
+@@ -9,6 +9,45 @@
+ open scoped BigOperators
+ open Classical
+ set_option autoImplicit false
++
++theorem strategy_expected_separator_bound_of_distribution {n b : ℕ} {H κ : Type*}
++    [Fintype H] [Fintype κ] [DecidableEq κ]
++    (F : Finset (FiniteMatrix n b))
++    (w : F → ℝ) (hw : ∀ x, 0 ≤ w x) (hw1 : ∑ x, w x = 1)
++    (helper : FiniteMatrix n b → H)
++    (strategy : H → PublicStrategy (Fin n) (fun _ => Row n b))
++    (decode : H → Fin n → Row n b → List Bool → Row n b)
++    (M : FiniteMatrix n b → List Bool)
++    (hrun : ∀ x ∈ F, (strategy (helper x)).Executes x [] (M x))
++    (hcorrect : ∀ x ∈ F, ∀ j, decode (helper x) j (x j) (M x) = transposed x j)
++    (S : H → List Bool → Finset (Fin n)) (component : H → List Bool → Fin n → κ)
++    (hsep : ∀ x ∈ F, (strategy (helper x)).Along
++      (PublicProtocol.Separated (S (helper x) (M x)) (component (helper x) (M x))) [] (M x)) :
++    (∑ x : F, w x * ((M x.val).length : ℝ)) ≥
++      (n * n * b : ℕ) -
++      (∑ x : F, w x *
++        ((n * b * (S (helper x.val) (M x.val)).card +
++          (internalFreeBits (b := b) (S (helper x.val) (M x.val))
++            (component (helper x.val) (M x.val))).card : ℕ) : ℝ)) -
++      2 * ((n * n * b : ℕ) - entropy w / Real.log 2) -
++      2 * (observationEntropy w (fun x : F => helper x.val) / Real.log 2) := by
++  obtain ⟨p, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hrun
++  let C : RowCode n b H := ⟨helper, p, decode⟩
++  have htrans : ∀ x ∈ F, C.transcript x = M x := hM
++  have hc : C.CorrectOn (F : Set _) := by
++    intro x hx j
++    change decode (helper x) j (x j) (C.transcript x) = transposed x j
++    rw [htrans x hx]
++    exact hcorrect x hx j
++  have hs : ∀ x ∈ F, (C.protocol (C.helper x)).Along
++      (PublicProtocol.Separated (S (C.helper x) (C.transcript x))
++        (component (C.helper x) (C.transcript x))) (C.transcript x) := by
++    intro x hx
++    rw [htrans x hx]
++    exact hP x hx _ (hsep x hx)
++  have h := C.expected_separator_bound_of_distribution F w hw hw1 hc S component hs
++  have htransF (x : F) : C.transcript x.val = M x.val := htrans x.val x.property
++  simpa only [RowCode.separatorLoss, htransF] using h
+ 
+ theorem strategy_expected_separator_bound {n b : ℕ} {H κ : Type*}
+     [Fintype H] [Fintype κ] [DecidableEq κ]
+@@ -30,37 +69,10 @@
+             (component (helper x.val) (M x.val))).card : ℕ) : ℝ)) -
+       2 * ((n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2) -
+       2 * (observationEntropy (uniformWeight F) (fun x : F => helper x.val) / Real.log 2) := by
+-  obtain ⟨p, hM, hP⟩ := PublicStrategy.finite_family_truncation F helper strategy M hrun
+-  let C : RowCode n b H := ⟨helper, p, decode⟩
+-  have htrans : ∀ x ∈ F, C.transcript x = M x := hM
+-  have hc : C.CorrectOn (F : Set _) := by
+-    intro x hx j
+-    change decode (helper x) j (x j) (C.transcript x) = transposed x j
+-    rw [htrans x hx]
+-    exact hcorrect x hx j
+-  have hs : ∀ x ∈ F, (C.protocol (C.helper x)).Along
+-      (PublicProtocol.Separated (S (C.helper x) (C.transcript x))
+-        (component (C.helper x) (C.transcript x))) (C.transcript x) := by
+-    intro x hx
+-    rw [htrans x hx]
+-    exact hP x hx _ (hsep x hx)
+-  have h := C.expected_separator_bound F hc S component hs
+-  have hleft : (∑ x : F, uniformWeight F x * ((C.transcript x.val).length : ℝ)) =
+-      ∑ x : F, uniformWeight F x * ((M x.val).length : ℝ) := by
+-    apply Finset.sum_congr rfl
+-    intro x _
+-    rw [htrans x.val x.property]
+-  have hright : (∑ x : F, uniformWeight F x * (C.separatorLoss S component x.val : ℝ)) =
+-      ∑ x : F, uniformWeight F x *
+-        ((n * b * (S (helper x.val) (M x.val)).card +
+-          (internalFreeBits (b := b) (S (helper x.val) (M x.val))
+-            (component (helper x.val) (M x.val))).card : ℕ) : ℝ) := by
+-    apply Finset.sum_congr rfl
+-    intro x _
+-    unfold RowCode.separatorLoss
+-    rw [htrans x.val x.property]
+-  rw [hleft, hright] at h
+-  exact h
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using
++    strategy_expected_separator_bound_of_distribution F (uniformWeight F)
++      (uniformWeight_nonneg F) (sum_uniformWeight F) helper strategy decode M hrun hcorrect
++      S component hsep
+ 
+ /-- Worst-case form for public strategies that may diverge off F. -/
+ theorem strategy_worst_case_separator_bound {n b : ℕ} {H κ : Type*}
+--- before/lean/TransposeFollowup/XorPathCycleBound.lean
++++ after/lean/TransposeFollowup/XorPathCycleBound.lean
+@@ -16,30 +16,29 @@
+ 
+ variable {n b B : ℕ} (C : RecodedXorCode n b B)
+ 
++/-- One radius and one ball-volume budget suffice. This isolates the shared
++counting step from the choice of an integer square-root threshold. -/
++theorem broadcast_bound_of_ball_budget (hc : C.Correct) (G : SimpleGraph (Fin n))
++    (hG : C.LocalTo G) (k q e : ℕ)
++    (hballs : ∀ i, (nearVertices G k i).card ≤ q)
++    (hbudget : n + k * q ≤ (k + 1) * e) :
++    n * n * b ≤ B + b * n * e := by
++  have hnear := card_nearBits_le_of_balls (b := b) G k q hballs
++  have hs := C.broadcast_lower_bound_scaled hc G hG k
++  have hscaled : (k + 1) * (n * n * b) ≤ (k + 1) * (B + b * n * e) := by
++    nlinarith [Nat.mul_le_mul_left (b * n) hbudget, Nat.mul_le_mul_left k hnear]
++  exact (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
++
+ theorem linear_ball_broadcast_bound_nat (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G)
+     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :
+     n * n * b ≤ B + b * n * (3 * Nat.sqrt n) := by
+   let k := Nat.sqrt n
+   have hk : 1 ≤ k := Nat.sqrt_pos.mpr hn
+-  have hnear : (nearBits (b := b) G k).card ≤ b * n * (2 * k) := by
+-    apply card_nearBits_le_of_balls
+-    intro i
+-    exact (hballs k hk i).trans (Nat.sub_le _ _)
+-  have hs := C.broadcast_lower_bound_scaled hc G hG k
++  apply C.broadcast_bound_of_ball_budget hc G hG k (2 * k) (3 * k)
++    (fun i => (hballs k hk i).trans (Nat.sub_le _ _))
+   have hnSq : n ≤ (k + 1) * (k + 1) := (Nat.lt_succ_sqrt n).le
+-  have hterm : n * n * b + k * (nearBits (b := b) G k).card ≤
+-      (k + 1) * (b * n * (3 * k)) := by
+-    calc
+-      _ ≤ b * n * ((k + 1) * (k + 1)) + k * (b * n * (2 * k)) := by
+-        apply Nat.add_le_add
+-        · convert Nat.mul_le_mul_left (b * n) hnSq using 1
+-          ring
+-        · exact Nat.mul_le_mul_left k hnear
+-      _ ≤ (k + 1) * (b * n * (3 * k)) := by nlinarith
+-  have hscaled : (k + 1) * (n * n * b) ≤
+-      (k + 1) * (B + b * n * (3 * k)) := by nlinarith
+-  exact (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
++  nlinarith
+ 
+ /-- An explicit form of B>=P-O(b n^(3/2)): the error is at most bn sqrt(8n).
+ All recoding and decoding assumptions remain those of the full finite theorem. -/
+@@ -61,13 +60,8 @@
+     have hsub := congrArg (fun t : ℕ => k * t)
+       (Nat.sub_add_cancel (by omega : 1 ≤ 2 * k))
+     nlinarith
+-  have hnear : (nearBits (b := b) G k).card ≤ b * n * (2 * k - 1) :=
+-    card_nearBits_le_of_balls G k (2 * k - 1) (fun i => hballs k hk i)
+-  have hs := C.broadcast_lower_bound_scaled hc G hG k
+-  have hscaled : (k + 1) * (n * n * b) ≤
+-      (k + 1) * (B + b * n * (4 * k)) := by
+-    nlinarith [Nat.mul_le_mul_left (b * n) hcalc, Nat.mul_le_mul_left k hnear]
+-  have hnat := (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
++  have hnat := C.broadcast_bound_of_ball_budget hc G hG k (2 * k - 1) (4 * k)
++    (fun i => hballs k hk i) hcalc
+   have hbound : ((n * n * b : ℕ) : ℝ) ≤ B + (b : ℝ) * n * (4 * (k : ℝ)) := by
+     exact_mod_cast hnat
+   have hksq : 2 * k ^ 2 ≤ n := by

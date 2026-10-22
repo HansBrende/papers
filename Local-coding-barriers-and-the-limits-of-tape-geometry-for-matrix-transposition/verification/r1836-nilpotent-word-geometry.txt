@@ -1,0 +1,100 @@
+R1836 — VERIFIED NILPOTENT WORD GEOMETRY
+
+In progress. R1836 verifies a weighted-trace certificate giving uniform separation from the identity for BOTH actual nilpotent arithmetic word families, with source errors charged. It also derives the positive scalar interval from actual near-identity source words and supplies whole-family near/far geometry. One new module and one refactored module add seven theorems. The old trace-error calculation now reuses its exposed distance estimate. Scalar separation, normalized distribution, retained mass and the full trace-cubic comparison remain application obligations; nonnilpotent cases remain open.
+
+1. REUSED NATIVE WORD DISTANCE ESTIMATE.
+The previous internal calculation is now exposed as two_source_word_distances. For u,v,u',v',g,h in SL2(R), R,epsilon>=0, entry bounds R on v,u',g,h and dist(u,u'),dist(v,v')<=epsilon, it proves
+  dist(uvg,u'v'g)<=8R^2 epsilon,
+  dist(ugvh,u'gv'h)<=16R^3 epsilon.
+No entry bounds on u or v' are required. The earlier trace-error theorem retains its statement and constants and now invokes this result. The calculation is not copied.
+
+2. EXACT WEIGHTED TRACE CERTIFICATE.
+Let tr(b)=det(b)=0, u=cI+tb,v=pI+qb in SL2(R), c,p>=1/2, and g in SL2(R). Put ell=tr(bg),tau=tr(g). The determinant equation forces c=p=1, and
+  tr(b u v g)=ell,
+  tr(b u g v g)=ell*(tau+q*ell).
+The proof reuses scalarAffine_mul and the general repeated trace identity, including its determinant correction. No diagonalization or choice of eigenvectors is required. These are elementary supporting trace identities; no novelty is claimed.
+
+3. GENERAL WEIGHTED TRACE DISTANCE LOWER BOUND.
+For arbitrary real 2x2 matrices b,x,y,
+  |tr(bx)-tr(by)|<=2||b|| dist(x,y).
+If tr(b)=0, B>0, ||b||<=B, L<=|tr(bx)|, dist(x,y)<=E, and 2BE<=L/2, then
+  dist(y,I)>=L/(4B).
+L>0 is needed only to make the resulting lower bound positive, not for this inequality itself. The proof uses the existing trace Lipschitz and left multiplication estimates.
+
+4. ACTUAL WORDS REMAIN UNIFORMLY FAR FROM I.
+Take the data of item2. Suppose R>=1 bounds entries of v,z,g, epsilon>=0 bounds dist(u,z) and dist(v,w), B>0 bounds ||b||, and L<=|ell|. If
+  tau+q*ell>=1,
+  32 B R^3 epsilon<=L/2,
+then BOTH actual words satisfy
+  dist(z w g,I)>=L/(4B),
+  dist(z g w g,I)>=L/(4B).
+The first distance error is bounded by the larger common 16R^3 epsilon budget. For the second weighted trace, the positive scalar factor cannot cancel ell. No condition is imposed on the sign of ell. No subfamily or trace mass is discarded.
+
+5. POSITIVE SCALAR RANGE FROM ACTUAL NEAR-IDENTITY SOURCES.
+Let A be contained in the original identity ball of radius alpha, 0<alpha<=1, z in A^m,g in A^n. Let u=cI+tb be as above with c>=1/2 and nilpotent tracefree b. If dist(u,z)<=epsilon>=0, the entries of g are bounded by R>=0 and
+  5^(m+n) alpha+2R epsilon<=1/4,
+then x=(2/3)(tau+ell*t) satisfies 1<=x<=2.
+The proof bounds dist(ug,I) through the actual word zg, uses tr(ug)=tau+ell*t and the native trace-Lipschitz estimate. No scalar translation/dilation is performed, so the existing actual-word product readout is preserved.
+
+6. WHOLE-FAMILY GEOMETRY MATCHING R1835.
+For a nonempty finite index set I, u_i=c_i I+t_i b and actual approximants z_i as in R1835, define
+  Dadd={z_i z_j g:i,j in I},
+  Dmul={z_i g z_j g:i,j in I}.
+Use the word containments ALREADY returned by nilpotent_actual_trace_growth:
+  Dadd subset A^(2m+n), Dmul subset A^(2m+2n).
+Assume A is in the alpha identity ball, 0<alpha<=1, all u_i,z_i,g entry bounds R>=1, approximation epsilon>=0, ||b||<=B>0, 0<L<=|ell|, and each x_i=(2/3)(tau+ell*t_i)>=1. If
+  5^(2m+2n) alpha<=1/4,
+  32 B R^3 epsilon<=L/2,
+then Dadd and Dmul are both nonempty, rho=L/(4B)>0, and EVERY word in each family is in the identity ball of radius1/2 and has distance at least rho from I.
+The single larger word-length bound handles both families via the imported power monotonicity lemma. The scalar lower-range premise can be discharged by item5. This theorem uses R1835's word-containment conclusions rather than rebuilding the word-membership chain.
+
+DECLARATIONS.
+TransposeFollowup.SL2Projection.two_source_word_distances
+TransposeFollowup.SL2Projection.weighted_trace_error_le
+TransposeFollowup.SL2Projection.nilpotent_weighted_trace_words
+TransposeFollowup.SL2Projection.weighted_trace_distance_lower_bound
+TransposeFollowup.SL2Projection.nilpotent_actual_words_far
+TransposeFollowup.SL2Projection.nilpotent_trace_coordinate_range
+TransposeFollowup.SL2Projection.nilpotent_actual_word_families_geometry
+
+APPLICATION LEDGER: WRITTEN COMPARISON, NOT A CLOSED CONTRADICTION.
+Use rho=L/(4B) as the far-from-I radius in R1832. It differs from the initial extraction radius; do not conflate them. In addition to all frame/chart hypotheses, the second-extraction condition requires 819200 eta<=rho, equivalently eta<=L/(3276800B).
+If the actual source approximation is the UNNORMALIZED epsilon=819200 eta/r_initial, the new separation budget becomes
+  52428800 B R^3 eta<=L*r_initial.
+The scalar readout still needs 26214400 R^3 eta/r_initial<=delta. Re-centering changes the charged error and word length, so this substitution is valid only for the matching source representation.
+The native trace lower bound is K|X|<250 N_delta(tr D). For eta<=delta, mathlib already supplies Metric.externalCoveringNumber_anti, so N_delta(tr D)<=N_eta(tr D) (with finiteness checked before toReal). Write U_k for the FULL right-hand side of the R1832 cubic inequality, before taking a cube root:
+  U_k=(9 P(k+1) H)^3 * 4 (Cchart Lchart)^3 * (E P(141) N_eta(A)+1).
+Here H uses rho, and all P,H,Cchart,Lchart,E,scales and frame losses are those of R1832. A sufficient contradiction criterion is
+  (K|X|)^3 >= 250^3 * max(U_(2m+n), U_(2m+2n)).
+The strict trace growth and the nonnegative cubic bound would then contradict each other, whichever family wins. This criterion has NOT been established for the extracted input. Do not replace U_k by a bare O(N^(1/3)) expression or assume P(k) monotone without its hypotheses.
+
+NEXT REUSE AND SOURCE-SAMPLING DIAGNOSTIC: WRITTEN, NOT FORMALIZED HERE.
+The existing exists_coarse_source_sample returns spacing >2sigma and
+  N_eta(source)<=6561*(4sigma/eta+1)^4*|I|,
+with actual source witnesses. Do not rebuild this sampler. Exact nilpotence gives u_i-u_j=(t_i-t_j)b. Thus a source spacing s and approximation epsilon suggest
+  |x_i-x_j| >= (2L/(3B))*(s-2epsilon).
+To obtain delta separation, the sufficient budget is 3B delta<=2L(s-2epsilon), with s>2epsilon. Establish this bridge only after accounting for the coarsening loss in the above full cubic criterion. Nonzero ell also makes the exact scalar coordinate injective on distinct u_i, but it does not supply normalized local mass for the retained sample.
+Existing scalar_maximal_density_zoom and positive-zoom lemmas are already imported. Arbitrary affine zooming changes the product readout; simply importing the density theorem does not close that application gap. The concentrated-case matrix alternative and nonnilpotent cases remain necessary.
+
+DRIFT CHECK.
+The completed target removes the concrete geometric obstruction to using R1835 with R1832: both entire candidate word families meet the near/far conditions under quantified budgets, and their scalar interval follows from actual source geometry. No fourth original family or unconditional expansion bound has been completed. Stop adding detached trace identities. The next work should quantify retained scalar size and separation, and compare all losses against the full cubic threshold BEFORE expanding the formal chain further. Reuse the existing sampler, density selection, covering-radius monotonicity and native matrix estimates.
+
+BOUNDARY
+R1836 supplies exact-nilpotent actual-word near/far geometry and the positive scalar interval under explicit budgets, without discarding trace gain. It does not produce a sufficiently large, separated, distributed scalar input or prove that the source/error/profile budgets beat the full R1832 trace-cubic threshold. The concentrated-case alternative, nonnilpotent amplification, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1836 is recorded; never replay its checkpoint. Full 10095-job build and 4567-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1836-nilpotent-word-geometry.txt and library-reuse-audit-r1836.json. The weighted-trace certificate, actual-word uniform near/far geometry and scalar range are verified. Do not redo them or the shared word-error chain.
+
+NEXT CONCRETE TARGET: audit retained scalar size and separation against the FULL R1832 cubic threshold. Start with the actual source representation (unnormalized or re-centered), its correct word length and charged epsilon. Reuse exists_coarse_source_sample. In the nilpotent case, write out the exact coordinate-distance comparison u_i-u_j=(t_i-t_j)b, x_i=(2/3)(tau+ell*t_i). The new note records a candidate spacing budget and the existing coarsening loss. Quantify whether enough cardinality survives to satisfy (K|X|)^3>=250^3*max(U_add,U_mul), with every envelope and rho=L/(4B) loss present. Native cover radius monotonicity is already in mathlib as Metric.externalCoveringNumber_anti; use it rather than reprove it.
+
+DRIFT GATE: do not merely formalize another tautological contradiction wrapper with the desired inequality assumed. First determine which scale/retention/profile inequality remains genuinely missing. If the available extracted cardinality/profile cannot meet the target, record the obstruction and change the input selection, not the constants in a detached lemma. If the source-to-scalar separation/retention bridge is quantitatively useful, formalize it by reusing the existing sampler and native norms. The positive range and near/far geometry are now available under explicit budgets and require no arbitrary scalar zoom.
+
+INPUT PROFILE remains unresolved. scalar_maximal_density_zoom and positive-zoom lemmas ALREADY exist; do not rebuild density selection. An affine scalar zoom changes actual trace-product readouts and can lose too much mass. Preserve the concentrated-case matrix alternative. Nonnilpotent cases are still required; near identity alone does not justify erasing determinant corrections.
+
+REPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. This is not a local-lemma percentage or a time estimate. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1836 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.
+
+VERIFICATION
+Full lake build passed 10095 jobs without warnings; SupportAxioms audited 4567 unique declarations using only propext, Classical.choice and Quot.sound. There are 913 mathematical modules plus SupportAxioms (914 local sources), 204 pinned external modules, 8 configurations and 115 validation artifacts. All 384 archive hashes and 117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD 5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.

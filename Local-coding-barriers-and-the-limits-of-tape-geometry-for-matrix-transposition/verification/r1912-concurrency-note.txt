@@ -1,0 +1,56 @@
+R1912 CONCURRENCY FOLLOW-UP — PREPARATION ONLY
+Pinned toolchain: Lean/Lake 4.34.1. No Lean/Lake invocation, benchmark, source
+edit, configuration change or cache operation was performed for this note.
+
+The observation that late wide waves take about 31–32 seconds per module while
+less-concurrent work took about 15–17 seconds is consistent with contention.
+It does not identify CPU, memory, storage, thread oversubscription, module size,
+or some other cause. More simultaneously running jobs can reduce throughput
+as well as increasing individual job duration; only a controlled batch timing
+can decide that here.
+
+LOCALLY VERIFIED CONTROLS
+1. Lean supports -j N / --threads=N for threads within one Lean process.
+   Lean/Shell.lean:165 documents it; lines 300–307 parse it. The default is
+   hardware concurrency when Lean is multithreaded (lines 219–223).
+2. Lake exposes package/library moreLeanArgs, passed to each Lean compiler
+   process. Config/LeanConfig.lean:167–180 and Build/Module.lean:981–990 establish
+   that mechanism. Thus moreLeanArgs = ["-j1"] is a supported TOML way to
+   constrain per-compiler threads, if a later measured experiment warrants it.
+   It does not cap the number of simultaneous compiler processes.
+3. The pinned Lake CLI has no -j or --jobs option. Main.lean:210–224 and
+   273–386 enumerate recognized options and reject unknown ones. Do not
+   recommend `lake -j N build` as if it were supported in this release.
+4. Lake jobs use BaseIO.asTask and dependency continuations
+   (Build/Job/Monad.lean:169–173; Build/Module.lean:999 onward). The inspected
+   source does not supply a documented CLI process-count cap. Runtime
+   environment-variable workarounds were not established by this inspection.
+   weakLeanArgs exists but deliberately does not change build traces; it is
+   not a way to manufacture a fresh benchmark or bypass cache validation.
+
+ONE BOUNDED FUTURE EXPERIMENT
+After all current handles are terminal and the final validation is complete,
+choose four already-validated short modules from the observed expensive wave.
+Copy their exact source bodies to scratch, use the pinned Lake environment and
+validated existing prerequisites, and write every artifact/log to a distinct
+scratch path. One managed harness must own and join every child; no live build
+may overlap it. Use fixed Lean --threads=1 in both arms to isolate concurrency
+between compiler processes.
+
+Compare the SAME four proof checks with a process pool of size 1 versus size 2,
+with two paired repetitions in opposite arm order. Record entire batch elapsed
+time, per-file times, exit status, user/system CPU and reported child maximum
+RSS. Check source hashes before/after and keep all normal kernel checks. No
+repository edits, trace rewriting or cache clearing are needed. This is 16
+bounded proof-check invocations, not a whole-project rebuild.
+
+A faster pool-of-two batch would show useful parallelism for this workload even
+if each module slows down. A slower batch would support reducing simultaneous
+work. Neither result establishes a hardware diagnosis or the best setting for
+all files. Only after such evidence should a separate round consider a small
+per-compiler thread trial or controlled topological target batching in Lake.
+No implementation or additional optimization is proposed for the present round.
+
+Source root for all citations:
+/Users/hansbrende/.elan/toolchains/leanprover--lean4---v4.34.1/src/lean/
+Lake paths are under lake/Lake/; Lean/Shell.lean is directly under that root.

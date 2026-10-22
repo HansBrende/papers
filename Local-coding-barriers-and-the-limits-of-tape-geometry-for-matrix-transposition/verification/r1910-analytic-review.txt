@@ -1,0 +1,84 @@
+R1910 analytic-support / reuse review — 21 October 2026
+Reviewer: /root/r1910_analytic
+Mode: read-only source review. No Lean/Lake execution, no repository source edits.
+
+Concrete recommended cleanup
+
+Prepared /private/tmp/r1910-analytic-cleanup-plan.json and guarded, UNAPPLIED
+/private/tmp/apply_r1910_analytic_cleanup.py. The script verifies all seven
+source before-hashes, creates research/10-linear-decision/archive/
+r1910-retired-analytic-support, preserves complete before-files and hashes,
+then applies only the approved source changes and nine SupportAxioms removals.
+Do not run while any Lake/Lean handle is live. Do not replay after execution.
+
+Mathematical source saving: 448 lines, excluding SupportAxioms savings.
+- DyadicCenterTrimming: remove unused finite-center dyadic endpoint and its
+  exclusive SL2FiniteCenterTrimming import: 109 lines. Retain the live generic
+  exists_dyadic_scaled_rpow_bound helper.
+- Archive SL2FiniteCenterTrimming module: 92 lines. It is now consumed only
+  by that obsolete dyadic endpoint. Its useful finite-center theorem is
+  preserved in the archive; this is not a finding that it is false.
+- ReextractionPowerBounds: 38-line old bounded-word-length numeric
+  specialization. The live exists_reextracted_trace_power_bound_of_cost is
+  more general and its explicit arithmetic recovers the old specialization.
+- NilpotentExtractionParameters: 92 lines across two unused specialized
+  existential packaging endpoints. Retain generic first_extraction_cost_bounds,
+  scalar_concentration_power_bounds, concentration_budget_of_power_bounds,
+  exists_scaled_extraction_parameters and exists_first_extraction_size_constant.
+  Those are the APIs actually reused by the trace-square proof.
+- ScalarDyadicBudgets: 26-line exact-choice specialization
+  nilpotent_scalar_exponent_margins; retain scalar_exponent_margins_of_bounds.
+- LocalizedFixedProductEnvelope: 42 lines for old exponent-400000/power-37
+  specializations; retain arbitrary-n fixed_power_coefficient_bound and
+  localized_fixed_power_coveringNumber_envelope.
+- SL2SpanningTrace: 49-line unused dyadic-scale wrapper and its exclusive
+  DyadicSeparationInterpolation import; retain general frame/spanning trace
+  covering statements and the exact constant.
+
+All nine removed declaration names have zero lexical references in the
+virtual remaining mathematical sources, including comments. No removed import
+remains. A second conservative scan of import closures found no remaining
+source references to declarations lost through changed transitive imports.
+These are static checks; a subsequent full Lake build and axiom audit remain
+necessary. The broader source-level class-instance dependency question is
+appropriately settled by that build.
+
+Concrete mathlib reuse
+
+Pinned Mathlib/Data/Set/Image.lean:904 already proves Set.image_eq_range.
+Three manually proved subtype range=image identities in SL2TranslatedCluster
+and ConjugacyFiberCovering can become `(Set.image_eq_range _ _).symm`.
+Prepared /private/tmp/r1910-analytic-mathlib-reuse.json, with exact before/after
+texts and hashes, saving 11 lines. Untested in Lean. No new helper is needed.
+
+Stronger paid-padding endpoint
+
+All constants can be chosen before the payload machine:
+  ∃ A H K₀ E : ℕ, ∀ M, ∃ M', cellBits M'=3 ∧
+    M'.q+1 = H+(M.q+1) ∧
+    M'.k = K₀+(M.k+E)*max 1 M.g.size ∧ [all existing run/limit clauses].
+
+Choose H as the fixed PaidClean prefix state count, K₀ as 53 plus its rational
+page count, and E as the already-uniform extra stationary tape count.
+Tape equality is PaidPadding.fixed_resources .1. State equality is
+SequentialFive.fixed_resources .2.2; BitPlaneMachine and StationaryTapes preserve
+q definitionally. This strengthens the universal resource accounting with
+roughly seven additional proof lines and no new analytic argument. It is a
+structural fact already present in the construction, not a newly claimed
+impossibility result or literature novelty.
+
+NativeIO delegation follow-up
+
+The .work branch of NativeIO.step_denote duplicates the five instruction cases
+of NativeMicrocode.step_denote. Direct exact fails conceptually because Config
+is indexed by the full TM, including δ, despite equal k/g/q. A local same-field
+conversion plus congrArg should permit reuse in about 14 lines. Detailed
+UNTESTED draft at /private/tmp/r1910-nativeio-work-reuse-draft.txt. Under hp,
+transition options agree; splitting the common option should give reflexivity.
+Abandon this refinement if elaboration needs a larger adapter development.
+
+No broad speculative packaging migration recommended. The longest remaining
+analytic statements repeat profile assumptions, but replacing them by records
+would be a larger API refactor without established net proof savings. All
+six main target endpoints remain outside this cleanup; the paid-padding
+resource strengthening is optional and strictly additive.

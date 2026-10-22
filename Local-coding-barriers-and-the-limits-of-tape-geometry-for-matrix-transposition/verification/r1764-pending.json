@@ -1,0 +1,68 @@
+{
+  "checkpoint": "R1764",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "ExpansionParameters",
+    "NormalizedCellCorrelation",
+    "ConditionalSpectralExpansion"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.expansionMargin_pos",
+    "TransposeFollowup.expansionMargin_small",
+    "TransposeFollowup.uniformityTolerance_bounds",
+    "TransposeFollowup.trimWidth_displacement",
+    "TransposeFollowup.trimWidth_fraction",
+    "TransposeFollowup.trimWidth_twice_le",
+    "TransposeFollowup.RationalUnitMobius.augmented_correlation_with_parameters",
+    "TransposeFollowup.normalizedCellFunction_coe",
+    "TransposeFollowup.normalizedCellFunction_measurable",
+    "TransposeFollowup.normalizedCellFunction_square_integrable",
+    "TransposeFollowup.normalizedCellFunction_square_integral",
+    "TransposeFollowup.normalizedCellFunction_off_unit",
+    "TransposeFollowup.normalizedCellFunction_cell_integral",
+    "TransposeFollowup.normalizedCellFunction_closed_cell_integral",
+    "TransposeFollowup.RationalUnitMobius.normalizedCellFunction_correlation",
+    "TransposeFollowup.RationalUnitMobius.weighted_correlation_integrableOn",
+    "TransposeFollowup.RationalUnitMobius.symmetricCorrelation_eq_integral_average",
+    "TransposeFollowup.RationalUnitMobius.symmetricCorrelation_lower",
+    "TransposeFollowup.RationalUnitMobius.weighted_correlation_eq_global",
+    "TransposeFollowup.RationalUnitMobius.expansion_of_restrictedCorrelationGap",
+    "TransposeFollowup.RationalUnitMobius.open_expansion_of_restrictedCorrelationGap",
+    "TransposeFollowup.RationalUnitMobius.exists_expanding_family_of_eventual_gap"
+  ],
+  "checks": {
+    "conditional_expansion": {
+      "session_id": 27657,
+      "exit_code": 0,
+      "jobs": 9474
+    },
+    "build": {
+      "session_id": 83092,
+      "exit_code": 0,
+      "jobs": 9547
+    },
+    "axioms": {
+      "session_id": 73208,
+      "exit_code": 0,
+      "declarations": 3028
+    }
+  },
+  "boundary": "Three of six original families complete. RestrictedCorrelationGap is an explicit premise, not proved to exist. Paid padding remains conditional on the rational generator and spectral-gap dependencies; motion, recursion and final referees remain.",
+  "source_audit": {
+    "primary_source": "https://arxiv.org/html/1108.2555#S1",
+    "last_reread": "R1764",
+    "scope": "Theorem 1.2 reduction and Theorem 1.3 statement. The function-form gap uses the actual weighted action, normalized squared integral, closed cell integrals and symmetric average. The normalized representative is proved equal almost everywhere to the prior L2 construction. No formal proof of the global SL2 unitary representation, restricted gap or generator existence is claimed."
+  },
+  "updated_at": "2026-10-19T12:15:00.089724+00:00",
+  "formal_checkpoint": "R1764 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1764, 570 sources, 3028 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1764 proves jointly feasible parameters and the conditional continuous-expansion theorem. ExpansionParameters chooses m=ceil(8*eta*K), sigma=1/(100*K^2), delta=K*(K-1)*sigma, and proves every numeric hypothesis for eta<=1/1000000 and K>=10000. Uniformity follows from actual small augmented expansion. NormalizedCellCorrelation supplies a measurable representative of the existing normalized L2 class, exact unit squared integral, unit support, zero integrals on both open and closed cells, and correlation at least 3/4. ConditionalSpectralExpansion proves integrability of weighted products, equality of the symmetric correlation average with the integral of the averaged weighted action, and the continuous expansion bound with margin sigma from the explicit RestrictedCorrelationGap premise. It handles null sets separately and derives positive variance for positive-measure sets. The bound transfers to the existing open-domain interface; an eventual-gap premise yields a fixed nonempty rational expanding family. Existence of RestrictedCorrelationGap is not asserted.",
+  "next": "Build the global weighted-action foundation needed for the restricted spectral-gap proof. Use actual determinant-one real matrices and fractional-linear maps on the real line; treat a possible pole as a null singleton, prove measurability and global change of variables, and show the weighted action is independent of the L2 representative. Establish the isometry/inverse and correct composition order (W_g W_h = W_(h*g), so T_g=W_(g inverse) is the representation). Then identify the finite symmetric operator and its inner product with RestrictedCorrelationGap, retaining the exact normalized class and closed-cell conditions. Inspect and reuse Mathlib Jacobian and matrix-group APIs; a bounded search found upper-half-plane Moebius action and general change-of-variables tools, but no ready-made real-line weighted L2 representation in the searched analysis/measure/representation/group directories. The actual restricted gap and rational-generator existence still require full proofs or verified library results; do not replace them by new assumptions and call paid padding complete. Preserve all six targets and defer referee subagents until all formalization is complete.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. R1764 closes the explicit parameter, normalization and symmetric-average reduction from a stated restricted correlation gap to continuous expansion. The actual gap and rational generator existence are not proved, so paid padding 201/202 remains conditional. Motion 200/210, recursion 206/208 and final referees remain. The percentage is a provisional scope estimate, not an elapsed-time forecast or proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ExpansionParameters.lean": "4e0720b0791362d44c211e7c8ffce9e6211fc6322219b6757cbc5bff2ee735e4",
+    "lean/TransposeFollowup/NormalizedCellCorrelation.lean": "75eb6ad4a0a483a17d9f5fff2f0d7ec0d38d97e30d267e13b563957d9c4a025f",
+    "lean/TransposeFollowup/ConditionalSpectralExpansion.lean": "c90ec8293d25b0dd59ab9c58ae10d95e777c8ea642f775e3aee0d38f0ef4b94b"
+  }
+}

@@ -1,0 +1,113 @@
+
+R1863 — VERIFIED COUNTABLE AFFINE PATH LABELS AND EXCEPTIONAL-TIME BOUNDS
+R1863 proves the central original200/210 analytic path results: arbitrarily small admissible label classes and cuts for countably affine almost-everywhere covers; total exceptional time >=1/2 under full M* for open affine components or local affine neighborhoods; and the common-set bound >=1/(2k). Countability and the omitted-time integral estimate are proved, not assumed. Full motion-family native, physical-time and bounded-piece approximation consequences remain; four of six original families formalized.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+1. exists_compact_interval_cover: every compact real E has a finite closed
+   interval cover with total length <=volume(E)+epsilon, for every epsilon>0.
+   Reuses mathlib Stieltjes/Lebesgue outer measure and finite subcovers.
+2. interval_visit_majorant translates the original K-Lipschitz interval
+   indicatrix majorant to [a,b]. compact_visit_majorant extends a1-Lipschitz
+   path from I and sums these imported interval majorants over the cover.
+   It gives a measurable majorant for encard{x in E:P(x)=p}, integral at most
+   volume(E)+epsilon. lintegral_compact_visits_le removes epsilon and proves
+   the integral of that extended cardinality is <=volume(E).
+3. lintegral_levelCross_delete_le: for any label beta, retained set R and
+   compact E=I minus R, original total crossing integral is at most the
+   retained original-pair integral plus2 volume(E). This uses the original
+   infinite-level convention and a measurable majorant, without asserting
+   measurability of the retained-pair count.
+4. star_half_le_finite_affine_omission: full original M* plus finite measurable
+   affine branch families with compact complements gives total omitted-time
+   volume >=1/2. Constants and negative slopes are allowed.
+5. star_half_le_countable_affine_omission: the same >=1/2 bound for countably
+   many open affine branches. Finite-prefix complements decrease to the
+   actual omitted set; mathlib measure continuity passes the inequality.
+   Branches need not be disjoint or intervals. not_star_of_countable_affine_ae_cover
+   immediately excludes an almost-everywhere affine cover for every head.
+6. exists_countable_local_affine_cover derives an actual countable family
+   from arbitrary local open affine neighborhoods, via a countable subcover
+   and mathlib decode2 enumeration. The countability is not a premise.
+   star_half_le_locally_affine_omission and
+   star_half_le_affine_component_omission prove original210's sum_t|E_t|>=1/2
+   for locally affine regular time and open affine connected components.
+   star_common_affine_omission gives |E|>=1/(2k), k>0.
+7. exists_countable_affine_path_cut_bound: for theta,epsilon>0 there is ONE
+   measurable natural-valued beta, original PiecewiseConstOn(beta,empty,c0),
+   every class of length<=theta, and sum_t integral levelCross strictly less
+   than2 sum_t|E_t|+epsilon. exists_countable_affine_path_small_cut specializes
+   to null E_t, proving the full original200 small-label/small-cut statement,
+   not only its M* contradiction. All countable branches, constants, height
+   weights, and actual original crossings are retained.
+
+DRIFT / REUSE: this turn closes the main analytic path gap rather than
+adding another abstract-label helper. The omitted-time estimate imports the
+original indicatrix theorem; compact interval covers use mathlib's measure
+construction; countable branches use measure continuity; and local affine
+neighborhoods use mathlib countable subcovers and enumeration. The finite-prefix
+limit argument was factored into one shared lemma for both the quantitative
+obstruction and full constructive path labeling statement. Neither a general
+area formula nor a countable first-return measure was developed. No restrictions
+on the original final path endpoint were added. Native and approximation
+consequences remain explicitly open, so this is not a fifth completed family.
+
+
+BOUNDARY
+The original countable-affine small-label path theorem and quantitative exceptional-time path bound are now Lean-verified, including constant branches, arbitrary negative slopes, positive exceptional time, and the original levelCross infinite-level convention. Remaining motion200/210 obligations are the actual physical-time conversion F(u)=G f(u/G), native correct/high-entropy trace-class consequences with their complete boundary/state/time hypotheses, and the bounded-J polygonal o(1)-approximation corollary. Do not label the entire motion family complete before those are verified. Regular recursion206/208 and final authorized referees/cleanup remain. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1863 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; previous turn PROGRESS. Full original motion200/210 about70%
+formalized (best estimate, low confidence); four of six families complete.
+
+CENTRAL ANALYTIC PATH RESULTS ARE NOW PROVED. Do not reopen CFW, affine
+label construction, countable return measures, compact-time majorants or
+countable affine-region approximation. The actual countable small-label
+path theorem and original210 component/local-affine >=1/2 bound are done.
+
+NEXT: finish the remaining original motion-family consequences.
+1. Physical time: for G>0, F(u)=G*f(u/G), verify affine-region/time-set
+   transport and Lebesgue scaling u=Gt, including actual path Lipschitzness
+   and local affine neighborhoods. Derive sum_t |E_t physical|>=1/(2G)
+   and common |E physical|>=1/(2kG). These are absolute time in P units,
+   not fractions of total runtime. Reuse existing volume_affine_preimage,
+   mathlib affine measure/continuity/Lipschitz identities; do not assume a
+   free Jacobian or replace actual transformed sets by a numeric premise.
+2. Native consequences: import protected Transpose/Tape/MStarClass.lean
+   theoremMStar_class_nonuniform (line174) and MStarRobust.lean
+   theoremMStar_level_nonuniform (line83), theoremMStar_level_robust(line156).
+   The class theorem already supplies subsequence existence and EVERY limit
+   is 1-Lipschitz and full M*. It takes fixed k,G, sublinear state bits,
+   actual TraceClass, correct class, sublinear coentropy and linear time.
+   Preserve all assumptions and adaptive/nonuniform scope, and apply the
+   proved path obstruction/exceptional-time theorem to its actual limits.
+   The robust theorem supplies popular classes from high-entropy fast inputs;
+   do not replace it by arbitrary or atypical single-run trajectories.
+   SatisfiesStar is just the original quantified M* inequality packaged as
+   an abbreviation; the imported stronger all-theta result feeds it directly.
+   Do not silently add horizon/trace-class assumptions: derive needed
+   nonnegative horizon or preserve the original positive time constant.
+3. Bounded-piece approximation corollary from original200 section5: if
+   actual rescaled paths are o(1)-uniformly approximated by 1-Lipschitz
+   polygonal paths with one fixed J pieces/head, extract limiting breakpoints
+   and values; collapsed intervals merge; the uniform limit has a finite
+   affine cover. Then invoke FiniteAffineObstruction. Reuse original compact
+   subsequence/limit APIs and mathlib compact finite products. Do not infer
+   this from arbitrary finite traces, whose piece count may grow with size.
+4. Regular recursion206/208 remains after the complete motion family: actual
+   bounded scan palette and local-limit derivations; bounded-stage contracting
+   contiguous recursive trees; exact exceptional-work and state-bit scopes.
+   Final authorized independent referees, strengthening and cleanup follow
+   all six formalizations. No fresh subagents before that phase.
+
+New R1863 modules:CompactIntervalCover,CompactVisitMajorant,OmittedVisitBound,
+FiniteAffineTimeBound,CountableAffineTimeBound,OpenAffineTimeBound,
+CountableAffinePathLabels (18 declarations). Original read-only; no commits
+or pushes. Paid padding/SL2 complete; do not reopen.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:70% formalized, low confidence. Its central countable-affine path-label theorem and quantitative exceptional-time obstruction are proved. Remaining: physical-time units, full native trace-class consequences and bounded-piece approximation corollary. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No completion-time guarantee.
+
+VERIFICATION
+Full lake build passed10168 jobs without warnings/errors; SupportAxioms audited4819 unique declarations using only propext,Classical.choice,Quot.sound. There are987 local sources (986 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and169 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

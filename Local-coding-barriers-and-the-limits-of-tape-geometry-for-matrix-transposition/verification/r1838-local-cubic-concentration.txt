@@ -1,0 +1,107 @@
+R1838 — VERIFIED LOCAL CUBIC CONCENTRATION
+
+In progress. R1838 proves output-localized cubic packing and a radius-dependent bound for the whole finite commuting cluster. Actual cubic words remain in A^142 near the selected frame element; the local cover bound of A^142 is derived from the actual distribution of A and its A^142/A^284 envelopes. Integer rounding and small clusters are charged. Two new modules and four modified modules add eight theorems. Existing global interfaces retain their statements/constants; the scalar sampler is strengthened to return its already proved matrix spacing. Normalization by the retained scalar cardinality and the final exponent application remain open.
+
+1. ACTUAL WORD RADIUS, WITH NO NEW PRODUCT-ERROR CHAIN.
+For a_0,a_1,a_2 and a_center,u,v in SL2(R), suppose all entries have absolute value<=R>=1 and dist(a_center,a_i)<=rho>=0. The actual word
+  q=(a_center^-1 a_0) u (a_center^-1 a_1) (u^-1 v) (a_center^-1 a_2)
+satisfies
+  dist(q,v)<=20*(2R)^11*rho.
+The proof applies the existing normalized_cubic_product_dist_error with all exact factors and both centers equal to a_center. That exact normalized product is I. Right multiplication by v costs at most2R. There is no commutativity, nilpotence or eigenvalue hypothesis in this radius lemma.
+
+2. COVER TRANSFER TO A SPECIFIED ACTUAL TARGET.
+cubic_source_word_covering_transfer_to_set strengthens the internal target handling of the existing transfer. The exact normalized cubic product P is unchanged. The actual words q must belong to a specified D subset A^142. With the previous source, entry and approximation hypotheses, it proves native-cover finiteness and
+  N_eta(P)<=E*N_eta(D),
+  E=(4*(20*(2R)^10*epsilon+2R*eta)/eta+1)^4.
+The previous cubic_source_word_covering_transfer is now a wrapper with D=A^142. Its statement and constants are preserved; the metric error and cover transport are not duplicated.
+
+3. OUTPUT-LOCALIZED TRANSFER AND SELECTED PACKING.
+Let the exact approximants f_i satisfy dist(f_i,f_j)<=2s for all indices, with s>=0. Their actual sources are a_i=base^-1 X_i and dist(f_i,a_i)<=epsilon>=0. Therefore dist(a_i,a_j)<=2(s+epsilon). The normalized source words keep their shared-center cancellation X_i0^-1 X_i.
+Using the actual frame u in A^34,v in A^68, each cubic word remains in A^142 and satisfies
+  dist(q,v)<=rho_out, rho_out=40*(2R)^11*(s+epsilon).
+The refined target is
+  D={q in A^142: dist(q,v)<=rho_out}.
+The cover transfer of2 applies to D. Combining it with the EXISTING finite actual-frame cubic packing gives, under all its chart, determinant, spacing and retained-cardinality hypotheses,
+  m^3<=E*N_eta(D)
+for some v in A^68. This is actual_localized_source_packing_near. The old global actual_localized_source_packing is preserved as a wrapper, using a diameter bound from its entry bounds and then enlarging D to A^142.
+
+4. LOCAL COVER BOUND FOR AN ACTUAL FIXED POWER.
+Let n>0, I in A, and entries of A be bounded by2. Write N=N_eta(A), 0<eta<=1. Suppose K>=1 and
+  N_eta(A^(2n))<=K*N, N_eta(A^n)<=J*N.
+Assume the actual separated-distribution premise on A: for eta<t<eta^gamma, a t-separated finite subset of A has at least t^(-kappa) elements, with kappa,gamma>=0. For h in A^n and radius r>=eta, let
+  Bpow=4^n,
+  Cpow=(8Bpow+1)^4*(8Bpow^2+4Bpow+1)^kappa.
+Then the native cover of {x in A^n:dist(x,h)<=r} is finite and at most
+  Cpow*K*J*eta^(-gamma*kappa)*r^kappa*N.
+This reuses cluster_coveringNumber_le_of_multiscale on A^n. The separated subsets inherit from A subset A^n. Its square is A^(2n). Cover monotonicity supplies the normalization change to apply the old theorem, and the A^n envelope returns the conclusion to N_eta(A). No concentration property of the power is added as an independent premise.
+In the application n=142, the two global envelopes are for A^284 and A^142, hence P(283) and P(141) from the existing arbitrary-power theorem. They still must be instantiated in the final application; these costs are explicit parameters K,J here.
+
+5. RADIUS-DEPENDENT CUBIC PACKING AND WHOLE-CLUSTER BOUND.
+Under ALL prior actual-frame, chart, spacing and source-error hypotheses, add the distribution/envelope hypotheses of4 with n=142, J>=0, and eta<=rho_out. Let
+  Bpow=4^142,
+  Cpow=(8Bpow+1)^4*(8Bpow^2+4Bpow+1)^kappa,
+  U=E*Cpow*K*J*eta^(-gamma*kappa)*rho_out^kappa*N_eta(A).
+The selected-size bound is m^3<=U. The center v belongs to A^142 because v is in A^68 and I is in A; this is proved, not assumed.
+Now let I_index be the ENTIRE finite cluster, with the input spacing required by cubic packing, and let
+  Lchart=binCount(B,delta_chart)^4.
+Then finite_source_cluster_cubic_bound proves
+  |I_index|^3 <= 4*Lchart^3*(U+1).
+It chooses m=floor(|I_index|/Lchart), applies selected packing when m>0, and handles m=0 directly. Empty and small clusters are included. The additive1 and integer localization loss remain explicit.
+This bound applies to the general scalar-affine centralizers covered by the existing chart/frame theorem; it does NOT assume det(b)=0. Nilpotence is needed later for the particular scalar readout and its inverse distance formula, not for this local cubic bound.
+
+6. SHARED ROUNDING AND PRESERVED SOURCE SPACING.
+The new arithmetic helper nat_cubic_bound_of_quotient states: if L>0 and floor(n/L)^3<=U, then n^3<=4L^3(U+1). It reuses Nat.lt_div_mul_add and add_pow_le. Both the existing global commuting_family_cubic_bound and the new local finite-cluster theorem call it; their duplicated rounding calculation is removed. The old global bound retains its statement/constants.
+The R1837 exists_nilpotent_scalar_sample now ALSO RETURNS the already proved conclusion dist(x,y)>2sigma for distinct sampled matrices. The proof previously held this as internal hsep. Its witnesses, scalar separation, exact cardinality equality and both cardinality bounds are unchanged. This strengthening is necessary to pass the SAME sample to cubic packing at its chosen spacing, without another thinning step.
+
+EIGHT NEW DECLARATIONS.
+TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer_to_set
+TransposeFollowup.SL2Projection.shared_center_cubic_word_near
+TransposeFollowup.SL2Projection.cubic_source_word_covering_transfer_near
+TransposeFollowup.SL2Projection.power_cluster_coveringNumber_le_of_multiscale
+TransposeFollowup.SL2Projection.nat_cubic_bound_of_quotient
+TransposeFollowup.SL2Projection.actual_localized_source_packing_near
+TransposeFollowup.SL2Projection.actual_localized_source_packing_concentration
+TransposeFollowup.SL2Projection.finite_source_cluster_cubic_bound
+
+NEXT NORMALIZATION: WRITTEN APPLICATION PLAN, NOT YET A PROVED SCALAR PROFILE.
+Keep the SAME scalar sample, x_i=(2/3)(tau+ell*t_i), |ell|>=ell0>0, ||b||<=Bgen. In the nilpotent positive branch, exact matrix distance equals |t_i-t_j|*||b||. Indices lying in a scalar ball of radius r therefore have pairwise matrix distances<=3Bgen*r/ell0. Use s=3Bgen*r/(2ell0) in5. If epsilon<=r then
+  rho_out<=Dloc*r,
+  Dloc=40*(2R)^11*(3Bgen/(2ell0)+1).
+Apply5 to the subtype of these indices. Transfer its cardinality to scalarBallMass using the injective scalar image from R1837, not by assuming that every projection preserves cardinality. The original sampled matrix spacing is now available explicitly.
+Write M for the whole scalar sample size. The global normalization N<=G*M^3 should be derived from the already proved spanning extraction, actual mixed-product envelope and the sampler retention, with the exact factor
+  G=(9*P_mixed*H_initial)^3 * eta^(-8sigma0) * S_sample^3,
+  S_sample=6561*(4sigma_sample/eta+1)^4.
+Here P_mixed bounds the actual mixed product by P_mixed*N; H_initial and the spanning exponent sigma0 belong to the FIRST extraction. Cancel N^3 only after establishing N>0. Do not silently substitute the second-extraction radius or error. This algebraic normalization has not been added as a theorem here.
+The additive1 can be absorbed using an actual lower bound N>=(2eta)^(-kappa0), when the distribution premise is available at2eta. Its required window condition is2eta<eta^gamma. Metric packing versus external covering, with injectivity of the SL2-to-matrix coercion, already provides this consequence; search/reuse the existing separated-cardinality machinery. For r>=eta this implies1<=2^kappa0*r^kappa0*N.
+With kappa=kappa0,5 would then yield
+  ballMass^3 <= Aconst * r^kappa0 * N <= Aconst*G*r^kappa0*M^3,
+  Aconst=4Lchart^3*(E*Cpow*K*J*eta^(-gamma*kappa0)*Dloc^kappa0 + 2^kappa0).
+Any Cscalar>=0 with Cscalar^3>=Aconst*G would give the normalized scalar profile
+  ballMass<=Cscalar*r^(kappa0/3)*M.
+For r<=1 this implies the R1835 exponent2*kappa_scalar whenever2*kappa_scalar<=kappa0/3. The inequality, nonnegative cube-root/rpow step and all scale budgets must be verified; they are not hidden in the current theorem. The old problematic N^(2/3) factor disappears only after this global cube normalization is actually established.
+The remaining application also needs eta<=rho_out for each scalar radius, the required packing spacing of sigma_sample, scalar interval, cardinality upper gap, dyadic scalar scale and all three projection loss budgets. The R1837 exponent audit already pays the stricter cubic input spacing. Do not retroactively choose parameters after later witnesses or call the illustrative margin a complete proof.
+
+DRIFT CHECK.
+This turn proves the proposed radius-dependent bound by composing existing actual packing, product errors, multiscale distribution and power envelopes. It does not add a local concentration hypothesis for A^142. The result includes all finite cluster sizes and works for general centralizers under the existing frame assumptions. Existing proofs share the transfer and integer-rounding calculations. The next target is normalization and the scalar-ball application of this bound, not another independent packing or product-error theorem. Three original families remain formalized; the fourth is not complete, and no novelty or new transposition bound is claimed.
+
+BOUNDARY
+R1838 proves a radius-dependent cubic bound for the entire finite commuting cluster, with actual source-word locality, derived local power concentration, integer rounding and small-cluster costs. The normalized scalar ball-count profile for the retained sample still needs scalar-ball reindexing, global cube normalization, the native lower size bound and explicit budgets. The scalar upper dimension gap, complete initial-extraction composition, nonnilpotent amplification, final growth contradiction, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1838 is recorded; never replay its checkpoint. Full10098-job build and4578-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1838-local-cubic-concentration.txt and library-reuse-audit-r1838.json. The whole finite-cluster radius-dependent cubic bound is verified. Do not redo source-word locality, target cover transfer, fixed-power local concentration or integer rounding.
+
+NEXT CONCRETE TARGET: derive normalized scalar ball counts for the SAME retained nilpotent sample, using finite_source_cluster_cubic_bound. The R1838 note contains the exact constants and proposed normalization formula.
+- For a scalar ball of radius r, restrict the finite index type to |x_i-v|<=r. Use scalarAffine_dist_same_constant and the nonzero trace coefficient to prove diameter<=3Bgen*r/ell0; take s=3Bgen*r/(2ell0). Preserve actual source witnesses and their entry/error bounds. The sampler now explicitly returns matrix spacing>2sigma, so the SAME chosen sample can satisfy the cubic spacing threshold. Do not thin it again or infer the stronger matrix spacing merely from delta-separated scalar outputs.
+- Apply the whole finite-cluster bound and use injectivity/cardinality of the scalar image to identify its size with scalarBallMass. Bound rho_out by Dloc*r under epsilon<=r, with eta<=rho_out checked. This proves a cubic count bound relative to N_eta(A).
+- Derive N_eta(A)<=G*|X|^3 from the existing first spanning extraction, the actual mixed-product envelope and sampler retention. The note gives G explicitly. Prove positivity before cancelling powers of N. Derive the native lower size bound needed to absorb the additive1 from actual multiscale distribution at2eta, checking its window. Reuse native packing and separated-cardinality lemmas.
+- Combine to a normalized profile with exponent kappa0/3 and explicit constant; weaken to the scalar theorem exponent2*kappa_scalar only after checking the exponent order and r<=1. Reuse mathlib rpow/cube monotonicity rather than rebuilding real-power calculus. Then audit the Cscalar budget together with the upper cardinality gap and the full R1832 threshold.
+
+Do not assume a good normalized profile or an unexplained global factor G. The input interfaces already exist, but the composition and exponent budget remain real work. Keep the first error12800*B0^6*eta/r_initial (B0=4*4^34) distinct from the second-extraction error. Sources base^-1 X_i belong to A^2. Exact nilpotence is still the current arithmetic branch; the new local cubic bound itself has no nilpotence assumption, and nonnilpotent amplification remains necessary.
+
+REPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1838 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.
+
+VERIFICATION
+Full lake build passed 10098 jobs without warnings; SupportAxioms audited 4578 unique declarations using only propext, Classical.choice and Quot.sound. There are 916 mathematical modules plus SupportAxioms (917 local sources), 204 pinned external modules, 8 configurations and 119 validation artifacts. All 384 archive hashes and 117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD 5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.

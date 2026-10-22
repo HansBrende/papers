@@ -1,0 +1,34 @@
+{
+  "format": "r1912-exact-archived-source-header-checks-v1",
+  "baseline_inventory": "/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed/baseline-sources.json",
+  "baseline_inventory_sha256": "7775bdd5f6494b5a689eb6f9592d0b3a43c4a0782739aaed3a3bd5f98d897dbc",
+  "checker": "/private/tmp/r1912-kernel-type-checker-v2.lean",
+  "checker_sha256": "15fe6626ad32d4f41f14b8acbb5a962fc7b72ea29a280ab805f52e116cd5f63f",
+  "declarations": [
+    {
+      "name": "TransposeFollowup.NativePaddedField.tail_trace",
+      "auditor_declaration": "TransposeFollowup.NativePaddedField.R1912_original_header_tail_trace",
+      "baseline_source": "lean/TransposeFollowup/NativePaddedFieldMachine.lean",
+      "baseline_source_sha256": "b1e070d7eef62b9296c7fb620a0fe34ef1661fdde1805f760f1324c6e64a858b",
+      "original_header": "theorem tail_trace (C : \u2115) (source : Tape Bool) (field : List Bool) (pos : Fin 2 \u2192 \u2124) :\n    \u2203 t \u2264 2*field.length+3*C+6, PaddedWord.Trace C id t\n      (PaddedWord.cfg (.fill \u27e8C,by omega\u27e9) source (NativeSealBack.openWord field) pos)\n      (PaddedWord.cfg (.seal .done) source (Counter.marked (padded C field)) (Function.update pos 1 (pos 1-field.length)))",
+      "original_header_sha256": "b68723045287a699648e0f9439b4c7d116f67c5579b3b93ceeb68627fcb39f87",
+      "renamed_header": "theorem R1912_original_header_tail_trace (C : \u2115) (source : Tape Bool) (field : List Bool) (pos : Fin 2 \u2192 \u2124) :\n    \u2203 t \u2264 2*field.length+3*C+6, PaddedWord.Trace C id t\n      (PaddedWord.cfg (.fill \u27e8C,by omega\u27e9) source (NativeSealBack.openWord field) pos)\n      (PaddedWord.cfg (.seal .done) source (Counter.marked (padded C field)) (Function.update pos 1 (pos 1-field.length)))",
+      "source_check_text": "namespace TransposeFollowup.NativePaddedField\nopen FixedTapeCompiler CopyMachine\nopen NativeFieldCopy (targetBinding allBinding)\nset_option autoImplicit false\n\ntheorem R1912_original_header_tail_trace (C : \u2115) (source : Tape Bool) (field : List Bool) (pos : Fin 2 \u2192 \u2124) :\n    \u2203 t \u2264 2*field.length+3*C+6, PaddedWord.Trace C id t\n      (PaddedWord.cfg (.fill \u27e8C,by omega\u27e9) source (NativeSealBack.openWord field) pos)\n      (PaddedWord.cfg (.seal .done) source (Counter.marked (padded C field)) (Function.update pos 1 (pos 1-field.length))) := by\n  exact tail_trace C source field pos\n\nend TransposeFollowup.NativePaddedField\n",
+      "source_check_text_sha256": "ba2b50483bcffb691aa8df355d6bda4e4494809c4993b76ca15e2247a9e47447",
+      "change": "Only theorem identifier renamed; archived full binders/premises/conclusion preserved exactly. Proof is direct application of current original-named theorem."
+    },
+    {
+      "name": "TransposeFollowup.CountedFill.emit_step",
+      "auditor_declaration": "TransposeFollowup.CountedFill.R1912_original_header_emit_step",
+      "baseline_source": "lean/TransposeFollowup/CountedFillBody.lean",
+      "baseline_source_sha256": "7d3265ec12de598835b0937c742d57aa3216faf973dcf1cdb49f5e1554e8cb3e",
+      "original_header": "theorem emit_step (m : \u2115) (bit : Bool) (i : Fin (m+1)) (hi : i.val < m)\n    (fuel acc : List Bool) (origin : Fin 2 \u2192 \u2124) :\n    NativeZipper.step (program m bit) (cfg (.emit i) fuel acc origin)=\n      cfg (.emit \u27e8i.val+1,by omega\u27e9) fuel (acc++[bit]) origin",
+      "original_header_sha256": "46b1b96c37a5bc431209f9f3cd5ba6a42e200ba06ed9d64b199b4d5f81a8d435",
+      "renamed_header": "theorem R1912_original_header_emit_step (m : \u2115) (bit : Bool) (i : Fin (m+1)) (hi : i.val < m)\n    (fuel acc : List Bool) (origin : Fin 2 \u2192 \u2124) :\n    NativeZipper.step (program m bit) (cfg (.emit i) fuel acc origin)=\n      cfg (.emit \u27e8i.val+1,by omega\u27e9) fuel (acc++[bit]) origin",
+      "source_check_text": "namespace TransposeFollowup.CountedFill\nopen FixedTapeCompiler\nopen CopyMachine (Tape Sym symbols)\nset_option autoImplicit false\n\ntheorem R1912_original_header_emit_step (m : \u2115) (bit : Bool) (i : Fin (m+1)) (hi : i.val < m)\n    (fuel acc : List Bool) (origin : Fin 2 \u2192 \u2124) :\n    NativeZipper.step (program m bit) (cfg (.emit i) fuel acc origin)=\n      cfg (.emit \u27e8i.val+1,by omega\u27e9) fuel (acc++[bit]) origin := by\n  exact emit_step m bit i hi fuel acc origin\n\nend TransposeFollowup.CountedFill\n",
+      "source_check_text_sha256": "973d76596d4fe1d8bfb496a46b986558bc47c2a14c05540b3f925a881d4577f0",
+      "change": "Only theorem identifier renamed; archived full binders/premises/conclusion preserved exactly. Proof is direct application of current original-named theorem."
+    }
+  ],
+  "count": 2
+}

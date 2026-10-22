@@ -1,0 +1,152 @@
+{
+  "status": "passed",
+  "reviewer": "/root",
+  "reviewed_at_utc": "2026-10-22T02:01:22.810467+00:00",
+  "scope": "Independent cross-review of the complete revised motion exposition and changed outlines, all 12 numbered contracts, and actual public Lean types/proof interfaces. Not a replay or line-by-line audit of all compiler internals.",
+  "reviewed_sources": {
+    "paper/sections/motion.tex": "71203b8fb44f8f636c2e4f5f9ad47f1c299ca1431b04f90c7ac05681566ee682",
+    "verification/manuscript/motion-contracts.json": "57fec65ba362168125ec99843b7ddc15f058a23617870384beb56a84fa3838f9"
+  },
+  "actual_sources_checked": {
+    "lean/TransposeFollowup/OpenAffineTimeBound.lean": "7fc00a8c44911be027779678852e6dc406f1239fbe533d1ede92d1f13aef630d",
+    "lean/TransposeFollowup/CountableAffinePathLabels.lean": "84fa979ed2157a2bac5aea9b8864a742e430e75bcbf1d76b1d83eaecac58f78d",
+    "lean/TransposeFollowup/BoundedAffineCovers.lean": "e654250e4f29b16a61e9daf8afea9060c3fecada2f948353d0b11313401caeda",
+    "lean/TransposeFollowup/NativeAffineMotion.lean": "457b454ce61ec9025f3ebee2e3b14ebdb6916ce0f4db383b35fb6ef3e7ebb174",
+    "lean/TransposeFollowup/PhysicalAffineApproximationObstruction.lean": "ec3dbaf27f60e517f75293e64e6dc33454ff88b680bdaf02d04a25e127e0ea8c",
+    "lean/TransposeFollowup/MatrixPaletteObstructions.lean": "07384bc0b02e90e1fa5f01ec46869426c3075a61ab40d95c77c908b478d109c7",
+    "lean/TransposeFollowup/RawMixedBinaryWordObstruction.lean": "59a1261f007781c4d82eb331650ed1f72b1e2f8263321b42ba3ad07ff7009399",
+    "lean/TransposeFollowup/NativeExceptionalRecursion.lean": "bed85e6bcdade4ff5d2576fdb164432170b0ea14be74151cb11b828b966db98c",
+    "lean/TransposeFollowup/ActualStageRegularity.lean": "9eb9a1252c782e214d02101eaff7d2f238b3cdedd2a8ce0068712d790deb2966",
+    "lean/TransposeFollowup/ContractingStageClock.lean": "871253bf8755af02da751d339a2732b3da9f7e3abf9834271aa968d60d19f91d",
+    "lean/TransposeFollowup/ExceptionalStageClock.lean": "a64d1e73e41a0d9e19100fada685de915a6af1c2beddbb41d48f4abaf0900071"
+  },
+  "checks": [
+    "Ambient-open regions and full-level crossing convention match the definitions.",
+    "Countable labeling uses finite initial subfamilies, then continuity of finite measure; no finite subcover assumed.",
+    "Nonuniform state bits, high-entropy inputs, representative selection, and all uniform subsequential limits agree with native endpoints.",
+    "Physical scaling and universal/further-subsequence pointwise approximation quantifiers preserved.",
+    "All three palette bounds retain exact declared operations, eventual correctness and public size dependence.",
+    "Clock ownership covers all actual ticks; a node and its descendants need not form a contiguous interval.",
+    "Stage regularity uses global ticks and positive duration/diverging volume; the frozen tail is included.",
+    "Exceptional time and per-node corollary agree with formal budget inequalities, including derived k>0."
+  ],
+  "items": [
+    {
+      "label": "def:motion-star",
+      "status": "passed",
+      "program_role": "Fixes the exact inherited crossing condition used by the motion impossibility argument.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.SatisfiesStar"
+      ]
+    },
+    {
+      "label": "thm:motion-affine-time",
+      "status": "passed",
+      "program_role": "Gives the quantitative exceptional-time obstruction used by all subsequent native motion exclusions.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission",
+        "TransposeFollowup.AffineMotion.star_half_le_affine_component_omission",
+        "TransposeFollowup.AffineMotion.star_common_affine_omission"
+      ]
+    },
+    {
+      "label": "thm:motion-native-limits",
+      "status": "passed",
+      "program_role": "Derives relevant representatives and physical-time obstruction from native correctness, including nonuniform/high-entropy families.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.popular_affine_time_nonuniform",
+        "TransposeFollowup.AffineMotion.popular_affine_time_robust",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission"
+      ]
+    },
+    {
+      "label": "def:motion-affine-cover",
+      "status": "passed",
+      "program_role": "Specifies the finite-piece approximation interface for candidate execution paths.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.HasAffineIntervalCover"
+      ]
+    },
+    {
+      "label": "lem:motion-cover-closure",
+      "status": "passed",
+      "program_role": "Transfers pointwise bounded-cover approximation to locally affine limits, enabling the native contradiction.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.local_affine_ae_of_eventual_bounded_covers"
+      ]
+    },
+    {
+      "label": "thm:motion-pointwise",
+      "status": "passed",
+      "program_role": "Rules out native fast transposers with the stated universal/further-subsequence approximation property.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.no_subsequential_physical_pointwise_affine_fast_approximation"
+      ]
+    },
+    {
+      "label": "thm:motion-palettes",
+      "status": "passed",
+      "program_role": "Excludes bounded words in the three implemented palettes with no extra caller-supplied geometry premise.",
+      "declarations": [
+        "TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose",
+        "TransposeFollowup.TernaryMatrixPalette.no_high_entropy_transpose",
+        "TransposeFollowup.RawMixedBinaryWord.no_high_entropy_transpose"
+      ]
+    },
+    {
+      "label": "def:motion-clock",
+      "status": "passed",
+      "program_role": "Charges every actual tick to a contracting recursion stage; does not assume free recursion.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.ContractingStageClock"
+      ]
+    },
+    {
+      "label": "lem:motion-clock-accounting",
+      "status": "passed",
+      "program_role": "Provides the time bound and depth/exceptional-work estimates used in the recursive limit argument.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.stage_clock_deep_work_bound",
+        "TransposeFollowup.RegularMotion.stage_clock_total_time_bound"
+      ]
+    },
+    {
+      "label": "def:motion-stage-regularity",
+      "status": "passed",
+      "program_role": "States the exact actual-stage limit obligation a recursive candidate must meet before the obstruction applies.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasRegularStageSubsequences"
+      ]
+    },
+    {
+      "label": "thm:motion-exceptional-recursion",
+      "status": "passed",
+      "program_role": "Quantifies the positive exceptional-time budget and excludes all-regular contracting stage families.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.native_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget"
+      ]
+    },
+    {
+      "label": "cor:motion-node-exception",
+      "status": "passed",
+      "program_role": "Converts per-node exceptional-work allowances into a necessary global coefficient bound.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions",
+        "TransposeFollowup.RegularMotion.native_node_budget_recursion_bound"
+      ]
+    }
+  ],
+  "resolved_findings": [
+    {
+      "issue": "Closing M* summary said arbitrary payload although limiting conclusions need a linear-time family.",
+      "resolution": "Qualified to linear-time payload; discrete cut scope unchanged."
+    },
+    {
+      "issue": "A sentence called displayed d-dependent error bounds independent of d.",
+      "resolution": "Removed the unnecessary sentence; precise formulas remain."
+    }
+  ],
+  "unresolved_required_corrections": []
+}

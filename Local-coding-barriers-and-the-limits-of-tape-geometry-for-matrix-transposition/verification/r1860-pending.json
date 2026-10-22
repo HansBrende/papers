@@ -1,0 +1,60 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1859",
+  "target": "Affine return motion200/210: uniform collision measure and exact boundary transfer to actual priority samples.",
+  "new_modules": [
+    "AffineGridCollisions",
+    "PrioritySampleTransfer",
+    "AffineSampleBoundary"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.AffineMotion.exists_small_pair_grid_collision",
+    "TransposeFollowup.AffineMotion.gridCollisions",
+    "TransposeFollowup.AffineMotion.measurableSet_gridCollisions",
+    "TransposeFollowup.AffineMotion.grid_injective_off_collisions",
+    "TransposeFollowup.AffineMotion.grid_not_mem_collisions_of_injective",
+    "TransposeFollowup.AffineMotion.exists_small_grid_collisions",
+    "TransposeFollowup.AffineMotion.image_union_card_of_injOn",
+    "TransposeFollowup.AffineMotion.image_disagreement_card_of_injOn",
+    "TransposeFollowup.AffineMotion.image_disagreement_ratio_of_injOn",
+    "TransposeFollowup.AffineMotion.gridSample_values_image",
+    "TransposeFollowup.AffineMotion.gridSample_disagreement_ratio",
+    "TransposeFollowup.AffineMotion.affineGridValue",
+    "TransposeFollowup.AffineMotion.affineGridValue_right",
+    "TransposeFollowup.AffineMotion.affine_grid_injOn_off_collisions",
+    "TransposeFollowup.AffineMotion.exists_small_affine_family_collisions",
+    "TransposeFollowup.AffineMotion.affine_right_grid_boundary",
+    "TransposeFollowup.AffineMotion.affineGridValue_subtype_image",
+    "TransposeFollowup.AffineMotion.affine_priority_samples_boundary"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8939,
+      "log": "/private/tmp/r1860-dev7.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10154,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4773,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 91205 exit1; dev2 86309 exit1 (finite-minimum explicit arguments repaired); dev3 15445 exit0/3264; dev4 50252 exit0/8935; dev5 75385 exit1; dev6 14658 exit1 (subtype/coefficient inference repaired); dev7 93765 exit0/8939 with one unnecessary-simpa warning, repaired before full build; full60817 exit0/10154; audit70247 exit0/4773. All handles terminal; final build/audit clean.",
+  "formal_checkpoint": "R1860 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:973 local sources,204 external sources,4773 declarations,8 configurations,163 artifacts",
+  "proof_scope": "R1860 proves one uniform small-mesh collision-volume bound for every finite family of distinct affine maps, and exact transfer of the finite affine boundary to the ACTUAL priority samples at x and sx+b outside those collisions. Empty families, negative slopes and equal-slope offset separation are retained. The weighted one-order selection application and full motion200/210 theorem remain. Four of six original families formalized; final referees pending.",
+  "next": "R1860 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; previous turn PROGRESS. Full motion200/210 about20% (best estimate,\nlow confidence); four of six original families formalized.\n\nNEXT: assemble the actual finite-family weighted labeling theorem, discharging\nthe finite ratio, collision, measurability and interval-label obligations.\n1. Reuse AffineSampleBoundary.affine_priority_samples_boundary,\n   exists_small_affine_family_collisions, AffineFiniteBoundary,\n   AffinePriorityLabels and WeightedMinimumCoupling. Inspect exact measure,\n   subtype, finite-union and ENNReal APIs before writing general replacements.\n2. Prefer Omega=({x:R // x in I} x {x:R // x in I}) for the measure: every\n   sample is then pointwise nonempty by the universe theorem and F.Nonempty.\n   The global natural label is still beta:R->N. Later the actual return\n   measure must be constructed/transported onto Omega rigorously. An ambient\n   measure approach is also possible with a proved sample totalization.\n3. Obtain one finite F for all finite return maps. Let K contain F and all\n   right-composed Fg_j. Choose ONE mesh for collision mass and class mass.\n   Restrict grid injectivity on K to each F union Fg_j and use the proved\n   converse to collision avoidance. Transfer real finite-boundary bounds\n   to ENNReal with existing ofReal/natCast tools.\n4. The bad pair set is source collisions plus graph-support exceptions.\n   Charge collisions by the source marginal bound and exceptions by their\n   explicit zero measure. Prove all events measurable, then select ONE\n   ordering with the already-proved weighted minimum theorem. Get cut<=\n   delta*mu(Omega)+k*eta and then arbitrary small cut for finite mu.\n5. Construct the ACTUAL countable-branch consecutive-good-return measure,\n   both marginals, finite truncation and levelCross identity. Keep constant\n   branches, phase accumulation, negative slopes and infinite full fibers.\n6. Prove210's omitted-visit charge<=2 and use original level-count majorants\n   for compact exceptional times; retain sum_t|E_t|>=1/2 and original native\n   scope. Then regular recursion206/208 and final referees remain.\n\nNew modules:AffineGridCollisions,PrioritySampleTransfer,AffineSampleBoundary\n(18 declarations). Original read-only; no commits/pushes or unapproved agents.\nDo not reopen paid-padding/SL2. Optional unaudited CFW source is not a blocker.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: affine return motion200/210. Best estimate:20% formalized, low confidence. This is for the full countably affine obstruction and quantitative exceptional-time result, not just collision or finite-sample lemmas. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.",
+  "updated_at": "2026-10-20T20:54:33.025822+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/AffineGridCollisions.lean": "9fb33b192493c576f216e033b80827f012595c2ef267628b466a4269de5adff2",
+    "lean/TransposeFollowup/PrioritySampleTransfer.lean": "274499e59b7ad625bcf09c09338960021bbb0cd2b16e8b510ae26614d14e9b96",
+    "lean/TransposeFollowup/AffineSampleBoundary.lean": "b03728d6b52892f518c66591b9951dee2193ea5fcc75754e324f543879e01888"
+  }
+}

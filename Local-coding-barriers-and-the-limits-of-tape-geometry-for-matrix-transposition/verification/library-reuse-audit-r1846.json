@@ -1,0 +1,49 @@
+{
+  "status": "In progress. R1846 selects an actual word g in A^204 with both inverse-final readout coefficients quantitatively nonzero, using the existing adjoint frame and a new trace-Gram calculation. It proves exact sum/product identities for the positive trace-square scalar coordinate and reuses the imported scalar Pluennecke inequality to control sums and products from one mixed readout. The scalar family is enlarged explicitly by products and quotients; closure is not assumed. Four modules add twenty-two audited declarations. Actual sample selection, readout geometry, source errors and the final exponent comparison remain open.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Matrix.trace_mul_cycle",
+    "Matrix.det_smul",
+    "Matrix.det_fin_three",
+    "Finset.image_add",
+    "Finset.mul_mem_mul",
+    "Finset.inv_mem_inv"
+  ],
+  "reused_external": [
+    "OAI.Falconer.scalar_pluennecke",
+    "OAI.Falconer.scalar_dilation_cells",
+    "OAI.Falconer.scalarCells_mono"
+  ],
+  "reused_local": [
+    "exists_adjoint_frame_from_actual_spanning",
+    "centered_near_identity_generator_bounds",
+    "matrixConjugation_trace_det_norm",
+    "scalarAffine_sandwich_trace",
+    "sl2_scalarAffine_product_coordinates",
+    "sl2_centered_coordinate_equation",
+    "sl2_inverse_final_scalar_identity",
+    "SL2Escape.pairSpanMatrix_det_trace_polynomial",
+    "trace_error_le_frobenius_dist",
+    "set_pow_dist_from_one_le"
+  ],
+  "searches": [
+    "Pinned mathlib additive PluenneckeRuzsa and RuzsaCovering sources",
+    "Pinned OAI ScalarPluennecke, ScalarRuzsa, ScalarDilationBound",
+    "Existing local ScalarRingProjection and RoundedDilateProjections",
+    "Existing local adjoint-frame, centralizer and actual trace-growth modules",
+    "Pinned mathlib matrix Trace and SpecialLinearGroup APIs, trace-square searches"
+  ],
+  "finding": "The full scalar_sum_product_alternative already exists locally over the pinned OAI projection theorem. It is retained for the final application; no scalar growth theory or Ruzsa/Pluennecke proof is duplicated. The new local content supplies actual matrix coefficients, specialized coordinate identities and their finite-set connection. No drop-in full actual-sample application found in the inspected sources; this bounded search is not a global absence claim.",
+  "next_reuse": [
+    "MatrixFourBounds.mulVec_inverse_bound",
+    "centered_scalar_constant_bounds",
+    "actual_localized_source_packing_concentration",
+    "finite_source_cluster_cubic_bound",
+    "scalar_sum_product_alternative",
+    "localized_fixed_power_coveringNumber_envelope",
+    "trace_reextraction_cubic_bound"
+  ],
+  "novelty": "None claimed. Classical trace/Gram and additive-combinatorial tools are applied to the supporting analytic chain. No new original theorem family completed.",
+  "drift_check": "DRIFT AND FEASIBILITY AUDIT\n\nThe new fixed scalar coordinate avoids a varying-coefficient projection\ntheory. It replaces the earlier proposed six-term product expression by a\ntwo-term sum. The imported scalar_sum_product_alternative is already\navailable. With m=|X|, the displayed bounds say that a small mixed readout\nforces both small sums and products with loss560(T/|X|)^2. Thus scalar\ngrowth gives a square-root-scale mixed-readout gain, provided its actual\nseparation, size and nonconcentration inputs are established.\n\nThis is a workable algebra/combinatorics reduction, NOT an established\nmatrix growth theorem. Two coupled obligations must be resolved:\n(1) preserve enough actual source sample under the trace-square map,\nincluding the critical point at I and the small readout coefficient;\n(2) control the mixed ACTUAL word traces using second extraction, which\nrequires these words to stay quantitatively away from I.\n\nThe finite enlargement includes quotients uu^-1=I. Therefore a statement\nthat every enlarged element is away from I would be false. The Pluennecke\nbridge was generalized before checkpoint to use a retained base X and\nan enlargement Y. Only one input of each mixed word needs to come from\nthe retained base. This changes the next geometric obligation to:\nif one centralizer input stays away from I, prove the mixed word does too,\nwith a polynomial cost in the two actual coefficient gaps.\n\nA formal identity supports this target:\n det([b,Ad_g b])=D(4Delta-D).\nIf both coefficient gaps are>=rho, the absolute determinant is>=rho^2.\nThe existing general 4x4 frame inverse bounds should control the\ncoefficients of an error in span{I,b,Ad_g b}. No eigenbasis is needed.\n\nWord accounting: original f approximates sources in A^2; F*F and F*F^-1\nhave sources in A^4. With g in A^204, a mixed word with one source in A^2\nand the other in A^4 has length at most420 (424 is a safe common bound).\nThis is separate from R1845's larger universal initial D word bound n0.\nUse localized_fixed_power_coveringNumber_envelope with the ACTUAL maximum.\nNeither the n<=283 wrapper nor its3000000*tau budget applies automatically.\nNo full closed exponent budget or original-family completion is claimed.\n",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

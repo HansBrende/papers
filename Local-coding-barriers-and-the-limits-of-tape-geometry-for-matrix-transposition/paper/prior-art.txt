@@ -1,0 +1,91 @@
+CONJECTURE 36: CLOSED ROUTE AND ATTRIBUTION
+Checked 18 October 2026. Drafting note; not a claimed new contribution.
+
+The conjecture is Mittal--Raz, ITCS 2021, Section 8.1, Conjecture 36
+[MittalRaz2021]. It concerns the uniform random binary n-by-n matrix game:
+player j sees a prescribed set of rows and must output column j. It posits
+a constant c>0 giving joint success at most 2^(-c*n^2) when each player sees
+c*n rows (with the appropriate integer convention).
+
+STATUS: FALSE. Do not spend further work refuting this universal assertion.
+Its failure does not decide multitape transposition complexity: information
+available to an abstract player does not provide a paid tape computation.
+
+EXPLICIT PUBLIC DISPROOF
+
+[Mittal2025], Section 10.8.2, Proposition 10.8.3 and Lemma 10.8.5, printed
+pp.158-160 (PDF pp.169-171), gives the transpose-game counterexample and
+credits Mark Braverman and Katherine Forbes. The thesis bibliography lists
+their 2022 personal communication, "A strategy for the matrix-transpose
+game." Cite the thesis as the accessible proof and retain that attribution;
+do not present the personal communication as a separately published paper.
+
+For infinitely many sizes, players observe at most delta*n rows and succeed
+with probability at least 2^(-n^(1+epsilon)); epsilon can be any sufficiently
+small positive constant with delta=n^(-alpha(epsilon)), or epsilon=o(1) and
+delta=o(1). These parameters are stronger than our elementary product example.
+
+EARLIER CONSTRUCTIONS THAT IMPLY COUNTEREXAMPLES
+
+The following three supplied papers do not explicitly refute Conjecture 36.
+They provide constructions from which its failure follows. The conversion
+below is an explanation of the implication, not a claim of new priority.
+
+For a square placement delivery array (PDA), let player j observe the rows
+marked by stars in column j. A non-star symbol class is an induced matching:
+for any one of its entries, all other entries in the class lie in rows that
+the corresponding player observes. Predict that entry by XORing the others.
+All predictions are correct exactly when every class has XOR zero. If there
+are r nonempty classes, their supports are disjoint, so these are r independent
+binary equations. Joint success is exactly 2^(-r), or 2^(-b*r) for independent
+b-bit entries. Thus o(n) observed rows per player and r=o(n^2) disprove the
+fixed-positive-c bound. Extra rows may be supplied and ignored.
+
+1. [YanEtAl2017], arXiv:1510.05064v3, Definition 1(C3), Theorems 1 and 4.
+   Theorem 4 gives K=q(m+1), F=q^m, Z=q^(m-1), S=(q-1)q^m.
+   Choose m=q-1, q>=3. Then K=q^2 divides F. Repeat the column pattern F/K
+   times with separate symbol labels in each copy, obtaining n=F columns
+   and rows. Only the observation pattern is copied, not matrix data.
+   Each player observes n/q rows; r=(q-1)n^2/q^2. Both fractions tend to zero.
+
+2. [ShanmugamEtAl2017], arXiv:1701.07115v1, Definition 4 and Theorems 1-2.
+   The induced-matching XOR scheme and imported Alon--Moitra--Sudakov dense
+   graph construction give another route. Use a minimum-degree pruning
+   argument before applying the scheme, rather than relying on v1 Lemma 1.
+   If at most delta*K^2 unordered pairs are missing, delete vertices with
+   complement degree >sqrt(delta)*K. At most 2*sqrt(delta)*K vertices are
+   deleted. The remaining graph has K'=(1-o(1))K vertices and minimum degree
+   K'-o(K'); induced matchings restrict and their count cannot increase.
+   Theorem 2, with fixed sufficiently large C, supplies delta=o(1) and
+   t=K^(1+epsilon+o(1)), epsilon<1, hence t=o(K'^2).
+
+   Source caveat: the proof of v1 Lemma 1 uses the global mean of squared
+   distance for a fixed vertex, although the conditional mean can differ.
+   For C=5, x=(1,...,1) in dimension h, the global mean is 4h but the
+   conditional mean is 6h. Adjacency requires distance <5h; Hoeffding gives
+   degree/K <=exp(-h/128), incompatible with the claimed lower bound
+   1-2*exp(-h/1250) for large even h. This concerns the supplied version and
+   does not invalidate the preceding density-plus-pruning route.
+
+3. [ChittoorEtAl2021], arXiv:2001.00399v2, Lemmas 10-11, Theorem 3, and
+   Corollary 2 (Scheme C), Section V-E, pp.24-25.
+   Scheme C is square: F=K, cached fraction a<=lambda, matching size
+   gamma=binom(2h,h), h=lambda*q. Its r=K^2(1-a)/gamma classes partition
+   all missing entries. Choose q=2^(2j), h=2^j, lambda=2^(-j), j>=1.
+   Then a=o(1), gamma tends to infinity, and r=o(K^2). The finite field
+   labels the construction; the payload may still consist of binary bits.
+
+SUGGESTED MANUSCRIPT WORDING
+
+The failure of the transpose prediction conjecture is explicitly recorded
+in Mittal's dissertation, which credits Braverman and Forbes. Counterexamples
+also follow from earlier coded-caching and PDA constructions of Yan et al.,
+Shanmugam et al., and Chittoor et al., by restricting their XOR syndromes to
+zero, with square conversion or minimum-degree pruning where necessary.
+We recall this limitation of the lower-bound approach and claim no new
+refutation. The elementary example in our research archive is explanatory
+background, not a principal contribution.
+
+This list audits the supplied sources; it is not an exhaustive priority claim.
+The older research archive retains the detailed derivations and source checks.
+All bibliography keys above are in prior-art.bib in this directory.

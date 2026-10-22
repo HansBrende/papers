@@ -1,0 +1,86 @@
+{
+  "status": "METRIC CANDIDATE VERIFIED; mathematical applicability remains to be proved",
+  "scope": "Pinned Mathlib full-source keyword and module search; current Mathlib complete path inventory and selected source; complete source snapshots of lean-bourgain, LeanAPAP, PFR, and add-combi; selected OpenAI math candidates and full160-module import closure of the metric theorem. This is not proof that no other formalization exists.",
+  "pinned_mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "current_mathlib_tree": "b6161c3ab66106b0047774826d8b6cf8214ca90c",
+  "direct_reuse": [
+    "Set.pow_subset_pow_mul_of_sq_subset_mul (already used by R1823)",
+    "Finset.card_pow_le and Finset.card_mul_le",
+    "IsApproximateSubgroup and Ruzsa/SmallTripling infrastructure; finite cardinal bounds are not metric entropy bounds",
+    "Existing RealMobius.matrixEntryBox_set_pow, native covering transfers and covering_basic_coefficient_bounds"
+  ],
+  "candidate": {
+    "repo": "https://github.com/openai/math",
+    "commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+    "module": "OAI.MeasureTheory.Falconer.Incidence.ScalarBlockSumProduct",
+    "theorem": "OAI.Falconer.Regularization.scalar_block_sum_product",
+    "source": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/lean/OAI/MeasureTheory/Falconer/Incidence/ScalarBlockSumProduct.lean",
+    "lower_level_theorem": "OAI.Falconer.Regularization.scalar_initial_projection_growth",
+    "toolchain": "leanprover/lean4:v4.34.1",
+    "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "dependency_modules": 160,
+    "requirements": "For0<kappa<=1 and fixed positive K,K0: dyadic leaf set L at depth B*M, nonempty and size<=2^((1-kappa)*B*M); normalized local ball counts<=K0*t^kappa for all centers and delta<=t<=1; a nonempty parameter set A in[1/3,1] with analogous normalized bound K*t^kappa.",
+    "conclusion": "Fixed B,copies,M0,eta>0 exist; for all M>=M0 either the scalar grid cover of copies-fold L expands by2^(eta*M), or for some t in A the scalar grid cover of L+tL does.",
+    "needed_bridge": [
+      "Native Frobenius/scalar external-cover comparisons with its dyadic scalarCells",
+      "Our extracted commuting family to a scalar set of the required intermediate size",
+      "Uniform normalized LOCAL ball-count control for both scalar and parameter sets; our existing intermediate-radius separated subsets alone do not immediately give this",
+      "Fixed parameter choices and dyadic block-scale interpolation",
+      "Transfer scalar expansion back to bounded products of the actual matrix set"
+    ],
+    "important_quantifier": "K is fixed before B and copies in the packaged theorem. K0 enters the explicit scale inequality in scalar_initial_projection_growth; this lower-level result may allow a small scale-dependent loss after proving its budget. Do not insert scale-dependent K into a supposedly fixed construction.",
+    "assumption_check": "Exact fully explicit theorem types printed; no PublishedPlanarFurstenberg or other external theorem premise. Both audited declarations use only propext, Classical.choice and Quot.sound.",
+    "build": {
+      "session_id": 74817,
+      "exit_code": 0,
+      "jobs": 3655,
+      "warnings": false,
+      "log": "/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/transpose-validation/library-reuse-r1823/metric-cone/build.log"
+    },
+    "audit": {
+      "session_id": 57774,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 2,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "log": "/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/transpose-validation/library-reuse-r1823/metric-cone/reuse-audit.log"
+    },
+    "license": "Apache-2.0; exact pinned LICENSE retained as metric-cone/upstream-LICENSE",
+    "integration_note": "The full upstream lakefile declares many unrelated dependencies and compatibility hooks. The audited exact 160-module cone imports only Mathlib and was built using a minimal isolated package. No project dependency change yet. Prefer a pinned, hash-checked read-only source adapter or equivalent reproducible import, not copied/reproved theorem bodies in our namespace."
+  },
+  "other_sources": [
+    {
+      "repo": "Command-Master/lean-bourgain",
+      "tree": "07fe8b2feac3e72d4f0bd1c8d094e1ebd0a02ffb",
+      "toolchain": "v4.7.0",
+      "finding": "Growth/Stab/EnergyGrowth quantify over finite fields or ZMod p and exact cardinalities. Algebraic stabilizer ideas are relevant, but no scale-dependent real covering theorem was found in this source snapshot."
+    },
+    {
+      "repo": "YaelDillies/LeanAPAP",
+      "commit": "d0403cc40ba648a465cc330348013d5b2b061e8e",
+      "finding": "Discrete additive-analysis infrastructure; current source delegates additional combinatorics to add-combi."
+    },
+    {
+      "repo": "teorth/pfr",
+      "commit": "61bbfc446a44a9cc4f3d54668fd909a824142e4b",
+      "finding": "ent_bsg has finite-group hypotheses; ApproxHomPFR imports AddCombi.BSG. No direct continuous noncommutative Haar flattening theorem identified."
+    },
+    {
+      "repo": "leanprover-community/add-combi",
+      "commit": "111b61aa52c0740a298d83967ff2394ff20dbbb4",
+      "finding": "BSG/BSG_self use finite additive commutative groups and normalized densities. This is a reusable finite result, not a replacement for our continuous SL2 small-product BSG without an additional bridge."
+    },
+    {
+      "repo": "mathlib-initiative/sum_product",
+      "commit": "80e4127a67742659d521466204c6d2d7e0ca2b3f",
+      "finding": "The inspected headline statement is a conditional counterexample to near-quadratic finite-set sum-product growth, taking MartinetTotallyRealTowers as a hypothesis. It is not the discretized expansion theorem needed here."
+    }
+  ],
+  "decision": "Reuse the verified OpenAI scalar metric theorem if the local-concentration and matrix-transfer bridges can be proved; investigate those obligations before reproducing a discretized-ring theorem. Paid padding remains incomplete.",
+  "snapshot": "/Users/hansbrende/Documents/Codex/2026-10-09/a/outputs/transpose-validation/library-reuse-r1823",
+  "snapshot_manifest_sha256": "2dd67f4183572d1a6be031ca8831e6a98330461bf7e728c67b4118156d9d728b"
+}

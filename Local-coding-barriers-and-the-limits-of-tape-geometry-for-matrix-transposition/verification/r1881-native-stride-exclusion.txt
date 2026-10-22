@@ -1,0 +1,122 @@
+
+R1881 — NATIVE STRIDE EXCLUSION AND REUSABLE PAID BANK STAGE
+PROGRESS at R1881: the full raw forward masked-binary-stride primitive now has an unconditional native high-entropy transpose exclusion. The original physical/block normalization bridge and original stateBits_div_tendsto discharge the remaining machine hypotheses. A reusable internal-bank stage also has exact paid schedule, semantic recurrence, restored heads, completely blank scratch and preserved external IO, within11P ticks. Five of six original families formalized; regular recursion206/208 best estimate73% complete (low confidence). Full bounded-word composition, backward/reversal/rotation variants and row/integer/F3 palettes remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1881 RESULTS
+1. PhysicalAffineApproximationObstruction combines existing results:
+   AffineTimeRequired.not_physical_pointwise_bounded_covers rules out
+   fixed-size affine interval covers converging pointwise to the physical
+   limit Phead(G*t)/G on[0,H/G]. It reuses bounded-cover closure and the
+   already proved physical_omission lower bound; no new normalization or
+   rounding proof is introduced.
+   no_subsequential_physical_affine_fast_approximation retains fixed work
+   heads/alphabet, nonuniform o(P) state bits, correct-set deficit o(P),
+   native halting and linear time. Its geometry premise only needs a
+   further strict subsequence with fixed finite covers and uniform error
+   tending to zero, for every selected subsequence and input sequence.
+   The cover size may depend on that subsequence. It directly reuses
+   popular_affine_time_nonuniform and native_sampled_physical_limit.
+2. RawMaskedStride.cellBits_eq proves the existing five-symbol executor
+   has G=3. state_bits_vanish derives its o(P) state-bit requirement:
+   q+1=4*(T+1)<=76P from T<=18P and P>=1. The ORIGINAL paper's
+   stateBits_div_tendsto bounds clog2(2*(q+1)+1)/P; mathlib monotonicity
+   and squeeze_zero give clog2(q+1)/P->0. No separate logarithm-asymptotic
+   development is needed.
+3. RawMaskedStride.no_high_entropy_transpose is the complete application.
+   Let n_i->infinity, P_i=inputLength(n_i)=n_i^2*entryBits(n_i),
+   1<=S_i<=P_i, with arbitrary size-dependent public mode and masks.
+   There cannot be sets W_i and deficits m_i with m_i/P_i->0 and
+      2^P_i <= 2^m_i * |W_i|
+   eventually, such that every w in W_i encodes a matrix A and the exact
+   outputWord of that forward masked prefix/difference operation equals
+   the raw encoding of transpose(A). There are no regularity, stride-ratio,
+   state-bit, time or machine-correctness assumptions left to discharge.
+   Its proof derives native fast correctness from native_correct and
+   native_halts, applies R1880 whole-run geometry on the subsequence
+   supplied by the original theorem, and permutes encoded ports by the
+   inverse encoding. This includes actual initialization and frozen halt.
+   It is the one-primitive instance, not the full bounded-word theorem.
+4. MaskedStrideBankStage is the actual reusable internal operation:
+   Scan.result; erase scratch S; rewind scratch S; rewind bank P.
+   Its schedule has N+2S+P ticks, with N=Scan.ticks(P,S), hence <=11P
+   for S<=P. schedule_active and schedule_exact connect every operation
+   to the existing paid schedule semantics. result_spec assumes only
+   positive S and a blank scratch tape, allowing arbitrary initial head
+   coordinates, bank contents, local mode and external IO fields. It
+   proves BOTH heads restored to their original coordinates, every
+   processed bank cell equals the proved stride recurrence, the ENTIRE
+   scratch tape blank, and the original input/output fields preserved.
+   prepared_result identifies it definitionally with the internal part
+   of the existing verified raw executor. Native composition can therefore
+   retain intermediate data on the real work bank, loading/emitting once.
+
+Three new modules,13 audited named declarations (including definitions and
+interfaces), not13 research discoveries. All baseline mathematical sources
+unchanged. Original source208/global210.5 remain complete.
+
+DRIFT / REUSE
+Searched local native/affine/stage interfaces, the protected original paper,
+and pinned mathlib before extending the chain. Found the needed bit-count
+asymptotic in ORIGINAL MStarClass.stateBits_div_tendsto and used it directly;
+did not develop a new ceiling-log asymptotic. Reused native_sampled_physical_limit
+for ALL block/physical rounding, existing local_affine_ae_of_eventual_bounded_covers,
+and AffineTimeRequired.physical_omission. The final application uses the
+existing complete executor, whole-run subsequence theorem and original
+run/stepN correspondence. Its port conversion is only an Equiv inverse.
+Mathlib supplies convergence composition/congr_dist, squeeze_zero, clog
+monotonicity and ordinary ENNReal arithmetic. The bank stage reuses the
+scan recurrence/correctness/outside-scratch/IO lemmas, physical erase/rewind
+lemmas and paid append_exact. It adds no new simulator or execution model.
+The concrete next dependency is bounded composition on real work banks;
+no assumption of free external-output reuse is introduced. The completed
+single-primitive exclusion is an integration milestone, not a replacement
+for the original source206 scope or a new novelty claim.
+
+
+BOUNDARY
+The native normalization connection and complete one-forward-primitive exclusion are now verified, including the derived o(P) state-bit bound. The reusable internal-bank stage is also fully paid and composable at its semantic interface, with restored heads and blank scratch. Its bounded-word whole-run geometry/native compilation still needs assembly. All backward/reversal/rotation variants and exact row/integer/F3 palettes remain required by source206 sections20-24. Source208 and global exceptional-work210.5 are complete. Five of six families complete; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transposition result or novelty claim.
+
+NEXT
+R1881 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate73%, low confidence.
+
+NEXT: compose the actual internal-bank stages. Normalization and the
+single-primitive exclusion are closed; do not redo their proof chains.
+- MaskedStrideBankStage.result/schedule are the paid internal stage;
+  result_spec gives restored heads, full scratch blank, recurrence on the
+  bank and preserved IO. prepared_result is exactly the old raw ready.
+- Keep one raw load/rewind before the whole word and one emission after it.
+  Consecutive operations act on the SAME bank, never on write-only output.
+- Stage motion can reuse Scan.schedule_positions plus append_position,
+  erase_position/rewind_position. Whole-run raw formulas/approximations
+  from R1880 already contain these phases. Avoid duplicating rounding,
+  ramps, bounded-cover closure, or the two stride cases.
+- For bounded K stages, derive actual total schedule/time/state bounds and
+  compose their geometry through paid endpoint resets. Existing generic
+  no_subsequential_physical_affine_fast_approximation now accepts the
+  resulting physical covers directly; no new block-normalization work.
+- Derive state bits using the ORIGINAL stateBits_div_tendsto as in
+  RawMaskedStride.state_bits_vanish. Every correct-set premise must remain
+  raw bit transpose, with arbitrary public size-dependent masks/parameters.
+- Extend to backward/reversal/rotation and the exact row/integer/F3
+  palettes. Keep the full source206 statement; a single primitive or
+  an abstract executor assumption does not complete the family.
+
+R1881 APIs:
+AffineTimeRequired.not_physical_pointwise_bounded_covers;
+no_subsequential_physical_affine_fast_approximation;
+RawMaskedStride.cellBits_eq/state_bits_vanish/no_high_entropy_transpose;
+MaskedStrideBankStage.ticks/schedule/result/schedule_active/schedule_exact/
+ticks_le/result_spec/prepared_result.
+
+No new subagents until all six; then authorized impartial referees/cleanup.
+Original paper read-only; no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate73% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Within family6 the native recursion/global exceptional-work extension, full raw stride normalization and one-primitive exclusion are complete. The paid bank-stage interface is verified. Exact source206 still requires the remaining palettes and actual bounded-word composition. Final independent referees pending.
+
+VERIFICATION
+Full lake build passed10232 jobs without warnings/errors; SupportAxioms audited5240 unique declarations using only propext,Classical.choice,Quot.sound. There are1051 local sources (1050 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and205 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

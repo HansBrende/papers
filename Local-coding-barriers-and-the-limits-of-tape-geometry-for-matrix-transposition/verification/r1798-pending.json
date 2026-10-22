@@ -1,0 +1,126 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "HaarRuzsaBounds",
+    "HaarInverseEnergy",
+    "HaarPopularOverlap",
+    "HaarSandwichRepresentations",
+    "HaarSandwichBounds",
+    "MobiusPopularCore",
+    "MobiusCoreFromEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.haar_ruzsa_product_bound",
+    "TransposeFollowup.haarMultiplicativeEnergy_product_lower",
+    "TransposeFollowup.autocorrelationDensity_eq_inverse_convolution",
+    "TransposeFollowup.inverse_indicator_convolution_eq_autocorrelation",
+    "TransposeFollowup.inverse_indicator_convolution_inv",
+    "TransposeFollowup.haarMultiplicativeEnergy_inv_swap",
+    "TransposeFollowup.inverse_indicator_convolution_eq_overlap",
+    "TransposeFollowup.popularOverlap_volume_bounds",
+    "TransposeFollowup.indicatorConvolutionIterate",
+    "TransposeFollowup.indicatorConvolutionIterate_measurable",
+    "TransposeFollowup.indicatorConvolutionIterate_lintegral",
+    "TransposeFollowup.indicatorConvolutionIterate_sandwich_lower",
+    "TransposeFollowup.sandwich_power_threshold_volume_le",
+    "TransposeFollowup.haar_measure_le_left_product",
+    "TransposeFollowup.haar_measure_le_right_product",
+    "TransposeFollowup.popularOverlap_sandwich_volume",
+    "TransposeFollowup.RealMobius.popular_overlap_core",
+    "TransposeFollowup.RealMobius.exists_symmetric_core_from_self_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 17,
+    "def": 1
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 28013,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev1.log"
+    },
+    "development_2": {
+      "session_id": 61953,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev2.log"
+    },
+    "development_3": {
+      "session_id": 88458,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev3.log"
+    },
+    "development_4": {
+      "session_id": 24530,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev4.log"
+    },
+    "development_5": {
+      "session_id": 24404,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev5.log"
+    },
+    "development_6": {
+      "session_id": 66798,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev6.log"
+    },
+    "development_7": {
+      "session_id": 37915,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev7.log"
+    },
+    "development_8": {
+      "session_id": 50875,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev8.log"
+    },
+    "development_9": {
+      "session_id": 63482,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1798-dev9.log"
+    },
+    "build": {
+      "session_id": 82546,
+      "exit_code": 0,
+      "jobs": 9745,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 47523,
+      "exit_code": 0,
+      "declarations": 4200,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Terence Tao, Product set estimates for non-commutative groups, arXiv:math/0601431v3, https://arxiv.org/pdf/math/0601431v3. This turn implements the continuous Ruzsa specialization and the trace/popular-overlap argument of Lemma4.3 and Proposition4.5. All n sandwich powers were proved by a short convolution induction rather than separate n=1,n=3 proofs. The resulting constants match the displayed Proposition4.5 inequality; composition with the earlier deliberately relaxed self-energy BSG gives K=2^55 L^21. These are supporting formalizations of known arguments, not new impossibility results. For the next step, Lemma3.6, Definition3.8 and Theorem3.10 were read R1798: the finite symmetric covering set must be contained in H^2. Plan H=T^3, using the proved n=7 sandwich bound and finite packing; do not substitute a weaker definition silently.",
+  "cleanup": "Removed an unused local mass identity during development. All new declarations are used by the core theorem or are its public entry points. No pre-existing mathematical source edits.",
+  "updated_at": "2026-10-19T21:13:09.766174+00:00",
+  "formal_checkpoint": "R1798 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1798, 768 sources, 4200 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1798 proves the continuous Ruzsa bound, inverse-energy trace identity, popular-overlap volume bounds, and a concrete symmetric open core T. For open A subset Box(Q), H(A)>0, finite K>=1 and H(AA^-1)<=K H(A), T={x:(1_(A^-1)*1_A)(x)>H(A)/(2K)} contains1, is inversion-symmetric and open, and has compact closure in Box(2Q^2). H(A)<=2K H(T)<=4K^2 H(A); for every n>=0, H(A*T^n*A^-1)<=2^n K^(2n+1)H(A). Hence H(A*T)<=2K^3 H(A) and H(T^3)<=16K^8 H(T). A direct composition from the R1797 self-energy input constructs A subset O and this T with K=2^55 L^21, H(O)<=2^62 L^23 H(T), and H(T)<=2^56 L^21 H(O). This completes the actual symmetric-core construction, including the representation proof for every sandwich power. Finite approximate-group covering, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved. These are supporting formalizations of known arguments, not new transposition bounds.",
+  "next": "Start from RealMobius.exists_symmetric_core_from_self_energy in MobiusCoreFromEnergy.lean. It takes open O subset Box(Q), w=H(O)>0, finite L>=1 and w^3<=L E(O,O). Put K=2^55 L^21. It returns open A subset O with compact closure in Box(Q), positive finite volume, w<=64L^2 H(A), H(AA^-1)<=K H(A), and an explicit open symmetric T containing1 with compact closure in Box(2Q^2), positive finite volume,\n H(A)<=2K H(T), H(T)<=2K H(A),\n w<=2^62 L^23 H(T), H(T)<=2^56 L^21 w,\n H(A*T^n*A^-1)<=2^n K^(2n+1)H(A) for ALL natural n,\n H(A*T)<=2K^3 H(A), H(T^3)<=16K^8 H(T).\nDo not redo BSG, Ruzsa, inverse-energy trace, popular-overlap selection or the sandwich induction.\n\nNext concrete target: complete finite approximate-group extraction and retain a large translate overlap with O. Use an actual maximal finite packing of Haar translates, following Tao Lemma3.6, and the exact Definition3.8 in https://arxiv.org/pdf/math/0601431v3 (read R1798). A covering witness must be finite, symmetric and contained in U^2. Choose U=T^3. This avoids both a new general growth theory and an unjustified weaker definition of approximate group.\n\nProposed explicit route (UNPROVED; check all constants in Lean): the n=7 sandwich bound and H(A)<=2K H(T) give H(T^7)<=256K^16 H(T). A maximal finite family of pairwise disjoint x*T with x in T^6 gives a finite X subset T^6, card(X)<=256K^16, and T^6 subset X*T^2. Set Y=X union X^-1. Then Y is symmetric, Y subset U^2, card(Y)<=512K^16, and U^2 subset Y*U because T^2 subset T^3. Thus U is a concrete approximate group in the source's precise sense. Its closure should be compact in Box(32Q^6), from closure(T) subset Box(2Q^2). Keep 1 in U and inversion symmetry explicit.\n\nUse the SAME finite packing lemma on A and T. Since H(A*T)<=2K^3 H(A)<=4K^4 H(T), obtain W subset A, card(W)<=4K^4, and A subset W*T^2 subset W*U. Finite-union measure and a finite maximum then give some x in W subset O with H(O intersect x*U)>=w/(256 L^2 K^4). Also H(U)<=8K^7 H(A)<=8K^7 w by n=3, and w<=128K L^2 H(U) since T subset U. These exact constants are planned, not yet checked. Prove the actual U, Y, W and translate overlap, not a wrapper assuming a packing or cover. The finite packing lemma should use measurable translates, positive finite H(T), and finite H(B*T); bounded cardinality ensures a maximal FINITE packing, with no appeal to compactness implying finitely many disjoint opens.\n\nUseful APIs: haar_ruzsa_product_bound; haar_measure_le_left_product and haar_measure_le_right_product (translation volume comparisons with only nonemptiness); popularOverlap_sandwich_volume; popular_overlap_core; exists_symmetric_core_from_self_energy. Preserve group multiplication order. The all-n representation proof uses indicatorConvolutionIterate sigma C n with n+1 quotient-set factors, so its total mass is H(C)^(n+1).\n\nAfter approximate-group extraction: metric/covering transfer with explicit bounded-entry dependence; SL2 growth/escape; strict flattening of a FIXED iterate. Ultimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), choosing k before N,J0,epsilon0. Carry the conservative BSG losses, not the sharper source constants. Preserve all six original families, Haar normalization and the original density-level overlap. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1798 completes the symmetric-core target and proves all sandwich powers, with a direct self-energy composition. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/HaarRuzsaBounds.lean": "0fedc3a5e6a2d4ebba7f0e99577467f66c5a21942516f9671081f5411b1003f9",
+    "lean/TransposeFollowup/HaarInverseEnergy.lean": "b96030e8040a8b7544e00a7457aa21c16622a4f3712e85ebcb3683514657ca7d",
+    "lean/TransposeFollowup/HaarPopularOverlap.lean": "a308ac0cd71acf10813dace5d5267b215613902caeda3750404c256fe5507897",
+    "lean/TransposeFollowup/HaarSandwichRepresentations.lean": "c61ff4f4e449d170cfc065565ae5c3b7ed159fd2ce95ecc0059659af5094004d",
+    "lean/TransposeFollowup/HaarSandwichBounds.lean": "1716bceeb12dc1d3d333991dbfe9cc5f56517a52c20510f98b179f8d21f581ed",
+    "lean/TransposeFollowup/MobiusPopularCore.lean": "deb9c638f020db0cccde84a456d0fb80ba729959efa35e7f14b913af228d666a",
+    "lean/TransposeFollowup/MobiusCoreFromEnergy.lean": "97225254fc36c144d8c476a47bf7bbc393ab7d68573ef8ac433c9f6e3f4c4193"
+  }
+}

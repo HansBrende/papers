@@ -1,0 +1,97 @@
+R1912 native core / bridge split — independent read-only review
+21 October 2026. No Lean/Lake execution and no repository mutation.
+
+VERDICT
+No weakening or resource/accounting change found in the proposed source changes.
+The proposed core definitions retain the original machine model. The eight new
+core proofs reproduce the existing proofs with one definitionally equal total-step
+name, and all twelve original compatibility theorem headers are byte-for-byte
+unchanged. Ordinary compilation must still check those definitional equalities.
+
+REVIEWED INPUTS
+/private/tmp/r1912-native-core-split-proposal.json
+/private/tmp/r1912-first-import-cuts-proposal.json
+/private/tmp/r1912-broad19-group-plan.json
+All proposal old texts match the archived R1911 source baseline exactly.
+
+EXACT MODEL AND RESOURCE PRESERVATION
+An independent command-block comparison checks all 37 original def/abbrev/structure/
+inductive blocks across the seven split source modules against their Core locations.
+They are unchanged, including alphabet encoding, port/state cardinalities, native
+machine records, configuration fields, input and output state, transition tables,
+program interpretation, fused-step selection, and finite initial-label encoding.
+No faster simulated operation, omitted transition, altered halt rule, new assumption,
+weaker access restriction, or changed cost constant is introduced.
+
+The sole new definition is NativeMicrocode.totalStep M w c :=
+  (Transpose.step M w c).getD c.
+The protected original Transpose/Tape/Run.lean line26 defines Impl.next with exactly
+that term and the same arguments/types. Thus totalStep is definitionally equal to
+next for every original machine, input and configuration, including halted states.
+It does not merely agree on a correct execution set or under an extra hypothesis.
+The original partial step and stepN APIs remain untouched.
+
+EIGHT CORE PROOFS AND TWELVE ORIGINAL INTERFACES
+The new *_core proof bodies are the old proofs with Impl.next replaced by totalStep
+and references to the corresponding earlier core proofs. In the compatibility
+modules, eight original theorems have the exact old headers and are proved by
+ordinary `exact` application of the core counterpart. Lean must establish the
+required definitional equality; no cast axiom, admission, unsafe code or native
+proof shortcut is involved. Four run/trajectory endpoints are retained directly,
+with their original proof text. All twelve old headers were independently compared.
+
+The definitions and theorems keep their existing namespaces; module movement is
+not a renaming of the mathematical API. Core files import the unchanged light
+original Statement layer, while only the compatibility modules import the heavier
+original Tape.Run vocabulary. The sibling original paper is not modified.
+
+IMPORT REVIEW
+Applying both cut proposals yields 1,164 local mathematical modules and an acyclic
+local graph. Applying broad19 consolidation afterward yields 896 modules, still
+acyclic, with no dangling/deleted imports. The six native Core modules do not
+transitively import full Mathlib's root or the original Tape.Run. This is an exact
+static import-closure statement; its speed effect remains to be measured.
+All twelve explicit references found to the old qualified compatibility theorem
+names retain a path to the proper bridge. Unqualified name resolution is left to
+the ordinary Lean build and exact exported-type comparison.
+
+All 6,297 original audit commands remain unchanged at proposal stage. Every moved
+original theorem keeps coverage. Recommend adding these nine names:
+  TransposeFollowup.NativeMicrocode.totalStep
+  TransposeFollowup.NativeMicrocode.step_denote_core
+  TransposeFollowup.NativeMicrocode.run_denote_core
+  TransposeFollowup.NativeMicrocode.actual_result_transfers_core
+  TransposeFollowup.NativeReadFusion.step_denote_core
+  TransposeFollowup.NativeReadFusion.run_denote_core
+  TransposeFollowup.NativeIO.step_denote_core
+  TransposeFollowup.NativeIOFusion.step_denote_core
+  TransposeFollowup.NativeIOFusion.run_denote_core
+Expected enlarged audit count: 6,306. Do not mistakenly count the already-existing
+NativeMicrocode.run_core as a new declaration. Original exported-type comparison
+should still compare the exact original 6,297 names, with the nine extras explicit.
+
+FIRST IMPORT CUTS
+MonotoneCellOverlap removes a graph-machinery dependency and retains every
+mathematical body exactly. MonotoneOverlapGraph explicitly imports that machinery
+where it is actually used; its bodies remain exact. LinearGenerationBudget retains
+both old theorem statements and replaces the reference to the upstream elementary
+bound n <= 2^entryBits(n) by the identical three-line argument inside its proof.
+That bound holds also at n=0; no positive-dimension hypothesis is added. This small
+proof duplication is the deliberate cost of avoiding a much larger imported chain.
+All final dimension and input-length formulas remain unchanged.
+
+CHECKS PREPARED / COMPLETED
+/private/tmp/r1912-core-preservation-review.py
+/private/tmp/r1912-core-preservation-review.json
+/private/tmp/r1912-check-bridge-imports.py
+/private/tmp/r1912-bridge-import-reference-check.json
+These are static source/import checks only. The previous pure-consolidation exact-
+body checker should be applied to a source baseline after the reviewed cut proposal,
+or augmented with an explicit approved-cut mapping. Do not claim that the original
+pure-concatenation checker by itself validates altered import-cut proof bodies.
+
+No source repair is recommended at this stage. Required remaining evidence is the
+ordinary Lean build, complete 6,306-name standard-axiom audit, exact original-type
+manifest comparison, and meaningful before/after timing. If Lean reports a missing
+bridge, add the narrow explicit bridge import to the consumer rather than restoring
+the heavy dependency to all core modules.

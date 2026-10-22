@@ -1,0 +1,83 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1875",
+  "target": "Regular recursion206/208: exact masked-stride bank semantics and paid execution.",
+  "new_modules": [
+    "MaskedStrideGroupSemantics",
+    "MaskedStrideScan",
+    "MaskedStrideBank",
+    "MaskedStrideExecution"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.MaskedStrideGroup.cells",
+    "TransposeFollowup.MaskedStrideGroup.moveBuffer_cells",
+    "TransposeFollowup.MaskedStrideGroup.rewind_cells",
+    "TransposeFollowup.MaskedStrideGroup.slots_position_of_le",
+    "TransposeFollowup.MaskedStrideGroup.slots_outside",
+    "TransposeFollowup.MaskedStrideGroup.readMode_slots",
+    "TransposeFollowup.MaskedStrideGroup.written",
+    "TransposeFollowup.MaskedStrideGroup.slots_written",
+    "TransposeFollowup.MaskedStrideGroup.result_written",
+    "TransposeFollowup.MaskedStrideGroup.result_outside",
+    "TransposeFollowup.MaskedStrideScan.input",
+    "TransposeFollowup.MaskedStrideScan.buffer",
+    "TransposeFollowup.MaskedStrideScan.output",
+    "TransposeFollowup.MaskedStrideScan.buffer_succ",
+    "TransposeFollowup.MaskedStrideScan.AtGroup",
+    "TransposeFollowup.MaskedStrideScan.at_zero",
+    "TransposeFollowup.MaskedStrideScan.AtGroup.written",
+    "TransposeFollowup.MaskedStrideScan.AtGroup.result_written",
+    "TransposeFollowup.MaskedStrideScan.AtGroup.step",
+    "TransposeFollowup.MaskedStrideScan.groups",
+    "TransposeFollowup.MaskedStrideScan.groups_invariant",
+    "TransposeFollowup.MaskedStrideScan.partial_correct",
+    "TransposeFollowup.MaskedStrideScan.value",
+    "TransposeFollowup.MaskedStrideScan.value_block",
+    "TransposeFollowup.MaskedStrideScan.value_recurrence",
+    "TransposeFollowup.MaskedStrideScan.result",
+    "TransposeFollowup.MaskedStrideScan.result_correct",
+    "TransposeFollowup.MaskedStrideScan.fullSchedule",
+    "TransposeFollowup.MaskedStrideScan.fullSchedule_block",
+    "TransposeFollowup.MaskedStrideScan.full_exact",
+    "TransposeFollowup.MaskedStrideScan.full_prefix",
+    "TransposeFollowup.MaskedStrideScan.ticks",
+    "TransposeFollowup.MaskedStrideScan.schedule",
+    "TransposeFollowup.MaskedStrideScan.schedule_active",
+    "TransposeFollowup.MaskedStrideScan.schedule_prefix",
+    "TransposeFollowup.MaskedStrideScan.schedule_exact",
+    "TransposeFollowup.MaskedStrideScan.native_run",
+    "TransposeFollowup.MaskedStrideScan.ticks_le",
+    "TransposeFollowup.MaskedStrideScan.state_count"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8957,
+      "log": "/private/tmp/r1876-dev11.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10207,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5058,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All checkpoint handles terminal.\ndev1: handle unavailable after compaction; failure recorded in /private/tmp/r1876-dev1.log and read-only process inspection confirmed no R1876 build remains.\ndev2:77515 exit1; dev3:41513 exit0 (8954 jobs).\ndev4:29263 exit1; dev5:59764 exit1; dev6:50643 exit1; dev7:28737 exit0 (8955 jobs).\ndev8:65532 exit1; dev9:59673 exit0 (8956 jobs).\ndev10:91025 exit1; dev11:48926 exit0 (8957 jobs).\nfull:69255 exit0 (10207 jobs). audit:30223 exit0 (5058 unique declarations).\nNo Lean edits after the full build and axiom audit. No second checkpoint Lake launched while an earlier checkpoint handle was live.",
+  "formal_checkpoint": "R1876 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1026 local sources,204 external sources,5058 declarations,8 configurations,195 artifacts",
+  "proof_scope": "PROGRESS at R1876: the arbitrary masked binary stride processing phase now has exact cell semantics, a cross-group invariant, the full raw-index zero-filled recurrence, and a single paid native execution of every full/partial group. Its exact time is 4*S*(floor(P/S)+1), at most8*P for1<=S<=P, with4*(N+1) states. Five of six original families formalized; regular recursion206/208 best estimate59% complete (low confidence). Raw IO/final clearing, stride limits, other exact206 palettes and bounded composition remain.",
+  "next": "R1876 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five of six original families\nformalized; sixth regular recursion206/208 best estimate59%, low confidence.\n\nNEXT: finish the RAW IO AND CLEANUP interface of the arbitrary masked\nbinary stride executor. Its complete prepared-bank processing phase is\nnow proved, with exact zero-filled raw-index prefix/difference semantics.\nReuse it; do not re-prove its group invariant or build another compiler.\n\nMain APIs:\n- MaskedStrideGroupSemantics: cells, slots_outside/readMode_slots,\n  slots_written, result_written/result_outside, rewind_cells.\n- MaskedStrideScan: input decodes the initial bank; buffer/output define\n  group semantics. AtGroup records actual bank/scratch positions, past\n  output, untouched future, and buffer. groups_invariant and partial_correct\n  prove full and partial group composition.\n- MaskedStrideBank (namespace MaskedStrideScan): value, value_block,\n  value_recurrence (actual raw-index equation); result and result_correct\n  (all P bank bits, head positions, untouched future). Scratch initialization\n  only assumes the first S decoded buffer bits are false; actual blank tape\n  implies it via AbsoluteTape.blank_cells and MaskedStrideCell.bit.\n- MaskedStrideExecution (same namespace): fullSchedule/full_exact/full_prefix,\n  ticks P S=(P/S+1)*(4*S), schedule/schedule_exact, native_run (exact N\n  original-machine transitions AND halt), ticks_le (N<=8P for S<=P),\n  state_count (q+1=4*(N+1)). All masks are arbitrary public data-independent\n  transition-table choices. One empty final slab when P%S=0 is paid.\n- R1875 ScheduledNativeIO.native_prefix, trajectory_add/congr,\n  native_run_and_halt and native_state_count remain the generic interface.\n  Compose subroutines' schedules before compiling; do not treat standalone\n  halt states as free caller transitions. Full prefixes give exact native\n  intermediate configurations, not just eventual semantic equality.\n\nFor the full primitive, load the raw P input bits into bank tape0 with\nreadInput / act(write bank,right) / moveInput; then paid bank rewind P.\nExisting NativeIO raw readers/writers may provide reusable traces; inspect\nbefore implementing a new routine. End processing pays scratch erasure:\nS blank-write/right instructions, then S left moves. Bank head is at P;\nrewind it P and emit the P output bits by paid read/output/advance. A rough\nfull budget is <=18P (load+rewind4P,processing8P,clear2P,rewindP,emit3P),\nbut this bound remains unproved and must include all real transitions.\nProve all preserved IO fields and scratch outside the cleared interval;\nuse the existing absolute-cell refinement rather than copying tape theory.\nPrepared coordinates may be normalized0 only when raw initialization is\nproved, not silently assumed. NativeIO.blank_denote connects initial state.\n\nThen prove the arbitrary-stride geometry using the existing exact group\nhead formulas. If S/P->0, buffer excursions and partial slab are o(P), and\nfull slab endpoints make the bank O(S)-close to an affine path. If S/P has\npositive limit, the number of groups is bounded and finite affine phases\nsuffice. No uniform piece-count bound across both cases is needed.\nBackward scans, whole-bank reversal/rotation, exact row/integer and F3\npalettes, and bounded-word composition remain required. Preserve source200\nsections20-24 scope, nonuniform public choices, fixed heads/alphabet,\nO(log P) state bits and high-entropy raw correctness. No uniform generator\nis required; no new primitive-classification or finite word-search project.\n\nNo fresh subagents until all six; then authorized impartial referees and\ncleanup. Original paper read-only; no commits/pushes. No unrestricted\ntranspose decision or literature-novelty claim. Source208 and global210.5\nare complete and should not be reopened to defer executor work.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate59% complete (low confidence). This estimates the whole sixth family, not just the scan helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and its global exceptional extension are complete within the sixth family. Exact206 compilation remains, with the masked binary processing phase now complete. Final independent referees follow all six.",
+  "updated_at": "2026-10-21T00:44:17.362325+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/MaskedStrideGroupSemantics.lean": "a7a1b9da1a89c5dd1723ffed412c8800d5079cec8f71cb956c99aa3ac172be56",
+    "lean/TransposeFollowup/MaskedStrideScan.lean": "6ab0c0af4e2e716cd05ddaaf7f6b75fb8a564a52dc260e4f6ad0c56cfc9c964c",
+    "lean/TransposeFollowup/MaskedStrideBank.lean": "5a13246654b8f497769f6be3a117618ffb80bf61a132e13e66a3f35e86261e8e",
+    "lean/TransposeFollowup/MaskedStrideExecution.lean": "3fd6aaa341672a256381646d3fe0d3c0b61be1cb56090f1fbf54bda38027550e"
+  }
+}

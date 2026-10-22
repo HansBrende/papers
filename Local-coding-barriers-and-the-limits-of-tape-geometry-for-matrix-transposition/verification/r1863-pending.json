@@ -1,0 +1,68 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1862",
+  "target": "Affine return motion200/210: countable affine path labels and quantitative exceptional-time bounds.",
+  "new_modules": [
+    "CompactIntervalCover",
+    "CompactVisitMajorant",
+    "OmittedVisitBound",
+    "FiniteAffineTimeBound",
+    "CountableAffineTimeBound",
+    "OpenAffineTimeBound",
+    "CountableAffinePathLabels"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.AffineMotion.volume_eq_cover_content",
+    "TransposeFollowup.AffineMotion.exists_compact_interval_cover",
+    "TransposeFollowup.AffineMotion.interval_visit_majorant",
+    "TransposeFollowup.AffineMotion.compact_visit_majorant",
+    "TransposeFollowup.AffineMotion.lintegral_compact_visits_le",
+    "TransposeFollowup.AffineMotion.lintegral_levelCross_delete_le",
+    "TransposeFollowup.AffineMotion.SatisfiesStar",
+    "TransposeFollowup.AffineMotion.one_le_of_star_small_cuts",
+    "TransposeFollowup.AffineMotion.star_half_le_finite_affine_omission",
+    "TransposeFollowup.AffineMotion.tendsto_open_omission_prefix_sum",
+    "TransposeFollowup.AffineMotion.star_half_le_countable_affine_omission",
+    "TransposeFollowup.AffineMotion.not_star_of_countable_affine_ae_cover",
+    "TransposeFollowup.AffineMotion.exists_countable_local_affine_cover",
+    "TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission",
+    "TransposeFollowup.AffineMotion.star_half_le_affine_component_omission",
+    "TransposeFollowup.AffineMotion.star_common_affine_omission",
+    "TransposeFollowup.AffineMotion.exists_countable_affine_path_cut_bound",
+    "TransposeFollowup.AffineMotion.exists_countable_affine_path_small_cut"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8953,
+      "log": "/private/tmp/r1863-dev12.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10168,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4819,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 88301 exit1; dev2 21958 exit1; dev3 30488 exit1; dev4 36185 exit0/8933; dev5 96358 exit1; dev6 16731 exit1; dev7 71042 exit1; dev8 55589 exit1; dev9 18412 exit1; dev10 9182 exit1; dev11 38069 exit1; dev12 86287 exit0/8953. Development failures were elaboration/API corrections; final development succeeded. Full build11496 exit0/10168. Final audit45636 exit0/4819. All handles terminal; no warnings/errors in final build/audit.",
+  "formal_checkpoint": "R1863 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:987 local sources,204 external sources,4819 declarations,8 configurations,169 artifacts",
+  "proof_scope": "R1863 proves the central original200/210 analytic path results: arbitrarily small admissible label classes and cuts for countably affine almost-everywhere covers; total exceptional time >=1/2 under full M* for open affine components or local affine neighborhoods; and the common-set bound >=1/(2k). Countability and the omitted-time integral estimate are proved, not assumed. Full motion-family native, physical-time and bounded-piece approximation consequences remain; four of six original families formalized.",
+  "next": "R1863 recorded; NEVER replay its checkpoint script. All Lake handles terminal.\nGoal ACTIVE; previous turn PROGRESS. Full original motion200/210 about70%\nformalized (best estimate, low confidence); four of six families complete.\n\nCENTRAL ANALYTIC PATH RESULTS ARE NOW PROVED. Do not reopen CFW, affine\nlabel construction, countable return measures, compact-time majorants or\ncountable affine-region approximation. The actual countable small-label\npath theorem and original210 component/local-affine >=1/2 bound are done.\n\nNEXT: finish the remaining original motion-family consequences.\n1. Physical time: for G>0, F(u)=G*f(u/G), verify affine-region/time-set\n   transport and Lebesgue scaling u=Gt, including actual path Lipschitzness\n   and local affine neighborhoods. Derive sum_t |E_t physical|>=1/(2G)\n   and common |E physical|>=1/(2kG). These are absolute time in P units,\n   not fractions of total runtime. Reuse existing volume_affine_preimage,\n   mathlib affine measure/continuity/Lipschitz identities; do not assume a\n   free Jacobian or replace actual transformed sets by a numeric premise.\n2. Native consequences: import protected Transpose/Tape/MStarClass.lean\n   theoremMStar_class_nonuniform (line174) and MStarRobust.lean\n   theoremMStar_level_nonuniform (line83), theoremMStar_level_robust(line156).\n   The class theorem already supplies subsequence existence and EVERY limit\n   is 1-Lipschitz and full M*. It takes fixed k,G, sublinear state bits,\n   actual TraceClass, correct class, sublinear coentropy and linear time.\n   Preserve all assumptions and adaptive/nonuniform scope, and apply the\n   proved path obstruction/exceptional-time theorem to its actual limits.\n   The robust theorem supplies popular classes from high-entropy fast inputs;\n   do not replace it by arbitrary or atypical single-run trajectories.\n   SatisfiesStar is just the original quantified M* inequality packaged as\n   an abbreviation; the imported stronger all-theta result feeds it directly.\n   Do not silently add horizon/trace-class assumptions: derive needed\n   nonnegative horizon or preserve the original positive time constant.\n3. Bounded-piece approximation corollary from original200 section5: if\n   actual rescaled paths are o(1)-uniformly approximated by 1-Lipschitz\n   polygonal paths with one fixed J pieces/head, extract limiting breakpoints\n   and values; collapsed intervals merge; the uniform limit has a finite\n   affine cover. Then invoke FiniteAffineObstruction. Reuse original compact\n   subsequence/limit APIs and mathlib compact finite products. Do not infer\n   this from arbitrary finite traces, whose piece count may grow with size.\n4. Regular recursion206/208 remains after the complete motion family: actual\n   bounded scan palette and local-limit derivations; bounded-stage contracting\n   contiguous recursive trees; exact exceptional-work and state-bit scopes.\n   Final authorized independent referees, strengthening and cleanup follow\n   all six formalizations. No fresh subagents before that phase.\n\nNew R1863 modules:CompactIntervalCover,CompactVisitMajorant,OmittedVisitBound,\nFiniteAffineTimeBound,CountableAffineTimeBound,OpenAffineTimeBound,\nCountableAffinePathLabels (18 declarations). Original read-only; no commits\nor pushes. Paid padding/SL2 complete; do not reopen.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: affine return motion200/210. Best estimate:70% formalized, low confidence. Its central countable-affine path-label theorem and quantitative exceptional-time obstruction are proved. Remaining: physical-time units, full native trace-class consequences and bounded-piece approximation corollary. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No completion-time guarantee.",
+  "updated_at": "2026-10-20T21:42:27.327168+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/CompactIntervalCover.lean": "777f109d94d9284348f001d536077c4fa8247a1c9abfa80517df1d4a1c348738",
+    "lean/TransposeFollowup/CompactVisitMajorant.lean": "e53f4a68b7a613329ffdc17aacfc39b5e5a127d8917327fb91e72418344f59e9",
+    "lean/TransposeFollowup/OmittedVisitBound.lean": "b83711502bf1bc15109f7e5f2c3dca4357f0d7d1f83f604bb80b1a4ef3f23fe9",
+    "lean/TransposeFollowup/FiniteAffineTimeBound.lean": "24a97ee4932e96af8dc25092934a8d3796997a73f0b3699796fbf3eb45db5481",
+    "lean/TransposeFollowup/CountableAffineTimeBound.lean": "9f1e6194e7e7ebfd7d71f6ba1defe312e8c3dcacaec9e8efd69dd2cfd41bbb77",
+    "lean/TransposeFollowup/OpenAffineTimeBound.lean": "7fc00a8c44911be027779678852e6dc406f1239fbe533d1ede92d1f13aef630d",
+    "lean/TransposeFollowup/CountableAffinePathLabels.lean": "84fa979ed2157a2bac5aea9b8864a742e430e75bcbf1d76b1d83eaecac58f78d"
+  }
+}

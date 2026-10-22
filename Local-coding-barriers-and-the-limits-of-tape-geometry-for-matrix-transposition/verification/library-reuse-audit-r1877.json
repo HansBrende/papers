@@ -1,0 +1,48 @@
+{
+  "status": "PROGRESS at R1877: the forward arbitrary masked binary stride primitive now has a complete raw-input native executor. It loads the input, performs the proved prefix/difference recurrence, erases all scratch cells, emits the correct raw bits and halts. Exact total time is8*P+4*S*(floor(P/S)+1)+2*S, at most18*P for1<=S<=P. It uses two work tapes, five work symbols and4*(T+1) states. Five of six original families formalized; regular recursion206/208 best estimate62% complete (low confidence). Arbitrary-stride limits, backward/rotation/reversal variants, all row/integer/F3 palettes and bounded composition remain.",
+  "boundary": "The forward masked binary primitive is now verified from the ORIGINAL native blank-tape initial state, with actual external input reads and output writes, both bank rewinds and complete scratch erasure. Its correctness is the standard zero-filled prefix/difference recurrence. This completes one concrete primitive, not source206 as a whole. No native execution costs remain hidden for this primitive. Its arbitrary-stride limiting head geometry remains to be proved and transferred; backward variants, all other declared palettes and bounded-word composition remain required. Source208 and global exceptional-work threshold210.5 are complete. Final referees follow all six. No unrestricted transpose result or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate62% complete (low confidence). This is an estimate for the full sixth family, not the raw-scan helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and global exceptional-work extension are complete within family6; exact206 still requires the full palette and limit/composition proof. Final independent referees remain pending.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "searches": [
+    {
+      "scope": "Existing raw IO and cleanup routines",
+      "finding": "Inspected RawInputCopy, NativeSpanErase/Rewind, NativeMappedCopy, NativeIOOnlyWork and related modules. Marked-word interfaces differ from this public-length clock; reused underlying instruction/tape/compiler lemmas."
+    },
+    {
+      "scope": "Original input encoding and standard lists",
+      "finding": "Imported readInput_natCast and nth_eq_getElem? directly from the original paper. Reused standard List.range/map/reverse lemmas for output order."
+    }
+  ],
+  "reused_mathlib": [
+    "List.range_succ",
+    "List.map_append",
+    "List.reverse_append",
+    "List.map_congr_left",
+    "List.mem_range",
+    "List.getElem?_eq_getElem",
+    "Nat.strong_induction_on"
+  ],
+  "reused_local": [
+    "Microcode.single",
+    "NativeMicrocode.action_cells",
+    "AbsoluteTape.scanned",
+    "NativeIO.blank_denote",
+    "ScheduledNativeIO.trajectory_add",
+    "ScheduledNativeIO.trajectory_congr",
+    "ScheduledNativeIO.native_run_and_halt",
+    "ScheduledNativeIO.native_state_count",
+    "MaskedStrideScan.result_correct",
+    "MaskedStrideScan.value_recurrence",
+    "MaskedStrideGroup.result_outside"
+  ],
+  "reused_original": [
+    "Transpose.Tape.Impl.readInput_natCast",
+    "Transpose.Tape.Impl.nth_eq_getElem?",
+    "Transpose.init",
+    "Transpose.stepN",
+    "Transpose.step",
+    "Transpose.TM"
+  ],
+  "dependency_simplification": "DRIFT / REUSE\nInspected RawInputCopy, NativeSpanErase, NativeSpanRewind, NativeMappedCopy,\nNativeIOOnlyWork and the existing input/output/rewind/erase modules before\nimplementing these interfaces. The old raw loader uses marked words and\nboundary detection; its loop interface does not supply the exact public\nschedule required here. Reused its underlying NativeIO/Microcode/native\nrefinement instead of adding marker conversion and another controller.\nPublic-length passes preserve the already chosen four-value local mode and\nprovide exact affine head motion needed by the next limit proof.\nThe original Transpose.Tape.Impl.readInput_natCast and nth_eq_getElem? are\nIMPORTED and used directly. NativeIO.blank_denote, ScheduledNativeIO's\ncompiler/state count/exact execution, NativeMicrocode.action_cells,\nMicrocode.single, AbsoluteTape.scanned, and standard List.range/map/reverse\nlemmas are reused. No copied original definitions, replacement simulator,\nuniform parameter generator or new generic list theory was introduced.\nThe R1876 stride recurrence, full bank semantics, group execution and\ngeometry are reused without changes. Existing native recursion/exceptional\nlower bounds were not reopened. This closes their next concrete executor\ninterface obligation; no finite word search or unrelated proof undertaking.\n",
+  "novelty": "No novelty claim. Complete raw masked-stride native primitive verified; arbitrary-stride limits, other palettes and final referees remain."
+}

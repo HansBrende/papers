@@ -1,0 +1,180 @@
+R1909 — FRESH AUDIT OF THE SIX FOLLOW-UP PROOF FAMILIES
+21 October 2026. User-requested trust, simplification, strengthening and original-statement audit.
+
+STATUS: COMPLETE. Full build passed10332 jobs;6293 audited declarations use
+only the three allowed standard axioms. Fresh Lean kernel replay passed for
+all1157 current mathematical source roots and their imported dependencies.
+All execution handles are terminal. No correctness defect or weakened main
+target was found within the stated review scope.
+
+FINDINGS
+
+No proof defect, forbidden axiom, kernel bypass or weakening of any of the six
+original main target statements was found in this audit. This conclusion has
+two different bases: exhaustive automated checks of the checked source and
+axiom dependencies, and selective independent source review of definitions,
+endpoint quantifiers and critical proof chains. It is not a claim of human
+line-by-line review of all supporting code or established literature novelty.
+
+The six target statements were not reconstructed from the final implementation.
+verification/r1909-original-requirements.json preserves the actual original
+all-unstarted requirements, recovered from this chat's 18 October command
+output before any theorem was formalized. Its six id/source/statement triples
+match today's requirements exactly. Reviewers compared the mathematical source
+notes themselves against the Lean definitions and conclusions.
+
+STATEMENT COMPARISON
+
+1. Adaptive separators/treewidth (181/186/188): preserved and strengthened.
+Arbitrary correlated correct sets, public adaptive stopping/support, original-row
+receiver information, actual transcript graphs, helper entropy and expected/worst
+cost are retained. Coefficients2 remain sharp. Arbitrary finite query supports
+strictly generalize original pairwise supports. Original treewidth conclusion
+n/9*max(epsilon-1/n-2eta,0)^2-1 is strengthened as described below.
+
+2. Recoded pairwise XOR (181B): preserved and strengthened.
+Arbitrary bijective nonlinear row recodings, fixed singleton/pairwise packets,
+individual own-row decoders and all-input correctness are exactly the original
+model. All-input correctness is not a later narrowing. The finite bound implies
+P-O_Delta(P/log n), including disconnected graphs. Path/cycle error improves below.
+
+3. Affine motion (200/210): preserved and strengthened.
+The full small-class/small-crossing construction is formalized, as are native
+trace-class/nonuniform consequences and exceptional-time constants1/2,1/(2G),
+1/(2kG). Open overlapping branches generalize disjoint intervals. The proof
+uses direct affine-boundary estimates in place of measured hyperfiniteness.
+The weaker theta<1/2 premise strengthens the obstruction; padding still proves
+full original M*. No off-correct-set geometry is demanded.
+
+4. Fully paid padding (201/202): main conclusion preserved and strengthened.
+One uniform machine preserves arbitrary payload computations with actual halt,
+exact output and literal zero-slack CutIneq at the same horizon, with fully
+paid initialization/generation/reset/cleanup and additive O(P) overhead. The
+same machine has full NativeRunLimits.Conclusion, including every eligible
+limit. Universal overhead A precedes the payload machine; all positive canonical
+dimensions are covered. Supporting speed/measure omissions are disclosed below.
+
+5. Exact two-stage helper (216.3/216.4): preserved and strengthened.
+The local wrappers, middle bijections/permutation, first triangular bijection,
+second arbitrary causal stage and single helper-selected orders match source.
+No new invertibility condition is imposed on input/final wrappers or second
+stage. Arbitrary real deficit D and attained helper range give the original
+D+g >= b*floor(n^2/4). The entropy strengthening below retains arbitrary ambient
+helper types and correlated correct sets.
+
+6. Concrete palettes and regular recursion (206/208/210): preserved or broader.
+Canonical entry width matches source206; every declared integer/F3/binary
+operation and arbitrary public size-dependent bounded word is present. Exact
+internal trits, paid implementation, high-entropy correctness and state-bit
+accounting remain. All-cost recursive tick ownership, contracting volumes,
+fixed branching/stages and regularity over every eligible correct-execution
+sequence remain. Nested contiguous child-call intervals are unnecessary;
+removing them broadens the exclusion, while own-stage global-time contiguity
+remains. Global and per-node exceptional-work bounds are both explicit.
+
+ORIGINAL-SOURCE CLAIMS THAT MUST NOT BE CALLED FORMALIZED
+
+These are genuine limitations of the current development relative to all the
+surrounding notes, even though none weakens a named six-target conclusion:
+
+- Source201 section8 proposed opcode generation O(d polylog d)=o(P). The
+  implemented dense generator has a proved O(P) bound. This is a weaker
+  supporting algorithmic claim; total padding still meets its intended O(P)
+  bound. Source: units/200-affine-return-motion.txt lines268-285.
+- Source201 sections9-10's weak convergence/identification of actual return
+  measures and nonhyperfinite relation are not formal endpoints. Full M*
+  follows by the alternate route explicitly allowed in source202 section17.
+- Source200's measured-hyperfinite relation/CFW proof method is not formalized;
+  its intended small-cut and obstruction conclusions have direct Lean proofs.
+- Source181A's separate recursive K(G) theorem is not implied by the present
+  adaptive separator theorem and was not one of the six exact targets.
+- Source216.2's adaptive-query block lemma and216.5's general bounded-query
+  wrapper extension are not the exact local-wrapper quarter-toll target.
+  They remain unformalized as full endpoints.
+
+These distinctions supersede any loose earlier wording that all results in
+those entire research units had been formalized. They are not counterexamples
+to those written results, and deleting obsolete support is not a claim that its
+mathematics is false.
+
+NEW STRENGTHENINGS IN THIS AUDIT
+
+Let P=n^2*b, D=P-log2|F| and H(Z) be actual helper Shannon entropy in bits
+for uniform input on nonempty F.
+
+A. Two-stage entropy toll:
+  D + H(Z) >= b*r*(n-r), for every0<=r<=n;
+  D + H(Z) >= b*floor(n^2/4).
+The proof uses the already-proved cardinal bound for each branch and existing
+mean_log_fiberCard. The finite attained-helper subtype allows an infinite
+ambient helper type. Since H(Z)<=log2|image Z|<=g, this is stronger than the
+old g-bit conclusion when helper frequencies are unequal. A concrete correct
+example illustrating strict numerical entropy-vs-range difference is identity
+on all8 symmetric Boolean2x2 matrices, with helper X00 AND X11: helper
+frequencies3/4 and1/4 give about0.811 bits versus a one-bit range bound.
+Lean: TwoStageHelperEntropy.helper_entropy_deficit_bound and
+quarter_helper_entropy_deficit_bound.
+
+B. Path/cycle XOR finite constant:
+  B >= P - 3*b*n*sqrt(n), replacing4*b*n*sqrt(n).
+This retains all cycle-embedding/path/subcycle hypotheses. The natural bound
+is P<=B+3*b*n*floor(sqrt(n)). Existing ball estimates suffice; no new asymptotic
+claim is made. Lean: XorPathCycleBound's existing endpoints.
+
+C. Adaptive finite treewidth improvement:
+  E[tw] >= (n/4)*alpha^2 + alpha/2 - 1,
+  alpha=max(epsilon-2(D+H(Z))/P,0).
+The floor-threshold proof had discarded the nonnegative product
+(r-floor(r))*(floor(r)+1-r). Retaining it gives the additional alpha/2 term.
+Lean: TreewidthAverage.quadratic_bound_of_integer_tests and
+AdaptiveTreewidth.average_treewidth_lower_bound.
+
+CLEANUP AND REUSE
+
+Archived10 further modules plus7 redundant endpoint/projection declarations,
+removing1843 mathematical source lines before additions; the net reduction
+after strengthenings/import repair is1739 lines (108021 to106282).28 old audited
+declarations were retired;3 new definitions/theorems are audited. The archive
+is research/10-linear-decision/archive/r1909-retired-support, with original
+hashes and complete before-file snapshots. No final target endpoint was removed.
+
+The nilpotent-only exclusion branch was kept alive solely to export a cubic
+budget inequality; that live inequality remains, while its obsolete branch is
+archived. The older trimmed spanning extraction and four weaker projection
+corollaries were similarly unused by final endpoints. A previously transitive
+DyadicCenterTrimming import was made explicit in ReextractionPowerBounds.
+Independent useful APIs and results remain deliberately preserved.
+
+The proof is still large for a concrete reason: the paid-padding endpoint's
+local import closure accounts for roughly81,000 mathematical lines; palette
+and recursion endpoints for roughly21,000. These overlap and exclude imported
+mathlib/original/OAI sources. The local coding results are much smaller. No
+full replacement for the specialized unconditional expander/native compiler
+chains was established in pinned mathlib. Removing those obligations would
+weaken the unconditional theorem. Broad API/record refactoring remains possible,
+but was not undertaken without a demonstrated net simplification.
+
+TRUST AND VALIDATION
+
+Initial R1908 baseline:1648/1648 recorded source/configuration/log hashes match.
+All local executable source tokens were checked after removing nested comments
+and strings. No sorry/admit, added axiom, unsafe/native_decide, custom elaborator,
+environment mutation or compiler override was found. Only autoImplicit false
+is set; no raised proof limits or disabled linters. Standard allowed axioms are
+propext, Classical.choice and Quot.sound.
+
+Final machine-check outcomes are recorded in support-build.json and
+r1909-validation-runs.json: all stages exited0. The full build had no
+warnings/errors; it replayed one pre-existing harmless ring tactic info message. Fresh Lean kernel replay is an additional
+check against imported-environment tricks; it uses Lean's own kernel and is not
+an independent external verifier.
+
+Three fresh independent agents reviewed complementary domains. Their reports
+are r1909-strengthening-review.txt, r1909-padding-motion-review.txt and
+r1909-simplification-review.json. Source reviews inspect selected chains and
+statement interfaces; automated axiom/hash/kernel checks have the broader
+scope recorded in their receipts.
+
+Original sibling paper and dependency pins remain unchanged. No commits or
+pushes. No claim of literature novelty or resolution of unrestricted matrix
+transposition or integer multiplication follows from this audit.

@@ -1,0 +1,43 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1854",
+  "target": "Generalize the full trace upper bound and exclude the spanning profile with the source constructed internally.",
+  "new_modules": [
+    "SpanningProfileExclusion"
+  ],
+  "modified_modules": [
+    "ReextractionPowerBounds"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_reextracted_trace_power_bound_of_cost",
+    "TransposeFollowup.SL2Projection.exists_spanning_profile_exclusion"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9901,
+      "log": "/private/tmp/r1855-dev3.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10138,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4699,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 16544 exit0/9871 (generic wrapper and old nilpotent consumer); dev2 36086 exit1 (ambiguous root/matrix inverse lemma, fixed); dev3 31151 exit0/9901 (spanning profile exclusion); full17265 exit0/10138; audit6099 exit0/4699. All handles terminal; final build/audit clean. A read-only ps inventory was denied by the OS; no process restart resulted, and each actual Lake handle was polled terminal.",
+  "updated_at": "2026-10-20T19:47:22.522084+00:00",
+  "formal_checkpoint": "R1855 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:957 local sources,204 external sources,4699 declarations,8 configurations,153 artifacts",
+  "proof_scope": "In progress. R1855 generalizes the full reextraction bound to arbitrary word lengths with their actual profile costs, retaining the old theorem as a specialization. It then excludes the spanning localized approximate-group profile at sufficiently fine scales. The original commuting source family, quantitative determinant gap, approximation bound, extraction cube, power covers and actual trace-growth family are constructed inside this proof. The remaining hypotheses are the explicit primitive profile, spanning-frame, distribution and ambient-size conditions. Two declarations reuse the existing long proofs; no fourth original family is completed.",
+  "next": "R1855 recorded; never replay its checkpoint script. All handles terminal.\nFull10138-job build and4699-declaration standard-axiom audit passed.\nGoal ACTIVE; previous turn PROGRESS.\n\nNEXT TARGET: strict flattening for the ACTUAL fixed rational walk family.\nDo not reprove the spanning exclusion, source extraction or scalar chain.\n\n1. Read InitialWalkDistribution.exists_initial_walk_spanning. It already\n   supplies primitive U,Y,A, finite ENNReal cardinality, distribution,\n   actual p,q,pq inA^34 and the spanning determinant under high energy\n   and nonflattening. InitialWalkTraceProfile is stronger than needed;\n   avoid its extra trace projection.\n2. For requestedgamma>0 setkappa=min(gamma/2,1/122880)>0,<=1.\n   Obtain theta,alpha0,L,J fromexists_spanning_profile_exclusion.\n   Usealpha=alpha0 (<=1). Invoke initial_walk_spanning with\n   epsilon=theta/2,zeta=theta and beta chosen to makeL*s<=theta:\n   beta=30000*theta/(2*(L:Real)) works, since it returns30000s<=beta.\n   s>0 is chosen BEFORE the bounded iterate cutoffk, preserving quantifiers.\n3. Do not introduce an assumed profile coefficient bound. Recover the\n   actual common envelopeh=eta^-s using the existing APIs:\n   exists_uniform_covering_loss_threshold hs (max(2^100,alpha^-4))\n   inCoveringLevelScale; exists_quarter_scale_threshold;\n   covering_level_log_bound_of_powers using the originallevel-count bound,\n   actualenergy>=eta^-gamma ands<=1;\n   exists_dyadic_walk_support_threshold hs k inDyadicWalkSupportScale\n   gives actualQ<=eta^-s. q0=eta^s hasq0^-1=h exactly.\n   Increase the commonN0,J0,Jr thresholds without changing the fixedg.\n   These same bounds are already proved locally inside the initial\n   profile proof; reuse their helper lemmas, not the long proofs.\n4. Convert the ENNReal |Y| bound toReal withfiniteK. Use U subsetclosureU\n   to getU subsetentryBoxQ. Distribution exponent1/122880 weakens to\n   kappa because0<rho<1. Its range isrho<eta^(theta/2).\n   The ambient upper boundeta^(-3+gamma/2) weakens toeta^(-(3-kappa)).\n   All other assumptions ofexists_spanning_profile_exclusion are literal\n   outputs ofthe sameactualprofile. Apply it withtau=s,h=eta^-s.\n5. Conclude strict flattening by contradiction:\n   energy_i>=ofReal(eta^-gamma) implies\n   energy_(i+1)<ofReal(eta^s)*energy_i\n   at all admissiblej,ell,i<=k for the ONE selectedfree rational family.\n   Keepfreedom, denominators, nearidentitybounds, familycardinality and\n   ordering s beforek,g beforej/ell as needed by the laterdensitycap.\n6. Then finite-iterate density cap and the existing spectral/gap/padding\n   composition remain. Audit hypotheses against the actualdensitycap\n   consumer before inventing a new target.\n\nCurrent original paid-padding proofabout65%,LOW CONFIDENCE;3/6 done.\nOriginal paper read-only. No commits/pushes. Referees after all six.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about65% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a claim that the remaining analytic and machine integration is routine or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SpanningProfileExclusion.lean": "9481080b5a6a76984afa866f997f40e9b40dae1ad7c9ebe495f464847f90c8b8",
+    "lean/TransposeFollowup/ReextractionPowerBounds.lean": "085f4d4112c23cd921d898842f33f3a0d587f7706648065766452f21b95a60a7"
+  }
+}

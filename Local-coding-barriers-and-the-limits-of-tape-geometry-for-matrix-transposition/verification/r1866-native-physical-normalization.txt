@@ -1,0 +1,94 @@
+
+R1866 — ACTUAL PHYSICAL/BLOCK NORMALIZATION AND NATIVE SAMPLED LIMITS
+PROGRESS at R1866: the actual physical/block normalization bridge for regular recursion206/208 is formalized, including finite-size rounding estimates, uniform-limit equivalence, actual native Lipschitz representations, and raw sampled work-head limits. Five of six original families remain formalized; the current sixth family is about5% complete, low confidence. Final referees remain pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1866 RESULTS
+1. exists_lipschitz_real_walk: every original integer UnitSteps walk has a
+   globally unit-Lipschitz real extension agreeing at every natural tick.
+   This directly imports mathlib LipschitzOnWith.extend_real and the original
+   unitSteps_dist'; no interpolation or extension theory is reproved.
+2. physicalPath(L,f,t)=f(L*t)/L is unit-Lipschitz for L>0. Its distance
+   from raw floor sampling h(floor(L*t))/L is <=1/L for every t>=0.
+   L may be any positive real volume, not only an integer input length.
+3. block_physical_sample_error: for n,r>=1 and u>=0, the actual original
+   blockTraj(r,n,h,u) differs from physicalPath(n*r,f,u) by <=2/n.
+   Both time-flooring and signed block rounding are explicitly bounded.
+4. For actual r=blockSize(G,n), P=inputLength(n), G,n>=1, the scale
+   a=n*r/P satisfies 0<a, 1/G<=a<=1 and a-1/G<=1/n. For walks starting
+   at0, |physicalPath(P,f,u/G)-blockTraj(r,n,h,u)/G|<=2*(u+1)/n.
+   These follow from original blockSize/inputLength definitions and bounds.
+5. block_limit_iff_scaled_physical_limit: along n_i->infinity and eventually
+   valid zero-start unit-step walks, uniform convergence of actual block
+   paths toF on[0,H] is equivalent to uniform convergence there of
+   G*physicalPath(P_i,f_i,u/G) toF. All extension samples are actual walks.
+6. physical_limit_of_block_limit transports that convergence to physical
+   time[0,H/G], with limit t|->F(G*t)/G, including exact domain endpoints.
+7. exists_native_physical_limits constructs the extensions for actual
+   original TM/workTraj paths for all fixed work heads and fixed cellBits G,
+   and proves the transported uniform limits. No machine regularity premise
+   is inserted and all samples are of the original execution.
+8. native_sampled_physical_limit removes the auxiliary extension completely:
+   actual workTraj at floor(inputLength(n_i)*t), divided by inputLength(n_i),
+   converges uniformly toF(G*t)/G. Divergence of inputLength is imported from
+   original MStarClass; the residual1/P_i error vanishes.
+
+DRIFT / REUSE: This is the exact microscopic-to-physical bridge needed to
+apply208 to native limits, rather than assuming compatible normalizations.
+Lipschitz extension, uniform convergence, scalar composition and vanishing
+reciprocal limits are reused from mathlib. The original paper supplies its
+UnitSteps, block rounding/size bounds, native trajectories and input-length
+divergence. There is no new general interpolation library or assumed limit
+identity. A ten-line epsilon/2 transfer specializes standard metric tools.
+The next step can reuse mathlib Ascoli: its equicontinuous pointwise/uniform
+convergence equivalence avoids rebuilding compact equicontinuity arguments.
+
+
+BOUNDARY
+This closes source206 section24 normalization, not the full regular-recursion theorem. Exact palette semantics and native clocks, frozen local-profile limits, actual contiguous contracting call-tree geometry, coverage and exceptional-work consequences remain. The continuous representation is a unit-Lipschitz extension agreeing at integer ticks, not asserted to be linear interpolation; its distance from raw sampling is proved at most1/L. Transfer of local regularity between representations must use this estimate. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1866 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate5%, low confidence.
+
+Next concrete target:208 equation(208.2), actual frozen local-profile
+stability. For globally unit-Lipschitz f_i uniformly converging on the
+bounded physical horizon, and stage starts alpha_i, positive volumes v_i,
+and frozen durations lambda_i with convergent parameters and v>0, prove
+uniform convergence of
+ [f_i(alpha_i+v_i*min(s,lambda_i))-f_i(alpha_i)]/v_i
+on[0,a]. Stage endpoints must actually lie within the horizon; do not
+replace this with arbitrary extrapolated convergence. Derive the unique
+limit and use local regularity along a subsequence to establish affinity
+on the actual limiting stage interval. Two representations agreeing at
+actual integer ticks differ locally by at most2/V; this transfers the
+source's linearly interpolated regularity to the imported extension.
+
+Reuse findings: Mathlib.Topology.UniformSpace.Ascoli has
+Equicontinuous.tendsto_uniformFun_iff_pi on compact domains. Unit-Lipschitz
+profiles give equicontinuity; pointwise moving-argument convergence uses
+TendstoUniformlyOn.tendsto_comp in UniformApproximation. This may avoid
+bespoke uniform error algebra or any new Arzela-Ascoli/diagonal theory.
+Read exact signatures first. Current native normalization modules:
+PhysicalWalkNormalization, CanonicalTimeNormalization, NativePhysicalLimits.
+
+After that:actual bounded-branching, bounded-stage contiguous call trees;
+derive depth/subtree work bounds and finite-depth coverage from all assigned
+ticks, use compact countable endpoint products, and force an a.e. affine
+cover. Exceptional work must give eta>=1/(2kG) in absolute physical units.
+Complete206's actual scan palettes/native execution and zero/positive
+stride limit cases too. Source206 permits nonuniform O(P) clock states:
+do not reopen uniform generator/paid-padding construction. Preserve all
+native popular-class and high-entropy hypotheses; all heads and costs count.
+
+No fresh subagents until all six initial formalizations; then run the
+user-authorized impartial referees and cleanup. Original paper read-only.
+No commits or pushes. Do not reopen other completed families.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate5% complete (low confidence). Completed initial formalizations remain5/6: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and fully paid padding201/202. Independent referees and cleanup follow all six. Progress percentages refer to the entire original family, not the current helper.
+
+VERIFICATION
+Full lake build passed10176 jobs without warnings/errors; SupportAxioms audited4859 unique declarations using only propext,Classical.choice,Quot.sound. There are995 local sources (994 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and175 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

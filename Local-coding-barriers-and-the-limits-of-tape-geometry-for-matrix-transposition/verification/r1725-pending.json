@@ -1,0 +1,125 @@
+{
+  "unit": "R1725",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1724 fixed-family native batching proved;298source,1545audit,86artifact and384archive hashes verified atentry",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "scope": "All6families;3complete. Original unchanged,no commits/pushes,referees afterALL.",
+  "new_modules": [
+    "NativeSpanRewind",
+    "NativeHeadDisplacement",
+    "FamilyReaderMachine",
+    "FamilyReaderCalls",
+    "FamilyReaderRun",
+    "NativeFieldAppendMachine",
+    "NativeFieldAppendRun",
+    "NativeFieldCopy"
+  ],
+  "checks": {
+    "span_rewind": {
+      "session": 22046,
+      "exit_code": 0
+    },
+    "head_displacement": {
+      "passed_in_session": 29617,
+      "module_passed": true
+    },
+    "family_reader": {
+      "session": 76598,
+      "exit_code": 0
+    },
+    "field_append": {
+      "session": 13397,
+      "exit_code": 0
+    },
+    "field_copy": {
+      "session": 25584,
+      "exit_code": 0
+    },
+    "build": {
+      "session": 2950,
+      "exit_code": 0,
+      "jobs": 9283,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session": 45364,
+      "exit_code": 0,
+      "declarations": 1599,
+      "log": "verification/axioms.log"
+    }
+  },
+  "new_declarations": [
+    "TransposeFollowup.NativeSpanRewind.two_steps",
+    "TransposeFollowup.NativeSpanRewind.empty_run",
+    "TransposeFollowup.NativeSpanRewind.rewind_run",
+    "TransposeFollowup.NativeSpanRewind.blank_left_denote",
+    "TransposeFollowup.NativeSpanRewind.cfg_blank_left",
+    "TransposeFollowup.NativeSpanRewind.rewind_trace",
+    "TransposeFollowup.NativeSpanRewind.fixed_resources",
+    "TransposeFollowup.NativeSpanRewind.native_rewind",
+    "TransposeFollowup.NativeSpanRewind.native_call",
+    "TransposeFollowup.NativeHeadDisplacement.work_step_bounds",
+    "TransposeFollowup.NativeHeadDisplacement.io_step_bounds",
+    "TransposeFollowup.NativeHeadDisplacement.trace_bounds",
+    "TransposeFollowup.FamilyReader.generate_code",
+    "TransposeFollowup.FamilyReader.rewind_code",
+    "TransposeFollowup.FamilyReader.stream_nonblank",
+    "TransposeFollowup.FamilyReader.length_le_time",
+    "TransposeFollowup.FamilyReader.embed_generate",
+    "TransposeFollowup.FamilyReader.generate_call",
+    "TransposeFollowup.FamilyReader.embed_rewind",
+    "TransposeFollowup.FamilyReader.loaded_at_output",
+    "TransposeFollowup.FamilyReader.loaded_update",
+    "TransposeFollowup.FamilyReader.restored_positions",
+    "TransposeFollowup.FamilyReader.rewind_call",
+    "TransposeFollowup.FamilyReader.jump_trace",
+    "TransposeFollowup.FamilyReader.complete_trace",
+    "TransposeFollowup.FamilyReader.native_complete",
+    "TransposeFollowup.FamilyReader.native_call",
+    "TransposeFollowup.FamilyReader.fixed_resources",
+    "TransposeFollowup.NativeFieldAppend.rewind_code",
+    "TransposeFollowup.NativeFieldAppend.three_steps",
+    "TransposeFollowup.NativeFieldAppend.forward_run",
+    "TransposeFollowup.NativeFieldAppend.embed_rewind",
+    "TransposeFollowup.NativeFieldAppend.back_positions",
+    "TransposeFollowup.NativeFieldAppend.rewind_call",
+    "TransposeFollowup.NativeFieldAppend.stop_trace",
+    "TransposeFollowup.NativeFieldAppend.append_trace",
+    "TransposeFollowup.NativeFieldAppend.fixed_resources",
+    "TransposeFollowup.NativeFieldAppend.native_append",
+    "TransposeFollowup.NativeFieldAppend.native_call",
+    "TransposeFollowup.NativeFieldCopy.init_code",
+    "TransposeFollowup.NativeFieldCopy.append_code",
+    "TransposeFollowup.NativeFieldCopy.seal_code",
+    "TransposeFollowup.NativeFieldCopy.embed_init",
+    "TransposeFollowup.NativeFieldCopy.embed_append",
+    "TransposeFollowup.NativeFieldCopy.embed_seal",
+    "TransposeFollowup.NativeFieldCopy.init_call",
+    "TransposeFollowup.NativeFieldCopy.append_call",
+    "TransposeFollowup.NativeFieldCopy.seal_positions",
+    "TransposeFollowup.NativeFieldCopy.seal_call",
+    "TransposeFollowup.NativeFieldCopy.jump_trace",
+    "TransposeFollowup.NativeFieldCopy.copy_trace",
+    "TransposeFollowup.NativeFieldCopy.fixed_resources",
+    "TransposeFollowup.NativeFieldCopy.native_copy",
+    "TransposeFollowup.NativeFieldCopy.native_call"
+  ],
+  "updated_at": "2026-10-18T20:35:35.845443+00:00",
+  "formal_checkpoint": "R1725 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1725,306sources,1599declarations,86artifacts",
+  "proof_scope": "In progress. R1725 proves paid access to generated records and template-driven field copying. NativeSpanRewind is a one-tape5-symbol4-state machine that preserves any nonblank mixed-symbol span and returns its head from end to start in2*length+3 transitions,including empty spans. A generic native-head displacement proof bounds generated stream length by actual emission time. FamilyReader composes raw family generation and rewind on42tapes;from Transpose.init it returns the exact stream ready at its first symbol,with all42work heads restored,39work tapes blank,payload/short dimension preserved. Its cost is(3*C_family+4)*L and states1447+sum_i(seedStates(F_i)). NativeFieldAppend uses a marked m-bit template to copy precisely m input bits and restore the template,in5m+5 steps,on3tapes/11states. NativeFieldCopy pays blank-destination initialization and seal/rewind,returns the exact marked field in7m+14 steps,on3tapes/27states;only the input field head advances. Arbitrary input prefix/suffix,origins,external input/output and caller frames are supported. Fullbuild9283jobs;1599declarations standard axioms only. Eight modules/54theorems added. Templates still need paid preparation and a two-field/batch controller/common-width integration. Three of six families complete.",
+  "next": "Compose the actual field reader with paid width preparation and record boundaries. Use PaddedWord(C_i,id) on the preserved short dimension to prepare a marked m_i=2*size(N)+C_i template from blank storage;its cost12*ell+3*C_i+21 and head restoration are already proved. If canonical arithmetic needs a common width,let Cmax=max_i C_i and add Cmax-C_i zero bits before sealing each copied field. Reuse the existing PaddedWord.fill_trace/seal_call tail on the open output from NativeFieldAppend instead of doubling an already copied field with the full PaddedWord routine. All zeros,markers,transfers and rewinds must be paid;Cmax-C_i is fixed machine control,not runtime data. Then build a four-tape two-field reader preserving the first field while copying the second,with a real boundary read that consumes STOP only between records. Compose per-map preparation/erasure and the finite-family controller,including empty batches and all workspace reuse. Continue canonical edge processing/full generator;keep all6families. See verification/map-family-stream-plan.txt. Older supplemental row checks62722/19934 remain live and unverified by execution;do not restart solely for elapsed time. No original edits,commits orpushes;referees afterALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeSpanRewind.lean": "2f9ed01ab5f5ae11e036e171559cf3c2e586dd29cd873622c663b6d644f98dc6",
+    "lean/TransposeFollowup/NativeHeadDisplacement.lean": "69024c95c9c120465f7d84579b32b45d4efed385705ae60ddbf3a4513facb589",
+    "lean/TransposeFollowup/FamilyReaderMachine.lean": "619d09839d0066bef143b46a82d9cc8cf97b931a3e28ff807434273dc5456fa0",
+    "lean/TransposeFollowup/FamilyReaderCalls.lean": "69415e3d731387670fc14cd90b0dc595a468f38ddccdd0e32ebe8ee29d086992",
+    "lean/TransposeFollowup/FamilyReaderRun.lean": "aa1535e972d4e1056b62fdb2f4ed6e8416beff74b65374a78d804db7a0b49bb6",
+    "lean/TransposeFollowup/NativeFieldAppendMachine.lean": "e1fd381180c0fae85fe6ecf3164392eb28058eda04a281581357cd352e17e0ae",
+    "lean/TransposeFollowup/NativeFieldAppendRun.lean": "9a45fbc54a1dbe77fd5a782560e99dac353f2d9823a0584aa50b68f8d6ad8231",
+    "lean/TransposeFollowup/NativeFieldCopy.lean": "bbfd5ec20a89bdd38dda831a20d2ab423805067326c8ea1fe1f066333ddae4ee"
+  }
+}

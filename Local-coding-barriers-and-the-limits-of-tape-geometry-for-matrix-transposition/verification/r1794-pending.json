@@ -1,0 +1,76 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "DensityEnergyCongruence",
+    "SymmetricOpenSuperset",
+    "MobiusOpenEntryBox",
+    "MobiusSetEnergyRegularization",
+    "SmoothedIterateOpenEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.densityConvolution_congr_ae",
+    "TransposeFollowup.haarMultiplicativeEnergy_congr_ae",
+    "TransposeFollowup.haarMultiplicativeEnergy_mono",
+    "TransposeFollowup.dyadicDensityLevel_inter_support_ae",
+    "TransposeFollowup.exists_symmetric_open_superset_add",
+    "TransposeFollowup.exists_symmetric_open_superset",
+    "TransposeFollowup.RealMobius.matrixOpenEntryBox",
+    "TransposeFollowup.RealMobius.matrixOpenEntryBox_isOpen",
+    "TransposeFollowup.RealMobius.matrixOpenEntryBox_subset",
+    "TransposeFollowup.RealMobius.matrixEntryBox_subset_open_add_one",
+    "TransposeFollowup.RealMobius.matrixEntryBox_inv_iff",
+    "TransposeFollowup.RealMobius.exists_symmetric_open_energy_superset_add",
+    "TransposeFollowup.RealMobius.exists_symmetric_open_energy_superset",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_nonflattening_open_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 13,
+    "def": 1
+  },
+  "checks": {
+    "set_regularization": {
+      "session_id": 91391,
+      "exit_code": 0,
+      "jobs": 9553,
+      "warnings": false
+    },
+    "actual_open_energy": {
+      "session_id": 70218,
+      "exit_code": 0,
+      "jobs": 9605,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 63989,
+      "exit_code": 0,
+      "jobs": 9721,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 26939,
+      "exit_code": 0,
+      "declarations": 4128,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "R1794 directly proves the topological input bridge for the continuous Haar-energy route. Primary source rechecked: Tao, Product set estimates for non-commutative groups, arXiv math/0601431v3, Definition2.1 and Section5 (https://arxiv.org/pdf/math/0601431). The construction uses proved a.e. convolution invariance, outer regularity and existing compact entry boxes; no source theorem is assumed. It produces the nonempty open precompact input with explicit volume/energy/location bounds and arbitrarily small added volume. Continuous BSG itself remains unproved. These are supporting formalizations, not new impossibility theorems or novelty claims.",
+  "development_checks": "24262 failed on the unqualified measure-preserving inverse name and expressing the open box as finite intersections; it also reported an unnecessary simpa.70813 resolved those issues but failed to rewrite a composed function and reported a deprecated set-of-forall alias.26157 built convolution congruence but failed on a nonexistent import and reported a redundant change tactic.Qualified Measure.measurePreserving_inv, explicit change at the composed equality, Set.ofPred_forall, correct MobiusUnimodular import and removal of the redundant change resolved these issues.91391 passed.70218 passed the strengthened arbitrary-error regularization and actual iterate application. It replayed an informational suggestion from the unchanged AutocorrelationSupport module, not a warning or failed build. No old mathematical-source edits, proof-limit changes, disabled linters or placeholders. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T20:14:26.972513+00:00",
+  "formal_checkpoint": "R1794 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1794, 744 sources, 4128 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1794 closes the topological input gap between the measurable high-energy level and a symmetric nonempty open precompact set. Null-set support restriction preserves volume and energy. For every 0<delta<=1, outer regularity gives O with v<=H(O)<=(1+delta)v and compact closure inside Box(R+1), where R=(4B^2)^(2^k) comes from the base smoothed support Box(B). For K=64N^4, the actual nonflattening iterate gives theta<=K U H(O), theta U H(O)<=2K, and theta^2 H(O)^3<=8K^2 E(O,O), retaining the logarithmic bound on N. Continuous BSG, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved.",
+  "next": "Start from RealMobius.exists_smoothedIterate_nonflattening_open_energy in SmoothedIterateOpenEnergy.lean. Do not repeat level extraction, normalization, trace/Cauchy\u2013Schwarz, self-energy conversion or regularization. For actual f=rho_k, U=integral f^2, theta>0, kappa<=C, base smoothed support Box(B), and integral rho_(k+1)^2>=theta U, the theorem returns N<=1+log2(max(1,16C/(theta U))), K=64N^4, a level A and symmetric nonempty open precompact O. The closure is inside Box(R+1), R=(4B^2)^(2^k). For ANY 0<delta<=1, v<=H(O)<=(1+delta)v and A intersect Box(R) is inside O. The volume/energy inequalities in the checkpoint are checked. Preserve the freedom to choose small delta when transferring a later overlap back to A.\n\nNext bounded target: continuous popular products and the weak-BSG selection mechanism. Source: Tao, Product set estimates for non-commutative groups, https://arxiv.org/pdf/math/0601431v3, Section5, Lemma5.1 and Theorem5.2, rechecked R1794. First concrete statement to prove: for nonempty open precompact O of volume w, L>=1 and E(O,O)>=w^3/L, F=1_O*1_O and C={F>w/(2L)} satisfy H(C)<=2Lw and integral_C F>=w^2/(2L), with C open precompact. The scalar estimates use F<=w, integral F=w^2 and an energy split at the threshold. Prove openness/support as well as the scalar estimates. If O is inside Box(Q), then C is inside Box(2Q^2). Identify integral_C F with the measure of pairs (a,b) in O x O satisfying ab in C. This is input to weak BSG; it is all UNPROVED here.\n\nCheck lower semicontinuity before building a general continuity library: strict superlevel openness only needs that much. A limited R1794 search found IsOpen.lowerSemicontinuous_indicator in Mathlib/Topology/Semicontinuity/Basic.lean but no directly named lower-semicontinuity-of-lintegral theorem. This is not proof of absence. Audit Fatou or L2 convolution continuity for reuse. Then complete the actual weak-BSG selection and small-product/approximate-group extraction; wrappers do not complete BSG.\n\nUltimate interface: RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k). Some FIXED k must give rho_k<=D, D^2<=2^j, eta=4^(-j), for dyadic base n=2^m with C*log(1/eta)/log(1/epsilon)<n<=j/(2N). Choose k before N,J0,epsilon0. Initial eta^(-3+1/61440) density is only initialization. Preserve all six families, actual measures and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1794 completes quantitative open/precompact regularization for the actual nonflattening iterate. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/DensityEnergyCongruence.lean": "b00761ff93cfdf800a069de027b1b24210c6c79e0413e693632e08a70c6f839c",
+    "lean/TransposeFollowup/SymmetricOpenSuperset.lean": "b58b8dc8d4034b07716eb53df4c89583152b673a8774a2341d48e25316c25157",
+    "lean/TransposeFollowup/MobiusOpenEntryBox.lean": "849f1b60890341e5cc9222efb73c2a224c0545756057a9bf7d09d4acb9da6d11",
+    "lean/TransposeFollowup/MobiusSetEnergyRegularization.lean": "f328df549765cc2b332acbdf3756470abfdbe163f8c725b146bdcd1d06dd6827",
+    "lean/TransposeFollowup/SmoothedIterateOpenEnergy.lean": "237ecbf4fe438afa4232f83e4d37256e709353f7ab03d217015d5e6413081ffd"
+  }
+}

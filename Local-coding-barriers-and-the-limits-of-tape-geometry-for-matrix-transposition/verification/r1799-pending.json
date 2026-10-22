@@ -1,0 +1,79 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "HaarFinitePacking",
+    "FiniteTranslateOverlap",
+    "HaarApproximateCore",
+    "MobiusApproximateFromEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.haar_translate_packing_card",
+    "TransposeFollowup.exists_finite_haar_translate_cover",
+    "TransposeFollowup.exists_large_overlap_of_finite_translate_cover",
+    "TransposeFollowup.symmetric_cube_finite_cover",
+    "TransposeFollowup.RealMobius.exists_approximate_group_from_self_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 5
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 39868,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1799-dev1.log"
+    },
+    "development_2": {
+      "session_id": 58283,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1799-dev2.log"
+    },
+    "development_3": {
+      "session_id": 46520,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1799-dev3.log"
+    },
+    "development_4": {
+      "session_id": 22349,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1799-dev4.log"
+    },
+    "development_5": {
+      "session_id": 19417,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1799-dev5.log"
+    },
+    "build": {
+      "session_id": 81076,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9749,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 15339,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4205,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Terence Tao, Product set estimates for non-commutative groups, arXiv:math/0601431v3, https://arxiv.org/pdf/math/0601431v3, Lemma3.6, Definition3.8 and Theorem3.10 (read R1798). R1799 proves the continuous finite-packing cover, constructs U=T^3 using the R1798 n=7 bound, and retains an actual symmetric Y subset U^2. It reuses Mathlib.Combinatorics.Additive.ApproximateSubgroup.IsApproximateSubgroup rather than introducing a duplicate predicate. That library predicate does not require symmetry/containment of its finite witness, so these stronger source conditions are separately proved and returned. The existing finite-set small-tripling theorem does not apply to our continuous positive-Haar-volume sets; the continuous covering proof is supplied. These are supporting formalizations of known arguments, not new impossibility theorems.",
+  "cleanup": "No new duplicate approximate-group definition. All five new theorems are used or the public composed result; no pre-existing mathematical source edits.",
+  "updated_at": "2026-10-19T21:26:18.694354+00:00",
+  "formal_checkpoint": "R1799 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1799, 772 sources, 4205 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1799 proves a continuous finite-packing covering lemma, constructs U=T^3 with a finite symmetric doubling witness Y subset U^2, and composes this with actual self-energy extraction. For open O subset Box(Q), w=H(O)>0, finite L>=1 and w^3<=L E(O,O), put K=2^55 L^21. There are open positive-finite-volume A subset O and U containing1, with U inversion-symmetric and compact closure in Box(32Q^6), finite Y,W and x in W subset A subset O. One has card(Y)<=512K^16, U^2 subset Y*U, Y^-1=Y, A subset W*U, card(W)<=4K^4, w<=128K L^2 H(U), H(U)<=8K^7 w, and w<=256L^2K^4 H(O intersect x*U). The code reuses mathlib IsApproximateSubgroup and separately retains the stronger symmetric witness inside U^2. The finite covers and selected overlap are constructed, not assumed. Transfer to the original density level, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved. These are supporting formalizations of known arguments, not new transposition bounds.",
+  "next": "Start from RealMobius.exists_approximate_group_from_self_energy in MobiusApproximateFromEnergy.lean. For open O subset Box(Q), w=H(O)>0, finite L>=1 and w^3<=L E(O,O), set K=2^55 L^21. Its actual witnesses A,U,Y,W,x satisfy:\n A subset O, A open, 0<H(A)<infinity, w<=64L^2 H(A);\n 1 in U, U open and inversion-symmetric, closure(U) compact in Box(32Q^6), 0<H(U)<infinity;\n w<=128K L^2 H(U), H(U)<=8K^7 w;\n Y finite symmetric subset U^2, card(Y)<=512K^16, U^2 subset Y*U;\n IsApproximateSubgroup (512K^16).toReal U;\n W finite subset A, card(W)<=4K^4, A subset W*U;\n x in W subset O, w<=256L^2K^4 H(O intersect x*U).\nDo not redo BSG, symmetric-core construction, all sandwich powers or finite packing.\n\nNext concrete target: transfer this approximate-group concentration to the original measurable density level, then to the ACTUAL nonflattening density. The open regularization can otherwise absorb the small selected overlap. Do not assume an error chosen before the dyadic level is sufficiently small. Use the measurable self-energy theorem first, then choose regularization tolerance depending on its losses. Avoid duplicating the entire old open-energy proof.\n\nProposed generic measurable-level extraction (UNPROVED; verify constants): let D be measurable and inversion-symmetric, (D intersect Box(R))=ae D, 0<H(D)<infinity, finite L0>=1 and H(D)^3<=L0 E(D,D). Set L=8L0, K=2^55 L^21 and M=256L^2K^4. Choose delta=1/(2M) AFTER L0, and epsilon=delta H(D). Reuse exists_symmetric_open_energy_superset_add on D with epsilon. It gives open symmetric O containing D intersect Box(R), compact closure in Box(R+1), H(D)<=H(O)<=H(D)+epsilon<=2H(D), and E(D,D)<=E(O,O). Thus H(O)^3<=L E(O,O). Apply the checked approximate-group theorem. Prove the elementary volume-budget transfer using E=D intersect Box(R) subset O: H(O minus E)<=delta H(D), and H(O intersect Z)<=H(D intersect Z)+delta H(D) for Z=x*U. Absorbing M delta=1/2 yields H(D)<=512L^2K^4 H(D intersect x*U). Keep positive finite H(U), closure(U) subset Box(32(R+1)^6), x in Box(R+1), symmetric finite Y subset U^2 with card<=512K^16, H(D)<=128K L^2 H(U), and H(U)<=16K^7 H(D). Reuse ennreal_le_two_mul_of_small_add if it simplifies finite cancellation.\n\nThen compose with exists_smoothedIterate_nonflattening_self_energy: f=rho_k, V=integral f^2, q=ofReal(theta), a=ofReal(theta V.toReal/16). It returns N>0, the logarithmic N bound, i<N and D=dyadicDensityLevel f a i with q<=K0 V H(D), q V H(D)<=K0, q^2 H(D)^3<=K0^2 E(D,D), K0=64N^4. Set L0=K0^2/q^2; prove L0>=1 using E(D,D)<=H(D)^3 and positive finite H(D), as in SmoothedIteratePopularProducts. Use dyadicDensityLevel_inter_support_ae and smoothedAutocorrelationIterate_ae_zero_outside to obtain the required essential box R=(4B^2)^(2^k). Choose delta only now. Proposed resulting bounds (UNPROVED) are q<=128K0 K L^2 V H(U), q V H(U)<=16K^7 K0 and q^2<=8192K0 L^2K^4 (H.withDensity f)(x*U). For the last bound, check the dyadic definition gives f>=a on D, prove a=qV/16 with finite V, and use a H(D intersect x*U)<=integral_(x*U) f. Preserve the actual finite covering witness and the N bound; do not replace actual concentration by a hypothesis.\n\nAfter original-density concentration: metric/covering transfer with explicit bounded-entry dependence; SL2 growth/escape; strict flattening of a FIXED iterate. Ultimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), choosing k before N,J0,epsilon0. Carry conservative BSG losses, not sharper source constants. Preserve all six original families and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1799 completes actual finite approximate-group extraction and translate overlap from self-energy. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/HaarFinitePacking.lean": "19c6f606145e0c69b6e0ac0cf30aebfab5f831e2f958d9c03262db642a18bea8",
+    "lean/TransposeFollowup/FiniteTranslateOverlap.lean": "c4e798c0bb41aef2721908b2cb2c0cbf844644fd8e5c303d1c060c15cc1042bd",
+    "lean/TransposeFollowup/HaarApproximateCore.lean": "01d2d83b813cf1983d3de3fefb97135959bcaa9e6a952084f405b86a9d937fa5",
+    "lean/TransposeFollowup/MobiusApproximateFromEnergy.lean": "6892a742fef2436c5aea265e7f365173417219b6352d046d6a48bbed72d7a04a"
+  }
+}

@@ -1,0 +1,149 @@
+
+R1871 — ACTUAL-OCCURRENCE REGULARITY AND THE GEOMETRIC RECURSION LIMIT
+PROGRESS at R1871: the geometric recursion limit theorem is formalized. Every physical head limit with the actual contracting stage-clock budgets and regularity of actual positive-duration occurrences has a locally affine open region of full measure, including its frozen post-halt tail. Five of six original families remain formalized; regular recursion206/208 is about30% complete, low confidence. Native high-entropy recursion exclusion, exceptional-work integration and exact206 executors remain open.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1871 RESULTS
+1. HasRegularStageSubsequences states the actual-occurrence hypothesis:
+   on every strictly increasing subsequence consisting entirely of positive
+   duration stages and whose node volumes tend to infinity, the raw frozen
+   head profiles admit a further strictly increasing subsequence converging
+   uniformly to a finite affine-interval cover on [0,a]. It is preserved by
+   passage to a subsequence. Missing padded stages are not included.
+2. positive_stage_affine_of_regular_occurrences derives v>0 and a finite
+   affine cover of s |-> f(l+v*s) on [0,(r-l)/v] whenever l<r is a limiting
+   actual stage. The hypotheses use P->infinity, exact raw head samples,
+   unit-Lipschitz extensions, uniform physical convergence, convergent
+   A/P,E/P,V/P, A<=E, the actual stage budget E-A<=aV, and its horizon bound.
+   It proves eventual positive stage duration and positive volume, discards
+   a proved finite prefix, derives (E-A)/V ->(r-l)/v, and then reuses
+   native_positive_stage_affine. No early-index positivity is assumed.
+3. local_affine_ae_on_stage transports this finite local cover to an open
+   locally affine set of full measure in (l,l+v*ell). It reuses the existing
+   BoundedAffineCovers theorem and AffineGridMass.volume_affine_preimage.
+   assemble_stage_local_affinity combines countably many such stage sets
+   with the previously proved null coverage complement. Piece counts may
+   vary without a global finite bound. extend_affine_cover_by_constant adds
+   a constant tail up to the full physical horizon.
+4. physical_limit_constant_after_halt proves f(x)=f(H) for H<=x<=M from
+   actual integer paths frozen after their halting ticks, T/P->H, the horizon
+   bound, uniform physical convergence, and P->infinity. Arbitrary chosen
+   unit-Lipschitz interpolating extensions need NOT be constant between ticks;
+   the verified O(1/P) sampling error proves constancy in the limit.
+   native_physical_limit_constant_after_halt obtains the raw frozen premise
+   by importing the original workTraj_frozen from HaltsAt.
+5. regular_physical_limit_locally_affine assembles the entire geometric core.
+   Given fixed B,J,rho,a,C with 0<=rho<1 and a>=0, nonnegative charged volumes,
+   child charge sum<=rho*parent, root<=C*P, exact integer stages partitioning
+   every tick with A<=E<=T and total node own duration<=aV, P>0 tending to
+   infinity, a fixed horizon M bounding T/P, a uniform physical head limit,
+   raw post-halt freezing and the actual-occurrence hypothesis at each fixed
+   address/stage: there is an open R subset [0,M], with null complement,
+   on which the limiting head path is locally affine.
+   No limiting affine-cover assumption occurs in its premises. The proof
+   invokes actual local regularity only after proving positive duration.
+
+SCOPE REFINEMENTS OF THE GEOMETRIC CORE
+The core does not use whole-subtree call contiguity once own stages are
+actual contiguous global-time intervals, fixed in number per node, and all
+ticks satisfy the contraction budget. Whole-call contiguity remains useful
+for R1870's separate zero-volume subtree statement, but is unnecessary for
+this affine-cover conclusion. No new branching/order assumption is inserted.
+The theorem applies one head at a time to the same already existing uniform
+limit. Thus per-head local subsequence regularity suffices; the source's
+joint all-head regularity implies this. Every physical head must still meet
+it for the eventual impossibility result. These are verified relaxations of
+the geometric hypotheses, not yet a fully integrated native exclusion.
+
+DEPENDENCIES
+Four new modules: ActualStageRegularity, StageAffineAssembly,
+FrozenHaltLimits and RecursiveAffineLimits. Nine new audited declarations.
+No earlier mathematical module is modified. The common-limit, tree-clock,
+finite affine-cover, affine measure-transport, physical sampling-error and
+native frozen-run results are all imported rather than re-proved.
+
+DRIFT / REUSE: This turn proves source208 section29's geometric conclusion
+through the actual heads, not another auxiliary numerical bound. Reuse found
+AffineGridMass.volume_affine_preimage for null-set transport,
+BoundedAffineCovers.local_affine_ae_of_bounded_covers for finite local covers,
+and the original workTraj_frozen for the actual halted machine. Mathlib
+supplies closed inequalities, eventually-atTop tail removal, uniform-limit
+composition at moving points, continuity of uniform limits, and countable
+null unions. No bespoke measure transformation, compactness, interpolation,
+or diagonal argument was added. The previously proved source208 core can
+now be used directly; the next target is native/popular-class integration.
+No exhaustive claim that nothing related exists in mathlib is made.
+
+
+BOUNDARY
+The geometric source208 core is now proved from actual finite clocks and raw integer head samples: common coordinate extraction and coverage, eventual actual-stage presence, local-profile affinity, transport and assembly of countably many stage covers, and the frozen post-halt tail. The original workTraj_frozen is imported for the native tail. This is not yet the full native transposition impossibility theorem: the final argument must still instantiate these hypotheses for arbitrary eligible popular-class representatives on high-entropy correct sets, retain fixed tapes/alphabet and o(P) state bits, and apply the completed affine-time obstruction. Exceptional-work integration and all exact206 scan-palette semantics/native nonuniform executors remain. Final referees follow all six; no unrestricted transpose decision or novelty claim.
+
+NEXT
+R1871 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate30%, low confidence.
+
+Next concrete target: derive the native high-entropy recursion impossibility
+from RecursiveAffineLimits.regular_physical_limit_locally_affine and the
+completed NativeAffineMotion endpoint. Do not re-prove geometric stage limits,
+local profiles, affine cover assembly, or frozen halting tails.
+
+The geometric theorem takes one physical head; use it for every fixed head
+of an already chosen simultaneous native limit. Different refinements of
+stage coordinates are allowed per head because they preserve that same
+limiting path. Its local regularity predicate is
+HasRegularStageSubsequences(a,V,A,L,hs), quantified over EVERY strict
+subsequence of actual positive-duration occurrences with V->infinity.
+.subsequence transports it. The source's joint all-head hypothesis is
+stronger; it suffices to project that hypothesis for each head. Do not allow
+one favorable representative sequence or a favorable stage sequence to
+substitute for the required quantifiers.
+
+Use NativePhysicalLimits.exists_native_physical_limits to pull a native
+block limit P_t on [0,c*G+1] back to physical f_t(s)=P_t(G*s)/G on
+[0,(c*G+1)/G]. This already constructs the exact unit-Lipschitz extensions
+of workTraj. NativeAffineMotion.class_affine_time_nonuniform and
+popular_affine_time_nonuniform/robust supply the simultaneous block limit
+and AffineTimeRequired on every eligible such limit. The actual physical
+horizon is (c*G+1)/G, not just c. The constant frozen tail is now handled:
+FrozenHaltLimits imports original workTraj_frozen; apply it from HaltsAt.
+All input lengths must be positive when dividing; discard a proved finite
+prefix using ns->infinity and the eventual trace/correctness premises.
+
+The contradiction can use AffineTimeRequired.physical_omission directly:
+every head now has an open locally affine region with zero omitted volume,
+whereas their sum must be at least 1/(2G). Reuse existing scalePath and
+normalization equalities; do not change the native limit or M* premises.
+No separate common affine partition across heads is needed for this route.
+
+Formalize an honest actual-execution decomposition interface if it helps
+avoid repeating the long clock signature. For the native fast-correct-set
+statement, decomposition/regularity must be available for arbitrary eligible
+sequences of actual executions on W_i, including popular representatives.
+Membership in W_i and actual HaltsAt must be derived from the selected trace
+classes; do not assume a common adaptive recursion tree or charge its choices
+to entropy. Retain fixed tape count/alphabet, high entropy, o(P) state bits,
+correct raw transpose and one machine per size. Do not stop at a conditional
+analytic not-star lemma and mark source208 complete.
+
+The geometric theorem needs only actual global-time own stages, bounded J,
+fixed branching and charge contraction. It does not need whole-call
+contiguity; this is a verified relaxation of the source208 geometric core.
+The separate zero-volume-call theorem remains valid and need not be re-proved.
+Do not require subsequences of unused call endpoints/existence patterns.
+
+Exceptional work still requires the eta>=1/(2kG) physical-unit result.
+Exact206 row/entry/F3/bit-stride palettes, growing-stride cases, bounded
+composition and native nonuniform executors remain. All copies/seeks/clears,
+I/O and parameter access must be paid. Source206 allows O(P) clock states;
+do not reopen uniform parameter generation or the five completed families.
+No fresh subagents until all six formalizations; then user-authorized
+impartial referees and cleanup. Original read-only; no commits/pushes.
+No unrestricted transpose decision or novelty claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate30% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. The percentage is for the full sixth family, including exact206 executors, not just the now-proved geometric recursion core.
+
+VERIFICATION
+Full lake build passed10192 jobs without warnings/errors; SupportAxioms audited4931 unique declarations using only propext,Classical.choice,Quot.sound. There are1011 local sources (1010 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and185 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

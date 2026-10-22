@@ -1,0 +1,78 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1887",
+  "target": "Regular recursion206/208: complete bounded mixed binary word exclusion.",
+  "new_modules": [
+    "BinarySlotApproximation",
+    "ScheduledWordSlots",
+    "BinarySlotRegularity",
+    "BinarySlotFamilyRegularity",
+    "FiniteAffineSums",
+    "MixedBinaryWordRegularity",
+    "RawBankProgramApproximation",
+    "RawMixedBinaryWordRegularity",
+    "RawMixedBinaryWordObstruction"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.BinaryBankSlot.stride",
+    "TransposeFollowup.BinaryBankSlot.Valid",
+    "TransposeFollowup.BinaryBankSlot.path",
+    "TransposeFollowup.BinaryBankSlot.stride_le",
+    "TransposeFollowup.BinaryBankSlot.approximation",
+    "TransposeFollowup.BinaryBankSlot.smallApproximation",
+    "TransposeFollowup.BinaryBankSlot.coverBound",
+    "TransposeFollowup.BinaryBankSlot.coverBound_pos",
+    "TransposeFollowup.BinaryBankSlot.approximation_cover",
+    "TransposeFollowup.BinaryBankSlot.smallApproximation_cover",
+    "TransposeFollowup.BinaryBankSlot.approximation_error",
+    "TransposeFollowup.BinaryBankSlot.smallApproximation_error",
+    "TransposeFollowup.ScheduledWord.path_eq_sum_slots",
+    "TransposeFollowup.BinaryBankSlot.affine_approximation_of_ratio",
+    "TransposeFollowup.BinaryBankSlot.finite_affine_approximation_subsequence",
+    "TransposeFollowup.AffineMotion.HasAffineIntervalCover.sum_fin",
+    "TransposeFollowup.MixedBinaryWord.slot_valid",
+    "TransposeFollowup.MixedBinaryWord.path_eq_sum_slots",
+    "TransposeFollowup.MixedBinaryWord.affine_approximation_subsequence",
+    "TransposeFollowup.RawBankProgram.ioCurve",
+    "TransposeFollowup.RawBankProgram.ioCurve_cover",
+    "TransposeFollowup.RawBankProgram.ioCurve_error",
+    "TransposeFollowup.RawMixedBinaryWord.full_affine_approximation_subsequence",
+    "TransposeFollowup.RawMixedBinaryWord.no_high_entropy_transpose"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9081,
+      "log": "/private/tmp/r1888-dev8.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10271,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5522,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "25266 dev1 exit1: optional-slot case layout and range-sum order corrected after terminal.\n26480 dev2 exit1: ScheduledWordSlots passed; remaining Lean case continuation layout corrected after terminal.\n32430 dev3 exit0:9063 jobs, slot approximation and scalar-ratio regularity passed.\n46965 dev4 exit1: finite-product compactness passed; corrected Fin lambda annotation and deprecated dite names after terminal.\n30610 dev5 exit1: complete mixed-word affine subsequence theorem passed; corrected raw curve congruence call/eta expansion and linter after terminal.\n68683 dev6 exit0:9073 jobs, full native mixed-word affine approximation passed.\n54151 dev7 exit1: endpoint cast through function composition corrected after terminal.\n86429 dev8 exit0:9081 jobs, complete high-entropy mixed binary word impossibility theorem passed.\n10334 full build exit0:10271 jobs, no warnings/errors.\n70751 SupportAxioms exit0:5522 unique declarations, standard axioms only.\nAll handles terminal; no Lean edits or second Lake while a handle was live.",
+  "formal_checkpoint": "R1888 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1090 local sources,204 external sources,5522 declarations,8 configurations,219 artifacts",
+  "proof_scope": "PROGRESS at R1888: source206 palette(c), arbitrary bounded mixed binary words, now has a complete Lean impossibility theorem on correctness sets of coentropy o(P). Types, masks, forward/backward strides and rotation offsets may vary nonuniformly with size; validity and word-length bounds need hold only eventually. The proof derives all native/geometry hypotheses from the existing paid executor and uses one mathlib finite-product compactness call. Five of six original families formalized; regular recursion206/208 best estimate85% complete (low confidence). Exact row/integer and F3 palettes(a,b) remain.",
+  "next": "R1888 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate85%, low confidence.\n\nNEXT: EXACT ROW/INTEGER PALETTE(a), THEN F3 PALETTE(b).\nSource206(c) is now DONE at RawMixedBinaryWord.no_high_entropy_transpose.\nDo not reopen its raw IO, state-bit, compactness or native obstruction chain.\nSource208/global exceptional-work210.5 are also done. Family6 still requires\nALL of source206, so palette(c) alone is not completion.\n\nFirst inspect exact017 semantics/bit order and reuse BinaryCarryData,\nBinaryCarryMachine and BinaryCarryRun. They already supply fixed-width\ncarry/borrow arithmetic, addition_identity/subtraction_identity,\nresult_length/value bounds and an actual paid three-tape arithmetic_run,\narithmetic_trace/native_arithmetic with explicit return motion. Extract\nmodulo2^W semantics from those identities and bounded output, using\nmathlib modular arithmetic. Do not recreate elementary carry proofs.\nThe current original fixed-width controller expects marked operand tapes;\npay for row staging/markers, output transfer and scratch cleanup. Existing\nrow clock/padding modules are not automatically arithmetic row executors.\nCheck whether their generic trace/motion interfaces can be imported before\nadding another loop proof. A declared correct stage without its actual\nnative computation does not discharge the palette.\n\nConcrete target: one actual reusable fixed-width modular row arithmetic\nstage (prefix addition/difference), with exact row semantics, fixed public\nschedule, paid resets/cleanup, and O(W) per-row motion error. Use generic\nScheduledWord and BankWord interfaces where applicable. Generalize shared\nraw wrapping only as required by tape/mode/decoded-value types; do not clone\nnative initialization/halting/state-bit/physical-normalization chains.\nThe existing three-tape carry controller may be reused through its trace\nrather than rewritten into the two-tape XOR controller; choose by the full\npaid composition cost and proof reuse, not by forcing a smaller tape count.\nThen complete row reversals, entry reversals, public row rotations and\nwhole-bank increment/decrement with their exact declared semantics.\n\nScope source: archive research/10-linear-decision/units/200-affine-return-motion.txt\nsections20--24. Palette(a): row-prefix addition/difference mod2^W, row-prefix\nXOR/difference, row/entry reversals, declared row-dependent rotations,\nwhole-bank increment/decrement mod2^P. Palette(b): declared F3 row/column\nprefixes/differences, reversals, row rotations, diagonal signs and whole-bank\nentry rotation. Raw input is bits; final correctness remains raw BIT transpose.\nDo not silently mix integer and ternary intermediate data types.\nUse fixed public row slabs CW so O(W) errors/P vanish asW/P=1/d. All scratch,\nseeks, copying, staging, output and cleanup are paid. Types/parameters may\nvary nonuniformly withsize, correctness sets have coentropy o(P).\n\nCOMPLETED R1888 REUSE MAP\nBinarySlotApproximation: optional analytic slots, two uniform error regimes.\nBinarySlotRegularity/FamilyRegularity: scalar ratio plus one finite-product\ncompactness call; covers common across variable types, all shifts allowed.\nScheduledWordSlots and FiniteAffineSums: exact path unrolling and direct\nreindexing of existing cover sums. MixedBinaryWordRegularity gives entire\nword approximants; RawBankProgramApproximation adds IO with4-cell error;\nRawMixedBinaryWordRegularity gives full native approximants. Endpoint\nRawMixedBinaryWordObstruction takes only eventual word validity/length,\nsize divergence, entropy and semantic transpose correctness, then False.\n\nNo new subagents until all six; then authorized impartial referees/cleanup.\nOriginal read-only; no commits/pushes. Research236/full080 unchanged.\nNo unrestricted transpose decision or finite-size word-length rate claimed.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate85% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Sixth now includes the complete binary bounded-word impossibility theorem as well as source208/global210.5. Exact row/integer and F3 palettes remain; final independent referees pending.",
+  "updated_at": "2026-10-21T04:31:28.874144+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/BinarySlotApproximation.lean": "54a4dd5a5646624b678e9309716d2b9d8a70ba86bc48f9aab6ad3e48f26247d0",
+    "lean/TransposeFollowup/ScheduledWordSlots.lean": "6df60b0eb82012fad12b355b19c6651d96eb1abde5addae3c2b765ab24584d92",
+    "lean/TransposeFollowup/BinarySlotRegularity.lean": "21d4c119ab89149d28ec5adb0e44bcd05a58fd39951df4b994c05e1b6851de2e",
+    "lean/TransposeFollowup/BinarySlotFamilyRegularity.lean": "1317f2770955ccd95e80b1cb09d862653e96441589cfc136d31c71541735abe7",
+    "lean/TransposeFollowup/FiniteAffineSums.lean": "2ad2059b2493634cb7074d08554099b04c847c552fef5306c10dad5c5520f4d3",
+    "lean/TransposeFollowup/MixedBinaryWordRegularity.lean": "2192b3943422fa44b2725c0f0f6518c98e764be645e6a56e83293f919e692562",
+    "lean/TransposeFollowup/RawBankProgramApproximation.lean": "91977c6aca4e8d07af53a8a8f16fd5117ae1a903c76e94f0b41ffee418dec714",
+    "lean/TransposeFollowup/RawMixedBinaryWordRegularity.lean": "fbcdfe24f73c0c8bb177f97fe6ff0e0ae1561354e737133e8a1e0f3ec140873e",
+    "lean/TransposeFollowup/RawMixedBinaryWordObstruction.lean": "b14ddec18dd224c583c423195f34cf86347ebb38a7bd0a0b2ce2e496a6c700df"
+  }
+}

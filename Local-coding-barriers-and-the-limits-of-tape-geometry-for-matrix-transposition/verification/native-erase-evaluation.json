@@ -1,0 +1,8 @@
+{
+  "purpose": "271 ORIGINAL NativeZipper executions of the reused eight-state eraser. All words of lengths0..7 and four patterns each at widths8,17,64,128. Check halt at label0,absolute head restored at varying negative positions,and every literal residual zipper cell blank,including both former START/STOP markers. The kernel-checked denotation theorem identifies this residual all-blank zipper with the actual blank infinite tape. This tests the erase subroutine,not its future integration into the joint-endpoint caller.",
+  "command": "lake env lean /private/tmp/native_erase_examples.lean",
+  "exit_code": 0,
+  "source_sha256": "b707f17ebfbdf91bf8d023d646feb7a8f907dfa32224d01ee9778b633645679b",
+  "source": "import TransposeFollowup.NativeErase\nopen TransposeFollowup FixedTapeCompiler\n\ndef bits (m n : Nat) : List Bool := (List.range m).map n.testBit\n\ndef checkErase (m n : Nat) : Bool :=\n  let xs := bits m n\n  let pos : Fin 1 \u2192 Int := fun _ => ((n%23 : Nat) : Int)-57\n  let c := NativeZipper.run NativeErase.program (4*m+4) (NativeErase.cfg 2 (Counter.marked xs) pos)\n  decide (c.core.pc=0) && decide (c.pos 0=pos 0) &&\n    decide ((c.core.tapes 0).left=[CopyMachine.Sym.blank]) &&\n    decide ((c.core.tapes 0).right=List.replicate (m+1) CopyMachine.Sym.blank)\n\ndef checks : Nat \u00d7 Nat := Id.run do\n  let mut count := 0\n  let mut failures := 0\n  for m in List.range 8 do\n    for n in List.range (2^m) do\n      count := count+1\n      if !checkErase m n then failures := failures+1\n  for m in [8,17,64,128] do\n    for n in [0,1,2^m-1,(2^m-1)/3] do\n      count := count+1\n      if !checkErase m n then failures := failures+1\n  return (count,failures)\n#eval checks\n",
+  "observed_output": "(271, 0)\n"
+}

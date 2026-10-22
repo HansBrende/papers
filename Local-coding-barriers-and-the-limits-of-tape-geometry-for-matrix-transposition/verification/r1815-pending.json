@@ -1,0 +1,99 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1814 receipt revalidated;844 sources,5 configurations,86 artifacts.",
+  "new_modules": [
+    "SL2SpanCertificate",
+    "RationalSpanCertificate"
+  ],
+  "modified_modules": [
+    "SmoothedIterateSmallEscape",
+    "InitialWalkDistribution"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Escape.pairSpanMatrix",
+    "TransposeFollowup.SL2Escape.pairSpanMatrix_det",
+    "TransposeFollowup.SL2Escape.pairSpanMatrix_det_trace_polynomial",
+    "TransposeFollowup.SL2Escape.pairSpanMatrix_det_commutator",
+    "TransposeFollowup.SL2Escape.pairSpanMatrix_det_trace_two",
+    "TransposeFollowup.SL2Escape.pairSpanMatrix_det_conjugate",
+    "TransposeFollowup.RationalFreePair.rational_bicommutator_span_certificate",
+    "TransposeFollowup.RationalFreePair.symmetric_commutator_mem_pow",
+    "TransposeFollowup.RationalFreePair.rational_conjugated_spanning",
+    "TransposeFollowup.RationalFreePair.exists_iterate_spanning_escape",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_spanning"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 39392,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1815-dev1.log"
+    },
+    "development_2": {
+      "session_id": 76245,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1815-dev2.log"
+    },
+    "development_3": {
+      "session_id": 59495,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1815-dev3.log"
+    },
+    "development_4": {
+      "session_id": 66645,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1815-dev4.log"
+    },
+    "development_5": {
+      "session_id": 61974,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1815-dev5.log"
+    },
+    "development_6": {
+      "session_id": 87364,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1815-dev6.log"
+    },
+    "build": {
+      "session_id": 86770,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9823,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 66112,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4365,
+      "log": "verification/axioms.log"
+    }
+  },
+  "preserved_statements": {
+    "SmoothedIterateSmallEscape": [
+      "exists_iterate_small_exponent_escape"
+    ],
+    "InitialWalkDistribution": [
+      "exists_initial_walk_distribution_escape",
+      "exists_initial_walk_distribution"
+    ]
+  },
+  "source_audit": "Exact 2x2 trace and determinant identities, reusing the verified rational bicommutator trace certificate and the existing shorter-scale extraction. This supplies an actual bounded-power spanning certificate for our rational profile without assuming a quantitative eigenvalue gap. Source context: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Claim5.9 and Section5. No theorem of product growth or discretized ring expansion is assumed.",
+  "updated_at": "2026-10-20T01:20:40.059710+00:00",
+  "formal_checkpoint": "R1815 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1815, 846 sources, 4365 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1815 proves a quantitative four-matrix spanning certificate using the existing rational trace witness. Exact identities convert a commutator trace into the determinant of the columns I,p,q,pq, and explicitly handle trace2. For a nontrivial bicommutator of common-denominator-D matrices, a suitable pair has determinant magnitude at least D^(-34). After the common real conjugation, all four matrices lie in the SAME A^34 and their coordinate columns are proved linearly independent. The shorter-scale argument yields determinant at least eta^zeta for any requested zeta>0. This is integrated into the full uniform family statement alongside all prior covering, tripling, distribution, short-walk and arbitrary-complex-basis escape outputs. No new coefficient, spectral-gap, diagonalization, or eigenvalue-separation premise is imposed. Product growth and the subsequent flattening/expansion/padding chain remain unfinished. No new transposition bound or completed fourth original family is asserted.",
+  "next": "The preceding turn is PROGRESS. R1815 closes the quantitative spanning certificate for the actual fixed rational family and integrates it into the full uniform theorem. Do not repeat the determinant identities, trace2 case, rational separation, A^34 power bookkeeping, or shorter-scale squaring. Interfaces: SL2SpanCertificate.pairSpanMatrix_det_commutator and pairSpanMatrix_det_trace_two; RationalSpanCertificate.rational_conjugated_spanning; SmoothedIterateSmallEscape.exists_iterate_spanning_escape; InitialWalkDistribution.exists_initial_walk_spanning. The last supplies the same A with covering-size bounds, small tripling, intermediate-scale distribution, escape in A^4 and quantitative spanning in A^34. Its energy/nonflattening premises remain explicit.\n\nNEXT CONCRETE TARGET: the quantitative trace-covering projection on the three-dimensional determinant-one surface, followed by nearly commuting-set extraction. The spanning certificate now provides four actual coordinate directions. A naive four-coordinate product cover gives exponent1/4; the product-growth argument needs the dimension-three exponent1/3. Prove a quantitative local three-coordinate projection, retaining the determinant lower bound, entry/radius constants and actual Frobenius external-covering convention. Then select one of the trace maps g->tr(h^-1*g), h in {I,p,q,pq}, with enough covering complexity for the commuting-set argument. Do not substitute the weaker1/4 conclusion merely because it is easier. Reuse native linear algebra and existing covering/refinement interfaces. The source context is Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemmas5.1\u20135.2 and Corollary5.3. Our certificate avoids the qualitative-to-quantitative eigenvalue step in Claim5.9 for this rational profile; it does not justify ignoring such issues in later nearly commuting/diagonalization arguments.\n\nUNPROVED PRODUCT-GROWTH INTERFACE TO TARGET: for fixed0<sigma<=1 and tau>0, obtain fixed alpha in(0,1], e>0 and eta0>0 such that, for0<eta<=eta0, a symmetric precompact near-identity set A containingI with eta^(-sigma)<=N_eta(A)<=eta^(-3+sigma), rho-separated subsets of size>=rho^(-tau) for eta<rho<eta^e, complex-basis escape>=eta^e in A^4, and a four-column spanning witness>=eta^e in A^34, satisfies N_eta(A^3)>eta^(-e)*N_eta(A). This is a target, NOT a proved theorem or an axiom. The extra spanning input is already derived for our actual A and does not alter the six-family end goal. Choose sigma<=min(gamma/2,1/122880), tau=1/122880, and the exponents before s and k when composing. All geometry constants for the fixed power34 must be proved and absorbed before final parameter selection.\n\nREUSE INVENTORY: MobiusCoveringNumbers, ExternalCoverAttainment, FrobeniusClosedRefinement and CoordinateCoverRefinement supply ambient Frobenius finite-cover tools. The full witness already has U^2 subset Y*U, finite Y bounds and A subset U^2. SmoothedIterateScaleCover and SmoothedIterateFrobeniusCover contain actual covers of U and U^6; inspect these before building a new metric Ruzsa engine. For this specific A, higher bounded-product entropy control may be derived directly from U,Y and existing localization bounds. The finite cardinality lemmas in pinned Mathlib ApproximateSubgroup are not automatically metric-covering theorems. Targeted local and pinned-Mathlib searches found no ready discretized ring or full SL2 product-growth theorem.\n\nProduct growth still requires substantial nearly commuting-set and discretized sum-product/ring work. Do not conceal these dependencies or treat the two available certificates as growth itself. After growth, compose strict flattening, a fixed-iterate density cap with D^2<=2^j, the unconditional restricted gap, and paid padding. Motion200/210 and recursion206/208 remain in scope. No final referees, protected original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1815 adds a quantitative four-matrix spanning certificate in the same A^34 to the full uniform family theorem. Paid padding is still unfinished; motion200/210 and recursion206/208 are unstarted. This percentage estimates formalization scope, not time or distance to deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SL2SpanCertificate.lean": "cc6c8185e0f7d70650564add3c32891b1d4bbf3637d7005de43b62e5e64fbc96",
+    "lean/TransposeFollowup/RationalSpanCertificate.lean": "f4536b89b95e6bb950ed98e8a71634a8c7d2482328a4bc9591db30befdabad29",
+    "lean/TransposeFollowup/SmoothedIterateSmallEscape.lean": "9d344f60af872f1567714baba7f1923835fca32e59a9c414efb31ef32f9f889a",
+    "lean/TransposeFollowup/InitialWalkDistribution.lean": "9ac901fb90e9765cf4fcb6fb9bd6437383955ae8c7660089227255b8081d8121"
+  }
+}

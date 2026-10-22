@@ -1,0 +1,121 @@
+
+R1870 — COMMON STAGE LIMITS, COVERAGE AND ZERO-VOLUME CALLS
+PROGRESS at R1870: common stage endpoint/volume/halt limits, inherited geometric omission bounds, almost-everywhere open-stage coverage, and zero-volume call disappearance are formalized. The common subsequence is extracted from actual clock/tree budgets with mathlib compactness. Five of six original families remain formalized; regular recursion206/208 is about25% complete, low confidence. Global affine regularity, native exclusion and exact206 executors remain open.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1870 RESULTS
+1. For a finite pairwise-disjoint family [l_k,r_k) in [0,H), its omitted
+   volume is H minus the sum of r_k-l_k. Collapsed stages are allowed.
+   Endpoint and halt convergence preserve disjointness and the omitted volume.
+   Bounds and disjointness need only hold eventually in this finite lemma.
+2. Actual finite stage clocks therefore transfer their depth-h physical
+   omission bound a*C*rho^h/(1-rho) to every common endpoint/halt limit.
+   No limiting coverage or disjointness premise is inserted.
+3. A depth-h omission bound tending geometrically to zero yields
+   volume([0,H] minus union_p (l_p,r_p))=0. Countably many left endpoints
+   and the final halting endpoint have zero measure. The result covers the
+   actual stage interiors, not just an abstract measurable superset.
+4. exists_stage_clock_limit_cover derives a common strictly increasing
+   subsequence for all node volumes, stage endpoints and the halt time.
+   Assumptions: fixed finite branching B and stage bound J; P_i>0;
+   V_i(w)>=0; 0<=rho<1; a>=0; child-volume sum<=rho*parent volume;
+   root volume<=C*P_i; integer stages A<=E<=T; their exact labels partition
+   every tick; total own-stage duration at w<=a*V_i(w).
+   Conclusions: H in [0,a*C/(1-rho)], v_w in [0,C/(1-rho)], convergence
+   of T/P, A/P, E/P and V/P for every fixed key, 0<=l_p<=r_p<=H,
+   pairwise disjoint half-open stage intervals, and the null complement
+   of the union of their open interiors in [0,H].
+   Compact bounds are proved from the verified tree and clock budgets.
+   No common tree, labels, positive node volumes, or uniform trace choice
+   is required across the sequence. The theorem does not yet mention heads.
+5. stage_duration_limit_bound proves r-l<=a*v from the actual own-stage
+   budget and endpoint/volume convergence. Thus an ordered limiting stage
+   with v=0 collapses. Positive limiting duration requires positive v.
+6. zero_volume_call_duration_tendsto proves (D_i-S_i)/P_i -> 0 for a
+   contiguous call whose tick membership is exactly its subtree prefix,
+   whenever V_i(w)/P_i ->0. The bound includes every descendant's paid work.
+
+DEPENDENCY MAP
+FiniteStageLimits reuses StageRealGeometry and mathlib finite additivity,
+real interval volume, closed-order limits, and finite-sum convergence.
+LimitingStageCoverage reuses the exact PhysicalStageCoverage bound and
+finite shallow address sets. CommonStageLimits reuses the geometric charge
+and whole-clock bounds, mathlib countable-product compactness, and the
+actual contiguous-call duration bound. There are three new modules and
+eight new audited declarations; no changes to existing mathematical sources.
+
+DRIFT / REUSE: This closes the common-limit/coverage step in source208
+section29 directly. All general measure, compactness and convergence tools
+are imported. In particular, CompactSpace.tendsto_subseq on a countable
+product replaces a bespoke diagonal-subsequence proof, and finite length
+sums replace general convergence-of-measures machinery. Existing local
+BoundedAffineCovers was checked for its compactness pattern; the new result
+needs countably many addresses and a geometric coverage deficit. Existing
+physical coverage, tree-charge and call bounds are used without duplication.
+No claim that the entire recursion theorem already exists in mathlib follows
+from this targeted reuse audit, and no exhaustive negative search is claimed.
+The next step must connect these intervals to actual all-head local profiles,
+not introduce unrelated geometric machinery or revisit completed families.
+
+
+BOUNDARY
+Common stage geometry is now derived from actual native-clock ownership and contraction: simultaneous endpoint/volume/halt convergence, bounded limiting coordinates, pairwise disjoint intervals, and almost-everywhere coverage by their interiors. Zero normalized node volume forces every own stage to collapse and every contiguous subtree call to have vanishing normalized duration. This does not yet prove that the limiting head paths are affine on those stages. Applying actual-occurrence local regularity, assembling the affine cover, the frozen post-halt tail, native recursion impossibility and exceptional-work bounds remain. Exact206 palette semantics and native nonuniform executors remain. Final referees follow all six; no unrestricted transpose decision or novelty claim.
+
+NEXT
+R1870 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate25%, low confidence.
+
+Next concrete target: turn the common limiting stage cover into the actual
+head-path affine cover, using R1867 native_positive_stage_affine. The required
+common coordinate extraction and almost-everywhere coverage are now proved
+in CommonStageLimits.exists_stage_clock_limit_cover, and stage duration is
+bounded by a*v. Keep the actual native all-head uniform limit on refinement:
+TendstoUniformlyOn.comp_tendsto with StrictMono.tendsto_atTop should suffice.
+Do not repeat diagonal extraction, geometric charge, tick accounting, or
+measure-limit theory.
+
+For a limiting stage with l<r, stage_duration_limit_bound and v>=0 force v>0.
+The extracted endpoint limits give (E-A)/P -> r-l and, after restricting to
+the eventual V/P>0 tail, (E-A)/V -> (r-l)/v. This supplies the local duration
+parameter in native_positive_stage_affine. If P->infinity then V->infinity.
+A positive limiting duration also makes A<E eventually, so every remaining
+stage is an actual occurrence. Do not invoke the source regularity condition
+on padded missing stages. Discard a proved finite prefix when necessary;
+no hypothesis of positivity for every original index should be silently added.
+Use the existing raw-sample/frozen-profile equivalence and actual Lipschitz
+extensions. Source regularity is for all fixed physical heads, including
+retained parent, scratch and control heads. Per-stage subdivisions may vary.
+
+At v=0, ordered endpoints and stage_duration_limit_bound already imply l=r;
+zero_volume_call_duration_tendsto additionally proves whole contiguous
+subtree duration/P ->0. A stronger common extraction of all call endpoints
+or finite existence patterns is unnecessary if the proof uses only these
+facts, stage endpoints and eventual actual presence. Avoid extra obligations.
+
+Obtain a.e. local affinity on each surviving global stage interval from the
+finite-piecewise-affine local cover. Search/reuse BoundedAffineCovers and
+OpenAffineTimeBound before adding transfer helpers; a constant sequence in
+local_affine_ae_of_bounded_covers may suffice for the local finite subdivision.
+Countably many null stage exceptional sets plus the already proved null
+coverage complement give the global affine cover. Add the constant frozen
+post-halt portion using actual workTraj halting semantics (or its proved
+raw-sample limit), not an assumption about arbitrary Lipschitz extensions.
+Then use NativeAffineMotion's completed class/popular/robust obstruction;
+retain high entropy, correct-set inclusion, fixed heads/alphabet and state bits.
+Exceptional-work conclusion remains eta>=1/(2kG) in physical P-time units.
+
+Exact source206 row/entry/F3/bit-stride palettes, growing-stride cases,
+bounded composition and native nonuniform executors still remain. They must
+pay for every copy, seek, clear, I/O and parameter access. O(P) clock states
+are allowed by source206; do not reopen uniform parameter generation or the
+five completed families. No fresh subagents until all six formalizations;
+then user-authorized impartial referees and cleanup. Original read-only;
+no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate25% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. Estimates refer to the entire sixth family, including exact206 executors, not just its geometric limit lemma.
+
+VERIFICATION
+Full lake build passed10188 jobs without warnings/errors; SupportAxioms audited4922 unique declarations using only propext,Classical.choice,Quot.sound. There are1007 local sources (1006 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and183 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

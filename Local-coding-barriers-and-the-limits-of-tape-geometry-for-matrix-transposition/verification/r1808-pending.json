@@ -1,0 +1,108 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "GeneratorWalkFiniteSupport",
+    "RationalCommonSmoothingSeparation",
+    "SmoothedWalkSeparatedSubset",
+    "DyadicWalkSeparatedSubset",
+    "SmoothedIterateSeparatedSubset"
+  ],
+  "modified_modules": [
+    "ConvolutionTranslateMass",
+    "CoveringPolynomialLoss"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.mconv_ae_finite_support",
+    "TransposeFollowup.RealMobius.generatorWalkMeasure_finite_support",
+    "TransposeFollowup.RationalFreePair.frobenius_entry_le_dist",
+    "TransposeFollowup.RationalFreePair.frobenius_norm_le_of_entryBox",
+    "TransposeFollowup.RationalFreePair.common_smoothing_separated",
+    "TransposeFollowup.RationalFreePair.exists_separated_subset_of_smoothed_walk_mass",
+    "TransposeFollowup.RationalFreePair.initial_length_separation_radius",
+    "TransposeFollowup.RationalFreePair.exists_dyadic_walk_separated_subset",
+    "TransposeFollowup.RationalFreePair.exists_iterate_dyadic_separated_subset",
+    "TransposeFollowup.exists_half_le_of_lintegral",
+    "TransposeFollowup.mconv_apply_eq_lintegral_right_preimage",
+    "TransposeFollowup.exists_right_slice_mass_of_mconv",
+    "TransposeFollowup.covering_basic_coefficient_bounds",
+    "TransposeFollowup.localized_separation_coefficient_bound"
+  ],
+  "declaration_counts": {
+    "theorem": 14
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 58348,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1808-dev1.log"
+    },
+    "development_2": {
+      "session_id": 1384,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev2.log"
+    },
+    "development_3": {
+      "session_id": 72395,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev3.log"
+    },
+    "development_4": {
+      "session_id": 90559,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev4.log"
+    },
+    "development_5": {
+      "session_id": 91055,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev5.log"
+    },
+    "development_6": {
+      "session_id": 21262,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev6.log"
+    },
+    "development_7": {
+      "session_id": 11896,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1808-dev7.log"
+    },
+    "build": {
+      "session_id": 19907,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9788,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 18272,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4277,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1808 proves a stronger extraction than the proposed additive-error route: select one common right-smoothing element by probability averaging, then cancel the common left translation in pairwise quotients. Frobenius submultiplicativity and the already proved rational denominator separation give separation with no additive smoothing error and no translating-element bound. Existing finite generator definitions, free-walk atom decay, initialWalkLength scale estimates and log-length compatibility are reused. The conclusion is a finite subset of the SAME localized set; no cover surrogate or product-theorem hypothesis is assumed. The complete all-radii power-law distribution statement, escape, product growth and flatness remain open.",
+  "cleanup": "Five new modules add nine theorems. Two existing follow-up modules add five reusable theorems: generic half-mass averaging and right-slice convolution, plus common coefficient bounds and the resulting h^1140 separation loss. Existing public statements are byte-identical and now reuse these extracted arguments. No definitions added. Removed an unnecessary second-point box hypothesis. Replaced expansive automation with explicit monotone multiplication; no proof limits raised or linters disabled. Protected original untouched.",
+  "updated_at": "2026-10-19T23:32:43.681005+00:00",
+  "formal_checkpoint": "R1808 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1808, 811 sources, 4277 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1808 proves separated finite subsets inside the actual localized set at all dyadic scales rho=(1/4)^v with7680r<=v<=j, for smoothing eta=(1/4)^j and the existing logarithmic walk-length condition. The native ambient Frobenius separation is strict. The explicit bound is c<=4*C*M*|F|*rho^(1/30720), where c<=C times the actual iterate mass on xU and M=ofReal(33^4Q^8/alpha^4). The short length initialWalkLength(r,v)<=ell is derived. Freezing one common right-smoothing element cancels the large left translation in pairwise quotients and avoids any additive smoothing error or scale cutoff. The coefficient cost for the actual profile is proved <=h^1140 after dividing by q^2. Absorbing that loss, extending to all radii, and preserving the full family quantifiers still need composition. Escape, product growth, strict flattening and unconditional paid padding remain. No new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1808 proves actual separated finite subsets, with a stronger extraction than the proposed smoothing-error route. Do not redo localization, terminal-walk factorization, finite support, Frobenius quotient geometry, or the dyadic short-length estimates.\n\nKEY CHANGE: freeze a SINGLE common right-smoothing element u by probability averaging. For endpoints a,b landing in wA, their target points are y=w^-1*a*u and z=w^-1*b*u. The large w cancels: a^-1*b=u*(y^-1*z)*u^-1. This gives separation1/(64D^2) without additive eta error or any bound on w. Native Metric.IsSeparated uses a factor2 smaller radius. No eta-power cutoff is needed. The plan in R1807 to budget translation distortion and a smoothing-error cutoff is superseded.\n\nMain checked interface: SmoothedIterateSeparatedSubset.exists_iterate_dyadic_separated_subset. For actual eta=(1/4)^j and every7680r<=v<=j, with rho=(1/4)^v, it produces F subset the SAME A, strict rho-separation, and c<=4*C*M*|F|*ofReal(rho^(1/30720)). From the actual profile c=q^2,C=8192*K0*L^2*K^4, the coefficient is32768*K0*L^2*K^4*M. InitialWalkLength(r,v)<=ell is already derived from v<=j and the actual logarithmic length bound. The family still must be fixed before the scale, walk and iterate; preserve s before k.\n\nNEXT CONCRETE TARGET: compose this with the actual profile coefficient estimates to obtain a uniform PURE POWER lower bound |F|>=rho^-tau for EVERY real eta<rho<eta^epsilon. This is the missing distribution hypothesis. R1808 proves localized_separation_coefficient_bound: after division by q^2 the explicit coefficient is <=h^1140. Reuse native ENNReal.toReal operations and the conversion pattern in MobiusCoveringPowerBounds to obtain 1<=eta^(-1140s)*|F|*rho_v^(1/30720). Do not assume the simplified power-law mass bound; derive it from the checked coefficient theorem and actual level/support thresholds. Extract/reuse the existing threshold and level-bound work in SmoothedIterateCoveringInterval instead of duplicating its large proof.\n\nFor arbitrary real rho choose a coarser dyadic rho_v with rho<=rho_v<4rho, so its separated set remains rho-separated. Prove7680r<=v<=j by making the fixed scale threshold depend on r and epsilon. Use a justified small-loss margin, for example1140s<=epsilon/(61440). Then eta^(1140s)>=rho^(1/61440) when rho<=eta^epsilon; after the fixed factor from rho_v<4rho is absorbed at sufficiently small rho, a target exponent tau=1/122880 is plausible. These final exponent/margin claims are NOT YET FORMALIZED. Preserve all ordering and avoid a circular s-after-k choice. A smaller small-tripling beta can enforce the extra bound on s while preserving the original tripling conclusion, but prove that parameter composition explicitly.\n\nThe product theorem's escape condition is independent of this distribution condition. After distribution, quantitative escape, product growth itself, strict flattening and the unconditional spectral gap remain. The final conditional gap needs a FIXED iterate with ae cap D and D^2<=2^j. Motion200/210 and recursion206/208 remain in scope, unstarted. No final referees, protected original edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1808 proves actual finite separated subsets of the SAME localized set at every admissible dyadic scale, including the smoothing scale, with explicit cardinal loss. A common smoothing sample removes additive smoothing error and translation-size loss. The fourth family, paid padding, is still unfinished. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not time, success probability, or distance to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/GeneratorWalkFiniteSupport.lean": "2d30b8e8a684a3c9c4c27f6238b6bb2ae7e49c937d8b9c4c535e57f6a1a0500b",
+    "lean/TransposeFollowup/RationalCommonSmoothingSeparation.lean": "ea37804b54bc3f2d02d384cf43ec3513d5b83397c644b8097ed71044f38e6e75",
+    "lean/TransposeFollowup/SmoothedWalkSeparatedSubset.lean": "4fd6f4a0f31187902b15a9ad803bef2228afe688bcc98fe88f1425980eeafcb0",
+    "lean/TransposeFollowup/DyadicWalkSeparatedSubset.lean": "dd8e55a3bf958620dedef8c7a5d5030aa262297f39a3330f5c3bb033260bb3ff",
+    "lean/TransposeFollowup/SmoothedIterateSeparatedSubset.lean": "0b2001fdda06e76362b3485f4527753271b19667838ed340f60e9ea909c70931",
+    "lean/TransposeFollowup/ConvolutionTranslateMass.lean": "f63c6bd63dbdd2220f96e5daee7386aae0434a83507eb075a5b1934e236c9ebb",
+    "lean/TransposeFollowup/CoveringPolynomialLoss.lean": "3524033dea0d439a6bf09b660a40e1122eae6157b17fc71afb3ae05b30bafb80"
+  }
+}

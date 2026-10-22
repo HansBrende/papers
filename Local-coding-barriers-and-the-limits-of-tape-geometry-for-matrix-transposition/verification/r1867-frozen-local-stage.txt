@@ -1,0 +1,119 @@
+
+R1867 — FROZEN LOCAL PROFILES AND POSITIVE-VOLUME STAGE REGULARITY
+PROGRESS at R1867: actual frozen local profiles, uniform limit stability, representation independence, and the positive-volume stage-affinity consequence for regular recursion206/208 are formalized. The normalization bridge from R1866 remains verified. Five of six original families remain formalized; the sixth family is about10% complete, low confidence. Final referees remain pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1867 RESULTS
+1. frozenProfile(f,alpha,v,ell,s) is exactly
+     [f(alpha+v*min(s,ell))-f(alpha)]/v.
+   frozenProfile_lipschitz proves it unit-Lipschitz whenever f is, for any
+   real parameters (including zero volume, where Lean division gives0).
+   Actual stage applications explicitly require positive volumes.
+2. frozenProfile_tendsto and frozenProfile_tendstoUniformlyOn: unit-Lipschitz
+   physical paths converge uniformly on[0,H]; starts, normalized volumes
+   and durations converge; the limiting volume is positive; actual stage
+   endpoints eventually lie in[0,H]. Then frozen profiles converge uniformly
+   on[0,a] to the profile of the actual limiting path and parameters.
+   Pointwise moving-argument convergence, continuity of the limit and Ascoli
+   are imported from mathlib. No extra convergence beyond[0,H] is assumed.
+3. frozenProfile_physicalPath proves the exact scale identity from a global
+   physical path at start A/P and scale V/P to (f(A+V*min(s,ell))-f(A))/V.
+4. native_frozen_profile_sample_error compares it, for integer start A and
+   duration L, with the ACTUAL frozen integer stage sample
+     [h(A+min(floor(V*s),L))-h(A)]/V.
+   The error is <=1/V. The identity for the capped floor follows from
+   monotonicity of Nat.floor and multiplication; the start sample is exact.
+5. native_frozen_profile_distance bounds the distance between two unit-
+   Lipschitz representations agreeing at every actual integer tick by2/V.
+   native_frozen_limit_independent transfers uniform limits as V->infinity.
+   native_frozen_sampled_limit_iff proves equivalence between continuous and
+   raw sampled local convergence for any such representation. No choice of
+   interpolation can manufacture or remove local regularity in this limit.
+6. frozenProfile_affine_of_subsequence: any uniformly convergent local
+   subsequence with a fixed finite affine interval cover agrees, by uniqueness,
+   with the already determined frozen profile. Its cover is inherited by
+   that actual limit; no second profile diagonalization is required.
+7. frozenProfile_affine_stage: if that frozen profile has a J-piece closed
+   affine interval cover on[0,a], v>0 and0<=ell<=a, then
+     s |-> f(alpha+v*s), s in[0,ell]
+   has a J-piece affine cover. This is precisely the actual global stage
+   [alpha,alpha+v*ell] in local coordinates. Truncated pieces that collapse
+   at ell are handled with constant affine formulas, not invalid extensions.
+8. native_positive_stage_affine ties the pieces together for actual integer
+   stage starts A_i and durations L_i, positive input scales P_i->infinity
+   and charged volumes V_i, exact unit-step representations, bounded stages
+   A_i+L_i<=H*P_i, and own-stage budgets L_i<=a*V_i. It derives V_i->infinity
+   from V_i/P_i->v>0 using mathlib Tendsto.atTop_mul_pos; derives0<=ell<=a;
+   derives actual frozen-profile convergence and identifies a finite affine
+   cover from the regular subsequence of raw local samples. The conclusion
+   is an affine cover for the actual limiting global stage in local coordinates.
+   This is a one-head local theorem; the call-tree theorem must apply it to
+   every physical head and preserve its common joint-regularity hypotheses.
+
+DRIFT / REUSE: The checkpoint closes the exact positive-volume local-stage
+step of208 rather than assuming its limiting geometry. Mathlib already has
+the central convergence machinery: Ascoli equicontinuous pointwise/uniform
+equivalence, Lipschitz equicontinuity, moving-argument uniform convergence,
+continuous uniform limits, limit uniqueness and positive-times-divergent
+products. These are all imported. The custom work is the actual frozen
+stage formula, integer sampling/rounding and transfer to affine stage covers.
+The completed R1865 affine-cover definition and R1866 physical/error bridge
+are reused. No general Ascoli, compactness, interpolation or diagonal proof
+was added. The full contracting-tree coverage and scan executors remain open.
+
+
+BOUNDARY
+The positive-volume own-stage step in208 equation(208.2) is verified with actual integer stage samples and derived uniform limits. This is not the full recursive theorem: actual contracting call trees, depth/subtree work bounds, simultaneous endpoint limits, disjoint time coverage, zero-volume subtrees, global affine covers, native impossibility and exceptional-work consequences remain. Source206 exact palette executors and nonuniform clocks also remain. Local regularity is still an explicit substantive hypothesis; finite polygonality of microscopic traces does not establish it. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1867 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate10%, low confidence.
+
+Next concrete target:208 sections28-29, the actual contracting-tree cost
+and coverage interface. First search existing mathlib/local finite-tree,
+finite word sums, geometric sums and interval-measure results. No matching
+local recursion/depth-volume theorem was found in the first targeted search.
+Use padded addresses List(Fin B) (or an existing suitable finite-tree type)
+for fixed branching B. Nonnegative node charges must satisfy child sums
+<=rho*parent with0<rho<1; own-work duration<=a*charge; all actual ticks
+are assigned. Derive depth bound C*rho^h*P, total/subtree time aV/(1-rho),
+and deep-work tail aC*rho^h*P/(1-rho). Prove these from the actual finite
+execution decomposition, not as extra premises in the final exclusion.
+
+Then compactness of countable bounded endpoint/volume coordinates supplies
+one subsequence for all padded addresses/stages. Reuse mathlib sequential
+compactness of countable products. Positive-volume stages now have the
+verified native_positive_stage_affine route. Zero-volume subtrees must
+vanish by the derived subtree bound. Finite-depth disjoint actual stages
+cover time except the geometric tail. Transfer lengths/order and obtain
+the global a.e. affine cover; include frozen post-halt tails. Exceptional
+work must yield eta>=1/(2kG) in absolute physical units. Apply completed
+native/popular-class affine motion results without dropping high entropy,
+adaptive representatives, fixed tapes/alphabet or o(P) state-bit accounting.
+
+R1867 modules:FrozenLocalProfiles,NativeFrozenProfiles,FrozenProfileRegularity
+(12 declarations). The native local theorem explicitly uses raw frozen
+samples; native_frozen_sampled_limit_iff makes the continuous local hypothesis
+equivalent for any unit-Lipschitz representation agreeing at integer ticks.
+A chosen extension is not asserted to be linear interpolation. All actual
+stage endpoints stay within the domain of known global uniform convergence.
+If applying an eventual-positive-volume version, discard only a proved
+finite prefix; do not assume positivity for missing/zero-volume nodes.
+
+Source206 remains too: exact row/entry and F3 scan palettes, growing masked
+strides, fixed word composition, actual native clocks and all movement/I/O.
+It explicitly permits O(P)-state nonuniform schedules, so avoid reopening
+uniform parameter generators. Local regularity of those executors still
+needs proof; finite microscopic polygonality alone does not suffice.
+
+No fresh subagents until all six initial formalizations. Then run the
+user-authorized impartial referees and cleanup. Original paper read-only.
+No commits/pushes. Do not reopen the other completed families.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate10% complete (low confidence). Five completed initial formalizations remain: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and fully paid padding201/202. Independent referees and cleanup follow all six. Estimates refer to the entire sixth family, not its current helper.
+
+VERIFICATION
+Full lake build passed10179 jobs without warnings/errors; SupportAxioms audited4871 unique declarations using only propext,Classical.choice,Quot.sound. There are998 local sources (997 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and177 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

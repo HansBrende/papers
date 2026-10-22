@@ -1,0 +1,76 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1830",
+  "previous_turn_classification": "PROGRESS; source-word transfer and coarse sample verified",
+  "target": "Compose the full commuting-family cubic bound including the integer small-cardinality case; test the inverse-final-factor scalar identity and its nilpotent obstruction.",
+  "new_modules": [
+    "CommutingFamilyCubicBound",
+    "InverseFinalScalarIdentity",
+    "CommutingCubicEnvelope"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 5116,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1831-dev1.log"
+    },
+    "development_2": {
+      "session_id": 24198,
+      "exit_code": 0,
+      "status": "terminal",
+      "log": "/private/tmp/r1831-dev2.log"
+    },
+    "development_3": {
+      "session_id": 32064,
+      "status": "terminal",
+      "log": "/private/tmp/r1831-dev3.log",
+      "exit_code": 1,
+      "reason": "Use additive monotonicity without the namespace-shadowed directional lemma; preserve the exact coefficient during numeric reduction."
+    },
+    "development_4": {
+      "session_id": 5058,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1831-dev4.log"
+    },
+    "build": {
+      "session_id": 81159,
+      "status": "terminal",
+      "exit_code": 0,
+      "jobs": 10083,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 10854,
+      "status": "terminal",
+      "log": "verification/axioms.log",
+      "exit_code": 0,
+      "declarations": 4534,
+      "warnings": false
+    }
+  },
+  "completed_families": "3/6; final referees pending",
+  "constraints": "No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.commuting_family_cubic_bound",
+    "TransposeFollowup.SL2Projection.scalarAffine_inverse_final_identity",
+    "TransposeFollowup.SL2Projection.sl2_inverse_final_scalar_identity",
+    "TransposeFollowup.SL2Projection.sl2_inverse_final_scaled_projection",
+    "TransposeFollowup.SL2Projection.sl2_inverse_final_nilpotent_identity",
+    "TransposeFollowup.SL2Projection.commuting_cubic_bound_with_envelope"
+  ],
+  "terminal_handles": "All R1831 handles terminal. Development1(5116),2(24198),4(5058) passed;3(32064) failed once and was repaired. Full build81159 and audit10854 passed:10083 jobs,4534 declarations, no warnings. No live Lake process.",
+  "updated_at": "2026-10-20T05:45:19.820611+00:00",
+  "formal_checkpoint": "R1831 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:902 local sources,204 external sources,4534 declarations,8 configurations,105 artifacts",
+  "proof_scope": "In progress. R1831 completes the cubic upper bound for the whole possibly infinite commuting family, composing source-preserving sampling, localization, integer rounding, actual A^142 transfer and the existing arbitrary-power envelope. The small-cardinality case is retained. It also verifies the inverse-final-factor identity: the trace expression is a scaled X+lambda_g X for the same squared-coordinate set X, with an explicit nilpotent specialization. Three modules add6 theorems. Nonconcentrated coefficient selection, conversion of scalar amplification to matrix growth and the fourth original theorem family remain incomplete.",
+  "next": "The preceding goal turn is PROGRESS. R1831 is recorded; never replay its checkpoint. Read verification/r1831-cubic-bound-and-scalar-identity.txt and verification/library-reuse-audit-r1831.json. Full10083-job build and4534-declaration audit passed; standard axioms only; no live Lake handle.\n\nTHE CUBIC SIZE CHAIN IS CLOSED: commuting_family_cubic_bound constructs the finite source sample, selects the integer retained size, includes its small-cardinality branch and bounds the entire V. commuting_cubic_bound_with_envelope substitutes the ACTUAL142-factor envelope. Do not rebuild this chain or optimize its fixed constants as a substitute for amplification.\n\nNEXT SUBSTANTIVE TARGET: make the verified same-set scalar projection identity useful, with a drift gate before a long support chain.\nFor trace-free b and D_g=det(bg-gb),\n  tr(v u^-1 g v u g^-1)=2-D_g*(t^2+(4det(b)/D_g-1)*q^2)\nwhen D_g!=0. This is now a verified theorem, not a conjectured identity. It removes the varying base set Y_g. Reuse sl2_inverse_final_scaled_projection and the existing finite-product/trace-cover machinery for a charged actual-word realization. If u',v' in A^m and g in A^n, the word still has length4m+2n; the last g^-1 has the same bounded entries as g. Avoid copying an entire old error/cover chain.\n\nBefore claiming amplification, resolve BOTH missing bridges:\n- Coefficients: lambda_g=4det(b)/D_g-1. For nonzero D1,D2, the elementary difference formula is |lambda(D1)-lambda(D2)|=4|det(b)|*|D1-D2|/(|D1||D2|). Check/use mathlib division identities rather than re-proving generic reciprocal calculus. This makes the necessary lower bound on |det(b)| explicit. Determine whether actual extraction can supply a sufficiently nonconcentrated D_g family with a controlled discriminant, or whether a separate nilpotent/near-nilpotent mechanism is required. The verified nilpotent specialization gives lambda=-1, so it cannot be silently included in a nonconcentration assertion.\n- Gain: the scalar projection theorem gives growth relative to the extracted X. The available trace upper bound is relative to ambient A. Prove how that scalar gain produces a matrix growth contradiction; an unconnected large X+lambda X is insufficient.\nCheck the source product-growth argument against this split before committing to another long formal chain. Keep hypotheses concrete and track what has actually changed. The next proof should discharge one of these substantive bridges, not merely restate them as additional assumptions.\n\nAll six original families remain required. Reuse the pinned204-source scalar projection theorem and read-only original adapter. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.",
+  "checkpoint_reporting": "The current whole-family cubic budget/envelope composition and inverse-final scalar identity are100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/CommutingFamilyCubicBound.lean": "778945fb9206e1329d4e494d5d8bf7d87f05fe58269ad30ce97721f676d002b4",
+    "lean/TransposeFollowup/InverseFinalScalarIdentity.lean": "9c50e5eb00a0fe3334159f1e77f4afb8e03bdbbc218e51d49081358a1bef6b73",
+    "lean/TransposeFollowup/CommutingCubicEnvelope.lean": "cdd9554e5db8d759c56a363f3ad38a5dcb44c05bb2fb19a2e5526661a563757b"
+  }
+}

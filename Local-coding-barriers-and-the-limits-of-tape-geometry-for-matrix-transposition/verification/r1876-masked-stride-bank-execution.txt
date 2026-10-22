@@ -1,0 +1,146 @@
+
+R1876 — EXACT MASKED-STRIDE BANK SEMANTICS AND PAID EXECUTION
+PROGRESS at R1876: the arbitrary masked binary stride processing phase now has exact cell semantics, a cross-group invariant, the full raw-index zero-filled recurrence, and a single paid native execution of every full/partial group. Its exact time is 4*S*(floor(P/S)+1), at most8*P for1<=S<=P, with4*(N+1) states. Five of six original families formalized; regular recursion206/208 best estimate59% complete (low confidence). Raw IO/final clearing, stride limits, other exact206 palettes and bounded composition remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1876 RESULTS
+1. MaskedStrideGroupSemantics proves the cellwise meaning of the existing
+   paid4*S slab. At every active slot, both operands are still the original
+   bank and scratch values for that group. For j<g the bank receives
+      x_j XOR (a_j AND prev_j).
+   The scratch receives that output in prefix mode, and the ORIGINAL x_j
+   in difference mode. Outside each tape's g-cell update interval, all
+   absolute cells are unchanged. Padding and physical rewind write nothing.
+2. MaskedStrideScan.AtGroup tracks actual bank/scratch head positions,
+   outputs of all earlier groups, the untouched future bank and the exact
+   preceding-group buffer value. groups_invariant proves this for every
+   full group, starting with zero-decoding scratch cells. partial_correct
+   handles any last g<=S, preserves all earlier outputs and the future bank,
+   and restores the scratch head. Data and masks never affect these lengths.
+3. MaskedStrideBank.value_recurrence proves the standard raw-index equation
+      y_n = x_n XOR (a_n AND previous_n),
+   where previous_n=0 for n<S; otherwise it is y_(n-S) in prefix mode
+   and x_(n-S) in difference mode. This is proved from the recursively
+   defined group semantics, not supplied as an assumed executor invariant.
+   result_correct proves that every j<P in the actual final bank equals
+   this y_j, the bank head advances P, the scratch head restores, and all
+   bank cells at/after the end of the processed bank remain unchanged.
+   Here x_j is decoded from the actual initial absolute bank cell.
+4. MaskedStrideExecution composes scheduled instructions BEFORE compiling
+   them. full_exact/full_prefix connect full groups and their intermediate
+   states to the existing slab. schedule_exact and native_run execute all
+   floor(P/S) full groups plus one last P%S group in a SINGLE native program,
+   then halt, with no unpaid call transitions. If P%S=0, the empty final
+   slab still executes and is charged. For positive S the exact processing
+   duration is N=4*S*(floor(P/S)+1). ticks_le gives N<=8*P when S<=P.
+   state_count gives q+1=4*(N+1), using the existing public-clock compiler,
+   two work tapes, and the existing five-symbol work alphabet. This pays
+   the arbitrary public masks through nonuniform transition tables; it
+   does not read them from a free data oracle.
+
+SCOPE / REMAINING OBLIGATION
+The prepared-bank PROCESSING phase is complete, in both prefix/difference
+modes, including any final partial/empty group. Initial raw input loading,
+final output, bank rewind and scratch clearing remain to be formally paid
+and composed. The whole raw-input primitive is not claimed complete.
+Next finish those interfaces, then the two arbitrary-stride limit cases,
+backward variants, all row/integer/F3 palettes and bounded-word composition.
+
+FILES
+Four new modules: MaskedStrideGroupSemantics, MaskedStrideScan,
+MaskedStrideBank, MaskedStrideExecution. Thirty-nine audited declarations,
+including definitions and a proposition structure, not39 new mathematical
+theorems. All prior mathematical sources remain unchanged.
+
+DRIFT / REUSE
+The user's renewed library-reuse request was applied to the active chain.
+Searched the pinned mathlib (including its Computability/TuringMachine,
+Data/List, Data/Vector, Data/Nat and Logic/Function modules), Lean's Nat
+arithmetic, and existing local stride/schedule/NativeIO modules. Found
+Vector.scanl_get/scanl_cons and Function.iterate lemmas, but these are pure
+scan/iteration facts: they do not provide this paid native executor,
+absolute-tape preservation or scratch reuse invariant. No matching complete
+executor was found in this search; this is not an exhaustive absence claim.
+Reused the existing NativeMicrocode.action_cells, AbsoluteTape.scanned,
+ScheduledNativeIO.trajectory_add/congr/native_run_and_halt/native_state_count,
+and all R1875 cell/group execution and position theorems. No new compiler,
+Turing tape model, generic list-scan theory or division algorithm was built.
+The raw-index bridge directly reuses Nat.mul_add_div, mul_add_mod_of_lt,
+div_add_mod', mod_lt, div_le_div_right and div_mul_le_self from Lean/mathlib.
+The lower-level tape model already imports Mathlib's Turing.Tape move/write
+lemmas. The small group recurrence is specific to the two executor modes.
+This work closes the concrete semantic gap in source206 rather than
+reopening the completed recursion or exceptional-work lower-bound chains.
+
+
+BOUNDARY
+The new native execution starts from an explicit prepared bank and scratch whose firstS decoded bits are zero. It proves the entire processing phase, including group padding and physical buffer rewinds; it does not include raw input loading, final raw output, bank rewind or final scratch clearing. Those costs and correctness remain required. Source208 and the native global exceptional-work threshold (210.5) are complete. All source206 row/integer/F3 palettes and growing-stride limit cases remain in scope. Five of six original families formalized, final referees pending. No unrestricted transpose decision or novelty claim.
+
+NEXT
+R1876 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five of six original families
+formalized; sixth regular recursion206/208 best estimate59%, low confidence.
+
+NEXT: finish the RAW IO AND CLEANUP interface of the arbitrary masked
+binary stride executor. Its complete prepared-bank processing phase is
+now proved, with exact zero-filled raw-index prefix/difference semantics.
+Reuse it; do not re-prove its group invariant or build another compiler.
+
+Main APIs:
+- MaskedStrideGroupSemantics: cells, slots_outside/readMode_slots,
+  slots_written, result_written/result_outside, rewind_cells.
+- MaskedStrideScan: input decodes the initial bank; buffer/output define
+  group semantics. AtGroup records actual bank/scratch positions, past
+  output, untouched future, and buffer. groups_invariant and partial_correct
+  prove full and partial group composition.
+- MaskedStrideBank (namespace MaskedStrideScan): value, value_block,
+  value_recurrence (actual raw-index equation); result and result_correct
+  (all P bank bits, head positions, untouched future). Scratch initialization
+  only assumes the first S decoded buffer bits are false; actual blank tape
+  implies it via AbsoluteTape.blank_cells and MaskedStrideCell.bit.
+- MaskedStrideExecution (same namespace): fullSchedule/full_exact/full_prefix,
+  ticks P S=(P/S+1)*(4*S), schedule/schedule_exact, native_run (exact N
+  original-machine transitions AND halt), ticks_le (N<=8P for S<=P),
+  state_count (q+1=4*(N+1)). All masks are arbitrary public data-independent
+  transition-table choices. One empty final slab when P%S=0 is paid.
+- R1875 ScheduledNativeIO.native_prefix, trajectory_add/congr,
+  native_run_and_halt and native_state_count remain the generic interface.
+  Compose subroutines' schedules before compiling; do not treat standalone
+  halt states as free caller transitions. Full prefixes give exact native
+  intermediate configurations, not just eventual semantic equality.
+
+For the full primitive, load the raw P input bits into bank tape0 with
+readInput / act(write bank,right) / moveInput; then paid bank rewind P.
+Existing NativeIO raw readers/writers may provide reusable traces; inspect
+before implementing a new routine. End processing pays scratch erasure:
+S blank-write/right instructions, then S left moves. Bank head is at P;
+rewind it P and emit the P output bits by paid read/output/advance. A rough
+full budget is <=18P (load+rewind4P,processing8P,clear2P,rewindP,emit3P),
+but this bound remains unproved and must include all real transitions.
+Prove all preserved IO fields and scratch outside the cleared interval;
+use the existing absolute-cell refinement rather than copying tape theory.
+Prepared coordinates may be normalized0 only when raw initialization is
+proved, not silently assumed. NativeIO.blank_denote connects initial state.
+
+Then prove the arbitrary-stride geometry using the existing exact group
+head formulas. If S/P->0, buffer excursions and partial slab are o(P), and
+full slab endpoints make the bank O(S)-close to an affine path. If S/P has
+positive limit, the number of groups is bounded and finite affine phases
+suffice. No uniform piece-count bound across both cases is needed.
+Backward scans, whole-bank reversal/rotation, exact row/integer and F3
+palettes, and bounded-word composition remain required. Preserve source200
+sections20-24 scope, nonuniform public choices, fixed heads/alphabet,
+O(log P) state bits and high-entropy raw correctness. No uniform generator
+is required; no new primitive-classification or finite word-search project.
+
+No fresh subagents until all six; then authorized impartial referees and
+cleanup. Original paper read-only; no commits/pushes. No unrestricted
+transpose decision or literature-novelty claim. Source208 and global210.5
+are complete and should not be reopened to defer executor work.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate59% complete (low confidence). This estimates the whole sixth family, not just the scan helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Native recursion and its global exceptional extension are complete within the sixth family. Exact206 compilation remains, with the masked binary processing phase now complete. Final independent referees follow all six.
+
+VERIFICATION
+Full lake build passed10207 jobs without warnings/errors; SupportAxioms audited5058 unique declarations using only propext,Classical.choice,Quot.sound. There are1026 local sources (1025 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and195 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

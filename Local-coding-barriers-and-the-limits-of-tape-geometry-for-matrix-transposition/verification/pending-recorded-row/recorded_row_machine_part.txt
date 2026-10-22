@@ -1,0 +1,112 @@
+
+namespace TransposeFollowup.RecordedRow
+open FixedTapeCompiler CopyMachine
+set_option autoImplicit false
+
+inductive Port | row (p : RowExecution.Port) | output
+  deriving DecidableEq, Fintype
+
+def rowBinding : FinitePortBinding RowExecution.Port Port where
+  ports := ⟨Port.row,fun _ _ h => Port.row.inj h⟩
+  decode := fun p => match p with | .row t => some t | .output => none
+  decode_spec := by
+    intro p t
+    change (match p with | .row u => some u | .output => none)=some t ↔ Port.row t=p
+    cases p <;> simp [eq_comm]
+
+def consumerPort : RowConsumer.Port → Port
+  | .stream => .row .stream | .index => .row .counter
+  | .rowIndex => .row (.prep (.images (.source (.shared .index))))
+  | .unit => .row (.prep (.images (.source (.shared .unit))))
+  | .zero => .row (.prep (.images (.source (.shared .zero))))
+  | .fuel => .row (.prep (.images (.source (.shared .fuel))))
+  | .scratch => .row (.prep (.images (.source (.shared .scratch))))
+  | .output => .output
+
+def consumerBinding : FinitePortBinding RowConsumer.Port Port where
+  ports := ⟨consumerPort,by decide +kernel⟩
+  decode := fun p => match p with
+    | .row .stream => some .stream | .row .counter => some .index
+    | .row (.prep (.images (.source (.shared .index)))) => some .rowIndex
+    | .row (.prep (.images (.source (.shared .unit)))) => some .unit
+    | .row (.prep (.images (.source (.shared .zero)))) => some .zero
+    | .row (.prep (.images (.source (.shared .fuel)))) => some .fuel
+    | .row (.prep (.images (.source (.shared .scratch)))) => some .scratch
+    | .output => some .output | _ => none
+  decode_spec := by decide +kernel
+
+inductive Label (F : RationalMobius)
+  | row (pc : ReusableRow.Label F)
+  | consume (saved : Bool) (pc : RowConsumer.Label)
+  | done (saved : Bool)
+  deriving DecidableEq, Fintype
+
+def start (F : RationalMobius) : Label F := .row (ReusableRow.start F)
+
+def program (F : RationalMobius) : Microcode.Program Port (Label F)
+  | .row (.done saved) => .jump (.consume saved RowConsumer.start)
+  | .row pc => rowBinding.instruction Label.row (ReusableRow.program F pc)
+  | .consume saved .done => .jump (.done saved)
+  | .consume saved pc => consumerBinding.instruction (Label.consume saved) (RowConsumer.program pc)
+  | .done _ => .halt
+
+theorem row_code (F : RationalMobius) (pc : ReusableRow.Label F)
+    (hh : ReusableRow.program F pc≠.halt) (_ : ReusableRow.program F pc≠.reject) :
+    program F (.row pc)=MicrocodeEmbedding.instruction rowBinding.ports Label.row (ReusableRow.program F pc) := by
+  cases pc <;> try exact rowBinding.instruction_eq _ _
+  exact False.elim (hh rfl)
+
+theorem consumer_code (F : RationalMobius) (saved : Bool) (pc : RowConsumer.Label)
+    (hh : RowConsumer.program pc≠.halt) (_ : RowConsumer.program pc≠.reject) :
+    program F (.consume saved pc)=MicrocodeEmbedding.instruction consumerBinding.ports
+      (Label.consume saved) (RowConsumer.program pc) := by
+  cases pc <;> simp_all only [program,FinitePortBinding.instruction_eq,RowConsumer.program]
+  exact False.elim (hh rfl)
+
+
+abbrev Bank := Port → Tape Bool
+
+def liftBank (b : RowExecution.Bank) (pre : List (Sym Bool)) : Bank
+  | .row p => b p | .output => ⟨pre,[]⟩
+
+def initial (n iw : List Bool) (pre : List (Sym Bool)) := liftBank (RowExecution.initial n iw) pre
+
+def consumerBank (n iw : List Bool) (w : RowConsumer.Work) : Bank :=
+  consumerBinding.values (RowConsumer.bank iw (ArithmeticSeed.one n.length) w) (initial n iw w.pre)
+
+def cfg {F : RationalMobius} (pc : Label F) (s : Bank) (pos : Port → ℤ) : NativeMicrocode.Config Port (Label F) :=
+  ⟨⟨pc,fun p => (s p).denote⟩,pos⟩
+
+def frame (s : Bank) (pos : Port → ℤ) : MicrocodeEmbedding.Frame Port :=
+  ⟨fun p => (s p).denote,pos⟩
+
+def rowPositions (pos : Port → ℤ) (flags : List Bool) : Port → ℤ :=
+  fun p => pos p+if p=.row .stream then (flags.length : ℤ) else 0
+
+def finalPositions (pos : Port → ℤ) (bits : List Bool) : Port → ℤ :=
+  fun p => pos p+if p=.output then (bits.length : ℤ) else 0
+
+abbrev Trace (F : RationalMobius) := OperationalTrace.Trace (NativeMicrocode.step (program F)) (NativeMicrocode.Active (program F))
+
+theorem consumer_initial (n iw flags : List Bool) (hm : 0<n.length) (pre : List (Sym Bool)) :
+    consumerBank n iw (RowConsumer.initial flags pre)=
+      liftBank (RowCleanup.retainedRow n iw (RowStream.closedTape flags)) pre := by
+  funext p
+  fin_cases p <;>
+    simp only [consumerBank,consumerBinding,FinitePortBinding.values,RowConsumer.bank,RowConsumer.initial,
+      initial,liftBank,RowCleanup.retainedRow,RowExecution.initial,RowExecution.prepBank,
+      RowPreparation.initial,RowPreparation.Bank.tapes,SourceImages.initial,SourceImages.Bank.tapes,
+      SourceEndpoints.initial,SourceEndpoints.Bank.tapes,EndpointClip.initial,EndpointClip.Bank.tapes,
+      ArithmeticSeed.one_length _ hm,ArithmeticSeed.zeros,Function.update] <;> rfl
+
+theorem consumer_final (n iw : List Bool) (hm : 0<n.length) (pre : List (Sym Bool)) :
+    consumerBank n iw (RowConsumer.final pre)=initial n iw pre := by
+  funext p
+  fin_cases p <;>
+    simp only [consumerBank,consumerBinding,FinitePortBinding.values,RowConsumer.bank,RowConsumer.final,
+      initial,liftBank,RowExecution.initial,RowExecution.prepBank,
+      RowPreparation.initial,RowPreparation.Bank.tapes,SourceImages.initial,SourceImages.Bank.tapes,
+      SourceEndpoints.initial,SourceEndpoints.Bank.tapes,EndpointClip.initial,EndpointClip.Bank.tapes,
+      ArithmeticSeed.one_length _ hm,ArithmeticSeed.zeros] <;> rfl
+
+end TransposeFollowup.RecordedRow

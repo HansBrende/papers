@@ -1,0 +1,48 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1848",
+  "target": "Shared source scalar concentration, exact normalization and a verified obstruction to coarsening before trimming.",
+  "new_modules": [
+    "SourceScalarConcentration",
+    "ScalarSampleNormalization"
+  ],
+  "modified_modules": [
+    "NilpotentScalarConcentration"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.source_scalar_sample_concentration",
+    "TransposeFollowup.SL2Projection.coefficient_cube_normalization",
+    "TransposeFollowup.SL2Projection.trim_budget_of_global_normalization",
+    "TransposeFollowup.SL2Projection.coarsening_trim_budget_obstruction"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9676,
+      "log": "/private/tmp/r1849-dev4.log",
+      "note": "One lint warning fixed before final full build"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10125,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4671,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 18063 exit0/9675; dev2 58786 exit0/9681; dev3 76981 exit0/9681; dev4 75492 exit0/9676, one lint warning subsequently fixed; first full49290 exit0/10125, replayed warning; final full60595 exit0/10125, no warnings/errors; audit22544 exit0/4671, no warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T18:19:16.429493+00:00",
+  "formal_checkpoint": "R1849 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:944 local sources,204 external sources,4671 declarations,8 configurations,141 artifacts",
+  "proof_scope": "In progress. R1849 generalizes the existing scalar-concentration proof and recovers the nilpotent theorem with its statement unchanged. It proves exact normalization and trimming-ratio lemmas, and discovers and verifies an obstruction to trimming AFTER the final scalar-driven coarsening. That ordering is abandoned: trim at the fine matrix scale first, then coarsen the retained branch. Two modules add four audited declarations; the old nilpotent proof is shortened by reuse. The actual two-stage sample and its parameter closure remain next.",
+  "next": "R1849 recorded; never replay its checkpoint script. Full10125-job build\nand4671-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: two-stage actual source sampling. Reuse the R1848 sampler\nat a FINE scale sigma0 independent of the far cutoff s, trim there, then\nresample the retained far branch at the FINAL scalar-driven scale sigma1.\nDo not return to the incompatible single-pass trimming budget.\n\nConcrete construction:\n1. Choose sigma0>=eta with2sigma0>=the cubic packing threshold.\n   Set an AUXILIARY positive scalar spacing, e.g.\n   delta0=(lambda*s/3072)*sigma0, so Kinv*delta0=sigma0.\n   Apply exists_actual_trace_square_source_sample with sigma0,delta0.\n   Its original-space source tuple, far branch and matrix separation are\n   useful even though delta0 is too fine for final scalar growth.\n   C0=6561(4sigma0/eta+1)^4 has NO inverse-cutoff loss.\n   Use coefficient_cube_normalization and trim_budget_of_global_normalization\n   to discharge this FINE trimming budget from the original cube and\n   distribution. Its numerical ratio is\n   32L^3 C0^3 W0(Anear+1/N0)<=1.\n   This no longer contains a forced s^-12 factor through C0.\n2. Let T0 be that retained original index set. Matrix separation>2sigma0\n   and sigma0>=eta give |T0|<=N_eta(f(T0)), by the existing separated\n   matrix-cardinality bound. The first stage gives V<=4C0|T0|.\n3. Apply exists_coarse_source_sample to the restricted family f:T0->G\n   at sigma1>=eta with2sigma1>=Kinv*delta_s. Preserve the witness map\n   into T0 and then into the original index type; injectivity follows\n   from equality with the sampled matrices, exactly as in R1848.\n   With C1=6561(4sigma1/eta+1)^4,\n     |T0|<=N_eta(f(T0))<=C1|T1|,\n   so V<=4C0 C1 |T1|. Obtain T1 subset T0 explicitly; it inherits the\n   far condition, one sign, near1/64, and actual source witnesses.\n   Its new matrix spacing and the R1848 inverse estimate give final\n   scalar spacing delta_s, injectivity, and the[1,2] interval.\n   A generic finite-source resampling lemma may package this step; reuse\n   exists_coarse_source_sample and separated_matrix_card_le_coveringNumber.\n4. Apply the R1849 source_scalar_sample_concentration kernel on T1.\n   The scalar interval inverse uses Kinv=3072/(lambda*s). Derive its\n   interval diameter from the returned pairwise inverse bound and the\n   scalar triangle inequality. The final global factor is\n     W=W0*(4C0 C1)^3.\n   C1 enters QW<=Cscalar^3, NOT the fine trimming ratio in step1.\n   Do not duplicate the old nilpotent concentration proof; it is now a\n   wrapper around the shared kernel. Its old statement is unchanged.\n\nThen check FEASIBILITY of the complete exponents before building another\nlarge conditional endpoint. There is no claim yet that all final budgets\nclose. Choose the small frame exponent much smaller than the cutoff decay\nexponent; audit all C0,C1,localization,source-error and mixed-cover losses.\nThe radius for scalar growth must satisfy delta>=max(eta,epsilon), since\nconcentration is only proved in that window.\n\nNext remaining bridges: choose the coefficient with abs>=3/4 for the\nenlargement, pay the other coefficient's lower bound3rho/256 in the\nretained-base cells, use the existing product/quotient enlargement identity\nand range lemma, transfer enlarged factors to their actual A^4 sources,\nand check R1847's mixed-source far budget. Generalize the old n<=283\nsecond-extraction wrapper to word length420 using the existing fixed-power\ncoefficient h^(8802n+4427). R1845's initial universal n0+3 cost is separate.\nOnly after all these numeric losses are listed choose theta,tau and dyadic\nthresholds. Original profile/frame and analytic/machine endpoints remain.\nThree of six original families formalized; paid padding about60%, low\nconfidence. Original paper read-only; no commits/pushes/subagents.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SourceScalarConcentration.lean": "d34cc8fde55a379fbc771a5c5ada8086d84928978b5c497580aba6cc623227e0",
+    "lean/TransposeFollowup/ScalarSampleNormalization.lean": "74a08cba392345bd12a84914b0089b2b40199db4e4ccc0a6e97001592740b37c",
+    "lean/TransposeFollowup/NilpotentScalarConcentration.lean": "0fbd10cd158e3bf5bcbc108f88953b441633b0ad8aab9a62e2a52f4587dc89be"
+  }
+}

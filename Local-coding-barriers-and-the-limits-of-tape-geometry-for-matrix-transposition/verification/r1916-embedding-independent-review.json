@@ -1,0 +1,55 @@
+{
+  "format": "r1916-embedding-independent-source-review-v1",
+  "status": "source_review_passed_compile_pending",
+  "proposal": {
+    "path": "/private/tmp/r1916-embedding/proposal.json",
+    "sha256": "02977b3247ee62e9f20668789578ec071bd289be6d8fa2ee13db66c9b1e53621"
+  },
+  "reviewer": "r1912_imports",
+  "rows": [
+    {
+      "path": "lean/TransposeFollowup/PortBindingFrame.lean",
+      "existing_source_exact": true,
+      "addition": "/-- Arbitrary fixed wiring transports the bank and preserves the caller's heads. -/\ntheorem embed_bank_project {L J : Type*} (b : FinitePortBinding T U) (labels : L \u2192 J)\n    (pc : L) (inner : T \u2192 FixedTapeCompiler.CopyMachine.Tape Bool)\n    (outer : U \u2192 FixedTapeCompiler.CopyMachine.Tape Bool) (pos : U \u2192 \u2124) :\n    MicrocodeEmbedding.embed b.ports labels\n      (\u27e8\u27e8pc,fun t => (inner t).denote\u27e9,fun t => pos (b.ports t)\u27e9 : NativeMicrocode.Config T L)\n      \u27e8fun u => (outer u).denote,pos\u27e9 =\n      \u27e8\u27e8labels pc,fun u => (b.values inner outer u).denote\u27e9,pos\u27e9 := by\n  simp only [MicrocodeEmbedding.embed,\u2190 values_eq_extend,map_values,values_project]\n\n",
+      "old_sha256": "6d7903bad39a19500c3dc733309d1c74720bbc9022ed08cea9a3142612b3c44c",
+      "new_sha256": "e2c81710668ae4008f4a3e7a979580796f0a400442b72e77a2073cf60b531196"
+    },
+    {
+      "path": "lean/TransposeFollowup/DimensionLoaderRun.lean",
+      "replacement_count": 7,
+      "all_nonproof_source_exact_except_one_import": true,
+      "old_sha256": "08e7d30422f524143a18d7579d93c698bad03ea6c0b6876f5d2eda4cff3a472a",
+      "new_sha256": "53f76af442fb92fe6a5be7eed1d5df99ea7ca37f46da90a764c470231d4900b4"
+    },
+    {
+      "path": "lean/TransposeFollowup/FamilyReaderRun.lean",
+      "replacement_count": 1,
+      "all_nonproof_source_exact_except_one_import": true,
+      "old_sha256": "eb86c36bd312a177ea16d91e1159c96b91791b5c0f4a485fba5584821635a708",
+      "new_sha256": "db9587a19df211c3b7bad142956863de23894edc30c19094e1c7f6eeb6c9d39c"
+    },
+    {
+      "path": "lean/TransposeFollowup/RadiusClockRun.lean",
+      "replacement_count": 3,
+      "all_nonproof_source_exact_except_one_import": true,
+      "old_sha256": "8138d39042ad7cb50ee810fa5ec292a3a606bd5e8d928ae553df87f85ada8485",
+      "new_sha256": "4e8d64d06d30bb34766f980b83c50023c8872550221f288cf58bf9bfd00a9965"
+    },
+    {
+      "path": "lean/TransposeFollowup/InputMeasureCalls.lean",
+      "replacement_count": 2,
+      "all_nonproof_source_exact_except_one_import": true,
+      "old_sha256": "b43ca84419fe06b8107f3906b2ab00da86b34f92c840abb03dcc440050e21534",
+      "new_sha256": "5f1e2188e407a681fec44c9da712ab13ba74cca050eb266d18c272259ca95f5d"
+    }
+  ],
+  "preserved_existing_theorem_headers": 13,
+  "net_lines_saved": 30,
+  "semantic_review": {
+    "generic_lemma": "Definitionally unfolds the same MicrocodeEmbedding.embed, uses the existing values_eq_extend and map_values for tape denotation, and values_project for absolute head positions. The port embedding and label map are unchanged.",
+    "machine_and_cost_definitions": "All old nonproof source, including every machine, program, configuration, trace, state count, runtime budget and binding definition, is byte-for-byte preserved; only four imports are added.",
+    "scope": "Conservative direct-bank/project batch only. Earlier expanded proposal involving bespoke lifted banks was excluded and is not approved by this review.",
+    "trust": "New proof uses existing equalities and ordinary simp only. No axioms, sorry, unsafe code, native_decide, options, macros, or elaborators added.",
+    "caveat": "No Lean/Lake execution by reviewer. Higher-order inference and reduction of source cfg definitions still require root compilation."
+  }
+}

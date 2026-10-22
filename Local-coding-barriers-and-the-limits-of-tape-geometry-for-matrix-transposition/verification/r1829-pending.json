@@ -1,0 +1,108 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1828",
+  "target": "Retain a finite commuting cluster, normalize it in the same centered generator, preserve scalar separation, and compose the existing native cubic-packing theorem.",
+  "new_modules": [
+    "NormalizedCentralizerChart",
+    "CentralizerClusterSelection",
+    "LocalizedCentralizerSample",
+    "LocalizedCentralizerPacking",
+    "ActualCentralizerPacking"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 50170,
+      "exit_code": 0,
+      "log": "/private/tmp/r1829-dev1.log"
+    },
+    "development_2": {
+      "session_id": 29208,
+      "exit_code": 1,
+      "log": "/private/tmp/r1829-dev2.log",
+      "reason": "Linter rewrite introduced ring after closed coordinate goals."
+    },
+    "development_3": {
+      "session_id": 83716,
+      "exit_code": 0,
+      "log": "/private/tmp/r1829-dev3.log",
+      "reason": "Chart estimates and cluster selection compiled without warnings."
+    },
+    "development_4": {
+      "session_id": 42266,
+      "exit_code": 0,
+      "log": "/private/tmp/r1829-dev4.log",
+      "reason": "Scalar sample with source witnesses compiled."
+    },
+    "development_5": {
+      "session_id": 40611,
+      "exit_code": 1,
+      "log": "/private/tmp/r1829-dev5.log",
+      "reason": "Conjugation norm and finite-vector simplification fixes."
+    },
+    "development_6": {
+      "session_id": 47844,
+      "exit_code": 0,
+      "log": "/private/tmp/r1829-dev6.log",
+      "reason": "Localized conjugated cubic packing compiled."
+    },
+    "development_7": {
+      "session_id": 25770,
+      "exit_code": 1,
+      "log": "/private/tmp/r1829-dev7.log",
+      "reason": "Actual-frame wrapper needed standard scalar triangle lemma and numeric absolute-value rewrite."
+    },
+    "development_8": {
+      "session_id": 33601,
+      "status": "terminal",
+      "log": "/private/tmp/r1829-dev8.log",
+      "exit_code": 0,
+      "reason": "Actual selected frame, finite localization and native cubic packing compiled without warnings."
+    },
+    "build": {
+      "session_id": 18719,
+      "status": "terminal",
+      "log": "verification/build.log",
+      "exit_code": 0,
+      "jobs": 10076,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 51822,
+      "status": "terminal",
+      "log": "verification/axioms.log",
+      "exit_code": 0,
+      "declarations": 4521,
+      "warnings": false
+    }
+  },
+  "completed_families": "3/6; final referees pending",
+  "constraints": "No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.",
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.scalarAffine_recenter",
+    "TransposeFollowup.SL2Projection.scalarAffine_noncentral",
+    "TransposeFollowup.SL2Projection.centered_parameters_of_distance",
+    "TransposeFollowup.SL2Projection.normalized_parameter_distance_bound",
+    "TransposeFollowup.SL2Projection.exists_localized_centered_parameters",
+    "TransposeFollowup.SL2Projection.exists_localized_scalar_sample",
+    "TransposeFollowup.SL2Projection.matrixConjugation_trace_det_norm",
+    "TransposeFollowup.SL2Projection.matrixConjugation_scalarAffine",
+    "TransposeFollowup.SL2Projection.conjugated_centered_cubic_packing",
+    "TransposeFollowup.SL2Projection.exists_localized_conjugated_cubic_packing",
+    "TransposeFollowup.SL2Projection.centered_near_identity_generator_bounds",
+    "TransposeFollowup.SL2Projection.exists_actual_localized_cubic_packing"
+  ],
+  "terminal_handles": "All R1829 handles terminal. Development1(50170),3(83716),4(42266),6(47844),8(33601) passed;2(29208),5(40611),7(25770) failed and were repaired. Full build18719 and audit51822 passed:10076 jobs,4521 declarations; no warnings. No live Lake process.",
+  "updated_at": "2026-10-20T05:21:48.221524+00:00",
+  "formal_checkpoint": "R1829 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:895 local sources,204 external sources,4521 declarations,8 configurations,101 artifacts",
+  "proof_scope": "In progress. R1829 composes actual bounded-word adjoint-frame selection with finite commuting-cluster localization, scalar reindexing and native cubic packing. The same extracted generator is used throughout. The theorem retains at least m points under an explicit four-coordinate bin-count budget, preserves a source witness for each scalar parameter, and proves an m^3 covering lower bound for the exact normalized conjugated product. All chart, frame, input-spacing and localization costs are explicit. Five modules add12 theorems. Transfer to approximate actual words and the fourth original theorem family remain incomplete.",
+  "next": "The preceding goal turn is PROGRESS. R1829 is recorded; never replay its checkpoint. Read verification/r1829-localized-packing.txt and verification/library-reuse-audit-r1829.json. Full10076-job build and4521-declaration audit passed; standard axioms only; no live Lake handle. The actual frame, retained finite sample, scalar witnesses and exact cubic packing are now composed. Reuse exists_actual_localized_cubic_packing rather than re-proving its chain.\n\nNEXT CONCRETE TARGET: transfer the exact product packing to the actual source words, retaining the shared source center from SpanningCommutingExtraction. With a_i=x_base^-1*x_i and dist(f_i,a_i)<=epsilon, prove a quantitative error bound between w_i=f_i0^-1*f_i and a_i0^-1*a_i=x_i0^-1*x_i in A^2. Check/reuse existing inverse-entry and finite-product-error lemmas before adding anything. Then compare the normalized exact product with the right normalization by v^-1 of the actual word\n  W0 u W1 (u^-1 v) W2 in A^142.\nThe normalized word has length210. Charge all error amplification by H and all Frobenius translation distortion; this metric is not invariant.\n\nA READY EXISTING TRANSFER TOOL was found: FrobeniusCoverTransfer.coveringNumber_le_bounded_transport. Given maps exact a and actual b and transport L(c)=c*v^-1, a bound dist(a(x),L(c))<=D+K*dist(b(x),c) yields\n  N_eta(exact)<= [4*(D+K*eta)/eta+1]^4 * N_eta(actual).\nUse K=2H when justified by the existing right-multiplication norm estimate. This avoids rebuilding cover perturbation/refinement. The actual-word image lies in A^142; apply ApproximatePowerCover/LocalizedFixedProductEnvelope for that actual exponent, not the obsolete37-factor specialization. The complex finite-product error and EntryApprox.inv machinery already exists; reuse or specialize it if cheaper than another general chain.\n\nAlso connect the required input spacing 10BM*(384M^4/d)*eta to an actual separated sample from the extracted approximants. Explicitly pay that coarsening loss, and the localization loss binCount(B,delta)^4. Before adding more abstract lemmas, calculate whether the resulting inequality improves on the existing cube-root commuting-size estimate. Cubic packing alone at that size is compatible with the ambient upper bound. Keep the spread/concentrated branch distinction and scalar amplification hypotheses explicit; R1825 concentration of A is not concentration of V.\n\nAll six original families remain required. Reuse pinned204-source scalar projection and local geometry. No protected original edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.",
+  "checkpoint_reporting": "The current actual-frame/localized-sample/cubic-packing composition is100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only the family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NormalizedCentralizerChart.lean": "258ae5d0f7fd0224fe6c73e1b78cfeb8f528d70debdb4272782545ddb6e717d0",
+    "lean/TransposeFollowup/CentralizerClusterSelection.lean": "14dc7e0c25c6662b2b3fae9fc8229eea8965ecb0d14d4dc7d61ac4709e48ab46",
+    "lean/TransposeFollowup/LocalizedCentralizerSample.lean": "35a63348182cdbc3da3a0121c03cf9227a1bcc1ebd49d1f94a280b5e59b78279",
+    "lean/TransposeFollowup/LocalizedCentralizerPacking.lean": "1afa048d59de18c9a6df793f0307697a2bec64fd86a87a1c0056cbe28cfedfc9",
+    "lean/TransposeFollowup/ActualCentralizerPacking.lean": "ba07f5038528deaf5d0dbd179937964bcdfa8a73bf48f6f172e1e29f85f68278"
+  }
+}

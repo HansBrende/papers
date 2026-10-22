@@ -1,0 +1,95 @@
+{
+  "checkpoint": "R1767",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "FourierL2Bridge",
+    "FrequencyCutoff",
+    "ComplexL2Parts",
+    "ComplexifiedL2Operator",
+    "GridHighFrequency"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.L2_fourier_pairing",
+    "TransposeFollowup.classical_fourier_pairing",
+    "TransposeFollowup.L2_fourier_coe_ae",
+    "TransposeFollowup.toLp_fourier_coe_ae",
+    "TransposeFollowup.complexL2_norm_sq",
+    "TransposeFollowup.frequencyCut_coe",
+    "TransposeFollowup.lowFrequency_fourier",
+    "TransposeFollowup.lowFrequency_norm",
+    "TransposeFollowup.lowFrequency_norm_sq",
+    "TransposeFollowup.lowFrequency_norm_le",
+    "TransposeFollowup.highFrequency_fourier_coe",
+    "TransposeFollowup.highFrequency_fourier_zero_on",
+    "TransposeFollowup.highFrequency_norm_le",
+    "TransposeFollowup.low_add_highFrequency",
+    "TransposeFollowup.norm_sub_highFrequency",
+    "TransposeFollowup.lowFrequency_norm_sq_classical",
+    "TransposeFollowup.ofRealL2_coe",
+    "TransposeFollowup.realPartL2_coe",
+    "TransposeFollowup.imagPartL2_coe",
+    "TransposeFollowup.realPartL2_ofReal",
+    "TransposeFollowup.imagPartL2_ofReal",
+    "TransposeFollowup.ofRealL2_norm",
+    "TransposeFollowup.ofRealL2_inner",
+    "TransposeFollowup.complexL2_norm_sq_parts",
+    "TransposeFollowup.complexL2_inner_parts",
+    "TransposeFollowup.realPartL2_I_smul",
+    "TransposeFollowup.imagPartL2_I_smul",
+    "TransposeFollowup.complexifyL2_apply",
+    "TransposeFollowup.complexifyL2_coe",
+    "TransposeFollowup.realPartL2_complexify",
+    "TransposeFollowup.imagPartL2_complexify",
+    "TransposeFollowup.complexifyL2_ofReal",
+    "TransposeFollowup.complexifyL2_norm_le",
+    "TransposeFollowup.complexifyL2_real_correlation",
+    "TransposeFollowup.complexifyL2_symmetric",
+    "TransposeFollowup.RealMobius.complexify_action_coe",
+    "TransposeFollowup.RealMobius.complexAverage_norm_le",
+    "TransposeFollowup.RealMobius.complexAverage_real_correlation",
+    "TransposeFollowup.RealMobius.complexAverage_symmetric",
+    "TransposeFollowup.RealMobius.ofRealL2_integrable",
+    "TransposeFollowup.RealMobius.ofRealL2_lowFrequency_norm_sq",
+    "TransposeFollowup.RealMobius.grid_lowFrequency_norm_le",
+    "TransposeFollowup.RealMobius.grid_highFrequency_correlation",
+    "TransposeFollowup.RealMobius.exists_highFrequency_witness"
+  ],
+  "new_theorems": 44,
+  "checks": {
+    "targeted": {
+      "session_id": 7998,
+      "exit_code": 0,
+      "jobs": 9490
+    },
+    "build": {
+      "session_id": 78967,
+      "exit_code": 0,
+      "jobs": 9564
+    },
+    "axioms": {
+      "session_id": 40306,
+      "exit_code": 0,
+      "declarations": 3171
+    }
+  },
+  "boundary": "Three of six original families complete. Actual L1/L2 Fourier identification and high-frequency witness now proved. This is an explicit sharp-cutoff version of the high-frequency reduction, not yet the source smooth Littlewood-Paley band decomposition or its off-diagonal estimates. Restricted gap and rational generator existence, motion, recursion and referees remain.",
+  "source_audit": {
+    "primary_source": "https://arxiv.org/html/1108.2555#S3",
+    "section3_reread": "R1767; Claims 3.2-3.4, lines 289-390",
+    "scope": "The classical integral agrees almost everywhere with Mathlib L2 Fourier by smooth-test uniqueness and tempered-distribution compatibility. The new witness uses a sharp interval cutoff; source Claim 3.2 is stated for a Littlewood-Paley high-frequency sum. Smooth band decomposition and spatial-tail/derivative controls in Claim 3.3 remain, and no global smooth near-identity bound is inferred from matrix entrywise closeness. No novelty claimed for standard analytical support."
+  },
+  "updated_at": "2026-10-19T13:01:55.176537+00:00",
+  "formal_checkpoint": "R1767 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1767, 587 sources, 3171 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1767 proves that the classical Fourier integral and Mathlib's L2 Fourier transform agree almost everywhere for every L1-intersection-L2 input, using equality against smooth compactly supported tests and the tempered-distribution compatibility theorem. Actual low/high-frequency L2 components are constructed, with exact Fourier representative formulas, norm contraction, and an exact low-component energy identity. Real and imaginary part maps reuse the existing real Mobius action: its complexification preserves contraction and symmetry, agrees with the real action on embedded real inputs, and each group action has the expected complex weighted-pullback formula almost everywhere. For a normalized unit-supported real L2 input with zero K-cell means, 2048*pi^2*R^3<=K^2 makes the low component norm <=1/16. If original average correlation is >=1/2, the complementary component g has norm <=1, no Fourier mass on [-R,R], distance <=1/16 from the original complexified input, and real-inner-product correlation >=95/256>1/4. This is an explicit sharp-cutoff high-frequency reduction; smooth Littlewood-Paley band isolation and the spectral-gap contradiction remain.",
+  "next": "Advance actual band localization toward source Claim 3.3, beginning with the analytic hypotheses that its short derivative argument leaves implicit. The new sharp high-frequency cutoff proves a reduction but can create slow spatial tails. Inspect/reuse Mathlib's smooth compact-support, Schwartz and Fourier derivative APIs; build a smooth band decomposition tied to the original unit-supported input, or an equally adequate localization with all tail errors charged. First derive the exact weighted derivative formula for W_g u away from its null pole and its L2 change-of-variables estimate, retaining the weighted moments of u and u'. Formally justify those moments for the chosen smooth band pieces before claiming a bound of order 2^k. A generic band-limited function can be spatially translated arbitrarily far, so do not assume that near-identity matrix entries alone give the required global Sobolev bound. Then prove off-diagonal decay, control the summed cross terms, and isolate a nonzero band with ||T band|| >= c||band|| using explicit constants. Reuse the verified L2 Fourier bridge, contraction, symmetry and high-frequency correlation witness. Preserve flattening/product growth, generator existence, full motion/recursion families and final referees as outstanding obligations.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees are pending. R1767 connects the classical Fourier estimate to actual L2 low/high-frequency components and proves a high-frequency correlation witness. This does not complete a fourth family. Paid padding remains conditional on spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage is a provisional scope estimate, not an elapsed-time estimate or proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FourierL2Bridge.lean": "5f00ee70781b2fcfe0d2cebde254c06f50c994ff1bd22e92a4333710e26a319d",
+    "lean/TransposeFollowup/FrequencyCutoff.lean": "36fa5197d6fe8c168929d5bdc84f7ae98b7cca18b952abfd4e2cb0fd70ea90db",
+    "lean/TransposeFollowup/ComplexL2Parts.lean": "92298e3956c4df1d39a35365f29f12d5bfe73d50e34220ee2029a67c7e0c114a",
+    "lean/TransposeFollowup/ComplexifiedL2Operator.lean": "b5ec1929340aa57f5a08109f44319241559a338b6bfe73b73a9e9750b72e4421",
+    "lean/TransposeFollowup/GridHighFrequency.lean": "4591c7caedc7ead27866bbb26344af1351c530d7dd5f950e5309bf2f08cc2b90"
+  }
+}

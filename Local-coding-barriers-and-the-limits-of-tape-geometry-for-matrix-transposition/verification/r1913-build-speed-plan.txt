@@ -1,0 +1,173 @@
+R1913 — PLAN TO REDUCE THE REMAINING ANALYTIC BUILD BOTTLENECK
+21 October 2026. Planning complete; implementation and benchmarks NOT started.
+
+MAIN FINDING
+The 1321.040-second validation run was dominated by a serial dependency chain,
+not one unusually expensive proof and not the 5.740-second no-change overhead.
+Only 347 modules actually rebuilt; 10071 was Lake's total job count including cache
+hits. Their displayed times have median 17s and maximum 32s.
+
+One dependency path contains 72 rebuilt modules and 9 cached ancestors. Its 72
+build actions account for at least 1281s, or 96.97% of the observed wall time.
+These 72 modules contain 7993 source lines (median 100 lines per module).
+The earlier 81-module unweighted graph path is a different path; use the new
+weighted analysis when deciding where to optimize.
+
+Pinned Lake source confirms each action timer excludes dependency waiting and
+that downstream jobs reset inherited buildTime. Every action on this path is
+reported as an integer duration above 10s, which Lake truncates downward. Thus
+1281s is a lower bound; the remaining 40s is NOT an estimate of scheduler cost.
+The 6075.2 summed job-seconds across all 347 modules overlap and are not wall time.
+
+If action durations were unchanged, scheduling alone could improve this run by
+at most about 3%. Contention tuning could still reduce the action durations.
+Reported child CPU: 1082.382s user and 4968.275s system (82.1% system). Together
+with the previous successful consolidation pilot, this suggests repeated import,
+compiler startup and artifact work. It does NOT identify disk, paging, RAM or
+threading as the cause. Per-file profiling remains necessary to attribute cost.
+
+PRIORITY 1 — REMOVE ONE ACCIDENTAL BRIDGE DEPENDENCY
+First implementation experiment: two import edits, no theorem/proof rewrite.
+- RealMobiusAverage: replace RationalMobiusAction import with RealMobiusL2.
+- SpectralGapInterface: add explicit RationalMobiusAction import, retaining
+  RealMobiusAverage. This is where rational compatibility is actually used.
+
+The 51-line RealMobiusAverage defines real L2 averaging, symmetry and contraction;
+source review finds no use of rational-map compatibility. Its generic analytic
+consumers currently inherit the unrelated rational expansion/graph branch.
+Searching all 10 rational compatibility exports finds uses in SpectralGapInterface
+and RationalContinuousExpander; the latter already depends on the former.
+Compilation must still detect implicit instances, syntax and tactic dependencies.
+
+Static sensitivity calculation, keeping all OLD job durations fixed:
+- Weighted critical path 1281 -> 907s (about29% shorter);72 ->50 rebuilt nodes.
+- Full-Mathlib reachability 456 -> 245 local modules: 211 lose the broad import.
+- RealMobiusAverage's Mathlib source closure 8530 -> 2696 vertices.
+- ConditionalSpectralExpansion edit fanout 217 -> 6 modules.
+- RealMobiusAverage edit fanout remains 215; its expected benefit is lighter
+  environments rather than fewer consumers.
+These are graph projections, NOT measured timings or promised savings. The final
+integration theorem still needs both branches and the full Mathlib import.
+
+Execution:
+1. Preserve R1912 as the baseline. Use an isolated candidate with cached pinned
+   prerequisites. Ensure consumers resolve candidate artifacts, not baseline
+   copies of modified modules. One harness owns and joins all Lean processes.
+2. Profile RealMobiusAverage and one late analytic module such as
+   NormalizedCentralizerChart with supported Lean --profile. The pinned import
+   loader itself has an 'import' profiling region. Pair each with an import-only
+   file using the identical header and comparable output settings; record wall,
+   user/system CPU, reported child RSS and actual loaded dependency paths.
+3. Compile the two edited modules plus relevant downstream consumers. Repair
+   explicit imports or exposed ordinary proof dependencies only; retain every
+   model definition, public name, theorem premise and conclusion.
+4. Compare baseline/candidate isolated proof checks in three alternating pairs.
+   A practical first gate is a reproducible 20% target improvement or a clear
+   measured rebuild-fanout benefit, with no material regression. A smaller gain
+   from this tiny correct dependency fix may still be worthwhile; report it.
+Do not expand the refactor simply because the static graph looks attractive.
+
+PRIORITY 2 — SEPARATE ELEMENTARY MATRIX GEOMETRY FROM HAAR/WALK THEORY
+If the first pilot succeeds, investigate the next genuine abstraction boundary:
+SL2SpanningTrace imports MobiusWalkEntrySupport for elementary matrix-entry and
+identity-neighborhood facts. Those facts currently sit in files that also bring
+Haar measures, convolution and Fourier analysis into the trace/centralizer chain.
+
+Candidate declarations include matrixEntryBox, one_mem_matrixEntryBox,
+matrixEntryBox_mul, mobiusIdentityBall, mobiusIdentityBall_entry_bounds and
+mobiusIdentityBall_subset_entryBox_two. Put an actually self-contained subset in
+one small geometry core, preserving names and definitions. Existing heavy files
+import that core; do not duplicate structures or make unsupported assumptions.
+Audit implicit instances, especially the locally compact Group instance currently
+near the top of MobiusHaarKernel. Merely importing a different existing heavy
+file does not achieve the separation.
+
+Before implementation, compute the proposed dependency graph and identify real
+external consumers. Compile the small core and both sides of the split, then
+measure the new critical path. This candidate's saving is not yet quantified.
+Stop if the supposed independent core genuinely requires the heavy theory.
+
+PRIORITY 3 — CONSOLIDATE ONLY REMAINING EXPENSIVE SERIAL GROUPS
+Recompute the weighted graph AFTER import cuts. Small independent branches may
+then cease to be bottlenecks. Benchmark one coherent group, not a giant file.
+Candidate groups in the present graph:
+- MobiusNearIdentity -> MobiusPairwiseComparison -> MobiusActionContinuity ->
+  MobiusGroupAverage -> MobiusGroupSmoothing: 5 modules,379 lines, 77 logged seconds.
+- SmallExpansionSymmDiff -> IndicatorPullbackError -> WeightedIndicatorError ->
+  WeightedEnergyTransfer -> UnitBoundaryError: 5 modules,653 lines, 84 logged seconds.
+- MonotoneOverlapGraph through RationalFamilyGraph: 6 modules,640 lines, 106 seconds.
+
+The current zero-cost graph ceilings for these groups are 77s, 49s and about 101s,
+respectively, with other old durations fixed. They are optimistic upper bounds
+for that grouping model, not predicted elapsed savings. After the first cut the
+first group is more relevant to the analytic tail; re-rank the others.
+
+Use the established split-versus-merged benchmark with exact same proof bodies,
+three alternating pairs and a cached import-only probe. Prefer at least 35% median
+saving for a group, without material memory or unrelated-edit regression. Check
+that grouping is acyclic and does not serialize previously parallel branches.
+The apparent Haar-entry-support group is cyclic under naive consolidation:
+do not adopt it. Avoid rewriting tactics unless --profile shows they dominate.
+
+PRIORITY 4 — MEASURE CONTENTION, THEN TUNE IT IF WARRANTED
+Use four independent validated analytic modules in scratch. Fix Lean --threads=1
+and compare process pools of 1 and 2 over the same complete batch, in opposite arm
+orders. Measure batch throughput, not just individual job latency. If useful,
+compare one versus default compiler thread counts separately; do not confound
+process concurrency with internal threads in the same experiment.
+
+Pinned Lean 4.34.1 supports --threads; this Lake release has no -j/--jobs CLI cap.
+If process limiting helps, use supported orchestration/topological batching or
+another verified control, not an invented Lake flag. Do not attribute contention
+to hardware or purchase more hardware before measurement. Do not change dependency
+versions, validation strength, proof limits, trace hashes or cache timestamps.
+No experimental snapshot/persistent compiler redesign is needed for the first
+round; start with the small source-dependency changes above.
+
+END-TO-END MEASUREMENT AND CORRECTNESS
+The historical 22-minute run mixed 347 pending rebuilds. Neither it nor the earlier
+failed 1380s run is a matched end-to-end baseline for a new candidate.
+
+Use TWO separately reported edit workloads with populated baseline and candidate
+caches and identical harmless proof-body edits:
+A. Edit RealMobiusAverage and build NormalizedCentralizerChart: measures smaller
+   environments along a representative analytic path with the same descendant set.
+B. Edit ConditionalSpectralExpansion and run ordinary lake build: measures avoided
+   rebuilding of unrelated analytic consumers. Static fanout 217 -> 6 is the lead.
+Restore exact sources and verify restoration; never forge cache hits. Start with
+one matched pair; repeat opposite order if an adoption decision depends on a
+noisy/small gain. Keep small module pilots replicated, but do not spend multiple
+22-minute runs before they pass. Also report no-change latency separately.
+A clean-local-build claim requires the same clean-local workload in BOTH isolated
+snapshots, with dependency caches retained; do not claim it from these edit tests.
+
+After the chosen bounded batch of changes, run one normal full build and the
+complete 6306-declaration axiom audit (adjust names only for justified new core
+lemmas), preserving all six theorem families and all original contracts. Reuse
+existing semantic type/source-header checks; compare compact manifests and expand
+only changed entries rather than generating a new giant aggregate. No additional
+formalization framework is needed. Preserve failures, measurements and source
+maps; update the receipt only after success. Stop rather than weaken statements.
+
+DECISION AND STOPPING POINT
+Begin with the TWO IMPORT EDITS and their cheap paired measurement. They remove
+an unnecessary serial dependency AND reduce many loaded environments, which is
+more promising than blindly merging more files or adding parallel workers.
+Aim for a substantial measured reduction in the matched workflows; a fraction
+of the former time is plausible but not established. Recompute the critical path
+after each adopted boundary change, and stop the batch if gains flatten.
+
+DELIVERABLES
+- Measured timing table, actual rebuilt-module lists and profiler attribution.
+- New weighted dependency graph and an honest separation of measured results
+  from sensitivity models, with every unsuccessful pilot recorded.
+- One validated source batch, unchanged six theorem contracts, axiom audit and
+  updated source-location map/receipt. No commits or pushes implied.
+
+SUPPORTING FILES (same verification directory)
+r1913-weighted-build-review.txt/.json/.py: independent weighted path/timer audit.
+r1913-import-bottleneck-review.txt: named-API/import audit and alternatives.
+r1913-import-bottleneck-analysis.json/.py: current weighted graph/source hashes.
+r1913-import-candidates.json/.py: static two-edge sensitivity calculations.
+Original evidence remains in r1912-build.log, r1912-build-timing.json and
+r1912-concurrency-note.txt. R1912 proof sources and validation receipts unchanged.

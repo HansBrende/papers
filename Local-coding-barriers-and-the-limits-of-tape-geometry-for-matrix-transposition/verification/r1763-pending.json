@@ -1,0 +1,75 @@
+{
+  "checkpoint": "R1763",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "WeightedEnergyTransfer",
+    "UnitBoundaryError",
+    "CellCenteredAlmostInvariant",
+    "CellCenteredRelativeError"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RationalMobius.weightedPullback_sub_smul",
+    "TransposeFollowup.RationalMobius.weighted_square_integrableOn",
+    "TransposeFollowup.RationalMobius.weighted_square_integral_le",
+    "TransposeFollowup.RationalMobius.weighted_error_integrableOn",
+    "TransposeFollowup.RationalMobius.weighted_projection_transfer",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_local_error",
+    "TransposeFollowup.RationalUnitMobius.unitEscape_measurable",
+    "TransposeFollowup.RationalUnitMobius.unitEscape_subset_unit",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.unitEscape_subset",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.unitEscape_volume",
+    "TransposeFollowup.RationalUnitMobius.unitIndicator_comp_error_pointwise",
+    "TransposeFollowup.RationalUnitMobius.unitIndicator_comp_error_integrable",
+    "TransposeFollowup.RationalUnitMobius.unitIndicator_comp_error_integral",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_unitIndicator_error",
+    "TransposeFollowup.gridStep_measurable",
+    "TransposeFollowup.centeredIndicator_measurable",
+    "TransposeFollowup.cellCenteredIndicator_measurable",
+    "TransposeFollowup.centeredIndicator_memLp",
+    "TransposeFollowup.centeredIndicator_decomposition",
+    "TransposeFollowup.RationalUnitMobius.weighted_centering_identity",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_centered_error",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.weighted_cellCentered_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_cellCentered_error",
+    "TransposeFollowup.cellCentered_error_budget_margin",
+    "TransposeFollowup.RationalUnitMobius.weighted_correlation_of_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_relative_error",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_correlation"
+  ],
+  "checks": {
+    "relative_error": {
+      "session_id": 36593,
+      "exit_code": 0,
+      "jobs": 9470
+    },
+    "build": {
+      "session_id": 91883,
+      "exit_code": 0,
+      "jobs": 9544
+    },
+    "axioms": {
+      "session_id": 21082,
+      "exit_code": 0,
+      "declarations": 3006
+    }
+  },
+  "boundary": "Three of six original families complete. Paid padding remains dependent on the restricted spectral gap and rational generator existence; motion, recursion and final referees remain.",
+  "source_audit": {
+    "primary_source": "https://arxiv.org/html/1108.2555#S1",
+    "last_reread": "R1761",
+    "scope": "Quantitative centering/projection and almost-invariance support. Not a new restricted spectral-gap proof or global unitary representation."
+  },
+  "updated_at": "2026-10-19T12:04:59.261264+00:00",
+  "formal_checkpoint": "R1763 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1763, 567 sources, 3006 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1763 completes centering, boundary and projection charges in the small-expansion argument. WeightedEnergyTransfer proves local squared-energy contraction for the actual Jacobian-weighted pullback, integrability and a general projection-transfer inequality. UnitBoundaryError confines points escaping [0,1] to two strips of total measure at most 16*eta, then bounds the weighted unit-indicator error. CellCenteredAlmostInvariant combines these with the trimmed-indicator and projection estimates to obtain the actual cell-centered error for both each generator and its inverse. CellCenteredRelativeError proves a concrete parameter budget, yielding weighted squared error at most V/16 and correlation at least 3*V/4, where V is the global squared integral of the actual cell-centered function. No spectral gap is assumed or proved in these estimates; they supply the lower-correlation side of the eventual contradiction.",
+  "next": "Make the explicit parameter hypotheses jointly feasible and close the conditional restricted-gap-to-expansion reduction. For eta<=1/1000000 and K>=10000 (also above the gap threshold), investigate m=ceil(8*eta*K), sigma=1/(100*K^2), and delta=K*(K-1)*sigma. Prove 8*eta<=m/K, 2m<=K, theta=2m/K<=1/2000, sigma<=1/2000 and delta<=1/100. Derive uniformity from actual augmented small expansion using TranslationUniformity. For positive source measure, reuse the proved positive variance and normalized input, prove the normalization and finite symmetric-average correlation bound, and contradict the exact restricted-gap hypothesis. Handle zero measure separately. Do not treat local energy contraction as a proved global unitary representation. Then establish the restricted spectral gap and rational-generator existence using library results or complete proofs, never new axioms or numerical tests. Preserve all six targets; after full paid padding 201/202 complete affine motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes actual cell-centered error at most one sixteenth of its variance and generator/inverse correlation at least three quarters of that variance, under explicit parameter hypotheses. Feasibility, normalization/averaging and the restricted-gap interface remain; restricted spectral gap and rational generator existence are still substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. The percentage is a provisional scope estimate, not an elapsed-time forecast or proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/WeightedEnergyTransfer.lean": "aaea49a2de18a06d8e4d1ccdb5b0e1270c7098420363d324c752adb721b96dee",
+    "lean/TransposeFollowup/UnitBoundaryError.lean": "9f8b757c1e3a99351440b4427d117266932fe3b753504f54bcc3ed482747ce70",
+    "lean/TransposeFollowup/CellCenteredAlmostInvariant.lean": "d3afb6d09a1028cc4a7b8b81eaf7670458c819dd146f7fa9ec2f22b7b7680fed",
+    "lean/TransposeFollowup/CellCenteredRelativeError.lean": "ce745188c1da2ef03909351fb21b8dbf35b94d5bbf4962f94cfa93659041b002"
+  }
+}

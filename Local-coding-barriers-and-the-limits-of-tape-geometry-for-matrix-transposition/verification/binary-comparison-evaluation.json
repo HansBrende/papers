@@ -1,0 +1,11 @@
+{
+  "purpose": "Executable fixed-controller comparison against direct natural-number order, with word preservation and distinct absolute head starts; universal correctness and native cost are proved in BinaryCompareRun.",
+  "command": "lake env lean /private/tmp/binary_compare_examples.lean",
+  "exit_code": 0,
+  "checks": [
+    "(21845, 0)"
+  ],
+  "source_sha256": "4055a469413c6cc96154f519375a703a11fd28db98bf3d50b471d49701648427",
+  "source": "import TransposeFollowup.BinaryCompareMachine\nopen TransposeFollowup TransposeFollowup.BinaryCompare\nopen FixedTapeCompiler.CopyMachine\n\ndef inputWord (m a : Nat) : List Bool := (List.range m).map (fun j => a.testBit j)\ndef inputTape (xs : List Bool) : Tape Bool := \u27e8[.start], symbols xs ++ [.stop]\u27e9\ndef initialHeads (i : Fin 2) : Int := if i = 0 then 7 else -11\n\ndef checkComparisons : Nat \u00d7 Nat := Id.run do\n  let mut tested := 0\n  let mut failed := 0\n  for m in List.range 8 do\n    for a in List.range (2^m) do\n      for b in List.range (2^m) do\n        let ta := inputTape (inputWord m a)\n        let tb := inputTape (inputWord m b)\n        let result := execute (5*m+6) (cfg (.scan .equal) ta tb initialHeads)\n        let expected := if a < b then Result.less else if b < a then .greater else .equal\n        tested := tested + 1\n        if !(decide (result.core.pc = .done expected) &&\n          decide (result.core.tapes 0 = ta) && decide (result.core.tapes 1 = tb) &&\n          decide (result.pos 0 = 7) && decide (result.pos 1 = -11)) then\n          failed := failed + 1\n  return (tested, failed)\n#eval checkComparisons\n",
+  "observed_output": "(21845, 0)\n"
+}

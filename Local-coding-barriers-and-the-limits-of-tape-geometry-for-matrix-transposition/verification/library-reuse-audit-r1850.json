@@ -1,0 +1,38 @@
+{
+  "status": "In progress. R1850 proves source-preserving coarse resampling and assembles the actual trace-square two-stage sample: first trim at a fine matrix scale, then impose the final scalar spacing. The final-scale loss is absent from the trimming budget. Two modules add three audited declarations, reusing existing coarse sampling, packing and the R1848 branch sampler. Simultaneous parameter closure and the final scalar-growth application remain open.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Metric.maximalSeparatedSet",
+    "Metric.isCover_maximalSeparatedSet",
+    "Metric.isSeparated_maximalSeparatedSet",
+    "Metric.encard_maximalSeparatedSet",
+    "Metric.packingNumber_two_mul_le_externalCoveringNumber",
+    "Finset.card_image_iff",
+    "Finset.card_image_of_injective",
+    "Finset.card_le_card"
+  ],
+  "reused_local": [
+    "exists_coarse_source_sample",
+    "separated_matrix_card_le_coveringNumber",
+    "exists_actual_trace_square_source_sample"
+  ],
+  "inspected": [
+    "Mathlib/Topology/MetricSpace/CoveringNumbers.lean",
+    "SeparatedMatrixSample.lean",
+    "CoarsenedSourceSample.lean",
+    "SeparatedScalarCover.lean",
+    "TraceSquareSourceSample.lean",
+    "SourceScalarConcentration.lean",
+    "ScalarDyadicBudgets.lean"
+  ],
+  "finding": "The packing/covering chain is imported through existing wrappers. Three new bridge/assembly declarations retain original indices and separate fine trimming from final scalar coarsening. Searches did not identify an end-to-end pinned mathlib/OAI replacement for this actual-source chain; no universal absence claim.",
+  "drift_check": "REUSE AND DRIFT CHECK\n\nThe required packing machinery is already in pinned mathlib:\nMetric.maximalSeparatedSet, isCover_maximalSeparatedSet,\nisSeparated_maximalSeparatedSet, encard_maximalSeparatedSet,\nand packingNumber_two_mul_le_externalCoveringNumber.\nOur existing SeparatedMatrixSample and CoarsenedSourceSample wrap these\nwith explicit real2x2 entry-based cover constants. R1850 imports and\nreuses those wrappers; it does not re-prove maximal packing or covers.\nThe only new generic bridge returns a subset of the ORIGINAL index set\nwith a cardinality comparison and transfers the spacing to a scalar map.\nThe actual two-stage theorem then calls the R1848 sampler directly.\n\nSearches of the pinned mathlib and OAI sources for Bourgain/Gamburd,\nSL2 growth/gap and flattening did not locate an end-to-end theorem for\nthis actual-source chain. This is a bounded reuse audit, not a claim\nthat no formalization exists anywhere. Existing scalar sampling and\ncovering modules were also inspected. The matrix sampler is retained\nbecause it returns the exact matrix separation needed by cubic packing.\nThe scalar-only sampler could be useful for a sharper future loss, but\nno such optimization is needed or claimed in this checkpoint.\n\nR1849's single-pass obstruction remains valid. This theorem changes the\norder of operations; it does not refute that obstruction or claim the\nfull paid-padding proof. The next work must audit simultaneous budgets\nbefore constructing another large conditional endpoint. The budget for\ncreating the far branch must contain C0 only. C1 may enter the final\nretention/concentration loss, which still has to be affordable.\n",
+  "next_reuse": [
+    "source_scalar_sample_concentration",
+    "coefficient_cube_normalization",
+    "trim_budget_of_global_normalization",
+    "exists_scalar_growth_budget_scale"
+  ],
+  "novelty": "None claimed. Conditional source sampling does not establish the fourth original family.",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

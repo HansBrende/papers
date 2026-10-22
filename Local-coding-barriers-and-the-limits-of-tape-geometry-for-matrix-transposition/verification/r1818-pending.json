@@ -1,0 +1,98 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1817 receipts revalidated;852 sources,5 configurations,86 artifacts;117 protected files unchanged.",
+  "new_modules": [
+    "ScalarCentralizerProjection",
+    "RealDeterminantNormalization",
+    "SL2CommutingApproximation"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.scalarAffine",
+    "TransposeFollowup.SL2Projection.noncentralCoordinates",
+    "TransposeFollowup.SL2Projection.scalarAffine_commute",
+    "TransposeFollowup.SL2Projection.smul_scalarAffine",
+    "TransposeFollowup.SL2Projection.exists_scalar_multiple_approx",
+    "TransposeFollowup.SL2Projection.noncentral_cross_bound",
+    "TransposeFollowup.SL2Projection.exists_scalarAffine_approx",
+    "TransposeFollowup.SL2Projection.real_matrix_det_error",
+    "TransposeFollowup.SL2Projection.inverse_sqrt_near_one",
+    "TransposeFollowup.SL2Projection.exists_sl2_scalar_normalization",
+    "TransposeFollowup.SL2Projection.frobenius_dist_le_of_entry_error",
+    "TransposeFollowup.SL2Projection.exists_sl2_commuting_approximation",
+    "TransposeFollowup.SL2Projection.exists_pairwise_commuting_approximants",
+    "TransposeFollowup.SL2Projection.near_identity_dist_le_noncentral",
+    "TransposeFollowup.SL2Projection.exists_near_identity_noncentral_pivot",
+    "TransposeFollowup.SL2Projection.exists_near_identity_commuting_approximants"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 69584,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev1.log"
+    },
+    "development_2": {
+      "session_id": 35687,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev2.log"
+    },
+    "development_3": {
+      "session_id": 23008,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev3.log"
+    },
+    "development_4": {
+      "session_id": 76224,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev4.log"
+    },
+    "development_5": {
+      "session_id": 17456,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1818-dev5.log"
+    },
+    "development_6": {
+      "session_id": 96344,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev6.log"
+    },
+    "development_7": {
+      "session_id": 33054,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1818-dev7.log"
+    },
+    "build": {
+      "session_id": 90000,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9832,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 5902,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4414,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Direct real two-by-two centralizer projection and positive scalar determinant normalization, proved from matrix entries and native real square roots. This supplies the quantitative commuting-approximation step needed in the route corresponding to Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2. It covers near-identity real matrices including nonidentity unipotents; it does not require an eigenvalue gap or a conditioned eigenbasis. The large-set covering extraction and later product-growth steps are not proved by this result. No literature novelty claim is made.",
+  "updated_at": "2026-10-20T02:03:49.367212+00:00",
+  "formal_checkpoint": "R1818 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1818, 855 sources, 4414 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1818 proves a direct quantitative projection to the real commuting algebra span{I,g}, restores determinant one by positive scalar normalization, and supplies whole families of pairwise commuting SL2 approximants. If g lies in the Frobenius identity ball of radius alpha<=1/2 and dist(g,I)>=r>0, a family with entries bounded by B>=1 and entrywise commutator error<=epsilon has such approximants with Frobenius error<=400B^2*epsilon/r, provided96B*epsilon<=r. No eigenvalue separation, diagonalization or conditioned eigenbasis is required. Three new modules add14 theorems and2 definitions. Large-set covering extraction and product growth remain unfinished; no fourth original family or new transposition bound is claimed.",
+  "next": "The preceding turn is PROGRESS. R1818 closes direct centralizer projection, exact determinant normalization, pairwise commuting families, near-identity pivot selection and the combined explicit error bound. Do not redo these steps or reintroduce a quantitative eigenvalue-gap assumption. Main interface: SL2CommutingApproximation.exists_near_identity_commuting_approximants. If g is nearI with dist_F(g,I)>=r>0 and an entry-bounded family has commutator error epsilon with96B*epsilon<=r, it gives exact pairwise commuting SL2(R) approximants at Frobenius error400B^2*epsilon/r. Generic pivot-based interfaces are also available. Previous full-family trace theorem remains InitialWalkTraceProfile.exists_initial_walk_trace.\n\nNEXT CONCRETE TARGET: derive the commutator hypotheses from an actual conjugacy fiber, then prove the covering-number pigeonhole extraction. For bounded real SL2 matrices x,x0 and a fixed g, set y=x0^-1*x. Prove the exact matrix identity\n y*g-g*y = x0^-1 * ((x*g*x^-1)-(x0*g*x0^-1)) * x.\nBound its error from a common small ball containing both conjugates. Inversion preserves the2-by2 SL2 entry bound; multiplication then supplies the coefficient for y and its commutator. Reuse native Matrix.frobenius_norm_mul/norm_mul_le and the existing entry-to-Frobenius bound rather than assuming a conjugation is an isometry. Keep the same g fixed; do not confuse it with the center of the covering ball. Compose the R1818 approximation with this actual normalized fiber inside A^-1*A.\n\nThen prove the finite-cover counting needed to make that fiber LARGE. Choose separated real trace values, partition a cover of A^2*A^-1 into trace buckets using the explicit Lipschitz bound for trace, select a low-cost bucket, and cover A by conjugacy fibers for a matrix having that trace. Subadditivity supplies a high-complexity fiber. All covers must use the actual Frobenius external covering convention and all radius changes must be paid. A near-identity g separated fromI at the required scale must be DERIVED for the actual application; a large trace image alone has not yet supplied that separation. Trimming/translation away from the spanning-frame centers and the retained covering-size bound remain an explicit obligation. Do not assume the whole localized A stays away fromI, since it containsI.\n\nThe approximation map need not be injective. Derive a lower bound for the covering number of its image by transferring covers back at the enlarged radius and using the existing coordinate refinements to pay the scale change. This is needed to complete the nearly commuting-set extraction corresponding to Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2/Corollary5.3. Our real direct-projection proof avoids qualitative diagonalization for this step; later simultaneous diagonalization, conditioning and discretized ring expansion remain separate tasks.\n\nReuse the actual covers of U and U^6 and U^2 subset Y*U for bounded-product entropy. The overall target remains actual metric SL2 product growth, then strict flattening, a fixed-iterate density cap with D^2<=2^j, unconditional restricted gap and paid padding. No discretized ring or product-growth axiom/import is available. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1818 adds exact determinant-one commuting approximants with explicit quantitative error, including unipotents. Paid padding is still unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. This percentage concerns formalization scope, not time, success probability or distance to deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScalarCentralizerProjection.lean": "877cb5df346fa8708bca88683730499ab7a303964a9054f3e0a104c733d30e4d",
+    "lean/TransposeFollowup/RealDeterminantNormalization.lean": "d4ebfe15f135e81110e5b4e7c778fce60a89dc972e99b4df3b64b335f75847dc",
+    "lean/TransposeFollowup/SL2CommutingApproximation.lean": "e76de0fe317303dfe2115e85fa467cba38e99a0e6667cada75bf158426eddf66"
+  }
+}

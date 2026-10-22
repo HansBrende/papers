@@ -1,0 +1,79 @@
+{
+  "format": "manuscript-final-cross-review-v1",
+  "status": "passed",
+  "reviewer": "/root/final_local_coding",
+  "reviewed_at_utc": "2026-10-22T01:58:47.920619+00:00",
+  "scope": "Independent read-only cross-review of final model and padding English statements, proof outlines, resource/quantifier contracts, and program roles against actual Lean source. No manuscript or mathematical proof edits by reviewer.",
+  "reviewed_sources": {
+    "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
+    "paper/sections/padding.tex": "5e6c53f441125d1193b59eb28d4cbd4e267be6b20dacf5f86a833ace6e27e88d",
+    "verification/manuscript/parent-contracts.json": "4a98ec8c6b16fbd03f02e31d0557a25192338dbadf55f3416785dbe1a6f5da7b"
+  },
+  "checks": [
+    {
+      "label": "def:target",
+      "status": "passed",
+      "exact_statement": "One deterministic native finite machine and one natural constant c; for every positive d, raw row-major transpose with b(d)=max(1,ceil log2 d), output encoding unchanged, time c(P+1). Matches entryBits, TransposesWithin, LinearTimeTransposable and ComputesWithin.",
+      "outline": "Definition only; no proof outline required. Machine initial tapes/heads/output, input end-marker behavior and transition output rate agree with Statement.lean.",
+      "program_role": "Defines the same fixed-machine target for both programs; no weakening to nonuniform or coded-output transposition."
+    },
+    {
+      "label": "thm:padding",
+      "status": "passed",
+      "exact_statement": "Outer absolute natural A,H,K0,E precede every M; the same Mprime precedes all positive dimensions, canonical-length words, outputs and time bounds. Exact state equality H+(q+1), tape equality K0+(k+E)*max(1,g.size), and cellBits=3 match exists_uniform_paid_padding. Part (a) has actual halting at T<=A*P+t with exact same output and full-run zero-slack CutIneq. Part (b) restricts to positive d_i tending to infinity, one fixed natural a and all payload computations within a*P_i; the same Mprime gives actual times with coefficient A+a and NativeRunLimits.Conclusion.",
+      "outline": "Analytic unconditional existence feeds continuous_uniform_computation_with_cut, whose all-size expansion gives fixed stretch and extra-tape constants. PaidPayload.execute_with_blank_prefix and preserves_computation supply blank handoff and additive paid time. BitPlaneRun.stepN_embed gives exact one-step payload simulation. cut_after_prefix uses full-horizon paths/head count; NativeRunLimits.of_cut gives the complete limiting assertion. No extra simulation or asymptotic claim is inserted.",
+      "program_role": "Explicitly supplies motion with paid generation/execution/cleanup to construction; shows the original cut and full M* conditions alone can be attached to any candidate linear transposer, so impossibility needs further information. Does not assert a transpose code or defeat every geometric lower-bound method."
+    },
+    {
+      "label": "lem:rational-expander",
+      "status": "passed",
+      "exact_statement": "The endpoint quantifies over Fin(c+1), eps>0, maps into Icc(0,1), and every measurable S subset Icc with real Lebesgue measure <=1/2. RationalMobius gives nonempty rational interval endpoints, rational coefficients, positive determinant and positive endpoint denominators; bounded uses the open interval and strictMonoOn_eval gives increase. The stated image-union inequality matches exactly.",
+      "outline": "exists_rational_restricted_gap supplies a rational free family near identity and a grid K; RestrictedL2Gap implies RestrictedCorrelationGap. expansion_of_restrictedCorrelationGap uses a trimmed, cell-centered normalized indicator and lower correlations for each generator and inverse, contradicting the symmetric gap. Clipped augmented family yields open domains and removes endpoints without changing the measured expansion.",
+      "program_role": "Discharges the analytic premise of the native wrapper. Existing continuous-expander strategy/existence is attributed to Bourgain–Yehudayoff; no independent novelty claim is made for that analytic existence."
+    },
+    {
+      "label": "padding-discrete-and-limit-contracts",
+      "status": "passed",
+      "exact_statement": "pairRes is the union of resident pairs over every pre-T step of a slot; prevBlock uses the most recent block change. IsChord demands x+1<z and absence from all intermediate slots. Label-class size is restricted to slots <N, and crossChords counts target-slot/block pairs. Zero-cut formula uses natural truncated subtraction and both slack parameters equal zero. Block trajectory freezes at actual T. Full Conclusion has existence of a uniformly convergent subsequence and universality over every eligible convergent subsequence; Lipschitz constant 1, every extended-real theta, integrated level excess >=1, total range plus one <=k*c0, and existence of a path neither monotone nor antitone.",
+      "outline": "Each prose definition was checked against Defs, DefsM and NativeRunLimits.Conclusion/of_cut.",
+      "program_role": "Precisely identifies which geometric conditions are supplied by the wrapper and thus which standalone conditions cannot separate transpose from unrelated tasks."
+    },
+    {
+      "label": "model-information-and-background-scope",
+      "status": "passed",
+      "exact_statement": "Helper entropy from attained range now explicitly assumes X is supported on F; arbitrary-law deficit is distinguished from uniform cardinal deficit. Sequence exclusions are identified as permitting size-dependent machines with separately charged resources and do not redefine T. Multiplication connection is labeled cited background rather than a newly Lean-proved theorem.",
+      "outline": "No extra proof claim is made for cited background.",
+      "program_role": "Separates finite coding obstructions, native sequence statements and the fixed-machine target."
+    }
+  ],
+  "findings": [
+    {
+      "id": "PM-X1",
+      "severity": "scope_clarification",
+      "status": "resolved_by_author",
+      "issue": "Initial opening applied both the cut inequality and limiting conclusions to every payload computation, although the full limit contract is for uniformly linear-time payload families.",
+      "resolution": "Opening now distinguishes a cut-enforcing prefix through any payload computation from full limiting conclusions for uniformly linear-time payload families; theorem statement was already exact.",
+      "verified_source_hash": "5e6c53f441125d1193b59eb28d4cbd4e267be6b20dacf5f86a833ace6e27e88d"
+    }
+  ],
+  "actual_lean_source_reads": {
+    "lean/TransposeFollowup/UnconditionalPaidPadding.lean": "32c026d268f63b97c5f96a1388f1b49055a17cd0f23883bdda8ffb57c3965948",
+    "lean/TransposeFollowup/NativeRunLimits.lean": "b51a15eeb1beb28d880971f7adafcab2c2a7ef8ef8194ad0b27d28f19653e5eb",
+    "lean/TransposeFollowup/RationalMobius.lean": "0d73b39fb954b24e196d2565fc58ae409a8650463ce210e78e22bc600f9ca019",
+    "lean/TransposeFollowup/RationalMobiusBounds.lean": "6228601dbb7f7b4cd9dc038ace703bbeceecef419cd2335adaf3a5b35c966d8e",
+    "lean/TransposeFollowup/RationalFamilyGraph.lean": "0cad467ee66174d69cb3645bfde175455d08adaa899970151a757fe1a4e24ed2",
+    "lean/TransposeFollowup/ContinuousNativePadding.lean": "0ad044b8b7b91cd1a5b8dc3769eee17152602a51768b1878049e7c99a991c4b0",
+    "lean/TransposeFollowup/PaidPaddingLimits.lean": "bcab6a39d867b2616ea674b75d1307b49b103106ea625bf3096f3ca8d666945e",
+    "lean/TransposeFollowup/BitPlaneRun.lean": "8a7b09fb044d765f758ada29eead9b4d807ae0518c8ef3696c19eb8c619e195f"
+  },
+  "actual_upstream_source_reads": {
+    "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean": "2853e0434355f77816dac9304454f571392ec763d55d3128c2c4912fd380216c",
+    "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean": "bb480460d0e7bca2f0df93d0d0d75be8398e5abdd2e98cf466bf4e6b5c968054",
+    "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/DefsM.lean": "700fc33fb9f23a623ba2bfcd0d5ab926324b8b1240f3069e6b562d47452581e5"
+  },
+  "unresolved_required_corrections": [],
+  "limitations": [
+    "Source-level statement/outline review, not an independent replay of all analytic or compiler proofs.",
+    "Prior literature attribution is assessed against the cited manuscript/dependency description here, not a fresh exhaustive literature search."
+  ]
+}

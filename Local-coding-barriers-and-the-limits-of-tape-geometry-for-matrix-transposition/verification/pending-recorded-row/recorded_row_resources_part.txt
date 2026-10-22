@@ -1,0 +1,119 @@
+
+namespace TransposeFollowup.RecordedRow
+open FixedTapeCompiler CopyMachine
+set_option autoImplicit false
+
+noncomputable def nativeEncoding (F : RationalMobius) := NativeMicrocode.initialEncoding (T:=Port) (start F)
+noncomputable def nativeMachine (F : RationalMobius) := NativeMicrocode.machine (nativeEncoding F) (program F)
+
+theorem native_row (F : RationalMobius) (source : List Bool) (i : Fin (Counter.value source))
+    (iw : List Bool) (hl : iw.length=(PaddedWord.word (PaddedWord.commonConstant F) id source).length)
+    (hv : Counter.value iw=i.val) (pre : List (Sym Bool)) (pos : Port → ℤ)
+    (input : List Bool) (inputPos : ℤ) (outRev : List Bool) :
+    let n := PaddedWord.word (PaddedWord.commonConstant F) id source
+    ∃ t ≤ budget F n (F.denseRow i),
+      Transpose.stepN (nativeMachine F) input t
+        ((cfg (start F) (initial n iw pre) pos).denote (nativeEncoding F) (program F) inputPos outRev)=
+        some ((cfg (.done (RowStream.rowGuard F i))
+          (initial n iw ((symbols (records n iw (F.denseRow i))).reverse++pre))
+          (finalPositions pos (records n iw (F.denseRow i)))).denote
+          (nativeEncoding F) (program F) inputPos outRev) ∧
+      Transpose.step (nativeMachine F) input
+        ((cfg (.done (RowStream.rowGuard F i))
+          (initial n iw ((symbols (records n iw (F.denseRow i))).reverse++pre))
+          (finalPositions pos (records n iw (F.denseRow i)))).denote
+          (nativeEncoding F) (program F) inputPos outRev)=none := by
+  obtain ⟨t,ht,htr⟩ := rational_trace F source i iw hl hv pre pos
+  refine ⟨t,ht,NativeMicrocode.trace_stepN (nativeEncoding F) (program F) input inputPos outRev htr,?_⟩
+  apply (NativeMicrocode.step_none_iff (nativeEncoding F) (program F) input inputPos outRev _).mpr
+  intro h; exact h.1 rfl
+
+theorem native_call {U J : Type*} {k q : ℕ} (F : RationalMobius)
+    (encoding : NativeMicrocode.Encoding U J k q) (ports : Port ↪ U) (labels : Label F → J)
+    (target : Microcode.Program U J) (outerFrame : MicrocodeEmbedding.Frame U)
+    (hc : ∀ pc,program F pc≠.halt → program F pc≠.reject →
+      target (labels pc)=MicrocodeEmbedding.instruction ports labels (program F pc))
+    (source : List Bool) (i : Fin (Counter.value source)) (iw : List Bool)
+    (hl : iw.length=(PaddedWord.word (PaddedWord.commonConstant F) id source).length)
+    (hv : Counter.value iw=i.val) (pre : List (Sym Bool)) (pos : Port → ℤ)
+    (input : List Bool) (inputPos : ℤ) (outRev : List Bool) :
+    let n := PaddedWord.word (PaddedWord.commonConstant F) id source
+    ∃ t ≤ budget F n (F.denseRow i),
+      Transpose.stepN (NativeMicrocode.machine encoding target) input t
+        ((MicrocodeEmbedding.embed ports labels (cfg (start F) (initial n iw pre) pos) outerFrame).denote
+          encoding target inputPos outRev)=
+        some ((MicrocodeEmbedding.embed ports labels
+          (cfg (.done (RowStream.rowGuard F i))
+            (initial n iw ((symbols (records n iw (F.denseRow i))).reverse++pre))
+            (finalPositions pos (records n iw (F.denseRow i)))) outerFrame).denote
+          encoding target inputPos outRev) := by
+  obtain ⟨t,ht,htr⟩ := rational_trace F source i iw hl hv pre pos
+  exact ⟨t,ht,MicrocodeEmbedding.native_call encoding ports labels (program F) target
+    outerFrame input inputPos outRev hc htr⟩
+
+def labelEquiv (F : RationalMobius) : Label F ≃ ReusableRow.Label F ⊕ (Bool × RowConsumer.Label) ⊕ Bool where
+  toFun | .row pc => .inl pc | .consume saved pc => .inr (.inl (saved,pc)) | .done saved => .inr (.inr saved)
+  invFun | .inl pc => .row pc | .inr (.inl (saved,pc)) => .consume saved pc | .inr (.inr saved) => .done saved
+  left_inv := by intro pc; cases pc <;> rfl
+  right_inv := by rintro (pc | ⟨saved,pc⟩ | saved) <;> rfl
+
+theorem fixed_resources (F : RationalMobius) : (nativeMachine F).k=40 ∧ (nativeMachine F).g+1=5 ∧
+    (nativeMachine F).q+1=
+      198*(SourceEndpoints.magnitude F false+SourceEndpoints.denominator F false)+
+      396*(SourceEndpoints.magnitude F true+SourceEndpoints.denominator F true)+396*SourceImages.coefficientSum F+12405 ∧
+    (nativeEncoding F).label (start F)=0 := by
+  refine ⟨?_,rfl,?_,NativeMicrocode.initialEncoding_start _⟩
+  · change Fintype.card Port=40
+    decide +kernel
+  · change Fintype.card (Label F)-1+1=_
+    rw [Fintype.card_congr (labelEquiv F)]
+    have hc : Fintype.card RowConsumer.Label=165 := by decide +kernel
+    have hr : Fintype.card (ReusableRow.Label F)=
+        198*(SourceEndpoints.magnitude F false+SourceEndpoints.denominator F false)+
+        396*(SourceEndpoints.magnitude F true+SourceEndpoints.denominator F true)+396*SourceImages.coefficientSum F+12073 := by
+      rw [Fintype.card_congr (ReusableRow.labelEquiv F)]
+      have hk : Fintype.card RowCleanup.Label=245 := by decide +kernel
+      simp only [Fintype.card_sum,Fintype.card_prod,Fintype.card_bool,hk,RowExecution.label_card]
+    simp only [Fintype.card_sum,Fintype.card_prod,Fintype.card_bool,hc,hr]
+    omega
+
+theorem budget_expansion (F : RationalMobius) (n flags : List Bool) (hf : flags.length=Counter.value n) :
+    let T := SourceImages.sourceSum F+SourceImages.coefficientSum F
+    budget F n flags=flags.length*(208*n.length+509)+flags.count true*(8*n.length+12)+
+      (684+36*T)*n.length+1571+104*T := by
+  unfold budget
+  rw [ReusableRow.budget_expansion,← hf]
+  unfold RowConsumer.budget
+  dsimp only
+  ring
+
+theorem budget_le (F : RationalMobius) (n flags : List Bool) (hf : flags.length=Counter.value n) :
+    let T := SourceImages.sourceSum F+SourceImages.coefficientSum F
+    budget F n flags ≤ flags.length*(216*n.length+521)+(684+36*T)*n.length+1571+104*T := by
+  rw [budget_expansion F n flags hf]
+  have h := List.count_le_length (l:=flags) (a:=true)
+  dsimp only
+  nlinarith
+
+theorem records_length (n iw flags : List Bool) (hm : 0<n.length) (hl : iw.length=n.length) :
+    (records n iw flags).length=2*n.length*(flags.count true) := by
+  have hu := ArithmeticSeed.one_length n.length hm
+  simpa only [records,hu] using RowConsumer.output_length iw (ArithmeticSeed.one n.length) flags (hl.trans hu.symm)
+
+theorem total_budget (F : RationalMobius) (N : ℕ) (source flags : List Bool)
+    (hN : 1 ≤ N) (hv : Counter.value source=N) (hl : source.length ≤ (N+1).size) (hf : flags.length=N) :
+    let T := SourceImages.sourceSum F+SourceImages.coefficientSum F
+    N*budget F (PaddedWord.word (PaddedWord.commonConstant F) id source) flags ≤
+      ((1800+72*T)*(F.integerOperandConstant^2).size+22184+928*T)*Transpose.inputLength N := by
+  have hr := ReusableRow.total_budget F N source hN hv hl
+  have hc := RowConsumer.total_budget F N source flags hN hl hf
+  have hd := dense_scan_budget 1 0 N hN
+  have hn : N ≤ 2*Transpose.inputLength N := by
+    have hnn : N ≤ N*N := Nat.le_mul_of_pos_left _ hN
+    norm_num at hd
+    exact hnn.trans hd
+  unfold budget
+  dsimp only at hr ⊢
+  nlinarith
+
+end TransposeFollowup.RecordedRow

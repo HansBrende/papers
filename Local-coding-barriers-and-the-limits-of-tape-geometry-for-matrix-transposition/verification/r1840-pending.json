@@ -1,0 +1,89 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1839",
+  "target": "Common dyadic scalar-growth budgets, upper size from the existing cube, and actual-source positive nilpotent sample.",
+  "new_modules": [
+    "ScalarDyadicBudgets",
+    "NilpotentSourceSample"
+  ],
+  "modified_modules": [
+    "CubicSampleNormalization",
+    "LocalizedFixedProductEnvelope"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_dyadic_power_comparison",
+    "TransposeFollowup.SL2Projection.exists_scalar_dyadic_radius",
+    "TransposeFollowup.SL2Projection.exists_scalar_growth_budget_scale",
+    "TransposeFollowup.SL2Projection.nilpotent_scalar_exponent_margins",
+    "TransposeFollowup.SL2Projection.sample_cardinality_upper_of_cubic",
+    "TransposeFollowup.SL2Projection.exists_actual_nilpotent_scalar_sample",
+    "TransposeFollowup.SL2Projection.fixed_power_coefficient_bound",
+    "TransposeFollowup.SL2Projection.localized_fixed_power_coveringNumber_envelope"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 63664,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1840-dev1.log",
+      "reason": "Corrected log name, rpow reassociation and local eta expression alignment."
+    },
+    "development_2": {
+      "session_id": 74055,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1840-dev2.log",
+      "reason": "Passed with unused positivity premise, then removed."
+    },
+    "development_3": {
+      "session_id": 96654,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1840-dev3.log",
+      "reason": "Actual source sampler and cube upper-size lemma passed without warnings."
+    },
+    "development_4": {
+      "session_id": 74102,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "/private/tmp/r1840-dev4.log",
+      "reason": "Explicit simultaneous exponent choices passed without warnings."
+    },
+    "development_5": {
+      "session_id": 59557,
+      "status": "terminal",
+      "exit_code": 1,
+      "log": "/private/tmp/r1840-dev5.log",
+      "reason": "Default recursion depth reached by generic congr tactic; replaced with explicit congrArg on the exponent equality. No proof limits changed."
+    },
+    "build": {
+      "session_id": 34400,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "verification/build.log",
+      "jobs": 10102,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 71188,
+      "status": "terminal",
+      "exit_code": 0,
+      "log": "verification/axioms.log",
+      "declarations": 4594,
+      "warnings": false
+    }
+  },
+  "terminal_handles": "All R1840 handles terminal. Development1(63664) failed and was fixed; development2(74055) passed with an unused premise subsequently removed; development3(96654),4(74102) passed without warnings; development5(59557) hit the default congr recursion limit and was fixed with explicit congrArg. Full build34400 passed10102 jobs and audit71188 passed4594 declarations without warnings, standard axioms only. No live Lake handle.",
+  "updated_at": "2026-10-20T08:29:21.871164+00:00",
+  "formal_checkpoint": "R1840 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:921 local sources,204 external sources,4594 declarations,8 configurations,123 artifacts",
+  "proof_scope": "In progress. R1840 proves a common actual dyadic scalar scale that pays all three scalar-growth budgets, approximation error and upper log-cardinality under strict exponent margins, and verifies one explicit simultaneous exponent choice. It derives the positive nilpotent scalar sample from actual source matrices, including its trace coefficient, sign, entry bound and interval. It derives an upper sample-size exponent from the existing whole-family cube. The old fixed-product coefficient proof is generalized to all powers and reused by the unchanged A^37 interfaces. Two new modules and two modified modules add eight declarations. Exact chart/sampling/approximation power estimates and the final first-extraction application remain open.",
+  "next": "The preceding goal turn is PROGRESS. R1840 is recorded; never replay its checkpoint. Full10102-job build and4594-declaration audit passed without warnings, standard axioms only; no live Lake handles. Read verification/r1840-scalar-interface-scales.txt and library-reuse-audit-r1840.json. Do not redo actual-source positivity/range, dyadic radius selection, simultaneous scalar budgets, the upper-size cube conversion or fixed-power envelope counting.\n\nNEXT CONCRETE TARGET: derive the exact coefficient power majorants and apply the FIRST extraction's nilpotent scalar interface, then the full trace-growth comparison. The existing modules now supply every individual interface; their common parameter application is still real work.\n1. Use nilpotent_scalar_exponent_margins with0<kappa0,e<=1: theta=min(e,kappa0)/4096, scalar exponent kappa0/12, scalar-radius exponent d=1-3theta, gain g=e/8, concentration exponent c=100theta, size exponent u=1-kappa0/3+84theta and error exponent tau=1-2theta. Obtain e from the scalar theorem BEFORE choosing theta. Normalize e<=1 by a proved monotonic restriction if needed.\n2. Choose first zeta=sigma0=theta and distribution gamma STRICTLY below zeta, e.g.gamma=theta/2. Do not set gamma=zeta: the original spanning extraction requires gamma<zeta. Choose the original small-tripling/profile-loss exponent small enough both for beta<zeta*kappa0 and for the fixed-power bounds. R1840 localized_fixed_power_coveringNumber_envelope bounds A^(n+1) by h^(8802n+4427)N. For n36,141,283 the exponents are321299,1245509,2495393. Thus a profile h=eta^(-s) with s<=theta/3000000 can fit these power losses below theta, provided the actual profile controls and the additional beta condition are supplied. This substitution/parameter hierarchy is not yet formalized.\n3. Use r_initial proportional to eta^(2theta), d0=eta^theta and the existing actual-frame determinant scale proportional to eta^(9theta). Choose chart radius proportional to eta^(9theta), chart bin width proportional to eta^(11theta), and sigma_sample proportional to eta^(1-9theta), checking both cubic input spacing and scalar separation. Keep exact fixed constants. Reuse BoundedCoordinatePacking.binCount_le and mathlib rpow algebra to prove S_sample<=S0*eta^(-36theta), Lchart<=L0*eta^(-44theta), E<=E0*eta^(-8theta), H_initial<=H0*eta^(-8theta), Dloc<=D0*eta^(-3theta). The R1839 Q,W then have combined root exponent<=289theta/3<100theta. Derive the actual majorant, not a new assumption that it holds.\n4. Apply exists_actual_nilpotent_scalar_sample to the original commuting approximants. It now derives c'>=1/2, entries<=2, actual g in A^34, coefficient L=(r_initial/8)*d0/[1152(4^34)^4], scalar interval[1,2], injectivity and both cardinality bounds from actual source data. It preserves all source indices. Prove its two proximity budgets using the original A radius and first error12800*B0^6*eta/r_initial, B0=4*4^34. Conditional det(b)=0 remains the current branch.\n5. Apply nilpotent_scalar_sample_concentration with the original Vset, mixed Dset, extraction cube theta_parameter=8sigma0 and actual envelopes; the same sample must satisfy its matrix-spacing threshold. Use commuting_family_cubic_bound and sample_cardinality_upper_of_cubic, plus the ambient upper N<=eta^(-(3-kappa0)), to obtain the upper size majorant with exponent1-kappa0/3+83theta (or the verified looser84theta). Then exists_scalar_growth_budget_scale supplies ONE scalar dyadic index satisfying all three R1835 budgets, error and log-cardinality. Its error constant must include32R^3. Weaken concentration exponentkappa0/3 to2*(kappa0/12) using mathlib.\n6. Compose R1835 growth with R1836 actual-word geometry and the FULL R1832 upper bound, retaining the source spacing, binning, approximation and250 factors. The explicit gain margin173theta<e/8 is verified, but actual coefficient bounds and their uniform threshold must still be shown. Do not silently replace the first error with the second-extraction error819200eta/rho. A completed nilpotent contradiction is the next substantive endpoint; nonnilpotent cases remain necessary.\n\nREPORTING: paid padding201/202 about60%, low confidence;3/6 original families formalized, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local scale lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScalarDyadicBudgets.lean": "46a09e46927d33aeb31f354bbbb0cc1a7ceda9ffaea91ca7d54eafd2e9dfbd55",
+    "lean/TransposeFollowup/NilpotentSourceSample.lean": "fe4f9327a16616e154fe7c557f8d34fa5c0c88ebec1c036a2e78159eba206942",
+    "lean/TransposeFollowup/CubicSampleNormalization.lean": "24077155712590bef7bab7482f8f8f2ff647113c569cee934e51efb4646f49a0",
+    "lean/TransposeFollowup/LocalizedFixedProductEnvelope.lean": "9cfae7baa677183447ab364920da6a8474412b63d4e138ca21f0cd49c04986d6"
+  }
+}

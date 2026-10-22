@@ -1,0 +1,193 @@
+In progress. R1852 proves explicit power envelopes for two-stage coarsening, inverse localization, scalar spacing, quantitative normalization and the near-identity trimming factor. It proves a dyadic threshold for the fine trimming ratio and the concentration budget with the original extraction constant and d^11 denominator retained. The final concentration-budget calculation is extracted from the old proof and reused; its previous endpoint statement is unchanged. Eight audited declarations are added across two new modules and one refactored module. A joint instantiation on the actual source sample remains next.
+
+R1852 EXACT VERIFIED STATEMENTS
+
+TraceSquarePowerBounds.lean (6 theorems)
+
+1. two_stage_sampling_power_bounds.
+For0<eta<=1,theta,Theta,a,R>=0,l0,s0,s1>0 and
+ 12Theta+88theta+4a<=36Theta, theta+a<=3Theta,
+set p=3Theta+13theta+a,
+ sigma0=s0 eta^(1-9theta),sigma1=s1 eta^(1-p),
+ C_i=6561(4sigma_i/eta+1)^4,S_i=6561(4s_i+1)^4,
+ Kinv=3072/[(l0 eta^theta) eta^a],
+ Dloc=40(2R)^11(Kinv+2),Dc=40(2R)^11(3072/l0+2).
+Then
+ C0<=S0 eta^(-36theta), C1<=S1 eta^(-4p),
+ 4C0C1<=4S0S1 eta^(-36Theta),
+ Kinv=(3072/l0)eta^(-(theta+a)),
+ Dloc<=Dc eta^(-3Theta).
+Both individual sampling bounds REUSE first_extraction_cost_bounds,
+with its exponent theta and then p/9. There is no new packing proof.
+
+2. trace_square_scalar_spacing.
+For0<eta<=1,theta>=0,l0>0,t0>=1,delta>0,
+ delta<=2eta^(1-3Theta),3072t0/l0<=s1,
+set delta_s=t0 delta eta^(-12theta),
+ Kinv=(3072/l0)eta^(-(theta+a)),sigma1=s1 eta^(1-(3Theta+13theta+a)).
+Then delta_s>0,delta<=delta_s,sigma1>0,Kinv delta_s<=2sigma1.
+For ANY real coefficient z and constant c with
+ c eta^(12theta)<=|z| and c t0>=1, also delta<=|z|delta_s.
+The sampler's strict delta_s separation therefore pays the smaller
+readout coefficient; no scale-independent lower bound on |z| is assumed.
+
+3. trace_square_normalization_power_bound.
+For eta>0,C,P,H>=0,P<=eta^(-theta),H<=Hc eta^(-8theta),
+ C(9PH)^3/(eta^theta)^11 <= C(9Hc)^3 eta^(-38theta).
+The fixed extraction constant C and actual d^11 denominator remain.
+
+4. trace_square_near_power_bound.
+For0<eta<=1,0<=kappa<=1,0<=gamma<=theta,R,epsilon,Ec,Cp,K,J>=0,
+ epsilon<=eta^a,E<=Ec eta^(-8theta),K,J<=eta^(-theta),
+ E[Cp K J eta^(-gamma*kappa)] [40(2R)^11(eta^a+epsilon)]^kappa
+ <= [Ec Cp (80(2R)^11)^kappa] eta^(kappa*a-11theta).
+This is the actual localized near-factor expression used by R1848/R1850.
+
+5. fine_trim_ratio_power_bound.
+For eta>0,L,C,W,A>=0 and Lc,Cc,Wc>=0, assume
+ L<=Lc eta^(-44theta),C<=Cc eta^(-36theta),W<=Wc eta^(-38theta),
+ A<=Ac eta^(kappa*a-11theta).
+Then
+ 32L^3 C^3 W[A+1/(2eta)^(-kappa)]
+ <= [32Lc^3 Cc^3 Wc]
+    [Ac eta^(kappa*a-289theta)+2^kappa eta^(kappa-278theta)].
+The distribution lower bound N0=(2eta)^(-kappa) pays the additive1
+through the existing trim_budget_of_global_normalization theorem.
+
+6. exists_fine_trim_ratio_threshold.
+For fixed B,Ac>=0 and289theta<kappa*a,278theta<kappa,
+there is ONE J such that at every j>=J,eta=(1/4)^j,
+ B[Ac eta^(kappa*a-289theta)+2^kappa eta^(kappa-278theta)]<=1.
+This reuses exists_dyadic_scaled_rpow_bound for each of the two terms.
+The R1851 certificate provides both strict exponent margins.
+
+NilpotentExtractionParameters.lean (one new theorem; old endpoint unchanged)
+
+7. concentration_budget_of_power_bounds.
+For0<eta<=1,Theta>=0,W,Qc,Wc>=0,
+ Q<=Qc eta^(-146Theta),W<=Wc eta^(-143Theta) imply
+ QW<=[(1+QcWc)eta^(-100Theta)]^3.
+This is the EXISTING final concentration-budget calculation extracted
+for reuse. exists_first_extraction_concentration_constant retains its
+exact previous statement and now calls this theorem. All old theorem
+statements in the module are unchanged.
+
+TraceSquareConcentrationBudget.lean (one theorem)
+
+8. trace_square_concentration_power_budget.
+Use all nonnegative input and profile hypotheses of the existing
+scalar_concentration_power_bounds, with exponentTheta,0<=kappa<=1,
+0<=gamma<=Theta. The bounds are
+ H<=Hc eta^(-8Theta),S<=Sc eta^(-36Theta),L<=Lc eta^(-44Theta),
+ E<=Ec eta^(-8Theta),D<=Dc eta^(-3Theta),P,K,J<=eta^(-Theta).
+Let Cext>=0 and11theta<=8Theta, and define
+ Q=4L^3[E(Cp K J eta^(-gamma*kappa))D^kappa+2^kappa],
+ W=Cext(9PH)^3/(eta^theta)^11 * S^3,
+ Qc=4Lc^3[Ec Cp Dc^kappa+2^kappa],Wc=(9Hc)^3 Sc^3,
+ Cscalar=1+Qc(Cext Wc).
+Then
+ Q<=Qc eta^(-146Theta),W<=Cext Wc eta^(-143Theta),
+ Cscalar>=1,QW<=[Cscalar eta^(-100Theta)]^3.
+This calls scalar_concentration_power_bounds and the shared budget
+calculation; it does not duplicate their numerical proofs.
+
+REUSE / DRIFT CHECK
+
+R1851's exponent ledger is now backed by verified inequalities for the
+explicit sampling, normalization and near-count formulas. The fine
+trimming ratio contains C0 only, and final retention contains4C0C1.
+The smaller readout coefficient is paid by delta_s, which is distinct
+from the final scalar radius delta. The concentration budget retains
+Cext and the original (eta^theta)^11 denominator.
+
+Existing first_extraction_cost_bounds is reused for both coarsening
+powers. Existing scalar_concentration_power_bounds is reused unchanged.
+Its final cube-budget arithmetic is now shared by the old nilpotent
+endpoint and the trace-square budget; the old endpoint statement is
+unchanged. Mathlib supplies rpow monotonicity and algebraic identities.
+No extra covering or packing theory has been recreated.
+
+Boundary: these inequalities still need a single simultaneous fixed-
+constant instantiation and application to R1850's actual sample. They
+do not themselves assert that a geometric input satisfies the required
+profiles, window, approximation, near-radius or determinant hypotheses.
+The readout selector's exact coefficient power, the joint thresholds,
+and the actual-source scalar concentration application remain next.
+
+NEXT
+R1852 recorded; never replay its checkpoint script. Full10130-job build
+and4685-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: one simultaneous constant/threshold instantiation for the
+actual trace-square sample, then apply source_scalar_sample_concentration.
+Do not re-prove R1852's power bounds or the old scalar concentration chain.
+The exact R1851 exponent choice and ledger remain authoritative.
+
+Fixed choices to use before eta:
+ Theta=min(e,kappa0)/16384,theta=kappa0*Theta/1024,a=5Theta/16.
+ l0=1/32,cutoff s=eta^a,Lgap=l0 eta^theta.
+ Fine extraction parameters: call exists_scaled_extraction_parameters
+ with fixed distance coefficient1/32 and exponenttheta; weaken the
+ distance to eta^(2theta)/32, while retaining the stronger eta^theta/32
+ for R1846's readout selector. Use B=2 or9 consistently; all fixed
+ entry bounds/R values can be enlarged independently of eta.
+ The source error bound26214400 eta^(1-theta) is dominated by the
+ chosen epsilon=e0 eta^(1-2theta). Prove this comparison explicitly.
+
+1. Specialize exists_actual_two_readout_coefficients at original
+   frame gap eta^theta and distance eta^theta/32. Its Gamma is
+   Gamma_c eta^(6theta),rho=rho_c eta^(12theta),rho_c>0 fixed.
+   Both normalized coefficients have magnitude>=c eta^(12theta),
+   c=3rho_c/256. Choose t0=max1(1/c),s1=3072t0/l0.
+   Then c*t0>=1,t0>=1, and the constant hypotheses of
+   trace_square_scalar_spacing hold. The larger coefficient (abs>=3/4)
+   belongs on the enlarged scalar factor; either orientation is allowed.
+2. For delta<=2eta^(1-3Theta), set
+   delta_s=t0 delta eta^(-12theta),
+   sigma1=s1 eta^(1-(3Theta+13theta+a)).
+   trace_square_scalar_spacing pays final scalar and matrix spacing;
+   two_stage_sampling_power_bounds pays Sret=4C0C1 and Dloc.
+3. first_extraction_cost_bounds at theta supplies H,C0,L,E envelopes.
+   Compare R1845's actual H with the weakened-distance H. Apply
+   coefficient_cube_normalization then trace_square_normalization_power_bound:
+   N<=W0 V^3,W0<=Wc eta^(-38theta),Wc=Cext(9Hc)^3.
+4. Use epsilon<=eta^a at a uniform threshold (1-2theta-a>0 follows
+   from the R1851 error margin). trace_square_near_power_bound supplies Ac.
+   Apply fine_trim_ratio_power_bound and exists_fine_trim_ratio_threshold;
+   use N0=(2eta)^(-kappa0), coveringNumber_lower_of_distribution and
+   trim_budget_of_global_normalization to discharge the ACTUAL fine
+   sample budget. No final coarsening factor in this condition.
+5. Apply exists_actual_trace_square_two_stage_sample to the original
+   source indices. Retention is4C0C1 and both matrix separations survive.
+   Weaken the first-stage H,L,E/profile envelopes from theta toTheta,
+   and use trace_square_concentration_power_budget with the ACTUAL
+   Cext/(eta^theta)^11 normalization. This gives Cscalar eta^(-100Theta).
+6. Apply source_scalar_sample_concentration on the returned original
+   index subtype. Use the returned fine matrix separation, inverse
+   scalar estimate and image-card equality. The interval diameter
+   follows by the real triangle inequality; do not assume it.
+   Keep radius>=max(eta,epsilon). Reuse the size bound at fine sigma0
+   via commuting_family_cubic_bound and exists_first_extraction_size_constant.
+
+Combine the finite thresholds for epsilon<=s, near1/64, the distribution
+window2eta<eta^(theta/2), native/source spacing, trimming and scalar growth.
+Choose alpha0 small enough before eta. Avoid a large conditional wrapper
+that merely assumes these budget inequalities instead of discharging them.
+After the actual sample/concentration result, finish the scalar-to-word
+cell bridge, including the square-root loss2gain<g (gain=e/32), and
+source error512R^7 epsilon. Mixed words have length420 and far exponent
+12theta+a<=3Theta. Generalize the FULL second-extraction wrapper by
+profile_power_exponent_bound_of_cost; it currently still has k<=282.
+The length420 cover uses n421,cost3710069, while the initial n0+3 cover
+uses n0+2. The old548Theta and143Theta costs fit691Theta<3gain.
+
+Original profile/frame, strict flattening and analytic/machine endpoints
+remain. Three of six original families formalized. Paid padding remains
+about60%, LOW CONFIDENCE; continue numeric progress reports.
+Original paper read-only; no commits/pushes/subagents at this stage.
+
+BOUNDARY
+The numerical expressions for sampling, normalization, near trimming and concentration now have verified power bounds. The coefficient-dependent scalar-spacing condition and a threshold for both fine-trimming terms are also proved. They are not yet assembled into one actual-source scalar-sample/concentration theorem with all fixed constants and hypotheses discharged. The readout selector still needs its eta^(12theta) coefficient specialization, and all radius/error/profile thresholds must be combined. Scalar-to-actual-word growth, the generalized full second-extraction wrapper, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty claimed.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

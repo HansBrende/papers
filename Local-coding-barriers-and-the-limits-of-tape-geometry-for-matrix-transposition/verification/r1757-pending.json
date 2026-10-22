@@ -1,0 +1,79 @@
+{
+  "checkpoint": "R1757",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1756 PROGRESS",
+  "new_modules": [
+    "RationalUnitRestriction",
+    "ClosedRationalExpansion"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RationalUnitMobius.lower_lt_upper",
+    "TransposeFollowup.RationalUnitMobius.lower_nonneg",
+    "TransposeFollowup.RationalUnitMobius.upper_le_one",
+    "TransposeFollowup.RationalUnitMobius.whole_denom_pos",
+    "TransposeFollowup.RationalUnitMobius.clipped_eval",
+    "TransposeFollowup.RationalUnitMobius.clipped_domain",
+    "TransposeFollowup.RationalUnitMobius.clipped_mapsTo",
+    "TransposeFollowup.RationalUnitMobius.clipped_open_mapsTo",
+    "TransposeFollowup.RationalUnitMobius.identity_eval",
+    "TransposeFollowup.RationalUnitMobius.translation_eval",
+    "TransposeFollowup.RationalUnitMobius.inverse_eval",
+    "TransposeFollowup.RationalUnitMobius.auxiliary_eval",
+    "TransposeFollowup.rationalEndpointImages_volume",
+    "TransposeFollowup.rational_open_image_subset_closed",
+    "TransposeFollowup.rational_closed_image_cover",
+    "TransposeFollowup.rational_closed_image_volume",
+    "TransposeFollowup.rational_closed_image_volume_real",
+    "TransposeFollowup.RationalUnitMobius.restrictedImageUnion_eq_closed",
+    "TransposeFollowup.RationalUnitMobius.restrictedImageUnion_volume_real",
+    "TransposeFollowup.RationalUnitMobius.clippedFamily_mapsTo",
+    "TransposeFollowup.RationalUnitMobius.restricted_expansion_to_open",
+    "TransposeFollowup.RationalUnitMobius.restricted_vertex_expansion",
+    "TransposeFollowup.RationalUnitMobius.augmented_restrictedImageUnion",
+    "TransposeFollowup.PaidPadding.restricted_uniform_computation_with_cut",
+    "TransposeFollowup.PaidPadding.restricted_uniform_linear_tasks_macrostar",
+    "TransposeFollowup.RationalUnitMobius.clipped",
+    "TransposeFollowup.RationalUnitMobius.inverse",
+    "TransposeFollowup.RationalUnitMobius.of_near_identity",
+    "TransposeFollowup.RationalUnitMobius.of_squared_near_identity",
+    "TransposeFollowup.RationalUnitMobius.augmentedFamily"
+  ],
+  "checks": {
+    "closed_rational_expansion": {
+      "session_id": 50622,
+      "exit_code": 0,
+      "jobs": 9456
+    },
+    "build": {
+      "session_id": 52432,
+      "exit_code": 0,
+      "jobs": 9529
+    },
+    "axioms": {
+      "session_id": 81722,
+      "exit_code": 0,
+      "declarations": 2854
+    }
+  },
+  "updated_at": "2026-10-19T10:42:38.291786+00:00",
+  "boundary": "Rational unit clipping and closed/open image-measure equivalence connect the source expansion formulation to the full native construction. Existence and the analytic expansion theorem remain unformalized; motion, recursion and final referees remain.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "read_sections": [
+      "Lemma 1.1 and its near-identity coefficient condition",
+      "construction with input/output restrictions, inverses, translations and identity",
+      "Theorem 1.2 and its reduction to Theorem 1.3"
+    ],
+    "finding": "The source has closed interval domains; the graph compiler has open domains. Rational clipping with positive determinant and six strict linear inequalities gives the exact closed unit input/output restriction. These inequalities hold whenever all coefficient deviations from identity are below 1/4, in particular when their squared sum is below 1/16, and are stable under the adjugate inverse. A finite family loses at most two endpoint images per map on passing to the open domain. Spectral-gap and generator-existence proofs are not supplied by these algebraic and measure bridges."
+  },
+  "formal_checkpoint": "R1757 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1757, 552 sources, 2854 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1757 proves the exact rational unit-domain and measure adapters for the source expansion construction. RationalUnitMobius uses rational coefficients, positive determinant and six strict linear inequalities. Clipping computes lo=max(0,-b/a) and hi=min(1,(d-b)/(a-c)); the interval is nondegenerate and is exactly the closed set where input and output lie in [0,1]. The coefficient conditions are preserved by adjugate inversion, cover opposite translations and identity, and follow from coefficient deviations below 1/4 or squared sum below 1/16. The finite augmented source family is constructed and its image union decomposed exactly. For every finite rational map family and arbitrary input set, replacing closed domains by open domains removes only finitely many endpoint images, hence preserves outer measure and real measure exactly. Restricted source expansion therefore supplies the existing epsilon/2 all-size graph expansion and the same complete native arbitrary-computation, CutIneq and MStar conclusions. No analytic expansion or generator-existence claim is inferred from these adapters.",
+  "next": "Advance the actual expansion proof next: formalize the translation-or-uniformity step in Bourgain\u2013Yehudayoff \u00a71, Proof of Theorem 1.2. For t=1/K with K>=2, prove that a difference between adjacent cell masses forces expansion under identity and opposite translations; otherwise derive quantitative uniformity of cell masses, suitable for the L2 spectral-gap reduction. Use RationalUnitMobius.augmentedFamily and restrictedImageUnion as the exact source representation, and retain the final analytic expansion/existence premise until proved. The restriction, endpoint-measure, all-size graph and native machine bridges are complete; do not rebuild them. Continue through the restricted spectral-gap and rational-generator existence dependencies using proved library results or full proofs, never new axioms or numerical spot checks. After full 201/202, complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes exact source-domain and image-measure adapters as well as the complete conditional native construction at every positive dimension. Analytic expansion and suitable rational generator existence remain substantial unformalized dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/RationalUnitRestriction.lean": "6c9635ce98194fb2ad6fd95577ce448b163fabed41127bbf64494d6df0055a7b",
+    "lean/TransposeFollowup/ClosedRationalExpansion.lean": "f1d7a64a4b6db7ac0e24f0eb3388cb74cb1e52dd5670132ca786b4f6ff6e59e6"
+  }
+}

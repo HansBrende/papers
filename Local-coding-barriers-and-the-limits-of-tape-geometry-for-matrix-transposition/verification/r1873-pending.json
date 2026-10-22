@@ -1,0 +1,50 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1872",
+  "target": "Regular recursion206/208: adaptive flagged coverage from actual global exceptional tick budgets.",
+  "new_modules": [
+    "ExceptionalStageClock",
+    "StageFlagLimits",
+    "ExceptionalCoverageLimits"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RegularMotion.exceptionalTicks",
+    "TransposeFollowup.RegularMotion.regular_shallow_stage_omission",
+    "TransposeFollowup.RegularMotion.exists_stage_flag_subsequence",
+    "TransposeFollowup.RegularMotion.finite_flag_filter_eventually_eq",
+    "TransposeFollowup.RegularMotion.finite_flagged_stage_omission_tendsto",
+    "TransposeFollowup.RegularMotion.regular_limit_shallow_omission",
+    "TransposeFollowup.RegularMotion.geometric_regular_stage_open_defect",
+    "TransposeFollowup.RegularMotion.exists_exceptional_stage_limit_cover"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9011,
+      "log": "/private/tmp/r1873-dev3.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10198,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4959,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "Current checkpoint sessions terminal. dev1:40175 exit1; dev2:80748 exit1; dev3:47977 exit0 (9011 jobs). Initial full-build handle was lost at context compaction; its success log showed10198 jobs and process inspection confirmed no active checkpoint build. Initial axiom audit2192 exit0. After mathlib sdiff simplification, fullbuild57697 exit0 (10198 jobs), final axioms61189 exit0. Unrelated older Lean processes were not modified.",
+  "formal_checkpoint": "R1873 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1017 local sources,204 external sources,4959 declarations,8 configurations,189 artifacts",
+  "proof_scope": "PROGRESS at R1873: actual global exceptional-tick budgets now give limiting regular-stage coverage with omitted physical time at most eta. Adaptive stage designations stabilize on a common subsequence; finite shallow-stage bounds and the geometric tail are proved. Five of six original families are formalized. Current sixth family, regular recursion206/208, best estimate45% complete (low confidence). The native exceptional-work threshold and exact206 executors remain.",
+  "next": "R1873 recorded; NEVER replay its checkpoint script. Current checkpoint\nLake handles terminal. Goal ACTIVE; PROGRESS. Five of six original families\nformalized; sixth regular recursion206/208 best estimate45%, low confidence.\n\nNext: finish source210 section35's GLOBAL exceptional-work threshold\neta>=1/(2*k*G). The actual flagged coverage extraction is complete in\nExceptionalCoverageLimits.exists_exceptional_stage_limit_cover. Reuse it.\n\nRegular-only occurrence regularity can reuse HasRegularStageSubsequences by\ncollapsing bad-stage durations to zero: L_i=if good_i then E_i-A_i else 0.\nFor a limiting good stage the flag is eventually true. Use modified end\nE'_i=if good_i then E_i else A_i, so A<=E'<=E, the budget persists and\nE'/P has the original endpoint limit. Then import\npositive_stage_affine_of_regular_occurrences; do not redo local profiles.\n\nGeneralize affine cover assembly to preserve omitted volume<=eta. Each\nstage's open affine region differs from its interval only by a null set.\nUse mathlib ae_le_set/ae_eq_set, countable_iUnion, ae_eq_set_sdiff and\nmeasureReal_congr to transport this defect through the countable union.\nAdd the constant post-halt interval using physical_limit_constant_after_halt.\nSeparate per-head covers suffice; no common finite partition is needed.\nSum their omissions<=k*eta and apply AffineTimeRequired.physical_omission\nto obtain 1/(2G)<=k*eta. Preserve all units, positivity and finite measure.\n\nFinish the native theorem, not merely a conditional geometric inequality:\nreuse NativeRegularRecursion's popular representative extraction, correct-set\nmembership, actual halting and physical extensions. Define an all-eligible-\nsequences interface with adaptive clocks/flags, a uniform eps_i->0 over\ncorrect sets, all physical heads and finite initial exceptions. Keep fixed\nheads/cell bits, o(P) state bits, sublinear coentropy and raw encode/transpose\nsemantics. Derive the linear time bound from clocks as in source208.\nPer-node eta*V only gives eta*C/(1-rho)>=1/(2*k*G).\n\nThen exact206 palette semantics/native executors: row/entry/F3 operations,\narbitrary masked bit strides, zero versus positive normalized stride, bounded\nword composition and every copy/seek/clear/reset/input/output cost. Source206\npermits O(P)-state unrolled clocks/O(log P) state bits and arbitrary public\nsize-dependent schedules; do not require a uniform parameter generator.\nSearch existing FixedTapeCompiler/semantic routines before adding code.\nDo not reopen completed source208 or motion200/210 general lower bounds.\n\nNo fresh subagents until all six; then authorized impartial referees and\ncleanup. Original paper read-only; no commits/pushes. No unrestricted\ntranspose decision or novelty claim.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate45% complete (low confidence). This measures the full sixth family, not completion of the coverage helper. The five completed families are adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup remain.",
+  "updated_at": "2026-10-20T23:50:22.893161+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ExceptionalStageClock.lean": "8a942409719b078006c8527656b055774cf97151b2c0bd01d2c6db5cc1506682",
+    "lean/TransposeFollowup/StageFlagLimits.lean": "9afb54c29646bc894d6966cfe39ab2f56eae38cd1f6232fbde6723494fec5689",
+    "lean/TransposeFollowup/ExceptionalCoverageLimits.lean": "85d7ca6ea3a6e56dfd4c4b30a15d83a4c9c5bc7e84388d8b3aca059c195c047e"
+  }
+}

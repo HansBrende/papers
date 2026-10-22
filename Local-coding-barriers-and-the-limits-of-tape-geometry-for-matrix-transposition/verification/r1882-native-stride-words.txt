@@ -1,0 +1,168 @@
+
+R1882 — NATIVE STRIDE WORDS AND SHIFTED STAGE GEOMETRY
+PROGRESS at R1882: arbitrary finite words of forward masked-binary-stride operations now have one proved raw-input native executor with exact semantics, scratch clearing, fixed2 tapes/5 symbols, time<=(7+11K)P for length<=K, and derived o(P) state bits. Exact native head paths at every time are sums of paid delayed stage excursions plus outer IO, including frozen halt. Shifted stage affine covers/errors are verified in both stride regimes, uniformly over all public start times. Five of six original families formalized; regular recursion206/208 best estimate76% complete (low confidence). Mixed palettes and their final bounded-word geometric exclusion remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1882 RESULTS
+1. MaskedStrideWord defines Operation(isPrefix,mask,stride), validity
+   1<=stride<=P, the exact mathematical transform, and the actual schedule
+   and internal result for an arbitrary finite list. The schedule is the
+   existing paid append operation. transform_congr_upto reuses the scan's
+   prefix-dependence theorem. result_spec proves that the actual bank bits
+   equal the composed transform, both heads return to their original
+   coordinates, the entire scratch tape is blank, and external IO fields
+   are preserved. It permits arbitrary starting bank/mode/coordinates.
+   Every stage's clearing and reset are included. The internal cost is
+   <=11*P*length. No external output is recycled as intermediate input.
+2. RawMaskedStrideWord wraps this word with one input load/rewind and one
+   final output sweep. native_correct proves its exact raw output, actual
+   halting and fully blank scratch at time T<= (7+11*length)*P. Fixed
+   resources are2 work tapes,5 symbols, and q+1=4*(T+1). This includes the
+   empty word and arbitrary public modes/masks/strides at every stage.
+3. LinearStateCount.state_bits_of_linear_count is factored from R1881's
+   original-library application, not a new asymptotic chain. It directly
+   uses ORIGINAL stateBits_div_tendsto with zero auxiliary bits and k=0,
+   then Nat.clog_mono_right and squeeze_zero. The existing single-primitive
+   state_bits_vanish now calls this shared result with its unchanged
+   statement. RawStrideWordResources proves G=3 and, for length<=K,
+      q+1 <=4*(8+11K)*P,
+   eventually, and hence clog2(q+1)/P->0 as n->infinity. Validity and the
+   word-length bound may hold eventually; P>=1 follows from input growth.
+4. MaskedStrideWordMotion proves exact data-independent stage paths from
+   arbitrary work configurations. Let N=Scan.ticks(P,S). The bank stage
+   displacement at integer time n is
+      bankPosition(P,S,min(n,N)) - min(n-N-S-S,P);
+   the scratch displacement is
+      scratchPosition(P,S,min(n,N))
+         +min(n-N,S)-min(n-N-S,S).
+   Both paths are0 initially and after the paid stage horizon N+2S+P.
+   For a list op::ops, each head's path is the first stage path at n plus
+   the remaining word path at n-first_stage_ticks. Exact schedule_position
+   and the restored endpoints are proved using append_position. There is
+   no unproved rule for composing physical paths.
+5. RawStrideWordMotion connects these formulas to ORIGINAL native
+   workTraj from blank init at every time, including frozen halt. Its
+   complete path for head t is
+      Word.path(P,ops,t,n-4P)
+      + if t=0 then min(floor((n+1)/3),P)-min(n-3P,P)
+          +min(floor((n-(4P+Word.ticks))/3),P) else0.
+   This includes all raw IO and all stage cleanup/reset costs. The proof
+   uses the original run/stepN identity and workTraj_frozen unchanged.
+6. StrideStageApproximation gives both heads finite affine covers with
+   explicit error at an ARBITRARY public integer start A>=0. The bounded
+   group comparison uses the old processing curves at(t-A), with paid
+   clearing/reset ramps added. If Q=floor(P/S)<=B, both covers have at
+   most9^(B+1)*9 intervals and the unnormalized error is <=2*(Q+2).
+   The small-stride bank comparison is just
+      clippedRamp(P,A,4,t)-clippedRamp(P,A+4P,1,t),
+   with scratch comparison0. Both have9-interval covers and unnormalized
+   error <=7*S+2. The actual comparison is to
+      Stage.path(P,S,head,floor(t)-A),
+   for every real t, including before the stage and after its reset.
+   These estimates hold uniformly in A. Division by P gives the needed
+   vanishing errors in the two usual regimes, without separately choosing
+   convergent start-time subsequences. That final finite-word assembly
+   is not claimed to be proved at this checkpoint.
+
+Seven new modules,53 audited named declarations including definitions and
+interfaces, not53 research discoveries. One existing mathematical module,
+RawMaskedStrideObstruction, is simplified to call the shared state-count
+lemma with all theorem statements unchanged. Other baseline math unchanged.
+Source208/global210.5 and the R1881 single-primitive exclusion remain complete.
+
+DRIFT / REUSE
+Searched for existing list scheduling, native sequencing, bank reversal,
+reflection and rotation interfaces. Existing SequentialFive is for disjoint
+banks, whereas these stages share the same live bank; the existing public
+clock/append compiler already provides the required mechanism. Used it
+without inventing a new machine model. The list proof is a direct induction
+on actual stage schedules and result_spec. Raw IO, initial encoding, native
+prefix/halt refinement and state counts are all reused. The original
+stateBits_div_tendsto remains the sole asymptotic input; its small wrapper
+is now shared by two executors, removing the duplicated R1881 proof body.
+All head algebra is built from existing append_position, scan positions,
+physical erase/rewind, original run and frozen halt. The shifted stage
+approximants reuse processing_curve_shift_covers, bank/scratchCurve_error,
+clippedRamp_sample_error/start_error, ticks_bounds, bankPosition_error and
+scratchPosition_bounds. No new compactness or block-rounding framework.
+The compiled word is a foundation for the mixed source206 palette. A full
+forward-only exclusion must not be mistaken for the required theorem with
+backward scans, reversals, rotations and row/integer/F3 operations. Next
+extend the concrete instruction palette, reusing/generalizing this word
+compiler, and assemble bounded finite-family covers for the mixed words.
+No matching bank-reversal/rotation executor was found in the targeted search;
+existing copy/absolute-tape routines should be reused when constructing it.
+
+
+BOUNDARY
+Arbitrary forward masked-stride words now have a complete native semantic/time/resource compiler and exact whole-run native paths. Shifted internal-stage covers/errors are verified uniformly in start time. The fixed-K subsequence/cover assembly and its high-entropy contradiction are not yet proved for words. Backward/reversal/rotation operations and exact row/integer/F3 palettes still need concrete paid implementations and inclusion in that assembly; source206 is not complete. Source208/global exceptional-work210.5 and the single-primitive R1881 exclusion are complete. Five of six families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transposition result or novelty claim.
+
+NEXT
+R1882 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate76%, low confidence.
+
+NEXT: extend the actual internal-bank palette to raw-bit reversal/rotation,
+then backward scans, while reusing/generalizing the proved word compiler.
+Keep the full source206 mixed-palette target in view; another forward-only
+exclusion is not a substitute for it. The complete word compiler and native
+head paths are now available; do not redo their chains.
+
+Useful concrete reversal candidate (NOT YET PROVED): copy P bank bits to
+blank scratch in2P read/write steps; rewind bank P; move scratch left once;
+read scratch backwards while writing bank forwards and clearing the read
+scratch cell in2P steps; rewind bank P and move scratch right once. This
+has6P+2 steps for P>0, restores both heads, and clears scratch. Reuse
+existing absolute-tape actions/copy/frame lemmas rather than assuming
+bulk copying. Backward masked scans can then be implemented by reversal,
+a forward scan with reflected public masks, and reversal. Prove semantics
+and pay ALL operations. Rotation can use the same temporary bank with
+public segment splits and paid seeks. Existing NativeMicrocode and
+NativeIOEmbedding support finite local-mode and tape embedding as needed.
+
+EXISTING R1882 APIs
+- MaskedStrideWord.Operation/Valid/transform/ticks/schedule/result;
+  transform_congr_upto, schedule_active/exact, ticks_le, result_spec.
+- RawMaskedStrideWord native_correct gives exact output, HaltsAt, total
+  <=(7+11*length)P and blank scratch. fixed_resources gives k2,g+1=5,
+  q+1=4(T+1); bounded_ticks/state_bits_vanish handle fixed K, even with
+  eventual validity/length hypotheses. cellBits_eq gives G3.
+- MaskedStrideBankStage.path/schedule_position/path_zero/path_end/
+  path_after/path_frozen; MaskedStrideWord.path is the recursive sum of
+  delayed stage excursions with corresponding exact position/freeze facts.
+- RawMaskedStrideWord.workTraj_position: exact complete native path, alln.
+- Stage.approximation P S A head t: delayed processing curves and cleanup;
+  approximation_error <=2*(floor(P/S)+2), approximation_cover
+  J=9^(B+1)*9 for floor(P/S)<=B, arbitrary A and H>=0.
+- Stage.smallApproximation P A head t: two ramps for bank, zero scratch;
+  smallApproximation_error <=7S+2 and smallApproximation_cover J9.
+  Both error theorems compare Stage.path(P,S,head,floor(t)-A), allreal t.
+- Shared TransposeFollowup.state_bits_of_linear_count directly reuses
+  ORIGINAL stateBits_div_tendsto. R1881 no_subsequential_physical_affine_fast_approximation
+  remains the eventual native high-entropy endpoint; all normalization
+  has already been proved.
+
+FINITE-WORD GEOMETRY STILL TO ASSEMBLE
+For fixed K, use existing mathlib compactness of the finite vector of
+stride/P ratios (select a constant word-length/type subsequence or use
+proved identity padding). Each occurrence has zero or positive limiting
+stride ratio. Use its corresponding shifted stage comparison, sum the
+finitely many errors and combine covers with existing .add/.sum_range.
+Divide by P via existing .rescale. Add the three outer IO ramps using
+RawMaskedStride.loading_curve_error and clippedRamp_sample_error.
+Because the new estimates hold for arbitrary paid start A, no separate
+start-time convergence is needed. Preserve the actual arbitrary words,
+public masks, raw-bit correct sets, and original inputLength/entryBits.
+Search mathlib/local APIs before adding a compactness or list lemma.
+
+All exact row/integer/F3 palettes remain. Source208/global210.5 complete;
+do not reopen them to defer source206. No new subagents until all six;
+then authorized impartial referees/cleanup. Original paper read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate76% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 now has the complete native recursion/global exceptional-work extension, single-stride exclusion, finite forward-word native semantics/resources/exact paths, and uniform shifted-stage affine estimates. Full mixed source206 palettes and final bounded-word geometric exclusion remain; final independent referees pending.
+
+VERIFICATION
+Full lake build passed10239 jobs without warnings/errors; SupportAxioms audited5293 unique declarations using only propext,Classical.choice,Quot.sound. There are1058 local sources (1057 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and207 validation artifacts. Original117 files and directory inventory unchanged. RawMaskedStrideObstruction refactored to share the original state-bit estimate; other baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

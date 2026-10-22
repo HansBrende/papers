@@ -1,0 +1,11 @@
+{
+  "purpose": "All words of widths0..10 are erased and re-prepared by the finite controller, checking every represented cell, exit and absolute head. An additional test initializes the marker on a blank tape in two steps. Universal execution proofs cover arbitrary widths.",
+  "command": "lake env lean /private/tmp/native_buffer_examples.lean",
+  "exit_code": 0,
+  "checks": [
+    "(2048, 0)"
+  ],
+  "source_sha256": "a7462316482785d4e1db91e2844b86b90f5afa16a306044546d0d9c7a4b936bc",
+  "source": "import TransposeFollowup.NativeBuffer\nopen TransposeFollowup FixedTapeCompiler\nopen CopyMachine\n\ndef bits (m a : Nat) : List Bool := (List.range m).map a.testBit\n\ndef bufferChecks : Nat \u00d7 Nat := Id.run do\n  let mut count := 0\n  let mut failed := 0\n  for m in List.range 11 do\n    for a in List.range (2^m) do\n      let final := NativeZipper.run NativeBuffer.program (4*m+6)\n        (NativeBuffer.cfg (.erase 2) (Counter.marked (bits m a)) (fun _ => -31))\n      let expected : Tape Bool := \u27e8[.start], List.replicate (m+1) .blank\u27e9\n      count := count + 1\n      if !(decide (final.core.pc = .done) && decide (final.core.tapes 0 = expected) &&\n          decide (final.pos 0 = -31)) then failed := failed + 1\n  let initial := NativeZipper.run NativeBuffer.program 2\n    (NativeBuffer.cfg (.erase 0) \u27e8[],[]\u27e9 (fun _ => 31))\n  count := count + 1\n  if !(decide (initial.core.pc = .done) &&\n      decide (initial.core.tapes 0 = (\u27e8[.start],[]\u27e9 : Tape Bool)) &&\n      decide (initial.pos 0 = 31)) then failed := failed + 1\n  return (count, failed)\n#eval bufferChecks\n",
+  "observed_output": "(2048, 0)\n"
+}

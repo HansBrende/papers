@@ -1,0 +1,54 @@
+R1912 FINAL-SOURCE IMPORT REVIEW
+Read-only snapshot: 2026-10-21T22:09:02.214002+00:00
+No Lean/Lake invocation or repository edits by this reviewer. The direct
+Mathlib.Basic.Real.Basic import and explicit Wavelet measurability repair are
+applied. Root reports the focused Wavelet check passed; full final build and
+complete type/axiom checks remain pending at this snapshot.
+
+                                      Baseline       Current
+Mathematical modules                    1,157           896
+Modules reaching full Mathlib             940           456
+Modules avoiding full Mathlib             217           440
+Longest local dependency path             188            81
+Dangling local imports                       0             0
+
+216 same-named surviving old modules now avoid full Mathlib. Tracking baseline
+source units through the composed consolidation map gives 303 baseline units
+whose final destination loses the full aggregator. The earlier unmerged
+proposal's 341 is not the final result: merging some lighter files into heavier
+routines restores their larger environment. Consolidation changes the population
+of files, so subtracting whole file counts is not a proof-unit comparison.
+Reusable native Core modules avoid the original full run theory; compatibility
+bridge modules retain it where its vocabulary is actually required.
+
+SOURCEENDPOINTSMEANING
+                                      Baseline       Current
+Parsed dependency vertices               8,941         3,282
+Mathlib vertices                          8,530         2,989
+Local dependency modules                    122            67
+Original-paper modules                       40             1
+Other external modules / leaf imports       249           225
+Full Mathlib aggregator reachable           yes            no
+
+The direct current prerequisites are SeedMultipleMeaning and NativeErase.
+Only the original core-only Transpose.Statement remains from the sibling paper.
+The original full-Mathlib paths through Transpose.Tape.Defs and MStarAnalysis
+are absent. Removing the deprecated alias subtracts one Mathlib vertex from the
+previous 3,283-vertex snapshot. The final file has twenty original module bodies
+and 2,226 lines, compared with the former terminal file's 104 lines.
+
+The restored final target ordinary Lake build passed in 13.3034 seconds,
+reporting 3.553 GB maximum RSS. The earlier 62.774-second pilot checks five
+original source bodies, while this final target checks twenty; see the separate
+performance summary for the exact comparison and qualifications. No whole-build
+speed ratio is inferred. Concurrent mixed-size live-build samples in the JSON
+are descriptive only and must not be summed or used as controlled A/B medians.
+
+METHOD
+Nested comments and strings are stripped; compound public/meta imports are
+recognized. Local, original-paper and pinned Mathlib sources are expanded.
+Other packages and Lean core remain leaf vertices. These are parsed source-graph
+counts, not loaded .olean counts, memory measurements, proof sizes or Lake job
+counts. The accompanying actual local graph check is acyclic and has no missing
+local-module references. Source hashes and the current live build-log snapshot
+are recorded separately; this review does not certify the pending full build.

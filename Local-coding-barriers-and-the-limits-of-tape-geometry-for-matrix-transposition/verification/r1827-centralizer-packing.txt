@@ -1,0 +1,59 @@
+R1827 — CENTRALIZER CHART, EXPLICIT INVERSE AND CONDITIONAL CUBIC PACKING
+
+In progress. R1827 proves explicit positive-trace centralizer chart estimates, a two-point remainder for triple products, a quantitative inverse estimate under a specified nondegenerate frame, and a cubic packing corollary using native external covering numbers. Four modules add ten theorems and no definitions. The estimates use no inverse discriminant and include nilpotent directions. The conditional local inverse-and-packing proof is complete; selecting its frame and retaining enough actual commuting parameters remain open. No fourth original theorem family is complete.
+
+EXACT STATEMENTS
+All two-by-two matrix norms and distances below are the native Frobenius ones; parameter vectors use the supremum norm. The identity has norm sqrt(2), bounded by 2 in the proof, never incorrectly set to 1.
+
+1. POSITIVE-TRACE CENTRALIZER CHART.
+Let b be a real traceless two-by-two matrix. For u=cI+t b in SL2(R),
+  c^2+det(b)t^2=1.
+If M>=1, 0<=r<=1, norm(b)<=M, |det(b)|<=M, and
+  u=cI+t b, v=pI+q b are in SL2(R), c,p>=1/2, |t|,|q|<=r,
+then
+  norm(u-I),norm(v-I)<=3Mr,
+  norm(u-v)<=5M|t-q|,
+  norm(u-v-(t-q)b)<=4Mr|t-q|.
+The more precise separate coefficient and matrix bounds are also proved. No division by det(b) or by a discriminant is used.
+
+2. TRIPLE-PRODUCT REMAINDER.
+In any normed ring with norm(1)<=2, if r<=1, all u_i,v_i lie within r of 1, and all norm(u_i-v_i)<=Y, i=0,1,2, then
+  norm(u0u1u2-v0v1v2-sum_i(u_i-v_i))<=12rY.
+The proof is an exact ordered telescoping identity plus existing norm inequalities.
+For three centralizer charts as in (1), with 3Mr<=1, put
+  U=u0u1u2-v0v1v2,
+  L=sum_i(t_i-q_i)b_i, N=norm(t-q).
+Then norm(U-L)<=192 M^2 r N.
+
+3. EXPLICIT FRAME INVERSE.
+Let T be a real four-by-four matrix whose columns 1,2,3 are the four matrix coordinates of b0,b1,b2. Column0 is arbitrary. Assume every |T_ij|<=M, d>0, |det(T)|>=d, and
+  36864 M^6 r<=d.
+With the preceding chart assumptions,
+  norm(t-q)<=192 M^4/d * dist(u0u1u2,v0v1v2).
+This reuses MatrixFour.mulVec_inverse_bound (96 M^4/d) and absorbs the explicit nonlinear remainder. It does not assert that such a T has been selected from our original matrix set.
+
+4. CUBIC PACKING.
+Let F be a finite set of real parameters. For each i=0,1,2 and x in F, let u_i(x)=c_i(x)I+x b_i be in SL2(R), with c_i(x)>=1/2 and |x|<=r. Assume the same frame and radius bounds, eta>=0, and
+  |x-y|>384 M^4 eta/d for distinct x,y in F.
+For S={u0(x0)u1(x1)u2(x2):x0,x1,x2 in F},
+  N_eta(S) is finite and N_eta(S)>=|F|^3.
+The actual map is injective and its distinct outputs have distance>2eta. The theorem also permits empty F and eta=0. It uses mathlib's externalCoveringNumber and the existing separated-sample comparison, not a new covering-number definition.
+
+BOUNDARY
+The frame is a hypothesis. R1827 does not yet select conjugating words g,h from the same actual A, prove a quantitative lower bound for the frame of b,Ad_g(b),Ad_(gh)(b), or retain a large enough localized scalar sample. Those are the next substantive obligations. The inverse radius is explicitly limited by r<=min(1,1/(3M),d/(36864M^6)); any localization loss, separation coarsening, approximation error and right-translation distortion must be paid. The R1826 mixed sum remains Y+D X with an upper bound relative to an actual ambient matrix power, not automatically X+aX or a bound relative to the smaller commuting sample. R1825 normalized concentration for A cannot silently be inherited by a smaller extracted set. Full actual-family parameter composition, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain. These reused/adapted analytic ingredients carry no novelty claim.
+
+NEXT
+The preceding goal turn is PROGRESS. R1827 is recorded; never replay its checkpoint. The local chart, triple-product remainder, explicit inverse and conditional cubic packing are complete. Read verification/r1827-centralizer-packing.txt and verification/library-reuse-audit-r1827.json. Full10066-job build and4491-declaration audit passed, standard axioms only. No live Lake handle. Do not rebuild this inverse or packing chain.
+
+NEXT CONCRETE TARGET: quantitative selection of an adjoint-direction frame for the SAME noncentral generator of the extracted commuting family. Seek g,h in fixed bounded powers of the actual A such that I,b,Ad_g(b),Ad_(gh)(b) have a determinant lower bound with explicit dependence on the actual escape certificate and size of b. Establish the exact hypotheses from existing SL2Escape/SL2SpanCertificate certificates. Mere matrix-algebra spanning by p,q,pq is not by itself a proof of the required adjoint span. Check possible invariant lines/planes and the nilpotent case; do not divide by a discriminant without handling zero. A polynomial contrapositive from the existing quantitative escape tests may avoid eigenbases.
+
+Then choose a localized parameter set with an explicitly proved retained cardinality and spacing, so the verified conditions 3Mr<=1 and36864M^6r<=d hold. For VgVhV, right normalization gives three conjugated centralizers; charge the translation distortion, conjugation bounds, actual word lengths and approximation error. No qualitative inverse-function theorem supplies these quantitative costs automatically.
+
+R1825 already proves normalized concentration for a separated sample of A itself. R1826 already proves real centralizer trace algebra and transfer of independent mixed sums to actual words. R1827 supplies cubic packing under explicit frame/radius/spacing hypotheses. Compose these rather than producing more generic substitutes. Do not infer normalized concentration for the much smaller V solely from the A bound. Keep spread and concentrated-cluster branches distinct until their actual hypotheses are certified.
+
+The scalar projection endpoint remains imported from openai/math commit1581d4cbdd69a0faf34b2089614fe2a814316a6a,204 unmodified sources. Source reuse searches found no ready-to-import real SL2 quantitative product-growth endpoint in the inspected code; that is a bounded search, not a global absence claim. Check applicable library interfaces before any new generic chain.
+
+Continue fixed-family budgets before k/family selection; adapt the fixed-word envelope to the length actually used. All six theorem families remain required. No protected original edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current local centralizer inverse-and-cubic-packing proof under an explicit frame hypothesis is 100% verified by the full build and axiom audit. Three of six original theorem families are formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain. Fifty percent is only the family count, not an effort or time estimate. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion 200/210 and recursion 206/208 remain unstarted.

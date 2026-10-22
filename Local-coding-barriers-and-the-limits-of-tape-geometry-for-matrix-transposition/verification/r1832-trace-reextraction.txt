@@ -1,0 +1,62 @@
+R1832 — SECOND EXTRACTION AND TRACE-CUBIC THRESHOLD
+
+In progress. R1832 proves the quantitative trace-cubic bound by reusing trace-driven extraction with the ORIGINAL conjugating set A, the whole-family cubic bound, and actual approximate-group product envelopes. A candidate set D may be any nonempty subset of A^k that is near I and quantitatively separated from I. No commuting-family size or scalar-growth conclusion is assumed. One module adds one theorem. This closes the scoped scalar-to-matrix gain mechanism: exceeding the explicit trace threshold gives a contradiction. Producing sufficient trace amplification and the fourth original theorem family remain incomplete.
+
+EXACT STATEMENT
+TRACE-CUBIC BOUND WITH ACTUAL PRODUCT ENVELOPES.
+The new theorem is trace_reextraction_cubic_bound in TraceReextractionCubicBound.lean.
+Let U be a symmetric subset of SL2(R) whose entries are bounded by Q>=1. Let finite Y be contained in U^2 and U^2 be contained in Y*U. Set A=U^2 intersect the Frobenius identity ball of radius alpha, assume I belongs to A and A is symmetric. Assume0<alpha<=1 and2*5^34*alpha<=1. Let p,q,pq belong to A^34 and assume |det(pairSpanMatrix(p,q))|>=d0>0.
+Let D be NONEMPTY, contained in A^k, and contained in the open identity ball of radius1/2. Every g in D satisfies dist(g,I)>=r0>0. Let eta,sigma>0 and819200*eta<=r0.
+The cubic chart parameters retain their explicit obligations:
+  M>=1 and M>=128*(4^68)^2;
+  delta>0,0<=r<=1,72*delta<=1,72*delta<=(r0/8)*r;
+  d>0 and d<=(r0/8)^3/[3456*(96*(4^34)^4/d0)^3];
+  3Mr<=1,36864*M^6*r<=d;
+  90M*(384*M^4/d)*eta<=2sigma.
+Write N=N_eta(A), T=trace(D), where all covers are native external covering numbers. Define
+  P(n)=(8*(2Q)^(4n+3)+1)^4 * |Y|^(2n+1) * (33^4 Q^8/alpha^4),
+  H=(102400*2^7/r0+17)^4,
+  C=6561*(4sigma/eta+1)^4,
+  L=binCount(9,delta)^4,
+  R=4^68, epsilon=819200*eta/r0,
+  E=[4*(20*(2R)^10*epsilon+2R*eta)/eta+1]^4.
+Then N_eta(T),N_eta(A) are finite and
+  N_eta(T)^3 <= (9*P(k+1)*H)^3 * 4*(C*L)^3 * (E*P(141)*N+1).
+The displayed losses are not automatically constants independent of eta. This is an explicit quantitative threshold, not an unconditional claim that every bounded word set has trace size O(N^(1/3)). No assumption that D has a large matrix covering number is needed.
+
+PROOF COMPOSITION.
+1. The existing extraction theorem uses independent sets A and D. Apply it with entry bound2. It produces a generator g in D and exact commuting approximants f(x) to base^-1*x for base,x in A, with error epsilon. The error budget gives epsilon<=1. Actual source entries are at most8, hence approximant entries are at most9.
+2. Existing extraction gives N_eta(T)*N <=9*N_eta(A D A^-1)*H*N_eta(V).
+3. D subset A^k and symmetry give A D A^-1 subset A^(k+2). The existing arbitrary-power envelope at n=k+1 gives N_eta(A D A^-1)<=P(k+1)*N. Mathlib positivity of the external covering number, finiteness and I in A establish N>0, allowing cancellation. Thus N_eta(T)<=9*P(k+1)*H*N_eta(V).
+4. Apply commuting_family_cubic_bound to this SAME extracted family and the original spanning frame. Its source words are in A, and its generator is the same g in D, so all hypotheses match without pretending exact approximants are actual words.
+5. Apply the actual A^142 envelope at n=141. Cube the trace inequality and substitute the cubic bound. The additive1 retains the small-cardinality case.
+
+This result uses no diagonalization and no lower bound on the discriminant of the centralizer generator. It therefore does not exclude a nilpotent generator. It also does not itself supply scalar amplification, distribution of scalar coordinates, or control of all scale exponents. No novelty is claimed for this adaptation.
+
+SOURCE CHECK / STRATEGY CORRECTION.
+Bourgain--Yehudayoff, Monotone expansion, section5.5 uses trace amplification followed by another commuting extraction and cubic packing. Sections5.2/5.5 use fixed-matrix scalar ring amplification; they do not require the varying lambda_g family proposed in R1831. Source: https://arxiv.org/pdf/1108.2555 (pp25-27,33-34). Our existing independent-set extraction allows the original A to remain the conjugating set, which yields the simpler verified composition above.
+
+DRIFT CHECK.
+This step closes an identified mathematical composition, rather than adding a new extraction hypothesis. The actual product envelopes, original source set, unchanged frame, approximation error and positive ambient covering number are all discharged in the proof. The resulting bound states exactly how large a trace image must become. Merely obtaining a scalar set larger than the FIRST commuting family is still insufficient unless that growth exceeds these losses after all scales are chosen.
+The R1831 coefficient route is optional and is not a prerequisite for the source method. Its nilpotent collapse is a limitation of that identity's coefficient family, not of all scalar amplification. Next focus on actual fixed-g scalar arithmetic and reuse the imported scalar Ruzsa/coefficient/projection results. Stop and change the route if the retained scalar set cannot meet the required nonconcentration or trace threshold. Do not rebuild the cubic size chain or re-extraction bridge.
+
+BOUNDARY
+R1832 verifies a trace-cubic threshold for actual D subset A^k under explicit near-identity/separation, frame and chart budgets. The scalar-to-matrix contradiction mechanism is closed in that scope. A trace-rich actual candidate D, scalar regularization/nonconcentration, fixed-g scalar amplification including nilpotent/near-nilpotent cases, approximation and center-separation transfer, and the quantitative exponent budget remain. Group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete. No supporting adaptation is claimed novel.
+
+NEXT
+The preceding goal turn is PROGRESS. R1832 is recorded; never replay its checkpoint. Full10084-job build and4535-declaration audit passed; standard axioms only; no live Lake handle. Read verification/r1832-trace-reextraction.txt and verification/library-reuse-audit-r1832.json.
+
+REUSE THE CLOSED BRIDGE.
+trace_reextraction_cubic_bound now combines extraction with the original A, its SAME frame, actual source-word approximation, cubic packing and actual envelopes. Its explicit trace threshold is the target to beat. Do not redo the cubic upper bound or assume that scalar growth relative to V alone automatically beats it.
+
+NEXT SUBSTANTIVE TARGET: fixed-g scalar arithmetic and a usable ring/projection amplification, starting with the nilpotent obstruction as a diagnostic.
+- The source method uses a fixed g and scalar ring expansion, rather than requiring a nonconcentrated family lambda_g. Reconsider the R1831 varying-coefficient plan accordingly.
+- Reuse scalarAffine_mul, scalarAffine_eq_smul_add, scalarAffine_trace, the chart estimates, actual spanning/trace separation and existing product-error/trace-cover lemmas. For trace(b)=det(b)=0 and positive normalized unipotents u(t)=I+t*b, inspect trace(u(t)u(q)g) and trace(u(t)g u(q)g^-1). These should encode scalar addition and multiplication with a fixed g. This is a NEXT target, not a theorem verified in R1832. A quantitative nonzero coefficient must follow from actual bounded words; do not assume it.
+- Inspect already imported OAI scalar_ruzsa_triangle, scalar coefficient add/mul/closure and projection results before building a ring-growth chain. The scalar projection theorem may be usable with a coefficient family obtained from the scalar set itself, rather than lambda_g. All domain, separation, density and nonconcentration hypotheses must actually be proved.
+- Separate the exact nilpotent case, near-nilpotent errors and nondegenerate case explicitly. No unquantified diagonalization or spectral gap. If a short correct direct route fails, record the precise obstruction and choose a concrete alternative rather than adding unused infrastructure.
+- Charge the actual word length and errors, near-identity and separation from I, then compare the resulting trace lower bound to the R1832 threshold. D need not have cubic matrix mass because the original A handles conjugation.
+
+User reporting correction: percentages must refer to the current ORIGINAL paid-padding proof, not a recently isolated lemma. There is no calibrated numerical percentage/ETA for that proof; report this honestly and state its concrete remaining dependencies. Three original families are formalized; final referees follow all six. Reuse read-only original/external adapters. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current original theorem family is paid padding201/202. Its percentage complete and remaining time are NOT calibrated: machine implementation and several analytic reductions are verified, but product growth, strict flattening and the unconditional expansion/gap step remain substantial. Do not substitute a percentage for one local lemma as the percentage for this original proof. The R1832 trace-cubic theorem is fully verified. Three of six original families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Fifty percent is only a family count. Motion200/210 and recursion206/208 remain unstarted.

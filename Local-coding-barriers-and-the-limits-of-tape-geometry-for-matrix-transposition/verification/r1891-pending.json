@@ -1,0 +1,72 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1890",
+  "target": "Regular recursion206/208: clean native integer row bank.",
+  "new_modules": [
+    "ScheduledBankCleanup",
+    "ZipperListCells",
+    "RawRowArithmeticBank",
+    "RawRowBankNative"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledBankCleanup.ticks",
+    "TransposeFollowup.ScheduledBankCleanup.schedule",
+    "TransposeFollowup.ScheduledBankCleanup.run",
+    "TransposeFollowup.ScheduledBankCleanup.schedule_active",
+    "TransposeFollowup.ScheduledBankCleanup.schedule_exact",
+    "TransposeFollowup.ScheduledBankCleanup.run_position",
+    "TransposeFollowup.ScheduledBankCleanup.run_cells",
+    "TransposeFollowup.ScheduledBankCleanup.run_io",
+    "TransposeFollowup.ScheduledBankCleanup.run_clean",
+    "TransposeFollowup.ZipperListCells.blank_front",
+    "TransposeFollowup.ZipperListCells.front_nat",
+    "TransposeFollowup.ZipperListCells.front_outside",
+    "TransposeFollowup.ZipperListCells.right_iterate_cells",
+    "TransposeFollowup.ZipperListCells.end_cells",
+    "TransposeFollowup.RawRowArithmetic.bankTicks",
+    "TransposeFollowup.RawRowArithmetic.bankSchedule",
+    "TransposeFollowup.RawRowArithmetic.bankRun",
+    "TransposeFollowup.RawRowArithmetic.bankStart",
+    "TransposeFollowup.RawRowArithmetic.bankOutput",
+    "TransposeFollowup.RawRowArithmetic.bank_active",
+    "TransposeFollowup.RawRowArithmetic.bank_exact",
+    "TransposeFollowup.RawRowArithmetic.bank_seed",
+    "TransposeFollowup.RawRowArithmetic.bank_spec",
+    "TransposeFollowup.RawRowArithmetic.bank_ticks_eq",
+    "TransposeFollowup.RawRowArithmetic.bank_ticks_linear",
+    "TransposeFollowup.RawRowArithmetic.bank_resources",
+    "TransposeFollowup.RawRowArithmetic.bank_native_complete",
+    "TransposeFollowup.RawRowArithmetic.bank_native_spec"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8975,
+      "log": "/private/tmp/r1891-dev6.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10286,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5643,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1891 dev1 session69322: exit1; explicit tape cast/default normalization and schedule import needed.\nR1891 dev2 session71424: exit1; corrected the mistaken import name and integer constructor normalization.\nR1891 dev3 session82041: exit0,8960 jobs,no warnings.\nR1891 dev4 session2496: exit1; explicit structure congruence and cells unfolding fixed.\nR1891 dev5 session54667: exit1; seed tape equality required explicit matrix-index reduction.\nR1891 dev6 session13802: exit0,8975 jobs,no warnings.\nR1891 fullbuild session89895: exit0,10286 jobs,no warnings.\nR1891 axiom audit session23355: exit0,5643 unique declarations,no warnings,standard axioms only.\nAll executions terminal. No Lean edits or overlapping Lake calls while a Lake handle was live.",
+  "formal_checkpoint": "R1891 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1105 local sources,204 external sources,5643 declarations,8 configurations,225 artifacts",
+  "proof_scope": "PROGRESS at R1891: the complete clean integer-row bank subroutine is checked in the original native TM. Its exact cost is8P+2W for nonempty W-bit rows,P=rW, hence at most10P for a nonempty bank; it restores both heads, clears scratch, preserves arbitrary surrounding bank cells and external IO. Two tapes,five symbols,50*(bankTicks+1) control states. Five of six original families formalized; regular recursion206/208 best estimate86% complete (low confidence). Whole-bank affine approximation, shared raw IO and the remaining integer/F3 operations still remain.",
+  "next": "R1891 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate86%, low confidence.\n\nNEXT: THE ACTUAL CLEAN BANK'S HEAD-PATH APPROXIMATION, THEN SHARED RAW IO.\nRawRowArithmetic.bank_spec/bank_native_spec are DONE, including actual\nblank seed, all surrounding bank cells, buffer clearing, both head resets\nand external IO preservation. bankTicks=8P+2W<=10P for W,r>0,P=rW.\nDo not rebuild row arithmetic, repeated rows, cleanup or native endpoints.\nThe resource count is2 tapes,5 symbols,50*(bankTicks+1) states. Once\ncomplete raw-body time is linear, reuse state_bits_of_linear_count; do not\ncopy the state-bit chain from RawBankProgramResources.\n\n1. Prove the actual row-loop paths are withinO(W) of the bank's straight\n   scan and buffer's stationary path. Each row costs7W, advances bankW\n   and restores buffer; ScheduledNativeIO.trajectory_displacement bounds\n   all intermediate motion. The schedule's movement is independent of\n   the carry data. CoupledRowCell.cell_positions and the existing seek\n   refinements can establish endpoint movement for arbitrary states if\n   useful. Reuse ScheduledWord/append trajectory identities and the\n   already checked row endpoints. Do not require a second growing-stride\n   compactness chain. W/P=1/d->0 supplies the approximation error.\n   Cleanup is three existing affine scan phases: buffer rightW,leftW,\n   bank leftP. Reuse clippedRamp and HasAffineIntervalCover operations.\n   Keep all prefix times and the frozen halted tail in the final statement.\n2. Share raw loading/emission. ScheduledRawInput/Output and RawBankProgram\n   use the earlier Bool*Bool mode; the coupled row mode is\n   Bool*Sym Bool*Sym Bool. NativeIOEmbedding.step_embed/trace_embed are\n   already proved. Lift the old finite IO mode into the larger mode or\n   factor a small generic mode interface so both clients share the IO\n   proofs. Any required reset is a paid native jump. Do not copy the entire\n   raw IO, halting, state-bit or affine wrapper chain into a parallel one.\n   Existing bank_spec accepts arbitrary bank prefix/suffix, all positions\n   and all incoming modes, so it has not restricted the bank to empty\n   surroundings. Existing BankWord.Interface/Represents is generic in\n   mode and alphabet value. Use it when composing operation words.\n\nRemaining source206(a): row XOR/difference, row-order reversal, entry-order\nreversal preserving within-entry bits, row-dependent entry rotations,\nwhole-bank increment/decrement modulo2^P. Source206(b): exact F3 row/column\nprefix/difference, row/column reversal, row rotations, diagonal signs and\nwhole-entry-stream rotation. Use CoupledRowCell's arbitrary work-symbol\nupdate table and symbol-preserving ScheduledTransfer where possible.\nThe existing5-symbol alphabet represents trits0,1,2 on unmarked banks;\nno new alphabet/compiler is needed. Avoid binary decoders on trit2.\nCheck shared row interfaces before repeating arithmetic-wrapper proofs.\n\nSource206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and\n210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,\nbounded operation words and correctness sets of coentropy o(P). Referees\nonly after all six original families complete. Original read-only;\nno commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate86% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1891 closes initialization/cleanup/rewind and native execution for integer row-prefix/difference bank updates. Complete operation families and final impartial referees remain.",
+  "updated_at": "2026-10-21T06:38:35.381542+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScheduledBankCleanup.lean": "5106f7b438e54ed75adac6ea0f5ecd806048925cc82d0dd32d744e02a17408ca",
+    "lean/TransposeFollowup/ZipperListCells.lean": "794ab034ee3dde586abd5c6742053788a740a04eb3778b3c1d556ebc39882b6a",
+    "lean/TransposeFollowup/RawRowArithmeticBank.lean": "2528a30049ee407b1986c8a2983a4426b96fb79d5d90f522942024255b2dce6d",
+    "lean/TransposeFollowup/RawRowBankNative.lean": "763f1ab4db02ada136b897f2babf75735733e0a2329965e7279914a70ff4b82c"
+  }
+}

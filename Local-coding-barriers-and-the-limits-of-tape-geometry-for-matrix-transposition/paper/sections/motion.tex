@@ -1,0 +1,644 @@
+\section{Affine motion and exceptional physical time}
+\label{sec:motion}
+
+The motion obstruction concerns actual work-head trajectories, including
+setup and cleanup.  We derive a quantitative consequence of the first paper's
+limiting inequality \cite{FirstPaper2026}, then transfer it to native
+executions.  This provides the lower-bound criterion used to exclude the
+concrete palettes and recursive schedules in Section~\ref{sec:motion-applications}.
+
+\subsection{The crossing convention and the affine-time bound}
+
+Write $\lambda$ for Lebesgue measure.  For a path $q:[0,H]\to\mathbb R$ and a
+height $p$, let $\Lambda_q(p)=\{u\in[0,H]:q(u)=p\}$.  Two visits $u<v$ are
+consecutive if no member of this \emph{full} level set lies strictly between
+them.  For an excision set $S$ and a label $\beta:\mathbb R\to\mathbb N$, let
+$\kappa_q(p;S,\beta)$ count consecutive pairs with both endpoints outside $S$
+and with different labels.  As in the first paper, this count is defined to
+be zero when $\Lambda_q(p)$ is infinite.  In particular, removing $S$ does not
+create new consecutive pairs.
+
+A label is admissible off $S$ if there is a finite set $Z$ such that it is
+constant on every closed subinterval of $[0,H]\setminus(S\cup Z)$.  The values
+at the finitely many breakpoints are unrestricted.  All crossing integrals
+below are nonnegative Lebesgue integrals, with values in $[0,\infty]$.
+
+\begin{definition}[The restricted star condition]
+\label{def:motion-star}
+For $k$ paths $q_t:[0,H]\to\mathbb R$, write $\mathcal S(q,H)$ if, for every
+$0<\theta<1/2$, every finite union $S$ of closed intervals, and every admissible
+label $\beta$ whose classes off $S$ have measure at most $\theta$,
+\begin{equation}
+\label{eq:motion-star}
+  1\le \sum_{t=1}^k\int_{\mathbb R}\kappa_{q_t}(p;S,\beta)\,dp
+       +2\theta+2k\lambda(S\cap[0,H]).
+\end{equation}
+A set $R_t\subseteq[0,H]$, open in $\mathbb R$, is an affine regular region
+for $q_t$ if every point of $R_t$ has an open neighborhood contained in $R_t$
+on which $q_t$ is affine.  The affine coefficients may depend on the
+neighborhood and the head.
+\end{definition}
+\formal{FiniteAffineTimeBound}{TransposeFollowup.AffineMotion.SatisfiesStar}
+\formal{NativeAffineMotion}{TransposeFollowup.AffineMotion.AffineTimeRequired}
+
+The original $M^*$ conclusion implies $\mathcal S$; this restriction suffices
+for the obstruction below.  The padding theorem retains the full original
+condition.  Second countability gives each regular region a countable open
+affine cover, so countability is not an additional assumption.  The cover
+sets need not be intervals or form a partition.
+
+\begin{theorem}[Quantitative affine-time obstruction]
+\label{thm:motion-affine-time}
+Let $H\ge0$, let each $q_t$ be $1$-Lipschitz on $[0,H]$, and assume
+$\mathcal S(q,H)$.  For any affine regular regions $R_1,\ldots,R_k$,
+\begin{equation}
+\label{eq:motion-half}
+  \sum_{t=1}^k\lambda([0,H]\setminus R_t)\ge\frac12.
+\end{equation}
+The same conclusion holds when each $R_t$ is open and $q_t$ is affine on each
+connected component of $R_t$.  If $k>0$ and a common region $R$ works for every
+head, then $\lambda([0,H]\setminus R)\ge1/(2k)$.
+\end{theorem}
+\formal{OpenAffineTimeBound}{TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission,TransposeFollowup.AffineMotion.star_half_le_affine_component_omission,TransposeFollowup.AffineMotion.star_common_affine_omission}
+
+\begin{proofoutline}
+The labeling argument proves the following intermediate statement, which
+does not require $\mathcal S(q,H)$.
+For countable open affine covers $R_t=\bigcup_j U_{t,j}$, and any positive
+$\theta,\varepsilon$, there is \emph{one} admissible measurable label $\beta$
+with class measures at most $\theta$ such that
+\begin{equation}
+\label{eq:motion-small-cut}
+ \sum_t\int\kappa_{q_t}(p;\varnothing,\beta)\,dp
+ <2\sum_t\lambda([0,H]\setminus R_t)+\varepsilon.
+\end{equation}
+For finitely many nonconstant affine branches, inverse visits at a common
+height are affine functions of that height.  Bound retained crossing pairs
+by all ordered pairs of inverse branches and push their height measures to
+pairs of times.  The resulting measures have explicit marginal bounds.
+Finite families of invertible affine transformations admit finite sets of
+transformations with arbitrarily small relative boundary.  A fine grid and
+a common priority labeling of those sets make both label classes and the
+measure of disagreeing pairs small.  Grid collisions and finite boundaries
+are charged separately.  The finitely many constant-branch heights have
+measure zero; their time intervals are retained.
+
+For a finite initial subfamily of the open cover, the complement in $[0,H]$
+is compact.  Deleting its visits
+can affect at most two consecutive pairs per deleted visit.  A measurable
+visit-count majorant for a $1$-Lipschitz path bounds the integrated charge by
+twice the complement's length.  This uses the original full-level adjacency
+relation, without asserting that a clipped path has the same crossings.
+Finite-prefix complements decrease to the actual omitted set, so continuity
+of finite measure proves \eqref{eq:motion-small-cut} for countably many
+branches.  Substituting the common label into \eqref{eq:motion-star} with
+$S=\varnothing$, then sending $\theta,\varepsilon$ to zero, yields
+\eqref{eq:motion-half}.  A countable cover of any locally affine open region
+finishes the general case.
+\end{proofoutline}
+\formal{CountableAffinePathLabels}{TransposeFollowup.AffineMotion.exists_countable_affine_path_cut_bound}
+\formal{FiniteAffineLabels}{TransposeFollowup.AffineMotion.exists_finite_affine_small_cut}
+\formal{OmittedVisitBound}{TransposeFollowup.AffineMotion.lintegral_levelCross_delete_le}
+
+Theorem~\ref{thm:motion-affine-time} quantifies the time a candidate must
+leave outside its affine regions, even with countably many regions and
+slopes of either sign, including zero.  The bound sums head-specific omitted
+measures; it does not require a common exceptional set for all heads.
+
+\subsection{Native normalization and correct-input quantifiers}
+
+For the native results, let $d_i\to\infty$. After discarding a finite prefix,
+assume $d_i\ge1$. Put
+$b_i=\max(1,\lceil\log_2 d_i\rceil)$, and $P_i=d_i^2b_i$.  Let $M_i$ be
+native finite multitape machines with a fixed number $k$ of work tapes and a
+fixed cell charge $G=\operatorname{cellBits}(M_i)\ge1$.  If $Q_i$ is the number
+of finite-control states, assume
+\begin{equation}
+\label{eq:motion-control}
+  \frac{\lceil\log_2 Q_i\rceil}{P_i}\longrightarrow0.
+\end{equation}
+Let $W_i$ be correct-input sets and $m_i\in\mathbb N$ satisfy, eventually,
+\begin{equation}
+\label{eq:motion-entropy}
+  2^{P_i}\le 2^{m_i}|W_i|,\qquad m_i/P_i\longrightarrow0.
+\end{equation}
+Every member of $W_i$ must be the raw row-major binary encoding of a
+$d_i\times d_i$ matrix, and the machine must actually halt with the raw
+encoding of its transpose.  When we assume a fast execution, this halting
+must occur by $cP_i$ ticks for one constant $c$.  All these input and time
+conditions may hold only eventually in $i$.  There is no condition on inputs
+outside $W_i$, and the machines themselves may vary with $i$.
+
+Let $h_{i,t}^{w}(m)\in\mathbb Z$ be the position of work head $t$ after $m$
+actual ticks on input $w$.  The native trajectory is frozen after halting.
+Physical time and space are measured in units of $P_i$:
+\begin{equation}
+\label{eq:motion-physical}
+  f_{i,t}^{w}(s)=\frac{\widetilde h_{i,t}^{w}(P_i s)}{P_i},
+  \qquad
+  \widehat f_{i,t}^{w}(s)=\frac{h_{i,t}^{w}(\lfloor P_i s\rfloor)}{P_i},
+\end{equation}
+where $\widetilde h$ is any $1$-Lipschitz extension agreeing at integer ticks.
+Such an extension exists, and the two expressions differ by at most $1/P_i$
+for $s\ge0$.
+
+The block normalization in \cite{FirstPaper2026} is different at finite size.
+Put $r_i=\lceil d_i b_i/G\rceil$.  Its actual block trajectory is
+\[
+  B_{i,t}^{w}(u)=\frac1{d_i}
+     \left\lfloor\frac{h_{i,t}^{w}(r_i\lfloor d_i u\rfloor)}{r_i}\right\rfloor,
+\]
+where the outer floor is the integer block index, also for negative head
+positions.  The proved comparison is
+\begin{equation}
+\label{eq:motion-normalization-error}
+ \left|f_{i,t}^{w}(u/G)-B_{i,t}^{w}(u)/G\right|
+ \le \frac{2(u+1)}{d_i}\quad(u\ge0).
+\end{equation}
+Thus a block limit $q_t$ corresponds to the physical limit
+$f_t(s)=q_t(Gs)/G$, although the finite trajectories differ.
+
+\begin{theorem}[Physical units and native limiting paths]
+\label{thm:motion-native-limits}
+Under \eqref{eq:motion-control}--\eqref{eq:motion-entropy} and fast correct
+halting, there are representatives $w_i\in W_i$ eventually and a subsequence
+whose block trajectories converge uniformly on $[0,cG+1]$.  Every uniform
+subsequential limit of these representatives is $1$-Lipschitz and satisfies
+\eqref{eq:motion-half}.  For the corresponding physical limits on
+$[0,c+1/G]$, any affine regular regions satisfy
+\begin{equation}
+\label{eq:motion-physical-budget}
+  \sum_{t=1}^k\lambda([0,c+1/G]\setminus R_t)\ge\frac1{2G}.
+\end{equation}
+A common regular region, when $k>0$, omits at least $1/(2kG)$ physical time.
+The assertion includes a fixed uniform machine as a special case.
+\end{theorem}
+\formal{NativeAffineMotion}{TransposeFollowup.AffineMotion.popular_affine_time_nonuniform,TransposeFollowup.AffineMotion.popular_affine_time_robust,TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission}
+\formal{AffineTimeScaling}{TransposeFollowup.AffineMotion.star_physical_common_affine_omission}
+\formal{NativePhysicalLimits}{TransposeFollowup.RegularMotion.native_sampled_physical_limit}
+\formal{CanonicalTimeNormalization}{TransposeFollowup.RegularMotion.canonical_physical_error}
+
+\begin{proofoutline}
+The popular-trace theorem of \cite{FirstPaper2026} supplies actual trace
+classes $F_i\subseteq W_i$ with representatives $w_i$, common halting times,
+and integer deficits $D_i$ satisfying
+$D_i\le m_i+C_0d_i b_i$ eventually, for a fixed trace-count constant $C_0$.
+Consequently $D_i/P_i\to0$.  Its native compactness and $M^*$ theorem applies
+to these classes; Theorem~\ref{thm:motion-affine-time} then applies to every
+eligible limit.  The estimate \eqref{eq:motion-normalization-error} transfers
+uniform convergence to physical paths, including all phases of execution
+and the frozen halting tail.  Finally the change of variables $u=Gs$ scales
+omitted measure by $G$.
+\end{proofoutline}
+
+This theorem derives the input sequence and limiting obstruction from native
+correctness.  It lets a lower-bound argument analyze physical motion without
+assuming a favorable trace class or conflating block time with execution time.
+
+\begin{definition}[Bounded affine interval cover]
+\label{def:motion-affine-cover}
+A function $v:[0,H]\to\mathbb R$ has an affine interval cover of size $J$ if
+there are $J$ endpoint pairs $\ell_j,r_j\in[0,H]$ such that their closed
+intervals cover $[0,H]$ and $v$ is affine on each $[\ell_j,r_j]$.
+Intervals may overlap or collapse; a pair with $\ell_j>r_j$ contributes an
+empty interval.  No continuity or Lipschitz assumption is imposed on $v$.
+\end{definition}
+\formal{BoundedAffineCovers}{TransposeFollowup.AffineMotion.HasAffineIntervalCover}
+
+\begin{lemma}[Pointwise closure]
+\label{lem:motion-cover-closure}
+If $v_i$ eventually have affine interval covers of a fixed finite size $J$
+and $v_i(s)\to v(s)$ at every $s\in[0,H]$, then $v$ is locally affine on an
+open subset of $[0,H]$ whose complement has measure zero.
+\end{lemma}
+\formal{BoundedAffineCovers}{TransposeFollowup.AffineMotion.local_affine_ae_of_eventual_bounded_covers}
+
+\begin{proofoutline}
+Pass to a subsequence on which all $2J$ endpoints converge.  Their limiting
+closed intervals still cover $[0,H]$.  Away from the finitely many limiting
+endpoints and the horizon endpoints, every point has a neighborhood lying
+inside one interval for all sufficiently large indices.  On a smaller fixed
+neighborhood the functions are affine.  Their coefficients converge because
+the values at two distinct fixed points converge.  The pointwise limit is
+affine there.
+\end{proofoutline}
+
+This closure lemma is the step that makes pointwise approximation sufficient
+for the next native obstruction; no slope bound or uniform convergence of
+the approximants is needed.
+
+\begin{theorem}[Pointwise approximation obstruction]
+\label{thm:motion-pointwise}
+The native fast-correct hypotheses above are incompatible with the following
+property.  For every strictly increasing $\phi:\mathbb N\to\mathbb N$ and
+every input sequence $(w_i)$ eventually satisfying $w_i\in W_i$, there exist
+a strictly increasing $\psi$, a finite $J$, and functions $v_{i,t}$ such that,
+with $H=c+1/G$:
+\begin{enumerate}
+\item eventually every $v_{i,t}$ has an affine interval cover of size $J$ on
+$[0,H]$;
+\item for every head $t$ and every fixed $s\in[0,H]$,
+\[
+  \bigl|\widehat f_{\phi(\psi(i)),t}^{\,w_{\phi(\psi(i))}}(s)
+                 -v_{i,t}(s)\bigr|\longrightarrow0.
+\]
+\end{enumerate}
+Here $J$, the further subsequence, and the approximants may depend on the
+chosen $\phi$ and the entire input sequence.  Only $J$ must be fixed along
+that further subsequence.
+\end{theorem}
+\formal{PhysicalAffineApproximationObstruction}{TransposeFollowup.AffineMotion.no_subsequential_physical_pointwise_affine_fast_approximation}
+
+\begin{proofoutline}
+Choose the popular representatives and a convergent subsequence supplied by
+Theorem~\ref{thm:motion-native-limits}, then apply the asserted approximation
+property to precisely those choices.  The approximants converge pointwise to
+the same physical limits.  Lemma~\ref{lem:motion-cover-closure} makes every
+head locally affine outside a null set, contradicting
+\eqref{eq:motion-physical-budget}.
+\end{proofoutline}
+
+Theorem~\ref{thm:motion-pointwise} reduces an exclusion proof to bounded-cover
+approximation of every work head over the whole physical horizon.  Error
+rates may vary with time, but convergence is required at \emph{every} fixed
+time.  Regularity of a selected subroutine alone does not suffice.
+
+\section{Concrete palettes and contracting recursion}
+\label{sec:motion-applications}
+
+We apply the motion obstruction to bounded words in explicit operation
+palettes and to contracting trees of execution stages.  The palette proofs
+supply the native implementations and their geometry.  The recursive result
+requires the stated regularity condition on actual stages.
+
+\subsection{The declared palettes}
+
+All indices below start at zero.  Set $W=db$ and write the bank as
+$x_{r,c,\ell}$, with $0\le r,c<d$ and $0\le\ell<b$, at flattened position
+$rW+cb+\ell$.  A displayed formula specifies the output $y$ in terms of the
+input $x$ to \emph{that operation}; a word applies its operations successively.
+The following four symbol permutations are shared by the integer and ternary
+palettes.  They preserve the order of the $b$ lanes inside each entry.
+\begin{center}
+\begin{tabular}{c l}
+\hline
+Operation & Exact output coordinate \\
+\hline
+$R$ & $y_{r,c,\ell}=x_{d-1-r,c,\ell}$ \\
+$C$ & $y_{r,c,\ell}=x_{r,d-1-c,\ell}$ \\
+$E$ & $y_{r,c,\ell}=x_{r,(c+r)\bmod d,\ell}$ \\
+$e$ & $y_{r,c,\ell}=x_{r,(c-r)\bmod d,\ell}$ \\
+\hline
+\end{tabular}
+\end{center}
+Residues modulo $d$ are represented in $\{0,\ldots,d-1\}$.
+The corresponding declarations are \texttt{rows}, \texttt{entries}, and the
+two choices of \texttt{rotate}.
+\formal{MatrixPermutationPalette}{TransposeFollowup.MatrixPermutationPalette.Operation,TransposeFollowup.MatrixPermutationPalette.value}
+\formal{RawEntryRotation}{TransposeFollowup.RawEntryRotation.index_entry}
+\formal{RawEntryReversal}{TransposeFollowup.RawEntryReversal.index_entry}
+
+For the \emph{integer palette}, interpret each complete raw row as a
+big-endian integer $X_r$ modulo $2^W$, and the complete bank as a big-endian
+integer $X$ modulo $2^P$.  In addition to $R,C,E,e$, permit exactly the
+following operations:
+\begin{center}
+\begin{tabular}{c l}
+\hline
+Operation & Output rule \\
+\hline
+Row sum & $Y_r=\sum_{a=0}^{r}X_a\pmod{2^W}$ \\
+Row difference & $Y_0=X_0$, $Y_r=X_r-X_{r-1}\pmod{2^W}$ for $r>0$ \\
+Row XOR prefix & $y_{r,c,\ell}=\bigoplus_{a=0}^{r}x_{a,c,\ell}$ \\
+Row XOR difference & $y_{0,c,\ell}=x_{0,c,\ell}$;
+ $y_{r,c,\ell}=x_{r,c,\ell}\oplus x_{r-1,c,\ell}$ for $r>0$ \\
+Increment/decrement & $Y=X+1\pmod{2^P}$ or $Y=X-1\pmod{2^P}$ \\
+\hline
+\end{tabular}
+\end{center}
+Carries in row arithmetic can cross entry boundaries but not row boundaries.
+A difference uses the preceding \emph{original} row; a prefix uses its
+previous accumulated output.  Increment and decrement act on the whole bank.
+\formal{IntegerMatrixPalette}{TransposeFollowup.IntegerMatrixPalette.Operation,TransposeFollowup.IntegerMatrixPalette.value}
+\formal{RawRowArithmeticData}{TransposeFollowup.RawRowArithmetic.output_value}
+\formal{RawRowXor}{TransposeFollowup.RawRowXor.bitValue_first,TransposeFollowup.RawRowXor.bitValue_next}
+\formal{RawUnitArithmeticData}{TransposeFollowup.RawUnitArithmetic.output_value}
+
+For the \emph{ternary palette}, the same coordinates hold values in
+$\mathbb F_3$.  There are $b$ independent trit lanes per entry; these are not
+integers represented in base three.  Along with $R,C,E,e$, the complete
+additional palette is:
+\begin{center}
+\begin{tabular}{c l}
+\hline
+Operation & Exact output coordinate in $\mathbb F_3$ \\
+\hline
+$P$ & $y_{r,c,\ell}=\sum_{a=0}^{r}x_{a,c,\ell}$ \\
+$p$ & $y_{r,c,\ell}=x_{r,c,\ell}-x_{r-1,c,\ell}$, with $x_{-1,c,\ell}=0$ \\
+$Q$ & $y_{r,c,\ell}=\sum_{a=0}^{c}x_{r,a,\ell}$ \\
+$q$ & $y_{r,c,\ell}=x_{r,c,\ell}-x_{r,c-1,\ell}$, with $x_{r,-1,\ell}=0$ \\
+$D$ & $y_{r,c,\ell}=(-1)^{\operatorname{popcount}(r\mathbin{\&}c)}x_{r,c,\ell}$ \\
+$S,s$ & $y_{a,\ell}=x_{(a+1)\bmod d^2,\ell}$ or
+ $y_{a,\ell}=x_{(a-1)\bmod d^2,\ell}$ \\
+\hline
+\end{tabular}
+\end{center}
+In the last line $a=rd+c$ is the flattened \emph{entry} index.  In the phase
+operation $\&$ is bitwise AND and $\operatorname{popcount}$ counts its set bits.
+Binary inputs enter as trits $0,1$, and intermediate trits are retained
+exactly.  Final emission applies $\pi(0)=0,\pi(1)=1,\pi(2)=0$; the theorem
+therefore also excludes words whose final bank is already binary.
+\formal{TernaryMatrixPalette}{TransposeFollowup.TernaryMatrixPalette.Operation,TransposeFollowup.TernaryMatrixPalette.value}
+\formal{RawTernaryVertical}{TransposeFollowup.RawTernaryVertical.value_entry}
+\formal{RawTernaryMatrixHorizontal}{TransposeFollowup.RawTernaryMatrixHorizontal.value_entry}
+\formal{TernaryPhase}{TransposeFollowup.TernaryPhase.value_encoded_entry}
+\formal{RawEntryShift}{TransposeFollowup.RawEntryShift.left_value_entry,TransposeFollowup.RawEntryShift.right_value_entry}
+\formal{RawSymbolWord}{TransposeFollowup.RawSymbolWord.output}
+
+The \emph{mixed binary palette} acts on $x_0,\ldots,x_{P-1}\in\mathbb F_2$.
+A masked stride operation chooses a public mask $\mu:\mathbb N\to\{0,1\}$,
+a stride $1\le S\le P$, a direction, and prefix or difference mode.  In the
+forward direction it computes in increasing index order
+\[
+ y_j=x_j\oplus\bigl(\mu(j)z_j\bigr),\qquad
+ z_j=\begin{cases}
+ 0,&j<S,\\
+ y_{j-S},&j\ge S\text{ in prefix mode},\\
+ x_{j-S},&j\ge S\text{ in difference mode}.
+ \end{cases}
+\]
+Backward mode uses $j+S$ in place of $j-S$, computes in decreasing order,
+and uses zero when $j+S\ge P$.  The remaining operations are full reversal
+$y_j=x_{P-1-j}$ and rotation $y_j=x_{(j+R)\bmod P}$ with $0\le R\le P$.
+These are all the operations in this palette.  The masks, strides, offsets,
+and operation words may depend arbitrarily on size, but not on the input.
+\formal{BinaryBankOperation}{TransposeFollowup.BinaryBankOperation.Operation,TransposeFollowup.BinaryBankOperation.Valid,TransposeFollowup.BinaryBankOperation.value}
+\formal{MaskedStrideScan}{TransposeFollowup.MaskedStrideScan.buffer,TransposeFollowup.MaskedStrideScan.output}
+\formal{BackwardMaskedStride}{TransposeFollowup.BackwardMaskedStride.value_recurrence}
+
+\begin{theorem}[Bounded-word palette exclusions]
+\label{thm:motion-palettes}
+Let $d_i\to\infty$ and use the canonical $b_i,P_i$ above.  Fix any finite $K$.
+For each of the three declared palettes, there is no sequence of words
+$\omega_i$ of length at most $K$ eventually whose output equals raw transpose
+eventually on sets $W_i$ of correctly encoded inputs satisfying
+\eqref{eq:motion-entropy}.  For mixed binary words,
+every stride and rotation must satisfy the stated bounds.  Public choices
+may vary arbitrarily with $i$; there is no uniform-generation premise.
+\end{theorem}
+\formal{MatrixPaletteObstructions}{TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose,TransposeFollowup.TernaryMatrixPalette.no_high_entropy_transpose}
+\formal{RawMixedBinaryWordObstruction}{TransposeFollowup.RawMixedBinaryWord.no_high_entropy_transpose}
+
+\begin{proofoutline}
+Each word is compiled to one actual native execution.  The input is loaded
+once, successive primitives run on the states produced by the preceding
+primitives, and the output is emitted once.  Each primitive's contract
+preserves the bank semantics, clears its scratch bank, and accounts for
+rewinds and head restoration.
+
+For the integer and ternary palettes, every primitive costs at most $24P$
+and the input/output shell costs $7P$.  The executor has two work tapes, five
+work symbols, $G=3$, and exactly $200(T+1)$ control states when its paid time
+is $T$.  Thus $T\le(7+24K)P$ and its state-bit charge is $o(P)$.
+Put $J_0=81^3\cdot9$.  At arbitrary prefix times and from arbitrary actual
+stage states, every primitive has an affine-cover approximation with at most
+$J_0$ pieces and unnormalized error at most $32(db+1)$.  The complete word,
+including the shell and frozen tail, therefore has at most
+$27J_0^K$ pieces and normalized error at most
+\[
+ \frac{32(db+1)K+4}{P}\longrightarrow0.
+\]
+The mixed binary executor has the same two tapes and five-symbol alphabet,
+with $T\le(7+27K)P$ and $4(T+1)$ control states.  Strides need not be small
+relative to $P$.  The geometry proof therefore selects subsequences according
+to their normalized sizes: a vanishing stride has a vanishing-error
+macroscopic scan approximation, while a stride bounded below as a fraction of
+$P$ permits only boundedly many groups.  The resulting further subsequence
+has bounded affine covers.  Masks change the data rule without changing the
+paid head schedule.  The input/output phases are then added with their proved
+error.  All three executors meet Theorem~\ref{thm:motion-pointwise}, which
+contradicts the assumed correctness sets.
+\end{proofoutline}
+\formal{RawSymbolWord}{TransposeFollowup.RawSymbolWord.native_correct,TransposeFollowup.RawSymbolWord.resources,TransposeFollowup.RawSymbolWord.ticks_le}
+\formal{RawSymbolWordApproximation}{TransposeFollowup.RawSymbolWord.scaled_approximation,TransposeFollowup.RawSymbolWord.state_bits_vanish}
+\formal{IntegerMatrixGeometry}{TransposeFollowup.IntegerMatrixPalette.approximation_cover,TransposeFollowup.IntegerMatrixPalette.approximation_error}
+\formal{TernaryMatrixGeometry}{TransposeFollowup.TernaryMatrixPalette.approximation_cover,TransposeFollowup.TernaryMatrixPalette.approximation_error}
+\formal{RawMixedBinaryWord}{TransposeFollowup.RawMixedBinaryWord.fixed_resources}
+\formal{RawMixedBinaryWordResources}{TransposeFollowup.RawMixedBinaryWord.bounded_ticks,TransposeFollowup.RawMixedBinaryWord.state_bits_vanish}
+\formal{RawMixedBinaryWordRegularity}{TransposeFollowup.RawMixedBinaryWord.full_affine_approximation_subsequence}
+
+Theorem~\ref{thm:motion-palettes} rules out these bounded-word construction
+families without a caller-supplied geometry assumption.  A surviving word
+construction must leave this class, for example by using unboundedly many
+operations, input-dependent selection, or another primitive.  The asymptotic
+exclusion is at $b=b(d)$; implementations of the primitives at other widths
+do not by themselves extend it to those widths.
+
+\subsection{Paid contracting stage clocks}
+
+A contracting recursion may have unboundedly many stages.  To analyze it,
+we assign every actual tick to a stage and bound the total duration of deep
+stages.  A separate regularity condition will control each fixed stage's
+physical motion.
+
+\begin{definition}[Contracting stage clock]
+\label{def:motion-clock}
+Fix natural numbers $B,J$ and real parameters $0\le\rho<1$, $a\ge0$, and $C$.
+For an execution of $T$ ticks at input size $P>0$, a clock consists of
+nonnegative volumes $V(w)$ on addresses $w\in\{0,\ldots,B-1\}^{*}$, a label
+$\ell:\{0,\ldots,T-1\}\to\{0,\ldots,B-1\}^{*}\times\{0,\ldots,J-1\}$,
+and nonnegative integer endpoints $A(w,j)\le E(w,j)\le T$, such that
+\begin{align}
+ \sum_{b=0}^{B-1}V(wb)&\le\rho V(w), & V(\varnothing)&\le CP,\label{eq:motion-volumes}\\
+ A(w,j)\le t<E(w,j)&\quad\Longleftrightarrow\quad\ell(t)=(w,j),
+       &&(0\le t<T),\label{eq:motion-ownership}\\
+ \sum_{j=0}^{J-1}\bigl(E(w,j)-A(w,j)\bigr)&\le aV(w).&&\label{eq:motion-own-budget}
+\end{align}
+The constants are fixed across the family, but the clock may depend on the
+execution.  Empty stages are allowed.
+\end{definition}
+\formal{ContractingStageClock}{TransposeFollowup.RegularMotion.ContractingStageClock}
+
+Equation~\eqref{eq:motion-ownership} partitions the global integer timeline.
+Each own-stage is contiguous; the work of a node together with its descendants
+need not be contiguous or nested.  The clock thus covers more schedules than
+depth-first recursion.  Its volume $V(w)$ is an accounting quantity, not an
+assumption of independently accessible memory.
+
+\begin{lemma}[Charged depth and exceptional work]
+\label{lem:motion-clock-accounting}
+For any such clock and $h\in\mathbb N$,
+\begin{equation}
+\label{eq:motion-depth}
+ \#\{t<T:|\ell(t)_1|\ge h\}
+ \le\frac{aV(\varnothing)\rho^h}{1-\rho},
+ \qquad
+ T\le\frac{aCP}{1-\rho}.
+\end{equation}
+Mark each stage good or exceptional, and let $E_{\rm bad}$ count all ticks
+owned by exceptional stages.  The part of $[0,T/P)$ not covered by good
+stages of depth less than $h$ has measure at most
+\begin{equation}
+\label{eq:motion-shallow}
+ \frac{E_{\rm bad}}P+\frac{aC\rho^h}{1-\rho}.
+\end{equation}
+If exceptional ticks owned by each node $w$ number at most $\eta V(w)$,
+where $\eta\ge0$, then
+\begin{equation}
+\label{eq:motion-node-charge}
+ E_{\rm bad}/P\le\eta C/(1-\rho).
+\end{equation}
+\end{lemma}
+\formal{StageClockAccounting}{TransposeFollowup.RegularMotion.stage_clock_deep_work_bound,TransposeFollowup.RegularMotion.stage_clock_total_time_bound}
+\formal{ExceptionalStageClock}{TransposeFollowup.RegularMotion.regular_shallow_stage_omission,TransposeFollowup.RegularMotion.exceptionalTicks_node_budget}
+
+\begin{proofoutline}
+The total volume at depth $r$ is at most $\rho^rV(\varnothing)$.
+Ownership identifies the number of ticks at one node with the sum of its
+stage lengths.  Summing its own-work budget over depths at least $h$ gives
+the geometric tail in \eqref{eq:motion-depth}.  The finite integer intervals
+in \eqref{eq:motion-ownership}, divided by $P$, have measure exactly their
+numbers of ticks divided by $P$.  Their disjointness is derived from the
+ownership equivalence.  A tick outside the shallow good stages is either
+exceptional or deep, giving \eqref{eq:motion-shallow}.  Charging exceptional
+ticks instead by $\eta V(w)$ gives \eqref{eq:motion-node-charge}, with each
+tick counted once.
+\end{proofoutline}
+
+The accounting lemma supplies the recursive obstruction's linear time bound
+and controls the work lost when only finitely many depths are retained.  Its
+per-node estimate will convert local exceptional-work budgets into a global
+lower bound.
+
+\subsection{Actual-stage regularity and the exceptional-time toll}
+
+\begin{definition}[Regular sequences of stage occurrences]
+\label{def:motion-stage-regularity}
+Let $V_i,A_i,L_i$ be the volume, actual start tick, and duration of one fixed
+stage across a sequence of executions, and let $h_i$ be one actual integer
+head path.  These occurrences are regular if, for every strictly increasing
+$\phi$ such that $L_{\phi(i)}>0$ for all $i$ and
+$V_{\phi(i)}\to\infty$, there are a further strictly increasing $\psi$, a
+finite $K$, and a function $v$ with an affine interval cover of size $K$ on
+$[0,a]$ for which
+\begin{equation}
+\label{eq:motion-local-profile}
+ \frac{h_{\phi(\psi(i))}\!\left(A_{\phi(\psi(i))}
+       +\min\{\lfloor V_{\phi(\psi(i))}s\rfloor,L_{\phi(\psi(i))}\}\right)
+       -h_{\phi(\psi(i))}(A_{\phi(\psi(i))})}
+      {V_{\phi(\psi(i))}}
+ \longrightarrow v(s)
+\end{equation}
+uniformly for $0\le s\le a$.  A sequence of flagged clocks is regular for a
+head if this condition holds for every fixed address and stage, using its
+true duration when the stage is good and duration zero otherwise.
+\end{definition}
+\formal{ActualStageRegularity}{TransposeFollowup.RegularMotion.HasRegularStageSubsequences}
+\formal{ExceptionalRecursiveLimits}{TransposeFollowup.RegularMotion.RegularFlaggedClockHead}
+
+The profile uses global ticks and freezes at the stage's actual end.  Its
+cover size and limit may depend on the fixed stage, head, and subsequences;
+there is no common piece bound across stages.  Missing, exceptional, and
+bounded-volume occurrences impose no diverging positive-duration obligation.
+
+Call a native family
+\emph{flagged-recursive with allowance $(\eta,\varepsilon_i)$} if there exists
+$N$ such that, for every strictly increasing $\phi$ with $\phi(i)\ge N$, every
+sequence $w_i\in W_{\phi(i)}$, and every sequence of their actual halting
+times $T_i$ with $P_{\phi(i)}>0$, there exist clocks and stage flags satisfying
+\[
+ E_{{\rm bad},i}/P_{\phi(i)}\le\eta+\varepsilon_{\phi(i)},
+\]
+and every work head is regular in Definition~\ref{def:motion-stage-regularity}.
+The sequence $\varepsilon_i\to0$ is fixed for the family.  Clocks and flags
+may depend on the execution sequence; no uniform algorithm for choosing them
+is required.
+\formal{NativeExceptionalRecursion}{TransposeFollowup.RegularMotion.HasFlaggedRecursiveExecutions}
+
+\begin{theorem}[Exceptional-time toll for contracting recursion]
+\label{thm:motion-exceptional-recursion}
+Assume the native resources, state-bit bound, and high-entropy correct sets
+of \eqref{eq:motion-control}--\eqref{eq:motion-entropy}.  Fix the clock
+parameters $B,J,\rho,a,C$ as above.  Suppose every correct input eventually
+has an actual halting transpose execution admitting a contracting stage
+clock, and the family is flagged-recursive with allowance
+$(\eta,\varepsilon_i)$, where $\varepsilon_i\to0$.  Then
+\begin{equation}
+\label{eq:motion-native-exception}
+ \frac1{2G}\le k\eta,\qquad \eta\ge\frac1{2kG}.
+\end{equation}
+In particular, no such correct family can have every stage regular and zero
+exceptional work.  The assertion holds for a fixed uniform machine as well.
+If a linear-time bound is already assumed, the first inequality follows
+without separately postulating clock existence for each correct execution.
+\end{theorem}
+\formal{NativeExceptionalRecursion}{TransposeFollowup.RegularMotion.native_flagged_recursion_budget,TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget,TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget}
+\formal{NativeRegularRecursion}{TransposeFollowup.RegularMotion.no_native_regular_recursion,TransposeFollowup.RegularMotion.no_uniform_regular_recursion}
+
+\begin{proofoutline}
+The clock gives $T_i\le aCP_i/(1-\rho)$.  Apply the popular-trace and native
+limit theorem, discard a finite prefix, and invoke the family-level clock
+hypothesis on the resulting representatives.
+
+A diagonal subsequence supplies limits of the normalized stage endpoints,
+volumes, and flags at every fixed node.  If a limiting good-stage interval
+has positive length, its volume is bounded below by a positive multiple of
+$P_i$, by the own-work budget.  Hence its volume tends to infinity and its
+duration is eventually positive.  Definition~\ref{def:motion-stage-regularity}
+then applies.  Transferring \eqref{eq:motion-local-profile} to the global
+physical limit makes that limit locally affine on the interior of the stage
+apart from finitely many breakpoints.  Zero-length limiting stages contribute
+no time.
+
+At each fixed depth there are finitely many stages.  Bound
+\eqref{eq:motion-shallow} passes to their limiting intervals; sending the
+depth to infinity leaves omitted measure at most $\eta$.  The countable union
+of the locally affine stage regions therefore gives, for each head, an open
+regular region missing at most $\eta$ physical time.  The frozen post-halting
+tail is constant and is included in this region up to its endpoint.  Thus
+\eqref{eq:motion-physical-budget} gives $1/(2G)\le k\eta$.
+This also forces $k>0$, yielding the second inequality.  All-good flags and
+$\eta=0$ prove the regular-recursion exclusion.
+\end{proofoutline}
+\formal{ExceptionalRecursiveLimits}{TransposeFollowup.RegularMotion.flagged_clock_limit_locally_affine}
+\formal{ActualStageRegularity}{TransposeFollowup.RegularMotion.positive_stage_affine_of_regular_occurrences}
+\formal{NativeRecursiveLimit}{TransposeFollowup.RegularMotion.native_flagged_limit_budget}
+
+\begin{corollary}[Per-node exceptional budget]
+\label{cor:motion-node-exception}
+Under the same native correctness and clock assumptions, replace the global
+exceptional allowance by the following family-level condition: in every
+eligible execution sequence one can choose clocks and flags with the same
+regularity and with at most $\eta V_i(w)$ exceptional ticks owned by each node
+$w$, for a fixed $\eta\ge0$.  Then
+\[
+ \frac1{2G}\le k\frac{\eta C}{1-\rho},\qquad
+ \frac{\eta C}{1-\rho}\ge\frac1{2kG}.
+\]
+\end{corollary}
+\formal{NativeExceptionalRecursion}{TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions,TransposeFollowup.RegularMotion.native_node_budget_recursion_bound}
+
+\begin{proofoutline}
+The exact node charge in \eqref{eq:motion-node-charge} produces a global
+allowance $\eta C/(1-\rho)$ with error sequence identically zero.  Apply
+Theorem~\ref{thm:motion-exceptional-recursion}.
+\end{proofoutline}
+
+Corollary~\ref{cor:motion-node-exception} gives a necessary lower bound on
+per-node exceptional work.  Together with
+Theorem~\ref{thm:motion-exceptional-recursion}, it sharpens the geometric
+recursion proposal of \cite{FirstPaper2026}: contraction and a bounded number
+of stages per node cannot yield a transposer if every stage has the regularity
+in Definition~\ref{def:motion-stage-regularity}.  A candidate satisfying the
+other clock assumptions must allocate at least the stated exceptional-time
+budget.  A nonlinear coordinate map need not have a finite-affine-cover stage
+limit, so it must be checked through its actual implementation.
+
+These exclusions concern $O(P)$ transposition at canonical logarithmic
+entry width.  Paid padding, proved next, shows that the first paper's
+necessary $M^*$ condition can be supplied at additive linear cost to any
+linear-time payload.  A construction must therefore both escape the excluded
+motion classes and perform the required computation; a general lower bound
+must identify an obligation that padding cannot satisfy independently.
+Neither these restricted exclusions nor padding decides the unrestricted
+transposition question.

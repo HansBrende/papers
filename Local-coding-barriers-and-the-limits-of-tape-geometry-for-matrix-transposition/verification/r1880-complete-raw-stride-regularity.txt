@@ -1,0 +1,139 @@
+
+R1880 — COMPLETE RAW MASKED-STRIDE NATIVE GEOMETRY
+PROGRESS at R1880: the complete forward raw masked-binary-stride executor now has exact native head paths at every time, including all input, cleanup, rewinds, output and frozen halt. For any sequence P->infinity and1<=S<=P, arbitrary modes/masks/inputs, and any finite nonnegative physical horizon, full_affine_approximation_subsequence supplies a strict subsequence, fixed finite affine-cover size and uniform error tending to zero for both actual native work heads. Five of six original families formalized; regular recursion206/208 best estimate70% complete (low confidence). Original block normalization, other exact palettes and bounded composition remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1880 RESULTS
+1. ScheduledRawIOMotion proves every intermediate raw IO position. Input
+   loading advances bank by floor((n+1)/3); output by floor(n/3). The scratch
+   head remains stationary. These come from the actual three-instruction
+   cell schedules, not an assumed rate or endpoint interpolation.
+2. ScheduledMotion.append_position composes additive head displacements
+   through the EXISTING paid schedule concatenation. Its horizons include
+   every transition. No new execution model or uncharged linking step.
+3. RawMaskedStrideScheduleMotion combines all seven raw phases and proves
+   exact positions from any initial work configuration up to the final
+   clock horizon. RawMaskedStridePaths then connects the complete ramp
+   formulas to ORIGINAL workTraj, with native_halts and the original
+   workTraj_frozen theorem providing the entire halted tail.
+   Let N=Scan.ticks(P,S), R=4P+N+2S, O=R+P. For every native time n:
+   bank = min(floor((n+1)/3),P)-cappedRamp(P,3P,n)
+       + bankPosition(P,S,n-4P)-cappedRamp(P,R,n)+rise(P,O,n).
+   scratch = scratchPosition(P,S,min(n-4P,N))
+       + cappedRamp(S,4P+N,n)-cappedRamp(S,4P+N+S,n).
+   cappedRamp is the pre-existing unit-speed capped ramp; rise advances
+   once per3ticks. Input reads, clearing, all rewinds and output are paid.
+4. RawMaskedStrideCurves builds full-execution finite-affine approximants.
+   If Q=floor(P/S), bank error is <=Q+6 and scratch error <=2(Q+2) before
+   normalization. For Q<=B, both normalized native paths have error
+   <=2(B+3)/P and a common cover size81*9^(B+1) on any finite horizon.
+   All inputs, modes and masks are arbitrary; halted tails are included.
+5. RawMaskedStrideSmallCurve uses a fixed five-ramp bank comparison with
+   nominal phase starts0,3P,4P,8P,9P and scratch comparison0. The bound
+   4P<=N<=4P+4S controls the actual final-phase shifts. The complete bank
+   error is <=9S+6; |scratchPath|<=2S. Both normalized errors are bounded
+   by(9S+6)/P, with243 affine intervals for both heads. Parameter-shift
+   control directly reuses mathlib's Lipschitz max/min operations.
+6. RawMaskedStrideRegularity.full_affine_approximation_subsequence packages
+   the full result. For arbitrary positive lengths P_i tending to infinity,
+   arbitrary strides1<=S_i<=P_i, arbitrary modes/masks/raw input words and
+   any H>=0, there are a strictly increasing subsequence phi, fixed J,
+   error e_i->0 and approximants q_i,h on[0,H], each with a J-interval
+   affine cover, such that for BOTH ORIGINAL native work heads
+      |workTraj(M_phi(i),w_phi(i),floor(P_phi(i)*t),port(h))/P_phi(i)
+          -q_i,h(t)| <= e_i
+   uniformly in t (indeed the error statement holds for every real t).
+   The only subsequence selection is mathlib compactness of S/P in[0,1].
+   Zero ratio uses the five-ramp bound; positive ratio reuses the R1879
+   eventual group-count bound. No stride-limit hypothesis is assumed.
+
+Seven new modules,31 audited named declarations including definitions and
+interfaces, not31 new research results. All baseline math unchanged.
+
+DRIFT / REUSE
+Searched the existing schedule, motion, native frozen-tail and physical
+normalization modules before extending this chain. Reused ScheduledNativeIO
+append_prefix/append_exact/native_prefix, existing raw-cell schedules,
+rewind_position/erase_position, Scan.schedule_positions/ticks_bounds,
+R1879 finite-affine covers/curve errors and the existing cappedRamp.
+Original run/stepN equivalence, HaltsAt and workTraj_frozen are imported
+unchanged. The arbitrary-stride subsequence uses mathlib's
+CompactSpace.tendsto_subseq on[0,1], ordinary limit arithmetic and the
+existing positive-stride group bound. No new compactness framework,
+simulator, native compiler or recursion lower-bound chain was introduced.
+The proof now covers the WHOLE raw machine, closing the missing outer-phase
+interface. It does not confuse the regularity of one primitive with a
+bounded-word theorem, nor compose machines via free external-output reuse.
+Future normalization should reuse native_sampled_physical_limit or the
+already proved canonical_physical_error; do not redo rounding estimates.
+
+
+BOUNDARY
+The entire forward masked binary raw primitive now has proved physical-time geometry for arbitrary stride sequences, not just its processing window. It also retains the earlier exact raw correctness, blank initialization, scratch erasure, halt, <=18P time and O(P) state count. This is one concrete primitive component of exact source206, not the full source206 bounded-word exclusion. Original block-normalization integration and actual internal-bank composition remain; no free piping through write-only external output is allowed. Backward/reversal/rotation variants and row/integer/F3 palettes remain. Source208 and global exceptional-work210.5 are complete. Final referees follow all six. Original unchanged; no commits/pushes. No unrestricted transpose result or novelty claim.
+
+NEXT
+R1880 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate70%, low confidence.
+
+NEXT: integrate this complete primitive geometry with the ORIGINAL native
+approximation obstruction, then make the reusable internal-bank stage
+interface needed for bounded composition. Do not redo raw IO, the full
+head paths, either stride regime or compactness of the stride ratio.
+
+Normalization route (reuse existing results):
+- NativePhysicalLimits.native_sampled_physical_limit already turns an
+  actual native blockTraj limit Phead into the physical sampled limit
+  Phead(G*t)/G. It uses the original UnitSteps and proven rounding bounds.
+- BoundedAffineCovers.local_affine_ae_of_eventual_bounded_covers and
+  AffineApproximationObstruction already turn fixed-cover approximants
+  with vanishing error into the forbidden affine limit behavior.
+- Alternatively scale covers via HasAffineIntervalCover.rescale with
+  scale1/G, obtaining G*q(u/G), and reuse the existing block obstruction.
+  CanonicalTimeNormalization.canonical_physical_error plus the existing
+  one-step sampling bound pays for the change of normalization. Do not
+  invent or assume a normalization identity.
+- Check for an existing physical-approximation wrapper before adding one.
+  Preserve high-entropy correct sets, fixed heads/alphabet, nonuniform
+  O(P) states/O(log P) state bits and native inputLength/entryBits sizes.
+- The new native path theorem uses encoded port indices. Convert actual
+  head indices with encoding.port.symm; approximants may be permuted per
+  index because their cover and error bounds hold for every head.
+
+Composition must use actual work-bank stages, not external IO piping.
+The natural binary internal stage is Scan.result, scratch erase(S),
+scratch rewind(S), and bank rewind(P): duration N+2S+P, heads restored to0,
+full scratch blank and bank transformed by the proved recurrence. Reuse
+Scan.result_correct/result_scratch_outside and ScheduledTapeAction cell
+preservation/erase/rewind. Existing RawMaskedStride cleared/ready proofs
+show this for the actual prepared bank; generalize through their underlying
+lemmas to an arbitrary correctly initialized bank. Keep raw load and emit
+once at the ends of the whole word. A raw external output tape is write-only
+and cannot be read as the next primitive input without a paid conversion.
+Check existing bank-stage/compiler APIs before adding new interfaces.
+
+R1880 APIs:
+Input/Output.cell_prefix_position, schedule_position.
+ScheduledNativeIO.append_position (bounded displacement concatenation).
+RawMaskedStride.bankPrefix/scratchPrefix, schedule_position, bankPath,
+scratchPath, bankPrefix_frozen/scratchPrefix_frozen, native_halts,
+workTraj_prefix, workTraj_position (all integer times, frozen tail).
+clippedRamp_shift, processing_curve_shift_covers, bankApproximation,
+scratchApproximation, loading_curve_error, bankApproximation_error,
+scratchApproximation_error, full_curve_covers,
+full_bounded_affine_approximation. clippedRamp_start_error,
+smallBankApproximation/cover/error, scratchPath_bound,
+full_small_affine_approximation. full_affine_approximation_subsequence.
+
+All exact backward/reversal/rotation variants, row/integer/F3 palettes and
+bounded-word composition remain required by source200 sections20-24.
+Source208/global210.5 complete; do not reopen them to defer source206.
+No new subagents until all six, then authorized impartial referees/cleanup.
+Original paper read-only; no commits/pushes; no unrestricted transpose claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate70% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Within family6 the native recursion and global exceptional-work extension are complete. Exact source206 still needs the whole palette, original normalization and bounded-word composition. Final independent referees pending.
+
+VERIFICATION
+Full lake build passed10229 jobs without warnings/errors; SupportAxioms audited5227 unique declarations using only propext,Classical.choice,Quot.sound. There are1048 local sources (1047 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and203 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

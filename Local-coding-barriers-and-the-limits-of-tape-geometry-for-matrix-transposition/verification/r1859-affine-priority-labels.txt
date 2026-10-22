@@ -1,0 +1,79 @@
+
+R1859 — VERIFIED ADMISSIBLE AFFINE PRIORITY LABELS
+R1859 proves actual finite affine-grid universes and finite breakpoint sets, then constructs concrete natural-valued priority labels. Every ordering gives a measurable label satisfying the original PiecewiseConstOn definition and the uniform grid-cell mass bound. Natural encoding preserves selected-minimum disagreement exactly. Small weighted cut and the full motion200/210 theorem remain. Four of six original families formalized; final referees pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+CHECKED GRID UNIVERSE AND ORIGINAL ADMISSIBILITY
+For any finite family of real affine coordinates g_i(x)=(a_i x+b_i)/h on I=[0,c0], a single finite set C of integers contains all floor(g_i(x)) for i and x in I. This is proved using mathlib compact-image bounds and finite integer intervals; no numerical magnitude premise is left to the caller. The finite-range theorem itself permits zero slopes and h=0.
+When all a_i!=0 and h!=0, there exists ONE finite set Z of real grid thresholds such that every coordinate floor(g_i(x)) is constant between any u<=v in I whose closed interval avoids Z. The set is built from inverse images (hz-b_i)/a_i of the finitely many relevant integers. The intermediate-value theorem proves that unequal endpoint floors force a threshold between them, with negative slopes handled by unordered intervals.
+Consequently, for ANY function L:(J->Z)->N, the actual label beta(x)=L(i->floor(g_i(x))) satisfies the ORIGINAL Transpose.Tape.PiecewiseConstOn beta empty c0. The original definition is imported from protected Transpose/Tape/DefsM.lean, not copied or weakened.
+
+CONCRETE PRIORITY LABELS
+For a finite integer universe C and a vector q:J->Z, gridSample C q is the finite set of cells in C attained by some q_i. gridPriority C sigma q is the minimum of that sample under the ONE permutation sigma of C; if the sample is empty it is0. This fallback defines a global function without postulating that every real point lies in I. If J is nonempty and all q_i lie in C, the sample is nonempty and the selected integer equals one actual q_i.
+Define beta_sigma(x)=Encodable.encode(gridPriority C sigma (i->floor(g_i(x)))). The encoding is mathlib's injective integer-to-natural encoding. Equality/disagreement of these natural labels agrees exactly with equality/disagreement of the selected finite-universe minima whenever both samples are nonempty; no collision is introduced by encoding.
+For any nonempty finite J, invertible affine coefficients a_i, h>0 and c0 real, exists_affine_priority_universe produces an ACTUAL finite C such that EVERY ordering sigma has all three properties:
+ (i) beta_sigma:R->N is measurable;
+ (ii) PiecewiseConstOn beta_sigma empty c0;
+ (iii) for every natural label n,
+       volume{x in I:beta_sigma(x)=n} <= h sum_i 1/|a_i|.
+The right side is represented exactly in ENNReal. The proof of(iii) imports the previous selected_affine_grid_label_mass lemma and uses injectivity of the integer encoding. It does not assume the output label is measurable merely to use an outer-measure union bound; measurability is separately proved for the actual constructed label. Condition(ii) holds for the literal source definition, including all intervals avoiding the finite threshold set.
+
+REUSE AND SCOPE
+Measurability uses mathlib measurable_of_countable, Measurable.of_eval and Measurable.floor; no Borel coding framework is rebuilt. Finite universes use IsCompact.image, IsCompact.bddBelow/bddAbove, Int.floor_mono and Finset.Icc. Thresholds use intermediate_value_uIcc, Int.floor_lt and Int.floor_le. Existing local minimum-coupling and grid Jacobian/mass theorems are imported. Bounded source searches found no matching entire affine-grid breakpoint/priority-label theorem; this is not an exhaustive literature claim.
+This completes the finite-universe, actual-label, admissibility, measurability and class-mass part of the direct finite route. It does NOT yet prove small cut for the same labels. The next step must connect the exact finite affine boundaries to these sample sets and charge all collisions, rather than supplying that as an unproved final hypothesis.
+
+NEXT MATHEMATICAL BRIDGE
+Given finite affine F and finitely many return maps s_j, let K=F union (union_j F s_j). Outside collisions between distinct affine maps in K, evaluating at x and taking mesh floors is injective on each F union Fs_j. Thus union and symmetric-difference cardinalities transfer exactly to the cell samples at x and s_j x. The earlier finite boundary theorem then supplies the ratio needed by the earlier weighted minimum lemma.
+For a given eta>0, bound total collision volume of distinct pairs in K by eta for all sufficiently small positive h. Unequal slopes use the checked bound2h/|a-c|; equal slopes have unequal offsets, so collisions disappear when h<=|b-d|. Finite unions and one common h give the result. Choose h small enough ALSO for h sum_f1/|slope(f)|<=theta. A source marginal <=k times Lebesgue charges the bad return-pair mass; no invariance is assumed.
+Take care of nonempty samples globally in the weighted lemma. On I they are proved nonempty. A clean option is to include0 in C and replace an empty sample by the singleton cell0; its selected integer agrees with the current gridPriority fallback. The return measure should be supported on I x I, so that this totalization does not affect the actual cut. Another option is a rigorously transported measure on I x I as a subtype. Do not silently apply the weighted theorem outside its pointwise nonemptiness hypotheses.
+
+DEVELOPMENT REPAIRS
+The first interval build exposed an inferred real-valued lambda that coerced an integer Finset; an explicit integer binder fixed it. The first label build exposed deprecated aliases (dite_eq_left and Measurable.of_eval are current names), an ENNReal zero-bound elaboration and an implicit postprocessing function. These were corrected without changing theorem scope. Final modules compile cleanly. No mathematical counterexample or proof-limit change.
+
+DRIFT CHECK: The new labels use the original paper definition directly and are the actual finite-minimum labels required by the weighted cut argument. All three generic output properties are now discharged for every ordering. The remaining cut/return/exceptional-time obligations are explicit; no finite-piece substitute or assumed endpoint is counted as motion completion.
+
+BOUNDARY
+Finite affine almost-invariant sets, concrete admissible priority labels, their measurability and class-mass bounds are proved. Still required: transfer of cardinality bounds through collision-free grid evaluation; small total collision mass; selecting one ordering with small cut for a finite weighted affine-return measure; actual countable-branch consecutive-return measure, both marginals, truncation and levelCross identity; omitted-visit charge and the M* contradiction sum_t |E_t|>=1/2. No general CFW or invariant-Lebesgue premise. No claim of a completed motion theorem, transpose decision or novelty.
+
+NEXT
+R1859 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; previous turn PROGRESS. Full motion200/210 about15% (best estimate,
+low confidence); four of six original families formalized.
+
+NEXT bounded target: small weighted cut for the ACTUAL priority labels, for a
+finite affine-return family and finite measure supported on I x I whose source
+marginal is <=k*Lebesgue. No interval-admissibility premise is now needed.
+1. Reuse AffinePriorityLabels.exists_affine_priority_universe and
+   encoded_gridPriority_ne_iff, AffineFiniteBoundary, WeightedMinimumCoupling
+   and AffineGridMass. Inspect finite-image/InjOn, measure finite union,
+   measurability and ENNReal transfer APIs before proving generic helpers.
+2. Prove a small uniform collision-volume bound for finite distinct affine
+   maps. For unequal slopes use2h/|a-c|; for equal slopes use offset separation.
+   Choose the same h for collisions and the already-proved class-mass bound.
+3. Transfer union/symmetric-difference cardinalities through collision-free
+   evaluation on F union Fs, paying for all maps in ONE finite collision set.
+   Check right composition using affineRight_apply and sample universes.
+4. Ensure the weighted lemma's samples are nonempty at EVERY point in its
+   domain, not merely on I. Including0 in C and totalizing empty samples by
+   singleton0 matches the current gridPriority fallback; alternatively prove
+   the needed measure restriction to the subtype I x I. Pay support exceptions.
+   Select ONE ordering using the weighted lemma; establish actual label cut.
+5. Then construct the actual countable-branch good consecutive-return measure,
+   both marginals, finite truncation and levelCross identity. Retain constant
+   branches, phase accumulation, negative slopes and infinite full fibers.
+6. For210 prove omitted-visit incidence <=2 and reuse the original level-count
+   majorant on compact exceptional-set covers. Keep sum_t|E_t|>=1/2 and full
+   native scope. Regular recursion206/208 and final referees still follow.
+
+New modules:AffineGridIntervals,AffinePriorityLabels (16 declarations).
+Original definition:Transpose.Tape.PiecewiseConstOn from Transpose.Tape.DefsM.
+Original remains read-only.
+No paid-padding/SL2 reopening, no commits/pushes, no new unapproved subagents.
+Optional unaudited CFW source access is not a blocker; no source imported.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:15% formalized, low confidence. This estimate covers the entire countably affine obstruction and quantitative exceptional-time conclusion, not only grid labeling. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.
+
+VERIFICATION
+Full lake build passed10151 jobs without warnings/errors; SupportAxioms audited4755 unique declarations using only propext,Classical.choice,Quot.sound. There are970 local sources (969 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and161 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

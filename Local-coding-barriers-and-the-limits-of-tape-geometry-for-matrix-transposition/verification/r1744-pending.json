@@ -1,0 +1,131 @@
+{
+  "unit": "R1744",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "scope": "ALL6 families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "previous_turn": "PROGRESS;R1743 receipts revalidated481 sources,5 configurations,86 artifacts;384 archive hashes",
+  "checkpoint_reporting": "At each good proof stopping point report a ballpark percentage and name completed original theorem families. Current rough overall estimate 40\u201360%, high uncertainty; not a time guarantee or probability of success. Verified completion 3/6: adaptive separator 181/186/188, recoded pairwise-XOR 181B, two-stage global helper 216. Paid padding 201/202 incomplete; affine motion 200/210 and regular recursion 206/208 unstarted; final referees/cleanup remain.",
+  "modified_existing_sources": [
+    "InputMeasureCalls"
+  ],
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "checks": {
+    "entry_bits": {
+      "session_id": 80053,
+      "exit_code": 0,
+      "jobs": 9077
+    },
+    "work_measure_refactor": {
+      "session_id": 51292,
+      "exit_code": 0,
+      "jobs": 9055
+    },
+    "division": {
+      "session_id": 17761,
+      "exit_code": 0,
+      "jobs": 9058
+    },
+    "build": {
+      "session_id": 76960,
+      "status": "passed",
+      "last_live_observation_at": "2026-10-19T01:41:56.508052+00:00",
+      "last_visible_job": 9373,
+      "expected_jobs": 9467,
+      "exit_code": 0,
+      "jobs": 9467
+    },
+    "axioms": {
+      "session_id": 46939,
+      "exit_code": 0,
+      "status": "passed",
+      "declarations": 2520
+    }
+  },
+  "next": "Assemble RadiusBuilder K from the retained marked N word and blank auxiliary tapes; do not build new entry-bit, measurement, counter, clock or constant-divider routines. EntryBits.native_call now yields b=entryBits(N) in a b-bit word, with b<=source.length and source preserved. Use this SMALL b word as DimensionScale fuel and the padded N word as its factor: the product is b*N and no variable-width alignment of b with N is necessary. ArithmeticSeed with fixed padding C (for example K.size+4, subject to an actual fit proof) prepares factor N, common-width zeros and unit, one-bit fuel and scratch. Reuse DimensionScale for b*N, existing fixed-multiple/in-place addition to add2, NativeDivideThree to obtain floor((b*N+2)/3), then a fixed-K multiplier into a separate zero accumulator. Prove every common-width fit and cleanup cost; the radius word may retain fixed width, since ClockBuilder accepts leading zeroes. Keep the immutable zero template separate from the output accumulator, and use NativeBatchErase/NativeUnprepare for the final explicit bank. Then integrate RadiusBuilder and ClockBuilder after raw opcode generation and before RowLoop, binding the source to the actual retained N tape and preserving the generated opcode stream. Only after this native composition may the prepared-clock hypothesis be removed from CutIneq; retain all real setup times. Added fixed idle tapes, input reset, arbitrary payload/cleanup, unconditional expansion and final MStar still remain. Old supplemental62722/19934 remain unverified; do not restart solely for elapsed time. All six families required; three complete; original unchanged; no commits/pushes.",
+  "new_modules": [
+    "StoredWordLength",
+    "NativeNonemptyWord",
+    "EntryBitsData",
+    "EntryBitsMachine",
+    "EntryBitsCalls",
+    "EntryBitsRun",
+    "NativeDivideThreeData",
+    "NativeDivideThreeMachine",
+    "NativeDivideThreeRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.InputMeasure.work_jump_trace",
+    "TransposeFollowup.InputMeasure.stored_length_trace",
+    "TransposeFollowup.NativeNonemptyWord.word_length",
+    "TransposeFollowup.NativeNonemptyWord.word_value",
+    "TransposeFollowup.NativeNonemptyWord.empty_run",
+    "TransposeFollowup.NativeNonemptyWord.nonempty_run",
+    "TransposeFollowup.NativeNonemptyWord.complete_trace",
+    "TransposeFollowup.EntryBits.size_eq_log2",
+    "TransposeFollowup.EntryBits.entryBits_eq",
+    "TransposeFollowup.EntryBits.entryBits_le_word",
+    "TransposeFollowup.EntryBits.prepared_length",
+    "TransposeFollowup.EntryBits.copy_code",
+    "TransposeFollowup.EntryBits.decrement_code",
+    "TransposeFollowup.EntryBits.trim_code",
+    "TransposeFollowup.EntryBits.ensure_code",
+    "TransposeFollowup.EntryBits.measure_code",
+    "TransposeFollowup.EntryBits.erase_code",
+    "TransposeFollowup.EntryBits.embed_copy",
+    "TransposeFollowup.EntryBits.embed_decrement",
+    "TransposeFollowup.EntryBits.embed_trim",
+    "TransposeFollowup.EntryBits.embed_ensure",
+    "TransposeFollowup.EntryBits.embed_measure",
+    "TransposeFollowup.EntryBits.embed_erase",
+    "TransposeFollowup.EntryBits.jump_trace",
+    "TransposeFollowup.EntryBits.copy_call",
+    "TransposeFollowup.EntryBits.decrement_call",
+    "TransposeFollowup.EntryBits.trim_call",
+    "TransposeFollowup.EntryBits.ensure_call",
+    "TransposeFollowup.EntryBits.measure_call",
+    "TransposeFollowup.EntryBits.erase_call",
+    "TransposeFollowup.EntryBits.complete_trace",
+    "TransposeFollowup.EntryBits.native_entryBits",
+    "TransposeFollowup.EntryBits.fixed_resources",
+    "TransposeFollowup.EntryBits.output_contract",
+    "TransposeFollowup.EntryBits.native_call",
+    "TransposeFollowup.NativeDivideThree.digit_identity",
+    "TransposeFollowup.NativeDivideThree.divide_length",
+    "TransposeFollowup.NativeDivideThree.divide_identity",
+    "TransposeFollowup.NativeDivideThree.divide_snoc",
+    "TransposeFollowup.NativeDivideThree.divide_value",
+    "TransposeFollowup.NativeDivideThree.divide_remainder",
+    "TransposeFollowup.NativeDivideThree.forward_step",
+    "TransposeFollowup.NativeDivideThree.forward_run",
+    "TransposeFollowup.NativeDivideThree.turn_step",
+    "TransposeFollowup.NativeDivideThree.backward_step",
+    "TransposeFollowup.NativeDivideThree.backward_empty",
+    "TransposeFollowup.NativeDivideThree.backward_run",
+    "TransposeFollowup.NativeDivideThree.complete_run",
+    "TransposeFollowup.NativeDivideThree.complete_trace",
+    "TransposeFollowup.NativeDivideThree.native_divide",
+    "TransposeFollowup.NativeDivideThree.fixed_resources",
+    "TransposeFollowup.NativeDivideThree.native_call",
+    "TransposeFollowup.InputMeasure.ones_work_call",
+    "TransposeFollowup.InputMeasure.scan_work_call",
+    "TransposeFollowup.InputMeasure.complement_work_call",
+    "TransposeFollowup.InputMeasure.erase_work_call"
+  ],
+  "updated_at": "2026-10-19T01:57:00.057271+00:00",
+  "formal_checkpoint": "R1744 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1744,490 sources,2520 declarations,86 artifacts",
+  "proof_scope": "In progress. R1744 proves two native radius-preparation ingredients. EntryBits is a fixed4-tape,5-symbol,165-state controller: from any positive marked dimension word xs and three blank tapes, it returns the exact entryBits(value(xs)) in at most50*xs.length+87 native transitions, preserving xs, clearing both temporary tapes and restoring every head. Its output word has length entryBits(value(xs))<=xs.length. The input-measurement work suffix is reused via four extracted work-call lemmas; old IO interfaces remain intact. NativeDivideThree is a fixed1-tape,5-symbol,19-state in-place divider: on any marked width-l word it returns the exact quotient and remainder modulo3 within4l+4 native transitions, preserving width, markers, external IO and absolute head. Both have framed native-call interfaces. Nine modules/56 new supporting declarations; full build9467 jobs;2520 audited declarations, standard axioms only. Three of six families complete.",
+  "source_sha256": {
+    "lean/TransposeFollowup/StoredWordLength.lean": "2631281ee2adedd202058e60bc689fec933295cc40fea27e04f88812c00d8fc8",
+    "lean/TransposeFollowup/NativeNonemptyWord.lean": "af8f2ac49ca909749f83e0e2e85e7f350edb72f5d0ffd1938bda6d1a7a3cd980",
+    "lean/TransposeFollowup/EntryBitsData.lean": "e09aa113998a20261b2fd9a6977cbdad1b69e9a31f50243e3e98ee6cf7b6b2fd",
+    "lean/TransposeFollowup/EntryBitsMachine.lean": "7be0d97cb738c13ba8650b06d4199a6f944ade4706aad2c7dba621df622193f2",
+    "lean/TransposeFollowup/EntryBitsCalls.lean": "38667e7da6887ced5a6f690745b2565046c4166eee1d4d458a7eec91b4bac2a4",
+    "lean/TransposeFollowup/EntryBitsRun.lean": "15b362dd8972981d3ffb8c937161467b212d628565c3fe608c601535ff097dd8",
+    "lean/TransposeFollowup/NativeDivideThreeData.lean": "24a06092775d31a6a11b0da78d60341665c5d93e23f290a800067ce3ac2aec80",
+    "lean/TransposeFollowup/NativeDivideThreeMachine.lean": "3c08361bb173d1fb6249684ef9e887eead07abaed852286cb802c43256dd51e6",
+    "lean/TransposeFollowup/NativeDivideThreeRun.lean": "68d924738a31dcd3b64f32cb377db42818d5aa1b48ea40d0a196288e3b962135"
+  }
+}

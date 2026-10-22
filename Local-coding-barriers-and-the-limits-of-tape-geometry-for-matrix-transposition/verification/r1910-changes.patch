@@ -1,0 +1,2158 @@
+--- before/lean/SupportAxioms.lean
++++ after/lean/SupportAxioms.lean
+@@ -265,7 +265,6 @@
+ import TransposeFollowup.SpanningCommutingExtraction
+ import TransposeFollowup.FinitePieceCoverBounds
+ import TransposeFollowup.SL2TranslatedCluster
+-import TransposeFollowup.SL2FiniteCenterTrimming
+ import TransposeFollowup.DyadicCenterTrimming
+ import TransposeFollowup.TraceBucketCover
+ import TransposeFollowup.SeparatedScalarCover
+@@ -563,6 +562,7 @@
+ import TransposeFollowup.TranslationUniformity
+ import TransposeFollowup.RationalUnitRestriction
+ import TransposeFollowup.ClosedRationalExpansion
++import TransposeFollowup.ClosedNativePadding
+ import TransposeFollowup.HalfGridExpansion
+ import TransposeFollowup.AllSizeOverlapExpansion
+ import TransposeFollowup.ContinuousNativePadding
+@@ -1242,7 +1242,6 @@
+ #print axioms TransposeFollowup.entropy_le_crossEntropy
+ #print axioms TransposeFollowup.entropy_pushforward_le
+ #print axioms TransposeFollowup.entropy_le_expected_length_log_two
+-#print axioms TransposeFollowup.entropy_chain_rule
+ #print axioms TransposeFollowup.entropy_strong_subadditive
+ #print axioms TransposeFollowup.coordinateEntropy_cover
+ #print axioms TransposeFollowup.two_cover_decoding_entropy
+@@ -5525,7 +5524,6 @@
+ #print axioms TransposeFollowup.SL2Projection.spanningTraceLoss_pos
+ #print axioms TransposeFollowup.SL2Projection.exists_large_trace_of_frame
+ #print axioms TransposeFollowup.SL2Projection.exists_large_trace_of_spanning
+-#print axioms TransposeFollowup.SL2Projection.exists_large_trace_at_dyadic_scale
+ 
+ -- R1818: quantitative determinant-one commuting approximants without diagonalization.
+ #print axioms TransposeFollowup.SL2Projection.scalarAffine
+@@ -5578,9 +5576,7 @@
+ #print axioms TransposeFollowup.SL2Projection.coveringNumber_le_left_translate
+ #print axioms TransposeFollowup.SL2Projection.translated_clusters_separated
+ #print axioms TransposeFollowup.SL2Projection.cluster_coveringNumber_mul_card_le
+-#print axioms TransposeFollowup.SL2Projection.finite_center_trimming
+ #print axioms TransposeFollowup.SL2Projection.exists_dyadic_scaled_rpow_bound
+-#print axioms TransposeFollowup.SL2Projection.exists_finite_center_trimming_at_dyadic_scale
+ 
+ -- R1822: same-frame trimming and actual separated near-identity commuting extraction.
+ #print axioms TransposeFollowup.SL2Projection.mobiusIdentityBall_iff_frobenius_dist
+@@ -5596,8 +5592,6 @@
+ #print axioms TransposeFollowup.SL2Projection.coveringNumber_power_le_localized
+ #print axioms TransposeFollowup.SL2Projection.localized_power_coveringNumber
+ #print axioms TransposeFollowup.SL2Projection.localized_set_pow_coveringNumber
+-#print axioms TransposeFollowup.SL2Projection.fixed_product_coefficient_bound
+-#print axioms TransposeFollowup.SL2Projection.localized_pow37_coveringNumber_envelope
+ 
+ -- R1824: pinned scalar analytic reuse, native covering comparison and quarter scales.
+ #print axioms TransposeFollowup.ScalarMetric.externalCoveringNumber_le_scalarCells
+@@ -5736,7 +5730,6 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_dyadic_power_comparison
+ #print axioms TransposeFollowup.SL2Projection.exists_scalar_dyadic_radius
+ #print axioms TransposeFollowup.SL2Projection.exists_scalar_growth_budget_scale
+-#print axioms TransposeFollowup.SL2Projection.nilpotent_scalar_exponent_margins
+ #print axioms TransposeFollowup.SL2Projection.sample_cardinality_upper_of_cubic
+ #print axioms TransposeFollowup.SL2Projection.fixed_power_coefficient_bound
+ #print axioms TransposeFollowup.SL2Projection.localized_fixed_power_coveringNumber_envelope
+@@ -5744,8 +5737,6 @@
+ -- R1841: actual first-extraction parameter choices and coefficient bounds.
+ #print axioms TransposeFollowup.SL2Projection.first_extraction_cost_bounds
+ #print axioms TransposeFollowup.SL2Projection.scalar_concentration_power_bounds
+-#print axioms TransposeFollowup.SL2Projection.exists_first_extraction_concentration_constant
+-#print axioms TransposeFollowup.SL2Projection.exists_first_extraction_parameters
+ #print axioms TransposeFollowup.SL2Projection.exists_first_extraction_size_constant
+ 
+ -- R1842: one actual sample and uniform actual-word trace growth.
+@@ -5754,7 +5745,6 @@
+ #print axioms TransposeFollowup.SL2Projection.exists_scaled_extraction_parameters
+ #print axioms TransposeFollowup.SL2Projection.profile_power_exponent_bound
+ #print axioms TransposeFollowup.SL2Projection.full_trace_coefficient_power_bound
+-#print axioms TransposeFollowup.SL2Projection.exists_reextracted_trace_power_bound
+ #print axioms TransposeFollowup.SL2Projection.cubic_trace_budget_contradiction
+ 
+ -- R1844: produce the original family and exclude its nilpotent generator.
+@@ -7627,3 +7617,11 @@
+ #print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound
+ 
+ #print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound
++
++-- R1910: shared operational and entropy strengthening lemmas.
++#print axioms TransposeFollowup.NativeMicrocode.jump_trace
++#print axioms TransposeFollowup.NativeIO.jump_trace
++#print axioms TransposeFollowup.entropy_le_observation_add_log_fiber_bound
++#print axioms TransposeFollowup.TwoStageHelper.exponent_decomposition
++#print axioms TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution
++#print axioms TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution
+--- before/lean/TransposeFollowup/ArithmeticSeedCalls.lean
++++ after/lean/TransposeFollowup/ArithmeticSeedCalls.lean
+@@ -51,14 +51,8 @@
+   OperationalTrace.Trace (NativeMicrocode.step (program C)) (NativeMicrocode.Active (program C))
+ 
+ theorem jump_trace (C : ℕ) (pc next : Label C) (s : Bank) (pos : Port → ℤ)
+-    (h : program C pc = .jump next) : Trace C 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace C 0 (NativeMicrocode.step (program C) (cfg pc s pos)) (cfg next s pos)
+-    have he : NativeMicrocode.step (program C) (cfg pc s pos) = cfg next s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    (h : program C pc = .jump next) : Trace C 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem pad_call (C : ℕ) (zero : Bool) (xs : List Bool) (s : Bank) (pos : Port → ℤ) :
+     ∃ t ≤ 12*xs.length+3*C+21,
+--- before/lean/TransposeFollowup/BatchMembershipCalls.lean
++++ after/lean/TransposeFollowup/BatchMembershipCalls.lean
+@@ -57,11 +57,7 @@
+   funext p;fin_cases p <;> rfl
+ 
+ theorem jump_trace (small : ℕ) (pc next : Label small) (s : Bank) (pos : Fin 7 → ℤ)
+-    (h : program small pc=.jump next) : Trace small 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace small 0 (NativeMicrocode.step (program small) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program small pc=.jump next) : Trace small 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.BatchMembership
+--- before/lean/TransposeFollowup/ClockBuilderCalls.lean
++++ after/lean/TransposeFollowup/ClockBuilderCalls.lean
+@@ -61,14 +61,8 @@
+ 
+ theorem jump_trace (pc next : Label) (source fuel output : Tape Bool) (pos : Fin 3 → ℤ)
+     (h : program pc=.jump next) :
+-    Trace 1 (cfg pc source fuel output pos) (cfg next source fuel output pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc source fuel output pos)) _
+-    have he : NativeMicrocode.step program (cfg pc source fuel output pos)=cfg next source fuel output pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    Trace 1 (cfg pc source fuel output pos) (cfg next source fuel output pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem init_call (source fuel : Tape Bool) (pos : Fin 3 → ℤ) :
+     ∃ t ≤ 2,Trace t (cfg start source fuel ⟨[],[]⟩ pos)
+--- before/lean/TransposeFollowup/ClosedNativePadding.lean
++++ after/lean/TransposeFollowup/ClosedNativePadding.lean
+@@ -0,0 +1,72 @@
++import TransposeFollowup.ClosedRationalExpansion
++import TransposeFollowup.ContinuousNativePadding
++
++/-! Graph and fully paid native adapters for the closed-domain expansion API.
++The analytic closed/open image comparison remains independent of the compiler. -/
++namespace TransposeFollowup
++open Classical Set MeasureTheory
++set_option autoImplicit false
++
++namespace RationalUnitMobius
++
++theorem restricted_vertex_expansion {c n : ℕ} (F : Fin c → RationalUnitMobius) (hn : 0<n)
++    (eps : ℝ) (heps : 0≤eps)
++    (hexp : ∀ A : Set ℝ,MeasurableSet A → A⊆Icc (0:ℝ) 1 → volume.real A≤1/2 →
++      (1+eps)*volume.real A≤volume.real (restrictedImageUnion F A))
++    (S : Finset (Fin (2*n))) (hS : 2*S.card≤Fintype.card (Fin (2*n))) :
++    eps/2*S.card≤(outsideNeighbors (overlapGraph
++      (rationalFamilyMaps (rationalSymmetricFamily (clippedFamily F))) n) S).card :=
++  rationalSymmetricGraph_vertex_expansion_all_sizes (clippedFamily F) hn
++    (clippedFamily_mapsTo F) eps heps (restricted_expansion_to_open F eps hexp) S hS
++
++end RationalUnitMobius
++
++namespace PaidPadding
++open FixedTapeCompiler Transpose.Tape Transpose.Tape.Impl Transpose.Tape.TSDiagram Filter Topology
++open RationalUnitMobius
++variable {c : ℕ}
++
++theorem restricted_uniform_computation_with_cut (F : Fin (c+1) → RationalUnitMobius)
++    (eps : ℝ) (heps : 0<eps)
++    (hexp : ∀ S : Set ℝ,MeasurableSet S → S⊆Icc (0:ℝ) 1 → volume.real S≤1/2 →
++      (1+eps)*volume.real S≤volume.real (restrictedImageUnion F S)) (M : Transpose.TM) :
++    ∃ K extra : ℕ,∀ (n : ℕ),1≤n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
++      ∀ (t : ℕ),Transpose.ComputesWithin M w out t →
++      ∃ T ≤ PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K*w.length+t,
++      ∃ d : Transpose.Config (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra),
++        Transpose.stepN (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) w T
++          (Transpose.init (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra))=some d ∧
++        Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) w d=none ∧
++        d.outRev.reverse=out ∧
++        CutIneq n 3 (blockSize 3 n) T 0 0
++          (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra w) := by
++  obtain ⟨K, extra, h⟩ := continuous_uniform_computation_with_cut (clippedFamily F)
++    (clippedFamily_mapsTo F) eps heps (restricted_expansion_to_open F eps hexp)
++  exact ⟨K, extra, h M⟩
++
++theorem restricted_uniform_linear_tasks_macrostar (F : Fin (c+1) → RationalUnitMobius)
++    (eps : ℝ) (heps : 0<eps)
++    (hexp : ∀ S : Set ℝ,MeasurableSet S → S⊆Icc (0:ℝ) 1 → volume.real S≤1/2 →
++      (1+eps)*volume.real S≤volume.real (restrictedImageUnion F S)) (M : Transpose.TM) :
++    ∃ K extra : ℕ,∀ (ns : ℕ → ℕ),Tendsto ns atTop atTop → (∀ i,1≤ns i) →
++      ∀ (ws outs : ℕ → List Bool),(∀ i,(ws i).length=Transpose.inputLength (ns i)) →
++      ∀ (a : ℕ),(∀ i,Transpose.ComputesWithin M (ws i) (outs i) (a*Transpose.inputLength (ns i))) →
++      ∃ Ts : ℕ → ℕ,
++        (∀ i,Ts i≤(PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K+a)*
++          Transpose.inputLength (ns i) ∧
++          ∃ d : Transpose.Config (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra),
++            Transpose.stepN (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra)
++              (ws i) (Ts i)
++              (Transpose.init (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra))=some d ∧
++            Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra)
++              (ws i) d=none ∧ d.outRev.reverse=outs i ∧
++            CutIneq (ns i) 3 (blockSize 3 (ns i)) (Ts i) 0 0
++              (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra (ws i))) ∧
++        NativeRunLimits.Conclusion
++          (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) ns ws Ts
++          (PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K+a) :=
++  continuous_uniform_linear_tasks_macrostar (clippedFamily F) (clippedFamily_mapsTo F)
++    eps heps (restricted_expansion_to_open F eps hexp) M
++
++end PaidPadding
++end TransposeFollowup
+--- before/lean/TransposeFollowup/ClosedRationalExpansion.lean
++++ after/lean/TransposeFollowup/ClosedRationalExpansion.lean
+@@ -1,9 +1,9 @@
+ import TransposeFollowup.RationalUnitRestriction
+-import TransposeFollowup.ContinuousNativePadding
+ 
+ /-! Closed-domain image expansion transfers exactly to the open-domain
+-graph and native machine interface. Only finitely many endpoint images
+-are removed, so equality holds even for outer measures of arbitrary sets. -/
++interface. Only finitely many endpoint images are removed, so equality
++holds even for outer measures of arbitrary sets. Native padding adapters
++are isolated in ClosedNativePadding to keep this analytic API independent. -/
+ namespace TransposeFollowup
+ open Classical Set MeasureTheory
+ set_option autoImplicit false
+@@ -83,16 +83,6 @@
+   intro S hS hunit hvol
+   simpa only [restrictedImageUnion_volume_real] using hexp S hS hunit hvol
+ 
+-theorem restricted_vertex_expansion {c n : ℕ} (F : Fin c → RationalUnitMobius) (hn : 0<n)
+-    (eps : ℝ) (heps : 0≤eps)
+-    (hexp : ∀ A : Set ℝ,MeasurableSet A → A⊆Icc (0:ℝ) 1 → volume.real A≤1/2 →
+-      (1+eps)*volume.real A≤volume.real (restrictedImageUnion F A))
+-    (S : Finset (Fin (2*n))) (hS : 2*S.card≤Fintype.card (Fin (2*n))) :
+-    eps/2*S.card≤(outsideNeighbors (overlapGraph
+-      (rationalFamilyMaps (rationalSymmetricFamily (clippedFamily F))) n) S).card :=
+-  rationalSymmetricGraph_vertex_expansion_all_sizes (clippedFamily F) hn
+-    (clippedFamily_mapsTo F) eps heps (restricted_expansion_to_open F eps hexp) S hS
+-
+ theorem augmented_restrictedImageUnion {c : ℕ} (F : Fin c → RationalUnitMobius)
+     (t : ℚ) (ht : |t|<1) (S : Set ℝ) :
+     restrictedImageUnion (augmentedFamily F t ht) S=
+@@ -115,52 +105,5 @@
+ 
+ end RationalUnitMobius
+ 
+-namespace PaidPadding
+-open FixedTapeCompiler Transpose.Tape Transpose.Tape.Impl Transpose.Tape.TSDiagram Filter Topology
+-open RationalUnitMobius
+-variable {c : ℕ}
+ 
+-theorem restricted_uniform_computation_with_cut (F : Fin (c+1) → RationalUnitMobius)
+-    (eps : ℝ) (heps : 0<eps)
+-    (hexp : ∀ S : Set ℝ,MeasurableSet S → S⊆Icc (0:ℝ) 1 → volume.real S≤1/2 →
+-      (1+eps)*volume.real S≤volume.real (restrictedImageUnion F S)) (M : Transpose.TM) :
+-    ∃ K extra : ℕ,∀ (n : ℕ),1≤n → ∀ (w out : List Bool),w.length=Transpose.inputLength n →
+-      ∀ (t : ℕ),Transpose.ComputesWithin M w out t →
+-      ∃ T ≤ PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K*w.length+t,
+-      ∃ d : Transpose.Config (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra),
+-        Transpose.stepN (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) w T
+-          (Transpose.init (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra))=some d ∧
+-        Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) w d=none ∧
+-        d.outRev.reverse=out ∧
+-        CutIneq n 3 (blockSize 3 n) T 0 0
+-          (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra w) := by
+-  obtain ⟨K, extra, h⟩ := continuous_uniform_computation_with_cut (clippedFamily F)
+-    (clippedFamily_mapsTo F) eps heps (restricted_expansion_to_open F eps hexp)
+-  exact ⟨K, extra, h M⟩
+-
+-theorem restricted_uniform_linear_tasks_macrostar (F : Fin (c+1) → RationalUnitMobius)
+-    (eps : ℝ) (heps : 0<eps)
+-    (hexp : ∀ S : Set ℝ,MeasurableSet S → S⊆Icc (0:ℝ) 1 → volume.real S≤1/2 →
+-      (1+eps)*volume.real S≤volume.real (restrictedImageUnion F S)) (M : Transpose.TM) :
+-    ∃ K extra : ℕ,∀ (ns : ℕ → ℕ),Tendsto ns atTop atTop → (∀ i,1≤ns i) →
+-      ∀ (ws outs : ℕ → List Bool),(∀ i,(ws i).length=Transpose.inputLength (ns i)) →
+-      ∀ (a : ℕ),(∀ i,Transpose.ComputesWithin M (ws i) (outs i) (a*Transpose.inputLength (ns i))) →
+-      ∃ Ts : ℕ → ℕ,
+-        (∀ i,Ts i≤(PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K+a)*
+-          Transpose.inputLength (ns i) ∧
+-          ∃ d : Transpose.Config (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra),
+-            Transpose.stepN (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra)
+-              (ws i) (Ts i)
+-              (Transpose.init (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra))=some d ∧
+-            Transpose.step (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra)
+-              (ws i) d=none ∧ d.outRev.reverse=outs i ∧
+-            CutIneq (ns i) 3 (blockSize 3 (ns i)) (Ts i) 0 0
+-              (paths (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra (ws i))) ∧
+-        NativeRunLimits.Conclusion
+-          (machine (c:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K M extra) ns ws Ts
+-          (PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily (clippedFamily F)) K+a) :=
+-  continuous_uniform_linear_tasks_macrostar (clippedFamily F) (clippedFamily_mapsTo F)
+-    eps heps (restricted_expansion_to_open F eps hexp) M
+-
+-end PaidPadding
+ end TransposeFollowup
+--- before/lean/TransposeFollowup/CompactInputMeasure.lean
++++ after/lean/TransposeFollowup/CompactInputMeasure.lean
+@@ -90,12 +90,8 @@
+   · simpa only [embed_trim,hi,hf,cfg] using NativeIO.lift_work_trace program w ip outRev he
+ 
+ theorem jump_trace (w : List Bool) (pc next : Label) (s : Bank) (pos : Port → ℤ) (ip : ℤ) (outRev : List Bool)
+-    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc s pos ip outRev) (cfg next s pos ip outRev) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeIO.Active,cfg,workCfg,h]
+-  · have hs : NativeIO.step program w (cfg pc s pos ip outRev)=cfg next s pos ip outRev := by
+-      simp [NativeIO.step,NativeIO.workProgram,NativeMicrocode.step,Microcode.actualStep,cfg,workCfg,h]
+-    rw [hs];exact .refl _
++    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc s pos ip outRev) (cfg next s pos ip outRev) :=
++  NativeIO.jump_trace _ _ _ _ h
+ 
+ theorem complete_trace (w : List Bool) (pos : Port → ℤ) (outRev : List Bool) :
+     ∃ ys,NativeTrim.Normalized ys ∧ Counter.value ys=w.length ∧ ys.length=w.length.size ∧
+--- before/lean/TransposeFollowup/ConjugacyFiberCovering.lean
++++ after/lean/TransposeFollowup/ConjugacyFiberCovering.lean
+@@ -55,13 +55,8 @@
+   obtain ⟨hafin, hbfin, hbound⟩ := coveringNumber_le_bounded_transport a b L
+     (by positivity : 0 ≤ 2 * B ^ 2 + R) (by positivity : 0 ≤ 2 * B * R)
+     (by positivity : 0 ≤ 2 * B) hη hb htrans
+-  have ha : Set.range a = (fun x : G => (x : RMat)) '' A := by
+-    ext y
+-    constructor
+-    · rintro ⟨x, rfl⟩
+-      exact Set.mem_image_of_mem _ x.2
+-    · rintro ⟨x, hx, rfl⟩
+-      exact ⟨⟨x, hx⟩, rfl⟩
++  have ha : Set.range a = (fun x : G => (x : RMat)) '' A :=
++    (Set.image_eq_range _ _).symm
+   rw [ha] at hafin hbound
+   refine ⟨hafin, hbfin, ?_⟩
+   convert hbound using 1
+--- before/lean/TransposeFollowup/DimensionAdvanceCalls.lean
++++ after/lean/TransposeFollowup/DimensionAdvanceCalls.lean
+@@ -86,11 +86,7 @@
+   exact ⟨t,ht,by simpa only [embed_erase,hin] using he⟩
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ) (hc : program pc=.jump next) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,hc]
+-  · have hs : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,hc]
+-    rw [hs];exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ hc
+ 
+ end TransposeFollowup.DimensionAdvance
+--- before/lean/TransposeFollowup/DimensionLoaderInitCalls.lean
++++ after/lean/TransposeFollowup/DimensionLoaderInitCalls.lean
+@@ -109,10 +109,7 @@
+   exact ⟨t,ht,by simpa only [embed_clear,← hs,Function.update_eq_self] using he⟩
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ) (hc : program pc=.jump next) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,hc]
+-  · have hs : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by simp [NativeMicrocode.step,Microcode.actualStep,cfg,hc]
+-    rw [hs];exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ hc
+ 
+ end TransposeFollowup.DimensionLoader
+--- before/lean/TransposeFollowup/DimensionScaleCalls.lean
++++ after/lean/TransposeFollowup/DimensionScaleCalls.lean
+@@ -47,14 +47,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ)
+-    (h : program pc=.jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc s pos)) _
+-    have he : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program pc=.jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem mapped_call (p q : Port) (hpq : p≠q) (labels : NativeMappedCopy.Label → Label)
+     (hc : ∀ pc, NativeMappedCopy.program id pc≠.halt → NativeMappedCopy.program id pc≠.reject →
+--- before/lean/TransposeFollowup/DimensionSearchCalls.lean
++++ after/lean/TransposeFollowup/DimensionSearchCalls.lean
+@@ -143,10 +143,7 @@
+   exact ⟨t,ht,by simpa only [embed_advance] using he⟩
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ) (hc : program pc=.jump next) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,hc]
+-  · have hs : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by simp [NativeMicrocode.step,Microcode.actualStep,cfg,hc]
+-    rw [hs];exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ hc
+ 
+ end TransposeFollowup.DimensionSearch
+--- before/lean/TransposeFollowup/DyadicCenterTrimming.lean
++++ after/lean/TransposeFollowup/DyadicCenterTrimming.lean
+@@ -1,15 +1,8 @@
+-import TransposeFollowup.SL2FiniteCenterTrimming
+ import TransposeFollowup.DyadicSeparationInterpolation
+ 
+-/-! Absorb the fixed trimming costs at a uniform dyadic threshold.
+-Small tripling and the existing intermediate-scale separated subsets
+-then retain half the covering complexity outside finitely many balls. -/
++/-! Uniform dyadic thresholds absorb any fixed positive coefficient. -/
+ namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Matrix.Norms.Frobenius Pointwise ENNReal NNReal
+ set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+ 
+ theorem exists_dyadic_scaled_rpow_bound {c e : ℝ} (hc : 0 < c) (he : 0 < e) :
+     ∃ J : ℕ, ∀ j : ℕ, J ≤ j → c * ((1 / 4 : ℝ) ^ j) ^ e ≤ 1 := by
+@@ -22,112 +15,4 @@
+   have hh' := (le_div_iff₀ hc).mp hh
+   linarith
+ 
+-theorem exists_finite_center_trimming_at_dyadic_scale (m : ℕ) {B H κ ζ β ε : ℝ}
+-    (hB : 1 ≤ B) (hH : 1 ≤ H) (hζ : 0 < ζ) (hζ1 : ζ < 1)
+-    (hεζ : ε < ζ) (hbudget : β < ζ * κ) :
+-    ∃ J : ℕ, ∀ j : ℕ, J ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-      ∀ {A : Set G} (F : Finset G), 1 ∈ A →
+-        (∀ x ∈ A, ∀ i k, |x i k| ≤ B) →
+-        (∀ h ∈ F, ∀ i k, |h i k| ≤ H) → F.card ≤ m →
+-        (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 3)) : ℝ≥0∞).toReal ≤
+-          η ^ (-β) * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal →
+-        (∀ ρ : ℝ, η < ρ → ρ < η ^ ε →
+-          ∃ T : Finset G, (T : Set G) ⊆ A ∧
+-            Metric.IsSeparated (ENNReal.ofReal ρ) ((fun x : G => (x : RMat)) '' (T : Set G)) ∧
+-            ρ ^ (-κ) ≤ (T.card : ℝ)) →
+-        let R := {x : G | x ∈ A ∧ ∀ h ∈ F, η ^ (2 * ζ) < dist (x : RMat) (h : RMat)}
+-        R.Nonempty ∧ Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' R) ≠ ⊤ ∧
+-          (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-            2 * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' R) : ℝ≥0∞).toReal := by
+-  have hBpos : 0 < B := by linarith
+-  have hHpos : 0 < H := by linarith
+-  obtain ⟨J₁, hJ₁⟩ := exists_dyadic_scaled_rpow_bound (by positivity : 0 < 16 * B * H) hζ
+-  obtain ⟨J₂, hJ₂⟩ := exists_dyadic_scaled_rpow_bound (by positivity : 0 < 8 * H) (by linarith : 0 < 1 - ζ)
+-  obtain ⟨J₃, hJ₃⟩ := exists_dyadic_scaled_rpow_bound
+-    (by positivity : 0 < 2 * ((m : ℝ) + 1) * (8 * B + 1) ^ 4) (by linarith : 0 < ζ * κ - β)
+-  refine ⟨max 1 (max J₁ (max J₂ J₃)), ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro A F hA1 hA hF hFm htrip hdistribution
+-  have hj1 : J₁ ≤ j := by omega
+-  have hj2 : J₂ ≤ j := by omega
+-  have hj3 : J₃ ≤ j := by omega
+-  let η := (1 / 4 : ℝ) ^ j
+-  let ηn : ℝ≥0 := ⟨η, by dsimp only [η]; positivity⟩
+-  let ρ := η ^ ζ
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hη1 : η < 1 := pow_lt_one₀ (by norm_num) (by norm_num) (by omega : j ≠ 0)
+-  have hρ : 0 < ρ := Real.rpow_pos_of_pos hη ζ
+-  have hηρ : η < ρ := by
+-    simpa only [Real.rpow_one] using Real.rpow_lt_rpow_of_exponent_gt hη hη1 hζ1
+-  have hρε : ρ < η ^ ε := Real.rpow_lt_rpow_of_exponent_gt hη hη1 hεζ
+-  obtain ⟨T, hTA, hTsep, hTcard⟩ := hdistribution ρ hηρ hρε
+-  have hT : T.Nonempty := by
+-    apply Finset.card_pos.mp
+-    exact_mod_cast (Real.rpow_pos_of_pos hρ (-κ)).trans_le hTcard
+-  have hsep : ∀ t ∈ T, ∀ u ∈ T, t ≠ u → ρ < dist (t : RMat) (u : RMat) := by
+-    intro t ht u hu hne
+-    have hne' : (t : RMat) ≠ (u : RMat) := fun he => hne (Subtype.ext he)
+-    have hh := hTsep (Set.mem_image_of_mem _ ht) (Set.mem_image_of_mem _ hu) hne'
+-    change ENNReal.ofReal ρ < edist (t : RMat) (u : RMat) at hh
+-    rw [edist_dist, ENNReal.ofReal_lt_ofReal_iff_of_nonneg hρ.le] at hh
+-    exact hh
+-  have hpow : η ^ (2 * ζ) = ρ * ρ := by
+-    rw [show 2 * ζ = ζ + ζ by ring, Real.rpow_add hη]
+-  have hpart1 : 16 * B * H * η ^ (2 * ζ) ≤ ρ := by
+-    calc
+-      _ = (16 * B * H * η ^ ζ) * ρ := by rw [hpow]; ring
+-      _ ≤ 1 * ρ := mul_le_mul_of_nonneg_right (hJ₁ j hj1) hρ.le
+-      _ = _ := one_mul _
+-  have hpow' : η ^ (1 - ζ) * ρ = η := by
+-    dsimp only [ρ]
+-    rw [← Real.rpow_add hη, sub_add_cancel, Real.rpow_one]
+-  have hpart2 : 8 * H * η ≤ ρ := by
+-    calc
+-      _ = (8 * H * η ^ (1 - ζ)) * ρ :=
+-        ((mul_assoc _ _ _).trans (congrArg (fun z : ℝ => 8 * H * z) hpow')).symm
+-      _ ≤ 1 * ρ := mul_le_mul_of_nonneg_right (hJ₂ j hj2) hρ.le
+-      _ = _ := one_mul _
+-  have hscale : 8 * B * H * η ^ (2 * ζ) + 4 * H * (ηn : ℝ) ≤ ρ := by
+-    change 8 * B * H * η ^ (2 * ζ) + 4 * H * η ≤ ρ
+-    linarith
+-  have hpower : η ^ (ζ * κ - β) * η ^ (-(ζ * κ)) = η ^ (-β) := by
+-    rw [← Real.rpow_add hη]
+-    congr 1
+-    ring
+-  have hmany' : 2 * ((m : ℝ) + 1) * (8 * B + 1) ^ 4 * η ^ (-β) ≤ ρ ^ (-κ) := by
+-    calc
+-      _ = (2 * ((m : ℝ) + 1) * (8 * B + 1) ^ 4 * η ^ (ζ * κ - β)) * η ^ (-(ζ * κ)) := by
+-        exact ((mul_assoc _ _ _).trans
+-          (congrArg (fun z : ℝ => 2 * ((m : ℝ) + 1) * (8 * B + 1) ^ 4 * z) hpower)).symm
+-      _ ≤ 1 * η ^ (-(ζ * κ)) := mul_le_mul_of_nonneg_right (hJ₃ j hj3) (by positivity)
+-      _ = ρ ^ (-κ) := by
+-        rw [one_mul]
+-        dsimp only [ρ]
+-        rw [← Real.rpow_mul hη.le]
+-        congr 1
+-        ring
+-  have hFcard : (F.card : ℝ) ≤ (m : ℝ) + 1 := by exact_mod_cast (Nat.le_succ_of_le hFm)
+-  have hmany : 2 * (F.card : ℝ) * (8 * B + 1) ^ 4 * η ^ (-β) ≤ (T.card : ℝ) := by
+-    apply le_trans ?_ (hmany'.trans hTcard)
+-    apply mul_le_mul_of_nonneg_right _ (by positivity)
+-    apply mul_le_mul_of_nonneg_right _ (by positivity)
+-    exact mul_le_mul_of_nonneg_left hFcard (by norm_num)
+-  have h3fin : Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 3)) ≠ ⊤ := by
+-    apply finite_coveringNumber_of_entry_bound (by positivity : 0 ≤ (2 * B) ^ 3) hη
+-    rintro z ⟨x, hx, rfl⟩
+-    exact set_pow_subset_matrixEntryBox hA 3 hx
+-  have h23 : A ^ 2 ⊆ A ^ 3 := by
+-    intro x hx
+-    rw [show (3 : ℕ) = 2 + 1 by norm_num, pow_succ]
+-    simpa only [mul_one] using Set.mul_mem_mul hx hA1
+-  have hprod : (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' (A ^ 2)) : ℝ≥0∞).toReal ≤
+-      η ^ (-β) * (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal := by
+-    apply le_trans ?_ htrip
+-    exact ENNReal.toReal_mono (ENat.toENNReal_ne_top.mpr h3fin)
+-      (ENat.toENNReal_mono (Metric.externalCoveringNumber_mono_set (Set.image_mono h23)))
+-  exact finite_center_trimming T F hBpos.le hHpos.le hη hT hA hF hTA hsep hscale hprod hmany
+-
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/EndpointClipCalls.lean
++++ after/lean/TransposeFollowup/EndpointClipCalls.lean
+@@ -71,14 +71,8 @@
+ 
+ theorem jump_trace (A B : ℕ) (upper negative : Bool) (pc next : Label A B)
+     (s : Bank) (pos : Port → ℤ) (h : program A B upper negative pc = .jump next) :
+-    Trace A B upper negative 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace A B upper negative 0 (NativeMicrocode.step (program A B upper negative) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program A B upper negative) (cfg pc s pos) = cfg next s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    Trace A B upper negative 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem mapped_call (A B : ℕ) (upper negative : Bool) (p q : Port) (hpq : p ≠ q)
+     (labels : NativeMappedCopy.Label → Label A B)
+--- before/lean/TransposeFollowup/EndpointGuardRun.lean
++++ after/lean/TransposeFollowup/EndpointGuardRun.lean
+@@ -41,14 +41,8 @@
+ 
+ theorem jump_trace (upper negative : Bool) (pc next : Label) (s : Bank) (pos : Port → ℤ)
+     (h : program upper negative pc = .jump next) :
+-    Trace upper negative 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace upper negative 0 (NativeMicrocode.step (program upper negative) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program upper negative) (cfg pc s pos) = cfg next s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    Trace upper negative 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem add_call (upper negative : Bool) (a b : List Bool) (h : a.length = b.length)
+     (s : Bank) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/EntropyFibers.lean
++++ after/lean/TransposeFollowup/EntropyFibers.lean
+@@ -54,15 +54,14 @@
+ theorem entropy_le_conditional_crossEntropy {A H : Type*}
+     [Fintype A] [Fintype H]
+     (p q : A → ℝ) (hp : ∀ a, 0 ≤ p a) (hq : ∀ a, 0 ≤ q a)
+-    (hp1 : ∑ a, p a = 1) (z : A → H)
++    (z : A → H)
+     (hq1 : ∀ h, pushforward q z h ≤ 1)
+     (hsupport : ∀ a, 0 < p a → 0 < q a) :
+     entropy p ≤ observationEntropy p z - ∑ a, p a * Real.log (q a) := by
+   let ph := pushforward p z
+   have hph : ∀ h, 0 ≤ ph h := pushforward_nonneg p hp z
+-  have hph1 : ∑ h, ph h = 1 := (sum_pushforward p z).trans hp1
+   let r := fun a => ph (z a) * q a
+-  have hr1 : ∑ a, r a ≤ 1 := by
++  have hr1 : ∑ a, r a ≤ ∑ a, p a := by
+     calc
+       _ = ∑ h, pushforward q z h * ph h := by
+         rw [sum_pushforward_mul]
+@@ -73,11 +72,11 @@
+         apply Finset.sum_le_sum
+         intro h _
+         simpa only [one_mul] using mul_le_mul_of_nonneg_right (hq1 h) (hph h)
+-      _ = 1 := hph1
++      _ = ∑ a, p a := sum_pushforward p z
+   have hphpos : ∀ a, 0 < p a → 0 < ph (z a) :=
+     fun a ha => lt_of_lt_of_le ha (le_pushforward p hp z a)
+-  have h := entropy_le_crossEntropy p r hp
+-    (fun a => mul_nonneg (hph (z a)) (hq a)) hp1 hr1
++  have h := entropy_le_crossEntropy_of_sum_le p r hp
++    (fun a => mul_nonneg (hph (z a)) (hq a)) hr1
+     (fun a ha => mul_pos (hphpos a ha) (hsupport a ha))
+   have hpoint : ∀ a, p a * Real.log (r a) =
+       p a * Real.log (ph (z a)) + p a * Real.log (q a) := by
+@@ -93,4 +92,24 @@
+   simpa only [entropy, Real.negMulLog, neg_mul, Finset.sum_neg_distrib,
+     neg_add_rev, sub_eq_add_neg, add_comm] using h
+ 
++/-- A deterministic observation loses at most log C entropy when every fiber
++contains at most C inputs. This also covers unnormalized nonnegative weights. -/
++theorem entropy_le_observation_add_log_fiber_bound {Ω A : Type*}
++    [Fintype Ω] [Fintype A] (p : Ω → ℝ) (hp : ∀ x, 0 ≤ p x)
++    (f : Ω → A) (C : ℝ) (hC : 0 < C)
++    (hcap : ∀ a, (fiberCard f a : ℝ) ≤ C) :
++    entropy p ≤ observationEntropy p f + (∑ x, p x) * Real.log C := by
++  classical
++  have hbudget (a : A) : pushforward (fun _ : Ω => C⁻¹) f a ≤ 1 := by
++    unfold pushforward
++    rw [← Finset.sum_filter]
++    simp only [Finset.sum_const, nsmul_eq_mul]
++    change (fiberCard f a : ℝ) * C⁻¹ ≤ 1
++    simpa only [div_eq_mul_inv, one_mul] using
++      (div_le_iff₀ hC).mpr (by simpa only [one_mul] using hcap a)
++  have h := entropy_le_conditional_crossEntropy p (fun _ : Ω => C⁻¹)
++    hp (fun _ => inv_nonneg.mpr hC.le) f hbudget (fun _ _ => inv_pos.mpr hC)
++  simpa only [Real.log_inv, mul_neg, Finset.sum_neg_distrib,
++    ← Finset.sum_mul, sub_neg_eq_add] using h
++
+ end TransposeFollowup
+--- before/lean/TransposeFollowup/EntryBitsCalls.lean
++++ after/lean/TransposeFollowup/EntryBitsCalls.lean
+@@ -55,12 +55,8 @@
+   congr 2 <;> funext p <;> fin_cases p <;> rfl
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ) (h : program pc=.jump next) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · have hs : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [hs];exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem copy_call (xs : List Bool) (pos : Port → ℤ) :
+     ∃ t ≤ 6*xs.length+14,Trace t (cfg start (initial xs) pos)
+--- before/lean/TransposeFollowup/FilteredBatchMachine.lean
++++ after/lean/TransposeFollowup/FilteredBatchMachine.lean
+@@ -88,11 +88,7 @@
+   funext p;fin_cases p <;> simp [advance,add_assoc]
+ theorem advance_zero (pos : Fin 9 → ℤ) : advance pos 0 0=pos := by funext p;simp [advance]
+ theorem jump_trace (small pad K : ℕ) (pc next : Label small pad K) (s : Bank) (pos : Fin 9 → ℤ)
+-    (h : program small pad K pc=.jump next) : Trace small pad K 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace small pad K 0 (NativeMicrocode.step (program small pad K) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program small pad K pc=.jump next) : Trace small pad K 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.FilteredBatch
+--- before/lean/TransposeFollowup/FiniteEntropy.lean
++++ after/lean/TransposeFollowup/FiniteEntropy.lean
+@@ -154,55 +154,6 @@
+     pushforward p Prod.snd b = ∑ a, p (a, b) := by
+   classical
+   simp [pushforward, Fintype.sum_prod_type]
+-
+-/-- Normalization identity, valid also for a zero-mass fiber. -/
+-theorem entropy_eq_normalized {α : Type*} [Fintype α]
+-    (p : α → ℝ) (hp : ∀ a, 0 ≤ p a) :
+-    entropy p = Real.negMulLog (∑ a, p a) +
+-      (∑ a, p a) * entropy (fun a => p a / (∑ a, p a)) := by
+-  classical
+-  let s := ∑ a, p a
+-  by_cases hs : s = 0
+-  · have hz : ∀ a, p a = 0 := by
+-      intro a
+-      have hle : p a ≤ s :=
+-        Finset.single_le_sum (fun i _ => hp i) (Finset.mem_univ a)
+-      exact le_antisymm (hs ▸ hle) (hp a)
+-    simp [entropy, hz]
+-  · have hnorm : ∑ a, p a / s = 1 := by
+-      rw [← Finset.sum_div]
+-      exact div_self hs
+-    have hpoint : ∀ a, Real.negMulLog (p a) =
+-        (p a / s) * Real.negMulLog s + s * Real.negMulLog (p a / s) := by
+-      intro a
+-      calc
+-        Real.negMulLog (p a) = Real.negMulLog (s * (p a / s)) := by
+-          congr 1
+-          field_simp
+-        _ = _ := Real.negMulLog_mul s (p a / s)
+-    change (∑ a, Real.negMulLog (p a)) = Real.negMulLog s +
+-      s * ∑ a, Real.negMulLog (p a / s)
+-    simp_rw [hpoint]
+-    rw [Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum, hnorm, one_mul]
+-
+-/-- Exact finite chain rule, with zero marginal fibers interpreted by `0/0=0`. -/
+-theorem entropy_chain_rule {α β : Type*} [Fintype α] [Fintype β]
+-    (p : α × β → ℝ) (hp : ∀ ab, 0 ≤ p ab) :
+-    entropy p = entropy (pushforward p Prod.fst) +
+-      ∑ a, pushforward p Prod.fst a *
+-        entropy (fun b => p (a, b) / pushforward p Prod.fst a) := by
+-  have hrow : ∀ a, (∑ b, Real.negMulLog (p (a, b))) =
+-      Real.negMulLog (pushforward p Prod.fst a) +
+-        pushforward p Prod.fst a *
+-          entropy (fun b => p (a, b) / pushforward p Prod.fst a) := by
+-    intro a
+-    simpa only [entropy, pushforward_fst] using
+-      entropy_eq_normalized (fun b => p (a, b)) (fun b => hp (a, b))
+-  change (∑ ab, Real.negMulLog (p ab)) = _
+-  rw [Fintype.sum_prod_type]
+-  simp_rw [hrow]
+-  rw [Finset.sum_add_distrib]
+-  rfl
+ 
+ /-- Subadditivity with its exact mass correction. This unnormalized form
+ can be applied directly on each conditioning fiber, including empty ones. -/
+--- before/lean/TransposeFollowup/FixedMultipleRun.lean
++++ after/lean/TransposeFollowup/FixedMultipleRun.lean
+@@ -22,14 +22,8 @@
+   OperationalTrace.Trace (NativeMicrocode.step (program K)) (NativeMicrocode.Active (program K))
+ 
+ theorem jump_trace (K : ℕ) (pc next : Label K) (b : Bank) (pos : Port → ℤ)
+-    (h : program K pc = .jump next) : Trace K 1 (cfg pc b pos) (cfg next b pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace K 0 (NativeMicrocode.step (program K) (cfg pc b pos)) (cfg next b pos)
+-    have he : NativeMicrocode.step (program K) (cfg pc b pos) = cfg next b pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    (h : program K pc = .jump next) : Trace K 1 (cfg pc b pos) (cfg next b pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem single_call (K : ℕ) (i : Fin (K+1)) (hi : 0 < i.val)
+     (a x : List Bool) (h : a.length = x.length) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/GeneratorCleanupMachine.lean
++++ after/lean/TransposeFollowup/GeneratorCleanupMachine.lean
+@@ -115,13 +115,7 @@
+   exact ⟨t,ht,by simpa only [NativeSpanErase.cfg,embed_single,htape,← hs,Function.update_eq_self] using he⟩
+ 
+ theorem jump_trace (pc next : Label) (hc : program pc=.jump next) (s : Bank) (pos : Port → ℤ) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,hc]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc s pos)) _
+-    have he : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,hc]
+-    rw [he]
+-    exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ hc
+ 
+ end TransposeFollowup.GeneratorCleanup
+--- before/lean/TransposeFollowup/InputMeasureCalls.lean
++++ after/lean/TransposeFollowup/InputMeasureCalls.lean
+@@ -49,12 +49,8 @@
+   congr 2 <;> funext p <;> fin_cases p <;> simp [singleBinding,FinitePortBinding.values]
+ 
+ theorem jump_trace (w : List Bool) (pc next : Label) (s : Bank) (pos : Port → ℤ) (ip : ℤ) (outRev : List Bool)
+-    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc s pos ip outRev) (cfg next s pos ip outRev) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeIO.Active,cfg,workCfg,h]
+-  · have hs : NativeIO.step program w (cfg pc s pos ip outRev)=cfg next s pos ip outRev := by
+-      simp [NativeIO.step,NativeIO.workProgram,NativeMicrocode.step,Microcode.actualStep,cfg,workCfg,h]
+-    rw [hs];exact .refl _
++    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc s pos ip outRev) (cfg next s pos ip outRev) :=
++  NativeIO.jump_trace _ _ _ _ h
+ 
+ theorem load_call (w : List Bool) (pos : Port → ℤ) (outRev : List Bool) :
+     ∃ t ≤ 5*w.length+10, Trace w t (cfg start initial pos 0 outRev)
+--- before/lean/TransposeFollowup/LeafAggregation.lean
++++ after/lean/TransposeFollowup/LeafAggregation.lean
+@@ -42,7 +42,7 @@
+     exact_mod_cast hvolpos l (hfpos l hl)
+   have hvol := entropy_le_conditional_crossEntropy p
+     (fun l => (volume l : ℝ) / (2 : ℝ) ^ P) hp
+-    (fun _ => by positivity) hp1 helper hvolbudget
++    (fun _ => by positivity) helper hvolbudget
+     (fun l hl => div_pos (hvpos l hl) (by positivity))
+   have hvpoint : ∀ l, p l * Real.log ((volume l : ℝ) / (2 : ℝ) ^ P) =
+       p l * Real.log (volume l : ℝ) - p l * ((P : ℝ) * Real.log 2) := by
+@@ -55,7 +55,7 @@
+   rw [Finset.sum_sub_distrib, ← Finset.sum_mul, hp1, one_mul] at hvol
+   have hcode := entropy_le_conditional_crossEntropy p
+     (fun l => (1 / 2 : ℝ) ^ charge l) hp
+-    (fun _ => by positivity) hp1 helper hcodebudget (fun _ _ => by positivity)
++    (fun _ => by positivity) helper hcodebudget (fun _ _ => by positivity)
+   have hcpoint : ∀ l, p l * Real.log ((1 / 2 : ℝ) ^ charge l) =
+       -(p l * (charge l : ℝ)) * Real.log 2 := by
+     intro l
+--- before/lean/TransposeFollowup/LocalizedFixedProductEnvelope.lean
++++ after/lean/TransposeFollowup/LocalizedFixedProductEnvelope.lean
+@@ -66,23 +66,6 @@
+       rw [← pow_add, ← pow_add]
+       exact congrArg (fun k : ℕ => h ^ k) (by omega)
+ 
+-theorem fixed_product_coefficient_bound {h Q α q y : ℝ} {N : ℕ}
+-    (hlarge : 2 ^ 100 ≤ h) (hN : (N : ℝ) ≤ h) (hQ0 : 0 ≤ Q) (hQ : Q ≤ h)
+-    (hα : 0 < α) (hαinv : α⁻¹ ^ 4 ≤ h) (hq : 0 < q) (hqinv : q⁻¹ ≤ h)
+-    (hy0 : 0 ≤ y) :
+-    let K₀ := 64 * (N : ℝ) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ) ^ 55 * L ^ 21
+-    y ≤ 512 * K ^ 16 →
+-      (8 * (2 * Q) ^ 147 + 1) ^ 4 * y ^ 73 * (33 ^ 4 * Q ^ 8 / α ^ 4) ≤ h ^ 400000 := by
+-  dsimp only
+-  intro hy
+-  have hh := fixed_power_coefficient_bound 36 hlarge hN hQ0 hQ hα hαinv hq hqinv hy0 hy
+-  change (8 * (2 * Q) ^ 147 + 1) ^ 4 * y ^ 73 * (33 ^ 4 * Q ^ 8 / α ^ 4) ≤
+-    h ^ 321299 at hh
+-  exact hh.trans (pow_le_pow_right₀
+-    ((by norm_num : (1 : ℝ) ≤ 2 ^ 100).trans hlarge) (by norm_num))
+-
+ theorem localized_fixed_power_coveringNumber_envelope (n : ℕ) {U : Set G} (Y : Finset G)
+     {h Q α θ : ℝ} {N : ℕ} {η : ℝ≥0}
+     (hlarge : 2 ^ 100 ≤ h) (hN : (N : ℝ) ≤ h) (hQ1 : 1 ≤ Q) (hQ : Q ≤ h)
+@@ -120,29 +103,4 @@
+     hQ1 hα hαone hη hU hUi hY hdouble
+   exact ⟨hAfin, hpowfin, hbound.trans (mul_le_mul_of_nonneg_right hcoef ENNReal.toReal_nonneg)⟩
+ 
+-theorem localized_pow37_coveringNumber_envelope {U : Set G} (Y : Finset G)
+-    {h Q α θ : ℝ} {N : ℕ} {η : ℝ≥0}
+-    (hlarge : 2 ^ 100 ≤ h) (hN : (N : ℝ) ≤ h) (hQ1 : 1 ≤ Q) (hQ : Q ≤ h)
+-    (hα : 0 < α) (hαone : α ≤ 1) (hαinv : α⁻¹ ^ 4 ≤ h)
+-    (hθ : 0 < θ) (hθinv : θ⁻¹ ≤ h) (hη : 0 < η)
+-    (hU : U ⊆ matrixEntryBox Q) (hUi : U⁻¹ = U)
+-    (hY : (Y : Set G) ⊆ U ^ 2) (hdouble : U ^ 2 ⊆ (Y : Set G) * U) :
+-    let q := ENNReal.ofReal θ
+-    let K₀ := 64 * (N : ℝ≥0∞) ^ 4
+-    let L := 8 * (K₀ ^ 2 / q ^ 2)
+-    let K := (2 : ℝ≥0∞) ^ 55 * L ^ 21
+-    (Y.card : ℝ≥0∞) ≤ 512 * K ^ 16 →
+-    let A := U ^ 2 ∩ mobiusIdentityBall α
+-    Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-      Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' (A ^ 37)) ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' (A ^ 37)) : ℝ≥0∞).toReal ≤
+-        h ^ 400000 * (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal := by
+-  dsimp only
+-  intro hcard
+-  obtain ⟨hAfin, h37fin, hbound⟩ := localized_fixed_power_coveringNumber_envelope 36 Y
+-    hlarge hN hQ1 hQ hα hαone hαinv hθ hθinv hη hU hUi hY hdouble hcard
+-  have hp : h ^ (8802 * 36 + 4427) ≤ h ^ 400000 :=
+-    pow_le_pow_right₀ ((by norm_num : (1 : ℝ) ≤ 2 ^ 100).trans hlarge) (by norm_num)
+-  exact ⟨hAfin, h37fin, hbound.trans (mul_le_mul_of_nonneg_right hp ENNReal.toReal_nonneg)⟩
+-
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/NativeFieldCopy.lean
++++ after/lean/TransposeFollowup/NativeFieldCopy.lean
+@@ -109,12 +109,8 @@
+   simpa only [embed_seal,Function.update_eq_self,← hw,adv,seal_positions] using he
+ 
+ theorem jump_trace (pc next : Label) (template input output : Tape Bool) (pos : Fin 3 → ℤ)
+-    (h : program pc=.jump next) : Trace 1 (cfg pc template input output pos) (cfg next template input output pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc template input output pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program pc=.jump next) : Trace 1 (cfg pc template input output pos) (cfg next template input output pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem copy_trace (template field : List Bool) (hw : template.length=field.length)
+     (pre suffix : List (Sym Bool)) (pos : Fin 3 → ℤ) :
+--- before/lean/TransposeFollowup/NativeIO.lean
++++ after/lean/TransposeFollowup/NativeIO.lean
+@@ -59,6 +59,17 @@
+ def Active (p : Program T L) (c : Config T L) : Prop :=
+   match p c.work.core.pc with | .work i => i≠.halt ∧ i≠.reject | _ => True
+ 
++/-- The same one-step jump rule includes unchanged input and output state. -/
++theorem jump_trace (p : Program T L) (w : List Bool) (c : Config T L) (next : L)
++    (h : p c.work.core.pc = .work (.jump next)) :
++    OperationalTrace.Trace (step p w) (Active p) 1 c (setLabel c next) := by
++  apply OperationalTrace.Trace.cons
++  · simp [Active, h]
++  · have hs : step p w c = setLabel c next := by
++      simp [step, workProgram, NativeMicrocode.step, Microcode.actualStep, setLabel, h]
++    rw [hs]
++    exact .refl _
++
+ theorem step_none_iff (e : Encoding T L k q) (p : Program T L) (w : List Bool) (c : Config T L) :
+     Transpose.step (machine e p) w (c.denote e p)=none ↔ ¬Active p c := by
+   cases hp : p c.work.core.pc with
+@@ -69,39 +80,17 @@
+     Transpose.Tape.Impl.next (machine e p) w (c.denote e p)=(step p w c).denote e p := by
+   cases hp : p c.work.core.pc with
+   | work i =>
+-    cases i with
+-    | read t next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,workProgram,AbsoluteTape.scanned,NativeMicrocode.symbolDecode_code,
+-        Option.getD_some,step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      split_ifs with hz
+-      · subst z; simp [AbsoluteTape.scanned]
+-      · simp [hz]
+-    | act acts next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,workProgram,AbsoluteTape.scanned,Option.getD_some,
+-        step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      rw [NativeMicrocode.action_cells]
+-      split_ifs with hz
+-      · cases (acts (e.port.symm i)).write <;> simp [hz]
+-      · simp [hz]
+-    | jump next =>
+-      simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,NativeMicrocode.delta,
+-        Equiv.symm_apply_apply,hp,workProgram,AbsoluteTape.scanned,Option.getD_some,
+-        step,NativeMicrocode.step,Microcode.actualStep]
+-      congr 1
+-      funext i z
+-      split_ifs with hz
+-      · subst z; simp [AbsoluteTape.scanned]
+-      · simp [hz]
+-    | halt => simp [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+-        NativeMicrocode.delta,workProgram,hp,step,NativeMicrocode.step,Microcode.actualStep]
+-    | reject => simp [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+-        NativeMicrocode.delta,workProgram,hp,step,NativeMicrocode.step,Microcode.actualStep]
++    let lift : Transpose.Config (NativeMicrocode.machine e (workProgram p)) →
++        Transpose.Config (machine e p) :=
++      fun d => ⟨d.state, d.inPos, d.work, d.workPos, d.outRev⟩
++    have hh := congrArg lift
++      (NativeMicrocode.step_denote e (workProgram p) w c.inputPos c.outRev c.work)
++    convert hh using 1
++    · simp only [Transpose.Tape.Impl.next, Transpose.step, Config.denote,
++        NativeMicrocode.Config.denote, machine, NativeMicrocode.machine, delta,
++        Equiv.symm_apply_apply, hp, lift]
++      split <;> rfl
++    · simp only [step, hp, Config.denote, lift, NativeMicrocode.Config.denote]
+   | readInput next =>
+     simp only [Transpose.Tape.Impl.next,Transpose.step,Config.denote,machine,delta,
+       Equiv.symm_apply_apply,hp,AbsoluteTape.scanned,Option.getD_some,step,setLabel,Transpose.Dir.shift]
+--- before/lean/TransposeFollowup/NativeMappedCopy.lean
++++ after/lean/TransposeFollowup/NativeMappedCopy.lean
+@@ -108,14 +108,8 @@
+ 
+ theorem jump_trace (f : Bool → Bool) (pc next : Label) (source target : Tape Bool)
+     (pos : Fin 2 → ℤ) (h : program f pc = .jump next) :
+-    Trace f 1 (cfg pc source target pos) (cfg next source target pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace f 0 (NativeMicrocode.step (program f) (cfg pc source target pos)) _
+-    have he : NativeMicrocode.step (program f) (cfg pc source target pos) =
+-        cfg next source target pos := by simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    Trace f 1 (cfg pc source target pos) (cfg next source target pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem initialize_call (f : Bool → Bool) (source : Tape Bool) (pos : Fin 2 → ℤ) :
+     ∃ t ≤ 2, Trace f t (cfg (.init (.erase 0)) source ⟨[], []⟩ pos)
+--- before/lean/TransposeFollowup/NativeMicrocodeRun.lean
++++ after/lean/TransposeFollowup/NativeMicrocodeRun.lean
+@@ -15,6 +15,18 @@
+ 
+ def Active (p : Program T L) (c : Config T L) : Prop :=
+   p c.core.pc ≠ .halt ∧ p c.core.pc ≠ .reject
++
++/-- A jump changes only the control label and consumes exactly one active step. -/
++theorem jump_trace (p : Program T L) (c : Config T L) (next : L)
++    (h : p c.core.pc = .jump next) :
++    OperationalTrace.Trace (step p) (Active p) 1 c
++      {c with core := {c.core with pc := next}} := by
++  apply OperationalTrace.Trace.cons
++  · simp [Active, h]
++  · have hs : step p c = {c with core := {c.core with pc := next}} := by
++      simp [step, Microcode.actualStep, h]
++    rw [hs]
++    exact .refl _
+ 
+ theorem step_none_iff (e : Encoding T L k q) (p : Program T L) (w : List Bool)
+     (inputPos : ℤ) (outRev : List Bool) (c : Config T L) :
+--- before/lean/TransposeFollowup/NativePaddedFieldCalls.lean
++++ after/lean/TransposeFollowup/NativePaddedFieldCalls.lean
+@@ -64,11 +64,7 @@
+   exact ⟨t,by omega,by simpa only [embed_tail,hi,Matrix.cons_val_one,Matrix.cons_val_zero,hf] using he⟩
+ 
+ theorem jump_trace (C : ℕ) (pc next : Label C) (template input output : Tape Bool) (pos : Fin 3 → ℤ)
+-    (h : program C pc=.jump next) : Trace C 1 (cfg pc template input output pos) (cfg next template input output pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace C 0 (NativeMicrocode.step (program C) (cfg pc template input output pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program C pc=.jump next) : Trace C 1 (cfg pc template input output pos) (cfg next template input output pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.NativePaddedField
+--- before/lean/TransposeFollowup/NativePairEqualMachine.lean
++++ after/lean/TransposeFollowup/NativePairEqualMachine.lean
+@@ -59,12 +59,8 @@
+   exact ⟨t,ht,by simpa only [embed_compare,← ha,← hb,Function.update_eq_self] using he⟩
+ 
+ theorem jump_trace (pc next : Label) (s : Fin 4 → Tape Bool) (pos : Fin 4 → ℤ) (h : program pc=.jump next) :
+-    Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ def samePair (a b : List Bool × List Bool) : Bool :=
+   decide ((BinaryCompare.value a.1,BinaryCompare.value a.2)=(BinaryCompare.value b.1,BinaryCompare.value b.2))
+--- before/lean/TransposeFollowup/NativePairReaderMachine.lean
++++ after/lean/TransposeFollowup/NativePairReaderMachine.lean
+@@ -85,11 +85,7 @@
+   exact ⟨t,ht,by simpa only [embed_copy,copy_positions,copy_final_positions] using he⟩
+ 
+ theorem jump_trace (C : ℕ) (pc next : Label C) (s : Fin 4 → Tape Bool) (pos : Fin 4 → ℤ)
+-    (h : program C pc=.jump next) : Trace C 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace C 0 (NativeMicrocode.step (program C) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program C pc=.jump next) : Trace C 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.NativePairReader
+--- before/lean/TransposeFollowup/NativeResiduePairMachine.lean
++++ after/lean/TransposeFollowup/NativeResiduePairMachine.lean
+@@ -65,11 +65,7 @@
+     ← hs,Function.update_eq_self] using he⟩
+ 
+ theorem jump_trace (d : ℕ) (pc next : Label d) (s : Fin 2 → Tape Bool) (pos : Fin 2 → ℤ)
+-    (h : program d pc=.jump next) : Trace d 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace d 0 (NativeMicrocode.step (program d) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program d pc=.jump next) : Trace d 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.NativeResiduePair
+--- before/lean/TransposeFollowup/NilpotentExtractionParameters.lean
++++ after/lean/TransposeFollowup/NilpotentExtractionParameters.lean
+@@ -211,64 +211,6 @@
+     _ ≤ C₀ ^ 3 * η ^ (-(300 * θ)) :=
+       mul_le_mul hconst hbig (by positivity) (by positivity)
+     _ = _ := by rw [mul_pow C₀ (η ^ (-(100 * θ))) 3, hcube]
+-
+-theorem exists_first_extraction_concentration_constant
+-    {a b s l e B B₀ R κ : ℝ}
+-    (ha : 0 < a) (hb : 0 < b) (hs : 0 < s) (hl : 0 < l) (he : 0 ≤ e)
+-    (hB : 0 ≤ B) (hB₀ : 0 ≤ B₀) (hR : 0 ≤ R) (hκ : 0 ≤ κ) (hκone : κ ≤ 1) :
+-    ∃ C₀ : ℝ, 1 ≤ C₀ ∧ ∀ η θ γ P K J : ℝ,
+-      0 < η → η ≤ 1 → 0 ≤ θ → 0 ≤ γ → γ ≤ θ →
+-      0 ≤ P → 0 ≤ K → 0 ≤ J →
+-      P ≤ η ^ (-θ) → K ≤ η ^ (-θ) → J ≤ η ^ (-θ) →
+-      let r₀ := a * η ^ (2 * θ)
+-      let δ := b * η ^ (11 * θ)
+-      let σ := s * η ^ (1 - 9 * θ)
+-      let ε := e * η ^ (1 - 2 * θ)
+-      let ℓ := l * η ^ (3 * θ)
+-      let Bpow := (4 : ℝ) ^ 142
+-      let H := (102400 * B₀ ^ 7 / r₀ + 8 * B₀ + 1) ^ 4
+-      let S := 6561 * (4 * σ / η + 1) ^ 4
+-      let L := ((binCount B δ ^ 4 : ℕ) : ℝ)
+-      let E := (4 * (20 * (2 * R) ^ 10 * ε + 2 * R * η) / η + 1) ^ 4
+-      let D := 40 * (2 * R) ^ 11 * (3 * 32 / (2 * ℓ) + 2)
+-      let Cp := (8 * Bpow + 1) ^ 4 * (8 * Bpow ^ 2 + 4 * Bpow + 1) ^ κ
+-      let Q := 4 * L ^ 3 * (E * (Cp * K * J * η ^ (-(γ * κ))) * D ^ κ + (2 : ℝ) ^ κ)
+-      let W := (9 * P * H) ^ 3 * η ^ (-(8 * θ)) * S ^ 3
+-      Q * W ≤ (C₀ * η ^ (-(100 * θ))) ^ 3 := by
+-  let Hc := (102400 * B₀ ^ 7 / a + 8 * B₀ + 1) ^ 4
+-  let Sc := 6561 * (4 * s + 1) ^ 4
+-  let Lc := (2 * B / b + 1) ^ 4
+-  let Ec := (80 * (2 * R) ^ 10 * e + 8 * R + 1) ^ 4
+-  let Dc := 40 * (2 * R) ^ 11 * (48 / l + 2)
+-  let Bpow := (4 : ℝ) ^ 142
+-  let Cp := (8 * Bpow + 1) ^ 4 * (8 * Bpow ^ 2 + 4 * Bpow + 1) ^ κ
+-  let Qc := 4 * Lc ^ 3 * (Ec * Cp * Dc ^ κ + (2 : ℝ) ^ κ)
+-  let Wc := (9 * Hc) ^ 3 * Sc ^ 3
+-  have hHc : 0 ≤ Hc := by dsimp only [Hc]; positivity
+-  have hSc : 0 ≤ Sc := by dsimp only [Sc]; positivity
+-  have hLc : 0 ≤ Lc := by dsimp only [Lc]; positivity
+-  have hEc : 0 ≤ Ec := by dsimp only [Ec]; positivity
+-  have hDc : 0 ≤ Dc := by dsimp only [Dc]; positivity
+-  have hCp : 0 ≤ Cp := by dsimp only [Cp, Bpow]; positivity
+-  have hQc : 0 ≤ Qc := by dsimp only [Qc]; positivity
+-  have hWc : 0 ≤ Wc := by dsimp only [Wc]; positivity
+-  let C₀ := 1 + Qc * Wc
+-  have hC₀ : 1 ≤ C₀ := le_add_of_nonneg_right (mul_nonneg hQc hWc)
+-  refine ⟨C₀, hC₀, ?_⟩
+-  intro η θ γ P K J hη hηone hθ hγ hγθ hP hK hJ hPb hKb hJb
+-    r₀ δ σ ε ℓ _ H S L E D _ Q W
+-  obtain ⟨hHb, hSb, hLb, hEb, hDb⟩ := first_extraction_cost_bounds
+-    hη hηone hθ ha hb hs he hB hB₀ hR
+-  have hH : 0 ≤ H := by dsimp only [H, r₀]; positivity
+-  have hS : 0 ≤ S := by dsimp only [S, σ]; positivity
+-  have hL : 0 ≤ L := Nat.cast_nonneg _
+-  have hD : 0 ≤ D := by dsimp only [D, ℓ]; positivity
+-  obtain ⟨hQb, hWb⟩ := scalar_concentration_power_bounds
+-    hη hηone hθ hκ hκone hγ hγθ hH hS hL hD hP hK hJ hCp
+-    hHc hEc hDc hHb hSb hLb hEb hDb hPb hKb hJb
+-  have hW : 0 ≤ W := by dsimp only [W]; positivity
+-  exact concentration_budget_of_power_bounds hη hηone hθ hW hQc hWc hQb hWb
+-
+ 
+ /-- Fixed constants chosen before the scale jointly pay chart localization,
+ frame absorption, matrix spacing and scalar spacing. -/
+@@ -407,40 +349,6 @@
+         mul_le_mul_of_nonneg_right (by linarith only [hls]) (hp _).le
+ 
+ 
+-/-- Fixed constants chosen before the scale jointly pay chart localization,
+-frame absorption, matrix spacing and scalar spacing. -/
+-theorem exists_first_extraction_parameters {H B M : ℝ}
+-    (hH : 1 ≤ H) (hB : 1 ≤ B) (hM : 1 ≤ M) :
+-    ∃ a b s l e f rc : ℝ,
+-      0 < a ∧ 0 < b ∧ 0 < s ∧ 0 < l ∧ 0 < e ∧ 0 < f ∧ 0 < rc ∧
+-      a = 1 / (2 * H) ∧ l = a / (9216 * H ^ 4) ∧
+-      e = 12800 * (4 * H) ^ 6 / a ∧
+-      ∀ η θ : ℝ, 0 < η → η ≤ 1 → 0 ≤ θ →
+-        let r₀ := a * η ^ (2 * θ)
+-        let d₀ := η ^ θ
+-        let d := f * η ^ (9 * θ)
+-        let r := rc * η ^ (9 * θ)
+-        let δ := b * η ^ (11 * θ)
+-        let σ := s * η ^ (1 - 9 * θ)
+-        let L := l * η ^ (3 * θ)
+-        let ε := e * η ^ (1 - 2 * θ)
+-        r ≤ 1 ∧ 3 * M * r ≤ 1 ∧ 36864 * M ^ 6 * r ≤ d ∧
+-        8 * B * δ ≤ 1 ∧ 8 * B * δ = (r₀ / 8) * r ∧
+-        d = (r₀ / 8) ^ 3 / (3456 * (96 * H ^ 4 / d₀) ^ 3) ∧
+-        10 * B * M * (384 * M ^ 4 / d * η) ≤ 2 * σ ∧ η ≤ σ ∧
+-        L = (r₀ / 8) * d₀ / (1152 * H ^ 4) ∧
+-        ε = 12800 * (4 * H) ^ 6 * η / r₀ ∧
+-        ∀ δs : ℝ, δs ≤ 2 * η ^ (1 - 3 * θ) → 96 * δs ≤ 4 * L * σ := by
+-  let a := 1 / (2 * H)
+-  have hHp : 0 < H := zero_lt_one.trans_le hH
+-  have ha : 0 < a := by dsimp only [a]; positivity
+-  have haone : a ≤ 1 := by
+-    apply (div_le_iff₀ (by positivity : 0 < 2 * H)).mpr
+-    linarith only [hH]
+-  obtain ⟨b, s, l, e, f, rc, hb, hs, hl, he, hf, hrc, hleq, heeq, hparams⟩ :=
+-    exists_scaled_extraction_parameters hH hB hM ha haone
+-  exact ⟨a, b, s, l, e, f, rc, ha, hb, hs, hl, he, hf, hrc, rfl, hleq, heeq, hparams⟩
+-
+ /-- The actual sampling, binning and error formulas meet the upper-size
+ budget; only the existing geometric cube and product envelope are inputs. -/
+ theorem exists_first_extraction_size_constant {b s e B R : ℝ}
+--- before/lean/TransposeFollowup/NormalizedBatchMachine.lean
++++ after/lean/TransposeFollowup/NormalizedBatchMachine.lean
+@@ -118,11 +118,7 @@
+   exact ⟨t,ht,by simpa only [liftRead_bank,start] using he⟩
+ 
+ theorem jump_trace (small pad : ℕ) (pc next : Label small pad) (s : Bank) (pos : Fin 6 → ℤ)
+-    (h : program small pad pc=.jump next) : Trace small pad 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace small pad 0 (NativeMicrocode.step (program small pad) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program small pad pc=.jump next) : Trace small pad 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.NormalizedBatch
+--- before/lean/TransposeFollowup/PaddedWordCalls.lean
++++ after/lean/TransposeFollowup/PaddedWordCalls.lean
+@@ -47,14 +47,8 @@
+ 
+ theorem jump_trace (C : ℕ) (f : Bool → Bool) (pc next : Label C) (source target : Tape Bool)
+     (pos : Fin 2 → ℤ) (h : program C f pc = .jump next) :
+-    Trace C f 1 (cfg pc source target pos) (cfg next source target pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace C f 0 (NativeMicrocode.step (program C f) (cfg pc source target pos)) _
+-    have he : NativeMicrocode.step (program C f) (cfg pc source target pos) =
+-        cfg next source target pos := by simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    Trace C f 1 (cfg pc source target pos) (cfg next source target pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem initialize_call (C : ℕ) (f : Bool → Bool) (source : Tape Bool) (pos : Fin 2 → ℤ) :
+     ∃ t ≤ 2, Trace C f t (cfg (.init (.erase 0)) source ⟨[], []⟩ pos)
+--- before/lean/TransposeFollowup/PageEventBatchCalls.lean
++++ after/lean/TransposeFollowup/PageEventBatchCalls.lean
+@@ -60,11 +60,7 @@
+ 
+ theorem jump_trace (F : Fin c → RationalMobius) (small : ℕ) (tag : Fin c) (incoming : Bool) (page : Fin (rationalPageCount F))
+     (pc next : Label F small) (s : Bank) (pos : Fin 7 → ℤ)
+-    (h : program F small tag incoming page pc=.jump next) : Trace F small tag incoming page 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F small tag incoming page 0 (NativeMicrocode.step (program F small tag incoming page) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program F small tag incoming page pc=.jump next) : Trace F small tag incoming page 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.PageEventBatch
+--- before/lean/TransposeFollowup/PageLoopMachine.lean
++++ after/lean/TransposeFollowup/PageLoopMachine.lean
+@@ -89,11 +89,7 @@
+ 
+ theorem jump_trace (F : Fin (r+1) → RationalMobius) (incoming : Bool) (pc next : Label F)
+     (s : PageQuery.Bank) (out : Tape Bool) (pos : Fin 8 → ℤ) (h : program F incoming pc=.jump next) :
+-    Trace F incoming 1 (cfg pc s out pos) (cfg next s out pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F incoming 0 (NativeMicrocode.step (program F incoming) (cfg pc s out pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    Trace F incoming 1 (cfg pc s out pos) (cfg next s out pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.PageLoop
+--- before/lean/TransposeFollowup/PageQueryMachine.lean
++++ after/lean/TransposeFollowup/PageQueryMachine.lean
+@@ -102,11 +102,7 @@
+ 
+ theorem jump_trace (F : Fin c → RationalMobius) (small K : ℕ) (tag : Fin c) (incoming : Bool) (page : Fin (rationalPageCount F))
+     (pc next : Label F small K) (s : Bank) (pos : Fin 7 → ℤ)
+-    (h : program F small K tag incoming page pc=.jump next) : Trace F small K tag incoming page 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F small K tag incoming page 0 (NativeMicrocode.step (program F small K tag incoming page) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program F small K tag incoming page pc=.jump next) : Trace F small K tag incoming page 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.PageQuery
+--- before/lean/TransposeFollowup/PageRecordTestMachine.lean
++++ after/lean/TransposeFollowup/PageRecordTestMachine.lean
+@@ -102,12 +102,8 @@
+ 
+ theorem jump_trace (F : Fin c → RationalMobius) (tag : Fin c) (incoming : Bool) (page : Fin (rationalPageCount F))
+     (pc next : Label F) (s : Fin 3 → Tape Bool) (pos : Fin 3 → ℤ)
+-    (h : program F tag incoming page pc=.jump next) : Trace F tag incoming page 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F tag incoming page 0 (NativeMicrocode.step (program F tag incoming page) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program F tag incoming page pc=.jump next) : Trace F tag incoming page 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ def hit (F : Fin c → RationalMobius) (tag : Fin c) (incoming : Bool) (page : Fin (rationalPageCount F))
+     (q a b : List Bool) : Bool :=
+--- before/lean/TransposeFollowup/PreparedPairMachine.lean
++++ after/lean/TransposeFollowup/PreparedPairMachine.lean
+@@ -157,11 +157,7 @@
+   funext p;fin_cases p <;> rfl
+ 
+ theorem jump_trace (small pad : ℕ) (pc next : Label small pad) (s : Bank) (pos : Fin 5 → ℤ)
+-    (h : program small pad pc=.jump next) : Trace small pad 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace small pad 0 (NativeMicrocode.step (program small pad) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h : program small pad pc=.jump next) : Trace small pad 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.PreparedPair
+--- before/lean/TransposeFollowup/RadiusBuilderCalls.lean
++++ after/lean/TransposeFollowup/RadiusBuilderCalls.lean
+@@ -23,12 +23,8 @@
+       simp [FinitePortBinding.values,h,hq]
+ 
+ theorem jump_trace (K : ℕ) (pc next : Label K) (s : Bank) (pos : Port → ℤ)
+-    (h : program K pc=.jump next) : Trace K 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · have hs : NativeMicrocode.step (program K) (cfg pc s pos)=cfg next s pos:=by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [hs];exact .refl _
++    (h : program K pc=.jump next) : Trace K 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem entry_call (K : ℕ) (xs : List Bool) (hx : 0<Counter.value xs) (pos : Port → ℤ) :
+     ∃ t ≤ 50*xs.length+87,Trace K t (cfg (start K) (initial xs) pos)
+--- before/lean/TransposeFollowup/RadiusClockCalls.lean
++++ after/lean/TransposeFollowup/RadiusClockCalls.lean
+@@ -44,12 +44,8 @@
+     | inr p => cases p;rfl
+ 
+ theorem jump_trace (K : ℕ) (pc next : Label K) (s : Bank) (pos : Port → ℤ)
+-    (h : program K pc=.jump next) : Trace K 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · have hs : NativeMicrocode.step (program K) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [hs];exact .refl _
++    (h : program K pc=.jump next) : Trace K 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem radius_call (K : ℕ) (xs : List Bool) (hx : 0<Counter.value xs) (pos : Port → ℤ) :
+     ∃ t ≤ RadiusBuilder.budget K xs,Trace K t (cfg (start K) (initial xs) pos)
+--- before/lean/TransposeFollowup/RawInputCopy.lean
++++ after/lean/TransposeFollowup/RawInputCopy.lean
+@@ -87,12 +87,8 @@
+   exact ⟨t,ht,by simpa only [embed_seal,cfg] using hi⟩
+ 
+ theorem jump_trace (w : List Bool) (pc next : Label) (word : Tape Bool) (pos inputPos : ℤ) (outRev : List Bool)
+-    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc word pos inputPos outRev) (cfg next word pos inputPos outRev) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeIO.Active,cfg,workCfg,h]
+-  · have hs : NativeIO.step program w (cfg pc word pos inputPos outRev)=cfg next word pos inputPos outRev := by
+-      simp [NativeIO.step,NativeIO.workProgram,NativeMicrocode.step,Microcode.actualStep,cfg,workCfg,h]
+-    rw [hs]; exact .refl _
++    (h : program pc=.work (.jump next)) : Trace w 1 (cfg pc word pos inputPos outRev) (cfg next word pos inputPos outRev) :=
++  NativeIO.jump_trace _ _ _ _ h
+ 
+ theorem input_at (pre rest : List Bool) : Transpose.readInput (pre++rest) pre.length=rest.head? := by
+   have h : ¬(pre.length : ℤ)<0 := by omega
+--- before/lean/TransposeFollowup/RecordedRowRun.lean
++++ after/lean/TransposeFollowup/RecordedRowRun.lean
+@@ -53,13 +53,8 @@
+     simp [consumerBinding,consumerPort,FinitePortBinding.values,RowConsumer.positions,rowPositions,finalPositions]
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]; exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ def records (n iw flags : List Bool) : List Bool := RowConsumer.output iw (ArithmeticSeed.one n.length) flags
+ 
+--- before/lean/TransposeFollowup/ReextractionPowerBounds.lean
++++ after/lean/TransposeFollowup/ReextractionPowerBounds.lean
+@@ -207,42 +207,4 @@
+   exact (pow_le_pow_left₀ ENNReal.toReal_nonneg
+     (ENNReal.toReal_mono (ENat.toENNReal_ne_top.mpr hTfin) (ENat.toENNReal_mono hmono)) 3).trans hnative
+ 
+-/-- The original numerical specialization, with its statement preserved. -/
+-theorem exists_reextracted_trace_power_bound {θ a : ℝ}
+-    (hθ : 0 ≤ θ) (hθquarter : θ < 1 / 4) (ha : 0 < a) (haone : a ≤ 1) :
+-    ∃ U₀ : ℝ, 0 < U₀ ∧ ∃ J₀ : ℕ, ∀ j : ℕ, J₀ ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      let ηn : ℝ≥0 := ⟨η, by positivity⟩
+-      ∀ {U A D : Set G} (Y : Finset G) (k : ℕ) {p q : G}
+-        {h Q α q₀ τ : ℝ} {Nprofile : ℕ},
+-      k ≤ 282 → (2 : ℝ) ^ 100 ≤ h → (Nprofile : ℝ) ≤ h → 1 ≤ Q → Q ≤ h →
+-      0 < α → α ≤ 1 → α⁻¹ ^ 4 ≤ h → 0 < q₀ → q₀⁻¹ ≤ h →
+-      0 ≤ τ → 3000000 * τ ≤ θ → h ≤ η ^ (-τ) →
+-      (Y.card : ℝ) ≤ 512 * ((2 : ℝ) ^ 55 * (8 * ((64 * (Nprofile : ℝ) ^ 4) ^ 2 / q₀ ^ 2)) ^ 21) ^ 16 →
+-      U ⊆ matrixEntryBox Q → U⁻¹ = U → (Y : Set G) ⊆ U ^ 2 → U ^ 2 ⊆ (Y : Set G) * U →
+-      A = U ^ 2 ∩ mobiusIdentityBall α → 1 ∈ A → A⁻¹ = A →
+-      2 * (5 : ℝ) ^ 34 * α ≤ 1 →
+-      p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-      η ^ θ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-      D.Nonempty → D ⊆ A ^ k → D ⊆ mobiusIdentityBall (1 / 2) →
+-      (∀ w ∈ D, a * η ^ (3 * θ) ≤ dist (w : RMat) 1) →
+-      let N := (Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-      let T := (fun w : G => Matrix.trace (w : RMat)) '' D
+-      Metric.externalCoveringNumber ηn ((fun x : G => (x : RMat)) '' A) ≠ ⊤ ∧
+-      ∀ δ : ℝ≥0, ηn ≤ δ → Metric.externalCoveringNumber δ T ≠ ⊤ ∧
+-        (Metric.externalCoveringNumber δ T : ℝ≥0∞).toReal ^ 3 ≤
+-          U₀ * η ^ (-(548 * θ)) * N := by
+-  obtain ⟨U₀, hU₀, J₀, hbound⟩ := exists_reextracted_trace_power_bound_of_cost hθ hθquarter ha haone
+-  refine ⟨U₀, hU₀, J₀, ?_⟩
+-  intro j hj η ηn U A D Y k p q h Q α q₀ τ Nprofile hk hlarge hNprofile hQ hQh
+-    hα hαone hαinv hq₀ hq₀inv hτ hmargin hprofile hYcard hU hUi hY hdouble
+-    hAloc hA1 hAi hαsmall hp hq hpq hspan hDn hDpow hDnear hDfar
+-  have hcost : ((8802*max (k+1) 141+4427 : ℕ) : ℝ)*τ ≤ θ := by
+-    have hh : ((8802*max (k+1) 141+4427 : ℕ) : ℝ) ≤ 3000000 := by
+-      exact_mod_cast (show 8802*max (k+1) 141+4427 ≤ 3000000 by omega)
+-    exact (mul_le_mul_of_nonneg_right hh hτ).trans hmargin
+-  exact hbound j hj Y k hlarge hNprofile hQ hQh hα hαone hαinv hq₀ hq₀inv
+-    hτ hcost hprofile hYcard hU hUi hY hdouble hAloc hA1 hAi hαsmall
+-    hp hq hpq hspan hDn hDpow hDnear hDfar
+-
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/RepeatedAddCalls.lean
++++ after/lean/TransposeFollowup/RepeatedAddCalls.lean
+@@ -49,13 +49,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace_to (target : Microcode.Program Port Label) (pc next : Label) (b : Bank) (pos : Port → ℤ)
+-    (h : target pc = .jump next) : OperationalTrace.Trace (NativeMicrocode.step target) (NativeMicrocode.Active target) 1 (cfg pc b pos) (cfg next b pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · have he : NativeMicrocode.step target (cfg pc b pos) = cfg next b pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    (h : target pc = .jump next) : OperationalTrace.Trace (NativeMicrocode.step target) (NativeMicrocode.Active target) 1 (cfg pc b pos) (cfg next b pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem jump_trace (pc next : Label) (b : Bank) (pos : Port → ℤ)
+     (h : program pc = .jump next) : Trace 1 (cfg pc b pos) (cfg next b pos) :=
+--- before/lean/TransposeFollowup/ReusableRow.lean
++++ after/lean/TransposeFollowup/ReusableRow.lean
+@@ -63,14 +63,8 @@
+   rfl
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ def budget (F : RationalMobius) (n : List Bool) := RowExecution.budget F n+RowCleanup.budget n.length+2
+ 
+--- before/lean/TransposeFollowup/RowCellCalls.lean
++++ after/lean/TransposeFollowup/RowCellCalls.lean
+@@ -52,15 +52,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace (pc next : Label) (m : ℕ) (w : Words) (pos : Port → ℤ)
+-    (h : program pc = .jump next) : Trace 1 (cfg pc (ready m w) pos) (cfg next (ready m w) pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc (ready m w) pos)) _
+-    have he : NativeMicrocode.step program (cfg pc (ready m w) pos) =
+-        cfg next (ready m w) pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    (h : program pc = .jump next) : Trace 1 (cfg pc (ready m w) pos) (cfg next (ready m w) pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem compare_call (second gate : Bool) (m : ℕ) (w : Words) (h : Width m w)
+     (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/RowCleanupRun.lean
++++ after/lean/TransposeFollowup/RowCleanupRun.lean
+@@ -27,14 +27,8 @@
+   all_goals simp [RowExecution.singleBinding,FinitePortBinding.values,Function.update,h]
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ)
+-    (h : program pc=.jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc s pos)) _
+-    have he : NativeMicrocode.step program (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program pc=.jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem batch_call (words : Fin 30 → List Bool) (m : ℕ) (hw : ∀ j,(words j).length=m)
+     (s : Bank) (hs : ∀ j,s (dirtyPorts j)=Counter.marked (words j)) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/RowConsumerCalls.lean
++++ after/lean/TransposeFollowup/RowConsumerCalls.lean
+@@ -8,13 +8,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace (pc next : Label) (row unit : List Bool) (s : Work) (pos : Port → ℤ)
+-    (h : program pc=.jump next) : Trace 1 (cfg pc row unit s pos) (cfg next row unit s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc row unit s pos)) _
+-    have he : NativeMicrocode.step program (cfg pc row unit s pos)=cfg next row unit s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]; exact .refl _
++    (h : program pc=.jump next) : Trace 1 (cfg pc row unit s pos) (cfg next row unit s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem embed_rewind (pc : NativeSealBack.Label) (w : Tape Bool) (row unit : List Bool)
+     (s : Work) (pos : Port → ℤ) (z : ℤ) :
+--- before/lean/TransposeFollowup/RowEnumerationCalls.lean
++++ after/lean/TransposeFollowup/RowEnumerationCalls.lean
+@@ -68,13 +68,8 @@
+   congr 2 <;> funext p <;> fin_cases p <;> rfl
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]; exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem compare_call (F : RationalMobius) (n iw : List Bool) (hl : iw.length=n.length)
+     (pre : List (Sym Bool)) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/RowExecutionCalls.lean
++++ after/lean/TransposeFollowup/RowExecutionCalls.lean
+@@ -69,14 +69,8 @@
+       cases q <;> simp [RowStream.positions,positions,rowPort]
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem prep_call (F : RationalMobius) (n iw : List Bool) (hm : 0<n.length)
+     (hi : iw.length=n.length) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/RowPreparationCalls.lean
++++ after/lean/TransposeFollowup/RowPreparationCalls.lean
+@@ -66,14 +66,8 @@
+   OperationalTrace.Trace (NativeMicrocode.step (program F)) (NativeMicrocode.Active (program F))
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem images_call (F : RationalMobius) (n iw : List Bool) (hm : 0<n.length)
+     (hi : iw.length=n.length) (s : Bank) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/RowStreamCalls.lean
++++ after/lean/TransposeFollowup/RowStreamCalls.lean
+@@ -31,14 +31,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace {m : ℕ} (pc next : Label) (fuel : List Bool) (s : State m) (pos : Port → ℤ)
+-    (h : program pc = .jump next) : Trace 1 (cfg pc fuel s pos) (cfg next fuel s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, config, h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc fuel s pos)) _
+-    have he : NativeMicrocode.step program (cfg pc fuel s pos) = cfg next fuel s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, config, h]
+-    rw [he]
+-    exact .refl _
++    (h : program pc = .jump next) : Trace 1 (cfg pc fuel s pos) (cfg next fuel s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem cell_call {m : ℕ} (guard : Bool) (fuel : List Bool) (s : State m) (pos : Port → ℤ) :
+     ∃ t ≤ 118*m+284,
+--- before/lean/TransposeFollowup/SL2FiniteCenterTrimming.lean
++++ after/lean/TransposeFollowup/SL2FiniteCenterTrimming.lean
+@@ -1,92 +0,0 @@
+-import TransposeFollowup.SL2TranslatedCluster
+-
+-/-! Retain at least half the covering complexity while avoiding finitely
+-many prescribed centers. The quantitative hypotheses are small doubling
+-and a sufficiently large separated subset of the original set. -/
+-namespace TransposeFollowup.SL2Projection
+-open Classical Matrix Set RealMobius
+-open scoped Matrix.Norms.Frobenius Pointwise ENNReal NNReal
+-set_option autoImplicit false
+-local notation "RMat" => Matrix (Fin 2) (Fin 2) ℝ
+-local notation "G" => RealMobius.Group
+-
+-theorem finite_center_trimming {A : Set G} (T F : Finset G)
+-    {B H r ρ K : ℝ} {η : ℝ≥0}
+-    (hB : 0 ≤ B) (hH : 0 ≤ H) (hη : 0 < η) (hT : T.Nonempty)
+-    (hA : ∀ x ∈ A, ∀ i j, |x i j| ≤ B)
+-    (hF : ∀ h ∈ F, ∀ i j, |h i j| ≤ H)
+-    (hTA : (T : Set G) ⊆ A)
+-    (hsep : ∀ t ∈ T, ∀ u ∈ T, t ≠ u → ρ < dist (t : RMat) (u : RMat))
+-    (hscale : 8 * B * H * r + 4 * H * (η : ℝ) ≤ ρ)
+-    (hproduct : (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' (A ^ 2)) : ℝ≥0∞).toReal ≤
+-      K * (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal)
+-    (hmany : 2 * (F.card : ℝ) * (8 * B + 1) ^ 4 * K ≤ (T.card : ℝ)) :
+-    let R := {x : G | x ∈ A ∧ ∀ h ∈ F, r < dist (x : RMat) (h : RMat)}
+-    R.Nonempty ∧ Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' R) ≠ ⊤ ∧
+-      (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-        2 * (Metric.externalCoveringNumber η ((fun x : G => (x : RMat)) '' R) : ℝ≥0∞).toReal := by
+-  let ι := fun x : G => (x : RMat)
+-  let R := {x : G | x ∈ A ∧ ∀ h ∈ F, r < dist (x : RMat) (h : RMat)}
+-  let S (h : G) := {x : G | x ∈ A ∧ dist (x : RMat) (h : RMat) ≤ r}
+-  have hAfin : Metric.externalCoveringNumber η (ι '' A) ≠ ⊤ := by
+-    apply finite_coveringNumber_of_entry_bound hB hη
+-    rintro z ⟨x, hx, rfl⟩
+-    exact hA x hx
+-  have hlocal (h : G) (hf : h ∈ F) :=
+-    cluster_coveringNumber_mul_card_le T h hB hH hη hA (hF h hf) hTA hsep hscale
+-  have hSfin : ∀ h ∈ F, Metric.externalCoveringNumber η (ι '' S h) ≠ ⊤ :=
+-    fun h hf => (hlocal h hf).1
+-  have hrem : {z | z ∈ ι '' A ∧ ∀ h ∈ F, z ∉ ι '' S h} = ι '' R := by
+-    ext z
+-    constructor
+-    · rintro ⟨⟨x, hx, rfl⟩, hn⟩
+-      refine ⟨x, ⟨hx, ?_⟩, rfl⟩
+-      intro h hf
+-      by_contra! hbad
+-      exact hn h hf ⟨x, ⟨hx, hbad⟩, rfl⟩
+-    · rintro ⟨x, hx, rfl⟩
+-      refine ⟨⟨x, hx.1, rfl⟩, ?_⟩
+-      intro h hf
+-      rintro ⟨y, hy, he⟩
+-      have hyx : y = x := Subtype.ext he
+-      subst y
+-      exact (not_le_of_gt (hx.2 h hf)) hy.2
+-  obtain ⟨hRfin, hupper⟩ := coveringNumber_le_remainder_add_sum F (ι '' A) (fun h => ι '' S h) hAfin hSfin
+-  rw [hrem] at hRfin hupper
+-  let nA := (Metric.externalCoveringNumber η (ι '' A) : ℝ≥0∞).toReal
+-  let nR := (Metric.externalCoveringNumber η (ι '' R) : ℝ≥0∞).toReal
+-  let nS (h : G) := (Metric.externalCoveringNumber η (ι '' S h) : ℝ≥0∞).toReal
+-  let C := (8 * B + 1) ^ 4
+-  have hnA : 0 ≤ nA := ENNReal.toReal_nonneg
+-  have hTpos : (0 : ℝ) < T.card := by exact_mod_cast Finset.card_pos.mpr hT
+-  have hpiece (h : G) (hf : h ∈ F) : (T.card : ℝ) * nS h ≤ C * K * nA := by
+-    calc
+-      _ ≤ C * (Metric.externalCoveringNumber η (ι '' (A ^ 2)) : ℝ≥0∞).toReal := (hlocal h hf).2.2
+-      _ ≤ C * (K * nA) := mul_le_mul_of_nonneg_left hproduct (by dsimp only [C]; positivity)
+-      _ = _ := (mul_assoc _ _ _).symm
+-  have hsum : (T.card : ℝ) * (∑ h ∈ F, nS h) ≤ (F.card : ℝ) * C * K * nA := by
+-    calc
+-      _ = ∑ h ∈ F, (T.card : ℝ) * nS h := Finset.mul_sum _ _ _
+-      _ ≤ ∑ _h ∈ F, C * K * nA := Finset.sum_le_sum hpiece
+-      _ = _ := by simp only [Finset.sum_const, nsmul_eq_mul]; ring
+-  have hweight : (2 * (F.card : ℝ) * C * K) * nA ≤ (T.card : ℝ) * nA :=
+-    mul_le_mul_of_nonneg_right hmany hnA
+-  have hupper' : (T.card : ℝ) * nA ≤ (T.card : ℝ) * (nR + ∑ h ∈ F, nS h) :=
+-    mul_le_mul_of_nonneg_left hupper hTpos.le
+-  have hretain : nA ≤ 2 * nR := by
+-    have hh : (T.card : ℝ) * nA ≤ (T.card : ℝ) * (2 * nR) := by
+-      nlinarith [hsum, hweight, hupper']
+-    nlinarith
+-  refine ⟨?_, hRfin, hretain⟩
+-  by_contra hn
+-  have hRe : R = ∅ := Set.not_nonempty_iff_eq_empty.mp hn
+-  have hnR : nR = 0 := by simp [nR, hRe]
+-  obtain ⟨t, ht⟩ := hT
+-  have hpos : (0 : ℕ∞) < Metric.externalCoveringNumber η (ι '' A) :=
+-    Metric.externalCoveringNumber_pos_iff.mpr ⟨ι t, Set.mem_image_of_mem ι (hTA ht)⟩
+-  have hpos' : (0 : ℝ≥0∞) < Metric.externalCoveringNumber η (ι '' A) := by
+-    simpa only [ENat.toENNReal_zero] using ENat.toENNReal_strictMono hpos
+-  have hnAp : 0 < nA := ENNReal.toReal_pos hpos'.ne' (ENat.toENNReal_ne_top.mpr hAfin)
+-  linarith
+-
+-end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/SL2SpanningTrace.lean
++++ after/lean/TransposeFollowup/SL2SpanningTrace.lean
+@@ -1,6 +1,5 @@
+ import TransposeFollowup.SL2GlobalTraceCover
+ import TransposeFollowup.MobiusWalkEntrySupport
+-import TransposeFollowup.DyadicSeparationInterpolation
+ 
+ /-! Apply the three-trace projection to an actual bounded-power spanning
+ certificate. All entry bounds and the fixed covering loss are explicit. -/
+@@ -98,52 +97,4 @@
+     (fun x hx => mobiusIdentityBall_entry_zero_lower hα hαhalf (hA hx)) hframe
+   exact ⟨g i, hmem i, hi⟩
+ 
+-theorem exists_large_trace_at_dyadic_scale {ζ : ℝ} (hζ : 0 < ζ) :
+-    ∃ J : ℕ, ∀ j : ℕ, J ≤ j →
+-      let η := (1 / 4 : ℝ) ^ j
+-      ∀ {A : Set G} {α : ℝ}, 1 ∈ A → 0 < α → α ≤ 1 / 2 →
+-      A ⊆ mobiusIdentityBall α →
+-      ∀ {p q : G}, p ∈ A ^ 34 → q ∈ A ^ 34 → p * q ∈ A ^ 34 →
+-      η ^ ζ ≤ |(SL2Escape.pairSpanMatrix (p : RMat) (q : RMat)).det| →
+-      ∃ h ∈ A ^ 34,
+-        η ^ (8 * ζ) * (Metric.externalCoveringNumber ⟨η, by positivity⟩
+-          ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal ≤
+-          (Metric.externalCoveringNumber ⟨η, by positivity⟩
+-            ((fun x : G => Matrix.trace ((h⁻¹ * x : G) : RMat)) '' A) : ℝ≥0∞).toReal ^ 3 := by
+-  obtain ⟨Jc, hJc⟩ := exists_quarter_scale_threshold (one_div_pos.mpr spanningTraceLoss_pos)
+-  obtain ⟨J, hJ⟩ := exists_separation_window_threshold hζ Jc
+-  refine ⟨J, ?_⟩
+-  intro j hj
+-  dsimp only
+-  intro A α hA1 hα hαhalf hA p q hp hq hpq hdet
+-  let η := (1 / 4 : ℝ) ^ j
+-  have hη : 0 < η := by dsimp only [η]; positivity
+-  have hηone : η ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+-  let d := η ^ ζ
+-  have hd : 0 < d := Real.rpow_pos_of_pos hη ζ
+-  have hd1 : d ≤ 1 := Real.rpow_le_one hη.le hηone hζ.le
+-  have hsmall : d ≤ 1 / spanningTraceLoss :=
+-    ((hJ j hj).trans (min_le_right _ _)).trans (hJc Jc le_rfl)
+-  have hC : spanningTraceLoss * d ≤ 1 := by
+-    have hh := (le_div_iff₀ spanningTraceLoss_pos).mp hsmall
+-    linarith only [hh]
+-  obtain ⟨h, hh, hcover⟩ := exists_large_trace_of_spanning (η := ⟨η, hη.le⟩)
+-    hA1 hα hαhalf hA hd hd1 hη hp hq hpq hdet
+-  let N : ℝ := (Metric.externalCoveringNumber ⟨η, hη.le⟩
+-    ((fun x : G => (x : RMat)) '' A) : ℝ≥0∞).toReal
+-  let T : ℝ := (Metric.externalCoveringNumber ⟨η, hη.le⟩
+-    ((fun x : G => Matrix.trace ((h⁻¹ * x : G) : RMat)) '' A) : ℝ≥0∞).toReal
+-  have hT : 0 ≤ T ^ 3 := pow_nonneg ENNReal.toReal_nonneg _
+-  have he : η ^ (8 * ζ) = d ^ 8 := by
+-    simpa only [Nat.cast_ofNat, mul_comm] using Real.rpow_mul_natCast hη.le ζ 8
+-  refine ⟨h, hh, ?_⟩
+-  change η ^ (8 * ζ) * N ≤ T ^ 3
+-  rw [he]
+-  calc
+-    _ ≤ d ^ 8 * (spanningTraceLoss / d ^ 7 * T ^ 3) :=
+-      mul_le_mul_of_nonneg_left hcover (by positivity)
+-    _ = (spanningTraceLoss * d) * T ^ 3 := by field_simp
+-    _ ≤ 1 * T ^ 3 := mul_le_mul_of_nonneg_right hC hT
+-    _ = _ := one_mul _
+-
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/SL2TranslatedCluster.lean
++++ after/lean/TransposeFollowup/SL2TranslatedCluster.lean
+@@ -40,16 +40,10 @@
+       (mul_le_mul_of_nonneg_right hn dist_nonneg)
+   obtain ⟨hafin, hbfin, hbound⟩ := coveringNumber_le_bounded_transport a b L
+     (by positivity : 0 ≤ 2 * B * Q) le_rfl (by positivity : 0 ≤ 2 * B) hη hb htrans
+-  have ha : Set.range a = (fun x : G => (x : RMat)) '' S := by
+-    ext y
+-    constructor
+-    · rintro ⟨x, rfl⟩; exact Set.mem_image_of_mem _ x.2
+-    · rintro ⟨x, hx, rfl⟩; exact ⟨⟨x, hx⟩, rfl⟩
++  have ha : Set.range a = (fun x : G => (x : RMat)) '' S :=
++    (Set.image_eq_range _ _).symm
+   have hb' : Set.range b = (fun x : G => ((t * x : G) : RMat)) '' S := by
+-    ext y
+-    constructor
+-    · rintro ⟨x, rfl⟩; exact Set.mem_image_of_mem _ x.2
+-    · rintro ⟨x, hx, rfl⟩; exact ⟨⟨x, hx⟩, rfl⟩
++    simpa only [b] using (Set.image_eq_range (fun x : G => ((t * x : G) : RMat)) S).symm
+   rw [ha] at hafin hbound
+   rw [hb'] at hbfin hbound
+   have hcoef : 4 * ((0 : ℝ) + 2 * B * (η : ℝ)) / (η : ℝ) + 1 = 8 * B + 1 := by
+--- before/lean/TransposeFollowup/ScalarDyadicBudgets.lean
++++ after/lean/TransposeFollowup/ScalarDyadicBudgets.lean
+@@ -214,30 +214,4 @@
+   · linarith only [hθ]
+   · linarith only [he, hθe]
+ 
+-/-- A single explicit choice has slack for the concentration and
+-cardinality loss estimates, all scalar budgets, and the earlier full
+-trace-gain comparison. Supplying those loss estimates is still required. -/
+-theorem nilpotent_scalar_exponent_margins {κ₀ e : ℝ}
+-    (hκ₀ : 0 < κ₀) (hκ₀one : κ₀ ≤ 1) (he : 0 < e) (heone : e ≤ 1) :
+-    let θ := min e κ₀ / 4096
+-    let d := 1 - 3 * θ
+-    let κ := κ₀ / 12
+-    let g := e / 8
+-    let c := 100 * θ
+-    let u := 1 - κ₀ / 3 + 84 * θ
+-    let τ := 1 - 2 * θ
+-    0 < θ ∧ θ ≤ e / 4096 ∧ θ ≤ κ₀ / 4096 ∧
+-      0 < d ∧ d ≤ 1 ∧ 0 < κ ∧ κ ≤ 1 ∧
+-      0 ≤ g ∧ 0 ≤ c ∧ 4 * g < d * e ∧ g + c < d * e ∧
+-      u < d * (1 - κ) ∧ d < τ ∧
+-      289 * θ / 3 < c ∧ 83 * θ < 84 * θ ∧ 173 * θ < g := by
+-  intro θ d κ g c u τ
+-  have hθ : 0 < θ := by dsimp only [θ]; positivity
+-  have hθe : θ ≤ e / 4096 :=
+-    div_le_div_of_nonneg_right (min_le_left _ _) (by norm_num)
+-  have hθκ : θ ≤ κ₀ / 4096 :=
+-    div_le_div_of_nonneg_right (min_le_right _ _) (by norm_num)
+-  exact ⟨hθ, hθe, hθκ,
+-    scalar_exponent_margins_of_bounds hκ₀ hκ₀one he heone hθ hθe hθκ⟩
+-
+ end TransposeFollowup.SL2Projection
+--- before/lean/TransposeFollowup/SeededEnumerationCalls.lean
++++ after/lean/TransposeFollowup/SeededEnumerationCalls.lean
+@@ -95,13 +95,8 @@
+   rfl
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]; exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem seed_call (F : RationalMobius) (source : List Bool) (pre : List (Sym Bool)) (pos : Port → ℤ) :
+     ∃ t ≤ ArithmeticSeed.budget (PaddedWord.commonConstant F) source, Trace F t
+--- before/lean/TransposeFollowup/SignedLinearFormCalls.lean
++++ after/lean/TransposeFollowup/SignedLinearFormCalls.lean
+@@ -56,14 +56,8 @@
+   OperationalTrace.Trace (NativeMicrocode.step (program u v)) (NativeMicrocode.Active (program u v))
+ 
+ theorem jump_trace (u v : ℤ) (pc next : Label u v) (s : Bank) (pos : Port → ℤ)
+-    (h : program u v pc=.jump next) : Trace u v 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace u v 0 (NativeMicrocode.step (program u v) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program u v) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program u v pc=.jump next) : Trace u v 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem mapped_call (u v : ℤ) (p q : Port) (hpq : p≠q)
+     (labels : NativeMappedCopy.Label → Label u v)
+--- before/lean/TransposeFollowup/SignedPairCalls.lean
++++ after/lean/TransposeFollowup/SignedPairCalls.lean
+@@ -50,14 +50,8 @@
+ abbrev Trace := OperationalTrace.Trace (NativeMicrocode.step program) (NativeMicrocode.Active program)
+ 
+ theorem jump_trace (pc next : Label) (s : Bank) (pos : Port → ℤ)
+-    (h : program pc = .jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace 0 (NativeMicrocode.step program (cfg pc s pos)) (cfg next s pos)
+-    have he : NativeMicrocode.step program (cfg pc s pos) = cfg next s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    (h : program pc = .jump next) : Trace 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem left_call (a d : List Bool) (h : a.length = d.length) (s : Bank) (pos : Port → ℤ) :
+     ∃ t ≤ 5 * d.length + 7,
+--- before/lean/TransposeFollowup/SourceEndpointsCalls.lean
++++ after/lean/TransposeFollowup/SourceEndpointsCalls.lean
+@@ -41,14 +41,8 @@
+ 
+ theorem jump_trace (A B : Bool → ℕ) (negative : Bool → Bool) (pc next : Label A B)
+     (s : Bank) (pos : Port → ℤ) (h : program A B negative pc=.jump next) :
+-    Trace A B negative 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active, cfg, h]
+-  · change Trace A B negative 0 (NativeMicrocode.step (program A B negative) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program A B negative) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step, Microcode.actualStep, cfg, h]
+-    rw [he]
+-    exact .refl _
++    Trace A B negative 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem endpoint_call (A B : Bool → ℕ) (negative : Bool → Bool) (upper : Bool)
+     (labels : GuardedEndpoint.Label (A upper) (B upper) → Label A B)
+--- before/lean/TransposeFollowup/SourceImagesCalls.lean
++++ after/lean/TransposeFollowup/SourceImagesCalls.lean
+@@ -52,14 +52,8 @@
+   OperationalTrace.Trace (NativeMicrocode.step (program F)) (NativeMicrocode.Active (program F))
+ 
+ theorem jump_trace (F : RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    have he : NativeMicrocode.step (program F) (cfg pc s pos)=cfg next s pos := by
+-      simp [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    rw [he]
+-    exact .refl _
++    (h : program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ theorem source_call (F : RationalMobius) (n iw : List Bool) (hm : 0<n.length)
+     (hi : iw.length=n.length) (s : Bank) (pos : Port → ℤ) :
+--- before/lean/TransposeFollowup/TwoStageHelper.lean
++++ after/lean/TransposeFollowup/TwoStageHelper.lean
+@@ -41,20 +41,23 @@
+       simpa only [apply, he] using hc x hx
+     _ = _ := by simp
+ 
++theorem exponent_decomposition (n b r : ℕ) (hr : r ≤ n) :
++    (n-r)*n*b + r*r*b + b*r*(n-r) = n*n*b := by
++  have hn := Nat.sub_add_cancel hr
++  calc
++    _ = (n-r)*n*b + r*((n-r)+r)*b := by ring
++    _ = (n-r)*n*b + r*n*b := by rw [hn]
++    _ = ((n-r)+r)*n*b := by ring
++    _ = _ := by rw [hn]
++
+ theorem correct_family_count_toll (F : Finset (FiniteMatrix n b)) (hc : T.CorrectOn F)
+     (r : ℕ) (hr : r ≤ n) :
+     F.card * 2 ^ (b * r * (n - r)) ≤ (F.image T.helper).card * 2 ^ (n * n * b) := by
+-  have hexp : (n - r) * n * b + r * r * b + b * r * (n - r) = n * n * b := by
+-    have hn := Nat.sub_add_cancel hr
+-    calc
+-      _ = (n - r) * n * b + r * ((n - r) + r) * b := by ring
+-      _ = (n - r) * n * b + r * n * b := by rw [hn]
+-      _ = ((n - r) + r) * n * b := by ring
+-      _ = _ := by rw [hn]
++
+   calc
+     _ ≤ ((F.image T.helper).card * 2 ^ ((n - r) * n * b + r * r * b)) *
+         2 ^ (b * r * (n - r)) := Nat.mul_le_mul_right _ (T.correct_family_card F hc r hr)
+-    _ = _ := by rw [mul_assoc, ← pow_add, hexp]
++    _ = _ := by rw [mul_assoc, ← pow_add, exponent_decomposition n b r hr]
+ 
+ /-- Exact deficit uses logarithmic cardinality, with no rounding or density
+ loss. Only helper values attained on F are charged; H need not be finite. -/
+--- before/lean/TransposeFollowup/TwoStageHelperEntropy.lean
++++ after/lean/TransposeFollowup/TwoStageHelperEntropy.lean
+@@ -1,9 +1,9 @@
+ import TransposeFollowup.TwoStageHelper
+ import TransposeFollowup.EntropyFibers
+ 
+-/-! The two-stage toll charges actual helper entropy under the uniform
+-correct input distribution. This strengthens charging log of the helper range,
+-including when the ambient helper type is infinite. -/
++/-! The two-stage toll charges actual input and helper entropy for arbitrary
++probability distributions on a correct family. Uniform cardinality deficit is
++an immediate specialization; the ambient helper type may be infinite. -/
+ set_option autoImplicit false
+ 
+ namespace TransposeFollowup.TwoStageHelper
+@@ -15,11 +15,13 @@
+     (x : F) : F.image T.helper :=
+   ⟨T.helper x.val, Finset.mem_image.mpr ⟨x.val, x.property, rfl⟩⟩
+ 
+-theorem helper_entropy_deficit_bound (F : Finset (FiniteMatrix n b)) [Nonempty F]
+-    (hc : T.CorrectOn F) (r : Nat) (hr : r ≤ n) :
+-    (n * n * b : Nat) - Real.log (F.card : Real) / Real.log 2 +
+-      observationEntropy (uniformWeight F) (T.attainedHelper F) / Real.log 2 ≥
+-        (b * r * (n-r) : Nat) := by
++theorem helper_entropy_deficit_bound_of_distribution
++    (F : Finset (FiniteMatrix n b)) (hc : T.CorrectOn F)
++    (p : F → ℝ) (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x, p x = 1)
++    (r : ℕ) (hr : r ≤ n) :
++    (n * n * b : ℕ) - entropy p / Real.log 2 +
++      observationEntropy p (T.attainedHelper F) / Real.log 2 ≥
++        (b * r * (n-r) : ℕ) := by
+   classical
+   let c := (n-r)*n*b + r*r*b
+   let f := T.attainedHelper F
+@@ -39,52 +41,36 @@
+         intro x hx
+         obtain ⟨hx, he⟩ := Finset.mem_filter.mp hx
+         simpa only [apply, he] using hc x hx
+-  let p := pushforward (uniformWeight F) f
+-  have hp (z : F.image T.helper) : 0 ≤ p z :=
+-    pushforward_nonneg _ (uniformWeight_nonneg F) f z
+-  have hp1 : ∑ z, p z = 1 := by
+-    dsimp only [p]
+-    rw [sum_pushforward, sum_uniformWeight]
++  have hent := entropy_le_observation_add_log_fiber_bound p hp f
++    ((2 : ℝ)^c) (by positivity) (fun z => by exact_mod_cast hfiber z)
++  rw [hp1, one_mul, Real.log_pow] at hent
++  have hexpR : (c : ℝ) + (b*r*(n-r) : ℕ) = (n*n*b : ℕ) := by
++    exact_mod_cast exponent_decomposition n b r hr
+   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+-  have hlog (z : F.image T.helper) :
+-      Real.log (fiberCard f z : Real) ≤ (c : Real) * Real.log 2 := by
+-    by_cases hz : fiberCard f z = 0
+-    · simp only [hz, Nat.cast_zero, Real.log_zero]
+-      exact mul_nonneg (Nat.cast_nonneg _) hlog2.le
+-    · have hzpos : 0 < (fiberCard f z : Real) := by
+-        exact_mod_cast Nat.pos_of_ne_zero hz
+-      have hcast : (fiberCard f z : Real) ≤ (2 : Real)^c := by
+-        exact_mod_cast hfiber z
+-      calc
+-        _ ≤ Real.log ((2 : Real)^c) := Real.log_le_log hzpos hcast
+-        _ = _ := Real.log_pow 2 c
+-  have hsum : (∑ z, p z * Real.log (fiberCard f z : Real)) ≤
+-      (c : Real) * Real.log 2 := by
+-    calc
+-      _ ≤ ∑ z, p z * ((c : Real) * Real.log 2) := by
+-        apply Finset.sum_le_sum
+-        intro z hz
+-        exact mul_le_mul_of_nonneg_left (hlog z) (hp z)
+-      _ = _ := by rw [← Finset.sum_mul, hp1, one_mul]
+-  have hmean := mean_log_fiberCard f
+-  change (∑ z, p z * Real.log (fiberCard f z : Real)) =
+-    Real.log (Fintype.card F : Real) - observationEntropy (uniformWeight F) f at hmean
+-  rw [hmean] at hsum
+-  simp only [Fintype.card_coe] at hsum
+-  have hexp : c + b*r*(n-r) = n*n*b := by
+-    dsimp [c]
+-    have hn := Nat.sub_add_cancel hr
+-    calc
+-      _ = (n-r)*n*b + r*((n-r)+r)*b := by ring
+-      _ = (n-r)*n*b + r*n*b := by rw [hn]
+-      _ = ((n-r)+r)*n*b := by ring
+-      _ = _ := by rw [hn]
+-  have hexpR : (c : Real) + (b*r*(n-r) : Nat) = (n*n*b : Nat) := by
+-    exact_mod_cast hexp
+   apply (mul_le_mul_iff_of_pos_right hlog2).mp
+   field_simp
+-  dsimp only [f] at hsum
++  dsimp only [f] at hent
+   nlinarith
++
++theorem helper_entropy_deficit_bound (F : Finset (FiniteMatrix n b)) [Nonempty F]
++    (hc : T.CorrectOn F) (r : ℕ) (hr : r ≤ n) :
++    (n * n * b : ℕ) - Real.log (F.card : ℝ) / Real.log 2 +
++      observationEntropy (uniformWeight F) (T.attainedHelper F) / Real.log 2 ≥
++        (b * r * (n-r) : ℕ) := by
++  have h := T.helper_entropy_deficit_bound_of_distribution F hc
++    (uniformWeight F) (uniformWeight_nonneg F) (sum_uniformWeight F) r hr
++  simpa only [entropy_uniformWeight, Fintype.card_coe] using h
++
++/-- The quarter toll for every input law supported on the correct family. -/
++theorem quarter_helper_entropy_deficit_bound_of_distribution
++    (F : Finset (FiniteMatrix n b)) (hc : T.CorrectOn F)
++    (p : F → ℝ) (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x, p x = 1) :
++    (n * n * b : ℕ) - entropy p / Real.log 2 +
++      observationEntropy p (T.attainedHelper F) / Real.log 2 ≥
++        (b * (n * n / 4) : ℕ) := by
++  have h := T.helper_entropy_deficit_bound_of_distribution F hc p hp hp1
++    (n / 2) (Nat.div_le_self n 2)
++  rwa [mul_assoc b, half_product_eq_floor_quarter] at h
+ 
+ /-- Entropy form of the exact quarter toll; the ambient helper type may be infinite. -/
+ theorem quarter_helper_entropy_deficit_bound (F : Finset (FiniteMatrix n b)) [Nonempty F]
+--- before/lean/TransposeFollowup/UnconditionalPaidPadding.lean
++++ after/lean/TransposeFollowup/UnconditionalPaidPadding.lean
+@@ -1,4 +1,5 @@
+ import TransposeFollowup.RationalContinuousExpander
++import TransposeFollowup.ContinuousNativePadding
+ 
+ /-! A fully paid native extension of every machine, with the literal
+ zero-slack cut inequality and the original M* conclusion. The continuous
+@@ -9,10 +10,11 @@
+ open Filter Topology
+ set_option autoImplicit false
+ 
+-/-- One absolute overhead coefficient works for every payload machine. The
+-compiled machine, unlike that coefficient, may depend on the payload. -/
++/-- Absolute time, state and tape overheads are chosen before the payload machine.
++The construction preserves every payload computation and supplies the full cut limit. -/
+ theorem exists_uniform_paid_padding :
+-    ∃ A : ℕ, ∀ M : Transpose.TM, ∃ M' : Transpose.TM, cellBits M'=3 ∧
++    ∃ A H K₀ E : ℕ, ∀ M : Transpose.TM, ∃ M' : Transpose.TM,
++      M'.q+1=H+(M.q+1) ∧ M'.k=K₀+(M.k+E)*max 1 M.g.size ∧ cellBits M'=3 ∧
+       (∀ n : ℕ, 1 ≤ n → ∀ w out : List Bool, w.length=Transpose.inputLength n →
+         ∀ t : ℕ, Transpose.ComputesWithin M w out t →
+         ∃ T ≤ A*w.length+t, ∃ d : Transpose.Config M',
+@@ -35,7 +37,8 @@
+   obtain ⟨c, F, eps, heps, hmap, hexp⟩ := exists_rational_continuous_expander
+   obtain ⟨K, extra, hcompile⟩ := continuous_uniform_computation_with_cut F hmap eps heps hexp
+   let A := PaidPayload.coefficient (r:=c+1+c) (rationalSymmetricFamily F) K
+-  refine ⟨A, ?_⟩
++  refine ⟨A, (PaidClean.nativeMachine (r:=c+1+c) (rationalSymmetricFamily F) K).q+1,
++    53+rationalPageCount (rationalSymmetricFamily F), extra, ?_⟩
+   intro M
+   let M' := machine (c:=c+1+c) (rationalSymmetricFamily F) K M extra
+   have hbits : cellBits M'=3 := cellBits_eq _ _ _ _
+@@ -48,7 +51,10 @@
+           (fun p τ => workTraj M' w τ p) := by
+     rw [hbits]
+     exact hcompile M n hn w out hw t ht
+-  refine ⟨M', hbits, hrun, ?_⟩
++  refine ⟨M', (SequentialFive.fixed_resources
++    (PaidPayload.prefixProgram (r:=c+1+c) (rationalSymmetricFamily F) K)
++    (PaidPayload.payloadProgram (StationaryTapes.machine M extra))).2.2,
++    (fixed_resources (c:=c+1+c) (rationalSymmetricFamily F) K M extra).1, hbits, hrun, ?_⟩
+   intro ns hns hn ws outs hw a hc
+   choose Ts ht ds hs hh ho hcut using
+     (fun i => hrun (ns i) (hn i) (ws i) (outs i) (hw i)
+--- before/lean/TransposeFollowup/VertexSchedulerMachine.lean
++++ after/lean/TransposeFollowup/VertexSchedulerMachine.lean
+@@ -114,11 +114,7 @@
+   funext p;fin_cases p <;> rfl
+ 
+ theorem jump_trace (F : Fin (r+1) → RationalMobius) (pc next : Label F) (s : Bank) (pos : Port → ℤ)
+-    (h:program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) := by
+-  apply OperationalTrace.Trace.cons
+-  · simp [NativeMicrocode.Active,cfg,h]
+-  · change Trace F 0 (NativeMicrocode.step (program F) (cfg pc s pos)) _
+-    simp only [NativeMicrocode.step,Microcode.actualStep,cfg,h]
+-    exact .refl _
++    (h:program F pc=.jump next) : Trace F 1 (cfg pc s pos) (cfg next s pos) :=
++  NativeMicrocode.jump_trace _ _ _ h
+ 
+ end TransposeFollowup.VertexScheduler
+--- before/lean/TransposeFollowup/XorPathCycleBound.lean
++++ after/lean/TransposeFollowup/XorPathCycleBound.lean
+@@ -41,23 +41,44 @@
+       (k + 1) * (B + b * n * (3 * k)) := by nlinarith
+   exact (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
+ 
+-/-- An explicit form of B>=P-O(b n^(3/2)): the error is at most3bn sqrt(n).
++/-- An explicit form of B>=P-O(b n^(3/2)): the error is at most bn sqrt(8n).
+ All recoding and decoding assumptions remain those of the full finite theorem. -/
+ theorem linear_ball_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G)
+     (hballs : ∀ ell, 1 ≤ ell → ∀ i, (nearVertices G ell i).card ≤ 2 * ell - 1) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
+-  have hnat := C.linear_ball_broadcast_bound_nat hc G hG hballs hn
+-  have hr : 0 ≤ Real.sqrt (n : ℝ) := Real.sqrt_nonneg _
+-  have hrsq := Real.sq_sqrt (Nat.cast_nonneg n)
+-  have hk : (1 : ℝ) ≤ (Nat.sqrt n : ℝ) := by exact_mod_cast Nat.sqrt_pos.mpr hn
+-  have hksq : (Nat.sqrt n : ℝ) ^ 2 ≤ (n : ℝ) := by exact_mod_cast Nat.sqrt_le' n
+-  have hkr : (Nat.sqrt n : ℝ) ≤ Real.sqrt (n : ℝ) := by nlinarith
+-  have hcoefficient : 3 * (Nat.sqrt n : ℝ) ≤ 3 * Real.sqrt (n : ℝ) := by linarith
++    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * Real.sqrt (8 * (n : ℝ)) := by
++  by_cases hn1 : n = 1
++  · subst n
++    have hmul := mul_le_mul_of_nonneg_left
++      (show (1 : ℝ) ≤ Real.sqrt 8 from Real.one_le_sqrt.mpr (by norm_num)) (Nat.cast_nonneg b)
++    norm_num at hmul ⊢
++    nlinarith [show (0 : ℝ) ≤ B from Nat.cast_nonneg B]
++  let k := Nat.sqrt (n / 2)
++  have hk : 1 ≤ k := Nat.sqrt_pos.mpr (by omega : 0 < n / 2)
++  have hupper : n < (k + 1) * (k + 1) * 2 :=
++    (Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).mp (Nat.lt_succ_sqrt (n / 2))
++  have hcalc : n + k * (2 * k - 1) ≤ (k + 1) * (4 * k) := by
++    have hsub := congrArg (fun t : ℕ => k * t)
++      (Nat.sub_add_cancel (by omega : 1 ≤ 2 * k))
++    nlinarith
++  have hnear : (nearBits (b := b) G k).card ≤ b * n * (2 * k - 1) :=
++    card_nearBits_le_of_balls G k (2 * k - 1) (fun i => hballs k hk i)
++  have hs := C.broadcast_lower_bound_scaled hc G hG k
++  have hscaled : (k + 1) * (n * n * b) ≤
++      (k + 1) * (B + b * n * (4 * k)) := by
++    nlinarith [Nat.mul_le_mul_left (b * n) hcalc, Nat.mul_le_mul_left k hnear]
++  have hnat := (mul_le_mul_iff_right₀ (by omega : 0 < k + 1)).mp hscaled
++  have hbound : ((n * n * b : ℕ) : ℝ) ≤ B + (b : ℝ) * n * (4 * (k : ℝ)) := by
++    exact_mod_cast hnat
++  have hksq : 2 * k ^ 2 ≤ n := by
++    have hlow : k ^ 2 ≤ n / 2 := Nat.sqrt_le' (n / 2)
++    nlinarith [Nat.div_mul_le_self n 2]
++  have hksqR : 2 * (k : ℝ) ^ 2 ≤ (n : ℝ) := by exact_mod_cast hksq
++  have hcoefficient : 4 * (k : ℝ) ≤ Real.sqrt (8 * (n : ℝ)) := by
++    apply Real.le_sqrt_of_sq_le
++    nlinarith
+   have hmul := mul_le_mul_of_nonneg_left hcoefficient
+     (by positivity : 0 ≤ (b : ℝ) * n)
+-  have hbound : ((n * n * b : ℕ) : ℝ) ≤ B + (b : ℝ) * n * (3 * (Nat.sqrt n : ℝ)) := by
+-    exact_mod_cast hnat
+   nlinarith
+ 
+ /-- Includes arbitrary row labels and arbitrary subgraphs of a cycle: the
+@@ -65,7 +86,7 @@
+ theorem cycle_embedding_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G) {m : ℕ} [NeZero m]
+     (f : G →g SimpleGraph.cycleGraph m) (hf : Function.Injective f) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
++    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * Real.sqrt (8 * (n : ℝ)) := by
+   apply C.linear_ball_broadcast_lower_bound hc G hG _ hn
+   intro ell hell i
+   exact (nearVertices_card_le_of_embedding f hf ell i).trans
+@@ -73,18 +94,18 @@
+ 
+ theorem subcycle_broadcast_lower_bound (hc : C.Correct) (G : SimpleGraph (Fin n))
+     (hG : C.LocalTo G) (hcycle : G ≤ SimpleGraph.cycleGraph n) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) := by
++    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * Real.sqrt (8 * (n : ℝ)) := by
+   let : NeZero n := ⟨Nat.ne_of_gt hn⟩
+   exact C.cycle_embedding_broadcast_lower_bound hc G hG (.ofLE hcycle) Function.injective_id hn
+ 
+ theorem cycle_broadcast_lower_bound (hc : C.Correct)
+     (hG : C.LocalTo (SimpleGraph.cycleGraph n)) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) :=
++    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * Real.sqrt (8 * (n : ℝ)) :=
+   C.subcycle_broadcast_lower_bound hc _ hG le_rfl hn
+ 
+ theorem path_broadcast_lower_bound (hc : C.Correct)
+     (hG : C.LocalTo (SimpleGraph.pathGraph n)) (hn : 0 < n) :
+-    (B : ℝ) ≥ (n * n * b : ℕ) - 3 * b * n * Real.sqrt (n : ℝ) :=
++    (B : ℝ) ≥ (n * n * b : ℕ) - (b : ℝ) * n * Real.sqrt (8 * (n : ℝ)) :=
+   C.subcycle_broadcast_lower_bound hc _ hG SimpleGraph.pathGraph_le_cycleGraph hn
+ 
+ end RecodedXorCode

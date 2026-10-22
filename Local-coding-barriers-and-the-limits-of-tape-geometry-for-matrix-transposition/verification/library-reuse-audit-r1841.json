@@ -1,0 +1,57 @@
+{
+  "status": "In progress. R1841 proves fixed first-extraction chart and sampling parameters satisfying all frame, branch, localization, absorption, matrix-spacing and scalar-spacing inequalities simultaneously. It derives the five exact coefficient power bounds, the normalized concentration budget C0*eta^(-100theta), and the upper-size exponent1-kappa/3+83theta by reusing the existing cube theorem. One new module adds five declarations. Applying these bounds to the actual original extracted family, the common dyadic scalar radius and the full trace-growth comparison remains open.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Real.rpow_neg",
+    "Real.rpow_sub",
+    "Real.rpow_add",
+    "Real.rpow_mul_natCast",
+    "Real.mul_rpow",
+    "Real.rpow_le_rpow",
+    "Real.rpow_le_rpow_of_exponent_ge",
+    "Real.rpow_le_rpow_of_exponent_le",
+    "Real.rpow_le_one",
+    "Real.one_le_rpow_of_pos_of_le_one_of_nonpos",
+    "pow_le_pow_left\u2080",
+    "pow_le_pow_right\u2080",
+    "one_le_pow\u2080",
+    "mul_mul_mul_comm",
+    "le_div_iff\u2080",
+    "div_le_iff\u2080"
+  ],
+  "reused_local": [
+    "BoundedCoordinatePacking.binCount_le",
+    "sample_cardinality_upper_of_cubic"
+  ],
+  "refactors": [
+    "New module imports BoundedCoordinatePacking and CubicSampleNormalization directly; redundant whole scalar-interface imports removed.",
+    "Unused positivity premises removed; no linter suppressed.",
+    "Large ring/linarith normalization replaced with direct ordered-ring lemmas and mul_mul_mul_comm, retaining default limits.",
+    "Upper-size theorem reuses the previous cubic normalization rather than rebuilding roots/order/cardinality."
+  ],
+  "search_scope": "Searched pinned mathlib real-power/order, Analysis, Combinatorics, GroupTheory and MeasureTheory sources, the local extraction/packing/cube modules, and pinned OAI scalar sum-product/projection sources. Generic ingredients are imported. No exact first-extraction parameter/cost composition found in inspected sources. Targeted public searches for Lean real SL2 product growth, Bourgain-Gamburd flattening, discretized sum-product and BSG did not identify an applicable replacement. This is a bounded search, not an exhaustive absence or novelty claim.",
+  "public_candidates": [
+    {
+      "url": "https://github.com/mathlib-initiative/sum_product",
+      "finding": "The README headline is a conditional construction of arbitrarily large real sets with sum/product cardinalities at most |A|^(2-c), using Martinet totally-real towers. Its listed number-theoretic ingredients do not provide the uniform discretized nonconcentration-to-growth statement needed here. Not imported; no independent code audit claimed."
+    },
+    {
+      "url": "https://www.cl.cam.ac.uk/~lp15/papers/Alexandria/BalogSzemGowers.pdf",
+      "finding": "A public Isabelle/HOL BSG formalization surfaced; this is not a direct Lean import and is not the current exact-coefficient gap. No port started."
+    }
+  ],
+  "next_reuse": [
+    "exists_spanning_commuting_extraction_at_dyadic_scale",
+    "localized_fixed_power_coveringNumber_envelope",
+    "exists_actual_nilpotent_scalar_sample",
+    "nilpotent_scalar_sample_concentration",
+    "commuting_family_cubic_bound",
+    "exists_scalar_growth_budget_scale",
+    "nilpotent_scalar_exponent_margins",
+    "nilpotent_actual_trace_growth",
+    "trace_reextraction_cubic_bound"
+  ],
+  "novelty": "None claimed. Supporting exact-parameter composition; original paid-padding proof incomplete.",
+  "drift_check": "DRIFT CHECK.\nThis turn closes the exact numerical obligations explicitly left by R1840: actual chart/sample parameters and first-extraction concentration/size majorants. All five lemmas support the same first extraction, with fixed constants quantified before scale. They do not introduce a new geometric, scalar-growth or counting framework. The next work must combine the existing original extraction and retained sample into the scalar-growth application. No new loss-budget framework or independent resampling is warranted. These algebraic results are not novel transposition theorems and do not complete the nilpotent branch.",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

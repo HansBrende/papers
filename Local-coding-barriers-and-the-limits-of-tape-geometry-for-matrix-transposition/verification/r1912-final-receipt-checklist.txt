@@ -1,0 +1,81 @@
+R1912 final receipt checklist — prepared read-only, 21 October 2026
+
+Run /private/tmp/r1912-final-receipt-check.py only AFTER all source repairs and
+Lean/Lake executions are terminal, the independent final-source addendum is updated,
+and root has written the completed R1912 receipt/documents. Default paths follow
+existing support-build.json and r1911-completion.json conventions. The script does
+not run Lean/Lake; it writes only its scratch result JSON.
+
+Checks performed:
+1. R1912 checkpoint, no live handles, successful final full-build and axiom records,
+   preserved six-target flag, and terminal records (including initial build17582).
+2. Every current receipt hash; exact actual source inventory; immutable8configuration
+   and204external maps; preserved historical log hashes; fresh source-review hashes. The three mutable
+   summaries README.md, paper/verified-results.txt and verification/progress.txt
+   may be updated/rehashed, provided their prior hashed bytes are archived.
+3. Original6,297-name inclusion and exact current6,306-name agreement among source
+   commands, receipt and parsed actual axiom log; only the three standard axioms.
+4. Successful clean final build log and recorded job count.
+5. Exact original exported types/universe parameter comparison for6,297names.
+   The preferred compact mode independently decompresses and exactly compares all
+   79 baseline/final chunk pairs from the verified full-type archive, checks every
+   compact per-name digest and ordered universe list, checks all archive member
+   hashes/inventory, and verifies any included aggregate against the compact data.
+   It never relies on hash equality alone to decide original-type equality. Full
+   JSON manifests remain a fallback and are streamed by top-level entry.
+6. Current trust-token/options scan; protected117originalfiles/directory inventory.
+7. Current R1912 mention in README, verified-results and progress, then a final
+   source-hash/no-live-handle stability check.
+
+Defaults expect:
+  verification/support-build.json
+  verification/r1912-in-progress.json
+  verification/r1912-completion.json
+  verification/r1912-type-comparison.json
+  verification/r1912-baseline-type-hashes.json
+  verification/r1912-final-type-hashes.json
+  verification/r1912-original-declaration-names.json
+  (fallback: r1912-baseline-types.json and r1912-final-types.json)
+  verification/r1912-final-source-review.json
+The exact success logs come from completion.full_build.log and axiom_audit.log.
+Alternate paths are CLI options. Completion fields follow the previous checkpoint:
+checkpoint, full_build{exit_code,jobs,log}, axiom_audit{exit_code,declarations,log},
+all_six_main_targets_preserved, no_live_execution_handles.
+
+Script Python syntax checked. Its isolated streaming parser passed three valid
+fixtures, including >1MiB Unicode/escaped strings, and rejected trailing JSON data.
+The final validator itself has NOT run: the full build is live and repairs are pending.
+
+Manual reporting checks still required:
+- Distinguish microbenchmark, target rebuild, no-change rebuild and broad rebuild.
+- Do not turn structural module/path reductions into measured wall-time speedups.
+- Say the normal current build checks new/rebuilt proofs; historical R1909 fresh
+  replay is not a fresh replay of R1912.
+- Explain source-only compatibility import path changes and preserve archive/map.
+- Report initial failed benchmark/type-driver/build attempts honestly as repaired
+  operational failures, without calling their logs clean successes.
+- Do not imply a new mathematical theorem or unrestricted multiplication result.
+
+QUEUED REPAIRS: INDEPENDENT PRE-APPLICATION REVIEW
+WaveletScaleKernel proposal changes exactly one proof fragment, with every other
+byte and full theorem header unchanged. The explicit measurable product/division
+composition uses only the existing hq and hψ hypotheses. Real division is total and
+measurable at zero, so it introduces no nonzero assumption; .aestronglyMeasurable
+supplies exactly the premise previously sought by fun_prop. No repair defect found.
+Actual Lean elaboration remains root's next check after the current handle ends.
+The replacement Real import is the direct import of the very module re-exported by
+the deprecated Mathlib.Data.Real.Basic wrapper; no mathematical API changes.
+
+COMPACT RECEIPT AND MUTABLE SUMMARY ADDENDUM
+The comparator source was independently reviewed: it compares decoded strings and
+ordered universe lists before generating hashes, rejects duplicate JSON keys and
+missing/repeated partitions, verifies every archived member before opt-in cleanup,
+and archives its own script hash as provenance. The receipt validator then repeats
+the exact chunk comparisons from the compressed archive itself, so full bulky
+active manifests can be removed after verified archival without weakening checks.
+An independent synthetic6,297-name/79-pair archive test passed, including aggregate
+provenance; a modified compact universe list was correctly rejected. Evidence:
+/private/tmp/r1912-compact-receipt-selftest.json. No real full-type data was changed.
+
+Default old-summary archive is A/before-r1912-summary-update/<relative path>;
+--summary-archive-dir overrides it. Every other historical log hash is immutable.

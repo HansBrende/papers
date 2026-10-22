@@ -1,0 +1,81 @@
+R1916 — STRENGTHENING AND SHARED-PROOF PASS
+Complete. Two theorem families strengthened; all six original targets retained.
+
+AFFINE APPROXIMATION (FAMILY 3)
+Approximation errors may now tend to zero separately at each fixed head/time
+point. A single error envelope uniform over the whole time interval is no
+longer required. The result is exposed both for the abstract obstruction and
+for the native subsequential physical-head theorem. Native execution, correct
+sets, entropy deficit, control cost and the full physical horizon are retained.
+The cover still has a fixed finite number of affine pieces on the chosen
+subsequence; approximants need not be Lipschitz. All input-sequence and
+subsequence quantifiers remain. This is not an almost-everywhere assertion.
+Existing uniform-error endpoints keep their exact statements and become
+specializations. No exceptional-time constant is improved.
+
+FINITE PATH/CYCLE XOR BOUND (FAMILY 2)
+For n>0, P=n*n*b, the five real endpoints now give
+  B >= P - b*n*(sqrt(8*(n+3))-4).
+Previously the error was b*n*sqrt(8*n). All hypotheses on nonlinear row
+bijections, all-input correctness, fixed XOR packets and graph locality are
+unchanged. This improves a finite correction, not the leading sqrt(8)
+coefficient or asymptotic order. The separate natural-number bound remains.
+Take k=floor(sqrt(floor((n+3)/2))), j=k+1 and t=sqrt((n+3)/2) over the reals.
+The exact error ratio is 4t-5+2(j-t)^2/j. Since j>=2 and 0<=j-t<=1, it is
+at most 4t-4. The formal comparison lemma bounds this error by the old one.
+A separate ordinary Lean file re-proves all five complete original statements
+from the stronger current endpoints. A shared real ball-budget lemma now also
+supplies the existing natural-budget theorem by specialization.
+Deferred reuse observation (written algebra, not an additional Lean lemma):
+the new real error also lies below 3*floor(sqrt(n)) for n>=1. Put m=floor(sqrt(n));
+then m>=1 and n<=m*m+2*m, so 8*(n+3)<=(3*m+4)^2, since
+m*m+8*m-8>=0. Thus the old natural bound could instead follow from the new
+real bound. The existing short proof is retained; no size saving is claimed.
+
+EMBEDDING REUSE AND SOURCE SIZE
+One general framed-bank embedding identity, for arbitrary port and label
+types, replaces 13 specialized proofs. It uses the existing map_values and
+values_project lemmas. Labels, full tape contents, absolute head positions,
+machine definitions, operational traces and all charged costs are unchanged.
+This removes 30 net source lines, including the shared lemma and imports.
+The two strengthenings add 81 lines, so TOTAL mathematical source changes
+from 105741 to 105792: NET +51 LINES. This pass is not a net
+source-size reduction. No public theorem was retired to improve the count.
+The reuse change touches four consumer modules and PortBindingFrame. Broader
+cases with bespoke bank layouts were excluded because they need additional
+layout reasoning; no blanket simplification or 38-module sweep is claimed.
+
+SIX-FAMILY STATUS
+1 Adaptive separators/treewidth: unchanged; arbitrary laws and sharp costs retained.
+2 Nonlinear recoding/fixed XOR: sharper finite path/cycle bound above.
+3 Affine motion: weaker pointwise-error approximation premise above.
+4 Fully paid padding: unchanged, including universal resource formulas.
+5 Two-stage helper: unchanged, including arbitrary-law entropy bounds.
+6 Scan palettes/recursion: unchanged, including actual-native obligations.
+Independent reviewers found no similarly inexpensive substantive improvement
+to families 1, 4, 5 or 6 in this bounded pass. Main architecture restrictions
+remain; these results do not decide unrestricted transposition or multiplication.
+
+VALIDATION AND PRESERVATION
+Full lake build passed 10063 jobs in 246.217s; axiom audit
+passed all 6313 names in 21.911s. Only propext,
+Classical.choice and Quot.sound occur. All 6306 previously audited names remain;
+seven audit entries add five new declarations and two existing XOR wrappers
+that were not previously listed. The earlier wrappers were already compiled.
+All focused checks and the five-original-XOR-statement recovery check passed.
+Source/proposal replay and independent reviews verify unchanged old headers
+except the five deliberate stronger XOR conclusions. No model definitions,
+dependency pins, original sibling files, proof limits or trust settings changed.
+No sorry, new axioms, unsafe bypass, disabled linter or environment substitution.
+This is ordinary kernel compilation and targeted statement preservation, not a
+fresh whole-environment replay or a new full exported-Expr comparison.
+The full build replayed one pre-existing harmless ring-tactic info suggestion.
+An initial embedding application script used the wrong JSON key and stopped
+before any source write; its ensuing cached build is explicitly not counted as
+validation. Corrected application passed without mathematical proof repairs.
+All evidence and original sources are retained; no commits or pushes.
+
+Main evidence: r1916-source-guards.json, r1916-affine-xor-review.txt,
+r1916-embedding-independent-review.json, r1916-xor-old-statements.lean,
+r1916-full-build.log and r1916-final-axioms.log.
+Source archive: /Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse

@@ -1,0 +1,58 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1853",
+  "target": "Scalar growth transferred to actual words and applied to the original sample at one dyadic scale.",
+  "new_modules": [
+    "TraceSquareMixedCells",
+    "TraceSquarePairedEnlargement",
+    "TraceSquareActualWordGrowth",
+    "TraceSquareDyadicTraceGrowth"
+  ],
+  "modified_modules": [
+    "TraceSquareSourceSample",
+    "TraceSquareSampleApplication"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.sl2_enlargement_near_identity",
+    "TransposeFollowup.ScalarMetric.scalar_dilated_cells_card",
+    "TransposeFollowup.ScalarMetric.scalar_ring_growth_forces_mixed_growth",
+    "TransposeFollowup.SL2Projection.mixed_trace_cells_le_actual_cover",
+    "TransposeFollowup.SL2Projection.paired_enlargement_first_image",
+    "TransposeFollowup.SL2Projection.paired_source_enlargement",
+    "TransposeFollowup.SL2Projection.trace_square_actual_word_growth",
+    "TransposeFollowup.SL2Projection.exists_trace_square_dyadic_trace_growth"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9881,
+      "log": "/private/tmp/r1854-dev7.log",
+      "note": "Two unnecessarySeqFocus warnings then removed; clean full build verifies final sources."
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10137,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4697,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 62756 exit1; dev2 39555 exit1 (mixed cells passed); dev3 49661 exit1 (paired enlargement passed); dev4 8909 exit0/9871 (actual words passed); dev5 63541 exit1 (path error; native source not written); dev6 34181 exit1 (sample strengthening passed); dev7 69115 exit0/9881 (two linter warnings subsequently removed); full38248 exit0/10137; audit86752 exit0/4697. All handles terminal; no warnings/errors in final build or audit.",
+  "updated_at": "2026-10-20T19:38:57.202638+00:00",
+  "formal_checkpoint": "R1854 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:956 local sources,204 external sources,4697 declarations,8 configurations,151 artifacts",
+  "proof_scope": "In progress. R1854 proves the actual trace-square growth bridge and instantiates it on the retained original-source sample at one dyadic scale. Scalar growth now gives actual words in A^420, trace-cover growth, and quantitative separation from the identity; all coefficients, sampling losses and approximation errors are paid. Eight declarations across four new modules and one existing module reuse mathlib, the pinned OAI projection theorem and the existing sampling, concentration, word-error and geometry proofs.",
+  "next": "R1854 recorded; never replay its checkpoint script. All full-build and\naxiom-audit checks passed; all Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: generalize and apply the FULL second-extraction wrapper.\nDo not reprove sampling, concentration, scalar growth or actual-word transfer.\n\n1. exists_reextracted_trace_power_bound in ReextractionPowerBounds STILL\n   assumes k<=282 and3000000tau<=theta. Factor its proof through a generic\n   fixed-cover-index/cost version; preserve the old API as a specialization.\n   REUSE profile_power_exponent_bound_of_cost, fixed_power_coefficient_bound\n   and trace_reextraction_cubic_bound. Inspect exactly which cover indices\n   appear (k+1 and the existing fixed141); bound their actual costs.\n   For k=420, index421 costs8802*421+4427=3710069.\n   No need to duplicate its long extraction/chart argument.\n2. Apply the generalized upper bound at Theta to the new actual finite\n   D subsetA^420 from exists_trace_square_dyadic_trace_growth. Its frame\n   comes with exponenttheta<=Theta, so weaken eta^theta>=eta^Theta.\n   If the far constanta2 exceeds1, usemin(a2,1); keep the chosen constants\n   independent ofeta and of the source input. Its scalar radiusdelta>=eta.\n3. Combine T^3<=U eta^-548Theta N with N<=Ws eta^-143Theta m^3\n   andeta^-gain m<25T. Existing cubic_trace_budget_contradiction uses250,\n   so weaken25T to250T usingT>=0. Choose one more threshold to pay\n   250^3 U Ws eta^(3gain-691Theta)<=1; the positive margin is already proved.\n4. Supply all profile bounds from the same localized approximate-group\n   assumptions. The initial quantitative extraction's UNIVERSAL n0+3\n   cover usesn0+2; choose one common fixed profile margin for\n   max(421,n0+2), WITHOUT assumingn0<=420.\n5. Continue original profile/frame construction and strict flattening;\n   then density cap, unconditional restricted gap and paid-padding endpoint.\n\nCurrent original proofabout60%,LOW CONFIDENCE; three of six families done.\nOriginal read-only; no commits/pushes. Referees only after all formalization.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is an estimate for the original proof, not the completed local trace-growth bridge or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceSquareMixedCells.lean": "39dd9c76f2fac9a42a3a9140d1a1178aeca9924fe0446fbd174d771929a41f51",
+    "lean/TransposeFollowup/TraceSquarePairedEnlargement.lean": "29afbb54302f2ce503313fa73df8799c63bc65bc9e9534b24502792b13bea89b",
+    "lean/TransposeFollowup/TraceSquareActualWordGrowth.lean": "c22c9bc4dc1f605e542c79650ed1e997bed7e5b84b1e862db80ec9c245a67bdf",
+    "lean/TransposeFollowup/TraceSquareDyadicTraceGrowth.lean": "f7ea5edace99b8dc82c0b5193657dbc0160ea93659e2b2edfd31293280b112e9",
+    "lean/TransposeFollowup/TraceSquareSourceSample.lean": "e1d15608a5f4a47c041b03dcb860572f8201c899c445a4435fbb3e3b8b5aa1b8",
+    "lean/TransposeFollowup/TraceSquareSampleApplication.lean": "358b86f813eaaae4ac52907128ea9fbdd8166b06ec4509c96f06436289617d50"
+  }
+}

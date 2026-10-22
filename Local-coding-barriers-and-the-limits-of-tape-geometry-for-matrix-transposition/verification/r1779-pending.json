@@ -1,0 +1,84 @@
+{
+  "checkpoint": "R1779",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "LeftConvolutionDensity",
+    "MobiusSmoothedDensity",
+    "DyadicSmoothingScale",
+    "UniformSmoothedBandWitness"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.leftConvolutionDensity",
+    "TransposeFollowup.leftConvolutionDensity_measurable",
+    "TransposeFollowup.mconv_withDensity_right",
+    "TransposeFollowup.leftConvolutionDensity_le",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_measurable",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity_le",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_measurable",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_le",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_lt_top",
+    "TransposeFollowup.RealMobius.mconv_mobiusHaarKernel_eq_withDensity",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_lintegral",
+    "TransposeFollowup.RealMobius.integrable_mobiusSmoothedDensity_action",
+    "TransposeFollowup.RealMobius.groupActionAverage_mobiusHaarKernel_eq_integral",
+    "TransposeFollowup.RealMobius.generatorWalk_haar_integral_dyadic_norm_lower",
+    "TransposeFollowup.dyadic_smoothing_error_of_integer_bounds",
+    "TransposeFollowup.exists_dyadic_smoothing_integer_parameters",
+    "TransposeFollowup.exists_dyadic_length_in_window",
+    "TransposeFollowup.dyadic_smoothing_log_inv",
+    "TransposeFollowup.dyadic_flattening_threshold_le",
+    "TransposeFollowup.exists_compatible_dyadic_smoothing_scales",
+    "TransposeFollowup.exists_small_parameter_log_bound",
+    "TransposeFollowup.RealMobius.exists_uniform_smoothed_regular_high_band"
+  ],
+  "new_theorems": 21,
+  "new_definitions": [
+    "TransposeFollowup.leftConvolutionDensity",
+    "TransposeFollowup.RealMobius.mobiusHaarKernelDensity",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity"
+  ],
+  "new_instances": [],
+  "modified_mathematical_sources": [],
+  "checks": {
+    "targeted": {
+      "session_id": 89729,
+      "exit_code": 0,
+      "jobs": 9564,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 90128,
+      "exit_code": 0,
+      "jobs": 9638,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 59396,
+      "exit_code": 0,
+      "declarations": 3582,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib primary sources for multiplicative measure convolution, left Haar invariance, Tonelli, withDensity Bochner integration, geometric powers and logarithms. Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 equation (3.2), Claim 3.4 and Proposition 3.5 (https://arxiv.org/html/1108.2555#S3); Claims 3.3\u20133.4 and the surrounding definitions were re-read in R1778 and retained in context. R1779 supplies an explicit ordinary-Frobenius-radius lower-bound analogue with a regular normalized band, density identity and compatible scales. It does not assert flattening, the Proposition 3.5 upper bound, spectral-gap existence or novelty of these support facts. The threshold parameter epsilon is not a proof that the generators are epsilon-close; the lower-bound theorem only needs its stated generator-entry bounds. Section 3 Proposition 3.5 was re-read in R1779. Candidate next-step support: Eirik Berge, A Primer on Coorbit Theory, Example 2.27/equation (2.15), https://link.springer.com/article/10.1007/s00041-021-09892-5 ; Hongyu He, Certain L2-Norms on Automorphic Representations of SL(2,R), introduction KAN Haar density, https://www.mdpi.com/2075-1680/13/2/80 . These standard identities suggest an affine-subgroup route to the upper bound; the proposed combination is not yet a proved or formalized result.",
+  "development_checks": "LeftConvolutionDensity session45976 failed on reserved lambda variable and reported unused section variables. Replaced the variable name and omitted unnecessary typeclasses; session83860 passed without warnings. MobiusSmoothedDensity session30797 and scalar session49335 passed. Final combined targeted session33397 passed without warnings. Final review strengthened scale and selected-band theorems to accept any requested lower bound Nmin on N; earlier full build73961 and audit98512 cover the preceding revision only, not the final source.",
+  "updated_at": "2026-10-19T16:22:31.786171+00:00",
+  "formal_checkpoint": "R1779 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1779, 661 sources, 3582 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1779 proves the general right-convolution density formula mu*(H.withDensity p)=H.withDensity(k), k(g)=integral p(h^-1*g) dmu(h), for arbitrary s-finite mu and a left-invariant s-finite base H with measurable nonnegative p. The first measure may be atomic. For the actual Haar kernel, the smoothed density is measurable, finite everywhere for positive radius, integrates to one under probability mu, and is bounded by 1/H(B_eta). The weighted actual complex-L2 orbit is Bochner integrable and its Haar integral equals groupActionAverage. Scalar lemmas choose dyadic length ell=2^m between j/(4N) and j/(2N), above C*log(1/eta)/log(1/epsilon), while making the smoothing error at eta=4^(-j) at most r^ell/2. N may be arbitrarily large above a requested Nmin. Composing with the existing normalized regular band selection produces a unit Schwartz witness with exact annular Fourier support, fixed regularity cost and an actual smoothed-density norm at least r^ell/2, with no remaining smoothing-error inequality as a hypothesis.",
+  "next": "Audit and then formalize the affine-subgroup route to the quantitative upper bound, starting with the wavelet Plancherel estimate. For pi(s,t)u(x)=s^(-1/2)u((x-t)/s), s>0, prove for Schwartz u with Fourier transform zero on |xi|<M and arbitrary complex L2 v that the integral over s>0,t in R of |<pi(s,t)u,v>|^2 dt ds/s^2 is at most M^(-1)||u||^2||v||^2. Derive it from translation Plancherel and Tonelli; distinguish the positive-scale and full affine-group formulas. Reuse the existing actual L2/Fourier machinery and extend the test vector from Schwartz by density if useful. Check that pi is exactly the upper-triangular restriction of T_g=W_(g^-1), with the correct scale and translation.\n\nCandidate next reduction, NOT YET PROVED: write g=k*diag(a,a^-1)*U(t), a>0. In these KAN coordinates the SL2 Haar density is a constant times a da dt dk, whereas affine left Haar is a constant times da dt/a. The relative factor is a^2, bounded by 2B^2 when every entry of g is bounded by B. This suggests integral over the bounded matrix box of |<T_g u,u>|^2 dH(g) <= constant*B^2*M^(-1)||u||^4. A direct local Jacobian computation for entries (a*cos(theta),a*t*cos(theta)-a^-1*sin(theta),a*sin(theta)) gives a da dt dtheta from da_entry db_entry dc_entry/|a_entry|, but the global measure identity, chart boundaries and Haar normalization still need proof. If the conventions survive the audit, prove this comparison and a polynomial box-volume bound, then convert it via Cauchy\u2013Schwarz and the proved density integral to the upper bound needed for the selected band. Do not assume the candidate reduction, claim it novel, or silently use a different representation.\n\nPrimary checks: Berge, A Primer on Coorbit Theory, Example 2.27/equation (2.15), https://link.springer.com/article/10.1007/s00041-021-09892-5 ; He, Certain L2-Norms on Automorphic Representations of SL(2,R), KAN Haar formula in the introduction, https://www.mdpi.com/2075-1680/13/2/80 . These support standard component identities, not our proposed complete reduction. Retain source Proposition 3.5 as a fallback if the reduction fails. Preserve actual Frobenius-radius and measure conventions, complex-valued inputs and spatial tails; Fourier bands are not compactly supported in space.\n\nFull Haar small-ball geometry, flattening/product growth, rational free generators and restricted spectral-gap existence remain required for unconditional paid padding. Full motion 200/210 and recursion 206/208 remain in scope. Do not begin final referee subagents before all formalization. Preserve the original directory and avoid commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1779 identifies the actual smoothed-walk Haar density, proves the weighted orbit integrable, and discharges the smoothing scale inequality for a selected normalized regular band with a dyadic length above the logarithmic threshold. The length divisor N can exceed any requested Nmin, to retain freedom for the later upper-bound exponent. No fourth family is complete. Paid padding still requires a quantitative upper bound, Haar geometry, flattening/product growth and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. This percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/LeftConvolutionDensity.lean": "07cc2af4648d6198bed95405a5e53991ba8687a2722b82331da8c66058a6de8c",
+    "lean/TransposeFollowup/MobiusSmoothedDensity.lean": "87ffa92f176ec2ca45896b9d76d22503d075f41c36b8eee0417bf1857489ac1f",
+    "lean/TransposeFollowup/DyadicSmoothingScale.lean": "9daf2d1275fa7b58a218e47a65fbf4df6c0d10c6ffa64fa989c71fc571e4e6c1",
+    "lean/TransposeFollowup/UniformSmoothedBandWitness.lean": "df02d0fc5a7effdf2eadae7b767219fb8181f78ca33deaf39b653aafe36538bf"
+  }
+}

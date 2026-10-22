@@ -1,0 +1,70 @@
+{
+  "checkpoint": "R1758",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1757 PROGRESS",
+  "new_modules": [
+    "TranslationExpansion",
+    "TranslationUniformity"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.unit_subset_volume_ne_top",
+    "TransposeFollowup.translate_volume_real",
+    "TransposeFollowup.RationalUnitMobius.restrictedImageUnion_subset_unit",
+    "TransposeFollowup.RationalUnitMobius.auxiliary_identity_subset",
+    "TransposeFollowup.RationalUnitMobius.auxiliary_add_subset",
+    "TransposeFollowup.RationalUnitMobius.auxiliary_sub_subset",
+    "TransposeFollowup.RationalUnitMobius.auxiliary_subset_augmented",
+    "TransposeFollowup.translated_part_gain",
+    "TransposeFollowup.unitStep_cast",
+    "TransposeFollowup.unitStep_small",
+    "TransposeFollowup.gridCell_step_shift",
+    "TransposeFollowup.RationalUnitMobius.augmented_adjacent_gain",
+    "TransposeFollowup.gridMass_eq",
+    "TransposeFollowup.gridMass_sum",
+    "TransposeFollowup.adjacent_path_bound",
+    "TransposeFollowup.adjacent_pair_bound",
+    "TransposeFollowup.adjacent_average_bound",
+    "TransposeFollowup.RationalUnitMobius.augmented_cell_uniformity",
+    "TransposeFollowup.RationalUnitMobius.augmented_expansion_or_uniformity"
+  ],
+  "checks": {
+    "translation_expansion": {
+      "session_id": 65308,
+      "exit_code": 0,
+      "jobs": 9457
+    },
+    "translation_uniformity": {
+      "session_id": 16127,
+      "exit_code": 0,
+      "jobs": 9458
+    },
+    "build": {
+      "session_id": 27175,
+      "exit_code": 0,
+      "jobs": 9531
+    },
+    "axioms": {
+      "session_id": 25524,
+      "exit_code": 0,
+      "declarations": 2873
+    }
+  },
+  "updated_at": "2026-10-19T10:52:16.422508+00:00",
+  "boundary": "The first analytic step of continuous expansion is proved: adjacent mass discrepancy forces gain under the actual augmented family, and small expansion forces quantitative cell uniformity. Boundary trimming, L2 reduction, restricted spectral gap and rational generator existence remain. No full expansion or new completed original theorem family is claimed.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "section": "Proof of Theorem 1.2, translation reduction and equation (1.2)",
+    "scope": "The actual augmented finite family is reused. The formal bound is K(K-1)*sigma*measure(A), slightly sharper than the source K^2 factor; no half-measure assumption is needed for this intermediate result. This is a formalized source reduction with a routine constant refinement, not a novelty claim."
+  },
+  "next_proof_obligation": "Boundary trimming must include its contribution to the later L2 projection error. Uniformity of A cannot be applied unchanged to a trimmed A: cells removed at the boundary have zero trimmed mass. Track boundary mass and projection error explicitly rather than copying an informal small-parameter estimate.",
+  "formal_checkpoint": "R1758 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1758, 554 sources, 2873 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1758 proves the first analytic reduction of continuous expansion for the actual augmented rational family. Its identity and legal opposite translations preserve the original set and shifted cell parts. The measure gain is at least the absolute difference of the occupied measures of two adjacent grid cells. The grid partition covers every unit-interval set up to a finite null boundary, and its cell masses sum exactly to the set measure. A finite path-and-average argument therefore proves that expansion at most 1+sigma implies |K*m_i-M| <= K*(K-1)*sigma*M for every cell, where M=volume(A), m_i=volume(A intersect cell_i), K>=2 and sigma>=0. An explicit expansion-or-uniformity dichotomy follows. No half-measure restriction is required for this intermediate reduction. The K*(K-1) factor is a routine sharpening of the source K^2 estimate, not a novelty claim or an unconditional expansion proof.",
+  "next": "Prove boundary trimming and retain its projection-error term before the spectral-gap argument. Starting from augmented_cell_uniformity, derive occupied-mass bounds for finite unions of cells and for deleting the first/last m cells. Match a central interval on which sufficiently near-identity Mobius maps and their inverses stay in [0,1]. Charge both the lost measure and the contribution of zeroed boundary cells to the L2 cell-mean projection; uniformity of A is not unchanged uniformity of the trimmed A. Then formalize the reduction to a restricted spectral gap, followed by the gap and rational-generator existence dependencies using proved library results or full proofs, never new axioms or numerical spot checks. Reuse the completed TranslationExpansion/TranslationUniformity, domain adapters, all-size graph bridge and native compiler. After full 201/202, complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes the actual translation-or-cell-uniformity reduction in addition to its complete conditional native construction and source-domain adapters. Boundary trimming, the L2 reduction, restricted spectral gap and rational generator existence remain substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TranslationExpansion.lean": "c9ad51d793d3307f8bf2ca3981d6afa517d0a975a25bfa48904868f2f1f85fc4",
+    "lean/TransposeFollowup/TranslationUniformity.lean": "1e4d4ca37e33677a8a52bd2ffe1bf97e401b3609bc9e70a7835b3c2d1d6461ad"
+  }
+}

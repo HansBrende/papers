@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable}
+\usepackage{xcolor,microtype,etoolbox}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Local Coding Barriers and the Limits of Tape Geometry for Matrix Transposition},
+ pdfauthor={Hans Brende and GPT-6 Astra (OpenAI)},pdfsubject={Formalized coding and tape-motion barriers for matrix transposition}}
+\input{macros}
+\title{Local Coding Barriers and the Limits of Tape Geometry\ for Matrix Transposition}
+\author{Hans Brende \and GPT-6 Astra (OpenAI)}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We prove six families of restrictions and constructions for matrix
+transposition on deterministic multitape Turing machines, using the model of
+\emph{Matrix Transposition and the Tape Coding Conjecture}. For local coding,
+we obtain adaptive original-row separator bounds with sharp deficit and helper
+coefficients; near-full broadcast bounds for all-input correctness after
+bijective nonlinear row recoding, when fixed coordinate-XOR packets follow a
+bounded-degree row graph; and a
+$b\floor{d^2/4}$ lower bound on helper entropy plus input entropy deficit for a
+specified two-stage architecture. Here $d$ is the matrix dimension and $b$ the
+entry width. For head motion, we bound time outside locally affine regions and
+exclude specified scan palettes and regular contracting recursions.
+We also construct, for every native machine, a fixed wrapper with additive
+$O(d^2b)$ overhead on canonical inputs whose complete runs satisfy the original
+zero-slack cut inequality. Under a linear-time bound, its normalized head limits
+satisfy the full $M^*$ conditions. Preparation, motion, cleanup and handoff are
+all charged. These geometric conditions can therefore be supplied independently
+of the computation that follows the prefix. All six families are formalized in
+Lean. Unrestricted linear-time transposition and integer multiplication remain
+unresolved here.
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende directed the research, supplied sources,
+and reviewed the scope and interpretation of results. GPT-6 Astra (OpenAI)
+developed the arguments and Lean proofs, performed computational and source
+checks, and prepared the manuscript under his direction.
+\end{quote}
+\tableofcontents
+\clearpage
+\input{sections/introduction}
+\input{sections/model}
+\input{sections/related-work}
+\input{sections/local-coding}
+\input{sections/motion}
+\input{sections/padding}
+\input{sections/roadmap}
+\appendix
+\input{sections/verification}
+\input{generated/theorem-index}
+\begingroup\small\raggedright
+\bibliographystyle{plainurl}
+\bibliography{references}
+\endgroup
+\end{document}

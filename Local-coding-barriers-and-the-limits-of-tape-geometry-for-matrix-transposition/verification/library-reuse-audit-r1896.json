@@ -1,0 +1,58 @@
+{
+  "status": "PROGRESS at R1896: a shared exact-symbol block-reversal primitive is formalized. For P=nB it has an actual paid schedule of exactly 10P steps, restores both work-head positions, preserves the bank outside its window, clears initially blank scratch, and implements the clean-bank composition interface. Its repeated block-copy phase stays within 5B of endpoint interpolation. Five of six original families formalized; regular recursion206/208 best estimate89% complete (low confidence). Full-program permutation geometry, per-row entry reversal, remaining integer/F3 primitives and full bounded-word exclusions remain.",
+  "boundary": "R1896 proves a generic internal-bank permutation with actual scheduled native instructions, exact cost and symbol-level semantics, including zero-width/count cases. The code is parameterized by a symbol codec with a proved left inverse; no Boolean decoder is used. Only the repeated block-copy phase has its new affine-error estimate here. Complete reversal motion, shared finite-controller instantiation/raw IO integration, per-row entry reversal and the full palette(a,b) exclusions remain. Source206(c), source208, global exceptional-work210.5 and raw integer-row arithmetic remain complete. Five of six original families formalized; final referees after all six. Original unchanged; no commits/pushes; no unrestricted transpose decision or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate89% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1896 finishes the exact-symbol block-reversal schedule, clean-bank interface and repeated-phase motion bound. Remaining permutation integration, integer/F3 operations, bounded-word assembly and final referees remain.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "searched": [
+    "mathlib Mathlib/Data/List",
+    "mathlib Mathlib/Computability",
+    "mathlib Mathlib/GroupTheory/Perm",
+    "Lean core Init/Data/List",
+    "original paper lean",
+    "local ScheduledAdvance/ScheduledTransfer/BankReversal/RepeatedScheduleMotion/BankWord"
+  ],
+  "reused_mathlib": [
+    "Function.iterate_succ_apply",
+    "Function.iterate_succ_apply'",
+    "Nat.div_lt_iff_lt_mul",
+    "Nat.div_add_mod'",
+    "Nat.mod_lt",
+    "Nat.mul_le_mul_right",
+    "Nat.sub_le",
+    "Nat.sub_add_cancel"
+  ],
+  "reused_local": [
+    "ScheduledTapeAction.advance",
+    "ScheduledTapeAction.advance_position",
+    "ScheduledTapeAction.advance_cells",
+    "ScheduledTapeAction.advance_io",
+    "ScheduledTapeAction.rewind",
+    "ScheduledTapeAction.rewind_position",
+    "ScheduledTapeAction.rewind_cells",
+    "ScheduledTapeAction.rewind_io",
+    "ScheduledTransfer.copied",
+    "ScheduledTransfer.schedule_exact",
+    "ScheduledTransfer.copied_positions",
+    "ScheduledTransfer.copied_source_preserved",
+    "ScheduledTransfer.copied_target",
+    "ScheduledTransfer.copied_target_outside",
+    "ScheduledTransfer.copied_source_cleared",
+    "ScheduledTransfer.copied_source_away",
+    "ScheduledTransfer.copied_io",
+    "ScheduledNativeIO.append_exact",
+    "ScheduledNativeIO.append_active",
+    "ScheduledNativeIO.repeatSchedule",
+    "ScheduledNativeIO.repeat_linear_error",
+    "ScheduledWord.schedule_active",
+    "BankWord.symbols",
+    "BankWord.Represents",
+    "BankWord.Congruent"
+  ],
+  "not_sufficient": [
+    "List.reverse_flatten: list identity, not paid tape execution",
+    "BankReversal: bit reversal with Boolean decoding, not block-order reversal preserving all symbols"
+  ],
+  "modified_existing": [],
+  "dependency_simplification": "REUSE AND DRIFT CHECK\nSearched the pinned mathlib List, Computability and permutation sources, Lean core List lemmas, local primitives and the original paper for block-reversal/reflected-block facilities. Core List.reverse_flatten and reverse_reverse concern list values and do not provide a paid native tape schedule. The existing local BankReversal reverses individual bits and decodes symbols through Bool, so it is not a substitute for entry-preserving, trit-safe block reversal. Reused ScheduledAdvance rather than writing another right-seek implementation; reused ScheduledTransfer for reads/writes/source clearing and frame facts; reused ScheduledTapeAction rewinds, ScheduledNativeIO append, ScheduledWord/repeatSchedule, RepeatedScheduleMotion, and the exact-symbol BankWord interface. Mathlib/core Function.iterate_succ_apply and its primed form, Nat.div_lt_iff_lt_mul, Nat.div_add_mod', Nat.mod_lt, multiplication monotonicity and natural subtraction facts supply the algebraic chain. No new tape semantics, compiler, IO implementation or lower-bound machinery. This is implementation infrastructure for exact source206(a,b), not a new research impossibility theorem.\n",
+  "novelty": "No novelty claim; exact paid permutation infrastructure for source206(a,b)."
+}

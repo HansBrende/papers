@@ -1,0 +1,83 @@
+{
+  "unit": "R1738",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1737 receipts revalidated (432 sources,5 configurations,86 artifacts)",
+  "scope": "ALL6 families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "checkpoint_reporting": "At every good proof stopping point, report a ballpark percentage of the entire user goal and name the completed original theorem families. Current rough estimate 40\u201360%, with substantial uncertainty; not a verified effort fraction, probability of success, or time guarantee. Verified completion count is 3/6: adaptive separator181/186/188, recoded pairwise-XOR181B, two-stage global helper216. Paid padding201/202 is incomplete; affine return motion200/210 and regular recursion206/208 are unstarted; final referees and cleanup remain.",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "new_modules": [
+    "FusedPageClockIO",
+    "GeneratorClockMachine",
+    "GeneratorClockRun",
+    "NativeIOFusion",
+    "NativeIOFusionCalls",
+    "NativeIOFusionPrefixes",
+    "NativeIOFusionRun",
+    "NativeReadFusionEmbedding"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.FusedPageClockIO.read_next_ne_done",
+    "TransposeFollowup.FusedPageClockIO.trace_call",
+    "TransposeFollowup.FusedPageClockIO.native_call",
+    "TransposeFollowup.FusedPageClockIO.native_page_trajectory",
+    "TransposeFollowup.GeneratorClock.gen_code",
+    "TransposeFollowup.GeneratorClock.clock_code",
+    "TransposeFollowup.GeneratorClock.embed_gen",
+    "TransposeFollowup.GeneratorClock.embed_clock",
+    "TransposeFollowup.GeneratorClock.transfer_trace",
+    "TransposeFollowup.GeneratorClock.prepared_trace",
+    "TransposeFollowup.GeneratorClock.native_prepared",
+    "TransposeFollowup.GeneratorClock.final_halts",
+    "TransposeFollowup.GeneratorClock.fixed_resources",
+    "TransposeFollowup.NativeIOFusion.active_iff",
+    "TransposeFollowup.NativeIOFusion.step_unselected",
+    "TransposeFollowup.NativeIOFusion.step_denote",
+    "TransposeFollowup.NativeIOFusion.step_none_iff",
+    "TransposeFollowup.NativeIOFusionCalls.unselected_trace",
+    "TransposeFollowup.NativeIOFusionCalls.unselected_native_call",
+    "TransposeFollowup.NativeIOFusionCalls.work_trace",
+    "TransposeFollowup.NativeIOFusionCalls.work_native_call",
+    "TransposeFollowup.NativeIOFusionCalls.work_prefix",
+    "TransposeFollowup.NativeIOFusionCalls.work_native_prefix",
+    "TransposeFollowup.NativeIOFusion.step_some_of_active",
+    "TransposeFollowup.NativeIOFusion.run_denote",
+    "TransposeFollowup.NativeIOFusion.trace_stepN",
+    "TransposeFollowup.NativeIOFusion.work_step",
+    "TransposeFollowup.NativeIOFusion.lift_work_trace",
+    "TransposeFollowup.NativeIOFusion.blank_denote",
+    "TransposeFollowup.NativeIOFusion.native_run",
+    "TransposeFollowup.NativeReadFusionEmbedding.instruction_embed",
+    "TransposeFollowup.NativeReadFusionEmbedding.step_embed",
+    "TransposeFollowup.NativeReadFusionEmbedding.active_embed",
+    "TransposeFollowup.NativeReadFusionEmbedding.trace_embed",
+    "TransposeFollowup.NativeReadFusionEmbedding.native_call"
+  ],
+  "checks": {
+    "build": {
+      "session_id": 91147,
+      "exit_code": 0
+    },
+    "axioms": {
+      "session_id": 17164,
+      "exit_code": 0
+    }
+  },
+  "updated_at": "2026-10-19T00:19:05.172363+00:00",
+  "formal_checkpoint": "R1738 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1738,440 sources,2306 declarations,86 artifacts",
+  "proof_scope": "In progress. R1738 integrates selected read/action fusion into the existing native IO language. Input reads/moves and output writes retain their original semantics; unselected work steps are unchanged. Fusion-aware embeddings explicitly preserve both active source code and the instruction reached by a selected read. The clock final return is not a read successor, so a caller may replace it with a continuation. Ordinary IO subroutines and fused work subroutines now transfer with exact transition counts, all tape cells and absolute positions. For the clock, every native caller prefix up to2L+3 has the exact unit-speed page trajectory; input/output and unused frame tapes are preserved. GeneratorClock is a concrete mixed program: the existing opcode generator, one paid transfer, and a fused clock call. With a prepared length-L clock and fixed q-entry opcode vector, it runs in at most C_F*P+2L+4 native transitions, then halts; it uses43+q tapes,5 symbols,and card(OpcodeGenerator.Label F)+11 states. It restores the clock and preserves the generated opcode bank during the call. The generated opcodes do NOT yet select the vector. Eight modules/35 theorems; full build9417 jobs;2306 audited declarations,standard axioms only. Three of six theorem families complete.",
+  "next": "Replace the fixed opcode-vector handoff by actual tape-driven dispatch. First reuse NativeSpanRewind on the generated output (OpcodeGenerator.output_tape/output_head:4NQ data bits, head at right end) and charge the rewind. Implement a fixed finite decoder consuming exactly2Q bits for one row with codes idle00/open10/close11, rejecting01 and malformed input. Q=rationalPageCount F is fixed for the machine, so a Q-entry opcode vector may be held in finite control; N, the row number, and R must remain on tapes, not in an input-dependent label type. Dispatch the decoded vector into the proved fused-clock call and return to the next unread row; prove all other tapes and absolute heads are preserved. The next milestone is one actual generated row consumed with a fully charged clock call, not another abstract codec property. Then pay clock construction and full row control. Before CutIneq, prove new start spacing with reset/fetch overhead and reconcile graph-grid parameters. Input reset, payload/cleanup, unconditional expansion, motion and recursion remain. Older supplemental62722/19934 remain live/unverified; do not restart solely for elapsed time. All six families required; three complete; original unchanged; no commits/pushes; referees after ALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FusedPageClockIO.lean": "259deb69a1e1f2dde5ab71c2e65d1a8f8d15f41994889d97a2d48ed25294289d",
+    "lean/TransposeFollowup/GeneratorClockMachine.lean": "fc33cae4bd94dedb61c4ddbd0d32a7f035ca6d94e17cee2e2349f846279786ba",
+    "lean/TransposeFollowup/GeneratorClockRun.lean": "f01b294a25d92b36f60166a04b7029e6ef694d3a0b8c8434b1edb05a7c8ec413",
+    "lean/TransposeFollowup/NativeIOFusion.lean": "72f224e79264bc9d476537f18d3ead969ed957ebb0e843a22b68b53440b43ee0",
+    "lean/TransposeFollowup/NativeIOFusionCalls.lean": "74959ae929c1f8a62d0bde9fb3e35f0b2df8a8c2c9ab52e4605ce0aa4124cfc2",
+    "lean/TransposeFollowup/NativeIOFusionPrefixes.lean": "1b0a1c8faa1163ff0ac62ab992852b8fb7c86eb6efed098c0cf51c0fdab5fada",
+    "lean/TransposeFollowup/NativeIOFusionRun.lean": "76dc6bc9dec97a7cdbc525829aa39fa5d4cc1dbfd859df9a5b86e93fb20b69a3",
+    "lean/TransposeFollowup/NativeReadFusionEmbedding.lean": "254a0c99c96c24789cc3320d291e82a5bc62e612e40161781767bb71c08b0431"
+  }
+}

@@ -1,0 +1,103 @@
+
+R1878 — ACTUAL NATIVE PROCESSING GEOMETRY AND VANISHING-STRIDE LIMIT
+PROGRESS at R1878: exact processing-head positions and the vanishing-stride limit are now connected to the actual raw-input native machine. If P tends to infinity and S/P tends to zero, its endpoint-frozen processing bank path converges uniformly on all nonnegative times to min(t/4,1), and its scratch path to zero. Modes, masks and inputs may vary arbitrarily with size. Five of six original families formalized; regular recursion206/208 best estimate64% complete (low confidence). Positive-stride limits, full raw-path assembly, other palettes and bounded composition remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1878 RESULTS
+1. MaskedStrideMotion derives exact intermediate head coordinates from
+   the existing paid schedule, for arbitrary modes, masks and input data.
+   Full-group bank position is r*S plus min(localTick/3,S); a partial
+   group uses min(localTick/3,P%S). Scratch position in a slab is
+   min(localTick/3,S) - max(localTick-3*S,0). Native prefixes use the
+   existing schedule compiler; no simulated transitions replace real ones.
+2. MaskedStrideMotionBounds proves 4P <= N <= 4P+4S for processing ticks N,
+   |bankPosition(n)-min(floor(n/4),P)| <= S, and 0 <= scratchPosition(n) <= S
+   throughout the processing horizon. Bank freezing preserves its value.
+3. MaskedStrideZeroLimit bounds the normalized endpoint-frozen bank error
+   by (S+1)/P and scratch error by S/P, uniformly in all t>=0. Hence for
+   P_i -> infinity and positive S_i with S_i/P_i -> 0, the two paths converge
+   uniformly on [0,infinity) to min(t/4,1) and 0. No bounded group count is
+   assumed; increasingly frequent scratch excursions vanish spatially.
+4. RawMaskedStrideMotion.processing_prefix locates the processing stage
+   at actual time 4P+n of the raw schedule. processing_workTraj connects
+   both coordinates to the ORIGINAL Transpose.Tape.workTraj, beginning from
+   the actual Transpose.init. It reuses native_prefix, blank_denote and the
+   original stepN_init_eq_some_iff, not an additional semantics.
+   processing_zero_stride_limits gives the uniform limits for the actual
+   machine sampled at 4P+min(floor(P*t),N). Modes, masks and external input
+   words may vary arbitrarily with index. Input loading is paid in 4P;
+   cleanup/output remain outside the endpoint-frozen processing window.
+
+Four new modules, twenty audited named declarations (including definitions),
+not twenty new research results. All prior mathematical sources unchanged.
+
+DRIFT / REUSE
+Searched the pinned mathlib uniform-convergence APIs and existing local
+normalization, native-profile, finite-affine-cover and trajectory modules.
+Mathlib supplies the limit and error tools, not this machine-specific
+schedule identity. Direct reuse includes TendstoUniformlyOn.congr,
+Metric.tendstoUniformlyOn_iff, LipschitzWith.id.min_const, Nat floor/cast/min
+lemmas, and reciprocal limits. The original paper's workTraj and native
+run/stepN equivalence are imported directly. Existing scheduled trajectory
+concatenation, group positions and native refinement are reused unchanged.
+No copied original framework, new compiler, generic topology framework or
+fresh recursion lower-bound chain. The new statements close a concrete
+source206 head-limit obligation. These searches do not establish that no
+related theorem exists elsewhere in the literature or a newer mathlib.
+
+
+BOUNDARY
+This proves the small-stride PROCESSING WINDOW of the already verified raw-input executor, including all processing padding and scratch rewinds. The window begins after the paid 4P input-loading/bank-rewind prefix and freezes at processing completion; it is not the full raw-execution trajectory. The positive normalized-stride case and the outer raw-pass geometry still require assembly. Backward variants, full-bank rotation/reversal, row/integer/F3 palettes and bounded-word composition remain for exact source206. Source208 and the global exceptional-work threshold210.5 are complete. Final referees follow all six. No unrestricted transposition result or novelty claim.
+
+NEXT
+R1878 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate64%, low confidence.
+
+NEXT: complete the forward binary stride primitive's limiting geometry.
+The vanishing-stride processing window is done, including its actual native
+workTraj connection. Do not redo raw IO, bank semantics, native compilation,
+small-stride estimates or the established recursion/exceptional bounds.
+
+First handle a positive subsequential limit alpha of S/P. Then floor(P/S)
+is bounded. Select a fixed group count and convergent normalized phase
+endpoints; derive a finite piecewise-affine processing limit. Reuse
+BoundedAffineCovers, AffinePointwiseClosure, PhysicalWalkNormalization,
+NativePhysicalLimits, ActualStageRegularity and StageAffineAssembly as
+appropriate. Do not impose a uniform piece count as alpha tends to zero:
+that case is already settled separately by the S/P error estimate.
+
+Then assemble all outer raw phases with processing, in both cases, using
+ScheduledNativeIO.append_prefix/append_exact and paid positions. Loading
+lasts3P: bank displacement at tick n is floor((n+1)/3), scratch0; rewindbank
+lastsP. After processing, scratch erasure/right then rewind/left each takeS,
+while bank staysP. Bank rewindsP, then output lasts3P with displacement
+floor(n/3). Verify intermediate raw load/output positions from their cell
+schedules rather than assuming them. Erase/rewind positions are already
+proved. Transfer the resulting physical limits to the original block
+normalization and frozen halt tails via NativePhysicalLimits. Preserve
+nonuniform parameters, fixed tape/alphabet counts and O(log P) state bits.
+
+R1878 API:
+MaskedStrideGroup.positions_simple.
+MaskedStrideScan.groups_positions, schedule_tail, bankPosition,
+scratchPosition, schedule_positions, native_positions, ticks_bounds,
+bankPosition_error/after/freeze, scratch_slab_bounds,
+scratchPosition_bounds, quarter_sample_error, normalized_bank_error,
+normalized_scratch_error, zero_stride_uniform_limits.
+RawMaskedStride.processing_prefix, processing_workTraj,
+processing_zero_stride_limits.
+
+After forward binary stride limits, backward variants, full-bank
+rotation/reversal, all exact row/integer and F3 palettes and bounded-word
+composition remain. Source200 sections20-24 is the authoritative scope.
+No new subagents until all six; then authorized impartial referees and
+cleanup. Original paper read-only; no commits or pushes. No unrestricted
+transposition decision or novelty claim. Stay on the exact sixth family.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate64% complete (low confidence), not the percentage of a helper. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Within family6 the native recursion and global exceptional-work extension are complete. Exact source206 still requires full native palette/limit/composition coverage. Final independent referees remain pending.
+
+VERIFICATION
+Full lake build passed10218 jobs without warnings/errors; SupportAxioms audited5165 unique declarations using only propext,Classical.choice,Quot.sound. There are1037 local sources (1036 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and199 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

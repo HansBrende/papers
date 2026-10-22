@@ -1,0 +1,207 @@
+R1846 — ACTUAL FIXED COEFFICIENTS AND SCALAR RING REDUCTION
+
+In progress. R1846 selects an actual word g in A^204 with both inverse-final readout coefficients quantitatively nonzero, using the existing adjoint frame and a new trace-Gram calculation. It proves exact sum/product identities for the positive trace-square scalar coordinate and reuses the imported scalar Pluennecke inequality to control sums and products from one mixed readout. The scalar family is enlarged explicitly by products and quotients; closure is not assumed. Four modules add twenty-two audited declarations. Actual sample selection, readout geometry, source errors and the final exponent comparison remain open.
+
+R1846 EXACT VERIFIED STATEMENTS
+
+AdjointCoefficientSelection.lean (8 declarations)
+
+For traceless real 2x2 matrices b,x,y, let G be their 3x3 trace Gram matrix,
+G_ij=tr(b_i b_j), b_0=b,b_1=x,b_2=y. Then
+ det(directionFrame(b,x,y))^2 = -2 det(G).
+If all three matrices have entries bounded by B>0, their diagonal trace
+pairings equal tr(b^2), and |det(directionFrame)|>=gamma>=0, at least one
+of the three deviations
+ tr(bx)-tr(b^2), tr(by)-tr(b^2), tr(xy)-tr(b^2)
+has absolute value at least gamma^2/(832 B^4).
+The proof writes the Gram matrix as a rank-one constant matrix plus three
+off-diagonal perturbations; the determinant bound is explicit.
+
+For x=Ad_u b and y=Ad_v b, write D(g)=det(bg-gb).
+The trace-pair identity is
+ tr(Ad_u b Ad_v b)=D(u^-1 v)-2det(b).
+Hence the selected coefficient comes from one of the ACTUAL words
+u,v,u^-1 v. It is not a coordinate-direction test outside the group.
+
+ActualScalarReadoutCoefficients.lean (4 declarations)
+
+For any real 2x2 b,g:
+ det([b,g^2])=(tr g)^2 det([b,g]).
+If |D(g)|>=rho>0 and tr(g)>=3/2, one of g,g^2 simultaneously satisfies
+ |D(w)|>=rho/4 and |D(w)-4det(b)|>=rho/4.
+This is a two-choice cancellation repair, not a coefficient-distribution
+assumption.
+
+The actual selector assumes:
+ I in A, A^-1=A, 0<alpha<=1, A subset identityBall(alpha),
+ 4*5^102*alpha<=1,
+ p,q,pq in A^34, d>0, |det(pairSpanMatrix(p,q))|>=d,
+ z in identityBall(1/2), r>0, dist(z,I)>=r.
+Let
+ b=z-(tr(z)/2)I,
+ Gamma=(r/8)^3/[3456(96(4^34)^4/d)^3],
+ B=128(4^68)^2.
+Then it PRODUCES g in A^204 with
+ |D(g)| >= Gamma^2/(3328 B^4),
+ |D(g)-4det(b)| >= Gamma^2/(3328 B^4).
+It reuses exists_adjoint_frame_from_actual_spanning, whose u and v lie in
+A^34 and A^68. The relative word is in A^102; squaring costs at most204.
+The matrix bound reuses centered_near_identity_generator_bounds and
+matrixConjugation_trace_det_norm. No diagonalization is used.
+For the R1845 choice r=d/32, the displayed lower bound equals c*d^12 for
+a fixed positive c; this algebraic specialization is not a separate Lean
+declaration.
+
+CentralizerTraceSquareScalar.lean (1 definition,6 theorems)
+
+Define X(u)=(2/3)tr(u)^2-4/3.
+For u=sI+tb, tr(b)=0, X(u)=(8/3)s^2-4/3.
+If dist(u,I)<=1/16, then 1<=X(u)<=2.
+If u=sI+tb and v=pI+qb are in SL2(R), then EXACTLY
+ X(u)X(v)=(2/3)[X(uv)+X(uv^-1)].
+No inverse determinant is present in this product identity.
+
+For W=v u^-1 g (v u) g^-1, Delta=det(b), D=det(bg-gb),
+ 8 Delta tr(W)=3 D X(u)+3(4Delta-D)X(v).
+If Delta!=0 this becomes
+ tr(W)=a X(u)+c X(v),
+ a=3D/(8Delta), c=3(4Delta-D)/(8Delta).
+Both coefficients are nonzero for the selected actual g.
+Their sum is3/2 (an immediate algebraic observation, not separately
+formalized). At least one has absolute value>=3/4; it may be used as
+the enlargement coefficient in the combinatorial bridge.
+
+The further exact identity
+ det([b,Ad_g b])=D(4Delta-D)
+connects the two readout coefficient gaps to separation of the two
+centralizer directions. This identity is verified. Its quantitative
+application to readout distance from I is still NEXT work.
+
+CentralizerScalarSumProduct.lean (3 declarations)
+
+Let N_delta(S) here denote the NUMBER OF SCALAR FLOOR CELLS, not the
+native external covering number. The existing bridges between these
+quantities are available but are not silently identified.
+
+For arbitrary finite scalar Z,Y, Z nonempty, delta>0,m>0, beta!=0,
+|beta^-1|<=2, if
+ m <= N_delta(a Z),
+ N_delta(a Z+beta Y) <= T,
+then N_delta(Y+Y)*m <=112 T^2.
+Proof: imported scalar_pluennecke with A=aZ,B=betaY,m=2,n=0 gives
+16 T^2 after multiplication by the base cell count. Imported dilation
+control contributes the factor7. Ruzsa/Pluennecke is not reproved.
+
+Consequently, for nonempty X subset Y satisfying
+ X*X subset (2/3)(Y+Y),
+with the same two hypotheses for Z=X, we have
+ N_delta(X+X)*m <=112 T^2,
+ N_delta(X*X)*m <=560 T^2.
+The extra product factor5 is the imported dilation-cell bound.
+Crucially, the mixed set is aX+betaY, not aY+betaY.
+
+For ANY finite matrix family F in the centralizer span of b, define
+ X=X(F), Y=X(F union F*F union F*F^-1).
+The file constructs and verifies
+ X subset Y and X*X subset (2/3)(Y+Y).
+It does not assume F contains I, is symmetric, or is closed under products.
+
+DRIFT AND FEASIBILITY AUDIT
+
+The new fixed scalar coordinate avoids a varying-coefficient projection
+theory. It replaces the earlier proposed six-term product expression by a
+two-term sum. The imported scalar_sum_product_alternative is already
+available. With m=|X|, the displayed bounds say that a small mixed readout
+forces both small sums and products with loss560(T/|X|)^2. Thus scalar
+growth gives a square-root-scale mixed-readout gain, provided its actual
+separation, size and nonconcentration inputs are established.
+
+This is a workable algebra/combinatorics reduction, NOT an established
+matrix growth theorem. Two coupled obligations must be resolved:
+(1) preserve enough actual source sample under the trace-square map,
+including the critical point at I and the small readout coefficient;
+(2) control the mixed ACTUAL word traces using second extraction, which
+requires these words to stay quantitatively away from I.
+
+The finite enlargement includes quotients uu^-1=I. Therefore a statement
+that every enlarged element is away from I would be false. The Pluennecke
+bridge was generalized before checkpoint to use a retained base X and
+an enlargement Y. Only one input of each mixed word needs to come from
+the retained base. This changes the next geometric obligation to:
+if one centralizer input stays away from I, prove the mixed word does too,
+with a polynomial cost in the two actual coefficient gaps.
+
+A formal identity supports this target:
+ det([b,Ad_g b])=D(4Delta-D).
+If both coefficient gaps are>=rho, the absolute determinant is>=rho^2.
+The existing general 4x4 frame inverse bounds should control the
+coefficients of an error in span{I,b,Ad_g b}. No eigenbasis is needed.
+
+Word accounting: original f approximates sources in A^2; F*F and F*F^-1
+have sources in A^4. With g in A^204, a mixed word with one source in A^2
+and the other in A^4 has length at most420 (424 is a safe common bound).
+This is separate from R1845's larger universal initial D word bound n0.
+Use localized_fixed_power_coveringNumber_envelope with the ACTUAL maximum.
+Neither the n<=283 wrapper nor its3000000*tau budget applies automatically.
+No full closed exponent budget or original-family completion is claimed.
+
+BOUNDARY
+The actual coefficient selector assumes the original spanning frame, symmetry, identity, a fixed sufficiently small identity neighborhood, and the selected generator distance r>0. Those coefficients are conclusions, not new input assumptions. R1845 supplies a quantitatively nonnilpotent generator to which this selector can be applied. The scalar combinatorial bridge still assumes a lower bound on the cells of one dilated base set and an upper bound on the mixed readout; these have NOT yet been verified for a retained sample from the actual extracted family. In particular, no scalar separation or nonconcentration is inferred from the identities. The second extraction also requires actual readout words away from I. The finite product/quotient enlargement can contain I and is not assumed away from I. A mixed base-versus-enlargement argument is explicitly supported instead. The n<=283 trace-bound wrapper does not cover the new readout word lengths; its general fixed-power proof must be reused with a correct larger margin. Strict flattening, original profile/frame construction, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original family or novelty is claimed.
+
+NEXT
+R1846 is recorded; never replay its checkpoint script. Full10117-job
+build and4646-declaration standard-axiom audit passed without warnings.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: a quantitative distance-from-I theorem for the actual mixed
+word W=v u^-1 g(vu)g^-1, with u,v in the SAME centered centralizer,
+both near I, g an actual selected bounded word, and at least one of u,v
+away from I. Use both gaps |D(g)|,|D(g)-4Delta|>=rho, not merely D(g)!=0.
+Do this before claiming that the old second-extraction trace bound
+controls the whole new mixed readout.
+
+Concrete proof route to audit:
+ Set a=vu, q=uv^-1. Then E=Ad_g(a)-q=q(W-I).
+ Write a=s_a I+t_a b, q=s_q I+t_q b.
+ The verified commutator_conjugate_det gives
+ |det(pairSpanMatrix(b,Ad_g b))|>=rho^2.
+ Reuse MatrixFourBounds.mulVec_inverse_bound on the frame
+ {I,b,Ad_g b,b Ad_g b} to bound t_a,t_q by
+ a fixed polynomial in the matrix entry bounds times ||E||/rho^2.
+ The centralizer input forms and product/inverse formulas already exist.
+ For a centered SL2 element near I, positive scalar part and determinant1
+ imply ||a-I||<=C_B |t_a| when ||b||,|detb|<=B>=1:
+ if |t_a|<=1 use |s_a-1|<=B t_a^2, otherwise use the near-I bound.
+ Apply the same to q. Commutativity gives u^2=aq and
+ v^2=a q^-1. Near I, ||u-I||<=||u^2-I|| follows from
+ ||2(u-I)+(u-I)^2||>=2||u-I||-||u-I||^2.
+ This suggests ||u-I||,||v-I||<=C rho^-2 ||W-I||.
+ This paragraph is a PROPOSED proof, not yet a Lean theorem.
+ For R1845/1846, rho is a fixed constant times d^12, so the cost is
+ still a power of d^-1. Keep every fixed constant and word length explicit.
+
+Then select an actual retained finite base F away from I using the
+EXISTING general source-cluster concentration/cubic packing results.
+Ensure F and its two-factor enlargement have the required small geometry.
+The trace-square map has a critical point at I; positivity in[1,2]
+does NOT imply separation or a scalar concentration profile.
+Use the determinant gap, retained distance and a sign choice to obtain a
+quantitative inverse on the sample, or record why this fails.
+Pay for the smaller of the two normalized linear coefficients when
+obtaining the base cell lower bound m<=N_delta(aX).
+
+Transfer the finite enlargement and mixed readouts to original source
+words, including approximation errors. Reuse scalar_sum_product_alternative,
+the new112/560 bounds, and the general second-extraction/fixed-power
+coefficient proofs with word bound>=420. Rechoose theta,tau and dyadic
+thresholds only after listing all exponent losses. Do not add another
+ideal-sample input theorem as a substitute for this actual application.
+
+Original profile/frame construction and remaining analytic/machine
+endpoints remain. Three of six original families formalized; paid padding
+best estimate about60%, low confidence. Original paper read-only, no
+commits/pushes, no unsolicited subagents.
+
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

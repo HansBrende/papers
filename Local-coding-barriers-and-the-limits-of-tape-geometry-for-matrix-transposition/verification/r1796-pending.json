@@ -1,0 +1,94 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "WeightedFiberSelection",
+    "IncidenceFiberMoments",
+    "IncidenceFiberSelection",
+    "ProductFiberSelection",
+    "ProductQuotientControl",
+    "MobiusWeakBSG"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.exists_large_weight_small_error",
+    "TransposeFollowup.edgeFiberMass",
+    "TransposeFollowup.edgeCodegree",
+    "TransposeFollowup.edgeBadFiberMass",
+    "TransposeFollowup.edgeFiberMass_measurable",
+    "TransposeFollowup.edgeCodegree_measurable",
+    "TransposeFollowup.edgeFiberMass_eq_measure",
+    "TransposeFollowup.edgeFiberMass_lintegral",
+    "TransposeFollowup.edgeFiberMass_second_moment_lower",
+    "TransposeFollowup.edgeBadFiberMass_lintegral_le",
+    "TransposeFollowup.edgeBadFiberMass_eq_measure",
+    "TransposeFollowup.exists_large_fiber_few_low_codegrees",
+    "TransposeFollowup.productIncidence",
+    "TransposeFollowup.productFiber",
+    "TransposeFollowup.productIncidence_measurable",
+    "TransposeFollowup.productIncidence_restrict_measure",
+    "TransposeFollowup.edgeFiberMass_restrict_product",
+    "TransposeFollowup.edgeBadFiberMass_restrict_product",
+    "TransposeFollowup.exists_large_productFiber_few_low_codegrees",
+    "TransposeFollowup.densityConvolution_inverse_indicator_eq",
+    "TransposeFollowup.productCodegree_le_quotient_density",
+    "TransposeFollowup.exists_productFiber_quotient_control",
+    "TransposeFollowup.RealMobius.exists_weakBSG_productFiber",
+    "TransposeFollowup.RealMobius.exists_weakBSG_from_self_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 19,
+    "def": 5
+  },
+  "checks": {
+    "quotient_control_before_linter_cleanup": {
+      "session_id": 69476,
+      "exit_code": 0,
+      "jobs": 2209,
+      "warnings": true
+    },
+    "weak_bsg": {
+      "session_id": 39047,
+      "exit_code": 0,
+      "jobs": 9565,
+      "warnings": false
+    },
+    "self_energy_weak_bsg": {
+      "session_id": 67190,
+      "exit_code": 0,
+      "jobs": 9565,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 3976,
+      "exit_code": 0,
+      "jobs": 9732,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 1681,
+      "exit_code": 0,
+      "declarations": 4168,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "R1796 formalizes continuous weak-BSG selection following the mechanism of Tao, Product set estimates for non-commutative groups, arXiv math/0601431v3, Lemma5.1 (primary source read in R1795; https://arxiv.org/pdf/math/0601431). The new proof directly derives simultaneous size and low-codegree control using Cauchy\u2013Schwarz, Tonelli and a positive finite weighted-averaging margin. It uses the relaxed size H(S)>H(A)/(2K), with strict exceptional-pair bound, and defines D as a global popular quotient region to reuse R1795 topology and Markov bounds. Its support and volume are quantitative. The self-energy corollary supplies H(S)>H(O)/(4L), H(D)<=32L^4 H(O)/epsilon and explicit entry boxes. These are supporting formalizations of a known mechanism, not novelty claims or new impossibility theorems. Full small-product BSG, approximate-group extraction, growth/escape and strict flattening remain unproved.",
+  "development_checks": "90917 built the averaging lemma with deprecated push_neg and an unused measurability argument, but failed on a wrong measurableSet_le argument. Replaced with push Not, removed the unnecessary measurability assumption and used a typed measurable set.52588 failed only on product-universe measure simplification; explicit univ_prod_univ and prod_prod repaired it.75140 built moments but failed on a final reflexive inequality in selection; an explicit final le_of_eq repaired it.2814 built full abstract selection but failed on opaque local measure abbreviations and an untyped preimage, plus an unused simp argument. Explicit local definitions and a typed preimage repaired them.69476 passed quotient control with one unused section-instance warning. Removed unused inversion instances.52846 failed in the empty-D contradiction on a propositional simplification and local set rewriting.Explicit not_false_eq_true and a typed change repaired those.39047 and67190 passed weak BSG and the self-energy corollary without warnings. Then removed three unused new helper lemmas (bad-fiber measurability, square-as-pair-integral, and fiber measurability); the full build verifies this cleanup. No old mathematical-source edits, placeholders, new axioms, raised proof limits or disabled linters. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T20:41:55.833931+00:00",
+  "formal_checkpoint": "R1796 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1796, 755 sources, 4168 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1796 proves continuous weak-BSG selection. From product-pair measure at least H(A)H(B)/K it selects an actual fiber S={a in A:ab in C} with H(S)>H(A)/(2K), and a global popular quotient region D. Fewer than epsilon H(S)^2 pairs in S x S have aa'^-1 outside D, and epsilon H(B)H(D)<=2K^2 H(C)^2. S,D are nonempty open precompact for the bounded open SL2 inputs, with explicit entry bounds. A checked self-energy corollary gives S subset O with H(S)>H(O)/(4L), H(D)<=32L^4 H(O)/epsilon, the same exceptional-pair bound, and closure bounds Box(Q), Box(8Q^4). This closes the full simultaneous selection target, not just its moment bookkeeping. Full small-product BSG, approximate-group extraction, metric transfer, SL2 growth/escape, strict flattening and unconditional paid padding remain unproved.",
+  "next": "Start from RealMobius.exists_weakBSG_productFiber and exists_weakBSG_from_self_energy in MobiusWeakBSG.lean. Do not repeat Fatou/openness, popular-product extraction, fiber moments, simultaneous weighted selection, restricted-measure identities or the quotient-density comparison. The general weak theorem takes bounded open A,B,C, positive H(A),H(B), positive finite K and 0<epsilon<=1, with product-pair measure >=H(A)H(B)/K. It returns b in B, S={a in A:ab in C}, D={1_C*1_(C^-1)>epsilon H(B)/(2K^2)}, and all geometry, H(A)^2<4K^2 H(S)^2, exceptional quotient-pair measure <epsilon H(S)^2, and epsilon H(B)H(D)<=2K^2 H(C)^2. The self-energy corollary composes this with R1795 and gives H(S)>w/(4L), epsilon H(D)<=32L^4 w, closure S in Box(Q), closure D in Box(8Q^4). The actual R1795 nonflattening input supplies such O and L=8(64N^4)^2/theta^2, with L>=1.\n\nNext concrete target: complete the continuous small-product BSG extraction for an open O of volume w and E(O,O)>=w^3/L, L>=1. Produce two positive-volume open subsets A_final,B_final of O, each of volume at least w divided by an explicit polynomial in L, and H(A_final*B_final) at most an explicit polynomial times w. Follow Tao, Product set estimates for non-commutative groups, https://arxiv.org/pdf/math/0601431v3, Theorem5.2 after the popular-product stage; the source was read in R1795. Keep support boxes explicit and prove the actual subsets and product bound, not a wrapper assuming them.\n\nProposed conservative route (UNPROVED; check constants before formalizing): C is the R1795 popular region, H(C)<=2Lw and product-pair mass>=w^2/(2L). First retain A_hi={a in O:integral_O 1_C(ab)>w/(4L)}. Prove H(A_hi)>=w/(4L) and retained pair mass>=w^2/(4L). Weak BSG with A=A_hi,B=O,K=4L and epsilon=1/(64L) gives S subset A_hi with H(S)>w/(32L^2) and H(D)<=8192L^5w. Trim S to rows with exceptional quotient degree <2epsilon H(S), losing at most half its volume; trim O to columns with S-neighbor mass >H(S)/(8L), keeping volume at least w/(8L). For every resulting product ab, the two neighbor conditions give more than H(S)/(16L) representations through D and C. Integrating yields the candidate bounds H(A_final)>=w/(64L^2), H(B_final)>=w/(8L), H(A_final*B_final)<=2^23 L^9 w. These constants are a proposed deliberately conservative derivation, NOT a proved result or a claim of Tao's best exponent. Any use must be checked. The main flattening program needs explicit universal polynomial losses; track their consequences rather than silently changing its quantifiers.\n\nTopological obligation: a non-strict upper sublevel of a bad-degree function need not be open. Define the good-row trim through a STRICT superlevel of the good-quotient degree instead, and prove that good plus bad degree equals H(S) using finite total mass. The existing lowerSemicontinuous_lintegral_family should handle all open-set degree superlevels. Do not label the source's convenient non-strict sets open without proof. Product-region mass bounds should reuse the proved Haar changes of variables and Markov infrastructure.\n\nAfter small-product BSG, approximate-group extraction and SL2 growth/escape still remain. Ultimate interface stays RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k): choose FIXED k before N,J0,epsilon0, prove sufficient rho_k flatness in its stated dyadic-walk range. Preserve all six families, actual measures and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1796 completes continuous weak-BSG fiber selection and quotient control, including explicit geometry and a self-energy corollary. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/WeightedFiberSelection.lean": "3937a9bef074bc3ed14cccf9fe716c46d35a480666662ec392634433ef283af1",
+    "lean/TransposeFollowup/IncidenceFiberMoments.lean": "f9aa36e6387306367ca3f7d757c185da9718c954c20e40e1ad19192b2644d87e",
+    "lean/TransposeFollowup/IncidenceFiberSelection.lean": "19c7dc99177ec873316ce17fc0cf698c33d13028f2f3687d7dc21b134dd49ad3",
+    "lean/TransposeFollowup/ProductFiberSelection.lean": "2c9d645120ca4246197c45756dfe988fbc5c4bd449ddc027913feeb46b1c822f",
+    "lean/TransposeFollowup/ProductQuotientControl.lean": "056a214ba5644129c995d2125b7d227b03919660bc00740846ed023d59b5e7bd",
+    "lean/TransposeFollowup/MobiusWeakBSG.lean": "262eb22f9b2b4271f64bca2e10432a211f437c1583a87ce4725b3ea3a2c785ad"
+  }
+}

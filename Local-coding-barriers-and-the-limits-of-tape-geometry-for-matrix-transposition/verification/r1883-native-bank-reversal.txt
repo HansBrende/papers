@@ -1,0 +1,141 @@
+
+R1883 — PAID BANK REVERSAL AND SHIFTED AFFINE GEOMETRY
+PROGRESS at R1883: a paid raw-bit bank reversal now has proved actual scheduled semantics, exact6P+2 time, both heads restored, scratch fully blank, external IO preserved and outside-bank cells unchanged. Every intermediate head position is proved. At arbitrary public start A, each head has an81-interval affine cover with unnormalized error at most4, uniformly in P,A and real time. A generic two-step directional transfer with optional clearing supports the implementation. Five of six original families formalized; regular recursion206/208 best estimate77% complete (low confidence). Mixed palettes and their final bounded-word geometric exclusion remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1883 RESULTS
+1. ScheduledTransferCell and ScheduledTransfer implement an actual paid
+   transfer between the two distinct work tapes. Each cell costs two
+   instructions: read the source into finite local mode, then write the
+   target, optionally clear the source, and move both heads. The source
+   moves left or right; the target moves right. Symbol read/write codecs
+   and local mode are parameters. After n cells, source displacement is
+   +/-n, target displacement n, and IO is unchanged. At every microscopic
+   time m the displacements are +/-floor(m/2) and floor(m/2). The target
+   cell j<n holds write(read(original source at source_origin +/- j)).
+   Future reads are proved unaffected by earlier writes/clears; source
+   and target are distinct tapes. Visited source cells are blank when
+   clearing is enabled; all source cells are preserved when disabled;
+   unvisited source and outside target cells retain their original values.
+   Exact schedule/copy refinement and activity are proved.
+2. BankReversal uses the existing binary local mode, two tapes and fixed
+   alphabet. It copies P bits forwards to scratch in2P steps, rewinds the
+   bank P steps, turns scratch left once, copies scratch backwards to bank
+   while clearing in2P steps, rewinds bank P, and turns scratch right once.
+   The actual schedule has exactly6P+2 steps, also for P=0. Starting from
+   arbitrary work-head coordinates, bank contents, finite mode and IO,
+   with the whole scratch tape blank, its result satisfies
+      bank[origin+j] = data(bit(original bank[origin+P-1-j])), j<P.
+   Both heads return to their original coordinates, the whole scratch
+   tape is blank, external input/output fields are unchanged, and every
+   bank cell outside [origin,origin+P) is preserved. The last preservation
+   fact supports later local row operations. All copies and resets are
+   actual NativeIO work actions, not bulk-operation assumptions.
+3. BankReversalMotion proves both exact head paths at every time through
+   the6P+2-step stage, from arbitrary starting configurations. The bank
+   path consists of the forward transfer, first rewind, return transfer
+   and final rewind. The scratch path consists of the forward transfer,
+   one left turn, backwards return transfer and one right turn. The
+   public formulas use clipped integer ramps and half-speed transfer
+   ramps. They are zero initially and after the paid stage horizon and
+   satisfy path(min(n,ticks))=path(n).
+4. BankReversalApproximation defines four real clipped ramps for each
+   head, shifted by any public start time A. The bank comparison is
+      R(P,A,2) - R(P,A+2P,1) + R(P,A+3P+1,2) - R(P,A+5P+1,1),
+   and scratch is
+      R(P,A,2) - R(1,A+3P,1) - R(P,A+3P+1,2) + R(1,A+6P+1,1),
+   where R(L,a,d)(t)=min(max((t-a)/d,0),L). For every real t and head h,
+      |path(P,h,floor(t)-A)-approximation(P,A,h,t)| <=4.
+   On every [0,H], H>=0, each comparison has an81-interval affine cover.
+   Both bounds are uniform in P and A. After normalization the error is
+   <=4/P. These are precisely the shifted stage interfaces needed by the
+   existing finite-word/native high-entropy obstruction framework.
+
+Five new modules,50 audited named declarations including definitions and
+interfaces, not50 research discoveries. All baseline mathematical sources
+unchanged. Existing scan, word compiler, native obstruction and original
+normalization/compactness chains are reused without weakening their scope.
+
+DRIFT / REUSE
+Searched pinned mathlib TuringMachine/Tape, ToPartrec and StackTuringMachine,
+original Transpose/Tape, local marked-copy and scheduled action/motion
+modules. Mathlib supplies Tape.move_left_nth, Tape.move_right_nth,
+Tape.move_right_n_head and Tape.write_nth; these underlie the existing
+absolute-tape/native cell-action interface, which is reused. ToPartrec's
+copy_ok proves qualitative TM2 reachability using reversed stack lists;
+it does not supply this native two-tape, exact-clock and all-prefix head
+path interface. The local NativeMappedCopy handles marked words; its
+cell-action foundation is reused, while the new transfer handles exact
+public lengths on a live shared bank. This is a targeted reuse search,
+not a claim that no equivalent theorem exists anywhere.
+All finite schedule composition uses existing append_exact/append_active
+and append_position. Rewinds reuse ScheduledTapeAction. All affine covers
+and rounding reuse clippedRamp_cover/sample_error and the existing .add
+and .sub closure results. No duplicate compactness, native compiler,
+normalization or asymptotic state-bit proof was introduced.
+The new operation fills an explicit source206 palette requirement and
+provides the concrete building block for backward masked scans and paid
+rotation. Do not turn this into another stand-alone reversal impossibility
+proof; next integrate the remaining operations with the existing shared-
+bank word compiler, then complete the mixed-word exclusion. The row,
+integer and F3 palettes remain real obligations, not informal corollaries.
+
+
+BOUNDARY
+The actual reversal stage, its exact paid semantics/head paths, outside-bank preservation and uniformly shifted affine covers are now proved. It is not yet integrated into the generic mixed-word compiler, and backward/rotation plus exact row/integer/F3 palettes remain. Arbitrary forward masked-stride words already have native semantic/time/resource and whole-run path proofs; final fixed-K subsequence/cover assembly and its high-entropy contradiction remain. Source208/global exceptional-work210.5 and the single-primitive R1881 exclusion are complete. Five of six families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transposition result or novelty claim.
+
+NEXT
+R1883 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate77%, low confidence.
+
+NEXT: use the new paid bank reversal to implement backward masked scans
+as reversal, forward scan with reflected public mask, and reversal.
+Prove the exact backwards recurrence/output map using the existing
+MaskedStrideScan.value_congr_upto and the proved bank interfaces. All
+head resets and scratch clearing already belong to these stages. Avoid
+copying the word compiler: generalize/reuse it for a mixed operation type.
+A public whole-bank rotation can use the new directional transfer for
+split-and-concatenate with paid seeks (or paid subinterval reversals,
+whose outside-bank preservation is now proved). Include all physical
+repositioning costs and exact paths; no bulk-copy hypotheses.
+
+R1883 REUSE MAP
+- ScheduledTransfer.cellSchedule/cellResult/cell_exact/cell_positions/
+  cell_source/cell_target reuse NativeMicrocode.action_cells.
+- ScheduledTransfer.copied, copied_positions/io/source_away/source_next/
+  source_preserved/source_cleared/target/target_outside; schedule_exact
+  at2*n; schedule_positions for ALL microscopic times m.
+  Generic local mode and symbol codec; source and target are two tapes.
+- BankReversal.read/write use existing binary Mode. prepared/returned/
+  result and schedule/ticks, ticks_eq6P+2, schedule_exact/active.
+  result_spec: heads restored, exact reflected bits, full scratch blank,
+  IO preserved; result_bank_outside: all other bank cells preserved.
+- BankReversal.path/schedule_position/path_zero/path_after/path_frozen.
+- BankReversal.approximation P A head t; approximation_cover J81 on
+  [0,H] for H>=0; approximation_error<=4 against path(floor(t)-A), all t.
+  All these are uniform in P and arbitrary public integer start A.
+
+EXISTING R1882/APPLIED ENDPOINTS
+Keep the complete native forward-word compiler, raw IO, state-bit lemma,
+whole-run workTraj_position and two-regime shifted stride estimates.
+R1881 no_subsequential_physical_affine_fast_approximation is the native
+high-entropy endpoint; original block/physical normalization is complete.
+No need to redo these chains. Reuse mathlib compactness on the finite
+vector of normalized stride parameters for fixed K, split zero/positive
+limiting ratios, sum shifted stage errors and combine existing covers.
+No separate start-time convergence is needed by the shifted estimates.
+Preserve arbitrary public masks/parameters, actual raw-bit correct sets,
+fixed tape/alphabet, o(P) state bits and original inputLength/entryBits.
+
+All exact row/integer/F3 palettes remain. Source208/global210.5 complete;
+do not reopen them to defer source206. No new subagents until all six;
+then authorized impartial referees/cleanup. Original paper read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate77% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 now includes the native recursion/global exceptional-work extension, single-stride exclusion, finite forward-word semantics/resources/exact paths, uniformly shifted stride estimates, and paid reversal with full semantics/motion/affine comparison. Full mixed source206 palettes and final bounded-word exclusion remain; final independent referees pending.
+
+VERIFICATION
+Full lake build passed10244 jobs without warnings/errors; SupportAxioms audited5343 unique declarations using only propext,Classical.choice,Quot.sound. There are1063 local sources (1062 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and209 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

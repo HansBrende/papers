@@ -1,0 +1,168 @@
+
+R1886 — SHARED WORD COMPILER AND CONCRETE MIXED BANK WORDS
+PROGRESS at R1886: arbitrary finite mixed words of forward/backward masked scans, reversal and rotation now have a proved actual shared-bank schedule, exact composed bank semantics, reusable blank scratch, restored heads, preserved IO, cost<=27P*length for P>0, and complete microscopic head paths. The schedule/fold/bank-invariant proofs are shared with the old forward compiler, which is refactored without weakening its prefix-dependence theorem or11P bound; existing raw forward native/resource/path theorems still build. Five of six original families formalized; regular recursion206/208 best estimate80% complete (low confidence). Mixed raw IO/native wrapper, bounded-word affine assembly/exclusion and exact row/integer/F3 palettes remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1886 RESULTS
+1. ScheduledWord is a shared finite-schedule compiler, polymorphic in the
+   operation, tape, mode and semantic state types. transform is an ordered
+   left fold; transform_rel directly uses mathlib List.rel_foldl with
+   List.forall₂_same to carry a supplied invariant through the actual word.
+   ticks is the sum of the public operation costs; ticks_le directly uses
+   List.sum_le_sum. schedule is the existing paid append construction.
+   schedule_active and schedule_exact prove activity and exact execution
+   from supplied per-operation proofs. The complete path is the recursive
+   sum of delayed operation paths. schedule_position/path_zero/path_after/
+   path_frozen compose the actual proved movements, using append_position.
+2. BankWordInvariant supplies a shared bank interface, parametrized by
+   tape/mode/decoded-value types, bank port, symbol decoder and a reusable
+   scratch predicate. Represents records ALL head coordinates relative to
+   the initial state, the full P-entry decoded bank, scratch readiness and
+   exact input/output fields. Congruent requires dependence only on the
+   whole P-entry bank, not on a prefix. represents_step and word_spec
+   transfer the concrete stage invariant through the shared fold theorem.
+   The binary instance uses tape0, the existing bit decoder and complete
+   blankness of tape1. Abstract interfaces alone are not counted as the
+   mixed result: every concrete case is discharged below.
+3. BinaryBankOperation defines the four actual operation types:
+   forward(prefix/difference,mask,S), backward(prefix/difference,mask,S),
+   reversal, and rotation(R). Validity is1<=S<=P for scans andR<=P for
+   rotations. value/ticks/schedule/result are their existing proved
+   implementations, not new assumed primitives. value_congr, activity,
+   exact schedule execution and result_spec are all proved by the existing
+   concrete stage theorems. ticks_le proves<=27P for every valid stage
+   when P>0, including all cleanup/reset/seeks. P=0 is not incorrectly
+   included in this linear bound for nonempty reversal words.
+4. MixedBinaryWord composes arbitrary finite lists of these operations
+   on the same actual work bank. Its result_spec proves every output bit
+   equals the ordered mathematical composition, all work heads are at
+   their original coordinates, the entire scratch tape is blank, and IO
+   fields are unchanged. schedule_exact proves that result is the actual
+   trajectory at the sum of paid operation times. The bound is
+      ticks(P,ops) <=27*P*ops.length, P>0.
+   The empty word is included. Public choices and masks are arbitrary;
+   there is no uniform-generator assumption and no intermediate external
+   output used as storage. transform_congr is whole-bank congruence.
+5. MixedBinaryWordMotion selects the already proved exact path for each
+   operation and instantiates the shared delayed-path composition theorem.
+   Every microscopic time through the word is covered, from arbitrary
+   initial configurations, with zero displacement initially and after
+   the internal word horizon. This is actual scheduled motion, not an
+   unproved assertion that mathematical transformations have nice paths.
+6. MaskedStrideWord and the word portion of MaskedStrideWordMotion now
+   call the shared machinery. All previously named theorem statements and
+   sharper bounds remain, including transform_congr_upto and11P per stage.
+   Their existing raw native compiler, resources, whole-run native paths
+   and shifted-stage estimates rebuild successfully. The old mathematical
+   transforms retain the same ordered left-fold semantics and schedules
+   retain the same paid append order. Only these two baseline mathematical
+   modules are refactored; the primitive stage proofs are unchanged.
+
+Five new modules,52 audited named declarations including definitions and
+interfaces, not52 research discoveries. Two existing mathematical modules
+refactored. This establishes the internal mixed-word executor and paths;
+the mixed raw-input/output native wrapper and asymptotic exclusion are
+still required, along with the other exact source206 palettes.
+
+DRIFT / REUSE
+Current R1885 receipt hashes were checked; previous goal turn was PROGRESS.
+Searched/inspected List.rel_foldl, List.forall₂_same, foldl_hom/foldlRecOn,
+and List.sum_le_sum. The shared semantics uses rel_foldl directly, and
+cost uses sum_le_sum. An initial test showed the old custom recursive
+functions were not definitionally equal to List.foldl without a bridge;
+rather than multiply bridge lemmas and duplicate induction, their public
+implementations were refactored to the shared fold. The old prefix-local
+property is rederived from the same fold theorem and remains available.
+Native schedule append, exact trajectory composition and additive head
+composition all reuse ScheduledNativeIO. The old forward list induction
+and word-motion proofs were replaced by calls to the shared results, so
+this is actual reuse across two concrete compilers, not an unused generic
+layer alongside cloned proofs. The binary operation cases use the existing
+forward/backward/reversal/rotation specifications in full.
+The shared bank interface is type-parametric for later arithmetic palettes;
+its concrete binary instance was fully discharged. No missing native/bit
+obligations are hidden in an assumed word correctness premise.
+DRIFT CHECK: the real remaining gap is now raw native wrapping plus the
+bounded-family affine assembly, not another operation or list invariant.
+Next generalize/reuse the existing raw forward wrapper and instantiate it
+for mixed words. Preserve the old exact native statements and11P bound.
+Do not call the mixed internal executor an impossibility theorem or a full
+source206 result. Row/integer/F3 palettes remain required after palette(c).
+
+
+BOUNDARY
+Arbitrary mixed binary words now have actual paid internal-bank semantics, cleanup, exact whole-word paths and cost<=27P*length for P>0. The common compiler and invariant are also used by the old forward words, retaining their stronger prefix property and11P cost. Mixed raw IO/native resource/frozen-path wrapping still needs to be generalized from the existing forward wrapper; then finite-family stride-ratio/cover assembly and high-entropy contradiction remain. Exact row/integer/F3 palettes(a,b) also remain. Source208/global exceptional-work210.5 and R1881 single-stride exclusion are complete. Five of six original families formalized; final referees after all six. Original directory unchanged; no commits/pushes. No unrestricted transpose result or novelty claim.
+
+NEXT
+R1886 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;
+sixth regular recursion206/208 best estimate80%, low confidence.
+
+NEXT: generalize/reuse the raw native bank-program wrapper, then instantiate
+it for the existing forward words AND the new MixedBinaryWord.
+Do not clone RawMaskedStrideWord and RawStrideWordMotion wholesale.
+Their raw load/rewind/emit, blank-init, native prefix/halt, resource count
+and frozen-tail proofs do not depend on which bank program they wrap.
+
+CONCRETE WRAPPER PLAN (not yet implemented)
+A small record of a binary bank program can hold transform, internal ticks,
+schedule and result. Its correctness is provided by actual activity,
+schedule_exact, BankWord.Represents and whole-bank Congruent proofs.
+The record itself must not count as the missing implementation: package
+forward and mixed words and discharge every field/premise with their
+existing theorems. Keep machine definitions independent of validity
+proofs where convenient; the proofs can be supplied to correctness lemmas.
+The generic raw wrapper costs7P+internal_ticks, has2 tapes/5 symbols and
+q+1=4*(T+1), and uses existing RawMaskedStride.prepared/initial and raw IO.
+Preserve all old forward theorem statements and the(7+11K)P bound.
+The mixed wrapper should obtain(7+27K)P for P>0,length<=K and arbitrary
+public masks/parameters. Reuse state_bits_of_linear_count for o(P) bits.
+
+Likewise factor the existing RawStrideWordMotion proof over a supplied
+proved internal head path and its freeze/after-zero interface. The raw
+path is the internal path delayed by4P plus the same three IO ramps.
+Reuse original stepN/run, blank_denote, native_prefix and workTraj_frozen.
+No new native/physical normalization chain is needed.
+
+R1886 REUSE MAP
+- ScheduledWord.transform/transform_rel: mathlib relational left fold.
+- ticks/ticks_le: mapped sum and mathlib sum_le_sum.
+- schedule/schedule_active/schedule_exact: generic actual paid append.
+- path/path_zero/path_after/path_frozen/schedule_position: delayed sum.
+- BankWord.Interface/input/Represents/Congruent; represents_self/step,
+  transform_congr/word_spec; binary interface (bank0,bit,blank tape1).
+- BinaryBankOperation.Operation/Valid/value/ticks/schedule/result;
+  value_congr/schedule_active/exact/ticks_le/result_spec. All four cases
+  are supplied by concrete already proved stages, not assumptions.
+- BinaryBankOperation.path/schedule_position/path_zero/after/frozen are
+  in MixedBinaryWordMotion, importing the existing individual paths.
+- MixedBinaryWord.Valid/transform/ticks/schedule/result;
+  transform_congr/schedule_active/exact/ticks_le/result_spec; all paths.
+  ticks_le needs0<P because reversal costs2 even at P=0.
+- MaskedStrideWord and its word-motion part are refactored specializations;
+  all old names and sharp bounds retained. Do not undo that reuse.
+
+AFTER RAW WRAPPING: FINITE-WORD AFFINE GEOMETRY
+The obstruction requires uniformly bounded covers plus vanishing error;
+no separate convergence theorem for the approximants is needed. Choose
+limits of finitely many normalized stride parameters (dummy values for
+non-stride slots), use zero/positive ratio regimes per slot, and combine
+existing shifted covers/errors. Primitive types and public masks may
+vary at every size; use their respective formulas and a common maximum
+cover bound. Rotation and reversal have uniform constant errors. Public
+start times need not converge. Bounded length can use identity padding
+or existing finite-list lemmas; search mathlib before adding machinery.
+Use existing cover add/sum/rescale and the R1881 native obstruction.
+
+Exact row/integer/F3 palettes(a,b) remain after palette(c). Do not count
+palette(c) alone as full source206/family6. Source208/global210.5 complete;
+do not reopen them to defer source206. No new subagents until all six;
+then authorized impartial referees/cleanup. Original paper read-only;
+no commits/pushes. Research236/full080 unchanged.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate80% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 now includes concrete arbitrary mixed binary internal words with semantics, time and exact paths, sharing proofs with forward words. Mixed raw native wrapping, finite-family affine exclusion and exact row/integer/F3 palettes remain; final independent referees pending.
+
+VERIFICATION
+Full lake build passed10256 jobs without warnings/errors; SupportAxioms audited5441 unique declarations using only propext,Classical.choice,Quot.sound. There are1075 local sources (1074 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and215 validation artifacts. Original117 files and directory inventory unchanged. MaskedStrideWord and MaskedStrideWordMotion refactored to shared proofs with old statements/bounds retained; other baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

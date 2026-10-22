@@ -1,0 +1,50 @@
+Historical preparation review; the proposed split was subsequently applied and validated. See r1910-audit.txt and r1910-import-split.json.
+
+R1910 import coupling diagnostic — 21 October 2026
+Read-only review; no Lean/Lake execution or repository changes by reviewer.
+
+Cause
+ClosedRationalExpansion imports ContinuousNativePadding solely to support
+three adapter declarations. Analytic definitions in the same module cause
+ConditionalSpectralExpansion and then RationalMobiusAction/RealMobiusAverage
+and the large SL2 analysis chain to import the entire native compiler.
+Consequently compiler proof edits invalidate analysis that never uses it.
+
+Smallest complete boundary split
+Move these declarations unchanged to a new ClosedNativePadding module:
+- RationalUnitMobius.restricted_vertex_expansion
+- PaidPadding.restricted_uniform_computation_with_cut
+- PaidPadding.restricted_uniform_linear_tasks_macrostar
+
+The new bridge imports ClosedRationalExpansion and ContinuousNativePadding.
+ClosedRationalExpansion retains only RationalUnitRestriction as its import.
+That foundational closure already supplies OverlapExpansion.mapImageUnion,
+RationalFamilyGraph.rationalFamilyMaps, and the clipped/augmented rational API.
+Add an explicit ContinuousNativePadding import to UnconditionalPaidPadding,
+which actually uses native padding, and a ClosedNativePadding import to
+SupportAxioms, which preserves audit coverage of the moved adapters.
+
+Prepared guarded UNAPPLIED script:
+/private/tmp/apply_r1910_import_split.py
+Plan with complete before/after sources and hashes:
+/private/tmp/r1910-import-split-plan.json
+
+Static checks
+- Exactly three declarations moved byte-for-byte; names/statements/proofs intact.
+- No other mathematical module directly references those three names.
+- New local import graph is acyclic.
+- 232 existing modules cease depending on NativeMicrocodeRun.
+- UnconditionalPaidPadding retains its required native dependency explicitly.
+- Local import closures, including each root:
+    ConjugacyFiberCovering       582 -> 138
+    RationalMobiusAction         497 ->  53
+    RealMobiusAverage            498 ->  54
+    ConditionalSpectralExpansion 492 ->  48
+    RationalContinuousExpander   859 -> 415
+- Net +17 source lines for bridge headers/imports, no theorem-count change.
+
+This changes dependency organization, not mathematics. It reduces unnecessary
+rebuild scope and exposes analytic/native parallelism; it does not eliminate
+any theorem obligation or reduce the full padding endpoint's necessary proof
+closure. Graph checks cannot detect every implicit instance dependency;
+root's subsequent full build and axiom audit remain required.

@@ -1,0 +1,80 @@
+[
+  {
+    "label": "def:target",
+    "kind": "definition",
+    "module": "Transpose.Statement",
+    "declarations": [
+      "Transpose.LinearTimeTransposable"
+    ],
+    "hypotheses": [
+      "Uniform deterministic finite multitape machine; d>=1; b=entryBits(d); raw row-major input and output."
+    ],
+    "prose_scope": "Exactly the original existential machine and natural constant c(P+1) target, unchanged.",
+    "proof_sources": [
+      "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Statement.lean"
+    ],
+    "review_notes": [
+      "Imported definition, not a new theorem."
+    ],
+    "program_relevance": {
+      "construction": "Defines the fixed uniform native transposition target that any positive construction must meet.",
+      "impossibility": "Defines the unchanged statement whose negation would settle the impossibility program; the multiplication implication is cited background."
+    },
+    "final_editorial_scope": "English statement checked against actual Lean declaration and defining interfaces; no strengthening beyond those interfaces."
+  },
+  {
+    "label": "thm:padding",
+    "kind": "theorem",
+    "module": "UnconditionalPaidPadding",
+    "declarations": [
+      "TransposeFollowup.PaidPadding.exists_uniform_paid_padding"
+    ],
+    "hypotheses": [
+      "Absolute A,H,K0,E precede every native M; same Mprime for all dimensions and computations.",
+      "d>=1, len(w)=inputLength(d), actual ComputesWithin payload premise; arbitrary output and time bound.",
+      "Sequence part: d_i→∞, each positive, canonical input length, fixed natural a, every payload computation within aP_i."
+    ],
+    "prose_scope": "Exact universal state/tape equalities, cellBits=3, same output at actual T<=AP+t, literal zero-slack CutIneq for whole run; for linear payloads original NativeRunLimits.Conclusion for same wrapper.",
+    "proof_sources": [
+      "UnconditionalPaidPadding.lean:465",
+      "ContinuousNativePadding.lean:29",
+      "PaidPaddingLimits.lean:1930",
+      "PaidPaddingLimits.lean:2035",
+      "NativeRunLimits.lean:12",
+      "BitPlaneRun.lean:9"
+    ],
+    "review_notes": [
+      "Five-symbol implementation is described as a construction property, not added to the headline existential type.",
+      "Proved O(P) generation; no claimed sublinear generator or nonhyperfinite return-relation endpoint."
+    ],
+    "program_relevance": {
+      "construction": "Supplies a single native wrapper with all schedule generation, execution, cleanup and handoff charged, satisfying the original cut and limit conditions for every canonical input. It supplies motion, not a transpose code.",
+      "impossibility": "Shows that the cut inequality and its full limiting consequences can be attached at additive linear cost to any prospective linear transposer, so an exclusion needs further information about the transpose computation."
+    },
+    "final_editorial_scope": "English statement checked against actual Lean declaration and defining interfaces; no strengthening beyond those interfaces."
+  },
+  {
+    "label": "lem:rational-expander",
+    "kind": "lemma",
+    "module": "UnconditionalPaidPadding",
+    "declarations": [
+      "TransposeFollowup.exists_rational_continuous_expander"
+    ],
+    "hypotheses": [],
+    "prose_scope": "Finite nonempty rational strictly increasing partial Mobius family; each domain is a nonempty open interval with rational endpoints mapping into [0,1]; uniform positive Lebesgue expansion for every measurable S subset [0,1] of measure at most 1/2. Rational coefficients, positive determinant and endpoint denominators are structure fields.",
+    "proof_sources": [
+      "UnconditionalPaidPadding.lean:411",
+      "RationalMobius.lean",
+      "RationalMobiusBounds.lean",
+      "RationalFamilyGraph.lean"
+    ],
+    "review_notes": [
+      "Attributed formalized analytic dependency, not a novelty claim for monotone-expander existence."
+    ],
+    "program_relevance": {
+      "construction": "Discharges the analytic expansion premise needed by continuous_uniform_computation_with_cut, leaving exists_uniform_paid_padding unconditional.",
+      "impossibility": "Supports the wrapper demonstrating the scope limit of the original geometric conditions. Continuous-expander existence is attributed to Bourgain–Yehudayoff, not claimed as novel."
+    },
+    "final_editorial_scope": "English statement checked against actual Lean declaration and defining interfaces; no strengthening beyond those interfaces."
+  }
+]

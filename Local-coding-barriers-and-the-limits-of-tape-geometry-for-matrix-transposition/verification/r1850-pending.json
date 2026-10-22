@@ -1,0 +1,43 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1849",
+  "target": "Actual two-stage trace-square source sampler, preserving original source indices and keeping final coarsening out of the fine trimming budget.",
+  "new_modules": [
+    "SourceResampling",
+    "TraceSquareTwoStageSample"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.exists_coarse_source_subsample",
+    "TransposeFollowup.SL2Projection.exists_scalar_source_subsample",
+    "TransposeFollowup.SL2Projection.exists_actual_trace_square_two_stage_sample"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9648,
+      "log": "/private/tmp/r1850-dev2.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10127,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4674,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 64322 exit0/9568; dev2 53824 exit0/9648; full15076 exit0/10127; audit72087 exit0/4674. All builds and audit without warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T18:26:26.915518+00:00",
+  "formal_checkpoint": "R1850 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:946 local sources,204 external sources,4674 declarations,8 configurations,143 artifacts",
+  "proof_scope": "In progress. R1850 proves source-preserving coarse resampling and assembles the actual trace-square two-stage sample: first trim at a fine matrix scale, then impose the final scalar spacing. The final-scale loss is absent from the trimming budget. Two modules add three audited declarations, reusing existing coarse sampling, packing and the R1848 branch sampler. Simultaneous parameter closure and the final scalar-growth application remain open.",
+  "next": "R1850 recorded; never replay its checkpoint script. Full10127-job build\nand4674-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: audit the simultaneous exponent/scale budgets for the actual\nTWO-STAGE trace-square sample before adding another large conditional\nwrapper. The sampler is now proved; do not reimplement it or the shared\nsource concentration proof. Do not return to the incompatible R1849\nsingle-pass trimming ratio.\n\nVerified pieces to reuse:\n - exists_actual_trace_square_two_stage_sample (R1850), with fine sigma0,\n   final sigma1, original source witnesses and both matrix separations;\n - coefficient_cube_normalization (R1849): R1845 global cube and mixed\n   profile bound imply N<=W0 V^3;\n - trim_budget_of_global_normalization (R1849): discharge fine trimming\n   using 32L^3 C0^3 W0(Anear+1/N0)<=1, where U<=Anear*N;\n - source_scalar_sample_concentration (R1849), with arbitrary scalar map,\n   interval inverse Kinv and N<=W*n^3;\n - existing ScalarDyadicBudgets and nilpotent arithmetic where applicable.\n\nMake one explicit loss ledger, with distinct names for the frame/gap\nscale, far cutoff s, fine matrix spacing sigma0, final matrix spacing\nsigma1, final scalar cover radius delta, retained scalar spacing delta_s,\nand source error epsilon. Keep every fixed constant before choosing\nscales. In particular, if delta_s must pay for the smaller readout\ncoefficient, do not identify it silently with delta.\n\nFor the R1850 sample, Kinv=3072/(Lgap*s), retained-cover factor4C0C1.\nThe shared concentration kernel will have\n W=W0*(4C0C1)^3,\n Dloc=40(2R)^11*(Kinv+2),\n Q=4L^3(E Gprofile Dloc^kappa+2^kappa),\n and QW<=Cscalar^3.\nApply it only at radii>=max(eta,epsilon). Pairwise inverse gives scalar\ninterval diameter by the real triangle inequality. Image-card equality\nsupplies injectivity on the actual index subtype. The fine separation\nreturned by R1850 still pays cubic packing after final coarsening.\nThis application is straightforward but not yet separately assembled;\nfirst establish plausible strict exponent margins for ALL downstream\nbudgets. Do not mistake a true conditional theorem for parameter closure.\n\nRemaining downstream costs to include in that ledger:\n - R1846 gives both normalized coefficients abs>=3rho/256; their sum3/2\n   permits the abs>=3/4 coefficient on the enlarged factor. The other\n   coefficient costs separation in the retained base scalar cells;\n - product/quotient enlargement Y=F union FF union FF^-1 remains in[1,2]\n   by R1848. Preserve actual A^4 sources and pay approximation errors;\n - R1847 mixed-source far bound has inverse-linear separation and\n   error512R^7 epsilon. Base length2, enlarged length4, g length204\n   imply word length420, with either orientation permitted;\n - extend the old n<=283 second-extraction wrapper using the existing\n   fixed-power coefficient h^(8802n+4427), not a new argument;\n - R1845's universal initial n0+3 power is separate, not bounded by420;\n - retain original profile/frame, strict flattening and analytic/machine\n   dependencies. Full paid padding is still open.\n\nLatest user instruction: keep checking mathlib/OAI/local reusable chains,\nand give best NUMERICAL progress estimates for the current ORIGINAL\nfamily, not each small lemma. Current estimate remains about60%, LOW\nCONFIDENCE; three of six families formalized, referees pending.\nOriginal paper read-only. No commits/pushes/subagents at this stage.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SourceResampling.lean": "01e6aa4cee65ba0621a9a945396c03aa0d709b59ca832a49f4b439057ae1afd7",
+    "lean/TransposeFollowup/TraceSquareTwoStageSample.lean": "efe8e995d9f876e2a0131377a39c1b7123d232743dc0683c00c7a0aa995c1fcc"
+  }
+}

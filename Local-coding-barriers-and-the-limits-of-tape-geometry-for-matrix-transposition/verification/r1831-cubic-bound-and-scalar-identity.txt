@@ -1,0 +1,67 @@
+R1831 — WHOLE-FAMILY CUBIC BOUND AND SAME-SET SCALAR IDENTITY
+
+In progress. R1831 completes the cubic upper bound for the whole possibly infinite commuting family, composing source-preserving sampling, localization, integer rounding, actual A^142 transfer and the existing arbitrary-power envelope. The small-cardinality case is retained. It also verifies the inverse-final-factor identity: the trace expression is a scaled X+lambda_g X for the same squared-coordinate set X, with an explicit nilpotent specialization. Three modules add6 theorems. Nonconcentrated coefficient selection, conversion of scalar amplification to matrix growth and the fourth original theorem family remain incomplete.
+
+EXACT STATEMENTS
+1. WHOLE COMMUTING-FAMILY CUBIC UPPER BOUND.
+Let V=range(f) be the exact commuting approximants associated with the shared source words base^-1 X_i, with base,X_i in A. The index type may be infinite. Retain the actual-frame and chart hypotheses of R1830: A symmetric, I in A, A inside a sufficiently small identity ball; p,q,pq in A^34 with a positive spanning determinant; the SAME near-identity generator z bounded away from I; every f_i scalar-affine in z; entries bounded by B; chart radius r, localization radius delta and frame bound d meeting the explicit inequalities in commuting_family_cubic_bound. Let epsilon bound dist(f_i,base^-1 X_i), and R>=max(B,4^68).
+Assume V is nonempty, eta,sigma>0 and
+  10BM*(384M^4/d)*eta <= 2sigma.
+Define
+  C=6561(4sigma/eta+1)^4,
+  L=binCount(B,delta)^4,
+  E=[4*(20(2R)^10 epsilon+2R eta)/eta+1]^4.
+Then N_eta(V) and N_eta(A^142) are finite and
+  N_eta(V)^3 <= 4(CL)^3 * (E*N_eta(A^142)+1).
+There is no remaining finite-cardinality or separated-input assumption: the finite source sample is constructed inside the proof. The integer choice m=|F|/L is made using natural-number division. When m=0 the bound follows from nonnegativity; the additive1 retains this branch. Mathlib add_pow_le gives (m+1)^3<=4(m^3+1), so no separate rounding/power chain is proved.
+
+2. ACTUAL A^142 ENVELOPE.
+For A=U^2 intersect the identity ball of radius alpha, assume U is symmetric, its entries are bounded by Q>=1, and a finite Y subset U^2 satisfies U^2 subset Y*U. The existing arbitrary-power theorem at n=141 gives
+  N_eta(A^142) <= P*N_eta(A),
+  P=(8(2Q)^567+1)^4 * |Y|^283 * (33^4 Q^8/alpha^4).
+The new composition theorem substitutes this into any proved cubic bound K*(E*N_eta(A^142)+1), yielding K*(E*P*N_eta(A)+1), and proves finiteness of N_eta(A). It is applied at the actual word length; the shorter37-factor specialization is not used. Combined with1, K=4(CL)^3. No sharp polynomial simplification of P is needed for this step.
+
+3. EXACT INVERSE-FINAL-FACTOR IDENTITY.
+Let b be a real trace-free two-by-two matrix and u=sI+t b, v=pI+q b, g be determinant-one matrices. Define
+  D_g=det(bg-gb).
+Then, with all products taken in SL2(R),
+  tr(v u^-1 g v u g^-1)=2+(D_g-4det(b))*q^2-D_g*t^2.
+This is verified by a general polynomial identity that retains determinant factors before specializing to SL2. It uses neither diagonalization nor a nonzero discriminant hypothesis.
+If D_g!=0, the same identity reads
+  tr(v u^-1 g v u g^-1)=2-D_g*(t^2+lambda_g*q^2),
+  lambda_g=4det(b)/D_g-1.
+Thus if X is the set of squared scalar coordinates of a common centralizer family, varying u,v over that same family gives an exact affine image of X+lambda_g X. This removes the moving-base-set issue in the earlier Y_g+D_g X formula. It does NOT establish that enough distinct/nonconcentrated lambda_g are realized by actual bounded words.
+
+4. NILPOTENT SPECIALIZATION.
+When trace(b)=det(b)=0, the identity becomes
+  tr(v u^-1 g v u g^-1)=2+D_g*(q^2-t^2).
+For D_g!=0 the normalized coefficient lambda_g is identically-1. Therefore this particular coefficient family cannot supply nonconcentrated scalar projections in the nilpotent case. This is an obstruction to this mechanism, not an impossibility theorem for multiplication, transposition or group growth. Near-nilpotent b may also cause a quantitatively narrow coefficient family and requires an explicit budget or separate branch.
+
+The current new formal statements are commuting_family_cubic_bound, commuting_cubic_bound_with_envelope, scalarAffine_inverse_final_identity, sl2_inverse_final_scalar_identity, sl2_inverse_final_scaled_projection and sl2_inverse_final_nilpotent_identity.
+
+DRIFT CHECK.
+The full cubic size composition is now closed, including coarsening, localization, the normalization-center error, actual word length142, the corresponding product envelope and integer rounding. The result is still compatible with the earlier cube-root extraction lower bound. Paying these costs alone does not create a positive scale-exponent gain.
+The inverse-final identity addresses a specific mismatch with the imported projection theorem: both summands now come from the SAME scalar set X. Two substantial bridges remain: actual bounded words must yield a coefficient family satisfying the projection theorem's nonconcentration hypotheses (including nilpotent/near-nilpotent handling), and scalar growth must be converted into a useful matrix-covering gain. A trace upper bound relative to N_eta(A) is not automatically a small upper bound relative to |X|. Concentration of A is not automatically concentration of the extracted X. Do not describe the identity as having solved either bridge.
+
+BOUNDARY
+R1831 completes the whole-family cubic upper bound and the actual-power envelope composition. The exact inverse-final scalar identity and nilpotent specialization are verified. Its charged transfer from exact centralizer matrices to approximate actual words, quantitative coefficient variation/nonconcentration, scalar-set regularization/small doubling, and conversion of a scalar gain back into matrix growth remain. The nilpotent coefficient family collapses to-1 and cannot be treated as nonconcentrated by assumption. Full fixed-family budget composition, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain. Supporting adaptations carry no novelty claim.
+
+NEXT
+The preceding goal turn is PROGRESS. R1831 is recorded; never replay its checkpoint. Read verification/r1831-cubic-bound-and-scalar-identity.txt and verification/library-reuse-audit-r1831.json. Full10083-job build and4534-declaration audit passed; standard axioms only; no live Lake handle.
+
+THE CUBIC SIZE CHAIN IS CLOSED: commuting_family_cubic_bound constructs the finite source sample, selects the integer retained size, includes its small-cardinality branch and bounds the entire V. commuting_cubic_bound_with_envelope substitutes the ACTUAL142-factor envelope. Do not rebuild this chain or optimize its fixed constants as a substitute for amplification.
+
+NEXT SUBSTANTIVE TARGET: make the verified same-set scalar projection identity useful, with a drift gate before a long support chain.
+For trace-free b and D_g=det(bg-gb),
+  tr(v u^-1 g v u g^-1)=2-D_g*(t^2+(4det(b)/D_g-1)*q^2)
+when D_g!=0. This is now a verified theorem, not a conjectured identity. It removes the varying base set Y_g. Reuse sl2_inverse_final_scaled_projection and the existing finite-product/trace-cover machinery for a charged actual-word realization. If u',v' in A^m and g in A^n, the word still has length4m+2n; the last g^-1 has the same bounded entries as g. Avoid copying an entire old error/cover chain.
+
+Before claiming amplification, resolve BOTH missing bridges:
+- Coefficients: lambda_g=4det(b)/D_g-1. For nonzero D1,D2, the elementary difference formula is |lambda(D1)-lambda(D2)|=4|det(b)|*|D1-D2|/(|D1||D2|). Check/use mathlib division identities rather than re-proving generic reciprocal calculus. This makes the necessary lower bound on |det(b)| explicit. Determine whether actual extraction can supply a sufficiently nonconcentrated D_g family with a controlled discriminant, or whether a separate nilpotent/near-nilpotent mechanism is required. The verified nilpotent specialization gives lambda=-1, so it cannot be silently included in a nonconcentration assertion.
+- Gain: the scalar projection theorem gives growth relative to the extracted X. The available trace upper bound is relative to ambient A. Prove how that scalar gain produces a matrix growth contradiction; an unconnected large X+lambda X is insufficient.
+Check the source product-growth argument against this split before committing to another long formal chain. Keep hypotheses concrete and track what has actually changed. The next proof should discharge one of these substantive bridges, not merely restate them as additional assumptions.
+
+All six original families remain required. Reuse the pinned204-source scalar projection theorem and read-only original adapter. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current whole-family cubic budget/envelope composition and inverse-final scalar identity are100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.

@@ -1,0 +1,103 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "InitialWalkScales",
+    "SmoothedDensityPropagation",
+    "InitialWalkRadiusGain",
+    "InitialWalkNormalization",
+    "InitialWalkFamily"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RationalFreePair.initialWalkLength",
+    "TransposeFollowup.RationalFreePair.initialWalkLength_pos",
+    "TransposeFollowup.RationalFreePair.initialWalkLength_upper",
+    "TransposeFollowup.RationalFreePair.initialWalkLength_lower",
+    "TransposeFollowup.RationalFreePair.initialWalkLength_decay_exponent",
+    "TransposeFollowup.RationalFreePair.quarter_pow_eq_inverse_square",
+    "TransposeFollowup.RationalFreePair.initial_smoothing_radius_le_half",
+    "TransposeFollowup.RationalFreePair.initial_denominator_power_le",
+    "TransposeFollowup.RationalFreePair.initial_walk_separation_scale",
+    "TransposeFollowup.RationalFreePair.twice_dyadicRadius",
+    "TransposeFollowup.RationalFreePair.initial_walk_factor_power_le",
+    "TransposeFollowup.leftConvolutionDensity_mconv",
+    "TransposeFollowup.leftConvolutionDensity_mconv_le",
+    "TransposeFollowup.RealMobius.mobiusSmoothedDensity_mconv_le",
+    "TransposeFollowup.RealMobius.generatorWalk_smoothedDensity_le_of_le",
+    "TransposeFollowup.RationalFreePair.initial_walk_factor_radius_le",
+    "TransposeFollowup.RationalFreePair.initial_walk_cubic_to_radius",
+    "TransposeFollowup.RationalFreePair.dyadicFamily_mass",
+    "TransposeFollowup.RationalFreePair.initial_walk_density_radius_gain",
+    "TransposeFollowup.exists_initial_radius_prefactor_threshold",
+    "TransposeFollowup.RationalFreePair.later_walk_density_radius_gain",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_family"
+  ],
+  "declaration_counts": {
+    "def": 1,
+    "theorem": 21
+  },
+  "checks": {
+    "scales": {
+      "session_id": 3124,
+      "exit_code": 0,
+      "jobs": 9546,
+      "warnings": false
+    },
+    "propagation": {
+      "session_id": 28083,
+      "module_built": true,
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 69884
+    },
+    "radius_gain": {
+      "session_id": 43483,
+      "exit_code": 0,
+      "jobs": 9565,
+      "warnings": false
+    },
+    "normalization": {
+      "session_id": 14499,
+      "exit_code": 0,
+      "jobs": 3092,
+      "warnings": false
+    },
+    "family": {
+      "session_id": 69884,
+      "exit_code": 0,
+      "jobs": 9568,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 16385,
+      "exit_code": 0,
+      "jobs": 9689,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 47392,
+      "exit_code": 0,
+      "declarations": 3971,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Proposition4.2 and Sections4.1\u20134.2 inspected in R1789. Our elementary free-walk atom bound supplies an explicit dyadic version of the initial radius gain. No novelty is claimed. The source iterative flattening argument still requires metric BSG, SL2 product growth and a comparison of interleaved smoothing with the actual once-smoothed walk. Its asserted inversion-symmetric level sets cannot be imported for our one-sided smoothed density without proof; that symmetry does not follow merely from symmetry of the walk and the kernel. No source flattening theorem is assumed as an axiom.",
+  "development_checks": "Scales7849 had unused hypotheses and an opaque-denominator positivity gap; removed the unused assumptions and supplied positivity, then3124 passed. Propagation8156 retained a redundant walk-length inequality in the induction hypothesis; cleared it, and28083 built the module warning-free but its combined command failed in then-unrepaired RadiusGain. Final family69884 includes the repaired chain. RadiusGain11645 needed targeted reverse pow_mul rewriting and an explicitly typed root identity;28083 then failed only on a redundant closing tactic;43483 passed after removing it. Normalization14499 and family69884 passed first builds. No old mathematical-source edits, placeholders, raised proof limits, disabled linters or new axioms. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T19:05:48.571452+00:00",
+  "formal_checkpoint": "R1789 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1789, 712 sources, 3971 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1789 proves an explicit initial density and squared-L2 radius gain. There is a threshold J0 such that, for every r>=5, one fixed rational free family of exactly 2^(3r) generators in the Frobenius ball of radius2^(-r), with inverses in the same ball and common denominator Q_r<=2^(1920r), works for all j>=max(J0,7680r) and all walk lengths ell>=floor(j/(3840r)). At smoothing radius eta=4^(-j), the actual one-sided Haar-smoothed density is everywhere at most eta^(-3+1/61440); its real square is integrable and has integral at most that same bound. J0 is independent of r. This is the initialization for flattening, not the final flatness bound.",
+  "next": "The quantitative initialization is now proved; do not rederive it. Use InitialWalkFamily.exists_initial_walk_family and SmoothedDensityPropagation.generatorWalk_smoothedDensity_le_of_le. The same family works at all sufficiently fine dyadic radii and all later walk lengths, with pointwise density and squared-L2 bound eta^(-3+1/61440). This is an initial gain only. The RestrictedGapFromFlatness target still requires a pointwise density bound D with D^2<=2^j at eta=4^(-j), with its exact dyadic walk-length and logarithmic-threshold quantifiers.\n\nNext concrete target: establish the analytic bridge needed to apply iterative flattening to the actual walk without a false symmetry assumption. Inspect the existing Haar inversion/right-invariance interfaces, then choose and prove a precise symmetrization or nonsymmetric convolution-energy formulation. Source Section4.2 asserts inversion-symmetric level sets, but our density is the one-sided convolution nu^ell*P_eta and is not automatically inversion-symmetric. Source Section4.1 also compares repeated interleaved smoothing with a single final smoothing; this comparison needs explicit constants, orientation and support distortion in our model. Neither issue may be hidden in a definition or a new axiom. Avoid a scalar iteration theorem that merely assumes the unproved main flattening step.\n\nPrimary source: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555. Proposition4.2 is the initial estimate; Lemma4.1 is the unproved flattening step; Theorem4.4 is the unproved SL2 product-growth input. The PDF was accessible and inspected in R1789, so no source-access blocker is present. Metric BSG and product growth remain major tasks after the analytic bridge. Maintain T_g=W_(g^-1), actual measures, the same Haar normalization and the distinction between L2 norm and its square. Preserve all six original targets; no final referee subagents before all formalization; no original-directory edits or commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1789 finishes the initial radius gain for the actual smoothed walk, uniformly for every later walk length. Iterative flattening is still substantial and this is not a fourth completed family. Motion 200/210 and recursion 206/208 remain unstarted. This estimate concerns formalization scope, not remaining time, success probability or proximity to deciding transposition or multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/InitialWalkScales.lean": "61296d56df9a92f08488d825bb96ff505f221189bb89fdb418ad71b87ceb22a3",
+    "lean/TransposeFollowup/SmoothedDensityPropagation.lean": "ac8fb3569ce26bcaf7c940e08ba0ea53593248d10c17cd052ebce1d0089962ca",
+    "lean/TransposeFollowup/InitialWalkRadiusGain.lean": "882cd722254f455ad683b81444b4df7d0eb0db1033a646589c4f8b0c4a1914c6",
+    "lean/TransposeFollowup/InitialWalkNormalization.lean": "ce5829c2e277b319a5333b95dd22c033d9297d4e2cb43135954266546cbdfc33",
+    "lean/TransposeFollowup/InitialWalkFamily.lean": "9a656cd0e573212b91d5346273e50d5c476e28c2e6174f248b2fc7c98dd84689"
+  }
+}

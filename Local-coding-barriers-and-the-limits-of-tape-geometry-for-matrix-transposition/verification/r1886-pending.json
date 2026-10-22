@@ -1,0 +1,103 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1885",
+  "target": "Regular recursion206/208: shared word compiler and concrete mixed bank words.",
+  "new_modules": [
+    "ScheduledWord",
+    "BankWordInvariant",
+    "BinaryBankOperation",
+    "MixedBinaryWord",
+    "MixedBinaryWordMotion"
+  ],
+  "modified_modules": [
+    "MaskedStrideWord",
+    "MaskedStrideWordMotion"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledWord.transform",
+    "TransposeFollowup.ScheduledWord.transform_rel",
+    "TransposeFollowup.ScheduledWord.ticks",
+    "TransposeFollowup.ScheduledWord.schedule",
+    "TransposeFollowup.ScheduledWord.schedule_active",
+    "TransposeFollowup.ScheduledWord.schedule_exact",
+    "TransposeFollowup.ScheduledWord.ticks_le",
+    "TransposeFollowup.ScheduledWord.path",
+    "TransposeFollowup.ScheduledWord.path_zero",
+    "TransposeFollowup.ScheduledWord.path_after",
+    "TransposeFollowup.ScheduledWord.path_frozen",
+    "TransposeFollowup.ScheduledWord.schedule_position",
+    "TransposeFollowup.BankWord.Interface",
+    "TransposeFollowup.BankWord.input",
+    "TransposeFollowup.BankWord.Represents",
+    "TransposeFollowup.BankWord.Congruent",
+    "TransposeFollowup.BankWord.represents_self",
+    "TransposeFollowup.BankWord.represents_step",
+    "TransposeFollowup.BankWord.transform_congr",
+    "TransposeFollowup.BankWord.word_spec",
+    "TransposeFollowup.BankWord.binary",
+    "TransposeFollowup.BinaryBankOperation.Operation",
+    "TransposeFollowup.BinaryBankOperation.Valid",
+    "TransposeFollowup.BinaryBankOperation.value",
+    "TransposeFollowup.BinaryBankOperation.ticks",
+    "TransposeFollowup.BinaryBankOperation.schedule",
+    "TransposeFollowup.BinaryBankOperation.result",
+    "TransposeFollowup.BinaryBankOperation.value_congr",
+    "TransposeFollowup.BinaryBankOperation.schedule_active",
+    "TransposeFollowup.BinaryBankOperation.schedule_exact",
+    "TransposeFollowup.BinaryBankOperation.ticks_le",
+    "TransposeFollowup.BinaryBankOperation.result_spec",
+    "TransposeFollowup.MixedBinaryWord.Valid",
+    "TransposeFollowup.MixedBinaryWord.transform",
+    "TransposeFollowup.MixedBinaryWord.ticks",
+    "TransposeFollowup.MixedBinaryWord.schedule",
+    "TransposeFollowup.MixedBinaryWord.result",
+    "TransposeFollowup.MixedBinaryWord.transform_congr",
+    "TransposeFollowup.MixedBinaryWord.schedule_active",
+    "TransposeFollowup.MixedBinaryWord.schedule_exact",
+    "TransposeFollowup.MixedBinaryWord.ticks_le",
+    "TransposeFollowup.MixedBinaryWord.result_spec",
+    "TransposeFollowup.BinaryBankOperation.path",
+    "TransposeFollowup.BinaryBankOperation.schedule_position",
+    "TransposeFollowup.BinaryBankOperation.path_zero",
+    "TransposeFollowup.BinaryBankOperation.path_after",
+    "TransposeFollowup.BinaryBankOperation.path_frozen",
+    "TransposeFollowup.MixedBinaryWord.path",
+    "TransposeFollowup.MixedBinaryWord.path_zero",
+    "TransposeFollowup.MixedBinaryWord.path_after",
+    "TransposeFollowup.MixedBinaryWord.path_frozen",
+    "TransposeFollowup.MixedBinaryWord.schedule_position"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8984,
+      "log": "/private/tmp/r1886-dev5.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10256,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5441,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "All R1886 execution handles terminal.\nprobe1 50290 exit1 (old custom recursion was not definitionally equal to foldl; informed refactor, no failed proof retained).\ndev1 40817 exit0 (8954 jobs); dev2 59090 exit1 (BankWordInvariant clean; value lambda syntax corrected); dev3 8192 exit0 (8976 jobs); dev4 43529 exit0 (9057 jobs, old forward native/resource/path dependents clean); dev5 4286 exit0 (8984 jobs, mixed-word motion clean).\nFull build 97152 exit0 (10256 jobs). Axiom audit 89880 exit0 (5441 unique declarations).",
+  "formal_checkpoint": "R1886 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1075 local sources,204 external sources,5441 declarations,8 configurations,215 artifacts",
+  "proof_scope": "PROGRESS at R1886: arbitrary finite mixed words of forward/backward masked scans, reversal and rotation now have a proved actual shared-bank schedule, exact composed bank semantics, reusable blank scratch, restored heads, preserved IO, cost<=27P*length for P>0, and complete microscopic head paths. The schedule/fold/bank-invariant proofs are shared with the old forward compiler, which is refactored without weakening its prefix-dependence theorem or11P bound; existing raw forward native/resource/path theorems still build. Five of six original families formalized; regular recursion206/208 best estimate80% complete (low confidence). Mixed raw IO/native wrapper, bounded-word affine assembly/exclusion and exact row/integer/F3 palettes remain.",
+  "next": "R1886 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate80%, low confidence.\n\nNEXT: generalize/reuse the raw native bank-program wrapper, then instantiate\nit for the existing forward words AND the new MixedBinaryWord.\nDo not clone RawMaskedStrideWord and RawStrideWordMotion wholesale.\nTheir raw load/rewind/emit, blank-init, native prefix/halt, resource count\nand frozen-tail proofs do not depend on which bank program they wrap.\n\nCONCRETE WRAPPER PLAN (not yet implemented)\nA small record of a binary bank program can hold transform, internal ticks,\nschedule and result. Its correctness is provided by actual activity,\nschedule_exact, BankWord.Represents and whole-bank Congruent proofs.\nThe record itself must not count as the missing implementation: package\nforward and mixed words and discharge every field/premise with their\nexisting theorems. Keep machine definitions independent of validity\nproofs where convenient; the proofs can be supplied to correctness lemmas.\nThe generic raw wrapper costs7P+internal_ticks, has2 tapes/5 symbols and\nq+1=4*(T+1), and uses existing RawMaskedStride.prepared/initial and raw IO.\nPreserve all old forward theorem statements and the(7+11K)P bound.\nThe mixed wrapper should obtain(7+27K)P for P>0,length<=K and arbitrary\npublic masks/parameters. Reuse state_bits_of_linear_count for o(P) bits.\n\nLikewise factor the existing RawStrideWordMotion proof over a supplied\nproved internal head path and its freeze/after-zero interface. The raw\npath is the internal path delayed by4P plus the same three IO ramps.\nReuse original stepN/run, blank_denote, native_prefix and workTraj_frozen.\nNo new native/physical normalization chain is needed.\n\nR1886 REUSE MAP\n- ScheduledWord.transform/transform_rel: mathlib relational left fold.\n- ticks/ticks_le: mapped sum and mathlib sum_le_sum.\n- schedule/schedule_active/schedule_exact: generic actual paid append.\n- path/path_zero/path_after/path_frozen/schedule_position: delayed sum.\n- BankWord.Interface/input/Represents/Congruent; represents_self/step,\n  transform_congr/word_spec; binary interface (bank0,bit,blank tape1).\n- BinaryBankOperation.Operation/Valid/value/ticks/schedule/result;\n  value_congr/schedule_active/exact/ticks_le/result_spec. All four cases\n  are supplied by concrete already proved stages, not assumptions.\n- BinaryBankOperation.path/schedule_position/path_zero/after/frozen are\n  in MixedBinaryWordMotion, importing the existing individual paths.\n- MixedBinaryWord.Valid/transform/ticks/schedule/result;\n  transform_congr/schedule_active/exact/ticks_le/result_spec; all paths.\n  ticks_le needs0<P because reversal costs2 even at P=0.\n- MaskedStrideWord and its word-motion part are refactored specializations;\n  all old names and sharp bounds retained. Do not undo that reuse.\n\nAFTER RAW WRAPPING: FINITE-WORD AFFINE GEOMETRY\nThe obstruction requires uniformly bounded covers plus vanishing error;\nno separate convergence theorem for the approximants is needed. Choose\nlimits of finitely many normalized stride parameters (dummy values for\nnon-stride slots), use zero/positive ratio regimes per slot, and combine\nexisting shifted covers/errors. Primitive types and public masks may\nvary at every size; use their respective formulas and a common maximum\ncover bound. Rotation and reversal have uniform constant errors. Public\nstart times need not converge. Bounded length can use identity padding\nor existing finite-list lemmas; search mathlib before adding machinery.\nUse existing cover add/sum/rescale and the R1881 native obstruction.\n\nExact row/integer/F3 palettes(a,b) remain after palette(c). Do not count\npalette(c) alone as full source206/family6. Source208/global210.5 complete;\ndo not reopen them to defer source206. No new subagents until all six;\nthen authorized impartial referees/cleanup. Original paper read-only;\nno commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate80% complete (low confidence), not helper completion. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Family6 now includes concrete arbitrary mixed binary internal words with semantics, time and exact paths, sharing proofs with forward words. Mixed raw native wrapping, finite-family affine exclusion and exact row/integer/F3 palettes remain; final independent referees pending.",
+  "updated_at": "2026-10-21T04:06:27.651723+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/ScheduledWord.lean": "959e46e22dace80033a2ea360a0a4f0e66bde273b8bb18304290acc271ebbb15",
+    "lean/TransposeFollowup/BankWordInvariant.lean": "1a0b9785e2e7d703be6c6eb818221edd12c2cb10e137346a0cdd6fc00c82e2a4",
+    "lean/TransposeFollowup/BinaryBankOperation.lean": "671bafa5e20f615e9b57a6640422454106dbfd84ae8753b8dbc07e68e220282d",
+    "lean/TransposeFollowup/MixedBinaryWord.lean": "9ae824dbf252675cf43e83dac74205f1a49c843633d28df523e88da1a182d4a1",
+    "lean/TransposeFollowup/MixedBinaryWordMotion.lean": "c77f4917513941ec22ba43c42cb4d2d854f4deef236cc670e3a2ee587f3e7047",
+    "lean/TransposeFollowup/MaskedStrideWord.lean": "c3475cbf0b071bd32b45e65a5409340150b9989bbe52cc27e34d37a800652352",
+    "lean/TransposeFollowup/MaskedStrideWordMotion.lean": "cf495a682b6722bfd5a158fd91cad23a713491f0c7f1954a1a9578298117f37a"
+  }
+}

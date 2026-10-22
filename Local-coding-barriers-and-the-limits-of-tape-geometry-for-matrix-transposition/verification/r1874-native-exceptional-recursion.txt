@@ -1,0 +1,156 @@
+
+R1874 — NATIVE GLOBAL EXCEPTIONAL-RECURSION THRESHOLD
+PROGRESS at R1874: the native exceptional-recursion theorem of source210 section35 is formalized. A global exceptional-tick budget eta*P+o(P), uniform over the correct input family, forces 1/(2G)<=k*eta and eta>=1/(2kG). Adaptive clocks/designations, high-entropy correct sets, nonuniform o(P) state bits, all physical heads, actual halting and a fixed-machine corollary are included. Running time is derived from actual clocks. Five of six original families formalized; regular recursion206/208 best estimate55% complete (low confidence). Exact206 palette compilation remains.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1874 RESULTS
+1. assemble_stage_local_affinity_ae strengthens the existing assembly lemma:
+   its open locally affine region equals the union of the stage intervals
+   almost everywhere. It no longer needs full-measure stage coverage.
+   Mathlib's ae_le_set and countable_iUnion prove this directly.
+   extend_affine_cover_by_constant_le strengthens the halting-tail lemma:
+   extending through a constant tail cannot increase omitted volume.
+   The old zero-omission theorems retain their exact statements and now
+   follow as short corollaries. No duplicate null-union proof remains.
+2. RegularFlaggedClockHead requires existing actual-occurrence regularity
+   only when the corresponding stage is designated regular. Bad durations
+   are replaced by zero ONLY in the regularity predicate; their full actual
+   tick costs remain in ContractingStageClock. A limiting regular stage is
+   eventually regular by the R1873 extraction. Replacing its early bad ends
+   by its starts permits direct reuse of the existing positive-stage theorem.
+3. flagged_clock_limit_locally_affine proves an open locally affine cover of
+   a physical head limit whose omitted real volume is <=eta. It imports the
+   actual exceptional coverage theorem, positive-occurrence profile theorem,
+   strengthened assembly and physical_limit_constant_after_halt. The full
+   frozen tail is included. Separate head covers suffice.
+4. native_flagged_limit_budget applies this to every actual physical work
+   head of a native limiting tuple and proves
+       1/(2G) <= k*eta.
+   G is the fixed number of bits per tape cell, k the fixed number of work
+   heads. The actual block-to-physical normalization is Q_t(G*s)/G.
+   Actual HaltsAt supplies the frozen raw heads. The already proved
+   AffineTimeRequired.physical_omission gives the lower bound; mathlib's
+   ENNReal.toReal_sum/toReal_mono transfer it to finite real volumes.
+   native_regular_limit_not_affine_required now specializes this theorem
+   to all regular flags and eta=eps=0, preserving its exact old statement.
+5. HasFlaggedRecursiveExecutions has a finite onset and quantifies over ALL
+   eligible size/input/halting-time sequences. It chooses actual clocks and
+   flags covering every physical head. The error sequence eps_i is fixed
+   before those quantifiers, so the global exceptional allowance
+       exceptionalTicks_i/P_i <= eta+eps_i, eps_i ->0,
+   is uniform over the correct input family. Clocks/flags may depend on the
+   actual sequence; the machine at each size is fixed before the inputs.
+6. native_fast_flagged_recursion_budget uses the original popular native
+   trace-class theorem via NativeAffineMotion. It proves representative
+   membership and actual halting, discards a finite prefix for positivity
+   and the execution onset, preserves every limit and the uniform error,
+   and obtains the product inequality from item4. Its hypotheses retain
+       n_i ->infinity, P_i=inputLength(n_i),
+       clog2(q_i+1)/P_i ->0,
+       2^P_i <= 2^m_i * |W_i| eventually, m_i/P_i ->0,
+   fixed k,G, raw encode/transpose correctness and eventual linear time.
+7. native_flagged_recursion_budget removes the assumed running-time bound.
+   Pointwise correct-set executions carry actual ContractingStageClock
+   witnesses; their budgets give T_i<=a*C*P_i/(1-rho). It proves BOTH
+       1/(2G) <= k*eta,       1/(2kG) <= eta.
+   Positivity of G is native; k>0 is derived from the product bound, not
+   added as a new assumption. The quantitative conclusion also rules out
+   globally sublinear exceptional work (eta=0).
+   uniform_flagged_recursion_budget is the fixed-machine specialization;
+   constant state bits divided by growing P tend to zero.
+8. HasRegularRecursiveExecutions.flagged embeds the original source208
+   predicate by setting all flags true and eta=eps=0. Both old native
+   source208 exclusion theorems now import the quantitative chain directly.
+   Their original statements are unchanged. Duplicate representative
+   extraction and running-time derivation were removed from the old proof.
+
+STRENGTH / SCOPE
+The global native theorem is source210 (210.5), not merely a conditional
+geometric assertion. All costs, raw correctness, high entropy and state-bit
+hypotheses are retained. As in the source208 formalization, fixed-count
+globally contiguous own stages suffice without whole-subtree contiguity.
+Per-head subsequence regularity suffices; no common finite affine partition
+across heads is required. This is an architecture exclusion, not a general
+lower bound for transposition or multiplication. No novelty claim.
+
+FILES
+Two new modules: ExceptionalRecursiveLimits, NativeExceptionalRecursion.
+Three existing mathematical modules strengthened/refactored:
+StageAffineAssembly, NativeRecursiveLimit, NativeRegularRecursion.
+Ten new audited declarations; all existing declarations are retained.
+
+DRIFT / REUSE
+This turn completes the concrete global exceptional-recursion target.
+The existing assembly and native results were generalized, with old results
+made corollaries; a parallel proof chain was not retained. The occurrence
+regularity, adaptive coverage extraction, physical limits, frozen halting,
+native popular-class and affine-time machinery are imported. Mathlib gives
+the measure/AE congruences, finite-sum real conversion and limit tools.
+No fresh compactness, entropy, native compiler or measure theory was built.
+The remaining scope is the exact206 palette theorem. Do not reopen the
+completed recursion/exceptional-work chain to postpone concrete executors.
+
+
+BOUNDARY
+Source208 and the global exceptional-recursion extension (210.5) are now formalized as native results. No limiting omission or affine-cover bound is assumed. Remaining in the sixth family: exact206 scan-palette semantics, native nonuniform executors, arbitrary growing-stride limits and bounded composition with every cost paid. The global exceptional allowance is measured in P transitions; the per-node eta*V comment has different scaling and is not a separate native theorem added here. Final independent referees and cleanup follow all six. No unrestricted transpose decision or literature-novelty claim.
+
+NEXT
+R1874 recorded; NEVER replay its checkpoint script. All checkpoint Lake
+handles terminal. Goal ACTIVE; PROGRESS. Five of six original families
+formalized; sixth regular recursion206/208 best estimate55%, low confidence.
+
+The native source208 theorem and global exceptional-work theorem (210.5)
+are complete. Read NativeExceptionalRecursion.native_flagged_recursion_budget
+and its uniform specialization. Existing source208 results are zero-budget
+corollaries. Do not re-prove the native limit, popular-class or cover chain.
+
+Next target: exact206 bounded scan-palette compilation. Read source
+200-affine-return-motion.txt sections20-24 (lines~550-740) and exact primitive
+notes017,144,168. Preserve ALL palettes, arbitrary size-dependent public
+masks/offsets/strides, fixed word length K, high-entropy correct sets and raw
+bit transpose output. Native nonuniform O(P)-state clocks are permitted;
+O(log P)=o(P) state bits suffice. A uniform parameter generator is not needed.
+
+Start with the arbitrary masked binary stride routine, which exposes the
+remaining executor/geometry issue. Define its exact zero-filled recurrence
+y_j=x_j XOR a_j*y_(j-S) and the input-difference variant, 1<=S<=P; construct
+the paid two-buffer group executor with fixed C*S slabs, including the last
+partial group and both buffer rewinds/clearing. Public masks are prescribed
+clock transitions, never input-dependent state tables or free work storage.
+Prove exact bank output, all-head movement, O(P) total steps and O(P) states.
+For S/P->0 use O(S) deviations from affine slab interpolation; for a positive
+limit use bounded group count and finite affine phases. Do not require a
+uniform piece-count bound across these two cases. Then add backward scans,
+rotations/reversal, the row/integer and ternary palettes and bounded composition.
+This is a first concrete target, not a reduction of the full required scope.
+
+Reuse inventory checked this turn:
+- FixedTapeCompiler/Microcode, MicroMappedAppend, MicroCopy, MicroRewind and
+  OperationalTrace already implement finite symbol reads/actions and exact
+  paid traces. Do not reimplement the elementary tape or trace semantics.
+- NativeMicrocode/NativeMicrocodeRun compile one active microinstruction to
+  one original native transition, preserve absolute heads and prove actual
+  run/trace/halt transfer. The finite Encoding is instantiated separately
+  at each size; its comment about fixed enumerations does not impose a
+  common state count on the nonuniform family.
+- NativeIO extends this to input reads/moves and output writes, with
+  step_denote, trace_stepN, lift_work_trace and blank_denote.
+- NativeIOFusion is available but no fusion is necessary for an O(P) bound.
+- NativePrefixRewind supplies an existing paid mixed-symbol rewind trace.
+- Searches found no existing generic unrolled public schedule theorem or
+  exact arbitrary masked-stride executor. Check narrow semantic helpers
+  before adding code; this is not an exhaustive absence claim.
+
+Do not turn this into a new primitive classification, search campaign or
+uniform generator project. The exact206 palette/native compilation and
+all its cost/limit obligations remain required. Keep progress estimates
+for the sixth ORIGINAL family. No fresh subagents until all six; then
+authorized impartial referees and cleanup. Original paper read-only;
+no commits/pushes. No unrestricted transpose decision or novelty claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate55% complete (low confidence). The full native contracting-recursion and global exceptional-work results are proved; the exact bounded scan-palette exclusion remains. Five completed families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final referees remain pending.
+
+VERIFICATION
+Full lake build passed10200 jobs without warnings/errors; SupportAxioms audited4969 unique declarations using only propext,Classical.choice,Quot.sound. There are1019 local sources (1018 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and191 validation artifacts. Original117 files and directory inventory unchanged. Three baseline mathematical modules strengthened/refactored; every other baseline mathematical source unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

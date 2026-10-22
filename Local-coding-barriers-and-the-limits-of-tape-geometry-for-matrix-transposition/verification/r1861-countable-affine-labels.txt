@@ -1,0 +1,83 @@
+
+R1861 — VERIFIED COUNTABLE AFFINE-RETURN LABELING
+R1861 proves the complete abstract small-class/small-cut labeling theorem for a finite measure supported on COUNTABLY many invertible affine return graphs, with only a bounded source marginal. It constructs one actual measurable natural-valued label satisfying the original PiecewiseConstOn condition, arbitrarily small label classes and arbitrarily small total cut. Finite affine sets, mesh, collision, priority and countable-tail choices are all discharged. The original paths-to-return-measure bridge and quantitative exceptional-time endpoint remain. Four of six original families formalized; final referees pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+EXACT CHECKED COUNTABLE LABELING THEOREM
+Let I=[0,c0], with time represented as the subtype of real points in I. Let mu be ANY finite Borel measure on I x I. Let(g_j)_(j in N) be any sequence of invertible real affine maps g_j(x)=s_j x+b_j, allowing negative slopes and duplicates. Assume:
+ (a) mu-almost every pair(u,v) lies on at least one graph v=g_j(u);
+ (b) for every measurable real set E, mu{(u,v):u in E}<=kappa volume(E),
+     where0<=kappa<infinity.
+Then for every theta>0 and epsilon>0, there exists ONE actual beta:R->N with:
+ (i) beta is measurable;
+ (ii) Transpose.Tape.PiecewiseConstOn beta empty c0, the ORIGINAL definition;
+ (iii) volume{x in I:beta(x)=n}<=theta for EVERY natural label n;
+ (iv) mu{(u,v):beta(u)!=beta(v)}<epsilon.
+This is exists_countable_affine_small_cut in CountableAffineLabels.lean. No assumption about finite equivalence classes, hyperfiniteness, invariant Lebesgue measure, ergodicity, freeness or the second marginal appears. There is no uniform bound on the number of cells or breakpoints, as in the original planned path theorem.
+The measure/domain assumptions are explicit and still must be derived for the actual original paths. The theorem does not identify an arbitrary measure with the path's original levelCross integral.
+
+FINITE FAMILY AND EXACT GLOBAL ORDER
+WeightedAffinePriority.lean introduces IntervalTime and IntervalTimePair, uses the actual finite affine graph union and ONE common family K containing F and all Fg_j, and applies the previous weighted minimum theorem to the actual priority samples. Samples are nonempty at every point because their domain is I x I, rather than merely almost everywhere in an ambient space. Graph-support exceptions and source grid collisions form a measurable bad pair set. Its mass is at most kappa times collision volume, with the graph complement charged by its explicit zero measure. The exact intermediate bound is cut<=delta mu(I x I)+kappa volume(collision(K,h)).
+FiniteAffineLabels.lean chooses delta=epsilon/(4(M+1)), eta=epsilon/(4(kappa+1)), where M=mu(I x I) as a real number. It obtains the finite affine set, a common collision threshold, and one mesh small enough also for the class bound. All parameters and the selected permutation are instantiated. The real budgets sum to at most epsilon/2<epsilon; finite-measure toReal/ofReal conversion is justified explicitly.
+
+COUNTABLE REDUCTION REUSES MATHLIB
+For G_N, the union of the first N return graphs, the complements form a decreasing measurable sequence whose intersection is the full graph complement. Mathlib tendsto_measure_iInter_atTop and finite mu imply mu(G_N complement)->0. Choose N with tail<epsilon/2. Restrict mu to G_N; this remains finite, has graph support and inherits the source marginal by Measure.restrict_apply_le. Apply the finite theorem at epsilon/2 and the same theta. The full cut is bounded by restricted cut plus the discarded graph tail, hence<epsilon. No fresh measure-continuity proof and no convergence of labels is required.
+
+WHAT THIS REMOVES FROM THE ORIGINAL PROOF PLAN
+The earlier CFW/finite-equivalence-class/nonatomic-quotient/interval-approximation chain is now unnecessary for this PARTICULAR affine-return labeling conclusion. This is a verified replacement of an internal proof dependency, not a weakening of200/210 or a proof of general CFW. The directly constructed labels are already admissible interval labels, so a second marginal is not needed to pay interval-approximation changes. The original target requires the path theorem, not an unused second-marginal helper; do not build that helper merely to preserve the historical proof architecture.
+The optional Prove2Me CFW source is no longer needed for this formalization route. No source was imported and its verification status remains unknown. No novelty claim is made for the standard finite amenability/minimum-coupling method or this application before the final literature/referee review.
+
+NEXT ACTUAL-PATH BRIDGE
+Read200 sections1-5 and210 sections33-35 in the original combined unit, and compare the protected definitions of ConsecIn,crossPairs,levelCross and public levelSet_encard_majorant/ae_finite_levelSet. Countably many disjoint open affine branches must produce a measure on the SAME interval subtype product, with actual consecutive retained visits, countable affine support, finite mass and source marginal<=k times Lebesgue. Constant branches/heights, branch-order accumulation, negative slopes and infinite full level sets remain in scope.
+One concrete construction to examine: for each ordered nonconstant branch pair, form its Borel consecutive-visit height domain, or its pullback to the source branch. Push forward weighted source-time measure |slope_i|du to the pair of inverse-affine visits and sum over branch pairs/heads. Source marginal control follows from disjoint source domains for a fixed source branch, disjoint branches and |slope_i|<=1. The equality to the height-integrated good cut requires the actual affine change of variables, not a counting assertion. Mathlib map/restrict/sum identities and the already-proved affine volume formula should be reused. The original ae_finite_levelSet already supplies finite full fibers almost everywhere; do not rebuild a general area formula just for that fact.
+For210, E_t can have positive measure: do NOT discard its image as null. Original pairs with both endpoints retained are included among consecutive retained pairs; all others touch E_t, at most twice per omitted visit. Compact interval covers and the original measurable level-count majorant bound their integral. This must yield sum_t|E_t|>=1/2 before claiming motion complete.
+
+DEVELOPMENT REPAIRS
+The fixed-weighted proof required only an addition-order elaboration repair and current instance-let style. The countable extension required Fin.isLt rather than a subtype property projection. The finite parameter-choice theorem compiled on its first development build. Final build/axiom audit verify all three modules; no axiom, sorry, relaxed proof limits or disabled linters.
+
+DRIFT CHECK: This checkpoint finishes the exact abstract countable-affine labeling ingredient needed by the original motion argument. The next required work is the ACTUAL path/measure/levelCross connection, not more abstract label variants. Removing unused CFW and second-marginal dependencies strengthens/simplifies the proof route while retaining all original endpoint requirements.
+
+BOUNDARY
+The countable affine-return MEASURE labeling theorem is now formalized without CFW, hyperfiniteness, a finite quotient, interval approximation or a second-marginal assumption. To finish motion200/210, construct the actual good consecutive-return measure from the original Lipschitz affine-branch paths on the interval subtype product, prove its source marginal and countable affine-graph support, identify/bound the original levelCross integral, and prove the <=2 omitted-visit charge with original level-count majorants. Retain sum_t |E_t|>=1/2 and the full native scope. No claim that the path theorem, transpose problem or overall goal is complete.
+
+NEXT
+R1861 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; previous turn PROGRESS. Full ORIGINAL motion200/210 about35%
+formalized (best estimate, low confidence); four of six families complete.
+
+NEXT: actual path-to-return-measure bridge. The countable affine-measure
+labeling theorem is COMPLETE; do not reopen general CFW/amenability/quotients.
+1. Re-read the exact original200/210 branch hypotheses and original ConsecIn,
+   crossPairs,levelCross,PiecewiseConstOn,levelSet_encard_majorant and
+   ae_finite_levelSet. Preserve countably many phases and positive exceptional
+   time; no finite-piece substitution. Keep the native trace-class scope.
+2. Inspect existing mathlib/local map/restrict/countable-sum measure identities,
+   affine change of variables, disjoint-open-interval/countability APIs and
+   finite ordered consecutive-pair counts. Reuse rather than copy.
+3. Choose a concrete branch representation and construct the ACTUAL consecutive
+   retained-return measure on IntervalTimePair c0. Prove measurability, source
+   marginal<=k*Lebesgue, finiteness and countable affine graph support. Only the
+   source marginal is needed by the new direct theorem; the second marginal
+   is no longer a required dependency unless another explicit endpoint uses it.
+4. Prove its cut equals the integrated good consecutive-visit count, with the
+   exact height weights. Source-time weighted pushforwards may simplify the
+   marginal proof; any such route must prove the affine Jacobian conversion.
+   Reuse original ae_finite_levelSet for finite fibers almost everywhere.
+5. Apply CountableAffineLabels.exists_countable_affine_small_cut. Then prove
+   the original-pair inclusion and <=2 omitted-visit charge, finite interval
+   covers for compact E_t and the original measurable majorant bound. Finish
+   sum_t |E_t|>=1/2, null-exception200 and the stated native consequences.
+6. Regular recursion206/208 remains after motion, with actual scan/local-limit
+   and contracting contiguous-tree hypotheses. Final authorized referees,
+   strengthening and cleanup follow all six formalizations.
+
+New modules:WeightedAffinePriority,FiniteAffineLabels,CountableAffineLabels
+(9 declarations). Original read-only; no commits/pushes or unapproved agents.
+Paid padding/SL2 complete; do not reopen. External CFW source not needed now.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:35% formalized, low confidence. This estimate covers the original countably affine path obstruction and quantitative exceptional-time result, not just the newly completed abstract labeling theorem. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.
+
+VERIFICATION
+Full lake build passed10157 jobs without warnings/errors; SupportAxioms audited4782 unique declarations using only propext,Classical.choice,Quot.sound. There are976 local sources (975 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and165 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

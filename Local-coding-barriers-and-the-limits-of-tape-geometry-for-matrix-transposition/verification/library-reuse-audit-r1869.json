@@ -1,0 +1,41 @@
+{
+  "status": "PROGRESS at R1869: the exact real-time stage geometry and physical shallow-coverage bound for regular recursion206/208 are formalized. Actual tick labels imply disjoint real stage intervals, measurable selected-stage regions, exact uncovered volume, and the bound a*C*rho^h/(1-rho) after physical scaling. Five of six original families remain formalized; the sixth is about20% complete, low confidence. Common-limit/native exclusion and exact206 executors remain open.",
+  "boundary": "The finite-execution physical-time coverage bound is derived from actual stage/tick ownership, child-charge contraction and the root budget. No coverage/disjointness premise is inserted at the real-time level. Common subsequence extraction for all endpoints/volumes, passage of coverage to the limit, zero-volume subtree disappearance, global affine regularity, native recursion impossibility and exceptional-work consequences remain. Exact206 primitive semantics/native nonuniform executors remain. Final referees follow all six; no unrestricted transpose decision or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate20% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. Estimates refer to the entire sixth family, not the current geometry module.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "searches": [
+    {
+      "scope": "Existing local GridCellMeasure/GridTrimming and AffineTimeScaling",
+      "finding": "Inspected existing open normalized grid-cell and scaling results. Exact half-open tick ownership uses direct mathlib floor/interval/finite-union lemmas; R1868 clock and tail results are reused."
+    },
+    {
+      "scope": "Mathlib real interval/floor geometry and measure",
+      "finding": "Reused Nat.le_floor_iff, floor_lt, floor_eq_on_Ico, finite-union measure, interval volume and positive multiplicative preimages."
+    },
+    {
+      "scope": "Next target: finite interval-union limits",
+      "finding": "No direct matching symmetric-difference/endpoint-union theorem found in targeted search. Set.Ico_disjoint_Ico and closed inequalities plus finite sums appear sufficient, avoiding a new measure-convergence framework."
+    }
+  ],
+  "reused_mathlib": [
+    "Nat.le_floor_iff",
+    "Nat.floor_lt",
+    "Nat.floor_eq_on_Ico",
+    "Nat.floor_le",
+    "Nat.lt_floor_add_one",
+    "measureReal_biUnion_finset",
+    "Real.volume_real_Ico",
+    "Real.volume_Ico",
+    "Disjoint.preimage",
+    "Real.volume_preimage_mul_left",
+    "ENNReal.toReal_mul",
+    "ENNReal.toReal_ofReal",
+    "Set.Finite.prod"
+  ],
+  "reused_local": [
+    "finite_addresses_lt_depth",
+    "stage_clock_deep_work_bound"
+  ],
+  "dependency_simplification": "DRIFT / REUSE: R1869 bridges the verified integer clock to its actual real\nintervals, rather than working with a hypothetical cover of the limiting path.\nMathlib supplies the floor inequalities, interval measure, disjoint finite\nunion measure, preimage disjointness and Lebesgue scaling. Existing local\nGridCellMeasure was inspected: it concerns open cells normalized to[0,1].\nHere literal half-open unit ticks retain exact ownership at integer endpoints;\nonly the short specialization of mathlib's finite-union volume formula is new.\nThe R1868 stage-clock and geometric-tail theorems are reused directly. No new\ngeneral measure, compactness, interpolation or convergence theory was added.\nCommon-limit coverage is still explicitly open; no full recursion exclusion\nis claimed from this finite-execution result.\n",
+  "novelty": "No novelty claim; this verifies the existing scoped recursion argument. Final independent referees remain."
+}

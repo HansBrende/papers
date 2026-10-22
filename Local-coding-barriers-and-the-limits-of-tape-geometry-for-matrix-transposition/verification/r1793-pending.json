@@ -1,0 +1,117 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "LevelEnergyNormalization",
+    "HaarSetEnergyBounds",
+    "RelativeNonflatteningEnergy",
+    "DensityConvolutionTrace",
+    "HaarSelfEnergyExtraction",
+    "SmoothedIterateSelfEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.dyadicDensityLevel_second_moment_le",
+    "TransposeFollowup.dyadicDensityLevel_measure_lt_top",
+    "TransposeFollowup.lintegral_sq_ne_zero_of_mass_ne_zero",
+    "TransposeFollowup.normalize_weighted_pair_energy",
+    "TransposeFollowup.weighted_pair_volume_window_left",
+    "TransposeFollowup.haarMultiplicativeEnergy_le_left",
+    "TransposeFollowup.haarMultiplicativeEnergy_le_right",
+    "TransposeFollowup.haarMultiplicativeEnergy_lt_top",
+    "TransposeFollowup.haarMultiplicativeEnergy_pos_measures",
+    "TransposeFollowup.haarMultiplicativeEnergy_volume_comparable",
+    "TransposeFollowup.exists_relative_nonflattening_level_pair",
+    "TransposeFollowup.densityConvolution_assoc",
+    "TransposeFollowup.densityConvolution_inv_of_symmetric",
+    "TransposeFollowup.densityConvolution_comm_at_one",
+    "TransposeFollowup.densityConvolution_inverse_at_one",
+    "TransposeFollowup.densityConvolution_energy_trace",
+    "TransposeFollowup.lintegral_mul_sq_le_lintegral_sq_mul_lintegral_sq",
+    "TransposeFollowup.densityConvolution_energy_sq_le",
+    "TransposeFollowup.haarMultiplicativeEnergy_sq_le_self_mul_self",
+    "TransposeFollowup.haarMultiplicativeEnergy_self_lower",
+    "TransposeFollowup.exists_symmetric_nonflattening_self_energy",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_nonflattening_self_energy"
+  ],
+  "declaration_counts": {
+    "theorem": 22
+  },
+  "checks": {
+    "normalization_initial": {
+      "session_id": 64015,
+      "module_built": true,
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 19575
+    },
+    "set_energy_bounds": {
+      "session_id": 61128,
+      "exit_code": 0,
+      "jobs": 2200,
+      "warnings": false
+    },
+    "relative_extraction": {
+      "session_id": 61041,
+      "module_built": true,
+      "overall_build_exit_code": 1,
+      "warnings": false,
+      "final_dependency_build": 19575
+    },
+    "trace": {
+      "session_id": 77884,
+      "exit_code": 0,
+      "jobs": 2197,
+      "warnings": false
+    },
+    "self_energy": {
+      "session_id": 86322,
+      "exit_code": 0,
+      "jobs": 2207,
+      "warnings": false
+    },
+    "volume_window": {
+      "session_id": 19575,
+      "exit_code": 0,
+      "jobs": 2207,
+      "warnings": false
+    },
+    "actual_iterates": {
+      "session_id": 14461,
+      "exit_code": 0,
+      "jobs": 9582,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 35433,
+      "exit_code": 0,
+      "jobs": 9716,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 13873,
+      "exit_code": 0,
+      "declarations": 4114,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "R1793 formalizes the continuous moment normalization and mixed-to-self energy part of the Bourgain\u2013Yehudayoff Monotone expansion flattening strategy (https://arxiv.org/pdf/1108.2555, proof of Lemma4.1, equations4.3\u20134.5). The proof uses the checked R1792 dyadic extraction, direct Haar convolution mass/pointwise bounds, an explicitly proved noncommutative trace identity and Cauchy\u2013Schwarz. Every positivity, finiteness, symmetry and cancellation condition is proved or explicit. The returned level has a two-sided volume window and high self-energy. These are analytic support formalizations, not a new impossibility result or a novelty claim. Metric BSG, bounded-representative/covering details and SL2 product growth/escape remain unproved. No source theorem is assumed as an axiom. Fresh primary-source check: Tao, Product set estimates for non-commutative groups, arXiv math/0601431v3, Definition2.1 and Theorem5.4, supplies a continuous BSG target before the metric-entropy stage. Its multiplicative sets are nonempty open precompact sets. Our level sets are not yet proved to meet that topological hypothesis. The next bridge must establish it, rather than apply the source theorem to merely measurable sets.",
+  "development_checks": "64015 built LevelEnergyNormalization but failed in indicator mass simplification in HaarSetEnergyBounds; adding Pi.one_apply gave warning-free61128. Relative2488 failed on unavailable one_lt_top; replaced with simp.61041 built the relative extraction but failed in trace on a final definitional equality and unreduced Nat-to-Real exponent casts, with unused section-variable warnings; added rfl, an explicitly specialized square-root-square identity, and omitted the unused instances.77884 passed. Self67925 failed to simplify implicit indicator functions; explicit change statements fixed it and86322 passed.19575 passed the strengthened volume-window statements and dependencies.14461 passed the actual smoothed-iterate application. No old mathematical-source edits, placeholders, new axioms, raised proof limits or disabled linters. Older62722/19934 remain unverified, not passes.",
+  "updated_at": "2026-10-19T20:01:55.580212+00:00",
+  "formal_checkpoint": "R1793 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1793, 739 sources, 4114 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1793 upgrades the weighted level-pair extraction to relative Haar energy and then to one symmetric positive finite-volume level set with high self-energy. If f is a bounded symmetric probability density, U=integral f^2 and integral(f*f)^2>=theta*U for theta>0, there are N logarithmically bounded levels and one level A such that, for K=64N^4, theta/(K U)<=H(A)<=K/(theta U) and E(A,A)>=theta^2*H(A)^3/K^2. Positivity/finiteness of U and level volumes, noncommutative trace/Cauchy\u2013Schwarz and every cancellation are checked. The result applies to the actual smoothed-autocorrelation iterates. Open/precompact regularization, continuous BSG, metric transfer, SL2 product growth/escape and strict flattening remain unproved; unconditional paid padding is incomplete.",
+  "next": "Start from RealMobius.exists_smoothedIterate_nonflattening_self_energy in SmoothedIterateSelfEnergy.lean. Do not repeat weighted level extraction, moment normalization, noncommutative trace/Cauchy\u2013Schwarz, self-energy conversion or volume comparisons. With f=rho_k, U=integral f^2, theta>0 and integral rho_(k+1)^2>=theta U, it gives a=tau/16, tau=theta U, N<=1+log2(max(1,16C/tau)), and a symmetric measurable level A of positive finite volume v satisfying theta<=K U v, theta U v<=K, theta^2 v^3<=K^2 E(A,A), K=64N^4. Initial kappa<=C is inherited by the actual rho_k. All these facts are formalized.\n\nNext concrete target: prepare a symmetric nonempty OPEN PRECOMPACT set for the continuous BSG theorem while controlling volume, energy and support. Fresh primary-source check: Tao, Product set estimates for non-commutative groups, https://arxiv.org/pdf/math/0601431 (v3), Definition2.1 and Theorem5.4. Theorem5.4 is a continuous Haar-measure theorem; the metric-entropy extension comes later in Section6. Do not make discretization the first prerequisite when the continuous route applies. Do not apply the source theorem to a merely measurable level set.\n\nProposed bridge, still unproved: first restrict A to its known symmetric compact matrix-entry support box. R1791 currently gives only Haar-a.e. density support; prove that restriction preserves volume and continuous energy. A useful direct tool is that replacing either convolution factor by an a.e.-equal function preserves convolution pointwise on a bi-invariant Haar group (translated/inverted null sets remain null). Then use outer regularity and a bounded open neighborhood of the box to find a symmetric open precompact superset O of the restricted A with v<=H(O)<=2v. Symmetrize by intersection with the inverse; it still contains A. Monotonicity gives E(O,O)>=E(A,A), so the normalized self-energy constant loses at most8, and the volume window loses at most2. Track an explicit enlarged entry box; an unspecified compactness bound depending wildly on eta is not sufficient for the later local product theorem. Prove these statements, not just a wrapper assuming such an O.\n\nAfter that, attack the continuous BSG core: popular products and the weak BSG selection step (Tao Lemma5.1), then small product subsets/approximate-group extraction. The limited fresh library filename search found RuzsaSzemeredi, PluenneckeRuzsa, ApproximateSubgroup and RuzsaCovering but no named BSG module; this is not proof that no reusable theorem exists. Audit precise hypotheses before reusing finite counting results. Metric radius loss, Haar-volume/covering comparisons, SL2 product growth and escape remain substantive later tasks.\n\nUltimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k): some FIXED k must yield rho_k<=D, D^2<=2^j, eta=4^(-j), for dyadic base n=2^m in C*log(1/eta)/log(1/epsilon)<n<=j/(2N). Choose k before N,J0,epsilon0. Initial density eta^(-3+1/61440) is only initialization. Preserve all six families, actual measures and Haar normalization. No original-directory edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1793 completes the continuous nonflattening-to-high-self-energy reduction with positive finite level volumes, quantitative volume comparison and a two-sided inverse-energy volume window, including the actual symmetric iterates. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The percentage concerns formalization scope, not time remaining, success probability or proximity to resolving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/LevelEnergyNormalization.lean": "aa856d9949363676e77bd1332e639e97223748a8731139ca5af112fdcd328fa8",
+    "lean/TransposeFollowup/HaarSetEnergyBounds.lean": "42325c1ad1ac1d8fad72795ce9954b231e99171bcc72cdc79078f05213620874",
+    "lean/TransposeFollowup/RelativeNonflatteningEnergy.lean": "e031a856eaaf6133a94598069884fde063ce0e4399aae0f56e1d88d2bb367ef9",
+    "lean/TransposeFollowup/DensityConvolutionTrace.lean": "739ce296333605509d277d8b9f876ef05de01e777c5029739e29e973759fc9fa",
+    "lean/TransposeFollowup/HaarSelfEnergyExtraction.lean": "175d85f17c37df7370fcbeffdf1fbae33cf8d80818cc409033fd3c8aac02ec66",
+    "lean/TransposeFollowup/SmoothedIterateSelfEnergy.lean": "8e916d6f45eb6d53c4834eed05c749a664a7a02be605f5ba84d73074fd07a801"
+  }
+}

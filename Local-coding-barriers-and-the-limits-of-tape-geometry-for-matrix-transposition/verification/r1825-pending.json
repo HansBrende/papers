@@ -1,0 +1,90 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1824",
+  "previous_turn_classification": "PROGRESS; reusable scalar analytic theorem and native-cover adapter verified",
+  "new_modules": [
+    "SL2LocalConcentration",
+    "SeparatedMatrixSample",
+    "SL2SampleConcentration"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.cluster_coveringNumber_le_of_multiscale",
+    "TransposeFollowup.SL2Projection.exists_separated_matrix_sample",
+    "TransposeFollowup.SL2Projection.separated_matrix_card_le_coveringNumber",
+    "TransposeFollowup.SL2Projection.exists_matrix_sample_local_concentration",
+    "TransposeFollowup.SL2Projection.exists_matrix_sample_power_concentration"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 67170,
+      "exit_code": 1,
+      "log": "/private/tmp/r1825-dev1.log",
+      "reason": "Initial arithmetic tactic fixes."
+    },
+    "development_2": {
+      "session_id": 87158,
+      "exit_code": 0,
+      "log": "/private/tmp/r1825-dev2.log",
+      "reason": "Local cover concentration compiled."
+    },
+    "development_3": {
+      "session_id": 69290,
+      "exit_code": 1,
+      "log": "/private/tmp/r1825-dev3.log",
+      "reason": "Frobenius edistance and extended natural casts needed explicit conversion."
+    },
+    "development_4": {
+      "session_id": 21158,
+      "exit_code": 0,
+      "log": "/private/tmp/r1825-dev4.log",
+      "reason": "First four declarations compiled."
+    },
+    "development_5": {
+      "session_id": 85712,
+      "exit_code": 1,
+      "log": "/private/tmp/r1825-dev5.log",
+      "reason": "Pure-power corollary needed explicit associative rewriting and NNReal coercions."
+    },
+    "development_6": {
+      "session_id": 43621,
+      "exit_code": 1,
+      "log": "/private/tmp/r1825-dev6.log",
+      "reason": "Coefficient bound compiled; one remaining NNReal coercion."
+    },
+    "development_7": {
+      "session_id": 22034,
+      "exit_code": 0,
+      "log": "/private/tmp/r1825-dev7.log",
+      "reason": "All five declarations compiled without warnings."
+    },
+    "build": {
+      "session_id": 92827,
+      "exit_code": 0,
+      "jobs": 10059,
+      "warnings": false,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 61382,
+      "exit_code": 0,
+      "declarations": 4469,
+      "warnings": false,
+      "log": "verification/axioms.log"
+    }
+  },
+  "target": "Derive normalized local counts for an actual separated matrix sample from existing small doubling and multiscale distribution. Preserve the normalization loss when moving to smaller scalar sets.",
+  "constraints": "No protected edits, commits, pushes, raised proof limits, proof placeholders or new subagents.",
+  "estimate": "Current matrix local-concentration and sampling proof100% verified by full build and axiom audit. Three of six original families remain formalized; no defensible overall paid-padding effort percentage or ETA.",
+  "terminal_handles": "All R1825 handles terminal. Development1(67170),3(69290),5(85712),6(43621) failed;2(87158),4(21158),7(22034) passed. Full build92827 and audit61382 passed,10059 jobs and4469 declarations. No live Lake process.",
+  "updated_at": "2026-10-20T04:15:58.972066+00:00",
+  "formal_checkpoint": "R1825 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:878 local sources,204 external sources,4469 declarations,8 configurations,93 artifacts",
+  "proof_scope": "In progress. R1825 proves normalized local concentration for an actual separated matrix sample from the existing small-tripling and multiscale-distribution hypotheses. Three modules add5 theorems and no definitions. A uniform quarter-scale corollary absorbs the explicit fixed geometric coefficient into any loss exponent nu>beta+epsilon*kappa. Mathlib maximal separated sets, packing/covering comparison, and existing local translated-cluster geometry are reused. This completes the matrix sampling lemma, not the scalar extraction or a fourth original theorem family.",
+  "next": "The preceding goal turn is PROGRESS. R1825 is recorded; never replay its checkpoint. The completed local proof is SL2SampleConcentration.exists_matrix_sample_power_concentration, supported by SL2LocalConcentration and SeparatedMatrixSample. Do not reprove the generic matrix local-concentration or maximal separated-set chain. The full10059-job build and4469-declaration audit passed, standard axioms only; no live Lake handle.\n\nNEXT CONCRETE TARGET: read verification/r1825-scalar-applicability.txt and audit the actual algebraic bridge from centralizer coordinates and conjugations to X+aX. First identify a specific scalar map whose sums can be represented by a bounded product of the same A, with the existing approximation radius charged. Then derive the quantitative scalar selection and coefficient nonconcentration for that map. A generic projection lemma alone may not preserve the algebra. Do not assume matrix multiplication becomes addition in arbitrary centralizer coordinates, or that a fixed near-identity radius makes nonlinear errors negligible at fine scale. Treat the unipotent and elliptic cases; no semisimple eigenvalue gap is available.\n\nThe scalar growth endpoint is already imported and proved: ScalarProjectionReuse.exists_scalar_projection_growth_at_quarter_scale. Source is openai/math commit1581d4cbdd69a0faf34b2089614fe2a814316a6a, theorem OAI.Falconer.Regularization.scalar_weak_radius_projection, with a pinned204-source import cone. Do not rebuild that analytic chain. The supplementary choose_projected_frostman and normalized_projected_frostman interfaces were inspected; their continuous-measure existence conclusions do not provide the required finite-scale quantitative selection loss. The installed source cone was not changed.\n\nThe new matrix sample F obeys N_eta(A)<=6561|F| and |F intersect B(c,r)|<=eta^(-nu)r^kappa|F| for all r>=eta when nu>beta+epsilon*kappa and eta is sufficiently small uniformly before A. This is not a bound relative to the smaller commuting image V or scalar X. Track any retained fraction or fiber multiplicity explicitly; a potential N_eta(A)^(2/3) loss cannot be silently absorbed into an arbitrarily small exponent.\n\nAlso finish the fixed-family composition of the already-proved R1822 commuting extraction and R1823 N_eta(A^37)<=h^400000*N_eta(A), choosing smaller input budgets before k/family selection to enforce400000*s<=nu. Keep exact approximation and cover-finiteness facts. No new long generic analytic chain until existing sources have been checked against its exact interface. Motion200/210, recursion206/208, and final referee/cleanup remain required. Goal ACTIVE; no protected edits, commits, pushes, or unsolicited subagents.",
+  "checkpoint_reporting": "The current matrix local-concentration and finite-sampling proof is100% verified by the completed full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only the family count, not effort or time. Paid padding remains incomplete and its remaining workload is not calibrated. Motion200/210 and recursion206/208 remain unstarted.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SL2LocalConcentration.lean": "fcc44e85d8c3ba8ce9aea79815237b4cb7768f3af97207af69cd129f78a7cd0c",
+    "lean/TransposeFollowup/SeparatedMatrixSample.lean": "be99b52c80b34b88078ac7793a89fe26a7ec61819e7fe7c43945bf3870c3eb19",
+    "lean/TransposeFollowup/SL2SampleConcentration.lean": "fd0401a5efb1d827c672f193c8f2b79b11ebba6b0da13611ffdf52694e2d4d31"
+  }
+}

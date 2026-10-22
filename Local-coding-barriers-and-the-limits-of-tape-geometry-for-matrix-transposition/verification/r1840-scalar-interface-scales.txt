@@ -1,0 +1,106 @@
+R1840 — VERIFIED SCALAR INTERFACE SCALES
+
+In progress. R1840 proves a common actual dyadic scalar scale that pays all three scalar-growth budgets, approximation error and upper log-cardinality under strict exponent margins, and verifies one explicit simultaneous exponent choice. It derives the positive nilpotent scalar sample from actual source matrices, including its trace coefficient, sign, entry bound and interval. It derives an upper sample-size exponent from the existing whole-family cube. The old fixed-product coefficient proof is generalized to all powers and reused by the unchanged A^37 interfaces. Two new modules and two modified modules add eight declarations. Exact chart/sampling/approximation power estimates and the final first-extraction application remain open.
+
+1. NEARBY DYADIC RADIUS AND UNIFORM POWER COMPARISON.
+exists_dyadic_power_comparison reuses exists_dyadic_scaled_rpow_bound and mathlib rpow_add: for c>0,a<b, there is a uniform J so c*eta^(-a)<=eta^(-b) for eta=4^-j,j>=J.
+exists_scalar_dyadic_radius states: for0<d<=1 and an index threshold J, some J0 ensures that every j>=J0 admits k>=J with
+  eta<=delta, eta^d<=delta<2eta^d, delta=2^-k, eta=4^-j.
+It reuses exists_separation_window_threshold and mathlib exists_nat_pow_near_of_lt_one. The integer rounding and index threshold are proved, not treated asymptotically.
+
+2. ONE COMMON SCALAR-GROWTH SCALE.
+exists_scalar_growth_budget_scale fixes all constants and exponents BEFORE choosing the matrix index j. Inputs are0<d<=1,e>0,kappa<=1,g,c>=0,K0,C0>=1,V0,E0>0 and the strict margins
+  4g<d*e, g+c<d*e, u<d*(1-kappa), d<tau.
+For any required scalar index J, there is a uniform matrix-index threshold J0 such that every j>=J0 admits ONE k>=J. With
+  eta=4^-j, delta=2^-k, K=K0*eta^(-g), C=C0*eta^(-c),
+  W=exp(e*(k+1)*log2),
+it proves the radius comparisons from1, K,C>=1, and simultaneously
+  109760*K^4<=W,
+  2^(2kappa)*C<=W,
+  2^(2kappa)*(2*K*C*2^(2kappa))<=W,
+  E0*eta^tau<=delta,
+  log(m)<=(1-kappa)*k*log2 for every0<m<=V0*eta^(-u).
+These are the precise numerical interfaces of nilpotent_actual_trace_growth. The proof uses W>=eta^(-d*e), obtained from the NEXT half-dyadic power; that pays integer rounding without dropping a factor. The upper-size estimate charges2^(1-kappa), and all six thresholds are combined before choosing j. This theorem does NOT supply the matrix-derived power majorants K0,C0,V0,E0 or their exponents; they must be proved separately.
+
+3. EXPLICIT SIMULTANEOUS EXPONENT MARGINS.
+nilpotent_scalar_exponent_margins assumes0<kappa0<=1 and0<e<=1. It defines
+  theta=min(e,kappa0)/4096,
+  d=1-3theta, kappa=kappa0/12, g=e/8,
+  c=100theta, u=1-kappa0/3+84theta, tau=1-2theta.
+It proves theta>0,theta<=e/4096,theta<=kappa0/4096,0<d<=1,0<kappa<=1,g,c>=0, all four strict margins of2, and
+  289theta/3<c, 83theta<84theta, 173theta<g.
+Thus the R1839 candidate concentration loss, candidate upper-size loss and earlier full trace-gain loss have strict slack in a single explicit choice. This is now Lean-verified arithmetic, not just the earlier rational diagnostic. The exact coefficient estimates that would imply those losses are still open.
+
+4. RETAIN THE AMBIENT DIMENSION GAP THROUGH THE COVER CUBE.
+sample_cardinality_upper_of_cubic consumes the existing whole-family cube
+  V^3<=4*(S*L)^3*(E*T+1), m<=V,
+and ambient/power bounds
+  N<=eta^(-(3-kappa0)), T<=J0*eta^(-p)*N,
+  S<=S0*eta^(-s), L<=L0*eta^(-l), E<=E0*eta^(-eLoss).
+For0<eta<=1,kappa0<=3,eLoss,p>=0, the indicated nonnegative quantities, and C>=0 satisfying
+  4*(S0*L0)^3*(E0*J0+1)<=C^3,
+it proves
+  m<=C*eta^(-(s+l+(3-kappa0+eLoss+p)/3)).
+The additive1 is bounded using eta^(-(3-kappa0+eLoss+p))>=1. The existing normalized_count_of_cubic supplies the cube-to-size conversion. In the intended equal-small-parameter regime, s=36theta,l=44theta,eLoss=8theta,p<=theta produce the proposed exponent1-kappa0/3+83theta. This substitution requires actual power majorants, not just their written exponent labels.
+
+5. ACTUAL-SOURCE POSITIVE NILPOTENT SAMPLE.
+exists_actual_nilpotent_scalar_sample starts with the original, possibly infinite, exact approximant family f_i=scalarAffine(z,c_i,t_i), actual sources a_i=base^-1 X_i with base,X_i in symmetric A, and dist(f_i,a_i)<=epsilon. A lies in the identity ball of radius0<alpha<=1. The actual frame p,q,pq lies in A^34 with determinant at least d0>0. The SAME generator z lies within1/2 of identity and has distance at least r0>0. Assume the family is nonempty and the centered generator b=z-(trz/2)I has det(b)=0.
+The explicit proximity budgets are
+  25alpha+epsilon<=1/2,
+  5^36*alpha+2*(4^34)*epsilon<=1/4.
+For delta>0,eta>0,sigma>=eta, and
+  96delta<=4L*sigma, L=(r0/8)*d0/[1152*(4^34)^4],
+it constructs an actual g in A^34 with |tr(bg)|>=L. It DERIVES, for every original index,
+  c_i+t_i*trz/2>=1/2 and |f_i(l,k)|<=2.
+Then it applies the EXISTING nilpotent sampler with generator norm bound32 and returns finite F with original index map s, exact matrix realization f_(s(y))=y, matrix spacing>2sigma, scalar injectivity, nonempty scalar image Z, |Z|=|F|, all scalar values in[1,2], scalar spacing>delta, finite native cover, and
+  |Z|<=N_eta(range f)<=6561*(4sigma/eta+1)^4*|Z|.
+Source membership a_i in A^2, distance from identity, positive centered coefficient, entry bound, actual trace coefficient and the interval are all proved. No sample is selected a second time, no actual source witness is dropped, and no extra approximation error is added. Nilpotence, the source approximation and the displayed budgets remain input conditions.
+
+6. ONE SHARED FIXED-POWER ENVELOPE PROOF.
+fixed_power_coefficient_bound generalizes the old n=36 polynomial calculation to every natural n. Under the same profile controls h>=2^100,N<=h,0<=Q<=h,alpha>0,alpha^-4<=h,q>0,q^-1<=h and y>=0, define
+  K0=64N^4, L=8K0^2/q^2, K=2^55*L^21.
+If y<=512K^16, then
+  (8*(2Q)^(4n+3)+1)^4*y^(2n+1)*(33^4*Q^8/alpha^4)
+    <=h^(8802n+4427).
+The old fixed_product_coefficient_bound is now a wrapper at n36, followed by321299<=400000; its statement and constants are unchanged.
+localized_fixed_power_coveringNumber_envelope combines this with the EXISTING actual approximate-group translate witness and localized_set_pow_coveringNumber. Under the same original profile/localization hypotheses and cardinality bound for Y, with A=U^2 intersect identityBall(alpha), it proves native-cover finiteness and
+  N_eta(A^(n+1))<=h^(8802n+4427)*N_eta(A).
+The old localized_pow37_coveringNumber_envelope wraps n36 and retains its h^400000 bound. The ENNReal-to-real conversion and fixed-power cover proof are shared rather than duplicated. The new general exponents for powers37,142,284 are321299,1245509,2495393. If h is later instantiated as eta^(-s) with s<=theta/3000000, each fits below eta^(-theta). That final instantiation and the original profile controls are not asserted here.
+
+EIGHT NEW DECLARATIONS
+TransposeFollowup.SL2Projection.exists_dyadic_power_comparison
+TransposeFollowup.SL2Projection.exists_scalar_dyadic_radius
+TransposeFollowup.SL2Projection.exists_scalar_growth_budget_scale
+TransposeFollowup.SL2Projection.nilpotent_scalar_exponent_margins
+TransposeFollowup.SL2Projection.sample_cardinality_upper_of_cubic
+TransposeFollowup.SL2Projection.exists_actual_nilpotent_scalar_sample
+TransposeFollowup.SL2Projection.fixed_power_coefficient_bound
+TransposeFollowup.SL2Projection.localized_fixed_power_coveringNumber_envelope
+
+PARAMETER-ORDER CAUTION.
+The explicit scalar margins do not choose every original input. In particular the first extraction requires distribution gamma<zeta, so choose gamma strictly smaller (e.g.theta/2 when zeta=theta), not all of them equal to theta. The original profile-loss exponent must satisfy both the arbitrary-power envelope allowance and beta<zeta*kappa0. The scalar theorem's positive exponent e must be obtained before theta is chosen. The first error12800*(4*4^34)^6*eta/r_initial must retain its actual coefficient; the second-extraction error is a different quantity. These checks remain part of the next concrete application.
+
+DRIFT CHECK.
+This turn supplies two previously assumed parts of the scalar interface: positive/range geometry from actual sources, and one common dyadic scale paying simultaneous numerical budgets. The upper-size calculation uses the existing whole-family cube and actual sample retention; the fixed-product proof is generalized and shared rather than duplicated for A^142 and A^284. The remaining exponent-majorant inputs are explicitly still obligations. Do not count the conditional budget theorem as a completed nilpotent growth proof. Next work should compute those exact majorants and apply the existing chain, not introduce another independent scale or concentration framework.
+
+BOUNDARY
+R1840 verifies actual-source sampling geometry, finite-constant uniform dyadic budgets, a cubic upper-size conversion, explicit exponent margins and arbitrary-power profile envelopes. It does not yet prove that the exact first-extraction chart, spacing, sampling, approximation and normalized concentration coefficients satisfy the required power majorants at one uniform threshold. The original extraction, retained sample, R1839 concentration and R1835 trace growth still require that joint application, followed by the full R1832 trace upper comparison. Nonnilpotent amplification, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original family or new transposition bound is claimed.
+
+NEXT
+The preceding goal turn is PROGRESS. R1840 is recorded; never replay its checkpoint. Full10102-job build and4594-declaration audit passed without warnings, standard axioms only; no live Lake handles. Read verification/r1840-scalar-interface-scales.txt and library-reuse-audit-r1840.json. Do not redo actual-source positivity/range, dyadic radius selection, simultaneous scalar budgets, the upper-size cube conversion or fixed-power envelope counting.
+
+NEXT CONCRETE TARGET: derive the exact coefficient power majorants and apply the FIRST extraction's nilpotent scalar interface, then the full trace-growth comparison. The existing modules now supply every individual interface; their common parameter application is still real work.
+1. Use nilpotent_scalar_exponent_margins with0<kappa0,e<=1: theta=min(e,kappa0)/4096, scalar exponent kappa0/12, scalar-radius exponent d=1-3theta, gain g=e/8, concentration exponent c=100theta, size exponent u=1-kappa0/3+84theta and error exponent tau=1-2theta. Obtain e from the scalar theorem BEFORE choosing theta. Normalize e<=1 by a proved monotonic restriction if needed.
+2. Choose first zeta=sigma0=theta and distribution gamma STRICTLY below zeta, e.g.gamma=theta/2. Do not set gamma=zeta: the original spanning extraction requires gamma<zeta. Choose the original small-tripling/profile-loss exponent small enough both for beta<zeta*kappa0 and for the fixed-power bounds. R1840 localized_fixed_power_coveringNumber_envelope bounds A^(n+1) by h^(8802n+4427)N. For n36,141,283 the exponents are321299,1245509,2495393. Thus a profile h=eta^(-s) with s<=theta/3000000 can fit these power losses below theta, provided the actual profile controls and the additional beta condition are supplied. This substitution/parameter hierarchy is not yet formalized.
+3. Use r_initial proportional to eta^(2theta), d0=eta^theta and the existing actual-frame determinant scale proportional to eta^(9theta). Choose chart radius proportional to eta^(9theta), chart bin width proportional to eta^(11theta), and sigma_sample proportional to eta^(1-9theta), checking both cubic input spacing and scalar separation. Keep exact fixed constants. Reuse BoundedCoordinatePacking.binCount_le and mathlib rpow algebra to prove S_sample<=S0*eta^(-36theta), Lchart<=L0*eta^(-44theta), E<=E0*eta^(-8theta), H_initial<=H0*eta^(-8theta), Dloc<=D0*eta^(-3theta). The R1839 Q,W then have combined root exponent<=289theta/3<100theta. Derive the actual majorant, not a new assumption that it holds.
+4. Apply exists_actual_nilpotent_scalar_sample to the original commuting approximants. It now derives c'>=1/2, entries<=2, actual g in A^34, coefficient L=(r_initial/8)*d0/[1152(4^34)^4], scalar interval[1,2], injectivity and both cardinality bounds from actual source data. It preserves all source indices. Prove its two proximity budgets using the original A radius and first error12800*B0^6*eta/r_initial, B0=4*4^34. Conditional det(b)=0 remains the current branch.
+5. Apply nilpotent_scalar_sample_concentration with the original Vset, mixed Dset, extraction cube theta_parameter=8sigma0 and actual envelopes; the same sample must satisfy its matrix-spacing threshold. Use commuting_family_cubic_bound and sample_cardinality_upper_of_cubic, plus the ambient upper N<=eta^(-(3-kappa0)), to obtain the upper size majorant with exponent1-kappa0/3+83theta (or the verified looser84theta). Then exists_scalar_growth_budget_scale supplies ONE scalar dyadic index satisfying all three R1835 budgets, error and log-cardinality. Its error constant must include32R^3. Weaken concentration exponentkappa0/3 to2*(kappa0/12) using mathlib.
+6. Compose R1835 growth with R1836 actual-word geometry and the FULL R1832 upper bound, retaining the source spacing, binning, approximation and250 factors. The explicit gain margin173theta<e/8 is verified, but actual coefficient bounds and their uniform threshold must still be shown. Do not silently replace the first error with the second-extraction error819200eta/rho. A completed nilpotent contradiction is the next substantive endpoint; nonnilpotent cases remain necessary.
+
+REPORTING: paid padding201/202 about60%, low confidence;3/6 original families formalized, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local scale lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.
+
+VERIFICATION
+Full lake build passed10102 jobs without warnings; SupportAxioms audited4594 unique declarations, using only propext, Classical.choice and Quot.sound. There are920 mathematical modules plus SupportAxioms (921 local sources),204 pinned external modules,8 configurations and123 validation artifacts. All384 archive hashes and117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. All handles terminal. No placeholders, new axioms, unsafe/native_decide, raised proof limits, disabled linters, commits or pushes.

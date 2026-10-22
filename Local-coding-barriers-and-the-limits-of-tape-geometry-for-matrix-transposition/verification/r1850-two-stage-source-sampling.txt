@@ -1,0 +1,162 @@
+In progress. R1850 proves source-preserving coarse resampling and assembles the actual trace-square two-stage sample: first trim at a fine matrix scale, then impose the final scalar spacing. The final-scale loss is absent from the trimming budget. Two modules add three audited declarations, reusing existing coarse sampling, packing and the R1848 branch sampler. Simultaneous parameter closure and the final scalar-growth application remain open.
+
+R1850 EXACT VERIFIED STATEMENTS
+
+SourceResampling.lean (2 theorems)
+
+exists_coarse_source_subsample:
+Let g:indices->real2x2 matrices, T a nonempty finite original index set,
+eta,sigma>0, B>=0. Assume all entries of g_i for i in T have absolute
+value<=B, and distinct indices in T have matrix distance>2eta.
+Then there is a nonempty S subset T such that distinct indices in S have
+matrix distance>2sigma and
+ |T| <= C1 |S|, C1=6561(4sigma/eta+1)^4.
+There is NO assumed injectivity or resampling oracle: fine separation
+proves injectivity, and the existing coarse source sampler supplies actual
+original source indices. The lower cardinality bound is the existing
+separated_matrix_card_le_coveringNumber.
+
+exists_scalar_source_subsample:
+Under the same fine-family conditions, let a:indices->R, K,delta>=0.
+If for all i,j in T,
+ dist(g_i,g_j)<=K|a_i-a_j|,
+and K delta<=2sigma, then there is such an S subset T for which
+ Z=a(S) is nonempty, |Z|=|S|, distinct x,y in Z satisfy |x-y|>delta,
+and |T|<=C1|Z|. Matrix separation>2sigma is retained as well.
+All unary and pairwise predicates on T remain true on S by subset.
+
+TraceSquareTwoStageSample.lean (1 theorem)
+
+exists_actual_trace_square_two_stage_sample:
+Retain ALL the original actual source geometry, affine centralizer,
+frame, localization, approximation, distribution, profile and determinant
+gap hypotheses from exists_actual_trace_square_source_sample.
+Let eta>0, sigma0>=eta, sigma0,sigma1>0, cutoff0<s<=1,
+Lgap>0 with Lgap<=|det(centered z)|, and delta_s>0.
+Require the cubic matrix-packing threshold<=2sigma0, and independently
+ (3072/(Lgap*s))*delta_s <= 2sigma1.
+Let C0=6561(4sigma0/eta+1)^4, C1=6561(4sigma1/eta+1)^4,
+V=N_eta(range(f)), L=binCount(B,delta)^4,
+and U the EXACT R1848 near-cluster expression, unchanged.
+The ONLY trimming condition is
+ 32 L^3 (U+1) C0^3 <= V^3.
+In particular, C1 does not enter it.
+
+The theorem produces a nonempty finite set T of ORIGINAL source indices:
+ - every f_i has distance>s from I and distance<=1/64 from I;
+ - t_i*t_j>=0 for every pair (one centered coefficient sign);
+ - distinct f_i,f_j have distance>max(2sigma0,2sigma1);
+ - dist(f_i,f_j)<=3072/(Lgap*s)*|X(f_i)-X(f_j)|;
+ - Z=X(f(T)) is nonempty, |Z|=|T|, Z subset[1,2];
+ - distinct scalar values have distance>delta_s;
+ - V is finite and |Z|<=V<=4 C0 C1 |Z|.
+Here X(u)=2 trace(u)^2/3-4/3. Every original X_i,c_i,t_i,
+base^-1 X_i approximation witness is retained by its original index.
+There is no need for sigma1>=sigma0 or sigma1>=eta; the first scale
+already supplies the fine separation used in cubic packing.
+
+Proof assembly:
+Choose auxiliary delta0=(Lgap*s/3072)*sigma0>0. Its inverse spacing
+cost is exactly sigma0. Apply R1848 at sigma0 and delta0, obtaining T0.
+Then apply the generic scalar source subsampling theorem to T0 at sigma1.
+The subset preserves all branch properties, both matrix separations are
+combined, and V<=4C0|T0|<=4C0C1|Z|. No second near-identity trimming
+occurs, so the s-dependent C1 cannot re-enter its budget.
+
+REUSE AND DRIFT CHECK
+
+The required packing machinery is already in pinned mathlib:
+Metric.maximalSeparatedSet, isCover_maximalSeparatedSet,
+isSeparated_maximalSeparatedSet, encard_maximalSeparatedSet,
+and packingNumber_two_mul_le_externalCoveringNumber.
+Our existing SeparatedMatrixSample and CoarsenedSourceSample wrap these
+with explicit real2x2 entry-based cover constants. R1850 imports and
+reuses those wrappers; it does not re-prove maximal packing or covers.
+The only new generic bridge returns a subset of the ORIGINAL index set
+with a cardinality comparison and transfers the spacing to a scalar map.
+The actual two-stage theorem then calls the R1848 sampler directly.
+
+Searches of the pinned mathlib and OAI sources for Bourgain/Gamburd,
+SL2 growth/gap and flattening did not locate an end-to-end theorem for
+this actual-source chain. This is a bounded reuse audit, not a claim
+that no formalization exists anywhere. Existing scalar sampling and
+covering modules were also inspected. The matrix sampler is retained
+because it returns the exact matrix separation needed by cubic packing.
+The scalar-only sampler could be useful for a sharper future loss, but
+no such optimization is needed or claimed in this checkpoint.
+
+R1849's single-pass obstruction remains valid. This theorem changes the
+order of operations; it does not refute that obstruction or claim the
+full paid-padding proof. The next work must audit simultaneous budgets
+before constructing another large conditional endpoint. The budget for
+creating the far branch must contain C0 only. C1 may enter the final
+retention/concentration loss, which still has to be affordable.
+
+NEXT
+R1850 recorded; never replay its checkpoint script. Full10127-job build
+and4674-declaration standard-axiom audit passed without warnings/errors.
+All Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: audit the simultaneous exponent/scale budgets for the actual
+TWO-STAGE trace-square sample before adding another large conditional
+wrapper. The sampler is now proved; do not reimplement it or the shared
+source concentration proof. Do not return to the incompatible R1849
+single-pass trimming ratio.
+
+Verified pieces to reuse:
+ - exists_actual_trace_square_two_stage_sample (R1850), with fine sigma0,
+   final sigma1, original source witnesses and both matrix separations;
+ - coefficient_cube_normalization (R1849): R1845 global cube and mixed
+   profile bound imply N<=W0 V^3;
+ - trim_budget_of_global_normalization (R1849): discharge fine trimming
+   using 32L^3 C0^3 W0(Anear+1/N0)<=1, where U<=Anear*N;
+ - source_scalar_sample_concentration (R1849), with arbitrary scalar map,
+   interval inverse Kinv and N<=W*n^3;
+ - existing ScalarDyadicBudgets and nilpotent arithmetic where applicable.
+
+Make one explicit loss ledger, with distinct names for the frame/gap
+scale, far cutoff s, fine matrix spacing sigma0, final matrix spacing
+sigma1, final scalar cover radius delta, retained scalar spacing delta_s,
+and source error epsilon. Keep every fixed constant before choosing
+scales. In particular, if delta_s must pay for the smaller readout
+coefficient, do not identify it silently with delta.
+
+For the R1850 sample, Kinv=3072/(Lgap*s), retained-cover factor4C0C1.
+The shared concentration kernel will have
+ W=W0*(4C0C1)^3,
+ Dloc=40(2R)^11*(Kinv+2),
+ Q=4L^3(E Gprofile Dloc^kappa+2^kappa),
+ and QW<=Cscalar^3.
+Apply it only at radii>=max(eta,epsilon). Pairwise inverse gives scalar
+interval diameter by the real triangle inequality. Image-card equality
+supplies injectivity on the actual index subtype. The fine separation
+returned by R1850 still pays cubic packing after final coarsening.
+This application is straightforward but not yet separately assembled;
+first establish plausible strict exponent margins for ALL downstream
+budgets. Do not mistake a true conditional theorem for parameter closure.
+
+Remaining downstream costs to include in that ledger:
+ - R1846 gives both normalized coefficients abs>=3rho/256; their sum3/2
+   permits the abs>=3/4 coefficient on the enlarged factor. The other
+   coefficient costs separation in the retained base scalar cells;
+ - product/quotient enlargement Y=F union FF union FF^-1 remains in[1,2]
+   by R1848. Preserve actual A^4 sources and pay approximation errors;
+ - R1847 mixed-source far bound has inverse-linear separation and
+   error512R^7 epsilon. Base length2, enlarged length4, g length204
+   imply word length420, with either orientation permitted;
+ - extend the old n<=283 second-extraction wrapper using the existing
+   fixed-power coefficient h^(8802n+4427), not a new argument;
+ - R1845's universal initial n0+3 power is separate, not bounded by420;
+ - retain original profile/frame, strict flattening and analytic/machine
+   dependencies. Full paid padding is still open.
+
+Latest user instruction: keep checking mathlib/OAI/local reusable chains,
+and give best NUMERICAL progress estimates for the current ORIGINAL
+family, not each small lemma. Current estimate remains about60%, LOW
+CONFIDENCE; three of six families formalized, referees pending.
+Original paper read-only. No commits/pushes/subagents at this stage.
+
+BOUNDARY
+The actual two-stage trace-square sampler is proved under its explicit fine trimming, geometry and source hypotheses. It returns original source indices, preserves the far single-sign branch, retains both matrix separation scales, and gives final scalar separation and native cover retention. No simultaneous scale choice is proved; removing the R1849 budget obstruction does not establish that the revised budgets all close. The shared concentration theorem exists, but its final two-stage application and numerical concentration budget have not yet been assembled. Dilated-base cells, enlarged product/quotient source errors, length420 second extraction, original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original families formalized; no fourth family or novelty claimed.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

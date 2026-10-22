@@ -1,0 +1,107 @@
+R1912 — BUILD SPEED IMPLEMENTATION AND VERIFICATION
+Checked 2026-10-21T22:50:21.358904+00:00
+
+RESULT
+The representative SourceEndpointsMeaning target rebuild takes 13.303s,
+versus 62.774s before: 4.72 times faster, or 78.81% less elapsed time.
+The final target contains twenty original source bodies rather than the original
+five. This is a measured target result with cached prerequisites, not a matched
+whole-project rebuild speed ratio. Whole-project speedup remains unmeasured.
+
+MEASUREMENTS
+Workload                                     Before       After
+Five-body scratch proof check (3-pair median)  73.840s      15.798s
+Actual five-body Lake target (single pair)    62.774s      16.731s
+Final broader twenty-body Lake target         62.774s      13.303s
+No-change whole-project Lake invocation        4.013s       5.740s
+
+The scratch paired trials alternate order and show a 78.60% median saving.
+The first adopted five-body merge shows a 73.35% actual-target saving.
+The final target's reported child-process peak RSS falls from
+6.083 GB to 3.553 GB (41.6% less).
+This is not an aggregate peak across simultaneous build processes.
+
+The 97.391s repair-inclusive run rebuilt seventeen prerequisites and
+this target. It is recorded separately and is not used as the isolated target
+measurement. The isolated 13.303s run removed the harmless benchmark-only
+apply-id proof step, restored exact final bytes, and rebuilt only the target.
+All timing logs include normal Lake startup and artifact work; no dependency
+cache, hash or timestamp was forged to avoid recompilation.
+
+IMPLEMENTATION
+Nineteen coherent compiler routines replace 287 former module locations,
+retiring 268 internal modules and adding seven lightweight Core modules.
+Mathematical modules: 1157 -> 896. Mathematical source: 105579 -> 105723
+(+144 lines, principally compatibility bridges). This reduces repeated
+compiler/import work; it does not claim a reduction of mathematical content.
+The grouping preserves original declaration/proof bodies, with import updates.
+The Core split preserves original model definitions and old bridge statements.
+The original sibling paper and dependency versions are unchanged.
+
+ClosedNativePadding's full local prerequisite path falls from 188 to 38.
+For edits to the actual NativeMicrocode implementation, affected modules fall
+from 566 to 306 and the serial local path from 176 to 36. The global longest
+local path falls from 188 to 81 and now lies on the analytic branch. These
+are dependency-graph measurements, not wall-time ratios. SourceEndpointsMeaning's
+parsed dependency closure falls from 8941 to 3282 vertices. The graph is
+acyclic and has no missing local imports.
+
+PRESERVATION AND CHECKS
+All 6297 original declaration contracts are covered: 6028 exported type
+representations are literally identical; 267 differing representations pass
+exact-original-Expr kernel conversion; the remaining two pass separate kernel
+checks against their exact archived source-level theorem headers. All ordered
+universe-parameter lists are identical. The raw comparison retains all 269
+differences and its failed literal-equality status; no mismatch was erased.
+
+The initial original-Expr checker could not resolve two retired generated proof
+constant names after module consolidation. Those two checks are therefore
+reported as source-header preservation, not as successful original-Expr
+conversion. Their full expression differences consist only of binder hygiene
+and the generated proof references. The complete axiom audit checks 6306 unique
+declarations, including nine new Core definitions/lemmas, using only propext,
+Classical.choice and Quot.sound. All six original main theorem families retain
+their strengthened R1911 statements. No new mathematical result is claimed.
+
+The final ordinary full build passes 10071 jobs with no warnings/errors.
+Its 1321.040s elapsed time is validation cost for this set of changed
+sources, not a matched comparison with R1911. Cached jobs are included in the
+job count. The no-change invocation above is a separate cache-overhead check.
+Normal Lean kernel checking validates the rebuilt proofs. The historical R1909
+fresh kernel replay was not repeated and does not certify this new snapshot.
+
+Independent source review reconstructs the pilot, Core split, broad grouping
+and two explicit repairs. The narrower imports exposed one implicit fun_prop
+measurability proof; it now uses an explicit measurable composition with the
+same theorem statement and hypotheses. A deprecated Real import is replaced
+by its supported target. No sorry, new axioms, unsafe proof shortcuts, raised
+proof limits, disabled linters or dependency upgrades. All 117 original files,
+204 pinned external sources and eight configuration files remain unchanged.
+
+ORGANIZATION AND REPRODUCTION
+Use r1912-module-guide.txt for moved routines and r1912-module-map.json for
+machine-readable old-to-current imports. Public declaration names remain.
+Some internal import paths are intentionally retired; update such imports
+using the map. Exact former sources are archived at:
+/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed
+Obsolete generated artifacts for retired modules were removed; no active
+source or dependency cache was removed. Full type manifests are compressed in
+a byte-verified archive there; compact per-name digests, raw comparisons
+and kernel/source-header preservation receipts remain here. Archived failure logs distinguish repaired operational
+failures from the clean final build.
+
+Run normal verification from lean/: lake build; lake env lean SupportAxioms.lean.
+The historical scratch benchmark needs a restored R1911 source baseline and
+its compiled prerequisites; the complete baseline source inventory is archived.
+Do not blindly replay it against retired source paths. The timing driver and
+source-edit records document the controlled target measurement. Current source
+hashes, pin hashes and validation artifacts are in support-build.json.
+
+NEXT
+The measured target reached about one fifth of its former rebuild time.
+If another optimization round is requested, profile the remaining analytic
+serial path before changing it. Warm no-change timing is not a clean rebuild
+benchmark. Further grouping trades lower startup cost against rechecking more
+proofs per edit. The separate r1912-concurrency-note.txt records supported
+controls and one small future contention experiment; no gain is assumed. No further refactor, commits, pushes or autonomous research
+are started by this checkpoint.

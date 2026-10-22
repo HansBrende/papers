@@ -1,0 +1,49 @@
+{
+  "status": "PROGRESS at R1891: the complete clean integer-row bank subroutine is checked in the original native TM. Its exact cost is8P+2W for nonempty W-bit rows,P=rW, hence at most10P for a nonempty bank; it restores both heads, clears scratch, preserves arbitrary surrounding bank cells and external IO. Two tapes,five symbols,50*(bankTicks+1) control states. Five of six original families formalized; regular recursion206/208 best estimate86% complete (low confidence). Whole-bank affine approximation, shared raw IO and the remaining integer/F3 operations still remain.",
+  "boundary": "Source206(c), source208 and global exceptional-work210.5 remain complete. R1891 proves a complete clean BANK subroutine from a bank already containing the rows and an actually blank buffer. It does not yet load external raw input, emit the result, prove the bank head-path approximation, or complete the remaining palette(a)/palette(b) operations. The native endpoint quantifies all cells, restores absolute heads and clears scratch; it is not only an abstract recurrence. Five of six families formalized; final referees after all six. Original unchanged; no commits/pushes. No unrestricted transpose decision or novelty claim.",
+  "reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate86% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1891 closes initialization/cleanup/rewind and native execution for integer row-prefix/difference bank updates. Complete operation families and final impartial referees remain.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Turing.Tape.mk'_nth_nat",
+    "Turing.ListBlank.nth_mk",
+    "List.getI_eq_default",
+    "Function.iterate_succ_apply",
+    "Int.ofNat_eq_natCast"
+  ],
+  "reused_local": [
+    "ScheduledTapeAction.erase",
+    "ScheduledTapeAction.erase_cells",
+    "ScheduledTapeAction.erase_position",
+    "ScheduledTapeAction.erase_io",
+    "ScheduledTapeAction.rewind_cells",
+    "ScheduledTapeAction.rewind_position",
+    "ScheduledTapeAction.rewind_io",
+    "ScheduledNativeIO.append_exact",
+    "ScheduledNativeIO.append_active",
+    "ScheduledNativeIO.native_run_and_halt",
+    "ScheduledNativeIO.native_state_count",
+    "RawRowArithmetic.rows_exact",
+    "RawRowArithmetic.rows_lengths",
+    "RawRowArithmetic.ticks_eq",
+    "EraseStream.blanks_eq_nil",
+    "CoupledRowMoves.right_word",
+    "CopyMachine.denote_right",
+    "AbsoluteTape.move_cells"
+  ],
+  "inspected_next": [
+    "ScheduledNativeIO.trajectory_displacement",
+    "CoupledRowCell.cell_positions",
+    "ScheduledWord",
+    "NativeIOEmbedding.step_embed",
+    "NativeIOEmbedding.trace_embed",
+    "BankWord.Interface",
+    "BankWord.Represents",
+    "TransposeFollowup.state_bits_of_linear_count",
+    "RawBankProgram",
+    "ScheduledRawInput",
+    "ScheduledRawOutput"
+  ],
+  "modified_existing": [],
+  "dependency_simplification": "REUSE / DRIFT CHECK\nVerified every R1890 receipt hash before edits. Searched the pinned local\nmathlib Turing tape/list APIs and the local scheduled actions, zipper,\ncopy/erase and native IO interfaces. Reused ScheduledTapeAction.erase,\nerase_position/erase_cells/erase_io, rewind_position/rewind_cells/rewind_io,\nScheduledNativeIO.append_exact/append_active/native_run_and_halt/\nnative_state_count, RawRowArithmetic.rows_exact/rows_lengths/ticks_eq,\nEraseStream.blanks_eq_nil, CoupledRowMoves.right_word,\nCopyMachine.denote_right, AbsoluteTape.move_cells, mathlib Tape.mk'_nth_nat,\nListBlank.nth_mk, List.getI_eq_default and Function.iterate_succ_apply.\nNo duplicate arithmetic, cleanup passes, compiler or tape model was added.\nThe only new tape reasoning connects the EXISTING zipper endpoint to the\nEXISTING absolute-cell semantics used by the reusable bank interface.\nDevelopment fixes concerned an import name, integer-constructor cast\nnormalization, explicit structure congruence and unfolding abbreviations.\nNo theorem scope was weakened; no new axioms, proof escapes, raised limits\nor disabled linters. Final development build passed without warnings.\nDrift: this closes a complete paid bank-operation dependency, not the full\nregular-recursion theorem. Raw IO, affine geometry and both remaining\noperation palettes still require explicit verified implementation.\n",
+  "novelty": "No novelty claim. Complete clean native row bank support for palette(a); affine geometry/raw IO and full palettes(a,b) remain."
+}

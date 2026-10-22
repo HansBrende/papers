@@ -1,0 +1,179 @@
+R1845 — QUANTITATIVE ACTUAL SPANNING EXTRACTION
+
+In progress. R1845 selects a quantitatively nonnilpotent generator during the actual spanning extraction. Universal n0, alpha0 and C are fixed before the set and scale. A frame determinant lower bound d yields an actual commuting family with centered generator determinant greater than d/32, original source witnesses, approximation error 26214400 eta/d, and the covering cube d^11 N_eta(A)^4 <= C[9 N_eta(A D A^-1) H N_eta(V)]^3. This uses geometry and the spanning frame; distribution and an approximate-group profile are not hypotheses of this extraction. Five modules and fifteen declarations reuse mathlib Hales-Jewett, finite continuity, existing trace projections and the original conjugacy-fiber extraction. Scalar amplification and the rest of the original paid-padding family remain open.
+
+R1845 EXACT VERIFIED STATEMENTS
+
+1. FiniteTraceAvoidance.lean.
+exists_bounded_four_color_progression imports mathlib Hales-Jewett to obtain a fixed
+finite N such that every coloring Nat -> Fin4 has a monochromatic progression
+a,a+d,a+2d with d>0 and a+2d<=N. Its proof maps a combinatorial line over Fin3 to
+the sum of its coordinates. This is a standard Ramsey consequence, not a new
+combinatorial theorem or a reconstructed proof of Hales-Jewett.
+
+exists_simultaneous_recurrence_escape: fix this N. Suppose four real sequences f_i,
+a real sequence t, and Delta>0 satisfy, for 0<d<=N,
+ Delta<=|t(d)-2|, |t(d)|<=3,
+ f_i(a+2d)+f_i(a)=t(d)f_i(a+d) whenever a+2d<=N.
+Then some m<=N satisfies |f_i(m)-2|>Delta/4 for all four i.
+Otherwise color m by one bad coordinate. A monochromatic progression gives
+2Delta<=5Delta/4, a contradiction.
+
+2. BoundedPowerTraceGap.lean.
+For SL2(R),
+ tr(g^n)-2=(tr(g)-2)det(sum_{k<n} g^k).
+For each fixed finite N, there is r>0 such that dist(g,I)<r implies
+ |tr(g^n)-2|>=|tr(g)-2|/2 and |tr(g^n)|<=3 for 0<n<=N.
+The determinant factor tends to n^2 at I; finite simultaneous continuity is
+imported from mathlib. No eigenbasis or inverse eigenvalue gap is involved.
+The exact recurrence is
+ tr(g^(a+2d)h)+tr(g^a h)=tr(g^d)tr(g^(a+d)h).
+Combining these facts gives universal N,r such that, for any four targets h_i
+and g in this r-ball with tr(g)!=2, some m<=N satisfies
+ |tr(g^m h_i)-2|>|tr(g)-2|/8 for all four i.
+
+3. ShiftedTraceFrame.lean.
+Common right translation of four SL2 matrices preserves the trace-frame
+determinant exactly. There exist universal n0>=34 and alpha0 in (0,1/2] such
+that, if A contains I, is symmetric, lies in identityBall(alpha), and
+0<alpha<=alpha0, an actual p,q,pq in A^34 with
+ d>0, d<=|det(pairSpanMatrix(p,q))|
+gives, for every center x, four k_i in A^n0 satisfying
+ |det(traceFrame(k))|>=d and |tr(k_i^-1 x)-2|>d/8 for every i.
+The translating matrix is the actual commutator [p,q] in A^136.
+The existing commutator/frame identity gives |tr([p,q])-2|>=d.
+Here n0=34+136N. The constants are chosen before A,d or the center.
+
+4. RetainedTraceGap.lean.
+A bounded nonempty set has a coordinate patch centered at one of its own
+points, of entry width r, retaining at least a
+(2(B+1)/r+1)^(-4) fraction of its native eta-covering number.
+This reuses coordinate_refinement and coveringNumber_le_sum_of_cover.
+
+Under the preceding frame hypotheses, with 0<d<=1 and eta>0, there are
+universal n0,alpha0,C>0 and an actual nonempty R subset A, h in A^n0, such that
+ every x in R satisfies |tr(h^-1 x)-2|>d/16,
+ d^11 N_eta(A) <= C N_eta({tr(h^-1 x):x in R})^3.
+The native cover of R is finite. The patch has width d/(128M), M=4^n0.
+Its cost is d^-4; the existing three-trace projection costs d^-7.
+An available C is P^4 T, with
+ P=256M(M+1)+1,
+ T=(12288(M+1)M^5+1)^4 (6144M^5+3)^3.
+All four coordinates avoid 2 on the same retained patch before the large
+trace coordinate is selected. Retention and avoidance are not separate
+existence statements about different subsets.
+
+5. QuantitativeSpanningExtraction.lean.
+There exist universal n0>=34, 0<alpha0<=1/2 and C>0, before A,alpha,d,eta,p,q.
+Assume I in A, A^-1=A, 0<alpha<=alpha0, A subset identityBall(alpha),
+0<d<=1, eta>0, 1536*2^4*eta<=d/32,
+p,q,pq in A^34, and |det(pairSpanMatrix(p,q))|>=d.
+Then the theorem PRODUCES a nonempty D subset A^(n0+1), in the identity
+half-ball, with every z in D satisfying
+ dist(z,I)>d/32 and |det(z-(tr(z)/2)I)|>d/32,
+and A D A^-1 subset A^(n0+3).
+It also produces z in D, a matrix v, the actual source fiber
+ S={x in A: dist(x z x^-1,v)<=eta},
+x0 in S, and f:S->SL2(R) with:
+ - f(x)=scalarAffine(z,c,t) for some real c,t;
+ - x0^-1 x in A^-1 A and dist(x0^-1 x,f(x))<=12800*2^6*eta/(d/32);
+ - every two values of f commute;
+ - finite native eta-covering numbers for A,A D A^-1,and V=range(f);
+ - d^11 N_eta(A)^4 <= C[9 N_eta(A D A^-1) H N_eta(V)]^3,
+   H=(102400*2^7/(d/32)+17)^4.
+The proof uses D=h^-1R, shrinks alpha0 so D lies within distance 1/4 of I,
+and applies the EXISTING exists_trace_commuting_extraction with B=2,r=d/32.
+The new scalar identity
+ det(z-(tr(z)/2)I)=-(tr(z)-2)(tr(z)+2)/4
+turns the retained trace gap into the determinant bound. The last cube is
+the previous trace cube multiplied by N_eta(A)^3 and combined with the
+existing extraction inequality. No distribution or small-tripling premise
+is silently inserted.
+
+DRIFT AND EXPONENT AUDIT
+
+The preceding qualitative det!=0 result did not control inversion near the
+nilpotent locus. R1845 instead arranges a quantitative gap during selection.
+For d=eta^theta, all displayed inverse-determinant costs are powers of
+eta^-theta. The extraction error is exactly 26214400 eta/d. The old coarse
+near-nilpotent perturbation route needed an eta-scale determinant threshold;
+the new selection avoids that route for the family we will actually use.
+It is not a uniform perturbation theorem for arbitrary existing families.
+
+The fixed word length is a genuine new cost, not free. Reuse
+localized_fixed_power_coveringNumber_envelope at n=n0+2:
+ N_eta(A^(n0+3)) <= h^(8802(n0+2)+4427) N_eta(A).
+If h<=eta^-tau, choose tau after n0 so that
+ (8802(n0+2)+4427)tau<=theta.
+Since n0 is universal, this is an admissible fixed positive tau constraint.
+The previous wrapper profile_power_exponent_bound assumes n<=283 and
+must not be used here. Later longer words require their own explicit fixed
+maximum and margin. This bookkeeping observation is not a formalized
+completion of the new growth argument.
+
+For d<=1, H <= (419430400+17)^4 d^-4. Thus the new cube and a paid mixed
+profile bound would give N_eta(A) <= K d^-26 N_eta(V)^3 for a fixed K.
+This is an arithmetic budget check, not a newly verified sample theorem.
+Scalar separation, retained cardinality, nonconcentration and readout
+errors remain obligations for the actual family.
+
+Do not start a separate varying-coefficient projection theory merely
+because an existing API accepts a coefficient distribution. A fixed-matrix
+sum/product route is available for audit. The Bourgain-Yehudayoff source
+(Monotone expansion, Section5.2, Propositions5.6/5.7)
+https://arxiv.org/html/1108.2555
+uses fixed-matrix scalar amplification and product identities. Reuse the
+existing real coordinate identities below; no new spectral diagonalization
+is needed for this proposed route.
+
+BOUNDARY
+R1845 replaces qualitative nonvanishing by a scale-controlled determinant bound for a newly selected actual family. It does not assert that the earlier arbitrary family has this bound. It still assumes symmetry, identity, a sufficiently small fixed identity neighborhood and an actual quantitative spanning frame in A^34. The Hales-Jewett word bound n0 is finite and universal, with no useful numerical bound claimed. It changes mixed-product membership from A^37 to A^(n0+3). All profile coefficients and later word lengths must pay for that change; the old n<=283 wrapper cannot be reused without checking its hypothesis. This does not yet prove scalar amplification, strict flattening, the density cap, an unconditional restricted gap, full paid padding, motion or recursion. Original profile/frame construction also remains. No fourth original theorem family or novelty claim is made. Final referees have not started.
+
+NEXT
+R1845 is recorded; never replay its checkpoint script. Full10113-job
+build and4624-declaration standard-axiom audit passed without warnings.
+All Lake handles are terminal. Read r1845-quantitative-spanning-extraction.txt
+and library-reuse-audit-r1845.json. The goal is ACTIVE.
+
+NEXT CONCRETE TARGET: audit and implement a single fixed-matrix sum/product
+amplification using the quantitatively separated ACTUAL family, with a
+complete exponent budget before a long new formal chain. The extraction
+and determinant bound are conclusions already; do not assume another
+ideal sample or redo this assembly.
+
+Let b=z-(tr(z)/2)I, Delta=det b, u=sI+tb, v=pI+qb. Existing
+sl2_scalarAffine_product_coordinates gives
+ t_uv^2+t_uvInv^2=2(t^2+q^2)-4Delta t^2q^2.
+Existing sl2_inverse_final_scalar_identity gives, for an actual fixed g,
+ tr(v u^-1 g (v u) g^-1)=2+(Dg-4Delta)q^2-Dg t^2,
+ Dg=det(bg-gb).
+Seek one bounded word g with quantitative lower bounds on both
+|Dg| and |Dg-4Delta|. Check the existing adjoint-frame selection first.
+A possible two-choice repair is g or g^2: Cayley-Hamilton predicts
+D(g^2)=(tr g)^2 Dg. Near I, (tr g)^2 is bounded away from1, so a
+near-cancellation Dg~4Delta cannot persist for both choices.
+This is a proposed argument, NOT part of the R1845 Lean result.
+
+Then audit the available metric Ruzsa/Pluennecke and scalar sum/product
+APIs. A small linear combination of two copies of the squared-coordinate
+set, together with the exact product identity and |Delta|>d/32, may
+control its sums and products through actual bounded-word traces.
+A fixed nonzero coefficient alone is not a scalar projection theorem.
+Use the product identity to justify the sum/product alternative.
+Include an actual positive, separated scalar sample and inherited
+nonconcentration. The centralizer family is not assumed closed under
+products and need not contain I; any enlargement by I or products must
+be explicit, with source witnesses and errors accounted for.
+
+Account for n0 and every longer actual word using the general fixed-power
+coefficient bound. If this route does not furnish the actual retained
+sample and compatible gain budget, record that specific failure before
+formalizing further detached identities. Original profile/frame
+construction, strict flattening and the remaining analytic/machine
+endpoints are still open. Three of six original families formalized;
+paid padding best estimate about60%, low confidence. Original paper
+unchanged; no commits/pushes or unsolicited subagents.
+
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.

@@ -1,0 +1,153 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "CoveringLevelScale",
+    "CoveringPolynomialLoss",
+    "CoveringPowerEnvelope",
+    "CoveringSizeInterval",
+    "MobiusCoveringPowerBounds",
+    "SmoothedIterateCoveringInterval"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.covering_level_log_bound",
+    "TransposeFollowup.exists_uniform_covering_loss_threshold",
+    "TransposeFollowup.covering_profile_coefficient_bounds",
+    "TransposeFollowup.covering_profile_power_envelope",
+    "TransposeFollowup.covering_envelope_size_interval",
+    "TransposeFollowup.exists_covering_loss_exponent",
+    "TransposeFollowup.RealMobius.covering_profile_power_bounds",
+    "TransposeFollowup.RealMobius.exists_uniform_smoothedIterate_covering_interval"
+  ],
+  "declaration_counts": {
+    "theorem": 8
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 56020,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev1.log"
+    },
+    "development_2": {
+      "session_id": 62446,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev2.log"
+    },
+    "development_3": {
+      "session_id": 84838,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev3.log"
+    },
+    "development_4": {
+      "session_id": 82402,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev4.log"
+    },
+    "development_5": {
+      "session_id": 30560,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev5.log"
+    },
+    "development_6": {
+      "session_id": 58109,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev6.log"
+    },
+    "development_7": {
+      "session_id": 86299,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev7.log"
+    },
+    "development_8": {
+      "session_id": 7884,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev8.log"
+    },
+    "development_9": {
+      "session_id": 6502,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev9.log"
+    },
+    "development_10": {
+      "session_id": 40166,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1805-dev10.log"
+    },
+    "development_11": {
+      "session_id": 36281,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev11.log"
+    },
+    "development_12": {
+      "session_id": 68991,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev12.log"
+    },
+    "development_13": {
+      "session_id": 13214,
+      "exit_code": 1,
+      "warnings": true,
+      "log": "/private/tmp/r1805-dev13.log"
+    },
+    "development_14": {
+      "session_id": 59142,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1805-dev14.log"
+    },
+    "development_15": {
+      "session_id": 4673,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1805-dev15.log"
+    },
+    "build_first": {
+      "session_id": 74688,
+      "exit_code": 0,
+      "warnings": true,
+      "jobs": 9775,
+      "log": "/private/tmp/r1805-full-first.log"
+    },
+    "build": {
+      "session_id": 10161,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9775,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 51437,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4249,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1805 reuses native Mathlib logarithm/rpow asymptotics, ENNReal finite-to-real conversion, actual Haar normalization, and the R1804 native closed Frobenius external-covering profile. All explicit coefficients are bounded by a common power without optimizing fixed constants. A uniform threshold is chosen before the measure, iterate, scale, and witness. The actual existence theorem retains all previous witness conclusions and adds the required intermediate-size and tripling powers. The actual support-growth specialization and the product-growth theorem remain unproved. This is supporting formalization of the existing route, not a new transposition lower bound.",
+  "cleanup": "Six new modules, eight theorems, no definitions or pre-existing mathematical-source edits. Native operations and asymptotics reused. Replaced recursion-prone automation with explicit multiplication/power inequalities; no limits raised. Removed two redundant positivity hypotheses (implied by the positive loss exponent and its margin bounds) and an unused change tactic; removed an unnecessary tactic combinator. Final full build and axiom audit passed without warnings.",
+  "updated_at": "2026-10-19T22:49:02.814083+00:00",
+  "formal_checkpoint": "R1805 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1805, 798 sources, 4249 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1805 absorbs all explicit nonflattening losses, the logarithmic level count, and the actual Haar normalization into a common power h^30000. With h=eta^-s and suitable positive s, one uniform small-scale threshold gives eta^(-kappa/2)<=N_eta(A)<=eta^(-3+gamma/2) and N_eta(A^3)<=eta^-beta*N_eta(A) for the actual localized witness A=U^2 intersect Ball(alpha). The theorem retains all previous geometry, approximate-group, probability-concentration, and quantitative volume/cover outputs. It derives these inequalities from the initial density cap, a lower squared-L2 mass bound, nonflattening, and the explicit support condition Q<=eta^-s; it does not assume the desired covering-number interval. Actual-walk support specialization, multiscale distribution, escape, product growth, strict flattening, and unconditional paid padding remain. Supporting formalization, not a new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1805 completes uniform loss absorption and the actual-witness intermediate-size interval. Do not redo coefficient expansion, log absorption, Haar normalization, BSG, localization, or covering-number conversion. Start from SmoothedIterateCoveringInterval.exists_uniform_smoothedIterate_covering_interval and CoveringSizeInterval.exists_covering_loss_exponent. There are six new modules and eight theorems; the actual existence theorem retains EVERY R1804 witness output and adds the three desired power inequalities. Matrix.Norms.Frobenius scope is required for the ambient matrix images. The final size bounds are real toReal values of proven finite positive native external covering numbers.\n\nNEXT CONCRETE TARGET: discharge Q<=eta^-s for the actual generator walk at eta=(1/4)^j with ell=2^m and2*N_selection*ell<=j, preserving the initial-density family and quantifier order. MobiusWalkEntrySupport.generatorWalk_smoothed_ae_entryBox gives B=4*(2A)^ell; take A=2 from near-identity generators. Then B=4^(ell+1),R=(4B^2)^(2^k)=4^((2ell+3)*2^k),Q=32*(R+1)^6. A useful elementary bound, NOT YET CHECKED, is Q<=4^(6+(12ell+18)*2^k), since R>=1 and32*2^6<=4^6. For fixed k and s>0, choose N_selection with N_selection>=12*2^k/s and j large enough that j*s/2>=6+18*2^k. Together with2*N_selection*ell<=j this should give Q<=4^(j*s)=eta^-s. Prove it, then compose with the actual-walk support theorem and R1805; do not leave Q as a new unexplained premise. Consider a uniform version for every iterate i<=fixed k, which the future flattening iteration will need.\n\nThere is a relevant quantifier issue: RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness currently exposes existential N_selection for fixed k, not an arbitrary lower bound on N_selection. The underlying UniformSmoothedBandWitness.exists_uniform_smoothed_regular_high_band already accepts ANY Nmin and returns N_selection>=Nmin. Use that to expose the required freedom, or strengthen the conditional gap composition appropriately. Merely increasing the existential N afterward can invalidate the flatness hypothesis's domain. Preserve k FIRST, then N_selection,J0,epsilon0. N_level (dyadic density decomposition) is entirely different from N_selection (walk length).\n\nActual initial gain: InitialWalkFamily.exists_initial_walk_family gives a fixed rational free family at each dyadic radiusr>=5, for all j>=maxJ0(7680r) and ell>=initialWalkLength r j=j/(3840r), initial smoothed density<=ofReal(eta^(-3+1/61440)). Its cap propagates to V via AutocorrelationIterates.smoothedAutocorrelationIterate_lintegral_sq_le. Prove the selected walk's lower length requirement too; the band witness gives C*log(1/eta)/log(1/epsilon)<ell. Do not silently assume the two length regimes match. Increase scale thresholds uniformly as needed to ensure eta<=eta0.\n\nAfter actual-walk specialization: multiscale distribution and quantitative escape for our A, then the product theorem proof and strict flattening. The source Bourgain\u2013Yehudayoff https://arxiv.org/pdf/1108.2555 Section4.1/Theorem4.4 was read R1803 and uses a DIFFERENT quotient-set construction. Probability concentration in xU is retained, but extracting a shorter rational walk from interleaved smoothing needs an actual factorization, not replacing rho_k by a discrete power. The final conditional gap target needs a fixed iterate with ae cap D satisfying D^2<=2^j, i.e. eta^-1/4. No product theorem or nonconcentration premise has been imported as an assumption. Original families remain3/6; no referees yet. Keep all six families required, original read-only, no commits/pushes.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216 are formalized; final referees remain pending. R1805 proves uniform intermediate-size and small-tripling power bounds for the actual nonflattening witness, conditional on an explicit support-growth bound. This advances paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. Percentage concerns formalization scope, not elapsed time, probability of success, or proximity to solving transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/CoveringLevelScale.lean": "d6147bef9914e49be0ea43a1fa1b1cea1473bb6b40538d6839491b9ae212f69c",
+    "lean/TransposeFollowup/CoveringPolynomialLoss.lean": "1d7f677c8c734390d8a769def6d3629ce8d861b0679b198baa78c1eeed428c23",
+    "lean/TransposeFollowup/CoveringPowerEnvelope.lean": "9e1db26ddacb8c0e973d0d3c33910383a21f3e76470c1ebeaaa74923799a0d27",
+    "lean/TransposeFollowup/CoveringSizeInterval.lean": "9e233fe76f81ac4d190470f3092e8af6120acee79651ccc9cdb0df0307c20c47",
+    "lean/TransposeFollowup/MobiusCoveringPowerBounds.lean": "482b839cfe0e1499deb4bd9ee315348623cac01104d173bf683558e5d31af67b",
+    "lean/TransposeFollowup/SmoothedIterateCoveringInterval.lean": "ac90cb2677ff19c8720cc24d41effe641ef78249f808033d8031c729d690ff76"
+  }
+}

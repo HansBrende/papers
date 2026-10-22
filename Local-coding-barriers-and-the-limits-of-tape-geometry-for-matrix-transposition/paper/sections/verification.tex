@@ -1,0 +1,72 @@
+\section{Building and checking the artifacts}\label{app:verification}
+
+\subsection{Shared sources and trust boundary}
+
+The accompanying project uses Lean~4 and Mathlib at version 4.34.1
+\cite{Lean4,Mathlib2020,Mathlib4}. The mathematical source is in
+\lean{lean/TransposeFollowup/}, with the reused native compiler in
+\lean{lean/FixedTapeCompiler/}. The local package \lean{lean/upstream/}
+points directly to the sibling first paper's sources. Its build outputs are
+kept in the adapter; no definitions or proofs from that paper are copied or
+modified. The original frozen statement, checker, full file inventory and
+digests are checked by \lean{verification/check_upstream.py}.
+
+The external OpenAI source is pinned to commit
+\lean{1581d4cbdd69a0faf34b2089614fe2a814316a6a}. An exact 204-module import
+closure, with its original namespace and Apache-2.0 license, is installed by
+\lean{verification/fetch_openai_metric.py}. The manifest
+\lean{verification/openai-metric-source.json} records import edges and every
+source digest. The bibliography and attribution ledger identify the imported scalar
+projection theorem. The adapter preserves these sources and uses its own
+package configuration.
+
+The proofs use only the standard axioms \lean{propext},
+\lean{Classical.choice} and \lean{Quot.sound}. The manuscript-specific audit
+runs \texttt{\#print axioms} on all explicitly cited formal declarations,
+including definitions and imported endpoints. It checks that every requested
+declaration has an audit result and that no other axiom occurs. The formal
+source guard additionally checks preservation of the audited mathematical
+sources and trust settings. This is an ordinary build and transitive axiom audit, not a fresh
+empty-environment replay of every imported proof term.
+
+\subsection{Reproduction}
+
+Keep the two paper folders adjacent in the repository. With the pinned Lean
+toolchain available through \lean{elan}, run the following commands from the
+follow-up folder. The external source installer can use
+\texttt{-{}-source-root PATH} for an offline source checkout; its digest checks
+are the same.
+\begin{verbatim}
+python3 verification/fetch_openai_metric.py
+python3 verification/check_upstream.py
+cd lean
+lake exe cache get
+cd ..
+python3 verification/manuscript/verify.py
+python3 verification/manuscript/build_paper.py
+\end{verbatim}
+The verification command generates the declaration inventory, runs
+\texttt{lake build}, builds all cited modules, and runs the manuscript axiom
+audit. It also checks the protected sources and retains the commands, logs and
+source hashes. A TeX distribution with \lean{latexmk}, BibTeX and
+the packages named in \lean{paper/main.tex} builds the manuscript. The final
+PDF is \lean{paper/main.pdf}; intermediate TeX files remain in
+\lean{paper/build/}.
+
+\subsection{What the verification establishes}
+
+The declaration inventory covers every formal annotation in the manuscript,
+including numbered statements, definitions and cited background endpoints. Generation checks module existence;
+the Lean audit checks declaration existence and transitive axioms. A separate
+semantic review compares the hypotheses, conclusions and quantifier order of
+the English statements with the formal source. The machine-readable contracts
+and review resolutions are retained in \lean{verification/manuscript/}.
+
+The earlier library audit checked 6,313 declarations across the six theorem
+families; the manuscript audit checks those cited here. Source reviews were
+performed by AI agents and are not external human peer review.
+
+Compilation is followed by checks for missing references, citations and
+formatting overflow, PDF text inspection and rendered-page review. The source ledger
+separately records imported theorems, borrowed arguments and literature
+comparisons. Neither rendering checks nor kernel checks establish novelty.

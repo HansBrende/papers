@@ -1,0 +1,83 @@
+{
+  "unit": "R1743",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "scope": "ALL6 families;3complete;original unchanged;no commits/pushes;referees afterALL",
+  "previous_turn": "R1742 saved and all475 sources,5 configurations,86 artifacts,384 archive hashes reverified",
+  "checkpoint_reporting": "At each good proof stopping point report a ballpark percentage and name completed original theorem families. Current rough overall estimate 40\u201360%, high uncertainty; not a time guarantee or probability of success. Verified completion 3/6: adaptive separator 181/186/188, recoded pairwise-XOR 181B, two-stage global helper 216. Paid padding 201/202 incomplete; affine motion 200/210 and regular recursion 206/208 unstarted; final referees/cleanup remain.",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "checks": {
+    "clock_builder_initial": {
+      "session_id": 80284,
+      "exit_code": 0,
+      "jobs": 9074,
+      "note": "One unused simp argument subsequently removed. Full build must confirm final source."
+    },
+    "build": {
+      "session_id": 67166,
+      "exit_code": 0,
+      "jobs": 9458
+    },
+    "axioms": {
+      "session_id": 53920,
+      "exit_code": 0,
+      "declarations": 2464
+    }
+  },
+  "next": "Compute the binary radius R=K*blockSize(cellBits,N) from the retained normalized dimension word, then insert the existing ClockBuilder before RowLoop begins. Do not build another clock routine or reprove abstract geometry. Native alphabet5 gives eventual cellBits3; blockSize(3,N)=(N*entryBits(N)+2)/3. entryBits(N)=log2(N-1)+1 is not always N.size. Inspection confirms DimensionLoader erases its earlier bits/square/threshold work words, so do not assume that entryBits survives the generator. Reuse NativeCounter for a copied N-1 and NativeTrim for its normalized word. NativeMappedCopy with an all-one map, MeasuredScan.length_count_trace and a complement copy already encode that word length; do not reinvent binary length measurement. entryBits(N)=max(1,(N-1).size), so handle N=1 explicitly. Reuse DimensionScale/repeated addition for N*entryBits(N), with explicit common-width fits. For division by3, first examine a finite-state right-to-left scan of the little-endian word: start at the most significant bit, retain remainder0/1/2 in control, and write each quotient bit in place; prove the native rewind and arithmetic invariant. Add2 before floor division to obtain the ceiling. A subtraction/increment fallback also fits O(N log^2 N)<=O(P), using entryBits(N)<=N, but all native operations and fits must be proved. Alternatively preserve the bits witness through an explicit paid modification of follow-up loader code, but account for all changed interfaces; never modify the protected original paper. Existing ClockBuilder.native_call then supplies the clock with blank temporary fuel and restored heads in51R+42width+95. Add a work embedding into the actual native generator-consumer before asserting blank-start CutIneq. Added fixed idle tapes, input reset, arbitrary payload/cleanup, unconditional expansion and final MStar still remain. Old supplemental62722/19934 remain live/unverified; do not restart solely for elapsed time. All six families required; three complete; original unchanged; no commits/pushes.",
+  "new_modules": [
+    "ClockBuilderCalls",
+    "ClockBuilderMachine",
+    "ClockBuilderRun",
+    "CountedFillBody",
+    "CountedFillMachine",
+    "CountedFillRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.ClockBuilder.embed_init",
+    "TransposeFollowup.ClockBuilder.embed_copy",
+    "TransposeFollowup.ClockBuilder.embed_fill",
+    "TransposeFollowup.ClockBuilder.embed_erase",
+    "TransposeFollowup.ClockBuilder.embed_seal",
+    "TransposeFollowup.ClockBuilder.jump_trace",
+    "TransposeFollowup.ClockBuilder.init_call",
+    "TransposeFollowup.ClockBuilder.copy_call",
+    "TransposeFollowup.ClockBuilder.fill_call",
+    "TransposeFollowup.ClockBuilder.erase_call",
+    "TransposeFollowup.ClockBuilder.seal_call",
+    "TransposeFollowup.ClockBuilder.init_code",
+    "TransposeFollowup.ClockBuilder.copy_code",
+    "TransposeFollowup.ClockBuilder.fill_code",
+    "TransposeFollowup.ClockBuilder.erase_code",
+    "TransposeFollowup.ClockBuilder.seal_code",
+    "TransposeFollowup.ClockBuilder.phase_trace",
+    "TransposeFollowup.ClockBuilder.phases_word",
+    "TransposeFollowup.ClockBuilder.clock_trace",
+    "TransposeFollowup.ClockBuilder.native_clock",
+    "TransposeFollowup.ClockBuilder.fixed_resources",
+    "TransposeFollowup.ClockBuilder.native_call",
+    "TransposeFollowup.CountedFill.emit_step",
+    "TransposeFollowup.CountedFill.emit_run",
+    "TransposeFollowup.CountedFill.body_run",
+    "TransposeFollowup.CountedFill.body_trace",
+    "TransposeFollowup.CountedFill.counter_code",
+    "TransposeFollowup.CountedFill.loop_state",
+    "TransposeFollowup.CountedFill.resultState_word",
+    "TransposeFollowup.CountedFill.fill_trace",
+    "TransposeFollowup.CountedFill.native_fill"
+  ],
+  "updated_at": "2026-10-19T01:23:24.389145+00:00",
+  "formal_checkpoint": "R1743 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1743,481 sources,2464 declarations,86 artifacts",
+  "proof_scope": "In progress. R1743 proves the complete physical seven-phase clock builder. One fixed three-tape, five-symbol, 161-state native machine, from a marked binary radius word xs of value R and two blank tapes, writes Counter.marked(SevenPhaseClock.word R), preserves the radius word, erases its temporary counter including markers, and restores all three absolute heads. It halts within51R+42*xs.length+95 original TM transitions, preserving external input position and output. All three counter copies, destructively counted writes, counter erasures, START/STOP writes, linking jumps and final rewind are charged. A framed native-call theorem permits insertion into a larger caller. Six modules/31 supporting theorems; full build9458 jobs;2464 audited declarations, standard axioms only. Three of six families complete.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ClockBuilderCalls.lean": "0e19c163f03cbb0e009e31131c5dcd445ab917ad99b910b63f6c8308bafb640f",
+    "lean/TransposeFollowup/ClockBuilderMachine.lean": "53ffd59bb72a6baee3d67dab78476a34f9398803b6964c5c9d3f31b54e69b411",
+    "lean/TransposeFollowup/ClockBuilderRun.lean": "ab3bf88e41c135c049b4facbbcd68fbedc906f5dddc4891cd541008b7ade907f",
+    "lean/TransposeFollowup/CountedFillBody.lean": "7d3265ec12de598835b0937c742d57aa3216faf973dcf1cdb49f5e1554e8cb3e",
+    "lean/TransposeFollowup/CountedFillMachine.lean": "ef2ff7de5513ace958dd4bf23899e5709516a928cb5d001f8e6460416931698d",
+    "lean/TransposeFollowup/CountedFillRun.lean": "c26ce0ca590fdd874ff2de56ecf1d686201e9d7186b65215d02450ed328ae75f"
+  }
+}

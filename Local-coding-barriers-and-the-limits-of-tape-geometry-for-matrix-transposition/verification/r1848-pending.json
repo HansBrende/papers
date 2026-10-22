@@ -1,0 +1,54 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1847",
+  "target": "Actual trace-square source sample with branch inverse, finite trimming, native cover retention and explicit numerical budgets.",
+  "new_modules": [
+    "TraceSquareScalarSeparation",
+    "FarSignSubsample",
+    "ActualTraceSquareSubsample",
+    "TraceSquareSourceSample"
+  ],
+  "modified_modules": [
+    "MixedReadoutDistance"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.traceSquareScalar_noncentral",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_abs_sub",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_inverse_distance",
+    "TransposeFollowup.SL2Projection.exists_far_sign_subsample",
+    "TransposeFollowup.SL2Projection.exists_actual_trace_square_subsample",
+    "TransposeFollowup.SL2Projection.exists_actual_trace_square_source_sample",
+    "TransposeFollowup.SL2Projection.traceSquareScalar_enlargement_range"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9646,
+      "log": "/private/tmp/r1848-dev7.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10123,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4667,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 96376 exit1; dev2 85522 exit0/9598 jobs; dev3 58162 exit1; dev4 19659 exit0/9646 jobs; dev5 60889 exit1; dev6 18860 exit1; dev7 74492 exit0/9646 jobs, no warnings/errors. Full53663 exit0/10123 jobs, no warnings/errors; audit93303 exit0/4667 declarations, no warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T17:58:06.393541+00:00",
+  "formal_checkpoint": "R1848 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:942 local sources,204 external sources,4667 declarations,8 configurations,139 artifacts",
+  "proof_scope": "In progress. R1848 constructs the retained trace-square sample from actual original sources, conditional on explicit numerical trimming and spacing budgets. It proves an inverse-distance estimate on one sign branch away from the identity, reuses the existing cubic cluster bound to discard at most half the finite sample, retains one sign, and reuses the coarse sampler to retain covering complexity with loss26244*(4sigma/eta+1)^4. Four modules add seven audited declarations; one earlier commutativity proof is simplified by reuse. Scalar concentration, verification of the parameter budgets, second extraction and exponent closure remain open.",
+  "next": "R1848 recorded; never replay its checkpoint script. Full10123-job build\nand4667-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: normalized scalar concentration for the SAME actual retained\ntrace-square sample, reusing the existing nilpotent_scalar_sample_concentration\nproof through a general scalar-readout lemma. Do not duplicate that long\nproof or assume concentration from separation.\n\nConcrete refactor to consider:\nThe existing NilpotentScalarConcentration proof uses its nilpotent hypotheses\nONLY to derive the diameter of indices in a scalar interval. Generalize\nthat proof to an arbitrary injective scalar map a on a finite source family,\nwith a proved interval inverse constant Kinv>=0 (or a pairwise inverse\nbound), and a general retained-cover factor Sret>=0. Then recover the\nold nilpotent theorem by instantiating Kinv=3Bg/(2L) and\nSret=6561(4sigma/eta+1)^4. This preserves the original endpoint and reuses\nall cubic source packing, distribution, and normalization arithmetic.\n\nFor the new sample, restrict the original index family to T. R1848 RETURNS\nboth original matrix spacing>2sigma and the inverse estimate\n Kinv=3072/(lambda*s).\nTherefore a scalar ball of radius r has matrix diameter<=2Kinv*r.\nThe existing proof's localization factor can be\n Dloc=40(2R)^11*(Kinv+2),\nusing epsilon<=r and eta<=r, exactly as in the nilpotent proof.\nUse Sret=26244(4sigma/eta+1)^4. The extra factor4 in retention costs64\nin the cubic normalization. Preserve source indices, entries, original\nspan witnesses and every numerical profile hypothesis when restricting.\nDo not transfer the nilpotent coordinate itself to the new case.\n\nThen discharge the R1848 trimming budget\n 32L^3(U+1) C^3<=V^3,\nusing the R1845 global cube, the original mixed-profile cover bound,\nand coveringNumber_lower_of_distribution to pay the additive1. Here\nC is the UNTRIMMED coarse factor6561(...); final retention is4C.\nThe two spacing budgets independently require\n2sigma >= max(cubic packing threshold,Kinv*delta_s).\nNo requirement Kinv*delta_s<=cubic threshold remains.\n\nPay for the smaller readout coefficient: R1846 gives both gaps>=rho,\n|det b|<=32, so each normalized coefficient has abs>=3rho/256.\nTheir sum is3/2, so choose one with abs>=3/4 for the enlargement coefficient\n(the inverse bound<=2 needed by Pluennecke). Use scalar spacing delta_s\nlarge enough that multiplying the retained base by the other coefficient\npreserves the final scalar cell spacing. Search existing OAI scalarCells\nseparation/dilation lemmas before writing new finite-cell proofs.\nIf swapping the coefficients swaps which input is the base, R1847's\nmax-distance bound and length420 apply equally to either orientation.\n\nUse traceSquareScalar_enlargement_range for Y=F union FF union FF^-1.\nTransfer products and quotients to the original A^4 sources; pay their\napproximation errors before R1847's mixed-readout source_far theorem.\nThe current formal source sampler assumes 25alpha+epsilon<=1/64.\nThe final scalar cover radius should cover the source-error/concentration\nwindow as well; do not silently apply the scalar estimate below epsilon.\n\nApply scalar_sum_product_alternative and the112/560 bounds only after\nthese inputs are verified. Generalize the old n<=283 second-extraction\nwrapper to the actual length420 using the existing fixed-power proof\n(coefficient h^(8802n+4427)). R1845's universal initial n0+3 is a separate\nword cost. List every eta,d loss before choosing theta,tau and dyadic\nthresholds. Original profile/frame and analytic/machine endpoints remain.\nThree of six original families formalized; paid padding about60%, low\nconfidence. Original paper read-only; no commits/pushes/subagents.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceSquareScalarSeparation.lean": "6e9de2ac5d289f3d5db5aa4db46852bd8d214dbdbc64cee43b8970328deb6934",
+    "lean/TransposeFollowup/FarSignSubsample.lean": "94ce762b03c09de7eb7a88ae955f25c172a2af72998947d02bdd38d4eaefde35",
+    "lean/TransposeFollowup/ActualTraceSquareSubsample.lean": "fdf0b1564c632a442a86c4939542ca76d2161bceb372a094bc65e9f6b985a20c",
+    "lean/TransposeFollowup/TraceSquareSourceSample.lean": "878652676583c543ab30cf223388edca04fd70716e5b3addf30c04b6ec581ec0",
+    "lean/TransposeFollowup/MixedReadoutDistance.lean": "18ae7343ef05d5f1fcfe004566d40434d401d250d97e04e52f27ebbcbbca74ca"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1894",
+  "target": "Regular recursion206/208: full raw row geometry and shared resource bounds.",
+  "new_modules": [
+    "RawShellPosition",
+    "RawShellNativeMotion",
+    "RawRowProgramApproximation",
+    "RawShellResources"
+  ],
+  "modified_modules": [
+    "RawBankProgramApproximation"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledNativeIO.append_position_right",
+    "TransposeFollowup.RawProgramShell.prepare_position",
+    "TransposeFollowup.RawProgramShell.position_decomposition",
+    "TransposeFollowup.RawProgramShell.ioPath_after",
+    "TransposeFollowup.RawProgramShell.ioPath_frozen",
+    "TransposeFollowup.RawProgramShell.native_halts",
+    "TransposeFollowup.RawProgramShell.workTraj_decomposition",
+    "TransposeFollowup.RowBankCurve.shift_cover",
+    "TransposeFollowup.SharedRowBank.rawCurve",
+    "TransposeFollowup.SharedRowBank.rawCurve_cover",
+    "TransposeFollowup.SharedRowBank.rawCurve_error",
+    "TransposeFollowup.SharedRowBank.raw_scaled_approximation",
+    "TransposeFollowup.SharedRowBank.raw_error_vanishes",
+    "TransposeFollowup.RawProgramShell.cellBits_eq",
+    "TransposeFollowup.RawProgramShell.state_bits_vanish",
+    "TransposeFollowup.SharedRowBank.raw_state_bits_vanish",
+    "TransposeFollowup.RawBankProgram.ioPath",
+    "TransposeFollowup.RawBankProgram.ioPath_curve_error"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9039,
+      "log": "/private/tmp/r1895-dev7.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10304,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5770,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1895 dev1 session84957: exit1; common IO refactor built, shell proof needed open syntax, cast/if normalization and prepared-state alias fixes.\nR1895 dev2 session52125: exit1; remaining prepared-state alias in suffix decomposition fixed explicitly.\nR1895 dev3 session49443: exit0,9069 jobs; generic native motion including frozen tail built without warnings.\nR1895 dev4 session96203: exit1; explicit Int.cast_zero needed in shifted row-bound transfer.\nR1895 dev5 session83034: exit0,9080 jobs; complete raw row affine approximation and vanishing normalized error built without warnings.\nR1895 dev6 session8368: exit1; whitespace in1 <= inputLength corrected to avoid InitialSeg notation.\nR1895 dev7 session97377: exit0,9039 jobs; shared finite-mode state-bit bounds built without warnings.\nR1895 fullbuild session25551: exit0,10304 jobs,no warnings/errors; prior binary-word regularity and obstruction rebuilt after shared IO refactor.\nR1895 axiom audit session74629: exit0,5770 unique declarations,no warnings/errors,standard axioms only.\nAll execution handles terminal. No Lean edits or overlapping Lake calls while a Lake handle was live.",
+  "formal_checkpoint": "R1895 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1123 local sources,204 external sources,5770 declarations,8 configurations,233 artifacts",
+  "proof_scope": "PROGRESS at R1895: the complete raw integer-row program now has all-time native motion decomposition, including the frozen halted tail, a243-interval affine approximation with normalized error(8W+8)/P, and derived o(P) state bits for linear time. The error vanishes forP->infinity,W/P->0. Five of six original families formalized; regular recursion206/208 best estimate89% complete (low confidence). Remaining exact integer/F3 primitives and their bounded-word exclusions remain.",
+  "next": "R1895 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate89%, low confidence.\n\nNEXT: SYMBOL-PRESERVING BLOCK REVERSAL, SHARED BY PALETTES(a,b).\nInteger-row arithmetic is DONE through actual raw execution, arbitrary\nclean-bank composition, all-time native geometry and sublinear state bits.\nDo not rederive those layers. Read RawRowProgram, RawShellPosition,\nRawShellNativeMotion, RawRowProgramApproximation and RawShellResources.\nFor P=rW: rawtime15P+2W<=17P ifW,r>0;2 tapes,5 symbols,\n200*(time+1) states;243 affine intervals; error(8W+8)/P->0 forW/P->0,\nP->infinity. Generic workTraj_decomposition keeps data-dependent body\nmotion. Generic raw shell takes actual schedules and symbol invariants.\nThe pure IO path/rounding estimate is now shared in\nRawBankProgramApproximation. Existing binary clients were rebuilt.\n\nThe next missing shared permutation should reverse the ORDER of equal-\nlength blocks while preserving symbol order INSIDE each block. It must\npreserve all5 symbols; this can serve integer row reversal, F3 row\nreversal and inner entry-order reversal. Existing BankReversal reverses\nindividual BITS and decodes through Bool, so do not treat it as the same\noperation. ScheduledTransfer already supports arbitrary finite read/write\nmaps, forward/backward reads, source erasure, exact positions/cells and\nnative scheduled execution. A possible shared transfer mode uses the\ncoupled controller's symbol field, read s=(false,s,blank), write m=m.2.1;\nwrite(read s)=s. Reuse product-mode transport if composing with shared IO.\n\nA concrete paid block-reversal route to inspect: for P=nB, seek the bank\nhead toP. For each block, rewind bankB to its start, copy forwardB symbols\nto advancing scratch, then rewind bankB again. Each block costs4B and\nends with bank displacement-B,scratch+B. After all blocks, bank is back\nat0 and scratch atP. Rewind scratchP, copy its P symbols forward back to\nbank while erasing source, then rewind both heads. With separate final\nrewinds this has total cost10P (initial seekP,4P block loop, scratch\nrewindP, return copy2P, two final rewinds2P). This is a proposed execution,\nNOT yet proved. Check zero-width/count edge cases and all frame/scratch\nobligations. It is a constant-tape, symbol-preserving permutation, not\nfree random access. RepeatedScheduleMotion can bound block interiors by\nO(B) around their endpoint drift; larger setup/return passes have existing\nexact affine motion. For row reversalB=W=db, B/P->0.\nApply the same primitive per row to reverse b-symbol entries inside each\nrow while preserving within-entry bit order. An outer fixed-width row\nloop then uses the existing repeated-block endpoint estimate O(W).\nThis can close both R and C in palettes(a,b). Keep proofs generic enough\nfor exact-symbol BankWord.symbols, without duplicating a separate trit\nreversal. Any refinements to this proposal must retain paid head motion.\n\nAfter R/C, remaining source206(a): row XOR/difference, public row-dependent\ncyclic rotations and whole-bank increment/decrement modulo2^P.\nSource206(b): F3 row/column prefix/difference, row rotations, diagonal\nsigns and whole-entry-stream rotation. Reuse existing MaskedStride,\nCoupledRowCell, ScheduledTransfer, cleanup and BankWord.word_spec.\nFor trits2 use .start on public-clock banks; Boolean decoders erase it.\nPreserve exact declared data types; no integer operation on trit states.\nThen assemble the FULL bounded-word high-entropy exclusions, with arbitrary\npublic nonuniform choices and correctness sets of coentropy o(P).\nUse PhysicalAffineApproximationObstruction (already done) for the physical\ntrajectory scaling; rescaledTrajOf is a different slot/block convention.\nSource206(c), source208 and210.5 remain DONE. Referees after all six.\nOriginal read-only; no commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate89% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1895 completes full raw-program geometry/state-bit premises for integer row arithmetic. Remaining integer/F3 operations, bounded words and final referees remain.",
+  "updated_at": "2026-10-21T07:50:08.206104+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/RawShellPosition.lean": "b005edb3050a828bc4e366035b2b61a3d7596f389f4a18a217c489215591d271",
+    "lean/TransposeFollowup/RawShellNativeMotion.lean": "7dff897e45223536d0be4fa5c1120a657a53511ea5897c3c9ba4df59167c8bba",
+    "lean/TransposeFollowup/RawRowProgramApproximation.lean": "1324f45c14d738e5cda0869a1d866a5fe6939686df316266fddb2ff7f829d7cd",
+    "lean/TransposeFollowup/RawShellResources.lean": "509fb176dd0d24f1d57a473212c711bfa4a1ea26fc509eb82dcabe3d8f58d830",
+    "lean/TransposeFollowup/RawBankProgramApproximation.lean": "36602835577fe6b869ffa267e47674f71c0cab4c691d78b4263a95305c60a691"
+  }
+}

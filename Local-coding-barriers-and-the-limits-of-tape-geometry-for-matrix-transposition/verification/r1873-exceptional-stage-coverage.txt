@@ -1,0 +1,116 @@
+
+R1873 — ADAPTIVE EXCEPTIONAL-STAGE COVERAGE
+PROGRESS at R1873: actual global exceptional-tick budgets now give limiting regular-stage coverage with omitted physical time at most eta. Adaptive stage designations stabilize on a common subsequence; finite shallow-stage bounds and the geometric tail are proved. Five of six original families are formalized. Current sixth family, regular recursion206/208, best estimate45% complete (low confidence). The native exceptional-work threshold and exact206 executors remain.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1873 RESULTS
+1. exceptionalTicks counts actual global ticks whose stage is designated bad.
+   Every such tick remains charged to its original contracting node budget.
+   regular_shallow_stage_omission proves that the real time omitted outside
+   regular stages of depth<h is at most
+       exceptionalTicks/P + a*C*rho^h/(1-rho).
+   The proof imports the exact clock-to-interval volume identity and deep
+   work bound; it adds only the finite exceptional/deep tick union estimate.
+2. exists_stage_flag_subsequence uses mathlib's sequential compactness of
+   the countable product of discrete Boolean spaces. Every fixed stage flag
+   is eventually constant. finite_flag_filter_eventually_eq stabilizes the
+   selected subset of each finite shallow family. The flagged omission limit
+   then imports finite_stage_omission_tendsto; no new interval-limit proof.
+3. regular_limit_shallow_omission passes the actual global exceptional budget
+       exceptionalTicks_i/P_i <= eta+eps_i,  eps_i -> 0,
+   to each finite limiting shallow family. It proves omission at most
+       eta + a*C*rho^h/(1-rho).
+   Clock disjointness, endpoint bounds and all-cost budgets are derived from
+   ContractingStageClock. Flag stability is proved in the final extraction.
+4. geometric_regular_stage_open_defect lets h tend to infinity. The open
+   union of all limiting regular stages omits at most eta from [0,H].
+   Mathlib's a.e. interval equalities, countable union congruence, set
+   difference congruence and measureReal_congr replace bespoke endpoint
+   counting and the final hand-written set-difference proof.
+5. exists_exceptional_stage_limit_cover combines common coordinate extraction
+   with a further flag subsequence. It returns one strictly increasing index
+   subsequence and limits of every stage start/end, node volume and halting
+   time, all coordinate bounds, eventual flag stabilization and the eta
+   coverage bound. There is no assumed limiting omission bound and no
+   assumed shared stage designation across executions. Fixed B,J and
+   0<=rho<1, a>=0, positive P, actual clocks and the global budget suffice.
+
+SCOPE
+This proves the coverage portion of source210 section35, including (210.6).
+It does not assert setwise convergence of exceptional sets. The global eta
+is in units of P transitions; a per-node eta*V allowance has different units.
+The local affine-cover and native quantitative contradiction are next.
+
+DEPENDENCIES
+Three new mathematical modules: ExceptionalStageClock, StageFlagLimits,
+ExceptionalCoverageLimits. Eight new audited declarations. Existing
+mathematical modules are unchanged. SupportAxioms imports and audits the
+new modules. The geometric clock tail and endpoint compactness are reused.
+
+DRIFT / REUSE
+The target is the explicit global exceptional-work extension (210.5), not
+a new abstract regularity project. This checkpoint removes its adaptive
+flag/coverage obligation using existing clock and mathlib APIs. Reused:
+CompactSpace.tendsto_subseq, eventually_all_finset, Ioo_ae_eq_Ico,
+Ico_ae_eq_Icc, EventuallyEqSet.countable_iUnion/iUnion, ae_eq_set_sdiff,
+measureReal_congr, and the geometric power limit. No new compactness,
+measure-continuity, endpoint-nullity or native trace-counting chain.
+The exact pipeline was not found as a pre-existing theorem in the searched
+local/mathlib modules; this is not an exhaustive absence or novelty claim.
+
+
+BOUNDARY
+The source208 native contracting-recursion exclusion is complete. This checkpoint proves the exceptional coverage part of source210 section35 from actual paid clocks and a global exceptionalTicks/P<=eta+eps budget with eps->0. It does not yet prove the full native eta>=1/(2*k*G) theorem: regular-only occurrence profiles, defect-preserving affine assembly, post-halt extension and native popular-execution integration remain. Exact206 palette semantics/native nonuniform executors, growing strides and bounded composition also remain. No unrestricted transpose decision or literature-novelty claim. Final referees follow all six.
+
+NEXT
+R1873 recorded; NEVER replay its checkpoint script. Current checkpoint
+Lake handles terminal. Goal ACTIVE; PROGRESS. Five of six original families
+formalized; sixth regular recursion206/208 best estimate45%, low confidence.
+
+Next: finish source210 section35's GLOBAL exceptional-work threshold
+eta>=1/(2*k*G). The actual flagged coverage extraction is complete in
+ExceptionalCoverageLimits.exists_exceptional_stage_limit_cover. Reuse it.
+
+Regular-only occurrence regularity can reuse HasRegularStageSubsequences by
+collapsing bad-stage durations to zero: L_i=if good_i then E_i-A_i else 0.
+For a limiting good stage the flag is eventually true. Use modified end
+E'_i=if good_i then E_i else A_i, so A<=E'<=E, the budget persists and
+E'/P has the original endpoint limit. Then import
+positive_stage_affine_of_regular_occurrences; do not redo local profiles.
+
+Generalize affine cover assembly to preserve omitted volume<=eta. Each
+stage's open affine region differs from its interval only by a null set.
+Use mathlib ae_le_set/ae_eq_set, countable_iUnion, ae_eq_set_sdiff and
+measureReal_congr to transport this defect through the countable union.
+Add the constant post-halt interval using physical_limit_constant_after_halt.
+Separate per-head covers suffice; no common finite partition is needed.
+Sum their omissions<=k*eta and apply AffineTimeRequired.physical_omission
+to obtain 1/(2G)<=k*eta. Preserve all units, positivity and finite measure.
+
+Finish the native theorem, not merely a conditional geometric inequality:
+reuse NativeRegularRecursion's popular representative extraction, correct-set
+membership, actual halting and physical extensions. Define an all-eligible-
+sequences interface with adaptive clocks/flags, a uniform eps_i->0 over
+correct sets, all physical heads and finite initial exceptions. Keep fixed
+heads/cell bits, o(P) state bits, sublinear coentropy and raw encode/transpose
+semantics. Derive the linear time bound from clocks as in source208.
+Per-node eta*V only gives eta*C/(1-rho)>=1/(2*k*G).
+
+Then exact206 palette semantics/native executors: row/entry/F3 operations,
+arbitrary masked bit strides, zero versus positive normalized stride, bounded
+word composition and every copy/seek/clear/reset/input/output cost. Source206
+permits O(P)-state unrolled clocks/O(log P) state bits and arbitrary public
+size-dependent schedules; do not require a uniform parameter generator.
+Search existing FixedTapeCompiler/semantic routines before adding code.
+Do not reopen completed source208 or motion200/210 general lower bounds.
+
+No fresh subagents until all six; then authorized impartial referees and
+cleanup. Original paper read-only; no commits/pushes. No unrestricted
+transpose decision or novelty claim.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate45% complete (low confidence). This measures the full sixth family, not completion of the coverage helper. The five completed families are adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup remain.
+
+VERIFICATION
+Full lake build passed10198 jobs without warnings/errors; SupportAxioms audited4959 unique declarations using only propext,Classical.choice,Quot.sound. There are1017 local sources (1016 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and189 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All checkpoint execution handles terminal.

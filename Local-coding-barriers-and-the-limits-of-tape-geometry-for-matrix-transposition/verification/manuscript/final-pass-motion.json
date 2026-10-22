@@ -1,0 +1,174 @@
+{
+  "review_date": "2026-10-21",
+  "reviewer": "final_motion",
+  "status": "passed",
+  "scope": "Final editorial and semantic pass of paper/sections/motion.tex; direct comparison with listed Lean endpoint statements, definitions, and supporting proofs. No Lean edits.",
+  "manuscript": "paper/sections/motion.tex",
+  "manuscript_sha256": "71203b8fb44f8f636c2e4f5f9ad47f1c299ca1431b04f90c7ac05681566ee682",
+  "contracts_sha256": "57fec65ba362168125ec99843b7ddc15f058a23617870384beb56a84fa3838f9",
+  "numbered_items": 12,
+  "formal_annotations": 50,
+  "no_material_statement_overclaims_found": true,
+  "open_findings": [],
+  "changes": [
+    "Made affine regular regions explicitly open in ambient R.",
+    "Corrected countable-cover proof terminology: finite initial subfamilies, not a finite subcover.",
+    "Stated eventual correctness and correctly encoded inputs explicitly in the palette theorem.",
+    "Explained the lower-bound or construction-filter role of every numbered result and the dependency role of the closure/accounting lemmas.",
+    "Removed repeated qualifiers and rhetorical comparisons while retaining costs, native scope, subsequence order and scope boundaries.",
+    "Added mixed-binary endpoint to the palette contract declaration inventory.",
+    "Root cross-review corrected the closing M* summary to linear-time payloads; arbitrary-payload scope belongs only to the discrete cut condition.",
+    "Root cross-review removed a sentence claiming all displayed bounds were independent of d; the primitive error depends on d although its coefficient and cover bound are fixed."
+  ],
+  "word_count_method": "Whitespace-delimited tokens in complete TeX source, including markup and displays.",
+  "word_count_before": 3963,
+  "word_count_after": 3714,
+  "word_count_delta": -249,
+  "items": [
+    {
+      "label": "def:motion-star",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.SatisfiesStar"
+      ],
+      "comparison": "SatisfiesStar quantifies 0<theta<1/2 in ENNReal, FinUnionIcc S, PiecewiseConstOn beta S H, and all off-S class measures. English finite real theta is equivalent in this restricted range. AffineTimeRequired uses ambient-open neighborhoods. Made ambient openness explicit.",
+      "outline_assessment": "Definition; crossing and piecewise-constant conventions checked against first-paper DefsM. No proof outline.",
+      "program_role": "Defines the necessary geometric condition used by the affine-time obstruction; preserves the first paper crossing convention.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "thm:motion-affine-time",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission",
+        "TransposeFollowup.AffineMotion.star_half_le_affine_component_omission",
+        "TransposeFollowup.AffineMotion.star_common_affine_omission"
+      ],
+      "comparison": "Matches nonnegative H, k finite, 1-Lipschitz paths, R contained in [0,H], local affine neighborhoods, and SatisfiesStar. Component formulation is a listed endpoint. Common-region bound follows from the summed bound by k>0. No per-head 1/2 bound asserted.",
+      "outline_assessment": "Checked CountableAffinePathLabels, FiniteAffineLabels, OmittedVisitBound and OpenAffineTimeBound. Simultaneous label, strict small-cut estimate, finite-prefix approximation, constant-branch null heights and original adjacency accounting match. Corrected finite open subcover to finite initial subfamily.",
+      "program_role": "Impossibility: quantifies a positive sum of omitted times for any locally affine regions. Construction filter: a candidate must have enough physical motion outside such regions.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "thm:motion-native-limits",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.popular_affine_time_nonuniform",
+        "TransposeFollowup.AffineMotion.popular_affine_time_robust",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission"
+      ],
+      "comparison": "popular_affine_time_nonuniform derives eventual TraceClass representatives inside W_i and both existence and universal implication for uniform subsequential block limits. Nat.clog 2 (q+1) is ceiling log2 of Q_i. Kept fixed k,G, raw encode/output, actual halting, state-bit vanishing, integer deficits and canonical widths. physical_omission and canonical_physical_error supply the stated units and error.",
+      "outline_assessment": "Checked native popular-class endpoint and normalization proof. Correct representatives/deficit extraction, universal limit property and measure rescaling; no geometry assumptions on a chosen favorable input.",
+      "program_role": "Transfers the limiting obstruction to actual nonuniform high-entropy correct executions and derives representatives rather than assuming favorable inputs.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "def:motion-affine-cover",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.HasAffineIntervalCover"
+      ],
+      "comparison": "HasAffineIntervalCover J f H has two endpoint maps into Icc 0 H, pointwise coverage, and affine formulas on each Icc l r. No endpoint order, partition, continuity, or slope assumptions added.",
+      "outline_assessment": "Definition directly compared with Lean.",
+      "program_role": "Defines the bounded geometric approximation class used by the closure lemma and native approximation obstruction.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "lem:motion-cover-closure",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.local_affine_ae_of_eventual_bounded_covers"
+      ],
+      "comparison": "local_affine_ae_of_eventual_bounded_covers assumes eventual fixed J and pointwise convergence at every horizon point; returns open R contained in the horizon, null complement, and local affine neighborhoods. English matches.",
+      "outline_assessment": "Read endpoint proof: compact endpoint subsequence, finite limiting endpoints, an eventual fixed interior neighborhood, pointwise affine closure. English follows these steps.",
+      "program_role": "Technical bridge for impossibility: pointwise approximants with fixed finite cover size force an almost-everywhere locally affine limit.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "thm:motion-pointwise",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.no_subsequential_physical_pointwise_affine_fast_approximation"
+      ],
+      "comparison": "The endpoint quantifies every strict phi and every full ws eventually in Ws, then exists strict psi,J,q. Cover bound holds eventually jointly for all heads. Error convergence is pointwise for each head/time. The English uses the identical indexing phi(psi(i)) and horizon c+1/G=(cG+1)/G, G>0 derived from native cellBits.",
+      "outline_assessment": "Read contradiction proof: popular representatives, physical limit, approximation subsequence, pointwise convergence and local-affinity contradiction. English follows the same sequence.",
+      "program_role": "Impossibility criterion for native algorithms whose complete head trajectories admit subsequential pointwise bounded-affine-cover approximations.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "thm:motion-palettes",
+      "declarations": [
+        "TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose",
+        "TransposeFollowup.TernaryMatrixPalette.no_high_entropy_transpose",
+        "TransposeFollowup.RawMixedBinaryWord.no_high_entropy_transpose"
+      ],
+      "comparison": "All three endpoints allow arbitrary size-dependent words with eventually bounded length, eventual correctness on raw encodings, integer coentropy bounds o(P), and canonical dimensions tending to infinity. Mixed-binary validity is eventual. English validity is stronger if read globally, hence does not overclaim. Added explicit eventual correctness and encoded-input wording to match the endpoints more closely.",
+      "outline_assessment": "Checked all palette endpoint statements, operation types, coordinate identities/recurrences, native resources, whole-word approximation and mixed-word subsequence theorem. Costs (7+24K)P and (7+27K)P, control states 200(T+1) and 4(T+1), two tapes/five symbols, cover/error constants match. Proof distinguishes accumulated output from original prior row and retains ternary intermediates.",
+      "program_role": "Excludes the three exact bounded-word construction families by deriving native costs and geometry; identifies which class boundaries a surviving word construction must leave.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "def:motion-clock",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.ContractingStageClock"
+      ],
+      "comparison": "The structure has real nonnegative volumes, natural A/E, label Fin T to address times Fin J, contraction/root bounds, A<=E<=T, exact ownership equivalence, and per-node own-duration budget. Manuscript additionally fixes the parameter inequalities used by later results. It does not introduce descendant contiguity.",
+      "outline_assessment": "Definition directly compared with ContractingStageClock fields.",
+      "program_role": "Defines a charged partition of actual execution ticks so a recursive total-time estimate and depth-tail estimate can be proved without free subroutine costs.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "lem:motion-clock-accounting",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.stage_clock_deep_work_bound",
+        "TransposeFollowup.RegularMotion.stage_clock_total_time_bound"
+      ],
+      "comparison": "Deep tick count and total time follow stage_clock_deep_work_bound and stage_clock_total_time_bound with root<=CP. regular_shallow_stage_omission uses real measure of [0,T/P) minus good shallow stageRegion. exceptionalTicks_node_budget has eta>=0 and exact per-node tick cardinalities. Manuscript matches all four.",
+      "outline_assessment": "Read StageClockAccounting and ExceptionalStageClock proofs: tick ownership turns interval lengths into fiber counts; geometric volume charge supplies deep work; omission is bad-union-deep; per-node bad work counted once.",
+      "program_role": "Supplies the linear-time and finite-depth coverage estimates needed by the recursive obstruction; aggregates local exceptional charges for its per-node corollary.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "def:motion-stage-regularity",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasRegularStageSubsequences"
+      ],
+      "comparison": "HasRegularStageSubsequences requires every strict phi with all positive durations and V_phi tending to infinity, then exists strict psi and one finite-cover uniform limit on Icc 0 a. The frozen sample uses natural floor/min and actual global start ticks. RegularFlaggedClockHead makes bad durations zero; family predicate fixes eps before selecting execution sequences and clocks.",
+      "outline_assessment": "Definitions directly compared; positive_stage_affine_of_regular_occurrences also checked for use in the following outline.",
+      "program_role": "States the actual-stage hypothesis under which contracting recursion yields affine physical limits, including sequence-dependent clocks and varying piece bounds.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "thm:motion-exceptional-recursion",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.native_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget"
+      ],
+      "comparison": "native_flagged_recursion_budget assumes eventual correctness plus existence of a clock on every correct execution, vanishing fixed eps and HasFlaggedRecursiveExecutions; it derives both inequalities. Fast endpoint instead assumes cP time and has only the first inequality in its conclusion. English preserves this distinction. Positive k follows algebraically. Uniform and zero-exception cases are supported by listed endpoints.",
+      "outline_assessment": "Read NativeExceptionalRecursion, ExceptionalRecursiveLimits and positive-stage transfer proof. Paid linear bound, popular representatives, stage-limit extraction, positive volume from positive interval, local profiles, affine stage union, frozen tail and global omission budget match.",
+      "program_role": "Impossibility: rules out all-regular contracting clocks. Construction requirement: quantifies the exceptional-time allowance needed under the other clock hypotheses.",
+      "english_no_stronger_than_formal": true
+    },
+    {
+      "label": "cor:motion-node-exception",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions",
+        "TransposeFollowup.RegularMotion.native_node_budget_recursion_bound"
+      ],
+      "comparison": "native_node_budget_recursion_bound assumes eta>=0, same correctness and clock existence, and HasNodeBudgetRecursiveExecutions. to_global supplies allowance eta*C/(1-rho), with eps identically zero. Both displayed inequalities match the endpoint.",
+      "outline_assessment": "Checked to_global and native_node_budget_recursion_bound: exact node charge and constant-zero error reduce to the global theorem.",
+      "program_role": "Converts the necessary global exceptional-time allowance into a bound on per-node exceptional-work coefficients.",
+      "english_no_stronger_than_formal": true
+    }
+  ],
+  "validation_limits": "Semantic comparison by direct source review; root will run final build/axiom inventory and independent cross-review. No new mathematical theorem or strengthening claimed.",
+  "cross_review_corrections": [
+    {
+      "reviewer": "root",
+      "finding": "Closing summary conflated arbitrary-payload discrete-cut scope with limiting M* scope.",
+      "resolution": "Changed arbitrary payload to any linear-time payload for M*.",
+      "status": "resolved"
+    },
+    {
+      "reviewer": "root",
+      "finding": "Displayed primitive error 32(db+1) depends on d, contradicting the sentence claiming independence of the bounds.",
+      "resolution": "Removed the unnecessary sentence.",
+      "status": "resolved"
+    }
+  ]
+}

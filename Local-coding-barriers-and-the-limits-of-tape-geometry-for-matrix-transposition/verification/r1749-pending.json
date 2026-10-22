@@ -1,0 +1,86 @@
+{
+  "checkpoint": "R1749",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "NativeInputRewind",
+    "NativeInputRewindCalls",
+    "NativeIOFusionEmbedding",
+    "PaidGeneratorSafety",
+    "PaidReadyMachine",
+    "PaidReadyRun",
+    "NativeIOFusionRecover",
+    "PaidReadyGeometry",
+    "PaidReadyCut"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.NativeInputRewind.left_trace",
+    "TransposeFollowup.NativeInputRewind.read_trace",
+    "TransposeFollowup.NativeInputRewind.right_trace",
+    "TransposeFollowup.NativeInputRewind.scan_trace",
+    "TransposeFollowup.NativeInputRewind.complete_trace",
+    "TransposeFollowup.NativeInputRewind.embed_cfg",
+    "TransposeFollowup.NativeInputRewind.framed_trace",
+    "TransposeFollowup.NativeInputRewind.native_call",
+    "TransposeFollowup.NativeIOFusionEmbedding.work_code",
+    "TransposeFollowup.NativeIOFusionEmbedding.step_embed",
+    "TransposeFollowup.NativeIOFusionEmbedding.trace_embed",
+    "TransposeFollowup.NativeIOFusionEmbedding.run_prefix",
+    "TransposeFollowup.RowLoop.selected_next_ne_done",
+    "TransposeFollowup.PaidGeneratorRows.selected_next_ne_done",
+    "TransposeFollowup.PaidReady.prefix_code_except",
+    "TransposeFollowup.PaidReady.prefix_code",
+    "TransposeFollowup.PaidReady.prefix_read_code",
+    "TransposeFollowup.PaidReady.reset_code",
+    "TransposeFollowup.PaidReady.embed_prefix",
+    "TransposeFollowup.PaidReady.prefix_trace",
+    "TransposeFollowup.PaidReady.prefix_run",
+    "TransposeFollowup.PaidReady.transfer_trace",
+    "TransposeFollowup.PaidReady.reset_trace",
+    "TransposeFollowup.PaidReady.complete_trace",
+    "TransposeFollowup.PaidReady.total_linear",
+    "TransposeFollowup.PaidReady.final_halts",
+    "TransposeFollowup.PaidReady.native_complete",
+    "TransposeFollowup.PaidReady.output_contract",
+    "TransposeFollowup.PaidReady.fixed_resources",
+    "TransposeFollowup.NativeIOFusion.trace_of_stepN",
+    "TransposeFollowup.PaidReady.prefix_positions",
+    "TransposeFollowup.PaidReady.native_row_walk",
+    "TransposeFollowup.PaidReady.native_layout",
+    "TransposeFollowup.PaidReady.native_cutIneq",
+    "TransposeFollowup.PaidReady.native_canonical_cut"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 52646,
+      "exit_code": 0,
+      "jobs": 9423
+    },
+    "build": {
+      "session_id": 98813,
+      "exit_code": 0,
+      "jobs": 9496
+    },
+    "axioms": {
+      "session_id": 84536,
+      "exit_code": 0,
+      "declarations": 2655
+    }
+  },
+  "updated_at": "2026-10-19T08:54:45.603424+00:00",
+  "formal_checkpoint": "R1749 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1749,519 sources,2655 declarations,86 artifacts",
+  "proof_scope": "In progress. R1749 composes the fully paid native blank-start prefix with a physical input reset. For all raw inputs w of valid length P=inputLength(n), n>=1, the fixed PaidReady machine executes the prefix, pays one transfer, then returns the input head to0 in exactly2P+3 further transitions. Its total bound is(C_prefix+6)*P, where C_prefix=OpcodeGenerator.coefficient(F)+RadiusClock.linearConstant(K)+28K+16Q+19 and Q=rationalPageCount(F). All53+Q work tapes, their final absolute heads, and the empty output are preserved across reset; no additional work tape is used. Exact prefix position preservation is proved at every successful source execution time. Under the original explicit expansion/stretch/head conditions, the same zero-slack CutIneq holds for PaidReady at a prefix horizon T<=C_prefix*P. The four-state rewind covers empty inputs and any initial input position0<=j<=P in exactly2j+3 steps. General mixed-IO selective-fusion embedding and recovery of charged traces from successful stepN are also proved. Arbitrary payload execution and the complete paid-padding theorem are not yet proved.",
+  "next": "Implement arbitrary original-TM payload composition, not just a payload written in the five-symbol NativeIO language. First formalize a finite bit-plane encoding for any fixed payload alphabet Fin(M.g+1): use ell=max(1,Nat.size M.g) parallel tapes per original work tape, encode symbol0 as all blank, and prove exact encode/decode and scanned-symbol preservation. Original TM transitions inspect all fixed heads at once, so one payload step can update all bit planes together, preserve the input move/output bit, and shift every plane of each source tape together. This keeps the combined alphabet at5 symbols and cellBits3, avoiding a hidden change in the clock radius/geometric scale. Build a finite-state combined original TM that runs PaidReady on private prefix tapes, keeps payload planes blank, then pays one transfer from the known return state to the payload initial state. Prove exact output and runtime preservation, prefix paths, fixed resources, and the extended CutIneq horizon. Private prefix workspace must be accounted for honestly; do not claim it erased. Audit the full201/202 statement before dropping any stronger cleanup obligation. Unconditional expansion/MStar and motion/recursion remain separate real obligations.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. Native input reset and preserved cut geometry support paid padding201/202, not completion. Motion200/210, recursion206/208 and final referees remain. The percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/NativeInputRewind.lean": "b68e7af6c099bec4807c1ed45111e632a11d49a887d5bab0d809c7ee3944f4d1",
+    "lean/TransposeFollowup/NativeInputRewindCalls.lean": "2d93b795ac93e1a124a512941dbde36bd36cae0cc22208b10c0e195c2ad877d3",
+    "lean/TransposeFollowup/NativeIOFusionEmbedding.lean": "6b450b6bfd86e89aab44709a8dfa631b1a645f0ea96e628df8d3d2484fd8a3d5",
+    "lean/TransposeFollowup/PaidGeneratorSafety.lean": "576b8120c52fe89c66eb2876f2e37aa54429895cb2e67322d0b7e0e4f48167ab",
+    "lean/TransposeFollowup/PaidReadyMachine.lean": "7660b48137ccab6289e579e91bc796303d35f194feae6352678b4dd1f271fdfa",
+    "lean/TransposeFollowup/PaidReadyRun.lean": "149cbab945b4981c29459cc757d79730054a6b1551d6e28e8986083afe7d7b94",
+    "lean/TransposeFollowup/NativeIOFusionRecover.lean": "f80bb0662090bc562851ca29e1888ffebfee6367beda3cce6e811709c6068999",
+    "lean/TransposeFollowup/PaidReadyGeometry.lean": "913fd1d8a57f4e8d30aa978749af6578517e8504e009cd6c934ec2878e98ea6c",
+    "lean/TransposeFollowup/PaidReadyCut.lean": "e193da9ba650d974a68e386567d254b24a8fca4de9b28f8b33058c341d0777c7"
+  }
+}

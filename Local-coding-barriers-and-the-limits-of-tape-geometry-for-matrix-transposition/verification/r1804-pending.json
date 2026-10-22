@@ -1,0 +1,89 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "ExternalCoverAttainment",
+    "FrobeniusClosedRefinement",
+    "MobiusCoveringNumbers",
+    "SmoothedIterateCoveringProfile"
+  ],
+  "new_declarations": [
+    "Metric.exists_finset_card_eq_externalCoveringNumber",
+    "TransposeFollowup.frobenius_dist_sq",
+    "TransposeFollowup.frobenius_dist_le_iff",
+    "TransposeFollowup.isCover_of_strict_frobenius",
+    "TransposeFollowup.exists_strict_frobenius_refinement",
+    "TransposeFollowup.strict_cover_cost_le_externalCoveringNumber",
+    "TransposeFollowup.RealMobius.externalCoveringNumber_le_finite_frobenius",
+    "TransposeFollowup.RealMobius.haar_le_externalCoveringNumber",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_covering_profile"
+  ],
+  "declaration_counts": {
+    "theorem": 9
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 23862,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev1.log"
+    },
+    "development_2": {
+      "session_id": 33578,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev2.log"
+    },
+    "development_3": {
+      "session_id": 11799,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev3.log"
+    },
+    "development_4": {
+      "session_id": 48932,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev4.log"
+    },
+    "development_5": {
+      "session_id": 52561,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev5.log"
+    },
+    "development_6": {
+      "session_id": 32940,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1804-dev6.log"
+    },
+    "build": {
+      "session_id": 72530,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9769,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 90536,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4241,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1804 uses native Mathlib Matrix.Norms.Frobenius, Metric.externalCoveringNumber, IsCover, and ENat.toENNReal. The actual distance squared is proved equal to the sum of four squared entry differences. Closed radius-eta covers refine to strict radius-eta covers at cost6561, so the convention change is proved rather than assumed. A missing finite external-cover attainment lemma reuses the existing ENat infimum and definition. The actual nonflattening composition now has native positive finite covering numbers, a small-tripling bound and two-sided quantitative size control. This supports the Bourgain\u2013Yehudayoff product-growth route previously audited, but does not yet absorb losses into scale exponents, prove multiscale distribution/escape, or prove the product theorem.",
+  "cleanup": "No new definitions or edits to pre-existing mathematical modules. Reused the exact native Frobenius metric instead of defining an equivalent metric; native external covering numbers and ENat coercion; native finite attainment machinery; existing coordinate refinement and Haar-cover volume. The same universal strict-cover-cost lemma handles both size and tripling conversions. Fixed missing NNReal scope, an explicit natural-power argument, and zero-coercion simplification; did not raise heartbeat limits. All nine declarations are used or public compositions.",
+  "updated_at": "2026-10-19T22:27:15.076013+00:00",
+  "formal_checkpoint": "R1804 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1804, 792 sources, 4241 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1804 uses Mathlib's exact Frobenius metric and native external covering numbers. It proves the distance/squared-entry identity, finite attainment of external covering numbers, and a closed-to-strict radius-eta cover refinement of cost6561. Applied to the actual localized set A, it gives native covering numbers nA,n3 with0<nA<=n3<infinity, n3*q^2<=6561D*nA, q<=128*6561*393216^4*K0*K*L^2*M*V*nA*v_eta, and nA*q^3*V*v_eta<=A6*2^72*K0^2*L^2*K^107. The actual squared-L2 mass V is proved positive and finite, and the original geometry, probability concentration and volume comparisons remain in the same theorem. Absorbing the explicit losses into scale exponents, intermediate-size power bounds, multiscale distribution, quantitative escape, product growth itself, strict flattening and unconditional paid padding remain unproved. Supporting formalization, not a new transposition bound.",
+  "next": "The preceding turn is PROGRESS. R1804 proves the native covering-profile target. Do not redo metric definitions, finite cover attainment, open/closed conversion, localization, volume comparison or BSG. Start from SmoothedIterateCoveringProfile.exists_smoothedIterate_covering_profile, importing Matrix.Norms.Frobenius scope for the AMBIENT MATRIX images. It uses Mathlib Metric.externalCoveringNumber and ENat.toENNReal; no new metric/entropy definitions exist.\n\nChecked theorem: with the R1803 actual nonflattening hypotheses, q=ofReal(theta), V=integral rho_k^2, R=(4B^2)^(2^k),Q=32(R+1)^6,M=ofReal(33^4 Q^8/alpha^4),K0=64N_level^4,L=8(K0^2/q^2),K=2^55 L^21,A6=ofReal((2^21+1)^4 Q^52),d=393216^4,D=d*A6*(2^68 K0 L^2 K^100)*M,v=H(Ball(eta)), it returns the SAME N_level,U,Y,x and A=U^2 intersect Ball(alpha), retaining all original geometry/probability/volume inequalities. Set nA,n3 to native CLOSED Frobenius eta external covering numbers of the ambient matrix images, cast to ENNReal. Then\n 0<V<infinity, 0<nA<=n3<infinity,\n n3*q^2<=6561D*nA,\n q<=128*6561*d*K0*K*L^2*M*V*nA*v,\n nA*q^3*V*v<=A6*2^72*K0^2*L^2*K^107.\nThe checked N_level bound is N_level<=1+logb2(max1(16C/(theta V.toReal))). Distinguish N_level from the separate large walk-length selection constant N_selection in the final restricted-gap interface.\n\nNEXT CONCRETE TARGET (UNPROVED): absorb the explicit losses into arbitrarily small powers of eta, and obtain the intermediate-size interval for this actual A under the appropriate initial-density, nonflat-energy and support-size bounds. This tests whether the quantitative route reaches the product theorem's range, rather than just accumulating equivalent cover wrappers. Preserve actual-witness geometry and probability outputs. Do not assume the desired power interval or a product-growth conclusion as a new premise.\n\nSuggested arithmetic audit (calculated on paper, NOT checked in Lean): K0=2^6 N_level^4; L=2^15 N_level^8/q^2; K=2^370 N_level^168/q^42. Hence the three profile inequalities should imply\n n3 <=[6561*d*(2^21+1)^4*33^4*2^37104]*Q^60*N_level^16820/(alpha^4*q^4206)*nA,\n nA >= q^47*alpha^4/[2^413*6561*d*33^4*Q^8*N_level^188*V*v],\n nA <=[(2^21+1)^4*2^39704]*Q^52*N_level^18000/[q^4501*V*v].\nThese expressions use real positive finite values (or careful ENNReal cancellations). Check all exponents. Do not spend time optimizing giant fixed constants or expand them as literal integers. Reuse native pow/div and real rpow/log lemmas; raise no proof limits. No new definitions are required for local coefficient abbreviations.\n\nFor fixed0<alpha<=1,0<kappa<3,0<gamma<3, and a desired tripling exponent beta>0, choose tiny sigma,a>0 with\n 47sigma+8a+xi<kappa/2,\n 4501sigma+52a+xi<gamma/2,\n 4206sigma+60a+xi<beta,\nfor a small positive slack xi. Set theta=eta^sigma. Under V<=ofReal(eta^(-3+kappa)), V>=ofReal(eta^(-gamma)), Q<=eta^(-a), and sufficiently small eta, expect\n ofReal(eta^(-kappa/2))<=nA<=ofReal(eta^(-3+gamma/2)),\n n3<=ofReal(eta^(-beta))*nA.\nThis supplies the intermediate-size margin min(kappa/2,gamma/2), with a small-tripling exponent chosen against the later product theorem. Verify strict/non-strict margins carefully. One can take the actual initial gain kappa=1/61440 later and a nonflat threshold gamma compatible with the final eta^-1/4 density requirement. Do not claim any actual specialization before proving it.\n\nFor N_level, if C<=eta^(-3+kappa), V>=eta^(-gamma)>=1,0<sigma<=1 and eta<=1/2, the log bound should give N_level<=5+4*logb2(1/eta). The ratio is bounded by16 eta^(-3-sigma)<=16 eta^-4; use the native logb monotonicity and laws. Reuse Mathlib logarithmic-power versus rpow asymptotics to absorb N_level^18000 and fixed constants into eta^-xi, with a single uniform small-scale threshold. Avoid per-scale or per-witness choices. Haar volume normalization MUST be retained: existing haar_identityBall_lower/upper bound v between cH*eta^3/512 and96*cH*eta^3, where cH is the actual positive finite Haar scalar. These fixed constants can be absorbed only after accounting for them.\n\nActual-walk connection to retain: InitialWalkFamily.exists_initial_walk_family (R1789) already gives for a fixed rational free family at each dyadic generator radius, all sufficiently large j and sufficiently long ell,\n mobiusSmoothedDensity(generatorWalkMeasure G ell)((1/4)^j)<=ofReal(((1/4)^j)^(-3+1/61440)).\nAutocorrelationIterates.smoothedAutocorrelationIterate_lintegral_sq_le propagates that cap to V. The required Q power bound must be derived from the actual support estimate and the actual permitted walk-length range, not asserted. Existing MobiusWalkEntrySupport and AutocorrelationSupport give explicit B/R formulas. In the restricted-gap interface ell=2^m and2*N_selection*ell<=j. Taking N_selection sufficiently large AFTER fixed k can make the support exponent small; verify this and respect the quantifier order. Do not confuse this N_selection with N_level. If one uses a different logarithmic-length regime, prove it matches the actual interface.\n\nAfter quantitative intermediate size: multiscale distribution and quantitative escape for our actual A, then the product theorem proof and strict flattening. The source, Bourgain\u2013Yehudayoff https://arxiv.org/pdf/1108.2555 Section4.1/Theorem4.4 (read R1803), uses a different localized quotient-set union. It does not directly give those premises for U^2 intersect Ball(alpha). Probability concentration in xU is retained, but extracting a shorter rational walk from our interleaved smoothing needs an actual probability factorization; do not silently replace rho_k by a discrete convolution power. The fixed-iterate target RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k) chooses k before N_selection,J0,epsilon0 and requires an ae cap D with D^2<=2^j at eta=(1/4)^j. Preserve all six families. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1804 proves the native Frobenius external-covering profile, including positive finite size, small tripling and explicit two-sided size bounds for the actual localized set. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/ExternalCoverAttainment.lean": "eb850ed85eb1e301a718276197534df882c17d91a4c9e96effc805b257f96d81",
+    "lean/TransposeFollowup/FrobeniusClosedRefinement.lean": "19870f3fc01fde4713a4d595fbfbedd19cdf886f2d980520b5eee11c25450668",
+    "lean/TransposeFollowup/MobiusCoveringNumbers.lean": "e811047ba0844a07ba4a91f1b895e68539610ef886f27b215d8084474d5fe57c",
+    "lean/TransposeFollowup/SmoothedIterateCoveringProfile.lean": "e5404a338760b9a223880f1e68e36ecabfd38f71db94bd9ab2b0c20003a9afa8"
+  }
+}

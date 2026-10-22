@@ -1,0 +1,46 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1850",
+  "target": "Verified simultaneous exponent certificate and arbitrary fixed-word profile cost; reuse old numerical chains rather than duplicate them.",
+  "new_modules": [
+    "TraceSquareExponentMargins"
+  ],
+  "modified_modules": [
+    "ScalarDyadicBudgets",
+    "ReextractionPowerBounds"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.scalar_exponent_margins_of_bounds",
+    "TransposeFollowup.SL2Projection.trace_square_two_stage_exponent_margins",
+    "TransposeFollowup.SL2Projection.profile_power_exponent_bound_of_cost"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 9675,
+      "log": "/private/tmp/r1851-dev2.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10128,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 4677,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "dev1 81368 exit0/9572; dev2 10894 exit0/9675; full8855 exit0/10128; audit67932 exit0/4677. All builds and audit without warnings/errors. All handles terminal.",
+  "updated_at": "2026-10-20T18:38:07.031959+00:00",
+  "formal_checkpoint": "R1851 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:947 local sources,204 external sources,4677 declarations,8 configurations,145 artifacts",
+  "proof_scope": "In progress. R1851 verifies a simultaneous exponent certificate for the two-stage trace-square ledger, including fine trimming, reused concentration bounds, scalar growth, mixed-source error and the final cubic contradiction margin. The numerical scalar-growth proof is generalized and reused; its previous theorem statement is unchanged. The profile-cost calculation now handles arbitrary fixed word lengths, with its old cutoff theorem preserved. Three audited declarations are added across one new and two refactored modules. Native quantity-to-power envelopes and the end-to-end application remain open.",
+  "next": "R1851 recorded; never replay its checkpoint script. Full10128-job build\nand4677-declaration standard-axiom audit passed without warnings/errors.\nAll Lake handles terminal. Goal ACTIVE.\n\nNEXT TARGET: turn the R1851 LOSS LEDGER into actual native power envelopes,\nreusing the existing proofs. Read verification/r1851-two-stage-exponent-ledger.txt.\nThe numerical margins are now verified; do not re-prove them or choose\na new unrelated parameter system. The remaining task is supplying their\ninputs from the actual quantities, then applying the shared concentration\nkernel on the R1850 sample.\n\nUse Theta=min(e,kappa0)/16384,theta=kappa0*Theta/1024,a=5Theta/16.\nUse fine extraction scales from exists_scaled_extraction_parameters at\ntheta, with fixed a0=1/32, weakening generator distance to eta^(2theta)/32.\nUse the stronger eta^theta/32 distance for R1846's coefficient selector\nso rho scales as eta^(12theta). Keep determinant gap Lgap=eta^theta/32.\n\nImmediate reusable numerical pieces:\n 1. first_extraction_cost_bounds at theta supplies H,C0,L,E envelopes.\n 2. coefficient_cube_normalization pays the actual eta^(11theta) cube;\n    W0 has loss38theta using the weakened H. Fine trimming is paid by\n    kappa0*a-289theta>0 and kappa0-278theta>0. No C1 in that ratio.\n 3. Prove C1 and Dloc envelopes from final scalar radius delta~eta^(1-3Theta),\n    delta_s~delta*eta^(-12theta),Kinv=98304 eta^(-(theta+a)).\n    Total Sret=4C0C1 fits eta^(-36Theta),Dloc fits eta^(-3Theta).\n 4. Apply scalar_concentration_power_bounds at Theta; absorb Cext and\n    11theta<=8Theta in the fixed constant. This gives QW loss289Theta\n    and Cscalar loss100Theta. Do not duplicate its long proof.\n 5. Apply source_scalar_sample_concentration to the ORIGINAL index subtype\n    returned by exists_actual_trace_square_two_stage_sample. Fine separation\n    pays packing; pairwise inverse plus triangle gives interval diameter;\n    image-card equality gives injectivity. Preserve radius>=epsilon,eta.\n 6. Reuse commuting_family_cubic_bound and exists_first_extraction_size_constant\n    for |Z|, with |Z|<=V from R1850; the old83theta bound suffices.\n 7. Existing exists_scalar_growth_budget_scale and the new margin certificate\n    cover scalar-growth budgets. Readout transfer still needs its explicit\n    source/cell bridge; pay square-root loss using2gain<g, gain=e/32.\n\nGeneralize exists_reextracted_trace_power_bound to arbitrary fixed length\nby calling profile_power_exponent_bound_of_cost. Its old statement should\nremain a wrapper. Actual k=420 uses profile n=421,cost3710069. Initial\nn0+3 is separate: profile n=n0+2. Do not substitute the old n<=283 theorem.\nThe old548Theta reextraction loss and143Theta normalization combine to\n691Theta, already dominated by3gain. This uses the actual mixed-source\nfar bound and12theta+a<=3Theta; no stronger unproved geometry is assumed.\n\nAfter native power envelopes, obtain one maximum dyadic threshold for\nfixed constants, distribution window, error/near-identity conditions,\ntrimming, scalar growth and contradiction. No claim yet that this native\nassembly or full paid padding is complete. Original profile/frame,\nstrict flattening and analytic/machine endpoints remain.\n\nContinue numeric progress reports for the ORIGINAL paid-padding proof:\nabout60%, LOW CONFIDENCE; three of six families formalized, referees pending.\nOriginal paper read-only; no commits/pushes/subagents at this stage.\n",
+  "checkpoint_reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.",
+  "source_sha256": {
+    "lean/TransposeFollowup/TraceSquareExponentMargins.lean": "95d692d58197e3905da51dbd70e9aa61d39b5b4e4c856004c7552bd4d27b898c",
+    "lean/TransposeFollowup/ScalarDyadicBudgets.lean": "c4769f6a85a898b79142669ab6f451d448c3fa8c152656bdb817ee8e8a4a7b47",
+    "lean/TransposeFollowup/ReextractionPowerBounds.lean": "617f090e6d21d0215a60984157f0cbe7ff0b4a852f2ac4dfe20966a58dae457a"
+  }
+}

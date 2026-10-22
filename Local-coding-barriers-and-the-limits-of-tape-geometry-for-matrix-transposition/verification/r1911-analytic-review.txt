@@ -1,0 +1,70 @@
+R1911 analytic / affine / recursion review — source-only proposals
+
+Scope: read-only review of current R1910 revision. No Lean or Lake process was
+started, and no repository file was edited. Proposals are under /private/tmp.
+
+SELECTED: finite affine obstruction reuses established small-cut implication.
+File: lean/TransposeFollowup/FiniteAffineObstruction.lean.
+Declaration: not_star_of_finite_affine_cover.
+Its full statement is unchanged, including arbitrary measurable finite branch
+sets and no Lipschitz hypothesis. The previous concrete theta=epsilon=1/4
+contradiction is replaced by one_le_of_star_small_cuts with B=0. This saves
+14 lines. Import changes from AffineBranchCuts to FiniteAffineTimeBound; the
+latter already imports AffineBranchCuts and does not depend on this endpoint,
+so the import graph remains acyclic. The finite-path cut theorem is unchanged.
+
+SELECTED: pointwise rather than uniform convergence.
+File: lean/TransposeFollowup/AffineApproximationObstruction.lean.
+Declaration: AffineTimeRequired.not_bounded_affine_approximation.
+The hypothesis that u_n converges uniformly on [0,H] to P is weakened to
+pointwise convergence at every point of [0,H]. The proof already used only
+this information, through .tendsto_at. Both executable consumers are in the
+same module (no_bounded_affine_class_approximation and
+no_bounded_affine_fast_approximation), and both are adapted to pass pointwise
+convergence derived from their existing uniform limit. Their main statements
+are unchanged. The only other Lean reference is the axiom audit. Net +1 line.
+Plan: /private/tmp/r1911-analytic-small-reuse-plan.json. Combined net -13 lines.
+No new audit declarations.
+
+SELECTED: shared finite-code representative selection.
+Files: lean/TransposeFollowup/CoordinateCoverRefinement.lean and SL2TraceCover.lean.
+New reusable theorem: BoundedCoordinatePacking.exists_finite_code_representatives.
+For arbitrary domain X, finite label type L, and code:X->L, there is a finite
+P subset X with |P|<=|L| and for every x some e in P has code(e)=code(x).
+The proof selects one representative of each attained label; it handles empty
+domains and does not assume X finite or nonempty. It uses standard mathlib
+Finset.card_image_le and Fintype.card_le_of_injective. Two existing coordinate
+cover proofs previously repeated label-image/surjection/representative
+selection and cardinal accounting. They now share this theorem. Their exact
+statements and bounds remain unchanged. No new imports. Net -12 lines total.
+Plan: /private/tmp/r1911-finite-code-reuse-plan.json.
+Add axiom print: TransposeFollowup.BoundedCoordinatePacking.exists_finite_code_representatives.
+
+PRESERVATION JUDGMENT
+No additional wholesale analytic module retirement recommended. Modules with no
+current executable consumers include useful independent affine return-graph,
+full path small-cut, and native endpoint results. Removing them simply because
+they are unused would hide mathematical scope. Several unused SL2 source-word
+and covering specializations also contain distinct bounds, so no deletion was
+proposed without a demonstrable replacement preserving that content.
+
+These are bounded simplifications and one abstract affine hypothesis
+strengthening. They do not improve the coefficient 1/2 in the omitted-time
+bound, enlarge the native recursion exclusion, or settle unrestricted
+transposition complexity. Root must Lean-check all proposals and integrate
+successful changes into the source/axiom receipt before claiming completion.
+
+FINAL PLAN SIGNOFF
+Compared every original theorem header in both plans against its before-text.
+All are unchanged except the explicitly intended uniform-to-pointwise
+hypothesis weakening of AffineTimeRequired.not_bounded_affine_approximation.
+The representative-selection theorem introduces no finiteness requirement on
+the source X and no nonemptiness requirement on either type. Its finite
+range subtype gives the desired empty-case behavior without a default X.
+The old proofs used mathlib Finset.exists_subset_injOn_image_eq_of_surjOn
+independently; the replacement packages exactly the common consequence,
+using standard mathlib card_image_le and card_le_of_injective. This is
+ordinary reusable infrastructure, not a claimed new mathematical theorem.
+Static review found no additional signature consumers of the pointwise
+change beyond the two adapted callers and its axiom-audit entry. No further
+candidates pursued. Build/typechecking remains the root's responsibility.

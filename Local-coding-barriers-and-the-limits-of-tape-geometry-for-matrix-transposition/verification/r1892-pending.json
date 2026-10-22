@@ -1,0 +1,75 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "last_full_checkpoint": "R1891",
+  "target": "Regular recursion206/208: all-prefix row bank affine approximation.",
+  "new_modules": [
+    "RepeatedScheduleMotion",
+    "CoupledRowMotion",
+    "RawRowLoopMotion",
+    "ScheduledCleanupMotion",
+    "RowBankCurve",
+    "RawRowBankMotion",
+    "RawRowBankApproximation"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.ScheduledNativeIO.repeatSchedule",
+    "TransposeFollowup.ScheduledNativeIO.repeat_endpoint",
+    "TransposeFollowup.ScheduledNativeIO.repeat_block_error",
+    "TransposeFollowup.ScheduledNativeIO.repeat_linear_error",
+    "TransposeFollowup.CoupledRowMotion.right_position",
+    "TransposeFollowup.CoupledRowMotion.scan_position",
+    "TransposeFollowup.CoupledRowMotion.arithmetic_endpoint",
+    "TransposeFollowup.RawRowArithmetic.rows_endpoint",
+    "TransposeFollowup.RawRowArithmetic.rows_linear_error",
+    "TransposeFollowup.ScheduledBankCleanup.path",
+    "TransposeFollowup.ScheduledBankCleanup.schedule_position",
+    "TransposeFollowup.ScheduledBankCleanup.scratch_bounds",
+    "TransposeFollowup.RowBankCurve.curve",
+    "TransposeFollowup.RowBankCurve.cover",
+    "TransposeFollowup.RowBankCurve.before",
+    "TransposeFollowup.RowBankCurve.cleanup",
+    "TransposeFollowup.RowBankCurve.after",
+    "TransposeFollowup.RowBankCurve.sample_stability",
+    "TransposeFollowup.RawRowArithmetic.bank_endpoint",
+    "TransposeFollowup.RawRowArithmetic.bank_curve_error",
+    "TransposeFollowup.RawRowArithmetic.bank_real_curve_error",
+    "TransposeFollowup.RawRowArithmetic.bank_native_prefix_error",
+    "TransposeFollowup.RawRowArithmetic.bank_scaled_cover",
+    "TransposeFollowup.RawRowArithmetic.bank_scaled_error",
+    "TransposeFollowup.RawRowArithmetic.bank_error_vanishes"
+  ],
+  "checks": {
+    "development": {
+      "exit_code": 0,
+      "jobs": 8985,
+      "log": "/private/tmp/r1892-dev8.log"
+    },
+    "build": {
+      "exit_code": 0,
+      "jobs": 10293,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "exit_code": 0,
+      "declarations": 5668,
+      "log": "verification/axioms.log"
+    }
+  },
+  "terminal_handles": "R1892 dev1 session39952: exit1; explicit casts and natural remainder types fixed; coupled-row endpoints built.\nR1892 dev2 session97643: exit1; row-wrapper simplification/cast type annotations fixed; generic block estimate built.\nR1892 dev3 session67889: exit1; named cast parameter, natural truncated subtraction and cleanup formula normalization fixed.\nR1892 dev4 session99476: exit1; affine-cover eta-expansion and unused simp argument fixed; row-loop bound built.\nR1892 dev5 session61559: exit1; Bool/Prop condition conversion and final zero-absolute-value goal fixed.\nR1892 dev6 session86769: exit1; abs_zero normalization still needed.\nR1892 dev7 session76574: exit1; trace diagnostic identified abs_zero goal; diagnostic removed before final build.\nR1892 dev8 session94344: exit0,8985 jobs,no warnings.\nR1892 fullbuild session9475: exit0,10293 jobs,no warnings.\nR1892 axiom audit session34970: exit0,5668 unique declarations,no warnings,standard axioms only.\nAll executions terminal. No Lean edits or overlapping Lake calls while a Lake handle was live.",
+  "formal_checkpoint": "R1892 recorded; never replay checkpoint script",
+  "authoritative_receipt": "support-build.json:1112 local sources,204 external sources,5668 declarations,8 configurations,227 artifacts",
+  "proof_scope": "PROGRESS at R1892: all-prefix affine approximation of the actual clean integer-row bank is checked, including row interiors, paid cleanup and frozen stopped tail. Native prefixes have error<=8W; real-time sampling error<=8W+4. Rescaling gives error(8W+4)/P and a9-interval affine cover, vanishing when W/P->0 and P->infinity. Five of six original families formalized; regular recursion206/208 best estimate87% complete (low confidence). Shared raw IO and remaining integer/F3 operations and bounded-word assembly remain.",
+  "next": "R1892 recorded; NEVER replay its checkpoint script. All checkpoint Lake\nhandles terminal. Goal ACTIVE; PROGRESS. Five original families formalized;\nsixth regular recursion206/208 best estimate87%, low confidence.\n\nNEXT: SHARE THE RAW INPUT/OUTPUT WRAPPER ACROSS FINITE MODE TYPES.\nThe clean arithmetic bank AND its all-prefix affine approximation are\nDONE. Do not reopen their row loop, cleanup, rescaling, finite affine cover,\nrounded-time estimate or native-prefix bounds. See RawRowBankMotion,\nRawRowBankApproximation and RowBankCurve. P=rW; W>0; normalized error\n(8W+4)/P,9-interval cover; P->infinity,W/P->0 imply vanishing error.\nRepeatedScheduleMotion is generic and permits data-dependent internal\nmotion at fixed endpoint displacement; reuse it for later local blocks.\nThe prior runtime is8P+2W<=10P for nonempty banks;2 tapes,5 symbols,\n50*(bankTicks+1) states. Use state_bits_of_linear_count when full time\nis linear; do not duplicate state-bit/compactness/lower-bound chains.\n\nExisting ScheduledRawInput/Output and RawBankProgram use Bool*Bool mode;\nCoupledRowCell.Mode is Bool*Sym Bool*Sym Bool. NativeIOEmbedding already\nhas instruction, step_embed, active_embed and trace_embed for label maps\nand port embeddings. A small shared schedule/mode relabeling interface\ncan lift the old IO into the coupled mode while sharing its proofs.\nFor example, an injective encoding of the4 IO modes into the50 coupled\nmodes exists (store the second Boolean in .data and use a blank third\nsymbol); a left inverse lets the lifted controller dispatch. This is a\nsuggested implementation, NOT a checked interface yet. Prove its actual\nstep/trajectory correspondence using the existing embedding theorem.\nAny reset needed between differently represented modes is a PAID native\njump. Keep both tapes, all cell contents, heads and external IO framed.\n\nThen factor/generalize the raw-bank wrapper sufficiently that the old\nbinary client and new row client share loading, rewind, emission, native\ninitialization/halting and resource/approximation reasoning. Preserve the\nold public API/theorems, and build their dependents after any refactor.\nDo not copy the whole RawBankProgram chain into a parallel controller.\nIts old Motion interface requires an exact input-independent path;\nour new bank has a proved uniform approximation and endpoints. Use the\nexisting physical approximation obstruction at the appropriate level;\ndo not replace the general shared block bound with unnecessary exact\ncarry-path enumeration just to fit an overly strong wrapper interface.\nBankWord.Interface/Represents already parameterizes mode and value types.\nR1891 bank_spec accepts arbitrary bank prefix/suffix and incoming mode,\nso no empty-surroundings restriction has been imposed on future words.\n\nRemaining source206(a): row XOR/difference, row-order reversal, entry-order\nreversal preserving within-entry bits, row-dependent rotations, whole-bank\nincrement/decrement modulo2^P. Source206(b): exact F3 row/column prefix/\ndifference, row/column reversal, row rotations, diagonal signs and whole-\nentry-stream rotation. Reuse CoupledRowCell arbitrary-symbol tables,\nScheduledBankCleanup and symbol-preserving ScheduledTransfer. Check and\nfactor shared row interfaces before duplicating wrapper proofs. Trit2\ncan use .start on unmarked public-clock banks; binary decoders erase it.\nNo new work alphabet/compiler is required merely for trits.\n\nSource206(c) RawMixedBinaryWord.no_high_entropy_transpose, source208 and\n210.5 are DONE. Preserve arbitrary public nonuniform parameter choices,\nbounded operation words and correctness sets of coentropy o(P). Referees\nonly after all six original families complete. Original read-only;\nno commits/pushes. Research236/full080 unchanged.\n",
+  "checkpoint_reporting": "Current ORIGINAL proof: regular recursion206/208, best estimate87% complete (low confidence), not helper completion. Five formalized families: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, paid padding201/202. R1892 completes clean integer-row-bank geometry with an explicit vanishing normalized error and bounded affine cover. Raw IO, remaining integer/F3 operations, bounded-word assembly and final independent referees remain.",
+  "updated_at": "2026-10-21T07:05:51.246662+00:00",
+  "source_sha256": {
+    "lean/TransposeFollowup/RepeatedScheduleMotion.lean": "14c33e02cf3ffa54054961480203e8815d5047b195c9335dc8fe1f198715e9bf",
+    "lean/TransposeFollowup/CoupledRowMotion.lean": "06c2c8401af9d5a9376dc3689a5a6a9cb7308d91235fbfad1938882db281a9c3",
+    "lean/TransposeFollowup/RawRowLoopMotion.lean": "14ef47276364353972527a6ce4df5f4b3cde6bdc2f36c0b280f3856892bd0128",
+    "lean/TransposeFollowup/ScheduledCleanupMotion.lean": "97f7c3b58c778177a1634ac2281e1050d23f0b320e6503e535c07d0ac408ab87",
+    "lean/TransposeFollowup/RowBankCurve.lean": "dd9e0247a7c1f8a58c84af54c2e7eacad5854b902d044d065fd6df40563d0fb0",
+    "lean/TransposeFollowup/RawRowBankMotion.lean": "ce5fa07d01043dcafc6623153002b72374782886bde4ccd5291152c81565e5c5",
+    "lean/TransposeFollowup/RawRowBankApproximation.lean": "5b8d2c8820f820d62abe362dcde3c2fc62cee751b520267e9b2d8c43e964a54e"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "new_modules": [
+    "SmoothedIterateEndpoint",
+    "HaarSmoothingOverlap",
+    "HaarLocalPacking",
+    "MobiusLocalCoverGeometry",
+    "MobiusSmoothingScaleCover",
+    "SmoothedIterateScaleCover"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.smoothedAutocorrelationIterate_right_kernel",
+    "TransposeFollowup.haar_smoothing_apply",
+    "TransposeFollowup.exists_local_haar_overlap_of_smoothing",
+    "TransposeFollowup.measure_le_of_finite_left_cover",
+    "TransposeFollowup.exists_finite_cover_from_local_volume",
+    "TransposeFollowup.RealMobius.mobius_quotient_ball_of_entry_difference",
+    "TransposeFollowup.RealMobius.local_piece_quotients_in_identityBall",
+    "TransposeFollowup.RealMobius.exists_finite_cover_of_smoothed_concentration",
+    "TransposeFollowup.RealMobius.exists_smoothedIterate_approximate_group_scale_cover"
+  ],
+  "declaration_counts": {
+    "theorem": 9
+  },
+  "checks": {
+    "development_1": {
+      "session_id": 18696,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev1.log"
+    },
+    "development_2": {
+      "session_id": 14166,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev2.log"
+    },
+    "development_3": {
+      "session_id": 6592,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev3.log"
+    },
+    "development_4": {
+      "session_id": 77880,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev4.log"
+    },
+    "development_5": {
+      "session_id": 89754,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1801-dev5.log"
+    },
+    "development_6": {
+      "session_id": 75918,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev6.log"
+    },
+    "development_7": {
+      "session_id": 61296,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev7.log"
+    },
+    "development_8": {
+      "session_id": 59943,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1801-dev8.log"
+    },
+    "build": {
+      "session_id": 89552,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9758,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 39717,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4218,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "R1801 formalizes the smoothing/local-overlap/finite-packing bridge corresponding to Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1, equations4.11\u20134.12 (read R1800). The endpoint factorization is proved for the actual autocorrelation iterates and does not commute noncommuting factors or require inversion invariance of the kernel. The output is an actual finite cover by left translates of the identity ball of radius64Q^2 eta; the radius contains bounded-entry distortion. It is not yet an ordinary Frobenius eta-cover or a product-growth theorem. These are supporting formalizations of known arguments, not new impossibility results.",
+  "cleanup": "No new definitions. Reused RationalFreePair.real_inv_mul_mem_identityBall and mobiusIdentityBall_inv to replace an overlapping direct calculation, deleting the unused new entry-error helper. Also reused finite Haar packing, original approximate-group extraction and native convolution associativity. Removed the letI style warning rather than disabling its linter. All nine declarations are used or are public compositions. No pre-existing mathematical-source edits.",
+  "updated_at": "2026-10-19T21:51:03.276359+00:00",
+  "formal_checkpoint": "R1801 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1801, 781 sources, 4218 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1801 proves that every actual autocorrelation iterate retains a rightmost original smoothing kernel. A Haar averaging identity yields a concrete local-volume intersection from positive smoothed probability. Finite packing and explicit SL2 geometry then construct F subset U with U subset F*Ball(64Q^2 eta) and card(F)*p*H(Ball(eta))<=2cH(U), where U subset Box(Q), U^2 subset Y*U and card(Y)<=c. Composing with actual nonflattening concentration preserves all R1800 witnesses and yields card(F)*q^2*H(Ball(eta))<=2^23 K0 L^2K^20 H(U), with Q=32(R+1)^6. No uniform thickness, packing witness or local intersection is assumed. The finite cover is proved at its stated distorted radius; ordinary Frobenius eta-covering, product growth/escape, strict flattening and unconditional paid padding remain unproved. These are supporting formalizations of known arguments, not new transposition bounds.",
+  "next": "The preceding turn is PROGRESS. R1801 proves the actual smoothing-scale cover target; do not redo endpoint factorization, smoothing averaging, local-volume selection or maximal packing. Start from exists_smoothedIterate_approximate_group_scale_cover in SmoothedIterateScaleCover.lean. It has the R1800 inputs plus eta<=1: mu probability, eta>0, fixed k, actual mu*P_eta support in Box(B), initial density cap ofReal(C), theta>0, and q V_k<=V_(k+1). Let f=rho_k, V=integral f^2, q=ofReal(theta), R=(4B^2)^(2^k), Q=32(R+1)^6. It returns N>0 with the original logarithmic N bound; put K0=64N^4, L=8(K0^2/q^2), K=2^55 L^21. It retains U,Y,x and every R1800 conclusion:\n U open, inversion-symmetric, containing1, compact closure in Box(Q), positive finite H(U);\n Y finite symmetric subset U^2, card(Y)<=512K^16, U^2 subset Y*U;\n the native IsApproximateSubgroup predicate, x in Box(R+1),\n q<=128K0 K L^2 V H(U), q V H(U)<=16K^7 K0,\n q^2<=8192K0 L^2K^4 (H.withDensity f)(x*U).\nIt additionally constructs F finite subset U with\n U subset F*mobiusIdentityBall(64Q^2 eta),\n card(F)*q^2*H(mobiusIdentityBall eta)<=2^23 K0 L^2K^20 H(U).\n\nNext concrete target: refine the actual cover to an ordinary Frobenius eta-cover, then obtain the same kind of cover for the fixed product U^6, losing only explicit polynomials in Q and the finite approximate-group coefficient. Preserve the eta^-3 dependence coming from H(Ball(eta)); do not introduce a global eta^-4 coordinate grid. Produce actual finite witnesses before introducing any entropy shorthand.\n\nProposed refinement (UNPROVED; check constants): prove a finite-coordinate refinement lemma for ANY set A, finite centers F subset Box(Qc), and A subset F*Ball(r), with Qc,r,eta>0. A point g in f*Ball(r) satisfies |g_ij-f_ij|<2Qc*r. Encode these four OFFSET coordinates, together with a chosen coarse center f, in the existing bins of width eta/4. Reuse BoundedCoordinatePacking.bin, bin_lt, same_bin_close and binCount_le. Choose one point of A for each occupied finite label (reuse native finite-image/representative tools where available). This gives E finite subset A, card(E)<=card(F)*binCount(2Qc*r)(eta/4)^4, and for every g in A a representative e in E with |g_ij-e_ij|<eta/4 for all entries. Hence the sum of the four squared differences is <eta^2. Coarse centers need NOT belong to A; the chosen representatives must belong to A. Keep this flexibility for U^6.\n\nFor the current U take Qc=Q, r=64Q^2 eta. Since Q>=1, binCount(128Q^3 eta)(eta/4)<=1025Q^3 is the proposed bound, independent of eta. Thus card(E)<=card(F)*1025^4 Q^12, and multiplying the checked cardinal inequality gives the desired eta-cover bound. The powers/constants are planned, not checked yet. Use haar_identityBall_lower only after this finite-cover bound, keeping its actual Haar scalar factor, to express the cubic eta dependence. The existing geometry helper mobius_quotient_ball_of_entry_difference requires Q>0 and a strict entry-difference bound; it reuses RationalFreePair.real_inv_mul_mem_identityBall and does not reprove that algebra.\n\nFor U^6, use the EXISTING native Set.pow_subset_pow_mul_of_sq_subset_mul, as used in Mathlib/Combinatorics/Additive/ApproximateSubgroup.lean: U^6 subset Y^5*U. Reuse Finset.card_pow_le and Finset.card_mul_le, not the library's finite-set card_pow_le as if continuous U were finite. Then Y^5*F is an actual coarse cover center set, cardinal<=c^5 card(F), c=512K^16, and lies in U^11 because Y subset U^2 and F subset U. Bound its entries, e.g. by Qc=(2Q)^11, using matrixEntryBox_mul and Q>=1. The same radius64Q^2 eta works by associativity of left multiplication. Apply the general offset-bin refinement with that Qc. Its bin bound is polynomial in Q: 16Qc*r/eta+1=1024QcQ^2+1, at most (2^21+1)Q^13 with the proposed Qc. This keeps a cubic eta-volume scaling and gives a concrete ordinary eta-cover of U^6, with representatives IN U^6. Exact constants must be verified. These claims are not yet formalized.\n\nNative metric conventions audited R1801: Mathlib/Topology/MetricSpace/CoveringNumbers.lean already defines Metric.externalCoveringNumber and Metric.coveringNumber in ENat, using closed-ball covers. Use those if an entropy interface is needed; do not create duplicate definitions. Matrix Fin2 Fin2 Real has its native pi metric, not automatically the Frobenius metric of the source. Explicit finite entry-error/Frobenius witnesses avoid silently conflating them. A native IsCover statement on the matrix image may be added with a proved norm comparison. Metric.coveringNumber requires centers in the target set, unlike externalCoveringNumber. The source product theorem uses ordinary Frobenius covering; constant-factor equivalence must be justified.\n\nRelevant current APIs: smoothedAutocorrelationIterate_right_kernel returns actual probability nu with H.withDensity(rho_k)=nu*P_eta; haar_smoothing_apply gives the exact normalized overlap integral; exists_local_haar_overlap_of_smoothing gives pH(S)<=2H(Z intersect gS); measure_le_of_finite_left_cover bounds Haar volume by finite translates; exists_finite_cover_from_local_volume returns actual finite F; local_piece_quotients_in_identityBall gives the radius64Q^2 eta bound; exists_finite_cover_of_smoothed_concentration composes these before the actual-iterate specialization.\n\nAfter ordinary-scale covers of U and U^6: localize a suitable symmetric product set near identity and establish intermediate-size, multiscale distribution and quantitative escape for the actual rational free walk, then prove product growth and strict flattening of a FIXED iterate. Source route: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Section4.1, equations4.11\u20134.12 and Theorem4.4 (read R1800); these later premises remain substantial, not inferred from covering. Ultimate interface remains RestrictedGapFromAutocorrelation.exists_restricted_gap_from_autocorrelation_flatness(k), choosing k before N,J0,epsilon0. Preserve all six original families and Haar normalization. No original edits, commits/pushes or referee agents yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees remain pending. R1801 completes actual local smoothing overlap and a finite cover at explicit radius64Q^2 eta. This supports paid padding but does not complete that fourth family. Motion200/210 and recursion206/208 are unstarted. The estimate concerns formalization scope, not time remaining, success probability or proximity to solving transposition/multiplication.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SmoothedIterateEndpoint.lean": "6904ab7c40b49b923dad7e4b284c3adf77332df1f4b36210dd4fcb88d30c400f",
+    "lean/TransposeFollowup/HaarSmoothingOverlap.lean": "b9c00c37b96de2aba46d40ba5eecc2e97bc3f4c108af3fc9a16eeeafb7dfc185",
+    "lean/TransposeFollowup/HaarLocalPacking.lean": "67710ef3e8b04a54572b5c6a6c7a455fa7abc9993d890d3d4726367149bf8009",
+    "lean/TransposeFollowup/MobiusLocalCoverGeometry.lean": "36281a676e85d654981e3f06e50f5d412b0560946cf6c1863150b660561cce8f",
+    "lean/TransposeFollowup/MobiusSmoothingScaleCover.lean": "9785b4e4be997d1320492bb4295dc0dcd94c0e591ae9fbd464e13781fc121533",
+    "lean/TransposeFollowup/SmoothedIterateScaleCover.lean": "a0a76f96494f63ebfac6d3790c60822981577e3d7b5b4580015e73c0d49a926d"
+  }
+}

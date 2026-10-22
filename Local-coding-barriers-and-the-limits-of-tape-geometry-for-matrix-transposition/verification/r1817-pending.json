@@ -1,0 +1,82 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1816 receipts revalidated;850 sources,5 configurations,86 artifacts;117 protected files unchanged.",
+  "new_modules": [
+    "SL2SpanningTrace",
+    "InitialWalkTraceProfile"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.RealMobius.set_pow_subset_matrixEntryBox",
+    "TransposeFollowup.RealMobius.mobiusIdentityBall_entry_zero_lower",
+    "TransposeFollowup.SL2Projection.spanningTraceLoss",
+    "TransposeFollowup.SL2Projection.spanningTraceLoss_pos",
+    "TransposeFollowup.SL2Projection.exists_large_trace_of_frame",
+    "TransposeFollowup.SL2Projection.exists_large_trace_of_spanning",
+    "TransposeFollowup.SL2Projection.exists_large_trace_at_dyadic_scale",
+    "TransposeFollowup.RationalFreePair.exists_initial_walk_trace"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 95156,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1817-dev1.log"
+    },
+    "development_2": {
+      "session_id": 54945,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1817-dev2.log"
+    },
+    "development_3": {
+      "session_id": 96733,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1817-dev3.log"
+    },
+    "development_4": {
+      "session_id": 94773,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1817-dev4.log"
+    },
+    "development_5": {
+      "session_id": 28372,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1817-dev5.log"
+    },
+    "development_6": {
+      "session_id": 15556,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1817-dev6.log"
+    },
+    "build": {
+      "session_id": 77787,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9829,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 16895,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4398,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Reuses the already verified three-trace covering theorem and the actual rational spanning witness. Supplies explicit bounded-power entry control, a selected trace map, dyadic constant absorption, and composition into the full fixed-family profile. Source context: Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemmas5.1\u20135.2 and Corollary5.3. The next commuting-set proof must control projection quantitatively; qualitative diagonalization alone does not justify a uniform eigenvalue or conjugation bound. No published product-growth or discretized-ring theorem is assumed, and no novelty claim is made.",
+  "updated_at": "2026-10-20T01:52:31.808913+00:00",
+  "formal_checkpoint": "R1817 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1817, 852 sources, 4398 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1817 applies the verified three-trace covering theorem to the actual spanning witness in A^34 and incorporates the result into the full uniform rational-family profile. For any requested tau>0, the same A has h in A^34 with eta^tau*N_eta(A)<=N_eta(tr(h^-1*A))^3. All prior covering, tripling, mass, distribution, complex-basis escape and spanning outputs are retained for0<alpha<=1/2. Fixed entry bounds and every new loss are derived; the contraction parameter s is still selected before k. Two new modules add7 theorems and1 definition. Nearly commuting-set extraction, product growth and the subsequent flattening/gap/padding chain remain unfinished. No fourth original family, transposition bound or literature novelty is claimed.",
+  "next": "The preceding turn is PROGRESS. R1817 closes bounded-power entry control, large single-trace selection, constant absorption and full uniform fixed-family composition. Do not redo these steps. Main interface: InitialWalkTraceProfile.exists_initial_walk_trace. For any independent tau>0 it returns h in the same A^34 with eta^tau*N_eta(A)<=N_eta(tr(h^-1*A))^3, retaining all earlier conclusions for alpha<=1/2. The helper SL2SpanningTrace.exists_large_trace_at_dyadic_scale exposes the deterministic geometry separately.\n\nNEXT CONCRETE TARGET: a quantitative projection onto the commuting algebra span{I,g}, avoiding an uncontrolled eigenbasis. For real2-by2 g=[[a,b],[c,d]] and x=[[u,v],[w,z]], the commutator entries are b*w-c*v, (a-d)*v-b*(u-z), c*(u-z)-(a-d)*w and the negative first entry. If one of |a-d|,|b|,|c| is at least rho>0 and all commutator entries have magnitude<=epsilon, choose that pivot and construct y=sI+t*g with the same trace as x and entrywise error<=epsilon/rho. Prove all three pivot cases explicitly and prove that every pair of matrices of this form commutes. This is a concrete proof target, not an existing theorem. It handles nonidentity unipotents without a quantitative eigenvalue-gap assumption.\n\nThen upgrade to actual SL2 approximants: if x has determinant1 and bounded entries, prove det(y) is close to1 with an explicit error. At sufficiently small epsilon/rho, det(y)>0; rescale by the positive inverse square root to restore determinant1. Quantify the added error and preserve pairwise commutation. The source application starts from matrices separated from plus/minus identity; derive a lower bound on a noncentral pivot from that separation and bounded near-identity entries. Do not assume distance from plus/minus I yields an eigenvalue separation or well-conditioned diagonalization.\n\nAfter this algebraic step, prove trace-bucket and conjugacy-fiber covering estimates to extract a large approximately commuting set. Source context is Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2 and Corollary5.3. The printed proof changes g0/g1 notation in the conjugacy argument and uses qualitative diagonalization; formalize with one fixed conjugated matrix and explicit distortion. Prefer direct centralizer projection if it closes the needed bound. Later diagonalization and discretized sum-product/ring expansion remain separate obligations.\n\nReuse the actual covers of U and U^6 and U^2 subset Y*U for bounded-product entropy; inspect these before new metric Ruzsa infrastructure. The target remains actual metric SL2 product growth for the current size/distribution/escape/spanning profile, then strict flattening, a fixed-iterate density cap with D^2<=2^j, the unconditional restricted gap, and paid padding. The source discretized ring theorem is NOT an axiom or a proved import. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1817 integrates the large-trace covering conclusion into the actual uniform fixed-family theorem. Paid padding remains unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. The percentage estimates formalization scope, not time, success probability, or progress toward deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SL2SpanningTrace.lean": "2affcdcb3cff933dabafc30616ae226053f40c826e6792f1219fa6681471b2cb",
+    "lean/TransposeFollowup/InitialWalkTraceProfile.lean": "1380d17261f409065a6c0e5a53051eae7416ea3dc865a7bc456a61d305709afb"
+  }
+}

@@ -1,0 +1,13 @@
+HISTORICAL STATUS SNAPSHOT: this file predates the R1824 checkpoint.
+Current verification and scope: support-build.json, progress.txt and r1824-pending.json.
+The scalar analytic reuse and native-cover adapter are now verified; paid padding remains incomplete.
+
+STATUS AND ESTIMATE REVIEW
+
+The user asked why the current proof is taking longer than expected and how much remains. The central issue is the depth of the analytic dependency chain supporting paid padding, not the last two Lean errors. The chain reaches an unconditional expansion theorem for the actual matrix family. Product growth, discretized ring/sum-product expansion, flattening, density control and the unconditional restricted gap are still outstanding. Local checked lemmas are progress but do not by themselves give a calibrated estimate of the end-to-end remaining effort.
+
+Formalized original families: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. Final independent review remains pending. Paid padding201/202 is incomplete. Affine return motion200/210 and regular recursion206/208 are unstarted. Three of six is a family count; the previous roughly50% should not be used as an estimate of time or work remaining. Completion may require days or longer, and no dependable upper estimate is established.
+
+Latest local check: FiniteTranslateCover and ApproximatePowerCover compile; the five new declarations use only propext, Classical.choice and Quot.sound. The targeted build and local axiom audit have terminal exit0. These are not a replacement for a full R1823 checkpoint. SupportAxioms is unchanged. R1822 remains the last full checkpoint.
+
+Resume from verification/r1823-pending.json. The fixed-product coefficient envelope and actual-family composition remain. Before treating more local completions as a schedule forecast, reassess the missing sum-product/product-growth theorem and the shortest dependency route to the original paid-padding statement. Goal remains ACTIVE; this status request is not a request to pause it. No protected original edits, commits or pushes.

@@ -1,0 +1,131 @@
+{
+  "unit": "R1727",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "previous_turn": "PROGRESS;R1726 actual batch normalization proved and checkpoint hashes verified atentry:320sources,1692audit,86artifacts,384archive",
+  "older_live_checks": {
+    "cleanup_materialized": 62722,
+    "reusable_materialized": 19934
+  },
+  "scope": "All6families;3complete. Original unchanged,no commits/pushes,referees afterALL.",
+  "new_modules": [
+    "FamilyNormalizationLoop",
+    "FamilyNormalizationMachine",
+    "FamilyNormalizationRun",
+    "NormalizedReaderMachine",
+    "NormalizedReaderRun",
+    "NormalizedRecordsSize",
+    "RawNormalizationCalls",
+    "RawNormalizationMachine",
+    "RawNormalizationMeaning",
+    "RawNormalizationRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.FamilyNormalization.segments_ofFn",
+    "TransposeFollowup.FamilyNormalization.input_batch_eq",
+    "TransposeFollowup.FamilyNormalization.input_stream_eq",
+    "TransposeFollowup.FamilyNormalization.rest_trace",
+    "TransposeFollowup.FamilyNormalization.complete_trace",
+    "TransposeFollowup.FamilyNormalization.le_common",
+    "TransposeFollowup.FamilyNormalization.phase_code",
+    "TransposeFollowup.FamilyNormalization.embed_phase",
+    "TransposeFollowup.FamilyNormalization.phase_call",
+    "TransposeFollowup.FamilyNormalization.phase_trace",
+    "TransposeFollowup.FamilyNormalization.batch_label_card",
+    "TransposeFollowup.FamilyNormalization.fixed_resources",
+    "TransposeFollowup.FamilyNormalization.native_complete",
+    "TransposeFollowup.FamilyNormalization.output_encoding",
+    "TransposeFollowup.FamilyNormalization.normalized_values",
+    "TransposeFollowup.FamilyNormalization.normalized_width",
+    "TransposeFollowup.NormalizedReader.generate_code",
+    "TransposeFollowup.NormalizedReader.rewind_code",
+    "TransposeFollowup.NormalizedReader.embed_generate",
+    "TransposeFollowup.NormalizedReader.generate_call",
+    "TransposeFollowup.NormalizedReader.embed_rewind",
+    "TransposeFollowup.NormalizedReader.bank_update",
+    "TransposeFollowup.NormalizedReader.restored_positions",
+    "TransposeFollowup.NormalizedReader.rewind_call",
+    "TransposeFollowup.NormalizedReader.transfer_trace",
+    "TransposeFollowup.NormalizedReader.complete_trace",
+    "TransposeFollowup.NormalizedReader.native_complete",
+    "TransposeFollowup.NormalizedReader.native_call",
+    "TransposeFollowup.NormalizedReader.fixed_resources",
+    "TransposeFollowup.FamilyNormalization.row_record_count",
+    "TransposeFollowup.FamilyNormalization.sparse_rows_count",
+    "TransposeFollowup.FamilyNormalization.normalized_records_count",
+    "TransposeFollowup.FamilyNormalization.total_records_count",
+    "TransposeFollowup.RawNormalization.generate_call",
+    "TransposeFollowup.RawNormalization.normalize_call",
+    "TransposeFollowup.RawNormalization.transfer_trace",
+    "TransposeFollowup.RawNormalization.generate_code",
+    "TransposeFollowup.RawNormalization.normalize_code",
+    "TransposeFollowup.RawNormalization.bank_ready",
+    "TransposeFollowup.RawNormalization.embed_generate",
+    "TransposeFollowup.RawNormalization.embed_normalize",
+    "TransposeFollowup.RawNormalization.norm_positions",
+    "TransposeFollowup.RawNormalization.norm_final_positions",
+    "TransposeFollowup.RawNormalization.bank_payload",
+    "TransposeFollowup.RawNormalization.bank_source",
+    "TransposeFollowup.RawNormalization.bank_raw",
+    "TransposeFollowup.RawNormalization.bank_output",
+    "TransposeFollowup.RawNormalization.bank_other",
+    "TransposeFollowup.RawNormalization.normalized_records_spec",
+    "TransposeFollowup.RawNormalization.normalized_records_nodup",
+    "TransposeFollowup.RawNormalization.output_nonblank",
+    "TransposeFollowup.RawNormalization.output_ne_raw",
+    "TransposeFollowup.RawNormalization.output_length_le_time",
+    "TransposeFollowup.RawNormalization.complete_trace",
+    "TransposeFollowup.RawNormalization.native_complete",
+    "TransposeFollowup.RawNormalization.native_call",
+    "TransposeFollowup.RawNormalization.fixed_resources"
+  ],
+  "updated_at": "2026-10-18T21:21:14.313946+00:00",
+  "checks": {
+    "build": {
+      "session_id": 10328,
+      "exit_code": 0,
+      "jobs": 9307,
+      "warnings": 0
+    },
+    "axioms": {
+      "session_id": 58490,
+      "exit_code": 0,
+      "declarations": 1749,
+      "allowed": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "upstream": {
+      "files": 117,
+      "unchanged": true,
+      "directories_unchanged": true
+    },
+    "native_readiness": {
+      "session_id": 98942,
+      "exit_code": 0,
+      "jobs": 9220
+    },
+    "record_size": {
+      "session_id": 10328,
+      "exit_code": 0,
+      "via": "fullbuild"
+    }
+  },
+  "formal_checkpoint": "R1727 recorded;this checkpoint script MUST NOT RUN AGAIN",
+  "authoritative_receipt": "support-build.json:R1727,330sources,1749declarations,86artifacts",
+  "proof_scope": "In progress. R1727 composes the actual batch normalizers into finite map phases and links them with raw family generation and both paid rewinds. FamilyNormalization uses6tapes and common C=max_i C_i;phase i uses C_i and C-C_i,with a paid transfer after each batch. Its coefficient is c*(74C+649). RawNormalization runs from the original blank configuration on42tapes,with coefficient C_R=FamilyReader.coefficient+FamilyNormalization.coefficient+1. NormalizedReader adds the paid output rewind and has coefficient3*C_R+4. It returns exact normalized directed neighbor-pair batches under the first-symbol output head,with common width2*size(N)+C;per-map values,nodup and numeric relation are proved. Payload and short dimension survive;raw stream remains at its end head;normalized output head restores;the other38tapes are blank. All external output and caller frames are preserved. The actual record count equals neighbor cardinality per row and is at mostN*sum_i(distortion(F_i)+1) over all normalized batches. Ten modules/57theorems;fullbuild9307jobs;1749audited declarations use standard axioms only. Canonical deduplication/least-tag selection,residue coloring,clock/fetch/payload and full generator remain. Three of six families complete.",
+  "next": "Implement canonical duplicate removal and least-map tagging on the actual normalized family stream. First connect the earliest batch containing an ordered numeric pair to rationalTag/overlapTag,using per-batch nodup and exact membership;check whether later page consumers require any particular stream order rather than inventing a sorting requirement. Then build a native scan that retains a candidate pair while comparing it against earlier map batches,using the existing common-width parser and BinaryCompare,real STOP reads,paid rewinds and physical cleanup. A candidate is retained exactly at its least witnessing map. Map index is fixed finite control;candidate coordinates remain on tape. Use NormalizedRecordsSize.total_records_count:R<=N*S,S=sum_i(distortion(F_i)+1),to charge O(R^2*logN) work within inputLength(N),including all delimiters and resets. The graph is bipartite with ordered pairs:do NOT discard diagonal pairs or identify(i,j)with(j,i). Symmetrization is via the already-proved rationalSymmetricFamily(F),not orientation removal. Reuse the proved residue-color semantics after the selector;fixed-modulus native residue scans can follow. Main generator/geometry/motion/recursion scopes remain. Old supplementary executions62722/19934 remain live/unverified,not passes;do not restart solely for elapsed time. Original unchanged,no commits/pushes,referees afterALL.",
+  "source_sha256": {
+    "lean/TransposeFollowup/FamilyNormalizationLoop.lean": "d3a9615c72055245bf245710733f1c8e139ca017e6d07f0435d410b1f60dafb1",
+    "lean/TransposeFollowup/FamilyNormalizationMachine.lean": "6da6588de0f28729e8b118901bc1bc60e46022a066610f6d1c117cf30e3a408f",
+    "lean/TransposeFollowup/FamilyNormalizationRun.lean": "1e256947e73b6a57202972b9c6038616d72b36b52393615840dc742125c87c6c",
+    "lean/TransposeFollowup/NormalizedReaderMachine.lean": "6c908ab1e86405c31d27bc9ce08d3158abf9c8a7fe5cdf6b145292a0718d03e5",
+    "lean/TransposeFollowup/NormalizedReaderRun.lean": "e784399b920cb7d762c3e4ceac4c0798b1c3431a4abb10597460f20089b6a220",
+    "lean/TransposeFollowup/NormalizedRecordsSize.lean": "299362e846e66b3d663bfe0a030500976afb1dda7af0c66db5431a55302e6135",
+    "lean/TransposeFollowup/RawNormalizationCalls.lean": "7878b782a7d6d1ef0feea67a8b9e112e79cd6ea2760ca0d553e243c4bbc6c8c2",
+    "lean/TransposeFollowup/RawNormalizationMachine.lean": "cfdc50500ff55224a56e2adafe240bbd047c730410825857dfed80b3c1a2a1f5",
+    "lean/TransposeFollowup/RawNormalizationMeaning.lean": "ae56aa114e5799223e0e15f5ce03e06f58573028d3d331a4b6efdbf501d49926",
+    "lean/TransposeFollowup/RawNormalizationRun.lean": "94ea26ec2bfd2822b489773d28097b0248c0460ad36eccf278ef3e9d24b1fd26"
+  }
+}

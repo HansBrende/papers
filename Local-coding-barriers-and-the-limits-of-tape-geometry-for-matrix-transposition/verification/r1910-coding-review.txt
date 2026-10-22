@@ -1,0 +1,76 @@
+R1910 coding / entropy review (read-only; no Lean/Lake executed)
+
+Recommended: strengthen the two-stage toll from uniform input families to arbitrary probability weights supported on the correct family. Reuse a generic fiber-cap entropy inequality and generalize the existing conditional Gibbs lemma to arbitrary nonnegative masses. These are standard information-theoretic tools; no novelty claim for the abstract entropy lemma.
+
+1. EntropyFibers.lean: generalize entropy_le_conditional_crossEntropy.
+Remove the argument (hp1 : ∑ a, p a = 1). In its proof remove hph1. Change hr1 to ∑ a, r a ≤ ∑ a, p a; its last equality is sum_pushforward p z. Replace entropy_le_crossEntropy by entropy_le_crossEntropy_of_sum_le, dropping hp1. All other proof text works unchanged. The conclusion itself remains exactly the same. Update its two existing LeafAggregation calls by dropping hp1. This is a genuine premise weakening with shorter proof; conditional Gibbs does not require normalization because comparison mass is controlled separately on each helper fiber.
+
+2. Append the following shared lemma to EntropyFibers.lean. Draft is source-reviewed but not compiled:
+
+/-- A deterministic observation loses at most log C entropy when every fiber
+contains at most C inputs. This form also covers unnormalized weights. -/
+theorem entropy_le_observation_add_log_fiber_bound {Ω A : Type*}
+    [Fintype Ω] [Fintype A] (p : Ω → ℝ) (hp : ∀ x, 0 ≤ p x)
+    (f : Ω → A) (C : ℝ) (hC : 0 < C)
+    (hcap : ∀ a, (fiberCard f a : ℝ) ≤ C) :
+    entropy p ≤ observationEntropy p f + (∑ x, p x) * Real.log C := by
+  classical
+  have hbudget (a : A) : pushforward (fun _ : Ω => C⁻¹) f a ≤ 1 := by
+    unfold pushforward
+    rw [← Finset.sum_filter]
+    simp only [Finset.sum_const, nsmul_eq_mul]
+    change (fiberCard f a : ℝ) * C⁻¹ ≤ 1
+    simpa only [div_eq_mul_inv, one_mul] using
+      (div_le_iff₀ hC).mpr (by simpa only [one_mul] using hcap a)
+  have h := entropy_le_conditional_crossEntropy p (fun _ : Ω => C⁻¹)
+    hp (fun _ => inv_nonneg.mpr hC.le) f hbudget (fun _ _ => inv_pos.mpr hC)
+  simpa only [Real.log_inv, mul_neg, Finset.sum_neg_distrib,
+    ← Finset.sum_mul, sub_neg_eq_add] using h
+
+Minor elaboration risk: the div_le_iff₀ target may need an explicit `show (fiberCard f a : ℝ) / C ≤ 1` before simpa; the mathematical proof is immediate. The fiberCard `change` is definitional after Finset.sum_filter.
+
+3. TwoStageHelperEntropy.lean: replace the current long uniform proof by a weighted core, retaining the current uniform theorem as a short specialization.
+
+New statement:
+
+theorem helper_entropy_deficit_bound_of_distribution
+    (F : Finset (FiniteMatrix n b)) (hc : T.CorrectOn F)
+    (p : F → ℝ) (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x, p x = 1)
+    (r : Nat) (hr : r ≤ n) :
+    (n * n * b : Nat) - entropy p / Real.log 2 +
+      observationEntropy p (T.attainedHelper F) / Real.log 2 ≥
+        (b * r * (n-r) : Nat) := by
+  -- Retain current c, f and hfiber block verbatim (lines24–41).
+  -- Replace current p/hp/hp1/hlog/hsum/hmean block by:
+  have hent := entropy_le_observation_add_log_fiber_bound p hp f
+    ((2 : ℝ)^c) (by positivity) (fun z => by exact_mod_cast hfiber z)
+  rw [hp1, one_mul, Real.log_pow] at hent
+  -- Retain current exponent identity hexp and hexpR.
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  apply (mul_le_mul_iff_of_pos_right hlog2).mp
+  field_simp
+  dsimp only [f] at hent
+  nlinarith
+
+Note: no [Nonempty F] required for this weighted theorem; hp1 rules out empty input families. It works with arbitrary ambient helper H by the existing attained-helper subtype.
+
+Old uniform theorem becomes:
+  have h := T.helper_entropy_deficit_bound_of_distribution F hc
+    (uniformWeight F) (uniformWeight_nonneg F) (sum_uniformWeight F) r hr
+  simpa only [entropy_uniformWeight, Fintype.card_coe] using h
+
+A weighted quarter theorem is the same three-line r=n/2 specialization as the current uniform quarter theorem. Keep the original two uniform names and statements intact.
+
+4. Concrete reusable algebra / fiber cleanup if implementing (3):
+- Factor the identical natural exponent decomposition `(n-r)*n*b + r*r*b + b*r*(n-r) = n*n*b` into one named theorem in TwoStageHelper.lean with hr:r≤n. The current 12-line proof occurs both there and in TwoStageHelperEntropy.lean. Replace both blocks by the lemma; approximately 10 net source lines removed.
+- Factor the helper-fiber branch estimate `(F.filter (fun x => T.helper x=z)).card ≤ 2^((n-r)*n*b+r*r*b)` in TwoStageHelper.lean. Its six-line decoding argument is duplicated in correct_family_card and the entropy proof. Adding its declaration and replacing both uses roughly breaks even, so lower priority than exponent reuse.
+
+5. Clear archive candidate: FiniteEntropy.lean lines158–205, entropy_eq_normalized and entropy_chain_rule (48 lines including their documentation). Across all TransposeFollowup modules these declarations are used only by each other; SupportAxioms prints them but no mathematical consumer exists. Neither is used by the main subadditivity chain, which independently uses Gibbs. Archive both declarations and remove their two #print axioms entries. These are useful standard identities, so preserve the source snapshot in the retirement archive. No theorem weakens.
+
+Size expectation: generic fiber lemma adds about24 lines; weighted-core replacement plus old uniform wrapper removes about20–30 lines from the current98-line file, depending whether a weighted quarter endpoint is added. Shared exponent identity removes about10. Normalization generalization saves about2. Archiving unused normalization/chain-rule pair removes48. Overall expected net reduction roughly45–65 lines while materially strengthening the two-stage family. These are estimates; measure actual before/after.
+
+6. XOR optional/defer: current path/cycle real coefficient3 improves to 2√2 by keeping ball cap2k−1 and taking k=floor√(n/2). For n≥2, k≥1, 2k²≤n<2(k+1)² and hence n+k(2k−1)≤4k(k+1); the broadcast inequality gives P≤B+4bn floor√(n/2)≤B+bn√(8n). n=1 follows fromB≥0. But the old natural auxiliary bound3floor√n and the new natural4floor√(n/2) are incomparable for smalln. Retaining both duplicates arithmetic, and a shared general threshold-budget lemma likely grows the code modestly. Given present priority of net reduction and root's decision, defer this constant improvement unless replacing only the real endpoint is desired.
+
+7. Further substantive direction not recommended within this cleanup: the same fiber-cap principle with variable fiber sizes can generalize aggregate_leaf_bounds to arbitrary input distributions, and thus the separator/treewidth family from cardinality deficit to entropy deficit. The proof replaces equality mean_log_fiberCard by H(X)≤H(leaf)+E log |fiber|. But preserving existing uniform interfaces introduces several long wrappers; no obvious immediate net reduction. This is not a new obstruction class or an unrestricted transposition lower bound.
+
+Pinned-mathlib search: no existing discrete finite entropy/cardinality chain in the local snapshot. Mathlib has NegMulLog, binary entropy, KL divergence and coding Kraft theorems; replacing this compact finite entropy representation by measure-theoretic KL would require adapters and is unlikely to reduce code. The existing conditional Gibbs helper is the direct reusable source.

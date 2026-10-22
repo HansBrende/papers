@@ -1,0 +1,73 @@
+
+R1857 — VERIFIED FINITE PRIORITY COUPLING AND AFFINE GRID ESTIMATES
+R1857 begins affine return motion200/210 with three checked modules: exact finite minimum-coupling counts, selection of one global ordering for an arbitrary weighted measure, and affine grid-cell/collision bounds. The original motion theorem is not yet formalized. Four of six original families remain complete; final referees pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+CHECKED LOCAL STATEMENTS
+1. FiniteMinimumCoupling.lean: For nonempty subsets A,B of a finite linearly ordered universe, select the least element under a permutation sigma. The exact number of permutations producing distinct selections, multiplied by |A union B|, equals |Perm| times |(A union B) minus (A intersection B)|. The proof uses equal minimum fibers, a swap bijection and mathlib finite fiberwise counting; no factorial formula or unproved random-oracle hypothesis.
+2. WeightedMinimumCoupling.lean: Let mu be any measure on a measurable space Omega, let A(x),B(x) be nonempty finite sets, and let bad be measurable. If |A(x) triangle B(x)|<=delta|A(x) union B(x)| off bad, and each ordering's disagreement event is measurable, then ONE ordering sigma satisfies mu{first_sigma A(x)!=first_sigma B(x)}<=delta mu(Omega)+mu(bad). Neither finite total measure nor invariance is a hypothesis of this general lemma. Finiteness is needed later to obtain a small numerical error.
+3. AffineGridMass.lean: For a!=0 and h>0, volume{x:floor((ax+b)/h)=z}=h/|a|. If a label at each x in I selects a grid cell from one of finitely many invertible affine maps, each label class has outer measure at most h sum_i 1/|a_i|, regardless of priorities. Distinct slopes a,c give collision measure at most 2h/|a-c|. Equal slopes and offsets separated by at least h give an empty collision set. Negative slopes and arbitrary measurable/nonmeasurable domains in the class bound are covered. These results reuse mathlib's affine change of variables and finite-union measure bound.
+
+DIRECT FINITE ROUTE: WRITTEN DEPENDENCY MAP, NOT YET FORMALIZED
+The original argument invokes CFW for the affine return relation. The needed conclusion is only a finite interval label with tiny classes and tiny total return cut. A finite Foelner/minimum construction appears to obtain that conclusion directly.
+A. For a finite family H of return affine maps s, obtain a nonempty finite family F of invertible affine maps with |F triangle Fs|/|F union Fs| small for every s in H. This is a finite group-counting condition, not Lebesgue invariance.
+B. For x in compact I, form the cells {floor(f(x)/h):f in F}. All cells fit in a single finite universe. A single random ordering of that universe assigns the minimum cell to x. The checked weighted lemma chooses ONE ordering for the entire return-pair measure, including all heads. It does not choose a separate ordering for each pair.
+C. For each s, off collisions among distinct maps in F union Fs, the two cell sets at x and sx have the same union and symmetric-difference cardinalities as F and Fs. The checked grid collision bounds make the bad source-time set small. A proved marginal bound converts this to a small return-pair mass. That marginal bound is still required.
+D. Every selected cell class has mass <=h sum_f 1/|slope(f)|, already checked. Finitely many affine grid thresholds on compact I make the selected label constant between finitely many breakpoints. Prove this for the ORIGINAL PiecewiseConstOn definition, and inject the finite integer-cell labels into natural labels.
+E. The actual finite weighted good-return measure decomposes over countably many branch pairs. Truncate to finitely many maps with small discarded mass; prove Borel pair domains and both marginals <=k times Lebesgue. Connect the integral to the ORIGINAL levelCross definition, including infinite full level sets and constant-branch heights.
+F. For210, retain only affine-region visits to build the good-return measure. Each omitted full-level visit touches at most two original consecutive pairs. Reuse Transpose.Tape.Statements.Core's levelSet_encard_majorant on a finite interval cover of compact E_t. Conclude sum_t integral levelCross<=small+2 sum_t |E_t|, then use M* and arbitrarily small class masses to derive sum_t |E_t|>=1/2.
+
+SMALLER AFFINE FOELNER ROUTE TO TEST NEXT
+Use the split affine multiplication (a,t)(s,b)=(as,t+ab), not a general amenable-extension theorem. First choose a finite almost-invariant slope set S in the commutative group R^units for the finite generator slopes. Next choose a finite almost-invariant translation set T in additive R for all finitely many shifts ab (a in S, b an offset of a return map). Then F=S x T consists of affine maps. For right multiplication by (s,b), slopes leaving S cost at most |T| times their count; remaining translation losses are bounded by sum_a |(T+ab) minus T|. Equal cardinalities convert one-sided losses into the symmetric-difference bound. All maps are invertible, including negative slopes. F need not lie in the subgroup generated by return maps.
+For either commutative group, use images of exponent boxes C_n={product_i g_i^e_i:0<=e_i<=n}. They are nonempty, nested, have |C_n|<=(n+1)^m and contain g_i C_(n-1). Some consecutive growth ratio is arbitrarily close to1, since a permanent larger ratio would force exponential growth. Image cardinality avoids assuming independent generators. Reuse mathlib isLittleO_pow_const_const_pow_of_one_lt (or its tendsto corollary), not a fresh analysis proof. This yields finite simultaneous almost-invariance without general invariant means or CFW. This step is a candidate proof and remains to be formalized.
+
+POTENTIAL EXTERNAL REUSE LEAD
+https://prove2.me/theorems/7d583bf2-8689-40cd-9c11-81c5e5f4a64c
+The public page labels a CFW theorem Proved (Lean4.33.1/mathlib0df444a), with a theorem about a measurable countable equivalence relation, quasi-invariance and Monod.IsAmenableRel implying an automorphism orbit relation off a null set. Its statement placeholder contains `by sorry`; actual solutions are separate downloads. The public proof-download API requires sign-in; one unauthenticated theorem GET returned401. No source proof has been inspected or imported, so its axioms, completeness and compatibility are UNVERIFIED. Optional async user question for a public source link is pending. No login/account/action/credential use was attempted. Downloaded API docs were treated as data only, not instructions or an installed skill. Independent direct-route work continues; this is not a blocker.
+
+ATTEMPTS RETAINED
+Finite minimum counting initially produced unused-typeclass warnings and arithmetic/elaboration errors; repaired by scoping Fintype only where needed and reusing fiberwise counting. Weighted integration required explicit ENNReal casts and standard finite-sum integration. Affine mass estimates required current Set.mem_ofPred_eq syntax and explicit set-membership reduction. All final modules compile cleanly. These were proof-development repairs, not counterexamples to the mathematical statements.
+
+DRIFT CHECK: The three new modules serve the exact small-class/small-cut label required by200 and210. Their purpose is to remove the need for a large general CFW formalization. No claim of a complete motion exclusion, new literature theorem, transpose algorithm or improved unrestricted lower bound. The affine rectangle construction is the next bounded test; keep all original scope obligations visible.
+
+BOUNDARY
+Finite affine Foelner sets, the actual finite interval labeling, the weighted consecutive-return measure, countable truncation, omitted-visit charge and final M* contradiction remain unproved in Lean. The new lemmas do not assume or prove CFW/hyperfiniteness. The direct finite route below is a written candidate proof, not a completed replacement. It must retain arbitrary countably many affine branches, negative/zero path slopes and the robust sum_t |E_t|>=1/2 result. No invariant-Lebesgue-probability assumption; no transpose-complexity or novelty claim.
+
+NEXT
+R1857 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE. Four of six original families formalized. Current ORIGINAL proof:
+affine return motion200/210, best estimate5%, low confidence.
+
+1. Check for a user reply to the optional Prove2Me CFW source-link question.
+   Do not require access or credentials and do not stall independent work.
+2. Next bounded target: finite simultaneous Foelner sets for arbitrary finitely
+   many real affine maps. First inspect existing finite-growth/cardinality
+   APIs, then prove commutative exponent-box small growth. Reuse mathlib's
+   polynomial-versus-exponential limit theorem. Compose finite slope S and
+   translation T via (a,t)(s,b)=(as,t+ab). Avoid a general CFW/amenability chain.
+3. Turn F and the checked minimum-coupling/grid modules into ONE actual finite
+   interval label for a weighted measure supported on finitely many affine
+   return maps. Prove original PiecewiseConstOn and finite label encoding;
+   do not leave grid-injectivity or interval admissibility as final premises.
+4. Construct/count the ACTUAL good consecutive-return measure for countably
+   many affine branches; truncate its finite mass. Prove both marginals and
+   connect to original levelCross. Constant branches, accumulation of phase
+   intervals, negative slopes and infinite full fibers must be retained.
+5. Prove210's omitted-visit <=2 incidence charge, compact interval cover and
+   imported level-count-majorant application. Keep sum_t |E_t|>=1/2 and the
+   original native scope. A finite-piece special case does not complete200.
+6. After motion: regular recursion206/208 with actual local-limit and bounded
+   contiguous-tree execution hypotheses. Final authorized referees follow
+   all six formalizations. Do not reopen completed paid-padding/SL2 work.
+
+Current modules:FiniteMinimumCoupling,WeightedMinimumCoupling,AffineGridMass.
+Protected original path for majorant:lean/Transpose/Tape/Statements/Core.lean
+(not lean/Transpose/Statements/Core.lean). Original read-only; no commits/pushes.
+No new subagents before authorized final-referee phase without fresh approval.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:5% formalized, low confidence. This measures the full countably affine obstruction AND quantitative exceptional-time conclusion, not just the three helper modules. Four of six families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 is unstarted; final referees/cleanup remain. No time-to-completion guarantee.
+
+VERIFICATION
+Full lake build passed10147 jobs without warnings/errors; SupportAxioms audited4724 unique declarations using only propext,Classical.choice,Quot.sound. There are966 local sources (965 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and157 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

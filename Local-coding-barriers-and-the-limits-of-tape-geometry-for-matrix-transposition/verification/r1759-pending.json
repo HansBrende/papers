@@ -1,0 +1,80 @@
+{
+  "checkpoint": "R1759",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1758 PROGRESS",
+  "new_modules": [
+    "GridTrimming",
+    "GridProjectionError"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.gridTrim_measurable",
+    "TransposeFollowup.gridTrim_subset",
+    "TransposeFollowup.gridTrim_subset_unit",
+    "TransposeFollowup.gridTrim_volume_real",
+    "TransposeFollowup.gridCells_inter_cell",
+    "TransposeFollowup.gridTrim_inter_cell",
+    "TransposeFollowup.gridTrim_partition",
+    "TransposeFollowup.gridTrim_loss_nonneg",
+    "TransposeFollowup.gridTrim_mass_bound",
+    "TransposeFollowup.gridTrim_loss_bound",
+    "TransposeFollowup.centralCells_eq_map",
+    "TransposeFollowup.centralCells_compl_card",
+    "TransposeFollowup.centralCells_subset_interval",
+    "TransposeFollowup.centralTrim_loss_bound",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_trim",
+    "TransposeFollowup.gridStep_on_cell",
+    "TransposeFollowup.gridStep_off_cells",
+    "TransposeFollowup.gridStep_sub",
+    "TransposeFollowup.gridStep_square",
+    "TransposeFollowup.gridStep_integrable",
+    "TransposeFollowup.gridStep_integral",
+    "TransposeFollowup.gridStep_square_integral",
+    "TransposeFollowup.gridStep_const_ae",
+    "TransposeFollowup.cellCenteredIndicator_cell_integral",
+    "TransposeFollowup.centering_error_ae",
+    "TransposeFollowup.centering_error_square_integral",
+    "TransposeFollowup.centering_error_square_integrable",
+    "TransposeFollowup.gridTrim_projection_error",
+    "TransposeFollowup.gridTrim_projection_error_explicit",
+    "TransposeFollowup.RationalUnitMobius.augmented_central_projection_error"
+  ],
+  "checks": {
+    "grid_trimming": {
+      "session_id": 5323,
+      "exit_code": 0,
+      "jobs": 9459
+    },
+    "grid_projection_error": {
+      "session_id": 96574,
+      "exit_code": 0,
+      "jobs": 9460
+    },
+    "build": {
+      "session_id": 87632,
+      "exit_code": 0,
+      "jobs": 9533
+    },
+    "axioms": {
+      "session_id": 47666,
+      "exit_code": 0,
+      "declarations": 2903
+    }
+  },
+  "updated_at": "2026-10-19T11:04:38.915295+00:00",
+  "boundary": "Cell trimming and the actual squared-integral centering error now include all deleted-cell contributions. L2 membership/normalization and variance lower bounds, near-identity dynamics and the restricted spectral-gap/generator-existence proofs remain. No complete expansion theorem or new completed original family is claimed.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "section": "Proof of Theorem 1.2: boundary trimming and cell-mean projection",
+    "scope": "Use the source strategy, but prove an explicit error formula for actual centered functions. If a fraction theta of cells is deleted and the original normalized cell error is delta, squared-integral centering error is at most ((delta+theta*(1+delta))^2+theta)*M^2. The theta term explicitly charges deleted cells. This supplies a needed proof obligation; it is not a claim that the published theorem is false or a novelty claim."
+  },
+  "formal_checkpoint": "R1759 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1759, 556 sources, 2903 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1759 discharges cell trimming and its actual squared-integral projection error. GridTrimming proves exact occupied mass sums for selected cells, the complementary mass partition, the changed occupancy of each retained/deleted cell, and a loss bound theta*(1+delta)*M from original normalized cell error delta. Removing the first and last m cells deletes exactly 2m cells and leaves a subset of [m/K,1-m/K], for 2m<=K. GridProjectionError constructs actual real step functions, proves their integrability and exact squared-integral formula, and proves the cell-centered indicator has zero integral on every cell. The difference between globally centered and cell-centered indicators equals a step function almost everywhere, with an integrable square. After trimming, its squared integral is at most ((delta+theta*(1+delta))^2+theta)*M^2, where theta is the removed-cell fraction. The final theta term explicitly charges zeroed cells. Source-family corollaries substitute delta=K*(K-1)*sigma and theta=2m/K. This is a proved error budget toward the analytic expansion theorem, not that theorem itself.",
+  "next": "Prove the next analytic input for the trimmed cell-centered function: exact squared norm M_prime-K*sum_i(m_i_prime^2), a positive lower bound from the original cell-uniformity bound when 0<M<=1/2, support in [0,1], and membership/normalization in L2. The zero integral on every cell and the actual squared-integral error are already proved in GridProjectionError. Use the explicit delta/theta error budget to obtain a concrete small relative projection error; do not drop its theta term. Then prove sufficiently near-identity rational Mobius maps and their inverses preserve the trimmed central support and establish the almost-invariance estimates needed for the restricted spectral-gap reduction. The spectral gap and rational-generator existence must still be proved from library results or complete proofs, never new axioms or numerical tests. Preserve all six targets; after full 201/202 complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes exact trimming mass loss and the actual squared-integral cell-centering error, with deleted cells explicitly charged. L2 admissibility/normalization and variance lower bounds, near-identity dynamics, restricted spectral gap and rational generator existence remain substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/GridTrimming.lean": "ae172a96c84af6cc0ab7b0a7aea5e245caf6413f495df747d7a38981432effe3",
+    "lean/TransposeFollowup/GridProjectionError.lean": "e57894b248757f24577bbe4a2afaa7e02a742cd1f64286cd7a686f3818162759"
+  }
+}

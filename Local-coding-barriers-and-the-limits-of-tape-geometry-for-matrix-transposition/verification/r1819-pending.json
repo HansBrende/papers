@@ -1,0 +1,93 @@
+{
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn": "PROGRESS: R1818 receipts revalidated;855 sources,5 configurations,86 artifacts;117 protected files unchanged.",
+  "new_modules": [
+    "SL2ConjugacyFiber",
+    "FrobeniusCoverTransfer",
+    "ConjugacyFiberCovering",
+    "FiniteCoverSelection",
+    "LargeConjugacyFiber"
+  ],
+  "modified_modules": [],
+  "new_declarations": [
+    "TransposeFollowup.SL2Projection.entry_error_le_frobenius_dist",
+    "TransposeFollowup.SL2Projection.frobenius_norm_le_of_entry_bound",
+    "TransposeFollowup.SL2Projection.normalized_conjugacy_commutator",
+    "TransposeFollowup.SL2Projection.conjugacy_fiber_commutator_bound",
+    "TransposeFollowup.SL2Projection.exists_conjugacy_fiber_commuting_approximants",
+    "TransposeFollowup.SL2Projection.coveringNumber_le_coordinate_patches",
+    "TransposeFollowup.SL2Projection.finite_coveringNumber_of_entry_bound",
+    "TransposeFollowup.SL2Projection.coveringNumber_le_bounded_transport",
+    "TransposeFollowup.SL2Projection.frobenius_dist_left_mul",
+    "TransposeFollowup.SL2Projection.coveringNumber_le_normalized_approximation",
+    "TransposeFollowup.SL2Projection.exists_conjugacy_fiber_commuting_cover",
+    "TransposeFollowup.exists_large_cover_piece",
+    "TransposeFollowup.SL2Projection.exists_large_conjugacy_fiber_commuting_cover"
+  ],
+  "checks": {
+    "development_1": {
+      "session_id": 76431,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1819-dev1.log"
+    },
+    "development_2": {
+      "session_id": 62244,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1819-dev2.log"
+    },
+    "development_3": {
+      "session_id": 89915,
+      "exit_code": 1,
+      "warnings": false,
+      "log": "/private/tmp/r1819-dev3.log"
+    },
+    "development_4": {
+      "session_id": 92386,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1819-dev4.log"
+    },
+    "development_5": {
+      "session_id": 96282,
+      "exit_code": 0,
+      "warnings": true,
+      "log": "/private/tmp/r1819-dev5.log"
+    },
+    "development_6": {
+      "session_id": 35681,
+      "exit_code": 0,
+      "warnings": false,
+      "log": "/private/tmp/r1819-dev6.log"
+    },
+    "build": {
+      "session_id": 22051,
+      "exit_code": 0,
+      "warnings": false,
+      "jobs": 9837,
+      "log": "verification/build.log"
+    },
+    "axioms": {
+      "session_id": 32007,
+      "exit_code": 0,
+      "warnings": false,
+      "declarations": 4427,
+      "log": "verification/axioms.log"
+    }
+  },
+  "source_audit": "Actual matrix conjugacy identity, native Frobenius norm bounds, existing coordinate refinement and external-cover attainment, and finite-cover selection. These compose the R1818 exact commuting approximation with an actual large conjugacy fiber and quantify the covering loss without injectivity. Source context is the conjugacy-fiber step in Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2. The low-cost trace bucket and the required separation from identity are still to be derived for the actual full-family application. No product-growth theorem or novelty claim is asserted.",
+  "updated_at": "2026-10-20T02:16:16.359059+00:00",
+  "formal_checkpoint": "R1819 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1819, 860 sources, 4427 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1819 derives the commutator error from an actual normalized conjugacy fiber, transfers external covers through its noninjective commuting approximation, and selects a fiber with at least the average covering complexity. Given a finite cover F of the conjugacy orbit of a bounded nonempty set A, the theorem produces a nonempty fiber and exact pairwise commuting SL2 matrices near A^-1*A, with an explicit lower covering bound in terms of N_eta(A), |F| and the approximation radius. Five new modules add13 theorems and no definitions. The low-cost trace bucket, suitable separation from identity, product growth and paid padding remain unfinished. No fourth original family or new transposition result is claimed.",
+  "next": "The preceding turn is PROGRESS. R1819 closes the actual conjugacy identity, normalized-fiber commutator estimate, covering transfer without injectivity, finite-cover selection and a combined large-fiber/commuting-image theorem. Do not redo these. Main interface: LargeConjugacyFiber.exists_large_conjugacy_fiber_commuting_cover. Given g nearI separated by r, an entry bound B and a radius-delta orbit cover F with1536B^4*delta<=r, it supplies a nonempty actual fiber, commuting SL2 image V within R=12800B^6*delta/r of A^-1*A, and N_eta(A)<=|F|*(8B(R+eta)/eta+1)^4*N_eta(V). Both covering numbers are native, finite and at the same eta. The radius delta is independent of eta. Lower-level useful interfaces are exists_large_cover_piece, coveringNumber_le_bounded_transport, and coveringNumber_le_normalized_approximation.\n\nNEXT CONCRETE TARGET: select a LOW-COST TRACE BUCKET to control |F| by a product-set covering number divided by the number of separated traces. For a bounded real SL2 set A and finite separated trace values T subset tr(A), cover C=A^2*A^-1 by actual external Frobenius eta-balls. Trace is Lipschitz with an explicit constant (2 suffices). Choose trace buckets and T separation so each cover center can serve at most one bucket. Count the assigned centers, select a bucket with at most the average number, and choose g in A with its trace. All x*g*x^-1 belong to that bucket by exact trace invariance and actual product membership. This gives the orbit cover F needed by R1819. Centers may be ambient matrices rather than SL2 elements, which R1819 already permits. Reuse finite-cover attainment and prove the finite disjoint-bucket count; do not introduce arbitrary covering or conjugation-isometry assumptions.\n\nThe required distance of g fromI remains an explicit application obligation. A large trace image alone has not supplied a small-power distance bound. The localized A containsI, so do not assume it is wholly separated fromI. Audit and derive the trimming/translation step away from the spanning-frame centers while retaining enough covering complexity. Source context is Bourgain\u2013Yehudayoff, Monotone expansion, https://arxiv.org/pdf/1108.2555, Lemma5.2 and Corollary5.3. No qualitative diagonalization is needed for the real commuting approximation now proved, but later simultaneous diagonalization and conditioning remain separate tasks.\n\nWhen delta is a fixed multiple of eta, the new loss is a polynomial in1/r with fixed entry-bound constants. Prove the needed simplification and absorb constants at fixed thresholds before composing with InitialWalkTraceProfile.exists_initial_walk_trace. Keep all exponent choices before s,k and retain the SAME localized A. Reuse covers of U and U^6 and U^2 subset Y*U for bounded-product entropy. After nearly commuting extraction, actual product growth still needs the discretized ring/sum-product ingredient; no such theorem is an axiom or verified import. Then prove strict flattening, a fixed-iterate density cap with D^2<=2^j, unconditional restricted gap and paid padding. Motion200/210 and recursion206/208 remain required. No final referees, protected edits, commits or pushes yet.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the six-family formalization goal. Adaptive separators181/186/188, recoded pairwise-XOR181B and two-stage helper216 are formalized; final referees remain pending. R1819 adds actual conjugacy-fiber selection and a verified covering bound for its exact commuting approximants. Paid padding remains unfinished. Affine return motion200/210 and regular recursion206/208 are unstarted. This estimate concerns formalization scope, not time, success probability or progress toward deciding transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SL2ConjugacyFiber.lean": "4ad4729401bb3c4c600438c403d3f84add46a481b4878ca8fd944ce1f6fe63c0",
+    "lean/TransposeFollowup/FrobeniusCoverTransfer.lean": "bfd5404ab8dda5403053cb62b44cac5c75ccf949212a300e454b15b728e7265f",
+    "lean/TransposeFollowup/ConjugacyFiberCovering.lean": "43447831a8048ab086ff42674ffdf27b63f5f77dfaacda48d6e4a07eb6676c5d",
+    "lean/TransposeFollowup/FiniteCoverSelection.lean": "3749b6e6ecda21860d61d12a7d21cc7a22198033a6cba2684b139457587bfd83",
+    "lean/TransposeFollowup/LargeConjugacyFiber.lean": "97526a44b157871a39283af7134ae7329eae301f39b6deb630ad9117a974c21e"
+  }
+}

@@ -1,0 +1,122 @@
+
+R1869 — EXACT REAL-TIME STAGE GEOMETRY AND PHYSICAL SHALLOW COVERAGE
+PROGRESS at R1869: the exact real-time stage geometry and physical shallow-coverage bound for regular recursion206/208 are formalized. Actual tick labels imply disjoint real stage intervals, measurable selected-stage regions, exact uncovered volume, and the bound a*C*rho^h/(1-rho) after physical scaling. Five of six original families remain formalized; the sixth is about20% complete, low confidence. Common-limit/native exclusion and exact206 executors remain open.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+NEW R1869 RESULTS
+1. tickCells(S) is the union of half-open real unit intervals[t,t+1) for a
+   finite set S of actual ticks t:Fin T. It lies in[0,T), is measurable and
+   has real Lebesgue volume exactly|S|. For x in[0,T), membership is exactly
+   membership of the actual tick floor(x) in S. Complementation in[0,T)
+   corresponds exactly to complementing S. Integer endpoints are included
+   consistently; no unproved null-boundary adjustment is used here.
+2. stageRegion(l,r,Q) is the union of actual half-open intervals[l(k),r(k))
+   for selected keys k in Q. For an integer stage clock with every tick
+   assigned one label, actual stage membership is equivalent to the label
+   of floor(x). This proves pairwise disjointness of ALL real stage intervals.
+   The normalized intervals[A(k)/P,E(k)/P) are also pairwise disjoint for P>0,
+   by importing preimage preservation of disjointness.
+3. stageRegion_eq_tickCells identifies any selected-stage union exactly with
+   the unit intervals of ticks whose labels lie in Q. This also proves its
+   measurability, even for an arbitrary key type and an arbitrary Q, because
+   the actual execution contains only finitely many ticks.
+4. stageRegion_volume_real and stageRegion_omission_volume give the exact
+   volumes as the numbers of selected and unselected actual ticks.
+   No lower bound on stage durations or nonempty-stage assumption is needed.
+5. stageRegion_scale transports its actual intervals by x->P*x. The real
+   volume scaling is imported from mathlib Real.volume_preimage_mul_left.
+   stageRegion_scaled_omission_volume gives the exact identity
+     volume.real([0,T/P) minus union_selected[A/P,E/P))
+       = number_of_unselected_ticks / P.
+6. finite_shallow_stage_keys proves that all keys (node,stage) at node depth
+   <h form a finite family for fixed branching B and stage bound J. This
+   family is independent of T and of the actual adaptive execution choices.
+7. stage_clock_physical_omission combines the exact identity with the R1868
+   derived deep-tick bound. Under the actual own-stage budgets and child-
+   charge contraction, the omitted physical-time volume is at most
+     [a*V(root)*rho^h/(1-rho)]/P.
+8. stage_clock_physical_omission_of_root_bound additionally uses
+   V(root)<=C*P to derive the exact written bound
+     a*C*rho^h/(1-rho).
+   The region is the actual union of normalized shallow stage intervals.
+   Constants and division by P are checked; no real-time coverage defect
+   is assumed as an additional hypothesis. This closes the finite-execution
+   precursor to the common-limit coverage argument in208 section29.
+
+DRIFT / REUSE: R1869 bridges the verified integer clock to its actual real
+intervals, rather than working with a hypothetical cover of the limiting path.
+Mathlib supplies the floor inequalities, interval measure, disjoint finite
+union measure, preimage disjointness and Lebesgue scaling. Existing local
+GridCellMeasure was inspected: it concerns open cells normalized to[0,1].
+Here literal half-open unit ticks retain exact ownership at integer endpoints;
+only the short specialization of mathlib's finite-union volume formula is new.
+The R1868 stage-clock and geometric-tail theorems are reused directly. No new
+general measure, compactness, interpolation or convergence theory was added.
+Common-limit coverage is still explicitly open; no full recursion exclusion
+is claimed from this finite-execution result.
+
+
+BOUNDARY
+The finite-execution physical-time coverage bound is derived from actual stage/tick ownership, child-charge contraction and the root budget. No coverage/disjointness premise is inserted at the real-time level. Common subsequence extraction for all endpoints/volumes, passage of coverage to the limit, zero-volume subtree disappearance, global affine regularity, native recursion impossibility and exceptional-work consequences remain. Exact206 primitive semantics/native nonuniform executors remain. Final referees follow all six; no unrestricted transpose decision or novelty claim.
+
+NEXT
+R1869 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; PROGRESS. Five of six original families formalized. CURRENT:
+regular recursion206/208, best estimate20%, low confidence.
+
+Next concrete target: finite-family interval coverage under a common limit,
+then actual simultaneous extraction of all tree/stage coordinates. Use the
+R1869 stageRegion with real endpoints; its physical shallow omission estimate
+is already derived from the exact integer clock, contraction and root bound.
+Do not assume a limiting disjoint cover or a limiting coverage defect.
+
+Useful next reuse route: mathlib Set.Ico_disjoint_Ico characterizes disjointness
+by min(right endpoints)<=max(left endpoints). This closed inequality can pass
+to endpoint limits using existing closed-set/continuous min/max lemmas, even
+when intervals collapse. Finite disjoint interval-union volume is a sum of
+lengths, so ordinary finite-sum limit rules can transfer the shallow omission
+bound along convergent endpoints/halt times. No general measure-convergence
+or dominated-convergence framework should be needed. Keep A<=E<=T in the
+actual source interface so endpoints remain in the bounded physical horizon.
+
+For extraction, all padded addresses List(Fin B) x Fin J are countable, and
+fixed-depth sets are finite by finite_shallow_stage_keys. Put normalized
+starts/ends, volumes and halt time in a countable product of compact intervals;
+reuse CompactSpace.tendsto_subseq. This refinement preserves the previously
+obtained physical uniform head-path limit. Obtain bounds from the verified
+clock/tree costs and V(root)<=C*P; do not postulate compactness of unbounded
+physical quantities. A uniform bound V(w)/P<=C/(1-rho) already follows from
+sum_deep_charge_le with the singleton address, if a sharper node bound is
+unnecessary for compactness.
+
+At positive-volume nodes, reuse native_positive_stage_affine (R1867) and the
+raw/continuous frozen-profile equivalence. For a padded missing stage, do not
+assume the source local-regularity condition applies to a nonexistent occurrence.
+A positive limiting stage duration makes the stage present eventually; discard
+that proved finite prefix before applying the actual-occurrence hypothesis.
+Zero-length limiting stages need no open affine region. Zero-duration padded
+profiles can alternatively be handled directly as constant functions. At zero-volume nodes, apply the
+actual contiguous call bound (R1868) and squeeze its normalized duration to0.
+Use the finite-depth physical omission bound (R1869), let rho^h->0, and add
+the actual frozen post-halt tail. Then apply the completed native/popular-class
+motion obstruction without weakening high-entropy, state-bit or fixed-head
+hypotheses. Exceptional work still must give eta>=1/(2kG).
+
+R1869 modules:UnitTickRegions,StageRealGeometry,PhysicalStageCoverage.
+The first is half-open unit tick geometry; the second gives exact label,
+measure and scaling identities; the third supplies the actual physical-time
+shallow-coverage estimate. No common-limit conclusion has yet been proved.
+
+Source206 still requires exact row/entry/F3/stride palettes, growing-stride
+limit cases, bounded composition and native nonuniform clock compilation,
+including all copies, seeks, clearing and I/O. Source206 permits O(P) states;
+do not reopen uniform parameter generation or the five completed families.
+No fresh subagents until all six initial formalizations; then user-authorized
+impartial referees and cleanup. Original read-only; no commits/pushes.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: regular recursion206/208, best estimate20% complete (low confidence). Five initial formalizations remain complete: adaptive separators181/186/188, recoded pairwise-XOR181B, affine motion200/210, two-stage helper216, and paid padding201/202. Final independent referees and cleanup follow all six. Estimates refer to the entire sixth family, not the current geometry module.
+
+VERIFICATION
+Full lake build passed10185 jobs without warnings/errors; SupportAxioms audited4914 unique declarations using only propext,Classical.choice,Quot.sound. There are1004 local sources (1003 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and181 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

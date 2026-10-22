@@ -1,0 +1,103 @@
+R1835 — VERIFIED ACTUAL NILPOTENT TRACE AMPLIFICATION
+
+In progress. R1835 composes the scalar sum/product alternative with exact nilpotent centralizer arithmetic and actual source-word approximation. It proves growth of a native trace covering number for an actual word family, under explicit scalar range, separation, cardinality, distribution and error budgets. Three new modules and one refactored module add6 theorems; the old inverse-final-word error calculation and the new repeated-word calculation share one proof. Nilpotence remains an explicit case assumption. The resulting word family is not yet proved to satisfy all near/far and retained-mass hypotheses of the final trace-cubic contradiction.
+
+1. EXACT SHIFTED TRACE PRODUCT, WITH ITS GENERAL CORRECTION RETAINED.
+For any real2x2 b with tr(b)=0, any real2x2 g, and real c,t,p,q, write U=cI+t b,V=pI+q b, ell=tr(bg),tau=tr(g),Delta=det(b). Then
+  tr(U g V g)=(c*tau+t*ell)(p*tau+q*ell)-2(cp+Delta*t*q)det(g).
+This polynomial identity does NOT assume det(b)=0 or det(g)=1.
+For u,v,g in SL2(R), det(b)=0, c,p>=1/2 and the above forms, the already proved determinant-one coordinate equation forces c=p=1. Consequently
+  tr(u v g)+tau=(tau+ell*t)+(tau+ell*q),
+  tr(u g v g)+2=(tau+ell*t)(tau+ell*q).
+These are the shifted identities needed for the SAME scalar input set, including its positive offset. They are standard trace algebra, not a claim of novelty.
+
+2. ONE SHARED SOURCE-WORD ERROR CALCULATION.
+The existing native Frobenius calculation was generalized to an arbitrary final fixed factor h and moved into two_source_trace_word_errors. If entries of v,u',g,h are at most R>=0 and dist(u,u'),dist(v,v')<=epsilon>=0, then
+  |tr(u'v'g)-tr(uvg)|<=16R^2*epsilon,
+  |tr(u'g v'h)-tr(ugvh)|<=32R^3*epsilon.
+It does not require bounds on entries of u or v'. The previous centered_actual_arithmetic_words now calls this helper with h=g^-1; the new argument calls it with h=g. The previous theorem statement and constants are unchanged. This avoids duplicating the product-distance proof or converting to complex matrices.
+
+3. ACTUAL TRACE CELL TRANSFER.
+Let I be a finite index set, u_i=c_i I+t_i b in SL2(R), tr(b)=det(b)=0,c_i>=1/2, and let z_i be actual approximants with Frobenius dist(u_i,z_i)<=epsilon. Let R>=1 bound entries of all u_i,z_i,g. Put
+  x_i=(2/3)(tau+ell*t_i), X={x_i:i in I},
+  Tadd={tr(z_i z_j g):i,j in I},
+  Tmul={tr(z_i g z_j g):i,j in I}.
+If delta>0 and32R^3*epsilon<=delta, then
+  cells_delta(X+X)<=50*cells_delta(Tadd),
+  cells_delta(X*X)<=50*cells_delta(Tmul).
+The affine trace readouts are(2/3)(tr(word)+tau) and(4/9)(tr(word)+2). Their slopes have absolute value at most1. The factor50 is entirely charged:5 for delta approximation,5 for the imported bounded-dilation lemma,2 for a translated grid. No separation or scalar distribution is needed for these upper transfers.
+The supporting scalar_cells_le_affine_near is general: if each x in finite S lies within delta of a*y+b for some y in finite T and |a|<=1, then cells_delta(S)<=50*cells_delta(T).
+
+4. NATIVE COVERING GROWTH OF AN ACTUAL WORD FAMILY.
+For every0<kappa<=1, there exist epsilon0>0,J>0 such that the following holds at every j>=J. Let
+  delta=2^(-j), W=exp(epsilon0*(j+1)*log2).
+Take the matrix data from3 with I nonempty, and assume z_i in A^m and g in A^n. No symmetry or identity-inclusion assumption on A is required for this word-membership conclusion.
+Let K,C>=1 satisfy the existing scalar theorem's three budgets:
+  109760K^4<=W,
+  2^(2kappa)C<=W,
+  2^(2kappa)*(2K C 2^(2kappa))<=W.
+The ACTUAL scalar set X from3 must satisfy
+  X subset[1,2], delta separation,
+  log|X|<=(1-kappa)j log2,
+  ballMass(X,v,r)<=C r^(2kappa)|X| for every delta<=r<=1 and every v.
+Define actual finite word families
+  Dadd={z_i z_j g:i,j in I} subset A^(2m+n),
+  Dmul={z_i g z_j g:i,j in I} subset A^(2m+2n).
+Then at least one holds:
+  K|X| < 250*N_delta(tr(Dadd)), OR
+  K|X| < 250*N_delta(tr(Dmul)),
+where N_delta is the NATIVE external covering number with arbitrary real centers, converted to a finite real value. The extra factor5 uses the already proved scalar cell/native-cover bridge. The actual finite trace sets are not assumed to have growth; growth follows from the imported projection endpoint via R1834 and item3.
+This proves a conditional nilpotent-case amplification theorem, not an unconditional expansion theorem. In particular, it does not supply X's profile or enough retained cardinality from an arbitrary commuting extraction.
+
+FORMAL DECLARATIONS.
+TransposeFollowup.SL2Projection.scalarAffine_repeated_trace
+TransposeFollowup.SL2Projection.nilpotent_shifted_trace_arithmetic
+TransposeFollowup.SL2Projection.two_source_trace_word_errors
+TransposeFollowup.SL2Projection.scalar_cells_le_affine_near
+TransposeFollowup.SL2Projection.nilpotent_actual_trace_cells
+TransposeFollowup.SL2Projection.nilpotent_actual_trace_growth
+
+PARAMETER LEDGER AND APPLICATION AUDIT.
+A. In the UNNORMALIZED R1832 extraction, epsilon=819200*eta/r0. Using that epsilon would require
+  26214400*R^3*eta/r0<=delta.
+Thus the amplification scale must generally be coarser than the source extraction scale eta. If the source family is re-centered, use the charged approximation error of that normalization, not the unnormalized epsilon by default.
+B. The actual g from R1833 can have n=34. If z_i in A^2, word lengths are38 and72; if z_i in A^4, they are42 and76. Check which source representation and error are actually available before choosing m.
+C. The scalar range condition is exactly1<=x_i<=2, equivalently3/2<=tau+ell*t_i<=3. In the nilpotent case tau+ell*t_i=tr(u_i g). A sufficient geometric input would be dist(u_i g,I)<=1/4, since the existing trace-Lipschitz bound then places this trace in[3/2,5/2]. That geometric input is NOT yet composed into item4.
+D. A quantitative nonzero ell is available from R1833's actual-word selection. It is not a premise of item4 because item4 assumes properties of X itself. It is essential to the intended application for controlling collisions, scalar separation and retained cardinality. Existing centered-parameter distance lemmas can transfer a source separation to X; this transfer is not implicit in item4.
+E. The profile exponent is2*kappa and is normalized by |X|, not |A|. Cardinality alone, or nonconcentration of A, does not provide it for a much smaller extracted family.
+F. Let B_k denote the RIGHT-HAND SIDE of R1832's trace-cubic bound after taking a cube root, with all actual envelopes, H,C,L,E and scales included. To contradict it using item4 one must establish K|X|/250>B_k for the winning word length, while also satisfying near-identity and separation-from-I requirements for that D. If comparing at a finer eta<=delta, the radius monotonicity of native covers must be explicitly applied. No inequality of this form is yet claimed.
+G. The general formula in1 displays the determinant correction. Merely saying a generator is near nilpotent or a matrix is near I does not establish that the correction fits delta. Existing near-nilpotent estimates have determinant-times-radius-squared losses that must be budgeted. The exact nilpotent theorem cannot silently stand in for all centralizers.
+
+NEXT GEOMETRIC CERTIFICATE — WRITTEN, NOT LEAN VERIFIED.
+For b tracefree and nilpotent, u=I+t b,v=I+q b, ell=tr(bg),tau=tr(g), direct trace algebra suggests
+  tr(b u v g)=ell,
+  tr(b u g v g)=ell*(tau+q*ell).
+The second factor is at least3/2 under item4's lower scalar-range assumption. Since tr(bI)=0 and |tr(b(w-I))|<=2*||b||*dist(w,I), these formulas can certify UNIFORM separation from I for both candidate word families without discarding high trace mass. They must be proved and then transferred to the actual z_i words. With ||b||<=B and the existing Frobenius word-distance bounds8R^2*epsilon and16R^3*epsilon, a sufficient written error budget is32B R^3*epsilon<=ell0/2, where0<ell0<=|ell|. This would yield dist(actual_word,I)>=ell0/(4B). These certificate formulas and their error consequence are NOT among the six new declarations.
+The corresponding near-I condition can reuse set_pow_dist_from_one_le, e.g.5^k*alpha<=1/4 suffices for the required ball of radius1/2. Do not forget this condition when selecting large word lengths.
+
+FURTHER REUSE FOUND — DO NOT REBUILD DENSITY REGULARIZATION.
+The existing imported scalar_maximal_density_zoom already returns a retained cluster, scale R between delta and2, cardinality at least(R/2)^s times the original size, separation delta/R, and normalized local mass constant2^s. scalar_positive_zoom_bounds and scalar_positive_zoom_local_mass already place an appropriate affine zoom in a positive interval. These were inspected and are not newly imported or modified.
+However, applying such an affine zoom to X changes its sum/product readouts. A scalar density theorem by itself does not prove that the new products are traces of allowed matrix words, nor preserve enough retained mass or the three growth budgets. Do not declare the concentrated case solved just by calling a zoom lemma. The existing matrix translated-cluster alternative remains available.
+
+DRIFT CHECK.
+R1835 now turns scalar growth into native trace-cover growth for actual words, instead of stopping at identities or scalar projections. The shared metric-error proof removes duplication. The integration is deliberately restricted by an explicit det(b)=0 hypothesis, so it must not be advertised as covering the nonnilpotent cases. The main unresolved application obligations are scalar distribution/retention, geometric near/far budgets, and enough gain to beat the full trace-cubic threshold. The next target is the concrete weighted-trace separation certificate above, not another standalone scalar theorem. Existing density zooming is already available and should be reused only with a valid word/readout transfer.
+
+BOUNDARY
+R1835 proves conditional exact-nilpotent amplification for actual words with native trace-cover gain, reusing the scalar endpoint and shared source-error bound. Uniform near/far geometry of those words, input scalar distribution and retained mass, concentrated-case alternative, nonnilpotent amplification, and the comparison against the full R1832 threshold remain. Group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain incomplete.
+
+NEXT
+The preceding goal turn is PROGRESS. R1835 is recorded; never replay its checkpoint. Full10094-job build and4560-declaration audit passed, standard axioms only, no live Lake handle. Read verification/r1835-actual-nilpotent-trace-growth.txt and library-reuse-audit-r1835.json. The nilpotent scalar-to-actual-word amplification is now formalized, including native covers and word lengths. Do not redo the scalar ring theorem, shifted trace identities, affine cell transfer or source-word error chain.
+
+NEXT CONCRETE TARGET: prove the weighted-trace separation certificate written in the R1835 note. In the exact nilpotent case, test tr(bw) on the two candidate word families: it should equal ell for u v g and ell*(tau+q ell) for u g v g. Use the already positive scalar range and actual nonzero ell from R1833. Transfer to actual z_i words with a proved source-error budget, obtaining a uniform distance-from-I lower bound for BOTH families. This may avoid discarding the trace gain in a center-trimming step. Reuse the native product-distance calculation: if its internal distance bounds must be exposed, refactor that shared helper rather than copying it. Combine the original set_pow_dist_from_one_le with the actual word lengths for the near-I requirement.
+
+Then compare the resulting native trace lower bound K|X|/250 with R1832's full trace-cubic upper threshold, including all scale, envelope and retained-size losses. The parameter ledger in the note records the necessary source error, scalar normalization, separation and profile obligations. Do not replace that comparison by the weaker statement that a trace set is larger than the first commuting family.
+
+INPUT PROFILE remains unresolved. The imported scalar_maximal_density_zoom and positive-zoom lemmas ALREADY exist; do not build another density-selection chain. An affine scalar zoom changes the actual trace-product readout and can lose too much mass, so it is not by itself an application of R1835. Preserve the concentrated-case matrix alternative and audit its word costs. Nonnilpotent cases are also still required: near identity alone does not justify erasing the determinant correction.
+
+REPORTING: Current ORIGINAL proof is paid padding201/202, about60% complete by best rough subjective estimate, low confidence. This is not the percentage for a local lemma or a time estimate. Three of six original families are formalized; referees pending. Motion and recursion remain unstarted. Goal ACTIVE. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE, based on verified machine construction and analytic reductions versus substantial remaining scalar growth, analytic closure and final integration. This is a subjective progress estimate, not calibrated effort, a time estimate or evidence of proximity. The user explicitly requires a best percentage estimate for this original proof; do not substitute a local-lemma percentage or refuse all numerical estimates. The R1835 local statements are fully verified. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Motion200/210 and recursion206/208 remain unstarted.
+
+VERIFICATION
+Full lake build passed10094 jobs without warnings; SupportAxioms audited4560 unique declarations using only propext, Classical.choice and Quot.sound. There are912 mathematical modules plus SupportAxioms(913 local sources),204 pinned external modules,8 configurations and113 validation artifacts. All384 archive hashes and117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No proof placeholders, new axioms, unsafe/native_decide, raised proof limits or disabled linters; no commits/pushes.

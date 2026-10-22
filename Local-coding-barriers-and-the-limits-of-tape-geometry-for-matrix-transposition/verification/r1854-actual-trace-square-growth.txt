@@ -1,0 +1,163 @@
+In progress. R1854 proves the actual trace-square growth bridge and instantiates it on the retained original-source sample at one dyadic scale. Scalar growth now gives actual words in A^420, trace-cover growth, and quantitative separation from the identity; all coefficients, sampling losses and approximation errors are paid. Eight declarations across four new modules and one existing module reuse mathlib, the pinned OAI projection theorem and the existing sampling, concentration, word-error and geometry proofs.
+
+R1854 EXACT VERIFIED STATEMENTS
+
+1. sl2_enlargement_near_identity (extracted from TraceSquareSourceSample).
+If every u in finite F is within1/64 ofI in Frobenius distance, every
+w in F union FF union FF^-1 is within1/16 ofI.
+The old source-sample and scalar-range statements are unchanged.
+
+2. scalar_dilated_cells_card (TraceSquareMixedCells).
+For delta>0,a!=0, sigma-separated finiteX, and delta<=|a|sigma,
+the number of delta-cells of aX equals|X|.
+Uses OAI scalarCells_injective and mathlib cardinality/injectivity.
+
+3. scalar_ring_growth_forces_mixed_growth (same module).
+Let X nonempty, X subsetY, XX subset(2/3)(Y+Y), a,b nonzero,
+|b^-1|<=2, X sigma-separated, delta>0,delta<=|a|sigma,
+and560 G^2<=K. If either sum or product delta-cell count exceedsK|X|,
+then the delta-cell count of aX+bY exceedsG|X|.
+The square-root loss is explicit, not ignored.
+
+4. mixed_trace_cells_le_actual_cover (same module).
+For paired finite P,Q in SL2 x SL2, first components in the same
+traceless affine centralizer b,detb!=0, both components and g entry
+bounded byR>=1, pair errors<=epsilon>=0,
+and1024R^7 epsilon<=delta, put
+X={traceSquareScalar(u.first):u inP},Y similarly forQ,
+Dg=det(bg-gb),a1=3Dg/(8detb),a2=3(4detb-Dg)/(8detb).
+The delta-cell count of a1X+a2Y is <=25 N_delta(trace D),
+where D consists of ACTUAL source words
+v.second u.second^-1 g (v.second u.second) g^-1.
+The factor25 pays cell-nearness5 and cell-to-cover5.
+
+5. paired_enlargement_first_image (TraceSquarePairedEnlargement).
+Projecting E=P union PP union PP^-1 to first components gives
+F union FF union FF^-1,F=first-image(P).
+Uses mathlib Finset.image_mul/image_inv with MonoidHom.fst.
+
+6. paired_source_enlargement (same module).
+For symmetricA containing1, second components inA^m, first components
+affine inb and within1/64 ofI, entry boundsR>=1 and errors<=epsilon,
+every pair inE has second component inA^(2m), first component in the
+same affine centralizer and within1/16 ofI, both entry bounds2R^2,
+and error<=8R^2 epsilon. Existing word-distance and inverse bounds reused.
+
+7. trace_square_actual_word_growth (TraceSquareActualWordGrowth).
+Given nonempty pairedP, source components inA^m, g inA^k, symmetricA
+containing1 inside identity-ballalpha with0<alpha<=1,
+R>=1,epsilon>=0,M>=32,rho>0,sigma>=0,
+tracelessb withdetb!=0,normb<=M,|detb|<=32,norm(gbg^-1)<=M,
+both determinant gaps>=rho, base first components affine inb,
+within1/64 ofI and at distance>=s, entry boundsR, pair errors<=epsilon,
+delta<=3rho sigma/256,
+1024(2R^2)^7(8R^2 epsilon)<=delta,
+512(2R^2)^7(8R^2 epsilon)<=rho s/(288M^2),
+560 gain^2<=K,
+and for X=traceSquareScalar(firstP), X sigma-separated and the scalar
+sum/product alternative at factorK:
+there is finite nonempty D subsetA^(6m+2k), with every word satisfying
+rho s/(288M^2)<=dist(w,I)<=5^(6m+2k)alpha,
+and gain|X|<25 N_delta(trace D).
+Both mixed-word orientations are available; choose the orientation
+placing the coefficient of magnitude>=3/4 on the enlarged scalar set.
+
+8. exists_trace_square_dyadic_trace_growth (TraceSquareDyadicTraceGrowth).
+For0<kappa0<=1 and fixedCext>0 there exist positive
+Theta,theta,gain,alpha0,a2,Ws andJ, chosen BEFORE the scale and all inputs,
+Theta<1/4,theta<=Theta,691Theta<3gain.
+For each j>=J,eta=4^-j, there is k>0 anddelta=2^-k with
+eta<=delta andeta^(1-3Theta)<=delta<2eta^(1-3Theta).
+For ANY original-source input satisfying:
+ - A symmetric,1 inA,identity-ballalpha,0<alpha<=alpha0;
+ - p,q,pq inA^34 with frame determinant>=eta^theta;
+ - z inhalf identity ball,dist(z,I)>=eta^theta/32,
+   |det(z-trace(z)I/2)|>=eta^theta/32;
+ - base,X_i inA,nonempty affine f_i=c_i I+t_i z inSL2,
+   dist(f_i,base^-1 X_i)<=26214400eta^(1-theta);
+ - original kappa0 distribution ateta<rho<eta^(theta/2);
+ - N=N_eta(A)<=eta^(-(3-kappa0)),
+   N_eta(A^284),N_eta(A^142),N_eta(Dset)<=eta^-theta N;
+ - NV=N_eta(range f),H=(419430400/eta^theta+17)^4,
+   (eta^theta)^11 N^4<=Cext[9N_eta(Dset)H NV]^3;
+there are m>0 and finite nonemptyD subsetA^420 with
+ N<=Ws eta^(-143Theta)m^3,
+ everyw inD inhalf identity ball anddist(w,I)>=a2 eta^(3Theta),
+ eta^-gain m<25 N_delta(trace D).
+
+The witnessm is the retained scalar sample's cardinality. No independent
+scalar sample, coefficient, mixed-cell, error or growth oracle is assumed.
+The existing scalar theorem is applied withkappa=kappa0/12,e=min(eRaw,1),
+Theta=min(e,kappa0)/16384,theta=kappa0Theta/1024,a=5Theta/16,
+g=e/8,gain=e/32. The explicit560 loss is absorbed using2gain<g.
+R=4^204,M=128R^2,Eerr=1024(2R^2)^7(8R^2),a2=rho_c/(288M^2).
+Sources are inA^2, enlarged sources inA^4,g inA^204, giving length420.
+All constants, alpha0 and the combined threshold precede the input.
+
+STRENGTHENED EXISTING API
+exists_trace_square_sample_bounds now also returns Eerr epsilon<=delta
+and the actual original-source distance bound<=epsilon for every index.
+Both facts were already proved inside its proof; no new hypothesis,
+reproved estimate, or weaker original conclusion was introduced.
+
+REUSE / DRIFT CHECK
+The paid-padding dependency now has a verified actual-word growth theorem
+for the nondegenerate trace-square branch. This directly closes the R1853
+target; it is not a new original-family completion.
+
+Searched the pinned mathlib source for sum-product growth, discretized
+sum-product, Bourgain, Falconer, SL2 growth/flattening and relevant matrix
+trace identities. No matching full endpoint was found. This is a bounded
+source audit, not proof of absence from all Lean repositories or literature.
+Mathlib has Pluennecke-Ruzsa, finite-image, ordered-field and real-power
+tools; the project already reuses them. The pinned204-module OAI tree
+provides scalar weak-radius projection, cell injectivity and cell-nearness.
+Those imports remain unchanged and are used through existing wrappers.
+No parallel projection, sampling, concentration or packing chain was added.
+
+Proof simplifications: extracted the existing near-identity enlargement
+argument; projected paired sets using mathlib homomorphism image laws;
+exposed two bounds already proved by the sample; used multiplication
+associativity rather than expanding5^420. No limits or linters raised/disabled.
+
+NEXT
+R1854 recorded; never replay its checkpoint script. All full-build and
+axiom-audit checks passed; all Lake handles terminal. Goal ACTIVE.
+
+NEXT TARGET: generalize and apply the FULL second-extraction wrapper.
+Do not reprove sampling, concentration, scalar growth or actual-word transfer.
+
+1. exists_reextracted_trace_power_bound in ReextractionPowerBounds STILL
+   assumes k<=282 and3000000tau<=theta. Factor its proof through a generic
+   fixed-cover-index/cost version; preserve the old API as a specialization.
+   REUSE profile_power_exponent_bound_of_cost, fixed_power_coefficient_bound
+   and trace_reextraction_cubic_bound. Inspect exactly which cover indices
+   appear (k+1 and the existing fixed141); bound their actual costs.
+   For k=420, index421 costs8802*421+4427=3710069.
+   No need to duplicate its long extraction/chart argument.
+2. Apply the generalized upper bound at Theta to the new actual finite
+   D subsetA^420 from exists_trace_square_dyadic_trace_growth. Its frame
+   comes with exponenttheta<=Theta, so weaken eta^theta>=eta^Theta.
+   If the far constanta2 exceeds1, usemin(a2,1); keep the chosen constants
+   independent ofeta and of the source input. Its scalar radiusdelta>=eta.
+3. Combine T^3<=U eta^-548Theta N with N<=Ws eta^-143Theta m^3
+   andeta^-gain m<25T. Existing cubic_trace_budget_contradiction uses250,
+   so weaken25T to250T usingT>=0. Choose one more threshold to pay
+   250^3 U Ws eta^(3gain-691Theta)<=1; the positive margin is already proved.
+4. Supply all profile bounds from the same localized approximate-group
+   assumptions. The initial quantitative extraction's UNIVERSAL n0+3
+   cover usesn0+2; choose one common fixed profile margin for
+   max(421,n0+2), WITHOUT assumingn0<=420.
+5. Continue original profile/frame construction and strict flattening;
+   then density cap, unconditional restricted gap and paid-padding endpoint.
+
+Current original proofabout60%,LOW CONFIDENCE; three of six families done.
+Original read-only; no commits/pushes. Referees only after all formalization.
+
+BOUNDARY
+Actual nondegenerate trace-square growth is proved under the stated frame, distribution, profile and quantitative extraction hypotheses. This does not yet discharge those inputs or prove original flattening. The full second-extraction wrapper still has k<=282 and must be generalized to actual fixed word costs; original profile/frame construction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. Three original theorem families formalized; no fourth family or novelty claimed.
+
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is an estimate for the original proof, not the completed local trace-growth bridge or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested.
+
+VERIFICATION
+Full lake build passed10137 jobs without warnings/errors; SupportAxioms audited4697 unique declarations using only propext,Classical.choice,Quot.sound. There are956 local sources (955 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and151 validation artifacts. Original117 files and inventory unchanged. R1853 source-sample statements preserved; sampling API only strengthened. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged.

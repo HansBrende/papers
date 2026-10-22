@@ -1,0 +1,80 @@
+
+R1860 — VERIFIED COLLISION CONTROL AND ACTUAL SAMPLE BOUNDARIES
+R1860 proves one uniform small-mesh collision-volume bound for every finite family of distinct affine maps, and exact transfer of the finite affine boundary to the ACTUAL priority samples at x and sx+b outside those collisions. Empty families, negative slopes and equal-slope offset separation are retained. The weighted one-order selection application and full motion200/210 theorem remain. Four of six original families formalized; final referees pending.
+
+EXACT STATEMENTS AND DEPENDENCY MAP
+VERIFIED UNIFORM COLLISION THEOREM
+For a finite indexed family of distinct affine coefficient pairs(a_i,b_i), and every eta>0, there is rho>0 such that EVERY mesh0<h<=rho satisfies
+ volume{x:there exist i!=j with floor((a_i x+b_i)/h)=floor((a_j x+b_j)/h)}<=eta.
+The collision set is measurable. Off this set the grid-evaluation map on the family is injective, and conversely injectivity implies no collision. No invertibility or sign assumption is needed for this general coefficient-pair theorem; the later actual affine-family corollary uses units for the slopes.
+Proof: each unequal-slope pair has the previously proved2h/|a-c| bound; an equal-slope pair has different offsets, and its collision set is empty for h<=|b-d|. Allocate eta/(N+1) to each of N ordered index pairs, choose their positive thresholds, and take a finite minimum after adjoining a dummy value1. The dummy handles empty families. The finite-union inequality gives the simultaneous bound. No unproved convergence or limit interchange is used.
+exists_small_affine_family_collisions specializes this to an actual finite set K of invertible affine maps. Injectivity of the real coefficient pairs is derived from subtype and unit extensionality, not assumed about a potentially duplicate enumeration.
+
+VERIFIED EXACT CARDINALITY TRANSFER
+If f is injective on A union B, then
+ |f(A) union f(B)|=|A union B|,
+ |(f(A) union f(B)) minus(f(A) intersection f(B))|=|(A union B) minus(A intersection B)|.
+These are short compositions of mathlib image_union,image_inter_of_injOn,image_sdiff_of_injOn and card_image_of_injOn. Consequently the ENNReal relative-boundary inequality transfers exactly, without a multiplicity factor.
+For the ACTUAL gridSample C q from R1859, its integer-value image is exactly the finite image of q whenever all q_i lie in C. Subtype-value injectivity then transfers the boundary inequality BACK into the finite priority universe C. Different finite index types for the two samples are allowed; neither nonemptiness nor a free-generator assumption is hidden in these counting identities.
+
+VERIFIED AFFINE-TO-SAMPLE ENDPOINT
+Let F be a finite set of invertible affine maps, g(x)=sx+b with s!=0, and let H=F composed on the right with g. Suppose |F triangle H|<=delta|F union H|, expressed in ENNReal. Let x avoid the explicit collision set of the ACTUAL finite set F union H at mesh h. Let finite C contain all values floor(f(x)/h) and floor(f(g(x))/h) for f in F. Then the actual finite priority samples A=gridSample C(f->floor(f(x)/h)) and B=gridSample C(f->floor(f(g(x))/h)) satisfy |A triangle B|<=delta|A union B|.
+The right-composition identity is verified through affineGridValue_right and the earlier affineRight_apply; the two finite-universe samples are exactly those used by gridPriority and the encoded labels. affineGridValue_subtype_image bridges the finite-subtype enumeration and Finset image with mathlib attach_image_val. This does not merely prove a ratio for a different family of abstract sets.
+The endpoint does retain finite boundary and collision-avoidance premises locally, but BOTH are now supplied by earlier proved existence/volume theorems. The next task is to assemble them with ONE mesh and the weighted measure, not to assume them as final motion hypotheses.
+
+NEXT ASSEMBLY AND A DOMAIN CHOICE
+A clean implementation may put the finite weighted measure on Omega=I_subtype x I_subtype, with I=[0,c0]. Every point then lies in I by type, and both actual samples are nonempty from the proved common grid universe and F.Nonempty. This satisfies the weighted minimum lemma's pointwise nonemptiness requirements without inventing values off I. The global natural label remains the already-proved beta:R->N, restricted to Omega when measuring disagreement. If using this route, later construct or rigorously transport the actual return measure onto that subtype product; do not silently identify it with an ambient measure.
+Use one finite K containing F and all Fg_j. Its collision set bounds all individual collisions: restrict the proved grid injectivity on K to F union Fg_j, then use grid_not_mem_collisions_of_injective. Include the complement of the finitely many return graphs in the bad pair set and charge it by the explicit zero-support hypothesis. A source marginal <=k*Lebesgue charges the collision term. Choose h below BOTH the collision threshold and the class-mass threshold. Then the previous weighted minimum theorem selects one ordering for the entire measure.
+An initial quantitative assembled endpoint may keep explicit delta,eta and bound cut<=delta*mu(Omega)+k*eta, while proving class mass<=theta. For finite mu, selecting delta and eta sufficiently small must then yield the original arbitrary-epsilon statement. Do not report motion completion from the quantitative helper alone.
+
+REUSE/REPAIRS
+Mathlib finite minima, measurable equality, finite unions, finite image/intersection/difference and subtype enumeration are reused. Local pairwise collision estimates, priority labels, finite affine boundary and weighted selection are imported. Development repaired explicit arguments to lt_inf'_iff, subtype coercion around a Finset union, and inference of real versus unit coefficient pairs. An unnecessary-simpa warning was fixed before the full build. No new axiom, increased proof limit, disabled linter or mathematical counterexample.
+
+DRIFT CHECK: The new transfer endpoint names the actual finite samples used by the already-proved admissible labels, and the collision error has a uniform quantitative measure bound. Thus this advances the exact small-cut obligation. The weighted measure, countable returns and exceptional-time conclusion remain explicit; no partial finite theorem is substituted for200/210.
+
+BOUNDARY
+Finite affine almost-invariant sets, actual measurable/admissible/small-class priority labels, uniform collision-volume control and exact affine-to-sample boundary transfer are proved. Still required: apply these together to select one ordering for a finite weighted affine-return measure, with all marginal/support costs; construct the actual countable-branch consecutive-return measure, prove both marginals, truncate and connect levelCross; prove omitted-visit charge and the M* contradiction sum_t |E_t|>=1/2. No assumed hyperfiniteness or invariant-Lebesgue probability, and no completed motion theorem or transpose decision.
+
+NEXT
+R1860 recorded; NEVER replay its checkpoint script. All Lake handles terminal.
+Goal ACTIVE; previous turn PROGRESS. Full motion200/210 about20% (best estimate,
+low confidence); four of six original families formalized.
+
+NEXT: assemble the actual finite-family weighted labeling theorem, discharging
+the finite ratio, collision, measurability and interval-label obligations.
+1. Reuse AffineSampleBoundary.affine_priority_samples_boundary,
+   exists_small_affine_family_collisions, AffineFiniteBoundary,
+   AffinePriorityLabels and WeightedMinimumCoupling. Inspect exact measure,
+   subtype, finite-union and ENNReal APIs before writing general replacements.
+2. Prefer Omega=({x:R // x in I} x {x:R // x in I}) for the measure: every
+   sample is then pointwise nonempty by the universe theorem and F.Nonempty.
+   The global natural label is still beta:R->N. Later the actual return
+   measure must be constructed/transported onto Omega rigorously. An ambient
+   measure approach is also possible with a proved sample totalization.
+3. Obtain one finite F for all finite return maps. Let K contain F and all
+   right-composed Fg_j. Choose ONE mesh for collision mass and class mass.
+   Restrict grid injectivity on K to each F union Fg_j and use the proved
+   converse to collision avoidance. Transfer real finite-boundary bounds
+   to ENNReal with existing ofReal/natCast tools.
+4. The bad pair set is source collisions plus graph-support exceptions.
+   Charge collisions by the source marginal bound and exceptions by their
+   explicit zero measure. Prove all events measurable, then select ONE
+   ordering with the already-proved weighted minimum theorem. Get cut<=
+   delta*mu(Omega)+k*eta and then arbitrary small cut for finite mu.
+5. Construct the ACTUAL countable-branch consecutive-good-return measure,
+   both marginals, finite truncation and levelCross identity. Keep constant
+   branches, phase accumulation, negative slopes and infinite full fibers.
+6. Prove210's omitted-visit charge<=2 and use original level-count majorants
+   for compact exceptional times; retain sum_t|E_t|>=1/2 and original native
+   scope. Then regular recursion206/208 and final referees remain.
+
+New modules:AffineGridCollisions,PrioritySampleTransfer,AffineSampleBoundary
+(18 declarations). Original read-only; no commits/pushes or unapproved agents.
+Do not reopen paid-padding/SL2. Optional unaudited CFW source is not a blocker.
+
+
+CHECKPOINT REPORTING
+Current ORIGINAL proof: affine return motion200/210. Best estimate:20% formalized, low confidence. This is for the full countably affine obstruction and quantitative exceptional-time result, not just collision or finite-sample lemmas. Four of six original families formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216, paid padding201/202. Regular recursion206/208 and final referees/cleanup remain. No time-to-completion guarantee.
+
+VERIFICATION
+Full lake build passed10154 jobs without warnings/errors; SupportAxioms audited4773 unique declarations using only propext,Classical.choice,Quot.sound. There are973 local sources (972 mathematical plusSupportAxioms),204 unchanged pinned external modules,8 unchanged configurations and163 validation artifacts. Original117 files and directory inventory unchanged. All baseline mathematical sources unchanged. No sorry,new axioms,unsafe,native_decide,increased proof limits or disabled linters. Branch andHEAD unchanged. All execution handles terminal.

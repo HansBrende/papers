@@ -1,0 +1,73 @@
+\section{Common notation and the native target}\label{sec:model}
+
+\paragraph{Matrices and information.}
+The dimension is $d$, the number of bits in an entry is $b$, and
+$P=d^2b$. An input is a bit matrix $x=(x_{ijt})$ with $i,j<d$ and $t<b$.
+Its row-major encoding writes bit $(i,j,t)$ at position $(di+j)b+t$;
+the required output puts it at $(dj+i)b+t$. We use base-two Shannon entropy.
+For a random input $X$, its deficit is $D_X=P-H(X)$. If $X$ is uniform on a
+nonempty set $F$, this is $D=P-\log_2|F|$. A helper $Z$ is a deterministic
+function of the whole input, supplied to the participants specified in a
+particular model. If $X$ is supported on $F$, the bound $|Z(F)|\le2^g$
+implies $H(Z)\le g$. Each theorem specifies access to the helper; it does
+not supply a tape implementation of that access.
+
+The finite coding results allow arbitrary $b$ unless stated otherwise.
+For arbitrary input laws they use $D_X$; the cardinality formula for $D$
+requires the uniform law on $F$. All uses of $o(P)$ are along the indicated
+size sequence.
+
+\paragraph{Native machines.}
+We use the unchanged model of~\cite{FirstPaper2026}. A machine has $q+1$
+states, $k$ two-way infinite work tapes over $g+1$ symbols (one blank), a
+read-only two-way input tape, and a one-way write-only output tape. In one
+transition each input or work head moves by $-1$, $0$ or $1$; the machine may append at most
+one output bit. The input lies in cells $0,\ldots,P-1$, with an end marker
+elsewhere. All heads start at zero, work tapes are blank, and the output is
+empty. The transition table, state set, alphabet and tape count are finite
+and independent of the input for a uniform machine. Write
+$G=\max(1,\ceil{\log_2(g+1)})$ for the charge in bits per work cell.
+``Computes within $t$'' means that an actual halting configuration with exactly
+the specified output is reached after at most $t$ transitions.
+\upformal{Transpose.Statement}{Transpose.TM,Transpose.ComputesWithin}
+\upformal{Transpose.Tape.DefsM}{Transpose.Tape.cellBits}
+
+\begin{definition}[The unchanged decision target]\label{def:target}
+Let
+\[
+ b(d)=\max(1,\ceil{\log_2d}),\qquad P(d)=d^2b(d),\qquad d\ge1.
+\]
+Statement \textup{(T)} asserts that there exist one native machine $M$ and one
+constant $c\in\N$ such that, for every $d\ge1$ and every input matrix,
+$M$ halts with its raw transpose within $c(P(d)+1)$ steps.
+\end{definition}
+\upformal{Transpose.Statement}{Transpose.entryBits,Transpose.inputLength,Transpose.encode,Transpose.transpose,Transpose.TransposesWithin,Transpose.LinearTimeTransposable}
+
+The Lean files use $n$ for the dimension in many declarations; the manuscript
+consistently writes $d$. Formally, the width is
+$\operatorname{Nat.log2}(d-1)+1$, including the convention at $d=1$.
+The original target and checker are reused without alteration;
+\textup{(T)} remains open.
+
+\paragraph{The multiplication connection (cited background).}
+Write $\lg x=\max(1,\ceil{\log_2x})$ and let $\lg^*x$ be the number of
+iterations of this rounded logarithm needed to reach $1$.
+Harvey and van der Hoeven~\cite[Corollary~6.9]{HvdH2025} reduce transposition
+with entry width $b$ to multiplication with an iterated-logarithm factor
+$\ell_0=\max(1,\lg^*d-\lg^*b)$. At $b=\lg d=b(d)$ this factor is one.
+The encoding conventions are reconciled in the earlier paper's discussion
+of its Proposition on $(T)$ and $1$-logarithmic transposition.
+Consequently a negative resolution of \textup{(T)} would exclude linear-time
+multiplication in the multitape model. A positive resolution of \textup{(T)}
+would not by this implication produce a multiplier. For binary entries
+$b=1$, the cited reduction from a linear multiplier instead gives an
+$O(P\log^*P)$ transposer.
+
+\paragraph{Scope of the sequence statements.}
+Native exclusion theorems below can allow a machine chosen separately for each
+size, while fixing its number of work tapes and cell-bit charge and bounding
+the logarithm of its state count by $o(P)$. Such statements are stronger than
+their fixed-machine special cases, but do not allow input-dependent advice
+without charging it. The correctness set may have deficit $o(P)$; geometric
+hypotheses refer to actual runs on that set. The required universal and
+subsequential quantifiers are given explicitly in the motion section.

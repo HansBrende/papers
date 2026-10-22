@@ -1,0 +1,75 @@
+R1830 — ACTUAL SOURCE-WORD TRANSFER AND CHARGED COARSENING
+
+In progress. R1830 transfers the exact normalized cubic product to actual shared-center source words in A^142, including the error of the normalization center, conjugation factors and Frobenius right-translation distortion. It composes this transfer with R1829 to prove an actual-power covering lower bound. A separate source-preserving coarsening theorem explicitly pays for the larger input spacing. Four modules add7 theorems. Strict amplification, full budget composition and the fourth original theorem family remain incomplete.
+
+EXACT STATEMENTS
+All norms and distances below are native Frobenius matrix norms and distances. N_eta denotes the native external covering number, interpreted as a real number only after finiteness is proved.
+
+1. TEN-FACTOR PRODUCT ERROR, INCLUDING THE CENTER.
+Let c,d,f_i,a_i,u,v be in SL2(R), i=0,1,2. Assume all their entries have absolute value at most R>=1, dist(c,d)<=epsilon and dist(f_i,a_i)<=epsilon, epsilon>=0. Define
+  P_f=(c^-1 f_0)(u c^-1 f_1 u^-1)(v c^-1 f_2 v^-1),
+  P_a=(d^-1 a_0)(u d^-1 a_1 u^-1)(v d^-1 a_2 v^-1).
+Then
+  dist(P_f,P_a)<=20(2R)^10 epsilon.
+The proof specializes the EXISTING complex finite-product error theorem and EntryApprox.inv to the actual list of ten factors, then uses the existing entrywise-to-Frobenius bound. No new generic product or inverse-metric chain is built.
+
+2. ACTUAL SOURCE WORD LENGTH AND COVER TRANSFER.
+Let A be symmetric with entries bounded by2. Let x_i belong to A and a_i=base^-1*x_i. Let f_i be epsilon-approximants to a_i, with entries of both families, u and v bounded by R>=1. Let u belong to A^34 and v to A^68. Choose a center i0 and any selected source map s (the selected index type need not be finite). Put
+  w_j=f_i0^-1*f_(s(j)), W_j=x_i0^-1*x_(s(j)).
+The source-center cancellation is exact:
+  a_i0^-1*a_i=x_i0^-1*x_i in A^2.
+For any triple, the actual word
+  Q=W_0 u W_1 (u^-1 v) W_2
+belongs to A^142. More generally, if u in A^j and v in A^k, its length is6+2j+k. Its right normalization Q*v^-1 is the same conjugated product built from the W_i; normalized length is210 in the actual case.
+For the exact product set
+  P={w_0 (u w_1 u^-1)(v w_2 v^-1)},
+and eta>0, both relevant covering numbers are finite and
+  N_eta(P)<=C(R,epsilon,eta)*N_eta(A^142),
+  C(R,epsilon,eta)=[4*(20(2R)^10 epsilon+2R eta)/eta+1]^4.
+Equivalently C=[80(2R)^10 epsilon/eta+8R+1]^4. The term2R is the norm bound on v^-1, not an assumed metric invariance. The fourth power is the already-proved four-coordinate cover refinement cost. This theorem reuses coveringNumber_le_bounded_transport directly.
+
+3. COMPOSITION WITH THE ACTUAL-FRAME PACKING ENDPOINT.
+Under ALL finite-sample, actual-frame, localization, cardinality and spacing hypotheses of R1829 exists_actual_localized_cubic_packing, suppose additionally that the source center base and every X_i belong to A and
+  dist(f_i,base^-1*X_i)<=epsilon.
+Choose R>=B and R>=4^68; the latter also bounds the entries of base^-1*X_i by8. Then
+  m^3<=C(R,epsilon,eta)*N_eta(A^142),
+and N_eta(A^142) is finite. The Lean endpoint is actual_localized_source_packing. Thus the lower bound now reaches an actual power of the original A; it is no longer only a statement about exact commuting approximants.
+
+4. COARSER SEPARATED SAMPLE WITH SOURCE WITNESSES.
+For any matrix set V with finite N_sigma(V), eta>0, coordinate refinement gives
+  N_eta(V)<infinity,
+  N_eta(V)<=[4sigma/eta+1]^4*N_sigma(V).
+For a nonempty bounded image V=range(g), and eta,sigma>0, there is a nonempty finite F subset V and a source map s:F->domain(g) satisfying g(s(y))=y, pairwise distances strictly greater than2sigma, and
+  N_eta(V)<=6561[4sigma/eta+1]^4*|F|.
+The source map preserves the original approximant, source word and scalar coordinates when applying the actual packing theorem to F. Existing separated_matrix_sample and coordinate-patch refinement are reused, rather than re-proving maximal packing or bins.
+For R1829's required spacing, take
+  2sigma=10BM*(384M^4/d)*eta.
+Then the explicit sampling coefficient becomes6561[7680BM^5/d+1]^4. Localization additionally costs binCount(B,delta)^4. These two lemmas have not yet been assembled with the integer choice of m into a single bound on N_eta(V)^3; that remaining composition must retain the small-cardinality case.
+
+DRIFT CHECK — WHY THIS IS NECESSARY BUT NOT THE MISSING GROWTH.
+Let A0=N_eta(A), V0=N_eta(V). Existing extraction, after bounding N_eta(A D A^-1) by an envelope times A0, has the form
+  V0^3 >= L_lower * A0,
+where L_lower is small (positive scale powers and inverse envelope costs). The current packing, source transfer, coarsening and localization have the complementary form
+  V0^3 <= L_upper * A0
+once the actual A^142 envelope is applied, up to a harmless small-cardinality branch; L_upper is large. These inequalities are compatible. They do not become contradictory merely by paying the constants more sharply, and no strict product growth has been proved here.
+The remaining substantial ingredient must amplify a scalar/commuting set or otherwise gain a positive scale exponent beyond this cube-root-size balance. In particular, the scalar projection theorem needs a genuine nonconcentrated coefficient family and a comparison at the extracted scalar-set scale. An upper bound on traces relative to A0 is not automatically an upper bound relative to V0. Concentration of A does not automatically transfer to V. Do not repeat the cubic argument in another wrapper and describe it as amplification.
+
+BOUNDARY
+R1830 closes the error and actual-word containment gap of R1829. The source transfer and actual-power packing endpoint are fully formalized; a source-preserving coarsening lemma is also verified. The finite reindexing, integer retained-size choice and actual-power envelope still need to be composed into the best final commuting-size inequality, with the small-cardinality branch explicit. Crucially, the existing cubic upper/lower estimates are compatible and do not imply strict growth. Scalar amplification, its nonconcentration and small-doubling hypotheses, and its conversion back to useful matrix growth remain substantive obligations. Full fixed-family budget composition, group product growth, strict flattening, density cap, unconditional restricted gap, paid padding, motion, recursion and final referee/cleanup remain. No novelty claimed for supporting quantitative adaptations.
+
+NEXT
+The preceding goal turn is PROGRESS. R1830 is recorded; never replay its checkpoint. Read verification/r1830-source-word-transfer.txt and verification/library-reuse-audit-r1830.json. Full10080-job build and4528-declaration audit passed, standard axioms only; no live Lake handle.
+
+REUSE THE NEW ENDPOINTS: actual_localized_source_packing now bounds m^3 by the explicit transfer cost times N_eta(A^142), and exists_coarse_source_sample retains both cardinality and original source witnesses. Reuse them rather than rebuilding inverse errors, product errors, cover transfer or sampling.
+
+NEXT WORK, WITH A DRIFT GATE:
+1. Complete the finite source reindexing and integer m composition, paying6561[7680BM^5/d+1]^4 for coarsening and binCount(B,delta)^4 for localization. Handle small cardinality explicitly. Apply ApproximatePowerCover.localized_set_pow_coveringNumber with n=141 for A^142; it gives coefficient (8*(2Q)^567+1)^4*|Y|^283*(33^4 Q^8/alpha^4). Do not apply the37-factor specialization or spend a long chain optimizing a fixed exponent.
+2. Compare that resulting cubic upper bound against the existing extraction lower bound BEFORE starting more geometric lemmas. They control the cube-root size but do not by themselves contradict small growth. The next substantive target is scalar amplification and a proved conversion of its gain to matrix growth, not another cubic-packing reformulation.
+3. Investigate a concrete bridge for the mixed-sum obstacle. The current R1826 identity gives a variable base set Y_g plus D_g X, where X={t^2}; it is not directly X+aX. A promising exact identity to CHECK (not yet a proved Lean theorem) replaces the last g by g^-1. For trace-free b, u=cI+t b, v=pI+q b, D_g=det(bg-gb), determinant-one u,v, the candidate is
+   tr(v u^-1 g v u g^-1)=2+(D_g-4det(b))*q^2-D_g*t^2.
+If valid and D_g!=0, this represents a scaled X+lambda_g X with lambda_g=4det(b)/D_g-1, using actual words. It would remove the moving-base-set issue. However lambda_g is identically-1 when det(b)=0, so a nonconcentrated coefficient family cannot be assumed. Check the regular-semisimple and nilpotent/near-nilpotent branches separately and connect any gain back to matrix covering, not merely to an ambient trace upper bound. This is a candidate next attack, not a discovery or completion claim.
+
+Reuse the pinned204-module scalar projection endpoint and existing trace algebra. Keep all hypotheses and scale losses visible. All six original theorem families remain required. No protected edits, commits, pushes, placeholders, raised limits or unsolicited subagents. Goal ACTIVE.
+
+REPORTING
+The current actual source-word transfer, composition with cubic packing, and source-preserving coarsening lemmas are100% verified by the full build and axiom audit. Three of six original theorem families remain formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees are pending. Fifty percent describes only family count, not effort or time. Paid padding remains incomplete with no calibrated remaining percentage or ETA. Motion200/210 and recursion206/208 remain unstarted.

@@ -1,0 +1,49 @@
+{
+  "status": "In progress. R1847 proves quantitative separation of the inverse-final mixed readout, with inverse-linear rather than inverse-quadratic loss in the two coefficient gaps. It transfers this separation to actual source words with an explicit error budget, verifies their word lengths, and connects the bound to the existing actual coefficient selector. Two modules add fourteen audited declarations. Actual retained scalar sample selection, concentration, second-extraction application and final exponent closure remain open.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Matrix.SpecialLinearGroup.coe_inv",
+    "Matrix.adjugate_fin_two",
+    "norm_mul_le",
+    "norm_sub_le",
+    "Matrix.det_fin_two",
+    "Commute.inv_right",
+    "Set.mul_mem_mul",
+    "Set.inv_mem_inv"
+  ],
+  "reused_local": [
+    "frobenius_dist_sq",
+    "entry_error_le_frobenius_dist",
+    "frobenius_norm_le_of_entry_bound",
+    "centered_matrix_small_chart",
+    "trace_error_le_frobenius_dist",
+    "sl2_scalarAffine_product_coordinates",
+    "matrixConjugation_scalarAffine",
+    "commutator_conjugate_det",
+    "frobenius_dist_right_mul",
+    "frobenius_product_distance",
+    "two_source_word_distances",
+    "exists_actual_two_readout_coefficients",
+    "matrixConjugation_trace_det_norm",
+    "set_pow_subset_matrixEntryBox",
+    "set_pow_dist_from_one_le"
+  ],
+  "searches": [
+    "Pinned mathlib Analysis/Matrix and LinearAlgebra/Matrix: Frobenius norm, determinant bounds, inverse/adjugate norm and distance searches",
+    "Existing local SL2CentralizerChart, NormalizedCentralizerChart, SL2NearIdentityProducts, SL2ConjugacyFiber and LocalizedCentralizerPacking",
+    "Existing local NilpotentArithmeticWords, NilpotentWordGeometry, CubicSourceWordTransfer and source sample/concentration machinery"
+  ],
+  "finding": "No drop-in inverse-final mixed-readout distance endpoint found in inspected sources. Existing chart and word-error lemmas supply most of the proof. Exact SL2 inversion distance isometry is a short specialization of the adjugate formula. This bounded source search is not a global absence claim. Existing scalar growth/Pluennecke infrastructure is retained; it is not reproved.",
+  "rejected_duplicate_chain": "The proposed 4x4 inverse-frame chain is unnecessary. The commutator norm yields the stronger inverse-linear gap loss directly.",
+  "next_reuse": [
+    "exists_coarse_source_sample",
+    "finite_source_cluster_cubic_bound",
+    "actual_localized_source_packing_concentration",
+    "scalar_sum_product_alternative",
+    "localized_fixed_power_coveringNumber_envelope",
+    "trace_reextraction_cubic_bound"
+  ],
+  "novelty": "None claimed. These are supporting analytic estimates, not a fourth original theorem family.",
+  "drift_check": "DRIFT / REUSE CHECK\n\nThis closes the specific geometric obstruction recorded at R1846: the\nproduct/quotient enlargement includes I, but the mixed readout only needs\none retained input away from I. A two-coefficient norm argument proves\nexactly that and improves the proposed inverse-square loss to inverse-linear.\nIt introduces no additional frame input or new direction-choice problem.\n\nThe scalar Pluennecke and sum-product theory remains imported/reused.\nNo new abstract inverse-frame chain or general matrix growth framework is\nadded. The full supporting analytic endpoint is still NOT proved.\nThe required source-error threshold and retained scalar sample must be\nsatisfied together; the new source transfer does not silently assume them\nfor the extracted family. Word420 is now checked, but the second-extraction\nwrapper must still be widened using its general fixed-power proof.\n",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

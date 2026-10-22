@@ -1,0 +1,57 @@
+{
+  "checkpoint": "R1750",
+  "status": "CHECKPOINT RECORDED;goal ACTIVE;PROGRESS",
+  "new_modules": [
+    "BitPlaneAlphabet",
+    "BitPlaneMachine",
+    "BitPlaneRun"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.BitPlaneAlphabet.width_positive",
+    "TransposeFollowup.BitPlaneAlphabet.encode_zero",
+    "TransposeFollowup.BitPlaneAlphabet.encode_injective",
+    "TransposeFollowup.BitPlaneAlphabet.matchesWord_iff",
+    "TransposeFollowup.BitPlaneAlphabet.decode_encode",
+    "TransposeFollowup.BitPlaneAlphabet.decode_zero",
+    "TransposeFollowup.BitPlaneMachine.scanned_decode",
+    "TransposeFollowup.BitPlaneMachine.delta_embed",
+    "TransposeFollowup.BitPlaneMachine.step_embed",
+    "TransposeFollowup.BitPlaneMachine.initial_embed",
+    "TransposeFollowup.BitPlaneMachine.fixed_resources",
+    "TransposeFollowup.BitPlaneMachine.stepN_embed",
+    "TransposeFollowup.BitPlaneMachine.halts_iff",
+    "TransposeFollowup.BitPlaneMachine.run_embed",
+    "TransposeFollowup.BitPlaneMachine.observations",
+    "TransposeFollowup.BitPlaneMachine.computesWithin",
+    "TransposeFollowup.BitPlaneMachine.computesWithin_iff",
+    "TransposeFollowup.BitPlaneMachine.transposesWithin"
+  ],
+  "checks": {
+    "targeted": {
+      "session_id": 90725,
+      "exit_code": 0,
+      "jobs": 8932
+    },
+    "build": {
+      "session_id": 33182,
+      "exit_code": 0,
+      "jobs": 9499
+    },
+    "axioms": {
+      "session_id": 11494,
+      "exit_code": 0,
+      "declarations": 2673
+    }
+  },
+  "updated_at": "2026-10-19T09:06:39.191755+00:00",
+  "formal_checkpoint": "R1750 recorded;never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json:R1750,522 sources,2673 declarations,86 artifacts",
+  "proof_scope": "In progress. R1749 paid blank-start prefix,input reset and zero-slack native CutIneq remain verified. R1750 proves exact bit-plane simulation for every original Transpose.TM M, with no restriction on its work alphabet, number of tapes, input contents, or time bound. Let ell=max(1,Nat.size M.g). BitPlaneMachine.machine M uses M.k*ell tapes,5 symbols and the same state count. Every source transition is exactly one target transition; initial blanks, input moves, output, halting, all partial stepN executions and frozen runs are preserved. Each source work-head trajectory is replicated on its ell planes. For every w,out,t, ComputesWithin(converted M,w,out,t) iff ComputesWithin(M,w,out,t). TransposesWithin with the identical time function follows. The code and decoder are executable finite tables depending only on M.g; zero encodes as all blank. No arithmetic on input-size words is hidden in a unit-cost instruction. This is standard alphabet normalization used to cover arbitrary payloads, with no novelty claim. The arbitrary payload has not yet been composed with PaidReady.",
+  "next": "Implement a general sequential composition of two five-symbol machines using the original Transpose.TM step semantics. Use disjoint tape banks and the sum of state sets. The combined machine starts in the first machine state0 with every tape blank. During the prefix, all payload tapes/heads remain blank/zero. When the first transition table returns none, take one paid transfer to the payload state0 while retaining every tape and head. During payload execution freeze the prefix bank and simulate each payload step exactly; halt when the payload halts. A small three-field record(k,q,delta) that converts definitionally to Transpose.TM with g=4 may simplify types; it must introduce no new execution semantics. Prove exact stepN composition and output equivalence under the prefix endpoint contract inPos0/outRev[]. Instantiate the prefix with PaidReady and the payload with BitPlaneMachine.machine M; the adapters should equal the original machines by rfl. The total resource count is53+Q+M.k*ell tapes,5 symbols, with prefix time plus one transfer plus the unchanged payload time. Transfer the actual prefix excursion layout to this larger machine and extend its horizon through payload completion. Keep stored prefix workspace explicit; no free erasure. Finish unconditional expansion/MStar and the other two theorem families separately.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators181/186/188, recoded pairwise-XOR181B, two-stage helper216. Alphabet normalization is supporting compilation work for paid padding201/202, not a fourth completed family or a new impossibility bound. Motion200/210, recursion206/208 and final referees remain. This percentage does not estimate proximity to resolving multiplication/transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/BitPlaneAlphabet.lean": "c12d96eca2ddf453b4bc708ddafdbbd4e9bb509b54f202ac0627edf29fbcb562",
+    "lean/TransposeFollowup/BitPlaneMachine.lean": "52919e4eb5011f4b3ea2b9746497149551d25a756aae1f0fa6557d4fbbe76a61",
+    "lean/TransposeFollowup/BitPlaneRun.lean": "8a7b09fb044d765f758ada29eead9b4d807ae0518c8ef3696c19eb8c619e195f"
+  }
+}

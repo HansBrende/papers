@@ -1,0 +1,156 @@
+R1912 READ-ONLY IMPORT / CACHE REVIEW
+21 October 2026. No Lean/Lake process was launched by this reviewer and no
+repository source or configuration was edited. All proposals below remain
+uncompiled until the root agent tests them with the ordinary pinned driver.
+
+MAIN CONCLUSION
+Consolidation is not the only available improvement. There are two accidental
+source dependencies and one small compatibility boundary that can keep full
+Mathlib out of a substantial native-computation subgraph without changing the
+original sibling paper or any original public theorem statement. The bounded
+proposal preserves original import paths as compatibility wrappers.
+
+PROPOSALS DELIVERED
+/private/tmp/r1912-first-import-cuts-proposal.json
+  Three existing files, exact old/new source:
+  - MonotoneCellOverlap: replace MatchingPageDegree import with Real.Basic and
+    Mathlib.Tactic. Its complete body uses only real inequalities, grid-cell
+    facts, and BoundedMonotoneMap, not the imported page/graph machinery.
+  - MonotoneOverlapGraph: explicitly import MatchingPageDegree, which this
+    actual graph consumer uses.
+  - LinearGenerationBudget: import unchanged Transpose.Statement instead of
+    the enormous MStarClass chain. The one needed auxiliary numeric bound is
+    a local have proved by unfold entryBits; Nat.lt_log2_self; omega. The two
+    existing public theorem statements stay literally unchanged.
+
+/private/tmp/r1912-native-core-split-proposal.json
+  32 existing files plus seven new Core files, exact old/new source.
+  Old source paths remain compatibility modules, retaining all old public
+  names, original types, and transitive access to the reusable declarations.
+  New cores: NativeMicrocodeCore, NativeMicrocodeRunCore,
+    NativeReadFusionCore, NativeIOCore, NativeIOFusionCore,
+    NativeIOFusionRunCore, FiniteProgramEncodingCore.
+  Eight existing next-based proof bodies move once into `_core` variants.
+  Their original statements become one-line aliases, checked by definitional
+  equality, in the original path/namespace. Four genuine run/trajectory
+  bridge proofs remain verbatim in the old compatibility modules.
+  All 12 moved original theorem headers were checked byte-for-byte.
+  Other definitions/proof bodies remain unchanged apart from import edges,
+  `_core` lemma calls, and replacing the old total-step vocabulary.
+  One new helper totalStep is EXACTLY (Transpose.step M w c).getD c.
+  It uses the original Transpose.TM, Config, step, and stepN definitions from
+  unchanged Statement. No machine model, transition count, encoding, or
+  resource assumption is changed, shadowed, or recreated.
+  Internal direct consumers import cores. Actual original-run/trajectory
+  consumers explicitly import the compatibility modules.
+
+WHY THE NATIVE BRIDGE MATTERS
+NativeMicrocode imported Transpose.Tape.Run only for Impl.next, a one-line
+optional-step totalization. Run imports Defs, and Defs imports all Mathlib.
+NativeMicrocode's other imports do NOT independently pull full Mathlib:
+AbsoluteTape uses core-only Statement plus Mathlib's Turing tape; Microcode
+uses CopyMachine/OperationalTrace. Their broad Mathlib.Tactic imports are
+large but smaller than all Mathlib.
+Merely deleting Run would be invalid: NativeMicrocodeRun has native_run and
+native_trajectory, and FiniteProgramEncoding has a trajectory bridge. The
+latter would reintroduce the heavy import through NativeZipper if not split.
+The seven-core proposal explicitly handles all of these points.
+
+SOURCE-GRAPH EFFECT (NOT A TIMING CLAIM)
+The parser strips nested comments/strings and recognizes public/meta import
+combinations. It includes local, protected original, and pinned Mathlib
+sources; imports outside those trees remain leaf vertices. Counts therefore
+are parsed dependency vertices, not measured loaded objects or Lake jobs.
+There are 1,157 original local mathematical modules; 940 currently reach the
+full Mathlib aggregator. With both bounded cuts and the compatibility split,
+341 original local modules no longer reach it. The graph remains acyclic.
+
+                              Baseline    Proposed
+SourceEndpointsData              8,936       3,319
+RationalMobius                   8,809       3,215
+NativeIOFusionCalls              8,799       3,057
+NativeZipper                     8,792       3,050
+ScheduledNativeIO                8,805       3,063
+ClosedNativePadding              9,312       9,318
+
+The final endpoint still genuinely imports the original-paper theory and all
+compatibility theorems. The optimization is to avoid paying for that endpoint
+vocabulary at every intermediate computation stage. No claim is made that
+341/1,157 is the wall-time improvement; the benchmark must measure that.
+Final graph data: /private/tmp/r1912-proposed-import-counts.json.
+Initial smaller closure numbers sent during investigation omitted public-meta
+edges; the numbers above supersede them. The count of 341 is unchanged.
+
+EXACT LEAN 4.34.1 / LAKE CACHE BEHAVIOR
+Inspected installed source under:
+/Users/hansbrende/.elan/toolchains/leanprover--lean4---v4.34.1/src/lean/
+
+lake/Lake/Build/Module.lean:
+- ModuleImportInfo.addImport (~309-380): a legacy importer mixes the imported
+  legacyTransTrace plus allArtsTrace into its dependency trace. An import-all
+  module similarly tracks all transitive/private artifacts. An ordinary
+  new-module import uses public traces/artifacts instead.
+- computeExportInfo (~477-522): legacy files have one full .olean artifact.
+  A new module separates public .olean, .olean.server, .olean.private,
+  .ir.sig and .ir. The ordinary public compile dependency hash uses .olean;
+  meta/import-all paths deliberately track richer information.
+- recFetchPreSetup (~590-613): dependency trace, source, options, module name,
+  package identity and compiler arguments all feed the build trace.
+  Therefore source edits require normal Lake invalidation. No timestamps,
+  handcrafted traces, or fake caches should be used to suppress it.
+
+Lean/Environment.lean:
+- importModulesCore (~2112 onward): a new `module` cannot import a legacy
+  non-module. With the module system disabled at the root, Lean imports all
+  transitively referenced modules and ignores public/private annotations.
+- mkModuleData/writeModule (~1858-1918): new modules retain full checked
+  constants in .olean.private, while exported views can be smaller.
+
+Consequences:
+1. A facade that merely imports the original Run module cannot hide its full
+   Mathlib closure from our legacy clients. Lean has no selective import of
+   a few declarations from that existing legacy artifact.
+2. Adding `module` only to native files is not a local drop-in fix: they need
+   the protected legacy Transpose.Statement. A wrapper around Statement is
+   still unable to import it from the new module system. This route would
+   require a coordinated upstream migration, outside this bounded change.
+3. If a later permitted module-system migration is considered, proof-only
+   edits CAN in principle avoid invalidating ordinary public consumers when
+   the exported artifact is unchanged. That is not the behavior of our
+   present legacy files and is not promised without an actual A/B test.
+4. `import all` or a legacy consumer deliberately restores private data and
+   those dependency costs; mass conversion followed by import-all everywhere
+   would undo much of the intended cache benefit.
+
+PROOF RETENTION / AUDIT DETAIL
+Lean/AddDecl.lean (~110-126) exports ordinary new-module theorem signatures
+without their proof bodies; this is standard compiler behavior, not a new
+source axiom. Full checked bodies remain in .olean.private. The installed
+Lean/Util/CollectAxioms.lean (~112-154) computes an exported axiom-dependency
+extension from full bodies and downstream #print axioms uses that metadata.
+Thus new-module adoption would need a deliberate proof-retention audit and
+full-data kernel replay path, not merely counting apparent public constants.
+No module-system migration or signature-only stub is proposed for this pass.
+
+SAFE VALIDATION ORDER
+1. Root ensures all old Lean/Lake executions have terminal responses.
+2. Archive baseline sources/config; apply bounded first cuts and core split.
+3. Compile core chain, compatibility wrappers, then direct consumer branches.
+   The likely repair class is explicit narrow Mathlib lemma/tactic imports
+   formerly supplied by all Mathlib, not new mathematical obligations.
+4. Test original public contracts and all existing audit names; add the eight
+   core helpers and totalStep to source/declaration inventory as appropriate.
+5. Measure the same import-only and five-module benchmark under the changed
+   imports, then full ordinary Lake build and complete axiom audit.
+6. Combine consolidation only after confirming its source changes do not
+   overlap or invalidate the saved full-source proposal baselines.
+
+OPTIONAL LATER TACTIC CUTS
+After the core split works, narrow the three primitive Mathlib.Tactic roots:
+CopyMachine appears to need DeriveFintype plus its existing Tape/List imports;
+OperationalTrace uses natural arithmetic/omega; AbsoluteTape only needs its
+existing Tape/Statement plus omega. NativeMicrocodeCore explicitly needs
+FinCases. These are uncompiled candidates, not delivered source changes.
+At present broad Tactic imports elsewhere in the analytic path remain, so
+removing these three alone would not reduce SourceEndpointsData's complete
+closure. Profile and target the primitive branch separately before expanding.

@@ -1,0 +1,98 @@
+R1912 ACTUAL SOURCE GRAPH AFTER CONSOLIDATION AND CORE SPLIT
+Read-only snapshot, 21 October 2026. Full build still live when this was
+prepared; the graph check does not certify that build's eventual success.
+No Lean/Lake commands or repository edits were made by this review.
+
+VERIFIED STATIC RESULT
+- Mathematical modules: 1,157 -> 896 (261 fewer net: 268 removals + 7 Core files).
+- Mathematical source lines: 105,579 -> 105,723 (+144 physical lines).
+- No cycles in either baseline or current local mathematical import graph.
+- No missing TransposeFollowup.* or FixedTapeCompiler.* imports.
+- ClosedNativePadding's longest complete local prerequisite path: 188 -> 38.
+- Global longest complete local prerequisite path: 188 -> 81. The remaining
+  longest path ends at UnconditionalPaidPadding through the analytic expansion
+  and trace-growth branch; it no longer follows the native compiler chain.
+
+The before graph comes from the exact archived R1912 baseline source texts.
+The after graph comes from current source files, including the composed pilot,
+19-group consolidation, seven Core modules and first import cuts. These are
+actual applied-source counts, not the older proposed broad19 quotient.
+
+LIKE-FOR-LIKE IMPLEMENTATION EDIT SCENARIOS
+Old implementation -> current implementation     Affected files    Serial path
+NativeMicrocode -> NativeMicrocodeCore             566 -> 306        176 -> 36
+NativeMicrocodeRun -> NativeMicrocodeRunCore        565 -> 304        175 -> 35
+NativeIO -> NativeIOCore                           345 -> 212         86 -> 26
+NativeIOFusion -> NativeIOFusionCore                 71 -> 22          40 -> 12
+NativeIOFusionRun -> NativeIOFusionRunCore           70 -> 20          39 -> 11
+NativeReadFusion -> NativeReadFusionCore             79 -> 31          42 -> 14
+FiniteProgramEncoding -> FiniteProgramEncodingCore 546 -> 280        174 -> 34
+
+Affected files include the changed implementation file and every transitive
+local mathematical consumer. A serial path is a longest dependency path in
+that induced affected subgraph, excluding already-cached prerequisites.
+In the central NativeMicrocode case the source organization removes 45.9% of
+affected module jobs and 79.5% of serial module steps. That does not mean
+45.9% or 79.5% measured wall-time reduction: modules differ greatly in body
+size, import footprint, concurrency, and elaboration cost.
+
+The unchanged old module paths are now compatibility bridges. An edit confined
+to those bridges affects fewer modules (NativeMicrocode:26; NativeIO:14;
+NativeIOFusion:13; FiniteProgramEncoding:1), but comparing those small counts
+against the former whole implementation would overstate the improvement.
+The table deliberately compares the actual moved implementations instead.
+
+MAIN REMAINING PATHS
+- NativeMicrocodeCore has a 36-module affected path: instruction/run core,
+  finite encoding and zipper, binary comparison/carry and repeated addition,
+  fixed multiples, pair preparation, normalized membership/prefix search,
+  family selector, page records, opcode and row generation, timed walks, paid
+  padding limits, and ClosedNativePadding. Exact sequence is in the JSON.
+- NativeIOCore's 26-module path instead ends at MatrixPaletteObstructions
+  through scheduled motion, row arithmetic and buffered/ternary updates.
+- NativeIOFusionCore's 12-module path passes through fusion calls/prefixes,
+  fused page clock, generated rows, timed walks and final paid padding.
+- The global 81-module path is the separate analytic branch from padding
+  geometry and rational expansion through L2 transport, smoothing, SL2 trace
+  geometry, trace growth and RationalContinuousExpander to UnconditionalPaidPadding.
+- Longest remaining strictly linear blocks have only five modules each.
+  Examples: HaarRuzsaBounds -> HaarSandwichBounds (360 lines), IntervalOverlap
+  -> RationalNeighbors (413), MaskedStrideGroup -> MaskedStrideExecution (650),
+  RationalOpcodeSize -> IntegerOperandSize (574), and SchwartzAffineFourier
+  -> L2WaveletEstimate (435). These are observations, not new change proposals.
+
+MEASURED RESULTS VERSUS GRAPH ESTIMATES
+Completed ordinary Lake pilot receipts show:
+  Original five SourceEndpoints modules: 62.774 seconds.
+  Merged pilot target:                    16.731 seconds.
+  Measured pilot ratio:                   3.752x faster / 73.35% less wall time.
+These are the bounded paired real-build measurements recorded before the
+broader consolidation and import split. They are not a measured speed ratio
+for rebuilding the entire project. A cached no-change baseline build took
+4.013 seconds. The current full build was still active at this graph snapshot;
+its eventual wall time must come from the final timing receipt, not a sum of
+per-module job durations or the static critical-path reduction.
+
+The graph explains the mechanism: fewer independent process/import boundaries,
+a much shorter dependency chain, and bridge imports separated from reusable
+computation. The number of external modules removed from each imported Lean
+environment is a separate import-closure measurement; this local-only graph
+does not count Mathlib/standard library modules or claim a new import-footprint
+number. No end-to-end speed ratio should be inferred from the 188 -> 81 or
+176 -> 36 path ratios alone.
+
+DELIVERABLES
+/private/tmp/r1912-final-graph.json records complete before/after graphs,
+source hashes, new/retired module inventories, endpoint paths, implementation
+and bridge scenarios, largest dependency closures, remaining serial blocks,
+and the completed timing receipt contents.
+/private/tmp/r1912-final-graph.py is the read-only analysis generator.
+
+No unexpected dependency cycles or missing-import correctness defects found.
+No further grouping or source change is proposed by this review.
+
+RESTORED FINAL TARGET TIMING ADDENDUM
+The restored twenty-body SourceEndpointsMeaning target passed in 13.3034 s,
+with reported maximum RSS 3.553 GB. The preceding 97.391 s run rebuilt seventeen
+prerequisites plus that target and is not a clean timing pair. The full build
+and final no-change timing remain pending; no whole-project ratio is claimed.

@@ -1,0 +1,35 @@
+{
+  "status": "Four modules,7 theorems; existing product-error, inverse-entry, native cover-transfer and separated-sample machinery reused.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Matrix.SpecialLinearGroup.map",
+    "group inverse and multiplication identities",
+    "Metric.exists_finset_card_eq_externalCoveringNumber",
+    "Metric.externalCoveringNumber_mono_set",
+    "ENat.toENNReal_mono",
+    "ENNReal.toReal_mono",
+    "native pointwise set powers"
+  ],
+  "reused_local": [
+    "complex_matrix_list_prod_error",
+    "EntryApprox.inv",
+    "frobenius_dist_le_of_entry_error",
+    "frobenius_dist_right_mul",
+    "coveringNumber_le_bounded_transport",
+    "finite_coveringNumber_of_entry_bound",
+    "exists_actual_localized_cubic_packing",
+    "exists_separated_matrix_sample",
+    "coveringNumber_le_coordinate_patches",
+    "matrixEntryBox_inv",
+    "set_pow_subset_matrixEntryBox"
+  ],
+  "local_search": {
+    "inspected": "Existing complex product and inverse-error modules, normalization and trace transfer, Frobenius covers, separated sampling, ApproximatePowerCover and LocalizedFixedProductEnvelope; mathlib norm/product and covering-number modules.",
+    "finding": "The ten-factor expression can be passed directly to the existing finite-product theorem, including all occurrences of the center inverse. This avoided a separate inverse-isometry and normalization-error chain. Existing bounded transport supplies the cover cost. Coarsening uses existing separated sampling plus the coordinate refinement theorem.",
+    "next_reuse": "localized_set_pow_coveringNumber n=141 handles the actual A^142 power. Use its explicit coefficient before investing in polynomial simplification."
+  },
+  "external_adapter": "Unchanged204-source adapter at1581d4cbdd69a0faf34b2089614fe2a814316a6a; read-only check passed.",
+  "scope": "Actual source-word lower bound with fully charged error; separate source-preserving coarsening. The integer retained-size composition and strict amplification remain open.",
+  "drift_check": "DRIFT CHECK \u2014 WHY THIS IS NECESSARY BUT NOT THE MISSING GROWTH.\nLet A0=N_eta(A), V0=N_eta(V). Existing extraction, after bounding N_eta(A D A^-1) by an envelope times A0, has the form\n  V0^3 >= L_lower * A0,\nwhere L_lower is small (positive scale powers and inverse envelope costs). The current packing, source transfer, coarsening and localization have the complementary form\n  V0^3 <= L_upper * A0\nonce the actual A^142 envelope is applied, up to a harmless small-cardinality branch; L_upper is large. These inequalities are compatible. They do not become contradictory merely by paying the constants more sharply, and no strict product growth has been proved here.\nThe remaining substantial ingredient must amplify a scalar/commuting set or otherwise gain a positive scale exponent beyond this cube-root-size balance. In particular, the scalar projection theorem needs a genuine nonconcentrated coefficient family and a comparison at the extracted scalar-set scale. An upper bound on traces relative to A0 is not automatically an upper bound relative to V0. Concentration of A does not automatically transfer to V. Do not repeat the cubic argument in another wrapper and describe it as amplification.",
+  "novelty": "No novelty claimed for these routine quantitative adaptations; candidate inverse-final-factor identity remains unproved in Lean."
+}

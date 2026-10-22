@@ -1,0 +1,70 @@
+{
+  "checkpoint": "R1771",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "PROGRESS",
+  "new_modules": [
+    "SchwartzFourierMoments",
+    "SmoothBandSpatialMoments",
+    "FiniteBandTransportEnergy"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.schwartz_polynomial_moment_integrable",
+    "TransposeFollowup.schwartz_fourier_moment_energy",
+    "TransposeFollowup.schwartz_spatial_moment_energy",
+    "TransposeFollowup.schwartz_first_spatial_moment_energy",
+    "TransposeFollowup.schwartz_second_spatial_moment_energy",
+    "TransposeFollowup.schwartz_fourier_deriv",
+    "TransposeFollowup.schwartz_toLp_norm_sq",
+    "TransposeFollowup.schwartzFrequencyDerivative_hasCompactSupport",
+    "TransposeFollowup.schwartzFrequencyDerivative_smoothBandSpectrum",
+    "TransposeFollowup.smoothBand_deriv",
+    "TransposeFollowup.smoothBand_spatial_moment_energy",
+    "TransposeFollowup.smoothBand_deriv_spatial_moment_energy",
+    "TransposeFollowup.finite_smoothBand_first_moment_energy_le",
+    "TransposeFollowup.finite_smoothBand_deriv_energy_le",
+    "TransposeFollowup.finite_smoothBand_deriv_second_moment_energy_le",
+    "TransposeFollowup.RealMobius.schwartzDifferentialTransport_energy_le",
+    "TransposeFollowup.RealMobius.finite_schwartzDifferentialTransport_energy_le",
+    "TransposeFollowup.RealMobius.finite_smoothBand_transport_energy_le",
+    "TransposeFollowup.RealMobius.finite_schwartzActionL2_highFrequency_energy_le"
+  ],
+  "new_theorems": 19,
+  "proof_carrying_definitions": [],
+  "checks": {
+    "targeted": {
+      "session_id": 69640,
+      "exit_code": 0,
+      "jobs": 9511,
+      "warnings": false
+    },
+    "build": {
+      "session_id": 81262,
+      "exit_code": 0,
+      "jobs": 9588,
+      "warnings": false
+    },
+    "axioms": {
+      "session_id": 98802,
+      "exit_code": 0,
+      "declarations": 3304,
+      "warnings": false,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  },
+  "source_audit": "Local Mathlib Schwartz Fourier Plancherel and differentiation APIs; previous source context: Bourgain\u2013Yehudayoff, Monotone expansion, Section 3 Claims 3.2\u20133.4. No new external claim or novelty claim.",
+  "source_sha256": {
+    "lean/TransposeFollowup/SchwartzFourierMoments.lean": "48c03e6752d2378e2d30c73c4a1ae073cf304ae645cc306eec649918c725e56d",
+    "lean/TransposeFollowup/SmoothBandSpatialMoments.lean": "cbe5857e3bf3f92efb5f954b048ce9ce2e7deddf43917dfb116c60b05359ace6",
+    "lean/TransposeFollowup/FiniteBandTransportEnergy.lean": "fd448423d02d46a781a1f86cb765589094e69a2a8e973c6e3d60459714d7b138"
+  },
+  "updated_at": "2026-10-19T14:03:52.608922+00:00",
+  "formal_checkpoint": "R1771 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1771, 611 sources, 3304 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1771 proves the exact Plancherel identity for every polynomial spatial moment of any complex Schwartz function, with no spatial support hypothesis. For each actual smooth band u=F_inverse(chi*Ff), its derivative is exactly the smooth band with cutoff q(xi)=2*pi*i*xi*chi(xi); q is compactly supported Schwartz. The R1770 finite-family frequency derivative estimates now give the spatial moments needed for D_g u=(a-c*x)^2*u'-c*(a-c*x)*u. Five explicit pointwise weighted square-sum bounds on chi, chi', q, q', q'' control the sum of ||D_g u_i||_2^2, with a displayed constant independent of family size. A finite-family high-frequency tail estimate permits different thresholds for different bands. Concrete dyadic cutoffs, their coefficient bounds, L2 decomposition and band isolation remain.",
+  "next": "Construct a concrete dyadic cutoff family and discharge the five coefficient square-sum hypotheses of finite_smoothBand_transport_energy_le. Use a fixed smooth rho with 0<=rho<=1, rho=1 on [-1,1], and rho=0 outside [-2,2], then chi_j(xi)=rho(xi/2^(j+1))-rho(xi/2^j). Mathlib ContDiffBump supplies rho; a radius pair (2^j,2^(j+1)) gives an equivalent scaled family if its exact scaling identity is proved. Show chi_j vanishes for |xi|<=2^j and |xi|>=2^(j+2), bounded overlap, and the scaling identities for its first two derivatives. For q_j=2*pi*i*xi*chi_j and weights w_j=2^(-2j), bound the pointwise weighted square sums of chi_j, chi_j', q_j, q_j', q_j''. Feed these bounds to the verified transport theorem; do not assume uniform per-band relative moment bounds.\n\nProve the telescoping decomposition converges in actual L2. Build the smooth high-frequency component directly from the original unit-supported input; use the low-frequency grid estimate to retain correlation after removing rho*Ff. Do not apply unit-support moment bounds to the already truncated R1767 witness. Combine the transported energy bound with the R1769 separated-correlation bound and summable 2^(j-k) factors; use symmetry for reversed bands and isolate a nonzero band. Preserve flattening, generator existence, full motion/recursion and referees as remaining obligations.",
+  "checkpoint_reporting": "At substantial checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full six-family formalization goal. Three of six original families are complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216; final referees remain pending. R1771 converts frequency derivatives into exact spatial moments, identifies band derivatives as actual smooth bands with multiplier q=2*pi*i*xi*chi, and proves a finite-family transported derivative energy bound from five explicit coefficient square-sum hypotheses. No fourth family is complete. Paid padding still requires restricted spectral-gap and rational generator existence; motion 200/210 and recursion 206/208 remain unstarted. The percentage describes formalization scope, not elapsed time or proximity to deciding transposition or multiplication."
+}

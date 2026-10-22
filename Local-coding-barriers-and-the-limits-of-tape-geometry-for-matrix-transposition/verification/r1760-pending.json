@@ -1,0 +1,62 @@
+{
+  "checkpoint": "R1760",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1759 PROGRESS",
+  "new_modules": [
+    "CellCenteredVariance",
+    "CellCenteredSpectralInput"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.gridStep_memLp",
+    "TransposeFollowup.cellCenteredIndicator_memLp",
+    "TransposeFollowup.cellCenteredIndicator_off_unit",
+    "TransposeFollowup.cellCenteredIndicator_gridTrim_off_cells",
+    "TransposeFollowup.indicator_gridStep_product",
+    "TransposeFollowup.indicator_gridStep_integral",
+    "TransposeFollowup.cellCenteredIndicator_variance",
+    "TransposeFollowup.cellCenteredIndicator_variance_lower",
+    "TransposeFollowup.gridTrim_cell_cap",
+    "TransposeFollowup.gridTrim_variance_lower",
+    "TransposeFollowup.gridTrim_variance_pos",
+    "TransposeFollowup.gridTrim_small_projection_error",
+    "TransposeFollowup.cellCenteredLp_coe",
+    "TransposeFollowup.cellCenteredLp_norm_sq",
+    "TransposeFollowup.cellCenteredLp_variance",
+    "TransposeFollowup.normalizedCellCentered_coe",
+    "TransposeFollowup.normalizedCellCentered_norm",
+    "TransposeFollowup.normalizedCellCentered_off_unit",
+    "TransposeFollowup.normalizedCellCentered_cell_integral",
+    "TransposeFollowup.gridTrim_normalized_off_cells",
+    "TransposeFollowup.centralTrim_normalized_support",
+    "TransposeFollowup.gridTrim_normalized_spectral_input"
+  ],
+  "checks": {
+    "build": {
+      "session_id": 2674,
+      "exit_code": 0,
+      "jobs": 9535
+    },
+    "axioms": {
+      "session_id": 88685,
+      "exit_code": 0,
+      "declarations": 2925
+    }
+  },
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "section": "Proof of Theorem 1.2: boundary trimming and cell-mean projection",
+    "scope": "This supplies the variance and normalized L2 input in the source strategy, with explicit retained-cell support and a charged deleted-cell contribution. It does not supply the restricted spectral gap or generator existence and makes no novelty claim."
+  },
+  "boundary": "Actual L2 normalization, exact variance, positive variance and quantitative relative projection error are now proved. Near-identity Mobius dynamics, restricted spectral gap and rational generator existence remain substantial open formalization dependencies. No additional complete original family is claimed.",
+  "updated_at": "2026-10-19T11:17:46.606085+00:00",
+  "formal_checkpoint": "R1760 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1760, 558 sources, 2925 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1760 completes the normalized analytic input for the trimmed cell-centered function. CellCenteredVariance proves membership in every finite or infinite Lp exponent, exact squared integral M_prime-K*sum_i(m_i_prime^2), a lower bound from a cell-mass cap, and positive variance when 0<M<=1/2, 0<=delta<1 and theta*(1+delta)<1. It also proves the function vanishes outside the retained cells. If delta<=1/100 and theta<=1/200, its variance is at least (49/100)*M, and the squared-integral error from global centering is at most one hundredth of this variance. CellCenteredSpectralInput constructs the actual real L2 equivalence class, identifies its norm square with the variance integral, normalizes it, proves its representative has zero integral on every grid cell, and proves almost-everywhere support in the retained cells and hence the central interval for central trimming. The final spectral-input theorem identifies the normalized function explicitly with this trimmed indicator. These are formal analytic prerequisites; no spectral-gap or rational-generator-existence result is assumed or claimed.",
+  "next": "Prove quantitative estimates for sufficiently near-identity rational Mobius maps and their inverses: positive denominator bounds, displacement and derivative bounds on the unit interval, and that the trimmed central support maps into the unit interval. Use these to establish the actual change-of-variables and almost-invariance estimates required for the normalized L2 input. The retained-support lemma and the concrete relative squared-error bound are now proved, with all deleted-cell contributions charged. Then complete the restricted spectral-gap and rational-generator-existence arguments using library results or complete proofs, never new axioms or numerical tests. Preserve all six targets; after full 201/202 complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now includes actual L2 membership and normalization, exact and positive variance, retained central support, zero cell integrals and a concrete relative projection-error bound. Near-identity dynamics, restricted spectral gap and rational generator existence remain substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/CellCenteredVariance.lean": "48b8ca91f93be2128c70db2485b145a4f786bc60c8eae8b94ee26cd4fcec7535",
+    "lean/TransposeFollowup/CellCenteredSpectralInput.lean": "cf926c11e4f1a70290f9bb54ac269915ada7291b9ddd88e6a45236a6454b1938"
+  }
+}

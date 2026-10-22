@@ -1,0 +1,46 @@
+R1915 PRESERVATION PLAN — bounded final capture; reused verified baseline
+
+Prepared baseline: capture/baseline-compact.json is a new, explicitly labeled
+R1915 baseline wrapper around the verified R1914 final capture. The original
+R1914 files are unchanged. Root-frozen A15 source/receipt snapshots match that
+completed evidence, and all6306 audit names and order agree. Current sources
+were not read during binding, since the baseline benchmark edit was active.
+No baseline Lean inspection or raw-chunk copy was performed. The79 referenced
+raw chunks will be fully hash-checked at exact comparison, after timings stop.
+
+1. Root completes the proposed merge/import remapping, benchmark restoration,
+   and ordinary full build. Root alone executes all Lean/Lake commands.
+2. python3 prepare.py final
+   Generates capture/final-inspect.lean,79 commands of at most80 names.
+   Root runs it with the normal timed Lean driver; no limits/trust changes.
+3. python3 types.py seal final --execution TIMING_JSON --log LEAN_LOG
+   python3 types.py compare
+   Exact strings AND ordered universes are compared for all6306 names. Raw
+   changes remain explicit; neither hash matching nor normalization replaces
+   this comparison. Original baseline run/script/chunk provenance is retained.
+4. If any differences exist: python3 prepare-kernel.py
+   Root runs the generated capture/kernel/check.lean. It reconstructs each
+   exact old Expr, requires repr roundtrip/current-capture/universe agreement,
+   then native-kernel checks the explicit identity application. Controls remain
+   enabled. No aliases, axioms, casts, limits or silent source-header fallback.
+   A missing generated proof constant fails closed for separate review.
+5. python3 finish-types.py [--execution KERNEL_TIMING --log KERNEL_LOG]
+   No kernel arguments needed if all types are literally identical. The receipt
+   distinguishes raw matches, original-Expr conversions and any separately
+   approved explicit archived-header route; the raw mismatch report is kept.
+6. After exact benchmark restoration:
+   python3 source-guards.py --output FINAL_SOURCE_GUARD_JSON
+   Checks23 theorem-family bodies,11 shared-model bodies, all original audit
+   names, local import DAG, trust/options, pinned config/external sources,
+   protected sibling inventory, and immutable prior receipt evidence. Other
+   changed/added/retired bodies still require the separate exact merge replay.
+   Root also performs the full6306 axiom audit (allowed original three axioms).
+7. Only after timed runs and checks terminate, preserve full final/raw evidence
+   and semantic checker inputs/outputs with types.py archive, or an equivalent
+   verified durable archive. No duplicate giant aggregate is generated. Prior
+   R1914 archive/provenance stays immutable; baseline-reuse.json records its
+   link. New proof sources, finalization and publication remain root-owned.
+
+Helpers are prepared only in /private/tmp/r1915-preservation. Nothing in R1914
+was changed. Baseline metadata binding took0.14s and read no working-tree source,
+raw type chunk, or full archive. It does not falsely claim a fresh baseline run.

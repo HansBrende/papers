@@ -1,0 +1,109 @@
+R1839 — VERIFIED NORMALIZED SCALAR CONCENTRATION
+
+In progress. R1839 derives normalized scalar ball counts for the same retained nilpotent sample, using the actual finite-cluster cubic bound, original spanning cube, mixed-cover envelope and sampling retention. The ambient covering factor cancels after its positivity is proved; distribution at2eta pays the additive1. The normalized coefficient is explicit, including every chart, approximation, power-envelope, trace-coefficient and sampling loss. Two new modules and one modified module add eight declarations. A conditional written exponent audit identifies simultaneous strict margins for scalar concentration, upper cardinality and trace gain; the actual dyadic parameter composition remains unproved.
+
+1. REUSED SCALAR GEOMETRY AND SAMPLER.
+scalar_coordinate_abs_sub isolates the identity
+  |(2/3)(tau+ell*t)-(2/3)(tau+ell*q)|=(2/3)|ell|*|t-q|.
+The previous nilpotent_scalar_spacing now calls it. nilpotent_scalar_ball_diameter assumes exact determinant-one matrices u=cI+tb,v=pI+qb, trb=detb=0,c,p>=1/2, ||b||<=Bg>=0 and |tr(bg)|>=L>0. If both scalar coordinates lie within r of the same real center, then
+  dist(u,v)<=2*(3Bg/(2L)*r).
+It reuses the previously proved c=p=1 and exact Frobenius distance formula.
+exists_nilpotent_scalar_sample now RETURNS its already proved injectivity along with matrix spacing, scalar spacing, source indices, exact cardinality and both retention bounds. This changes no witness or cost.
+
+2. COUNTING AND GLOBAL NORMALIZATION.
+scalarBallMass_image identifies mass in a scalar ball with the real cardinality of the corresponding subtype of indices, for any injective finite scalar map. It uses Finset.filter_image, card_image_of_injective and Fintype.card_subtype.
+spanning_cube_sample_normalization states, for eta>0,N>0,T,V,P,H>=0:
+  eta^theta*N^4 <= (9*T*H*V)^3,
+  T<=P*N, V<=S*m
+imply
+  N <= W*m^3, W=(9*P*H)^3*eta^(-theta)*S^3.
+This is the exact cube supplied by the first spanning extraction. Cancellation is only of the positive N^3. The sampler and mixed-cover losses are retained; no root or ambient-size factor is discarded. S need not be assumed nonnegative separately in this algebraic lemma.
+
+3. ACTUAL NATIVE LOWER SIZE AND THE SMALL-CLUSTER TERM.
+coveringNumber_lower_of_distribution uses the actual multiscale distribution on A, eta>0, the strict window2eta<eta^gamma and finite N_eta(A), to prove
+  (2eta)^(-kappa)<=N_eta(A).
+The finite separated group set is mapped injectively into matrices, then the existing separated_matrix_card_le_coveringNumber theorem is applied. In particular N_eta(A)>0.
+one_le_scaled_cover_of_lower then proves, for r>=eta and kappa>=0,
+  1<=2^kappa*r^kappa*N_eta(A).
+The additive1 in the finite-cluster cubic theorem is therefore charged uniformly, including empty/small clusters.
+
+4. NONNEGATIVE CUBE NORMALIZATION.
+normalized_count_of_cubic states: if m,n,A,C,r>=0,
+  n^3<=A*r^kappa*N, N<=W*m^3, A*W<=C^3,
+then n<=C*r^(kappa/3)*m. This reuses mathlib rpow_mul_natCast and pow_le_pow_iff_left_0; no new real-power calculus is developed.
+
+5. NORMALIZED PROFILE FOR THE SAME FINITE NILPOTENT SAMPLE.
+nilpotent_scalar_sample_concentration retains ALL the geometric, actual-frame, chart, matrix-spacing, source-entry and approximation premises of finite_source_cluster_cubic_bound. It assumes the original A distribution and A^142/A^284 cover envelopes J,K, plus the distribution window2eta<eta^gamma. It centers the SAME generator z and assumes det(b)=0, c_i+t_i*tr(z)/2>=1/2, ||b||<=Bg>0, and |tr(bg)|>=L>0. The retained scalar map is injective, as the sampler now explicitly supplies.
+For the original whole approximant set Vset and mixed-product set Dset, it consumes the extraction cube, mixed envelope P and retained sample inequality with
+  S=6561*(4sigma_sample/eta+1)^4.
+It does not choose a new sample. Write
+  N=N_eta(A), M=|Z|, Z={(2/3)(tr(g)+tr(bg)*t_i)},
+  Bpow=4^142,
+  E=(4*(20*(2R)^10*epsilon+2R*eta)/eta+1)^4,
+  Lchart=binCount(B,delta_chart)^4,
+  Cpow=(8Bpow+1)^4*(8Bpow^2+4Bpow+1)^kappa,
+  Dloc=40*(2R)^11*(3Bg/(2L)+2),
+  Q=4*Lchart^3*(E*Cpow*K*J*eta^(-gamma*kappa)*Dloc^kappa+2^kappa),
+  W=(9*P*H)^3*eta^(-theta)*S^3.
+For every C>=0 with Q*W<=C^3, every real center v and radius r>=eta,epsilon,
+  scalarBallMass(Z,v,r)<=C*r^(kappa/3)*M.
+The proof restricts the index type to the scalar ball. It uses matrix radius
+  s=(3Bg/(2L)+1)*r.
+The extra1 makes s>=r>=eta and hence eta<=40*(2R)^11*(s+epsilon), since R>=1. The actual output radius is at most Dloc*r. This slightly enlarges the coefficient relative to the initial R1838 plan, and avoids introducing a separate upper bound on L. Source witnesses, approximation and spacing are inherited by the subtype. The original R1838 theorem bounds its cube;3 absorbs the additive1;2 supplies N<=W*M^3;4 yields the normalized profile. The native count N therefore cancels.
+For 0<r<=1 and2*kappa_scalar<=kappa/3, mathlib Real.rpow_le_rpow_of_exponent_ge immediately weakens this to the exponent required by R1835. The actual scalar C budget and all original inputs are still to be instantiated; the theorem does not assert them without proof.
+
+EIGHT NEW DECLARATIONS
+TransposeFollowup.SL2Projection.scalar_coordinate_abs_sub
+TransposeFollowup.SL2Projection.nilpotent_scalar_ball_diameter
+TransposeFollowup.SL2Projection.scalarBallMass_image
+TransposeFollowup.SL2Projection.spanning_cube_sample_normalization
+TransposeFollowup.SL2Projection.coveringNumber_lower_of_distribution
+TransposeFollowup.SL2Projection.one_le_scaled_cover_of_lower
+TransposeFollowup.SL2Projection.normalized_count_of_cubic
+TransposeFollowup.SL2Projection.nilpotent_scalar_sample_concentration
+
+6. CONDITIONAL WRITTEN EXPONENT AUDIT — NOT A FORMAL DYADIC APPLICATION.
+Use the R1837 first-extraction scaling, suppressing only fixed constants: initial distance exponent2zeta, spanning determinant exponent sigma0, trace coefficient lower exponent2zeta+sigma0, first-frame determinant exponent d1=6zeta+3sigma0, scalar radius at eta^(1-3zeta), and sampler spacing chosen to dominate both scalar and cubic requirements. The conservative sampler loss exponent is4d1=24zeta+12sigma0. The chart bin loss exponent is32zeta+12sigma0; the approximation-cover E exponent is8zeta; H_initial has exponent8zeta. Let p0,p141,p283 denote actual mixed,A^142,A^284 envelope losses. Then the displayed Q,W have candidate loss exponents
+  q=104zeta+36sigma0+p283+p141+kappa0*(gamma+2zeta+sigma0),
+  w=3p0+96zeta+44sigma0.
+Thus C can be paid at any exponent strictly larger than
+  cLoss=p0+(p283+p141)/3+(200/3)zeta+(80/3)sigma0
+        +(kappa0/3)*(gamma+2zeta+sigma0).
+These are finite combinations of small parameters; no residual ambient N factor remains.
+The SAME sample's upper cardinality can be attacked using its existing |Z|<=N_eta(V) and commuting_family_cubic_bound. If the original ambient upper size is N<=eta^(-(3-kappa0)), the candidate upper-size loss beyond N^(1/3) is
+  uV=(176/3)zeta+24sigma0+p141/3.
+For kappa_scalar=kappa0/12, the upper log-cardinality condition has a strict margin if
+  uV+3zeta*(1-kappa_scalar)<kappa0/4.
+This is a new application plan for existing theorems, NOT a proved upper-cardinality result in this checkpoint.
+As an illustrative consistency test only, assume0<kappa0<=1,0<e<=1, and all displayed envelope/small losses (including the R1837 trace-envelope losses) <=theta, with
+  theta=min(e,kappa0)/4096, gain exponent g=e/8.
+Then cLoss<=289theta/3, uV<=83theta, and uV+3zeta*(1-kappa_scalar)<=86theta. The old full trace threshold costs at most173theta. Exact rational checks give positive margins:
+  1/8-173/4096=339/4096,
+  1/4-86/4096=469/2048,
+  1-3/4096-1/8-289/(3*4096)=5227/6144.
+Also4g=e/2 leaves a strict scalar K^4 margin. These tests suggest the newly explicit concentration loss does not force failure of this regime. They do NOT instantiate the actual envelopes, pay all fixed constants, choose an actual dyadic radius, check the scalar theorem's parameter order, establish the positive branch or handle nonnilpotent generators. The next turn should attempt that composition directly and reassess if an input cannot be supplied.
+
+DRIFT CHECK.
+This turn composes the prior cubic bound into the missing normalized scalar profile, rather than assuming concentration of the extracted scalar family. Global normalization is derived from the original spanning cube and actual cover/retention interfaces, not introduced as a free factor. The remaining C budget is an explicit inequality between named losses, and is not declared discharged. Library finite-cardinality, packing and rpow facts are reused; the sampler simply exposes its already proved injectivity. The next target is to instantiate the first extraction and close all scalar-interface budgets at one dyadic scale. Do not build another independent concentration or scalar projection theory.
+
+BOUNDARY
+R1839 proves the normalized scalar profile under the existing geometric, source, distribution, extraction-cube, mixed-envelope and retention interfaces. It does not prove that one choice of the original dyadic parameters meets all these interfaces and the scalar loss budget. The first-extraction positive branch, same-sample application, actual fixed-power envelopes, scalar interval, upper dimension gap and complete loss-budget/scale composition still need integration. Exact nilpotence remains the current arithmetic branch. Nonnilpotent amplification, final trace-growth contradiction, strict flattening, density cap, unconditional restricted gap, full paid padding, motion, recursion and final referees remain incomplete. No fourth original family or improved transposition bound is claimed.
+
+NEXT
+The preceding goal turn is PROGRESS. R1839 is recorded; never replay its checkpoint. Full10100-job build and4586-declaration axiom audit passed; no live Lake handles. Read verification/r1839-normalized-scalar-concentration.txt and library-reuse-audit-r1839.json. Normalized scalar ball counts for the same retained nilpotent sample are now proved under the existing input interfaces. Do not redo scalar-ball geometry, filter counting, cover positivity, cube cancellation or small-cluster absorption.
+
+NEXT CONCRETE TARGET: close the first-extraction nilpotent scalar interface at an actual dyadic scalar scale, with all loss and upper-cardinality budgets. Use the new theorem; do not assume its Q*W<=C^3 budget as a new unexplained premise.
+1. Instantiate the original exists_spanning_commuting_extraction_at_dyadic_scale and choose its scalar-affine coordinates. Center the SAME generator z: b=z-(trz/2)I, c'=c+t*trz/2. From actual A^2 sources near I and the charged first error, derive c'>=1/2. Conditional on det(b)=0, apply exists_nilpotent_scalar_sample; it now returns injectivity and matrix spacing explicitly. Preserve source indices. Apply nilpotent_scalar_sample_concentration with Vset equal to the ORIGINAL whole approximant image, Dset equal to its mixed product, theta=8sigma0, H=H_initial, P from the A^37 envelope, and the sampler's explicit S. Check both scalar and cubic matrix spacing.
+2. Reuse localized_set_pow_coveringNumber for the A^37,A^142,A^284 envelopes (P36,P141,P283), retaining all constants. Derive actual upper scalar cardinality from |X|<=N_eta(V) and commuting_family_cubic_bound, plus the original ambient upper size N_eta(A)<=eta^(-(3-kappa0)). This avoids a new density zoom or separate one-dimensional packing theory.
+3. Choose an actual scalar dyadic radius within a fixed factor of eta^(1-3zeta); reuse existing dyadic/rpow/log lemmas. Check epsilon<=delta, eta<=delta, scalar range[1,2], separation, the distribution window2eta<eta^gamma, upper log-cardinality and all three R1835 scalar-growth budgets. The R1839 note gives the new normalized C exponent and a conditional strict-margin test. It is a diagnostic, not a completed application: fixed constants and quantifier order must still be paid.
+4. Compare against the FULL R1832 trace-cubic threshold, preserving both actual additive/multiplicative word families and their geometry. Do not omit the second extraction's source-spacing, chart, binning or approximation losses. A completed nilpotent branch is the next substantive endpoint; nonnilpotent cases remain necessary afterward.
+
+The first error is12800*B0^6*eta/r_initial, B0=4*4^34; never silently replace it by the second error819200eta/rho. The source words base^-1X_i are in A^2. For scalar radii r, R1839 uses s=(3Bg/(2L)+1)r and Dloc=40(2R)^11(3Bg/(2L)+2); the extra1 ensures the native-scale condition without a new coefficient upper bound. Full exact constants are in the theorem/note.
+
+REPORTING: paid padding201/202 remains about60%, low confidence;3/6 original families formalized, final referees pending. Goal ACTIVE. No protected edits, commits/pushes, unsolicited subagents or proof-limit changes.
+
+REPORTING
+Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This subjective estimate is for the original proof, not the local normalization lemma, and is not an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Keep reporting a best numerical estimate as explicitly requested.
+
+VERIFICATION
+Full lake build passed10100 jobs without warnings. SupportAxioms audited4586 unique declarations, using only propext, Classical.choice and Quot.sound. There are918 mathematical modules plus SupportAxioms (919 local sources),204 pinned external modules,8 configurations and121 validation artifacts. All384 archive hashes and117 protected files/directory inventory verify. Branch codex/transpose-followup-formalization and HEAD5f99ef1a503f5d56585a3862b2778193b6d358f4 unchanged. No placeholders, new axioms, unsafe/native_decide, raised proof limits, disabled linters, commits or pushes. All Lake handles terminal.

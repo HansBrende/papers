@@ -1,0 +1,42 @@
+{
+  "status": "In progress. R1849 generalizes the existing scalar-concentration proof and recovers the nilpotent theorem with its statement unchanged. It proves exact normalization and trimming-ratio lemmas, and discovers and verifies an obstruction to trimming AFTER the final scalar-driven coarsening. That ordering is abandoned: trim at the fine matrix scale first, then coarsen the retained branch. Two modules add four audited declarations; the old nilpotent proof is shortened by reuse. The actual two-stage sample and its parameter closure remain next.",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "reused_mathlib": [
+    "Real.rpow_le_rpow_of_exponent_ge",
+    "one_le_pow\u2080",
+    "Finset.card_image_of_injective",
+    "Real.mul_rpow"
+  ],
+  "reused_local": [
+    "finite_source_cluster_cubic_bound",
+    "scalarBallMass_image",
+    "coveringNumber_lower_of_distribution",
+    "one_le_scaled_cover_of_lower",
+    "normalized_count_of_cubic",
+    "spanning_cube_sample_normalization",
+    "nilpotent_scalar_ball_diameter"
+  ],
+  "searches": [
+    "Existing NilpotentScalarConcentration and CubicSampleNormalization: coordinate-specific diameter use and reusable arithmetic",
+    "Existing ActualCentralizerSourcePacking and TraceSquareSourceSample signatures",
+    "Local cube/global-normalization and scalar concentration searches",
+    "Existing ScalarDyadicBudgets and scalar-cell sources for remaining application"
+  ],
+  "finding": "The scalar concentration chain already exists locally. It is generalized once in SourceScalarConcentration and the old nilpotent proof becomes a wrapper with exactly the same statement. No parallel copy of the cubic concentration proof remains. The conditional single-pass trace-square application was removed after the budget audit ruled out its intended ordering.",
+  "new_arithmetic": [
+    "Exact fixed-constant cube normalization by an existing theorem",
+    "Count-independent trimming ratio",
+    "A sufficient certificate that coarsening-before-trimming cannot close the displayed budget"
+  ],
+  "next_reuse": [
+    "exists_actual_trace_square_source_sample at the fine scale",
+    "exists_coarse_source_sample at the final scale",
+    "separated_matrix_card_le_coveringNumber",
+    "source_scalar_sample_concentration",
+    "coefficient_cube_normalization",
+    "trim_budget_of_global_normalization"
+  ],
+  "novelty": "None claimed; the obstruction concerns this proof budget, not transposition complexity. No fourth original theorem family completed.",
+  "drift_check": "DECISIVE DRIFT / FEASIBILITY AUDIT\n\nA single-pass concentration endpoint was implemented and passed targeted\nLean builds. It correctly constructs the R1848 sample and applies the\nshared concentration theorem under explicit trimming and concentration\nbudgets. An independent algebraic check of the simultaneous budgets then\nshowed that this ORDER of operations is unsuitable for the intended scales.\nThe conditional theorem was true, but its required trimming inequality\ncould not be made small in that regime. The unused specialization was\nremoved from active Lean sources; diagnostic source is saved locally at\n/private/tmp/r1849_single_pass_prototype.lean. The shared proof and the\nnormalization lemmas remain useful and are audited here.\n\nWhy the budget fails:\nFor the trace-square inverse, Kinv=3072/(lambda*s), lambda<=32.\nThe final scalar spacing requires2sigma>=Kinv*delta_s. In the intended\nregime delta_s>=eta this forces sigma/eta>=48/s. Hence the coarse\nretention factor C=6561(4sigma/eta+1)^4 satisfies C*s^4>=1.\nIts CUBIC normalization cost therefore contains s^-12.\nMeanwhile Anear has decay only s^kappa. With the usual nonnegative profile\nbounds E>=1,K,J>=1,eta<=1,gamma,kappa>=0,R>=1, one has Anear>=s^kappa.\nTaking the harmless larger fixed constants/envelopes ensures W,L>=1.\nThe newly proved obstruction applies for kappa<=12, covering our range.\nThus decreasing s to remove the trace-square critical point cannot make\nthis single-pass trimming estimate succeed. Earlier optimism about just\nchoosing smaller exponents overlooked that sigma itself depends on1/s.\n\nThis DOES NOT refute the R1848 conditional sampler. It also does not rule\nout special inputs or spacings outside the stated regime. It says not to\ntry to close the main argument with this coupled single-pass budget.\n\nRepair: TRIM FIRST, COARSEN SECOND.\nThe initial fine scale sigma0 only has to meet cubic packing. Its trimming\nfactor C0 is independent of1/s. After choosing a far, single-sign branch,\na second coarse sampling at sigma1 pays the trace-square inverse loss.\nThe factor C1(s) then enters the FINAL cardinality/concentration budget,\nnot the earlier condition that creates the far branch. This is the next\nconstruction to prove; it is not yet formalized in this checkpoint.\n",
+  "reporting": "Current ORIGINAL theorem family: paid padding201/202. Best rough estimate: about60% complete, LOW CONFIDENCE. This is a subjective estimate for the original proof, not a percentage for the local parameter lemmas or an ETA. Three of six original families are formalized: adaptive separators181/186/188, recoded pairwise-XOR181B, and two-stage helper216; final referees pending. Paid padding remains incomplete; motion200/210 and recursion206/208 remain unstarted. Continue numerical progress reports as explicitly requested."
+}

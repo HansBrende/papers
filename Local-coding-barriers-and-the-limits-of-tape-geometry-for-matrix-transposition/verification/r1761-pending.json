@@ -1,0 +1,74 @@
+{
+  "checkpoint": "R1761",
+  "status": "CHECKPOINT RECORDED; goal ACTIVE; PROGRESS",
+  "previous_turn_classification": "R1760 PROGRESS",
+  "new_modules": [
+    "MobiusCalculus",
+    "NearIdentityMobius"
+  ],
+  "new_declarations": [
+    "TransposeFollowup.RationalMobius.hasDerivAt_eval",
+    "TransposeFollowup.RationalMobius.derivative_pos",
+    "TransposeFollowup.RationalMobius.continuousOn_derivative",
+    "TransposeFollowup.RationalMobius.measurableSet_image_eval",
+    "TransposeFollowup.RationalMobius.integral_image_eval",
+    "TransposeFollowup.RationalMobius.volume_real_image_eval",
+    "TransposeFollowup.RationalMobius.integrableOn_derivative",
+    "TransposeFollowup.RationalMobius.weightedPullback_square",
+    "TransposeFollowup.RationalMobius.weightedPullback_square_integral",
+    "TransposeFollowup.RationalUnitMobius.inverse_inverse",
+    "TransposeFollowup.RationalUnitMobius.inverse_delta",
+    "TransposeFollowup.RationalUnitMobius.inverse_denom_eval",
+    "TransposeFollowup.RationalUnitMobius.inverse_eval_eval",
+    "TransposeFollowup.RationalUnitMobius.eval_inverse_eval",
+    "TransposeFollowup.RationalUnitMobius.inverse_derivative_eval",
+    "TransposeFollowup.RationalUnitMobius.unit_preimage_eq_inverse_image",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.nonneg",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.inverse",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.of_squared",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.denom_error",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.denom_bounds",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.determinant_error",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.eval_displacement",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.derivative_error",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.mapsTo_central",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.sqrt_derivative_error",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.central_subset_clipped",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.central_preimage_eq_inverse_image",
+    "TransposeFollowup.RationalUnitMobius.NearIdentity.volume_distortion"
+  ],
+  "checks": {
+    "near_identity": {
+      "session_id": 4703,
+      "exit_code": 0,
+      "jobs": 8968
+    },
+    "build": {
+      "session_id": 50813,
+      "exit_code": 0,
+      "jobs": 9537
+    },
+    "axioms": {
+      "session_id": 3120,
+      "exit_code": 0,
+      "declarations": 2954
+    }
+  },
+  "boundary": "Near-identity geometric and analytic estimates are proved; small-expansion-to-almost-invariance, the restricted spectral gap and rational generator existence remain. No additional complete original family is claimed.",
+  "source_audit": {
+    "url": "https://arxiv.org/html/1108.2555#S1",
+    "version": "1108.2555v1",
+    "section": "Section 1, construction and proof of Theorem 1.2; operator preceding Theorem 1.3",
+    "scope": "Source reread this turn. Use explicit entrywise error eta; the squared coefficient-distance hypothesis is bounded by eta^2. Prove actual derivatives, change of variables, adjugate inverse identities and weighted energy locally on the rational interval. Do not infer a full L2 unitary representation or the spectral gap from these local identities."
+  },
+  "updated_at": "2026-10-19T11:30:39.674899+00:00",
+  "formal_checkpoint": "R1761 recorded; never rerun checkpoint script",
+  "authoritative_receipt": "support-build.json: R1761, 560 sources, 2954 declarations, 86 artifacts",
+  "proof_scope": "In progress. R1761 completes quantitative near-identity Mobius control and reuses Mathlib for actual change of variables. MobiusCalculus proves the derivative formula, its positivity and continuity, measurable images, the real image-measure integral formula, and the exact squared-integral identity for the square-root-Jacobian weighted pullback on measurable subsets of the existing rational interval. It proves both inverse compositions on the unit interval, the reciprocal derivative identity, and the unit-restricted preimage/inverse-image equality under its explicit domain hypothesis. NearIdentityMobius bounds coefficients entrywise by eta, transfers the condition to the adjugate inverse, and derives it from squared coefficient distance at most eta^2. For eta<=1/8 and x in [0,1], the denominator lies between 1-2eta and 1+2eta, displacement is at most 8eta, and derivative and square-root-derivative errors are at most 32eta. These imply actual image-measure distortion between factors 1-32eta and 1+32eta. A central interval [r,1-r] with r>=8eta lies in the clipped domain and maps into [0,1], for the map and its inverse. The corresponding preimage identity is proved. These local identities do not by themselves establish a unitary L2 representation, almost-invariance, the spectral gap, or generator existence.",
+  "next": "Convert small augmented-family image expansion into an explicit symmetric-difference bound for the centrally trimmed set T and its images under every generator and inverse. Use the proved central-domain inclusion, image measurability and volume distortion; for original mass M, trimmed mass M_prime and lost mass ell=M-M_prime, target a bound of the form 2*sigma*M+2*ell+32*eta*M_prime. Then use the exact unit-preimage/inverse-image identity to obtain the squared-integral indicator-composition error. Account explicitly for the square-root Jacobian and the unit-interval boundary term in global centering; use the proved projection-error budget to transfer almost-invariance to the actual normalized cell-centered input. Establish the required L2 operator bounds, restricted spectral gap and rational-generator existence from library results or complete proofs, never new axioms or numerical tests. Preserve all six targets; after full 201/202 complete nonsingular affine-motion 200/210 and regular recursion 206/208, then run authorized impartial referees.",
+  "checkpoint_reporting": "At substantial proof checkpoints report roughly 50% (40\u201360%, high uncertainty) of the full formalization goal, with 3/6 original families complete: adaptive separators 181/186/188, recoded pairwise-XOR 181B, and two-stage helper 216. Paid padding 201/202 now also includes quantitative near-identity Mobius control, exact inverse identities, actual change of variables and a local weighted-pullback energy identity. Small-expansion-to-almost-invariance, the full restricted spectral-gap proof and rational generator existence remain substantial dependencies. Motion 200/210, recursion 206/208 and final referees remain. This estimate is not proximity to resolving multiplication or transposition.",
+  "source_sha256": {
+    "lean/TransposeFollowup/MobiusCalculus.lean": "b0c34111c87b23f243f29e855f42c79f0cb3b205539e977ad91331c674b2a5c8",
+    "lean/TransposeFollowup/NearIdentityMobius.lean": "5569d0ed9464ea50534d8335ddb8afafcfb88690ed76fb73c387554d70c3f0f7"
+  }
+}

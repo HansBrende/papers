@@ -105,10 +105,7 @@ build artifacts.
 
 The [Opus review response](verification/manuscript/opus-review/response.txt)
 records the accepted changes, qualified suggestions and disagreements.
-Historical records are published as path-sanitized views. Raw records and
-backup ZIPs are preserved privately outside this repository. See the
-[publication-path policy](verification/PUBLICATION-PATHS.txt) and
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for publishing guidance and historical
+path conventions, and the
 [normalization manifest](verification/publication-path-normalization.json)
-for provenance and logical path conventions. Current reproduction commands
-resolve this checkout automatically; historical scripts are not current build
-entry points. Before committing, run the repository's public-path check.
+for historical record provenance.

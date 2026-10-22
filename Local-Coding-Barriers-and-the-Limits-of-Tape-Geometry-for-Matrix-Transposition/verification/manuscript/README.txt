@@ -74,7 +74,7 @@ dependencies. Original bytes and their hashes are preserved privately; embedded
 historical digests still refer to those original bytes. The normalization
 manifest records each original-to-public digest transition. Current source
 and proof hash maps are unchanged, and the active verifier regenerates portable
-receipts. See ../PUBLICATION-PATHS.txt.
+receipts. See ../../../CONTRIBUTING.md.
 
 
 Rebuilding a PDF can change its timestamp/hash, so an old visual receipt must not be relabeled as

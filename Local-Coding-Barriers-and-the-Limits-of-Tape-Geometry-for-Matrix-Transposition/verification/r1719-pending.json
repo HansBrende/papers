@@ -21,7 +21,7 @@
     "trim_standalone": {
       "session": 39681,
       "exit_code": 0,
-      "log": "/private/tmp/native-trim-run.log"
+      "log": "external/temporary/native-trim-run.log"
     },
     "trim_build": {
       "session": 15128,
@@ -36,7 +36,7 @@
     "compact_standalone": {
       "session": 48588,
       "exit_code": 0,
-      "log": "/private/tmp/compact-input-measure.log"
+      "log": "external/temporary/compact-input-measure.log"
     },
     "final_build": {
       "session": 22385,
@@ -60,7 +60,7 @@
   },
   "next": "Recover the matrix dimension from the now-proved canonical input-length word. Use original entryBits(N)=log2(N-1)+1,not the archive RawShape convention. First prove the candidate-search invariants and width/cost bounds,then wire existing native seed,copy,add,compare,repeated-add,trim and erase controllers. A potentially simpler recurrence keeps candidate k,square k*k,width b and threshold2^b;initial k=b=square=1,threshold2. Increment square by2k+1 and k by1;only when k exceeds threshold,increment b and double threshold. Compute square*b with the existing repeated-adder and compare toL. This is a DESIGN,not a proved routine. Stop at first equality on valid lengths;do not supplyN as fuel or data. See dimension-loader-plan.txt. Then common-map record normalization and whole generator;unconditional BY,motion200/210,recursion206/208 remain. Preserve all6families,no commits/pushes,referees afterALL.",
   "next_target_staging": {
-    "source_path": "/private/tmp/DimensionCandidateData.lean",
+    "source_path": "external/temporary/DimensionCandidateData.lean",
     "source_sha256": "cb18106b986c5fff709b03a3ad48fb7ad925e109ef1c13e767289caf05037dcf",
     "source": "import Transpose.Tape.MStarClass\nimport Transpose.Tape.CEHint\nimport Mathlib.Data.Nat.Size\n\n/-! Arithmetic invariants for recovery of the original matrix dimension.\nThis is a search specification; it does not yet provide a native controller. -/\nnamespace TransposeFollowup.DimensionCandidate\nopen Transpose\nset_option autoImplicit false\n\ntheorem entryBits_mono {a b : \u2115} (h : a \u2264 b) : entryBits a \u2264 entryBits b := by\n  by_cases ha : a \u2264 1\n  \u00b7 have hz : a-1=0 := by omega\n    simp only [entryBits,hz,Nat.log2_zero]\n    omega\n  \u00b7 have hn : a-1\u22600 := by omega\n    have hm : b-1\u22600 := by omega\n    have hp := Nat.log2_self_le hn\n    have hl : (a-1).log2 \u2264 (b-1).log2 := (Nat.le_log2 hm).mpr (by omega)\n    unfold entryBits\n    omega\n\ntheorem length_strictMono : StrictMono inputLength := by\n  intro a b hab\n  have hm := entryBits_mono (Nat.le_of_lt hab)\n  have hw : 0<entryBits a := by unfold entryBits;omega\n  have hs : a*a<b*b := by nlinarith\n  unfold inputLength\n  exact lt_of_lt_of_le (Nat.mul_lt_mul_of_pos_right hs hw) (Nat.mul_le_mul_left _ hm)\n\ntheorem entryBits_step (k : \u2115) (hk : 1 \u2264 k) :\n    entryBits (k+1)=if k+1 \u2264 2^entryBits k then entryBits k else entryBits k+1 := by\n  by_cases h1 : k=1\n  \u00b7 subst k;decide +kernel\n  \u00b7 have hkn : k-1\u22600 := by omega\n    have hkp : k\u22600 := by omega\n    have hlow : (k-1).log2 \u2264 k.log2 := (Nat.le_log2 hkp).mpr (by have := Nat.log2_self_le hkn;omega)\n    have hup : k \u2264 2^entryBits k := Tape.Impl.le_two_pow_entryBits k\n    by_cases h : k+1 \u2264 2^entryBits k\n    \u00b7 simp only [h,ite_true]\n      have hu : k.log2 < entryBits k := (Nat.log2_lt hkp).mpr (by omega)\n      simp only [entryBits,Nat.add_sub_cancel] at hu \u22a2\n      omega\n    \u00b7 simp only [h,ite_false]\n      have he : k=2^entryBits k := by omega\n      have hl : k.log2=entryBits k := (congrArg Nat.log2 he).trans Nat.log2_two_pow\n      simp only [entryBits,Nat.add_sub_cancel]\n      unfold entryBits at hl\n      omega\n\ntheorem input_size_bound (n : \u2115) : (inputLength n).size \u2264 3*entryBits n+1 := by\n  apply Nat.size_le.mpr\n  have h := Tape.Impl.inputLength_succ_le n\n  change inputLength n+1 \u2264 2^(3*entryBits n+1) at h\n  omega\n\ndef width (L : \u2115) : \u2115 := 2*L.size+4\n\ntheorem width_budget (n : \u2115) : width (inputLength n) \u2264 12*entryBits n := by\n  have h := input_size_bound n\n  have hb : 1 \u2264 entryBits n := by unfold entryBits;omega\n  unfold width\n  omega\n\ntheorem search_budget (n : \u2115) (hn : 1 \u2264 n) :\n    n*entryBits n*width (inputLength n) \u2264 12*inputLength n := by\n  have hb := Tape.Impl.entryBits_le_self hn\n  have hw := Nat.mul_le_mul_left (n*entryBits n) (width_budget n)\n  calc\n    n*entryBits n*width (inputLength n) \u2264 (12*n*entryBits n)*entryBits n := by nlinarith [hw]\n    _ \u2264 (12*n*entryBits n)*n := Nat.mul_le_mul_left _ hb\n    _ = 12*inputLength n := by unfold inputLength;ring\n\nend TransposeFollowup.DimensionCandidate\n",
     "status": "Passed standalone Lean90222exit0,no warnings/errors. Not yet published or added to SupportAxioms/production receipt. Integrate and audit next,then prove the search recurrence and native controller.",
@@ -69,9 +69,9 @@
       "exit_code": 0,
       "target": "Transpose.Tape.CEHint",
       "jobs": 8969,
-      "log": "/private/tmp/dimension-original-bound-build.log"
+      "log": "external/temporary/dimension-original-bound-build.log"
     },
-    "standalone_log": "/private/tmp/dimension-candidate-data.log",
+    "standalone_log": "external/temporary/dimension-candidate-data.log",
     "theorems": [
       "entryBits_mono",
       "length_strictMono",

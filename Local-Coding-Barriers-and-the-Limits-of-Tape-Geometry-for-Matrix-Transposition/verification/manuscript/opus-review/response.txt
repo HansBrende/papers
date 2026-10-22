@@ -1,0 +1,167 @@
+RESPONSE TO THE OPUS 5.5 REVIEW
+Local Coding Barriers and the Limits of Tape Geometry for Matrix Transposition
+Review of the suggestions supplied for commit 2c05e49, October 2026
+
+All 25 suggestions were checked against the manuscript, formal sources, or
+reproduction tools as appropriate. Most are accepted; items 14 and 15 contain
+mathematical overstatements, and item 23 was subsequently expanded to sanitize all public records while
+preserving raw historical evidence privately. Additional qualifications to
+items 3, 5, 6 and 9 are recorded below. No numbered result was removed, no
+mathematical Lean statement or proof was changed, and no new research claim
+is made. Seven additional existing declarations are now cited explicitly.
+
+FRAMING
+
+1. Accepted. The abstract distinguishes the finite coding models from native
+   machine results. Coefficients 2 are universally optimal over finite instances;
+   the d=2 witnesses do not establish sharpness when both information charges
+   are o(P). The text now says so.
+
+2. Accepted. The padding discussion uses an immediately halting empty-output
+   payload. This unconditionally produces a machine satisfying the geometric
+   conditions without transposing; no hypothetical linear transposer is needed.
+
+3. Accepted with scope qualifications. The idle tape count, K0=53+q, and the
+   role of 4q<=3k eta in the coarse memory-boundary charge are explicit. This
+   describes how this construction proves its cut inequality; it is not a
+   theorem that idle tapes are necessary for every possible construction.
+   Deleting idle heads preserves the S=empty instances, excess bound, and
+   existence of nonmonotone/nonantitone motion. We do NOT assert preservation
+   of the full M* inequality for nonempty S, whose RHS also depends on k.
+
+4. Accepted. Padding is a data-free prefix, generated and executed once before
+   the payload. Coupling such motion to actual encoded data at successive
+   recursive levels remains open. The first-paper section locator is fixed.
+
+5. Accepted with a qualification. The recursion theorem excludes stages with
+   its precise affine regularity. A stage limit agreeing with a non-affine
+   Mobius map on an interval has no finite affine cover. The first paper's
+   intended non-affine profiles therefore escape this criterion if realized
+   by the actual execution. The exceptional-work toll is made explicit.
+
+6. Accepted with qualifications. The 1/(2G) bound is summed physical head-time
+   outside affine regions, NOT a lower bound on distance travelled; half a
+   nominal stored-input scan is only a scale comparison. A one-node clock is
+   available when its fixed family constants may be chosen, not necessarily
+   for every arbitrarily prescribed set of constants. Regularity is the
+   substantive restriction.
+
+7. Accepted. The first paper's claim about needing encoder and decoder savings
+   is identified as heuristic.
+
+ATTRIBUTION
+
+8. Accepted. The prose identifies all five directly imported OAI modules and
+   their scalar-cell, ball, zoom and ratio-family ingredients. Bourgain's 2003
+   and 2010 papers receive mathematical attribution, distinct from the pinned
+   Lean formal source. No claim that every auxiliary lemma first appeared in
+   those papers is made.
+
+9. Accepted with a qualification. The affine-group Folner/amenability step is
+   explicit, with Folner and Lubotzky--Weiss references. Non-affinity of an
+   arbitrary Mobius transformation does not by itself imply that a chosen
+   family generates a free nonamenable group; no such blanket assertion was
+   added. The native crossing and scaling steps remain identified separately.
+
+10. Accepted. Added Sadeghi--Arbabjolfaei--Kim on distributed index coding and
+    two Li--Ong--Johnson papers on cooperative coding and rank minimization.
+    Sender constraints are a close comparison; adaptive public-history access
+    and the entry-level column demands still need explicit modeling. The
+    comparison is not an exhaustive novelty certification.
+
+PRECISION
+
+11. Accepted. Fixed recoded-XOR broadcasts are original-row protocols with
+    constant helper and full-cube correctness. The separator theorem has the
+    stronger path/cycle leading constant. Its loss on the stated 100-cycle
+    example is 1810b, versus about 2470.54b for the distance bound. The latter
+    is now an illustration; the bounded-degree expander consequence is its
+    additional reach. Historical improvement logs remain historical.
+
+12. Accepted. Added the explicit loss epsilon*P+b*K(epsilon)*d and the broader
+    expected-treewidth o(d) consequence, retaining the information-charge and
+    uniformity hypotheses.
+
+13. Accepted. 'The saving is at most' replaces wording that could imply a
+    matching construction or tightness.
+
+14. DISAGREE with the proposed iff as stated. The actual model permits
+    same-row pairs. With identity recoding, u1, u2, u1 XOR u2 already have the
+    required packet format, but their distinct row-parts are dependent.
+    For a fully correct counterexample, broadcast every input bit as a singleton
+    and add that same-row XOR; the code is valid on the entire input cube.
+    Independence is a useful sufficient condition for homogeneous two-row
+    binary-linear packets: extend the row-parts to dual bases. This sufficient
+    test and the counterexample to necessity are included. A criterion for a
+    more restricted packet format must not be stated as an iff for our model.
+
+15. DISAGREE with automatic field coverage. Family 1 applies after an explicit
+    finite binary encoding, with bit costs and any encoding deficit charged;
+    an arbitrary field is not automatically a fixed-width bit alphabet.
+    Family 2 requires the specified common recoding and coordinate-XOR format.
+    General GF(2)- or extension-field linearity alone is insufficient. Added
+    these qualifications instead of the proposed blanket extension.
+
+16. Accepted. The companion summary now quantifies geometry over every eligible
+    sequence of inputs eventually in the correct sets, with the subsequence
+    choices required by the endpoint.
+
+17. Accepted. The physical-units theorem is explicitly an assembly of cited
+    declarations. The common-region clause states componentwise affinity and
+    explains its equivalence to local affinity on open real sets. The misplaced
+    AffineTimeRequired annotation is moved to the property it defines.
+
+18. Accepted. Strengthenings relative to internal formulations are identified
+    as such. The S=empty, 0<theta<1/2 portion of the first-paper condition is
+    distinguished from the full M* statement retained by padding.
+
+19. Accepted. Escape of the padding limits from the affine class is labeled a
+    corollary of the two theorems.
+
+20. Accepted. Corrected two stale complete documentation comments in
+    UnconditionalPaidPadding.lean and the obsolete module locator. A reversible
+    comment-only source guard recovers the original audited file hash; all
+    executable proof text is preserved. Original audit hashes are untouched.
+
+REPRODUCIBILITY AND HYGIENE
+
+21. Accepted. The new run_axiom_audit.py helper builds all imports before either
+    selected audit. The documented support command is:
+      python3 verification/run_axiom_audit.py support
+    The manuscript verifier already built all cited imports and continues to
+    enforce declaration coverage and the axiom whitelist. The helper's support
+    reports were also checked for complete coverage and permitted axioms.
+
+22. Accepted. The upstream check uses tracked plus nonignored files in Git;
+    an artifact-aware fallback supports source archives. It still detects
+    missing/changed protected files and added tracked files, even in otherwise
+    ignored directories. An independently committed first-paper editorial
+    update (da19648) affected seven document files while leaving Lean intact.
+    Its exact before/after hashes are recorded explicitly, without rewriting
+    the immutable original baseline or editing the first paper.
+
+23. Updated after the author's publication preference. Public records now
+    contain relative project paths or logical external/ artifact labels.
+    Raw records and both backup ZIPs are preserved privately outside papers.
+    Original-to-sanitized digests are recorded in the normalization manifest;
+    historical hash values still refer to original artifacts. Active build
+    receipts use portable executable labels and relative cwd/operands. This
+    supersedes the earlier decision to leave recorded local paths in public.
+
+24. Accepted. The README explicitly says the source reviewers were AI agents;
+    this is not external human peer review.
+
+25. Accepted. The prediction-conjecture note is now a public source comparison,
+    without instructions to future research or references requiring an omitted
+    private archive. The mathematical conversions and attribution are retained.
+
+VALIDATION
+
+The manuscript still has 31 numbered definitions/results in six families.
+The ordinary Lean build and the expanded 149-declaration manuscript audit pass;
+the broader 6313-declaration support audit also passes. Both use only propext,
+Classical.choice and Quot.sound (some declarations use fewer or no axioms).
+There are 27 passing regression tests for source preservation and reproducibility.
+These checks are not a new empty-environment replay of every imported term.
+The final PDF has 41 pages. See the current semantic, visual, attribution and
+completion receipts for the exact source and artifact hashes.

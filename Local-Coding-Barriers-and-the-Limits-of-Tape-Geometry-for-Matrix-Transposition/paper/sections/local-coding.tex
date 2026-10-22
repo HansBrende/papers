@@ -188,8 +188,10 @@ by a constant smaller than $2$, with the other terms unchanged.  Each assertion
 has a zero-transcript witness with $d=2$, empty separator, and every $b>0$.
 \end{theorem}
 \formal{SeparatorSharpness}{TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two,TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two}
-Thus a stronger obstruction must use further structure or change other terms
-of the bound; reducing either information coefficient alone is impossible.
+These witnesses establish optimal universal coefficients, not sharpness when
+$d\to\infty$ and $D,H(Z)=o(P)$: each has $d=2$ and its nonzero information
+charge equals $P/4$.  Improvements restricted to the small-deficit,
+small-helper regime remain possible.
 \begin{proofoutline}
 The empty interaction graph has two singleton components, so its loss is
 $2b$, while $P=4b$.  For the deficit coefficient, take the family
@@ -279,12 +281,27 @@ Such original-row strategies cannot yield a fixed fractional saving.
 Graphs without such separators remain candidates for this model.
 
 The first paper's construction discussion asks for locally encoded index
-coding and suggests, heuristically, that hyperfinite interaction graphs offer
-only negligible savings~\cite[section ``The construction side'']{FirstPaper2026}.
-The separator and treewidth bounds make this restriction quantitative for
-nonlinear queries, public adaptivity, helpers, and correlated correct sets.
-They leave the coding problem on bounded-degree expanders open and do not
-strengthen Theorem~P or prove the Tape Coding Conjecture.
+coding~\cite[section ``The construction side'']{FirstPaper2026}.
+The separator bound gives an explicit obstruction for hyperfinite interaction
+graphs.  If, for each $\varepsilon>0$,
+every completed-run graph has a separator of at most $\varepsilon d$ vertices
+leaving components of size at most $K(\varepsilon)$, uniformly in $d$ and the
+run, then
+\[
+  \mathcal L(G,S)\le\varepsilon P+bK(\varepsilon)d.
+\]
+Together with $D_w+H(Z)=o(P)$, this excludes a fixed fractional saving.
+The treewidth consequence also excludes such savings whenever
+$\mathbb E_w\operatorname{tw}(G_X)=o(d)$, without the uniform component-size
+bound required by hyperfiniteness.  For a fixed interaction graph $\Gamma_d$,
+it suffices that $\operatorname{tw}(\Gamma_d)=o(d)$.
+
+These statements allow nonlinear queries, public adaptivity, helpers, and
+correlated correct sets.  They leave the coding problem on bounded-degree
+expanders open and do not strengthen Theorem~P or prove the Tape Coding
+Conjecture.  They also apply to finite-field data after an explicit binary
+encoding: query answers and costs must be counted in bits, and any deficit
+from restricting to valid encodings must be retained.
 
 \subsection{Bijective row recoding and fixed XOR packets}\label{subsec:local-xor}
 
@@ -331,8 +348,9 @@ No positivity or connectedness hypothesis is needed for the integral form.
 \formal{XorComponentCount}{TransposeFollowup.RecodedXorCode.broadcast_lower_bound_scaled,TransposeFollowup.RecodedXorCode.broadcast_lower_bound}
 
 Small graph neighborhoods limit the savings even after nonlinear row
-recoding.  The next two corollaries turn this bound into explicit restrictions
-on bounded-degree graphs and on paths and cycles.
+recoding.  The bounded-degree corollary below adds an obstruction on
+expanders.  The path/cycle corollary illustrates the distance argument, but
+the earlier separator bound gives a better constant on those graphs.
 
 \begin{proofoutline}
 Form the variable graph on the $P$ transformed bit coordinates: distinct
@@ -405,7 +423,7 @@ vertex labels.  The same bound holds whenever every $\ell$-near ball has at
 most $2\ell-1$ vertices for every integer $\ell\ge1$.
 \end{corollary}
 \formal{XorPathCycleBound}{TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_embedding_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.subcycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.cycle_broadcast_lower_bound,TransposeFollowup.RecodedXorCode.path_broadcast_lower_bound}
-For these graphs, the maximum possible saving is $O(P/\sqrt d)$, improving
+For these graphs, the saving is at most $O(P/\sqrt d)$, improving
 the $O(P/\log d)$ error supplied by the bounded-degree estimate.
 \begin{proofoutline}
 An injective graph homomorphism sends a near ball into the corresponding
@@ -426,11 +444,35 @@ Then $k\le t<j$, $j\ge2$, and
 The estimate includes $d=1$.
 \end{proofoutline}
 
+Every recoded fixed-XOR code also gives an original-row strategy: transmit
+its fixed packets in order, with a constant helper and correctness on the
+full cube.  Its interaction graph is a subgraph of $G$, so the separator
+bound gives $B\ge P-\mathcal L(G,S)$ for every $S$.  On a path or cycle,
+about $\sqrt d$ evenly spaced separator vertices leave components of size
+about $\sqrt d$, giving loss $(2+o(1))bd^{3/2}$ instead of the leading
+$2\sqrt2\,bd^{3/2}$ in Corollary~\ref{cor:local-xor-cycle}.
+For example, on the $100$-cycle, ten separator vertices leave ten components
+of size nine, giving loss $1810b$, whereas
+\eqref{eq:local-xor-cycle} gives about $2471b$.
+The additional reach of the distance method is therefore its bounded-degree
+conclusion on graphs, including expanders, for which small separators are
+unavailable.
+
 The bounded-degree conclusion applies even to expanders, but only for the
 specified packet format.  It does not answer the first paper's question about
 \emph{arbitrary} linear functionals supported on two rows: one such functional
 may involve many coordinates, and a single common row bijection need not
 convert a whole family of them into pairwise coordinate XORs.
+One sufficient condition is that, for each row, the distinct nonzero row-parts
+of all binary-linear packets are linearly independent.  Extend those forms
+to a basis of the row's dual space and use that basis as its linear recoding;
+every nonzero packet then becomes a singleton or a two-coordinate XOR.
+Zero packets can be omitted.  This condition is not necessary for the full
+model, which also permits same-row pairs: the packets $u_1$, $u_2$, and
+$u_1\oplus u_2$ already have the required format although their row-parts
+are dependent.  Linearity over $\mathrm{GF}(2)$, or over an extension field,
+does not by itself imply membership; the bit-expanded packets must admit
+the specified common recoding and packet format.
 The first paper's XOR-frame model concerns changes of address frame in a
 gadget, a different restriction.  The bounded-degree corollary rules out a
 fixed fractional saving through independent bijective row preprocessing
@@ -614,8 +656,8 @@ distributed.  The theorem does not cover more stages, extra banks, or an
 unrestricted causal network.
 
 The first paper identifies a global oracle hint in the plain-versus-robust
-gap, and its proposed recursion needs savings at both encoder and
-decoder~\cite[sections ``Plain versus robust'' and ``The construction
+gap and argues heuristically that its proposed recursion needs savings at
+both encoder and decoder~\cite[sections ``Plain versus robust'' and ``The construction
 side'']{FirstPaper2026}.  The two-stage results quantify a helper-or-deficit
 toll for one explicit architecture; they neither remove the general hint nor
 strengthen the native pass lower bound.  The three coding models in this

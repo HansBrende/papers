@@ -9,7 +9,7 @@ from pathlib import Path
 import argparse,hashlib,json,re,io,tarfile
 from contextlib import nullcontext
 from itertools import zip_longest
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
+P=Path('.');V=P/'verification'
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--receipt',type=Path,default=V/'support-build.json')
 ap.add_argument('--state',type=Path,default=V/'r1912-in-progress.json')
@@ -23,7 +23,7 @@ ap.add_argument('--kernel-conversion',type=Path,default=V/'r1912-kernel-type-con
 ap.add_argument('--type-archive',type=Path,default=V/'r1912-type-archive.json')
 ap.add_argument('--source-review',type=Path,default=V/'r1912-final-source-review.json')
 ap.add_argument('--summary-archive-dir',type=Path,help='Contains prior README.md, paper/verified-results.txt and verification/progress.txt under original relative paths')
-ap.add_argument('--output',type=Path,default=Path('/private/tmp/r1912-final-receipt-check.json'))
+ap.add_argument('--output',type=Path,default=Path('external/temporary/r1912-final-receipt-check.json'))
 a=ap.parse_args()
 def read(p):return json.loads(p.read_text())
 def filehash(p):

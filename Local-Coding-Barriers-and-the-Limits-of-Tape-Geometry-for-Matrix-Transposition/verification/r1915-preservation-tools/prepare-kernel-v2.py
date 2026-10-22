@@ -5,8 +5,8 @@ kernel conversion, and every row retains exact old/current repr/universe checks.
 """
 from pathlib import Path
 import copy,hashlib,json
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
-C=Path('/private/tmp/r1915-preservation/capture');D=C/'kernel-v2';D.mkdir(exist_ok=False)
+P=Path('.');V=P/'verification'
+C=Path('external/temporary/r1915-preservation/capture');D=C/'kernel-v2';D.mkdir(exist_ok=False)
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def digest(s):return hashlib.sha256(s.encode()).hexdigest()
 def rec(p):

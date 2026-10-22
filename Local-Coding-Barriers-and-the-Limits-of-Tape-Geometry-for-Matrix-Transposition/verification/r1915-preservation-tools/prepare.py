@@ -6,13 +6,13 @@ No aggregate type manifest is generated.
 """
 from pathlib import Path
 import argparse,hashlib,json,re
-DEFAULT=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+DEFAULT=Path('.')
 def read(p):return json.loads(p.read_text())
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def write_new(p,j):
  with p.open('x') as f:json.dump(j,f,ensure_ascii=False,indent=2);f.write('\n')
 def main():
- ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('side',choices=['final']);ap.add_argument('--project',type=Path,default=DEFAULT);ap.add_argument('--capture',type=Path,default=Path('/private/tmp/r1915-preservation/capture'));a=ap.parse_args()
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('side',choices=['final']);ap.add_argument('--project',type=Path,default=DEFAULT);ap.add_argument('--capture',type=Path,default=Path('external/temporary/r1915-preservation/capture'));a=ap.parse_args()
  P=a.project.resolve();C=a.capture.resolve();C.mkdir(parents=True,exist_ok=True);side=C/a.side;side.mkdir(exist_ok=False)
  audit=P/'lean/SupportAxioms.lean';audit_text=audit.read_text()
  names=re.findall(r'^#print axioms (\S+)\s*$',audit_text,re.M);assert len(names)==len(set(names)) and len(names)>=6306

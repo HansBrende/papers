@@ -1,16 +1,19 @@
 SIX FOLLOW-UP THEOREM FAMILIES: EXACT STATEMENTS AND SCOPE
 Local coding barriers and the limits of tape geometry for matrix transposition
 
-STATUS: R1916 complete. All six original theorem families remain proved. The path/cycle XOR bound and pointwise-error affine approximation obstruction are stronger; 13 compiler proofs share one general embedding lemma. Full build passes 10063 jobs and the axiom audit passes 6313 names. Net mathematical source change +51 lines. See verification/r1916-audit.txt.
+STATUS: All six theorem families remain proved. This public summary includes
+the October 2026 manuscript review corrections. The complete manuscript and
+current declaration audit are in paper/main.pdf and verification/manuscript/.
+Historical build and strengthening measurements remain in verification/.
 
 COMMON NOTATION AND INTERPRETATION
 
-An n-by-n matrix has b bits per entry and P=n^2*b input bits. For a nonempty
+A d-by-d matrix has b bits per entry and P=d^2*b input bits. For a nonempty
 correct-input family F, D=P-log_2|F| is its entropy deficit. H(Z) denotes helper
 entropy in bits for uniform input from F unless an arbitrary input law is specified. A high-entropy family has D=o(P).
-The finite coding theorems allow general n,b. The native asymptotic theorems
-use the original paper's canonical b=entryBits(n)=floor(log_2(n-1))+1, with
-its n=1 convention, and P=inputLength(n). G is bits charged per work-tape
+The finite coding theorems allow general d,b. The native asymptotic theorems
+use the original paper's canonical b=entryBits(d)=floor(log_2(d-1))+1, with
+its d=1 convention, and P=inputLength(d). G is bits charged per work-tape
 cell; k is the number of work tapes. Native means the original paper's
 finite multitape machine, input/output conventions and paid transition count.
 
@@ -30,7 +33,7 @@ column j. The strategy need terminate and be correct only on F.
 For each completed transcript let G_x join every pair of rows queried together
 (each support contributes a clique). Choose any separator S_x as a function
 of helper and transcript. Let C range over components of G_x minus S_x, and
-put L_x=n*b*|S_x|+b*sum_C |C|^2. Then
+put L_x=d*b*|S_x|+b*sum_C |C|^2. Then
 
   E[length(transcript)] >= P - E[L_x] - 2D - 2H(Z).
 
@@ -42,21 +45,22 @@ declared F. Uniform-source statements and worst-case consequences remain.
 
 If every transcript has length <=B, every L_x<=L, and the helper has at most
 2^g attained values, then B>=P-L-2(D+g). Both coefficients2, for deficit and
-helper separately, are sharp in the stated model (explicit n=2 witnesses at
-every positive b). Full virtual-fiber factorization and the charged prefix
+helper separately, are sharp in the stated model (explicit d=2 witnesses at
+every positive b). These witnesses have deficit or helper cost Theta(P);
+sharpness within the o(P)-deficit/o(P)-helper regime is not established. Full virtual-fiber factorization and the charged prefix
 budget are derived, not assumptions; correlated F and adaptive graphs are
 allowed. The expected formulation uses a finite helper type.
 
-For n,b>0 and E[length]<= (1-epsilon)P, with eta=(D+H(Z))/P,
+For d,b>0 and E[length]<= (1-epsilon)P, with eta=(D+H(Z))/P,
 
-  E[treewidth(G_x)] >= (n/4)*max(epsilon-2eta,0)^2
+  E[treewidth(G_x)] >= (d/4)*max(epsilon-2eta,0)^2
                           + max(epsilon-2eta,0)/2 - 1.
 
 The supporting fragmentation theorem gives a separator with components of
-size at most L and (L+1)|S| <= (treewidth(G)+1)n.
+size at most L and (L+1)|S| <= (treewidth(G)+1)d.
 
 Strengthening: coefficient1/4 replaces the written1/9 treewidth coefficient
-and removes its 1/n rounding loss. R1909 additionally retains the positive
+and removes its 1/d rounding loss. R1909 additionally retains the positive
 max(epsilon-2eta,0)/2 term from integer-threshold optimization. Referee review also removed the unnecessary
 two-row-per-query restriction; arbitrary finite supports are now admitted.
 This is not permission to query arbitrary coded workspace as if it were an
@@ -80,23 +84,21 @@ vertices are joined by a walk shorter than ell. For every integer ell>=0,
 
   B >= P - (P+ell*Q_ell)/(ell+1).
 
-For maximum degree at most Delta and n>=2,
+For maximum degree at most Delta and d>=2,
 
-  B >= P - 6*log(max(2,Delta))*P/log(n).
+  B >= P - 6*log(max(2,Delta))*P/log(d).
 
-For n>0 and any injective graph homomorphism into a cycle (including paths,
+For d>0 and any injective graph homomorphism into a cycle (including paths,
 cycles, arbitrary relabelings and their subgraphs),
 
-  B >= P - b*n*(sqrt(8*(n+3))-4).
+  B >= P - b*d*(sqrt(8*(d+3))-4).
 
-R1909 improved the real path/cycle error constant from 4 to 3; R1910 now
-improves it to 2*sqrt(2), with the same hypotheses. The natural-number bound
-with error 3*b*n*floor(sqrt(n)) remains available unchanged. The newer R1916
-shifted square-root bound displayed above supersedes that finite comparison.
-These are finite improvements, not asymptotic changes.
-R1916 retains the exact ball cap and divisor to obtain the shifted square-root
-error displayed above. Its five real endpoints keep every hypothesis; all five
-original statements were separately re-proved from the stronger versions.
+The path/cycle inequality illustrates the XOR distance method. It is not the
+strongest bound available here: the separator theorem also applies and yields
+loss 2*b*d^(3/2)+O(b*d), rather than leading constant 2*sqrt(2). On a 100-cycle,
+ten evenly spaced separator vertices leave ten components of size nine,
+giving separator loss 1810*b. The degree bound is useful even on bounded-degree
+expander families, for which small-component separators are not available.
 
 Strengthening/precision: explicit finite constants and all stated graph
 edge cases; no linearity restriction on the row bijections. The core result
@@ -132,8 +134,8 @@ classes and their deficits are derived. The nonuniform theorem includes
 fixed uniform machines as a special case.
 
 R1911 strengthens the abstract approximation support lemma: convergence of
-u_n to the required limiting paths need only be pointwise on [0,H]. Its
-separate uniform approximation error |u_n-q_n|<=e_n->0 remains required.
+u_i to the required limiting paths need only be pointwise on [0,H]. Its
+separate uniform approximation error |u_i-q_i|<=e_i->0 remains required.
 Existing native endpoints still derive uniform convergence and imply the
 weaker pointwise premise; their statements remain unchanged.
 R1916 further removes the uniform error envelope in new abstract and native
@@ -144,11 +146,12 @@ remains. Existing uniform-error endpoints are exact specializations.
 An approximation version excludes actual physical head paths approximable
 with vanishing normalized error by a fixed finite number of affine interval
 pieces (after the permitted subsequence selections). The intervals may overlap
-or collapse; approximants need not be Lipschitz. Geometry is required only
-for selected input sequences eventually in the correct sets. No hypothetical
+or collapse; approximants need not be Lipschitz. The geometry assumption is quantified over every eligible diverging size
+sequence and every input sequence eventually in the correct sets, with the
+further-subsequence choices specified by the formal endpoint. No hypothetical
 geometry for inputs outside the correct sets is needed.
 
-Strengthening: eventual bounded interval covers replace more rigid partitions;
+Strengthening relative to our earlier internal formulations: eventual bounded interval covers replace more rigid partitions;
 no Lipschitz assumption on the approximants; the correct-set-only geometry
 premise is weaker. The local abbreviation SatisfiesStar uses just0<theta<1/2
 of the original M* inequality, sufficient for this obstruction. Native padding
@@ -170,7 +173,7 @@ and FiniteAffineObstruction.
 There exist absolute integers A,H,K0,E such that, for EVERY original native
 machine M, there exists one fixed native machine M' with cellBits(M')=3
 (five work symbols) with the following properties. For every positive
-canonical dimension n, every input w of length P, and every output out and
+canonical dimension d, every input w of length P, and every output out and
 time t for which M computes out on w within t, M' actually halts with the
 same output at a time T<=A*P+t. Its actual entire execution up to T satisfies
 the literal original zero-slack CutIneq. Generation of the padding walk,
@@ -184,7 +187,15 @@ The resource constants also precede M, with exact formulas
 Here states(M)=M.q+1 and M.g+1 is the source work-alphabet size. R1910 exposes
 these uniform resource bounds using the existing compiler contracts.
 
-For every sequence n_i tending to infinity and every sequence of computations
+The wrapper includes E*max(1,Nat.size(M.g)) idle tapes, which stay blank with
+heads at zero. Its fixed tape base is K0=53+q for the fixed rational family's
+page count q. The finite-cut proof uses the coarse 3*k*M_b(S) boundary charge
+and the chosen overhead ensuring 4*q<=3*k*eta. It does not prove the analogous
+cut with a charge only for visited memory. The S=empty-set instances, excess lower bound, and existence of a
+nonmonotone, nonantitone head are unaffected by discarding these idle heads.
+The full M* assertion for nonempty S is not claimed to survive this deletion.
+
+For every sequence d_i tending to infinity and every sequence of computations
 of M bounded by a*P_i, the SAME M' has corresponding actual halting times
 T_i<=(A+a)P_i and satisfies NativeRunLimits.Conclusion, including existence
 of convergent subsequences and the full original M* conclusion for every
@@ -196,15 +207,21 @@ compiler; universal A chosen before M (identified in referee review). The
 fixed rational family precedes the scale and walk-length choices. This is
 an existence theorem, not a practical extracted table of constants.
 
-Use: satisfying these M*/Cut geometric conditions can be appended at only
-additive linear cost to arbitrary computation. Therefore a contradiction
+An immediately halting empty-output payload gives an unconditional example
+satisfying these conditions without transposing. The construction supplies a
+data-free prefix, not the data-coupled encoder/decoder proposed in the first paper.
+
+Use: the finite CutIneq condition can be appended at additive linear cost
+to arbitrary computation; full limiting M* conclusions also hold for
+linear-time payload families. Therefore a contradiction
 using only those conditions cannot by itself establish a general superlinear
 transposition lower bound. It identifies what a stronger impossibility
 argument must distinguish about the useful computation.
 
 Lean: TransposeFollowup.PaidPadding.exists_uniform_paid_padding, in the
 UnconditionalPaidPadding module, through
-RationalContinuousExpander and the actual paid compiler to NativeRunLimits.
+TransposeFollowup.exists_rational_continuous_expander in that same module,
+and the actual paid compiler to NativeRunLimits.
 The separate weak-limit return-measure identification/nonhyperfinite relation
 mentioned in source201 is not a formal endpoint claimed here. The proposed
 source201 o(P) opcode-generator speed is also not proved: the dense formal
@@ -221,14 +238,14 @@ arbitrary nonlinear dependence on earlier rows. Input and final local maps
 and the second stage need not be invertible. No extra banks, unrestricted
 middle global operation, or additional uncharged global control are allowed.
 
-For any correct family F and any0<=r<=n,
+For any correct family F and any0<=r<=d,
 
-  |F|*2^(b*r*(n-r)) <= |helper(F)|*2^P.
+  |F|*2^(b*r*(d-r)) <= |helper(F)|*2^P.
 
-In particular |F|*2^(b*floor(n^2/4)) <= |helper(F)|*2^P. If |F|>=2^(P-D),
+In particular |F|*2^(b*floor(d^2/4)) <= |helper(F)|*2^P. If |F|>=2^(P-D),
 for any real D, and |helper(F)|<=2^g, then
 
-  D+g >= b*floor(n^2/4).
+  D+g >= b*floor(d^2/4).
 
 The cardinality theorem allows empty or arbitrarily correlated F and an
 infinite ambient helper type; only the attained image is counted. The positive
@@ -248,7 +265,7 @@ row orders cannot eliminate that toll.
 R1910 generalizes R1909's actual-helper-entropy toll to EVERY probability law
 X supported on F, with entropy deficit D_X=P-H(X):
 
-  D_X+H(helper(X)) >= b*r*(n-r), and >= b*floor(n^2/4).
+  D_X+H(helper(X)) >= b*r*(d-r), and >= b*floor(d^2/4).
 
 Uniform X gives D_X=P-log2|F| and recovers the previous entropy statements.
 The attained-helper subtype permits an infinite ambient helper type. A shared
@@ -261,11 +278,11 @@ Lean: TwoStageRows, TwoStageHelper, TwoStageHelperEntropy.
 
 6. CONCRETE SCAN PALETTES AND CONTRACTING RECURSION [sources206/208/210.5]
 
-Along any canonical size sequence n_i tending to infinity, no eventually
+Along any canonical size sequence d_i tending to infinity, no eventually
 bounded-length family of words in any of the following declared palettes
 can transpose correct sets with deficit o(P_i):
 
-(a) Integer row addition/difference modulo2^(nb), row XOR prefix/difference,
+(a) Integer row addition/difference modulo2^(db), row XOR prefix/difference,
     row/entry reversals, declared row-dependent cyclic rotations, and full-bank
     increment/decrement.
 (b) The declared F3 palette P/p,Q/q,R,C,E/e,D,S/s, with all b trit lanes kept
@@ -280,7 +297,7 @@ correctness, time, resources and geometry; none asks the caller to assume
 these missing computational obligations. The integer/F3 whole-word executor
 loads once, uses actual prefix-produced stage states, then emits once. For
 word length<=K it has two work tapes, five symbols and time<=(7+24K)P. Its
-head-approximation error is <=32(nb+1)K+4 and becomes o(P). State-bit cost
+head-approximation error is <=32(db+1)K+4 and becomes o(P). State-bit cost
 is also derived to be o(P).
 
 The contracting-recursion theorem assumes fixed branching B, fixed stage
@@ -302,6 +319,13 @@ derived from these paid budgets. There is NO requirement that all descendant
 calls form nested contiguous call intervals. Thus the formal exclusion covers
 a broader stage-clock class than the source's contiguous-call recursion.
 
+The clock budgets alone do not exclude arbitrary linear-time schedules:
+when constants may be chosen, one node, one stage, and volume proportional to
+P suffice. The affine regularity of large stages is the substantive restriction.
+The intended non-affine Mobius stages in the first paper are outside it unless
+the relevant limits satisfy that additional regularity. The exceptional-work
+bound is a quantitative requirement, not an exclusion of every recursive design.
+
 For high-entropy correct native executions with fixed k,G and o(P) control
 bits, let arbitrary exceptional stages occupy at most eta*P+o(P) actual ticks,
 uniformly over correct inputs; regularity is required for the other stages.
@@ -315,7 +339,7 @@ and native corollary give
 
   eta*C/(1-rho) >= 1/(2kG).
 
-Strengthening: arbitrary size-dependent bounded words, high-entropy correctness
+Strengthening relative to our earlier internal formulations: arbitrary size-dependent bounded words, high-entropy correctness
 sets, broader stage-clock scheduling, and final ternary projection. The per-node
 corollary is now explicit and reuses the existing tree-charge theorem. These
 are exclusions of the stated palettes/clocks. Unbounded word counts, unmodeled
@@ -335,13 +359,15 @@ REUSE, REVIEW, CLEANUP AND LIMITATIONS
 The sibling original paper is imported through a build adapter and remains
 read-only. Pinned mathlib provides the measure, topology, entropy primitives,
 Kraft inequality, combinatorics, finite sets, arithmetic and limits used here;
-a pinned 204-module OAI source adapter supplies its scalar projection theorem.
+a pinned 204-module OAI source adapter supplies scalar projection, dilation,
+Pluennecke, covering, ball and zoom ingredients. Their mathematical attribution
+is detailed in the manuscript, including Bourgain's discretized theory.
 The existing compiler, paid append, actual-state word semantics, tree-charge
 bounds and native obstruction are reused. No replacement for the complete
 specialized chains was identified in the inspected pinned libraries; this
 is not a claim about all existing or future Lean libraries.
 
-Three authorized independent referees reviewed critical semantic assumptions
+Three independent AI-agent reviewers reviewed critical semantic assumptions
 and endpoint/dependency chains. They found no substantive defect in their
 reviewed scope. They did not independently rebuild Lean or inspect every
 analytic declaration line by line. The revised proof undergoes a full kernel
@@ -364,12 +390,10 @@ from native compilation. See verification/r1910-audit.txt.
 Conjecture36's known refutation and attribution remain in prior-art.txt;
 it is not a new contribution of this work.
 
-All six exact targets have passed the revised validation receipt. This is a
-formal theorem foundation and status report, not a finished
-submission manuscript. It does not formalize every statement from all source
+All six exact targets have passed the recorded validation. This is a
+companion statement-and-scope summary to the complete manuscript. It does not formalize every statement from all source
 units: in particular, source181A's separate recursive K(G) theorem and the
-additional extensions identified above are not claimed. No commits or pushes
-are included in this task.
+additional extensions identified above are not claimed.
 
 R1911 preserves all six main families, adds the arbitrary-law adaptive and
 pointwise affine support extensions, and further shares compiler, finite-code

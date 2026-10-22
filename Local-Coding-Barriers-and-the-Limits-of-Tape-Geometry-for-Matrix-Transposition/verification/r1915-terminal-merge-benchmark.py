@@ -5,7 +5,7 @@ of +TransposeFollowup.UnconditionalPaidPadding (or a full build). No cache mutat
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,os,platform,re,shlex,signal,statistics,subprocess,tempfile,time
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean';LAKE='/Users/hansbrende/.elan/bin/lake'
+P=Path('.');L=P/'lean';LAKE='lake'
 NAMES=['ConditionalSpectralExpansion','RationalMobiusAction','SpectralGapInterface','RationalRestrictedGap','RationalContinuousExpander','UnconditionalPaidPadding'];GROUP={'TransposeFollowup.'+n for n in NAMES}
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--run',action='store_true');ap.add_argument('--confirm-idle',action='store_true')
@@ -71,7 +71,7 @@ if a.run:
  assert not after or '+TransposeFollowup.UnconditionalPaidPadding'in after or 'TransposeFollowup'in after,'Validation must cover current group and prerequisites.'
  log=a.validation_log.read_text();assert 'Build completed successfully'in log and not re.search(r'error:|✖',log)
  validation={'timing':record(a.validation_timing),'log':record(a.validation_log),'receipt':receipt,'scope':'Root confirms this successful ordinary build validated CURRENT sources and artifacts after exact source restoration and prerequisite validation. Existing artifact presence alone is not validation.'}
-D=Path(tempfile.mkdtemp(prefix='r1915-terminal-merge-',dir='/private/tmp'))
+D=Path(tempfile.mkdtemp(prefix='r1915-terminal-merge-',dir='external/temporary'))
 variants={**{n:source[n]for n in NAMES},'Merged':merged,'ImportOnly':header}
 for n,b in variants.items():(D/f'{n}.lean').write_bytes(b)
 source_records=[record(local[n])for n in sorted(closure(GROUP))]
@@ -86,7 +86,7 @@ for n in sorted(direct_artifact_inputs):
  f=L/'.lake/build/lib/lean'/Path(*n.split('.')).with_suffix('.olean')
  assert f.is_file(),f'Missing current cached prerequisite: {f}'
  artifacts.append(record(f))
-proposal_path=Path('/private/tmp/r1915-terminal-merge/one/proposal.json')
+proposal_path=Path('external/temporary/r1915-terminal-merge/one/proposal.json')
 proposal=json.loads(proposal_path.read_text())
 assert proposal['scheme']=='one' and proposal['quotient_acyclic'] is True
 for c in proposal['changes']:

@@ -5,7 +5,7 @@ receipts. Earlier exact type comparisons/byte-verified archives are not repeated
 """
 from pathlib import Path
 import argparse,importlib.util,json
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',type=Path,required=True);p.add_argument('--finalizer',type=Path,default=Path(__file__).with_name('finalize.py'));p.add_argument('--output',type=Path,default=Path('/private/tmp/r1915-final-receipt-check.json'));a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',type=Path,required=True);p.add_argument('--finalizer',type=Path,default=Path(__file__).with_name('finalize.py'));p.add_argument('--output',type=Path,default=Path('external/temporary/r1915-final-receipt-check.json'));a=p.parse_args()
 spec=importlib.util.spec_from_file_location('r1915_finalization',a.finalizer);f=importlib.util.module_from_spec(spec);spec.loader.exec_module(f)
 cfg=f.read(a.config);d=f.validate_inputs(cfg,after_finalization=True)
 P,V,A=d['P'],d['V'],d['A'];receipt=f.read(V/'support-build.json');completion=f.read(V/'r1915-completion.json');old=d['old']

@@ -12,8 +12,8 @@ import json
 from pathlib import Path
 import re
 
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1915-spectral-build-speed')
+P=Path('.')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1915-spectral-build-speed')
 MEMBERS=['TransposeFollowup.'+m for m in ['ConditionalSpectralExpansion','RationalMobiusAction','SpectralGapInterface','RationalRestrictedGap','RationalContinuousExpander','UnconditionalPaidPadding']]
 DEST=MEMBERS[-1]
 EXTERNAL=['TransposeFollowup.'+m for m in ['NormalizedCellCorrelation','RealMobiusL2','RealMobiusAverage','InitialWalkDensityCap','RestrictedGapFromAutocorrelation','RationalNearIdentityFamily','ContinuousNativePadding']]
@@ -90,10 +90,10 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--baseline',type=Path,default=A/'baseline-sources.json')
     p.add_argument('--baseline-receipt',type=Path,default=A/'before-receipt.json')
-    p.add_argument('--proposal',type=Path,default=Path('/private/tmp/r1915-terminal-merge/one/proposal.json'))
+    p.add_argument('--proposal',type=Path,default=Path('external/temporary/r1915-terminal-merge/one/proposal.json'))
     p.add_argument('--application',type=Path,default=P/'verification/r1915-merge-application.json')
     p.add_argument('--benchmark-receipt',type=Path,action='append',default=[])
-    p.add_argument('--output',type=Path,default=Path('/private/tmp/r1915-final-source-review.json'))
+    p.add_argument('--output',type=Path,default=Path('external/temporary/r1915-final-source-review.json'))
     a=p.parse_args();B=read(a.baseline);frozen=read(a.baseline_receipt);Q=read(a.proposal);application=read(a.application)
     require('lean/SupportAxioms.lean'in B,'baseline audit root missing')
     require({r:sha(s)for r,s in B.items()}==frozen['source_sha256'],'frozen source snapshot differs from pre-round receipt')

@@ -7,16 +7,16 @@ ordinary build and the existing exact-name axiom audit.
 """
 from pathlib import Path
 import argparse, hashlib, json, re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+P=Path('.')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--project-root',type=Path,default=P,help='Scratch project for dry-run checking, or active project read-only')
-p.add_argument('--plan',type=Path,default=Path('/private/tmp/r1912-group-plan.json'))
+p.add_argument('--plan',type=Path,default=Path('external/temporary/r1912-group-plan.json'))
 p.add_argument('--max-phase',type=int,default=0)
 p.add_argument('--groups',nargs='*',help='Select exact group names instead of phases')
 p.add_argument('--check-current',action='store_true')
 p.add_argument('--axioms-log',type=Path)
-p.add_argument('--output',type=Path,default=Path('/private/tmp/r1912-preservation-check.json'))
+p.add_argument('--output',type=Path,default=Path('external/temporary/r1912-preservation-check.json'))
 a=p.parse_args(); P=a.project_root; baseline=json.loads((A/'baseline-sources.json').read_text()); receipt=json.loads((A/'before-receipt.json').read_text()); plan=json.loads(a.plan.read_text())
 sha=lambda s:hashlib.sha256(s.encode()).hexdigest()
 for rel,text in baseline.items(): assert sha(text)==receipt['source_sha256'][rel],('baseline hash',rel)

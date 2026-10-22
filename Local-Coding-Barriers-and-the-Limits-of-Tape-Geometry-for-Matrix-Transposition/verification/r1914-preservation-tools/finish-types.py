@@ -6,7 +6,7 @@ substituted for old-Expr conversion. Raw comparison files remain unchanged.
 """
 from pathlib import Path
 import argparse,hashlib,json,re
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--capture',type=Path,default=Path('/private/tmp/r1914-preservation/capture'));p.add_argument('--plan',type=Path);p.add_argument('--execution',type=Path);p.add_argument('--log',type=Path);p.add_argument('--source-headers',type=Path);p.add_argument('--output',type=Path);a=p.parse_args();C=a.capture
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--capture',type=Path,default=Path('external/temporary/r1914-preservation/capture'));p.add_argument('--plan',type=Path);p.add_argument('--execution',type=Path);p.add_argument('--log',type=Path);p.add_argument('--source-headers',type=Path);p.add_argument('--output',type=Path);a=p.parse_args();C=a.capture
 read=lambda p:json.loads(p.read_text())
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def rec(p):return {'path':str(p.resolve()),'bytes':p.stat().st_size,'sha256':sha(p)}

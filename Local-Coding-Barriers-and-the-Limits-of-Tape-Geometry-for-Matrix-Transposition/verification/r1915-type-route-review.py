@@ -4,7 +4,7 @@ No Lean/Lake execution; no full-chunk/archive expansion or proof-source writes.
 """
 from pathlib import Path
 import hashlib,json,re,statistics,datetime
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification';C=Path('/private/tmp/r1915-preservation/capture')
+P=Path('.');V=P/'verification';C=Path('external/temporary/r1915-preservation/capture')
 def unique(pairs):
  d={}
  for k,v in pairs:

@@ -14,8 +14,8 @@ import json
 from pathlib import Path
 import re
 
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1914-analytic-build-speed')
+P=Path('.')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1914-analytic-build-speed')
 NAMES=[
  'TransposeFollowup.MobiusNearIdentity','TransposeFollowup.MobiusPairwiseComparison',
  'TransposeFollowup.MobiusActionContinuity','TransposeFollowup.MobiusGroupAverage',
@@ -195,7 +195,7 @@ def main():
     p.add_argument('--approved-repair',type=Path,action='append',default=[],help='Explicit independently reviewed full-text repair receipt; each approved-repair stage must byte-match one listed receipt')
     p.add_argument('--benchmark-receipt',type=Path,action='append',default=[],help='Restored benchmark edit receipt(s); a restored/restored flag is required')
     p.add_argument('--expected-original-names',type=int,default=6306)
-    p.add_argument('--output',type=Path,default=Path('/private/tmp/r1914-final-source-review.json'))
+    p.add_argument('--output',type=Path,default=Path('external/temporary/r1914-final-source-review.json'))
     args=p.parse_args()
     baseline=read(args.baseline);expected=dict(baseline)
     require('lean/SupportAxioms.lean'in baseline,'baseline audit source missing')

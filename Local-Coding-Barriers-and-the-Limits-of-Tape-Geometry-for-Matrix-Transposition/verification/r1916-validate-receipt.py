@@ -4,8 +4,8 @@ No Lean, full type capture, archive expansion, or proof replay is performed.
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse')
+P=Path('.');V=P/'verification'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1916-strengthening-reuse')
 MUTABLE={'README.md','paper/verified-results.txt','verification/progress.txt'}
 EXCLUDED={'verification/r1916-in-progress.json','verification/r1916-final-receipt-check.json'}
 def read(p):return json.loads(p.read_text())

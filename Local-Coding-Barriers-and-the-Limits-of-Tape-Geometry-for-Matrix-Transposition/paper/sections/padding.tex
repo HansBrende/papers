@@ -3,8 +3,8 @@
 A native-machine prefix of linear cost enforces the original cut inequality
 through any payload computation. For uniformly linear-time payload families,
 the resulting runs also satisfy the full limiting conclusions. This supplies
-the required motion for the construction program and identifies what those
-conditions alone cannot exclude.
+a data-free realization of those conditions; coupling the motion to a
+transposition computation remains open.
 
 \subsection{The exact geometric contract}
 
@@ -95,6 +95,29 @@ bit planes encode the source alphabet using additional tapes, which is why
 the displayed tape count depends on the source alphabet while the additive
 time coefficient can be chosen before $M$.
 
+The tape count includes $E\max(1,\operatorname{size}(g(M)))$ idle tapes:
+they remain blank with their heads at cell zero throughout the run. In the
+construction, $K_0=53+q$, where $q$ is the page count of the fixed symmetric
+rational family. The extra tapes are chosen to ensure $4q\le3k(M')\eta$,
+where $\eta>0$ is the finite graphs' vertex-expansion constant. This is the
+head-count hypothesis of \lean{PaidPayload.cut_after_prefix}: the term
+$3k(M')rG B_\lambda$ in \eqref{eq:zero-cut} absorbs the expanding edges lost
+at label changes. Thus this finite cut guarantee uses the coarse per-tape
+memory-boundary charge. An entry-cell charge would count at most one cell
+per boundary on each idle tape, rather than three whole blocks. The theorem
+does not establish the corresponding inequality with that finer charge.
+\formal{StationaryTapesRun}{TransposeFollowup.StationaryTapes.observations}
+\formal{BitPlaneMachine}{TransposeFollowup.BitPlaneMachine.fixed_resources}
+\formal{BitPlaneRun}{TransposeFollowup.BitPlaneMachine.run_embed}
+\formal{PaidPaddingLimits}{TransposeFollowup.PaidPadding.fixed_resources,TransposeFollowup.PaidPayload.cut_after_prefix}
+
+The idle paths contribute zero to the integrated level-crossing and excess
+terms and are both monotone and antitone. Removing them therefore preserves
+the $S=\varnothing$ instances of $M^*$, the excess lower bound of one, and
+the existence of a nonmonotone, nonantitone path. These limiting conclusions
+already concern the remaining heads; they do not rely on the idle tapes'
+memory-boundary charge.
+
 The constants are existential; no numerical values are given here. Once the
 rational family and its parameters are fixed, the same transition table
 handles all positive canonical dimensions.
@@ -119,7 +142,7 @@ constant. The estimates hold at every positive dimension. Monotonicity gives
 a fixed finite page decomposition of these edges. A page is implemented by
 one head's excursions, with a constant stretch chosen so that expanding edges
 force enough distinct crossing chords in every slot labelling. A fixed number
-of extra stationary tapes supplies the required head-count inequality.
+of idle tapes supplies the head-count inequality described above.
 
 \emph{Actual generation and execution.} Rational comparisons determine the
 overlap edges and the corresponding finite operation stream. The generator
@@ -200,19 +223,23 @@ Original limiting conclusion & \lean{NativeRunLimits.of_cut}\\
 
 \subsection{What the construction establishes}
 
-The earlier paper's expanding-motion proposal~\cite[Construction
-programme]{FirstPaper2026} identified preparation and execution as obligations.
-Theorem~\ref{thm:padding} resolves those obligations for a wrapper, including
-all setup and execution costs. Its construction contribution is a uniform
-method for supplying the required motion. It still leaves complete exchange
-to the payload: the expander and the excursions do not specify how to recover
-the transpose's output bits from coded data.
+The earlier paper's expanding-motion proposal~\cite[Section~13, ``The
+construction side'']{FirstPaper2026} requires rulers that drive an encoder
+along an expanding relation graph of its data, at every recursive level.
+Theorem~\ref{thm:padding} supplies a data-free version: a uniform machine
+generates and executes expanding excursions in linear time, with every setup
+and execution step charged. The excursions run once before the payload and
+carry no matrix data. Coupling this motion to the encoder and decoder at
+successive recursive levels remains open.
 
-For the impossibility program, if a linear transposer exists, the theorem
-supplies another linear transposer satisfying the zero-slack cut inequality
-and the full $M^*$ conclusions. Those necessary conditions therefore cannot
-by themselves exclude a linear transposer. An exclusion must also use the
-transpose demand or another property not supplied by the wrapper.
+For the impossibility program, apply the theorem to a machine that halts
+immediately with empty output. The wrapper is a fixed linear-time machine
+that outputs the empty word on every positive-dimensional matrix input,
+yet satisfies the zero-slack cut inequality and the full $M^*$ conclusions.
+Thus these geometric conditions can hold without performing any transpose.
+A transposition lower bound must also use the output demand or another
+property not supplied by the wrapper. This conclusion concerns the stated
+cut inequality, including its coarse memory-boundary charge.
 
 The theorem uses $O(P)$ schedule generation. It does not assert an $o(P)$
 generator, a particular weak-limit return measure, or a nonhyperfinite return

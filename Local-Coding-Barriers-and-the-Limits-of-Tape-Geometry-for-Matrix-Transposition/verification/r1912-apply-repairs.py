@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-V=P/'verification'; A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+P=Path('.')
+V=P/'verification'; A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 assert not json.loads((V/'r1912-in-progress.json').read_text())['live_handles']
 proposals=json.loads((V/'r1912-queued-repairs.json').read_text())
 for x in proposals:

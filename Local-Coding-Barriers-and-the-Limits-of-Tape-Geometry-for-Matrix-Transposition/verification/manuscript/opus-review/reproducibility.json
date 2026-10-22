@@ -1,0 +1,118 @@
+{
+  "review": "Reproducibility items21 and22",
+  "status": "implemented_and_validated_with_explicit_upstream_editorial_amendment",
+  "items": [
+    {
+      "item": 21,
+      "disposition": "accepted",
+      "change": "New fixed-choice helper extracts the direct import header of PaperAxioms.lean and/or SupportAxioms.lean, builds their union, then runs each audit from the Lean project directory. Names are validated ASCII Lean modules; subprocess receives argument lists, not shell commands. --dry-run performs no builds.",
+      "commands": [
+        "python3 verification/run_axiom_audit.py both",
+        "python3 verification/run_axiom_audit.py paper",
+        "python3 verification/run_axiom_audit.py support"
+      ],
+      "limitation": "Helper prints Lean axiom reports; it does not itself compare axioms against a whitelist or assert exact declaration coverage. The manuscript verifier performs those checks for paper-cited declarations. Only the current plain import-header syntax is supported; unfamiliar syntax is not claimed to be a general Lean parser."
+    },
+    {
+      "item": 22,
+      "disposition": "accepted",
+      "change": "Inventory tracked files plus nonignored untracked source files using Git. Always include every baseline path, so new ignore rules cannot hide missing or altered baseline files. Known artifacts are filtered only from untracked candidates. Tracked added files are never filtered, even beneath ignored/artifact directories. Source-directory inventory derives from selected source-file ancestors.",
+      "archive_fallback": "Without Git executable/metadata, os.walk excludes .git/.lake/__pycache__, paper/build, .DS_Store and listed TeX/Python artifacts. Every baseline file is still explicitly checked. Arbitrary .gitignore rules are not interpreted in archive mode; ignored-file provenance cannot be reconstructed. Empty directories are excluded in both modes.",
+      "baseline_preserved": true,
+      "editorial_amendment": "verification/upstream-editorial-amendment.json pins only seven existing paper .tex/.bib/.bbl/.pdf files to reviewed Git blob hashes, validates the baseline digest/commit/directory and every before hash, and cannot amend Lean sources. Any nonlisted change or further change/removal of an amended document fails."
+    }
+  ],
+  "validation": {
+    "command": "python3 verification/manuscript/opus-review/test_reproducibility.py",
+    "tests_passed": 11,
+    "cases": [
+      "Git generated artifact exclusions",
+      "Changed/missing/nonignored untracked source detection",
+      "Added tracked source inside ignored .lake directory",
+      "Baseline path cannot be hidden by new ignore rule",
+      "Archive fallback and added source detection",
+      "Comment-aware deduplicated imports and build-before-audit ordering",
+      "Real audit imports plus arbitrary-working-directory dry run",
+      "Malformed import rejection",
+      "Exact editorial amendment with historical disclosure and unlisted Lean change rejection",
+      "Further alteration or deletion of amended document detection",
+      "Wrong-baseline and Lean-amendment rejection"
+    ],
+    "actual_paper_imports": 65,
+    "actual_support_imports": 719,
+    "actual_union_imports": 734,
+    "large_builds_run": false,
+    "diff_check": "passed",
+    "upstream_git_provenance": "All seven changed files are committed at da196481850cef5b608aad2e849806fccb49446f; before/after hashes equal Git blobs; original-paper worktree clean; git diff baseline..reviewed_commit -- original/lean empty.",
+    "actual_source_archive_fallback": {
+      "unchanged": true,
+      "status": "unchanged_since_reviewed_editorial_revision",
+      "proof_sources_unchanged": true,
+      "reviewed_editorial_commit": "da196481850cef5b608aad2e849806fccb49446f",
+      "historical_baseline_changes": [
+        "paper/macros.tex",
+        "paper/main.bbl",
+        "paper/main.pdf",
+        "paper/references.bib",
+        "paper/sections/barriers.tex",
+        "paper/sections/construction.tex",
+        "paper/sections/open.tex"
+      ],
+      "inventory_mode": "source-archive",
+      "files_checked": 117,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "directories_unchanged": true,
+      "directory_scope": "ancestors of inventoried source files; empty directories excluded"
+    }
+  },
+  "upstream_status_note": "The baseline is preserved. Seven committed paper-only changes from da196481850cef5b608aad2e849806fccb49446f are explicitly acknowledged by before/after hashes. Current status means unchanged since this reviewed editorial revision, not unchanged since the original baseline. Original Lean sources remain identical. This commit follows 2c05e49; it was already present in the working repository before these edits.",
+  "baseline_sha256": "210b5d5a08017581750656fbb710babe4a664ebf81ba26c2b2af06b902a73bd2",
+  "source_sha256": {
+    "verification/check_upstream.py": "4ea841eabc81d847746d1b87e943ecb23810857c3dfde9a609b8928358cf7339",
+    "verification/run_axiom_audit.py": "bbbbfecf51a136ae931a9387cc9a6128533032ae3c41af1d81ac025965d50a08",
+    "verification/manuscript/opus-review/test_reproducibility.py": "5ac2e26e5992e6d940782536aa7d437850e25873f1019bc4fe2c92176ed29d67",
+    "verification/upstream-editorial-amendment.json": "955791efc201fa9437bc4a90e558d47baed9d578bbf4263ba351ea17a9a2807c"
+  },
+  "initial_unamended_upstream_check": {
+    "unchanged": false,
+    "inventory_mode": "git",
+    "files_checked": 117,
+    "added": [],
+    "removed": [],
+    "changed": [
+      "paper/macros.tex",
+      "paper/main.bbl",
+      "paper/main.pdf",
+      "paper/references.bib",
+      "paper/sections/barriers.tex",
+      "paper/sections/construction.tex",
+      "paper/sections/open.tex"
+    ],
+    "directories_unchanged": true,
+    "directory_scope": "ancestors of inventoried source files; empty directories excluded"
+  },
+  "current_upstream_check": {
+    "unchanged": true,
+    "status": "unchanged_since_reviewed_editorial_revision",
+    "proof_sources_unchanged": true,
+    "reviewed_editorial_commit": "da196481850cef5b608aad2e849806fccb49446f",
+    "historical_baseline_changes": [
+      "paper/macros.tex",
+      "paper/main.bbl",
+      "paper/main.pdf",
+      "paper/references.bib",
+      "paper/sections/barriers.tex",
+      "paper/sections/construction.tex",
+      "paper/sections/open.tex"
+    ],
+    "inventory_mode": "git",
+    "files_checked": 117,
+    "added": [],
+    "removed": [],
+    "changed": [],
+    "directories_unchanged": true,
+    "directory_scope": "ancestors of inventoried source files; empty directories excluded"
+  }
+}

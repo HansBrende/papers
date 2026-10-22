@@ -12,12 +12,12 @@ Prepared baseline
   temporarily; compression reduces storage. Hashes do not replace exact equality.
 
 Final inspection, once adopted edits and ordinary build finish
-  python3 /private/tmp/r1914-preservation/prepare.py final
+  python3 external/temporary/r1914-preservation/prepare.py final
 Root runs generated capture/final-inspect.lean through its ordinary Lean harness.
 Then:
-  python3 /private/tmp/r1914-preservation/types.py seal final \
+  python3 external/temporary/r1914-preservation/types.py seal final \
     --execution FINAL_TIMING_JSON --log FINAL_LEAN_LOG
-  python3 /private/tmp/r1914-preservation/types.py compare
+  python3 external/temporary/r1914-preservation/types.py compare
 The comparison checks all6306 original names, exact decoded Expr repr strings,
 and ordered universe parameters, one chunk pair at a time. New audit additions
 are permitted but need the final normal axiom audit; they are not mislabeled as
@@ -25,7 +25,7 @@ original declarations. Raw differences produce a separate differences.json and
 status differences_require_review. They are never dismissed as cosmetic.
 
 If and only if actual differences exist
-  python3 /private/tmp/r1914-preservation/prepare-kernel.py
+  python3 external/temporary/r1914-preservation/prepare-kernel.py
 Root can run capture/kernel/check.lean. This reuses the reviewed R1912 constructor
 parser and Lean decoder. It requires exact original repr reconstruction, exact
 current-environment repr match, identical ordered universe parameters, and native
@@ -40,7 +40,7 @@ successfully checked kernel/source-header names. It must require terminal exit0
 and unique full difference-name coverage, not merely a count or hash agreement.
 
 Source guards, after the final source state is stable
-  python3 /private/tmp/r1914-preservation/source-guards.py --output REPORT_JSON
+  python3 external/temporary/r1914-preservation/source-guards.py --output REPORT_JSON
 These protect non-import bodies for all six theorem families and shared finite
 coding/native machine model modules (an exact intact relocation is allowed).
 They also check original names, trust tokens/options, acyclic complete imports,
@@ -51,9 +51,9 @@ Other changed mathematical bodies are listed for explicit proposal-level review;
 this guard does not pretend to prove every edit body-preserving automatically.
 
 Archive choices; do not overlap compression with performance measurements
-  python3 /private/tmp/r1914-preservation/pack-side.py final --output FINAL.tar.gz
+  python3 external/temporary/r1914-preservation/pack-side.py final --output FINAL.tar.gz
 or after comparison:
-  python3 /private/tmp/r1914-preservation/types.py archive --output BOTH.tar.gz
+  python3 external/temporary/r1914-preservation/types.py archive --output BOTH.tar.gz
 Both use exclusive creation and direct decompressed-byte verification before
 publication. Neither removes input chunks. Do not create both unnecessarily.
 The two-sided archive preserves raw comparison evidence, even when unresolved;
@@ -73,7 +73,7 @@ Final root-owned gates
   CPU/I/O with measurement runs or infer end-to-end speedup from static counts.
 
 Compact semantic receipt (small metadata only)
-  python3 /private/tmp/r1914-preservation/finish-types.py \
+  python3 external/temporary/r1914-preservation/finish-types.py \
     --execution KERNEL_TIMING_JSON --log KERNEL_LOG
 If comparison is entirely exact, omit execution/log; no redundant kernel run is
 needed. If root prepares a separately reviewed source-header fallback, pass its

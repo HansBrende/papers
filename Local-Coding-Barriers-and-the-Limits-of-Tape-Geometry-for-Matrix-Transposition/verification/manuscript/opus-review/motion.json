@@ -1,0 +1,110 @@
+{
+  "review": "Opus corrections: motion source audit and edits",
+  "status": "complete_source_review_pending_parent_build_and_render",
+  "owned_manuscript": "paper/sections/motion.tex",
+  "source_sha256": "3cf0f5552b7422d11939c9ed88ef6ca8ed801445d5720e15325bf50b4a1af52a",
+  "suggestions_sha256": "f10160f59bb68c209894082e80eaba39d581285f9bc67d1f1acb30fdb5492f2a",
+  "items": [
+    {
+      "item": 5,
+      "decision": "accepted_with_qualification",
+      "reason": "The theorem excludes stage sequences with the declared finite-affine-cover subsequential regularity. Non-affine Mobius profiles on a positive-length interval do not have a finite affine cover, so the intended choreography is outside that hypothesis. Actual implementation still has to be checked; no tape implementation is inferred from the abstract coordinate map. The exceptional allowance is an asymptotic constant, not a superlinear toll.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasRegularStageSubsequences",
+        "TransposeFollowup.RegularMotion.native_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.native_node_budget_recursion_bound"
+      ]
+    },
+    {
+      "item": 6,
+      "decision": "accepted_with_qualification",
+      "reason": "An explicit one-node clock works for every T <= cP when family constants can be chosen: B=J=a=1,rho=0,C=c,V(root)=cP, all other volumes zero, root stage [0,T), all other stages empty. This does not assert that every prescribed choice of clock parameters works. The physical bound is a sum of omitted head-times, not travelled distance. Half-scan language is restricted to the nominal P/G-cell footprint.",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.ContractingStageClock",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission"
+      ]
+    },
+    {
+      "item": 9,
+      "decision": "accepted_with_qualification",
+      "reason": "Credit the affine-group Folner property and amenability, while identifying the Lean proof as a direct finite-boundary construction. Cite Lubotzky-Weiss only as related amenability/expansion context. Do not assert that arbitrary non-affine Mobius maps generate a free non-amenable group: that depends on the chosen generators.",
+      "declarations": [
+        "TransposeFollowup.FiniteBoundary.exists_affine_small_boundary",
+        "TransposeFollowup.AffineMotion.exists_finite_affine_small_cut",
+        "TransposeFollowup.AffineMotion.lintegral_levelCross_delete_le"
+      ],
+      "bibliography_keys": [
+        "Folner1955",
+        "LubotzkyWeiss1993"
+      ]
+    },
+    {
+      "item": 17,
+      "decision": "accepted",
+      "reason": "Move the AffineTimeRequired annotation from the star definition to prose that actually defines its quantified omitted-measure property. Mark the physical-units theorem as assembled. State its common-region clause in the exported connected-component form, explain equivalence to local affinity for open subsets of R, and cite the original native M* endpoint supplying SatisfiesStar. No new Lean theorem or strengthened theorem claim was added.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.AffineTimeRequired",
+        "TransposeFollowup.AffineMotion.popular_affine_time_nonuniform",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission",
+        "TransposeFollowup.AffineMotion.star_physical_common_affine_omission",
+        "TransposeFollowup.RegularMotion.native_sampled_physical_limit",
+        "Transpose.Tape.Impl.theoremMStar_level_nonuniform"
+      ]
+    },
+    {
+      "item": 18,
+      "decision": "accepted",
+      "reason": "State explicitly that the first paper contains a common-triangle-wave observation but no affine-motion theorem, and that this obstruction uses only S=empty and 0<theta<1/2. Parent handles corresponding verified-results.txt edits.",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.one_le_of_star_small_cuts",
+        "TransposeFollowup.AffineMotion.star_half_le_finite_affine_omission"
+      ]
+    }
+  ],
+  "source_checks": {
+    "Lean_mathematical_edits": false,
+    "Lean_build_run_by_this_agent": false,
+    "git_diff_check": "passed",
+    "new_formal_annotations": [
+      "TransposeFollowup.FiniteBoundary.exists_affine_small_boundary",
+      "Transpose.Tape.Impl.theoremMStar_level_nonuniform"
+    ],
+    "numbered_statement_count_changed": false
+  },
+  "unformalized_explanatory_checks": [
+    {
+      "claim": "One-node clock",
+      "argument": "The root owns all ticks, T<=cP=aV(root); children have zero volume and all other stages are empty, so every defining field holds. No geometric regularity follows."
+    },
+    {
+      "claim": "Local affine iff affine on components for open real sets",
+      "argument": "Each component is an open interval. Affine coefficients are unique on a nonempty open interval. Thus the locally defined coefficient pair is locally constant, hence constant on a connected component. The reverse implication follows because the component itself is an open neighborhood."
+    },
+    {
+      "claim": "A non-affine Mobius profile has no finite affine cover on a positive-length interval",
+      "argument": "For q(x)=(ax+b)/(cx+d), ad-bc != 0 and c != 0, equality to mx+n on an open interval forces the polynomial coefficients c*m=0, c*n+d*m=a, d*n=b. These give m=0 and ad-bc=0, a contradiction. A finite interval cover of a positive-length interval must contain a positive-length piece."
+    }
+  ],
+  "primary_sources": [
+    {
+      "key": "Folner1955",
+      "landing": "https://journals.msp.org/mscand/article/view/2881",
+      "pdf": "https://journals.msp.org/mscand/article/download/2881/2880/2912",
+      "doi": "10.7146/math.scand.a-10442",
+      "scope": "Classical finite almost-invariant-set characterization; metadata checked on publisher page."
+    },
+    {
+      "key": "LubotzkyWeiss1993",
+      "landing": "https://cris.huji.ac.il/en/publications/groups-and-expanders/",
+      "pdf": "https://ma.huji.ac.il/~alexlub/PAPERS/groups%20and%20expanders/groupsAndExpanders.pdf",
+      "doi": "10.1090/dimacs/010/08",
+      "scope": "Related amenability-versus-expansion context only; primary indexed text states the finitely generated amenable quotient obstruction."
+    },
+    {
+      "key": "Adachi1993_background_check_not_cited",
+      "landing": "https://www.cambridge.org/core/journals/nagoya-mathematical-journal/article/note-on-the-folner-condition-for-amenability/7DE4684CCA2C46CC53943C63741D9E6B",
+      "doi": "10.1017/S0027763000004542",
+      "scope": "Publisher abstract explicitly records solvable groups amenable and nonabelian free groups nonamenable; checked for attribution scope."
+    }
+  ]
+}

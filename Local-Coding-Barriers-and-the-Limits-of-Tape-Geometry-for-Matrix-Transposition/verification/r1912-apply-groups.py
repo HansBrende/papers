@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,re,sys,hashlib,shutil
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean';V=P/'verification'
+P=Path('.');L=P/'lean';V=P/'verification'
 state=json.loads((V/'r1912-in-progress.json').read_text());assert not state['live_handles']
 A=Path(state['archive']);tag=sys.argv[1];plan=json.loads(Path(sys.argv[2]).read_text());wanted=sys.argv[3:]
 groups=[g for g in plan['groups'] if not wanted or g['name'] in wanted]

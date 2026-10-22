@@ -1,7 +1,7 @@
 from pathlib import Path
 import re,json,collections,functools
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean'
-prior=json.loads(Path('/private/tmp/r1912-import-graph.json').read_text());G=prior['graph'];files=prior['files']
+P=Path('.');L=P/'lean'
+prior=json.loads(Path('external/temporary/r1912-import-graph.json').read_text());G=prior['graph'];files=prior['files']
 for m in list(G):
  if m.startswith(('TransposeFollowup.','FixedTapeCompiler.')):del G[m];files.pop(m,None)
 for sub in ['TransposeFollowup','FixedTapeCompiler']:
@@ -40,5 +40,5 @@ for d in external_imports:
  for n in names:
   if n in closure(d):cycles.append({'external_import':d,'member':n,'path':shortest(d,n)})
 output={'method':'Current local source import graph, unchanged pinned Mathlib/upstream graph from R1912. Static only, no Lean execution.','modules':rows,'merge':{'members':names,'external_imports':external_imports,'external_consumer_map':{n:[x for x in R[n]if x not in names]for n in names},'cycles':cycles,'all_members_source_lines':sum(v['lines']for v in rows.values()),'full_roots_in_union':sorted(set().union(*(closure(n)&roots for n in names)))}}
-Path('/private/tmp/r1915-import-review.json').write_text(json.dumps(output,indent=2)+'\n')
+Path('external/temporary/r1915-import-review.json').write_text(json.dumps(output,indent=2)+'\n')
 print(json.dumps(output,indent=2))

@@ -5,7 +5,7 @@ Only scratch/archive metadata are written. Full chunks are always retained.
 from pathlib import Path
 import argparse,importlib.util,json,io,tarfile,os,hashlib
 spec=importlib.util.spec_from_file_location('r1915_types',Path(__file__).with_name('types.py'));t=importlib.util.module_from_spec(spec);spec.loader.exec_module(t)
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('side',choices=['baseline','final']);p.add_argument('--capture',type=Path,default=Path('/private/tmp/r1915-preservation/capture'));p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('side',choices=['baseline','final']);p.add_argument('--capture',type=Path,default=Path('external/temporary/r1915-preservation/capture'));p.add_argument('--output',type=Path,required=True);a=p.parse_args()
 C=a.capture;d=t.read(C/f'{a.side}-compact.json');assert d['side']==a.side and d['declarations']==6306
 files=[(f'{a.side}/{r["index"]:03d}.json',Path(r['path']),r) for r in d['chunks']]
 for name in ['names.json','baseline-sources.json','before-receipt.json',f'{a.side}-compact.json',f'{a.side}-capture.json']:

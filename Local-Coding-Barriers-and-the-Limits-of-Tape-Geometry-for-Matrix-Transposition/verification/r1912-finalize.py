@@ -1,8 +1,8 @@
 """Finalize R1912 only after all normal Lean checks have succeeded and terminated."""
 from pathlib import Path
 import datetime,hashlib,json,re,shutil
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification';L=P/'lean'
-R=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision');A=R/'archive/r1912-build-speed'
+P=Path('.');V=P/'verification';L=P/'lean'
+R=Path('external/research-workspace/research/10-linear-decision');A=R/'archive/r1912-build-speed'
 def read(p): return json.loads(Path(p).read_text())
 def write(p,x): p.write_text(json.dumps(x,indent=2)+'\n')
 def sha(p):

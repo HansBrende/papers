@@ -11,7 +11,7 @@ if mode=='imports':
   changes.append(dict(path=rel,old_text=old,new_text=new,old_sha256=sha(old),new_sha256=sha(new)))
  assert json.loads((V/'r1914-import-confirmation-summary.json').read_text())['status']=='passed'
 elif mode=='geometry':
- proposal=json.loads(Path('/private/tmp/r1914-geometry/proposal.json').read_text());changes=proposal['changes'];assert len(proposal['relocations'])==8
+ proposal=json.loads(Path('external/temporary/r1914-geometry/proposal.json').read_text());changes=proposal['changes'];assert len(proposal['relocations'])==8
 else:raise SystemExit('Expected imports or geometry')
 record=V/f'r1914-{mode}-application.json';assert not record.exists()
 for c in changes:

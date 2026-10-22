@@ -8,8 +8,10 @@ The accompanying project uses Lean~4 and Mathlib at version 4.34.1
 \lean{lean/FixedTapeCompiler/}. The local package \lean{lean/upstream/}
 points directly to the sibling first paper's sources. Its build outputs are
 kept in the adapter; no definitions or proofs from that paper are copied or
-modified. The original frozen statement, checker, full file inventory and
-digests are checked by \lean{verification/check_upstream.py}.
+modified. The original frozen statement, checker, and source inventory and
+digests are checked by \lean{verification/check_upstream.py}. Its record
+separately identifies a subsequent editorial update to seven first-paper
+artifacts; the first paper's Lean proofs are unchanged.
 
 The external OpenAI source is pinned to commit
 \lean{1581d4cbdd69a0faf34b2089614fe2a814316a6a}. An exact 204-module import
@@ -17,7 +19,7 @@ closure, with its original namespace and Apache-2.0 license, is installed by
 \lean{verification/fetch_openai_metric.py}. The manifest
 \lean{verification/openai-metric-source.json} records import edges and every
 source digest. The bibliography and attribution ledger identify the imported scalar
-projection theorem. The adapter preserves these sources and uses its own
+projection and related combinatorial estimates. The adapter preserves these sources and uses its own
 package configuration.
 
 The proofs use only the standard axioms \lean{propext},
@@ -26,7 +28,8 @@ runs \texttt{\#print axioms} on all explicitly cited formal declarations,
 including definitions and imported endpoints. It checks that every requested
 declaration has an audit result and that no other axiom occurs. The formal
 source guard additionally checks preservation of the audited mathematical
-sources and trust settings. This is an ordinary build and transitive axiom audit, not a fresh
+sources and trust settings; the review records separately identify two
+comment-only corrections in the padding module. This is an ordinary build and transitive axiom audit, not a fresh
 empty-environment replay of every imported proof term.
 
 \subsection{Reproduction}
@@ -47,7 +50,13 @@ python3 verification/manuscript/build_paper.py
 \end{verbatim}
 The verification command generates the declaration inventory, runs
 \texttt{lake build}, builds all cited modules, and runs the manuscript axiom
-audit. It also checks the protected sources and retains the commands, logs and
+audit. For the broader support audit, run
+\begin{verbatim}
+python3 verification/run_axiom_audit.py support
+\end{verbatim}
+This also builds every import before invoking Lean. A bare library build may omit
+first-paper modules used only by the audit entry point.
+The verification command also checks the protected sources and retains the commands, logs and
 source hashes. A TeX distribution with \lean{latexmk}, BibTeX and
 the packages named in \lean{paper/main.tex} builds the manuscript. The final
 PDF is \lean{paper/main.pdf}; intermediate TeX files remain in

@@ -6,6 +6,9 @@ setup and cleanup.  We derive a quantitative consequence of the first paper's
 limiting inequality \cite{FirstPaper2026}, then transfer it to native
 executions.  This provides the lower-bound criterion used to exclude the
 concrete palettes and recursive schedules in Section~\ref{sec:motion-applications}.
+The first paper remarks that a common triangle wave fails its inequality;
+it does not contain an affine-motion theorem.  The results below use only
+the $S=\varnothing$, $0<\theta<1/2$ instances of that inequality.
 
 \subsection{The crossing convention and the affine-time bound}
 
@@ -39,7 +42,6 @@ on which $q_t$ is affine.  The affine coefficients may depend on the
 neighborhood and the head.
 \end{definition}
 \formal{FiniteAffineTimeBound}{TransposeFollowup.AffineMotion.SatisfiesStar}
-\formal{NativeAffineMotion}{TransposeFollowup.AffineMotion.AffineTimeRequired}
 
 The original $M^*$ conclusion implies $\mathcal S$; this restriction suffices
 for the obstruction below.  The padding theorem retains the full original
@@ -61,6 +63,10 @@ head, then $\lambda([0,H]\setminus R)\ge1/(2k)$.
 \end{theorem}
 \formal{OpenAffineTimeBound}{TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission,TransposeFollowup.AffineMotion.star_half_le_affine_component_omission,TransposeFollowup.AffineMotion.star_common_affine_omission}
 
+The property \eqref{eq:motion-half}, quantified over all affine regular
+regions, is named \texttt{AffineTimeRequired} in Lean.
+\formal{NativeAffineMotion}{TransposeFollowup.AffineMotion.AffineTimeRequired}
+
 \begin{proofoutline}
 The labeling argument proves the following intermediate statement, which
 does not require $\mathcal S(q,H)$.
@@ -76,12 +82,15 @@ For finitely many nonconstant affine branches, inverse visits at a common
 height are affine functions of that height.  Bound retained crossing pairs
 by all ordered pairs of inverse branches and push their height measures to
 pairs of times.  The resulting measures have explicit marginal bounds.
-Finite families of invertible affine transformations admit finite sets of
-transformations with arbitrarily small relative boundary.  A fine grid and
-a common priority labeling of those sets make both label classes and the
-measure of disagreeing pairs small.  Grid collisions and finite boundaries
-are charged separately.  The finitely many constant-branch heights have
-measure zero; their time intervals are retained.
+The affine group is solvable and hence amenable: its F\o lner property
+provides finite sets of transformations with arbitrarily small relative
+boundary under any prescribed finite family \cite{Folner1955}.
+Our formal proof constructs these sets directly, first choosing slopes and
+then translations.  A fine grid and a common priority labeling of those
+sets make both label classes and the measure of disagreeing pairs small.
+Grid collisions and finite boundaries are charged separately.  The finitely
+many constant-branch heights have measure zero; their time intervals are
+retained.
 
 For a finite initial subfamily of the open cover, the complement in $[0,H]$
 is compact.  Deleting its visits
@@ -99,11 +108,16 @@ finishes the general case.
 \formal{CountableAffinePathLabels}{TransposeFollowup.AffineMotion.exists_countable_affine_path_cut_bound}
 \formal{FiniteAffineLabels}{TransposeFollowup.AffineMotion.exists_finite_affine_small_cut}
 \formal{OmittedVisitBound}{TransposeFollowup.AffineMotion.lintegral_levelCross_delete_le}
+\formal{AffineFiniteBoundary}{TransposeFollowup.FiniteBoundary.exists_affine_small_boundary}
 
 Theorem~\ref{thm:motion-affine-time} quantifies the time a candidate must
 leave outside its affine regions, even with countably many regions and
 slopes of either sign, including zero.  The bound sums head-specific omitted
 measures; it does not require a common exceptional set for all heads.
+The F\o lner step connects the argument to the classical obstruction to
+expansion from amenability; see Lubotzky--Weiss \cite{LubotzkyWeiss1993}.
+The crossing-measure estimates and native time normalization are the
+additional steps needed here.
 
 \subsection{Native normalization and correct-input quantifiers}
 
@@ -158,6 +172,9 @@ positions.  The proved comparison is
 Thus a block limit $q_t$ corresponds to the physical limit
 $f_t(s)=q_t(Gs)/G$, although the finite trajectories differ.
 
+The next theorem assembles the cited native-limit and scaling declarations;
+it is not a single exported Lean statement.
+
 \begin{theorem}[Physical units and native limiting paths]
 \label{thm:motion-native-limits}
 Under \eqref{eq:motion-control}--\eqref{eq:motion-entropy} and fast correct
@@ -170,13 +187,15 @@ $[0,c+1/G]$, any affine regular regions satisfy
 \label{eq:motion-physical-budget}
   \sum_{t=1}^k\lambda([0,c+1/G]\setminus R_t)\ge\frac1{2G}.
 \end{equation}
-A common regular region, when $k>0$, omits at least $1/(2kG)$ physical time.
+When $k>0$, a common open region on each of whose connected components every
+head is affine omits at least $1/(2kG)$ physical time.
 The assertion includes a fixed uniform machine as a special case.
 \end{theorem}
 \formal{NativeAffineMotion}{TransposeFollowup.AffineMotion.popular_affine_time_nonuniform,TransposeFollowup.AffineMotion.popular_affine_time_robust,TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission}
 \formal{AffineTimeScaling}{TransposeFollowup.AffineMotion.star_physical_common_affine_omission}
 \formal{NativePhysicalLimits}{TransposeFollowup.RegularMotion.native_sampled_physical_limit}
 \formal{CanonicalTimeNormalization}{TransposeFollowup.RegularMotion.canonical_physical_error}
+\upformal{Transpose.Tape.MStarRobust}{Transpose.Tape.Impl.theoremMStar_level_nonuniform}
 
 \begin{proofoutline}
 The popular-trace theorem of \cite{FirstPaper2026} supplies actual trace
@@ -188,12 +207,21 @@ to these classes; Theorem~\ref{thm:motion-affine-time} then applies to every
 eligible limit.  The estimate \eqref{eq:motion-normalization-error} transfers
 uniform convergence to physical paths, including all phases of execution
 and the frozen halting tail.  Finally the change of variables $u=Gs$ scales
-omitted measure by $G$.
+omitted measure by $G$.  For the common-region clause, retain the original
+$M^*$ theorem's star condition and apply the cited common-region scaling
+theorem.  Its exported hypothesis is affinity on each connected component.
+For an open subset of $\mathbb R$ this is equivalent to local affinity:
+components are open intervals, and affine formulas agree on overlapping
+open neighborhoods, hence throughout each connected component.
 \end{proofoutline}
 
 This theorem derives the input sequence and limiting obstruction from native
 correctness.  It lets a lower-bound argument analyze physical motion without
 assuming a favorable trace class or conflating block time with execution time.
+The toll is only $1/(2G)$ in total head-time, on the scale of half a scan of
+a nominal $P/G$-cell storage footprint.  It is a bound on time outside affine
+regions, not on distance travelled, and does not itself give a superlinear
+time lower bound.
 
 \begin{definition}[Bounded affine interval cover]
 \label{def:motion-affine-cover}
@@ -465,6 +493,12 @@ need not be contiguous or nested.  The clock thus covers more schedules than
 depth-first recursion.  Its volume $V(w)$ is an accounting quantity, not an
 assumption of independently accessible memory.
 
+Clock existence alone does not restrict linear-time executions when the
+family constants may be chosen: if $T\le cP$, take $B=J=1$, $\rho=0$,
+$a=1$, $C=c$, $V(\varnothing)=cP$, and one root stage $[0,T)$; give every
+other node zero volume and an empty stage.  The substantive additional
+hypothesis below is regularity of the stages marked good.
+
 \begin{lemma}[Charged depth and exceptional work]
 \label{lem:motion-clock-accounting}
 For any such clock and $h\in\mathbb N$,
@@ -626,13 +660,17 @@ Theorem~\ref{thm:motion-exceptional-recursion}.
 
 Corollary~\ref{cor:motion-node-exception} gives a necessary lower bound on
 per-node exceptional work.  Together with
-Theorem~\ref{thm:motion-exceptional-recursion}, it sharpens the geometric
-recursion proposal of \cite{FirstPaper2026}: contraction and a bounded number
-of stages per node cannot yield a transposer if every stage has the regularity
-in Definition~\ref{def:motion-stage-regularity}.  A candidate satisfying the
-other clock assumptions must allocate at least the stated exceptional-time
-budget.  A nonlinear coordinate map need not have a finite-affine-cover stage
-limit, so it must be checked through its actual implementation.
+Theorem~\ref{thm:motion-exceptional-recursion}, it excludes variants of the
+geometric recursion in \cite[Section~13]{FirstPaper2026} whose actual stages
+all have the regularity in Definition~\ref{def:motion-stage-regularity}.
+It does not exclude the proposed non-affine M\"obius choreography: a
+non-affine M\"obius map is affine on no nonempty open interval of its domain,
+so a stage limit agreeing with such a map on an interval of positive length
+has no finite affine cover.
+The construction still has to realize its intended profiles on actual tapes.
+The exceptional allowance must be at least $1/(2kG)$, a constant physical-time
+toll corresponding asymptotically to $P/(2kG)$ ticks.  This toll does not grow
+with the recursion depth.
 
 These exclusions concern $O(P)$ transposition at canonical logarithmic
 entry width.  Paid padding, proved next, shows that the first paper's

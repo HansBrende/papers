@@ -6,7 +6,7 @@ Other changed mathematical bodies are listed for explicit proposal-level review.
 """
 from pathlib import Path
 import argparse,hashlib,json,re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+P=Path('.')
 FAMILIES={
  'adaptive_separator_treewidth':['GraphSeparatorBound','SeparatorSharpness','Treewidth','AdaptiveTreewidth'],
  'nonlinear_row_fixed_xor':['XorComponentCount','XorDegreeBound','XorPathCycleBound'],
@@ -44,7 +44,7 @@ def clean(s):
  return ''.join(out)
 def main():
  global P
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,default=P);p.add_argument('--capture',type=Path,default=Path('/private/tmp/r1914-preservation/capture'));p.add_argument('--output',type=Path,required=True);a=p.parse_args();P=a.project.resolve()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--project',type=Path,default=P);p.add_argument('--capture',type=Path,default=Path('external/temporary/r1914-preservation/capture'));p.add_argument('--output',type=Path,required=True);a=p.parse_args();P=a.project.resolve()
  C=a.capture;before=read(C/'baseline-sources.json');receipt=read(C/'before-receipt.json');frozen=read(C/'names.json')
  assert filehash(C/'baseline-sources.json')==frozen['baseline_sources_sha256']
  for r,s in before.items():assert sha(s)==receipt['source_sha256'][r]

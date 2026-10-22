@@ -2,12 +2,16 @@
 import Transpose.Statement
 import Transpose.Tape.Defs
 import Transpose.Tape.DefsM
+import Transpose.Tape.MStarRobust
 import Transpose.Tape.Statements.Coding
 import TransposeFollowup.ActualStageRegularity
 import TransposeFollowup.AdaptiveTreewidth
+import TransposeFollowup.AffineFiniteBoundary
 import TransposeFollowup.AffineTimeScaling
 import TransposeFollowup.BackwardMaskedStride
 import TransposeFollowup.BinaryBankOperation
+import TransposeFollowup.BitPlaneMachine
+import TransposeFollowup.BitPlaneRun
 import TransposeFollowup.BoundedAffineCovers
 import TransposeFollowup.CanonicalTimeNormalization
 import TransposeFollowup.ContractingStageClock
@@ -31,6 +35,7 @@ import TransposeFollowup.NativeRegularRecursion
 import TransposeFollowup.NativeRunLimits
 import TransposeFollowup.OmittedVisitBound
 import TransposeFollowup.OpenAffineTimeBound
+import TransposeFollowup.PaidPaddingLimits
 import TransposeFollowup.PhysicalAffineApproximationObstruction
 import TransposeFollowup.ProtocolTruncation
 import TransposeFollowup.RationalMobius
@@ -51,6 +56,7 @@ import TransposeFollowup.RawUnitArithmeticData
 import TransposeFollowup.RecodedXor
 import TransposeFollowup.SeparatorSharpness
 import TransposeFollowup.StageClockAccounting
+import TransposeFollowup.StationaryTapesRun
 import TransposeFollowup.TernaryMatrixGeometry
 import TransposeFollowup.TernaryMatrixPalette
 import TransposeFollowup.TernaryPhase
@@ -69,6 +75,7 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms Transpose.LinearTimeTransposable
 #print axioms Transpose.TM
 #print axioms Transpose.Tape.CutIneq
+#print axioms Transpose.Tape.Impl.theoremMStar_level_nonuniform
 #print axioms Transpose.Tape.cellBits
 #print axioms Transpose.Tape.code_gap
 #print axioms Transpose.Tape.codes_coentLinear_of_linearTimeTransposable
@@ -100,8 +107,11 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.BinaryBankOperation.Operation
 #print axioms TransposeFollowup.BinaryBankOperation.Valid
 #print axioms TransposeFollowup.BinaryBankOperation.value
+#print axioms TransposeFollowup.BitPlaneMachine.fixed_resources
+#print axioms TransposeFollowup.BitPlaneMachine.run_embed
 #print axioms TransposeFollowup.CausalRows
 #print axioms TransposeFollowup.CausalRows.apply
+#print axioms TransposeFollowup.FiniteBoundary.exists_affine_small_boundary
 #print axioms TransposeFollowup.IntegerMatrixPalette.Operation
 #print axioms TransposeFollowup.IntegerMatrixPalette.approximation_cover
 #print axioms TransposeFollowup.IntegerMatrixPalette.approximation_error
@@ -115,6 +125,8 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.NativeRunLimits.Conclusion
 #print axioms TransposeFollowup.NativeRunLimits.of_cut
 #print axioms TransposeFollowup.PaidPadding.exists_uniform_paid_padding
+#print axioms TransposeFollowup.PaidPadding.fixed_resources
+#print axioms TransposeFollowup.PaidPayload.cut_after_prefix
 #print axioms TransposeFollowup.PublicStrategy
 #print axioms TransposeFollowup.PublicStrategy.Executes
 #print axioms TransposeFollowup.RationalMobius
@@ -172,6 +184,7 @@ import TransposeFollowup.XorPathCycleBound
 #print axioms TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget
 #print axioms TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two
 #print axioms TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two
+#print axioms TransposeFollowup.StationaryTapes.observations
 #print axioms TransposeFollowup.TernaryMatrixPalette.Operation
 #print axioms TransposeFollowup.TernaryMatrixPalette.approximation_cover
 #print axioms TransposeFollowup.TernaryMatrixPalette.approximation_error

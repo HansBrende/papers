@@ -6,8 +6,9 @@ import TransposeFollowup.RestrictedGapFromAutocorrelation
 import TransposeFollowup.RationalNearIdentityFamily
 import TransposeFollowup.ContinuousNativePadding
 
-/-! Continuous expansion from an explicit normalized restricted-correlation
-gap hypothesis. This file proves the reduction, not existence of the gap. -/
+/-! Rational continuous expansion and fully paid native padding. The file
+constructs a restricted spectral gap, derives continuous expansion, and
+compiles it into a zero-slack padding wrapper. -/
 namespace TransposeFollowup
 open Classical Set MeasureTheory
 open scoped BigOperators
@@ -22,7 +23,7 @@ noncomputable def symmetricCorrelation {c : ℕ} (F : Fin c → RationalUnitMobi
     (∫ x in Icc (0:ℝ) 1,(F p).inverse.whole.weightedPullback f x*f x)))/(2*(c:ℝ))
 
 /-- The real-function form of the required restricted gap, with closed
-grid cells as in the source theorem. Its existence is not asserted here. -/
+grid cells as in the source theorem. -/
 def RestrictedCorrelationGap {c : ℕ} (F : Fin c → RationalUnitMobius) (K : ℕ) : Prop :=
   ∀ f : ℝ → ℝ,Measurable f → Integrable (fun x => (f x)^2) volume →
     (∀ x : ℝ,x∉Icc (0:ℝ) 1 → f x=0) → (∫ x,(f x)^2)=1 →

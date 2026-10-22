@@ -1,10 +1,10 @@
 from pathlib import Path
 import json,re,functools,copy
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean'
-old=json.loads(Path('/private/tmp/r1912-import-graph.json').read_text());G=old['graph'];local={'.'.join(p.relative_to(L).with_suffix('').parts):p for folder in ['TransposeFollowup','FixedTapeCompiler'] for p in (L/folder).rglob('*.lean')}
+P=Path('.');L=P/'lean'
+old=json.loads(Path('external/temporary/r1912-import-graph.json').read_text());G=old['graph'];local={'.'.join(p.relative_to(L).with_suffix('').parts):p for folder in ['TransposeFollowup','FixedTapeCompiler'] for p in (L/folder).rglob('*.lean')}
 G={m:ds for m,ds in G.items() if not m.startswith(('TransposeFollowup.','FixedTapeCompiler.'))}
 for m,p in local.items():G[m]=re.findall(r'^(?:(?:public|meta)\s+)*import\s+(\S+)',p.read_text(),re.M)
-weights=json.loads(Path('/private/tmp/r1913-import-bottleneck-analysis.json').read_text())['durations']
+weights=json.loads(Path('external/temporary/r1913-import-bottleneck-analysis.json').read_text())['durations']
 def result(g):
  @functools.cache
  def anc(m):return {m}|set().union(*(anc(x) for x in g.get(m,[])))
@@ -26,4 +26,4 @@ for tag,d in [('baseline',base),('realAverageCut',a),('plusCorrelationCut',b)]:
  print(tag,'path',d['same_weight_path_seconds'],'fullMathlib',d['fullMathlibCount'],'lost',len(set(base['fullMathlibModules'])-set(d['fullMathlibModules'])))
  print(d['targets'])
 print('fullheavy realAverage descendants eliminated', sorted(set(base['fullMathlibModules'])-set(a['fullMathlibModules']))[:30])
-Path('/private/tmp/r1913-import-candidates.json').write_text(json.dumps({'baseline':base,'realAverageCut':a,'plusCorrelationCut':b,'warning':'Static graph thought experiments only; no compilation, new durations, or claim all transitive consumer imports identified.'},indent=2)+'\n')
+Path('external/temporary/r1913-import-candidates.json').write_text(json.dumps({'baseline':base,'realAverageCut':a,'plusCorrelationCut':b,'warning':'Static graph thought experiments only; no compilation, new durations, or claim all transitive consumer imports identified.'},indent=2)+'\n')

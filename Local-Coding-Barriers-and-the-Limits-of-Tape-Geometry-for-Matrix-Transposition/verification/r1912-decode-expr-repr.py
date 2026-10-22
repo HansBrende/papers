@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 import re
 
-P = Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+P = Path('.')
 
 
 def strict_object(pairs):
@@ -209,10 +209,10 @@ def flat_name(text):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--comparison',type=Path,default=P/'verification/r1912-type-comparison.json')
-    p.add_argument('--baseline-pattern',default='/private/tmp/r1912-baseline-types-{index:03d}.json')
-    p.add_argument('--final-pattern',default='/private/tmp/r1912-final-types-{index:03d}.json')
-    p.add_argument('--output',type=Path,default=Path('/private/tmp/r1912-original-types-ast.json'))
-    p.add_argument('--chunk-dir',type=Path,default=Path('/private/tmp/r1912-original-types-ast-chunks'))
+    p.add_argument('--baseline-pattern',default='external/temporary/r1912-baseline-types-{index:03d}.json')
+    p.add_argument('--final-pattern',default='external/temporary/r1912-final-types-{index:03d}.json')
+    p.add_argument('--output',type=Path,default=Path('external/temporary/r1912-original-types-ast.json'))
+    p.add_argument('--chunk-dir',type=Path,default=Path('external/temporary/r1912-original-types-ast-chunks'))
     args=p.parse_args()
     comparison=load(args.comparison)
     names=[m['name'] for m in comparison['mismatches']]

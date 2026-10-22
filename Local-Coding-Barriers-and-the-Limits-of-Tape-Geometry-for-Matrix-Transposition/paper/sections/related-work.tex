@@ -35,7 +35,18 @@ Blasiak, Kleinberg, and Lubetzky develop entropy-based bounds for broadcast
 rate~\cite{BKL2011}. We also use established entropy methods, including Shearer's covering
 inequality~\cite{CGFS1986}, and bounds obtained by counting code fibers.
 
-The adaptive separator theorem addresses a different interface: each query
+Distributed and multi-sender index coding are closer comparisons because
+sender knowledge constrains the permitted encoders. Sadeghi, Arbabjolfaei,
+and Kim study distributed servers holding prescribed message subsets
+\cite{SadeghiArbabjolfaeiKim2016}. Li, Ong, and Johnson develop cooperative
+composite coding and a sender-constrained rank-minimization formulation
+\cite{LiOngJohnson2019,LiOngJohnsonRank2019}. Our fixed original-row packet
+models can be interpreted in this setting after specifying the entry-level
+messages and column demands. Adaptive queries additionally choose their
+access supports from the public history; a fixed sender allocation does not
+by itself express this interface.
+
+The adaptive separator theorem addresses the following interface: each query
 has specified access to \emph{original} rows, its support and subsequent
 queries may depend on the public history, and the correct-input law can be
 correlated and nonuniform. Its graph records which rows a query accesses
@@ -80,12 +91,22 @@ spectral-gap results~\cite{BourgainYehudayoff2013}. Our analytic development fol
 rational-family, growth, flattening and spectral statements needed for the
 native implementation.
 
-One analytic input is reused directly from the pinned OpenAI formal library:
-the scalar projection theorem
-\texttt{scalar\_weak\_radius\_projection}~\cite{OAIProjection2026}.
-The local argument verifies its hypotheses and derives the statements used
-in the expansion proof. The bibliography identifies the exact formal source
-and revision; the imported proof is checked in the same dependency chain.
+The scalar sum-product and projection ingredients belong to Bourgain's
+discretized ring and projection theory~\cite{Bourgain2003,Bourgain2010}.
+Their mathematical origin is distinct from the formal source we reuse.
+The pinned OpenAI library~\cite{OAIProjection2026} supplies more than the
+endpoint \lean{scalar_weak_radius_projection}: we directly import
+\lean{ScalarDilationBound}, \lean{ScalarPluennecke},
+\lean{ScalarBallCandidates}, \lean{ScalarCoverCount}, and
+\lean{ScalarWeakRadiusProjection}. The bridge also uses its scalar-cell,
+ball-mass, zoom, and ratio-family definitions and estimates, including
+\lean{scalar_zoom_cells}, \lean{scalar_zoom_ball_bound},
+\lean{scalar_refined_ball_bound},
+\lean{scalar_ratio_family_ball}, and
+\lean{scalar_ratio_family_card}.
+The local arguments verify the hypotheses and derive the expansion inputs.
+The bibliography pins the formal source revision, whose imported proofs are
+checked in the same dependency chain.
 
 The padding theorem adds a computational conclusion: the walk is generated,
 executed, cleaned up, and followed by the original computation at additive

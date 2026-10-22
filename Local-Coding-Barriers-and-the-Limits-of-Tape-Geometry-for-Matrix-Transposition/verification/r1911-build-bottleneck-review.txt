@@ -9,7 +9,7 @@ Measured snapshot
 - The sampled live log contains618 completed local builds; its overall median is30s because earlier concurrent builds were slower. The later serial compiler tail is consistently14–16s per module. Do not describe14–15s as the median of the entire build.
 - A weighted longest local dependency path to ClosedNativePadding contains178 modules. Summing the observed durations, and imputing14s only for modules not yet in this full-build log, gives3,190s (~53min). This is a description of that sampled build, not a promised future wall-time forecast.
 - On this path there are34 strictly linear blocks containing146 nodes where each interior predecessor has exactly one local consumer and the next module imports only it. Collapsing every such block would remove112 serial module boundaries. This is an upper opportunity count, not a recommendation to collapse every block into enormous files.
-- Static data and exact path are saved in /private/tmp/r1911-build-graph.json; its timestamp is the snapshot time, not build completion. Generator: /private/tmp/r1911-build-graph.py.
+- Static data and exact path are saved in external/temporary/r1911-build-graph.json; its timestamp is the snapshot time, not build completion. Generator: external/temporary/r1911-build-graph.py.
 
 Best bounded experiment: combine the SourceEndpoints subroutine group
 Modules:
@@ -21,7 +21,7 @@ Modules:
 Total448 source lines before repeated import/header removal. All five report15s in this build, for75s serial elapsed time. Each intermediate module has exactly one local consumer, namely the next member; all five have the same namespace and balanced namespace/end blocks. No private declarations or module-local attributes were found in the group. The only external prerequisite is SourceEndpointsData. This makes it a clean aggregation pilot with unchanged theorem names and proof bodies, not a theorem redesign.
 
 ONE controlled benchmark after the current build and axiom audit are terminal
-1. In an isolated /private/tmp directory, copy these five existing sources as the split baseline. Produce one combined source importing only SourceEndpointsData and concatenating the five original bodies, removing only their module import lines. Retain each existing namespace/end block and all proof bodies, definitions, options, and documentation. Do not modify the repository for the experiment.
+1. In an isolated external/temporary directory, copy these five existing sources as the split baseline. Produce one combined source importing only SourceEndpointsData and concatenating the five original bodies, removing only their module import lines. Retain each existing namespace/end block and all proof bodies, definitions, options, and documentation. Do not modify the repository for the experiment.
 2. Using the same pinned Lake environment and normally validated dependency artifacts, compile the five baseline copies sequentially and compile the combined copy once. Both arms must use the same compiler flags and produce .olean outputs to scratch. No parallel compilation or other live Lean handles. A baseline copy may import the current validated original predecessor; it does not need to replace its proof.
 3. Run three paired warm-cache repetitions, alternating arm order, recording wall time, user/system CPU, maximum resident memory, and success/warnings. Include one import-only SourceEndpointsData probe inside the same benchmark to estimate fixed import/setup cost. Normal OS warm cache is fine; do not delete shared caches or use unchecked cache traces.
 4. Require successful kernel checking of every proof, unchanged declaration signatures/names (they are retained source text), unchanged axiom audit when merged into the real project, and at least35% median elapsed-time savings without material memory regression before rolling this organization out. The theoretical maximum for this group is four avoided15s startups (~60s), but the actual saving may be lower; measure it.
@@ -38,9 +38,9 @@ Installed Lake's Build/Module.lean builds each module after its presetup/import 
 The installed Lean supports its newer public/private module system, but legacy root imports load all transitive/private data (Lean/Environment.lean around2121; Lake/Build/Module.lean around306–359). A selective migration would therefore need a separate carefully audited compatibility exercise and axiom-inspection strategy. It is not the bounded next benchmark, and no theorem is being replaced with an unchecked interface.
 
 Relevant installed-source references
-- /Users/hansbrende/.elan/toolchains/leanprover--lean4---v4.34.1/src/lean/lake/Lake/Build/Module.lean: Module.buildLean around981; Module.recBuildLean around999; ModuleImportInfo.addImport around319.
-- /Users/hansbrende/.elan/toolchains/leanprover--lean4---v4.34.1/src/lean/Lean/Environment.lean: legacy versus module import behavior around2121.
-- /Users/hansbrende/Documents/Codex/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean:1, protected import Mathlib.
+- external/lean-toolchain/src/lean/lake/Lake/Build/Module.lean: Module.buildLean around981; Module.recBuildLean around999; ModuleImportInfo.addImport around319.
+- external/lean-toolchain/src/lean/Lean/Environment.lean: legacy versus module import behavior around2121.
+- ../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Defs.lean:1, protected import Mathlib.
 
 
 Addendum: exact consumers, compatibility, and next-round boundary
@@ -57,15 +57,15 @@ Lower-change compatibility option
 Keep SourceEndpointsMeaning.lean as the combined implementation importing SourceEndpointsData. Replace each of the first four module bodies with a one-line import of SourceEndpointsMeaning. Their old module paths and public declaration names remain available. These four wrappers become parallel siblings, rather than a four-edge chain; they do not each need to retain the previous wrapper import. The main consumer SignedLinearFormMeaning already imports Meaning and needs no change. Under the .+ default glob, all wrappers are still built, so they retain process/import work and may compete for resources; they do NOT necessarily negate the savings because they no longer lie serially on the main consumer path. The axiom-audit join waits for the slowest parallel wrapper. This is a conservative first production option if preserving module-path API matters. Removing wrappers after consumers/audit imports are updated is the cleaner maximum-saving option. Source file paths are not theorem names.
 
 Prepared script, NOT RUN
-  /private/tmp/r1911-source-endpoints-benchmark.py
+  external/temporary/r1911-source-endpoints-benchmark.py
 Syntax-only Python compilation was checked; no Lean/Lake command was invoked.
 Prepare-only command (does not invoke Lean/Lake):
-  python3 /private/tmp/r1911-source-endpoints-benchmark.py
+  python3 external/temporary/r1911-source-endpoints-benchmark.py
 Next round, after every active Lean/Lake handle is terminal, initial one-pair benchmark:
-  python3 /private/tmp/r1911-source-endpoints-benchmark.py --run --confirm-idle
+  python3 external/temporary/r1911-source-endpoints-benchmark.py --run --confirm-idle
 If the initial gain is material, the same controlled experiment can be repeated with three pairs and an import-only cost probe:
-  python3 /private/tmp/r1911-source-endpoints-benchmark.py --run --confirm-idle --pairs 3 --probe
-The script stores all outputs in a fresh /private/tmp/r1911-source-endpoints-benchmark-* directory, uses the exact pinned Lake environment, sends .olean outputs to scratch, preserves bodies verbatim, alternates arm order for repeated pairs, writes elapsed times and BSD time memory/CPU logs, and verifies that source hashes stay unchanged before/after each check. --run refuses to start without explicit --confirm-idle. This flag is an operator assertion, not an automatic live-process detector.
+  python3 external/temporary/r1911-source-endpoints-benchmark.py --run --confirm-idle --pairs 3 --probe
+The script stores all outputs in a fresh external/temporary/r1911-source-endpoints-benchmark-* directory, uses the exact pinned Lake environment, sends .olean outputs to scratch, preserves bodies verbatim, alternates arm order for repeated pairs, writes elapsed times and BSD time memory/CPU logs, and verifies that source hashes stay unchanged before/after each check. --run refuses to start without explicit --confirm-idle. This flag is an operator assertion, not an automatic live-process detector.
 
 Benchmark pitfalls
 - One pair is a pilot, not a stable speed estimate; normal OS cache warmth and concurrent system activity matter. Three alternating pairs provide a better comparison.

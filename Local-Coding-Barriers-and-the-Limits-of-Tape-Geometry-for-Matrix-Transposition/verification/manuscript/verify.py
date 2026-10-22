@@ -14,6 +14,8 @@ import shutil
 import subprocess
 import sys
 import time
+from source_guard import verify_digest
+from portable_paths import command_record
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'verification/manuscript'
@@ -24,13 +26,15 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def run(name, command, cwd=ROOT):
+def run(name, command, cwd=ROOT, *, executable_label, path_indices=()):
+    portable = command_record(command, root=ROOT, cwd=cwd,
+                              executable_label=executable_label, path_indices=path_indices)
     start = datetime.datetime.now(datetime.timezone.utc).isoformat()
     tic = time.monotonic()
     log = OUT / (name+'.log')
     with log.open('w') as stream:
         result = subprocess.run(command, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT)
-    item = {'command': command, 'cwd': str(cwd), 'started_at': start,
+    item = {**portable, 'started_at': start,
             'seconds': time.monotonic()-tic, 'exit_code': result.returncode,
             'log': str(log.relative_to(ROOT)), 'log_sha256': sha(log)}
     print(json.dumps({'step': name, **item}), flush=True)
@@ -42,14 +46,16 @@ def main():
     receipt_path = OUT / 'verification.json'
     def save():
         receipt_path.write_text(json.dumps(receipt, indent=2)+'\n')
-    def step(name, command, cwd=ROOT):
-        receipt['steps'][name] = run(name, command, cwd)
+    def step(name, command, cwd=ROOT, *, executable_label, path_indices=()):
+        receipt['steps'][name] = run(name, command, cwd, executable_label=executable_label,
+                                     path_indices=path_indices)
         save()
         if receipt['steps'][name]['exit_code']:
             raise RuntimeError(f'{name} failed; inspect its log')
     save()
     try:
-        step('prepare', [sys.executable, str(OUT / 'prepare.py')])
+        step('prepare', [sys.executable, str(OUT / 'prepare.py')],
+             executable_label='python3', path_indices=(1,))
         inv = json.loads((OUT / 'declarations.json').read_text())
         texts = [(ROOT / path).read_text() for path in inv['sources']]
         combined = '\n'.join(texts) + (ROOT/'paper/generated/theorem-index.tex').read_text()
@@ -71,34 +77,39 @@ def main():
         baseline = json.loads((OUT / 'formal-baseline.json').read_text())['files']
         actual = {str(f.relative_to(ROOT)):sha(f) for base in ('lean/TransposeFollowup','lean/FixedTapeCompiler')
                   for f in (ROOT/base).rglob('*.lean')}
-        if actual != baseline:
-            raise RuntimeError('Mathematical sources differ from manuscript-start baseline')
-        receipt['formal_sources_unchanged'] = len(actual)
-        step('upstream', [sys.executable, 'verification/check_upstream.py'])
-        step('openai-source', [sys.executable, 'verification/fetch_openai_metric.py', '--check'])
+        if set(actual) != set(baseline):
+            raise RuntimeError('Mathematical source inventory differs from manuscript-start baseline')
+        preservation = [verify_digest(ROOT/path, digest) for path,digest in baseline.items()]
+        receipt['formal_sources_unchanged'] = sum(x['status'] == 'byte_unchanged' for x in preservation)
+        receipt['comment_only_amendments'] = [x for x in preservation if x['status'] != 'byte_unchanged']
+        receipt['mathematical_code_unchanged'] = len(preservation)
+        step('upstream', [sys.executable, 'verification/check_upstream.py'], executable_label='python3')
+        step('openai-source', [sys.executable, 'verification/fetch_openai_metric.py', '--check'],
+             executable_label='python3')
         # R1916's staging guard intentionally refuses already-updated publication
         # summaries. The final receipt is the correct source baseline now.
         prior_path = ROOT/'verification/support-build.json'
         prior = json.loads(prior_path.read_text())
         guard = {'basis': str(prior_path.relative_to(ROOT)), 'basis_sha256': sha(prior_path),
-                 'scope': 'Exact source/configuration/external hash preservation against the final R1916 receipt',
-                 'groups': {}}
+                 'scope': 'R1916 source/configuration/external preservation, with an explicitly verified comment-only amendment and documented provenance-path normalization',
+                 'groups': {}, 'metadata_path_amendments': []}
         for group in ('source_sha256', 'configuration_sha256', 'external_source_sha256'):
             expected_hashes = prior[group]
             for relative, expected in expected_hashes.items():
                 path = Path(relative)
                 if not path.is_absolute():
                     path = ROOT/path
-                if not path.is_file() or sha(path) != expected:
-                    raise RuntimeError(f'Formal preservation failure: {group}: {relative}')
+                result = verify_digest(path, expected)
+                if result['status'] == 'publication_metadata_normalization':
+                    guard['metadata_path_amendments'].append(result)
             guard['groups'][group] = len(expected_hashes)
         guard['status'] = 'passed'
         (OUT/'formal-guard.json').write_text(json.dumps(guard, indent=2)+'\n')
         receipt['formal_guard'] = guard
         lake = shutil.which('lake') or str(Path.home()/'.elan/bin/lake')
-        step('lake-build', [lake, 'build'], ROOT/'lean')
-        step('paper-imports', [lake, 'build', *inv['modules']], ROOT/'lean')
-        step('paper-axioms', [lake, 'env', 'lean', 'PaperAxioms.lean'], ROOT/'lean')
+        step('lake-build', [lake, 'build'], ROOT/'lean', executable_label='lake')
+        step('paper-imports', [lake, 'build', *inv['modules']], ROOT/'lean', executable_label='lake')
+        step('paper-axioms', [lake, 'env', 'lean', 'PaperAxioms.lean'], ROOT/'lean', executable_label='lake')
         output = (OUT/'paper-axioms.log').read_text()
         parsed = {}
         for name, values in re.findall(r"'([^']+)' depends on axioms:\s*\[([^\]]*)\]", output):
@@ -124,7 +135,9 @@ def main():
         receipt['status'] = 'passed'
     except Exception as error:
         receipt['status'] = 'failed'
-        receipt['error'] = str(error)
+        # Exceptions may contain private filesystem paths. Preserve their type
+        # publicly and let the re-raised exception provide local diagnostics.
+        receipt['error'] = {'type': type(error).__name__, 'details': 'See local console diagnostics.'}
         save()
         raise
     save()

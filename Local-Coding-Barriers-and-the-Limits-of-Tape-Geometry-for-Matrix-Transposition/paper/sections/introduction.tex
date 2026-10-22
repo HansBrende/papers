@@ -15,7 +15,7 @@ transposers. Their construction discussion separates complicated head motion
 from the unresolved coding computation. This paper develops both sides of that
 separation.
 
-Our results fall into two connected groups. The first concerns local
+Our results fall into two connected groups. The first concerns abstract local
 information access. Adaptive nonlinear broadcasts confined to original rows
 obey separator bounds; bijective nonlinear row recodings still require near-full
 broadcasts for bounded-degree fixed coordinate XORs under all-input correctness;
@@ -29,11 +29,13 @@ cut condition for any payload computation and the limiting-motion conditions
 for any linear-time payload.
 
 \paragraph{What the padding construction shows.}
-The padding theorem does not contradict the affine-motion obstruction: its
-motion escapes the excluded class. Nor does it refute the Tape Coding
+As a corollary of Theorem~\ref{thm:motion-affine-time} applied to the $M^*$
+limits of Theorem~\ref{thm:padding}, the padding's motion lies outside the
+excluded class. The padding theorem does not refute the Tape Coding
 Conjecture, whose demand and causal-code requirements are additional
 conditions. It establishes that the particular geometric inequalities under
-consideration can be satisfied without performing the transpose. To obtain a transposition lower bound, these inequalities must be combined
+consideration can be satisfied without performing the transpose. To obtain a
+transposition lower bound, these inequalities must be combined
 with an additional restriction, such as one tracking the information required
 at the outputs. For a construction, satisfying them leaves encoding and
 decoding to be implemented.
@@ -52,10 +54,12 @@ made explicit at the relevant statement.
 The local coding results turn parts of the earlier construction programme into
 proved restrictions; they are not improvements to an existing separator or
 two-stage theorem there. The affine results strengthen consequences of
-Theorem~$M^*$. The paid construction resolves the geometric and cost obligations
-of an expanding-motion mechanism, without supplying its missing encoder and
-decoder. The scan and recursion results give applications in the actual
-machine model. None improves an unrestricted transposition time bound.
+Theorem~$M^*$. The paid construction gives a data-free version of the earlier
+expanding-motion proposal: it generates and executes the motion in linear
+time, before the payload begins. Coupling that motion to coded data at each
+recursive level remains open. The scan and recursion results give applications
+in the actual machine model. None improves an unrestricted transposition time
+bound.
 
 \subsection{Proofs and their interpretation}\label{sec:proof-policy}
 

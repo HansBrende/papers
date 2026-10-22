@@ -20,9 +20,9 @@ import re
 import tarfile
 import tempfile
 
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+P=Path('.')
 V=P/'verification'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 BLOCK=1024*1024
 COUNT=6297
 RAW_SAME=6028
@@ -325,14 +325,14 @@ def archive(args,records,raw_record,semantic_record):
 def main():
     p=argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--comparison',type=Path,default=V/'r1912-type-comparison.json')
-    p.add_argument('--semantic',type=Path,default=Path('/private/tmp/r1912-kernel-type-conversion.json'))
-    p.add_argument('--raw-comparator',type=Path,default=Path('/private/tmp/r1912-raw-compare-types.py'))
-    p.add_argument('--decoder',type=Path,default=Path('/private/tmp/r1912-decode-expr-repr.py'))
-    p.add_argument('--assembler',type=Path,default=Path('/private/tmp/r1912-assemble-kernel-type-conversion.py'))
-    p.add_argument('--header-generator',type=Path,default=Path('/private/tmp/r1912-prepare-kernel-type-checker-v2.py'))
+    p.add_argument('--semantic',type=Path,default=Path('external/temporary/r1912-kernel-type-conversion.json'))
+    p.add_argument('--raw-comparator',type=Path,default=Path('external/temporary/r1912-raw-compare-types.py'))
+    p.add_argument('--decoder',type=Path,default=Path('external/temporary/r1912-decode-expr-repr.py'))
+    p.add_argument('--assembler',type=Path,default=Path('external/temporary/r1912-assemble-kernel-type-conversion.py'))
+    p.add_argument('--header-generator',type=Path,default=Path('external/temporary/r1912-prepare-kernel-type-checker-v2.py'))
     p.add_argument('--baseline-source-inventory',type=Path,default=A/'baseline-sources.json')
     p.add_argument('--archive',type=Path,required=True)
-    p.add_argument('--archive-receipt',type=Path,default=Path('/private/tmp/r1912-type-archive.json'))
+    p.add_argument('--archive-receipt',type=Path,default=Path('external/temporary/r1912-type-archive.json'))
     p.add_argument('--baseline-aggregate',type=Path)
     p.add_argument('--final-aggregate',type=Path)
     p.add_argument('--compression-level',type=int,choices=range(1,10),default=6)

@@ -5,7 +5,7 @@ of +TransposeFollowup.MobiusGroupSmoothing (or a full build). No cache mutation.
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,os,platform,re,shlex,signal,statistics,subprocess,tempfile,time
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean';LAKE='/Users/hansbrende/.elan/bin/lake'
+P=Path('.');L=P/'lean';LAKE='lake'
 NAMES=['MobiusNearIdentity','MobiusPairwiseComparison','MobiusActionContinuity','MobiusGroupAverage','MobiusGroupSmoothing'];GROUP={'TransposeFollowup.'+n for n in NAMES}
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--run',action='store_true');ap.add_argument('--confirm-idle',action='store_true')
@@ -68,7 +68,7 @@ if a.run:
  assert not after or '+TransposeFollowup.MobiusGroupSmoothing'in after or 'TransposeFollowup'in after,'Validation must cover current group and prerequisites.'
  log=a.validation_log.read_text();assert 'Build completed successfully'in log and not re.search(r'error:|✖',log)
  validation={'timing':record(a.validation_timing),'log':record(a.validation_log),'receipt':receipt,'scope':'Root confirms this successful ordinary build validated CURRENT sources and artifacts after all preceding import/core changes. Existing artifact presence alone is not validation.'}
-D=Path(tempfile.mkdtemp(prefix='r1914-mobius-smoothing-merge-',dir='/private/tmp'))
+D=Path(tempfile.mkdtemp(prefix='r1914-mobius-smoothing-merge-',dir='external/temporary'))
 variants={**{n:source[n]for n in NAMES},'Merged':merged,'ImportOnly':header}
 for n,b in variants.items():(D/f'{n}.lean').write_bytes(b)
 source_records=[record(local[n])for n in sorted(closure(GROUP))]

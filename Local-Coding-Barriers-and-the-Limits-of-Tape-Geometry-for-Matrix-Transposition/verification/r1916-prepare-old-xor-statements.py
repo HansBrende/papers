@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification';D=Path('/private/tmp/r1916-affine-xor-review')
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse');B=A/'baseline-sources.json'
+P=Path('.');V=P/'verification';D=Path('external/temporary/r1916-affine-xor-review')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1916-strengthening-reuse');B=A/'baseline-sources.json'
 def sha(s):return hashlib.sha256(s.encode()).hexdigest()
 def record(p):return {'path':str(p),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
 rel='lean/TransposeFollowup/XorPathCycleBound.lean';base=json.loads(B.read_text());old=base[rel];new=(P/rel).read_text();assert isinstance(old,str)

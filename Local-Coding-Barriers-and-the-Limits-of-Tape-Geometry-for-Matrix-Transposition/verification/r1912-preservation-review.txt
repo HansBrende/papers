@@ -1,6 +1,6 @@
 R1912 independent preservation and benchmark review — 21 October 2026
 READ ONLY. No Lean/Lake process started and no repository source edited.
-Scratch scripts and simulations are confined to /private/tmp.
+Scratch scripts and simulations are confined to external/temporary.
 
 CONCLUSION
 The five-module SourceEndpoints pilot is safe to test and adopt subject to the
@@ -17,7 +17,7 @@ set, and all their source definitions/statements/proofs are preserved by the
 whole-source comparison. No mathematical endpoint is retired or weakened.
 
 SOURCE-PRESERVATION CHECK
-/private/tmp/r1912-preservation-check.py is read-only and has two modes:
+external/temporary/r1912-preservation-check.py is read-only and has two modes:
 - Candidate review, no Lean execution: scans scopes and commands and checks the
   baseline source hashes and complete exact audit-name list.
 - --check-current: requires exact concatenation of every original non-import
@@ -42,13 +42,13 @@ source trees and checked. All declaration/proof bodies are unchanged, all audit
 commands are unchanged, and the remapped local import graphs are acyclic.
 No Lean execution was performed on these scratch trees.
 
-Conservative simulation: /private/tmp/r1912-preservation-simulation-5xv0f5wn
-Conservative report: /private/tmp/r1912-preservation-simulation.json
-Broader simulation: /private/tmp/r1912-preservation-simulation-qihqgoww
-Broader report: /private/tmp/r1912-broad-preservation-simulation.json
-Generator: /private/tmp/r1912-preservation-simulate.py
+Conservative simulation: external/temporary/r1912-preservation-simulation-5xv0f5wn
+Conservative report: external/temporary/r1912-preservation-simulation.json
+Broader simulation: external/temporary/r1912-preservation-simulation-qihqgoww
+Broader report: external/temporary/r1912-broad-preservation-simulation.json
+Generator: external/temporary/r1912-preservation-simulate.py
 To repeat broader simulation:
-  python3 /private/tmp/r1912-preservation-simulate.py --plan /private/tmp/r1912-broad-group-plan.json --label broad
+  python3 external/temporary/r1912-preservation-simulate.py --plan external/temporary/r1912-broad-group-plan.json --label broad
 
 SCOPING AND GENERATED-NAME REVIEW
 The SourceEndpoints pilot contains independently balanced namespace/end blocks,
@@ -75,7 +75,7 @@ instance/name resolution could in principle elaborate unchanged text differently
 An exact exported-type comparison is prepared to close this operational gap.
 
 EXACT TYPE MANIFEST (PREPARED, NOT EXECUTED BY THIS REVIEWER)
-/private/tmp/r1912-prepare-type-manifest.py generates a scratch Lean command that
+external/temporary/r1912-prepare-type-manifest.py generates a scratch Lean command that
 imports the current audit roots, looks up each of the 6,297 original names and
 writes the exact Expr type representation and universe parameter names to JSON.
 It introduces no repository mathematical declarations or axioms. Root must run it
@@ -85,10 +85,10 @@ signatures, Expr representations retain implicit arguments and binder informatio
 Generated driver has not yet run and may need ordinary syntax/elaboration repairs;
 it must never be made to pass by raising proof limits or using trust bypasses.
 
-Initial generated driver: /private/tmp/r1912-type-manifest.lean
-Expected baseline output: /private/tmp/r1912-baseline-types.json
+Initial generated driver: external/temporary/r1912-type-manifest.lean
+Expected baseline output: external/temporary/r1912-baseline-types.json
 Generate final driver after changes with:
-  python3 /private/tmp/r1912-prepare-type-manifest.py --label final
+  python3 external/temporary/r1912-prepare-type-manifest.py --label final
 Root executes each using its pinned lake env lean, only when no prior handle is live.
 
 BENCHMARK REVIEW

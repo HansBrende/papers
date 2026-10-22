@@ -2,8 +2,8 @@
 """Prepare by default. Run ONLY next round after every Lean/Lake handle is terminal."""
 from pathlib import Path
 import argparse, hashlib, json, platform, re, shlex, subprocess, tempfile, time
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-L=P/'lean'; LAKE='/Users/hansbrende/.elan/bin/lake'
+P=Path('.')
+L=P/'lean'; LAKE='lake'
 NAMES=['SourceEndpointsMachine','SourceEndpointsCalls','SourceEndpointsStages','SourceEndpointsRun','SourceEndpointsMeaning']
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--run',action='store_true',help='Launch sequential Lean checks; otherwise only prepare files and print commands')
@@ -12,7 +12,7 @@ ap.add_argument('--pairs',type=int,default=1,choices=[1,2,3])
 ap.add_argument('--probe',action='store_true',help='Also time an import-only dependency probe')
 a=ap.parse_args()
 if a.run and not a.confirm_idle:ap.error('--run requires --confirm-idle; do not run during another Lean/Lake session')
-D=Path(tempfile.mkdtemp(prefix='r1911-source-endpoints-benchmark-',dir='/private/tmp'))
+D=Path(tempfile.mkdtemp(prefix='r1911-source-endpoints-benchmark-',dir='external/temporary'))
 source={n:(L/'TransposeFollowup'/f'{n}.lean').read_bytes() for n in NAMES}
 sha=lambda b:hashlib.sha256(b).hexdigest()
 external=set(); bodies=[]

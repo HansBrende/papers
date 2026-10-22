@@ -817,7 +817,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-000.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-000.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -908,7 +908,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-001.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-001.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -999,7 +999,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-002.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-002.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1090,7 +1090,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-003.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-003.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1181,7 +1181,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-004.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-004.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1272,7 +1272,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-005.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-005.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1363,7 +1363,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-006.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-006.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1454,7 +1454,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-007.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-007.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1545,7 +1545,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-008.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-008.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1636,7 +1636,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-009.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-009.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1727,7 +1727,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-010.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-010.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1818,7 +1818,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-011.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-011.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -1909,7 +1909,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-012.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-012.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2000,7 +2000,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-013.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-013.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2091,7 +2091,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-014.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-014.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2182,7 +2182,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-015.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-015.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2273,7 +2273,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-016.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-016.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2364,7 +2364,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-017.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-017.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2455,7 +2455,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-018.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-018.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2546,7 +2546,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-019.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-019.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2637,7 +2637,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-020.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-020.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2728,7 +2728,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-021.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-021.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2819,7 +2819,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-022.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-022.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -2910,7 +2910,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-023.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-023.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3001,7 +3001,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-024.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-024.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3092,7 +3092,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-025.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-025.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3183,7 +3183,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-026.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-026.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3274,7 +3274,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-027.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-027.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3365,7 +3365,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-028.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-028.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3456,7 +3456,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-029.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-029.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3547,7 +3547,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-030.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-030.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3638,7 +3638,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-031.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-031.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3729,7 +3729,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-032.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-032.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3820,7 +3820,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-033.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-033.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -3911,7 +3911,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-034.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-034.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4002,7 +4002,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-035.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-035.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4093,7 +4093,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-036.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-036.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4184,7 +4184,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-037.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-037.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4275,7 +4275,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-038.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-038.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4366,7 +4366,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-039.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-039.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4457,7 +4457,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-040.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-040.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4548,7 +4548,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-041.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-041.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4639,7 +4639,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-042.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-042.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4730,7 +4730,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-043.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-043.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4821,7 +4821,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-044.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-044.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -4912,7 +4912,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-045.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-045.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5003,7 +5003,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-046.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-046.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5094,7 +5094,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-047.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-047.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5185,7 +5185,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-048.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-048.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5276,7 +5276,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-049.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-049.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5367,7 +5367,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-050.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-050.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5458,7 +5458,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-051.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-051.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5549,7 +5549,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-052.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-052.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5640,7 +5640,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-053.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-053.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5731,7 +5731,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-054.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-054.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5822,7 +5822,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-055.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-055.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -5913,7 +5913,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-056.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-056.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6004,7 +6004,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-057.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-057.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6095,7 +6095,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-058.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-058.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6186,7 +6186,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-059.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-059.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6277,7 +6277,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-060.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-060.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6368,7 +6368,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-061.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-061.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6459,7 +6459,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-062.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-062.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6550,7 +6550,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-063.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-063.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6641,7 +6641,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-064.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-064.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6732,7 +6732,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-065.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-065.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6823,7 +6823,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-066.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-066.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -6914,7 +6914,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-067.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-067.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7005,7 +7005,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-068.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-068.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7096,7 +7096,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-069.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-069.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7187,7 +7187,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-070.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-070.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7278,7 +7278,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-071.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-071.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7369,7 +7369,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-072.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-072.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7460,7 +7460,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-073.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-073.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7551,7 +7551,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-074.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-074.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7642,7 +7642,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-075.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-075.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7733,7 +7733,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-076.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-076.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7824,7 +7824,7 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-077.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-077.json" (Json.mkObj rows.toList).compress
 
 open Lean Elab Command in
 run_cmd do
@@ -7892,4 +7892,4 @@ run_cmd do
     let some info := env.find? n | throwError "missing declaration {n}"
     pure (n.toString, Json.mkObj [("type", toJson (reprStr info.type)),
       ("levelParams", toJson (info.levelParams.map Name.toString))])
-  liftIO <| IO.FS.writeFile "/private/tmp/r1912-final-types-078.json" (Json.mkObj rows.toList).compress
+  liftIO <| IO.FS.writeFile "external/temporary/r1912-final-types-078.json" (Json.mkObj rows.toList).compress

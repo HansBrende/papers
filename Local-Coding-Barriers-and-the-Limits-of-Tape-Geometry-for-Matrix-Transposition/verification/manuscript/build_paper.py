@@ -4,9 +4,11 @@ from pathlib import Path
 import datetime
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import time
+from portable_paths import command_record
 
 ROOT = Path(__file__).resolve().parents[2]
 PAPER = ROOT / 'paper'
@@ -14,18 +16,17 @@ OUT = ROOT / 'verification/manuscript'
 
 
 def main():
-    executable = shutil.which('latexmk')
-    if executable is None and Path('/Library/TeX/texbin/latexmk').is_file():
-        executable = '/Library/TeX/texbin/latexmk'
+    executable = shutil.which(os.environ.get('LATEXMK', 'latexmk'))
     if executable is None:
-        raise SystemExit('latexmk and a LaTeX distribution are required.')
+        raise SystemExit('Put latexmk on PATH or set LATEXMK to its executable; a LaTeX distribution is required.')
     command = [executable, '-pdf', '-interaction=nonstopmode', '-halt-on-error',
                '-file-line-error', '-outdir=build', 'main.tex']
     started = datetime.datetime.now(datetime.timezone.utc).isoformat()
     tic = time.monotonic()
     with (OUT / 'latex-build.log').open('w') as log:
         run = subprocess.run(command, cwd=PAPER, stdout=log, stderr=subprocess.STDOUT)
-    record = {'command': command, 'started_at': started, 'seconds': time.monotonic()-tic,
+    record = {**command_record(command, root=ROOT, cwd=PAPER, executable_label='latexmk'),
+              'started_at': started, 'seconds': time.monotonic()-tic,
               'exit_code': run.returncode}
     built = PAPER / 'build/main.pdf'
     if run.returncode == 0 and built.is_file():

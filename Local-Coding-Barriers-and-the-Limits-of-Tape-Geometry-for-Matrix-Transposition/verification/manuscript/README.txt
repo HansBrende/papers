@@ -11,7 +11,7 @@ Start here
 The six theorem families are the adaptive separator/treewidth bounds, fixed
 coordinate-XOR bounds after nonlinear row recoding, affine-motion barriers,
 fully paid native padding, two-stage helper toll, and scan-palette/recursive
-stage exclusions. There are 31 numbered definitions/results and 142 explicitly
+stage exclusions. There are 31 numbered definitions/results and 149 explicitly
 cited formal declarations. The unrestricted canonical transposition question
 remains open. Exact Lean statements and proofs take precedence over the prose.
 
@@ -20,7 +20,8 @@ Reproduce from the follow-up folder
 Keep the first paper in its original adjacent folder. Install elan and the
 pinned toolchain. Retain the Lake/mathlib pins. Python 3 is needed for the
 verification scripts; latexmk, BibTeX and the packages in paper/main.tex are
-needed for the multi-file LaTeX build.
+needed for the multi-file LaTeX build. Put latexmk on PATH or set LATEXMK
+to its executable; resolved executable paths are not written to public receipts.
 
   python3 verification/fetch_openai_metric.py
   python3 verification/check_upstream.py
@@ -35,12 +36,16 @@ and --check for an already installed copy. The installer verifies the pinned
 204-module source closure and retains its attribution and license. Network
 access is required only when dependencies are absent and must be fetched.
 
-verify.py runs prepare.py, verifies the unchanged mathematical and upstream
-sources, performs an ordinary full library build, builds every explicitly
+verify.py runs prepare.py, verifies the preserved mathematical code and upstream
+sources (with the explicit comment/editorial amendments described below), performs an ordinary full library build, builds every explicitly
 cited module, and runs lean/PaperAxioms.lean. The latter is generated from the
 manuscript rather than maintained as a separate subset. It audits every cited
 declaration and rejects axioms other than propext, Classical.choice, Quot.sound.
-The broader historical SupportAxioms.lean audit remains available separately.
+For the broader SupportAxioms.lean audit, run from the follow-up folder:
+  python3 verification/run_axiom_audit.py support
+The helper builds all imports first, including audit-only first-paper modules.
+Use both instead of support to run both audits. A bare lake build need not
+build dependencies that occur only in these audit entry points.
 
 build_paper.py keeps intermediate output in paper/build/ and copies a successful
 PDF to paper/main.pdf. Review the TeX log for missing references and layout
@@ -56,14 +61,21 @@ verification.json contains commands, exit codes, log hashes, source hashes and
 audit coverage. latex-build.json identifies the produced PDF. The contracts
 and the final-pass cross-review receipts record English-to-Lean checks;
 the visual-review receipts identify the actual rendered pages examined. The
-completion receipt binds these to the delivered files. The final editorial
-pass uses final-pass-*-cross-review.json and final-pass-visual-part*.json;
-older receipts are retained as history. final-pass-program-roles.json records
-the contribution of each numbered statement to the research programs.
-Historical audit records and one-off research scripts retain the paths used
-when they ran, including the folder's earlier capitalization. The reproduction
-commands above locate the current folder automatically; paths within this
-paper in the current attribution ledger are relative to that folder.
+completion receipt binds these to the delivered files. The active review-set.json identifies the semantic, program-role, and visual
+receipts for this revision. The opus-review/ folder records every reviewer
+suggestion and its disposition. The pre-review manuscript and raw receipts are preserved privately outside
+this repository, identified by archive name and digest in the publication
+normalization manifest. Older final-pass receipts refer to that earlier
+manuscript; they are not current review claims.
+Historical public records and scripts are path-sanitized views, not verbatim
+run logs. Project paths resolve from the follow-up folder. external/ labels
+identify private historical inputs and scratch artifacts, not public build
+dependencies. Original bytes and their hashes are preserved privately; embedded
+historical digests still refer to those original bytes. The normalization
+manifest records each original-to-public digest transition. Current source
+and proof hash maps are unchanged, and the active verifier regenerates portable
+receipts. See ../PUBLICATION-PATHS.txt.
+
 
 Rebuilding a PDF can change its timestamp/hash, so an old visual receipt must not be relabeled as
 a review of a newly changed document without comparison or inspection.
@@ -79,7 +91,13 @@ new empty-environment kernel replay of every imported expression. Source and
 visual reviews were performed by AI agents. They are not external human peer
 review, and source attribution checks do not establish exhaustive novelty.
 
-The mathematical Lean sources and the original sibling paper were not changed
-while preparing this manuscript. PaperAxioms.lean is the new generated audit
+The manuscript review changes two complete documentation comments in
+UnconditionalPaidPadding.lean and no mathematical code. source_guard.py
+reverses those exact replacements and requires recovery of the original
+audited hash; it rejects other changes. Historical proof receipts are not
+rewritten. upstream-editorial-amendment.json in the parent verification folder
+records a separate committed first-paper editorial update. The upstream
+check verifies the frozen proof files and the documented editorial revision,
+ignoring generated artifacts; tracked or nonignored added files still fail. PaperAxioms.lean is the new generated audit
 entry point. The shared first-paper framework is imported directly through
 lean/upstream, with adapter build products kept in the follow-up folder.

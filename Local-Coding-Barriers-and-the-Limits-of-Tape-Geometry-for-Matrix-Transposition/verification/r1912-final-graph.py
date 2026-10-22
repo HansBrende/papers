@@ -1,7 +1,7 @@
 from pathlib import Path
 import re,json,functools,hashlib,datetime
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+P=Path('.');L=P/'lean'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 baseline=json.loads((A/'baseline-sources.json').read_text())
 def module(k):return '.'.join(Path(k).relative_to('lean').with_suffix('').parts)
 old={module(k):v for k,v in baseline.items()if k.startswith(('lean/TransposeFollowup/','lean/FixedTapeCompiler/')) and k.endswith('.lean')}
@@ -62,7 +62,7 @@ for name in ['baseline-incremental','baseline-pilot-rebuild','merged-pilot-rebui
  p=P/'verification'/f'r1912-{name}-timing.json'
  if p.exists():measurements[name]=json.loads(p.read_text())
 output=dict(created_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),status='Read-only static analysis of current source while full build is live. This does not confirm build success.',baseline_archive=str(A/'baseline-sources.json'),before=before,after=after,implementation_comparisons=comparisons,completed_timing_receipts=measurements,new_modules=sorted(cur.keys()-old.keys()),removed_modules=sorted(old.keys()-cur.keys()),method='Dependency graph over local mathematical modules only; all ordinary imports parsed from source, edges importer->prerequisite. A rebuild scenario uses the seed plus its transitive local consumers, and longest dependency path within that induced subgraph. Standard/external prerequisites are treated as cached and omitted from path counts. Neither job sums nor graph lengths are wall time.')
-Path('/private/tmp/r1912-final-graph.json').write_text(json.dumps(output,indent=2)+'\n')
+Path('external/temporary/r1912-final-graph.json').write_text(json.dumps(output,indent=2)+'\n')
 print('COUNTS',len(old),len(cur),'LINES',before['mathematical_lines'],after['mathematical_lines'],'PATH',before['longest_path_length'],after['longest_path_length'])
 for c in comparisons:print(c)
 print('ENDPOINTS',[(x['endpoint'],x['length'])for x in after['largest_endpoint_paths']])

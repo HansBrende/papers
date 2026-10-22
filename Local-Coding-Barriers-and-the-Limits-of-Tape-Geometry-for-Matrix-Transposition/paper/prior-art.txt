@@ -1,13 +1,14 @@
-CONJECTURE 36: CLOSED ROUTE AND ATTRIBUTION
-Checked 18 October 2026. Drafting note; not a claimed new contribution.
+THE TRANSPOSE PREDICTION CONJECTURE: KNOWN COUNTEREXAMPLES
+Source comparison checked 18 October 2026; public note revised 21 October 2026.
+These are background implications, not claimed new contributions.
 
 The conjecture is Mittal--Raz, ITCS 2021, Section 8.1, Conjecture 36
-[MittalRaz2021]. It concerns the uniform random binary n-by-n matrix game:
+[MittalRaz2021]. It concerns the uniform random binary d-by-d matrix game:
 player j sees a prescribed set of rows and must output column j. It posits
-a constant c>0 giving joint success at most 2^(-c*n^2) when each player sees
-c*n rows (with the appropriate integer convention).
+a constant c>0 giving joint success at most 2^(-c*d^2) when each player sees
+c*d rows (with the appropriate integer convention).
 
-STATUS: FALSE. Do not spend further work refuting this universal assertion.
+The conjecture is false.
 Its failure does not decide multitape transposition complexity: information
 available to an abstract player does not provide a paid tape computation.
 
@@ -17,17 +18,17 @@ EXPLICIT PUBLIC DISPROOF
 pp.158-160 (PDF pp.169-171), gives the transpose-game counterexample and
 credits Mark Braverman and Katherine Forbes. The thesis bibliography lists
 their 2022 personal communication, "A strategy for the matrix-transpose
-game." Cite the thesis as the accessible proof and retain that attribution;
-do not present the personal communication as a separately published paper.
+game." The thesis is the accessible proof cited here; the personal
+communication is not a separately published paper.
 
-For infinitely many sizes, players observe at most delta*n rows and succeed
-with probability at least 2^(-n^(1+epsilon)); epsilon can be any sufficiently
-small positive constant with delta=n^(-alpha(epsilon)), or epsilon=o(1) and
-delta=o(1). These parameters are stronger than our elementary product example.
+For infinitely many sizes, players observe at most delta*d rows and succeed
+with probability at least 2^(-d^(1+epsilon)); epsilon can be any sufficiently
+small positive constant with delta=d^(-alpha(epsilon)), or epsilon=o(1) and
+delta=o(1).
 
 EARLIER CONSTRUCTIONS THAT IMPLY COUNTEREXAMPLES
 
-The following three supplied papers do not explicitly refute Conjecture 36.
+The following three papers do not explicitly refute Conjecture 36.
 They provide constructions from which its failure follows. The conversion
 below is an explanation of the implication, not a claim of new priority.
 
@@ -38,15 +39,15 @@ the corresponding player observes. Predict that entry by XORing the others.
 All predictions are correct exactly when every class has XOR zero. If there
 are r nonempty classes, their supports are disjoint, so these are r independent
 binary equations. Joint success is exactly 2^(-r), or 2^(-b*r) for independent
-b-bit entries. Thus o(n) observed rows per player and r=o(n^2) disprove the
+b-bit entries. Thus o(d) observed rows per player and r=o(d^2) disprove the
 fixed-positive-c bound. Extra rows may be supplied and ignored.
 
 1. [YanEtAl2017], arXiv:1510.05064v3, Definition 1(C3), Theorems 1 and 4.
    Theorem 4 gives K=q(m+1), F=q^m, Z=q^(m-1), S=(q-1)q^m.
    Choose m=q-1, q>=3. Then K=q^2 divides F. Repeat the column pattern F/K
-   times with separate symbol labels in each copy, obtaining n=F columns
+   times with separate symbol labels in each copy, obtaining d=F columns
    and rows. Only the observation pattern is copied, not matrix data.
-   Each player observes n/q rows; r=(q-1)n^2/q^2. Both fractions tend to zero.
+   Each player observes d/q rows; r=(q-1)d^2/q^2. Both fractions tend to zero.
 
 2. [ShanmugamEtAl2017], arXiv:1701.07115v1, Definition 4 and Theorems 1-2.
    The induced-matching XOR scheme and imported Alon--Moitra--Sudakov dense
@@ -75,7 +76,7 @@ fixed-positive-c bound. Extra rows may be supplied and ignored.
    Then a=o(1), gamma tends to infinity, and r=o(K^2). The finite field
    labels the construction; the payload may still consist of binary bits.
 
-SUGGESTED MANUSCRIPT WORDING
+SCOPE AND ATTRIBUTION
 
 The failure of the transpose prediction conjecture is explicitly recorded
 in Mittal's dissertation, which credits Braverman and Forbes. Counterexamples
@@ -83,9 +84,7 @@ also follow from earlier coded-caching and PDA constructions of Yan et al.,
 Shanmugam et al., and Chittoor et al., by restricting their XOR syndromes to
 zero, with square conversion or minimum-degree pruning where necessary.
 We recall this limitation of the lower-bound approach and claim no new
-refutation. The elementary example in our research archive is explanatory
-background, not a principal contribution.
+refutation.
 
 This list audits the supplied sources; it is not an exhaustive priority claim.
-The older research archive retains the detailed derivations and source checks.
 All bibliography keys above are in prior-art.bib in this directory.

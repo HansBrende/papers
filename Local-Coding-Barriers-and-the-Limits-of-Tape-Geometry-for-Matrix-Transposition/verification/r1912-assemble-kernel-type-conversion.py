@@ -4,16 +4,16 @@ No Lean execution; no proof source changes. Raw comparison remains immutable.
 """
 from pathlib import Path
 import argparse,hashlib,json,re,datetime
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition'); V=P/'verification'
+P=Path('.'); V=P/'verification'
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--comparison',type=Path,default=V/'r1912-type-comparison.json')
-ap.add_argument('--inventory',type=Path,default=Path('/private/tmp/r1912-original-types-ast-chunks/inventory.json'))
-ap.add_argument('--checker',type=Path,default=Path('/private/tmp/r1912-kernel-type-checker-v2.lean'))
-ap.add_argument('--output-dir',type=Path,default=Path('/private/tmp/r1912-kernel-type-conversion-v2'))
-ap.add_argument('--source-headers',type=Path,default=Path('/private/tmp/r1912-source-header-checks.json'))
+ap.add_argument('--inventory',type=Path,default=Path('external/temporary/r1912-original-types-ast-chunks/inventory.json'))
+ap.add_argument('--checker',type=Path,default=Path('external/temporary/r1912-kernel-type-checker-v2.lean'))
+ap.add_argument('--output-dir',type=Path,default=Path('external/temporary/r1912-kernel-type-conversion-v2'))
+ap.add_argument('--source-headers',type=Path,default=Path('external/temporary/r1912-source-header-checks.json'))
 ap.add_argument('--lean-log',type=Path,required=True)
 ap.add_argument('--execution-record',type=Path,required=True,help='Root timing/execution JSON containing exit_code=0')
-ap.add_argument('--output',type=Path,default=Path('/private/tmp/r1912-kernel-type-conversion.json'))
+ap.add_argument('--output',type=Path,default=Path('external/temporary/r1912-kernel-type-conversion.json'))
 a=ap.parse_args()
 def unique(pairs):
  d={}

@@ -6,8 +6,8 @@ never deletes generated artifacts or edits dependency caches/traces/timestamps.
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,math,os,re,statistics,tempfile
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1914-analytic-build-speed')
+P=Path('.');L=P/'lean'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1914-analytic-build-speed')
 NAMES=['TransposeFollowup.MobiusNearIdentity','TransposeFollowup.MobiusPairwiseComparison','TransposeFollowup.MobiusActionContinuity','TransposeFollowup.MobiusGroupAverage','TransposeFollowup.MobiusGroupSmoothing'];DEST=NAMES[-1]
 IM=re.compile(r'^import ([A-Za-z_][A-Za-z0-9_.]*)\n',re.M)
 def require(ok,message):
@@ -48,7 +48,7 @@ def main():
  ap.add_argument('--apply',action='store_true',help='Archive then apply the reviewed changes; absent means scratch proposal only.')
  ap.add_argument('--archive-dir',type=Path,default=A/'five-module-merge')
  ap.add_argument('--receipt',type=Path,default=P/'verification/r1914-merge-application.json')
- ap.add_argument('--proposal-output',type=Path,default=Path('/private/tmp/r1914-mobius-smoothing-merge-proposal.json'))
+ ap.add_argument('--proposal-output',type=Path,default=Path('external/temporary/r1914-mobius-smoothing-merge-proposal.json'))
  a=ap.parse_args()
  require(a.confirm_idle,'Root idle confirmation required; never execute during timed work.')
  state=read(a.execution_state);require(state.get('live_handles')==[],'Root still has live handles, or the explicit live_handles list is missing.')

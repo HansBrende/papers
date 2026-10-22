@@ -6,11 +6,11 @@ never deletes generated artifacts or edits dependency caches/traces/timestamps.
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,math,os,re,statistics,tempfile
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1915-spectral-build-speed')
+P=Path('.');L=P/'lean'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1915-spectral-build-speed')
 NAMES=['TransposeFollowup.'+n for n in ['ConditionalSpectralExpansion','RationalMobiusAction','SpectralGapInterface','RationalRestrictedGap','RationalContinuousExpander','UnconditionalPaidPadding']];DEST=NAMES[-1]
 FROZEN=A/'baseline-sources.json'
-PROPOSAL=Path('/private/tmp/r1915-terminal-merge/one/proposal.json')
+PROPOSAL=Path('external/temporary/r1915-terminal-merge/one/proposal.json')
 IM=re.compile(r'^import ([A-Za-z_][A-Za-z0-9_.]*)\n',re.M)
 def require(ok,message):
  if not ok:raise ValueError(message)
@@ -50,7 +50,7 @@ def main():
  ap.add_argument('--apply',action='store_true',help='Archive then apply the reviewed changes; absent means scratch proposal only.')
  ap.add_argument('--archive-dir',type=Path,default=A/'six-module-merge')
  ap.add_argument('--receipt',type=Path,default=P/'verification/r1915-merge-application.json')
- ap.add_argument('--proposal-output',type=Path,default=Path('/private/tmp/r1915-terminal-merge-proposal.json'))
+ ap.add_argument('--proposal-output',type=Path,default=Path('external/temporary/r1915-terminal-merge-proposal.json'))
  a=ap.parse_args()
  require(a.confirm_idle,'Root idle confirmation required; never execute during timed work.')
  state=read(a.execution_state);require(state.get('live_handles')==[],'Root still has live handles, or the explicit live_handles list is missing.')

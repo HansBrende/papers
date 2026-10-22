@@ -946,70 +946,70 @@ def runChunk (input output : String) : CommandElabM Unit := do
 
 end R1912TypeConversionAudit
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/000.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-000.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/000.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-000.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/001.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-001.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/001.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-001.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/002.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-002.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/002.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-002.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/003.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-003.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/003.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-003.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/004.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-004.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/004.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-004.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/005.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-005.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/005.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-005.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/006.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-006.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/006.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-006.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/007.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-007.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/007.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-007.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/008.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-008.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/008.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-008.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/009.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-009.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/009.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-009.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/010.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-010.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/010.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-010.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/011.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-011.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/011.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-011.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/012.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-012.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/012.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-012.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/013.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-013.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/013.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-013.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/014.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-014.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/014.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-014.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/015.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-015.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/015.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-015.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/016.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-016.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/016.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-016.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/017.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-017.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/017.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-017.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/018.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-018.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/018.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-018.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/019.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-019.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/019.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-019.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/020.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-020.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/020.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-020.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/021.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-021.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/021.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-021.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/022.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-022.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/022.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-022.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/023.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-023.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/023.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-023.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/024.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-024.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/024.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-024.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/025.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-025.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/025.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-025.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/026.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-026.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/026.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-026.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/027.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-027.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/027.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-027.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/028.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-028.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/028.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-028.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/029.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-029.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/029.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-029.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/030.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-030.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/030.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-030.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/031.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-031.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/031.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-031.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/032.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-032.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/032.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-032.json"
 
-run_cmd R1912TypeConversionAudit.runChunk "/private/tmp/r1912-original-types-ast-chunks/033.json" "/private/tmp/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-033.json"
+run_cmd R1912TypeConversionAudit.runChunk "external/temporary/r1912-original-types-ast-chunks/033.json" "external/temporary/r1912-kernel-type-conversion-v2/r1912-kernel-type-conversion-033.json"

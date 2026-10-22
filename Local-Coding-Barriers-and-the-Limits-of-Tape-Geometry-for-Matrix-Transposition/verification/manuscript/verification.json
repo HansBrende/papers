@@ -4,66 +4,74 @@
   "steps": {
     "prepare": {
       "command": [
-        "/usr/local/opt/python@3.13/bin/python3.13",
-        "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/verification/manuscript/prepare.py"
+        "python3",
+        "verification/manuscript/prepare.py"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition",
-      "started_at": "2026-10-22T02:01:23.972800+00:00",
-      "seconds": 0.0585900004953146,
+      "cwd": ".",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:04.191911+00:00",
+      "seconds": 0.07822808437049389,
       "exit_code": 0,
       "log": "verification/manuscript/prepare.log",
-      "log_sha256": "b313f8d1ae09146cbdb94743da2cfbbb18808ce0ac9ba84138c8bc272e87d26a"
+      "log_sha256": "736112695dc028f464893e2388c6bb061565d4821837538b1625199f7b23016c"
     },
     "upstream": {
       "command": [
-        "/usr/local/opt/python@3.13/bin/python3.13",
+        "python3",
         "verification/check_upstream.py"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition",
-      "started_at": "2026-10-22T02:01:24.081052+00:00",
-      "seconds": 0.06749170832335949,
+      "cwd": ".",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:04.364128+00:00",
+      "seconds": 0.14354954473674297,
       "exit_code": 0,
       "log": "verification/manuscript/upstream.log",
-      "log_sha256": "440f28a2b77c7e20d9eba0ba170b4ecbd71ccb2f36b302e67dcc7383605a66db"
+      "log_sha256": "baa12784f9a8f3ecec679478de4fba71e40a7293a942c59babaad1b94d419fca"
     },
     "openai-source": {
       "command": [
-        "/usr/local/opt/python@3.13/bin/python3.13",
+        "python3",
         "verification/fetch_openai_metric.py",
         "--check"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition",
-      "started_at": "2026-10-22T02:01:24.149155+00:00",
-      "seconds": 0.13670766912400723,
+      "cwd": ".",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:04.508452+00:00",
+      "seconds": 0.1375296227633953,
       "exit_code": 0,
       "log": "verification/manuscript/openai-source.log",
-      "log_sha256": "0078fc1df6e9fa5e6dc8d4c6830447b8928e3cc0ad913673f0757200ba9070cb"
+      "log_sha256": "b40a2ca0d107d288119d6be5b028e2ac813f1f8f972f327380469b6b059c9c30"
     },
     "lake-build": {
       "command": [
-        "/Users/hansbrende/.elan/bin/lake",
+        "lake",
         "build"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/lean",
-      "started_at": "2026-10-22T02:01:24.338902+00:00",
-      "seconds": 3.290605042129755,
+      "cwd": "lean",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:04.697240+00:00",
+      "seconds": 4.521764958277345,
       "exit_code": 0,
       "log": "verification/manuscript/lake-build.log",
-      "log_sha256": "8b9d932e29dd8f449f153631039ea92c314c3d523614523d272efbb0a1524761"
+      "log_sha256": "9ce42175793b667841357a8392cd75253165d406d8a0d50859a3138b1ce5f14a"
     },
     "paper-imports": {
       "command": [
-        "/Users/hansbrende/.elan/bin/lake",
+        "lake",
         "build",
         "Transpose.Statement",
         "Transpose.Tape.Defs",
         "Transpose.Tape.DefsM",
+        "Transpose.Tape.MStarRobust",
         "Transpose.Tape.Statements.Coding",
         "TransposeFollowup.ActualStageRegularity",
         "TransposeFollowup.AdaptiveTreewidth",
+        "TransposeFollowup.AffineFiniteBoundary",
         "TransposeFollowup.AffineTimeScaling",
         "TransposeFollowup.BackwardMaskedStride",
         "TransposeFollowup.BinaryBankOperation",
+        "TransposeFollowup.BitPlaneMachine",
+        "TransposeFollowup.BitPlaneRun",
         "TransposeFollowup.BoundedAffineCovers",
         "TransposeFollowup.CanonicalTimeNormalization",
         "TransposeFollowup.ContractingStageClock",
@@ -87,6 +95,7 @@
         "TransposeFollowup.NativeRunLimits",
         "TransposeFollowup.OmittedVisitBound",
         "TransposeFollowup.OpenAffineTimeBound",
+        "TransposeFollowup.PaidPaddingLimits",
         "TransposeFollowup.PhysicalAffineApproximationObstruction",
         "TransposeFollowup.ProtocolTruncation",
         "TransposeFollowup.RationalMobius",
@@ -107,6 +116,7 @@
         "TransposeFollowup.RecodedXor",
         "TransposeFollowup.SeparatorSharpness",
         "TransposeFollowup.StageClockAccounting",
+        "TransposeFollowup.StationaryTapesRun",
         "TransposeFollowup.TernaryMatrixGeometry",
         "TransposeFollowup.TernaryMatrixPalette",
         "TransposeFollowup.TernaryPhase",
@@ -121,49 +131,75 @@
         "TransposeFollowup.XorPackets",
         "TransposeFollowup.XorPathCycleBound"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/lean",
-      "started_at": "2026-10-22T02:01:27.630118+00:00",
-      "seconds": 3.3642211239784956,
+      "cwd": "lean",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:09.220613+00:00",
+      "seconds": 3.5057836268097162,
       "exit_code": 0,
       "log": "verification/manuscript/paper-imports.log",
-      "log_sha256": "b63506c368999de1da83d08e14af078d588e78733d099fee587d0015423f4751"
+      "log_sha256": "1dd5693fc1913e1beb64d075da39c9b5fd77c5018f961323682093efb61f1500"
     },
     "paper-axioms": {
       "command": [
-        "/Users/hansbrende/.elan/bin/lake",
+        "lake",
         "env",
         "lean",
         "PaperAxioms.lean"
       ],
-      "cwd": "/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition/lean",
-      "started_at": "2026-10-22T02:01:30.995256+00:00",
-      "seconds": 12.598439458757639,
+      "cwd": "lean",
+      "command_format": "portable tool label; operands relative to cwd; cwd relative to project root",
+      "started_at": "2026-10-22T04:00:12.727793+00:00",
+      "seconds": 41.10805504396558,
       "exit_code": 0,
       "log": "verification/manuscript/paper-axioms.log",
-      "log_sha256": "0655597f256d77ae69e3916121d1f5d341281c1585966c73c5d9d48bc0db0789"
+      "log_sha256": "8fa792056875db5835d346d1ee384f7582e55f8b5be424e0a3755c52ac8bb67c"
     }
   },
   "static": {
     "labels": 72,
-    "citations": 25,
-    "bibliography_entries": 25,
+    "citations": 32,
+    "bibliography_entries": 32,
     "missing_references": [],
     "missing_citations": []
   },
-  "formal_sources_unchanged": 888,
+  "formal_sources_unchanged": 887,
+  "comment_only_amendments": [
+    {
+      "status": "comment_only_amendment",
+      "path": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "expected_sha256": "32c026d268f63b97c5f96a1388f1b49055a17cd0f23883bdda8ffb57c3965948",
+      "actual_sha256": "3e06c94664efbe58922d5385f3f865a1536e300111f77d1bc3b002813c80619b",
+      "manifest": "verification/manuscript/opus-review/source-comment-amendments.json",
+      "manifest_sha256": "0acddc820cba2dfd2e63217cd95069aa6d284cd5bb7521c0c3636735bd5a6125",
+      "replacements": 2
+    }
+  ],
+  "mathematical_code_unchanged": 888,
   "formal_guard": {
     "basis": "verification/support-build.json",
-    "basis_sha256": "f190781957f493294e03e7bf929bca5037e89bb1f4802a8e5aa255fe9590db89",
-    "scope": "Exact source/configuration/external hash preservation against the final R1916 receipt",
+    "basis_sha256": "24644fd1b1cca33d42941aa7af1df2e01c222161a7e3fbe9fc1e97703832623c",
+    "scope": "R1916 source/configuration/external preservation, with an explicitly verified comment-only amendment and documented provenance-path normalization",
     "groups": {
       "source_sha256": 889,
       "configuration_sha256": 8,
       "external_source_sha256": 204
     },
+    "metadata_path_amendments": [
+      {
+        "status": "publication_metadata_normalization",
+        "path": "verification/archive-source-provenance.json",
+        "expected_sha256": "666e2c85d0301d6c677b361f37b112a3edcd762b0648bfd56f4fc803a87004af",
+        "actual_sha256": "d82cd99d08f8db2b5530f68c79b24039f6742c8e0082fea4b677c930eba232f5",
+        "manifest": "verification/publication-config-amendment.json",
+        "manifest_sha256": "e6d6c931d3ce807d5cab7bbae2b51245a7a07b89e703ddf68363c3921cc8f477",
+        "semantic_sha256": "5f8ded79a7d8de9f6e436e2cfb127eca20aa5bc139a5c98c1c5f3bfcd2fb57a7",
+        "verified_destinations": 13
+      }
+    ],
     "status": "passed"
   },
   "axioms": {
-    "declarations": 142,
+    "declarations": 149,
     "allowed": [
       "Classical.choice",
       "Quot.sound",
@@ -177,19 +213,19 @@
   },
   "sources": {
     "paper/macros.tex": "8b7a165e7b0c4341b25e37398f62b6c29a0ee8426f8ffb1698c22a974cf4eb48",
-    "paper/references.bib": "656527e957da36409ec481e0b14e805de4a9d8836cc5375d53e4e4170f3e24f2",
+    "paper/references.bib": "ea6c834324a2a20b80fcc352904d3c5a2bc0451e1f5f712d84892a7ebf031074",
     "paper/prior-art.bib": "d919ea0feb499023673a03de8ba639a9420dc9e908149fbd10b80350f861ca90",
-    "paper/main.tex": "2a4d37f2529e3c37f16392b1ca15a705639f470a545366ff995d7c13905b2880",
+    "paper/main.tex": "daef657e719be78243622bdd59631b51cd1e48f99518f806af991fd8ee48dd84",
     "paper/generated/theorem-index.tex": "feeb77a7067dc22c90f61216faf076cfaca8b70d809c110fda7df90e60974def",
     "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
-    "paper/sections/padding.tex": "5e6c53f441125d1193b59eb28d4cbd4e267be6b20dacf5f86a833ace6e27e88d",
-    "paper/sections/related-work.tex": "1c8e63e439d835323000e63727960287d5cf4f575bae04da72fdee8200958812",
+    "paper/sections/padding.tex": "59db6099b7c559eb120c8b8529ce53236d4df08bb62dd9f799082af83ff61fef",
+    "paper/sections/related-work.tex": "1c0fae262fcff44d38e3b1681cdc90873f4bd64078808b35954dd4b979151cfd",
     "paper/sections/roadmap.tex": "91980b62ae204f0b9260f0996afda25ef3386f3b5cc36c8f8443bfdec224c235",
-    "paper/sections/verification.tex": "e16bcc686240dfa7a9ae25be280fc5ab949d868e96983b535a7283bb27936b1f",
-    "paper/sections/introduction.tex": "1dfb690486f8f23288154f720da1f06e5e03d75691484fee3a174debc42203ce",
-    "paper/sections/local-coding.tex": "4213fdeb588c168db0daed0e247c4e3f36f60c7d8d91db5eacc4f991a1f8e51b",
-    "paper/sections/motion.tex": "71203b8fb44f8f636c2e4f5f9ad47f1c299ca1431b04f90c7ac05681566ee682"
+    "paper/sections/verification.tex": "56a50110dde28fea273e16ab64c152c44f488b319437782ccb1a09766d43757e",
+    "paper/sections/introduction.tex": "5cbf84cd390857f8b6f9e2bf88c940c4a701b6e208fe2f67ccfb5790ef3ba2d6",
+    "paper/sections/local-coding.tex": "7b0377444410f306ba3e28274bb3036b4a6d0e17791a940a4bfb0eae77d36b2d",
+    "paper/sections/motion.tex": "3cf0f5552b7422d11939c9ed88ef6ca8ed801445d5720e15325bf50b4a1af52a"
   },
-  "paper_axioms_sha256": "c1e6dd9a541ef050fc805c12899a1a5918416359651484370d5d0ad7b49e1c4d",
-  "inventory_sha256": "5ef27f1cca365bad58ca092228e805fea539b4bd7dd0b6a1be81a2c81fe9c9ed"
+  "paper_axioms_sha256": "9a611cdb34db4155455a686f3944760543da8d98d35f6eb28b2ca887c68e821a",
+  "inventory_sha256": "ecd6235d2b585dca11bca2b82ffe71f1797fd794e58c9f1c534cb364f2034c78"
 }

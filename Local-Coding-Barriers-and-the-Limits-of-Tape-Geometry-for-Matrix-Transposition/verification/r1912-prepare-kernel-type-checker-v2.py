@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib,re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+P=Path('.')
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 sources=json.loads((A/'baseline-sources.json').read_text())
 def sha(s):return hashlib.sha256(s.encode()).hexdigest()
 items=[('NativePaddedFieldMachine','NativePaddedField','tail_trace','open FixedTapeCompiler CopyMachine\nopen NativeFieldCopy (targetBinding allBinding)','C source field pos'),('CountedFillBody','CountedFill','emit_step','open FixedTapeCompiler\nopen CopyMachine (Tape Sym symbols)','m bit i hi fuel acc origin')]
@@ -14,7 +14,7 @@ for file,ns,n,opens,args in items:
  code=f'namespace TransposeFollowup.{ns}\n{opens}\nset_option autoImplicit false\n\n'+renamed+f' := by\n  exact {n} {args}\n\nend TransposeFollowup.{ns}\n'
  proofs.append(code)
  records.append({'name':f'TransposeFollowup.{ns}.{n}','auditor_declaration':f'TransposeFollowup.{ns}.{newname}','baseline_source':path,'baseline_source_sha256':sha(source),'original_header':header,'original_header_sha256':sha(header),'renamed_header':renamed,'source_check_text':code,'source_check_text_sha256':sha(code),'change':'Only theorem identifier renamed; archived full binders/premises/conclusion preserved exactly. Proof is direct application of current original-named theorem.'})
-old=Path('/private/tmp/r1912-kernel-type-checker.lean').read_text();old=old[:old.index('\nrun_cmd R1912TypeConversionAudit.runChunk ')]
+old=Path('external/temporary/r1912-kernel-type-checker.lean').read_text();old=old[:old.index('\nrun_cmd R1912TypeConversionAudit.runChunk ')]
 old=old.replace('open Lean Elab Command\nnamespace R1912TypeConversionAudit', '\n'.join(proofs)+'\nopen Lean Elab Command\nnamespace R1912TypeConversionAudit',1)
 start=old.index('  -- Sharing changes only object representation')
 end=old.index('\n  pure (Json.mkObj [',start)
@@ -47,11 +47,11 @@ old=old.replace('("kernel_identity_application_checked", toJson true),','''("val
     ("original_source_header_kernel_checked", toJson headerAuditor.isSome),
     ("auditor_declaration", toJson (headerAuditor.map Name.toString)),''')
 commands=[]
-outdir=Path('/private/tmp/r1912-kernel-type-conversion-v2');outdir.mkdir(exist_ok=True)
-for p in sorted(Path('/private/tmp/r1912-original-types-ast-chunks').glob('[0-9][0-9][0-9].json')):
+outdir=Path('external/temporary/r1912-kernel-type-conversion-v2');outdir.mkdir(exist_ok=True)
+for p in sorted(Path('external/temporary/r1912-original-types-ast-chunks').glob('[0-9][0-9][0-9].json')):
  output=outdir/f'r1912-kernel-type-conversion-{p.stem}.json'
  commands.append('\nrun_cmd R1912TypeConversionAudit.runChunk '+json.dumps(str(p))+' '+json.dumps(str(output))+'\n')
-checker=Path('/private/tmp/r1912-kernel-type-checker-v2.lean');checker.write_text(old+''.join(commands))
+checker=Path('external/temporary/r1912-kernel-type-checker-v2.lean');checker.write_text(old+''.join(commands))
 record={'format':'r1912-exact-archived-source-header-checks-v1','baseline_inventory':str(A/'baseline-sources.json'),'baseline_inventory_sha256':hashlib.sha256((A/'baseline-sources.json').read_bytes()).hexdigest(),'checker':str(checker),'checker_sha256':hashlib.sha256(checker.read_bytes()).hexdigest(),'declarations':records,'count':2}
-Path('/private/tmp/r1912-source-header-checks.json').write_text(json.dumps(record,indent=2)+'\n')
-print(checker);print('/private/tmp/r1912-source-header-checks.json')
+Path('external/temporary/r1912-source-header-checks.json').write_text(json.dumps(record,indent=2)+'\n')
+print(checker);print('external/temporary/r1912-source-header-checks.json')

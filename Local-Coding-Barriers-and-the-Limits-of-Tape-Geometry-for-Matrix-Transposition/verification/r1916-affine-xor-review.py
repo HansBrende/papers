@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,hashlib,argparse,re,shutil
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse')
+P=Path('.');V=P/'verification'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1916-strengthening-reuse')
 def read(p):return json.loads(p.read_text())
 def sha(s):return hashlib.sha256(s.encode()).hexdigest()
 def record(p):return {'path':str(p),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}

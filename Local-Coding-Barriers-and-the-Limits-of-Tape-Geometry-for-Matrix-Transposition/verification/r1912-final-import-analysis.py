@@ -1,16 +1,16 @@
 from pathlib import Path
 from functools import cache
 import ast,json,re,hashlib,statistics,datetime
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');L=P/'lean';V=P/'verification'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
-src=Path('/private/tmp/r1912-read-import-graph.py').read_text();tree=ast.parse(src)
+P=Path('.');L=P/'lean';V=P/'verification'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
+src=Path('external/temporary/r1912-read-import-graph.py').read_text();tree=ast.parse(src)
 fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='strip')
 exec(compile(ast.Module(body=[fn],type_ignores=[]),'strip-imports','exec'))
 def imports(s):return re.findall(r'^(?:(?:public|meta|private) )*import(?: all)?\s+([A-Za-z0-9_.]+)',strip(s),re.M)
 def modname(p):return '.'.join(Path(p).relative_to('lean').with_suffix('').parts)
 oldtext={modname(k):v for k,v in json.loads((A/'baseline-sources.json').read_text()).items() if k.startswith(('lean/TransposeFollowup/','lean/FixedTapeCompiler/'))}
 newtext={'.'.join(f.relative_to(L).with_suffix('').parts):f.read_text() for root in [L/'TransposeFollowup',L/'FixedTapeCompiler'] for f in root.rglob('*.lean')}
-saved=json.loads(Path('/private/tmp/r1912-import-graph.json').read_text());external={k:v for k,v in saved['graph'].items() if not k.startswith(('TransposeFollowup.','FixedTapeCompiler.'))}
+saved=json.loads(Path('external/temporary/r1912-import-graph.json').read_text());external={k:v for k,v in saved['graph'].items() if not k.startswith(('TransposeFollowup.','FixedTapeCompiler.'))}
 graphs={'baseline':external|{m:imports(s) for m,s in oldtext.items()},'current':external|{m:imports(s) for m,s in newtext.items()}}
 @cache
 def closure(label,m):
@@ -59,6 +59,6 @@ for heavy in [False,True]:
  if vals:timing['full_mathlib' if heavy else 'no_full_mathlib']={'built_samples':len(vals),'median_seconds':statistics.median(vals),'minimum_seconds':min(vals),'maximum_seconds':max(vals)}
 oldpath=longest('baseline',oldtext);newpath=longest('current',newtext)
 report={'timestamp_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Read-only final-source dependency analysis; full build still running at analysis time; no Lean/Lake invocation or repository edits by reviewer.','graph_method':'Comments/strings stripped; compound public/meta imports included. Local, original-paper and pinned Mathlib source graph expanded. Other library/core imports are leaf vertices. Counts are parsed dependencies, not loaded artifact counts or Lake jobs.','baseline':{'modules':len(oldtext),'full_mathlib':len(baseheavy),'no_full_mathlib':len(oldtext)-len(baseheavy),'longest_local_dependency_path_modules':len(oldpath),'longest_local_dependency_path':oldpath},'current':{'modules':len(newtext),'full_mathlib':len(newheavy),'no_full_mathlib':len(newtext)-len(newheavy),'longest_local_dependency_path_modules':len(newpath),'longest_local_dependency_path':newpath,'dangling_local_imports':sorted({q for m in newtext for q in graphs['current'][m] if local(q) and q not in newtext})},'same_named_survivors_losing_full_mathlib':existing_lost,'baseline_units_whose_consolidated_destination_loses_full_mathlib':sorted(represented_lost),'counting_caution':'Consolidation means baseline vs final file counts do not measure the same proof-unit population. Represented baseline units use composed grouping destination, while split native source paths count as retained compatibility wrappers.','source_endpoints':source_details,'other_targets':{m:{label:closure_stats(label,'TransposeFollowup.'+m) for label,texts in [('baseline',oldtext),('current',newtext)] if 'TransposeFollowup.'+m in texts} for m in ['NativeMicrocode','NativeMicrocodeCore','NativeIOFusionCalls','NativeZipper','ScheduledNativeIO','RationalMobius','ClosedNativePadding']},'build_snapshot':{'path':str(log),'sha256_at_snapshot':hashlib.sha256('\n'.join(logs).encode()).hexdigest(),'complete_seen':any('Build completed successfully' in s for s in logs),'error_lines':[s for s in logs if s.startswith('error:') or '✖' in s],'last_lines':logs[-8:],'timing_groups':timing,'samples':measured,'warning':'Concurrent mixed-size build samples are descriptive only; medians are not controlled A/B comparisons, sums are not wall time, and the complete build timing remains outstanding.'}}
-Path('/private/tmp/r1912-final-import-review.json').write_text(json.dumps(report,indent=2))
+Path('external/temporary/r1912-final-import-review.json').write_text(json.dumps(report,indent=2))
 print(json.dumps({k:report[k] for k in ['baseline','current']},indent=2))
 print(json.dumps(source_details,indent=2));print('Same names lost',len(existing_lost),'represented baseline units lost',len(represented_lost));print('early timing',timing)

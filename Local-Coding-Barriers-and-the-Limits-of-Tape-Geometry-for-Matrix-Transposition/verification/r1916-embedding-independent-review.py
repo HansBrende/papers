@@ -1,6 +1,6 @@
 from pathlib import Path
 import hashlib,json
-D=Path('/private/tmp/r1916-embedding')
+D=Path('external/temporary/r1916-embedding')
 p=D/'proposal.json'; raw=p.read_bytes(); plan=json.loads(raw)
 rows=[]
 for c in plan['changes']:
@@ -34,5 +34,5 @@ assert sum(r.get('replacement_count',0) for r in rows)==13
 saved=sum(c['old_text'].count('\n')-c['new_text'].count('\n') for c in plan['changes'])
 assert saved==30
 out={'format':'r1916-embedding-independent-source-review-v1','status':'source_review_passed_compile_pending','proposal':{'path':str(p),'sha256':hashlib.sha256(raw).hexdigest()},'reviewer':'r1912_imports','rows':rows,'preserved_existing_theorem_headers':13,'net_lines_saved':saved,'semantic_review':{'generic_lemma':'Definitionally unfolds the same MicrocodeEmbedding.embed, uses the existing values_eq_extend and map_values for tape denotation, and values_project for absolute head positions. The port embedding and label map are unchanged.','machine_and_cost_definitions':'All old nonproof source, including every machine, program, configuration, trace, state count, runtime budget and binding definition, is byte-for-byte preserved; only four imports are added.','scope':'Conservative direct-bank/project batch only. Earlier expanded proposal involving bespoke lifted banks was excluded and is not approved by this review.','trust':'New proof uses existing equalities and ordinary simp only. No axioms, sorry, unsafe code, native_decide, options, macros, or elaborators added.','caveat':'No Lean/Lake execution by reviewer. Higher-order inference and reduction of source cfg definitions still require root compilation.'}}
-Path('/private/tmp/r1916-embedding-independent-review.json').write_text(json.dumps(out,indent=2)+'\n')
+Path('external/temporary/r1916-embedding-independent-review.json').write_text(json.dumps(out,indent=2)+'\n')
 print({'status':out['status'],'files':len(rows),'wrappers':13,'net_lines_saved':saved,'proposal_sha256':out['proposal']['sha256']})

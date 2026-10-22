@@ -5,14 +5,14 @@ No repository, Mathlib cache, dependency artifact, trace, or timestamp is change
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,os,platform,re,shlex,signal,statistics,subprocess,tempfile,time
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-L=P/'lean';LAKE='/Users/hansbrende/.elan/bin/lake'
+P=Path('.')
+L=P/'lean';LAKE='lake'
 ap=argparse.ArgumentParser(description=__doc__)
 ap.add_argument('--run',action='store_true',help='Launch sequential ordinary Lean checks; otherwise prepare scratch inputs only.')
 ap.add_argument('--confirm-idle',action='store_true',help='Acknowledge all other Lean/Lake handles are terminal and sources will remain fixed.')
 ap.add_argument('--pairs',type=int,choices=[1,2,3],default=3)
 ap.add_argument('--profile',action='store_true',help='After unprofiled timing pairs, run one --profile check for each proof arm and each import-only probe; excluded from timing medians.')
-ap.add_argument('--scratch-parent',type=Path,default=Path('/private/tmp'))
+ap.add_argument('--scratch-parent',type=Path,default=Path('external/temporary'))
 a=ap.parse_args()
 if a.run and not a.confirm_idle:ap.error('--run requires --confirm-idle')
 D=Path(tempfile.mkdtemp(prefix='r1914-real-mobius-average-',dir=a.scratch_parent))

@@ -1,0 +1,132 @@
+{
+  "review": "Opus suggestions: padding and introduction",
+  "status": "edits_complete_source_checked",
+  "scope": "Written proof and source-level verification. No build performed by this reviewer. Two complete Lean documentation comments corrected under a reversible historical-source guard; no definitions, declarations or proof terms changed.",
+  "files": {
+    "paper/sections/padding.tex": {
+      "sha256": "59db6099b7c559eb120c8b8529ce53236d4df08bb62dd9f799082af83ff61fef"
+    },
+    "paper/sections/introduction.tex": {
+      "sha256": "5cbf84cd390857f8b6f9e2bf88c940c4a701b6e208fe2f67ccfb5790ef3ba2d6"
+    }
+  },
+  "numbered_statements": {
+    "padding": [
+      "thm:padding",
+      "lem:rational-expander"
+    ],
+    "introduction": [],
+    "changes": "No numbered statement added or changed."
+  },
+  "items": [
+    {
+      "item": 2,
+      "decision": "accepted",
+      "change": "Replaced conditional transposer argument by unconditional specialization to a machine that halts immediately with empty output. States that the wrapper satisfies the cut and full M* conclusions without performing any transpose.",
+      "proof_references": [
+        "TransposeFollowup.PaidPadding.exists_uniform_paid_padding",
+        "TransposeFollowup.NativeRunLimits.Conclusion"
+      ],
+      "reason": "Take a native transition function identically none. It halts in zero steps with empty output on every input. Universal paid padding supplies one fixed wrapper and linear bound; canonical positive-dimensional inputs have positive length, so empty output is not a transpose."
+    },
+    {
+      "item": 3,
+      "decision": "accepted_with_scope_qualifications",
+      "change": "Disclosed exact idle-tape factor, K0=53+q, head-count inequality 4q<=3k eta, and coarse memory-boundary charge; distinguished S=empty/excess/nonmonotonicity consequences from an unproved finer finite cut inequality.",
+      "qualification": "The extra tapes are chosen to ensure the head-count hypothesis. This does not prove that no alternative padding construction could dispense with them. Deleting idle paths is asserted only for S=empty, total excess, and nonmonotonicity, not for every finite or excised-region inequality.",
+      "proof_references": [
+        "TransposeFollowup.PaidPadding.exists_uniform_paid_padding",
+        "TransposeFollowup.PaidPadding.fixed_resources",
+        "TransposeFollowup.PaidPadding.exists_parameters",
+        "TransposeFollowup.PaidPayload.cut_after_prefix",
+        "TransposeFollowup.StationaryTapes.observations",
+        "TransposeFollowup.BitPlaneMachine.run_embed",
+        "TransposeFollowup.BitPlaneAlphabet.encode_zero",
+        "TransposeFollowup.SequentialFive.prefix_run",
+        "TransposeFollowup.SequentialFive.execute",
+        "TransposeFollowup.NativeRunLimits.Conclusion",
+        "Transpose.Tape.levelCross",
+        "Transpose.Tape.levelExcess"
+      ],
+      "proof_details": [
+        "The final machine is PaidPayload.machine F K (StationaryTapes.machine M E); StationaryTapes preserves the source alphabet and adds E stationary blank source tapes.",
+        "BitPlaneMachine uses Fin M.k x Fin(max 1 Nat.size M.g); encode_zero sends a source blank to blank on every plane, and its embedding copies the source head coordinate to all planes. Thus the E source idle tapes become E*max(1,Nat.size g(M)) idle physical tapes.",
+        "SequentialFive holds its right bank blank/stationary throughout prefix execution, and preserves the payload execution after the one-step handoff.",
+        "exists_uniform_paid_padding selects K0=53+rationalPageCount(rationalSymmetricFamily F), and PaidPadding.exists_parameters chooses E before the payload to ensure the explicit hheads premise of cut_after_prefix.",
+        "An idle head stays at one cell. In a union of slots it can have an external read only at an entry boundary (the preceding visit is the immediately preceding step), giving at most one entry cell per boundary, versus the coarse 3r-cell charge.",
+        "A constant path has zero levelCross at every height, and levelExcess is zero except possibly at its single constant height. Its nonnegative integral is zero. It is both monotone and antitone. Thus the selected M* consequences survive removing idle paths."
+      ]
+    },
+    {
+      "item": 4,
+      "decision": "accepted",
+      "change": "States that the wrapper is a data-free version of the expanding-motion proposal: one prefix, with setup and execution paid, without matrix data. Coupling to encoder/decoder data at each recursive level remains open. Corrected citation to Section13, The construction side.",
+      "proof_references": [
+        "TransposeFollowup.PaidPadding.exists_uniform_paid_padding",
+        "TransposeFollowup.PaidPayload.execute_with_blank_prefix"
+      ],
+      "source_reference": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/construction.tex; main.tex places this thirteenth in the section input order."
+    },
+    {
+      "item": 19,
+      "decision": "accepted",
+      "change": "Explicitly labels exclusion escape as a corollary of the affine-time theorem applied to the padding M* limits, with numbered theorem cross-references.",
+      "proof_references": [
+        "TransposeFollowup.NativeRunLimits.Conclusion",
+        "TransposeFollowup.AffineMotion.affineTimeRequired_of_star",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.not_countable_affine_ae"
+      ]
+    },
+    {
+      "item": 20,
+      "decision": "accepted_implemented_comment_only",
+      "change": "Corrected both stale complete block comments. Added a narrow guard and explicit amendment manifest so historical receipt hashes remain unchanged; every accepted changed source is reported separately from byte-unchanged sources.",
+      "recommended_header": "Rational continuous expansion and fully paid native padding. The file constructs a restricted spectral gap, derives continuous expansion, and compiles it into a zero-slack padding wrapper.",
+      "recommended_definition_docstring": "The real-function form of the required restricted gap, with closed grid cells as in the source theorem.",
+      "location": "lean/TransposeFollowup/UnconditionalPaidPadding.lean",
+      "proof_references": [
+        "TransposeFollowup.RationalFreePair.exists_rational_restricted_gap",
+        "TransposeFollowup.exists_rational_continuous_expander",
+        "TransposeFollowup.PaidPadding.exists_uniform_paid_padding"
+      ]
+    }
+  ],
+  "added_formal_annotations": [
+    [
+      "StationaryTapesRun",
+      "TransposeFollowup.StationaryTapes.observations"
+    ],
+    [
+      "BitPlaneMachine",
+      "TransposeFollowup.BitPlaneMachine.fixed_resources"
+    ],
+    [
+      "BitPlaneRun",
+      "TransposeFollowup.BitPlaneMachine.run_embed"
+    ],
+    [
+      "PaidPaddingLimits",
+      "TransposeFollowup.PaidPadding.fixed_resources,TransposeFollowup.PaidPayload.cut_after_prefix"
+    ]
+  ],
+  "disagreements": [],
+  "remaining_checks": "Parent to regenerate declaration index and audit imports, build/render the combined manuscript, and refresh source-bound verification records.",
+  "source_comment_guard": {
+    "api": "verify_digest(path, expected_digest) -> dict; statuses byte_unchanged or comment_only_amendment; mismatch raises SourceGuardError(RuntimeError).",
+    "files": {
+      "lean/TransposeFollowup/UnconditionalPaidPadding.lean": "3e06c94664efbe58922d5385f3f865a1536e300111f77d1bc3b002813c80619b",
+      "verification/manuscript/source_guard.py": "6564eefef2ab6c4ea2d688af3f321118601d2a1f0dce3084af26182e101641e3",
+      "verification/manuscript/test_source_guard.py": "25aef7e913adfed98b128c6114f7bceee008aa0c74220e19cf189ac9ae784c61",
+      "verification/manuscript/opus-review/source-comment-amendments.json": "0acddc820cba2dfd2e63217cd95069aa6d284cd5bb7521c0c3636735bd5a6125"
+    },
+    "tests": {
+      "command": "python3 verification/manuscript/test_source_guard.py",
+      "passed": 16
+    },
+    "baseline_check": {
+      "byte_unchanged": 887,
+      "comment_only_amendment": 1
+    },
+    "historical_baselines_modified": false
+  }
+}

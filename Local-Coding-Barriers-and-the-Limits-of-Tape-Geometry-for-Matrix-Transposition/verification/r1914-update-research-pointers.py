@@ -5,7 +5,7 @@ import json
 
 P = Path(__file__).resolve().parents[1]
 V = P / 'verification'
-R = Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision')
+R = Path('external/research-workspace/research/10-linear-decision')
 A = R / 'archive/r1914-analytic-build-speed'
 completion = json.loads((V / 'r1914-completion.json').read_text())
 check = json.loads((V / 'r1914-final-receipt-check.json').read_text())

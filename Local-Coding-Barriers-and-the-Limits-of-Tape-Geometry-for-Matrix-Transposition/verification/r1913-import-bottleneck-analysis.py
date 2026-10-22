@@ -1,6 +1,6 @@
 from pathlib import Path
 import re,json,functools,statistics,hashlib
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification';L=P/'lean'
+P=Path('.');V=P/'verification';L=P/'lean'
 g=json.loads((V/'r1912-final-graph.json').read_text())['after'];D=g['direct_local_imports']
 weights={}
 for m,x,u in re.findall(r'Built ([A-Za-z0-9_.]+) \(([\d.]+)(ms|s)\)',(V/'r1912-build.log').read_text()):weights[m]=float(x)/(1000 if u=='ms' else 1)
@@ -22,4 +22,4 @@ for m in path:
  rows.append(row)
  print(f"{row['seconds']:4.1f} {row['lines']:4} {m.split('.')[-1]} <- {[x.split('.')[-1] for x in imps]}")
 out={'weighted_path_seconds':score,'weighted_path':rows,'built_modules':len(weights),'durations':weights,'summed_job_seconds':sum(weights.values()),'unweighted_path_length':g['longest_path_length'],'unweighted_path_weight':sum(weights.get(m,0)for m in g['longest_path']),'source_graph_stale_modules':[m for m,h in g['source_sha256'].items() if hashlib.sha256((L/Path(*m.split('.')).with_suffix('.lean')).read_bytes()).hexdigest()!=h]}
-Path('/private/tmp/r1913-import-bottleneck-analysis.json').write_text(json.dumps(out,indent=2)+'\n')
+Path('external/temporary/r1913-import-bottleneck-analysis.json').write_text(json.dumps(out,indent=2)+'\n')

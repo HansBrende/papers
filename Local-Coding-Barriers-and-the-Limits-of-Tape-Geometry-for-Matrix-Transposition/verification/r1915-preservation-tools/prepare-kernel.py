@@ -6,8 +6,8 @@ fail closed; no aliases, normalization or automatic source-header exceptions.
 """
 from pathlib import Path
 import argparse,hashlib,json,importlib.util,re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--capture',type=Path,default=Path('/private/tmp/r1915-preservation/capture'));a=p.parse_args();C=a.capture
+P=Path('.');V=P/'verification'
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--capture',type=Path,default=Path('external/temporary/r1915-preservation/capture'));a=p.parse_args();C=a.capture
 P=Path(json.loads((C/'names.json').read_text())['project']);V=P/'verification'
 read=lambda p:json.loads(p.read_text());sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 comparison=read(C/'comparison.json');different=read(C/'differences.json')['differences'];assert comparison['status']=='differences_require_review' and len(different)==comparison['raw_different']>0

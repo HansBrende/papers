@@ -1,0 +1,38 @@
+PUBLICATION PATHS AND HISTORICAL RECORDS
+
+No personal filesystem paths belong in the public paper repository. Current
+reproduction tools resolve the checkout and installed executables at runtime.
+Public receipts contain tool names and relative paths; detailed local logs and
+build output remain ignored. Ignoring a file does not untrack an existing file.
+
+The publication-path-normalization.json manifest describes the cleanup. Raw
+records and the two earlier manuscript backup ZIPs are preserved privately
+outside this repository. Each sanitized historical file is linked to its raw
+original by a before/after digest. The private archive name and digest identify
+the preserved collection without publishing its host location.
+
+Public historical records are sanitized views, not verbatim originals. Their
+embedded historical hashes still identify original artifacts, not subsequently
+edited public copies. They must not be treated as a new successful execution.
+Only the documented current verification entry points reproduce this revision.
+Historical one-off scripts may refer to private archived inputs and are retained
+as explanatory source, not as supported reproduction commands.
+
+Project-relative paths in these records resolve from the follow-up paper root.
+external/research-workspace, external/temporary and external/lean-toolchain
+are logical labels for private historical inputs; they are not included build
+dependencies. Mathematical source hashes and pinned dependency hashes have not
+been weakened or recalculated to hide a change.
+
+From the repository root, with pypdf installed, run:
+  python3 tools/check_public_paths.py
+After staging changes, also run:
+  python3 tools/check_public_paths.py --staged
+That mode inspects the exact Git index blobs, including a staged version that
+differs from the working file. The default check includes tracked and nonignored untracked files, compressed archives,
+PDF contents and symlink targets. It also checks tracked files even if a later
+ignore rule would ordinarily hide them. Ignored build caches are excluded.
+
+This checks the current publishable tree. By the author's decision, earlier Git
+commits are retained and may contain older paths. The policy applies to the
+current publishable tree and future commits; it does not rewrite Git history.

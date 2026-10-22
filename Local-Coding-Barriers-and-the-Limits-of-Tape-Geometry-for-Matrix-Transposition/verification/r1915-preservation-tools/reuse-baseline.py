@@ -6,7 +6,7 @@ not here; no baseline inspection, raw-type copy or archive expansion is needed.
 """
 from pathlib import Path
 import argparse, datetime, hashlib, importlib.util, json, re, shutil
-ROOT = Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+ROOT = Path('.')
 HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('r1915_types', HERE/'types.py')
 t = importlib.util.module_from_spec(spec); spec.loader.exec_module(t)

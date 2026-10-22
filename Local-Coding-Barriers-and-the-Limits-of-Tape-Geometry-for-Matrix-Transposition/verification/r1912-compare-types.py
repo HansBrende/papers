@@ -20,8 +20,8 @@ import sys
 import tarfile
 import tempfile
 
-P = Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
-A = Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1912-build-speed')
+P = Path('.')
+A = Path('external/research-workspace/research/10-linear-decision/archive/r1912-build-speed')
 EXPECTED_COUNT = 6297
 CHUNKS = 79
 BLOCK = 1024 * 1024
@@ -336,10 +336,10 @@ def verified_archive(args, summary, summary_out, compact_outputs):
 
 def parser():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('--baseline-pattern', default='/private/tmp/r1912-baseline-types-{index:03d}.json')
-    p.add_argument('--final-pattern', default='/private/tmp/r1912-final-types-{index:03d}.json')
+    p.add_argument('--baseline-pattern', default='external/temporary/r1912-baseline-types-{index:03d}.json')
+    p.add_argument('--final-pattern', default='external/temporary/r1912-final-types-{index:03d}.json')
     p.add_argument('--baseline-source-inventory', type=Path, default=A/'baseline-sources.json')
-    p.add_argument('--output-dir', type=Path, default=Path('/private/tmp'))
+    p.add_argument('--output-dir', type=Path, default=Path('external/temporary'))
     p.add_argument('--prefix', default='r1912')
     p.add_argument('--progress', action='store_true')
     p.add_argument('--archive', type=Path, help='Optional fresh .tar.gz inside the existing research archive; default does not archive or remove anything.')

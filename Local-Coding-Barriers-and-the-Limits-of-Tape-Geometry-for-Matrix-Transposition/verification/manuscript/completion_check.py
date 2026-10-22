@@ -9,7 +9,10 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import re
+import subprocess
+import sys
 from pypdf import PdfReader
+from source_guard import verify_digest
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'verification/manuscript'
@@ -36,6 +39,9 @@ def binding(item):
 
 
 def main():
+    public_check = subprocess.run([sys.executable, str(ROOT.parent / 'tools/check_public_paths.py')],
+                                  cwd=ROOT.parent, text=True, capture_output=True)
+    require(public_check.returncode == 0, 'Public-path check failed: ' + public_check.stdout)
     ver, inv = read('verification.json'), read('declarations.json')
     require(ver['status'] == 'passed', 'Formal verification failed')
     groups = [ver['sources'], inv['sources'], read('formal-baseline.json')['files']]
@@ -43,7 +49,8 @@ def main():
     groups += [support[g] for g in ['source_sha256', 'configuration_sha256', 'external_source_sha256']]
     for group in groups:
         for path, digest in group.items():
-            binding({'path': path, 'sha256': digest})
+            absolute = Path(path) if Path(path).is_absolute() else ROOT / path
+            verify_digest(absolute, digest)
     for step in ver['steps'].values():
         require(step['exit_code'] == 0, 'Failed verification step')
         binding({'path': step['log'], 'sha256': step['log_sha256']})
@@ -56,8 +63,8 @@ def main():
     require(len(contracts) == len(inv['numbered_results']) == 31, 'Numbered-result count changed')
     require({c['label'] for c in contracts} == {c['label'] for c in inv['numbered_results']}, 'Contract coverage mismatch')
     require(all(n in inv['unique_declarations'] for c in contracts for n in c['declarations']), 'Unaudited contract declaration')
-    semantic_files = [f'final-pass-{part}-cross-review.json' for part in
-                      ['local-coding', 'motion', 'padding-model', 'parent']]
+    review_set = read('review-set.json')
+    semantic_files = review_set['semantic_files']
     reviewed_sources = set()
     for name in semantic_files:
         review = read(name)
@@ -66,9 +73,11 @@ def main():
         for path, digest in review['reviewed_sources'].items():
             binding({'path': path, 'sha256': digest})
             reviewed_sources.add(path)
+        for path, digest in review.get('independent_reports', {}).items():
+            binding({'path': path, 'sha256': digest})
     require(set(inv['sources']) | {'paper/main.tex'} <= reviewed_sources,
             'Current manuscript section lacks a cross-review')
-    roles = read('final-pass-program-roles.json')
+    roles = read(review_set['program_roles'])
     require({i['label'] for i in roles['items']} == {c['label'] for c in contracts}
             and all(i['role'] for i in roles['items']), 'Missing statement program role')
     for path, digest in roles['sources'].items():
@@ -93,23 +102,27 @@ def main():
         require(snippet in text, f'Inline command not preserved: {snippet}')
     manuscript = '\n'.join((ROOT / p).read_text() for p in inv['sources'])
     require(not re.search(r'\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b', manuscript), 'Unfinished manuscript marker')
-    visual_files = ['final-pass-visual-part1.json', 'final-pass-visual-part2.json']
+    visual_files = review_set['visual_files']
     first, last = [read(name) for name in visual_files]
     for review in [first, last]:
         require(review['status'] == 'passed' and review['pdf']['sha256'] == digest, 'Stale/failed visual review')
     reviewed = set(first['pages']) | set(last['pages'])
     require(reviewed == set(range(1, len(reader.pages) + 1)), 'Visual review misses pages')
     receipts = ['verification.json', 'latex-build.json', 'declarations.json', 'attribution-ledger.json',
-                'final-pass-program-roles.json', *semantic_files, *visual_files, *contract_files]
+                'review-set.json', review_set['program_roles'], *semantic_files, *visual_files, *contract_files]
     record = {
         'status': 'ready_for_user_review', 'checked_at_utc': datetime.now(timezone.utc).isoformat(),
         'pdf': {'path': 'paper/main.pdf', 'sha256': digest, 'pages': len(reader.pages)},
+        'public_path_check': {'exit_code': public_check.returncode, 'summary': public_check.stdout.strip(),
+                              'script_sha256': sha(ROOT.parent / 'tools/check_public_paths.py')},
         'coverage': {'theorem_families': 6, 'numbered_definitions_and_results': len(contracts),
                      'audited_declarations': ver['axioms']['declarations'], 'cited_sources': len(keys),
                      'visually_reviewed_pages': sorted(reviewed)},
         'axioms': ver['axioms'], 'mathematical_sources_unchanged': ver['formal_sources_unchanged'],
+        'comment_only_amendments': ver.get('comment_only_amendments', []),
+        'mathematical_code_unchanged': ver['mathematical_code_unchanged'],
         'sources': ver['sources'], 'review_receipts': {name: sha(OUT / name) for name in receipts},
-        'reproduction_scripts': {name: sha(OUT / name) for name in ['prepare.py', 'verify.py', 'build_paper.py', 'completion_check.py']},
+        'reproduction_scripts': {name: sha(OUT / name) for name in ['prepare.py', 'verify.py', 'build_paper.py', 'completion_check.py', 'source_guard.py', 'portable_paths.py']},
         'limitations': ['Unrestricted canonical transposition remains open.',
                        'Reviews are AI-agent checks, not external human peer review.',
                        'Novelty is qualified; the attribution search is not exhaustive.',

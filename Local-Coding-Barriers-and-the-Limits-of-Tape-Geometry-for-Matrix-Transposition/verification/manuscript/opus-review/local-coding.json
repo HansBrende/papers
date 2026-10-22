@@ -1,0 +1,103 @@
+{
+  "review": "Opus follow-up review: local coding",
+  "status": "accepted_with_two_substantive_qualifications",
+  "source": "paper/sections/local-coding.tex",
+  "source_sha256": "7b0377444410f306ba3e28274bb3036b4a6d0e17791a940a4bfb0eae77d36b2d",
+  "lean_source_changes": false,
+  "numbered_statement_changes": false,
+  "items": [
+    {
+      "item": 1,
+      "disposition": "accepted",
+      "change": "Explain separate coefficient sharpness is universal only: both Lean witnesses have d=2 and nonzero information charge P/4. No sharpness claimed in growing-d, o(P) charge regime.",
+      "lean": [
+        "TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two",
+        "TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two"
+      ]
+    },
+    {
+      "item": 7,
+      "disposition": "accepted",
+      "change": "Qualify the first paper's asserted need for encoder and decoder savings as heuristic.",
+      "source_checked": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/sections/construction.tex"
+    },
+    {
+      "item": 11,
+      "disposition": "accepted",
+      "change": "Explain that a fixed recoded-XOR broadcast is an original-row strategy with constant helper and full-cube correctness. Its interaction graph is a subgraph of G, so graph-component splitting can only decrease separator loss. State path/cycle corollary is illustrative and the bounded-degree expander obstruction is the additional reach.",
+      "lean": [
+        "TransposeFollowup.RecodedXorCode",
+        "TransposeFollowup.RecodedXorCode.Correct",
+        "TransposeFollowup.RecodedXorCode.LocalTo",
+        "TransposeFollowup.graph_worst_case_separator_bound",
+        "TransposeFollowup.graphSeparatorLoss",
+        "TransposeFollowup.RecodedXorCode.linear_ball_broadcast_lower_bound"
+      ],
+      "numeric_check": {
+        "dimension": 100,
+        "separator_vertices": 10,
+        "component_sizes": [
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "separator_loss_per_bit_width": 1810,
+        "distance_loss_per_bit_width": 2470.5400188814647
+      },
+      "proof": "Transmit fixed packet list; every packet depends only on its one or two original rows through bijections. The fixed complete graph H is a subgraph of G. Each component of H-S lies inside a component of G-S, and sum of squares of split sizes is no larger. For a cycle, q evenly spaced separator vertices leave q blocks with sizes differing by at most one; q asymptotic to sqrt(d) gives loss (2+o(1))*b*d^(3/2). On C100 choose vertices 0,10,...,90."
+    },
+    {
+      "item": 12,
+      "disposition": "accepted_with_explicit_hypotheses",
+      "change": "State separator loss <= epsilon*P+b*K(epsilon)*d, requiring uniform component bound in d and completed run, and retain D_w+H(Z)=o(P). State expected-treewidth o(d), or a fixed ambient graph of treewidth o(d), suffices.",
+      "lean": [
+        "TransposeFollowup.graph_expected_separator_bound_of_distribution",
+        "TransposeFollowup.average_treewidth_lower_bound_of_distribution"
+      ],
+      "proof": "If |S|<=epsilon*d and all components have size<=K, then sum_C |C|^2<=K*sum_C|C|<=K*d. Apply separator theorem, then let d grow and epsilon decrease. Fixed ambient graph contains each run graph; restrict a tree decomposition to prove monotonicity of treewidth. No stronger formal statement added."
+    },
+    {
+      "item": 13,
+      "disposition": "accepted",
+      "change": "Replace maximum possible saving with saving is at most; no matching construction or tightness claimed."
+    },
+    {
+      "item": 14,
+      "disposition": "rejected_as_stated_corrected_to_sufficiency",
+      "change": "Add the sufficient independent-row-parts test, basis-extension proof, and explicit failure of necessity because same-row pairs are permitted. Do not add proposed iff.",
+      "lean": [
+        "TransposeFollowup.XorPacket",
+        "TransposeFollowup.XorPacket.eval",
+        "TransposeFollowup.RecodedXorCode.LocalTo"
+      ],
+      "counterexample": "d=2,b=1, identity row recoding, broadcast all four input bits as singleton packets and x00 XOR x01 as a same-row pair. This is correct on all 16 inputs. Row0 has distinct nonzero row-parts x00,x01,x00+x01, which are dependent. All 16 cases checked. Constants also require care: model allows zero self-XOR, but no constant-one packet on a nonempty cube; fixed output shifts are decoder-equivalent normalization, not literal model identity.",
+      "proof_of_sufficient_condition": "For each row, extend the distinct nonzero homogeneous GF(2)-linear row-parts to a basis of the dual row space; these coordinates define a linear bijection. Each homogeneous packet supported on at most two rows becomes a singleton or pair, and identically zero packets may be deleted with zeros restored by the decoder.",
+      "scope": "For genuinely two-row homogeneous packets alone (two nonzero row-parts per packet), a restricted iff can be proved using surjectivity, but it is unnecessary here and was not inserted."
+    },
+    {
+      "item": 15,
+      "disposition": "qualified_rejected_automatic_field_extension",
+      "change": "Family1 applies to finite-field variants only after explicit binary encoding, bit-cost accounting, and retaining any encoding deficit. Family2 requires actual coordinate-XOR membership after expansion; binary or extension-field linearity alone is insufficient.",
+      "lean": [
+        "TransposeFollowup.LocalQuery",
+        "TransposeFollowup.RecodedXorCode",
+        "TransposeFollowup.XorPacket"
+      ],
+      "reason": "Formal inputs and packets are Boolean. An injectively encoded non-power-of-two alphabet occupies only a subfamily of the bit cube; its deficit is not zero. Infinite field symbols have no fixed finite binary representation. General GF(2^e)-linear outputs expand into GF(2)-linear forms, which need not satisfy the shared-coordinate packet restriction."
+    }
+  ],
+  "validation": {
+    "lean_declarations_read": true,
+    "all_16_counterexample_inputs_checked": true,
+    "new_numbered_theorems": false,
+    "new_formal_annotations": false,
+    "lean_build_run_by_subagent": false
+  }
+}

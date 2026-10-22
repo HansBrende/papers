@@ -4,8 +4,8 @@ This checks reviewed source contracts, not every exported elaborated Expr type.
 """
 from pathlib import Path
 import argparse,hashlib,json,re
-P=Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition');V=P/'verification'
-A=Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision/archive/r1916-strengthening-reuse')
+P=Path('.');V=P/'verification'
+A=Path('external/research-workspace/research/10-linear-decision/archive/r1916-strengthening-reuse')
 def read(p):return json.loads(p.read_text())
 def sha(s):return hashlib.sha256(s.encode()).hexdigest()
 def filehash(p):return hashlib.sha256(p.read_bytes()).hexdigest()

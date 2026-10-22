@@ -1,9 +1,9 @@
 from pathlib import Path
 import copy, datetime, difflib, hashlib, json, re, sys
 
-P = Path('/Users/hansbrende/Documents/Codex/papers/Local-coding-barriers-and-the-limits-of-tape-geometry-for-matrix-transposition')
+P = Path('.')
 V = P / 'verification'
-R = Path('/Users/hansbrende/Documents/Codex/2026-10-09/a/research/10-linear-decision')
+R = Path('external/research-workspace/research/10-linear-decision')
 A = R / 'archive/r1916-strengthening-reuse'
 def read(p): return json.loads(p.read_text())
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()

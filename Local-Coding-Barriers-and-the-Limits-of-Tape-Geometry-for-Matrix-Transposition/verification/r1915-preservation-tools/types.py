@@ -6,7 +6,7 @@ not certify those differences harmless. No input deletion is performed.
 """
 from pathlib import Path
 import argparse,datetime,hashlib,json,re,tarfile,io,os
-DEFAULT=Path('/private/tmp/r1915-preservation/capture')
+DEFAULT=Path('external/temporary/r1915-preservation/capture')
 def unique(pairs):
  d={}
  for k,v in pairs:

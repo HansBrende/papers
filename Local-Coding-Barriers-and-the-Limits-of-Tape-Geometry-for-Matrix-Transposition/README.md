@@ -13,7 +13,7 @@ ties the final sources and PDF to the declaration, attribution, semantic and
 rendered-page reviews. No unrestricted transposition or multiplication bound
 is claimed, and novelty qualifications remain explicit.
 
-All **six target theorem families are formalized, independently reviewed at
+All **six target theorem families are formalized, independently reviewed by AI agents at
 source level, and kernel checked after strengthening and cleanup**. This
 completes the formalization task; unrestricted transposition complexity remains
 open in this work. The source reviews do not replace human peer review or
@@ -52,7 +52,9 @@ The [R1914 analytic build pass](verification/r1914-audit.txt) reduces the clean 
 
 The [R1915 spectral build pass](verification/r1915-audit.txt) reduces the matched cached proof-edit rebuild from **75.061s to 17.189s** in one observed pair. All 6306 original audited contracts and all six theorem families are preserved. See the report for the distinct matched-workload evidence and its limits.
 
-The [R1916 strengthening pass](verification/r1916-audit.txt) improves the finite XOR bound and weakens the affine approximation premise to pointwise error. Thirteen compiler proofs now share one embedding lemma; total source grows by 51 lines after the stronger statements. All six theorem families remain proved.
+The [R1916 strengthening pass](verification/r1916-audit.txt) improves the finite XOR bound and weakens the affine approximation premise to pointwise error. Thirteen compiler proofs now share one embedding lemma; total source grows by 51 lines after the stronger statements. All six theorem families remain proved. The separator
+theorem gives the stronger path/cycle bound; the XOR result illustrates a
+different argument (see the statement summary below).
 
 Start with the [exact statements, improvements, scope and relevance](paper/verified-results.txt).
 The six families are:
@@ -82,15 +84,31 @@ record the known failure of Mittal--Raz Conjecture36 and its attribution.
 Its refutation is not a contribution claimed by this follow-up.
 
 The `lean/upstream` package imports the sibling original paper directly and
-writes dependency build artifacts here. The original directory is unchanged.
+writes dependency build artifacts here. The original proof sources are unchanged; the upstream check also records
+the first paper's subsequent editorial revision.
 The shared original definitions are reused, not copied. Thirteen modules in
 `lean/FixedTapeCompiler` reuse our earlier local native compiler proofs;
 [provenance](verification/archive-source-provenance.json) records those sources.
 A [pinned source adapter](lean/openai-metric/README.txt) imports the external
-OAI scalar theorem. Keep the Lean toolchain and mathlib pins unchanged.
+OAI scalar projection and related combinatorial estimates. Keep the Lean toolchain and mathlib pins unchanged.
 
 From this paper directory, verify or fetch the pinned external dependency with
 `python3 verification/fetch_openai_metric.py` (`--check` verifies an existing
-installation). Then run `lake build` and `lake env lean SupportAxioms.lean`
-from `lean/`. `python3 verification/check_upstream.py` verifies that the original
-paper's 117 files and directory inventory remain unchanged.
+installation). Run the manuscript build and audit with
+`python3 verification/manuscript/verify.py`. For the broader support audit,
+run `python3 verification/run_axiom_audit.py support`.
+The audit commands build every imported module before invoking Lean; a bare
+`lake build` does not necessarily build the first-paper modules used only by
+an audit entry point. `python3 verification/check_upstream.py` checks the
+original paper's frozen files and source inventory while ignoring generated
+build artifacts.
+
+The [Opus review response](verification/manuscript/opus-review/response.txt)
+records the accepted changes, qualified suggestions and disagreements.
+Historical records are published as path-sanitized views. Raw records and
+backup ZIPs are preserved privately outside this repository. See the
+[publication-path policy](verification/PUBLICATION-PATHS.txt) and
+[normalization manifest](verification/publication-path-normalization.json)
+for provenance and logical path conventions. Current reproduction commands
+resolve this checkout automatically; historical scripts are not current build
+entry points. Before committing, run the repository's public-path check.

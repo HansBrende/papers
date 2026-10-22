@@ -22,16 +22,14 @@ informally in \cref{sec:plainrobust}).
 so that a negative answer would also rule out oblivious linear-time multiplication; this requires checking that all
 control flow and data layout in their construction depend only on the sizes. Does (T) imply oblivious~(T)?
 
-\item \emph{Locally encoded index coding} (\cref{sec:construction}). On bounded-degree expanders, can a broadcast of
-two-row functionals of size $(1-\varepsilon)d^2$ let every receiver, knowing its own row, recover its column?
+\item \emph{Locally encoded index coding} (\cref{sec:construction}). On bounded-degree expanders, can a broadcast of two-row functionals of size $(1-\varepsilon)d^2$ let every receiver, knowing its own row, recover its column? The answer is no for graphs of treewidth $o(d)$ and, on every bounded-degree graph, for broadcasts that use each row only through the coordinates of one recoding~\cite{BrendeAstra2026}. Expanders with general two-row functionals remain open, as does the analogous decoder problem.
 
 \item \emph{Sharper passes.} Remove the dependence on $T$ from Theorem~P$'$, whose bound gives $\Omega(\log d)$ passes only
 for $T\le\poly(L)$ (for example through the run-length lemma of Grohe and Schweikardt~\cite{GroheSchweikardt2005}), and extend Theorems~P and~P$'$ to passes that may move
 back by a bounded number of cells.
 
 \item \emph{Beyond levels.} Theorem~M* concerns partitions of macroscopic time into intervals. Cuts of other shapes, or
-information inequalities that are not cut bounds, are needed to go further; is there a tape-specific non-cut inequality
-for oblivious machines?
+information inequalities that are not cut bounds, are needed to go further; is there a tape-specific non-cut inequality for oblivious machines? By the padding theorem of~\cite{BrendeAstra2026}, a machine that transposes nothing can satisfy the cut inequality and the conclusions of Theorem~M* in linear time, so such an inequality must depend on which information is carried. Its construction uses idle extra tapes, which the cut inequality's per-tape memory-boundary charge counts; whether a refinement that charges only the cells actually used escapes this barrier is open.
 
 \item \emph{XOR-frame gadgets.} Is there a gadget (\cref{def:gadget}) with $s/W\le m^{\tau}$ for some fixed $\tau<1$? This would improve the exponent of the sub-$L\log d$ transposition claim substantially, though not to linear time (\cref{prop:gadget-runs}(a), not formalized). For integer frames the lower bounds of \cref{prop:gadget-runs}(c), which come from \cref{thm:mod2,thm:mod2m}, stay below $4W$, while the trivial gadget costs $mW$; close this gap.
 \end{enumerate}

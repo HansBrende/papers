@@ -1,0 +1,106 @@
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Machines and the statement (T)}\label{sec:prelim-machines}
+
+We use the machine model of the first paper~\cite{FirstPaper2026}: a deterministic Turing machine with a finite state
+set, a read-only two-way input tape, $k\ge1$ two-way work tapes over a finite alphabet, and a write-only one-way output
+tape that receives at most one bit per step (the first paper also allows $k=0$; an idle work tape can always be added). All heads start at cell~$0$; head moves are $-1$, $0$ or $+1$; every step
+writes the cell under each work head. For $d\ge1$ let $b(d)=\max(1,\clog d)$. The input is a $d\times d$ matrix with
+$b(d)$-bit entries written row by row, of length $L=d^2b(d)$, and the machine must write its transpose in the same
+encoding. Statement~(T) says that some machine does this within $c(L+1)$ steps for a constant~$c$ and all~$d$. Its
+formal version, \lean{Transpose.LinearTimeTransposable}, is fixed in a frozen file of the first paper's library.
+
+A machine is \emph{oblivious} if, for each input length, the positions of all heads at every time, the times at which it
+appends output bits, and its halting time do not depend on the input. An oblivious machine has a single head schedule
+per input length; an adaptive machine has one per input.
+
+The Lean library of this paper does not model machines. Its theorems are about polymatroids, storage codes, matrices, and
+labels on finite sets with hop bijections; the machine-level statements of \cref{sec:decomposition,sec:motion} are not formalized, and each comes
+with a complete proof.
+
+\subsection{Walks, hops and legs}\label{sec:prelim-walks}
+
+A \emph{walk} of \emph{length}~$T$ is a map $x\colon\{0,\dots,T-1\}\to\Z$ with $\abs{x(t+1)-x(t)}\le1$. The work heads of a machine trace
+walks $x_1,\dots,x_k$, one per work tape, and in a run these walks may be coupled arbitrarily.
+
+For a head $h$ and a time $u$, let $\prev_h(u)=\max\{t<u : x_h(t)=x_h(u)\}$ when this set is nonempty. The pair
+$(\prev_h(u),u)$ is the \emph{hop} of head $h$ ending at $u$: the symbol that head $h$ reads at step $u$ was written at
+step $\prev_h(u)$, because every step writes the cell under each work head. A hop is \emph{long} if
+$u-\prev_h(u)\ge2$; the other hops are pauses. The \emph{legs} of a walk partition its time interval greedily: the first
+leg starts at time~$0$, each leg is the longest interval beginning at its first time on which the walk is weakly
+monotone, and the next leg starts at the following time. So a leg ends just before the first step that reverses its direction.
+A walk is \emph{home-based}, with home cell~$0$,
+if every leg begins or ends within distance~$1$ of~$0$. Theorems about head motion are invariant under shifting a
+tape, so the home cell can be any cell.
+
+\subsection{Storage codes and guessing numbers}\label{sec:prelim-codes}
+
+\emph{Side information} on a finite vertex set $V$ is a map $N\colon V\to 2^V$. For a simple graph $G$ on $V$ it is the
+neighbourhood map $N(v)=\{u:uv\in E(G)\}$ (\lean{nbhd}); for a digraph it is the out-neighbourhood map
+(\lean{outNbhd}). Let $\alpha$ be a finite alphabet.
+
+\begin{definition}[Storage codes]\label{def:storage-code}
+\formal{StorageCode.lean}{IsStorageCode, IsRecoverable}
+A set $C\subseteq\alpha^V$ is a \emph{storage code} for $N$ if for all $x,y\in C$ and every $v\in V$, $x$ and $y$ agree at
+$v$ whenever they agree on $N(v)$. A random word $X\colon\Omega\to\alpha^V$ is \emph{recoverable} for $N$ if the same holds
+for all pairs of its values.
+\end{definition}
+
+So in a storage code each symbol is a function of the symbols at its neighbours. The \emph{rate} of $C$ is
+$\log\card C/(\card V\log\card\alpha)$. The \emph{guessing number} $\gn(G,q)$ is the largest value of
+$\log_q\card C$ over storage codes on $G$ with $\card\alpha=q$, and the asymptotic guessing number is
+$\gn(G)=\sup_q\gn(G,q)$~\cite[Def.~3.7 and Thm.~3.6]{ChristofidesMarkstrom2011}; guessing numbers for a fixed alphabet go
+back to Riis~\cite{Riis2007}. Storage codes are dual to index codes: for the
+same side information, the optimal rates of the two problems are complementary asymptotically, and exactly for linear
+codes~\cite{Mazumdar2014,ArbabjolfaeiKim2015}.
+We work with storage codes throughout.
+A \emph{linear} storage code over a field $F$ is a subspace of $F^V$ with the defining property; equivalently
+(\cref{lem:linear-pattern}), a subspace of the kernel of a matrix $M\in F^{V\times V}$ with unit diagonal whose off-diagonal
+entries vanish outside the edges of~$G$. The largest dimension of such a kernel is $\card V$ minus the
+\emph{minrank} of $G$ over $F$~\cite{Haemers1979,BBJK2011}.
+
+\subsection{Polymatroids and rate bounds}\label{sec:prelim-polymatroids}
+
+\begin{definition}[Polymatroids, validity, rate bounds]\label{def:polymatroid}
+\formal{Polymatroid.lean}{IsPolymatroid, IsValid, RateBound, IsGood}
+A \emph{polymatroid} on $V$ is a function $h\colon 2^V\to\R$ with $h(\emptyset)=0$ that is monotone and submodular:
+$h(A\cup B)+h(A\cap B)\le h(A)+h(B)$. It is \emph{valid} for side information $N$ if $h(N(v)\cup\{v\})=h(N(v))$ for every
+$v$. Side information $N$ satisfies the \emph{rate bound} $c$ if every valid polymatroid satisfies
+\[
+  h(V)\;\le\;c\sum_{v\in V}h(\{v\}).
+\]
+A graph $G$ is \emph{good} if its neighbourhood map satisfies the rate bound~$\tfrac12$, that is, $2h(V)\le\sum_vh(\{v\})$ for
+every valid polymatroid.
+\end{definition}
+
+The rate bound quantifies over all polymatroids, so it is a statement about the \emph{Shannon} information
+inequalities; the smallest admissible $c$ is the Shannon bound $\lambda_{\Sh}$ of the side information.
+For a random word $X$ on a finite probability space, $S\mapsto H(X_S)$ is a polymatroid (\cref{lem:entropic}),
+and it is valid whenever $X$ is recoverable (the converse holds when every outcome has positive probability). Hence a rate bound $c$ bounds every storage code, linear or not, over
+every alphabet: $H(X_V)\le c\sum_vH(X_v)$ for every recoverable $X$, and $\log\card C\le c\,\card V\log\card\alpha$
+for every storage code $C$ (\cref{thm:entropic-rate}). Entropy is the finite Shannon entropy of the second
+paper~\cite{SecondPaper2026}, whose Lean definitions we import.
+
+\subsection{Formal status of the results}\label{sec:prelim-lean}
+
+Every numbered result names its formal status in one of four ways. A line
+\begin{center}
+{\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
+\end{center}
+gives the Lean declarations of a fully formalized result. The declarations live in the namespace
+\texttt{MotionDepthCodes} and the files in the directory \leanfile{lean/MotionDepthCodes/}. The text after such a statement, labelled \emph{Outline of
+the formal proof}, is a guide to the formal proof; it is a convenience, not a proof. A line beginning \textsf{Lean
+(partial)} marks a result whose formal counterpart covers all but an explicitly named part, which the text proves or
+cites. The words \textsf{Not formalized} mark a result with no formal counterpart; it comes with a complete proof,
+labelled \emph{Proof (not formalized)}. A line beginning \textsf{Cited} marks a result of an earlier paper that is used
+without proof, and says where it is proved and whether it is Lean-verified there. Where the English statement
+simplifies, the Lean statement is authoritative.
+Results from the literature are cited; a few short ones are reproved in our notation, and say so. Numerical
+observations are labelled as such, claims that have only a proof sketch are stated in remarks beginning \emph{Proof sketch
+only}, and neither is used in proofs. Numbered definitions carry a status line only when they
+are formalized.
+
+The library depends on Lean~4 and Mathlib (both v4.34.1) and on the Lean libraries of the first two papers of this
+series, imported through relative paths. It contains no \texttt{sorry}, no \texttt{native\_decide} and no unsafe
+evaluation, and every declaration cited here depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound} (\cref{app:verify}). \Cref{app:index} lists every declaration of this library cited in the paper.

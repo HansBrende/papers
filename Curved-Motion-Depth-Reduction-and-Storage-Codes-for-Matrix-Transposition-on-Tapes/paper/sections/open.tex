@@ -1,0 +1,78 @@
+\section{Roadmap and open problems}\label{sec:open}
+
+\subsection{Where the decision of (T) stands}
+
+For oblivious machines, Theorem~D reduces $\neg$(T) to two statements, and this paper narrows both; the last row of
+the table records the unconditional results on motion.
+\begin{center}
+\begin{tabular}{@{}p{0.27\textwidth}p{0.33\textwidth}p{0.33\textwidth}@{}}
+\toprule
+ & \textbf{proved here} & \textbf{open} \\
+\midrule
+Depth reduction (TCP) &
+one walk (by planarity) and all couplings of home-based walks (Theorem~B); packing certificates cannot show
+depth-robustness (\cref{prop:packing}); on the deep-nesting pair with one level of nesting, labels exact on one head pay
+a fixed price (Theorems~E, E$_1$) &
+TCP$(2)$ at fixed $\eps$; its sharpest instance is the deep-nesting pair (\cref{conj:Aprime}), where per-head band
+rules appear to fail (sketch only, \cref{rem:dep-N,rem:dep-Nprime}) \\
+\addlinespace
+The crux (index coding on bounded-depth side information) &
+undirected form, rate $\tfrac12$: bounded complex linear codes on locally bipartite graphs (Theorem~A); scalar linear codes
+over every field at degree~$3$ (Theorem~S); all codes on $C_5$-, $K_{14/5}$- and Petersen-colourable graphs (\cref{cor:H2}) &
+on locally bipartite graphs, scalar linear codes over finite fields at degree at least~$4$ (vector-linear ones
+already at degree~$3$)
+and nonlinear codes at degree at least~$3$; the directed, depth-bounded form \\
+\addlinespace
+Motion &
+machines whose work heads are all home-based with legs of boundedly many constant-rate runs fail unconditionally
+(Theorem~C); half a block unit of travel must be curved (Theorem~Cq) &
+whether curved motion of the Bourgain--Yehudayoff type can be coupled to a coding scheme \\
+\bottomrule
+\end{tabular}
+\end{center}
+For home-based oblivious machines only the crux remains (Corollary~B), and only in a weak form: a rate $\rho(D)$ with
+$\rho(D)\log D\to\infty$ suffices. Theorem~C also covers adaptive machines; for them the decomposition
+needs further hypotheses, which we do not treat here.
+
+\subsection{Open problems}
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Decide (T).} Construct a machine transposing $d\times d$ matrices with $\clog d$-bit entries in time
+$O(d^2\log d)$, or prove that none exists. The first paper's frozen checker accepts either answer~\cite{FirstPaper2026}.
+
+\item \emph{Depth reduction for interacting walks} (\cref{prob:tcp}). Does every coupling of $k$ walks admit an
+$\eps T$-edge cut that leaves depth $D(k,\eps)$? A positive answer for every~$k$, with the crux, refutes oblivious~(T)
+(Theorem~D). The first open case is $k=2$, and its sharpest instance is the deep-nesting pair. There, the missing step is
+a robust bound, logarithmic in the depth, on how many levels a label of small cost can serve on both heads at once
+(\cref{conj:Aprime}, stated for labels on a cyclic cover and for a suitable odd shift); the same statement for labels on the walk DAG would
+make these pairs depth-robust as $m\to\infty$, give
+$\TCP(2)$ a negative answer, and point constructions toward deep nesting.
+
+\item \emph{The undirected crux} (\cref{prob:undirected-crux}). Do storage codes on locally bipartite graphs of bounded
+degree have rate at most $\tfrac12+o(1)$? Open for scalar linear codes over finite fields at degree at least~$4$ (and for vector-linear ones already at
+degree~$3$), where a gain would need $p$-torsion (\cref{cor:torsion}), and for nonlinear codes at every degree at
+least~$3$. Arguments that use only the
+local necessary conditions of a smallest counterexample inside tree-like regions cannot give rate $\tfrac12+o(1)$ at
+degree at least~$4$ (\cref{prop:L}), and eigenvalue codes cannot reach rate~$\tfrac12$ at girth at least~$7$
+(\cref{prop:E}).
+
+\item \emph{Targets} (\cref{prob:G}). Is the fractional chromatic number unbounded on good graphs? Theorem~H
+proves rate~$\tfrac12$ on every graph that maps to a good target, so a family of good targets with growing fractional
+chromatic number would extend \cref{cor:H2} to side information that needs more colours; a negative answer, $\chi_f\le C$ on all good graphs, would
+close this route for side information whose fractional chromatic number stays above~$C$ after the deletion of $o(N)$
+vertices. Mycielski's construction does not preserve goodness (\cref{prop:M}).
+
+\item \emph{Cubic graphs of large girth.} Do all storage codes on cubic graphs of large girth have rate at most~$\tfrac12$?
+By \cref{cor:H3} this would follow from a positive answer to Nešetřil's Pentagon Problem~\cite{Nesetril1999}, or
+from a proof that such graphs have circular chromatic number at most~$14/5$, which is open. For scalar linear codes, Theorem~S answers it.
+
+\item \emph{The crux in full.} Prove an index-coding lower bound of any rate $\rho(D)\gg\beta/D$ for the side-information
+systems of bounded-depth cones of oblivious schedules (\cref{def:crux}), linear or nonlinear; by \cref{prop:tradeoff},
+no depth reduction can use a smaller rate. For home-based heads, where depth reduction is
+proved, the rate $\rho(D)\gg1/\log D$ suffices (Corollary~B).
+
+\item \emph{Formalization.} Formalize the Tutte--Berge step of \cref{thm:S-barrier} (Mathlib has Tutte's theorem but not the
+Tutte--Berge formula), and the results of
+\cref{sec:decomposition,sec:motion,sec:depth,sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets} that are not
+formalized.
+\end{enumerate}

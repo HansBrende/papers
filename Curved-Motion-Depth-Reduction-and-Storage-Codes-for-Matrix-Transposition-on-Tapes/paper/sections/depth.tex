@@ -1,0 +1,1109 @@
+\section{Depth reduction for interacting walks}\label{sec:depth}
+
+\Cref{thm:D} reduces the oblivious case of~(T) to two hypotheses. This section is about the structural one: deleting a
+small fraction of the edges of the walk DAG of a head schedule so that every remaining path contains few long hops.
+\Cref{thm:B} does this for home-based walks, for every coupling. Here we state the general problem at a fixed
+fraction~$\eps$ (\cref{prob:tcp}), rule out packing certificates for lower bounds (\cref{prop:packing}), give
+evidence against per-head band bookkeeping (\cref{rem:dep-N,rem:dep-Nprime}, proof sketches only), and study what we
+regard as the sharpest open instance: two deeply nested walks, shifted against each other in time (\cref{def:dnp}). One
+such walk alone is easy (\cref{lem:dep-visit}), and the pair with $m$ levels of nesting is depth-reducible: clock labels cut
+it at a depth exponential in~$m$ (\cref{prop:dep-clock}). On a cyclic cover of the pair the cost of every label obeys exact
+identities (Lemma~Zq, \cref{lem:chain,lem:transfer}); with them we prove, for the pair with one level of nesting, that
+the labels that count exactly along one head pay a price per hop on the cover that does not depend on the depth
+(\cref{thm:E,thm:E1}). Whether the pairs are depth-robust as $m$ grows remains open (\cref{conj:Aprime}).
+
+\subsection{The problem}\label{sec:dep-problem}
+
+We use the walk DAG of \cref{sec:dec-B}: for walks $x_1,\dots,x_k$ of length~$T$, its vertices are the times
+$[0,T)$, its edges are the state edges $t\to t-1$ and the long hops $u\to\prev_h(u)$, a pause is identified with the
+state edge joining the same two times, and an edge is determined by its endpoints. A \emph{cut} is a set of edges; it
+has \emph{depth at most~$D$} if every path that uses no edge of the cut contains at most $D$ long hops.
+
+\begin{problem}[$\TCP(k)$ at fixed $\eps$]\label{prob:tcp}
+Let $k\ge1$. Is there, for every $\eps>0$, an integer $D=D(k,\eps)$ such that for every~$T$ and all walks
+$x_1,\dots,x_k$ of length~$T$, coupled arbitrarily, the walk DAG has a cut with at most $\eps T$ edges and depth at
+most~$D$?
+\end{problem}
+
+A family of $k$-tuples of walks is \emph{depth-robust} if for some $\eps>0$ no single~$D$ serves all its members.
+Cuts are conveniently described by labels. For an integer $D\ge0$ and a map $\Psi\colon[0,T)\to\{0,\dots,D\}$, call a
+long hop $u\to p$ \emph{violated} if $\Psi(u)\le\Psi(p)$, call a time $t\ge1$ a \emph{descent} if
+$\Psi(t)<\Psi(t-1)$, and let $\cost(\Psi)$ be the number of violated long hops plus the number of descents.
+
+\begin{lemma}[Cuts are labels]\label{lem:dep-label}
+\notformalized
+For all walks $x_1,\dots,x_k$ of length~$T$ and every $D\ge0$, the smallest size of a cut of depth at most~$D$ equals
+the smallest value of $\cost(\Psi)$ over all maps $\Psi\colon[0,T)\to\{0,\dots,D\}$.
+\end{lemma}
+
+\begin{informalproof}
+Given $\Psi$, let $F$ consist of the violated long hops and of the state edges $t\to t-1$ at descents~$t$; so
+$\card F=\cost(\Psi)$. Along every edge $a\to b$ outside~$F$ we have $\Psi(b)\le\Psi(a)$, with strict inequality for
+long hops. Along a path avoiding~$F$, $\Psi$ therefore never increases and drops at every long hop; as it takes values
+in $\{0,\dots,D\}$, the path contains at most $D$ long hops. Conversely, let $F$ be a cut of depth at most~$D$, and
+let $\Psi(t)$ be the largest number of long hops on a path that starts at~$t$ and avoids~$F$; so
+$0\le\Psi(t)\le D$. For an edge $a\to b$ not in~$F$, prepending it to a path from~$b$ gives
+$\Psi(a)\ge\Psi(b)+1$ if the edge is a long hop and $\Psi(a)\ge\Psi(b)$ otherwise. Hence every violated long hop and
+every state edge at a descent of~$\Psi$ belongs to~$F$, and $\cost(\Psi)\le\card F$.
+\end{informalproof}
+
+\paragraph{Why the problem matters.} \Cref{prob:tcp} is the walk-level form of the structural hypothesis of \cref{thm:D}. If it
+has a positive answer for~$k$, the proof of \cref{cor:B}, with the cut provided by \cref{prob:tcp} in place of the one
+provided by \cref{thm:B}, shows that $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ holds for all $C\ge1$,
+$\beta\ge2$ and $0<\eps\le1$, with $D=(D(k,\eps/(4\beta C))+1)\lceil4\beta C/\eps\rceil$; \cref{thm:D} then reduces
+the oblivious case
+of~(T) to the crux alone, as \cref{cor:B} does for home-based heads. The problem is posed for all walks, and not only
+for the head schedules of transposers, because a machine can run any schedule that its finite control generates on
+extra work tapes without changing its output; such dummy traffic enters the dependency DAG. A family that
+oblivious machines can generate in linear time, and that is depth-robust at every $\eps$ below the crux rates in
+question, would therefore make the structural hypothesis fail for some machines, and the route of \cref{thm:D} would
+need a version of it that sees only the part of the DAG able to carry the transposition. On the
+construction side, \cref{thm:D} says that an oblivious linear-time transposer either beats the crux or has a head
+schedule without genies of small cost and bounded depth; up to constants this means that its walk DAG has no cut of
+size $\eps T$ and bounded depth, since a genie~$\Gamma$ yields a cut of at most $(k+1)\card\Gamma$ edges and the
+conversions of \cref{sec:dec-corB} go the other way. The walks of this section show what the second alternative could
+look like.
+
+For $k=1$ the problem is easy. Call a long hop $(p,u)$ of a single walk~$x$ an upper hop if $x>x(p)$ on $(p,u)$ and a
+lower hop if $x<x(p)$ there. Two upper hops never cross as intervals of time: if $p<p'<u<u'$, then $x(p')>x(p)$
+because $p'\in(p,u)$, while $u\in(p',u')$ and $x(u)=x(p)<x(p')$, contradicting that $x>x(p')$ on $(p',u')$; the same
+holds for lower hops. Every long hop is an upper or a lower hop, since $x\ne x(p)$ on $(p,u)$ and $x$ moves by at most~$1$ per
+step. Drawing the upper hops on one side of the time axis and the lower hops on the other shows that
+the walk DAG of one walk is planar; its maximum degree is at most~$4$. By the planar separator theorem of Lipton and
+Tarjan~\cite{LiptonTarjan1979}, applied recursively as in~\cite{LiptonTarjan1980}, some set of $O(T/\sqrt M)$ vertices
+leaves components of at most $M$ vertices. Cutting the at most four edges at each of these vertices cuts
+$O(T/\sqrt M)$ edges, and a path that avoids the cut stays inside one component, so it has at most $M-1$ long hops;
+this gives $D(1,\eps)=O(\eps^{-2})$. For $k\ge2$ the union of the walks' hop families is in general not planar, and only special
+classes are solved, chief among them the home-based walks of \cref{thm:B}.
+
+\paragraph{Relation to segregators.} Paul, Pippenger, Szemer\'edi and Trotter~\cite{PPST1983} showed that the
+computation graphs of multitape machines have small segregators: deleting $O(n/\log^*n)$ vertices leaves every vertex
+with at most $O(n/\log^*n)$ predecessors. This is the combinatorial core of their separation of deterministic from
+nondeterministic linear time. \Cref{prob:tcp} is a depth version of the same problem with constant parameters.
+Through the conversions of \cref{sec:dec-corB}, a positive answer gives genies of cost $\eps L$ and bounded
+depth~$D'$, and by the cone lemma (\cref{lem:cone}) every step then has at most $(k+1)^{D'+1}$ predecessors reached
+without passing through the genie: the deleted set is a fixed fraction of the steps, far more than $n/\log^*n$, but
+the remaining cones have bounded size instead of size $n/\log^*n$. Santhanam stated that if, for every~$r$, the
+multi-pushdown graphs $H_r(n)$, a class containing the computation graphs of multitape machines, had segregators
+deleting $o(n/\log n)$ vertices and leaving every vertex at most $o(n)$ predecessors, then deterministic and
+nondeterministic time $n\log n$ would differ~\cite[Thm.~2.7]{Santhanam2001}, and indicated that its proof is analogous
+to that of his Theorem~2.5. Since the deleted
+part in \cref{prob:tcp} is linear, a positive answer would not by itself give a new separation of complexity classes.
+
+\subsection{Uniform recursive walks}\label{sec:dep-walks}
+
+The instances of this section are built from one family of walks in which every level of a recursive nesting
+receives the same total time. Since \cref{prob:tcp} concerns all schedules, these walks are relevant even though the
+results of \cref{sec:motion} constrain the macroscopic motion of transposers.
+
+\begin{definition}[Uniform recursive walks]\label{def:dep-walk}
+Let $g\ge1$ and $m\ge0$ be integers, and let $s_0$ be an integer with $s_i:=s_0-ig\ge1$ for $0\le i\le m$. A
+\emph{level-$m$ stroke} of direction $\sigma\in\{-1,1\}$ is the sequence of $2^{s_m}$ steps equal to~$\sigma$. For
+$i<m$, a \emph{level-$i$ stroke} of direction~$\sigma$ is the concatenation, for $j=0,\dots,2^{g-1}-1$, of a
+\emph{segment} of $2^{s_{i+1}+1}$ steps equal to~$\sigma$ followed by a \emph{V}: a level-$(i+1)$ stroke of
+direction~$-\sigma$ (the \emph{back stroke}) followed by a level-$(i+1)$ stroke of direction~$\sigma$ (the
+\emph{forward stroke}). The walk $U(s_0,m,g)$ is the walk $x\colon\Z\to\Z$ with $x(0)=0$, periodic with period
+$P:=4(m+1)2^{s_0}$, whose steps $x(t+1)-x(t)$, $t\in[0,P)$, are those of four level-$0$ strokes of directions
+$1,-1,-1,1$, in this order.
+\end{definition}
+
+By induction on $m-i$, a level-$i$ stroke has $(m-i+1)2^{s_i}$ steps and moves the head by $\sigma2^{s_i}$: its
+segments contribute $2^{g-1}\cdot2^{s_{i+1}+1}=2^{s_i}$, and each V returns the head to where it started. So every
+period has $4\cdot2^{s_0}=P/(m+1)$ steps belonging to segments of level-$i$ strokes for each $i<m$, and as many
+belonging to level-$m$ strokes, and the walk never pauses. Each step belongs to exactly one segment or level-$m$
+stroke; we say that the stroke emits it, and a time~$t$ belongs to the stroke that emits the step from $t$ to $t+1$.
+The \emph{span} of a stroke or of a V is the set of times belonging to it, and its \emph{end time} is the first time
+after the span. The terms \emph{during}, \emph{first time} and \emph{last time} refer to spans.
+
+If a level-$i$ stroke of direction~$\sigma$, $i<m$, starts at cell~$a$, its segment~$j$ ends at the \emph{grid point}
+$b_j=a+\sigma(j+1)2^{s_{i+1}+1}$, and the V that follows is \emph{attached} at~$b_j$. By
+\cref{lem:dep-structure}(a) below, this V stays in its \emph{range}, the interval of cells between its \emph{base}
+$b_j$ and its \emph{valley cell} $b_j-\sigma2^{s_{i+1}}$; the \emph{level} of the V is the level of its strokes, its
+\emph{apex time} is the first time of its back stroke and its \emph{valley time} the first time of its forward
+stroke. The \emph{open half-segments} of the stroke are the open intervals of cells between consecutive points of
+$a+\sigma2^{s_{i+1}}\Z$ that lie between $a$ and $a+\sigma2^{s_i}$; the \emph{open range} of a level-$i$ stroke is the set of
+cells strictly between $a$ and $a+\sigma2^{s_i}$, and for a level-$m$ stroke we use it in place of the open
+half-segments; the open range of a V is its range without the base and the valley cell. A \emph{turn} is a time~$t$ with
+$x(t+1)-x(t)\ne x(t)-x(t-1)$, and its \emph{level} is the level of the stroke to which $t$ belongs. Intervals of
+cells are written without regard to orientation, and ``beyond~$b$ in direction~$\sigma$'' means $\sigma(c-b)>0$.
+
+\begin{lemma}[Structure of $U$]\label{lem:dep-structure}
+\notformalized
+Let $x=U(s_0,m,g)$.
+\begin{enumerate}[label=(\alph*)]
+\item During a level-$i$ stroke~$S$ of direction~$\sigma$ starting at cell~$a$, including its end time, the head
+stays between $a$ and $a+\sigma2^{s_i}$, and it is at $a+\sigma2^{s_i}$ at the end time. The first and the last step
+of~$S$ equal~$\sigma$. If $i<m$, the part of~$S$ up to the end time of the V at~$b_j$ stays between $a$ and~$b_j$, and
+the part after it stays between $b_j$ and $a+\sigma2^{s_i}$. During a V, including its end time, the head stays in
+the range of the V.
+\item The turns are exactly the apex and valley times of all V's, each of the level of its V, and, in every period,
+the first times of the second and of the fourth level-$0$ stroke, which have level~$0$; at these two times the head
+is at $2^{s_0}$ and at $-2^{s_0}$.
+\item During a V of level~$i$, every cell strictly inside its range is visited exactly $2(m-i+1)$ times and each of
+its two endpoints exactly $m-i+1$ times. In every period, every cell~$c$ with $\abs c<2^{s_0}$ is visited exactly
+$2(m+1)$ times and each of $\pm2^{s_0}$ exactly $m+1$ times.
+\item For every stroke~$S$ whose first time~$t_S$ is nonnegative, the number of times $t\in[0,t_S)$ with $x(t)=c$
+is the same for all cells~$c$ of any one open half-segment of~$S$ (of the open range of~$S$ if $S$ has level~$m$).
+\item Let $1\le j\le m$. If no turn of level less than~$j$ lies strictly inside a hop $(p,u)$, then
+$\abs{x(t)-x(p)}\le2^{s_j}$ for all $t\in[p,u]$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) Induction on $m-i$. A level-$m$ stroke is monotone. For $i<m$, the segments move the head monotonically from~$a$
+to $a+\sigma2^{s_i}$, reaching $b_j$ at the end of segment~$j$. By the induction hypothesis, the back stroke of the V
+at~$b_j$ stays between $b_j$ and $b_j-\sigma2^{s_{i+1}}$ and ends at the valley cell, and the forward stroke stays in
+the same range and ends at~$b_j$. This range lies between $b_j-\sigma2^{s_{i+1}+1}$, the start of segment~$j$, and
+$b_j$, which gives all the claims about~$S$. The first step of~$S$ is a segment step, and its last step is the last
+step of its last forward stroke, which equals~$\sigma$ by induction.
+
+(b) Inside a segment and inside a level-$m$ stroke all steps are equal. Let $t$ be a time at which the steps from
+$t-1$ to~$t$ and from $t$ to $t+1$ are emitted by different strokes. Let $Y$ be the largest segment or stroke whose
+span ends at $t-1$, and $Z$ the largest segment or stroke whose span begins at~$t$. They are consecutive parts of one
+stroke or of the sequence of level-$0$ strokes, so the pair $(Y,Z)$ is of one of four kinds, and by~(a) the last step
+of~$Y$ and the first step of~$Z$ are their directions. (1)~$Y$ is a segment of a stroke of direction~$\sigma$ and $Z$
+the back stroke of the V attached at its end: the steps are $\sigma$ and~$-\sigma$, and $t$ is the apex time, a turn
+of the level of the back stroke. (2)~$Y$ is a back stroke and $Z$ the forward stroke of the same V: the steps are
+$-\sigma$ and~$\sigma$, and $t$ is the valley time, a turn of the level of the forward stroke. (3)~$Y$ is a forward
+stroke and $Z$ the next segment of the stroke to which its V is attached: both steps are~$\sigma$, and $t$ is not a
+turn. (4)~$Y$ and~$Z$ are consecutive level-$0$ strokes: their directions $1,-1,-1,1$, followed by~$1$ in the next
+period, give a turn exactly when $Z$ is the second or the fourth stroke of a period, and then the head is at
+$2^{s_0}$ or $-2^{s_0}$ by~(a).
+
+(c) By induction on $m-i$ we prove the claim about V's. A V of level~$m$ consists of two monotone runs of $2^{s_m}$
+steps in opposite directions: the back stroke visits every cell of the range except the valley cell, the forward
+stroke every cell except the base. Let $i<m$, and suppose by symmetry that the back stroke goes down, so that the
+range is $[v,b]$ with $v=b-2^{s_i}$. Put $s=s_{i+1}$ and $K=2^{g-1}$, and let $v=\gamma_0<\gamma_1<\dots<\gamma_K=b$
+be the points of $v+2^{s+1}\Z$ in $[v,b]$; since $2^{s_i}=K2^{s+1}$, these are also the points of $b-2^{s+1}\Z$ in
+$[v,b]$. The segments of the back stroke visit $b,b-1,\dots,v+1$ once each, and its V's have level $i+1$, are attached
+at $\gamma_{K-1},\dots,\gamma_0$ and have ranges $[\gamma_k,\gamma_k+2^s]$. The segments of the forward stroke visit
+$v,v+1,\dots,b-1$ once each, and its V's are attached at $\gamma_1,\dots,\gamma_K$ and have ranges
+$[\gamma_k-2^s,\gamma_k]$. By the induction hypothesis each of these V's visits the cells strictly inside its range
+$2(m-i)$ times and its endpoints $m-i$ times, and the spans of the segments and of these V's partition the span of the
+V. A cell strictly between $\gamma_k$ and $\gamma_k+2^s$, or strictly between $\gamma_k+2^s$ and $\gamma_{k+1}$, lies
+strictly inside exactly one of the attached V's and is visited $1+1+2(m-i)$ times. The cell $\gamma_k+2^s$
+($0\le k<K$) is an endpoint of two attached V's, the back stroke's at $\gamma_k$ and the forward stroke's at
+$\gamma_{k+1}$, and so is every $\gamma_k$ with $0<k<K$; these cells are visited $1+1+2(m-i)$ times. The base~$b$ is
+visited once by the back stroke's segments and $m-i$ times by the forward stroke's V at $\gamma_K=b$, and the valley
+cell~$v$ once by the forward stroke's segments and $m-i$ times by the back stroke's V at $\gamma_0=v$. This proves
+the claim for V's. In a period, the first two level-$0$ strokes have, over $[0,2^{s_0}]$, the same segments and
+attached V's as the forward and back strokes of a V over this range (in the other order), so the count for V's applies
+verbatim and shows that they visit every $c$ with $0<c<2^{s_0}$ exactly $2(m+1)$ times and $0$ and $2^{s_0}$ exactly $m+1$
+times; the last two strokes do the same over $[-2^{s_0},0]$.
+
+(d) For a stroke~$S$ with $t_S\ge0$ write $\mathrm{pre}_S(c)$ for the number of times $t\in[0,t_S)$ with $x(t)=c$.
+By~(a) and~(c), during a level-$i$ stroke with $i<m$ the number of visits to~$c$ is constant on each open
+half-segment: the segments visit each cell between the first cell (included) and the last cell (excluded) once, and
+the V at~$b_j$ adds $2(m-i)$ visits on the open half-segment of segment~$j$ next to~$b_j$ and none elsewhere inside
+open half-segments. During a level-$m$ stroke every cell of the open range is visited once. We now argue down the
+tree of strokes; since time~$0$ starts a level-$0$ stroke, the parent of every stroke~$S$ with $t_S\ge0$ also starts at a
+nonnegative time. Let $S$ be a level-$0$ stroke of period~$n$. If it is the first or the third stroke of the period,
+$\mathrm{pre}_S(c)=2(m+1)n$ on its open range by~(c). If it is the second (fourth) stroke, $\mathrm{pre}_S$ is the sum
+of $\mathrm{pre}_{S'}$ and of the visits during~$S'$, where $S'$ is the first (third) stroke of the period, and $S$
+and~$S'$ have the same open half-segments because $2^{s_0}$ is a multiple of $2^{s_1}$ (for $m=0$, the same open range). Next let $S$ be the back
+stroke of a V attached at~$b_j$ to a stroke~$S'$. The open range of the V is an open half-segment of~$S'$, and on it
+$\mathrm{pre}_S=\mathrm{pre}_{S'}+1$: by~(a) the part of~$S'$ before segment~$j$ stays between the first cell of~$S'$
+and the start of segment~$j$, and segment~$j$ visits each cell of the open range once. So $\mathrm{pre}_S$ is constant
+on the open range of~$S$, which contains all its open half-segments. If $S$ is the forward stroke of that V and $B$ its
+back stroke, $\mathrm{pre}_S$ is the sum of $\mathrm{pre}_B$ and of the visits during~$B$, and $B$ and~$S$ have the
+same open half-segments, or the same open range at level~$m$, because their common displacement is a multiple of the
+spacing of their half-segments. Hence $\mathrm{pre}_S$ is constant on the open half-segments, or the open range, of every
+stroke.
+
+(e) Let $c=x(p)$. As $u-p\ge2$ and the walk moves by $\pm1$, the first time $\tau^*\in(p,u)$ at which $\abs{x(t)-c}$
+is largest is a turn, and it suffices to show $\abs{x(\tau^*)-c}\le2^{s_j}$. The level of~$\tau^*$ is at least
+$j\ge1$, so by~(b) $\tau^*$ is the apex or valley time of a V of level at least~$j$, and therefore belongs to the span
+of a V of level exactly~$j$, say~$\mathcal V$: a V of level greater than~$j$ lies inside a stroke of level at
+least~$j$, and such a stroke lies inside a V of level~$j$. Let $\mathcal V$ be attached to the stroke~$S'$, of
+level~$j-1$ and direction~$\sigma$, at its base~$b$, so that its range is $[v,b]$ with $v=b-\sigma2^{s_j}$. By~(a),
+$x(\tau^*)\in[v,b]$, so it suffices to show $c\in[v,b]$. Suppose not. By~(a) the head is in $[v,b]$ during
+$\mathcal V$ and at its end time~$t_E$, so $p$ precedes the apex time~$t_A$ of~$\mathcal V$ and $u$ follows~$t_E$.
+
+\emph{Case 1: $c$ lies beyond~$b$ in direction~$\sigma$.} By~(a) the part of~$S'$ before~$\mathcal V$ stays between
+the first cell of~$S'$ and~$b$, so $p$ precedes the first time of~$S'$. If $j\ge2$, $S'$ is a back or forward stroke
+of a V of level $j-1$, whose first time is an apex or valley time, a turn of level $j-1$ in $(p,t_A)$. If $j=1$ and
+$S'$ is the second or fourth level-$0$ stroke of its period, its first time is a turn of level~$0$ in $(p,t_A)$. If
+$S'$ is the first (third) level-$0$ stroke, then $\sigma=1$ and $c>b>0$ ($\sigma=-1$ and $c<b<0$); the two preceding
+level-$0$ strokes stay in $[-2^{s_0},0]$ (in $[0,2^{s_0}]$), so $p$ precedes both of them, and the first time of the
+later one, the fourth (second) level-$0$ stroke, is a turn of level~$0$ in $(p,t_A)$.
+
+\emph{Case 2: $c$ lies beyond~$v$ in direction~$-\sigma$.} Let $A_{j-1}=S'$, and for $1\le l\le j-1$ let $A_{l-1}$ be
+the stroke to which the V containing $A_l$ is attached; $A_l$ has level~$l$. From~$t_E$ on, by~(a), the head stays
+beyond~$b$ in direction~$\sigma$, or at~$b$, until the end time of~$A_{j-1}$. If $A_{j-1}$ is a back stroke, its end
+time is the valley time of its V, a turn of level $j-1$. If $A_{j-1}$ is a forward stroke, it has the direction
+$\sigma$ of $A_{j-2}$, its end time is the end time of a V attached to~$A_{j-2}$ at the last cell of~$A_{j-1}$, and
+by~(a) the head stays beyond that cell, hence beyond~$b$, until the end time of~$A_{j-2}$. Repeating this, if some
+$A_l$ with $1\le l\le j-1$ is a back stroke and $l^*$ is the largest such~$l$, the head stays beyond~$b$ (or at~$b$)
+from~$t_E$ until the end time of~$A_{l^*}$, which is a valley time, a turn of level $l^*\le j-1$. Otherwise all
+$A_l$ have direction~$\sigma$, and the head stays beyond~$b$ (or at~$b$) until the end time of the level-$0$
+stroke~$A_0$. If $A_0$ is the first (third) stroke of its period, that end time is a turn of level~$0$. If it is the
+second (fourth) stroke, the next level-$0$ stroke continues in direction~$\sigma$ and stays beyond~$b$, and its end
+time is a turn of level~$0$. In every case the turn follows~$t_E$, and the head is not at~$c$ between $t_E$ and the
+turn, so the turn precedes~$u$.
+
+In both cases a turn of level less than~$j$ lies strictly inside $(p,u)$, contrary to the hypothesis.
+\end{informalproof}
+
+\subsection{Union labels and the nesting barrier}\label{sec:dep-nesting}
+
+The labels of \cref{thm:B} are lexicographic: they carry counts of events at a few scales and compare them from the
+top. A natural way to extend this to arbitrary walks is to let each head decide, at each cell and time, which bands of
+scales (groups of consecutive scales; in \cref{sec:dec-B} a band was a single scale) it currently needs, and to carry, for every band needed by some head, a count of the events of that band (a
+\emph{union label}). Two requirements make such a label work. A hop must find its own band among the tracked bands at
+both of its ends, so that it is decided there; and a change of the bands tracked by one head breaks the comparison
+along the hops of the other heads that span it, of which there can be about $2^\theta$ when $\theta$ is the bottom
+scale of the changed band, so changes at high bands must be rare. We make the per-head part precise and sketch, without a
+full proof, why it cannot be met with bounded load on deeply nested walks. We do not claim that such rules would
+suffice for \cref{prob:tcp}; the point is that they appear not to exist.
+
+\begin{definition}[Band rules]\label{def:dep-band}
+Let $x$ be a walk of length~$T$ without pauses. For a turn~$\tau$ at which $x$ has a local maximum, a time~$t$ is
+\emph{higher} than~$\tau$ if $x(t)>x(\tau)$, or $x(t)=x(\tau)$ and $t<\tau$; the \emph{prominence} $\mathrm{pr}(\tau)$
+is the least $d\ge1$ such that on one side of~$\tau$ the walk reaches a time higher than~$\tau$ without going below
+$x(\tau)-d$ on the way, and $x(\tau)-\min x$ if no time is higher than~$\tau$. For local minima exchange above and
+below, an earlier time at the same height counting as lower. Fix integers $h_0,W\ge1$ and offsets $r\in[0,h_0)$,
+$r'\in[0,W)$. A scale $\theta\ge0$ lies in \emph{band} $\lfloor(\lfloor(\theta+r)/h_0\rfloor+r')/W\rfloor$, and
+$\theta(b)$ is the least scale of band~$b$. The band of a turn is the band of $\lfloor\log_2\mathrm{pr}(\tau)\rfloor$.
+The \emph{owner} of a hop $(p,u)$ is the first time in $(p,u)$ at which $\abs{x(t)-x(p)}$ is largest, a turn, and the
+\emph{own band} of the hop is the band of its owner. For a band $b\ge1$, the \emph{$b$-gaps} are the intervals
+$[\tau,\tau')$ between consecutive turns of band at least~$b$ (and the interval before the first such turn). A
+\emph{band rule} assigns to every cell~$c$ and time~$t$ a set $\mathcal M(c,t)$ of bands containing~$0$. It is
+\emph{consistent} if for every $b\ge1$ the membership $b\in\mathcal M(c,t)$ depends only on~$c$ and on the $b$-gap
+containing~$t$; its \emph{load} is $\max_t\card{\mathcal M(x(t),t)}$; $\mathrm{Viol}$ is the number of hops whose own
+band is missing from $\mathcal M(x(p),p)$ or from $\mathcal M(x(u),u)$; and
+\[
+  D_{\mathrm{sum}}=\sum_{t}\;\sum_{b\ge1,\ b\in\mathcal M(x(t),t)\,\triangle\,\mathcal M(x(t+1),t+1)}2^{\theta(b)},
+\]
+while $D_{\max}$ counts, for each~$t$, only the largest band of the symmetric difference.
+\end{definition}
+
+A union label for $k$ heads tracks, at time~$t$, the union of the sets $\mathcal M_h(x_h(t),t)$ of the heads; with
+load~$P_0$ per head it has at most $kP_0$ digits, so its depth is bounded in terms of $k$, $P_0$ and the moduli. Its
+cost is bounded by the heads' violations, by their changes weighted as above (a change at band~$b$ is charged to the
+hops of other heads that span it), and by wrap terms. This is the setting of the following two statements.
+
+\begin{remark}[The nesting barrier for consistent band rules]\label{rem:dep-N}
+Proof sketch only: we state the result precisely, but its proof exists only at the level of the following sketch;
+exact linear programs support it numerically. Let
+$g\ge\max(Wh_0,2)$ and $s_m\ge Wh_0+1$, let $x=U(s_0,m,g)$ on a whole number of periods, $T$ steps in all, and put
+$M=T/(m+1)$. Then for every choice of the offsets, every consistent band rule of load at most~$P_0$ satisfies
+\[
+  \mathrm{Viol}+\gamma D_{\mathrm{sum}}\;\ge\;(m+2-P_0)M-2^{1-g}T-2^{1-s_m}M-O(m2^{s_0}),\qquad\gamma=2^{Wh_0-g};
+\]
+if the rule need not contain band~$0$, replace $m+2-P_0$ by $m+1-P_0$. \emph{Sketch.} Up to boundary effects the
+prominences of the turns of~$U$ are $2^{s_0+1}$ and $2^{s_1},\dots,2^{s_m}$, one value per level of nesting (at a
+double extremum the later turn carries the prominence of the deeper level), and for every offset their bands
+$\beta_0>\beta_1>\dots>\beta_m$ are distinct, with $\theta(\beta_i)\ge s_i-Wh_0+1$. For a level-$i$ stroke~$S$ let
+$\mathrm{gap}(S)$ be the $\beta_i$-gap containing its first segment step, and let $y(c,S)\in\{0,1\}$ be the membership
+of~$\beta_i$ at $(c,\mathrm{gap}(S))$, well defined by consistency. (1)~For every cell~$c$ that the segments of~$S$
+visit inside $\mathrm{gap}(S)$, the first visit of~$c$ in $\mathrm{gap}(S)$ ends a hop of own band~$\beta_i$, which
+$y(c,S)=0$ violates; distinct pairs $(c,S)$ give distinct hops, except for a fraction at most $q_02^{-g}$ of each
+level, $q_0=1/(2(1-2^{-g}))$, which comes from the last V's of strokes whose gap ends at their own arrival, and except
+for the first cell of each back stroke. (2)~Every switch of $y(\cdot,S)$ between adjacent cells is a change of
+$\beta_i$ at a segment step inside $\mathrm{gap}(S)$, of weight $2^{\theta(\beta_i)}\ge2^{1-Wh_0}\cdot2^{s_i}$, and
+distinct pairs (stroke, switch) give distinct pairs (step, band). (3)~A cell~$c$ of a level-$m$ stroke with ancestors
+$S_0\supset S_1\supset\dots\supset S_m$ is visited by the segments of~$S_m$ at a time that lies in $\mathrm{gap}(S_i)$
+for every~$i$, except at exceptional levels, where $S_m$ lies in the last V of an ancestor whose gap ends early; so
+the load gives $\sum_iy(c,S_i)\le P_0-1+\#\{\text{exceptional levels of }c\}$, and the expected number of exceptional
+levels of a uniform such cell is at most $2q_02^{-g}m$. (4)~Averaging~(3) over a uniform level-$m$ stroke and a
+uniform cell of it, which gives every block (a segment with its V) of every ancestor the same mass, and comparing
+with~(1) and~(2) yields the bound; the exceptional terms add up to at most $2^{1-g}T$ because $g\ge2$.
+
+Per head, a union label would need, heuristically, $\mathrm{Viol}\le\eps(N+T)$ and $D_{\max}\le\eps(N+T)$, where $N\le T$ is the number of
+long hops. As $D_{\mathrm{sum}}\le D_{\max}/(1-2^{-Wh_0})$, the bound excludes this for all $P_0$, $W$ and~$h_0$ once
+$\eps<0.37$ (take $g=Wh_0+4$, $m=10P_0$ and $s_m$ large), and once $\eps<0.21$ at $g=Wh_0+2$. Numerically, the exact
+optimum of $\mathrm{Viol}+\gamma D_{\mathrm{sum}}$ over all consistent rules, computed by linear programming on
+seventeen instances with $g\in\{1,2,3,4\}$ and $m\le5$, was $(m+2-P_0)M'-1$, where $M'$ is the mass per level in the
+window used; the bound is loose only by its correction terms.
+\end{remark}
+
+\begin{remark}[The nesting barrier without consistency]\label{rem:dep-Nprime}
+Proof sketch only: under the hypotheses of \cref{rem:dep-N}, let $t\mapsto\mathcal M(t)$ be any choice of sets of bands
+containing~$0$, with $\card{\mathcal M(t)}\le P_0$ and no consistency requirement; it may depend on the whole walk, and
+it may be randomised or fractional. Let $\mathrm{Viol}_u$ be the number of hops whose own band is missing from
+$\mathcal M(u)$ at the later endpoint~$u$, and let $D_{\mathrm{sum}}$ count the changes of non-zero bands with weights
+$2^{\theta(b)}$. Then $\mathrm{Viol}_u+\gamma D_{\mathrm{sum}}$ satisfies the bound of \cref{rem:dep-N}. Every band rule,
+read along the walk as $\mathcal M(t)=\mathcal M(x(t),t)$, is such a choice, with the same load and changes and with
+$\mathrm{Viol}_u\le\mathrm{Viol}$; so relaxing consistency does not help, and the thresholds $0.37$ and $0.21$ remain.
+\emph{Sketch.} Steps~(2) and~(3) of the sketch of \cref{rem:dep-N} are the only uses of consistency, and both are replaced
+by a trichotomy in time. For a level-$i$ stroke~$S$ and its block~$j$ (segment~$j$ with its V), let $J$ be the
+block's time window, from just after the start of segment~$j$ to the start of segment~$j+1$ (the first and last
+windows extend to the ends of $\mathrm{gap}(S)$); the windows of one level are disjoint. Exactly one of the following
+holds: $\beta_i$ changes at a step inside~$J$, at cost $\gamma2^{\theta(\beta_i)}\ge2^{s_{i+1}+1}$, the number of
+cells of segment~$j$; $\beta_i$ is absent throughout~$J$, so all the hops entering the cells of segment~$j$, whose
+later endpoints lie in~$J$, are violated; or $\beta_i$ is present throughout~$J$, in particular at the deepest visits
+inside the V of block~$j$, where it uses load. The load at the deepest visit of a cell then bounds the number of
+levels~$i$ of the third kind by $P_0-1$, up to exceptional levels, and the averaging of step~(4) concludes. A
+layer-cake decomposition of $1-\mathcal M$ gives a second proof, as a max-flow certificate. Numerically, when the own
+band is required at both endpoints of a hop, the optimum over such choices of sets was lower than over consistent
+rules only by a boundary term on the instances computed, and a bound with only boundary losses is conjectured; when it
+is required at the later endpoint alone, the optimum was lower by a small multiple of~$M$.
+\end{remark}
+
+\paragraph{Why they matter.} \Cref{rem:dep-N,rem:dep-Nprime} indicate, with proof sketches only, that the union-label
+route to \cref{prob:tcp} fails in its natural form: per-head band bookkeeping with load independent of the depth of
+nesting, own-band decisions and $2^\theta$-weighted changes would fail already on a single walk, offline and for every
+offset. The obstruction does not
+concern $\TCP(1)$, which holds by planarity; what fails is a per-head format that would have handled all couplings at
+once. A repair must decide some hops at a band other than their own, as the labels of \cref{thm:B} do, or weigh
+changes differently, which is legitimate only against other heads that are not adversarial, or use a different
+mechanism altogether.
+
+\paragraph{One nested walk is nevertheless easy.} A single digit that ignores bands handles all levels of one walk at
+once.
+
+\begin{lemma}[One nested walk is easy]\label{lem:dep-visit}
+\notformalized
+Let $x=U(s_0,m,g)$ on $[0,T)$, where $T$ is a multiple of~$P$, let $q\ge1$, and let $\kappa(t)$ be the number of times
+$s\in[0,t)$ with $x(s)=x(t)$. For $\omega\in\{0,\dots,q-1\}$ put $\Psi_\omega(t)=(\kappa(t)+\omega)\bmod q$. Then
+\[
+  \frac1q\sum_{\omega=0}^{q-1}\cost(\Psi_\omega)\;\le\;\frac{\#\{\text{long hops}\}}q+\frac{6T}{(m+1)2^{s_m}}.
+\]
+In particular, for every $\eps>0$ the walk DAG has a cut of at most $\eps T$ edges and depth at most
+$\lceil2/\eps\rceil-1$ as soon as $(m+1)2^{s_m}\ge12/\eps$.
+\end{lemma}
+
+\begin{informalproof}
+\emph{Hops.} For a hop $(p,u)$ we have $\kappa(u)=\kappa(p)+1$, so $\Psi_\omega(u)\le\Psi_\omega(p)$ if and only if
+$\Psi_\omega(p)=q-1$, which holds for exactly one~$\omega$. Averaged over~$\omega$, the number of violated hops is
+$\#\{\text{long hops}\}/q$ (all hops of~$U$ are long).
+
+\emph{Descents.} A descent at~$t$ requires $\kappa(t)\ne\kappa(t-1)$; we count such~$t$. Let the step from $t-1$ to~$t$
+be emitted by a segment of a level-$i$ stroke~$S$, $i<m$, running from $a_j$ to the grid point~$b_j$ in
+$2^{s_{i+1}+1}$ steps, so that its middle cell is $a_j+\sigma2^{s_{i+1}}$. If neither $x(t-1)$ nor $x(t)$ is one of
+$a_j$, $a_j+\sigma2^{s_{i+1}}$ and~$b_j$, both cells lie in one open half-segment of~$S$, both times belong to the
+segment, and $\kappa(t-1)=\kappa(t)$: indeed, for a segment time~$s$ at such a cell~$c$, the visits to~$c$ before~$s$
+are those before the first time of~$S$, because by \cref{lem:dep-structure}(a) the earlier parts of~$S$ stay between
+the first cell of~$S$ and~$a_j$ and the segment reaches~$c$ only at~$s$; and the number of earlier visits is the same
+for all cells of the open half-segment by \cref{lem:dep-structure}(d). So at most four steps emitted by the segment
+change~$\kappa$: those leaving~$a_j$, entering and leaving the middle cell, and entering~$b_j$. In the same way a
+level-$m$ stroke from~$a$ to $a+\sigma2^{s_m}$ emits at most two such steps, those leaving~$a$ and entering
+$a+\sigma2^{s_m}$. A period contains $4\cdot2^{gi}$ strokes of level~$i$, so the number of changes of~$\kappa$ per
+period is at most
+\[
+  4\sum_{i<m}4\cdot2^{gi}\cdot2^{g-1}+2\cdot4\cdot2^{gm}\;\le\;\frac{8\cdot2^g}{2^g-1}\,2^{gm}+8\cdot2^{gm}
+  \;\le\;24\cdot2^{gm}=\frac{6P}{(m+1)2^{s_m}},
+\]
+using $2^{gm}=2^{s_0-s_m}$. Each change of~$\kappa$ is at most one descent of~$\Psi_\omega$, for every~$\omega$, which
+gives the second term.
+
+For the last claim take $q=\lceil2/\eps\rceil$: the first term is at most $\eps T/2$, the second at most $\eps T/2$,
+and some~$\omega$ does at least as well as the average; \cref{lem:dep-label} turns $\Psi_\omega$ into a cut.
+\end{informalproof}
+
+\paragraph{Why it matters.} One deeply nested walk costs essentially nothing beyond the floor $1/q$ per hop, at every
+depth of nesting, and larger~$m$ even helps. The label is a single anchored digit, since $\kappa$ rises by exactly~$1$
+along every hop whatever happens in between, and it is not a band rule, so it escapes \cref{rem:dep-N,rem:dep-Nprime}. The
+difficulty of the instance studied next lies entirely in the interaction of two heads.
+
+\subsection{The deep-nesting pair}\label{sec:dep-dnp}
+
+\Cref{thm:B} covers walks of linear leg area, in particular walks whose legs all begin or end near a home. In
+$U(s_0,m,g)$ most legs do neither: the nesting happens far from home, at every level. Two copies of~$U$ shifted
+against each other in time give the instance that we regard as the sharpest open case of \cref{prob:tcp} for $k=2$.
+
+\begin{definition}[The deep-nesting pair]\label{def:dnp}
+Let $s_0$, $m$, $g$ be as in \cref{def:dep-walk} and $P=4(m+1)2^{s_0}$. The \emph{golden shift} $\xi$ is the least odd
+integer at least $\lfloor0.381966\,P\rfloor$. The \emph{deep-nesting pair} $\mathrm{DNP}(s_0,m,g)$ consists of the
+walks $x_1=U(s_0,m,g)$ and $x_2(t)=x_1(t+\xi)$, $t\in\Z$. For $r\ge1$, its \emph{$r$-fold cover} is the pair on the
+cyclic time axis $\Z_T$, $T=rP$. For $t\in\Z_T$ and a head~$h$, $\prev_h(t)$ is the residue modulo~$T$ of the previous
+visit, on~$\Z$, of head~$h$ to $x_h(t)$; this defines bijections $\prev_1,\prev_2$ of $\Z_T$, and the \emph{hops} of
+head~$h$ on the cover are the pairs $(\prev_h(t),t)$, $t\in\Z_T$, so there are $n_{\mathrm h}=2T$ hops in all. A
+\emph{label} on the cover is a map $G\colon\Z_T\to\{0,\dots,q-1\}$ with $q\ge1$. A hop $(p,u)$ is \emph{violated} if
+$G(u)\le G(p)$, a time~$t$ is a \emph{descent} if $G(t)<G(t-1)$, and $\cost(G)$ is the number of violated hops of both
+heads plus the number $\mathrm{desc}(G)$ of descents. Hops are indexed by head and later endpoint, so a pair that is a
+hop of both heads would count twice: $\cost(G)$ counts violations per head, unlike $\cost(\Psi)$ on the walk DAG;
+by \cref{rem:dep-linear} no such pair exists when $s_m\ge2$.
+\end{definition}
+
+The constant $0.381966$ is $2-\phi$ to six decimals, $\phi$ the golden ratio, and we also call $\mathrm{DNP}(s_0,m,g)$
+the \emph{golden pair}. It is meant to keep the two hierarchies
+misaligned, but because of the truncation it fails to do so when $15625$ divides $m+1$: then $\xi\equiv1\pmod{2^{s_0-3}}$,
+and the hierarchies are aligned at every scale up to $2^{s_0-3}$; for some other~$m$ they nearly align at several
+scales (\cref{rem:dep-Em}). Only the arithmetic of \cref{thm:E1}, where $m=1$,
+depends on its exact value.
+
+The cover is a model of the walk
+DAG of many periods in which the identities below are exact; \cref{rem:dep-linear} transfers the main bound back to
+the walk DAG. A label on the cover plays the role of a label of depth $q-1$; by \cref{lem:dep-label}, labels lose
+nothing on the walk DAG. A cell~$c$ is \emph{interior} if $\abs c<2^{s_0}$; by \cref{lem:dep-structure}(c), on the
+$r$-fold cover each head visits every interior cell $r(2m+2)$ times and each of the two tips $\pm2^{s_0}$ $r(m+1)$
+times.
+
+For $t\in\Z_T$, identified with its representative in $[0,T)$, the \emph{visit index} $\kappa_h(t)$ is the number of
+times $s\in[0,t)$ with $x_h(s)=x_h(t)$. The \emph{error} of a hop $(p,u)$ is
+$e(p,u)=(G(u)-G(p)-1)\bmod q\in\{0,\dots,q-1\}$, and $G$ is \emph{exact} on the hop if the error is~$0$, that is,
+$G(u)\equiv G(p)+1\pmod q$. The labels $(\kappa_1+\omega)\bmod q$ of \cref{lem:dep-visit} are exact on every head-$1$
+hop at an interior cell when $q$ divides $r(2m+2)$. The \emph{level} of a hop $(p,u)$ of head~$h$ is the least level
+of a turn of~$x_h$ strictly inside $(p,u)$ (on the cover, inside any lift of the hop to~$\Z$); every hop contains a
+turn, its owner, so levels are defined.
+
+\paragraph{Anchored counts.} The visit index is anchored: it rises by exactly one along every hop of its head. A
+count restricted to a band of levels rises by exactly one along the hops of that band and is unchanged along the
+others.
+
+\begin{lemma}[Level-band anchored counts]\label{lem:dep-band}
+\notformalized
+For a head~$h$, a set~$B$ of levels and a time $t\ge0$, let $U_h^B(t)$ be the number of times $s\in[0,t)$ with
+$x_h(s)=x_h(t)$ such that the hop of head~$h$ that begins at~$s$ has its level in~$B$. Then for every hop $(p,u)$ of
+head~$h$ with $p\ge0$, $U_h^B(u)-U_h^B(p)$ is $1$ if the level of $(p,u)$ lies in~$B$ and $0$ otherwise.
+\end{lemma}
+
+\begin{informalproof}
+The visits to $x_h(u)$ in $[0,u)$ are those in $[0,p)$ and $p$ itself, because $p$ and~$u$ are consecutive visits.
+The visit~$p$ is counted in $U_h^B(u)$ exactly when the hop that begins at~$p$, which is $(p,u)$, has its level in~$B$.
+\end{informalproof}
+
+With $B$ all levels, $U_h^B$ is the visit index. Along the \emph{chain} of a cell, the visits of one head (here head~$1$) to it
+in time order, a label exact on the head-$1$ hops whose
+level lies in~$B$ rises by one modulo~$q$ wherever $U_1^B$ rises, so modulo~$q$ it differs from $U_1^B$ by a function
+of the cell and of the number of earlier head-$1$ hops at that cell with level outside~$B$; this is the class used in
+\cref{rem:dep-Em}.
+
+\begin{remark}[Numerical: how often band counts change]\label{rem:dep-bandcount}
+Numerically, on all instances checked, $U_1^{\{0,\dots,j\}}$ is constant during every V
+of level greater than~$j$ at all times at which the head is not at the base of the V; at the base it may change, so the
+plain statement ``constant during the V'' is false. The total number of its changes was of the order of
+$T/((m+1)2^{s_{j+1}})+T(m-j)/((m+1)2^{s_j})$, so the gain $1/(m+1)$ of \cref{lem:dep-visit} is lost for $j<m$.
+Nothing below uses this remark.
+\end{remark}
+
+\begin{lemma}[No monotone anchoring]\label{lem:dep-monotone}
+\notformalized
+Let $x$ be a time shift of $U(s_0,m,g)$, let $1\le i<m$, and let $\mathcal V$ be a V of level~$i$ with valley
+cell~$v$ whose forward stroke has direction~$\sigma$. For $1\le\rho<2^{s_i}$ let $p_\rho$ be the last visit to
+$v+\sigma\rho$ during the back stroke and $u_\rho$ its first visit during the forward stroke; $(p_\rho,u_\rho)$ is a
+hop. Let $K$ be an integer function on the span of~$\mathcal V$ with $K(t)\ge K(t-1)$ whenever $t-1$ and~$t$ belong to
+the span, and with $K(u')\ge K(p')+1$ for every hop $(p',u')$ of level $i+1$ with both endpoints in the span. Then
+\[
+  K(u_\rho)-K(p_\rho)\;\ge\;\rho/2^{s_{i+1}}-3/2\qquad(1\le\rho<2^{s_i});
+\]
+in particular $K(u_\rho)-K(p_\rho)\ge2^g-2$ for $\rho=2^{s_i}-1$.
+\end{lemma}
+
+\begin{informalproof}
+After its last visit to $v+\sigma\rho$ the back stroke ends at~$v$, so by continuity it stays on the side of~$v$; the
+forward stroke starts at~$v$ and first reaches $v+\sigma\rho$ at~$u_\rho$. So $p_\rho,u_\rho$ are consecutive visits.
+Put $s=s_{i+1}$ and let $\gamma_k=v+\sigma k2^{s+1}$. By \cref{lem:dep-structure}(a), the back stroke has V's of
+level $i+1$ attached at $\gamma_k$ with ranges $[\gamma_k,\gamma_k+\sigma2^s]$, $0\le k<2^{g-1}$, and the forward
+stroke has V's attached at $\gamma_{k+1}$ with ranges $[\gamma_{k+1}-\sigma2^s,\gamma_{k+1}]$. If
+$(2k+1)2^s<\rho$, the back stroke's V at~$\gamma_k$ lies strictly on the side of~$v$ of $v+\sigma\rho$; it is
+attached after the back stroke has passed $v+\sigma\rho$, and nothing after it in the back stroke returns to
+$v+\sigma\rho$, so it lies inside $(p_\rho,u_\rho)$. There are at least $(\rho/2^s-1)/2$ such~$k$. If
+$(k+1)2^{s+1}<\rho$, the forward stroke reaches $\gamma_{k+1}$ and completes its V there before it reaches
+$v+\sigma\rho$, so this V lies inside $(p_\rho,u_\rho)$ as well; there are at least $\rho/2^{s+1}-1$ such~$k$. In all,
+at least $\rho/2^s-3/2$ V's of level $i+1$ lie inside $(p_\rho,u_\rho)$, and their spans are disjoint.
+
+In each of them, with valley cell $v'$ and forward direction $\sigma'$, take the hop between the last visit of the back
+stroke and the first visit of the forward stroke to $v'+\sigma'$. As $2^s\ge2$, this cell is not the base, so the hop
+lies after the apex time; by \cref{lem:dep-structure}(b) the only turns strictly inside it are the valley time of this
+V and turns of V's nested in it, so the hop has level $i+1$. Listing the chosen hops in time order and joining them by
+the stretches of time between them, $K$ gains at least~$1$ along each chosen hop and does not decrease along the
+stretches. Hence $K(u_\rho)-K(p_\rho)$ is at least the number of chosen hops. For $\rho=2^{s_i}-1$ the bound is
+$2^g-2^{-s}-3/2\ge2^g-2$.
+\end{informalproof}
+
+\paragraph{Clock labels.} Counting turns instead of visits gives digits that never decrease. One digit per scale
+suffices for both heads, because the two walks of a deep-nesting pair have the same scales.
+
+\begin{proposition}[Clock labels]\label{prop:dep-clock}
+\notformalized
+Let $x_1$, $x_2$ be time shifts of $U(s_0,m,g)$, for instance a deep-nesting pair, on $[0,T)$, where $T$ is a multiple
+of~$P$. For $0\le i\le m$ let $N^{(i)}(t)$ be the number of turns of level~$i$ of either head at times in $[0,t]$.
+For an
+integer $B\ge2$ and $\omega\in\{0,\dots,B-1\}^{m+1}$ let
+\[
+  \Psi_\omega(t)=\sum_{i=0}^{m}B^{m-i}\bigl((N^{(i)}(t)+\omega_i)\bmod B\bigr)\in\{0,\dots,B^{m+1}-1\}.
+\]
+Then the average of $\cost(\Psi_\omega)$ over all~$\omega$ is at most $12T/B$. Consequently, for every $\eps>0$ the walk
+DAG of the pair has a cut of at most $\eps T$ edges and depth at most $\lceil12/\eps\rceil^{m+1}-1$.
+\end{proposition}
+
+\begin{informalproof}
+The vector $(N^{(0)}(t),\dots,N^{(m)}(t))$ is coordinatewise non-decreasing in~$t$, and $\Psi_\omega(t)$ is the integer
+whose base-$B$ digits, most significant first, are $(N^{(i)}(t)+\omega_i)\bmod B$.
+
+\emph{Hops.} Let $(p,u)$ be a hop of head $h'\in\{1,2\}$ inside $[0,T)$. Its owner is a turn strictly inside $(p,u)$,
+so some $N^{(i)}$ increases from $p$ to~$u$; let $j$ be the least such~$i$ and $\Delta=N^{(j)}(u)-N^{(j)}(p)\ge1$. The
+digits of index less than~$j$ agree at $p$ and~$u$. If $(N^{(j)}(p)+\omega_j)\bmod B<B-\Delta$, digit~$j$ increases and
+$\Psi_\omega(u)>\Psi_\omega(p)$ whatever the later digits are; for uniform $\omega_j$ the residue
+$(N^{(j)}(p)+\omega_j)\bmod B$ is uniform, so the hop is violated with probability at most $\Delta/B$. Now $\Delta$ is
+the number of turns of level~$j$ of either head at times in $(p,u]$, and no turn of level less than~$j$ of either head
+lies in $(p,u]$. Fix a turn~$\tau$ of level~$j$ and consider the hops $(p,u)$ of head~$h'$ with $\tau\in(p,u]$ and
+without turns of head~$h'$ of level less than~$j$ strictly inside. By \cref{lem:dep-structure}(e) if $j\ge1$, and
+because $\abs{x_{h'}}\le2^{s_0}$ if $j=0$, the cell of every such hop lies within distance $2^{s_j}$ (within
+$2^{s_0+1}$ if $j=0$) of $x_{h'}(\tau)$; and at each cell at most one hop of head~$h'$ has $\tau\in(p,u]$, because the
+hops of one head at one cell are disjoint half-open intervals of time. So the turn~$\tau$ is counted, over both
+heads, at most $2(2^{s_j+1}+1)$ times if $j\ge1$ and at most $2(2^{s_0+1}+1)$ times if $j=0$. By
+\cref{lem:dep-structure}(b), each head has, per period, two turns of level~$0$ and $4\cdot2^{gj}$ turns of level~$j$
+for $1\le j\le m$ (a period contains $2\cdot2^{gj}$ V's of level~$j$). Summing over the turns of both heads in one
+period gives at most
+\[
+  4\cdot2(2^{s_0+1}+1)+\sum_{j=1}^{m}8\cdot2^{gj}\cdot2(2^{s_j+1}+1)
+  =32(m+1)2^{s_0}-16\cdot2^{s_0}+8+16\sum_{j=1}^m2^{gj}\;\le\;8P+8\;\le\;9P,
+\]
+because $16\sum_{j\le m}2^{gj}\le32\cdot2^{gm}\le16\cdot2^{s_0}$ (as $s_m\ge1$) and $P\ge8$. So the expected number of
+violated hops is at most $9T/B$.
+
+\emph{Descents.} If no turn occurs at~$t$, then $\Psi_\omega(t)=\Psi_\omega(t-1)$. Otherwise the coordinates increase
+by one for each head that turns at~$t$, so by at most two in all; the first changed digit increases by $1$ or~$2$, and
+$\Psi_\omega$ descends only if this digit wraps, which has probability at most (number of turns at~$t$)$/B$. The two
+heads have at most
+$4+8\sum_{j\le m}2^{gj}\le4+8\cdot2^{s_0}\le3P$ turns per period, so the expected number of descents is at most
+$3T/B$.
+
+For the last claim we may assume $\eps<12$, since cutting all of the at most $3T$ edges gives depth~$0$; take
+$B=\lceil12/\eps\rceil\ge2$, choose~$\omega$ with cost at most the average, and apply
+\cref{lem:dep-label}.
+\end{informalproof}
+
+\paragraph{Why they matter.} By \cref{prop:dep-clock} every deep-nesting pair of fixed nesting depth~$m$ is depth-reducible,
+with $D(\eps)$ of the form $(c/\eps)^{m+1}$; so depth-robustness can only appear as $m$ grows. The two lemmas show why
+the obvious ways of beating the clock fail. For $g\ge2$, a digit that decides one head's hops at several levels exactly,
+with slack below $2^g-2$, must descend inside every V of that head (\cref{lem:dep-monotone}; for $g=1$ the lemma is
+empty), and the other head's long
+hops that span such a descent see it. A digit that decides the other head's hops must instead be non-decreasing across
+them. Anchored digits (\cref{lem:dep-visit,lem:dep-band}) and clock digits are the two ends of this spectrum, and
+every explicit label we know is built from them.
+
+\paragraph{Packing certificates.} A proof that the pairs are depth-robust as $m$ grows must show that every cut of depth~$D$ is
+large. The standard way to certify such lower bounds, linear programming duality or packings of local obstructions,
+cannot do it.
+
+\begin{proposition}[No packing certificate]\label{prop:packing}
+\notformalized
+Let $x_1,\dots,x_k$ be walks of length~$T$, let $H$ be the set of long hops of their walk DAG, and let $D\ge0$. Call a
+set~$F$ of edges \emph{$D$-forcing} if no map $\Psi\colon[0,T)\to\{0,\dots,D\}$ satisfies $\Psi(a)\ge\Psi(b)+1$ for
+every long hop $a\to b$ in~$F$ and $\Psi(a)\ge\Psi(b)$ for every state edge $a\to b$ in~$F$.
+\begin{enumerate}[label=(\alph*)]
+\item Every $D$-forcing set contains a path with at least $D+1$ long hops.
+\item Let $F_1,\dots,F_n$ be $D$-forcing and $y_1,\dots,y_n\ge0$ with $\sum_{j:e\in F_j}y_j\le1$ for every edge~$e$.
+Then every cut of depth at most~$D$ has at least $\sum_jy_j$ edges, and $\sum_jy_j\le\card H/(D+1)\le kT/(D+1)$.
+\item The linear program that minimises $\sum_ez_e$ over $z\ge0$ subject to $\sum_{e\in\pi}z_e\ge1$ for every path~$\pi$
+with at least $D+1$ long hops has value at most $\card H/(D+1)$.
+\end{enumerate}
+Hence a lower bound $\eps T$ on the size of all cuts of depth at most~$D$ can be certified in the form~(b) or~(c) only
+if $D<k/\eps$; such certificates never show depth-robustness.
+\end{proposition}
+
+\begin{informalproof}
+(a) If $F$ contains no path with $D+1$ long hops, let $\Psi(a)$ be the largest number of long hops on a path in~$F$
+that starts at~$a$. Then $0\le\Psi\le D$, and for every edge $a\to b$ of~$F$, $\Psi(a)\ge\Psi(b)+1$ if it is a long
+hop and $\Psi(a)\ge\Psi(b)$ otherwise; so $F$ is not forcing.
+
+(b) Let $F$ be a cut of depth at most~$D$, and let $\Psi$ be the map of the proof of \cref{lem:dep-label}; it satisfies
+the constraints of all edges outside~$F$. Since each $F_j$ is forcing, it contains an edge of~$F$, and
+$\card F\ge\sum_{e\in F}\sum_{j:e\in F_j}y_j\ge\sum_jy_j$. By~(a), $\card{F_j\cap H}\ge D+1$, so
+$(D+1)\sum_jy_j\le\sum_jy_j\card{F_j\cap H}=\sum_{e\in H}\sum_{j:e\in F_j}y_j\le\card H$. Finally $\card H\le kT$,
+because each time is the later endpoint of at most one hop of each head.
+
+(c) Put $z_e=1/(D+1)$ on long hops and $z_e=0$ on state edges.
+
+For the last sentence, $\card H/(D+1)\ge\eps T$ forces $D+1\le k/\eps$.
+\end{informalproof}
+
+On a cyclic time axis, such as the covers of \cref{def:dnp}, every cyclic hop chain is forcing: a chain of $n$ hops
+always contains at least $\lceil n/q\rceil$ violated hops, more than the average $n/q$ unless $q$ divides~$n$. This is
+why we use covers on which $q$ divides the visit numbers of the cells that matter; the effect does not arise on the
+walk DAG, which is acyclic.
+
+\paragraph{Why it matters.} \Cref{prop:packing} rules out the natural strategy for proving depth-robustness by duality:
+packings of forcing structures, of any shape, certify at most what the trivial assignment of weight $1/(D+1)$ to
+every long hop certifies. \Cref{lem:dep-euler}(c) below records the same barrier for cycle bounds in the cost
+identity. A robustness proof cannot be a fractional packing; it has to exploit integrality, and we expect it to be
+multiplicative: it would show that a label with $q$ values cannot serve many levels of both heads at once.
+
+\subsection{Exact identities for labels}\label{sec:dep-identities}
+
+On the cover every label obeys an exact cost identity, which separates the unavoidable floor $1/q$ per hop from the
+errors of the hops.
+
+\begin{lemma}[Lemma Zq: the cost identity]\label{lem:Zq}
+\formal{DepthLabels.lean}{lemma_Zq, card_violated_eq, card_descents_eq}
+Let $\tau$ and $H$ be finite sets, $q\ge1$ an integer, $G\colon\tau\to\{0,\dots,q-1\}$, and $t\mapsto t^-$ a bijection
+of~$\tau$. Let $p,u\colon H\to\tau$ be maps and $\mathrm{succ}$ a bijection of~$H$ with
+$p(\mathrm{succ}(h))=u(h)$ for all $h\in H$. Put $e_h=(G(u(h))-G(p(h))-1)\bmod q$ and $\chi_t=(G(t)-G(t^-))\bmod q$,
+residues in $\{0,\dots,q-1\}$. Then
+\[
+  q\cdot\#\{h:G(u(h))\le G(p(h))\}=\card H+\sum_he_h,\qquad q\cdot\#\{t:G(t)<G(t^-)\}=\sum_t\chi_t,
+\]
+and hence $q\,(\#\{h:G(u(h))\le G(p(h))\}+\#\{t:G(t)<G(t^-)\})=\card H+\sum_he_h+\sum_t\chi_t$.
+\end{lemma}
+
+\begin{outline}
+For $-q\le y<q$ one has $y\bmod q=y+q\cdot[y<0]$ (\lean{emod_of_bounds}). With $y=G(u(h))-G(p(h))-1$, which lies in
+$[-q,q-2]$, this gives $e_h=G(u(h))-G(p(h))-1+q\cdot[G(u(h))\le G(p(h))]$. Summing over~$H$ and using
+$\sum_hG(u(h))=\sum_hG(p(h))$, obtained by reindexing along the bijection $\mathrm{succ}$, gives the first identity. The
+second is the same computation with $y=G(t)-G(t^-)\in(-q,q)$ and $\sum_tG(t^-)=\sum_tG(t)$; the third is their sum.
+\end{outline}
+
+On the cover of \cref{def:dnp} take $\tau=\Z_T$, $t^-=t-1$, let $H=\{1,2\}\times\Z_T$ index the hops of the two heads, with
+$p,u$ their endpoints, and let $\mathrm{succ}$ map a hop to the next hop of the same head at the same cell; the hypothesis only
+says that the hops of each head at each cell form a cycle. Since $\sum_t\chi_t=q\,\mathrm{desc}(G)$, the lemma reads
+\begin{equation}\label{eq:dep-Zq}
+  \cost(G)\;=\;\mathrm{desc}(G)+\frac1q\sum_{\text{hops }h}(1+e_h).
+\end{equation}
+Every hop costs at least $1/q$, and beyond that exactly its error divided by~$q$; every descent costs~$1$. For $q=2$,
+\eqref{eq:dep-Zq} says that twice the cost is $n_{\mathrm h}$ plus the number of hops with $G(u)=G(p)$ plus the number
+of times with $G(t)\ne G(t-1)$, so depth~$1$ is a problem of frustration in a signed graph. The identity also shows
+that $\cost(G)$ does not change when $G$ is replaced by $(G+c)\bmod q$.
+
+\begin{corollary}[Per-class split]\label{cor:dep-split}
+\notformalized
+On the cover of a deep-nesting pair, for every label~$G$,
+\[
+  \cost(G)=\mathrm{desc}(G)+\sum_{h=1}^{2}\sum_{i=0}^{m}\frac1q\sum_{\substack{\text{hops of head }h\\\text{of level
+}i}}
+  (1+e).
+\]
+\end{corollary}
+
+\begin{informalproof}
+Group the hops in \eqref{eq:dep-Zq} by head and level; each hop has exactly one of each.
+\end{informalproof}
+
+So the classes (head, level) contribute additively, and how well $G$ serves a class is measured by the error mass of
+the class: a class on which $G$ is exact costs its size over~$q$.
+
+\paragraph{Lifts.} To state the next lemmas without boundary terms we lift labels, walks and hops to~$\Z$: $G$ and the
+walks are $T$-periodic, the hops of head~$h$ are the pairs $(\prev_h(u),u)$, $u\in\Z$, with $\prev_h$ the previous
+visit on~$\Z$, and each hop of the cover is the residue of such a pair. For a head~$h$, a cell~$c$ and a visit
+$s\in\Z$ of head~$h$ to~$c$, let $\hat\kappa_h(s)$ be the number of visits of head~$h$ to~$c$ at times in $[0,s)$ if
+$s\ge0$, and minus the number at times in $[s,0)$ if $s<0$. Thus $\hat\kappa_h(s')-\hat\kappa_h(s)=1$ for consecutive
+visits $s<s'$, $\hat\kappa_h(s+T)=\hat\kappa_h(s)+n_h(c)$, where $n_h(c)$ is the number of visits of head~$h$ to~$c$ per
+cover, and $\hat\kappa_h=\kappa_h$ on $[0,T)$. Let $t_0(c)$ be the first visit of head~$h$ to~$c$ in $[0,T)$, and let
+$\hat E_h(s)$ be the total error of the hops of head~$h$ at~$c$ whose later endpoint lies in $(t_0(c),s]$ if
+$s\ge t_0(c)$, and minus the total error of those with later endpoint in $(s,t_0(c)]$ if $s<t_0(c)$. So
+$\hat E_h(s')-\hat E_h(s)\ge0$ is the error mass of the hops of~$c$ ending in $(s,s']$ when $s<s'$.
+
+\begin{lemma}[Chain decomposition]\label{lem:chain}
+\partformal{DepthLabels.lean}{congr_of_exact}{the general form~(a), with error terms, and its reading~(c) on the cover.}
+\begin{enumerate}[label=(\alph*)]
+\item For every head~$h$, every cell~$c$ and every visit $s\in\Z$ of head~$h$ to~$c$,
+\[
+  G(s)\equiv G(t_0(c))+\hat\kappa_h(s)+\hat E_h(s)\pmod q,
+\]
+and the total error of the $n_h(c)$ hops of head~$h$ at~$c$ on the cover is congruent to $-n_h(c)$ modulo~$q$.
+\item (Exact case, abstract form.) Let $\prev\colon\tau\to\tau$ and $\mathrm{cell}\colon\tau\to C$ be maps on a set
+$\tau$ with $\mathrm{cell}(\prev(t))=\mathrm{cell}(t)$, such that whenever $\mathrm{cell}(s)=\mathrm{cell}(t)$ some
+iterate of $\prev$ maps $t$ to~$s$. Let $S\subseteq C$, and let $G,\kappa\colon\tau\to\Z$ satisfy
+$G(t)-G(\prev(t))\equiv1$ and $\kappa(t)-\kappa(\prev(t))\equiv1\pmod q$ whenever $\mathrm{cell}(t)\in S$. Then
+$G(s)-\kappa(s)\equiv G(t)-\kappa(t)\pmod q$ whenever $\mathrm{cell}(s)=\mathrm{cell}(t)\in S$.
+\item If $G$ is exact on all hops of head~$h$ at a cell~$c$, then $q$ divides $n_h(c)$ and
+$G\equiv\kappa_h+G(t_0(c))\pmod q$ at the visits of~$c$ in $[0,T)$. Conversely, if $q$ divides $n_h(c)$ and
+$G-\kappa_h$ is constant modulo~$q$ on the visits of~$c$ in $[0,T)$, then $G$ is exact on all hops of head~$h$ at~$c$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}[Outline of the formal proof of~(b)]
+Induction on~$n$ shows $G(\prev^n(t))-\kappa(\prev^n(t))\equiv G(t)-\kappa(t)$: the cell stays in~$S$ because
+$\mathrm{cell}\circ\prev=\mathrm{cell}$, and at each step the two congruences cancel. The orbit hypothesis supplies~$n$
+with $\prev^n(t)=s$.
+\end{outline}
+
+\begin{proof}[Proof of~(a) and~(c) (not formalized)]
+(a) For consecutive visits $s<s'$ of head~$h$ to~$c$, $G(s')-G(s)\equiv1+e(s,s')$ by the definition of the error,
+while $\hat\kappa_h$ rises by~$1$ and $\hat E_h$ by $e(s,s')$. So $G-\hat\kappa_h-\hat E_h$ is constant modulo~$q$ on
+the visits of~$c$, and at $t_0(c)$ it equals $G(t_0(c))$. At $s=t_0(c)+T$ we have $G(s)=G(t_0(c))$,
+$\hat\kappa_h(s)=n_h(c)$, and $\hat E_h(s)$ is the total error of the $n_h(c)$ hops of~$c$ on the cover; this gives the
+second claim.
+
+(c) If all these errors vanish, (a) gives $0\equiv-n_h(c)$ and $G(s)\equiv G(t_0(c))+\kappa_h(s)$ for
+$s\in[0,T)$. Conversely, let $t_0<\dots<t_{n-1}$ be the visits of~$c$ in $[0,T)$. For $1\le j<n$ the hop
+$(t_{j-1},t_j)$ satisfies $G(t_j)-G(t_{j-1})\equiv\kappa_h(t_j)-\kappa_h(t_{j-1})=1$, and the remaining hop of~$c$ on
+the cover, from $t_{n-1}$ to~$t_0$, satisfies $G(t_0)-G(t_{n-1})\equiv0-(n-1)\equiv1$ because $q$ divides~$n$.
+\end{proof}
+
+The visit numbers of the tips are $r(m+1)$ and those of interior cells $r(2m+2)$. So if $q$ divides $r(2m+2)$ but not
+$r(m+1)$, for instance $r=q/\gcd(q,4)$ with $4\mid q$ at $m=1$, no label is exact on all head-$1$ hops; the natural
+class is that of labels exact on all head-$1$ hops \emph{at interior cells}, which by~(c) are the labels
+$G\equiv\kappa_1+\Phi(x_1)\pmod q$ at interior cells, for arbitrary functions~$\Phi$ of the cell. It contains the
+visit-index labels of \cref{lem:dep-visit}.
+
+\begin{lemma}[Transfer identity]\label{lem:transfer}
+\partformal{DepthLabels.lean}{cycleDefect, cycle_errors_congr}{the general form~(a), with head-$1$ error mass, and the
+absorption reading~(c).}
+\begin{enumerate}[label=(\alph*)]
+\item Let $h_j=(p_j,u_j)$, $j\in\Z_\ell$, be hops of head~$2$ on~$\Z$ with $x_1(u_j)=x_1(p_{j+1})$ for every~$j$. Put
+$\Delta\hat\kappa_1(h_j)=\hat\kappa_1(u_j)-\hat\kappa_1(p_j)$ and define the \emph{defect}
+$\delta=\sum_j(\Delta\hat\kappa_1(h_j)-1)$. Then
+\[
+  \sum_je(h_j)\;\equiv\;\delta-\sum_j\bigl(\hat E_1(p_{j+1})-\hat E_1(u_j)\bigr)\pmod q.
+\]
+\item (Exact case, abstract form.) Let $\prev_2\colon\tau\to\tau$, $\mathrm{cell}\colon\tau\to C$, $S\subseteq C$ and
+$G,\kappa\colon\tau\to\Z$ be such that $G-\kappa$ is constant modulo~$q$ on the times of each cell of~$S$. Let
+$b\colon\Z_\ell\to\tau$ satisfy $\mathrm{cell}(b(j))=\mathrm{cell}(\prev_2(b(j+1)))$ and $\mathrm{cell}(b(j))\in S$ for
+all~$j$. Then
+\[
+  \sum_j\bigl(G(b(j))-G(\prev_2(b(j)))-1\bigr)\;\equiv\;\sum_j\bigl(\kappa(b(j))-\kappa(\prev_2(b(j)))-1\bigr)
+  \pmod q;
+\]
+the right side is the defect \lean{cycleDefect} of $\kappa$, $\prev_2$ and~$b$.
+\item (Absorption.) In~(a), call the head-$1$ stretch from $u_j$ to $p_{j+1}$ \emph{forward} if $u_j<p_{j+1}$ and
+\emph{backward} otherwise, and let $A_j=\abs{\hat E_1(p_{j+1})-\hat E_1(u_j)}$ be its error mass. If $-q<\delta<0$ and
+$\sum_je(h_j)<q-\abs\delta$, then either the backward stretches carry error mass at least
+$\abs\delta+\sum_je(h_j)$, or the forward stretches carry error mass at least
+$q-\abs\delta-\sum_je(h_j)+\sum_{\text{backward}}A_j$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}[Outline of the formal proof of~(b)]
+After reindexing one of the sums by the rotation $j\mapsto j+1$ of $\Z_\ell$, the difference of the
+two sides becomes $\sum_j[(G-\kappa)(b(j))-(G-\kappa)(\prev_2(b(j+1)))]$. Each term is divisible by~$q$, because
+$b(j)$ and $\prev_2(b(j+1))$ are times of the same cell of~$S$.
+\end{outline}
+
+\begin{proof}[Proof of~(a) and~(c) (not formalized)]
+(a) By the definition of the error, $G(u_j)-G(p_j)\equiv1+e(h_j)$. By \cref{lem:chain}(a) for head~$1$ at the cell
+$x_1(u_j)=x_1(p_{j+1})$, whose base term cancels,
+$G(p_{j+1})-G(u_j)\equiv\hat\kappa_1(p_{j+1})-\hat\kappa_1(u_j)+\hat E_1(p_{j+1})-\hat E_1(u_j)$. Summing both
+congruences over $j\in\Z_\ell$, the values of~$G$ cancel, and $\sum_j(\hat\kappa_1(p_{j+1})-\hat\kappa_1(u_j))
+=-\sum_j\Delta\hat\kappa_1(h_j)$. Rearranging gives~(a).
+
+(c) Write $\sigma_e=\sum_je(h_j)$, $\delta'=-\delta\in(0,q)$, and let $F_A$ and $B_A$ be the error masses of the forward
+and of the backward stretches. The term $\hat E_1(p_{j+1})-\hat E_1(u_j)$ is $A_j$ for a forward and $-A_j$ for a
+backward stretch, so~(a) says $B_A-F_A\equiv\sigma_e+\delta'\pmod q$, where $0<\sigma_e+\delta'<q$. Write
+$B_A-F_A=\sigma_e+\delta'+qz$ with $z\in\Z$. If $z\ge0$, then $B_A\ge\sigma_e+\delta'$. If $z\le-1$, then
+$F_A=B_A-\sigma_e-\delta'-qz\ge q-\delta'-\sigma_e+B_A$.
+\end{proof}
+
+For labels exact on head~$1$ at interior cells, all errors of head-$1$ hops at interior cells vanish, so by~(a) or~(b)
+every closed sequence of head-$2$ hops through interior head-$1$ cells has $\sum_je(h_j)\equiv\delta$: a cell
+correction~$\Phi$ telescopes and absorbs nothing. In general, by~(c), a defect $-q<\delta<0$ can be absorbed cheaply,
+at a cost of order $\abs\delta/q$, only by errors of head-$1$ hops on backward stretches, which lie inside the overlaps of
+consecutive head-$2$ hops; errors on forward stretches enter with the wrong sign and help only after a wrap, at a cost of nearly a whole
+unit.
+
+\begin{remark}[Numerical: who absorbs in optimised labels]\label{rem:dep-absorb}
+For the deep-nesting pair with $m=3$, $g=1$ and $s_0=6$, we examined the best labels found by optimisation at
+$D=7,15,31,63$; they cost about four to five times less than clock labels with the same number of values. For the
+pairs of head-$2$ hops $a\to b$, $b\to a$ in head-$1$ cell space whose defect a label exact on head~$1$ could not
+absorb, head-$1$ errors on backward stretches did the absorbing in $55\%$, $83\%$, $88\%$ and $96\%$ of the cases,
+and head~$2$ paid (error sum at least $q/2$) in $28\%$, $9\%$, $9\%$ and $4\%$. The transfer identity held on all
+$6925$ pairs examined.
+\end{remark}
+
+\begin{lemma}[Euler: balanced degrees, chain defects, and the barrier in $\Z_q$ form]\label{lem:dep-euler}
+\notformalized
+On the $r$-fold cover of a deep-nesting pair:
+\begin{enumerate}[label=(\alph*)]
+\item The multigraph $M_2$ on the cells of head~$1$ with one edge $x_1(p)\to x_1(u)$ for every hop $(p,u)$ of head~$2$
+is balanced: the in-degree and the out-degree of a cell~$c$ both equal the number of visits of head~$1$ to~$c$.
+\item Let head~$2$ visit the cell~$c'$ at the times $t_0<\dots<t_{n-1}$ of $[0,T)$. Its hops at~$c'$, lifted to
+$(t_{j-1},t_j)$ for $1\le j<n$ and $(t_{n-1},t_0+T)$, satisfy the hypothesis of \cref{lem:transfer}(a), and their
+defect is $n_1(x_1(t_0))-n_2(c')$. It is $0$ if $c'$ and $x_1(t_0)$ are both interior cells or both tips.
+\item In the setting of \cref{lem:transfer}(a), with $A_j$ as in \cref{lem:transfer}(c),
+$\sum_je(h_j)+\sum_jA_j\ge\lVert \delta\rVert_q$, where $\lVert
+\cdot\rVert_q$
+is the distance to $q\Z$, and $\abs\delta$ is at most the number of hops on the closed walk formed by the~$h_j$ and the
+head-$1$ stretches, counted with multiplicity. Consequently, if such closed walks $C_1,\dots,C_n$ use every hop of
+either head at most once in all, the bound they yield through \eqref{eq:dep-Zq},
+$\cost(G)\ge(n_{\mathrm h}+\sum_i\lVert \delta(C_i)\rVert_q)/q$, is at most $2n_{\mathrm h}/q$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) Since $\prev_2$ is a bijection of $\Z_T$, every time~$t$ is the later endpoint of exactly one hop of head~$2$ and
+the earlier endpoint of exactly one; the first enters $x_1(t)$ in~$M_2$ and the second leaves it.
+
+(b) Consecutive hops of the list share an endpoint in time, so the head-$1$ cells match, and the last hop ends at
+$t_0+T$, where head~$1$ is at $x_1(t_0)$. The sum of the $\Delta\hat\kappa_1$ telescopes to
+$\hat\kappa_1(t_0+T)-\hat\kappa_1(t_0)=n_1(x_1(t_0))$, and there are $n=n_2(c')$ hops. As $x_2$ is a time shift
+of~$x_1$, $n_2(c')=n_1(c')$, which is $r(2m+2)$ for interior cells and $r(m+1)$ for tips.
+
+(c) By \cref{lem:transfer}(a), $\delta$ is congruent to $\sum_je(h_j)\pm A_1\pm\dots\pm A_\ell$, whose absolute value
+is at most $\sum_je(h_j)+\sum_jA_j$. Next, $\hat\kappa_1(p_{j+1})-\hat\kappa_1(u_j)$ is plus or minus the number of
+head-$1$ hops on the $j$-th stretch, so $\delta=-\ell-\sum_j(\hat\kappa_1(p_{j+1})-\hat\kappa_1(u_j))$ and $\abs\delta$
+is at most the number of hops on the closed walk. If the walks $C_i$ use every hop at most once, the errors they involve
+are distinct terms of $\sum_he_h$, so \eqref{eq:dep-Zq} gives $q\cost(G)\ge n_{\mathrm h}+\sum_he_h\ge
+n_{\mathrm h}+\sum_i\lVert \delta(C_i)\rVert_q$; and $\sum_i\lVert \delta(C_i)\rVert_q\le\sum_i\abs{\delta(C_i)}\le
+n_{\mathrm h}$.
+\end{informalproof}
+
+\paragraph{Why they matter.} \Cref{lem:Zq} makes the depth problem on the cover an exact accounting problem: a label
+pays $1/q$ per hop, its errors, and its descents, and the error of a hop is a residue modulo~$q$. \Cref{lem:chain}
+says that a label is the visit index of either head plus a cell correction plus that head's integrated errors, and
+\cref{lem:transfer} says how the two descriptions interact: around a closed walk of head-$2$ hops, the defect of
+head~$1$'s visit index must be paid by head~$2$ or absorbed by head~$1$'s errors on backward stretches. By
+\cref{lem:dep-euler}(b), the chain of a head-$2$ cell has zero defect unless exactly one of that cell and the head-$1$
+cell of its first visit is a tip, and by \cref{lem:dep-euler}(c) lower bounds obtained from hop-disjoint cycles in
+this way are bounded by twice the floor: the identity alone does not give robustness, but it says exactly
+what a proof has to count.
+
+\subsection{Labels exact on one head}\label{sec:dep-exact}
+
+The one-head mechanism of \cref{lem:dep-visit} counts exactly along one head; adding an arbitrary correction per cell
+gives the natural class of labels exact on that head. For this class the transfer identity has no absorption, and
+negative cycles force a price that does not depend on~$q$.
+
+\begin{theorem}[Theorem E: labels exact on one head, abstract form]\label{thm:E}
+\formal{DepthLabels.lean}{cost_ge_of_negative_cycles, le_of_modEq_neg}
+\begin{enumerate}[label=(\alph*)]
+\item If $q\ge1$, $E\ge0$ and $\delta<0$ are integers with $E\equiv\delta\pmod q$, then $E\ge q+\delta$.
+\item Let $\tau$ be a finite set, $q\ge1$, $G\colon\tau\to\{0,\dots,q-1\}$, and let $t\mapsto t^-$, $\prev_1$ and
+$\prev_2$ be bijections of~$\tau$. Let $\mathrm{cell}\colon\tau\to C$, $S\subseteq C$ and $\kappa\colon\tau\to\Z$ be
+such that $G-\kappa$ is constant modulo~$q$ on the times of each cell of~$S$. Let $I$ be a finite set and, for $i\in I$,
+let $b_i\colon\Z_{\ell_i}\to\tau$ be maps such that $(i,j)\mapsto b_i(j)$ is injective,
+$\mathrm{cell}(b_i(j))=\mathrm{cell}(\prev_2(b_i(j+1)))$ and $\mathrm{cell}(b_i(j))\in S$ for all $i,j$, and
+\[
+  \delta_i:=\sum_{j\in\Z_{\ell_i}}\bigl(\kappa(b_i(j))-\kappa(\prev_2(b_i(j)))-1\bigr)<0\qquad(i\in I).
+\]
+Then
+\begin{multline*}
+  2\card\tau+\sum_{i\in I}(q+\delta_i)\\
+  \le\;q\Bigl(\#\{t:G(t)\le G(\prev_1t)\}+\#\{t:G(t)\le G(\prev_2t)\}+\#\{t:G(t)<G(t^-)\}\Bigr).
+\end{multline*}
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+(a) Write $E-\delta=qz$; then $z\ge1$ because $E\ge0>\delta$, so $E\ge q+\delta$. (b) Apply \lean{card_violated_eq} to
+each head, with the hops $(\prev_ht,t)$, $t\in\tau$, and the successor bijection $\prev_h^{-1}$, and apply
+\lean{card_descents_eq}; all reduced errors are nonnegative. For each~$i$, the reduced errors of the hops
+$(\prev_2(b_i(j)),b_i(j))$ have a sum congruent to the unreduced sum, which is congruent to $\delta_i$ by
+\lean{cycle_errors_congr}; so by~(a) it is at least $q+\delta_i$. By injectivity these hops are distinct, so the sum
+over~$i$ is at most the total reduced error of head~$2$. Linear arithmetic combines the three identities.
+\end{outline}
+
+On the cover of a deep-nesting pair take $\tau=\Z_T$, $t^-=t-1$, the hop maps $\prev_1,\prev_2$, $\mathrm{cell}=x_1$,
+$S$ the set of interior cells and $\kappa=\kappa_1$; the right side is then $q\cost(G)$, and $2\card\tau=n_{\mathrm h}$.
+If $q$ divides $r(2m+2)$, every label exact on all head-$1$ hops at interior cells satisfies the hypothesis on
+$G-\kappa_1$, by \cref{lem:chain}(c). A family $(b_i)$ is a set of hop-disjoint closed walks of head-$2$ hops in~$M_2$
+through interior head-$1$ cells, each with negative defect. A closed walk with $-q<\delta_i<0$ forces head-$2$ error at
+least $q+\delta_i$, nearly~$q$, on its hops, which by \eqref{eq:dep-Zq} costs nearly one unit, whatever~$q$ is. The
+formal statement needs only $\delta_i<0$; for $\delta_i\le-q$ the contribution $q+\delta_i$ is not positive and lowers
+the bound, so such walks should be left out of the family. Here $\delta_i$ is computed from the residues~$\kappa$ on the
+cover, as in the Lean statement; it differs from the lifted defect of \cref{lem:transfer}(a) by $n_1(\cdot)$ on every
+hop that wraps around the cover, and in Theorem~E$_1$ no hop wraps.
+
+\paragraph{Why it matters.} \Cref{prop:packing} and \cref{lem:dep-euler}(c) bound every packing certificate for all
+labels by about twice the floor. Theorem~E escapes this because the class is restricted: exactness on one head removes
+all absorption (\cref{lem:transfer}), so each negative cycle costs about one unit at every depth. A packing of such
+cycles with positive density therefore gives a price per hop independent of~$D$, which rules out the whole class as a
+depth-reduction mechanism for the instance; the next theorem supplies such a packing in closed form.
+
+\begin{theorem}[Theorem E$_1$]\label{thm:E1}
+\notformalized
+Let $s_0\ge4$, $\Lambda=2^{s_0}$, let $x_1=U(s_0,1,1)$, of period $P=8\Lambda$, and let $x_2(t)=x_1(t+\xi)$ with
+$\xi=3\Lambda+\eta$ for an integer $\eta$ with $0<8\eta<\Lambda$. Let $r,q\ge1$ with $q\mid4r$. Then every label~$G$ on
+the $r$-fold cover (defined as in \cref{def:dnp} for this shift) that is exact on all hops of head~$1$ at interior
+cells satisfies
+\[
+  \cost(G)\;\ge\;\nu_1n_{\mathrm h},\qquad\nu_1=\frac{\Lambda/2-4\eta-1}{16\Lambda},
+\]
+and $\cost(G)\ge\nu_1n_{\mathrm h}+(1-4\nu_1)n_{\mathrm h}/q$ if $q>4$. For the golden shift of \cref{def:dnp} the
+condition $0<8\eta<\Lambda$ holds for every $s_0\ge4$; for $s_0\ge5$, $\nu_1\ge67/4096\approx0.01636$, with equality
+exactly at $s_0=8$, and for $s_0=4$, $\nu_1=3/256$.
+\end{theorem}
+
+\begin{informalproof}
+\emph{The walk.} By \cref{def:dep-walk} with $m=g=1$, each level-$0$ stroke is one segment of $\Lambda$ steps followed
+by a V of two plain strokes of $\Lambda/2$ steps. So on $[0,4\Lambda]$
+\[
+  x_1(t)=\begin{cases}
+  t,&0\le t\le\Lambda,\\
+  2\Lambda-t,&\Lambda\le t\le3\Lambda/2,\\
+  t-\Lambda,&3\Lambda/2\le t\le2\Lambda,\\
+  3\Lambda-t,&2\Lambda\le t\le3\Lambda,\\
+  t-3\Lambda,&3\Lambda\le t\le7\Lambda/2,\\
+  4\Lambda-t,&7\Lambda/2\le t\le4\Lambda,
+  \end{cases}
+\]
+and $x_1(t+4\Lambda)=-x_1(t)$ for all~$t$. In $[0,8\Lambda)$, a cell~$c$ with $0<c<\Lambda/2$ is visited at the times
+$c$, $3\Lambda-c$, $3\Lambda+c$, $4\Lambda-c$, and a cell with $\Lambda/2<c<\Lambda$ at $c$, $2\Lambda-c$,
+$\Lambda+c$, $3\Lambda-c$; we call $0,1,2,3$ the \emph{indices} of these visits. A cell~$c$ with $-\Lambda<c<0$ is
+visited at the times $4\Lambda+t$, for the visits $t$ of $-c$ just listed, with the same indices. Each of these cells
+is interior and has $4$ visits per period; so for a time~$t$ of the $k$-th period copy $[8\Lambda k,8\Lambda(k+1))$ of
+the cover at such a cell, $\kappa_1(t)$ is $4k$ plus the index of the visit. A pair $(p,u)$ is a hop of head~$2$ if and
+only if $(p+\xi,u+\xi)$ is a hop of head~$1$.
+
+\emph{The family.} For every integer~$a$ with $1\le a\le\Lambda/2-4\eta-1$ consider the four head-$2$ hops of the
+following table, where the third column is the head-$1$ hop they come from, with its cell, and the last two columns
+give the cells of head~$1$ at the two endpoints and the difference of the indices of these visits.
+\begin{center}
+\small
+\begin{tabular}{@{}llllc@{}}
+\toprule
+& head-$2$ hop $(p,u)$ & head-$1$ hop $(p+\xi,u+\xi)$; its cell & $x_1(p)\to x_1(u)$ & $\Delta\kappa_1$\\
+\midrule
+$e_1$ & $(a,\Lambda-a-2\eta)$ & $(3\Lambda+a+\eta,4\Lambda-a-\eta)$; $a+\eta$ & $a\to\Lambda-a-2\eta$ & $0$\\
+$e_2$ & $(2\Lambda+a+2\eta,3\Lambda-a-4\eta)$ & $(5\Lambda+a+3\eta,6\Lambda-a-3\eta)$; $a+3\eta-\Lambda$
+& $\Lambda-a-2\eta\to a+4\eta$ & $-2$\\
+$e_3$ & $(3\Lambda-a-4\eta,3\Lambda+a+2\eta)$ & $(6\Lambda-a-3\eta,6\Lambda+a+3\eta)$; $a+3\eta-\Lambda$
+& $a+4\eta\to a+2\eta$ & $1$\\
+$e_4$ & $(3\Lambda-a-2\eta,3\Lambda+a)$ & $(6\Lambda-a-\eta,6\Lambda+a+\eta)$; $a+\eta-\Lambda$
+& $a+2\eta\to a$ & $1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The bounds on~$a$ give $0<a+\eta<a+2\eta<a+3\eta<a+4\eta<\Lambda/2$, which places every cell below in the stated range.
+Row~$e_1$: the cell $a+\eta$ lies in $(0,\Lambda/2)$ and is visited at $3\Lambda+(a+\eta)$ and $4\Lambda-(a+\eta)$ with
+indices $2$ and~$3$, consecutively; at the times $a$ and $\Lambda-a-2\eta$ head~$1$ is on its first stroke, at cells
+$a\in(0,\Lambda/2)$ and $\Lambda-a-2\eta\in(\Lambda/2,\Lambda)$, both with index~$0$. Row~$e_2$: the cell
+$\Lambda-a-3\eta$ lies in $(\Lambda/2,\Lambda)$ and is visited at $\Lambda+a+3\eta$ and $2\Lambda-a-3\eta$ with indices
+$1$ and~$2$, so its negative $a+3\eta-\Lambda$ is visited at the times of the table with indices $1$ and~$2$,
+consecutively; at $2\Lambda+a+2\eta=3\Lambda-(\Lambda-a-2\eta)$ head~$1$ visits
+$\Lambda-a-2\eta\in(\Lambda/2,\Lambda)$ with index~$3$, and
+at $3\Lambda-(a+4\eta)$ it visits $a+4\eta\in(0,\Lambda/2)$ with index~$1$. Row~$e_3$: the visits of
+$a+3\eta-\Lambda$ at $6\Lambda-a-3\eta$ and $6\Lambda+a+3\eta=4\Lambda+3\Lambda-(\Lambda-a-3\eta)$ have indices
+$2$ and~$3$; at $3\Lambda+(a+2\eta)$ head~$1$ visits $a+2\eta\in(0,\Lambda/2)$ with index~$2$. Row~$e_4$: the cell
+$\Lambda-a-\eta$ lies in $(\Lambda/2,\Lambda)$ and is visited at $2\Lambda-a-\eta$ and $2\Lambda+a+\eta$ with indices
+$2$ and~$3$, so its negative $a+\eta-\Lambda$ is visited at the times of the table with indices $2$ and~$3$; at
+$3\Lambda-(a+2\eta)$ head~$1$ visits $a+2\eta$ with index~$1$, and at $3\Lambda+a$ it visits $a$ with index~$2$. In
+each row $p<u$, and all eight times lie in $[0,4\Lambda)$, so the
+differences of~$\kappa_1$ in any period copy are the differences of the indices.
+
+\emph{Closure and defect.} The head-$1$ cells run $a\to\Lambda-a-2\eta\to a+4\eta\to a+2\eta\to a$, so
+$x_1(u_j)=x_1(p_{j+1})$ for $j\in\Z_4$, identically in $a$, $\Lambda$ and~$\eta$, and all four cells are interior. The
+defect is $(0-1)+(-2-1)+(1-1)+(1-1)=-4$. (At $a=0$ and at $a=\Lambda/2-4\eta$ other negative cycles arise, with other
+index patterns; we do not use them.)
+
+\emph{The mirror family.} Since $x_1(t+4\Lambda)=-x_1(t)$ for all~$t$, also $x_2(t+4\Lambda)=-x_2(t)$, so adding
+$4\Lambda$ to all times of a member gives four head-$2$ hops whose head-$1$ cells are negated. The cycle condition is
+preserved, the indices are the same by the description of the visits of negative cells, and the defect is again~$-4$.
+
+\emph{Disjointness.} A hop of head~$2$ on the cover is determined by its later endpoint. In $[0,8\Lambda)$ the later
+endpoints of $e_1$, $e_2$, $e_3$, $e_4$ lie in $(\Lambda/2,\Lambda)$, $(5\Lambda/2,3\Lambda)$, $(3\Lambda,7\Lambda/2)$
+and $(3\Lambda,7\Lambda/2)$ respectively, and those of the mirror family in the same intervals shifted by $4\Lambda$;
+these sets are disjoint except for the last two. For different values of~$a$ the endpoints of $e_1$ differ, as do those
+of $e_2$, of~$e_3$ and of~$e_4$, and $3\Lambda+a+2\eta=3\Lambda+a'$ exactly when $a'=a+2\eta$. So two members share a
+hop only if their parameters differ by~$2\eta$, the shared hop being $e_3$ of the smaller and $e_4$ of the larger, and
+within a member the four hops are distinct. Let $n=\Lambda/2-4\eta-1$ be the number of members of each family. The
+members split into chains $a,a+2\eta,a+4\eta,\dots$; keeping every other member of each chain, starting with the
+first, keeps $\lceil\ell/2\rceil$ members of a chain of~$\ell$, hence at least $n/2$ members of each family, and the
+kept members are pairwise hop-disjoint. With the mirror family this gives at least~$n$ hop-disjoint cycles per period.
+
+\emph{Counting.} On the $r$-fold cover, take these cycles in each of the $r$ period copies, translated by multiples of
+$8\Lambda$; they remain hop-disjoint, each has defect $-4$ computed with~$\kappa_1$, and their number $n_{\mathrm c}$ is
+at least $rn$. Interior cells have $4r$ visits per cover and $q\mid4r$, so by \cref{lem:chain}(c) the label~$G$
+satisfies the hypothesis of \cref{thm:E}(b) with $\kappa=\kappa_1$. That theorem gives
+$q\cost(G)\ge2T+n_{\mathrm c}(q-4)$, that is, $\cost(G)\ge n_{\mathrm c}+(2T-4n_{\mathrm c})/q\ge n_{\mathrm c}$,
+because the $n_{\mathrm c}$ cycles use $4n_{\mathrm c}$ distinct hops among the $T$ hops of head~$2$. Since
+$n_{\mathrm h}=2T=16r\Lambda$ and $n_{\mathrm c}\ge rn$, this is $\cost(G)\ge\nu_1n_{\mathrm h}$. If $q>4$, the right
+side $n_{\mathrm c}(1-4/q)+2T/q$ increases with~$n_{\mathrm c}$, and $n_{\mathrm c}\ge2T\nu_1$ gives
+$\cost(G)\ge\nu_1n_{\mathrm h}+(1-4\nu_1)n_{\mathrm h}/q$.
+
+\emph{The golden shift.} Here $P=8\Lambda$ and $0.381966\,P=3.055728\Lambda$. For $s_0=5,6,7,8$ one finds
+$\lfloor3.055728\Lambda\rfloor=97,195,391,782$, so $\xi=97,195,391,783$, $\eta=1,3,7,15$, $8\eta<\Lambda$, and
+$\nu_1=11/512$, $19/1024$, $35/2048$, $67/4096$. For $s_0\ge9$, $3.055728\Lambda-1<\xi\le3.055728\Lambda+1$, so
+$0.055728\Lambda-1<\eta\le0.055728\Lambda+1$; hence $0<8\eta<\Lambda$ and
+$\nu_1\ge(0.277088-5/\Lambda)/16\ge0.0167>67/4096$, as $\Lambda\ge512$.
+\end{informalproof}
+
+\paragraph{Why it matters.} Theorem~E$_1$ is the first price per hop that does not depend on the depth, on the
+sharpest open instance, with one level of nesting, for a natural class of labels: the class that extends the mechanism solving one walk by an
+arbitrary correction per cell. On the golden pair with $m=1$ and $s_0\ge5$, such labels cost at least $0.016$ per hop on the cover, about
+$0.033\,T$, at every depth~$D$, so they cannot give $\cost\le\eps T$ for $\eps<0.03$; for the aligned shift $\xi=1$ the
+analogous certificates are close to zero numerically. The theorem says nothing about labels with small but nonzero
+errors on
+head~$1$, and these are exactly what optimised labels use (\cref{rem:dep-absorb}).
+
+\begin{remark}[From the cover to the walk DAG]\label{rem:dep-linear}
+The same argument works on the walk DAG of the pair of \cref{thm:E1} on $[0,NP)$, $N\ge1$, for labels
+$\Psi\colon[0,NP)\to\{0,\dots,q-1\}$ that are exact modulo~$q$ on all head-$1$ hops at interior cells. The chains of
+hops no longer close up, so summing $q[\Psi(u)\le\Psi(p)]=1+e-(\Psi(u)-\Psi(p))$ over the hops of a chain gives
+$q\cdot\#\{\text{violated hops}\}\ge\#\{\text{hops}\}+\sum e-(q-1)\#\{\text{chains}\}$; there are at most
+$2(2\Lambda+1)$ chains. Along each interior head-$1$ chain
+$\Psi-\kappa_1$ is constant modulo~$q$, with no divisibility condition, and the cycles of the family that lie in
+$[0,NP)$, at least $Nn$ after selection, force head-$2$ error at least $q-4$ each. Hence, counting hops per head,
+$\cost(\Psi)\ge2\nu_1NP-O(\Lambda)$ for $q>4$, and $\cost(\Psi)\ge NP/2-O(\Lambda)$ for $q\le4$ from the floor. A
+pair $(p,u)$ that is a hop of both heads would be a single edge of the walk DAG, but there is none. Indeed, all turn
+times and turn positions of $U(s_0,m,g)$ are multiples of $2^{s_m}$, so on every maximal monotone run $x(t)=\pm t+c$
+with $2^{s_m}\mid c$. A hop $(p,u)$ leaves $x(p)$ at time~$p$ and returns at time~$u$ along runs of opposite slopes,
+so $p+u\equiv0\pmod{2^{s_m}}$, while a hop of $x_2$ satisfies $p+u\equiv-2\xi$; and $2\xi\not\equiv0\pmod{2^{s_m}}$ for
+odd~$\xi$ when $s_m\ge2$; for the pair of \cref{thm:E1}, where $\xi=3\Lambda+\eta$ need not be odd, $2^{s_1}=\Lambda/2$
+and $2\xi\equiv2\eta\not\equiv0\pmod{\Lambda/2}$ because $0<2\eta<\Lambda/4$.
+\end{remark}
+
+\begin{remark}[Numerical: nesting depths $m\le6$]\label{rem:dep-Em}
+Theorem~E$_1$ is a closed form of computer-found certificates. For the golden pair $\mathrm{DNP}(s_0,m,1)$ with $1\le
+m\le6$, explicit one-parameter families of negative cycles in~$M_2$, fitted as affine functions of~$a$, $\Lambda$
+and~$\xi$ on ranges of~$s_0$ between $9$ and~$14$ and checked member by member on instances outside the fitting range
+(up to $s_0=16$), certify for labels exact on all head-$1$ hops at interior cells, at every~$q$, prices per hop of
+$0.0509$, $0.0554$, $0.0527$, $0.0519$, $0.0526$, $0.0480$ for $m=1,\dots,6$ (from $12,16,95,208,245,531$ families,
+with the fractional packing that gives each member $C$ the weight $1/\max_{h\in C}\mathrm{load}(h)$, where the load of a
+hop is the number of members through it). These values were stable in~$s_0$; they are per-instance certificates, not proofs
+for all~$s_0$, and they have not been checked independently. For $m=1$ a greedy selection of hop-disjoint
+members does better: it finds exactly $\Lambda-4$ negative $4$-cycles per period on all instances checked ($7\le s_0\le14$
+and $s_0=16$), that is, a price $1/16-1/(4\Lambda)$ per hop at every~$q$; a proof would need the coincidences between the
+twelve families. For labels exact only on
+the head-$1$ hops of some levels, the certified price falls as levels are released: at $m=1$ exactness on the finest
+level alone admits an explicit label of cost at most about $4/q$ per hop, while at $m=3$ and $s_0=7$, exactness on the
+finest one, two or three levels or on all four carries certified prices of about $0.003$, $0.026$, $0.066$ and
+$0.107$. Why ``every~$m$'' is open: the families show no recursion in~$m$, and the phases of the shift relative to the
+level grids, $\psi_i=\mathrm{frac}(2^i\xi/2^{s_0})$, which are the same for all strokes of level~$i$, degenerate for
+special~$m$; for instance $\psi_2,\dots,\psi_6$ lie between $0.003$ and $0.06$ at $m=8$, and when $15625$ divides
+$m+1$ exact arithmetic gives $\psi_i=2^{i-s_0}$ for every $i\ge3$. A proof for all~$m$ therefore needs a rule
+generating level-$i$ families from local configurations, a bound on their overlaps independent of~$m$, and a positive
+share of good levels, not equidistribution of phases.
+\end{remark}
+
+\subsection{The remaining gap}\label{sec:dep-gap}
+
+Labels found by optimisation are not exact on either head. They trade errors of head~$1$ on backward stretches
+against errors of head~$2$ (\cref{rem:dep-absorb}), and by \cref{lem:transfer}(c) such an absorption costs only about
+$\abs\delta/q$ per cycle. A lower bound for all labels must show that absorptions cannot be supplied consistently: an
+error on a head-$1$ hop lies on backward stretches of some head-$2$ cycles, where it helps, and on forward stretches of
+others, where it hurts, and symmetrically for head~$2$. We expect that this forces a multiplicative loss at every level
+that both heads use, and we state the expected outcome as a count of served levels.
+
+Let the pair of \cref{def:dnp} be defined, verbatim, for any odd shift~$\xi$. For a label~$G$ on its cover and
+$0<\theta<1$, say that level~$i$ is \emph{$\theta$-served for head~$h$} if the hops of head~$h$ of level~$i$ have total error at most $\theta qn_{\mathrm h}/(2(m+1))$, and
+\emph{doubly $\theta$-served} if it is $\theta$-served for both heads. When the $n_{\mathrm h}/2$ hops of each head are
+spread evenly over the $m+1$ levels, as numerical counts indicate, this says that the mean error per hop of the class
+is at most~$\theta q$. Two kinds of labels serve every level for trivial reasons; the conjecture excludes the first by
+its bound on the cost and the second by its choice of the shift. Labels with few or random values serve every level at
+large~$\theta$, but cost at least $n_{\mathrm h}/q$, more than $n_{\mathrm h}/8$ if $q<8$, respectively about
+$n_{\mathrm h}/2$, by \eqref{eq:dep-Zq}. And for a shift aligned with the dyadic scales, such as the golden shift
+when $15625$ divides $m+1$, a label exact on one head is nearly exact on the other.
+
+\begin{conjecture}[Conjecture A$'$: few doubly served levels]\label{conj:Aprime}
+There are $\theta_0>0$ and constants $C,C'$, and for all $s_0$ and~$m$ an odd shift~$\xi$, such that for all $r$
+and~$q$ every label~$G$ with $\cost(G)\le n_{\mathrm h}/8$ on the $r$-fold cover of the pair $x_1=U(s_0,m,1)$,
+$x_2=x_1(\cdot+\xi)$ has at most $C\log_2q+C'$ doubly $\theta_0$-served levels.
+\end{conjecture}
+
+We expect shifts misaligned with the dyadic scales at every level to qualify. The golden shift is not always one of
+them: even when $15625\nmid m+1$, its phases nearly align at several levels for some~$m$, such as $m=8$
+(\cref{rem:dep-Em}).
+
+If the conjecture holds, let $G$ be a label, on a cover of the pair with the shift that it provides, of cost
+$\cost(G)\le\eps n_{\mathrm h}$, where $\eps\le1/8$ and
+$\eps<\theta_0/2$. By \cref{cor:dep-split}, every level that is not doubly $\theta_0$-served contributes more than
+$\theta_0n_{\mathrm h}/(2(m+1))$ to the cost, so fewer than $2\eps(m+1)/\theta_0$ levels are not doubly served, and
+$(m+1)(1-2\eps/\theta_0)<C\log_2q+C'$. This gives
+\[
+  D=q-1\;\ge\;\exp\bigl(c(1-2\eps/\theta_0)(m+1)-c'\bigr)-1
+\]
+for constants $c,c'>0$, so the depth needed at a fixed cost per hop grows exponentially in the depth of nesting,
+matching the clock labels of \cref{prop:dep-clock} up to the constant in the exponent. The same statement for labels
+on the walk DAG of many periods would bound the depth of every cut of size $\eps T$ in the same way, because
+\eqref{eq:dep-Zq} and \cref{cor:dep-split} hold there up to boundary terms and, when $s_m\ge2$, no pair is a hop of
+both heads (both as in \cref{rem:dep-linear}). It would make the family of these pairs with $s_m\ge2$, $m\to\infty$,
+depth-robust, and \cref{prob:tcp} for $k=2$ would have a negative answer.
+
+\begin{remark}[Numerical: evidence for Conjecture~A$'$]\label{rem:dep-Aevidence}
+The evidence is limited. In the best labels found by optimisation for $m=3$ ($g=1$, $s_0=6$), with mean error at most
+$q/10$ per hop counted as served, the number of doubly served levels was $1$, $1$, $2$ and $2$ or~$3$ at
+$D=7,15,31,63$, consistent with growth like $\log q$, and level~$0$ of head~$1$ was never served (mean error about
+$0.17q$ to $0.20q$ at every~$D$). Labels exact on several levels of one head carry a price that grows with the number
+of exact levels (\cref{rem:dep-Em}), a restricted form of the conjecture. Small instances cannot decide asymptotic
+questions, and these labels are upper bounds of uncertain quality.
+\end{remark}
+
+\paragraph{Status.} We do not know whether the deep-nesting pairs are depth-robust as $m$ grows. No mechanism we know
+cuts them at a depth independent of~$m$: per-head band rules appear to fail (proof sketches of \cref{rem:dep-N,rem:dep-Nprime}); for $g\ge2$, anchored digits
+cannot be monotone (\cref{lem:dep-monotone}); and explicit combinations of visit indices and band counts kept a cost per
+hop bounded away from zero at every depth tried, in computations up to $m=8$. Clock labels cut each pair, but only at depth $(c/\eps)^{m+1}$ (\cref{prop:dep-clock}). On the other
+side, the only lower bounds that hold at every depth are for restricted classes
+(\cref{thm:E,thm:E1}), and packing certificates cannot do better (\cref{prop:packing}).
+
+\paragraph{Why it matters.} \Cref{prob:tcp} is the walk-level form of the structural hypothesis of \cref{thm:D}, and
+\cref{thm:B} solves it for home-based walks. On the sharpest open instance, the evidence just listed leaves a robust
+multiplicative count of absorptions as the missing step, of which \cref{conj:Aprime} is one form. Either answer is
+informative. If the pairs are depth-robust as $m$ grows, $\TCP(2)$ fails as stated; if moreover oblivious linear-time
+machines can generate them as dummy traffic and they are depth-robust at every $\eps$ below the crux rates in question, the structural hypothesis of \cref{thm:D} must be weakened as explained in
+\cref{sec:dep-problem}, and these pairs, placed at intermediate scales inside curved motion, are candidates for the depth-robust schedule that
+an oblivious linear-time transposer obeying the crux would need. If they are depth-reducible at a depth independent
+of~$m$, the mechanism must beat clock
+labels by absorbing defects consistently across levels, and it would be the core of a general proof of $\TCP(2)$.

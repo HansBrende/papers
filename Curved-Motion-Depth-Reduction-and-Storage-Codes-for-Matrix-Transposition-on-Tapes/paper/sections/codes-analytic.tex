@@ -1,0 +1,765 @@
+% Continuation of the codes section (\cref{sec:codes}): subsections only.
+
+\subsection{Bounded complex coefficients: Theorem A}\label{sec:ana-A}
+
+The rate bounds proved so far in this section hold either for all codes on special graphs (\cref{thm:H} and its
+corollaries) or for all linear codes on triangle-free graphs of maximum degree~$3$ (\cref{thm:S}). The undirected crux
+(\cref{prob:undirected-crux}) concerns locally bipartite side information of bounded degree. In this subsection we
+prove the bound~$\frac12+o(1)$ on the rate in that setting for one class of codes: linear codes over~$\R$ or~$\C$
+whose recovery coefficients are bounded.
+
+Let $G$ be a finite graph with vertex set $V$ and $N=\card V$. A matrix $M\in F^{V\times V}$ over a field $F$
+\emph{fits} $G$ if $M_{vv}=1$ for every $v$ and $M_{vu}=0$ whenever $u\ne v$ and $uv\notin E(G)$. By
+\cref{lem:linear-pattern}, the linear storage codes on $G$ over $F$ are the subspaces of kernels of matrices that fit
+$G$; the coefficients $R_{vu}$ of a recovery rule $x_v=\sum_{u\sim v}R_{vu}x_u$ are the negated off-diagonal entries of
+such a matrix, which we call a \emph{check matrix} of the code.
+A complex matrix is \emph{$B$-bounded} if all its entries have modulus at most $B$; a matrix that fits a
+graph can be $B$-bounded only if $B\ge1$. For $\ell\ge1$ let $\mathrm{odd}_\ell(G)$ be the set of vertices of $G$ that
+lie on an odd cycle of length at most $\ell$. As in \cref{prob:undirected-crux}, a sequence of graphs $G_n$ on
+$N_n\to\infty$ vertices is \emph{locally bipartite} if $\card{\mathrm{odd}_\ell(G_n)}=o(N_n)$ for every fixed $\ell$.
+Sequences whose girth tends to infinity
+are locally bipartite, and so are \emph{locally tree-like} sequences, in which, for every fixed $\ell$, only $o(N_n)$
+vertices lie on cycles of length at most $\ell$.
+
+\begin{theorem}[Theorem A: bounded complex coefficients]\label{thm:A}
+\notformalized
+Let $D\ge1$ and $B\ge1$.
+\begin{enumerate}[label=(\roman*)]
+\item Let $(G_n)$ be a locally bipartite sequence of graphs of maximum degree at most $D$ on $N_n$ vertices, and let
+  $M_n\in\C^{V(G_n)\times V(G_n)}$ be $B$-bounded matrices that fit $G_n$. Then
+  $\liminf_n\rank(M_n)/N_n\ge\frac12$.
+\item \emph{(Uniform form.)} For every $\eps>0$ there are $\delta>0$ and $N_0$ such that $\rank M\ge(\frac12-\eps)N$
+  for every graph $G$ on $N\ge N_0$ vertices of maximum degree at most $D$ with
+  $\card{\mathrm{odd}_{\lfloor1/\delta\rfloor}(G)}\le\delta N$ and every $B$-bounded complex matrix $M$ that fits $G$.
+\item \emph{(Random regular graphs.)} Let $d\ge3$ and $\eps>0$, and let $G_{n,d}$ be a uniformly random $d$-regular
+  graph on $n$ vertices ($nd$ even). With probability tending to $1$ as $n\to\infty$, every $B$-bounded complex matrix
+  that fits $G_{n,d}$ has rank at least $(\frac12-\eps)n$.
+\end{enumerate}
+\end{theorem}
+
+In terms of codes (\cref{cor:ana-codes}): on a locally bipartite sequence of graphs of bounded degree, a linear storage
+code over $\R$ or $\C$ whose recovery coefficients have modulus at most $B$ has dimension at most $(\frac12+o(1))N_n$.
+
+\paragraph{Why it matters.} For the impossibility side, Theorem~A proves the analogue of the crux's rate bound
+(\cref{def:crux}) for real and complex linear codes with bounded recovery coefficients, scalar or with a fixed number of
+symbols per vertex (\cref{prop:ana-A-ext}), on side information of bounded total degree whose underlying graphs are
+locally bipartite. The crux itself concerns binary codes; Theorem~A bears on them through \cref{cor:torsion}. Only the support of the check matrix enters, so directed side information is
+covered through its underlying graph, and locally tree-like side information is covered. For the construction side it
+is a design rule: on such side information, a code that beats rate~$\frac12$ by a constant is nonlinear, or vector-linear
+with a number of symbols per vertex that grows with $N$, or linear with coefficients that no diagonal rescaling makes
+bounded (\cref{prop:ana-A-ext}(a), for $t=1$), or linear over a finite field, and then every bounded integer lift of its
+check matrix has $p$-torsion of linear rank (\cref{cor:torsion}). Codes over finite alphabets, linear or not, are not
+covered; they are the open part of the crux.
+
+\paragraph{Local limits.} We use the framework of Benjamini and Schramm~\cite{BenjaminiSchramm2001} and of Aldous and
+Lyons~\cite{AldousLyons2007}. A \emph{network} is a connected graph of maximum degree at most $D$ with \emph{marks}: a
+point of a compact metric space $\Xi_V$ at every vertex and a point of a compact metric space $\Xi_E$ at each end of
+every edge. A \emph{rooted} network has a distinguished vertex $o$, a \emph{doubly rooted} network an ordered pair of
+distinguished vertices, and we identify networks that are isomorphic by graph isomorphisms preserving the roots and the
+marks. Two rooted networks are close if, for a large $R$, the balls of radius $R$ around their roots are isomorphic by a
+root-preserving graph isomorphism that changes every mark by less than $1/R$. Since degrees are bounded and the mark
+spaces are compact, the space of rooted networks is compact (a diagonal argument). A finite marked graph of maximum
+degree at most $D$, connected or not, defines a random rooted network: choose $o$ uniformly among its vertices and keep
+the component of $o$. A sequence of finite marked graphs \emph{converges locally} to a probability measure $\mu$ on
+rooted networks if these random rooted networks converge to $\mu$ in distribution. A probability measure $\mu$ on
+rooted networks is \emph{unimodular} if it satisfies the mass-transport principle
+\begin{equation}\label{eq:ana-mtp}
+  \mathbb{E}_\mu\sum_{x\in V(G)}f(G,o,x)\;=\;\mathbb{E}_\mu\sum_{x\in V(G)}f(G,x,o)
+\end{equation}
+for every Borel function $f\ge0$ on doubly rooted networks, where $(G,o)$ denotes a $\mu$-random rooted network. We use
+four standard facts.
+\begin{enumerate}[label=(L\arabic*)]
+\item Every sequence of finite marked graphs as above has a locally convergent subsequence (compactness and
+  Prokhorov's theorem).
+\item Every local limit of finite marked graphs is unimodular~\cite[Section~2]{AldousLyons2007}. (A finite graph with
+  several components is a convex combination of its components, each rooted uniformly.)
+\item Let $\mu$ be unimodular. A family $T=(T_G)$ of bounded operators $T_G$ on $\ell^2(V(G))$, indexed by networks,
+  is \emph{equivariant} if $\langle T_{G'}\delta_{\varphi x},\delta_{\varphi y}\rangle=\langle T_G\delta_x,\delta_y\rangle$
+  for every isomorphism $\varphi\colon G\to G'$ of networks and all vertices $x,y$, and \emph{measurable} if
+  $(G,x,y)\mapsto\langle T_G\delta_x,\delta_y\rangle$ is Borel on doubly rooted networks. The $\mu$-classes of
+  equivariant, measurable families with $\sup_G\lVert T_G\rVert<\infty$ form a von Neumann algebra $\mathrm{Alg}(\mu)$,
+  acting on the direct integral of the spaces $\ell^2(V(G))$, on which
+  $\mathrm{Tr}(T)=\mathbb{E}_\mu\langle T_G\delta_o,\delta_o\rangle$ is a positive linear functional with
+  $\mathrm{Tr}(ST)=\mathrm{Tr}(TS)$~\cite[Section~5]{AldousLyons2007}. Its elements act fibrewise, and their kernels,
+  ranges and spectral projections are computed fibrewise.
+\item (Polar decomposition.) For $T$ in a von Neumann algebra $\mathcal A$ there is a partial isometry $U\in\mathcal A$
+  such that $U^*U$ is the projection onto $(\ker T)^\perp$ and $UU^*$ is the projection onto the closure of the range
+  of $T$~\cite[Theorem~6.1.2 and Proposition~6.1.3]{KadisonRingrose1997}.
+\end{enumerate}
+
+\begin{informalproof}
+(i) Let $\nu_n=1-\rank(M_n)/N_n$ be the normalized nullity and $\nu=\limsup_n\nu_n$; we show $\nu\le\frac12$. Make
+$G_n$ a marked graph by putting the mark $M_n[v,u]$, a point of the disc $\{z\in\C:\abs z\le B\}$, at the end $v$ of
+each edge $vu$. Pass to a subsequence along which $\nu_n\to\nu$ and, by (L1), the marked graphs converge locally to some
+$\mu$, which is unimodular by (L2). Write $(G,M,o)$ for a $\mu$-random rooted network. The marks define an operator $M_G$
+on $\ell^2(V(G))$ by $(M_Gx)_v=x_v+\sum_{u\sim v}M[v,u]\,x_u$. Each row and each column of $M_G$ has at most $D+1$
+nonzero entries, of modulus at most $B$, so $\lVert M_G\rVert\le(D+1)B$, and $(M_G)$ is an equivariant measurable
+family.
+
+\emph{Step 1: the limit is bipartite.} For $\ell,R\ge1$ let $A_{\ell,R}$ be the set of rooted networks in which some odd
+cycle of length at most $\ell$ meets the ball of radius $R$ around the root. Such a cycle lies in the ball of radius
+$R+\ell$, so membership in $A_{\ell,R}$ is decided by that ball without its marks, and $A_{\ell,R}$ is open and closed.
+A uniform root of $G_n$ lies in $A_{\ell,R}$ only if it is within distance $R$ of $\mathrm{odd}_\ell(G_n)$, which has
+probability at most $(1+D+\dots+D^R)\card{\mathrm{odd}_\ell(G_n)}/N_n\to0$. Since $A_{\ell,R}$ is open and closed,
+$\mu(A_{\ell,R})$ is the limit of these probabilities, so $\mu(A_{\ell,R})=0$. Every odd cycle of $G$ meets some ball
+around $o$, so $\mu$-almost surely $G$ has no odd cycle: $G$ is bipartite.
+
+\emph{Step 2: semicontinuity of the nullity.} Let $H_n=M_n^*M_n$ and let $\sigma_n$ be the empirical eigenvalue
+distribution of $H_n$ (eigenvalues counted with multiplicity, each with mass $1/N_n$); it is supported in $[0,c]$ with
+$c=((D+1)B)^2$. For $k\ge0$, $\int x^k\,d\sigma_n=N_n^{-1}\operatorname{tr}H_n^k$ is the expectation, over a uniform
+vertex $o$ of $G_n$, of $\langle H_n^k\delta_o,\delta_o\rangle$. Expanding the product,
+$\langle(M^*M)^k\delta_o,\delta_o\rangle$ is a sum of at most $(D+1)^{2k}$ products of $2k$ entries of $M$ or their
+conjugates, taken along walks of length $2k$ from $o$ to $o$ whose steps stay put or move to a neighbour; such walks
+stay in the ball of radius $k$. Hence $(G,M,o)\mapsto\langle(M_G^*M_G)^k\delta_o,\delta_o\rangle$ is a bounded continuous
+function on rooted networks, and $\int x^k\,d\sigma_n\to\mathbb{E}_\mu\langle H^k\delta_o,\delta_o\rangle=\int
+x^k\,d\sigma$, where $H=M_G^*M_G$ and $\sigma=\mathbb{E}_\mu\sigma_{H,o}$ is the average of the spectral measures
+$\sigma_{H,o}$ of $H$ at $\delta_o$. All these are probability measures on $[0,c]$, so convergence of moments implies
+$\sigma_n\to\sigma$ weakly (Weierstrass approximation), and the portmanteau theorem for the closed set $\{0\}$ gives
+$\limsup_n\sigma_n(\{0\})\le\sigma(\{0\})$. Since $\ker(M^*M)=\ker M$ for matrices and for bounded operators,
+$\sigma_n(\{0\})=\nu_n$ and $\sigma(\{0\})=\mathbb{E}_\mu\langle P_K\delta_o,\delta_o\rangle$, where $P_K$ is the
+orthogonal projection onto $K=\ker M_G$. Therefore
+\begin{equation}\label{eq:ana-step2}
+  \nu\;\le\;\mathbb{E}_\mu\langle P_K\delta_o,\delta_o\rangle .
+\end{equation}
+This is the easy half of L\"uck's approximation theorem~\cite{Luck1994}; for adjacency matrices of random graphs the
+same argument is used by Bordenave, Lelarge and Salez~\cite{BLS2011}. The bound $B$ is used here and in~(L1).
+
+\emph{Step 3: a random colouring.} For $\mu$-almost every $(G,M,o)$ the graph $G$ is connected and bipartite, so it has
+exactly two proper colourings with colours $\pm1$, each the negative of the other. Let $\hat\mu$ be the law of
+$(G,M,\beta,o)$, where $(G,M,o)$ has law $\mu$ and $\beta$, a vertex mark, is one of the two colourings, chosen by a fair
+coin independent of everything else. Then $\hat\mu$ is unimodular. Indeed, let $f\ge0$ be Borel on doubly rooted
+coloured networks. For a doubly rooted network $(G,M,x,y)$ with $G$ bipartite let $\pi_x(w)=(-1)^{\dist(x,w)}$, and put
+$\bar f(G,M,x,y)=\frac12\bigl(f(G,M,\pi_x,x,y)+f(G,M,-\pi_x,x,y)\bigr)$ (and $\bar f=0$ if $G$ is not bipartite).
+Since $\{\pi_x,-\pi_x\}=\{\pi_y,-\pi_y\}$ is the set of both colourings, $\bar f$ is the average of $f$ over the two
+colourings whichever root is used to define it; it is Borel and invariant under isomorphisms. Hence
+\[
+  \mathbb{E}_{\hat\mu}\sum_xf(G,M,\beta,o,x)=\mathbb{E}_\mu\sum_x\bar f(G,M,o,x)
+  =\mathbb{E}_\mu\sum_x\bar f(G,M,x,o)=\mathbb{E}_{\hat\mu}\sum_xf(G,M,\beta,x,o),
+\]
+the middle equality being \eqref{eq:ana-mtp} for $\mu$. Moreover $\hat\mu(\beta(o)=-1)=\frac12$. (Without the coin,
+colouring by the parity of the distance to the root is not unimodular in general: the root would always have colour
+$+1$ and its neighbours colour $-1$.)
+
+\emph{Step 4: the trace.} By (L3) the algebra $\mathrm{Alg}(\hat\mu)$ contains $M=(M_G)$, hence $H=M^*M$ and its spectral
+projection $P_K=\mathbf 1_{\{0\}}(H)$, and the projection $P_J$ onto $\ell^2(J)$, where $J=\beta^{-1}(-1)$; let
+$V_+=\beta^{-1}(+1)$. Let $T=P_JP_K\in\mathrm{Alg}(\hat\mu)$. If $Tx=0$, write $x=k+k'$ with $k\in K$ and
+$k'\in K^\perp$; then $P_Jk=Tx=0$, so $k$ vanishes on $J$. Every neighbour of a vertex $v\in V_+$ lies in $J$, so
+$0=(M_Gk)_v=k_v+\sum_{u\sim v}M[v,u]\,k_u=k_v$. Hence $k=0$, and $\ker T=K^\perp$. The range of $T$ lies in
+$\ell^2(J)$. By (L4) there is a partial isometry $U\in\mathrm{Alg}(\hat\mu)$ with $U^*U=P_K$ and $UU^*\le P_J$, and by
+(L3)
+\[
+  \mathbb{E}_\mu\langle P_K\delta_o,\delta_o\rangle=\mathrm{Tr}(P_K)=\mathrm{Tr}(U^*U)=\mathrm{Tr}(UU^*)
+  \le\mathrm{Tr}(P_J)=\hat\mu(\beta(o)=-1)=\tfrac12 .
+\]
+The first equality holds because $\langle P_K\delta_o,\delta_o\rangle$ does not depend on $\beta$ and the law of
+$(G,M,o)$ under $\hat\mu$ is $\mu$. With \eqref{eq:ana-step2}, $\nu\le\frac12$.
+
+(ii) If (ii) failed for some $\eps$, then for every $m$ there would be a graph $G_m$ on $N_m\ge m$ vertices of maximum
+degree at most $D$ with $\card{\mathrm{odd}_m(G_m)}\le N_m/m$, and a $B$-bounded matrix $M_m$ fitting $G_m$ with
+$\rank M_m<(\frac12-\eps)N_m$. For fixed $\ell$ and $m\ge\ell$ we have
+$\card{\mathrm{odd}_\ell(G_m)}\le\card{\mathrm{odd}_m(G_m)}\le N_m/m$, so $(G_m)$ is locally bipartite, and (i)
+gives a contradiction.
+
+(iii) By a theorem of Wormald~\cite{Wormald1981}, for each fixed $\ell\ge3$ the number $X_\ell$ of cycles of length
+$\ell$ in $G_{n,d}$ converges in distribution as $n\to\infty$, to a Poisson law with mean $(d-1)^\ell/(2\ell)$; in
+particular $X_\ell$ is bounded in probability. Let $\delta$ and $N_0$ be given by (ii) for $D=d$. Then
+$\card{\mathrm{odd}_{\lfloor1/\delta\rfloor}(G_{n,d})}\le\sum_{\ell\le1/\delta}\ell X_\ell$ is bounded in probability,
+so it is at most $\delta n$ with probability tending to $1$, and (ii) applies.
+\end{informalproof}
+
+\begin{proposition}[Extensions of Theorem A]\label{prop:ana-A-ext}
+\notformalized
+Let $D\ge1$ and $B\ge1$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Tight coefficients and gauge.)} For every $\eps>0$ there are $\delta'>0$ and $N_0'$ with the following
+  property. Let $G$ be a graph on $N\ge N_0'$ vertices of maximum degree at most $D$ with
+  $\card{\mathrm{odd}_{\lfloor1/\delta'\rfloor}(G)}\le\delta'N$, let $M\in\C^{V\times V}$ fit $G$, let $S$ be an
+  invertible diagonal matrix, and let $X$ be the set of rows of $S^{-1}MS$ that contain an entry of modulus larger than
+  $B$. Then $\rank M\ge(\frac12-\eps)(N-\card X)$.
+\item \emph{(A fixed number of symbols per vertex.)} Let $t\ge1$. Parts (i) and (ii) of \cref{thm:A} hold for complex
+  matrices $M$ with rows and columns indexed by $V\times[t]$ and entries of modulus at most $B$ whose $t\times t$ blocks
+  satisfy $M_{vv}=I_t$ and $M_{vu}=0$ whenever $u\ne v$ and $uv\notin E(G)$, with $N$ replaced by $tN$ in the
+  conclusions; the constants $\delta$ and $N_0$ depend on $t$.
+\item \emph{(Invariant independent sets.)} Let $B$-bounded matrices $M_n$ fitting graphs $G_n$ of maximum degree at most
+  $D$, viewed as marked graphs as in the proof of \cref{thm:A}, converge locally to $\mu$. Let $\alpha_U(\mu)$ be the
+  supremum of $\hat\mu(\iota(o)=1)$ over all unimodular laws $\hat\mu$ of networks with an additional vertex mark
+  $\iota\in\{0,1\}$ such that forgetting $\iota$ gives $\mu$ and $\iota^{-1}(1)$ is $\hat\mu$-almost surely an
+  independent set. Then $\liminf_n\rank(M_n)/N_n\ge\alpha_U(\mu)$.
+\item \emph{(Sharpness.)} If $G$ has a perfect matching $P$ with adjacency matrix $A_P$, then $I+A_P$ is $1$-bounded,
+  fits $G$, and has rank $N/2$. In particular the constant $\frac12$ of \cref{thm:A} is attained on every regular
+  bipartite graph of positive degree.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) The matrix $S^{-1}MS$ fits $G$ and has the rank of $M$, so we may assume $S=I$. Let $\delta$ and $N_0$ be given by
+\cref{thm:A}(ii) for $D$, $B$ and $\eps$, and put $\delta'=2\delta/(D+1)$ and $N_0'=\lceil(D+1)N_0/2\rceil$. Let
+$N'=N-\card X$. If $N'\le2N/(D+1)$, let $Y$ be an independent set of $G$ with $\card Y\ge N/(D+1)$ (a greedy choice);
+the principal submatrix $M[Y,Y]$ is the identity, so $\rank M\ge\card Y\ge N'/2$. Otherwise $N'>2N/(D+1)\ge N_0$, and
+the principal submatrix $M'=M[V\setminus X,V\setminus X]$ is $B$-bounded and fits $G'=G[V\setminus X]$. Every odd cycle
+of $G'$ is an odd cycle of $G$, and $\lfloor1/\delta\rfloor\le\lfloor1/\delta'\rfloor$, so
+$\card{\mathrm{odd}_{\lfloor1/\delta\rfloor}(G')}\le\card{\mathrm{odd}_{\lfloor1/\delta'\rfloor}(G)}\le\delta'N<\delta N'$.
+\Cref{thm:A}(ii) gives $\rank M\ge\rank M'\ge(\frac12-\eps)N'$.
+
+(b) Let $G[t]$ be the graph on $V\times[t]$ in which $(v,i)\sim(u,j)$ if and only if $uv\in E(G)$. Such a matrix $M$
+fits $G[t]$, whose maximum degree is $tD$. An odd cycle of length $\ell'\le\ell$ through $(v,i)$ in $G[t]$ projects to a
+closed walk of odd length $\ell'$ through $v$ in $G$; a closed walk of odd length contains an odd cycle of length at
+most $\ell'$ formed by vertices of the walk, all within distance $\ell'/2\le\ell$ of $v$. Hence
+$\mathrm{odd}_\ell(G[t])\subseteq W\times[t]$, where $W$ is the set of vertices within distance $\ell$ of
+$\mathrm{odd}_\ell(G)$, and $\card{\mathrm{odd}_\ell(G[t])}\le t(1+D+\dots+D^\ell)\card{\mathrm{odd}_\ell(G)}$. So
+$(G_n[t])$ is locally bipartite when $(G_n)$ is, and \cref{thm:A}(i) applies to $G_n[t]$ with $D$ replaced by $tD$.
+For~(ii), take $\delta_t$ and $N_0$ from \cref{thm:A}(ii) for degree $tD$, put $\ell=\lfloor1/\delta_t\rfloor$ and
+$\delta=\min\bigl(\delta_t/(1+D+\dots+D^\ell),1/\ell\bigr)$. Then $\card{\mathrm{odd}_{\lfloor1/\delta\rfloor}(G)}\le\delta N$
+gives $\card{\mathrm{odd}_\ell(G[t])}\le t(1+D+\dots+D^\ell)\delta N\le\delta_t\,tN$, and $tN\ge N\ge N_0$.
+
+(c) Steps~2 and~4 of the proof of \cref{thm:A} do not use bipartiteness. Step~2, applied to the whole sequence, gives
+$\limsup_n(1-\rank(M_n)/N_n)\le\mathbb{E}_\mu\langle P_K\delta_o,\delta_o\rangle$. Step~4, run in
+$\mathrm{Alg}(\hat\mu)$ with $\iota^{-1}(1)$ in place of $V_+$ and $J=\iota^{-1}(0)$ (every neighbour of a vertex of
+$\iota^{-1}(1)$ lies in $J$, since $\iota^{-1}(1)$ is independent), gives $\mathbb{E}_\mu\langle P_K\delta_o,\delta_o\rangle\le\hat\mu(\iota(o)=0)
+=1-\hat\mu(\iota(o)=1)$. Take the supremum over $\hat\mu$.
+
+(d) Ordering the vertices in matched pairs, $I+A_P$ is block diagonal with one block
+$\bigl(\begin{smallmatrix}1&1\\1&1\end{smallmatrix}\bigr)$ of rank $1$ per edge of $P$. A regular bipartite graph with
+at least one edge has a perfect matching, by Hall's theorem.
+\end{informalproof}
+
+\begin{remark}[On the extensions]\label{rem:ana-A-ext}
+Part~(a) says that boundedness is needed only up to a diagonal rescaling and outside $o(N)$ rows. A rescaling changes
+$M_{vu}$ into $s_v^{-1}M_{vu}s_u$, so it preserves the products of entries around closed walks, for instance
+$M_{vu}M_{uv}$; ``bounded in some gauge'' is a condition on these products. In part~(b) the constants depend on $t$
+through the degree $tD$ of $G[t]$, so the argument says nothing about the linear capacity, a supremum over~$t$, or
+about codes whose number of symbols per vertex grows with $N$. Part~(c) explains why the limit object is needed. A
+finite independent set $Y$ gives only $\rank M\ge\card Y$, since $M[Y,Y]$ is the identity, and graphs of large girth
+can have small independence ratio: there are cubic graphs of arbitrarily large girth with independence ratio less than
+$6/13$~\cite{Bollobas1981}. In a limit concentrated on the $d$-regular tree, by contrast, $\alpha_U=\frac12$: the
+coin-flip colouring of Step~3 gives $\alpha_U\ge\frac12$, and the mass transport that sends one unit from each vertex
+of $\iota^{-1}(1)$ to each of its $d$ neighbours gives $d\,\hat\mu(\iota(o)=1)\le d\,\hat\mu(\iota(o)=0)$. By part~(d)
+the bound is attained along locally tree-like sequences as well, for instance on bipartite double covers of $d$-regular
+graphs of large girth.
+\end{remark}
+
+\begin{remark}[Literature]\label{rem:ana-A-lit}
+We have not found Theorem~A in the literature; its proof combines the easy half of
+L\"uck approximation~\cite{Luck1994,BLS2011} with a tracial form of the Haemers bound~\cite{Haemers1979},
+$\rank M\ge\card Y$ for an independent set $Y$, applied to an invariant random independent set of the limit; a tracial
+version of the Haemers bound for finite graphs was studied by Gao, Gribling and Li~\cite{GaoGriblingLi2022}. The
+positive semidefinite analogue is classical and exact: a positive semidefinite matrix with unit diagonal whose
+off-diagonal support lies in the edges of a triangle-free graph has rank at least $N/2$ (Rosenfeld~\cite{Rosenfeld1991}
+for real matrices, and Deaett~\cite{Deaett2011}). It needs no degree or coefficient bound, but it does not imply
+Theorem~A, which concerns matrices that need not be symmetric or positive semidefinite. For such matrices
+triangle-freeness alone does not suffice without a degree bound: Codenotti, Pudl\'ak and Resta~\cite{CPR2000} construct
+triangle-free graphs for which $A-2I$, a matrix that fits the graph after scaling by $-\frac12$, has rank
+$O(N^{3/4})$.
+\end{remark}
+
+\subsection{Codes over fields: torsion and odd characteristic}\label{sec:ana-fields}
+
+We record what Theorem~A says about codes, and what it implies for codes over finite fields.
+
+\begin{corollary}[Bounded real and complex linear codes]\label{cor:ana-codes}
+\notformalized
+Let $F\in\{\R,\C\}$, let $D,t\ge1$ and $B\ge1$ be fixed, and let $(G_n)$ be a locally bipartite sequence of graphs of
+maximum degree at most $D$ on $N_n$ vertices. For $x\in F^{V\times[t]}$ write $x_v\in F^t$ for its block at $v$.
+\begin{enumerate}[label=(\roman*)]
+\item Let $C_n\subseteq F^{V(G_n)\times[t]}$ be a linear storage code with $t$ symbols per vertex and bounded
+  coefficients: there are $t\times t$ matrices $R_{vu}$ ($uv\in E(G_n)$) with entries of modulus at most $B$ such that
+  $x_v=\sum_{u\sim v}R_{vu}x_u$ for every $x\in C_n$ and every $v$. Then $\dim C_n\le(\frac12+o(1))\,tN_n$.
+\item Let every vertex $v$ of $G_n$ be a receiver that wants $x_v$ and knows the blocks $x_u$ for $u$ in a set
+  $I_n(v)\subseteq N_{G_n}(v)$ (directed side information). Let a linear map $E\colon F^{V(G_n)\times[t]}\to F^r$ be a
+  linear index code with decoders $x_v=\Lambda_v(Ex)+\sum_{u\in I_n(v)}R_{vu}x_u$, valid for all $x$, where the maps
+  $\Lambda_v$ are linear and the matrices $R_{vu}$ have entries of modulus at most $B$. Then $r\ge(\frac12-o(1))\,tN_n$.
+\end{enumerate}
+\end{corollary}
+
+\begin{informalproof}
+In both cases let $M_n$ be the matrix with blocks $(M_n)_{vv}=I_t$, $(M_n)_{vu}=-R_{vu}$ for the pairs $(v,u)$ that carry
+a coefficient, and zero blocks elsewhere; it satisfies the hypotheses of \cref{prop:ana-A-ext}(b), so
+$\rank M_n\ge(\frac12-o(1))\,tN_n$. (i) $C_n\subseteq\ker M_n$. (ii) For every $x$, the block of $M_nx$ at $v$ is
+$\Lambda_v(Ex)$; so $M_n=\Lambda E$, where $\Lambda$ stacks the maps $\Lambda_v$, and $\rank M_n\le r$.
+\end{informalproof}
+
+By \cref{prop:ana-A-ext}(a), for $t=1$ the coefficients need to be bounded only after a diagonal rescaling and outside
+$o(N_n)$ vertices. The statement does not cover coefficients that no rescaling makes bounded, numbers of symbols per
+vertex that grow with $N_n$, codes over finite fields, or nonlinear codes. For finite fields Theorem~A still says
+something: a gain must be a torsion effect.
+
+\begin{corollary}[Torsion-only principle]\label{cor:torsion}
+\notformalized
+Fix a prime $p$, integers $D,t\ge1$, a real $B\ge1$ and $c>0$. Let $(G_n)$ be a locally bipartite sequence of graphs
+of maximum degree at most $D$ on $N_n$ vertices. Let $M_n$ be matrices over $\F_p$ with rows and columns indexed by
+$V(G_n)\times[t]$ whose $t\times t$ blocks satisfy $(M_n)_{vv}=I_t$ and $(M_n)_{vu}=0$ whenever $u\ne v$ and
+$uv\notin E(G_n)$, and suppose that $\dim\ker M_n\ge(\frac12+c)\,tN_n$ for all $n$. Let $\tilde M_n$ be integer
+matrices whose diagonal blocks are $I_t$, whose off-diagonal blocks vanish at non-edges and whose entries have modulus at
+most $B$, that reduce to $M_n$ modulo $p$ (for instance the lifts with these diagonal blocks and entries in $[-p/2,p/2]$,
+with $B=p/2$). Then $p$ divides at least $(c-o(1))\,tN_n$ of the invariant
+factors of $\tilde M_n$; equivalently, the cokernel $\Z^{tN_n}/\tilde M_n\Z^{tN_n}$ contains a subgroup isomorphic to
+$(\Z/p\Z)^{r_n}$ with $r_n\ge(c-o(1))\,tN_n$.
+\end{corollary}
+
+\begin{informalproof}
+Write $\tilde M_n=U\Sigma W$ in Smith normal form, with $U,W$ invertible over $\Z$ and
+$\Sigma=\mathrm{diag}(s_1,\dots,s_\rho,0,\dots,0)$, where $s_i\ge1$ and $\rho=\rank_\Q\tilde M_n$. Reducing modulo $p$,
+where $U$ and $W$ stay invertible, gives $\rank_{\F_p}M_n=\card{\{i\le\rho:p\nmid s_i\}}$, so the number of invariant
+factors divisible by $p$ is $\rho-\rank_{\F_p}M_n$. As a complex matrix, $\tilde M_n$ satisfies the hypotheses of
+\cref{prop:ana-A-ext}(b), so $\rho\ge(\frac12-o(1))\,tN_n$, while $\rank_{\F_p}M_n=tN_n-\dim\ker M_n\le(\frac12-c)\,tN_n$.
+The cokernel is isomorphic to $\Z^{tN_n-\rho}\oplus\bigoplus_i\Z/s_i\Z$, and its elements of order dividing $p$ form a
+group $(\Z/p\Z)^{r_n}$ with $r_n=\card{\{i:p\mid s_i\}}$.
+\end{informalproof}
+
+An $\F_{p^e}$-linear storage code becomes, after the choice of a basis of $\F_{p^e}$ over $\F_p$, an $\F_p$-linear code
+with $t=e$ symbols per vertex and the same rate, because multiplication by an element of $\F_{p^e}$ is $\F_p$-linear; so
+\cref{cor:torsion} covers $\F_{p^e}$ for fixed $e$.
+
+\begin{remark}[The Clebsch code is inherited from $\Q$]\label{rem:ana-clebsch}
+The Clebsch graph is strongly regular with parameters $(16,5,0,2)$, so its adjacency matrix satisfies
+$A^2=5I+2(J-I-A)=3I-2A+2J$, where $J$ is the all-ones matrix. Hence $(I+A)^2\equiv0\pmod 2$, and over $\F_2$ the image
+of $I+A$ lies in its kernel. In fact $\rank_{\F_2}(I+A)=6$, which \cref{cor:H4} establishes formally; directly, the Clebsch graph is the Cayley
+graph of
+$\Z_2^4$ with connection set $\{e_1,\dots,e_4,e_1+\dots+e_4\}$, and in the group algebra
+$\F_2[\Z_2^4]=\F_2[y_1,\dots,y_4]/(y_1^2,\dots,y_4^2)$, with $e_i\mapsto1+y_i$, the matrix $I+A$ acts as multiplication
+by $a=\sigma_2+\sigma_3+\sigma_4$, where $\sigma_k$ is the $k$-th elementary symmetric polynomial in the $y_i$. The
+product of $a$ with a monomial of degree $2$ is $y_1y_2y_3y_4$, and with a monomial of higher degree it is $0$, so the
+image is spanned by $a$, $y_1a,\dots,y_4a$ and $y_1y_2y_3y_4$, which are linearly independent. The kernel of $I+A$, of
+dimension $16-6=10>8$, is the code behind \cref{cor:H4}, and it is not a torsion effect. Over $\Q$ the eigenvalues of $A$ are $5$, $1$
+and $-3$, with multiplicities $1$, $10$ and $5$, so $\rank_\Q(I-A)=6$. The integer kernel of $I-A$ is a direct summand
+of $\Z^{16}$ of rank $10$, so its reduction modulo~$2$ is a $10$-dimensional subspace of $\ker_{\F_2}(I-A)=\ker_{\F_2}(I+A)$,
+hence all of it. The binary code is therefore the reduction of the rational eigenvalue code of the eigenvalue~$1$
+(\cref{prop:E}), whose recovery coefficients are $1$; \cref{cor:torsion} rules out exactly this mechanism on locally
+bipartite families of bounded degree. The other lift $I+A$, with eigenvalues $6$, $2$ and $-2$, has full rank and ten
+invariant factors divisible by~$2$: the torsion counted in \cref{cor:torsion} depends on the lift, and its conclusion
+holds for every bounded lift. A single graph of girth~$4$ is not a locally bipartite family; the Clebsch graph shows
+that local bipartiteness cannot be dropped from Theorem~A and \cref{cor:torsion}, even for bounded rational codes.
+\end{remark}
+
+The nilpotent identity $(I+W)^2=0$, which the Clebsch check matrix satisfies modulo~$2$, gives no gain once the girth is
+at least~$5$.
+
+\begin{lemma}[Index-two nilpotence at girth five]\label{lem:ana-matching}
+\notformalized
+Let $G$ be a graph of girth at least $5$, and let $W\in F^{V\times V}$, over any field $F$, have zero diagonal and
+$W_{vu}=0$ whenever $uv\notin E(G)$. If $W^2=I$, then there is a perfect matching $P$ of $G$ such that $W_{vu}\ne0$
+exactly when $uv\in P$, and $W_{vu}W_{uv}=1$ for $uv\in P$; in particular $\rank(I+W)=\rank(I-W)=N/2$. Over a field of
+characteristic $2$, $(I+W)^2=I+W^2$, so every matrix $I+W$ that fits $G$ and satisfies $(I+W)^2=0$ has rank exactly
+$N/2$.
+\end{lemma}
+
+\begin{informalproof}
+For $v\ne w$, $(W^2)_{vw}$ is a sum over the common neighbours of $v$ and $w$, of which there is at most one, as $G$
+has no cycle of length $3$ or $4$. Since $(W^2)_{vv}=\sum_{u\sim v}W_{vu}W_{uv}=1$, some neighbour $m(v)$ of $v$ has
+$W_{v\,m(v)}W_{m(v)\,v}\ne0$. If $W_{vu'}\ne0$ for a neighbour $u'\ne m(v)$, then $m(v)$ and $u'$ are non-adjacent with
+unique common neighbour $v$, and $(W^2)_{m(v)\,u'}=W_{m(v)\,v}W_{vu'}\ne0$, contradicting $W^2=I$; so row $v$ of $W$ is
+supported on $\{m(v)\}$. Likewise, if $W_{u'v}\ne0$ for a neighbour $u'\ne m(v)$, then
+$(W^2)_{u'\,m(v)}=W_{u'v}W_{v\,m(v)}\ne0$; so column $v$ is supported on $\{m(v)\}$. As $W_{m(v)\,v}\ne0$, row $m(v)$ is
+supported on $\{v\}$, so $m(m(v))=v$, the pairs $\{v,m(v)\}$ form a perfect matching, and
+$W_{v\,m(v)}W_{m(v)\,v}=(W^2)_{vv}=1$. Ordering the vertices in matched pairs, $I\pm W$ is block diagonal with blocks
+$\bigl(\begin{smallmatrix}1&\pm a\\\pm a^{-1}&1\end{smallmatrix}\bigr)$ of rank $1$.
+\end{informalproof}
+
+In odd characteristic there is a different constraint, which compares a code with its sign twin.
+
+\begin{proposition}[Sign twins in odd characteristic]\label{prop:oddchar}
+\notformalized
+Let $F$ be a field of characteristic different from $2$ and let $W\in F^{V\times V}$. Then
+\[
+  \rank(I+W)+\rank(I-W)\;=\;\rank\begin{pmatrix}I&W\\W&I\end{pmatrix}\;\ge\;N .
+\]
+Hence $\dim\ker(I+W)+\dim\ker(I-W)\le N$, and at most one of $\ker(I+W)$ and $\ker(I-W)$ has dimension larger than
+$N/2$. If $W$ has zero diagonal and is supported on the edges of a graph $G$, the block matrix fits the bipartite double
+cover $G\times K_2$, the graph on $V\times\{0,1\}$ in which $(v,i)\sim(u,j)$ if and only if $uv\in E(G)$ and $i\ne j$.
+\end{proposition}
+
+\begin{informalproof}
+Let $Q=\bigl(\begin{smallmatrix}I&I\\I&-I\end{smallmatrix}\bigr)$; then $Q^2=2I$, so $Q$ is invertible. A direct
+computation gives $Q\bigl(\begin{smallmatrix}I&W\\W&I\end{smallmatrix}\bigr)Q^{-1}
+=\bigl(\begin{smallmatrix}I+W&0\\0&I-W\end{smallmatrix}\bigr)$, which proves the equality. The block matrix contains
+$I$ as a principal $N\times N$ submatrix, so its rank is at least $N$. The last claim holds because the off-diagonal
+entries of the block matrix are the entries $W_{vu}$ at positions $((v,0),(u,1))$ and $((v,1),(u,0))$.
+\end{informalproof}
+
+\begin{remark}[Gauge invariance]\label{rem:ana-gauge}
+Over a field of characteristic different from~$2$, if $G$ is bipartite with a proper colouring $s\colon V\to\{\pm1\}$, the diagonal matrix $S=\mathrm{diag}(s)$ satisfies
+$SWS=-W$ for $W$ supported on the edges, so $\ker(I+W)$ and $\ker(I-W)$ have the same dimension, at most $N/2$ by
+\cref{prop:oddchar}. On a locally bipartite sequence the same conclusion up to $o(N_n)$, for all matrices over a field
+of characteristic different from $2$ and uniformly in the number of symbols per vertex, would follow from approximate
+gauge invariance: $\dim\ker(I+W_n)-\dim\ker(I-W_n)=o(N_n)$. In the bipartite limit object of the proof of \cref{thm:A}
+the coin-flip colouring does conjugate $I+W$ into $I-W$, although that proof uses the colouring differently, through the
+independent set $\beta^{-1}(+1)$. In characteristic $2$,
+$I+W=I-W$ and \cref{prop:oddchar} says nothing; on the Clebsch graph $I+A=I-A$ has a kernel of dimension $10>8$ over
+$\F_2$.
+\end{remark}
+
+\paragraph{Why it matters.} For constructions, \cref{cor:torsion} is the finite-field part of the design rule stated
+after \cref{thm:A}; in particular, a gain cannot be inherited by reduction modulo~$p$ from a code over $\Q$ with bounded
+coefficients, as the Clebsch code is (\cref{rem:ana-clebsch}). In characteristic~$2$, a gain also cannot come from the identity
+$(I+W)^2=0$ once the girth is at least~$5$ (\cref{lem:ana-matching}). For the impossibility side,
+\cref{prop:oddchar} shows that in odd characteristic a gain on one sign twin is paid for on the other. In
+characteristic~$2$ only \cref{cor:torsion} applies.
+
+\subsection{Limits of local and spectral arguments}\label{sec:ana-limits}
+
+Theorem~S settles all scalar linear codes on triangle-free graphs of maximum degree~$3$, and Theorem~A settles bounded
+complex linear codes on locally bipartite graphs of every bounded degree by a spectral argument. The undirected crux needs finite
+fields (indeed all codes), at degree at least~$4$ for scalar linear codes and already at degree~$3$ for vector-linear
+and nonlinear ones. This subsection
+records three limits: inside tree-like regions, the local necessary conditions of a smallest counterexample are
+compatible with rate above $\frac12+o(1)$ at degree at least~$4$ (\cref{prop:L}); real eigenvalue codes, the mechanism
+behind several known codes that beat $\frac12$ at bounded degree, cannot reach rate $\frac12$ at girth~$7$ or more
+(\cref{prop:E}); and girth~$5$ does not replace low degree (\cref{prop:HS}).
+
+A class $\mathcal K$ of pairs $(G,M)$, where $M$ fits $G$ over some field, is \emph{hereditary} if
+$(G[W],M[W,W])\in\mathcal K$ whenever $(G,M)\in\mathcal K$ and $W\subseteq V(G)$ is nonempty; for example, triangle-free
+graphs of maximum degree at most $4$ with all matrices that fit them, over all fields. For $C=\ker M$ and
+$U\subseteq V$ let $r(U)=\dim C|_U$ be the dimension of the restriction of $C$ to the coordinates in $U$ (the rank
+function of the matroid of $C$), and let $C^\perp=\{y\in F^V:\sum_vy_vx_v=0\text{ for all }x\in C\}$, the row space of
+$M$. For a hereditary class, the floor bound $\dim\ker M\le\lfloor N/2\rfloor$ for all
+members implies $\dim\ker M\le\nu(G)$, the matching number, by the argument of \cref{thm:S-barrier}: for every vertex
+set $U$, $\dim\ker M\le\card U+\sum_H\lfloor\card{H}/2\rfloor$ over the components $H$ of $G-U$, and the Tutte--Berge
+formula turns the minimum over $U$ into $\nu(G)$. The floor bound is therefore the statement to prove.
+
+\begin{lemma}[Smallest counterexamples]\label{lem:ana-mincex}
+\notformalized
+Let $\mathcal K$ be hereditary, and let $(G,M)\in\mathcal K$ satisfy $\dim\ker M>\lfloor N/2\rfloor$ with $N$ as small as
+possible. Then
+\begin{enumerate}[label=(\alph*)]
+\item $N$ is odd and $\dim\ker M=(N+1)/2$;
+\item $r(U)\ge\lfloor\card U/2\rfloor+1$ for every nonempty $U\subseteq V$;
+\item for every nonempty $X\subseteq V$, the vectors of $C^\perp$ supported in $X$, in particular the rows of $M$
+  supported in $X$, span a space of dimension at most $\lceil\card X/2\rceil-1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+A $1\times1$ matrix that fits a graph is $(1)$, so $N\ge2$. For $U\subseteq V$, the codewords vanishing on $U$ form a
+subspace of dimension $\dim C-r(U)$, and their restrictions to $V\setminus U$ lie in $\ker M[V\setminus U,V\setminus U]$
+and determine them; so for $U\ne V$ the pair $(G-U,M[V\setminus U,V\setminus U])\in\mathcal K$ has a kernel of dimension
+at least $\dim C-r(U)$. (a) If $N$ were even, deleting one vertex ($r\le1$) would leave a kernel of dimension at least
+$N/2>\lfloor(N-1)/2\rfloor$ on fewer vertices; if $\dim C\ge(N+3)/2$, deleting one vertex would leave a kernel of
+dimension at least $(N+1)/2>\lfloor(N-1)/2\rfloor$. (b) By minimality for $U\ne V$, and trivially for $U=V$,
+$\dim C-r(U)\le\lfloor(N-\card U)/2\rfloor$, so $r(U)\ge(N+1)/2-\lfloor(N-\card U)/2\rfloor=\lfloor\card U/2\rfloor+1$,
+as $N$ is odd. (c) The vectors of $C^\perp$ supported in $X$ form the annihilator of the
+restriction $C|_X$ in $F^X$, of dimension $\card X-r(X)\le\card X-\lfloor\card X/2\rfloor-1$.
+\end{informalproof}
+
+One way to reach a contradiction in a smallest counterexample is to exhibit a set $X$ with $\lceil\card X/2\rceil$
+independent vectors of $C^\perp$ supported in $X$, for instance rows of $M$. The proof of Theorem~S does this with a
+maximal chain grown from a single vertex along recovery neighbourhoods; such a chain closes only through cycles or the
+boundary of the vertex set, never inside a tree-like region. The next proposition shows that inside a tree-like region of degree
+$d\ge4$ no such set exists, however the region is explored, and that the local conditions there are met by a code of
+rate close to $(d-2)/(d-1)$.
+
+\begin{proposition}[Proposition L: tree codes are locally consistent]\label{prop:L}
+\notformalized
+Let $d\ge3$ and $r\ge1$, let $B$ be the ball of radius $r$ around the root of the $d$-regular tree, $B^\circ\subseteq B$
+the set of vertices at distance less than $r$ from the root, and $F$ a field. For each $v\in B^\circ$ let $z_v\in F^B$
+have $z_v(v)=1$, $z_v(u)\ne0$ for every neighbour $u$ of $v$, and $z_v(w)=0$ otherwise (over $\F_2$ these are the rows
+of $I+A$ indexed by $B^\circ$). Let $C_B=\{x\in F^B:\sum_wz_v(w)x_w=0\text{ for all }v\in B^\circ\}$ and
+$r(U)=\dim C_B|_U$.
+\begin{enumerate}[label=(\roman*)]
+\item $\dim C_B=d(d-1)^{r-1}$, the number of vertices at distance $r$, and $\dim C_B/\card B\to(d-2)/(d-1)$ as
+  $r\to\infty$: this is $\frac12$ for $d=3$ and $\frac23$ for $d=4$.
+\item $r(U)\ge\card U-\lfloor\card U/(d-1)\rfloor$ for every $U\subseteq B$.
+\item If $d\ge4$, then $r(U)\ge\lfloor\card U/2\rfloor+1$ for every nonempty $U\subseteq B$, and for every nonempty
+  $X\subseteq B$ the vectors of $C_B^\perp$ supported in $X$, in particular the vectors $z_v$ supported in $X$, span a
+  space of dimension at most $\lceil\card X/2\rceil-1$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+Orient the tree away from the root; for $v\in B^\circ$ let $\mathrm{ch}(v)$ be its set of children, of size $d$ at the
+root and $d-1$ elsewhere. (i) Order $B^\circ$ by distance from the root. A child of $v$ lies in the support of $z_w$, for
+$w\in B^\circ$, only if $w=v$, or $w$ is that child or one of its children, which come after $v$; so each $z_v$ is
+nonzero at a coordinate where all earlier vectors vanish, the vectors $z_v$ are linearly independent, and
+$\dim C_B=\card B-\card{B^\circ}$ is the number of vertices at distance $r$. Since $\card B=1+d((d-1)^r-1)/(d-2)$, the
+ratio tends to $(d-2)/(d-1)$.
+
+(ii) The annihilator of $C_B|_U$ in $F^U$ is $C_B^\perp\cap F^U$, where $C_B^\perp$ is spanned by the vectors $z_v$, so
+$r(U)=\card U-\dim(C_B^\perp\cap F^U)$. Let $D_U=\{v\in B^\circ:\mathrm{ch}(v)\subseteq U\}$. If
+$y=\sum_v\lambda_vz_v$ is supported in $U$ and $\lambda\ne0$, let $v$ be a vertex of maximal depth with $\lambda_v\ne0$.
+For a child $c$ of $v$, the only vectors $z_w$ with $z_w(c)\ne0$ are $z_v$, $z_c$ and the $z_w$ for the children $w$ of
+$c$, and $\lambda_c=\lambda_w=0$ because $c$ and $w$ are deeper than $v$; so $y_c=\lambda_vz_v(c)\ne0$, $c\in U$, and
+$v\in D_U$. Since the vectors $z_v$ are independent by (i), each element of $C_B^\perp\cap F^U$ has a unique coefficient
+vector $\lambda$, and $\lambda\mapsto\lambda|_{D_U}$ is injective on these coefficient vectors; so
+$\dim(C_B^\perp\cap F^U)\le\card{D_U}$. The children sets of distinct vertices are disjoint subsets of size at least
+$d-1$, so $\card{D_U}\le\lfloor\card U/(d-1)\rfloor$.
+
+(iii) For $d\ge4$, (ii) gives $r(U)\ge\card U-\lfloor\card U/3\rfloor$, which is at least $\lfloor\card U/2\rfloor+1$:
+check $\card U\le5$ directly, and for $\card U\ge6$ use $\card U-\lfloor\card U/3\rfloor\ge2\card U/3\ge\card U/2+1$.
+The second claim follows as in \cref{lem:ana-mincex}(c).
+\end{informalproof}
+
+\paragraph{Why it matters.} In a $d$-regular graph of girth at least $2r+2$, every ball of radius $r$ is a copy of $B$.
+By \cref{prop:L}, inside such a ball the constraints that a smallest counterexample satisfies, namely (b) and (c) of
+\cref{lem:ana-mincex} for subsets of the ball and the recoverability of every interior vertex from its neighbours, are
+all met by a code of rate close to $(d-2)/(d-1)$, which exceeds $\frac12$ when $d\ge4$. So an argument that uses only
+these local necessary conditions inside tree-like regions cannot give even the asymptotic bound $\frac12+o(1)$ at degree
+at least~$4$. At degree~$3$ the ball code $C_B$ has rate $\frac12+1/\card B$, so such conditions are compatible with the
+asymptotic bound there; the exact floor bound needs global information even at degree~$3$, as the closing of the maximal
+chain in the proof of Theorem~S shows. For such arguments, large girth is the hardest case, not the easiest. And the
+degree-$4$ statement over $\F_2$ on $4$-regular graphs of large girth is the scalar-linear, characteristic-$2$ case of the
+undirected crux at degree~$4$, for which no characteristic-$p$ analogue of Theorem~A is known.
+
+\begin{remark}[Computational evidence at degree four]\label{rem:ana-deg4}
+Exhaustive exact searches with SAT solvers, not independently verified and not used in any proof, found no
+counterexample to the floor bound for triangle-free graphs of maximum degree $4$: over $\F_2$ none of the
+$193{,}900$ connected $4$-regular triangle-free graphs on $17$ vertices has a linear storage code of dimension $9$; over
+$\F_3$ none of the connected $4$-regular triangle-free graphs on $13$ and $15$ vertices, and none of the non-bipartite
+connected triangle-free graphs with degrees between $2$ and $4$ on $9$ vertices, or on $11$ vertices with a vertex of
+degree $4$, has a code of dimension larger than its matching number.
+\end{remark}
+
+Several known codes that beat $\frac12$ on graphs of bounded degree, for instance on the Clebsch graph over $\Q$ and on
+the Hoffman--Singleton graph, come from eigenvalues. For a graph $G$ with adjacency matrix $A$ and a real number
+$\theta\ne0$, the matrix $I-A/\theta$ fits $G$, has coefficients of modulus $1/\abs\theta$, and its kernel, the \emph{eigenvalue code} of $\theta$, is the
+$\theta$-eigenspace of $A$, of dimension $\mathrm{mult}(\theta)$ (zero if $\theta$ is not an eigenvalue). The next
+proposition, a linear-programming bound in the spirit of Nozaki's bounds for regular graphs~\cite{Nozaki2015}, shows
+where this mechanism stops. Let
+\[
+  p_0=1,\quad p_1(x)=\frac{x}{\sqrt d},\quad p_2(x)=\frac{x^2-d}{\sqrt{d(d-1)}},\quad
+  p_3(x)=\frac{x(x^2-2d+1)}{\sqrt d\,(d-1)},\qquad K_n(\theta)=\sum_{k=0}^np_k(\theta)^2 ;
+\]
+these are the first orthonormal polynomials of the Kesten--McKay law, the spectral measure of the $d$-regular tree at a
+vertex~\cite{Kesten1959,McKay1981}.
+
+\begin{proposition}[Eigenvalue codes and girth]\label{prop:E}
+\notformalized
+Let $d\ge3$ and let $G$ be a $d$-regular graph on $N$ vertices with girth at least $g$.
+\begin{enumerate}[label=(\roman*)]
+\item For $n\in\{1,2,3\}$ with $2n+1\le g$ and every real $\theta$, $\mathrm{mult}(\theta)\le N/K_n(\theta)$.
+\item $K_1(\theta)<2$ if and only if $\theta^2<d$; and $K_2(\theta)<2$ if and only if $1<\theta^2<d$.
+\item $K_3(\theta)>2$ for every real $\theta$. Hence, if $g\ge7$, every eigenvalue has multiplicity less than $N/2$.
+\item If $g\ge7$, no eigenvalue code of $G$ has dimension $N/2$ or more. If $g\ge5$ and an eigenvalue code has dimension
+  larger than $N/2$, then $\theta$ is an integer with $2\le\abs\theta<\sqrt d$, so $d\ge5$.
+\end{enumerate}
+Equality holds in (i) for the Petersen graph ($d=3$, $g=5$, $n=2$, $\theta=1$, multiplicity $5$) and for the
+Hoffman--Singleton graph ($d=7$, $g=5$, $n=2$, $\theta=2$, multiplicity $28$).
+\end{proposition}
+
+\begin{informalproof}
+\emph{Orthonormality.} Let $A_T$ be the adjacency operator of the $d$-regular tree, $o$ its root, $S_k$ the sphere of
+radius $k$ around $o$, and $e_k=\card{S_k}^{-1/2}\mathbf 1_{S_k}$. Counting neighbours in adjacent spheres gives
+$A_Te_0=\sqrt d\,e_1$, $A_Te_1=\sqrt d\,e_0+\sqrt{d-1}\,e_2$ and $A_Te_k=\sqrt{d-1}\,(e_{k-1}+e_{k+1})$ for $k\ge2$. A
+direct computation from these relations gives $p_k(A_T)e_0=e_k$ for $k\le3$; for instance
+$(A_T^2-d)e_0=\sqrt{d(d-1)}\,e_2$. Hence $\langle p_j(A_T)e_0,p_k(A_T)e_0\rangle=\delta_{jk}$ for $j,k\le3$.
+
+\emph{Moments.} For $k<g$ and every vertex $v$ of $G$, $(A^k)_{vv}=\langle A_T^ke_0,e_0\rangle$. Indeed, let
+$\pi\colon T\to G$ be a covering of the component of $v$ by the $d$-regular tree with $\pi(o)=v$. Walks from $v$ lift
+uniquely to walks from $o$ of the same length, and a lift of a closed walk of length $k<g$ is closed: otherwise the path
+in $T$ between its distinct endpoints would project to a closed non-backtracking walk of positive length at most $k$,
+which contains a cycle of length at most $k<g$. Conversely, closed walks from $o$ project to closed walks from $v$.
+
+(i) Let $q=\sum_{k\le n}c_kp_k$ with $c_k=p_k(\theta)/K_n(\theta)$, so that $q(\theta)=1$. The symmetric matrix $q(A)^2$
+has eigenvalue $1$ on the $\theta$-eigenspace and nonnegative eigenvalues elsewhere, so
+$\mathrm{mult}(\theta)\le\operatorname{tr}q(A)^2$. Since $q^2$ has degree $2n<g$, the moments give
+$\operatorname{tr}q(A)^2=N\lVert q(A_T)e_0\rVert^2=N\sum_kc_k^2=N/K_n(\theta)$.
+
+(ii) $K_1(\theta)=1+\theta^2/d$. With $s=\theta^2$, $d(d-1)\bigl(K_2(\theta)-2\bigr)=(d-1)s+(s-d)^2-d(d-1)=(s-1)(s-d)$.
+
+(iii) With $s=\theta^2$, $d(d-1)^2\bigl(K_3(\theta)-2\bigr)=f(s)=s^3-(3d-1)s^2+(3d^2-4d+2)s+d(d-1)$, and
+$f(d+y)=y^3+y^2-2(d-1)y+d(d-1)^2$. The derivative $3y^2+2y-2(d-1)$ has roots $y_\pm=(-1\pm\sqrt{6d-5})/3$, a local
+maximum at $y_-<0$ and a local minimum at $y_+>0$. On $[-d,0]$ the minimum of $f(d+y)$ is therefore attained at an
+endpoint, where the values are $f(0)=d(d-1)>0$ and $f(d)=d(d-1)^2>0$. On $[0,\infty)$ the minimum is
+$f(d+y_+)=d(d-1)^2-y_+^2(2y_++1)$, using $3y_+^2+2y_+=2(d-1)$. From $y_+<\sqrt{6d}/3$ we get
+$y_+^2(2y_++1)<\frac{2d}3\bigl(\frac{2\sqrt{6d}}3+1\bigr)$, which is less than $d(d-1)^2$ because
+$(d-1)^2>\frac49\sqrt{6d}+\frac23$ for $d\ge3$ (at $d=3$, $4>2.56$, and the left side grows faster). So $f(s)>0$ for
+all $s\ge0$. The second claim follows from (i) with $n=3$.
+
+(iv) The first claim is (iii). For the second: $A$ has integer entries, so the roots of the minimal polynomial of
+$\theta$ over $\Q$ are eigenvalues of the same multiplicity; if this multiplicity exceeds $N/2$, the minimal polynomial
+has degree $1$, and $\theta$, an algebraic integer, is an integer. By (i) with $n=2$ and (ii), $1<\theta^2<d$, so
+$\abs\theta\ge2$ and $d>4$.
+
+\emph{Equality cases.} $K_2(1)=1+\frac13+\frac46=2$ for $d=3$, and $K_2(2)=1+\frac47+\frac9{42}=\frac{25}{14}$ for
+$d=7$, with $50\cdot\frac{14}{25}=28$; the multiplicities are those of the Petersen graph (spectrum $3$, $1^5$,
+$(-2)^4$) and of the Hoffman--Singleton graph (computed in the proof of \cref{prop:HS}).
+\end{informalproof}
+
+\paragraph{Why it matters.} \Cref{prop:E} bounds the girth up to which the spectral mechanism can work: real eigenvalue codes,
+which give the Clebsch graph a code of dimension $10$ over $\Q$ (eigenvalue $1$) and the Hoffman--Singleton graph one of
+dimension $28$ (\cref{prop:HS}), never reach rate $\frac12$ at girth $7$ or more, at any degree, and beat it at girth $5$
+or $6$ only when $d\ge5$; whether they beat it at girth~$6$ at all is open. It is a finite-girth counterpart of
+Theorem~A for eigenvalue codes, with explicit thresholds.
+It does not see $p$-torsion: over $\F_p$ the rank of $A-\theta I$ can be smaller than over $\Q$, and over $\F_2$ a code
+need not come from an eigenvalue at all, and by \cref{cor:torsion} the finite-field gains that matter here are torsion
+effects.
+
+\begin{proposition}[Proposition HS: Hoffman--Singleton beats one half outside characteristic two]\label{prop:HS}
+\notformalized
+Let $A$ be the adjacency matrix of the Hoffman--Singleton graph ($50$ vertices, $7$-regular, girth $5$). Over every field
+$F$ of characteristic different from $2$, the matrix $I-A/2$ fits the graph and has rank at most $22$, with equality if
+the characteristic is $0$. So $\ker(I-A/2)$ is a linear storage code over $F$ of dimension at least $28>25$, with
+recovery coefficients $\frac12$, and disjoint unions of copies of the graph form a $7$-regular family of girth $5$ that
+carries such codes of rate at least $0.56$.
+\end{proposition}
+
+\begin{informalproof}
+By~\cite{HoffmanSingleton1960} the Hoffman--Singleton graph is strongly regular with parameters $(50,7,0,1)$:
+adjacent vertices have no common neighbour and non-adjacent vertices exactly one. Hence $A^2=7I+(J-I-A)$, where $J$ is
+the all-ones matrix, that is, $(A-2I)(A+3I)=J$. The all-ones vector is an eigenvector with eigenvalue $7$, and $J$
+vanishes on its orthogonal complement, which is invariant under $A$; so the other eigenvalues are $2$ and $-3$, with
+multiplicities $f+g=49$ and $7+2f-3g=\operatorname{tr}A=0$, and $f=28$. Thus
+$\rank_\Q(2I-A)=22$. Minors of an integer matrix that vanish over $\Z$ vanish modulo $p$, so
+$\rank_{\F_p}(2I-A)\le22$, and $I-A/2=(2I-A)/2$ has the same rank whenever $2$ is invertible. The rank over a field
+depends only on its characteristic.
+\end{informalproof}
+
+\begin{remark}[Computations on the Hoffman--Singleton graph]\label{rem:ana-hs}
+By exact computation (not used in any proof), the rank of $2I-A$ is $22$ over $\F_3$ and $\F_7$ but $21$ over $\F_5$,
+an example of the $p$-torsion that \cref{prop:E} does not see. Over $\F_2$ the matrix $I+A$ has rank $29$, giving only
+dimension $21$, and we do not know whether the Hoffman--Singleton graph carries an $\F_2$-linear storage code of
+dimension larger than $25$.
+\end{remark}
+
+\paragraph{Why it matters.} Theorem~S needs maximum degree~$3$ (and no triangles), and Theorem~A needs local
+bipartiteness. One might hope
+that large girth alone gives the bound $\frac12$ at every bounded degree, over every field. \Cref{prop:HS} shows that
+girth~$5$ does not suffice: at degree~$7$, over $\Q$ and over every field of odd characteristic, there are linear codes
+of rate $0.56$ with bounded coefficients. By \cref{prop:E}, eigenvalue codes need girth at most~$6$ to beat $\frac12$;
+whether, for each $d$, some girth forces rate at most $\frac12+o(1)$ for all linear codes over a fixed finite field is
+open, and in characteristic~$2$ even the Hoffman--Singleton graph is undecided.
+
+Taken together, on side information of bounded degree $d\ge4$ that is locally bipartite, an $\F_p$-linear code with a
+fixed number of symbols per vertex that beats $\frac12$ by a constant must have $p$-torsion of linear rank in every
+bounded integer lift of its check matrix (\cref{cor:torsion}); in characteristic~$2$ it gains nothing from the identity
+$(I+W)^2=0$ once the girth is at least $5$ (\cref{lem:ana-matching}); it does not come from a real eigenvalue code once
+the girth is at least $7$ (\cref{prop:E}); and the local necessary conditions of a smallest counterexample cannot refute
+its existence inside tree-like regions (\cref{prop:L}). These are design
+constraints for constructions, and they say where a characteristic-$p$ proof of the crux would have to work.
+
+\subsection{Targets, Mycielskians and Question G}\label{sec:ana-targets}
+
+By Theorem~H (\cref{thm:H}), a homomorphism from side information to a good graph $T$ certifies the rate bound $\frac12$
+for every code on the side information, linear or not. If the homomorphism is defined only after the deletion of a
+vertex set $U$, conditioning on the symbols at $U$ weakens the bound by at most $\card U/2$ symbols: for a valid
+polymatroid~$h$, the function $S\mapsto h(S\cup U)-h(U)$ on subsets of $V\setminus U$ is a valid polymatroid for $G-U$,
+so $h(V)\le h(U)+\frac12\sum_{v\notin U}h(\{v\})\le\frac12\sum_vh(\{v\})+\frac12\sum_{u\in U}h(\{u\})$. A single good target
+that receives the side information of the crux after the deletion of $o(N)$ vertices would therefore prove the crux for
+all codes. Two facts constrain the targets. Good graphs are triangle-free: the triangle carries the code
+$\{(a,b,a+b)\}$ of rate $\frac23$, and a graph that contains a triangle receives it (\cref{thm:H}). And homomorphisms do not decrease
+the fractional chromatic number $\chi_f$, the least total weight of a family of weighted independent sets that covers
+every vertex with weight at least $1$, because preimages of independent sets are independent. So side information $H$
+with a deleted set $U$ needs a target with $\chi_f(T)\ge\chi_f(H-U)\ge(\card{V(H)}-\card U)/\alpha(H)$, where $\alpha$
+is the independence number.
+
+The classical way to raise $\chi_f$ while keeping a graph triangle-free is Mycielski's construction. For a graph $G$ on
+$V$, the \emph{Mycielskian} $\mathrm M(G)$ has vertex set $V\cup V'\cup\{z\}$, where $V'=\{v':v\in V\}$, and edges $uv$,
+$uv'$ and $u'v$ for $uv\in E(G)$, and $v'z$ for $v\in V$. Thus $\mathrm M(K_2)$ is the $5$-cycle and $\mathrm M^2(K_2)$
+is the Gr\"otzsch graph. The Mycielskian of a triangle-free graph is triangle-free~\cite{Mycielski1955}, and
+$\chi_f(\mathrm M(G))=\chi_f(G)+1/\chi_f(G)$~\cite{LPU1995}, so $\chi_f(\mathrm M^k(K_2))\to\infty$.
+
+\begin{lemma}[Homomorphisms into a Mycielskian]\label{lem:ana-myc}
+\notformalized
+For graphs $H$ and $G$, $H$ admits a homomorphism to $\mathrm M(G)$ if and only if $H$ has an independent set $Z$ such that
+the set $N_H(Z)$ of vertices outside $Z$ with a neighbour in $Z$ is independent and $H-Z$ admits a homomorphism to $G$.
+\end{lemma}
+
+The `if' direction is the case $t=1$ of~\cite[Lemma~2.3]{GHW2025}; we include the short proof of both directions.
+
+\begin{informalproof}
+Let $\varphi\colon H\to\mathrm M(G)$, and put $Z=\varphi^{-1}(z)$ and $Y=\varphi^{-1}(V')$. Both are independent,
+because $z$ has no loop and $V'$ is independent in $\mathrm M(G)$, and $N_H(Z)\subseteq Y$ because $z$ is adjacent only
+to $V'$. Define $\psi$ on $H-Z$ by $\psi(w)=\varphi(w)$ if $\varphi(w)\in V$ and $\psi(w)=v$ if $\varphi(w)=v'$. An edge
+of $H-Z$ has at most one end in $Y$; if it has none, $\varphi$ maps it to an edge of $G$; if it has one, $\varphi$ maps it
+to an edge $uv'$ with $uv\in E(G)$, and $\psi$ maps it to $uv$. So $\psi$ is a homomorphism to $G$. Conversely, given
+$Z$ and $\psi\colon H-Z\to G$, map $Z$ to $z$, each $w\in N_H(Z)$ to $\psi(w)'$, and every other vertex $w$ to $\psi(w)$.
+There are no edges inside $Z$ or inside $N_H(Z)$, and none between $Z$ and the vertices outside $Z\cup N_H(Z)$; edges
+between $Z$ and $N_H(Z)$ go to edges $zv'$; and every other edge $ww''$ goes to $\psi(w)\psi(w'')$, $\psi(w)'\psi(w'')$ or
+$\psi(w)\psi(w'')'$, which are edges of $\mathrm M(G)$ because $\psi(w)\psi(w'')\in E(G)$.
+\end{informalproof}
+
+\begin{corollary}[Odd cycle transversals]\label{cor:ana-oct}
+\notformalized
+If $H$ is triangle-free and $H-X$ is bipartite for a set $X$ of $k$ vertices, then $H$ admits a homomorphism to
+$\mathrm M^k(K_2)$.
+\end{corollary}
+
+\begin{informalproof}
+Induction on $k$; a bipartite graph maps to $K_2$. For $k\ge1$ pick $x\in X$. The set $Z=\{x\}$ is independent, $N_H(x)$
+is independent because $H$ is triangle-free, and $H-x$ is triangle-free and becomes bipartite after the deletion of
+$X\setminus\{x\}$, so $H-x\to\mathrm M^{k-1}(K_2)$ by induction. \Cref{lem:ana-myc} gives $H\to\mathrm M^k(K_2)$. (A
+similar iteration is used in~\cite{GHW2025}.)
+\end{informalproof}
+
+\begin{proposition}[Mycielskians leave the good graphs]\label{prop:M}
+\notformalized
+\begin{enumerate}[label=(\roman*)]
+\item The Clebsch graph admits a homomorphism to $\mathrm M^6(K_2)$. Hence $\mathrm M^6(K_2)$ is not good.
+\item $K_2$ and $\mathrm M(K_2)$, the $5$-cycle, are good. Hence there is $j\in\{1,\dots,5\}$ such that $\mathrm M^j(K_2)$
+  is good and $\mathrm M^{j+1}(K_2)$ is not: the Mycielski construction does not preserve goodness.
+\item No good graph receives every triangle-free graph of maximum degree $5$. More generally, if $T_1,T_2,\dots$ are
+  graphs and every finite triangle-free graph admits a homomorphism to some $T_k$, then some $T_k$ is not good; by
+  \cref{cor:ana-oct} this applies to the graphs $\mathrm M^k(K_2)$, which are universal for triangle-free graphs by
+  a theorem of Cropper, Gyárfás and Lehel~\cite{CGL2006}.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(i) The Clebsch graph $\Gamma$ is triangle-free and $5$-regular on $16$ vertices. For an edge $uv$, the neighbourhoods
+$N(u)$ and $N(v)$ are disjoint independent sets (as $\Gamma$ is triangle-free), so $\Gamma[N(u)\cup N(v)]$ is bipartite
+on $10$ vertices and the remaining set $X$ of $6$ vertices has $\Gamma-X$ bipartite. By \cref{cor:ana-oct},
+$\Gamma\to\mathrm M^6(K_2)$. The Clebsch graph is not good: by \cref{cor:H4} it has guessing number $10>8$, while a good
+graph on $16$ vertices has guessing number at most $8$ by \cref{thm:entropic-rate}. By \cref{thm:H}, a graph that
+receives a graph that is not good is not good. (ii) The $5$-cycle is good (\cref{prop:C5}), and $K_2$ maps to it, so
+$K_2$ is good by \cref{thm:H}. With (i), the least $k$ for which $\mathrm M^k(K_2)$ is not good satisfies $2\le k\le6$;
+take $j=k-1$. (iii) The Clebsch graph is triangle-free of maximum degree $5$, and a graph that receives it is not good.
+\end{informalproof}
+
+\begin{remark}[Which iterate fails; computational]\label{rem:ana-myc}
+The Gr\"otzsch graph $\mathrm M^2(K_2)$ is good by an exact certificate, a nonnegative rational combination of
+elemental Shannon inequalities found by computer and checked in exact arithmetic; the certificate is not published here,
+not formalized and not used in any proof. With it,
+$j\in\{2,3,4,5\}$ in \cref{prop:M}(ii). A SAT computation (not used in any proof) indicates that the Clebsch graph does
+not map to $\mathrm M^5(K_2)$, so the argument of (i) cannot locate the first iterate that is not good; which iterate it
+is remains open. At the level of Shannon inequalities the construction may fail at the first step: numerically, by a
+floating-point linear program without an exact certificate, the Mycielskian of the circular clique $K_{8/3}$ (which is
+good by \cref{prop:targets}) has Shannon bound about $7/13>\frac12$.
+\end{remark}
+
+\paragraph{Why it matters.} Mycielski's construction is the standard way to build triangle-free graphs of large
+fractional chromatic number, and its iterates are universal for triangle-free graphs~\cite{CGL2006}; \cref{cor:ana-oct} refines this, bounding
+the number of iterations by the size of an odd cycle transversal.
+\Cref{prop:M} shows that this universality forces them out of the good graphs. Targets of growing $\chi_f$ for the
+homomorphism route to the crux must therefore be built differently, and they must avoid receiving the Clebsch graph and
+the other graphs known not to be good.
+
+\begin{remark}[Good graphs with $\chi_f>3$; computational]\label{rem:ana-circulants}
+Write $C_n(S)$ for the Cayley graph of $\Z_n$ with connection set $\pm S$; for vertex-transitive graphs
+$\chi_f=N/\alpha$. Exact rational certificates, nonnegative combinations of elemental Shannon inequalities found by
+computer and checked in exact arithmetic, show that the triangle-free circulants
+$C_{13}(1,5)$ ($4$-regular, $\chi_f=13/4$), $C_{16}(1,3,8)$ ($5$-regular, $\chi_f=16/5$) and $C_{20}(1,6,10)$
+($5$-regular, $\alpha=6$, $\chi_f=10/3$) are good. The certificate for $C_{20}(1,6,10)$ consists of $777$ inequalities;
+$10/3$ is the largest value of $\chi_f$ among good graphs known to us. The certificates are not published here, and none
+of this is formalized or used in any proof. These examples show that $\chi_f\le3$ is no barrier, and that $\chi_f$ does not
+determine goodness: $C_{16}(1,3,8)$ has the same number of vertices, degree, independence number and fractional
+chromatic number as the Clebsch graph, which is not good. Nearby circulants are not good: for instance
+$C_{20}(2,5,6)$, with $\chi_f=10/3$, carries the $\F_2$-linear code $\ker(I+A)$ of dimension $12>10$.
+\end{remark}
+
+\begin{remark}[Cayley graphs of elementary abelian $2$-groups; partly computational]\label{rem:ana-z2}
+Proof sketch only: every non-bipartite Cayley graph $\Gamma=\mathrm{Cay}(\Z_2^k,S)$ is not good. The graph $\Gamma$ is
+bipartite if and only if some linear functional equals $1$ on $S$, and by linear duality over $\F_2$ this fails exactly
+when some subset of $S$ with an odd number of elements sums to $0$. A minimal such subset $S'$ consists of $m-1$ linearly independent
+elements and their sum, with $m$ odd (and $m\ge5$ if $\Gamma$ is triangle-free), so $\mathrm{Cay}(\langle
+S'\rangle,S')$ is the folded $m$-cube, a subgraph of $\Gamma$. In the group algebra the matrix $I+A$ of a folded cube
+satisfies $(I+A)^2=0$ over $\F_2$, so its kernel has dimension at least half; exact computation shows that the dimension
+is $(2^{m-1}+2^{(m-1)/2})/2$ for $m\le11$, and we have not proved this formula in general. Where it holds, the folded
+$m$-cube is not good, and neither is $\Gamma$, by \cref{thm:H}. The argument is complete for $k\le10$, where $m\le11$;
+it would exclude, as targets, all non-bipartite triangle-free Cayley graphs of elementary abelian $2$-groups, a family that contains
+the Clebsch graph and the folded cubes.
+\end{remark}
+
+These examples lead to the following question.
+
+\begin{question}[Question G: the fractional chromatic number of good graphs]\label{prob:G}
+Is $\chi_f$ unbounded on good graphs? That is, is $\sup\{\chi_f(T):T\text{ a good graph}\}$ infinite?
+\end{question}
+
+Good graphs are triangle-free, and triangle-free graphs have unbounded $\chi_f$; the question is whether goodness bounds
+it. The analogous question for digraphs, with the fractional dichromatic number (fractional covers by vertex sets
+inducing acyclic subgraphs), is also open.
+
+\paragraph{Why it matters.} A negative answer, $\chi_f(T)\le C$ for every good graph $T$, would rule out the homomorphism
+route for every family of side information whose underlying graphs keep fractional chromatic number above $C$ after the
+deletion of $o(N)$ vertices, for instance families whose independence ratio stays below $1/C$. A positive answer is
+necessary for the route but not sufficient, since the targets must also receive the side information. With the methods
+available to us, certifying a single target by the Shannon linear program is limited to about $20$ vertices, while a
+triangle-free graph with large $\chi_f$ must be large, so Question~G needs a structural argument in either direction.

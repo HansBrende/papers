@@ -1,0 +1,77 @@
+% ---------------------------------------------------------------------------
+% Theorem environments
+% ---------------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% The Lean proof is the proof; the text gives a faithful outline of it.
+\newenvironment{outline}[1][Outline of the formal proof]{\begin{proof}[#1]}{\end{proof}}
+% Results that are not formalized get complete proofs, labelled as such.
+\newenvironment{informalproof}{\begin{proof}[Proof (not formalized)]}{\end{proof}}
+
+% ---------------------------------------------------------------------------
+% Lean references
+%   \lean{name}            a declaration, relative to the namespace MotionDepthCodes
+%   \formal{file}{names}   the formal counterpart of a numbered result: a file relative to
+%                          lean/MotionDepthCodes/ and a comma-separated list of declarations
+%   \partformal{file}{names}{gap}
+%                          a numbered result whose formal counterpart covers all but the
+%                          part described in {gap}; the gap is proved or cited in the text
+%   \notformalized         a numbered result that has no formal counterpart
+%   \cited{where}          a result of an earlier paper used without proof: where it is proved,
+%                          and whether it is Lean-verified there
+% ---------------------------------------------------------------------------
+% Lean names are typeset like paths, with line breaks allowed after "_", "." and "/".
+\DeclareUrlCommand\leanname{\def\UrlFont{\ttfamily\upshape}}
+\renewcommand{\UrlBreaks}{\do\_\do\.\do\/\do\-}
+\newcommand{\lean}[1]{\leanname{#1}}
+\newcommand{\leanfile}[1]{\leanname{#1}}
+\newcommand{\leanlist}[1]{\begingroup\def\leansep{}%
+  \renewcommand*{\do}[1]{\leansep\leanname{##1}\def\leansep{, }}\docsvlist{#1}\endgroup}
+\newcommand{\formal}[2]{\par\noindent{\small\upshape\raggedright\textsf{Lean:} \leanlist{#2}\unskip
+  \nobreak\hfil\penalty50\hskip1em\hbox{}\nobreak\hfill[\leanfile{#1}]\parfillskip=0pt\par}%
+  \smallskip\noindent\ignorespaces}
+\newcommand{\partformal}[3]{\par\noindent{\small\upshape\raggedright\textsf{Lean (partial):} \leanlist{#2}\unskip
+  \nobreak\hfil\penalty50\hskip1em\hbox{}\nobreak\hfill[\leanfile{#1}]\parfillskip=0pt\par}%
+  \par\noindent{\small\upshape\textsf{Not formalized:} #3}\par\smallskip\noindent\ignorespaces}
+\newcommand{\notformalized}{\par\noindent{\small\upshape\textsf{Not formalized;} a complete proof is given
+  below.}\par\smallskip\noindent\ignorespaces}
+\newcommand{\cited}[1]{\par\noindent{\small\upshape\textsf{Cited:} #1}\par\smallskip\noindent\ignorespaces}
+
+% ---------------------------------------------------------------------------
+% Notation
+% ---------------------------------------------------------------------------
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\clog}[1]{\lceil \log_2 #1 \rceil}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\card}[1]{\lvert #1 \rvert}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\prev}{\mathrm{prev}}
+\newcommand{\cost}{\mathrm{cost}}
+\newcommand{\gn}{\mathrm{gn}}
+\newcommand{\Sh}{\mathrm{Sh}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\Aut}{\mathrm{Aut}}
+\newcommand{\minrk}{\mathrm{minrk}}
+\newcommand{\MAIS}{\mathrm{MAIS}}
+\newcommand{\Crux}{\mathrm{Crux}}
+\newcommand{\TCP}{\mathrm{TCP}}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\poly}{poly}

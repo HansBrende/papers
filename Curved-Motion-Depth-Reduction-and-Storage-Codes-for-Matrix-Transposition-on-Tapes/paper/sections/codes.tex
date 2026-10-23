@@ -1,0 +1,398 @@
+\section{Storage codes on sparse side information}\label{sec:codes}
+
+The second hypothesis of Theorem~D is an all-codes index-coding statement, the crux (\cref{def:crux}): on the side information
+produced by a bounded-depth genie, every index code for the transposition demand must broadcast a constant fraction of
+the input. An oblivious linear-time transposer whose dependency DAG has cheap genies of bounded depth needs the
+opposite, broadcasts of $\eps L$ bits with $\eps$ as small as the trade-off of \cref{prop:tradeoff} allows. Rate~$\tfrac12$ is the natural threshold: when the receivers can be paired so
+that each knows its partner's demand, broadcasting the XOR of each pair serves everyone with $L/2$ bits, and no
+construction we know does better on bounded-degree side information of growing odd girth.
+
+In the hardest instances we know, coming from schedules whose head motion expands (the ones \cref{sec:motion} leaves
+open), the side information that matters is symmetric and sparse: two receivers that know each other's demands form an
+edge of a bounded-degree graph that looks locally like a tree. This is a heuristic description, not a theorem, but it
+singles out the following question, the undirected form of the crux. By the duality between index codes and storage codes
+(\cref{sec:prelim-codes}), it asks whether storage codes can beat rate~$\tfrac12$.
+
+\begin{question}[Undirected crux]\label{prob:undirected-crux}
+Let $(G_n)$ be graphs of maximum degree at most $\Delta$ that are \emph{locally bipartite}: for each fixed $\ell$, only
+$o(\card{V(G_n)})$ vertices lie on odd cycles of length at most $\ell$. Does every storage code on $G_n$ have rate at most
+$\tfrac12+o(1)$, over every alphabet?
+\end{question}
+
+A negative answer is necessary for the kind of coding gain a linear-time transposer would exploit on such side
+information; a positive answer, in the directed and depth-bounded generality of \cref{def:crux}, would combine with depth
+reduction to refute oblivious~(T). This section proves the positive answer for restricted classes of codes and of
+graphs, and shows where the remaining difficulty lies:
+\begin{itemize}[leftmargin=2em]
+\item every storage code, linear or not, on any graph that maps homomorphically to $C_5$, to the circular clique
+$K_{14/5}$ or to the Petersen graph has rate at most $\tfrac12$, with no degree assumption (\cref{cor:H2});
+\item on triangle-free graphs of maximum degree~$3$, no linear storage code over any field beats rate~$\tfrac12$
+(Theorem~S, \cref{thm:S});
+\item with bounded complex coefficients, no linear code beats rate $\tfrac12+o(1)$ on locally bipartite graphs of
+bounded degree, and over finite fields, with a fixed number of symbols per vertex, a gain must come from $p$-torsion
+(Theorem~A, \cref{thm:A,cor:torsion});
+\item at degree~$5$ the threshold fails: the Clebsch graph carries a binary linear code of rate $5/8$, and no storage code
+does better, so its guessing number is exactly~$10$ (\cref{cor:H4});
+\item local arguments inside tree-like regions cannot give rate $\tfrac12+o(1)$ at degree at least~$4$, real eigenvalue
+codes cannot reach rate~$\tfrac12$ at girth at least~$7$, and Mycielski's construction does not preserve goodness;
+whether goodness bounds the fractional chromatic number is open (\cref{sec:ana-limits,sec:ana-targets}).
+\end{itemize}
+Every numbered result of \cref{sec:entropic,sec:thmH,sec:symmetrization,sec:targets,sec:clebsch,sec:subcubic} is
+formalized, apart from the classical Tutte--Berge formula used in the matching form of Theorem~S (\cref{thm:S-barrier});
+\cref{sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets} are not formalized.
+
+\subsection{Entropic polymatroids}\label{sec:entropic}
+
+\begin{lemma}[Entropy of a recoverable word]\label{lem:entropic}
+\formal{StorageCode.lean}{codeEntropy, codeEntropy_isPolymatroid, codeEntropy_isValid}
+Let $X\colon\Omega\to\alpha^V$ be a random word on a finite probability space. Then $S\mapsto H(X_S)$ is a polymatroid on
+$V$. If $X$ is recoverable for $N$, this polymatroid is valid for~$N$.
+\end{lemma}
+
+\begin{outline}
+$H(X_S)$ is the entropy of the observation $\omega\mapsto X(\omega)|_S$, written as a word in $(\alpha\cup\{\bot\})^V$ that
+is $\bot$ outside $S$, in the second paper's entropy library~\cite{SecondPaper2026}. The empty observation is constant,
+so it has entropy~$0$. Monotonicity holds because $X_S$ is a function of $X_T$ for $S\subseteq T$. Submodularity is that
+library's strong subadditivity for the observations $X_S$, $X_T$ and $X_{S\cap T}$. Validity: recoverability makes
+$X_{N(v)\cup\{v\}}$ a function of $X_{N(v)}$, so the two entropies agree.
+\end{outline}
+
+\begin{theorem}[Rate bounds bound codes]\label{thm:entropic-rate}
+\formal{StorageCode.lean}{codeEntropy_univ_le_of_rateBound, codeEntropy_univ_uniform, log_card_le_of_rateBound}
+Suppose $N$ satisfies the rate bound $c\ge0$. Then every random word $X$ recoverable for $N$ satisfies
+$H(X_V)\le c\sum_vH(X_v)$, and every storage code $C$ for $N$ over a nonempty alphabet $\alpha$ satisfies
+$\log\card C\le c\,\card V\log\card\alpha$.
+\end{theorem}
+
+\begin{outline}
+The first claim applies the rate bound to the polymatroid of \cref{lem:entropic}. For the second, take $X$ uniform on
+$C$; then $H(X_V)=\log\card C$, and each $H(X_v)\le\log\card\alpha$.
+\end{outline}
+
+\paragraph{Why it matters.} This is the bridge from polymatroids to codes: a rate bound proved for valid polymatroids,
+by a certificate or by Theorem~H, bounds every storage code, linear or not, over every alphabet. For~(T), a rate
+bound~$c$ on the side information of the cones gives the crux at rate~$1-c$ (\cref{rem:dec-crux}(b)).
+
+Valid polymatroids inherit the recovery structure as a closure operation, which every certificate below uses.
+
+\begin{lemma}[Closure]\label{lem:closure}
+\formal{Polymatroid.lean}{IsPolymatroid.eq_of_closure, IsPolymatroid.insert_eq_of_subset}
+Let $h$ be a polymatroid valid for $N$, and let $S\subseteq T$ be such that $N(v)\subseteq S$ for every
+$v\in T\setminus S$. Then $h(T)=h(S)$.
+\end{lemma}
+
+\begin{outline}
+Submodularity gives diminishing returns: if adding $v$ to $A$ does not increase $h$, then adding $v$ to any $B\supseteq A$
+does not either. Apply this with $A=N(v)$ and $B\supseteq S$, adding the vertices of $T\setminus S$ one at a time.
+\end{outline}
+
+\subsection{Theorem H: rate bounds pull back along homomorphisms}\label{sec:thmH}
+
+\begin{theorem}[Theorem H]\label{thm:H}
+\formal{Polymatroid.lean}{pushRank, IsPolymatroid.pushRank, IsValid.pushRank, pushRank_univ, sum_pushRank_singleton_le, RateBound.of_hom, RateBound.of_graphHom, RateBound.of_digraphHom}
+Let $N_G$ and $N_T$ be side information on $V$ and $W$, and let $\varphi\colon V\to W$ map $N_G(u)$ into $N_T(\varphi(u))$
+for every $u$. For a polymatroid $h$ on $V$ put $h'(Z)=h(\varphi^{-1}(Z))$. Then $h'$ is a polymatroid on $W$, valid for
+$N_T$ if $h$ is valid for $N_G$, with $h'(W)=h(V)$ and $\sum_th'(\{t\})\le\sum_vh(\{v\})$. Consequently, if $N_T$ satisfies
+the rate bound $c\ge0$, so does $N_G$. In particular this holds for every graph homomorphism $G\to T$ and every digraph
+homomorphism (arcs to arcs).
+\end{theorem}
+
+\begin{outline}
+Preimages preserve unions, intersections and inclusions, so $h'$ is a polymatroid. Validity: if $u$ lies in the fibre of
+$t$, then $N_G(u)\subseteq\varphi^{-1}(N_T(t))$, so by \cref{lem:closure} adding the whole fibre of $t$ to
+$\varphi^{-1}(N_T(t))$ does not increase~$h$. No looplessness or injectivity is needed. The fibres partition $V$, and
+subadditivity bounds $h$ of each fibre by the sum over its vertices. Finally
+$h(V)=h'(W)\le c\sum_th'(\{t\})\le c\sum_vh(\{v\})$.
+\end{outline}
+
+The formal theorem is about all polymatroids, so it concerns the Shannon bound. The same argument shows that the
+push-forward of an entropic polymatroid is entropic: if $h(S)=H(X_S)$, then $h'(Z)=H(Y_Z)$ for the random word
+$Y_t=X_{\varphi^{-1}(t)}$. We do not need this, because every target below is certified by Shannon inequalities.
+
+\paragraph{Why it matters.} Theorem~H turns one finite certificate into a statement about infinitely many graphs: a rate
+bound for a fixed target~$T$ holds for every side information that maps to~$T$, whatever its size or degree. This is the
+mechanism behind every all-codes result of this section about infinitely many graphs, and
+the reason a target's structure, not the size of the side
+information, decides goodness. For~(T), it underlies the homomorphism route to the crux (\cref{sec:ana-targets}). The
+theorem is folklore-level (the proof is one line); related monotonicity statements
+for index coding appear in~\cite{EbrahimiSiavoshani2014}, and blow-up lemmas in~\cite{Baber2017,CameronDangRiis2016}.
+
+\subsection{Symmetrization}\label{sec:symmetrization}
+
+\begin{theorem}[Symmetrization]\label{thm:symmetrization}
+\formal{Symmetry.lean}{IsAut, symmetrize, IsPolymatroid.symmetrize, IsValid.symmetrize, symmetrize_invariant, symmetrize_univ, sum_symmetrize_singleton, RateBound.of_invariant}
+Let $N$ be side information on $V$. If every valid polymatroid that is invariant under all automorphisms of $N$ satisfies
+$h(V)\le c\sum_vh(\{v\})$, then $N$ satisfies the rate bound~$c$.
+\end{theorem}
+
+\begin{outline}
+Average a valid polymatroid over the finite group of permutations $\sigma$ of $V$ with $\sigma(N(v))=N(\sigma(v))$. Each
+relabelled function $S\mapsto h(\sigma S)$ is a valid polymatroid, so the average is one too. It is invariant, because
+right multiplication by an automorphism permutes the group, and it has the same value on $V$ and the same sum over
+singletons as~$h$.
+\end{outline}
+
+\paragraph{Why it matters.} With symmetrization, a certificate (\cref{sec:targets}) needs one elemental inequality per orbit, and each set it
+mentions can be replaced by an
+orbit representative through an explicit automorphism. This is what makes the Clebsch certificate below small enough to
+check.
+
+\subsection{Good targets}\label{sec:targets}
+
+A certificate for a rate bound $c$ is a nonnegative combination of \emph{elemental inequalities}
+$h(K\cup\{i\})+h(K\cup\{j\})\ge h(K\cup\{i,j\})+h(K)$ that equals $c\sum_vh(\{v\})-h(V)$ once every set is replaced by its
+closure (\cref{lem:closure}). We found the certificates by linear programming, re-solved them exactly in rational
+arithmetic on their supports, and checked the Petersen, $K_{14/5}$ and Clebsch certificates in Lean with
+\texttt{linear\_combination} and exact coefficients (the five-inequality pentagon certificate is closed by
+\texttt{linarith}); the generator is \leanfile{tools/certificates.py}. The smallest example shows the mechanism.
+
+\begin{proposition}[The pentagon is good]\label{prop:C5}
+\formal{Pentagon.lean}{pentagonNbhd, nbhd_cycleGraph_five, rateBound_pentagon, rateBound_cycleGraph_five}
+Every valid polymatroid on the $5$-cycle $0\text{-}1\text{-}2\text{-}3\text{-}4\text{-}0$ satisfies $2h(V)\le\sum_vh(\{v\})$.
+\end{proposition}
+
+\begin{outline}
+Writing $I(i;j\mid K)$ for the elemental quantity above, the five non-adjacent inequalities
+\[
+  I(0;2)+I(0;3\mid1,2)+I(1;3)+I(1;4)+I(2;4\mid1)\;\ge\;0
+\]
+sum to $\sum_vh(\{v\})-2h(V)$ after the closures $\{0,1,2\}\to\{0,2\}$, $\{1,2,3\}\to\{1,3\}$,
+$\{0,1,2,3\}\to V$ and $\{1,2,4\}\to V$. The Lean proof is exactly this computation.
+\end{outline}
+
+The \emph{circular clique} $K_{p/q}$ has vertices $\Z/p$, with $i\sim j$ if and only if $q\le(j-i)\bmod p\le p-q$.
+
+\begin{proposition}[Further good targets]\label{prop:targets}
+\formal{Petersen.lean}{petersenGraph, petersenGraph_adj_iff, petersenKneser_card, petersenKneser_injective, rateBound_petersenGraph}
+\formal{CircularClique.lean}{circularClique, rateBound_circularClique_14_5, circularClique_adj_of_lt, circularCliqueHom, rateBound_circularClique_of_le, cycleToCircularClique, rateBound_cycleGraph_odd}
+The Petersen graph (the Kneser graph $K(5,2)$) and the circular clique $K_{14/5}$ (the Andrásfai graph
+$\mathrm{And}(5)$) are good. If $p/q\le p'/q'$ with $q'\ge1$, the map $i\mapsto\lfloor p'i/p\rfloor$ is a homomorphism
+$K_{p/q}\to K_{p'/q'}$ (Bondy and Hell~\cite{BondyHell1990}). Hence every circular clique $K_{p/q}$ with $p/q\le14/5$ is
+good, for example $K_{8/3}$ (the Möbius ladder $\mathrm{And}(3)$) and $K_{11/4}$ ($\mathrm{And}(4)$), and so is every
+odd cycle $C_{2k+1}$ with $k\ge2$.
+\end{proposition}
+
+\begin{outline}
+The Petersen certificate is a
+combination of $58$ elemental inequalities with weights $\tfrac14$ and~$\tfrac12$ and $25$ closure equalities (of the $40$ that the
+file proves), and the labelling is identified with $K(5,2)$ by an explicit bijection. For $K_{14/5}$ the polymatroid is first symmetrized over the
+dihedral group (\cref{thm:symmetrization}); the certificate then uses $32$ orbit rows, $21$ explicit automorphisms, $116$
+invariance equalities and $13$ closure equalities. For the homomorphism, if $i<j$ and $q\le j-i\le p-q$,
+then $\lfloor p'i/p\rfloor+q'\le\lfloor p'j/p\rfloor\le\lfloor p'i/p\rfloor+p'-q'$ because $pq'\le p'q$, and adjacency is
+symmetric. The odd cycle $C_{2k+1}$ maps to $K_{(2k+1)/k}$ by $i\mapsto ki$, which turns the differences $\pm1$ into
+$\pm k$, and $(2k+1)/k\le14/5$ for $k\ge2$. Theorem~H applies.
+\end{outline}
+
+\begin{corollary}[Corollary H2: rate $\tfrac12$ for every code]\label{cor:H2}
+\formal{RateHalf.lean}{card_sq_le_of_rateBound_half, IsGood.card_sq_le, IsGood.codeEntropy_le}
+\formal{Polymatroid.lean}{IsGood.of_hom}
+Let $G$ be a good graph, for instance a graph with a homomorphism to $C_5$, to the Petersen graph or to a circular clique
+$K_{p/q}$ with $p/q\le14/5$. Then every storage code $C\subseteq\alpha^{V}$ on $G$ over a nonempty alphabet, linear or
+not, satisfies $\card C^2\le\card\alpha^{\card V}$, and every random word $X$ recoverable for $G$ satisfies
+$2H(X_V)\le\sum_vH(X_v)$.
+\end{corollary}
+
+\begin{outline}
+Goodness pulls back along homomorphisms (Theorem~H); combine with \cref{prop:C5,prop:targets} and
+\cref{thm:entropic-rate}. The integer form takes logarithms.
+\end{outline}
+
+The graphs with a homomorphism to some $K_{p/q}$ with $p/q\le14/5$ are exactly the graphs of circular chromatic number at
+most $14/5$, since for a finite graph the circular chromatic number is the least $p/q$ such that it maps to
+$K_{p/q}$~\cite{Vince1988,Zhu2001}.
+
+A graph with a perfect matching carries the pairing code (copy one symbol across each matched edge), of rate exactly
+$\tfrac12$, so for good graphs with a perfect matching the corollary determines the guessing number:
+$\gn(G)=\card V/2$. The corollary strictly
+extends the guessing-number results of Mazumdar, McGregor and Vorotnikova~\cite[Thms~9--11]{MMV2019} (their graphs map to
+$K_{8/3}$ or to $C_5$), and contains the odd-cycle theorem of Christofides and Markström~\cite{ChristofidesMarkstrom2011}.
+For Petersen it makes rigorous the numerical values of Blasiak, Kleinberg and Lubetzky~\cite{BKL2013}.
+
+\paragraph{Why it matters.} \Cref{cor:H2} is an all-codes answer to the undirected crux, \cref{prob:undirected-crux}, for
+every graph that maps to a good target: the graphs need not have bounded degree, and they include graphs of arbitrarily
+large odd girth, for example long odd cycles. The question is
+whether high-girth bounded-degree graphs map to good targets. For cubic graphs this is a known open problem:
+
+\begin{corollary}[Corollary H3: a conditional degree-$3$ result]\label{cor:H3}
+\formal{RateHalf.lean}{IsGood.card_sq_le}
+\formal{Polymatroid.lean}{IsGood.of_hom}
+\formal{Pentagon.lean}{rateBound_cycleGraph_five}
+\formal{CircularClique.lean}{rateBound_circularClique_14_5}
+If every cubic graph of sufficiently large girth maps to $C_5$ (Nešetřil's Pentagon Problem~\cite{Nesetril1999}), or to
+$K_{14/5}$, then every storage code on such a graph, nonlinear included, has rate at most $\tfrac12$.
+\end{corollary}
+
+\begin{outline}
+This is \cref{cor:H2} applied under the stated hypothesis.
+\end{outline}
+
+Whether high-girth cubic graphs have circular chromatic number below~$3$ is itself open~\cite{DaneshgarMadani2015}. Some
+targets are known to fail: random cubic graphs do not map to $C_7$~\cite{Hatami2005}, and the Clebsch graph, to which every
+subcubic graph of girth at least~$17$ maps by a theorem of DeVos and Šámal~\cite{DeVosSamal2006}, is not good
+(\cref{cor:H4}). For linear codes, Theorem~S below settles degree~$3$ unconditionally.
+
+\subsection{The Clebsch graph: guessing number ten}\label{sec:clebsch}
+
+The Clebsch graph is the folded $5$-cube: vertices $0,\dots,15$, with $i\sim j$ if and only if $i\oplus j$ (bitwise
+exclusive or) is a power of two or equals $15$. It is triangle-free and $5$-regular.
+
+\begin{corollary}[Corollary H4: $\gn(\text{Clebsch})=10$]\label{cor:H4}
+\formal{ClebschCertificate.lean}{rateBound_clebsch, rateBound_clebschGraph, clebsch_card_le, clebsch_guessingNumber, clebschCode_eq, mem_ker_clebsch_iff, finrank_ker_clebsch, rank_clebsch}
+\formal{Clebsch.lean}{clebschGraph, clebschGraph_adj_iff, clebschCode, clebschCode_card, clebschCode_isStorageCode, exists_clebsch_storageCode}
+Every valid polymatroid on the Clebsch graph satisfies $h(V)\le\tfrac58\sum_vh(\{v\})$. Hence every storage code on the
+Clebsch graph over an alphabet of size $q$ has at most $q^{10}$ codewords, while the binary linear storage code
+$\ker(I+A)$ over $\F_2$, where $A$ is the adjacency matrix, has exactly $2^{10}$. So $\gn(\text{Clebsch})=10$, and
+$I+A$ has rank~$6$ over $\F_2$.
+\end{corollary}
+
+\begin{outline}
+Symmetrize over the automorphism group, of order $1920$ (\cref{thm:symmetrization}). The certificate has $54$ orbit rows;
+unlike the certificates for $C_5$, the Petersen graph and $K_{14/5}$, it uses elemental inequalities between adjacent
+vertices as well. It uses $126$ explicit
+automorphisms, $225$ invariance equalities and $54$ closure equalities, and is checked with exact rational coefficients.
+For the lower bound, the code is the span of ten explicit vectors, each satisfying $x_v=\sum_{u\sim v}x_u$ over
+$\F_2$, in systematic form on ten coordinates; injectivity of the encoding gives $2^{10}$ codewords. Since $\ker(I+A)$ is itself a storage code, the upper bound shows that
+it has at most $2^{10}$ words, so it equals the code; its dimension is $10$, and the rank of $I+A$ is $16-10=6$. The
+identification with the folded $5$-cube is checked by decision procedure.
+\end{outline}
+
+\begin{proposition}[The Shannon bound of the Clebsch graph]\label{prop:clebsch-exact}
+\formal{ClebschCertificate.lean}{clebsch_rateBound_iff}
+\formal{Polymatroid.lean}{RateBound.mono}
+The Clebsch graph satisfies the rate bound $c$ if and only if $c\ge\tfrac58$.
+\end{proposition}
+
+\begin{outline}
+The \emph{if} direction is \cref{cor:H4} with monotonicity in $c$. For the \emph{only if} direction, the entropic
+polymatroid of the uniform distribution on the binary code has $h(V)=10\log2$ and $h(\{v\})\le\log2$, which violates
+every rate bound below~$\tfrac58$.
+\end{outline}
+
+Cameron, Dang and Riis proved $10\le\gn(\text{Clebsch})\le11$~\cite{CameronDangRiis2016} and, in the preprint
+version, asked for the exact guessing numbers of the strongly regular graphs they consider~\cite[Problem~5.11]{CameronDangRiis2014};
+\cref{cor:H4} answers this for the Clebsch graph. The binary code $\ker(I+A)$ goes back to Blasiak,
+Kleinberg and Lubetzky~\cite{BKL2013}.
+
+\paragraph{Why it matters.} The Clebsch graph is triangle-free with odd girth~$5$ and degree~$5$, and its codes beat the
+pairing by a constant factor. So bounded degree alone does not force rate~$\tfrac12$: any proof of the undirected crux must
+use local bipartiteness (few short odd cycles), not only sparsity. It also rules out
+targets: it is not good, although every subcubic graph of girth at least~$17$ maps to it~\cite{DeVosSamal2006}, and
+by Theorem~H no graph that receives it is good, which makes iterated Mycielski graphs bad (\cref{prop:M}). On the
+construction side it shows what a coding gain can look like
+at small girth: the binary code is the reduction modulo~$2$ of a rational eigenvalue code with coefficients~$1$
+(\cref{rem:ana-clebsch}), a mechanism that Theorem~A and \cref{cor:torsion} rule out on locally bipartite families of
+bounded degree.
+
+\subsection{Theorem S: linear codes on subcubic triangle-free graphs}\label{sec:subcubic}
+
+Let $F$ be a field and $M\in F^{V\times V}$ a matrix with unit diagonal. The \emph{recovery set} of $v$ is
+$S_v=\{u\ne v: M_{vu}\ne0\}$. The matrix has \emph{no recovery triangle} if $q\notin S_p$ whenever $p,q\in S_r$; this
+holds whenever the off-diagonal support of $M$ lies in the edges of a triangle-free graph. A vertex satisfies
+\emph{reciprocity}~$(\star\star)$ if $\card{S_v}\le2$, or $\card{S_v}=3$ and $r\in S_v$ whenever $v\in S_r$.
+
+\begin{theorem}[Theorem S]\label{thm:S}
+\formal{Subcubic.lean}{Star, RecTriangleFree, ThmSHyp, finrank_subCode_le_half, thmSHyp_of_cliqueFree, star_of_degree_le_three, finrank_ker_le_half_of_degree_le_three, rank_ge_half_of_degree_le_three}
+Let $M\in F^{V\times V}$ have unit diagonal and no recovery triangle. For every vertex set $W$ on which every vertex
+satisfies $(\star\star)$, the kernel of the principal submatrix $M[W,W]$ has dimension at most $\lfloor\card W/2\rfloor$.
+In particular, if $G$ is a triangle-free graph of maximum degree at most~$3$ and the off-diagonal support of $M$ lies in
+the edges of $G$, then $\dim\ker M\le\lfloor\card V/2\rfloor$ and $\rank M\ge\lceil\card V/2\rceil$, over every field.
+\end{theorem}
+
+\begin{outline}
+Codes on vertex sets are subspaces of $F^V$: the code on $W$ is the set of vectors supported on $W$ that satisfy the rows of
+$W$, so deleting vertices is an inclusion of subspaces. The proof is a strong induction over $W$; suppose $W$ is a minimal
+counterexample.
+\begin{enumerate}[leftmargin=2em]
+\item \emph{Start.} Deleting one vertex costs at most one dimension, so $\card W=2m+1$ is odd, the code has dimension
+exactly $m+1$, and every singleton deletion is \emph{tight}: it leaves the largest dimension the theorem allows.
+\item \emph{Tightness.} On a tight deletion no coordinate vanishes identically, since otherwise a smaller set would be a
+counterexample. If two coordinates $p,q$ vanish together on a tight code, deleting both is again tight, and the deleted
+code is the subspace $\{y_p=0\}$ of the old one.
+\item \emph{Maximal chains.} A \emph{good chain} starts at a vertex $v_0$ with at most two recovery neighbours in $W$, which
+exists by a parity argument (otherwise the recovery relation would be a symmetric $3$-regular graph on an odd set). It
+repeatedly adds a pair $\{p,q\}$ that is exactly the part of a chain vertex's recovery set outside the chain. Along a good
+chain, every deletion is tight and its code lies inside the code of~$W$, so every row of a chain vertex restricted to
+the rest is a relation on the remaining code. If some chain vertex has exactly one recovery neighbour outside the chain,
+that coordinate vanishes, contradicting tightness. If one has exactly two, the chain extends. Reciprocity rules out
+three, because the vertex that added a chain vertex lies in its recovery set.
+\item \emph{Final count.} A maximal chain therefore leaves every chain vertex with no recovery neighbours outside it. Call
+\emph{free} the vertex $v_0$ and the first vertex of each pair. A codeword that vanishes on the free vertices vanishes on
+the whole chain, because the row of each pair's parent then forces the second vertex of the pair to vanish. For the last
+pair $\{p,q\}$ even $p$ is forced: its row involves only earlier chain vertices, since $q\notin S_p$ ($p,q\in S_r$ for the
+parent $r$, and $M$ has no recovery triangle). So a codeword is determined, on the chain, by $k$ coordinates for a chain
+with $k$ pairs, and $m+1\le k+\lfloor(\card W-2k-1)/2\rfloor=m$, a contradiction.
+\end{enumerate}
+\end{outline}
+
+The proof needs neither Gallai's lemma nor connectivity, and the first part of \cref{thm:S}, stated for recovery sets, is slightly stronger
+than the graph-theoretic statement. The triangle condition is only needed on the recovery sets, and reciprocity only on the vertex
+set being bounded. Over a field, linear storage codes are exactly the subspaces of the kernels of such matrices:
+
+\begin{lemma}[Linear storage codes are subspaces of kernels]\label{lem:linear-pattern}
+\formal{Subcubic.lean}{IsLinearStorageCode, IsLinearStorageCode.exists_coeffs, IsLinearStorageCode.exists_pattern, isLinearStorageCode_of_le_ker, isStorageCode_iff_isLinearStorageCode}
+Call a subspace $C\subseteq F^V$ a \emph{linear storage code} on $G$ if every $x\in C$ that vanishes on the neighbours
+of~$v$ vanishes at~$v$; over a finite field this is equivalent, by linearity, to the defining property of
+\cref{def:storage-code}. If $C$ is a linear storage code, each coordinate is a fixed linear combination of the
+neighbouring coordinates on~$C$, so $C\subseteq\ker M$ for a matrix $M$ with unit diagonal and off-diagonal support in the
+edges of~$G$. Conversely, every subspace of such a kernel is a linear storage code.
+\end{lemma}
+
+\begin{outline}
+On $C$, the evaluation at $v$ vanishes on the common kernel of the evaluations at the neighbours of $v$, so it lies in
+their span (Mathlib's \texttt{mem\_span\_of\_iInf\_ker\_le\_ker}). Conversely, on $\ker M$ the row of~$v$ gives
+$x_v=-\sum_{u\sim v}M_{vu}x_u$. For the equivalence, $x,y\in C$ agree on a set exactly when $x-y\in C$ vanishes there.
+\end{outline}
+
+\begin{corollary}[Theorem S for linear storage codes]\label{cor:S-linear}
+\formal{Subcubic.lean}{IsLinearStorageCode.finrank_le_half, IsLinearStorageCode.card_sq_le}
+On a triangle-free graph of maximum degree at most~$3$, every linear storage code over any field has dimension at most
+$\lfloor\card V/2\rfloor$; over a finite field $F$ it has $\card C^2\le\card F^{\card V}$.
+\end{corollary}
+
+\begin{outline}
+By \cref{lem:linear-pattern}, $C\subseteq\ker M$ for a matrix $M$ as in \cref{thm:S}; apply \cref{thm:S}. Over a finite
+field, $\card C=\card F^{\dim C}$.
+\end{outline}
+
+The exact minrank follows by splitting along separated vertex sets.
+
+\begin{theorem}[Theorem S, barrier and matching forms]\label{thm:S-barrier}
+\partformal{Subcubic.lean}{finrank_subCode_union_le, finrank_subCode_biUnion_le, finrank_ker_le_barrier, finrank_ker_le_heavy, exists_linearStorageCode_of_matching, exists_pattern_finrank_ker_ge_of_matching}{the identification of the minimum of the bound with the matching number, which is the Tutte--Berge formula~\cite{Berge1958}.}
+Let $M$ have unit diagonal, no recovery triangle, and off-diagonal support in the edges of a graph~$G$. Let $U\subseteq V$ be
+a set outside which every vertex satisfies $(\star\star)$, and let the vertices outside $U$ be partitioned into blocks with
+no edges between different blocks (for instance the components of $G-U$). Then
+\[
+  \dim\ker M\;\le\;\card U+\sum_{B}\lfloor\card B/2\rfloor .
+\]
+Taking for $U$ the vertices violating $(\star\star)$ gives $\dim\ker M\le\card U+\lfloor(\card V-\card U)/2\rfloor$. By the
+Tutte--Berge formula, the minimum of the right side over all $U$, with the components of $G-U$ as blocks, is the matching
+number $\nu(G)$. Conversely, over every field and for every graph, a matching of $m$ edges gives such a matrix with
+$\dim\ker M\ge m$. Hence, for triangle-free $G$ of maximum degree at most~$3$, $\minrk_F(G)=\card V-\nu(G)$ over every
+field.
+\end{theorem}
+
+\begin{outline}
+Deleting $U$ costs at most $\card U$ dimensions. A code on a union of blocks with no edges between them splits as a sum
+of the codes on the blocks, because the rows of one block vanish on the others; each block's code obeys \cref{thm:S}. The
+matching code puts one free symbol on each edge of the matching, constant along the edge, and zero elsewhere; it is a
+linear storage code of dimension~$m$, and \cref{lem:linear-pattern} turns it into a matrix with $\dim\ker M\ge m$. The
+Tutte--Berge formula is classical and not formalized.
+\end{outline}
+
+The statement appears to be new: we found no statement that the minrank of triangle-free subcubic graphs equals the
+clique-cover number $\card V-\nu(G)$ over every field, in the minrank, index-coding, storage-code or guessing-game
+literature. Special cases are known. Tims~\cite{Tims2013} proves that the minimum rank over
+every field equals the clique-cover number for all graphs of order at most~$10$ (by computer), the Petersen graph
+included, and for the Möbius ladders, cubic triangle-free graphs for which Blasiak, Kleinberg and
+Lubetzky~\cite{BKL2013} had shown broadcast rate $\card V/2$ for all codes; Berliner and
+Langberg~\cite{BerlinerLangberg2011} prove the same equality over every finite field for outerplanar graphs. None of the hypotheses can be dropped.
+The Clebsch graph (degree~$5$, \cref{cor:H4}) has binary minrank $6<8=\card V-\nu$. The complete graph $K_4$ shows that
+triangles must be excluded. On $C_5$, vector-linear codes with two symbols per vertex reach dimension~$5$, more than
+$2\nu(C_5)=4$, so the theorem is genuinely scalar (although rate~$\tfrac12$ still holds for $C_5$ by \cref{prop:C5}).
+
+\paragraph{Why it matters.} Theorem~S settles, for scalar linear codes, the first whole class of bounded
+degree beyond degree~$2$, where earlier results covered particular families, and it is exact: in degree~$3$ no scalar
+linear code over any field, characteristic~$2$ included, beats the pairing on any triangle-free graph, locally
+tree-like or not. With Theorem~A it narrows where a coding gain could live: for scalar linear codes, at degree at
+least~$4$ over a finite field through $p$-torsion; for vector-linear codes over finite fields and for nonlinear codes,
+already at degree~$3$.

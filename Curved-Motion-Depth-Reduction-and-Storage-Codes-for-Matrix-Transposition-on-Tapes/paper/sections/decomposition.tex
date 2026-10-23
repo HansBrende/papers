@@ -1,0 +1,725 @@
+\section{The decomposition: depth reduction plus an index-coding crux}\label{sec:decomposition}
+
+This section reduces the oblivious case of~(T) to two statements of different kinds. For an oblivious machine and a
+fixed input length, the run is a circuit: the value computed at each step is a fixed function of the input bit under
+the input head, of the previous state, and of the symbols under the work heads, and each of these symbols was written
+at the previous visit of its head to its cell. Revealing the values at a set $\Gamma$ of steps cuts this circuit. If
+every path of the circuit that avoids $\Gamma$ is short, each output bit depends only on the revealed values and on
+few input bits, so the revealed values form an index code for the transpose demand with small side information.
+
+\Cref{sec:dec-dag} sets up the circuit and proves the cone lemma. \Cref{sec:dec-D} states the two hypotheses, depth
+reduction at linear cost (depth-TCP) and a lower bound for index codes on the resulting side information (the crux),
+and shows that together they exclude oblivious linear-time transposers (Theorem~D). \Cref{sec:dec-rates} records what
+the crux must deliver. \Cref{sec:dec-B} proves depth reduction for walks of linear leg area, in particular for
+home-based walks, for every coupling of the heads (Theorem~B), and \cref{sec:dec-corB} turns its cuts into genies,
+which reduces home-based oblivious machines to the crux (Corollary~B). None of the results of this section is formalized; each comes with a complete proof.
+
+\subsection{The dependency DAG of an oblivious run}\label{sec:dec-dag}
+
+Let $M$ be a machine as in \cref{sec:prelim-machines}, with state set $\{0,\dots,q\}$ and $k\ge1$ work tapes over the
+alphabet $\{0,\dots,g\}$, and let $L\ge1$ be an input length at which $M$ is oblivious, with halting time~$T$. On
+every input $w\in\{0,1\}^L$ the machine executes steps $0,\dots,T-1$. Write $x_0(t)$ for the position of the input
+head and $x_j(t)$ for the position of work head~$j$ ($1\le j\le k$) at time~$t$; by obliviousness these positions,
+and the set of steps that append an output bit, do not depend on~$w$. Step~$t$ reads the symbols under the heads at
+time~$t$, writes the cells $x_1(t),\dots,x_k(t)$, moves the heads, and possibly appends an output bit. As in
+\cref{sec:prelim-walks}, $\prev_j(t)=\max\{s<t:x_j(s)=x_j(t)\}$ when this set is nonempty.
+
+The \emph{value} $v_t(w)$ of step~$t$ on input~$w$ consists of the state after step~$t$, the $k$ symbols written at
+step~$t$, and the output bit appended at step~$t$ (or a symbol for ``none''). It takes at most $2^{\beta(M)}$ values,
+where
+\[
+  \beta(M)=\clog{(q+1)}+k\,\clog{(g+1)}+2
+\]
+is the \emph{value width} of~$M$; the last two bits encode the output (none, $0$ or $1$).
+
+\begin{definition}[Dependency DAG]\label{def:depgraph}
+The \emph{dependency DAG} $H_M$ of $M$ at length~$L$ has vertex set $[0,T)=\{0,\dots,T-1\}$ and the following edges,
+all pointing backwards in time: a \emph{state edge} $t\to t-1$ for every $1\le t<T$, and a \emph{cell edge}
+$t\to\prev_j(t)$, labelled~$j$, for every work tape~$j$ and every $t$ for which $\prev_j(t)$ is defined. The
+\emph{length} of an edge $t\to s$ is $t-s$.
+\end{definition}
+
+Every vertex has out-degree at most $k+1$. For each~$j$ the map $t\mapsto\prev_j(t)$ is injective: if
+$\prev_j(t)=\prev_j(t')=s$ with $t<t'$, then $x_j(t')=x_j(s)=x_j(t)$ with $s<t<t'$, so $\prev_j(t')\ge t>s$. Hence
+the symbol written on tape~$j$ at step~$s$ is read along at most one edge, the state after step~$s$ only along
+$s+1\to s$, and the output bit along none. The DAG depends only on the head schedule of~$M$ at length~$L$, not on the
+input or on the transition table.
+
+\begin{lemma}[Local recursion]\label{lem:dec-local}
+\notformalized
+For every $t<T$ there is a function $\Delta_t$ such that for every input $w\in\{0,1\}^L$,
+\[
+  v_t(w)=\Delta_t\bigl(v_{t-1}(w),\,w_{x_0(t)},\,v_{\prev_1(t)}(w),\dots,v_{\prev_k(t)}(w)\bigr),
+\]
+where an undefined argument is replaced by a constant: by the initial state if $t=0$, by the end marker if
+$x_0(t)\notin[0,L)$, and by the blank symbol if $\prev_j(t)$ is undefined.
+\end{lemma}
+
+\begin{informalproof}
+Step~$t$ applies the transition function to the state at time~$t$, the input symbol under the input head and the
+$k$ symbols under the work heads, and $v_t(w)$ is read off from its result. The state at time~$t$ is the initial
+state if $t=0$ and the state component of $v_{t-1}(w)$ otherwise. The input symbol is $w_{x_0(t)}$, or the end marker
+if $x_0(t)\notin[0,L)$. Every step writes the cell under each work head, so at time~$t$ the cell under work head~$j$
+holds the symbol written on tape~$j$ at step $\prev_j(t)$, a component of $v_{\prev_j(t)}(w)$, and it is blank if
+the head has not visited it before time~$t$; this is the cell-contents lemma of the first paper, Lean-verified
+there~\cite[Lemma~2.3]{FirstPaper2026}. The positions $x_0(t)$ and the steps $\prev_j(t)$ do not depend on~$w$, so neither
+does~$\Delta_t$.
+\end{informalproof}
+
+\begin{definition}[Genies, cones and depth]\label{def:genie}
+A \emph{genie} is a set $\Gamma\subseteq[0,T)$ of revealed steps. For an integer $\beta\ge\beta(M)$, its
+\emph{revealed word} $G_\Gamma(w)=(v_s(w))_{s\in\Gamma}$ is written with $\beta$ bits per value; this defines a map
+$G_\Gamma\colon\{0,1\}^L\to\{0,1\}^{\beta\card\Gamma}$, and $\beta\card\Gamma$ is the \emph{cost} of~$\Gamma$. A path
+$t_0\to t_1\to\dots\to t_m$ in $H_M$ has \emph{length}~$m$, and it is \emph{$\Gamma$-free} if
+$t_1,\dots,t_m\notin\Gamma$ (its first vertex may lie in~$\Gamma$). The \emph{cone} $C_\Gamma(t)$ is the set of
+endpoints of $\Gamma$-free paths starting at~$t$, so $t\in C_\Gamma(t)$. Its \emph{boundary} $\partial_\Gamma(t)$ is
+the set of $s\in\Gamma$ such that some edge of $H_M$ leads from a vertex of $C_\Gamma(t)$ to~$s$, and
+$J_\Gamma(t)=x_0(C_\Gamma(t))\cap[0,L)$ is the set of input positions read in the cone. The genie has \emph{depth at
+most~$D$} if every $\Gamma$-free path has length at most~$D$.
+\end{definition}
+
+So revealing the value $v_s$ blocks every edge into~$s$.
+
+\begin{lemma}[Cone lemma]\label{lem:cone}
+\notformalized
+Let $\Gamma$ be a genie and $t<T$.
+\begin{enumerate}[label=(\alph*)]
+\item If two inputs $w,w'\in\{0,1\}^L$ agree on $J_\Gamma(t)$ and satisfy $v_s(w)=v_s(w')$ for every
+$s\in\partial_\Gamma(t)$, then $v_t(w)=v_t(w')$. Thus $v_t$ is a function of the values at the boundary and of the
+input bits read in the cone.
+\item If $\Gamma$ has depth at most~$D$, then
+$\card{J_\Gamma(t)}\le\card{C_\Gamma(t)}\le\sum_{i=0}^{D}(k+1)^i\le(k+1)^{D+1}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) By strong induction on~$t$. Let $w,w'$ be as stated; we show that the arguments of $\Delta_t$ in
+\cref{lem:dec-local} agree on $w$ and~$w'$. Constant arguments agree trivially. If $x_0(t)\in[0,L)$, then
+$x_0(t)\in J_\Gamma(t)$ because $t\in C_\Gamma(t)$, so $w_{x_0(t)}=w'_{x_0(t)}$. Now let $t\to t'$ be an edge, with
+$t'=t-1$ or $t'=\prev_j(t)$. If $t'\in\Gamma$, then $t'\in\partial_\Gamma(t)$, since the edge starts at
+$t\in C_\Gamma(t)$, and $v_{t'}(w)=v_{t'}(w')$ by hypothesis. If $t'\notin\Gamma$, then every $\Gamma$-free path
+from~$t'$, preceded by the edge $t\to t'$, is a $\Gamma$-free path from~$t$. Hence $C_\Gamma(t')\subseteq C_\Gamma(t)$,
+so $J_\Gamma(t')\subseteq J_\Gamma(t)$ and $\partial_\Gamma(t')\subseteq\partial_\Gamma(t)$, and the induction
+hypothesis for $t'<t$ gives $v_{t'}(w)=v_{t'}(w')$. So all arguments agree, and $v_t(w)=v_t(w')$.
+
+(b) Every vertex of $C_\Gamma(t)$ is the endpoint of a $\Gamma$-free path from~$t$ of length at most~$D$, and since
+out-degrees are at most $k+1$, at most $(k+1)^i$ paths of length~$i$ start at~$t$. The last inequality holds because
+$k\ge1$.
+\end{informalproof}
+
+\begin{corollary}[Output bits]\label{cor:dec-output}
+\notformalized
+Suppose that $M$ appends exactly $L$ output bits at length~$L$, the $\ell$-th one ($0\le\ell<L$) at step~$t_\ell$,
+and let $\Gamma$ be a genie. Put $I_\Gamma(\ell)=J_\Gamma(t_\ell)$. If $G_\Gamma(w)=G_\Gamma(w')$ and $w,w'$ agree on
+$I_\Gamma(\ell)$, then output bit~$\ell$ is the same on $w$ and on~$w'$. If $\Gamma$ has depth at most~$D$, then
+$\card{I_\Gamma(\ell)}\le(k+1)^{D+1}$.
+\end{corollary}
+
+\begin{informalproof}
+Output bit~$\ell$ is a component of $v_{t_\ell}$, and $\partial_\Gamma(t_\ell)\subseteq\Gamma$, so
+$G_\Gamma(w)=G_\Gamma(w')$ gives $v_s(w)=v_s(w')$ for every $s\in\partial_\Gamma(t_\ell)$. Apply \cref{lem:cone}.
+\end{informalproof}
+
+\begin{remark}[Field-level genies]\label{rem:dec-field}
+A genie may also reveal single \emph{fields}: the state after a step, or the symbol written on one tape. Each field
+is read along at most one edge, so revealing it blocks exactly that edge, and the proof of \cref{lem:cone} applies
+verbatim to paths that avoid the blocked edges. We do not need this refinement. Below, an edge $t\to s$ is blocked by
+putting~$s$ into~$\Gamma$, at a cost of $\beta$ bits, which also bounds the width of a single field.
+\end{remark}
+
+\subsection{Two hypotheses and Theorem~D}\label{sec:dec-D}
+
+The first hypothesis, depth-TCP (TCP stands for \emph{trajectory cut problem}), says that a genie of linear cost
+reduces the depth of every dependency DAG of linear size to a constant.
+
+\begin{definition}[depth-TCP]\label{def:depth-tcp}
+Let $k\ge1$, $D\ge0$ and $\beta\ge2$ be integers and $C,\eps>0$ reals. The statement
+$\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ says: for every machine~$M$ with $k$ work tapes and value width
+$\beta(M)\le\beta$ there is~$d_0$ such that, for every $d\ge d_0$ at which $M$ is oblivious at length $L=d^2b(d)$
+with halting time $T\le C(L+1)$, the dependency DAG $H_M$ at length~$L$ has a genie $\Gamma$ of cost
+$\beta\card\Gamma\le\eps L$ and depth at most~$D$.
+\end{definition}
+
+This is a statement about head schedules: whether a genie of a given size and depth exists depends only on the DAG.
+By the trade-off of \cref{prop:tradeoff} below, applied to a machine that copies its input to its output, depth-TCP
+with $C\ge1$ can hold only if $\eps\ge\beta/(D+1)$.
+
+For the second hypothesis recall the transpose map. Bit~$s$ of entry $(i,j)$ of a $d\times d$ matrix with $b$-bit
+entries sits at input position $(di+j)b+s$, and in the encoding of the transpose at position
+$\operatorname{tpos}((di+j)b+s)=(dj+i)b+s$~\cite[Section~2.2 and Lemma~2.5]{FirstPaper2026}. The map $\operatorname{tpos}$ is an involution of
+$[0,L)$, so on input~$w$ the output bit of a transposer at position~$\ell$ is $w_{\operatorname{tpos}(\ell)}$.
+
+\begin{definition}[Index codes and the crux]\label{def:crux}
+Let $d\ge1$ and $L=d^2b(d)$. A \emph{side-information system} at size~$d$ is a family $I=(I(\ell))_{\ell\in[0,L)}$
+of subsets of $[0,L)$: receiver~$\ell$ knows the input bits at the positions in $I(\ell)$ and demands
+$w_{\operatorname{tpos}(\ell)}$. A map $G\colon\{0,1\}^L\to\{0,1\}^m$ is an \emph{index code} for~$I$ with $m$ bits
+if for every~$\ell$ and all $w,w'\in\{0,1\}^L$ with $G(w)=G(w')$ that agree on $I(\ell)$ we have
+$w_{\operatorname{tpos}(\ell)}=w'_{\operatorname{tpos}(\ell)}$.
+
+For a class $\mathcal S$ of side-information systems and a real $\rho\ge0$, the statement $\Crux(\mathcal S,\rho)$
+says: for every $\eta>0$ there is~$d_0$ such that every index code for every system of $\mathcal S$ at a size
+$d\ge d_0$ has at least $(\rho-\eta)L$ bits. In other words, index codes for systems of~$\mathcal S$ have at least
+$\rho L-o(L)$ bits, with the $o(L)$ uniform over~$\mathcal S$.
+
+The class $\mathcal S_{k,C,\beta,D}$ consists of the systems $I_\Gamma=(I_\Gamma(\ell))_{\ell\in[0,L)}$ of
+\cref{cor:dec-output}, where $d\ge1$; $M$ is a machine with $k$ work tapes and $\beta(M)\le\beta$ that is oblivious
+at length $L=d^2b(d)$ with halting time $T\le C(L+1)$ and appends exactly $L$ output bits; and $\Gamma$ is a genie
+of depth at most~$D$ in~$H_M$.
+\end{definition}
+
+The class $\mathcal S_{k,C,\beta,D}$ depends on each machine only through its head schedule and its output times; no
+transition table enters. Its sets have at most $(k+1)^{D+1}$ elements, and it grows with~$D$. The crux is a statement
+about \emph{all} index codes, linear or not, and it must be: the revealed word of a genie is an arbitrary function of
+the input, determined by the transition table. A lower bound for linear index codes alone would cover only machines
+whose revealed words are linear functions of the input, such as machines with an $\F_2$-linear data path.
+
+\begin{remark}[Two readings of the crux]\label{rem:dec-crux}
+(a) \emph{The crux restricts head schedules.} Call receiver~$\ell$ of a system~$I$ \emph{trivial} if
+$\operatorname{tpos}(\ell)\in I(\ell)$, and let $\mathrm{triv}(I)$ be the number of trivial receivers. Broadcasting
+the demanded bits of the non-trivial receivers is an index code with $L-\mathrm{triv}(I)$ bits, so
+$\Crux(\mathcal S,\rho)$ implies $\mathrm{triv}(I)\le(1-\rho)L+o(L)$ for the systems $I\in\mathcal S$. For
+$\mathcal S_{k,C,\beta,D}$ this says that at most $(1-\rho)L+o(L)$ output positions~$\ell$ have the property that the input
+head reads position $\operatorname{tpos}(\ell)$ at the end of a $\Gamma$-free path that starts at the step $t_\ell$ appending
+output bit~$\ell$.
+
+(b) \emph{Storage codes.} For a system~$I$ let $N_I(p)=I(\operatorname{tpos}(p))$, the side information
+of the receiver that demands $w_p$. If $G$ is an index code for~$I$ with $m$ bits, then every fibre $G^{-1}(z)$
+is a binary storage code for $N_I$ (\cref{def:storage-code}): two words of the fibre that agree on $N_I(p)$
+agree at~$p$. Some fibre has at least $2^{L-m}$ words. Hence, if every binary storage code for every $N_I$,
+$I\in\mathcal S$, has at most $2^{(1-\rho)L+o(L)}$ words, uniformly, then $\Crux(\mathcal S,\rho)$ holds; in
+particular, if every $N_I$ satisfies the rate bound~$c$ (\cref{def:polymatroid}), then $\Crux(\mathcal S,1-c)$ holds
+by \cref{thm:entropic-rate}. Conversely, a linear storage code $U\subseteq\F_2^L$ for $N_I$ of dimension $\lambda L$
+gives the linear index code $w\mapsto w+U\in\F_2^L/U$ with $(1-\lambda)L$ bits: if $w-w'\in U$ vanishes on
+$N_I(p)$, it agrees there with $0\in U$, so it vanishes at~$p$. Restricted to linear codes, the crux at
+rate~$\rho$ is therefore equivalent to the statement that binary linear storage codes for the $N_I$, $I\in\mathcal S$,
+have dimension at most $(1-\rho)L+o(L)$, uniformly (the kernel of a linear index code is a linear storage code). For
+general codes the two notions are related by the duality recalled in \cref{sec:prelim-codes}.
+\end{remark}
+
+\begin{theorem}[Theorem D: decomposition]\label{thm:D}
+\notformalized
+Let $k\ge1$, $D\ge0$ and $\beta\ge2$ be integers, $C>0$, and $0<\eps<\rho$. Suppose that the statements
+$\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ and $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ hold. Then for every
+machine~$M$ with $k$ work tapes and value width at most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ is $M$
+oblivious at length $L=d^2b(d)$ with halting time at most $C(L+1)$ and at the same time a transposer of all
+$d\times d$ matrices with $b(d)$-bit entries. In particular, no oblivious machine with $k$ work tapes and value width
+at most~$\beta$ transposes within $C(L+1)$ steps for all~$d$, or even for infinitely many~$d$.
+\end{theorem}
+
+\begin{informalproof}
+Fix~$M$. Let $d_1$ be given by $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ for~$M$, let $d_2$ be given by
+$\Crux(\mathcal S_{k,C,\beta,D},\rho)$ for $\eta=(\rho-\eps)/2$, and put $d_0=\max(d_1,d_2)$. Suppose that for some
+$d\ge d_0$ the machine is oblivious at length $L=d^2b(d)$ with halting time $T\le C(L+1)$ and transposes all
+$d\times d$ matrices. Every word of length~$L$ encodes such a matrix (\cite[Lemma~2.5]{FirstPaper2026}, Lean-verified there), so on every input~$w$
+the output has length~$L$ and its bit~$\ell$ is $w_{\operatorname{tpos}(\ell)}$; in particular, $M$ appends exactly
+$L$ output bits. By depth-TCP there is a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ and depth at most~$D$, so
+$I_\Gamma\in\mathcal S_{k,C,\beta,D}$. By \cref{cor:dec-output}, if $G_\Gamma(w)=G_\Gamma(w')$ and $w,w'$ agree on
+$I_\Gamma(\ell)$, then $w_{\operatorname{tpos}(\ell)}=w'_{\operatorname{tpos}(\ell)}$: the revealed word $G_\Gamma$ is
+an index code for $I_\Gamma$ with $\beta\card\Gamma$ bits. The crux gives
+$\beta\card\Gamma\ge(\rho-\eta)L=\tfrac12(\rho+\eps)L>\eps L$, a contradiction.
+\end{informalproof}
+
+\begin{corollary}[The two hypotheses refute oblivious (T)]\label{cor:dec-obl}
+\notformalized
+Suppose that for all integers $k\ge1$ and $\beta\ge2$ and every real $C>0$ there are reals $0<\eps<\rho$ and an
+integer $D\ge0$ such that $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ and $\Crux(\mathcal S_{k,C,\beta,D},\rho)$
+hold. Then for every oblivious machine~$M$ and every constant~$c$ there is~$d_0$ such that for no $d\ge d_0$ does $M$
+transpose all $d\times d$ matrices within $c(L+1)$ steps. In particular, no oblivious machine witnesses~(T).
+\end{corollary}
+
+\begin{informalproof}
+If $c=0$ there is nothing to prove, since a machine that halts at time~$0$ writes no output. A machine without work
+tapes first receives one idle work tape, which keeps it oblivious and changes neither its running time nor its output.
+So let $M$ have $k\ge1$ work tapes. It is oblivious at every input length, and if it transposes all $d\times d$ matrices
+within $c(L+1)$ steps, its halting time at length $L=d^2b(d)$ is at most $c(L+1)$. Apply \cref{thm:D} with $C=c$ and
+$\beta=\beta(M)\ge2$.
+\end{informalproof}
+
+\paragraph{Why it matters.} Theorem~D isolates exactly two statements that together refute the oblivious case
+of~(T): a structural statement about tape dependency DAGs, which mentions neither the data nor the transition table,
+and an information-theoretic statement about index codes, which sees a machine only through its head schedule and
+its output times. An impossibility proof for oblivious machines can therefore be split into a depth-reduction part
+and a coding part; for
+instance, a crux at rate~$\tfrac12$ for every depth~$D$ would combine with depth reduction at a single
+$\eps<\tfrac12$. Theorem~B and Corollary~B below settle the depth-reduction part for home-based heads; in general
+both parts are open (\cref{sec:depth,sec:codes}). On the construction side, Theorem~D says what an oblivious
+transposer~$M$ with $k$ work tapes and running time $C(L+1)$ must do; let $\beta=\beta(M)$. At every size at which it
+transposes and for all $\eps>0$ and $D\ge0$, either $H_M$ has no genie of cost at most $\eps L$ and depth at
+most~$D$, or the system $I_\Gamma\in\mathcal S_{k,C,\beta,D}$ of such a genie has an index code with at most $\eps L$
+bits, namely~$G_\Gamma$; by \cref{rem:dec-crux}(b), some fibre of $G_\Gamma$ is a storage code of rate at least
+$1-\eps$ for $N_{I_\Gamma}$.
+
+Theorem~D is an elementary composition of the cone lemma with definitions tailored to it, the multitape analogue of
+the route from small-depth computation to index coding by depth reduction recalled in the introduction. Its content is
+the formulation of the two hypotheses and the bookkeeping of genie cost against depth.
+
+\begin{remark}[Relation to the first paper]\label{rem:dec-first}
+The first paper proves, Lean-verified, that the plain form of its Tape Coding Conjecture, which forbids causal codes
+for complete exchange on the block networks of tape diagrams of linear length, at the profile capacities, refutes the
+oblivious case of~(T)~\cite[Theorem~9.9]{FirstPaper2026}. Theorem~D is not a refinement of that reduction, and we know no
+implication, in either direction, between the plain Tape Coding Conjecture and the conjunction of depth-TCP and the crux:
+depth-TCP concerns the step-level dependency DAG and says nothing about codes on block networks, and the crux
+concerns index codes for cone side information rather than complete exchange.
+\end{remark}
+
+\subsection{What the crux must deliver}\label{sec:dec-rates}
+
+Theorem~D needs the crux at a rate~$\rho$ above the relative cost~$\eps$ of the genie. The next proposition bounds that
+cost from below in terms of the depth.
+
+\begin{proposition}[Forced trade-off]\label{prop:tradeoff}
+\notformalized
+Let $M$ be oblivious at length~$L$ with halting time~$T$, and let $\Gamma$ be a genie of depth at most~$D$. Then
+$\card\Gamma\ge\lfloor(T-1)/(D+1)\rfloor$. If moreover $T\ge L$, as for every machine that appends $L$ output bits
+and in particular for every transposer, and $\beta\card\Gamma\le\eps L$, then
+\[
+  \eps\;\ge\;\frac{\beta}{D+1}-\frac{\beta}{L},\qquad\text{equivalently}\qquad D+1\;\ge\;\frac{\beta L}{\eps L+\beta}.
+\]
+\end{proposition}
+
+\begin{informalproof}
+Let $n=\lfloor(T-1)/(D+1)\rfloor$ and $a_i=i(D+1)$ for $0\le i<n$. Then $a_i+D+1\le n(D+1)\le T-1$, and the path
+$a_i+D+1\to a_i+D\to\dots\to a_i$ of state edges has length $D+1$, so it is not $\Gamma$-free: one of
+$a_i,\dots,a_i+D$ lies in~$\Gamma$. These $n$ windows are disjoint, so $\card\Gamma\ge n\ge(T-1-D)/(D+1)$. With
+$T\ge L$ and $\beta\card\Gamma\le\eps L$ this gives $\eps L\ge\beta(L-D-1)/(D+1)=\beta L/(D+1)-\beta$, which is
+either form of the claim.
+\end{informalproof}
+
+\paragraph{Why it matters.} In Theorem~D the crux is used at a rate $\rho>\eps$, and for a transposer
+\cref{prop:tradeoff} gives $\eps\ge\beta/(D+1)-\beta/L$. So at depth~$D$ the crux must deliver a rate of at least
+about $\beta/(D+1)$, and since $\beta\ge2$, genies of cost $\eps L$ have depth $D\ge2/\eps-1-o(1)$: the cheaper the
+genie, the deeper the side information that the crux has to handle. The next proposition shows that the size of the
+cones alone never suffices.
+
+\begin{proposition}[The counting bound cannot replace the crux]\label{prop:dec-counting}
+\notformalized
+Let $I$ be a side-information system at size~$d$ with $\card{I(\ell)}\le B$ for all~$\ell$. Call a set~$W$ of
+non-trivial receivers (\cref{rem:dec-crux}(a)) \emph{acyclic} if there are no distinct $\ell_1,\dots,\ell_r\in W$, $r\ge2$, with
+$\operatorname{tpos}(\ell_{i+1})\in I(\ell_i)$ for all~$i$ (indices modulo~$r$), and let $\MAIS(I)$ be the largest
+size of an acyclic set.
+\begin{enumerate}[label=(\alph*)]
+\item Every index code for~$I$ has at least $\MAIS(I)$ bits.
+\item $\MAIS(I)\ge(L-\mathrm{triv}(I))/(B+1)$.
+\item Suppose that a machine~$M$ with $k$ work tapes, oblivious at length $L$ with halting time $T\ge L$, has a genie
+$\Gamma$ of depth at most~$D$ and cost $\beta\card\Gamma\le\eps L$, where $\beta\ge2$, $0<\eps\le1$ and
+$L\ge\beta/\eps$. Then $(k+1)^{D+1}>1/\eps$. Consequently, for every system~$I$ at this size whose sets have at most
+$B=(k+1)^{D+1}$ elements, in particular for every system of $\mathcal S_{k,C,\beta,D}$ (\cref{cor:dec-output}), the
+lower bound $(L-\mathrm{triv}(I))/(B+1)$ given by (a) and~(b) is smaller than $\eps L$; it never contradicts the
+existence of an index code with $\eps L$ bits, such as the revealed word $G_\Gamma$ when $M$ is a transposer.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) This is the acyclic-subgraph bound of Bar-Yossef et al.~\cite[Theorem~3]{BBJK2011}; we include the short proof in
+our notation. Let $W$ be acyclic, and order it as
+$\ell_1,\dots,\ell_r$ so that $\operatorname{tpos}(\ell_j)\in I(\ell_i)$ with $j\ne i$ implies $j<i$; this is
+possible because the digraph on~$W$ with an arc from $\ell$ to $\ell'$ when $\operatorname{tpos}(\ell')\in I(\ell)$
+has no cycle. Let $Z$ be the set of inputs that vanish outside $\operatorname{tpos}(W)$; it has $2^{\card W}$
+elements because $\operatorname{tpos}$ is injective. We show that an index code~$G$ is injective on~$Z$. Let
+$w,w'\in Z$ with $G(w)=G(w')$, and suppose $w$ and $w'$ agree at $\operatorname{tpos}(\ell_j)$ for all $j<i$. A
+position in $I(\ell_i)$ lies outside $\operatorname{tpos}(W)$, where both inputs vanish, or equals
+$\operatorname{tpos}(\ell_j)$ for some $j<i$, because $\operatorname{tpos}(\ell_i)\notin I(\ell_i)$ (receiver
+$\ell_i$ is non-trivial). So $w$ and $w'$ agree on $I(\ell_i)$, hence at $\operatorname{tpos}(\ell_i)$. By induction
+$w=w'$, so $2^m\ge2^{\card W}$.
+
+(b) Order the non-trivial receivers uniformly at random, and let $W$ consist of those receivers~$\ell$ that precede
+every non-trivial $\ell'\ne\ell$ with $\operatorname{tpos}(\ell')\in I(\ell)$. Then $W$ is acyclic, since along a
+cycle in~$W$ each receiver would precede the next. As $\operatorname{tpos}$ is injective, a receiver~$\ell$ has at
+most $\card{I(\ell)}\le B$ such receivers~$\ell'$, so it lies in~$W$ with probability at least $1/(B+1)$, and
+$\mathbb E\card W\ge(L-\mathrm{triv}(I))/(B+1)$.
+
+(c) By \cref{prop:tradeoff}, $D+1\ge\beta L/(\eps L+\beta)\ge\beta L/(2\eps L)=\beta/(2\eps)\ge1/\eps$, using
+$\beta\le\eps L$ and $\beta\ge2$. Hence $(k+1)^{D+1}\ge2^{D+1}\ge2^{1/\eps}>1/\eps$, and
+$(L-\mathrm{triv}(I))/(B+1)\le L/(B+1)<\eps L$.
+\end{informalproof}
+
+\paragraph{Why it matters.} The combined bound $(L-\mathrm{triv}(I))/(B+1)$ of (a) and~(b) uses only the sizes of the
+sets of the side information and the number of trivial receivers. Part~(c) shows that it is always below $\eps L$: the
+depth that a genie of cost $\eps L$ must reach is so large that the size bound $(k+1)^{D+1}$ on the cones is far bigger
+than $1/\eps$. No argument that uses only the sizes can do better, because splitting the receivers into groups of
+$B+1$, each receiver knowing the bits demanded by the others in its group, gives a system with sets of size~$B$ and an
+index code of $\lceil L/(B+1)\rceil$ bits, one XOR per group. A proof of the crux must use the structure of the side
+information produced by tape schedules.
+
+\begin{remark}[The rate needed]\label{rem:dec-rates}
+For each depth~$D$, let $\rho^*(D)$ be the supremum of all rates~$\rho$ such that the statement
+$\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds. It is non-increasing in~$D$, because the classes grow with~$D$. Suppose that depth-TCP holds with parameters
+$(k,C,\beta,\eps,D(\eps))$ for all small $\eps>0$. By Theorem~D, oblivious machines with these parameters are then
+excluded as soon as $\rho^*(D(\eps))>\eps$ for a single~$\eps$. If $D(\eps)\le c\,\eps^{-a}$ for constants $c$
+and~$a$ (by \cref{prop:tradeoff}, necessarily $a\ge1$ if depth-TCP is to apply to transposers), a crux with
+$\rho^*(D)\ge D^{-1/a+\delta}$ for some $0<\delta<1/a$ suffices, because then
+\[
+  \rho^*(D(\eps))\;\ge\;\bigl(c\,\eps^{-a}\bigr)^{-1/a+\delta}\;=\;c^{-1/a+\delta}\,\eps^{1-a\delta}\;>\;\eps
+\]
+for all small~$\eps$. For heads of leg area at most $AT$ (home-based heads have $A=1$), Corollary~B below gives depth
+$D(\eps)=2^{O(k^3(1+A)\beta C/\eps)}$; there a crux at a single depth~$D$ with a rate exceeding about
+$456k^3(1+A)\beta C/\log_2D$ suffices. Both requirements are far
+above the rate, at most $(k+1)^{-D-1}$, that the counting bound of \cref{prop:dec-counting} gives.
+\end{remark}
+
+\subsection{Depth reduction for home-based walks: Theorem~B}\label{sec:dec-B}
+
+Theorem~B is a statement about walks; machines reappear in \cref{sec:dec-corB}. Throughout this subsection
+$x_1,\dots,x_k$ are walks of length~$T$ (\cref{sec:prelim-walks}), indexed by \emph{heads} $h\in\{1,\dots,k\}$. They
+may be coupled arbitrarily: no relation between them is assumed.
+
+\paragraph{The walk DAG and cuts.} The \emph{walk DAG} of $x_1,\dots,x_k$ has vertex set $[0,T)$ and two kinds of
+edges: \emph{state edges} $t\to t-1$ for $1\le t<T$, and \emph{long hops} $u\to\prev_h(u)$, one for every head~$h$
+and every time~$u$ with $u-\prev_h(u)\ge2$ (the hop $(\prev_h(u),u)$ of \cref{sec:prelim-walks}, read backwards). A
+pause $u\to u-1$ of a head joins the same two vertices as the state edge $u\to u-1$ and is identified with it; in
+general an edge is determined by its two endpoints, so a pair that is a long hop of several heads is a single edge. A
+\emph{cut} is a set~$F$ of edges, and it has \emph{depth at most~$D$} if every path that uses no edge of~$F$ contains
+at most~$D$ long hops. For the work-head walks of an oblivious machine~$M$ at length~$L$, the walk DAG has the
+vertices of $H_M$ (\cref{def:depgraph}), and every edge of $H_M$ joins the endpoints of an edge of the walk DAG: a
+cell edge of length~$1$ is a pause, and a cell edge of length at least~$2$ is a long hop.
+
+\paragraph{Bands, legs and leg area.} For $z\in\Z$ let $\lambda(z)=\lfloor\log_2\abs z\rfloor$ if $\abs z\ge2$ and
+$\lambda(z)=0$ otherwise. The \emph{band} of head~$h$ at time~$t$ is $\lambda_h(t)=\lambda(x_h(t))$, a function of
+the cell. Bands, scales, floors and the exponents~$\theta$ of radii $2^\theta$ are integers throughout. For integers
+$\theta\ge1$, $\lambda(z)\ge\theta$ if and only if $\abs z\ge2^\theta$; and since $\abs{x_h}$ changes by at most~$1$ per
+step, so does~$\lambda_h$. The \emph{scale} of a leg (\cref{sec:prelim-walks}) is the largest band over it. For
+$\theta\ge0$ let $N_h(\theta,t)$ be the number of legs of head~$h$ of scale at least~$\theta$ that begin at or before
+time~$t$, and let $N_h(\theta)=N_h(\theta,T-1)$. The \emph{leg area} of head~$h$ is
+\[
+  S_h=\sum_{\text{legs $\ell$ of $h$}}2^{\mathrm{scale}(\ell)},
+\]
+and the \emph{area hypothesis} with constant $A>0$ is
+\[
+  \text{(A)}\qquad S_h\le A\,T\quad\text{for every head }h.
+\]
+Every leg contributes at least~$1$, so head~$h$ has at most $S_h$ legs. The statements below use only that the legs
+of each walk partition $[0,T)$ into intervals on which the walk is weakly monotone.
+
+\begin{lemma}[Leg area of home-based walks]\label{lem:dec-area}
+\notformalized
+If every leg of a walk~$x$ of length~$T$ begins or ends at a cell~$z$ with $\abs z\le1$, then every leg~$\ell$
+satisfies $2^{\mathrm{scale}(\ell)}\le\card\ell$, and the leg area of~$x$ is at most~$T$. In particular, home-based
+walks satisfy~(A) with $A=1$.
+\end{lemma}
+
+\begin{informalproof}
+If the scale~$s$ of $\ell$ is~$0$, then $2^s=1\le\card\ell$. Otherwise $\ell$ contains a time~$t$ with
+$\abs{x(t)}\ge2^s$ and has an endpoint~$e$ with $\abs{x(e)}\le1$. Since $x$ moves by at most~$1$ per step,
+$\abs{t-e}\ge2^s-1$, and the interval~$\ell$ contains the $\abs{t-e}+1\ge2^s$ times between $e$ and~$t$. Summing
+over the legs, which partition $[0,T)$, bounds the leg area by~$T$.
+\end{informalproof}
+
+The walk DAG does not change when a single walk is translated, so everything below applies to heads with individual
+fixed home cells, the bands of each head being measured from its home.
+
+\begin{lemma}[Crossings and spanning hops]\label{lem:dec-facts}
+\notformalized
+Let $x$ be a walk of length~$T$ with leg area~$S$, let $\theta\ge1$, and let $N(\theta)$ be the number of legs of~$x$
+of scale at least~$\theta$. A \emph{crossing} of radius~$2^\theta$ at time~$t$ ($1\le t<T$) is \emph{outward} if
+$\abs{x(t-1)}<2^\theta\le\abs{x(t)}$ and \emph{inward} if $\abs{x(t-1)}\ge2^\theta>\abs{x(t)}$.
+\begin{enumerate}[label=\textup{(F\arabic*)}]
+\item The walk has at most $2N(\theta)$ outward crossings, and at most $5N(\theta)$ crossings in total, of
+radius~$2^\theta$. Moreover $\sum_{\theta\ge1}2^\theta N(\theta)\le2S$.
+\item For every time~$\tau$ and every integer $R\ge1$, at most $2R-1$ hops $u\to\prev(u)$ of~$x$ \emph{span}~$\tau$,
+that is, satisfy $\prev(u)<\tau\le u$, and have $\abs{x(u)}<R$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(F1) Assign each outward crossing~$t$ to the leg~$\ell$ that contains~$t$; the scale of~$\ell$ is at least~$\theta$
+because $\abs{x(t)}\ge2^\theta$. Either $t$ is the first time of~$\ell$, which happens for at most one crossing per
+leg, or $t-1\in\ell$ as well. In the second case suppose that $x$ is non-decreasing on~$\ell$; the non-increasing case
+follows by the symmetry $z\mapsto-z$. If $x(t)\le0$, then $x(t-1)\le x(t)\le0$ and $\abs{x(t-1)}\ge\abs{x(t)}$,
+which is impossible; so $x(t)\ge2^\theta$, and $x\ge2^\theta$ at all later times of~$\ell$, so no later outward
+crossing $t'$ with $t'-1\in\ell$ is assigned to~$\ell$. Thus each leg of scale at least~$\theta$ receives at most two
+outward crossings and every other leg none, which gives the first bound. Crossings of radius~$2^\theta$ alternate
+between outward and inward, as each changes whether $\abs x\ge2^\theta$. So the inward crossings number at most the
+outward ones plus one, and the extra one occurs only if $\abs{x(0)}\ge2^\theta$, in which case the first leg has
+scale at least~$\theta$ and $N(\theta)\ge1$. Altogether there are at most $2N(\theta)+3N(\theta)$ crossings. Finally,
+$\sum_{\theta\ge1}2^\theta N(\theta)=\sum_\ell\sum_{1\le\theta\le\mathrm{scale}(\ell)}2^\theta
+\le\sum_\ell2^{\mathrm{scale}(\ell)+1}=2S$.
+
+(F2) For such a hop, $x$ visits the cell $x(u)$ at time $\prev(u)<\tau$ and at no time strictly between $\prev(u)$
+and~$u$, so $u$ is the first visit to $x(u)$ at or after~$\tau$. Hence each of the $2R-1$ cells~$z$ with $\abs z<R$
+is the cell of at most one such hop.
+\end{informalproof}
+
+\begin{lemma}[Legs and long hops]\label{lem:legs}
+\notformalized
+Let $u\to p$ be a long hop of head~$h$, so $p=\prev_h(u)\le u-2$. The leg of~$h$ that contains~$u$ begins after~$p$
+and has scale at least $\lambda_h(u)$. Hence $N_h(\theta,u)\ge N_h(\theta,p)+1$ for every $\theta\le\lambda_h(u)$.
+\end{lemma}
+
+\begin{informalproof}
+Pick~$t$ with $p<t<u$. By the definition of $\prev_h$, head~$h$ is not at the cell $x_h(u)=x_h(p)$ at time~$t$. If
+$p$ and~$u$ lay in one leg, $x_h$ would be weakly monotone on an interval containing $p<t<u$, so $x_h(t)$ would lie
+between the equal values $x_h(p)$ and $x_h(u)$, a contradiction. So the leg containing~$u$ is a later interval than
+the leg containing~$p$, and it begins after~$p$; its scale is at least $\lambda_h(u)$ because it contains~$u$. For
+$\theta\le\lambda_h(u)$ this leg is counted in $N_h(\theta,u)$ but not in $N_h(\theta,p)$, and every leg counted in
+$N_h(\theta,p)$ is counted in $N_h(\theta,u)$.
+\end{informalproof}
+
+\Cref{lem:legs} fails for pauses, whose two endpoints may lie in one leg; this is why pauses are treated as state edges.
+
+\begin{definition}[The band label and its cut]\label{def:dec-label}
+Fix integers $a\ge1$ (the \emph{group width}), $r\in\{0,\dots,a-1\}$ (the \emph{offset}), $K\ge2$ (the
+\emph{modulus}) and $\omega_1,\dots,\omega_k\in\{0,\dots,K-1\}$.
+\begin{itemize}[leftmargin=2em]
+\item The \emph{group} of head~$h$ at time~$t$ is $g_h(t)=\lfloor(\lambda_h(t)+r)/a\rfloor$, and the \emph{floor} of
+a group $G\ge0$ is $\theta(G)=\max(aG-r,0)$, the smallest band in group~$G$. The floors of the groups $G\ge1$ are the
+integers $\theta\ge1$ with $\theta\equiv-r\pmod a$.
+\item The \emph{occupied groups} at time~$t$ are the distinct values among $g_1(t),\dots,g_k(t)$, listed from the top
+as $G_1(t)>G_2(t)>\dots>G_{m(t)}(t)$, with floors $\theta_i(t)=\theta(G_i(t))$; here $m(t)\le k$.
+\item The \emph{shared counts} are $n_i(t)=\sum_{h=1}^kN_h(\theta_i(t),t)$ for $i\le m(t)$: the number of
+legs, of all heads, of scale at least $\theta_i(t)$ begun by time~$t$.
+\item The \emph{label} is
+\[
+  \Psi(t)=\sum_{i=1}^{m(t)}\bigl((n_i(t)+\omega_i)\bmod K\bigr)\,K^{k-i}\;\in[0,K^k).
+\]
+\item The \emph{cut} $F=F(a,r,K,\omega)$ consists of the long hops $u\to p$ with $\Psi(p)\ge\Psi(u)$ and the state
+edges $t\to t-1$ with $\Psi(t-1)>\Psi(t)$.
+\end{itemize}
+\end{definition}
+
+So $\Psi(t)$ is the integer whose base-$K$ digits, most significant first, are $\psi_i(t)=(n_i(t)+\omega_i)\bmod K$
+for $i\le m(t)$ and $0$ for $m(t)<i\le k$, and labels compare as these digit strings compare lexicographically.
+Whether an edge is cut depends only on its endpoints. For a fixed~$\theta$, the shared count $\sum_hN_h(\theta,t)$ is
+non-decreasing in~$t$; this monotonicity and \cref{lem:legs} are what the label uses.
+
+\begin{theorem}[Theorem B: depth reduction for home-based walks]\label{thm:B}
+\notformalized
+Let $x_1,\dots,x_k$ be walks of length~$T$, coupled arbitrarily, that satisfy the area hypothesis~(A) with
+constant~$A$. Let $a\ge1$ and $K\ge2$ be integers, and let $r\in\{0,\dots,a-1\}$ and $\omega\in\{0,\dots,K-1\}^k$ be
+uniformly random and independent. Then the cut $F=F(a,r,K,\omega)$ has depth at most $K^k-1$, and
+\begin{equation}\label{eq:dec-B}
+  \mathbb E_{r,\omega}\card F\;\le\;\frac{(20k^2A+k)\,T}{a}+\Bigl(9+\frac{2^{a+2}}a\Bigr)\frac{k^2AT}{K}
+  \;\le\;20k^2(1+A)\,T\Bigl(\frac1a+\frac{2^a}{aK}\Bigr)+\frac{20k^2AT}{K}.
+\end{equation}
+Consequently:
+\begin{enumerate}[label=(\alph*)]
+\item for every $D\ge4^k$, the choice $K=\lfloor D^{1/k}\rfloor$ and $a=\lfloor\log_2D/(2k)\rfloor$, with suitable
+offsets, gives a cut of depth at most $D-1$ with $\card F\le114k^3(1+A)T/\log_2D$;
+\item for every $0<\eps\le1$, some cut of size at most $\eps T$ has depth less than
+$2^{\lceil114k^3(1+A)/\eps\rceil}$;
+\item in particular, for every coupling of $k$ home-based walks, $\eps T$ edges suffice to reach depth less than
+$2^{\lceil228k^3/\eps\rceil}=2^{O(k^3/\eps)}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{informalproof}
+\emph{Depth.} Along a path that avoids~$F$, $\Psi$ does not increase along state edges and strictly decreases along
+long hops. Since $\Psi$ takes values in $[0,K^k)$, the path contains at most $K^k-1$ long hops.
+
+\emph{Notation.} Fix the walks, $a$ and~$K$; probabilities and expectations are over $r$ and~$\omega$. We bound the
+number of cut long hops counted with their head, as pairs $(h,u)$, which is at least the number of cut long-hop
+edges, and the number of cut state edges. Consider a long hop $u\to p$ of head~$h$, with cell $z=x_h(u)=x_h(p)$.
+Since bands are functions of the cell, $h$ has the same band $\lambda=\lambda(z)$ and the same group
+$G=g_h(u)=g_h(p)$ at $p$ and at~$u$. Let $\theta^+=\theta(G+1)=a(G+1)-r\ge1$ be the floor of the next group: a head
+is in a group above~$G$ at time~$t$ exactly when its cell has absolute value at least $2^{\theta^+}$, and
+$\abs z<2^{\theta^+}$. Let $U(t)$ be the set of occupied groups above~$G$ at time~$t$. Whether $U(p)=U(u)$ holds,
+and all counts $n_i$, depend on~$r$ only.
+
+\emph{Step 1: $U(p)=U(u)$.} Then $G$ has the same position $j=\card{U(p)}+1$ in the lists at $p$ and at~$u$, and
+$G_i(p)=G_i(u)$, with a common floor~$\theta_i$, for every $i\le j$. Let $\Delta_i=n_i(u)-n_i(p)$ for $i\le j$. For
+$i<j$, $\Delta_i\ge0$ by monotonicity at a fixed floor. For $i=j$ we have $\theta_j=\theta(G)\le\lambda=\lambda_h(u)$,
+so \cref{lem:legs} gives $N_h(\theta_j,u)\ge N_h(\theta_j,p)+1$, and with monotonicity for the other heads, $\Delta_j\ge1$.
+Say that digit~$i$ \emph{wraps} if $\lfloor(n_i(p)+\omega_i)/K\rfloor\ne\lfloor(n_i(u)+\omega_i)/K\rfloor$. If no
+digit $i\le j$ wraps, then $\psi_i(p)=\psi_i(u)-\Delta_i$ for every $i\le j$, so the first position at which the
+digit strings of $p$ and~$u$ differ is at most~$j$ and carries the smaller digit at~$p$. Thus $\Psi(p)<\Psi(u)$, and
+the hop is not cut; the digits below position~$j$ play no role. Given~$r$, since $\omega_i$ is uniform on
+$\{0,\dots,K-1\}$, digit~$i$ wraps with probability at most $\Delta_i/K$. So, given~$r$, a hop of Step~1 is cut with
+probability at most $\sum_{i\le j}\Delta_i/K$.
+
+\emph{Step 2: $U(p)\ne U(u)$.} We count every such hop as cut and charge it to a crossing. Let $G'>G$ be a group that
+lies in exactly one of $U(p)$ and $U(u)$. Since $h$ is in group~$G$ at both times, at one of the two times $G'$ is
+occupied by a head $h'\ne h$ that is not in~$G'$ at the other time. Groups change by at most one per step, and a
+head moves from a group $G''$ to $G''+1$ exactly when its band reaches $\theta(G''+1)$, that is, at an outward
+crossing of radius $2^{\theta(G''+1)}$; it moves back at an inward crossing of the same radius. If $h'$ is in~$G'$
+at time~$p$, consider its first move out of~$G'$ after~$p$; if $h'$ is in~$G'$ at time~$u$, consider its last move
+into~$G'$ at or before~$u$. In either case the move happens at a step $\tau-1\to\tau$ with $p<\tau\le u$, and it is a
+crossing of radius $2^{\theta(G'+1)}$ or $2^{\theta(G')}$. So $h'$ has a crossing of radius $2^{\theta^*}$ at a time
+$\tau\in(p,u]$, where $\theta^*$ is a floor with $\theta^*\ge\theta(G')\ge\theta^+$.
+Charge the hop to one such crossing $(h',\theta^*,\tau)$, chosen by a fixed rule. Every hop $(h,u)$ charged to
+$(h',\theta^*,\tau)$ satisfies $\prev_h(u)<\tau\le u$ and $\abs{x_h(u)}=\abs z<2^{\theta^+}\le2^{\theta^*}$, so by
+(F2) with $R=2^{\theta^*}$, applied to each of the $k$ heads, at most $k\,2^{\theta^*+1}$ hops are charged to each
+crossing. By (F1), head~$h'$ has at most $5N_{h'}(\theta)$ crossings of radius~$2^\theta$. Hence, for fixed~$r$,
+\[
+  \#\{\text{hops of Step 2}\}\;\le\;\sum_{h'=1}^k\ \sum_{\theta\ge1\text{ a floor}}5N_{h'}(\theta)\cdot k\,2^{\theta+1}.
+\]
+Each $\theta\ge1$ is a floor for exactly one value of~$r$, hence with probability $1/a$, and by (F1) and~(A),
+\[
+  \mathbb E\,\#\{\text{hops of Step 2}\}\;\le\;\frac{10k}a\sum_{h'}\sum_{\theta\ge1}2^\theta N_{h'}(\theta)
+  \;\le\;\frac{10k}a\sum_{h'}2S_{h'}\;\le\;\frac{20k^2AT}a.
+\]
+
+\emph{Step 3: wraps.} By Step~1, the expected number of cut hops of Step~1 is at most
+$\frac1K\mathbb E\sum\sum_{i\le j}\Delta_i$, where the outer sum runs over the hops of Step~1. For such a hop and
+$i\le j$, $\Delta_i$ is the number of legs, of all heads, that have scale at least~$\theta_i$ and begin in $(p,u]$.
+We exchange the order of summation: for each leg~$\ell$, of any head, beginning at time~$\tau_\ell$ with
+scale~$s_\ell$, we count the hops that span~$\tau_\ell$ in the sense of (F2), that is, satisfy $p<\tau_\ell\le u$. By the argument
+of (F2), for each head and each cell at most one hop of that head spans~$\tau_\ell$ and ends at that cell.
+
+\emph{Own digit ($i=j$).} A hop spanning~$\tau_\ell$ contributes~$\ell$ to its $\Delta_j$ only if $\theta(G)\le
+s_\ell$, where $G$ is its group. Since $\theta(G)$ is the largest floor at most~$\lambda$ (or~$0$ if there is none),
+this holds if $\lambda\le s_\ell$, and for $\lambda>s_\ell$ it holds exactly when no floor lies in $(s_\ell,\lambda]$.
+The floors at least~$1$ form an arithmetic progression of difference~$a$ with a uniformly random offset, so the latter
+has probability $\max(0,1-(\lambda-s_\ell)/a)$. There are $2^{s+2}-1$ cells of band at most~$s$, and $2^{\lambda+1}$
+cells of band $\lambda\ge1$. So the expected number of hops counted for~$\ell$ is at most
+\[
+  k\Bigl(2^{s_\ell+2}+\sum_{i=1}^{a-1}2^{s_\ell+i+1}\Bigl(1-\frac ia\Bigr)\Bigr)
+  \;\le\;k\Bigl(2^{s_\ell+2}+\frac{2^{s_\ell+a+2}}a\Bigr),
+\]
+because $\sum_{i=1}^{a-1}2^i(a-i)=2^a\sum_{j=1}^{a-1}j2^{-j}<2^{a+1}$. Summing over the legs of all heads, with
+$\sum_\ell2^{s_\ell}=\sum_{h'}S_{h'}\le kAT$, gives $\mathbb E\sum\Delta_j\le4k^2AT(1+2^a/a)$.
+
+\emph{Higher digits ($i<j$).} Here $G_i>G$, so $\theta_i\ge\theta^+$ is a floor at least~$1$ that exceeds the band
+of the hop, and distinct~$i$ give distinct floors. So, for each leg~$\ell$, the pairs consisting of a hop
+spanning~$\tau_\ell$ and an index $i<j$ with $\theta_i\le s_\ell$ number at most the sum, over the floors
+$1\le\theta\le s_\ell$, of the number of hops spanning~$\tau_\ell$ whose cell has absolute value less than~$2^\theta$.
+By (F2) this number is at most $k(2^{\theta+1}-1)$, and since consecutive floors differ by $a\ge1$, the sum is at most
+$k\sum_{\theta=1}^{s_\ell}2^{\theta+1}<k\,2^{s_\ell+2}$. Summing over the legs gives
+$\sum\sum_{i<j}\Delta_i\le4k^2AT$ for every~$r$.
+
+Together, the expected number of cut hops of Step~1 is at most
+$(4k^2AT(1+2^a/a)+4k^2AT)/K=(8+2^{a+2}/a)\,k^2AT/K$.
+
+\emph{Step 4: state edges.} Consider the state edge $t\to t-1$. If no head changes group at step $t-1\to t$, the
+occupied groups and their floors are the same at $t-1$ and~$t$, and $n_i(t-1)\le n_i(t)$ for every~$i$; as in
+Step~1, the edge is cut only if some digit wraps, which, given~$r$, has probability at most
+$\sum_i(n_i(t)-n_i(t-1))/K$. Here $n_i(t)-n_i(t-1)$ is the number of heads that begin, at time~$t$, a leg of scale at
+least~$\theta_i$. A head begins at most one leg at a time and there are at most $k$ digits, so the sum over $i$
+and~$t$ is at most $k$ times the number of legs, which is at most $\sum_{h'}S_{h'}\le kAT$; so these cuts number at
+most $k^2AT/K$ in expectation. Otherwise some head changes group at step $t-1\to t$, and we count the edge as cut. A
+head changes group at a step only if its band moves between two values $\lambda$ and $\lambda+1$ and $\lambda+1$ is a
+floor, which has probability $1/a$; so the expected number of such steps is at most $kT/a$.
+
+\emph{Total.} Adding Steps 2, 3 and~4,
+\[
+  \mathbb E\card F\;\le\;\frac{20k^2AT}a+\Bigl(8+\frac{2^{a+2}}a\Bigr)\frac{k^2AT}K+\frac{k^2AT}K+\frac{kT}a,
+\]
+which is the first bound of \eqref{eq:dec-B}; the second follows from $k\le20k^2$, $9\le20$ and
+$2^{a+2}A\le20(1+A)2^a$. Some offsets $r,\omega$ achieve at most the expectation.
+
+\emph{Parameters.} For~(a) put $y=\log_2D/(2k)\ge1$. Then $a=\lfloor y\rfloor\ge y/2$, and $K=\lfloor2^{2y}\rfloor
+\ge2^{2y-1}$ because $2^{2y}\ge4$; moreover $K^k\le D$. Using $2^{-y}\le1/y$ for $y>0$,
+\[
+  \frac1a\le\frac2y=\frac{4k}{\log_2D},\qquad\frac{2^a}K\le2^{1-y}\le\frac2y=\frac{4k}{\log_2D},\qquad
+  \frac1K\le2^{1-2y}\le2^{-y}\le\frac1y=\frac{2k}{\log_2D}.
+\]
+Inserting these into the first bound of \eqref{eq:dec-B}, with $2^{a+2}/(aK)\le4\cdot2^a/K$, gives
+\[
+  \mathbb E\card F\;\le\;\bigl(80k^3A+4k^2+18k^3A+16k^3A\bigr)\frac T{\log_2D}\;\le\;\frac{114k^3(1+A)\,T}{\log_2D},
+\]
+and the depth is at most $K^k-1\le D-1$. For~(b) take $\log_2D=\lceil114k^3(1+A)/\eps\rceil$, which is at least~$2k$.
+Part~(c) is~(b) with $A=1$, by \cref{lem:dec-area}.
+\end{informalproof}
+
+\paragraph{Why it matters.} Theorem~B proves the walk form of the first hypothesis of Theorem~D for all heads of
+linear leg area, in particular for home-based heads, and for every coupling: it makes no assumption on hop lengths, on
+independence, or on how the heads move relative to each other. So, for an oblivious machine running in time at most
+$C(L+1)$, a genie of cost $\eps L$ and depth at most $D(\eps)$, depending on $k$, $A$, $\beta$ and~$C$, exists for every
+$\eps\in(0,1]$ (see the paragraph after the proof of \cref{cor:B}) unless the leg area of some work head is not $O(T)$
+for any choice of home cell. That requires many legs whose duration is much shorter than
+$2^{\mathrm{scale}}$; by \cref{lem:dec-area} such legs neither begin nor end near the home cell, so the head turns
+around far from every fixed home. \Cref{sec:depth} studies walks of this kind.
+
+\subsection{Home-based oblivious machines reduce to the crux}\label{sec:dec-corB}
+
+Theorem~B cuts edges, counts only long hops, and pays one unit per cut edge. Two conversions turn its cut into a genie
+in the sense of \cref{def:genie}: an edge $t\to s$ is blocked by revealing~$s$, at a cost of $\beta$ bits, and the
+runs of short edges are cut by revealing periodic steps.
+
+\begin{lemma}[Long-edge conversion]\label{lem:dec-longedge}
+\notformalized
+Let $M$ be oblivious at length~$L$ with halting time~$T$, let $\mu\ge1$ and $P>\mu$ be integers, and let $\Gamma_0$
+be a genie such that every $\Gamma_0$-free path has at most $D'$ edges of length greater than~$\mu$. Then the genie
+\[
+  \Gamma=\Gamma_0\cup\{t\in[0,T):t\bmod P\ge P-\mu\}
+\]
+has depth at most $D'+(D'+1)(P-\mu)\le(D'+1)P-1$, and $\card\Gamma\le\card{\Gamma_0}+\mu\lceil T/P\rceil$; for
+$\mu=1$, $\card\Gamma\le\card{\Gamma_0}+\lfloor T/P\rfloor$.
+\end{lemma}
+
+\begin{informalproof}
+Let $t_0\to t_1\to\dots\to t_m$ be $\Gamma$-free. It is $\Gamma_0$-free, so at most $D'$ of its edges have length
+greater than~$\mu$, and removing them leaves at most $D'+1$ maximal runs of consecutive edges of length at most~$\mu$.
+Let $t_a\to\dots\to t_b$ be such a run. Its vertices $t_{a+1}>\dots>t_b$ are not in~$\Gamma$, so each lies in an
+interval $[nP,nP+P-\mu)$ with $n\ge0$. If $t_i$ lies in such an interval and $t_{i+1}<nP$ for consecutive
+vertices of the run, then $n\ge1$ and $t_{i+1}\ge t_i-\mu\ge nP-\mu$, so $t_{i+1}\bmod P\ge P-\mu$ and
+$t_{i+1}\in\Gamma$, which is impossible. Hence $t_{a+1},\dots,t_b$ are distinct elements of one interval of $P-\mu$
+consecutive integers, and the run has $b-a\le P-\mu$ edges. So $m\le D'+(D'+1)(P-\mu)$, and this is at most
+$(D'+1)P-1$ as $\mu\ge1$. Each of the $\lceil T/P\rceil$ periods $[nP,(n+1)P)$ that meet $[0,T)$ contains $\mu$
+revealed residues; for $\mu=1$ the revealed steps are $P-1,2P-1,\dots$, of which $\lfloor T/P\rfloor$ are less
+than~$T$.
+\end{informalproof}
+
+\begin{remark}[Why blocks of $\mu$ steps]\label{rem:dec-jitter}
+For $\mu=1$ one revealed step per period suffices, because a run of edges of length~$1$ visits consecutive times.
+Single revealed steps do not cut runs of edges of length at most~$\mu$ when $\mu\ge2$: a work head that oscillates
+between two adjacent cells has $\prev_j(t)=t-2$ for all $t\ge2$, and if $P$ is even, the path $t\to t-2\to t-4\to
+\cdots$ through even times avoids every step $t\equiv P-1\pmod P$. A depth-reduction statement that treats such short
+revisits (jitter, or revisits within a window of $\mu$ steps) as free must therefore be combined with
+\cref{lem:dec-longedge} for that~$\mu$, which reveals blocks of $\mu$ consecutive steps at $\mu$ times the cost.
+Theorem~B needs only $\mu=1$, because it counts every hop of length at least~$2$ as long.
+\end{remark}
+
+\begin{corollary}[Corollary B: home-based oblivious machines reduce to the crux]\label{cor:B}
+\notformalized
+Let $k\ge1$ and $\beta\ge2$ be integers, $C\ge1$, $A>0$ and $0<\eps\le1$, and put
+\[
+  D=D(\eps)=2^{\lceil456k^3(1+A)\beta C/\eps\rceil}\cdot\lceil4\beta C/\eps\rceil=2^{O(k^3(1+A)\beta C/\eps)}.
+\]
+Suppose that $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds for some $\rho>\eps$. Then for every machine~$M$ with $k$
+work tapes and value width at most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ do the following three
+conditions hold together at $L=d^2b(d)$: $M$ is oblivious at length~$L$ with halting time $T\le C(L+1)$; each
+work-head walk~$x_j$ of~$M$ on $[0,T)$ has leg area at most $AT$ measured from some cell~$c_j$ (that is, the walk
+$x_j-c_j$ satisfies~(A)); and $M$ transposes all $d\times d$ matrices with $b(d)$-bit entries. In particular, if an
+oblivious machine with $k$ work tapes and value width at most~$\beta$, whose work heads are home-based at every input
+length, transposes within $C(L+1)$ steps for infinitely many~$d$, then for every $\eps\in(0,1]$ the crux
+$\Crux(\mathcal S_{k,C,\beta,D(\eps)},\rho)$, with $A=1$ in $D(\eps)$, fails for every rate $\rho>\eps$.
+\end{corollary}
+
+\begin{informalproof}
+Put $D_1=2^{\lceil456k^3(1+A)\beta C/\eps\rceil}$ and $P=\lceil4\beta C/\eps\rceil$, so that $D=D_1P$; note that
+$D_1\ge4^k$, because $456k^3(1+A)\beta C/\eps\ge2k$. Fix~$M$, let $d_0$ be given by
+$\Crux(\mathcal S_{k,C,\beta,D},\rho)$ for $\eta=(\rho-\eps)/2$, and suppose that the three conditions hold at some
+$d\ge d_0$. As in the proof of \cref{thm:D}, $M$ appends exactly $L$ output bits, and on every input~$w$ its output
+bit~$\ell$ is $w_{\operatorname{tpos}(\ell)}$.
+
+Apply \cref{thm:B}(a) with depth parameter~$D_1$ to the translated work-head walks $x_1-c_1,\dots,x_k-c_k$ on
+$[0,T)$, whose walk DAG is that of $x_1,\dots,x_k$: some cut~$F$ of depth at most $D_1-1$ has
+$\card F\le114k^3(1+A)T/\log_2D_1\le\eps T/(4\beta C)$. Let $\Gamma_0$ be the set of
+steps~$s$ such that some edge of~$F$ ends at~$s$; so $\card{\Gamma_0}\le\card F$. Every edge of a $\Gamma_0$-free path
+in $H_M$ ends outside~$\Gamma_0$, so its endpoints are not those of an edge of~$F$. Read in the walk DAG, the path
+therefore avoids~$F$, and its edges of length at least~$2$ are long hops; so it has at most $D_1-1$ edges of length
+greater than~$1$. By \cref{lem:dec-longedge} with $\mu=1$, the genie
+$\Gamma=\Gamma_0\cup\{t<T:t\equiv P-1\pmod P\}$ has depth at most $D_1P-1<D$, and
+\[
+  \beta\card\Gamma\;\le\;\beta\card F+\beta\lfloor T/P\rfloor\;\le\;\frac{\eps T}{4C}+\frac{\eps T}{4C}
+  \;\le\;\frac{\eps(L+1)}2\;\le\;\eps L,
+\]
+using $T\le C(L+1)$ and $L\ge1$. So $I_\Gamma\in\mathcal S_{k,C,\beta,D}$, and by \cref{cor:dec-output} the revealed
+word $G_\Gamma$ is an index code for $I_\Gamma$ with at most $\eps L$ bits, while the crux requires at least
+$(\rho-\eta)L>\eps L$ bits. This contradiction proves the first statement. For the second, a work head that is
+home-based with home cell~$c_j$ satisfies~(A) with $A=1$ when measured from~$c_j$, by \cref{lem:dec-area} applied to
+$x_j-c_j$; a machine that transposes within $C(L+1)$ steps at length~$L$ has halting time at most $C(L+1)$ there; so a
+machine as described would violate the first statement at infinitely many~$d$ if the crux held at some rate
+$\rho>\eps$.
+\end{informalproof}
+
+The genie~$\Gamma$ built in this proof does not use that $M$ transposes. It shows that the conclusion of
+$\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D(\eps))$ holds for every machine~$M$ with $k$ work tapes and value width at
+most~$\beta$, at every length $L=d^2b(d)$ at which $M$ is oblivious with halting time at most $C(L+1)$ and its
+work-head walks satisfy~(A), measured from some home cells.
+
+\paragraph{Why it matters.} Theorem~D needs two hypotheses. For home-based heads Theorem~B supplies the first, so
+Corollary~B reduces home-based oblivious machines to the crux alone, whatever the coupling of their heads. Read as a
+requirement on the crux, it suffices to prove $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ at a single depth $D=D(\eps)$
+with a rate $\rho>\eps$, that is, a rate exceeding about $456k^3(1+A)\beta C/\log_2D$ at depth~$D$ (\cref{rem:dec-rates});
+this is far beyond the rate, at most $(k+1)^{-D-1}$, that the counting bound of \cref{prop:dec-counting} gives, but, for large~$D$, far below
+rate~$\tfrac12$. Read as a design constraint, an oblivious linear-time transposer must either have a work head whose
+leg area, measured from any home cell, is not $O(T)$, or produce, for every $\eps\in(0,1]$ and at every size at which it transposes, an index
+code with at most $\eps L$ bits for its own cone side information at depth $D(\eps)$, and hence a storage code of
+rate at least $1-\eps$ (\cref{rem:dec-crux}(b)).
+
+\begin{remark}[Adaptive machines]\label{rem:dec-adaptive}
+The argument uses obliviousness twice: the dependency DAG and the times of the output bits must be the same for all
+inputs. We do not treat adaptive machines here. We expect that an extension of Corollary~B to adaptive machines whose heads are
+home-based on every input would need additional hypotheses on head motion far from home and a stronger form of the
+crux, for index codes that need to be correct only on a large set of inputs. No result of this paper depends on such an extension.
+\end{remark}

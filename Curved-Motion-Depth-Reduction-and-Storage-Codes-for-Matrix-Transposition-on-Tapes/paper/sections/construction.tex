@@ -1,0 +1,71 @@
+\section{What a linear-time transposer would need}\label{sec:construction}
+
+Our aim is to decide~(T), and we would prefer a construction. This section collects what the results above require of
+any linear-time transposer, and of any oblivious one in particular. It contains no new theorems: every claim is one of
+the results above or the first two papers, a citation, or explicitly labelled as a heuristic.
+
+\subsection{Necessary conditions}
+
+A machine witnessing~(T) must have all of the following properties, in addition to those of the first two
+papers~\cite{FirstPaper2026,SecondPaper2026} ($\Omega(\log d)$ passes, folding macroscopic motion, and a coding gain of order
+$\log d$ over routing on the block network of a slightly modified machine; within the abstract local-coding models of
+the second paper, a fixed fractional saving is also excluded when the interaction graph has treewidth $o(d)$).
+\begin{enumerate}[label=(C\arabic*),leftmargin=3em]
+\item \emph{Curved motion.} In every macroscopic limit, the work heads travel a total distance of at least
+half a block unit, a linear number of cells, along motion that is not countably-piecewise affine (Theorem~Cq, \cref{thm:Cq}), and a common change of
+clock does not remove it (\cref{cor:mot-clock}). The curved motion must be head-dependent, and
+at least two work-head limits must be non-monotone and not all equal (\cref{cor:mot-design}). Curved monotone expanders of the Bourgain--Yehudayoff type~\cite{BourgainYehudayoff2013} remain
+possible.
+\item \emph{Coding on bounded-depth side information, or depth-robust dependencies.} For an oblivious machine, Theorem~D
+(\cref{thm:D}) leaves two ways out. Either some genie of $\eps L$ bits cuts the time--space dependency DAG to bounded
+depth, and then the side information of the cones admits index codes of broadcast length $\eps L$, defeating the crux;
+or no such genie exists, and the walks of the work heads are depth-robust. Home-based heads always admit such a genie
+(Theorem~B, \cref{thm:B}), so for them only the first way is open (Corollary~B, \cref{cor:B}), and by the trade-off
+(\cref{prop:tradeoff}) the depth is at least about $\beta/\eps$.
+\item \emph{Codes that beat the pairing, of a particular kind.} If, as in the hardest instances we know, the relevant side
+information is sparse, symmetric and locally tree-like, a construction needs storage codes of rate at least
+$\tfrac12+\delta$ on it, for a fixed $\delta>0$ (a heuristic reading of \cref{prob:undirected-crux}). The classes of codes
+that our results exclude are listed in \cref{sec:con-fail}.
+Over a finite field, with a fixed number of symbols per vertex, a gain must come from $p$-torsion (\cref{cor:torsion}).
+The binary code of rate $5/8$ on the Clebsch graph (\cref{cor:H4}) is not a torsion effect: it is the reduction of a rational
+eigenvalue code with coefficients~$1$ (\cref{rem:ana-clebsch}), a mechanism that \cref{cor:torsion} rules out on locally
+bipartite families of bounded degree. In odd
+characteristic at most one of the two signed versions $I\pm W$ of a code can gain (\cref{prop:oddchar}).
+\item \emph{If the dependencies are depth-robust: the deep-nesting template.} The only candidate we know for depth-robust walk pairs is
+the deep-nesting pair (\cref{def:dnp}). Proof sketches indicate that per-head band rules fail already on one deeply nested walk
+(\cref{rem:dep-N,rem:dep-Nprime}), although one such walk alone is easy to cut (\cref{lem:dep-visit}); and with one level
+of nesting, labels exact on one head pay a price per hop on the cover independent of the depth (Theorem~E$_1$,
+\cref{thm:E1}). Whether the pairs are depth-robust as $m$ grows is open (\cref{conj:Aprime}).
+\end{enumerate}
+
+\subsection{An architecture compatible with these conditions}
+
+We describe, as a design and not as a result, how the first paper's geometric recursion~\cite[\S13]{FirstPaper2026} would
+have to look in the light of (C1)--(C4). The recursion runs $\Theta(\log d)$ levels of geometrically decreasing volume,
+each with $O(1)$ passes of an encoder and a decoder. Condition~(C1) forces the heads of each level to follow curved
+rulers, for example near-identity Möbius maps realizing a monotone expander, and the second paper excludes the affine
+variants~\cite{SecondPaper2026}. The encoder of each level must then save a constant fraction of the data by coding across
+the expander's relations. By (C3), the code it uses must be nonlinear, or linear over a finite field,
+with a $p$-torsion gain if it has a fixed number of symbols per vertex, and
+a scalar linear code needs degree at least~$4$; its side-information graph must not map to any good target. Codes that beat $\tfrac12$ exist on single graphs with short
+odd cycles, such as the Clebsch graph (girth~$4$) and, outside characteristic~$2$, the Hoffman--Singleton graph
+(girth~$5$, \cref{prop:HS}). We do not know any family of bounded degree and growing odd girth that carries one; such a
+family would answer \cref{prob:undirected-crux} in the negative. For an oblivious design, Corollary~B applies if its
+work heads are all home-based, and the design then stands or falls with the crux; otherwise, if the crux holds, its
+dependency structure must be depth-robust, and the deep-nesting pair is the template.
+
+\subsection{Mechanisms that fail}\label{sec:con-fail}
+
+The following classes of constructions fail for reasons proved here, in addition to those listed in the first two papers.
+\begin{itemize}[leftmargin=2em]
+\item \emph{Home-based motion of all work heads with legs of boundedly many constant-rate runs}, obliviously or
+adaptively, with any number of legs at any scales (Theorem~C).
+\item \emph{One expanding tape, or a common change of clock}: no single work tape can carry the expansion, and a common
+reparametrization of time adds nothing (\cref{cor:mot-one-tape,cor:mot-clock}).
+\item \emph{Stroke trees for all work heads}, the recursive schedules of \cref{def:mot-stroke}: their limits are affine
+wherever the heads move (\cref{prop:mot-strokes}).
+\item \emph{Linear codes with bounded real or complex coefficients}, scalar or with a bounded number of symbols per
+vertex, on locally bipartite side information of bounded degree (Theorem~A and \cref{prop:ana-A-ext}),
+\emph{scalar linear codes of degree~$3$} on triangle-free side information (Theorem~S), and \emph{all codes} on
+side information that is $C_5$-, $K_{14/5}$- or Petersen-colourable (\cref{cor:H2}).
+\end{itemize}

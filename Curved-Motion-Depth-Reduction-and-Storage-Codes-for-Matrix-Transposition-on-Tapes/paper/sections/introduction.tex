@@ -1,0 +1,146 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\clog d)$-bit entries, written row
+by row, in time linear in the input length $L=d^2b(d)$? This is the statement~(T) of the first paper of this
+series~\cite{FirstPaper2026}. Transposition is the data-movement step of fast integer multiplication on tapes, and by a
+reduction of Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025} a linear-time multiplication machine would give a
+linear-time transposer. So a proof of $\neg$(T) would give the first superlinear lower bound for off-line integer
+multiplication on multitape Turing machines, and a proof of~(T) would remove the data-movement obstacle to linear-time
+multiplication.
+
+The first paper proved, in Lean, that every transposer needs $\Omega(\log d)$ monotone passes and that the macroscopic
+head motion of every linear-time transposer must fold back (Theorems~P, P$'$ and~M*), and it reduced $\neg$(T) to a network-coding statement on tape networks,
+the Tape Coding Conjecture. The second paper~\cite{SecondPaper2026} excluded, in its models, local coding schemes with
+low-treewidth interaction graphs and regular (piecewise affine) limiting motion, and the third~\cite{ThirdPaper2026} related bit and word
+transposition. The question remains open, and this paper does not decide it.
+
+\subsection{Three ingredients}
+
+This paper asks what a linear-time transposer would need, and finds three ingredients that an oblivious one would have to
+combine; the first is needed by adaptive machines as well.
+\begin{itemize}[leftmargin=2em]
+\item \emph{Curved, head-dependent motion.} Its work heads cannot all move along home-based legs made of boundedly many
+constant-rate runs, and a linear amount of their macroscopic motion must be curved, in a way that no common change of
+clock removes.
+\item \emph{Depth-robust dependencies, or extreme coding on shallow ones.} Cut its time--space dependency DAG with a cheap
+genie, which reveals a small set of intermediate values. Either the genie leaves large depth, or the shallow cones that remain must carry index codes saving all but an
+$\eps$ fraction of the input.
+\item \emph{Codes that beat the pairing.} On sparse side information that looks locally like a tree, such codes must beat
+rate~$\tfrac12$, the rate of the code that pairs up receivers.
+\end{itemize}
+Our theorems prove restricted versions of each of these statements, and reduce the oblivious case of (T) to two
+precisely stated open problems (Theorem~D): depth reduction for interacting walks, whose sharpest open instance has two
+walks, and an index-coding lower bound on the side information of shallow cones, whose undirected form is open for
+finite-field and nonlinear codes.
+
+\subsection{Results}
+
+\paragraph{Curved motion (\cref{sec:motion}).} \emph{Theorem~C.} No machine, oblivious or adaptive, whose work heads are
+all home-based on every input, with legs made of boundedly many constant-rate runs, transposes in linear time
+(\cref{thm:C}). The homes may depend on the input, and the number of legs, their scales and their interleaving are
+arbitrary. \emph{Theorem~Cq}: in every macroscopic limit of a linear-time transposer, the work heads travel a total
+distance of at least half a block unit, a linear number of cells, along motion that is not
+countably-piecewise affine (\cref{thm:Cq}). Theorem~C follows from it, and it contains the second paper's affine-time
+obstruction (\cref{cor:mot-lambda}). These results are unconditional; they use an extension of Theorem~M* from interval partitions to Borel partitions, and the
+hyperfiniteness of amenable equivalence relations.
+
+\paragraph{The decomposition (\cref{sec:decomposition}).} \emph{Theorem~D.} If the dependency DAG of every oblivious
+linear-time run can be cut to bounded depth by revealing $\eps L$ bits (\emph{depth reduction}), and if index codes on the
+side information of bounded-depth cones need a broadcast of $\rho L$ bits with $\rho>\eps$ (\emph{the crux}), then no
+oblivious linear-time transposer exists (\cref{thm:D,cor:dec-obl}). The composition is elementary; its content is the formulation and
+the bookkeeping, including the forced trade-off $\eps\ge\beta/(D+1)-\beta/L$ between the genie and the depth~$D$,
+where $\beta$ is the number of bits revealed per step (\cref{prop:tradeoff}). \emph{Theorem~B} proves depth reduction for
+every coupling of $k$ home-based walks of length~$T$: $\eps T$ cut edges leave depth $2^{O(k^3/\eps)}$, whatever the
+walks do (\cref{thm:B}). So an oblivious transposer with home-based work heads
+exists only if the crux fails, even in a weak form (Corollary~B, \cref{cor:B}).
+
+\paragraph{Depth reduction (\cref{sec:depth}).} For walks that turn far from home, depth reduction is open (\cref{prob:tcp});
+for one walk it holds by planarity. We prove that no packing certificate, whatever structures it packs, can
+certify depth-robustness
+(\cref{prop:packing} and \cref{lem:dep-euler}(c)), and we sketch why per-head band bookkeeping, a natural strategy for depth reduction, fails on
+deeply nested walks (\cref{rem:dep-N,rem:dep-Nprime}; proof sketches only). On what we regard as the sharpest open instance, the \emph{deep-nesting pair}, we develop an exact accounting of label
+costs: \emph{Lemma~Zq} expresses the cost of any label, a map from times to $\{0,\dots,q-1\}$ that describes a cut of depth
+$q-1$, through residues modulo~$q$, and the
+chain-decomposition and transfer identities describe labels that are exact on one head. \emph{Theorem~E}: every
+hop-disjoint family of negative-defect cycles of head-$2$ hops forces such labels to pay about one violation per cycle
+(\cref{thm:E}). \emph{Theorem~E$_1$}: on the golden deep-nesting pair with one level of nesting, labels exact on one head pay a fixed
+price per hop on the cover at every depth, at least $67/4096$ at all but the smallest scale (\cref{thm:E1}). Whether the pairs are depth-robust as $m$ grows is open; we state one form of the
+missing step, for labels on the cover and a suitable odd shift, as \cref{conj:Aprime}.
+
+\paragraph{Storage codes (\cref{sec:codes}).} The crux is open in general. Its undirected form asks whether storage codes on
+locally bipartite graphs of bounded degree can beat rate~$\tfrac12$ (\cref{prob:undirected-crux}).
+\begin{itemize}[leftmargin=2em]
+\item \emph{Theorem~H}: rate bounds pull back along homomorphisms of graphs and digraphs, for all codes
+(\cref{thm:H}). With exact certificates for $C_5$, the Petersen graph and $K_{14/5}$, every storage code, nonlinear
+included, on a graph that maps to one of them has rate at most $\tfrac12$, with no degree assumption
+(\emph{Corollary~H2}, \cref{cor:H2}). On cubic graphs of large girth the nonlinear case follows from a positive answer to Nešetřil's
+Pentagon Problem (\cref{cor:H3}).
+\item \emph{Corollary~H4}: the Clebsch graph has guessing number exactly~$10$, and Shannon bound exactly~$5/8$
+(\cref{cor:H4,prop:clebsch-exact}). This answers, for the Clebsch graph, a question of Cameron, Dang and Riis~\cite{CameronDangRiis2014}, and
+shows that bounded degree alone does not force rate~$\tfrac12$.
+\item \emph{Theorem~S}: on triangle-free graphs~$G$ of maximum degree~$3$ with $N$ vertices, every linear storage code over
+every field has dimension at most $\lfloor N/2\rfloor$, and with the Tutte--Berge formula the minrank is $N-\nu(G)$, where
+$\nu(G)$ is the matching number (\cref{thm:S,thm:S-barrier}).
+\item \emph{Theorem~A}: on locally bipartite graphs of bounded degree, complex matrices with unit diagonal, graph support
+and bounded entries have rank at least $(\tfrac12-o(1))N$; so over finite fields a gain of a linear code with a fixed
+number of symbols per vertex must come from $p$-torsion (\cref{thm:A,cor:torsion}).
+\end{itemize}
+We also show limits of local and spectral arguments (\cref{sec:ana-limits}), and that Mycielski's construction does
+not preserve goodness, the Shannon rate bound~$\tfrac12$ of \cref{def:polymatroid} (\cref{sec:ana-targets}).
+
+\paragraph{Roadmap (\cref{sec:construction,sec:open}).} We list what any linear-time transposer must do, describe an
+architecture compatible with these conditions, and state the open problems whose positive solution would rule out
+oblivious linear-time transposers.
+
+\subsection{How to read this paper: the formal proofs}
+
+The results on storage codes of \cref{sec:entropic,sec:thmH,sec:symmetrization,sec:targets,sec:clebsch,sec:subcubic}
+(Theorem~H, Corollaries H2--H4, Theorem~S) and the exact label accounting of \cref{sec:depth} (Lemma~Zq, the exact cases of
+the chain and transfer identities, Theorem~E) are formalized in Lean. The only exception is the classical Tutte--Berge
+formula, which the matching form of Theorem~S cites. All other results are proved in full but not
+formalized, among them Theorems~D, B, C, Cq, E$_1$ and~A, \cref{prop:tradeoff,prop:packing}, the general forms of the
+chain and transfer identities, and the results of \cref{sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets}. Each of them comes with a
+complete proof, and each numbered result states its status as described in \cref{sec:prelim-lean}. Claims with
+only a proof sketch, among them the nesting barrier for per-head band rules (\cref{rem:dep-N,rem:dep-Nprime}), are stated
+in remarks and are not used in proofs.
+
+\subsection{Related work}
+
+\paragraph{Depth reduction and index coding.} The route from a computation of small depth to index coding goes back to
+Valiant's depth reduction for circuits~\cite{Valiant1977} and Riis's guessing games~\cite{Riis2007}, and was used, in the language of
+min-rank, by Jukna and Schnitger~\cite{JuknaSchnitger2011}; a related network-coding view of oblivious external-memory
+algorithms, and through them of oblivious two-tape machines, is due to Adler, Harvey, Jain, Kleinberg and
+Lehman~\cite[Section~6, Theorems~6.2 and~6.3]{AHJKL2006}. On multitape machines, Paul, Pippenger, Szemerédi and Trotter separated deterministic
+from nondeterministic linear time by a segregator argument on the dependency graph of a run~\cite{PPST1983}; depth
+reduction at linear cost may delete far more, a small constant fraction of the edges, but must then leave constant
+depth (\cref{sec:dep-problem}).
+
+\paragraph{Guessing games and storage codes.} Guessing numbers were introduced by Riis~\cite{Riis2007} and studied for
+undirected graphs by Christofides and Markström~\cite{ChristofidesMarkstrom2011}, Baber, Christofides, Dang, Vaughan and
+Riis~\cite{Baber2017}, and Cameron, Dang and Riis~\cite{CameronDangRiis2016}. Storage codes on graphs and their duality
+with index coding were studied by Mazumdar~\cite{Mazumdar2014} and by Arbabjolfaei and Kim~\cite{ArbabjolfaeiKim2015};
+Mazumdar, McGregor and Vorotnikova bounded the storage capacity above by vertex covers and averages of vertex covers,
+and below by fractional matchings~\cite{MMV2019}, and Barg and Zémor constructed linear storage codes of rate
+approaching~$3/4$ on triangle-free graphs of growing degree~\cite{BargZemor2022}. Index coding was introduced by Birk and
+Kol~\cite{BirkKol2006} and formalized, with minrank, by Bar-Yossef, Birk, Jayram and Kol~\cite{BBJK2011}; the Shannon
+linear-programming bound for it is due to Blasiak, Kleinberg and Lubetzky~\cite{BKL2013}, and minrank goes back to
+Haemers~\cite{Haemers1979}.
+
+\paragraph{Motion.} Theorems~C and~Cq rest on the first paper's Theorem~M* and on the theorem of Connes, Feldman and
+Weiss that amenable nonsingular equivalence relations are hyperfinite~\cite{CFW1981}; the Lebesgue-measure form of
+Theorem~Cq for relatively open affine pieces (\cref{cor:mot-lambda}) slightly generalizes the second paper's
+affine-time obstruction~\cite{SecondPaper2026}. With one work tape, much stronger lower bounds are classical:
+$\Omega(L^{3/2}/(\log L)^{1/2})$ steps without an output tape~\cite{DMS1991}, and $\Theta(L^{5/4})$ for Boolean matrices
+with a write-only output tape~\cite{DietzfelbingerMaass1993}. Our motion results hold for any number of tapes, and they
+leave room for curved motion such as the monotone expanders of Bourgain and Yehudayoff~\cite{BourgainYehudayoff2013}, on
+which the first paper's architecture is built.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} fixes notation. \Cref{sec:motion} proves the motion theorems, \cref{sec:decomposition} the
+decomposition and depth reduction for home-based walks, \cref{sec:depth} the results on depth reduction for interacting
+walks, and \cref{sec:codes} the results on storage codes. \Cref{sec:construction} collects the consequences for constructions, and
+\cref{sec:open} the roadmap and open problems. The appendices index the Lean declarations and explain how to build and
+check the library.

@@ -1,0 +1,77 @@
+{
+  "format": "padding-memo-editorial-review-v1",
+  "checked_on": "2026-10-23",
+  "scope": "Editorial notes citing the separate padding memo. No Lean source or original formal annotation changed. This receipt supplements the historical completion.json; it does not claim a new full-library or whole-manuscript semantic audit.",
+  "base_revision": "81174b522cec957b19f0dcbf9a75b088ec647fce",
+  "memo_revision": "e84dfe805bbe1cac3b357a71230ea4c5e21fc751",
+  "checks": {
+    "memo_build": {
+      "cwd": "memo/lean",
+      "command": "lake build PaddingMemo.Comparison",
+      "exit_code": 0
+    },
+    "memo_axiom_audit": {
+      "cwd": "memo/lean",
+      "command": "lake env lean MemoAxioms.lean",
+      "exit_code": 0,
+      "declarations": 9,
+      "actual_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "pdf_build": {
+      "cwd": "paper",
+      "command": "latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error -outdir=build main.tex",
+      "exit_code": 0,
+      "warnings": [],
+      "pages": 52
+    },
+    "formal_annotation_inventory": "Unchanged from base revision; no new manuscript formal/upformal annotations. The cited memo endpoints have a separate package audit.",
+    "independent_review": "Complete editorial source diff approved; scope wording tightened to the stated aggregate entry-cell count.",
+    "visual_reviewed_pages": [
+      3,
+      40,
+      41,
+      42,
+      43,
+      45,
+      50
+    ]
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "86ab37c38e09bcdb23edb921ee96934cd1cd30f490e4826c4d9add643b2bc586"
+    },
+    {
+      "path": "paper/references.bib",
+      "sha256": "a08790c169fe90436b8ff4e657c275659dea463c59e4fb19010fdd322cc14264"
+    },
+    {
+      "path": "paper/sections/introduction.tex",
+      "sha256": "0ecab2e0c8797a7103337533b2622039cf532160d8b43666389112198dabe404"
+    },
+    {
+      "path": "paper/sections/padding.tex",
+      "sha256": "cd9371705efe2c5b640e6247f01cd45f640d8a4eeca5f8a79b7763cb88be5e08"
+    },
+    {
+      "path": "paper/sections/roadmap.tex",
+      "sha256": "4206960593ba1b61a4b333679f879c60369572706815fc727e2b5bb4b7aa4df9"
+    },
+    {
+      "path": "paper/sections/verification.tex",
+      "sha256": "a2ce2441b8381d1cb1dc7327aed3e2730be37942f4a4e2221d620616dc5a0adb"
+    },
+    {
+      "path": "paper/main.pdf",
+      "sha256": "09c55b158278d491f2b5e78de66acfca05e0d3b272993267e81002dd0bbe2037"
+    },
+    {
+      "path": "verification/manuscript/attribution-ledger.json",
+      "sha256": "360d175e2cf6453cf001759e11e2c3c8e855f3f47ea9ea6ebb2016efb7f7f55e"
+    }
+  ]
+}

@@ -84,6 +84,25 @@ dimension, input sequence, output and time coefficient.
 \end{theorem}
 \formal{UnconditionalPaidPadding}{TransposeFollowup.PaidPadding.exists_uniform_paid_padding}
 
+\paragraph{Subsequent strengthening.}
+Brende and Claude Opus~5.5~\cite{PaddingMemo2026} prove this wrapper contract
+with $E=0$, retaining the stated time, state, alphabet, output and full
+limiting guarantees. Their separate Lean formalization also proves both
+the original cut inequality and its finer \emph{entry-cell} version at every
+integer slot length
+\[
+ 1\le r'\le 7K\ceil{db(d)/3},
+\]
+for one fixed positive integer $K$. The finer version charges the actual
+last-visit entry events into each label class, rather than whole blocks;
+both slack terms are zero. These events may carry data-free contents, so
+this is not a bound on the matrix information conveyed to the outputs.
+The memo's endpoints are
+\lean{PaddingMemo.exists_uniform_paid_padding_without_idle_tapes} and
+\lean{PaddingMemo.exists_uniform_paid_padding_cell}.
+The original numbered theorem and its proof outline retain their formal source;
+the memo supplies the cited strengthening.
+
 \paragraph{What is paid.}
 The machine starts with blank work tapes. It derives the required dimension
 from the input length, generates its finite schedule, builds the clocks used
@@ -95,17 +114,19 @@ bit planes encode the source alphabet using additional tapes, which is why
 the displayed tape count depends on the source alphabet while the additive
 time coefficient can be chosen before $M$.
 
-The tape count includes $E\max(1,\operatorname{size}(g(M)))$ idle tapes:
+The original construction includes $E\max(1,\operatorname{size}(g(M)))$ idle tapes:
 they remain blank with their heads at cell zero throughout the run. In the
 construction, $K_0=53+q$, where $q$ is the page count of the fixed symmetric
 rational family. The extra tapes are chosen to ensure $4q\le3k(M')\eta$,
 where $\eta>0$ is the finite graphs' vertex-expansion constant. This is the
 head-count hypothesis of \lean{PaidPayload.cut_after_prefix}: the term
 $3k(M')rG B_\lambda$ in \eqref{eq:zero-cut} absorbs the expanding edges lost
-at label changes. Thus this finite cut guarantee uses the coarse per-tape
-memory-boundary charge. An entry-cell charge would count at most one cell
-per boundary on each idle tape, rather than three whole blocks. The theorem
-does not establish the corresponding inequality with that finer charge.
+at label changes. This proof uses the coarse per-tape memory-boundary charge.
+An entry-cell charge counts at most one cell per boundary on each idle tape,
+rather than three whole blocks. The later memo~\cite{PaddingMemo2026}
+instead counts entry events at matched offsets within excursion windows;
+it removes the added idle tapes and proves the finer inequality over the
+slot-length range stated above.
 \formal{StationaryTapesRun}{TransposeFollowup.StationaryTapes.observations}
 \formal{BitPlaneMachine}{TransposeFollowup.BitPlaneMachine.fixed_resources}
 \formal{BitPlaneRun}{TransposeFollowup.BitPlaneMachine.run_embed}
@@ -238,8 +259,11 @@ that outputs the empty word on every positive-dimensional matrix input,
 yet satisfies the zero-slack cut inequality and the full $M^*$ conclusions.
 Thus these geometric conditions can hold without performing any transpose.
 A transposition lower bound must also use the output demand or another
-property not supplied by the wrapper. This conclusion concerns the stated
-cut inequality, including its coarse memory-boundary charge.
+property not supplied by the wrapper. The memo~\cite{PaddingMemo2026}
+extends this obstruction to the finer entry-cell charge over its stated
+slot-length range. Neither result supplies the input/output-aware Cut Lemma
+for an arbitrary payload, or a condition on which matrix information reaches
+the outputs.
 
 The theorem uses $O(P)$ schedule generation. It does not assert an $o(P)$
 generator, a particular weak-limit return measure, or a nonhyperfinite return

@@ -9,9 +9,17 @@ and proofs are authoritative; the prose outlines are explanatory conveniences.
 
 The [manuscript verification guide](verification/manuscript/README.txt) explains
 how to reproduce the build and audit. The [completion receipt](verification/manuscript/completion.json)
-ties the final sources and PDF to the declaration, attribution, semantic and
+ties its recorded manuscript checkpoint to the declaration, attribution, semantic and
 rendered-page reviews. No unrestricted transposition or multiplication bound
 is claimed, and novelty qualifications remain explicit.
+
+The subsequent [padding memo](memo/README.md), by Hans Brende and Claude Opus
+5.5 (Anthropic), removes the added idle tapes and proves the finer entry-cell
+inequality throughout a specified range of slot lengths. The manuscript cites
+this strengthening separately; its proofs and axiom audit are in `memo/lean/`.
+The original numbered theorem and its formal source are retained.
+The [editorial review receipt](verification/manuscript/padding-memo-editorial-review.json)
+records the memo audit and the revised PDF checks.
 
 The original six theorem families are formalized in Lean. The earlier packet extension
 replaces the XOR-only manuscript result by arbitrary fixed two-coordinate

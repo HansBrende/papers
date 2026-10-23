@@ -1,0 +1,36 @@
+\section{Consequences and remaining questions}
+The reduction makes a linear-time dyadic bit transposer sufficient
+for canonical word transposition. Its contrapositive says that failure of linear-time canonical word
+transposition implies failure of linear-time dyadic bit transposition.
+The reverse transfer would require $\WORD\Rightarrow\BIT$, which
+remains open. No general quantitative lower-bound transfer is asserted.
+
+The multiscale argument isolates a common obstruction: a short composition of
+whole-entry operations and simple rearrangements has limited fine-scale
+spread unless it traverses a block whose scale is exceptional. Disjointness
+bounds the total volume of these exceptional blocks across sufficiently
+separated scales. To cover synchronous scans, path counting must be supplemented by a bound
+on information carried between addresses. For the synchronous scan grammar, one shared record supplies the
+exceptional values and scan boundary states, after which acyclic decoding
+charges the missing named input bits. The finite bound quantifies this cost:
+a helper of $h$ bits can support at most $(D+1)h$ demands whose own bins
+are absent from ancestor sets of size at most $D$. The count is derived even when the intermediate bank encodings are nonlinear.
+
+The state restriction matters. The theorem permits arbitrary nonlinear
+transition tables, but fixes the number of banks, layers, and state bits while
+the dimension grows. It does not permit an unbounded workspace to travel
+through a scan without being charged. Nor does it cover arbitrary asynchronous
+head schedules, input-dependent block layouts, or expanding banks. Extending
+the barrier to any of these features requires an additional proof.
+
+The construction program now has a proved sufficient target: a uniform
+linear-time dyadic bit transposer supplies the canonical word transposer
+through \cref{thm:bit-word}. Alternatively, a reverse compiler must use
+operations beyond the excluded grammars; allowing such operations is only
+a candidate route, not evidence of a construction. In either case, every
+movement, state update, temporary copy and reset must be charged in the
+native model. For the impossibility program, the next target is an accounting
+principle that continues to bound the shared information when local state
+or access schedules grow with the input. Neither a
+restricted negative result nor a short algebraic factorization alone settles
+the original transposition question.

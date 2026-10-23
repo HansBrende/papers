@@ -1,0 +1,155 @@
+\section{A multiscale obstruction for interval compilers}
+\label{sec:geometry}
+
+We next examine a restricted converse to the bit-to-word reduction. The
+operations below include the endpoints of actual canonical word-transpose
+calls. Their internal computations may be adaptive: only their resulting
+whole-entry permutations enter the argument. The restriction is on the
+surrounding compiler and its public layout, not on how an oracle implements
+its endpoint. This complements the local coding and tape-geometry barriers
+in \cite{FirstPaper2026,SecondPaper2026}.
+
+\begin{definition}[Permitted stage]
+\label{def:geometry-stage}
+A bank has addresses $0,\ldots,P-1$. A permitted stage is either a stable
+split into even and odd addresses, its inverse, or the following operation
+on any public family of disjoint contiguous intervals. Each interval
+independently carries one of these operations:
+\begin{enumerate}[label=(\roman*),nosep]
+\item an arbitrary permutation of $n$ consecutive $k$-bit entries,
+      preserving the offset within each entry, where $k,n\geq1$ and
+      $kn\leq V(k):=k4^k$;
+\item a cyclic rotation by any fixed offset;
+\item reversal.
+\end{enumerate}
+The intervals may have different widths, lengths and starting addresses.
+Uncovered addresses are fixed. The parity split requires even $P$.
+All choices are independent of the bank contents.
+\end{definition}
+
+The formalization constructs the endpoint permutation and its inverse from
+these interval and operation data; it does not assume the geometric
+conclusion below. A canonical word block of side $r$ and width $b(r)$ is
+included because $r\leq2^{b(r)}$, hence $b(r)r^2\leq V(b(r))$.
+\lean{PartitionData.toStage} and
+\lean{canonicalWordBlock_admissible} establish these two facts.
+
+Fix a positive integer $B$ and partition the bank into aligned bins of
+$B$ addresses. An entry-permutation interval of width $k$ is \emph{bad at
+scale $B$} when
+\[
+                     k<B<V(k).
+\]
+Its whole interval is then marked bad. Rotations, reversals and parity
+operations have no bad addresses.
+
+\begin{lemma}[One-stage geometry and exceptional volume]
+\label{lem:stage-geometry}
+For any permitted stage, the good addresses in one $B$-bin have images in
+at most $11$ $B$-bins. The same assertion holds for the inverse stage.
+If positive scales $B_0,\ldots,B_{m-1}$ satisfy
+$V(B_i)\leq B_j$ whenever $i<j$, the sum of the stage's bad volumes over
+all these scales is at most $P$.
+\end{lemma}
+
+\begin{proof}[Proof outline]
+A good entry block either has total length at most $B$, or has entry width
+at least $B$. The small blocks meeting one source bin keep their outputs
+within three neighboring bins. At most two disjoint blocks of length
+greater than $B$ meet that source bin. In a large entry block, the source
+bin meets at most two entries, each translated to at most two output
+bins. A rotation splits into at most two translated pieces; a reversal
+has at most two output bins. Including the uncovered addresses, these estimates give
+$3+2\cdot4=11$. Stable split and interleave meet at most four and six
+bins, respectively, and therefore satisfy the same bound. All estimates apply in both directions.
+
+A fixed width $k$ can be bad at at most one separated scale. Summing the
+volumes of the disjoint intervals therefore charges each address at most
+once. The Lean results are
+\lean{Stage.good_image_bins_le}, \lean{Stage.predecessors_card_le}, and
+\lean{Stage.total_bad_volume_le}.
+\end{proof}
+
+A \emph{path} is a chronological composition of permitted stages. It may
+depend on the matrix dimension. Let $\gamma_1,\ldots,\gamma_K$ be paths
+of length at most $L$ on $P=d^2$ bits, and let $T$ be the row-major bit
+transpose permutation. Define the set of covered source addresses by
+\[
+ C=\{u:\gamma_j(u)=T(u)\text{ for some }j\}.
+\]
+Coverage is an endpoint coincidence, not a probability that the compiler
+is correct on a random input.
+
+\begin{theorem}[Common-scale path coverage]
+\label{thm:path-coverage}
+Let $m\geq1$ and let $B_i$ be positive divisors of $d$, with
+$B_i\geq B_*>0$ and $V(B_i)\leq B_j$ for $i<j$. Then
+\begin{equation}
+ \label{eq:path-coverage}
+ \frac{|C|}{P}\leq\frac{KL}{m}+\frac{K11^L}{B_*}
+ \qquad(d\geq1).
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Proof outline]
+At a fixed scale, mark an original address dirty if its path visits a
+bad interval. Since each preceding path prefix is a permutation, pulling
+bad sets back preserves their cardinalities. Summing over all scales and
+all $K$ paths costs at most $KLP$. Thus one scale has total dirty volume
+at most $KLP/m$.
+
+The clean part of one source bin reaches at most $11^L$ bins along each
+path. Because $B\mid d$, the transpose sends the $B$ addresses of one
+source bin into distinct output bins. A path therefore agrees with the
+transpose on at most $11^L$ clean addresses per source bin. There are
+$P/B$ source bins. Adding dirty addresses and taking the union over paths
+gives \eqref{eq:path-coverage}. The compiled endpoint is
+\lean{Compiler.transpose_coverage_bound}; it states the equivalent
+unnormalized inequality and also covers the empty bank.
+\end{proof}
+
+\begin{corollary}[Pointwise nonlinear readout]
+\label{cor:path-readout}
+For every fixed $K,L$, there is a positive dyadic integer $d_0$ such
+that, for every positive dimension $d$ divisible by $d_0$, no $K$ paths
+of length at most $L$, followed by arbitrary public address-dependent
+Boolean tables, transpose every bit input. In particular, this excludes
+every dyadic $d\geq d_0$.
+Specifically, an output of the form
+\[
+ y_a=f_a\bigl(x_{\gamma_1^{-1}(a)},\ldots,
+             x_{\gamma_K^{-1}(a)}\bigr)
+\]
+cannot equal $x_{T^{-1}(a)}$ for every $x$ and $a$.
+\end{corollary}
+
+\begin{proof}[Proof outline]
+Choose $m\geq\max\{1,4KL\}$ and a dyadic
+$B_*\geq\max\{1,4K11^L\}$, then set $B_{i+1}=V(B_i)$.
+Set $d_0=B_{m-1}$. All chosen scales are dyadic, and each divides
+$d_0$, hence also every multiple $d$ of $d_0$. The coverage fraction is
+at most $1/2$. At an uncovered address,
+flipping the required source bit changes the desired output but none of
+the table's arguments. This contradicts correctness on the full input
+cube. \lean{Compiler.no_bounded_path_transpose_of_dvd} gives this
+statement with an explicit $d_0$;
+\lean{Compiler.no_bounded_path_transpose} derives the dyadic case.
+\end{proof}
+
+The formal circuit model also permits nonlinear gates between stages.
+A depth-$L$, fan-in-$q$ node applies a permitted stage to each child's
+output and then an arbitrary address-dependent Boolean table. Leaves
+apply public unary tables to the original input, allowing constants as
+well as copies. The exact recursive unrolling has $q^L$ paths, each of
+length $L$. Consequently the same exclusion holds for this circuit
+model, at every positive multiple of the corresponding threshold for
+$K=q^L$. This follows from \lean{Circuit.unroll} and
+\lean{Circuit.no_bounded_circuit_transpose_of_dvd}. The unrolling is
+proved from the circuit evaluation rule, rather than supplied as a
+dependency assumption.
+
+The theorem does not allow the input to select the interval family or
+the paths. Nor does it cover arbitrary cross-address computation,
+increasing depth or fan-in, or an unrestricted tape implementation.
+It therefore excludes a compiler class, not the unrestricted converse
+$\WORD\Rightarrow\BIT$.

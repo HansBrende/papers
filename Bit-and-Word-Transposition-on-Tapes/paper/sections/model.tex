@@ -1,0 +1,37 @@
+\section{Model and two transposition problems}
+\label{sec:model}
+We use the deterministic multitape model of \cite{FirstPaper2026}, imported
+through the shared Lean package of \cite{SecondPaper2026}. A machine has fixed
+finite control, a fixed finite work alphabet, and a fixed number of two-way
+work tapes. Initially every work cell is blank and every head is at the
+origin. Its read-only input is a raw finite bit string; the input end symbol
+is visible outside the string. Output is append-only. One transition queries
+the scanned symbols, updates the finite control and work symbols, moves each
+head by at most one position, and appends at most one output bit. No matrix
+header or dimension is supplied separately.
+
+For $d\geq1$, the canonical entry width and input length are
+\[
+ b(d)=\max\{1,\ceil{\log_2 d}\},\qquad P(d)=d^2b(d).
+\]
+The Lean definition is \lean{Transpose.entryBits}, namely
+{\small\texttt{Nat.log2 (d - 1) + 1}}; Lean's natural-number logarithm satisfies
+{\small\texttt{Nat.log2 0 = 0}}.
+A matrix is serialized in row-major order, with the bits of each entry
+consecutive. The desired output uses the same bit order within each
+transposed entry. These are \lean{Transpose.encode} and
+\lean{Transpose.transpose}.
+
+The statement $\WORD$ is \lean{Transpose.LinearTimeTransposable}: there
+are one native machine $M$ and one constant $c\in\N$ such that every canonical
+input of every dimension $d\geq1$ is transposed within $c(P(d)+1)$ transitions.
+The statement $\BIT$ asks for one native machine and one constant that transpose
+every square bit matrix of dyadic side $2^h$ in at most $c4^h$ transitions,
+for every $h\geq0$, as in \lean{BitWord.DyadicBitOracle}.
+These quantifiers require one machine for all sizes.
+
+The compiler models in \cref{sec:geometry,sec:scans} are separate finite
+models used to study possible reductions in the opposite direction. Their
+operations are defined directly; there is no assertion that every native
+computation has one of those forms. In particular, charging a word-oracle
+call does not turn arbitrary surrounding computation into a permitted stage.

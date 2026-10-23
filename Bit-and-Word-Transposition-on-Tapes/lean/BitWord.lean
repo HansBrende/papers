@@ -1,0 +1,31 @@
+-- Public theorem-map imports, including the complete native reduction.
+-- Verification audits every authored local module in their import closure.
+import BitWord.AddressBanks
+import BitWord.AddressFields
+import BitWord.AddressParity
+import BitWord.AddressSuffix
+import BitWord.CanonicalGates
+import BitWord.CompilerCircuit
+import BitWord.CompilerThreshold
+import BitWord.CompilerTranspose
+import BitWord.GeometryCanonical
+import BitWord.GeometryPartitionData
+import BitWord.GeometryStage
+import BitWord.GeometryStageScales
+import BitWord.HelperInjection
+import BitWord.NativeCanonicalGeneratorRun
+import BitWord.NativeGateRun
+import BitWord.NativeNormalizeRun
+import BitWord.NativeReduction
+import BitWord.NativeReductionBudget
+import BitWord.NativeReductionCompile
+import BitWord.NativeReductionIOCalls
+import BitWord.NativeReductionRun
+import BitWord.NativeStagesCanonical
+import BitWord.NativeStagesRun
+import BitWord.NativeSuffixPoweredRun
+import BitWord.ScanAncestry
+import BitWord.ScanExclusion
+import BitWord.ScanRawProgram
+import BitWord.ScanTrace
+import BitWord.SquareLayout

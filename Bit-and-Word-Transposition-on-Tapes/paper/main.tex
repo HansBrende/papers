@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable}
+\usepackage{xcolor,microtype}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Bit and Word Transposition on Tapes},pdfauthor={Hans Brende and GPT-6 Astra (OpenAI)}}
+\input{macros}
+\title{Bit and Word Transposition on Tapes}
+\author{Hans Brende \and GPT-6 Astra (OpenAI)}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We prove that linear-time transposition of dyadic bit squares implies
+linear-time transposition of canonical square matrices with logarithmic-width
+entries on deterministic multitape Turing machines. One fixed wrapper
+recovers all dimensions and parameters from raw input, and the assumed bit
+machine may have an adaptive schedule and nonlinear workspace encodings.
+We also prove barriers for restricted compilers in the reverse direction.
+A multiscale bound limits the transpose coordinates covered by a bounded
+family of bounded-length paths through public interval permutations,
+whole-entry operations, rotations, reversals and parity rearrangements.
+A second theorem allows finitely many synchronous nonlinear scans over a
+fixed number of banks, with bounded persistent state. One common helper
+records exceptional values and boundary states; acyclic decoding yields
+a finite inequality excluding all sufficiently large dyadic transposes in
+this grammar. The unrestricted converse and unrestricted linear-time
+transposition remain open. All stated theorems have Lean proofs in a shared
+framework with our earlier papers.
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende directed the research, supplied sources,
+and reviewed the scope and interpretation of results. GPT-6 Astra (OpenAI)
+developed the arguments and Lean proofs and prepared the manuscript under his
+direction.
+\end{quote}
+\tableofcontents
+\clearpage
+\input{sections/introduction}
+\input{sections/model}
+\input{sections/reduction}
+\input{sections/geometry}
+\input{sections/scans}
+\input{sections/discussion}
+\appendix
+\input{sections/verification}
+\clearpage
+\begingroup\small\raggedright
+\bibliographystyle{plainurl}
+\bibliography{references}
+\endgroup
+\end{document}

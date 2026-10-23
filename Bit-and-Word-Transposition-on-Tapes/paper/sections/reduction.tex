@@ -1,0 +1,166 @@
+\section{The bit-to-word reduction}
+\label{sec:reduction}
+\begin{theorem}[Uniform bit-to-word reduction]
+\label{thm:bit-word}
+If one deterministic multitape machine transposes every dyadic square bit
+matrix in time linear in its input length, then one such machine transposes
+every canonical square matrix with entry width $b(d)$ in linear time:
+\[
+                              \BIT\Longrightarrow\WORD.
+\]
+Both problems use the raw-input model of \cref{sec:model}. The assumed bit
+machine need not have an oblivious schedule or a workspace-reset guarantee.
+\end{theorem}
+
+The Lean endpoint is
+\lean{BitWord.linearTimeTransposable_of_dyadicBitOracle}. The remainder of
+this section outlines its proof, from address identities to native execution.
+
+\subsection{A constant-length address factorization}
+For a square of dyadic side $D=2^h$ with $h\geq1$, set
+\[
+ u=\ceil{\log_2 h},\quad e=u\bmod2,\quad w=u+e,\quad
+ N=2h+w=2n,\quad W=2^w.
+\]
+The even choice of $w$ makes $n=h+w/2$ an integer and the padded
+bank length a square power of two. Pad every $h$-bit entry with trailing zeros
+to width $W$. The padded bank has $2^N$ bits, and each address has fields
+\[
+                 (\text{row}[h],\text{column}[h],\text{lane}[w]).
+\]
+The desired permutation exchanges the row and column fields and preserves
+every lane. The bound $W<4h$ limits the padding cost.
+
+Let $S_k$ exchange the last two $k$-bit address fields, fixing all earlier
+positions; it is legal when $2k\leq N$. Let $R$ move the last address bit
+to the front, and let $R^{-1}$ reverse this rotation. These are source-motion
+permutations: a bit initially at address $a$ moves to the transformed address.
+Composition lists below are chronological.
+
+\begin{lemma}[At most thirteen stages]
+\label{lem:thirteen}
+For every $h\geq1$, a specified list of at most thirteen legal operators
+$S_k,R,R^{-1}$ exchanges the two leading $h$-bit fields and fixes all tail
+positions. All indices in the list are explicit functions of $h$.
+\end{lemma}
+
+\begin{proof}[Proof outline]
+For $h<32$, one has $w\leq6$. Use $w$ copies of $R$, then $S_h$, then
+$w$ copies of $R^{-1}$. This uses $2w+1\leq13$ stages.
+
+For $h\geq32$, the chosen parameters satisfy $3w\leq n$. Define the
+five-stage word
+\[
+                   Q=(S_n,S_{n-w},S_w,S_{n-w},S_n).
+\]
+It exchanges the first and last $w$ address positions and fixes the middle.
+Conjugating the suffix exchange by this endpoint exchange gives
+\[
+                            (Q,S_h,Q),
+\]
+which has eleven stages. To check the conjugation, split the leading
+fields as $A=A_0A_1$ and $B=B_0B_1$, where $|A_0|=|B_0|=w$,
+and write the tail as $C$. The three operators act by
+\[
+\begin{aligned}
+ (A_0,A_1,B_0,B_1,C)&\xrightarrow{Q}(C,A_1,B_0,B_1,A_0)\\
+ &\xrightarrow{S_h}(C,B_1,A_0,A_1,B_0)\\
+ &\xrightarrow{Q}(B_0,B_1,A_0,A_1,C).
+\end{aligned}
+\]
+This is the desired head-field swap. The endpoint exchange is its own
+inverse. The finite-address identities, including every
+boundary case, are checked in \lean{five_suffix_end},
+\lean{elevenSuffix_eq_head}, and \lean{canonicalGates_correct}. Their bank
+interpretation is \lean{canonical_bank_action}.
+\end{proof}
+
+\subsection{Native execution and workspace reuse}
+A suffix stage $S_k$ partitions the bank into consecutive blocks of $4^k$
+bits. Each block is a raw $2^k\times2^k$ bit matrix, so one call to the bit
+transposer realizes the required suffix exchange. Calls are sequential,
+reusing one fixed collection of work tapes. The number of calls is not
+bounded by thirteen: thirteen bounds the number of whole-bank stages.
+The block lengths sum to the bank length, so linear cost per block gives
+linear cost per stage.
+
+The oracle may branch on data, move its heads adaptively, and use nonlinear
+work encodings. The wrapper interprets its actual transition function on a
+copied raw block and captures the append-only output on a work tape. The cleanup follows the history-and-replay method of
+Bennett~\cite{Bennett1973},
+with a checked finite controller for the present model. To restore the workspace,
+a fixed finite record alphabet stores the old scanned
+symbols and control label of each simulated microstep. Replaying these records
+backward restores all unretained tapes and head positions while retaining the
+captured output. Record creation, replay, erasure, and the return to the
+origin are included in the bound. The alphabet and number of log tracks may
+depend on the fixed oracle machine; they do not depend on the block size.
+
+The rotation $R$ is a stable even/odd split: read the bank once, separate
+the two parities, rewind, and concatenate. The inverse interleaves its two
+halves. The checked split and interleave subroutines initialize and erase their
+scratch tapes and restore all heads. A physical ruler controls width
+expansion, cropping, and block traversal. Moving and resetting a ruler is
+charged to the data it accompanies. A dimension or a loop index written in
+binary is not treated as a constant-time arithmetic register.
+
+\subsection{Uniformity and arbitrary dimensions}
+The wrapper has one fixed controller. Its tape count, alphabet and control
+states may depend on the chosen bit machine, but not on the input dimension.
+The input contains only the matrix bits. The raw dimension loader from
+\cite{SecondPaper2026} recovers $d$ and the entry width $h=b(d)$.
+
+Set $D=2^h$ and use the lane width $W=2^{w}$ defined above. This choice
+satisfies
+\[
+ d\leq D\leq2d,\qquad h\leq W<4h,\qquad
+ V:=D^2W\leq16P,\qquad P=d^2b(d).
+\]
+The same procedure handles $d=1$: it pads to $D=2$, executes the
+permutation, and crops. No exceptional machine or separate size advice is
+needed.
+
+The fixed controller performs the following operations in order.
+\begin{enumerate}[nosep]
+\item Load the raw input onto a marked work tape. Compute binary words for
+$d,h,w,n$ and the gate parameters, and write thirteen physical opcode and
+parameter slots. Unused slots contain an idle opcode.
+\item Construct unary rulers for row counts and record widths. Expand each
+entry from $h$ to $W$ bits, then pad rows and columns from $d$ to $D$.
+\item Construct a half-bank ruler and execute the thirteen slots. Every
+suffix slot computes its block ruler from its stored parameter and reuses
+the same oracle workspace for all consecutive blocks.
+\item Crop rows and columns, then crop entries to $h$ bits. Append the
+result to the raw output and halt.
+\end{enumerate}
+The descriptor generator uses a fixed finite table for $h<32$ and binary
+arithmetic for $h\geq32$. Both branches belong to the same native program.
+Sharing a physical port between two subroutines is a fixed wiring choice in the controller; it neither copies
+data nor changes its location during execution.
+
+The setup trace \lean{NativePrepare.complete_trace} costs at most $40000P$.
+Each padding or cropping pass costs at most $200V+200$ by
+\lean{NativeNormalize.complete_trace}. The half-bank ruler has cost linear
+in $V$ and its binary exponent length. Each whole-bank gate costs at most
+\[
+                  (\kappa+300)V+24\ell+100,
+\]
+where $\kappa$ depends only on the fixed bit machine and its linear-time
+constant, and $\ell$ is the stored parameter-word length.
+\lean{NativeStages.complete_trace} executes all thirteen slots and includes
+their linking transitions. The generated parameter words have length at most
+$2h+2$, so these costs sum to $O(P)$. This accounting includes physical
+counter construction, repeated block calls, cleanup and raw output; it does
+not charge a binary arithmetic operation as a single tape transition.
+
+The semantic composition uses exact serialization identities. Padding commutes
+with transpose, as does widening every entry by trailing zeros. The checked
+address action therefore transforms the padded serialization into the padded
+serialization of the transposed original matrix. Cropping recovers precisely
+{\small\texttt{Transpose.encode d (Transpose.entryBits d) (Transpose.transpose A)}}.
+The complete trace is \lean{NativeReductionMachine.complete_trace}.
+It proves the bound $(200000+208\kappa)P$ from blank work tapes, with the exact
+raw transposed output and actual halting. The compiler bridge identifies its
+initial configuration with the original machine model's initial state and
+yields \lean{NativeReductionMachine.native_transpose}, from which
+\cref{thm:bit-word} follows.

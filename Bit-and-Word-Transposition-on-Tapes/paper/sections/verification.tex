@@ -1,0 +1,28 @@
+\section{Formalization and reproduction}
+\label{sec:verification}
+The Lean proofs are the mathematical proofs for the theorems in this paper.
+Human-readable proofs and outlines explain those proofs; they do not enlarge
+the checked statements. The declaration map in
+\lean{verification/contracts.json} identifies each numbered result and its
+supporting native interfaces.
+
+The new package shares the native machine model and supporting results of
+\cite{FirstPaper2026,SecondPaper2026} through a relative Lake dependency.
+It preserves the existing Lean and mathlib pins
+\cite{Lean4,Mathlib2020,Mathlib4}. Shared definitions are imported, not copied
+and independently redefined. All native execution claims are proved against
+actual transition traces, including input preparation and final output.
+
+The reproduction script builds the mapped modules, checks their aggregate
+imports, and audits every declaration owned by their local import closure.
+It records source hashes, elaborated endpoint types and the axiom dependencies.
+The permitted foundations are \lean{propext}, \lean{Classical.choice}, and
+\lean{Quot.sound}. The checks reject additional axioms, admitted proofs and
+unchecked native decision procedures. These checks complement the review of
+the mathematical contracts and the English-to-Lean correspondence; compilation
+alone does not establish that correspondence.
+
+The paper's README gives the build and verification commands. Clone the whole
+repository so the sibling Lean packages retain their relative paths. Generated
+local logs are ignored; the sources and reproduction tools contain no
+machine-specific paths. The manuscript build is separate from the Lean audit.

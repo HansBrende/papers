@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "scope": "Complete map of the native bit-to-word implication and compiler/scan barriers; manuscript semantic and visual reviews are separate.",
+  "contracts": [
+    {
+      "id": "address-factorization",
+      "status": "checked_component",
+      "module": "BitWord.CanonicalGates",
+      "declarations": [
+        "BitWord.canonicalGates_length",
+        "BitWord.canonicalGates_legal",
+        "BitWord.canonicalGates_correct",
+        "BitWord.tail_padding_bound"
+      ],
+      "scope": "At most thirteen legal address stages, including all positive h; pure permutation identities.",
+      "manuscript_label": "lem:thirteen"
+    },
+    {
+      "id": "address-bank-action",
+      "status": "checked_component",
+      "module": "BitWord.AddressBanks",
+      "declarations": [
+        "BitWord.canonical_bank_action"
+      ],
+      "scope": "Exact action on every bank, not a native implementation by itself."
+    },
+    {
+      "id": "row-major-bridge",
+      "status": "checked_component",
+      "module": "BitWord.AddressFields",
+      "declarations": [
+        "BitWord.matrixBank_flatten",
+        "BitWord.canonical_flatten_transpose"
+      ],
+      "scope": "Canonical address action is the row-major matrix transpose after width padding."
+    },
+    {
+      "id": "parity-layout",
+      "status": "checked_component",
+      "module": "BitWord.AddressParity",
+      "declarations": [
+        "BitWord.flattenBank_right",
+        "BitWord.flattenBank_left_halves"
+      ],
+      "scope": "Flat-list stable split and interleave identities."
+    },
+    {
+      "id": "suffix-layout",
+      "status": "checked_component",
+      "module": "BitWord.AddressSuffix",
+      "declarations": [
+        "BitWord.bitTranspose_spec",
+        "BitWord.suffix_block_decomposition"
+      ],
+      "scope": "Suffix action decomposes into actual raw square-bit blocks."
+    },
+    {
+      "id": "padding-layout",
+      "status": "checked_component",
+      "module": "BitWord.SquareLayout",
+      "declarations": [
+        "BitWord.square_expansion_layout",
+        "BitWord.square_cropping_layout"
+      ],
+      "scope": "Exact data-layout equalities for square padding and cropping."
+    },
+    {
+      "id": "public-interval-grammar",
+      "status": "checked_component",
+      "module": "BitWord.GeometryPartitionData",
+      "declarations": [
+        "BitWord.Geometry.PartitionData.toStage"
+      ],
+      "scope": "Endpoint and inverse constructed from disjoint actual interval data.",
+      "manuscript_label": "def:geometry-stage"
+    },
+    {
+      "id": "canonical-word-inclusion",
+      "status": "checked_component",
+      "module": "BitWord.GeometryCanonical",
+      "declarations": [
+        "BitWord.Geometry.canonicalWordBlock_admissible"
+      ],
+      "scope": "Actual canonical word-entry permutations satisfy the stage volume bound."
+    },
+    {
+      "id": "one-stage-geometry",
+      "status": "checked_component",
+      "module": "BitWord.GeometryStage",
+      "declarations": [
+        "BitWord.Geometry.Stage.good_image_bins_le",
+        "BitWord.Geometry.Stage.predecessors_card_le"
+      ],
+      "scope": "At most eleven good image/predecessor bins, for every positive bin width.",
+      "manuscript_label": "lem:stage-geometry"
+    },
+    {
+      "id": "exceptional-volume",
+      "status": "checked_component",
+      "module": "BitWord.GeometryStageScales",
+      "declarations": [
+        "BitWord.Geometry.Stage.total_bad_volume_le"
+      ],
+      "scope": "Summed bad volume over separated scales is at most the bank length."
+    },
+    {
+      "id": "path-coverage",
+      "status": "checked_component",
+      "module": "BitWord.CompilerTranspose",
+      "declarations": [
+        "BitWord.Compiler.transpose_coverage_bound"
+      ],
+      "scope": "Unnormalized common-scale KL/m + K11^L/B0 coverage inequality.",
+      "manuscript_label": "thm:path-coverage"
+    },
+    {
+      "id": "pointwise-exclusion",
+      "status": "checked_component",
+      "module": "BitWord.CompilerThreshold",
+      "declarations": [
+        "BitWord.Compiler.no_bounded_path_transpose_of_dvd",
+        "BitWord.Compiler.no_bounded_path_transpose"
+      ],
+      "scope": "Fixed public paths with arbitrary address-dependent Boolean tables fail at every positive dimension divisible by a fixed dyadic threshold; the large-dyadic case is derived.",
+      "manuscript_label": "cor:path-readout"
+    },
+    {
+      "id": "intermediate-nonlinear-gates",
+      "status": "checked_component",
+      "module": "BitWord.CompilerCircuit",
+      "declarations": [
+        "BitWord.Compiler.Circuit.unroll",
+        "BitWord.Compiler.Circuit.no_bounded_circuit_transpose_of_dvd",
+        "BitWord.Compiler.Circuit.no_bounded_circuit_transpose"
+      ],
+      "scope": "Actual recursive fixed-depth, fixed-fanin circuit semantics and exclusion at every positive multiple of a fixed dyadic threshold."
+    },
+    {
+      "id": "raw-scan-model",
+      "status": "checked_component",
+      "module": "BitWord.ScanRawProgram",
+      "declarations": [
+        "BitWord.RawScanProgram",
+        "BitWord.RawScanProgram.run_onGrid"
+      ],
+      "scope": "Raw-address synchronous scan semantics and exact analytical regrouping.",
+      "manuscript_label": "def:scan-program"
+    },
+    {
+      "id": "one-common-helper",
+      "status": "checked_component",
+      "module": "BitWord.HelperInjection",
+      "declarations": [
+        "BitWord.helper_named_demands_bound"
+      ],
+      "scope": "Full-Boolean-cube shared-helper bound |F| <= (D+1)h, requiring local determination only for named demands F; finite range cardinality, with public bins and no linearity assumption.",
+      "manuscript_label": "lem:named-helper"
+    },
+    {
+      "id": "scan-local-replay",
+      "status": "checked_component",
+      "module": "BitWord.ScanTrace",
+      "declarations": [
+        "BitWord.Scan.output_congr_of_record"
+      ],
+      "scope": "Scan output reconstruction from its entering state and bin inputs."
+    },
+    {
+      "id": "layered-reconstruction",
+      "status": "checked_component",
+      "module": "BitWord.ScanAncestry",
+      "declarations": [
+        "BitWord.ScanProgram.run_congr_on_ancestry"
+      ],
+      "scope": "Complete carried-state layered reconstruction from one actual record."
+    },
+    {
+      "id": "finite-scan-bound",
+      "status": "checked_component",
+      "module": "BitWord.ScanExclusion",
+      "declarations": [
+        "BitWord.RawScanProgram.exists_scale_transpose_bound"
+      ],
+      "scope": "Common-scale necessary inequality (P-DP/B)/(D+1) <= qLP/m+sLP/B, D=(11q)^L, with all exceptional bits and n entering states charged.",
+      "manuscript_label": "thm:scan-bound"
+    },
+    {
+      "id": "scan-exclusion",
+      "status": "checked_component",
+      "module": "BitWord.ScanExclusion",
+      "declarations": [
+        "BitWord.RawScanProgram.not_transposes_of_scales",
+        "BitWord.RawScanProgram.not_transposes_of_threshold_dvd",
+        "BitWord.RawScanProgram.not_transposes_large_dyadic"
+      ],
+      "scope": "Exclusion at every positive dimension divisible by a fixed dyadic threshold, with the dyadic case derived; fixed public geometry, bank count, layer count and state alphabet, not a general tape lower bound.",
+      "manuscript_label": "cor:scan-exclusion"
+    },
+    {
+      "id": "uniform-descriptor-generator",
+      "status": "checked_component",
+      "module": "BitWord.NativeCanonicalGeneratorRun",
+      "declarations": [
+        "BitWord.NativeCanonicalGenerator.complete_trace",
+        "BitWord.NativeCanonicalGenerator.native_generate",
+        "BitWord.NativeCanonicalGenerator.fixed_resources",
+        "BitWord.NativeCanonicalGenerator.field_values",
+        "BitWord.NativeCanonicalGenerator.slot_parameter",
+        "BitWord.NativeCanonicalGenerator.slot_opcode",
+        "BitWord.NativeCanonicalGenerator.field_word_length"
+      ],
+      "scope": "Actual fixed 38-tape generator from prepared measured h; raw size discovery is a separate obligation."
+    },
+    {
+      "id": "paid-native-suffix",
+      "status": "checked_component",
+      "module": "BitWord.NativeSuffixPoweredRun",
+      "declarations": [
+        "BitWord.NativeSuffixPowered.complete_trace"
+      ],
+      "scope": "Actual suffix execution from a binary parameter, including ruler creation, adaptive oracle simulation and cleanup; assumes one uniform DyadicBitOracle."
+    },
+    {
+      "id": "native-normalization",
+      "status": "checked_component",
+      "module": "BitWord.NativeNormalizeRun",
+      "declarations": [
+        "BitWord.NativeNormalize.complete_trace",
+        "BitWord.NativeNormalize.native_normalize",
+        "BitWord.NativeNormalize.fixed_resources"
+      ],
+      "scope": "Fixed nine-tape padding/cropping caller with actual cleanup; prepared ruler tapes are explicit preconditions."
+    },
+    {
+      "id": "native-opcode-dispatch",
+      "status": "checked_component",
+      "module": "BitWord.NativeGateRun",
+      "declarations": [
+        "BitWord.NativeGate.complete_trace"
+      ],
+      "scope": "Physical two-bit opcode dispatch to paid suffix/split/interleave/idle; preserves descriptors and restored scratch."
+    },
+    {
+      "id": "thirteen-native-slots",
+      "status": "checked_component",
+      "module": "BitWord.NativeStagesRun",
+      "declarations": [
+        "BitWord.NativeStages.complete_trace"
+      ],
+      "scope": "Actual thirteen-slot native composition from prepared descriptors and half ruler, including all interstage jumps."
+    },
+    {
+      "id": "canonical-slot-semantics",
+      "status": "checked_component",
+      "module": "BitWord.NativeStagesCanonical",
+      "declarations": [
+        "BitWord.NativeStages.after_padded",
+        "BitWord.NativeStages.canonical_after"
+      ],
+      "scope": "The thirteen physical slot semantics equal the canonical gate-list bank action."
+    },
+    {
+      "id": "global-cost-arithmetic",
+      "status": "checked_component",
+      "module": "BitWord.NativeReductionBudget",
+      "declarations": [
+        "BitWord.NativeReductionBudget.total_le",
+        "BitWord.NativeReductionBudget.canonical_bound"
+      ],
+      "scope": "Arithmetic absorption of the listed paid-phase budgets; does not alone prove that the full machine realizes those phases."
+    },
+    {
+      "id": "raw-io-calls",
+      "status": "checked_component",
+      "module": "BitWord.NativeReductionIOCalls",
+      "declarations": [
+        "BitWord.NativeReductionMachine.prepare_call",
+        "BitWord.NativeReductionMachine.output_call"
+      ],
+      "scope": "Actual raw-input discovery/setup and final append-only output calls; no supplied size header."
+    },
+    {
+      "id": "full-native-trace",
+      "status": "checked_component",
+      "module": "BitWord.NativeReductionRun",
+      "declarations": [
+        "BitWord.NativeReductionMachine.complete_trace"
+      ],
+      "scope": "The single fixed machine executes all six paid phases and six linking transitions from blank workspace with the exact transposed output."
+    },
+    {
+      "id": "native-compilation",
+      "status": "checked_component",
+      "module": "BitWord.NativeReductionCompile",
+      "declarations": [
+        "BitWord.NativeReductionMachine.computesWithin_of_trace",
+        "BitWord.NativeReductionMachine.fixed_resources"
+      ],
+      "scope": "Literal trace-to-original-machine bridge, actual halting, output convention and fixed tape/alphabet resources."
+    },
+    {
+      "id": "native-bit-to-word",
+      "status": "checked_component",
+      "module": "BitWord.NativeReduction",
+      "declarations": [
+        "BitWord.NativeReductionMachine.native_transpose",
+        "BitWord.linearTimeTransposable_of_dyadicBitOracle"
+      ],
+      "scope": "One uniform raw-input native machine proves BIT implies Transpose.LinearTimeTransposable for every positive matrix side; the sole oracle premise is a uniform dyadic bit transposer, with no obliviousness or reset premise.",
+      "manuscript_label": "thm:bit-word"
+    }
+  ],
+  "pending": []
+}

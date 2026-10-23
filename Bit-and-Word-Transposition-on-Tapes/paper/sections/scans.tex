@@ -1,0 +1,162 @@
+\section{Adding synchronous nonlinear scans}
+\label{sec:scans}
+
+The previous argument concerns permutations and pointwise Boolean gates.
+We now allow information to travel along a bank through a carried state.
+The resulting obstruction uses one global record of exceptional bits
+and scan boundary states. It does not require the intermediate banks to
+remain independent or linearly encoded.
+
+\begin{definition}[Public scan program]
+\label{def:scan-program}
+A program has $q$ banks of $P$ bits and $L$ layers. Each initial bank is
+either a copy of the raw input or a fixed public bit string. Each layer
+first applies one permitted stage from \cref{def:geometry-stage} to each
+bank, then scans all banks synchronously from left to right or from
+right to left. At an address the scan reads the $q$ old bits and its
+current state, writes $q$ new bits, and updates the state. The transition
+rule may be any public address-dependent nonlinear function.
+
+The state is carried between layers. Its finite alphabet has at most
+$2^s$ values, for an integer $s\geq0$, and its initial value is fixed.
+The stages, directions, transition tables and initial constants are
+independent of the input. The output is one designated final bank.
+\end{definition}
+
+\lean{RawScanProgram} gives these raw-address semantics. Grouping a scan
+into analytical bins preserves every output bit and its terminal state
+by \lean{RawScanProgram.run_onGrid}. In particular, the program is fixed
+before the proof selects a bin scale. Public choices may vary with $d$;
+the theorem below fixes only $q,L,s$.
+
+We first isolate a counting argument. The input ranges over the full
+Boolean cube, with its coordinates partitioned into public source bins.
+A \emph{named demand} is an original input bit $x_v$, together with a
+public set $A_v$ of source bins. A helper $H(x)$ determines that demand
+if equal helper values and equal input bits in $A_v$ force equal values
+of $x_v$, for every pair of inputs.
+
+\begin{lemma}[One shared helper]
+\label{lem:named-helper}
+Let $F$ be a set of distinct original input coordinates, each with a
+named demand determined by one common helper and its own set $A_v$. Suppose each demand's source bin is absent from
+$A_v$ and $|A_v|\leq D$ for $v\in F$. If the helper has at most $2^h$
+possible values, where $h\in\N$, then
+\begin{equation}
+ \label{eq:named-helper}
+                       |F|\leq (D+1)h.
+\end{equation}
+Only demands in $F$ need to be determined.
+\end{lemma}
+
+\begin{proof}
+Order the source bins uniformly at random. Select $v\in F$ when its
+source bin precedes every bin in $A_v$. Its selection probability is
+$1/(|A_v|+1)\geq1/(D+1)$.
+
+Fix an order and restrict to inputs whose nonzero coordinates are all
+selected demands. Two such inputs with equal helpers agree on every
+selected bit: work backwards through the bin order. A selected demand's
+ancestor bins come later, so their selected bits have already been
+recovered; their unselected bits are zero. Local determination now
+recovers that demand. No selected demand uses its own bin as local side information.
+Thus the helper is injective on this subcube. If it has $t$ selected
+coordinates, then $2^t\leq2^h$, giving $t\leq h$. Averaging yields
+$|F|/(D+1)\leq h$.
+\end{proof}
+
+This is the acyclic-side-information method from index coding
+\cite[Theorem~7]{BBJK2011}, specialized to public bins. We do not claim a new
+information principle. The Lean result \lean{helper_named_demands_bound}
+uses one range-cardinality budget, without assuming linearity or
+independence between helper fields. It formalizes the averaging by an
+exact finite count of bin orders, followed by the descending-rank
+injection above. The budget $h$ is an integer; a real entropy budget is
+not asserted. The scan-specific work is to construct this common helper
+and prove the required public ancestry bounds.
+
+For a scale $B\mid d$, put $n=P/B$ and record the current bit at every
+bad source position before each layer's permutations, in every bank. Let their total number be
+$E_B$. Also record the actual state entering each of the $n$ bins in every
+scan, in its scan direction. This includes the inherited initial state.
+A scan's terminal state is not needed to replay its outputs; if another
+layer follows, that state is recorded as the next scan's initial state. The complete
+record has at most
+\begin{equation}
+ \label{eq:scan-record}
+                    2^{E_B+sLn}
+\end{equation}
+possible values. This is a cardinality upper bound; the recorded fields
+can be dependent.
+
+Given this record, a final output bin depends on at most
+$D=(11q)^L$ original bins. The induction uses at most $11$ good predecessor bins per
+permuted bank and the scan's entering state. A scan's output on one bin
+is determined by that state and the old tuples in the bin, in either
+direction. Both local replay and the entire layered reconstruction are
+proved from the transition recurrence in
+\lean{Scan.output_congr_of_record} and
+\lean{ScanProgram.run_congr_on_ancestry}. The ancestor sets are public
+and independent of the record.
+
+\begin{theorem}[Finite scan bound]
+\label{thm:scan-bound}
+Suppose a public scan program transposes every $d\times d$ bit matrix,
+where $d\geq1$.
+For any $m\geq1$ positive divisor scales $B_i\mid d$ satisfying
+$V(B_i)\leq B_j$ for $i<j$, there is a common scale $B=B_i$ such that
+\begin{equation}
+ \label{eq:scan-bound}
+ \frac{P-DP/B}{D+1}
+ \leq \frac{qLP}{m}+\frac{sLP}{B},
+ \qquad P=d^2,\quad D=(11q)^L.
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Proof outline]
+Each output bin requests $B$ bits from distinct source bins under
+transpose. At most $D$ of them come from its own ancestor bins, leaving
+at least $P-DP/B$ far demands overall. Apply \cref{lem:named-helper}
+with the complete record in \eqref{eq:scan-record}. This gives the
+one-scale inequality with $E_B$ in place of $qLP/m$.
+
+The one-stage volume bound, summed over all $q$ banks and $L$ layers,
+gives $\sum_i E_{B_i}\leq qLP$. Choose one scale attaining the average.
+No volume is pulled back through nonlinear scans. The compiled endpoint
+is \lean{RawScanProgram.exists_scale_transpose_bound}.
+\end{proof}
+
+\begin{corollary}[Bounded-state scan exclusion]
+\label{cor:scan-exclusion}
+For fixed $q,L,s$, there is a positive dyadic integer $d_0$ such that
+no public scan program with those resource bounds transposes every
+$d\times d$ bit matrix at any positive dimension divisible by $d_0$.
+In particular, all sufficiently large dyadic dimensions are excluded.
+The layouts and transition tables may vary with the dimension.
+\end{corollary}
+
+\begin{proof}[Proof outline]
+Choose a positive number of scales with
+$m\geq 8(D+1)qL$. Choose a dyadic first scale satisfying
+\[
+ B_0\geq\max\{2D,\,8(D+1)sL,\,2\},
+ \qquad B_{i+1}=V(B_i).
+\]
+Take $d_0=B_m$. Every selected scale divides $d_0$, hence also
+every positive multiple $d$ of $d_0$. The left side
+of \eqref{eq:scan-bound} is at least $P/[2(D+1)]$. Each term
+on the right is at most $P/[8(D+1)]$, so their sum is at most
+$P/[4(D+1)]$, a contradiction.
+\lean{RawScanProgram.not_transposes_of_threshold_dvd} proves the
+positive-multiple exclusion, and
+\lean{RawScanProgram.not_transposes_large_dyadic} derives the dyadic
+case. \lean{RawScanProgram.not_transposes_of_scales} states the
+finite conditions directly.
+\end{proof}
+
+The carried state and its boundary records are charged explicitly.
+The theorem permits arbitrary nonlinear transition tables, but still
+requires fixed public geometry, a bounded number of banks and layers,
+and a bounded state alphabet. It does not describe a general multitape
+machine with independently moving heads or growing auxiliary workspace.
+A construction using those freedoms is not excluded by this result.

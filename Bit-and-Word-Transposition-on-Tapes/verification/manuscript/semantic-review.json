@@ -1,0 +1,110 @@
+{
+  "status": "reviewed",
+  "date": "2026-10-23",
+  "scope": "Source-based English/Lean correspondence, simplification, strengthening and focused primary-source novelty review. This is separate from kernel verification and is not a global priority certificate.",
+  "declaration_map_sha256": "99af3f3685deb28c3884a2ba5bfc41ef6cfbdb67b823333a9798c5d36546f51d",
+  "manuscript_sources": {
+    "paper/macros.tex": "86a886de319e51a6284f3ca568293f116b7a8f09aa252efc7a92bd7c184fe352",
+    "paper/main.tex": "956a298877e6a84f688fc04f4073c33b555cb20c7c086def47fb3b870dc392f4",
+    "paper/sections/discussion.tex": "e486d9ba01779a044cdd0881f169c04be0484c7e2d4a87e17dd63844831d0483",
+    "paper/sections/geometry.tex": "20cb40767559880e435beff9d5bc3357e956a406c7bc92c969f387c91ed03ec4",
+    "paper/sections/introduction.tex": "ac3edd2501bf074a5e1303601baaca74cef60db3fbdb0a863c90376099272719",
+    "paper/sections/model.tex": "7792b852c7a61c181ae167baf0f544bb336cba318b83e888a1635edb41f978d2",
+    "paper/sections/reduction.tex": "0aeaed6fb02b24b75c75b1545b11ce70103f5d624c51c3f21d3194e5f01d7546",
+    "paper/sections/scans.tex": "290f0aa60e6454020c6789e08a3216bc652de063900662e7798b82ebf46ac6c4",
+    "paper/sections/verification.tex": "8f2990505e03f8875e62ef60d173030e1f6bfb3bb9d2bd776f1635828e37e304",
+    "paper/references.bib": "b5f6c134b962fb8bd230407c142eebc06b4d31f75f87f743362e70f66a6b330b"
+  },
+  "headline_findings": [
+    "BIT implies canonical WORD: one native machine depends only on the given bit machine, with raw input, blank initial workspace, exact output and actual halting. No schedule, reset, supplied counter, or dimension-advice premise survives.",
+    "The geometric and scan conclusions concern the exact public grammars defined in the manuscript. Public layouts/tables may depend on dimension but not payload. They are not normal forms for unrestricted multitape machines.",
+    "Every numbered English result is supported by its mapped Lean statement. Positive-dimension normalizations and full-Boolean-cube correctness are explicit. All original headline conclusions are preserved or strengthened."
+  ],
+  "strengthenings": [
+    "Good image/predecessor-bin bound: 16 to 11; path coverage KL/m + K*11^L/B0.",
+    "Named helper: |F| <= (D+1)*h, replacing 2^(D+1)*h. Local determination is required only on F.",
+    "Scan ancestry D=(11*q)^L and record budget E_B+s*L*n, omitting the unused terminal-state field.",
+    "Finite scan bound: (P-D*P/B)/(D+1) <= q*L*P/m+s*L*P/B.",
+    "Path, circuit and scan exclusions hold at every positive multiple of a fixed dyadic threshold; former dyadic statements are derived corollaries."
+  ],
+  "simplifications": [
+    "Reused mathlib finite-set union/image/filter identities and consolidated the generic bin-diameter estimate.",
+    "Replaced the half-marking helper framework by one finite-order acyclic-selection proof, with narrow imports; removed the superseded weighted experiment.",
+    "Removed unused native interpreter visit/origin tracks and the marker phase. Interpreter ports fall from 3*r+4 to r+2, where r is the work-track count after the five-symbol encoding, and a simulated macro from r+3 to r+2 transitions; final halt discovery remains charged.",
+    "NativeBootstrap.jump reuses NativeIO.jump_trace. The six-module native cleanup deletes 43 source lines; replay semantics and headline premises are preserved.",
+    "Second pass: removed four unused geometry declarations and reused the mathlib filter-union/complement identity, deleting a net 48 lines across three modules without changing any mapped endpoint."
+  ],
+  "clarifications": [
+    "The contrapositive transfers failure of linear-time WORD to failure of linear-time BIT, not arbitrary quantitative lower bounds.",
+    "The shared helper counts distinct original coordinates over the full Boolean cube. Only named demands need determination; their own bins cannot be local side information.",
+    "Exceptional records contain current intermediate bits at bad source positions, which need not be raw input bits. Actual inherited entering states are charged.",
+    "The address-field conjugation and descending-rank helper reconstruction are explained explicitly in English.",
+    "Pointwise nonlinear gates are already covered by path unrolling; the additional scan argument charges information carried between addresses."
+  ],
+  "novelty_review": {
+    "finding": "The focused search did not locate the exact adaptive, uniform, raw-input canonical linear-time implication. No unqualified priority claim is made.",
+    "established_ingredients": "Address-permutation factorization, Bennett history/replay and acyclic index-coding decoding are established methods and are attributed. The contribution claimed is the exact native reduction and the derived common-scale/helper bounds for the specified compiler grammar.",
+    "comparisons": [
+      {
+        "source": "Harvey and van der Hoeven, arXiv:2503.22848v1, Section 7.6",
+        "url": "https://arxiv.org/html/2503.22848v1#S7.SS6",
+        "finding": "Discusses arbitrary-width complexity comparisons and provides an oblivious bit-to-word simulation. The present theorem is adaptive but restricted to canonical width and the linear-time regime."
+      },
+      {
+        "source": "Bar-Yossef, Birk, Jayram and Kol, Index Coding with Side Information, 2011; Theorem 7",
+        "url": "https://doi.org/10.1109/TIT.2010.2103753",
+        "finding": "The acyclic induced-subgraph method underlies the helper argument; it is not a new general information principle."
+      },
+      {
+        "source": "Bennett, Logical Reversibility of Computation, 1973",
+        "url": "https://doi.org/10.1147/rd.176.0525",
+        "finding": "History, retained output and reverse cleanup are established. Their literal paid realization is checked in the native model."
+      },
+      {
+        "source": "Kirchherr, conservative-tape transposition, 1988",
+        "url": "https://doi.org/10.1016/0020-0190(88)90163-9",
+        "finding": "Indivisible-entry restriction differs from the nonlinear scan grammar; neither comparison implies a general tape lower bound."
+      },
+      {
+        "source": "Adler et al., On the Capacity of Information Networks, 2006, Section 6",
+        "url": "https://www.math.uwaterloo.ca/~harvey/Publications/Capacity/Capacity-Soda.pdf",
+        "finding": "Conditional I/O/coding comparison has a different model. The present unconditional result has additional grammar restrictions."
+      },
+      {
+        "source": "Krishnamoorthy et al., On Efficient Out-of-core Matrix Transposition, Technical Report OSU-CISRC-9/03-TR52, September 2003, Section 4",
+        "url": "https://www.csc.lsu.edu/~gb/TCE/Publications/SeqTranspose-TR0352.pdf",
+        "finding": "Precedent for address-bit factorization; different memory model and no matching adaptive native implication located."
+      }
+    ],
+    "limitations": "Focused search only; incomplete indexing, inaccessible sources and recent work can leave overlaps undiscovered."
+  },
+  "remaining_open": "Unrestricted WORD implies BIT, existence of an unrestricted linear-time bit or word transposer, and barriers for arbitrary asynchronous schedules, adaptive layouts, growing depth/state or workspace.",
+  "lean_verification": "../verified.json",
+  "visual_review": "review.json",
+  "verification_result": {
+    "status": "passed_mapped_contracts",
+    "modules": 143,
+    "audited_declarations": 9532,
+    "mapped_endpoints": 57,
+    "assumptions": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "second_pass": {
+    "date": "2026-10-23",
+    "reviews": [
+      "Independent native-reduction source audit",
+      "Independent geometry, helper and scan source audit",
+      "Independent manuscript and focused primary-source novelty review"
+    ],
+    "finding": "No material correctness issue, English/Lean mismatch, new headline weakening or publication blocker found. The bounded novelty review does not establish priority over all literature.",
+    "edits": [
+      "Removed unused geometry declarations and replaced a manual set-partition proof by an existing library identity.",
+      "Replaced ambiguous reduction-direction wording with multiplication-based transposition algorithms.",
+      "Identified the Krishnamoorthy et al. source as Technical Report OSU-CISRC-9/03-TR52, September 2003; added Theorem 7 as the BBJK locator."
+    ],
+    "citation_metadata_source": "https://www.csc.lsu.edu/~gb/TCE/"
+  }
+}

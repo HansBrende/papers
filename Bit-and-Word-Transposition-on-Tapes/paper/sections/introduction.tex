@@ -1,0 +1,47 @@
+\section{Introduction}
+Matrix transposition exposes a distinction between identifying the required
+permutation and paying to execute it. The distinction is especially sharp on
+a machine with a fixed number of tapes: a short description of a permutation
+does not by itself supply an efficient tape computation.
+
+Our earlier papers established a native transposition model and studied local
+coding and tape geometry within that model
+\cite{FirstPaper2026,SecondPaper2026}. The present work separates two questions.
+First, can a linear-time bit transposer supply the word transposer used in the
+canonical problem? Second, which restricted compilers could run in the opposite
+direction? The constructive analysis uses a constant-length factorization of
+binary address permutations. The negative analysis charges both exceptional
+word operations and information carried across scan boundaries.
+
+The barriers are statements about explicitly defined compiler grammars. They
+remain valid when public operation descriptions vary with the dimension and
+when permitted scan transitions are nonlinear. They are not normal-form
+theorems for arbitrary multitape computations. In particular, they do not
+resolve whether a more general word-to-bit reduction exists.
+
+Harvey and van der Hoeven study reductions from transposition to integer
+multiplication in the multitape model \cite{HarveyVanDerHoeven2025}. Section~7.6 of their 2025 version identifies the difficulty of transferring complexity bounds between
+bit and multi-bit entries, and gives a bit-to-word simulation for oblivious
+machines. Our reduction concerns the canonical logarithmic width
+and the linear-time regime, while allowing an arbitrary adaptive bit machine.
+It does not assert their more general comparison across all widths and time
+bounds. The converse compiler barriers here also do not strengthen their
+multiplication-based transposition algorithms: an unrestricted transposition lower bound would
+still be required. These distinctions are necessary when interpreting progress
+on the original multiplication problem.
+
+The underlying methods have established precedents. Address-bit
+factorizations occur in out-of-core transposition, for example in
+\cite[Section~4]{KrishnamoorthyTranspose}; history-and-replay cleanup is due
+to Bennett~\cite{Bennett1973}; and our shared-helper bound is an application
+of the acyclic index-coding bound~\cite{BBJK2011}. The constructive result
+combines its specific factorization with paid native execution to remove an
+obliviousness assumption in the canonical linear-time setting.
+
+The negative results concern different restrictions from earlier lower
+bounds. Kirchherr's conservative-tape result treats entries as indivisible
+pebbles~\cite{Kirchherr1988}. Adler et al. connect oblivious I/O transposition
+with a network-coding conjecture~\cite[Section~6]{Adler2006}. Our scan bound
+allows nonlinear mixing and requires no coding conjecture, but restricts
+geometry, synchronization and state. It does not strengthen either result in its original model. Its contribution is a common-scale bound
+and a fully charged helper derived from the concrete scan semantics.

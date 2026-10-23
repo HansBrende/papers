@@ -1,13 +1,14 @@
 {
   "sources": {
-    "paper/sections/introduction.tex": "4b4052d1be4003f6488a43e00f11255a4df03be2a8398aa9600e4c7c654e5fb3",
-    "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
-    "paper/sections/related-work.tex": "83e6cb5abb04c5c56330a64f1e425fc6aaff2818d40287a862461aadf3dad479",
+    "paper/sections/introduction.tex": "0e220852e155b85738219eebcf43f150d39a38762918c17f4d1f3a54c7cb535c",
+    "paper/sections/model.tex": "9b5af818e69359d117c50371e2ef0459bf71317108efa31cf22537756015056f",
+    "paper/sections/related-work.tex": "d30b799520ef409f6e049b0a78d2e921865aa69b4bca28ced5938441a62141d1",
     "paper/sections/local-coding.tex": "18ef25cd66c7bb3870b34c2b3b071416af971a417809852b86bc8bca221ef5c9",
+    "paper/sections/adaptive-coding.tex": "39f1d8d16b67c9fd26406990792322aa1810f8a5b3f672f8da1c91e057af9dc5",
     "paper/sections/motion.tex": "3cf0f5552b7422d11939c9ed88ef6ca8ed801445d5720e15325bf50b4a1af52a",
     "paper/sections/padding.tex": "59db6099b7c559eb120c8b8529ce53236d4df08bb62dd9f799082af83ff61fef",
-    "paper/sections/roadmap.tex": "15cccb8c2a27512ad7e9c07c37c8d3803fcf654a4bcbf4e93346b418aad09f75",
-    "paper/sections/verification.tex": "6a6b2fee53e5aa1dde58bb50288f88479ccf2900e90319b87708b4bf87bc232a"
+    "paper/sections/roadmap.tex": "eddceef1f8c37facfd03ae2e9e749406811c0ad57cf2e4114c9bce4191abd34e",
+    "paper/sections/verification.tex": "fb1eade5a7ea2a48bf60dc27112ed24cbc5edb3ceca99224671ec0668640422d"
   },
   "annotations": [
     {
@@ -419,6 +420,330 @@
       "line": 815,
       "source": "lean/TransposeFollowup/TwoStageHelperEntropy.lean",
       "source_sha256": "9729154fde246667d1a199f6f3d60bafaa9007f10c7a763a3cd2d621ea109567"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.GapBank",
+      "declarations": [
+        "TransposeFollowup.GapBank"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 31,
+      "source": "lean/TransposeFollowup/GapBank.lean",
+      "source_sha256": "3e2e56033a54491c9ff0633e54286d64526d65c487b674b5983b2ccd64b1733a"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.GapBankStateRange",
+      "declarations": [
+        "TransposeFollowup.GapBank.StateRangeBudget",
+        "TransposeFollowup.GapBank.restrictStates_budget_iff"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 32,
+      "source": "lean/TransposeFollowup/GapBankStateRange.lean",
+      "source_sha256": "d79a73b94d4874c16182a4a8868730ef21736921c89fcfc23959a4bf23d10eec"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveBankStrategy",
+      "declarations": [
+        "TransposeFollowup.HelperGapBankStrategy",
+        "TransposeFollowup.HelperGapBankStrategy.TerminatesOn",
+        "TransposeFollowup.HelperGapBankStrategy.CorrectOn"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 43,
+      "source": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+      "source_sha256": "aae7086d073dc1e81265146a5ddb31347a834d34ac46f85b5b9fa2d4ce509388"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestRangeBound",
+      "declarations": [
+        "TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 72,
+      "source": "lean/TransposeFollowup/AdaptiveForestRangeBound.lean",
+      "source_sha256": "9eb957123022d5b0a326b57dbce69a79065bf02fe0d34323e259f5ac53e62ae5"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestLaw",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.budget"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 73,
+      "source": "lean/TransposeFollowup/AdaptiveForestLaw.lean",
+      "source_sha256": "2851d329eee1b479cccd3d54613e1c59dd24efcbd7288a7a0a9f125d021d65ab"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestRefinement",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForest.refined_length_mul_le",
+        "TransposeFollowup.AdaptiveForest.refined_rectangle"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 89,
+      "source": "lean/TransposeFollowup/AdaptiveForestRefinement.lean",
+      "source_sha256": "ddb93b753719ea36995b13bc86896d83c2e4fd7dd992244222925a481239a9b9"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.GapBankLeafEntropy",
+      "declarations": [
+        "TransposeFollowup.GapBankCode.grouped_leaf_entropy"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 114,
+      "source": "lean/TransposeFollowup/GapBankLeafEntropy.lean",
+      "source_sha256": "68bddbf10baef29e0c4053de9c6848593a9378b51fa9df9eb2df4cf82ed0c33f"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.FullFiberEntropy",
+      "declarations": [
+        "TransposeFollowup.coordinateRectangle_full_join",
+        "TransposeFollowup.fullFiberReference_deficit"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 128,
+      "source": "lean/TransposeFollowup/FullFiberEntropy.lean",
+      "source_sha256": "ab67407e3dbf8dcee2ead9434a4ee001a362e04b821d720e2d0bc861e1930e09"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.FullFiberAveraging",
+      "declarations": [
+        "TransposeFollowup.fullFiber_expected_cost_of_leaf_cost",
+        "TransposeFollowup.fullFiber_expected_cost"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 131,
+      "source": "lean/TransposeFollowup/FullFiberAveraging.lean",
+      "source_sha256": "da016ba24f75025f7432be7d91f69fd7198d5bff00c7d6321cb7356823452b40"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestAsymptotics",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.near_linear"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 144,
+      "source": "lean/TransposeFollowup/AdaptiveForestAsymptotics.lean",
+      "source_sha256": "97ebc00469c7692bedc60c1ea7baa9d12f263b660a6d1c9250a8eaec05f1ffbc"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestLaw",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.explicit_rate"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 145,
+      "source": "lean/TransposeFollowup/AdaptiveForestLaw.lean",
+      "source_sha256": "2851d329eee1b479cccd3d54613e1c59dd24efcbd7288a7a0a9f125d021d65ab"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveForestRate",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 146,
+      "source": "lean/TransposeFollowup/AdaptiveForestRate.lean",
+      "source_sha256": "e5ed8b9b629a3f6d52cf98e972ca73eb0d290ba52465fd370338a81cc563d45f"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.AdaptiveBankRateLimit",
+      "declarations": [
+        "TransposeFollowup.adaptiveRateError_log_t_tendsto"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 170,
+      "source": "lean/TransposeFollowup/AdaptiveBankRateLimit.lean",
+      "source_sha256": "9ed54b23df1ae026469d301cf02a96b4183a061cea7f9586943b66386ef4f7d6"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShear",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.shear_involutive"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 187,
+      "source": "lean/TransposeFollowup/ExpanderShear.lean",
+      "source_sha256": "3bd2079e7005c35c56753a8c193cf26b0d5f430dd24842c6e02101340404b2e4"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearLocal",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.rawRow_factorsThrough_inverseRows",
+        "TransposeFollowup.ExpanderShear.inverseRows_card_le",
+        "TransposeFollowup.ExpanderShear.inverseRows_reuse_le",
+        "TransposeFollowup.ExpanderShear.shear_same_lane"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 188,
+      "source": "lean/TransposeFollowup/ExpanderShearLocal.lean",
+      "source_sha256": "fb54902fb1425de228787a6864311ba1794d6b822fce7c4a2ffbf6267e882229"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ShearGap",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 215,
+      "source": "lean/TransposeFollowup/ShearGap.lean",
+      "source_sha256": "d0d5b41c53c0858380818657fb74994a236831c0f562e9ad5c84bde1db899c8b"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ShearGapRecoveryRanges",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.helper_recovery_gap_conditional_of_state_range_bits"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 216,
+      "source": "lean/TransposeFollowup/ShearGapRecoveryRanges.lean",
+      "source_sha256": "669c14d03b07227b32a7e23dfd6e50f9f0ea06ae6984bcb189ecb88bf6181b5d"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearCut",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.mismatch_add_coreCross_le",
+        "TransposeFollowup.ExpanderShear.balanced_cross_nnz_sharp"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 236,
+      "source": "lean/TransposeFollowup/ExpanderShearCut.lean",
+      "source_sha256": "75f9933f886507eec0ddce7b532a250cbf8095bebec81d298943753b74bfafea"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearRank",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.nnz_le_rank_mul_sq"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 243,
+      "source": "lean/TransposeFollowup/ExpanderShearRank.lean",
+      "source_sha256": "147df555f24d69fbbe953c0dc36bad06dd244a13568fe666b4d2ef9b30671cc1"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ShearGapEntropy",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.conditional_rowView_ge_cross_rank"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 253,
+      "source": "lean/TransposeFollowup/ShearGapEntropy.lean",
+      "source_sha256": "579d0e49d792c332a0153f194d763efc7ad7fc420bbd9f70221dc5303e523370"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearNativeFamily",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.exists_fixed_native_shear"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 282,
+      "source": "lean/TransposeFollowup/ExpanderShearNativeFamily.lean",
+      "source_sha256": "ffae06af272883113daa105fa28beccbdcc08ec776f6c8f9818994bd023efa7a"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.NativeExpanderShear",
+      "declarations": [
+        "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+        "TransposeFollowup.NativeExpanderShearMachine.fixed_resources"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 283,
+      "source": "lean/TransposeFollowup/NativeExpanderShear.lean",
+      "source_sha256": "51fc41385049fe859592df9ce14251a20c6110f362af0509fa512905701df4ca"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearEncoding",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.rawBank_surjective",
+        "TransposeFollowup.ExpanderShear.boolShear_involutive"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 284,
+      "source": "lean/TransposeFollowup/ExpanderShearEncoding.lean",
+      "source_sha256": "ee9cd803cac0bc51044ff78aa3bb8aad0a62bd0cf2a1a98f4089dc19a6f1485e"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearFamily",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.exists_rational_shear_family"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 307,
+      "source": "lean/TransposeFollowup/ExpanderShearFamily.lean",
+      "source_sha256": "4f283651b968a7ee4c0adff3548d1c1f4656e74f49021799a856298013306e7a"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearGraph",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.rationalSymmetric_core_expansion",
+        "TransposeFollowup.ExpanderShear.rationalMatrix_row_support",
+        "TransposeFollowup.ExpanderShear.rationalMatrix_col_support"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 308,
+      "source": "lean/TransposeFollowup/ExpanderShearGraph.lean",
+      "source_sha256": "8768cdc87073aaac73303e68bddb5ccfe00f018bf786858cf47452bc1fb03efc"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearRationalBridge",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.rational_page_masks",
+        "TransposeFollowup.ExpanderShear.rational_page_matrix_sum"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 326,
+      "source": "lean/TransposeFollowup/ExpanderShearRationalBridge.lean",
+      "source_sha256": "45ae382313b1612bf12891a4fc3ec3f0ed26288e8666c015199c2651558f8de4"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.ExpanderShearNativeBridge",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.mask_page_stream_eq_shear",
+        "TransposeFollowup.ExpanderShear.boolShear_fold"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 327,
+      "source": "lean/TransposeFollowup/ExpanderShearNativeBridge.lean",
+      "source_sha256": "a67336ad782f3f53aa70569e06e8a98ee410bbfafac521dc3720013b33c3df0b"
+    },
+    {
+      "kind": "formal",
+      "module": "TransposeFollowup.NativeExpanderShearNumerics",
+      "declarations": [
+        "TransposeFollowup.NativeExpanderShearNumerics.total_budget_le"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 336,
+      "source": "lean/TransposeFollowup/NativeExpanderShearNumerics.lean",
+      "source_sha256": "1231b7f50bdeb1dbc48e826eee6d4cd3f8cd03496d91a0363967b05f1293887f"
     },
     {
       "kind": "formal",
@@ -1150,7 +1475,7 @@
         "Transpose.Tape.code_gap"
       ],
       "manuscript": "paper/sections/roadmap.tex",
-      "line": 52,
+      "line": 64,
       "source": "../Matrix-Transposition-and-the-Tape-Coding-Conjecture/lean/Transpose/Tape/Statements/Coding.lean",
       "source_sha256": "f81f1ead08f21286a9b497d2579c4568768275be2a525a26ec870e166bad39c7"
     }
@@ -1406,6 +1731,50 @@
       "line": 803
     },
     {
+      "label": "thm:adaptive-coded-forest",
+      "kind": "theorem",
+      "title": "Adaptive forest bound",
+      "module": "TransposeFollowup.AdaptiveForestRangeBound",
+      "declarations": [
+        "TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 54
+    },
+    {
+      "label": "cor:adaptive-coded-rate",
+      "kind": "corollary",
+      "title": "Near-full answer cost",
+      "module": "TransposeFollowup.AdaptiveForestAsymptotics",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.near_linear"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 134
+    },
+    {
+      "label": "thm:shear-recovery",
+      "kind": "theorem",
+      "title": "Recovery across every pair of half-row sets",
+      "module": "TransposeFollowup.ShearGap",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 190
+    },
+    {
+      "label": "thm:cheap-shear",
+      "kind": "theorem",
+      "title": "Cheap encoding with expensive interval recovery",
+      "module": "TransposeFollowup.ExpanderShearNativeFamily",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.exists_fixed_native_shear"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 264
+    },
+    {
       "label": "def:motion-star",
       "kind": "definition",
       "title": "The restricted star condition",
@@ -1587,6 +1956,12 @@
     "Transpose.entryBits",
     "Transpose.inputLength",
     "Transpose.transpose",
+    "TransposeFollowup.AdaptiveForest.refined_length_mul_le",
+    "TransposeFollowup.AdaptiveForest.refined_rectangle",
+    "TransposeFollowup.AdaptiveForestLaw.budget",
+    "TransposeFollowup.AdaptiveForestLaw.explicit_rate",
+    "TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate",
+    "TransposeFollowup.AdaptiveForestLaw.near_linear",
     "TransposeFollowup.AffineMotion.AffineTimeRequired",
     "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission",
     "TransposeFollowup.AffineMotion.HasAffineIntervalCover",
@@ -1614,7 +1989,37 @@
     "TransposeFollowup.CoordinateSystem",
     "TransposeFollowup.CoordinateSystem.selected_conditional_entropy_lower",
     "TransposeFollowup.CoordinateSystem.selected_tc_le_deficit",
+    "TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp",
+    "TransposeFollowup.ExpanderShear.balanced_cross_nnz_sharp",
+    "TransposeFollowup.ExpanderShear.boolShear_fold",
+    "TransposeFollowup.ExpanderShear.boolShear_involutive",
+    "TransposeFollowup.ExpanderShear.conditional_rowView_ge_cross_rank",
+    "TransposeFollowup.ExpanderShear.exists_fixed_native_shear",
+    "TransposeFollowup.ExpanderShear.exists_rational_shear_family",
+    "TransposeFollowup.ExpanderShear.helper_recovery_gap_conditional_of_state_range_bits",
+    "TransposeFollowup.ExpanderShear.inverseRows_card_le",
+    "TransposeFollowup.ExpanderShear.inverseRows_reuse_le",
+    "TransposeFollowup.ExpanderShear.mask_page_stream_eq_shear",
+    "TransposeFollowup.ExpanderShear.mismatch_add_coreCross_le",
+    "TransposeFollowup.ExpanderShear.nnz_le_rank_mul_sq",
+    "TransposeFollowup.ExpanderShear.rationalMatrix_col_support",
+    "TransposeFollowup.ExpanderShear.rationalMatrix_row_support",
+    "TransposeFollowup.ExpanderShear.rationalSymmetric_core_expansion",
+    "TransposeFollowup.ExpanderShear.rational_page_masks",
+    "TransposeFollowup.ExpanderShear.rational_page_matrix_sum",
+    "TransposeFollowup.ExpanderShear.rawBank_surjective",
+    "TransposeFollowup.ExpanderShear.rawRow_factorsThrough_inverseRows",
+    "TransposeFollowup.ExpanderShear.shear_involutive",
+    "TransposeFollowup.ExpanderShear.shear_same_lane",
     "TransposeFollowup.FiniteBoundary.exists_affine_small_boundary",
+    "TransposeFollowup.GapBank",
+    "TransposeFollowup.GapBank.StateRangeBudget",
+    "TransposeFollowup.GapBank.restrictStates_budget_iff",
+    "TransposeFollowup.GapBankCode.grouped_leaf_entropy",
+    "TransposeFollowup.HelperGapBankStrategy",
+    "TransposeFollowup.HelperGapBankStrategy.CorrectOn",
+    "TransposeFollowup.HelperGapBankStrategy.TerminatesOn",
+    "TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range",
     "TransposeFollowup.HelperInverseLocalPacketCode",
     "TransposeFollowup.HelperInverseLocalPacketCode.CorrectOn",
     "TransposeFollowup.HelperInverseLocalPacketCode.degree_broadcast_bound_scaled",
@@ -1633,6 +2038,9 @@
     "TransposeFollowup.MaskedStrideScan.output",
     "TransposeFollowup.MatrixPermutationPalette.Operation",
     "TransposeFollowup.MatrixPermutationPalette.value",
+    "TransposeFollowup.NativeExpanderShearMachine.fixed_resources",
+    "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+    "TransposeFollowup.NativeExpanderShearNumerics.total_budget_le",
     "TransposeFollowup.NativeRunLimits.Conclusion",
     "TransposeFollowup.NativeRunLimits.of_cut",
     "TransposeFollowup.PaidPadding.exists_uniform_paid_padding",
@@ -1720,12 +2128,17 @@
     "TransposeFollowup.TwoStageRows.apply",
     "TransposeFollowup.TwoStageRows.correct_family_card",
     "TransposeFollowup.TwoStageRows.inverse_block_injective",
+    "TransposeFollowup.adaptiveRateError_log_t_tendsto",
     "TransposeFollowup.average_treewidth_lower_bound",
     "TransposeFollowup.average_treewidth_lower_bound_of_distribution",
     "TransposeFollowup.blockInjective_inverse",
     "TransposeFollowup.blockInjective_rowwise",
+    "TransposeFollowup.coordinateRectangle_full_join",
     "TransposeFollowup.exists_fractional_independent_cover_scaled",
     "TransposeFollowup.exists_rational_continuous_expander",
+    "TransposeFollowup.fullFiberReference_deficit",
+    "TransposeFollowup.fullFiber_expected_cost",
+    "TransposeFollowup.fullFiber_expected_cost_of_leaf_cost",
     "TransposeFollowup.graph_expected_separator_bound",
     "TransposeFollowup.graph_expected_separator_bound_of_distribution",
     "TransposeFollowup.graph_worst_case_separator_bound",
@@ -1742,6 +2155,13 @@
     "Transpose.Tape.MStarRobust",
     "Transpose.Tape.Statements.Coding",
     "TransposeFollowup.ActualStageRegularity",
+    "TransposeFollowup.AdaptiveBankRateLimit",
+    "TransposeFollowup.AdaptiveBankStrategy",
+    "TransposeFollowup.AdaptiveForestAsymptotics",
+    "TransposeFollowup.AdaptiveForestLaw",
+    "TransposeFollowup.AdaptiveForestRangeBound",
+    "TransposeFollowup.AdaptiveForestRate",
+    "TransposeFollowup.AdaptiveForestRefinement",
     "TransposeFollowup.AdaptiveTreewidth",
     "TransposeFollowup.AffineFiniteBoundary",
     "TransposeFollowup.AffineTimeScaling",
@@ -1756,9 +2176,24 @@
     "TransposeFollowup.CountableAffinePathLabels",
     "TransposeFollowup.ExceptionalRecursiveLimits",
     "TransposeFollowup.ExceptionalStageClock",
+    "TransposeFollowup.ExpanderShear",
+    "TransposeFollowup.ExpanderShearCut",
+    "TransposeFollowup.ExpanderShearEncoding",
+    "TransposeFollowup.ExpanderShearFamily",
+    "TransposeFollowup.ExpanderShearGraph",
+    "TransposeFollowup.ExpanderShearLocal",
+    "TransposeFollowup.ExpanderShearNativeBridge",
+    "TransposeFollowup.ExpanderShearNativeFamily",
+    "TransposeFollowup.ExpanderShearRank",
+    "TransposeFollowup.ExpanderShearRationalBridge",
     "TransposeFollowup.FiniteAffineLabels",
     "TransposeFollowup.FiniteAffineTimeBound",
     "TransposeFollowup.FractionalIndependentCover",
+    "TransposeFollowup.FullFiberAveraging",
+    "TransposeFollowup.FullFiberEntropy",
+    "TransposeFollowup.GapBank",
+    "TransposeFollowup.GapBankLeafEntropy",
+    "TransposeFollowup.GapBankStateRange",
     "TransposeFollowup.GraphSeparatorBound",
     "TransposeFollowup.HelperPacketAveraging",
     "TransposeFollowup.HelperPacketDegreeBound",
@@ -1773,6 +2208,8 @@
     "TransposeFollowup.MatrixPermutationPalette",
     "TransposeFollowup.NativeAffineMotion",
     "TransposeFollowup.NativeExceptionalRecursion",
+    "TransposeFollowup.NativeExpanderShear",
+    "TransposeFollowup.NativeExpanderShearNumerics",
     "TransposeFollowup.NativePhysicalLimits",
     "TransposeFollowup.NativeRecursiveLimit",
     "TransposeFollowup.NativeRegularRecursion",
@@ -1803,6 +2240,9 @@
     "TransposeFollowup.RecodedPackets",
     "TransposeFollowup.SeparatorSharpness",
     "TransposeFollowup.SharedDemandEntropy",
+    "TransposeFollowup.ShearGap",
+    "TransposeFollowup.ShearGapEntropy",
+    "TransposeFollowup.ShearGapRecoveryRanges",
     "TransposeFollowup.StageClockAccounting",
     "TransposeFollowup.StationaryTapesRun",
     "TransposeFollowup.TernaryMatrixGeometry",

@@ -1,0 +1,115 @@
+{
+  "status": "pass",
+  "review_kind": "Author mathematical strengthening and simplification audit; independent review is separately recorded in this review directory.",
+  "timestamp_utc": "2026-10-23T02:09:54.629562+00:00",
+  "files": [
+    {
+      "path": "lean/TransposeFollowup/ExpanderShearCut.lean",
+      "sha256": "75f9933f886507eec0ddce7b532a250cbf8095bebec81d298943753b74bfafea",
+      "baseline_sha256": "5b7e563ac75abaa849625d3c1423ce443877fd6869052a88edf376d847f9f1d7",
+      "lines_before": 243,
+      "lines_after": 280,
+      "line_delta": 37,
+      "explicit_header_line_delta": 14
+    },
+    {
+      "path": "lean/TransposeFollowup/ShearGap.lean",
+      "sha256": "d0d5b41c53c0858380818657fb74994a236831c0f562e9ad5c84bde1db899c8b",
+      "baseline_sha256": "c0d68eee37937ffae819513e0888bac44fb9c1067d1ca0a09d317c481a00f6cd",
+      "lines_before": 92,
+      "lines_after": 134,
+      "line_delta": 42,
+      "explicit_header_line_delta": 27
+    },
+    {
+      "path": "lean/TransposeFollowup/ShearGapRecovery.lean",
+      "sha256": "8dedeb1667c0ff6df6f6659249c84c3957743ea78b5d5f85b8a857ed1a34e405",
+      "baseline_sha256": "1fdd65672d8f44d6344761c105c70c96ec1ed2347954003aa0b213298dc381a8",
+      "lines_before": 182,
+      "lines_after": 267,
+      "line_delta": 85,
+      "explicit_header_line_delta": 56
+    },
+    {
+      "path": "lean/TransposeFollowup/ShearGapRecoveryRanges.lean",
+      "sha256": "669c14d03b07227b32a7e23dfd6e50f9f0ea06ae6984bcb189ecb88bf6181b5d",
+      "baseline_sha256": "5163cfc701578b72bc891077f6f7fdab6b1448fe0e692c9a3ffa3b7dddb85d4b",
+      "lines_before": 48,
+      "lines_after": 82,
+      "line_delta": 34,
+      "explicit_header_line_delta": 25
+    }
+  ],
+  "source_line_delta": 198,
+  "explicit_header_line_delta": 122,
+  "preserved_original_theorem_headers": [
+    "mem_supportRect",
+    "nnz_submatrix_eq_supportRect",
+    "mem_crossSupport",
+    "card_crossSupport",
+    "mem_mismatch",
+    "card_le_add_mismatch",
+    "diagonal_mismatch_le_crossSupport",
+    "coreSelected_card_sum",
+    "coreSelected_mismatch",
+    "inl_mem_coreSelected",
+    "inr_mem_coreSelected",
+    "coreCross_compl",
+    "outsideNeighbors_core_le",
+    "coreCross_le_crossSupport",
+    "balanced_cross_nnz",
+    "balanced_cross_rank",
+    "balanced_conditional_gap",
+    "rowRecode_injective",
+    "observationEntropy_rowRecode_eq",
+    "rowView_recode_same_fibers",
+    "conditional_rowView_recode_eq",
+    "conditional_entropy_le_state_budget",
+    "helper_recovery_gap",
+    "helper_recovery_gap_bits",
+    "helper_recovery_gap_of_state_range_bits"
+  ],
+  "build": {
+    "command": "lake build TransposeFollowup.ShearGapRecoveryRanges",
+    "status": "pass",
+    "reported_jobs": 3282,
+    "warnings": []
+  },
+  "axiom_check": {
+    "status": "pass",
+    "declarations_checked": 14,
+    "allowed": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "receipt": "verification/manuscript/adaptive-coding/review1/shear-axioms.txt",
+    "receipt_sha256": "42f0d549ba8d71482b1a73cb48b7d536f2fc5647d4c9f47b6daba6889335a33a"
+  },
+  "strengthenings": [
+    "Disjoint diagonal mismatch and crossing-core images improve the cut factor from 4 to 2, hence the recovery coefficient from eta/(8(D+1)^2) to eta/(4(D+1)^2).",
+    "Sharp endpoints allow 0<=eta<=2, while all original eta<=1 theorem signatures are preserved.",
+    "The conditional helper endpoint allows an arbitrary finite joint law of source X and helper Z, charges P-H(X|Z), and averages branch-dependent real state budgets.",
+    "The reachable-range endpoint permits arbitrary ambient state types, with each branch range bounded by 2^{s(a)}; its conclusion is cP-(P-H_bits(X|Z))<=E[s(Z)]."
+  ],
+  "scope": [
+    "Actual bipartite shear incidence L with row and column support bounded by D and actual vertex expansion.",
+    "Both selected row sets have cardinality m, independently on raw/stored sides; branch-selected recodings are separate bijections within each row.",
+    "Both complementary recovery states must decode the selected raw half from the corresponding stored half and their state; the common branch budget may differ between helper values.",
+    "Correctness is required on the finite sample fibers, including zero-weight samples; zero-probability helper branches contribute zero average weight.",
+    "This is a local-recovery obstruction for a known cheap encoder, not a normalization theorem or an unrestricted multiplication/transposition lower bound."
+  ],
+  "reuse": [
+    "The original core-cross cardinality bound is a corollary of the disjoint joint count.",
+    "Generic diagonal image containment is shared between standalone mismatch count and the joint count.",
+    "Original cut/rank/recovery theorems are direct corollaries of the stronger chain.",
+    "The reachable-state restriction is constructed once; the original range endpoint follows from the new endpoint and the shared entropy-charge comparison."
+  ],
+  "findings": [],
+  "independent_review": {
+    "reviewer": "separate native/formalization agent",
+    "status": "pass",
+    "scope": "Complete four modules and rank/entropy dependencies; exact original headers and source hashes; focused independent axiom checks.",
+    "findings": []
+  }
+}

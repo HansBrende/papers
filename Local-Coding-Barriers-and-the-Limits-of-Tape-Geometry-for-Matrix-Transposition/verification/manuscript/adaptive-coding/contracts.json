@@ -1,0 +1,78 @@
+[
+  {
+    "label": "thm:adaptive-coded-forest",
+    "kind": "theorem",
+    "module": "AdaptiveForestRangeBound",
+    "declarations": [
+      "TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range",
+      "TransposeFollowup.AdaptiveForestLaw.budget"
+    ],
+    "hypotheses": [
+      "Full-cube bank bijections; whole-column forward window sigma; full-cube recovery of each nonempty row interval with reachable-state range at most 2^s, s real nonnegative.",
+      "Public history-dependent Boolean queries, declared support at most two stored coordinates; only actual correct-input executions must halt and satisfy leafwise coordinate forest and projected row degree Delta.",
+      "Original raw-row side information, all-inputs-in-F correctness, arbitrary finite normalized input law including zero masses, helper-selected bank/states/strategy/decoders.",
+      "d,b>=1, R>=1, 1<=M<=d; delta=max(2,Delta)."
+    ],
+    "prose_scope": "(1+1/R) Eell >= P-W*delta^(2R)*(ceil(d/M)+2sigma)-(delta^R+1)*Q*s-Q*(P-H(X)+H(Z)); Q=sum_{j=1}^{min(delta^R,M)} choose(M,j).",
+    "program_role": "Excludes fixed fractional answer savings in a stated adaptive coded-bank interface; no unrestricted native-time lower bound.",
+    "final_english_lean_comparison": "Actual transcript refinement, full reference fibers, gap recovery and entropy budget are derived. The final public endpoint restricts arbitrary ambient states to reachable ranges. English specializes the finite Lean theorem to b>0 and M<=d.",
+    "final_outline_assessment": "Child-depth pins and charged adaptive refinement; exact bucket groups and gap states; conditional total correlation relative to full fibers; Kraft bound and helper conditioning."
+  },
+  {
+    "label": "cor:adaptive-coded-rate",
+    "kind": "corollary",
+    "module": "AdaptiveForestRate",
+    "declarations": [
+      "TransposeFollowup.AdaptiveForestLaw.near_linear",
+      "TransposeFollowup.AdaptiveForestLaw.explicit_rate",
+      "TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate"
+    ],
+    "hypotheses": [
+      "Actual adaptive forest law family, b(d)>0 at positive d, fixed degree Delta.",
+      "Qualitative: sigma(d)/d tends to zero and (s+Dtot)/P tends to zero.",
+      "Quantitative: sigma fixed, s<=As*W, Dtot<=Ad*W, fixed nonnegative As,Ad."
+    ],
+    "prose_scope": "Eell>=P-o(P); under quantitative assumptions, eventual relative loss at most (8 log(max(2,Delta))+1)/log(log_2 d), with a checked finite factor-8 error expression.",
+    "program_role": "Makes the finite bound useful uniformly in entry width and describes exactly which information budgets rule out fractional answer savings.",
+    "final_english_lean_comparison": "Asymptotic wrappers consume the actual semantic law bundle, not a separately assumed entropy inequality. Parameter choices and decay limit are proved.",
+    "final_outline_assessment": "Fix R then M for the qualitative argument; choose floor(log_delta(log_2 d)/4) and floor(d^(1/(4 delta^R))) for the explicit rate."
+  },
+  {
+    "label": "thm:shear-recovery",
+    "kind": "theorem",
+    "module": "ShearGapRecoveryRanges",
+    "declarations": [
+      "TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp",
+      "TransposeFollowup.ExpanderShear.helper_recovery_gap_conditional_of_state_range_bits"
+    ],
+    "hypotheses": [
+      "Binary simple bipartite incidence L on m+m rows, row/column degree<=Delta, outside-neighbor expansion eta for sets of at most m vertices, 0<eta<=1.",
+      "Arbitrary finite input law on m+m rows of W bits. Independently chosen raw and stored half sets, each of cardinality m.",
+      "Arbitrary finite joint input/helper law, with no determinism premise. Helper selects both half sets, separate within-row raw and stored bijections, and arbitrary nonlinear finite-range states and decoders; branch budget s(z) bounds both reachable state ranges throughout that branch."
+    ],
+    "prose_scope": "With c=eta/(4*(Delta+1)^2), max(H(X_I|Y_J),H(X_Ic|Y_Jc)) >= c*P-(P-H(X)); helper recovery budgets obey E s(Z) >= c*P-(P-H(X|Z)) = c*P-(P-H(X))-I(X;Z). Deterministic helper/common-budget consequence s>=c*P-D_X-H(Z).",
+    "program_role": "Rules out making all interval-recovery states sublinear in expectation by independently chosen row orders and separate within-row bijections, even under randomized helper selection, when fixed eta>0,Delta and input deficit plus helper mutual information is sublinear.",
+    "final_english_lean_comparison": "Disjoint diagonal/core support count doubles the previous coefficient. English specializes sharp eta<=2 endpoints to eta<=1. Exact conditional-source deficit and average branch budgets are proved for arbitrary joint laws; reachable-range theorem allows arbitrary ambient state types. Original endpoint types retained as corollaries. No globally mixing regrouping claim.",
+    "final_outline_assessment": "Disjoint diagonal mismatches and core crossing entries; smaller-side expansion yields combined count eta*d/2; sparse rank; finite linear-fiber entropy; within-row invariance and conditional averaging."
+  },
+  {
+    "label": "thm:cheap-shear",
+    "kind": "theorem",
+    "module": "ExpanderShearNativeFamily",
+    "declarations": [
+      "TransposeFollowup.ExpanderShear.exists_fixed_native_shear",
+      "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+      "TransposeFollowup.ExpanderShear.rawBank_surjective",
+      "TransposeFollowup.ExpanderShear.boolShear_involutive"
+    ],
+    "hypotheses": [
+      "Existential fixed rational family, positive expansion eta<=1, fixed degree Delta and runtime constant C; all witnesses precede dimension.",
+      "Every even canonical dimension d=2m>=2, W=d*entryBits d and P=d*W; arbitrary raw input of length P.",
+      "Original deterministic finite-state multitape model; blank initial work tapes, read-only raw input and append-only raw output."
+    ],
+    "prose_scope": "One fixed machine emits the raw shear (A,B+L_m A) and halts within C*P steps, for the exact simple rational overlap matrices with fixed degree and positive expansion at every m>=1. Thus the earlier every-half/helper recovery lower bound holds for a linearly computable family.",
+    "program_role": "Shows that cheap native encoding, bounded inverse incidence and zero forward column radius do not force small interval-recovery states. Supplies a paid workspace primitive, not a transpose decoder or complete-exchange saving.",
+    "final_english_lean_comparison": "The combined endpoint chooses a fixed rational family before all dimensions, and uses the native halt and output theorem for the same actual deduplicated incidence. Serialization covers every length-P bit string. Final work tapes need not be blank.",
+    "final_outline_assessment": "Existing expander and paid opcode generator; exact unary row clock and expanded masks; increasing-matching XOR scans with resets; raw output; framed trace composition and a single fixed linear cost constant. Review acceptance is recorded separately against built final sources."
+  }
+]

@@ -19,7 +19,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-We prove six families of results for finite coding models and for matrix
+We prove coding and head-motion bounds for finite information-access models and for matrix
 transposition on deterministic multitape Turing machines, using the native
 model of \emph{Matrix Transposition and the Tape Coding Conjecture}. For local
 coding, we obtain adaptive original-row separator bounds with optimal universal
@@ -32,7 +32,16 @@ entry width. The packet bound extends to correlated inputs and helper-selected
 global bijections with local inverses. With bounded stored-row degree, inverse
 support and inverse reuse, it excludes fixed fractional savings when input
 deficit plus helper entropy is $o(d^2b)$; an $O(db)$ information budget gives
-the explicit error $O(d^2b/\log d)$. For head motion, we bound time outside
+the explicit error $O(d^2b/\log d)$. For adaptive two-coordinate queries, a
+leafwise forest condition and small interval-recovery states give a near-full
+answer bound, with an explicit $O(d^2b/\log\log d)$ error under row-sized
+information budgets. One fixed native machine computes an expander shear in
+linear time from raw input and blank work tapes. These banks have bounded
+inverse supports and zero forward column radius, yet require linear-size
+interval-recovery budgets in expectation even after randomized helper-selected
+row orders and within-row bijections, when input deficit plus helper mutual
+information is sublinear.
+For head motion, we bound time outside
 locally affine regions and exclude specified scan palettes and regular
 contracting recursions.
 We also construct, for every native machine, a fixed wrapper with additive
@@ -40,7 +49,7 @@ $O(d^2b)$ overhead on canonical inputs whose complete runs satisfy the original
 zero-slack cut inequality. Under a linear-time bound, its normalized head limits
 satisfy the full $M^*$ conditions. Preparation, motion, cleanup and handoff are
 all charged. These geometric conditions can therefore be supplied independently
-of the computation that follows the prefix. All six families are formalized in
+of the computation that follows the prefix. The stated results are formalized in
 Lean. Unrestricted linear-time transposition and integer multiplication remain
 unresolved here.
 \end{abstract}
@@ -56,6 +65,7 @@ checks, and prepared the manuscript under his direction.
 \input{sections/model}
 \input{sections/related-work}
 \input{sections/local-coding}
+\input{sections/adaptive-coding}
 \input{sections/motion}
 \input{sections/padding}
 \input{sections/roadmap}

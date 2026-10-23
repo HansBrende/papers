@@ -1,0 +1,337 @@
+\section{Adaptive packets and the cost of local recovery}\label{sec:adaptive-coded-bank}
+
+The fixed-packet bounds of \cref{sec:local-coding} do not cover supports chosen
+from earlier answers. We now allow that adaptation for nonlinear coded banks,
+under a forest condition on each completed coordinate graph. The inverse
+condition also changes: a short state must recover each consecutive interval
+of original rows from the stored rows in the same interval. The resulting
+bound excludes a fixed fractional saving in the number of public answers.
+A complementary construction shows why inexpensive encoding alone cannot
+supply this interval-recovery condition.
+
+\subsection{The bank and the public query interface}
+
+Fix $d,b\ge1$, write $W=db$ and $P=dW$, and index both raw and stored bits
+by $(r,c,t)\in[d]\times[d]\times[b]$. A bank is a bijection $\Phi$ of the
+\emph{full} $P$-bit cube; write $Y=\Phi(X)$. For a fixed integer $\sigma\ge0$,
+put
+\[
+ N_\sigma(c)=[c-\sigma,c+\sigma]\cap[d].
+\]
+Each stored bit $(r,c,t)$ may depend on all raw bits in the columns
+$N_\sigma(c)$, but on no other raw columns. For every nonempty consecutive
+row interval $I$, there is a fixed finite-valued state $S_I(X)$ such that
+\begin{equation}\label{eq:gap-bank-recovery}
+ Y_I=Y'_I\ \text{and}\ S_I(X)=S_I(X')
+ \quad\Longrightarrow\quad X_I=X'_I
+\end{equation}
+on the full cube. Assume $|\range S_I|\le2^s$ for a common real $s\ge0$.
+These states are records used in the proof; no algorithm for evaluating them
+is supplied for free.
+\formal{GapBank}{TransposeFollowup.GapBank}
+\formal{GapBankStateRange}{TransposeFollowup.GapBank.StateRangeBudget,TransposeFollowup.GapBank.restrictStates_budget_iff}
+
+A public strategy chooses its next Boolean query, its declared support of
+at most two stored coordinates, or a halt instruction from the preceding
+public answers. Each query answer costs one bit, including constant answers,
+repeated queries and unused declared arguments. The strategy must terminate
+on a declared correct-input family $F$; it need not terminate elsewhere.
+Receiver $j$ recovers the whole raw column $j$ from its original raw row
+$X_j$ and the completed transcript. A deterministic public helper $Z=Z(X)$
+may select the bank, all its states, the strategy and the decoders, with
+common parameters $d,b,\sigma,s$.
+\formal{AdaptiveBankStrategy}{TransposeFollowup.HelperGapBankStrategy,TransposeFollowup.HelperGapBankStrategy.TerminatesOn,TransposeFollowup.HelperGapBankStrategy.CorrectOn}
+
+For each actual helper value and completed correct transcript, form the simple
+support graph on \emph{all stored coordinates}, adding an edge for each distinct
+two-coordinate support. Require that graph to be a forest. Its projection to
+stored-row labels must lie in a simple row graph of maximum degree at most
+$\Delta$. Within-row coordinate edges need no projected row edge. Both graphs
+may depend on the completed transcript; their union over different transcripts
+need not be a forest. Coordinate components may contain arbitrarily many bits
+and rows.
+
+\begin{theorem}[Adaptive forest bound]\label{thm:adaptive-coded-forest}
+Under this interface, let $X$ have any probability law supported on $F$,
+let $\ell(X)$ be the number of original public answers, and put
+$D_{\mathrm{tot}}=P-H(X)+H(Z)$. Set $\delta=\max(2,\Delta)$. For any integers
+$R\ge1$ and $1\le M\le d$, define
+\[
+ K=\delta^R,\quad \nu=\delta^{2R},\quad L=\ceil{d/M},\quad
+ Q=\sum_{j=1}^{\min(K,M)}\binom Mj,\quad
+ C=(K+1)Q,\quad N=W\nu(L+2\sigma).
+\]
+Then
+\begin{equation}\label{eq:adaptive-coded-forest}
+ \left(1+\frac1R\right)\E\ell
+ \ \ge\ P-N-Cs-QD_{\mathrm{tot}}.
+\end{equation}
+Without a helper, take $H(Z)=0$. Correctness on $F$ includes its
+zero-probability inputs.
+\end{theorem}
+\formal{AdaptiveForestRangeBound}{TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range}
+\formal{AdaptiveForestLaw}{TransposeFollowup.AdaptiveForestLaw.budget}
+
+This is a query bound, not a native-time lower bound. Its hypotheses permit
+nonlinear banks, correlated inputs and large coordinate components. They impose
+forward column locality, interval recovery and leafwise acyclicity. The older
+inverse-support theorem permits fixed cyclic packet graphs and arbitrary
+forward dependencies; neither set of hypotheses subsumes the other.
+
+\begin{proofoutline}
+Truncate the public strategies at the maximum correct transcript length,
+preserving the actual correct executions. At each forest leaf, root every
+tree. Partition its edges by child depth modulo $R$ and choose a class with
+fewest edges. Append the stored value of each child in that class as one
+additional public unary answer. The choices depend only on the already
+completed transcript. Distinct edges have distinct children, so the refined
+length satisfies $\ell_A\le(1+1/R)\ell$.
+\formal{AdaptiveForestRefinement}{TransposeFollowup.AdaptiveForest.refined_length_mul_le,TransposeFollowup.AdaptiveForest.refined_rectangle}
+
+Fix an attained refined transcript and consider its fiber in the full stored
+cube. On every cut edge, substituting the observed child value leaves a unary
+constraint on the parent. The fiber therefore factors over the retained
+pieces, each of height less than $R$. Each piece occupies at most $K$ stored
+rows, and any two of its rows are within distance $2R-2$ in the original
+leaf's row graph. The appropriate row balls have size at most $\nu$.
+No independence of the actual conditional input law is asserted.
+
+Divide the rows into consecutive buckets of size at most $L$, using at most
+$M$ bucket labels. Group pieces by their exact nonempty set of occupied
+buckets. There are at most $Q$ groups. A coordinate is near if its forward
+column window meets an occupied bucket of its group. Because the bucket set
+is also the exact bucket set of its own piece, the row-ball estimate bounds
+the total number of near coordinates by $N$. Each group has at most $K+1$
+nonempty complementary row gaps.
+
+Condition on all other groups and the refined transcript. A group's near
+bits and its gap states determine the entire group: equal stored rows and
+state on a gap give equal raw rows there by \eqref{eq:gap-bank-recovery};
+the original receiver decoders then give the corresponding raw columns;
+forward column locality determines every remaining far bit. This comparison
+uses only actual correct inputs, never a hybrid input supplied to a decoder.
+The sum of the groups' conditional entropies is therefore at most $N+Cs$.
+\formal{GapBankLeafEntropy}{TransposeFollowup.GapBankCode.grouped_leaf_entropy}
+
+For a full reference fiber $\mathcal R_a$, put
+$e_a=\log_2|\mathcal R_a|-H(Y\mid A=a)$. Rectangularity bounds the conditional
+total correlation of the groups by $e_a$. Complement subadditivity gives
+\[
+ H(Y\mid A=a)\le N+Cs+(Q-1)e_a.
+\]
+The reference is the uniform full cube. Its fiber-deficit identity gives
+$\E e_A\le P-H(X)$, while prefix freedom gives $H(A)\le\E\ell_A$.
+Thus the transcript is charged once, not again as an external helper.
+Combining these inequalities proves \eqref{eq:adaptive-coded-forest} for
+one bank. Conditioning on the actual helper and averaging replaces the
+source deficit by $D_{\mathrm{tot}}$.
+\formal{FullFiberEntropy}{TransposeFollowup.coordinateRectangle_full_join,TransposeFollowup.fullFiberReference_deficit}
+The averaging lemma also permits a leaf-dependent overhead and charges its
+expectation. Here the uniform geometric bound $N+Cs$ suffices.
+\formal{FullFiberAveraging}{TransposeFollowup.fullFiber_expected_cost_of_leaf_cost,TransposeFollowup.fullFiber_expected_cost}
+\end{proofoutline}
+
+\begin{corollary}[Near-full answer cost]\label{cor:adaptive-coded-rate}
+Along $d\to\infty$, allow $b\ge1$ and all bank and protocol data to vary,
+with $\Delta$ fixed. If
+\[
+ \sigma=o(d),\qquad s+D_{\mathrm{tot}}=o(P),
+\]
+then $\E\ell\ge P-o(P)$. If, more specifically, $\sigma$ is fixed and
+$s\le A_sW$, $D_{\mathrm{tot}}\le A_DW$ for fixed nonnegative constants,
+then $\E\ell\ge P-O(P/\log\log d)$, uniformly in $b$ and the code.
+\end{corollary}
+\formal{AdaptiveForestAsymptotics}{TransposeFollowup.AdaptiveForestLaw.near_linear}
+\formal{AdaptiveForestLaw}{TransposeFollowup.AdaptiveForestLaw.explicit_rate}
+\formal{AdaptiveForestRate}{TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate}
+
+\begin{proofoutline}
+For the qualitative assertion, first fix $R$, then a sufficiently large fixed
+$M$, and then let $d$ grow. The normalized near loss is at most
+$\nu[1/M+(1+2\sigma)/d]$; for fixed $R,M$, the remaining normalized loss
+tends to zero. Finally let $M$ and $R$ grow.
+For the rate, put $t=\log_2d\ge\delta^8$ and take
+\[
+ R=\floor{\frac{\log_\delta t}{4}},\qquad K=\delta^R,
+ \qquad M=\floor{d^{1/(4K)}}.
+\]
+The checked finite consequence is
+\[
+ 1-\frac{\E\ell}{P}\le\frac{8\log\delta}{\log t}+e_d,
+ \qquad
+ e_d=K^2\left[2d^{-1/(4K)}+\frac{1+2\sigma}{d}\right]
+       +\frac{(K+1)A_s+A_D}{\sqrt d}.
+\]
+Here $K^4\le t$, $Q\le\sqrt d$, and $e_d\log t\to0$. In particular, for all
+sufficiently large $d$,
+\[
+ \E\ell\ge\left(1-\frac{8\log\delta+1}{\log\log_2d}\right)P.
+\]
+\formal{AdaptiveBankRateLimit}{TransposeFollowup.adaptiveRateError_log_t_tendsto}
+\end{proofoutline}
+
+\subsection{Expander shears and local recovery}
+
+Let $d=2m$ and let $L\in\F_2^{m\times m}$ be the incidence matrix of a simple
+bipartite graph on two sets of $m$ vertices. Suppose its maximum degree is
+at most $\Delta$ and every set $S$ of at most $m$ vertices has at least
+$\eta|S|$ neighbors outside $S$, where $0<\eta\le1$. For rows of width $W$,
+define, independently in every bit position,
+\begin{equation}\label{eq:expander-shear}
+ \Phi_L(A,B)=(A,B+LA),\qquad P=2mW,\qquad
+ c_0=\frac{\eta}{4(\Delta+1)^2}.
+\end{equation}
+This map is its own inverse. Each output bit depends only on raw bits in the
+same bit position. Its inverse row supports and the number of inverse
+supports containing any one stored row are at most $\Delta+1$.
+\formal{ExpanderShear}{TransposeFollowup.ExpanderShear.shear_involutive}
+\formal{ExpanderShearLocal}{TransposeFollowup.ExpanderShear.rawRow_factorsThrough_inverseRows,TransposeFollowup.ExpanderShear.inverseRows_card_le,TransposeFollowup.ExpanderShear.inverseRows_reuse_le,TransposeFollowup.ExpanderShear.shear_same_lane}
+
+\begin{theorem}[Recovery across every pair of half-row sets]\label{thm:shear-recovery}
+Let $Y=\Phi_L(X)$ and $D_X=P-H(X)$ for any input law. For every two sets
+$I,J$ of $m$ rows each,
+\begin{equation}\label{eq:shear-half-entropy}
+ \max\{H(X_I\mid Y_J),\ H(X_{I^c}\mid Y_{J^c})\}
+ \ \ge\ c_0P-D_X.
+\end{equation}
+The input and stored half sets may be chosen independently.
+
+More generally, allow any finite joint law of $X$ and a public helper $Z$;
+here $Z$ need not be a deterministic function of $X$. The helper may select
+both half sets and arbitrary bijections applied separately within each raw
+and stored row. Suppose that, throughout each helper branch $Z=z$, both
+raw half-row views can be recovered from their respective stored half-row
+views and states whose ranges have at most $2^{s(z)}$ values, for a common
+real budget $s(z)$ in that branch. Then
+\begin{equation}\label{eq:shear-helper-recovery}
+ \E s(Z)\ \ge\ c_0P-\bigl(P-H(X\mid Z)\bigr)
+       =c_0P-D_X-I(X;Z),
+\end{equation}
+where $I(X;Z)=H(X)-H(X\mid Z)$. For deterministic $Z=Z(X)$ and a constant
+budget $s$, this gives $s\ge c_0P-D_X-H(Z)$. The states and decoders may be
+nonlinear. The bound does not cover a further change of coordinates that
+combines different rows.
+\end{theorem}
+\formal{ShearGap}{TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp}
+\formal{ShearGapRecoveryRanges}{TransposeFollowup.ExpanderShear.helper_recovery_gap_conditional_of_state_range_bits}
+
+In particular, every raw-row order and stored-row order has an aligned prefix
+or suffix half requiring this much recovery information. For fixed $\eta>0$ and $\Delta$, if
+$D_X+I(X;Z)=o(P)$, no such ordering and within-row recoding can give all
+interval states a common branch budget with expectation $o(P)$.
+Independent public randomness contributes no information charge.
+The bounded inverse-support property of the earlier
+packet theorem is compatible with this obstruction: recovering a row from a
+few arbitrary stored rows is different from recovering a whole interval from
+only the stored rows in that same interval.
+
+\begin{proofoutline}
+Write the shear matrix as $T=\begin{pmatrix}I&0\\ L&I\end{pmatrix}$.
+For selected halves $I,J$, let $q$ count the diagonal mismatches and $e$ the
+crossing edges of the bipartite core in the two submatrices
+$T[J,I^c]$ and $T[J^c,I]$. These occupy disjoint matrix entries, so their
+combined nonzero count is at least $q+e$. The smaller core side has at least
+$(d-q)/2$ vertices. Expansion gives $\eta(d-q)\le2e$; since $\eta\le1$,
+the combined count is at least $\eta d/2$.
+\formal{ExpanderShearCut}{TransposeFollowup.ExpanderShear.mismatch_add_coreCross_le,TransposeFollowup.ExpanderShear.balanced_cross_nnz_sharp}
+
+A matrix with at most $\Gamma$ nonzero entries in each row and column has
+at most $\Gamma^2\operatorname{rank}(M)$ nonzero entries. Indeed, basis rows
+meet at most $\Gamma\operatorname{rank}(M)$ columns; all other columns vanish,
+and each remaining column has at most $\Gamma$ nonzero entries. Taking
+$\Gamma=\Delta+1$, one crossing rank is at least $c_0d$.
+\formal{ExpanderShearRank}{TransposeFollowup.ExpanderShear.nnz_le_rank_mul_sq}
+
+For an arbitrary input law, fiber counting for the crossing linear map gives
+$H(X_I\mid Y_J)\ge W\operatorname{rank}(T[J,I^c])-D_X$.
+Applying this to both cuts proves \eqref{eq:shear-half-entropy}.
+A finite recovery state can supply at most the logarithm of its number of
+possible values. Within-row bijections preserve the relevant information,
+and averaging the branch bounds gives the exact conditional deficit
+$P-H(X\mid Z)$. This proves \eqref{eq:shear-helper-recovery} with average
+state budgets and no independence or linear-decoder assumption.
+\formal{ShearGapEntropy}{TransposeFollowup.ExpanderShear.conditional_rowView_ge_cross_rank}
+\end{proofoutline}
+
+\subsection{A uniformly paid encoder}
+
+The recovery obstruction can occur after a linear-time tape computation.
+The following construction uses the rational monotone expander already
+proved for the padding theorem, with XOR passes over the input data in place of
+empty head excursions. The expander and compiler results are reused; the
+new obligations are the data transformation and its complete native cost.
+
+\begin{theorem}[Cheap encoding with expensive interval recovery]\label{thm:cheap-shear}
+There are constants $\Delta,C\in\N$, $0<\eta\le1$, and one fixed
+deterministic multitape machine $E$ with the following property. For every
+even canonical dimension $d=2m\ge2$, there is a simple bipartite incidence
+matrix $L_m$ satisfying the degree and expansion hypotheses of
+\cref{thm:shear-recovery}. Put $W=db(d)$ and $P=dW$. On every raw $P$-bit
+input $(A,B)$ in row-major order, $E$ outputs
+\[
+ (A,B+L_mA)
+\]
+in at most $CP$ steps. It starts with blank work tapes and uses the original
+read-only input and append-only raw output conventions. Its alphabet,
+finite control and tape count are independent of $d$.
+
+The resulting banks are full-cube involutions with zero forward column
+radius and inverse row support and reuse at most $\Delta+1$. For the
+same constants, \cref{thm:shear-recovery} applies uniformly in $d$.
+\end{theorem}
+\formal{ExpanderShearNativeFamily}{TransposeFollowup.ExpanderShear.exists_fixed_native_shear}
+\formal{NativeExpanderShear}{TransposeFollowup.NativeExpanderShearMachine.native_shear,TransposeFollowup.NativeExpanderShearMachine.fixed_resources}
+\formal{ExpanderShearEncoding}{TransposeFollowup.ExpanderShear.rawBank_surjective,TransposeFollowup.ExpanderShear.boolShear_involutive}
+
+Thus linear-time encoding, even with bounded inverse incidence and zero
+forward column radius, does not force sublinear interval-recovery states
+after row reorderings and separate within-row bijections, including randomized
+choices with $D_X+I(X;Z)=o(P)$ and budgets charged in expectation. This rules out
+that proposed route for automatically applying the adaptive forest bound
+to fast tape computations. The construction is a workspace primitive; it
+has no transpose decoder and proves no complete-exchange saving. The
+earlier fixed-packet obstruction still applies to this bank under its
+packet hypotheses. A further globally mixing change of representation is
+outside the recovery theorem; applying the shear again restores the raw
+input in linear time.
+
+\begin{proofoutline}
+The existing continuous-expander theorem supplies one fixed finite rational
+family. Symmetrization and the finite overlap construction give positive
+ordinary vertex expansion at every positive half-dimension $m$. The
+incidence matrix is the simple, deduplicated overlap graph. Its edge pages
+are partial increasing matchings, with a fixed page count $q$ and degree
+bound independent of $m$. The ordered-graph address convention used to
+prove expansion is transferred by a graph equivalence; it is not a free
+physical row permutation.
+\formal{ExpanderShearFamily}{TransposeFollowup.ExpanderShear.exists_rational_shear_family}
+\formal{ExpanderShearGraph}{TransposeFollowup.ExpanderShear.rationalSymmetric_core_expansion,TransposeFollowup.ExpanderShear.rationalMatrix_row_support,TransposeFollowup.ExpanderShear.rationalMatrix_col_support}
+
+The machine loads the raw input, determines its canonical dimension and
+$m=d/2$, and executes the existing paid rational opcode generator at $m$.
+The generator assigns each simple edge exactly one page. An actual tape
+routine creates the unary row clock of length $W$, and fixed controllers
+extract the page flags and repeat each row flag across its $W$ bit positions.
+All metadata, clocks, delimiters and data copies are constructed from the
+raw input and blank work tapes.
+
+In a page pass, the source and target heads advance through their respective
+rows. False flags skip unchanged bits; true flags pair the selected streams
+in order and XOR source bits into the target. Increasing matching endpoints
+make one forward pass sufficient. The source data are preserved; target
+bits outside the matching are unchanged. Paid resets prepare the next pass.
+Each page costs $O(mW)$, and $q$ is fixed. The actual generated masks select
+precisely that page's edges, and their matrices sum to $L_m$ without
+characteristic-two cancellation.
+\formal{ExpanderShearRationalBridge}{TransposeFollowup.ExpanderShear.rational_page_masks,TransposeFollowup.ExpanderShear.rational_page_matrix_sum}
+\formal{ExpanderShearNativeBridge}{TransposeFollowup.ExpanderShear.mask_page_stream_eq_shear,TransposeFollowup.ExpanderShear.boolShear_fold}
+
+After the final page, the target is $B+L_mA$. A native output scan emits the
+unchanged $A$ and updated $B$ in raw row-major order. The trace proof counts
+initial loading, dimension arithmetic, opcode generation, clock and flag
+preparation, all data passes, resets and output. Their sum is bounded by a
+constant depending only on the fixed rational family times $P$. The
+finite-state compilation has no dimension-dependent control and no initial
+advice or preloaded graph.
+\formal{NativeExpanderShearNumerics}{TransposeFollowup.NativeExpanderShearNumerics.total_budget_le}
+\end{proofoutline}

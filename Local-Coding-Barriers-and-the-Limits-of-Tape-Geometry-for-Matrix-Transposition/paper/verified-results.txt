@@ -1,8 +1,9 @@
-SIX FOLLOW-UP THEOREM FAMILIES: EXACT STATEMENTS AND SCOPE
+FOLLOW-UP THEOREMS: EXACT STATEMENTS AND SCOPE
 Local coding barriers and the limits of tape geometry for matrix transposition
 
-STATUS: All six theorem families remain proved. This public summary includes
-the October 2026 manuscript review corrections. The complete manuscript and
+STATUS: The original six theorem families remain proved. The adaptive-coding
+extension is recorded separately below and in verification/manuscript/adaptive-coding/.
+This public summary includes the October 2026 manuscript review corrections. The complete manuscript and
 current declaration audit are in paper/main.pdf and verification/manuscript/.
 Historical build and strengthening measurements remain in verification/.
 
@@ -422,3 +423,87 @@ R1916 strengthens families 2 and 3 and shares 13 framed-bank embedding proofs.
 The latter saves 30 lines; stronger statements add 81, giving 105792 total
 mathematical source lines (net +51 this pass). No old theorem is retired.
 See verification/r1916-audit.txt for preservation scope and exact evidence.
+
+7. ADAPTIVE NONLINEAR FOREST PACKETS
+
+Let W=d*b and P=d*W. A helper selects a full-cube bank bijection, whose
+stored column-c bits depend only on raw columns within sigma of c. Every
+nonempty raw row interval I is recoverable from stored rows I plus a state
+whose reachable range has at most 2^s values. Public-adaptive queries use
+at most two declared stored coordinates; actual completed coordinate graphs
+are forests, with projected row degree at most Delta. Receivers retain their
+original rows. Termination and correctness are required only on the declared
+correct-input set, including zero-mass inputs.
+
+For any input law, Dtot=P-H(X)+H(helper), delta=max(2,Delta), R>=1,
+1<=M<=d, K=delta^R, nu=delta^(2R), L=ceil(d/M), and
+Q=sum_{j=1}^{min(K,M)} binomial(M,j),
+
+  (1+1/R) E[length] >= P-W*nu*(L+2*sigma)-(K+1)*Q*s-Q*Dtot.
+
+The forest refinement, full-cube fiber factorization, gap recovery and
+entropy inequalities are proved from the actual protocol, not assumed.
+The transcript is charged once. The helper entropy is explicitly charged.
+For fixed Delta, sigma=o(d) and s+Dtot=o(P), this gives E[length]>=P-o(P).
+For fixed sigma and s<=As*W, Dtot<=Ad*W with fixed nonnegative As,Ad,
+E[length]>=P-O(P/log log d), with eventual constant 8*log(delta)+1 over
+log(log_2 d). The manuscript also states the checked finite error term.
+
+Use: excludes fixed fractional answer savings in this adaptive model. It is
+not a native-time lower bound, and is not a blanket strengthening of the
+older fixed-packet theorem: the latter allows cycles and arbitrary forward
+mixing but uses bounded inverse support/reuse instead of interval recovery.
+
+Lean: AdaptiveForestRangeBound, AdaptiveForestLaw,
+      AdaptiveForestAsymptotics, AdaptiveForestRate.
+
+8. EXPANDER SHEARS AND EXPENSIVE INTERVAL RECOVERY
+
+For d=2m, let L be a binary m-by-m incidence matrix of a bipartite graph
+with maximum degree Delta and outside-neighbor expansion eta in (0,1]
+on sets of at most m vertices. The full-cube shear Phi(A,B)=(A,B+LA) is
+an involution, has zero forward column radius, and has inverse row support
+and reuse at most Delta+1. For arbitrary input law, D=P-H(X), and any
+independently selected m-row sets I,J, one of
+
+  H(X_I | Phi(X)_J), H(X_(I complement) | Phi(X)_(J complement))
+
+is at least c*P-D, where c=eta/(4*(Delta+1)^2). For any finite joint
+input/helper law, let Z select the half sets and arbitrary separate within-row
+bijections. If both halves are recoverable throughout each branch Z=z with
+reachable-state ranges at most 2^{s(z)}, then
+
+  E s(Z) >= c*P-(P-H(X|Z)) = c*P-D-I(X;Z).
+
+For deterministic Z=Z(X) and constant s, this gives s>=c*P-D-H(Z).
+Independent public randomness has I(X;Z)=0 and incurs no information charge.
+State alphabets may be arbitrary; only attained ranges are charged. States
+and decoders may be nonlinear. For fixed eta>0, Delta, and D+I(X;Z)=o(P),
+no independent row ordering and within-row recoding can give all interval
+states a common branch budget with sublinear expectation. Arbitrary regrouping of bits or globally mixing changes
+of coordinates are not covered. Applying the shear again recovers the raw
+input; this is not an obstruction to every possible change of representation.
+
+One fixed native machine computes this same expanding family of shears
+for every even canonical d>=2 in time at most C*P, for a fixed C. Input
+and output are raw row-major bit strings, all initial work tapes are blank,
+and finite control, alphabet and tape count are independent of d. Loading,
+dimension arithmetic, rational opcode generation, clocks, masks, repeated
+tags, XOR data passes, head resets and output are all charged. Work tapes
+need not be blank at the final halt.
+
+Use: even bounded inverse incidence, zero forward column radius and a
+linear-time native encoder together do not imply small interval recovery.
+The construction tests normalization premises for fast coded computation;
+it provides no transpose decoder or complete-exchange advantage.
+
+Lean (finite recovery): ExpanderShear, ExpanderShearCut,
+  ExpanderShearRank, ExpanderShearLocal, ShearGap, ShearGapRecoveryRanges.
+Lean (fixed native construction): ExpanderShearNativeFamily,
+  NativeExpanderShear, NativeExpanderShearNumerics, ExpanderShearEncoding.
+
+Review refinement: the disjoint diagonal/core crossing count doubles the
+previous recovery coefficient. Sharp Lean endpoints allow eta<=2; the
+expanding-family statement uses eta<=1. Original cut/rank/recovery statements
+remain corollaries with their original types. Adaptive headline rates and the
+fixed native machine, resource bounds and cost coefficient are unchanged.

@@ -5,6 +5,13 @@ import Transpose.Tape.DefsM
 import Transpose.Tape.MStarRobust
 import Transpose.Tape.Statements.Coding
 import TransposeFollowup.ActualStageRegularity
+import TransposeFollowup.AdaptiveBankRateLimit
+import TransposeFollowup.AdaptiveBankStrategy
+import TransposeFollowup.AdaptiveForestAsymptotics
+import TransposeFollowup.AdaptiveForestLaw
+import TransposeFollowup.AdaptiveForestRangeBound
+import TransposeFollowup.AdaptiveForestRate
+import TransposeFollowup.AdaptiveForestRefinement
 import TransposeFollowup.AdaptiveTreewidth
 import TransposeFollowup.AffineFiniteBoundary
 import TransposeFollowup.AffineTimeScaling
@@ -19,9 +26,24 @@ import TransposeFollowup.CoordinatePackets
 import TransposeFollowup.CountableAffinePathLabels
 import TransposeFollowup.ExceptionalRecursiveLimits
 import TransposeFollowup.ExceptionalStageClock
+import TransposeFollowup.ExpanderShear
+import TransposeFollowup.ExpanderShearCut
+import TransposeFollowup.ExpanderShearEncoding
+import TransposeFollowup.ExpanderShearFamily
+import TransposeFollowup.ExpanderShearGraph
+import TransposeFollowup.ExpanderShearLocal
+import TransposeFollowup.ExpanderShearNativeBridge
+import TransposeFollowup.ExpanderShearNativeFamily
+import TransposeFollowup.ExpanderShearRank
+import TransposeFollowup.ExpanderShearRationalBridge
 import TransposeFollowup.FiniteAffineLabels
 import TransposeFollowup.FiniteAffineTimeBound
 import TransposeFollowup.FractionalIndependentCover
+import TransposeFollowup.FullFiberAveraging
+import TransposeFollowup.FullFiberEntropy
+import TransposeFollowup.GapBank
+import TransposeFollowup.GapBankLeafEntropy
+import TransposeFollowup.GapBankStateRange
 import TransposeFollowup.GraphSeparatorBound
 import TransposeFollowup.HelperPacketAveraging
 import TransposeFollowup.HelperPacketDegreeBound
@@ -36,6 +58,8 @@ import TransposeFollowup.MatrixPaletteObstructions
 import TransposeFollowup.MatrixPermutationPalette
 import TransposeFollowup.NativeAffineMotion
 import TransposeFollowup.NativeExceptionalRecursion
+import TransposeFollowup.NativeExpanderShear
+import TransposeFollowup.NativeExpanderShearNumerics
 import TransposeFollowup.NativePhysicalLimits
 import TransposeFollowup.NativeRecursiveLimit
 import TransposeFollowup.NativeRegularRecursion
@@ -66,6 +90,9 @@ import TransposeFollowup.RawUnitArithmeticData
 import TransposeFollowup.RecodedPackets
 import TransposeFollowup.SeparatorSharpness
 import TransposeFollowup.SharedDemandEntropy
+import TransposeFollowup.ShearGap
+import TransposeFollowup.ShearGapEntropy
+import TransposeFollowup.ShearGapRecoveryRanges
 import TransposeFollowup.StageClockAccounting
 import TransposeFollowup.StationaryTapesRun
 import TransposeFollowup.TernaryMatrixGeometry
@@ -95,6 +122,12 @@ import TransposeFollowup.UnconditionalPaidPadding
 #print axioms Transpose.entryBits
 #print axioms Transpose.inputLength
 #print axioms Transpose.transpose
+#print axioms TransposeFollowup.AdaptiveForest.refined_length_mul_le
+#print axioms TransposeFollowup.AdaptiveForest.refined_rectangle
+#print axioms TransposeFollowup.AdaptiveForestLaw.budget
+#print axioms TransposeFollowup.AdaptiveForestLaw.explicit_rate
+#print axioms TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate
+#print axioms TransposeFollowup.AdaptiveForestLaw.near_linear
 #print axioms TransposeFollowup.AffineMotion.AffineTimeRequired
 #print axioms TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission
 #print axioms TransposeFollowup.AffineMotion.HasAffineIntervalCover
@@ -122,7 +155,37 @@ import TransposeFollowup.UnconditionalPaidPadding
 #print axioms TransposeFollowup.CoordinateSystem
 #print axioms TransposeFollowup.CoordinateSystem.selected_conditional_entropy_lower
 #print axioms TransposeFollowup.CoordinateSystem.selected_tc_le_deficit
+#print axioms TransposeFollowup.ExpanderShear.balanced_conditional_gap_sharp
+#print axioms TransposeFollowup.ExpanderShear.balanced_cross_nnz_sharp
+#print axioms TransposeFollowup.ExpanderShear.boolShear_fold
+#print axioms TransposeFollowup.ExpanderShear.boolShear_involutive
+#print axioms TransposeFollowup.ExpanderShear.conditional_rowView_ge_cross_rank
+#print axioms TransposeFollowup.ExpanderShear.exists_fixed_native_shear
+#print axioms TransposeFollowup.ExpanderShear.exists_rational_shear_family
+#print axioms TransposeFollowup.ExpanderShear.helper_recovery_gap_conditional_of_state_range_bits
+#print axioms TransposeFollowup.ExpanderShear.inverseRows_card_le
+#print axioms TransposeFollowup.ExpanderShear.inverseRows_reuse_le
+#print axioms TransposeFollowup.ExpanderShear.mask_page_stream_eq_shear
+#print axioms TransposeFollowup.ExpanderShear.mismatch_add_coreCross_le
+#print axioms TransposeFollowup.ExpanderShear.nnz_le_rank_mul_sq
+#print axioms TransposeFollowup.ExpanderShear.rationalMatrix_col_support
+#print axioms TransposeFollowup.ExpanderShear.rationalMatrix_row_support
+#print axioms TransposeFollowup.ExpanderShear.rationalSymmetric_core_expansion
+#print axioms TransposeFollowup.ExpanderShear.rational_page_masks
+#print axioms TransposeFollowup.ExpanderShear.rational_page_matrix_sum
+#print axioms TransposeFollowup.ExpanderShear.rawBank_surjective
+#print axioms TransposeFollowup.ExpanderShear.rawRow_factorsThrough_inverseRows
+#print axioms TransposeFollowup.ExpanderShear.shear_involutive
+#print axioms TransposeFollowup.ExpanderShear.shear_same_lane
 #print axioms TransposeFollowup.FiniteBoundary.exists_affine_small_boundary
+#print axioms TransposeFollowup.GapBank
+#print axioms TransposeFollowup.GapBank.StateRangeBudget
+#print axioms TransposeFollowup.GapBank.restrictStates_budget_iff
+#print axioms TransposeFollowup.GapBankCode.grouped_leaf_entropy
+#print axioms TransposeFollowup.HelperGapBankStrategy
+#print axioms TransposeFollowup.HelperGapBankStrategy.CorrectOn
+#print axioms TransposeFollowup.HelperGapBankStrategy.TerminatesOn
+#print axioms TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range
 #print axioms TransposeFollowup.HelperInverseLocalPacketCode
 #print axioms TransposeFollowup.HelperInverseLocalPacketCode.CorrectOn
 #print axioms TransposeFollowup.HelperInverseLocalPacketCode.degree_broadcast_bound_scaled
@@ -141,6 +204,9 @@ import TransposeFollowup.UnconditionalPaidPadding
 #print axioms TransposeFollowup.MaskedStrideScan.output
 #print axioms TransposeFollowup.MatrixPermutationPalette.Operation
 #print axioms TransposeFollowup.MatrixPermutationPalette.value
+#print axioms TransposeFollowup.NativeExpanderShearMachine.fixed_resources
+#print axioms TransposeFollowup.NativeExpanderShearMachine.native_shear
+#print axioms TransposeFollowup.NativeExpanderShearNumerics.total_budget_le
 #print axioms TransposeFollowup.NativeRunLimits.Conclusion
 #print axioms TransposeFollowup.NativeRunLimits.of_cut
 #print axioms TransposeFollowup.PaidPadding.exists_uniform_paid_padding
@@ -228,12 +294,17 @@ import TransposeFollowup.UnconditionalPaidPadding
 #print axioms TransposeFollowup.TwoStageRows.apply
 #print axioms TransposeFollowup.TwoStageRows.correct_family_card
 #print axioms TransposeFollowup.TwoStageRows.inverse_block_injective
+#print axioms TransposeFollowup.adaptiveRateError_log_t_tendsto
 #print axioms TransposeFollowup.average_treewidth_lower_bound
 #print axioms TransposeFollowup.average_treewidth_lower_bound_of_distribution
 #print axioms TransposeFollowup.blockInjective_inverse
 #print axioms TransposeFollowup.blockInjective_rowwise
+#print axioms TransposeFollowup.coordinateRectangle_full_join
 #print axioms TransposeFollowup.exists_fractional_independent_cover_scaled
 #print axioms TransposeFollowup.exists_rational_continuous_expander
+#print axioms TransposeFollowup.fullFiberReference_deficit
+#print axioms TransposeFollowup.fullFiber_expected_cost
+#print axioms TransposeFollowup.fullFiber_expected_cost_of_leaf_cost
 #print axioms TransposeFollowup.graph_expected_separator_bound
 #print axioms TransposeFollowup.graph_expected_separator_bound_of_distribution
 #print axioms TransposeFollowup.graph_worst_case_separator_bound

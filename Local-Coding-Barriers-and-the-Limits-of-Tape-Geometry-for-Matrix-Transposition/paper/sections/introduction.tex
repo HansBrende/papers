@@ -24,6 +24,19 @@ degree, inverse support and inverse reuse exclude a fixed fractional saving
 when input deficit plus helper entropy is $o(P)$. With an $O(db)$ information
 budget, the error is explicitly $O(P/\log d)$. A particular two-stage
 architecture also requires substantial global helper information.
+The adaptive packet extension permits the next query to depend on earlier
+answers. For nonlinear banks with local forward dependencies and small
+interval-recovery states, leafwise forests give $P-o(P)$ answers; row-sized
+state and information budgets give an $O(P/\log\log d)$ error.
+Expander shears supply a complementary obstruction: even bounded inverse row
+supports and zero forward column radius do not imply small interval-recovery
+states. The obstruction holds for every pair of raw and stored half-row sets,
+arbitrary joint input/helper laws, and helper-selected within-row bijections.
+It charges average branch budgets and the helper's mutual information with
+the input; independent public randomness contributes no information charge.
+One fixed native machine computes this shear in linear time from raw input
+and blank work tapes. Consequently, cheap encoding does not supply the
+adaptive theorem's interval-recovery premise.
 The second group concerns actual tape execution. Theorem~$M^*$ imposes a positive lower bound on total time
 outside locally affine regions of the limiting head paths. This excludes
 specified operations and regular recursions. A fully paid prefix supplies the
@@ -42,7 +55,7 @@ with an additional restriction, such as one tracking the information required
 at the outputs. For a construction, satisfying them leaves encoding and
 decoding to be implemented.
 
-\paragraph{Six families, with different scopes.}
+\paragraph{Different scopes.}
 The finite coding theorems permit general entry width $b$. Their hypotheses
 describe abstract broadcasts or row transformations; they are not automatic
 properties of arbitrary tape computations. The native asymptotic theorems use
@@ -52,7 +65,12 @@ and, where stated, negligible size-dependent control information. The packet
 theorems distinguish all-input row recoding from helper-selected global
 recoding with locally recoverable original rows. Their restrictions concern
 the inverse dependencies and the subsequent packet list; the forward
-bijection may mix the whole input. Each change of model is made explicit at
+bijection may mix the whole input. The adaptive forest theorem instead
+requires forward column locality and interval recovery; it allows large
+coordinate components and only requires termination on the correct inputs.
+The expander-shear result separates interval recovery from bounded inverse
+support and linear-time encoding. Its native implementation uses canonical
+width and even dimensions. Each change of model is made explicit at
 the relevant statement.
 
 \paragraph{Relation to the earlier paper.}
@@ -61,8 +79,10 @@ proved restrictions; they are not improvements to an existing separator or
 two-stage theorem there. The affine results strengthen consequences of
 Theorem~$M^*$. The paid construction gives a data-free version of the earlier
 expanding-motion proposal: it generates and executes the motion in linear
-time, before the payload begins. Coupling that motion to coded data at each
-recursive level remains open. The scan and recursion results give applications
+time, before the payload begins. The new shear couples the same expander
+family to a fully paid data transformation. Coupling successive transformations
+to a transpose decoder with linear total cost remains open.
+The scan and recursion results give applications
 in the actual machine model. None improves an unrestricted transposition time
 bound.
 

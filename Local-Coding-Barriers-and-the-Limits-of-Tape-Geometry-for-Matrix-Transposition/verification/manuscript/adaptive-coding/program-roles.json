@@ -1,0 +1,629 @@
+{
+  "status": "passed",
+  "items": [
+    {
+      "label": "def:target",
+      "kind": "definition",
+      "title": "The unchanged decision target",
+      "module": "Transpose.Statement",
+      "declarations": [
+        "Transpose.entryBits",
+        "Transpose.inputLength",
+        "Transpose.encode",
+        "Transpose.transpose",
+        "Transpose.TransposesWithin",
+        "Transpose.LinearTimeTransposable"
+      ],
+      "manuscript": "paper/sections/model.tex",
+      "line": 35,
+      "role": {
+        "construction": "Defines the fixed uniform native transposition target that any positive construction must meet.",
+        "impossibility": "Defines the unchanged statement whose negation would settle the impossibility program; the multiplication implication is cited background."
+      },
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:local-public-strategy",
+      "kind": "definition",
+      "title": "Public original-row strategy",
+      "module": "TransposeFollowup.ProtocolTruncation",
+      "declarations": [
+        "TransposeFollowup.PublicStrategy",
+        "TransposeFollowup.PublicStrategy.Executes"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 39,
+      "role": "Defines exactly the original-row interface to which the separator obstruction applies.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:local-adaptive-separator",
+      "kind": "theorem",
+      "title": "Adaptive separator bound",
+      "module": "TransposeFollowup.GraphSeparatorBound",
+      "declarations": [
+        "TransposeFollowup.graph_expected_separator_bound_of_distribution",
+        "TransposeFollowup.graph_expected_separator_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 81,
+      "role": "Excludes a fixed fractional broadcast saving when expected separator loss, input deficit and helper entropy are all negligible relative to P.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "cor:local-separator-worst",
+      "kind": "corollary",
+      "title": "Worst-case cost and attained helper range",
+      "module": "TransposeFollowup.GraphSeparatorBound",
+      "declarations": [
+        "TransposeFollowup.graph_worst_case_separator_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 166,
+      "role": "Converts the separator inequality to a candidate rejection test from pointwise broadcast/loss bounds and the attained helper range.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:local-separator-sharpness",
+      "kind": "theorem",
+      "title": "Separate sharpness of the two information charges",
+      "module": "TransposeFollowup.SeparatorSharpness",
+      "declarations": [
+        "TransposeFollowup.SeparatorSharpness.deficit_coefficient_at_least_two",
+        "TransposeFollowup.SeparatorSharpness.helper_coefficient_at_least_two"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 185,
+      "role": "Optimal universal finite-model coefficients; does not establish sharpness in the small-deficit/small-helper regime.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "lem:local-treewidth-fragmentation",
+      "kind": "lemma",
+      "title": "Integral fragmentation",
+      "module": "TransposeFollowup.Treewidth",
+      "declarations": [
+        "TransposeFollowup.treewidth_fragmentation",
+        "TransposeFollowup.treewidth_separator_loss"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 215,
+      "role": "Supplies the integral separator-loss budget used to turn communication savings into a treewidth lower bound.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "cor:local-treewidth",
+      "kind": "corollary",
+      "title": "Savings force large average treewidth",
+      "module": "TransposeFollowup.AdaptiveTreewidth",
+      "declarations": [
+        "TransposeFollowup.average_treewidth_lower_bound_of_distribution",
+        "TransposeFollowup.average_treewidth_lower_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 242,
+      "role": "For high-entropy inputs and small helper entropy, forces linear average treewidth whenever an original-row strategy saves a fixed fraction.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:local-recoded-xor",
+      "kind": "definition",
+      "title": "Recoded two-coordinate packet code",
+      "module": "TransposeFollowup.RecodedPackets",
+      "declarations": [
+        "TransposeFollowup.RecodedPacketCode",
+        "TransposeFollowup.RecodedPacketCode.Correct",
+        "TransposeFollowup.RecodedPacketCode.LocalTo"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 313,
+      "role": {
+        "impossibility": "Defines the fixed two-coordinate Boolean model; old XOR codes embed without changing broadcasts.",
+        "construction": "Test a proposed code against the stated hypotheses and bound; escape from the exclusion is a necessary condition, not a construction."
+      },
+      "evidence": "packet-strengthening/semantic-review.json; local-coding-contracts.json"
+    },
+    {
+      "label": "thm:local-xor-distance",
+      "kind": "theorem",
+      "title": "Distance bound after arbitrary row recoding",
+      "module": "TransposeFollowup.PacketDistanceBound",
+      "declarations": [
+        "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound_scaled",
+        "TransposeFollowup.RecodedPacketCode.broadcast_lower_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 343,
+      "role": {
+        "impossibility": "Limits savings through graph-neighborhood volume even for nonlinear Boolean packets.",
+        "construction": "Test a proposed code against the stated hypotheses and bound; escape from the exclusion is a necessary condition, not a construction."
+      },
+      "evidence": "packet-strengthening/semantic-review.json; local-coding-contracts.json"
+    },
+    {
+      "label": "cor:local-xor-degree",
+      "kind": "corollary",
+      "title": "Bounded degree",
+      "module": "TransposeFollowup.PacketDistanceConsequences",
+      "declarations": [
+        "TransposeFollowup.RecodedPacketCode.fixed_degree_broadcast_lower_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 392,
+      "role": {
+        "impossibility": "Excludes fixed fractional savings on any bounded-degree graph, including expanders.",
+        "construction": "Test a proposed code against the stated hypotheses and bound; escape from the exclusion is a necessary condition, not a construction."
+      },
+      "evidence": "packet-strengthening/semantic-review.json; local-coding-contracts.json"
+    },
+    {
+      "label": "cor:local-xor-cycle",
+      "kind": "corollary",
+      "title": "Paths, cycles, and their embedded subgraphs",
+      "module": "TransposeFollowup.PacketDistanceConsequences",
+      "declarations": [
+        "TransposeFollowup.RecodedPacketCode.linear_ball_broadcast_lower_bound",
+        "TransposeFollowup.RecodedPacketCode.cycle_embedding_broadcast_lower_bound",
+        "TransposeFollowup.RecodedPacketCode.subcycle_broadcast_lower_bound",
+        "TransposeFollowup.RecodedPacketCode.cycle_broadcast_lower_bound",
+        "TransposeFollowup.RecodedPacketCode.path_broadcast_lower_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 414,
+      "role": {
+        "impossibility": "Retains the O(P/sqrt d) distance-method error for nonlinear packets; separator theorem still has the better leading constant on paths/cycles.",
+        "construction": "Test a proposed code against the stated hypotheses and bound; escape from the exclusion is a necessary condition, not a construction."
+      },
+      "evidence": "packet-strengthening/semantic-review.json; local-coding-contracts.json"
+    },
+    {
+      "label": "def:local-inverse-packets",
+      "kind": "definition",
+      "title": "Helper-selected bank with local inverse",
+      "module": "TransposeFollowup.InverseRowBank",
+      "declarations": [
+        "TransposeFollowup.InverseRowBank"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 486,
+      "role": {
+        "impossibility": "Extends the restricted impossibility test to globally mixed storage while recording the precise inverse-recovery obligation.",
+        "construction": "Test a proposed code against the stated hypotheses and bound; escape from the exclusion is a necessary condition, not a construction."
+      },
+      "evidence": "packet-strengthening/semantic-review.json; local-coding-contracts.json"
+    },
+    {
+      "label": "thm:local-robust-packets",
+      "kind": "theorem",
+      "title": "Packet bound with inverse locality and helper entropy",
+      "module": "TransposeFollowup.HelperRobustPacketBound",
+      "declarations": [
+        "TransposeFollowup.HelperInverseLocalPacketCode.robust_broadcast_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 516,
+      "role": "Excludes savings when neighborhood volume and the amplified entropy deficit/helper charge are small; it is not a tape-runtime bound.",
+      "evidence": "Reviewed against actual packet endpoints and their every-radius consequence in review2/manuscript-review.json."
+    },
+    {
+      "label": "cor:local-robust-degree",
+      "kind": "corollary",
+      "title": "Bounded inverse support and reuse",
+      "module": "TransposeFollowup.HelperPacketDegreeBound",
+      "declarations": [
+        "TransposeFollowup.HelperInverseLocalPacketCode.degree_expected_length_lower_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 597,
+      "role": "Explicit O(P/log d) saving bound for I<=A*d*b at fixed c,e,delta,A; the every-radius family also excludes fixed fractional saving under I=o(P). No native-runtime conclusion.",
+      "evidence": "Reviewed against actual packet endpoints and their every-radius consequence in review2/manuscript-review.json."
+    },
+    {
+      "label": "def:local-triangular-causal",
+      "kind": "definition",
+      "title": "Triangular and causal row maps",
+      "module": "TransposeFollowup.TriangularRows",
+      "declarations": [
+        "TransposeFollowup.TriangularRows",
+        "TransposeFollowup.TriangularRows.apply",
+        "TransposeFollowup.CausalRows",
+        "TransposeFollowup.CausalRows.apply"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 663,
+      "role": "Specifies the primitive row updates of the two-stage architecture; the own-row bijection condition is the source of block recovery.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:local-two-stage",
+      "kind": "definition",
+      "title": "Two-stage branch and helper selection",
+      "module": "TransposeFollowup.TwoStageRows",
+      "declarations": [
+        "TransposeFollowup.TwoStageRows",
+        "TransposeFollowup.TwoStageRows.apply"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 681,
+      "role": "Defines exactly which coupled nonlinear construction attempts the helper-or-deficit obstruction excludes.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "lem:local-block-injective",
+      "kind": "lemma",
+      "title": "Block injectivity",
+      "module": "TransposeFollowup.TriangularRows",
+      "declarations": [
+        "TransposeFollowup.TriangularRows.block_injective",
+        "TransposeFollowup.TriangularRows.equiv",
+        "TransposeFollowup.blockInjective_rowwise",
+        "TransposeFollowup.blockInjective_inverse"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 707,
+      "role": "Derives the recovery property needed for branch counting from the primitive update rules, rather than assuming that property.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "lem:local-branch-count",
+      "kind": "lemma",
+      "title": "A record for one branch",
+      "module": "TransposeFollowup.TwoStageRows",
+      "declarations": [
+        "TransposeFollowup.TwoStageRows.correct_family_card"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 732,
+      "role": "Bounds each fixed branch correctness family, which is the common input to the helper-range and helper-entropy lower bounds.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:local-helper-count",
+      "kind": "theorem",
+      "title": "Exact helper-or-deficit toll",
+      "module": "TransposeFollowup.TwoStageHelper",
+      "declarations": [
+        "TransposeFollowup.TwoStageHelper.correct_family_count_toll",
+        "TransposeFollowup.TwoStageHelper.quarter_count_toll",
+        "TransposeFollowup.TwoStageHelper.quarter_helper_bound_of_density"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 770,
+      "role": "Forces a large attained helper range or a large correct-family deficit; full-cube correctness needs at least 2^(b floor(d^2/4)) helper values.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:local-helper-entropy",
+      "kind": "theorem",
+      "title": "Actual helper entropy under arbitrary input laws",
+      "module": "TransposeFollowup.TwoStageHelperEntropy",
+      "declarations": [
+        "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound_of_distribution",
+        "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound_of_distribution",
+        "TransposeFollowup.TwoStageHelper.helper_entropy_deficit_bound",
+        "TransposeFollowup.TwoStageHelper.quarter_helper_entropy_deficit_bound"
+      ],
+      "manuscript": "paper/sections/local-coding.tex",
+      "line": 803,
+      "role": "For high-entropy input laws forces actual helper entropy near P/4 as d grows, so a heavily skewed helper distribution does not avoid the obstruction.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:motion-star",
+      "kind": "definition",
+      "title": "The restricted star condition",
+      "module": "TransposeFollowup.FiniteAffineTimeBound",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.SatisfiesStar"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 29,
+      "role": "Defines the necessary geometric condition used by the affine-time obstruction; preserves the first paper crossing convention.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:motion-affine-time",
+      "kind": "theorem",
+      "title": "Quantitative affine-time obstruction",
+      "module": "TransposeFollowup.OpenAffineTimeBound",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.star_half_le_locally_affine_omission",
+        "TransposeFollowup.AffineMotion.star_half_le_affine_component_omission",
+        "TransposeFollowup.AffineMotion.star_common_affine_omission"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 52,
+      "role": "Impossibility: quantifies a positive sum of omitted times for any locally affine regions. Construction filter: a candidate must have enough physical motion outside such regions.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:motion-native-limits",
+      "kind": "theorem",
+      "title": "Physical units and native limiting paths",
+      "module": "TransposeFollowup.NativeAffineMotion",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.popular_affine_time_nonuniform",
+        "TransposeFollowup.AffineMotion.popular_affine_time_robust",
+        "TransposeFollowup.AffineMotion.AffineTimeRequired.physical_omission"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 178,
+      "role": "Transfers the limiting obstruction to actual nonuniform high-entropy correct executions and derives representatives rather than assuming favorable inputs.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:motion-affine-cover",
+      "kind": "definition",
+      "title": "Bounded affine interval cover",
+      "module": "TransposeFollowup.BoundedAffineCovers",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.HasAffineIntervalCover"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 226,
+      "role": "Defines the bounded geometric approximation class used by the closure lemma and native approximation obstruction.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "lem:motion-cover-closure",
+      "kind": "lemma",
+      "title": "Pointwise closure",
+      "module": "TransposeFollowup.BoundedAffineCovers",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.local_affine_ae_of_eventual_bounded_covers"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 236,
+      "role": "Technical bridge for impossibility: pointwise approximants with fixed finite cover size force an almost-everywhere locally affine limit.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:motion-pointwise",
+      "kind": "theorem",
+      "title": "Pointwise approximation obstruction",
+      "module": "TransposeFollowup.PhysicalAffineApproximationObstruction",
+      "declarations": [
+        "TransposeFollowup.AffineMotion.no_subsequential_physical_pointwise_affine_fast_approximation"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 258,
+      "role": "Impossibility criterion for native algorithms whose complete head trajectories admit subsequential pointwise bounded-affine-cover approximations.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:motion-palettes",
+      "kind": "theorem",
+      "title": "Bounded-word palette exclusions",
+      "module": "TransposeFollowup.MatrixPaletteObstructions",
+      "declarations": [
+        "TransposeFollowup.IntegerMatrixPalette.no_high_entropy_transpose",
+        "TransposeFollowup.TernaryMatrixPalette.no_high_entropy_transpose"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 407,
+      "role": "Excludes the three exact bounded-word construction families by deriving native costs and geometry; identifies which class boundaries a surviving word construction must leave.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:motion-clock",
+      "kind": "definition",
+      "title": "Contracting stage clock",
+      "module": "TransposeFollowup.ContractingStageClock",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.ContractingStageClock"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 472,
+      "role": "Defines a charged partition of actual execution ticks so a recursive total-time estimate and depth-tail estimate can be proved without free subroutine costs.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "lem:motion-clock-accounting",
+      "kind": "lemma",
+      "title": "Charged depth and exceptional work",
+      "module": "TransposeFollowup.StageClockAccounting",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.stage_clock_deep_work_bound",
+        "TransposeFollowup.RegularMotion.stage_clock_total_time_bound"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 502,
+      "role": "Supplies the linear-time and finite-depth coverage estimates needed by the recursive obstruction; aggregates local exceptional charges for its per-node corollary.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "def:motion-stage-regularity",
+      "kind": "definition",
+      "title": "Regular sequences of stage occurrences",
+      "module": "TransposeFollowup.ActualStageRegularity",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasRegularStageSubsequences"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 549,
+      "role": "States the actual-stage hypothesis under which contracting recursion yields affine physical limits, including sequence-dependent clocks and varying piece bounds.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:motion-exceptional-recursion",
+      "kind": "theorem",
+      "title": "Exceptional-time toll for contracting recursion",
+      "module": "TransposeFollowup.NativeExceptionalRecursion",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.native_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.native_fast_flagged_recursion_budget",
+        "TransposeFollowup.RegularMotion.uniform_flagged_recursion_budget"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 592,
+      "role": "Excludes clocks all of whose stages satisfy affine regularity; gives a constant exceptional-time toll. Does not exclude intended non-affine Mobius stage limits.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "cor:motion-node-exception",
+      "kind": "corollary",
+      "title": "Per-node exceptional budget",
+      "module": "TransposeFollowup.NativeExceptionalRecursion",
+      "declarations": [
+        "TransposeFollowup.RegularMotion.HasNodeBudgetRecursiveExecutions",
+        "TransposeFollowup.RegularMotion.native_node_budget_recursion_bound"
+      ],
+      "manuscript": "paper/sections/motion.tex",
+      "line": 641,
+      "role": "Converts the necessary global exceptional-time allowance into a bound on per-node exceptional-work coefficients.",
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:padding",
+      "kind": "theorem",
+      "title": "Universal fully paid padding",
+      "module": "TransposeFollowup.UnconditionalPaidPadding",
+      "declarations": [
+        "TransposeFollowup.PaidPadding.exists_uniform_paid_padding"
+      ],
+      "manuscript": "paper/sections/padding.tex",
+      "line": 59,
+      "role": {
+        "construction": "Fully paid data-free prefix with literal coarse-charge CutIneq for arbitrary payloads and full M* limits for linear-time families. The new cheap-shear theorem supplies one separately paid data transformation using the same expander infrastructure; coupling successive transformations to a transpose decoder with a linear total cost remains open.",
+        "impossibility": "Specialize to an immediately halting empty-output payload to see these geometric conditions are satisfied without transposing. A lower bound needs an additional computation-sensitive property."
+      },
+      "evidence": "Original record preserved in previous_record; current distinction checked against paper/sections/padding.tex, introduction.tex, adaptive-coding.tex and roadmap.tex.",
+      "previous_record": {
+        "label": "thm:padding",
+        "kind": "theorem",
+        "title": "Universal fully paid padding",
+        "module": "TransposeFollowup.UnconditionalPaidPadding",
+        "declarations": [
+          "TransposeFollowup.PaidPadding.exists_uniform_paid_padding"
+        ],
+        "manuscript": "paper/sections/padding.tex",
+        "line": 59,
+        "role": {
+          "construction": "Fully paid data-free prefix with literal coarse-charge CutIneq for arbitrary payloads and full M* limits for linear-time families. Coupling motion to useful encoded data remains open.",
+          "impossibility": "Specialize to an immediately halting empty-output payload to see these geometric conditions are satisfied without transposing. A lower bound needs an additional computation-sensitive property."
+        },
+        "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+      }
+    },
+    {
+      "label": "lem:rational-expander",
+      "kind": "lemma",
+      "title": "Rational continuous-expander interface",
+      "module": "TransposeFollowup.UnconditionalPaidPadding",
+      "declarations": [
+        "TransposeFollowup.exists_rational_continuous_expander"
+      ],
+      "manuscript": "paper/sections/padding.tex",
+      "line": 173,
+      "role": {
+        "construction": "Discharges the analytic expansion premise needed by continuous_uniform_computation_with_cut, leaving exists_uniform_paid_padding unconditional.",
+        "impossibility": "Supports the wrapper demonstrating the scope limit of the original geometric conditions. Continuous-expander existence is attributed to Bourgain–Yehudayoff, not claimed as novel."
+      },
+      "evidence": "Unchanged statement and original role; see opus-review/program-roles.json"
+    },
+    {
+      "label": "thm:adaptive-coded-forest",
+      "kind": "theorem",
+      "title": "Adaptive forest bound",
+      "module": "TransposeFollowup.AdaptiveForestRangeBound",
+      "declarations": [
+        "TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range",
+        "TransposeFollowup.AdaptiveForestLaw.budget"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 54,
+      "role": "Excludes fixed fractional answer savings in a stated adaptive coded-bank interface; no unrestricted native-time lower bound.",
+      "evidence": "adaptive-coding/contracts.json; scoped semantic review reports and final compiled-source acceptance are recorded separately.",
+      "scope_limits": [
+        "Full-cube bank bijections; whole-column forward window sigma; full-cube recovery of each nonempty row interval with reachable-state range at most 2^s, s real nonnegative.",
+        "Public history-dependent Boolean queries, declared support at most two stored coordinates; only actual correct-input executions must halt and satisfy leafwise coordinate forest and projected row degree Delta.",
+        "Original raw-row side information, all-inputs-in-F correctness, arbitrary finite normalized input law including zero masses, helper-selected bank/states/strategy/decoders.",
+        "d,b>=1, R>=1, 1<=M<=d; delta=max(2,Delta)."
+      ]
+    },
+    {
+      "label": "cor:adaptive-coded-rate",
+      "kind": "corollary",
+      "title": "Near-full answer cost",
+      "module": "TransposeFollowup.AdaptiveForestRate",
+      "declarations": [
+        "TransposeFollowup.AdaptiveForestLaw.near_linear",
+        "TransposeFollowup.AdaptiveForestLaw.explicit_rate",
+        "TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 132,
+      "role": "Makes the finite bound useful uniformly in entry width and describes exactly which information budgets rule out fractional answer savings.",
+      "evidence": "adaptive-coding/contracts.json; scoped semantic review reports and final compiled-source acceptance are recorded separately.",
+      "scope_limits": [
+        "Actual adaptive forest law family, b(d)>0 at positive d, fixed degree Delta.",
+        "Qualitative: sigma(d)/d tends to zero and (s+Dtot)/P tends to zero.",
+        "Quantitative: sigma fixed, s<=As*W, Dtot<=Ad*W, fixed nonnegative As,Ad."
+      ]
+    },
+    {
+      "label": "thm:shear-recovery",
+      "kind": "theorem",
+      "title": "Recovery across every pair of half-row sets",
+      "module": "TransposeFollowup.ShearGapRecoveryRanges",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.balanced_conditional_gap",
+        "TransposeFollowup.ExpanderShear.helper_recovery_gap_of_state_range_bits"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 188,
+      "role": "Rules out making all interval-recovery states sublinear by independent row ordering and separate within-row bijections, for fixed eta>0,Delta and sublinear deficit plus helper entropy.",
+      "evidence": "adaptive-coding/contracts.json; scoped semantic review reports and final compiled-source acceptance are recorded separately.",
+      "scope_limits": [
+        "Binary simple bipartite incidence L on m+m rows, row/column degree<=Delta, outside-neighbor expansion eta for sets of at most m vertices, 0<eta<=1.",
+        "Arbitrary finite input law on m+m rows of W bits. Independently chosen raw and stored half sets, each of cardinality m.",
+        "Helper may select both half sets, separate within-row raw and stored bijections, and arbitrary nonlinear finite-range states and decoders; a common real s bounds both reachable state ranges in every branch."
+      ]
+    },
+    {
+      "label": "thm:cheap-shear",
+      "kind": "theorem",
+      "title": "Cheap encoding with expensive interval recovery",
+      "module": "TransposeFollowup.ExpanderShearNativeFamily",
+      "declarations": [
+        "TransposeFollowup.ExpanderShear.exists_fixed_native_shear",
+        "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+        "TransposeFollowup.ExpanderShear.rawBank_surjective",
+        "TransposeFollowup.ExpanderShear.boolShear_involutive"
+      ],
+      "manuscript": "paper/sections/adaptive-coding.tex",
+      "line": 254,
+      "role": "Shows that cheap native encoding, bounded inverse incidence and zero forward column radius do not force small interval-recovery states. Supplies a paid workspace primitive, not a transpose decoder or complete-exchange saving.",
+      "evidence": "adaptive-coding/contracts.json; scoped semantic review reports and final compiled-source acceptance are recorded separately.",
+      "scope_limits": [
+        "Existential fixed rational family, positive expansion eta<=1, fixed degree Delta and runtime constant C; all witnesses precede dimension.",
+        "Every even canonical dimension d=2m>=2, W=d*entryBits d and P=d*W; arbitrary raw input of length P.",
+        "Original deterministic finite-state multitape model; blank initial work tapes, read-only raw input and append-only raw output."
+      ]
+    }
+  ],
+  "sources": {
+    "paper/sections/introduction.tex": "42cf618f3f1d9b361878e496cf95d0824c6e8c5a5e13d7eb5086c585f72a4a7f",
+    "paper/sections/model.tex": "a69847cf3194d10d23147dfb4f5952dfae312b4d3adb500b086803605892cb03",
+    "paper/sections/related-work.tex": "515a1485b330a5d4a46dd9c3e9fe833070028a430f99b6e03add50aaf372473a",
+    "paper/sections/local-coding.tex": "18ef25cd66c7bb3870b34c2b3b071416af971a417809852b86bc8bca221ef5c9",
+    "paper/sections/motion.tex": "3cf0f5552b7422d11939c9ed88ef6ca8ed801445d5720e15325bf50b4a1af52a",
+    "paper/sections/padding.tex": "59db6099b7c559eb120c8b8529ce53236d4df08bb62dd9f799082af83ff61fef",
+    "paper/sections/roadmap.tex": "8941fb2df93c2b3888285303ad5909857309fb4d15c81075a68940cf502a6e23",
+    "paper/sections/verification.tex": "fb1eade5a7ea2a48bf60dc27112ed24cbc5edb3ceca99224671ec0668640422d",
+    "paper/main.tex": "e07e65e279b715d302cf32b8a098deb54af9a0526121270f1a297401b8e72cad",
+    "paper/sections/adaptive-coding.tex": "0fdbf84e3854831ad92f2124ae91730f7eddb653f7bee68deb7ec973781eea25"
+  },
+  "previous_roles": {
+    "path": "verification/manuscript/packet-strengthening/review2/program-roles.json",
+    "sha256": "55b84669ef74ab507d199f7a7b17dcd0bc5e06f1676ba3f9ea7504a07e5e9709",
+    "count": 34,
+    "preservation": "The original file is unchanged. Thirty-three complete original records are retained verbatim; the padding record is retained verbatim under previous_record alongside its scoped current role."
+  },
+  "added_contracts": {
+    "path": "verification/manuscript/adaptive-coding/contracts.json",
+    "sha256": "6666b23982e0107cae0231b5f1ee06680985e69f4edce3ca043be045530371d3",
+    "count": 4
+  },
+  "review_scope": "Editorial program-role assessment of all 38 labeled contracts. This record describes theorem implications and limitations; it does not assert that an unbuilt native endpoint has compiled. Final build and editorial semantic acceptance are separate requirements. No fresh novelty or priority claim is made."
+}

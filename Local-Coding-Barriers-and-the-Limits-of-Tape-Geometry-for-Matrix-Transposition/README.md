@@ -3,7 +3,7 @@
 The follow-up manuscript by **Hans Brende and GPT-6 Astra (OpenAI)** is in
 [paper/main.pdf](https://hansbrende.github.io/papers/Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/paper/main.pdf); its complete LaTeX source starts at
 [paper/main.tex](paper/main.tex). It uses **d** for the matrix dimension.
-The paper presents the six theorem families, exact scopes, proof outlines,
+The paper presents the coding and native-machine results, exact scopes, proof outlines,
 connections to the first paper, attribution and a roadmap. Lean statements
 and proofs are authoritative; the prose outlines are explanatory conveniences.
 
@@ -13,7 +13,7 @@ ties the final sources and PDF to the declaration, attribution, semantic and
 rendered-page reviews. No unrestricted transposition or multiplication bound
 is claimed, and novelty qualifications remain explicit.
 
-The six theorem families are formalized in Lean. The current packet extension
+The original six theorem families are formalized in Lean. The earlier packet extension
 replaces the XOR-only manuscript result by arbitrary fixed two-coordinate
 Boolean packets and adds helper-selected global banks with bounded inverse
 support and reuse. At fixed degree and inverse-incidence bounds, a sublinear
@@ -22,10 +22,19 @@ saving; an O(db) budget gives the explicit O(P/log d) error.
 Original XOR statements and constants are preserved as direct corollaries of
 the Boolean-packet results. Shared counting, numerical and covering proofs
 replace the duplicate arguments.
-The [extension record](verification/manuscript/packet-strengthening/README.txt)
-separates the new proof sources from the historical audits below. The current
-version is prepared for further review; no unrestricted complexity improvement
-or exhaustive novelty claim is made.
+The [packet extension record](verification/manuscript/packet-strengthening/README.txt)
+separates those proof sources from the historical audits below.
+
+The [adaptive coding extension](verification/manuscript/adaptive-coding/README.txt)
+adds actual public-adaptive nonlinear forest bounds, including reachable-state
+budgets and explicit asymptotics, and a linear-time native expander shear with
+expensive interval recovery. Its preparation and data operations start from
+raw input and blank work tapes, with all costs charged. The recovery bound
+also allows randomized helpers and average branch budgets, charging only
+mutual information with the input. Its coefficient is eta/(4*(Delta+1)^2).
+The new source inventory is additive: the original sources, theorem contracts,
+and prior packet manifest remain separately guarded. This revision is a review
+draft; it makes no unrestricted complexity improvement or exhaustive novelty claim.
 
 The [fresh R1909 audit](verification/r1909-audit.txt) compares every target
 against the recovered original specification, discloses unformalized side claims,
@@ -65,7 +74,7 @@ theorem gives the stronger path/cycle bound; the XOR result illustrates a
 different argument (see the statement summary below).
 
 Start with the [exact statements, improvements, scope and relevance](paper/verified-results.txt).
-The six families are:
+The original six families are:
 
 - [Adaptive separators and average treewidth](lean/TransposeFollowup/AdaptiveTreewidth.lean),
   now allowing arbitrary input laws and finite original-row query supports.
@@ -78,9 +87,14 @@ The six families are:
 - [Concrete scan palettes](lean/TransposeFollowup/MatrixPaletteObstructions.lean) and
   [contracting recursion with exceptional work](lean/TransposeFollowup/NativeExceptionalRecursion.lean).
 
+The additions are [adaptive forest packets](lean/TransposeFollowup/AdaptiveForestRangeBound.lean),
+their [asymptotic rate](lean/TransposeFollowup/AdaptiveForestRate.lean), and
+[expander-shear recovery](lean/TransposeFollowup/ShearGapRecoveryRanges.lean)
+with the [fixed native encoder](lean/TransposeFollowup/ExpanderShearNativeFamily.lean).
+
 The [referee record](verification/r1908-referee-reviews.json) includes findings
 and resolutions. The [validation receipt](verification/support-build.json)
-and [current completion record](verification/r1916-completion.json) identify the checked
+and [R1916 completion record](verification/r1916-completion.json) identify the checked
 sources and permitted axioms. The [cleanup inventory](verification/r1908-cleanup.json)
 records 24 retired modules preserved in the research archive; independent unused
 mathematical results were retained deliberately. The

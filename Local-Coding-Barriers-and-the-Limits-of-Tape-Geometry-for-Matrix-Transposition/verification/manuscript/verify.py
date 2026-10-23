@@ -17,6 +17,7 @@ import time
 from source_guard import (verify_digest, load_proof_refactors, refactor_audit_source,
                           check_refactor_audit, PROOF_MANIFEST, PROOF_PATHS)
 from portable_paths import command_record
+from source_extensions import load_source_extensions
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'verification/manuscript'
@@ -78,25 +79,22 @@ def main():
         baseline = json.loads((OUT / 'formal-baseline.json').read_text())['files']
         actual = {str(f.relative_to(ROOT)):sha(f) for base in ('lean/TransposeFollowup','lean/FixedTapeCompiler')
                   for f in (ROOT/base).rglob('*.lean')}
-        extension_path = OUT / 'packet-strengthening/source-extension.json'
-        extension = json.loads(extension_path.read_text())
-        added = extension['files']
-        original_labels = set(extension['original_numbered_labels'])
-        added_labels = set(extension['added_numbered_labels'])
-        if original_labels & added_labels or {i['label'] for i in inv['numbered_results']} != original_labels | added_labels:
-            raise RuntimeError('Numbered results differ from original inventory plus explicit extension')
-        if extension.get('schema_version') != 1 or set(added) & set(baseline):
+        extensions, added, expected_labels = load_source_extensions()
+        if {i['label'] for i in inv['numbered_results']} != expected_labels:
+            raise RuntimeError('Numbered results differ from original inventory plus explicit extensions')
+        if set(added) & set(baseline):
             raise RuntimeError('Invalid additive mathematical source manifest')
         if set(actual) != set(baseline) | set(added):
             raise RuntimeError('Mathematical inventory differs from baseline plus explicit extension')
         for path, digest in added.items():
             if actual[path] != digest:
                 raise RuntimeError('Strengthening source differs from its recorded digest')
-        receipt['source_extension'] = {
-            'manifest': str(extension_path.relative_to(ROOT)),
-            'manifest_sha256': sha(extension_path),
-            'files': added,
-            'scope': 'New proofs checked by this build; explicit original proof refactors are separately guarded and audited.'}
+        receipt['source_extensions'] = [{
+            'manifest': str(path.relative_to(ROOT)),
+            'manifest_sha256': sha(path),
+            'files': extension['files'],
+            'scope': 'New proofs checked by this build; original proof refactors remain separately guarded and audited.'}
+            for path, extension in extensions]
         refactors = load_proof_refactors()
         if refactors is not None:
             audit = ROOT / 'lean/ProofRefactorAxioms.lean'

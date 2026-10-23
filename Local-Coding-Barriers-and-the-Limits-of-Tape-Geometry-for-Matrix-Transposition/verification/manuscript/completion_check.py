@@ -14,6 +14,7 @@ import sys
 from pypdf import PdfReader
 from source_guard import (verify_digest, load_proof_refactors, refactor_audit_source,
                           check_refactor_audit, PROOF_MANIFEST)
+from source_extensions import load_source_extensions
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'verification/manuscript'
@@ -57,20 +58,20 @@ def main():
                 == ver.get('proof_refactor_types'), 'Original type audit evidence differs')
         require({r['path'] for r in ver.get('proof_refactors', [])}
                 == {r['path'] for r in refactors['files']}, 'Proof-refactor source coverage differs')
-    extension = ver['source_extension']
-    binding({'path': extension['manifest'], 'sha256': extension['manifest_sha256']})
-    manifest = json.loads((ROOT / extension['manifest']).read_text())
-    require(extension['files'] == manifest['files'], 'Extension receipt/manifest mismatch')
-    expected_inventory = set(read('formal-baseline.json')['files']) | set(manifest['files'])
+    manifests, added_files, expected_labels = load_source_extensions()
+    extensions = ver['source_extensions']
+    require([x['manifest'] for x in extensions] == [str(p.relative_to(ROOT)) for p, _ in manifests],
+            'Extension manifest coverage mismatch')
+    for extension, (_, manifest) in zip(extensions, manifests):
+        binding({'path': extension['manifest'], 'sha256': extension['manifest_sha256']})
+        require(extension['files'] == manifest['files'], 'Extension receipt/manifest mismatch')
+    expected_inventory = set(read('formal-baseline.json')['files']) | set(added_files)
     current_inventory = {str(p.relative_to(ROOT)) for base in ('lean/TransposeFollowup', 'lean/FixedTapeCompiler')
                          for p in (ROOT / base).rglob('*.lean')}
     require(current_inventory == expected_inventory, 'Mathematical source inventory changed after verification')
-    original_labels = set(manifest['original_numbered_labels'])
-    added_labels = set(manifest['added_numbered_labels'])
-    require(not original_labels & added_labels and
-            {i['label'] for i in inv['numbered_results']} == original_labels | added_labels,
-            'Numbered results differ from original inventory plus explicit extension')
-    groups = [ver['sources'], inv['sources'], read('formal-baseline.json')['files'], extension['files']]
+    require({i['label'] for i in inv['numbered_results']} == expected_labels,
+            'Numbered results differ from original inventory plus explicit extensions')
+    groups = [ver['sources'], inv['sources'], read('formal-baseline.json')['files'], added_files]
     support = json.loads((ROOT / 'verification/support-build.json').read_text())
     groups += [support[g] for g in ['source_sha256', 'configuration_sha256', 'external_source_sha256']]
     for group in groups:
@@ -86,6 +87,8 @@ def main():
     for item in inv['annotations']:
         binding({'path': item['source'], 'sha256': item['source_sha256']})
     contract_files = ['parent-contracts.json', 'local-coding-contracts.json', 'motion-contracts.json']
+    contract_files += [str((ROOT / m['contracts']).relative_to(OUT))
+                       for _, m in manifests if 'contracts' in m]
     contracts = sum((read(name) for name in contract_files), [])
     require(len(contracts) == len(inv['numbered_results']), 'Numbered-result count mismatch')
     require({c['label'] for c in contracts} == {c['label'] for c in inv['numbered_results']}, 'Contract coverage mismatch')
@@ -112,7 +115,12 @@ def main():
     ledger = read('attribution-ledger.json')
     keys = set(re.findall(r'@\w+\s*\{\s*([^,\s]+)', (ROOT / 'paper/references.bib').read_text()))
     require(keys == {s['source'] for s in ledger['sources']}, 'Attribution coverage mismatch')
-    require({c['family'] for c in ledger['family_comparisons']} == set(range(1, 7)), 'Missing family comparison')
+    families = ledger['family_comparisons']
+    # Families 1--6 are the original scope; 7--8 are this declared extension.
+    # Do not infer the required inventory from the ledger's current length:
+    # that would silently accept a truncated (or empty) ledger.
+    require({c['family'] for c in families} == set(range(1, 9)) and len(families) == 8,
+            'Missing or duplicate original/extension family comparison')
     require(all(s['status'] == 'checked_with_stated_scope' for s in ledger['sources']), 'Unfinished attribution')
     for item in ledger['manuscript_artifacts']:
         binding(item)
@@ -142,7 +150,7 @@ def main():
         'pdf': {'path': 'paper/main.pdf', 'sha256': digest, 'pages': len(reader.pages)},
         'public_path_check': {'exit_code': public_check.returncode, 'summary': public_check.stdout.strip(),
                               'script_sha256': sha(ROOT.parent / 'tools/check_public_paths.py')},
-        'coverage': {'theorem_families': 6, 'numbered_definitions_and_results': len(contracts),
+        'coverage': {'theorem_families': len(families), 'numbered_definitions_and_results': len(contracts),
                      'audited_declarations': ver['axioms']['declarations'], 'cited_sources': len(keys),
                      'visually_reviewed_pages': sorted(reviewed)},
         'axioms': ver['axioms'], 'mathematical_sources_unchanged': ver['formal_sources_unchanged'],
@@ -152,10 +160,10 @@ def main():
         'proof_refactors': ver.get('proof_refactors', []),
         'proof_refactor_manifest': ver.get('proof_refactor_manifest'),
         'proof_refactor_types': ver.get('proof_refactor_types'),
-        'source_extension': extension,
+        'source_extensions': extensions,
         'packet_axioms': ver['packet_axioms'],
         'sources': ver['sources'], 'review_receipts': {name: sha(OUT / name) for name in receipts},
-        'reproduction_scripts': {name: sha(OUT / name) for name in ['prepare.py', 'verify.py', 'build_paper.py', 'completion_check.py', 'source_guard.py', 'portable_paths.py']},
+        'reproduction_scripts': {name: sha(OUT / name) for name in ['prepare.py', 'verify.py', 'build_paper.py', 'completion_check.py', 'source_guard.py', 'source_extensions.py', 'portable_paths.py']},
         'limitations': ['Unrestricted canonical transposition remains open.',
                        'Reviews are AI-agent checks, not external human peer review.',
                        'Novelty is qualified; the attribution search is not exhaustive.',

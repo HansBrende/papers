@@ -1,0 +1,105 @@
+{
+  "status": "passed",
+  "review_kind": "Author audit of the native construction and final native manuscript subsection; not independent external peer review.",
+  "checked_at_utc": "2026-10-23T01:40:45.810860+00:00",
+  "scope": {
+    "endpoint": "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+    "statement": "For each fixed finite rational family F, one fixed machine computes the exact rational incidence shear on every BoolBank of even canonical dimension d=2m>=2, starts from blank work tapes, halts, and emits the raw transformed bank within coefficient(F)*inputLength(d) steps.",
+    "coverage": "The actual raw loader, half-dimension computation, rational opcode generator, mask reversal/layout, unary row clock, repeated flags, payload copying, matching passes, resets and raw output are composed through native execution traces. The final statement has no prepared-metadata or execution-correctness premise.",
+    "representation": "ExpanderShear.rawBank_surjective covers all raw strings of the stated canonical length. The machine keeps the first half and XORs the deduplicated incidence action into the second half.",
+    "fixed_resources": "nativeMachine F has the finite Port(rationalPageCount F) work-tape type, five work symbols, and fixed finite control depending only on F. The input dimension is discovered on tape."
+  },
+  "build": {
+    "command": "lake build TransposeFollowup.NativeExpanderShear",
+    "result": "success",
+    "reported_lake_jobs": 9184,
+    "reported_final_target_seconds": 18,
+    "scope": "Ordinary Lake build, including reused/replayed dependencies; not a claimed clean rebuild or independent theorem reimplementation.",
+    "private_log_sha256": "09cac1ee337f67c3485d7915570e6b4deba697ba52b44d3587b20e3c3a43850f"
+  },
+  "focused_axiom_audit": {
+    "method": "Ordinary lake env lean invocation with #print axioms for the compiled endpoints.",
+    "theorems": [
+      "TransposeFollowup.NativeExpanderShearMachine.complete_trace",
+      "TransposeFollowup.NativeExpanderShearMachine.native_shear",
+      "TransposeFollowup.NativeExpanderShearMachine.fixed_resources"
+    ],
+    "exact_axioms_for_each": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "result": "success; no sorryAx or additional axioms",
+    "private_audit_source_sha256": "17b71d9a4ee21f6d0bb664bac1486837d0f0e6f2a16c98082de7abe33343fc02",
+    "private_audit_output_sha256": "9e64437296f4890ca968cc720110e1f5f30a80e14db3dd5828e6d3b93c0bc645"
+  },
+  "source_scan": {
+    "scope": "NativeExpanderShear*, NativeMatchingXor*, and MatchingXor* Lean sources",
+    "forbidden_tokens": [
+      "sorry",
+      "axiom",
+      "unsafe",
+      "native_decide",
+      "Lean.ofReduceBool"
+    ],
+    "result": "no matches"
+  },
+  "manuscript_comparison": {
+    "reviewed": "Complete A uniformly paid encoder subsection and preceding expander-shear recovery section of paper/sections/adaptive-coding.tex.",
+    "result": "Native theorem and proof outline accepted without correction.",
+    "checks": [
+      "The same exact simple rational incidence matrix is generated and applied; partial matching pages are deduplicated, and their matrices sum without characteristic-two cancellation.",
+      "Descending generated target flags are physically reversed exactly once before pairing with increasing target rows.",
+      "Every setup, movement, reset, data pass, output action and caller link is paid; no free graph reordering, caller-preloaded dimension, clock or initial advice is assumed.",
+      "Raw initialization, output, halting, even-dimension scope and fixed-machine resource claims match native_shear and fixed_resources."
+    ]
+  },
+  "limitations": [
+    "This audit certifies the compiled native endpoint and its prose comparison, not the overall repository completion receipt or the separately assembled unconditional family wrapper build.",
+    "The terminal work tapes retain their actual contents. No final global erasure or head-reset property is claimed or needed.",
+    "The construction is an invertible workspace encoding, not a transpose algorithm, transpose decoder, or native-time lower bound.",
+    "Focused checks are ordinary Lean builds and axiom inspection; they are not exhaustive execution testing or an external human review."
+  ],
+  "sources_sha256": {
+    "lean/TransposeFollowup/ExpanderShear.lean": "3bd2079e7005c35c56753a8c193cf26b0d5f430dd24842c6e02101340404b2e4",
+    "lean/TransposeFollowup/ExpanderShearClock.lean": "c31411e95c732bfbcb076a36299f96e33b7298a1a4f1b5411af5ac0aa654577a",
+    "lean/TransposeFollowup/ExpanderShearClockProduct.lean": "24e69df12ed7a0e2770ded922b5d22104275749d77c0055b323aa69fa7975060",
+    "lean/TransposeFollowup/ExpanderShearEncoding.lean": "ee9cd803cac0bc51044ff78aa3bb8aad0a62bd0cf2a1a98f4089dc19a6f1485e",
+    "lean/TransposeFollowup/ExpanderShearNativeBridge.lean": "a67336ad782f3f53aa70569e06e8a98ee410bbfafac521dc3720013b33c3df0b",
+    "lean/TransposeFollowup/ExpanderShearOpcodeBridge.lean": "6d83e02f7f6370747eb5ca3e4a01ff531427445b3daf951dd6add633b01b6770",
+    "lean/TransposeFollowup/ExpanderShearRationalBridge.lean": "45ae382313b1612bf12891a4fc3ec3f0ed26288e8666c015199c2651558f8de4",
+    "lean/TransposeFollowup/ExpanderShearRowStream.lean": "cff0fd4c12be0c5ec644b0805f20dcdaf905d7fc960d0f9a271a472a35fda6b1",
+    "lean/TransposeFollowup/MatchingXorMasksSemantics.lean": "bdcddeeec086c7aaef8e3876247de74c8a507ad2bb2513eda90d2e2bb535c9d1",
+    "lean/TransposeFollowup/MatchingXorStream.lean": "b91f69ee867dc1034172351b74e83fbc276e4aa697849aa80228e8244ba60d75",
+    "lean/TransposeFollowup/NativeExpanderShear.lean": "51fc41385049fe859592df9ce14251a20c6110f362af0509fa512905701df4ca",
+    "lean/TransposeFollowup/NativeExpanderShearCalls.lean": "3a05d00ff9996053fa1091d57fa112b7abb79fd2bf45144f3fe5f2aae5457e6b",
+    "lean/TransposeFollowup/NativeExpanderShearFrames.lean": "6d922acc0b8a7b922544487bbbb86220b146d925ca002fb971ddd6827c34c0bd",
+    "lean/TransposeFollowup/NativeExpanderShearGenerate.lean": "bc2a161ff637abdce4f49d88a1beb4afb0518c753db5256b25be48992729d16d",
+    "lean/TransposeFollowup/NativeExpanderShearHalf.lean": "440664d35f0da8c7122cc3550602d71896cd6dc4f54b450ffeb7213ca0bfc3c4",
+    "lean/TransposeFollowup/NativeExpanderShearLoad.lean": "f2eb4a0f941ea93e253e4f4f9e7e70f4bd8bb20cc3a2c56770115678fb58aef0",
+    "lean/TransposeFollowup/NativeExpanderShearMachine.lean": "576a901abd3df97a584278c70bd2665687f2a6983d606b8088ef1061b44b8ab6",
+    "lean/TransposeFollowup/NativeExpanderShearMetadata.lean": "8513e6c8d1bd3ab9fd3245b7a018d2261aca29410e9dd3b41306b3cdeac4b25d",
+    "lean/TransposeFollowup/NativeExpanderShearMetadataInterface.lean": "f93d9413dd9fbfbae68a161f317b5ec671268af73113b38c2caa47c89ab35f6f",
+    "lean/TransposeFollowup/NativeExpanderShearNumerics.lean": "1231b7f50bdeb1dbc48e826eee6d4cd3f8cd03496d91a0363967b05f1293887f",
+    "lean/TransposeFollowup/NativeExpanderShearPrepare.lean": "02c240baa99ba0cf89938b6741d2e3583211bdd8b503109dc98733e5069092d3",
+    "lean/TransposeFollowup/NativeExpanderShearSemantics.lean": "d326c161ea11e21fcc8d979532650d2a129182dd575933afb8bccd6815820620",
+    "lean/TransposeFollowup/NativeExpanderShearTagBank.lean": "f67dfe7f61931d3d1e134a868de3763d602b4d2b1c9d6773e2ac4bddc76b994b",
+    "lean/TransposeFollowup/NativeMatchingXorClose.lean": "840823405b7fef1786d567d8d5de79a0ff83790c489b791b3b7356e618f21c29",
+    "lean/TransposeFollowup/NativeMatchingXorData.lean": "6dfeb0f67952fc28bfea3842dde00c0f7c0e9dec2ae784ddad7a16831648a625",
+    "lean/TransposeFollowup/NativeMatchingXorMaskLayout.lean": "fada0ba9f9a4df89905e5a913106e2bdd5d8a9aa4b1dc4b4ab6970d4457683db",
+    "lean/TransposeFollowup/NativeMatchingXorMaskRow.lean": "2b9b455e45452f588f9383ebd56f0739380b0a78f092e395f899887dc917ae21",
+    "lean/TransposeFollowup/NativeMatchingXorMasks.lean": "7f18ec90dc3fac1a011b8c609b070f5c01f4543fcd16ade98b9b5898a6fbae3a",
+    "lean/TransposeFollowup/NativeMatchingXorOutput.lean": "54ce8a76ab6fed0454dbb95abcce66edb9ded81a01fb8e3c2144d28091deb00b",
+    "lean/TransposeFollowup/NativeMatchingXorPage.lean": "16c4c9f292d299f4a2f9f7a7b395e470147305a193a27fa98f85c20e19e06cbe",
+    "lean/TransposeFollowup/NativeMatchingXorPageReset.lean": "dcc642f5aaf46ca3b49e2e8b9385b806fed445f45e43ac0f861d918b1aa9b58e",
+    "lean/TransposeFollowup/NativeMatchingXorPages.lean": "a57e6bf71a64bf225405571a28fd61a0cffbe8a4d886344403cc578f0be5af0a",
+    "lean/TransposeFollowup/NativeMatchingXorPayload.lean": "f893ee79ef39f407e59b1f58433596a8363950b5aba894eb36148d344649873e",
+    "lean/TransposeFollowup/NativeMatchingXorPrefixRewind.lean": "86931bb7e37a9e5bf8171d377cf3dde7dd10439ab945b9acab06ba9254cdc00d",
+    "lean/TransposeFollowup/NativeMatchingXorReset.lean": "d2fb5952b62133a76d176d76cfbd382476aef03c50bd65b224a635ea1965f69d",
+    "lean/TransposeFollowup/NativeMatchingXorRow.lean": "0812296441471a8aa5d1ca4f547cdca3dd4bae9f7bb005b4de509eef20aae5f0",
+    "lean/TransposeFollowup/NativeMatchingXorTagStream.lean": "63fa52eb990f215b5f90f1bdf0551f7fb47b7ae449ce0aeb6229488021a84908",
+    "lean/TransposeFollowup/NativeMatchingXorTags.lean": "5f51553426e03aa7c620d0644f366e265687233bce7a67a5ec4cd1da29adc532",
+    "paper/sections/adaptive-coding.tex": "0fdbf84e3854831ad92f2124ae91730f7eddb653f7bee68deb7ec973781eea25"
+  },
+  "unresolved_required_corrections": []
+}

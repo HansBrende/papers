@@ -1,0 +1,312 @@
+{
+  "status": "passed",
+  "scope": "Adaptive-bank simplification and supporting-lemma strengthening review; no new published theorem or native-construction claim.",
+  "changed_sources": [
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+      "before_sha256": "3b8c178c6697c6c564bacdd372bd61831e139448445d34a68f99a7d117d0e328",
+      "sha256": "aae7086d073dc1e81265146a5ddb31347a834d34ac46f85b5b9fa2d4ce509388",
+      "before_lines": 112,
+      "after_lines": 122
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+      "before_sha256": "031a4fe6ec4e279893d1072e1f46c3562de0c6a9cfcca6994cbb418776d693d2",
+      "sha256": "d0d58a7c9af2cb05a4414c688c2734ff2ab166506ee851c7a2851c9eb139ba71",
+      "before_lines": 129,
+      "after_lines": 111
+    },
+    {
+      "path": "lean/TransposeFollowup/FullFiberAveraging.lean",
+      "before_sha256": "a42503658aab5dfaeb2dc37c463a01d9e3d84178c34c2d15fa70f1627c3f5c2d",
+      "sha256": "da016ba24f75025f7432be7d91f69fd7198d5bff00c7d6321cb7356823452b40",
+      "before_lines": 105,
+      "after_lines": 132
+    }
+  ],
+  "line_counts": {
+    "before": 346,
+    "after": 365,
+    "net": 19,
+    "interpretation": "The forest proof loses 18 lines. Two stronger truncation APIs and a leaf-dependent cost API plus compatibility wrappers make the total 19 lines larger; this is not a claim of net source-size reduction."
+  },
+  "changes": [
+    {
+      "kind": "reuse_and_strengthening",
+      "source": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+      "detail": "Reuse finite PublicProtocol support/graph definitions. Sufficient truncation now preserves supports and graph for every public answer word, without any Executes premise. Existing execution-based named theorems remain wrappers."
+    },
+    {
+      "kind": "simplification",
+      "source": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+      "detail": "Replace manual residue indicator counting and Nat.find minimum proof with Finset.sum_card_fiberwise_eq_card_filter and Finset.exists_min_image; original statements unchanged."
+    },
+    {
+      "kind": "supporting_generalization",
+      "source": "lean/TransposeFollowup/FullFiberAveraging.lean",
+      "detail": "Allow overhead : A -> Real and charge its source-law expectation. Existing constant-overhead theorem is a direct specialization; Q >= 1, arbitrary normalized input law, full reference fibers, positive-mass-only leaf hypotheses, injective prefix-free code all retained."
+    }
+  ],
+  "endpoint_preservation": {
+    "existing_named_theorem_headers": [
+      {
+        "name": "truncate_querySupports",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": false,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "truncate_bankInteractionGraph",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": false,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "compile_transcript",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "compile_correct",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "compile_graph",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "compile_along",
+        "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "parent_adj",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "parent_depth",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "deeperVertices_card_le",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "nonroots_card_le_queries",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "sum_pins_card",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "exists_pins_card_mul_le",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "exists_charged_pins",
+        "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "observationEntropy_le_expected_code_length",
+        "path": "lean/TransposeFollowup/FullFiberAveraging.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      },
+      {
+        "name": "fullFiber_expected_cost",
+        "path": "lean/TransposeFollowup/FullFiberAveraging.lean",
+        "source_header_exact": true,
+        "source_header_equal_mod_unused_binder_name": true
+      }
+    ],
+    "definitions": "Private compiled lemmas prove new querySupports and bankInteractionGraph equal the exact former recursive/graph definitions on all public answer words, including inconsistent or nonterminating words.",
+    "published_endpoints": "AdaptiveForestLaw.budget and logarithmic_logarithmic_rate statements unchanged; rebuilt through original downstream callers. No main rate strengthening claimed.",
+    "namespace_collision": "The bankInteractionGraph/truncate_bankInteractionGraph names are retained; combined import with old GraphSeparatorBound passes."
+  },
+  "reviewed_sources": [
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankStrategy.lean",
+      "sha256": "aae7086d073dc1e81265146a5ddb31347a834d34ac46f85b5b9fa2d4ce509388",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankHelper.lean",
+      "sha256": "b8fb777576df95d413ac94d5ff8e5f8d3531c34021f7137f828cd09db64c8e55",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankTranscript.lean",
+      "sha256": "05238da430a00bb9874d06c877e00f766b625649896555f7044987765eaa9f33",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankRefinement.lean",
+      "sha256": "cadcf7831f30f4eb2d73a4d17d7851c543ad2e2092d7d710c23c73ae94a9b661",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankProtocol.lean",
+      "sha256": "153e4fb5ae5e831a8176125817da44df063cc42d9e698e09bb6afee64eca249e",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestHelperBound.lean",
+      "sha256": "334e142e15033542f5b8ad2b1a998ced70c1b3124fbcc51527934a2de6da8397",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestRangeBound.lean",
+      "sha256": "9eb957123022d5b0a326b57dbce69a79065bf02fe0d34323e259f5ac53e62ae5",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestLaw.lean",
+      "sha256": "2851d329eee1b479cccd3d54613e1c59dd24efcbd7288a7a0a9f125d021d65ab",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestBound.lean",
+      "sha256": "3e51ad2b80321a76cf855b91a14774f6e755493b79d12b91008ab57c3b911d13",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestAsymptotics.lean",
+      "sha256": "97ebc00469c7692bedc60c1ea7baa9d12f263b660a6d1c9250a8eaec05f1ffbc",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestPaths.lean",
+      "sha256": "e262c57d467cfb7fcafc34cfde07c9ab76b655bad99d0fc6ad5d01f334d0e6e3",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestRows.lean",
+      "sha256": "4c34d41f7b251396866d1beab5df27ef2bf150b6ae558fb89f2fb0dee2551ca6",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestCount.lean",
+      "sha256": "d0d58a7c9af2cb05a4414c688c2734ff2ab166506ee851c7a2851c9eb139ba71",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestLevels.lean",
+      "sha256": "f7c93d4678b4faeec98f245f843242c5510fe309761ee9bdfd61010e1d138722",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveForestRefinement.lean",
+      "sha256": "ddb93b753719ea36995b13bc86896d83c2e4fd7dd992244222925a481239a9b9",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankInformation.lean",
+      "sha256": "18ed5652035de55baf42a51b7b47485da817da1461e51baaa60adb87d70591a2",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankLeafEntropy.lean",
+      "sha256": "68bddbf10baef29e0c4053de9c6848593a9378b51fa9df9eb2df4cf82ed0c33f",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankBucketEntropy.lean",
+      "sha256": "986a828685599af8d961b4779d967cd6b8b46de7a6d45e0667f9683b01d97b69",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankGroups.lean",
+      "sha256": "611ed33e06773d182458abc3f4f24544cdf0867311742d2cd0fd7ac3569d0a14",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankGroupedGeometry.lean",
+      "sha256": "55065faaa37e5c9548707ea281fe34cc9122115512b41f8b4b0aa33db10c6e91",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankNear.lean",
+      "sha256": "eb0ff82753eba4abdbd1b630e4407d28238e6fbcc927161d8697401bfe61acaf",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/GapBankStateRange.lean",
+      "sha256": "d79a73b94d4874c16182a4a8868730ef21736921c89fcfc23959a4bf23d10eec",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/AdaptiveBankNumerics.lean",
+      "sha256": "5a0c763f2157a27cf79ac567d4048e8b5846a245ad4998cb976c823d5ce816de",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/FullFiberAveraging.lean",
+      "sha256": "da016ba24f75025f7432be7d91f69fd7198d5bff00c7d6321cb7356823452b40",
+      "scope": "complete source read"
+    },
+    {
+      "path": "lean/TransposeFollowup/FullFiberEntropy.lean",
+      "sha256": "ab67407e3dbf8dcee2ead9434a4ee001a362e04b821d720e2d0bc861e1930e09",
+      "scope": "complete source read"
+    }
+  ],
+  "reuse_inspection": [
+    "ProtocolTruncation, InteractionGraph and GraphSeparatorBound interfaces",
+    "TranscriptEntropy, RefinedPrefix, ConditionalEntropyFibers, EntropyObservation, ConditionalCoordinateEntropy and RectangleEntropy",
+    "mathlib finite fiber counting, finite minimum selection, prefix-code Kraft machinery"
+  ],
+  "checks": [
+    {
+      "command": "lake build TransposeFollowup.AdaptiveForestRate TransposeFollowup.GraphSeparatorBound",
+      "status": "passed",
+      "jobs": 3332,
+      "scope": "Targeted downstream adaptive endpoint chain plus original graph separator; not the full repository verifier."
+    },
+    {
+      "command": "lake env lean <private generated semantic-and-axiom check>",
+      "status": "passed",
+      "source_sha256": "3f7f91221cce3f5b0b9fe6fd8a268098e844b5e0102727d468d46d2de9ebdf8f",
+      "source": "import TransposeFollowup.GraphSeparatorBound\nimport TransposeFollowup.AdaptiveForestRate\n\nnamespace AdaptiveReview\nopen TransposeFollowup\nvariable {V : Type*}\n\ndef legacySupports (s : PublicStrategy V (fun _ => Bool)) :\n    List Bool \u2192 List Bool \u2192 List (Finset V)\n  | _, [] => []\n  | h, a :: m => match s h with\n    | none => []\n    | some q => q.support :: legacySupports s (h ++ [a]) m\n\ntheorem supports_preserved (s : PublicStrategy V (fun _ => Bool)) (h m : List Bool) :\n    s.querySupports h m = legacySupports s h m := by\n  induction m generalizing h with\n  | nil => rfl\n  | cons a m ih =>\n    cases hs : s h with\n    | none => simp [PublicStrategy.querySupports, PublicStrategy.truncate, hs, legacySupports,\n        PublicProtocol.querySupports]\n    | some q =>\n      simpa [PublicStrategy.querySupports, PublicStrategy.truncate, hs, legacySupports,\n        PublicProtocol.querySupports] using congrArg (List.cons q.support) (ih (h ++ [a]))\n\ndef legacyGraph (s : PublicStrategy V (fun _ => Bool)) (h m : List Bool) : SimpleGraph V where\n  Adj v w := v \u2260 w \u2227 \u2203 S \u2208 legacySupports s h m, v \u2208 S \u2227 w \u2208 S\n  symm := \u27e8fun _ _ \u27e8hne, S, hs, hv, hw\u27e9 => \u27e8hne.symm, S, hs, hw, hv\u27e9\u27e9\n  loopless := \u27e8fun _ h => h.1 rfl\u27e9\n\ntheorem graph_preserved (s : PublicStrategy V (fun _ => Bool)) (h m : List Bool) :\n    s.bankInteractionGraph h m = legacyGraph s h m := by\n  ext v w\n  simp only [PublicStrategy.bankInteractionGraph, PublicProtocol.interactionGraph, legacyGraph]\n  rw [\u2190 PublicStrategy.querySupports, supports_preserved]\n\n#print axioms supports_preserved\n#print axioms graph_preserved\n#print axioms TransposeFollowup.PublicStrategy.truncate_querySupports_of_length\n#print axioms TransposeFollowup.PublicStrategy.truncate_bankInteractionGraph_of_length\n#print axioms TransposeFollowup.fullFiber_expected_cost_of_leaf_cost\n#print axioms TransposeFollowup.fullFiber_expected_cost\n#print axioms TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range\n#print axioms TransposeFollowup.AdaptiveForestLaw.budget\n#print axioms TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate\nend AdaptiveReview\n",
+      "output_sha256": "ac978834d3823ab721967b9e6a57943da26bd91d642780914fcb427131f59246",
+      "output": "'AdaptiveReview.supports_preserved' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AdaptiveReview.graph_preserved' depends on axioms: [propext, Classical.choice, Quot.sound]\n'TransposeFollowup.PublicStrategy.truncate_querySupports_of_length' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'TransposeFollowup.PublicStrategy.truncate_bankInteractionGraph_of_length' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'TransposeFollowup.fullFiber_expected_cost_of_leaf_cost' depends on axioms: [propext, Classical.choice, Quot.sound]\n'TransposeFollowup.fullFiber_expected_cost' depends on axioms: [propext, Classical.choice, Quot.sound]\n'TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'TransposeFollowup.AdaptiveForestLaw.budget' depends on axioms: [propext, Classical.choice, Quot.sound]\n'TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n",
+      "axioms": "All nine inspected lemmas/endpoints use only propext, Classical.choice, Quot.sound."
+    }
+  ],
+  "assumption_audit": [
+    "No sorry, new axiom, unsafe declaration, native_decide, or opaque evaluation escape introduced.",
+    "Zero-mass fibers contribute zero; no new correctness obligation on them.",
+    "No uniformity/independence assumption on the actual input law added.",
+    "No all-input termination premise added: strategy compilation remains on the finite correct family.",
+    "No probability-dependent public branch selector introduced: overhead is a deterministic leaf function.",
+    "Original row side information, full-cube bank inverse locality, forest/two-coordinate query and reachable state-range premises remain unchanged."
+  ],
+  "paper_implications": "No required manuscript change. The leaf-dependent overhead lemma is reusable internal infrastructure, not an additional advertised headline result.",
+  "unresolved_required_corrections": [],
+  "edits_excluded": [
+    "Original old mathematical modules",
+    "Manuscript",
+    "Verification scripts/manifests",
+    "Commits, staging and pushes"
+  ]
+}

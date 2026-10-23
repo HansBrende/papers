@@ -24,9 +24,21 @@ globally recoded bank. Its bounded-degree consequence applies to fixed
 two-coordinate packets after a full-cube bijection, with bounded stored-row
 degree, inverse support and reuse, and sublinear combined input deficit and
 helper entropy. Fast tape execution alone does not supply these properties.
+The adaptive forest theorem gives a second route, through forward column
+locality and small interval-recovery states. Its hypotheses must also be
+proved for the extracted code. In particular, bounded inverse supports are
+insufficient: the expander shear satisfies that property but has a linear
+recovery-state requirement across some half for every pair of row orders.
+Randomized helper selection does not avoid this bound when the source deficit
+plus helper mutual information is $o(P)$, even with average state budgets.
+The shear also has a fixed linear-time native encoder, so this obstruction
+persists even when preparation and all data operations are paid.
 Likewise, an evolving coded bank is not an original row, and an
 arbitrary execution need not factor into the two stages of our helper theorem.
 Improving constants in the local bounds does not supply this missing argument.
+Both packet bounds concern the number of public answers. A lower bound of
+$P-o(P)$ answers is compatible with linear time; a superlinear tape lower
+bound needs an additional cost or a repeated-use argument.
 
 \paragraph{A lower-bound invariant to test.}
 A further lower bound must use more than the aggregate cut and $M^*$
@@ -60,6 +72,14 @@ inverse support and reuse is already covered: on bounded-degree packet
 graphs it cannot produce a fixed fractional broadcast saving with
 $D_w+H(Z)=o(P)$. None of the remaining possibilities is thereby shown feasible.
 Larger inverse supports must still be tested against the finite packet bound.
+Adaptive two-coordinate queries with leafwise forests are also restricted
+when the forward-locality and interval-recovery hypotheses hold. Adaptive
+cyclic coordinate graphs and banks with expensive interval recovery lie
+outside that new theorem. The shear obstruction identifies a concrete reason
+the latter hypothesis can fail after a linear-time computation; it does not
+provide a complete-exchange code. Its fixed native implementation can serve
+as a primitive, but a useful construction still needs a decoding identity
+and a saving across successive stages.
 The padding construction supplies motion, not an encoder or decoder for
 complete exchange.
 

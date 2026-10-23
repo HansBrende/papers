@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "reviewed_at_utc": "2026-10-23T01:46:04.604291+00:00",
+  "cause": "The new Boolean bank-specific strategy graph was given the existing qualified name TransposeFollowup.PublicStrategy.interactionGraph. Separate target builds did not merge it with the old GraphSeparatorBound environment; PaperAxioms exposed the real import collision.",
+  "repair": {
+    "old_declaration_preserved": "TransposeFollowup.PublicStrategy.interactionGraph in GraphSeparatorBound.lean",
+    "new_declaration_renamed": {
+      "before": "TransposeFollowup.PublicStrategy.interactionGraph",
+      "after": "TransposeFollowup.PublicStrategy.bankInteractionGraph"
+    },
+    "new_bridge_renamed": {
+      "before": "TransposeFollowup.PublicStrategy.truncate_interactionGraph",
+      "after": "TransposeFollowup.PublicStrategy.truncate_bankInteractionGraph"
+    },
+    "references": "Only new bank-strategy call sites changed; PublicProtocol.interactionGraph and every old source remain unchanged.",
+    "semantic_scope": "Identifier-only correction. The adjacency definition, support list, truncation proof, hypotheses and conclusions are unchanged apart from referring to the distinct new constant name. No hypothesis is weakened and no result renamed at the manuscript endpoint."
+  },
+  "changed_sources": {
+    "lean/TransposeFollowup/AdaptiveBankStrategy.lean": {
+      "before_sha256": "2a692055c76105957fad37329a303107c2266aea0188d63bb81569e2ae0cd142",
+      "after_sha256": "3b8c178c6697c6c564bacdd372bd61831e139448445d34a68f99a7d117d0e328"
+    },
+    "lean/TransposeFollowup/AdaptiveForestStrategyBound.lean": {
+      "before_sha256": "d406823b2b7132c66996ed72158393121ccf20b72c471eeaeae610b18186d860",
+      "after_sha256": "200d7164238adef78ea805577ad14f42433e253cb199b9ef2388b98a6df6affc"
+    },
+    "lean/TransposeFollowup/AdaptiveForestRangeBound.lean": {
+      "before_sha256": "47943ebafe4c2857b316edf539019a5442894f987c6f8d47d4bd459dedfa27ac",
+      "after_sha256": "9eb957123022d5b0a326b57dbce69a79065bf02fe0d34323e259f5ac53e62ae5"
+    },
+    "lean/TransposeFollowup/AdaptiveForestLaw.lean": {
+      "before_sha256": "a246f1fd97690d5dde965f4a8d88cbc9fa4e50ead2282262e2b0ef6878de1ff0",
+      "after_sha256": "2851d329eee1b479cccd3d54613e1c59dd24efcbd7288a7a0a9f125d021d65ab"
+    }
+  },
+  "preserved_old_sources": {
+    "tracked_mathematical_diff_paths": [],
+    "check": "git diff --name-only -- lean/TransposeFollowup lean/FixedTapeCompiler returned no tracked changes."
+  },
+  "validation": {
+    "targeted_build": {
+      "command": "lake build TransposeFollowup.GraphSeparatorBound TransposeFollowup.AdaptiveForestRate",
+      "exit_code": 0,
+      "jobs": 3332
+    },
+    "combined_import_and_axioms": {
+      "command": "lake env lean <private two-import probe>",
+      "source": "import TransposeFollowup.GraphSeparatorBound\nimport TransposeFollowup.AdaptiveForestRate\n#check TransposeFollowup.PublicStrategy.interactionGraph\n#check TransposeFollowup.PublicStrategy.bankInteractionGraph\n#print axioms TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range\n#print axioms TransposeFollowup.AdaptiveForestLaw.budget\n#print axioms TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate\n",
+      "source_sha256": "a98656bf516ff7da5a51bc0d9a5f1cdef8ae43e97961e5e69fcf169e8cc2b9f6",
+      "exit_code": 0,
+      "output": "TransposeFollowup.PublicStrategy.interactionGraph.{u_1, u_2} {\u03b9 : Type u_1} {V : \u03b9 \u2192 Type u_2}\n  (s : TransposeFollowup.PublicStrategy \u03b9 V) (h m : List Bool) : SimpleGraph \u03b9\nTransposeFollowup.PublicStrategy.bankInteractionGraph.{u_1} {V : Type u_1}\n  (s : TransposeFollowup.PublicStrategy V fun x => Bool) (h m : List Bool) : SimpleGraph V\n'TransposeFollowup.HelperGapBankStrategy.forest_expected_length_of_state_range' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'TransposeFollowup.AdaptiveForestLaw.budget' depends on axioms: [propext, Classical.choice, Quot.sound]\n'TransposeFollowup.AdaptiveForestLaw.logarithmic_logarithmic_rate' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n",
+      "output_sha256": "a103f4ad7d63b54850e267e77bf64166e4eb2f5f246f91d0f5dce896bc4e586d",
+      "standard_axioms_only": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_import_probe": {
+      "command": "lake env lean <private all-module import probe>",
+      "generation": "Sort every *.lean module beneath lean/TransposeFollowup and lean/FixedTapeCompiler and import each exactly once, with no commands after the imports.",
+      "module_count": 994,
+      "source_sha256": "68bbeed40a673b68709455de1442d23de3c1c2a507277646043b3813729fba70",
+      "exit_code": 0,
+      "output": "",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "review_limits": [
+    "The complete 994-module import probe checks current compiled environments for remaining declaration collisions; it is not a replacement for the ordinary full build or all-declaration axiom audit.",
+    "The three named adaptive endpoint axiom checks were run afresh; the final verifier must still regenerate and check its full inventory.",
+    "Manuscript/PDF and historical scoped review reports were not edited. The parent must refresh the current source-extension hashes and final review bindings before rerunning verification."
+  ],
+  "unresolved_required_corrections": []
+}

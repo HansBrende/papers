@@ -75,6 +75,13 @@ needed for this extension. The coordinate restriction remains
 substantial: it does not allow arbitrary functions of two entire rows.
 Nonlinear index codes can outperform linear ones~\cite{LubetzkyStav2008};
 our obstruction is therefore stated directly for its nonlinear packet model.
+The adaptive forest extension uses a different inverse condition: a short
+state recovers each raw interval from the stored rows in that interval.
+Refining the actual transcripts yields rectangular full-cube fibers;
+full-fiber entropy accounting then handles the correlated correct-input law
+without charging the transcript twice. These are uses of standard counting,
+entropy and prefix-code inequalities in the stated interface, not new
+information-theoretic principles.
 Similarly, the two-stage helper theorem counts fibers of a specific
 triangular--causal composition. Its helper selects the whole composition; no additional uncharged
 global operation is allowed between the stages.
@@ -98,6 +105,19 @@ M\"obius transformations and proved the associated growth and restricted
 spectral-gap results~\cite{BourgainYehudayoff2013}. Our analytic development follows this established work, proving the
 rational-family, growth, flattening and spectral statements needed for the
 native implementation.
+
+The expander-shear obstruction uses this same expander input. Its map
+$(A,B)\mapsto(A,B+LA)$ is a standard invertible linear shear; neither that
+identity nor the existence of bounded-degree expanders is a novelty claim.
+The result here is the uniform recovery obstruction over independently
+chosen raw and stored halves, including correlated inputs, randomized helper
+selection and branch budgets charged in expectation. The information charge
+is the helper's mutual information with the input. A cut-count and sparse-rank argument prove it directly, so no
+general network-coding conjecture is assumed.
+The companion encoder reuses the paid rational generator and implements
+its deduplicated matching pages as data-preserving XOR scans. Its contribution
+is the fixed native implementation, together with the recovery obstruction
+for the same family; neither follows from expansion alone.
 
 The scalar sum-product and projection ingredients belong to Bourgain's
 discretized ring and projection theory~\cite{Bourgain2003,Bourgain2010}.

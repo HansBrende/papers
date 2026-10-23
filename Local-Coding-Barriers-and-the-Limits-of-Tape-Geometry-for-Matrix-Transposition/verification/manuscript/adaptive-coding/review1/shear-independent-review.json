@@ -1,0 +1,100 @@
+{
+  "schema": "shear-independent-review-1",
+  "status": "accepted_without_findings",
+  "date": "2026-10-22",
+  "reviewer_role": "Independent reader of the shear-strengthening proofs; author of the separately reviewed native implementation.",
+  "complete_source_reads": {
+    "lean/TransposeFollowup/ExpanderShearCut.lean": {
+      "sha256": "75f9933f886507eec0ddce7b532a250cbf8095bebec81d298943753b74bfafea",
+      "lines": 280
+    },
+    "lean/TransposeFollowup/ShearGap.lean": {
+      "sha256": "d0d5b41c53c0858380818657fb74994a236831c0f562e9ad5c84bde1db899c8b",
+      "lines": 134
+    },
+    "lean/TransposeFollowup/ShearGapRecovery.lean": {
+      "sha256": "8dedeb1667c0ff6df6f6659249c84c3957743ea78b5d5f85b8a857ed1a34e405",
+      "lines": 267
+    },
+    "lean/TransposeFollowup/ShearGapRecoveryRanges.lean": {
+      "sha256": "669c14d03b07227b32a7e23dfd6e50f9f0ea06ae6984bcb189ecb88bf6181b5d",
+      "lines": 82
+    },
+    "lean/TransposeFollowup/ExpanderShearRank.lean": {
+      "sha256": "147df555f24d69fbbe953c0dc36bad06dd244a13568fe666b4d2ef9b30671cc1",
+      "lines": 77
+    },
+    "lean/TransposeFollowup/ExpanderShearSupport.lean": {
+      "sha256": "3152c725a6142a2d6bd86a0ac5792f64dd80dd93669f5dddc8aa425f42b059b0",
+      "lines": 85
+    },
+    "lean/TransposeFollowup/ShearGapEntropy.lean": {
+      "sha256": "579d0e49d792c332a0153f194d763efc7ad7fc420bbd9f70221dc5303e523370",
+      "lines": 190
+    }
+  },
+  "proof_checks": [
+    "The diagonal mismatch image and the core-crossing image are injective and disjoint: their matrix entries lie on the diagonal and in the lower-left block, respectively.",
+    "The smaller core side has size at least (d-q)/2; expansion and eta <= 2 yield eta*d <= 2*(q+e), proving the sharper nonzero-count bound.",
+    "Actual row/column support <= Delta+1 and the basis-row rank lemma imply max crossing rank >= eta*d/[4*(Delta+1)^2], including characteristic two.",
+    "The arbitrary-law linear-fiber argument scales crossing rank by the full bit-lane width and subtracts exactly the source entropy deficit.",
+    "Every positive-mass helper fiber receives its normalized conditional law; zero-mass fibers contribute zero and need no nonemptiness hypothesis.",
+    "Independent within-row recodings preserve the relevant observation fibers, while cross-row changes of representation remain outside the hypothesis.",
+    "Each branch has two recovery states bounded by the same branch budget; the max conditional entropy is bounded by that budget and averaged exactly.",
+    "The new charge is P-H(X|Z), equivalent to D_X+I(X;Z), for arbitrary finite joint laws. No condition Z=f(X) or independence is imposed.",
+    "Arbitrary ambient state types are restricted to their actual finite ranges without introducing a rounding loss.",
+    "All original bounds are preserved as weaker corollaries; their exact source headers remain unchanged."
+  ],
+  "preserved_headers": {
+    "count": 25,
+    "by_module": {
+      "ExpanderShearCut": 15,
+      "ShearGap": 2,
+      "ShearGapRecovery": 7,
+      "ShearGapRecoveryRanges": 1
+    },
+    "evidence_sha256": "689503f2871390477ec7a8cd832b6385706e194d2f819779d2e2bd20839e33c3"
+  },
+  "focused_lean_audit": {
+    "command": "lake env lean <temporary audit source>",
+    "exit_code": 0,
+    "source_sha256": "f28a4f58d8552fa75a218406e70ab61103a422742c69d8e6c8d84d707d103ed8",
+    "output_sha256": "40c694abf2f524426851241e8d086b76f6f83800abe40b6cf229a6e391bf544e",
+    "theorems": [
+      "balanced_cross_nnz_sharp",
+      "balanced_cross_rank_sharp",
+      "balanced_conditional_gap_sharp",
+      "helper_recovery_gap_conditional_of_state_range_bits",
+      "helper_recovery_gap_of_state_range_bits"
+    ],
+    "all_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "scope": "Reads the successfully compiled current modules; not a clean rebuild."
+  },
+  "manuscript_comparison": {
+    "path": "paper/sections/adaptive-coding.tex",
+    "file_sha256": "39f1d8d16b67c9fd26406990792322aa1810f8a5b3f672f8da1c91e057af9dc5",
+    "reviewed_section": "Expander shears and local recovery through the end of A uniformly paid encoder",
+    "reviewed_section_sha256": "166442e9b64bb4880eac5685074b61ecc97aaea1890350d12e82ed11175f1e5a",
+    "accepted_claims": [
+      "c0 = eta/[4*(Delta+1)^2]",
+      "Arbitrary finite joint source/helper law and E s(Z)",
+      "Exact D_X+I(X;Z) information charge",
+      "Independent finite public randomness has zero information charge",
+      "Both independently selected half-row sets and all branchwise within-row bijections",
+      "The q+e proof outline counts disjoint entries and agrees with the formal proof",
+      "The fixed native machine computes the same incidence shear from every canonical even raw input with all stated costs paid"
+    ],
+    "scope_notes": [
+      "The English eta<=1 premise is weaker than the new Lean allowance eta<=2.",
+      "The native implementation and its resource/cost theorem are unchanged by this mathematical strengthening.",
+      "Neither the recovery theorem nor the native shear is a transpose decoder or a general native lower bound.",
+      "No final global workspace erasure/reset is claimed."
+    ]
+  },
+  "findings": [],
+  "source_edits_by_this_review": false
+}

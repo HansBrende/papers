@@ -9,6 +9,7 @@ from pathlib import Path
 import hashlib
 import json
 import re
+from source_extensions import load_source_extensions
 
 ROOT = Path(__file__).resolve().parents[2]
 PAPER = ROOT / 'paper'
@@ -87,10 +88,10 @@ def main():
     audit += [f'import {module}' for module in modules]
     audit += [''] + [f'#print axioms {name}' for name in names]
     (ROOT / 'lean/PaperAxioms.lean').write_text('\n'.join(audit)+'\n')
-    extension = json.loads((OUT / 'packet-strengthening/source-extension.json').read_text())
+    _, extension_files, _ = load_source_extensions()
     packet_modules = sorted(Path(path).with_suffix('').relative_to('lean').as_posix().replace('/', '.')
-                            for path in extension['files'])
-    packet_audit = ['-- Generated audit of every declaration in the additive packet modules.',
+                            for path in extension_files)
+    packet_audit = ['-- Generated audit of every declaration in the additive proof modules.',
                     '-- This is verification tooling, not a mathematical axiom or proof source.',
                     'import Lean', *['import ' + module for module in packet_modules], '',
                     'open Lean Elab Command', '', 'set_option maxHeartbeats 0 in',
@@ -128,6 +129,10 @@ def main():
               r'obstructions, which feed the scan-palette and recursion exclusions. The',
               r'finite original-row, two-coordinate packet and two-stage interfaces support the',
               r'three local-coding families independently of the analytic padding chain.',
+              r'The adaptive forest extension combines actual transcript refinement, interval',
+              r'recovery and full-fiber entropy accounting. Expander shears combine a cut-count',
+              r'and sparse-rank argument with arbitrary-law conditional entropy; their native',
+              r'implementation reuses the paid rational-page generator and fixed tape compiler.',
               r'For padding, rational expansion feeds finite overlap graphs and their',
               r'paid excursion implementation; cleanup and payload composition preserve',
               r'the computation, and the original cut-to-limit theorem supplies the',

@@ -8,10 +8,13 @@ Start here
   attribution-ledger.json      Source uses, provenance, novelty qualifications
   completion.json              Final artifact and review receipt
 
-The six theorem families are the adaptive separator/treewidth bounds, fixed
+The original six theorem families are the adaptive separator/treewidth bounds, fixed
 two-coordinate Boolean packet bounds, including helper-selected global recoding, affine-motion barriers,
 fully paid native padding, two-stage helper toll, and scan-palette/recursive
-stage exclusions. The generated declarations.json records the current counts of numbered
+stage exclusions. The adaptive-coding/ extension adds nonlinear adaptive forest
+bounds and expander-shear recovery/construction results. Its review record
+distinguishes these from the historical packet-strengthening/ revision.
+The generated declarations.json records the current counts of numbered
 definitions/results and explicitly cited formal declarations. The unrestricted canonical transposition question
 remains open. Exact Lean statements and proofs take precedence over the prose.
 
@@ -38,13 +41,14 @@ access is required only when dependencies are absent and must be fetched.
 
 verify.py runs prepare.py, verifies the mathematical source inventory and upstream
 sources (with the explicit comment/editorial and proof-refactor records described
-below), checks the additional packet-proof manifest, performs an ordinary full
+below), checks the ordered additive proof manifests in source_extensions.py, performs an ordinary full
 library build, builds every explicitly
 cited module, and runs lean/PaperAxioms.lean. The latter is generated from the
 manuscript rather than maintained as a separate subset. It audits every cited
 declaration and rejects axioms other than propext, Classical.choice, Quot.sound.
 The generated PacketAxioms.lean additionally checks every declaration in the
-new packet and refactored original modules against the same axiom whitelist.
+new additive modules against the same axiom whitelist. ProofRefactorAxioms.lean
+separately checks the intentionally refactored original modules.
 The proof-refactor audit compares every original declaration in those modules
 with its captured pre-refactor elaborated type; names, universe parameters and
 expression structure are preserved, disregarding only bound-variable labels.
@@ -103,6 +107,11 @@ UnconditionalPaidPadding.lean and no mathematical code. The current packet
 extension adds new mathematical modules listed in
 packet-strengthening/source-extension.json; their hashes are checked by the
 current verifier, separately from the immutable original baseline.
+The later adaptive-coding/source-extension.json adds its own files and numbered
+results without changing the earlier packet manifest. The verifier checks the
+complete union, rejects duplicate files, and checks the succession of statement
+inventories. It does not infer that a recorded source hash proves a theorem;
+the matching build and axiom checks provide that evidence.
 The second review refactors old XOR endpoints into specializations of the
 Boolean-packet results and the unweighted cover into the weighted cover.
 The proof-refactor manifest records exact reversible edits to the four affected

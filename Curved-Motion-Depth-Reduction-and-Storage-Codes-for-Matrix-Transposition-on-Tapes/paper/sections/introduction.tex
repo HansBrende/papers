@@ -23,7 +23,7 @@ combine; the first is needed by adaptive machines as well.
 \begin{itemize}[leftmargin=2em]
 \item \emph{Curved, head-dependent motion.} Its work heads cannot all move along home-based legs made of boundedly many
 constant-rate runs, and a linear amount of their macroscopic motion must be curved, in a way that no common change of
-clock removes.
+clock (by a homeomorphism whose inverse preserves null sets) removes.
 \item \emph{Depth-robust dependencies, or extreme coding on shallow ones.} Cut its time--space dependency DAG with a cheap
 genie, which reveals a small set of intermediate values. Either the genie leaves large depth, or the shallow cones that remain must carry index codes saving all but an
 $\eps$ fraction of the input.
@@ -43,8 +43,13 @@ all home-based on every input, with legs made of boundedly many constant-rate ru
 arbitrary. \emph{Theorem~Cq}: in every macroscopic limit of a linear-time transposer, the work heads travel a total
 distance of at least half a block unit, a linear number of cells, along motion that is not
 countably-piecewise affine (\cref{thm:Cq}). Theorem~C follows from it, and it contains the second paper's affine-time
-obstruction (\cref{cor:mot-lambda}). These results are unconditional; they use an extension of Theorem~M* from interval partitions to Borel partitions, and the
-hyperfiniteness of amenable equivalence relations.
+obstruction (\cref{cor:mot-lambda}). \emph{Theorem~Cr} passes from pieces to returns: in every common change of clock
+by a homeomorphism whose inverse preserves null sets, and for every countable set of affine maps, the times at which a
+head's next return to its level is not given by one of these maps carry at least one block unit of travel in total
+(\cref{thm:Cr}). So neither a common clock nor fixed changes of scale on the tapes remove the
+curvature. These results are unconditional. They use Theorem~M*, the second paper's labels for finitely many affine
+pieces or affine maps, which rest on F\o lner sets of finitely many affine maps, and the area formula; no
+hyperfiniteness theorem is needed.
 
 \paragraph{The decomposition (\cref{sec:decomposition}).} \emph{Theorem~D.} If the dependency DAG of every oblivious
 linear-time run can be cut to bounded depth by revealing $\eps L$ bits (\emph{depth reduction}), and if index codes on the
@@ -100,7 +105,7 @@ The results on storage codes of \cref{sec:entropic,sec:thmH,sec:symmetrization,s
 (Theorem~H, Corollaries H2--H4, Theorem~S) and the exact label accounting of \cref{sec:depth} (Lemma~Zq, the exact cases of
 the chain and transfer identities, Theorem~E) are formalized in Lean. For the matching form of Theorem~S, the Lean library uses a port of an external
 formalization of the Tutte--Berge formula (\cref{app:verify}). All other results are proved in full but not
-formalized, among them Theorems~D, B, C, Cq, E$_1$ and~A, \cref{prop:tradeoff,prop:packing}, the general forms of the
+formalized, among them Theorems~D, B, C, Cq, Cr, E$_1$ and~A, \cref{prop:tradeoff,prop:packing}, the general forms of the
 chain and transfer identities, and the results of \cref{sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets}. Each of them comes with a
 complete proof, and each numbered result states its status as described in \cref{sec:prelim-lean}. Claims with
 only a proof sketch, among them the nesting barrier for per-head band rules (\cref{rem:dep-N,rem:dep-Nprime}), are stated
@@ -128,10 +133,11 @@ Kol~\cite{BirkKol2006} and formalized, with minrank, by Bar-Yossef, Birk, Jayram
 linear-programming bound for it is due to Blasiak, Kleinberg and Lubetzky~\cite{BKL2013}, and minrank goes back to
 Haemers~\cite{Haemers1979}.
 
-\paragraph{Motion.} Theorems~C and~Cq rest on the first paper's Theorem~M* and on the theorem of Connes, Feldman and
-Weiss that amenable nonsingular equivalence relations are hyperfinite~\cite{CFW1981}; the Lebesgue-measure form of
-Theorem~Cq for relatively open affine pieces (\cref{cor:mot-lambda}) slightly generalizes the second paper's
-affine-time obstruction~\cite{SecondPaper2026}. With one work tape, much stronger lower bounds are classical:
+\paragraph{Motion.} Theorems~C, Cq and~Cr rest on the first paper's Theorem~M* and on the second paper's affine-time
+obstruction~\cite{SecondPaper2026}: its labels for finitely many affine pieces or affine maps and its truncation argument
+carry over from open sets and Lebesgue measure to Borel pieces, first returns and the speed measure, with the area
+formula~\cite{Federer1969} charging the omitted returns. The Lebesgue-measure form of Theorem~Cq for relatively open affine pieces
+(\cref{cor:mot-lambda}) slightly generalizes that obstruction. With one work tape, much stronger lower bounds are classical:
 $\Omega(L^{3/2}/(\log L)^{1/2})$ steps without an output tape~\cite{DMS1991}, and $\Theta(L^{5/4})$ for Boolean matrices
 with a write-only output tape~\cite{DietzfelbingerMaass1993}. Our motion results hold for any number of tapes, and they
 leave room for curved motion such as the monotone expanders of Bourgain and Yehudayoff~\cite{BourgainYehudayoff2013}, on

@@ -74,8 +74,13 @@ cones.
   - Theorems C, C′ and Cq: no machine, oblivious or adaptive, whose work heads are all home-based with legs made of
     boundedly many constant-rate runs transposes in linear time. In every macroscopic limit of a linear-time
     transposer, at least half a block unit of travel, a linear number of cells, is not countably-piecewise affine.
-  - One work tape never suffices, a common change of clock does not help, and machines whose work heads all
-    follow stroke trees fail.
+  - Theorem Cr: in every macroscopic limit of a linear-time transposer, in every common change of clock (a
+    homeomorphism whose inverse preserves null sets) and for every countable set of affine maps, the times at which a
+    head's next return to its level is not given by one of these maps carry at least one block unit of travel in total.
+  - One work tape never suffices; a common change of clock, or a fixed change of scale on each tape, does not help;
+    and machines whose work heads all follow stroke trees fail.
+  - The proofs use Theorem M*, the second paper's Lean-verified labels for finitely many affine pieces or affine
+    maps, and the area formula. No hyperfiniteness theorem is needed.
 - **Depth reduction for interacting walks.**
   - One walk is always depth-reducible, by planarity.
   - Packing certificates cannot show depth-robustness.
@@ -189,40 +194,45 @@ counterexamples), 6.28 (Proposition L), 6.30 (eigenvalue codes and girth), 6.31 
 **Missing:** the walk DAG with cuts and depth, labels, leg area, home-based walks, and the recursive
 walk U(s₀, m, g) with its covers.
 
-### 4. Motion (about 2 agent-weeks, without Connes–Feldman–Weiss)
-**Results:** 3.3, 3.5–3.9, 3.12–3.14 (Theorems C, C′, Cq), 3.15, 3.16, 3.20, 3.21, 3.23, 3.24.
+### 4. Motion (about 1–2 agent-weeks)
+**Results:** 3.3 (levels), 3.4 (deleting visits), 3.6 (returns), 3.10–3.12 (Theorems C, C′, Cq), 3.13 (teeth),
+3.14, 3.18, 3.19 (Theorem Cr), 3.20, 3.21, 3.23 and 3.24. Lemmas 3.5 and 3.7, the finite affine labels in branch and
+measure form, are Lean-verified in the second paper.
 
-**A shorter route.** The paper proves Theorem Cq through Lemma 3.8, which uses Connes–Feldman–Weiss,
-Ornstein–Weiss and Dougherty–Jackson–Kechris; none of these exists in Lean anywhere. They are not
-needed:
-- **Cq.** For N affine pieces, P2's `exists_finite_affine_branch_small_cut` gives a label with small
-  classes and few retained crossings. Every other crossing has an endpoint in the omitted set O_N,
-  each visit lies in at most two consecutive pairs, and Banach's inequality ∫#(O ∩ Λ(p)) dp ≤ ν(O)
-  charges them. Then (⋆)_∅ gives 1 ≤ ε + 2θ + 2 Σ_t ν_t(O_{t,N}), and Σ_t ν_t(N_t) ≥ ½ as N → ∞.
-- **C.** The home-level set is one constant piece and the uncovered set is countable, so the Lebesgue
-  charge suffices.
-- **The rest.** The same argument gives Theorem C′ and both forms of 3.16, and with small lemmas
-  3.21 and 3.24.
-- **Status.** This route was checked against the Lean sources; it has not been refereed. Taking it
-  removes the need for 3.5–3.9 (and so for Lusin–Novikov and Connes–Feldman–Weiss), and Section 3's
-  proofs would change accordingly.
+**How the paper proves them.**
+- **Theorem Cq** is the second paper's truncation argument with the speed measure. For n pieces per head,
+  Lemma 3.5 gives a label with small classes and few retained crossings. Every other crossing has an omitted
+  visit, and each visit lies in at most two consecutive pairs, so the area formula charges these crossings
+  by 2ν(omitted). Then (⋆)_∅ gives 1 ≤ ε + 2θ + 2 Σ_t ν_t(omitted), and n → ∞ gives Σ_t ν_t(N_t) ≥ ½.
+- **Theorem Cr** uses first returns ψ_t (Lemma 3.6(a), (d), (e): they are Borel, and ∫κ ≤ ν(crossing set);
+  Lemma 3.20 uses (b) and (c)). For the returns given by the finite set Γ_n of affine maps, at times where the density of
+  the clock is at most n, push ν_t forward to pairs of times. Lemma 3.7 gives a label with small classes and little mass on
+  disagreeing pairs, the clock transports the label, and (⋆)_∅ with n → ∞ gives Σ_t ν_t(X_t) ≥ 1.
+- **C′, C, 3.14 and 3.23** follow from Cq. Corollary 3.18 uses an explicit label by height bands and time
+  chunks. Lemma 3.20 turns affine pieces, after a change of clock and an injective change of scale, into affine
+  returns, so Corollary 3.21 follows from Theorem Cr.
+- **No hyperfiniteness theorem** (Connes–Feldman–Weiss, Ornstein–Weiss) and no Lusin–Novikov is needed.
 
 **Existing:**
 - **P2:**
-  - `exists_finite_affine_branch_small_cut` (AffineBranchCuts.lean:100), for finitely many
-    measurable pieces;
-  - `exists_affine_small_boundary` (AffineFiniteBoundary.lean:66), Følner sets for finitely many
-    affine maps;
+  - `exists_finite_affine_branch_small_cut` (AffineBranchCuts.lean:100), which is Lemma 3.5;
+  - `exists_finite_affine_small_cut` (FiniteAffineLabels.lean:13), which is Lemma 3.7; Lemma 3.5 is derived from it
+    through `exists_finite_branch_small_cut` (AffineBranchCuts.lean) and `exists_small_height_pair_cut`
+    (AffineHeightPairs.lean), which pushes height measure forward to pairs of times;
+  - `exists_countable_affine_small_cut` (CountableAffineLabels.lean), the countable form of Lemma 3.7, which could
+    shorten a formal proof of Theorem Cr;
+  - `levelCross_delete_le` (ConsecutiveDeletion.lean), the pointwise part of Lemma 3.4;
+  - `exists_affine_small_boundary` (AffineFiniteBoundary.lean:66), Følner sets for finitely many affine maps;
   - `one_le_of_star_small_cuts` and `SatisfiesStar` (FiniteAffineTimeBound.lean);
   - `exists_countable_affine_path_cut_bound` (CountableAffinePathLabels.lean), which takes no (⋆)
     hypothesis;
   - `exists_countable_local_affine_cover`, `star_half_le_locally_affine_omission`,
     `star_half_le_affine_component_omission`, `star_common_affine_omission` (OpenAffineTimeBound.lean).
-    These are the Lebesgue form of 3.16 with relatively open pieces, up to a few hours of wrappers.
+    These are the Lebesgue form of 3.14 with relatively open pieces, up to a few hours of wrappers.
   - the omitted-set charge `lintegral_levelCross_delete_le` (OmittedVisitBound.lean), through
     `compact_visit_majorant`, `interval_visit_majorant` and `lintegral_compact_visits_le`
     (CompactVisitMajorant.lean) and `exists_compact_interval_cover` (CompactIntervalCover.lean);
-  - `block_physical_sample_error` (PhysicalWalkNormalization.lean), for 3.15.
+  - `block_physical_sample_error` (PhysicalWalkNormalization.lean), for 3.13.
 - **P1:**
   - limits: `theoremMStar_level_adaptive` (MStarAdaptive.lean), `theoremMStar_level_class_on`
     (Statements/Adaptive.lean), `blockTraj_limit_lipschitz`, `exists_subseq_blockTraj` (MStarTM.lean);
@@ -239,27 +249,40 @@ needed:
   - `addHaar_image_le_lintegral_abs_det_fderiv` and
     `addHaar_image_eq_zero_of_differentiableOn_of_addHaar_eq_zero` (Jacobian.lean);
   - `measurableSet_of_differentiableAt`, `lintegral_liminf_le`, `tendsto_measure_iInter_atTop`;
-  - `exists_pos_setLIntegral_lt_of_measure_lt`, for ε–δ absolute continuity.
-- **External:** the full area formula `LipschitzWith.lintegral_normDet_fderiv_eq_lintegral_encard`
-  and Banach's indicatrix `ContinuousOn.eVariationOn_eq_lintegral_encard`, in
+  - `exists_pos_setLIntegral_lt_of_measure_lt`, for ε–δ absolute continuity;
+  - `norm_deriv_le_of_lipschitzOn`, for ν ≤ λ; `measurable_of_Iio`, for the first returns;
+  - `Measure.withDensity_rnDeriv_eq` and `Measure.rnDeriv_lt_top`, for the density of the clock in Theorem Cr;
+    `Measure.map` for the pushforward to pairs of times.
+- **External:** the full area formula `LipschitzWith.lintegral_normDet_fderiv_eq_lintegral_encard` and
+  Banach's indicatrix `ContinuousOn.eVariationOn_eq_lintegral_encard`, in
   [Tau Ceti](https://github.com/TauCetiProject/TauCeti), `TauCeti/MeasureTheory/Function/AreaFormula/`
-  (Apache-2.0, October 2026 Mathlib, a moderate backport). Only Lemma 3.3 as stated, an equality, needs
-  them; the route above needs only the inequality.
+  (Apache-2.0, October 2026 Mathlib, a moderate backport). Lemma 3.3 as stated, an equality, needs them. The
+  other proofs use only the inequality ∫#(A∩Λ(p))dp ≤ ν(A), in the measurable-majorant form of the table below
+  (Lemma 3.4 splits a lower integral), with two exceptions. Lemma 3.6(c), used by Lemma
+  3.20 and Corollary 3.21, applies Lemma 3.3(a) in both directions. And ν(Λ(p)) = 0 (Lemma 3.3(b), used in 3.13(d)
+  and 3.20) also follows directly from P′ = 0 almost everywhere on a level set. Stating 3.6(c), 3.19 and 3.20 in
+  counting form, with ∫#(X∩Λ(p))dp in place of ν(X), removes the reverse inequality.
 
 **New lemmas, with estimates:**
 
 | Lemma | Estimate |
 |---|---|
-| a (⋆)_∅ copy of `one_le_of_star_small_cuts` | 1 h |
-| the visit majorant for arbitrary sets | 3–5 h |
-| the Lebesgue form with Borel pieces | 3–6 h |
-| the visit majorant for the speed measure ν | 8–16 h |
-| Cq from it | 2–4 h |
-| 3.15 in countable form | 8–20 h |
-| a time change, for 3.21 | 4–8 h |
-| ε–δ absolute continuity | 1–2 h |
-| cheap labels for a single path, for 3.20 and 3.24(c) | 12–24 h |
+| the visit majorant for arbitrary sets (Lebesgue measure) | 3–5 h |
+| the speed measure ν_t = \|P_t′\| dλ on [0, c₀] and ν_t ≤ λ (`norm_deriv_le_of_lipschitzOn`) | 1–2 h |
+| the visit majorant for the speed measure ν (Lemma 3.3(a) as an inequality, in measurable-majorant form): adapt the first paper's dyadic count by replacing its boxes with the images P(I_j), using λ(P(I_j)) ≤ ∫_{I_j} \|P′\|, then pass to Borel sets by outer regularity | 8–16 h |
+| Lemma 3.4 and Theorem Cq from them | 3–6 h |
+| first returns for Theorem Cr, Lemma 3.6(a), (d), (e): ψ and D⁺ Borel (each {ψ < a} is a countable union of projections of compact sets); every consecutive pair is (s, ψ(s)); `levelCross` ≤ #(A(β) ∩ Λ(p)) | 6–10 h |
+| Lemma 3.6(b), (c), for Lemma 3.20: injectivity on D⁺, and the charge in counting form | 2–4 h |
+| Theorem Cr with the identity clock: push Σ_t ν_t, restricted to the times with affine returns, forward along u ↦ (u, ψ_t(u)). Its marginal is at most kλ, so `exists_countable_affine_small_cut` gives the label directly (no truncation, no density cut-off), and `one_le_of_star_small_cuts` finishes | 3–6 h |
+| Theorem Cr for a general clock: density cut-off, ε–δ, transport of the label through φ | 4–8 h |
+| Lemma 3.20 and Corollary 3.21 | 2–4 h |
+| 3.13 in countable form | 8–20 h |
+| the band labels of 3.18(a) | 6–12 h |
 | machine wrappers | 3–6 h, plus 2–4 h per theorem |
+
+Theorem Cr alone, with the identity clock, takes about 18–34 h: the speed measure, its visit majorant, Lemma 3.6(a), (d),
+(e) and the assembly. A general clock adds 4–8 h. The majorant and the returns lemma are independent and can be built in
+parallel; the majorant also serves Theorem Cq and Corollary 3.14, so it belongs in `lean-machine`.
 
 ### 5. Theorem A and its consequences (months in full; 3–6 agent-weeks conditionally)
 **Results:** 6.17 (Theorem A), 6.18, 6.21 and 6.22 (the torsion-only principle).
@@ -284,7 +307,7 @@ needed:
   - A conditional version could take the four standard facts (L1)–(L4) of Section 6.7 as hypotheses.
 
 ### Not counted
-- The remarks marked "Proof sketch only" (3.19, 5.6, 5.7, 6.38) need complete proofs first.
+- The remarks marked "Proof sketch only" (3.17, 5.6, 5.7, 6.38) need complete proofs first.
 - The computational remarks with exact certificates take a few hours each through
   `tools/certificates.py`: the Grötzsch graph and the circulants C₁₃(1,5), C₁₆(1,3,8) and C₂₀(1,6,10),
   the last with 777 rows. Measure build time first.

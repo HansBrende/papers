@@ -51,8 +51,8 @@ def main():
         "",
         "Every declaration of this paper's library cited in the text, grouped by the Lean module that contains it, relative to the namespace",
         r"\texttt{MotionDepthCodes}. All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and",
-        r"\texttt{Quot.sound} (\cref{app:verify}). The declarations of the first paper's library cited in \cref{sec:motion} are",
-        r"verified there~\cite{FirstPaper2026}.",
+        r"\texttt{Quot.sound} (\cref{app:verify}). The declarations of the first two papers' libraries named in",
+        r"\cref{sec:motion} are verified there~\cite{FirstPaper2026,SecondPaper2026}.",
         "",
     ]
     for file in sorted(by_file, key=module):

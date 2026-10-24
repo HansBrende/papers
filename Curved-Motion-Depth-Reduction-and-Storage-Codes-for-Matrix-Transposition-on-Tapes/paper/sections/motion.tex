@@ -4,24 +4,25 @@ This section constrains the head motion of every linear-time transposer, oblivio
 the oblivious case follows in \cref{sec:decomposition}. The first paper~\cite{FirstPaper2026} rescales the work-head trajectories of a machine, passes to uniform limits
 along subsequences of sizes, and proves that the limits of a linear-time transposer satisfy an isoperimetric
 inequality $(\star)$. This is Theorem~M*, restated as \cref{thm:Mstar}. In this section we turn $(\star)$ into a
-constraint on the shape of the motion. We extend $(\star)$ from labellings by finitely many intervals to Borel
-labellings, with the returns of the heads weighted by their speed (\cref{thm:mot-borel}), and combine it with the
-theorem of Connes, Feldman and Weiss that orbit relations of countable amenable groups are hyperfinite off a null set.
-The outcome is Theorem~Cq (\cref{thm:Cq}): in every limit of a linear-time transposer, the work heads travel a total
+constraint on the shape of the motion. We combine it with the second paper's labels for finitely many affine pieces or
+affine maps, built from F\o lner sets of finitely many affine maps and Lean-verified there~\cite{SecondPaper2026}, and
+with the area formula, which charges the remaining returns of the heads by their speed (\cref{sec:mot-tools}). The outcome is Theorem~Cq (\cref{thm:Cq}): in every limit of a linear-time transposer, the work heads travel a total
 distance of at least $\frac12$, in block units, along motion that is not countably-piecewise affine. Theorem~C
 (\cref{thm:C}) applies this to machines whose work heads are all home-based, with legs made of boundedly many runs at
 constant rate: no such machine, oblivious or adaptive, transposes in linear time.
-\Cref{sec:mot-consequences} draws consequences: one work tape never suffices, a common change of clock does not help,
-machines whose work heads all follow stroke trees are excluded, and a construction must use head-dependent curved
-motion on at least two interacting tapes (\cref{cor:mot-design}).
+\Cref{sec:mot-consequences} draws consequences. One work tape never suffices. Theorem~Cr (\cref{thm:Cr}) passes from
+affine pieces to affine returns: in every common clock, that is, every reparametrization of time by a homeomorphism
+whose inverse maps null sets to null sets, and for every countable set of affine maps, the times at which a head's next
+return to its level is not given by one of these maps carry at least one block unit of travel in total; so a common
+change of clock and fixed changes of scale do not help. Machines whose work heads all follow stroke trees are excluded, and a construction
+must use head-dependent curved motion on at least two interacting tapes (\cref{cor:mot-design}).
 
 These are restricted impossibility results, and they are unconditional: they use neither depth reduction
 (\cref{prob:tcp}) nor any statement about codes. On the construction side they say which motion a linear-time
-transposer must have. No numbered result of this section is formalized in this paper's Lean library. Theorem~M*, on
-which they rest, is Lean-verified in the first paper; the other ingredients (the area formula for Lipschitz functions,
-the Lusin--Novikov theorem, the amenability of solvable groups, the hyperfiniteness theorems of Ornstein and Weiss and of
-Connes, Feldman and Weiss in Kechris's formulation, and the characterization of hyperfiniteness of Dougherty, Jackson
-and Kechris) are cited.
+transposer must have. No numbered result of this section is formalized in this paper's Lean library. Theorem~M* and the finite affine
+labels, on which they rest, are Lean-verified in the first two papers; the remaining cited ingredient, the area formula
+for Lipschitz functions, is classical, as are the other facts of measure theory used below. Amenability enters only
+through F\o lner sets of finitely many affine maps, so no hyperfiniteness theorem is needed.
 
 \subsection{Rescaled limits and Theorem M*}\label{sec:mot-setting}
 
@@ -98,11 +99,11 @@ within $2cL(d)$ steps on every matrix input of every size, because $c(L+1)\le2cL
 of~\cite{FirstPaper2026}; Lean: \leanname{Transpose.Tape.adaptive_hyps_of_linearTime}), so by~(b) it has limits at time
 constant $2c$ along a subsequence of every sequence of sizes. We use only the case $S=\emptyset$ of~(a).
 
-\subsection{Speed-weighted returns and the Borel form of \texorpdfstring{$(\star)$}{(*)}}\label{sec:mot-borel}
+\subsection{Levels, returns and finite affine labels}\label{sec:mot-tools}
 
 Statements about $1$-Lipschitz functions, here and below, hold for every $c_0>0$; for walks and limits of machines,
-$c_0=cG+1$. In this subsection and the next, $P$ is a $1$-Lipschitz function on $[0,c_0]$, $\nu=\abs{P'}\,\mathrm du$ and $\Lambda(p)=\{u\in[0,c_0]:P(u)=p\}$; for a family $(P_t)$ we add
-the index $t$ to everything.
+$c_0=cG+1$. In this subsection $P$ is a $1$-Lipschitz function on $[0,c_0]$, $\nu=\abs{P'}\,\mathrm du$ and
+$\Lambda(p)=\{u\in[0,c_0]:P(u)=p\}$; for a family $(P_t)$ we add the index $t$ to everything.
 
 \begin{lemma}[Levels]\label{lem:mot-levels}
 \notformalized
@@ -126,28 +127,67 @@ $\nu(\Lambda(p_0))=0$.
 (c) $\abs{P'}\le1$ almost everywhere.
 \end{informalproof}
 
-\begin{definition}[First returns and crossing sets]\label{def:mot-returns}
-For $u\in[0,c_0]$ let $\psi(u)=\inf\{v\in[0,c_0]:v>u,\ P(v)=P(u)\}$, defined on the set $\operatorname{dom}\psi$ of
-those $u$ for which this set is nonempty, and let $D^+=\{u\in\operatorname{dom}\psi:\psi(u)>u\}$. A \emph{Borel
-labelling} is a Borel map $\beta\colon[0,c_0]\to\N$; its \emph{classes} are the sets $\beta^{-1}(\ell)$. Its
-\emph{crossing set} is
-\[
-  A(\beta)=\{u\in D^+:\beta(\psi(u))\ne\beta(u)\}.
-\]
-\end{definition}
+All labellings below are piecewise constant off $S=\emptyset$, and $\kappa$ is the crossing count of $(\star)$ with
+$S=\emptyset$. For a set $R\subseteq[0,c_0]$ of \emph{retained} times, let $\kappa^R(p)$ be the number of consecutive
+pairs $s<s'$ of $\Lambda(p)$ with $s,s'\in R$ and $\beta(s)\ne\beta(s')$ if $\Lambda(p)$ is finite, and $\kappa^R(p)=0$
+otherwise; so $\kappa=\kappa^{[0,c_0]}$. The points of $\Lambda(p)$ outside $R$ are the \emph{omitted} visits.
 
-So $\psi(u)$ is the first return of the limit path to the level of $u$, and $D^+$ consists of the points that have a
-later point in their level set and are not limits of such points from the right. For a family $(P_t)$ we write
-$\psi_t$, $D^+_t$ and $A_t(\beta)$.
+\begin{lemma}[Deleting visits]\label{lem:mot-delete}
+\notformalized
+For every labelling $\beta$, every set $R\subseteq[0,c_0]$ and every level $p$,
+$\kappa(p)\le\kappa^R(p)+2\,\#(\Lambda(p)\setminus R)$. If $R$ is Borel, then
+\[
+  \int\kappa\,\mathrm dp\;\le\;\int\kappa^R\,\mathrm dp+2\,\nu([0,c_0]\setminus R).
+\]
+\end{lemma}
+
+\begin{informalproof}
+If $\Lambda(p)$ is infinite, then $\kappa(p)=0$. Otherwise every consecutive pair counted by $\kappa(p)$ but not by
+$\kappa^R(p)$ has a point in $\Lambda(p)\setminus R$, and each point of $\Lambda(p)$ lies in at most two consecutive
+pairs. For Borel $R$ the function $p\mapsto\#(\Lambda(p)\setminus R)$ is measurable with integral
+$\nu([0,c_0]\setminus R)$, by \cref{lem:mot-levels}(a), and the lower integral of a sum is the sum of the lower integrals
+when one summand, here $2\,\#(\Lambda(p)\setminus R)$, is measurable.
+\end{informalproof}
+
+The pointwise inequality is \leanname{TransposeFollowup.AffineMotion.levelCross_delete_le} in the second paper's Lean
+library. The next lemma is the finite step of that paper's proof of its affine-time obstruction. For finitely many affine
+pieces, the visits of a level in two pieces on which the path is not constant are related by an affine map of time; the
+finitely many levels of the constant pieces form a null set of levels. The labels are built from F\o lner sets for the
+finitely many affine maps that arise; such sets exist because the affine group is solvable, and the second paper
+constructs them directly.
+
+\begin{lemma}[Finite affine labels]\label{lem:mot-finite-labels}
+\cited{the finite step of the proof of~\cite[Theorem~6.2]{SecondPaper2026}, which applies it to open pieces.
+Lean-verified there for measurable pieces as
+\leanname{TransposeFollowup.AffineMotion.exists_finite_affine_branch_small_cut}; the countable step of that proof,
+\leanname{TransposeFollowup.AffineMotion.exists_countable_affine_path_cut_bound}, uses it. Not reproved here.}
+Let $(P_t)_{t<k}$ be arbitrary functions on $[0,c_0]$, with $\Lambda_t(p)$, consecutive pairs and $\kappa_t^{R}$ defined
+as above (no continuity is needed), and for each $t$ let $J_{t,1},\dots,J_{t,n}$ be Borel subsets of
+$[0,c_0]$ on each of which $P_t$ agrees with an affine function; put $R_t=J_{t,1}\cup\dots\cup J_{t,n}$. For all
+$\theta>0$ and $\varepsilon>0$ there is a labelling $\beta$ whose classes have measure at most $\theta$ and
+$\sum_{t<k}\int\kappa_t^{R_t}\,\mathrm dp<\varepsilon$.
+\end{lemma}
+
+In the Lean statement the pieces need only be measurable, they may overlap and may carry constant functions, and the
+$P_t$ need not be continuous. At each level it counts the crossing pairs with both points retained, and this count is at
+least $\kappa_t^{R_t}(p)$.
+
+The second form of the labels concerns first returns. For $u\in[0,c_0]$ let
+$\psi(u)=\inf\{v\in[0,c_0]:v>u,\ P(v)=P(u)\}$, the \emph{first return} of the path to the level of $u$, defined on the
+set $\operatorname{dom}\psi$ of those $u$ for which this set is nonempty, and let
+$D^+=\{u\in\operatorname{dom}\psi:\psi(u)>u\}$. For a labelling $\beta$, the \emph{crossing set}
+$A(\beta)=\{u\in D^+:\beta(\psi(u))\ne\beta(u)\}$ consists of the times whose first return changes the label. For a
+family $(P_t)$ we write $\psi_t$, $D^+_t$ and $A_t(\beta)$.
 
 \begin{lemma}[Returns]\label{lem:mot-returns}
 \notformalized
 \begin{enumerate}[label=(\alph*)]
-\item $\operatorname{dom}\psi$ and $D^+$ are Borel sets, $\psi\colon\operatorname{dom}\psi\to[0,c_0]$ is a Borel map,
-and the crossing set $A(\beta)$ of every Borel labelling $\beta$ is Borel.
+\item $\operatorname{dom}\psi$ and $D^+$ are Borel sets, and $\psi\colon\operatorname{dom}\psi\to[0,c_0]$ is a Borel
+map.
 \item $P(\psi(u))=P(u)$ for every $u\in\operatorname{dom}\psi$, and $\psi$ is injective on $D^+$.
 \item $\nu(\psi^{-1}(W)\cap D^+)\le\nu(W)$ for every Borel set $W\subseteq[0,c_0]$.
 \item If $\Lambda(p)$ is finite, its consecutive pairs are exactly the pairs $(s,\psi(s))$ with $s\in\Lambda(p)\cap D^+$.
+\item For every labelling $\beta$ the crossing set $A(\beta)$ is Borel, and $\int\kappa\,\mathrm dp\le\nu(A(\beta))$.
 \end{enumerate}
 \end{lemma}
 
@@ -156,9 +196,8 @@ and the crossing set $A(\beta)$ of every Borel labelling $\beta$ is Borel.
 $K_a=\{(u,v)\in[0,c_0]^2:u<v<a,\ P(u)=P(v)\}$: if $\psi(u)<a$, some $v$ in the set whose infimum is $\psi(u)$ is below
 $a$, and conversely. $K_a$ is the intersection of a closed set with an open subset of the compact square, hence
 $\sigma$-compact, so its projection is $\sigma$-compact and therefore Borel. Hence
-$\operatorname{dom}\psi=\{\psi<c_0+1\}$ is Borel and $\psi$ is Borel on it; so are
-$D^+=\{u\in\operatorname{dom}\psi:\psi(u)>u\}$ and
-$A(\beta)=\bigcup_\ell\bigl((\beta^{-1}(\ell)\cap D^+)\setminus\psi^{-1}(\beta^{-1}(\ell))\bigr)$.
+$\operatorname{dom}\psi=\{\psi<c_0+1\}$ is Borel and $\psi$ is Borel on it, and so is
+$D^+=\{u\in\operatorname{dom}\psi:\psi(u)>u\}$.
 (b) $\psi(u)$ is the infimum of a nonempty subset of the closed set $\Lambda(P(u))\cap[u,c_0]$, so it lies in that set.
 Let $u<u'$ be points of $D^+$ with $\psi(u)=\psi(u')=v$. Then $P(u)=P(v)=P(u')$, so $u'$ belongs to the set whose
 infimum is $\psi(u)$, and $\psi(u)\le u'<\psi(u')=v$, a contradiction.
@@ -167,154 +206,26 @@ injectively into $W\cap\Lambda(p)$ for every $p$. Integrate the inequality
 $\#(\psi^{-1}(W)\cap D^+\cap\Lambda(p))\le\#(W\cap\Lambda(p))$ over $p$ and apply \cref{lem:mot-levels}(a) to both sides.
 (d) If $\Lambda(p)$ is finite and $s\in\Lambda(p)$ is not its largest point, then $\psi(s)$ is the next point of
 $\Lambda(p)$, so $\psi(s)>s$; the largest point is not in $\operatorname{dom}\psi$.
+(e) With $Z$ as in the definition of a labelling, $\beta$ is constant on each of the finitely many components of
+$[0,c_0]\setminus Z$, so it is Borel on $[0,c_0]$, and $A(\beta)$ is the union over $\ell$ of the sets
+$\{u\in D^+:\beta(u)=\ell,\ \beta(\psi(u))\ne\ell\}$, which are Borel by (a). By (d),
+$\kappa(p)=\#(A(\beta)\cap\Lambda(p))$ whenever $\Lambda(p)$ is finite, and $\kappa(p)=0$ otherwise. So
+$\int\kappa\,\mathrm dp\le\nu(A(\beta))$, by monotonicity of the lower integral and \cref{lem:mot-levels}(a).
 \end{informalproof}
 
-By (d), for every labelling $\beta$ and $S=\emptyset$ we have $\kappa(p)=\#(A(\beta)\cap\Lambda(p))$ whenever $\Lambda(p)$
-is finite. For a piecewise constant labelling, which is Borel on $[0,c_0]$, the area formula therefore gives
-$\int\kappa=\nu(A(\beta))$: the integral in $(\star)$ is the speed-weighted measure of the set of times whose
-first return changes label. The next theorem extends $(\star)_\emptyset$, read in this way, to all Borel labellings.
-This is the form needed below, because the labellings produced by the hyperfiniteness argument are Borel but not
-piecewise constant.
-
-\begin{theorem}[Borel form of $(\star)$]\label{thm:mot-borel}
-\notformalized
-Let $(P_t)_{t<k}$ be $1$-Lipschitz functions on $[0,c_0]$ that satisfy $(\star)_\emptyset$, for instance a limit of a
-machine (\cref{thm:Mstar}). Then for every $\theta\in(0,\frac12)$ and every Borel labelling $\beta$ of $[0,c_0]$ whose
-classes have Lebesgue measure at most $\theta$,
-\begin{equation}\label{eq:mot-star-borel}
-  \sum_{t<k}\nu_t\bigl(A_t(\beta)\bigr)\;\ge\;1-2\theta .
-\end{equation}
-\end{theorem}
-
-\begin{informalproof}
-Fix $\theta$, $\beta$ and $\varepsilon>0$ with $\theta+\varepsilon<\frac12$. We first replace $\beta$ by a labelling
-$\beta'$ that is constant on finitely many intervals. The classes $Q_\ell=\beta^{-1}(\ell)$ are disjoint Borel sets with
-$\sum_\ell\lambda(Q_\ell)=c_0$, so there is $J$ with $\lambda(\bigcup_{\ell\ge J}Q_\ell)\le\varepsilon$. For $\ell<J$
-choose a finite union $U_\ell\subseteq[0,c_0]$ of intervals with $\lambda(U_\ell\mathbin{\triangle}Q_\ell)\le\varepsilon/J$,
-put $U_\ell'=U_\ell\setminus\bigcup_{m<\ell}U_m$ and $V=[0,c_0]\setminus\bigcup_{\ell<J}U_\ell$, and cut $V$ into
-finitely many intervals $V_1,\dots,V_n$ of length at most $\theta$. Let $\beta'=\ell$ on $U'_\ell$, $\beta'=J+i$ on
-$V_i$, and $\beta'=0$ outside $[0,c_0]$. Then $\beta'$ is constant on each interval of a finite partition of $[0,c_0]$
-into intervals, hence piecewise constant (take $Z$ to be the set of endpoints), and its classes have measure at most
-$\theta+\varepsilon$, because $\lambda(U'_\ell)\le\lambda(Q_\ell)+\varepsilon/J$. Let
-$W=V\cup\bigcup_{\ell<J}(U_\ell\mathbin{\triangle}Q_\ell)$. Since
-$V\subseteq\bigcup_{\ell\ge J}Q_\ell\cup\bigcup_{\ell<J}(Q_\ell\setminus U_\ell)$, we have $\lambda(W)\le3\varepsilon$.
-If $u\in[0,c_0]\setminus W$, let $\ell<J$ be least with $u\in U_\ell$, which exists because $u\notin V$; then
-$\beta'(u)=\ell$, and $\beta(u)=\ell$ because $u\notin U_\ell\mathbin{\triangle}Q_\ell$. So $\beta'=\beta$ off $W$, and
-therefore
-\[
-  A_t(\beta')\subseteq A_t(\beta)\cup W\cup\bigl(\psi_t^{-1}(W)\cap D^+_t\bigr),
-\]
-because a point $u\in D^+_t$ outside the right-hand side has $\beta'(u)=\beta(u)=\beta(\psi_t(u))=\beta'(\psi_t(u))$. By
-\cref{lem:mot-returns}(c) and \cref{lem:mot-levels}(c), $\nu_t(A_t(\beta'))\le\nu_t(A_t(\beta))+2\lambda(W)
-\le\nu_t(A_t(\beta))+6\varepsilon$.
-
-Now apply $(\star)_\emptyset$ to $\beta'$, with $\theta+\varepsilon$ in place of $\theta$. For every level $p$ with
-$\Lambda_t(p)$ finite, \cref{lem:mot-returns}(d) shows that $\kappa_t(p)=\#(A_t(\beta')\cap\Lambda_t(p))$; for the other
-levels $\kappa_t(p)=0$. By monotonicity of the lower integral and \cref{lem:mot-levels}(a),
-$\int\kappa_t\le\nu_t(A_t(\beta'))$. Hence
-\[
-  1-2\theta-2\varepsilon\;\le\;\sum_t\nu_t(A_t(\beta'))\;\le\;\sum_t\nu_t(A_t(\beta))+6k\varepsilon,
-\]
-and letting $\varepsilon\to0$ proves~\eqref{eq:mot-star-borel}.
-\end{informalproof}
-
-\paragraph{Why it matters.} The Borel form is a measure-theoretic form of the case $S=\emptyset$ of Theorem~M*: every partition of
-macroscopic time into Borel classes of small measure is crossed by first returns of total speed-weighted mass close to
-one. Motion that is stationary or slow counts for little. Together with the existence of limits, it is the only
-property of linear-time transposers that the rest of this section uses.
-
-\subsection{Hyperfinite returns}\label{sec:mot-hyperfinite}
-
-A \emph{finite Borel equivalence relation} on a Borel set $Y\subseteq\R$ is an equivalence relation $F$ on $Y$ that is a
-Borel subset of $Y\times Y$ and whose classes are finite. The first lemma says that if the first returns of the heads
-lie, off a small set, in an increasing union of such relations, then $(\star)$ fails; the second supplies such unions for
-countable groups of affine maps; the third puts the returns between affine pieces into such a group.
-
-\begin{lemma}[Cheap labellings from hyperfinite transitions]\label{lem:mot-hyperfinite}
-\notformalized
-Let $(P_t)_{t<k}$ be $1$-Lipschitz functions on $[0,c_0]$. Let $Y\subseteq[0,c_0]$ be a Borel set, let
-$F_1\subseteq F_2\subseteq\cdots$ be finite Borel equivalence relations on $Y$, and let $F=\bigcup_jF_j$. For each $t$
-let $B_t\subseteq D^+_t$ be a Borel set such that $u\in Y$, $\psi_t(u)\in Y$ and $(u,\psi_t(u))\in F$ for every
-$u\in B_t$. Then for all $\theta>0$ and $\varepsilon>0$ there is a Borel labelling $\beta$ of $[0,c_0]$ whose classes have
-Lebesgue measure at most $\theta$ and
-\[
-  \sum_{t<k}\nu_t\bigl(A_t(\beta)\bigr)\;\le\;\sum_{t<k}\nu_t\bigl(D^+_t\setminus B_t\bigr)+\varepsilon .
-\]
+\begin{lemma}[Finite affine labels, measure form]\label{lem:mot-finite-measure}
+\cited{the finite step of the proof of~\cite[Theorem~6.2]{SecondPaper2026}, which applies it to push-forwards of
+height measure; Lean-verified there, for every measure $\mu$ as in the statement, as
+\leanname{TransposeFollowup.AffineMotion.exists_finite_affine_small_cut}. Not reproved here.}
+Let $\Gamma_0$ be a finite set of affine bijections of $\R$, let $K\ge0$, and let $\mu$ be a finite Borel measure on
+$[0,c_0]^2$ that is concentrated on the union of the graphs $\{(x,g(x))\}$ of the maps $g\in\Gamma_0$ and satisfies
+$\mu(E\times[0,c_0])\le K\lambda(E)$ for every Borel set $E$. For all $\theta>0$ and $\varepsilon>0$ there is a
+labelling $\beta$ whose classes have measure at most $\theta$ and $\mu(\{(x,y):\beta(x)\ne\beta(y)\})<\varepsilon$.
 \end{lemma}
 
-\begin{informalproof}
-\emph{Truncation.} For $j\ge1$ let $C_{t,j}=\{u\in B_t:(u,\psi_t(u))\notin F_j\}$. These sets are Borel, because
-$u\mapsto(u,\psi_t(u))$ is Borel on $\operatorname{dom}\psi_t$ (\cref{lem:mot-returns}(a)) and $F_j$ is Borel. They
-decrease in $j$, and their intersection is empty because $F=\bigcup_jF_j$. Since $\nu_t$ is finite, we can fix $j$ with
-$\sum_t\nu_t(C_{t,j})\le\varepsilon$.
-
-\emph{Class minima.} By the Lusin--Novikov theorem~\cite[Theorem~18.10]{Kechris1995}, the Borel set $F_j$, whose
-sections are finite, is the union of the graphs of countably many Borel functions $f_n\colon Y_n\to Y$ defined on Borel
-sets $Y_n\subseteq Y$. So the class of $u\in Y$ is $\{f_n(u):u\in Y_n\}$, and the map $\pi\colon Y\to Y$ that sends $u$
-to the least element of its class is Borel, being the infimum of the countably many Borel functions equal to $f_n$ on
-$Y_n$ and to $+\infty$ off $Y_n$. The map $\pi$ is constant on classes, and $\pi^{-1}(v)$ is contained in the class of
-$v$, hence finite.
-
-\emph{Grouping whole classes.} The finite Borel measure $\mu(V)=\lambda(\pi^{-1}(V))$ on $[0,c_0]$ has no atoms, since
-finite sets are $\lambda$-null. So $x\mapsto\mu([0,x])$ is continuous, hence uniformly continuous on $[0,c_0]$, and
-equally spaced points $0=x_0<x_1<\dots<x_m=c_0$ with small enough spacing satisfy $x_i-x_{i-1}\le\theta$ and
-$\mu([x_{i-1},x_i])\le\theta$ for all $i$. For $u\in Y$ let $\beta(u)$ be the least $i$
-with $\pi(u)\in[x_{i-1},x_i]$, and for $u\in[0,c_0]\setminus Y$ let $\beta(u)=m+i$ for the least $i$ with
-$u\in[x_{i-1},x_i]$. Then $\beta$ is a Borel labelling, its classes have measure at most $\theta$, and it is constant on
-every $F_j$-class.
-
-\emph{Crossings.} If $u\in B_t\setminus C_{t,j}$, then $u$ and $\psi_t(u)$ lie in one $F_j$-class, so
-$\beta(\psi_t(u))=\beta(u)$ and $u\notin A_t(\beta)$. Hence $A_t(\beta)\subseteq(D^+_t\setminus B_t)\cup C_{t,j}$, and
-summing $\nu_t$ over $t$ gives the claim.
-\end{informalproof}
-
-Let $\mathrm{Aff}(\R)=\{u\mapsto au+b:a\ne0\}$ be the affine group of the line. For a subgroup $\Gamma$ let
-$R_\Gamma=\{(u,g(u)):u\in\R,\ g\in\Gamma\}$ be its orbit relation, and write $\Gamma u$ for the orbit of $u$.
-
-\begin{lemma}[Amenable groups give hyperfinite transitions]\label{lem:mot-cfw}
-\notformalized
-Let $\Gamma$ be a countable subgroup of $\mathrm{Aff}(\R)$. There are a Borel set $Y_0\subseteq\R$ with
-$\lambda(\R\setminus Y_0)=0$ and finite Borel equivalence relations $F_1\subseteq F_2\subseteq\cdots$ on $Y_0$ with
-$\bigcup_jF_j=R_\Gamma\cap(Y_0\times Y_0)$.
-\end{lemma}
-
-\begin{informalproof}
-The homomorphism $(u\mapsto au+b)\mapsto a$ from $\mathrm{Aff}(\R)$ to the multiplicative group of $\R$ has an abelian
-image and an abelian kernel, the translations. So $\mathrm{Aff}(\R)$ and $\Gamma$ are solvable, and solvable groups are
-amenable, since abelian groups are amenable and amenability passes to extensions~\cite{vonNeumann1929}, \cite[Appendix~G]{BekkaHarpeValette2008}. The group $\Gamma$ acts on $\R$ by homeomorphisms, so $R_\Gamma$ is
-a countable Borel equivalence relation, a countable union of graphs of continuous maps. Let $\mu$ be a Borel probability
-measure on $\R$ with the same null sets as $\lambda$, for instance the Gaussian measure. By the theorem of Ornstein and
-Weiss~\cite{OrnsteinWeiss1980} and of Connes, Feldman and Weiss~\cite{CFW1981}, in the form stated
-in~\cite[p.~894]{Kechris1993}, there is a $\Gamma$-invariant Borel set $Y_0$ with $\mu(Y_0)=1$ such that $R_\Gamma$
-restricted to $Y_0$ is induced by a single Borel automorphism of $Y_0$. (Connes, Feldman and Weiss prove that an
-amenable countable equivalence relation with a quasi-invariant measure is hyperfinite up to a null
-set~\cite[Theorem~10]{CFW1981}. Amenability of equivalence relations is Zimmer's notion~\cite{Zimmer1977}, and the orbit
-relation of an action of an amenable group, free or not, is amenable~\cite[p.~431]{CFW1981}. Here $\mu$ is
-quasi-invariant under $\Gamma$, because affine maps preserve $\lambda$-null sets.) By~\cite[Theorem~5.1]{DJK1994}, a
-countable Borel equivalence relation that is induced by a Borel automorphism is the union of an increasing sequence of
-finite Borel equivalence relations. Since $\mu$ and $\lambda$ have the same null sets, $\lambda(\R\setminus Y_0)=0$.
-\end{informalproof}
-
-\begin{lemma}[Transitions between affine pieces]\label{lem:mot-transitions}
-\notformalized
-Let $P$ be $1$-Lipschitz on $[0,c_0]$ and let $\varphi\colon[0,c_0]\to\R$ be an injective Borel map. Let $E_a$
-($a\in\N$) be Borel subsets of $[0,c_0]$ and $f_a\colon\R\to\R$ affine maps with $P=f_a\circ\varphi$ on $E_a$, and let
-$N=[0,c_0]\setminus\bigcup_aE_a$. Let $\Gamma\le\mathrm{Aff}(\R)$ be the subgroup generated by the maps
-$f_b^{-1}\circ f_a$ for which neither $f_a$ nor $f_b$ is constant. Then there is a Borel set $B\subseteq D^+$ with
-$\nu(D^+\setminus B)\le2\nu(N)$ such that $\varphi(\psi(u))\in\Gamma\varphi(u)$ for every $u\in B$.
-\end{lemma}
-
-\begin{informalproof}
-If $f_a$ is constant, then $P$ is constant on $E_a$, so $E_a$ lies in a level set and $\nu(E_a)=0$ by
-\cref{lem:mot-levels}(b). Let $E^*$ be the union of the $E_a$ with $f_a$ not constant, and for $u\in E^*$ let $a(u)$ be
-the least such index with $u\in E_{a(u)}$. The set $N^*=[0,c_0]\setminus E^*$ is Borel, contains $N$, and is contained
-in $N$ together with the $\nu$-null sets $E_a$ with $f_a$ constant, so $\nu(N^*)=\nu(N)$. Let
-$B=\{u\in D^+:u\in E^*,\ \psi(u)\in E^*\}$, a Borel set by \cref{lem:mot-returns}(a). For $u\in B$, with $a=a(u)$ and
-$b=a(\psi(u))$, \cref{lem:mot-returns}(b) gives $f_b(\varphi(\psi(u)))=P(\psi(u))=P(u)=f_a(\varphi(u))$, so
-$\varphi(\psi(u))=f_b^{-1}(f_a(\varphi(u)))\in\Gamma\varphi(u)$. Finally
-$D^+\setminus B\subseteq N^*\cup(\psi^{-1}(N^*)\cap D^+)$, which has $\nu$-measure at most $2\nu(N)$ by
-\cref{lem:mot-returns}(c).
-\end{informalproof}
+In the second paper's Lean library, \cref{lem:mot-finite-labels} is derived from this lemma, by pushing the measure of
+levels forward to pairs of times in two affine pieces. The two lemmas are the only places below where amenability
+enters.
 
 \subsection{Theorems C, C\texorpdfstring{$'$}{'} and Cq}\label{sec:mot-statements}
 
@@ -407,27 +318,22 @@ curved motion (\cref{rem:mot-scope}).
 
 \subsection{Proofs of Theorems Cq, C\texorpdfstring{$'$}{'} and C}\label{sec:mot-proofs}
 
-We prove Theorem~Cq (\cref{thm:Cq}) first. The proof combines the three lemmas of \cref{sec:mot-hyperfinite} with the
-Borel form of $(\star)$.
+We prove Theorem~Cq (\cref{thm:Cq}) first. The proof is the second paper's truncation argument with the speed measure in
+place of Lebesgue measure: finitely many pieces are handled by \cref{lem:mot-finite-labels}, and the returns that involve
+the other times are charged by their speed.
 
 \begin{informalproof}
-Fix $\theta\in(0,\frac12)$ and $\varepsilon>0$. For each $t$ choose affine maps $f_{t,a}$ with $P_t=f_{t,a}$ on
-$E_{t,a}$, and apply \cref{lem:mot-transitions} to $P_t$ with $\varphi$ the identity. This gives Borel sets
-$B_t\subseteq D^+_t$ with $\nu_t(D^+_t\setminus B_t)\le2\nu_t(N_t)$ and $\psi_t(u)\in\Gamma u$ for $u\in B_t$, where
-$\Gamma\le\mathrm{Aff}(\R)$ is the countable subgroup generated by the maps $f_{t,b}^{-1}\circ f_{t,a}$ ($t<k$, neither
-$f_{t,a}$ nor $f_{t,b}$ constant). Take $Y_0$ and $F_j$ from \cref{lem:mot-cfw}, and put $Y=Y_0\cap[0,c_0]$,
-$F'_j=F_j\cap(Y\times Y)$ and $B'_t=B_t\cap Y\cap\psi_t^{-1}(Y)$. The $F'_j$ are increasing finite Borel equivalence
-relations on $Y$ with union $R_\Gamma\cap(Y\times Y)$, and for $u\in B'_t$ we have $u,\psi_t(u)\in Y$ and
-$(u,\psi_t(u))\in R_\Gamma$. Since $\lambda([0,c_0]\setminus Y)=0$, \cref{lem:mot-levels}(c) and
-\cref{lem:mot-returns}(c) give
+Fix $\theta\in(0,\frac12)$, $\varepsilon>0$ and $n\ge1$, and let $R_{t,n}=E_{t,0}\cup\dots\cup E_{t,n-1}$.
+\Cref{lem:mot-finite-labels}, applied to these pieces, gives a labelling $\beta$ whose classes have measure at most
+$\theta$ and $\sum_t\int\kappa_t^{R_{t,n}}\,\mathrm dp<\varepsilon$. By \cref{lem:mot-delete},
+$\int\kappa_t\,\mathrm dp\le\int\kappa_t^{R_{t,n}}\,\mathrm dp+2\nu_t([0,c_0]\setminus R_{t,n})$ for every $t$, so
+$(\star)_\emptyset$, applied to $\beta$, gives
 \[
-  \nu_t(D^+_t\setminus B'_t)\le\nu_t(D^+_t\setminus B_t)+\nu_t([0,c_0]\setminus Y)
-  +\nu_t\bigl(\psi_t^{-1}([0,c_0]\setminus Y)\cap D^+_t\bigr)\le2\nu_t(N_t).
+  1\;\le\;\varepsilon+2\theta+2\sum_{t<k}\nu_t\bigl([0,c_0]\setminus R_{t,n}\bigr).
 \]
-\Cref{lem:mot-hyperfinite} now gives a Borel labelling $\beta$ whose classes have measure at most $\theta$ and
-$\sum_t\nu_t(A_t(\beta))\le2\sum_t\nu_t(N_t)+\varepsilon$, while \cref{thm:mot-borel} gives
-$\sum_t\nu_t(A_t(\beta))\ge1-2\theta$. Hence $1-2\theta\le2\sum_t\nu_t(N_t)+\varepsilon$, and letting $\theta$ and
-$\varepsilon$ tend to $0$ proves the theorem.
+For each $t$ the sets $[0,c_0]\setminus R_{t,n}$ decrease to $N_t$ as $n\to\infty$, and $\nu_t$ is a finite measure, so
+$\nu_t([0,c_0]\setminus R_{t,n})\to\nu_t(N_t)$. Letting $n\to\infty$ and then $\theta,\varepsilon\to0$ gives
+$\sum_t\nu_t(N_t)\ge\frac12$.
 \end{informalproof}
 
 Theorem~C$'$ (\cref{thm:mot-Cprime}) follows from Theorem~Cq and the existence of limits.
@@ -537,9 +443,9 @@ $\nu_t\le\lambda$ gives the second.
 The second inequality is the quantitative affine-time obstruction of the second paper~\cite[Theorem~6.2]{SecondPaper2026},
 which is Lean-verified there for paths satisfying its restricted star condition~\cite[Definition~6.1]{SecondPaper2026}.
 That condition includes $(\star)_\emptyset$ as its case $S=\emptyset$ and is formally stronger; the corollary needs only
-$(\star)_\emptyset$ and allows relatively open sets, so it slightly generalizes that theorem. The proof there constructs F\o lner sets for the affine group directly and does
-not use the theorem of Connes, Feldman and Weiss; we have not checked whether that argument extends to the
-speed-weighted form. The motion exclusions of~\cite[Sections~6 and~7]{SecondPaper2026}, for bounded words in explicit
+$(\star)_\emptyset$ and allows relatively open sets, so it slightly generalizes that theorem. Theorem~Cq carries the same
+argument, F\o lner labels for finitely many affine pieces followed by truncation, from open sets and Lebesgue measure to
+Borel pieces and the speed measure; the area formula charges the omitted returns by speed. The motion exclusions of~\cite[Sections~6 and~7]{SecondPaper2026}, for bounded words in explicit
 operation palettes and for contracting recursions with regular stages, rest on that inequality.
 
 The speed-weighted form is stronger exactly where the heads are slow on the non-affine set. For a limit of HB-AR heads,
@@ -561,16 +467,20 @@ home-level set of $P$ within $[0,1]$ is $C$. No point of $C$ has a neighbourhood
 affine function would vanish at that point and, $C$ being perfect, at points of $C$ arbitrarily close to it, hence
 vanish identically, and $C$ would contain an interval. So every relatively open set on which $P$ is locally affine misses $C$, and the Lebesgue form gives nothing
 because $\lambda(C)=\frac12$. But $\nu(C)=0$, so Theorem~C and Theorem~Cq exclude every machine all of whose work heads move
-like this.
+like this. Alternatively, $P$ is constant on the Borel set $C$, so $C$ can be taken as one of the pieces in Theorem~Cq;
+the uncovered set is then countable, and even the Lebesgue-measure bound $\sum_t\lambda(N_t)\ge\frac12$ with Borel pieces,
+which follows from Theorem~Cq because $\nu\le\lambda$, excludes this schedule.
 \end{remark}
 
 \begin{remark}[What escapes]\label{rem:mot-scope}
 Theorem~Cq demands a minimum amount of speed-weighted motion that is not countably-piecewise affine; it says nothing
-against curved motion.
+against curved motion. Theorem~Cr (\cref{thm:Cr}) excludes curved motion only when, in some clock, countably many
+affine maps give the first returns at all times except a set carrying less than one block unit of travel.
 A machine with one head whose home drifts, or whose motion is not home-based at all, falls outside Theorem~C even if
-all its other heads are HB-AR; it is excluded only through Theorem~Cq, that is, only if its limits are
-countably-piecewise affine on enough of their speed. Motion that satisfies $(\star)$
-exists, and by Theorem~Cq it is necessarily curved. The second paper constructs, for every machine, a fixed wrapper
+all its other heads are HB-AR; it is excluded only through Theorems~Cq and~Cr, that is, only if its limits are
+countably-piecewise affine on enough of their speed, or have affine returns in a common clock on enough of it. Motion
+that satisfies $(\star)$ exists, and by Theorems~Cq and~Cr it is necessarily curved, and in every clock its first
+returns are not countably-piecewise affine on a set carrying at least one block unit of travel. The second paper constructs, for every machine, a fixed wrapper
 that adds linear time and whose complete runs satisfy, whatever computation follows, the cut inequality
 of~\cite[Definition~7.4]{FirstPaper2026} with zero slack, and also the conclusions of Theorem~M* when that computation
 runs in linear time~\cite[Theorem~8.1]{SecondPaper2026}; this result is Lean-verified there. The heads of the wrapper
@@ -592,41 +502,53 @@ curved macroscopic motion only; the cell-exact pairings that data movement needs
 
 \subsection{Consequences}\label{sec:mot-consequences}
 
-The consequences concern the number of tapes that must interact, changes of clock, and hierarchical schedules; the
-first two, with Theorem~Cq, give the design constraint of \cref{cor:mot-design}.
+The consequences concern the number of tapes that must interact, affine returns and changes of clock, and hierarchical
+schedules; the first two, with Theorem~Cq, give the design constraint of \cref{cor:mot-design}.
 
 \begin{corollary}[One work tape never expands]\label{cor:mot-one-tape}
 \notformalized
 \begin{enumerate}[label=(\alph*)]
-\item Let $P$ be $1$-Lipschitz on $[0,c_0]$. For all $\theta>0$ and $\varepsilon>0$ there is a Borel labelling $\beta$
-of $[0,c_0]$ whose classes have Lebesgue measure at most $\theta$ and whose crossing set satisfies $\nu(A(\beta))\le\varepsilon$.
+\item Let $P$ be $1$-Lipschitz on $[0,c_0]$. For all $\theta>0$ and $\varepsilon>0$ there is a labelling $\beta$ whose
+classes have measure at most $\theta$ and $\int\kappa\,\mathrm dp\le\varepsilon$.
 \item Let $(P_t)_{t<k}$ be $1$-Lipschitz functions on $[0,c_0]$ that satisfy $(\star)_\emptyset$. Then at least two of
-the $P_t$ are not monotone, and the non-monotone ones are not all equal.
+the $P_t$ are not monotone, and the non-monotone ones do not all have the same level sets: they are not all of the form
+$h_t\circ P$ for one of them, $P$, and injective maps $h_t$.
 \item Consequently, if $M$ has one work tape and transposes, then $T_M(d)/L(d)\to\infty$. In every limit of a machine
-that transposes within $cL(d)$ steps on all inputs, at least two work-head limits are non-monotone, and they are not all
-equal.
+that transposes within $cL(d)$ steps on all inputs, at least two work-head limits are non-monotone, and they do not all
+have the same level sets.
 \end{enumerate}
 \end{corollary}
 
 \begin{informalproof}
-(a) For $m\ge0$ let $N_m(p)$ be the number of intervals $I$ of the partition of $[0,c_0]$ into $2^m$ intervals of equal
-length (half-open, the last one closed) with $p\in P(I)$. Each $P(I)$ is an interval, so $N_m$ is Borel. We have
-$N_m\le N_{m+1}$, since $P(I)$ is the union of the images of the two halves of $I$, and $N_m(p)\to\#\Lambda(p)$, since
-distinct intervals contain distinct points of $\Lambda(p)$ and any finitely many points of $\Lambda(p)$ lie in distinct
-intervals once $m$ is large. So $Z_\infty=\{p:\#\Lambda(p)=\infty\}$ is Borel, and it is $\lambda$-null by
-\cref{lem:mot-levels}(b). Let $Y=[0,c_0]\setminus P^{-1}(Z_\infty)$. By \cref{lem:mot-levels}(a),
-$\nu([0,c_0]\setminus Y)=\int_{Z_\infty}\#\Lambda(p)\,\mathrm dp=0$. The relation $F=\{(u,v)\in Y\times Y:P(u)=P(v)\}$
-is a finite Borel equivalence relation on $Y$, since its classes are finite level sets. Put $F_j=F$ for all $j$ and
-$B=D^+\cap Y$. For $u\in B$ the point $\psi(u)$ lies in the level set of $u$, hence in $Y$, and $(u,\psi(u))\in F$. Since
-$D^+\setminus B\subseteq[0,c_0]\setminus Y$ is $\nu$-null, \cref{lem:mot-hyperfinite} with $k=1$ gives the claim.
+(a) Let $\delta>0$ be a band width, to be chosen at the end. By \cref{lem:mot-levels}(b) the level set $\Lambda(p)$ is
+finite for almost every $p$, so for almost every $\eta\in[0,1)$ all the levels $p_j=(j+\eta)\delta$, $j\in\Z$, have finite level sets; fix
+such an $\eta$. The bands $T_j=\{u\in[0,c_0]:p_j\le P(u)<p_{j+1}\}$ partition $[0,c_0]$, only finitely many of them are
+nonempty, and each is a finite union of intervals, because $P$ is continuous and takes each value $p_j$ only finitely
+often. In a band with $\lambda(T_j)\le\theta$ make no cut, and put $m_j=0$. In each other band choose
+$m_j=\lceil\lambda(T_j)/\theta\rceil-1\le\lambda(T_j)/\theta$ cut times, the first times at which the continuous function
+$x\mapsto\lambda(T_j\cap[0,x])$ takes the values $\theta,2\theta,\dots,m_j\theta$. Let $\beta$ label $u\in T_j$ by a
+natural number that encodes, injectively, the pair formed by $j$ and the number of cuts of $T_j$ that are at most $u$,
+and label every $u\notin[0,c_0]$ by $0$. Then $\beta$ is constant on each of finitely many intervals that partition
+$[0,c_0]$, so it is piecewise constant off $\emptyset$ (take $Z$ to be their endpoints). Its classes have measure at most
+$\theta$: within $T_j$ they are the parts of $T_j$ before the first cut, between consecutive cuts, and after the last
+cut, of measures $\theta,\dots,\theta$ and $\lambda(T_j)-m_j\theta\le\theta$.
+Let $p\in[p_j,p_{j+1})$ have a finite level set, and let $s<s'$ be consecutive points of $\Lambda(p)$. Both lie in $T_j$,
+so $\beta(s)\ne\beta(s')$ only if a cut of $T_j$ lies in $(s,s']$. These intervals are disjoint for different
+consecutive pairs of $\Lambda(p)$, so $\kappa(p)\le m_j$. Hence $\int\kappa\,\mathrm dp\le\delta\sum_jm_j\le\delta
+c_0/\theta$, which is $\varepsilon$ for $\delta=\varepsilon\theta/c_0$.
 
-(b) If $P_t$ is monotone and $u\in D^+_t$, then $P_t$ is constant on $[u,\psi_t(u)]$, so $u$ lies in one of the
-countably many maximal nondegenerate intervals on which $P_t$ is constant. On each of them $P_t'=0$ except at the
-endpoints, so $\nu_t(D^+_t)=0$. Now suppose that the non-monotone $P_t$, if there are any, are all equal to one path $P$.
-Take $\theta=\frac14$, and let $\beta$ be the labelling of (a) for $P$ with $\varepsilon=1/(4k)$, or any Borel labelling
-with classes of measure at most $\frac14$ if all $P_t$ are monotone. The heads with $P_t=P$ have the same returns and the
-same speed measure as $P$, so $\sum_t\nu_t(A_t(\beta))\le k\cdot\frac1{4k}=\frac14<1-2\theta$, which contradicts
-\cref{thm:mot-borel}.
+(b) If $P_t$ is monotone, each of its level sets is empty, a point or an interval, so $\kappa_t(p)=0$ for every labelling
+and every $p$. Now suppose that the non-monotone $P_t$, if there are any, are all of the form $h_t\circ P$ for one of
+them, $P$, and injective maps $h_t$. The interval $I=P([0,c_0])$ is nondegenerate, and $h_t$ is continuous on it: for
+closed $F\subseteq\R$ the set $\{q\in I:h_t(q)\in F\}=P(P_t^{-1}(F))$ is compact. Being injective, $h_t$ is strictly
+monotone on $I$. So $\Lambda_t(h_t(q))=\Lambda(q)$ for $q\in I$, the other level sets of $P_t$ are empty, and
+$\kappa_t(h_t(q))=\kappa(q)$ for every labelling. Take $\theta=\frac14$. By uniform continuity there is $\delta>0$ such
+that each of these $h_t$ maps every subinterval of $I$ of length at most $\delta$ onto an interval of length at most
+$\theta/(4kc_0)$. Let $\beta$ be the labelling of (a) for $P$ with band width $\delta$, or any labelling with classes of
+measure at most $\frac14$ if all $P_t$ are monotone. For each band, $\kappa_t\le m_j$ on the interval
+$h_t([p_j,p_{j+1})\cap I)$, and $\kappa_t=0$ off the union of these intervals, so
+$\int\kappa_t\,\mathrm dp\le\sum_jm_j\,\theta/(4kc_0)\le1/(4k)$. Hence $\sum_t\int\kappa_t\,\mathrm dp\le\frac14$, and
+$(\star)_\emptyset$ gives $1\le\frac14+\frac12$, a contradiction.
 
 (c) If $M$ has one work tape and transposes, and $T_M(d_i)\le cL(d_i)$ along some $d_i\to\infty$, then by
 \cref{thm:Mstar}(b) $M$ has a limit, which satisfies $(\star)_\emptyset$ and consists of a single path, against (b). The
@@ -635,44 +557,140 @@ second statement is (b) for limits, which satisfy $(\star)_\emptyset$ by \cref{t
 
 \paragraph{Why it matters.} For one work tape the statement is much weaker than the classical superlinear lower bounds
 in neighbouring models: $\Omega(L^{3/2}/(\log L)^{1/2})$ steps with one work tape and no output tape~\cite{DMS1991}, and
-$\Theta(L^{5/4})$ for Boolean matrices with one work tape and a write-only output tape~\cite{DietzfelbingerMaass1993}. Its interest is the reason: the first
-returns of a single head stay in its level sets, which are finite for almost every level, so a single head can be
-labelled at no cost, however its motion is curved. The expansion that $(\star)$ demands must come from the interplay of
-the returns of two or more heads moving along different non-monotone paths. Heads in lockstep, stationary heads and
-monotone heads contribute nothing.
+$\Theta(L^{5/4})$ for Boolean matrices with one work tape and a write-only output tape~\cite{DietzfelbingerMaass1993}.
+Its interest is the reason: label time by thin height bands of the head's own position, and cut each band into pieces of
+small measure. Consecutive visits of a level lie in one band and get different labels only across a cut, and each cut
+separates at most one consecutive pair at each level; so crossings are rare, however curved the motion. The expansion that $(\star)$ demands must come from the interplay of
+the returns of two or more heads moving along non-monotone paths with different level sets. Stationary and monotone heads
+contribute nothing, and heads that all move in lockstep, even after a fixed change of scale on each tape, cannot supply
+the expansion by themselves.
 
-\begin{corollary}[A common clock change does not help]\label{cor:mot-clock}
+The next theorem replaces the affine pieces of Theorem~Cq by affine returns, seen through a common change of clock.
+
+\begin{theorem}[Theorem Cr: affine returns]\label{thm:Cr}
 \notformalized
 Let $(P_t)_{t<k}$ be $1$-Lipschitz functions on $[0,c_0]$ that satisfy $(\star)_\emptyset$. Let $\varphi$ be a
 homeomorphism of $[0,c_0]$ onto an interval $J$ such that $\varphi^{-1}$ maps $\lambda$-null sets to $\lambda$-null sets,
-for instance an increasing homeomorphism with absolutely continuous inverse. For each $t$ let $E_{t,a}$ ($a\in\N$) be
-Borel subsets of $J$ on each of which $P_t\circ\varphi^{-1}$ agrees with an affine function, and let
+for instance the identity; we call such a $\varphi$ a \emph{clock}. Let $\Gamma$ be a countable set of affine bijections
+of $\R$. For each $t$ let
+\[
+  X_t=\{u\in D^+_t:\varphi(\psi_t(u))\ne g(\varphi(u))\text{ for every }g\in\Gamma\}
+\]
+be the set of times whose first return is not given, in the clock $\varphi$, by a map in $\Gamma$; it is Borel by
+\cref{lem:mot-returns}(a). Then
+\[
+  \sum_{t<k}\nu_t(X_t)\;\ge\;1 .
+\]
+\end{theorem}
+
+In words: in every limit of a linear-time transposer, in every clock and for every countable set of affine maps, the
+times at which a head's next return to its current level is not given by one of these maps carry at least one block
+unit of travel in total.
+
+\begin{informalproof}
+Translating $J$, and conjugating the maps in $\Gamma$ by the same translation, we may assume that $J=[0,c_1]$. The
+finite measure $A\mapsto\lambda(\varphi^{-1}(A))$ on $J$ vanishes on $\lambda$-null sets, so by the Radon--Nikodym
+theorem it has a density $\rho$ with respect to $\lambda$, which we take Borel and finite everywhere, and for every
+$\theta>0$ there is $\delta>0$ with $\lambda(\varphi^{-1}(A))\le\theta$ whenever $\lambda(A)\le\delta$. Let
+$\Gamma_1\subseteq\Gamma_2\subseteq\cdots$ be finite sets with union $\Gamma$. For $n\ge1$ let $B_{t,n}$ be the set of
+$u\in D^+_t$ with $\rho(\varphi(u))\le n$ and $\varphi(\psi_t(u))=g(\varphi(u))$ for some $g\in\Gamma_n$; it is Borel by
+\cref{lem:mot-returns}(a).
+
+Fix $\theta\in(0,\frac12)$, $\varepsilon>0$ and $n\ge1$, and choose $\delta$ for $\theta$. Push the restriction of
+$\nu_t$ to $B_{t,n}$ forward along $u\mapsto(\varphi(u),\varphi(\psi_t(u)))$ and sum over $t$. This gives a finite Borel
+measure $\mu$ on $J^2$, concentrated on the graphs of the maps in $\Gamma_n$, and by \cref{lem:mot-levels}(c), for
+every Borel set $E\subseteq J$,
+\[
+  \mu(E\times J)=\sum_t\nu_t\bigl(B_{t,n}\cap\varphi^{-1}(E)\bigr)
+  \le k\,\lambda\bigl(\varphi^{-1}(E\cap\{\rho\le n\})\bigr)=k\int_{E\cap\{\rho\le n\}}\rho\,\mathrm d\lambda
+  \le kn\,\lambda(E).
+\]
+\Cref{lem:mot-finite-measure}, on $J$ and with $\delta$ in place of $\theta$, gives a labelling $\beta'$ whose classes
+have measure at most $\delta$ and $\mu(\{(x,y):\beta'(x)\ne\beta'(y)\})<\varepsilon$. Let $\beta=\beta'\circ\varphi$ on
+$[0,c_0]$ and $\beta=0$ elsewhere. Since $\varphi$ is a homeomorphism, $\beta$ is piecewise constant off $\emptyset$,
+with the finite set $\varphi^{-1}(Z')$, where $Z'$ is that of $\beta'$. Its classes are the preimages under $\varphi$ of
+those of $\beta'$, so by the choice of $\delta$ they have measure at most $\theta$. A point $u\in B_{t,n}$ lies in $A_t(\beta)$ exactly when
+$\beta'(\varphi(u))\ne\beta'(\varphi(\psi_t(u)))$, so
+$\sum_t\nu_t(A_t(\beta)\cap B_{t,n})=\mu(\{(x,y):\beta'(x)\ne\beta'(y)\})<\varepsilon$. By $(\star)_\emptyset$ and
+\cref{lem:mot-returns}(e),
+\[
+  1\;\le\;\sum_t\int\kappa_t\,\mathrm dp+2\theta\;\le\;\sum_t\nu_t(A_t(\beta))+2\theta
+  \;<\;\sum_t\nu_t(D^+_t\setminus B_{t,n})+\varepsilon+2\theta .
+\]
+As $n\to\infty$, the sets $B_{t,n}$ increase to $D^+_t\setminus X_t$, so $\nu_t(D^+_t\setminus B_{t,n})\to\nu_t(X_t)$,
+and $1\le\varepsilon+2\theta+\sum_t\nu_t(X_t)$. Letting $\theta,\varepsilon\to0$ proves the theorem.
+\end{informalproof}
+
+For $\Gamma=\emptyset$ the theorem says $\sum_t\nu_t(D^+_t)\ge1$. By \cref{lem:mot-levels}(a) and~(b) and
+\cref{lem:mot-returns}(d) the left side is the integrated level excess $\sum_t\int(\#\Lambda_t(p)-1)^+\,\mathrm dp$. The
+second paper also bounds it below by $1$, for limits of linear-time runs that satisfy the first paper's cut inequality
+with zero slack~\cite[Section~8]{SecondPaper2026}, and the bound follows directly from $(\star)_\emptyset$, since
+$\kappa_t\le(\#\Lambda_t-1)^+$. The constant is $1$, not the $\frac12$ of Theorem~Cq, because each crossing is charged
+once, to the earlier of its two visits, whereas deleting a visit can break two consecutive pairs.
+
+A countable union of countable sets is countable, so the sets $X_t$ have a smallest version. If countable sets
+$\Gamma_j$ make $\sum_t\nu_t(X_t)$ tend to its infimum over all countable $\Gamma$, their union $\Gamma^*$ attains it, and
+then, for every countable $\Gamma$, $\nu_t$-almost every time in the set $X_t$ for $\Gamma^*$ also lies in the set $X_t$
+for $\Gamma$. So in every clock the sets $X_t$ for $\Gamma^*$ carry at least one block unit of travel in total, and on no
+part of them that carries travel are the first returns, seen in that clock, countably-piecewise affine.
+
+The hypotheses on the clock matter. A Cantor function of a null Cantor set is continuous and nondecreasing but constant
+on each gap, and almost every time lies in a gap; by \cref{lem:mot-returns}(c), $\nu_t$-almost no first return lands in
+the Cantor set. With it in place of $\varphi$, countably many translations give the first return of $\nu_t$-almost every
+time, so $\sum_t\nu_t(X_t)=0$ for every family of paths, and the conclusion fails.
+
+Affine pieces, possibly after a change of scale on the tape, produce affine returns.
+
+\begin{lemma}[Returns between affine pieces]\label{lem:mot-transitions}
+\notformalized
+Let $P$ be $1$-Lipschitz on $[0,c_0]$, let $\varphi\colon[0,c_0]\to\R$ be a Borel map, and let $h\colon\R\to\R$ be
+injective. Let $E_a$ ($a\in\N$) be Borel subsets of $[0,c_0]$ and $f_a$ affine maps with $P=h\circ f_a\circ\varphi$ on
+$E_a$, and let $N=[0,c_0]\setminus\bigcup_aE_a$. Let $\Gamma$ be the countable set of the maps $f_b^{-1}\circ f_a$ for
+which neither $f_a$ nor $f_b$ is constant. Then the set of $u\in D^+$ with $\varphi(\psi(u))\ne g(\varphi(u))$ for every
+$g\in\Gamma$, which is Borel by \cref{lem:mot-returns}(a), has $\nu$-measure at most $2\nu(N)$.
+\end{lemma}
+
+\begin{informalproof}
+If $f_a$ is constant, then $P$ is constant on $E_a$, so $E_a$ lies in a level set and $\nu(E_a)=0$ by
+\cref{lem:mot-levels}(b). Let $E^*$ be the union of the $E_a$ with $f_a$ not constant. The Borel set
+$N^*=[0,c_0]\setminus E^*$ contains $N$ and is contained in $N$ together with the $\nu$-null sets $E_a$ with $f_a$
+constant, so $\nu(N^*)=\nu(N)$. Let $u\in D^+$ with $u\in E_a$ and $\psi(u)\in E_b$, where neither $f_a$ nor $f_b$ is
+constant. By \cref{lem:mot-returns}(b), $h(f_b(\varphi(\psi(u))))=P(\psi(u))=P(u)=h(f_a(\varphi(u)))$, and since $h$ is
+injective, $\varphi(\psi(u))=f_b^{-1}(f_a(\varphi(u)))$. So the set in question is contained in
+$N^*\cup(\psi^{-1}(N^*)\cap D^+)$, which has $\nu$-measure at most $2\nu(N)$ by \cref{lem:mot-returns}(c).
+\end{informalproof}
+
+\begin{corollary}[A common clock change and changes of scale do not help]\label{cor:mot-clock}
+\notformalized
+Let $(P_t)_{t<k}$ be $1$-Lipschitz functions on $[0,c_0]$ that satisfy $(\star)_\emptyset$. Let $\varphi$ be a
+homeomorphism of $[0,c_0]$ onto an interval $J$ such that $\varphi^{-1}$ maps $\lambda$-null sets to $\lambda$-null sets,
+for instance an increasing homeomorphism with absolutely continuous inverse, and for each $t$ let $h_t$ be an injective
+map of $\R$ into itself, for instance a homeomorphism of $\R$. For each $t$ let $E_{t,a}$ ($a\in\N$) be Borel subsets
+of $J$ on each of which $P_t\circ\varphi^{-1}=h_t\circ f$ for an affine function $f$, and let
 $N_t=J\setminus\bigcup_aE_{t,a}$. Then $\sum_t\nu_t(\varphi^{-1}(N_t))\ge\frac12$.
 \end{corollary}
 
 \begin{informalproof}
-Choose affine maps $f_{t,a}$ with $P_t\circ\varphi^{-1}=f_{t,a}$ on $E_{t,a}$. Then $P_t=f_{t,a}\circ\varphi$ on the
-Borel set $\varphi^{-1}(E_{t,a})$, and these sets cover $[0,c_0]$ except $\varphi^{-1}(N_t)$. \Cref{lem:mot-transitions}
-gives Borel sets $B_t\subseteq D^+_t$ with $\nu_t(D^+_t\setminus B_t)\le2\nu_t(\varphi^{-1}(N_t))$ and
-$\varphi(\psi_t(u))\in\Gamma\varphi(u)$ for $u\in B_t$, where $\Gamma\le\mathrm{Aff}(\R)$ is the countable group generated
-by all the maps $f_{t,b}^{-1}\circ f_{t,a}$ with $f_{t,a},f_{t,b}$ not constant. Take $Y_0$ and $F_j$ from
-\cref{lem:mot-cfw}, let $Y=\varphi^{-1}(Y_0)$ and $F'_j=\{(u,v)\in Y\times Y:(\varphi(u),\varphi(v))\in F_j\}$. These
-are increasing finite Borel equivalence relations on $Y$, with finite classes because $\varphi$ is injective, and their
-union contains $(u,\psi_t(u))$ for every $u\in B'_t=B_t\cap Y\cap\psi_t^{-1}(Y)$. By hypothesis
-$[0,c_0]\setminus Y=\varphi^{-1}(J\setminus Y_0)$ is $\lambda$-null, so, as in the proof of \cref{thm:Cq},
-$\nu_t(D^+_t\setminus B'_t)\le2\nu_t(\varphi^{-1}(N_t))$. \Cref{lem:mot-hyperfinite,thm:mot-borel} then give
-$1-2\theta\le2\sum_t\nu_t(\varphi^{-1}(N_t))+\varepsilon$ for all $\theta\in(0,\frac12)$ and $\varepsilon>0$.
+For each $t$ apply \cref{lem:mot-transitions} to $P_t$, $\varphi$, $h_t$ and the Borel pieces $\varphi^{-1}(E_{t,a})$,
+whose union misses exactly $\varphi^{-1}(N_t)$, and let $\Gamma$ be the union over $t$ of the countable sets of affine
+maps that it produces. The sets $X_t$ of \cref{thm:Cr} for $\varphi$ and $\Gamma$ lie in the sets that the lemma bounds
+for head $t$, because $\Gamma$ contains the maps produced for $t$. So $\nu_t(X_t)\le2\nu_t(\varphi^{-1}(N_t))$, and
+\cref{thm:Cr} gives $1\le2\sum_t\nu_t(\varphi^{-1}(N_t))$.
 \end{informalproof}
 
-With $\varphi$ the identity this is Theorem~Cq. The corollary covers, for example, a global time profile that slows all
-heads down and speeds them up together, or a shared duty cycle.
+With $\varphi$ and all $h_t$ the identity this is Theorem~Cq, which therefore also follows from Theorem~Cr. The corollary
+covers, for example, a global time profile that slows all heads down and speeds them up together, a shared duty cycle,
+and heads whose speed depends in a fixed way on their position on the tape.
 
-\paragraph{Why it matters.} Curvature that is common to all heads does not create expansion: if one change of clock
-makes every head countably-piecewise affine, up to sets carrying little speed, then $(\star)$ fails. Non-affine returns
-are therefore necessary but not sufficient. What is required is that no single such change of clock conjugates the
-transitions of all heads into a countable group of affine maps. Head-dependent clocks, $P_t=f_t\circ\varphi_t$ with
-affine $f_t$ and different $\varphi_t$, are not covered; a M\"obius clock on one head and affine motion on another produce M\"obius
-transitions, which is the regime of the monotone expanders of Bourgain and Yehudayoff~\cite{BourgainYehudayoff2013}.
+\paragraph{Why it matters.} Curvature that is common to all heads, or that comes from a fixed change of scale
+on each tape, does not create expansion: if one change of clock and such changes of scale make every head
+countably-piecewise affine, up to sets carrying little speed, then $(\star)$ fails. Non-affine motion is therefore
+necessary but not sufficient. What is required, by Theorem~Cr, is that in no common clock are the first returns of the
+heads given by countably many affine maps, except at times that carry less than one block unit of travel. Behind this
+is amenability: the affine maps of $\R$ form a solvable group, and \cref{lem:mot-finite-measure} builds its labels from
+F\o lner sets of finitely many of them. Head-dependent clocks, $P_t=f_t\circ\varphi_t$ with countably-piecewise affine
+$f_t$ and different $\varphi_t$, are not covered; a M\"obius clock on one head and affine motion on another produce M\"obius transitions,
+which is the regime of the monotone expanders of Bourgain and Yehudayoff~\cite{BourgainYehudayoff2013}.
 
 Next we consider hierarchical schedules in which every move is a sweep at constant speed and every excursion returns
 exactly to where it started. They may be arbitrarily deep and interleaved.
@@ -801,18 +819,22 @@ a subsequence of every sequence of sizes. Then:
 \begin{enumerate}[label=(\alph*)]
 \item (curved) for all Borel sets $E_{t,a}$ on each of which $P_t$ is affine, the uncovered sets $N_t$ satisfy
 $\sum_t\nu_t(N_t)\ge\frac12$;
-\item (head-dependent) this survives every common change of clock: for every homeomorphism $\varphi$ of $[0,c_0]$ onto an
-interval $J$ such that $\varphi^{-1}$ maps null sets to null sets, and all Borel sets $E_{t,a}\subseteq J$ on each of
-which $P_t\circ\varphi^{-1}$ is affine, the uncovered sets $N_t\subseteq J$ satisfy
-$\sum_t\nu_t(\varphi^{-1}(N_t))\ge\frac12$;
-\item (interacting tapes) at least two of the $P_t$ are not monotone, and these are not all equal; in particular
+\item (head-dependent) this survives every common change of clock and every fixed change of scale on each tape: for
+every homeomorphism $\varphi$ of $[0,c_0]$ onto an interval $J$ such that $\varphi^{-1}$ maps null sets to null sets and
+every countable set $\Gamma$ of affine bijections of $\R$, the times $u\in D^+_t$ with
+$\varphi(\psi_t(u))\notin\{g(\varphi(u)):g\in\Gamma\}$ carry travel at least $1$ in total, that is, the sum over $t$
+of their $\nu_t$-measures is at least $1$; in particular, for all
+injective maps $h_t$ of $\R$ and all Borel sets $E_{t,a}\subseteq J$ on each of which $P_t\circ\varphi^{-1}=h_t\circ f$
+for an affine $f$, the uncovered sets $N_t\subseteq J$ satisfy $\sum_t\nu_t(\varphi^{-1}(N_t))\ge\frac12$;
+\item (interacting tapes) at least two of the $P_t$ are not monotone, and these do not all have the same level sets;
+in particular
 $k\ge2$.
 \end{enumerate}
 \end{corollary}
 
 \begin{informalproof}
 Limits exist by \cref{thm:Mstar}(b), and they satisfy $(\star)_\emptyset$ by \cref{thm:Mstar}(a). Then (a) is
-\cref{thm:Cq}, (b) is \cref{cor:mot-clock} and (c) is \cref{cor:mot-one-tape}(b).
+\cref{thm:Cq}, (b) is \cref{thm:Cr,cor:mot-clock} and (c) is \cref{cor:mot-one-tape}(b).
 \end{informalproof}
 
 \paragraph{Why it matters.} This is the motion a construction must use: curved, with curvature that differs between

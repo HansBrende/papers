@@ -2,6 +2,7 @@ import MotionDepthCodes.CircularClique
 import MotionDepthCodes.Clebsch
 import MotionDepthCodes.ClebschCertificate
 import MotionDepthCodes.DepthLabels
+import MotionDepthCodes.MatchingForm
 import MotionDepthCodes.Pentagon
 import MotionDepthCodes.Petersen
 import MotionDepthCodes.Polymatroid
@@ -48,6 +49,12 @@ and `Quot.sound`. -/
 #print axioms MotionDepthCodes.cycle_errors_congr
 #print axioms MotionDepthCodes.le_of_modEq_neg
 #print axioms MotionDepthCodes.lemma_Zq
+-- MatchingForm.lean
+#print axioms MotionDepthCodes.exists_pattern_matchingNumber_le_finrank_ker
+#print axioms MotionDepthCodes.finrank_ker_le_matchingNumber
+#print axioms MotionDepthCodes.finrank_ker_le_matchingNumber_of_degree_le_three
+#print axioms MotionDepthCodes.matchingNumber_eq_min_barrier
+#print axioms MotionDepthCodes.minrank_eq_card_sub_matchingNumber
 -- Pentagon.lean
 #print axioms MotionDepthCodes.nbhd_cycleGraph_five
 #print axioms MotionDepthCodes.pentagonNbhd

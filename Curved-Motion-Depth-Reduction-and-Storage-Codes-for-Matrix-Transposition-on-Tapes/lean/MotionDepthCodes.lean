@@ -3,6 +3,7 @@
 import MotionDepthCodes.CircularClique
 import MotionDepthCodes.ClebschCertificate
 import MotionDepthCodes.DepthLabels
+import MotionDepthCodes.MatchingForm
 import MotionDepthCodes.Pentagon
 import MotionDepthCodes.Petersen
 import MotionDepthCodes.RateHalf

@@ -38,8 +38,7 @@ codes cannot reach rate~$\tfrac12$ at girth at least~$7$, and Mycielski's constr
 whether goodness bounds the fractional chromatic number is open (\cref{sec:ana-limits,sec:ana-targets}).
 \end{itemize}
 Every numbered result of \cref{sec:entropic,sec:thmH,sec:symmetrization,sec:targets,sec:clebsch,sec:subcubic} is
-formalized, apart from the classical Tutte--Berge formula used in the matching form of Theorem~S (\cref{thm:S-barrier});
-\cref{sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets} are not formalized.
+formalized; \cref{sec:ana-A,sec:ana-fields,sec:ana-limits,sec:ana-targets} are not formalized.
 
 \subsection{Entropic polymatroids}\label{sec:entropic}
 
@@ -357,7 +356,8 @@ field, $\card C=\card F^{\dim C}$.
 The exact minrank follows by splitting along separated vertex sets.
 
 \begin{theorem}[Theorem S, barrier and matching forms]\label{thm:S-barrier}
-\partformal{Subcubic.lean}{finrank_subCode_union_le, finrank_subCode_biUnion_le, finrank_ker_le_barrier, finrank_ker_le_heavy, exists_linearStorageCode_of_matching, exists_pattern_finrank_ker_ge_of_matching}{the identification of the minimum of the bound with the matching number, which is the Tutte--Berge formula~\cite{Berge1958}.}
+\formal{Subcubic.lean}{finrank_subCode_union_le, finrank_subCode_biUnion_le, finrank_ker_le_barrier, finrank_ker_le_heavy, exists_linearStorageCode_of_matching, exists_pattern_finrank_ker_ge_of_matching}
+\formal{MatchingForm.lean}{matchingNumber_eq_min_barrier, finrank_ker_le_matchingNumber, finrank_ker_le_matchingNumber_of_degree_le_three, exists_pattern_matchingNumber_le_finrank_ker, minrank_eq_card_sub_matchingNumber}
 Let $M$ have unit diagonal, no recovery triangle, and off-diagonal support in the edges of a graph~$G$. Let $U\subseteq V$ be
 a set outside which every vertex satisfies $(\star\star)$, and let the vertices outside $U$ be partitioned into blocks with
 no edges between different blocks (for instance the components of $G-U$). Then
@@ -365,7 +365,7 @@ no edges between different blocks (for instance the components of $G-U$). Then
   \dim\ker M\;\le\;\card U+\sum_{B}\lfloor\card B/2\rfloor .
 \]
 Taking for $U$ the vertices violating $(\star\star)$ gives $\dim\ker M\le\card U+\lfloor(\card V-\card U)/2\rfloor$. By the
-Tutte--Berge formula, the minimum of the right side over all $U$, with the components of $G-U$ as blocks, is the matching
+Tutte--Berge formula~\cite{Berge1958}, the minimum of the right side over all $U$, with the components of $G-U$ as blocks, is the matching
 number $\nu(G)$. Conversely, over every field and for every graph, a matching of $m$ edges gives such a matrix with
 $\dim\ker M\ge m$. Hence, for triangle-free $G$ of maximum degree at most~$3$, $\minrk_F(G)=\card V-\nu(G)$ over every
 field.
@@ -376,7 +376,10 @@ Deleting $U$ costs at most $\card U$ dimensions. A code on a union of blocks wit
 of the codes on the blocks, because the rows of one block vanish on the others; each block's code obeys \cref{thm:S}. The
 matching code puts one free symbol on each edge of the matching, constant along the edge, and zero elsewhere; it is a
 linear storage code of dimension~$m$, and \cref{lem:linear-pattern} turns it into a matrix with $\dim\ker M\ge m$. The
-Tutte--Berge formula is classical and not formalized.
+Tutte--Berge formula, in the form used here (some $U$ attains $\card U+\sum_B\lfloor\card B/2\rfloor=\nu(G)$, with the
+components of $G-U$ as blocks), comes from the repository's shared Lean library \texttt{lean-machine}. It ports
+J.~P. Traverso Gianini's derivation of the formula from Mathlib's Tutte theorem~\cite{TraversoGianini2026} and adds the
+matching number and the blocks.
 \end{outline}
 
 The statement appears to be new: we found no statement that the minrank of triangle-free subcubic graphs equals the

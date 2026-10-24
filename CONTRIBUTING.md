@@ -49,6 +49,11 @@ Tapes*, is a complete example: start from its `paper/macros.tex`,
   ```
   Readers then need the whole repository, with sibling directories in place;
   the paper's README must say so.
+- **Shared machinery.** [`lean-machine/`](lean-machine/) at the repository root holds Lean code that more
+  than one paper can use, and external Lean code we have ported. A paper requires it like an earlier
+  paper's library (`path = "../../lean-machine"`). Put general lemmas there rather than in a paper's
+  library. Its README sets the rules for external code: a compatible licence, a pinned commit, a full
+  read before building, and a record of the source and of every change.
 - **Packages.** `.lake/` is ignored. Locally, `.lake/packages` may be a symbolic
   link to a sibling's packages at the same revisions, which avoids a second
   Mathlib download. It is a local convenience and is never committed.

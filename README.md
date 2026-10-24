@@ -7,4 +7,7 @@
 | [Bit and Word Transposition on Tapes](Bit-and-Word-Transposition-on-Tapes/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Bit-and-Word-Transposition-on-Tapes/paper/main.pdf), LaTeX sources), its Lean 4 formalization, and reproduction tools |
 | [Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/paper/main.pdf), LaTeX sources), its Lean 4 formalization, and certificate tools |
 
+Shared Lean machinery used by the papers, including ported external formalizations, is in
+[`lean-machine/`](lean-machine/).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution and publishing guidance.

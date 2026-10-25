@@ -20,15 +20,15 @@ Equivalently, each coordinate is a function of its recovery set on~$\mathcal C$.
 The induced relation on $Q\subseteq V$ is $N_Q(q)=N(q)\cap Q$ for $q\in Q$. A code on this induced relation need not extend to one on~$V$. Conversely, projecting an arbitrary code on~$V$ to~$Q$ need not give a code for $N_Q$: the omitted coordinates must first be fixed.
 
 \begin{lemma}[Paid conditioning]\label{lem:pre-conditioning}
-\notformalized
+\formal{StorageCode.lean}{isStorageCode_conditionedCode,storageCode_conditioning_bound}
 Let $H=V\setminus Q$. Every nonempty fibre of a storage code~$\mathcal C$ obtained by fixing the coordinates in~$H$, and then restricting to~$Q$, is a storage code for~$N_Q$. If every code for~$N_Q$ has at most $a^u$ words, then
 \[
  |\mathcal C|\le a^{|H|+u}.
 \]
 \end{lemma}
-\begin{informalproof}
+\begin{outline}
 Two words in a fixed fibre agree on~$H$. Agreement on $N(q)\cap Q$ therefore gives agreement on all of~$N(q)$, so it determines~$q$. There are at most $a^{|H|}$ fibres, each of size at most~$a^u$.
-\end{informalproof}
+\end{outline}
 
 \begin{definition}[Paired incidence]\label{def:pre-incidence}
 The incidence graph $E(N)$ has vertex set $\{L_p:p\in V\}\sqcup\{R_q:q\in V\}$, with an edge $L_pR_q$ exactly when $p\in N(q)$. The pair $L_p,R_p$ is the \emph{demand pair} for~$p$; it is not an extra graph edge. Let
@@ -45,12 +45,12 @@ For binary inputs on~$V$, an index code of length~$m$ for~$N$ is a map $G:\{0,1\
 \end{definition}
 
 \begin{lemma}[Fibre bound]\label{lem:pre-fibre}
-\notformalized
+\formal{StorageCode.lean}{isStorageCode_indexFiber,indexCode_length_ge}
 Every fibre of an index code for~$N$ is a binary storage code for~$N$. Consequently, if all such storage codes have size at most $2^{|V|-s}$, every index code has length at least~$s$.
 \end{lemma}
-\begin{informalproof}
+\begin{outline}
 Inside a fibre the broadcast is fixed, so agreement on the recovery set determines the demanded bit. The at most $2^m$ fibres partition $2^{|V|}$ inputs. Hence $2^{|V|}\le2^m2^{|V|-s}$.
-\end{informalproof}
+\end{outline}
 
 For a native computation, let $I_\Gamma(\ell)$ be the raw input coordinates in the dependency cone of physical output~$\ell$ after a genie~$\Gamma$ is fixed. The relation relevant to transposition is
 \begin{equation}\label{eq:transpose-relation}

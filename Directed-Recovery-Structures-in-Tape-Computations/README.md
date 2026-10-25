@@ -18,8 +18,10 @@ spaces over any field, with ordinary integer subtraction and no invertibility or
 commutativity hypothesis. It reuses Mathlib rank and range inequalities through
 `lean-machine`. Its axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`. Formal status is recorded beside every numbered result; the index
-and axiom checks are generated from those annotations. Other results below
-currently remain written proofs.
+and axiom checks are generated from those annotations. The paid-conditioning, index-code fibre, and independent-coordinate code lemmas
+are also formalized, including arbitrary real exponents and the entropy statement
+for every law. They reuse the fourth paper's storage-code predicate and earlier
+entropy library unchanged. Other results below currently remain written proofs.
 
 The written proofs establish an actual-cone incidence-distance theorem; a half-rate
 bound for complex linear codes with fixed block width and bounded coefficients;

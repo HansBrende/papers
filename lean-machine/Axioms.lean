@@ -55,3 +55,11 @@ import LeanMachine
 #print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate
 #print axioms LeanMachine.MatrixRankCertificate.rank_map_field
 #print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate_extension
+
+-- LinearRecovery.lean
+#print axioms LeanMachine.LinearRecovery.IsRecoverable.exists_coeffs
+#print axioms LeanMachine.LinearRecovery.IsRecoverable.exists_recovery_matrix
+#print axioms LeanMachine.LinearRecovery.finrank_add_rank_le
+#print axioms LeanMachine.LinearRecovery.isBlockRecoverable_of_decoder
+#print axioms LeanMachine.LinearRecovery.IsBlockRecoverable.exists_recovery_matrix
+#print axioms LeanMachine.LinearRecovery.IsBlockRecoverable.finrank_bound_of_matrix_labels

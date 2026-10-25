@@ -28,7 +28,10 @@ The following results are formalized in Lean:
 
 The finite counting and retained-degree part of paid trimming is formalized; its
 native cone-size premise and asymptotic paired-distance application remain written
-proofs. Every cited declaration uses only `propext`, `Classical.choice`, and
+proofs. Linearization of nonlinear recovery on arbitrary directed block codes and
+the resulting dimension bound from actual matrix-label witnesses are also
+formalized; constructing the specific expanding family and its witnesses remains
+unformalized. Every cited declaration uses only `propext`, `Classical.choice`, and
 `Quot.sound`. Formal status is recorded beside each numbered result; the index and
 axiom checks are generated from those annotations. General algebraic and counting
 lemmas are shared through `lean-machine`.

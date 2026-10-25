@@ -4,3 +4,4 @@ import LeanMachine.RankCertificate
 import LeanMachine.ColorOrder
 import LeanMachine.IncidenceTrimming
 import LeanMachine.MatrixRankCertificate
+import LeanMachine.LinearRecovery

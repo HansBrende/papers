@@ -1,3 +1,4 @@
+import DirectedRecovery.LinearRecovery
 import DirectedRecovery.DamagedExpanders
 import DirectedRecovery.MatrixCertificate
 import DirectedRecovery.Hyperfinite

@@ -89,3 +89,19 @@ import LeanMachine
 -- CanonicalBuckets.lean
 #print axioms LeanMachine.CanonicalBuckets.bucket_monotone
 #print axioms LeanMachine.CanonicalBuckets.bucket_fibre_card
+
+-- GraphBall.lean
+#print axioms LeanMachine.GraphBall.closedBall_zero
+#print axioms LeanMachine.GraphBall.closedBall_succ_subset
+#print axioms LeanMachine.GraphBall.card_closedBall_le
+#print axioms LeanMachine.GraphBall.card_edist_le
+
+-- FinitePacking.lean
+#print axioms LeanMachine.FinitePacking.exists_disjoint_subfamily
+#print axioms LeanMachine.FinitePacking.card_le_of_disjoint_bound
+
+-- PathPacking.lean
+#print axioms LeanMachine.PathPacking.edist_start_le_of_mem_support
+#print axioms LeanMachine.PathPacking.support_multiplicity_le_ball
+#print axioms LeanMachine.PathPacking.fixed_length_count
+#print axioms LeanMachine.PathPacking.odd_length_count

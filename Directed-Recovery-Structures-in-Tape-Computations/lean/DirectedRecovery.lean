@@ -1,3 +1,5 @@
+import DirectedRecovery.PathPacking
+import DirectedRecovery.PathPackingAsymptotics
 import DirectedRecovery.SelfDemands
 import DirectedRecovery.RowWordDeficit
 import DirectedRecovery.ThresholdBuckets

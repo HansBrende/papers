@@ -7,6 +7,7 @@ import DirectedRecovery.IncidenceTrimming
 import DirectedRecovery.IndependentRectangle
 import DirectedRecovery.LinearRecovery
 import DirectedRecovery.MatrixCertificate
+import DirectedRecovery.PathPackingAsymptotics
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.RowWordDeficit
 import DirectedRecovery.SelfDemands
@@ -39,6 +40,9 @@ and `Quot.sound`. -/
 -- MatrixCertificate.lean
 #print axioms DirectedRecovery.matrix_label_certificate
 #print axioms DirectedRecovery.matrix_label_certificate_extension
+-- PathPackingAsymptotics.lean
+#print axioms DirectedRecovery.short_paired_count_log_asymptotics
+#print axioms DirectedRecovery.short_paired_count_log_bound
 -- RankCertificate.lean
 #print axioms DirectedRecovery.rank_identity
 -- RowWordDeficit.lean

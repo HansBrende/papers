@@ -34,6 +34,9 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/BucketChains.lean`](LeanMachine/BucketChains.lean) | Finite coordinatewise chain bounds and monotone bucket images | this repository |
 | [`LeanMachine/ThresholdCuts.lean`](LeanMachine/ThresholdCuts.lean), [`ThresholdPullback.lean`](LeanMachine/ThresholdPullback.lean) | Signed cuts through partial monotone injections and exact exceptional-row bounds for band words | this repository |
 | [`LeanMachine/CanonicalBuckets.lean`](LeanMachine/CanonicalBuckets.lean) | Concrete monotone interval partitions with a guaranteed minimum bucket size | this repository |
+| [`LeanMachine/GraphBall.lean`](LeanMachine/GraphBall.lean) | Actual extended-distance ball cardinalities from maximum degree | this repository |
+| [`LeanMachine/FinitePacking.lean`](LeanMachine/FinitePacking.lean) | Maximal disjoint finite families with bounded size and overlap | this repository |
+| [`LeanMachine/PathPacking.lean`](LeanMachine/PathPacking.lean) | Short-path multiplicity and odd-length packing bounds | this repository |
 
 ## External code
 

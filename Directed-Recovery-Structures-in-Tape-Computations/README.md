@@ -28,7 +28,9 @@ The following results are formalized in Lean:
 - The arbitrary-field rank identity and full matrix-label certificate, including
   labels over field extensions and independent code and witness block widths.
 
-The self-demand count is formalized from native one-edge transport, whose proof
+Finite short-path packing and its exact logarithmic and asymptotic bounds are
+formalized from the native transport estimates, whose uniform derivation from
+tape semantics remains unformalized. The self-demand count is formalized from native one-edge transport, whose proof
 remains unformalized. The finite counting and retained-degree part of paid trimming is formalized; its
 native cone-size premise and asymptotic paired-distance application remain written
 proofs. Linearization of nonlinear recovery on arbitrary directed block codes and

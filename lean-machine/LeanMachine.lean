@@ -9,3 +9,6 @@ import LeanMachine.BucketChains
 import LeanMachine.ThresholdCuts
 import LeanMachine.ThresholdPullback
 import LeanMachine.CanonicalBuckets
+import LeanMachine.GraphBall
+import LeanMachine.FinitePacking
+import LeanMachine.PathPacking

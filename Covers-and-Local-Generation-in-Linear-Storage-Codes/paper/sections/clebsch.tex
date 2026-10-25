@@ -1,0 +1,211 @@
+\section{Finite Clebsch covers and rigidity}\label{sec:clebsch-finite}
+
+The preceding cover bounds are asymptotic and permit varying coefficients.
+Here we fix the ordinary adjacency check and obtain an exact finite bound
+without a separating-chain hypothesis. These are different restrictions;
+neither set of hypotheses is supplied by the other.
+
+Let $G$ be the Clebsch graph on $\F_2^4$, identified with the integers
+$0,\ldots,15$, where $u\sim v$ when $u\mathbin\oplus v$ belongs to
+$\{1,2,4,8,15\}$. Write $M=I+A_G$.
+Equivalently, label the five generators by $i\in[5]$ and their ten
+pairwise sums by $ij$. The edges are $0$--$i$, $i$--$ij$, and disjoint
+pairs. Over any characteristic-two field,
+\begin{equation}\label{eq:clebsch-base}
+ \rank M=6,\qquad \dim\ker M=10,\qquad M^2=0.
+\end{equation}
+Indeed, pivoting the five independent singleton coordinates leaves a zero
+root row and column and the all-ones ten-pair block. For the last identity,
+the five Cayley translations commute and square to the identity, so
+$(I+\sum_iT_i)^2=I+5I=0$. The binary code and its optimality among all
+storage codes on the base graph are treated in
+\cite[Corollary H4]{BrendeCurved}, with Lean proofs there; that paper also
+attributes the original binary construction. The cover results below
+bound only the specified adjacency code and its subsets.
+
+\subsection{Exact loss under a binary lift}
+For a finite connected simple graph $F$, put $C_F=\ker(I+A_F)$ over
+$\F_2$. A signing $s:E(F)\to\F_2$ defines the lift with edges
+$(u,b)$--$(v,b+s_{uv})$. Let $S_s$ be its symmetric zero-diagonal
+signed adjacency matrix and let
+\[
+ B_s(x,z)=x^TS_sz\quad(x,z\in C_F),\qquad q(s)=\rank B_s.
+\]
+A signing is a \emph{cut} if $s_{uv}=a_u+a_v$ for vertex values $a_u$.
+Call $F$ \emph{signing-rigid} if $B_s=0$ implies that $s$ is a cut.
+The reverse implication always holds.
+
+\begin{lemma}[Lift loss and rigidity propagation]\label{lem:binary-loss}
+\notformalized
+If $k=\dim C_F$, the binary lift $F_s$ satisfies
+\[
+ \dim C_{F_s}=2k-q(s).
+\]
+The integer $q(s)$ is even. The lift is connected exactly when $s$ is
+not a cut. If $F$ is signing-rigid and $q(s)=2$, then $F_s$ is connected
+and signing-rigid.
+\end{lemma}
+\begin{informalproof}
+With $M_F=I+A_F$, the lifted check is
+$\left(\begin{smallmatrix}M_F+S_s&S_s\\S_s&M_F+S_s\end{smallmatrix}\right)$.
+Writing a word as $(y+z,y)$ gives $M_Fz=0$ and $M_Fy=S_sz$.
+Since $\im M_F=C_F^\perp$, the feasible $z$ form $\operatorname{rad}B_s$;
+each has a $k$-dimensional fibre of choices of $y$. This proves the
+identity. The form is alternating. A nonzero alternating form splits
+off a nondegenerate two-dimensional summand; induction proves even rank.
+
+For a cut, $S_s=D_aM_F+M_FD_a$, which vanishes as a form on $C_F$.
+Path integration gives the connectivity assertion: if all closed walks
+have sign sum zero, their path sums define a vertex potential; otherwise
+a closed walk joins the two sheets, and connectedness of $F$ joins all
+vertices of the lift.
+
+Suppose now that $F$ is rigid, $q(s)=2$, and a child signing $t$ has
+zero form. Pairing diagonal child words $(x,x),(y,y)$ shows that the
+sum of its two signs above each base edge has zero base form, hence is
+a cut $da$. Switch the child vertices by $a_v$ on sheet zero and by
+zero on sheet one. The two signs above each edge now agree, even on
+crossed edges, so the switched signing is the pullback of a base
+signing $r$. Switching preserves zero form.
+
+Pair a diagonal word with a child word of sheet sum
+$z\in\operatorname{rad}B_s$. The resulting value is $B_r(x,z)$.
+Every such $z$ occurs, by the lift equations. Thus $B_r$ descends to
+the two-dimensional space $C_F/\operatorname{rad}B_s$. Over $\F_2$ its
+alternating form is either zero or the form induced by $B_s$.
+Rigidity makes $r$ a cut or $s$ plus a cut. Both pull back to cuts:
+the pullback of $s$ is the cut given by the sheet-bit potential.
+Undoing the first switch proves child rigidity. Since $q(s)>0$, $s$
+is not a cut, so the child is connected.
+\end{informalproof}
+
+\begin{theorem}[C: sharp binary towers]\label{thm:clebsch-towers}
+\notformalized
+Start from Clebsch and take any sequence of connected binary lifts.
+At a level with $N$ vertices, the binary adjacency code has dimension
+at most $N/2+2$. More precisely, either its dimension is $N/2+2$ and
+the graph is signing-rigid, or its dimension is at most $N/2$ and stays
+at most half at every descendant. Equality $N/2+2$ is attained at
+every level by repeatedly signing just one edge. The upper bound also
+holds for every connected regular cover of Clebsch with finite
+$2$-group deck group, including nonabelian groups.
+\end{theorem}
+\begin{informalproof}
+Clebsch is signing-rigid by \cref{cor:clebsch-rigid} below; that proof
+uses only block elimination, not the tower theorem. Write
+$e=\dim C_F-|V(F)|/2$. The lift identity gives $e'=2e-q(s)$.
+Initially $e=2$. At a rigid parent, a connected lift has positive even
+$q(s)$. If $q(s)=2$, the new excess is two and rigidity propagates.
+If $q(s)\ge4$, the new excess is nonpositive. Once nonpositive, it
+remains so without any rigidity assumption.
+
+Endpoint evaluation of $\ker M$ onto $\F_2^2$ is surjective on every
+base edge $uv$. Column $u$ of $M$ has values $(1,1)$ there; column $w$,
+for a different neighbor $w$ of $u$, has values $(1,0)$ by triangle
+freeness. Both are in the kernel by \eqref{eq:clebsch-base}. Diagonal
+kernel words preserve this surjectivity in every binary lift. A
+single-edge signing therefore has $q(s)=2$, proving sharpness and
+connectedness at every step.
+
+A finite $2$-group has a subgroup chain with successive indices two:
+use a central subgroup of order two and induct on the quotient.
+The intermediate quotient covers of a connected regular cover remain
+connected, and consecutive maps are binary lifts. Normality in the
+whole deck group is unnecessary. Apply the tower conclusion.
+\end{informalproof}
+
+\subsection{Reciprocal checks and odd characters}
+Fix a characteristic-two field $K$ and a positive block width $r$.
+A \emph{reciprocal check} $H$ has diagonal $I_r$, zero nonedges of
+Clebsch, and edge blocks $G_{uv}\in\mathrm{GL}_r(K)$ with
+$G_{vu}=G_{uv}^{-1}$. A vertex gauge replaces each block by
+$D_u^{-1}G_{uv}D_v$. The gains are \emph{flat} if every based
+closed-walk product is the identity, equivalently if a vertex gauge
+makes every edge block $I_r$.
+
+\begin{theorem}[R: reciprocal rank rigidity]\label{thm:clebsch-rank}
+\notformalized
+Every such check has rank at least $6r$. Equality holds exactly for
+flat gains, and rank $6r+1$ is impossible. In particular a scalar
+reciprocal check has rank at most seven exactly when it is diagonally
+similar to $M$; its rank is then six, and every other one has rank
+at least eight.
+\end{theorem}
+\begin{informalproof}
+The full block elimination, including the mixed root row and column,
+is given in \cref{sec:clebsch-block-proof}. It proves the lower bound,
+the equality criterion, and the forbidden next rank over every
+characteristic-two field. The scalar assertion is the case $r=1$.
+\end{informalproof}
+
+\begin{corollary}[The base signing rigidity]\label{cor:clebsch-rigid}
+\notformalized
+The Clebsch graph is signing-rigid.
+\end{corollary}
+\begin{informalproof}
+A binary lift is a reciprocal width-two check, with edge blocks
+identity or swap. If $q(s)=0$, \cref{lem:binary-loss} and
+\eqref{eq:clebsch-base} give nullity twenty and rank twelve.
+By \cref{thm:clebsch-rank} its gains are flat. Every closed walk
+therefore has sign sum zero, so path integration makes $s$ a cut.
+This argument supplies the base rigidity algebraically, without a
+finite rank certificate.
+\end{informalproof}
+
+\begin{theorem}[A: direct-product deck groups]\label{thm:clebsch-product}
+\notformalized
+Let a connected regular Clebsch cover have deck group $P\times D$,
+where $P$ is a finite $2$-group and $D$ is a finite odd abelian group.
+On its $N=16|P||D|$ vertices the binary adjacency code has dimension
+at most $N/2+2$. In particular every finite abelian deck group is
+covered. The bound is sharp at every cyclic covering degree.
+\end{theorem}
+\begin{informalproof}
+Choose voltages $(p_{uv},d_{uv})$, with inverse reverse voltages, and
+extend scalars to an algebraic closure of $\F_2$. This preserves rank.
+The regular representation of the odd abelian direct factor splits
+into its $|D|$ characters: commuting translations are diagonalizable,
+since their orders are odd, and character orthogonality gives each
+character once. The check therefore splits into weighted $P$-cover
+checks, with scalar edge weights $\chi(d_{uv})$.
+
+Connectedness says that based closed-walk voltages generate $P\times D$.
+Every nontrivial character detects one of their $D$ projections. Its
+weighted base check is reciprocal and nonflat, so its nullity is at
+most eight by \cref{thm:clebsch-rank}. For any weighted check $B$,
+a binary lift with pulled-back weights has equations $Bz=0$, $By=Sz$.
+The feasible $z$ form a subspace of $\ker B$, and each fibre has
+dimension $\dim\ker B$. Thus nullity at most doubles. A subgroup
+chain of $P$ bounds each nontrivial character sector by $8|P|$.
+For the trivial character the projected $P$ cover is connected and
+unweighted, so \cref{thm:clebsch-towers} instead gives $8|P|+2$.
+Summing the sectors gives $8|P||D|+2$. The direct-product assumption
+is used in this decomposition; a semidirect product is not included.
+
+For sharpness, put an $m$-cycle permutation $T$ on one base edge $uv$,
+its inverse in reverse, and identity elsewhere. Deleting this edge
+leaves the base connected, so the cover is connected and regular
+cyclic. Put $M_m=M\otimes I_m$, let $U$ embed the endpoint blocks,
+and let $V=U^T$. The endpoint surjectivity used in
+\cref{thm:clebsch-towers} implies that $V$ is onto on $\ker M_m$.
+Symmetry then gives $\im U\cap\im M_m=0$: if $Ua\in\im M_m$, its
+pairing with every kernel vector is zero, so surjectivity forces $a=0$.
+The changed check is $M_m+U\Delta V$, where
+\[
+ \Delta=\begin{pmatrix}0&T-I\\T^{-1}-I&0\end{pmatrix}.
+\]
+Its kernel is exactly $\ker M_m\cap\ker(\Delta V)$, hence has
+dimension $10m-\rank\Delta=10m-2\rank(T-I)=8m+2$.
+More generally the last term is $8m+2c(T)$, with $c(T)$ the number
+of permutation cycles. No diagonalizability of $T$ is needed.
+\end{informalproof}
+
+The two bounds give rate at most $1/2+2/N$ for these prescribed checks.
+They rule out preserving Clebsch's $5/8$ rate through these cover
+operations, even when no separating chain has been specified. They do
+not bound arbitrary fitting matrices or nonlinear codes on the lifted
+graphs. The tower dichotomy concerns binary towers; it is not asserted
+for all direct-product covers. Further small-representation consequences
+and a rigid three-sheet seed appear in \cref{sec:clebsch-small}.
+No paired-port separation or native implementation follows from any
+of these constructions.

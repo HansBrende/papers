@@ -9,7 +9,8 @@ Hans Brende and GPT-6 Astra (OpenAI), October 2026.
 
 What structure must an above-half linear storage code have, and which such
 codes could contribute to a coding approach to linear-time matrix transposition?
-This companion treats fixed group-cover models and, separately, local generation.
+This companion treats finite Clebsch covers, asymptotic group-cover models,
+and, separately, local generation.
 It does not supply their hypotheses for arbitrary native tape computations.
 
 ## What is proved
@@ -29,6 +30,17 @@ Their axiom audits permit only `propext`, `Classical.choice`, and `Quot.sound`.
 The following results have complete written proofs and are explicitly marked
 **not formalized**:
 
+- **Sharp finite Clebsch covers:** the prescribed binary adjacency code has
+  dimension at most `N/2 + 2` on connected binary towers, with an
+  equality/rigidity versus permanent-at-most-half dichotomy. The bound extends
+  to regular deck groups `P × D` (a finite 2-group and odd abelian group) and
+  `P × S₃`. It is sharp at every cyclic degree. Three-sheet covers have
+  dimension at most 26; a named rigid seed supports further binary towers.
+- **Reciprocal-block rigidity:** at block width `r`, the Clebsch check has rank
+  at least `6r`, equality exactly for flat gains, and no rank `6r + 1`.
+  Exact two-edge and minimum-pair-block identities are paired with the actual
+  width-five counterexample to their unrestricted extension. These statements
+  do not bound arbitrary recovery codes on a cover.
 - **Fixed-width half rate:** for a fixed separated free-group voltage template
   and the specified ambient pro-p chain, one eventual bound works for all
   characteristic-p fields and homogeneous coefficient tuples.
@@ -62,7 +74,8 @@ the combinations of results has not been established.
 
 ## What is open
 
-Arbitrary growing block width, unrestricted nonlinear codes, and a paid native
+The `N/2 + 2` adjacency-code bound for arbitrary connected Clebsch permutation
+covers remains open here. Arbitrary growing block width, unrestricted nonlinear codes, and a paid native
 representation remain open. Large simple factors are necessary for an excess
 within the cover setting, but are not sufficient. Recovery locality does not
 imply local generation. No unrestricted transposition time bound is claimed.
@@ -120,6 +133,13 @@ asymptotic cover theorems, and reuse the dependencies below.
    the cover bounds. These applications retain the unformalized dependencies
    of items 1 and 4-6; a checked final inequality alone would not complete them.
 
+9. **Finite Clebsch covers and rigidity.** Reuse the fourth paper's formalized
+   Clebsch graph, check, and rank-six theorem. Formalize the binary-lift kernel
+   exact sequence and rank-two rigidity propagation, then the reciprocal
+   Schur identities, symplectic plane argument, and character/module splits.
+   The seed's exact certificate below is checked in Python, not Lean; port
+   its literal matrix-inverse identity rather than trusting the checker.
+
 ## Building and verifying
 
 Clone the whole repository, preserving the sibling `lean-machine` directory.
@@ -142,6 +162,16 @@ From `paper/`, build the manuscript:
 ```sh
 latexmk -pdf main.tex
 ```
+
+Check the exact finite seed witness with:
+
+```sh
+python3 tools/check_clebsch_seed.py
+```
+
+The certificate records an explicit kernel basis and a 73-square signing
+minor with its inverse. The standard-library checker reconstructs the graph
+and verifies exact binary identities. It is not a Lean formalization.
 
 The local `.lake/` cache is ignored. The proof-status labels distinguish the
 verified algebra from the remaining graph and asymptotic proofs.

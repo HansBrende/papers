@@ -12,7 +12,7 @@ closure for the dimension, quotient-deficit, and split-generator bounds.
 The paper modules expose these results without duplicating their proofs.
 The English outlines are guides; the Lean declarations are authoritative.
 
-The remaining graph, asymptotic cover, nonlinear-source, and group-word
+The remaining graph, finite and asymptotic cover, nonlinear-source, and group-word
 results have complete written proofs.
 In particular, the local-generation theorem is not described as
 formalized merely because its final dimension inference is checked.
@@ -24,8 +24,18 @@ written product-subcode corollary part of the formal kernel equivalence.
 The source-coset argument and central-layer group-word specialization are
 also written proofs, not additional claims about the scope of that interface.
 The README's formalization todos record the remaining dependencies and
-existing library material to reuse. No numerical computation is used as
-a proof premise.
+existing library material to reuse. No floating-point estimate or
+experimental observation is used as a proof premise.
+
+The finite Clebsch lift, reciprocal-block, and small-representation
+arguments are complete written proofs. Their algebraic base signing
+rigidity proof does not depend on a finite rank computation. The separate
+48-vertex seed uses the exact witness in
+\path{tools/clebsch-seed-certificate.json}: its literal kernel basis,
+original signing-map minor, and explicit inverse are verified by
+\texttt{python3 tools/check\_clebsch\_seed.py}. This finite identity
+certificate is part of the written proof and is not described as
+kernel-checked Lean code. It uses no floating-point arithmetic or solver.
 
 Lean and Mathlib are pinned to v4.34.1. The paper requires the
 sibling shared package through a relative path. Clone the whole

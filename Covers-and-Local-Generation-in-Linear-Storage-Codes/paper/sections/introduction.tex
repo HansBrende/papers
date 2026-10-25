@@ -10,18 +10,32 @@ distances from native tape geometry and studies several coding bounds
 with additional premises. Here we examine two such premises more closely:
 algebraic structure in regular covers, and local generation of a linear code.
 
-In the first setting a fixed finite template is repeated over the sheets
-of finite group quotients. Recovery matrices use the same coefficients
-at each sheet. We prove a half-rate theorem that is uniform over the
-coefficient field and values at fixed width. We then identify exactly
-what a filtration argument needs when the width grows. In the second
-setting the graph need not be a cover at all. Locally supported codewords
+The cover results combine two settings. For a fixed template repeated
+over finite group quotients, homogeneous recovery has an asymptotic
+half-rate theorem uniform over coefficient fields and values at fixed
+width. We identify what its filtration argument needs when width grows.
+For the prescribed Clebsch adjacency check, exact finite bounds instead
+control binary towers and specified regular covers, with sharpness and
+rigidity and without a separating-chain hypothesis. For local generation
+the graph need not be a cover at all. Locally supported codewords
 are forced into the image of a check operator, while the whole code lies
 in its kernel. Rank-nullity gives a quantitative restriction on their span.
 
 \subsection{The results}
 The principal conclusions are the following.
 \begin{enumerate}[label=\textup{(\arabic*)}]
+\item \textbf{Sharp finite Clebsch-cover bounds.}
+Every connected binary-lift tower above Clebsch has adjacency-code
+dimension at most $N/2+2$. Either equality and signing rigidity persist,
+or the dimension drops to at most half and stays there. The constant
+two is sharp at every level. We extend the bound to regular deck groups
+$P\times D$, for a $2$-group $P$ and odd abelian $D$, and to
+$P\times S_3$; every connected three-sheet cover has dimension at most
+$26$. A named rigid three-sheet seed supports further binary towers.
+Reciprocal blocks have rank at least $6r$, with equality exactly for
+flat gains and no rank $6r+1$. A concrete counterexample limits a
+stronger proposed extension
+(\cref{sec:clebsch-finite,sec:clebsch-block-proof,sec:clebsch-small}).
 \item \textbf{Uniform half rate on fixed covers.}
 Under the precise ambient-group and chain hypotheses in
 \cref{sec:model}, paired-port disconnection in the infinite incidence
@@ -109,8 +123,10 @@ model and expose the remaining width obstruction.
 Exact homogenization and the dimension interfaces, including the quotient
 deficit and split-generator criterion, are Lean-verified. Their formal
 statements are authoritative; the English outlines are guides to them.
-The asymptotic cover results, graph-local argument, and source and
-group-word applications have complete written proofs but are not formalized.
+The finite and asymptotic cover results, graph-local argument, and source
+and group-word applications have complete written proofs but are not formalized.
+The named rigid seed includes an explicit binary matrix-inverse certificate
+with a portable exact checker; that checker is not a Lean proof.
 In particular, the split-generator
 interface does not itself verify the graph parity and boundary argument.
 Every numbered result states its status. We distinguish the applications

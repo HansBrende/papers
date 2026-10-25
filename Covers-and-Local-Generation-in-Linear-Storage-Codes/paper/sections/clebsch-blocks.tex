@@ -1,0 +1,158 @@
+\section{Reciprocal Clebsch blocks: proofs and limits}
+\label{sec:clebsch-block-proof}
+
+This appendix proves \cref{thm:clebsch-rank} and records the exact
+identities that explain both the bound and its limits. All vector
+spaces here are over a characteristic-two field $K$. The width is
+$r\ge1$. A section is a family $x_u$ satisfying $G_{uv}x_v=x_u$ on
+every edge. A dual section is a family of rows satisfying
+$\lambda_uG_{uv}=\lambda_v$. Write $h,h^*$ for their dimensions.
+Spanning-tree propagation identifies them with the common fixed
+vectors and covectors of based holonomies; each dimension is at most
+$r$. Either dimension equals $r$ exactly when the gains are flat.
+
+\subsection{The Schur complement and the first rank gap}
+Gauge the five root edges to identity. Write $X_{i,p}=H_{i,p}$ when
+$i\in p$, and pivot the singleton block $I_{5r}$. The resulting
+root/pair Schur matrix $S$ satisfies
+\begin{align*}
+ \rank H&=5r+\rank S,& S_{00}&=0,&S_{pp}&=I_r,\\
+ S_{0,ij}&=X_{i,ij}+X_{j,ij},&
+ S_{ij,0}&=X_{i,ij}^{-1}+X_{j,ij}^{-1},
+\end{align*}
+and its ten-pair block $B$ has
+\[
+ B_{pq}=\begin{cases}
+ X_{i,p}^{-1}X_{i,q},&p\cap q=\{i\},\\
+ G_{pq},&p\cap q=\varnothing,
+ \end{cases}\qquad B_{pp}=I_r.
+\]
+In particular all off-diagonal pair blocks are invertible and reciprocal.
+
+\begin{lemma}[The minimum pair-block identity]\label{lem:flat-pair}
+\notformalized
+If $\rank B=r$, then $\rank H=8r-h-h^*$.
+\end{lemma}
+\begin{informalproof}
+Fix a pair $p_0$. Pivoting $B_{p_0p_0}=I_r$ shows
+$B_{pq}=B_{pp_0}B_{p_0q}$. Put $T_p=B_{p_0p}$ and gauge pair $p$
+by $T_p^{-1}$. All pair blocks become $I_r$. The shared-index
+identities imply $X_{i,p}=C_i$, independently of $p$ containing $i$.
+All original disjoint-pair gains are identity. Define
+$A_{ij}=C_i+C_j$ and $b_{ij}=C_i^{-1}+C_j^{-1}$. Then
+\[
+ S=\begin{pmatrix}0&A\\b&J_{10}\otimes I_r\end{pmatrix}.
+\]
+The disjoint-pair graph is connected: two intersecting pairs have
+their complementary pair as a common neighbor. Consequently sections
+are specified by a common pair vector $v$ for which all $C_iv$ coincide;
+dual sections by a row $\lambda$ for which all $\lambda C_i$ coincide.
+
+Pivoting pair $p_0$ leaves
+\[
+ \begin{pmatrix}D&R\\T&0\end{pmatrix},\quad
+ D=A_{p_0}b_{p_0},\quad
+ R=[A_p+A_{p_0}]_{p\ne p_0},\quad
+ T=\begin{bmatrix}b_p+b_{p_0}\end{bmatrix}_{p\ne p_0},
+\]
+where $R$ is horizontal and $T$ vertical block stacking.
+Comparing overlapping pairs shows that a row annihilates $R$ exactly
+when all its $\lambda C_i$ coincide; hence $\rank R=r-h^*$.
+Likewise $w\in\ker T$ exactly when all $C_i^{-1}w$ coincide, so
+$\rank T=r-h$. For such $w$, $b_{p_0}w=0$, hence $Dw=0$.
+The displayed matrix therefore has kernel $\ker T\times\ker R$,
+and rank $\rank R+\rank T$. Including the pivots proves the identity.
+\end{informalproof}
+
+\begin{informalproof}[Proof of \cref{thm:clebsch-rank} (not formalized)]
+The singleton pivot and one pair diagonal block give $\rank H\ge6r$.
+At equality, $\rank B=r$, and \cref{lem:flat-pair} gives
+$h+h^*=2r$. Thus both equal $r$ and the gains are flat. Conversely
+flat gains gauge to $M\otimes I_r$, which has rank $6r$.
+
+Suppose $\rank H=6r+1$. Every three-pair principal block of $B$ has
+rank at most $r+1$. After block vertex gauges it has the form
+\[
+ \begin{pmatrix}I&I&I\\I&I&X\\I&X^{-1}&I\end{pmatrix},
+\]
+whose rank, by pivoting the first block, is $r+2\rank(X-I)$.
+Thus $X=I$. Every triangle of the complete pair-block gain system
+is flat, which gives $\rank B=r$ by an anchor-pair gauge.
+Now \cref{lem:flat-pair} implies
+$\rank H-6r=(r-h)+(r-h^*)$. Nonflat gains make both summands positive;
+flat gains make both zero. Neither case permits rank $6r+1$.
+\end{informalproof}
+
+\subsection{Two-edge sharpness and a genuine counterexample}
+\begin{proposition}[Two-edge identity]\label{prop:two-edge}
+\notformalized
+Put arbitrary $X,Y\in\mathrm{GL}_r(K)$ on the Cayley edges $0$--$1$
+and $0$--$2$, with inverse reverse gains and identity elsewhere. Then
+$\rank H=8r-h-h^*$. For transitive permutation gains this gives
+nullity $8r+2$ on the connected $r$-sheet cover.
+\end{proposition}
+\begin{informalproof}
+The identity-edge complement is connected, using the detours
+$0$--$4$--$5$--$1$ and $0$--$4$--$6$--$2$. Thus $h,h^*$ are the
+common fixed-vector and fixed-covector dimensions of $X,Y$.
+Evaluation of $\ker(M\otimes I_r)$ at $0,1,2$ is onto: the columns
+of $M$ at $4,5,6$ restrict there to the three unit vectors and lie
+in the kernel. With $U$ the three-block embedding and $V=U^T$,
+symmetry again gives $\im U\cap\im(M\otimes I_r)=0$.
+The actual update is $U\Delta V$, where
+\[
+ \Delta=\begin{pmatrix}
+ 0&X-I&Y-I\\X^{-1}-I&0&0\\Y^{-1}-I&0&0
+ \end{pmatrix}.
+\]
+Its horizontal part has rank $r-h^*$, and its vertical part rank
+$r-h$, with disjoint domains and outputs. The updated kernel has
+dimension $10r-\rank\Delta$, proving the claim. In a transitive
+permutation action fixed vectors and covectors are constant on the
+single orbit, so $h=h^*=1$.
+\end{informalproof}
+
+The two dimensions cannot be identified for arbitrary blocks. For
+$X=I+E_{12}$ and $Y=I+E_{13}$ at width three, they are $h=1,h^*=2$;
+\cref{prop:two-edge} gives rank $21$, disproving a putative lower
+bound $8r-2h=22$.
+
+\begin{proposition}[Failure of the general dual-balanced bound]
+\label{prop:clebsch-counterexample}
+\notformalized
+The inequality $\rank H\ge8r-h-h^*$ fails for general reciprocal
+Clebsch blocks, even commuting determinant-one involutions. At width
+five there is a check with rank $34$, $h=1$, and $h^*=4$.
+\end{proposition}
+\begin{informalproof}
+On the four Cayley square edges $e_1=01,e_2=13,e_3=23,e_4=02$ put
+$G_{e_j}=I_5+E_{1,j+1}$, with one-based matrix indices. Put identity
+elsewhere. The nilpotent parts have all pairwise products zero, so
+the gains commute, are involutions, and have determinant one.
+
+Let $C=\ker M$. The evaluations $\ell_0,\ldots,\ell_3$ on $C$
+are independent, witnessed by columns $4,5,6,7$ of $M$.
+For $e=uv$, the restricted edge form $B_e=\ell_u\wedge\ell_v$
+has image $\langle\ell_u,\ell_v\rangle$. The concatenation of the
+four selected forms therefore has rank four. Ordering by coordinate
+layers, the check has diagonal blocks $M$ and top row
+$[M,S_{e_1},S_{e_2},S_{e_3},S_{e_4}]$, with all other off-diagonal
+blocks zero. The four lower vectors lie in $C$. Their upper equation
+is soluble exactly when $\sum_jB_{e_j}y_j=0$, because
+$\im M=C^\perp$. The lower tuples have dimension $40-4=36$;
+each has a ten-dimensional upper fibre. Hence nullity is $46$ and
+rank $80-46=34$.
+
+The identity-edge complement is connected: replace every selected
+$u$--$v$ by $u$--$(u\oplus4)$--$(v\oplus4)$--$v$.
+Sections and dual sections are consequently constant on this complement.
+The four gains fix exactly $\langle f_1\rangle$ among vectors and
+the annihilator of $f_1$ among covectors. Thus $h=1,h^*=4$, while
+$8r-h-h^*=35>34$.
+\end{informalproof}
+
+These gains are not permutation matrices. The counterexample therefore
+does not refute the $N/2+2$ bound for arbitrary connected permutation
+covers, which remains open here. It does rule out deriving that bound
+from the proposed unrestricted reciprocal-block inequality. The exact
+two-edge and minimum pair-block identities retain their stated premises.

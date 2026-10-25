@@ -1,0 +1,192 @@
+\section{Small representations and a rigid three-sheet seed}
+\label{sec:clebsch-small}
+
+\begin{theorem}[A fixed section at symplectic width two]
+\label{thm:clebsch-plane}
+\notformalized
+For a reciprocal Clebsch check with edge gains in $\mathrm{SL}_2(K)$,
+where $K$ has characteristic two, rank below sixteen forces a nonzero
+section. Its only possible ranks below sixteen are twelve and fourteen;
+rank twelve is equivalent to flatness, and nonflat rank fourteen occurs.
+\end{theorem}
+\begin{informalproof}
+Put $J=\left(\begin{smallmatrix}0&1\\1&0\end{smallmatrix}\right)$.
+Since $G^TJG=J$ for $G\in\mathrm{SL}_2(K)$, the form
+$\operatorname{diag}(J)H$ is alternating. The singleton Schur pivot
+of \cref{sec:clebsch-block-proof} gives $\rank H=10+\rank S$,
+where $\operatorname{diag}(J)S$ is alternating. If $\rank H<16$,
+its radical quotient is a nondegenerate alternating space $E$ of
+dimension two or four. The coordinate maps $f_u$ into $E$ satisfy
+$\langle f_ux,f_vy\rangle=x^TJS_{uv}y$.
+Each pair image $U_p=\im f_p$ is a nondegenerate plane. Two such
+planes intersect: otherwise they span the four-dimensional $E$,
+but their frame Gram matrix is
+\[
+ \operatorname{diag}(J,J)
+ \begin{pmatrix}I&B_{pq}\\B_{pq}^{-1}&I\end{pmatrix},
+\]
+of rank two, contradicting nondegeneracy.
+
+A pairwise-intersecting family of planes either has a common line
+or lies in a three-space. To see this, choose distinct $U,V$, put
+$L=U\cap V$ and $W=U+V$. A plane avoiding $L$ meets $U,V$ in
+distinct lines and lies in $W$. A plane outside $W$ could then meet
+$U,V$ only in $L$, making intersection with the plane avoiding $L$
+impossible. If all planes coincide, the common-line case applies.
+
+In that case choose $0\ne\ell\in\bigcap_pU_p$ and define
+$f_pv_p=\ell$. Comparing its pairings with $f_p$ gives
+$B_{pq}v_q=v_p$. The shared-index identities make
+$X_{i,p}v_p=w_i$ independent of $p$ containing $i$.
+Pairing $\ell$ with the root gives
+$\langle f_0x,\ell\rangle=x^TJ(w_i+w_j)$, independent of $ij$.
+Comparing overlapping pairs makes all $w_i$ equal to one nonzero
+$w$. The values $v_p$ at pairs and $w$ at root and singletons form
+the required section, including every disjoint-pair edge.
+
+In the three-space case the restricted alternating form on the span
+of the pair planes has rank two, so $\rank B=2$. The pair gauge in
+\cref{lem:flat-pair} can be chosen in $\mathrm{SL}_2(K)$ and makes
+all $B_{pq}=I$. We then have $X_{i,p}=C_i\in\mathrm{SL}_2(K)$ and
+$A_{ij}=C_i+C_j$. Pivoting one pair in the alternating Schur form
+leaves $\left(\begin{smallmatrix}D&JR\\R^TJ&0\end{smallmatrix}\right)$
+of rank at most two, where $R=[A_p+A_{p_0}]$.
+For any $Q$, the rank of
+$\left(\begin{smallmatrix}D&Q\\Q^T&0\end{smallmatrix}\right)$ is
+at least $2\rank Q$: a kernel vector has first component in
+$\ker Q^T$, and each second-component fibre is a translate of
+$\ker Q$. Thus $\rank R\le1$.
+Choose a nonzero row $\lambda$ annihilating $R$. Overlapping-pair
+comparisons give $\lambda C_i=\mu$ for the same nonzero row $\mu$.
+The matrices $F_i=C_1^{-1}C_i$ fix $\mu$ and have determinant one.
+In a basis with $\mu=(1,0)$ they have form
+$\left(\begin{smallmatrix}1&0\\a_i&1\end{smallmatrix}\right)$,
+so fix $\ker\mu$ pointwise. For $0\ne v\in\ker\mu$, all
+$C_iv=C_1v=w$ coincide. Use $v$ at pairs and $w$ at the root and
+singletons, and undo the gauges.
+
+The form is alternating, so its rank is even. The lower bound and
+flatness criterion in \cref{thm:clebsch-rank} leave only twelve and
+fourteen below sixteen. A single transvection $I+E_{12}$ on one
+edge adds rank at most two to the flat rank-twelve check and gives
+nontrivial holonomy, so its rank is fourteen.
+\end{informalproof}
+
+\begin{corollary}[Three sheets and a nonabelian odd action]
+\label{cor:clebsch-s3}
+\notformalized
+Every connected three-sheet Clebsch cover, including nonregular
+covers, has binary adjacency-code dimension at most $26$.
+Every connected regular cover with deck group $P\times S_3$, for
+a finite $2$-group $P$, has dimension at most $N/2+2$, where
+$N=96|P|$. The bounds $26$ and $50$ are attained for three sheets
+and regular $S_3$ sheets, respectively.
+\end{corollary}
+\begin{informalproof}
+The permutation module $\F_2^3$ splits as its constant line and
+even-sum plane. The latter is the natural two-dimensional module
+for $S_3=\mathrm{SL}_2(\F_2)$, acting on its three nonzero vectors.
+Transitive monodromy fixes no nonzero natural vector. By
+\cref{thm:clebsch-plane} its check has rank at least sixteen and
+nullity at most sixteen. The constant sector contributes ten,
+giving the three-sheet bound.
+
+Write $S_3=\langle c,t:c^3=t^2=1,\ tct=c^{-1}\rangle$.
+In $\F_2S_3$, the central idempotent $e=1+c+c^2$ has ideal with
+basis $e,et$, isomorphic to $\F_2C_2$. The complementary ideal has
+dimension four. In the natural representation take
+\[
+ C=\begin{pmatrix}0&1\\1&1\end{pmatrix},\qquad
+ T=\begin{pmatrix}0&1\\1&0\end{pmatrix}.
+\]
+Here $e$ maps to zero, and $I,C,T,CT$ are linearly independent.
+Thus the complementary ideal is $M_2(\F_2)$, with two natural
+column modules under left multiplication. The regular $P\times S_3$
+check splits accordingly into an ordinary connected $P\times C_2$
+quotient, contributing at most $16|P|+2$ by
+\cref{thm:clebsch-towers}, and two natural weighted $P$ checks.
+Their base holonomy is full $S_3$, so each has base nullity at most
+sixteen. Binary-lift doubling, valid also for block weights, bounds
+each by $16|P|$. The sum is $48|P|+2$. No semisimplicity of the
+$\F_2C_2$ sector is assumed.
+
+For sharpness put $U=I+E_{12}$ on the Cayley edge $0$--$1$,
+$V=I+E_{21}$ on $0$--$2$, and identity elsewhere. The identity-edge
+complement is connected by the detours in \cref{prop:two-edge}.
+These gains generate $S_3$, so both actions give connected covers.
+The natural check has rank at most $12+2+2=16$, and at least sixteen
+by \cref{thm:clebsch-plane}. The binary quotient signs the two
+selected edges. Its restricted form has rank at most two, since
+its signing matrix is
+$e_0(e_1+e_2)^T+(e_1+e_2)e_0^T$. A cycle containing one selected
+edge shows the signing is not a cut; base rigidity forces rank two.
+Thus its nullity is eighteen. The three-sheet and regular checks
+have nullities $10+16=26$ and $18+2\cdot16=50$, respectively.
+\end{informalproof}
+
+\subsection{A named rigid seed and its descendants}
+Let $F$ be the three-sheet graph just constructed, with sheets the
+nonzero vectors $(1,0),(0,1),(1,1)$ and vertex encoding $3u+a$ for
+$a\in\{0,1,2\}$. The selected edge permutations are $(0,2,1)$ and
+$(2,1,0)$. It has $48$ vertices and $120$ edges.
+
+\begin{lemma}[An exact finite signing certificate]\label{lem:seed-rigid}
+\notformalized
+The graph $F$ is signing-rigid.
+\end{lemma}
+\begin{informalproof}
+Its nullity is $26$ by \cref{cor:clebsch-s3} (also by
+\cref{prop:two-edge}). In a basis $c_0,\ldots,c_{25}$ of its
+kernel, the signing map has entries
+\[
+ Q_{(i,j),uv}=c_i(u)c_j(v)+c_i(v)c_j(u),\qquad i<j.
+\]
+Order edges and pairs lexicographically. The accompanying exact
+certificate \path{tools/clebsch-seed-certificate.json} specifies
+the basis as 48-bit integers, 73 original row and column indices
+of $Q$, and the rows of an inverse to the resulting $73$-square
+minor. Bit zero is coordinate zero throughout. Kernel membership,
+basis independence, the minor entries, and the identity between
+that minor and its supplied inverse are finite binary identities;
+\path{tools/check_clebsch_seed.py} reconstructs the graph and
+checks each of them using only integer bit arithmetic.
+In particular the minor has determinant one, so $\rank Q\ge73$.
+The $47$-dimensional cut space is contained in $\ker Q$ by
+\cref{lem:binary-loss}; hence $\rank Q\le120-47=73$.
+Equality identifies its kernel with the cuts and proves rigidity.
+The explicit certificate is part of this finite proof; its Python
+verification is not a Lean formalization or a numerical rank estimate.
+\end{informalproof}
+
+\begin{corollary}[Towers above the rigid seed]\label{cor:seed-tower}
+\notformalized
+Every connected binary tower above $F$ has adjacency-code dimension
+at most $N/2+2$, with the same equality/rigidity versus permanent
+at-most-half dichotomy as \cref{thm:clebsch-towers}. Equality is
+attained at every level. The bound also holds for connected regular
+$2$-group covers of $F$.
+\end{corollary}
+\begin{informalproof}
+Initially the excess is $26-48/2=2$ and the graph is rigid.
+Apply \cref{lem:binary-loss} and the induction in
+\cref{thm:clebsch-towers}. The seed contains the ordinary Clebsch
+kernel pulled back to all sheets, so endpoint evaluation is onto
+on every seed edge. It persists in binary lifts, making every
+single-edge signing have loss two and proving sharpness.
+The subgroup-chain argument gives the regular-cover assertion.
+\end{informalproof}
+
+This also handles a conditional noncentral extension: suppose
+$1\to P\to Q\to S_3\to1$ has $2$-group kernel and a connected
+regular $Q$ cover has this \emph{actual} three-point quotient $F$.
+The preimage in $Q$ of a point stabilizer has order $2|P|$; its
+right action is a regular deck action over $F$. The preceding
+corollary applies. Merely possessing an $S_3$ quotient does not
+identify that quotient cover with $F$.
+
+These results extend the available finite obstructions to specified
+noncommuting actions. They do not address every permutation cover,
+arbitrary subsequent bases, or unrestricted recovery codes. The
+counterexample in \cref{prop:clebsch-counterexample} explains why
+replacing the remaining permutation problem by arbitrary reciprocal
+blocks loses a potentially essential restriction.

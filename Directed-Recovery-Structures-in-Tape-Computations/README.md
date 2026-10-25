@@ -13,10 +13,13 @@ fixed-depth dependency cones and the coding bounds needed by this approach.
 
 ## What is proved
 
-The initial draft has no new formalized results. Formal status is recorded beside
-every numbered result; the declaration index and axiom checks are generated from
-those annotations. Future formal counterparts must use only `propext`,
-`Classical.choice`, and `Quot.sound`.
+The appendix rank identity is formalized for arbitrary finite-dimensional vector
+spaces over any field, with ordinary integer subtraction and no invertibility or
+commutativity hypothesis. It reuses Mathlib rank and range inequalities through
+`lean-machine`. Its axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`. Formal status is recorded beside every numbered result; the index
+and axiom checks are generated from those annotations. Other results below
+currently remain written proofs.
 
 The written proofs establish an actual-cone incidence-distance theorem; a half-rate
 bound for complex linear codes with fixed block width and bounded coefficients;

@@ -20,3 +20,7 @@ import LeanMachine
 #print axioms SimpleGraph.matchingNumber_le_card_add_sum_card_div_two
 #print axioms SimpleGraph.exists_card_add_sum_card_div_two_eq_matchingNumber
 #print axioms SimpleGraph.Subgraph.IsMatching.exists_fin_enum
+
+-- RankCertificate.lean
+#print axioms LeanMachine.RankCertificate.rank_identity
+#print axioms LeanMachine.RankCertificate.rank_identity_int

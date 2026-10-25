@@ -32,8 +32,12 @@ fixed number of banks, with bounded persistent state. One common helper
 records exceptional values and boundary states; acyclic decoding yields
 a finite inequality excluding all sufficiently large dyadic transposes in
 this grammar. The unrestricted converse and unrestricted linear-time
-transposition remain open. All stated theorems have Lean proofs in a shared
-framework with our earlier papers.
+transposition remain open. A constructive extension computes an equivariant
+cyclic phase and the least period of every column in linear time. Computing
+the entire matrix normalized by this particular phase is equivalent to
+canonical linear-time word transposition. The reduction and compiler barriers
+have Lean proofs in a shared framework; the phase and normalizer results
+have complete written proofs and are not formalized.
 \end{abstract}
 \begin{quote}\small
 \textbf{Contributions.} Hans Brende directed the research, supplied sources,
@@ -41,11 +45,13 @@ and reviewed the scope and interpretation of results. GPT-6 Astra (OpenAI)
 developed the arguments and Lean proofs and prepared the manuscript under his
 direction.
 \end{quote}
+\setcounter{tocdepth}{1}
 \tableofcontents
 \clearpage
 \input{sections/introduction}
 \input{sections/model}
 \input{sections/reduction}
+\input{sections/phase}
 \input{sections/geometry}
 \input{sections/scans}
 \input{sections/discussion}

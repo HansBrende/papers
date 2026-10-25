@@ -6,7 +6,7 @@ does not by itself supply an efficient tape computation.
 
 Our earlier papers established a native transposition model and studied local
 coding and tape geometry within that model
-\cite{FirstPaper2026,SecondPaper2026}. The present work separates two questions.
+\cite{FirstPaper2026,SecondPaper2026}. The original formalized results separate two questions.
 First, can a linear-time bit transposer supply the word transposer used in the
 canonical problem? Second, which restricted compilers could run in the opposite
 direction? The constructive analysis uses a constant-length factorization of
@@ -45,3 +45,14 @@ with a network-coding conjecture~\cite[Section~6]{Adler2006}. Our scan bound
 allows nonlinear mixing and requires no coding conjecture, but restricts
 geometry, synchronization and state. It does not strengthen either result in its original model. Its contribution is a common-scale bound
 and a fully charged helper derived from the concrete scan semantics.
+
+The constructive extension in \cref{sec:phase} separates a further pair of
+tasks. For dyadic matrices, a shrinking column recurrence computes a cyclic
+phase and the least period in linear time, with all native tape costs paid.
+Applying the resulting phases to the entire matrix is equivalent to canonical
+word transposition. Thus phase discovery can be removed as an obstacle for
+this particular normalization scheme, while the cost of producing the
+normalized payload retains the full transposition question. These additional
+results have complete written proofs, including the native schedules, but
+have not been formalized in Lean. The original reduction and compiler
+barriers retain their Lean proofs.

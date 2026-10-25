@@ -1,17 +1,29 @@
 \section{Formalization and reproduction}
 \label{sec:verification}
-The Lean proofs are the mathematical proofs for the theorems in this paper.
-Human-readable proofs and outlines explain those proofs; they do not enlarge
-the checked statements. The declaration map in
-\lean{verification/contracts.json} identifies each numbered result and its
+The reduction and compiler barriers have Lean proofs. For those results,
+the Lean proofs are the mathematical proofs; the human-readable proofs and
+outlines explain them without enlarging their checked statements. The map
+in \lean{verification/contracts.json} identifies these results and their
 supporting native interfaces.
+
+\Cref{thm:paid-phase,lem:phase-marker,thm:normalizer-word} instead have
+complete written proofs in \cref{sec:phase}, including the native tape
+schedules. They are explicitly marked \emph{not formalized} and are listed
+separately in \lean{verification/written-results.json}. The manuscript
+checker requires every numbered result to occur in exactly one of these
+two proof-status categories. A successful Lean audit does not certify the
+written results. Formalization remains to cover the vector-polynomial
+recurrence and selector, the all-size phase schedule, the marker lemma,
+and both native normalizer reductions.
 
 The new package shares the native machine model and supporting results of
 \cite{FirstPaper2026,SecondPaper2026} through a relative Lake dependency.
 It preserves the existing Lean and mathlib pins
 \cite{Lean4,Mathlib2020,Mathlib4}. Shared definitions are imported, not copied
-and independently redefined. All native execution claims are proved against
-actual transition traces, including input preparation and final output.
+and independently redefined. The formalized native execution claims are proved
+against actual transition traces, including input preparation and final
+output. The new phase and normalizer schedules are written implementation
+proofs; they have not been compiled into checked transition traces.
 
 The reproduction script builds the mapped modules, checks their aggregate
 imports, and audits every declaration owned by their local import closure.

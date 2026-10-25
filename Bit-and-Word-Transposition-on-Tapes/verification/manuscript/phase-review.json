@@ -1,0 +1,93 @@
+{
+  "status": "reviewed_written_extension",
+  "date": "2026-10-25",
+  "scope": "Written phase and normalizer proofs, proof-status mapping, source preservation, and visual PDF review. Not a fresh Lean kernel audit or a priority certificate.",
+  "artifact": "paper/main.pdf",
+  "pdf_sha256": "c3fe8a1b08c0266e90b14fadc5445a769d83b8d7b06c5ef166dcc905b3f6b36a",
+  "page_count": 17,
+  "pages_reviewed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "rendering": "Poppler, 90 dpi; every page inspected in four-page contact sheets.",
+  "manuscript_and_verification_sources": {
+    "paper/macros.tex": "9d0d8fe1b8d12f3a331c058fd8baa23962e26d1c7c3248a7f42944ae3a383eac",
+    "paper/main.tex": "2e21cfd5c3e8859f115dba2f344da3440328ba225d1bf08172406fdeef311a60",
+    "paper/sections/discussion.tex": "fac1748a88d58c7cd490aba7a31f07043590ed3b0cbb178ffec763025a509fd7",
+    "paper/sections/geometry.tex": "20cb40767559880e435beff9d5bc3357e956a406c7bc92c969f387c91ed03ec4",
+    "paper/sections/introduction.tex": "c6808919ccbd877fc3f379f3f37c851d791040892c045a3e09c08d47e9773c19",
+    "paper/sections/model.tex": "7792b852c7a61c181ae167baf0f544bb336cba318b83e888a1635edb41f978d2",
+    "paper/sections/phase.tex": "547d4608e708375c1ba93bc15bacb9504edb64da3eeb14a73f73be0aa34236b9",
+    "paper/sections/reduction.tex": "0aeaed6fb02b24b75c75b1545b11ce70103f5d624c51c3f21d3194e5f01d7546",
+    "paper/sections/scans.tex": "290f0aa60e6454020c6789e08a3216bc652de063900662e7798b82ebf46ac6c4",
+    "paper/sections/verification.tex": "896d4634eabd829f4cadfc7d00a93d5fd29dca6501c449cc979b90853ef5854e",
+    "paper/references.bib": "b5f6c134b962fb8bd230407c142eebc06b4d31f75f87f743362e70f66a6b330b",
+    "verification/contracts.json": "99af3f3685deb28c3884a2ba5bfc41ef6cfbdb67b823333a9798c5d36546f51d",
+    "verification/written-results.json": "d06d997db5c2aece9da0a4045ea6676dab5025de5becb9078464127d6e2a7705",
+    "verification/verify.py": "53ade090e680b394496b05a2632d674dd6d91f6bc7e590549f53f0c2edb26549"
+  },
+  "proof_status": [
+    {
+      "manuscript_label": "thm:paid-phase",
+      "status": "written_proof_not_formalized",
+      "scope": "The specific dyadic vector-word phase recurrence, least periods, and a uniform O(P) native extractor with raw setup and output."
+    },
+    {
+      "manuscript_label": "lem:phase-marker",
+      "status": "written_proof_not_formalized",
+      "scope": "A single least-significant-bit marker fixes the exact phase origin regardless of all higher payload lanes."
+    },
+    {
+      "manuscript_label": "thm:normalizer-word",
+      "status": "written_proof_not_formalized",
+      "scope": "Linear-time full normalization for the stated phase on canonical dyadic banks is equivalent to canonical word transposition at all dimensions."
+    }
+  ],
+  "review_basis": "Integration review against previously independently reviewed phase-extraction and normalizer-equivalence arguments; no new independent review claimed for this manuscript revision.",
+  "findings": [
+    "The vector-polynomial selector retains the boundary word needed for the second leading coefficient; zero, fixed, and short-period columns are handled explicitly.",
+    "The phase recurrence is equivariant with the exact least period and yields a uniform fixed-tape O(P) schedule, including nested metadata, raw setup, resets, and output.",
+    "The least-significant marker fixes the exact phase origin independently of all higher payload lanes.",
+    "The forward reduction uses the correctly signed marked column shear, canonical width, full dyadic transpose before cropping, and a normalizer call of less than 32P bits for arbitrary dimensions.",
+    "The converse pays input-head resets, both transpose simulations, row rotations, and final output; its bound allows constant-factor simulation overhead.",
+    "The sibling identity and explicit counterexample explain the remaining full-payload obligation without claiming a general lower bound.",
+    "All three additional numbered results are explicitly marked not formalized; blanket Lean-coverage claims have been removed.",
+    "The final PDF has no clipping, overlaps, unresolved references, or LaTeX box warnings; the contents fit on the title page."
+  ],
+  "checks": {
+    "exact_disjoint_numbered_result_maps": "passed",
+    "negative_map_checks": {
+      "rejected": 3,
+      "cases": [
+        "formal/written overlap",
+        "omitted written result with status marker",
+        "nonexistent written-result label"
+      ]
+    },
+    "local_lean_source_closure_and_escape_guard": "passed: 143 modules; 57 mapped endpoints",
+    "historical_lean_and_contract_hashes_unchanged": 148,
+    "lean_rebuild": "not rerun; Lean sources, pins, aggregate imports, and declaration map are unchanged",
+    "historical_lean_audit": "verification/verified.json"
+  },
+  "remaining_open": [
+    "Formalization of all three added results and their native schedules.",
+    "Unrestricted linear-time word transposition.",
+    "The unrestricted WORD implies BIT direction."
+  ],
+  "novelty_scope": "No fresh literature-wide novelty claim is made for this extension; existing citations and their pinned revisions are retained."
+}

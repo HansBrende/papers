@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LEAN = ROOT / 'lean'
 OUT = ROOT / 'verification/build'
 MAP = ROOT / 'verification/contracts.json'
+WRITTEN = ROOT / 'verification/written-results.json'
 NAME = re.compile(r'[A-Za-z_][A-Za-z_0-9.]*\Z')
 IMPORT = re.compile(r'^\s*(?:public\s+)?import\s+([^\n]+)$', re.M)
 
@@ -151,6 +152,20 @@ def audit_source(modules, names):
     ])
 
 
+def load_written_results():
+    data = json.loads(WRITTEN.read_text())
+    if data.get('schema_version') != 1:
+        raise ValueError('Unsupported written-result map')
+    items = data['results']
+    labels = [item['manuscript_label'] for item in items]
+    if len(labels) != len(set(labels)):
+        raise ValueError('Duplicate written-result label')
+    for item in items:
+        if item.get('status') != 'written_proof_not_formalized' or not item.get('scope'):
+            raise ValueError('Invalid written-result proof status')
+    return items
+
+
 def manuscript_check(data):
     sources = sorted((ROOT / 'paper').rglob('*.tex'))
     sources = [p for p in sources if 'build' not in p.relative_to(ROOT / 'paper').parts]
@@ -169,22 +184,30 @@ def manuscript_check(data):
     for item in data['contracts']:
         if item.get('manuscript_label') and item['manuscript_label'] not in labels:
             raise ValueError('Mapped manuscript label is missing: ' + item['id'])
-    numbered = re.compile(r'\\begin\{(?:theorem|lemma|corollary|proposition|definition)\}')
+    written = {item['manuscript_label'] for item in load_written_results()}
+    mapped = {item['manuscript_label'] for item in data['contracts'] + data['pending']
+              if item.get('manuscript_label')}
+    if written & mapped:
+        raise ValueError('A result cannot be both Lean-mapped and written-only')
+    numbered = re.compile(r'\\begin\{(theorem|lemma|corollary|proposition|definition)\}')
     actual = set()
     for source in sources:
         contents = source.read_text()
-        matches = list(numbered.finditer(contents))
-        for i, match in enumerate(matches):
-            end = matches[i+1].start() if i+1 < len(matches) else len(contents)
-            label = re.search(r'\\label\{([^{}]+)\}', contents[match.end():end])
+        for match in numbered.finditer(contents):
+            end = contents.find('\\end{' + match[1] + '}', match.end())
+            if end < 0:
+                raise ValueError('Unclosed numbered result in ' + str(source.relative_to(ROOT)))
+            body = contents[match.end():end]
+            label = re.search(r'\\label\{([^{}]+)\}', body)
             if label is None:
                 raise ValueError('Unlabelled numbered result in ' + str(source.relative_to(ROOT)))
             actual.add(label[1])
-    mapped = {item['manuscript_label'] for item in data['contracts'] + data['pending']
-              if item.get('manuscript_label')}
-    if actual != mapped:
-        raise ValueError('Numbered result map differs: missing=' + str(sorted(actual - mapped)) +
-                         ', extra=' + str(sorted(mapped - actual)))
+            if (label[1] in written) != ('\\notformalized' in body):
+                raise ValueError('Written-result status marker differs: ' + label[1])
+    expected = mapped | written
+    if actual != expected:
+        raise ValueError('Numbered result map differs: missing=' + str(sorted(actual - expected)) +
+                         ', extra=' + str(sorted(expected - actual)))
     return {str(p.relative_to(ROOT)): sha(p) for p in [*sources, bib]}
 
 
@@ -221,9 +244,11 @@ def main():
             raise ValueError('Aggregate imports differ from the stable theorem map')
         sources = {str(p.relative_to(ROOT)): sha(p) for p in closure.values()}
         configs = ['lean/BitWord.lean', 'lean/lakefile.toml', 'lean/lake-manifest.json',
-                   'lean/lean-toolchain', 'verification/contracts.json', 'verification/verify.py']
+                   'lean/lean-toolchain', 'verification/contracts.json', 'verification/verify.py',
+                   'verification/written-results.json']
         sources.update({p: sha(ROOT / p) for p in configs})
         receipt.update({'contract_status': data['status'], 'pending': data['pending'],
+                        'written_results_not_formalized': load_written_results(),
                         'targets': targets, 'local_modules': sorted(closure), 'sources': sources,
                         'manuscript_sources': manuscript_check(data), 'mapped_declarations': names,
                         'assumptions': ['propext', 'Classical.choice', 'Quot.sound']})
@@ -246,6 +271,7 @@ def main():
         receipt['audited_declarations'] = int(result[1])
         receipt['status'] = 'passed_components' if data['pending'] else 'passed_mapped_contracts'
         receipt['not_certified'] = ['English-to-Lean correspondence', 'visual PDF quality',
+                                     *[p['manuscript_label'] for p in load_written_results()],
                                      *[p['id'] for p in data['pending']]]
         save()
         print(json.dumps({'status': receipt['status'], 'declarations': int(result[1]),

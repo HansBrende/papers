@@ -5,6 +5,17 @@ transposition implies failure of linear-time dyadic bit transposition.
 The reverse transfer would require $\WORD\Rightarrow\BIT$, which
 remains open. No general quantitative lower-bound transfer is asserted.
 
+The phase extractor in \cref{thm:paid-phase} adds an unconditional
+linear-time primitive: every column's phase and period can be obtained
+without gathering its entries. Its shrinking recurrence discards payload,
+so it does not by itself produce the normalized matrix. By
+\cref{thm:normalizer-word}, a linear-time full normalizer for this exact
+phase convention would be equivalent to $\WORD$. Conversely, proving
+that this normalizer cannot run in linear time would refute $\WORD$.
+The two siblings require a common inherited phase; independently
+normalizing them is insufficient. These written results are not
+Lean-formalized and are separate from the compiler barriers below.
+
 The multiscale argument isolates a common obstruction: a short composition of
 whole-entry operations and simple rearrangements has limited fine-scale
 spread unless it traverses a block whose scale is exceptional. Disjointness
@@ -34,3 +45,12 @@ principle that continues to bound the shared information when local state
 or access schedules grow with the input. Neither a
 restricted negative result nor a short algebraic factorization alone settles
 the original transposition question.
+
+A second precise construction target is the full normalizer of
+\cref{thm:normalizer-word}. Its phase computation is already paid; the
+unresolved obligation is to update and emit the full payload in linear
+time. Shared computation across the two retained components is one
+possible route. The cost of a literal two-child recursion does not
+exclude such computation. Formalizing the phase recurrence and its
+native schedule is also an explicit verification task, not an additional
+assumption in the written equivalence proof.

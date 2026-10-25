@@ -1,0 +1,367 @@
+\section{Linear-time phase extraction and full normalization}
+\label{sec:phase}
+This section gives complete written proofs, including the tape schedules;
+its results are not formalized in Lean. A phase identifies a column's
+position within its cyclic orbit. Computing that index and moving the
+column to the indicated position are different output tasks. We prove
+that the first is linear-time for a specific recurrence, and that the
+second is equivalent to $\WORD$.
+
+\subsection{The phase recurrence}
+Throughout this section, bits within a word are ordered least significant
+first. For a column of dyadic height $n$ and word width $w$, write
+\[
+ f(X)=\sum_{r=0}^{n-1}x_rX^r,\qquad x_r\in\mathbb F_2^w.
+\]
+Coefficients are vectors: the only coefficient operations used are XOR
+and bit inspection. The cyclic shift $J_n$ moves source row $r$ to row
+$r+1\pmod n$, so $(J_nf)_r=x_{r-1\bmod n}$. It is multiplication by
+$X$ modulo $X^n-1$. Since $n$ is a power of two, substitution $X=1+y$
+identifies this module with vector polynomials modulo $y^n$.
+
+For $f\ne0$, write
+\[
+ f(1+y)=y^v(A+By+\cdots),\qquad A\ne0,
+\]
+where $v$ is the least nonzero coefficient degree and $B=0$ if $v=n-1$.
+Let $p(f)$ be the bit of $B$ at the least significant set-bit position of
+$A$. Set $p(0)=0$. A nonzero fixed column has $v=n-1$, and hence $p=0$.
+For $n=2m$, define adjacent-row maps
+\[
+ (C_0f)_k=x_{2k}\mathbin\oplus x_{2k+1},\qquad
+ (C_1f)_k=x_{2k+1}\quad(0\le k<m).
+\]
+Put $N(f)=J_n^{-p(f)}f$ and
+$K(f)=C_{v\bmod2}N(f)$ for nonzero $f$; set $K(0)=0$.
+The phase convention is
+\begin{equation}\label{eq:phase-recurrence}
+ \phi_n(f)=
+ \begin{cases}
+  0,&J_nf=f,\\
+  p(f)+2\phi_m(K(f)),&J_nf\ne f.
+ \end{cases}
+\end{equation}
+Every height-one column is fixed, so this defines $\phi$ at all dyadic
+heights. It does not specify a lexicographically least rotation.
+
+\begin{theorem}[Paid phase extraction]\label{thm:paid-phase}
+\notformalized\ Let $d=2^h$, $h\ge0$, $b=\max(1,h)$, and $P=d^2b$.
+There is one uniform deterministic native machine that, on every raw
+row-major $d\times d$ matrix of $b$-bit entries, outputs in column order
+the phase $\phi_d(f)$ and least positive cyclic period $L(f)$ of each
+column. Its time is $O(P)$, including raw size discovery, all workspace
+operations, and output. For every column,
+\[
+ 0\le\phi_d(f)<L(f),\qquad
+ \phi_d(J_df)=(\phi_d(f)+1)\bmod L(f).
+\]
+Each output record consists of an $h$-bit phase followed by an $(h+1)$-bit
+period, both least significant first, without separators. Zero and fixed
+columns have phase zero and period one.
+\end{theorem}
+
+\begin{proof}
+\emph{Period and carry.}
+Put $g(y)=f(1+y)$. Multiplication by $J_n$ becomes multiplication by
+$1+y$ modulo $y^n$. For $f\ne0$, this preserves $v,A$. It fixes $f$
+exactly when $v=n-1$; otherwise it replaces $B$ by $B+A$, so
+$p(J_nf)=1-p(f)$. The least period divides $n$ and is therefore a power
+of two. For every $2^s\le n$,
+\[
+ (J_n^{2^s}-I)g=y^{2^s}g\pmod {y^n}.
+\]
+For nonzero $g$, this vanishes exactly when $v+2^s\ge n$. Consequently
+\begin{equation}\label{eq:phase-period}
+ L(f)=\min\{2^s:2^s\ge n-v\}\quad(f\ne0),\qquad L(0)=1.
+\end{equation}
+For a nonfixed column the one-bit normalization satisfies
+\[
+ N(J_nf)=
+ \begin{cases}N(f),&p(f)=0,\\J_n^2N(f),&p(f)=1.\end{cases}
+\]
+
+\emph{Shrinking child and phase induction.}
+Separating even and odd raw coefficients gives
+\begin{equation}\label{eq:phase-components}
+ f(1+y)=(C_0f)(1+y^2)+y(C_1f)(1+y^2).
+\end{equation}
+Multiplication by $J_n^2$ multiplies both components by $1+y^2$ in
+their respective quotients. Thus
+$C_iJ_n^2=J_mC_i$ for $i=0,1$, including cyclic wrap.
+The component selected by $v\bmod2$ has valuation $\floor{v/2}$ and
+leading word $A$. For $L(f)>1$, \cref{eq:phase-period} therefore gives
+\[
+ L(K(f))=L(f)/2,
+\]
+because $m-\floor{v/2}=\ceil{(n-v)/2}$. For zero or fixed columns,
+the child remains zero or fixed. The selected parity is invariant under
+$J_n$, so for nonfixed columns
+\[
+ K(J_nf)=K(f)\quad\text{if }p(f)=0,\qquad
+ K(J_nf)=J_mK(f)\quad\text{if }p(f)=1.
+\]
+Induction in \cref{eq:phase-recurrence} proves the range and equivariance.
+In the second case, with $L'=L(f)/2$, the new phase is
+$2((\phi_m(K(f))+1)\bmod L')$, which is the old phase plus one modulo
+$2L'$. This includes $L'=1$. The fixed cases hold modulo one.
+
+\emph{Extracting two coefficients without expanding the Taylor polynomial.}
+The implementation needs only $v,A,B$ at each stage. For a nonzero
+polynomial $f$ of degree less than $n=2m$, keep a boundary word $e$ and
+an offset $t$. Split $f=a+X^mc$, with both halves of degree less than
+$m$, and put $\ell=a+c$. Then
+\[
+ f(1+y)+ey^{2m}
+ =\ell(1+y)+y^mc(1+y)+ey^{2m}.
+\]
+If $\ell\ne0$, replace $(f,e)$ by $(\ell,c(1))$ and leave $t$
+unchanged. The leading degree is below $m$; the next coefficient crosses
+the boundary only if that degree is $m-1$, in which case the needed
+additional word is exactly $c(1)$. If $\ell=0$, replace $f$ by $c$,
+retain $e$, and add $m$ to $t$, using the exact factorization
+$y^m(c(1+y)+ey^m)$. Starting with $e=t=0$, these updates preserve
+the first two leading words and preserve the original valuation as
+$t$ plus the current valuation. At height one, the remaining word is
+$A$, the boundary word is $B$, and $t=v$. A separate zero-column flag
+keeps all fields zero for zero columns. The offset additions use distinct
+descending powers of two and cannot overflow the original $h$-bit field.
+
+\emph{Native implementation of the selector.}
+Assume $h\ge1$, so $b=h$. A rectangular current bank has $n$ rows,
+$d$ columns, and the original $b$-bit words. Copy it before selection,
+so the current payload remains available. At each inner fold, sequentially
+copy its first and last halves to two banks, XOR them to a third, and
+accumulate, for each column, a nonzero flag for $\ell$ and the word
+$c(1)$. Store these in a scratch row scanned alongside every data row
+and rewound at each row end. Scan the metadata once to update $e,t$.
+Then scan the $\ell$ and $c$ banks together, selecting the indicated
+entry in each column; both source heads advance regardless of the choice.
+Erase the used temporary spans and repeat with half as many rows.
+
+A fixed pool of bank and metadata tapes suffices. A bank has an origin
+marker and entry/row delimiters, adding only $O(1)$ cells per entry or
+row. Entry rulers and counters occupy ordinary tapes. Their $O(h)$ work
+per entry is $O(b)$; each scratch-row return costs $O(db)$ and is charged
+to that data row. Separate metadata scans cost $O(db)$ per fold. With
+$q=\log_2 n$, all selector copies, scans, erasures, and returns therefore
+cost
+\begin{equation}\label{eq:phase-selector-cost}
+ O(ndb+db(q+1)).
+\end{equation}
+The fixed-column test uses the current height, $v=n-1$.
+
+\emph{Native outer update.}
+At each height $n=2m$, run this selector on a copy of the current bank.
+Store the per-column bits $p$ and $v\bmod2$, using zero for the latter
+on zero columns. Form a uniformly shifted bank $J_n^{-1}f$ by saving
+the first row, copying the remaining rows, and appending the saved row.
+Merge shifted and unshifted banks using the $p$ scratch row. This
+implements $N(f)$ with a zero-or-one-row shift per column in $O(ndb)$
+time; it does not apply an arbitrary phase for free.
+
+Split the resulting bank stably into even-row and odd-row banks $E,O$.
+Scanning both in row order, write $E\oplus O$ where $v$ is even and
+$O$ where it is odd. The resulting row-major bank is exactly $K(f)$
+column by column. Scratch scans and returns cost $O(ndb)$. Erase the
+old bank and temporary spans before reusing their tapes, retaining only
+this one child and the metadata. The number of tapes is independent of
+$h$; both the inner and outer recurrences are loops over fixed tape pools.
+
+Keep $d$ permanent output records. At outer level $i$, write $p$ into
+phase bit $i$, by scanning each whole record if necessary; this costs
+$O(dh)$ per level. Continue all columns for all $h$ levels: fixed and
+zero children remain fixed and contribute zero bits. Use the first
+selector's valuation to compute the \emph{original} period from
+\cref{eq:phase-period}, and never overwrite it with a child period.
+Even an $O(h^2)$ local binary routine per column suffices for this step.
+
+\emph{Setup, total cost, and output.}
+Count raw input length using a binary counter with its low end fixed.
+An increment and return across $t$ trailing ones costs $O(t+1)$, giving
+$O(P)$ total. Rewind the input. Test $P=h4^h$ for $h$ up to the bit
+length of $P$ using ordinary binary tape arithmetic. This one-time setup
+is polynomial in $\log(P+1)$ and hence $O(P)$ with one uniform constant.
+Create the rulers, $O(h)$-bit counters, bank delimiters, and output records
+by paid scans. No dimension is stored in finite control or supplied as advice.
+
+Across outer heights $d,d/2,\ldots,2$, the data-bank cost is
+$O(db\sum_i d/2^i)=O(P)$. The nested selector metadata contribute
+\[
+ O\left(db\sum_{q=1}^h(q+1)\right)=O(dbh^2)=O(P),
+\]
+using $h^2\le2\cdot2^h=2d$ for $h\ge1$.
+Period computation and phase-record writes cost $O(dh^2)$ in total.
+All bank erasures and scratch-row returns are included in these bounds.
+Finally scan the records in column order and append exactly $d(2h+1)$
+bits, with no workspace use of the output tape. The case $d=1$ outputs
+the one-bit period $1$ and an empty phase field. Invalid lengths may halt
+with a fixed fallback. This proves the promised uniform native bound.
+\end{proof}
+
+The theorem removes phase discovery as a possible source of superlinear
+cost for this recurrence. It does not recover the original column from
+its phase and period, nor does it output a rotated payload.
+
+\subsection{The full normalizer is equivalent to word transposition}
+Define the full column normalizer by
+\[
+ \mathcal N_{\phi,n}(f)=J_n^{-\phi_n(f)}f.
+\]
+Equivariance makes this constant on every cyclic orbit. The bank task
+applies it to every column and writes the entire resulting raw row-major
+matrix, with the original word width and no additional encoding.
+
+\begin{lemma}[Exact marker phase]\label{lem:phase-marker}
+\notformalized\ Let $n$ be a power of two. In a column of any word
+width $w\ge1$, suppose the least significant bit is one exactly at
+row $a$, $0\le a<n$, and zero elsewhere. All higher bits may be
+arbitrary. Then $L(f)=n$ and $\phi_n(f)=a$.
+\end{lemma}
+\begin{proof}
+The single marker forces period $n$. For $n\ge2$, its constant Taylor
+coefficient is one, so $v=0$ and the pivot is the least significant bit,
+regardless of the payload in higher bits. Its linear Taylor coefficient
+is $a\bmod2$, hence $p=a\bmod2$. The shift $J_n^{-p}$ moves the
+marker to the even row $a-p$; the selected $C_0$ child has its marker
+at $\floor{a/2}$. Induction, with the immediate base case $n=1$, gives
+$\phi_n(f)=(a\bmod2)+2\floor{a/2}=a$.
+\end{proof}
+The exact origin matters: equivariance alone would allow an unknown
+orbit-dependent additive constant. This marker fixes that constant even
+when all other bit lanes carry arbitrary data.
+
+\begin{theorem}[Normalizer equivalence]\label{thm:normalizer-word}
+\notformalized\ One uniform deterministic native machine computes
+$\mathcal N_{\phi,d}$ on all raw dyadic $d\times d$ matrices with
+$d=2^h\ge2$ and canonical width $b=h$ in $O(d^2b)$ time if and
+only if $\WORD$ holds. Here $\phi$ is exactly
+\cref{eq:phase-recurrence}, with its least significant set-bit pivot.
+\end{theorem}
+\begin{proof}
+\emph{Native interfaces.}
+Every intermediate bank below is a work tape. A fixed subroutine's
+read-only input head and append-only output can be simulated on such
+banks with constant transition overhead. End markers delimit the raw
+input; an origin track and a side flag permit returning its input head
+to origin after halting. The return costs at most its runtime plus the
+bank length. Reserve separate initially blank workspace sets for the
+constant number of calls. This uses a fixed number of tapes and does
+not assume free cleanup or free resets. Only the wrapper's final answer
+is written on the actual append-only output tape.
+
+Raw size recovery costs $O(P)$ as in \cref{thm:paid-phase}.
+For arbitrary canonical dimensions, binary search the strictly increasing
+function $d\mapsto d^2\max(1,\ceil{\log_2d})$ after counting the input
+length. Its one-time arithmetic uses polynomial time in $\log(P+1)$.
+Ordinary $O(b)$-bit counters and $b$-cell rulers cost $O(b)$ per
+entry visited. Copies, seeks, rewinds, and zero padding are charged by
+the number of cells traversed or written.
+
+\emph{From a normalizer to a column shear.}
+First take $d=2^h\ge2$, $b=h$, and put $D=2d$. Given any matrix
+$A$, construct a raw $D\times D$ matrix $B$ of canonical width $h+1$.
+For each active column $c<d$, put a single least-significant-bit marker
+at row
+\[
+ a_c=2((-c)\bmod d).
+\]
+For dummy columns $d\le c<D$, put that marker at row zero. In the
+higher $h$ bits of $B[2r,c]$, for $r,c<d$, copy $A[r,c]$; all
+other payload bits are zero. This is a sequential construction: at row
+$2r$, compare $c$ to $(-r)\bmod d$, write the marker first, then
+copy the payload. Write all dummy entries and all odd rows explicitly.
+Every comparison costs $O(h+1)$ per entry, and
+\[
+ D^2(h+1)=4d^2(h+1)\le8P.
+\]
+Thus preparation and rewind cost $O(P)$.
+
+By \cref{lem:phase-marker}, normalization gives
+$C[s,c]=B[s+a_c\bmod D,c]$ for active columns. Scan its entire raw
+output, keeping the first $d$ columns of the even rows and dropping
+the first bit of each retained entry. The extracted bank satisfies
+\[
+ U[r,c]=A[r-c\bmod d,c].
+\]
+It is already in row-major order. This implements the source-motion
+shear $V(r,c)=(r+c,c)$ with one normalizer call and $O(P)$ other work.
+
+\emph{Completing the transpose and extending to all sizes.}
+The row maps $H_-(r,c)=(r,c-r)$ and $R(r,c)=(r,-c)$ are linear-time
+native operations. For $H_-$, copy each row to a reusable buffer and
+emit its suffix starting at entry $r$, then its prefix. For $R$, emit
+entries in the order $0,d-1,d-2,\ldots,1$, each word forward; moving
+back two word lengths after an emission reaches the preceding entry.
+Including seeks, returns, and counter updates, each routine costs
+$O(db)$ per row. Tracking source positions through the chronological
+sequence $H_-,V,H_-,R$ gives
+\[
+ (r,c)\longmapsto(r,c-r)\longmapsto(c,c-r)
+       \longmapsto(c,-r)\longmapsto(c,r).
+\]
+It therefore computes dyadic transpose.
+
+For arbitrary $d\ge2$, put $b=\ceil{\log_2d}$ and $N=2^b$.
+Pad to the top-left corner of an $N\times N$ matrix with the same
+word width, run the complete dyadic transpose, and crop its top-left
+$d\times d$ corner. Since $d\le N<2d$, all padding and cropping
+cost $O(P(d))$. The one normalizer call has raw length
+\[
+ 4N^2(b+1)\le8N^2b<32P(d).
+\]
+Cropping occurs after the full transpose, not after an intermediate
+shear. The case $d=1$ is a fixed copy routine. Constant-overhead
+simulation and all wrappers thus prove $\WORD$.
+
+\emph{From word transposition to the normalizer.}
+On a dyadic bank $X$, run \cref{thm:paid-phase}, capturing its output
+on a work tape and retaining $X$. Pay the input-head reset and rewind
+the phase records. Transpose $X$ to a fresh bank $Y=X^{\mathsf T}$.
+Row $c$ of $Y$ is original column $c$, and the phase records are in
+this same sequential order. Copy that row to a reusable buffer, read
+its phase $t$, and emit the suffix beginning at entry $t$, then the
+prefix. Ignore its period field. This produces the row with entry $r$
+equal to the old entry $r+t\bmod d$, in $O(db)$ time per row, including
+every seek, counter, rewind, and buffer reuse. A second transpose gives
+the raw bank whose column $c$ is $J_d^{-\phi_d(X_{:,c})}X_{:,c}$.
+Zero and short-period columns need no exception beyond their computed
+phases. There are two fixed transposer calls and $O(P)$ other work;
+if their runtime is $t(P)=O(P)$, the total is $O(t(P)+P)=O(P)$.
+\end{proof}
+
+This equivalence supplies a concrete alternative construction target and
+an equally strong impossibility target. It does not prove a transposer,
+does not establish $\WORD\Rightarrow\BIT$, and does not assert the
+same equivalence for an arbitrary choice of orbit representative.
+
+\subsection{Why the discarded sibling still matters}
+Phase extraction retains just one shrinking child. Full normalization
+must retain enough information for both components. At height $n=2m$,
+write $U=C_0N(f)$, $V=C_1N(f)$, and $q=\phi_m(K(f))$.
+For fixed columns as well as nonfixed ones, the recurrence gives
+$\phi_n(f)=p(f)+2q$. Commutation with $J_n^2$ yields
+\[
+ C_0\mathcal N_{\phi,n}(f)=J_m^{-q}U,\qquad
+ C_1\mathcal N_{\phi,n}(f)=J_m^{-q}V.
+\]
+Both siblings require the \emph{same} phase $q$, selected by one of
+them. Inverting the adjacent-row maps reconstructs the normalized even
+entries by XOR of these two shifted siblings and the odd entries from
+the shifted $V$. Independently normalizing each sibling need not work.
+
+For example, with two-bit words and $f=(2,2,1,0)$, the recurrence gives
+$v=0$, $p=0$, $U=(0,1)$, $V=(2,0)$, and $q=\phi_2(U)=1$.
+The correct normalized column is $(1,0,2,2)$. But $\phi_2(V)=0$;
+using each sibling's own phase reconstructs $(3,2,0,0)$ instead.
+More generally, placing a single lowest-bit marker in $U$ and zeros
+in that lane of $V$ leaves all higher lanes of both siblings independent.
+There is no general recovery of the discarded payload from the selected
+child and the phase alone.
+
+Literal recursion on both full siblings preserves the total payload
+volume at each level, so a full scan per level costs $O(P\log d)$.
+That observation is not a lower bound for other computations. The
+remaining constructive task is to share work across these coupled
+updates while preserving and eventually emitting the entire raw payload.
+The normalizer equivalence shows precisely why achieving this in linear
+time would settle canonical word transposition.

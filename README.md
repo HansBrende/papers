@@ -12,4 +12,11 @@
 Shared Lean machinery used by the papers, including ported external formalizations, is in
 [`lean-machine/`](lean-machine/).
 
+Extension memos by Hans Brende and GPT-6 Astra (OpenAI):
+
+- [Adaptive Pass Bounds without a Runtime Assumption](Matrix-Transposition-and-the-Tape-Coding-Conjecture/memo-passes/)
+  removes the halting transposer's polynomial-runtime premise in the first paper's pass bound.
+- [Subcubic Storage Bounds beyond Scalar Recovery](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-subcubic/)
+  extends the fourth paper with reversible rules, low-rank ports, two-step stability, and exact quadratic ranks.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution and publishing guidance.

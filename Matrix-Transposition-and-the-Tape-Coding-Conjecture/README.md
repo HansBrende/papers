@@ -2,6 +2,12 @@
 
 Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
 
+**Extension memo:** [Adaptive Pass Bounds without a Runtime Assumption](memo-passes/),
+by Hans Brende and GPT-6 Astra (OpenAI), proves the logarithmic-pass consequence
+for halting machines without a polynomial-runtime premise. It formalizes the
+native run-length bound and derives the previous runtime-restricted consequence
+as a corollary. The original manuscript and frozen Lean files are unchanged.
+
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0

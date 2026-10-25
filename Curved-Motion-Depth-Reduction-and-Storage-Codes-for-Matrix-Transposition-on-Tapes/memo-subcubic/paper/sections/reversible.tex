@@ -1,0 +1,196 @@
+\section{Local rules and the scalar theorem}\label{sec:intro}
+The fourth paper proves a scalar linear storage bound on triangle-free
+subcubic graphs, including a more general directed-support form and an
+exact matching-number consequence~\cite{BrendeCurved}. A scalar row can
+solve for any coordinate with a nonzero coefficient. We isolate this
+property and retain the support combinatorics, without assuming scalar
+linearity. The resulting generating set applies to every alphabet and
+compatible code on the same supports.
+
+Closure operators and their entropy are an established framework for
+network coding~\cite{Gadouleau2014}. Our use of closure and polymatroids
+is within that framework. The result here is the matching-size generator
+bound for the specified local rules, together with a schedule that charges
+each center once. We do not claim a bound for arbitrary nonlinear recovery
+on all triangle-free subcubic graphs.
+
+Sections~\ref{sec:rank-one} and~\ref{sec:higher-rank} treat a different
+linear class: arbitrary coordinate widths with at most one higher-rank
+component per row. These bounds measure actual coordinate images and
+charge exceptional rows by their exact quotient deficit.
+Sections~\ref{sec:squares} and~\ref{sec:quadratic} treat arbitrary block
+ranks through the actual two-step defect. They give a weighted graph
+bound, a paid kernel bound, and an exact quadratic rank identity.
+
+Every numbered result below has a Lean proof. Those declarations are the
+proofs; the English outlines are explanatory guides. The formalization
+imports the fourth paper's library and reuses its good-chain geometry and
+Tutte--Berge machinery. It proves new generating-set statements rather
+than assuming the old scalar dimension inequality for nonlinear objects.
+
+Let $V$ be finite. At each $v$ choose $N_v\subseteq V\setminus\{v\}$ and
+write $R_v=\{v\}\cup N_v$. The general directed hypotheses are
+\begin{align}
+ &p,q\in N_v\ \Longrightarrow\ q\notin N_p,
+   \label{eq:no-triangle}\\
+ &|N_v|\le2\quad\text{or}\quad
+   \bigl(|N_v|=3\ \text{and}\ v\in N_u\Longrightarrow u\in N_v
+       \text{ for every }u\bigr).
+   \label{eq:star}
+\end{align}
+They are exactly the no-recovery-triangle and reciprocity conditions used
+in the original directed theorem. In particular, they hold whenever
+$N_v\subseteq N_G(v)$ for a finite simple triangle-free graph $G$ of maximum
+degree at most three. In the directed statements, $G$ may be any simple
+undirected graph containing every pair $vu$ with $u\in N_v$.
+Write $\nu(G)$ for its maximum matching size.
+
+In Lean a matrix records the supports $N_v$. Only its zero pattern is
+used in the generator proof. Arbitrary named sets are encoded by a zero-one
+rational matrix; this introduces no field assumption on the recovered data.
+
+\section{A fixed generating set}\label{sec:generators}
+Starting with known coordinates $B\subseteq W$, a rule centered at
+$v\in W$ may mark $x\in R_v\cap W$ known whenever all other members of
+$R_v\cap W$ are already known. A set generates $W$ if finitely many such
+steps mark every member of $W$ known. These are combinatorial rules;
+restricting a row to $W$ does not assert that an arbitrary projected code
+can recover without its omitted coordinates.
+
+\begin{theorem}[Half-size generators and matching-size generators]
+\label{thm:generators}
+\formal{ReversibleRules.lean}{exists_generators_half, exists_generators_matching}
+Under \cref{eq:no-triangle,eq:star}, every $W\subseteq V$ has a generating
+set $B\subseteq W$ with $|B|\le\lfloor|W|/2\rfloor$. On $W=V$, if $G$
+contains the prescribed pairs, there is such a $B$ with $|B|\le\nu(G)$.
+The choices depend only on the row supports.
+\end{theorem}
+\begin{outline}
+Induct on $|W|$. If $|W|$ is positive and even, choose one seed and apply
+the odd-size induction bound to the remaining set, supplying the removed
+seed whenever a truncated row needs it. For odd $|W|$, the original
+small-recovery lemma supplies a root with at most two parents in $W$.
+A good chain starts at this root. When a known center has two parents
+outside the chain, add both and seed one; its row derives the other.
+After $j$ additions the chain has $2j+1$ vertices and at most $j+1$ seeds.
+Reciprocity ensures that every chain vertex has at most two parents outside.
+
+If a chain row has just one outside parent, derive that parent without a
+seed. The enlarged set has at most half as many seeds as vertices; apply
+induction to its complement. If a pair remains, extend the chain. Finally,
+if no row has outside parents, either the singleton root derives itself
+without a seed, or the last pair shares a parent and has no prescribed
+edge between its members by \cref{eq:no-triangle}. One member of that last
+pair is then derivable from the preceding chain, so its seed can be removed.
+Again the chain and complement meet the half-size bound. Finiteness
+terminates the chain construction.
+
+For the matching bound, use the original library's Tutte--Berge partition:
+choose $U\subseteq V$ with
+$\nu(G)=|U|+\sum_A\lfloor|A|/2\rfloor$, where $A$ ranges over the
+components of $G-U$. Seed $U$ and a half-size generating set in each
+component. Every omitted premise of a component row is in $U$, since no
+graph edge joins different components. Thus the component derivations lift
+to the whole vertex set, with at most $\nu(G)$ seeds.
+\end{outline}
+
+\begin{theorem}[Productive schedule]\label{thm:schedule}
+\formal{Schedules.lean}{Generates.exists_schedule, Schedule.centers_nodup, exists_matching_schedule}
+The set $B$ in the matching conclusion can be accompanied by a finite list
+of steps $(v_i,x_i)$, chosen from the supports, which marks only previously
+unknown targets and generates $V$. No center $v_i$ occurs twice.
+\end{theorem}
+\begin{outline}
+If a derivable target remains unknown, descend through its finite derivation
+until finding a rule all of whose other premises are already known. Apply
+that productive rule. The unknown set strictly shrinks. After using a row,
+all of its members are known, so that center can never again produce a new
+target. This last argument requires no graph hypothesis.
+\end{outline}
+
+A code $\mathcal C\subseteq\mathcal A^V$ is \emph{reversible on these rows}
+if, for every $v$ and every $x\in R_v$, agreement of two codewords on
+$R_v\setminus\{x\}$ implies agreement at $x$. Ordinary recovery of $v$
+from $N_v$ is only one of these directions.
+
+\begin{theorem}[Alphabet-independent information set]\label{thm:information}
+\formal{ReversibleRules.lean}{reversible_information_set, named_rules_information_set, reversible_card_le, reversible_finrank_le}
+There is a set $B$ of size at most $\nu(G)$, determined by the supports,
+such that projection onto $B$ is injective on every code reversible on the
+rows. In particular, for a finite nonempty alphabet of size $q$,
+\[
+ |\mathcal C|\le q^{\nu(G)}.
+\]
+If the coordinates lie in one finite-dimensional vector space $A$ over any
+field $K$, and $\mathcal C\le A^V$ is linear and reversible, then
+\[
+ \dim_K\mathcal C\le\nu(G)\dim_K A.
+\]
+\end{theorem}
+\begin{outline}
+Two codewords agreeing on $B$ agree at every step of a generating derivation.
+Projection onto $B$ is therefore injective. Count the possible records in
+the finite-alphabet case. In the linear case this projection is an injective
+linear map into $A^B$, whose dimension is $|B|\dim_K A$.
+\end{outline}
+The set $B$ is an information set, not an efficient native tape decoder.
+The theorem gives no bound on the cost of evaluating an individual inverse.
+
+\section{Linear-block consequences and the original theorem}\label{sec:blocks}
+
+\begin{theorem}[Injective participating blocks]\label{thm:blocks}
+\formal{BlockRecovery.lean}{injective_block_information_set, injective_block_finrank_le}
+Let $G$ be finite, simple, triangle-free, and subcubic. Let $A$ be a
+finite-dimensional vector space over any field $K$, and let
+$T_{vu}:A\to A$ be linear maps with $T_{vv}=I$ and $T_{vu}=0$ off the
+edges for $v\ne u$. Suppose every nonzero $T_{vu}$ is injective.
+For every linear subspace $\mathcal C\le A^V$ satisfying
+$\sum_uT_{vu}x_u=0$ at every $v$,
+\[
+ \dim_K\mathcal C\le\nu(G)\dim_K A.
+\]
+When $A$ has positive dimension, the corresponding information set is chosen
+from the nonzero block pattern and works for every, possibly nonlinear,
+solution set. In finite dimension the nonzero injective endomorphisms are
+invertible; no commutation assumption is imposed.
+\end{theorem}
+\begin{outline}
+Subtract two solutions agreeing at all but one participating member of a
+row. The remaining block applied to their target difference is zero;
+injectivity kills that difference. Thus every participating row is
+reversible, and \cref{thm:information} applies. The zero-dimensional case
+has zero code dimension directly.
+\end{outline}
+
+\begin{corollary}[Original scalar statements]\label{cor:scalar}
+\formal{ReversibleRules.lean}{original_subCode_half, original_matching_bound}
+Let $M$ be a scalar matrix with unit diagonal, prescribed directed supports
+$N_v$, and \cref{eq:no-triangle,eq:star}. Its original restricted code
+\[
+ \mathcal C_W=\{x:x_u=0\ (u\notin W),\quad (Mx)_v=0\ (v\in W)\}
+\]
+satisfies $\dim\mathcal C_W\le\lfloor|W|/2\rfloor$ whenever
+\cref{eq:star} holds at the centers in $W$. If a graph $G$ contains every
+prescribed pair, then $\dim\ker M\le\nu(G)$.
+\end{corollary}
+\begin{outline}
+A scalar row solves for each variable with nonzero coefficient. This
+remains true after outside coordinates are set to zero. Use the generating
+set of \cref{thm:generators} and inject its restricted code into the scalar
+seed coordinates. The full-code matching statement follows from
+\cref{thm:information}. Thus both statements are derived from the stronger
+rules theorem, not from a second copy of the original scalar induction.
+\end{outline}
+
+\begin{corollary}[Exact scalar minrank]\label{cor:minrank}
+\formal{BlockRecovery.lean}{original_graph_matching, original_minrank}
+For a triangle-free subcubic graph $G$, the minimum rank, over any field,
+of a scalar unit-diagonal matrix with off-diagonal support on $G$ is
+$|V|-\nu(G)$.
+\end{corollary}
+\begin{outline}
+The preceding nullity bound and rank--nullity give the lower bound. Reuse
+the original library's matching-supported construction for attainment,
+and apply the new upper nullity bound to get equality. This is a
+rederivation of the original minrank result, not a new minrank value.
+\end{outline}

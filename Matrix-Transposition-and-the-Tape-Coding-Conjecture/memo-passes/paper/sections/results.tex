@@ -1,0 +1,203 @@
+\section{Purpose and model}\label{sec:introduction}
+The first paper's Theorem P$'$ bounds the information delivered by an adaptive
+machine using few monotone passes~\cite{BrendeTranspose}. Its explicit
+inequality includes the runtime $T$. The paper obtains
+$r\ge\log_{k+1}d-O_M(1)$ when $\log T=O(b)$ and identifies removal of the
+runtime premise as unfinished formal work. This memo supplies that step for
+halting runs. It leaves the original finite-time and nonhalting-prefix
+statements intact.
+
+Bounds exponential in the number of reversals are standard. In particular,
+Hernich and Schweikardt state a run-length bound for reversal- and
+space-bounded machines in Lemma~2.3, attributing the deterministic argument
+to earlier work~\cite{HernichSchweikardt2006}. Our proof works directly with
+the first paper's deterministic machine, including simultaneous head moves,
+stationary heads, and unreadable output. We make no priority claim for the
+run-length principle.
+
+The model has $q+1$ states, a read-only binary input tape, $k$ initially blank
+work tapes with $g+1$ symbols, and an append-only output that the machine
+cannot read. Each input or work head moves by $-1$, $0$, or $1$ per step;
+all start at position zero. A pass is an interval on which each of these
+$k+1$ head trajectories is monotone, with a separate direction for each
+head. Empty passes are allowed. A run halting at $T$ has a transition at
+every step before $T$ and none at $T$.
+
+We use $d$ for the matrix dimension, $b$ for its entry width, and $L=d^2b$.
+The canonical width is $b(d)=\max(1,\lceil\log_2d\rceil)$, as in the frozen
+statement of the first paper. For one fixed machine define
+\begin{align}
+ S_M&=3(q+1)(g+1)^k,& C_M&=(2k+3)(S_M+1),\label{eq:machine-constants}\\
+ \sigma_M&=\lceil\log_2(q+1)\rceil+k\lceil\log_2(g+1)\rceil,&
+ \ell_M&=\lceil\log_2 C_M\rceil,\nonumber\\
+ A_M&=2+\sigma_M+(k+4)(5+\ell_M).\label{eq:pass-constant}
+\end{align}
+The Lean declarations are authoritative proofs; the outlines below explain
+them. This memo imports the original library by a relative path and does
+not alter its frozen machine definitions.
+
+\section{Native run length}\label{sec:run-length}
+
+\begin{lemma}[Clean-ray intervals]\label{lem:ray}
+\formal{RaySimulation.lean}{ray_simulation, ray_eventually_none, ray_interval_bound}
+At the start of an interval, assign each head either the instruction to stay
+at its current cell or a direction along a ray. For a moving input head,
+assume the whole ray lies outside the input word. For a moving work head,
+assume every cell strictly ahead on the ray is blank. During the interval,
+allow each head only stationary moves or moves along its assigned ray.
+If the actual run eventually halts, any such interval of executed steps has
+length at most $S_M$.
+\end{lemma}
+\begin{outline}
+The signature consists of the state, the currently scanned input symbol
+(including the outside-word symbol), and the $k$ scanned work symbols.
+There are exactly $S_M$ signatures. A stationary work head next sees its
+written symbol; an advancing work head sees blank. A permitted input move
+preserves the scanned symbol. These facts define an exact finite transition
+system, with an exit when the native transition is undefined or attempts a
+forbidden direction. The invariant about blank rays is preserved by writes.
+
+The formal simulation lifts every nonexit finite transition to the actual
+machine step. Consequently eventual native halting forces eventual exit
+from the finite system. Before the first exit its signatures are distinct:
+a repeated signature would repeat the future trajectory and prevent exit.
+The interval length is therefore bounded by the number of signatures. The
+output is reproduced by the native step but need not be in the signature,
+since no transition reads it.
+\end{outline}
+
+\begin{lemma}[One-pass envelope]\label{lem:envelope}
+\formal{RunLength.lean}{pass_envelope}
+Suppose the run halts at $T$, $0\le a\le e\le T$, and $[a,e)$ is a pass.
+For $L=|w|$,
+\[
+ L+e+1\le C_M(L+a+1).
+\]
+\end{lemma}
+\begin{outline}
+Put $R=L+a$. Every cell visited before $a$, and every nonblank input cell,
+lies in $[-R,R]$. Mark a step if some head moves and its departing or
+arriving cell lies in this interval. A monotone head has at most $2R+2$
+marked steps, so the total number $m$ is at most $(k+1)(2R+2)$.
+
+Between marked steps, a head inside the envelope remains stationary.
+A head outside it can move only outward, since it started the pass inside
+and is monotone. Its forward work cells are blank: they were visited neither
+before $a$ nor earlier in the pass. The input head outside the envelope sees
+only the outside-word symbol. Thus each unmarked interval satisfies
+\cref{lem:ray}. The $m$ marked steps split $[a,e)$ into at most $m+1$
+unmarked intervals, giving $e-a\le(m+1)S_M+m$. The displayed bound follows
+from \cref{eq:machine-constants}.
+\end{outline}
+
+\begin{theorem}[Halting run-length bound]\label{thm:run-length}
+\formal{RunLength.lean}{halting_run_length, halting_time_le, timeBound_log}
+If the actual run on an $L$-bit word halts at $T$ and has a partition into
+$r$ passes, then
+\begin{equation}\label{eq:run-length}
+ L+T+1\le (L+1)C_M^r.
+\end{equation}
+In particular, with $\overline T=(L+1)C_M^r$,
+\begin{equation}\label{eq:time-log}
+ T\le\overline T,\qquad
+ \lceil\log_2(2\overline T+1)\rceil
+ \le 2+\lceil\log_2(L+1)\rceil+r\ell_M.
+\end{equation}
+\end{theorem}
+\begin{outline}
+Apply \cref{lem:envelope} to successive partition intervals, starting with
+$L+0+1$. This gives $L+p_i+1\le(L+1)C_M^i$ at every endpoint $p_i$.
+At $p_r=T$ it proves \cref{eq:run-length}. For \cref{eq:time-log}, bound
+$L+1$ and $C_M$ by their respective powers of two and use
+$2\overline T+1\le4\overline T$, since $\overline T\ge1$.
+\end{outline}
+This is a restriction on how much computation a halting construction can
+hide in a small number of passes. It is not a lower bound on time itself.
+
+\section{Removing time from the adaptive pass bound}\label{sec:adaptive}
+Write $H_r=\sum_{i=0}^{r-1}(k+1)^i$, so $kH_r+1=(k+1)^r$, and let
+$G_\gamma=\lceil d/\gamma\rceil$ for $\gamma\ge1$. Set
+\[
+ B_M(L,r)=\sigma_M+(k+4)
+   \bigl(2+\lceil\log_2(L+1)\rceil+r\ell_M\bigr).
+\]
+
+\begin{theorem}[Time-free grouped bound]\label{thm:grouped}
+\formal{AdaptivePasses.lean}{time_free_grouped, time_free_grouped_on, time_free_div}
+Suppose $M$ correctly transposes every $d\times d$ input with $b$-bit entries,
+and every input's halting run has a partition into $r$ passes. Then
+\begin{equation}\label{eq:grouped}
+ d^2b\le H_r\bigl((\gamma+1)db+G_\gamma B_M(d^2b,r)\bigr).
+\end{equation}
+In particular $db\le H_r(2b+B_M(d^2b,r))$.
+
+More generally, let $W$ be a set of inputs on each of which the machine
+halts with the correct transposed output and an $r$-pass partition. If
+$2^{d^2b}\le2^m|W|$, then
+\begin{equation}\label{eq:grouped-on}
+ d^2b\le G_\gamma m+
+ H_r\bigl((\gamma+1)db+G_\gamma B_M(d^2b,r)\bigr).
+\end{equation}
+No condition is imposed on inputs outside $W$.
+\end{theorem}
+\begin{outline}
+\Cref{thm:run-length} supplies the common bound
+$\overline T=(d^2b+1)C_M^r$ on all relevant halting times. Apply the existing
+Lean-verified grouped Theorem P$'$ (or its correct-set form) from the first
+paper, and bound its term $\lceil\log_2(2\overline T+1)\rceil$ using
+\cref{eq:time-log}. The correct-set form keeps the original payment
+$G_\gamma m$. The per-$d$ form uses the original theorem's corresponding
+arithmetic consequence.
+\end{outline}
+
+\begin{theorem}[Logarithmic passes without a runtime assumption]\label{thm:passes}
+\formal{AdaptivePasses.lean}{logarithmic_pass_power, canonical_pass_power, canonical_logarithmic_passes}
+Let $k\ge1$, $b\ge1$, and $d\le2^b$. Under the full-correctness and halting
+hypotheses of \cref{thm:grouped},
+\begin{equation}\label{eq:power}
+ kd\le A_M(k+1)^r.
+\end{equation}
+For the canonical width $b=b(d)$ and $d\ge1$, this gives
+\[
+ r\ge\log_{k+1}d-
+   \bigl(\log_{k+1}A_M-\log_{k+1}k\bigr).
+\]
+The subtracted quantity depends only on the fixed machine.
+\end{theorem}
+\begin{outline}
+Because $b<2^b$ and $d\le2^b$, one has
+$d^2b+1\le2^{3b}$. If $r\le b$, then
+$2b+B_M(d^2b,r)\le A_M b$. The per-$d$ bound gives $d\le A_M H_r$;
+multiply by $k$ and use $kH_r+1=(k+1)^r$.
+If $r>b$, then $d\le2^b\le(k+1)^r$, and $A_M\ge k$ proves the same
+conclusion. The canonical width satisfies $b(d)\ge1$ and $d\le2^{b(d)}$.
+Taking logarithms in \cref{eq:power} proves the final inequality.
+\end{outline}
+
+\begin{corollary}[The earlier runtime-restricted consequence]\label{cor:old}
+\formal{AdaptivePasses.lean}{bounded_runtime_corollary}
+The conclusion \cref{eq:power} at canonical width still holds if the
+hypotheses additionally give a common runtime bound $T_0$. In particular,
+the earlier logarithmic-pass consequence for polynomial-time machines
+follows without using its polynomial bound.
+\end{corollary}
+\begin{outline}
+Discard the bound $T\le T_0$ and apply \cref{thm:passes}. This rederives the
+runtime-restricted consequence, not the original finite-time inequality,
+which is an input to our proof.
+\end{outline}
+
+\section{Consequences and remaining problem}\label{sec:roadmap}
+An adaptive transposer cannot evade the logarithmic-pass barrier by using
+very long monotone stretches between direction changes. The grouped
+correct-set inequality also removes the need to assume a common runtime
+on the specified halting inputs. Its co-entropy cost is retained explicitly;
+we do not assert an additional robust asymptotic bound here.
+
+These results do not decide (T), the existence of a fixed finite-tape
+machine transposing the canonical inputs in $O(d^2b(d))$ time. A linear-time
+run can still have many short passes. A stronger impossibility argument
+must turn the required passes into enough total work, while a construction
+must exploit them within its time budget. The finite-time P$'$ theorem
+also applies to certain nonhalting prefixes; our new run-length argument
+requires eventual halting and does not replace that broader interface.

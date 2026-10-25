@@ -1,0 +1,71 @@
+\section{Graphs covered by four-cycles}\label{sec:squares}
+The next bounds impose no restriction on individual block ranks. Their
+graph input concerns the edges in the \emph{original} support graph that
+belong to a simple four-cycle. Write $G_\square$ for this spanning
+subgraph, and $F=E(G)\setminus E(G_\square)$. There is no iterative
+edge-deletion process in this definition.
+
+\begin{theorem}[C: a common target for square-covered graphs]\label{thm:square-good}
+Let $G$ be a finite simple triangle-free graph of maximum degree three.
+If every edge belongs to a four-cycle, then $G$ admits a graph
+homomorphism to the circular clique $K_{8/3}$. Consequently every
+normalized, monotone, submodular function $h:2^V\to\R$ satisfying
+$h(N_G(v)\cup\{v\})=h(N_G(v))$ obeys
+\[
+ 2h(V)\leq\sum_{v\in V}h(\{v\}).
+\]
+In particular, $G_\square$ satisfies this weighted half bound for every
+triangle-free subcubic $G$, whether or not all edges of $G$ lie in squares.
+\formal{SquareGood.lean}{Squares.target,Squares.good,squareCore_good}
+\end{theorem}
+\begin{outline}
+Work first in a connected component. Two small configurations force a
+closed bipartite component: two vertices with three common neighbors,
+and an embedded cube with one vertex deleted. The formal proof treats
+both by the same boundary lemma. A bipartite seed has three boundary
+vertices, each already adjacent to two internal vertices. A square
+through any new edge forces its outside endpoint to touch two boundary
+vertices. Any two such pairs intersect, and the degree bound then forces
+all outside attachments to be the same vertex. The enlarged component
+remains bipartite and maps to an edge of $K_{8/3}$.
+
+Suppose now that no such homomorphism exists. The preceding configurations
+are absent. Distinct vertices have at most two common neighbors, and no
+vertex can support squares on all three pairs of incident edges: those
+three squares would produce a cube cap, or three common neighbors.
+
+An embedded ladder consists of disjoint two-vertex rungs joined by two
+rails. A square with an outside attachment extends to a three-rung
+ladder; if no attachment exists, the square is a closed bipartite
+component. Choose a longest embedded ladder, of at least three rungs.
+Each interior vertex already has degree three. At an endpoint, a new
+edge must belong to a square through the endpoint's rung. A square
+through the last rail instead would give three common neighbors or
+three square wedges at the preceding interior vertex. The new square's
+other two vertices both lie outside the ladder, by degree saturation.
+It would therefore extend the ladder, a contradiction.
+
+Connectedness makes this ladder span the component. Its extra edges
+can only form a partial matching between its two end rungs. Complete
+that matching: the resulting graph is a closed ladder, with either
+parallel or twisted closing rails. Adding two rungs admits a fold onto
+the shorter ladder, by inserting a two-edge backtrack. Four finite base
+maps suffice: the three-rung twisted ladder and four-rung untwisted
+ladder are bipartite; the four-rung twisted ladder is the M\"obius
+ladder $M_8$; the five-rung untwisted ladder maps to its five-cycle.
+The three-rung untwisted closure is excluded by triangle-freeness.
+The Lean kernel checks these finite maps directly.
+
+Label $M_8$ by $\Z/8\Z$, with edge differences $1,-1,4$.
+Multiplication by three identifies it with $K_{8/3}$, whose edge
+differences are $3,4,5$. Combine the component maps. Finally apply
+the fourth paper's formalized homomorphism pullback and its certified
+weighted half bound for $K_{8/3}$~\cite{BrendeCurved}. Every edge of
+$G_\square$ retains its original witnessing square, so the same theorem
+applies to that subgraph.
+\end{outline}
+
+For the construction program, squares alone cannot provide a subcubic
+support exceeding half capacity, even for arbitrary polymatroid recovery.
+The next section accounts for the edges outside those squares without
+assuming that deleting them preserves an arbitrary code.

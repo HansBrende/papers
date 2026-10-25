@@ -1,0 +1,113 @@
+\section{Rank-one ports with arbitrary coordinate widths}\label{sec:rank-one}
+The reversible-rule bounds require an input to be recoverable from the
+other symbols in its row. A singular coefficient need not permit this.
+We now allow arbitrary finite coordinate widths, provided every recovery
+block has rank at most one. Throughout this section, $K$ is any field and
+$G=(V,E)$ is a finite simple triangle-free graph of maximum degree three.
+
+\begin{theorem}[R: intrinsic half bound]\label{thm:rank-one}
+Let $A_v$ be finite-dimensional $K$-vector spaces and let
+$C\leq\prod_{v\in V}A_v$ be a linear code. Suppose linear maps
+$T_{vu}:A_u\to A_v$ satisfy
+\[
+ x_v=\sum_{u\in V}T_{vu}x_u\quad(x\in C),\qquad
+ T_{vu}=0\text{ if }vu\notin E,\qquad \rank T_{vu}\leq1.
+\]
+Writing $\pi_v$ for coordinate projection, we have
+\[
+ 2\dim C\leq\sum_{v\in V}\dim\pi_v(C)\leq\sum_{v\in V}\dim A_v.
+\]
+Consequently, if $B$ is the block operator with blocks $T_{vu}$ and
+$N=\sum_v\dim A_v$, then $2\rank(I-B)\geq N$.
+\formal{RankOneCodes.lean}{LowRank.rank_one_code_half,LowRank.rank_one_code_capacity,LowRank.rank_one_block_rank,LowRank.scalar_recovery_half}
+\end{theorem}
+\begin{outline}
+The proof first establishes a statement about an arrangement of subspaces
+$U_v\leq W$ spanning $W$. Its supplied component maps
+$R_{vu}:U_v\to W$ have images in $U_u$, vanish off $G$, have rank at most
+one, and sum to the inclusion of $U_v$ in $W$.
+It proves $2\dim W\leq\sum_v\dim U_v$.
+
+Induct on $\dim W$. Quotienting by any nonzero subspace $S$ produces
+another arrangement of the same kind: choose a linear section of each
+local quotient image and compose each old component with that section
+and the ambient quotient. This constructs new maps of no larger rank;
+it does not assume that the old maps descend. A counterexample would
+therefore satisfy
+\[
+ f(S):=2\dim S-\sum_v\dim(U_v\cap S)\geq1\qquad(S\ne0).
+\]
+Distinct coordinate spaces are disjoint. Each coordinate has dimension
+at most two: its at most three image lines span it, and equality with a
+three-dimensional row span would contradict that disjointness.
+
+The submodularity of $f$ makes intersecting spaces of deficit one have
+deficit-one intersection and sum. Equality also gives the exact identity
+$U_v\cap(S+T)=(U_v\cap S)+(U_v\cap T)$ for those spaces.
+A plane coordinate's three input lines span a three-dimensional space
+of deficit one, meeting no other coordinates. Two adjacent plane rows
+would have a tight intersection supported on just two lines, an
+impossible odd deficit. Thus every neighbor of a plane is a line.
+
+Starting with one plane's row span, grow a tight space by either adjoining
+two outside lines whose nonzero row contributions sum into the space,
+or absorbing a plane's row span along one shared input line. Exact
+intersection accounting preserves whole-coordinate membership and the
+inclusion of every known plane's row span. Every known line retains a
+known neighbor. A reachable space of maximum dimension is closed under
+all the supplied component maps: a partially met plane span would admit
+an absorption, and a known line has at most two outside neighbors, whose
+nonzero contributions would admit a line extension.
+
+If this closed space is proper, its coordinate intersections span it
+and the actual recovery maps restrict to it. Its deficit one contradicts
+induction. If it is the whole space, inspect the last growth operation.
+An initial star or a final line extension contradicts recovery of one
+of its leaves. For a final star absorption, the two newly added input
+axes are independent modulo the predecessor space. Triangle-freeness
+and this independence make that predecessor closed under all the old
+rows, again contradicting induction. If there was no plane to begin
+with, evaluation on line generators gives a scalar code; the scalar
+half bound applies, counting only nonzero coordinates.
+
+For the stated code, set $W=C^*$ and $U_v=\operatorname{im}\pi_v^*$.
+Local linear sections of $\pi_v^*$ turn the dual recovery equations
+into the required component maps without increasing their ranks.
+These coordinate duals span $C^*$, and $\dim U_v=\dim\pi_v(C)$.
+The ambient-capacity bound follows by inclusion, and rank--nullity gives
+the block-operator statement. Width one recovers the scalar graph
+half bound.
+\end{outline}
+
+The arrangement theorem and its global closed-subspace step are
+\formal{RankOneBound.lean}{LowRank.rank_one_arrangement_half,LowRank.Core.exists_smaller_closed}
+The generic quotient, restriction, and code-dual constructions are shared
+in the repository's \texttt{lean-machine} library. In particular, no
+compatible choice of a scalar basis across different ports is assumed.
+For the construction program, a code exceeding half capacity must escape
+the rank-one condition somewhere. This is a restriction on the recovery
+maps; it is not a condition supplied by tape geometry.
+
+\begin{theorem}[Paid exceptional rows]\label{thm:rank-one-exceptions}
+Consider a spanning arrangement $U_v\leq W$ with supplied recoveries as
+above, but allow unrestricted component ranks at vertices in $D\subseteq V$.
+Every row outside $D$ still has rank-at-most-one components. Set
+$H=\sum_{v\in D}U_v$ and $\Delta=2\dim W-\sum_v\dim U_v$. Then
+\[
+ \Delta\leq2\dim H-\sum_v\dim(U_v\cap H)
+ \leq\dim H\leq\sum_{v\in D}\dim U_v.
+\]
+\formal{RankOneCodes.lean}{LowRank.rank_one_exception_defect,LowRank.exceptional_span_defect}
+\end{theorem}
+\begin{outline}
+Quotient by $H$, using the local-section construction. Exceptional
+coordinates become zero, and all surviving components have rank at
+most one. Apply the arrangement half bound to this quotient. The
+identities $\dim(U_v\bmod H)=\dim U_v-\dim(U_v\cap H)$ give the first
+inequality. The sum of the exceptional coordinate dimensions is at
+least $\dim H$ and contributes in full to the intersection sum, giving
+the remaining inequalities.
+\end{outline}
+Thus any excess above half must be paid by the actual span of exceptional
+coordinates. The theorem does not assert that this span is small in a
+native tape computation.

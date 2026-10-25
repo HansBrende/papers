@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+% Omit random trailer identifiers for reproducible, text-auditable PDF metadata.
+\pdftrailerid{}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable}
+\usepackage{xcolor,microtype}
+\usepackage{etoolbox}
+\usepackage{xurl}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Subcubic Storage Bounds beyond Scalar Recovery},pdfauthor={Hans Brende and GPT-6 Astra (OpenAI)},pdfsubject={Reversible, low-rank and quadratic recovery, October 2026},pdfkeywords={storage codes, subcubic graphs, reversible rules, matching number, block rank, Lean}}
+\numberwithin{equation}{section}
+\input{macros}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\emergencystretch}{2em}
+\title{Subcubic Storage Bounds beyond Scalar Recovery}
+\author{Hans Brende \and GPT-6 Astra (OpenAI)}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+We extend the scalar storage bounds in \emph{Curved Motion, Depth Reduction,
+and Storage Codes for Matrix Transposition on Tapes}. Reversible local
+relations over arbitrary alphabets admit a support-dependent generating set
+of size at most the matching number; a schedule uses each row at most once.
+This gives ambiguity and nullity payment bounds and recovers the original
+scalar theorems. Over any field, the intrinsic half bound holds at arbitrary
+coordinate widths when each recovery row has at most one component of rank
+above one. With unrestricted block ranks, the off-diagonal part of the
+squared recovery operator pays for excess kernel dimension. If that part
+vanishes, an exact quadratic rank identity holds. We also prove the required
+homomorphism theorem for square-covered subcubic graphs. All numbered
+results are verified in Lean. None of these additional coding hypotheses
+follows from native tape geometry alone.
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende directed the research. GPT-6 Astra
+(OpenAI) developed the extensions, formalization, and text under his
+direction. The memo reuses the fourth paper's framework and graph lemmas,
+by Hans Brende and Claude Opus 5.5 (Anthropic).
+\end{quote}
+\tableofcontents
+\input{sections/reversible}
+\input{sections/paid}
+\input{sections/rank-one}
+\input{sections/higher-rank}
+\input{sections/squares}
+\input{sections/quadratic}
+\input{sections/roadmap}
+\clearpage
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+\bibliographystyle{plainurl}
+\bibliography{references}
+\end{document}

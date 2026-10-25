@@ -1,0 +1,111 @@
+\section{One higher-rank component in each row}\label{sec:higher-rank}
+The rank-one condition can be relaxed at one port in every row, without
+bounding that port's rank or any original coordinate width. The graph
+hypotheses and intrinsic capacity convention remain those of
+\cref{sec:rank-one}.
+
+\begin{theorem}[H: one higher-rank port]\label{thm:one-high}
+Let $C\leq\prod_v A_v$ have prescribed linear recoveries
+$x_v=\sum_u T_{vu}x_u$, with $T_{vu}=0$ off a finite simple triangle-free
+subcubic graph. Suppose, for each $v$, at most one map $T_{vu}$ has rank
+greater than one. Then
+\[
+ 2\dim C\leq\sum_v\dim\pi_v(C)\leq\sum_v\dim A_v.
+\]
+For the corresponding block operator $B$ of total scalar size $N$, this
+gives $2\rank(I-B)\geq N$.
+\formal{HigherRankCodes.lean}{LowRank.one_high_code_half,LowRank.one_high_code_capacity,LowRank.one_high_block_rank}
+\end{theorem}
+\begin{outline}
+Use the coordinate-dual arrangement and induction on ambient dimension,
+as in \cref{thm:rank-one}. Local sections preserve the one-higher-rank
+condition in every quotient. A counterexample would again have
+$f(S)\geq1$ for every nonzero test space, and distinct coordinate spaces
+would be disjoint.
+
+Each coordinate is a line or plane. For a row with a higher-rank component
+$R_{vu}$, the remainder $x\mapsto x-R_{vu}x$ is injective: a vector in its
+kernel would lie in both $U_v$ and $U_u$. Its image is spanned by the at
+most two remaining rank-one ports, so $\dim U_v\leq2$. The previous
+three-line argument handles rows without a higher-rank port. Thus every
+higher-rank component in this hypothetical core is a rank-two
+isomorphism between planes. Call its directed edge a high arc.
+
+A high arc $v\to u$ forces a high successor $u\to w$ with $w\ne v$.
+Otherwise $U_v+U_u$ has dimension four and contains the two endpoint
+planes and four exterior input lines at distinct vertices. Their eight
+coordinate dimensions contradict positive deficit. This argument
+includes a low-rank or zero reverse port; reciprocity is not assumed.
+
+Along a high path $p\to a\to b\to c$, let $z$ and $y$ be the third
+graph neighbors of $a$ and $b$. The space
+\[
+ S=U_a+U_b+\operatorname{im}R_{by}
+\]
+has dimension at most five and contains the planes $U_a,U_b,U_c$,
+as well as input lines at $p,z,y$. Triangle-freeness makes these six
+vertices distinct. Their total contribution is nine, forcing $\dim S=5$,
+$f(S)=1$, and exactly those coordinate intersections.
+
+The next successor plane lies in $S$ plus the next third-neighbor line.
+That line is outside $S$. Adding it grows the space by one dimension
+and increases its own coordinate intersection. Positive deficit forces
+the successor plane to have already met $S$ in a line. The exact support
+just proved then forces either a high four-cycle or an edge from $a$
+to that successor.
+
+A high four-cycle is impossible. Starting from its first tight triple
+space, adjoining the next third-neighbor line grows dimension by one.
+It gains one dimension at the remaining cycle plane and at each of two
+distinct external coordinates. If an external vertex coincides with
+one from the previous triple, the neighboring triple's exact intersection
+shows that its new line is independent of the old line. Thus there are
+three coordinate gains for two units of dimension budget, contradicting
+positive deficit.
+
+Seven consecutive high arcs now suffice for the final contradiction.
+The forced distance-three edges and maximum degree three make the last
+vertex equal the second. The six intervening distinct vertices form
+$K_{3,3}$, with every available graph edge used. Recovery makes all six
+plane coordinates lie in the span of one three-vertex part. That span
+has dimension at most six but at least twelve coordinate-intersection
+dimensions, again contradicting positive deficit. Every high arc could
+be extended to such a path, so there are none. The rank-one arrangement
+bound finishes the induction. The code and block-rank conclusions use
+the same dualization and rank--nullity as before.
+\end{outline}
+
+The arbitrary-width arrangement theorem is
+\formal{HigherRankBound.lean}{LowRank.one_high_arrangement_half}
+Its two final exclusions are
+\formal{HigherRankFourCycle.lean}{LowRank.HighCore.no_high_four_cycle}
+\formal{HigherRankExclusion.lean}{LowRank.HighCore.no_seven_path,LowRank.HighCore.no_high}
+The proof does not require a classification of the full high-arc graph.
+In particular, it does not assume that high arcs have distinct predecessors.
+
+\begin{corollary}[Exceptional rows for Theorem H]\label{cor:one-high-exceptions}
+In the arrangement version of \cref{thm:one-high}, allow rows at
+$D\subseteq V$ to have arbitrarily many higher-rank components. With
+$H=\sum_{v\in D}U_v$ and $\Delta=2\dim W-\sum_v\dim U_v$, the exact
+payment remains
+\[
+ \Delta\leq2\dim H-\sum_v\dim(U_v\cap H)
+ \leq\dim H\leq\sum_{v\in D}\dim U_v.
+\]
+\formal{HigherRankCodes.lean}{LowRank.one_high_exception_defect}
+\formal{RankOneCodes.lean}{LowRank.exceptional_span_defect}
+\end{corollary}
+\begin{outline}
+Quotient by $H$. Exceptional coordinates become zero; all other rows retain
+at most one higher-rank component. Apply the arrangement theorem and
+the same exact intersection accounting as in
+\cref{thm:rank-one-exceptions}.
+\end{outline}
+
+For a construction exceeding half capacity, some rows must have at least
+two higher-rank ports, and the span of those exceptional coordinates must
+pay the excess. This does not imply a matching-number bound for arbitrary
+vector codes, nor a small exceptional span for native computations.
+The reversible-rule and one-higher-rank hypotheses are separate sufficient
+conditions; neither is asserted for unrestricted linear or nonlinear
+recovery.

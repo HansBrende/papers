@@ -15,3 +15,15 @@ import LeanMachine.PathPacking
 import LeanMachine.SmithRankLoss
 import LeanMachine.KernelRangeBound
 import LeanMachine.HomogeneousInflation
+import LeanMachine.FiniteProjection
+import LeanMachine.SubspaceDefect
+import LeanMachine.SubspaceRecovery
+import LeanMachine.LinearCodeRecovery
+import LeanMachine.SubspaceFamilies
+import LeanMachine.SubspaceGrowth
+import LeanMachine.SubspaceGains
+import LeanMachine.SparseProjection
+import LeanMachine.BlockRankSparsity
+import LeanMachine.CoordinateSplitting
+import LeanMachine.ProjectionFamilies
+import LeanMachine.InvariantKernel

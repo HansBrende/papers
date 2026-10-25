@@ -40,6 +40,12 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/SmithRankLoss.lean`](LeanMachine/SmithRankLoss.lean) | Exact modular rank loss from unimodular integer diagonalization, excluding zero factors | this repository |
 | [`LeanMachine/KernelRangeBound.lean`](LeanMachine/KernelRangeBound.lean) | Kernel-range dimension and quotient-deficit bounds, with a split-generator criterion | this repository |
 | [`LeanMachine/HomogeneousInflation.lean`](LeanMachine/HomogeneousInflation.lean) | Exact homogenization over arbitrary sheet groups, kernel equivalence, and finite-dimensional rate preservation | this repository |
+| [`LeanMachine/FiniteProjection.lean`](LeanMachine/FiniteProjection.lean) | Restriction kernels, coordinate capacity, and single-coordinate nullity costs for arbitrary-field linear codes | this repository |
+| [`SubspaceDefect`](LeanMachine/SubspaceDefect.lean), [`SubspaceFamilies`](LeanMachine/SubspaceFamilies.lean), [`SubspaceGrowth`](LeanMachine/SubspaceGrowth.lean), [`SubspaceGains`](LeanMachine/SubspaceGains.lean) | Exact subspace deficits, quotient dimensions, tight intersections, and coordinate-gain budgets | this repository |
+| [`SubspaceRecovery`](LeanMachine/SubspaceRecovery.lean), [`LinearCodeRecovery`](LeanMachine/LinearCodeRecovery.lean) | Explicit recovery maps on images and closed restrictions; intrinsic coordinate-dual recovery preserving port ranks | this repository |
+| [`SparseProjection`](LeanMachine/SparseProjection.lean), [`BlockRankSparsity`](LeanMachine/BlockRankSparsity.lean) | Actual-generator support counting and block-column rank payment from sparse block rows | this repository |
+| [`CoordinateSplitting`](LeanMachine/CoordinateSplitting.lean), [`ProjectionFamilies`](LeanMachine/ProjectionFamilies.lean) | Exact coordinate capacity splitting for orthogonal idempotents and a weighted residual bound | this repository |
+| [`InvariantKernel`](LeanMachine/InvariantKernel.lean) | Kernel-dimension transport through an injective intertwiner covering the entire kernel | this repository |
 
 ## External code
 

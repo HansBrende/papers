@@ -45,6 +45,14 @@ The following results have complete written proofs and are explicitly marked
 - **Local generation:** in characteristic two and odd girth greater than 2R+1,
   the dimension of a code plus the dimension spanned by its radius-R codewords
   is at most the sum of its attained coordinate dimensions.
+- **Nonlinear local sources:** if the entire affine hull of a Cartesian-source
+  encoder is recoverable, exceptional sources pay for excess support size and
+  entropy. All-local sources force the hull to be locally generated and obey
+  the weighted half bound. Recovery merely on the image is insufficient.
+- **Growing group alphabets:** ordinary group-word recovery inherits the cover
+  half and zero-rate bounds when its exponent matrix modulo p meets the respective
+  homogeneous scalar hypotheses. The finite p-group alphabet can grow freely;
+  arbitrary endomorphic expressions are not included in this scalar application.
 
 The rank-approximation input is Jaikin-Zapirain–Souza, Theorem 8.1; its chain
 hypotheses are retained. A separate finite-type parameter proof supplies uniformity.
@@ -105,6 +113,12 @@ asymptotic cover theorems, and reuse the dependencies below.
    full matrix algebra over every field extension, and its separate all-code
    half bound. The extension from whole kernels to arbitrary subcodes by
    independent products is also still a written corollary.
+8. **Source and group-word applications.** Formalize the Cartesian-fibre
+   telescoping argument and quotient/support/entropy payments, retaining recovery
+   on the full affine hull. For ordinary words, specialize the directed-recovery
+   paper's central-layer argument to scalar exponent maps and combine it with
+   the cover bounds. These applications retain the unformalized dependencies
+   of items 1 and 4-6; a checked final inequality alone would not complete them.
 
 ## Building and verifying
 

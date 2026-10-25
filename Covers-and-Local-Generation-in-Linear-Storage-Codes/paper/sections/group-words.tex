@@ -1,0 +1,95 @@
+\section{Ordinary group-word recovery}\label{sec:group-words}
+
+The scalar cover bounds also apply to a nonlinear class with arbitrarily
+large finite alphabets. An ordinary group word uses variables, their
+inverses, multiplication, and fixed constants. The expression at a
+coordinate is fixed on the whole code; arbitrary symbol maps and
+endomorphisms are not included here. The latter require the vector-layer
+benchmark of~\cite[Theorem B.5]{BrendeDirected}.
+
+\begin{lemma}[The scalar exponent check]\label{lem:word-check}
+\notformalized
+Let $G$ be a finite $p$-group and $\mathcal D\subseteq G^N$ a set
+satisfying fixed ordinary-word equations $x_v=w_v(x)$.
+Let $E_{vu}\in\F_p$ be the signed exponent sum of variable $x_u$
+in $w_v$, and put $k=\dim_{\F_p}\ker(I-E)$. Then
+\[
+ |\mathcal D|\le |G|^k.
+\]
+For any law on a nonempty $\mathcal D$, its entropy is at most
+$k\log_2|G|$.
+\end{lemma}
+\begin{informalproof}
+Use the terminating lower exponent-$p$ central series
+$P_1=G$, $P_{j+1}=P_j^p[P_j,G]$. Its termination and the central-layer
+argument are proved in~\cite[Theorem B.5]{BrendeDirected}.
+Write $t_j=\dim_{\F_p}(P_j/P_{j+1})$, so
+$\sum_jt_j=\log_p|G|$. Fix an attained solution modulo $P_j$ and
+choose representatives modulo $P_{j+1}$. Each further lift has the
+form $r_va_v$, where $a_v$ is in the central elementary abelian layer.
+Centrality makes the change in an ordinary word equal to
+$\sum_u E_{vu}a_u$: products add, inversion negates, and constants
+give zero. Thus the lift equations have linear part
+$(I-E)\otimes I_{t_j}$. A nonempty fibre is contained in an affine
+solution space of size $p^{kt_j}$. Multiplying the fibre bounds gives
+$|\mathcal D|\le p^{k\sum_jt_j}=|G|^k$. Empty sets and trivial groups
+satisfy the cardinality bound directly. Entropy is at most the
+logarithm of the support size.
+\end{informalproof}
+
+This is the ordinary-word specialization of the classical central
+lifting method discussed in~\cite{BrendeDirected}, not a new general
+group-equation theorem. In particular, a zero exponent sum is a
+statement about this word language, not a rule for erasing arbitrary
+nonlinear operations from a recovery circuit.
+
+\begin{corollary}[Uniform bounds for growing group alphabets]
+\label{cor:group-cover}
+\notformalized
+Fix the template, prime, embedding, chain, and positive integer type
+widths of \cref{thm:fixed-width}. At level $i$, use any nontrivial
+finite $p$-group $G_i$ as the alphabet in each of the
+$N_i=Bq_i$ symbol positions. Let a nonempty code
+$\mathcal D_i\subseteq G_i^{N_i}$ have ordinary-word recovery from
+the permitted parents. Suppose its exponent matrix modulo $p$ is
+homogeneous on the external sheets, with the block shapes of the
+fixed template. For every $\varepsilon>0$, eventually
+\[
+ \frac{\log_{|G_i|}|\mathcal D_i|}{N_i}<\frac12+\varepsilon,
+\]
+with one threshold independent of $G_i$, its order, the words, and
+their constants.
+
+On the independent-chord family of \cref{thm:weighted-zero}, use one
+$G_i$-symbol per vertex. If the exponent on each directed edge is
+homogeneous and nonzero modulo $p$, the same normalized rate tends
+to zero, uniformly in these choices. The corresponding entropy
+bounds hold for every law on each code.
+\end{corollary}
+\begin{informalproof}
+The exponent check $I-E_i$ is a characteristic-$p$ homogeneous
+linear check with the stated fixed type widths. Apply
+\cref{lem:word-check} to bound the normalized logarithmic size by
+$\dim_{\F_p}\ker(I-E_i)/N_i$, then apply
+\cref{thm:fixed-width}. For the second conclusion, the diagonal is
+$1$ and the directed edge coefficients are the negatives of the
+nonzero exponent sums. They meet \cref{thm:weighted-zero} exactly.
+Its uniform threshold gives the zero-rate conclusion. The entropy
+assertions follow from the final part of \cref{lem:word-check}.
+\end{informalproof}
+
+The words themselves may vary between sheets: only their exponent
+matrices must be homogeneous. Reordering occurrences, changing
+constants, and inserting commutators can preserve this matrix.
+The number of group-symbol slots per type remains fixed, even though
+the group alphabet may grow. Arbitrary endomorphic expressions have
+matrix-valued central derivatives; the scalar argument above does
+not cover them. Nor does it supply a group-word representation or
+a charged native implementation for an arbitrary tape fibre.
+
+This extends the cover obstruction beyond linear codes while retaining
+an explicit algebraic restriction on recovery. An above-half candidate
+in this cover model must violate the word or exponent hypotheses, or
+the cover hypotheses themselves. The rate-zero conclusion additionally
+requires every prescribed edge exponent to be nonzero; the single-edge
+example of \cref{sec:weighted} shows why that condition matters.

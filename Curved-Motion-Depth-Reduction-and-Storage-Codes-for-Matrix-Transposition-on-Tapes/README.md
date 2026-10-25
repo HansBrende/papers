@@ -7,6 +7,14 @@ extends the circular-clique half-rate range below from `p/q ≤ 14/5` to every
 `p/q < 3`. Its family theorem and common-alphabet code corollary are verified
 in Lean using this paper's library; the original paper remains unchanged.
 
+**Subcubic extension memo:** [Subcubic Storage Bounds beyond Scalar Recovery](memo-subcubic/),
+by Hans Brende and GPT-6 Astra (OpenAI), adds reversible-rule matching bounds,
+paid ambiguity, arbitrary-width recovery with at most one higher-rank port per
+row, quantitative two-step stability, and an exact quadratic rank identity.
+These results and their square-covered graph input are Lean verified. The
+original scalar half and matching bounds are rederived as corollaries; the
+original manuscript is unchanged.
+
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0

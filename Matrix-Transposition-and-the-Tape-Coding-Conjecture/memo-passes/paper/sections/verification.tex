@@ -1,0 +1,16 @@
+\section{Building and verification}\label{sec:verification}
+The library uses Lean and Mathlib v4.34.1 and imports the first paper's
+\texttt{transpose} package through \texttt{../../lean}. Clone the complete
+repository, retaining the sibling directories. From this memo's
+\texttt{lean/} directory run
+\begin{verbatim}
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+From the memo directory, \texttt{python3 tools/lean\_index.py} regenerates
+both the preceding declaration index and the axiom-check file from the
+LaTeX references. The cited proofs use at most \texttt{propext},
+\texttt{Classical.choice}, and \texttt{Quot.sound}; no additional axioms or
+kernel-bypassing evaluation are used. The original frozen files are unchanged.
+Build the PDF in \texttt{paper/} with \texttt{latexmk -pdf main.tex}.

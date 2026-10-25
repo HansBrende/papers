@@ -125,3 +125,86 @@ import LeanMachine
 #print axioms LeanMachine.HomogeneousInflation.kernelEquiv
 #print axioms LeanMachine.HomogeneousInflation.finrank_kernel_inflated
 #print axioms LeanMachine.HomogeneousInflation.rate_cross_product
+
+-- FiniteProjection.lean
+#print axioms LeanMachine.FiniteProjection.mem_vanishing
+#print axioms LeanMachine.FiniteProjection.vanishing_antitone
+#print axioms LeanMachine.FiniteProjection.vanishing_univ
+#print axioms LeanMachine.FiniteProjection.dimension_le
+#print axioms LeanMachine.FiniteProjection.step_bound
+
+-- SubspaceDefect.lean
+#print axioms LeanMachine.SubspaceDefect.defect_bot
+#print axioms LeanMachine.SubspaceDefect.defect_top
+#print axioms LeanMachine.SubspaceDefect.intersection_supermodular
+#print axioms LeanMachine.SubspaceDefect.submodular
+#print axioms LeanMachine.SubspaceDefect.tight_inf_sup
+#print axioms LeanMachine.SubspaceDefect.exact_join_of_equality
+#print axioms LeanMachine.SubspaceDefect.tight_exact_join
+#print axioms LeanMachine.SubspaceDefect.quotient_image_dimension
+#print axioms LeanMachine.SubspaceDefect.deficit_of_quotient_half
+#print axioms LeanMachine.SubspaceDefect.pairwise_disjoint_of_positive
+#print axioms LeanMachine.SubspaceDefect.exact_intersections
+#print axioms LeanMachine.SubspaceDefect.tight_spanned
+#print axioms LeanMachine.SubspaceDefect.restriction_dimension
+#print axioms LeanMachine.SubspaceDefect.restricted_span
+#print axioms LeanMachine.SubspaceDefect.image_span
+
+-- SubspaceRecovery.lean
+#print axioms LeanMachine.SubspaceRecovery.Recovery.reconstruct
+#print axioms LeanMachine.SubspaceRecovery.Recovery.row_le
+#print axioms LeanMachine.SubspaceRecovery.Recovery.partial_sum_mem
+#print axioms LeanMachine.SubspaceRecovery.Recovery.component_range_le_of_rest
+#print axioms LeanMachine.SubspaceRecovery.imageMap_val
+#print axioms LeanMachine.SubspaceRecovery.imageMap_surjective
+#print axioms LeanMachine.SubspaceRecovery.Recovery.image
+#print axioms LeanMachine.SubspaceRecovery.Recovery.restrict
+#print axioms LeanMachine.SubspaceRecovery.finrank_finset_sup_le
+#print axioms LeanMachine.SubspaceRecovery.Recovery.le_row_span
+#print axioms LeanMachine.SubspaceRecovery.Recovery.strict_row_span
+#print axioms LeanMachine.SubspaceRecovery.Recovery.strict_row_dimension
+
+-- LinearCodeRecovery.lean
+#print axioms LeanMachine.SubspaceRecovery.recovery_of_generators
+#print axioms LeanMachine.SubspaceRecovery.coordinate_apply
+#print axioms LeanMachine.SubspaceRecovery.coordinate_duals_span
+#print axioms LeanMachine.SubspaceRecovery.code_dual_recovery
+#print axioms LeanMachine.SubspaceRecovery.blockOperator_apply
+#print axioms LeanMachine.SubspaceRecovery.blockOperator_single
+#print axioms LeanMachine.SubspaceRecovery.block_kernel_recovery
+
+-- SubspaceFamilies.lean
+#print axioms LeanMachine.SubspaceDefect.family_mass_le
+#print axioms LeanMachine.SubspaceDefect.exact_finite_family
+#print axioms LeanMachine.SubspaceDefect.line_le_or_disjoint
+
+-- SubspaceGrowth.lean
+#print axioms LeanMachine.SubspaceDefect.line_extension_dimension
+#print axioms LeanMachine.SubspaceDefect.line_coordinate_gain
+#print axioms LeanMachine.SubspaceDefect.plane_gain_forces_intersection
+
+-- SubspaceGains.lean
+#print axioms LeanMachine.SubspaceDefect.coordinate_gain_count
+#print axioms LeanMachine.SubspaceDefect.tight_growth_gain_budget
+
+-- SparseProjection.lean and BlockRankSparsity.lean
+#print axioms LeanMachine.SparseProjection.projection_rank_le_support
+#print axioms LeanMachine.SparseProjection.sum_projection_ranks_le
+#print axioms LeanMachine.SparseProjection.rowFamily_span
+#print axioms LeanMachine.SparseProjection.sum_column_ranks_le
+
+-- CoordinateSplitting.lean and ProjectionFamilies.lean
+#print axioms LeanMachine.CoordinateSplitting.range_split
+#print axioms LeanMachine.CoordinateSplitting.range_split_disjoint
+#print axioms LeanMachine.CoordinateSplitting.coordinate_rank_split
+#print axioms LeanMachine.CoordinateSplitting.rank_factor_eq
+#print axioms LeanMachine.CoordinateSplitting.rank_sum_of_extraction
+#print axioms LeanMachine.CoordinateSplitting.projection_sum_rank
+#print axioms LeanMachine.CoordinateSplitting.observed_projection_sum_rank
+#print axioms LeanMachine.CoordinateSplitting.projection_sum_extract
+#print axioms LeanMachine.CoordinateSplitting.projection_sum_idempotent
+#print axioms LeanMachine.CoordinateSplitting.projection_sum_ker
+#print axioms LeanMachine.CoordinateSplitting.half_of_residual
+
+-- InvariantKernel.lean
+#print axioms LeanMachine.InvariantKernel.finrank_ker_eq

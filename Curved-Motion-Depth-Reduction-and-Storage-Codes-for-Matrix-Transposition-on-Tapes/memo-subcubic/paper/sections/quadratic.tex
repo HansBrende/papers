@@ -1,0 +1,126 @@
+\section{Two-step defects and exact quadratic ranks}\label{sec:quadratic}
+Let $K$ be any field, let $A_v$ be finite-dimensional $K$-vector spaces,
+and put $A=\prod_v A_v$ and $N=\sum_v\dim A_v$. Fix a finite simple
+triangle-free subcubic graph $G$ and an operator $W:A\to A$ with blocks
+$T_{vu}:A_u\to A_v$ vanishing off its edges. In particular $T_{vv}=0$.
+Define
+\[
+ E=\operatorname{offdiag}(W^2),\qquad
+ E_{ac}=\begin{cases}\sum_b T_{ab}T_{bc},&a\ne c,\\0,&a=c.\end{cases}
+\]
+All ranks below are ordinary $K$-linear ranks, including when $K$ has
+characteristic two.
+
+Call $(a,c)$ touched if $a\ne c$ and a two-edge path $a-b-c$ contains
+an edge of $F=E(G)\setminus E(G_\square)$. Such a path has a unique
+middle vertex; a second one would put both edges in a square. Define
+the source-separated constraint map
+\[
+ \Phi:A\longrightarrow\prod_{c\in V}A,\qquad
+ (\Phi x)_{c,a}=
+ \begin{cases}E_{ac}x_c,&(a,c)\text{ touched},\\0,&\text{otherwise}.
+ \end{cases}
+\]
+Unlike $Ex$, this map does not sum contributions from different source
+coordinates. Set $C=\ker(I-W)$, $H=C\cap\ker\Phi$, and
+$q=\rank(\Phi|_C)=\dim C-\dim H$.
+
+\begin{theorem}[S: paid two-step stability]\label{thm:stability}
+With the preceding definitions,
+\begin{align*}
+ 2\dim H&\leq\sum_v\dim\pi_v(H),\\
+ N&\leq2\rank(I-W)+2q,\qquad q\leq\rank\Phi\leq6\rank E,\\
+ N&\leq2\rank(I-W)+12\rank E,\\
+ N&\leq2\rank(I+W)+12\rank E.
+\end{align*}
+\formal{QuadraticBounds.lean}{subcubic_constrained_half,subcubic_paid_rank,subcubic_twoStep_stability}
+\formal{TwoStepStability.lean}{constraintLoss_identity,constraintLoss_le}
+\formal{TwoStepDefect.lean}{separatedConstraint_rank_le}
+\end{theorem}
+\begin{outline}
+For an edge $uv\in F$, define $p_{uv}x$ to have coordinates
+$T_{uv}x_v$ at $u$, $T_{vu}x_u$ at $v$, and zero elsewhere.
+On the \emph{full} space $H$, the two-step constraints imply that this
+vector again belongs to $H$, recovers across $uv$, and transmits zero
+along every other incident edge. Thus $p_{uv}$ is an idempotent on $H$;
+the idempotents for distinct unordered edges annihilate one another.
+Each endpoint projection is injective on its edge factor, giving
+exactly twice the factor dimension in total coordinate capacity.
+
+This decomposition also splits capacity coordinate by coordinate. At
+$u$ the operator $p_{uv}$ is induced by $T_{uv}T_{vu}$ on $\pi_u(H)$,
+and similarly at $v$; at every other coordinate it is zero. Hence each
+coordinate image is the direct sum of its edge-factor images and its
+image from the residual $\ker\sum_{uv\in F}p_{uv}$. On that residual
+all off-square transmissions vanish. Its actual coordinate observations
+therefore recover on $G_\square$. Apply \cref{thm:square-good} to their
+rank polymatroid, then add back the balanced edge factors. This proves
+the intrinsic bound for $H$. No invariance is asserted for an arbitrary
+subcode of $C$.
+
+Rank--nullity gives $q+\dim H=\dim C$ and the paid bound. To compare
+$\Phi$ with $E$, each block row of $E$ has at most six possible source
+coordinates: three first neighbors, each with at most two nonreturning
+continuations. Choose a basis from the \emph{actual} scalar row
+functionals of $E$. Each chosen row has support in at most six blocks,
+so the sum of the block-column ranks is at most $6\rank E$.
+Projecting each column onto its touched targets cannot increase rank,
+and source separation makes these ranks add. Therefore
+$\rank\Phi\leq6\rank E$. Replacing $W$ by $-W$ leaves $E$ unchanged
+and gives the final inequality.
+\end{outline}
+
+The actual-kernel restriction and coordinatewise splitting are checked in
+\formal{EdgeProjections.lean}{edgeProjection_idempotent,edgeProjection_annihilate,edgeProjection_coordinatewise,edgeProjection_balanced}
+For a full kernel of dimension $(1/2+\varepsilon)N$, the theorem requires
+$q\geq\varepsilon N$ and $\rank E\geq\varepsilon N/6$. This rules out
+a small two-step defect as the source of a fixed excess over half; it
+does not prove that an arbitrary native recovery operator has small defect.
+
+\begin{theorem}[Q: exact quadratic rank identity]\label{thm:quadratic-exact}
+If $E=0$, equivalently $W^2$ is block diagonal, then
+\[
+ 2\rank(I-W)=2\rank(I+W)=N+\rank(W^2-I).
+\]
+\formal{QuadraticBounds.lean}{subcubic_quadratic_exact}
+\end{theorem}
+\begin{outline}
+First suppose $W^2=I$. The zero-defect case of \cref{thm:stability}
+gives $\rank(I\pm W)\geq N/2$. The identity
+$(I-W)(I+W)=0$ gives the reverse inequality for their sum. Both ranks,
+and both kernel dimensions, are therefore exactly $N/2$, without an
+eigenspace decomposition or a restriction on characteristic.
+
+In general write $W^2=\operatorname{diag}(D_v)$ and set
+$S_v=\ker(D_v-I)$. Then $S=\ker(W^2-I)=\prod_v S_v$.
+Commutation of $W$ with $W^2$ shows that every actual block $T_{vu}$
+maps $S_u$ into $S_v$. The restricted operator on $S$ is an involution
+on the same graph support. Both $\ker(I-W)$ and $\ker(I+W)$ lie in $S$,
+so their dimensions equal those of the restricted kernels, namely
+$\dim S/2$. Finally $\dim S=N-\rank(W^2-I)$ and rank--nullity give
+the displayed equalities.
+\end{outline}
+
+\begin{corollary}[Injective-subspace refinement and involutions]
+\label{cor:quadratic-refinement}
+Under $E=0$, if $W^2-I$ is injective on any subspace $U\leq A$, then
+\[
+ N+\dim U\leq2\rank(I-W),\qquad
+ N+\dim U\leq2\rank(I+W).
+\]
+If $W^2=I$, both doubled ranks equal $N$.
+\formal{QuadraticBounds.lean}{subcubic_quadratic_injective,subcubic_involution_ranks}
+\end{corollary}
+\begin{outline}
+Injectivity gives $\dim U\leq\rank(W^2-I)$; apply
+\cref{thm:quadratic-exact}. If $W^2=I$, that rank is zero.
+\end{outline}
+
+The injective-subspace statement includes any invariant summand on which
+$W^2-I$ is invertible, but needs neither invariance nor a chosen Fitting
+decomposition. The exact identity is stronger: it accounts for the
+whole rank of $W^2-I$. For a construction, block-diagonal two-step
+behavior cannot support a kernel above half ambient capacity, regardless
+of widths, commutativity, or singular individual blocks. These are
+additional sufficient hypotheses for the half bound; they do not imply
+the original scalar matching bound for unrestricted vector codes.

@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+% Omit random trailer identifiers for reproducible, text-auditable PDF metadata.
+\pdftrailerid{}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable}
+\usepackage{xcolor,microtype}
+\usepackage{etoolbox}
+\usepackage{xurl}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Adaptive Pass Bounds without a Runtime Assumption},pdfauthor={Hans Brende and GPT-6 Astra (OpenAI)},pdfsubject={Native halting runs and adaptive transposition, October 2026},pdfkeywords={matrix transposition, tape machines, passes, Lean}}
+\numberwithin{equation}{section}
+\input{macros}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\emergencystretch}{2em}
+\title{Adaptive Pass Bounds without a Runtime Assumption}
+\author{Hans Brende \and GPT-6 Astra (OpenAI)}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+The adaptive pass theorem in \emph{Matrix Transposition and the Tape Coding
+Conjecture} yields a logarithmic pass lower bound under a polynomial runtime
+hypothesis. We remove that hypothesis for halting machines in its exact
+formal model. A native run of length $T$ on an $L$-bit input, partitioned
+into $r$ monotone passes, satisfies $L+T+1\le(L+1)C_M^r$, with an explicit
+machine constant $C_M$. Substitution into the original information bound
+gives $r\ge\log_{k+1}d-O_M(1)$ at logarithmic entry width, for $k\ge1$ work
+tapes. A grouped bound also applies to a specified set of correct halting
+inputs. All new numbered results are verified in Lean. The run-length
+principle is classical; the contribution is an explicit proof in the
+original model and its checked application to the adaptive pass theorem.
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende directed the research. GPT-6 Astra
+(OpenAI) developed the argument, formalization, and text under his direction.
+This memo extends the first paper by Hans Brende and Claude Opus 5.5
+(Anthropic), reusing its machine definitions and adaptive information theorem.
+\end{quote}
+\tableofcontents
+\input{sections/results}
+\clearpage
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+\bibliographystyle{plainurl}
+\bibliography{references}
+\end{document}

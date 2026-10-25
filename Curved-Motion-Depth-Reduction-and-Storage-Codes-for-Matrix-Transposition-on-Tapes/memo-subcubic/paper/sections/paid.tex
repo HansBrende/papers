@@ -1,0 +1,96 @@
+\section{Paying for ambiguous inversions}\label{sec:paid}
+The same support-only schedule remains useful when some directions of a
+row are not exactly reversible. In this section the supports satisfy
+\cref{eq:no-triangle,eq:star} and fit $G$; $B$ and $(v_i,x_i)$ are the
+fixed seed set and schedule from \cref{thm:schedule}.
+
+For a finite code $\mathcal C$ and an attained row pattern, let
+$L_{v,x}$ bound the number of possible values at $x\in R_v$ after all
+other coordinates of $R_v$ are fixed. These are inverse-fibre bounds on
+the actual code, not bounds on the number of whole codewords in a fibre.
+
+\begin{theorem}[Finite ambiguity ledger]\label{thm:card-cost}
+\formal{CardinalityCosts.lean}{paid_cardinality_schedule, paid_cardinality_matching}
+For any finite code over any alphabet,
+\[
+ |\mathcal C|\le |\pi_B\mathcal C|\prod_i L_{v_i,x_i}.
+\]
+If the alphabet is finite and nonempty with size $q$, and each row has a
+common bound $L_v\ge1$ valid for all its directions, then
+\[
+ |\mathcal C|\le q^{\nu(G)}\prod_{v\in V}L_v.
+\]
+\end{theorem}
+\begin{outline}
+At a productive step, all other coordinates in its row have already been
+observed. Each previous observation therefore has at most $L_{v_i,x_i}$
+extensions when $x_i$ is added. Multiply these finite fibre bounds along
+the schedule. At the end every codeword is distinguished. For the second
+bound, $|\pi_B\mathcal C|\le q^{|B|}$, and the centers are distinct, so
+replacing directional costs by $L_v\ge1$ charges each row at most once.
+Empty codes cause no exception.
+\end{outline}
+
+A real polymatroid is a function $h:2^V\to\R$ with $h(\varnothing)=0$,
+monotonicity, and submodularity. No integrality or exchange axiom is assumed.
+For every $x\in R_v$ set
+$\delta_{v,x}=h(R_v)-h(R_v\setminus\{x\})$.
+
+\begin{theorem}[Polymatroid ambiguity ledger]\label{thm:poly-cost}
+\formal{PolymatroidBounds.lean}{Schedule.polymatroid_directions, paid_polymatroid_matching, reversible_polymatroid_matching}
+For every real polymatroid $h$,
+\[
+ h(V)\le h(B)+\sum_i\delta_{v_i,x_i}.
+\]
+If $h(\{v\})\le1$ and $0\le\delta_{v,x}\le\kappa_v$ for every
+participating direction, then
+\[
+ h(V)\le\nu(G)+\sum_v\kappa_v.
+\]
+In particular, if all the rows are reversible for $h$, meaning
+$h(R_v)=h(R_v\setminus\{x\})$ for every $x\in R_v$, then
+$h(V)\le\nu(G)$.
+\end{theorem}
+\begin{outline}
+Submodularity bounds the marginal of an added target after all known
+coordinates by its marginal after only the other row coordinates.
+Sum these inequalities along the schedule. For the row-budget form, use
+$h(B)\le\sum_{v\in B}h(\{v\})\le|B|\le\nu(G)$ and charge each center
+once. Zero directional costs give the last statement.
+\end{outline}
+The original library proves that finite joint entropy is such a
+polymatroid, for every source law. The exact schedule formula therefore
+applies to conditional-entropy costs as well. The normalized singleton
+bound is needed only for the displayed $\nu(G)$ specialization.
+
+\begin{theorem}[Singular-block nullity ledger]\label{thm:block-cost}
+\formal{BlockCosts.lean}{Schedule.nullity_directions, paid_block_matching}
+Let $A$ be a finite-dimensional vector space over any field $K$, and let
+$T_{vu}:A\to A$ be linear maps vanishing for $u\notin R_v$. Suppose
+$\mathcal C\le A^V$ satisfies $\sum_uT_{vu}x_u=0$ for every $v$.
+Then the fixed schedule gives
+\[
+ \dim_K\mathcal C\le |B|\dim_K A+
+             \sum_i\dim_K\ker T_{v_i x_i}.
+\]
+Consequently, if $\dim_K\ker T_{vx}\le\kappa_v$ for every $x\in R_v$,
+\[
+ \dim_K\mathcal C\le\nu(G)\dim_K A+\sum_v\kappa_v.
+\]
+No invertibility, common eigenbasis, or commutation premise is required.
+\end{theorem}
+\begin{outline}
+Let $Z_S$ be the subspace of codewords vanishing on the known set $S$.
+If a rule at $v$ is ready to add $x$, its row equation gives
+$T_{vx}f_x=0$ for every $f\in Z_S$. Evaluation at $x$ maps $Z_S$ into
+$\ker T_{vx}$, with kernel $Z_{S\cup\{x\}}$. Rank--nullity yields
+$\dim Z_S\le\dim\ker T_{vx}+\dim Z_{S\cup\{x\}}$.
+Telescope along the schedule, whose final vanishing subspace is zero.
+Projection onto the seeds gives
+$\dim\mathcal C\le|B|\dim A+\dim Z_B$. The row-maxima version again
+uses distinct centers. The general restriction lemmas are shared in
+\texttt{LeanMachine.FiniteProjection}.
+\end{outline}
+For an above-matching code, these inequalities require enough directional
+ambiguity on every such schedule. They do not assert that a native tape
+computation has small ambiguity or small block nullities.

@@ -1,0 +1,124 @@
+\subsection{Nonlinear sources and a recoverable affine hull}
+\label{sec:local-sources}
+
+Local generation can be supplied by local changes to a nonlinear encoder.
+The additional requirement is recovery on the encoder's entire affine hull.
+Recovery on its image alone does not suffice.
+
+\begin{theorem}[Payment for exceptional sources]\label{thm:local-sources}
+\notformalized
+Retain the graph, parent sets, and radius of
+\cref{thm:local-generation}, and suppose $K$ is finite, with $q=|K|$.
+Let $I$ be a finite set, let each $A_i$ be finite and nonempty, and let
+\[
+ F:\prod_{i\in I}A_i\longrightarrow\bigoplus_v W_v,
+ \qquad S=\operatorname{im}F,\qquad
+ \operatorname{aff}_K S=a+\mathcal C.
+\]
+Assume that each specified parent set recovers its coordinate on all of
+$a+\mathcal C$. Fix a set $B\subseteq I$ of exceptional sources.
+For each $j\notin B$, assume there is a center $c_j$ such that changing
+only source $j$ changes no output coordinate outside $B_R(c_j)$.
+Put
+\[
+ k=\dim_K\mathcal C,\quad
+ r=\sum_v\dim_K\pi_v(\mathcal C),\quad
+ \mathcal L=\mathcal L_R(\mathcal C),\quad
+ \ell=\dim_K\mathcal L,\quad M=\prod_{i\in B}|A_i|.
+\]
+Each fixed exceptional-source fibre has image in one affine coset of
+$\mathcal L$. Consequently,
+\begin{equation}\label{eq:local-source-size}
+ 2\log_q|S|\le r+\log_q M.
+\end{equation}
+For any probability law of a source tuple $Z$ on the stated Cartesian
+domain, with $X=F(Z)$ and entropies in bits,
+\begin{equation}\label{eq:local-source-entropy}
+ 2H(X)\le r\log_2q+H(Z_B).
+\end{equation}
+Neither independence nor full support of this law is required.
+If $B=\varnothing$, then $\mathcal C=\mathcal L$ and $2k\le r$.
+If $S=a+\mathcal C$, then also
+\[
+ q^{\dim_K(\mathcal C/\mathcal L)}\le M;
+\]
+if, in addition, $X$ is uniform on this affine space, then
+$\dim_K(\mathcal C/\mathcal L)\log_2q\le H(Z_B)$.
+\end{theorem}
+\begin{informalproof}
+Translation by $a$ transfers recovery from $a+\mathcal C$ to
+$\mathcal C$. Thus \cref{thm:local-generation} gives $k+\ell\le r$.
+Two source assignments differing only in a nonexceptional coordinate
+have output difference in $\mathcal C$, supported in its specified
+radius-$R$ ball, and hence in $\mathcal L$. Any two assignments with
+the same exceptional tuple can be joined by changing the remaining
+coordinates one at a time. All intermediate assignments are in the
+Cartesian domain. Summing the differences proves that their outputs
+lie in one affine $\mathcal L$-coset.
+
+There are at most $M$ such fibres, each with at most $q^\ell$ outputs,
+whereas $S\subseteq a+\mathcal C$ gives $|S|\le q^k$. Adding the
+logarithms of these two bounds and using $k+\ell\le r$ proves
+\eqref{eq:local-source-size}. For any source law the same support
+bounds give
+\[
+ H(X)\le k\log_2q,\qquad
+ H(X\mid Z_B)\le\ell\log_2q.
+\]
+Combine the second with $H(X)\le H(Z_B)+H(X\mid Z_B)$, add the first,
+and apply $k+\ell\le r$ to obtain \eqref{eq:local-source-entropy}.
+
+If $B$ is empty, choose $a\in S$. The coset assertion puts
+$S-a$ in $\mathcal L$. Since $S-a$ spans $\mathcal C$, this proves
+$\mathcal C=\mathcal L$. Finally, the quotient of $F(Z)-a$ modulo
+$\mathcal L$ is a function of $Z_B$. If $S=a+\mathcal C$, that
+function maps the exceptional-source domain onto
+$\mathcal C/\mathcal L$, proving the quotient cardinality bound.
+A uniform $X$ induces the uniform law on this quotient, whose entropy
+is $(k-\ell)\log_2q$. A function of $Z_B$ has entropy at most
+$H(Z_B)$, proving the last assertion.
+\end{informalproof}
+
+The quantity $r$ measures affine coordinate dimensions. The theorem
+does not replace it by $\sum_v H(X_v)/\log_2q$ or by
+$\sum_v\log_q|\pi_v S|$. For uniform $X$ on the entire affine hull,
+these quantities do agree with $r$. Empty source sets, singleton
+alphabets, constant encoders, and zero-dimensional coordinates are
+included. At radius zero, $\mathcal L=0$, so nonexceptional sources
+cannot affect the output.
+
+The all-local conclusion recovers the weighted half bound for locally
+generated linear codes: choose finitely many ball-supported generators,
+use their coefficients as the sources, and let $F$ be their sum.
+The more general statement permits nonlinear source dependence and
+charges the actual exceptional tuple. To apply it to a native fibre,
+one must supply the Cartesian representation, the local influence
+sets, and recovery on the whole affine hull. A small circuit or a
+shallow recovery cone supplies none of these automatically.
+
+\begin{example}[Recovery can fail on the affine hull]
+\label{ex:affine-hull}
+On the bipartite graph $K_{3,3}$, the binary encoder
+\[
+ (a,b,c)\longmapsto
+ (a,b,c,\ c+ab,\ a+c+ab,\ b+c+ab)
+\]
+has eight outputs and exact neighbor recovery. Writing the last three
+coordinates as $y_1,y_2,y_3$, the inverse formulas are
+$a=y_1+y_2$, $b=y_1+y_3$, and $c=y_1+ab$.
+Each source affects only the radius-one star centered at its own
+left vertex. Nevertheless, the affine hull has dimension four, with
+basis
+\[
+ (1,0,0,0,1,0),\quad (0,1,0,0,0,1),\quad
+ (0,0,1,1,1,1),\quad (0,0,0,1,1,1).
+\]
+The first three vectors are outputs at the three unit sources; the
+fourth is $F(1,1,0)+F(1,0,0)+F(0,1,0)$. They span every output and
+are independent, as their first three coordinates show. Their span
+contains $(0,0,1,0,0,0)$, so the third coordinate is not recoverable
+there from its neighbors. All six coordinate dimensions are one;
+the inequality $2\dim\mathcal C\le6$ would fail if recovery on the
+affine hull were omitted. The original eight-word code still has
+exactly half rate.
+\end{example}

@@ -1,0 +1,59 @@
+\section{Introduction}\label{sec:introduction}
+
+A tape machine can compute a local linear transformation cheaply without making the corresponding recovery graph simple. Conversely, a complicated recovery graph need not support a high-rate code. These two observations create an applicability problem for coding approaches to matrix transposition: one needs a structural condition that follows from the actual execution, together with a coding theorem that uses that condition without silently strengthening it.
+
+This paper studies that interface. Its central object is a directed recovery relation, represented by a bipartite graph with two copies of every coordinate. The left copy is an input port; the right copy is the receiver demanding that coordinate. An edge records available side information. The condition supplied by tape geometry is that almost all matched ports are far apart. Ordinary bipartiteness of the incidence graph is automatic. Symmetry of the recovery relation, local bipartiteness after symmetrization, cheap separators, and disconnected matched ports are additional assertions, and some fail for inexpensive native executions.
+
+\subsection{The transposition problem and the coding interface}
+Fix a deterministic multitape Turing machine with a finite state set, a fixed finite work alphabet, a read-only two-way input tape, finitely many two-way work tapes, and an append-only binary output. The input consists of a $d\times d$ matrix written in row-major order, with
+\[
+ b(d)=\max\{1,\lceil\log_2 d\rceil\},\qquad L=d^2b(d).
+\]
+The machine must output the transposed matrix in the same format. Statement~(T) asks whether one such machine can perform this task in $O(L)$ time for all~$d$. The earlier papers develop its relation to integer multiplication, causal coding, restricted machine architectures, and bit-versus-word transposition~\cite{BrendeTapeCoding,BrendeLocalCoding,BrendeBitWord,BrendeCurved}. The native incidence-distance theorem allows every entry width $b\ge1$; the explicit machines below use the canonical width.
+
+An oblivious machine has one head schedule and one set of output times at each input length. A \emph{genie} reveals the whole values of selected computation steps. If deleting dependencies into those steps leaves bounded depth, each output is a function of the genie and a bounded set of raw input coordinates. If the machine transposes correctly, fixing the genie leaves a storage code for these side-information sets. A code-size deficit larger than the genie cost gives a contradiction. This is the elementary decomposition of~\cite[Theorem~D]{BrendeCurved}; we recall the required finite counting argument in \cref{sec:preliminaries}.
+
+The unresolved issue is not the counting argument. It is the structure and capacity of the full cone relations. A lower bound for linear codes alone does not control an arbitrary genie, and a graph theorem does not apply until its graph hypothesis has been justified from the execution.
+
+\subsection{Results and their scope}
+The main results follow one progression.
+
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item \textbf{A structural theorem for actual cones.} For every fixed depth and degree bound, a linear-time native schedule has only $O(L/\log d)$ coordinates whose matched ports are within any fixed incidence distance. Conditioning on heavily used inputs makes both incidence degrees bounded at an arbitrarily small fixed coordinate cost. The proof realizes short incidence paths as bounded-congestion geometric transport along alternating forward and reverse copies of the \emph{same} head schedule. Reversing geometric paths does not invert the computation's local functions.
+
+\item \textbf{A directed analytic coding theorem.} Bounded-degree incidence systems satisfying this paired-distance condition have complex linear storage rate at most $1/2+o(1)$ when block size and recovery coefficients are uniformly bounded. Independent phases on incidence components in a local limit replace the symmetric graph hypothesis used in the fourth paper. The argument does not establish a finite-field or nonlinear theorem.
+
+\item \textbf{An all-code theorem, and the failure of its universal structural premise.} Uniform hyperfiniteness together with paired-distance separation gives a half-rate bound for every finite alphabet and every recovery function. A native expander-shear construction shows that actual cone incidence need not be hyperfinite after cheap genie deletion. Its own cone relations nevertheless satisfy an all-code half bound, by a different argument using physical row lanes.
+
+\item \textbf{Connected demands with a positive coding deficit.} A conjugated native construction keeps a positive fraction of matched ports connected after the prescribed deletions. A full-cone row analysis still yields an independent coordinate rectangle of positive density. The resulting nonlinear rate deficit is independent of the fixed depth parameter. It is a theorem about these relations and an explicitly stated row interface, not a normal form for arbitrary tape computations.
+\end{enumerate}
+
+The appendix develops a finite-field matrix-label certificate. It supplies characteristic-two half-rate bounds at arbitrary vector width on a separate expanding family constructed to admit the certificate. It neither realizes that family by a tape schedule nor transfers the certificate to every paired-distance-separated system.
+
+The main statements are \cref{thm:nb-main} (the native structural bridge), \cref{thm:dc-complex} and \cref{cor:dc-native} (complex linear codes), \cref{cor:dc-hyperfinite} (all codes under hyperfiniteness), \cref{cor:ne-combined} (native expansion with nonlinear half bounds), and Theorems~\ref{thm:cd-robust-demands} and~\ref{thm:cd-uniform-gap} (connected demands with a depth-independent coding deficit). The abstract finite-field family is \cref{thm:mc-expanding-family}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\small,box/.style={draw,rounded corners,align=center,text width=3.5cm,minimum height=1.05cm},>=Latex]
+\node[box] (schedule) {Linear-time tape schedule\\and fixed-depth genie};
+\node[box,right=0.7cm of schedule] (incidence) {Bounded-degree incidence\\with distant matched ports};
+\node[box,right=0.7cm of incidence] (code) {Coding deficit\\under stated hypotheses};
+\draw[->] (schedule) -- (incidence);
+\draw[->] (incidence) -- (code);
+\node[align=center,text width=11.8cm,below=0.45cm of incidence] {General finite-alphabet coding and sufficiently cheap depth reduction are separate remaining obligations.};
+\end{tikzpicture}
+\caption{The interface developed here. The first arrow holds for actual fixed-depth cones after paid degree trimming. The second is proved in several specified regimes, not for all native finite-alphabet recovery systems.}
+\label{fig:interface}
+\end{figure}
+
+\subsection{Relation to earlier results}
+The first paper's causal block-network formulation and common-monotone-pass bounds remain distinct from the step-level incidence approach~\cite{BrendeTapeCoding}. The second paper shows why data-independent geometric conditions and cheap encoders alone do not force the desired coding restrictions~\cite{BrendeLocalCoding}. The bit-to-word reduction of the third paper concerns the computational task rather than the graph hypothesis studied here~\cite{BrendeBitWord}. The fourth paper supplies the depth-to-index-code decomposition, home-based depth reduction, and a symmetric analytic half-rate theorem~\cite{BrendeCurved}.
+
+Storage codes, guessing games, and index coding have an established duality theory~\cite{Mazumdar,ArbabjolfaeiKim}. We use its elementary fibre implication, proved below, and do not need an asymptotic duality theorem to convert a storage bound into a genie lower bound. The analytic proof uses the local-limit and finite-trace framework for unimodular networks~\cite{AldousLyons}. The new issue is the directed incidence geometry and its connection to actual input and output ports.
+
+Two distinctions govern the conclusions. First, the native constructions are inexpensive executors, not transposition algorithms; their role is to test proposed universal graph properties. Second, although their coding bounds exclude transposition on the particular schedules, that algorithmic exclusion is already available from the first paper's pass machinery. The contribution here is the all-code statement for the full cone relation, uniformly over the specified genies and coordinate restrictions.
+
+\subsection{Quantifier conventions}
+Unless otherwise stated, machine resources, time constants, cone depth, incidence degree, and vector width are fixed before $d$ or the number of coordinates tends to infinity. An error $o_D(L)$ may have a convergence threshold depending on the fixed depth~$D$. A rate deficit described as independent of~$D$ has one positive leading constant valid for every fixed~$D$; this does not make its error bound uniform when $D$ grows. All nonlinear code bounds quantify over every finite alphabet and every storage code on the stated relation. No numerical experiment is a premise of a theorem.
+
+\paragraph{Reading the proofs.} Every new result in this initial draft has a written proof and is not yet formalized in Lean. Imported results state their source and verification scope. The declaration index and verification appendix record formal counterparts as they become available.

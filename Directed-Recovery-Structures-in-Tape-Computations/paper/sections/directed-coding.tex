@@ -1,0 +1,368 @@
+\section{Two half-rate bounds for directed recovery}
+\label{sec:dc-section}
+
+The distinction between a coordinate and its two incidence ports is essential
+here.  A directed recovery relation on a finite set $V$, with $N=|V|$, assigns
+a set $\mathcal N(q)\subseteq V\setminus\{q\}$ to each $q\in V$.
+Its \emph{paired incidence graph} $E$ has ports $L_p,R_p$, $p\in V$, and
+an undirected edge $L_pR_q$ precisely when $p\in\mathcal N(q)$.
+Distances below are in this graph; disconnected ports have distance infinity.
+Write
+\begin{equation}
+  b_E(r)=\bigl|\{p\in V:\operatorname{dist}_E(L_p,R_p)\le r\}\bigr|.
+  \label{eq:dc-bad-pairs}
+\end{equation}
+A sequence $(E_n)$ on $2N_n$ ports, with $N_n\to\infty$, has
+\emph{paired-distance separation} if $b_{E_n}(r)=o(N_n)$ for every fixed
+integer $r\ge1$.  This concerns prescribed pairs of ports, rather than
+the girth or connected-component sizes of $E_n$.
+
+We prove a half-rate bound under either of two additional hypotheses.
+Uniform hyperfiniteness suffices for every finite-alphabet code.
+Without hyperfiniteness, bounded complex linear recovery coefficients
+and a fixed block width suffice.  The latter extends the graph hypothesis
+of Theorem~A of~\cite{BrendeCurved} from a locally bipartite underlying
+graph to paired-distance separation.
+
+\subsection{All codes on hyperfinite incidence graphs}
+
+A storage code over a finite alphabet $\mathcal A$ of size at least two is a set
+$\mathcal C\subseteq\mathcal A^V$ such that two codewords agreeing on
+$\mathcal N(q)$ agree at $q$, for every $q\in V$.
+Equivalently, each coordinate has a recovery function on the neighbour
+assignments that occur in the code.  The code need not be linear, and
+no distribution or extension property is assumed.
+
+\begin{lemma}[Separated components]
+\notformalized
+\label{lem:dc-components}
+If $L_p$ and $R_p$ lie in different components of $E$ for every $p\in V$,
+then every storage code satisfies
+\[
+  |\mathcal C|\le |\mathcal A|^{\lfloor N/2\rfloor}.
+\]
+\end{lemma}
+\begin{informalproof}
+Let $\alpha(p)$ and $\beta(p)$ be the components containing $L_p$ and $R_p$.
+Choose an order of the components, and record the coordinates $p$ for which
+$\alpha(p)$ precedes $\beta(p)$.  This record determines a codeword.
+Indeed, process the $\alpha$-components in increasing order.  A coordinate
+in the current component was either recorded, or its $\beta$-component is
+earlier.  In the latter case every recovery neighbour $u\in\mathcal N(p)$
+satisfies $\alpha(u)=\beta(p)$, so its value is already determined.
+The equality case $\alpha(p)=\beta(p)$ is excluded by hypothesis.
+For a uniformly random component order each coordinate is recorded with
+probability $1/2$.  Some order therefore records at most $\lfloor N/2\rfloor$
+coordinates, and the resulting projection is injective on $\mathcal C$.
+\end{informalproof}
+
+\begin{theorem}[Finite separator bound]
+\notformalized
+\label{thm:dc-separator}
+Let $Z$ be a set of incidence ports such that each component of $E-Z$
+has at most $K$ vertices, where $K\ge1$.  Every nonempty storage code satisfies
+\begin{equation}
+ \log_{|\mathcal A|}|\mathcal C|
+ \le \frac{N+|Z|+b_E(K)}2.
+ \label{thm:dc-separator-bound}
+\end{equation}
+No degree bound is required.
+\end{theorem}
+\begin{informalproof}
+Let $U$ contain the coordinates with at least one port in $Z$, and also
+the coordinates counted by $b_E(K)$.  Thus $|U|\le |Z|+b_E(K)$.
+Delete both ports of every coordinate in $U$, obtaining the induced
+relation on $Q=V\setminus U$.  Its components still have at most $K$
+ports.  If a surviving pair were connected, a shortest path in its
+component would have length at most $K-1$, contradicting the choice of $U$.
+
+Fix an assignment to the coordinates in $U$.  The restrictions to $Q$ of
+codewords with this assignment form a storage code for the induced relation:
+deleted recovery arguments are fixed constants.  \cref{lem:dc-components}
+bounds each such fibre by $|\mathcal A|^{|Q|/2}$.  There are at most
+$|\mathcal A|^{|U|}$ fibres, giving
+$|\mathcal C|\le |\mathcal A|^{|U|+|Q|/2}$ and the claimed inequality.
+This conditions on coordinate values; it does not discard side-information
+edges without paying for their coordinates.
+\end{informalproof}
+
+\begin{definition}
+\label{def:dc-hyperfinite-definition}
+A sequence $(E_n)$ is \emph{uniformly hyperfinite} if, for each $\eta>0$,
+there is an integer $K_\eta$ such that, for every sufficiently large $n$,
+one can delete at most $2\eta N_n$ incidence ports and leave components
+of size at most $K_\eta$.
+\end{definition}
+
+\begin{corollary}[Hyperfinite half-rate bound]
+\notformalized
+\label{cor:dc-hyperfinite}
+Suppose $(E_n)$ is uniformly hyperfinite and has paired-distance separation.
+For any finite alphabets $\mathcal A_n$ of size at least two, and any
+nonempty storage codes $\mathcal C_n$ on these relations,
+\[
+ \limsup_{n\to\infty}
+ \frac{\log_{|\mathcal A_n|}|\mathcal C_n|}{N_n}\le\frac12.
+\]
+\end{corollary}
+\begin{informalproof}
+For fixed $\eta$, \cref{thm:dc-separator} gives a limiting upper bound
+$1/2+\eta$, because $K_\eta$ is fixed before $n$ tends to infinity.
+Then let $\eta$ decrease to zero.  The finite estimate is uniform in
+the alphabet, so it also permits the displayed varying alphabets.
+\end{informalproof}
+
+\subsection{Bounded complex linear recovery}
+
+Let $t\ge1$.  A recovery matrix $A$ has $t\times t$ blocks $A_{qp}$,
+with $A_{qq}=0$ and $A_{qp}=0$ unless $L_pR_q\in E$.
+Its actual support graph has $L_pR_q$ precisely when $A_{qp}\ne0$;
+we may use a larger declared relation $E$.
+A linear storage space with these recovery rules is contained in
+$\ker(I-A)$.  No symmetry or adjoint relation between $A_{qp}$ and
+$A_{pq}$ is imposed.
+
+\begin{theorem}[Directed complex half-rank bound]
+\notformalized
+\label{thm:dc-complex}
+Fix integers $\Delta,t\ge1$ and a real number $B\ge1$.
+Let $(E_n)$ have maximum incidence degree at most $\Delta$ and paired-port
+separation.  Let $A_n$ be complex recovery matrices of block width $t$
+on $E_n$, with every scalar entry of modulus at most $B$.
+Then
+\begin{equation}
+ \liminf_{n\to\infty}
+ \frac{\operatorname{rank}_{\mathbb C}(I-A_n)}{tN_n}\ge\frac12.
+ \label{thm:dc-complex-rank}
+\end{equation}
+Consequently every associated complex or real linear storage space has
+dimension at most $(1/2+o(1))tN_n$.
+\end{theorem}
+
+We give the analytic details because two points matter: a component
+marking must preserve unimodularity, and finite nullity passes to the
+limit in only one direction.
+We use the marked-network framework of Aldous and Lyons~\cite[Sections~2
+and~5]{AldousLyons}.  Uniformly rooted finite graphs of bounded degree,
+with marks in fixed compact spaces, have locally convergent subsequences;
+their limits satisfy the mass-transport identity.  For a unimodular law
+$\mu$, bounded measurable operator families equivariant under network
+isomorphisms, and independent of the distinguished root, form a von Neumann
+algebra.  In its $t\times t$ matrix amplification the normalized trace is
+\begin{equation}
+ \tau(T)=\mathbb E_\mu\frac1t\operatorname{tr}(T_{oo}),
+ \qquad \tau(I)=1.
+ \label{eq:dc-trace}
+\end{equation}
+It is tracial and positive.  These are the same analytic inputs used in
+the proof of Theorem~A in~\cite{BrendeCurved}.
+
+\begin{informalproof}[Proof of \cref{thm:dc-complex}]
+Form the coordinate graph $G_n$ by joining $p$ and $q$ if either directed
+incidence is present.  Its degree is at most $2\Delta$.
+Record the two directed incidence flags as discrete marks, and the
+corresponding bounded coefficient blocks as compact marks.  In particular,
+retain an incidence flag when its coefficient converges to zero.
+Choose a subsequence realizing the limsup of the normalized nullities,
+then a locally convergent marked subsequence with unimodular limit $\mu$.
+The root is uniform among coordinates, and the rooted limit retains the
+root's connected coordinate component.  Write $(G,A,o)$ for that limit.
+The row and column absolute sums of $A$ are at most $\Delta tB$, so
+\[
+ \|A\|\le\Delta tB,\qquad \|I-A\|\le c:=1+\Delta tB.
+\]
+
+\emph{Separation in the limit.}
+For fixed $r,s$, the event that a coordinate within $G_n$-distance $s$
+of the root has paired-port distance at most $r$ has probability at most
+\[
+ \left(\sum_{j=0}^s(2\Delta)^j\right)\frac{b_{E_n}(r)}{N_n}.
+\]
+It is determined by finitely many discrete incidence flags and therefore
+is a clopen local event.  Its limiting probability is zero.  Taking the
+countable union over $r,s$ shows that, almost surely, \emph{every}
+coordinate $p$ of $G$ has $L_p,R_p$ in different components of the limit
+port graph $E$.
+
+\emph{An invariant phase extension.}
+Conditionally on this countable graph, give each component of $E$ an
+independent uniform phase on the complex unit circle.  This law can be
+specified without choosing an invariant enumeration: for a finite list
+of ports, give independent phases to its distinct component classes,
+and equal phases to ports in the same class.  The cylinder laws are
+consistent.  Connectivity of two ports is a countable union of finite-path
+events, so their component partition is Borel.  The cylinder integrals,
+and then all bounded Borel integrals by a monotone-class argument, define
+a Borel probability kernel $\kappa_G$.  Its law is unchanged by any
+isomorphism or change of root.
+
+The resulting phase-marked extension $\widehat\mu$ is unimodular.
+Indeed, for any nonnegative doubly rooted test function $f$, average
+$f$ over $\kappa_G$ to obtain $\bar f$.  The same kernel is used with
+either root distinguished.  Applying mass transport to $\bar f$ and
+Tonelli's theorem gives
+\[
+ \mathbb E_{\widehat\mu}\sum_x f(G,o,x)
+ =\mathbb E_\mu\sum_x\bar f(G,o,x)
+ =\mathbb E_\mu\sum_x\bar f(G,x,o)
+ =\mathbb E_{\widehat\mu}\sum_x f(G,x,o).
+\]
+This construction is a probability-space extension, not an assertion
+that component phases are a factor of independent vertex labels.
+
+Let $D_L,D_R$ multiply the $t$ entries at coordinate $p$ by the phase
+of the component of $L_p,R_p$, respectively.  They are measurable,
+equivariant diagonal unitaries.  An edge $L_pR_q$ equates the phase
+at column $p$ with that at row $q$, and hence
+\begin{equation}
+ AD_L=D_RA.
+ \label{eq:dc-intertwining}
+\end{equation}
+The phases of each matched pair are independent and nonatomic.
+By countability they differ at every coordinate simultaneously, almost
+surely.  Thus $D_L-D_R$ is injective; no bounded inverse is asserted.
+
+\emph{The tracial half bound.}
+Let $K=\ker(I-A)$ and let $P_K$ be its orthogonal projection.
+If $y\in K$ and $D_Ly\in K$, then
+$D_Ly=AD_Ly=D_RAy=D_Ry$, so $y=0$.
+Consequently $T=(I-P_K)D_LP_K$ has kernel $K^\perp$, and its range
+closure lies in $K^\perp$.
+All these operators lie in the amplified equivariant algebra.
+Polar decomposition there gives a partial isometry $U$ with
+$U^*U=P_K$ and $UU^*\le I-P_K$.  One can obtain $U$ as the strong
+limit of $T(T^*T+\varepsilon I)^{-1/2}$ as $\varepsilon\downarrow0$;
+functional calculus and strong closure keep this limit in the algebra.
+Therefore
+\begin{equation}
+ \tau(P_K)=\tau(U^*U)=\tau(UU^*)\le1-\tau(P_K),
+ \qquad \tau(P_K)\le\frac12.
+ \label{eq:dc-half-trace}
+\end{equation}
+This uses the range closure, not an assumption that the range is closed.
+The expected root trace of $P_K$ is unchanged on forgetting the phases.
+
+\emph{Return to finite matrices.}
+Put $M_n=I-A_n$, $H_n=M_n^*M_n$, and $H=(I-A)^*(I-A)$.
+Their normalized empirical spectral measures $\nu_n$ have common support
+in $[0,c^2]$.  For each integer $j\ge0$, the moment
+$(tN_n)^{-1}\operatorname{tr}H_n^j$ is the expected normalized root-block
+trace of a bounded continuous local function; radius $2j$ suffices.
+Local convergence gives moment convergence to the averaged root spectral
+measure $\nu$ of $H$.  Polynomial approximation on $[0,c^2]$ gives weak
+convergence.  The closed-set inequality for the singleton $\{0\}$ is
+\begin{equation}
+ \limsup_n\frac{\dim\ker M_n}{tN_n}
+ =\limsup_n\nu_n(\{0\})
+ \le\nu(\{0\})=\tau(P_K)\le\frac12.
+ \label{eq:dc-nullity-semicontinuity}
+\end{equation}
+Here $\ker(M^*M)=\ker M$ holds for finite matrices and bounded operators.
+This proves~\eqref{thm:dc-complex-rank}.  Real matrices have the same rank
+after complexification.
+\end{informalproof}
+
+\begin{corollary}[Uniform finite form]
+\notformalized
+\label{cor:dc-uniform}
+For fixed $\Delta,t,B$ and every $\varepsilon>0$ there exist an integer
+$r\ge1$, a number $\delta>0$, and $N_0$ such that
+\[
+ b_E(r)\le\delta N,\quad N\ge N_0
+ \quad\Longrightarrow\quad
+ \operatorname{rank}_{\mathbb C}(I-A)\ge(1/2-\varepsilon)tN
+\]
+for every relation and matrix with the bounds of \cref{thm:dc-complex}.
+\end{corollary}
+\begin{informalproof}
+Otherwise choose a failure with $r=j$, $\delta=1/j$, and $N\ge j$
+for each positive integer $j$.  These failures have paired-distance separation,
+contradicting \cref{thm:dc-complex}.
+\end{informalproof}
+
+\begin{corollary}[Complex linear codes on actual cone relations]
+\notformalized
+\label{cor:dc-native}
+Fix the tape count, linear-time constant, full cone depth, block width~$t$,
+and a uniform bound on the recovery coefficients.  Every sequence of
+complex linear storage spaces on the corresponding native cone relations,
+admitting linear recovery maps with the stated block width and coefficient
+bound, has dimension at most $(1/2+o(1))tL$ as $d\to\infty$.
+\end{corollary}
+\begin{informalproof}
+Remove the $O(L/\log d)$ self-demand coordinates supplied by
+\cref{cor:nb-self-demands}.  For any fixed $0<\delta<1$, also remove
+coordinates whose left degree exceeds a fixed $M\ge B_D/\delta$, where
+$B_D=\sum_{h=0}^D(k+1)^h$ is the cone bound in
+\eqref{eq:nb-cone-bound}, using
+\cref{cor:nb-trim}.  Write $H$ for their union and $Q$ for the
+retained set.  Then $|H|\le\delta L+o(L)$, and the induced relation is
+loop-free, has bounded incidence degree, and satisfies the paired-distance
+condition by \cref{thm:nb-main}.
+
+If $\mathcal U$ is the original linear space, its subspace with zero
+coordinates on $H$ has codimension at most $t|H|$.  On this subspace the
+original bounded linear recovery maps restrict to maps on $Q$ with the
+same coefficient bound and block width.  \cref{thm:dc-complex} bounds
+its dimension by $(1/2+o(1))t|Q|$.  Therefore
+\[
+ \dim\mathcal U\le t|H|+(1/2+o(1))t|Q|
+ \le(1/2+\delta/2+o(1))tL.
+\]
+Take the size limit first and then let $\delta$ tend to zero.  This is a
+complex-linear statement about the cone relations; it does not make the
+machine's binary genie a complex linear map.
+\end{informalproof}
+
+\begin{remark}[Scope of the graph extension]
+\label{rem:dc-comparison}
+For a symmetric recovery relation, $E$ is its bipartite double cover.
+A path between matched ports projects to an odd closed walk, and an odd
+cycle gives such a path at each of its vertices.  With bounded degree,
+paired-distance separation is consequently equivalent to having only $o(N_n)$
+vertices on odd cycles of every fixed bounded length.
+For directed relations the hypotheses differ: in disjoint directed
+seven-cycles with one recovery neighbour at each vertex, $E$ is a union
+of isolated edges and every matched distance is infinite, whereas the
+underlying coordinate graphs have odd cycles at positive density.
+Thus replacing directed recovery by its undirected closure loses information.
+\end{remark}
+
+\subsection{What the complex bound says over finite fields}
+
+\begin{corollary}[Necessary torsion in bounded lifts]
+\notformalized
+\label{cor:dc-torsion}
+Fix a prime $p$, integers $\Delta,t\ge1$, and $\varepsilon>0$.
+Let $(E_n)$ satisfy the graph hypotheses of \cref{thm:dc-complex}.
+Suppose matrices $M_n$ over $\mathbb F_p$ have diagonal blocks $I_t$,
+off-diagonal support in $E_n$, and
+$\dim\ker M_n\ge(1/2+\varepsilon)tN_n$.
+For any integer lifts $\widetilde M_n$ with the same support restrictions,
+literal diagonal blocks $I_t$, and uniformly bounded entries, at least
+$(\varepsilon-o(1))tN_n$ of their \emph{nonzero} Smith invariant factors
+are divisible by $p$.
+\end{corollary}
+\begin{informalproof}
+Set $\rho_n=\operatorname{rank}_{\mathbb Q}\widetilde M_n$.
+\cref{thm:dc-complex} gives $\rho_n\ge(1/2-o(1))tN_n$.
+The unimodular transformations in Smith normal form remain invertible
+modulo $p$.  Thus
+\[
+ \#\{\hbox{nonzero invariant factors divisible by }p\}
+ =\rho_n-\operatorname{rank}_{\mathbb F_p}M_n
+ \ge(\varepsilon-o(1))tN_n.
+\]
+Equivalently, the subgroup annihilated by $p$ in the integer cokernel
+has at least this dimension over $\mathbb F_p$.  Zero invariant factors
+give free abelian summands and are not counted as torsion.
+\end{informalproof}
+
+This conclusion permits such torsion; it is not a finite-field half-rate
+theorem.  A fixed extension field can be represented over its prime field
+by enlarging the fixed block width.  The analytic argument does not cover
+growing block widths, unbounded complex coefficients, or nonlinear codes
+on nonhyperfinite relations.  \cref{sec:mc-section} gives a separate
+finite-field certificate on one existential expanding family, uniform
+in the storage-code block width.  Neither result identifies all native
+cone relations with that family or settles the unrestricted coding problem.

@@ -1,0 +1,221 @@
+\section{Finite matrix certificates and an expanding example}
+\label{sec:mc-section}
+
+The component phases in \cref{thm:dc-complex} have a finite algebraic
+counterpart.  Its witnesses may have growing dimension while the code
+being bounded retains any chosen block width.  This distinction permits
+a finite-field result without a spectral limit of recovery matrices.
+
+\begin{lemma}[Rank identity]
+\notformalized
+\label{lem:mc-identity}
+For endomorphisms $A,L,R$ of any finite-dimensional vector space over any
+field $F$,
+\begin{equation}
+ 2\operatorname{rank}(I-A)
+ \ge\operatorname{rank}(L-R)-\operatorname{rank}(AL-RA).
+ \label{eq:mc-rank-identity}
+\end{equation}
+No invertibility or commutativity is required.
+\end{lemma}
+\begin{informalproof}
+For $M=I-A$ the exact identity is
+$L-R=(AL-RA)+ML-RM$.  Apply rank subadditivity and
+$\operatorname{rank}(ML),\operatorname{rank}(RM)\le\operatorname{rank}M$.
+\end{informalproof}
+
+\begin{proposition}[Matrix-label certificate]
+\notformalized
+\label{prop:mc-certificate}
+Let $A$ have $t\times t$ blocks indexed by $N$ coordinates, supported on
+a paired incidence relation $E$.  Give its ports arbitrary labels
+$X_p,Y_q\in\operatorname{Mat}_m(F)$, where $m\ge1$.  Then
+\begin{equation}
+ \operatorname{rank}_F(I-A)\ge
+ \frac{t\sum_{p}\operatorname{rank}_F(X_p-Y_p)
+ -\sum_{L_pR_q\in E}\operatorname{rank}_F(A_{qp})
+                         \operatorname{rank}_F(X_p-Y_q)}{2m}.
+ \label{prop:mc-certificate-equation}
+\end{equation}
+Labels over a field extension of $F$ are also valid witnesses, with
+the ranks of the original matrices unchanged.
+\end{proposition}
+\begin{informalproof}
+Use $\widehat A=A\otimes I_m$ and block-diagonal operators
+$L_{pp}=I_t\otimes X_p$, $R_{qq}=I_t\otimes Y_q$.
+Then
+\[
+ \operatorname{rank}(I-\widehat A)=m\operatorname{rank}(I-A),\qquad
+ \operatorname{rank}(L-R)=t\sum_p\operatorname{rank}(X_p-Y_p),
+\]
+and the $(q,p)$ block of $\widehat A L-R\widehat A$ is
+$A_{qp}\otimes(X_p-Y_q)$.  Tensor-product ranks multiply over any field.
+Writing a block matrix as the sum of its single-block inclusions bounds
+its rank by the sum of their ranks.  \cref{lem:mc-identity} gives the
+displayed inequality.
+\end{informalproof}
+
+In particular, full-rank differences on matched ports and low-rank
+differences on incidence edges give a useful certificate.  The following
+construction shows that this situation is compatible with uniform
+expansion and large matched distances.
+
+\begin{theorem}[An existential characteristic-two family]
+\notformalized
+\label{thm:mc-expanding-family}
+There are constants $\Delta\ge1$, $h>0$, and $m_0$ such that for every
+integer $m\ge m_0$ there is a simple paired incidence graph $E_m$ on
+$2N_m$ ports, where
+\[
+ N_m=2^{m^2}(2^m-1)^2,
+\]
+with the following properties:
+\begin{enumerate}
+\item Its maximum degree is at most $\Delta$, and every port set $S$ with
+      $|S|\le N_m$ has at least $h|S|$ edges leaving it.
+\item Every matched pair has distance at least $m$.
+\item For every field $F$ of characteristic two, every integer $t\ge1$,
+      and every recovery matrix $A$ of block width $t$ supported on $E_m$,
+\begin{equation}
+ \operatorname{rank}_F(I-A)
+ \ge\frac{tN_m}{2}
+       -\frac1{2m}\sum_{L_pR_q\in E_m}\operatorname{rank}_F(A_{qp})
+ \ge\left(\frac12-\frac{\Delta}{2m}\right)tN_m.
+ \label{eq:mc-expander-rank}
+\end{equation}
+\end{enumerate}
+The graph is chosen independently of $F,t,A$.  In particular the bound
+is uniform in $t$, even if $t$ grows with $m$.
+\end{theorem}
+
+\begin{informalproof}
+\emph{An outer graph with rank-one steps.}
+Put $s=2^m$ and $D_m=(s-1)^2$.  On the additive group
+$\operatorname{Mat}_m(\mathbb F_2)$ join $B$ to $B+uv^{\mathsf T}$
+for each ordered pair of nonzero vectors $u,v\in\mathbb F_2^m$.
+Each nonzero rank-one matrix has exactly one such representation over
+$\mathbb F_2$, so this is a simple $D_m$-regular graph $G_m$.
+The edge label $(u,v)$ is unchanged by reversal.
+
+For a matrix $C$ of rank $r$, the additive character
+$B\mapsto(-1)^{\sum_{i,j}C_{ij}B_{ij}}$ has normalized eigenvalue
+\begin{equation}
+ \lambda_r=
+ \frac{2^{2m-r}-2^{m+1}+1}{(2^m-1)^2}.
+ \label{eq:mc-outer-spectrum}
+\end{equation}
+Indeed, among the $s-1$ nonzero vectors $u$, exactly $2^{m-r}-1$
+satisfy $u^{\mathsf T}C=0$.  Summing the character over nonzero $v$
+gives $s-1$ for those $u$ and $-1$ for the others.  The resulting sum
+is $2^{2m-r}-2s+1$.  These characters form an orthogonal eigenbasis.
+For $m\ge2$ and $r\ge1$, the eigenvalues decrease from at most $1/2$
+to $-1/(s-1)\ge-1/3$.  Thus all nonconstant eigenvalues have absolute
+value at most $1/2$.
+
+\emph{Reducing the degree.}
+Fix $k=1024$.  Theorem~1 of Bordenave~\cite{Bordenave} implies that,
+for every sufficiently large $D$, there is a simple $k$-regular graph
+$H_D$ on $D$ vertices whose normalized nonconstant eigenvalues have
+absolute value at most $1/10$.  In fact
+$(2\sqrt{1023}+1)/1024<1/10$, and $kD$ is always even.
+Choose one such graph on the label set of $G_m$.
+
+Use the zig-zag construction of Reingold, Vadhan, and
+Wigderson~\cite[Section~3]{RVW}.  Its vertex set consists of pairs $(B,a)$,
+where $a$ is an outer edge label.  A step first changes $a$ along one
+edge of $H_{D_m}$, then takes that labelled edge of $G_m$, and finally
+changes the new label along one edge of $H_{D_m}$.
+The resulting undirected multigraph $Z_m$ has $N_m$ vertices and degree
+$\Delta=k^2$.  Every edge changes $B$ by a matrix of rank exactly one.
+There are no loops; we permit parallel edges in the spectral accounting.
+
+For completeness, the following loose spectral estimate suffices.
+Let $P$ average within each label cloud, let $\mathcal H$ apply the
+normalized adjacency of $H_{D_m}$ within clouds, and let $\mathcal R$
+be the outer rotation, an orthogonal involution.
+The normalized adjacency of $Z_m$ is
+$\mathcal H\mathcal R\mathcal H$.
+For a vector $f$ orthogonal to the constants, write
+$f=f_\parallel+f_\perp$, where $f_\parallel=Pf$, and put
+$e=\mathcal Hf_\perp$.  Then $\|e\|\le\|f_\perp\|/10$.
+On cloud-constant vectors $P\mathcal RP$ is the outer normalized
+adjacency.  Hence
+\[
+ \bigl|\langle f,\mathcal H\mathcal R\mathcal Hf\rangle\bigr|
+ \le\tfrac12\|f_\parallel\|^2
+      +\tfrac2{10}\|f_\parallel\|\|f_\perp\|
+      +\tfrac1{100}\|f_\perp\|^2
+ \le0.71\|f\|^2.
+\]
+Since the adjacency is self-adjoint, all its nonconstant eigenvalues
+have absolute value at most $\lambda=0.71<1$.
+
+\emph{Ports and their prescribed pairing.}
+For a vertex $x=(B,a)$ put $\theta(x)=(B+I_m,a)$.
+Take the bipartite double cover of $Z_m$, keep the physical left port
+at $x$ named $L_x$, and name the physical right port at $\theta(y)$ by
+$R_y$.  Finally remove parallel copies of edges to obtain the simple
+graph $E_m$.  Thus
+\begin{equation}
+ L_xR_y\in E_m\quad\Longleftrightarrow\quad
+ x\text{ and }\theta(y)\text{ are adjacent in }Z_m.
+ \label{eq:mc-shifted-pairing}
+\end{equation}
+Give these ports the matrix labels $X_x=B_x$ and $Y_y=B_y+I_m$.
+Each edge difference has rank one.  Each matched difference is $I_m$
+and has rank $m$.  Along any port path the matrix differences telescope;
+rank subadditivity therefore forces every matched path to have at least
+$m$ edges.  In particular there are no self-demand edges when $m>1$.
+
+The double cover has eigenvalues equal to the positive and negative
+eigenvalues of $Z_m$.  Its eigenvalue $1$ is simple, and every other
+eigenvalue is at most $\lambda$; the additional eigenvalue $-1$ is harmless
+for this upper bound.  For a port set $S$ of size $q\le N_m$, apply
+the spectral gap to $1_S-q/(2N_m)$.  It gives at least
+$\Delta(1-\lambda)q/2$ crossing edges counted with multiplicity.
+Every simple edge has multiplicity at most $\Delta$.  Deduplication
+therefore leaves at least $hq$ crossing edges for
+$h=(1-\lambda)/2>0$, and degree at most $\Delta$.
+
+\emph{The rank bound.}
+Interpret the binary labels $X_x,Y_y$ in any field of characteristic two.
+Their ranks are preserved by extension of the prime field.
+\cref{prop:mc-certificate} gives the first inequality in
+\eqref{eq:mc-expander-rank}.  The second follows from
+$\operatorname{rank}A_{yx}\le t$ and $|E_m|\le\Delta N_m$.
+\end{informalproof}
+
+\begin{corollary}[Linear codes on the expanding family]
+\notformalized
+\label{cor:mc-linear-codes}
+Over any characteristic-two field, every linear storage space on $E_m$
+with $t$ symbols per coordinate has normalized dimension at most
+$1/2+\Delta/(2m)$.  This includes linear spaces initially supplied with
+nonlinear recovery functions.
+\end{corollary}
+\begin{informalproof}
+On a linear space, determination of a coordinate by its neighbours means
+that the kernel of the neighbour projection is contained in the kernel
+of the coordinate projection.  The latter therefore factors linearly
+through the image of the former, and this linear map extends to the
+ambient neighbour space.  Choose these linear recovery maps for all
+coordinates to obtain $A$ with $\mathcal C\subseteq\ker(I-A)$, and use
+\cref{thm:mc-expanding-family}.
+\end{informalproof}
+
+These graphs are not uniformly hyperfinite.  If deletion of $z$ ports
+leaves components of size at most a fixed $K<N_m$, expansion summed
+over the components gives
+$h(2N_m-z)\le\Delta z$.  Thus every such separator has a fixed positive
+linear size.  The preceding finite-field result consequently goes beyond
+the hyperfinite hypothesis of \cref{cor:dc-hyperfinite}, though it
+applies only to linear code spaces.
+
+Two scope points are useful.  First, the binary translation $\theta$ is
+an involutive automorphism of $Z_m$, so the demand relation in this
+particular construction is symmetric.  Its contribution is a
+characteristic-two bound uniform in block width, not an example requiring
+asymmetric recovery.  Second, the inner graphs were chosen by an existence
+theorem.  No efficient uniform generator or native tape realization is
+asserted.  These are abstract relations; their degree, expansion, and
+paired-port separation do not identify them with all native cones.

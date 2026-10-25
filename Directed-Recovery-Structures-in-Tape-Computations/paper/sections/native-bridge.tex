@@ -1,0 +1,506 @@
+\section{Paired distances in actual tape cones}\label{sec:nb-section}
+
+The recovery relation extracted from a computation is directed: an input
+coordinate may occur in the cone of an output without the converse
+occurrence.  The appropriate geometric object retains separate copies of
+the input and output ports.  We prove that, after a paid bound on input
+reuse, almost every matched pair of ports is far apart in this incidence
+graph.  No assumption that the computation transposes is needed.
+
+\subsection{The computation DAG and the incidence graph}
+
+Fix integers $d\ge2$ and $b\ge1$, and write
+\[
+ L=d^2b,\qquad W=db,\qquad [L]=\{0,\ldots,L-1\}.
+\]
+Identify a coordinate $(i,j,s)$, with $0\le i,j<d$ and $0\le s<b$, with
+the raw address $(id+j)b+s$.  The transpose permutation is
+\begin{equation}\label{eq:nb-transpose}
+ \Pi\bigl((id+j)b+s\bigr)=(jd+i)b+s.
+\end{equation}
+Throughout this section, logarithms and entropies have base two.
+
+Consider an execution with one read-only input tape, $k\ge1$ work tapes,
+and exactly $L$ output appends in $T$ steps.  Each head starts at zero and
+moves by at most one cell per step.  At most one bit is appended per step.
+Write $x_0(t)$ for the input-head position and $x_j(t)$ for work-head
+position $j$ immediately before step $t$.  A work cell is written at every
+visit, including a visit which preserves its symbol.  Let
+\[
+ \operatorname{prev}_j(t)=\max\{u<t:x_j(u)=x_j(t)\}
+\]
+when this set is nonempty.  We first take the schedule to be oblivious:
+these positions, the append times, and $T$ depend on the input length
+alone.  The structural argument will also apply to a single frozen
+adaptive trace.
+
+\begin{definition}[Whole-step cones]\label{def:nb-cones}
+The value $v_t$ of step $t$ consists of the state after that step, all
+symbols written on the $k$ work tapes, and the appended output bit or
+a symbol indicating no append.  Fix a constant integer $\beta$ large
+enough to encode one such value.  A genie $\Gamma\subseteq[0,T)$
+reveals $(v_t)_{t\in\Gamma}$ and has cost $\beta|\Gamma|$ bits.
+
+The computation DAG $H$ has vertices $0,\ldots,T-1$, state edges
+$t\to t-1$ for $1\le t<T$, and cell edges
+$t\to\operatorname{prev}_j(t)$ whenever the
+displayed predecessor exists.  Parallel edges may be identified.  All
+edges point backward in time.
+
+A path $t_0\to\cdots\to t_m$ is $\Gamma$-free if
+$t_1,\ldots,t_m\notin\Gamma$; its first vertex may belong to $\Gamma$.
+The genie has \emph{full depth at most $D$} if every such path has at most
+$D$ edges.  Let $C_\Gamma(t)$ be the set of endpoints of $\Gamma$-free
+paths from $t$.  If output address $\ell$ is appended at step $t_\ell$,
+put
+\[
+ I_\Gamma(\ell)=\{x_0(u):u\in C_\Gamma(t_\ell)\}\cap[L],
+ \qquad N(q)=I_\Gamma(\Pi(q)).
+\]
+\end{definition}
+
+These are the whole-step conventions of
+\cite[the dependency DAG and cone lemma]{BrendeCurved}.  In particular,
+a length-zero path is permitted, even when its vertex is revealed.
+Here $N(q)$ is a syntactic input set; its definition does not require
+that output $\Pi(q)$ equal input $q$.
+
+Each vertex of $H$ has both in-degree and out-degree at most $k+1$.
+For the in-degree assertion, a given visit has at most one next visit to
+the same cell on each work tape, and at most one next state edge.
+Consequently, if the genie has full depth at most $D$, then
+\begin{equation}\label{eq:nb-cone-bound}
+ |N(q)|\le B,\qquad B=\sum_{h=0}^{D}(k+1)^h.
+\end{equation}
+
+\begin{definition}[Paired incidence graph]\label{def:nb-incidence}
+The graph $E$ has distinct vertices $L_p,R_p$ for every $p\in[L]$, with
+an undirected edge $L_pR_q$ precisely when $p\in N(q)$.  The physical
+port represented by $L_p$ is input address $p$; that represented by $R_q$
+is output address $\Pi(q)$.  For $Q\subseteq[L]$, let $E_Q$ be the
+induced graph on $\{L_p,R_p:p\in Q\}$.  Distances between vertices in
+different components are infinite.
+\end{definition}
+
+The graph $E$ is an auxiliary bipartite graph on physical ports.  It is
+neither the computation DAG $H$ nor the undirected graph obtained by
+forgetting the directions of the recovery relation on $[L]$.  Its
+bipartiteness is automatic; the assertion below concerns the distances
+between the two copies of the \emph{same} coordinate.
+
+\begin{theorem}[Paired-distance bound]\label{thm:nb-main}
+\notformalized
+Fix $k\ge1$, $D\ge0$, $c>0$, a degree bound $\Delta$, and an integer
+$r\ge1$.  Suppose $T\le c(L+1)$ and $\Gamma$ has full depth at most
+$D$.  For every $Q\subseteq[L]$ such that $E_Q$ has maximum degree at
+most $\Delta$,
+\begin{equation}\label{eq:nb-main-bound}
+ \bigl|\{p\in Q:\operatorname{dist}_{E_Q}(L_p,R_p)\le r\}\bigr|
+   =O_{k,D,c,\Delta,r}\!\left(\frac{L}{\log_2d}\right).
+\end{equation}
+The constant is uniform over $b\ge1$, the schedule, the genie, and $Q$.
+Neither correctness as a transposer nor a bound on $|\Gamma|$ is assumed.
+\end{theorem}
+
+The proof uses a geometric relaxation in which selected paths may share
+a location and subsequently separate.  These paths are auxiliary objects;
+they do not assert that a coded tape symbol carries independent source
+bits.  A row-entropy potential controls partial transpose transport in
+this relaxation.  Alternating forward and reverse realizations of cone
+matchings then converts short paired paths in $E_Q$ into that transport.
+
+\subsection{A partial-transport inequality}
+
+We specify the geometric relaxation so that its use does not import a
+routing assumption about the original machine.  There are $K$ tapes,
+one unit-speed head on each, and $\rho$ registers without spatial
+addresses.  A geometric tick first permits arbitrary transfers among
+the current head cells and registers, leaving other locations unchanged,
+and then moves each head by at most one cell.  Each selected source
+label follows a single trajectory.  Different trajectories may occupy
+the same slot and later separate.  The \emph{occupancy} is the number
+of selected trajectories at a slot, without regard to encoded values.
+We bound occupancy at each placement before and after a local transfer.
+Moving heads does not change the locations of the selected labels.
+
+\begin{lemma}[Partial transpose transport]\label{lem:nb-transport}
+\notformalized
+Let $S\subseteq[L]$ have $m>0$ elements.  Suppose geometric trajectories
+start at the distinct input cells $p\in S$, with no selected labels
+elsewhere, and end at the distinct cells $\Pi(p)$ of one output tape.
+Assume all heads start at zero, every slot has occupancy at most $C$,
+and the trajectories use $U$ geometric ticks.  Then
+\begin{equation}\label{eq:nb-transport-sharp}
+ m\log_2d-m\log_2\!\left(\frac{L+2W}{m}\right)-m
+       \le CK(K+\rho+3)U.
+\end{equation}
+In particular, including $m=0$,
+\begin{equation}\label{eq:nb-transport-simple}
+ m\log_2d\le CK(K+\rho+3)U+3L.
+\end{equation}
+\end{lemma}
+
+\begin{informalproof}
+Fix all trajectories before choosing any partition.  For each
+$\theta\in\{0,\ldots,W-1\}$, partition every tape into the bins
+$\lfloor(z-\theta)/W\rfloor$, retaining the tape name as part of the
+bin name.  Merge the $K$ bins currently containing heads, together
+with all registers, into one active class.  The remaining bins are
+separate classes.  The active class contains at most $KW+\rho$ slots.
+
+Choose a source label $V$ uniformly from $S$, and let
+$A=\lfloor V/W\rfloor$ be its original input row.  If
+$Z_{t,\theta}$ is the class containing its trajectory at boundary $t$,
+define
+\[
+ \Phi_t=m\,\mathbb E_\theta\mathrm H(A\mid Z_{t,\theta}).
+\]
+This is entropy of a random \emph{source label}, not entropy of the
+machine input or the contents of a cell.  For any two class variables
+$Z,Z'$, the chain rule gives
+\begin{equation}\label{eq:nb-chain-rule}
+ \mathrm H(A\mid Z')-\mathrm H(A\mid Z)
+       \le \mathrm H(Z\mid Z').
+\end{equation}
+Thus a new class containing $n$ labels contributes at most $n$ times
+the entropy of their old class names to the increase of the unnormalized
+potential.
+
+A local transfer changes no label's class: both of its endpoints lie
+in the active class.  Analyze a simultaneous movement of the heads as
+$K$ successive movements, with all labels held at their physical slots.
+A unit movement of a particular head crosses a bin boundary for exactly
+one offset $\theta$.  At that offset, the new active class has at most
+two old class names, namely the old active class and the newly joined
+bin.  A released bin has only the old active name.  All other classes
+are unchanged.  By occupancy, the new active class contains at most
+$C(KW+\rho)\le C(K+\rho+3)W$ selected labels.  Equation
+\eqref{eq:nb-chain-rule} therefore bounds the increase, after averaging
+over $\theta$, by $C(K+\rho+3)$.  A pause has zero cost.  Summing gives
+\begin{equation}\label{eq:nb-potential-motion}
+ \Phi_U-\Phi_0\le CK(K+\rho+3)U.
+\end{equation}
+
+Initially, a shifted input bin meets at most two aligned input rows.
+Only the input tape contains selected labels, and merging headed bins
+merges no additional occupied input bin.  Hence $\Phi_0\le m$.
+
+For the endpoint estimate, first keep all output bins separate.  At
+output position $v=\Pi(p)$ the original source row is
+$\lfloor(v\bmod W)/b\rfloor$.  This label is $W$-periodic, with exactly
+$b$ occurrences of each row in a period.  Thus a shifted $W$-cell bin
+containing $n$ selected labels has row multiplicities $n_a\le b$, and
+\[
+ n\,\mathrm H(A\mid\text{this bin})
+     =n\log_2 n-\sum_a n_a\log_2n_a
+     \ge n\log_2 n-n\log_2b.
+\]
+Use $0\log_20=0$.  At most $L/W+2$ shifted bins meet $[L]$.
+Convexity of $x\log_2x$ consequently gives
+\[
+ m\,\mathrm H(A\mid\text{separate output bins})
+   \ge m\log_2\!\left(\frac{m}{b(L/W+2)}\right)
+   =m\log_2d-m\log_2\!\left(\frac{L+2W}{m}\right).
+\]
+Merging headed bins is a coarsening of the partition, so it cannot
+decrease this conditional entropy.  This is a lower bound for $\Phi_U$.
+Together with \eqref{eq:nb-potential-motion} and $\Phi_0\le m$, it proves
+\eqref{eq:nb-transport-sharp}.
+
+For $a>0$ and $0<x\le a$,
+$x\log_2(a/x)\le a/(e\ln2)$.  Since $L+2W\le2L$ and $m\le L$,
+\[
+ m+m\log_2\!\left(\frac{L+2W}{m}\right)
+ \le \left(1+\frac{2}{e\ln2}\right)L<3L.
+\]
+Rearranging proves \eqref{eq:nb-transport-simple}.
+\end{informalproof}
+
+The factor $b$ in the endpoint estimate is essential.  The statement
+holds for arbitrary selected source subsets and every entry width; no
+conversion of a word instance into a bit instance is used.
+
+\subsection{Realizing and reversing incidence matchings}
+
+\begin{lemma}[A matching of cone incidences]\label{lem:nb-matching}
+\notformalized
+Let $\mathcal M$ be a matching in $E$.  There is a geometric realization
+of its edges, carrying a label from input cell $p$ to output cell
+$\Pi(q)$ for each $L_pR_q\in\mathcal M$, with $K=k+2$ tapes, one
+register, occupancy at most $B+1$, and $T$ ticks.  All such realizations
+use the same head configurations $h_0$ at entry and $h_T$ at exit.
+The geometric paths can be reversed in $2T$ ticks with the same
+occupancy, from configuration $h_T$ to $h_0$.
+\end{lemma}
+
+\begin{informalproof}
+For every edge $L_pR_q$ choose one $\Gamma$-free backward path from
+the output step $t_{\Pi(q)}$ to a step reading raw input $p$.  It has
+at most $D$ edges.  Any vertex of the computation DAG belongs to at
+most $B$ chosen paths: the distinct output steps of paths using that
+vertex lie within its forward radius $D$, which contains at most $B$
+vertices.  This counts output endpoints, not the number of possible
+combinatorial paths.
+
+For the geometric realization, regard the input tape and the
+append-output tape as two additional work-capable tapes.  The input
+head follows its original trajectory.  The output head occupies the
+next append address and advances exactly when an append occurs.
+The additional register represents a whole step's record for purposes
+of the geometric interface; it is not restricted to the original
+control-state component.
+
+Read each chosen DAG path in forward chronological order.  Its label
+waits at its raw input cell until the chosen input read.  A state edge
+is realized by waiting in the record register from one step to the
+next.  A cell edge is realized by waiting in that work cell between
+two consecutive visits.  At a path vertex, the incoming head cell or
+register and the required outgoing head cell or register are present
+at the local interface, so the geometric model permits the transfer.
+At the chosen output step the label moves to the current output cell
+and remains there.  These operations occur before the original head
+movements, and therefore use the original $T$ ticks.
+
+During a work-cell waiting interval all labels there use its same
+previous-visit vertex, so there are at most $B$.  Labels in the record
+register use one step vertex and satisfy the same bound.  A raw input
+cell contains only its own not-yet-departed source label; a completed
+output cell contains only its own output label.  The matching supplies
+distinct sources and outputs, and the input and output tapes are
+distinct.  The bound $B+1$ is thus conservative at every placement.
+At the end of the block, all selected labels occupy output ports and
+none remains in a work cell or register.
+
+The record register is an augmentation of the geometric model.  A
+syntactic state edge of the whole-step DAG may refer to components that
+the real control state does not retain.  The argument does not identify
+that edge with an independent information channel in the original
+machine.  Instead it uses an additional register in precisely the
+geometric model covered by \cref{lem:nb-transport}.
+
+To reverse a tick, first preserve all labels and undo the original unit
+head movements in one tick.  In a second tick, keep the heads fixed and
+reverse the selected local transfers.  Both endpoints of each transfer
+are again current head cells or registers.  This reverses the geometric
+trajectories, including waiting intervals, with the same occupancy.
+It does not invert a transition function or reconstruct a past machine
+state.  All matchings use the same original head schedule, including
+the two port tapes.  Their forward and reverse configurations therefore
+agree exactly at the stated block boundaries.
+\end{informalproof}
+
+\begin{lemma}[Disjoint short paired paths]\label{lem:nb-disjoint}
+\notformalized
+For any fixed odd $s\ge1$, the number $m$ of vertex-disjoint $s$-edge
+paths in $E$ whose endpoints are $L_p,R_p$ satisfies
+\begin{equation}\label{eq:nb-disjoint-bound}
+ m\le A_s\frac{L}{\log_2d},\qquad
+ A_s=4sc(B+1)(k+2)(k+6)+3.
+\end{equation}
+\end{lemma}
+
+\begin{informalproof}
+Write $s=2a+1$ and orient each incidence path from its left endpoint
+to its right endpoint.  The edges at a fixed position along these
+paths form a matching, because the paths are vertex-disjoint.  Realize
+the first matching forward, the second backward, and continue
+alternating, ending with a forward block.
+
+For example, an incidence path beginning
+$L_p,R_v,L_u,R_w$ first carries its label from input $p$ to output
+$\Pi(v)$, then from that same output cell back to input $u$, and
+then to output $\Pi(w)$.  Every splice identifies the same physical
+tape and address.  In particular, $\Pi$ is never performed as a free
+operation; it only names which output cell a right port represents.
+Forward blocks end at $h_T$, where reverse blocks begin, and reverse
+blocks end at $h_0$, where the next forward blocks begin.  No head
+repositioning is omitted.  At each junction the selected labels occupy
+distinct ports, so occupancy does not accumulate across stages.
+
+The resulting trajectories carry each original input $p$ to output
+$\Pi(p)$, starting with every head at zero.  They use $K=k+2$ tapes,
+$\rho=1$, occupancy $B+1$, and
+\[
+ U=(3a+1)T\le2sT\le4scL
+\]
+ticks.  Apply \eqref{eq:nb-transport-simple} to obtain
+\eqref{eq:nb-disjoint-bound}.
+\end{informalproof}
+
+\begin{informalproof}[Proof of \cref{thm:nb-main}]
+For each $p\in Q$ at paired distance at most $r$, choose one shortest
+path in $E_Q$.  Its length is odd.  Put
+\[
+ V_r=\sum_{j=0}^{r}\max(1,\Delta)^j.
+\]
+A fixed vertex $z$ belongs to at most $V_r$ chosen paths: the distinct
+left endpoints of paths through $z$ are within distance $r$ of $z$,
+and there is one chosen path per left endpoint.
+
+For each odd $s\le r$, choose a maximal vertex-disjoint subfamily among
+the chosen paths of length $s$.  Every candidate meets a selected path.
+A selected path has $s+1$ vertices and therefore meets at most
+$(s+1)V_r$ candidates.  \cref{lem:nb-disjoint} gives the explicit bound
+\begin{equation}\label{eq:nb-packing-bound}
+ \bigl|\{p\in Q:\operatorname{dist}_{E_Q}(L_p,R_p)\le r\}\bigr|
+ \le \sum_{\substack{1\le s\le r\\
+s\text{ odd}}}
+       (s+1)V_r A_s\frac{L}{\log_2d}.
+\end{equation}
+All parameters in the sum are fixed independently of $b$, the schedule,
+and the genie.  This proves the theorem.
+\end{informalproof}
+
+\subsection{Input reuse, conditioning, and adaptive traces}
+
+\begin{corollary}[Self-demands]\label{cor:nb-self-demands}
+\notformalized
+Without any bound on left incidence degrees,
+\[
+ |\{p\in[L]:p\in N(p)\}|\le A_1\frac{L}{\log_2d}.
+\]
+\end{corollary}
+
+\begin{informalproof}
+The edges $L_pR_p$ for self-demanding coordinates form a matching.
+Apply \cref{lem:nb-disjoint} with $s=1$.
+\end{informalproof}
+
+\begin{corollary}[Paid degree reduction]\label{cor:nb-trim}
+\notformalized
+For an integer $M\ge1$, let
+\[
+ H_M=\{p\in[L]:\deg_E(L_p)>M\},\qquad Q_M=[L]\setminus H_M.
+\]
+Then $|H_M|\le BL/M$, and $E_{Q_M}$ has maximum degree at most
+$\max(B,M)$.  For each fixed $\delta\in(0,1)$, choosing the fixed
+threshold $M\ge B/\delta$ retains at least $(1-\delta)L$ coordinates
+and gives \eqref{eq:nb-main-bound} at every fixed radius.
+\end{corollary}
+
+\begin{informalproof}
+By \eqref{eq:nb-cone-bound},
+$\sum_p\deg_E(L_p)=\sum_q|N(q)|\le BL$.
+This bounds the number of left degrees exceeding $M$.  Deleting both
+ports of each such coordinate cannot increase a degree.  Surviving
+left degrees are at most $M$, and all right degrees were at most $B$.
+\end{informalproof}
+
+The deletion in \cref{cor:nb-trim} costs a small \emph{fixed}
+fraction for a fixed threshold; it is not an uncharged $o(L)$ deletion.
+Its coding interpretation is paid conditioning as in
+\cref{lem:pre-conditioning}.  \cref{prop:open-transfer} below
+spells out the resulting conditional transfer of an all-code half bound.
+
+\begin{remark}[Exactly what is structural]\label{rem:nb-scope}
+The premise of \cref{prop:open-transfer} is an additional
+coding statement.  \cref{thm:nb-main} alone supplies no code-rate
+bound.  It also supplies no genie: the depth $D$ is assumed fixed before
+$d$ tends to infinity.  Its constants may grow rapidly with $D$.
+
+Every argument proving \cref{thm:nb-main} applies to one fixed legal
+adaptive execution trace with the stated time, output, and depth
+properties.  Freeze that trace's head walks and append times and use
+them as the geometric schedule.  The only random object in
+\cref{lem:nb-transport} is an auxiliary source label, so no distribution
+of inputs realizing the trace is required.  This observation does not
+produce a common cone relation across inputs, bound the entropy of a
+trace, or make the input coordinates independent on a trace fibre.
+Those are separate obligations for an adaptive all-input coding
+reduction.
+\end{remark}
+
+\subsection{Why symmetrizing the recovery relation loses the conclusion}
+
+The distinction between incidence distance and ordinary odd cycles is
+necessary even for simple native operations.  The example below forces
+directed triangles in every cone relation while respecting the geometric
+conditions already proved.
+
+\begin{proposition}[Persistent directed triangles]\label{prop:nb-triangles}
+\notformalized
+For canonical widths $b=\max(1,\lceil\log_2d\rceil)$, there is a fixed
+uniform deterministic oblivious native machine with $O(L)$ runtime
+which appends exactly $L$ bits and computes
+\[
+ Y[j,i,s]=X[j,-j-i\bmod d,s].
+\]
+For every genie $\Gamma$, its demand-labelled cone relation contains
+\begin{equation}\label{eq:nb-triangle-map}
+ F(i,j,s)=(j,-i-j\bmod d,s)\in N(i,j,s).
+\end{equation}
+The map $F$ has $\gcd(3,d)b$ fixed points and otherwise consists of
+disjoint directed three-cycles.  Thus the undirected symmetrization of
+the recovery relation contains
+$(L-\gcd(3,d)b)/3$ vertex-disjoint triangles.  Making it triangle-free
+by coordinate deletion requires at least this many deletions.
+
+Moreover, for each fixed $\varepsilon>0$, the machine admits genies of
+cost at most $\varepsilon L$ and full depth bounded independently of
+$d$.  The same triangle conclusion holds for those genies.
+\end{proposition}
+
+\begin{informalproof}
+Output rows $j$ in order and, within each row, output entries $i$ in
+order.  Obtain the entry directly from input row $j$, column
+$c=-j-i\bmod d$.  Read its $b$ bits forward, appending each bit in the
+same transition that reads it.  Between successive entries the target
+column decreases by one.  An ordinary repositioning costs $O(b)$
+input-head steps, and the single wrap within a row costs $O(db)$.
+Moving from the final target of one row to the initial target of the
+next costs $O(db)$.  The total input motion and emission cost is
+therefore $O(d^2b)$.
+
+Here is a fixed-resource implementation of the indexing and motion
+control.  First count the raw length $L$ with a little-endian binary
+counter, returning its head to zero after each increment.  The total
+carry distance is $O(L)$.  Rewind the input head, and recover $d,b$
+from the strictly increasing function
+$d\mapsto d^2\max(1,\lceil\log_2d\rceil)$ by binary search and
+ordinary arithmetic on $O(\log L)$ bits.  This setup takes
+$\operatorname{poly}(\log L)=O(L+1)$ time on a fixed number of tapes.
+Noncanonical lengths may use an immediate fallback after this test.
+
+At canonical lengths $d\ge2$, every subsequent index and displacement
+has $O(b)$ bits.  Per-entry operations are addition, subtraction,
+comparison, and modular decrement, implementable in $O(b)$ time by
+full scans of a fixed number of binary registers.  A reusable unary
+guide of length $b$ controls blocks of $b$ input moves or output
+appends.  Each use scans outward and returns, with the input head
+paused during the return.  Longer displacements use $O(d)$ such
+blocks with $O(b)$ counter work per block; they cost $O(db)$ each.
+Hence all entry operations, row wraps, and row transitions still cost
+$O(L)$.  The work tapes are registers or guides accessed by monotone
+outward-and-return scans from zero, so their walks are home-based.
+All motion depends on the public length and counters; payload bits
+affect only the emitted values.  This proves uniformity, obliviousness,
+and the claimed native cost with a fixed tape alphabet and control.
+
+The step emitting physical output $(j,i,s)$ reads raw input
+$(j,-j-i\bmod d,s)$.  The length-zero path at this step is
+$\Gamma$-free for every $\Gamma$, including one revealing that step.
+Demand relabelling by \eqref{eq:nb-transpose} proves
+\eqref{eq:nb-triangle-map}.  Direct calculation gives
+\[
+ F^2(i,j,s)=(-i-j,i,s),\qquad F^3(i,j,s)=(i,j,s).
+\]
+Its fixed points satisfy $i=j$ and $3i=0$ in $\mathbb Z/d\mathbb Z$,
+so there are exactly $\gcd(3,d)b$ of them.  All other orbits have size
+three and give vertex-disjoint triangles after symmetrization.
+
+Finally use the home-based depth-reduction theorem and long-edge
+conversion of \cite[Theorem~B and the proof of Corollary~B]{BrendeCurved}.
+For fixed machine resources and each $\varepsilon>0$, these give a
+genie with cost at most $\varepsilon L$ and constant full depth.
+That construction uses the schedule and its runtime, not transpose
+correctness.  It therefore applies to this machine.  The triangles
+persist because \eqref{eq:nb-triangle-map} held for every genie.
+\end{informalproof}
+
+The guaranteed arcs in this example contribute only the incidence
+matching $L_{F(q)}R_q$; they do not by themselves connect $L_q$ to
+$R_q$ around the directed three-cycle.  There is therefore no conflict
+with \cref{thm:nb-main}.  Additional actual cone edges are permitted
+throughout the argument.  The example rules out a universal local
+bipartiteness conclusion for the symmetrized recovery graph, while
+leaving the directed paired-distance condition intact.

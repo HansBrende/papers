@@ -1,0 +1,47 @@
+\section{The remaining coding problem}\label{sec:open}
+
+The structural theorem suggests a finite-alphabet question that mentions neither a transition function nor a choice of local encoding gates.
+
+\begin{question}[All-code paired-distance bound]\label{prob:open-paired}
+Fix a degree bound~$\Delta$. Let $N_j$ be recovery relations on finite coordinate sets $V_j$ with $|V_j|\to\infty$. Suppose their incidence graphs have maximum degree at most~$\Delta$ and satisfy the paired-distance condition. Must every sequence of nonempty finite-alphabet storage codes $\mathcal C_j\subseteq\mathcal A_j^{V_j}$ satisfy
+\[
+ \limsup_{j\to\infty}\frac{\log_{|\mathcal A_j|}|\mathcal C_j|}{|V_j|}\le\frac12?
+\]
+Here $|\mathcal A_j|\ge2$; the alphabets may vary. The fixed binary alphabet is already an important open case.
+\end{question}
+
+The directed analytic theorem answers the linear, bounded-complex-coefficient version at fixed vector width. The hyperfinite theorem answers the all-code question under an additional separator hypothesis. The native examples show that this separator hypothesis is not a consequence of a linear-time origin. Their separate coding bounds show, at the same time, that its failure is not evidence for a high-rate code.
+
+\begin{proposition}[What an affirmative answer would supply]\label{prop:open-transfer}
+\notformalized
+If \cref{prob:open-paired} has an affirmative answer for every fixed~$\Delta$, then for every fixed tape count, linear-time constant, and cone depth, all finite-alphabet storage codes on the corresponding actual transposition-labelled cone relations have rate at most $1/2+o(1)$, uniformly over those schedules and genies.
+\end{proposition}
+\begin{informalproof}
+Let $B$ be the fixed upper bound on recovery-set sizes. For any fixed $0<\delta<1$, condition on the coordinates whose left incidence degree exceeds an integer $M\ge B/\delta$. There are at most $\delta L$ such coordinates. The retained relation has maximum degree at most $\max(B,M)$, and the native structural theorem gives $b_E(r)=O_r(L/\log d)=o(L)$ for every fixed~$r$. Its number of coordinates is at least $(1-\delta)L$, so the same condition holds relative to its size.
+
+An affirmative answer gives half-rate plus $o(1)$ on the retained relation. By \cref{lem:pre-conditioning}, a full code has logarithmic size at most
+\[
+ |H|+\tfrac12(L-|H|)+o(L)
+ \le\tfrac12L+\tfrac12\delta L+o(L).
+\]
+First take $d\to\infty$ with $\delta$ fixed, then let $\delta\downarrow0$. Uniformity follows by contradiction: a violating sequence of schedules, genies, and codes would itself be a sequence to which \cref{prob:open-paired} applies after the same fixed-threshold trimming.
+\end{informalproof}
+
+This implication requires no assertion that the input and output ports are disconnected in the finite graphs. It also does not require that the recovery relation be symmetric. Conversely, a counterexample to \cref{prob:open-paired} would defeat this proposed abstract coding theorem, not construct a transposer: the counterexample might have no native realization.
+
+\subsection{Depth, rate, and the order of choices}
+The transposition application still needs a cheap genie. The fourth paper supplies it for home-based head schedules and certain other restricted motion classes, but the general depth-reduction problem remains open~\cite{BrendeCurved}. If the all-code half bound held, any such class admitting genies of an arbitrarily small fixed positive cost would be excluded from oblivious linear-time transposition.
+
+The exact value $1/2$ is not essential to that comparison. A deficit $\rho>0$ works if one can choose a genie of cost $\eps L$ with $\eps<\rho$ and then apply the coding bound at its resulting fixed depth. A bound $\rho(D)>0$ for each~$D$ is not by itself enough: making the genie cheaper can increase~$D$, and the deficit may then fall below its cost. This is why the depth-independent leading constant in the connected-demand example is useful, even though it is smaller than one half.
+
+For the specific native examples, the conclusion concerns all codes on their full cone relations. Their schedules already lie within classes excluded by the first paper's pass bounds. Extending the relation-level theorem to more general schedules would be new work; the examples are not a reduction of arbitrary machines to a finite set of scans.
+
+\subsection{Finite fields and nonlinear recovery}
+The complex theorem controls neither modular rank collapse nor nonlinear recovery. Bounded integer lifts expose modular rank loss as torsion; they do not rule it out. The appendix's matrix certificates give an algebraic way to prove finite-field bounds without controlling coefficients or vector width, but only when the required matrix labels exist. Establishing those labels for arbitrary paired-distance systems, or finding a different all-code inequality, would close a genuine remaining interface.
+
+The linear-algebraic and nonlinear statements should therefore be kept separate. A machine's genie is an arbitrary function of its binary input even when its head schedule is fixed. No replacement of that function by a complex linear map is available from the geometry alone.
+
+\subsection{Adaptive schedules}
+The geometric incidence theorem applies to each fixed legal adaptive trace. Its proof transports abstract labels along frozen head walks and does not randomize the inputs that select the trace. To use it for an adaptive machine, however, one must control the family of inputs producing that trace and the information needed to identify the relevant recovery relation. Different inputs can have different cones, output times, and genies. The tracewise theorem supplies none of that description for free.
+
+Thus the paper isolates a specific structural invariant and several coding mechanisms that respect it. A complete lower-bound argument still needs a sufficiently strong finite-alphabet capacity bound, a compatible cheap depth reduction, and, for unrestricted~(T), a paid all-input treatment of adaptivity.

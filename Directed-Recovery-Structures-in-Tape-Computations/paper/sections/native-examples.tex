@@ -1,0 +1,470 @@
+\section{A native nonhyperfinite family with a half-rate bound}
+\label{sec:ne}
+
+The directed recovery formulation does not require a decomposition into
+small components.  We demonstrate this with one fixed native computation.
+Its full cone incidence graphs contain robust expander cores, yet every
+storage code on every induced coordinate set has logarithmic cardinality
+at most half its coordinate count plus $o(L)$.  This gives rate at most
+one half plus $o(1)$ whenever the retained set has size $\Omega(L)$.
+The computation is an invertible shear,
+not a transposition algorithm.  The point of the example is the simultaneous
+graph-theoretic and coding conclusion for its actual execution.
+
+Throughout this section let
+\[
+ d=2m,\qquad b=\max\{1,\lceil\log_2d\rceil\},\qquad
+ W=db,\qquad L=dW=d^2b.
+\]
+A raw coordinate is $p=(i,j,s)\in V=[d]\times[d]\times[b]$, where
+$[u]=\{0,\ldots,u-1\}$.  Its physical address is $(id+j)b+s$, and its
+transpose demand is the physical output address of
+$\Pi(p)=(j,i,s)$.  The paired incidence graph has distinct ports $L_p,R_p$;
+an edge $L_pR_q$ means that raw input $p$ occurs in the full backward cone
+of the append at $\Pi(q)$.  We write this graph as $E_\Gamma$ when cones
+are stopped by a whole-step genie $\Gamma$.  Deleting a coordinate always
+deletes both of its ports.  In particular it is different from deleting
+chosen dependencies.
+
+\subsection{Two imported interfaces and a paid executor}
+
+We use the following expander input from the native shear construction of
+\cite[section on expander shears and local recovery]{BrendeLocalCoding}.
+The graph construction is imported; the schedule refinements and the
+subsequent cone analysis will be given here.
+
+\begin{lemma}[Ordered expander input]\label{lem:ne-expander-import}
+\cited{The expander-shear construction of~\cite{BrendeLocalCoding}. The uniform list-generation refinement is justified below by a written argument; this full interface is not claimed to be Lean-verified.}
+There are fixed positive constants $J,\Delta,\eta$, with $J,\Delta$
+integers and $\eta\le1$, and simple bipartite graphs $H_m$ on
+\[
+ A_0,\ldots,A_{m-1},\quad B_0,\ldots,B_{m-1},
+\]
+such that their maximum degree is at most $\Delta$, their edges partition
+into $J$ partial increasing matchings, and
+\[
+ |N_{H_m}(S)\setminus S|\ge\eta|S|
+ \quad\text{whenever }|S|\le m.
+\]
+The matching endpoint lists can be generated uniformly in
+$O(m\operatorname{polylog}m)$ time using a fixed number of tapes and
+polylogarithmic working space besides the monotonically emitted lists.
+All constants and rational coefficients are fixed before $m$ varies.
+\end{lemma}
+
+Here a partial increasing matching has its two endpoint sequences strictly
+increasing.  The computational part of the imported interface can be seen
+directly from the rational overlap construction.  Fix its finite family
+of increasing rational maps on interval domains.  Their derivatives have
+fixed positive lower and upper bounds.  An edge records a positive-length
+overlap of the image of one mesh cell with a second mesh cell; exact
+rational comparisons decide boundary coincidences.  There are constantly
+many candidate neighbors in either direction.  Split candidates by map
+name and by the residues of the two endpoint indices modulo a fixed
+integer larger than these consecutive-neighbor bounds.  Each resulting
+class is an increasing matching.  Symmetrization uses further fixed
+classes, and retaining a duplicate only in its first class preserves the
+simple graph.  Evaluation, division, comparison, and duplicate tests use
+polynomially many bit operations and cells in $\log m$ per candidate.
+Enumerating sources and filtering by class emits each page in increasing
+order.  Thus this use of the expander input requires neither a table
+depending on $m$ nor a unit-cost operation on a growing word.
+
+The depth interface is a machine-independent consequence of the previous
+paper.  We state precisely the portion needed below.
+
+\begin{lemma}[Cheap whole-step depth for home-based walks]
+\cited{Theorem B and the proof of Corollary B of~\cite{BrendeCurved}. Both the home-based cut theorem and the whole-step conversion used here are written proofs, not Lean-verified results.}
+\label{lem:ne-depth-import}
+Fix an oblivious native machine with $k$ work tapes, whole-step value width
+at most $\beta$ bits, and running time at most $c(L+1)$.  Suppose every
+work-head walk is home-based: every greedy weakly monotone leg begins or
+ends within distance one of its fixed home cell.  For every fixed
+$\varepsilon>0$, and all sufficiently large admissible $L$, there is a
+whole-step genie satisfying $\beta|\Gamma|\le\varepsilon L$ whose full
+depth, in the sense of \cref{def:nb-cones}, is at most a constant $D$.
+The constant may
+depend on the machine and $\varepsilon$, but not on $L$.
+\end{lemma}
+
+This is the cut theorem and long-edge conversion of
+\cite[Theorem B and the proof of Corollary B]{BrendeCurved}, before any
+assumption of transposition correctness.  A cut edge $t\to s$ is blocked
+by revealing $s$; a periodic set of additional revealed steps bounds the
+runs of state edges and pauses between long hops.  The imported statement
+therefore controls all edges of the whole-step DAG, not just long hops.
+We will use it only for existence.  Our conclusions about a specified
+depth-$D$ genie quantify over every such genie.
+
+\begin{proposition}[A fixed native shear executor]\label{prop:ne-native-shear}
+\notformalized
+There is a fixed deterministic oblivious native machine $M_0$ which, at
+all sufficiently large even canonical dimensions, computes
+\[
+ \Phi(A,B)=(A,B+L_mA)
+\]
+in $O(L)$ transitions, where $A,B$ are the first and last $m$ raw rows and
+$L_m$ is the binary adjacency matrix of $H_m$.  It uses read-only raw
+input, blank initial work tapes, and append-only raw output, and all work
+heads are home-based.  There is also such a machine $M_1$ which appends
+all $A$ rows only after completing the shear pages, followed by all $B$
+rows.  Both machines have fixed alphabet, state set, and tape count.
+\end{proposition}
+
+\begin{informalproof}
+We give the execution details because later arguments use its visits,
+including visits at which the scanned symbols are semantically irrelevant.
+Two separate work tapes will hold banks of length $n=mW$.  They begin
+blank; each receives a persistent origin flag, row-start flags during
+loading, and an end marker when its loading finishes.  A unary row clock
+has length $W$ and its own origin and end marker.  All flags are tracks
+of a fixed finite alphabet.  Both data heads remain at their origins
+throughout setup, so setup does not visit or initialize the full banks.
+
+First count the raw input length with a little-endian binary counter whose
+head returns to its origin after each carry.  The sum of carry lengths is
+$O(L)$, including return traversals.  The raw input is then rewound.
+Canonical shape recovery uses polynomially many bit operations in
+$\log L$: try the possible entry widths, compute an integer square root,
+and check the defining equality.  Invalid lengths, odd dimensions, and a
+fixed finite set of small cases use an identity fallback.  Only the even
+canonical subfamily is used in this section.
+
+All polylogarithmic-space arithmetic can be made physically home-based
+at polynomially larger polylogarithmic cost.  To make this explicit,
+bootstrap a unary scratch ruler of length $S=(\lceil\log_2(L+2)\rceil+c)^h$
+by repeated complete sweeps.  Here the fixed exponent $h$ exceeds the
+space exponent of the routines to be simulated.  A fixed number of tracks
+in this window represent virtual tapes, symbols, and virtual head flags.
+A complete outward-and-return scan reads the flagged symbols; further
+complete scans implement a virtual transition and relocate flags.  Right
+moves can be flagged on an outward scan and left moves on a return scan,
+using old and new flag tracks.  Each virtual transition costs $O(S)$,
+and every physical turn occurs at the origin or at the end of the ruler.
+The length counter itself is implemented by the direct carry routine,
+so this simulation does not multiply its linear cost by a polylogarithm.
+
+Generate the $J$ endpoint lists of \cref{lem:ne-expander-import} as
+monotone output streams.  Copy an individual record to the origin buffer
+before parsing it.  The long list heads make monotone traversals and full
+rewinds, rather than reversing locally for arithmetic.  Their total length
+is $O(m\log m)$ and the compiler still costs
+$O(m\operatorname{polylog}L)$.  Construct the unary row clock by reading
+the binary digits of $W$ from most to least significant.  At each digit,
+double the current unary string onto an alternate tape, append the digit,
+erase and rewind the old string, and rewind the new one.  The geometric
+sum of the string lengths is $O(W)$.  All these work heads are home-based.
+
+Load the $A$ bank and then the $B$ bank in raw row order.  The row clock
+identifies the first bit of each row, where the load writes the row-start
+flag; completion of a bank writes its end marker at $n$.  Thus these
+flags require no preliminary full-bank sweep.  An active bank head and
+the row-clock head advance one cell per bit.  At a row boundary
+the bank head waits while the clock returns to its origin.  The machine
+$M_0$ also appends each $A$ bit at its load transition; $M_1$ omits these
+early appends.  After loading, rewind both banks completely.
+
+For each increasing matching page, read its next endpoint pair $(i,j)$,
+skip whole rows forward until the two indicated rows are reached, and
+scan the pair in alignment.  In a single transition at offset $s$, read
+$A_i[s]$ and $B_j[s]$, write their XOR to $B_j[s]$, and advance both heads
+and the row clock.  A skip likewise uses one transition per bit and
+preserves its payload.  Clock rewinds and controller operations take place
+with the bank heads parked at row starts or at the bank end.  Increasing
+endpoints make a single forward traversal sufficient.  After the last
+matched pair, scan the unused suffixes to the end and rewind both banks
+in lockstep, one cell per transition.  Empty pages use the same complete
+traversal convention.  Each page costs $O(L)$.
+
+All work cells scanned on every transition are rewritten, including cells
+under parked heads.  Preserving a symbol is a write, and no part of the
+construction assumes otherwise.  Induction over the pages shows that the
+$B$ bank contains $B+L_mA$: every simple edge is executed exactly once,
+so duplicate XORs do not cancel a desired contribution.  The $A$ bank
+remains unchanged.  Finally $M_0$ appends the $B$ bank.  For $M_1$, after
+the last full rewind, scan and append $A$ and then $B$.  This has the
+specified delayed output order.
+
+The complete cost is
+\[
+ O\bigl(L+W+JL+m\operatorname{polylog}L+\operatorname{polylog}L\bigr)
+ =O(L),
+\]
+since $L=4m^2b$ and all logarithmic powers are fixed.  Public parameters,
+flags, and endpoint records determine every move and append time; payload
+values determine only written or appended bits.  The schedule is therefore
+oblivious.  Bank and metadata heads make complete outward traversals and
+returns, possibly pausing along a traversal.  Clock and compiled controller
+heads also make origin excursions.  These are home-based physical walks.
+The number of pauses need not be bounded, and we make no assertion of a
+bounded number of affine pieces within a leg.
+\end{informalproof}
+
+\subsection{Literal expander paths and robust separators}
+
+The native DAG has a state edge $t\to t-1$ and, for each work tape, an
+edge from $t$ to the previous visit to its scanned cell, if one exists.
+Its in- and out-degrees are at most $k+1$ after parallel edges are merged.
+Raw input bits attach to their read steps; the read-only input tape does
+not contribute previous-visit edges.  A genie-free path may start at a
+revealed vertex but has no subsequent revealed vertex.  When proving
+survival below, we conservatively discard a path meeting the genie even
+at its first vertex.
+
+\begin{lemma}[A literal core with bounded congestion]\label{lem:ne-paths}
+\notformalized
+For either machine in \cref{prop:ne-native-shear}, every edge
+$A_iB_j$ of $H_m$ and every lane $s\in[W]$ has a literal backward DAG
+path from the append of $B_j[s]$ to a read of raw input $A_i[s]$.
+The chosen paths have maximum vertex congestion at most $C_0=2\Delta$,
+including endpoints.  For lanes $1\le s<W$, their lengths are bounded by
+a constant depending only on $J$.  No length bound is needed for lane zero.
+\end{lemma}
+
+\begin{informalproof}
+Let $t_{\mathrm{in}}$ be the load of $A_i[s]$, $t_{\mathrm{xor}}$ the update for the
+chosen edge, and $t_{\mathrm{out}}$ the append of $B_j[s]$.  List every visit
+to the physical $A_i[s]$ cell from $t_{\mathrm{in}}$ through $t_{\mathrm{xor}}$;
+then list every visit to the $B_j[s]$ cell from $t_{\mathrm{xor}}$ through
+$t_{\mathrm{out}}$.  Consecutive visits in each list are actual previous-visit
+edges when read backward, and the lists share the XOR vertex.  Their
+concatenation gives the claimed path to an actual raw read.  It includes
+unchanged writes and controller waits.
+
+For $s\ne0$, no bank head parks at this cell.  The $A$ cell has at most
+$2J+2$ relevant visits and the $B$ cell at most $2J+3$; a bound of
+$4J+8$ on path length is more than sufficient.  At lane zero, all parked
+visits are included and can make the path long.  At any time a scanned
+$A$ cell belongs to paths for at most $\Delta$ incident expander edges,
+and the same holds for the scanned $B$ cell.  Their union has size at
+most $2\Delta$.  The extra delayed $A$ scan in $M_1$ can add parked
+visits on the $B$ origin, but does not change this congestion estimate.
+\end{informalproof}
+
+Thus $E_\Gamma$ contains $W$ vertex-disjoint copies of $H_m$ with at most
+$C_0|\Gamma|$ missing core edges.  There are $2mW=L$ core ports, a subset
+of the $2L$ incidence ports.  The claim concerns containment in the full
+syntactic cone graph; unselected state and cell paths may supply further
+edges.
+
+\begin{proposition}[A robust separator estimate]\label{prop:ne-separator}
+\notformalized
+Let $U$ be any deleted coordinate set.  If a further port set $Z$ makes
+every component of $E_\Gamma-U-Z$ have size at most $K\le m$, then
+\[
+ |Z|\ \ge\ \frac{\eta L-2C_0|\Gamma|}{\Delta+\eta}-2|U|.
+\]
+This holds for every genie, without a depth hypothesis.
+\end{proposition}
+
+\begin{informalproof}
+Discard the at most $f=C_0|\Gamma|$ core edges whose paths meet $\Gamma$.
+At most $z\le2|U|+|Z|$ core ports have been deleted.  Intersect each
+remaining component with each lane core.  These intersections have size
+at most $m$, so expansion applies to each.  Summing their edge-boundary
+lower bounds counts at least $\eta(L-z)$ crossing edges with multiplicity.
+An edge joining two surviving intersections must be one of the $f$ lost
+core edges, and is counted at most twice.  Edges meeting the deleted core
+ports contribute at most $\Delta z$.  Hence
+\[
+ \eta(L-z)\le2f+\Delta z.
+\]
+Rearrange and use $z\le2|U|+|Z|$.  Additional cone edges can merge
+components, but cannot invalidate this lower bound.
+\end{informalproof}
+
+\subsection{The full syntactic cones retain a lane constraint}
+
+The preceding core alone says nothing about code rate.  For that purpose
+we must control every cone edge, including those introduced by parked
+heads and state transitions.  Fix either $M_0$ or $M_1$, let $k$ be its
+number of work tapes, and write
+\[
+ B_D=\sum_{h=0}^D(k+1)^h.
+\]
+
+\begin{lemma}[A sparse interface for full cones]\label{lem:ne-lane}
+\notformalized
+There are fixed constants $C_s,h_s$ and a set $X$ of actual time vertices,
+depending only on the length-specific schedule, such that
+\[
+ |X|\le S_d:=C_s\bigl[W+d(1+\log_2(L+2))^{h_s}\bigr].
+\]
+For every full-depth-$D$ genie, every output outside the $D$-step forward
+neighborhood of $X$, and every non-row-start raw input in its cone, the
+two physical within-row bit offsets have cyclic distance at most $D$
+in $\mathbb Z/W\mathbb Z$.
+\end{lemma}
+
+\begin{informalproof}
+The entire length count, shape calculation, metadata generation, and clock
+construction form the setup.  This can take $\Theta(L)$ transitions, so
+it cannot be discarded as a small set of times.  Its distinct work cells,
+however, number only $O(W+d\operatorname{polylog}L)$.  Mark the first
+post-setup state vertex and the first post-setup visit to every cell touched
+during setup.  Any backward state or cell edge entering setup begins at
+one of these marked vertices.
+
+Post-setup fast phases are a forward row load, skip, or XOR scan; a clock
+return; a simultaneous whole-bank rewind; and a final forward output
+scan.  Mark all other controller, parser, arithmetic, and metadata ticks.
+Their total is $O(d\operatorname{polylog}L)$.  Mark also the first and last
+ticks of each fast phase, moving bank visits to offset zero modulo $W$,
+and moving clock visits to its endpoints.  There are $O(d)$ such marks,
+with the fixed number of pages absorbed in the constant.  A stationary
+head at offset zero is not marked at every tick.
+
+Every unmarked post-setup vertex has a lane: the position of its moving
+clock modulo $W$, if the clock moves, and otherwise that of its moving
+bank.  Simultaneously moving banks have the same lane.  A state edge
+between unmarked vertices changes lane by at most one.  For a cell edge,
+a stationary head has its immediately preceding time as predecessor once
+the first fast tick has been excluded.  A moving bank head at a nonzero
+offset has no parked visits at that cell; its preceding post-setup moving
+visit has the same lane.  The same is true of a moving interior clock
+cell, in a forward row scan or return.  These cases cover all work tapes,
+including tapes whose fields the current operation ignores.  Consequently
+every edge between good vertices changes lane by at most one cyclically.
+
+The $D$-step forward neighborhood of $X$ contains at most $B_D|X|$ time
+vertices, since forward degree is at most $k+1$.  An output outside it
+has no marked vertex in a depth-$D$ free cone.  Its cone also cannot enter
+setup, by the first-touch marks.  During loading, a non-row-start raw bit
+is read only at a load vertex with that same lane.  During row-boundary
+pauses the raw head holds the next row-start bit or is outside the payload;
+after loading it is outside the payload.  Excluding the $d$ raw row starts
+therefore accounts for every remaining input attachment.  Summing lane
+changes along a free path proves the result.  The output itself is included
+in the forward-neighborhood exclusion, which covers the convention allowing
+a free path to start at a revealed vertex.
+\end{informalproof}
+
+The following elementary code argument will be useful for both examples.
+
+\begin{lemma}[An order of port colors]\label{lem:ne-color-injection}
+\notformalized
+Let a paired incidence graph on $N$ coordinates admit colors
+$\alpha(v)$ at $L_v$ and $\zeta(v)$ at $R_v$ such that every edge is
+monochromatic and $\alpha(v)\ne\zeta(v)$ for every $v$.  Every storage
+code over an alphabet of cardinality $a$ has size at most
+$a^{\lfloor N/2\rfloor}$.
+\end{lemma}
+
+\begin{informalproof}
+Order the finitely many used colors.  Record the coordinates $v$ for which
+$\alpha(v)$ precedes $\zeta(v)$.  Process left-color classes in increasing
+order.  If a coordinate was not recorded, then its right color precedes
+its left color.  Every coordinate in its recovery neighborhood has that
+earlier left color, by monochromaticity, and so has already been recovered.
+This proves that projection onto the recorded coordinates is injective on
+the code; no extension of an arbitrary partial assignment is needed.
+In a uniformly random color order each coordinate is recorded with
+probability $1/2$.  Some order records at most $\lfloor N/2\rfloor$
+coordinates, which proves the claim.
+\end{informalproof}
+
+\begin{theorem}[Half rate on every induced full-cone relation]
+\notformalized
+\label{thm:ne-full-cone-half}
+Fix $D\ge0$.  For either native machine in
+\cref{prop:ne-native-shear}, for every whole-step genie of full
+depth at most $D$, every $Q\subseteq V$, and every storage code
+$\mathcal C\subseteq\mathcal A^Q$ for the induced actual cone relation,
+where $a=|\mathcal A|\ge2$ and $N=|Q|$, there is $u\le\min(N,e_D(d))$
+such that
+\[
+ |\mathcal C|\le a^{\lfloor(N+u)/2\rfloor}.
+\]
+One permissible error bound, uniform in the genie, alphabet, and $Q$, is
+\[
+ \begin{split}
+ g&=\lceil\sqrt d\rceil,\qquad r=\lceil d/g\rceil,\\
+ e_D(d)&=B_DS_d+d+2d(2D+1)r+bdg=o_D(L).
+ \end{split}
+\]
+There is no bound on the cost of the genie in this theorem.
+\end{theorem}
+
+\begin{informalproof}
+Partition the column indices into $r$ consecutive buckets of at most $g$
+columns each, and view their bit lanes as consecutive arcs of
+$\mathbb Z/W\mathbb Z$.  Guard all lanes within cyclic distance $D$ of
+a bucket boundary.  There are at most $(2D+1)r$ guarded bit lanes.
+Delete from $V$ the following coordinate sets: demand labels of the bad
+physical outputs in \cref{lem:ne-lane}; the $d$ raw row starts; coordinates
+whose input or transpose-output lane is guarded; and coordinates $(i,j,s)$
+whose row and column belong to the same bucket.  The first set costs at
+most $B_DS_d$, the third at most $2d(2D+1)r$, and the fourth at most $bdg$.
+The total deletion is at most $e_D(d)$.
+
+On the surviving ports give $L_{(i,j,s)}$ the bucket of $j$, and give
+$R_{(i,j,s)}$ the bucket of $i$.  A surviving incidence edge has equal
+colors by \cref{lem:ne-lane}: a path of lane length at most $D$ cannot
+cross a bucket boundary while both endpoint lanes avoid its guard.
+The own-port colors differ by the fourth deletion.  The graph therefore
+satisfies \cref{lem:ne-color-injection}.
+
+Intersect the deleted set with $Q$, obtaining $u$ coordinates.  Condition
+their values in the original code.  Each nonempty fibre is a storage code
+on the induced surviving relation: the removed recovery inputs have fixed
+values in that fibre.  \cref{lem:ne-color-injection} bounds its size by
+$a^{\lfloor(N-u)/2\rfloor}$.  There are at most $a^u$ fibres, giving
+$a^{u+\lfloor(N-u)/2\rfloor}=a^{\lfloor(N+u)/2\rfloor}$.
+For fixed $D$, each displayed error divided by $L=d^2b$ tends to zero.
+All exclusions were chosen from the schedule and the full relation; the
+argument is simultaneous for all alphabets, recovery functions, and codes.
+\end{informalproof}
+
+\begin{corollary}[Nonhyperfinite bounded-degree cones with half rate]
+\notformalized
+\label{cor:ne-combined}
+For one fixed native home-based linear-time machine there are constants
+$\varepsilon,\alpha>0$ and fixed integers $D,M$ with the following
+property.  At every sufficiently large even canonical dimension the class
+of genies satisfying $\beta|\Gamma|\le\varepsilon L$ and full depth at
+most $D$ is nonempty.  For every such genie, one can delete coordinates
+to obtain an induced paired graph on $N=\Theta(L)$ coordinates, of maximum
+degree at most $M$, with no own-port edge, such that:
+\begin{enumerate}
+\item for every fixed $K$ and all sufficiently large $d$, every port set
+whose deletion leaves components of size at most $K$ has size at least
+$\alpha L/2$;
+\item every storage code on every further induced coordinate set has
+logarithmic cardinality at most half its coordinate count plus $o_D(L)$,
+uniformly over all finite alphabets.
+\end{enumerate}
+\end{corollary}
+
+\begin{informalproof}
+Choose $\gamma>0$ with $\gamma\le\eta/(8C_0)$, and then
+$0<\varepsilon\le\min(1,\beta\gamma)$.  Set
+$\alpha=\eta/[2(\Delta+\eta)]$.  \cref{prop:ne-separator}
+gives a separator lower bound at least $\alpha L$ before coordinate
+trimming for every genie of the stated price.  \cref{lem:ne-depth-import}
+supplies a fixed $D$ and makes the permitted genie class nonempty.
+
+Each right incidence degree is at most $B_D$, so there are at most
+$B_D L$ edges.  Choose a constant degree threshold $M_0\ge8B_D/\alpha$.
+Delete every coordinate whose left degree exceeds $M_0$; their number is
+at most $\alpha L/8$.  Also delete coordinates with an own-port edge.
+The one-stage transpose-matching estimate of \cref{cor:nb-self-demands}
+bounds these by $O(L/\log d)$, uniformly over the genies in question;
+eventually this is at most $\alpha L/8$.  This use of the matching estimate
+does not require transpose correctness or an initial left-degree bound.
+The remaining graph has maximum degree at most $M=\max(M_0,B_D)$ and
+$N=\Theta(L)$.  The separator loss is at most twice the number of deleted
+coordinates, giving $\alpha L/2$.  For any fixed $K$, eventually $K\le m$,
+so \cref{prop:ne-separator} applies.  The code conclusion is
+\cref{thm:ne-full-cone-half}, whose quantifiers already include every
+induced coordinate set.
+\end{informalproof}
+
+\begin{remark}\label{rem:ne-scope}
+The conclusion rules out a uniform small-component decomposition for this
+family at arbitrarily small deletion cost.  It does not exhibit a high-rate
+code.  In fact its simultaneous half-rate bound shows why a directed
+coding theorem can remain possible after a separator approach fails.
+Neither the lane lemma nor its coloring is claimed for arbitrary native
+schedules.  The next construction changes the paid physical layout and
+destroys almost-everywhere separation of paired ports by component colors.
+\end{remark}

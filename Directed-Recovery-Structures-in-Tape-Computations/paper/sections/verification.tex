@@ -1,0 +1,25 @@
+\section{Proof status and verification}\label{sec:verification}
+
+The initial version is a written-proof draft. Every numbered result carries an
+explicit status line. No new theorem in this initial version is claimed to be Lean
+verified. The earlier papers are cited at a pinned revision; their verification
+claims apply only to their own stated declarations. The geometric, analytic and
+native-example arguments here are written proofs, subject to further scrutiny.
+The general all-code paired-distance bound, unrestricted cheap depth reduction,
+and an all-input treatment of adaptive schedules remain open.
+
+The Lean library uses Lean and Mathlib v4.34.1 and requires the shared
+\texttt{lean-machine} package and the fourth paper's library from the same repository. No new axioms,
+\texttt{sorry}, \texttt{admit}, or kernel-bypassing decision procedures are permitted.
+The only permitted axioms are \texttt{propext}, \texttt{Classical.choice}, and
+\texttt{Quot.sound}. The declaration index and \texttt{PaperAxioms.lean} are generated
+from the same inline formal-status annotations by \texttt{tools/lean\_index.py}.
+
+From the paper directory, run \texttt{python3 tools/lean\_index.py} to regenerate
+these files. In \texttt{lean/}, run \texttt{lake exe cache get}, \texttt{lake build},
+and \texttt{lake env lean PaperAxioms.lean}. The entire repository must be present
+with its sibling directories. In \texttt{paper/}, run
+\texttt{latexmk -pdf main.tex} to compile the manuscript.
+
+Formal verification, where recorded, establishes the precise Lean statements;
+it does not certify external novelty or remove hypotheses from their applications.

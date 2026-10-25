@@ -1,3 +1,4 @@
+import DirectedRecovery.IndependentRectangle
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.StorageCode
 
@@ -5,6 +6,9 @@ import DirectedRecovery.StorageCode
 declaration cited in the paper. Each should report at most `propext`, `Classical.choice`
 and `Quot.sound`. -/
 
+-- IndependentRectangle.lean
+#print axioms DirectedRecovery.IndependentRectangle.independent_rectangle
+#print axioms DirectedRecovery.IndependentRectangle.independent_rectangle_consecutive
 -- RankCertificate.lean
 #print axioms DirectedRecovery.rank_identity
 -- StorageCode.lean

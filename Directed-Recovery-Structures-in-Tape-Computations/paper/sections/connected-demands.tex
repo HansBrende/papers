@@ -540,14 +540,14 @@ identification of the demand.
 \subsection{An independent rectangle and the all-code gap}
 
 \begin{lemma}[A finite independent rectangle]\label{lem:cd-rectangle}
-\notformalized
+\formal{IndependentRectangle.lean}{IndependentRectangle.independent_rectangle,IndependentRectangle.independent_rectangle_consecutive}
 Let any directed recovery relation on $V=[d]^2\times[b]$ have the
 following endpoint interface.  There are raw-row exceptions $S$, physical
 output-row exceptions $T$, and coordinate exceptions $Z$.  Partition
 $[d]$ into $B$ contiguous near-equal buckets and suppose every incidence
 $L_pR_q$ with $p,q\notin Z$, $\operatorname{rawrow}(p)\notin S$, and
 $\operatorname{outrow}(q)\notin T$ belongs to one of at most
-$K(2B-1)$ raw-row/output-row bucket pairs.  Let $B=4K$ and $d\ge B$.
+$K(2B-1)$ raw-row/output-row bucket pairs.  Let $K\ge1$, $B=4K$, and $d\ge B$.
 Then the relation has an independent coordinate set $I$ with
 \[
  |I|\ge L_0:=\max\left\{0,
@@ -558,7 +558,7 @@ Independence means that no recovery neighborhood of a coordinate of $I$
 contains a coordinate of $I$, including itself.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 In the bipartite graph of occupied bucket pairs, some output bucket has
 degree at most
 \[
@@ -580,7 +580,7 @@ interface would put $\operatorname{rawrow}(p)\in R$ and
 $\operatorname{outrow}(q)\in C$ in an occupied pair, contrary to the
 choice of $R$.  Thus $I$ is independent in the original relation; no
 individual incidence edge has been removed.
-\end{informalproof}
+\end{outline}
 
 \begin{lemma}[Independent coordinates bound every induced code]
 \formal{StorageCode.lean}{induced_storageCode_card_le_of_independent,induced_storageCode_entropy_of_independent}

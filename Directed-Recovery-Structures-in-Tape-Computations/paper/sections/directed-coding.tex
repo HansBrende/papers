@@ -34,7 +34,7 @@ assignments that occur in the code.  The code need not be linear, and
 no distribution or extension property is assumed.
 
 \begin{lemma}[Separated components]
-\notformalized
+\formal{IncidenceComponents.lean}{storageCode_card_le_of_separated_components}
 \label{lem:dc-components}
 If $L_p$ and $R_p$ lie in different components of $E$ for every $p\in V$,
 then every storage code satisfies
@@ -42,7 +42,7 @@ then every storage code satisfies
   |\mathcal C|\le |\mathcal A|^{\lfloor N/2\rfloor}.
 \]
 \end{lemma}
-\begin{informalproof}
+\begin{outline}
 Let $\alpha(p)$ and $\beta(p)$ be the components containing $L_p$ and $R_p$.
 Choose an order of the components, and record the coordinates $p$ for which
 $\alpha(p)$ precedes $\beta(p)$.  This record determines a codeword.
@@ -51,13 +51,13 @@ in the current component was either recorded, or its $\beta$-component is
 earlier.  In the latter case every recovery neighbour $u\in\mathcal N(p)$
 satisfies $\alpha(u)=\beta(p)$, so its value is already determined.
 The equality case $\alpha(p)=\beta(p)$ is excluded by hypothesis.
-For a uniformly random component order each coordinate is recorded with
-probability $1/2$.  Some order therefore records at most $\lfloor N/2\rfloor$
-coordinates, and the resulting projection is injective on $\mathcal C$.
-\end{informalproof}
+Compare this order with its reverse. Every coordinate is recorded in exactly
+one of the two orders, so one record has at most $\lfloor N/2\rfloor$
+coordinates. Its projection is injective on $\mathcal C$.
+\end{outline}
 
 \begin{theorem}[Finite separator bound]
-\notformalized
+\formal{IncidenceSeparator.lean}{storageCode_separator_log_bound}
 \label{thm:dc-separator}
 Let $Z$ be a set of incidence ports such that each component of $E-Z$
 has at most $K$ vertices, where $K\ge1$.  Every nonempty storage code satisfies
@@ -68,7 +68,7 @@ has at most $K$ vertices, where $K\ge1$.  Every nonempty storage code satisfies
 \end{equation}
 No degree bound is required.
 \end{theorem}
-\begin{informalproof}
+\begin{outline}
 Let $U$ contain the coordinates with at least one port in $Z$, and also
 the coordinates counted by $b_E(K)$.  Thus $|U|\le |Z|+b_E(K)$.
 Delete both ports of every coordinate in $U$, obtaining the induced
@@ -84,7 +84,7 @@ $|\mathcal A|^{|U|}$ fibres, giving
 $|\mathcal C|\le |\mathcal A|^{|U|+|Q|/2}$ and the claimed inequality.
 This conditions on coordinate values; it does not discard side-information
 edges without paying for their coordinates.
-\end{informalproof}
+\end{outline}
 
 \begin{definition}
 \label{def:dc-hyperfinite-definition}

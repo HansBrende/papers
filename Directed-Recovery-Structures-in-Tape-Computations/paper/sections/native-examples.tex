@@ -342,7 +342,7 @@ a free path to start at a revealed vertex.
 The following elementary code argument will be useful for both examples.
 
 \begin{lemma}[An order of port colors]\label{lem:ne-color-injection}
-\notformalized
+\formal{ColorOrder.lean}{color_order_half_bound}
 Let a paired incidence graph on $N$ coordinates admit colors
 $\alpha(v)$ at $L_v$ and $\zeta(v)$ at $R_v$ such that every edge is
 monochromatic and $\alpha(v)\ne\zeta(v)$ for every $v$.  Every storage
@@ -350,7 +350,7 @@ code over an alphabet of cardinality $a$ has size at most
 $a^{\lfloor N/2\rfloor}$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Order the finitely many used colors.  Record the coordinates $v$ for which
 $\alpha(v)$ precedes $\zeta(v)$.  Process left-color classes in increasing
 order.  If a coordinate was not recorded, then its right color precedes
@@ -358,10 +358,10 @@ its left color.  Every coordinate in its recovery neighborhood has that
 earlier left color, by monochromaticity, and so has already been recovered.
 This proves that projection onto the recorded coordinates is injective on
 the code; no extension of an arbitrary partial assignment is needed.
-In a uniformly random color order each coordinate is recorded with
-probability $1/2$.  Some order records at most $\lfloor N/2\rfloor$
+Compare the color order with its reverse. Each coordinate is recorded in
+exactly one of them, so one record has at most $\lfloor N/2\rfloor$
 coordinates, which proves the claim.
-\end{informalproof}
+\end{outline}
 
 \begin{theorem}[Half rate on every induced full-cone relation]
 \notformalized

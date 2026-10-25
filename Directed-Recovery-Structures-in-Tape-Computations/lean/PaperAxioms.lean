@@ -1,3 +1,6 @@
+import DirectedRecovery.ColorOrder
+import DirectedRecovery.IncidenceComponents
+import DirectedRecovery.IncidenceSeparator
 import DirectedRecovery.IndependentRectangle
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.StorageCode
@@ -6,6 +9,12 @@ import DirectedRecovery.StorageCode
 declaration cited in the paper. Each should report at most `propext`, `Classical.choice`
 and `Quot.sound`. -/
 
+-- ColorOrder.lean
+#print axioms DirectedRecovery.color_order_half_bound
+-- IncidenceComponents.lean
+#print axioms DirectedRecovery.storageCode_card_le_of_separated_components
+-- IncidenceSeparator.lean
+#print axioms DirectedRecovery.storageCode_separator_log_bound
 -- IndependentRectangle.lean
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle_consecutive

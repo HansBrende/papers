@@ -23,7 +23,10 @@ are also formalized, including arbitrary real exponents and the entropy statemen
 for every law. They reuse the fourth paper's storage-code predicate and earlier
 entropy library unchanged. The finite independent-rectangle lemma is also formalized, including both row
 exception sets, coordinate deletions, and the near-equal consecutive bucket case.
-Other results below currently remain written proofs.
+The port-color and separated-component half bounds and the full finite separator
+theorem are formalized as well, including the ambient extended-natural distance
+convention for disconnected ports. Other results below currently remain written
+proofs.
 
 The written proofs establish an actual-cone incidence-distance theorem; a half-rate
 bound for complex linear codes with fixed block width and bounded coefficients;

@@ -24,3 +24,8 @@ import LeanMachine
 -- RankCertificate.lean
 #print axioms LeanMachine.RankCertificate.rank_identity
 #print axioms LeanMachine.RankCertificate.rank_identity_int
+
+-- ColorOrder.lean
+#print axioms LeanMachine.ColorOrder.eq_of_agree_on_record
+#print axioms LeanMachine.ColorOrder.card_le_pow_record
+#print axioms LeanMachine.ColorOrder.card_le_pow_half

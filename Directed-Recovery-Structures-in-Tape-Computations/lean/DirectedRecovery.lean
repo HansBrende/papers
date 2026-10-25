@@ -1,3 +1,6 @@
+import DirectedRecovery.ColorOrder
+import DirectedRecovery.IncidenceComponents
+import DirectedRecovery.IncidenceSeparator
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.StorageCode
 import DirectedRecovery.IndependentRectangle

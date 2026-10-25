@@ -1,4 +1,4 @@
-# Covers and Local Generation in Linear Storage Codes (Draft)
+# Covers and Local Generation in Linear Storage Codes
 
 Hans Brende and GPT-6 Astra (OpenAI), October 2026.
 
@@ -129,6 +129,5 @@ From `paper/`, build the manuscript:
 latexmk -pdf main.tex
 ```
 
-The local `.lake/` cache is ignored. This manuscript remains a draft with
-explicit proof-status labels; the formalized algebra does not certify the
-remaining graph and asymptotic arguments.
+The local `.lake/` cache is ignored. The proof-status labels distinguish the
+verified algebra from the remaining graph and asymptotic proofs.

@@ -19,6 +19,8 @@ The following results are formalized in Lean:
   and entropy bounds, using the earlier papers' storage-code and entropy libraries.
 - The finite independent-rectangle lemma, including coordinate and row deletions
   and consecutive buckets.
+- Full threshold pullback through signed partial monotone row words, including
+  exact exceptional-row and occupied-bucket bounds.
 - Port-color and separated-component half bounds, the finite separator theorem,
   and the hyperfinite half-rate corollary with varying alphabets.
 - The surviving-pair bound for damaged expanders, including arbitrary edge and

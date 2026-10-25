@@ -5,3 +5,6 @@ import LeanMachine.ColorOrder
 import LeanMachine.IncidenceTrimming
 import LeanMachine.MatrixRankCertificate
 import LeanMachine.LinearRecovery
+import LeanMachine.BucketChains
+import LeanMachine.ThresholdCuts
+import LeanMachine.ThresholdPullback

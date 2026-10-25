@@ -63,3 +63,25 @@ import LeanMachine
 #print axioms LeanMachine.LinearRecovery.isBlockRecoverable_of_decoder
 #print axioms LeanMachine.LinearRecovery.IsBlockRecoverable.exists_recovery_matrix
 #print axioms LeanMachine.LinearRecovery.IsBlockRecoverable.finrank_bound_of_matrix_labels
+
+-- BucketChains.lean
+#print axioms LeanMachine.BucketChains.card_le_of_comparable
+#print axioms LeanMachine.BucketChains.card_le_of_oppositely_comparable
+#print axioms LeanMachine.BucketChains.card_image_mono
+#print axioms LeanMachine.BucketChains.card_image_antitone
+
+-- ThresholdCuts.lean and ThresholdPullback.lean
+#print axioms LeanMachine.ThresholdPullback.Cut.monotone_holds
+#print axioms LeanMachine.ThresholdPullback.Cut.antitone_holds
+#print axioms LeanMachine.ThresholdPullback.exists_upper_cut
+#print axioms LeanMachine.ThresholdPullback.exists_lower_cut
+#print axioms LeanMachine.ThresholdPullback.PartialMap.injective
+#print axioms LeanMachine.ThresholdPullback.exists_pullback_cut
+#print axioms LeanMachine.ThresholdPullback.band_single_card
+#print axioms LeanMachine.ThresholdPullback.bandPreimage_card
+#print axioms LeanMachine.ThresholdPullback.bandAmbiguity_card
+#print axioms LeanMachine.ThresholdPullback.band_threshold_iff
+#print axioms LeanMachine.ThresholdPullback.band_cut_iff
+#print axioms LeanMachine.ThresholdPullback.mem_mapPreimage
+#print axioms LeanMachine.ThresholdPullback.mapPreimage_card
+#print axioms LeanMachine.ThresholdPullback.word_threshold_pullback

@@ -466,7 +466,7 @@ to pull back thresholds, which does remain valid in the presence of
 arbitrary domain gaps.
 
 \begin{lemma}[Finite threshold pullback]\label{lem:cd-threshold}
-\notformalized
+\formal{ThresholdBuckets.lean}{ThresholdPullback.finite_threshold_pullback}
 Let $K$ row words connect the starting and ending intervals $[d]$, each
 using at most $\ell_{\max}$ strictly monotone partial injections and bands of integer
 radius $r\ge0$.  Maps may be increasing or decreasing.  Partition each endpoint
@@ -482,53 +482,34 @@ particular the union of all retained word relations occupies at most
 $K(2B-1)$ starting/ending bucket pairs.
 \end{lemma}
 
-\begin{informalproof}
-Use threshold predicates $1[x\ge\theta]$ and their complements, allowing
-infinite cuts for constants.  Pulling a threshold through a strictly
-increasing partial injection yields a threshold of the same polarity on
-its domain; a decreasing injection reverses polarity.  Extend across
-domain gaps by a half-line cut between the two parts of the domain.
-Such an extension exists because the map is strictly monotone.  Exactness
-is required only on its domain, not at unused intermediate values.
+\begin{outline}
+A threshold or its complement pulls back through a strictly monotone
+partial injection to a cut on its domain, with polarity multiplied by
+the sign of the map. Extend that cut across domain gaps. Empty domains
+and constant predicates are included.
 
-For a band, a threshold at finite cut $\theta$ is unchanged for every
-permitted pair $(x,y)$ except possibly when
+At a radius-$r$ band, a cut can change only on at most $2r$ starting
+rows. Each exceptional row at the next layer has at most $2r+1$
+predecessors through a band and at most one through a partial injection.
+Backward induction through a word with $\ell$ maps therefore gives
 \[
- x\in[\theta-r,\theta+r-1],
+ E_0=2r,\qquad E_{j+1}=(2r+1)E_j+2r,\qquad
+ E_\ell=(2r+1)^{\ell+1}-1.
 \]
-an interval of at most $2r$ integers.  The same holds for the complement;
-a constant threshold has no exceptional values.  Moreover a fixed point
-at an intermediate layer has at most $(2r+1)^j$ possible starting
-ancestors through a prefix containing $j$ bands: backward traversal of
-a partial injection has at most one preimage, and backward traversal of
-a band at most $2r+1$.
+Outside the charged set the pulled-back comparison is exact for every
+attained endpoint, simultaneously. The formal relation permits arbitrary
+subrelations of the full-band word, so omitted paths cannot invalidate
+this conclusion.
 
-Fix a word with $\ell\le\ell_{\max}$ maps and one ending-bucket boundary.  Pull
-its upper-threshold predicate backward through the word.  At each band
-record its ambiguous input values and all their actual starting ancestors.
-For the band numbered $j$ from zero, the prefix has $j$ earlier bands,
-so this adds at most $2r(2r+1)^j$ starting rows.  Their union has size at
-most
-\[
- 2r\sum_{j=0}^{\ell}(2r+1)^j=(2r+1)^{\ell+1}-1.
-\]
-For $r=0$ both sides are zero.  Every full path from an uncharged starting
-row avoids every ambiguous input, so its endpoint comparison with the
-fixed boundary equals the pulled-back threshold at the starting row.
-This assertion holds simultaneously for all attained paths, not merely
-for a selected representative endpoint.
-
-Take the union over $K$ words and $B-1$ ending boundaries.  Outside this
-set $T$, the boundary comparisons determine one ending bucket for every
-attained starting row.  Each comparison has the polarity of the word,
-so this bucket index is monotone with that sign.  List the attained
-starting rows increasingly and reverse ending-bucket order for a negative
-word.  Both bucket indices are now nondecreasing.  Between successive
-distinct occupied bucket pairs at least one index increases; their total
-increase is at most $2(B-1)$.  Thus one word occupies at most $2B-1$
-bucket pairs and all words at most $K(2B-1)$.  Missing paths, domain
-holes, and empty map domains can only reduce these counts.
-\end{informalproof}
+Take the union over $K$ words and the $B-1$ ending-bucket boundaries.
+The boundary comparisons force one ending bucket for every retained
+starting row that attains an endpoint, and that bucket is monotone with
+the product sign. For a negative word reverse the ending-bucket order.
+Each retained occupied pair then lies in a coordinatewise chain in
+$[B]\times[B]$. The sum of its two indices increases strictly between
+distinct comparable pairs and ranges over $2B-1$ values. Thus one word
+occupies at most $2B-1$ pairs, and their union at most $K(2B-1)$.
+\end{outline}
 
 In \cref{lem:cd-row-words} the starting row is the physical output row.
 Consequently $T$ in \cref{lem:cd-threshold} is a set of output rows.

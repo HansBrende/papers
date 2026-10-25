@@ -88,6 +88,7 @@ edges without paying for their coordinates.
 
 \begin{definition}
 \label{def:dc-hyperfinite-definition}
+\formal{Hyperfinite.lean}{UniformlyHyperfinite}
 A sequence $(E_n)$ is \emph{uniformly hyperfinite} if, for each $\eta>0$,
 there is an integer $K_\eta$ such that, for every sufficiently large $n$,
 one can delete at most $2\eta N_n$ incidence ports and leave components
@@ -95,7 +96,7 @@ of size at most $K_\eta$.
 \end{definition}
 
 \begin{corollary}[Hyperfinite half-rate bound]
-\notformalized
+\formal{Hyperfinite.lean}{hyperfinite_rate_limsup_le_half}
 \label{cor:dc-hyperfinite}
 Suppose $(E_n)$ is uniformly hyperfinite and has paired-distance separation.
 For any finite alphabets $\mathcal A_n$ of size at least two, and any
@@ -105,12 +106,12 @@ nonempty storage codes $\mathcal C_n$ on these relations,
  \frac{\log_{|\mathcal A_n|}|\mathcal C_n|}{N_n}\le\frac12.
 \]
 \end{corollary}
-\begin{informalproof}
+\begin{outline}
 For fixed $\eta$, \cref{thm:dc-separator} gives a limiting upper bound
 $1/2+\eta$, because $K_\eta$ is fixed before $n$ tends to infinity.
 Then let $\eta$ decrease to zero.  The finite estimate is uniform in
 the alphabet, so it also permits the displayed varying alphabets.
-\end{informalproof}
+\end{outline}
 
 \subsection{Bounded complex linear recovery}
 

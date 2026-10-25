@@ -1,6 +1,8 @@
 import DirectedRecovery.ColorOrder
+import DirectedRecovery.Hyperfinite
 import DirectedRecovery.IncidenceComponents
 import DirectedRecovery.IncidenceSeparator
+import DirectedRecovery.IncidenceTrimming
 import DirectedRecovery.IndependentRectangle
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.StorageCode
@@ -11,10 +13,15 @@ and `Quot.sound`. -/
 
 -- ColorOrder.lean
 #print axioms DirectedRecovery.color_order_half_bound
+-- Hyperfinite.lean
+#print axioms DirectedRecovery.UniformlyHyperfinite
+#print axioms DirectedRecovery.hyperfinite_rate_limsup_le_half
 -- IncidenceComponents.lean
 #print axioms DirectedRecovery.storageCode_card_le_of_separated_components
 -- IncidenceSeparator.lean
 #print axioms DirectedRecovery.storageCode_separator_log_bound
+-- IncidenceTrimming.lean
+#print axioms DirectedRecovery.paid_degree_trimming
 -- IndependentRectangle.lean
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle_consecutive

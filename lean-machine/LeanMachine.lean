@@ -2,3 +2,4 @@ import LeanMachine.TutteBerge.Berge
 import LeanMachine.TutteBerge.MatchingNumber
 import LeanMachine.RankCertificate
 import LeanMachine.ColorOrder
+import LeanMachine.IncidenceTrimming

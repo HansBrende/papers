@@ -1,3 +1,5 @@
+import DirectedRecovery.Hyperfinite
+import DirectedRecovery.IncidenceTrimming
 import DirectedRecovery.ColorOrder
 import DirectedRecovery.IncidenceComponents
 import DirectedRecovery.IncidenceSeparator

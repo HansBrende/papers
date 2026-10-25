@@ -25,8 +25,11 @@ entropy library unchanged. The finite independent-rectangle lemma is also formal
 exception sets, coordinate deletions, and the near-equal consecutive bucket case.
 The port-color and separated-component half bounds and the full finite separator
 theorem are formalized as well, including the ambient extended-natural distance
-convention for disconnected ports. Other results below currently remain written
-proofs.
+convention for disconnected ports. The hyperfinite half-rate corollary is formalized with varying alphabets and its
+exact order of asymptotic quantifiers. The finite counting and retained-degree
+part of paid trimming is formalized; the native cone-size premise and asymptotic
+paired-distance application remain written proofs. Other results below currently
+remain written proofs.
 
 The written proofs establish an actual-cone incidence-distance theorem; a half-rate
 bound for complex linear codes with fixed block width and bounded coefficients;

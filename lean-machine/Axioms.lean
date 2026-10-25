@@ -29,3 +29,14 @@ import LeanMachine
 #print axioms LeanMachine.ColorOrder.eq_of_agree_on_record
 #print axioms LeanMachine.ColorOrder.card_le_pow_record
 #print axioms LeanMachine.ColorOrder.card_le_pow_half
+
+-- IncidenceTrimming.lean
+#print axioms LeanMachine.IncidenceTrimming.sum_leftDegree_eq_sum_rightDegree
+#print axioms LeanMachine.IncidenceTrimming.sum_leftDegree_le
+#print axioms LeanMachine.IncidenceTrimming.heavy_card_mul_succ_le
+#print axioms LeanMachine.IncidenceTrimming.heavy_card_le
+#print axioms LeanMachine.IncidenceTrimming.retained_card_add_heavy_card
+#print axioms LeanMachine.IncidenceTrimming.leftDegreeOn_le
+#print axioms LeanMachine.IncidenceTrimming.rightDegreeOn_le
+#print axioms LeanMachine.IncidenceTrimming.retained_leftDegree_le
+#print axioms LeanMachine.IncidenceTrimming.degree_trimming

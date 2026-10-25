@@ -21,6 +21,8 @@ The following results are formalized in Lean:
   and consecutive buckets.
 - Port-color and separated-component half bounds, the finite separator theorem,
   and the hyperfinite half-rate corollary with varying alphabets.
+- The surviving-pair bound for damaged expanders, including arbitrary edge and
+  vertex deletions across multiple copies.
 - The arbitrary-field rank identity and full matrix-label certificate, including
   labels over field extensions and independent code and witness block widths.
 

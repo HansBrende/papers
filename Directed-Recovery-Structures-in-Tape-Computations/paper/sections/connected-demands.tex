@@ -26,11 +26,11 @@ $B_D=\sum_{h=0}^{D}(k+1)^h$ with these enlarged resources.
 \subsection{A robust count of connected pairs}
 
 \begin{lemma}[Prescribed pairs in damaged expanders]
-\notformalized
+\formal{DamagedExpanders.lean}{DamagedExpanders.damaged_expander_copies}
 \label{lem:cd-connected-pairs}
 Let $H_1,\ldots,H_W$ be disjoint graphs on $2m$ vertices, each of maximum
 degree at most $\Delta$ and with outside vertex expansion at least
-$\eta|S|$ for every $|S|\le m$.  Prescribe $n_*$ pairs of distinct
+$\eta|S|$ for every $|S|\le m$, where $\eta>0$.  Prescribe $n_*$ pairs of distinct
 vertices, with all $2n_*$ endpoints distinct and each pair contained in
 one graph.  After deletion of $f$ edges and $z$ vertices, at least
 \[
@@ -41,7 +41,7 @@ component.  The bound holds for every finite $m\ge1$ and arbitrary
 distributions of the deletions among the graphs.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Vertex expansion implies an edge-boundary bound $|\partial_E S|\ge\eta|S|$.
 Consider one graph, and write $f_0,z_0$ for its deletion counts.  If the
 surviving graph has a component $G$ of more than $m$ vertices, let $S$ be
@@ -68,7 +68,7 @@ vertex contribute at most $\Delta z_0$.  Hence
 There were at most $m$ prescribed pairs in this graph.  Declaring all of
 them lost therefore satisfies the same asserted bound.  This includes an
 empty surviving graph.  Summing over the copies proves the lemma.
-\end{informalproof}
+\end{outline}
 
 \subsection{A physical rotation wrapper}
 

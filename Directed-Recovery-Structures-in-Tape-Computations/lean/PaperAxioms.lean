@@ -1,4 +1,5 @@
 import DirectedRecovery.ColorOrder
+import DirectedRecovery.DamagedExpanders
 import DirectedRecovery.Hyperfinite
 import DirectedRecovery.IncidenceComponents
 import DirectedRecovery.IncidenceSeparator
@@ -14,6 +15,8 @@ and `Quot.sound`. -/
 
 -- ColorOrder.lean
 #print axioms DirectedRecovery.color_order_half_bound
+-- DamagedExpanders.lean
+#print axioms DirectedRecovery.DamagedExpanders.damaged_expander_copies
 -- Hyperfinite.lean
 #print axioms DirectedRecovery.UniformlyHyperfinite
 #print axioms DirectedRecovery.hyperfinite_rate_limsup_le_half

@@ -1,3 +1,4 @@
+import DirectedRecovery.RowWordDeficit
 import DirectedRecovery.ThresholdBuckets
 import DirectedRecovery.LinearRecovery
 import DirectedRecovery.DamagedExpanders

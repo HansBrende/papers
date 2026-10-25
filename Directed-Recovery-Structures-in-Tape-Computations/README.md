@@ -33,7 +33,9 @@ native cone-size premise and asymptotic paired-distance application remain writt
 proofs. Linearization of nonlinear recovery on arbitrary directed block codes and
 the resulting dimension bound from actual matrix-label witnesses are also
 formalized; constructing the specific expanding family and its witnesses remains
-unformalized. Every cited declaration uses only `propext`, `Classical.choice`, and
+unformalized. The exact finite and asymptotic depth-independent code deficit is
+formalized from an actual row-word cover, with the native extraction and its
+uniform sublinear exception estimate as the remaining gap. Every cited declaration uses only `propext`, `Classical.choice`, and
 `Quot.sound`. Formal status is recorded beside each numbered result; the index and
 axiom checks are generated from those annotations. General algebraic and counting
 lemmas are shared through `lean-machine`.

@@ -33,6 +33,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/LinearRecovery.lean`](LeanMachine/LinearRecovery.lean) | Linearization of arbitrary deterministic recovery on directed block codes and dimension bounds from matrix labels | this repository |
 | [`LeanMachine/BucketChains.lean`](LeanMachine/BucketChains.lean) | Finite coordinatewise chain bounds and monotone bucket images | this repository |
 | [`LeanMachine/ThresholdCuts.lean`](LeanMachine/ThresholdCuts.lean), [`ThresholdPullback.lean`](LeanMachine/ThresholdPullback.lean) | Signed cuts through partial monotone injections and exact exceptional-row bounds for band words | this repository |
+| [`LeanMachine/CanonicalBuckets.lean`](LeanMachine/CanonicalBuckets.lean) | Concrete monotone interval partitions with a guaranteed minimum bucket size | this repository |
 
 ## External code
 

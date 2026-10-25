@@ -85,3 +85,7 @@ import LeanMachine
 #print axioms LeanMachine.ThresholdPullback.mem_mapPreimage
 #print axioms LeanMachine.ThresholdPullback.mapPreimage_card
 #print axioms LeanMachine.ThresholdPullback.word_threshold_pullback
+
+-- CanonicalBuckets.lean
+#print axioms LeanMachine.CanonicalBuckets.bucket_monotone
+#print axioms LeanMachine.CanonicalBuckets.bucket_fibre_card

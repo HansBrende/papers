@@ -8,6 +8,7 @@ import DirectedRecovery.IndependentRectangle
 import DirectedRecovery.LinearRecovery
 import DirectedRecovery.MatrixCertificate
 import DirectedRecovery.RankCertificate
+import DirectedRecovery.RowWordDeficit
 import DirectedRecovery.StorageCode
 import DirectedRecovery.ThresholdBuckets
 
@@ -39,6 +40,10 @@ and `Quot.sound`. -/
 #print axioms DirectedRecovery.matrix_label_certificate_extension
 -- RankCertificate.lean
 #print axioms DirectedRecovery.rank_identity
+-- RowWordDeficit.lean
+#print axioms DirectedRecovery.row_word_cover_asymptotic_code_gap
+#print axioms DirectedRecovery.row_word_cover_code_log_bound
+#print axioms DirectedRecovery.row_word_cover_independent
 -- StorageCode.lean
 #print axioms DirectedRecovery.indexCode_length_ge
 #print axioms DirectedRecovery.induced_storageCode_card_le_of_independent

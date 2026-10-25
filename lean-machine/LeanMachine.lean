@@ -8,3 +8,4 @@ import LeanMachine.LinearRecovery
 import LeanMachine.BucketChains
 import LeanMachine.ThresholdCuts
 import LeanMachine.ThresholdPullback
+import LeanMachine.CanonicalBuckets

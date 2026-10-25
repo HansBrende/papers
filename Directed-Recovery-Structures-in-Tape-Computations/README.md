@@ -13,31 +13,30 @@ fixed-depth dependency cones and the coding bounds needed by this approach.
 
 ## What is proved
 
-The appendix rank identity is formalized for arbitrary finite-dimensional vector
-spaces over any field, with ordinary integer subtraction and no invertibility or
-commutativity hypothesis. It reuses Mathlib rank and range inequalities through
-`lean-machine`. Its axiom audit reports only `propext`, `Classical.choice`, and
-`Quot.sound`. Formal status is recorded beside every numbered result; the index
-and axiom checks are generated from those annotations. The paid-conditioning, index-code fibre, and independent-coordinate code lemmas
-are also formalized, including arbitrary real exponents and the entropy statement
-for every law. They reuse the fourth paper's storage-code predicate and earlier
-entropy library unchanged. The finite independent-rectangle lemma is also formalized, including both row
-exception sets, coordinate deletions, and the near-equal consecutive bucket case.
-The port-color and separated-component half bounds and the full finite separator
-theorem are formalized as well, including the ambient extended-natural distance
-convention for disconnected ports. The hyperfinite half-rate corollary is formalized with varying alphabets and its
-exact order of asymptotic quantifiers. The finite counting and retained-degree
-part of paid trimming is formalized; the native cone-size premise and asymptotic
-paired-distance application remain written proofs. Other results below currently
-remain written proofs.
+The following results are formalized in Lean:
 
-The written proofs establish an actual-cone incidence-distance theorem; a half-rate
-bound for complex linear codes with fixed block width and bounded coefficients;
-an all-code half bound under hyperfiniteness; and native examples with expansion
-and connected demands whose full cone relations still have nonlinear coding gaps.
-The appendix gives field-independent matrix certificates and a characteristic-two
-expanding-family application. These statements retain all hypotheses printed in
-the paper; the examples are not transposition algorithms.
+- Paid conditioning, index-code fibres, and independent-coordinate cardinality
+  and entropy bounds, using the earlier papers' storage-code and entropy libraries.
+- The finite independent-rectangle lemma, including coordinate and row deletions
+  and consecutive buckets.
+- Port-color and separated-component half bounds, the finite separator theorem,
+  and the hyperfinite half-rate corollary with varying alphabets.
+- The arbitrary-field rank identity and full matrix-label certificate, including
+  labels over field extensions and independent code and witness block widths.
+
+The finite counting and retained-degree part of paid trimming is formalized; its
+native cone-size premise and asymptotic paired-distance application remain written
+proofs. Every cited declaration uses only `propext`, `Classical.choice`, and
+`Quot.sound`. Formal status is recorded beside each numbered result; the index and
+axiom checks are generated from those annotations. General algebraic and counting
+lemmas are shared through `lean-machine`.
+
+The remaining written proofs establish the actual-cone incidence-distance theorem;
+a complex linear half-rate bound with fixed block width and bounded coefficients;
+and native examples with expansion and connected demands whose full cone relations
+still have nonlinear coding gaps. The appendix applies the matrix certificate to
+a characteristic-two expanding family. These statements retain all hypotheses
+printed in the paper; the examples are not transposition algorithms.
 
 ## What is open
 

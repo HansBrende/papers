@@ -29,6 +29,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/RankCertificate.lean`](LeanMachine/RankCertificate.lean) | Arbitrary-field finite-dimensional rank identity from an intertwining defect | this repository |
 | [`LeanMachine/ColorOrder.lean`](LeanMachine/ColorOrder.lean) | Ordered recovery and a nonlinear half-size record from port colors | this repository |
 | [`LeanMachine/IncidenceTrimming.lean`](LeanMachine/IncidenceTrimming.lean) | Double counting and paid degree reduction for finite directed incidence | this repository |
+| [`LeanMachine/MatrixRankCertificate.lean`](LeanMachine/MatrixRankCertificate.lean) | Tensor-product and block-rank inequalities, matrix-label certificates, and invariance under scalar extension | this repository |
 
 ## External code
 

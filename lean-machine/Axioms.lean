@@ -40,3 +40,18 @@ import LeanMachine
 #print axioms LeanMachine.IncidenceTrimming.rightDegreeOn_le
 #print axioms LeanMachine.IncidenceTrimming.retained_leftDegree_le
 #print axioms LeanMachine.IncidenceTrimming.degree_trimming
+
+-- MatrixRankCertificate.lean
+#print axioms LeanMachine.MatrixRankCertificate.finrank_range_tensorProduct_map
+#print axioms LeanMachine.MatrixRankCertificate.rank_kronecker
+#print axioms LeanMachine.MatrixRankCertificate.finrank_range_piMap
+#print axioms LeanMachine.MatrixRankCertificate.rank_add_le
+#print axioms LeanMachine.MatrixRankCertificate.rank_sum_le
+#print axioms LeanMachine.MatrixRankCertificate.rank_diagonalBlocks
+#print axioms LeanMachine.MatrixRankCertificate.rank_blocks_le
+#print axioms LeanMachine.MatrixRankCertificate.matrix_rank_identity
+#print axioms LeanMachine.MatrixRankCertificate.rank_amplify
+#print axioms LeanMachine.MatrixRankCertificate.matrix_label_certificate
+#print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate
+#print axioms LeanMachine.MatrixRankCertificate.rank_map_field
+#print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate_extension

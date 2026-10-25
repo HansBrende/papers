@@ -4,6 +4,7 @@ import DirectedRecovery.IncidenceComponents
 import DirectedRecovery.IncidenceSeparator
 import DirectedRecovery.IncidenceTrimming
 import DirectedRecovery.IndependentRectangle
+import DirectedRecovery.MatrixCertificate
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.StorageCode
 
@@ -25,6 +26,9 @@ and `Quot.sound`. -/
 -- IndependentRectangle.lean
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle
 #print axioms DirectedRecovery.IndependentRectangle.independent_rectangle_consecutive
+-- MatrixCertificate.lean
+#print axioms DirectedRecovery.matrix_label_certificate
+#print axioms DirectedRecovery.matrix_label_certificate_extension
 -- RankCertificate.lean
 #print axioms DirectedRecovery.rank_identity
 -- StorageCode.lean

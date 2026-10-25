@@ -25,7 +25,7 @@ $\operatorname{rank}(ML),\operatorname{rank}(RM)\le\operatorname{rank}M$.
 \end{outline}
 
 \begin{proposition}[Matrix-label certificate]
-\notformalized
+\formal{MatrixCertificate.lean}{matrix_label_certificate,matrix_label_certificate_extension}
 \label{prop:mc-certificate}
 Let $A$ have $t\times t$ blocks indexed by $N$ coordinates, supported on
 a paired incidence relation $E$.  Give its ports arbitrary labels
@@ -40,7 +40,7 @@ $X_p,Y_q\in\operatorname{Mat}_m(F)$, where $m\ge1$.  Then
 Labels over a field extension of $F$ are also valid witnesses, with
 the ranks of the original matrices unchanged.
 \end{proposition}
-\begin{informalproof}
+\begin{outline}
 Use $\widehat A=A\otimes I_m$ and block-diagonal operators
 $L_{pp}=I_t\otimes X_p$, $R_{qq}=I_t\otimes Y_q$.
 Then
@@ -52,8 +52,9 @@ and the $(q,p)$ block of $\widehat A L-R\widehat A$ is
 $A_{qp}\otimes(X_p-Y_q)$.  Tensor-product ranks multiply over any field.
 Writing a block matrix as the sum of its single-block inclusions bounds
 its rank by the sum of their ranks.  \cref{lem:mc-identity} gives the
-displayed inequality.
-\end{informalproof}
+displayed inequality. Scalar extension preserves matrix rank, so the same
+argument applies to labels over any extension field.
+\end{outline}
 
 In particular, full-rank differences on matched ports and low-rank
 differences on incidence edges give a useful certificate.  The following

@@ -11,6 +11,7 @@ import DirectedRecovery.PathPackingAsymptotics
 import DirectedRecovery.RankCertificate
 import DirectedRecovery.RowWordDeficit
 import DirectedRecovery.SelfDemands
+import DirectedRecovery.SmithRankLoss
 import DirectedRecovery.StorageCode
 import DirectedRecovery.ThresholdBuckets
 
@@ -51,6 +52,9 @@ and `Quot.sound`. -/
 #print axioms DirectedRecovery.row_word_cover_independent
 -- SelfDemands.lean
 #print axioms DirectedRecovery.self_demands_count_of_disjoint_transport
+-- SmithRankLoss.lean
+#print axioms DirectedRecovery.smith_rank_loss
+#print axioms DirectedRecovery.torsion_count_of_rank_and_nullity
 -- StorageCode.lean
 #print axioms DirectedRecovery.indexCode_length_ge
 #print axioms DirectedRecovery.induced_storageCode_card_le_of_independent

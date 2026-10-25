@@ -28,27 +28,34 @@ The following results are formalized in Lean:
 - The arbitrary-field rank identity and full matrix-label certificate, including
   labels over field extensions and independent code and witness block widths.
 
-Finite short-path packing and its exact logarithmic and asymptotic bounds are
-formalized from the native transport estimates, whose uniform derivation from
-tape semantics remains unformalized. The self-demand count is formalized from native one-edge transport, whose proof
-remains unformalized. The finite counting and retained-degree part of paid trimming is formalized; its
-native cone-size premise and asymptotic paired-distance application remain written
-proofs. Linearization of nonlinear recovery on arbitrary directed block codes and
-the resulting dimension bound from actual matrix-label witnesses are also
-formalized; constructing the specific expanding family and its witnesses remains
-unformalized. The exact finite and asymptotic depth-independent code deficit is
-formalized from an actual row-word cover, with the native extraction and its
-uniform sublinear exception estimate as the remaining gap. Every cited declaration uses only `propext`, `Classical.choice`, and
-`Quot.sound`. Formal status is recorded beside each numbered result; the index and
-axiom checks are generated from those annotations. General algebraic and counting
-lemmas are shared through `lean-machine`.
+Six results are partially formalized:
 
-The remaining written proofs establish the actual-cone incidence-distance theorem;
-a complex linear half-rate bound with fixed block width and bounded coefficients;
-and native examples with expansion and connected demands whose full cone relations
-still have nonlinear coding gaps. The appendix applies the matrix certificate to
-a characteristic-two expanding family. These statements retain all hypotheses
-printed in the paper; the examples are not transposition algorithms.
+- **Paired distances and self-demands:** finite path counting and the logarithmic
+  asymptotic bound are verified; native transport and its uniform constants remain
+  written proofs.
+- **Paid degree trimming:** finite counting and retained-degree bounds are
+  verified; the native cone premise and paired-distance application remain.
+- **Depth-independent code deficit:** the exact finite and asymptotic bounds are
+  verified from an actual row-word cover. Native extraction and its uniform
+  sublinear exception estimate remain.
+- **Linear codes on the expanding family:** linearization of nonlinear recovery
+  and the dimension bound from actual matrix labels are verified. Construction
+  of the specific family and its witnesses remains.
+- **Necessary torsion:** the exact modular rank-loss count and finite rank/nullity
+  implication are verified from a supplied unimodular diagonalization. Smith-form
+  existence, the analytic estimate, and the cokernel interpretation remain.
+
+In total, 12 new numbered results are fully formalized, 6 are partially
+formalized, and 18 retain written proofs; 2 additional numbered results are cited
+from earlier papers. Every cited Lean declaration uses only `propext`,
+`Classical.choice`, and `Quot.sound`. Status appears beside each numbered result;
+the index and axiom checks are generated from those annotations. General
+algebraic and counting lemmas are shared through `lean-machine`.
+
+The remaining arguments include the native transport and construction machinery,
+the complex linear half-rate theorem, and the characteristic-two expanding-family
+construction. All statements retain the hypotheses printed in the paper; the
+native examples are not transposition algorithms.
 
 ## What is open
 

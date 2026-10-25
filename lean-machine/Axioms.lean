@@ -105,3 +105,9 @@ import LeanMachine
 #print axioms LeanMachine.PathPacking.support_multiplicity_le_ball
 #print axioms LeanMachine.PathPacking.fixed_length_count
 #print axioms LeanMachine.PathPacking.odd_length_count
+
+-- SmithRankLoss.lean
+#print axioms LeanMachine.SmithRankLoss.rank_map_of_diagonalization
+#print axioms LeanMachine.SmithRankLoss.rank_loss_eq
+#print axioms LeanMachine.SmithRankLoss.rank_mod_le_rank_rat
+#print axioms LeanMachine.SmithRankLoss.loss_count_lower_bound

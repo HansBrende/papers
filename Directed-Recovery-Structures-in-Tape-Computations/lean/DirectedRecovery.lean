@@ -1,3 +1,4 @@
+import DirectedRecovery.SmithRankLoss
 import DirectedRecovery.PathPacking
 import DirectedRecovery.PathPackingAsymptotics
 import DirectedRecovery.SelfDemands

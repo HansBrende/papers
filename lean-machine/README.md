@@ -37,6 +37,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/GraphBall.lean`](LeanMachine/GraphBall.lean) | Actual extended-distance ball cardinalities from maximum degree | this repository |
 | [`LeanMachine/FinitePacking.lean`](LeanMachine/FinitePacking.lean) | Maximal disjoint finite families with bounded size and overlap | this repository |
 | [`LeanMachine/PathPacking.lean`](LeanMachine/PathPacking.lean) | Short-path multiplicity and odd-length packing bounds | this repository |
+| [`LeanMachine/SmithRankLoss.lean`](LeanMachine/SmithRankLoss.lean) | Exact modular rank loss from unimodular integer diagonalization, excluding zero factors | this repository |
 
 ## External code
 

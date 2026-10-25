@@ -1,0 +1,40 @@
+\section{Proof status and verification}\label{sec:verification}
+
+The Lean-verified results are exact homogenization
+(\cref{prop:inflation}) and the dimension interfaces
+(\cref{lem:kernel-range}). The shared
+\leanfile{LeanMachine/HomogeneousInflation.lean} module constructs
+the two checks and their coordinate permutation, proves the kernel
+equivalence, and applies Mathlib's finite-product dimension formula.
+\leanfile{LeanMachine/KernelRangeBound.lean} reuses Mathlib's
+dimension monotonicity, rank-nullity, quotient dimension, and span
+closure for the dimension, quotient-deficit, and split-generator bounds.
+The paper modules expose these results without duplicating their proofs.
+The English outlines are guides; the Lean declarations are authoritative.
+
+The remaining graph and asymptotic cover results have complete written proofs.
+In particular, the local-generation theorem is not described as
+formalized merely because its final dimension inference is checked.
+The native hypotheses, free-group separation, imported Cohn and
+Jaikin-Zapirain--Souza theorems, parameter uniformization, coefficient
+filtrations, weighted determinant argument, and full-matrix-algebra
+inflation example are not formalized in this manuscript. Nor is the
+written product-subcode corollary part of the formal kernel equivalence.
+The README's formalization todos record the remaining dependencies and
+existing library material to reuse. No numerical computation is used as
+a proof premise.
+
+Lean and Mathlib are pinned to v4.34.1. The paper requires the
+sibling shared package through a relative path. Clone the whole
+repository with its directories intact. From the paper directory,
+\texttt{python3 tools/lean\_index.py} generates the declaration
+index and \texttt{lean/PaperAxioms.lean} from the same annotations.
+In \texttt{lean/}, run \texttt{lake exe cache get},
+\texttt{lake build}, and \texttt{lake env lean PaperAxioms.lean}.
+The cited declarations use at most \texttt{propext},
+\texttt{Classical.choice}, and \texttt{Quot.sound}.
+In \texttt{paper/}, run \texttt{latexmk -pdf main.tex}.
+
+The current document is a companion manuscript for review. Its
+proof-status inventory and imported hypotheses are part of its
+claims; removing those restrictions would require further work.

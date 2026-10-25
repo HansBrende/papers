@@ -1,0 +1,84 @@
+\section{Templates, quotients, and checks}\label{sec:model}
+
+Fix a prime $p$ and a finitely generated abstract free group $\Gamma$.
+A finite directed voltage template consists of a finite nonempty set
+$V$ of types and a finite set $E$ of triples $e=(u,v,g)$ with
+$u,v\in V$ and $g\in\Gamma$. The triple permits a type-$u$ input for
+a type-$v$ receiver. Equal triples are collected before assigning
+coefficients. Words that represent different elements of $\Gamma$
+remain separate even if they later coincide in a quotient.
+
+For a quotient $q:\Gamma\twoheadrightarrow Q$, the incidence lift
+$I_Q$ has ports $L_{(v,x)},R_{(v,x)}$ for $v\in V,x\in Q$, with edges
+\begin{equation}\label{eq:lift}
+ L_{(u,x)}\;--\;R_{(v,q(g)x)}\qquad ((u,v,g)\in E).
+\end{equation}
+This graph is undirected for connectivity and distance; the recovery
+relation itself need not be symmetric. The two ports of $(v,x)$ are
+\emph{matched}. The infinite lift $I_\Gamma$ uses the identity quotient.
+Common right multiplication of sheets is a graph automorphism.
+Our separation hypothesis is
+\begin{equation}\label{eq:separation}
+ L_{(v,1)}\text{ and }R_{(v,1)}\text{ lie in different components of }
+ I_\Gamma\quad\text{for every }v\in V.
+\end{equation}
+It then holds at every sheet. The literal template is retained even
+when selected coefficients vanish or cancel.
+
+Give type $v$ a finite-dimensional space $W_v$ over a field $K$,
+put $w_v=\dim_K W_v$ and $B=\sum_vw_v>0$, and choose
+$C_e:W_u\to W_v$ for every $e=(u,v,g)$.
+Let $T_e$ be its extension by zero to $W=\bigoplus_vW_v$.
+With $\rho_Q(g)e_x=e_{q(g)x}$, define the homogeneous check
+\begin{equation}\label{eq:check}
+ M_Q=I-\sum_{e\in E}T_e\otimes\rho_Q(g_e),\qquad
+ (M_Qx)_{v,y}=x_{v,y}-\sum_{e=(u,v,g)}C_e x_{u,q(g)^{-1}y}.
+\end{equation}
+Its normalized nullity is
+$r_Q=\dim_K\ker M_Q/(B|Q|)$.
+Every linear subcode of this kernel has at most this rate; over finite
+$K$ this agrees with logarithmic cardinality normalized by $B|Q|$.
+Homogeneity means that $C_e$ does not depend on the sheet $y$.
+
+A linear storage space with deterministic recovery admits linear
+recovery maps: on the attained parent projection define the map taking
+a parent tuple to its determined coordinate, then extend it linearly
+by a basis. This observation does not force homogeneous choices when
+different sheets originally have different maps. Homogeneity is a
+separate hypothesis of the cover theorems.
+
+\paragraph{The actual chain.}
+For the rank limits, fix a faithful embedding of $\Gamma$ in a
+free-by-$\Z_p$ pro-$p$ group $\mathcal G$. This means that
+$\mathcal G$ has a closed normal free pro-$p$ subgroup with quotient
+$\Z_p$. Fix descending normal open subgroups $U_i$ with
+$\bigcap_iU_i=\{1\}$ in $\mathcal G$, and put
+\begin{equation}\label{eq:chain}
+ H_i=\Gamma\cap U_i,\qquad Q_i=\Gamma/H_i,\qquad q_i=|Q_i|.
+\end{equation}
+The normalization is $q_i$, not $|\mathcal G/U_i|$ unless the two
+quotients coincide. No cofinality in the separate pro-$p$ completion
+of $\Gamma$ is assumed. The natural maps $Q_j\to Q_i$, $j\ge i$,
+are surjective and have $p$-group kernels.
+
+The prime, template, embedding, and chain stay fixed in every cover
+limit below. Widths are fixed through \cref{sec:uniformity} and may
+grow only under the explicit hypotheses in \cref{sec:factors,sec:weighted}.
+Zero-width types may be omitted. When nonidentity within-type voltages
+occur, an early quotient may collapse one to $1$; then the matrix is
+still a check but need not describe recovery without self-input.
+Separation excludes identity within-type voltages, and the finite
+template and trivial intersection ensure that no such collapse occurs
+at sufficiently late levels.
+
+\paragraph{One filtration fact used throughout.}
+If a linear map $T$ preserves a finite filtration
+$0=F_0\subset F_1\subset\cdots\subset F_m=X$, and $T_j$ is its
+map on $F_j/F_{j-1}$, then
+\begin{equation}\label{eq:filtered-kernel}
+ \dim\ker T\le\sum_{j=1}^m\dim\ker T_j.
+\end{equation}
+Indeed the map from
+$(\ker T\cap F_j)/(\ker T\cap F_{j-1})$ to $F_j/F_{j-1}$
+is injective and lands in $\ker T_j$. Sum dimensions.
+The filtration need not split, and quotient kernel vectors need not lift.

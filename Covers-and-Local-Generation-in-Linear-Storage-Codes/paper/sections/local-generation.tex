@@ -1,0 +1,138 @@
+\section{Local generation in characteristic two}\label{sec:local}
+
+This section is independent of the group-cover hypotheses. Let $G$
+be a finite simple undirected graph, let $K$ be a characteristic-two
+field, let each $W_v$ be finite-dimensional, and let
+$\mathcal C\le\bigoplus_{v\in V(G)}W_v$ be a linear code.
+For each $v$, a specified set $N_v\subseteq N_G(v)$ determines
+$x_v$ on the code. The supplied recovery functions may be nonlinear;
+only the code support is assumed linear. Write
+$U_v=\pi_v(\mathcal C)$ and $W=\bigoplus_vU_v$ for the attained
+coordinate spaces. Let
+\[
+ \mathcal L_R(\mathcal C)=\operatorname{span}_K
+ \{x\in\mathcal C:\supp x\subseteq B_R(c)
+                         \text{ for some }c\in V(G)\}.
+\]
+The center may depend on the codeword. This is a condition on
+generators of the actual code, not on its recovery equations.
+
+\begin{lemma}[The dimension interface]\label{lem:kernel-range}
+\formal{LocalGeneration.lean}{kernel_range_dimension_bound,quotient_dimension_bound,split_generator_dimension_bound}
+Let $W$ be a finite-dimensional vector space over a division ring,
+$H:W\to W$ linear, and $C,L$ subspaces with $C\subseteq\ker H$
+and $L\subseteq\im H$. Then
+$\dim C+\dim L\le\dim W$. If also $L\subseteq C$, then
+\[
+ 2\dim C\le\dim(C/L)+\dim W.
+\]
+For $H=I+A$ and $L=\operatorname{span}S$, the range premise follows
+whenever every $x\in S$ admits $x=s+As$ for some $s\in W$.
+\end{lemma}
+\begin{outline}
+Monotonicity of dimension bounds the two summands by
+$\dim\ker H$ and $\dim\im H$. Mathlib's rank-nullity theorem
+says their sum is $\dim W$. Mathlib's quotient dimension formula
+gives the second inequality. For the last assertion, $x=(I+A)s$
+puts each generator in the range; closure under linear combinations
+puts the span there as well. The paper library reuses these shared
+lemmas; no graph premise is hidden in their formal statements.
+\end{outline}
+
+\begin{theorem}[The local span cannot exceed the deficiency]
+\label{thm:local-generation}
+\notformalized
+If $G$ has no odd cycle of length at most $2R+1$, where $R\ge0$
+is an integer, then
+\begin{equation}\label{eq:local-span}
+ \dim_K\mathcal C+\dim_K\mathcal L_R(\mathcal C)
+       \le\sum_v\dim_K U_v.
+\end{equation}
+Consequently local generation, $\mathcal L_R(\mathcal C)=\mathcal C$,
+implies the weighted half bound. More generally,
+\[
+ \dim_K(\mathcal C/\mathcal L_R(\mathcal C))
+       \ge2\dim_K\mathcal C-\sum_v\dim_K U_v.
+\]
+No degree, common-width, or reciprocal-recovery hypothesis is required.
+\end{theorem}
+\begin{informalproof}
+For each $v$, map an attained parent tuple to its determined coordinate
+in $U_v$. This map is well-defined by recovery and linear because
+both projections come from the linear space $\mathcal C$.
+Extend it from the attained parent subspace to
+$\bigoplus_{u\in N_v}U_u$ by extending a basis. We obtain fixed
+linear maps $A_{vu}:U_u\to U_v$ such that every codeword satisfies
+$x_v=\sum_{u\in N_v}A_{vu}x_u$.
+Let $A$ be this ambient recovery operator on $W$, and put $H=I+A$.
+Characteristic two gives $\mathcal C\subseteq\ker H$.
+
+Take a codeword $x$ supported in $B_R(c)$. Color vertices of that
+ball by the parity of their distance from $c$. An edge within the
+ball whose endpoints had the same parity would, together with
+shortest paths to $c$, give an odd closed walk of length at most
+$2R+1$. Removing repeated-vertex subwalks leaves an odd cycle no
+longer than that walk, contrary to the hypothesis. Thus every
+edge inside the ball joins opposite parities.
+
+Split $x=s+t$ by these two parities, extending each part by zero
+outside the ball. We claim $As=t$ and $At=s$. At a vertex inside
+the ball, the only possibly nonzero contributions to its recovery
+come from the opposite parity, so the assertion follows from the
+recovery equation for $x$. At a vertex $v$ outside the ball, every
+neighbor $u$ inside it must have distance exactly $R$ from $c$:
+\[
+ R+1\le\dist(c,v)\le\dist(c,u)+1\le R+1.
+\]
+All these neighbors therefore have the same parity. One of the
+two sums is zero term by term; the other is the entire original
+recovery sum, which is zero because $x_v=0$. This checks every
+boundary row, including its cancellations.
+
+It follows that $Hs=s+As=s+t=x$. Every local codeword, and hence
+its span $\mathcal L_R(\mathcal C)$, lies in $\im H$.
+Apply \cref{lem:kernel-range} to obtain \eqref{eq:local-span}.
+The quotient inequality is the second assertion of the same lemma.
+The split vectors need not themselves belong to the code, and we
+have not asserted $\im H\subseteq\mathcal C$.
+\end{informalproof}
+
+The dimension, quotient, and split-generator interfaces are formalized.
+The application to attained coordinate spaces, graph parity, and
+boundary cancellation above remains a written proof.
+At $R=0$, a one-vertex-supported recoverable word is zero, so
+$\mathcal L_0(\mathcal C)=0$, as the proof also shows.
+Zero-dimensional attained spaces and disconnected graphs cause no
+exception. Disjoint edges with equal values at their endpoints
+attain the half bound with radius-one generators. Conversely the
+triangle's parity code has dimension two on three scalar vertices
+and is generated inside radius-one balls; it violates half rate
+when the odd-cycle exclusion is removed.
+
+\begin{corollary}[Above-half codes need nonlocal dimension]
+\label{cor:nonlocal}
+\notformalized
+Put $D=\sum_v\dim_K U_v$. Under the hypotheses of
+\cref{thm:local-generation}, if $\dim_K\mathcal C\ge(1/2+\delta)D$,
+then $\dim_K(\mathcal C/\mathcal L_R(\mathcal C))\ge2\delta D$.
+In particular, for scalar characteristic-two codes on triangle-free
+graphs with $N$ vertices and rate $1-o(1)$,
+$\dim_K\mathcal L_1(\mathcal C)=o(N)$.
+\end{corollary}
+\begin{informalproof}
+Substitute the assumed dimension in the quotient inequality.
+For the scalar conclusion use $D\le N$ and
+$\dim\mathcal L_1(\mathcal C)\le D-\dim\mathcal C
+\le N-\dim\mathcal C=o(N)$.
+\end{informalproof}
+
+Thus the known near-unit-rate triangle-free binary families
+\cite{BargSchwartzYohananov,Zabokritskiy} necessarily have a
+negligible span of radius-one codewords. This consequence does not
+contradict local recovery: many global codewords can satisfy local
+equations without being sums of local codewords. For a construction,
+the theorem identifies a required nonlocal part of the code. For an
+impossibility argument, it leaves the obligation to prove local
+generation, together with the appropriate odd-cycle condition, for
+the actual code under study. Bounded causal depth alone supplies
+neither assertion.

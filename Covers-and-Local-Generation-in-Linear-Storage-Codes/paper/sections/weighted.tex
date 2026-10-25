@@ -1,0 +1,127 @@
+\section{Nonzero checks on independent-chord covers}\label{sec:weighted}
+
+For a stricter check class the limiting rate is zero. Fix a finite
+simple connected graph $H$ on $n$ vertices with a spanning $2$-factor,
+that is, disjoint cycles covering all vertices. Choose a spanning
+tree and orient its chords. Let $\Gamma$ be the free group on these
+chords. Assign reciprocal voltages $g_{uv}=g_{vu}^{-1}$ to adjacent
+ordered pairs, with tree voltages $1$ and one independent generator
+on each oriented chord. Here $g_{uv}$ is in matrix row $u$, column
+$v$; it takes a sheet at type $v$ to the sheet multiplied on the
+left by $g_{uv}$ at type $u$.
+
+Fix an embedding and chain as in \eqref{eq:chain} for this abstract
+$\Gamma$. Over a characteristic-$p$ field $K$, choose arbitrary
+diagonal scalars $d_u$ and nonzero scalars $c_{uv}$ for every ordered
+edge. Define
+\begin{equation}\label{eq:weighted}
+ T_{uu}=d_u,\qquad T_{uv}=c_{uv}g_{uv}\quad(uv\in E(H)),
+ \qquad T_{uv}=0\quad\text{otherwise}.
+\end{equation}
+Reverse coefficients need not agree or be inverses.
+
+\begin{lemma}[A surviving determinant monomial]\label{lem:determinant}
+\notformalized
+Abelianize the chord generators to independent Laurent variables
+$z_1,\ldots,z_s$. The resulting matrix $T_z$ has nonzero determinant
+over $K[z_1^{\pm1},\ldots,z_s^{\pm1}]$ for every allowed tuple.
+\end{lemma}
+\begin{informalproof}
+Orient the cycles of a spanning $2$-factor and let $\pi_0$ send each
+vertex to its successor. The associated determinant term has nonzero
+coefficient $\operatorname{sgn}(\pi_0)\prod_uc_{u,\pi_0(u)}$.
+For any determinant permutation, record the net directed use of each
+undirected edge. This integer current has divergence zero; the
+Laurent exponents are its chord coordinates, with fixed choices of
+sign. If a second permutation has the same exponents as $\pi_0$,
+the difference of the two currents is supported on the spanning
+tree and has divergence zero. Leaf deletion shows that it vanishes.
+
+Every oriented factor edge has net use one. Since a permutation
+uses each ordered edge at most once, that current forces use of
+the same oriented edge. These edges prescribe one outgoing arrow
+at every vertex, so the permutation equals $\pi_0$. The selected
+monomial is unique and cannot cancel, in any characteristic.
+No factor vertex uses a diagonal, so arbitrary $d_u$ cause no issue.
+\end{informalproof}
+
+\begin{theorem}[Uniform scalar rate zero]\label{thm:weighted-zero}
+\notformalized
+For every $\varepsilon>0$ there is $I(\varepsilon)$ such that for
+all $i\ge I(\varepsilon)$, all characteristic-$p$ fields, all nonzero
+directed edge weights, and all diagonal values in \eqref{eq:weighted},
+\[
+ \frac{\dim_K\ker T_{Q_i}}{nq_i}<\varepsilon.
+\]
+\end{theorem}
+\begin{informalproof}
+First fix one tuple over $K=\F_{p^a}$. Restrict scalars to $\F_p$
+to obtain a fixed matrix $T^{\mathrm{res}}$ of size $an$ over
+$\F_p[\Gamma]$. Its abelian specialization over
+$\F_p(z_1,\ldots,z_s)$ is invertible. To justify this step, an
+$\F_p$-basis of $K$ remains linearly independent over $\F_p(z)$:
+clear denominators and compare monomial coefficients. Its
+$\F_p(z)$-span is a finite-dimensional subalgebra of the field
+$K(z)$, hence is a field, since multiplication by any nonzero element
+is injective and therefore surjective. It contains $K$ and
+$\F_p(z)$, so it is all of $K(z)$. The specialization is consequently
+the restriction of scalars of the invertible map $T_z$ from
+\cref{lem:determinant}.
+
+Any factorization of $T^{\mathrm{res}}$ through fewer than $an$
+columns would specialize to such a factorization of an invertible
+matrix over this rational-function field. Hence its inner rank is
+$an$. Equation~\eqref{eq:rank-approx} gives a limiting normalized
+nullity of zero. Restriction of scalars preserves that normalized
+nullity, so the fixed finite-field tuple has rate tending to zero.
+
+Now form the finite-type parameter algebra
+\[
+ \mathscr R=\F_p[c_{uv},c_{uv}^{-1}:uv\text{ an ordered edge}]
+                  [d_u:u\in V(H)].
+\]
+Its maps to fields are exactly the permitted tuples. Apply
+\cref{thm:uniformization} to the universal matrix with $\beta=0$.
+The nonzero constraints survive every residue-field specialization.
+\end{informalproof}
+
+\begin{corollary}[Arbitrary widths with a common flag]\label{cor:flag-zero}
+\notformalized
+Replace the scalars in \eqref{eq:weighted} by internal matrices on
+one $w_i$-dimensional space at each type, over any characteristic-$p$
+field $K_i$. Assume that all edge and diagonal matrices preserve a
+common full flag after algebraic closure, and every edge matrix is
+invertible. Then the normalized nullity tends to zero uniformly in
+the fields, coefficients, flags, and widths $w_i\ge1$.
+\end{corollary}
+\begin{informalproof}
+On each one-dimensional internal flag quotient, the edge matrices
+induce nonzero scalars: an invertible triangular matrix has nonzero
+diagonal entries. The induced diagonal scalars are unrestricted.
+There are $w_i$ scalar check layers, each on $nq_i$ coordinates.
+The same threshold in \cref{thm:weighted-zero} bounds every layer's
+nullity by $\varepsilon nq_i$. Equation~\eqref{eq:filtered-kernel}
+then bounds the full nullity by $\varepsilon nw_iq_i$.
+Extending fields preserves rank, so the estimate holds over $K_i$.
+\end{informalproof}
+
+Commuting internal edge and diagonal maps give the flag by the proof
+of \cref{cor:flag-half}; edge invertibility is still required.
+For a recovery check, choose diagonal $I$ and edge coefficients
+equal to the negatives of the recovery maps. Thus this theorem
+excludes the corresponding full-neighbor, common-flag construction
+class, even at unrestricted vector width. It is a bound on specified
+checks, not the storage capacity of the underlying graphs.
+
+The nonzero premise cannot be dropped. Set every diagonal to $1$,
+retain only one edge $uv$ with coefficients $-1$ in both directions,
+and set all other edge coefficients to zero. Its two-type block is
+\[
+ \begin{pmatrix}I&-P\\-P^{-1}&I\end{pmatrix},
+ \qquad P=\rho_{Q_i}(g_{uv}),
+\]
+which has kernel dimension $q_i$, while all other types have identity
+checks. Its normalized nullity is $1/n$ at every level.
+No paired-distance hypothesis was needed for the rate-zero theorem;
+the independent chord variables and nonzero weights supplied the
+stronger rank certificate directly.

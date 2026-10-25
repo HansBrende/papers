@@ -13,3 +13,5 @@ import LeanMachine.GraphBall
 import LeanMachine.FinitePacking
 import LeanMachine.PathPacking
 import LeanMachine.SmithRankLoss
+import LeanMachine.KernelRangeBound
+import LeanMachine.HomogeneousInflation

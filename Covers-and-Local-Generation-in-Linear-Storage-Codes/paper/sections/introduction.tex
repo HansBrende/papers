@@ -1,0 +1,119 @@
+\section{Introduction}\label{sec:introduction}
+
+A recovery graph specifies which coordinates may determine another
+coordinate. It does not specify how a code is represented or computed.
+This distinction matters in the coding approach to matrix transposition:
+a structural property of a machine's dependency graph becomes useful
+only when a coding theorem applies to its actual code fibres.
+The companion paper~\cite{BrendeDirected} obtains long matched-port
+distances from native tape geometry and studies several coding bounds
+with additional premises. Here we examine two such premises more closely:
+algebraic structure in regular covers, and local generation of a linear code.
+
+In the first setting a fixed finite template is repeated over the sheets
+of finite group quotients. Recovery matrices use the same coefficients
+at each sheet. We prove a half-rate theorem that is uniform over the
+coefficient field and values at fixed width. We then identify exactly
+what a filtration argument needs when the width grows. In the second
+setting the graph need not be a cover at all. Locally supported codewords
+are forced into the image of a check operator, while the whole code lies
+in its kernel. Rank-nullity gives a quantitative restriction on their span.
+
+\subsection{The results}
+The principal conclusions are the following.
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item \textbf{Uniform half rate on fixed covers.}
+Under the precise ambient-group and chain hypotheses in
+\cref{sec:model}, paired-port disconnection in the infinite incidence
+cover forces asymptotic rate at most $1/2$ for homogeneous linear checks
+of fixed total width. One threshold works for every coefficient tuple
+over every field of the fixed characteristic
+(\cref{thm:fixed-width}). The coefficients and fields may therefore vary
+along the sequence.
+\item \textbf{An obstruction to excess rate at growing width.}
+Let $\alpha_i(k)$ be the fraction of internal dimension in simple
+coefficient-module factors larger than $k$, after algebraic closure.
+For each fixed $k$ and $\varepsilon>0$, eventually
+\[
+ r_i\le(1-\alpha_i(k))(1/2+\varepsilon)+\alpha_i(k).
+\]
+Thus a sustained excess $\delta$ over half rate requires at least
+$2\delta$ of the dimension in factors exceeding every fixed cutoff
+(\cref{thm:factors,cor:factor-excess}).
+\item \textbf{Uniform zero rate for a stricter check class.}
+On the independent-chord covers of a fixed graph with a spanning
+$2$-factor, every homogeneous scalar check with nonzero edge weights
+has rate tending to zero. The convergence is uniform in the field,
+weights, and diagonal entries. It also holds for arbitrary-width
+blocks with a common full flag and invertible edge maps
+(\cref{thm:weighted-zero,cor:flag-zero}).
+\item \textbf{The cost of removing sheet dependence.}
+Any sheet-dependent linear check has an exact homogeneous inflation
+with the same rate. Its internal width grows by the sheet count, and
+its coefficient algebra can be a full matrix algebra of that growing
+size. Hence this conversion does not supply the small-factor premise
+(\cref{prop:inflation,prop:large-factor}).
+\item \textbf{A local-generation deficit.}
+In characteristic two and with no odd cycle of length at most $2R+1$,
+\[
+ \dim\mathcal C+\dim\mathcal L_R(\mathcal C)
+       \le\sum_v\dim\pi_v(\mathcal C).
+\]
+An above-half code must therefore have substantial dimension outside
+the span of its locally supported words (\cref{thm:local-generation}).
+\end{enumerate}
+
+\subsection{Relation to existing work}
+Storage codes and index coding are established subjects. In particular,
+triangle-free graphs can support binary linear codes with rate approaching
+one~\cite{BargZemor,BargSchwartzYohananov,Zabokritskiy}.
+We make no general half-rate claim for triangle-free graphs. Our local
+theorem instead constrains the span of local codewords on such graphs;
+recovery locality and generator locality are different conditions.
+
+The cover argument uses standard free-group subgroup separability,
+presented here by finite Schreier-graph completion; see
+Stallings~\cite{Stallings} for the classical graph method. The
+free-group algebra input is Cohn's Sylvester-domain theorem
+\cite{Cohn}, as recorded in~\cite[Introduction]{JaikinSouza}.
+The asymptotic input is precisely Jaikin-Zapirain and Souza's
+Theorem~8.1~\cite{JaikinSouza}. We apply that theorem to the specified
+quotients, then prove a separate uniformization over coefficient fields
+and parameters. We do not claim a new general rank-approximation theorem.
+The parameter argument uses the finite-residue-field consequence of the
+weak Nullstellensatz~\cite{Stacks00FV}.
+
+The first paper formulates the tape problem and its coding program
+\cite{BrendeTapeCoding}; the subsequent local-barrier paper separates
+cheap encoding from cheap local recovery~\cite{BrendeLocalCoding}.
+The fourth paper supplies depth reduction and the reduction from a
+correct trace to a storage-code fibre~\cite{BrendeCurved}.
+The directed-recovery companion proves native paired-distance bounds
+and an all-width matrix-label criterion on a different family
+\cite{BrendeDirected}. Our cover theorems neither subsume that
+all-width criterion nor establish its hypotheses for arbitrary cones.
+They remove field and coefficient restrictions in a specified cover
+model and expose the remaining width obstruction.
+
+\paragraph{Proof status and attribution.}
+Exact homogenization and the dimension interfaces, including the quotient
+deficit and split-generator criterion, are Lean-verified. Their formal
+statements are authoritative; the English outlines are guides to them.
+The asymptotic cover results and the graph-local argument have complete
+written proofs but are not formalized. In particular, the split-generator
+interface does not itself verify the graph parity and boundary argument.
+Every numbered result states its status. We distinguish the applications
+developed here from their standard algebraic inputs; external priority for
+the resulting combinations has not been established.
+
+\subsection{Connection to transposition}
+Keep the series' notation: $d$ is the matrix side length,
+$b(d)=\max\{1,\lceil\log_2d\rceil\}$, and $L=d^2b(d)$.
+Statement~(T) asks for one fixed multitape machine transposing these
+inputs in $O(L)$ time. A coding lower-bound route needs a code deficit
+that exceeds a paid genie cost. The present theorems can supply such a
+deficit only after their representation and linearity hypotheses have
+been proved for the relevant fibres. They are also tests for constructions:
+an above-half candidate in these regimes must escape the stated module
+or local-generation restrictions. The missing native implications are
+listed in \cref{sec:roadmap}; (T) remains open.

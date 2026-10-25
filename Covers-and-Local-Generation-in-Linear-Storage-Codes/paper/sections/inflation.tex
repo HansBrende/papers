@@ -1,0 +1,96 @@
+\section{Exact homogenization and its width obstruction}\label{sec:inflation}
+
+It is natural to try to encode sheet-dependent coefficients inside
+larger homogeneous blocks. The following transformation is exact,
+but its module structure explains why it does not settle the
+unrestricted-width problem.
+
+\begin{proposition}[Rate-preserving inflation]\label{prop:inflation}
+\formal{HomogeneousInflation.lean}{sheetCheck,inflatedCheck,sheetReindex,reindex_inflated,kernelEquiv,finrank_kernel_inflated,rate_cross_product}
+On a finite quotient $Q$ of order $q$, allow coefficients indexed by
+the destination sheet:
+\[
+ (M_Cx)_{v,t}=x_{v,t}-\sum_{e=(u,v,g)}C_e(t)x_{u,g^{-1}t}.
+\]
+There is a homogeneous check on the same external voltage support,
+with each internal width multiplied by $q$, that is permutation
+equivalent to $q$ copies of $M_C$. Its normalized nullity is unchanged.
+\end{proposition}
+\begin{outline}
+The formalization takes $W=\bigoplus_vW_v$ and extends every
+$C_e(t)$ by zero from its source type to its target type. Thus one
+sheet is a vector in $W$, and the two checks below are exactly
+\lean{sheetCheck} and \lean{inflatedCheck} on $W$-valued functions.
+Replace $W_v$ by $\widetilde W_v=\bigoplus_{t\in Q}W_v$ and set
+$(D_ez)_t=C_e(t)z_{g^{-1}t}$. The homogeneous check is
+$\widetilde M=I-\sum_e D_e\otimes\rho_Q(g_e)$.
+Its coordinates $x_{v,x,t}$ have external sheet $x$ and internal
+sheet $t$, and a dependency simultaneously replaces these by
+$g^{-1}x,g^{-1}t$. Therefore $h=x^{-1}t$ is invariant.
+For each $h\in Q$ put $y^h_{v,t}=x_{v,th^{-1},t}$.
+This bijective reindexing turns the check into the original equations
+for $y^h$, independently for each $h$.
+
+The formal kernel equivalence is
+$\ker\widetilde M\cong\prod_{h\in Q}\ker M_C$.
+Mathlib's dimension formulas therefore give
+$\dim\ker\widetilde M=q\dim\ker M_C$, while the ambient
+dimensions are respectively $Bq^2$ and $Bq$. The Lean rate identity
+is stated by cross multiplication, so it also holds at zero width;
+dividing by the positive ambient dimensions gives the stated rate
+equality. Neither commutativity of $Q$ nor distinct voltages is assumed.
+\end{outline}
+
+For a linear subcode $\mathcal C\le\ker M_C$, the same coordinate
+permutation takes $\prod_{h\in Q}\mathcal C$ into the inflated
+kernel. Its dimension is $q\dim\mathcal C$, so it too preserves rate.
+
+\begin{proposition}[One large absolutely simple factor]
+\label{prop:large-factor}
+\notformalized
+There is a fixed paired-separated template on an actual chain
+\eqref{eq:chain} for which the inflation in \cref{prop:inflation}
+produces a coefficient module that remains simple after every field
+extension, of dimension $2q_i\to\infty$.
+Nevertheless every storage code on the underlying two-type relation
+has rate at most one half for equal coordinate alphabets.
+\end{proposition}
+\begin{informalproof}
+Take $\Gamma=\langle a\rangle\subset\mathcal G=\Z_p\times\Z_p$
+by $a\mapsto(1,0)$, with $U_i=p^i\Z_p\times p^i\Z_p$.
+Then $Q_i=C_{p^i}$. Use two types $0,1$ and four triples
+\[
+ (0,1,1),\quad(1,0,1),\quad(0,1,a),\quad(0,1,a^2).
+\]
+Their incidence edges stay in the disjoint classes
+$\{L_0,R_1\}$ and $\{L_1,R_0\}$, so every matched pair is
+disconnected in the infinite and finite lifts.
+
+For scalar coordinates over $\F_p$, choose destination-sheet
+coefficients $1,1,1,\mathbf1_{t=1}$ in that order. On the inflated
+internal space $Z_i=\F_p^{Q_i}$, let $P e_t=e_{at}$ and let $F$
+project onto the identity sheet. The four internal maps are
+$I,I,P,FP^2$. Include the two vertex projectors in their algebra.
+The cross identities put $P$ and $FP^2$ in one diagonal corner.
+Since $P^{q_i}=I$, that corner also contains $P^{-2}$ and therefore
+$F$. For any sheets $x,y$, powers of $P$ give
+$P_xFP_y^{-1}=E_{xy}$, the corresponding matrix unit.
+The cross identities transfer these units to all four type corners.
+Consequently the algebra is
+$\operatorname{Mat}_{2q_i}(\F_p)$, and remains the full matrix
+algebra after any field extension. Its natural module is simple:
+a full endomorphism algebra can send any nonzero vector to any
+specified vector. Thus $\alpha_i(k)=1$ eventually for every fixed $k$.
+
+Finally each type is recoverable from the other type alone.
+Projection onto either full type is injective on any storage code.
+With $q_i$ coordinates per type and common alphabet $\Sigma$,
+$|\mathcal C|\le|\Sigma|^{q_i}$. The same argument applies to the
+inflated block alphabet. No rate attainment by the displayed check
+is asserted.
+\end{informalproof}
+
+The example refutes automatic small-factor mass after homogenization.
+It does not refute a possible all-width half-rate theorem. In
+particular, the contrapositive of \cref{cor:factor-excess} provides
+a necessary algebraic escape condition, not a sufficient construction.

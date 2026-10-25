@@ -111,3 +111,17 @@ import LeanMachine
 #print axioms LeanMachine.SmithRankLoss.rank_loss_eq
 #print axioms LeanMachine.SmithRankLoss.rank_mod_le_rank_rat
 #print axioms LeanMachine.SmithRankLoss.loss_count_lower_bound
+
+-- KernelRangeBound.lean
+#print axioms LeanMachine.finrank_add_le_of_ker_range
+#print axioms LeanMachine.twice_finrank_le_quotient_add_of_ker_range
+#print axioms LeanMachine.finrank_add_span_le_of_split_generators
+
+-- HomogeneousInflation.lean
+#print axioms LeanMachine.HomogeneousInflation.sheetCheck
+#print axioms LeanMachine.HomogeneousInflation.inflatedCheck
+#print axioms LeanMachine.HomogeneousInflation.sheetReindex
+#print axioms LeanMachine.HomogeneousInflation.reindex_inflated
+#print axioms LeanMachine.HomogeneousInflation.kernelEquiv
+#print axioms LeanMachine.HomogeneousInflation.finrank_kernel_inflated
+#print axioms LeanMachine.HomogeneousInflation.rate_cross_product

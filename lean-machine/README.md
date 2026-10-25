@@ -38,6 +38,8 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/FinitePacking.lean`](LeanMachine/FinitePacking.lean) | Maximal disjoint finite families with bounded size and overlap | this repository |
 | [`LeanMachine/PathPacking.lean`](LeanMachine/PathPacking.lean) | Short-path multiplicity and odd-length packing bounds | this repository |
 | [`LeanMachine/SmithRankLoss.lean`](LeanMachine/SmithRankLoss.lean) | Exact modular rank loss from unimodular integer diagonalization, excluding zero factors | this repository |
+| [`LeanMachine/KernelRangeBound.lean`](LeanMachine/KernelRangeBound.lean) | Kernel-range dimension and quotient-deficit bounds, with a split-generator criterion | this repository |
+| [`LeanMachine/HomogeneousInflation.lean`](LeanMachine/HomogeneousInflation.lean) | Exact homogenization over arbitrary sheet groups, kernel equivalence, and finite-dimensional rate preservation | this repository |
 
 ## External code
 

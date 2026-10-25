@@ -1,0 +1,199 @@
+\section{Row-word covers and an all-code deficit}\label{sec:row-words}
+
+This section isolates the interface used later for a native example.
+It applies to any recovery relation on $V=[d]^2\times[b]$, with
+$\operatorname{rawrow}(i,j,s)=i$ and
+$\operatorname{outrow}(i,j,s)=j$. No machine, degree bound, or
+linearity assumption is needed.
+
+\subsection{Monotone partial maps and thresholds}
+
+A \emph{row word} with $\ell$ maps has the form
+\[
+ x_0\ \xrightarrow{\mathrm{band}}\ y_0
+ \ \xrightarrow{f_1}\ x_1
+ \ \xrightarrow{\mathrm{band}}\ y_1
+ \ \xrightarrow{f_2}\ \cdots
+ \ \xrightarrow{f_\ell}\ x_\ell
+ \ \xrightarrow{\mathrm{band}}\ y_\ell.
+\]
+There are exactly $\ell+1$ bands, including the endpoint bands.
+Each map is a strictly monotone partial injection between integer intervals;
+each band permits an arbitrary subset of the pairs $|x-y|\le r$ in its
+interval.  For $\ell=0$ the word is one band.  Different maps may have
+different intermediate domains.  A word records every attained endpoint,
+and need not be single-valued.
+
+Partial increasing injections need not preserve distances: the map sending
+$0,100$ to $0,1$ is a counterexample.  For the row words it is sufficient
+to pull back thresholds, which does remain valid in the presence of
+arbitrary domain gaps.
+
+\begin{lemma}[Finite threshold pullback]\label{lem:cd-threshold}
+\formal{ThresholdBuckets.lean}{ThresholdPullback.finite_threshold_pullback}
+Let $K$ row words connect the starting and ending intervals $[d]$, each
+using at most $\ell_{\max}$ strictly monotone partial injections and bands of integer
+radius $r\ge0$.  Maps may be increasing or decreasing.  Partition each endpoint
+interval into $B$ nonempty consecutive buckets, where $1\le B\le d$;
+the partitions may differ.  There is a set of starting rows $T$ with
+\[
+ |T|\le\min\{d,\ K(B-1)[(2r+1)^{\ell_{\max}+1}-1]\}
+\]
+such that, for each word, all attained endings of any remaining starting
+row lie in one ending bucket.  That bucket index is monotone in the
+starting row, with sign equal to the product of the map signs.  In
+particular the union of all retained word relations occupies at most
+$K(2B-1)$ starting/ending bucket pairs.
+\end{lemma}
+
+\begin{outline}
+A threshold or its complement pulls back through a strictly monotone
+partial injection to a cut on its domain, with polarity multiplied by
+the sign of the map. Extend that cut across domain gaps. Empty domains
+and constant predicates are included.
+
+At a radius-$r$ band, a cut can change only on at most $2r$ starting
+rows. Each exceptional row at the next layer has at most $2r+1$
+predecessors through a band and at most one through a partial injection.
+Backward induction through a word with $\ell$ maps therefore gives
+\[
+ E_0=2r,\qquad E_{j+1}=(2r+1)E_j+2r,\qquad
+ E_\ell=(2r+1)^{\ell+1}-1.
+\]
+Outside the charged set the pulled-back comparison is exact for every
+attained endpoint, simultaneously. The formal relation permits arbitrary
+subrelations of the full-band word, so omitted paths cannot invalidate
+this conclusion.
+
+Take the union over $K$ words and the $B-1$ ending-bucket boundaries.
+The boundary comparisons force one ending bucket for every retained
+starting row that attains an endpoint, and that bucket is monotone with
+the product sign. For a negative word reverse the ending-bucket order.
+Each retained occupied pair then lies in a coordinatewise chain in
+$[B]\times[B]$. The sum of its two indices increases strictly between
+distinct comparable pairs and ranges over $2B-1$ values. Thus one word
+occupies at most $2B-1$ pairs, and their union at most $K(2B-1)$.
+\end{outline}
+
+
+\subsection{From a rectangle to a deficit}
+
+\begin{lemma}[A finite independent rectangle]\label{lem:cd-rectangle}
+\formal{IndependentRectangle.lean}{IndependentRectangle.independent_rectangle,IndependentRectangle.independent_rectangle_consecutive}
+Let any directed recovery relation on $V=[d]^2\times[b]$ have the
+following endpoint interface.  There are raw-row exceptions $S$, physical
+output-row exceptions $T$, and coordinate exceptions $Z$.  Partition
+$[d]$ into $B$ contiguous near-equal buckets and suppose every incidence
+$L_pR_q$ with $p,q\notin Z$, $\operatorname{rawrow}(p)\notin S$, and
+$\operatorname{outrow}(q)\notin T$ belongs to one of at most
+$K(2B-1)$ raw-row/output-row bucket pairs.  Let $K\ge1$, $B=4K$, and $d\ge B$.
+Then the relation has an independent coordinate set $I$ with
+\[
+ |I|\ge L_0:=\max\left\{0,
+ b(2K+1)\left\lfloor\frac d{4K}\right\rfloor^2
+       -bd(|S|+|T|)-|Z|\right\}.
+\]
+Independence means that no recovery neighborhood of a coordinate of $I$
+contains a coordinate of $I$, including itself.
+\end{lemma}
+
+\begin{outline}
+In the bipartite graph of occupied bucket pairs, some output bucket has
+degree at most
+\[
+ \left\lfloor\frac{K(2B-1)}B\right\rfloor=2K-1.
+\]
+Let $C$ be its row set, and let $R$ be the union of its nonneighboring
+raw buckets.  At least $2K+1$ raw buckets are in $R$.  Each bucket has
+at least $\lfloor d/(4K)\rfloor$ rows.  Define
+\[
+ I=\bigl((R\setminus S)\times(C\setminus T)\times[b]\bigr)\setminus Z.
+\]
+Before exceptions its size is at least the leading term in $L_0$.
+The raw-row and output-row exclusions cost at most $bd|S|$ and $bd|T|$,
+and coordinate exclusions at most $|Z|$.  This bound permits all exceptions
+to concentrate in the selected rectangle.
+
+If $p,q\in I$ and $p$ were in the recovery neighborhood of $q$, the
+interface would put $\operatorname{rawrow}(p)\in R$ and
+$\operatorname{outrow}(q)\in C$ in an occupied pair, contrary to the
+choice of $R$.  Thus $I$ is independent in the original relation; no
+individual incidence edge has been removed.
+\end{outline}
+
+\begin{lemma}[Independent coordinates bound every induced code]
+\formal{StorageCode.lean}{induced_storageCode_card_le_of_independent,induced_storageCode_entropy_of_independent}
+\label{lem:cd-independent-code}
+If $I$ is independent in a directed recovery relation on $V$, then for
+every $Q\subseteq V$ and every storage code $\mathcal C\subseteq
+\mathcal A^Q$ for the induced relation,
+\[
+ |\mathcal C|\le a^{|Q|-|I\cap Q|},\qquad a=|\mathcal A|.
+\]
+For any random word supported on the code, with any probability law,
+\[
+ H(X_Q)=H(X_{Q\setminus I})\le(|Q|-|I\cap Q|)\log_2a.
+\]
+\end{lemma}
+
+\begin{outline}
+Projection onto $Q\setminus I$ is injective on the code.  Indeed, two
+codewords agreeing there agree on the entire recovery neighborhood of
+each coordinate in $I\cap Q$, since that neighborhood contains no
+coordinate of $I$.  The storage-code property forces agreement on every
+remaining coordinate.  This proves the cardinality and entropy assertions
+directly, without an extension assumption or a sequential recovery order.
+\end{outline}
+
+
+\begin{theorem}[A deficit from a bounded row-word cover]\label{thm:rw-deficit}
+\formal{RowWordDeficit.lean}{row_word_cover_independent,row_word_cover_code_log_bound,row_word_cover_asymptotic_code_gap}
+Let $d,b,K,r,\ell,z$ be integers with $b,r,\ell,z\ge0$, $K\ge1$,
+and $d\ge4K$. Suppose $Z\subseteq V$,
+$|Z|\le z$, and every incidence $L_pR_q$ with $p,q\notin Z$ is
+covered, from $\operatorname{outrow}(q)$ to $\operatorname{rawrow}(p)$,
+by one of $K$ row words with at most $\ell$ maps and band radius $r$.
+Put
+\[
+ t=K(4K-1)\bigl[(2r+1)^{\ell+1}-1\bigr],\qquad
+ \Lambda=\max\left\{0,
+ b(2K+1)\left\lfloor\frac d{4K}\right\rfloor^2
+                  -bd\min(d,t)-z\right\}.
+\]
+One independent coordinate set has size at least $\Lambda$.
+For every $Q\subseteq V$, finite alphabet of size $a\ge2$, and nonempty
+storage code $\mathcal C$ on the induced relation on $Q$,
+\[
+ \log_a|\mathcal C|\le |Q|-\max\{0,\Lambda-|V\setminus Q|\}.
+\]
+Along any sequence with $d\to\infty$, $b\ge1$, fixed $K,r,\ell$,
+and $z=o(d^2b)$, this implies, uniformly in $Q$, alphabet and code,
+\[
+ \log_a|\mathcal C|\le |Q|-\frac{d^2b}{8K}
+                       +|V\setminus Q|+o(d^2b).
+\]
+\end{theorem}
+\begin{outline}
+Use $4K$ consecutive near-equal buckets at each end of the words.
+\Cref{lem:cd-threshold} removes at most $\min(d,t)$ starting rows
+and leaves at most $K(8K-1)$ occupied bucket pairs. Starting rows are
+physical output rows, so deleting a starting row costs $db$ coordinates
+with that \emph{second} index. Transpose the bucket-pair relation and
+apply \cref{lem:cd-rectangle}, with no extra raw-row exceptions.
+This gives $|I|\ge\Lambda$. Since
+$|I\cap Q|\ge\max\{0,\Lambda-|V\setminus Q|\}$,
+\cref{lem:cd-independent-code} proves the code bound.
+
+For the limit, $\lfloor x\rfloor^2\ge x^2-2x$ for $x\ge0$ gives a
+leading coefficient $(2K+1)/(16K^2)>1/(8K)$.
+The remaining errors are $O_{K,r,\ell}(db)+z=o(d^2b)$.
+The formal asymptotic theorem allows arbitrary sequences of covers and
+exception bounds; it does not require one fixed collection of maps.
+\end{outline}
+
+The deficit coefficient depends on the number of words, but not on their
+band radius or length. Those parameters affect the error and the eventual
+size threshold. Thus a native extraction with a fixed number of words,
+even when its radius depends on a fixed cone depth, supplies a deficit
+independent of that depth. Extracting such a cover for an unrestricted
+native computation remains an additional obligation.

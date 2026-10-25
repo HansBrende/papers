@@ -1,0 +1,38 @@
+\section{A torsion diagnostic for finite-field recovery}\label{sec:torsion}
+
+\begin{corollary}[Necessary torsion in bounded lifts]
+\partformal{SmithRankLoss.lean}{smith_rank_loss,torsion_count_of_rank_and_nullity}{Existence of Smith normal form, the analytic rational-rank estimate and its asymptotic application, and the cokernel-torsion interpretation.}
+\label{cor:dc-torsion}
+Fix a prime $p$, integers $\Delta,t\ge1$, and $\varepsilon>0$.
+Let $(E_n)$ satisfy the graph hypotheses of \cref{thm:dc-complex}.
+Suppose matrices $M_n$ over $\mathbb F_p$ have diagonal blocks $I_t$,
+off-diagonal support in $E_n$, and
+$\dim\ker M_n\ge(1/2+\varepsilon)tN_n$.
+For any integer lifts $\widetilde M_n$ with the same support restrictions,
+literal diagonal blocks $I_t$, and uniformly bounded entries, at least
+$(\varepsilon-o(1))tN_n$ of their \emph{nonzero} Smith invariant factors
+are divisible by $p$.
+\end{corollary}
+\begin{informalproof}
+Set $\rho_n=\operatorname{rank}_{\mathbb Q}\widetilde M_n$.
+\cref{thm:dc-complex} gives $\rho_n\ge(1/2-o(1))tN_n$.
+The unimodular transformations in Smith normal form remain invertible
+modulo $p$.  Thus
+\[
+ \#\{\hbox{nonzero invariant factors divisible by }p\}
+ =\rho_n-\operatorname{rank}_{\mathbb F_p}M_n
+ \ge(\varepsilon-o(1))tN_n.
+\]
+Equivalently, the subgroup annihilated by $p$ in the integer cokernel
+has at least this dimension over $\mathbb F_p$.  Zero invariant factors
+give free abelian summands and are not counted as torsion.
+\end{informalproof}
+
+This conclusion permits such torsion; it is not a finite-field half-rate
+theorem.  A fixed extension field can be represented over its prime field
+by enlarging the fixed block width.  The analytic argument does not cover
+growing block widths, unbounded complex coefficients, or nonlinear codes
+on nonhyperfinite relations.  \cref{sec:mc-section} gives a separate
+finite-field certificate on one existential expanding family, uniform
+in the storage-code block width.  Neither result identifies all native
+cone relations with that family or settles the unrestricted coding problem.

@@ -1,0 +1,29 @@
+\section{Verification and reuse}\label{sec:verification}
+
+The authoritative proofs of the results marked \textsf{Lean} are in
+the memo's \texttt{lean/CircularMemo/} library. The English outlines
+describe those proofs for convenience. The general partition identity,
+the general acyclic-orientation argument, unequal alphabets, and the
+sharpness examples have written proofs; they are not claimed to be
+formalized by the three-part inequality alone.
+
+The library requires the fourth paper by the relative path
+\texttt{../../lean}; that paper in turn requires the earlier shared
+libraries. Clone the whole repository, preserving sibling directories.
+Lean and Mathlib remain pinned to v4.34.1. No new axiom, proof placeholder,
+or kernel-bypassing decision procedure is used. The permitted axiom set
+is \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+
+From the memo directory, run \texttt{python3 tools/lean\_index.py}.
+It generates this declaration index and \texttt{lean/PaperAxioms.lean}
+from the same formal-status annotations. In \texttt{lean/}, run
+\texttt{lake build} and \texttt{lake env lean PaperAxioms.lean}.
+On a fresh clone first fetch the pinned dependency cache with
+\texttt{lake exe cache get}. In \texttt{paper/}, run
+\texttt{latexmk -pdf main.tex}.
+
+The main paper's original declarations and certificate remain intact.
+The memo's old-range corollary derives that range directly from the
+stronger theorem, including the empty case.
+Removing the old certificate from its original module is deferred until
+a separate dependency and publication review.

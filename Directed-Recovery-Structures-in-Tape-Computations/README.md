@@ -1,6 +1,6 @@
-# Directed Recovery Structures in Tape Computations (Draft)
+# Directed Recovery Structures in Tape Computations
 
-Hans Brende and GPT-6 (OpenAI), October 2026.
+Hans Brende and GPT-6 Astra (OpenAI), October 2026.
 
 [Paper and LaTeX sources](paper/) ([PDF](paper/main.pdf), [CC BY 4.0](paper/LICENSE)).
 [Lean library](lean/) ([Apache 2.0](lean/LICENSE)).
@@ -21,6 +21,8 @@ The following results are formalized in Lean:
   and consecutive buckets.
 - Full threshold pullback through signed partial monotone row words, including
   exact exceptional-row and occupied-bucket bounds.
+- The general finite and asymptotic all-code deficit from an actual bounded
+  row-word cover, independent of any machine realization.
 - Port-color and separated-component half bounds, the finite separator theorem,
   and the hyperfinite half-rate corollary with varying alphabets.
 - The surviving-pair bound for damaged expanders, including arbitrary edge and
@@ -45,8 +47,8 @@ Six results are partially formalized:
   implication are verified from a supplied unimodular diagonalization. Smith-form
   existence, the analytic estimate, and the cokernel interpretation remain.
 
-In total, 12 new numbered results are fully formalized, 6 are partially
-formalized, and 18 retain written proofs; 2 additional numbered results are cited
+In total, 13 new numbered results are fully formalized, 6 are partially
+formalized, and 23 retain written proofs; 2 additional numbered results are cited
 from earlier papers. Every cited Lean declaration uses only `propext`,
 `Classical.choice`, and `Quot.sound`. Status appears beside each numbered result;
 the index and axiom checks are generated from those annotations. General
@@ -54,8 +56,19 @@ algebraic and counting lemmas are shared through `lean-machine`.
 
 The remaining arguments include the native transport and construction machinery,
 the complex linear half-rate theorem, and the characteristic-two expanding-family
-construction. All statements retain the hypotheses printed in the paper; the
-native examples are not transposition algorithms.
+construction. New written results give an arbitrary-alphabet bound for directed
+components with at most two internal inputs, a paid native counterexample to
+universally sublinear reduction to that class, and an exact transfer from
+finite-p-group endomorphic recovery expressions to the all-width vector-linear
+benchmark. On the expanding family, the transfer is uniform in group size and
+pays explicitly for exceptional recovery rows. All statements retain the
+hypotheses printed in the paper; the native examples are not transposition algorithms.
+
+The independent row-word interface now precedes its native application; long
+rotation and phase audits are in an appendix. The introduction gives a table of
+code classes, graph premises, and missing native implications. The fourth
+paper's [circular strengthening memo](../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo/)
+is cited as a separate all-alphabet tool.
 
 ## What is open
 

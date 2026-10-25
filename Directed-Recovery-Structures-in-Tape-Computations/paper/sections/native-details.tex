@@ -1,0 +1,264 @@
+\section{Native verification of the rotated trace}\label{sec:native-details}
+
+The following proofs retain the controller, cell-visit, and exception-cost
+obligations used in \cref{sec:cd}.
+
+\subsection{Physical row rotations}\label{sec:details-cd-rotated-native}
+
+\begin{informalproof}[Proof of \cref{prop:cd-rotated-native}]
+Use the two banks and the paid setup and page executor of
+\cref{prop:ne-native-shear}.  Add two reusable physical row-buffer
+tapes, denoted $P_{\mathrm{buf}},S_{\mathrm{buf}}$, each with an origin and a movable
+end marker.  Their symbols have fixed bit, origin, and end tracks.
+
+We first specify a paid split-and-concatenate primitive.  Given a public
+cut $a\in[0,W]$, clear the previous cut marker by a complete outward and
+return sweep of the row clock.  Initialize an origin-based binary
+countdown to $a$, move the clock one cell after each decrement, mark the
+cut when the countdown becomes zero, and rewind the clock.  The countdown
+does not perform a full zero test at each decrement: mark its highest
+one, update that mark when a borrow removes it, and remember zero when
+no one remains.  The total digit traversal in a countdown of $a$ is
+$O(a+\log(a+1))$, including returns to the low digit.  Initial parameter
+arithmetic uses the complete-sweep compiler of the preceding section.
+The cut therefore costs $O(W+\operatorname{polylog}L)$, and all these
+head motions are home-based.
+
+To split a sequential $W$-bit source row, scan its bits with the row clock.
+In one transition per bit copy into $P_{\mathrm{buf}}$ before the cut and into
+$S_{\mathrm{buf}}$ at or after it, advancing only the source, active buffer,
+and clock.  A fixed mode changes at the cut flag.  Mark the two buffer
+ends and rewind the buffers and clock completely.  An empty buffer has
+its end marker at zero.  On reuse, writing a bit clears any former end
+flag at that cell; if a shorter string is stored, its new first end marker
+stops subsequent reading.  Cells beyond that end are neither read nor
+erased.  To concatenate in rotated order, scan $S_{\mathrm{buf}}$ and then
+$P_{\mathrm{buf}}$, copying to the sequential destination or directly appending
+to the real output.  Each bit transfer is one native transition, and the
+buffers are fully rewound afterward.  There is no long-lived payload
+register and at most one output bit per transition.  The entire primitive
+costs $O(W+\operatorname{polylog}L)$.
+
+For input row $i$, split at $W-ib$ and concatenate $S_{\mathrm{buf}}$ followed
+by $P_{\mathrm{buf}}$ into its bank row.  This is a right rotation by $ib$
+bits, so raw column $c$ reaches internal column $c+i\pmod d$ without
+changing its within-entry bit offset.  Process all rows in order, loading
+$A$ and then $B$, with no output appends.  Each bank head moves monotonically
+through its bank and pauses during the buffer operations.  Write its
+row-start flags on the first concatenated bit of each row and its end
+marker on completing the bank; no full-bank setup sweep is used.  After loading,
+rewind both banks completely.  Execute the $J$ shear pages exactly as in
+\cref{prop:ne-native-shear}, including suffix scans and complete
+synchronized rewinds.
+
+Finally process bank rows $i=0,\ldots,d-1$ in order.  Split the bank row
+at $ib$, and append $S_{\mathrm{buf}}$ followed by $P_{\mathrm{buf}}$.  This is a
+left rotation by $ib$ bits and implements $R^{-1}$.  A source bank row is
+copied into buffers before its output is emitted.  In particular, even
+the unchanged $A$ output is delayed until after every core page.  We do
+not give its syntactic cone an unjustified restriction to $A$ inputs.
+The resulting $B$ output row is, explicitly,
+\[
+ B_j[c,s]+\sum_{i:A_iB_j\in E(H_m)} A_i[c+j-i\pmod d,s],
+\]
+with addition modulo two.
+
+There are $d$ input and $d$ output primitives.  All parameter calculations,
+cut marking, countdown borrows and returns, data copies, buffer rewinds,
+bank rewinds, and appends are included in
+\[
+ O\bigl(L+dW+d\operatorname{polylog}L
+              +m\operatorname{polylog}L+\operatorname{polylog}L\bigr)
+ =O(L).
+\]
+The fixed page family, compiler, counters, buffers, and clocks use a fixed
+number of tapes and fixed control.  End flags and public row indices
+determine all movements, independently of the payload.  Banks traverse
+monotonically from origin to end, with pauses, and return completely;
+buffers and clocks make origin-to-end excursions; counters return to their
+own origins.  Thus the entire physical trace is home-based.  During
+concatenation a bank may pause inside a row, so the row-start parking
+property of the unwrapped executor is not claimed here.
+
+It remains to certify the actual paths.  Fix one edge and internal lane.
+Its raw source bit is first written to an input-buffer cell, then copied
+from that same cell to $A_i[gb+s]$.  The core XOR copies its contribution
+to $B_j[gb+s]$; in the final wrapper that bank cell is copied to an
+output-buffer cell and then read for the actual append.  Follow all
+consecutive visits in these four residence intervals: input buffer to
+bank copy, $A$ bank to XOR, $B$ bank to output-buffer copy, and output
+buffer to append.  Include every parked rewrite.  Consecutive visits
+are previous-visit edges, and successive intervals meet at the same copy
+or XOR transition.  Reversing their concatenation gives a literal DAG
+path with the displayed physical endpoints.
+
+At any time each active bank carrier participates in at most $\Delta$
+chosen paths.  The same holds for a live buffer carrier, because it
+belongs to one source or one final target bit.  Reuse of a buffer cell
+does not accumulate congestion: its residence intervals for different
+rows are disjoint, and each path has left the cell before it is reused.
+The input and output phases are disjoint, and buffering an $A$ output
+carries none of the selected paths.  A step scans one cell of each of the
+four payload tapes, so the union bound gives congestion $4\Delta$,
+including steps at which a path changes carrier and all parked endpoints.
+\end{informalproof}
+
+\subsection{Extracting all row words from the native trace}\label{sec:details-cd-row-words}
+
+\begin{informalproof}[Proof of \cref{lem:cd-row-words}]
+Call everything through parameter, endpoint-list, and clock initialization
+setup.  Thereafter the successive macro phases are
+\[
+ I,\ R_0,\ F_1,\ R_1,\ldots,\ F_J,\ R_J,\ O.
+\]
+Here $I$ is the complete input wrapper, $O$ the complete output wrapper,
+$R_0$ the post-load synchronized rewind, $F_a$ the forward part of page
+$a$, and $R_a$ its synchronized rewind.  There are $M_{\mathrm{ph}}$ phases,
+each occurring once.  A backward edge crossing phases strictly decreases
+the phase index.
+
+In a wrapper phase, row episode $i$ contains its parameter calculation,
+cut marking, countdown, split, concatenation, tests, and returns.  Episodes
+occur in increasing global row order and do not interleave.  In a forward
+page, a scan event consists of a whole $W$-bit $A$ skip, $B$ skip, or
+matched $A/B$ scan and its following clock return.  Number events in
+chronological order, ignoring intervening controller ticks.  There are
+at most $2m=d$ events in one page.  Each row of either bank is active in
+exactly one event and its active events are in increasing order.  Let
+\[
+ \tau_{a,A},\tau_{a,B}:[m]\longrightarrow[E_a]
+\]
+be the corresponding strictly increasing injections.  Their values agree
+at a matched scan.  One common event index is used even when one bank is
+parked; the parked cursor is not an independently selectable row.
+
+We define a sparse set $X$ of marked real time vertices.  First mark the
+first post-setup state vertex and the first post-setup visit to each work
+cell touched in setup.  The setup inventory, not its time, is
+$O(W+d\operatorname{polylog}L)$.  These marks block every backward edge
+entering setup.  Next mark the first and last ticks of every macro phase
+and wrapper row episode, all synchronized-rewind turn and end-test ticks,
+all slow controller, parser, list, and arithmetic ticks in core pages,
+and the first and last ticks of each core row scan and clock return.
+The core slow work totals $O(d\operatorname{polylog}L)$.  Wrapper countdowns
+are not included in this wholesale marking: their time can be linear.
+
+On each bank mark moving visits to row-boundary cells, and the first tick
+of each maximal constant-position run of at least two ticks.  There are
+$O(d)$ such runs per fixed phase: a bank pauses at the constant number of
+operation boundaries in each wrapper row, and during core row or controller
+operations.  A long countdown gives one bank wait, not a new wait at each
+decrement.  This rule also covers an interior bank pause between the two
+concatenation segments.
+
+For each macro phase, mark its first visit to each cell of the row clock
+and the two row buffers.  They occupy only $[0,W]$, giving $O(M_{\mathrm{ph}}W)$
+marks.  Finally, for each wrapper row episode mark its first visit to
+each cell of every other controller or work tape.  Those tapes use only
+polylogarithmically many distinct cells in that episode: metadata heads
+park at their origins during wrappers, and the scratch ruler, arithmetic,
+and countdown use their bounded polylogarithmic windows.  This costs
+$O(d\operatorname{polylog}L)$.  We have not marked first visits to every
+bank cell in every phase, nor every clock cell in every row.  Either
+would incorrectly charge a linear number of vertices.  The stated rules
+give
+\[
+ |X|\le C[W+d(1+\log_2(L+2))^h].
+\]
+
+Assign each unmarked post-setup vertex a chart: its global row-episode
+index in $I$ or $O$, its event index in $F_a$, and the common local bank
+row $\lfloor\operatorname{position}/W\rfloor$ in $R_a$.  At good rewind
+vertices both banks move in lockstep through interior cells.  We check
+that every same-phase edge between good vertices changes chart by at
+most one.
+
+For state edges this follows from chronological row or event order.
+For a wrapper controller tape, an edge into an earlier episode starts at
+the first visit to that cell in the current episode and was marked.
+All remaining such edges stay in their row, including every countdown
+borrow and return.  The row clock receives a complete outward-and-return
+sweep while clearing the cut in every wrapper row.  A clock predecessor
+therefore lies in the same or preceding row episode.  Its first macro-phase
+touch is already marked.
+
+For buffers, every used prefix, including its end, is visited in the row
+episode.  During $I$, the $P_{\mathrm{buf}}$ lengths $W-ib$ decrease and the
+$S_{\mathrm{buf}}$ lengths $ib$ increase; during $O$ these monotonicities are
+reversed.  If a cell has an earlier visit within a wrapper phase, this
+monotonicity ensures that the immediately preceding episode also visited
+it, unless it has already been visited in the current episode.  Position
+zero is visited even for an empty buffer.  The first touch in each macro
+phase was marked, so stale earlier-phase visits cause no exception.
+
+For a wrapper bank, any stationary visit after the first has predecessor
+$t-1$, while the first tick of a nontrivial parking run was marked.  An
+isolated moving interior visit belongs to its physical row episode.
+The bank progresses monotonically through that wrapper, so an earlier
+same-phase visit to that cell is in the same row.  Moving row-boundary
+visits were marked.  These facts cover the possible interior pauses.
+
+At good core forward vertices, controller tapes and buffers are stationary;
+after the marked first fast tick their predecessors are $t-1$.  The same
+holds for a parked bank after its marked first parking tick.  Each active
+interior bank cell is visited once in the forward page, so any other
+predecessor leaves the phase.  The moving clock visits each interior cell
+on the scan and return of every event, giving a predecessor in the same
+or preceding event.  In a synchronized rewind, each bank cell is visited
+once, all other heads are stationary, and state edges change local row by
+at most one.  Turn and end-test vertices were marked.  This completes the
+same-phase edge audit.
+
+Now consider an edge with good endpoints in different phases.  State
+crossings are blocked by phase marks, clock and buffer crossings by their
+first macro-phase touches, and controller crossings by per-row first
+touches in wrappers or by stationary/slow-tick rules in the core.  Setup
+crossings have also been blocked.  Only bank cell edges remain.  The
+current endpoint cannot be the first tick of a parking run or a moving
+row boundary.  It therefore has the chart of its actual active interior
+bank row.  At the earlier endpoint, any wrapper pause at that interior
+cell belongs to the same physical row; a page or rewind has its unique
+active visit.  Thus both endpoints refer to one and the same local bank
+row $u\in[m]$.
+
+For bank $H\in\{A,B\}$ define the strict injections
+\[
+ \begin{array}{lll}
+ \iota_{I,A}(u)=\iota_{O,A}(u)=u,&
+ \iota_{I,B}(u)=\iota_{O,B}(u)=m+u,\\
+ \iota_{R_a,A}(u)=\iota_{R_a,B}(u)=u,&
+ \iota_{F_a,A}(u)=\tau_{a,A}(u),&
+ \iota_{F_a,B}(u)=\tau_{a,B}(u).
+ \end{array}
+\]
+A backward bank edge from phase $F$ to an earlier phase $F'$ acts exactly
+by $\iota_{F',H}\circ \iota_{F,H}^{-1}$ on its chart, with the inverse interpreted
+on its image.  This factorization uses a common physical cell and does
+not assume that an increasing partial map preserves distances.
+
+Every append occurs in $O$ with chart equal to its physical output row.
+After input loading the raw head reads blank.  During $I$ it reads a bit
+of the current row while splitting, or waits at the first bit of the next
+row during concatenation and controller work.  Exclude the $d$ raw
+row-start coordinates.  Every other raw attachment at a good vertex then
+has raw row equal to its chart.
+
+Exclude also the demand labels of outputs in the $D$-step forward
+neighborhood of $X$ in the full DAG.  There are at most $B_D|X|$ of them.
+A free cone of any remaining output can meet neither $X$ nor setup,
+because its paths have length at most $D$.  The physical output exclusions
+are converted through $\Pi$ to coordinate labels before being united with
+the raw row-start exclusions.  This gives the set $Z$ in the statement.
+
+Break a surviving output-to-raw path at its cross-phase edges.  Each
+same-phase segment has chart displacement at most $D$.  Each cross-phase
+edge contributes the two strict partial injections just displayed.  Since
+phase indices strictly decrease, there are at most $M_{\mathrm{ph}}-1$
+crossings.  Enlarging every local displacement and every zero gap between
+these injections to a band of radius $D+2$ gives the asserted words.
+There are at most $2\cdot3^{M_{\mathrm{ph}}-2}$ phase-and-bank choices for paths
+from $O$ to $I$; the larger value $K=3^{M_{\mathrm{ph}}}+1$ is convenient and
+also covers empty or padded choices.  The bounds on $K,\ell_{\max}$ are independent
+of depth.  Finally $W/L=1/d$ and
+$d\operatorname{polylog}L/L\to0$, proving the fixed-$D$ error estimate.
+\end{informalproof}

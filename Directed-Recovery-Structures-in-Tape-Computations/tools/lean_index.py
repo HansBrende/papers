@@ -51,7 +51,7 @@ def main():
         r"Declarations are relative to \texttt{DirectedRecovery}; their axiom checks are generated together with this index (\cref{sec:verification}).", "",
     ]
     if not by_file and not inline:
-        lines += ["No new results are formalized in the initial draft.", ""]
+        lines += ["No new results are formalized in this document.", ""]
     for file in sorted(by_file, key=module):
         decls = sorted(by_file[file])
         lines.append(r"\paragraph{\texttt{" + tex_escape(module(file)) + "}}")

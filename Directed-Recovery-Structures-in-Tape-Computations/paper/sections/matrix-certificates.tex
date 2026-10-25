@@ -5,6 +5,8 @@ The component phases in \cref{thm:dc-complex} have a finite algebraic
 counterpart.  Its witnesses may have growing dimension while the code
 being bounded retains any chosen block width.  This distinction permits
 a finite-field result without a spectral limit of recovery matrices.
+Central layers then transfer its bound to a specified class of nonlinear
+finite-group recovery rules.
 
 \begin{lemma}[Rank identity]
 \formal{RankCertificate.lean}{rank_identity}
@@ -209,8 +211,8 @@ leaves components of size at most a fixed $K<N_m$, expansion summed
 over the components gives
 $h(2N_m-z)\le\Delta z$.  Thus every such separator has a fixed positive
 linear size.  The preceding finite-field result consequently goes beyond
-the hyperfinite hypothesis of \cref{cor:dc-hyperfinite}, though it
-applies only to linear code spaces.
+the hyperfinite hypothesis of \cref{cor:dc-hyperfinite}. The next theorem
+also transfers it to nonlinear codes with group-expression recovery.
 
 Two scope points are useful.  First, the binary translation $\theta$ is
 an involutive automorphism of $Z_m$, so the demand relation in this
@@ -220,3 +222,154 @@ asymmetric recovery.  Second, the inner graphs were chosen by an existence
 theorem.  No efficient uniform generator or native tape realization is
 asserted.  These are abstract relations; their degree, expansion, and
 paired-port separation do not identify them with all native cones.
+
+\subsection{From vector-linear bounds to group-expression recovery}
+
+Fix a finite loopless recovery relation $E$ on $N>0$ coordinates and a
+prime $p$. For a nontrivial finite $p$-group $G$, an \emph{endomorphic
+recovery expression} uses permitted parent variables, constants in $G$,
+multiplication, inversion, and fixed group endomorphisms $G\to G$.
+Expressions are finite, with arbitrary nesting and repeated variables.
+Each row has one fixed expression on the whole code. The code itself
+can be any nonempty subset of $G^V$ satisfying these equations; it need
+not be a subgroup. Arbitrary symbol maps inside an expression are not
+included in this language.
+
+\begin{theorem}[Central-layer transfer and the exact benchmark]
+\notformalized
+\label{thm:mc-group-transfer}
+Suppose that for every integer $t\ge1$ and every $t\times t$ block
+matrix $A$ over $\F_p$ supported on $E$,
+$\dim\ker(I-A)\le\rho t$. Then every endomorphic-expression code
+over every finite $p$-group satisfies $|\mathcal C|\le|G|^\rho$.
+In particular, define
+\[
+ \gamma_p(E)=\sup_{t\ge1}\ max_{A\text{ supported on }E}
+                    \frac{\dim_{\F_p}\ker(I-A)}{tN}.
+\]
+The supremum of $N^{-1}\log_{|G|}|\mathcal C|$ over all nontrivial
+finite $p$-groups and their nonempty endomorphic-expression codes is
+exactly $\gamma_p(E)$, the all-width vector-linear benchmark on $E$.
+\end{theorem}
+\begin{informalproof}
+Use the lower exponent-$p$ central series
+$P_1=G$, $P_{j+1}=P_j^p[P_j,G]$, where products denote generated
+subgroups. Its terms are fully invariant. Each
+$V_j=P_j/P_{j+1}$ is central in $G/P_{j+1}$ and is a vector space
+over $\F_p$, of dimension $t_j$. Every endomorphism of $G$ therefore
+induces a linear map on $V_j$.
+
+Here is an elementary termination argument. Every nonzero finite
+$\F_p$-representation of $G$ has a nonzero fixed vector: its additive
+set has size divisible by $p$, every nontrivial orbit has size divisible
+by $p$, and zero is fixed, so there are at least $p$ fixed vectors.
+Iterate this observation on quotient representations to obtain a full
+flag with trivial one-dimensional factors. On the regular module
+$\F_p[G]$ of dimension $D=|G|$, every $g-1$ lowers this flag.
+Thus its augmentation ideal $I$ satisfies $I^D=0$.
+Inductively, $g\in P_j$ implies $g-1\in I^j$: the assertion is
+preserved under products and inverses, powers satisfy
+$g^p-1=(g-1)^p\in I^{j+1}$, and
+\[
+ [g,h]-1=g^{-1}h^{-1}
+       \bigl((g-1)(h-1)-(h-1)(g-1)\bigr)\in I^{j+1}.
+\]
+Consequently $P_D=1$ and $\sum_jt_j=\log_p|G|$.
+
+Project the actual code to $(G/P_j)^V$. Fix one of its attained
+quotient assignments and choose lifts $r_v\in G/P_{j+1}$.
+Every further lift is uniquely $r_va_v$, with $a_v\in V_j$.
+Structural induction on an allowed expression $w$ gives
+\[
+ w((r_va_v)_v)=w((r_v)_v)L_w(a),
+\]
+where $L_w$ is linear over $\F_p$ and uses only the variables of $w$.
+Variables give projections and constants give zero. Products add the
+linear maps, inversion negates them, and an endomorphism composes with
+its induced map on $V_j$. Centrality permits these operations even
+when the base values do not commute. In this language $L_w$ is
+independent of the chosen base assignment.
+
+The recovery equations in the fibre therefore have the form
+$(I-A_j)a=b$, with $t_j\times t_j$ blocks supported on $E$.
+Their solutions form an affine translate of $\ker(I-A_j)$ when
+nonempty. The actual code fibre can be a proper subset of this set;
+no assertion that all quotient solutions lift is needed.
+Multiply the uniform bounds on these successive fibres to get
+\[
+ \log_p|\mathcal C|\le\sum_j\dim\ker(I-A_j)
+                      \le\rho\sum_jt_j=\rho\log_p|G|.
+\]
+Zero-width layers are omitted. Trivial groups and empty codes satisfy
+the cardinality assertion separately.
+
+Taking $\rho=N\gamma_p(E)$ proves the benchmark upper bound without
+assuming its supremum is attained. Conversely take the additive group
+$G=(\F_p)^t$. Every block linear map is an allowed endomorphism,
+and sums of them realize each kernel in the definition of $\gamma_p$.
+Thus every rate in that supremum is realized by the allowed language.
+Finally any vector-linear storage space, even with initially nonlinear
+decoders, admits linear decoders by factoring its parent projections,
+as in \cref{cor:mc-linear-codes}. This identifies the benchmark with
+the usual vector-linear one.
+\end{informalproof}
+
+Central lifting for ordinary group equations is classical; for example,
+Shmel'kin's nonsingular-system theorem is stated in
+\cite[Introduction]{Mikheenko}. Here fixed endomorphisms require
+fully invariant vector layers, and the application needs bounds uniform
+in their widths. We do not claim a new general theorem on solvability
+of group equations or an unrestricted nonlinear-to-linear reduction.
+
+\begin{corollary}[Group codes and exceptional recovery rows]
+\notformalized
+\label{cor:mc-group-codes}
+On the family $E_m$ of \cref{thm:mc-expanding-family}, let $G$ be any
+nontrivial finite $2$-group. If all recovery rows have endomorphic
+expressions, then
+\[
+ \log_{|G|}|\mathcal C|\le
+ \frac{N_m}{2}+\frac{|E_m|}{2m}
+ \le\left(\frac12+\frac{\Delta}{2m}\right)N_m.
+\]
+More generally, suppose only rows outside a specified $J\subseteq V$
+are required to have such expressions. With $S=V\setminus J$ and
+$E_m[S]$ the induced incidence relation,
+\[
+ \log_{|G|}|\mathcal C|\le
+ \frac{N_m+|J|}{2}+\frac{|E_m[S]|}{2m}
+ \le\frac{N_m+|J|}{2}+\frac{\Delta(N_m-|J|)}{2m}.
+\]
+These bounds are uniform in group size and expression length.
+For $m>\Delta$, a normalized rate at least $1/2+\delta$ requires
+\[
+ \frac{|J|}{N_m}\ge
+       \frac{2\delta-\Delta/m}{1-\Delta/m}.
+\]
+In particular a sustained excess $\delta>0$ forces
+$\liminf_{m\to\infty}|J|/N_m\ge2\delta$.
+\end{corollary}
+\begin{informalproof}
+Restrict the same binary port labels to both ports of coordinates in
+$S$. Their matched differences still have rank $m$ and their edge
+differences rank one. \Cref{prop:mc-certificate} gives, over $\F_2$
+and at every width $t$,
+\[
+ \dim\ker(I-A)\le t\left(\frac{|S|}{2}
+                                      +\frac{|E_m[S]|}{2m}\right).
+\]
+Apply \cref{thm:mc-group-transfer}. For $J\ne\varnothing$, first
+fix the actual coordinates on $J$ and substitute their values as
+constants. Each remaining fibre has exactly the required expression
+form on $S$. Summing over at most $|G|^{|J|}$ fibres pays for these
+coordinates once. Use $|E_m[S]|\le\Delta|S|$ and rearrange to obtain
+the final estimate. The empty $S$ case is the trivial full-code bound.
+\end{informalproof}
+
+Thus this particular expanding family obstructs more than linear code
+spaces: finite-group nonlinearity in the stated language cannot improve
+its asymptotic half-rate bound. A construction would need a different
+relation or a quantitatively substantial failure of that language.
+No small exceptional set or such expression form has been supplied for
+arbitrary native cones, and group operations have not been assigned
+unit cost as tape operations.

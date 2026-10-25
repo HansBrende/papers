@@ -40,6 +40,35 @@ where disconnected vertices have distance~$\infty$. A sequence on $|V|\to\infty$
 
 The two incidence degrees encode different restrictions: $\deg(R_q)=|N(q)|$ bounds recovery-set size, whereas $\deg(L_p)$ bounds the reuse of a coordinate across recovery sets. Bounded cone depth immediately gives the former, not the latter. If $N$ is symmetric, the incidence graph is the bipartite double cover of its coordinate graph. In that special case a path from $L_p$ to $R_p$ projects to an odd closed walk based at~$p$. For directed recovery, forgetting which endpoint supplies information loses this interpretation.
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,font=\small,
+  port/.style={draw,circle,minimum size=7mm,inner sep=1pt}]
+\node[port] (a) at (0,1.2) {$a$};
+\node[port] (b) at (1.5,0) {$b$};
+\node[port] (c) at (-1.5,0) {$c$};
+\draw[->] (a) -- (b); \draw[->] (b) -- (c); \draw[->] (c) -- (a);
+\node at (0,-0.7) {Recovery arcs};
+\node[port] (la) at (4,1.2) {$L_a$};
+\node[port] (lb) at (6,1.2) {$L_b$};
+\node[port] (lc) at (8,1.2) {$L_c$};
+\node[port] (rb) at (4,0) {$R_b$};
+\node[port] (rc) at (6,0) {$R_c$};
+\node[port] (ra) at (8,0) {$R_a$};
+\draw (la) -- (rb); \draw (lb) -- (rc); \draw (lc) -- (ra);
+\draw[dashed,blue!60!black,rounded corners=3pt] (la.west) -- (3.4,1.2)
+  -- (3.4,-0.45) -- (8.6,-0.45) -- (8.6,0) -- (ra.east);
+\draw[dashed,blue!60!black] (lb) -- (rb);
+\draw[dashed,blue!60!black] (lc) -- (rc);
+\node at (6,-0.7) {Solid: incidence edges; dashed: demand pairs};
+\end{tikzpicture}
+\caption{A directed three-cycle has three disconnected incidence edges.
+Each coordinate's two ports lie in different components. Dashed demand
+pairs indicate which ports correspond; they are not graph edges and
+cannot be traversed in a paired-distance calculation.}
+\label{fig:paired-ports}
+\end{figure}
+
 \begin{definition}[Index code]
 For binary inputs on~$V$, an index code of length~$m$ for~$N$ is a map $G:\{0,1\}^V\to\{0,1\}^m$ such that $G(x)$ together with $x|_{N(q)}$ determines~$x_q$ for every~$q$.
 \end{definition}

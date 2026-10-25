@@ -1,0 +1,210 @@
+\section{The strengthening and its scope}
+
+The fourth paper proves that every storage-valid polymatroid on a
+circular clique $K_{p/q}$ with $p/q\le14/5$ satisfies a weighted half
+bound~\cite[Proposition ``Further good targets'']{BrendeCurved}.
+This memo extends that range to $p/q<3$. The exact endpoint fails on
+$K_3$. The existing paper and its Lean declarations remain unchanged;
+the memo supplies a general proof and derives the earlier range from it.
+
+A polymatroid here is a function $h:2^V\to\R$ on a finite set, with
+$h(\varnothing)=0$, monotonicity, and submodularity. Write
+\[
+ h(A\mid S)=h(A\cup S)-h(S),\qquad
+ I_h(A;B\mid S)=h(A\mid S)+h(B\mid S)-h(A\cup B\mid S).
+\]
+The mutual information is nonnegative for the disjoint sets used below.
+Validity for recovery sets $N(v)$ means $h(v\mid N(v))=0$.
+Diminishing returns preserves this equality after enlarging the
+conditioning set. For a graph, $N(v)$ is its neighborhood.
+No representability, integrality, or equality of singleton values is assumed.
+
+\section{Conditional elimination}
+
+\begin{theorem}[An exact partition identity]\label{thm:elimination}
+\notformalized
+Let $P_1,\ldots,P_m$ partition $V$, where $m\ge2$ and empty parts are
+allowed. Enumerate $V$ as $v_0,\ldots,v_{n-1}$ and put
+$S_t=\{v_0,\ldots,v_{t-1}\}$, $P_i^t=P_i\setminus S_t$.
+Let $a(t)$ be the part of $v_t$. Suppose there is $b(t)\ne a(t)$ with
+\[
+ h(v_t\mid S_t\cup P_{b(t)}^t)=0.
+\]
+Then
+\begin{equation}\label{eq:elimination}
+ \sum_i h(P_i)-2h(V)
+ =\sum_{t=0}^{n-1}\ \sum_{i\notin\{a(t),b(t)\}}
+                       I_h(v_t;P_i^t\mid S_t)\ge0.
+\end{equation}
+In particular $2h(V)\le\sum_i h(P_i)\le\sum_{v\in V}h(\{v\})$.
+\end{theorem}
+\begin{informalproof}
+Set $J_t=\sum_i h(P_i^t\mid S_t)-2h(V\setminus S_t\mid S_t)$.
+Fix a step and abbreviate its vertex, own part, supplying part, and
+conditional entropy by $v,a,b,u=h(v\mid S_t)$.
+The own-part contribution decreases by $u$. Each other part decreases
+by $I_h(v;P_i^t\mid S_t)$, and the whole remaining entropy decreases
+by $u$. Thus
+\[
+ J_t-J_{t+1}=\sum_{i\ne a}I_h(v;P_i^t\mid S_t)-u.
+\]
+The supplying-part condition makes its summand exactly $u$.
+Cancel it and telescope, using $J_n=0$ and
+$J_0=\sum_i h(P_i)-2h(V)$. Nonnegative mutual information and
+subadditivity within the parts give the two inequalities.
+The empty ground set and zero conditional entropies cause no exception.
+\end{informalproof}
+
+More explicitly, the weighted slack is the right side of
+\eqref{eq:elimination} plus
+$\sum_i(\sum_{v\in P_i}h(\{v\})-h(P_i))$, another sum of nonnegative
+mutual informations. If the supplying condition is dropped, the same
+calculation subtracts $\sum_t h(v_t\mid S_t\cup P_{b(t)}^t)$ from
+the right side. That is an exact defect identity, not an assertion
+that a low-defect order always exists.
+
+The following equivalent style of elimination is the short formal
+interface used for the graph application. It is stated separately
+because Lean verifies its inequality, not the preceding general
+multi-part identity.
+
+\begin{lemma}[A three-record criterion]\label{lem:three-part}
+\formal{Elimination.lean}{three_part_elimination}
+Let $A,B,C\subseteq V$, not necessarily disjoint. Suppose that for
+every proper revealed set $S\subsetneq V$ there is $v\notin S$ for
+which one of the following holds:
+\[
+ \begin{array}{ll}
+ v\in A,&h(v\mid S\cup B)=0;\\
+ v\in B,&h(v\mid S\cup C)=0;\\
+ v\in C,&h(v\mid S\cup A)=0.
+ \end{array}
+\]
+Then $2h(V)\le h(A)+h(B)+h(C)$.
+\end{lemma}
+\begin{outline}
+Induct downwards on the number of unrevealed vertices to prove
+$2h(V)+h(S)\le h(S\cup A)+h(S\cup B)+h(S\cup C)$.
+Adding an eligible $v$ changes neither the own-record nor the
+supplying-record entropy. Submodularity bounds the increase of the
+third record by $h(S\cup\{v\})-h(S)$.
+The induction therefore passes from $S\cup\{v\}$ to $S$.
+At $S=V$ it is equality; at $S=\varnothing$ it is the conclusion.
+\end{outline}
+
+For a proper partition into three independent graph parts $A,B,C$,
+orient edges cyclically $A\to B\to C\to A$. If this orientation is
+acyclic, it satisfies the criterion: in each unrevealed induced graph
+choose a source. Its unrevealed neighbors all belong to the next part;
+its other neighbors are already in $S$. Validity and diminishing
+returns give the displayed dependence. This passage from an arbitrary
+acyclic orientation is a written argument. The specific order for the
+Andrasfai application below is checked directly in Lean.
+
+Acyclicity cannot be omitted from the three-record claim. On a six-cycle
+colored $A,B,C,A,B,C$, the binary word
+$(U,V,U+V,U,V,U+V)$ for independent fair bits is recoverable at every
+vertex. Its joint entropy is two, but each of the three color records
+has entropy one. This does not violate the weighted half bound for
+the six-cycle; it distinguishes that bound from this particular
+three-record inequality.
+
+\section{All circular ratios below three}
+
+The circular clique $K_{p/q}$ has vertices $0,\ldots,p-1$, with
+adjacency given by $q\le(j-i)\bmod p\le p-q$.
+For $k\ge2$ put $\operatorname{And}(k)=K_{(3k-1)/k}$.
+
+\begin{theorem}[All Andrasfai graphs]\label{thm:andrasfai}
+\formal{Circular.lean}{rateBound_andrasfai}
+Every valid polymatroid on $\operatorname{And}(k)$, $k\ge2$, satisfies
+$2h(V)\le\sum_{v\in V}h(\{v\})$.
+\end{theorem}
+\begin{outline}
+Use independent intervals
+$A_i=i$, $B_j=k+j$ for $0\le i,j<k$, and
+$C_\ell=2k+\ell$ for $0\le\ell<k-1$.
+Directly from circular adjacency,
+\[
+ A_i\sim B_j\iff i\le j,\quad
+ B_j\sim C_\ell\iff j\le\ell,\quad
+ C_\ell\sim A_i\iff\ell<i.
+\]
+The order $A_0,B_0,C_0,A_1,B_1,C_1,\ldots,A_{k-1},B_{k-1}$
+places every cyclically oriented edge forward. Lean checks these
+inequalities using the integer order keys $3i,3j+1,3\ell+2$.
+For any unrevealed set take its least key; all later neighbors lie
+in the next part. \Cref{lem:three-part} gives
+$2h(V)\le h(A)+h(B)+h(C)$, and subadditivity over the partition
+gives the weighted assertion.
+\end{outline}
+
+\begin{corollary}[Circular targets and homomorphisms]\label{cor:circular}
+\formal{Circular.lean}{rateBound_circularClique_lt_three,rateBound_of_circularHom,rateBound_circularClique_oldRange}
+For integers $q>0$ and $0\le p<3q$, every valid polymatroid on
+$K_{p/q}$ satisfies the weighted half bound. The same holds on every
+finite simple graph with a homomorphism to such a clique.
+The previous range $5p\le14q$, including its degenerate $p=q=0$
+case under the Lean empty-graph convention, is a corollary.
+\end{corollary}
+\begin{outline}
+Choose $k=q+1\ge2$. Since $p\le3q-1$,
+$pk\le(3k-1)q$. The already formalized Bondy--Hell map
+$i\mapsto\lfloor(3k-1)i/p\rfloor$ gives
+$K_{p/q}\to\operatorname{And}(k)$~\cite{BondyHell1990}.
+For $p=0$ this is the unique empty-domain map; no division is evaluated
+at a vertex. Apply \cref{thm:andrasfai} and the fourth paper's
+homomorphism pullback. That pullback sends $h$ to
+$Z\mapsto h(\phi^{-1}(Z))$ and uses subadditivity in each fibre.
+If $q>0$ and $5p\le14q$, then $p<3q$; if $q=0$, the older range
+forces $p=0$ and the conclusion is the empty-graph bound.
+No earlier numerical circular-clique certificate is used in this proof.
+\end{outline}
+
+\begin{corollary}[Arbitrary common alphabets]\label{cor:codes}
+\formal{Codes.lean}{card_sq_le_of_circularHom}
+Let $G$ be a finite simple graph mapping to $K_{p/q}$ with $q>0$
+and $p<3q$. For any nonempty finite alphabet $\mathcal A$, every
+storage code $\mathcal C\subseteq\mathcal A^{V(G)}$ satisfies
+$|\mathcal C|^2\le|\mathcal A|^{|V(G)|}$.
+No linearity assumption is imposed.
+\end{corollary}
+\begin{outline}
+Supply \cref{cor:circular} to the fourth paper's existing
+cardinality theorem. That theorem applies the
+weighted bound to the entropy of a uniform codeword and converts the
+logarithmic inequality to the stated integer one. It handles empty
+codes and one-symbol alphabets as well. No entropy library is duplicated.
+\end{outline}
+
+\begin{corollary}[Unequal alphabets]\label{cor:unequal}
+\notformalized
+On the same graphs, every storage code
+$\mathcal C\subseteq\prod_v\mathcal A_v$ over nonempty finite
+alphabets satisfies $|\mathcal C|^2\le\prod_v|\mathcal A_v|$.
+\end{corollary}
+\begin{informalproof}
+For a nonempty code, take its uniform law. Its entropy is a valid
+polymatroid and has $h(V)=\log|\mathcal C|$ and
+$h(\{v\})\le\log|\mathcal A_v|$. Apply \cref{cor:circular} and
+exponentiate. Empty codes satisfy the inequality directly.
+\end{informalproof}
+
+The endpoint is sharp: $K_{3/1}=K_3$ supports the binary parity code
+$(U,V,U+V)$ of size four, whose square exceeds $2^3$.
+The half constant is also attained on each Andrasfai graph with a
+suitable alphabet: give each edge an independent $a$-ary symbol and
+store its incident tuple at each vertex. The graph is $k$-regular,
+so the coordinate alphabet has size $a^k$, and
+$2|E|=k|V|$ gives rate exactly one half. This is the standard edge-symbol
+construction, not a new encoding method.
+
+\paragraph{Contribution to the program.}
+The memo widens an all-alphabet impossibility tool and replaces isolated
+circular-target certificates by one explicit elimination mechanism.
+A prospective construction on these graphs cannot exceed half rate.
+An application to native transposition still needs a proved graph
+homomorphism or elimination interface for its actual recovery relation;
+neither is furnished here. The general tape question remains open.
+The argument's correctness and formal verification are separate from
+external priority, which has not been established for this strengthening.

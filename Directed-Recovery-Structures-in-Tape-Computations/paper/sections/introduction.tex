@@ -16,7 +16,7 @@ An oblivious machine has one head schedule and one set of output times at each i
 The unresolved issue is not the counting argument. It is the structure and capacity of the full cone relations. A lower bound for linear codes alone does not control an arbitrary genie, and a graph theorem does not apply until its graph hypothesis has been justified from the execution.
 
 \subsection{Results and their scope}
-The main results follow one progression.
+The main results separate structural information supplied by a trace from the additional hypotheses needed by each coding theorem.
 
 \begin{enumerate}[label=\textup{(\arabic*)}]
 \item \textbf{A structural theorem for actual cones.} For every fixed depth and degree bound, a linear-time native schedule has only $O(L/\log d)$ coordinates whose matched ports are within any fixed incidence distance. Conditioning on heavily used inputs makes both incidence degrees bounded at an arbitrarily small fixed coordinate cost. The proof realizes short incidence paths as bounded-congestion geometric transport along alternating forward and reverse copies of the \emph{same} head schedule. Reversing geometric paths does not invert the computation's local functions.
@@ -25,35 +25,42 @@ The main results follow one progression.
 
 \item \textbf{An all-code theorem, and the failure of its universal structural premise.} Uniform hyperfiniteness together with paired-distance separation gives a half-rate bound for every finite alphabet and every recovery function. A native expander-shear construction shows that actual cone incidence need not be hyperfinite after cheap genie deletion. Its own cone relations nevertheless satisfy an all-code half bound, by a different argument using physical row lanes.
 
-\item \textbf{Connected demands with a positive coding deficit.} A conjugated native construction keeps a positive fraction of matched ports connected after the prescribed deletions. A full-cone row analysis still yields an independent coordinate rectangle of positive density. The resulting nonlinear rate deficit is independent of the fixed depth parameter. It is a theorem about these relations and an explicitly stated row interface, not a normal form for arbitrary tape computations.
+\item \textbf{A directed nonlinear bound with a measured cleanup cost.} If every strongly connected component has internal indegree at most two, all codes obey half rate, apart from an explicit bidirected-triangle correction. Native transport bounds that correction after any eligible deletion. A fixed linear-time three-bank XOR machine nevertheless requires a linear deletion before entering this class. Thus cheap depth reduction alone cannot supply this normalization.
+
+\item \textbf{Connected demands with a positive coding deficit.} A conjugated native construction keeps a positive fraction of matched ports connected after the prescribed deletions. A general theorem turns a bounded cover by monotone row words into an independent rectangle and an all-code deficit. A full-cone analysis verifies this cover for the example. The resulting nonlinear rate deficit is independent of the fixed depth parameter. It is a theorem about these relations and an explicitly stated row interface, not a normal form for arbitrary tape computations.
 \end{enumerate}
 
-The appendix develops a finite-field matrix-label certificate. It supplies characteristic-two half-rate bounds at arbitrary vector width on a separate expanding family constructed to admit the certificate. It neither realizes that family by a tape schedule nor transfers the certificate to every paired-distance-separated system.
+The algebraic appendix supplies characteristic-two half-rate bounds at arbitrary vector width on a separate expanding family. A central-layer theorem identifies the exact rate benchmark for recovery expressions over finite $p$-groups with the all-width vector-linear benchmark on the same relation. On the expanding family it therefore bounds a specified nonlinear class, uniformly in group size, and pays explicitly for exceptional rows. It does not include arbitrary nonlinear maps or realize this family by a tape schedule.
 
-The main statements are \cref{thm:nb-main} (the native structural bridge), \cref{thm:dc-complex} and \cref{cor:dc-native} (complex linear codes), \cref{cor:dc-hyperfinite} (all codes under hyperfiniteness), \cref{cor:ne-combined} (native expansion with nonlinear half bounds), and Theorems~\ref{thm:cd-robust-demands} and~\ref{thm:cd-uniform-gap} (connected demands with a depth-independent coding deficit). The abstract finite-field family is \cref{thm:mc-expanding-family}.
+The principal structural statement is \cref{thm:nb-main}. The following table distinguishes the coding conclusions and their missing premises. Each deficit is relative to the full coordinate count; stated exceptional coordinates must be paid for.
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[font=\small,box/.style={draw,rounded corners,align=center,text width=3.5cm,minimum height=1.05cm},>=Latex]
-\node[box] (schedule) {Linear-time tape schedule\\and fixed-depth genie};
-\node[box,right=0.7cm of schedule] (incidence) {Bounded-degree incidence\\with distant matched ports};
-\node[box,right=0.7cm of incidence] (code) {Coding deficit\\under stated hypotheses};
-\draw[->] (schedule) -- (incidence);
-\draw[->] (incidence) -- (code);
-\node[align=center,text width=11.8cm,below=0.45cm of incidence] {General finite-alphabet coding and sufficiently cheap depth reduction are separate remaining obligations.};
-\end{tikzpicture}
-\caption{The interface developed here. The first arrow holds for actual fixed-depth cones after paid degree trimming. The second is proved in several specified regimes, not for all native finite-alphabet recovery systems.}
-\label{fig:interface}
-\end{figure}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{5.6cm}@{}}
+\toprule
+Relation hypothesis & Code class & Conclusion & Additional native obligation \\
+\midrule
+Paired distance and uniform hyperfiniteness & Every finite alphabet & Half rate asymptotically & Supply small separators; false for some cheap native traces. \\[4pt]
+At most two internal inputs per cyclic component & Every finite alphabet & Half rate plus triangle and deletion costs & Supply small cyclic cleanup; the three-bank example requires linear cost. \\[4pt]
+Bounded row-word cover, sublinear exceptions & Every finite alphabet and every induced code & Fixed positive deficit & Extract the cover from the full trace; verified here for one example. \\[4pt]
+Bounded degree and paired distance & Complex linear, fixed width and bounded coefficients & Half rate asymptotically & Show actual genie fibres belong to this code class. \\[4pt]
+The constructed binary matrix-label family & All-width characteristic-two linear; finite-$2$-group expression codes & Half rate plus $\Delta/(2m)$ & Supply the labels and code language on an actual relation. \\
+\bottomrule
+\end{tabular}
+\caption{Theorems control different interfaces. None supplies every premise of an unrestricted native lower bound.}
+\label{tab:regimes}
+\end{table}
 
 \subsection{Relation to earlier results}
-The first paper's causal block-network formulation and common-monotone-pass bounds remain distinct from the step-level incidence approach~\cite{BrendeTapeCoding}. The second paper shows why data-independent geometric conditions and cheap encoders alone do not force the desired coding restrictions~\cite{BrendeLocalCoding}. The bit-to-word reduction of the third paper concerns the computational task rather than the graph hypothesis studied here~\cite{BrendeBitWord}. The fourth paper supplies the depth-to-index-code decomposition, home-based depth reduction, and a symmetric analytic half-rate theorem~\cite{BrendeCurved}.
+The first paper's causal block-network formulation and common-monotone-pass bounds remain distinct from the step-level incidence approach~\cite{BrendeTapeCoding}. The second paper shows why data-independent geometric conditions and cheap encoders alone do not force the desired coding restrictions~\cite{BrendeLocalCoding}. The bit-to-word reduction of the third paper concerns the computational task rather than the graph hypothesis studied here~\cite{BrendeBitWord}. The fourth paper supplies the depth-to-index-code decomposition, home-based depth reduction, and a symmetric analytic half-rate theorem~\cite{BrendeCurved}. Its accompanying memo extends the weighted all-code circular-clique range from $14/5$ to every ratio below $3$~\cite{BrendeCircularMemo}; no homomorphism from arbitrary native cones to those targets is assumed here.
 
 Storage codes, guessing games, and index coding have an established duality theory~\cite{Mazumdar,ArbabjolfaeiKim}. We use its elementary fibre implication, proved below, and do not need an asymptotic duality theorem to convert a storage bound into a genie lower bound. The analytic proof uses the local-limit and finite-trace framework for unimodular networks~\cite{AldousLyons}. The new issue is the directed incidence geometry and its connection to actual input and output ports.
 
 Two distinctions govern the conclusions. First, the native constructions are inexpensive executors, not transposition algorithms; their role is to test proposed universal graph properties. Second, although their coding bounds exclude transposition on the particular schedules, that algorithmic exclusion is already available from the first paper's pass machinery. The contribution here is the all-code statement for the full cone relation, uniformly over the specified genies and coordinate restrictions.
 
 \subsection{Quantifier conventions}
-Unless otherwise stated, machine resources, time constants, cone depth, incidence degree, and vector width are fixed before $d$ or the number of coordinates tends to infinity. An error $o_D(L)$ may have a convergence threshold depending on the fixed depth~$D$. A rate deficit described as independent of~$D$ has one positive leading constant valid for every fixed~$D$; this does not make its error bound uniform when $D$ grows. All nonlinear code bounds quantify over every finite alphabet and every storage code on the stated relation. No numerical experiment is a premise of a theorem.
+Unless otherwise stated, machine resources, time constants, cone depth, incidence degree, and vector width are fixed before $d$ or the number of coordinates tends to infinity. An error $o_D(L)$ may have a convergence threshold depending on the fixed depth~$D$. A rate deficit described as independent of~$D$ has one positive leading constant valid for every fixed~$D$; this does not make its error bound uniform when $D$ grows. The all-code results quantify over every finite alphabet and every storage code on the stated relation. The group-expression results instead quantify over their explicitly restricted alphabets and recovery language; group size and expression length may grow. No numerical experiment is a premise of a theorem.
 
-\paragraph{Reading the proofs.} The conditioning, fibre, independent-coordinate, rectangle, threshold-pullback, port-color, component, separator, damaged-expander, rank-identity, matrix-label, and hyperfinite results are formalized in Lean. The paired-distance bound, self-demands, degree trimming, depth-independent code deficit, bounded-lift torsion, and expanding-family linear-code corollary are partially formalized. The remaining native, complex-analytic, and expanding-family construction arguments have written proofs. Imported results state their source and verification scope. The declaration index and verification appendix record formal counterparts as they become available.
+\paragraph{Reading the proofs.} A result marked \textsf{Lean} is proved by the cited Lean declaration; its English outline is a convenience, and the formal statement is authoritative. Finite conditioning, path counting, row-word deficits, and matrix certificates supply reusable verified interfaces. The native structural bridge, its row-word application, and two algebraic applications have explicitly stated formalization gaps. The analytic, cyclic-component, group-expression, and remaining native arguments have complete written proofs. Imported results identify their source and verification scope. \Cref{sec:verification} and the declaration index give the detailed status.
+
+The text develops native separation first, then coding bounds and their limits, followed by native examples. The row-word theorem is stated independently before its machine application. Long rotation and phase-verification proofs are collected in \cref{sec:native-details}; algebraic certificates, group transfer, and the torsion diagnostic are in \cref{sec:mc-section,sec:torsion}.

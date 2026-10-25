@@ -2,6 +2,11 @@
 
 Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
 
+**Strengthening memo:** [Conditional Elimination and Circular Storage Codes](memo/)
+extends the circular-clique half-rate range below from `p/q ≤ 14/5` to every
+`p/q < 3`. Its family theorem and common-alphabet code corollary are verified
+in Lean using this paper's library; the original paper remains unchanged.
+
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0

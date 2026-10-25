@@ -1,0 +1,212 @@
+\section{Cyclic recovery with two internal inputs}\label{sec:cyclic-cores}
+
+A different all-code bound allows arbitrarily many one-way dependencies
+between strongly connected components. Its restriction is on the number
+of inputs participating in each component's cycles. We first prove the
+bound, then show that reducing general cheap native cones to this class
+can require a linear coordinate payment.
+
+Orient a recovery arc from its supplier to its receiver: $p\to q$ means
+$p\in N(q)$. A \emph{valid polymatroid} is a normalized, monotone,
+submodular function $h:2^V\to\R$ with
+$h(N(q)\cup\{q\})=h(N(q))$ for every $q$.
+The entropy of any law on a storage code is one example.
+
+\begin{theorem}[Two-input cyclic components]\label{thm:cc-two-input}
+\notformalized
+Let $D$ be a finite loopless recovery digraph. Suppose that every vertex
+has at most two parents inside its own strongly connected component.
+Let $\mathcal T(D)$ be the set of components that are bidirected triangles.
+Every valid polymatroid satisfies
+\[
+ 2h(V)\le\sum_{v\in V}h(\{v\})+
+                 \sum_{S\in\mathcal T(D)}\min_{v\in S}h(\{v\}).
+\]
+Consequently every nonempty storage code over an alphabet of size $a\ge2$
+satisfies, with $N=|V|$ and $t=|\mathcal T(D)|$,
+\[
+ \log_a|\mathcal C|\le\frac N2+\frac t2
+                         \le\frac N2+\frac{b_E(3)}6.
+\]
+There is no restriction on external parents, outdegree, or recovery functions.
+\end{theorem}
+\begin{informalproof}
+First each strongly connected component $S$ is either a union of two
+induced acyclic sets, or a bidirected odd cycle. To see this, take an
+inclusion-minimal subset $B\subseteq S$ that cannot be colored with two
+acyclic colors, if one exists. Every vertex of $B$ has at least two
+parents and two children in $B$: otherwise extend a coloring of its
+deletion using a color absent from its parents, or from its children.
+The indegree cap makes every indegree exactly two. Equality of total
+indegree and outdegree then makes every outdegree exactly two as well.
+No arc can enter $B$ from $S\setminus B$, since its target already has
+two internal parents. Strong connectivity forces $B=S$.
+The directed Brooks theorem, in the form of
+\cite[Theorem~1.2 and Section~1.1]{AboulkerAubian}, now makes $S$ a
+bidirected odd cycle. This application uses maximum in- and outdegree
+two only after the minimal-subset argument; a global outdegree cap was
+not assumed.
+
+Order the components $S_i$ topologically, let $P_i$ be their preceding
+union, and put $h_i(A)=h(P_i\cup A)-h(P_i)$ on subsets of $S_i$.
+Contraction preserves the polymatroid inequalities. Every external
+parent lies in $P_i$, so diminishing returns preserves validity for
+the internal recovery relation.
+If $S_i=A\sqcup B$ has two acyclic color classes, knowledge of $A$
+recovers $B$ in topological order, and conversely. Thus
+$h_i(S_i)=h_i(A)=h_i(B)$ and
+$2h_i(S_i)\le\sum_{v\in S_i}h_i(\{v\})$.
+For a bidirected odd cycle of length at least five, the same inequality
+is the weighted good-cycle bound of~\cite[Proposition ``Further good targets'']{BrendeCurved}.
+One may also pull back the pentagon bound along a closed walk consisting
+of one pentagon traversal and any number of two-edge backtracks.
+For a triangle, order the three singleton values as $x\le y\le z$.
+Any two coordinates determine the third, so
+$2h_i(S_i)\le2(x+y)\le x+y+z+x$.
+
+Sum these inequalities. The left-hand increments telescope to $2h(V)$,
+and $h_i(\{v\})\le h(\{v\})$ also bounds each exceptional minimum.
+This proves the polymatroid assertion. Apply it to a uniform codeword
+and use $h(\{v\})\le\log_2 a$ for the first cardinality bound.
+In a bidirected triangle on $u,v,w$, the path
+$L_u,R_v,L_w,R_u$ has three edges. All three coordinates are counted
+by $b_E(3)$, and different triangle components are disjoint. Hence
+$3t\le b_E(3)$.
+\end{informalproof}
+
+Reciprocal pairs attain half rate. Bidirected triangles attain the
+triangle correction over any finite field, using a parity equation.
+A directed three-cycle is not an exceptional component.
+The graph-coloring input and the odd-cycle certificates are established
+results; the conclusion here is their application to conditional recovery.
+
+\begin{corollary}[Paid cyclic cleanup]\label{cor:cc-cleanup}
+\notformalized
+For any recovery relation $D$, let $U\subseteq V$ be such that $D[V\setminus U]$
+is loopless and satisfies the internal-indegree hypothesis of
+\cref{thm:cc-two-input}. If $t_U$ is its number of bidirected-triangle
+components, then every nonempty storage code satisfies
+\[
+ \log_a|\mathcal C|\le\frac{N+|U|+t_U}{2}.
+\]
+For actual full-depth-$D_0$ native cones with $T\le c(L+1)$ and $k$ work
+heads, put $B=\sum_{h=0}^{D_0}(k+1)^h$ and
+$A_3=12c(B+1)(k+2)(k+6)+3$. Uniformly over eligible $U$,
+\[
+ t_U\le A_3\frac L{\log_2 d},\qquad
+ \log_a|\mathcal C|\le\frac{L+|U|}{2}
+                      +\frac{A_3L}{2\log_2 d}.
+\]
+\end{corollary}
+\begin{informalproof}
+Fix the actual values on $U$. Each remaining fibre is a code on the
+induced relation, with the omitted parents replaced by constants.
+\Cref{thm:cc-two-input} bounds each fibre by
+$a^{(N-|U|+t_U)/2}$, and at most $a^{|U|}$ fibres occur.
+For the native bound choose one three-edge paired path from each
+surviving triangle component. They are vertex-disjoint in the original
+incidence graph. Apply \cref{lem:nb-disjoint} with $s=3$.
+This does not require bounded left degree or a bound on all short
+paired paths of the untrimmed relation.
+\end{informalproof}
+
+Write $\tau_2(D)$ for the minimum eligible $|U|$. For native cones a
+rate of at least $1/2+\varepsilon$ requires
+$\tau_2(D)\ge2\varepsilon L-A_3L/\log_2d$.
+Thus sublinear cyclic cleanup would suffice for the half bound.
+The next result shows why that premise needs a separate argument.
+
+\begin{proposition}[A linear native cleanup cost]\label{prop:cc-native-obstruction}
+\notformalized
+There is one fixed oblivious $O(L)$-time native machine, with home-based
+work heads, that appends exactly
+\[
+ Y(r,t,s)=\sum_{c=0}^2 X(r+c,t-c,s)\pmod2
+\]
+in physical row-major order for every canonical $d\ge3$; indices are
+reduced modulo $d$. For every whole-step genie $\Gamma$, its actual
+transpose-demand relation $D_\Gamma$ satisfies
+\[
+ 4\tau_2(D_\Gamma)\ge L-3db-6|\Gamma|.
+\]
+If its fixed whole-step value width is $\beta$, then for every fixed
+$0<\varepsilon\le\min(1,\beta/12)$ there are genies of cost at most
+$\varepsilon L$ and depth bounded independently of $d$, yet every genie
+at that cost satisfies
+\[
+ \tau_2(D_\Gamma)\ge L/8-3db/4.
+\]
+The machine is not claimed to transpose.
+\end{proposition}
+\begin{informalproof}
+Use three separate payload banks $A_c$, each with $L$ cells, an origin
+flag, and an end flag. Reuse the paid length counter, home-based scratch
+interpreter, and binary-to-unary guide construction in the proof of
+\cref{prop:ne-native-shear}. Prepare reusable guides for $W=db$, $cb$,
+and $W-cb$, for $c=0,1,2$. Each guided action moves the raw head or
+copies one raw bit to the current bank cell per tick, then returns the
+guide to its origin while the payload heads wait. Zero-length guides
+perform no action. All transitions preserve the flags and the other
+scanned payload cells.
+
+To fill bank $c$, process raw rows in the order
+$c,c+1,\ldots,d-1,0,\ldots,c-1$. For each row, with $a=cb$ and
+$q=W-a$, perform five guided actions: move raw right $q$; copy $a$
+bits; move raw left $W$; copy $q$ bits; move raw right $a$.
+This writes the last $a$ bits followed by the first $q$ bits and ends
+at the next raw row and bank row. Initial offsets cost at most $2W$.
+At the raw right blank, wrap to the left blank and advance to zero,
+paying $L+O(1)$; after filling the bank, reset raw and rewind the
+bank completely. Then
+$A_c(r,t,s)=X(r+c,t-c,s)$.
+Finally advance all three banks together and append their three-bit
+XOR in one fixed transition per position.
+
+The initial length count and raw rewind cost $O(L)$. Shape recognition
+and guide preparation cost $\operatorname{polylog}L+O(W)$; the $3d$
+row routines, wraps, bank rewinds and appends cost $O(L)$.
+Public row control costs $O(d\operatorname{polylog}L)=O(L)$ on the
+canonical widths. There is no arithmetic charged only implicitly per
+payload bit. Noncanonical lengths use the uniform fallback of the
+same controller. Bank heads make full outward scans and returns,
+with waits; guide and scratch heads make origin excursions. Hence
+the physical work walks are home-based and the schedule is oblivious.
+
+For each bank cell, list every visit from its raw-bit load through
+its final XOR append, including parked rewrites and the rewind.
+Read backwards, this list is a literal path of previous-visit edges
+from the append to the raw read. One path is chosen per bank cell.
+A step scans one cell per bank, so it belongs to at most three chosen
+paths. Revealing $\Gamma$ destroys at most $3|\Gamma|$ of them.
+Every surviving path is an incidence in the full actual cone relation;
+no auxiliary dependency is pruned.
+
+Under transpose-demand labels the three suppliers of $v=(i,j,s)$ are
+$F_c(v)=(j+c,i-c,s)$. Each $F_c$ is an involution, and the three values
+are distinct for $d\ge3$. Their fixed-coordinate sets are disjoint and
+total $3db$ vertices. Form the undirected graph with nonfixed edges
+$\{v,F_c(v)\}$. It has maximum degree three and degree exactly three
+outside those fixed-coordinate sets. Each edge has two designated
+directed paths. At most $3|\Gamma|$ edges lose either path, so the
+set $Z$ of fixed coordinates and damaged-edge endpoints has
+$|Z|\le3db+6|\Gamma|$.
+
+If an eligible deletion $U$ leaves a vertex outside both $Z$ and the
+closed neighborhood of $U$ in this degree-three graph, it leaves
+that vertex and all three reciprocal neighbors. These four vertices
+belong to one strongly connected component of the actual induced
+relation, contradicting internal indegree at most two.
+Thus $V\setminus Z$ lies in that closed neighborhood, of size at most
+$4|U|$, proving the finite bound. Extra cone arcs cannot invalidate
+this argument. Finally apply \cref{lem:ne-depth-import} to obtain
+cheap fixed-depth genies. For any genie with
+$\beta|\Gamma|\le\varepsilon L$ and $\varepsilon\le\beta/12$,
+the finite bound gives the stated $L/8-3db/4$ estimate.
+\end{informalproof}
+
+The two results have complementary roles: few cyclic inputs give a
+nonlinear coding bound, but a cheap native trace need not admit cheap
+reduction to that class. A general lower-bound argument must handle
+more internal inputs or exploit further information, such as transpose
+correctness. This example supplies neither an above-half code nor a
+counterexample to the general paired-distance coding question.

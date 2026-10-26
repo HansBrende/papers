@@ -3,18 +3,21 @@
 The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
 (\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}). It requires, through relative paths,
 the Lean library of the fourth paper~\cite{FourthPaper2026}, in the directory
-\leanfile{Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean}, and that of its circular
-memo~\cite{CircularMemo2026}, in the subdirectory \leanfile{memo/lean} of the same paper. The fourth paper's library in turn
-imports the second paper's library, which imports that of the first~\cite{FirstPaper2026,SecondPaper2026}, and the
-repository's shared library \texttt{lean-machine}. Keep the repository's directory layout, so that these sibling directories
-stay in place.
+\leanfile{Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean}, that of its circular
+memo~\cite{CircularMemo2026}, in the subdirectory \leanfile{memo/lean} of the same paper, and that of \emph{Directed Recovery
+Structures}~\cite{DirectedRecovery2026}, in the directory \leanfile{Directed-Recovery-Structures-in-Tape-Computations/lean}
+(namespace \texttt{DirectedRecovery}). The fourth paper's library in turn imports the second paper's library, which imports
+that of the first~\cite{FirstPaper2026,SecondPaper2026}, and the repository's shared library \texttt{lean-machine}, which
+the library of \emph{Directed Recovery Structures} also imports. Keep the repository's directory layout, so that these
+sibling directories stay in place.
 
 \paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
 \begin{center}
 \texttt{lake exe cache get \&\& lake build}
 \end{center}
 The first command downloads the compiled Mathlib; the second compiles the library and the parts of the earlier libraries
-that it uses. Before the first build, fetch the second paper's pinned external dependency as its README describes.
+that it uses. Before the first build, fetch the second paper's pinned external dependency as its README describes. A
+full build of this library takes about six minutes.
 
 \paragraph{Axioms.} The file \leanfile{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
 \leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration of this library named here
@@ -22,10 +25,21 @@ that it uses. Before the first build, fetch the second paper's pinned external d
 \begin{center}
 \texttt{lake env lean PaperAxioms.lean}
 \end{center}
-Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of this
-library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom}. Running
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. The declarations
+of the earlier libraries named in the text are verified in those libraries; this file does not check them. No Lean file
+of this library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom}. Running
 \texttt{python3 tools/lean\_index.py --index-only} in the paper's directory regenerates only the index of
 \cref{app:index}.
+
+\paragraph{Kernel evaluation.} The finite statements of \cref{sec:limits} are proved by evaluation, and none uses
+\texttt{native\_decide}. \Cref{prop:no-private}, over all $512$ subsets of $\Z_9$, \lean{x15_cores}, over all
+$2^{15}$ subsets of the vertex set of $\Ex$, and \lean{x15_hexagon} use \texttt{decide +kernel}, which leaves the
+evaluation to the kernel alone. The other finite checks use \texttt{decide}, whose proof term the kernel rechecks:
+\cref{ex:D9}, the elimination certificates of \cref{sec:limits}, \lean{c13_spec}, the chorded-cycle conditions of
+\cref{rem:sweeps}, the other properties of $\Ex$ in \cref{rem:X15}, and the triangle-freeness and degrees of the
+Petersen graph in \cref{rem:petersen}. The evaluation of \lean{x15_cores} takes about four minutes and needs a larger recursion limit, which
+the file raises for that declaration only (\texttt{set\_option maxRecDepth 100000}); no other option is set in this
+library.
 
 \paragraph{Where things are.} \leanfile{NestedElimination.lean} (Lemma~E), \leanfile{Decomposition.lean} (contraction,
 piece certificates and Theorem~D), \leanfile{Positional.lean} (co-supply), \leanfile{Pieces.lean} (fewer arcs, greedy
@@ -35,11 +49,18 @@ circular chromatic number below three), \leanfile{N3.lean} (Theorem~N3 and the s
 \leanfile{Blocks.lean} (internal certificates and chordless subcubic blocks), \leanfile{PathCert.lean} (Lemma~S and
 Theorem~PC), \leanfile{Circulant.lean} (positional certificates and Proposition~CC), \leanfile{Cayley.lean}
 (Corollary~CC), \leanfile{Barrier.lean} (the barrier bound), \leanfile{Matching.lean} (fractional matchings, the fractional
-Tutte--Berge formula and the guessing number), \leanfile{IndexCoding.lean} (index codes and the broadcast rate), and
+Tutte--Berge formula and the code bounds of \cref{thm:gn}), \leanfile{IndexCoding.lean} (index codes and
+\cref{thm:index}), \leanfile{PairedDistance.lean} (\cref{lem:tt-paired}, paid deletion and \cref{prop:dn3-transfer}),
+\leanfile{Components.lean} (the component form of Corollary~$\Tint$), \leanfile{Digon.lean} (Theorem~PC for digon
+components), \leanfile{Rates.lean} (guessing numbers, the broadcast rate and fractional clique covers),
+\leanfile{Limits.lean} (\cref{prop:no-private}, \cref{ex:D9}, the certificates printed in \cref{sec:limits}, the twelve
+chorded cycles of \cref{rem:sweeps}, the facts about $\Ex$ in \cref{rem:X15} and the decomposition of the Petersen graph
+in \cref{rem:petersen}), and
 \leanfile{Examples.lean} (small sanity checks).
 
 \paragraph{Computations.} The numerical remarks of \cref{sec:limits} (\cref{rem:X15,rem:sweeps,rem:petersen}) and the
 numerical check of the folded-cube formula in \cref{rem:foldcube} are reproduced by \leanfile{tools/verify_remarks.py}
 (plain Python~3, run from the paper's directory as \texttt{python3 tools/verify\_remarks.py}), described in
-\leanfile{tools/README.md}; the script also checks \cref{prop:no-private} by exhaustion, and \cref{ex:D9} and the global
-certificate before it step by step. They are not used in any proof, and the Lean library does not depend on them.
+\leanfile{tools/README.md}; independently of their Lean proofs, the script also checks \cref{prop:no-private} by
+exhaustion, and \cref{ex:D9} and the printed certificates step by step. The computations are not used in any proof, and
+the Lean library does not depend on them.

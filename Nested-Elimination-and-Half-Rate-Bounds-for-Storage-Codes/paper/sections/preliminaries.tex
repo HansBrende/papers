@@ -38,26 +38,39 @@ $T$ (\lean{IsAcyclicIn}); equivalently, $N[A]$ has no loops and no directed cycl
 \emph{$2$-dicolourable} if $V$ is the union of two disjoint acyclic sets.
 
 \paragraph{Paired incidence.} \emph{Directed Recovery Structures}~\cite[Definition~2.3]{DirectedRecovery2026} attaches
-to $N$ its incidence graph $E(N)$: a bipartite graph with vertices $L_p$ and $R_p$ for $p\in V$ and an edge
-$L_pR_q$ whenever $p\in N(q)$. It puts $b_E(r)=\card{\{p\in V:\dist_E(L_p,R_p)\le r\}}$, and a sequence of relations
-satisfies the \emph{paired-distance condition} if $b_E(r)=o(\card V)$ for every fixed $r$. Distances between $L_p$
-and $R_p$ are odd. Our hypothesis ``TT-free'' is the exact form of this condition at radius three.
+to $N$ its incidence graph $E(N)$ (\lean{DirectedRecovery.pairedIncidenceGraph}): a bipartite graph with vertices $L_p$
+and $R_p$ for $p\in V$ and an edge $L_pR_q$ whenever $p\in N(q)$. We write $\dist_E$ for its graph distance, with
+value $\infty$ between vertices in different components. It puts $b_E(r)=\card{\{p\in V:\dist_E(L_p,R_p)\le r\}}$, the
+number of elements of \lean{DirectedRecovery.shortPairedCoordinates}~$N\,r$, and a sequence of relations satisfies the
+\emph{paired-distance condition} if $b_E(r)=o(\card V)$ for every fixed $r$
+(\lean{DirectedRecovery.HasPairedDistanceSeparation}). Our hypothesis ``TT-free'' is the exact form of this condition
+at radius three.
 
 \begin{lemma}[Transitive triangles are paired paths of length three]\label{lem:tt-paired}
-\notformalized
-Let $N$ be a recovery relation and $p\in V$. Then $\dist_E(L_p,R_p)=1$ if and only if $p\in N(p)$. If $N$ is
-loopless, then $\dist_E(L_p,R_p)=3$ if and only if $p$ is the middle vertex of a transitive triangle. In particular,
-a loopless relation is TT-free if and only if $b_E(3)=0$, that is, if and only if $\dist_E(L_p,R_p)\ge5$ for every
-$p$.
+\formal{PairedDistance.lean}{edist_eq_one_iff, tt_of_walk_three, edist_le_three_of_tt, odd_of_edist_eq, three_le_edist, edist_eq_three_iff, ttFree_iff_shortPaired_eq_empty, ttFree_iff_five_le_edist}
+Let $N$ be a recovery relation and $p,q\in V$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:pd-odd} If $\dist_E(L_p,R_q)$ is finite, it is odd. Moreover $\dist_E(L_p,R_p)=1$ if and only if
+$p\in N(p)$.
+\item\label{it:pd-three} If $N$ is loopless, then $\dist_E(L_p,R_p)\ge3$, with equality if and only if $p$ is the
+middle vertex of a transitive triangle.
+\item\label{it:pd-five} A loopless relation is TT-free if and only if $b_E(3)=0$, and if and only if
+$\dist_E(L_p,R_p)\ge5$ for every $p$.
+\end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
-The edge $L_pR_p$ exists exactly when $p\in N(p)$. Let $N$ be loopless. A path $L_p,R_z,L_x,R_p$ of length three
-means $p\in N(z)$, $x\in N(z)$ and $x\in N(p)$, that is, $p\to z$, $x\to z$ and $x\to p$. Its vertices are distinct,
-so $z\ne p$ and $x\ne p$, and $x\ne z$ because $x\in N(z)$ and $N$ is loopless. Hence $x\to p\to z$ with $x\to z$ is
-a transitive triangle with middle vertex $p$. Conversely, every transitive triangle $x\to p\to z$, $x\to z$ gives
-this path. Since the distance is odd and not $1$, it is at least $5$ when no such path exists.
-\end{informalproof}
+\begin{outline}
+The distance is Mathlib's extended distance \texttt{SimpleGraph.edist}, with values in $\N\cup\{\infty\}$.
+\ref{it:pd-odd} The graph $E(N)$ is bipartite, so every walk from $L_p$ to $R_q$ has odd length
+(\lean{DirectedRecovery.paired_walk_length_odd}, through \lean{odd_of_edist_eq}); the edge $L_pR_p$ exists exactly when
+$p\in N(p)$ (\lean{edist_eq_one_iff}, which needs no looplessness). \ref{it:pd-three} A walk $L_p,R_z,L_x,R_p$ of length
+three means $p\in N(z)$, $x\in N(z)$ and $x\in N(p)$, that is, $x\to p\to z$ and $x\to z$ (\lean{tt_of_walk_three}); if
+$N$ is loopless, $x$, $p$ and $z$ are distinct, so this is a transitive triangle with middle vertex $p$. Conversely,
+such a triangle gives the walk (\lean{edist_le_three_of_tt}, again without looplessness). Without loops the odd
+distance is not $1$, hence at least $3$ (\lean{three_le_edist}, \lean{edist_eq_three_iff}). \ref{it:pd-five} By
+\ref{it:pd-odd} and~\ref{it:pd-three}, $\dist_E(L_p,R_p)\le3$ means that $p$ is the middle vertex of a transitive triangle,
+and otherwise the distance is at least $5$ (\lean{ttFree_iff_shortPaired_eq_empty}, \lean{ttFree_iff_five_le_edist}).
+\end{outline}
 
 \subsection{Polymatroids and storage codes}\label{sec:prelim-codes}
 
@@ -74,9 +87,11 @@ and $I(w;X)=h(w)+h(X)-h(X\cup\{w\})$ (\lean{mi}). The subject of this paper is t
 In the terms of the fourth paper, \eqref{eq:star} says that $N$ satisfies the rate bound $\tfrac12$; the
 formal statement is \lean{MotionDepthCodes.RateBound}~$N\,(1/2)$. A \emph{storage code} for $N$ over a finite alphabet $\alpha$ is a set
 $C\subseteq\alpha^V$ such that two words of $C$ that agree on $N(v)$ agree at $v$, for every $v$
-(\lean{MotionDepthCodes.IsStorageCode}). The \emph{guessing number} $\gn(N,q)$ is the largest value of
-$\log_q\card C$ over storage codes with $\card\alpha=q$, and $\gn(N)=\sup_q\gn(N,q)$ is the asymptotic guessing
-number~\cite{Riis2007,ChristofidesMarkstrom2011}.
+(\lean{MotionDepthCodes.IsStorageCode}). For $q\ge2$ the \emph{guessing number} $\gn(N,q)$ is the largest
+value of $\log_q\card C$ over storage codes with $\card\alpha=q$~\cite{Riis2007,ChristofidesMarkstrom2011}, and we put
+$\gn(N)=\sup_{q\ge2}\gn(N,q)$. We use this supremum; for the graphs of \cref{cor:gn} it is already attained at every
+perfect square (\cref{cor:gn}\ref{it:gnsq}), and it is also the limit as $q\to\infty$ (\cref{cor:gn}\ref{it:gnlim}).
+For graphs, \cref{cor:gn} states the formal versions of both definitions.
 
 \begin{theorem}[Rate bounds bound codes]\label{thm:codes}
 \cited{the fourth paper~\cite[Theorem~6.3 and Corollary~6.9]{FourthPaper2026}, Lean-verified there
@@ -113,28 +128,34 @@ $V\setminus U$ is valid for $N-U$. Moreover $h_U(w)=h(w)-I(w;U)$ for $w\notin U$
 
 \begin{outline}
 The polymatroid axioms for $h_U$ follow from those for $h$, because $X\mapsto X\cup U$ preserves unions,
-intersections and inclusions. If $N(v)\subseteq U\cup X$, the closure lemma (\cref{lem:closure}) gives
-$h(X\cup U\cup\{v\})=h(X\cup U)$. The last identity is the definition of $I(w;U)$.
+intersections and inclusions (\lean{contr_isPolymatroid}). If $N(v)\subseteq U\cup X$, validity at $v$ and
+submodularity give $h(X\cup U\cup\{v\})=h(X\cup U)$, as in the closure lemma (\lean{contr_insert_eq}). The ``in
+particular'' clause is immediate from \lean{contr_insert_eq}, applied with $X=N(v)\setminus U$, and the ``moreover''
+clause from the definition of $I(w;U)$.
 \end{outline}
 
 \subsection{Formal status of the results}\label{sec:prelim-lean}
 
-Every numbered result names its formal status in one of four ways. A line
+Every numbered theorem, proposition, lemma, corollary and example names its formal status in one of two ways. A line
 \begin{center}
 {\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
 \end{center}
-gives the Lean declarations of a fully formalized result. The declarations live in the namespace \texttt{HalfRate}
-and the files in the directory \leanfile{lean/HalfRate/}. The text after such a statement, labelled \emph{Outline of the
-formal proof}, is a guide to the formal proof; it is a convenience, not a proof. A line beginning \textsf{Lean
-(partial)} marks a result whose formal counterpart covers all but an explicitly named part, which the text proves.
-The words \textsf{Not formalized} mark a result with no formal counterpart; it comes with a complete proof, labelled
-\emph{Proof (not formalized)}. A line beginning \textsf{Cited} marks a result of an earlier paper of the series that is
-used without proof, and says where it is proved and whether it is Lean-verified there. Where the English statement
-simplifies, the Lean statement is authoritative. Numerical observations are labelled as such and are not used in
-proofs. Numbered definitions carry a status line only when they are formalized.
+gives the Lean declarations of a formalized result. The declarations live in the namespace \texttt{HalfRate}
+and the files in the directory \leanfile{lean/HalfRate/}; names with another prefix belong to the libraries of earlier
+papers. The text after such a statement, labelled \emph{Outline of the formal proof}, is a guide to the formal proof; it
+is a convenience, not a proof. A line beginning \textsf{Cited} marks a result of an earlier paper of the series that is
+used without proof, and says where it is proved and whether it is Lean-verified there. Apart from these cited
+results, every numbered theorem, proposition, lemma, corollary and example of this paper is formalized. Where the
+English statement simplifies, the Lean statement is authoritative. The remarks of
+\cref{sec:limits} are labelled as numerical, cited or heuristic, say which of their claims are Lean-verified, and are
+not used in proofs. Numbered definitions carry a status line only when they are formalized.
 
 The library depends on Lean~4 and Mathlib (both v4.34.1), on the Lean library of the fourth paper (whose
-polymatroids, storage codes and rate bounds we use unchanged) and on that of its circular memo~\cite{CircularMemo2026},
-imported through relative paths. It contains no \texttt{sorry}, no \texttt{native\_decide} and no unsafe evaluation,
-and every declaration cited here depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and
-\texttt{Quot.sound} (\cref{app:verify}). \Cref{app:index} lists every declaration of this library cited in the paper.
+polymatroids, storage codes and rate bounds we use unchanged), on that of its circular memo~\cite{CircularMemo2026},
+and on that of \emph{Directed Recovery Structures}~\cite{DirectedRecovery2026} (whose paired incidence graph, induced
+relations, paid conditioning and code rates we use unchanged), imported through relative paths. It contains no
+\texttt{sorry}, no \texttt{native\_decide} and no unsafe evaluation; the finite checks of \cref{sec:limits} are
+evaluated by the kernel. Every declaration of this paper's library cited here depends only on the axioms
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verify}); the names from the earlier
+libraries are verified in those libraries, and the axiom check \leanfile{PaperAxioms.lean} covers only this library.
+\Cref{app:index} lists every declaration of this library cited in the paper.

@@ -41,8 +41,9 @@ Every loopless TT-free relation in which every vertex has at most three parents 
 (\cref{def:piece}).
 \end{conjecture}
 
-By Theorem~D, \cref{conj:P} implies that all such relations satisfy \eqref{eq:star}, and by \cref{prop:dn3-transfer}
-that the paired-distance question has an affirmative answer for recovery sets of size at most three, at any out-degree.
+The conjecture is stated in Lean as \lean{ConjectureP}. By Theorem~D, \cref{conj:P} implies that all such relations
+satisfy \eqref{eq:star} (\lean{dn3_of_conjectureP}), and by \cref{prop:dn3-transfer} that the paired-distance question
+has an affirmative answer for recovery sets of size at most three, at any out-degree.
 Every relation treated in this paper has a decomposition, including $\Ex$ (\cref{rem:X15}), and \cref{rem:X15} shows that
 a proof cannot always start from a minimum nonempty core. One intermediate target is the all-code version of the fourth paper's
 Theorem~S on its whole class: TT-free relations with at most three parents per vertex, in which every vertex with three
@@ -52,13 +53,13 @@ parents has no child that is not a parent. It lies between Theorem~U3 and \cref{
 
 \begin{conjecture}[Conjecture K]\label{conj:K}
 Let $K$ be a chorded digon cycle, with at most one chord into and at most one chord out of every vertex, such that $N[K]$
-is TT-free. Then $N[K]$ has an elimination certificate.
+is loopless and TT-free. Then $N[K]$ has an elimination certificate.
 \end{conjecture}
 
-With Theorem~PC, \cref{conj:K} would give \eqref{eq:star} for every TT-free relation whose digon components are paths or
-cycles and which satisfies (H1) and (H2) of \cref{cor:PC-digon}; this includes every TT-free relation in which every
-vertex has exactly two digon partners, one one-way parent and one one-way child. \Cref{prop:CC} with the mirror sweep
-proves it when all chords have one offset $k$ with $2k\not\equiv\pm1\pmod{\card K}$, in particular for TT-free
+With Theorem~PC, \cref{conj:K} would give \eqref{eq:star} for every loopless TT-free relation whose digon components are
+paths or cycles and which satisfies (H1) and (H2) of \cref{cor:PC-digon}; this includes every loopless TT-free relation in
+which every vertex has exactly two digon partners, one one-way parent and one one-way child. \Cref{prop:CC}\ref{it:mirror} proves it
+when all chords have one offset $k$ with $2k\not\equiv\pm1\pmod{\card K}$, in particular for loopless TT-free
 circulants; sweeps do not prove it in general (\cref{rem:sweeps}), but every cycle of \cref{rem:sweeps} has a
 certificate with three records.
 
@@ -74,8 +75,9 @@ exclude oblivious linear-time transposers in that class (\cref{sec:con-interface
 construct a transposer~\cite{DirectedRecovery2026}. Our results answer it for relations that are close, in the sense of
 \cref{cor:paid}, to one of the classes above.
 
-\item \emph{Formalization.} Formalize the topological order of strongly connected components used in
-Corollary~$\Tint$, the digon-component form of Theorem~PC (\cref{cor:PC-digon}), \cref{lem:tt-paired},
-\cref{cor:paid}, \cref{prop:dn3-transfer} and \cref{prop:no-private}, and turn the computations of \cref{sec:limits}
-into Lean certificates.
+\item \emph{Formalization.} Formalize the claims of the numerical remarks of \cref{sec:limits} that are still
+numerical (that $\Ex$ is strongly connected and not $2$-dicolourable and that its minimum nonempty core is not a
+piece, that the twelve chorded cycles of \cref{rem:sweeps} have no valid sweep, and that the Petersen graph has no global
+certificate), the folded-cube rank formula of \cref{rem:foldcube} beyond the Clebsch graph, and the theorem of Atkins,
+Rombach and Skerman cited after \cref{cor:gn}. The heuristic \cref{rem:degree4} has no formal content.
 \end{enumerate}

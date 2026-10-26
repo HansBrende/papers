@@ -1,8 +1,8 @@
 \section{What this means for transposition}\label{sec:construction}
 
 Our aim is to decide~(T), and we would prefer a construction. This section says what the results above require of a
-linear-time transposer, and of an oblivious one in particular. Apart from \cref{prop:dn3-transfer}, a conditional
-statement with a complete proof, it contains no new theorems: every claim is one of the results above, a result of an
+linear-time transposer, and of an oblivious one in particular. Apart from \cref{prop:dn3-transfer}, a formalized
+conditional statement, it contains no new theorems: every claim is one of the results above, a result of an
 earlier paper of the series, or explicitly labelled as a heuristic.
 
 \subsection{The interface}\label{sec:con-interface}
@@ -34,21 +34,38 @@ these classes, and depth reduction is open. The degree-three case of Question~9.
 combinatorial statement.
 
 \begin{proposition}[What the directed degree-three conjecture would give]\label{prop:dn3-transfer}
-\notformalized
-Suppose that every loopless TT-free relation in which every vertex has at most three parents satisfies
-\eqref{eq:star}; \cref{conj:P} below would imply this, by Theorem~D. Then every storage code on a relation $N$ in which
-every vertex has at most three parents has rate at most $\frac12+b_E(3)/(2\card V)$. In particular,
-\cite[Question~9.1]{DirectedRecovery2026} would have an affirmative answer for relations with recovery sets of size at
-most three, with no bound on out-degrees and with the paired-distance condition used only at radius three.
+\formal{PairedDistance.lean}{DN3, ConjectureP, dn3_of_conjectureP, dn3_hyp_deleted, card_sq_le_of_dn3, storageCodeRate_le_of_dn3, dn3_rate_eventually_le, shortPaired_three_tendsto}
+Suppose that every loopless TT-free relation on a finite set in which every vertex has at most three parents satisfies
+\eqref{eq:star}; \cref{conj:P} below implies this, by Theorem~D. Let $N$ be a relation on $V$ in which every vertex has at
+most three parents.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:dn3-card} Every storage code $C$ for $N$ over a nonempty finite alphabet $\alpha$ satisfies
+$\card C^2\le\card\alpha^{\card V+b_E(3)}$.
+\item\label{it:dn3-rate} If moreover $\card\alpha\ge2$, $V\ne\emptyset$ and $C\ne\emptyset$, the rate
+$\log_{\card\alpha}\card C/\card V$ of $C$ is at most $\frac12+b_E(3)/(2\card V)$.
+\item\label{it:dn3-seq} Let $N_n$ be relations on nonempty finite sets $V_n$ in which every vertex has at most three
+parents, with $b_E(3)/\card{V_n}\to0$, and let $C_n$ be nonempty storage codes for $N_n$ over alphabets with at least two
+symbols. Then for every $\eps>0$ the rate of $C_n$ is at most $\frac12+\eps$ for all large $n$. The paired-distance
+condition implies $b_E(3)/\card{V_n}\to0$.
+\end{enumerate}
+In particular, \cite[Question~9.1]{DirectedRecovery2026} would have an affirmative answer for relations with recovery
+sets of size at most three, with no bound on out-degrees and with the paired-distance condition used only at radius
+three.
 \end{proposition}
 
-\begin{informalproof}
-Let $Z$ be the set of coordinates $p$ with $\dist_E(L_p,R_p)\le3$, so $\card Z=b_E(3)$. It contains every vertex with a
-loop and the middle vertex of every transitive triangle (\cref{lem:tt-paired}; the path $L_p,R_z,L_x,R_p$ given by a
-transitive triangle $x\to p\to z$, $x\to z$ needs no looplessness). A transitive triangle of $N-Z$ is one of $N$, whose
-middle vertex lies in $Z$; so $N-Z$ is loopless and TT-free, and its vertices still have at most three parents. By
-hypothesis it satisfies \eqref{eq:star}, and \cref{cor:paid} gives $\log_{\card\alpha}\card C\le(\card V+b_E(3))/2$.
-\end{informalproof}
+\begin{outline}
+The hypothesis is \lean{DN3}, and Conjecture~P is \lean{ConjectureP}; Theorem~D gives the implication
+(\lean{dn3_of_conjectureP}). Let $Z$ be the set of coordinates $p$ with $\dist_E(L_p,R_p)\le3$, so $\card Z=b_E(3)$. It
+contains every vertex with a loop and the middle vertex of every transitive triangle (\cref{lem:tt-paired}; the walk
+$L_p,R_z,L_x,R_p$ given by a transitive triangle $x\to p\to z$, $x\to z$ needs no looplessness). A transitive triangle
+of $N-Z$ is one of $N$, whose middle vertex lies in $Z$; so $N-Z$ is loopless and TT-free, and its vertices still have at
+most three parents (\lean{dn3_hyp_deleted}). By hypothesis it satisfies \eqref{eq:star}, and \cref{cor:paid}
+gives~\ref{it:dn3-card} (\lean{card_sq_le_of_dn3}). Taking logarithms gives~\ref{it:dn3-rate}, with the rate
+\lean{DirectedRecovery.storageCodeRate} of \emph{Directed Recovery Structures} (\lean{storageCodeRate_le_of_dn3}),
+and~\ref{it:dn3-rate} gives~\ref{it:dn3-seq} (\lean{dn3_rate_eventually_le}). The paired-distance condition
+(\lean{DirectedRecovery.HasPairedDistanceSeparation}) at radius three is the hypothesis of~\ref{it:dn3-seq}
+(\lean{shortPaired_three_tendsto}).
+\end{outline}
 
 \subsection{Necessary conditions for a construction}\label{sec:con-necessary}
 

@@ -8,7 +8,7 @@ paper's directory (the parent of `paper/`, `lean/` and `tools/`). Each script do
 Generates the index of Lean declarations, `paper/sections/leanindex.tex`, and the axiom check `lean/PaperAxioms.lean`
 from the `\formal`, `\partformal` and `\lean` references in `paper/sections/*.tex`. Declarations are relative to the
 namespace `HalfRate` and files to `lean/HalfRate/`; names from the earlier libraries (`Transpose`, `MotionDepthCodes`,
-`CircularMemo`) are skipped.
+`CircularMemo`, `DirectedRecovery`) are skipped.
 
 ```sh
 python3 tools/lean_index.py               # writes both files
@@ -20,7 +20,8 @@ python3 tools/lean_index.py --index-only  # writes only paper/sections/leanindex
 Exact checks, in plain Python 3 (standard library only, deterministic, a few seconds), of the computational remarks of
 the section on the limits of the method and of its statements about `Cay(Z_9, {1, -1, 3})`. Every output line ends in
 `OK`, and the last line gives the running time. None of the checks is used in a proof, and the Lean library does not
-depend on them.
+depend on them. Many of the checked facts are also Lean-verified (the paper says which); the script checks them
+independently, on the same data as the Lean definitions.
 
 ```sh
 python3 tools/verify_remarks.py
@@ -29,8 +30,8 @@ python3 tools/verify_remarks.py
 What it checks, by remark of the paper:
 
 - The relation of `Cay(Z_9, {1, -1, 3})` (Proposition 7.1 and Example 7.2): no set `H` with `{} != H != Z_9` has
-  properties (a) and (b) of Proposition 7.1, by exhaustion over the `2^9` subsets (the proposition also has a written
-  proof); the piece certificate of Example 7.2 satisfies conditions (C1) and (C2) of the definition of piece
+  properties (a) and (b) of Proposition 7.1, by exhaustion over the `2^9` subsets (the proposition is also
+  Lean-verified, `no_private_piece`); the piece certificate of Example 7.2 satisfies conditions (C1) and (C2) of the definition of piece
   certificates step by step, with the stated outside parents `8`, `4`, `7`, each co-supplied; the pieces `{4}` and
   `{7,8}` complete the decomposition; the three-record global elimination certificate printed after Proposition 7.1 is
   valid.

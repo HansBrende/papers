@@ -81,38 +81,38 @@ acyclic set of the hypothesis. These two sets partition $R$, which is a piece by
 Theorem~D concludes.
 \end{outline}
 
-Strongly connected components can be treated separately, since a parent in an earlier component can be contracted. The
-formal statement is a block form.
+Strongly connected components can be treated separately, since a parent in an earlier component can be contracted.
 
 \begin{corollary}[Corollary $\Tint$]\label{cor:Tint}
-\partformal{TheoremT.lean}{TTFreeOn, BlockOrder, blocks_decomp, rateBound_blocks}{the existence of a topological order of
-the strongly connected components, which is standard; it is proved below.}
+\formal{Components.lean}{Reaches, scc, ancestors, ancFibre, reaches_of_card_eq, mem_scc_of_fibre, blockOrder_fibres, rateBound_Tint}
+\formal{TheoremT.lean}{TTFreeOn, BlockOrder, blocks_decomp, rateBound_blocks}
 Let $N$ be loopless. Suppose that no strongly connected component of $N$ contains a transitive triangle, and that the set
 $\Tint$ of vertices with at least three parents inside their own strongly connected component is acyclic. Then $N$
 satisfies \eqref{eq:star}. There is no restriction on parents outside a vertex's component.
 \end{corollary}
 
-The formal theorem (\lean{rateBound_blocks}) is the following block form: if $N$ is loopless and $V$ is the union of
-pairwise disjoint blocks
-$S_1,\dots,S_r$ such that every parent of a vertex of $S_j$ lies in $S_1\cup\dots\cup S_j$, no block contains a
-transitive triangle, and each set $\{v\in S_j:\card{N(v)\cap S_j}\ge3\}$ is acyclic, then $N$ satisfies
-\eqref{eq:star}.
+In the formal statement (\lean{rateBound_Tint}) the component of $v$ is \lean{scc}~$N\,v$, the set of vertices that
+reach $v$ and are reached from it along arcs (\lean{Reaches}), and $\Tint$ is the set of $v$ with
+$\card{N(v)\cap\mathrm{scc}(v)}\ge3$. The corollary is derived from a block form (\lean{rateBound_blocks}): if $N$ is
+loopless and $V$ is the union of pairwise disjoint blocks $S_1,\dots,S_r$ such that every parent of a vertex of $S_j$
+lies in $S_1\cup\dots\cup S_j$ (\lean{BlockOrder}), no block contains a transitive triangle (\lean{TTFreeOn}), and each
+set $\{v\in S_j:\card{N(v)\cap S_j}\ge3\}$ is acyclic, then $N$ satisfies \eqref{eq:star}.
 
 \begin{outline}
-Induction over the list of blocks (\lean{blocks_decomp}): each block $S_j$ is decomposed by the procedure of Theorem~T
-run inside $S_j$ (\lean{block_decomp}), with the earlier blocks in the context. Parents in earlier blocks are then free,
-so in-degrees in~(a)--(c) are counted inside the remaining part of $S_j$, and TT-freeness is needed only inside $S_j$
-(\lean{TTFreeOn}).
-\end{outline}
+The block form: induction over the list of blocks (\lean{blocks_decomp}); each block $S_j$ is decomposed by the
+procedure of Theorem~T run inside $S_j$ (\lean{block_decomp}), with the earlier blocks in the context. Parents in earlier
+blocks are then free, so in-degrees in~(a)--(c) are counted inside the remaining part of $S_j$, and TT-freeness is needed
+only inside $S_j$.
 
-\begin{informalproof}
-We derive the corollary from the block form. The \emph{condensation} of $N$ has the strongly connected components as vertices and an arc $S\to S'$, $S\ne S'$,
-whenever some arc of $N$ goes from $S$ to $S'$. It has no directed cycle, since components on such a cycle would be
-strongly connected to each other. Hence it has a topological order: repeatedly remove a component that receives no arc
-from the remaining ones. Listing the components $S_1,\dots,S_r$ in this order, every parent of a vertex of $S_j$ lies in
-$S_1\cup\dots\cup S_j$. The set $\{v\in S_j:\card{N(v)\cap S_j}\ge3\}$ is $\Tint\cap S_j$, which is acyclic because
-acyclicity passes to subsets. The block form applies.
-\end{informalproof}
+The corollary, without a topological sort of the components: give each vertex $v$ the number $c(v)$ of vertices that
+reach it (\lean{ancestors}). An arc $u\to v$ gives $c(u)\le c(v)$, since everything that reaches $u$ reaches $v$; if
+$c(u)=c(v)$, the two ancestor sets are equal, so $v$, which reaches itself, reaches $u$, and $u$ and $v$ lie in one
+strongly connected component (\lean{reaches_of_card_eq}). The blocks are the fibres of $c$ (\lean{ancFibre}), listed by
+increasing value. Every parent of a vertex lies in its fibre or in an earlier one, and an arc inside a fibre joins two
+vertices of one component (\lean{mem_scc_of_fibre}). Hence no fibre contains a transitive triangle, and the parents of
+$v$ inside its fibre lie in $\mathrm{scc}(v)$, so the vertices with at least three parents inside their fibre lie in
+$\Tint$ and form an acyclic set (\lean{blockOrder_fibres}). The block form applies.
+\end{outline}
 
 When $\Tint=\emptyset$, that is, when every vertex has at most two parents inside its component, Corollary~$\Tint$ is
 the TT-free case of the two-input theorem of \emph{Directed Recovery
@@ -205,7 +205,7 @@ If $N$ is loopless and $N[K]$ is TT-free, a chorded digon path satisfies the hyp
 around $k_{i\pm1}$.
 
 \begin{proposition}[Proposition CC: chorded circulant cycles]\label{prop:CC}
-\formal{Circulant.lean}{circCol, circB, elimOn_circulant, circulant_sweep}
+\formal{Circulant.lean}{circCol, circB, elimOn_circulant, circulant_sweep, neg_mod_eq, add_mod_eq, elimOn_circulant_mirror}
 Let $3\le k\le m-3$ and let $K=\{k_0,\dots,k_{m-1}\}$ be listed without repetitions so that every arc inside $K$ has the
 form $k_{j\pm1}\to k_j$ or $k_{j-k}\to k_j$, indices modulo $m$. Put $\delta=m-1-k$.
 \begin{enumerate}[label=(\alph*)]
@@ -213,6 +213,7 @@ form $k_{j\pm1}\to k_j$ or $k_{j-k}\to k_j$, indices modulo $m$. Put $\delta=m-1
 formal proof uses the sweep along $k_0,k_1,\dots,k_{m-1}$ described below).
 \item\label{it:arith} If $2k\not\equiv\pm1\pmod m$, then the condition of~\ref{it:sweep} holds for the offset $k$ or for
 the offset $m-k$.
+\item\label{it:mirror} Consequently, if $2k\not\equiv\pm1\pmod m$, then $N[K]$ has an elimination certificate.
 \end{enumerate}
 \end{proposition}
 
@@ -228,17 +229,18 @@ forces $\delta\mid m-3$.
 \ref{it:arith} (\lean{circulant_sweep}.) For the offset $m-k$ the role of $\delta$ is played by $\delta'=k-1$, and
 $m-1=\delta+\delta'+1$, $m-3=\delta+\delta'-1$. If the condition fails for both offsets, then $\delta\mid\delta'\pm1$ and
 $\delta'\mid\delta\pm1$ with $\delta,\delta'\ge2$, which forces $\card{\delta-\delta'}=1$ and then $2k=m\pm1$.
+\ref{it:mirror} (\lean{elimOn_circulant_mirror}.) In the formal statement the condition $2k\not\equiv\pm1\pmod m$ reads
+$2k\ne m+1$ and $2k+1\ne m$, which is equivalent for $3\le k\le m-3$. If the condition of~\ref{it:sweep} holds for the
+offset $k$, part~\ref{it:sweep} applies. Otherwise, by~\ref{it:arith}, it holds for the offset $m-k$; reindex by
+$j\mapsto(m-j)\bmod m$. This turns the arcs $k_{j\pm1}\to k_j$ into arcs of the same form and the chords $k_{j-k}\to k_j$
+into chords of offset $m-k$ (\lean{neg_mod_eq} and \lean{add_mod_eq} do the arithmetic modulo $m$), so
+part~\ref{it:sweep} applies to the list $k_0,k_{m-1},\dots,k_1$, the \emph{mirror sweep}.
 \end{outline}
 
-\emph{With the mirror sweep, if $2k\not\equiv\pm1\pmod m$, then $N[K]$ has an elimination certificate.} Indeed, by
-part~\ref{it:arith} the condition of part~\ref{it:sweep} holds for the offset $k$, and part~\ref{it:sweep} applies, or
-for the offset $m-k$. In the second case relabel $k'_j=k_{-j}$: the relabelling $j\mapsto-j$ turns the arcs
-$k_{j\pm1}\to k_j$ into arcs of the same form and the chords $k_{j-k}\to k_j$ into chords $k'_{j-(m-k)}\to k'_j$ of
-offset $m-k$, so part~\ref{it:sweep} applies to the list $k'_0,k'_1,\dots,k'_{m-1}$, that is, to $k_0,k_{m-1},\dots,k_1$.
-This is the \emph{mirror sweep}; it is not a single Lean declaration, and the formal proof of Corollary~CC below realizes
-it by indexing cosets with powers of $s^{-1}$. The condition $2k\not\equiv0$, which makes the chords one-way, is not
-needed. In a TT-free circulant $\Cay(\Z_m,\{1,-1,k\})$ with one-way chords the hypotheses
-hold, since chords of length $2$ and chords with $2k\equiv\pm1$ close transitive triangles.
+The condition $2k\not\equiv0$, which makes the chords one-way, is not needed. In a TT-free circulant
+$\Cay(\Z_m,\{1,-1,k\})$ with one-way chords the hypotheses of part~\ref{it:mirror} hold, since chords of length $2$ and
+chords with $2k\equiv\pm1$ close transitive triangles. The formal proof of Corollary~CC below does not use
+part~\ref{it:mirror}; it realizes the mirror sweep by indexing cosets with powers of $s^{-1}$.
 
 \begin{theorem}[Theorem PC: blocks with private outside parents]\label{thm:PC}
 \formal{PathCert.lean}{ChordedPath, ChordedPath.elimOn, rateBound_pc}
@@ -277,28 +279,38 @@ The blocks are usually far from minimum pieces; Theorem~PC is not a shortest-cyc
 components of the digon graph.
 
 \begin{corollary}[Theorem PC for digon components]\label{cor:PC-digon}
-\notformalized
+\formal{Digon.lean}{digonGraph, digonComp, InducesDigonPath, oneWay_of_comp_ne, rateBound_pc_digon}
 Let $N$ be loopless and TT-free. Suppose that
 \begin{enumerate}[label=(H\arabic*),leftmargin=3em]
 \item every vertex has at most one one-way parent, and
 \item no vertex has one-way arcs to two vertices of the same component of the digon graph $G_2(N)$,
 \end{enumerate}
 and that every component $K$ of $G_2(N)$ has no one-way arc inside it and only vertices with at most three parents, or
-induces a path of $G_2(N)$, or is such that $N[K]$ has an elimination certificate (for instance a cycle of $G_2(N)$ of length $m$ whose
-one-way arcs inside $K$ all have the same offset $k$ with $2k\not\equiv\pm1\pmod m$, by \cref{prop:CC} with the mirror
-sweep; TT-freeness gives $3\le k\le m-3$). Then $N$ satisfies \eqref{eq:star}.
+induces a path of $G_2(N)$, or is such that $N[K]$ has an elimination certificate. Then $N$ satisfies \eqref{eq:star}.
 \end{corollary}
 
-\begin{informalproof}
-Take the components of $G_2(N)$ as blocks. The digon partners of a vertex lie in its own component, so its parents
-outside its component are one-way; by~(H1) there is at most one, which is~\ref{it:P1}. A vertex outside a component $K$
-has only one-way arcs into $K$, at most one by~(H2), which is~\ref{it:P2}. For~\ref{it:P3}: a component without one-way
-arcs inside it has every internal arc in a digon, and with the in-degree bound and TT-freeness it is of kind~(a). If $K$
-induces a path $k_0,\dots,k_{L-1}$ of $G_2(N)$, its consecutive pairs are digons, and every other arc inside $K$ is
-one-way, because a digon inside $K$ is an edge of $G_2(N)[K]$, which is the path. Each vertex is the head of at most one
-one-way arc, by~(H1), and the tail of at most one one-way arc into $K$, by~(H2); so $K$ is a chorded digon path, of
-kind~(b). The remaining components are of kind~(c) by hypothesis. Theorem~PC applies.
-\end{informalproof}
+Here $G_2(N)$ is \lean{digonGraph}~$N$, the component of $v$ is \lean{digonComp}~$N\,v$, and ``$K$ induces a path'' means
+that $K$ can be listed without repetitions as $k_0,\dots,k_{L-1}$, $L\ge1$, so that $k_i$ and $k_j$ are adjacent in
+$G_2(N)$ exactly when $\card{i-j}=1$ (\lean{InducesDigonPath}).
+
+\begin{outline}
+Theorem~PC applies with the components of $G_2(N)$ as blocks; in Lean, \lean{rateBound_pc_digon} applies
+\lean{rateBound_pc}. A parent in another component is one-way, since a digon would join the two components
+(\lean{oneWay_of_comp_ne}); so~(H1) gives~\ref{it:P1}, and~(H2), applied to the one-way arcs from a vertex into another
+component, gives~\ref{it:P2}.
+For~\ref{it:P3}: a component without one-way arcs inside it has every internal arc in a digon, and with the in-degree
+bound and TT-freeness it is of kind~(a). If $K$ induces a path $k_0,\dots,k_{L-1}$ of $G_2(N)$, its consecutive pairs are
+digons, and every other arc inside $K$ is one-way, because a digon inside $K$ is an edge of $G_2(N)[K]$, which is the path.
+Each vertex is the head of at most one one-way arc, by~(H1), and the tail of at most one one-way arc into $K$, by~(H2);
+so $K$ is a chorded digon path, of kind~(b). The remaining components are of kind~(c) by hypothesis.
+\end{outline}
+
+For instance, a component that induces a cycle $k_0,\dots,k_{m-1}$ of $G_2(N)$ and contains at least one one-way arc,
+all of whose one-way arcs have the form $k_{j-k}\to k_j$ (indices modulo $m$) for one $k$ with $2k\not\equiv\pm1\pmod m$,
+is of the third kind by \cref{prop:CC}\ref{it:mirror} (\lean{elimOn_circulant_mirror}). The hypothesis $3\le k\le m-3$
+of \cref{prop:CC} then holds automatically: $k\not\equiv0$ because $N$ is loopless, $k\not\equiv\pm1$ because the arcs
+between cyclically consecutive vertices are digons, and $k\not\equiv\pm2$ because an arc $k_{j\mp2}\to k_j$ would close a
+transitive triangle with the digons through $k_{j\mp1}$.
 
 Every chordless cycle of $G_2(N)$ is of kind~(a), and also of kind~(c) by \cref{lem:cycle-cert}\ref{it:cycle}; it has
 length at least four, since $G_2(N)$ is triangle-free. Whether every TT-free chorded digon cycle is of kind~(c) is

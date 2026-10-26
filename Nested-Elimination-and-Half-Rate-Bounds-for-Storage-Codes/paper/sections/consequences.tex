@@ -82,28 +82,53 @@ its preimage. Every symbol is then determined by the neighbours, and the $\card\
 (\lean{log_card_le_fracMatchingNumber}); equality by~\ref{it:gn-lower}.
 \end{outline}
 
-\begin{remark}[Guessing numbers; not formalized]\label{rem:gn}
-Let $G$ be triangle-free of maximum degree at most three, and let $q\ge2$. By \cref{thm:gn}\ref{it:gn-upper},
-$\gn(G,q)\le\nustar(G)$. If $q=r^2$ is a perfect square, the code of part~\ref{it:gn-upper} over $\beta\times\beta$ with
-$\card\beta=r$ has $q^{\nustar(G)}$ words, so $\gn(G,q)=\nustar(G)$. Hence the asymptotic guessing number
-$\gn(G)=\sup_q\gn(G,q)$ equals $\nustar(G)$. The restriction to squares cannot be dropped: by a theorem of Atkins, Rombach
-and Skerman~\cite{AtkinsRombachSkerman2017}, for every $q\ge2$ that is not a perfect square and every sufficiently large odd
+\begin{corollary}[Guessing numbers]\label{cor:gn}
+\formal{Rates.lean}{guessingNumberAt, guessingNumber, isStorageCode_map_equiv, isStorageCode_map_injective, logb_card_le_fracMatchingNumber, guessingNumberAt_le, guessingNumberAt_sq, guessingNumberAt_ge, guessingNumber_eq, tendsto_guessingNumberAt}
+For a finite simple graph $G$ and $q\ge2$, let $\gn(G,q)$ be the supremum of $\log_q\card C$ over the storage codes $C$
+for $G$ over the alphabet $\{0,\dots,q-1\}$, and let $\gn(G)=\sup_{q\ge2}\gn(G,q)$. If $G$ is triangle-free of maximum
+degree at most~$3$, then
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:gnq} $\gn(G,q)\le\nustar(G)$ for every $q\ge2$;
+\item\label{it:gnsq} $\gn(G,r^2)=\nustar(G)$ for every $r\ge2$;
+\item\label{it:gnsup} $\gn(G)=\nustar(G)$;
+\item\label{it:gnlim} $\gn(G,q)\to\nustar(G)$ as $q\to\infty$.
+\end{enumerate}
+\end{corollary}
+
+\begin{outline}
+The Lean definitions (\lean{guessingNumberAt}, \lean{guessingNumber}) take the supremum with the convention
+$\log0=0$ for the empty code, which does not change it, since one-word codes give $0$. \ref{it:gnq} Divide the
+logarithmic bound of \cref{thm:gn}\ref{it:gn-upper} by $\log q>0$ (\lean{logb_card_le_fracMatchingNumber},
+\lean{guessingNumberAt_le}). \ref{it:gnsq} For $\card\beta=r$, the code of \cref{thm:gn}\ref{it:gn-lower} over
+$\beta\times\beta$ has at least $(r^2)^{\nustar(G)}$ words, and a bijection $\beta\times\beta\to\{0,\dots,r^2-1\}$
+carries it to a storage code over that alphabet (\lean{isStorageCode_map_equiv}); with~\ref{it:gnq},
+$\gn(G,r^2)=\nustar(G)$ (\lean{guessingNumberAt_sq}). \ref{it:gnsup} Every $\gn(G,q)$ is at most $\nustar(G)$, and
+$\gn(G,4)=\nustar(G)$ (\lean{guessingNumber_eq}). \ref{it:gnlim} For $q\ge4$ let $r=\lfloor\sqrt q\rfloor\ge2$. An
+injection $\{0,\dots,r-1\}^2\to\{0,\dots,q-1\}$ carries the code of \cref{thm:gn}\ref{it:gn-lower} over
+$\{0,\dots,r-1\}^2$ to a storage code over $\{0,\dots,q-1\}$ (\lean{isStorageCode_map_injective}), so
+$\gn(G,q)\ge\nustar(G)\log(r^2)/\log q$ (\lean{guessingNumberAt_ge}). Since $q<(r+1)^2\le4r^2$, this is at least
+$\nustar(G)(1-\log4/\log q)$, using $\nustar(G)\ge0$ (\lean{fracMatchingNumber_nonneg}); with the upper bound
+of~\ref{it:gnq}, $\gn(G,q)\to\nustar(G)$ (\lean{tendsto_guessingNumberAt}).
+\end{outline}
+
+The restriction to squares in~\ref{it:gnsq} cannot be dropped: by a theorem of Atkins, Rombach and
+Skerman~\cite{AtkinsRombachSkerman2017}, for every $q\ge2$ that is not a perfect square and every sufficiently large odd
 $n$, the odd cycle $C_n$, which lies in this class and has $\nustar(C_n)=n/2$, has $\gn(C_n,q)=(n-1)/2+\log_qa<n/2$, where
 $a$ is the largest divisor of $q$ that is at most $\sqrt q$.
-\end{remark}
 
 The code of part~\ref{it:gn-lower} realizes Christofides and Markström's fractional clique cover
 strategy~\cite{ChristofidesMarkstrom2011}, restated in storage language by Mazumdar, McGregor and
 Vorotnikova~\cite{MMV2019}: on a triangle-free graph the cliques are the vertices and the edges, and the fractional clique
-cover number is $\card V-\nustar(G)$ (\cref{rem:broadcast}). Christofides and Markström conjectured that this strategy is
-optimal on every undirected graph (see~\cite[Conjecture~1]{Dang2015}) and proved it for perfect graphs and odd
-cycles~\cite{ChristofidesMarkstrom2011}; Mazumdar, McGregor and Vorotnikova proved it for prisms and certain chorded
-cycles~\cite{MMV2019}. The conjecture is false in general: Baber, Christofides, Dang, Vaughan and Riis disproved
+cover number is $\card V-\nustar(G)$ (\cref{cor:broadcast}\ref{it:bc-cover}). Christofides and Markström conjectured
+that this strategy is optimal on every undirected graph (see~\cite[Conjecture~1]{Dang2015}) and proved it for perfect
+graphs and odd cycles~\cite{ChristofidesMarkstrom2011}; Mazumdar, McGregor and Vorotnikova proved it for prisms and
+certain chorded cycles~\cite{MMV2019}. The conjecture is false in general: Baber, Christofides, Dang, Vaughan and Riis disproved
 it~\cite{Baber2017} (Dang's thesis gives a counterexample on ten vertices~\cite[Section~4.1]{Dang2015}), and Cameron, Dang
 and Riis~\cite{CameronDangRiis2016} found triangle-free counterexamples, such as the Higman--Sims graph. For the Clebsch
 graph, of degree five, they proved $10\le\gn\le11$, and the fourth paper determined $\gn=10>8=\nustar$
-\cite[Corollary~6.11]{FourthPaper2026}. \Cref{thm:gn} proves the conjecture for triangle-free graphs of maximum degree
-three.
+\cite[Corollary~6.11]{FourthPaper2026}. \Cref{thm:gn,cor:gn} prove the conjecture for triangle-free graphs of maximum
+degree three, whether the asymptotic guessing number is taken as the supremum over $q$, as here, or as the limit as
+$q\to\infty$, in which form the conjecture is often stated (\cref{cor:gn}\ref{it:gnlim}).
 
 \begin{definition}[Index codes]\label{def:indexcode}
 \formal{IndexCoding.lean}{IndexCode}
@@ -135,28 +160,50 @@ half of $x_u$; both $g(v)$ and $u$ are neighbours. The message set has $\card\be
 The duality between storage codes and index codes behind part~(a) is that of Mazumdar~\cite{Mazumdar2014}, Shanmugam and
 Dimakis~\cite{ShanmugamDimakis2014}, and Arbabjolfaei and Kim~\cite{ArbabjolfaeiKim2015}.
 
-\begin{remark}[The broadcast rate and fractional clique covers; not formalized]\label{rem:broadcast}
-Let $G$ be triangle-free of maximum degree at most three. For $t\ge1$ let $\beta_t$ be the least number of bits,
-$\lceil\log_2\card M\rceil$, of an index code for $N_G$ over the alphabet $\{0,1\}^t$; the broadcast rate
-of~\cite{BKL2013} is $\lim_t\beta_t/t$. Part~(a) of \cref{thm:index}, with $\alpha=\{0,1\}^t$, gives
-$\beta_t\ge(\card V-\nustar(G))\,t$. Part~(b), with $\beta=\F_2^t$, gives an index code over $\{0,1\}^{2t}$ with exactly
-$2(\card V-\nustar(G))\,t$ bits, an integer because $2\nustar(G)$ is one; so $\beta_{2t}\le2(\card V-\nustar(G))\,t$. Hence
-the broadcast rate of $G$ is $\card V-\nustar(G)$.
+\begin{corollary}[The broadcast rate and fractional clique covers]\label{cor:broadcast}
+\formal{Rates.lean}{IndexCode.ofInjective, IndexCode.restrict, broadcastBits, broadcastBits_nonempty, broadcastBits_ge, broadcastBits_le_succ, broadcastBits_even_le, broadcastBits_even, fracMatchingNumber_nonneg, fracMatchingNumber_le_card, tendsto_broadcastBits, IsFracCover, coverWeight, fracCliqueCoverNumber, fracCliqueCoverNumber_eq}
+Let $G$ be a finite simple graph. For $t\ge0$ let $\beta_t$ be the least $n$ such that $N_G$ has an index code over the
+alphabet $\{0,1\}^t$ with message set $\{0,1\}^n$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:bc-every} For all $t,s\ge0$, $\beta_t\le\beta_{t+1}$ and $\beta_{2s}\le2(\card V-\nustar(G))s$.
+\item\label{it:bc-rate} If $G$ is triangle-free of maximum degree at most~$3$, then $(\card V-\nustar(G))t\le\beta_t$ for
+every $t$, $\beta_{2s}=2(\card V-\nustar(G))s$ for every $s$, and $\beta_t/t\to\card V-\nustar(G)$ as $t\to\infty$.
+\item\label{it:bc-cover} Call weights $y_v\ge0$ on the vertices and $y(u,v)=y(v,u)\ge0$ on pairs of vertices, vanishing on
+non-adjacent pairs, a \emph{fractional cover by vertices and edges} if $y_v+\sum_uy(v,u)\ge1$ for every $v$, and let its
+weight be $\sum_vy_v+\frac12\sum_{u,v}y(u,v)$, each edge counted once. The infimum of these weights is
+$\card V-\nustar(G)$.
+\end{enumerate}
+\end{corollary}
 
-This number is the fractional clique cover number of $G$, the least total weight of weighted cliques, here vertices and
-edges, that cover every vertex at least once. A fractional matching $x$ gives the cover with weight $x_e$ on each edge and
-$1-\sum_{e\ni v}x_e$ on each vertex $v$, of total weight $\card V-\sum_ex_e$. Conversely, in a cover, lowering the weight
-of a vertex that is covered more than once, or lowering the weight of an edge $uv$ at such a vertex $v$ and raising that of
-the vertex $u$ by the same amount, keeps a cover and does not increase its weight; so some optimal cover covers every
-vertex exactly once, and then its edge weights form a fractional matching whose weight is $\card V$ minus that of the cover.
-The bound of part~(b) is thus the fractional clique cover upper bound on the broadcast rate~\cite{BKL2013}, realized over
-$\beta\times\beta$ by a double-cover matching. For some graphs of the class these values were known: Blasiak, Kleinberg and
-Lubetzky determined the broadcast rate of cycles and of the cubic circulants, and computed that of the Petersen graph
-numerically~\cite{BKL2013}.
-\end{remark}
+\begin{outline}
+\ref{it:bc-every} The identity code shows that $\beta_t$ exists (\lean{broadcastBits_nonempty}). An index code over
+$\{0,1\}^{t+1}$ restricts to $\{0,1\}^t$: append a fixed bit to every symbol, and drop it after decoding
+(\lean{IndexCode.restrict}, \lean{broadcastBits_le_succ}). \Cref{thm:index}(b) with $\beta=\F_2^s$ gives an index code
+over $\beta\times\beta$, which is $\{0,1\}^{2s}$ up to a bijection, whose message set has $2^n$ elements with
+$n=2(\card V-\nustar(G))s$; a bijection of message sets (\lean{IndexCode.ofInjective}) gives
+\lean{broadcastBits_even_le}. \ref{it:bc-rate} \Cref{thm:index}(a) with $\alpha=\{0,1\}^t$ gives the lower bound
+(\lean{broadcastBits_ge}), and with~\ref{it:bc-every} the equality for even $t$ (\lean{broadcastBits_even}). For odd $t$,
+$\beta_t\le\beta_{t+1}=(\card V-\nustar(G))(t+1)$, so $\card V-\nustar(G)\le\beta_t/t\le(\card V-\nustar(G))(1+1/t)$
+for all $t\ge1$, where $0\le\nustar(G)\le\card V$ (\lean{fracMatchingNumber_nonneg}, \lean{fracMatchingNumber_le_card},
+\lean{tendsto_broadcastBits}). \ref{it:bc-cover} In Lean the covers are \lean{IsFracCover}, their weight is
+\lean{coverWeight}, the infimum is \lean{fracCliqueCoverNumber}, and the claim is \lean{fracCliqueCoverNumber_eq}. Take $S$ attaining the minimum in
+\cref{prop:fracTB}, and put $z_v=1$ on $I(S)$, $z_v=0$ on $S$ and $z_v=\frac12$ elsewhere. An edge at a vertex of $I(S)$
+ends in $S$, so $z_u+z_v\le1$ on every edge, and every cover has weight at least
+$\sum_vz_v(y_v+\sum_uy(v,u))\ge\sum_vz_v=\frac12(\card V-\card S+\card{I(S)})=\card V-\nustar(G)$. Conversely, an optimal
+fractional matching $x$ gives the cover with $y(u,v)=x(u,v)$ and $y_v=1-\sum_ux(v,u)$, of weight $\card V-\nustar(G)$.
+\end{outline}
 
-\paragraph{Why it matters.} For triangle-free subcubic side information, \cref{thm:barrier,thm:gn,thm:index} settle the
-storage and index-coding problems exactly, for all codes and all alphabets. In the language of the fourth paper's crux
+The limit in~\ref{it:bc-rate} is the broadcast rate of Blasiak, Kleinberg and Lubetzky~\cite{BKL2013}, so the broadcast
+rate of a triangle-free graph of maximum degree three is $\card V-\nustar(G)$. In a triangle-free graph the cliques are
+the vertices and the edges, so the infimum in~\ref{it:bc-cover} is the fractional clique cover number, which therefore
+equals $\card V-\nustar(G)$. The bound of \cref{thm:index}(b) is thus the fractional clique cover upper bound on the
+broadcast rate~\cite{BKL2013}, realized over $\beta\times\beta$ by a double-cover matching. For some graphs of the class
+these values were known: Blasiak, Kleinberg and Lubetzky determined the broadcast rate of cycles and of the cubic
+circulants, and computed that of the Petersen graph numerically~\cite{BKL2013}.
+
+\paragraph{Why it matters.} For triangle-free subcubic side information, \cref{thm:barrier,thm:gn,thm:index} and
+\cref{cor:gn,cor:broadcast} determine the guessing number and the broadcast rate; the bounds hold for all codes and all
+alphabets and are attained over the alphabets $\beta\times\beta$. In the language of the fourth paper's crux
 (\cref{sec:construction}), on such side information an index code must broadcast at least $\card V-\nustar(G)\ge\card
 V/2$ symbols, and the extremal codes are fractional pairings: there is no room for a coding gain.
 
@@ -165,19 +212,23 @@ V/2$ symbols, and the extremal codes are fractional pairings: there is no room f
 All our classes are defined by exact conditions. A few exceptional vertices cost only what they could carry.
 
 \begin{corollary}[Paid deletion]\label{cor:paid}
-\notformalized
+\formal{PairedDistance.lean}{card_sq_le_of_paidDeletion}
 Let $N$ be a recovery relation on $V$ and $Z\subseteq V$. If $N-Z$ satisfies \eqref{eq:star}, then every storage code
-$C$ for $N$ over a nonempty finite alphabet $\alpha$ satisfies $\card C^2\le\card\alpha^{\card V+\card Z}$; that is,
-$\log_{\card\alpha}\card C\le(\card V+\card Z)/2$.
+$C$ for $N$ over a nonempty finite alphabet $\alpha$ satisfies $\card C^2\le\card\alpha^{\card V+\card Z}$.
 \end{corollary}
 
-\begin{informalproof}
-The paid-conditioning lemma~\cite[Lemma~2.2]{DirectedRecovery2026}, Lean-verified there, says that every fibre of
-$C$ obtained by fixing the values on $Z$ and restricting to $V\setminus Z$ is a storage code for $N-Z$, and that if
-every storage code for $N-Z$ has at most $\card\alpha^u$ words, then $\card C\le\card\alpha^{\card Z+u}$. (Directly: two words of a fibre that agree on $N(v)\setminus Z$, for $v\notin Z$,
-agree on $N(v)$, since they agree on $Z$, hence at $v$; and there are at most $\card\alpha^{\card Z}$ fibres.) By
-\cref{thm:codes} we may take $u=(\card V-\card Z)/2$.
-\end{informalproof}
+\begin{outline}
+In the formal statement, $N-Z$ is the relation \lean{DirectedRecovery.inducedNeighborhood}~$N\,(V\setminus Z)$ induced
+on $V\setminus Z$, as in \emph{Directed Recovery Structures}. By \cref{thm:codes}
+(\lean{MotionDepthCodes.card_sq_le_of_rateBound_half}), every storage code for $N-Z$ has at most
+$\card\alpha^{(\card V-\card Z)/2}$ words. The paid-conditioning lemma of
+\emph{Directed Recovery Structures}~\cite[Lemma~2.2]{DirectedRecovery2026}
+(\lean{DirectedRecovery.storageCode_conditioning_bound}) fixes the values on $Z$: every fibre is a storage code for
+$N-Z$, and there are at most $\card\alpha^{\card Z}$ fibres, so $\card C\le\card\alpha^{\card Z+(\card V-\card Z)/2}$.
+Squaring gives the claim.
+\end{outline}
+
+For $\card\alpha\ge2$ the conclusion says that $\log_{\card\alpha}\card C\le(\card V+\card Z)/2$.
 
 Combined with \cref{lem:tt-paired}, the corollary shows that relations with
 few short paired paths are as good as TT-free ones: if deleting the loops, the middle vertices of transitive triangles and

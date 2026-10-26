@@ -11,7 +11,7 @@ in the record of the next position (`elimOn_ofFn`). Two colourings are used:
   unless `δ ∣ m - 1` or `δ ∣ m - 3` with `δ = m - 1 - k`.
 `circulant_sweep` is the arithmetic of Proposition CC: when `3 ≤ k ≤ m - 3` and
 `2k ≢ ±1 (mod m)`, the sweep is valid for the offset `k` or for the offset `m - k` (the mirror
-image, `j ↦ -j`).
+image, `j ↦ -j`), and `elimOn_circulant_mirror` combines the two into a certificate.
 -/
 
 namespace HalfRate
@@ -263,5 +263,68 @@ theorem circulant_sweep {m k : ℕ} (hk : 3 ≤ k) (hkm : k + 3 ≤ m)
   · rcases hA' with h | h
     · have := Nat.le_of_dvd (by omega) h; omega
     · have := Nat.le_of_dvd (by omega) h; omega
+
+omit [DecidableEq V] [Fintype V] in
+theorem neg_mod_eq {m x : ℕ} (hx : x < m) : (m - x) % m = if x = 0 then 0 else m - x := by
+  split_ifs with h
+  · subst h; simp
+  · exact Nat.mod_eq_of_lt (by omega)
+
+omit [DecidableEq V] [Fintype V] in
+theorem add_mod_eq {m a c : ℕ} (ha : a < m) (hc : c ≤ m) :
+    (a + c) % m = if a + c < m then a + c else a + c - m := by
+  split_ifs with h
+  · exact Nat.mod_eq_of_lt h
+  · rw [Nat.mod_eq_sub_mod (by omega), Nat.mod_eq_of_lt (by omega)]
+
+omit [Fintype V] in
+/-- **Proposition CC with the mirror sweep.** If `3 ≤ k ≤ m - 3` and `2k ≢ ±1 (mod m)`, a block
+listed as `f 0, …, f (m-1)` whose arcs are `j ± 1 → j` and `j - k → j` (indices mod `m`) has an
+elimination certificate: the sweep of `elimOn_circulant` for the offset `k`, or, along the
+reversed listing `j ↦ -j`, for the offset `m - k`. -/
+theorem elimOn_circulant_mirror {m k : ℕ} (hk : 3 ≤ k) (hkm : k + 3 ≤ m)
+    (hp : 2 * k ≠ m + 1) (hn : 2 * k + 1 ≠ m) (f : Fin m → V) (hf : Function.Injective f)
+    (hpar : ∀ i j (hi : i < m) (hj : j < m), f ⟨i, hi⟩ ∈ N (f ⟨j, hj⟩) →
+      i = (j + 1) % m ∨ j = (i + 1) % m ∨ j = (i + k) % m) :
+    Nonempty (ElimOn N (univ.image f)) := by
+  rcases circulant_sweep hk hkm hp hn with ⟨h1, h3⟩ | ⟨h1, h3⟩
+  · exact elimOn_circulant hk hkm f hf h1 h3 hpar
+  · have hm : 0 < m := by omega
+    let σ : Fin m → Fin m := fun j => ⟨(m - j.val) % m, Nat.mod_lt _ hm⟩
+    have hσ : Function.Involutive σ := by
+      intro j
+      apply Fin.ext
+      show (m - (m - j.val) % m) % m = j.val
+      have hj := j.isLt
+      rw [neg_mod_eq hj]
+      split_ifs with h0
+      · rw [h0]; simp
+      · rw [neg_mod_eq (by omega)]
+        split_ifs <;> omega
+    have himg : univ.image (f ∘ σ) = univ.image f := by
+      ext x
+      simp only [mem_image, mem_univ, true_and, Function.comp]
+      constructor
+      · rintro ⟨j, rfl⟩; exact ⟨σ j, rfl⟩
+      · rintro ⟨j, rfl⟩; exact ⟨σ j, by rw [hσ j]⟩
+    rw [← himg]
+    refine elimOn_circulant (k := m - k) (by omega) (by omega) (f ∘ σ) (hf.comp hσ.injective)
+      h1 h3 ?_
+    intro i j hi hj h
+    have h' := hpar ((m - i) % m) ((m - j) % m) (Nat.mod_lt _ hm) (Nat.mod_lt _ hm) h
+    obtain ⟨a, ha⟩ : ∃ a, (m - i) % m = a := ⟨_, rfl⟩
+    obtain ⟨b, hb⟩ : ∃ b, (m - j) % m = b := ⟨_, rfl⟩
+    have ha' : (i = 0 ∧ a = 0) ∨ (i ≠ 0 ∧ a = m - i) := by
+      rw [← ha, neg_mod_eq hi]; split_ifs with h0 <;> simp [h0]
+    have hb' : (j = 0 ∧ b = 0) ∨ (j ≠ 0 ∧ b = m - j) := by
+      rw [← hb, neg_mod_eq hj]; split_ifs with h0 <;> simp [h0]
+    have hal : a < m := ha ▸ Nat.mod_lt _ hm
+    have hbl : b < m := hb ▸ Nat.mod_lt _ hm
+    rw [ha, hb] at h'
+    rw [add_mod_eq (c := 1) hbl (by omega), add_mod_eq (c := 1) hal (by omega),
+      add_mod_eq (c := k) hal (by omega)] at h'
+    rw [add_mod_eq (c := 1) hj (by omega), add_mod_eq (c := 1) hi (by omega),
+      add_mod_eq (c := m - k) hi (by omega)]
+    split_ifs at h' ⊢ <;> omega
 
 end HalfRate

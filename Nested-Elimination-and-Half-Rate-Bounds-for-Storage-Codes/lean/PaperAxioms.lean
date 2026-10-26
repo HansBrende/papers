@@ -2,15 +2,20 @@ import HalfRate.Barrier
 import HalfRate.Blocks
 import HalfRate.Cayley
 import HalfRate.Circulant
+import HalfRate.Components
 import HalfRate.Corollaries
 import HalfRate.Decomposition
+import HalfRate.Digon
 import HalfRate.IndexCoding
+import HalfRate.Limits
 import HalfRate.Matching
 import HalfRate.N3
 import HalfRate.NestedElimination
+import HalfRate.PairedDistance
 import HalfRate.PathCert
 import HalfRate.Pieces
 import HalfRate.Positional
+import HalfRate.Rates
 import HalfRate.TheoremT
 import HalfRate.U3
 
@@ -35,12 +40,24 @@ and `Quot.sound`. -/
 #print axioms HalfRate.mem_coset_iff
 #print axioms HalfRate.rateBound_cayley
 -- Circulant.lean
+#print axioms HalfRate.add_mod_eq
 #print axioms HalfRate.circB
 #print axioms HalfRate.circCol
 #print axioms HalfRate.circulant_sweep
 #print axioms HalfRate.elimOn_circulant
+#print axioms HalfRate.elimOn_circulant_mirror
 #print axioms HalfRate.elimOn_cycle
 #print axioms HalfRate.elimOn_ofFn
+#print axioms HalfRate.neg_mod_eq
+-- Components.lean
+#print axioms HalfRate.Reaches
+#print axioms HalfRate.ancFibre
+#print axioms HalfRate.ancestors
+#print axioms HalfRate.blockOrder_fibres
+#print axioms HalfRate.mem_scc_of_fibre
+#print axioms HalfRate.rateBound_Tint
+#print axioms HalfRate.reaches_of_card_eq
+#print axioms HalfRate.scc
 -- Corollaries.lean
 #print axioms HalfRate.ElimCert
 #print axioms HalfRate.ElimCert.pullback
@@ -61,11 +78,25 @@ and `Quot.sound`. -/
 #print axioms HalfRate.contr_isPolymatroid
 #print axioms HalfRate.decomp_ineq
 #print axioms HalfRate.rateBound_of_decomp
+-- Digon.lean
+#print axioms HalfRate.InducesDigonPath
+#print axioms HalfRate.digonComp
+#print axioms HalfRate.digonGraph
+#print axioms HalfRate.oneWay_of_comp_ne
+#print axioms HalfRate.rateBound_pc_digon
 -- IndexCoding.lean
 #print axioms HalfRate.IndexCode
 #print axioms HalfRate.IndexCode.isStorageCode_fibre
 #print axioms HalfRate.exists_indexCode
 #print axioms HalfRate.log_card_message_ge
+-- Limits.lean
+#print axioms HalfRate.cay9
+#print axioms HalfRate.ex72Piece
+#print axioms HalfRate.ex72Piece4
+#print axioms HalfRate.ex72Piece78
+#print axioms HalfRate.ex72_decomp
+#print axioms HalfRate.exH1
+#print axioms HalfRate.no_private_piece
 -- Matching.lean
 #print axioms HalfRate.IsFracMatching
 #print axioms HalfRate.dcFrac
@@ -101,6 +132,24 @@ and `Quot.sound`. -/
 #print axioms HalfRate.sum_records_step
 #print axioms HalfRate.totalDefect
 #print axioms HalfRate.totalDefect_le
+-- PairedDistance.lean
+#print axioms HalfRate.ConjectureP
+#print axioms HalfRate.DN3
+#print axioms HalfRate.card_sq_le_of_dn3
+#print axioms HalfRate.card_sq_le_of_paidDeletion
+#print axioms HalfRate.dn3_hyp_deleted
+#print axioms HalfRate.dn3_of_conjectureP
+#print axioms HalfRate.dn3_rate_eventually_le
+#print axioms HalfRate.edist_eq_one_iff
+#print axioms HalfRate.edist_eq_three_iff
+#print axioms HalfRate.edist_le_three_of_tt
+#print axioms HalfRate.odd_of_edist_eq
+#print axioms HalfRate.shortPaired_three_tendsto
+#print axioms HalfRate.storageCodeRate_le_of_dn3
+#print axioms HalfRate.three_le_edist
+#print axioms HalfRate.ttFree_iff_five_le_edist
+#print axioms HalfRate.ttFree_iff_shortPaired_eq_empty
+#print axioms HalfRate.tt_of_walk_three
 -- PathCert.lean
 #print axioms HalfRate.ChordedPath
 #print axioms HalfRate.ChordedPath.elimOn
@@ -118,6 +167,32 @@ and `Quot.sound`. -/
 -- Positional.lean
 #print axioms HalfRate.relCharged_of_cosupply
 #print axioms HalfRate.rev
+-- Rates.lean
+#print axioms HalfRate.IndexCode.ofInjective
+#print axioms HalfRate.IndexCode.restrict
+#print axioms HalfRate.IsFracCover
+#print axioms HalfRate.broadcastBits
+#print axioms HalfRate.broadcastBits_even
+#print axioms HalfRate.broadcastBits_even_le
+#print axioms HalfRate.broadcastBits_ge
+#print axioms HalfRate.broadcastBits_le_succ
+#print axioms HalfRate.broadcastBits_nonempty
+#print axioms HalfRate.coverWeight
+#print axioms HalfRate.fracCliqueCoverNumber
+#print axioms HalfRate.fracCliqueCoverNumber_eq
+#print axioms HalfRate.fracMatchingNumber_le_card
+#print axioms HalfRate.fracMatchingNumber_nonneg
+#print axioms HalfRate.guessingNumber
+#print axioms HalfRate.guessingNumberAt
+#print axioms HalfRate.guessingNumberAt_ge
+#print axioms HalfRate.guessingNumberAt_le
+#print axioms HalfRate.guessingNumberAt_sq
+#print axioms HalfRate.guessingNumber_eq
+#print axioms HalfRate.isStorageCode_map_equiv
+#print axioms HalfRate.isStorageCode_map_injective
+#print axioms HalfRate.logb_card_le_fracMatchingNumber
+#print axioms HalfRate.tendsto_broadcastBits
+#print axioms HalfRate.tendsto_guessingNumberAt
 -- TheoremT.lean
 #print axioms HalfRate.BlockOrder
 #print axioms HalfRate.DCyc
@@ -141,5 +216,25 @@ and `Quot.sound`. -/
 #print axioms HalfRate.triPiece
 #print axioms HalfRate.und
 -- named in the text
+#print axioms HalfRate.IsChordedCycle
 #print axioms HalfRate.TTFree
+#print axioms HalfRate.c13
+#print axioms HalfRate.c13_elimOn
+#print axioms HalfRate.c13_isChordedCycle
+#print axioms HalfRate.c13_spec
+#print axioms HalfRate.cyc1
 #print axioms HalfRate.mi
+#print axioms HalfRate.petersen_cliqueFree
+#print axioms HalfRate.petersen_decomp
+#print axioms HalfRate.rateBound_c13
+#print axioms HalfRate.rateBound_cay9
+#print axioms HalfRate.rateBound_of_elimOn_univ
+#print axioms HalfRate.rateBound_x15
+#print axioms HalfRate.twelve_cycles
+#print axioms HalfRate.x15
+#print axioms HalfRate.x15_cores
+#print axioms HalfRate.x15_elimOn
+#print axioms HalfRate.x15_hexagon
+#print axioms HalfRate.x15_oneWay_parents
+#print axioms HalfRate.x15_props
+#print axioms HalfRate.z9_elimOn

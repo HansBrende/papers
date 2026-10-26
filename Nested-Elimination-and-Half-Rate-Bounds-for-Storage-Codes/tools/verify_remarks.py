@@ -11,12 +11,12 @@ for every u in N[v]). The checks:
 
 0. The relation Cay(Z_9, {1, -1, 3}), N(q) = {q-1, q+1, q-3}, of Proposition 7.1 and Example 7.2.
    No set H with {} != H != Z_9 has (a) at most one parent outside H at every vertex of H and (b) at
-   most one child in H at every vertex outside H (Proposition 7.1, which also has a written proof;
-   exhaustive over the 2^9 subsets). The piece certificate of Example 7.2 for H1 = {0,1,2,3,5,6} in
-   context {} is checked step by step against conditions (C1) and (C2) of the paper's definition of
-   piece certificates, with the outside parents and their co-supply as stated; so are the pieces {4}
-   and {7, 8} that complete the decomposition, and the global elimination certificate printed after
-   Proposition 7.1.
+   most one child in H at every vertex outside H (Proposition 7.1, which is also Lean-verified as
+   no_private_piece; exhaustive over the 2^9 subsets). The piece certificate of Example 7.2 for
+   H1 = {0,1,2,3,5,6} in context {} is checked step by step against conditions (C1) and (C2) of the
+   paper's definition of piece certificates, with the outside parents and their co-supply as stated;
+   so are the pieces {4} and {7, 8} that complete the decomposition, and the global elimination
+   certificate printed after Proposition 7.1.
 1. The relation X15. Loopless, in- and out-degrees at most 3, no transitive triangle, strongly
    connected, and not 2-dicolourable. Its minimum nonempty cores (sets H != {} in which every vertex
    has at most one in-neighbour outside H) are found by exhaustive search: the only one is the

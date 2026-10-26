@@ -474,11 +474,9 @@ theorem blocks_decomp (hloop : ∀ v, v ∉ N v) : ∀ bs : List (Finset V), Blo
     exact block_decomp hloop hSL hL hTT hT hq S (subset_refl S)
 
 /-- **Corollary T_int, block form.** If the vertex set is covered by an ordered list of blocks as
-in `BlockOrder`, the weighted half bound holds. With the strongly connected components in
-topological order as blocks this is Corollary T_int of the note: no component contains a
-transitive triangle, and the vertices with at least three in-neighbours inside their own
-component induce an acyclic sub-relation; parents outside a vertex's component are
-unrestricted. -/
+in `BlockOrder`, the weighted half bound holds. Corollary T_int in its component form
+(`rateBound_Tint`, in `HalfRate.Components`) applies it to blocks made of strongly connected
+components. -/
 theorem rateBound_blocks (hloop : ∀ v, v ∉ N v) {bs : List (Finset V)} (hB : BlockOrder N bs)
     (hcov : bs.foldr (· ∪ ·) ∅ = univ) : RateBound N (1 / 2) := by
   obtain ⟨q, hq⟩ := blocks_decomp hloop bs hB

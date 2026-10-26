@@ -14,3 +14,8 @@ import HalfRate.PathCert
 import HalfRate.Barrier
 import HalfRate.Matching
 import HalfRate.IndexCoding
+import HalfRate.PairedDistance
+import HalfRate.Components
+import HalfRate.Digon
+import HalfRate.Rates
+import HalfRate.Limits

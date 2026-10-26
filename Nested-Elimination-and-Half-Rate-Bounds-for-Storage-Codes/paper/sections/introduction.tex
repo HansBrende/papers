@@ -74,19 +74,21 @@ by~(g), and by~(f) with a single block.
 satisfies $2\log\card C\le(\card V+\card S-\card{I(S)})\log\card\alpha$ for every vertex set $S$, where $I(S)$ is the set
 of isolated vertices of $G-S$ (\cref{thm:barrier}). With the fractional Tutte--Berge formula (\cref{prop:fracTB}), the
 guessing number equals the fractional matching number $\nustar(G)$, attained over every alphabet of square size
-(\cref{thm:gn,rem:gn}). This proves, for these graphs, Christofides and Markström's conjecture that fractional clique covers are
+(\cref{thm:gn,cor:gn}). This proves, for these graphs and with the asymptotic guessing number taken either as the
+supremum or as the limit over alphabet sizes, Christofides and Markström's conjecture that fractional clique covers are
 optimal guessing strategies~\cite{ChristofidesMarkstrom2011,Dang2015}, which is false in
-general~\cite{Baber2017,CameronDangRiis2016}; it was known before for perfect graphs, bipartite graphs in particular, and
-odd cycles~\cite{ChristofidesMarkstrom2011}, and for prisms and certain chorded cycles~\cite{MMV2019}. It also proves
-Dang's conjecture for planar triangle-free graphs at maximum degree three~\cite[Conjecture~15]{Dang2015}. Dually, the
-broadcast rate of index coding is $\card V-\nustar(G)$ (\cref{thm:index,rem:broadcast}). Relations that become one of our classes after deleting a set $Z$ have storage codes of rate at most
+general~\cite{Baber2017,CameronDangRiis2016}; it was known before for perfect graphs, bipartite graphs in particular, and odd
+cycles~\cite{ChristofidesMarkstrom2011}, and for prisms and certain chorded cycles~\cite{MMV2019}. It also proves Dang's
+conjecture for planar triangle-free graphs at maximum degree three~\cite[Conjecture~15]{Dang2015}. Dually, the broadcast
+rate of index coding is $\card V-\nustar(G)$ (\cref{thm:index,cor:broadcast}). Relations that become one of our classes
+after deleting a set $Z$ have storage codes of rate at most
 $(\card V+\card Z)/(2\card V)$ (\cref{cor:paid}).
 
 \paragraph{Limits (\cref{sec:limits}).} The natural rules for choosing pieces fail: $\Cay(\Z_9,\{1,-1,3\})$ has no proper
 piece with private outside parents (\cref{prop:no-private}); a $15$-vertex relation with in- and out-degrees at most three
 has a unique minimum nonempty core, which is not a piece, although the relation has a global certificate
 (\cref{rem:X15}); some chorded cycles have no valid sweep (\cref{rem:sweeps}); and the Petersen graph has no global
-certificate, although Theorem~N3 decomposes it into two pieces (\cref{rem:petersen}). The half bound fails on the folded
+certificate, although Theorem~N3 gives it a decomposition (\cref{rem:petersen}). The half bound fails on the folded
 cubes, whose odd girth equals their degree (\cref{rem:foldcube}, from a rank formula of Barg, Schwartz and
 Yohananov~\cite{BSY2024}); so an exact half bound that assumes only $b_E(r)=0$, for a fixed odd $r\ge3$, cannot
 hold at maximum degree $r+2$.
@@ -99,16 +101,17 @@ would give the degree-three case of the paired-distance question (\cref{prop:dn3
 
 \subsection{How to read this paper: the formal proofs}
 
-Every numbered result of \cref{sec:engine,sec:undirected,sec:directed,sec:consequences} is formalized in Lean, with
-three exceptions: Corollary~$\Tint$ is formalized in a block form, and the existence of a topological order of the
-strongly connected components, which turns the block form into the corollary, is proved in the text; the digon-component
-form of Theorem~PC (\cref{cor:PC-digon}) and the paid-deletion corollary (\cref{cor:paid}) have complete written proofs.
-\Cref{lem:tt-paired}, \cref{prop:no-private} and \cref{prop:dn3-transfer} are not formalized either and have complete
-proofs. \Cref{rem:gn,rem:broadcast}, which pass from the formal code bounds of \cref{thm:gn,thm:index} to the guessing
-number and the broadcast rate, are labelled as not formalized and are derived in full in the text. The remarks of \cref{sec:limits} report computations, reproducible with the scripts in \leanfile{tools/}, and a
-cited rank formula for folded cubes; they are labelled as numerical or cited and are not used in proofs. The results of
-the fourth paper that we use (\cref{thm:codes,lem:closure,lem:fewer-arcs}) are Lean-verified there. Each numbered result
-states its status as described in \cref{sec:prelim-lean}.
+Apart from three results of the fourth paper that we cite (\cref{thm:codes,lem:closure,lem:fewer-arcs}), which are
+Lean-verified there, every numbered theorem, proposition, lemma, corollary and example of this paper is formalized in
+Lean, including the guessing number and the broadcast rate (\cref{cor:gn,cor:broadcast}), the conditional transfer of
+\cref{prop:dn3-transfer}, \cref{prop:no-private} and \cref{ex:D9}; the finite checks are evaluated by the Lean kernel.
+Not formalized are the remaining claims of the numerical remarks of \cref{sec:limits}: that the $15$-vertex relation
+$\Ex$ is strongly connected and not $2$-dicolourable and that its minimum nonempty core is not a piece; that the twelve
+chorded cycles of \cref{rem:sweeps} have no valid sweep; and that the Petersen graph has no global certificate. They are
+reproducible with the scripts in \leanfile{tools/}. Not formalized either are the cited rank formula for folded cubes,
+whose case of the Clebsch graph is Lean-verified in the fourth paper, the cited theorem of Atkins, Rombach and Skerman
+after \cref{cor:gn}, and the heuristic \cref{rem:degree4}. The certificates printed in the remarks are Lean-verified.
+None of the unformalized claims is used in a proof. Each numbered result states its status as described in \cref{sec:prelim-lean}.
 
 \subsection{Related work}
 

@@ -1,8 +1,9 @@
 \section{Limits of the method}\label{sec:limits}
 
 The decompositions above are produced by rules: contract a shortest cycle (Theorems~N3 and~U3), a shortest directed cycle
-of in-degree-two vertices (Theorem~T), or a whole block (Theorem~PC). This section shows where such rules stop. Only
-\cref{prop:no-private} is a theorem. The remarks report computations, labelled as numerical, and a cited formula; none of
+of in-degree-two vertices (Theorem~T), or a whole block (Theorem~PC). This section shows where such rules stop.
+\Cref{prop:no-private} and \cref{ex:D9} are formalized, by kernel evaluation. The remarks report computations,
+labelled as numerical, a cited formula and a heuristic; where parts of them are Lean-verified, they say so, and none of
 them is used in a proof. The computations are reproduced by the script \leanfile{tools/verify_remarks.py}, described in
 \leanfile{tools/README.md}.
 
@@ -12,7 +13,7 @@ The induction of Theorem~N3 removes a piece whose outside parents are private. I
 such pieces need not exist, even when the half bound holds.
 
 \begin{proposition}[No private proper pieces]\label{prop:no-private}
-\notformalized
+\formal{Limits.lean}{cay9, no_private_piece}
 Let $N$ be the relation of $\Cay(\Z_9,\{1,-1,3\})$, so $N(q)=\{q-1,q+1,q-3\}$ and the children of $q$ are $q+1$, $q-1$
 and $q+3$. There is no set $H$ with $\emptyset\ne H\ne\Z_9$ such that
 \begin{enumerate}[label=(\alph*)]
@@ -21,27 +22,38 @@ and $q+3$. There is no set $H$ with $\emptyset\ne H\ne\Z_9$ such that
 \end{enumerate}
 \end{proposition}
 
-\begin{informalproof}
-Suppose $H$ exists. Since $\emptyset\ne H\ne\Z_9$, some $a\in H$ has $a-1\notin H$. By~(a) at $a$, two of its parents
-$a-1,a+1,a-3$ lie in $H$, so $a+1\in H$ and $a-3\in H$. The children of $a-1\notin H$ are $a-2$, $a$ and $a+2$; since
-$a\in H$, (b) gives $a-2\notin H$ and $a+2\notin H$. Now the parents of $a+1$ are $a$, $a+2$ and $a-2$, and only $a$ lies
-in $H$, contradicting~(a). The residues $a-3,\dots,a+2$ are distinct modulo~$9$, so the argument is valid.
-\end{informalproof}
+\begin{outline}
+The formal proof evaluates the statement for all $512$ subsets $H$ of $\Z_9$ in the kernel (\texttt{decide +kernel}).
+The following argument explains the result. Suppose $H$ exists. Since $\emptyset\ne H\ne\Z_9$, some $a\in H$ has
+$a-1\notin H$. By~(a) at $a$, two of its parents $a-1,a+1,a-3$ lie in $H$, so $a+1\in H$ and $a-3\in H$. The children of
+$a-1\notin H$ are $a-2$, $a$ and $a+2$; since $a\in H$, (b) gives $a-2\notin H$ and $a+2\notin H$. Now the parents of
+$a+1$ are $a$, $a+2$ and $a-2$, and only $a$ lies in $H$, contradicting~(a). The residues $a-3,\dots,a+2$ are distinct
+modulo~$9$, so the argument is valid.
+\end{outline}
 
 Every piece of a decomposition in context $\emptyset$ satisfies~(a), and a piece whose outside parents are private
 satisfies~(b). So on this relation a decomposition must start with the whole vertex set or with a piece whose outside
 parents are shared. Both happen. Corollary~CC gives a single piece; explicitly, the records $\{0,4\}$, $\{1,3,6,8\}$,
-$\{2,5,7\}$ with the list $0,1,2,3,4,7,5,6,8$ form a global elimination certificate. And nested charges give a proper
+$\{2,5,7\}$ with the list $0,1,2,3,4,7,5,6,8$ form a global elimination certificate (\lean{z9_elimOn}), which gives
+\eqref{eq:star} directly (\lean{rateBound_of_elimOn_univ}, \lean{rateBound_cay9}). And nested charges give a proper
 first piece, as follows.
 
 \begin{example}[A proper piece with shared outside parents]\label{ex:D9}
+\formal{Limits.lean}{exH1, ex72Piece, ex72Piece4, ex72Piece78, ex72_decomp}
 In the relation of \cref{prop:no-private}, let $H_1=\{0,1,2,3,5,6\}$ with records $X=\{0,2,6\}$, $Y=\{1,3,5\}$ and an
 empty record $Z$, and the list $2,3,5,6,0,1$ with supplying records $Y,X,X,Z,Y,Z$. The outside parents are $8$ for the
 vertices $2$ and $0$, $4$ for $3$ and $5$, and $7$ for $6$ and $1$; each outside vertex is shared by two steps with the
 same supplying record, so the certificate is co-supplied (\cref{lem:cosupply}). For instance, at the step of $5$ the
 revealed set is $\{2,3\}$ and $N(5)=\{4,6,2\}$ lies in $\{2,3\}\cup X\cup\{4\}$. The relation that remains,
-on $\{4,7,8\}$ with $H_1$ as context, is decomposed by the pieces $\{4\}$ and $\{7,8\}$.
+on $\{4,7,8\}$ with $H_1$ as context, is decomposed by the pieces $\{4\}$ and $\{7,8\}$, with records $\{4\},\emptyset$
+and $\{7\},\{8\}$. So $H_1,\{4\},\{7,8\}$ is a decomposition of $N$.
 \end{example}
+
+\begin{outline}
+The three piece certificates are written out (\lean{ex72Piece}, \lean{ex72Piece4}, \lean{ex72Piece78}); their
+conditions, including co-supply (\lean{relCharged_of_cosupply}), are checked by kernel evaluation (\texttt{decide}), and
+\lean{ex72_decomp} assembles them.
+\end{outline}
 
 \paragraph{Why it matters.} For an impossibility proof, \cref{prop:no-private} shows that the private-piece induction of
 Theorem~N3 cannot prove half bounds on directed side information of degree three, even on a single circulant: an argument
@@ -55,7 +67,7 @@ $\emptyset$ is a core, and in a cubic graph the minimum nonempty cores are the s
 can always contract a minimum nonempty core. In directed relations this fails.
 
 \begin{remark}[Numerical: a $15$-vertex relation whose minimum nonempty core is not a piece]\label{rem:X15}
-Let $\Ex$ be the relation on $\{0,\dots,14\}$ with
+Let $\Ex$ be the relation (\lean{x15}) on $\{0,\dots,14\}$ with
 \begin{center}
 \small
 \begin{tabular}{@{}l*{8}{c}@{}}
@@ -68,38 +80,43 @@ $N(q)$ & $\{9,14,5\}$ & $\{6,11,7\}$ & $\{9,12\}$ & $\{2,13,12\}$ & $\{14,11\}$ 
 \bottomrule
 \end{tabular}
 \end{center}
-A computation (\leanfile{tools/verify_remarks.py}) shows: $\Ex$ is loopless and TT-free, every vertex has at most
-three parents and at most three children, it is strongly connected, and it is not $2$-dicolourable. Its unique minimum
-nonempty core is $C=\{0,\dots,5\}$, a bidirected $6$-cycle whose outside parents $6$, $7$, $8$ each have two antipodal children:
-$6\to0,3$, $7\to1,4$ and $8\to2,5$. An exhaustive search over the partitions of $C$ into at most seven records, all elimination orders
+The relation $\Ex$ is loopless and TT-free, and every vertex has at most three parents and at most three children
+(\lean{x15_props}). Every nonempty core has at least six vertices, and the only core with six vertices is
+$C=\{0,\dots,5\}$ (\lean{x15_cores}). The set $C$ is a core, its cyclically consecutive vertices form digons, and its
+outside parents $6$, $7$, $8$ each have two antipodal children: $6\to0,3$, $7\to1,4$ and $8\to2,5$ (\lean{x15_hexagon}).
+So $C$ is the unique minimum nonempty core, and, as every vertex has at most three parents, it is a bidirected
+$6$-cycle. A computation (\leanfile{tools/verify_remarks.py}) shows that $\Ex$ is strongly connected and not
+$2$-dicolourable, and an exhaustive search over the partitions of $C$ into at most seven records, all elimination orders
 and all supplying records finds no piece certificate for $C$ in context $\emptyset$, even when the steps charged to an
 outside parent are only required to be nested (co-supplied outside parents are a special case). More records cannot
 help: $C$ has six vertices, so a certificate with more than seven records has at least two empty records, which can be
-merged.
-So $C$ is not a piece in context $\emptyset$, with any number of records. Nevertheless
-$\Ex$ has a decomposition, with a single piece: a global elimination certificate with three records, obtained by giving
-the vertices $0,\dots,14$ the records $0,1,0,1,0,1,1,1,0,0,0,1,0,0,2$ and using the list
-$0,4,5,7,1,9,8,2,11,12,10,6,3,13,14$, which can be checked by hand. So \eqref{eq:star} holds for $\Ex$, but no rule that
-starts by contracting a minimum nonempty core can prove it.
+merged. So $C$ is not a piece in context $\emptyset$, with any number of records. Nevertheless $\Ex$ has a
+decomposition, with a single piece: a global elimination certificate with three records, obtained by giving the vertices
+$0,\dots,14$ the records $0,1,0,1,0,1,1,1,0,0,0,1,0,0,2$ and using the list $0,4,5,7,1,9,8,2,11,12,10,6,3,13,14$
+(\lean{x15_elimOn}). So \eqref{eq:star} holds for $\Ex$ (\lean{rateBound_x15}), but no rule that starts by contracting a
+minimum nonempty core can prove it. The claims that $\Ex$ is strongly connected and not $2$-dicolourable and that $C$ is
+not a piece are numerical; the other claims of this remark are Lean-verified as cited.
 \end{remark}
 
 In the undirected setting the antipodal pattern cannot occur on a shortest cycle: an outside vertex adjacent to $c_0$ and
 $c_3$ on a $6$-cycle closes the $5$-cycle $w,c_0,c_1,c_2,c_3$. In $\Ex$ the arc $6\to3$ is one-way
 ($0\leftrightarrow6$ is a digon); the $5$-cycle $6,0,1,2,3$ of the underlying graph is not a core, since vertex~$6$ has
-the two parents $10$ and $14$ outside it, and the exhaustive search finds no nonempty core with fewer than six vertices.
+the two parents $10$ and $14$ outside it, and no nonempty core has fewer than six vertices (\lean{x15_cores}).
 The relation lies outside Theorems~U3 and~T: vertex $6$ has five neighbours in the underlying graph, and the vertices with
-three parents include the digons of $C$. Its digon components violate~(H1) of
-\cref{cor:PC-digon}, since vertex $6$ has the two one-way parents $10$ and $14$; Theorem~PC applies with the whole vertex set
-as one block, through the global certificate.
+three parents include the digons of $C$. Its digon components violate~(H1) of \cref{cor:PC-digon}, since vertex $6$ has
+the two one-way parents $10$ and $14$ (\lean{x15_oneWay_parents}); Theorem~PC applies with the whole vertex set as one
+block, through the global certificate.
 
 \subsection{Sweeps and global certificates}\label{sec:sweeps}
 
-For a TT-free chorded digon cycle $K=\{k_0,\dots,k_{L-1}\}$ (indices modulo $L$), the \emph{sweep} from $k_z$ in direction
-$d=\pm1$ is the elimination list $k_z,k_{z+d},\dots,k_{z+(L-1)d}$ with the finest records that make the later parents of
-each vertex lie in one record: the classes of the equivalence relation that merges these later parents, for every vertex.
-The sweep is \emph{valid} if no vertex lies in the class of its later parents; it is then an elimination certificate.
-\Cref{prop:CC}, with the mirror sweep, shows that a TT-free chorded digon cycle whose chords all have one offset $k$ with
-$2k\not\equiv\pm1\pmod L$ has a valid sweep; this includes every TT-free circulant $\Cay(\Z_L,\{1,-1,k\})$.
+For a chorded digon cycle $K=\{k_0,\dots,k_{L-1}\}$ (indices modulo $L$) such that $N[K]$ is loopless and TT-free, the
+\emph{sweep} from $k_z$ in direction $d=\pm1$ is the elimination list $k_z,k_{z+d},\dots,k_{z+(L-1)d}$ with the finest
+records that make the later parents of each vertex lie in one record: the classes of the equivalence relation that
+merges these later parents, for every vertex. The sweep is \emph{valid} if no vertex lies in the class of its later
+parents; since $N[K]$ is loopless, it is then an elimination certificate. The proof of \cref{prop:CC}\ref{it:mirror}
+shows that such a cycle (with $N[K]$ loopless and TT-free) whose chords all have one offset $k$ with
+$2k\not\equiv\pm1\pmod L$ has a valid sweep, along the cycle or, for the mirror sweep, in the opposite direction; this includes every loopless TT-free
+circulant $\Cay(\Z_L,\{1,-1,k\})$.
 
 \begin{remark}[Numerical: chorded cycles without a valid sweep]\label{rem:sweeps}
 An adversarial local search over chord sets found twelve TT-free chorded digon cycles, of lengths $13$, $15$ and $16$,
@@ -109,9 +126,20 @@ none of whose $2L$ sweeps is valid (\leanfile{tools/verify_remarks.py}). One of 
 \]
 All twelve have elimination certificates with three records. For the cycle displayed, give the vertices
 $0,\dots,12$ the records $0,2,0,1,0,2,1,2,1,2,1,2,1$; the list $11,9,7,6,5,4,10,1,2,0,8,3,12$ is then an elimination
-certificate, which can be checked by hand. So these
-cycles are of kind~(c) in Theorem~PC; they only show that sweeps, the method of \cref{prop:CC}, do not cover all chorded
-cycles.
+certificate, which can be checked by hand. So these cycles are of kind~(c) in Theorem~PC; they only show that sweeps, the
+method of \cref{prop:CC}, do not cover all chorded cycles.
+
+All twelve cycles are Lean-verified to be loopless TT-free chorded digon cycles: on $\Z_L$, every vertex $v$ has the
+parents $v\pm1$, at most three parents and at most three children (\lean{IsChordedCycle}), so beyond the digons of the
+cycle there is at most one chord into and at most one chord out of every vertex. Their global elimination
+certificates, which the Lean proofs construct with three records, and hence \eqref{eq:star}, are Lean-verified as well.
+The displayed cycle is \lean{c13}: \lean{c13_spec} shows that the parents of each vertex are exactly its two cycle
+neighbours and the tails of the displayed chords into it, and \lean{c13_isChordedCycle}, \lean{c13_elimOn} and
+\lean{rateBound_c13} give the rest. The other eleven are \lean{cyc1}, \dots, \texttt{cyc11}, each with its
+certificate \texttt{cyc$K$\_elimOn}; \lean{twelve_cycles} collects the twelve statements \lean{IsChordedCycle} and
+\eqref{eq:star}. Apart from \lean{cyc1}, the declarations of these eleven cycles are not listed in the index
+individually; their axioms are checked through \lean{twelve_cycles}. Only the claim that none of the $2L$ sweeps is
+valid is numerical.
 \end{remark}
 
 \begin{remark}[Numerical: the Petersen graph has no global certificate]\label{rem:petersen}
@@ -122,9 +150,12 @@ exactly when these forced equalities and inequalities of records are consistent,
 equalities can then serve as the records. An exhaustive search over all elimination orders of $N$, which keeps the
 forced equalities in a union--find structure and abandons an order as soon as a forced inequality fails, finds no
 consistent order (\leanfile{tools/verify_remarks.py}). So $N$ has no global elimination certificate, with any number of
-records. Theorem~N3, by contrast, decomposes the Petersen graph into two pieces: its proof first contracts a $5$-cycle,
-whose outside parents (the spokes) are private, and then the remaining $5$-cycle. So decompositions are strictly
-stronger than global certificates, and Theorem~D strictly stronger than \cref{prop:global}.
+records. The Petersen graph, \lean{MotionDepthCodes.petersenGraph} of the fourth paper's library, is triangle-free
+(\lean{petersen_cliqueFree}) and cubic, so Theorem~N3, by contrast, gives it a decomposition (\lean{petersen_decomp}).
+Following the proof of Theorem~N3, the first piece is a $5$-cycle, whose outside parents (the spokes) are private, and the
+second is the remaining $5$-cycle; this description of the pieces is not part of the formal statement. So
+decompositions are strictly stronger than global certificates, and Theorem~D strictly stronger than
+\cref{prop:global}.
 \end{remark}
 
 \subsection{Odd girth and degree}\label{sec:foldcubes}
@@ -135,12 +166,13 @@ vector, has $N=2^{2k}$ vertices, degree $2k+1$ and odd girth $2k+1$; for $k=2$ i
 matrix $I+A$ has rank $\frac12(2^{2k}-2^k)$: this is the case of even dimension $2k$ of a proposition of Barg,
 Schwartz and Yohananov~\cite[Proposition~13]{BSY2024}, whose Cayley graph also has the zero vector as a generator and
 therefore has adjacency matrix $I+A$. Its kernel is a binary linear storage code of dimension
-$N/2+2^{k-1}$; for $k=2,3$ this is also checked numerically (\leanfile{tools/verify_remarks.py}). So \eqref{eq:star}
-fails on the folded cubes, whose odd girth equals their degree, for every $k\ge2$; it holds on other graphs whose odd
-girth equals their degree, such as the $5$-regular Andrásfai graph $\Andr(5)=K_{14/5}$, of odd girth five
-(\cref{thm:circular}). In the symmetric case $\dist_E(L_p,R_p)$ is the length of the shortest odd closed walk through
-$p$, so here $b_E(r)=0$ for $r<2k+1$.
-Hence, for every odd $r\ge3$, an exact half bound that assumes only $b_E(r)=0$ can hold at most for maximum degree
+$N/2+2^{k-1}$; for $k=2,3$ this is also checked numerically (\leanfile{tools/verify_remarks.py}). For $k=2$ it is
+Lean-verified in the fourth paper~\cite[Corollary~6.11]{FourthPaper2026}: its Clebsch graph is the folded $5$-cube
+(\lean{MotionDepthCodes.clebschGraph_adj_iff}), and $\ker(I+A)$ has dimension $10=N/2+2$
+(\lean{MotionDepthCodes.finrank_ker_clebsch}). So \eqref{eq:star} fails on the folded cubes, whose odd girth equals their
+degree, for every $k\ge2$; it holds on other graphs whose odd girth equals their degree, such as the $5$-regular
+Andrásfai graph $\Andr(5)=K_{14/5}$, of odd girth five (\cref{thm:circular}). In the symmetric case $\dist_E(L_p,R_p)$ is
+the length of the shortest odd closed walk through $p$, so here $b_E(r)=0$ for $r<2k+1$. Hence, for every odd $r\ge3$, an exact half bound that assumes only $b_E(r)=0$ can hold at most for maximum degree
 $r+1$: the folded $(r+2)$-cube violates it. The excess $2^{k-1}=\sqrt N/2$ is $o(N)$, which is consistent with the
 asymptotic form of the paired-distance question~\cite[Question~9.1]{DirectedRecovery2026}.
 \end{remark}

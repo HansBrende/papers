@@ -8,8 +8,8 @@ Usage (from the paper directory, i.e. the parent of paper/ and lean/):
 
 Collects every declaration named in a \\formal{file}{names} or \\partformal{file}{names}{...}
 line of paper/sections/*.tex, and every name in a \\lean{name} reference to this library (names of
-the earlier papers' libraries, which start with "Transpose", "MotionDepthCodes" or
-"CircularMemo", are skipped), and writes
+the earlier papers' libraries, which start with "Transpose", "MotionDepthCodes", "CircularMemo"
+or "DirectedRecovery", are skipped), and writes
   * paper/sections/leanindex.tex: the declarations grouped by Lean module;
   * lean/PaperAxioms.lean: imports and one `#print axioms` per declaration (not with
     --index-only).
@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = ROOT / "paper" / "sections"
 FORMAL = re.compile(r"\\(?:formal|partformal)\{([^{}]+)\}\{([^{}]+)\}")
 INLINE = re.compile(r"\\lean\{([^{}]+)\}")
-FOREIGN = ("Transpose", "MotionDepthCodes", "CircularMemo")
+FOREIGN = ("Transpose", "MotionDepthCodes", "CircularMemo", "DirectedRecovery")
 
 
 def collect():
@@ -52,12 +52,13 @@ def write_index(by_file, inline):
     lines = [
         r"\section{Index of Lean declarations}\label{app:index}",
         "",
-        "Every declaration of this paper's library cited in the text, grouped by the Lean module that contains it, relative to the namespace",
-        r"\texttt{HalfRate}. All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and",
+        r"This index lists every declaration of this paper's library cited in the text, relative to the namespace",
+        r"\texttt{HalfRate}. The declarations named in status lines are grouped by the module named there; those named only",
+        r"in the text are listed at the end. All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and",
         r"\texttt{Quot.sound} (\cref{app:verify}). The declarations of the earlier libraries of the series that are named in",
-        r"the text, in the namespaces \texttt{Transpose} of the first paper, \texttt{MotionDepthCodes} of the fourth paper and",
-        r"\texttt{CircularMemo} of its circular memo, are defined and verified",
-        r"there~\cite{FirstPaper2026,FourthPaper2026,CircularMemo2026}.",
+        r"the text, in the namespaces \texttt{Transpose} of the first paper, \texttt{MotionDepthCodes} of the fourth paper,",
+        r"\texttt{CircularMemo} of its circular memo and \texttt{DirectedRecovery} of \emph{Directed Recovery Structures},",
+        r"are defined and verified there~\cite{FirstPaper2026,FourthPaper2026,CircularMemo2026,DirectedRecovery2026}.",
         "",
     ]
     for file in sorted(by_file, key=module):

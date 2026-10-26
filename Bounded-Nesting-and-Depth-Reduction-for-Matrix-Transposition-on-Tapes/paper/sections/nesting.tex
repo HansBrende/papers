@@ -15,6 +15,7 @@ bounded entry, and the confinement of depth-robustness to a set of cells of vani
 
 \begin{lemma}[Nesting with distinct owners costs visits]\label{lem:owner}
 \formal{Owner.lean}{owner_entries, card_crossings_le}
+\formal{OwnerLoad.lean}{owner_entries_lower}
 Let $x$ be a walk, $\ell\ge1$, and let $(p_i,u_i)$, $0\le i<\ell$, be upper long hops of~$x$ that are strictly nested,
 $p_i<p_{i+1}$ and $u_{i+1}<u_i$, with pairwise distinct owners. Then for every time $T'\ge u_0$, the cell of the innermost
 hop $(p_{\ell-1},u_{\ell-1})$ has at least $(\ell+1)/2$ entries at times at most~$T'$. By the reflection $x\mapsto-x$, the
@@ -22,10 +23,11 @@ same holds for lower long hops.
 \end{lemma}
 
 \begin{outline}
-The Lean statement concerns upper hops; the lower case follows by the reflection $x\mapsto-x$, which maps lower long hops
-to upper ones with the same owners and does not change entries. In Lean a walk is a map $x\colon\N\to\Z$ with
+The main Lean statement concerns upper hops. The lower case, \lean{owner_entries_lower}, follows by the reflection
+$x\mapsto-x$, which maps lower long hops (\lean{IsLowerHop}) to upper ones with the same owners (\lean{IsLowerOwner}) and
+does not change entries (\lean{entries_neg}). In Lean a walk is a map $x\colon\N\to\Z$ with
 $\abs{x(t+1)-x(t)}\le1$ (\lean{IsWalk}); a walk of length~$T$ is extended by staying at $x(T-1)$, which adds no entries
-before time~$T$. Upper long hops and owners are the structures
+at times at least~$T$. Upper long hops and owners are the structures
 \lean{IsUpperHop} and \lean{IsOwner}, and entries and crossings are \lean{entries} and \lean{crossings}. Let $c_i$ be the
 cell of $(p_i,u_i)$ and $c=c_{\ell-1}$. Since $p_{i+1}\in(p_i,u_i)$, the cells increase inwards, $c_0<\dots<c_{\ell-1}=c$.
 Every owner $o_i$ is a maximum of $x$ over $(p_i,u_i)\supseteq(p_{\ell-1},u_{\ell-1})$, where $x\ge c+1$, so
@@ -40,19 +42,24 @@ most once, and so the number of crossings is at most twice the number of entries
 \end{outline}
 
 \begin{corollary}[Bounded entry bounds the owner-load]\label{cor:owner-load}
-\notformalized
-Let $x_1,\dots,x_k$ be walks of length~$T$ and $H'$ a set of their long hops such that, for every hop of~$H'$ of head~$h$
-at a cell~$c$, the walk $x_h$ enters~$c$ at most $V$ times. Then $H'$ has owner-load at most $2V-1$. In particular, if every
+\formal{OwnerLoad.lean}{ownerLoad_le_of_entries}
+Let $V\ge1$, let $x_1,\dots,x_k$ be walks of length~$T$ and $H'$ a set of their long hops such that, for every hop of~$H'$
+of head~$h$ at a cell~$c$, the walk $x_h$ enters~$c$ at most $V$ times. Then $H'$ has owner-load at most $2V-1$. In particular, if every
 walk enters every cell at most $V$ times, the set of all long hops has owner-load at most $2V-1$.
 \end{corollary}
 
-\begin{informalproof}
-Fix a time~$t$, a head~$h$ and a side, say upper. The hops of~$H'$ of head~$h$ on this side whose open intervals
-contain~$t$ form a chain (\cref{sec:prelim-walks}). Choosing one hop for each of their $\ell$ distinct owners gives a strictly
-nested chain of upper long hops with distinct owners, and by \cref{lem:owner} with $T'=T-1$ its innermost cell has at
-least $(\ell+1)/2$ entries. This cell is the cell of a hop of~$H'$ of head~$h$, so $(\ell+1)/2\le V$. Lower hops are
-symmetric.
-\end{informalproof}
+\begin{outline}
+The owners are those of \cref{sec:prelim-walks} (\lean{hopOwner}), and the second sentence is the instance $H'=$
+\lean{allHops}, used in \cref{cor:entry-tcp}. Fix a time~$t$, a head~$h$ and a side~$\sigma$, and let $O$ be the set of
+owners of the hops of~$H'$ of head~$h$ on side~$\sigma$ whose open intervals contain~$t$. Choose one hop for each owner.
+Seen from side~$\sigma$, that is for the walk $\pm x_h$ (\lean{sw}), these hops are upper long hops
+(\lean{isUpperHop_sw}), and the owner of the paper is their owner in the sense of \cref{lem:owner}, the first time
+strictly inside at which the walk is highest (\lean{isOwner_hopOwner}). Distinct owners give distinct starts, because a
+hop is determined by its start (\lean{hop_start_unique}). Listed by increasing start, the chosen hops are strictly nested:
+two of them contain~$t$, so they are not disjoint; equal ends would give equal starts (\lean{hop_end_unique}); and they
+do not cross. \Cref{lem:owner} with $T'=T-1$ then gives at least $(\card O+1)/2$ entries of the innermost cell, which is the
+cell of a hop of~$H'$ of head~$h$, and the reflection does not change entries (\lean{entries_sw}). So $\card O\le2V-1$.
+\end{outline}
 
 \subsection{Families and virtual heads}\label{sec:nest-families}
 
@@ -298,33 +305,39 @@ the load of the family clock is $N\le2k\ell$.
 \subsection{Bounded entry and the capacity of depth}\label{sec:nest-capacity}
 
 \begin{corollary}[Bounded entry implies TCP]\label{cor:entry-tcp}
-\notformalized
-Let $V\ge1$. TCP holds for every family of $k$-tuples of walks in which every walk enters every cell at most $V$ times,
+\partformal{OwnerLoad.lean}{tcp_of_entries}{the clause on multiplicity, which is not defined in Lean; it follows
+because the walk $x_h$ enters~$c$ at most $\mu(h,c)$ times.}
+Let $k,V\ge1$. TCP holds for every family of $k$-tuples of walks in which every walk enters every cell at most $V$ times,
 in particular for walks of multiplicity at most~$V$, with $D(\eps)=\DF(k,2V-1,\eps)$ for $\eps\in(0,1]$.
 \end{corollary}
 
-\begin{informalproof}
-By \cref{cor:owner-load} the set of all long hops has owner-load at most $2V-1$, and $G(H')$ is the walk DAG; apply
-\cref{thm:F}.
-\end{informalproof}
+\begin{outline}
+By \cref{cor:owner-load} the set of all long hops (\lean{allHops}) has owner-load at most $2V-1$, and $G(H')$ is then the
+walk DAG; apply \cref{thm:F} (\lean{theoremF_owner}). The Lean statement holds for every $\eps>0$, with depth less
+than $\DF(k,2V-1,\eps)$.
+\end{outline}
 
 The corollary is incomparable with Theorem~B: home-based sweeps $0\to n\to0$, repeated, enter cells near home unboundedly
 often, while walks made of V's of varying sizes that drift away from every home enter every cell at most three times
 but have superlinear leg area about every cell.
 
 \begin{corollary}[The capacity of depth]\label{cor:capacity}
-\notformalized
-Let $x_1,\dots,x_k$ be walks of length~$T$, let $\eps\in(0,1]$ and $V=\lceil1/\eps\rceil$, and let $R$ be the set of pairs
-$(h,c)$ such that $x_h$ enters~$c$ more than $V$ times. Then $\card R\le kT/(V+1)<k\eps T$; at every time~$\tau$ at most
-$\card R$ hops at pairs of~$R$ span~$\tau$; and $G-R$ has a cut of at most $\eps T$ edges and depth less than
+\partformal{OwnerLoad.lean}{heavyPairs, lightHops, card_heavyPairs_mul_le, card_heavyPairs_lt, card_span_heavyPairs_le, capacity_cut}{the estimate $\DF(k,2\lceil1/\eps\rceil-1,\eps)=2^{O(k^3/\eps^4)}$.}
+Let $k,T\ge1$, let $x_1,\dots,x_k$ be walks of length~$T$, let $\eps\in(0,1]$ and $V=\lceil1/\eps\rceil$, and let $R$ be
+the set of pairs $(h,c)$ such that $x_h$ enters~$c$ more than $V$ times. Then $\card R\le kT/(V+1)<k\eps T$; at every
+time~$\tau$ at most $\card R$ long hops at pairs of~$R$ span~$\tau$; and $G-R$ has a cut of at most $\eps T$ edges and depth less than
 $\DF(k,2\lceil1/\eps\rceil-1,\eps)=2^{O(k^3/\eps^4)}$.
 \end{corollary}
 
-\begin{informalproof}
-Each walk has at most $T$ entries in all, which bounds $\card R$. By (P1), at most one hop at each pair spans a
-given time. The DAG $G-R$ is $G(H')$ for the set $H'$ of long hops at pairs entered at most $V$ times, which by
-\cref{cor:owner-load} has owner-load at most $2V-1\le3/\eps$; apply \cref{thm:F}.
-\end{informalproof}
+\begin{outline}
+In Lean, $R$ is \lean{heavyPairs}, the pairs $(h,c)$ such that $x_h$ visits~$c$ before~$T$ and enters it more than $V$
+times, and the hops of $G-R$ are \lean{lightHops}. Each walk has at most $T$ entries in all
+(\lean{sum_card_entries_le}), which gives $\card R\,(V+1)\le kT$ (\lean{card_heavyPairs_mul_le}), and with
+$V=\lceil1/\eps\rceil$ this is less than $k\eps T$ (\lean{card_heavyPairs_lt}). By (P1), at most one hop at each pair spans a
+given time (\lean{hop_unique}, \lean{card_span_heavyPairs_le}). The hops of $G-R$ lie at cells entered at most $V$ times
+(\lean{entries_le_of_lightHops}), so by \cref{cor:owner-load} they have owner-load at most $2V-1$, and \cref{thm:F} applies
+(\lean{capacity_cut}).
+\end{outline}
 
 \paragraph{Why it matters.} Every schedule of linear length splits, with no property of transposition used, into a
 \emph{shallow} part, the hops at boundedly entered cells, which a cut of $\eps T$ edges reduces to bounded depth, and a
@@ -337,7 +350,7 @@ alternation cannot be forbidden at no cost: for walks without pauses, the statem
 implies $\TCP(k)$ in genie form, while $\TCP(k+1)$ in genie form implies $\mathrm{RF}(k+1)$ with $R=\emptyset$.
 
 \begin{proposition}[Relays must be allowed]\label{prop:relays}
-\notformalized
+\formal{Relays.lean}{RF, TCPgenie, tcpGenie_of_rf}
 Restrict to walks without pauses, and let $\mathrm{RF}(k)$ be the statement: for every $\eps>0$ there are $D(\eps)$ and
 $\delta(\eps)$, with $\delta(\eps)\to0$ as $\eps\to0$, such that for all $k$ walks of length~$T$ there are a set~$R$ of pairs
 with $\card R\le\delta(\eps)T$ and a set $\Gamma\subseteq[0,T)$ with $\card\Gamma\le\eps T$ such that, for every path
@@ -348,30 +361,32 @@ $\Gamma'\subseteq[0,T)$ with $\card{\Gamma'}\le\eps'T$ such that every path whos
 has at most $D'$ edges.
 \end{proposition}
 
-\begin{informalproof}
-For $\eps'\ge1$ take $\Gamma'=[0,T)$. Let $0<\eps'<1$, let $M$ be the least odd integer with $M\ge4/\eps'$, and choose
-$\eps\le\eps'/8$ with
-$(M-1)\delta(\eps)\le\eps'/8$. Let $x_1,\dots,x_k$ be walks of length $T\ge16/\eps'$. Define an extra walk~$z$ on
-$[0,T)$ blockwise: for $t\in[jM,(j+1)M)$, $z(t)=j+((t-jM)\bmod2)$. Inside block~$j$ it alternates between $j$ and $j+1$,
-ending at~$j$ because $M$ is odd, and the next block starts at $j+1$; so $z$ has no pauses. Cell~$j$ is visited at most
-$M$ times, $z$ has at most $T/M+2$ first visits, and every time that is not a first visit of~$z$ is the later endpoint of a
-long hop of~$z$.
+\begin{outline}
+The walk DAG and its paths are \lean{IsDagPath}, walks without pauses \lean{NoPauses}, and the two statements are
+\lean{RF} and \lean{TCPgenie}, with $\delta(\eps)\to0$ as $\eps\to0^+$. For $\eps'\ge1$ take $\Gamma'=[0,T)$. Let
+$0<\eps'<1$ and $M=2\lceil2/\eps'\rceil+1$, an odd integer with $M\ge4/\eps'$, and choose $\eps\le\eps'/8$ with
+$2M\delta(\eps)\le\eps'/8$. Put $D'=\max(D(\eps),\lceil16/\eps'\rceil)$. A path goes back in time
+(\lean{IsDagPath.lt}), so for $T<16/\eps'$ every path has fewer than $16/\eps'$ edges and $\Gamma'=\emptyset$ works. Let
+$x_1,\dots,x_k$ be walks of length $T\ge16/\eps'$. Define an extra walk~$z$ (\lean{zig}) blockwise: for $t\in[jM,(j+1)M)$,
+$z(t)=j+((t-jM)\bmod2)$. Inside block~$j$ it alternates between $j$ and $j+1$, ending at~$j$ because $M$ is odd, and the
+next block starts at $j+1$; so $z$ has no pauses (\lean{zig_ne}). Cell~$j$ is visited at most $2M$ times
+(\lean{card_zig_visits_le}), $z$ has at most $(T-1)/M+2$ first visits (\lean{card_firstVisits_le}), and every time that is
+not a first visit of~$z$ is the later endpoint of a long hop of~$z$ (\lean{exists_prev_hop}).
 
-Apply $\mathrm{RF}(k+1)$ to $(x_1,\dots,x_k,z)$ at~$\eps$, obtaining $R$ and~$\Gamma$. Let $\Delta$ be the set of times~$s$
-at which some path of length greater than $D(\eps)$, with all vertices after the first outside~$\Gamma$, ends. For such a
-path ending at~$s$, if $s$ were not a first visit of~$z$, the pair $(z,z(s))$ were not in~$R$ and $\prev_z(s)$ were not
-in~$\Gamma$, then appending the hop edge $s\to\prev_z(s)$ would give a path that violates $\mathrm{RF}$ at its last edge.
-So every $s\in\Delta$ is a first visit of~$z$ (at most $T/M+2$ times), or the later endpoint of a hop of~$z$ at a pair
-of~$R$ (at most $(M-1)\card R\le(M-1)\delta(\eps)T$ times, since each pair of~$z$ carries at most $M-1$ hops), or has
-$\prev_z(s)\in\Gamma$ (at most $\card\Gamma\le\eps T$ times, since $\prev_z$ is injective).
+Apply $\mathrm{RF}(k+1)$ to $(x_1,\dots,x_k,z)$ (\lean{withZig}) at~$\eps$, obtaining $R$ and~$\Gamma$. Let $\Delta$ be the set
+of times~$s$ at which some path of length greater than $D(\eps)$, with all vertices after the first outside~$\Gamma$, ends.
+For such a path ending at~$s$, if $s$ were not a first visit of~$z$, the pair $(z,z(s))$ were not in~$R$ and $\prev_z(s)$
+were not in~$\Gamma$, then appending the hop edge $s\to\prev_z(s)$ would give a path that violates $\mathrm{RF}$ at its last
+edge. So every $s\in\Delta$ is a first visit of~$z$ (at most $T/M+2$ times), or a visit of~$z$ at a cell~$c$ with
+$(z,c)\in R$ (at most $2M\card R\le2M\delta(\eps)T$ times), or the later endpoint of a hop of~$z$ that starts in~$\Gamma$ (at
+most $\card\Gamma\le\eps T$ times, since a hop is determined by its start).
 
 Put $\Gamma'=\Gamma\cup\Delta$. A path of length greater than $D(\eps)$ whose vertices after the first avoid~$\Gamma'$
 would avoid~$\Gamma$, so its last vertex would lie in~$\Delta\subseteq\Gamma'$, a contradiction. Hence such paths have at
 most $D(\eps)$ edges in the walk DAG of $(x_1,\dots,x_k,z)$, and therefore in that of $(x_1,\dots,x_k)$, which has the same
-vertices and fewer edges. Finally
-$\card{\Gamma'}\le2\eps T+T/M+2+(M-1)\delta(\eps)T\le(\eps'/4+\eps'/4+\eps'/8)T+2\le\eps'T$, using $T\ge16/\eps'$. For
-$T<16/\eps'$ every path has fewer than $16/\eps'$ edges, so $D'=\max(D(\eps),\lceil16/\eps'\rceil)$ works.
-\end{informalproof}
+vertices and fewer edges (\lean{hopPairs_subset_withZig}, \lean{IsDagPath.mono}). Finally
+$\card{\Gamma'}\le2\eps T+T/M+2+2M\delta(\eps)T\le(\eps'/4+\eps'/4+\eps'/8+\eps'/8)T\le\eps'T$, using $2\le\eps'T/8$.
+\end{outline}
 
 The conversion is the reason the scratch of \cref{cor:capacity} must be allowed to relay: a busy extra head of bounded
 multiplicity and space about $T/M$ turns any relay-free certificate into a genuine genie for the other heads.

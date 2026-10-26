@@ -51,13 +51,13 @@ barrier~\cite[Definition~5.5]{FourthPaper2026}, and that barrier does not apply 
 \subsection{Theorem M}\label{sec:one-M}
 
 Let $x_0$ be any walk of length~$T$; its long hops are called \emph{chords}. Let $H'$ be a set of long hops of further
-walks $x_1,\dots,x_k$ of length~$T$, of owner-load at most~$\ell$, with families, bands and events as in
+walks $x_1,\dots,x_k$ of length~$T$, of owner-load at most~$\ell\ge1$, with families, bands and events as in
 \cref{sec:nest-families}, and put $N=2k\ell$, an upper bound for the number of virtual heads (\cref{lem:families}).
 Let $G$ be the DAG on $[0,T)$ with the state edges, all chords and the hop edges of~$H'$; an edge is determined by its
 endpoints.
 
 \begin{theorem}[Theorem M: one arbitrary head]\label{thm:M}
-\notformalized
+\formal{TheoremM.lean}{theoremM_owner, theoremM, mw, mK0, mK, DM}
 Let $q\ge1$ and $h\ge0$ be integers and $0\le\beta_1<\beta_2<\dots<\beta_q$ integers, and suppose that every family~$F$
 of~$H'$ is assigned a window $i(F)\in\{1,\dots,q\}$ with $\beta_{i(F)}\le\lambda(d_F)\le\beta_{i(F)}+h$. Let
 $\eps\in(0,1]$ and put
@@ -73,96 +73,117 @@ For $q=0$, that is, $H'=\emptyset$, \cref{lem:W} applies. Windows may touch or o
 by $q$ windows of width~$h$ can moreover be replaced by the greedy cover, in which each window starts at the smallest band
 not yet covered, with at most $q$ windows of the same width.
 
-\begin{informalproof}
-\emph{Widths and lines.} Put $W_0=w$ and, for $1\le i\le q$, let $W_i$ be the least power of~$2$ that is at least
-$\max(\mathrm{lo}_i,w)$, where $\mathrm{lo}_i=64qN2^{\beta_i+h}/\eps$. The $\mathrm{lo}_i$ increase with~$i$, so
-$w=W_0\mid W_1\mid\dots\mid W_q$, and $W_i\le2\max(\mathrm{lo}_i,w)\le2(\mathrm{lo}_i+w)$. Draw $\rho$ uniformly from
-$\{0,\dots,W_q-1\}$. The \emph{level-$i$ lines} are the cells congruent to~$\rho$ modulo~$W_i$; every level-$i$ line is a
-level-$i'$ line for $i'\le i$. A \emph{level-$i$ strip} is the set of cells strictly between two consecutive level-$i$
-lines, so it has $W_i-1$ cells and every level-$i$ strip lies inside a level-$(i+1)$ strip. Let
-$Z=\{t:x_0(t)\text{ is a level-}0\text{ line}\}$, and for $t\notin Z$ let $\sigma_i(t)$ be the level-$i$ strip of $x_0(t)$.
+\begin{outline}
+The theorem for the owners of \cref{sec:prelim-walks} is \lean{theoremM_owner}, an instance of \lean{theoremM}, which
+holds for every assignment of owners strictly inside the hops. In Lean the chords are \lean{hops}, the hop pairs of~$H'$ are
+\lean{hopPairs}, the families are those of \lean{famData}, and the windows are numbered from~$0$: window~$j$ belongs to
+level $j+1$, and the hypothesis on windows says that every family has some window~$j$ with
+$\beta_j\le\lambda(d_F)\le\beta_j+h$. The case $k=0$ is allowed.
 
-\emph{Counters and label.} The level-$0$ counter of a level-$0$ strip~$S$ is $c^0_S(t)=\#\{t'\le t:x_0(t')\in S\}$, and for
-$i\ge1$ the level-$i$ counter of a level-$i$ strip~$S$ counts \emph{entries} into~$S$,
-$c^i_S(t)=\#\{t'\le t:x_0(t')\in S\text{ and }x_0(t'-1)\text{ is a level-}i\text{ line}\}$. For the walks of~$H'$, let
-$n_i(t)$ be the number of events at times at most~$t$ of scale at least~$\beta_i$. Choose independent uniform offsets
-$\omega_0\in[0,K_0)$ and $\omega_1,\dots,\omega_q,\omega'_1,\dots,\omega'_q\in[0,K)$, and put
+\emph{Widths and lines} (\lean{wexp}, \lean{mwidth}). Put $W_0=w=2^m$ with $m=\lceil\log_2(8(4+2k)/\eps)\rceil$
+(\lean{mExp}) and, for $1\le i\le q$, let $W_i$ be the least power of~$2$ that is at least
+$\max(\lceil\mathrm{lo}_i\rceil,w)$, where $\mathrm{lo}_i=64qN2^{\beta_i+h}/\eps$. The $\mathrm{lo}_i$ increase with~$i$, so
+$w=W_0\mid W_1\mid\dots\mid W_q$ (\lean{mwidth_dvd}); moreover $\mathrm{lo}_i\le W_i\le w+2\,\mathrm{lo}_i+2$
+(\lean{lo_le_mwidth}, \lean{mwidth_le}), the ceiling costing the summand~$2$. Draw $\rho$ uniformly from
+$\{0,\dots,W_q-1\}$. The \emph{level-$i$ lines} are the cells congruent to~$\rho$ modulo~$W_i$ (\lean{LineAt}); every
+level-$i$ line is a level-$i'$ line for $i'\le i$ (\lean{LineAt.mono}). A \emph{level-$i$ strip} is the set of cells strictly
+between two consecutive level-$i$ lines (\lean{stripAt}), so it has $W_i-1$ cells and every level-$i$ strip lies inside a
+level-$(i+1)$ strip. Let $Z=\{t:x_0(t)\text{ is a level-}0\text{ line}\}$ (\lean{Zt}), and for $t\notin Z$ let
+$\sigma_i(t)$ be the level-$i$ strip of $x_0(t)$; a walk that visits no level-$i$ line stays in one level-$i$ strip
+(\lean{stripAt_const}).
+
+\emph{Counters and label.} The level-$0$ counter of a level-$0$ strip~$S$ is $c^0_S(t)=\#\{t'\le t:x_0(t')\in S\}$
+(\lean{visits}), and for $i\ge1$ the level-$i$ counter of a level-$i$ strip~$S$ counts \emph{entries} into~$S$,
+$c^i_S(t)=\#\{t'\le t:x_0(t')\in S\text{ and }x_0(t'-1)\text{ is a level-}i\text{ line}\}$ (\lean{entries'}); \lean{lcnt}
+reads the counter of the strip of $x_0(t)$. For the walks of~$H'$, let $n_i(t)$ be the number of events at times at
+most~$t$ of scale at least~$\beta_i$ (\lean{nev}). Choose independent uniform offsets $\omega_0\in[0,K_0)$ and
+$\omega_1,\dots,\omega_q,\omega'_1,\dots,\omega'_q\in[0,K)$ (\lean{offsets}), and put
 $d_0(t)=(c^0_{\sigma_0(t)}(t)+\omega_0)\bmod K_0$, $d_i(t)=(c^i_{\sigma_i(t)}(t)+\omega_i)\bmod K$ and
-$e_i(t)=(n_i(t)+\omega'_i)\bmod K$ for $1\le i\le q$. The label $\Psi(t)$, for $t\notin Z$, is the mixed-radix number with
-the \emph{static} digit order, most significant first,
+$e_i(t)=(n_i(t)+\omega'_i)\bmod K$ for $1\le i\le q$ (\lean{mdig}, \lean{mradix}). The label $\Psi(t)$ (\lean{mlab}) is the
+tuple of these digits in the \emph{static} order, most significant first,
 \[
   d_q,\ e_q,\ d_{q-1},\ e_{q-1},\ \dots,\ d_1,\ e_1,\ d_0,
 \]
-so it has $K_0K^{2q}$ values; put $\Psi(t)=0$ for $t\in Z$. The cut~$F$ consists of all edges with an endpoint in~$Z$,
-the hop edges $u\to p$ (chords or hops of~$H'$) with $\Psi(u)\le\Psi(p)$, and the state edges at descents. Every edge
-at~$Z$ is cut, so the value of $\Psi$ on~$Z$ is never compared, and by \cref{lem:labels} $F$ has depth less than
-$K_0K^{2q}$. A digit \emph{wraps} at a step if its count passes a value congruent to minus its offset modulo its radix;
-a digit whose count rises by~$\Delta$ at a step wraps there with probability at most $\Delta$ divided by its radix.
+compared lexicographically (\lean{posD}, \lean{posE}, \lean{pos0}); it has $K_0K^{2q}$ values (\lean{prod_mradix}). The
+cut~$F$ consists of all edges with an endpoint in~$Z$, the hop edges $u\to p$ (chords or hops of~$H'$) with
+$\Psi(u)\le\Psi(p)$, and the state edges at descents (\lean{cutSM}, \lean{cutHM}). Every edge at~$Z$ is cut, so the value
+of~$\Psi$ on~$Z$ is never compared, and by \cref{lem:labels} $F$ has depth less than $K_0K^{2q}$
+(\lean{depth_le_of_mixedRadix}). A digit \emph{wraps} at a step if its count passes a value congruent to minus its offset
+modulo its radix; a digit whose count rises by~$\Delta$ wraps there for at most $\Delta$ times the number of the other
+offsets (\lean{card_offsets_wrap0}, \lean{card_offsets_wrapD}, \lean{card_offsets_wrapE}).
 
 \emph{The deciding level of a chord.} Let $\gamma=(p,u)$ be a chord at a cell~$c$ that is not a level-$0$ line (chords at
 lines have both endpoints in~$Z$). Its \emph{excursion} $E(\gamma)=\{x_0(t):p<t<u\}$ is a nonempty interval of cells next
 to~$c$, on one side of~$c$. Let $\lev(\gamma)$ be the largest $i\in\{0,\dots,q\}$ such that $E(\gamma)$ contains a level-$i$
-line, and $0$ if it contains none. If $\lev(\gamma)=i<q$, then $E(\gamma)$ contains no level-$(i+1)$ line, so
-$E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)$ (\emph{confinement}).
+line, and $0$ if it contains none (\lean{chordLevel}). If $\lev(\gamma)=i<q$, then $E(\gamma)$ contains no level-$(i+1)$
+line, so $E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)$ (\emph{confinement}, \lean{chord_confined}).
 
-\emph{(M-a) State edges.} Let $t,t-1\notin Z$. Then $x_0(t-1)$ and $x_0(t)$ are equal or adjacent cells that are not lines,
-so they lie in the same strip at every level. No counter of level $i\ge1$ changes at~$t$, since an entry at~$t$ needs
-$x_0(t-1)$ on a line; the level-$0$ counter rises by one, and $n_i$ by the number of events at~$t$ of scale at least
-$\beta_i$. So $\Psi(t)<\Psi(t-1)$ only if some digit wraps at~$t$.
+\emph{(M-a) State edges} (\lean{lcnt_state_zero}, \lean{state_le}, \lean{desc_subset}). Let $t,t-1\notin Z$. Then
+$x_0(t-1)$ and $x_0(t)$ are equal or adjacent cells that are not lines, so they lie in the same strip at every level. No
+counter of level $i\ge1$ changes at~$t$, since an entry at~$t$ needs $x_0(t-1)$ on a line; the level-$0$ counter rises by
+one, and $n_i$ by the number of events at~$t$ of scale at least $\beta_i$. So $\Psi(t)<\Psi(t-1)$ only if some digit wraps
+at~$t$.
 
-\emph{(M-b) Chords.} Let $\gamma=(p,u)$ be a chord at a cell~$c$ that is not a line, with $i=\lev(\gamma)$. (i) At $p$ and
-at~$u$ every head-$0$ digit reads the counter of the same strip $\sigma_{i'}(c)$, and counters do not decrease. (ii) The
-level-$i$ counter of $\sigma_i(c)$ rises strictly in $(p,u]$: for $i=0$ by the visit at~$u$; for $i\ge1$, $E(\gamma)$
-contains the nearest level-$i$ line~$y_*$ to~$c$ on the side of the excursion, and if $t_1$ is the last time in
-$(p,u)$ with $x_0(t_1)=y_*$, then $x_0(t_1+1)$ is the neighbour of $y_*$ on the side of~$c$, since the walk reaches~$c$
-at~$u$ without returning to~$y_*$; this neighbour is a cell of $\sigma_i(c)$, so $t_1+1\in(p,u]$ is an entry into
-$\sigma_i(c)$. (iii) If $i<q$, then by confinement $x_0$ visits no
-level-$(i+1)$ line at the times $p,\dots,u-1$, so no counter of a level greater than~$i$ changes in $(p,u]$. (iv) The event
-counts do not decrease. Hence, if no digit at a position at or above~$d_i$ wraps in $(p,u]$, the most significant digit
-whose count changed has risen without wrapping, and $\Psi(u)>\Psi(p)$. By~(iii), $\gamma$ is violated only if
+\emph{(M-b) Chords} (\lean{lcnt_chord_eq}, \lean{lcnt_chord_lt}, \lean{chord_lt}, \lean{chord_subset}). Let $\gamma=(p,u)$ be
+a chord at a cell~$c$ that is not a line, with $i=\lev(\gamma)$. (i) At $p$ and at~$u$ every head-$0$ digit reads the
+counter of the same strip $\sigma_{i'}(c)$, and counters do not decrease. (ii) The level-$i$ counter of $\sigma_i(c)$ rises
+strictly in $(p,u]$: for $i=0$ by the visit at~$u$; for $i\ge1$, $E(\gamma)$ contains a level-$i$ line, and if $t_1$ is
+the last time in $(p,u)$ at which $x_0$ is on a level-$i$ line, then $x_0$ visits no level-$i$ line at the times
+$t_1+1,\dots,u$, so it stays in the strip $\sigma_i(c)$ of $x_0(u)=c$ on that interval, and $t_1+1\in(p,u]$ is an entry
+into $\sigma_i(c)$. (iii) If $i<q$, then by confinement $x_0$ visits
+no level-$(i+1)$ line at the times $p,\dots,u-1$, so no counter of a level greater than~$i$ changes in $(p,u]$. (iv) The
+event counts do not decrease. Hence, if no digit at a position at or above~$d_i$ wraps in $(p,u]$, the most significant
+digit whose count changed has risen without wrapping, and $\Psi(u)>\Psi(p)$. By~(iii), $\gamma$ is violated only if
 \textup{(c1)} the level-$i$ counter of $\sigma_i(c)$ wraps at a time in $(p,u]$, or \textup{(c2)} some $e_{i'}$ with
 $i'>i$ wraps in $(p,u]$.
 
-\emph{(M-c) Hops of~$H'$.} Let $\eta=(p,u)\in H'$ lie in a family~$F$ with window $i=i(F)$, and $p,u\notin Z$. If $x_0$
-visits no level-$i$ line during $(p,u)$, it stays in one level-$i$ strip on $[p,u]$, hence in one level-$i'$ strip for every
-$i'\ge i$, and enters none of them in $(p,u]$; so the digits $d_{i'}$, $i'\ge i$, do not change. The counts
-$n_{i'}$ do not decrease, and $n_i$ rises, because the owner $o_F\in(p,u)$ is an event of scale
+\emph{(M-c) Hops of~$H'$} (\lean{ahop_lt}, \lean{ahop_subset}). Let $\eta=(p,u)\in H'$ lie in a family~$F$ with window
+$i=i(F)$, and $p,u\notin Z$. If $x_0$ visits no level-$i$ line during $(p,u)$, it stays in one level-$i$ strip on $[p,u]$,
+hence in one level-$i'$ strip for every $i'\ge i$, and enters none of them in $(p,u]$; so the digits $d_{i'}$, $i'\ge i$, do
+not change. The counts $n_{i'}$ do not decrease, and $n_i$ rises, because the owner $o_F\in(p,u)$ is an event of scale
 $\lambda(d_F)\ge\beta_i$. So $\eta$ is violated only if \textup{(d1)} $x_0$ visits a level-$i$ line during $(p,u)$, or
 \textup{(d2)} some $e_{i'}$ with $i'\ge i$ wraps in $(p,u]$.
 
-\emph{Cost.} All expectations are over $\rho$ and the offsets; each violated edge is charged to one of the causes above,
-and the classes may overlap, which only over-counts.
+\emph{Cost.} The expectation is formalized as a count: the sizes of the cuts, summed over the residues $\rho<W_q$ and the
+$K_0K^{2q}$ offsets, times~$K$, are at most $K^{2q}$ times an explicit bound (\lean{sum_offsets_cut_le}, \lean{sum_cut_le},
+\lean{costB}), and some choice does at most as well as the average. We describe the terms as expectations; each violated
+edge is charged to one of the causes above (\lean{card_cut_le}), and the classes may overlap, which only over-counts.
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
-\item \emph{Edges at~$Z$.} A vertex has at most $2$ state edges, $2$ chords and $2k$ hops of~$H'$. Since
-$\rho\bmod w$ is uniform, $\mathbb E\card Z=T/w$, and these edges cost at most $(4+2k)T/w\le\eps T/8$.
-\item \emph{Descents.} By (M-a), they cost at most $T/K_0+\sum_i\#\{\text{events of scale}\ge\beta_i\}/K\le T/K_0+qNT/(2K)$,
-because there are at most $\sum_v\sum_Fd_F\le NT/2$ events (\cref{lem:families}(e)).
-\item \emph{(c1).} A wrap at time~$\tau$ of the level-$i$ counter of a strip~$S$ is charged only by chords at cells of~$S$
-that span~$\tau$, at most $W_i-1$ of them by~(P1). At level~$0$ there are at most $T/K_0$ wraps in expectation,
-costing at most $(w-1)T/K_0$. At level $i\ge1$ every entry follows a visit to a level-$i$ line, there are $T/W_i$ such
-visits in expectation, and each entry is a wrap with probability at most $1/K$; so each level $i\ge1$ costs at most $T/K$.
-\item \emph{(c2).} Let $e_{i'}$ wrap at~$\tau$. The chords charged to it have level $i<i'$ and span~$\tau$, so by
-confinement $x_0(\tau)\in E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)\subseteq\sigma_{i'}(c)$: all of them lie at cells of the
-level-$i'$ strip containing $x_0(\tau)$, and by~(P1) there are at most $W_{i'}-1$ of them. Events of scale at least
-$\beta_{i'}$ are owners of families of height at least $2^{\beta_{i'}}$, so by \cref{lem:families}(e) there are at most
-$NT/2^{\beta_{i'}+1}$ of them. The cost is at most
-$\sum_{i'}W_{i'}NT/(2^{\beta_{i'}+1}K)\le\sum_{i'}(\mathrm{lo}_{i'}+w)NT/(2^{\beta_{i'}}K)\le
-q(64qN^22^h/\eps+wN)T/K$.
-\item \emph{(d1).} Charge $\eta$ to its first visit $\tau\in(p,u)$ to a level-$i$ line. The hops of window~$i$ that
-span~$\tau$ lie in families of band at most $\beta_i+h$, so by the overlap bound of \cref{lem:families} there are fewer than
-$N2^{\beta_i+h+1}$ of them. There are $T/W_i\le T/\mathrm{lo}_i$ visits to level-$i$ lines in expectation, so the cost is
-at most $\sum_iN2^{\beta_i+h+1}T/\mathrm{lo}_i=\eps T/32$.
-\item \emph{(d2).} An event~$o'$ of scale~$s$ raises the counts $n_{i'}$ with $\beta_{i'}\le s$, and a wrap of $e_{i'}$ at
-$o'$ exposes the hops of windows at most~$i'$ that span~$o'$, whose bands are at most $\beta_{i'}+h$: fewer than
-$N2^{\beta_{i'}+h+1}$ of them. Since the $\beta_{i'}$ are distinct integers, $\sum_{\beta_{i'}\le s}2^{\beta_{i'}}<2^{s+1}$,
-so the cost is at most $\sum_{o'}N2^{h+2}2^{s(o')}/K\le N^22^{h+1}T/K$, using
-$\sum_{o'}2^{s(o')}\le\sum_v\sum_Fd_F\le NT/2$.
+\item \emph{Edges at~$Z$} (\lean{card_ZS_le}, \lean{card_ZH_le}). A vertex has at most $2$ state edges, $2$ chords and $2k$
+hops of~$H'$ (\lean{card_hopPairs_at_le}). Each cell is a level-$i$ line for exactly $W_q/W_i$ of the residues
+(\lean{card_rho_lineAt}, \lean{sum_rho_lineT}), so $\mathbb E\card Z=T/w$, and these edges cost at most
+$(4+2k)T/w\le\eps T/8$.
+\item \emph{Descents} (\lean{sum_desc_le}). By (M-a), they cost at most
+$T/K_0+\sum_i\#\{\text{events of scale}\ge\beta_i\}/K\le T/K_0+qNT/(2K)$, because there are at most $\sum_v\sum_Fd_F\le
+NT/2$ events (\cref{lem:families}(e), \lean{Fam.Valid.sum_d_all}).
+\item \emph{(c1)} (\lean{sum_chord_le}, \lean{sum_chord_growth_le}). An increment at time~$\tau$ of the level-$i$ counter of a
+strip~$S$ counts for the chords at cells of~$S$ that span~$\tau$, at most $W_i-1$ of them by~(P1)
+(\lean{card_hops_span_strip_le}). At level~$0$ there are at most $T$ increments, costing at most $(w-1)T/K_0$. At level
+$i\ge1$ every increment follows a visit to a level-$i$ line (\lean{card_incT_le}), there are $T/W_i$ such visits in
+expectation, and each level $i\ge1$ costs at most $T/K$.
+\item \emph{(c2)} (\lean{sum_chord_events_le}). Let $e_{i'}$ wrap at~$\tau$. The chords charged to it have level $i<i'$ and
+span~$\tau$, so by confinement $x_0(\tau)\in E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)\subseteq\sigma_{i'}(c)$: all of
+them lie at cells of the level-$i'$ strip containing $x_0(\tau)$, and by~(P1) there are at most $W_{i'}-1$ of them.
+Events of scale at least $\beta_{i'}$ are owners of families of height at least $2^{\beta_{i'}}$, so by
+\cref{lem:families}(e) there are at most $NT/2^{\beta_{i'}+1}$ of them. With $W_{i'}\le w+2+2\,\mathrm{lo}_{i'}$ the cost
+is at most $\sum_{i'}W_{i'}NT/(2^{\beta_{i'}+1}K)\le q\bigl((w+2)N/2+64qN^22^h/\eps\bigr)T/K$ (\lean{sum_swev_le}).
+\item \emph{(d1)} (\lean{card_lineVisit_le}, \lean{sum_sl_le}). Charge $\eta$ to a visit $\tau\in(p,u)$ to a level-$i$ line.
+The hops of window~$i$ that span~$\tau$ lie in families of band at most $\beta_i+h$, so by the overlap bound of
+\cref{lem:families} (\lean{Fam.Valid.overlap}) there are fewer than $N2^{\beta_i+h+1}$ of them. There are $T/W_i\le
+T/\mathrm{lo}_i$ visits to level-$i$ lines in expectation, so the cost is at most
+$\sum_iN2^{\beta_i+h+1}T/\mathrm{lo}_i=\eps T/32$ (for $N\ge1$; without bounded walks there is nothing to charge).
+\item \emph{(d2)} (\lean{sum_ahop_le}, \lean{sum_ahop_events_le}). An event~$o'$ of scale~$s$ raises the counts $n_{i'}$ with
+$\beta_{i'}\le s$, and a wrap of $e_{i'}$ at $o'$ exposes the hops of windows at most~$i'$ that span~$o'$, whose bands are
+at most $\beta_{i'}+h$: fewer than $N2^{\beta_{i'}+h+1}$ of them. Since the $\beta_{i'}$ are distinct integers,
+$\sum_{\beta_{i'}\le s}2^{\beta_{i'}}<2^{s+1}$ (\lean{sum_pow_beta_lt}), so the cost is at most
+$\sum_{o'}N2^{h+2}2^{s(o')}/K\le N^22^{h+1}T/K$, using $\sum_{o'}2^{s(o')}\le\sum_v\sum_Fd_F\le NT/2$.
 \end{enumerate}
-\emph{Total.} The edges at~$Z$ cost at most $\eps T/8$; the level-$0$ terms, $T/K_0+(w-1)T/K_0=wT/K_0$, at most
-$\eps T/8$; all terms with denominator~$K$ together at most
-$(qN+q+64q^2N^22^h/\eps+qwN+N^22^{h+1})T/K\le\eps T/8$; and (d1) at most $\eps T/32$. The sum is less than $\eps T/2$, and
-some choice of $\rho$ and the offsets attains at most the expectation.
-\end{informalproof}
+\emph{Total} (\lean{costB_le}, \lean{costM_arith}). The edges at~$Z$ cost at most $\eps T/8$; the level-$0$ terms,
+$T/K_0+(w-1)T/K_0=wT/K_0$, at most $\eps T/8$; all terms with denominator~$K$ together at most
+$(qN/2+q+q(w+2)N/2+64q^2N^22^h/\eps+N^22^{h+1})T/K\le(q+qN+64q^2N^22^h/\eps+qwN+N^22^{h+1})T/K\le\eps T/8$, since
+$w\ge1$; and (d1) at most $\eps T/32$. The sum is at most $13\eps T/32\le\eps T$, and some choice of $\rho$ and the offsets
+attains at most the expectation.
+\end{outline}
 
 The chords never see the digits of the bounded walks except through wraps, because the digit positions are static and the
 event counts are global. A chord of a strip that $x_0$ has left is decided at the coarsest level whose line it crosses, by
@@ -171,25 +192,33 @@ width rather than by the number of live chords. The hops of the bounded walks co
 their window, whose lines are far apart compared with their heights.
 
 \begin{corollary}[Corollary M1: scale-ratio form]\label{cor:M1}
-\notformalized
+\partformal{CorM.lean}{corM1, corM1_i, corM1_ii, DM_one_le, two_pow_lam_sub_le, DM_mono}{the last sentence, on
+zigzags.}
 If all family heights of~$H'$ lie in $[d_{\min},d_{\max}]$, then $G$ has a cut of at most $\eps T$ edges and depth
 \[
   O\bigl(k\,(N^2d_{\max}/d_{\min}+kN)^2/\eps^6\bigr)=\poly(k,\ell,1/\eps)\cdot(d_{\max}/d_{\min})^2 .
 \]
 In particular: (i) bounded walks whose families have height at most $d_{\max}$, together with any $x_0$, are cut at depth
 $\poly(k,\ell,1/\eps)\,d_{\max}^2$; (ii) if all families except at most two per virtual head have their band in one window of
-width~$h$, the depth is bounded in terms of $k$, $\ell$, $h$ and~$\eps$ alone; this covers zigzags of any amplitude,
-even growing with~$T$.
+width~$h$, the depth is bounded in terms of $k$, $\ell$, $h$ and~$\eps$ alone; this covers zigzags of any common
+amplitude, even growing with~$T$.
 \end{corollary}
 
-\begin{informalproof}
-Take $q=1$, $\beta_1=\lambda(d_{\min})$ and $h=\lambda(d_{\max})-\lambda(d_{\min})$, so that
-$2^h\le2d_{\max}/d_{\min}$; then $K_0=O(k/\eps^2)$ and $K=O((N^22^h+kN)/\eps^2)$, and \cref{thm:M} gives depth less
-than $K_0K^2$. For~(i), $d_{\min}\ge1$. For~(ii), the exceptional families are those truncated at the ends of $[0,T)$; with
-them the bands are covered by at most $1+2N$ windows of width~$h$, and \cref{thm:M} applies with $q\le1+2N$. A zigzag
+\begin{outline}
+In Lean $k,\ell\ge1$, $\eps\in(0,1]$ and $d_{\min}\ge1$, and the $O$-bound is explicit: the depth is less than
+$\DM(k,\ell,1,h,\eps)\le2^{29}k\,(N^22^h+kN)^2/\eps^6$ with $2^h\le2d_{\max}/d_{\min}$, that is, less than
+$2^{29}k\,(2N^2d_{\max}/d_{\min}+kN)^2/\eps^6$ (\lean{corM1}). Take $q=1$, $\beta_1=\lambda(d_{\min})$ and
+$h=\lambda(d_{\max})-\lambda(d_{\min})$, so that $2^h\le2d_{\max}/d_{\min}$ (\lean{two_pow_lam_sub_le}). With $u=1/\eps\ge1$:
+$w\le16(4+2k)u$ (\lean{mw_le}), so $w\le96ku$, $K_0\le8(w+1)u+1\le777ku^2$ and $K\le8u\cdot98(N^22^h+kN)u+1\le785(N^22^h+kN)u^2$,
+so $K_0K^2\le777\cdot785^2\,k(N^22^h+kN)^2u^6<2^{29}k(N^22^h+kN)^2u^6$ (\lean{DM_one_le}). For~(i), every family has height
+at least~$1$, so $d_{\min}=1$ (\lean{corM1_i}). For~(ii) (\lean{corM1_ii}), the hypothesis is that all families outside a
+set of at most $2N$ have their band in one window $[\beta,\beta+h]$; the window starts $\beta$ and the bands of the
+exceptional families, sorted, are at most $1+2N$ strictly increasing starts of windows of width~$h$ covering all bands, and
+\cref{thm:M} applies with $q\le1+2N$, the bound $\DM$ increasing with~$q$ (\lean{DM_mono}). For the last sentence (not
+formalized): the exceptional families are those truncated at the ends of $[0,T)$, at most two per virtual head. A zigzag
 between two cells at distance~$A$ has owner-load one per side, and all its families have height~$A$ except the truncated
-ones, so $h=0$.
-\end{informalproof}
+ones; so for zigzags of a common amplitude $h=0$.
+\end{outline}
 
 \paragraph{Why it matters.} Theorem~M allows one head to be anything: of unbounded owner-load, nested at every scale,
 drifting, deep everywhere. So a depth-robust family must contain either two heads of unbounded owner-load, as the
@@ -199,18 +228,27 @@ scales (\cref{cor:where}). For machines this becomes \cref{cor:M-machine}.
 \subsection{Where a counterexample to TCP must live}\label{sec:one-counter}
 
 \begin{corollary}[Where depth-robustness lives]\label{cor:where}
-\notformalized
+\formal{CorM.lean}{FamTCPAt, DepthRobust, BandsCovered, where_ownerLoad, where_windows, where_ratio}
 Let $\mathcal W$ be a depth-robust family of $k$-tuples of walks. Then the owner-load of the set of all long hops is
 unbounded on~$\mathcal W$. If moreover all walks but one have owner-load at most a fixed~$\ell$ on~$\mathcal W$, then for
 every fixed~$h$ the least number of windows of width~$h$ covering the family bands of the bounded walks is unbounded
 on~$\mathcal W$; in particular the ratio of their largest to their smallest family height is unbounded.
 \end{corollary}
 
-\begin{informalproof}
-If the owner-load were bounded, \cref{thm:F} would give a single depth bound for each~$\eps$. If, for some~$h$, the bands
-of the bounded walks of every member were covered by at most $q$ windows of width~$h$, \cref{thm:M}, applied with the
-unbounded walk as~$x_0$, would do the same. A bounded ratio $d_{\max}/d_{\min}$ gives such a cover with $q=1$.
-\end{informalproof}
+\begin{outline}
+Members are pairs of a length~$T$ and a tuple of walks; TCP for a family at $(\eps,D)$ is \lean{FamTCPAt} and
+depth-robustness is \lean{DepthRobust}. The owners are those of \cref{sec:prelim-walks} (\lean{owners}), and in the second
+statement the exceptional walk of each member is given by a choice $e$ of an index, the bounded walks being the others
+(\lean{others}). If the owner-load were bounded by~$\ell$, \cref{thm:F} would give a single depth bound
+$\DF(k,\max(\ell,1),\eps)$ for each~$\eps$ (\lean{where_ownerLoad}; without walks there are no hops). If, for some~$h$, the bands
+of the bounded walks of every member were covered by at most $q$ windows of width~$h$ (\lean{BandsCovered}), \cref{thm:M},
+applied with the exceptional walk as~$x_0$ and $\min(\eps,1)$ in place of~$\eps$, would give a single bound
+(\lean{where_windows}). In Lean the members of that family are $(k+1)$-tuples, $k$ of whose walks are bounded, and the bound
+is $\DM(k,\max(\ell,1),q+1,h,\min(\eps,1))$; for $k$-tuples, as in the statement, it is $\DM(k-1,\dots)$. Here the walk DAG of the member consists of the chords of~$x_0$ and the hops of the others
+(\lean{hopPairs_allHops_succAbove}), and the window starts, with $0$ added, are sorted. A bounded ratio, $d_F\le Rd_{F'}$ for all
+families, gives such a cover with $q=1$ and $h=2(\lambda(R)+1)$, since $\lambda(Rd)\le\lambda(R)+\lambda(d)+1$
+(\lean{lam_mul_le}, \lean{where_ratio}).
+\end{outline}
 
 The structure of walk DAGs that these theorems exploit is a stack structure. Call an \emph{$s$-stack DAG} a DAG on
 $[0,N)$, with edges determined by their endpoints, consisting of the spine edges $t\to t-1$ and of \emph{arcs} $u\to p$ with
@@ -221,7 +259,7 @@ the statement that for every $\eps>0$ there is $D$ such that every $s$-stack DAG
 edges and depth at most~$D$.
 
 \begin{proposition}[TCP is depth reduction for stack DAGs]\label{prop:stacks}
-\notformalized
+\formal{Stacks.lean}{StackDag, SR, TCP, TCPnp, walkDag_isStack, StackDag.walk_isWalk, StackDag.walk_noPause, StackDag.walk_upperHop, StackDag.walk_hop, StackDag.card_pullS_le, StackDag.card_pullA_le, StackDag.pullback_cut, srAt_of_tcpnpAt, tcpAt_of_srAt, sr_of_tcpnp, tcp_of_sr, tcpnp_of_tcp, tcp_of_tcpnp_two_mul}
 \begin{enumerate}[label=(\alph*)]
 \item The walk DAG of $k$ walks, pauses allowed, is a $2k$-stack DAG.
 \item Every $s$-stack DAG $H$ on $[0,N)$ is realized by $s$ walks of length $2N$ without pauses: every arc $(p,u)$ of
@@ -233,27 +271,39 @@ $\mathrm{SR}(2k)$ implies $\TCP(k)$ for walks with pauses; in particular the for
 equivalent up to a factor~$2$ in the number of walks.
 \end{proposition}
 
-\begin{informalproof}
-(a) The upper long hops of one walk do not cross, nor do its lower long hops (\cref{sec:prelim-walks}). Each time is the left
-endpoint of at most one long hop of each walk and the right endpoint of at most one. A pair of times that is a long hop of
-several walks is a single edge, kept in one of its families, and pauses are spine edges.
+\begin{outline}
+In Lean an $s$-stack DAG is \lean{StackDag}: the arcs of family~$i$ are a finite set of pairs $(p,u)$ with $u\ge p+2$ and
+$u<N$, non-crossing, with at most one arc of a family at each endpoint, and the families are disjoint. A cut is a set of
+spine edges, given by their upper ends, and a set of arcs, and a path that avoids it is \lean{AvoidPath}, with
+\lean{arcCount} arcs; $\mathrm{SR}$, TCP with pauses and TCP without pauses are \lean{SR}, \lean{TCP} and \lean{TCPnp}.
 
-(b) For $0\le t\le N$ let $d_i(t)$ be the number of arcs of family~$i$ that contain~$t$ strictly inside, so
-$d_i(0)=d_i(N)=0$. By the degree condition, $\abs{d_i(t+1)-d_i(t)}\le1$: $d_i(t+1)-d_i(t)$ is $1$ if $t$ is the left
-endpoint of an arc and $0$ otherwise, minus $1$ if $t+1$ is the right endpoint of an arc and $0$ otherwise. The two
-endpoints of an arc $(p,u)$ have the same value of~$d_i$: an arc $(p',u')$ of the family that contains~$p$ strictly inside
-has $u'>u$, since $u'<u$ would cross and $u'=u$ would violate the degree condition, so it also contains~$u$, and
-conversely. Every time strictly inside the arc has a larger value. Put $x_i(2t)=2d_i(t)$ and
-$x_i(2t+1)=\min(x_i(2t),x_i(2t+2))+1$ for $t<N$. Consecutive even values differ by $0$ or~$\pm2$, so $x_i$ is a walk
-without pauses. At $2p$ and $2u$ it is at $2d_i(p)$, and strictly between them it is at least $2d_i(p)+1$, so $(2p,2u)$
-is an upper long hop of~$x_i$. A spine edge $t\to t-1$ maps to the state edges $2t\to2t-1\to2t-2$ and an arc $u\to p$ to the
+(a) (\lean{walkDag_isStack}) The families are indexed by a head and a side. The upper long hops of one walk do not
+cross, nor do its lower long hops (\cref{sec:prelim-walks}, \lean{upper_no_cross}). Each time is the left endpoint of at most
+one long hop of each walk and the right endpoint of at most one. A pair of times that is a long hop of several walks is a
+single edge, kept in the family of the least index, and pauses are spine edges.
+
+(b) For $0\le t\le N$ let $d_i(t)$ be the number of arcs of family~$i$ that contain~$t$ strictly inside
+(\lean{StackDag.dep}), so $d_i(0)=d_i(N)=0$. By the degree condition, $\abs{d_i(t+1)-d_i(t)}\le1$: $d_i(t+1)-d_i(t)$ is $1$
+if $t$ is the left endpoint of an arc and $0$ otherwise, minus $1$ if $t+1$ is the right endpoint of an arc and $0$
+otherwise (\lean{StackDag.dep_succ}). The two endpoints of an arc $(p,u)$ have the same value of~$d_i$: an arc $(p',u')$
+of the family that contains~$p$ strictly inside has $u'>u$, since $u'<u$ would cross and $u'=u$ would violate the degree
+condition, so it also contains~$u$, and conversely (\lean{StackDag.dep_eq_of_arc}). Every time strictly inside the arc has
+a larger value (\lean{StackDag.dep_lt_of_mem}). Put $x_i(2t)=2d_i(t)$ and $x_i(2t+1)=\min(x_i(2t),x_i(2t+2))+1$ for $t<N$
+(\lean{StackDag.walk}). Consecutive even values differ by $0$ or~$\pm2$, so $x_i$ is a walk without pauses
+(\lean{StackDag.walk_isWalk}, \lean{StackDag.walk_noPause}). At $2p$ and $2u$ it is at $2d_i(p)$, and strictly between
+them it is at least $2d_i(p)+1$, so $(2p,2u)$ is an upper long hop of~$x_i$ (\lean{StackDag.walk_upperHop},
+\lean{StackDag.walk_hop}). A spine edge $t\to t-1$ maps to the state edges $2t\to2t-1\to2t-2$ and an arc $u\to p$ to the
 hop edge $2u\to2p$; distinct edges of~$H$ have disjoint images. Given a cut~$F$ of the walk DAG, cut an edge of~$H$ if some
-edge of its image lies in~$F$. This cut has at most $\card F$ edges, and a path of~$H$ that avoids it maps to a path that
-avoids~$F$ with as many long hops as the path has arcs.
+edge of its image lies in~$F$ (\lean{StackDag.pullS}, \lean{StackDag.pullA}). This cut has at most $\card F$ edges
+(\lean{StackDag.card_pullS_le}, \lean{StackDag.card_pullA_le}), and a path of~$H$ that avoids it maps to a path that avoids~$F$ with as many long hops as the path has arcs
+(\lean{StackDag.lift_path}, \lean{StackDag.pullback_cut}).
 
-For the consequences, a $k$-stack DAG on $[0,N)$, padded with empty families, is realized by $k$ walks of length $2N$, and a
-cut of $\eps N=(\eps/2)(2N)$ edges of their walk DAG pulls back; conversely~(a) applies to $k$ walks.
-\end{informalproof}
+For the consequences, an $s$-stack DAG on $[0,N)$ is realized by $s$ walks of length $2N$, and a cut of
+$(\eps/2)(2N)=\eps N$ edges of their walk DAG pulls back (\lean{srAt_of_tcpnpAt}, \lean{sr_of_tcpnp}); conversely~(a)
+applies to $k$ walks (\lean{tcpAt_of_srAt}, \lean{tcp_of_sr}). TCP with pauses contains TCP without pauses
+(\lean{tcpnp_of_tcp}), and TCP for $2k$ walks without pauses gives $\mathrm{SR}(2k)$ and hence TCP for $k$ walks with pauses
+(\lean{tcp_of_tcpnp_two_mul}).
+\end{outline}
 
 In this language, Theorem~F says that $s$-stack DAGs are depth-reducible when the arcs open at any time in any family come
 from boundedly many distinct owners, the owner of an arc being that of its hop in~(b). Forgetting the orientation of the

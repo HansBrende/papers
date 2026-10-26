@@ -94,21 +94,30 @@ oblivious case rests.
 
 \subsection{How to read this paper: the formal proofs}
 
-Six results are formalized in Lean, two of them in part: the owner lemma (\cref{lem:owner}), the structure of families
-(\cref{lem:families}), Theorem~F (\cref{thm:F}) and Lemma~W (\cref{lem:W}) completely; the lemma that cuts are labels
-(\cref{lem:labels}) in its path form, its consequence for walk DAGs being deduced in the text (the formal statements of
-Theorem~F and Lemma~W include it for their labels); and the label arithmetic of the turn counter (\cref{thm:counter}). The
-formal Theorem~F holds for any choice of owners strictly inside the hops, of which the owners of \cref{sec:prelim-walks} are
-one. For the turn counter, part~(1), the hypotheses
-of the Lean theorem on the cover, and the counts of turns and hops, which rest on the fourth paper's Lemma~5.4, are proved in
-the text. Everything else is
-proved in the text and not formalized; this includes Theorem~M, Corollaries F, F$'$, F$''$ and~M1, the capacity corollary, the stack form of TCP,
-the corollaries of the turn counter, the class count, blindness, Theorem~V, Theorem~$\Dlin$, the equivariant crux and Theorem~SH.
+Most results of \cref{sec:nesting,sec:onehead} and of \cref{sec:crux-deg4} are formalized in Lean. Completely: the owner
+lemma (\cref{lem:owner}), the lemma that cuts are labels (\cref{lem:labels}), the structure of families
+(\cref{lem:families}), Theorem~F (\cref{thm:F}), the corollary that bounded entry bounds the owner-load
+(\cref{cor:owner-load}), the proposition that relays must be allowed (\cref{prop:relays}), Lemma~W (\cref{lem:W}),
+Theorem~M (\cref{thm:M}), the corollary on where depth-robustness lives (\cref{cor:where}), the stack form of TCP
+(\cref{prop:stacks}), and Theorem~SH (\cref{thm:SH}) with its barrier and matching forms (\cref{cor:SH}) and the three lemmas of
+its proof. In part: bounded entry implies TCP (\cref{cor:entry-tcp}), whose clause on multiplicity is deduced in the text; the
+capacity corollary (\cref{cor:capacity}), without the asymptotic form of its depth bound; Corollary~M1 (\cref{cor:M1}),
+without its sentence on zigzags; the label arithmetic of the turn counter (\cref{thm:counter}); per-machine rigidity
+(\cref{lem:rigidity}) and Theorem~$\Dlin$ (\cref{thm:Dlin}) for linear networks, the passage from machines and the
+quantification over sizes being given in the text; and in the equivariant crux (\cref{thm:eqcrux}) the step of the
+double-cover recursion~(c) from one level to the next. The formal Theorems F and M hold for any choice of owners strictly
+inside the hops, of which the owners of \cref{sec:prelim-walks} are one. For the turn counter, part~(1), the hypotheses of the
+Lean theorem on the cover, and the counts of turns and hops, which rest on the fourth paper's Lemma~5.4, are proved in the
+text. The formal proof of Theorem~SH works with codes instead of the rows of a run, which the outline explains. Everything
+else is proved in the text and not formalized; this includes Corollaries F, F$'$, F$''$ and the machine form of Theorem~M, the
+two-stack proposition, the corollaries of the turn counter, the class count, blindness, Theorem~V, the other parts of the
+equivariant crux and the towers of covers.
 Each of them comes with a complete proof, with all constants, and each numbered result states its status as described in
 \cref{sec:prelim-lean}. Part~(f) of the equivariant crux follows from a lemma of \emph{Covers and Local Generation}, and a short script in
 \leanfile{tools/} checks it independently by one exact rank computation over~$\F_2$. Results of earlier papers that our proofs use are cited with their status there. Lean-verified there: the first paper's
 encoding lemma, pass bounds and coding-gap theorems; and the fourth paper's Lemma~Zq, Theorem~S with its matching form, and
-rate bounds for bipartite graphs and for the Clebsch graph. With written proofs there: the fourth paper's Theorem~D,
+rate bounds for bipartite graphs and for the Clebsch graph; the formal proofs of Theorem~SH and its corollary reuse the fourth
+paper's codes on vertex sets and the Tutte--Berge formula of \texttt{lean-machine}. With written proofs there: the fourth paper's Theorem~D,
 Corollary~B, local recursion, cone lemma, long-edge conversion and Lemma~5.4; Proposition~9.2 of \emph{Directed Recovery
 Structures}; and Lemma~6.1 and Theorem~6.2 of \emph{Covers and Local Generation}. Partly formalized there: the paired-distance
 theorem and the paid trimming of \emph{Directed Recovery Structures} (its Theorem~3.3 and Corollary~3.8), whose extension to a

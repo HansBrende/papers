@@ -77,23 +77,24 @@ $\Psi(u)\le\Psi(p)$, a time $t\ge1$ is a \emph{descent} if $\Psi(t)<\Psi(t-1)$, 
 the violated hop edges and of the state edges $t\to t-1$ at descents. Its size is the \emph{cost} of~$\Psi$.
 
 \begin{lemma}[Cuts are labels]\label{lem:labels}
-\partformal{Labels.lean}{depth_le_of_label}{the last sentence, the consequence for walk DAGs.}
+\formal{Labels.lean}{depth_le_of_label}
+\formal{WalkDag.lean}{labelCut_depth, labelCut_depth_walkDag}
 Let $\Psi$ be a map from a set to $\{0,\dots,q-1\}$, and let $f(0),f(1),\dots,f(n)$ be a sequence of points of that set
 with some of its steps $i<n$ marked. If $\Psi(f(i+1))\le\Psi(f(i))$ for every $i<n$, and $\Psi(f(i+1))<\Psi(f(i))$ for
 every marked~$i$, then at most $q-1$ steps are marked. Consequently, for every label $\Psi$ with $q$ values of a
 walk DAG, or of a sub-DAG $G(H')$, the cut $F_\Psi$ has depth at most $q-1$.
 \end{lemma}
 
-\begin{outline}[Outline of the formal proof of the statement about sequences]
+\begin{outline}
 By induction on~$n$, the number of marked steps plus $\Psi(f(n))$ is at most $\Psi(f(0))$
-(\lean{card_marked_add_le}), and $\Psi(f(0))\le q-1$.
+(\lean{card_marked_add_le}), and $\Psi(f(0))\le q-1$. For the last sentence (\lean{labelCut_depth}), the hop edges are
+given by a set~$E$ of pairs $(p,u)$ with $u\ge p+2$: all long hops of the heads for the walk DAG
+(\lean{allHops}, \lean{labelCut_depth_walkDag}), the hops of~$H'$ for $G(H')$. The cut consists of the state edges at the
+descents (\lean{descentsOf}) and of the violated pairs (\lean{violatedOf}). Let $t_0\to t_1\to\dots\to t_n$ be a path
+that avoids it, and mark its hop edges. Along a state edge $t_i\to t_{i+1}=t_i-1$, the time $t_i$ is not a descent, so
+$\Psi(t_{i+1})\le\Psi(t_i)$; along a hop edge, which is not violated, $\Psi(t_{i+1})<\Psi(t_i)$. A step cannot be both,
+since a hop pair has $u\ge p+2$. By the statement about sequences, the path has at most $q-1$ hop edges.
 \end{outline}
-
-\begin{proof}[Proof of the last sentence (not formalized)]
-Let $t_0\to t_1\to\dots\to t_n$ be a path that avoids $F_\Psi$, and mark its hop edges. Along a state edge
-$t_i\to t_{i+1}=t_i-1$, the time $t_i$ is not a descent, so $\Psi(t_{i+1})\le\Psi(t_i)$; along a hop edge, which is not
-violated, $\Psi(t_{i+1})<\Psi(t_i)$. By the statement about sequences, the path has at most $q-1$ hop edges.
-\end{proof}
 
 The lemma is one direction of the fourth paper's lemma ``cuts are labels''~\cite[Lemma~5.2]{FourthPaper2026}, which also
 proves the converse: for every~$D$, the smallest size of a cut of depth at most~$D$ equals the smallest cost of a label
@@ -102,6 +103,8 @@ with $D+1$ values. All cuts in this paper are built from labels.
 \subsection{Depth reduction and the crux}\label{sec:prelim-tcp}
 
 \begin{definition}[TCP and depth-robustness]\label{def:tcp}
+\formal{CorM.lean}{FamTCP, FamTCPAt, DepthRobust, depthRobust_iff, tcp_iff_famTCP}
+\formal{Stacks.lean}{TCPat, TCP}
 \emph{TCP holds} for a family of $k$-tuples of walks if for every $\eps>0$ there is an integer~$D$ such that the walk DAG
 of every member, of length~$T$, has a cut of at most $\eps T$ edges and depth at most~$D$. $\TCP(k)$ is the statement
 that TCP holds for the family of all $k$-tuples of walks~\cite[Problem~5.1]{FourthPaper2026}. A family is
@@ -247,7 +250,9 @@ Every numbered result names its formal status in one of four ways. A line
 {\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
 \end{center}
 gives the Lean declarations of a fully formalized result. The declarations live in the namespace
-\texttt{BoundedNesting} and the files in the directory \leanfile{lean/BoundedNesting/}. The text after such a statement,
+\texttt{BoundedNesting} and the files in the directory \leanfile{lean/BoundedNesting/}; declarations of the earlier libraries
+carry their namespace, \texttt{MotionDepthCodes} for the fourth paper and \texttt{SimpleGraph} for the Tutte--Berge formula
+of \texttt{lean-machine}. The text after such a statement,
 labelled \emph{Outline of the formal proof}, is a guide to the formal proof; it is a convenience, not a proof. A line
 beginning \textsf{Lean (partial)} marks a result whose formal counterpart covers all but an explicitly named part, which
 the text proves; on a definition, it names the notions that have no Lean counterpart. The words \textsf{Not formalized} mark a result with no formal counterpart; it comes with a complete

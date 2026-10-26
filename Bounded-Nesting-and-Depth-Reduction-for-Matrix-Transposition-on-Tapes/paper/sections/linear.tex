@@ -13,6 +13,8 @@ values $v_t(w)$ as in \cref{sec:prelim-tcp}, and write $\mathrm{out}(t)$ for the
 $\prev_1(t),\dots,\prev_k(t)$ of~$t$ in~$H_M$.
 
 \begin{definition}[Linear data path]\label{def:linear-path}
+\partformal{Rigidity.lean}{LinNet, LinNet.val}{the machine, its step values and their encodings; in Lean the data path is
+given as a network, and the output steps and the functionals $\varphi_\ell$ are arguments of \lean{LinNet.rigidity}.}
 $M$ has an \emph{$F$-linear data path} at length~$L$ if there are maps $\mathrm{enc}_t$ from the possible values of step~$t$ to
 $F^m$, vectors $c_t,a_t\in F^m$ and matrices $A_{t,s}\in F^{m\times m}$, none depending on the input, such that for every
 $w\in\{0,1\}^L$
@@ -38,6 +40,8 @@ set to zero and $B$ is the input matrix: the transfer matrices of the linear net
 Médard~\cite{KoetterMedard2003}.
 
 \begin{definition}[Linear depth]\label{def:linear-depth}
+\partformal{Rigidity.lean}{LinNet.GFree, LinNet.C, LinNet.reach}{the condition of linear depth itself, which in Lean is a
+hypothesis of \lean{LinNet.rigidity}.}
 Let $I^D_\Gamma(\ell)$ be the set of input positions read at steps reachable from~$t_\ell$ by $\Gamma$-free paths of length
 at most~$D$, and $B^D(\ell)\supseteq I^D_\Gamma(\ell)$ the set of positions read at steps reachable from~$t_\ell$ by directed paths of
 length at most~$D$ in~$H_M$, so that $B^D(\ell)=I^D_\emptyset(\ell)$. Output step~$t_\ell$ has \emph{linear depth at most~$D$ for~$\Gamma$} if
@@ -58,7 +62,9 @@ $I(\ell)$ for every~$\ell$; it is the least length of an $F$-linear index code f
 linear decoders~\cite{Haemers1979,BBJK2011}.
 
 \begin{lemma}[Per-machine rigidity]\label{lem:rigidity}
-\notformalized
+\partformal{Rigidity.lean}{LinNet, LinNet.val, LinNet.C, LinNet.reach, LinNet.reach_subset, LinNet.Pmat, LinNet.minrank, LinNet.rigidity, LinNet.minrank_le}{the
+translation from the machine to a linear network: the machine model, the encodings $\mathrm{enc}_t$ and the step
+values~$v_t$.}
 Suppose that $M$ has an $F$-linear data path at length~$L$ (with some representation), transposes all $d\times d$ matrices,
 and has a genie~$\Gamma$ under which every output step has linear depth at most~$D$. Then
 \[
@@ -68,22 +74,39 @@ and has a genie~$\Gamma$ under which every output step has linear depth at most~
 equivalently, the system $(I^D_\Gamma(\ell))_\ell$ has minrank at most $\beta\card\Gamma$ over~$F$.
 \end{lemma}
 
-\begin{informalproof}
-Define $V_t(w)$ for all $w\in F^L$ by the recursion of the data path. By induction $V_t(w)=v_t(w)$ for $w\in\{0,1\}^L$, and the
-path-sum expansion holds for~$V$ identically in $w\in F^L$, being the unrolled recursion. As $M$ transposes, it appends
-exactly $L$ bits, and the affine function $\varphi_\ell(V_{t_\ell}(w))$ equals $w_{\tpos(\ell)}$ on $\{0,1\}^L$, hence on
-all of~$F^L$, because an affine function is determined by its values at~$0$ and at the unit vectors. By linear depth,
-\[
-  w_{\tpos(\ell)}=\varphi_\ell(c'_{t_\ell})+\sum_{s\in\Gamma}\varphi_\ell^{\mathrm{lin}}T_{t_\ell,s}V_s(w)
-  +\sum_{j\in I^D_\Gamma(\ell)}\varphi_\ell^{\mathrm{lin}}C_{t_\ell,j}w_j\qquad(w\in F^L).
-\]
-So $E(w)=(V_s(w)-V_s(0))_{s\in\Gamma}$ is an $F$-linear index code for $(I^D_\Gamma(\ell))_\ell$, decodable on all of~$F^L$ with
-linear decoders. On $\{0,1\}^L$ it takes at most $2^{\beta\card\Gamma}$ values, since each $v_s$ takes at most $2^\beta$ values.
-A linear map of rank~$\rho$ takes at least $2^\rho$ values on $\{0,1\}^L$: it is injective on the binary vectors supported on
-$\rho$ coordinates whose columns are independent, because differences of such vectors have coefficients in $\{-1,0,1\}$. So
-$\rank E\le\beta\card\Gamma$, and the linear parts of the displayed identity, stacked over~$\ell$, give the decomposition, with
-the rows of~$R$ in the row space of~$E$.
-\end{informalproof}
+\begin{outline}
+The Lean statement concerns a linear network, \lean{LinNet}, with out-neighbours at earlier steps, the vectors $c_t$ and
+$a_t$, the matrices $A_{t,s}$, and the input position read by each step, if any. Its formal values $V_t(w)$, $w\in F^L$, are
+defined by the recursion of the data path (\lean{LinNet.val}), and the hypotheses are stated for them: on binary inputs the
+affine output functionals give the transposed bits, each step of~$\Gamma$ takes at most $2^\beta$ values, and every output
+step has linear depth at most~$D$, with the path sums \lean{LinNet.C} over the $\Gamma$-free paths (\lean{LinNet.GFree}) and
+the sets $I^D_\Gamma(\ell)$ given by \lean{LinNet.reach}; for $\Gamma=\emptyset$ these are the ball sets, and
+$I^D_\Gamma(\ell)\subseteq B^D(\ell)$ (\lean{LinNet.reach_subset}).
+
+The values split into a constant and a linear part, $V_t(w)=V_t(0)+V^{\mathrm{lin}}_t(w)$ (\lean{LinNet.val_eq_add}), and the
+linear part has the path-sum expansion
+$V^{\mathrm{lin}}_t(w)=\sum_{s\in\Gamma}T_{t,s}V^{\mathrm{lin}}_s(w)+\sum_jC_{t,j}w_j$ identically in $w\in F^L$, being the
+unrolled recursion (\lean{LinNet.C_eq}, \lean{LinNet.vlin_expand}); in Lean $T_{t,s}$ is defined by the recursion that it
+satisfies (\lean{LinNet.Tm}). Let $E(w)=(V^{\mathrm{lin}}_s(w))_{s\in\Gamma}$, the linear parts of the revealed values, let
+$R$ be the matrix of the linear map $w\mapsto\bigl(\sum_{s\in\Gamma}\varphi_\ell^{\mathrm{lin}}T_{t_\ell,s}E_s(w)\bigr)_\ell$,
+and let $S_{\ell j}=\varphi_\ell^{\mathrm{lin}}C_{t_\ell,j}$. Transposition at the inputs $0$ and~$e_j$ gives
+$\varphi_\ell^{\mathrm{lin}}V^{\mathrm{lin}}_{t_\ell}(e_j)=(e_j)_{\tpos(\ell)}$, and the expansion turns this into
+$(P_{\tpos})_{\ell j}=R_{\ell j}+S_{\ell j}$. By linear depth, $S_{\ell j}=0$ for $j\notin I^D_\Gamma(\ell)$. On $\{0,1\}^L$,
+$E$ takes at most $2^{\beta\card\Gamma}$ values, since each $V_s$, $s\in\Gamma$, takes at most $2^\beta$ values there. A
+linear map of rank~$\rho$ takes at least $2^\rho$ values on $\{0,1\}^L$: it is injective on the binary vectors supported on
+$\rho$ coordinates whose columns are independent, because differences of such vectors have coefficients in $\{-1,0,1\}$
+(\lean{LinNet.two_pow_finrank_le}). So $\rank R\le\rank E\le\beta\card\Gamma$ (\lean{LinNet.rigidity}); in other words, $E$
+is an $F$-linear index code of rank at most $\beta\card\Gamma$ for $(I^D_\Gamma(\ell))_\ell$, decodable with linear decoders.
+The minrank form is \lean{LinNet.minrank_le}, with the minrank as the least such rank (\lean{LinNet.minrank}).
+\end{outline}
+
+\begin{proof}[Proof of the translation (not formalized)]
+The dependency DAG of~$M$, with out-neighbours $\mathrm{out}(t)$, the data $c_t,A_{t,s},a_t$ of the representation and the
+input positions read define a linear network. By induction on~$t$, its formal values satisfy $V_t(w)=\mathrm{enc}_t(v_t(w))$
+for $w\in\{0,1\}^L$, since both satisfy the recursion. As $M$ transposes, it appends exactly $L$ bits, and output bit~$\ell$
+equals $\varphi_\ell(V_{t_\ell}(w))$ on binary inputs; each $v_s$ takes at most $2^\beta$ values; and linear depth is a
+statement about the path sums of the representation.
+\end{proof}
 
 \begin{definition}[Linear depth-TCP and the linear crux]\label{def:lin-hyp}
 \emph{Linear depth-TCP}$(k,C,\beta,\eps,D;F)$ says: for every machine~$M$ with $k$ work tapes and value width at most~$\beta$
@@ -97,19 +120,28 @@ that every system of $\Sball_{k,C,\beta,D}$ at a size $d\ge d_0$ has minrank at 
 \end{definition}
 
 \begin{theorem}[Theorem $\Dlin$]\label{thm:Dlin}
-\notformalized
+\partformal{Rigidity.lean}{LinNet.dlin_step}{the quantification over machines and sizes, the two hypotheses as statements
+about machines, and the translation of a machine into a linear network (\cref{lem:rigidity}); the Lean theorem is the
+argument at one size, for a network.}
 Let $k\ge1$, $D\ge0$ and $\beta\ge2$ be integers, $C>0$, $0<\eps<\rho$ and $F$ a field. If linear depth-TCP$(k,C,\beta,\eps,D;F)$
 and $\LinCrux_F(\Sball_{k,C,\beta,D},\rho)$ hold, then for every machine~$M$ with $k$ work tapes and value width at
 most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length~$L$ with an $F$-linear data path, halting
 time at most $C(L+1)$, and a transposer of all $d\times d$ matrices.
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}[Outline of the formal proof at one size]
+For a transposing network with a genie~$\Gamma$ of cost $\beta\card\Gamma\le\eps L$ under which every output step has
+linear depth at most~$D$, \cref{lem:rigidity} bounds the minrank of the ball system by $\beta\card\Gamma\le\eps L$; with
+$\eta=(\rho-\eps)/2$ and $L\ge1$ this contradicts a minrank of at least $(\rho-\eta)L$ (\lean{LinNet.dlin_step}).
+\end{outline}
+
+\begin{proof}[Proof of the reduction to one size (not formalized)]
 Let $\eta=(\rho-\eps)/2$ and let $d_0$ be the larger of the thresholds of the two hypotheses. If $M$ were such a transposer at
-some $d\ge d_0$, linear depth-TCP would give a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ under which every output step
-has linear depth at most~$D$, and by \cref{lem:rigidity} the system $(I^D_\Gamma(\ell))_\ell$, and hence the larger system
-$(B^D(\ell))_\ell\in\Sball_{k,C,\beta,D}$, would have minrank at most $\eps L<(\rho-\eta)L$.
-\end{informalproof}
+some $d\ge d_0$, linear depth-TCP would give a representation and a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ under which
+every output step has linear depth at most~$D$, and $\LinCrux_F$ would give the ball system
+$(B^D(\ell))_\ell\in\Sball_{k,C,\beta,D}$ a minrank of at least $(\rho-\eta)L$; the argument at one size, applied to the
+network of the representation, gives a contradiction.
+\end{proof}
 
 This is the proof of Theorem~D with the cone lemma replaced by the path-sum expansion, which is exact for linear data paths.
 

@@ -7,11 +7,12 @@ Usage (from the paper directory, i.e. the parent of paper/ and lean/):
     python3 tools/lean_index.py --index-only  # writes only paper/sections/leanindex.tex
 
 Collects every declaration named in a \\formal{file}{names} or \\partformal{file}{names}{...}
-line of paper/sections/*.tex, and every name in a \\lean{name} reference to this library (names of
-the earlier libraries, which start with "Transpose", "MotionDepthCodes" or "HalfRate", are
-skipped), finds the module that declares each of them by scanning lean/BoundedNesting/ (warning when
-a status line names another file), and writes
-  * paper/sections/leanindex.tex: the declarations grouped by the Lean module that declares them;
+line of paper/sections/*.tex, and every name in a \\lean{name} reference to this library, finds the
+module that declares each of them by scanning lean/BoundedNesting/ (warning when a status line names another
+file), and writes
+  * paper/sections/leanindex.tex: the declarations grouped by the Lean module that declares them, after a
+    sentence listing the names of other libraries cited in \\lean{...} (those starting with a prefix in
+    LIBRARIES), which are checked in their own libraries;
   * lean/PaperAxioms.lean: imports and one `#print axioms` per declaration (not with --index-only).
 Declarations are relative to the namespace BoundedNesting; files are relative to
 lean/BoundedNesting/. Names that the scan does not find are listed separately, with a warning.
@@ -24,7 +25,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = ROOT / "paper" / "sections"
 FORMAL = re.compile(r"\\(?:formal|partformal)\{([^{}]+)\}\{([^{}]+)\}")
 INLINE = re.compile(r"\\lean\{([^{}]+)\}")
-FOREIGN = ("Transpose", "MotionDepthCodes", "HalfRate")
+# Other libraries, by namespace: how the index names them, and their citation key (None: no citation).
+# lean-machine's Tutte--Berge formula lives in the namespace SimpleGraph.
+LIBRARIES = {
+    "Transpose": ("the first paper's library", "FirstPaper2026"),
+    "MotionDepthCodes": ("the fourth paper's library", "FourthPaper2026"),
+    "HalfRate": ("the seventh paper's library", "SeventhPaper2026"),
+    "SimpleGraph": (r"the shared library \texttt{lean-machine}", None),
+}
+FOREIGN = tuple(LIBRARIES)
 LEAN_DIR = ROOT / "lean" / "BoundedNesting"
 DECL = re.compile(r"^\s*(?:@\[[^\]]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|partial)\s+)*"
                   r"(?:theorem|lemma|def|abbrev|structure|inductive|class|instance)\s+([^\s(:{\[]+)")
@@ -77,7 +86,8 @@ def group(by_file, inline):
 
 
 def collect():
-    by_file, inline = {}, set()
+    """Return the status-line names by file, the other inline names of this library, and the foreign names."""
+    by_file, inline, foreign = {}, set(), set()
     for tex in sorted(SECTIONS.glob("*.tex")):
         if tex.name == "leanindex.tex":
             continue
@@ -85,9 +95,26 @@ def collect():
         for file, names in FORMAL.findall(text):
             decls = [n.strip() for n in names.split(",") if n.strip()]
             by_file.setdefault(file.strip(), set()).update(decls)
-        inline.update(n.strip() for n in INLINE.findall(text) if not n.strip().startswith(FOREIGN))
+        for n in (n.strip() for n in INLINE.findall(text)):
+            (foreign if n.startswith(FOREIGN) else inline).add(n)
     listed = set().union(*by_file.values()) if by_file else set()
-    return by_file, sorted(inline - listed)
+    return by_file, sorted(inline - listed), sorted(foreign)
+
+
+def foreign_sentence(foreign):
+    """The sentence of the index that lists the cited declarations of other libraries."""
+    parts = []
+    for prefix, (desc, key) in LIBRARIES.items():
+        names = [n for n in foreign if n.split(".")[0] == prefix]
+        if names:
+            cite = f"~\\cite{{{key}}}" if key else ""
+            parts.append(", ".join(r"\lean{" + n + "}" for n in names) + f" in {desc}{cite}")
+    if not parts:
+        return []
+    if len(parts) > 1:
+        parts[-1] = "and " + parts[-1]
+    return [r"{\raggedright The declarations of other libraries named in the text are checked in those libraries: "
+            + ("; " if len(parts) > 2 else " ").join(parts) + r".\par}"]
 
 
 def module(file):
@@ -98,14 +125,14 @@ def tex_escape(name):
     return name.replace("_", r"\_")
 
 
-def write_index(by_file, inline):
+def write_index(by_file, inline, foreign):
     lines = [
         r"\section{Index of Lean declarations}\label{app:index}",
         "",
         "Every declaration of this paper's library cited in the text, grouped by the Lean module that contains it, relative to the namespace",
         r"\texttt{BoundedNesting}. All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and",
-        r"\texttt{Quot.sound} (\cref{app:verify}). The declarations of the fourth paper's library named in the text",
-        r"(\lean{MotionDepthCodes.lemma_Zq} and \lean{MotionDepthCodes.card_descents_eq}) are verified there~\cite{FourthPaper2026}.",
+        r"\texttt{Quot.sound} (\cref{app:verify}).",
+        *foreign_sentence(foreign),
         "",
     ]
     for file in sorted(by_file, key=module):
@@ -142,8 +169,9 @@ def main():
     ap.add_argument("--index-only", action="store_true",
                     help="write only paper/sections/leanindex.tex, not lean/PaperAxioms.lean")
     args = ap.parse_args()
-    by_file, inline = group(*collect())
-    write_index(by_file, inline)
+    by_file, inline, foreign = collect()
+    by_file, inline = group(by_file, inline)
+    write_index(by_file, inline, foreign)
     if not args.index_only:
         write_axioms(by_file, inline)
     total = sum(len(v) for v in by_file.values()) + len(inline)

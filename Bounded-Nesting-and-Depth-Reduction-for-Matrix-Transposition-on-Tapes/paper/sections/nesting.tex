@@ -57,6 +57,7 @@ symmetric.
 \subsection{Families and virtual heads}\label{sec:nest-families}
 
 \begin{definition}[Families]\label{def:families}
+\formal{Families.lean}{side, sw, fam, famP, famU, famd, famDepth, vcode, famData}
 Let $H'$ be a set of long hops of walks $x_1,\dots,x_k$ of length~$T$. For a head~$h$, a side~$\sigma$ and a time~$o$,
 the \emph{family} of $(h,\sigma,o)$ is the set of hops of~$H'$ of head~$h$ on side~$\sigma$ with owner~$o$, when it is
 nonempty; every hop of~$H'$ lies in exactly one family. All hops of a family~$F$ contain its owner~$o_F$, so they form a
@@ -69,7 +70,8 @@ virtual heads.
 \end{definition}
 
 \begin{lemma}[Structure of families]\label{lem:families}
-\notformalized
+\formal{Families.lean}{fam_cell_mem, fam_cell_injOn, card_fam_le, fam_long, famP_ne, fam_no_cross, famDepth_le, vcode_lt, vh_eq, famData_disj, famData_valid}
+\formal{Clock.lean}{Fam.Valid.unique_span, Fam.Valid.sum_d_le, Fam.Valid.overlap}
 Let $H'$ have owner-load at most~$\ell$.
 \begin{enumerate}[label=(\alph*)]
 \item The cells of the hops of a family~$F$ are distinct and lie between $c_F$, included, and $x_h(o_F)$, excluded, so
@@ -84,36 +86,52 @@ $(p,u)\in H'$ with $p<\tau\le u$ lie in families of band less than~$\theta$.
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
-(a) Let $F$ be upper; the lower case is symmetric. If $(p,u)\supsetneq(p',u')$ are hops of~$F$, then $p'\in(p,u)$, so
+\begin{outline}
+In Lean the walks are maps $x_h\colon\N\to\Z$ (\lean{IsWalk}), extended beyond~$T$ as in \cref{lem:owner}; the hops of~$H'$ are
+triples $(h,p,u)$ such that $(p,u)$ is a long hop of~$x_h$ before~$T$ (\lean{IsHop}); and the owners may be any assignment of
+times strictly inside the hops, the owners of \cref{sec:prelim-walks} being one (\lean{hopOwner_spec}). A hop is upper if the
+walk steps up after its start (\lean{side}); seen from its side, that is, after the reflection $x\mapsto-x$ for lower hops
+(\lean{sw}), it lies strictly above its cell (\lean{sw_above}), so all hops of a family are upper hops of one walk. Families,
+spans, heights and depths are \lean{fam}, \lean{famP}, \lean{famU}, \lean{famd} and \lean{famDepth}; the span is the hop of
+the family that starts first, and it also ends last (\lean{fam_nested}, \lean{fam_span}). With the heads numbered
+$0,\dots,k-1$ and $\sigma=1$ for the upper side and $0$ for the lower one, a virtual head $(h,\sigma,i)$ is coded by the number
+$(i-1)+(2h+\sigma)\ell<2k\ell$ (\lean{vcode}, \lean{vcode_lt}, \lean{vh_eq}). The formal family clock runs
+on all $2k\ell$ codes, the unused ones being virtual heads without families, of band~$0$ at all times; so the formal~$N$ is
+its bound~$2k\ell$. The data of all families form an instance \lean{famData} of abstract family data (\lean{Fam}), and
+\lean{famData_valid} proves the hypotheses \lean{Fam.Valid} of the family clock: every hop lies in the span of its family with
+the owner strictly inside, a hop that ends at the end of its span is the span, (d), (a), and spans end before~$T$. Parts (e)
+and~(f) are proved from these hypotheses alone (\lean{Fam.Valid.unique_span}, \lean{Fam.Valid.sum_d_le},
+\lean{Fam.Valid.overlap}).
+
+(a) (\lean{fam_cell_mem}, \lean{fam_cell_injOn}, \lean{card_fam_le}, \lean{fam_long}.) Let $F$ be upper; the lower case is the same seen from its side. If $(p,u)\supsetneq(p',u')$ are hops of~$F$, then $p'\in(p,u)$, so
 $x_h(p')>x_h(p)$: the cells increase strictly inwards. The innermost hop contains~$o_F$, where the walk is above its cell,
 so all cells lie in $[c_F,x_h(o_F)-1]$, and $\card F\le d_F$. The walk moves by at most one cell per step and goes from
 $c_F$ at $P_F$ to $x_h(o_F)$ at~$o_F$ and back to $c_F$ at~$U_F$, so $o_F-P_F\ge d_F$ and $U_F-o_F\ge d_F$.
 
-(b) The span of~$F$ is a hop of~$F$, with owner~$o_F$; equal spans give equal owners and hence equal families. Spans are
+(b) (\lean{famP_ne}, \lean{fam_no_cross}.) The span of~$F$ is a hop of~$F$, with owner~$o_F$; equal spans give equal owners
+and hence equal families. Since a hop is determined by its start, distinct spans even start at distinct times. Spans are
 long hops of one head on one side, which do not cross.
 
-(c) Let $t\in(P_F,U_F)$, a nonempty interval by~(a). Every family~$F'$ whose span contains the span of~$F$ has $t$ in the
+(c) (\lean{famDepth_le}.) Let $t\in(P_F,U_F)$, a nonempty interval by~(a). Every family~$F'$ whose span contains the span of~$F$ has $t$ in the
 open interval of its span, a hop of~$H'$ of head~$h$ on side~$\sigma$ with owner~$o_{F'}$, and distinct such families have
 distinct owners. So there are at most $\ell$ of them. A virtual head is then a triple $(h,\sigma,i)$ with $i\le\ell$.
 
-(d) If the open spans of $F$ and~$F'$ met, then by~(b) one would be strictly contained in the other, say
+(d) (\lean{famData_disj}, \lean{disj_aux}.) By~(b) we may assume $P_F<P_{F'}$. Suppose that $P_{F'}<U_F$. Since the spans do
+not cross, $U_{F'}\le U_F$, and $U_{F'}\ne U_F$, since a hop is also determined by its end; so
 $(P_{F'},U_{F'})\subsetneq(P_F,U_F)$. Every family whose span contains the span of~$F$ also contains the span of~$F'$, and
-$F'$ contains its own span but not that of~$F$; so $F'$ would have larger depth than~$F$. Hence the open spans are
-disjoint; say $P_F<P_{F'}$. Then $P_{F'}\ge U_F-1$, since otherwise $P_{F'}+1$ would lie in both open spans. If
-$P_{F'}=U_F-1$ and $F$ is upper, then $x_h(U_F-1)=c_F+1$ is the cell of the span of~$F'$, while
-$U_F\in(P_{F'},U_{F'})$ and $x_h(U_F)=c_F<c_F+1$, which contradicts that this span is an upper hop. The lower case is
-symmetric. So $U_F\le P_{F'}$.
+$F'$ contains its own span but not that of~$F$; so $F'$ would have larger depth than~$F$ (\lean{famDepth_lt}). Hence
+$U_F\le P_{F'}$.
 
-(e) The first claim is~(d). The half-open spans $(P_F,U_F]$ of the families of~$v$ are therefore disjoint subsets of
+(e) (\lean{Fam.Valid.unique_span}, \lean{Fam.Valid.sum_d_le}.) The first claim is~(d). The half-open spans $(P_F,U_F]$ of the families of~$v$ are therefore disjoint subsets of
 $\{1,\dots,T-1\}$, and by~(a) each has at least $2d_F$ elements.
 
-(f) A hop $(p,u)$ of a family~$F$ of a virtual head~$v$ with $p<\tau\le u$ satisfies $P_F\le p<\tau\le u\le U_F$. By~(e)
+(f) (\lean{Fam.Valid.overlap}.) A hop $(p,u)$ of a family~$F$ of a virtual head~$v$ with $p<\tau\le u$ satisfies $P_F\le p<\tau\le u\le U_F$. By~(e)
 at most one family of~$v$ qualifies, and if its band is less than~$\theta$, then by~(a) it has at most
 $d_F<2^{\lambda(d_F)+1}\le2^\theta$ hops. Summing over the $N$ virtual heads gives the bound.
-\end{informalproof}
+\end{outline}
 
 \begin{definition}[The family clock]\label{def:clock}
+\formal{Clock.lean}{lam, grp, flr, Fam.band, Fam.group, Fam.occ, Fam.rk, Fam.cnt, Fam.digit, Fam.clock}
 Let $H'$ have owner-load at most~$\ell$ and $N\ge1$ virtual heads, numbered $1,\dots,N$.
 \begin{itemize}[leftmargin=2em]
 \item The \emph{band} of a virtual head~$v$ at time~$t$ is $b_v(t)=\lambda(d_F)$ for the family~$F$ of~$v$ with the
@@ -145,7 +163,7 @@ distances from home, and owners in place of leg starts.
 \subsection{Theorem F}\label{sec:nest-F}
 
 \begin{theorem}[Theorem F: depth reduction at bounded owner-load]\label{thm:F}
-\notformalized
+\formal{TheoremF.lean}{theoremF_owner, theoremF, DF}
 Let $k,\ell\ge1$, $\eps\in(0,1]$ and $T\ge1$, let $x_1,\dots,x_k$ be walks of length~$T$, coupled arbitrarily, and let $H'$
 be a set of their long hops of owner-load at most~$\ell$. Then the DAG $G(H')$ has a cut of at most $\eps T$ edges and depth
 less than
@@ -156,10 +174,22 @@ less than
 The bound does not depend on~$T$, on the coupling, on homes or on the scales of the walks, and pauses are allowed.
 \end{theorem}
 
-\begin{informalproof}
-If $N=0$, then $H'$ is empty, and the empty cut has depth~$0$. Otherwise let $r$ and~$\omega$ be uniformly random and
-independent, and let $F_\Psi$ be the cut of the family clock in $G(H')$ (violated hop edges and state edges at descents).
-By \cref{lem:labels} it has depth at most $K^N-1$. We show
+\begin{outline}
+The theorem for the owners of \cref{sec:prelim-walks} (\lean{hopOwner}) is \lean{theoremF_owner}. It is an instance of
+\lean{theoremF}, which holds for every assignment of owners strictly inside the hops and for every $\eps>0$. Owner-load is
+\lean{OwnerLoadLE}, and the hop edges of $G(H')$ are the pairs of \lean{hopPairs}. The cut consists of the state edges
+$t\to t-1$ at the times of a subset of $[1,T)$ and of a set of hop pairs, and the depth bound concerns every path
+$f(0)\to\dots\to f(n)$ that avoids the cut, as in \lean{strip_cut_depth}. The family clock is defined for abstract family data
+(\lean{Fam.clock}) and applied to \lean{famData}, whose hypotheses \lean{Fam.Valid} hold by \cref{lem:families}, with
+$N=2k\ell$ as explained there; digit positions and the coordinates of~$\omega$ are numbered from~$0$, so that position $i-1$
+carries the digit~$\psi_i$. The expectation is formalized as a count: summed over the $a$ offsets and the $K^N$ choices
+of~$\omega$, the violated hops and the descents number at most $K^N\cdot4N^2T+aK^{N-1}2^{a+1}N^2T$
+(\lean{Fam.Valid.cost_sum_le}), which is $aK^N$ times the right side of \eqref{eq:F-expect}, and some $(r,\omega)$ does at most
+as well as the average (\lean{Fam.Valid.exists_cheap}). The bounds below are lemmas of that count.
+
+Let $r$ and~$\omega$ be uniformly random and independent, and let $F_\Psi$ be the cut of the family clock in $G(H')$
+(violated hop edges and state edges at descents). By \cref{lem:labels} it has depth at most $K^N-1$; in Lean, for a label
+with $N$ digits in $[0,K)$ compared lexicographically (\lean{Fam.depth_le_of_lex}, \lean{Fam.digit_lt}). We show
 \begin{equation}\label{eq:F-expect}
   \mathbb E\card{F_\Psi}\;\le\;\frac{4N^2T}a+\frac{2^{a+1}N^2T}K.
 \end{equation}
@@ -167,45 +197,53 @@ We bound the number of violated hops of~$H'$, counted per hop, which is at least
 number of descents. Throughout, $\eta=(p,u)$ is a hop of~$H'$ of the virtual head~$w$, in the family~$F$, and
 $G_\eta=\lfloor(\lambda(d_F)+r)/a\rfloor$ is the group of its band.
 
-\emph{Consistency.} We have $G_w(p)=G_\eta$, and $G_w(u)=G_\eta$ unless $\eta$ is the span of~$F$ and the next family
-$F'$ of~$w$ starts at $P_{F'}=U_F$. Indeed, $P_F\le p<u\le U_F$, and by \cref{lem:families}(d) no family of~$w$ starts in
-$(P_F,U_F)$, so $b_w=\lambda(d_F)$ on $[P_F,U_F)$; the hops of~$F$ other than its span have $u<U_F$, by strict nesting.
-Call $\eta$ \emph{inconsistent} if $G_w(u)\ne G_\eta$.
+\emph{Consistency} (\lean{Fam.Valid.band_of_mem}, \lean{Fam.Valid.band_at_end}). We have $G_w(p)=G_\eta$, and $G_w(u)=G_\eta$
+unless $\eta$ is the span of~$F$ and the next family $F'$ of~$w$ starts at $P_{F'}=U_F$. Indeed, $P_F\le p<u\le U_F$, and
+by \cref{lem:families}(d) no family of~$w$ starts in $(P_F,U_F)$, so $b_w=\lambda(d_F)$ on $[P_F,U_F)$; the hops of~$F$
+other than its span have $u<U_F$, by strict nesting. Call $\eta$ \emph{inconsistent} if $G_w(u)\ne G_\eta$.
 
-\emph{($\alpha$) Inconsistent hops.} We count them all as violated. By consistency there is at most one inconsistent hop for each
-pair $(F,F')$ of consecutive families of~$w$ with $U_F=P_{F'}$, and it requires the bands $\lambda(d_F)$ and
-$\lambda(d_{F'})$ to lie in different groups, which has probability at most
-$\abs{\lambda(d_F)-\lambda(d_{F'})}/a\le(\lambda(d_F)+\lambda(d_{F'}))/a$. Each family lies in at most two consecutive
-pairs, and $\lambda(d)<d$, so the expected number is at most $(2/a)\sum_Fd_F\le T/a$ per virtual head, and $NT/a$ in all.
+\emph{The jumps that change a group} (\lean{Fam.gjumps}, \lean{Fam.Valid.sum_gjumps}). A jump of~$v$ from band~$b$ to
+band~$b'$ changes the group of~$v$ with probability at most $\abs{b-b'}/a\le(b+b')/a$ (\lean{card_grp_ne_le}). At the jump that starts a
+family~$F''$, the new band is $\lambda(d_{F''})$ and the old band is that of the previous family of~$v$, or the initial
+band~$0$; each family occurs at most once as a new band and at most once as an old band (\lean{Fam.Valid.sum_old_le}). So,
+since $\lambda(d)<d$, $\sum_{\text{jumps of }v}(b+b')\le2\sum_F\lambda(d_F)\le T$ (\lean{Fam.Valid.sum_jumps_lam}), and
+the jumps that change a group number at most $NT/a$ in expectation.
 
-\emph{($\beta$) Consistent hops whose higher groups differ.} Let $\mathcal U(t)$ be the set of occupied groups above $G_\eta$ at
-time~$t$, and suppose $\eta$ is consistent and $\mathcal U(p)\ne\mathcal U(u)$; we count it as violated. Some group
+\emph{($\alpha$) Inconsistent hops} (\lean{Fam.incons}, \lean{Fam.Valid.card_incons_le}). We count them all as violated. By
+consistency, an inconsistent hop is the span of its family~$F$, and the next family $F'$ of~$w$ starts at $U_F$ with a jump
+that changes the group of~$w$; distinct inconsistent hops give distinct such jumps. So their expected number is at most
+$NT/a$.
+
+\emph{($\beta$) Consistent hops whose higher groups differ} (\lean{Fam.higher}, \lean{Fam.Valid.exists_charge},
+\lean{Fam.Valid.card_higher_le}, \lean{Fam.Valid.sum_higher_le}). Let $\mathcal U(t)$ be the set of occupied groups above
+$G_\eta$ at time~$t$, and suppose $\eta$ is consistent and $\mathcal U(p)\ne\mathcal U(u)$; we count it as violated. Some group
 $G'>G_\eta$ is occupied at exactly one of the times $p,u$, by a virtual head~$v$ that is not in~$G'$ at the other time;
 $v\ne w$, since $w$ is in $G_\eta$ at both times. So $G_v(p)\ne G_v(u)$ and $\max(G_v(p),G_v(u))>G_\eta$. The group of~$v$
-changes only at its jumps. If $G_v(p)>G_\eta$, let $\tau$ be the first jump in $(p,u]$ that changes the group of~$v$;
-otherwise let $\tau$ be the last such jump. In both cases the jump at $\tau\in(p,u]$ moves $v$ between two groups whose
-larger one, $G^\circ$, exceeds~$G_\eta$. Let the jump move the band of~$v$ from~$b$ to~$b'$. The floor
+changes only at its jumps, and so some jump $\tau\in(p,u]$ of~$v$ moves it between two groups whose larger one, $G^\circ$,
+exceeds~$G_\eta$ (\lean{exists_change}: going back from~$u$, the first step at which the group of~$v$ changes between two
+groups the larger of which exceeds~$G_\eta$). Let the jump move the band of~$v$ from~$b$ to~$b'$. The floor
 $\theta^\circ=\theta(G^\circ)$ satisfies $\min(b,b')<\theta^\circ\le\max(b,b')$, and since
 $G^\circ\ge G_\eta+1$, $\lambda(d_F)<\theta(G_\eta+1)\le\theta^\circ$. So $\eta$ spans~$\tau$ and its family has band
 less than~$\theta^\circ$. Charge $\eta$ to the jump $(v,\tau)$. By the overlap bound of \cref{lem:families}, at most
 $N(2^{\theta^\circ}-1)$ hops are charged to one jump. Given~$r$, $\theta^\circ$ is the largest floor in
-$(\min(b,b'),\max(b,b')]$, so this is less than $N$ times the sum of $2^\theta$ over the floors~$\theta$ in
-that range; a jump that changes no group receives no charge. Since each integer $\theta\ge1$ is a floor with
-probability $1/a$, the expected charge of a jump is at most $(N/a)2^{M+1}$, where $M=\max(b,b')$ and
-$2^M\le2^b+2^{b'}$. At the jump that starts a family $F''$, the new band is $\lambda(d_{F''})$ and the old band is
-that of the previous family of~$v$, or the initial band~$0$. Each family occurs at most once as a new band and at most once
-as an old band, so $\sum_{\text{jumps of }v}2^M\le1+2\sum_F2^{\lambda(d_F)}\le1+2\sum_Fd_F\le T$. The expected number of
-such hops is therefore at most $(2N/a)\sum_vT=2N^2T/a$.
+$(\min(b,b'),\max(b,b')]$, and a jump that changes no group receives no charge. Over the $a$ offsets at which the jump
+changes a group, these floors are distinct integers in $(\min(b,b'),\max(b,b')]$, since the floors at least~$1$ for the
+offset~$r$ are the integers congruent to $-r$ modulo~$a$ (\lean{sum_floor_pow_le}); so the expected charge of a jump is at
+most $(N/a)2^{M+1}$, where $M=\max(b,b')$ and $2^M\le2^b+2^{b'}$. As above, each family occurs at most once as a new band
+and at most once as an old band, so $\sum_{\text{jumps of }v}2^M\le1+2\sum_F2^{\lambda(d_F)}\le1+2\sum_Fd_F\le T$
+(\lean{Fam.Valid.sum_jumps_pow}). The expected number of such hops is therefore at most $(2N/a)\sum_vT=2N^2T/a$.
 
-\emph{($\gamma$) The remaining hops.} Now $\eta$ is consistent and $\mathcal U(p)=\mathcal U(u)$. Then $G_\eta$ has the same
+\emph{($\gamma$) The remaining hops} (\lean{Fam.calm}, \lean{Fam.Valid.card_viol_calm_le}, \lean{Fam.Valid.sum_calm_growth_le},
+\lean{Fam.Valid.sum_viol_calm_le}). Now $\eta$ is consistent and $\mathcal U(p)=\mathcal U(u)$. Then $G_\eta$ has the same
 position $j=\card{\mathcal U(p)}+1$ in the lists of occupied groups at $p$ and at~$u$, and the groups above it, hence
 their floors $\theta_i$, $i\le j$, agree. Put $\Delta_i=n_i(u)-n_i(p)$ for $i\le j$; then $\Delta_i\ge0$, because the
 floor is the same at both times. Moreover $\Delta_j\ge1$: the owner $o_F\in(p,u)$ is an event of scale
 $\lambda(d_F)\ge\theta(G_\eta)=\theta_j$. Say that digit~$i$ \emph{wraps} if
 $\lfloor(n_i(p)+\omega_i)/K\rfloor\ne\lfloor(n_i(u)+\omega_i)/K\rfloor$. If no digit $i\le j$ wraps, then
 $\psi_i(u)=\psi_i(p)+\Delta_i$ for $i\le j$, the first position $i\le j$ with $\Delta_i>0$ carries a larger digit at~$u$,
-all earlier digits agree, and $\Psi(u)>\Psi(p)$. Given~$r$, digit~$i$ wraps with probability at most $\Delta_i/K$, so
-$\eta$ is violated with probability at most $\sum_{i\le j}\Delta_i/K$.
+all earlier digits agree, and $\Psi(u)>\Psi(p)$ (\lean{Fam.clock_lt_of_no_wrap}). Given~$r$, digit~$i$ wraps with probability
+at most $\Delta_i/K$ (\lean{Fam.card_wrap_le}, \lean{Fam.card_wrap_union}), so $\eta$ is violated with probability at most
+$\sum_{i\le j}\Delta_i/K$.
 
 We bound $\sum_\eta\sum_{i\le j(\eta)}\Delta_i(\eta)$ over these hops, for every~$r$, by exchanging the order of
 summation. $\Delta_i(\eta)$ is the number of events $o'\in(p,u]$ of scale at least~$\theta_i$. Fix an event~$o'$ of
@@ -221,28 +259,32 @@ the sum over the floors $\varphi\le s$, which are distinct integers in $[0,s]$. 
 $\sum_{o'}2^{s(o')}=\sum_v\sum_F2^{\lambda(d_F)}\le\sum_v\sum_Fd_F\le NT/2$. Hence these hops contribute at most
 $N2^{a+1}\cdot NT/(2K)=2^aN^2T/K$ in expectation.
 
-\emph{Descents.} Consider the state edge $t\to t-1$. If no virtual head changes group at step $t-1\to t$, the occupied
-groups and their floors are the same at $t-1$ and~$t$, and $n_i(t)\ge n_i(t-1)$ for every~$i$; as in~($\gamma$), a descent needs
-a wrap, which given~$r$ has probability at most $\sum_i(n_i(t)-n_i(t-1))/K$. Summed over~$t$ this is at most $N$ times the
-number of events divided by~$K$, and there are at most $\sum_v\sum_Fd_F\le NT/2$ events; so these descents number at most
-$N^2T/(2K)$ in expectation. Otherwise some virtual head has a jump at~$t$ that changes its group, and we count the edge as
-cut. A jump from band~$b$ to~$b'$ changes the group with probability at most $\abs{b-b'}/a$, and
-$\sum_{\text{jumps of }v}\abs{b-b'}\le2\sum_F\lambda(d_F)\le T$; so these edges number at most $NT/a$ in
-expectation.
+\emph{Descents} (\lean{Fam.still}, \lean{Fam.card_desc_still_le}, \lean{Fam.sum_desc_still_le}, \lean{Fam.gchange},
+\lean{Fam.Valid.card_gchange_le}). Consider the state edge $t\to t-1$. If no virtual head changes group at step $t-1\to t$, the
+occupied groups and their floors are the same at $t-1$ and~$t$, and $n_i(t)\ge n_i(t-1)$ for every~$i$; as in~($\gamma$), a
+descent needs a wrap (\lean{Fam.clock_le_of_no_wrap}), which given~$r$ has probability at most $\sum_i(n_i(t)-n_i(t-1))/K$.
+Summed over~$t$ this is at most $N$ times the number of events divided by~$K$, and there are at most
+$\sum_v\sum_Fd_F\le NT/2$ events; so these descents number at most $N^2T/(2K)$ in expectation. Otherwise some virtual head
+has a jump at~$t$ that changes its group, and we count the edge as cut; these edges number at most $NT/a$ in expectation,
+by the bound on the jumps that change a group.
 
-\emph{Total.} Adding the four bounds,
-$\mathbb E\card{F_\Psi}\le(2NT+2N^2T)/a+(2^a+1/2)N^2T/K$, which gives \eqref{eq:F-expect}.
+\emph{Total} (\lean{Fam.violated_subset}, \lean{Fam.descents_subset}, \lean{Fam.Valid.cost_sum_le}). Adding the four bounds,
+$\mathbb E\card{F_\Psi}\le(2NT+2N^2T)/a+(2^a+1/2)N^2T/K$, which gives \eqref{eq:F-expect}. (The formal count bounds the two
+terms with~$K$ together: by $N2^{a+1}\sum_Fd_F/K$ and by $N/K$ per family, at most $2^{a+1}N^2T/K$ in all.)
 
-\emph{Parameters.} By \cref{lem:families}(c), $N\le2k\ell$, so the right side of \eqref{eq:F-expect} is at most
-$16k^2\ell^2T/a+2^{a+3}k^2\ell^2T/K$. Take $a=\lceil64k^2\ell^2/\eps\rceil$ and $K=2^{a+4}\lceil k^2\ell^2/\eps\rceil$.
+\emph{Parameters} (\lean{theoremF}, \lean{cost_le_eps}, \lean{ceil_le_two_pow_clog}). By \cref{lem:families}(c), $N\le2k\ell$,
+so the right side of \eqref{eq:F-expect} is at most $16k^2\ell^2T/a+2^{a+3}k^2\ell^2T/K$. Take
+$a=\lceil64k^2\ell^2/\eps\rceil$ and $K=2^{a+4}\lceil k^2\ell^2/\eps\rceil$.
 Then the first term is at most $\eps T/4$ and the second at most $\eps T/2$, and some choice of $(r,\omega)$ gives a cut of
-at most $\eps T$ edges. Its depth is at most $K^N-1<K^{2k\ell}$, and since $\log_2\lceil x\rceil\le\lceil\log_2x\rceil$
-for $x\ge1$,
+at most $\eps T$ edges. Its depth is at most $K^N-1<K^{2k\ell}$, and since $\lceil x\rceil\le2^{\lceil\log_2x\rceil}$
+for $x>0$,
 \[
   K^{2k\ell}\le2^{2k\ell\left(\lceil64k^2\ell^2/\eps\rceil+4+\lceil\log_2(k^2\ell^2/\eps)\rceil\right)}<\DF(k,\ell,\eps).
 \]
-Pauses are state edges, and the argument uses only that hops are long and that owners lie strictly inside their hops.
-\end{informalproof}
+In \lean{DF} the ceiling of the logarithm is taken in~$\N$, which agrees with the integer ceiling for $\eps\le1$, since
+$k^2\ell^2/\eps\ge1$. Pauses are state edges, and the argument uses only that hops are long and that owners lie strictly
+inside their hops.
+\end{outline}
 
 \paragraph{Why it matters.} Theorem~F proves the walk form of the structural hypothesis of Theorem~D for every family of
 bounded owner-load, for every coupling, and with no reference to positions: neither homes nor leg area enter. Together

@@ -9,11 +9,12 @@ Usage (from the paper directory, i.e. the parent of paper/ and lean/):
 Collects every declaration named in a \\formal{file}{names} or \\partformal{file}{names}{...}
 line of paper/sections/*.tex, and every name in a \\lean{name} reference to this library (names of
 the earlier libraries, which start with "Transpose", "MotionDepthCodes" or "HalfRate", are
-skipped), and writes
-  * paper/sections/leanindex.tex: the declarations grouped by Lean module;
+skipped), finds the module that declares each of them by scanning lean/BoundedNesting/ (warning when
+a status line names another file), and writes
+  * paper/sections/leanindex.tex: the declarations grouped by the Lean module that declares them;
   * lean/PaperAxioms.lean: imports and one `#print axioms` per declaration (not with --index-only).
 Declarations are relative to the namespace BoundedNesting; files are relative to
-lean/BoundedNesting/.
+lean/BoundedNesting/. Names that the scan does not find are listed separately, with a warning.
 """
 import argparse
 import re
@@ -24,6 +25,55 @@ SECTIONS = ROOT / "paper" / "sections"
 FORMAL = re.compile(r"\\(?:formal|partformal)\{([^{}]+)\}\{([^{}]+)\}")
 INLINE = re.compile(r"\\lean\{([^{}]+)\}")
 FOREIGN = ("Transpose", "MotionDepthCodes", "HalfRate")
+LEAN_DIR = ROOT / "lean" / "BoundedNesting"
+DECL = re.compile(r"^\s*(?:@\[[^\]]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|partial)\s+)*"
+                  r"(?:theorem|lemma|def|abbrev|structure|inductive|class|instance)\s+([^\s(:{\[]+)")
+
+
+def declared():
+    """Map each declaration of the library, relative to BoundedNesting, to its file."""
+    where = {}
+    for lean in sorted(LEAN_DIR.rglob("*.lean")):
+        text = re.sub(r"/-.*?-/", "", lean.read_text(), flags=re.S)
+        stack = []
+        for line in text.splitlines():
+            if m := re.match(r"^\s*namespace\s+(\S+)", line):
+                stack.append(("ns", m.group(1)))
+            elif re.match(r"^\s*section\b", line):
+                stack.append(("sec", ""))
+            elif re.match(r"^\s*end\b", line):
+                if stack:
+                    stack.pop()
+            elif m := DECL.match(line):
+                ns = ".".join(n for kind, n in stack if kind == "ns")
+                full = (ns + "." if ns else "") + m.group(1)
+                if full.startswith("BoundedNesting."):
+                    where[full[len("BoundedNesting."):]] = str(lean.relative_to(LEAN_DIR))
+    return where
+
+
+def group(by_file, inline):
+    """Group all cited declarations by the file that declares them."""
+    where = declared()
+    grouped, unknown = {}, []
+    for file, names in by_file.items():
+        for name in names:
+            actual = where.get(name)
+            if actual is None:
+                unknown.append(name)
+                continue
+            if actual != file:
+                print(f"warning: {name} is declared in {actual}, not in {file}")
+            grouped.setdefault(actual, set()).add(name)
+    for name in inline:
+        actual = where.get(name)
+        if actual is None:
+            unknown.append(name)
+        else:
+            grouped.setdefault(actual, set()).add(name)
+    for name in sorted(unknown):
+        print(f"warning: no declaration of {name} found in lean/BoundedNesting/")
+    return grouped, sorted(unknown)
 
 
 def collect():
@@ -64,7 +114,7 @@ def write_index(by_file, inline):
         lines.append(r"{\small\raggedright " + ", ".join(r"\texttt{" + tex_escape(d) + "}" for d in decls) + r".\par}")
         lines.append("")
     if inline:
-        lines.append(r"\paragraph{Also named in the text}")
+        lines.append(r"\paragraph{Not located by the index script}")
         lines.append(r"{\small\raggedright " + ", ".join(r"\texttt{" + tex_escape(d) + "}" for d in inline) + r".\par}")
         lines.append("")
     (SECTIONS / "leanindex.tex").write_text("\n".join(lines))
@@ -81,7 +131,7 @@ def write_axioms(by_file, inline):
         for d in sorted(by_file[file]):
             out.append(f"#print axioms BoundedNesting.{d}")
     if inline:
-        out.append("-- named in the text")
+        out.append("-- not located by the index script")
         for d in inline:
             out.append(f"#print axioms BoundedNesting.{d}")
     (ROOT / "lean" / "PaperAxioms.lean").write_text("\n".join(out) + "\n")
@@ -92,7 +142,7 @@ def main():
     ap.add_argument("--index-only", action="store_true",
                     help="write only paper/sections/leanindex.tex, not lean/PaperAxioms.lean")
     args = ap.parse_args()
-    by_file, inline = collect()
+    by_file, inline = group(*collect())
     write_index(by_file, inline)
     if not args.index_only:
         write_axioms(by_file, inline)

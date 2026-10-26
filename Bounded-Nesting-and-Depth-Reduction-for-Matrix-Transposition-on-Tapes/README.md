@@ -31,6 +31,11 @@ result with its Lean declarations and file):
   follow by reflection, in the text.)
 - **Cuts are labels.** Along a path on which a label with q values never increases, and strictly decreases at
   the marked steps, there are at most q − 1 marked steps. (Its consequence for walk DAGs is deduced in the text.)
+- **Theorem F (bounded nesting).** For k walks of length T, coupled arbitrarily, any set of their long hops in
+  which each head has at most ℓ distinct owners among its open hops of each side, and ε ∈ (0, 1], some εT edges
+  cut the DAG of these hops to depth less than 2^{2kℓ(⌈64k²ℓ²/ε⌉+5+⌈log₂(k²ℓ²/ε)⌉)} = 2^{O(k³ℓ³/ε)}, whatever
+  the homes, drift and scales. The formal theorem holds for any choice of owners strictly inside the hops; with
+  it, the structure of families (spans, heights, depths and virtual heads).
 - **Lemma W (the strip cut for one walk).** For integers w ≥ 2 and r ≥ 1, some line residue and offset give a cut
   of at most 4T/w + wT/r edges of the walk DAG of one walk, after which every path carries at most r − 1 hops.
 - **The label arithmetic of the turn counter**, on top of the fourth paper's Lemma Zq. The rest of the turn-counter
@@ -39,10 +44,8 @@ result with its Lean declarations and file):
 
 Proved in the paper with complete written proofs, not formalized:
 
-- **Theorem F (bounded nesting).** For k walks of length T, coupled arbitrarily, and any set of their long hops in
-  which each head has at most ℓ distinct owners among its open hops of each side, some εT edges cut the DAG of
-  these hops to depth 2^{O(k³ℓ³/ε)}, whatever the homes, drift and scales. Consequences: TCP for walks that enter
-  every cell boundedly often; in every schedule the depth-robust part lives on fewer than kεT cells.
+- **Consequences of Theorem F.** TCP for walks that enter every cell boundedly often; in every schedule the
+  depth-robust part lives on fewer than kεT cells.
 - **Theorem M.** One arbitrary walk together with walks of bounded owner-load whose families lie in boundedly many
   dyadic windows of bounded width is cut to a depth independent of the arbitrary walk and of T. TCP for k walks is, up to a
   factor 2 in k, depth reduction for DAGs with a spine and k non-crossing families of arcs; two families are

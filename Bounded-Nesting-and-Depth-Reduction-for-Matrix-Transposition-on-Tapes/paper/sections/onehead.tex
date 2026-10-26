@@ -1,0 +1,308 @@
+\section{One arbitrary head}\label{sec:onehead}
+
+Theorem~F needs every head to have bounded owner-load. One head of arbitrary owner-load is harmless on its own: the walk
+DAG of a single walk is planar, and $\TCP(1)$ holds by separators~\cite[Section~5.1]{FourthPaper2026}.
+\Cref{lem:W} gives $\TCP(1)$ in the form of a label that is anchored to cells rather than to times, and Theorem~M
+(\cref{thm:M}) combines it with the family clock: one arbitrary walk plus walks of bounded owner-load whose families use
+boundedly many scales are depth-reducible. \Cref{sec:one-counter} collects what Theorems F and~M, and a stack
+formulation of TCP, say about where a depth-robust family must live.
+
+\subsection{Lemma W: a strip label for one walk}\label{sec:one-W}
+
+Fix integers $w\ge2$ and $r\ge1$, a \emph{line residue} $\rho\in\{0,\dots,w-1\}$ and an \emph{offset}
+$\omega\in\{0,\dots,r-1\}$. The \emph{lines} are the cells congruent to~$\rho$ modulo~$w$, and the \emph{strips} are the
+sets of $w-1$ consecutive cells strictly between consecutive lines. For a walk~$x$ of length~$T$, the \emph{line times} are
+the times~$t$ at which $x(t)$ is a line. For a time~$t$ that is not a line time, let $S(t)$ be the strip of~$x(t)$ and
+$c(t)$ the number of times $t'\le t$ with $x(t')\in S(t)$; the \emph{strip label} is
+$\Psi(t)=(c(t)+\omega)\bmod r$. The \emph{strip cut} consists of the edges of the walk DAG with an endpoint at a line time,
+the hop edges $u\to p$ with $\Psi(u)\le\Psi(p)$, and the state edges $t\to t-1$ with $\Psi(t)<\Psi(t-1)$. (The value of
+the label at line times does not matter, since every edge at a line time is cut.)
+
+\begin{lemma}[Lemma W: the strip cut for one walk]\label{lem:W}
+\formal{OneWalk.lean}{strip_cut, strip_cut_depth}
+Let $x$ be a walk of length~$T$ and let $w\ge2$ and $r\ge1$ be integers. For every line residue and offset, every path of
+the walk DAG of~$x$ that avoids the strip cut contains at most $r-1$ hop edges. For some line residue and offset, the
+strip cut has at most $4T/w+wT/r$ edges.
+\end{lemma}
+
+\begin{outline}
+In Lean a walk is a map $\N\to\Z$ (\lean{IsWalk}); a walk of length~$T$ is extended by staying at $x(T-1)$, and since
+hops, line times, strip counts and cut edges are taken at times below~$T$, the extension changes none of them. Hops are
+the pairs of consecutive visits of a cell at distance at least two in time (\lean{IsHop}, \lean{hops});
+lines, strips, the strip count and the strip label are \lean{IsLine}, \lean{strip}, \lean{stripCount} and
+\lean{stripLabel}, and the cut consists of \lean{cutStates} and \lean{cutHops}. \emph{Depth.} Along a path that avoids the
+cut, the label does not increase along state edges and decreases strictly along hop edges, so \cref{lem:labels} bounds the
+number of hop edges by $r-1$. \emph{Size.} Some residue has at most $T/w$ line times, by averaging over the $w$ residues
+(\lean{exists_line_residue}). A \emph{wrap} is a time $\tau$, not a line time, with $c(\tau)+\omega\equiv0\pmod r$; for
+some offset there are at most $T/r$ wraps, again by averaging (\lean{exists_offset}). A hop at a cell that is not a line has
+both endpoints in one strip~$S$, and $c$ rises by at least one from $p$ to~$u$, at the visit~$u$; so if the hop is cut, the
+count of~$S$ passes a multiple of~$r$ at a visit to~$S$ in $(p,u]$, a wrap of~$S$. At each wrap at most $w-1$ hops of
+the strip span it, one per cell, by~(P1) (\lean{hop_unique}). Two adjacent cells that are not lines lie in one strip
+(\lean{strip_eq_of_adj}), so a state edge between non-line times is cut only at a wrap. Hence at most $2L+W$ state edges
+and at most $L+(w-1)W$ hop edges are cut, where $L$ and $W$ are the numbers of line times and of wraps
+(\lean{card_cutStates_le}, \lean{card_cutHops_le}), and $3L+wW\le3T/w+wT/r$.
+\end{outline}
+
+For $0<\eps\le4$, with $w=\lceil8/\eps\rceil\ge2$ and $r=\lceil2w/\eps\rceil$, the strip cut has at most $\eps T$ edges
+and depth at most $r-1<2w/\eps\le16/\eps^2+2/\eps$. The label is local to the strip of the current cell: the two endpoints of a hop read
+the counter of the same strip. So the label is not a band rule in the sense of the fourth paper's nesting
+barrier~\cite[Definition~5.5]{FourthPaper2026}, and that barrier does not apply to it.
+
+\subsection{Theorem M}\label{sec:one-M}
+
+Let $x_0$ be any walk of length~$T$; its long hops are called \emph{chords}. Let $H'$ be a set of long hops of further
+walks $x_1,\dots,x_k$ of length~$T$, of owner-load at most~$\ell$, with families, bands and events as in
+\cref{sec:nest-families}, and put $N=2k\ell$, an upper bound for the number of virtual heads (\cref{lem:families}).
+Let $G$ be the DAG on $[0,T)$ with the state edges, all chords and the hop edges of~$H'$; an edge is determined by its
+endpoints.
+
+\begin{theorem}[Theorem M: one arbitrary head]\label{thm:M}
+\notformalized
+Let $q\ge1$ and $h\ge0$ be integers and $0\le\beta_1<\beta_2<\dots<\beta_q$ integers, and suppose that every family~$F$
+of~$H'$ is assigned a window $i(F)\in\{1,\dots,q\}$ with $\beta_{i(F)}\le\lambda(d_F)\le\beta_{i(F)}+h$. Let
+$\eps\in(0,1]$ and put
+\[
+  w=2^{\lceil\log_2(8(4+2k)/\eps)\rceil},\qquad K_0=\lceil8(w+1)/\eps\rceil,\qquad
+  K=\Bigl\lceil\frac8\eps\Bigl(q+qN+\frac{64q^2N^22^h}\eps+qwN+N^22^{h+1}\Bigr)\Bigr\rceil.
+\]
+Then $G$ has a cut of at most $\eps T$ edges and depth less than $\DM(k,\ell,q,h,\eps)=K_0K^{2q}$. The bound does not
+depend on~$T$, on $x_0$ or on the $\beta_i$, and pauses are allowed.
+\end{theorem}
+
+For $q=0$, that is, $H'=\emptyset$, \cref{lem:W} applies. Windows may touch or overlap; any cover of a finite set of bands
+by $q$ windows of width~$h$ can moreover be replaced by the greedy cover, in which each window starts at the smallest band
+not yet covered, with at most $q$ windows of the same width.
+
+\begin{informalproof}
+\emph{Widths and lines.} Put $W_0=w$ and, for $1\le i\le q$, let $W_i$ be the least power of~$2$ that is at least
+$\max(\mathrm{lo}_i,w)$, where $\mathrm{lo}_i=64qN2^{\beta_i+h}/\eps$. The $\mathrm{lo}_i$ increase with~$i$, so
+$w=W_0\mid W_1\mid\dots\mid W_q$, and $W_i\le2\max(\mathrm{lo}_i,w)\le2(\mathrm{lo}_i+w)$. Draw $\rho$ uniformly from
+$\{0,\dots,W_q-1\}$. The \emph{level-$i$ lines} are the cells congruent to~$\rho$ modulo~$W_i$; every level-$i$ line is a
+level-$i'$ line for $i'\le i$. A \emph{level-$i$ strip} is the set of cells strictly between two consecutive level-$i$
+lines, so it has $W_i-1$ cells and every level-$i$ strip lies inside a level-$(i+1)$ strip. Let
+$Z=\{t:x_0(t)\text{ is a level-}0\text{ line}\}$, and for $t\notin Z$ let $\sigma_i(t)$ be the level-$i$ strip of $x_0(t)$.
+
+\emph{Counters and label.} The level-$0$ counter of a level-$0$ strip~$S$ is $c^0_S(t)=\#\{t'\le t:x_0(t')\in S\}$, and for
+$i\ge1$ the level-$i$ counter of a level-$i$ strip~$S$ counts \emph{entries} into~$S$,
+$c^i_S(t)=\#\{t'\le t:x_0(t')\in S\text{ and }x_0(t'-1)\text{ is a level-}i\text{ line}\}$. For the walks of~$H'$, let
+$n_i(t)$ be the number of events at times at most~$t$ of scale at least~$\beta_i$. Choose independent uniform offsets
+$\omega_0\in[0,K_0)$ and $\omega_1,\dots,\omega_q,\omega'_1,\dots,\omega'_q\in[0,K)$, and put
+$d_0(t)=(c^0_{\sigma_0(t)}(t)+\omega_0)\bmod K_0$, $d_i(t)=(c^i_{\sigma_i(t)}(t)+\omega_i)\bmod K$ and
+$e_i(t)=(n_i(t)+\omega'_i)\bmod K$ for $1\le i\le q$. The label $\Psi(t)$, for $t\notin Z$, is the mixed-radix number with
+the \emph{static} digit order, most significant first,
+\[
+  d_q,\ e_q,\ d_{q-1},\ e_{q-1},\ \dots,\ d_1,\ e_1,\ d_0,
+\]
+so it has $K_0K^{2q}$ values; put $\Psi(t)=0$ for $t\in Z$. The cut~$F$ consists of all edges with an endpoint in~$Z$,
+the hop edges $u\to p$ (chords or hops of~$H'$) with $\Psi(u)\le\Psi(p)$, and the state edges at descents. Every edge
+at~$Z$ is cut, so the value of $\Psi$ on~$Z$ is never compared, and by \cref{lem:labels} $F$ has depth less than
+$K_0K^{2q}$. A digit \emph{wraps} at a step if its count passes a value congruent to minus its offset modulo its radix;
+a digit whose count rises by~$\Delta$ at a step wraps there with probability at most $\Delta$ divided by its radix.
+
+\emph{The deciding level of a chord.} Let $\gamma=(p,u)$ be a chord at a cell~$c$ that is not a level-$0$ line (chords at
+lines have both endpoints in~$Z$). Its \emph{excursion} $E(\gamma)=\{x_0(t):p<t<u\}$ is a nonempty interval of cells next
+to~$c$, on one side of~$c$. Let $\lev(\gamma)$ be the largest $i\in\{0,\dots,q\}$ such that $E(\gamma)$ contains a level-$i$
+line, and $0$ if it contains none. If $\lev(\gamma)=i<q$, then $E(\gamma)$ contains no level-$(i+1)$ line, so
+$E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)$ (\emph{confinement}).
+
+\emph{(M-a) State edges.} Let $t,t-1\notin Z$. Then $x_0(t-1)$ and $x_0(t)$ are equal or adjacent cells that are not lines,
+so they lie in the same strip at every level. No counter of level $i\ge1$ changes at~$t$, since an entry at~$t$ needs
+$x_0(t-1)$ on a line; the level-$0$ counter rises by one, and $n_i$ by the number of events at~$t$ of scale at least
+$\beta_i$. So $\Psi(t)<\Psi(t-1)$ only if some digit wraps at~$t$.
+
+\emph{(M-b) Chords.} Let $\gamma=(p,u)$ be a chord at a cell~$c$ that is not a line, with $i=\lev(\gamma)$. (i) At $p$ and
+at~$u$ every head-$0$ digit reads the counter of the same strip $\sigma_{i'}(c)$, and counters do not decrease. (ii) The
+level-$i$ counter of $\sigma_i(c)$ rises strictly in $(p,u]$: for $i=0$ by the visit at~$u$; for $i\ge1$, $E(\gamma)$
+contains the nearest level-$i$ line~$y_*$ to~$c$ on the side of the excursion, and if $t_1$ is the last time in
+$(p,u)$ with $x_0(t_1)=y_*$, then $x_0(t_1+1)$ is the neighbour of $y_*$ on the side of~$c$, since the walk reaches~$c$
+at~$u$ without returning to~$y_*$; this neighbour is a cell of $\sigma_i(c)$, so $t_1+1\in(p,u]$ is an entry into
+$\sigma_i(c)$. (iii) If $i<q$, then by confinement $x_0$ visits no
+level-$(i+1)$ line at the times $p,\dots,u-1$, so no counter of a level greater than~$i$ changes in $(p,u]$. (iv) The event
+counts do not decrease. Hence, if no digit at a position at or above~$d_i$ wraps in $(p,u]$, the most significant digit
+whose count changed has risen without wrapping, and $\Psi(u)>\Psi(p)$. By~(iii), $\gamma$ is violated only if
+\textup{(c1)} the level-$i$ counter of $\sigma_i(c)$ wraps at a time in $(p,u]$, or \textup{(c2)} some $e_{i'}$ with
+$i'>i$ wraps in $(p,u]$.
+
+\emph{(M-c) Hops of~$H'$.} Let $\eta=(p,u)\in H'$ lie in a family~$F$ with window $i=i(F)$, and $p,u\notin Z$. If $x_0$
+visits no level-$i$ line during $(p,u)$, it stays in one level-$i$ strip on $[p,u]$, hence in one level-$i'$ strip for every
+$i'\ge i$, and enters none of them in $(p,u]$; so the digits $d_{i'}$, $i'\ge i$, do not change. The counts
+$n_{i'}$ do not decrease, and $n_i$ rises, because the owner $o_F\in(p,u)$ is an event of scale
+$\lambda(d_F)\ge\beta_i$. So $\eta$ is violated only if \textup{(d1)} $x_0$ visits a level-$i$ line during $(p,u)$, or
+\textup{(d2)} some $e_{i'}$ with $i'\ge i$ wraps in $(p,u]$.
+
+\emph{Cost.} All expectations are over $\rho$ and the offsets; each violated edge is charged to one of the causes above,
+and the classes may overlap, which only over-counts.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{Edges at~$Z$.} A vertex has at most $2$ state edges, $2$ chords and $2k$ hops of~$H'$. Since
+$\rho\bmod w$ is uniform, $\mathbb E\card Z=T/w$, and these edges cost at most $(4+2k)T/w\le\eps T/8$.
+\item \emph{Descents.} By (M-a), they cost at most $T/K_0+\sum_i\#\{\text{events of scale}\ge\beta_i\}/K\le T/K_0+qNT/(2K)$,
+because there are at most $\sum_v\sum_Fd_F\le NT/2$ events (\cref{lem:families}(e)).
+\item \emph{(c1).} A wrap at time~$\tau$ of the level-$i$ counter of a strip~$S$ is charged only by chords at cells of~$S$
+that span~$\tau$, at most $W_i-1$ of them by~(P1). At level~$0$ there are at most $T/K_0$ wraps in expectation,
+costing at most $(w-1)T/K_0$. At level $i\ge1$ every entry follows a visit to a level-$i$ line, there are $T/W_i$ such
+visits in expectation, and each entry is a wrap with probability at most $1/K$; so each level $i\ge1$ costs at most $T/K$.
+\item \emph{(c2).} Let $e_{i'}$ wrap at~$\tau$. The chords charged to it have level $i<i'$ and span~$\tau$, so by
+confinement $x_0(\tau)\in E(\gamma)\cup\{c\}\subseteq\sigma_{i+1}(c)\subseteq\sigma_{i'}(c)$: all of them lie at cells of the
+level-$i'$ strip containing $x_0(\tau)$, and by~(P1) there are at most $W_{i'}-1$ of them. Events of scale at least
+$\beta_{i'}$ are owners of families of height at least $2^{\beta_{i'}}$, so by \cref{lem:families}(e) there are at most
+$NT/2^{\beta_{i'}+1}$ of them. The cost is at most
+$\sum_{i'}W_{i'}NT/(2^{\beta_{i'}+1}K)\le\sum_{i'}(\mathrm{lo}_{i'}+w)NT/(2^{\beta_{i'}}K)\le
+q(64qN^22^h/\eps+wN)T/K$.
+\item \emph{(d1).} Charge $\eta$ to its first visit $\tau\in(p,u)$ to a level-$i$ line. The hops of window~$i$ that
+span~$\tau$ lie in families of band at most $\beta_i+h$, so by the overlap bound of \cref{lem:families} there are fewer than
+$N2^{\beta_i+h+1}$ of them. There are $T/W_i\le T/\mathrm{lo}_i$ visits to level-$i$ lines in expectation, so the cost is
+at most $\sum_iN2^{\beta_i+h+1}T/\mathrm{lo}_i=\eps T/32$.
+\item \emph{(d2).} An event~$o'$ of scale~$s$ raises the counts $n_{i'}$ with $\beta_{i'}\le s$, and a wrap of $e_{i'}$ at
+$o'$ exposes the hops of windows at most~$i'$ that span~$o'$, whose bands are at most $\beta_{i'}+h$: fewer than
+$N2^{\beta_{i'}+h+1}$ of them. Since the $\beta_{i'}$ are distinct integers, $\sum_{\beta_{i'}\le s}2^{\beta_{i'}}<2^{s+1}$,
+so the cost is at most $\sum_{o'}N2^{h+2}2^{s(o')}/K\le N^22^{h+1}T/K$, using
+$\sum_{o'}2^{s(o')}\le\sum_v\sum_Fd_F\le NT/2$.
+\end{enumerate}
+\emph{Total.} The edges at~$Z$ cost at most $\eps T/8$; the level-$0$ terms, $T/K_0+(w-1)T/K_0=wT/K_0$, at most
+$\eps T/8$; all terms with denominator~$K$ together at most
+$(qN+q+64q^2N^22^h/\eps+qwN+N^22^{h+1})T/K\le\eps T/8$; and (d1) at most $\eps T/32$. The sum is less than $\eps T/2$, and
+some choice of $\rho$ and the offsets attains at most the expectation.
+\end{informalproof}
+
+The chords never see the digits of the bounded walks except through wraps, because the digit positions are static and the
+event counts are global. A chord of a strip that $x_0$ has left is decided at the coarsest level whose line it crosses, by
+the re-entry into its own strip there; above that level it is confined, which bounds its exposure in~(c2) by a strip
+width rather than by the number of live chords. The hops of the bounded walks compare only head-$0$ digits at or above
+their window, whose lines are far apart compared with their heights.
+
+\begin{corollary}[Corollary M1: scale-ratio form]\label{cor:M1}
+\notformalized
+If all family heights of~$H'$ lie in $[d_{\min},d_{\max}]$, then $G$ has a cut of at most $\eps T$ edges and depth
+\[
+  O\bigl(k\,(N^2d_{\max}/d_{\min}+kN)^2/\eps^6\bigr)=\poly(k,\ell,1/\eps)\cdot(d_{\max}/d_{\min})^2 .
+\]
+In particular: (i) bounded walks whose families have height at most $d_{\max}$, together with any $x_0$, are cut at depth
+$\poly(k,\ell,1/\eps)\,d_{\max}^2$; (ii) if all families except at most two per virtual head have their band in one window of
+width~$h$, the depth is bounded in terms of $k$, $\ell$, $h$ and~$\eps$ alone; this covers zigzags of any amplitude,
+even growing with~$T$.
+\end{corollary}
+
+\begin{informalproof}
+Take $q=1$, $\beta_1=\lambda(d_{\min})$ and $h=\lambda(d_{\max})-\lambda(d_{\min})$, so that
+$2^h\le2d_{\max}/d_{\min}$; then $K_0=O(k/\eps^2)$ and $K=O((N^22^h+kN)/\eps^2)$, and \cref{thm:M} gives depth less
+than $K_0K^2$. For~(i), $d_{\min}\ge1$. For~(ii), the exceptional families are those truncated at the ends of $[0,T)$; with
+them the bands are covered by at most $1+2N$ windows of width~$h$, and \cref{thm:M} applies with $q\le1+2N$. A zigzag
+between two cells at distance~$A$ has owner-load one per side, and all its families have height~$A$ except the truncated
+ones, so $h=0$.
+\end{informalproof}
+
+\paragraph{Why it matters.} Theorem~M allows one head to be anything: of unbounded owner-load, nested at every scale,
+drifting, deep everywhere. So a depth-robust family must contain either two heads of unbounded owner-load, as the
+deep-nesting pair does, or one such head together with bounded heads whose families occupy unboundedly many separated
+scales (\cref{cor:where}). For machines this becomes \cref{cor:M-machine}.
+
+\subsection{Where a counterexample to TCP must live}\label{sec:one-counter}
+
+\begin{corollary}[Where depth-robustness lives]\label{cor:where}
+\notformalized
+Let $\mathcal W$ be a depth-robust family of $k$-tuples of walks. Then the owner-load of the set of all long hops is
+unbounded on~$\mathcal W$. If moreover all walks but one have owner-load at most a fixed~$\ell$ on~$\mathcal W$, then for
+every fixed~$h$ the least number of windows of width~$h$ covering the family bands of the bounded walks is unbounded
+on~$\mathcal W$; in particular the ratio of their largest to their smallest family height is unbounded.
+\end{corollary}
+
+\begin{informalproof}
+If the owner-load were bounded, \cref{thm:F} would give a single depth bound for each~$\eps$. If, for some~$h$, the bands
+of the bounded walks of every member were covered by at most $q$ windows of width~$h$, \cref{thm:M}, applied with the
+unbounded walk as~$x_0$, would do the same. A bounded ratio $d_{\max}/d_{\min}$ gives such a cover with $q=1$.
+\end{informalproof}
+
+The structure of walk DAGs that these theorems exploit is a stack structure. Call an \emph{$s$-stack DAG} a DAG on
+$[0,N)$, with edges determined by their endpoints, consisting of the spine edges $t\to t-1$ and of \emph{arcs} $u\to p$ with
+$u-p\ge2$, the arcs being partitioned into $s$ families; in each family no two arcs cross (there are no arcs $(p,u)$,
+$(p',u')$ with $p<p'<u<u'$), and every vertex is the left endpoint of at most one arc of each family and the right endpoint
+of at most one arc of each family. A cut is a set of edges, and its depth is the largest number of arcs on a path that avoids it. Let $\mathrm{SR}(s)$ be
+the statement that for every $\eps>0$ there is $D$ such that every $s$-stack DAG on $[0,N)$ has a cut of at most $\eps N$
+edges and depth at most~$D$.
+
+\begin{proposition}[TCP is depth reduction for stack DAGs]\label{prop:stacks}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item The walk DAG of $k$ walks, pauses allowed, is a $2k$-stack DAG.
+\item Every $s$-stack DAG $H$ on $[0,N)$ is realized by $s$ walks of length $2N$ without pauses: every arc $(p,u)$ of
+family~$i$ is the upper long hop $(2p,2u)$ of walk~$i$. Consequently a cut of size~$c$ and depth~$D$ of their walk DAG yields
+a cut of~$H$ of size at most~$c$ and depth at most~$D$.
+\end{enumerate}
+Hence $\TCP(k)$ for walks without pauses implies $\mathrm{SR}(k)$, with the depth of $\TCP(k)$ at $\eps/2$, and
+$\mathrm{SR}(2k)$ implies $\TCP(k)$ for walks with pauses; in particular the forms of TCP with and without pauses are
+equivalent up to a factor~$2$ in the number of walks.
+\end{proposition}
+
+\begin{informalproof}
+(a) The upper long hops of one walk do not cross, nor do its lower long hops (\cref{sec:prelim-walks}). Each time is the left
+endpoint of at most one long hop of each walk and the right endpoint of at most one. A pair of times that is a long hop of
+several walks is a single edge, kept in one of its families, and pauses are spine edges.
+
+(b) For $0\le t\le N$ let $d_i(t)$ be the number of arcs of family~$i$ that contain~$t$ strictly inside, so
+$d_i(0)=d_i(N)=0$. By the degree condition, $\abs{d_i(t+1)-d_i(t)}\le1$: $d_i(t+1)-d_i(t)$ is $1$ if $t$ is the left
+endpoint of an arc and $0$ otherwise, minus $1$ if $t+1$ is the right endpoint of an arc and $0$ otherwise. The two
+endpoints of an arc $(p,u)$ have the same value of~$d_i$: an arc $(p',u')$ of the family that contains~$p$ strictly inside
+has $u'>u$, since $u'<u$ would cross and $u'=u$ would violate the degree condition, so it also contains~$u$, and
+conversely. Every time strictly inside the arc has a larger value. Put $x_i(2t)=2d_i(t)$ and
+$x_i(2t+1)=\min(x_i(2t),x_i(2t+2))+1$ for $t<N$. Consecutive even values differ by $0$ or~$\pm2$, so $x_i$ is a walk
+without pauses. At $2p$ and $2u$ it is at $2d_i(p)$, and strictly between them it is at least $2d_i(p)+1$, so $(2p,2u)$
+is an upper long hop of~$x_i$. A spine edge $t\to t-1$ maps to the state edges $2t\to2t-1\to2t-2$ and an arc $u\to p$ to the
+hop edge $2u\to2p$; distinct edges of~$H$ have disjoint images. Given a cut~$F$ of the walk DAG, cut an edge of~$H$ if some
+edge of its image lies in~$F$. This cut has at most $\card F$ edges, and a path of~$H$ that avoids it maps to a path that
+avoids~$F$ with as many long hops as the path has arcs.
+
+For the consequences, a $k$-stack DAG on $[0,N)$, padded with empty families, is realized by $k$ walks of length $2N$, and a
+cut of $\eps N=(\eps/2)(2N)$ edges of their walk DAG pulls back; conversely~(a) applies to $k$ walks.
+\end{informalproof}
+
+In this language, Theorem~F says that $s$-stack DAGs are depth-reducible when the arcs open at any time in any family come
+from boundedly many distinct owners, the owner of an arc being that of its hop in~(b). Forgetting the orientation of the
+edges, $s$-stack DAGs are essentially the $s$-pushdown graphs of Galil, Kannan and Szemerédi~\cite{GKS1989separators}. Part~(a) of \cref{prop:stacks} is the
+classical fact that a tape is two pushdown stores, so that the computation graphs of multitape machines, the objects of the
+computation-graph method of Hopcroft, Paul and Valiant~\cite{HPV1977}, are $O(1)$-pushdown graphs; part~(b) is the converse,
+a pushdown store being a tape whose head sits at the height of the stack. The stack view of tape computations was also used
+by Paul, Pippenger, Szemerédi and Trotter~\cite{PPST1983} and by Santhanam~\cite{Santhanam2001}. $\mathrm{SR}(s)$ is the
+depth analogue of the separator question of Galil, Kannan and Szemerédi, who showed that sublinear separators for
+$3$-pushdown graphs, sublinear separators for $k$-page graphs, and subquadratic simulations of nondeterministic two-tape machines
+by nondeterministic one-tape machines stand or fall together~\cite{GKS1989separators}. We found no work on reducing DAGs of bounded stack number, or walk DAGs
+of bounded nesting, to bounded depth by deleting a linear fraction of the edges.
+
+\begin{proposition}[Two stacks are planar]\label{prop:sr2}
+\notformalized
+$\mathrm{SR}(2)$ holds, with $D(\eps)=O(\eps^{-2})$.
+\end{proposition}
+
+\begin{informalproof}
+Draw the vertices of a $2$-stack DAG in order on a line, the spine edges on the line, the arcs of one family above it and
+those of the other below it. Arcs of one family do not cross, and arcs that share an endpoint can be drawn without
+crossing, so the underlying graph is planar; its maximum degree is at most $2+2\cdot2=6$. By the planar separator theorem of
+Lipton and Tarjan~\cite{LiptonTarjan1979}, applied recursively as in~\cite{LiptonTarjan1980}, some set of $O(N/\sqrt M)$
+vertices leaves components of at most $M$ vertices. Cutting the at most six edges at each of these vertices cuts
+$O(N/\sqrt M)$ edges, and a path that avoids the cut uses no vertex of the separator, except possibly as a path with no edge,
+and so stays inside one component and has fewer than $M$ arcs. Taking $M$ of order $\eps^{-2}$ gives the claim.
+\end{informalproof}
+
+\paragraph{Why they matter.} \Cref{prop:sr2} recovers $\TCP(1)$, and \cref{prop:stacks} places the open part of TCP at
+three or four stacks: $\mathrm{SR}(3)$ is the first open case, and if $\TCP(2)$ fails, as Conjecture~A$'$ with its walk-DAG
+analogue predicts for the deep-nesting pairs, then $\mathrm{SR}(4)$ fails. From three stacks on, separators no longer help.
+Galil, Kannan and Szemerédi constructed $3$-pushdown graphs whose separators have $\Omega(n/\log^{(s)}n)$ vertices, with
+$\log^{(s)}$ the $s$-fold iterated logarithm, for every fixed~$s$~\cite{GKS1989pushdown}. Dvir and Wigderson obtained
+$O(1)$-pushdown expanders from monotone expanders, answering a question of Galil, Kannan and
+Szemerédi~\cite{DvirWigderson2010}, and Dujmović, Sidiropoulos and Wood built bounded-degree expanders with three-page book
+embeddings from the constant-degree monotone expanders of Bourgain and Yehudayoff~\cite{DSW2016,BourgainYehudayoff2013};
+each page of that embedding is a non-crossing matching, so with a spine added these expanders are $3$-stack DAGs.
+Depth-robustness, however, needs arcs that span many scales, and within
+boundedly many non-crossing families such arcs must nest; Theorem~F says that the nesting must then come from unboundedly
+many distinct owners.
+
+\begin{remark}[A candidate counterexample]\label{rem:umix-candidate}
+Heuristic. Let $x_0=U(s_0,m,1)$, a nested hierarchy, and let $x_1$ be a sequential one: a walk made of V's, each a
+segment of $2^{j+1}$ steps followed by a back stroke and a forward stroke of $2^j$ steps, with the exponents~$j$ running
+through $s_m,\dots,s_0$ with frequencies proportional to $2^{-j}$, so that every scale gets the same time, as every level
+of~$U$ does. Then $x_1$ has owner-load one per side and enters every cell at most three times. Theorem~F cuts $x_1$ alone
+at depth $2^{O(1/\eps)}$ and \cref{lem:W} cuts $x_0$ alone at depth $O(\eps^{-2})$, while Theorem~M cuts the pair at depth
+$O(4^m)\poly(1/\eps)$, with one window of width $h=m$. If the pair needs depth $2^{\Omega(m)}$ at some fixed~$\eps$, then
+$\TCP(2)$ fails already for one deep head and one head of owner-load one. The fourth paper's forced-shape heuristics for the
+deep-nesting pair apply with the small V's of~$x_1$ in the role of the second hierarchy; no lower-bound technique is
+available, and packing certificates cannot certify depth-robustness~\cite[Proposition~5.14]{FourthPaper2026}.
+\end{remark}

@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!35!black,urlcolor=blue!60!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\input{macros}
+
+\title{Bounded Nesting and Depth Reduction\\ for Matrix Transposition on Tapes}
+\author{Hans Brende \and Claude Opus 5.5 (Anthropic)}
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende chose the problem, fixed the verification standard, and directed the research.
+Claude Opus 5.5, a large language model developed by Anthropic, developed the mathematics, wrote the Lean
+formalization, and wrote this paper under Hans Brende's direction. \Cref{sec:transposers} combines Theorem~F with the
+paired-distance theorems and the coding question of \emph{Directed Recovery Structures in Tape Computations} by Hans Brende
+and GPT-6 Astra (OpenAI)~\cite{DirectedRecovery2026}, and \cref{sec:crux} builds on the lift identity and the free-group
+results of \emph{Covers and Local Generation in Linear Storage Codes}, by the same authors~\cite{Covers2026}.
+\end{quote}
+
+\tableofcontents
+\clearpage
+
+\input{sections/introduction}
+\input{sections/preliminaries}
+\input{sections/nesting}
+\input{sections/onehead}
+\input{sections/dnp}
+\input{sections/transposers}
+\input{sections/linear}
+\input{sections/crux}
+\input{sections/construction}
+\input{sections/open}
+
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+
+\bibliographystyle{plainurl}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,25 @@
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $\lceil\log_2d\rceil$-bit entries in time
+linear in the input length? A negative answer would give the first superlinear lower bound for off-line integer multiplication
+on such machines. The fourth paper of this series reduced the impossibility of oblivious linear-time transposers to depth
+reduction of the time--space dependency graph by a cheap genie, the trajectory cut problem, plus a coding bound, the crux.
+We prove depth reduction for every family of head walks of bounded nesting load: if at every time each of $k$ heads has at most
+$\ell$ distinct turning points among its open nested hops of each side, then $\eps T$ edges cut the walk DAG to depth
+$2^{O(k^3\ell^3/\eps)}$, whatever the homes, drift, scales and coupling of the heads (Theorem~F). Nested hops with distinct
+turning points force revisits, so this covers every machine whose work heads enter each cell boundedly often, and in every
+schedule the depth-robust part lives on a set of cells of vanishing capacity. With one arbitrary head and bounded heads at
+boundedly many scales, depth reduction still holds (Theorem~M). On the deep-nesting pair, the sharpest open instance, a turn
+counter serves every level at depth $2^{m+O(1)}$; on average over shifts, fine levels are blind to the other head for every
+label that changes only at turns, while for block labels coarse levels see its cancellations. By Theorem~F, the crux alone, or
+the all-code paired-distance question of \emph{Directed Recovery Structures in Tape Computations}, excludes oblivious
+linear-time transposers whose work heads enter every cell boundedly often, and the latter also excludes such machines of low
+adaptivity. For linear machines, linear depth reduction together with a linear crux excludes oblivious linear-time
+transposers, and the linear crux can be stated exactly as relative rigidity of the transposition matrix (Theorem~$\Dlin$). On
+the coding side, extending the lift identity of \emph{Covers and Local Generation in Linear Storage Codes} to asymmetric checks,
+we show that lifting a binary linear code along a tower of double covers never raises its rate, and, using mod-$2$ Lück
+approximation, we construct towers that never become bipartite and have girth tending to infinity, along which the lifted
+Clebsch code has rate tending to zero. A scalar linear code on a triangle-free graph of maximum degree four, the kernel of a
+matrix with unit diagonal, has rate at most one half when the exceptional vertices of that matrix are few or far apart
+(Theorem~SH). The owner lemma, the strip cut for one walk (Lemma~W), the path form of the lemma that cuts are labels and the
+label arithmetic of the turn counter are formalized in Lean~4; all other results, Theorems F and~M among them, are proved in
+full in the text but not formalized. The question remains open; we state the precise problems on which its oblivious case
+rests.

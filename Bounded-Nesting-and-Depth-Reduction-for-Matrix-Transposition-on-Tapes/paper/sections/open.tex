@@ -1,0 +1,79 @@
+\section{Open problems}\label{sec:open}
+
+For oblivious machines the series reduces $\neg$(T) to depth reduction and a coding bound (\cref{thm:D4}). This paper settles
+depth reduction for bounded owner-load and for one arbitrary head plus bounded heads at boundedly many scales, and reduces the
+coding side, for bounded-entry machines, to Question~9.1 of \emph{Directed Recovery Structures}. The first item below is the
+question itself. For the others, by \cref{thm:D4} and the proof of Corollary~F$'$, $\TCP(k)$ for every~$k$ together with an
+affirmative answer to \cref{prob:q91} would exclude oblivious linear-time transposers, while a depth-robust family of walks
+(\cref{prob:tcp-cases,prob:sr3}) or a negative answer to \cref{prob:q91} would show where a construction has to work.
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Decide (T).} Construct a machine that transposes $d\times d$ matrices with $b(d)$-bit entries in time $O(L)$, or prove
+that none exists. The first paper's frozen checker accepts either answer~\cite{FirstPaper2026}.
+
+\item \emph{Depth reduction at unbounded owner-load.} By \cref{cor:where}, a depth-robust family of walks has two heads of
+unbounded owner-load, or one such head together with bounded heads whose families occupy unboundedly many separated scales.
+\begin{problem}[Two remaining cases of TCP]\label{prob:tcp-cases}
+(a) Are the deep-nesting pairs depth-robust as $m\to\infty$, for some sequence of odd shifts? Conjecture~A$''$ (\cref{conj:App}),
+with its walk-DAG analogue, would give depth $2^{\Omega(m)}$ at fixed cost and a negative answer to $\TCP(2)$; the counter gives
+depth $2^{m+O(1)}/\eps$ at every shift (\cref{cor:counter-cut}). (b) Is TCP true for one arbitrary walk together with walks of
+owner-load one whose families occupy unboundedly many separated scales, for instance the pair of \cref{rem:umix-candidate}?
+\end{problem}
+Conjecture~A$''$ for block pairs would follow from visibility of the coarse classes in a window modulo~$q$ at a fixed shift
+(\cref{prop:Vfixed}). Theorem~V gives less, even on average over shifts: the integer event $F\le-Q-1$, with no lower bound
+on~$F$, which implies the window only for $q$ of order $(m-\kappa)Q$, with $\kappa$ the canceller level of \cref{lem:straddle}. Two points are open: a bound on $\abs F$ on the
+straddling hops, or a version of Theorem~V that counts the window directly; and, at one fixed shift, equidistribution of the apex
+centres of one head relative to the canceller valleys of the other. A proof for all labels must use cost, since fine levels are blind (\cref{cor:blind}), and
+packing certificates cannot do it~\cite[Proposition~5.14]{FourthPaper2026}.
+
+\item \emph{Three stacks.} $\mathrm{SR}(2)$ holds by planarity (\cref{prop:sr2}), and $\mathrm{SR}(2k)$ implies $\TCP(k)$
+(\cref{prop:stacks}).
+\begin{problem}[Three-stack DAGs]\label{prob:sr3}
+Is every family of $3$-stack DAGs with a spine depth-reducible, that is, does $\mathrm{SR}(3)$ hold? A depth-robust family of
+$3$-stack or $4$-stack DAGs, each realized as the walk DAG of two walks, would refute $\TCP(2)$.
+\end{problem}
+
+\item \emph{The coding bound.} By Corollaries F$'$ and~F$''$, an affirmative answer to the following question excludes oblivious
+bounded-entry transposers, and adaptive ones whose traces have entropy at most $\eta L$ for a fixed $\eta<\frac12$ and whose
+traces of probability at least $2^{-\eta L}$ have bounded entry.
+\begin{problem}[Question~9.1 of~\cite{DirectedRecovery2026}]\label{prob:q91}
+Do all storage codes, over every alphabet, on recovery relations of bounded incidence degree that satisfy the paired-distance
+condition have rate at most $\frac12+o(1)$? By \cref{rem:weak-crux}, Corollary~F$'$ already follows from a deficit $\rho(\Delta)$
+with $\rho(\Delta)\log\log\Delta\to\infty$.
+\end{problem}
+The companion paper proves exact half bounds on several classes of relations without short paired paths and states the
+directed degree-three case as a conjecture~\cite{SeventhPaper2026}; \emph{Directed Recovery Structures} proves the hyperfinite
+case and several others~\cite{DirectedRecovery2026}.
+
+\item \emph{Degree four.}
+\begin{problem}[Triangle-free side information of degree four]\label{prob:deg4}
+Does $2h(V)\le\sum_vh(\{v\})$ hold for every polymatroid valid for a triangle-free graph of maximum degree~$4$, so that every
+storage code there has rate at most~$\frac12$? For scalar linear codes, does $\dim\ker M\le\lfloor N/2\rfloor$ hold when the
+heavy vertices of \cref{thm:SH} form clusters?
+\end{problem}
+At degree three both are settled, for all codes by the companion paper~\cite{SeventhPaper2026} and for scalar linear codes by the
+fourth paper's Theorem~S. At degree four, \cref{thm:SH} reduces the scalar question to clusters of heavy vertices, the regime in
+which tree-local arguments are impossible~\cite[Proposition~6.28]{FourthPaper2026}.
+
+\item \emph{The scratch.} If TCP fails at unbounded owner-load, the route of Theorem~D needs input specific to transposition:
+fixed-depth genies, even charged by entropy, then fail for some easy oblivious bijections~\cite[Theorem~H]{InfoDepthMemo2026}.
+\begin{problem}[The scratch question]\label{prob:scratch}
+Can an oblivious linear-time transposer use a set of fewer than $\eps L$ work-tape cells, each visited unboundedly often, to supply
+the global information that the crux denies to the shallow part of its schedule (\cref{cor:capacity})?
+\end{problem}
+
+\item \emph{Rigidity.} For linear machines, linear depth-TCP together with a linear crux excludes oblivious linear-time
+transposers (\cref{thm:Dlin}), and the linear crux can be stated exactly as the following question.
+\begin{problem}[Relative rigidity of transposition]\label{prob:rigidity}
+Is there $\rho>0$ such that, for every linear-time schedule and every fixed~$D$, the transposition matrix is not the sum of a matrix
+of rank below $\rho L$ and a matrix supported on the depth-$D$ ball pattern of the schedule, for all large~$d$?
+\end{problem}
+
+\item \emph{Towers.} Do binary codes lifted along normal $2$-adic analytic towers with trivial intersection that stay
+non-bipartite have asymptotic rate at most~$\frac12$? Without trivial intersection the answer is negative: two Clebsch graphs
+joined by two edges, the code $\ker((I+A)\oplus(I+A))$, which ignores the joining edges, and a voltage on one joining edge
+give connected non-bipartite covers of rate~$\frac58$ at every level. For the Clebsch adjacency code, connected binary-lift
+towers have dimension at most $N/2+2$~\cite[Theorem~9.2]{Covers2026}, and along a normal tower with trivial intersection a
+positive limit would contradict the mod-$2$ case of the Lück approximation conjecture in positive
+characteristic~\cite[Section~8]{JaikinSouza2026} (\cref{sec:crux-towers}).
+\end{enumerate}

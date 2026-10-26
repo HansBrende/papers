@@ -1,0 +1,264 @@
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Machines and the statement (T)}\label{sec:prelim-machines}
+
+We use the machine model of the first paper~\cite{FirstPaper2026}, as in the fourth~\cite[Section~2.1]{FourthPaper2026}:
+a deterministic Turing machine with a finite state set, a read-only two-way input tape, $k\ge1$ two-way work tapes over a
+finite alphabet, and a write-only one-way output tape that receives at most one bit per step. All heads start at
+cell~$0$, head moves are $-1$, $0$ or~$+1$, and every step writes the cell under each work head. For $d\ge1$ let
+$b(d)=\max(1,\clog d)$. The input is a $d\times d$ matrix with $b(d)$-bit entries written row by row, of length
+$L=d^2b(d)$, and the machine must write its transpose in the same encoding. Statement~(T) says that some machine does
+this within $c(L+1)$ steps, for a constant~$c$ and all~$d$; its formal version,
+\lean{Transpose.LinearTimeTransposable}, is fixed in a frozen file of the first paper's library. Bit~$s$ of entry
+$(i,j)$ sits at input position $(di+j)b+s$ and at output position $\tpos((di+j)b+s)=(dj+i)b+s$, so on input~$w$ the
+output bit of a transposer at position~$\ell$ is $w_{\tpos(\ell)}$~\cite[Section~2.2 and Lemma~2.5]{FirstPaper2026}.
+
+A machine is \emph{oblivious} at an input length if the positions of all heads at every time, the times at which it
+appends output bits, and its halting time do not depend on the input of that length. The \emph{trace} of a run is the
+sequence of all head moves together with the append times and the halting time.
+
+\subsection{Walks, hops and owners}\label{sec:prelim-walks}
+
+A \emph{walk} of \emph{length}~$T\ge1$ is a map $x\colon\{0,\dots,T-1\}\to\Z$ with $\abs{x(t+1)-x(t)}\le1$; a step with
+$x(t+1)=x(t)$ is a \emph{pause}. The work heads of a machine trace walks $x_1,\dots,x_k$, one per work tape, and these may
+be coupled arbitrarily. We follow the fourth paper~\cite[Sections~2.2 and~4.4]{FourthPaper2026}.
+
+For a head~$h$ and a time~$u$, let $\prev_h(u)=\max\{t<u:x_h(t)=x_h(u)\}$ when this set is nonempty. The pair
+$(\prev_h(u),u)$ is the \emph{hop} of head~$h$ ending at~$u$, at the \emph{cell} $x_h(u)$; a hop is determined by either
+of its endpoints. A hop $(p,u)$ is \emph{long} if $u-p\ge2$. The hops of head~$h$ at a cell~$c$ partition the interval
+from the first to the last visit of~$c$ into half-open intervals $(p,u]$, so:
+\begin{enumerate}[label=(P\arabic*)]
+\item for every time~$\tau$ and every cell~$c$, at most one hop of head~$h$ at~$c$ \emph{spans}~$\tau$, that
+is, satisfies $p<\tau\le u$.
+\end{enumerate}
+Let $(p,u)$ be a long hop at cell~$c$. Then $x_h(t)\ne c$ for $p<t<u$, and since the walk moves by at most one cell per step,
+either $x_h(t)>c$ for all $t\in(p,u)$ or $x_h(t)<c$ for all of them. The hop is \emph{upper} in the first case and
+\emph{lower} in the second; this is its \emph{side}. The \emph{owner} of the hop is the first time $o\in(p,u)$ at which
+$\abs{x_h(o)-c}$ is largest, and $\abs{x_h(o)-c}\ge1$ is its \emph{height}. For a walk without pauses, a \emph{turn} is a
+time~$t$ with $x(t+1)-x(t)\ne x(t)-x(t-1)$, and the owner of every long hop is a turn: if the height is~$1$, then
+$u=p+2$ and $o=p+1$; otherwise the walk is at distance one less than the height at $o-1$ and at $o+1$.
+
+Two upper long hops of one walk never \emph{cross}: there are no upper long hops $(p,u)$, $(p',u')$ with
+$p<p'<u<u'$, and the same holds for lower long hops~\cite[Section~5.1]{FourthPaper2026}. (If $p<p'<u<u'$, then
+$x(p')>x(p)$ because $p'\in(p,u)$, while $u\in(p',u')$ and $x(u)=x(p)<x(p')$, contradicting $x>x(p')$ on $(p',u')$.
+The argument uses only $x>x(p)$ on $(p,u)$, so it holds with pauses.) Hence two long hops of one walk on the same side
+are either disjoint as open intervals or strictly nested, $p<p'<u'<u$; and long hops of one side whose open intervals
+contain a common time form a chain under inclusion.
+
+\begin{definition}[Entries]\label{def:entries}
+\formal{Owner.lean}{entries}
+An \emph{entry} of a cell~$c$ by a walk~$x$ is a time~$t$ with $x(t)=c$ and either $t=0$ or $x(t-1)\ne c$: the first time
+of a maximal run of visits.
+\end{definition}
+
+\begin{definition}[Owner-load, multiplicity]\label{def:owner-load}
+Let $H'$ be a set of long hops of walks $x_1,\dots,x_k$ of length~$T$. It has \emph{owner-load at most~$\ell$} (per head
+and side) if for every time~$t$, head~$h$ and side~$\sigma$, the hops of~$H'$ of head~$h$ on side~$\sigma$ whose open
+intervals contain~$t$ have at most $\ell$ distinct owners. The \emph{multiplicity} $\mu(h,c)$ of a pair $(h,c)$ is the
+number of times~$t$ with $x_h(t)=c$; the walk $x_h$ enters~$c$ at most $\mu(h,c)$ times.
+\end{definition}
+
+Since $\sum_c\mu(h,c)=T$ for each head, at most $kT/(V+1)$ pairs $(h,c)$ have multiplicity greater than~$V$, and the
+same bound holds for pairs with more than $V$ entries.
+
+\subsection{Walk DAGs, cuts and labels}\label{sec:prelim-dag}
+
+The \emph{walk DAG} of $x_1,\dots,x_k$~\cite[Section~4.4]{FourthPaper2026} has vertex set $[0,T)=\{0,\dots,T-1\}$ and two
+kinds of edges: \emph{state edges} $t\to t-1$ for $1\le t<T$, and \emph{hop edges} $u\to p$, one for every long hop
+$(p,u)$ of any head. A pause joins the same two vertices as a state edge and is identified with it, and an edge is
+determined by its endpoints: a pair that is a long hop of several heads is a single edge. For a set $H'$ of long hops,
+$G(H')$ denotes the DAG of the state edges and of the edges $u\to p$ with $(p,u)\in H'$; for a set~$R$ of pairs
+$(h,c)$, $G-R$ denotes $G(H')$ for the set $H'$ of long hops at pairs outside~$R$. A \emph{cut} is a set of edges; it has
+\emph{depth at most~$D$} if every path that uses no edge of the cut contains at most $D$ hop edges.
+
+A \emph{label} with $q$ values is a map $\Psi\colon[0,T)\to\{0,\dots,q-1\}$. A hop edge $u\to p$ is \emph{violated} if
+$\Psi(u)\le\Psi(p)$, a time $t\ge1$ is a \emph{descent} if $\Psi(t)<\Psi(t-1)$, and $F_\Psi$ is the cut consisting of
+the violated hop edges and of the state edges $t\to t-1$ at descents. Its size is the \emph{cost} of~$\Psi$.
+
+\begin{lemma}[Cuts are labels]\label{lem:labels}
+\partformal{Labels.lean}{depth_le_of_label}{the last sentence, the consequence for walk DAGs.}
+Let $\Psi$ be a map from a set to $\{0,\dots,q-1\}$, and let $f(0),f(1),\dots,f(n)$ be a sequence of points of that set
+with some of its steps $i<n$ marked. If $\Psi(f(i+1))\le\Psi(f(i))$ for every $i<n$, and $\Psi(f(i+1))<\Psi(f(i))$ for
+every marked~$i$, then at most $q-1$ steps are marked. Consequently, for every label $\Psi$ with $q$ values of a
+walk DAG, or of a sub-DAG $G(H')$, the cut $F_\Psi$ has depth at most $q-1$.
+\end{lemma}
+
+\begin{outline}[Outline of the formal proof of the statement about sequences]
+By induction on~$n$, the number of marked steps plus $\Psi(f(n))$ is at most $\Psi(f(0))$
+(\lean{card_marked_add_le}), and $\Psi(f(0))\le q-1$.
+\end{outline}
+
+\begin{proof}[Proof of the last sentence (not formalized)]
+Let $t_0\to t_1\to\dots\to t_n$ be a path that avoids $F_\Psi$, and mark its hop edges. Along a state edge
+$t_i\to t_{i+1}=t_i-1$, the time $t_i$ is not a descent, so $\Psi(t_{i+1})\le\Psi(t_i)$; along a hop edge, which is not
+violated, $\Psi(t_{i+1})<\Psi(t_i)$. By the statement about sequences, the path has at most $q-1$ hop edges.
+\end{proof}
+
+The lemma is one direction of the fourth paper's lemma ``cuts are labels''~\cite[Lemma~5.2]{FourthPaper2026}, which also
+proves the converse: for every~$D$, the smallest size of a cut of depth at most~$D$ equals the smallest cost of a label
+with $D+1$ values. All cuts in this paper are built from labels.
+
+\subsection{Depth reduction and the crux}\label{sec:prelim-tcp}
+
+\begin{definition}[TCP and depth-robustness]\label{def:tcp}
+\emph{TCP holds} for a family of $k$-tuples of walks if for every $\eps>0$ there is an integer~$D$ such that the walk DAG
+of every member, of length~$T$, has a cut of at most $\eps T$ edges and depth at most~$D$. $\TCP(k)$ is the statement
+that TCP holds for the family of all $k$-tuples of walks~\cite[Problem~5.1]{FourthPaper2026}. A family is
+\emph{depth-robust} if TCP fails for it: for some $\eps>0$ no single~$D$ serves all members.
+\end{definition}
+
+For an oblivious machine~$M$ at length~$L$ with halting time~$T$, the \emph{dependency DAG}
+$H_M$~\cite[Definition~4.1]{FourthPaper2026} has vertex set $[0,T)$, state edges $t\to t-1$, and cell edges
+$t\to\prev_j(t)$ along the work-head walks. Every edge of $H_M$ joins the endpoints of an edge of the walk DAG of the
+work heads: a cell edge of length~$1$ is a pause, and a cell edge of length at least~$2$ is a long hop. The input head
+contributes no edges. The same definition applies to a single trace~$\tau$ of any machine at length~$L$, with the head walks,
+append times and halting time of~$\tau$; we write $H_\tau$ for this \emph{dependency DAG of the trace}. All inputs that
+follow~$\tau$ share this schedule, and the fourth paper's long-edge conversion~\cite[Lemma~4.21]{FourthPaper2026}, whose
+proof uses only the DAG, applies to~$H_\tau$. A \emph{genie} is a set $\Gamma\subseteq[0,T)$ of revealed steps; it reveals the values
+$v_s$, $s\in\Gamma$ (state after the step, symbols written, output bit), with $\beta\ge\beta(M)$ bits per value, at
+\emph{cost} $\beta\card\Gamma$. A path $t_0\to\dots\to t_m$ of $H_M$ is $\Gamma$-free if $t_1,\dots,t_m\notin\Gamma$,
+and $\Gamma$ has \emph{full depth at most~$D$} if every $\Gamma$-free path has at most $D$ edges. The cone lemma
+\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, with written proofs there, says that output bit~$\ell$, appended at step~$t_\ell$, is a
+function of the revealed word $G_\Gamma(w)=(v_s(w))_{s\in\Gamma}$ and of the input bits at the positions $I_\Gamma(\ell)$
+read at the ends of $\Gamma$-free paths from~$t_\ell$, and that $\card{I_\Gamma(\ell)}\le(k+1)^{D+1}$ if $\Gamma$ has
+full depth at most~$D$.
+
+The fourth paper calls \emph{depth-TCP} the statement that genies of cost $\eps L$ and bounded full depth exist for all
+oblivious machines with $k$ work tapes running in time $C(L+1)$~\cite[Definition~4.7]{FourthPaper2026}. A
+\emph{side-information system} at size~$d$ is a family $I=(I(\ell))_{\ell\in[0,L)}$ of subsets of $[0,L)$, and an
+\emph{index code} for~$I$ with $m$ bits is a map $G\colon\{0,1\}^L\to\{0,1\}^m$ such that $G(w)$ and $w|_{I(\ell)}$
+determine $w_{\tpos(\ell)}$. For a class $\mathcal S$ of systems and $\rho\ge0$, $\Crux(\mathcal S,\rho)$ says that
+for every $\eta>0$ there is $d_0$ such that every index code for every system of $\mathcal S$ at a size $d\ge d_0$ has at
+least $(\rho-\eta)L$ bits; $\mathcal S_{k,C,\beta,D}$ is the class of the systems $I_\Gamma$ of oblivious machines with $k$
+work tapes, value width at most~$\beta$ and halting time at most $C(L+1)$ that append exactly $L$ bits, for genies
+of full depth at most~$D$~\cite[Definition~4.8]{FourthPaper2026}. Every fibre of an index code for~$I$ is a binary storage
+code for the relation $N_I(p)=I(\tpos(p))$, in which every symbol is a function of the symbols in its recovery set
+\cite[Remark~4.9(b)]{FourthPaper2026}.
+
+\begin{theorem}[Theorem D of the fourth paper]\label{thm:D4}
+\cited{the fourth paper~\cite[Theorem~4.10]{FourthPaper2026}, with a complete written proof there; not formalized.}
+If $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ and $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ hold with $0<\eps<\rho$,
+then for every machine with $k$ work tapes and value width at most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is it
+oblivious at length $L=d^2b(d)$ with halting time at most $C(L+1)$ and a transposer of all $d\times d$ matrices.
+\end{theorem}
+
+\paragraph{Why it matters.} Theorem~D splits a proof that no oblivious machine transposes in linear time into a
+structural half, depth-TCP, and a coding half, the crux. \Cref{sec:nesting,sec:onehead,sec:dnp} work on the structural half through cuts of
+walk DAGs, \cref{sec:linear,sec:crux} on the coding half, and \cref{sec:transposers} combines the two. An oblivious
+linear-time transposer must violate, for its own parameters, one of the two hypotheses.
+
+The structural hypothesis is a statement about walk DAGs. Every application below converts a cut of the walk DAG into a
+genie, as in the proof of the fourth paper's Corollary~B.
+
+\begin{lemma}[From cuts to genies]\label{lem:cut-genie}
+\notformalized
+Let $M$ have $k$ work tapes and value width at most~$\beta$, let $C\ge1$ and $0<\eps\le1$, and put
+$P=\lceil4\beta C/\eps\rceil$. Suppose that at length~$L\ge1$ the run of $M$ along a trace of halting time
+$T\le C(L+1)$ is given, and that the walk DAG of its work-head walks on $[0,T)$ has a cut of at most
+$\eps T/(4\beta C)$ edges and depth less than~$D_1$. Then the dependency DAG of that trace has a genie of cost at most
+$\eps L$ and full depth at most $D_1P-1$.
+\end{lemma}
+
+\begin{informalproof}
+Let $F$ be the cut and $\Gamma_0$ the set of steps~$s$ at which some edge $t\to s$ of~$F$ ends, so
+$\card{\Gamma_0}\le\card F$. Every edge of a $\Gamma_0$-free path of the dependency DAG ends outside~$\Gamma_0$, so its
+endpoints are not those of an edge of~$F$; read in the walk DAG, the path avoids~$F$, and its edges of length at least~$2$
+are long hops. Hence every $\Gamma_0$-free path has at most $D_1-1$ edges of length greater than~$1$. By the long-edge
+conversion of the fourth paper~\cite[Lemma~4.21]{FourthPaper2026} (a written proof there), with $\mu=1<P$ and
+$D'=D_1-1$, the genie
+$\Gamma=\Gamma_0\cup\{t<T:t\equiv P-1\pmod P\}$ has full depth at most $D_1P-1$ and
+$\card\Gamma\le\card F+\lfloor T/P\rfloor$. Its cost is at most
+$\eps T/(4C)+\beta T/P\le\eps T/(2C)\le\eps(L+1)/2\le\eps L$.
+\end{informalproof}
+
+The lemma uses the trace only through its dependency DAG. When the machine is oblivious and transposes, the revealed word
+of the genie is an index code with at most $\eps L$ bits for the system $I_\Gamma\in\mathcal S_{k,C,\beta,D_1P}$, by the
+cone lemma and correctness, exactly as in the proof of Theorem~D.
+
+\subsection{The deep-nesting pair}\label{sec:prelim-dnp}
+
+We recall the instance that the fourth paper regards as the sharpest open case of $\TCP(2)$, with the parameter $g=1$
+throughout. Let $s_0>m\ge0$ be integers, $\Lambda=2^{s_0}$ and $R_i=2^{s_0-i}$ for $0\le i\le m$, so $R_0=\Lambda$
+and $R_m\ge2$. A \emph{level-$m$ stroke} of direction $\sigma\in\{-1,1\}$ is a run of $R_m$ steps equal to~$\sigma$. For
+$i<m$, a \emph{level-$i$ stroke} of direction~$\sigma$ is a \emph{segment} of $R_i$ steps equal to~$\sigma$ followed by a
+\emph{V} of level $i+1$: a level-$(i+1)$ stroke of direction~$-\sigma$ (the \emph{back stroke}) followed by a
+level-$(i+1)$ stroke of direction~$\sigma$ (the \emph{forward stroke}). The walk $U=U(s_0,m,1)$ satisfies $U(0)=0$,
+is periodic with period
+\[
+  P=4(m+1)\Lambda,
+\]
+and its steps over one period are those of four level-$0$ strokes of directions $1,-1,-1,1$
+\cite[Definition~5.3]{FourthPaper2026}. A level-$i$ stroke has $n_iR_i$ steps, where $n_i=m-i+1$, and moves the head by
+$\sigma R_i$; U has no pauses. The first time of a back stroke is the \emph{apex} time of its V, the first time of its
+forward stroke the \emph{valley} time; the V is \emph{attached} at its \emph{base}, the cell where it starts and ends, and
+its \emph{valley cell} is at distance $R_i$ from the base, for a V of level~$i$. The turns of~$U$ are exactly the apex and
+valley times of all V's, each of the level of its V, and the first times of the second and fourth level-$0$ strokes of
+every period, of level~$0$, at the \emph{tips} $\pm\Lambda$~\cite[Lemma~5.4]{FourthPaper2026}, with a written proof
+there. A period contains $2^{i+1}$ V's of level~$i$ for $1\le i\le m$, as counted in the proof of the fourth paper's
+Proposition~5.13, hence $2^{i+2}$ turns of level~$i$ and two tips; all turn times and turn positions are multiples
+of~$R_m$~\cite[Remark~5.23]{FourthPaper2026}.
+
+For an integer shift~$\xi$ the pair is $x_1=U$ and $x_2(t)=x_1(t+\xi)$; the \emph{deep-nesting pair}
+$\DNP(s_0,m,1)$ of the fourth paper is the pair for a particular odd shift, the golden shift
+\cite[Definition~5.9]{FourthPaper2026}, and we call the pair for any odd shift a deep-nesting pair. A pair $(p,u)$ is a hop
+of head~$2$ if and only if $(p+\xi,u+\xi)$ is a hop of head~$1$. For $r\ge1$ the \emph{$r$-fold cover} is the pair on the
+cyclic time axis $\Z_T$, $T=rP$; its hops are the residues of the hops on~$\Z$, every time is the earlier and the
+later endpoint of exactly one hop of each head, and there are $n_{\mathrm h}=2T$ hops in all. Each head visits every cell of
+$[-\Lambda,\Lambda]$ in every period, so every time lies in the half-open interval $(p,u]$ of exactly $2(2\Lambda+1)$ hops of
+the two heads, one per head and cell. A \emph{label} on the cover is a map $G\colon\Z_T\to\{0,\dots,q-1\}$; a hop $(p,u)$
+is violated if $G(u)\le G(p)$, a time~$t$ is a descent if $G(t)<G(t-1)$, and $\cost(G)$ is the number of violated hops of
+both heads (counted per head) plus the number $\desc(G)$ of descents. The \emph{error} of a hop is
+$e(p,u)=(G(u)-G(p)-1)\bmod q\in\{0,\dots,q-1\}$.
+
+\begin{lemma}[Lemma Zq of the fourth paper]\label{lem:Zq4}
+\cited{the fourth paper~\cite[Lemma~5.15]{FourthPaper2026}; Lean-verified there (\lean{MotionDepthCodes.lemma_Zq},
+\lean{MotionDepthCodes.card_descents_eq}).}
+On the $r$-fold cover, every label satisfies $q\cdot\cost(G)=n_{\mathrm h}+\sum_{\text{hops}}e+q\cdot\desc(G)$ and
+$q\cdot\desc(G)=\sum_{t\in\Z_T}\chi_t$, where $\chi_t=(G(t)-G(t-1))\bmod q$.
+\end{lemma}
+
+The \emph{level} of a hop is the least level of a turn of its own head strictly inside it (inside any lift to~$\Z$); the
+owner is such a turn, so levels are defined. The hops of head~$h$ of level~$i$ form the \emph{class} $(h,i)$. A label
+\emph{$\theta$-serves} level~$i$ for head~$h$ if the class $(h,i)$ has total error at most
+$\theta qn_{\mathrm h}/(2(m+1))$, and \emph{doubly $\theta$-serves} it if it $\theta$-serves it for both heads
+\cite[Section~5.7]{FourthPaper2026}. By \cref{lem:dnp-classes} below, every class has exactly $n_{\mathrm h}/(2(m+1))$
+hops, so this says that the mean error of the class is at most~$\theta q$.
+
+\begin{conjecture}[Conjecture A$'$ of the fourth paper]\label{conj:Aprime}
+There are $\theta_0>0$ and constants $C,C'$, and for all $s_0$ and~$m$ an odd shift~$\xi$, such that for all $r$ and~$q$
+every label~$G$ with $\cost(G)\le n_{\mathrm h}/8$ on the $r$-fold cover of the pair $x_1=U(s_0,m,1)$,
+$x_2=x_1(\cdot+\xi)$, has at most $C\log_2q+C'$ doubly $\theta_0$-served levels~\cite[Conjecture~5.25]{FourthPaper2026}.
+\end{conjecture}
+
+By the per-class split of Lemma~Zq~\cite[Corollary~5.16]{FourthPaper2026}, $\cost(G)$ is at least the total error of
+all hops divided by~$q$, so a level that is not doubly $\theta_0$-served contributes more than
+$\theta_0n_{\mathrm h}/(2(m+1))$ to $\cost(G)$; hence a label of cost at most $\eps n_{\mathrm h}$ with $\eps\le1/8$ and
+$\eps<\theta_0/2$ doubly serves more than $(m+1)(1-2\eps/\theta_0)$ levels. Under
+Conjecture~A$'$ this forces $q\ge\exp(c(1-2\eps/\theta_0)(m+1)-c')$ for constants $c,c'>0$, and the same statement on the
+walk DAG of many periods would make the pairs depth-robust as $m\to\infty$, so that $\TCP(2)$ fails
+\cite[Section~5.7]{FourthPaper2026}. The fourth paper's clock labels cut every pair at depth $\lceil12/\eps\rceil^{m+1}-1$
+with $\eps T$ edges~\cite[Proposition~5.13]{FourthPaper2026}.
+
+\subsection{Formal status of the results}\label{sec:prelim-lean}
+
+Every numbered result names its formal status in one of four ways. A line
+\begin{center}
+{\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
+\end{center}
+gives the Lean declarations of a fully formalized result. The declarations live in the namespace
+\texttt{BoundedNesting} and the files in the directory \leanfile{lean/BoundedNesting/}. The text after such a statement,
+labelled \emph{Outline of the formal proof}, is a guide to the formal proof; it is a convenience, not a proof. A line
+beginning \textsf{Lean (partial)} marks a result whose formal counterpart covers all but an explicitly named part, which
+the text proves. The words \textsf{Not formalized} mark a result with no formal counterpart; it comes with a complete
+proof, labelled \emph{Proof (not formalized)}. A line beginning \textsf{Cited} marks a result of an earlier paper of the
+series that is used without proof, and says where it is proved and whether it is Lean-verified there. Where the English
+statement simplifies, the Lean statement is authoritative. Results from the literature are cited. Numerical observations
+appear only in remarks labelled as numerical, heuristics are labelled as such, and claims that have only a proof sketch are
+stated in remarks beginning \emph{Proof sketch only}; none of them is used in proofs. Numbered definitions carry a status line
+only when they have a Lean counterpart.
+
+The library depends on Lean~4 and Mathlib (both v4.34.1) and on the Lean library of the fourth paper, which imports those
+of the first two papers and the repository's shared library \texttt{lean-machine}, all through relative paths. It
+contains no \texttt{sorry}, no \texttt{native\_decide} and no unsafe evaluation, and every declaration cited here depends
+only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verify}).
+\Cref{app:index} lists every declaration of this library cited in the paper.

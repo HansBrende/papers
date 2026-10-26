@@ -1,0 +1,395 @@
+\section{The crux in special linear settings}\label{sec:crux}
+
+The crux asks for a deficit below rate~$1$, and its undirected core asks whether storage codes on locally bipartite side
+information of bounded degree can beat rate~$\frac12$~\cite[Question~6.1]{FourthPaper2026}. For all codes this is open beyond
+the classes of the companion paper, \emph{Nested Elimination and Half-Rate Bounds for Storage Codes}~\cite{SeventhPaper2026},
+which proves the half bound for every storage code on triangle-free graphs of maximum degree three, among other classes, with
+the guessing number equal to the fractional matching number there. This section proves two linear cases in which a natural
+source of high-rate codes fails: codes lifted along towers of covers in characteristic~$2$ (\cref{sec:crux-towers}), and scalar
+codes at degree four whose exceptional vertices are few or far apart (\cref{sec:crux-deg4}). By \cref{sec:linear}, linear codes
+are the relevant ones for linear machines.
+
+\subsection{Lifted codes along towers of covers}\label{sec:crux-towers}
+
+Let $H$ be a finite connected graph with vertex set~$V$, $\card V=N$, and let $M\in\F_2^{V\times V}$ have unit diagonal and
+off-diagonal support in the edges of~$H$; the entries $M_{uv}$ and $M_{vu}$ may differ. Its kernel is a linear storage code
+on~$H$~\cite[Lemma~6.14]{FourthPaper2026}. Let $\mathcal T$ be the universal cover of~$H$, a tree, and $\pi=\pi_1(H)$, a free
+group acting freely on~$\mathcal T$. A \emph{finite cover} is $\mathcal T/\Lambda$ for a subgroup $\Lambda\le\pi$ of finite
+index; more generally, a finite $\pi$-set~$X$ defines a cover with vertex set $X\times V$. Choosing a spanning tree and a base
+vertex turns~$M$ into a matrix $\tilde M\in\mathrm{Mat}_V(\F_2[\pi])$, whose entry $(u,v)$ is the sum of $M_{uv}g_e$ over the
+edges~$e$ from $u$ to~$v$, where $g_e\in\pi$ is the closed walk along the tree to~$u$, across~$e$ and back along the tree, and
+$\tilde M_{vv}=1$. The \emph{lift} $M_X$ is the image of $\tilde M$ under the permutation representation of~$\pi$ on
+$\F_2[X]$, applied entrywise: a matrix with unit diagonal and support in the edges of the cover, whose kernel is a linear
+storage code there, of rate $\dim\ker M_X/(N\card X)$. The \emph{inner rank} $\irk\tilde M$ is the least~$\rho$ such that
+$\tilde M=PQ$ with $P\in\mathrm{Mat}_{N\times\rho}(\F_2[\pi])$ and $Q\in\mathrm{Mat}_{\rho\times N}(\F_2[\pi])$. The group algebra
+of a free group is a free ideal ring, and its inner rank equals the rank over its universal field of fractions, Cohn's free
+field~\cite{Cohn2006}. The \emph{universal rate} is
+\[
+  r_U(M)=\bigl(N-\irk\tilde M\bigr)/N .
+\]
+Let $\chi\colon\pi\to\Z/2$ be the parity of the length of closed walks, $\pi^+=\ker\chi$, $\hat\pi$ the pro-$2$ completion of
+$\pi$ and $\hat\pi^+$ the closure of~$\pi^+$ in it. A cover $\mathcal T/\Lambda$ is bipartite if and only if $\Lambda\le\pi^+$.
+
+\begin{theorem}[The equivariant crux in characteristic two]\label{thm:eqcrux}
+\notformalized
+Let $H$ be non-bipartite.
+\begin{enumerate}[label=(\alph*)]
+\item Every finite cover~$X$ satisfies $\operatorname{rate}(M_X)\ge r_U(M)$.
+\item $r_U(M)\le\frac12$.
+\item Along every tower $\pi=\Lambda_0\ge\Lambda_1\ge\cdots$ in which each $\Lambda_{n+1}$ has index~$2$ in~$\Lambda_n$, the rate
+is non-increasing. More precisely, with $N_n=2^nN$ and $M_n$ the lift at level~$n$, the excess $e_n=\dim\ker M_n-N_n/2$
+satisfies $e_{n+1}=2e_n-r_n$, where $r_n\ge0$ is the rank of the \emph{twist pairing}
+$\ker M_n^\T\times\ker M_n\to\F_2$, $(y,x)\mapsto\sum(M_{uv}y_ux_v+M_{vu}y_vx_u)$, the sum over the edges $uv$ of level~$n$
+that the double cover twists.
+\item Let $C=\bigcap_n\overline{\Lambda_n}\le\hat\pi$. Some level of the tower is bipartite if and only if $C\le\hat\pi^+$, and
+from that level on the rate is at most~$\frac12$.
+\item Let $\iota\colon\pi\to\mathbf F$ be an injective homomorphism into a free-by-$\Z_2$ pro-$2$ group~$\mathbf F$, where
+$\Z_2$ denotes the $2$-adic integers (for instance a finitely generated free pro-$2$ group), and let
+$\mathbf F=\mathbf N_1\ge\mathbf N_2\ge\cdots$ be open normal subgroups with trivial intersection. Then
+$\operatorname{rate}(M_{\iota^{-1}(\mathbf N_j)})\to r_U(M)$.
+\item For the Clebsch graph and $M=I+A$, $r_U(M)=0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{informalproof}
+(a) Write $\tilde M=PQ$ with inner dimension $\rho=\irk\tilde M$. The permutation representation is a ring homomorphism, so
+$M_X=P_XQ_X$ has rank at most $\card X\rho$ and nullity at least $\card X(N-\rho)$.
+
+(b) Apply~(a) to the bipartite double cover $H\times K_2=\mathcal T/\pi^+$, on which every edge is twisted. With $M=I+B$, its
+lift is $\begin{psmallmatrix}I&B\\B&I\end{psmallmatrix}$, and $(x,y)$ lies in its kernel exactly when $x=By$ and $(I+B^2)y=0$;
+so its nullity is the nullity of $M^2=I+B^2$, at most~$N$. Hence $2Nr_U(M)\le N$. The bound is also contained in
+\emph{Covers and Local Generation}~\cite[Proposition~3.2]{Covers2026}, a lower bound $\lceil N/2\rceil$ for the inner rank
+over every field, whose separation hypothesis holds for graph templates and whose proof uses the specialization argument
+of~(a).
+
+(c) A double cover of level~$n$ is given by voltages in $\Z/2=\{1,g\}$ on the edges, and $\F_2[\Z/2]\cong\F_2[t]/(t^2)$ with
+$g=1+t$. So the lift is $\varphi=M_n+tM_n^{\mathrm{tw}}$ acting on $(\F_2[t]/(t^2))^{V_n}$, where $M_n^{\mathrm{tw}}$ keeps the
+entries of~$M_n$ on twisted edges. Its kernel consists of the $a+tb$ with $M_na=0$ and $M_nb=M_n^{\mathrm{tw}}a$. Since
+$\operatorname{im}M_n=(\ker M_n^\T)^\perp$, the admissible~$a$ form the kernel of $x\mapsto(y\mapsto y^\T M_n^{\mathrm{tw}}x)$ on
+$\ker M_n$, of dimension $\dim\ker M_n-r_n$, and each admits a coset of $\ker M_n$ of choices of~$b$. So
+$\dim\ker M_{n+1}=2\dim\ker M_n-r_n$, which is the recursion, and the rate does not increase. For symmetric checks, the
+adjacency checks $M=I+A$, the recursion is the lift identity of \emph{Covers and Local Generation}~\cite[Lemma~9.1]{Covers2026},
+for arbitrary binary lifts of finite connected graphs; the monotonicity of the normalized nullity under refinements with
+$2$-group kernels in characteristic~$2$ is its Lemma~4.1, and it is also the index-$2$ case of the argument of Bergeron,
+Linnell, Lück and Sauer~\cite[Lemma~4.1 and Theorem~1.6]{BLLS2014} (see also Kionke~\cite[Lemma~2.6]{Kionke2017}). Part~(c)
+gives the exact identity, with the twist pairing, for every unit-diagonal, possibly asymmetric, binary check, along arbitrary
+towers of index-$2$ subgroups.
+
+(d) If every level were non-bipartite, the sets $\overline{\Lambda_n}\cap(\hat\pi\setminus\hat\pi^+)$ would form a decreasing
+sequence of nonempty compact sets, so $C\not\le\hat\pi^+$. Conversely, a bipartite level gives
+$C\le\overline{\Lambda_n}\le\hat\pi^+$. Covers of bipartite graphs are bipartite, and every storage code on a bipartite graph has
+rate at most~$\frac12$~\cite[Corollary~6.9]{FourthPaper2026}.
+
+(e) A free pro-$2$ group of positive rank maps onto~$\Z_2$ with a free pro-$2$ kernel, so it is free-by-$\Z_2$. By
+Jaikin-Zapirain and Souza~\cite[Theorem~8.1]{JaikinSouza2026}, applied to the finitely generated subgroup $\iota(\pi)\cong\pi$,
+the normalized dimensions of the kernels converge to the dimension over the universal division ring of~$\F_2[\iota(\pi)]$; in the
+case of a finitely generated free pro-$2$ group, which is all that \cref{prop:eqtower} uses, this is
+Jaikin-Zapirain's~\cite[Proposition~3.5]{JaikinZapirain2024}. Since $\iota$ is injective, this division ring is Cohn's free field
+of $\F_2[\pi]$, and the limit is $r_U(M)$.
+
+(f) The Clebsch graph contains the $4$-cube, whose Gray code is a Hamiltonian cycle, so it has a spanning $2$-factor, and
+$I+A$ has unit diagonal and nonzero scalars on all edges. For such checks, \emph{Covers and Local Generation} shows that the
+abelianization of~$\tilde M$, over the Laurent polynomial ring in the chord generators, has nonzero
+determinant~\cite[Lemma~6.1]{Covers2026}, with a written proof there. A factorization $\tilde M=PQ$ through fewer than $N$
+columns would specialize to a factorization of this invertible matrix, so $\irk\tilde M=N=16$, as in the proof
+of~\cite[Theorem~6.2]{Covers2026}, and $r_U(M)=0$. As an independent computational check, the script
+\leanfile{tools/clebsch_lift.py} constructs an explicit $16$-sheeted lift~$X_0$ of the Clebsch graph, by permutation voltages
+on the $25$ edges outside a breadth-first spanning tree, and computes, by exact elimination over~$\F_2$, that the lift of
+$I+A$ has nullity~$10$; by~(a), $10\ge16(16-\irk\tilde M)$, so again $\irk\tilde M=16$.
+\end{informalproof}
+
+\begin{proposition}[Towers that never become bipartite]\label{prop:eqtower}
+\notformalized
+There are towers of normal subgroups of $\pi_1(\mathrm{Clebsch})$ with trivial intersection whose covers are non-bipartite at
+every level and have girth tending to infinity, and along which the rate of the lifted Clebsch code tends to~$0$.
+\end{proposition}
+
+\begin{informalproof}
+The Clebsch graph has $16$ vertices and $40$ edges, so $\pi_1(\mathrm{Clebsch})$ is free of rank~$25$. The kernel
+$K=\ker(F_9\to\Z/3)$ of a surjection from the free group of rank~$9$ is free of rank $1+3\cdot8=25$ by Schreier's formula. It is
+dense in the pro-$2$ completion $\hat F_9$, since for every normal subgroup $N$ of $2$-power index the index of $KN$ divides both
+$3$ and a power of~$2$; and $K$ embeds in $\hat F_9$, since free groups are residually~$2$. A character of~$K$ is continuous for
+the induced topology exactly when it is the restriction of a character of~$F_9$, and restriction is injective on characters
+because $F_9/K$ has order~$3$; so exactly $2^9$ of the $2^{25}$ characters of~$K$ are continuous. Since $\mathrm{Aut}(F_{25})$
+maps onto $\mathrm{GL}_{25}(\F_2)$, it acts transitively on nonzero characters, so there is an isomorphism
+$\varphi\colon\pi_1(\mathrm{Clebsch})\to K$ for which $\chi\circ\varphi^{-1}$ is not continuous. For a descending chain of open
+normal subgroups $U_j\le\hat F_9$ with trivial intersection, put $\Lambda_j=\varphi^{-1}(K\cap U_j)$. These are normal with
+trivial intersection; $\Lambda_j\not\le\pi^+$ for every~$j$, since otherwise $\chi\circ\varphi^{-1}$ would vanish on $K\cap U_j$
+and be continuous; and the girth tends to infinity, because only finitely many conjugacy classes have bounded translation
+length and each nontrivial element eventually leaves the normal subgroups~$\Lambda_j$. By \cref{thm:eqcrux}(e), with $\iota$ the
+composite of $\varphi$ and the inclusion $K\subseteq\hat F_9$, and by \cref{thm:eqcrux}(f), the rate tends to $r_U=0$; the limit
+also follows from~\cite[Theorem~6.2]{Covers2026}.
+\end{informalproof}
+
+\paragraph{Why it matters.} A construction cannot obtain its coding gain from a fixed small code lifted along towers that
+become bipartite, nor, for binary linear codes, along towers pulled back injectively from free pro-$2$ groups: bipartite levels
+have rate at most~$\frac12$ for every code (\cref{thm:eqcrux}(d)), lifting a binary check along double covers never raises the
+rate (\cref{thm:eqcrux}(c)), and along towers of type~(e) the rate tends to the universal rate, at most~$\frac12$, and to~$0$
+for the Clebsch code, whose rate is $\frac58$ on its own graph~\cite[Corollary~6.11]{FourthPaper2026}. The theorem leaves
+open: normal
+towers with trivial intersection and $C\not\le\hat\pi^+$ that are not of type~(e), such as $2$-adic analytic towers, where a
+positive limit for the Clebsch code would contradict the mod-$2$ case of the Lück approximation conjecture in positive
+characteristic, which Jaikin-Zapirain and Souza discuss for chains with trivial intersection~\cite[Section~8]{JaikinSouza2026};
+non-normal towers; towers with short even cycles at positive density; and codes that are not lifts of a code on the base.
+Trivial intersection matters: for the Clebsch adjacency check, the cyclic covers of degree $2^j$ with the voltage on a single
+edge form a normal tower of binary lifts whose intersection is not trivial; odd cycles that avoid that edge lift to odd
+cycles, so no level is bipartite, and the dimension $N/2+2$ at every level~\cite[Theorem~9.5]{Covers2026} makes the rate tend
+to~$\frac12$, not to $r_U=0$.
+
+\paragraph{Relation to earlier work.} \emph{Covers and Local Generation in Linear Storage Codes}~\cite{Covers2026} contains
+several parts of the theorem. Its lift identity~\cite[Lemma~9.1]{Covers2026} is the recursion of~(c) for symmetric binary
+checks, and its Lemma~4.1 gives the monotonicity in~(c) for towers of normal subgroups. Its Proposition~3.2 contains~(b). Its Lemma~6.1 and Theorem~6.2, full inner rank and rate tending
+to~$0$ along every chain from a faithful embedding into a free-by-$\Z_p$ pro-$p$ group, for every check with nonzero edge
+entries on a graph with a spanning $2$-factor, give~(f) without computation and the limit in \cref{prop:eqtower}. It also
+proves, under pro-$p$ and separation hypotheses, an asymptotic half-rate bound for homogeneous checks on a fixed free-group
+voltage template in every characteristic~$p$, uniformly over coefficient fields and values~\cite[Theorem~4.3]{Covers2026},
+through Jaikin-Zapirain and Souza's Theorem~8.1, and the exact finite bound $N/2+2$ for the Clebsch adjacency code along
+every sequence of connected binary lifts~\cite[Theorem~9.2]{Covers2026}. New here are the twist-pairing recursion of~(c) for
+asymmetric binary checks along arbitrary towers of index-$2$ subgroups, part~(d), and the towers of \cref{prop:eqtower}, which
+never become bipartite, have girth tending to infinity and are pulled back injectively from~$\hat F_9$.
+
+\subsection{Scalar codes at degree four}\label{sec:crux-deg4}
+
+Let $F$ be a field and $M\in F^{V\times V}$ a matrix with unit diagonal, $N=\card V$. The \emph{recovery set} of~$v$ is
+$S_v=\{u\ne v:M_{vu}\ne0\}$, and we say that $u$ \emph{points to}~$v$ if $v\in S_u$. The matrix has \emph{no recovery triangle}
+if $q\notin S_p$ whenever $p,q\in S_r$ and $p\ne q$; this holds whenever the off-diagonal support of~$M$ lies in the edges of a
+triangle-free graph. Following the fourth paper's Theorem~S~\cite[Theorem~6.13]{FourthPaper2026}, consider at a vertex~$v$ the
+conditions
+\begin{itemize}[leftmargin=3em]
+\item[$(\star\star)$] $\card{S_v}\le2$, or $\card{S_v}=3$ and $r\in S_v$ whenever $v\in S_r$;
+\item[$(\star4)$] $\card{S_v}\le3$, or $\card{S_v}=4$ and $r\in S_v$ whenever $v\in S_r$.
+\end{itemize}
+If the support of~$M$ lies in a graph of maximum degree at most~$4$, every vertex satisfies $(\star4)$, since
+$\card{S_v}=4$ forces $S_v$ to be the whole neighbourhood. A vertex violating $(\star\star)$ is \emph{heavy}, and $H$ is the set
+of heavy vertices. The \emph{separation} conditions are: (S1) no vertex has two heavy vertices in its recovery set; (S2) no
+heavy vertex has a heavy vertex in its recovery set. If the support lies in a graph~$G$ and the heavy vertices are pairwise at
+distance at least~$3$ in~$G$, both hold.
+
+\begin{theorem}[Theorem SH: separated heavy vertices]\label{thm:SH}
+\notformalized
+Let $M$ have unit diagonal and no recovery triangle, and let every vertex satisfy $(\star4)$. If $\card H\le2$, or if the heavy
+vertices satisfy (S1) and~(S2), then $\dim\ker M\le\lfloor N/2\rfloor$, over every field. In graph form: if $G$ is triangle-free
+of maximum degree at most~$4$, the off-diagonal support of~$M$ lies in the edges of~$G$, and the vertices violating
+$(\star\star)$ number at most two or lie pairwise at distance at least~$3$ in~$G$, then $\rank M\ge\lceil N/2\rceil$.
+\end{theorem}
+
+Theorem~S of the fourth paper is the case $H=\emptyset$. Since $\dim\ker M^\T=\dim\ker M$ and the absence of recovery
+triangles is invariant under transposition, the same holds when $M^\T$ satisfies $(\star4)$ and its heavy vertices, defined
+through the sets $\{u\ne v:M_{uv}\ne0\}$, satisfy the hypothesis instead.
+
+\begin{corollary}[Barrier and matching forms]\label{cor:SH}
+\notformalized
+Let $M$ have unit diagonal and no recovery triangle, let $U\subseteq V$, and let $V\setminus U$ be partitioned into blocks with
+$M_{uv}=0$ for $u,v$ in different blocks. If on every block~$B$ every vertex satisfies $(\star4)$ on~$B$ and the vertices
+violating $(\star\star)$ on~$B$ are at most two or satisfy (S1) and~(S2) on~$B$, then
+$\dim\ker M\le\card U+\sum_B\lfloor\card B/2\rfloor$. If the support of~$M$ lies in a triangle-free graph~$G$ of maximum degree at
+most~$4$, then
+\[
+  \dim\ker M\;\le\;\nu(G)+\card H-\max\bigl(\rho_3(H),\min(\card H,2)\bigr),
+\]
+where $\nu(G)$ is the matching number and $\rho_3(H)$ the largest size of a subset of~$H$ at pairwise distance at least~$3$
+in~$G$; the same holds with the heavy set of~$M^\T$ in place of~$H$.
+\end{corollary}
+
+\begin{informalproof}
+The kernel of $M$ meets $\{x_U=0\}$ in a subspace of codimension at most $\card U$, which restricted to $V\setminus U$ lies in
+$\ker M[V\setminus U,V\setminus U]=\bigoplus_B\ker M[B,B]$; apply \cref{thm:SH} to each block. Heaviness and the conditions
+pass to subsets (see the heredity statement in the proof of \cref{thm:SH} below), so for $W\subseteq V$ the classes of pairs
+$(G[W],M[W,W])$ whose heavy vertices on~$W$ number at most two, respectively lie pairwise at distance at least~$3$ in $G[W]$,
+are hereditary. By the Tutte--Berge formula~\cite{Berge1958}, every graph~$G'$ has a set~$U'$ with
+$\card{U'}+\sum_B\lfloor\card B/2\rfloor=\nu(G')$ over the components~$B$ of $G'-U'$, so every member of such a class satisfies
+$\dim\ker\le\nu$, as in the matching form of Theorem~S~\cite[Theorem~6.16]{FourthPaper2026}. Take $U=H\setminus D$, where $D$ is
+a set of $\min(\card H,2)$ heavy vertices, or a set of $\rho_3(H)$ heavy vertices at pairwise distance at least~$3$: the heavy
+vertices of $M[V\setminus U,V\setminus U]$ lie in~$D$, so $\dim\ker M\le\card U+\nu(G-U)\le\card H-\card D+\nu(G)$.
+\end{informalproof}
+
+\paragraph{Why it matters.} The theorem extends the fourth paper's Theorem~S, the case $H=\emptyset$, to matrices with few
+or scattered heavy vertices at degree four. A scalar linear code $\ker M$ beating $\lfloor N/2\rfloor$ by $\eps N$ on a
+triangle-free graph of maximum degree four needs $\card H-\rho_3(H)\ge\eps N$, for~$M$ and for~$M^\T$ alike: a linear number
+of heavy vertices that cannot be scattered, that is, dense clusters of vertices whose rows recover them from four neighbours
+or from three non-reciprocally. For all codes, guessing numbers of triangle-free graphs need not equal the lower bound
+given by fractional clique covers, as Cameron, Dang and Riis showed with the Higman--Sims graph~\cite{CameronDangRiis2016}. This is the regime of the fourth paper's tree code, in which every
+interior vertex is heavy and no locally confined argument can work~\cite[Proposition~6.28]{FourthPaper2026}. For linear machines,
+\cref{thm:Dlin} needs the linear crux, and the theorem says where a linear gain at degree four would have to live.
+
+\paragraph{Proof of \cref{thm:SH}.} Write $T_v=\{v\}\cup S_v$ for the support of the row $z_v$ of~$M$, $\mathcal C=\ker M$, and
+$\mathcal C^\perp$ for the row space. For a vertex set~$W$, ``on~$W$'' means that $S_v$ is replaced by $S_v\cap W$ and only
+rows $r\in W$ are considered. The class~$\mathcal H$ of pairs $(W,M[W,W])$ satisfying the hypotheses of \cref{thm:SH} on~$W$
+is \emph{hereditary}: no recovery triangle and $(\star4)$ pass to subsets, since a recovery set either keeps its size or loses
+elements, and the reciprocity condition only loses in-neighbours; a vertex heavy on $W'\subseteq W$ is heavy on~$W$, for the same
+reason; so $\card H\le2$, (S1) and (S2) on~$W$ imply them on~$W'$. Let $(V,M)$ be a counterexample in~$\mathcal H$ with $N$
+minimal, and $H$ its set of heavy vertices. We treat the separated case first, and the case $\card H\le2$ at the end.
+
+\begin{lemma}[Axioms of a minimal counterexample]\label{lem:SH-axioms}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item $N=2m+1$, $\dim\mathcal C=m+1$ and $\rank M=m$.
+\item For every nonempty $X\subseteq V$, $\dim(\mathcal C^\perp\cap F^X)\le\lceil\card X/2\rceil-1$; in particular, the rows
+supported in~$X$ span at most $\lceil\card X/2\rceil-1$ dimensions.
+\item $\card{S_v}\ge2$ for every~$v$.
+\item For every nonempty $X\subsetneq V$, the set $\mathrm{Out}(X)=\{v\in X:S_v\not\subseteq X\}$ has at least two elements if
+$\card X$ is even and at least one if $\card X$ is odd.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) Minimality gives $\dim\ker M[W,W]\le\lfloor\card W/2\rfloor$ for $W\subsetneq V$. The vectors of~$\mathcal C$ vanishing at
+a vertex~$v$, with that coordinate dropped, lie in $\ker M[V-v,V-v]$, so $\dim\mathcal C\le\lfloor(N-1)/2\rfloor+1$, which
+exceeds $\lfloor N/2\rfloor$ only if $N=2m+1$ and $\dim\mathcal C=m+1$. (b) For $X=V$ this is $\rank M=m=\lceil N/2\rceil-1$.
+Otherwise $\mathcal C\cap F^{V\setminus X}\subseteq\ker M[V\setminus X,V\setminus X]$, so with $\rho(X)=\dim\mathcal C|_X$ we get
+$m+1-\rho(X)\le\lfloor(N-\card X)/2\rfloor$, that is, $\rho(X)\ge\lfloor\card X/2\rfloor+1$; and $\mathcal C^\perp\cap F^X$ is
+the annihilator of $\mathcal C|_X$ in~$F^X$, of dimension $\card X-\rho(X)$. (c) $z_v\ne0$ lies in
+$\mathcal C^\perp\cap F^{T_v}$, which is zero if $\card{T_v}\le2$. (d) Let $I=X\setminus\mathrm{Out}(X)$, and suppose
+$I\ne\emptyset$. The rows $z_u$, $u\in I$, are supported in~$X$, so by~(b) their rank is at most $\lceil\card X/2\rceil-1$;
+restricted to the columns~$I$ they form $M[I,I]$, of rank at least $\lceil\card I/2\rceil$ by minimality. So
+$\lceil\card I/2\rceil\le\lceil\card X/2\rceil-1$, which gives the claim.
+\end{informalproof}
+
+\emph{Explorations.} A \emph{run} from a vertex~$v_0$ is a sequence of moves $(r_1,\pi_1),\dots,(r_t,\pi_t)$ with
+$X_0=\{v_0\}$, $r_i\in X_{i-1}$, $\pi_i=S_{r_i}\setminus X_{i-1}\ne\emptyset$, $X_i=X_{i-1}\cup\pi_i$ and
+$R_i=\{z_{r_1},\dots,z_{r_i}\}$; necessarily $r_1=v_0$. The row $z_{r_j}$ is supported in~$X_j$ and nonzero on all of~$\pi_j$,
+so $R_i$ is linearly independent. For $u\in X$ the \emph{pending set} is $P_X(u)=S_u\setminus X$, and $u$ is \emph{closed}
+at~$X$ if $P_X(u)=\emptyset$; a mover is closed after its move. Every $u\in X_i$ other than~$v_0$ entered as a member of a block
+$\pi_j\subseteq S_{r_j}$, and $r_j$ is its \emph{parent}. Put $\Phi(X_i,R_i)=\lceil\card{X_i}/2\rceil-1-\card{R_i}$; then
+$\Phi\ge0$ by \cref{lem:SH-axioms}(b), and $\Phi(X_0,\emptyset)=0$. A move with a block of size~$j$ changes~$\Phi$ by $-1,0,0,+1$
+for $j=1,2,3,4$ at odd $\card X$, and by $0,0,+1,+1$ at even $\card X$. A run is \emph{neutral} if all its moves leave~$\Phi$
+unchanged, and its states are then \emph{good} ($\Phi=0$). At a good state, $\card{R_i}=\lceil\card{X_i}/2\rceil-1\ge
+\dim(\mathcal C^\perp\cap F^{X_i})$, so every row supported in~$X_i$ lies in $\operatorname{span}R_i$; and a move with
+$\Phi$-change $-1$, in particular a single pending vertex at an odd good state, is a contradiction. A heavy vertex~$g$ is
+\emph{non-closed} at~$X$ if $g\notin X$ or $P_X(g)\ne\emptyset$; the set $\mathrm{NC}(X)$ of these vertices only shrinks as $X$
+grows.
+
+\begin{lemma}[Pending sizes, immediate closure, a Hall count]\label{lem:SH-tools}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item In any run, $v_0$ is closed after the first move, a light vertex $u\ne v_0$ has $\card{P_X(u)}\le2$, and a heavy vertex
+$u\ne v_0$ has $\card{P_X(u)}\le3$.
+\item Let $w\in\pi_i$ with $\card{\pi_i}\ge2$, and suppose $z_w\in\operatorname{span}R_t$ for some $t\ge i$. Then $\pi_j\subseteq
+S_w$ for some $j$ with $i<j\le t$. Consequently (\emph{immediate closure}): at a good state~$X_t$ whose last block has size at
+least~$2$, every member~$w$ of the last block has $P_{X_t}(w)\ne\emptyset$; and a neutral run cannot end at $X_t=V$ with a last
+block of size at least~$2$.
+\item If $I\subseteq V$ is nonempty and no vertex of~$I$ points to another, then $\card{I\cup\bigcup_{v\in I}S_v}\ge2\card I+1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) If $\card{S_u}=3$ and $u$ is light, $(\star\star)$ puts its parent, which points to~$u$, into~$S_u$; if $\card{S_u}=4$,
+$(\star4)$ does the same; the parent lies in~$X$. (b) Write $z_w=\sum_j\lambda_jz_{r_j}$ and let $j^*$ be the largest~$j$ with
+$\lambda_j\ne0$. The rows $z_{r_j}$, $j<j^*$, are supported in $X_{j^*-1}$, which is disjoint from~$\pi_{j^*}$, so $z_w$ agrees with
+$\lambda_{j^*}z_{r_{j^*}}$ on~$\pi_{j^*}$ and $\pi_{j^*}\subseteq T_w$. If $j^*<i$, then $w\notin X_{j^*}$ and $z_w(w)=0$,
+contradicting $z_w(w)=1$. If $j^*=i$, some $p\in\pi_i-w$ lies in~$S_w$, while $p,w\in S_{r_i}$: a recovery triangle. So $j^*>i$,
+$w\in X_{j^*-1}$, and $\pi_{j^*}\subseteq S_w$. For immediate closure, a member~$w$ of the last block with $T_w\subseteq X_t$ would
+have $z_w\in\operatorname{span}R_t$ and no later block. (c) The rows $z_v$, $v\in I$, are independent, since $z_v(v)=1$ and
+$z_v(u)=0$ for $u\in I-v$, and they are supported in $I\cup\bigcup_{v\in I}S_v$; apply \cref{lem:SH-axioms}(b).
+\end{informalproof}
+
+\begin{lemma}[The odd-state lemma]\label{lem:SH-OS}
+\notformalized
+Assume (S1) and (S2). For every $t\ge0$: if a neutral run with at least one move reaches an odd good state $X\ne V$ with
+$\card{\mathrm{NC}(X)}\le t$, there is a contradiction.
+\end{lemma}
+
+\begin{informalproof}
+By induction on~$t$; the cases that invoke the hypothesis for $t-1$ do not arise when $t=0$. Extend the run by neutral moves
+only, so that all states are good.
+
+\emph{Phase O.} At the current odd state $X'\ne V$: (O1) a vertex with exactly one pending vertex gives a contradiction;
+(O2) otherwise, if a light vertex~$u$ has $\card{P(u)}=2$, make that move, which keeps the state odd, and if it yields~$V$, its
+last block is a pair, contradicting immediate closure; (O3) otherwise, if a heavy vertex~$g$ has $\card{P(g)}=2$, make that
+move: the new state is odd with $g$ closed, so either it is~$V$, contradicting immediate closure, or it has at most $t-1$
+non-closed heavy vertices and the induction hypothesis gives a contradiction; (O4) otherwise every vertex of $\mathrm{Out}(X')$
+is heavy with exactly three pending vertices, by \cref{lem:SH-tools}(a) and because $v_0$ is closed. By
+\cref{lem:SH-axioms}(d), $\mathrm{Out}(X')\ne\emptyset$, so $t\ge1$; go to Phase~E with $Z=X'$ and some $h\in\mathrm{Out}(Z)$.
+Every move enlarges the state, so Phase~O ends.
+
+\emph{Phase E.} Let $P=P_Z(h)=\{t_1,t_2,t_3\}$. The move $(h,P)$ is neutral at the odd state~$Z$; $X_0=Z\cup P$ is an even good
+state, $h$ is closed, $\card{\mathrm{NC}(X_0)}\le t-1$, and $R_{X_0}=R_Z\cup\{z_h\}$ with every row of~$R_Z$ supported in~$Z$. No
+$t_i$ points to another, since $M$ has no recovery triangle, and all $t_i$ are light by~(S2). Below, a \emph{state} is a good
+state reached from~$X_0$ by a neutral run, and $Y=V\setminus X$; $\card Y$ is odd at even states.
+
+\emph{(F1) No early singles.} At an even state with $\card Y\ge3$, no vertex has exactly one pending vertex: that move is neutral
+and leads to an odd good state $\ne V$ with at most $t-1$ non-closed heavy vertices, contradicting the induction hypothesis.
+
+\emph{(F2) Pair coincidence.} At an even state with $\card Y\ge3$, any two pending sets of size exactly~$2$ are equal. We argue
+by induction on~$\card Y$. Let $q_1=P_X(u_1)\ne q_2=P_X(u_2)$ have size~$2$. If $\card Y=3$, then $Y=\{p,q,s\}$ with
+$q_1=\{p,q\}$ and $q_2=\{p,s\}$. Make the move $(u_1,q_1)$; at the even proper state $V-s$, \cref{lem:SH-axioms}(d) gives a
+vertex with pending set~$\{s\}$; add~$s$. This neutral run ends at~$V$, where $\operatorname{span}R=\mathcal C^\perp\ni z_p$, so
+by \cref{lem:SH-tools}(b) with $w=p$ the block $\{s\}$ lies in~$S_p$; but $p,s\in S_{u_2}$, a recovery triangle. If
+$\card Y\ge5$ and $\card{q_1\cap q_2}=1$, the move $(u_1,q_1)$ leaves $u_2$ with a single pending vertex at an even state with
+$\card Y-2\ge3$, contradicting~(F1). So $q_1\cap q_2=\emptyset$. Let $X_2=X\cup q_2$, after the move of~$u_2$, and
+$X_{12}=X\cup q_1\cup q_2$, after the moves of $u_1$ and then~$u_2$; both have last block~$q_2$. Let $c\in q_2$. By immediate
+closure at~$X_2$, $P_{X_2}(c)\ne\emptyset$, and by~(F1) at~$X_2$ it does not have size~$1$. If it has size~$2$, the inductive
+hypothesis at~$X_2$, applied to $c$ and~$u_1$, whose pending set there is still~$q_1$, gives $P_{X_2}(c)=q_1$; then
+$P_{X_{12}}(c)=\emptyset$, contradicting immediate closure at~$X_{12}$. So $\card{P_{X_2}(c)}\ge3$ and $c$ is heavy, by
+\cref{lem:SH-tools}(a). Then both members of~$q_2$ are heavy and lie in~$S_{u_2}$, contradicting~(S1).
+
+\emph{(F3) The final count.} By immediate closure at~$X_0$, every~$t_i$ has $P_{X_0}(t_i)\ne\emptyset$. If $\card{V\setminus X_0}\ge3$,
+then by (F1) and \cref{lem:SH-tools}(a) $\card{P_{X_0}(t_i)}=2$, and by~(F2) all three pending pairs equal one pair~$p$. A light
+$t_i$ with $\card{S_{t_i}}=3$ has $h\in S_{t_i}$ by $(\star\star)$, since $h$ points to~$t_i$, so $S_{t_i}=\{h\}\cup p$; otherwise
+$S_{t_i}=p$. Then $\card{P\cup\bigcup_iS_{t_i}}\le6<7$, contradicting \cref{lem:SH-tools}(c) with $I=P$. If
+$V\setminus X_0=\{w\}$, every~$t_i$ points to~$w$. Make the move $(t_1,\{w\})$, reaching~$V$. Then $z_{t_2}\in\operatorname{span}R$,
+and $z_{t_1}$ is the only row of~$R$ that is nonzero at~$w$, so $z_{t_2}=\lambda z_{t_1}+y$ with
+$\lambda=M_{t_2w}/M_{t_1w}\ne0$ and $y\in\operatorname{span}R_{X_0}$. Now $y(t_2)=1$ and $y(t_3)=0$, because $t_1$ points to
+neither. Every row of~$R_Z$ vanishes on~$P$, so $y|_P=\mu z_h|_P$ for some~$\mu$; $z_h(t_3)\ne0$ forces $\mu=0$, and then
+$y(t_2)=0$, a contradiction.
+\end{informalproof}
+
+Since $\mathrm{NC}(X)\subseteq H$, \cref{lem:SH-OS} with $t=\card H$ says that in a minimal counterexample no neutral run with at
+least one move reaches an odd good state other than~$V$.
+
+\emph{The start.} By \cref{lem:SH-axioms}(c), $\card{S_v}\ge2$ for all~$v$; light vertices have $\card{S_v}\le3$ and heavy ones
+$\card{S_v}\in\{3,4\}$.
+\emph{Case 1: some $v_0$ has $\card{S_{v_0}}=2$.} The move $(v_0,S_{v_0})$ is neutral and gives the odd good state $T_{v_0}$. If
+$T_{v_0}=V$, immediate closure gives a contradiction; otherwise \cref{lem:SH-OS} does.
+\emph{Case 2: no $\card{S_v}=2$, and some heavy~$h$ has $\card{S_h}=3$.} The move $(h,S_h)$ is neutral at $\card X=1$ and gives the
+even good state $X_0=T_h$ with $h$ closed. This is Phase~E with $Z=\{h\}$, $P=S_h$ and $R_Z=\emptyset$: the $t_i$ are light
+by~(S2), (F1) holds by \cref{lem:SH-OS} with $t=\card H$, and (F2) and~(F3) give a contradiction.
+\emph{Case 3: every light~$v$ has $\card{S_v}=3$ and every heavy~$v$ has $\card{S_v}=4$.} By $(\star\star)$ and $(\star4)$ every
+in-neighbour of~$v$ lies in~$S_v$; summing, in-sets and recovery sets have the same total size, so they coincide and the relation
+is symmetric. Its graph~$\Gamma$ is triangle-free, with light vertices of degree~$3$ and heavy ones of degree~$4$. The degree sum
+$3N+\card H$ is even and $N$ is odd, so $\card H$ is odd and $H\ne\emptyset$. Pick $h\in H$ and $v_0\in S_h$. Then $v_0$ is light
+by~(S2), $S_{v_0}=\{h,s_1,s_2\}$, and $s_1,s_2$ are light by~(S1), since $v_0$ points to~$h$. The move $(v_0,S_{v_0})$ is neutral at
+$\card X=1$, and $X_0=\{v_0,h,s_1,s_2\}$ is an even good state. (F1) and~(F2) hold at the even states reached from~$X_0$, with the
+same proofs, using \cref{lem:SH-OS} with $t=\card H$. The vertex~$h$ and its four neighbours give $N\ge5$. If $N=5$, the
+neighbours of~$h$ are pairwise non-adjacent and would have degree~$1$. If $N=7$, each neighbour of~$h$ needs its two further
+neighbours among the remaining two vertices, which then have degree at least~$4$, so a neighbour of~$h$ points to two heavy
+vertices, contradicting~(S1). So $N\ge9$. Since $\Gamma$ is triangle-free, $S_{s_i}\cap X_0=\{v_0\}$, so $P_{X_0}(s_i)$ has size~$2$,
+and by~(F2) both pending sets equal one pair~$p_1$, as $\card{V\setminus X_0}\ge5$. Make the move $(s_1,p_1)$; $X_1=X_0\cup p_1$ is
+an even good state with $\card{V\setminus X_1}\ge3$. By~(S1) some $a\in p_1$ is light. As $a\in S_{s_1}\cap S_{s_2}$, symmetry gives
+$S_a=\{s_1,s_2,x\}$, so $P_{X_1}(a)\subseteq\{x\}$; by immediate closure it is nonempty, and $a$ has a single pending vertex,
+contradicting~(F1).
+
+All cases are contradictory, which proves \cref{thm:SH} in the separated case.
+
+\emph{At most two heavy vertices.} The class of matrices satisfying the hypotheses with $\card H\le2$ is hereditary; take a minimal
+counterexample. \Cref{lem:SH-axioms,lem:SH-tools} hold, and we prove the odd-state lemma for $t\le2$ with two changes. In~(F2),
+the members~$c$ of~$q_2$ with $\card{P_{X_2}(c)}\ge3$ are heavy and non-closed at~$X_2$, and $\mathrm{NC}(X_2)\subseteq\mathrm{NC}(X_0)$
+has at most $t-1\le1$ element, so not both members of~$q_2$ can be of this kind: (F2) holds without~(S1). In~(F3), $P$ contains at
+most one heavy vertex, since a heavy member of~$P$ is non-closed at~$X_0$ by immediate closure. If it contains none, (F3) applies
+verbatim. Otherwise let $t_3=g$ be heavy and $t_1,t_2$ light. If $\card{V\setminus X_0}\ge5$, then as in~(F3) $t_1$ and~$t_2$ have
+the same pending pair $p_1=\{a,b\}$; make the move $(t_1,p_1)$, reaching an even good state~$X_1$ with
+$\card{V\setminus X_1}\ge3$. The vertices $a,b$ are light, since $g$ is the only non-closed heavy vertex. By immediate closure
+and~(F1) at~$X_1$ each of them has a pending pair, the same pair~$p_2$ by~(F2). Both $t_1$ and~$t_2$ point to~$a$, so if
+$\card{S_a}=3$, $(\star\star)$ would give $S_a\supseteq\{t_1,t_2\}\cup p_2$, four elements; hence $S_a=p_2$, and likewise
+$S_b=p_2$, and \cref{lem:SH-tools}(c) with $I=\{a,b\}$ is contradicted, as $\card{\{a,b\}\cup p_2}=4<5$. If
+$V\setminus X_0=\{a,b,w\}$ with $p_1=\{a,b\}$ the common pending pair of $t_1$ and~$t_2$, make the move $(t_1,p_1)$ and then add~$w$,
+using \cref{lem:SH-axioms}(d) at $V-w$; $t_2$ does not point to~$w$, and the last row is the only row nonzero at~$w$, so in the
+expansion of $z_{t_2}$ that row has coefficient~$0$; the rows of $R_{X_0}$ vanish on~$p_1$, so $z_{t_2}$ agrees on~$p_1$ with
+$\lambda z_{t_1}$ for some $\lambda\ne0$, and $y=z_{t_2}-\lambda z_{t_1}\in\operatorname{span}R_{X_0}$ has $y(t_2)=1$ and $y(g)=0$,
+while $y|_P=\mu z_h|_P$ forces $\mu=0$: a contradiction. If $V\setminus X_0=\{w\}$, argue as in~(F3), with $t_3=g$. The starts are as
+before: Cases 1 and~2 use the modified (F2) and~(F3), and in Case~3 the relation is symmetric and $\card H$ is odd, so $\card H=1$,
+where (S1) and~(S2) hold. This completes the proof of \cref{thm:SH}.
+
+\begin{remark}[Where the argument stops]\label{rem:SH-stop}
+Within the odd-state lemma, (S1) is used only at the end of~(F2) and (S2) only to make the members of a triple block light; the
+starting cases use them as well. Without them the argument fails exactly at two configurations: two vertices whose pending pairs are
+disjoint and consist of four heavy vertices, and a triple block of a heavy vertex that contains a heavy vertex. So a minimal
+counterexample to the general degree-four question has heavy vertices at distance at most two, and the contradiction tree of the
+argument must break at a cluster of heavy vertices.
+\end{remark}
+
+\begin{remark}[Numerical: small cases]\label{rem:SH-small}
+Exact searches over~$\F_2$ for all digraphs satisfying the hypotheses of \cref{thm:SH} with at most nine vertices, with a
+positive control that allows recovery triangles, found no counterexample; such small cases cannot test the asymptotic
+question.
+\end{remark}

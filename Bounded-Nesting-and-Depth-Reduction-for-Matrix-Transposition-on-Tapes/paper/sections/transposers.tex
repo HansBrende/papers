@@ -1,0 +1,177 @@
+\section{Consequences for transposers}\label{sec:transposers}
+
+Theorem~D of the fourth paper (\cref{thm:D4}) excludes oblivious linear-time transposers under two hypotheses, depth
+reduction and the crux. For machines whose work heads enter every cell boundedly often, Theorem~F supplies the first: the
+crux alone excludes them (Corollary~F). \emph{Directed Recovery Structures in Tape Computations} shows that the cone
+relations of every linear-time schedule are paired-distance separated after paid trimming, and asks whether all codes on
+such relations have rate at most $\frac12+o(1)$~\cite[Question~9.1]{DirectedRecovery2026}; an affirmative answer excludes
+bounded-entry transposers, oblivious (Corollary~F$'$) or of low adaptivity (Corollary~F$''$). Theorem~M gives the analogous
+statement for machines with one unrestricted work head (\cref{cor:M-machine}).
+
+\subsection{Corollary F}\label{sec:trans-F}
+
+\begin{corollary}[Corollary F: the crux excludes bounded-entry oblivious transposers]\label{cor:F}
+\notformalized
+Let $k\ge1$, $\beta\ge2$ and $V\ge1$ be integers, $C\ge1$ and $0<\eps\le1$, and put
+\[
+  D_1=\DF\bigl(k,2V-1,\eps/(4\beta C)\bigr),\qquad P=\lceil4\beta C/\eps\rceil,\qquad D=D_1P .
+\]
+Suppose that $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds for some $\rho>\eps$. Then for every machine~$M$ with $k$ work
+tapes and value width at most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ do the following hold together at
+$L=d^2b(d)$: $M$ is oblivious at length~$L$ with halting time $T\le C(L+1)$; every work-tape cell is entered at most $V$
+times on $[0,T)$; and $M$ transposes all $d\times d$ matrices with $b(d)$-bit entries.
+\end{corollary}
+
+\begin{informalproof}
+Let $d_0$ be given by the crux for $\eta=(\rho-\eps)/2$, and suppose the three conditions hold at some $d\ge d_0$. By
+\cref{cor:owner-load} the long hops of the work-head walks have owner-load at most $2V-1$, so \cref{thm:F}, at
+$\eps'=\eps/(4\beta C)\in(0,1/8]$, gives a cut of the walk DAG with at most $\eps'T$ edges and depth less than~$D_1$. By
+\cref{lem:cut-genie} the dependency DAG has a genie~$\Gamma$ of cost at most $\eps L$ and full depth less than~$D$. As in the
+proof of Theorem~D, $M$ appends exactly $L$ output bits, $I_\Gamma\in\mathcal S_{k,C,\beta,D}$, and the revealed word
+$G_\Gamma$ is an index code for~$I_\Gamma$ with at most $\eps L$ bits, by the cone lemma~\cite[Corollary~4.5]{FourthPaper2026}
+(a written proof there), while the
+crux requires at least $(\rho-\eta)L>\eps L$ bits. The input head needs no hypothesis: it adds no edge to the dependency DAG.
+\end{informalproof}
+
+So the crux alone, at the depth~$D$ and a rate above~$\eps$, excludes oblivious linear-time transposers whose work heads
+enter every cell $O(1)$ times, whatever the coupling, drift and scales of the heads and whatever the input head does.
+Here $\log_2D\approx512k^3(2V-1)^3\beta C/\eps$, so the crux is needed at a rate exceeding about
+$512k^3(2V-1)^3\beta C/\log_2D$, the analogue of the rate $456k^3(1+A)\beta C/\log_2D$ needed for home-based
+heads~\cite[Remark~4.15]{FourthPaper2026}.
+
+\begin{remark}[Which machines are new]\label{rem:calibration}
+Bounded entry allows unboundedly many reversals. A machine whose work heads make at most $r$ reversals each enters every
+cell at most $r+1$ times, since each head's motion splits into $r+1$ weakly monotone pieces, each of which visits a cell in
+one run; a bound on the number of visits counted in time steps does not cover such machines, because a head may wait on a
+cell. Such a head has at most $r+1$ legs, each contributing at most~$T$ to its leg area about its start cell, so it satisfies
+the area hypothesis of the fourth paper's Corollary~B~\cite[Corollary~4.23]{FourthPaper2026} with $A=r+1$, and that corollary, like Corollary~F, puts no
+condition on the input head. Relative to Corollary~B, Corollary~F is therefore new exactly for bounded-entry heads whose leg
+area is superlinear about every home; such heads reverse unboundedly often. Conversely, home-based heads may enter cells
+near home unboundedly often, so the two corollaries are incomparable. Relative to the unconditional bounds, Corollary~F
+also allows the input head to move freely: machines whose heads, the input head included, make $o(\log d)$ reversals in
+all cannot transpose at all, oblivious or not, by the first paper's pass bound, Lean-verified
+there~\cite[Theorems~5.9 and~5.12]{FirstPaper2026}, and conservative reversal-bounded machines are excluded by Kirchherr's
+bound~\cite{Kirchherr1988}.
+\end{remark}
+
+\subsection{Corollaries F\texorpdfstring{$'$}{'} and F\texorpdfstring{$''$}{''}}\label{sec:trans-Fprime}
+
+Question~9.1 of \emph{Directed Recovery Structures} asks: for a fixed degree bound~$\Delta$ and recovery relations $N_j$ on
+finite sets $V_j$ with $\card{V_j}\to\infty$, whose incidence graphs have maximum degree at most~$\Delta$ and satisfy
+the paired-distance condition, must every sequence of storage codes have rate at most $\frac12+o(1)$, for every
+alphabet?~\cite[Question~9.1]{DirectedRecovery2026} The incidence graph has vertices $L_p$ and $R_p$ for every
+coordinate~$p$ and an edge $L_pR_q$ whenever $p\in N(q)$; the paired-distance condition says that, for every fixed~$r$, only
+$o(\card{V_j})$ coordinates have $L_p$ and $R_p$ at distance at most~$r$~\cite[Definition~2.3]{DirectedRecovery2026}. The
+same paper proves that the cone relations $N_\Gamma(q)=I_\Gamma(\tpos(q))$ of every schedule with $T\le c(L+1)$, $k$ work
+tapes and a genie of fixed full depth satisfy this condition after the paid deletion of a small fixed fraction of
+coordinates of high reuse~\cite[Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}, both partly formalized there, with
+written proofs of the native realization and transport estimates and of the cone-size premise; this holds also for a single
+frozen trace of an adaptive machine, as argued in prose in~\cite[Remark~3.9]{DirectedRecovery2026}. It proves, with a written
+proof that is not formalized, that an affirmative answer to Question~9.1 for every~$\Delta$ gives rate at most
+$\frac12+o(1)$ for all codes on these cone relations, uniformly over the schedules and
+genies~\cite[Proposition~9.2]{DirectedRecovery2026}; the proof of that proposition uses the schedule only through the cone
+bound, the paid trimming and the paired-distance theorem.
+
+\begin{corollary}[Corollary F$'$: Question 9.1 excludes bounded-entry oblivious transposers]\label{cor:Fprime}
+\notformalized
+Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed~$\Delta$; the binary
+alphabet suffices. Then for all integers $k,V\ge1$ and every $c>0$, no machine with $k$ work tapes is, for infinitely
+many~$d$, oblivious at length $L=d^2b(d)$, a transposer of all $d\times d$ matrices within $c(L+1)$ steps, and such that
+every work-tape cell is entered at most $V$ times.
+\end{corollary}
+
+\begin{informalproof}
+Let $M$ be such a machine, $\beta=\beta(M)$, $C=\max(c,1)$ and $\eps=1/4$. At each such~$d$, as in the proof of
+Corollary~F, \cref{thm:F} and \cref{lem:cut-genie} give a genie~$\Gamma$ of cost at most $L/4$ and full depth at most a
+constant~$D$ depending only on $k$, $V$, $\beta$ and~$C$. The revealed word is an index code for~$I_\Gamma$, so its fibres
+are binary storage codes for the cone relation $N_\Gamma$~\cite[Remark~4.9(b)]{FourthPaper2026}, and some fibre has at least
+$2^{3L/4}$ words. By~\cite[Proposition~9.2]{DirectedRecovery2026}, applied with $k$ work tapes, linear-time constant~$c$ and
+cone depth~$D$, every binary storage code on these relations has at most $2^{(1/2+o(1))L}$ words. This is a contradiction
+for large~$d$.
+\end{informalproof}
+
+For home-based schedules the same conclusion is the remark of \emph{Directed Recovery Structures} that every class of
+schedules with arbitrarily cheap genies of fixed depth would be excluded by the all-code half bound
+\cite[Section~9.1]{DirectedRecovery2026}, combined with the fourth paper's Corollary~B; the bounded-entry class is supplied by
+Theorem~F. The same argument extends to adaptive machines whose traces have entropy at most $\eta L$ for a fixed
+$\eta<\frac12$, provided that every trace of probability at least $2^{-\eta L}$ has bounded entry.
+
+\begin{corollary}[Corollary F$''$: low adaptivity]\label{cor:Fsecond}
+\notformalized
+Let $k,V\ge1$ be integers, $c>0$ and $0\le\eta<1/2$. Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an
+affirmative answer for every fixed~$\Delta$. Then for every machine~$M$ with $k$ work tapes there is~$L_0$ such that at no
+length $L=d^2b(d)\ge L_0$ does $M$ have the following three properties:
+\begin{enumerate}[label=(\roman*)]
+\item on every input~$X$ it halts within $c(L+1)$ steps with output $X^\T$;
+\item every trace of probability at least $2^{-\eta L}$, for a uniformly random input, enters every work-tape cell at most
+$V$ times (for instance, every trace does);
+\item the trace $\tau(X)$ has Shannon entropy $H(\tau(X))\le\eta L$ for a uniformly random input (for instance, at most
+$2^{\eta L}$ distinct traces occur).
+\end{enumerate}
+For $\eta=0$ this is Corollary~F$'$. The proof uses only one trace: (ii) and~(iii) may be replaced by the single condition
+that some trace of probability at least $2^{-\eta L}$ enters every work-tape cell at most $V$ times.
+\end{corollary}
+
+\begin{informalproof}
+Fix $\eps\in(0,1]$ with $\eta+\eps<\frac12$, and let $D(\eps)$ be the full depth that \cref{thm:F} and
+\cref{lem:cut-genie} give, as in the proof of Corollary~F$'$, for $k$, $V$, $\beta(M)$, $c$ and~$\eps$. Suppose that $M$ has the
+three properties at a length~$L$. Since $H(\tau(X))\ge-\log_2\max_\tau\Pr[\tau(X)=\tau]$, some trace~$\tau_0$ has
+probability at least $2^{-\eta L}$; let $W$ be the set of inputs that follow it, so $\card W\ge2^{(1-\eta)L}$. All runs on~$W$
+share the dependency DAG $H_{\tau_0}$ of the trace (\cref{sec:prelim-tcp}), and the local recursion and the cone lemma of the
+fourth paper~\cite[Lemma~4.2, Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, which have written proofs there, hold for all
+pairs of inputs in~$W$, because their proofs use only the common schedule. By~(ii), $\tau_0$ has bounded entry, so
+\cref{thm:F} and \cref{lem:cut-genie}, applied to $H_{\tau_0}$, give a genie~$\Gamma$ of cost at most $\eps L$ and full depth
+at most~$D(\eps)$. For a value~$g$ of the revealed word,
+the set $W_g$ of inputs in~$W$ with revealed word~$g$ is a storage code for the cone relation of $\tau_0$: two of its inputs that
+agree on $N_\Gamma(q)$ produce the same output bit at position $\tpos(q)$, which by correctness is their bit~$q$. Some~$g$ has
+$\card{W_g}\ge2^{(1-\eta-\eps)L}$. The paired-distance theorem and its corollaries hold for one frozen trace
+\cite[Remark~3.9]{DirectedRecovery2026}, and the proof of~\cite[Proposition~9.2]{DirectedRecovery2026} uses the schedule only
+through them, so it bounds $\log_2\card{W_g}$ by $(\frac12+o(1))L$, uniformly in the trace, with $o(1)$ depending only on
+$k$, $c$ and $D(\eps)$. Since $\eta+\eps<\frac12$, this is a contradiction for all $L\ge L_0$, for a suitable $L_0$.
+\end{informalproof}
+
+The trace's information is paid for once, in the choice of~$\tau_0$. This is the kind of paid treatment of adaptivity that
+the fourth paper anticipated, with a coding bound for codes that are correct only on a large set of
+inputs~\cite[Remark~4.24]{FourthPaper2026}, and that \emph{Directed Recovery Structures} leaves open in
+general~\cite[Section~9.3]{DirectedRecovery2026}; here it is available only for traces of entropy below~$L/2$.
+
+\begin{remark}[A weak form of Question 9.1 suffices]\label{rem:weak-crux}
+Corollary~F$'$ does not need rate $\frac12$. The paired-distance condition is a property of sequences of relations.
+Suppose that along every sequence of relations of incidence degree at most~$\Delta$ that satisfies it, all codes have rate at
+most $1-\rho(\Delta)+o(1)$. The argument of Corollary~F$'$, with the paid trimming
+of~\cite[Corollary~3.8]{DirectedRecovery2026} at the threshold $\lceil B/\delta\rceil$, where $B=\sum_{i\le D(\eps)}(k+1)^i$
+bounds the cone sizes, then works as soon as $(1-\delta)\rho(\Delta)>\eps$ for some $\delta\in(0,1)$ and $\eps\in(0,1]$
+with $\Delta=\lceil B/\delta\rceil$. Since $D(\eps)$ is exponential in $1/\eps$, $\log\log\Delta$ is of order $1/\eps$, and a
+deficit with $\rho(\Delta)\log\log\Delta\to\infty$ suffices. For Corollary~F$''$ the deficit must exceed $\eta$ as well.
+\emph{Directed Recovery Structures} makes the same qualitative point: a deficit works if the cost of the genie can be chosen
+below it before the depth is fixed~\cite[Section~9.1]{DirectedRecovery2026}.
+\end{remark}
+
+\subsection{One unrestricted head}\label{sec:trans-M}
+
+\begin{corollary}[Machine form of Theorem M]\label{cor:M-machine}
+\notformalized
+Let $k\ge2$, $\beta\ge2$, $\ell\ge1$, $q\ge1$ and $h\ge0$ be integers, $C\ge1$ and $0<\eps\le1$, and put
+$D=\DM(k-1,\ell,q,h,\eps/(4\beta C))\cdot\lceil4\beta C/\eps\rceil$. Suppose that $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds
+for some $\rho>\eps$. Then for every machine~$M$ with $k$ work tapes and value width at most~$\beta$ there is~$d_0$ such that
+for no $d\ge d_0$ is $M$ oblivious at length $L=d^2b(d)$ with halting time at most $C(L+1)$, a transposer of all
+$d\times d$ matrices, and such that all its work heads but one have long hops of owner-load at most~$\ell$ whose family bands
+are covered by $q$ windows of width~$h$. The same holds with Question~9.1, in the form of Corollary~F$'$.
+\end{corollary}
+
+\begin{informalproof}
+The proof of Corollary~F uses Theorem~F only through a cut of the walk DAG with at most $\eps T/(4\beta C)$ edges and depth less
+than~$D_1$. \Cref{thm:M}, applied with the unrestricted work head as~$x_0$ and the long hops of the other $k-1$ work heads
+as~$H'$, at $\eps/(4\beta C)$, supplies such a cut with $D_1=\DM(k-1,\ell,q,h,\eps/(4\beta C))$.
+\end{informalproof}
+
+Corollary~F also holds with an owner-load hypothesis on all work heads instead of bounded entry, with
+$D_1=\DF(k,\ell,\eps/(4\beta C))$, since its proof uses only the owner-load. Together the two corollaries say the following.
+Let $0<\eps\le1$ and $\rho>\eps$, and let $M$ be oblivious with $k\ge2$ work tapes and value width at most~$\beta$,
+transposing within $C(L+1)$ steps. For fixed $\ell$, $q$ and~$h$, if $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds at the depth
+$D=\DF(k,\ell,\eps/(4\beta C))\cdot\lceil4\beta C/\eps\rceil$ and at the depth~$D$ of \cref{cor:M-machine}, then at all
+large lengths $M$ has at least two work heads of owner-load greater than~$\ell$, or exactly one, while the family bands of
+the other work heads are not covered by $q$ windows of width~$h$. Which of the two a transposer would use is open. The first paper's pass bound forces $\Omega(\log d)$
+reversals~\cite[Theorem~5.12]{FirstPaper2026}, but one head of owner-load one and a single scale supplies them: a zigzag of
+amplitude about $L/\log d$ has one family band, up to the families truncated at the ends, and makes $\log d$ reversals of
+amplitude larger than any smaller scale. So the pass bound does not force the case of many scales.

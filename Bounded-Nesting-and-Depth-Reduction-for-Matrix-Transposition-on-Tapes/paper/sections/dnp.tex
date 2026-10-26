@@ -1,0 +1,590 @@
+\section{The deep-nesting pair}\label{sec:dnp}
+
+The deep-nesting pairs of \cref{sec:prelim-dnp} have two heads of unbounded owner-load as $m$ grows, so they escape
+Theorems F and~M, and they remain the sharpest open instance of $\TCP(2)$. This section proves three things about them.
+A single turn counter serves every level of both heads at $\log_2q=m+O(\log(1/\theta))$ and cuts the pair at depth
+$2^{m+O(1)}/\eps$ (\cref{sec:dnp-counter}); so Conjecture~A$'$ can hold only with $C\ge1$, and the depth question is
+exponential against subexponential in~$m$. Fine levels are \emph{blind}: on average over shifts, a class with $g$ levels
+below it sees a turn of the other head on at most a fraction $(g+3+\lceil\log_2(g+2)\rceil)/(m+1)$ of its hops, for every
+label that changes only at turns (\cref{sec:dnp-blind}). Coarse levels are \emph{visible}: for the block labels that serve one head
+cheaply, a fixed fraction of the apex hops of every coarse class of the other head sees a cancellation at full size, an
+other-head increment of at most $-Q-1$, on average over shifts (\cref{sec:dnp-visible}). Blindness leaves a weaker form of Conjecture~A$'$, which still gives
+exponential depth (\cref{conj:App}).
+
+Throughout, $x_1=U(s_0,m,1)$ and $x_2=x_1(\cdot+\xi)$ for an integer shift~$\xi$, with $s_0>m$, $\Lambda=2^{s_0}$,
+$R_i=2^{s_0-i}$, $n_i=m-i+1$ and $P=4(m+1)\Lambda$, as in \cref{sec:prelim-dnp}.
+
+\subsection{Turns and classes}\label{sec:dnp-classes}
+
+Let $B$ be a V of level $k\ge1$ of a head, attached at its base~$b$ to a stroke of direction~$\sigma$, with apex~$\alpha$,
+valley~$\nu$ and valley cell $v=b-\sigma R_k$. Its back stroke is a segment from $b$ to~$v$ followed, if $k<m$, by the V
+$C_{k+1}$ of level $k+1$ attached at~$v$; for $k+1<l\le m$ let $C_l$ be the V of level~$l$ attached at the end of the segment
+of the forward stroke of $C_{l-1}$. By \cite[Lemma~5.4(a)]{FourthPaper2026}, which has a written proof there, $C_l$ is attached at~$v$, has valley cell
+$v+\sigma R_l$, stays between $v$ and $v+\sigma R_l$, and ends at time~$\nu$, since $C_{k+1}$ ends the back stroke of~$B$ and
+$C_{l+1}$ ends the forward stroke of~$C_l$; its valley time is $\nu-n_lR_l$. We call $C_{k+1},\dots,C_m$ the \emph{chain}
+of~$B$, and put $R_{m+1}=0$.
+
+\begin{lemma}[Turns and classes]\label{lem:dnp-classes}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item Each head has $2^{m+3}-6$ turns per period, and the pair has $N_P=2^{m+4}-12$.
+\item For $1\le k\le m$, the hops of level~$k$ of a head are exactly the following $2R_k$ hops for each V~$B$ of level~$k$ of
+that head, in the notation above: the \emph{apex hops} $(\alpha-d,\alpha+d)$, $1\le d\le R_k$, and the \emph{valley hops} at
+the cells $v+\sigma x$, $1\le x\le R_k$, whose later endpoint is $\nu+x$. For $d<R_k$ the only turn of the head in the
+half-open interval $(\alpha-d,\alpha+d]$ of an apex hop is~$\alpha$. For $k\le l\le m$ and $R_{l+1}<x<R_l$, the valley hop at
+$v+\sigma x$ is
+\[
+  \bigl(\nu-(m-l)R_l-x,\ \nu+x\bigr),
+\]
+and the turns of the head in its half-open interval are $\nu$ and the turns of $C_{l+1}$ (only $\nu$ if $l=m$).
+\item On the $r$-fold cover each head has exactly $4r\Lambda$ hops of each level $i\in\{0,\dots,m\}$; so every class has
+$n_{\mathrm h}/(2(m+1))$ hops, and the hops of~(b) other than those listed with $d<R_k$ or $R_{l+1}<x<R_l$, the
+\emph{boundary hops}, are a fraction $(m-k+2)/(2R_k)$ of the class.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) The turns are the apex and valley times of the V's, two per V, and two tips per period; a period contains $2^{i+1}$ V's
+of level~$i$ (\cref{sec:prelim-dnp}). So each head has $2+\sum_{i=1}^m2^{i+2}=2^{m+3}-6$ turns per period.
+
+(b) The V~$B$ is attached at the end of the segment of a stroke of level $k-1$, which has $R_{k-1}=2R_k$ steps in
+direction~$\sigma$ and ends at~$b$ at time~$\alpha$; the back stroke starts with a segment of $R_k$ steps in
+direction~$-\sigma$. So for $1\le d\le R_k$ the cell $b-\sigma d$ is visited at $\alpha-d$ and at $\alpha+d$ and not in
+between, and for $d<R_k$ the only turn in $(\alpha-d,\alpha+d]$ is~$\alpha$. For the valley hops, the forward stroke of~$B$
+starts with a segment from~$v$ to~$b$, so $v+\sigma x$ is visited at $\nu+x$ for $1\le x\le R_k$, and before that time,
+after~$\nu$, it is not visited. Let $R_{l+1}<x<R_l$. If $l=k$, the chain stays between $v$ and $v+\sigma R_{k+1}$, so the
+last visit before~$\nu$ is by the back segment, at time $\alpha+R_k-x=\nu-(m-k)R_k-x$, using $\nu=\alpha+n_kR_k$. If
+$l>k$, the forward segment of~$C_l$ runs from $v+\sigma R_l$ to~$v$ starting at time $\nu-n_lR_l$, and afterwards $C_{l+1}$
+stays between $v$ and $v+\sigma R_{l+1}$; so the last visit is at $\nu-n_lR_l+R_l-x=\nu-(m-l)R_l-x$, after the valley
+time of~$C_l$. In both cases the turns in the half-open interval are those of $C_{l+1}$ and~$\nu$, because $\nu+x$ lies
+before the apex of the V of the forward stroke, at $\nu+R_k$.
+
+The listed hops have level exactly~$k$. The only turn strictly inside an apex hop is~$\alpha$, since the times before~$\alpha$
+in the hop belong to the parent's segment and those after it to the back segment. A valley hop at $v+\sigma x$ has its
+earlier endpoint at or after~$\alpha$, because the back segment visits its cell at time $\alpha+R_k-x$, and its later
+endpoint is $\nu+x\le\nu+R_k$; so its interior lies in the span of~$B$, whose turns have level at least~$k$, and it contains
+the turn~$\nu$ of level~$k$. Each listed hop contains exactly one turn of level~$k$, the apex or the valley of~$B$, so it
+determines~$B$ and its type; within~$B$, the apex hops are distinguished by~$d$ and the valley hops by their cells. So the
+listed hops are distinct, and every head has at least $2^{k+1}\cdot2R_k=4\Lambda$ hops of level~$k$ per period, for
+$1\le k\le m$.
+
+(c) A hop has level~$0$ exactly when it contains a tip strictly inside. At a tip~$\tau$ the head is at $\pm\Lambda$, and for
+each of the other $2\Lambda$ cells of $[-\Lambda,\Lambda]$ exactly one hop of the head at that cell has $\tau$ in its
+half-open interval, hence in its open interval. No hop contains two tips: between consecutive tips the head sweeps all of
+$[-\Lambda,\Lambda]$, the second and third level-$0$ strokes of a period sweeping from $\Lambda$ to $-\Lambda$ and the fourth
+and first from $-\Lambda$ to $\Lambda$, and a hop at~$\pm\Lambda$ would contain the tip at its own cell. So each head has
+exactly $4\Lambda$ hops of level~$0$ per period. With~(b), every level has at least $4\Lambda$ hops per period and head, and
+there are exactly $P=4(m+1)\Lambda$ hops per period and head, one ending at every time. Hence every level has exactly
+$4\Lambda$, the list of~(b) is complete, and on the $r$-fold cover every class has $4r\Lambda=n_{\mathrm h}/(2(m+1))$ hops.
+The boundary hops are $m-k+2$ of the $2R_k$ hops of each V: $d=R_k$ and $x=R_l$ for $k\le l\le m$.
+\end{informalproof}
+
+The fourth paper defined service with the normalization $n_{\mathrm h}/(2(m+1))$ per class on the strength of numerical
+counts~\cite[Section~5.7]{FourthPaper2026}; \cref{lem:dnp-classes}(c) proves that every class has exactly this size. All
+turn times of head~$1$ are multiples of~$R_m$, and those of head~$2$ are congruent to $-\xi$ modulo~$R_m$; so for odd
+$\xi$ no time is a turn of both heads.
+
+\subsection{The turn counter}\label{sec:dnp-counter}
+
+\begin{theorem}[Turn counter]\label{thm:counter}
+\partformal{TurnCounter.lean}{turnCounter_cost}{part~(1), the hypotheses of the Lean theorem on the cover, and the counts
+of \cref{lem:dnp-classes}(a) and \cref{sec:prelim-dnp}, which rest on the fourth paper's Lemma~5.4 and its count of V's.}
+Let $\xi$ be any shift, $q\ge3$, and $r$ a multiple of $q/\gcd(q,N_P)$. On the $r$-fold cover let $\mathcal N(t)$, for
+$t\in[0,T)$, be the number of turns of either head at times in $[0,t]$, and $G(t)=\mathcal N(t)\bmod q$. Then:
+\begin{enumerate}[label=(\arabic*)]
+\item every hop $(p,u)$ has error $e=(\kappa-1)\bmod q\le\kappa-1$, where $\kappa\ge1$ is the number of turns of either
+head in the lifted interval $(p,u]$;
+\item $\desc(G)=rN_P/q$ and $q\cdot\cost(G)\le rN_P(4\Lambda+3)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}[Outline of the formal proof of the label arithmetic]
+The Lean theorem \lean{turnCounter_cost} concerns a finite set of times with a cyclic predecessor bijection and a finite set
+of hops arranged in closed chains, as in Lemma~Zq (\lean{MotionDepthCodes.lemma_Zq}). It assumes a label $G$ with values in
+$[0,q)$ that advances, modulo~$q$, by $\chi_t\in[0,q)$ at every time~$t$ and by $\kappa_h\ge1$ along every hop~$h$, and it
+concludes $q\cdot\cost(G)\le\sum_h\kappa_h+\sum_t\chi_t$ and $q\cdot\desc(G)=\sum_t\chi_t$. Its proof: Lemma~Zq writes
+$q\cdot\cost(G)$ as the number of hops plus the sum of the reduced errors plus $\sum_t\chi_t$, and each reduced error
+$(G(u)-G(p)-1)\bmod q=(\kappa_h-1)\bmod q$ is at most $\kappa_h-1$.
+\end{outline}
+
+\begin{proof}[Proof of~(1), of the hypotheses and of the counts (not formalized)]
+The times form the cycle $\Z_T$ under $t\mapsto t-1$, and the hops of each head at each cell form closed chains, each hop
+followed by the hop that starts at its later endpoint, since every time is the earlier and the later endpoint of exactly one
+hop of each head (\cref{sec:prelim-dnp}). Extend $\mathcal N$ to~$\Z$ by $\mathcal N(t+T)=\mathcal N(t)+rN_P$. Since $r$ is a multiple of $q/\gcd(q,N_P)$, $q$
+divides $rN_P$, so $G\equiv\mathcal N\pmod q$ on all of~$\Z$. Hence $G$ advances at each time~$t$ by the number $\chi_t$
+of turns at~$t$, at most $2<q$, and along each hop by the number~$\kappa$ of turns in its lifted half-open interval, which
+is at least~$1$ because the owner of the hop is a turn strictly inside it (\cref{sec:prelim-walks}). This gives~(1), since
+$e\equiv\kappa-1\pmod q$ and $\kappa-1\ge0$. Each turn is counted once in $\sum_t\chi_t$, so $\sum_t\chi_t=rN_P$ by
+\cref{lem:dnp-classes}(a). Each turn lies in the half-open intervals of exactly $2(2\Lambda+1)$ hops (\cref{sec:prelim-dnp}),
+so $\sum_h\kappa_h=rN_P\cdot2(2\Lambda+1)$. The Lean theorem then gives $\desc(G)=rN_P/q$ and
+$q\cdot\cost(G)\le rN_P(4\Lambda+2)+rN_P$.
+\end{proof}
+
+\begin{corollary}[The counter serves every level]\label{cor:counter-served}
+\notformalized
+In the setting of \cref{thm:counter}, let $0<\theta<1$. If $q\ge N_P(1+1/(2\Lambda))/\theta$, for instance if
+$q\ge20\cdot2^m/\theta$, then every level is doubly $\theta$-served. If moreover $q\ge32\cdot2^m/\theta$ and
+$\theta\le1/3$, then $\cost(G)\le\frac{11}{32}\,\theta\,n_{\mathrm h}/(m+1)\le n_{\mathrm h}/8$.
+\end{corollary}
+
+\begin{informalproof}
+By \cref{thm:counter}(1), the total error of all hops is at most $\sum_h(\kappa_h-1)<rN_P(4\Lambda+2)$, so every class has
+total error below this. It is at most $\theta qn_{\mathrm h}/(2(m+1))=4\theta qr\Lambda$ as soon as
+$q\ge N_P(4\Lambda+2)/(4\theta\Lambda)=N_P(1+1/(2\Lambda))/\theta$; and $N_P<2^{m+4}$, $\Lambda\ge2$. By
+\cref{thm:counter}(2), $\cost(G)/n_{\mathrm h}\le N_P(4\Lambda+3)/(8(m+1)\Lambda q)$, which for $q\ge32\cdot2^m/\theta$ is
+at most $\theta(4\Lambda+3)/(16(m+1)\Lambda)\le\frac{11}{32}\theta/(m+1)$, since $(4\Lambda+3)/\Lambda\le11/2$.
+\end{informalproof}
+
+\begin{corollary}[Conjecture A$'$ needs $C\ge1$]\label{cor:C1}
+\notformalized
+If Conjecture~A$'$ holds with constants $(\theta_0,C,C')$, then $C\ge1$.
+\end{corollary}
+
+\begin{informalproof}
+Put $\theta=\min(\theta_0,1/3)$ and $q=2^{m+5+\lceil\log_2(1/\theta)\rceil}\ge32\cdot2^m/\theta$. For every~$m$, every
+$s_0>m$ and every shift, in particular the one provided by the conjecture, \cref{cor:counter-served} gives a label on a cover of
+cost at most $n_{\mathrm h}/8$ that doubly $\theta_0$-serves all $m+1$ levels. Hence
+$m+1\le C(m+5+\lceil\log_2(1/\theta)\rceil)+C'$ for all~$m$, and letting $m\to\infty$ gives $C\ge1$.
+\end{informalproof}
+
+\begin{corollary}[Cutting the pair with a counter]\label{cor:counter-cut}
+\notformalized
+For every shift, every $\eps>0$ and every multiple~$T$ of~$P$, the walk DAG of the pair on $[0,T)$ has a cut of at most
+$\eps T$ edges and depth at most $\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil-1$. For $m\ge1$ and $\eps\le1$ this is smaller
+than the depth $\lceil12/\eps\rceil^{m+1}-1$ of the fourth paper's clock labels.
+\end{corollary}
+
+\begin{informalproof}
+Let $\mathcal N(t)$ be the number of turns of either head at times in $[0,t]$, $\Psi(t)=\mathcal N(t)\bmod q$, and call $t$
+a \emph{wrap time} if $\lfloor\mathcal N(t)/q\rfloor>\lfloor\mathcal N(t-1)/q\rfloor$. A hop $(p,u)$ with no wrap time
+in $(p,u]$ is not violated, since then $\Psi(u)-\Psi(p)=\mathcal N(u)-\mathcal N(p)\ge1$ by its owner. Descents occur only
+at wrap times. There are at most $\mathcal N(T-1)/q\le(T/P)N_P/q$ wrap times, and each lies in the half-open intervals of
+at most $2(2\Lambda+1)$ hops. So $\cost(\Psi)\le(T/P)N_P(4\Lambda+3)/q$, which is at most $\eps T$ for
+$q\ge N_P(4\Lambda+3)/(4(m+1)\Lambda\eps)$; this holds for $q=\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil$, because
+$N_P<2^{m+4}$ and $(4\Lambda+3)/(4\Lambda)\le11/8$. \Cref{lem:labels} gives depth at most $q-1$. For the comparison,
+$11\cdot2^{m+1}/(m+1)\le12^{m+1}/6$ for $m\ge1$ (at $m=1$ it reads $22\le24$, and from $m$ to $m+1$ the left side less
+than doubles while the right side grows twelvefold), so with $x=12^{m+1}/\eps\ge144$ we get
+$\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil\le\lceil x/6\rceil<x\le(12/\eps)^{m+1}\le\lceil12/\eps\rceil^{m+1}$ for
+$\eps\le1$.
+\end{informalproof}
+
+\paragraph{Why they matter.} The counter shows what Conjecture~A$'$ must look like: all $m+1$ levels are doubly served
+at $\log_2q=m+O(\log(1/\theta))$, within the cost budget, at every shift. So the conjecture, if true, is sharp up to the
+constant~$C$. The least depth $D(\eps)$ of a cut of $\eps T$ edges of the walk DAG satisfies
+$\log_2D(\eps)\le m+\log_2(1/\eps)+O(1)$ unconditionally, by \cref{cor:counter-cut}, while Conjecture~A$'$ with its walk-DAG
+analogue would give $\log_2D(\eps)\ge c(m+1)-c'$ for small~$\eps$, with $c\le1$ by the counter. So the open question is
+exponential against subexponential depth in the nesting depth~$m$, and the base of an exponential is at most~$2$, not the
+$c/\eps$ of the clock labels.
+
+\begin{remark}[Numerical: the evidence for Conjecture A$'$]\label{rem:counter-evidence}
+The fourth paper quotes, as evidence for Conjecture~A$'$, the numbers $1$, $1$, $2$ and $2$ or~$3$ of doubly
+$0.1$-served levels of optimized labels at $m=3$, $s_0=6$ and $q=8,16,32,64$~\cite[Remark~5.26]{FourthPaper2026}. On the
+walk DAG of eight periods at the golden shift, the turn counter doubly serves $1$, $1$, $2$ and $3$ levels at the same~$q$,
+and at $m=6$, $s_0=10$ it serves $\log_2q-3$ levels for $\log_2q=7,8,9$. The quoted evidence is therefore essentially
+what the counter does; it is consistent with Conjecture~A$'$ with $C\approx1$, but it cannot discriminate. (Not all of
+these labels meet the cost budget; the comparison is of served counts against~$q$.)
+\end{remark}
+
+The counter is a special case of a general criterion.
+
+\begin{proposition}[The counter criterion]\label{prop:counter-criterion}
+\notformalized
+Let $x_1,\dots,x_k$ be walks of length~$T$ without pauses, with $\mathcal N$ turns in all and at most $H$ hops spanning any
+time. Then for every $\eps>0$ the walk DAG has a cut of at most $\eps T$ edges and depth at most
+$\max(0,\lceil\mathcal N(H+1)/(\eps T)\rceil-1)$. Hence TCP holds for every family with $(\mathcal N/T)\cdot H$ bounded.
+\end{proposition}
+
+\begin{informalproof}
+Let $\mathcal N(t)$ count the turns of all walks at times in $[0,t]$, each walk separately, and $\Psi(t)=\mathcal N(t)\bmod q$
+with $q=\max(1,\lceil\mathcal N(H+1)/(\eps T)\rceil)$. As in \cref{cor:counter-cut}, a hop with no wrap time in its
+half-open interval contains its owner, a turn, and is not violated; there are at most $\lfloor\mathcal N/q\rfloor$ wrap
+times, each a descent at most once and inside at most $H$ hops. So the cost is at most
+$\lfloor\mathcal N/q\rfloor(H+1)\le\eps T$, and the depth is at most $q-1$.
+\end{informalproof}
+
+The criterion is incomparable with the fourth paper's Theorem~B: two zigzags of fixed width whose centres drift
+monotonically satisfy it but are not home-based. It fails on the deep-nesting pairs as $m\to\infty$, where
+$(\mathcal N/T)\cdot H\approx2^{m+4}(4\Lambda+2)/P\approx2^{m+4}/(m+1)$.
+
+The counter also pins down the capacity trade-off of \cref{cor:capacity} on the deep-nesting family. For two walks write
+$\mathrm{Cap}(D,\delta,\eps)$ for the statement: for all pairs of walks of length~$T$ there are a set~$R$ of pairs with
+$\card R\le\delta T$ and a cut of $G-R$ with at most $\eps T$ edges and depth at most~$D$.
+
+\begin{proposition}[Capacity on the deep-nesting family]\label{prop:dnp-capacity}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item Let $0<\eps<1/2$, $\delta(\eps)=2/\log_2(1/\eps)$ and $D(\eps)=\lceil11/\eps^2\rceil-1$. For every~$m$, every
+$s_0>m$, every shift and every multiple $T$ of~$P$, the pair on $[0,T)$ has a set~$R$ of pairs with
+$\card R\le\delta(\eps)T$ and a cut of $G-R$ with at most $\eps T$ edges and depth at most $D(\eps)$.
+\item Suppose there are $\eps_0>0$, an integer $N_0\ge1$ and a function~$D_*$ such that for every $m\ge0$ there are $s_0>m$
+and an odd shift for which the walk DAG of the pair on $[0,N_0P)$ has no cut of at most $\eps_0N_0P$ edges and depth less
+than $D_*(m)$ (a walk-DAG form of Conjecture~A$'$). If $\mathrm{Cap}(D(\eps),\delta(\eps),\eps)$ holds for all~$\eps$,
+then $D(\eps)\ge D_*(m)$ whenever $\eps\le\eps_0/2$ and $4(m+1)N_0\delta(\eps)\le\eps_0$. In particular, if
+$D_*(m)\ge2^{c(m+1)-c'}$, then $\delta(\eps)\ge c\eps_0/(4N_0(\log_2D(\eps)+c+c'))$ whenever $\eps\le\eps_0/2$ and
+$\delta(\eps)\le\eps_0/(4N_0)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) If $m+1\ge2/\delta(\eps)$, let $R$ be the set of all pairs visited; then $\card R=2(2\Lambda+1)$ and
+$\card R/T\le(4\Lambda+2)/(4(m+1)\Lambda)\le(5/4)/(m+1)\le\frac58\delta(\eps)$, every hop is at a pair of~$R$, and the empty
+cut of $G-R$ has depth~$0$. If $m+1<2/\delta(\eps)=\log_2(1/\eps)$, let $R=\emptyset$; \cref{cor:counter-cut} gives depth at
+most $\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil-1\le\lceil11/\eps^2\rceil-1$, since $2^{m+1}<1/\eps$.
+
+(b) Take the instance for~$m$ and $T=N_0P$, and let $R$ and a cut~$F$ of $G-R$ be given by the capacity statement. Each pair
+is visited at most $2(m+1)N_0$ times in $[0,T)$, so it carries fewer than $2(m+1)N_0$ hops. Let $F_0$ be the set of hop edges
+of~$G$ all of whose hops lie at pairs of~$R$; then $\card{F_0}\le2(m+1)N_0\card R\le\eps_0T/2$, and every edge of~$G$
+outside~$F_0$ is an edge of $G-R$. So $F\cup F_0$ is a cut of~$G$ with at most $\eps T+\eps_0T/2\le\eps_0T$ edges and depth
+at most $D(\eps)$, and the hypothesis gives $D(\eps)\ge D_*(m)$. For the second statement put $y=\eps_0/(4N_0\delta(\eps))\ge1$
+and $m+1=\lfloor y\rfloor$; then $\log_2D(\eps)\ge c\lfloor y\rfloor-c'\ge c(y-1)-c'$, that is,
+$y\le(\log_2D(\eps)+c+c')/c$.
+\end{informalproof}
+
+So on the deep-nesting family, under the walk-DAG form of Conjecture~A$'$ assumed in~(b), the scratch must have size about
+$T/\log D$ when the rest is cut at depth~$D$, and (a) achieves this: there $\log_2D(\eps)\approx2\log_2(1/\eps)+3.5$ and $\delta(\eps)\approx4/\log_2D(\eps)$.
+
+\subsection{Labels that change only at turns}\label{sec:dnp-turnlabels}
+
+Let $\xi$ be odd. A label~$G$ on the cover, or on the walk DAG of a window, is \emph{turn-supported} if there are integers
+$J_h(\tau)$ at the turn times~$\tau$ of each head~$h$ such that $G(t)-G(t-1)\equiv J_h(t)\pmod q$ when $t$ is a turn of
+head~$h$, and $G(t)\equiv G(t-1)$ when $t$ is not a turn. This class contains the counter ($J\equiv1$), the fourth paper's
+clock labels, and every function of the vector of turn counts. The \emph{potential} of head~$h$ is
+$\Phi_h(t)=\sum J_h(\tau)$ over the turns $\tau\le t$ of head~$h$ (on a window, or on~$\Z$ for periodic jumps, normalized
+by $\Phi_h(0)=0$), so $G\equiv\Phi_1+\Phi_2+\mathrm{const}\pmod q$. For a hop of head~$h'$, the \emph{other-head
+increment} is $F=\Phi_h(u)-\Phi_h(p)$, where $h\ne h'$.
+
+For a V of head~$h$ let $M(V)$ be the sum of the jumps of head~$h$ at the turns in the span of~$V$, with $M(\emptyset)=0$;
+let $V^\sigb$ and $V^\sigf$ be the V's attached at the ends of the segments of its back and forward strokes (none if $V$ has
+level~$m$), and put
+\[
+  A_V=J_h(\alpha_V)-1,\qquad E_V=J_h(\nu_V)+M(V^\sigb)-1,\qquad c_\sigb(V)=1+A_V,\qquad c_\sigf(V)=2+A_V+E_V .
+\]
+
+\begin{lemma}[Path sums]\label{lem:pathsums}
+\notformalized
+Let $t$ be a time in a level-$0$ stroke~$S_0$ of head~$h$, and let $V_1\supset V_2\supset\dots\supset V_j$ be the V's whose
+spans contain~$t$, with $V_i$ of level~$i$ and $V_1$ the V of~$S_0$. Then
+\[
+  \Phi_h(t)-\Phi_h(\alpha_{V_1}-1)=\sum_{i=1}^jc_{\delta_i}(V_i),
+\]
+where $\delta_i=\sigb$ if $t$ lies in the back stroke of~$V_i$ and $\delta_i=\sigf$ otherwise; for $t$ in the segment of~$S_0$,
+$j=0$. Moreover $M(V)=c_\sigf(V)+M(V^\sigf)$.
+\end{lemma}
+
+\begin{informalproof}
+By induction on the depth inside one V. The apex $\alpha_V$ is the first time of~$V$. For~$t$ in the segment of the back stroke,
+the only turn in $[\alpha_V,t]$ is $\alpha_V$, so the increment over $(\alpha_V-1,t]$ is $J_h(\alpha_V)=c_\sigb(V)$; for $t$
+in $V^\sigb$ it is $c_\sigb(V)$ plus the increment from $\alpha_{V^\sigb}-1$ to~$t$. For $t$ in the segment of the forward
+stroke the increment is $J_h(\alpha_V)+M(V^\sigb)+J_h(\nu_V)=c_\sigf(V)$, by the definition of $E_V$, and for $t$ in
+$V^\sigf$ it is $c_\sigf(V)$ plus the increment from $\alpha_{V^\sigf}-1$ to~$t$. At level~$m$ there are no inner V's and
+the same computation applies with $M(\emptyset)=0$. The mass identity is the case where $t$ is the last time of~$V$. The
+segment of~$S_0$ contains no turn after its first time.
+\end{informalproof}
+
+\begin{lemma}[Band decomposition]\label{lem:band}
+\notformalized
+Let $G$ be turn-supported, and let $B$ be a V of head~$h'$ of level $k\ge1$, with chain $C_{k+1},\dots,C_m$.
+\begin{enumerate}[label=(\alph*)]
+\item For $1\le d<R_k$ the apex hop $(\alpha-d,\alpha+d)$ has error $(A_B+F)\bmod q$.
+\item For $k\le l\le m$ and $R_{l+1}<x<R_l$, the valley hop at $v+\sigma x$ has error
+\[
+  \Bigl(E_B-\sum_{i=k+1}^{l}\bigl(A_{C_i}+E_{C_i}+2\bigr)+F\Bigr)\bmod q .
+\]
+\end{enumerate}
+Here $F$ is the other-head increment of the hop.
+\end{lemma}
+
+\begin{informalproof}
+The error is $(G(u)-G(p)-1)\bmod q$, and $G(u)-G(p)\equiv\Phi_{h'}(u)-\Phi_{h'}(p)+F$. (a) By \cref{lem:dnp-classes}(b) the
+only turn of head~$h'$ in $(\alpha-d,\alpha+d]$ is~$\alpha$, with jump $1+A_B$. (b) By \cref{lem:dnp-classes}(b) the
+increment of $\Phi_{h'}$ is $M(C_{l+1})+J_{h'}(\nu)$, and $J_{h'}(\nu)=E_B+1-M(C_{k+1})$. Since $C_{i+1}=C_i^\sigf$, the mass
+identity of \cref{lem:pathsums} gives $M(C_{k+1})-M(C_{l+1})=\sum_{i=k+1}^l(A_{C_i}+E_{C_i}+2)$.
+\end{informalproof}
+
+When $F=0$ on the hops concerned (the \emph{single-head regime}), $A_B$ is the apex error of~$B$ and $c_\sigb-1$,
+$c_\sigf-c_\sigb-1$ are errors of $B$'s own hops. So a V whose own errors lie in $[0,E]$ contributes at least $1$ and~$2$ to
+the path sums of \cref{lem:pathsums}: the potential of a head that serves many of its levels rises along every path, and it
+can come back down only through V's with an apex or band error near~$q$. Serving many levels cheaply needs cancellation,
+and the next labels cancel in blocks.
+
+\begin{definition}[Block labels]\label{def:block}
+Let $a\ge1$ and $K\ge0$ be integers. A level $l\in[1,m]$ is a \emph{canceller} if $m-l\equiv a\pmod{a+1}$ and
+\emph{served} otherwise. Define integers $A_l,E_l$ from level~$m$ upwards: for a served level~$l$, $A_l=K$ and
+$E_l=K+\sum_{i=l+1}^{c-1}(A_i+E_i+2)$, where $c$ is the first canceller below~$l$, or $m+1$ if there is none; for a
+canceller~$c$, $A_c=0$ and $E_c=-Q_c-2$ with $Q_c=\sum_{i=c+1}^{c'-1}(A_i+E_i+2)$, where $c'$ is the next canceller
+below~$c$, or $m+1$. The \emph{block label} $B(a,K)$ on head~$h$ has the jumps $J_h(\alpha_V)=1+A_{\lev V}$,
+$J_h(\nu_V)=E_{\lev V}+1-M(V^\sigb)$, computed from level~$m$ upwards, and $J_h=1$ at the tips; so $A_V=A_{\lev V}$ and
+$E_V=E_{\lev V}$.
+\end{definition}
+
+\begin{lemma}[Block masses]\label{lem:block}
+\notformalized
+In $B(a,K)$, a served level with $j$ served levels below it in its block has $A+E+2=2^j(2K+2)$. Every canceller has $a$
+served levels directly below it, and $Q_c=Q:=(2^a-1)(2K+2)$. Hence $c_\sigb(V)=1+K$ and $c_\sigf(V)=2^j(2K+2)$ at a served
+V, and $c_\sigb(V)=1$ and $c_\sigf(V)=-Q$ at a canceller V: the path sums depend only on the level. In the single-head
+regime, and if $K+Q<q$, every apex hop with $d<R_k$ of a served V has error~$K$ and every valley hop of
+\cref{lem:band}(b) of a served V has error in $[K,K+Q]$.
+\end{lemma}
+
+\begin{informalproof}
+Write $T(j)$ for $A+E+2$ at a served level with $j$ served levels below it in its block. Then $T(0)=2K+2$ and
+$T(j)=2K+2+\sum_{j'<j}T(j')$, so $T(j)=2^j(2K+2)$. A canceller~$c$ satisfies $m-c\equiv a\pmod{a+1}$ and $m-c\ge0$, so
+$m-c\ge a$ and the levels $c+1,\dots,c+a$ are served and below~$c$ in one block; hence
+$Q_c=\sum_{j<a}T(j)=Q$. The values of $c_\sigb$ and $c_\sigf$ follow. For the errors, write
+$S(i_1,i_2)=\sum_{i=i_1}^{i_2}(A_i+E_i+2)$. A served level~$k$ has $E_k=K+S(k+1,c-1)$ with $c$ the first canceller below~$k$.
+For $k\le l<c$ the band error of \cref{lem:band}(b) is $K+S(l+1,c-1)\in[K,K+Q)$. For $c\le l<c'$, with $c'$ the next
+canceller, it is $K-S(c,l)=K+Q-S(c+1,l)=K+S(l+1,c'-1)\in[K,K+Q]$, because $A_c+E_c+2=-Q$ and $S(c+1,c'-1)=Q$; and the
+pattern repeats below~$c'$. All values lie in $[0,q)$, so no reduction occurs.
+\end{informalproof}
+
+So, in the single-head regime, one head carrying $B(a,K)$ serves the $a/(a+1)$ fraction of its levels that are served,
+with errors in $[K,K+Q]$, and its violated own hops are essentially the valley hops of the canceller classes. Heuristically,
+its cost per own hop is then about $1/(2(a+1))$, which for $a=4$ is $1/10$, inside the budget $n_{\mathrm h}/8$ for
+every~$m$ at fixed~$q$ (see also \cref{rem:single-head}). So no argument that uses only one head's own structure can be
+expected to prove Conjecture~A$'$. At the aligned shift the second head inherits the first head's errors.
+
+\begin{remark}[Numerical: the single-head cost of block labels]\label{rem:single-head}
+Exact evaluations on covers gave costs per own hop of $0.05$ to $0.09$ for block labels with $a=4$, $q=256$ and
+$4\le m\le10$.
+\end{remark}
+
+\begin{proposition}[The aligned shift]\label{prop:aligned}
+\notformalized
+Let $\xi=1$, put the same jumps on both heads, $J_2(t)=J_1(t+1)$, and for a hop $(a',b')$ of head~$1$ write
+$I(a',b')=\Phi_1(b')-\Phi_1(a')$. The hops of head~$2$ are the pairs $(a'-1,b'-1)$ for the hops $(a',b')$ of head~$1$, and
+\begin{align*}
+  G(b'-1)-G(a'-1)&\equiv2I(a',b')-J_1(b')[b'\text{ a turn}]+J_1(a')[a'\text{ a turn}],\\
+  G(b')-G(a')&\equiv2I(a',b')+J_1(b'+1)[b'+1\text{ a turn}]-J_1(a'+1)[a'+1\text{ a turn}].
+\end{align*}
+So every hop whose shifted endpoints are not turns has error $(1+2e)\bmod q$, where $e=(I-1)\bmod q$ is the single-head
+error of the corresponding hop of head~$1$; each turn affects at most four hops.
+\end{proposition}
+
+\begin{informalproof}
+Head~$2$ is at a cell at time~$t$ exactly when head~$1$ is there at time $t+1$, so its hops are the shifted hops of head~$1$
+and its turns are the turns of head~$1$ minus one. Hence $\Phi_2(t)=\Phi_1(t+1)$ and $G(t)\equiv\Phi_1(t)+\Phi_1(t+1)$ up
+to a constant, and both identities follow by expanding $\Phi_1(t\pm1)-\Phi_1(t)$. Each time is the earlier and the later
+endpoint of exactly one hop of each head.
+\end{informalproof}
+
+\begin{remark}[Numerical: Conjecture A$'$ needs a misaligned shift]\label{rem:aligned}
+With $B(4,0)$ on both heads at the aligned shift and $q=256$, exact evaluations on covers gave costs $0.080$, $0.0996$ and
+$0.0935$ times~$n_{\mathrm h}$ at $m=6$, $9$ and~$10$, inside the budget $n_{\mathrm h}/8$, with $6$ of $7$, $8$ of $10$ and $9$
+of $11$ levels doubly $0.1$-served; \cref{prop:aligned} explains this, since at the aligned shift both heads see their
+single-head errors, doubled, on all but a vanishing fraction of hops. This indicates that Conjecture~A$'$ cannot hold with the
+aligned shift, so that its choice of a misaligned shift is essential. At misaligned shifts
+(the golden shift, and a shift whose dyadic phases alternate near $1/3$ and $2/3$ at every level) the same labels
+collapse to the finest few levels at costs $0.22$ to $0.24$ times~$n_{\mathrm h}$.
+\end{remark}
+
+\subsection{Blindness of fine classes}\label{sec:dnp-blind}
+
+\begin{lemma}[Turn-free runs]\label{lem:runs}
+\notformalized
+Let $m\ge1$. Over one period, the gaps between consecutive turns of~$U$ have the following lengths: for each level $1\le i\le m$,
+$2^{i+2}$ gaps of length~$R_i$, except that two of the gaps of level~$m$ have length $R_m+R_0$ instead; and two gaps of
+length~$R_0$.
+\end{lemma}
+
+\begin{informalproof}
+We find the gap that follows each turn. After an apex of level $i<m$ comes the back segment, $R_i$ steps, and then the apex
+of the V attached at its end; after an apex of level~$m$, a plain back stroke of $R_m$ steps and then the valley. After a
+valley of level $i<m$ comes the forward segment, $R_i$ steps, and then an apex. After a tip comes the segment of a level-$0$
+stroke, $R_0$ steps, and then an apex. After a valley~$\nu$ of level~$m$, the forward stroke takes $R_m$ steps and the V
+ends at $\nu+R_m$, together with every stroke of which it is the last part. If some enclosing stroke is a back stroke, the
+deepest such ends at $\nu+R_m$ with the valley of its V, a turn. If not, the level-$0$ stroke ends at $\nu+R_m$; this happens
+for one level-$m$ V per level-$0$ stroke. If the next level-$0$ stroke is the second or fourth of its period, $\nu+R_m$ is a
+tip; otherwise the directions continue (from the second to the third stroke, and from the fourth to the first), the next
+segment adds $R_0$ steps, and the next turn is at $\nu+R_m+R_0$; this happens twice per period. Each level~$i$ has
+$2^{i+2}$ turns per period, and the lengths add up to $4m\Lambda+4\Lambda=P$.
+\end{informalproof}
+
+\begin{proposition}[Blindness]\label{prop:blind}
+\notformalized
+Let $m\ge1$, let $G$ be turn-supported, let $(p,u)$ be a hop of head~$h'$ of length $\ell=u-p$, and let the shift~$\xi$ be uniformly
+random in~$\Z_P$. If $(p,u]$ contains no turn of the other head, then $F=0$. The probability of this event is
+\[
+  \frac1P\sum_{\text{gaps }L}(L-\ell)^+\;\ge\;\frac1{m+1}\sum_{i=0}^m\Bigl(1-\frac\ell{R_i}\Bigr)^+,
+\]
+the sum over the gaps of \cref{lem:runs}. For $\xi$ uniform over the odd residues the bound decreases by at most
+$2/((m+1)R_m)$.
+\end{proposition}
+
+\begin{informalproof}
+$F$ is the sum of the other head's jumps over the window, an empty sum. In the other head's own time, where it is~$U$, the
+window $(p,u]$ is a window $(a',a'+\ell]$ with $a'$ uniform in~$\Z_P$: a hop of head~$2$, given as a hop $(a,b)$ of~$U$ in the
+own time of head~$2$, occupies the window $(a-\xi,b-\xi]$ of head~$1$; and for a hop $(a,b)$ of head~$1$, the turns of head~$2$
+are those of~$U$ shifted by~$-\xi$, so the window is $(a+\xi,b+\xi]$ in the time of~$U$. This window contains no turn exactly when
+$\tau_j\le a'$ and $a'+\ell<\tau_{j+1}$ for consecutive turns $\tau_j<\tau_{j+1}$, which gives $(L_j-\ell)^+$ values
+of~$a'$ for the gap of length $L_j=\tau_{j+1}-\tau_j$. Insert \cref{lem:runs}, using
+$(x+y-\ell)^+\ge(x-\ell)^++(y-\ell)^+$ for $x,y,\ell\ge0$ for the two long gaps, and $2^{i+2}/P=1/((m+1)R_i)$,
+$4/P=1/((m+1)R_0)$. For odd shifts, each interval of admissible values of~$a'$ contains at least $((L_j-\ell)^+-1)/2$
+values of each parity, there are fewer than $2^{m+3}$ gaps, and $2^{m+3}/P=2/((m+1)R_m)$.
+\end{informalproof}
+
+\begin{corollary}[Fine classes are blind]\label{cor:blind}
+\notformalized
+Let $1\le k\le m$, $g=m-k$, and let $\xi$ be uniform in~$\Z_P$. On average over~$\xi$, at least a fraction
+\[
+  \frac{k-2-\lceil\log_2(g+2)\rceil}{m+1}
+\]
+of the hops of each class $(h',k)$ contain no turn of the other head. Consequently, for every turn-supported label, the
+expected fraction of the hops of the class with $F\ne0$ is at most
+\[
+  \frac{g+3+\lceil\log_2(g+2)\rceil}{m+1},
+\]
+which is $O(\log m/m)$ for the classes with $g=O(\log m)$.
+\end{corollary}
+
+\begin{informalproof}
+By \cref{lem:dnp-classes}(b), the hops of the class are, for each V of level~$k$, its apex hops $(\alpha-d,\alpha+d)$,
+$1\le d\le R_k$, and its valley hops at the cells $v+\sigma x$, $1\le x\le R_k$; the boundary hops among them obey the
+same length bounds as the others. An apex hop has length $2d\le2R_k=R_{k-1}$, so by \cref{prop:blind} it is blind with
+probability at least $\frac1{m+1}\sum_{i=0}^{k-1}(1-2^{i-k+1})\ge\frac{k-2}{m+1}$. For $k\le l\le m$ and
+$R_{l+1}<x\le R_l$, the valley hop at $v+\sigma x$ is $(\nu-(m-l)R_l-x,\nu+x)$: for $x<R_l$ by \cref{lem:dnp-classes}(b),
+and for the boundary hop $x=R_l$ because the cell $v+\sigma R_l$ is visited at the valley time $\nu-n_lR_l$ of~$C_l$ (at the
+apex $\alpha=\nu-n_kR_k$ if $l=k$), left at the next step, and not visited again before $\nu+R_l$. So its length is at most
+$(m-l+2)R_l\le R_{l-a}$, where $a=\lceil\log_2(m-l+2)\rceil$; if $l\ge a$ it is blind with probability at least
+$\frac1{m+1}\sum_{i=0}^{l-a}(1-2^{i-l+a})\ge\frac{l-a-1}{m+1}\ge\frac{k-1-\lceil\log_2(g+2)\rceil}{m+1}$, using $l\ge k$
+and $m-l\le g$; if $l<a$ the claimed bound is negative. The second statement follows, because $F\ne0$ needs a turn of the
+other head in the window.
+\end{informalproof}
+
+\paragraph{Why it matters.} By Markov's inequality, for each class with $g=O(\log m)$ the set of shifts at which a fixed
+fraction $c>0$ of the class has $F\ne0$ has density $O(\log m/(cm))$: for all large~$m$, at all but a vanishing density of
+shifts, these classes see the other head on less than a fraction~$c$ of their hops, for every label that changes only at
+turns. On their blind hops the error is the single-head error, so a head can serve them as if alone, for instance by a block
+label. Heuristically, then, at typical shifts no argument that charges errors to the other head's increments can bound the
+number of doubly served fine levels by $C\log_2q+C'+O(\log m)$, and if Conjecture~A$'$ holds at a typical shift, it holds
+because serving the coarse levels is expensive. This is not a proof: the corollary bounds an average over shifts, and the
+conjecture may choose an atypical shift. The measurements of \cref{rem:blind-numerics} agree with this picture.
+
+\begin{remark}[Numerical: block pairs at a misaligned shift]\label{rem:blind-numerics}
+With $B(4,0)$ on both heads at a misaligned shift and $q=256$, the number of doubly $0.1$-served levels was
+$4,4,4,5,5,8,8$ at $m=10,15,20,25,30,40,50$, all in the blind fine region, at costs of $0.23$ to $0.29$ times
+$n_{\mathrm h}$, above the budget; the value at $m=10$ is exact on a cover, the others are sampled.
+\end{remark}
+
+\subsection{Visibility of coarse classes}\label{sec:dnp-visible}
+
+The coarse classes see the other head's cancellations. In the other head's own time an apex hop of half-width~$d$ is a
+window $(c_0-d,c_0+d]$ around a centre~$c_0$, and its other-head increment is $F(d)=\Phi_h(c_0+d)-\Phi_h(c_0-d)$.
+
+\begin{lemma}[Straddle involution]\label{lem:straddle}
+\notformalized
+Let head~$h$ carry $B(a,K)$, let $c_0$ be an integer, $k\ge1$, and let $V$ be a V of head~$h$ of a canceller level~$\kappa$,
+with apex~$\alpha_V$, valley~$\nu_V$ and stroke length $\Pi_\kappa=\nu_V-\alpha_V=n_\kappa R_\kappa$. Let $\mathcal D$ be the
+set of $d\in[1,R_k-1]$ with $c_0-d\in[\alpha_V,\nu_V)$, $c_0+d\in[\nu_V,\nu_V+\Pi_\kappa)$ and $\Pi_\kappa-d\in[1,R_k-1]$.
+Then $d\mapsto\Pi_\kappa-d$ is an involution of~$\mathcal D$, and $F(d)+F(\Pi_\kappa-d)=-2Q-2$ for every $d\in\mathcal D$.
+Hence at least half of the elements of~$\mathcal D$ have $F(d)\le-Q-1$.
+\end{lemma}
+
+\begin{informalproof}
+For $d\in\mathcal D$ put $o_p=c_0-d-\alpha_V$ and $o_u=c_0+d-\nu_V$, both in $[0,\Pi_\kappa)$. For $d'=\Pi_\kappa-d$ we get
+$c_0-d'-\alpha_V=o_u$ and $c_0+d'-\nu_V=o_p$, so $d'\in\mathcal D$ and the map swaps $o_p$ and~$o_u$. By \cref{lem:pathsums},
+for a time~$x$ in the back stroke of~$V$, $\Phi_h(x)=C_V+c_\sigb(V)+Y(x-\alpha_V)$, and for $x$ in its forward stroke,
+$\Phi_h(x)=C_V+c_\sigf(V)+Y(x-\nu_V)$. Here $C_V$ collects $\Phi_h(\alpha_{V_1}-1)$ and the contributions of the V's
+containing~$V$, the same for all times in~$V$, and $Y(o)$ is the sum of $c_\delta(W)$ over the V's~$W$ inside a stroke of
+level~$\kappa$ that contain its time at offset~$o$; by \cref{lem:block} these contributions depend only on levels, so $Y$ is
+the same function for both strokes of~$V$. Hence $F(d)=c_\sigf(V)-c_\sigb(V)+Y(o_u)-Y(o_p)$ and
+$F(\Pi_\kappa-d)=c_\sigf(V)-c_\sigb(V)+Y(o_p)-Y(o_u)$, and their sum is $2(c_\sigf(V)-c_\sigb(V))=2(-Q-1)$ by
+\cref{lem:block}.
+\end{informalproof}
+
+\begin{theorem}[Theorem V: visibility of coarse classes on average over shifts]\label{thm:V}
+\notformalized
+Let head~$h$ carry $B(a,K)$ and let $\xi$ be uniform in~$\Z_P$. For every class $(h',k)$ of the other head with
+$1\le k\le m$ and $g=m-k\ge\lceil\log_2(g+1)\rceil+a$, the expected fraction of its apex hops with $d<R_k$ that have
+$F\le-Q-1$ is at least
+\[
+  \frac{g-\lceil\log_2(g+1)\rceil-2a}{2^{a+4}(m+1)}.
+\]
+\end{theorem}
+
+\begin{informalproof}
+Let $j_1=\min\{j\ge0:g+1-j\le2^j\}$; then $1\le j_1\le\lceil\log_2(g+1)\rceil$, since $g\ge1$. Let $\kappa=k+j$ be the first
+canceller level with $j\ge j_1$; cancellers recur every $a+1$ levels, so $j\le j_1+a$, and $\kappa\le m$ by the hypothesis
+on~$g$. Since $j\ge j_1$, $\Pi_\kappa=n_\kappa R_\kappa=(g+1-j)R_k2^{-j}\le R_k$, and $\Pi_\kappa$ is even.
+
+Fix a V of level~$k$ of head~$h'$ and its apex hops. As $\xi$ is uniform, the centre~$c_0$ of their windows in the own time of
+head~$h$ is uniform modulo~$P$. A window of half-width~$d$ \emph{straddles} a V of level~$\kappa$ of head~$h$ if its left end
+lies in the back stroke and its right end in the forward stroke; then $d<\Pi_\kappa$, and $c_0$ lies in the span of that V,
+so for fixed~$c_0$ at most one V of level~$\kappa$ is straddled, and for $d\le\Pi_\kappa-1$ the partner
+$\Pi_\kappa-d$ lies in $[1,R_k-1]$. So, for fixed~$c_0$, the straddling half-widths form the set~$\mathcal D$ of
+\cref{lem:straddle} for the straddled V. For a fixed~$d$, the centres that straddle a given V of level~$\kappa$ form an interval
+of length $2\min(d,\Pi_\kappa-d)$, and there are $2^{\kappa+1}$ such V's per period; so
+\[
+  \mathbb E\card{\mathcal D}=\sum_{d=1}^{\Pi_\kappa-1}\frac{2^{\kappa+2}\min(d,\Pi_\kappa-d)}P
+  =\frac{2^{\kappa+2}}P\cdot\frac{\Pi_\kappa^2}4=\frac{2^\kappa\Pi_\kappa^2}P .
+\]
+By \cref{lem:straddle}, at least $\card{\mathcal D}/2$ of the $R_k-1$ apex hops with $d<R_k$ have $F\le-Q-1$, so the expected
+fraction is at least
+\[
+  \frac{2^{\kappa-1}\Pi_\kappa^2}{PR_k}=\frac{n_\kappa^2R_\kappa}{8(m+1)R_k}=\frac{(g+1-j)^22^{-j}}{8(m+1)},
+\]
+using $2^\kappa=\Lambda/R_\kappa$ and $P=4(m+1)\Lambda$. By the minimality of~$j_1$, $g+2-j_1>2^{j_1-1}$, so with
+$G_1=g+2-j_1$ we have $2^j\le2^{j_1+a}<2^{a+1}G_1$ and $(g+1-j)^2\ge(G_1-1-a)^2\ge G_1^2-2(a+1)G_1$, where
+$G_1-1-a=g+1-j_1-a\ge1$. Hence $(g+1-j)^22^{-j}>(G_1-2(a+1))/2^{a+1}=(g-j_1-2a)/2^{a+1}$, and dividing by $8(m+1)$ and using
+$j_1\le\lceil\log_2(g+1)\rceil$ gives the bound.
+\end{informalproof}
+
+\paragraph{Why it matters.} Blindness bounds the visible fraction of a class from above by
+$(g+3+\lceil\log_2(g+2)\rceil)/(m+1)$, and Theorem~V bounds it from below, for block labels, by about $g/(2^{a+4}(m+1))$:
+both are of order $(m-k)/(m+1)$ up to logarithmic factors and constants depending on~$a$. So the coarse classes, a positive
+fraction of all levels, see the other head's cancellations at full size on a positive fraction of their apex hops, on
+average over shifts (see also \cref{rem:visible-numerics}). The next proposition says what this would give for block pairs,
+but it needs more than Theorem~V provides. First, Conjecture~A$'$ fixes one shift for all classes at once. Second, the
+proposition needs the cancellation in a window modulo~$q$, $-q/2<F\le-Q_h/2$, while Theorem~V gives only the integer event
+$F\le-Q-1$, with no lower bound on~$F$: by the proof of \cref{lem:straddle}, $F=-Q-1+Y(o_u)-Y(o_p)$, and $Y$ sums
+contributions of up to $m-\kappa$ nested levels, so $\abs F$ may grow linearly in~$m$, and the event is guaranteed to imply the
+window only for $q$ of order $(m-\kappa)Q$ or larger.
+
+\begin{remark}[Numerical: visible fractions]\label{rem:visible-numerics}
+Measured fractions of apex hops with $F\le-Q-1$ were ten to a hundred times larger than the bound of Theorem~V.
+\end{remark}
+
+\begin{proposition}[Visibility at a fixed shift bounds the served levels of block pairs]\label{prop:Vfixed}
+\notformalized
+Let the heads carry $B(a_1,K_1)$ and $B(a_2,K_2)$ with $a_1,a_2\ge1$, at a fixed odd shift, on the $r$-fold cover with $r$
+a multiple of~$q$, so that the two potentials define a label there modulo~$q$, and let $Q_1,Q_2$ be their block masses. Let $0<\beta<1$ and $\theta_0>0$, and suppose that for each head~$h'$ and each class
+$(h',k)$ with $m-k\ge\beta(m+1)$, a fraction at least $c(\beta)>8\theta_0$ of its apex hops with $d<R_k$ have
+$-q/2<F\le-Q_h/2$, where $h$ is the other head. Then at most $\beta(m+1)+2$ levels are doubly $\theta_0$-served.
+\end{proposition}
+
+\begin{informalproof}
+Since $Q_h=(2^{a_h}-1)(2K_h+2)\ge2K_h+2$, the inequalities $K_1\ge Q_2/2$ and $K_2\ge Q_1/2$ cannot both hold: they would
+give $Q_1\ge2K_1+2\ge Q_2+2$ and $Q_2\ge Q_1+2$. So some head~$h'$ has $K_{h'}<Q_h/2$ for the other head~$h$. Let $k\ge1$
+with $m-k\ge\beta(m+1)$. By \cref{lem:band}(a) an apex hop with $d<R_k$ of a V of level~$k$ of head~$h'$ has error
+$(A+F)\bmod q$ with $A\in\{0,K_{h'}\}$; on the hops of the hypothesis, $-q/2<A+F<0$, so the error lies in $[q/2,q)$. The
+apex hops with $d<R_k$ are a fraction $(R_k-1)/(2R_k)\ge1/4$ of the class, so the class has total error at least
+$c(\beta)\cdot\frac14\cdot\frac q2$ times its size, more than $\theta_0q$ times its size, and level~$k$ is not
+$\theta_0$-served for head~$h'$. The levels $k\ge1$ with $m-k<\beta(m+1)$, together with level~$0$, number at most
+$\beta(m+1)+2$.
+\end{informalproof}
+
+\subsection{A safe form of Conjecture A\texorpdfstring{$'$}{'}}\label{sec:dnp-App}
+
+Blindness suggests, heuristically, that cheap labels may serve a number of fine levels that grows with~$m$; in the
+measurements of \cref{rem:blind-numerics} the block pairs serve between $4$ and $8$ levels for $10\le m\le50$, above the
+budget. The following form of the conjecture allows up to a fixed fraction of the levels to be served and keeps its
+consequence.
+
+\begin{conjecture}[Conjecture A$''$]\label{conj:App}
+There are $\theta_0>0$, $\eta<1$ and constants $C,C'$ such that for all $s_0$ and~$m$ some odd shift~$\xi$ has the
+following property: for all $r$ and~$q$, every label of cost at most $n_{\mathrm h}/8$ on the $r$-fold cover of the pair
+$x_1=U(s_0,m,1)$, $x_2=x_1(\cdot+\xi)$, has at most $C\log_2q+C'+\eta(m+1)$ doubly $\theta_0$-served levels.
+\end{conjecture}
+
+If Conjecture~A$''$ holds and a label of cost at most $\eps n_{\mathrm h}$ with $\eps\le1/8$ and $\eps<(1-\eta)\theta_0/2$
+exists on such a cover, then, as in \cref{sec:prelim-dnp}, it doubly serves more than $(m+1)(1-2\eps/\theta_0)$ levels, so
+\[
+  \log_2q\;>\;\frac{(1-\eta-2\eps/\theta_0)(m+1)-C'}{C}.
+\]
+With its walk-DAG analogue this makes the pairs depth-robust as $m\to\infty$, and $\TCP(2)$ would fail; only the admissible
+range of~$\eps$ shrinks, from $\theta_0/2$ to $(1-\eta)\theta_0/2$. \Cref{prop:Vfixed} proves Conjecture~A$''$ for pairs of
+block labels, with $\eta=\beta+O(1/m)$ and no logarithmic term, from visibility in a window modulo~$q$ at a fixed shift.
+Theorem~V does not supply this hypothesis, even on average over shifts: it gives the integer event $F\le-Q-1$ with no lower
+bound on~$F$, hence the window only for $q$ of order $(m-\kappa)Q$, and only on average over shifts. Two steps remain open: a
+bound on $\abs F$ on the straddling hops, or a version of Theorem~V that counts the window directly; and, at one fixed shift
+for all coarse classes, equidistribution of a class's apex centres relative to the other head's canceller valleys of level
+about $k+\log_2(m-k)$, a mixed-radix carry problem that we could not solve.

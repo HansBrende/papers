@@ -1,0 +1,346 @@
+\section{Bounded nesting: the owner lemma and Theorem F}\label{sec:nesting}
+
+The fourth paper's Theorem~B cuts the walk DAG of any coupling of home-based walks with a lexicographic label: one
+digit per occupied group of scales, each counting legs measured from a fixed home~\cite[Theorem~4.20]{FourthPaper2026}.
+Its hypothesis, linear leg area about fixed homes, fails when heads turn often, far from every home, on legs much shorter
+than their distance from home. This section
+replaces homes by owners. \Cref{lem:owner} shows that nested structures with distinct turning points force revisits, and
+Theorem~F (\cref{thm:F}) proves depth reduction for every family of walks of bounded \emph{owner-load}
+(\cref{def:owner-load}), whatever their homes, drift and scales. Its label is Theorem~B's band label run on \emph{virtual
+heads}, one per head, side and nesting depth, with the band of a virtual head given by the height of its current family of
+hops instead of a distance from home. \Cref{sec:nest-capacity} derives the consequences at walk level: TCP for walks of
+bounded entry, and the confinement of depth-robustness to a set of cells of vanishing capacity.
+
+\subsection{The owner lemma}\label{sec:nest-owner}
+
+\begin{lemma}[Nesting with distinct owners costs visits]\label{lem:owner}
+\formal{Owner.lean}{owner_entries, card_crossings_le}
+Let $x$ be a walk, $\ell\ge1$, and let $(p_i,u_i)$, $0\le i<\ell$, be upper long hops of~$x$ that are strictly nested,
+$p_i<p_{i+1}$ and $u_{i+1}<u_i$, with pairwise distinct owners. Then for every time $T'\ge u_0$, the cell of the innermost
+hop $(p_{\ell-1},u_{\ell-1})$ has at least $(\ell+1)/2$ entries at times at most~$T'$. By the reflection $x\mapsto-x$, the
+same holds for lower long hops.
+\end{lemma}
+
+\begin{outline}
+The Lean statement concerns upper hops; the lower case follows by the reflection $x\mapsto-x$, which maps lower long hops
+to upper ones with the same owners and does not change entries. In Lean a walk is a map $x\colon\N\to\Z$ with
+$\abs{x(t+1)-x(t)}\le1$ (\lean{IsWalk}); a walk of length~$T$ is extended by staying at $x(T-1)$, which adds no entries
+before time~$T$. Upper long hops and owners are the structures
+\lean{IsUpperHop} and \lean{IsOwner}, and entries and crossings are \lean{entries} and \lean{crossings}. Let $c_i$ be the
+cell of $(p_i,u_i)$ and $c=c_{\ell-1}$. Since $p_{i+1}\in(p_i,u_i)$, the cells increase inwards, $c_0<\dots<c_{\ell-1}=c$.
+Every owner $o_i$ is a maximum of $x$ over $(p_i,u_i)\supseteq(p_{\ell-1},u_{\ell-1})$, where $x\ge c+1$, so
+$x(o_i)\ge c+1$. For $i<\ell-1$, $o_i$ lies outside $[p_{i+1},u_{i+1}]$: at the endpoints $x=c_{i+1}\le c$, and if $o_i$
+lay strictly inside $(p_{i+1},u_{i+1})$ it would also be the first maximum over that interval, that is $o_{i+1}$
+(\lean{IsOwner.unique}), contrary to distinctness. So the walk crosses the edge between $c$ and $c+1$ at some step in
+$(p_i,p_{i+1})$, between $o_i$ and $p_{i+1}$, or in $[u_{i+1},u_i)$, between $u_{i+1}$ and~$o_i$. The innermost hop
+crosses it at the steps $p_{\ell-1}$ and $u_{\ell-1}-1$. These $\ell+1$ crossings occur at distinct steps, because the
+intervals $(p_i,p_{i+1})\cup[u_{i+1},u_i)$ are pairwise disjoint and disjoint from $[p_{\ell-1},u_{\ell-1})$. Finally,
+every crossing of the edge either enters~$c$ or leaves it, each maximal run of visits to~$c$ is entered once and left at
+most once, and so the number of crossings is at most twice the number of entries (\lean{card_crossings_le}).
+\end{outline}
+
+\begin{corollary}[Bounded entry bounds the owner-load]\label{cor:owner-load}
+\notformalized
+Let $x_1,\dots,x_k$ be walks of length~$T$ and $H'$ a set of their long hops such that, for every hop of~$H'$ of head~$h$
+at a cell~$c$, the walk $x_h$ enters~$c$ at most $V$ times. Then $H'$ has owner-load at most $2V-1$. In particular, if every
+walk enters every cell at most $V$ times, the set of all long hops has owner-load at most $2V-1$.
+\end{corollary}
+
+\begin{informalproof}
+Fix a time~$t$, a head~$h$ and a side, say upper. The hops of~$H'$ of head~$h$ on this side whose open intervals
+contain~$t$ form a chain (\cref{sec:prelim-walks}). Choosing one hop for each of their $\ell$ distinct owners gives a strictly
+nested chain of upper long hops with distinct owners, and by \cref{lem:owner} with $T'=T-1$ its innermost cell has at
+least $(\ell+1)/2$ entries. This cell is the cell of a hop of~$H'$ of head~$h$, so $(\ell+1)/2\le V$. Lower hops are
+symmetric.
+\end{informalproof}
+
+\subsection{Families and virtual heads}\label{sec:nest-families}
+
+\begin{definition}[Families]\label{def:families}
+Let $H'$ be a set of long hops of walks $x_1,\dots,x_k$ of length~$T$. For a head~$h$, a side~$\sigma$ and a time~$o$,
+the \emph{family} of $(h,\sigma,o)$ is the set of hops of~$H'$ of head~$h$ on side~$\sigma$ with owner~$o$, when it is
+nonempty; every hop of~$H'$ lies in exactly one family. All hops of a family~$F$ contain its owner~$o_F$, so they form a
+chain. The \emph{span} of~$F$ is its outermost hop $(P_F,U_F)$, at the cell~$c_F$; its \emph{height} is
+$d_F=\abs{x_h(o_F)-c_F}\ge1$; its \emph{band} is $\lambda(d_F)$, where $\lambda(d)=\lfloor\log_2d\rfloor$, so
+$2^{\lambda(d)}\le d<2^{\lambda(d)+1}$; and its \emph{depth} is the number of families of $(h,\sigma)$ whose span
+contains the span of~$F$ as an interval, $F$ included. A \emph{virtual head} is a triple $v=(h,\sigma,i)$ such that some
+family of $(h,\sigma)$ has depth~$i$; its families are those of $(h,\sigma)$ of depth~$i$. We write $N$ for the number of
+virtual heads.
+\end{definition}
+
+\begin{lemma}[Structure of families]\label{lem:families}
+\notformalized
+Let $H'$ have owner-load at most~$\ell$.
+\begin{enumerate}[label=(\alph*)]
+\item The cells of the hops of a family~$F$ are distinct and lie between $c_F$, included, and $x_h(o_F)$, excluded, so
+$\card F\le d_F$; moreover $U_F-P_F\ge2d_F$.
+\item Distinct families of $(h,\sigma)$ have distinct spans, and their spans do not cross.
+\item Every family has depth at most~$\ell$. Hence $N\le2k\ell$.
+\item Two distinct families $F,F'$ of one virtual head satisfy $U_F\le P_{F'}$ or $U_{F'}\le P_F$.
+\item For every virtual head~$v$ and time~$\tau$, at most one family~$F$ of~$v$ has $\tau\in(P_F,U_F]$, and
+$\sum_{F\text{ of }v}d_F\le(T-1)/2$.
+\item \emph{(Overlap.)} For every time~$\tau$ and integer $\theta\ge0$, at most $N(2^\theta-1)$ hops
+$(p,u)\in H'$ with $p<\tau\le u$ lie in families of band less than~$\theta$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) Let $F$ be upper; the lower case is symmetric. If $(p,u)\supsetneq(p',u')$ are hops of~$F$, then $p'\in(p,u)$, so
+$x_h(p')>x_h(p)$: the cells increase strictly inwards. The innermost hop contains~$o_F$, where the walk is above its cell,
+so all cells lie in $[c_F,x_h(o_F)-1]$, and $\card F\le d_F$. The walk moves by at most one cell per step and goes from
+$c_F$ at $P_F$ to $x_h(o_F)$ at~$o_F$ and back to $c_F$ at~$U_F$, so $o_F-P_F\ge d_F$ and $U_F-o_F\ge d_F$.
+
+(b) The span of~$F$ is a hop of~$F$, with owner~$o_F$; equal spans give equal owners and hence equal families. Spans are
+long hops of one head on one side, which do not cross.
+
+(c) Let $t\in(P_F,U_F)$, a nonempty interval by~(a). Every family~$F'$ whose span contains the span of~$F$ has $t$ in the
+open interval of its span, a hop of~$H'$ of head~$h$ on side~$\sigma$ with owner~$o_{F'}$, and distinct such families have
+distinct owners. So there are at most $\ell$ of them. A virtual head is then a triple $(h,\sigma,i)$ with $i\le\ell$.
+
+(d) If the open spans of $F$ and~$F'$ met, then by~(b) one would be strictly contained in the other, say
+$(P_{F'},U_{F'})\subsetneq(P_F,U_F)$. Every family whose span contains the span of~$F$ also contains the span of~$F'$, and
+$F'$ contains its own span but not that of~$F$; so $F'$ would have larger depth than~$F$. Hence the open spans are
+disjoint; say $P_F<P_{F'}$. Then $P_{F'}\ge U_F-1$, since otherwise $P_{F'}+1$ would lie in both open spans. If
+$P_{F'}=U_F-1$ and $F$ is upper, then $x_h(U_F-1)=c_F+1$ is the cell of the span of~$F'$, while
+$U_F\in(P_{F'},U_{F'})$ and $x_h(U_F)=c_F<c_F+1$, which contradicts that this span is an upper hop. The lower case is
+symmetric. So $U_F\le P_{F'}$.
+
+(e) The first claim is~(d). The half-open spans $(P_F,U_F]$ of the families of~$v$ are therefore disjoint subsets of
+$\{1,\dots,T-1\}$, and by~(a) each has at least $2d_F$ elements.
+
+(f) A hop $(p,u)$ of a family~$F$ of a virtual head~$v$ with $p<\tau\le u$ satisfies $P_F\le p<\tau\le u\le U_F$. By~(e)
+at most one family of~$v$ qualifies, and if its band is less than~$\theta$, then by~(a) it has at most
+$d_F<2^{\lambda(d_F)+1}\le2^\theta$ hops. Summing over the $N$ virtual heads gives the bound.
+\end{informalproof}
+
+\begin{definition}[The family clock]\label{def:clock}
+Let $H'$ have owner-load at most~$\ell$ and $N\ge1$ virtual heads, numbered $1,\dots,N$.
+\begin{itemize}[leftmargin=2em]
+\item The \emph{band} of a virtual head~$v$ at time~$t$ is $b_v(t)=\lambda(d_F)$ for the family~$F$ of~$v$ with the
+largest $P_F\le t$, and $b_v(t)=0$ if no family of~$v$ starts at or before~$t$. It changes only at the start times
+$P_F\ge1$ of the families of~$v$, the \emph{jumps} of~$v$.
+\item The \emph{events} are the owners $o_F$ of all families of all virtual heads, one per family, with \emph{scale}
+$\lambda(d_F)$.
+\item Fix integers $a\ge1$ and $K\ge2$, an \emph{offset} $r\in\{0,\dots,a-1\}$ and $\omega\in\{0,\dots,K-1\}^N$. The
+\emph{group} of~$v$ at~$t$ is $G_v(t)=\lfloor(b_v(t)+r)/a\rfloor$, and the \emph{floor} of a group $G\ge0$ is
+$\theta(G)=\max(aG-r,0)$; a band $b$ lies in group~$G$ exactly when $\theta(G)\le b<\theta(G+1)$, and the floors at
+least~$1$ are the integers congruent to $-r$ modulo~$a$.
+\item The \emph{occupied groups} at~$t$ are the distinct values among $G_1(t),\dots,G_N(t)$, listed from the top as
+$G_1(t)>\dots>G_{m(t)}(t)$, with floors $\theta_i(t)=\theta(G_i(t))$; here $m(t)\le N$.
+\item The \emph{counts} are $n_i(t)=\#\{\text{events at times at most }t\text{ of scale at least }\theta_i(t)\}$.
+\item The \emph{family clock} is the label
+\[
+  \Psi(t)=\sum_{i=1}^{m(t)}\bigl((n_i(t)+\omega_i)\bmod K\bigr)\,K^{N-i}\;\in\;[0,K^N).
+\]
+\end{itemize}
+\end{definition}
+
+So $\Psi(t)$ is the integer whose base-$K$ digits, most significant first, are $\psi_i(t)=(n_i(t)+\omega_i)\bmod K$ for
+$i\le m(t)$ and $0$ for $m(t)<i\le N$, and labels compare as these digit strings compare lexicographically. Two bands
+$b<b'$ lie in different groups exactly when some floor $\theta\ge1$ satisfies $b<\theta\le b'$; for a
+uniformly random offset each integer $\theta\ge1$ is a floor with probability $1/a$. This is the band label of the fourth
+paper's Theorem~B~\cite[Definition~4.19]{FourthPaper2026}, with virtual heads in place of heads, family bands in place of
+distances from home, and owners in place of leg starts.
+
+\subsection{Theorem F}\label{sec:nest-F}
+
+\begin{theorem}[Theorem F: depth reduction at bounded owner-load]\label{thm:F}
+\notformalized
+Let $k,\ell\ge1$, $\eps\in(0,1]$ and $T\ge1$, let $x_1,\dots,x_k$ be walks of length~$T$, coupled arbitrarily, and let $H'$
+be a set of their long hops of owner-load at most~$\ell$. Then the DAG $G(H')$ has a cut of at most $\eps T$ edges and depth
+less than
+\[
+  \DF(k,\ell,\eps)=2^{\,2k\ell\left(\lceil64k^2\ell^2/\eps\rceil+5+\lceil\log_2(k^2\ell^2/\eps)\rceil\right)}
+  =2^{O(k^3\ell^3/\eps)}.
+\]
+The bound does not depend on~$T$, on the coupling, on homes or on the scales of the walks, and pauses are allowed.
+\end{theorem}
+
+\begin{informalproof}
+If $N=0$, then $H'$ is empty, and the empty cut has depth~$0$. Otherwise let $r$ and~$\omega$ be uniformly random and
+independent, and let $F_\Psi$ be the cut of the family clock in $G(H')$ (violated hop edges and state edges at descents).
+By \cref{lem:labels} it has depth at most $K^N-1$. We show
+\begin{equation}\label{eq:F-expect}
+  \mathbb E\card{F_\Psi}\;\le\;\frac{4N^2T}a+\frac{2^{a+1}N^2T}K.
+\end{equation}
+We bound the number of violated hops of~$H'$, counted per hop, which is at least the number of violated hop edges, and the
+number of descents. Throughout, $\eta=(p,u)$ is a hop of~$H'$ of the virtual head~$w$, in the family~$F$, and
+$G_\eta=\lfloor(\lambda(d_F)+r)/a\rfloor$ is the group of its band.
+
+\emph{Consistency.} We have $G_w(p)=G_\eta$, and $G_w(u)=G_\eta$ unless $\eta$ is the span of~$F$ and the next family
+$F'$ of~$w$ starts at $P_{F'}=U_F$. Indeed, $P_F\le p<u\le U_F$, and by \cref{lem:families}(d) no family of~$w$ starts in
+$(P_F,U_F)$, so $b_w=\lambda(d_F)$ on $[P_F,U_F)$; the hops of~$F$ other than its span have $u<U_F$, by strict nesting.
+Call $\eta$ \emph{inconsistent} if $G_w(u)\ne G_\eta$.
+
+\emph{($\alpha$) Inconsistent hops.} We count them all as violated. By consistency there is at most one inconsistent hop for each
+pair $(F,F')$ of consecutive families of~$w$ with $U_F=P_{F'}$, and it requires the bands $\lambda(d_F)$ and
+$\lambda(d_{F'})$ to lie in different groups, which has probability at most
+$\abs{\lambda(d_F)-\lambda(d_{F'})}/a\le(\lambda(d_F)+\lambda(d_{F'}))/a$. Each family lies in at most two consecutive
+pairs, and $\lambda(d)<d$, so the expected number is at most $(2/a)\sum_Fd_F\le T/a$ per virtual head, and $NT/a$ in all.
+
+\emph{($\beta$) Consistent hops whose higher groups differ.} Let $\mathcal U(t)$ be the set of occupied groups above $G_\eta$ at
+time~$t$, and suppose $\eta$ is consistent and $\mathcal U(p)\ne\mathcal U(u)$; we count it as violated. Some group
+$G'>G_\eta$ is occupied at exactly one of the times $p,u$, by a virtual head~$v$ that is not in~$G'$ at the other time;
+$v\ne w$, since $w$ is in $G_\eta$ at both times. So $G_v(p)\ne G_v(u)$ and $\max(G_v(p),G_v(u))>G_\eta$. The group of~$v$
+changes only at its jumps. If $G_v(p)>G_\eta$, let $\tau$ be the first jump in $(p,u]$ that changes the group of~$v$;
+otherwise let $\tau$ be the last such jump. In both cases the jump at $\tau\in(p,u]$ moves $v$ between two groups whose
+larger one, $G^\circ$, exceeds~$G_\eta$. Let the jump move the band of~$v$ from~$b$ to~$b'$. The floor
+$\theta^\circ=\theta(G^\circ)$ satisfies $\min(b,b')<\theta^\circ\le\max(b,b')$, and since
+$G^\circ\ge G_\eta+1$, $\lambda(d_F)<\theta(G_\eta+1)\le\theta^\circ$. So $\eta$ spans~$\tau$ and its family has band
+less than~$\theta^\circ$. Charge $\eta$ to the jump $(v,\tau)$. By the overlap bound of \cref{lem:families}, at most
+$N(2^{\theta^\circ}-1)$ hops are charged to one jump. Given~$r$, $\theta^\circ$ is the largest floor in
+$(\min(b,b'),\max(b,b')]$, so this is less than $N$ times the sum of $2^\theta$ over the floors~$\theta$ in
+that range; a jump that changes no group receives no charge. Since each integer $\theta\ge1$ is a floor with
+probability $1/a$, the expected charge of a jump is at most $(N/a)2^{M+1}$, where $M=\max(b,b')$ and
+$2^M\le2^b+2^{b'}$. At the jump that starts a family $F''$, the new band is $\lambda(d_{F''})$ and the old band is
+that of the previous family of~$v$, or the initial band~$0$. Each family occurs at most once as a new band and at most once
+as an old band, so $\sum_{\text{jumps of }v}2^M\le1+2\sum_F2^{\lambda(d_F)}\le1+2\sum_Fd_F\le T$. The expected number of
+such hops is therefore at most $(2N/a)\sum_vT=2N^2T/a$.
+
+\emph{($\gamma$) The remaining hops.} Now $\eta$ is consistent and $\mathcal U(p)=\mathcal U(u)$. Then $G_\eta$ has the same
+position $j=\card{\mathcal U(p)}+1$ in the lists of occupied groups at $p$ and at~$u$, and the groups above it, hence
+their floors $\theta_i$, $i\le j$, agree. Put $\Delta_i=n_i(u)-n_i(p)$ for $i\le j$; then $\Delta_i\ge0$, because the
+floor is the same at both times. Moreover $\Delta_j\ge1$: the owner $o_F\in(p,u)$ is an event of scale
+$\lambda(d_F)\ge\theta(G_\eta)=\theta_j$. Say that digit~$i$ \emph{wraps} if
+$\lfloor(n_i(p)+\omega_i)/K\rfloor\ne\lfloor(n_i(u)+\omega_i)/K\rfloor$. If no digit $i\le j$ wraps, then
+$\psi_i(u)=\psi_i(p)+\Delta_i$ for $i\le j$, the first position $i\le j$ with $\Delta_i>0$ carries a larger digit at~$u$,
+all earlier digits agree, and $\Psi(u)>\Psi(p)$. Given~$r$, digit~$i$ wraps with probability at most $\Delta_i/K$, so
+$\eta$ is violated with probability at most $\sum_{i\le j}\Delta_i/K$.
+
+We bound $\sum_\eta\sum_{i\le j(\eta)}\Delta_i(\eta)$ over these hops, for every~$r$, by exchanging the order of
+summation. $\Delta_i(\eta)$ is the number of events $o'\in(p,u]$ of scale at least~$\theta_i$. Fix an event~$o'$ of
+scale~$s$. A pair $(\eta,i)$ counts~$o'$ only if $\eta$ spans~$o'$ and $\theta(G_\eta)\le\theta_i\le s$; the floors
+$\theta_i$, $i\le j(\eta)$, are distinct, since $\theta$ is strictly increasing on groups. If $\theta(G_\eta)\le\varphi$,
+then $\lambda(d_{F(\eta)})<\theta(G_\eta+1)\le\theta(G_\eta)+a\le\varphi+a$. So, by the overlap bound with $\theta=\varphi+a$,
+the pairs
+counting~$o'$ number at most
+\[
+  \sum_{\varphi}N\bigl(2^{\varphi+a}-1\bigr)\;<\;N2^{a+1}2^s,
+\]
+the sum over the floors $\varphi\le s$, which are distinct integers in $[0,s]$. Each family is the family of one event, and
+$\sum_{o'}2^{s(o')}=\sum_v\sum_F2^{\lambda(d_F)}\le\sum_v\sum_Fd_F\le NT/2$. Hence these hops contribute at most
+$N2^{a+1}\cdot NT/(2K)=2^aN^2T/K$ in expectation.
+
+\emph{Descents.} Consider the state edge $t\to t-1$. If no virtual head changes group at step $t-1\to t$, the occupied
+groups and their floors are the same at $t-1$ and~$t$, and $n_i(t)\ge n_i(t-1)$ for every~$i$; as in~($\gamma$), a descent needs
+a wrap, which given~$r$ has probability at most $\sum_i(n_i(t)-n_i(t-1))/K$. Summed over~$t$ this is at most $N$ times the
+number of events divided by~$K$, and there are at most $\sum_v\sum_Fd_F\le NT/2$ events; so these descents number at most
+$N^2T/(2K)$ in expectation. Otherwise some virtual head has a jump at~$t$ that changes its group, and we count the edge as
+cut. A jump from band~$b$ to~$b'$ changes the group with probability at most $\abs{b-b'}/a$, and
+$\sum_{\text{jumps of }v}\abs{b-b'}\le2\sum_F\lambda(d_F)\le T$; so these edges number at most $NT/a$ in
+expectation.
+
+\emph{Total.} Adding the four bounds,
+$\mathbb E\card{F_\Psi}\le(2NT+2N^2T)/a+(2^a+1/2)N^2T/K$, which gives \eqref{eq:F-expect}.
+
+\emph{Parameters.} By \cref{lem:families}(c), $N\le2k\ell$, so the right side of \eqref{eq:F-expect} is at most
+$16k^2\ell^2T/a+2^{a+3}k^2\ell^2T/K$. Take $a=\lceil64k^2\ell^2/\eps\rceil$ and $K=2^{a+4}\lceil k^2\ell^2/\eps\rceil$.
+Then the first term is at most $\eps T/4$ and the second at most $\eps T/2$, and some choice of $(r,\omega)$ gives a cut of
+at most $\eps T$ edges. Its depth is at most $K^N-1<K^{2k\ell}$, and since $\log_2\lceil x\rceil\le\lceil\log_2x\rceil$
+for $x\ge1$,
+\[
+  K^{2k\ell}\le2^{2k\ell\left(\lceil64k^2\ell^2/\eps\rceil+4+\lceil\log_2(k^2\ell^2/\eps)\rceil\right)}<\DF(k,\ell,\eps).
+\]
+Pauses are state edges, and the argument uses only that hops are long and that owners lie strictly inside their hops.
+\end{informalproof}
+
+\paragraph{Why it matters.} Theorem~F proves the walk form of the structural hypothesis of Theorem~D for every family of
+bounded owner-load, for every coupling, and with no reference to positions: neither homes nor leg area enter. Together
+with the owner lemma it shows that a depth-robust family of walks, if one exists, must contain heads with unboundedly
+many simultaneously open nested structures with distinct turning points, hence, by \cref{lem:owner}, cells entered
+unboundedly often. This is the structure of the deep-nesting pair (\cref{sec:prelim-dnp}), which Theorem~F does not
+cut at a depth independent of its nesting depth. Theorem~F is consistent with the fourth paper's nesting barrier for band
+rules~\cite[Remarks~5.6 and~5.7]{FourthPaper2026}, which concerns rules whose load does not grow with the nesting depth;
+the load of the family clock is $N\le2k\ell$.
+
+\subsection{Bounded entry and the capacity of depth}\label{sec:nest-capacity}
+
+\begin{corollary}[Bounded entry implies TCP]\label{cor:entry-tcp}
+\notformalized
+Let $V\ge1$. TCP holds for every family of $k$-tuples of walks in which every walk enters every cell at most $V$ times,
+in particular for walks of multiplicity at most~$V$, with $D(\eps)=\DF(k,2V-1,\eps)$ for $\eps\in(0,1]$.
+\end{corollary}
+
+\begin{informalproof}
+By \cref{cor:owner-load} the set of all long hops has owner-load at most $2V-1$, and $G(H')$ is the walk DAG; apply
+\cref{thm:F}.
+\end{informalproof}
+
+The corollary is incomparable with Theorem~B: home-based sweeps $0\to n\to0$, repeated, enter cells near home unboundedly
+often, while walks made of V's of varying sizes that drift away from every home enter every cell at most three times
+but have superlinear leg area about every cell.
+
+\begin{corollary}[The capacity of depth]\label{cor:capacity}
+\notformalized
+Let $x_1,\dots,x_k$ be walks of length~$T$, let $\eps\in(0,1]$ and $V=\lceil1/\eps\rceil$, and let $R$ be the set of pairs
+$(h,c)$ such that $x_h$ enters~$c$ more than $V$ times. Then $\card R\le kT/(V+1)<k\eps T$; at every time~$\tau$ at most
+$\card R$ hops at pairs of~$R$ span~$\tau$; and $G-R$ has a cut of at most $\eps T$ edges and depth less than
+$\DF(k,2\lceil1/\eps\rceil-1,\eps)=2^{O(k^3/\eps^4)}$.
+\end{corollary}
+
+\begin{informalproof}
+Each walk has at most $T$ entries in all, which bounds $\card R$. By (P1), at most one hop at each pair spans a
+given time. The DAG $G-R$ is $G(H')$ for the set $H'$ of long hops at pairs entered at most $V$ times, which by
+\cref{cor:owner-load} has owner-load at most $2V-1\le3/\eps$; apply \cref{thm:F}.
+\end{informalproof}
+
+\paragraph{Why it matters.} Every schedule of linear length splits, with no property of transposition used, into a
+\emph{shallow} part, the hops at boundedly entered cells, which a cut of $\eps T$ edges reduces to bounded depth, and a
+\emph{scratch}~$R$ of fewer than $k\eps T$ cells, which carries fewer than $k\eps T$ symbols across every time cut.
+Paths that avoid the cut may still alternate between at most $\DF$ shallow hops and hops through the scratch. So
+depth-robustness of a linear-time schedule can only live in a set of cells of vanishing capacity that its heads visit
+over and over. On the deep-nesting family the trade-off between $\card R/T$ and the depth is of order $1/\log D$, and no
+better under the walk-DAG form of Conjecture~A$'$ (\cref{prop:dnp-capacity}). The next proposition shows that the
+alternation cannot be forbidden at no cost: for walks without pauses, the statement $\mathrm{RF}(k+1)$ that forbids it
+implies $\TCP(k)$ in genie form, while $\TCP(k+1)$ in genie form implies $\mathrm{RF}(k+1)$ with $R=\emptyset$.
+
+\begin{proposition}[Relays must be allowed]\label{prop:relays}
+\notformalized
+Restrict to walks without pauses, and let $\mathrm{RF}(k)$ be the statement: for every $\eps>0$ there are $D(\eps)$ and
+$\delta(\eps)$, with $\delta(\eps)\to0$ as $\eps\to0$, such that for all $k$ walks of length~$T$ there are a set~$R$ of pairs
+with $\card R\le\delta(\eps)T$ and a set $\Gamma\subseteq[0,T)$ with $\card\Gamma\le\eps T$ such that, for every path
+$t_0\to\dots\to t_n$ of the walk DAG with $t_1,\dots,t_n\notin\Gamma$ and every $i$ with $D(\eps)<i\le n$, if
+$t_{i-1}\to t_i$ is a hop edge then every hop that it carries lies at a pair of~$R$. Then $\mathrm{RF}(k+1)$ implies
+$\TCP(k)$ in genie form: for every $\eps'>0$ there is~$D'$ such that every $k$ walks of length~$T$ have a set
+$\Gamma'\subseteq[0,T)$ with $\card{\Gamma'}\le\eps'T$ such that every path whose vertices after the first avoid~$\Gamma'$
+has at most $D'$ edges.
+\end{proposition}
+
+\begin{informalproof}
+For $\eps'\ge1$ take $\Gamma'=[0,T)$. Let $0<\eps'<1$, let $M$ be the least odd integer with $M\ge4/\eps'$, and choose
+$\eps\le\eps'/8$ with
+$(M-1)\delta(\eps)\le\eps'/8$. Let $x_1,\dots,x_k$ be walks of length $T\ge16/\eps'$. Define an extra walk~$z$ on
+$[0,T)$ blockwise: for $t\in[jM,(j+1)M)$, $z(t)=j+((t-jM)\bmod2)$. Inside block~$j$ it alternates between $j$ and $j+1$,
+ending at~$j$ because $M$ is odd, and the next block starts at $j+1$; so $z$ has no pauses. Cell~$j$ is visited at most
+$M$ times, $z$ has at most $T/M+2$ first visits, and every time that is not a first visit of~$z$ is the later endpoint of a
+long hop of~$z$.
+
+Apply $\mathrm{RF}(k+1)$ to $(x_1,\dots,x_k,z)$ at~$\eps$, obtaining $R$ and~$\Gamma$. Let $\Delta$ be the set of times~$s$
+at which some path of length greater than $D(\eps)$, with all vertices after the first outside~$\Gamma$, ends. For such a
+path ending at~$s$, if $s$ were not a first visit of~$z$, the pair $(z,z(s))$ were not in~$R$ and $\prev_z(s)$ were not
+in~$\Gamma$, then appending the hop edge $s\to\prev_z(s)$ would give a path that violates $\mathrm{RF}$ at its last edge.
+So every $s\in\Delta$ is a first visit of~$z$ (at most $T/M+2$ times), or the later endpoint of a hop of~$z$ at a pair
+of~$R$ (at most $(M-1)\card R\le(M-1)\delta(\eps)T$ times, since each pair of~$z$ carries at most $M-1$ hops), or has
+$\prev_z(s)\in\Gamma$ (at most $\card\Gamma\le\eps T$ times, since $\prev_z$ is injective).
+
+Put $\Gamma'=\Gamma\cup\Delta$. A path of length greater than $D(\eps)$ whose vertices after the first avoid~$\Gamma'$
+would avoid~$\Gamma$, so its last vertex would lie in~$\Delta\subseteq\Gamma'$, a contradiction. Hence such paths have at
+most $D(\eps)$ edges in the walk DAG of $(x_1,\dots,x_k,z)$, and therefore in that of $(x_1,\dots,x_k)$, which has the same
+vertices and fewer edges. Finally
+$\card{\Gamma'}\le2\eps T+T/M+2+(M-1)\delta(\eps)T\le(\eps'/4+\eps'/4+\eps'/8)T+2\le\eps'T$, using $T\ge16/\eps'$. For
+$T<16/\eps'$ every path has fewer than $16/\eps'$ edges, so $D'=\max(D(\eps),\lceil16/\eps'\rceil)$ works.
+\end{informalproof}
+
+The conversion is the reason the scratch of \cref{cor:capacity} must be allowed to relay: a busy extra head of bounded
+multiplicity and space about $T/M$ turns any relay-free certificate into a genuine genie for the other heads.
+
+\begin{remark}[Depth-robust schedules carry capacity]\label{rem:abp}
+Proof sketch only. Alwen, Blocki and Pietrzak showed that a DAG that keeps a path with $d$ vertices after the deletion of
+any $e$ vertices has cumulative pebbling cost greater than about $ed$~\cite{ABP2017}; graphs of this kind go back to Erdős,
+Graham and Szemerédi~\cite{EGS1975}. Pebbling the walk DAG of $k$ walks in time order keeps, at step~$t$, pebbles on the
+current and the previous step and on the earlier endpoints of the hops that span~$t$, at most $\Live(t)+2$ pebbles, where
+$\Live(t)$ is the number of hops spanning~$t$. Hence, if a family is depth-robust at $(\eps,D)$ in genie form, then
+$\sum_t\Live(t)$ is at least about $\eps TD-2T$: the mean time-cut capacity of a depth-robust schedule grows linearly with
+the depth that it forces. \Cref{cor:capacity} bounds the capacity of the deep part from above; on the deep-nesting pairs
+both bounds are compatible, with capacity about $T/(m+1)$ and, under Conjecture~A$'$, depth exponential in~$m$.
+\end{remark}

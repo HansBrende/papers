@@ -1,0 +1,165 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\clog d)$-bit entries, written
+row by row, in time linear in the input length $L=d^2b(d)$? This is the statement~(T) of the first paper of this
+series~\cite{FirstPaper2026}. By a reduction of Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a linear-time
+multiplication machine would give a linear-time transposer, so a proof of $\neg$(T) would give the first superlinear lower
+bound for off-line integer multiplication on multitape Turing machines, and a proof of~(T) would remove the data-movement
+obstacle to linear-time multiplication. The question is open, and this paper does not decide it.
+
+For oblivious machines the fourth paper of the series~\cite{FourthPaper2026} reduced $\neg$(T) to two statements of different
+kinds (its Theorem~D, \cref{thm:D4} here). \emph{Depth reduction}: the time--space dependency DAG of every oblivious linear-time
+run can be cut to bounded depth by a genie that reveals $\eps L$ bits. At the level of head walks this is the trajectory cut
+problem TCP: deleting $\eps T$ edges of the walk DAG of $k$ walks of length~$T$ should leave every path with boundedly many long
+hops. \emph{The crux}: index codes for the side information of the remaining bounded-depth cones need more than $\eps L$ bits.
+The fourth paper proved TCP for home-based work heads, whose legs all begin or end near fixed homes, for every coupling of the
+heads (its Theorem~B), and it identified as the sharpest open instance the \emph{deep-nesting pair}: two copies of a walk nested
+at $m+1$ levels, shifted against each other in time, with a conjecture (A$'$) predicting depth-robustness as $m$ grows.
+\emph{Directed Recovery Structures in Tape Computations}~\cite{DirectedRecovery2026} showed that the cone relations of every
+linear-time schedule are paired-distance separated after a paid trimming, and isolated the crux as one machine-free question
+\cite[Question~9.1]{DirectedRecovery2026}: do all storage codes on bounded-degree recovery relations with this separation have
+rate at most $\frac12+o(1)$?
+
+This paper is about the depth side, and about how it meets the coding side. Its main theorem replaces homes by
+\emph{owners}, the turning points that hops are nested around, and proves TCP for all walks of bounded nesting load.
+
+\subsection{Results}
+
+\paragraph{Bounded nesting (\cref{sec:nesting}).} The \emph{owner} of a long hop of a walk is the first time inside it at which
+the walk is farthest from the hop's cell. The \emph{owner lemma} (\cref{lem:owner}): if $\ell$ nested hops of one side have
+pairwise distinct owners, the cell of the innermost hop is entered at least $(\ell+1)/2$ times. So walks that enter every cell
+at most $V$ times have \emph{owner-load} at most $2V-1$: at every time, each head has at most $2V-1$ distinct owners among its open
+hops of each side. \emph{Theorem~F} (\cref{thm:F}): for $k$ walks of length~$T$, coupled arbitrarily, and any set of their long
+hops of owner-load at most~$\ell$, some $\eps T$ edges cut the DAG of these hops to depth $2^{O(k^3\ell^3/\eps)}$, independently
+of homes, drift and scales. The label is the fourth paper's band label run on virtual heads, one per head, side and nesting
+depth, with bands given by the heights of families of hops with a common owner. Consequently TCP holds for walks of bounded
+entry (\cref{cor:entry-tcp}), and in every schedule the depth-robust part, if any, lives on fewer than $k\eps T$ cells that are
+entered more than $\lceil1/\eps\rceil$ times, while the rest is cut to depth $2^{O(k^3/\eps^4)}$ (\cref{cor:capacity}). The
+deep part must be allowed to relay information: for walks without pauses, forbidding it would already imply TCP for one head
+fewer (\cref{prop:relays}).
+
+\paragraph{One arbitrary head (\cref{sec:onehead}).} \emph{Lemma~W} (\cref{lem:W}) cuts a single walk with a strip label, anchored
+to cells: $\eps T$ edges and depth less than $16/\eps^2+2/\eps$. \emph{Theorem~M} (\cref{thm:M}) combines it with Theorem~F:
+one arbitrary walk, together with walks of owner-load at most~$\ell$ whose families have heights in $q$ dyadic windows of
+width~$h$, is cut to a depth that depends only on $(k,\ell,q,h,\eps)$, not on the arbitrary walk or on~$T$; with one window the
+depth is $\poly(k,\ell,1/\eps)$ times the square of the ratio of the largest to the smallest family height (\cref{cor:M1}). So a
+depth-robust family needs two heads of unbounded owner-load, or one together with bounded heads at unboundedly many separated
+scales (\cref{cor:where}). TCP for $k$ walks is, up to a factor~$2$ in~$k$, depth reduction for DAGs with a spine and $k$
+non-crossing families of arcs (\cref{prop:stacks}); two families are planar (\cref{prop:sr2}), and three is the first open case.
+
+\paragraph{The deep-nesting pair (\cref{sec:dnp}).} A \emph{turn counter}, the number of turns of either head so far modulo~$q$,
+doubly serves every level of both heads at $\log_2q=m+O(\log(1/\theta))$ and cost at most
+$\frac{11}{32}\theta n_{\mathrm h}/(m+1)$, at every shift (\cref{thm:counter,cor:counter-served}). Hence Conjecture~A$'$ needs
+the constant $C\ge1$ (\cref{cor:C1}), and the pair is cut at depth $\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil-1$, against the fourth
+paper's $\lceil12/\eps\rceil^{m+1}-1$ (\cref{cor:counter-cut}): the open question is exponential against subexponential depth in
+the nesting depth, with base at most~$2$. We prove that every level class of the pair has exactly $n_{\mathrm h}/(2(m+1))$ hops
+(\cref{lem:dnp-classes}). For labels that change only at turns, fine classes are \emph{blind}: on average over shifts, a class with
+$g$ levels below it sees a turn of the other head on at most a fraction $(g+3+\lceil\log_2(g+2)\rceil)/(m+1)$ of its hops
+(\cref{cor:blind}).
+Coarse classes are \emph{visible}: for the block labels that serve one head cheaply, a fraction of order $(m-k)/(m+1)$ of the
+apex hops of every coarse class of the other head sees a cancellation at full size, an other-head increment of at most
+$-Q-1$, on average over shifts (Theorem~V, \cref{thm:V}). Blindness leaves a safe form of the conjecture, A$''$, which still gives exponential depth (\cref{conj:App}).
+
+\paragraph{Consequences for transposers (\cref{sec:transposers}).} \emph{Corollary~F}: the crux alone, at the depth given by
+Theorem~F, excludes oblivious linear-time transposers whose work heads enter every cell boundedly often (\cref{cor:F}); such
+heads may reverse unboundedly often, and we know no unconditional lower bound for such machines. \emph{Corollary~F$'$}: an affirmative answer to
+Question~9.1 of \emph{Directed Recovery Structures} excludes them (\cref{cor:Fprime}), and \emph{Corollary~F$''$} extends this to
+adaptive machines whose traces have entropy at most $\eta L$ for a fixed $\eta<\frac12$, provided every trace of probability at
+least $2^{-\eta L}$ has bounded entry (\cref{cor:Fsecond}). Theorem~M gives the analogous
+statement when one work head is unrestricted (\cref{cor:M-machine}).
+
+\paragraph{Linear machines (\cref{sec:linear}).} For machines with a data path that is linear over a field, linear depth-TCP,
+in which depth is replaced by linear depth and long paths may cancel, together with a linear crux excludes oblivious
+linear-time transposers (Theorem~$\Dlin$, \cref{thm:Dlin}). The linear crux can be stated exactly as relative rigidity: the
+transposition matrix must not be the sum of a matrix of rank below $\rho L$ and a matrix supported on the bounded-depth ball
+pattern of the schedule (\cref{lem:rigidity}). Relative rigidity alone excludes no machine.
+
+\paragraph{The crux in special linear settings (\cref{sec:crux}).} For binary linear codes lifted from a fixed code along a
+tower of double covers, an exact recursion with a twist pairing extends the lift identity of \emph{Covers and Local
+Generation}~\cite{Covers2026} from symmetric to asymmetric checks, so lifting never raises the rate. Along towers that become
+bipartite every code has rate at most~$\frac12$ from that level on, and along towers pulled back injectively from chains with
+trivial intersection in free pro-$2$ groups the rate tends to a universal rate at most~$\frac12$, by mod-$2$ Lück approximation
+in the form of Jaikin-Zapirain and Souza; for the Clebsch code this limit is~$0$, as \emph{Covers and Local Generation} also
+shows. We construct such towers that never become bipartite and have girth tending to infinity (\cref{thm:eqcrux,prop:eqtower}).
+On triangle-free graphs~$G$ of maximum degree four, over every field, the kernel of a matrix~$M$ with unit diagonal and support
+in~$G$ has dimension at most $\lfloor N/2\rfloor$ when the vertices at which $M$ violates the reciprocity condition of the fourth
+paper's Theorem~S are at most two or pairwise at distance at least three (Theorem~SH, \cref{thm:SH}), and in general dimension at
+most $\nu(G)+\card H-\rho_3(H)$, where $H$ is the set of these vertices (\cref{cor:SH}).
+
+\paragraph{The construction side and open problems (\cref{sec:construction,sec:open}).} We list what a linear-time transposer
+would have to do, among other things carry unbounded nesting and a deep part of vanishing capacity, and the problems on which the
+oblivious case rests.
+
+\subsection{How to read this paper: the formal proofs}
+
+Four results are formalized in Lean, two of them in part: the owner lemma (\cref{lem:owner}) and Lemma~W (\cref{lem:W})
+completely; the lemma that cuts are labels (\cref{lem:labels}) in its path form, its consequence for walk DAGs being deduced
+in the text; and the label arithmetic of the turn counter (\cref{thm:counter}). For the turn counter, part~(1), the hypotheses
+of the Lean theorem on the cover, and the counts of turns and hops, which rest on the fourth paper's Lemma~5.4, are proved in
+the text. Everything else is
+proved in the text and not formalized; this includes Theorem~F, Theorem~M, Corollaries F, F$'$, F$''$ and~M1, the capacity corollary, the stack form of TCP,
+the corollaries of the turn counter, the class count, blindness, Theorem~V, Theorem~$\Dlin$, the equivariant crux and Theorem~SH.
+Each of them comes with a complete proof, with all constants, and each numbered result states its status as described in
+\cref{sec:prelim-lean}. Part~(f) of the equivariant crux follows from a lemma of \emph{Covers and Local Generation}, and a short script in
+\leanfile{tools/} checks it independently by one exact rank computation over~$\F_2$. Results of earlier papers that our proofs use are cited with their status there. Lean-verified there: the first paper's
+encoding lemma, pass bounds and coding-gap theorems; and the fourth paper's Lemma~Zq, Theorem~S with its matching form, and
+rate bounds for bipartite graphs and for the Clebsch graph. With written proofs there: the fourth paper's Theorem~D,
+Corollary~B, local recursion, cone lemma, long-edge conversion and Lemma~5.4; Proposition~9.2 of \emph{Directed Recovery
+Structures}; and Lemma~6.1 and Theorem~6.2 of \emph{Covers and Local Generation}. Partly formalized there: the paired-distance
+theorem and the paid trimming of \emph{Directed Recovery Structures} (its Theorem~3.3 and Corollary~3.8), whose extension to a
+frozen adaptive trace is argued in prose (its Remark~3.9). Numerical observations appear only in remarks labelled as numerical,
+heuristics are labelled as such, and claims with only a proof sketch appear only in remarks labelled as such; none of them is
+used in proofs.
+
+\subsection{Related work}
+
+\paragraph{The series.} The first paper formulated (T), proved in Lean pass and motion bounds, and reduced $\neg$(T) to the Tape
+Coding Conjecture~\cite{FirstPaper2026}; the second excluded, in its models, local coding schemes with low-treewidth interaction graphs
+and affine limiting motion~\cite{SecondPaper2026}; the third related bit and word transposition~\cite{ThirdPaper2026}; the fourth proved
+Theorems D and~B, curved-motion theorems and storage-code bounds~\cite{FourthPaper2026}. \emph{Directed Recovery Structures in
+Tape Computations}~\cite{DirectedRecovery2026} proved the paired-distance structure of native cone relations and posed
+Question~9.1, and \emph{Covers and Local Generation in Linear Storage Codes}~\cite{Covers2026} studied linear codes along covers.
+Memos to the fourth paper proved the half bound for graphs of circular chromatic number below three~\cite{CircularMemo2026},
+subcubic bounds beyond scalar recovery~\cite{SubcubicMemo2026}, and the equivalence of TCP with information-cheap depth
+reduction~\cite{InfoDepthMemo2026}. This paper is the eighth of the series. Its companion, the seventh, \emph{Nested
+Elimination and Half-Rate Bounds for Storage Codes}~\cite{SeventhPaper2026}, published together with it, proves on the coding side that every storage code on a triangle-free graph of maximum degree three,
+and on several classes of directed relations without transitive triangles, has rate at most~$\frac12$, that the guessing number
+equals the fractional matching number on such graphs, and that the broadcast rate of index coding there is the number of vertices
+minus the fractional matching number.
+
+\paragraph{Depth reduction and depth-robust graphs.} The route from small depth to lower bounds goes back to Valiant's depth
+reduction for circuits~\cite{Valiant1977}, and the computation-graph method for multitape machines to Hopcroft, Paul and
+Valiant~\cite{HPV1977}. Edge-deletion depth reduction was tied to multitape machines by Paul and
+Reischuk~\cite{PaulReischuk1980}, and separators of $k$-page graphs, which contain tape computation graphs, by Galil, Kannan and
+Szemerédi~\cite{GKS1989separators}, who also constructed $3$-pushdown graphs with nearly linear
+separators~\cite{GKS1989pushdown}. Paul, Pippenger, Szemerédi and Trotter separated deterministic from nondeterministic linear
+time with segregators of the computation graph~\cite{PPST1983}, and Santhanam related segregators of multi-pushdown graphs to
+time and space~\cite{Santhanam2001}; depth reduction at linear cost deletes a fixed fraction of the edges but must leave
+constant depth. Depth-robust graphs go back to a question of Stoß studied by Erdős, Graham and Szemerédi~\cite{EGS1975}, and their
+pebbling cost was related to depth-robustness by Alwen, Blocki and Pietrzak~\cite{ABP2017}. Expanders with $O(1)$-pushdown and
+three-page layouts exist~\cite{DvirWigderson2010,BourgainYehudayoff2013,DSW2016}. We found no work on reducing DAGs of bounded
+stack number, or walk DAGs of bounded nesting, to bounded depth by deleting a linear fraction of the edges.
+
+\paragraph{Coding.} The path sums of \cref{sec:linear} are the transfer matrices of algebraic network coding~\cite{KoetterMedard2003};
+minrank is that of Haemers and of Bar-Yossef, Birk, Jayram and Kol~\cite{Haemers1979,BBJK2011}; the route from small depth to
+index coding goes back to Valiant's depth reduction and Riis's guessing games~\cite{Valiant1977,Riis2007}, and was used in the
+language of min-rank by Jukna and Schnitger~\cite{JuknaSchnitger2011}; for static data structures, lower bounds imply
+rigidity~\cite{DGW2019}, and for systematic linear data structures the two are equivalent~\cite{NRR2020}; and the relation between
+oblivious algorithms and network codes goes back to Adler, Harvey, Jain, Kleinberg and Lehman~\cite{AHJKL2006}. Coding gaps over routing in
+undirected networks were found by Braverman and He~\cite{BravermanHe2026} and by Zhang, Li and Li~\cite{ZhangLiLi2026}. The towers of
+\cref{sec:crux-towers} build on \emph{Covers and Local Generation}~\cite{Covers2026}, which proves the lift identity for
+symmetric binary checks, the monotonicity of normalized nullity under refinements with $p$-group kernels, the half bound for
+the inner rank of graph checks, and full inner rank for checks on graphs with a spanning $2$-factor. They also use Cohn's
+theory of free ideal rings~\cite{Cohn2006}, the monotonicity argument of Bergeron, Linnell, Lück and
+Sauer~\cite{BLLS2014,Kionke2017}, and the mod-$p$ approximation theorems of Jaikin-Zapirain and of Jaikin-Zapirain and
+Souza~\cite{JaikinZapirain2024,JaikinSouza2026}, descendants of Lück's approximation theorem~\cite{Luck1994}.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} recalls the model, walk DAGs, the decomposition of the fourth paper and the deep-nesting pair.
+\Cref{sec:nesting} proves the owner lemma and Theorem~F, \cref{sec:onehead} Lemma~W and Theorem~M, and \cref{sec:dnp} the results on
+the deep-nesting pair. \Cref{sec:transposers} derives the consequences for transposers, \cref{sec:linear} treats linear machines,
+and \cref{sec:crux} proves the two cases of the crux. \Cref{sec:construction} collects what a construction would need, and
+\cref{sec:open} the open problems. The appendices index the Lean declarations and explain how to build and check the library.

@@ -1,0 +1,74 @@
+\section{What a linear-time transposer would need}\label{sec:construction}
+
+Our aim is to decide~(T), and we would prefer a construction. This section collects what the results above require of a
+linear-time transposer, oblivious unless said otherwise. It contains no new theorems: every claim is one of the results above
+or of earlier papers of the series, or is labelled as a heuristic or as resting on a proof sketch.
+
+\paragraph{The interface.} For an oblivious transposer~$M$ with $k$ work tapes and running time $C(L+1)$, and every
+$\eps\in(0,1]$ and $D\ge0$, Theorem~D says: either the dependency DAG has no genie of cost at most $\eps L$ and full depth at
+most~$D$, or the revealed word of such a genie is an index code with at most $\eps L$ bits for the machine's own cone side
+information, and some fibre is a binary storage code of rate at least $1-\eps$ on the cone relation
+\cite[Theorem~4.10 and Remark~4.9(b)]{FourthPaper2026}. After a paid trimming of a small fixed fraction of coordinates, that
+relation is paired-distance separated~\cite[Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}. So a transposer must either
+defeat cheap depth reduction or carry, on a paired-distance separated relation of bounded degree, a code of rate at
+least~$1-\eps$, a counterexample to Question~9.1 of~\cite{DirectedRecovery2026} far beyond rate~$\frac12$.
+
+\paragraph{Requirements on head motion.} In addition to the earlier requirements, $\Omega(\log d)$ passes
+\cite[Theorems~5.9 and~5.12]{FirstPaper2026}, curved macroscopic motion~\cite[Theorems~3.10 and~3.12]{FourthPaper2026}, and
+heads that are not all home-based unless the crux fails~\cite[Corollary~4.23]{FourthPaper2026}, an oblivious transposer must
+satisfy the following; (R1) assumes the crux at the depths of Corollary~F and of \cref{cor:M-machine}.
+\begin{enumerate}[label=(R\arabic*),leftmargin=3em]
+\item \emph{Unbounded nesting.} Some work heads must have unboundedly many simultaneously open nested structures
+with distinct turning points, hence cells entered unboundedly often (\cref{lem:owner}, Corollary~F); either two such heads, or
+one such head together with heads whose families occupy unboundedly many separated scales (\cref{cor:M-machine}). Unboundedly
+many reversals alone do not suffice.
+\item \emph{A deep part of vanishing capacity.} Whatever depth-robustness the schedule has lives on the cells
+entered more than $\lceil1/\eps\rceil$ times, fewer than $k\eps T$ of them; the rest of the walk DAG is cut to depth
+$2^{O(k^3/\eps^4)}$ by $\eps T$ edges (\cref{cor:capacity}). The deep part may relay information between shallow stretches,
+and must be allowed to (\cref{prop:relays}). On the deep-nesting family, under the walk-DAG form of Conjecture~A$'$, its size must be
+of order $T/\log D$ when the rest is cut at depth~$D$ (\cref{prop:dnp-capacity}), and depth-robust schedules carry a mean
+time-cut capacity that grows with the depth they force (\cref{rem:abp}, proof sketch only).
+\item \emph{Not a turn counter.} Families of walks without pauses with $(\mathcal N/T)\cdot H$ bounded, where $\mathcal N$ is the
+number of turns and $H$ the maximal number of hops spanning a time, are depth-reducible (\cref{prop:counter-criterion}); so the
+deep part must combine many turns with many hops open at once, as the deep-nesting pairs do.
+\end{enumerate}
+
+\paragraph{Requirements on the codes.} The fibre code on the cone relation must avoid every class on which rate~$\frac12$ is
+proved, on all but a small fraction of its coordinates: triangle-free side information of maximum degree three and the further
+directed classes of the companion paper~\cite{SeventhPaper2026}, symmetric side information of circular chromatic number below
+three~\cite[Corollary~3.2]{CircularMemo2026}, hyperfinite incidence graphs and strongly connected components with at most two
+internal inputs~\cite[Corollary~4.4 and Theorem~5.1]{DirectedRecovery2026}, and, for linear codes, bounded complex
+coefficients~\cite[Theorem~6.17]{FourthPaper2026}. This paper adds the following for linear codes; parts of (R4) were known
+before~\cite{Covers2026}.
+\begin{enumerate}[label=(R\arabic*),leftmargin=3em,resume]
+\item \emph{No fixed binary lift along a controlled tower.} Along a tower of covers that becomes bipartite, every code has
+rate at most~$\frac12$ from that level on~\cite[Corollary~6.9]{FourthPaper2026}. A fixed small binary linear code lifted along
+a tower of double covers never gains rate, and along a tower pulled back injectively from a chain of open normal subgroups
+with trivial intersection of a free-by-$\Z_2$ pro-$2$ group its rate tends to its universal rate, at most~$\frac12$; for the
+Clebsch code the limit is~$0$ (\cref{thm:eqcrux,prop:eqtower}; compare~\cite[Lemma~9.1 and Theorem~6.2]{Covers2026}).
+\item \emph{Clustered heavy vertices at degree four.} A scalar linear code $\ker M$ beating $\lfloor N/2\rfloor$ by $\eps N$
+on triangle-free side information of maximum degree four needs a matrix~$M$, and likewise~$M^\T$, with a linear number of heavy
+vertices that cannot be scattered (\cref{cor:SH}).
+\item \emph{Non-rigidity, for linear machines.} The transposition matrix must be the sum of a matrix of rank at most
+$\eps L$ and a matrix supported on the depth-$D$ ball pattern of the schedule, for a genie under which every output is linearly
+$D$-shallow (\cref{lem:rigidity}); otherwise the machine has no such genie.
+\end{enumerate}
+
+\paragraph{Coding gaps.} By the first paper, every linear-time transposer yields a causal code for complete exchange on the
+block network of its run that beats multicommodity flow by a factor $\Omega(\log d)$, on all inputs if the machine is oblivious
+\cite[Theorems~8.8, 9.2 and~9.9]{FirstPaper2026}, Lean-verified there; for oblivious algorithms the connection goes back to
+Adler, Harvey, Jain, Kleinberg and Lehman~\cite[Theorem~6.2]{AHJKL2006}. Coding gains over routing in undirected networks
+exist, and the known gains grow with the size of the network, as $(\log n)^{\eps}$ in~\cite{BravermanHe2026} and
+polylogarithmically in~\cite{ZhangLiLi2026}.
+Requirements (R1) and~(R2) suggest where a gain of order $\log d$ would have to be produced: in a deep part of small
+capacity, visited over and over, while the shallow part only moves data. This is a heuristic. A conditional theorem of Brende and
+GPT-6 Astra shows that the shape is not empty for computations in general: if $\TCP(k)$ fails for some~$k$, one fixed native
+bijection with a linear-time native inverse and logarithmic work span needs genie entropy above $\delta L$ at every fixed
+depth~\cite[Theorem~H]{InfoDepthMemo2026}.
+
+\paragraph{Mechanisms that fail.} The following cannot be the whole of an oblivious transposer for which the crux holds at
+the depths of Corollaries F and~B and of \cref{cor:M-machine}: home-based work heads
+(Corollary~B); work heads that enter every cell boundedly often, in any coupling and at any scales (Corollary~F); one arbitrary
+head together with bounded heads at boundedly many scales (\cref{cor:M-machine}). And the following cannot supply its codes on
+more than a small fraction of coordinates: the classes listed above, fixed binary lifts along controlled towers for binary linear codes,
+and, for scalar linear codes at degree four, scattered heavy vertices.

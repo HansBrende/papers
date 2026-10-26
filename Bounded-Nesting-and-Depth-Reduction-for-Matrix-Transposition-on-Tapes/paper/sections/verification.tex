@@ -1,0 +1,37 @@
+\section{Building and verifying the formalization}\label{app:verify}
+
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the library of the fourth
+paper~\cite{FourthPaper2026} through a relative path; that library imports the libraries of the second and first papers and the
+repository's shared library \texttt{lean-machine}. Keep the repository's directory layout, so that these sibling directories stay
+in place.
+
+\paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library and the parts of the earlier libraries that it
+uses. Before the first build, fetch the second paper's pinned external dependency as its README describes
+(\texttt{python3 verification/fetch\_openai\_metric.py}, run in that paper's directory).
+
+\paragraph{Axioms.} The file \leanfile{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration of this library named here (\cref{app:index}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of this
+library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom}. The script regenerates both
+the index of \cref{app:index} and \leanfile{PaperAxioms.lean}; with the option \texttt{--index-only} it writes only the index.
+
+\paragraph{The computational check of \cref{thm:eqcrux}(f).} The script \leanfile{tools/clebsch_lift.py}, which needs only
+Python~3,
+builds the $16$-sheeted lift of the Clebsch graph described at its top and prints the rank and the nullity of the lift of $I+A$
+over~$\F_2$:
+\begin{center}
+\texttt{python3 tools/clebsch\_lift.py}
+\end{center}
+It reports rank $246$ and nullity~$10$. The computation is exact elimination over~$\F_2$ and is not checked in Lean.
+
+\paragraph{Where things are.} \leanfile{Owner.lean} (walks, upper hops, owners, entries and crossings; the owner lemma),
+\leanfile{Labels.lean} (cuts are labels), \leanfile{OneWalk.lean} (hops, lines, strips, the strip label and Lemma~W), and
+\leanfile{TurnCounter.lean} (the label arithmetic of the turn counter, from the fourth paper's Lemma~Zq).

@@ -1,0 +1,148 @@
+\section{Linear machines: the linear crux as rigidity}\label{sec:linear}
+
+For machines whose data path is linear over a field, Theorem~D has a linear analogue, Theorem~$\Dlin$ (\cref{thm:Dlin}):
+\emph{linear depth-TCP} together with a \emph{linear crux} excludes oblivious linear-time transposers. Linear depth-TCP weakens
+the structural hypothesis, replacing depth by \emph{linear} depth, in which long paths may cancel; the linear crux is required
+for a larger class of systems, the ball systems of the schedules, and it can be stated exactly as relative rigidity of the
+transposition matrix with respect to the dependency pattern of the schedule. Relative rigidity alone excludes no machine.
+
+\subsection{Linear data paths and path sums}\label{sec:lin-setting}
+
+Let $F$ be a field; input bits are read as $0,1\in F$. Let $M$ be oblivious at length~$L$, with dependency DAG $H_M$ and step
+values $v_t(w)$ as in \cref{sec:prelim-tcp}, and write $\mathrm{out}(t)$ for the set of defined out-neighbours $t-1$,
+$\prev_1(t),\dots,\prev_k(t)$ of~$t$ in~$H_M$.
+
+\begin{definition}[Linear data path]\label{def:linear-path}
+$M$ has an \emph{$F$-linear data path} at length~$L$ if there are maps $\mathrm{enc}_t$ from the possible values of step~$t$ to
+$F^m$, vectors $c_t,a_t\in F^m$ and matrices $A_{t,s}\in F^{m\times m}$, none depending on the input, such that for every
+$w\in\{0,1\}^L$
+\[
+  \mathrm{enc}_t(v_t(w))=c_t+\sum_{s\in\mathrm{out}(t)}A_{t,s}\,\mathrm{enc}_s(v_s(w))+a_t\,w_{x_0(t)},
+\]
+where the last term is present only if the input head reads a position $x_0(t)\in[0,L)$, and such that output bit~$\ell$,
+appended at step~$t_\ell$, equals $\varphi_\ell(\mathrm{enc}_{t_\ell}(v_{t_\ell}(w)))$ for a fixed affine functional
+$\varphi_\ell$ with linear part $\varphi_\ell^{\mathrm{lin}}$. Such a \emph{representation} need not be unique.
+\end{definition}
+
+Write $v_t$ for $\mathrm{enc}_t(v_t)$. For a genie~$\Gamma$, expanding the recursion along paths and stopping at steps
+of~$\Gamma$ gives
+\[
+  v_t=c'_t+\sum_{s\in\Gamma}T_{t,s}v_s+\sum_jC_{t,j}w_j .
+\]
+Here, for a path $\pi=(t=t_0\to\dots\to t_n)$ of $H_M$ with weight $W(\pi)=A_{t_0,t_1}\cdots A_{t_{n-1},t_n}$, $T_{t,s}$ is
+the sum of $W(\pi)$ over the paths from~$t$ to $s\in\Gamma$ with $n\ge1$ whose interior avoids~$\Gamma$; $C_{t,j}$ is the sum
+of $W(\pi)a_{t_n}$ over the $\Gamma$-free paths whose last step reads position~$j$; and $c'_t$ is the sum of $W(\pi)c_{t_n}$
+over all $\Gamma$-free paths from~$t$. The sums are finite because $H_M$ is acyclic. In matrix form they are the blocks of
+$(I-A_\Gamma)^{-1}(A-A_\Gamma)$ and $(I-A_\Gamma)^{-1}B$, where $A_\Gamma$ is the block matrix~$A$ with the columns of~$\Gamma$
+set to zero and $B$ is the input matrix: the transfer matrices of the linear network cut at~$\Gamma$, in the sense of Koetter and
+Médard~\cite{KoetterMedard2003}.
+
+\begin{definition}[Linear depth]\label{def:linear-depth}
+Let $I^D_\Gamma(\ell)$ be the set of input positions read at steps reachable from~$t_\ell$ by $\Gamma$-free paths of length
+at most~$D$, and $B^D(\ell)\supseteq I^D_\Gamma(\ell)$ the set of positions read at steps reachable from~$t_\ell$ by directed paths of
+length at most~$D$ in~$H_M$, so that $B^D(\ell)=I^D_\emptyset(\ell)$. Output step~$t_\ell$ has \emph{linear depth at most~$D$ for~$\Gamma$} if
+$\varphi_\ell^{\mathrm{lin}}C_{t_\ell,j}=0$ for every $j\notin I^D_\Gamma(\ell)$.
+\end{definition}
+
+For such~$j$ every $\Gamma$-free path to a read of~$j$ is longer than~$D$, so the condition says that the long contributions
+to inputs outside $I^D_\Gamma(\ell)$ cancel; output bit~$\ell$ is then an affine function of the genie values and of the
+bits~$w_j$, $j\in I^D_\Gamma(\ell)$. Structural depth at most~$D$ implies linear depth at most~$D$ at every output step.
+Linear depth is not monotone in~$\Gamma$: adding a step to~$\Gamma$ can break a cancellation between a path through it and a
+path that avoids it.
+
+\subsection{Rigidity relative to the schedule}\label{sec:lin-rigid}
+
+Let $P_{\tpos}$ be the $L\times L$ matrix whose row~$\ell$ is the unit vector $e_{\tpos(\ell)}$. The \emph{minrank} of a
+system $(I(\ell))_\ell$ over~$F$ is the least rank of a matrix~$R$ such that row~$\ell$ of $P_{\tpos}-R$ is supported in
+$I(\ell)$ for every~$\ell$; it is the least length of an $F$-linear index code for the system, decodable on all of~$F^L$ with
+linear decoders~\cite{Haemers1979,BBJK2011}.
+
+\begin{lemma}[Per-machine rigidity]\label{lem:rigidity}
+\notformalized
+Suppose that $M$ has an $F$-linear data path at length~$L$ (with some representation), transposes all $d\times d$ matrices,
+and has a genie~$\Gamma$ under which every output step has linear depth at most~$D$. Then
+\[
+  P_{\tpos}=R+S,\qquad\rank R\le\beta\card\Gamma,\qquad\supp(\text{row }\ell\text{ of }S)\subseteq I^D_\Gamma(\ell)
+  \subseteq B^D(\ell);
+\]
+equivalently, the system $(I^D_\Gamma(\ell))_\ell$ has minrank at most $\beta\card\Gamma$ over~$F$.
+\end{lemma}
+
+\begin{informalproof}
+Define $V_t(w)$ for all $w\in F^L$ by the recursion of the data path. By induction $V_t(w)=v_t(w)$ for $w\in\{0,1\}^L$, and the
+path-sum expansion holds for~$V$ identically in $w\in F^L$, being the unrolled recursion. As $M$ transposes, it appends
+exactly $L$ bits, and the affine function $\varphi_\ell(V_{t_\ell}(w))$ equals $w_{\tpos(\ell)}$ on $\{0,1\}^L$, hence on
+all of~$F^L$, because an affine function is determined by its values at~$0$ and at the unit vectors. By linear depth,
+\[
+  w_{\tpos(\ell)}=\varphi_\ell(c'_{t_\ell})+\sum_{s\in\Gamma}\varphi_\ell^{\mathrm{lin}}T_{t_\ell,s}V_s(w)
+  +\sum_{j\in I^D_\Gamma(\ell)}\varphi_\ell^{\mathrm{lin}}C_{t_\ell,j}w_j\qquad(w\in F^L).
+\]
+So $E(w)=(V_s(w)-V_s(0))_{s\in\Gamma}$ is an $F$-linear index code for $(I^D_\Gamma(\ell))_\ell$, decodable on all of~$F^L$ with
+linear decoders. On $\{0,1\}^L$ it takes at most $2^{\beta\card\Gamma}$ values, since each $v_s$ takes at most $2^\beta$ values.
+A linear map of rank~$\rho$ takes at least $2^\rho$ values on $\{0,1\}^L$: it is injective on the binary vectors supported on
+$\rho$ coordinates whose columns are independent, because differences of such vectors have coefficients in $\{-1,0,1\}$. So
+$\rank E\le\beta\card\Gamma$, and the linear parts of the displayed identity, stacked over~$\ell$, give the decomposition, with
+the rows of~$R$ in the row space of~$E$.
+\end{informalproof}
+
+\begin{definition}[Linear depth-TCP and the linear crux]\label{def:lin-hyp}
+\emph{Linear depth-TCP}$(k,C,\beta,\eps,D;F)$ says: for every machine~$M$ with $k$ work tapes and value width at most~$\beta$
+there is~$d_0$ such that at every $d\ge d_0$ at which $M$ is oblivious at length~$L$, has an $F$-linear data path and halting
+time at most $C(L+1)$, there are a representation of its data path and a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ under
+which every output step has linear depth at most~$D$. Let $\Sball_{k,C,\beta,D}$ be the class of the ball systems
+$(B^D(\ell))_{\ell\in[0,L)}$, at the lengths $L=d^2b(d)$, of the oblivious machines with $k$ work tapes, value width at
+most~$\beta$ and halting time at most $C(L+1)$ that append exactly $L$ bits, as for $\mathcal S_{k,C,\beta,D}$; no linear data
+path is required. $\LinCrux_F(\Sball_{k,C,\beta,D},\rho)$ says: for every $\eta>0$ there is~$d_0$ such
+that every system of $\Sball_{k,C,\beta,D}$ at a size $d\ge d_0$ has minrank at least $(\rho-\eta)L$ over~$F$.
+\end{definition}
+
+\begin{theorem}[Theorem $\Dlin$]\label{thm:Dlin}
+\notformalized
+Let $k\ge1$, $D\ge0$ and $\beta\ge2$ be integers, $C>0$, $0<\eps<\rho$ and $F$ a field. If linear depth-TCP$(k,C,\beta,\eps,D;F)$
+and $\LinCrux_F(\Sball_{k,C,\beta,D},\rho)$ hold, then for every machine~$M$ with $k$ work tapes and value width at
+most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length~$L$ with an $F$-linear data path, halting
+time at most $C(L+1)$, and a transposer of all $d\times d$ matrices.
+\end{theorem}
+
+\begin{informalproof}
+Let $\eta=(\rho-\eps)/2$ and let $d_0$ be the larger of the thresholds of the two hypotheses. If $M$ were such a transposer at
+some $d\ge d_0$, linear depth-TCP would give a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ under which every output step
+has linear depth at most~$D$, and by \cref{lem:rigidity} the system $(I^D_\Gamma(\ell))_\ell$, and hence the larger system
+$(B^D(\ell))_\ell\in\Sball_{k,C,\beta,D}$, would have minrank at most $\eps L<(\rho-\eta)L$.
+\end{informalproof}
+
+This is the proof of Theorem~D with the cone lemma replaced by the path-sum expansion, which is exact for linear data paths.
+
+\paragraph{Why it matters.} Read as a matrix statement, $\LinCrux_F(\Sball,\rho)$ says that $P_{\tpos}$ is $\rho L$-rigid
+relative to the $D$-ball pattern of every linear-time schedule: it is not the sum of a matrix of rank below $\rho L$ and a
+matrix supported on that pattern. So, for linear machines, linear depth-TCP together with a
+linear crux excludes oblivious linear-time transposers, and the linear crux can be stated exactly as relative rigidity of the
+transposition matrix; \cref{lem:rigidity} applies only to a machine that has a cheap genie under which every output has
+linear depth at most~$D$. This is a relative form of Valiant's route from depth reduction and rigidity to lower bounds for
+linear circuits~\cite{Valiant1977}. The route from small depth to index coding also goes back to Riis's guessing
+games~\cite{Riis2007}, and it was used in the language of min-rank by Jukna and Schnitger~\cite{JuknaSchnitger2011}. For
+static data structures, lower bounds imply rigidity~\cite{DGW2019}, and for systematic linear data structures the two are
+equivalent~\cite{NRR2020}. Without the pattern the statement is false for permutation matrices: splitting the receivers into
+groups of $s+1$, each knowing the bits demanded by the others in its group, gives rank $\lceil L/(s+1)\rceil$ with $s$
+off-diagonal entries per row~\cite[Section~4.3]{FourthPaper2026}. Any proof must use the schedule's structure. On the construction
+side, a linear oblivious transposer at size~$d$ either has no genie of cost $\eps L$ that makes every output linearly
+$D$-shallow, or its formal revealed map is a linear index code of rank at most $\eps L$ for its own ball system.
+
+\begin{remark}[Scope]\label{rem:Dlin-scope}
+(a) The genie plays no role in the crux class: since $I^D_\Gamma(\ell)\subseteq I^D_\emptyset(\ell)=B^D(\ell)$ and the empty
+genie is allowed, the linear crux for the systems $(I^D_\Gamma(\ell))_\ell$ over all genies is equivalent to the linear crux
+for the ball systems; and $\Sball$ dominates the fourth paper's class $\mathcal S_{k,C,\beta,D}$ pointwise. Neither
+Theorem~$\Dlin$ nor the linear form of Theorem~D implies the other: $\Dlin$ trades a weaker structural hypothesis for a larger
+crux class. For home-based linear machines $\Dlin$ gives nothing new, since Corollary~B supplies structural genies.
+(b) The trade-off between cost and depth survives: the machine that appends, at every step, the parity of all bits read so
+far forces at least $\lfloor(L-1)/(D+1)\rfloor$ revealed steps for linear depth~$D$, as in the fourth paper's forced trade-off
+\cite[Proposition~4.13]{FourthPaper2026}.
+(c) Linear depth is robust to dummy traffic on separate coordinates: copies of an input bit carried along deep paths of a
+dummy schedule on extra tapes and combined so that they cancel contribute $W(\pi_1)+W(\pi_2)=0$ to the path sums, whatever their
+lengths, provided the genie reveals single coordinates (fields, as in~\cite[Remark~4.6]{FourthPaper2026}) and does not cut one
+of the two paths; Lemma~\ref{lem:rigidity} and Theorem~$\Dlin$ hold verbatim for such coordinate genies, with cost equal to the
+total bit width of the revealed coordinates. With whole-step genies the robustness fails, and it fails for dummy traffic that is
+entangled with revealed coordinates, for instance a value masked by a pad and unmasked through a deep partner copy.
+(d) Linear depth-TCP quantifies over all linear machines, and the theorem uses it only for the transposer itself. It is not a
+statement about head schedules alone: it depends on the data path and on its representation.
+\end{remark}

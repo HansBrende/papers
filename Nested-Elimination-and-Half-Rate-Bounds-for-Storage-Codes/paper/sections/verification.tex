@@ -1,0 +1,45 @@
+\section{Building and verifying the formalization}\label{app:verify}
+
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}). It requires, through relative paths,
+the Lean library of the fourth paper~\cite{FourthPaper2026}, in the directory
+\leanfile{Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/lean}, and that of its circular
+memo~\cite{CircularMemo2026}, in the subdirectory \leanfile{memo/lean} of the same paper. The fourth paper's library in turn
+imports the second paper's library, which imports that of the first~\cite{FirstPaper2026,SecondPaper2026}, and the
+repository's shared library \texttt{lean-machine}. Keep the repository's directory layout, so that these sibling directories
+stay in place.
+
+\paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library and the parts of the earlier libraries
+that it uses. Before the first build, fetch the second paper's pinned external dependency as its README describes.
+
+\paragraph{Axioms.} The file \leanfile{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration of this library named here
+(\cref{app:index}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of this
+library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom}. Running
+\texttt{python3 tools/lean\_index.py --index-only} in the paper's directory regenerates only the index of
+\cref{app:index}.
+
+\paragraph{Where things are.} \leanfile{NestedElimination.lean} (Lemma~E), \leanfile{Decomposition.lean} (contraction,
+piece certificates and Theorem~D), \leanfile{Positional.lean} (co-supply), \leanfile{Pieces.lean} (fewer arcs, greedy
+certificates, Lemma~$\Bdir$), \leanfile{Corollaries.lean} (global certificates, the pull-back, $2$-dicolourable relations and
+circular chromatic number below three), \leanfile{N3.lean} (Theorem~N3 and the shortest-cycle decomposition of blocks),
+\leanfile{U3.lean} (Theorem~U3), \leanfile{TheoremT.lean} (Theorem~T and the block form of Corollary~$\Tint$),
+\leanfile{Blocks.lean} (internal certificates and chordless subcubic blocks), \leanfile{PathCert.lean} (Lemma~S and
+Theorem~PC), \leanfile{Circulant.lean} (positional certificates and Proposition~CC), \leanfile{Cayley.lean}
+(Corollary~CC), \leanfile{Barrier.lean} (the barrier bound), \leanfile{Matching.lean} (fractional matchings, the fractional
+Tutte--Berge formula and the guessing number), \leanfile{IndexCoding.lean} (index codes and the broadcast rate), and
+\leanfile{Examples.lean} (small sanity checks).
+
+\paragraph{Computations.} The numerical remarks of \cref{sec:limits} (\cref{rem:X15,rem:sweeps,rem:petersen}) and the
+numerical check of the folded-cube formula in \cref{rem:foldcube} are reproduced by \leanfile{tools/verify_remarks.py}
+(plain Python~3, run from the paper's directory as \texttt{python3 tools/verify\_remarks.py}), described in
+\leanfile{tools/README.md}; the script also checks \cref{prop:no-private} by exhaustion, and \cref{ex:D9} and the global
+certificate before it step by step. They are not used in any proof, and the Lean library does not depend on them.

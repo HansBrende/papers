@@ -1,0 +1,120 @@
+\section{Base cases and symmetric side information}\label{sec:undirected}
+
+This section treats the base case of $2$-dicolourable relations and two classes of graphs: graphs of circular chromatic
+number below three, at any degree, and triangle-free graphs of maximum degree three.
+
+\begin{proposition}[$2$-dicolourable relations]\label{prop:twoAcyclic}
+\formal{Corollaries.lean}{IsAcyclicIn, rateBound_of_twoAcyclic}
+If $V$ is the disjoint union of two sets $A$ and $B$ that are acyclic for $N$, then $N$ satisfies \eqref{eq:star}.
+\end{proposition}
+
+\begin{outline}
+A global elimination certificate with records $A$ and $B$, each the supplying record of the other: while $A$ is not
+revealed, eliminate a vertex of the unrevealed part of $A$ with no parent there; then do the same in $B$. Apply
+\cref{prop:global}.
+\end{outline}
+
+Bipartite graphs are examples, and so is every loopless relation whose underlying graph is a forest: its directed cycles are
+digons, so a proper $2$-colouring of the underlying graph is a $2$-dicolouring. The bound is classical: for a valid $h$,
+each of $A$ and $B$ determines the other in topological order, so $h(V)=h(A)=h(B)$.
+
+\paragraph{Why it matters.} This is the base case of every decomposition below: pieces end, after their cyclic parts have
+been removed, in $2$-dicolourings. For~(T) it says that side information without odd dependency structure, in this
+directed sense, gives no coding gain at all.
+
+\subsection{Circular chromatic number below three}\label{sec:circular}
+
+The \emph{circular clique} $K_{p/q}$ has vertices $\Z/p$, with $i\sim j$ if and only if $q\le(j-i)\bmod p\le p-q$.
+The \emph{Andrásfai graph} $\Andr(k)$, $k\ge2$, is $K_{(3k-1)/k}$. The circular chromatic number $\chi_c(G)$ of a finite
+graph is the least $p/q$ such that $G$ maps homomorphically to $K_{p/q}$~\cite{Vince1988,Zhu2001}; so $\chi_c(G)<3$ if
+and only if $G$ maps to some $K_{p/q}$ with $p<3q$.
+
+\begin{theorem}[Circular chromatic number below three]\label{thm:circular}
+\formal{Corollaries.lean}{andrasfaiCert, rateBound_of_circularHom'}
+Let $G$ be a finite simple graph with a homomorphism to a circular clique $K_{p/q}$ with $q>0$ and $p<3q$, that is,
+with $\chi_c(G)<3$. Then $N_G$ satisfies \eqref{eq:star}.
+\end{theorem}
+
+This is the circular memo's theorem~\cite[Corollary~3.2]{CircularMemo2026}, Lean-verified there through the fourth
+paper's Theorem~H. We re-derive it as a direct instance of global certificates.
+
+\begin{outline}
+The Andrásfai graph $\Andr(k)$ has a global elimination certificate with three records
+(\lean{andrasfaiCert}): the intervals $[0,k)$, $[k,2k)$ and $[2k,3k-1)$, each supplied by the next one cyclically.
+The elimination order is the circular memo's interleaved order, with keys $3i$, $3j+1$ and $3\ell+2$ for the $i$-th,
+$j$-th and $\ell$-th vertex of the three intervals, and the memo's adjacency lemma (\lean{CircularMemo.neighbor_order})
+says that every later neighbour of a vertex lies in the next interval. For $k=q+1$ we have $pk\le(3k-1)q$, so the
+Bondy--Hell map $i\mapsto\lfloor(3k-1)i/p\rfloor$ is a homomorphism $K_{p/q}\to\Andr(k)$~\cite{BondyHell1990}, formalized
+in the fourth paper (\lean{MotionDepthCodes.circularCliqueHom}). Compose it with the given homomorphism, pull the
+certificate back (\cref{lem:pullback}) and apply \cref{prop:global}.
+\end{outline}
+
+\paragraph{Why it matters.} The theorem has no degree assumption: every graph of circular chromatic number below three,
+for instance every odd cycle of length at least five and every graph mapping to one, satisfies the half bound for all
+codes over all alphabets. For~(T), symmetric side information of this kind cannot carry a coding gain however dense it
+is. The bound does not reach $\chi_c=3$; the Petersen graph, which has $\chi_c=3$~\cite{JHS1997}, is covered by the
+fourth paper's certificate~\cite[Corollary~6.9]{FourthPaper2026} and by the next theorem.
+
+\subsection{Triangle-free graphs of maximum degree three}\label{sec:N3}
+
+\begin{theorem}[Theorem N3]\label{thm:N3}
+\formal{N3.lean}{CycIn, CycIn.chordless, CycIn.share, cyclePiece, decomp_of_cycles, n3_decomp, rateBound_n3, card_sq_le_n3}
+Let $G$ be a triangle-free graph of maximum degree at most~$3$. Then $N_G$ has a decomposition. Hence $N_G$ satisfies
+\eqref{eq:star}, and every storage code $C$ for $G$ over a nonempty finite alphabet satisfies
+$\card C^2\le\card\alpha^{\card V}$.
+\end{theorem}
+
+\begin{outline}
+By strong induction on the set $R$ of remaining vertices, with context $V\setminus R$, \lean{decomp_of_cycles}
+constructs a decomposition from every context. If $G[R]$ contains a cycle, let $C=c_0c_1\cdots c_{g-1}$ be a shortest one
+(\lean{CycIn}); $g\ge4$ because $G$ is triangle-free. Three facts:
+\begin{enumerate}[label=(\roman*)]
+\item $C$ is chordless (\lean{CycIn.chordless}), since a chord would close a shorter cycle;
+\item if a vertex $w\in R$ off $C$ is adjacent to $c_i$ and $c_j$, $i<j$, it closes cycles of lengths $j-i+2$ and
+$g-(j-i)+2$, both at least $g$; hence $g=4$ and $c_i,c_j$ are opposite (\lean{CycIn.share});
+\item every $c_i$ has at most one neighbour off $C$, since it has two on $C$ and degree at most three.
+\end{enumerate}
+The piece certificate of $C$ in context $V\setminus R$ (\lean{cyclePiece}) eliminates $c_0,\dots,c_{g-1}$ in order with
+three records given by colours: $c_0$ has colour~$0$ and $c_{g-1}$ colour~$1$; if $g$ is odd, $c_{g-2}$ has
+colour~$2$; every other $c_i$ has colour~$1$ for odd $i$ and~$0$ for even $i$. The supplying record of $c_t$ is the
+colour of $c_{t+1}$, and that of $c_{g-1}$ is colour~$0$. At a step $t\ge1$ the cycle neighbours of $c_t$ are
+$c_{t-1}$, already eliminated, and $c_{t+1}$, in the supplying record; at step~$0$ they are $c_1$ and $c_{g-1}$, both of
+colour~$1$. The remaining neighbour of $c_t$, if it lies in $R\setminus C$, is its outside parent. By~(ii) outside
+parents are private, except for opposite vertices of a $4$-cycle, which have equal supplying records ($c_0,c_2$ are
+supplied by colour~$1$, and $c_1,c_3$ by colour~$0$); \cref{lem:cosupply} applies. If $G[R]$ is a forest, a proper
+$2$-colouring of it is a piece by \cref{lem:Bdir}. Theorem~D concludes.
+\end{outline}
+
+By \cref{lem:fewer-arcs}, the half bound holds also for every relation $N$ with $N(v)\subseteq N_G(v)$ for all $v$,
+that is, for every relation whose arcs join adjacent vertices of $G$, in one direction or in both;
+\lean{decomp_of_cycles} gives decompositions for such relations as well, its hypothesis on $3$-cycles being vacuous here.
+Several known results are special cases.
+\begin{itemize}[leftmargin=2em]
+\item The fourth paper's Theorem~S~\cite[Theorem~6.13]{FourthPaper2026} proves the half bound for scalar linear codes,
+over every field, on a directed class that contains these graphs; Theorem~N3 is its all-code version on triangle-free
+subcubic graphs. For scalar linear codes the exact value is $\card V-\nu(G)$ for the minrank, with the integral matching
+number $\nu$~\cite[Theorem~6.16]{FourthPaper2026}; for all codes the guessing number is the fractional matching number
+$\nustar(G)$ (\cref{thm:gn}). The two differ already on $C_5$, where $\nu=2$ and $\nustar=5/2$.
+\item The subcubic memo~\cite[Theorem~7.1]{SubcubicMemo2026} proves the half bound, in Lean, for triangle-free subcubic
+graphs all of whose edges lie in four-cycles, through a homomorphism to $K_{8/3}$; this is a special case. Its
+information-set theorem~\cite[Theorem~2.3]{SubcubicMemo2026} bounds codes that are reversible on the rows by
+$q^{\nu(G)}$, which is stronger on that class of codes.
+\item The circular memo's theorem (\cref{thm:circular}) covers graphs of every degree with $\chi_c<3$, and the fourth
+paper's certificates cover the graphs that map to the Petersen graph~\cite[Corollary~6.9]{FourthPaper2026}. Theorem~N3
+needs no target: it covers every triangle-free subcubic graph. In particular it proves unconditionally the fourth paper's
+conditional result for cubic graphs of large girth~\cite[Corollary~6.10]{FourthPaper2026}, which assumed that such graphs
+map to $C_5$ or to $K_{14/5}$.
+\item Dang~\cite{Dang2015} computes the guessing numbers of several families of planar triangle-free graphs and
+conjectures that the fractional clique cover strategy is optimal on every planar triangle-free
+graph~\cite[Conjecture~15]{Dang2015}. With \cref{thm:gn} below, Theorem~N3 proves this for maximum degree three,
+without planarity.
+\end{itemize}
+
+\paragraph{Why it matters.} No storage code on a triangle-free subcubic graph beats the pairing, whatever its alphabet
+and whether or not it is linear. With \cref{cor:paid}, this answers the fourth paper's undirected
+crux~\cite[Question~6.1]{FourthPaper2026} affirmatively at maximum degree three: in a locally bipartite family of maximum
+degree at most three, only $o(\card V)$ vertices lie on triangles, deleting them leaves a triangle-free subcubic graph, and
+so every storage code has rate at most $\frac12+o(1)$. For~(T), symmetric subcubic side
+information that is triangle-free cannot carry a coding gain. Native cone relations are directed, however, and their
+symmetrizations can contain linearly many triangles~\cite[Proposition~3.10]{DirectedRecovery2026}; this is why
+\cref{sec:directed} allows directed triangles.

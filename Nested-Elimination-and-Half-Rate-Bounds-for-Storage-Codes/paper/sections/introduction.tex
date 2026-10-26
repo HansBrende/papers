@@ -1,0 +1,167 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\clog d)$-bit entries,
+written row by row, in time linear in the input length $L=d^2b(d)$? This is the statement~(T) of the first paper of this
+series~\cite{FirstPaper2026}. By a reduction of Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a linear-time
+multiplication machine would give a linear-time transposer, so a proof of $\neg$(T) would give the first superlinear lower
+bound for off-line integer multiplication on multitape Turing machines. The question is open, and this paper does not
+decide it.
+
+For oblivious machines the series has reduced $\neg$(T) to two statements. The fourth
+paper~\cite[Theorem~4.10 and Corollary~4.11]{FourthPaper2026} shows that depth reduction of the time--space dependency
+graph by a cheap genie, together with an index-coding lower bound on the side information of the remaining bounded-depth
+cones (the \emph{crux}), rules out oblivious linear-time transposers. \emph{Directed Recovery Structures in Tape
+Computations}~\cite{DirectedRecovery2026} shows that the cone relations of linear-time schedules have few coordinates
+whose input and demand ports are close in the paired incidence graph, and that an affirmative answer to one machine-free
+question would supply the crux on those cone relations~\cite[Question~9.1 and Proposition~9.2]{DirectedRecovery2026}: do
+storage codes on bounded-degree recovery relations with this paired-distance separation have rate at most
+$\frac12+o(1)$, for every alphabet?
+
+This is a storage-code paper, like the series paper \emph{Covers and Local Generation in Linear Storage
+Codes}~\cite{Covers2026}. We prove the exact half bound for all codes on large classes of recovery relations without short
+paired paths, and show where the method stops. A recovery relation assigns to each coordinate $v$ the set $N(v)$ of
+coordinates from which it must be recoverable. For a polymatroid $h$ valid for $N$, that is, with
+$h(N(v)\cup\{v\})=h(N(v))$ for every $v$, the bound reads
+\[
+  2h(V)\;\le\;\sum_{v\in V}h(\{v\}).\tag{$\star$}
+\]
+Applied to the entropy of a uniformly random codeword, \eqref{eq:star} gives $\card C^2\le\card\alpha^{\card V}$ for
+every storage code $C\subseteq\alpha^V$, linear or not, over every alphabet~\cite{FourthPaper2026}: no code beats the
+pairing. Our hypotheses are exact rather than asymptotic. The central one is that the relation has no \emph{transitive
+triangle} $x\to y\to z$, $x\to z$, where $u\to v$ means $u\in N(v)$; for loopless relations this says exactly that every
+coordinate has paired distance at least five (\cref{lem:tt-paired}).
+
+\subsection{Results}
+
+\paragraph{The engine (\cref{sec:engine}).} \emph{Lemma~E} (nested elimination) eliminates a piece $H$ one vertex at a
+time. Each vertex must be recovered from the vertices already eliminated, from one record other than its own, and possibly
+from one vertex outside the piece; steps that use the same outside vertex must be nested. Then
+$2h(H)\le\sum_ih(P_i)+\sum_{w\notin H}I(w;H)$ (\cref{lem:E}). Without outside vertices this is the inequality form of the
+exact partition identity of the circular memo~\cite[Theorem~2.1]{CircularMemo2026}; the nested charging is new.
+\emph{Theorem~D} (decomposition) contracts certified pieces one after another, each in the relation left by the earlier
+ones, and proves \eqref{eq:star} whenever the vertex set has such a decomposition (\cref{thm:D}). Relative $2$-dicolourings
+(Lemma~$\Bdir$, \cref{lem:Bdir}) and global certificates, which pull back along homomorphisms (\cref{lem:pullback}), are
+the basic pieces.
+
+\paragraph{The main theorem.} Every relation in the following classes has a decomposition, or a global certificate, and
+hence satisfies \eqref{eq:star}; every storage code on it satisfies $\card C^2\le\card\alpha^{\card V}$.
+\begin{enumerate}[label=(\alph*),leftmargin=2.5em]
+\item $2$-dicolourable relations, in particular bipartite graphs (\cref{prop:twoAcyclic});
+\item graphs of circular chromatic number below three, at any degree; this is the circular memo's
+theorem~\cite[Corollary~3.2]{CircularMemo2026}, re-derived here as a direct instance (\cref{thm:circular});
+\item triangle-free graphs of maximum degree three, and every relation whose arcs join adjacent vertices of such a graph
+(\emph{Theorem~N3}, \cref{thm:N3});
+\item loopless TT-free relations whose underlying graph has maximum degree three, directed triangles included
+(\emph{Theorem~U3}, \cref{thm:U3});
+\item loopless TT-free relations whose vertices with at least three parents induce an acyclic sub-relation, with no bound
+on in- or out-degrees (\emph{Theorem~T}, \cref{thm:T}), and the version in which only parents inside a vertex's strongly
+connected component count (\emph{Corollary~$\Tint$}, \cref{cor:Tint});
+\item loopless relations partitioned into blocks with private outside parents, each block $K$ chordless subcubic or a
+chorded digon path, with $N[K]$ TT-free, or internally certified (\emph{Theorem~PC}, \cref{thm:PC});
+\item every TT-free Cayley relation $\Cay(G,\{s,s^{-1},t\})$, with arcs $g\to gx$, for every finite group $G$, when
+$\{s,s^{-1},t\}$ has three elements and does not contain~$1$ (\emph{Corollary~CC}, \cref{cor:CC}).
+\end{enumerate}
+Corollary~$\Tint$ strictly contains the TT-free case of the two-input theorem of \emph{Directed Recovery
+Structures}~\cite[Theorem~5.1]{DirectedRecovery2026}, and Theorem~U3 is the all-code version, on subcubic underlying
+graphs, of the fourth paper's scalar linear Theorem~S~\cite[Theorem~6.13]{FourthPaper2026}. The certificates of
+Theorem~PC come from \emph{Lemma~S} for chorded paths (\cref{lem:S}) and from sweeps of chorded circulant cycles
+(\emph{Proposition~CC}, \cref{prop:CC}). The relation $\Cay(\Z_9,\{1,-1,3\})$ lies in none of the classes (a)--(e); it is covered
+by~(g), and by~(f) with a single block.
+
+\paragraph{Exact values (\cref{sec:consequences}).} On a triangle-free graph $G$ of maximum degree three, every storage code
+satisfies $2\log\card C\le(\card V+\card S-\card{I(S)})\log\card\alpha$ for every vertex set $S$, where $I(S)$ is the set
+of isolated vertices of $G-S$ (\cref{thm:barrier}). With the fractional Tutte--Berge formula (\cref{prop:fracTB}), the
+guessing number equals the fractional matching number $\nustar(G)$, attained over every alphabet of square size
+(\cref{thm:gn,rem:gn}). This proves, for these graphs, Christofides and Markström's conjecture that fractional clique covers are
+optimal guessing strategies~\cite{ChristofidesMarkstrom2011,Dang2015}, which is false in
+general~\cite{Baber2017,CameronDangRiis2016}; it was known before for perfect graphs, bipartite graphs in particular, and
+odd cycles~\cite{ChristofidesMarkstrom2011}, and for prisms and certain chorded cycles~\cite{MMV2019}. It also proves
+Dang's conjecture for planar triangle-free graphs at maximum degree three~\cite[Conjecture~15]{Dang2015}. Dually, the
+broadcast rate of index coding is $\card V-\nustar(G)$ (\cref{thm:index,rem:broadcast}). Relations that become one of our classes after deleting a set $Z$ have storage codes of rate at most
+$(\card V+\card Z)/(2\card V)$ (\cref{cor:paid}).
+
+\paragraph{Limits (\cref{sec:limits}).} The natural rules for choosing pieces fail: $\Cay(\Z_9,\{1,-1,3\})$ has no proper
+piece with private outside parents (\cref{prop:no-private}); a $15$-vertex relation with in- and out-degrees at most three
+has a unique minimum nonempty core, which is not a piece, although the relation has a global certificate
+(\cref{rem:X15}); some chorded cycles have no valid sweep (\cref{rem:sweeps}); and the Petersen graph has no global
+certificate, although Theorem~N3 decomposes it into two pieces (\cref{rem:petersen}). The half bound fails on the folded
+cubes, whose odd girth equals their degree (\cref{rem:foldcube}, from a rank formula of Barg, Schwartz and
+Yohananov~\cite{BSY2024}); so an exact half bound that assumes only $b_E(r)=0$, for a fixed odd $r\ge3$, cannot
+hold at maximum degree $r+2$.
+
+\paragraph{What this means for (T) (\cref{sec:construction}).} These are unconditional storage-code theorems; they do not
+decide~(T). They constrain constructions: in the cone relations of a correct oblivious transposer left by
+a genie of cost $\eps L$, no induced sub-relation on more than $2\eps L$ coordinates may lie in any of the classes above.
+They also locate the remaining work for an impossibility proof: \cref{conj:P}, that every loopless TT-free relation of in-degree at most three has a decomposition,
+would give the degree-three case of the paired-distance question (\cref{prop:dn3-transfer}).
+
+\subsection{How to read this paper: the formal proofs}
+
+Every numbered result of \cref{sec:engine,sec:undirected,sec:directed,sec:consequences} is formalized in Lean, with
+three exceptions: Corollary~$\Tint$ is formalized in a block form, and the existence of a topological order of the
+strongly connected components, which turns the block form into the corollary, is proved in the text; the digon-component
+form of Theorem~PC (\cref{cor:PC-digon}) and the paid-deletion corollary (\cref{cor:paid}) have complete written proofs.
+\Cref{lem:tt-paired}, \cref{prop:no-private} and \cref{prop:dn3-transfer} are not formalized either and have complete
+proofs. \Cref{rem:gn,rem:broadcast}, which pass from the formal code bounds of \cref{thm:gn,thm:index} to the guessing
+number and the broadcast rate, are labelled as not formalized and are derived in full in the text. The remarks of \cref{sec:limits} report computations, reproducible with the scripts in \leanfile{tools/}, and a
+cited rank formula for folded cubes; they are labelled as numerical or cited and are not used in proofs. The results of
+the fourth paper that we use (\cref{thm:codes,lem:closure,lem:fewer-arcs}) are Lean-verified there. Each numbered result
+states its status as described in \cref{sec:prelim-lean}.
+
+\subsection{Related work}
+
+\paragraph{Guessing numbers and graph entropy.} Guessing games and guessing numbers were introduced by
+Riis~\cite{Riis2007}. Christofides and Markström~\cite{ChristofidesMarkstrom2011} studied undirected graphs, introduced
+the fractional clique cover strategy and conjectured it to be optimal; the conjecture was disproved by Baber,
+Christofides, Dang, Vaughan and Riis~\cite{Baber2017}, with triangle-free counterexamples by Cameron, Dang and
+Riis~\cite{CameronDangRiis2016}. Dang's thesis~\cite{Dang2015} computes guessing numbers of several families of planar
+triangle-free graphs; those of maximum degree three are special cases of Theorem~N3. Gadouleau and
+Riis~\cite{GadouleauRiis2011} relate the guessing number of a digraph to the independence number of its guessing graph and
+construct digraphs with large guessing numbers. The bounds there come from Shannon and non-Shannon inequalities or from
+explicit strategies. Mazumdar, McGregor and Vorotnikova~\cite{MMV2019} bound storage capacity by covering a graph with
+gadgets of known capacity, which already gives combinatorial certificates for Shannon-type upper bounds on some families.
+Our certificates are of a different kind: elimination orders whose steps may use one outside vertex, with nested charges
+(Lemma~E), composed by contraction rather than by covering (Theorem~D).
+
+\paragraph{Storage codes and index coding.} Storage codes on graphs and their duality with index coding were studied by
+Mazumdar~\cite{Mazumdar2014}, by Shanmugam and Dimakis~\cite{ShanmugamDimakis2014}, and by Arbabjolfaei and
+Kim~\cite{ArbabjolfaeiKim2015}. Index coding was introduced by Birk and Kol~\cite{BirkKol2006} and formalized, with minrank
+and the acyclic-subgraph lower bound, by Bar-Yossef, Birk, Jayram and Kol~\cite{BBJK2011}; Blasiak, Kleinberg and
+Lubetzky~\cite{BKL2013} bound and approximate the broadcast rate by linear programming. Mazumdar, McGregor and Vorotnikova
+bounded the storage capacity above by vertex covers and below by fractional matchings~\cite{MMV2019}; the lower bound is
+Christofides and Markström's fractional clique cover strategy~\cite{ChristofidesMarkstrom2011} in storage language, and on
+triangle-free subcubic graphs it is exact (\cref{thm:gn}). Without a degree bound, triangle-freeness does not force
+rate~$\frac12$: Barg and Zémor~\cite{BargZemor2022} and Barg, Schwartz and Yohananov~\cite{BSY2024} construct storage codes
+on triangle-free graphs of growing degree with rates approaching $\frac34$ and~$1$, and an earlier triangle-free family of
+rate approaching~$1$ is due to Golovnev and Haviv~\cite{GolovnevHaviv2022}, as noted in~\cite{BSY2024}.
+
+\paragraph{The series.} The fourth paper~\cite{FourthPaper2026} proved that rate bounds pull back along homomorphisms
+(Theorem~H), the half bound for scalar linear codes on triangle-free subcubic side information with its matching form
+(Theorem~S), and that the Clebsch graph has guessing number ten. The circular memo~\cite{CircularMemo2026} proved the
+exact partition identity on which Lemma~E builds, and the half bound for circular chromatic number below three. The
+subcubic memo~\cite{SubcubicMemo2026} proved half bounds for reversible and low-rank codes on subcubic supports and, for
+all codes, on triangle-free subcubic graphs covered by four-cycles; Theorem~N3 contains the latter. \emph{Directed
+Recovery Structures}~\cite{DirectedRecovery2026} proved the paired-distance bound for cone relations, the two-input theorem
+and the hyperfinite half bound, and posed the all-code paired-distance question that motivates this paper. The covers
+paper~\cite{Covers2026} studies cover structure and local generation of linear storage codes. The companion
+paper~\cite{EighthPaper2026}, published together with this one, is about the depth side: its Theorem~F proves depth
+reduction for head walks of bounded nesting load, so the crux alone, or an affirmative answer to Question~9.1 of
+\emph{Directed Recovery Structures}, excludes oblivious linear-time transposers whose work heads enter every cell boundedly
+often.
+
+To our knowledge, Lemma~E, Theorems~N3, U3, T and~PC, and Corollary~CC are new. Special cases were known: the guessing
+numbers of perfect graphs and odd cycles~\cite{ChristofidesMarkstrom2011}; the storage capacity of prisms, of certain
+chorded cycles and of odd cycles~\cite{MMV2019}; the broadcast rates of cycles and of the cubic circulants, and numerically
+that of the Petersen graph~\cite{BKL2013}; the families of planar triangle-free graphs in Dang's thesis~\cite{Dang2015};
+the half bound on square-covered subcubic graphs~\cite{SubcubicMemo2026}; and the half bound for circular chromatic number
+below three, which is the circular memo's theorem~\cite{CircularMemo2026}.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} fixes notation. \Cref{sec:engine} proves Lemma~E and Theorem~D and the tools for building
+certificates. \Cref{sec:undirected} treats $2$-dicolourable relations and symmetric side information, \cref{sec:directed}
+the directed classes, and \cref{sec:consequences} the barrier bound, guessing numbers and index codes. \Cref{sec:limits}
+shows where the method stops, \cref{sec:construction} draws the consequences for constructions, and \cref{sec:open} lists
+open problems. The appendices index the Lean declarations and explain how to build and check the library.

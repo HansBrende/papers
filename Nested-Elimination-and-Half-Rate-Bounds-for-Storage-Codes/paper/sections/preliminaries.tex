@@ -1,0 +1,140 @@
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{The statement (T)}\label{sec:prelim-T}
+
+We use the machine model of the first paper of this series~\cite{FirstPaper2026}: a deterministic Turing machine with
+a read-only input tape, a constant number of work tapes over a finite alphabet, and a write-only output tape. For
+$d\ge1$ let $b(d)=\max(1,\clog d)$. The input is a $d\times d$ matrix with $b(d)$-bit entries written row by row, of
+length $L=d^2b(d)$, and the machine must write its transpose in the same encoding. Statement~(T) says that some
+machine does this within $c(L+1)$ steps, for a constant $c$ and all $d$. Its formal version,
+\lean{Transpose.LinearTimeTransposable}, is fixed in a frozen file of the first paper's library. A machine is
+\emph{oblivious} if its head positions, output times and halting time depend only on the input length.
+
+The Lean library of this paper does not model machines. Its theorems are about recovery relations, polymatroids,
+storage codes and index codes on finite sets. The connection to~(T) goes through the fourth paper of the
+series~\cite{FourthPaper2026} and through \emph{Directed Recovery Structures in Tape
+Computations}~\cite{DirectedRecovery2026}; we recall it in \cref{sec:construction}.
+
+\subsection{Recovery relations}\label{sec:prelim-relations}
+
+A \emph{recovery relation} on a finite set $V$ is a map $N\colon V\to2^V$. We write $u\to v$, an \emph{arc}, when
+$u\in N(v)$: then $u$ is a \emph{parent} (in-neighbour) of $v$ and $v$ a \emph{child} of $u$. The \emph{in-degree}
+of $v$ is $\card{N(v)}$. The relation is \emph{loopless} if $v\notin N(v)$ for every $v$. For $K\subseteq V$, the
+\emph{induced relation} $N[K]$ on $K$ is $v\mapsto N(v)\cap K$, and $N-Z=N[V\setminus Z]$. For a simple graph $G$ on
+$V$, its \emph{neighbourhood relation} $N_G$ maps $v$ to its set of neighbours (\lean{MotionDepthCodes.nbhd}); every
+arc of $N_G$ is reciprocated.
+
+A \emph{digon} is a pair of arcs $u\to v$ and $v\to u$; an arc that is not part of a digon is \emph{one-way}. The
+\emph{digon graph} $G_2(N)$ is the simple graph whose edges are the digons. The \emph{underlying graph} $U(N)$
+(\lean{und}) joins $u\ne v$ whenever $u\to v$ or $v\to u$. A \emph{transitive triangle} is a triple of distinct
+vertices $x,y,z$ with $x\to y$, $y\to z$ and $x\to z$; we call $y$ its \emph{middle vertex}. A relation is
+\emph{TT-free} if it has no transitive triangle (\lean{TTFree}); \lean{TTFreeOn} is the same condition for triples
+inside a set. In a loopless TT-free relation the parents of a vertex are pairwise non-adjacent, the digon graph is
+triangle-free, and every triangle of the underlying graph is a \emph{directed $3$-cycle} $x\to y\to z\to x$ without
+reverse arcs (\cref{lem:dtri} below); bidirected triangles are excluded.
+
+A set $A\subseteq V$ is \emph{acyclic} for $N$ if every nonempty $T\subseteq A$ contains a vertex with no parent in
+$T$ (\lean{IsAcyclicIn}); equivalently, $N[A]$ has no loops and no directed cycles. A relation is
+\emph{$2$-dicolourable} if $V$ is the union of two disjoint acyclic sets.
+
+\paragraph{Paired incidence.} \emph{Directed Recovery Structures}~\cite[Definition~2.3]{DirectedRecovery2026} attaches
+to $N$ its incidence graph $E(N)$: a bipartite graph with vertices $L_p$ and $R_p$ for $p\in V$ and an edge
+$L_pR_q$ whenever $p\in N(q)$. It puts $b_E(r)=\card{\{p\in V:\dist_E(L_p,R_p)\le r\}}$, and a sequence of relations
+satisfies the \emph{paired-distance condition} if $b_E(r)=o(\card V)$ for every fixed $r$. Distances between $L_p$
+and $R_p$ are odd. Our hypothesis ``TT-free'' is the exact form of this condition at radius three.
+
+\begin{lemma}[Transitive triangles are paired paths of length three]\label{lem:tt-paired}
+\notformalized
+Let $N$ be a recovery relation and $p\in V$. Then $\dist_E(L_p,R_p)=1$ if and only if $p\in N(p)$. If $N$ is
+loopless, then $\dist_E(L_p,R_p)=3$ if and only if $p$ is the middle vertex of a transitive triangle. In particular,
+a loopless relation is TT-free if and only if $b_E(3)=0$, that is, if and only if $\dist_E(L_p,R_p)\ge5$ for every
+$p$.
+\end{lemma}
+
+\begin{informalproof}
+The edge $L_pR_p$ exists exactly when $p\in N(p)$. Let $N$ be loopless. A path $L_p,R_z,L_x,R_p$ of length three
+means $p\in N(z)$, $x\in N(z)$ and $x\in N(p)$, that is, $p\to z$, $x\to z$ and $x\to p$. Its vertices are distinct,
+so $z\ne p$ and $x\ne p$, and $x\ne z$ because $x\in N(z)$ and $N$ is loopless. Hence $x\to p\to z$ with $x\to z$ is
+a transitive triangle with middle vertex $p$. Conversely, every transitive triangle $x\to p\to z$, $x\to z$ gives
+this path. Since the distance is odd and not $1$, it is at least $5$ when no such path exists.
+\end{informalproof}
+
+\subsection{Polymatroids and storage codes}\label{sec:prelim-codes}
+
+We use the definitions of the fourth paper~\cite[Definitions~2.1 and~2.2]{FourthPaper2026}. A \emph{polymatroid} on
+$V$ is a function $h\colon2^V\to\R$ with $h(\emptyset)=0$ that is monotone and submodular. It is \emph{valid} for
+$N$ if $h(N(v)\cup\{v\})=h(N(v))$ for every $v\in V$. We write $h(v)$ for $h(\{v\})$,
+\[
+  h(A\mid B)=h(A\cup B)-h(B),\qquad I(A;B\mid S)=h(A\cup S)+h(B\cup S)-h(A\cup B\cup S)-h(S)\ge0,
+\]
+and $I(w;X)=h(w)+h(X)-h(X\cup\{w\})$ (\lean{mi}). The subject of this paper is the \emph{weighted half bound}
+\begin{equation}\label{eq:star}
+  2h(V)\;\le\;\sum_{v\in V}h(v)\qquad\text{for every polymatroid $h$ valid for $N$.}\tag{$\star$}
+\end{equation}
+In the terms of the fourth paper, \eqref{eq:star} says that $N$ satisfies the rate bound $\tfrac12$; the
+formal statement is \lean{MotionDepthCodes.RateBound}~$N\,(1/2)$. A \emph{storage code} for $N$ over a finite alphabet $\alpha$ is a set
+$C\subseteq\alpha^V$ such that two words of $C$ that agree on $N(v)$ agree at $v$, for every $v$
+(\lean{MotionDepthCodes.IsStorageCode}). The \emph{guessing number} $\gn(N,q)$ is the largest value of
+$\log_q\card C$ over storage codes with $\card\alpha=q$, and $\gn(N)=\sup_q\gn(N,q)$ is the asymptotic guessing
+number~\cite{Riis2007,ChristofidesMarkstrom2011}.
+
+\begin{theorem}[Rate bounds bound codes]\label{thm:codes}
+\cited{the fourth paper~\cite[Theorem~6.3 and Corollary~6.9]{FourthPaper2026}, Lean-verified there
+(\lean{MotionDepthCodes.card_sq_le_of_rateBound_half}).}
+If $N$ satisfies \eqref{eq:star}, then every storage code $C\subseteq\alpha^V$ for $N$ over a nonempty finite
+alphabet satisfies $\card C^2\le\card\alpha^{\card V}$.
+\end{theorem}
+
+The proof applies \eqref{eq:star} to the entropy of a uniformly random codeword, which is a valid
+polymatroid. The same argument gives $\card C^2\le\prod_v\card{\alpha_v}$ for codes with coordinate alphabets
+$\alpha_v$~\cite[Corollary~3.4]{CircularMemo2026}; we do not use this.
+
+\begin{lemma}[Closure]\label{lem:closure}
+\cited{the fourth paper~\cite[Lemma~6.4]{FourthPaper2026}, Lean-verified there
+(\lean{MotionDepthCodes.IsPolymatroid.eq_of_closure}).}
+Let $h$ be a polymatroid valid for $N$, and let $S\subseteq T$ be such that $N(v)\subseteq S$ for every
+$v\in T\setminus S$. Then $h(T)=h(S)$.
+\end{lemma}
+
+\begin{lemma}[Fewer arcs]\label{lem:fewer-arcs}
+\cited{the fourth paper's Theorem~H~\cite[Theorem~6.5]{FourthPaper2026}, applied to the identity map; Lean-verified
+there (\lean{MotionDepthCodes.RateBound.of_hom}).}
+If $N(v)\subseteq N'(v)$ for every $v$ and $N'$ satisfies \eqref{eq:star}, then so does $N$.
+\end{lemma}
+
+Indeed, a polymatroid valid for $N$ is valid for $N'$, by diminishing returns. The last tool is contraction.
+
+\begin{lemma}[Contraction]\label{lem:contraction}
+\formal{Decomposition.lean}{contr, contr_isPolymatroid, contr_insert_eq}
+Let $h$ be a polymatroid on $V$ and $U\subseteq V$. Then $h_U(X)=h(X\cup U)-h(U)$ is a polymatroid. If $h$ is valid
+for $N$ and $N(v)\subseteq U\cup X$, then $h_U(X\cup\{v\})=h_U(X)$; in particular the restriction of $h_U$ to
+$V\setminus U$ is valid for $N-U$. Moreover $h_U(w)=h(w)-I(w;U)$ for $w\notin U$.
+\end{lemma}
+
+\begin{outline}
+The polymatroid axioms for $h_U$ follow from those for $h$, because $X\mapsto X\cup U$ preserves unions,
+intersections and inclusions. If $N(v)\subseteq U\cup X$, the closure lemma (\cref{lem:closure}) gives
+$h(X\cup U\cup\{v\})=h(X\cup U)$. The last identity is the definition of $I(w;U)$.
+\end{outline}
+
+\subsection{Formal status of the results}\label{sec:prelim-lean}
+
+Every numbered result names its formal status in one of four ways. A line
+\begin{center}
+{\small\textsf{Lean:} \texttt{declaration, \dots}\hfill[\texttt{file}]}
+\end{center}
+gives the Lean declarations of a fully formalized result. The declarations live in the namespace \texttt{HalfRate}
+and the files in the directory \leanfile{lean/HalfRate/}. The text after such a statement, labelled \emph{Outline of the
+formal proof}, is a guide to the formal proof; it is a convenience, not a proof. A line beginning \textsf{Lean
+(partial)} marks a result whose formal counterpart covers all but an explicitly named part, which the text proves.
+The words \textsf{Not formalized} mark a result with no formal counterpart; it comes with a complete proof, labelled
+\emph{Proof (not formalized)}. A line beginning \textsf{Cited} marks a result of an earlier paper of the series that is
+used without proof, and says where it is proved and whether it is Lean-verified there. Where the English statement
+simplifies, the Lean statement is authoritative. Numerical observations are labelled as such and are not used in
+proofs. Numbered definitions carry a status line only when they are formalized.
+
+The library depends on Lean~4 and Mathlib (both v4.34.1), on the Lean library of the fourth paper (whose
+polymatroids, storage codes and rate bounds we use unchanged) and on that of its circular memo~\cite{CircularMemo2026},
+imported through relative paths. It contains no \texttt{sorry}, no \texttt{native\_decide} and no unsafe evaluation,
+and every declaration cited here depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound} (\cref{app:verify}). \Cref{app:index} lists every declaration of this library cited in the paper.

@@ -1,0 +1,189 @@
+\section{Barrier bounds, guessing numbers and index codes}\label{sec:consequences}
+
+The relative form of Theorem~D gives exact values on triangle-free graphs of maximum degree three: the guessing number
+is the fractional matching number, and the broadcast rate of index coding is the number of vertices minus it. We end the
+section with a general consequence for relations that become one of our classes after deleting a few vertices.
+
+For a graph $G$ and $S\subseteq V$ let $I(S)=\{v\notin S:N_G(v)\subseteq S\}$, the set of isolated vertices of $G-S$
+(\lean{isolatedOut}).
+
+\begin{theorem}[Barrier bound]\label{thm:barrier}
+\formal{Barrier.lean}{isolatedOut, barrier_ineq, log_card_le_barrier}
+Let $G$ be a triangle-free graph of maximum degree at most~$3$ and $S\subseteq V$. Every polymatroid $h$ valid for $N_G$
+satisfies
+\[
+  2h(V)\;\le\;2\sum_{v\in S}h(v)+\sum_{v\notin S\cup I(S)}h(v),
+\]
+and every storage code $C$ for $G$ over a nonempty finite alphabet $\alpha$ satisfies
+$2\log\card C\le(\card V+\card S-\card{I(S)})\log\card\alpha$.
+\end{theorem}
+
+\begin{outline}
+Let $U=S\cup I(S)$. Theorem~N3 gives a decomposition from the context $U$ (\lean{n3_decomp}), and the relative form of
+Theorem~D gives $2(h(V)-h(U))\le\sum_{v\notin U}(h(U\cup\{v\})-h(U))\le\sum_{v\notin U}h(v)$. The vertices of $I(S)$
+have all their neighbours in $S$, so $h(U)=h(S)\le\sum_{v\in S}h(v)$ by the closure lemma and subadditivity. For codes,
+apply this to the entropy of a uniformly random codeword, as in \cref{thm:codes}.
+\end{outline}
+
+\begin{definition}[Fractional matchings]\label{def:fracmatching}
+\formal{Matching.lean}{IsFracMatching, fracWeight, fracMatchingNumber}
+A \emph{fractional matching} of a graph $G$ is a symmetric function $y\colon V\times V\to\R_{\ge0}$ that vanishes on
+non-adjacent pairs and satisfies $\sum_uy(v,u)\le1$ for every $v$. Its \emph{weight} is $\frac12\sum_{u,v}y(u,v)$, each
+edge counted once. The \emph{fractional matching number} $\nustar(G)$ is the supremum of the weights.
+\end{definition}
+
+\begin{proposition}[The fractional Tutte--Berge formula]\label{prop:fracTB}
+\formal{Matching.lean}{fracWeight_le_barrier, exists_doubleCover_matching, dcFrac, dcFrac_isFracMatching, fracWeight_dcFrac, fracMatchingNumber_spec, fracMatchingNumber_eq_min_barrier}
+For every finite simple graph $G$, the supremum $\nustar(G)$ is attained by a half-integral fractional matching, and
+\[
+  2\nustar(G)\;=\;\min_{S\subseteq V}\bigl(\card V+\card S-\card{I(S)}\bigr).
+\]
+\end{proposition}
+
+The formula is classical (see~\cite{ScheinermanUllman1997}); we formalize it because the next theorem needs both
+directions.
+
+\begin{outline}
+Weak duality (\lean{fracWeight_le_barrier}): the vertices of $I(S)$ send all their weight into $S$, which receives at most
+$\card S$, and every other vertex carries weight at most one, so twice the weight is at most
+$\card S+(\card V-\card{I(S)})$. For the converse, take a set $X_0$ of largest deficiency $d=\card{X_0}-\card{N(X_0)}$,
+where $N(X)$ is the set of neighbours of $X$. Hall's theorem~\cite{Hall1935}, in its Mathlib form, applied to the
+bipartite double cover of $G$ with $d$ dummy vertices added on one side, gives a set $D\subseteq V$ and an injective map
+$g$ on $D$ sending each vertex to a neighbour, with at most $d$ vertices outside $D$
+(\lean{exists_doubleCover_matching}). Putting weight $\frac12$ on each pair $\{v,g(v)\}$, once per direction, gives a
+half-integral fractional matching of weight $\card D/2$ (\lean{dcFrac}, \lean{fracWeight_dcFrac}). For
+$S=N(X_0)\setminus X_0$ the set $I(S)$ contains $X_0\setminus N(X_0)$, which gives
+$\card D\ge\card V+\card S-\card{I(S)}$. With weak duality, both bounds are equalities (\lean{fracMatchingNumber_spec}).
+\end{outline}
+
+\begin{theorem}[The guessing number is the fractional matching number]\label{thm:gn}
+\formal{Matching.lean}{log_card_le_fracMatchingNumber, exists_code_fracMatchingNumber, guessingNumber_eq_fracMatching}
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:gn-lower} For every finite simple graph $G$ and every nonempty finite set $\beta$, some storage code for
+$G$ over the alphabet $\beta\times\beta$ has at least $\card{\beta\times\beta}^{\nustar(G)}$ words.
+\item\label{it:gn-upper} If $G$ is triangle-free of maximum degree at most~$3$, every storage code for $G$ over every
+nonempty finite alphabet $\alpha$ has $\card C\le\card\alpha^{\nustar(G)}$, and over every alphabet $\beta\times\beta$
+some storage code has exactly $\card{\beta\times\beta}^{\nustar(G)}$ words.
+\end{enumerate}
+\end{theorem}
+
+The Lean statements are logarithmic, for instance $\nustar(G)\log\card{\beta\times\beta}\le\log\card C$, with the
+convention $\log0=0$. They give the counts above whenever $\nustar(G)>0$ and $\card\beta\ge2$; in the remaining cases the
+claims about $\beta\times\beta$ ask only for one word, and a code with a single word is a storage code.
+
+\begin{outline}
+\ref{it:gn-lower} Take $D$ and $g$ as in \cref{prop:fracTB}. The code consists of the words $x$ in which, for every
+$v\in D$, the second half of $x_v$ equals the first half of $x_{g(v)}$, and all other halves are a fixed symbol: each
+vertex of $D$ shares one half of its symbol with its neighbour $g(v)$, and each vertex of $g(D)$ receives one half from
+its preimage. Every symbol is then determined by the neighbours, and the $\card\beta^{\card D}=
+\card{\beta\times\beta}^{\nustar}$ choices of the shared halves give distinct words
+(\lean{exists_code_fracMatchingNumber}).
+\ref{it:gn-upper} \Cref{thm:barrier} with a set $S$ attaining the minimum of \cref{prop:fracTB}
+(\lean{log_card_le_fracMatchingNumber}); equality by~\ref{it:gn-lower}.
+\end{outline}
+
+\begin{remark}[Guessing numbers; not formalized]\label{rem:gn}
+Let $G$ be triangle-free of maximum degree at most three, and let $q\ge2$. By \cref{thm:gn}\ref{it:gn-upper},
+$\gn(G,q)\le\nustar(G)$. If $q=r^2$ is a perfect square, the code of part~\ref{it:gn-upper} over $\beta\times\beta$ with
+$\card\beta=r$ has $q^{\nustar(G)}$ words, so $\gn(G,q)=\nustar(G)$. Hence the asymptotic guessing number
+$\gn(G)=\sup_q\gn(G,q)$ equals $\nustar(G)$. The restriction to squares cannot be dropped: by a theorem of Atkins, Rombach
+and Skerman~\cite{AtkinsRombachSkerman2017}, for every $q\ge2$ that is not a perfect square and every sufficiently large odd
+$n$, the odd cycle $C_n$, which lies in this class and has $\nustar(C_n)=n/2$, has $\gn(C_n,q)=(n-1)/2+\log_qa<n/2$, where
+$a$ is the largest divisor of $q$ that is at most $\sqrt q$.
+\end{remark}
+
+The code of part~\ref{it:gn-lower} realizes Christofides and Markström's fractional clique cover
+strategy~\cite{ChristofidesMarkstrom2011}, restated in storage language by Mazumdar, McGregor and
+Vorotnikova~\cite{MMV2019}: on a triangle-free graph the cliques are the vertices and the edges, and the fractional clique
+cover number is $\card V-\nustar(G)$ (\cref{rem:broadcast}). Christofides and Markström conjectured that this strategy is
+optimal on every undirected graph (see~\cite[Conjecture~1]{Dang2015}) and proved it for perfect graphs and odd
+cycles~\cite{ChristofidesMarkstrom2011}; Mazumdar, McGregor and Vorotnikova proved it for prisms and certain chorded
+cycles~\cite{MMV2019}. The conjecture is false in general: Baber, Christofides, Dang, Vaughan and Riis disproved
+it~\cite{Baber2017} (Dang's thesis gives a counterexample on ten vertices~\cite[Section~4.1]{Dang2015}), and Cameron, Dang
+and Riis~\cite{CameronDangRiis2016} found triangle-free counterexamples, such as the Higman--Sims graph. For the Clebsch
+graph, of degree five, they proved $10\le\gn\le11$, and the fourth paper determined $\gn=10>8=\nustar$
+\cite[Corollary~6.11]{FourthPaper2026}. \Cref{thm:gn} proves the conjecture for triangle-free graphs of maximum degree
+three.
+
+\begin{definition}[Index codes]\label{def:indexcode}
+\formal{IndexCoding.lean}{IndexCode}
+An \emph{index code} for $N$ over an alphabet $\alpha$ with a finite message set $M$ is an encoding map $E\colon\alpha^V\to M$
+together with decoders $D_v$, $v\in V$, such that $D_v(E(x),x)=x_v$ for every word $x$, where $D_v(m,x)$ depends only on
+$m$ and on the restriction of $x$ to $N(v)$.
+\end{definition}
+
+\begin{theorem}[Index codes and fractional matchings]\label{thm:index}
+\formal{IndexCoding.lean}{IndexCode.isStorageCode_fibre, log_card_message_ge, exists_indexCode}
+\begin{enumerate}[label=(\alph*)]
+\item If $G$ is triangle-free of maximum degree at most~$3$, every index code for $N_G$ over a nonempty finite alphabet
+$\alpha$ has $\log\card M\ge(\card V-\nustar(G))\log\card\alpha$.
+\item For every finite simple graph $G$ and every finite abelian group $\beta$, there is an index code for $N_G$ over
+$\beta\times\beta$ with $\log\card M=(\card V-\nustar(G))\log\card{\beta\times\beta}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+(a) The words with a common message form a storage code (\lean{IndexCode.isStorageCode_fibre}), as in the fourth
+paper~\cite[Remark~4.9(b)]{FourthPaper2026}; each has at most $\card\alpha^{\nustar}$ words by \cref{thm:gn}, and the
+$\card M$ fibres cover $\alpha^V$. (b) With $D$ and $g$ as in \cref{prop:fracTB}, broadcast, for every $v$, the
+difference between the second half of $x_v$ and the first half of $x_{g(v)}$ when $v\in D$, and the second half of $x_v$
+otherwise, and broadcast the first halves of the vertices outside $g(D)$. A vertex recovers the second half of its symbol
+from its message and the first half of $x_{g(v)}$, and, if $v=g(u)$, the first half from the message of $u$ and the second
+half of $x_u$; both $g(v)$ and $u$ are neighbours. The message set has $\card\beta^{2\card V-\card D}$ elements.
+\end{outline}
+
+The duality between storage codes and index codes behind part~(a) is that of Mazumdar~\cite{Mazumdar2014}, Shanmugam and
+Dimakis~\cite{ShanmugamDimakis2014}, and Arbabjolfaei and Kim~\cite{ArbabjolfaeiKim2015}.
+
+\begin{remark}[The broadcast rate and fractional clique covers; not formalized]\label{rem:broadcast}
+Let $G$ be triangle-free of maximum degree at most three. For $t\ge1$ let $\beta_t$ be the least number of bits,
+$\lceil\log_2\card M\rceil$, of an index code for $N_G$ over the alphabet $\{0,1\}^t$; the broadcast rate
+of~\cite{BKL2013} is $\lim_t\beta_t/t$. Part~(a) of \cref{thm:index}, with $\alpha=\{0,1\}^t$, gives
+$\beta_t\ge(\card V-\nustar(G))\,t$. Part~(b), with $\beta=\F_2^t$, gives an index code over $\{0,1\}^{2t}$ with exactly
+$2(\card V-\nustar(G))\,t$ bits, an integer because $2\nustar(G)$ is one; so $\beta_{2t}\le2(\card V-\nustar(G))\,t$. Hence
+the broadcast rate of $G$ is $\card V-\nustar(G)$.
+
+This number is the fractional clique cover number of $G$, the least total weight of weighted cliques, here vertices and
+edges, that cover every vertex at least once. A fractional matching $x$ gives the cover with weight $x_e$ on each edge and
+$1-\sum_{e\ni v}x_e$ on each vertex $v$, of total weight $\card V-\sum_ex_e$. Conversely, in a cover, lowering the weight
+of a vertex that is covered more than once, or lowering the weight of an edge $uv$ at such a vertex $v$ and raising that of
+the vertex $u$ by the same amount, keeps a cover and does not increase its weight; so some optimal cover covers every
+vertex exactly once, and then its edge weights form a fractional matching whose weight is $\card V$ minus that of the cover.
+The bound of part~(b) is thus the fractional clique cover upper bound on the broadcast rate~\cite{BKL2013}, realized over
+$\beta\times\beta$ by a double-cover matching. For some graphs of the class these values were known: Blasiak, Kleinberg and
+Lubetzky determined the broadcast rate of cycles and of the cubic circulants, and computed that of the Petersen graph
+numerically~\cite{BKL2013}.
+\end{remark}
+
+\paragraph{Why it matters.} For triangle-free subcubic side information, \cref{thm:barrier,thm:gn,thm:index} settle the
+storage and index-coding problems exactly, for all codes and all alphabets. In the language of the fourth paper's crux
+(\cref{sec:construction}), on such side information an index code must broadcast at least $\card V-\nustar(G)\ge\card
+V/2$ symbols, and the extremal codes are fractional pairings: there is no room for a coding gain.
+
+\subsection{Relations near a class}\label{sec:paid}
+
+All our classes are defined by exact conditions. A few exceptional vertices cost only what they could carry.
+
+\begin{corollary}[Paid deletion]\label{cor:paid}
+\notformalized
+Let $N$ be a recovery relation on $V$ and $Z\subseteq V$. If $N-Z$ satisfies \eqref{eq:star}, then every storage code
+$C$ for $N$ over a nonempty finite alphabet $\alpha$ satisfies $\card C^2\le\card\alpha^{\card V+\card Z}$; that is,
+$\log_{\card\alpha}\card C\le(\card V+\card Z)/2$.
+\end{corollary}
+
+\begin{informalproof}
+The paid-conditioning lemma~\cite[Lemma~2.2]{DirectedRecovery2026}, Lean-verified there, says that every fibre of
+$C$ obtained by fixing the values on $Z$ and restricting to $V\setminus Z$ is a storage code for $N-Z$, and that if
+every storage code for $N-Z$ has at most $\card\alpha^u$ words, then $\card C\le\card\alpha^{\card Z+u}$. (Directly: two words of a fibre that agree on $N(v)\setminus Z$, for $v\notin Z$,
+agree on $N(v)$, since they agree on $Z$, hence at $v$; and there are at most $\card\alpha^{\card Z}$ fibres.) By
+\cref{thm:codes} we may take $u=(\card V-\card Z)/2$.
+\end{informalproof}
+
+Combined with \cref{lem:tt-paired}, the corollary shows that relations with
+few short paired paths are as good as TT-free ones: if deleting the loops, the middle vertices of transitive triangles and
+a further set $Z'$ leaves a relation in one of our classes, then storage codes have rate at most
+$\frac12+(b_E(3)+\card{Z'})/(2\card V)$.
+
+\paragraph{Why it matters.} This is how the exact theorems of this paper apply to the asymptotic setting of the
+paired-distance question~\cite[Question~9.1]{DirectedRecovery2026}: a construction must keep its cone relations away
+from every class here by a linear number of vertices (\cref{sec:construction}).

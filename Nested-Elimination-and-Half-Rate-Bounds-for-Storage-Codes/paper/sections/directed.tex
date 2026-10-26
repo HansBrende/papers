@@ -1,0 +1,347 @@
+\section{Directed relations without transitive triangles}\label{sec:directed}
+
+By \cref{lem:tt-paired}, a loopless relation is TT-free exactly when every coordinate has paired distance at least
+five. This section proves the half bound for three classes of such relations: subcubic underlying graphs
+(Theorem~U3), relations whose vertices of in-degree at least three are acyclic (Theorem~T), and block structures with
+private outside parents (Theorem~PC), which contain all TT-free Cayley relations $\Cay(G,\{s,s^{-1},t\})$
+(Corollary~CC). Directed triangles are allowed throughout; they are the only triangles a TT-free relation has.
+
+\begin{lemma}[Triangles of TT-free relations]\label{lem:dtri}
+\formal{U3.lean}{dtri_orient}
+Let $N$ be TT-free, and let $x_0,x_1,x_2$ be distinct and pairwise adjacent in the underlying graph, with
+$x_0\to x_1$. Then $x_1\to x_2$ and $x_2\to x_0$, and none of the arcs $x_1\to x_0$, $x_2\to x_1$, $x_0\to x_2$ is
+present.
+\end{lemma}
+
+\begin{outline}
+If $x_2\to x_1$, then either $x_0\to x_2$, and $x_0\to x_2\to x_1$ with $x_0\to x_1$ is a transitive triangle, or
+$x_2\to x_0$, and $x_2\to x_0\to x_1$ with $x_2\to x_1$ is one. So $x_1\to x_2$, and then $x_0\to x_2$ would close
+the transitive triangle $x_0\to x_1\to x_2$; hence $x_2\to x_0$. The reverse arcs $x_1\to x_0$ and $x_2\to x_1$ would
+close the transitive triangles $x_1\to x_2\to x_0$, $x_1\to x_0$ and $x_2\to x_0\to x_1$, $x_2\to x_1$.
+\end{outline}
+
+\subsection{Subcubic underlying graphs: Theorem U3}\label{sec:U3}
+
+\begin{theorem}[Theorem U3]\label{thm:U3}
+\formal{U3.lean}{und, sub_nbhd_und, dtriPiece, triPiece, rateBound_u3, card_sq_le_u3}
+Let $N$ be loopless and TT-free, and let its underlying graph have maximum degree at most~$3$. Then $N$ satisfies
+\eqref{eq:star}, and every storage code $C$ for $N$ over a nonempty finite alphabet satisfies
+$\card C^2\le\card\alpha^{\card V}$.
+\end{theorem}
+
+\begin{outline}
+Let $G=U(N)$; since $N$ is loopless, $N(v)\subseteq N_G(v)$ (\lean{sub_nbhd_und}). Run the shortest-cycle decomposition
+of Theorem~N3 on $G$ (\lean{decomp_of_cycles}). Shortest cycles of length at least four are pieces for $N_G$ and hence
+for $N$, which has fewer arcs (\cref{lem:greedy}\ref{it:mono}); the acyclic remainder is a relative $2$-colouring, built
+directly for $N$ by \cref{lem:Bdir}. The new case is a shortest
+cycle of length three. By \cref{lem:dtri} it is a directed $3$-cycle $c_0\to c_1\to c_2\to c_0$ without reverse arcs
+(\lean{triPiece}). Take $A=\{c_0,c_2\}$, which carries the single arc $c_2\to c_0$ and is acyclic, and $B=\{c_1\}$
+(\lean{dtriPiece}). Every $c_i$ has two neighbours on the triangle, hence at most one parent outside it. Two distinct
+triangle vertices cannot share an outside parent $w$: with the arc between them, $w$ would complete a transitive
+triangle. So outside parents are private, and \cref{lem:Bdir} applies.
+\end{outline}
+
+When the underlying graph is triangle-free, Theorem~U3 follows from Theorem~N3 and \cref{lem:fewer-arcs}; its new
+content is directed triangles. The fourth paper's Theorem~S~\cite[Theorem~6.13]{FourthPaper2026} proves the half bound
+for scalar linear codes on a larger class: its condition ``no recovery triangle'' is TT-freeness, and its reciprocity
+condition asks that a vertex with three parents have no child that is not a parent, which holds when the underlying
+graph is subcubic. Theorem~U3 is thus the all-code version of Theorem~S on relations with subcubic underlying graph;
+the all-code version of Theorem~S on its whole class is open.
+
+\paragraph{Why it matters.} Directed triangles do not help a code. This matters for~(T) because native cone relations
+can contain linearly many disjoint directed $3$-cycles~\cite[Proposition~3.10]{DirectedRecovery2026}, which rule out the
+symmetric hypothesis of Theorem~N3 but not the hypotheses of this section.
+
+\subsection{Acyclic high in-degree: Theorem T}\label{sec:T}
+
+\begin{theorem}[Theorem T]\label{thm:T}
+\formal{TheoremT.lean}{DCyc, exists_hasDCyc_of_sourceless, DCyc.chordless, DCyc.acyclic_of_missing, singlePiece, i5Piece, block_decomp, rateBound_thmT, card_sq_le_thmT}
+Let $N$ be loopless and TT-free, and suppose that the set $\{v:\card{N(v)}\ge3\}$ of vertices with at least three
+parents is acyclic for $N$. Then $N$ satisfies \eqref{eq:star}, and every storage code $C$ for $N$ over a nonempty
+finite alphabet satisfies $\card C^2\le\card\alpha^{\card V}$. No bound on in- or out-degrees is assumed.
+\end{theorem}
+
+\begin{outline}
+By strong induction on the set $R$ of remaining vertices (\lean{block_decomp}, with one block), in-degrees being counted
+inside $R$:
+\begin{enumerate}[label=(\alph*)]
+\item If some $v\in R$ has at most one parent in $R$, then $\{v\}$ is a piece, its remaining parent being its outside
+parent (\lean{singlePiece}, \cref{lem:Bdir} with $A=\{v\}$ and $B=\emptyset$).
+\item Otherwise let $W_R$ be the set of vertices with exactly two parents in $R$. If $W_R$ is not acyclic, it contains a
+nonempty set in which every vertex has a parent, hence a directed cycle (\lean{exists_hasDCyc_of_sourceless}). A
+shortest directed cycle $C$ in $W_R$ (\lean{DCyc}) is induced (\lean{DCyc.chordless}): the only parent of each
+$c\in C$ on $C$ is its predecessor. Hence each $c\in C$ has exactly one further parent in $R$, off $C$, its outside
+parent $p(c)$. Fix $c_0\in C$ and let $A=\{c\in C:p(c)=p(c_0)\}$ and $B=C\setminus A$. If $c_0\to c_1$ on $C$, then
+$p(c_1)\ne p(c_0)$, since otherwise $p(c_0)\to c_0\to c_1$ with $p(c_0)\to c_1$ is a transitive triangle. So $A$ and
+$B$ are proper subsets of an induced cycle and hence acyclic (\lean{DCyc.acyclic_of_missing}), and every outside vertex
+has its children on $C$ inside $A$ (if it is $p(c_0)$) or inside $B$. \Cref{lem:Bdir} applies (\lean{i5Piece}).
+\item Otherwise $W_R$ is acyclic, and so is the set of vertices with at least three parents in $R$, a subset of the
+acyclic set of the hypothesis. These two sets partition $R$, which is a piece by \cref{lem:Bdir}.
+\end{enumerate}
+Theorem~D concludes.
+\end{outline}
+
+Strongly connected components can be treated separately, since a parent in an earlier component can be contracted. The
+formal statement is a block form.
+
+\begin{corollary}[Corollary $\Tint$]\label{cor:Tint}
+\partformal{TheoremT.lean}{TTFreeOn, BlockOrder, blocks_decomp, rateBound_blocks}{the existence of a topological order of
+the strongly connected components, which is standard; it is proved below.}
+Let $N$ be loopless. Suppose that no strongly connected component of $N$ contains a transitive triangle, and that the set
+$\Tint$ of vertices with at least three parents inside their own strongly connected component is acyclic. Then $N$
+satisfies \eqref{eq:star}. There is no restriction on parents outside a vertex's component.
+\end{corollary}
+
+The formal theorem (\lean{rateBound_blocks}) is the following block form: if $N$ is loopless and $V$ is the union of
+pairwise disjoint blocks
+$S_1,\dots,S_r$ such that every parent of a vertex of $S_j$ lies in $S_1\cup\dots\cup S_j$, no block contains a
+transitive triangle, and each set $\{v\in S_j:\card{N(v)\cap S_j}\ge3\}$ is acyclic, then $N$ satisfies
+\eqref{eq:star}.
+
+\begin{outline}
+Induction over the list of blocks (\lean{blocks_decomp}): each block $S_j$ is decomposed by the procedure of Theorem~T
+run inside $S_j$ (\lean{block_decomp}), with the earlier blocks in the context. Parents in earlier blocks are then free,
+so in-degrees in~(a)--(c) are counted inside the remaining part of $S_j$, and TT-freeness is needed only inside $S_j$
+(\lean{TTFreeOn}).
+\end{outline}
+
+\begin{informalproof}
+We derive the corollary from the block form. The \emph{condensation} of $N$ has the strongly connected components as vertices and an arc $S\to S'$, $S\ne S'$,
+whenever some arc of $N$ goes from $S$ to $S'$. It has no directed cycle, since components on such a cycle would be
+strongly connected to each other. Hence it has a topological order: repeatedly remove a component that receives no arc
+from the remaining ones. Listing the components $S_1,\dots,S_r$ in this order, every parent of a vertex of $S_j$ lies in
+$S_1\cup\dots\cup S_j$. The set $\{v\in S_j:\card{N(v)\cap S_j}\ge3\}$ is $\Tint\cap S_j$, which is acyclic because
+acyclicity passes to subsets. The block form applies.
+\end{informalproof}
+
+When $\Tint=\emptyset$, that is, when every vertex has at most two parents inside its component, Corollary~$\Tint$ is
+the TT-free case of the two-input theorem of \emph{Directed Recovery
+Structures}~\cite[Theorem~5.1]{DirectedRecovery2026}: TT-free components contain no bidirected triangles, so that
+theorem's correction term vanishes. The corollary strictly contains this case, because it allows vertices with three or
+more internal parents as long as they induce an acyclic sub-relation. Its proof dismantles a bidirected odd cycle by
+contracting one digon, a shortest directed cycle of in-degree-two vertices, and does not use the directed Brooks
+theorem on which the proof in~\cite{DirectedRecovery2026} relies. Conversely, \cite[Theorem~5.1]{DirectedRecovery2026}
+also covers components that contain transitive triangles, which we do not.
+
+\paragraph{Why it matters.} Theorem~T and Corollary~$\Tint$ have no degree bound. For~(T) they locate where a coding
+gain on TT-free side information must come from: from directed cycles through vertices that have at least three parents
+in their own component. In a cone relation, after the middle vertices of transitive triangles have been deleted at the
+price of \cref{cor:paid}, a construction needs such cycles on a large fraction of the coordinates
+(\cref{sec:construction}).
+
+\subsection{Blocks with private outside parents: Theorem PC}\label{sec:PC}
+
+The pieces of Theorems~N3, U3 and~T are small. The next theorem takes whole blocks as pieces, in any order; a block
+then needs only an internal certificate.
+
+\begin{definition}[Elimination certificates of a block]\label{def:elimon}
+\formal{Blocks.lean}{ElimOn}
+Let $K\subseteq V$. An \emph{elimination certificate} of $N[K]$ consists of an elimination list of $K$ without
+repetitions, records partitioning $K$, and own and supplying records $a(v)\ne b(v)$ with $v\in P_{a(v)}$, such that at
+every step $t$ the parents of $v_t$ inside $K$ lie in $S_t\cup P_{b(v_t)}$.
+\end{definition}
+
+This is a global elimination certificate of the induced relation $N[K]$ (\cref{def:elimcert}), presented by its list.
+
+\begin{lemma}[Internal certificates give pieces]\label{lem:elimon-piece}
+\formal{Blocks.lean}{ElimOn.piece}
+Let $N[K]$ have an elimination certificate. Suppose that every vertex of $K$ has at most one parent outside $K$, and that
+every vertex outside $K$ is a parent of at most one vertex of $K$. Then $K$ has a piece certificate in every context $U$
+disjoint from $K$.
+\end{lemma}
+
+\begin{outline}
+Keep the list and the records. The outside parent of $v\in K$ is its parent outside $U\cup K$, if any; its other
+parents lie in $U$ or in $K$, where the internal certificate applies. Outside parents are private, so
+\cref{lem:cosupply} gives nesting. (The formal statement asks for at most one parent in $V\setminus(U\cup K)$ only.)
+\end{outline}
+
+\begin{lemma}[Positional certificates; chordless digon cycles]\label{lem:cycle-cert}
+\formal{Circulant.lean}{elimOn_ofFn, elimOn_cycle}
+Let $K=\{k_0,\dots,k_{m-1}\}$ be nonempty and listed without repetitions.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:positional} Let $\mathrm{col}$ and $\mathrm{bcol}$ be colourings of the positions $0,\dots,m-1$ with
+$\mathrm{col}(j)\ne\mathrm{bcol}(j)$ for every $j$. If $k_i\to k_j$ implies $i<j$ or $\mathrm{col}(i)=\mathrm{bcol}(j)$,
+then $N[K]$ has an elimination certificate (the formal proof uses the list $k_0,\dots,k_{m-1}$ and the colour classes as
+records).
+\item\label{it:cycle} If $m\ge4$ and every arc inside $K$ joins cyclically consecutive vertices ($k_i\to k_j$ only if
+$i\equiv j\pm1\pmod m$), then $N[K]$ has an elimination certificate.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+\ref{it:positional} The own record of $k_j$ is its colour and its supplying record is $\mathrm{bcol}(j)$; a parent $k_i$
+that comes later has colour $\mathrm{bcol}(j)$. \ref{it:cycle} Use the colouring of the cycle pieces of Theorem~N3, with
+$\mathrm{bcol}(j)=\mathrm{col}(j+1)$ for $j<m-1$ and $\mathrm{bcol}(m-1)=0$.
+\end{outline}
+
+Along a list $k_0,\dots,k_{L-1}$, call an arc $k_u\to k_v$ with $u\ge v+3$ a \emph{downward chord}.
+
+\begin{lemma}[Lemma S: chorded paths]\label{lem:S}
+\formal{PathCert.lean}{DownChord, pathRoot, pathRoot_succ_ne, elimOn_path}
+Let $K=\{k_0,\dots,k_{L-1}\}$ be nonempty and listed without repetitions. Suppose that every arc $k_i\to k_j$ inside
+$K$ joins consecutive positions, $\card{i-j}=1$, or skips at least two positions, $\card{i-j}\ge3$, and that every vertex
+of $K$ is the head of at most one downward chord and the tail of at most one. Then $N[K]$ has an elimination certificate
+(the formal proof uses the list $k_0,\dots,k_{L-1}$ and, as records, the classes of the equivalence relation on positions
+generated by the \emph{links} $u\sim v+1$, one for each downward chord $k_u\to k_v$, together with one empty
+record).
+\end{lemma}
+
+\begin{outline}
+When $k_j$ is eliminated, its parents inside $K$ that come later are $k_{j+1}$ (if $j<L-1$) and the tail $k_u$ of the
+downward chord to $k_j$, if there is one; these two are linked, so they lie in one class, which serves as supplying record
+(through \cref{lem:cycle-cert}\ref{it:positional}). It remains to show that $j$ and $j+1$ are never in the same class
+(\lean{pathRoot_succ_ne}). A link joins $u$ to $v+1\le u-2$. A position is the upper end of at most one link, from the
+downward chord out of it, and the lower end of at most one link, from the downward chord into the position below it,
+because these chords are unique. So the classes are chains whose positions decrease by at least two at each link:
+following links downwards from any position reaches a lowest position, its \emph{root} (\lean{pathRoot}), and two
+positions of one class differ by at least two.
+\end{outline}
+
+A \emph{chorded digon path} is a set $K=\{k_0,\dots,k_{L-1}\}$ such that $k_i\leftrightarrow k_{i+1}$ is a digon for
+$0\le i<L-1$ and the other arcs inside $K$, the \emph{chords}, number at most one into and at most one out of every vertex.
+If $N$ is loopless and $N[K]$ is TT-free, a chorded digon path satisfies the hypotheses of Lemma~S
+(\lean{ChordedPath.elimOn}): a chord between $k_i$ and $k_{i\pm2}$ would close a transitive triangle with the two digons
+around $k_{i\pm1}$.
+
+\begin{proposition}[Proposition CC: chorded circulant cycles]\label{prop:CC}
+\formal{Circulant.lean}{circCol, circB, elimOn_circulant, circulant_sweep}
+Let $3\le k\le m-3$ and let $K=\{k_0,\dots,k_{m-1}\}$ be listed without repetitions so that every arc inside $K$ has the
+form $k_{j\pm1}\to k_j$ or $k_{j-k}\to k_j$, indices modulo $m$. Put $\delta=m-1-k$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:sweep} If $\delta$ divides neither $m-1$ nor $m-3$, then $N[K]$ has an elimination certificate (the
+formal proof uses the sweep along $k_0,k_1,\dots,k_{m-1}$ described below).
+\item\label{it:arith} If $2k\not\equiv\pm1\pmod m$, then the condition of~\ref{it:sweep} holds for the offset $k$ or for
+the offset $m-k$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+\ref{it:sweep} (\lean{elimOn_circulant}, through \cref{lem:cycle-cert}\ref{it:positional}.) Position $0$ has a record of
+its own; a position $p\ne0$ gets the record of its residue modulo $\delta$, except that the residue class of $m-1$ is merged
+into that of $1$ (\lean{circCol}). The supplying record of $p<m-1$ is the record of $p+1$, and that of $m-1$ is the record
+of position~$0$ (\lean{circB}). The later parents of $k_p$ are $k_{p+1}$; for $p=0$ also $k_{m-1}$, which has the merged
+colour of $k_1$; and, for $p<k$, the tail $k_{p-k+m}$ of the chord, whose position $p-k+m=(p+1)+\delta$ is congruent to
+$p+1$. Own and supplying records differ: for $1\le p<m-1$ the residues of $p$ and $p+1$ differ, and the merge identifies
+them only if $p\equiv m-1$ and $p+1\equiv1$, which forces $\delta\mid m-1$, or $p\equiv1$ and $p+1\equiv m-1$, which
+forces $\delta\mid m-3$.
+\ref{it:arith} (\lean{circulant_sweep}.) For the offset $m-k$ the role of $\delta$ is played by $\delta'=k-1$, and
+$m-1=\delta+\delta'+1$, $m-3=\delta+\delta'-1$. If the condition fails for both offsets, then $\delta\mid\delta'\pm1$ and
+$\delta'\mid\delta\pm1$ with $\delta,\delta'\ge2$, which forces $\card{\delta-\delta'}=1$ and then $2k=m\pm1$.
+\end{outline}
+
+\emph{With the mirror sweep, if $2k\not\equiv\pm1\pmod m$, then $N[K]$ has an elimination certificate.} Indeed, by
+part~\ref{it:arith} the condition of part~\ref{it:sweep} holds for the offset $k$, and part~\ref{it:sweep} applies, or
+for the offset $m-k$. In the second case relabel $k'_j=k_{-j}$: the relabelling $j\mapsto-j$ turns the arcs
+$k_{j\pm1}\to k_j$ into arcs of the same form and the chords $k_{j-k}\to k_j$ into chords $k'_{j-(m-k)}\to k'_j$ of
+offset $m-k$, so part~\ref{it:sweep} applies to the list $k'_0,k'_1,\dots,k'_{m-1}$, that is, to $k_0,k_{m-1},\dots,k_1$.
+This is the \emph{mirror sweep}; it is not a single Lean declaration, and the formal proof of Corollary~CC below realizes
+it by indexing cosets with powers of $s^{-1}$. The condition $2k\not\equiv0$, which makes the chords one-way, is not
+needed. In a TT-free circulant $\Cay(\Z_m,\{1,-1,k\})$ with one-way chords the hypotheses
+hold, since chords of length $2$ and chords with $2k\equiv\pm1$ close transitive triangles.
+
+\begin{theorem}[Theorem PC: blocks with private outside parents]\label{thm:PC}
+\formal{PathCert.lean}{ChordedPath, ChordedPath.elimOn, rateBound_pc}
+\formal{Blocks.lean}{ChordlessSubcubic, localGraph, chordless_block_decomp}
+\formal{N3.lean}{block_decomp_of_cycles}
+Let $N$ be loopless and let $V$ be partitioned into blocks. Suppose:
+\begin{enumerate}[label=(P\arabic*),leftmargin=3em]
+\item\label{it:P1} every vertex has at most one parent outside its block;
+\item\label{it:P2} every vertex is a parent of at most one vertex of each other block;
+\item\label{it:P3} every block $K$ is
+  \begin{enumerate}[label=(\alph*)]
+  \item \emph{chordless subcubic}: every arc inside $K$ belongs to a digon, every vertex of $K$ has at most three
+  parents, and $N[K]$ is TT-free; or
+  \item a chorded digon path with $N[K]$ TT-free; or
+  \item such that $N[K]$ has an elimination certificate.
+  \end{enumerate}
+\end{enumerate}
+Then $N$ satisfies \eqref{eq:star}; consequently every storage code $C$ for $N$ over a nonempty finite alphabet satisfies
+$\card C^2\le\card\alpha^{\card V}$ (\cref{thm:codes}). Out-degrees are not restricted.
+\end{theorem}
+
+\begin{outline}
+By Lemma~S, blocks of kind~(b) have elimination certificates and are therefore of kind~(c)
+(\lean{ChordedPath.elimOn}). The blocks are taken as pieces in an arbitrary order (\lean{rateBound_pc}), each with the earlier blocks as context.
+By~\ref{it:P1} and~\ref{it:P2}, every vertex of a block $K$ has at most one parent outside $K$, and outside parents are
+private. A block of kind~(c) is a piece by \cref{lem:elimon-piece}. A block of kind~(a) is decomposed relative to its
+context by the shortest-cycle procedure of Theorem~N3 (\lean{chordless_block_decomp}, \lean{block_decomp_of_cycles}),
+applied to its local graph (\lean{localGraph}), which joins each vertex of $K$ to its parents. Inside $K$ the children of
+a vertex are its digon partners, so every vertex of $K$ has local degree at most three; a vertex outside $K$ has at most
+one local neighbour, by~\ref{it:P2}; and the local graph has no triangle inside $K$, since such a triangle would consist
+of digons and contain a transitive triangle. The cycle pieces and the final relative $2$-colouring then have private
+outside parents.
+\end{outline}
+
+The blocks are usually far from minimum pieces; Theorem~PC is not a shortest-cycle argument. Its natural blocks are the
+components of the digon graph.
+
+\begin{corollary}[Theorem PC for digon components]\label{cor:PC-digon}
+\notformalized
+Let $N$ be loopless and TT-free. Suppose that
+\begin{enumerate}[label=(H\arabic*),leftmargin=3em]
+\item every vertex has at most one one-way parent, and
+\item no vertex has one-way arcs to two vertices of the same component of the digon graph $G_2(N)$,
+\end{enumerate}
+and that every component $K$ of $G_2(N)$ has no one-way arc inside it and only vertices with at most three parents, or
+induces a path of $G_2(N)$, or is such that $N[K]$ has an elimination certificate (for instance a cycle of $G_2(N)$ of length $m$ whose
+one-way arcs inside $K$ all have the same offset $k$ with $2k\not\equiv\pm1\pmod m$, by \cref{prop:CC} with the mirror
+sweep; TT-freeness gives $3\le k\le m-3$). Then $N$ satisfies \eqref{eq:star}.
+\end{corollary}
+
+\begin{informalproof}
+Take the components of $G_2(N)$ as blocks. The digon partners of a vertex lie in its own component, so its parents
+outside its component are one-way; by~(H1) there is at most one, which is~\ref{it:P1}. A vertex outside a component $K$
+has only one-way arcs into $K$, at most one by~(H2), which is~\ref{it:P2}. For~\ref{it:P3}: a component without one-way
+arcs inside it has every internal arc in a digon, and with the in-degree bound and TT-freeness it is of kind~(a). If $K$
+induces a path $k_0,\dots,k_{L-1}$ of $G_2(N)$, its consecutive pairs are digons, and every other arc inside $K$ is
+one-way, because a digon inside $K$ is an edge of $G_2(N)[K]$, which is the path. Each vertex is the head of at most one
+one-way arc, by~(H1), and the tail of at most one one-way arc into $K$, by~(H2); so $K$ is a chorded digon path, of
+kind~(b). The remaining components are of kind~(c) by hypothesis. Theorem~PC applies.
+\end{informalproof}
+
+Every chordless cycle of $G_2(N)$ is of kind~(a), and also of kind~(c) by \cref{lem:cycle-cert}\ref{it:cycle}; it has
+length at least four, since $G_2(N)$ is triangle-free. Whether every TT-free chorded digon cycle is of kind~(c) is
+\cref{conj:K}.
+
+\paragraph{Why it matters.} Theorem~PC covers relations that none of Theorems~N3, U3 and~T covers, and puts no bound on
+out-degrees: a vertex may send one one-way arc into each of arbitrarily many blocks. For~(T), side information built
+from two-way exchanges inside blocks, linked by one-way arcs that are private in the sense of~\ref{it:P1}
+and~\ref{it:P2}, gives no coding gain. With the digon components as blocks, a construction needs, on a large scale,
+vertices that receive several one-way arcs or send several into one component, or components without certificates. The
+relation $\Ex$ of \cref{rem:X15} has vertices of the first kind, and yet it has a global certificate.
+
+\subsection{Cayley relations: Corollary CC}\label{sec:CC}
+
+\begin{corollary}[Corollary CC: Cayley relations]\label{cor:CC}
+\formal{Cayley.lean}{cayN, coset_steps, mem_coset_iff, rateBound_cayley, card_sq_le_cayley}
+Let $G$ be a finite group and let $s,t\in G$ be such that $S=\{s,s^{-1},t\}$ has three elements and does not contain
+$1$. Let $N$ be the Cayley relation with arcs $g\to gx$ for $x\in S$, so $N(q)=\{qs^{-1},qs,qt^{-1}\}$. If $N$ is
+TT-free, then $N$ satisfies \eqref{eq:star}, and every storage code $C$ for $N$ over a nonempty finite alphabet
+satisfies $\card C^2\le\card\alpha^{\card G}$.
+\end{corollary}
+
+\begin{outline}
+The relation is loopless because $1\notin S$. If $t^2=1$, every arc is reciprocated, the underlying graph has degree at
+most three, and Theorem~U3 applies. Otherwise take the left cosets $g\langle s\rangle$ as blocks. The order $m$ of $s$ is at least four: $m\ne1,2$ because $s\ne1$ and $s\ne s^{-1}$, and $m\ne3$
+because $g\to gs\to gs^2=gs^{-1}$ with $g\to gs^{-1}$ would be a transitive triangle. The only parent of $q$ outside its
+coset is $qt^{-1}$, and the only possible child outside it is $qt$; so~\ref{it:P1} and~\ref{it:P2} hold. Index the coset of
+$g$ by $j\mapsto gs^j$ (\lean{mem_coset_iff}); in-neighbours through $s^{\pm1}$ then sit at neighbouring positions
+(\lean{coset_steps}). If $t\notin\langle s\rangle$, its internal arcs join consecutive positions,
+and \cref{lem:cycle-cert}\ref{it:cycle} applies. If $t=s^k$, its internal arcs are $gs^{j\pm1}\to gs^j$ and
+$gs^{j-k}\to gs^j$. Here $k\ne0,\pm1$ because $\card S=3$ and $1\notin S$; $k\ne\pm2$ and $2k\not\equiv\pm1$ because
+each would close a transitive triangle. So $3\le k\le m-3$ and \cref{prop:CC} applies, with the generator $s$ or, for the
+mirror sweep, $s^{-1}$ and the offset $m-k$. Theorem~PC concludes.
+\end{outline}
+
+If instead $S$ has at most two elements and does not contain~$1$, every vertex has at most two parents, and Theorem~T
+applies when $N$ is TT-free. For example,
+$\Cay(\Z_9,\{1,-1,3\})$, with $N(q)=\{q-1,q+1,q-3\}$, is covered by Corollary~CC (one block, $m=9$,
+$k=3$, $\delta=5$). It is covered by none of the earlier results: its underlying graph is $4$-regular, so neither
+Theorem~N3, even with \cref{lem:fewer-arcs}, nor Theorem~U3 applies; it is strongly connected with every in-degree equal
+to three, so Theorem~T and Corollary~$\Tint$ do not apply; and it is not $2$-dicolourable, since the two ends of a
+digon must lie in different acyclic sets and its digons form a $9$-cycle. It also shows that the private pieces of Theorem~N3 can fail to exist (\cref{prop:no-private}).
+
+\paragraph{Why it matters.} Cayley relations are the side information of uniform, translation-invariant schedules. For
+every finite group, the pattern ``two-way exchange along one generator, one-way transfer along another'' gives no
+coding gain at any size. For~(T), symmetric constructions of this shape are excluded, whatever the group.

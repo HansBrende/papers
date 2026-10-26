@@ -1,0 +1,253 @@
+\section{Nested elimination and the decomposition theorem}\label{sec:engine}
+
+This section proves the engine of the paper. A \emph{piece} $H$ is eliminated one vertex at a time. When a vertex is
+eliminated it must be recovered from the vertices eliminated before it, from one \emph{record} other than its own, and
+possibly from one vertex outside the piece. Lemma~E bounds $2h(H)$ by the records plus the information that the outside
+vertices have about $H$, provided the steps charged to the same outside vertex are nested. Contracting $H$ then reduces
+the half bound to the rest of the relation, and Theorem~D composes pieces. Every other result of the paper is an
+instance: it only has to exhibit pieces.
+
+\subsection{Lemma E}\label{sec:lemmaE}
+
+\begin{definition}[Elimination data]\label{def:elim-data}
+\formal{NestedElimination.lean}{defect, totalDefect, Charged}
+Let $H\subseteq V$. \emph{Elimination data} for $H$ consist of finitely many \emph{records} $P_i\subseteq H$, $i\in I$,
+not necessarily disjoint; an \emph{elimination list} $v_0,\dots,v_{k-1}$, a listing of $H$ without repetitions (the
+formal statement allows repetitions, which do not help); and maps $a,b\colon H\to I$ with $v\in P_{a(v)}$ and $b(v)\ne a(v)$ for every $v\in H$, the \emph{own} and the
+\emph{supplying} record of $v$. At step $t$ the \emph{revealed set} is $S_t=\{v_0,\dots,v_{t-1}\}$ and the
+\emph{supply} is $Q_t=S_t\cup P_{b(v_t)}$. For a polymatroid $g$ on $V$, the \emph{defect} of step $t$ is
+$g(v_t\mid Q_t)$.
+
+Let $W\subseteq V$. A \emph{charging} into $W$ assigns to every vertex of $H$, and so to its step, either nothing or a
+vertex $w\in W$, such that the defect of a step with nothing vanishes (the step is \emph{free}) and a step assigned to $w$ satisfies
+$g(v_t\mid Q_t\cup\{w\})=0$ (it is \emph{charged to $w$}). The charging is \emph{nested} if, whenever $t'<t$ are
+consecutive steps charged to the same vertex, $Q_{t'}\cup\{v_{t'}\}\subseteq Q_t$.
+\end{definition}
+
+Consecutive nesting implies $Q_{t'}\cup\{v_{t'}\}\subseteq Q_t$ for all steps $t'<t$ charged to the same vertex,
+since supplies grow along the chain.
+
+\begin{lemma}[Lemma E: nested elimination]\label{lem:E}
+\formal{NestedElimination.lean}{record_increment, elim_defect, mi_mono, defect_eq_mi, totalDefect_le, nested_elimination}
+Let $g$ be a polymatroid on $V$ and fix elimination data for $H\subseteq V$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:E0} (Defect form.) $2g(H)\le\sum_ig(P_i)+\sum_tg(v_t\mid Q_t)$.
+\item\label{it:E1} (Charging.) If a charging into $W\subseteq V$ is nested, then
+$\sum_tg(v_t\mid Q_t)\le\sum_{w\in W}I(w;H)$.
+\item\label{it:E} (Lemma E.) Consequently, if a charging into $W$ is nested, then
+\[
+  2g(H)\;\le\;\sum_ig(P_i)+\sum_{w\in W}I(w;H).
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+\ref{it:E0} Let $m=\card I$; it is at least $2$ as soon as $H\ne\emptyset$, since $a(v)\ne b(v)$. Induction along the
+list proves, for every $t$,
+\[
+  2g(H)+(m-2)\,g(S_t)\;\le\;\sum_ig(S_t\cup P_i)+\sum_{s\ge t}g(v_s\mid Q_s).
+\]
+At the end, $S_k=H$ contains every record and both sides equal $m\,g(H)$. In the inductive step $v=v_t$ is revealed: the
+own record does not change, because $v\in P_{a(v)}$; the supplying record grows by
+exactly the defect $g(v\mid S_t\cup P_{b(v)})$; and each of the other $m-2$ records grows by at most
+$g(S_t\cup\{v\})-g(S_t)$, by submodularity (\lean{record_increment}). At $t=0$ this is~\ref{it:E0}.
+
+\ref{it:E1} For $w\in W$ let $L(w)$ be the supply of the last step charged to $w$ together with its vertex, initially
+$\emptyset$. Induction along the list proves
+$\sum_{s\ge t}g(v_s\mid Q_s)\le\sum_{w\in W}\bigl(I(w;H)-I(w;L(w))\bigr)$, where $L$ is taken at step $t$. A free step
+contributes nothing. For a step charged to $w$, the chain rule and $g(v_t\mid Q_t\cup\{w\})=0$ give
+$g(v_t\mid Q_t)=I(w;Q_t\cup\{v_t\})-I(w;Q_t)$ (\lean{defect_eq_mi}); nesting gives $L(w)\subseteq Q_t$, and
+$I(w;\cdot)$ is monotone (\lean{mi_mono}), so the defect is at most $I(w;Q_t\cup\{v_t\})-I(w;L(w))$, after which
+$L(w)$ becomes $Q_t\cup\{v_t\}\subseteq H$. At the start $I(w;\emptyset)=0$.
+
+\ref{it:E} Combine~\ref{it:E0} and~\ref{it:E1}.
+\end{outline}
+
+With $W=\emptyset$ and all steps free, part~\ref{it:E} is the inequality form of the exact partition identity of the
+circular memo~\cite[Theorem~2.1]{CircularMemo2026}, which assumes that the records partition the ground set and
+identifies the slack exactly; part~\ref{it:E0} is the inequality form of that memo's remark that dropping the
+supplying condition subtracts the defects. What is new is part~\ref{it:E1}: a step may use one vertex outside the
+piece, and several steps may use the same outside vertex, at the total price $I(w;H)$, provided their supplies are
+nested. Validity of $g$ is not assumed, and the records need not be disjoint; validity enters in Theorem~D through the
+closure lemma, and disjointness through subadditivity.
+
+\paragraph{Why it matters.} Lemma~E is the only entropy inequality of the paper; everything after it is combinatorics.
+For~(T) this means that the half-rate bounds needed by the impossibility programme of the fourth
+paper~\cite{FourthPaper2026} can be proved by exhibiting finite combinatorial certificates. The charging of
+part~\ref{it:E1} is what directed side information requires: in the directed classes of \cref{sec:directed}, an outside
+vertex can be a parent of several vertices of a piece. Not every natural piece admits such a charging; \cref{rem:X15}
+exhibits a minimum nonempty core that admits no piece certificate, with any number of records.
+
+\subsection{Piece certificates and Theorem D}\label{sec:thmD}
+
+\begin{definition}[Piece certificates and decompositions]\label{def:piece}
+\formal{Decomposition.lean}{RelCharged, PieceCert, Decomp}
+Let $N$ be a recovery relation on $V$, let $U\subseteq V$ be a \emph{context} and $H\subseteq V\setminus U$ a
+\emph{piece}, and call the vertices of $V\setminus(U\cup H)$ \emph{outside}. A \emph{piece certificate} for $H$ in
+context $U$ consists of elimination data for $H$ whose records $P_1,\dots,P_m$ are pairwise disjoint with union $H$,
+and of an optional \emph{outside parent} $p(v)$, an outside vertex, for each $v\in H$, such that for every step $t$:
+\begin{enumerate}[label=(C\arabic*),leftmargin=3em]
+\item\label{it:C1} $N(v_t)\subseteq U\cup Q_t\cup\{p(v_t)\}$, where $\{p(v_t)\}=\emptyset$ if $v_t$ has no outside
+parent;
+\item\label{it:C2} if $t'<t$ are consecutive steps with the same outside parent, then
+$Q_{t'}\cup\{v_{t'}\}\subseteq Q_t$.
+\end{enumerate}
+So every parent of $v_t$ outside the context has been eliminated, lies in the supplying record, or is the single
+outside parent of $v_t$. A \emph{decomposition of $N$ from context $U$} is a list of pieces $H_1,\dots,H_k$ such that,
+with $U_j=U\cup H_1\cup\dots\cup H_{j-1}$, each $H_j$ is disjoint from $U_j$ and has a piece certificate in context
+$U_j$, and $U_{k+1}=V$. A \emph{decomposition} of $N$ is a decomposition from context $\emptyset$.
+\end{definition}
+
+\begin{theorem}[Theorem D: decomposition]\label{thm:D}
+\formal{Decomposition.lean}{contr_isPolymatroid, RelCharged.charged, PieceCert.ineq, decomp_ineq, rateBound_of_decomp, card_sq_le_of_decomp}
+Let $h$ be a polymatroid valid for $N$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:D-piece} (Pieces.) If $H$ has a piece certificate in context $U$, then, with the contraction $h_U$ of
+\cref{lem:contraction} and the information $I_{h_U}$ computed in $h_U$,
+\[
+  2h_U(H)\;\le\;\sum_{v\in H}h_U(v)+\sum_{w\notin U\cup H}I_{h_U}(w;H).
+\]
+\item\label{it:D-rel} (Relative form.) If $N$ has a decomposition from context $U$, then
+\[
+  2\bigl(h(V)-h(U)\bigr)\;\le\;\sum_{v\notin U}\bigl(h(U\cup\{v\})-h(U)\bigr).
+\]
+\item\label{it:D-main} (Theorem D.) If $N$ has a decomposition, then $N$ satisfies \eqref{eq:star}, and every storage
+code $C\subseteq\alpha^V$ for $N$ over a nonempty finite alphabet satisfies $\card C^2\le\card\alpha^{\card V}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+\ref{it:D-piece} Apply Lemma~E to $g=h_U$, a polymatroid by \cref{lem:contraction}, with $W$ the set of outside
+vertices. Condition~\ref{it:C1} and \cref{lem:contraction} turn each step into a free step or a step charged to its
+outside parent (\lean{RelCharged.charged}), and \ref{it:C2} is the nesting. Finally
+$\sum_ih_U(P_i)\le\sum_{v\in H}h_U(v)$ by subadditivity over the disjoint records.
+
+\ref{it:D-rel} Induction over the list of pieces. For the first piece $H$ in context $U$, part~\ref{it:D-piece} applies;
+the induction hypothesis, for the remaining pieces from context $U\cup H$, gives
+$2(h(V)-h(U\cup H))\le\sum_{w\notin U\cup H}(h(U\cup H\cup\{w\})-h(U\cup H))$. Since
+$h(U\cup H\cup\{w\})-h(U\cup H)=h_U(w)-I_{h_U}(w;H)$, the information terms cancel when the two inequalities are added,
+and $h(V)-h(U)=h_U(H)+(h(V)-h(U\cup H))$.
+
+\ref{it:D-main} Take $U=\emptyset$ in~\ref{it:D-rel}; the code bound is \cref{thm:codes}.
+\end{outline}
+
+The pieces are certified in the relation that remains after contracting the earlier pieces: parents in earlier
+pieces are free. The bookkeeping is exact, in the sense that the piece inequalities add up to
+$\sum_vh(v)-2h(V)$ with all outside charges cancelling; unfolding a decomposition therefore gives an explicit Shannon
+certificate for \eqref{eq:star}, a nonnegative combination of submodularity and validity brackets.
+
+\paragraph{Why it matters.} Theorem~D turns each class theorem below into a statement that decompositions exist, and
+it is the only route by which this paper proves half-rate bounds. For~(T), a proof of the fourth paper's crux along
+these lines would have to decompose the cone relations of oblivious schedules into certified pieces;
+\cref{sec:limits} shows where the natural rules for choosing pieces break down.
+
+\subsection{Building certificates}\label{sec:building}
+
+Three tools produce piece certificates. The first removes the need to check nesting.
+
+\begin{lemma}[Co-supply implies nesting]\label{lem:cosupply}
+\formal{Positional.lean}{rev, relCharged_of_cosupply}
+Let elimination data for $H$, with records partitioning $H$ and optional outside parents, satisfy~\ref{it:C1} at every
+step. If all steps with the same outside parent have the same supplying record (the outside parents are
+\emph{co-supplied}), then~\ref{it:C2} holds. In particular~\ref{it:C2} holds if every outside vertex is the outside
+parent of at most one vertex of $H$ (the outside parents are \emph{private}).
+\end{lemma}
+
+\begin{outline}
+For steps $t'<t$ with the common supplying record $P_b$,
+$Q_{t'}\cup\{v_{t'}\}=S_{t'+1}\cup P_b\subseteq S_t\cup P_b=Q_t$. The formal statement takes the step conditions
+position by position along the list, with \lean{rev} the revealed set before a position.
+\end{outline}
+
+\begin{lemma}[Fewer arcs and greedy certificates]\label{lem:greedy}
+\formal{Pieces.lean}{RelCharged.mono, PieceCert.mono, exists_relCharged, pieceCert_of_elim}
+Let $U\subseteq V$ and $H\subseteq V\setminus U$.
+\begin{enumerate}[label=(\alph*)]
+\item\label{it:mono} If $N(v)\subseteq N'(v)$ for every $v\in H$, every piece certificate for $H$ in context $U$ for
+$N'$ is one for $N$.
+\item\label{it:greedy} Let records $P_1,\dots,P_m$ partition $H$, with own and supplying records $a(v)\ne b(v)$ and
+optional co-supplied outside parents $p(v)$. If every proper subset $S\subsetneq H$ misses a vertex $v\in H$ with
+$N(v)\subseteq U\cup S\cup P_{b(v)}\cup\{p(v)\}$, then $H$ has a piece certificate in context $U$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+\ref{it:mono} Condition~\ref{it:C1} only becomes weaker, and~\ref{it:C2} does not mention $N$.
+\ref{it:greedy} Starting from $S=\emptyset$, repeatedly eliminate a vertex given by the hypothesis. Each step
+satisfies~\ref{it:C1} by construction, and co-supply gives~\ref{it:C2} (\cref{lem:cosupply}). The list ends when $S=H$.
+\end{outline}
+
+\begin{lemma}[Lemma $\Bdir$: relative $2$-dicolourings]\label{lem:Bdir}
+\formal{Pieces.lean}{bdirPiece}
+Let $U\subseteq V$ and let $H=A\sqcup B\subseteq V\setminus U$, where $A$ and $B$ are acyclic for $N$. Suppose that
+every vertex of $H$ has at most one parent outside $U\cup H$, and that every outside vertex has all its children in $H$
+inside $A$, or all inside $B$. Then $H$ has a piece certificate in context $U$ (the formal proof uses the two records
+$A$ and $B$).
+\end{lemma}
+
+\begin{outline}
+The supplying record of a vertex of $A$ is $B$, and that of a vertex of $B$ is $A$; the outside parent of a vertex is
+its parent outside $U\cup H$, if any. Apply \cref{lem:greedy}\ref{it:greedy}. Given a proper subset $S$ of $H$: if
+$A\not\subseteq S$, acyclicity gives a vertex of $A\setminus S$ with no parent in $A\setminus S$, whose parents in $H$
+are therefore revealed or in $B$; otherwise $A\subseteq S$, and a vertex of $B\setminus S$ with no parent in
+$B\setminus S$ has all its parents in $H$ revealed. Co-supply holds because the children of an outside vertex lie in
+one part, which has one supplying record.
+\end{outline}
+
+\paragraph{Why it matters.} Relative $2$-dicolourings are the workhorse of \cref{sec:directed}: directed triangles,
+shortest directed cycles of in-degree-two vertices and the final step of Theorem~T are pieces of this kind. They need no
+degree bound and allow an outside vertex to have many children in a piece, as long as these lie on one side.
+
+\subsection{Global certificates and pull-back}\label{sec:global}
+
+A piece certificate with $H=V$ has no outside vertices. Its order-free form is the following.
+
+\begin{definition}[Global elimination certificates]\label{def:elimcert}
+\formal{Corollaries.lean}{ElimCert}
+A \emph{global elimination certificate} for $N$ consists of records $P_1,\dots,P_m$ partitioning $V$ and own and
+supplying records $a(v)\ne b(v)$ with $v\in P_{a(v)}$, such that every proper subset $S\subsetneq V$ misses a vertex
+$v$ with $N(v)\subseteq S\cup P_{b(v)}$.
+\end{definition}
+
+Equivalently, there is an elimination list in which the parents of each vertex that are not earlier in the list lie in
+its supplying record: given the list and a proper subset $S$, the first vertex of the list outside $S$ is eligible.
+
+\begin{proposition}[Global certificates]\label{prop:global}
+\formal{Corollaries.lean}{ElimCert.rateBound}
+\formal{NestedElimination.lean}{sum_records_step}
+If $N$ has a global elimination certificate, then $N$ satisfies \eqref{eq:star}.
+\end{proposition}
+
+\begin{outline}
+Downward induction on $\card{V\setminus S}$ proves $2h(V)+(m-2)h(S)\le\sum_ih(S\cup P_i)$, as in
+\cref{lem:E}\ref{it:E0}, with every defect zero by validity and the closure lemma; the inductive step is
+\lean{sum_records_step}. At $S=\emptyset$, subadditivity over the records gives \eqref{eq:star}.
+\end{outline}
+
+With three records and cyclic supply, $b(v)$ the record after $a(v)$, this is the three-record criterion of the
+circular memo~\cite[Lemma~2.2]{CircularMemo2026} for partitions; the memo also allows overlapping records. Global
+certificates pull back along homomorphisms of recovery relations.
+
+\begin{lemma}[Pull-back]\label{lem:pullback}
+\formal{Corollaries.lean}{ElimCert.pullback}
+Let $N$ and $N'$ be recovery relations on $V$ and $W$, and let $\varphi\colon V\to W$ satisfy $\varphi(u)\in
+N'(\varphi(v))$ whenever $u\in N(v)$. If $N'$ has a global elimination certificate with records $P'_i$ and maps
+$a',b'$, then $N$ has one with records $\varphi^{-1}(P'_i)$ and maps $a'\circ\varphi$, $b'\circ\varphi$.
+\end{lemma}
+
+\begin{outline}
+Given a proper subset $S\subsetneq V$, let $S'$ be the set of $x\in W$ whose whole fibre $\varphi^{-1}(x)$ lies in $S$.
+It is a proper subset of $W$, so some $x\notin S'$ satisfies $N'(x)\subseteq S'\cup P'_{b'(x)}$; choose
+$v\in\varphi^{-1}(x)\setminus S$. A parent $u$ of $v$ has $\varphi(u)\in N'(x)$: either $\varphi(u)\in S'$, so $u\in S$,
+or $\varphi(u)\in P'_{b'(x)}$, so $u$ lies in the supplying record of $v$.
+\end{outline}
+
+No looplessness is needed: a relation with a global certificate is loopless, since a loop at $v$ would put $v$ in its
+own supplying record. The fourth paper's Theorem~H~\cite[Theorem~6.5]{FourthPaper2026} pushes polymatroids forward
+along homomorphisms and so transfers \eqref{eq:star} itself; \cref{lem:pullback} transfers the certificate instead,
+and needs no polymatroid argument.
+
+\paragraph{Why it matters.} One certificate on a small target proves \eqref{eq:star} for every relation that maps to
+it, whatever its size or degree. For~(T), an impossibility proof could map the cone relations of a schedule to certified
+targets; a construction must avoid side information that admits such a map. Global certificates are weaker than
+decompositions (\cref{rem:petersen}), which is why the classes of \cref{sec:undirected,sec:directed} use Theorem~D.

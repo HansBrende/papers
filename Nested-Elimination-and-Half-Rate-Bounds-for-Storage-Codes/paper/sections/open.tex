@@ -1,0 +1,81 @@
+\section{Open problems}\label{sec:open}
+
+\subsection{Where the coding side stands}
+
+For oblivious machines, the series reduces $\neg$(T) to depth reduction and an all-code storage bound on the cone
+relations (\cref{sec:con-interface}). The table records the all-code half bounds now available at the exact radius three,
+that is, on loopless TT-free relations.
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}@{}}
+\toprule
+\textbf{class} & \textbf{result} & \textbf{open nearby} \\
+\midrule
+symmetric, $\chi_c<3$, any degree & circular memo, \cref{thm:circular} & symmetric, $\chi_c=3$, degree $\ge4$ \\
+\addlinespace
+symmetric, triangle-free, degree $\le3$ & Theorem~N3; $\gn=\nustar$ (\cref{thm:gn}) & symmetric, triangle-free, degree $4$ \\
+\addlinespace
+underlying degree $\le3$ & Theorem~U3 & the all-code form of Theorem~S of~\cite{FourthPaper2026} \\
+\addlinespace
+vertices with $\ge3$ internal parents acyclic & Theorem~T, Corollary~$\Tint$ & in-degree $\le3$ in general (\cref{conj:P}) \\
+\addlinespace
+blocks with private links & Theorem~PC, Corollary~CC & chorded digon cycles (\cref{conj:K}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+By \cref{rem:foldcube}, an exact half bound that assumes only $b_E(r)=0$ can hold at most up to maximum degree $r+1$;
+at radius three, TT-freeness alone can give exact bounds at most up to degree four, and further classes need further
+structure, as in Theorems~T and~PC. The transposition question needs the asymptotic form,
+\cite[Question~9.1]{DirectedRecovery2026}.
+
+\subsection{Open problems}
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Decide (T).} Construct a machine transposing $d\times d$ matrices with $b(d)$-bit entries in time $O(L)$, or
+prove that none exists. The first paper's frozen checker accepts either answer~\cite{FirstPaper2026}.
+
+\item \emph{The directed degree-three case.} The natural next class is all of in-degree three.
+
+\begin{conjecture}[Conjecture P]\label{conj:P}
+Every loopless TT-free relation in which every vertex has at most three parents has a decomposition
+(\cref{def:piece}).
+\end{conjecture}
+
+By Theorem~D, \cref{conj:P} implies that all such relations satisfy \eqref{eq:star}, and by \cref{prop:dn3-transfer}
+that the paired-distance question has an affirmative answer for recovery sets of size at most three, at any out-degree.
+Every relation treated in this paper has a decomposition, including $\Ex$ (\cref{rem:X15}), and \cref{rem:X15} shows that
+a proof cannot always start from a minimum nonempty core. One intermediate target is the all-code version of the fourth paper's
+Theorem~S on its whole class: TT-free relations with at most three parents per vertex, in which every vertex with three
+parents has no child that is not a parent. It lies between Theorem~U3 and \cref{conj:P}.
+
+\item \emph{Chorded digon cycles.}
+
+\begin{conjecture}[Conjecture K]\label{conj:K}
+Let $K$ be a chorded digon cycle, with at most one chord into and at most one chord out of every vertex, such that $N[K]$
+is TT-free. Then $N[K]$ has an elimination certificate.
+\end{conjecture}
+
+With Theorem~PC, \cref{conj:K} would give \eqref{eq:star} for every TT-free relation whose digon components are paths or
+cycles and which satisfies (H1) and (H2) of \cref{cor:PC-digon}; this includes every TT-free relation in which every
+vertex has exactly two digon partners, one one-way parent and one one-way child. \Cref{prop:CC} with the mirror sweep
+proves it when all chords have one offset $k$ with $2k\not\equiv\pm1\pmod{\card K}$, in particular for TT-free
+circulants; sweeps do not prove it in general (\cref{rem:sweeps}), but every cycle of \cref{rem:sweeps} has a
+certificate with three records.
+
+\item \emph{Degree four.} Does every triangle-free graph of maximum degree four satisfy \eqref{eq:star}, or at least have
+guessing number $\card V/2+o(\card V)$ along families with growing girth? At degree five the exact bound fails (the Clebsch
+graph), and \cref{rem:degree4} explains why Lemma~E alone does not reach degree four. The circular memo's theorem gives
+the answer for $\chi_c<3$ at every degree.
+
+\item \emph{The all-code paired-distance question}~\cite[Question~9.1]{DirectedRecovery2026}. Do bounded-degree
+recovery relations with $b_E(r)=o(\card V)$ for every fixed $r$ admit only storage codes of rate at most
+$\frac12+o(1)$, over every alphabet? With depth reduction for a class of oblivious schedules, an affirmative answer would
+exclude oblivious linear-time transposers in that class (\cref{sec:con-interface}); a counterexample would not by itself
+construct a transposer~\cite{DirectedRecovery2026}. Our results answer it for relations that are close, in the sense of
+\cref{cor:paid}, to one of the classes above.
+
+\item \emph{Formalization.} Formalize the topological order of strongly connected components used in
+Corollary~$\Tint$, the digon-component form of Theorem~PC (\cref{cor:PC-digon}), \cref{lem:tt-paired},
+\cref{cor:paid}, \cref{prop:dn3-transfer} and \cref{prop:no-private}, and turn the computations of \cref{sec:limits}
+into Lean certificates.
+\end{enumerate}

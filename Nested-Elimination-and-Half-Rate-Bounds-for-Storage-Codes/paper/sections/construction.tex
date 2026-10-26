@@ -1,0 +1,110 @@
+\section{What this means for transposition}\label{sec:construction}
+
+Our aim is to decide~(T), and we would prefer a construction. This section says what the results above require of a
+linear-time transposer, and of an oblivious one in particular. Apart from \cref{prop:dn3-transfer}, a conditional
+statement with a complete proof, it contains no new theorems: every claim is one of the results above, a result of an
+earlier paper of the series, or explicitly labelled as a heuristic.
+
+\subsection{The interface}\label{sec:con-interface}
+
+For oblivious machines, the fourth paper's Theorem~D and its Corollary~4.11~\cite[Theorem~4.10 and
+Corollary~4.11]{FourthPaper2026} reduce $\neg$(T) to two statements: \emph{depth reduction}, that the time--space dependency graph of every oblivious linear-time run can be cut
+to bounded depth by a genie revealing $\eps L$ bits; and \emph{the crux}, that index codes for the side information of
+the remaining bounded-depth cones need more than $\eps L$ bits~\cite[Definition~4.8]{FourthPaper2026}. Every fibre of an
+index code is a storage code for the cones' recovery relation $N_I$~\cite[Remark~4.9(b)]{FourthPaper2026}. Hence a correct
+oblivious transposer whose genie reveals $\eps L$ bits yields a binary storage code of rate at least $1-\eps$ on $N_I$;
+conversely, rate bounds $\frac12+o(1)$ for all codes on such relations, together with depth reduction at some cost
+$\eps<\frac12$, would rule out oblivious linear-time transposers. Depth reduction is proved for home-based work
+heads~\cite{FourthPaper2026} and, in the companion paper published with this one~\cite{EighthPaper2026}, for every family
+of head walks of bounded nesting load, which covers every machine whose work heads enter each cell boundedly often; it is
+open in general.
+
+\emph{Directed Recovery Structures}~\cite{DirectedRecovery2026} describes the relations $N_I$: for fixed-depth cones of
+linear-time schedules, after deleting a small fraction of coordinates of high reuse (its Corollary~3.8), only
+$O(L/\log d)$ coordinates $p$ have $\dist_E(L_p,R_p)\le r$, for every fixed $r$ (its Theorem~3.3 and Corollary~3.7).
+Deleting these coordinates leaves a relation with $b_E(r)=0$, since deleting coordinates does not shorten paired paths;
+for $r=3$ it is loopless and TT-free (\cref{lem:tt-paired}). Its Question~9.1 asks whether all codes on bounded-degree
+relations with $b_E(r)=o(\card V)$ for every fixed $r$ have rate at most $\frac12+o(1)$; by its Proposition~9.2, an
+affirmative answer gives this bound on all actual cone relations.
+
+Our theorems are exact half bounds, at radius three, on classes of TT-free relations, several of them with no degree
+bound. With \cref{cor:paid} they answer Question~9.1 affirmatively for every sequence of relations that, after deleting
+$o(\card V)$ coordinates, lies in one of our classes. They do not decide (T): we do not know that cone relations lie in
+these classes, and depth reduction is open. The degree-three case of Question~9.1 would follow from a single
+combinatorial statement.
+
+\begin{proposition}[What the directed degree-three conjecture would give]\label{prop:dn3-transfer}
+\notformalized
+Suppose that every loopless TT-free relation in which every vertex has at most three parents satisfies
+\eqref{eq:star}; \cref{conj:P} below would imply this, by Theorem~D. Then every storage code on a relation $N$ in which
+every vertex has at most three parents has rate at most $\frac12+b_E(3)/(2\card V)$. In particular,
+\cite[Question~9.1]{DirectedRecovery2026} would have an affirmative answer for relations with recovery sets of size at
+most three, with no bound on out-degrees and with the paired-distance condition used only at radius three.
+\end{proposition}
+
+\begin{informalproof}
+Let $Z$ be the set of coordinates $p$ with $\dist_E(L_p,R_p)\le3$, so $\card Z=b_E(3)$. It contains every vertex with a
+loop and the middle vertex of every transitive triangle (\cref{lem:tt-paired}; the path $L_p,R_z,L_x,R_p$ given by a
+transitive triangle $x\to p\to z$, $x\to z$ needs no looplessness). A transitive triangle of $N-Z$ is one of $N$, whose
+middle vertex lies in $Z$; so $N-Z$ is loopless and TT-free, and its vertices still have at most three parents. By
+hypothesis it satisfies \eqref{eq:star}, and \cref{cor:paid} gives $\log_{\card\alpha}\card C\le(\card V+b_E(3))/2$.
+\end{informalproof}
+
+\subsection{Necessary conditions for a construction}\label{sec:con-necessary}
+
+Consider an oblivious linear-time transposer and a genie that reveals $\eps L$ bits and leaves cones of bounded depth,
+with recovery relation $N_I$ on the $L$ input coordinates (for home-based work heads such genies exist for every
+$\eps>0$~\cite[Theorem~4.20 and Corollary~4.23]{FourthPaper2026}). The machine yields a binary storage code of rate at least $1-\eps$ on
+$N_I$. In addition to the requirements of the earlier papers of the series~\cite{FirstPaper2026,SecondPaper2026,FourthPaper2026,DirectedRecovery2026},
+it must satisfy the following.
+\begin{enumerate}[label=(N\arabic*),leftmargin=3em]
+\item\label{it:N1} \emph{No large induced sub-relation in our classes.} If $W$ is a set of coordinates such that
+$N_I[W]$ satisfies \eqref{eq:star}, then $\card W\le2\eps L$. Indeed, \cref{cor:paid} with $Z=V\setminus W$ bounds the
+code by $2^{L-\card W/2}$, while it has at least $2^{(1-\eps)L}$ words. This applies to every $W$ on which $N_I[W]$ is
+$2$-dicolourable, or lies in one of the classes of Theorems~U3, T, PC, Corollaries~$\Tint$ and~CC, or, when symmetric, of
+Theorems~N3 and~\ref{thm:circular}. For $2$-dicolourable $W$ this is a form of the classical bound of index coding by
+acyclic induced sub-relations~\cite{BBJK2011}; the other classes are not covered by the acyclic bound.
+\item\label{it:N2} \emph{Where a gain must live.} For every fixed $\delta>0$ there is a set $Z$ of at most
+$\delta L+O(L/\log d)$ coordinates such that $N_I-Z$ is loopless and TT-free, with bounded degrees: the coordinates of
+high reuse and those with paired distance at most three~\cite[Theorem~3.3 and Corollaries~3.7 and~3.8]{DirectedRecovery2026}.
+By~\ref{it:N1}, every induced sub-relation of $N_I-Z$ on more than $2\eps L$ coordinates violates the hypotheses of each
+theorem of \cref{sec:directed}. So it must contain vertices with at least three parents inside their strongly connected
+component that lie on directed cycles among themselves (Theorem~T and Corollary~$\Tint$); it must have underlying degree
+at least four somewhere (Theorem~U3); and it admits no partition into blocks as in Theorem~PC, in particular no
+elimination certificate of the whole sub-relation (with the digon components as blocks, this requires a vertex with two
+one-way parents, a vertex with two one-way arcs into one component, or a component of none of the three kinds). The
+relation $\Ex$ of \cref{rem:X15} has the first two features but not the third: it has a global certificate.
+\item\label{it:N3} \emph{Directed triangles do not help.} Native cone relations can contain linearly many disjoint directed
+$3$-cycles~\cite[Proposition~3.10]{DirectedRecovery2026}, which defeat symmetric triangle-free hypotheses. Our directed
+theorems allow them, so they are not by themselves a source of coding gain.
+\item\label{it:N4} \emph{Gains at short odd distance do not transfer.} The Clebsch graph and the folded cubes carry codes
+above rate $\frac12$, and their odd girth does not exceed their degree (\cref{rem:foldcube};
+\cite[Corollary~6.11]{FourthPaper2026}). After paid degree trimming, cone relations have only $O(L/\log d)$ coordinates with
+paired distance at most $r$, for every fixed~$r$~\cite[Theorem~3.3]{DirectedRecovery2026}, so such local structure can occupy only a vanishing fraction of a cone relation (heuristic
+reading: a gain must come from structure at growing paired distance, which is the open territory of
+Question~9.1).
+\end{enumerate}
+
+\subsection{Mechanisms that fail}\label{sec:con-fail}
+
+The following classes of side information admit no storage code of rate above $\frac12$, for any alphabet and any
+recovery functions; a construction cannot draw its coding gain from them, on more than a $2\eps$ fraction of the
+coordinates.
+\begin{itemize}[leftmargin=2em]
+\item \emph{Cycles through vertices with two internal inputs.} Relations whose strongly connected components have no
+transitive triangle and whose vertices with three or more internal parents induce an acyclic sub-relation, with any number
+of parents in earlier components and any out-degree (Corollary~$\Tint$). This contains the TT-free case of the two-input
+theorem of \emph{Directed Recovery Structures}~\cite[Theorem~5.1]{DirectedRecovery2026}.
+\item \emph{Exchange blocks with private links.} Blocks of two-way exchanges, linked by one-way arcs that are private in the
+sense of~\ref{it:P1} and~\ref{it:P2}, with blocks that are chordless subcubic, chorded paths or certified (Theorem~PC);
+in particular every translation-invariant pattern $\Cay(G,\{s,s^{-1},t\})$ without transitive triangles, on every finite
+group, when $\{s,s^{-1},t\}$ has three elements and does not contain~$1$ (Corollary~CC).
+\item \emph{Subcubic directed structure.} Relations without transitive triangles whose underlying graph has maximum degree
+three, directed triangles included (Theorem~U3).
+\item \emph{Sparse or low-chromatic symmetric structure.} Symmetric side information of circular chromatic number below
+three, at any degree (\cref{thm:circular}), and triangle-free subcubic symmetric side information (Theorem~N3), where
+the optimal codes are fractional pairings and index codes need $\card V-\nustar$ symbols (\cref{thm:gn,thm:index}).
+\end{itemize}
+For impossibility proofs, \cref{sec:limits} records what fails as a method: private pieces (\cref{prop:no-private}),
+minimum nonempty cores (\cref{rem:X15}), sweeps (\cref{rem:sweeps}) and global certificates alone (\cref{rem:petersen}).
+Whether nested decompositions always exist at in-degree three is \cref{conj:P}.

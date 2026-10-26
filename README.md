@@ -11,6 +11,9 @@
 | [Nested Elimination and Half-Rate Bounds for Storage Codes](Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/paper/main.pdf), LaTeX sources), its Lean 4 formalization, and a script for the computational remarks |
 | [Bounded Nesting and Depth Reduction for Matrix Transposition on Tapes](Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes/paper/main.pdf), LaTeX sources), Lean 4 formalization of the owner lemma, the strip cut for one walk and the turn-counter arithmetic, and an exact rank script |
 
+**[The Frontier](https://hansbrende.github.io/papers/frontier/)**: an interactive map of the multitape machines for which
+linear-time transposition is ruled out, unconditionally or under open hypotheses, and of where it is still open.
+
 Shared Lean machinery used by the papers, including ported external formalizations, is in
 [`lean-machine/`](lean-machine/).
 

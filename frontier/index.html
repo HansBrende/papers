@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transposition Impossibility Frontier</title>
+<meta name="description" content="A Venn map of all multitape Turing machines that transpose matrices, coloured by whether linear-time transposition is ruled out unconditionally, conditionally, or still open.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+<style>
+:root { color-scheme: light; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Layout: one Venn map of the machine universe (circles = machine properties, bands = classes excluded for every
+   machine), a legend strip above, an inspector line under it, region cards below. Colour = how conditional. */
+:root {
+  --bg: #eef1f4;          /* page ground: cool grey, so the white universe reads as "open" */
+  --paper: #ffffff;       /* open: no impossibility known, even conditionally */
+  --ink: #1a1d22;
+  --muted: #586070;
+  --rule: #c9ced6;
+  --outline: #5b6472;     /* circle outlines */
+  --red: #d24a38;         /* impossible, unconditionally */
+  --on-red: #ffffff;
+  --orange: #f2a058;      /* one open hypothesis */
+  --on-orange: #1a1d22;
+  --yellow: #fbeaa9;      /* two open hypotheses */
+  --on-yellow: #1a1d22;
+  --green: #14894a;       /* likely home of a construction */
+  --dash: #374151;
+  --card: #f9fafb;
+  --focus: #2563eb;
+  --link: #1d4ed8;
+  --display: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --body: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --label: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
+    --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --on-orange: #fff7ef;
+    --yellow: #5f5428; --on-yellow: #f6efd6; --green: #3fd07f; --dash: #c2cad6; --card: #141820;
+    --focus: #7aa2ff; --link: #8fb3ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --link: #8fb3ff;
+  --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
+  --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --on-orange: #fff7ef;
+  --yellow: #5f5428; --on-yellow: #f6efd6; --green: #3fd07f; --dash: #c2cad6; --card: #141820;
+  --focus: #7aa2ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 22px; }
+header { display: grid; gap: 8px; }
+.eyebrow { font-family: var(--label); text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.lede { max-width: 72ch; margin: 0; }
+.lede b { font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; font-family: var(--label); font-size: 14px; }
+.key { display: flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 16px; border-radius: 3px; border: 1px solid var(--rule); flex: none; display: inline-block; }
+.sw.red { background: var(--red); border-color: transparent; }
+.sw.orange { background: var(--orange); border-color: transparent; }
+.sw.yellow { background: var(--yellow); border-color: transparent; }
+.sw.open { background: var(--paper); }
+.sw.dash { background: transparent; border: 2px dashed var(--dash); }
+.q { font-family: var(--label); font-weight: 700; color: var(--green); font-size: 20px; line-height: 1; }
+.map { overflow-x: auto; border-radius: 10px; background: var(--paper); border: 1px solid var(--rule); }
+svg { display: block; width: 100%; min-width: 780px; height: auto; }
+svg text { font-family: var(--label); fill: var(--ink); }
+.r { cursor: pointer; outline: none; }
+.r:focus-visible .shape, .r.active .shape { stroke: var(--focus); stroke-width: 3.5; }
+.shape { stroke: none; }
+.f-red { fill: var(--red); } .f-orange { fill: var(--orange); } .f-yellow { fill: var(--yellow); } .f-open { fill: var(--paper); }
+.ol { fill: none; stroke: var(--outline); stroke-width: 1.6; pointer-events: none; }
+.t-red { fill: var(--on-red) !important; } .t-orange { fill: var(--on-orange) !important; } .t-yellow { fill: var(--on-yellow) !important; }
+.t-muted { fill: var(--muted) !important; }
+.hdr { font-weight: 700; letter-spacing: .07em; font-size: 12.5px; }
+.lbl { font-weight: 600; font-size: 14.5px; }
+.sub { font-size: 12.5px; }
+.tiny { font-size: 11.5px; }
+.qmark { font-weight: 700; fill: var(--green) !important; }
+.inspector { min-height: 78px; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); display: grid; gap: 4px; }
+.inspector .name { font-family: var(--label); font-weight: 600; font-size: 16px; display: flex; gap: 10px; align-items: center; }
+.inspector .stat { font-family: var(--label); font-size: 13px; color: var(--muted); }
+.inspector p { margin: 0; max-width: 92ch; }
+h2 { font-family: var(--display); font-size: 22px; margin: 6px 0 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.card { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; min-width: 0; align-content: start; }
+.card.active { outline: 3px solid var(--focus); outline-offset: -1px; }
+.card h3 { margin: 0; font-family: var(--label); font-weight: 600; font-size: 16px; display: flex; gap: 10px; align-items: center; }
+.chip { font-family: var(--label); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.card p { margin: 0; font-size: 15px; }
+.src { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.notes { display: grid; gap: 8px; max-width: 80ch; font-size: 15px; }
+.notes p { margin: 0; }
+.srclist { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+a { color: var(--link); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+.foot { color: var(--muted); font-size: 14px; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Linear-time matrix transposition on multitape Turing machines · statement (T)</div>
+    <h1>Transposition Impossibility Frontier</h1>
+    <p class="lede">The rectangle is every deterministic multitape Turing machine that transposes a <i>d</i>&nbsp;×&nbsp;<i>d</i> matrix of
+      ⌈log<sub>2</sub>&nbsp;<i>d</i>⌉-bit entries (read-only input, <i>k</i> work tapes, write-only output). Circles are machine
+      properties and overlap as in a Venn diagram. Each piece is coloured by what is known about transposing in time <b>O(L)</b>,
+      <i>L</i>&nbsp;=&nbsp;<i>d</i><sup>2</sup>⌈log<sub>2</sub>&nbsp;<i>d</i>⌉. The three red bands cut across every circle: a one-tape machine,
+      for instance, may or may not be oblivious. Hover or tap any piece for its status and sources.</p>
+  </header>
+
+  <div class="legend" role="list" aria-label="Legend">
+    <div class="key" role="listitem"><span class="sw red"></span>impossible, unconditionally</div>
+    <div class="key" role="listitem"><span class="sw orange"></span>impossible if one open statement holds</div>
+    <div class="key" role="listitem"><span class="sw yellow"></span>impossible if two open statements hold</div>
+    <div class="key" role="listitem"><span class="sw open"></span>open</div>
+    <div class="key" role="listitem"><span class="sw dash"></span>overlay: changes the hypothesis, not the colour</div>
+    <div class="key" role="listitem"><span class="q">?</span>where a linear-time machine is most likely</div>
+  </div>
+
+  <div class="map">
+    <svg viewBox="0 0 1000 720" role="img" aria-labelledby="maptitle">
+      <title id="maptitle">Venn map of machine classes, coloured by the status of linear-time transposition</title>
+      <defs>
+        <clipPath id="cLE"><circle cx="470" cy="375" r="265"></circle></clipPath>
+        <clipPath id="cOb"><circle cx="470" cy="405" r="195"></circle></clipPath>
+        <clipPath id="cD"><circle cx="330" cy="330" r="165"></circle></clipPath>
+      </defs>
+      <text x="14" y="26" class="tiny t-muted">All deterministic multitape TMs that transpose · white = open</text>
+      <rect x="10" y="38" width="980" height="672" rx="6" class="f-open" style="stroke: var(--rule); stroke-width: 1.5"></rect>
+
+      <!-- 1. high adaptivity (background of the circle area) -->
+      <g class="r" tabindex="0" data-id="high" aria-label="High adaptivity">
+        <rect class="shape f-open" x="88" y="96" width="902" height="558"></rect>
+      </g>
+      <!-- 2. depth-reduction classes with high adaptivity: open -->
+      <g class="r" tabindex="0" data-id="dHigh" aria-label="Depth reduction proved, high adaptivity">
+        <circle class="shape f-open" cx="330" cy="330" r="165"></circle>
+      </g>
+      <!-- 3. low adaptivity, no result -->
+      <g class="r" tabindex="0" data-id="leOpen" aria-label="Low adaptivity without bounded entry">
+        <circle class="shape f-open" cx="470" cy="375" r="265"></circle>
+      </g>
+      <!-- 4. low adaptivity with bounded entry: Corollary F'' -->
+      <g class="r" tabindex="0" data-id="lowad" aria-label="Low adaptivity and bounded entry">
+        <circle class="shape f-orange" cx="300" cy="300" r="100" clip-path="url(#cLE)"></circle>
+      </g>
+      <!-- 5. oblivious: deep nesting, two hypotheses -->
+      <g class="r" tabindex="0" data-id="deep" aria-label="Oblivious with deep nesting">
+        <circle class="shape f-yellow" cx="470" cy="405" r="195"></circle>
+      </g>
+      <!-- 6. oblivious with depth reduction proved: crux only -->
+      <g class="r" tabindex="0" data-id="obD" aria-label="Oblivious with depth reduction proved">
+        <circle class="shape f-orange" cx="330" cy="330" r="165" clip-path="url(#cOb)"></circle>
+      </g>
+      <!-- 7. oblivious, proved coding class, deep nesting: TCP only -->
+      <g class="r" tabindex="0" data-id="obPC" aria-label="Oblivious, proved coding class, deep nesting">
+        <circle class="shape f-orange" cx="520" cy="440" r="105"></circle>
+      </g>
+      <!-- 8. both: unconditional -->
+      <g class="r" tabindex="0" data-id="core" aria-label="Oblivious, depth reduction proved, proved coding class">
+        <circle class="shape f-red" cx="520" cy="440" r="105" clip-path="url(#cD)"></circle>
+      </g>
+
+      <!-- outlines -->
+      <circle class="ol" cx="470" cy="375" r="265"></circle>
+      <circle class="ol" cx="470" cy="405" r="195" style="stroke-width: 2.2"></circle>
+      <circle class="ol" cx="330" cy="330" r="165"></circle>
+      <circle class="ol" cx="300" cy="300" r="100" style="stroke-dasharray: 2 3"></circle>
+      <circle class="ol" cx="520" cy="440" r="105"></circle>
+
+      <!-- linear overlay -->
+      <g class="r" tabindex="0" data-id="linear" aria-label="Linear data path over a field">
+        <ellipse class="shape" cx="470" cy="557" rx="128" ry="40" style="fill: transparent; stroke: var(--dash); stroke-width: 2; stroke-dasharray: 7 6; pointer-events: stroke"></ellipse>
+      </g>
+
+      <!-- small red islands -->
+      <g class="r" tabindex="0" data-id="xor" aria-label="XOR-frame recursions">
+        <circle class="shape f-red" cx="666" cy="330" r="24"></circle>
+      </g>
+      <g class="r" tabindex="0" data-id="packets" aria-label="Local packet coding">
+        <circle class="shape f-red" cx="700" cy="470" r="30"></circle>
+      </g>
+
+      <!-- labels -->
+      <g pointer-events="none">
+        <text x="470" y="146" text-anchor="middle" class="hdr">LOW ADAPTIVITY</text>
+        <text x="470" y="162" text-anchor="middle" class="sub">traces carry at most ηL bits, η &lt; ½</text>
+
+        <text x="330" y="186" text-anchor="middle" class="hdr">DEPTH REDUCTION PROVED</text>
+        <text x="330" y="202" text-anchor="middle" class="sub">bounded nesting load, home-based</text>
+        <text x="330" y="217" text-anchor="middle" class="sub">heads, or one free head + O(1) scales</text>
+
+        <text x="300" y="250" text-anchor="middle" class="lbl t-orange">Each cell entered</text>
+        <text x="300" y="267" text-anchor="middle" class="lbl t-orange">O(1) times</text>
+        <text x="300" y="284" text-anchor="middle" class="tiny t-orange">with low adaptivity: needs Q9.1 (F″)</text>
+
+        <text x="352" y="405" text-anchor="middle" class="sub t-orange" style="font-weight:600">needs the crux</text>
+        <text x="352" y="420" text-anchor="middle" class="tiny t-orange">Theorems F, B, M + D</text>
+
+        <text x="566" y="262" text-anchor="middle" class="hdr t-yellow">OBLIVIOUS</text>
+        <text x="566" y="278" text-anchor="middle" class="sub t-yellow">head moves depend only on d</text>
+        <text x="566" y="294" text-anchor="middle" class="tiny t-yellow">Theorem D: TCP + crux</text>
+
+        <text x="552" y="425" text-anchor="middle" class="lbl t-orange">Cone relations in a</text>
+        <text x="545" y="442" text-anchor="middle" class="lbl t-orange">proved half-bound class</text>
+        <text x="548" y="462" text-anchor="middle" class="tiny t-orange">deep nesting: needs TCP</text>
+        <text transform="translate(457 408) rotate(-60)" text-anchor="middle" class="tiny t-red" style="font-weight:700">both: ruled out</text>
+
+        <text x="370" y="505" text-anchor="middle" class="lbl t-yellow">Deep nesting</text>
+        <text x="380" y="522" text-anchor="middle" class="sub t-yellow">two deep heads, or one</text>
+        <text x="390" y="538" text-anchor="middle" class="sub t-yellow">with bounded heads at</text>
+        <text x="402" y="554" text-anchor="middle" class="sub t-yellow">unboundedly many scales</text>
+        <text x="455" y="571" text-anchor="middle" class="tiny t-yellow">TCP likely fails here</text>
+        <text x="548" y="572" text-anchor="middle" class="tiny" style="font-weight:600">linear (D_lin)</text>
+
+        <text x="696" y="334" class="tiny">XOR-frame template</text>
+        <text x="738" y="474" class="tiny">Local packet coding</text>
+
+        <text x="790" y="210" class="hdr">HIGH ADAPTIVITY</text>
+        <text x="790" y="227" class="sub">traces carry about L/2 bits or more</text>
+        <text x="790" y="244" class="tiny t-muted">no reduction to coding known;</text>
+        <text x="790" y="259" class="tiny t-muted">only sweeps and fold-back constrain it</text>
+        <text x="185" y="334" text-anchor="middle" class="tiny t-muted">open</text>
+      </g>
+
+      <!-- question marks -->
+      <text x="498" y="592" class="qmark" font-size="38" pointer-events="none">?</text>
+      <text x="868" y="560" class="qmark" font-size="34" pointer-events="none">?</text>
+
+      <!-- red bands across the universe -->
+      <g class="r" tabindex="0" data-id="onetape" aria-label="Exactly one work tape">
+        <rect class="shape f-red" x="10" y="38" width="78" height="672" rx="6"></rect>
+        <text transform="translate(44 374) rotate(-90)" text-anchor="middle" class="lbl t-red">Exactly one work tape</text>
+        <text transform="translate(64 374) rotate(-90)" text-anchor="middle" class="tiny t-red">Dietzfelbinger–Maass–Schnitger 1991</text>
+      </g>
+      <g class="r" tabindex="0" data-id="sweeps" aria-label="Few sweeps">
+        <rect class="shape f-red" x="88" y="38" width="902" height="58"></rect>
+        <text x="106" y="63" class="lbl t-red">Heads make only o(log d) monotone sweeps, or never fold back</text>
+        <text x="106" y="82" class="tiny t-red">Theorems P, P′, M* (paper 1, Lean) · no runtime premise (passes memo)</text>
+      </g>
+      <g class="r" tabindex="0" data-id="movement" aria-label="Data movement only">
+        <rect class="shape f-red" x="88" y="654" width="902" height="56"></rect>
+        <text x="106" y="679" class="lbl t-red">Data movement only: entries are copied, never combined</text>
+        <text x="106" y="698" class="tiny t-red">Stoß 1973 · Kirchherr 1988 · oblivious routing needs a log L coding gain (paper 1 §11)</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="inspector" aria-live="polite" id="inspector">
+    <div class="name" id="i-name">Hover or tap a piece of the map</div>
+    <div class="stat" id="i-stat">Its defining conditions, status and sources appear here and in the cards below.</div>
+    <p id="i-text"></p>
+  </div>
+
+  <section style="display:grid; gap:12px">
+    <h2>The pieces</h2>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="notes">
+    <h2>How the colours are decided</h2>
+    <p><b>Theorem D</b> of the fourth paper splits impossibility for oblivious machines into two statements. <b>Depth reduction
+      (TCP)</b>: a genie revealing εL bits cuts the machine's time–space dependency graph to bounded depth. <b>The crux</b>: index codes
+      for the side information of the remaining bounded-depth cones need many bits. <i>Directed Recovery Structures</i> turns the crux into
+      one machine-free storage-code question, Question 9.1.</p>
+    <p>A piece is orange when one of the two is proved there, yellow when neither is. The red lens has both: depth reduction (Theorems F, B,
+      M) and a proved half-rate bound for its cone relations (papers 7 and 8 together). Adaptive machines enter only through
+      Corollary F″, which freezes the most likely trace.</p>
+    <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
+      machines (Harvey and van der Hoeven). The best known upper bound is O(L·(log d)<sup>1−κ</sup>), from an unrefereed preprint.</p>
+  </section>
+  <section class="notes" id="sources">
+    <h2>Sources</h2>
+    <p>The papers of the series cited on the map, with the external results: Dietzfelbinger, Maass and Schnitger (1991) and Dietzfelbinger
+      and Maass (1993) for one work tape; Stoß (1973) and Kirchherr (1988) for data movement; Harvey and van der Hoeven (2025) for the link
+      to integer multiplication.</p>
+    <ul class="srclist">
+      <li><b>Paper 1</b> · <a href="https://hansbrende.github.io/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/main.pdf">Matrix Transposition and the Tape Coding Conjecture</a></li>
+      <li><b>Passes memo</b> · <a href="https://hansbrende.github.io/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/memo-passes/paper/main.pdf">Adaptive Pass Bounds without a Runtime Assumption</a></li>
+      <li><b>Paper 2</b> · <a href="https://hansbrende.github.io/papers/Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/paper/main.pdf">Local Coding Barriers and the Limits of Tape Geometry for Matrix Transposition</a></li>
+      <li><b>Paper 4</b> · <a href="https://hansbrende.github.io/papers/Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/paper/main.pdf">Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes</a></li>
+      <li><b>Information-depth memo</b> · <a href="https://github.com/HansBrende/papers/tree/master/Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-information-depth">TCP and Information-Cheap Depth Reduction</a></li>
+      <li><a href="https://hansbrende.github.io/papers/Directed-Recovery-Structures-in-Tape-Computations/paper/main.pdf">Directed Recovery Structures in Tape Computations</a></li>
+      <li><b>Paper 7</b> · <a href="https://hansbrende.github.io/papers/Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/paper/main.pdf">Nested Elimination and Half-Rate Bounds for Storage Codes</a></li>
+      <li><b>Paper 8</b> · <a href="https://hansbrende.github.io/papers/Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes/paper/main.pdf">Bounded Nesting and Depth Reduction for Matrix Transposition on Tapes</a></li>
+    </ul>
+    <p class="foot">Hans Brende and Claude Opus 5.5 (Anthropic) · status as of 26 October 2026 ·
+      <a href="https://github.com/HansBrende/papers">all papers</a></p>
+  </section>
+</div>
+
+<script>
+const R = {
+  onetape: { name: "Exactly one work tape", color: "red", status: "Impossible, unconditionally",
+    text: "Off-line machines with a read-only input tape and a single work tape need superlinear time to transpose.",
+    src: "Dietzfelbinger, Maass and Schnitger 1991; Dietzfelbinger and Maass 1993" },
+  sweeps: { name: "Only o(log d) monotone sweeps, or head paths that never fold back", color: "red", status: "Impossible, unconditionally (Lean)",
+    text: "Every transposer needs Ω(log d) passes in which all heads move monotonically, oblivious or not, even when correct on a tiny fraction of inputs. Along its most popular trace, the rescaled head paths of a linear-time transposer must fold back (Theorem M*), so paths that never fold back at macroscopic scale are excluded too.",
+    src: "Paper 1, Theorems P, P′, M*; Adaptive Pass Bounds memo (no runtime premise)" },
+  movement: { name: "Data movement only", color: "red", status: "Impossible, unconditionally",
+    text: "Machines that only copy whole entries, never combining symbols, cannot transpose in linear time. For oblivious machines, a linear-time transposer needs a coding gain of order log L over routing, so pure routing fails.",
+    src: "Stoß 1973; Kirchherr 1988; paper 1 §11 (written proof)" },
+  xor: { name: "XOR-frame recursions", color: "red", status: "Impossible within the template",
+    text: "The recursion behind the only claimed sub-(L log d) construction, which mixes data by XOR in address-shear frames, makes at least as many frame changes as its gadget has wires. Within the template, linear time is excluded.",
+    src: "Paper 1 §12" },
+  packets: { name: "Local packet coding with a small helper budget", color: "red", status: "Impossible within the model",
+    text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too.",
+    src: "Paper 2 (Local Coding Barriers), with its packet and adaptive-coding extensions" },
+  high: { name: "High adaptivity", color: "open", status: "Open",
+    text: "Head movements carry about half of the input's information or more. No reduction to coding is known here. Only the unconditional constraints apply: Ω(log d) sweeps and fold-back of the head paths.",
+    src: "Paper 1 (Theorems P′, M*), Adaptive Pass Bounds memo" },
+  dHigh: { name: "Depth reduction proved, but high adaptivity", color: "open", status: "Open",
+    text: "Each trace has bounded nesting load, home-based heads or the Theorem M structure, so depth reduction holds trace by trace. Theorem D needs a single schedule, though, and these machines have too many likely traces.",
+    src: "Paper 8, Theorems F and M; paper 4, Theorem B" },
+  leOpen: { name: "Low adaptivity, without bounded entry", color: "open", status: "Open",
+    text: "The traces carry at most ηL bits, but some likely trace revisits cells unboundedly often. Corollary F″ is stated only when every likely trace enters each cell O(1) times.",
+    src: "Paper 8, Corollary F″ (hypotheses)" },
+  lowad: { name: "Low adaptivity, each cell entered O(1) times", color: "orange", status: "Impossible if Question 9.1 holds",
+    text: "Traces carry at most ηL bits for a fixed η < ½, and every trace of probability at least 2^(−ηL) enters each cell O(1) times. Freezing the most likely trace reduces to the oblivious case, so an affirmative answer to the paired-distance question excludes these machines.",
+    src: "Paper 8, Corollary F″" },
+  deep: { name: "Oblivious, deep nesting", color: "yellow", status: "Impossible if TCP and the crux hold",
+    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Depth reduction is open here; the deep-nesting pair is its sharpest test, and the evidence suggests TCP(2) fails. If it fails, fixed-depth genie arguments cannot work for general computations (Theorem H of the information-depth memo), and this piece becomes effectively open.",
+    src: "Paper 4, Theorem D; paper 8, §5 and the corollary on where depth-robustness lives; information-depth memo, Theorem H" },
+  obD: { name: "Oblivious, depth reduction proved", color: "orange", status: "Impossible if the crux holds",
+    text: "The machine is oblivious, and its heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F, B and M prove depth reduction, so the crux alone, or an affirmative answer to Question 9.1, excludes them.",
+    src: "Paper 8, Theorem F, Corollaries F and F′, Theorem M; paper 4, Theorem B and Corollary B" },
+  obPC: { name: "Oblivious, deep nesting, cone relations in a proved half-bound class", color: "orange", status: "Impossible if TCP holds",
+    text: "The coding half is settled: every storage code on such cone relations has rate at most ½. What is missing is depth reduction at deep nesting.",
+    src: "Paper 7 (§8), Directed Recovery Structures; paper 4, Theorem D" },
+  core: { name: "Oblivious, depth reduction proved, cone relations in a proved half-bound class", color: "red", status: "Impossible, unconditionally",
+    text: "Depth reduction holds, and the cone relations lie in a class where every storage code has rate at most ½. The classes are: TT-free with subcubic underlying graph; in-degree-3 vertices acyclic; blocks with private parents; TT-free Cayley relations Cay(G,{s,s⁻¹,t}); symmetric degree ≤ 3; χc < 3; hyperfinite; two-input components. A correct oblivious transposer cannot have cone relations of this kind on more than 2εL coordinates.",
+    src: "Paper 7 (Theorems N3, U3, T, PC, CC; §8), paper 8 (Theorems F, M), paper 4 (Theorem B), Directed Recovery Structures" },
+  linear: { name: "Linear data path over a field", color: "dash", status: "Overlay: the crux becomes relative rigidity",
+    text: "For machines that compute linearly over a field, linear depth reduction together with a linear crux excludes oblivious linear-time transposers. The linear crux is exactly relative rigidity: the transposition matrix is not a low-rank matrix plus one supported on the schedule's bounded-depth ball pattern. Both are open at deep nesting.",
+    src: "Paper 8, Lemma 7.3 and Theorem D_lin" }
+};
+const QUESTIONS = {
+  deep: "Most likely here: oblivious, deep nesting on two heads, linear XOR coding, cone relations outside every proved class (degree four or more, or directed degree three beyond the proved classes). It needs a depth-robust schedule, a scratch area of fewer than εL cells each visited unboundedly often, and a Θ(log k) coding gain over routing.",
+  high: "Second: high adaptivity, where none of the oblivious-machine barriers apply."
+};
+const order = ["onetape","sweeps","movement","xor","packets","core","obD","obPC","lowad","linear","deep","leOpen","dHigh","high"];
+const chipText = { red: "unconditional", orange: "one open statement", yellow: "two open statements", open: "open", dash: "overlay" };
+const cards = document.getElementById("cards");
+for (const id of order) {
+  const r = R[id];
+  const el = document.createElement("article");
+  el.className = "card"; el.dataset.id = id;
+  el.innerHTML = `<h3><span class="sw ${r.color}"></span>${r.name}</h3>
+    <div class="chip">${chipText[r.color]} · ${r.status}</div>
+    <p>${r.text}</p>${QUESTIONS[id] ? `<p><span class="q">?</span> ${QUESTIONS[id]}</p>` : ""}
+    <div class="src">${r.src}</div>`;
+  cards.appendChild(el);
+}
+const iname = document.getElementById("i-name"), istat = document.getElementById("i-stat"), itext = document.getElementById("i-text");
+let pinned = null;
+function show(id) {
+  const r = R[id]; if (!r) return;
+  iname.innerHTML = `<span class="sw ${r.color}"></span>${r.name}`;
+  istat.textContent = r.status + " · " + r.src;
+  itext.textContent = r.text + (QUESTIONS[id] ? "   ? " + QUESTIONS[id] : "");
+  document.querySelectorAll(".r").forEach(g => g.classList.toggle("active", g.dataset.id === id));
+  document.querySelectorAll(".card").forEach(c => c.classList.toggle("active", c.dataset.id === id));
+}
+function clear() {
+  if (pinned) { show(pinned); return; }
+  document.querySelectorAll(".r, .card").forEach(g => g.classList.remove("active"));
+}
+document.querySelectorAll(".r").forEach(g => {
+  g.addEventListener("mouseenter", () => show(g.dataset.id));
+  g.addEventListener("mouseleave", clear);
+  g.addEventListener("focus", () => show(g.dataset.id));
+  g.addEventListener("click", () => { pinned = g.dataset.id; show(pinned); });
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pinned = g.dataset.id; show(pinned); } });
+});
+document.querySelectorAll(".card").forEach(c => {
+  c.addEventListener("mouseenter", () => show(c.dataset.id));
+  c.addEventListener("mouseleave", clear);
+});
+</script>
+</body>
+</html>

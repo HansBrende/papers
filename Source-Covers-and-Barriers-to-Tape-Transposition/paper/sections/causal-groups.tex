@@ -1,0 +1,337 @@
+\section{Causally autonomous column groups}\label{sec:causal-groups}
+
+The source-cover results restrict the geometry of complete dependence.
+This section gives a complementary restriction on the functions computed
+along that geometry. If every local update obeys a capacity-conserving
+decomposition into fixed narrow groups of consecutive columns after one
+helper is fixed, then a
+linear-length computation must disclose almost the entire input through
+that helper.  Neither the return hypotheses nor final column purity
+alone supplies this causal decomposition.
+
+\subsection{The causal hypothesis and the routing convention}
+
+Here $b\ge1$ is any integer, $W=db$, and $L=d^2b$.  Consider a directed
+acyclic network with nodes $0,\ldots,n-1$, all edges directed from smaller
+to larger nodes, and all memory edges $(v,v+1)$.  Edge $e$ has a fixed
+nonnegative capacity $c_e$, measured in bits.  Each input row $i$ has a
+specified set $A_i$ of attachment nodes; at a node in $A_i$ the entire
+raw row is visible.  Each raw bit $(i,j,t)\in[d]^2\times[b]$ has a
+specified output node $o(i,j,t)$.  These nodes respect transposed output
+order: the bits of column $j$ are output before those of column $j+1$,
+although several columns can share a node.  These are the row-source
+and output conventions of the block-network model
+in~\cite[section ``Codes on time--space diagrams'']{FirstPaper2026}.
+
+Let $X\in\{0,1\}^{L}$ have any probability law supported on correctly
+transposed inputs, and let $Z$ be a deterministic function of $X$.
+Partition the columns into nonempty consecutive intervals
+$J_1,\ldots,J_h$, in increasing order.  Write $g_a=|J_a|$,
+$g=\max_a g_a$, and $X_a=X|_{[d]\times J_a\times[b]}$.
+All entropies and logarithms in this section use base~$2$.
+
+\begin{definition}[Causal group typing]\label{def:causal-group-typing}
+The computation has a \emph{capacity-conserving causal group typing
+conditional on $Z$} if the following holds for each attained $z$.
+For each edge $e$ there is one tuple of fields of each type
+$a\in[h]$, taking values in an alphabet of size at most
+$2^{c_{e,a}(z)}$, where
+\[
+ c_{e,a}(z)\ge0,\qquad \sum_{a=1}^{h}c_{e,a}(z)\le c_e.
+\]
+Every outgoing field of type $a$ is a deterministic function only of
+incoming type-$a$ fields, the raw bits of $X_a$ in rows attached at that
+node, and $z$.  Each output bit in group $a$ is obtained by a function
+with these same permitted arguments.  The field alphabets, allocations
+and local functions are fixed on the whole fibre $Z=z$, and their
+evaluation agrees there with the computation and its outputs.
+\end{definition}
+
+All input-dependent control used by a local function must consequently
+be carried by its permitted fields or determined by $z$.  A shared
+symbol cannot be reused as a full-capacity field for several groups
+without paying the sum of those capacities.  The local functions may be
+nonlinear and need only match the original computation on the fibre;
+they can be extended arbitrarily to unattained local tuples.  Merely
+asserting that an edge's final value depends on one group does not
+establish this local causal factorization.
+
+A \emph{partial routing} below uses the underlying undirected network.
+For each raw bit it assigns mass in $[0,1]$ to walks from nodes in its
+row's attachment set to its own output node.  Every edge traversal,
+in either direction and with multiplicity, consumes capacity.  Bits of
+unattached rows receive zero mass.  This is an analytic fractional
+routing; it is neither a causal execution nor a routing at one common
+rate for all bits.
+
+For each group let $\alpha_a$ and $\omega_a$ be its first and last
+output nodes, and put
+\[
+ I_a=\{(v,v+1):\alpha_a\le v<\omega_a\},\qquad
+ W_a=db g_a.
+\]
+The edge intervals $I_a$ are pairwise disjoint, since the groups are
+consecutive.  They may share endpoint nodes.  Define the paid volume
+\begin{equation}\label{eq:group-volume}
+ V=\sum_e c_e+2\sum_{a=1}^{h}W_a(\omega_a-\alpha_a)
+ \le \sum_e c_e+2gdb(n-1).
+\end{equation}
+The factor $2$ pays both collection at $\omega_a$ and return to each
+bit's original output node.
+
+\subsection{From autonomous recovery to partial routing}
+
+\begin{theorem}[Theorem Q: paid routing from causal groups]
+\label{thm:causal-group-routing}
+\notformalized
+Assume \cref{def:causal-group-typing}.  For every attained $z$, let
+\[
+ \mathcal A_a(z)=
+ \{x|_{[d]\times J_a\times[b]}:x\in\operatorname{supp}(X\mid Z=z)\},
+ \qquad
+ R_{\mathrm{sup}}=
+ \sum_z\Pr[Z=z]\sum_{a=1}^{h}\log_2|\mathcal A_a(z)|.
+\]
+There is a partial routing of total mass $R_{\mathrm{sup}}$, with
+capacity on edge $e$ at most
+\begin{equation}\label{eq:group-augmented-capacity}
+ c'_e=c_e+2\sum_{a:e\in I_a}W_a.
+\end{equation}
+For an integer $\ell\ge1$, let $S_\ell$ be the number of raw bits
+whose row has an attachment and whose distance from its nearest row
+attachment to its original output node is less than $\ell$.  Then
+\begin{equation}\label{eq:causal-group-finite}
+ \sum_{a=1}^{h}H(X_a\mid Z)
+ \le R_{\mathrm{sup}}
+ \le S_\ell+\frac{V}{\ell}.
+\end{equation}
+In particular, writing $\Delta=L-H(X)$ and
+\[
+ \operatorname{TC}(X_1;\ldots;X_h\mid Z)
+   =\sum_a H(X_a\mid Z)-H(X\mid Z),
+\]
+one has
+\begin{equation}\label{eq:causal-group-helper}
+ \Delta+H(Z)\ge
+ L+\operatorname{TC}(X_1;\ldots;X_h\mid Z)
+   -S_\ell-\frac{V}{\ell}.
+\end{equation}
+No independence of the input rows, groups, or helper fibres is assumed.
+\end{theorem}
+
+\begin{informalproof}
+Fix $a,z$.  Causal induction shows that evaluating all fields of type
+$a$ depends only on $X_a$ and $z$.  Indeed, this is true of the locally
+visible raw data, and it is preserved at each node by the local typing
+rule.  Thus a projected input $y\in\mathcal A_a(z)$ defines a code
+recovering every bit of $y$, independently of which full input extending
+$y$ was used to define it.  This argument evaluates one projection at a
+time; it makes no product assumption about the conditional support.
+
+Add a forward collector of capacity $W_a$ along each edge of $I_a$.
+It carries the previously output bits of group $a$, in their fixed
+order.  At node $\omega_a$ this prefix together with the outputs at that
+node determines all of $y$.  These collector fields still obey group
+autonomy.  Their total added capacity is
+$W_a(\omega_a-\alpha_a)$, including zero when both endpoints coincide.
+
+Add a supersource $s$ and a source vertex $u_i$ for each row.  Give
+$(s,u_i)$ capacity $bg_a$, and give every arc from $u_i$ to a node of
+$A_i$ capacity $L+1$.  The sink is $\omega_a$.  Consider any
+$s$--$\omega_a$ cut.  If it crosses one of the latter attachment arcs,
+its capacity exceeds $L\ge\log_2|\mathcal A_a(z)|$.  Otherwise let
+$U$ be its sink-side physical nodes and let $B$ be its sink-side row
+vertices.  Every row attached in $U$ belongs to $B$.
+
+For an input $y\in\mathcal A_a(z)$, record its $bg_a$ bits in each
+row of $B$ and all type-$a$ fields and collector values entering $U$.
+This tuple, with $z$ fixed, determines the computation inside $U$ in
+node order.  It supplies every raw argument visible there and every
+parent value entering from outside, including any edge that re-enters
+$U$ after an earlier departure.  It therefore determines $y$ at the
+collector sink.  The tuple map is injective, giving
+\[
+ \log_2|\mathcal A_a(z)|
+ \le bg_a|B|+\text{capacity entering }U.
+\]
+The right side is the cut capacity. The directed max-flow/min-cut theorem,
+whose original undirected form is due to Ford and Fulkerson
+\cite{FordFulkerson1956}, supplies a flow of value
+$\log_2|\mathcal A_a(z)|$, truncated to that value if necessary.
+For completeness, the directed version with real capacities follows by
+maximizing flow value over the compact feasible-flow polytope. A path of
+positive residual capacities to the sink would increase that maximum;
+if no such path exists, the residual reachable set gives a cut of the
+same value.
+Row $i$ supplies at most $bg_a$, and an unattached row supplies zero.
+
+Decompose the flow into source-to-sink paths and remove their artificial
+source and attachment arcs.  Split the path mass from each row among its
+$bg_a$ original group bits, assigning at most one unit to each bit.
+This is possible because all those bits have the same permitted row
+attachments.  It need not identify particular bits as entropy carriers.
+For each allocated bit append the memory path backwards from
+$\omega_a$ to that bit's original output node.  Every such return
+stays in $I_a$ and contributes at most the total group flow, hence at
+most $W_a$, to each edge of that interval.  The forward collector and
+these returns together cost at most $2W_a$ per edge of $I_a$.
+
+Sum over groups.  On an original edge the group flows use at most
+$\sum_a c_{e,a}(z)\le c_e$.  The collector and return loads obey
+\cref{eq:group-augmented-capacity}.  Average these routings over $z$.
+Their common capacity constraints and per-bit mass bounds are linear,
+so the average is feasible and has total mass $R_{\mathrm{sup}}$.
+Also $H(X_a\mid Z=z)\le\log_2|\mathcal A_a(z)|$, proving the
+first inequality in \cref{eq:causal-group-finite}.
+
+At most $S_\ell$ routed mass belongs to short-distance bits, since each
+bit has mass at most one.  Every unit of the remaining mass traverses
+at least $\ell$ physical edges.  Consequently
+$\ell(R_{\mathrm{sup}}-S_\ell)\le V$, proving the second inequality.
+Unattached rows contribute no routed mass and are not counted as
+zero-distance sources.  Finally, because $Z$ is determined by $X$,
+\[
+ \sum_aH(X_a\mid Z)
+ =L-\Delta-H(Z)+\operatorname{TC}(X_1;\ldots;X_h\mid Z).
+\]
+Substitution proves \cref{eq:causal-group-helper}.
+\end{informalproof}
+
+The theorem supplies an explicit conversion from a restricted causal
+code to partial routing.  Its extra communication is fully charged.
+It does not strengthen the general routing obstruction, and it does
+not convert arbitrary causal codes to routings.
+
+\subsection{Application to linear-length tape diagrams}
+
+For clarity we state the precise short-distance estimate needed for
+partial, possibly unequal, commodity masses.  The summed-distance bound
+alone would not suffice.
+
+\begin{lemma}[Attached short-distance count]\label{lem:attached-short-count}
+\formal{SourceCovers/NativeShortCount.lean}{SourceCovers.attachedShortBits, SourceCovers.card_attachedShortBits_le_local, SourceCovers.card_attachedShortBits_le_profile, SourceCovers.card_attachedShortBits_le, SourceCovers.attachedShortBits_zero_radius, SourceCovers.attachedShortBits_zero_block}
+Let a $k$-work-tape diagram have block length $r\ge0$, $n$ block
+nodes, and raw length $L=d^2b$. Use its original row attachments and
+transposed-bit output nodes. Write $R(a)$ for the rows attached at node
+$a$, $B_t(a)$ for its closed undirected radius-$t$ ball, and $m_{i,s}$
+for the number of bits of raw row $i$ assigned to output node $s$.
+For every integer $\ell\ge1$,
+\begin{equation}\label{eq:attached-short-local}
+ S_\ell\le
+ \sum_{a<n}\sum_{i\in R(a)}\sum_{s\in B_{\ell-1}(a)}m_{i,s}.
+\end{equation}
+This bound requires neither diagram validity nor an upper bound on $r$.
+If the diagram is valid for output length $L$ and $r\le db$, then
+\begin{align}
+ S_\ell&\le b\sum_{a<n}|R(a)|\,|B_{\ell-1}(a)|,
+     \label{eq:attached-short-profile}\\
+ S_\ell&\le\min\{L,\,(2n-1)_+b(2k+3)^{\ell-1}\}.
+     \label{eq:attached-short-count}
+\end{align}
+Also $S_0=0$, and $S_\ell=0$ for $r=0$ under the library's zero-block
+convention. The Lean inequalities include these cases, interpreting
+natural subtraction $\ell-1$ as $\max\{\ell-1,0\}$ and
+$(2n-1)_+=\max\{2n-1,0\}$.
+\end{lemma}
+
+\begin{outline}
+The formal definition excludes unattached rows, whose inherited default
+distance is zero. If an attachment exists, the block network is nonempty,
+its chosen output node lies in that network, and the memory spine
+connects it to the attachment. These facts require no validity
+hypothesis. The bridge lemma therefore identifies a short bit with a
+row attachment $a$ whose radius-$(\ell-1)$ ball contains its output
+node. Taking the union over $a$, its attached rows, and its ball gives
+\cref{eq:attached-short-local} by Mathlib's finite-union bound.
+
+For a valid diagram and $1\le r\le db$, a block's output positions
+lie in an interval of length at most $db$. Two distinct bits of one raw
+row with the same within-entry offset have transposed positions separated
+by a nonzero multiple of $db$. They cannot both lie in this interval.
+The within-entry offset thus injects the bits counted by $m_{i,s}$ into
+$\{0,\ldots,b-1\}$, proving $m_{i,s}\le b$ and
+\cref{eq:attached-short-profile}. This sharpens the first paper's
+$2b$ estimate, which separately counts the portions in two output
+columns~\cite[section ``Codes on time--space diagrams'']{FirstPaper2026}.
+
+A block attaches at most two raw rows, and its underlying graph has
+degree at most $2k+2$. Reuse the first paper's
+\lean{card_rowsAt_le} and \lean{card_ball_le} from
+\leanfile{Transpose/Tape/CECount.lean} to obtain
+$|R(a)|\le2$ and $|B_t(a)|\le(2k+3)^t$.
+The first block can touch only row zero: the input head starts at zero
+and has fewer than $r\le db$ steps in that block. Consequently
+$\sum_{a<n}|R(a)|\le(2n-1)_+$. Together with $S_\ell\le L$,
+this gives \cref{eq:attached-short-count}. The zero-radius set is empty by its
+strict distance test; for zero block length there are no nodes or
+attachments.
+\end{outline}
+
+The profile bound retains actual row and ball counts for later use,
+without imposing a common routing rate on the counted bits. The sharper
+coefficient and first-block correction improve the finite estimate;
+they do not change the asymptotic obstruction below. No optimality of the
+graph-ball estimate or the union bound is claimed.
+
+\begin{corollary}[Narrow causal groups require an almost complete helper]
+\label{cor:causal-group-obstruction}
+\notformalized
+Fix $k\ge0$, an integer $G\ge1$, and $c>0$.  Along any sequence
+$d\to\infty$, let $b\ge1$, $L=d^2b$, and
+$r=\lceil db/G\rceil$.  Suppose valid $k$-work-tape diagrams have
+length $T\le cL$, and their code capacities satisfy the block-profile
+volume bound
+\[
+ \sum_e c_e\le4knrG,
+ \qquad n=\lceil T/r\rceil.
+\]
+Let $X$ be any law on correctly transposed inputs and $Z$ a
+raw-input-determined helper admitting causal group typing into fixed
+consecutive column groups of maximum size $g$.  Then, with constants
+depending only on $k,G,c$,
+\begin{equation}\label{eq:causal-group-asymptotic}
+ \sum_aH(X_a\mid Z)
+ =O\!\left(\frac{L}{\sqrt d}+\frac{(1+g)L}{\log d}\right).
+\end{equation}
+In particular, if $g=o(\log d)$, then
+\[
+ \Delta+H(Z)\ge L-o(L).
+\]
+Thus $\Delta=o(L)$ and $H(Z)=o(L)$ cannot both hold.  The conclusion
+applies in particular to the series' standard width
+$b=b(d)=\max\{1,\lceil\log_2d\rceil\}$.
+\end{corollary}
+
+\begin{informalproof}
+Since $r\ge db/G$, one has $n\le cGd+1=O(d)$.  Also
+$nr\le T+r$ and $rG\le db+G$, so
+$\sum_e c_e=O(L)$.  Equation~\eqref{eq:group-volume} therefore gives
+$V=O((1+g)L)$.
+For sufficiently large $d$, take
+$\ell=\lfloor\tfrac12\log_{2k+3}d\rfloor\ge1$.
+Then $\ell$ is of order $\log d$, and
+\cref{lem:attached-short-count} gives
+$S_\ell=O(db\sqrt d)=O(L/\sqrt d)$.
+Apply \cref{thm:causal-group-routing} to obtain
+\cref{eq:causal-group-asymptotic}.  Finally,
+$L-\Delta-H(Z)=H(X\mid Z)\le\sum_aH(X_a\mid Z)$.
+The right side is $o(L)$ when $g=o(\log d)$.
+\end{informalproof}
+
+At the standard width, the block-profile volume hypothesis is supplied
+by the Lean-verified \lean{sum_cap_le} in~\cite{FirstPaper2026}.
+The finite theorem also
+permits other profiles: a separate $O(L)$ total capacity allowance
+leaves the asymptotic conclusion unchanged.
+
+For the construction program, the corollary excludes a completion that
+preserves one fixed narrow consecutive grouping at every local update
+after a sublinear-entropy joint helper is fixed.  Arbitrarily many
+updates and arbitrary nonlinear operations inside each group remain
+allowed.  It does not exclude final column purity, which every correct
+transposer already has, nor a succession of small groups that migrate
+and cumulatively mix all columns.  For nonconsecutive groups the exact
+collector cost in \cref{eq:group-volume} is still available, but its
+$2gdb(n-1)$ upper bound need not hold.  Finally, none of the geometric
+hypotheses elsewhere in this paper is asserted to produce this causal
+typing with a cheap helper; $Z=X$ always gives a vacuous expensive one.

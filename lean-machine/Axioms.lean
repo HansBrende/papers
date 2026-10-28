@@ -208,3 +208,124 @@ import LeanMachine
 
 -- InvariantKernel.lean
 #print axioms LeanMachine.InvariantKernel.finrank_ker_eq
+
+-- IntervalCover.lean
+#print axioms LeanMachine.IntervalCover.exists_cover_packing
+#print axioms LeanMachine.IntervalCover.packing_le_fractional_cover
+#print axioms LeanMachine.IntervalCover.exists_subcover_le_weight
+
+-- FiniteIncidence.lean
+#print axioms LeanMachine.FiniteIncidence.sum_eq_sum_multiplicity
+#print axioms LeanMachine.FiniteIncidence.multiplicity_le_of_coloring
+
+-- MonotonePatches.lean
+#print axioms LeanMachine.MonotonePatches.mem_jumpEdges
+#print axioms LeanMachine.MonotonePatches.crossings_le_twice_down_add_one
+#print axioms LeanMachine.MonotonePatches.downcrossings_le_one
+#print axioms LeanMachine.MonotonePatches.crossings_le_three
+#print axioms LeanMachine.MonotonePatches.variation_comp_le_crossings
+#print axioms LeanMachine.MonotonePatches.variation_comp_le
+#print axioms LeanMachine.MonotonePatches.variation_patch_le_three
+#print axioms LeanMachine.MonotonePatches.Action.apply_eq
+#print axioms LeanMachine.MonotonePatches.Action.apply_eq_self
+#print axioms LeanMachine.MonotonePatches.Action.apply_ne_self_iff
+#print axioms LeanMachine.MonotonePatches.Action.apply_le
+#print axioms LeanMachine.MonotonePatches.Action.apply_monotone
+#print axioms LeanMachine.MonotonePatches.Action.success_cons_iff
+#print axioms LeanMachine.MonotonePatches.Action.success_structure
+#print axioms LeanMachine.MonotonePatches.Action.endpoint_le
+#print axioms LeanMachine.MonotonePatches.Action.variation_successfulMap
+#print axioms LeanMachine.MonotonePatches.Patch.apply_eq_self
+#print axioms LeanMachine.MonotonePatches.Patch.apply_mem
+#print axioms LeanMachine.MonotonePatches.Patch.threshold_iff
+#print axioms LeanMachine.MonotonePatches.Patch.Separated.unique_time
+#print axioms LeanMachine.MonotonePatches.Patch.pack_eq_on
+#print axioms LeanMachine.MonotonePatches.Patch.pack_cases
+#print axioms LeanMachine.MonotonePatches.Patch.pack_le
+#print axioms LeanMachine.MonotonePatches.Patch.pack_threshold
+#print axioms LeanMachine.MonotonePatches.Patch.pack_threshold_outside
+#print axioms LeanMachine.MonotonePatches.crossings_congr
+#print axioms LeanMachine.MonotonePatches.variation_pack
+#print axioms LeanMachine.MonotonePatches.exists_sharp_patch
+
+-- PeriodicPhases.lean
+#print axioms LeanMachine.PeriodicPhases.unit_chain_card_lt
+#print axioms LeanMachine.PeriodicPhases.available_card
+#print axioms LeanMachine.PeriodicPhases.protected_not_deleted
+#print axioms LeanMachine.PeriodicPhases.sum_payment_le
+#print axioms LeanMachine.PeriodicPhases.sum_available_payment_le
+
+-- ThinIntervals.lean
+#print axioms LeanMachine.ThinIntervals.Model.isAcyclic
+#print axioms LeanMachine.ThinIntervals.Model.eq_container_of_adj
+#print axioms LeanMachine.ThinIntervals.Model.not_nonleaf_of_contained
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_left_injective
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_right_strict
+#print axioms LeanMachine.ThinIntervals.Model.no_nonleaf_between
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_or_endpoint
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_getVert
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_reachable
+#print axioms LeanMachine.ThinIntervals.Model.spineRank_pos
+#print axioms LeanMachine.ThinIntervals.Model.spineRank_strict
+#print axioms LeanMachine.ThinIntervals.Model.spineRank_injective
+#print axioms LeanMachine.ThinIntervals.Model.spineRank_step
+#print axioms LeanMachine.ThinIntervals.Model.spineRank_adj
+#print axioms LeanMachine.ThinIntervals.Model.nonleaf_neighbors_card_le_two
+#print axioms LeanMachine.ThinIntervals.Model.path_card_le_of_avoids
+
+-- FiniteOrbits.lean
+#print axioms LeanMachine.FiniteOrbits.mem_cloud_self
+#print axioms LeanMachine.FiniteOrbits.cloud_mono
+#print axioms LeanMachine.FiniteOrbits.cloud_card_le_chain
+#print axioms LeanMachine.FiniteOrbits.cloud_card_le
+#print axioms LeanMachine.FiniteOrbits.wordOrbit_image
+#print axioms LeanMachine.FiniteOrbits.reduce_word
+#print axioms LeanMachine.FiniteOrbits.endpoint_mem_cloud
+#print axioms LeanMachine.FiniteOrbits.cloud_subset_orbit
+#print axioms LeanMachine.FiniteOrbits.orbit_eq_cloud
+
+-- Exact packed source banks
+#print axioms LeanMachine.MonotonePatches.Action.endpoint_append
+#print axioms LeanMachine.MonotonePatches.Action.success_append
+#print axioms LeanMachine.MonotonePatches.Action.successfulAction_apply
+#print axioms LeanMachine.PeriodicPhases.unit_chain_window
+#print axioms LeanMachine.PeriodicPhases.unit_chain_mod_injective
+#print axioms LeanMachine.FiniteOrbits.wordOrbit_mono
+#print axioms LeanMachine.FiniteOrbits.wordOrbit_trans
+#print axioms LeanMachine.ThinIntervals.Model.component_span_contains
+#print axioms LeanMachine.ThinIntervals.Model.component_span_exact
+#print axioms LeanMachine.ThinIntervals.Model.component_spans_disjoint
+#print axioms LeanMachine.SourceBank.bounded_mono
+#print axioms LeanMachine.SourceBank.Bounded.unit_variation
+#print axioms LeanMachine.SourceBank.bounded_compose
+#print axioms LeanMachine.SourceBank.ordered_length
+#print axioms LeanMachine.SourceBank.bounded_ordered
+#print axioms LeanMachine.PackedWords.System.success_owner
+#print axioms LeanMachine.PackedWords.System.success_pairwise
+#print axioms LeanMachine.PackedWords.System.success_nodup
+#print axioms LeanMachine.PackedWords.System.success_chain
+#print axioms LeanMachine.PackedWords.System.word_unique
+#print axioms LeanMachine.PackedWords.System.wordAt_unique
+#print axioms LeanMachine.PackedWords.System.chosenWord_eq
+#print axioms LeanMachine.PackedWords.System.endpoint_component
+#print axioms LeanMachine.PackedWords.System.wordPatches_separated
+#print axioms LeanMachine.PackedWords.System.bank_length
+#print axioms LeanMachine.PackedWords.System.bank_bounded
+#print axioms LeanMachine.PackedWords.System.bank_exact
+
+-- Supporting public declarations of the packed source-bank modules
+#print axioms LeanMachine.ThinIntervals.Model.mem_componentVertices
+#print axioms LeanMachine.ThinIntervals.Model.componentVertices_nonempty
+#print axioms LeanMachine.PackedWords.System.active_owner
+#print axioms LeanMachine.PackedWords.System.head_last_order
+#print axioms LeanMachine.PackedWords.System.success_component
+#print axioms LeanMachine.PackedWords.System.chosenWord_spec
+#print axioms LeanMachine.PackedWords.System.chosenWord_members
+#print axioms LeanMachine.PackedWords.System.packedMap_sound
+#print axioms LeanMachine.SourceBank.mem_values
+#print axioms LeanMachine.SourceBank.cost_append
+#print axioms LeanMachine.SourceBank.bounded_append
+#print axioms LeanMachine.SourceBank.bounded_identity
+#print axioms LeanMachine.SourceBank.compose_length
+#print axioms LeanMachine.SourceBank.mem_compose
+#print axioms LeanMachine.SourceBank.bounded_action

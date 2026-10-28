@@ -1,0 +1,56 @@
+\section{Building and checking this draft}\label{sec:verification}
+
+The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
+\Cref{def:complete-families,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:interval-rounding,lem:attached-short-count}
+are Lean-verified. Their cited
+declarations depend only on \leanname{propext},
+\leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
+numbered results have complete written proofs and are not formalized.
+No additional axiom, admitted proof or native decision procedure is
+used in the new library.
+
+The package pins Lean and Mathlib to the repository's existing v4.34.1
+versions. It requires the existing second-paper build adapter, whose
+source directory points to the first paper's canonical Lean files.
+It also requires the eighth paper's \path{boundedNesting} package for
+actual families and the shared \path{lean-machine/} package for interval
+covers, finite incidence sums, monotone patches, thin interval graphs,
+protected phases, finite action orbits and uniform source banks.
+Readers need the whole repository, with sibling folders in place.
+No earlier mathematical source is copied or modified. From \path{lean/}, run
+\begin{samepage}
+\begin{verbatim}
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+\end{samepage}
+The cache command is needed only when the pinned dependency objects
+are not already available. The axiom output must contain no axioms
+beyond the three listed above. No heartbeat override is needed for
+the new proofs.
+
+From this paper's top-level directory, regenerate or check the statement
+index and axiom commands with
+\begin{verbatim}
+python3 tools/statement_index.py
+python3 tools/statement_index.py --check
+\end{verbatim}
+The script reads the section order from \path{paper/main.tex}, checks
+stable labels, proof-status markers and the corresponding proof or
+outline environments, and generates the index appendix,
+\path{FORMALIZATION-INDEX.md}, and \path{lean/PaperAxioms.lean}.
+It does not itself verify the mathematics or execute the axiom commands.
+\path{FORMALIZATION.md} records completed work and the remaining plan.
+
+Build the PDF from \path{paper/} with
+\begin{verbatim}
+latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+\end{verbatim}
+Resolve undefined references and citations, and inspect the rendered
+pages. Earlier-paper references are pinned in \path{paper/references.bib},
+and their proof status is stated where used. Public paths are relative
+to this repository. Run \path{tools/check_public_paths.py} from the
+repository root as described in \path{CONTRIBUTING.md} before publishing.
+That scan checks portability and local-path disclosure, not theorem
+correctness.

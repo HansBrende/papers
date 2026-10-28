@@ -1,0 +1,280 @@
+\section{Uniform exclusions and necessary source complexity}\label{sec:uniform}
+
+The finite bound has constants independent of the number of selected
+core families. This permits a numerical limit argument. It does not
+permit an infinite source bank or a cut parameter growing with dimension.
+
+\subsection{Original hop and variation profiles}
+
+Fix $c,\beta>0$, $N\ge1$ and an integer $q\ge1$. In each admissible
+geometry let $\mathcal K_0$ be an original $\mathrm Q_2$ core and let
+$\mathcal E$ contain at most $q$ other complete families. Let $a_0$ bound
+the hop count of every family outside $\mathcal K_0\cup\mathcal E$.
+Sort the original core by nonincreasing hop count, with a fixed rule
+for ties, and denote it by $G_1,G_2,\ldots$. Both profiles below are
+zero at indices with no family. The variation profile uses this same ordering, not an ordering
+by variation.
+
+\begin{definition}[Near-full sequence and joint profile]\label{def:joint-profile}
+A \emph{near-full sequence} consists of admissible fixed geometries and
+nonempty correctness sets indexed by $\nu$, with common $c,\beta,N,q$,
+such that
+\begin{equation}\label{eq:near-full}
+ d_\nu\longrightarrow\infty,\qquad
+ a_{0,\nu}/L_\nu\longrightarrow0,\qquad
+ \Delta_\nu/L_\nu\longrightarrow0.
+\end{equation}
+Its original profiles are
+\[
+ h_i^{(\nu)}=|G_i|/L_\nu,\qquad
+ v_i^{(\nu)}=\Var(x_\nu;[p_{G_i},U_{G_i}])/L_\nu.
+\]
+A \emph{joint profile} is a coordinatewise subsequential limit
+$(h_i,v_i)_{i\ge1}$ of both sequences of profiles. Write
+\[
+ \tau_R=\sum_{i>R}h_i,\qquad V_K=\sum_{i>K}v_i.
+\]
+\end{definition}
+
+Such a further subsequence always exists: the family accounting in
+\cref{sec:source-engine} gives
+$\sum_i h_i^{(\nu)}\le c$ and $\sum_i v_i^{(\nu)}\le2c$.
+Successive bounded-coordinate extractions and a diagonal subsequence
+give simultaneous convergence. Passing each finite partial sum to the
+limit gives $\sum_i h_i\le c$ and $\sum_i v_i\le2c$.
+In particular both tails tend to zero. This does not assert that tails
+of the finite profiles converge or that family topologies stabilize.
+
+\begin{theorem}[Theorem U: necessary hop tails]\label{thm:necessary-hop-tail}
+\notformalized
+For every joint profile of every near-full sequence and all integers
+$K\ge0$, $R\ge K$, $M\ge\max(2,R+1)$,
+\begin{equation}\label{eq:necessary-hop-tail}
+ \frac{\beta\tau_R}{M-R}
+ \ge \frac{(1-V_K)_+^2}{4(K+1)(2M+4)^q}.
+\end{equation}
+Consequently, whenever $V_K<1$ and $R\ge\max(K,1)$,
+\begin{equation}\label{eq:tail-floor}
+ \tau_R\ge
+ \frac{(1-V_K)^2}{\beta4^{q+1}(K+1)(R+2)^{q-1}}.
+\end{equation}
+If $q\ge2$, every such profile satisfies
+$\sum_{i\ge1}i^{q-1}h_i=\infty$.
+\end{theorem}
+\begin{informalproof}
+Fix a joint-profile subsequence and $K,R,M$. For each fixed integer
+$J\ge R$, select the first $J$ original core families, distinguish its
+first $K$, protect its first $R$, and rebuild the forest and ranks of
+that finite selection. Absent families are simply omitted. Sorted hop
+counts and their total bound imply that every omitted core family has
+at most $cL_\nu/(J+1)$ hops. The finite theorem therefore applies with
+\[
+ a_\nu=\max\{a_{0,\nu},\lceil cL_\nu/(J+1)\rceil\},\qquad
+ w_\nu=\lceil\lambda L_\nu\rceil,
+\]
+where $0<\lambda<1$ is also fixed before $\nu$ tends to infinity.
+The finite-prefix quantities satisfy
+\[
+ \alpha_\nu\to V_{K,J}:=\sum_{K<i\le J}v_i,\qquad
+ \tau_\nu/L_\nu\to\tau_{R,J}:=\sum_{R<i\le J}h_i.
+\]
+The normalized residual bill is bounded in the limit by
+$\beta NC_qc^2/[\lambda(J+1)]$; the normalized movement, outer-lower
+and stripe errors vanish, and $2(w_\nu-1)/L_\nu\to2\lambda$.
+Using \cref{cor:orbit-count-deficit} and \cref{eq:near-full}, we obtain
+\begin{equation}\label{eq:finite-prefix-limit}
+ \frac{(1-V_{K,J})_+^2}{4(K+1)(2M+4)^q}
+ \le\frac{\beta\tau_{R,J}}{M-R}+2\lambda
+       +\frac{\beta NC_qc^2}{\lambda(J+1)}.
+\end{equation}
+This is an inequality for every finite $J$. Now let $J$ tend to infinity
+in these numerical inequalities, and then let $\lambda$ decrease to zero.
+The constant $C_q$ depends on $M,q$, not $J$, so this proves
+\cref{eq:necessary-hop-tail}.
+
+Taking $M=2R+2$ gives $2M+4=4(R+2)$ and proves
+\cref{eq:tail-floor}. A finite $K$ with $V_K\le1/2$ always exists.
+If $\sum_i i^{q-1}h_i$ were finite, then for $R\ge1$
+\[
+ (R+2)^{q-1}\tau_R
+ \le2^{q-1}\sum_{i>R}i^{q-1}h_i\longrightarrow0,
+\]
+contrary to \cref{eq:tail-floor} for that $K$.
+Every step used a finite certificate. Omitted families remained in the
+residual bill until after the dimension limit; no family was discarded
+by an exchange of limits.
+\end{informalproof}
+
+\begin{corollary}[One arbitrary exceptional family]\label{cor:one-exception}
+\notformalized
+Fix $c,\beta>0$ and $N\ge1$. There exist $\eps>0$ and $d_0$ such that
+every admissible geometry with a $\mathrm Q_2$ core, at most one other
+complete exceptional family, $d\ge d_0$, and $a_0\le\eps L$ satisfies
+\begin{equation}\label{eq:uniform-deficit}
+ \Delta\ge\eps L,\qquad
+ |\mathcal C|\le2^{(1-\eps)L}.
+\end{equation}
+No envelope on the sorted core-family sizes is assumed.
+\end{corollary}
+\begin{informalproof}
+If no such constants existed, choose a violating geometry for each
+$\eps=1/n$ and $d_0=n$. These form a near-full sequence and have a
+joint profile. Choose $K$ with $V_K\le1/2$. For $q=1$,
+\cref{eq:tail-floor} bounds $\tau_R$ below by a fixed positive constant
+for every $R\ge\max(K,1)$, contrary to $\tau_R\to0$.
+\end{informalproof}
+
+\begin{corollary}[Common size envelopes]\label{cor:common-envelope}
+\notformalized
+Fix $c,\beta,N,q$ as above and a nonnegative summable sequence $(g_i)$
+such that
+\begin{equation}\label{eq:envelope-test}
+ \liminf_{R\to\infty}(R+2)^{q-1}\sum_{i>R}g_i=0.
+\end{equation}
+There exist $\eps>0,d_0$ for which \cref{eq:uniform-deficit} holds
+whenever $d\ge d_0$, $a_0\le\eps L$ and $|G_i|\le Lg_i$ for all
+original core families in their sorted order. In particular every
+common power envelope $g_i=H/i^p$, with fixed $H>0$ and $p>q$, is covered.
+\end{corollary}
+\begin{informalproof}
+Negating the uniform conclusion again gives a near-full sequence.
+In a joint profile $h_i\le g_i$ for each $i$, so
+\cref{eq:envelope-test} contradicts \cref{eq:tail-floor} after choosing
+$K$ with $V_K<1$. For a power envelope,
+$\sum_{i>R}H/i^p\le H R^{1-p}/(p-1)$; multiplication by
+$(R+2)^{q-1}$ tends to zero when $p>q$.
+\end{informalproof}
+
+\begin{corollary}[A fixed finite skeleton]\label{cor:finite-skeleton}
+\notformalized
+For fixed $c,\beta,N$ and $q\ge1$, there are $\eps>0,d_0$ such that
+\cref{eq:uniform-deficit} holds for every admissible geometry in which
+all but at most $q$ complete families have at most $a_0$ hops,
+$a_0\le\eps L$, and $d\ge d_0$.
+\end{corollary}
+\begin{informalproof}
+Take the core empty and use $g_i=0$ in \cref{cor:common-envelope}.
+The full geometry and its outside-family bound are unchanged.
+\end{informalproof}
+
+These are restrictions on a common full geometry. In the one-exception
+case they settle the paid-deficit comparison without a coding conjecture.
+For $q=2$, the necessary tail floor is of order $1/R$, compatible with
+an inverse-square size profile; a further geometric argument is needed.
+The proof supplies uniform constants by contradiction, not effective
+numerical values of $\eps$ and $d_0$.
+
+\subsection{Necessary fractional-cover complexity}
+
+Along a fixed joint-profile subsequence, select the first $J$ families
+and use $M=2R+2$ as above. For each phase and column put
+$\kappa_{\nu,J,R,\rho,j}=\kappa_\rho(S_\rho(s_j))$.
+All these quantities are finite and at least one. Write
+\begin{equation}\label{eq:reciprocal-cover-limit}
+ Q_R^*=\limsup_{J\to\infty}\limsup_{\nu\to\infty}
+                \mathbb E_{\rho,j}\frac1{\kappa_{\nu,J,R,\rho,j}},
+\end{equation}
+where the expectation is the arithmetic mean over legal phases and
+columns. This order of limits is part of the definition.
+
+\begin{theorem}[Necessary reciprocal-cover bound]\label{thm:necessary-cover}
+\notformalized
+For every near-full sequence, every joint profile, any $K$ with $V_K<1$
+and every $R\ge\max(K,1)$,
+\begin{equation}\label{eq:necessary-cover}
+ Q_R^*\le
+ \frac{4\beta(K+1)\tau_R}{(1-V_K)^2(R+2)}.
+\end{equation}
+This holds for any fixed number $q$ of exceptions.
+If $|G_i|\le HL/i^2$ and $V_K\le1/2$, then for every fixed $s\ge1$,
+\begin{equation}\label{eq:cover-saturation}
+ \limsup_J\limsup_\nu
+ \Pr_{\rho,j}\{\kappa_{\nu,J,R,\rho,j}\le s\}
+ \le \frac{16\beta(K+1)Hs}{R(R+2)}.
+\end{equation}
+\end{theorem}
+\begin{informalproof}
+Use the exact witnesses in \cref{thm:paid-source-cover}. For fixed
+$J,R,K,\lambda$ the geometric coefficient tends to
+$(1-V_{K,J})^2/[4(K+1)]>0$. The same error calculation as in
+\cref{eq:finite-prefix-limit} bounds the limsup of the mean reciprocal
+cover by that coefficient's reciprocal times
+\[
+ \frac{\beta\tau_{R,J}}{R+2}+2\lambda
+       +\frac{\beta NC_qc^2}{\lambda(J+1)}.
+\]
+Take the limsup in $J$, then let $\lambda$ decrease to zero. This proves
+\cref{eq:necessary-cover}. The elementary pointwise inequality
+$\mathbf1_{\{\kappa\le s\}}\le s/\kappa$ and
+$\tau_R\le H/R$ give \cref{eq:cover-saturation}.
+\end{informalproof}
+
+\begin{corollary}[Uniform cover criteria]\label{cor:uniform-cover}
+\notformalized
+Fix $c,\beta,N,q$. Each of the following defines a class with constants
+$\eps>0,d_0$ for which \cref{eq:uniform-deficit} holds when
+$d\ge d_0$ and $a_0\le\eps L$.
+\begin{enumerate}[label=(\alph*)]
+\item For some common constant $0<B<\infty$, selecting the first $J$
+original core families and protecting the first $R$, for every
+$J\ge R\ge1$ and $M=2R+2$, gives
+$\mathbb E_{\rho,j}\kappa_{J,R,\rho,j}\le B(R+2)$.
+No size envelope is required.
+\item For fixed $H>0,p>1$ the original sizes satisfy $|G_i|\le HL/i^p$,
+and for a common positive function $f(R)=o(R^p)$ every such finite
+prefix selection satisfies $\mathbb E_{\rho,j}\kappa_{J,R,\rho,j}\le f(R)$.
+\end{enumerate}
+Here $\kappa_{J,R,\rho,j}$ is the fractional cover of the selected
+geometry's complete source set at the first output time of column $j$.
+The bounds are uniform over the class and dimension; $\eps,d_0$ may
+depend on all the fixed class data. In (b), the
+inverse-square case requires mean cover $o(R^2)$.
+\end{corollary}
+\begin{informalproof}
+Suppose either uniform conclusion fails and extract a joint profile of
+a near-full sequence. Jensen's inequality for $u\mapsto1/u$ gives,
+respectively, $Q_R^*\ge1/[B(R+2)]$ or $Q_R^*\ge1/f(R)$.
+Choose $K$ with $V_K<1$. In (a), \cref{eq:necessary-cover} then forces
+$\tau_R$ to stay above a positive constant, a contradiction.
+In (b), $\tau_R\le HR^{1-p}/(p-1)$ bounds its right side by
+a fixed multiple of $R^{-p}$, contradicting $f(R)=o(R^p)$.
+\end{informalproof}
+
+The saturation bound also rules out a misleading average picture:
+in a near-full inverse-square sequence, rare very complicated columns
+cannot compensate for a positive fraction with cover complexity
+$o(R^2)$, in the stated ordered limits. This is a necessary condition,
+not a construction of an economical cover.
+
+\subsection{The movement of complete older observables}
+
+For $q=2$, use one cluster for all nonroot elements of $F_\rho(s_j)$
+in \cref{prop:continuation-covers}(c), and use $E=0$ when that set is
+empty or a singleton. Let $e_{\nu,J,R}$ be the mean of $E/L_\nu$
+over phases and columns, with $M=2R+2$, and put
+$e_R^*=\liminf_J\liminf_\nu e_{\nu,J,R}$.
+
+\begin{corollary}[Necessary complete-observable movement]\label{cor:necessary-exposure}
+\notformalized
+Along every subsequence realizing a joint profile of a two-exception
+near-full sequence, for every integer $K\ge0$ and $R\ge\max(K,1)$,
+\begin{equation}\label{eq:necessary-exposure}
+ e_R^*\ge
+ \frac{(1-V_K)_+^2}{32(K+1)(R+2)}-\frac{\beta\tau_R}{R+2}.
+\end{equation}
+For fixed $K$ with $V_K<1$ this implies
+$\liminf_{R\to\infty}(R+2)e_R^*\ge(1-V_K)^2/[32(K+1)]$.
+\end{corollary}
+\begin{informalproof}
+The one-cluster estimate, also valid when there are no nonroot seeds,
+is $(1-\alpha)_+^2/[8(K+1)(2M+4)]-E/L$.
+Insert it in \cref{thm:paid-source-cover} and move the mean $E/L$ to
+the other side. Take the liminf in $\nu$, then in $J$, and then let
+$\lambda$ decrease to zero exactly as in
+\cref{eq:finite-prefix-limit}. Substitution of $M=2R+2$ gives
+\cref{eq:necessary-exposure}; $\tau_R\to0$ gives the last assertion.
+\end{informalproof}
+
+Here the moving observables include every older continuation, not just
+the immediate input coordinate at an exceptional landing. This is the
+quantity that a successful approximation argument would have to control.

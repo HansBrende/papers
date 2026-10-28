@@ -27,3 +27,12 @@ import LeanMachine.BlockRankSparsity
 import LeanMachine.CoordinateSplitting
 import LeanMachine.ProjectionFamilies
 import LeanMachine.InvariantKernel
+import LeanMachine.IntervalCover
+import LeanMachine.FiniteIncidence
+import LeanMachine.MonotonePatches
+import LeanMachine.PeriodicPhases
+import LeanMachine.ThinIntervals
+import LeanMachine.FiniteOrbits
+import LeanMachine.IntervalComponents
+import LeanMachine.SourceBank
+import LeanMachine.PackedWords

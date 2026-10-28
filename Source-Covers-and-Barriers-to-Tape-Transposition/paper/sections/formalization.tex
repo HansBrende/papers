@@ -1,0 +1,122 @@
+\section{Specification for subsequent formalization}
+\label{sec:formalization}
+
+\Cref{def:complete-families,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:interval-rounding,lem:attached-short-count}
+are Lean-verified;
+their declarations and axiom commands accompany the paper. The remaining results retain
+complete written proofs. The index in
+\cref{sec:theorem-index} gives a stable label for every numbered result
+and definition; it is generated from the manuscript, rather than from
+a separate list of proposed theorems. Each result's status is explicit.
+The statements include the hypotheses to preserve when creating Lean
+declarations. Further formalizations must identify their declarations
+and disclose any change of scope before calling them authoritative.
+
+\subsection{Dependency order}
+
+\begin{enumerate}
+\item \emph{The model and complete-source engine.}
+Actual last-visit hops, full first-maximum families, the half-open span
+partition and family accounting are now formalized by reusing the eighth
+paper and finite incidence counting. Strict clipped shadows and their
+variation bounds, including successful words and disjoint packing, are
+also formalized, as are protected nonleaf phases and the exact packed bank,
+including closure across selected unpaid actual edges. Formalize paid-root
+semantics and correctness on one fixed geometry, then residual recovery. The any-argument-path bound now covers metric-valued paths;
+it is not restricted to the original input-head timeline.
+
+\item \emph{Finite deficit.}
+Formalize circular gap area, a common cyclic ordering of all raw
+coordinates, stripe discrepancy, and entropy recovery from a deterministic
+helper. \Cref{thm:cyclic-freezing} permits a helper bounded in entropy;
+it does not infer a support-cardinality bound from entropy. The fractional
+interval-cover lemma is already formalized independently of this base.
+Use it to prove the fractional gap bound, formalize anchored erosion,
+then prove \cref{thm:paid-source-cover}. The complete bank and the
+phase used for its payment must be the same throughout.
+
+\item \emph{Uniform consequences.}
+Extract only the numerical joint profile. Formalize the order
+``finite parameters, dimension limit, cutoff limit, radius limit''
+in \cref{thm:necessary-hop-tail}. Derive one-exception, common-envelope,
+finite-skeleton and necessary-cover results from it and the finite
+certificate. Do not replace those ordered limits by a single growing
+finite certificate.
+
+\item \emph{Two-exception refinements.}
+Prove the exact older-closure decomposition and its maximal-seed
+reductions before the exposure and shared-support results. The global
+seed set ranges over all output-bit times. Its raw support is revealed
+once, at a cost valid for every grid shift, and all density limits use
+the subsequence defining the same joint profile. The metric criteria
+then follow by replacing temporal counts with raw interval covers.
+
+\item \emph{Independent construction tests.}
+Formalize the serial native geometry as an exact finite construction,
+including all its return families, payments and arbitrary-seed cover
+lower bound. Separately prove the movement theorem and its specified
+query-interface applications. Finally formalize the causal-group
+support-to-flow argument, followed by its native metric application.
+The attached short-distance count for that application is already
+formalized, including its bridge to the nearest-attachment distance.
+These three branches do not serve as premises of the main uniform
+exclusion theorem.
+\end{enumerate}
+
+\subsection{Reuse and statement fidelity}
+
+The first, fourth, fifth and eighth papers contain relevant tape,
+dependency, entropy and owner-order libraries. The native short-pair
+count in \cref{sec:causal-groups} already imports the first paper's
+row and ball counting declarations, and strengthens its output-block count.
+The imported results are read from their original sources through
+the existing build adapter in the second paper; no copy is introduced.
+Family accounting imports the eighth paper's canonical family library
+and strengthens the bound by retaining the owner's two distances to
+the span endpoints. A shared weighted incidence identity supplies both
+span-length and variation accounting; the original Q2 estimates follow
+by bounding the overlap by two.
+The clipped-shadow module reuses those actual families and the shared
+monotone-patch library. Threshold crossing counts, Mathlib's finite-path
+triangle inequality and order-convex preimage lemmas give the variation
+bounds without a separate induction for each shadow word or packing.
+The proof retains exact crossing counts and handles metric-valued paths.
+The phase lemma reuses Mathlib's finite paths, cycle rotation and cardinality
+bounds. Shared interval geometry, periodic phase counting and finite-orbit
+modules keep the three arguments separate. The stronger cut deletes only
+original nonleaves and charges their actual lower supports. The complete
+orbit equality explicitly accounts for inactive actions.
+The packed-bank proof reuses the patch bound and Mathlib's uniqueness of
+paths in a forest. A common set of rank residues labels every spine
+component injectively. Unordered endpoint pairs index the packed maps;
+list composition handles the leaf sandwich and exceptional families.
+The exact orbit proof permits the representing word of a packed slot to
+vary with the argument. All originally selected unpaid actual edges are
+covered, since the phase pays every lower of each deleted family.
+The interval-cover lemma imports the shared library's greedy cover and
+packing certificate. It permits an empty target and arbitrary order-convex
+sets in a linear order. Its fractional bound uses Mathlib's finite-sum
+and order tools; no linear-programming development is needed.
+For the remaining results, inspect exact types and dependency pins
+before choosing imports. Use sibling packages
+through relative paths and shared lemmas through the repository's
+common library; do not duplicate the earlier developments or change
+their frozen theorem statements.
+
+The following distinctions are part of the specification: a physical
+head is not a return family; an endpoint witness is not a record with
+free capacity; a source overcover is not a set of independent bits;
+and a numerical subsequential profile is not a limiting geometry.
+The movement theorem quantifies over order and matching but retains
+its specified query interface. The causal theorem assumes local
+functional separation on every helper fibre, not merely separated
+final outputs. The serial example has a prescribed geometry and one
+root and phase, not an implemented transposer or an averaged
+counterexample.
+
+After each formalization stage, compare the entire English statement
+with the Lean type, including inherited model assumptions and the
+order of quantifiers. The axiom commands and declaration index are
+generated from the actual formal citations and must be regenerated
+when those citations change. Neither the statement index nor a
+successful PDF build constitutes formal verification.

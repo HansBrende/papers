@@ -46,6 +46,15 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`SparseProjection`](LeanMachine/SparseProjection.lean), [`BlockRankSparsity`](LeanMachine/BlockRankSparsity.lean) | Actual-generator support counting and block-column rank payment from sparse block rows | this repository |
 | [`CoordinateSplitting`](LeanMachine/CoordinateSplitting.lean), [`ProjectionFamilies`](LeanMachine/ProjectionFamilies.lean) | Exact coordinate capacity splitting for orthogonal idempotents and a weighted residual bound | this repository |
 | [`InvariantKernel`](LeanMachine/InvariantKernel.lean) | Kernel-dimension transport through an injective intertwiner covering the entire kernel | this repository |
+| [`IntervalCover`](LeanMachine/IntervalCover.lean) | Equal-size subcover and packing certificates for order-connected sets, and lossless fractional-cover rounding | this repository |
+| [`FiniteIncidence`](LeanMachine/FiniteIncidence.lean) | Exact weighted multiplicity sums for indexed families and overlap bounds from disjoint color classes | this repository |
+| [`MonotonePatches`](LeanMachine/MonotonePatches.lean) | Metric path variation from threshold crossings; sharp factor-three bounds for successful words and disjoint interval patches | this repository |
+| [`ThinIntervals`](LeanMachine/ThinIntervals.lean) | Triangle-free interval forests, nonleaf component ranks, and periodic cuts bounding every surviving simple path | this repository |
+| [`PeriodicPhases`](LeanMachine/PeriodicPhases.lean) | Unit-step chain bounds and protected phase averaging with exact residue counts and actual payment unions | this repository |
+| [`FiniteOrbits`](LeanMachine/FiniteOrbits.lean) | Exact finite action orbits, removal of inactive actions, relabeling, and cardinality bounds for deterministic continuation | this repository |
+| [`IntervalComponents`](LeanMachine/IntervalComponents.lean) | Component interval hulls equal their unions; distinct components have disjoint hulls | this repository |
+| [`SourceBank`](LeanMachine/SourceBank.lean) | Finite lists of time maps, summed path variation, composition, and ordered-exception recurrences | this repository |
+| [`PackedWords`](LeanMachine/PackedWords.lean) | Exact uniform banks for interval-supported actions on forests, packed by unordered component labels | this repository |
 
 ## External code
 

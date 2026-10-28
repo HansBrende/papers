@@ -1,0 +1,99 @@
+\section{What remains for a transposition algorithm or impossibility proof}
+\label{sec:roadmap}
+
+The main conclusion is a uniform deficit for specified full return
+geometries. It is stronger than a statement that one proposed code has
+failed: every deterministic local computation on any geometry in the
+stated class is covered, with no linearity assumption. Its scope is also
+explicit. A bounded full-span partition, a Q2 core, and a bounded number
+of exceptional families are additional geometric hypotheses. They have
+not been derived for an arbitrary linear-time transposer.
+
+\subsection{The nearest unresolved geometric case}
+
+For one exceptional family, \cref{cor:one-exception} completes the
+deficit-versus-payment argument. With two exceptional families, a
+limiting inverse-square hop profile is compatible with
+\cref{thm:necessary-hop-tail}. The next concrete problem is to determine
+whether the remaining complete continuation can satisfy all the
+necessary conditions simultaneously.
+
+There are three precise ways to exclude a common native class in this
+case. First, bound the phase-and-column mean fractional cover by a
+common function $f(R)=o(R^2)$, uniformly in dimension and every finite
+first-$J$ selection with $J\ge R$. Second, bound the mean number of
+globally maximal newer seeds, at each fixed protected scale $R$ in a
+common unbounded set, by a function $g_R(J)$ with
+$\liminf_J g_R(J)/(J+1)^2=0$. Third, give the raw metric covers with
+the three joint limits in \cref{eq:metric-sharing-limits}.
+These are respectively the criteria in
+\cref{cor:uniform-cover,thm:uniform-sharing,prop:metric-sharing}.
+They are alternatives; none is currently supplied for every admissible
+two-exception geometry with an inverse-square envelope.
+
+A failed attempt should be checked against the exact hypothesis it
+tests. \Cref{prop:serial-quadratic-cover} defeats a universal pointwise
+linear cover estimate based only on serial exceptional spans and
+exceptional-only variation tails. It does not defeat a phase average,
+a common inverse-square envelope, or shared raw revelation across all
+outputs. It also belongs to a class already excluded by the finite
+skeleton corollary. Using it as evidence against all three uniform
+criteria would therefore draw a conclusion the example does not support.
+
+Conversely, a candidate near-full sequence in the inverse-square class
+must meet the necessary reciprocal-cover, complete-observable movement,
+and global-continuation-density bounds of
+\cref{thm:necessary-cover,cor:necessary-exposure,cor:sharing-density},
+with all limits taken along the same joint profile. Producing such a
+geometry would test the sharpness of these certificates. It would not
+by itself supply a correct computation on the geometry.
+
+\subsection{What a constructive advance must compute}
+
+A recovery code becomes a transposition algorithm only after its
+encoding, updates, reads and output order have been implemented within
+the native time bound. The complete-source certificate charges one
+such implementation; it does not construct one from an abstract code.
+The coded-caching calibration makes this distinction concrete. Its
+algebraic decoder exists, but its specified raw-query interface cannot
+be represented by a fixed number of trajectories with uniformly bounded
+normalized movement at all small fixed radius ratios. Changing that
+interface or helper may evade the argument and must be analysed anew.
+
+The causal-group result identifies another restricted shortcut that
+cannot work: after a cheap helper is fixed, a locally autonomous
+computation for fixed groups of $o(\log d)$ adjacent columns cannot
+retain nearly all the input information. A successful algorithm can
+avoid that premise by coupling groups during computation. The theorem
+does not price arbitrary such coupling. The constructive target is an
+explicit coupled update rule whose total native execution cost can be
+bounded, including the cost of changing where its encoded information
+is available. Final-output separation alone is not the forbidden
+causal typing.
+
+\subsection{What would decide (T)}
+
+An affirmative answer requires one fixed finite-tape, finite-alphabet
+machine, constants $c,d_0$, and a proof that it correctly transposes
+every input of every dimension $d\ge d_0$ in at most $cd^2b(d)$ steps.
+All preprocessing and recovery must be included. A family of
+dimension-dependent machines, a source relation, or a storage code
+without such an implementation does not meet this specification.
+
+A negative answer must exclude every such fixed machine and constant.
+One possible route is a reduction from an arbitrary candidate to
+correctness sets and paid certificates with a strictly positive net
+deficit. Such a reduction must account for the cost of selecting a
+geometry in the adaptive case, and it must address geometries outside
+the span and core hypotheses used here. Alternatively, a different
+certificate may handle those geometries directly. The depth reductions
+of the fourth and eighth papers and the complete-recovery restrictions
+of the fifth provide complementary tools
+\cite{FourthPaper2026,EighthPaper2026,DirectedRecovery2026}; this paper
+does not prove that their hypotheses cover every remaining machine.
+
+The immediate formalization task is correspondingly bounded: verify
+the exact finite certificates and their stated uniform consequences,
+without promoting a geometric criterion into a universal machine
+property. The specification in the following appendices separates
+those obligations from the unresolved question (T).

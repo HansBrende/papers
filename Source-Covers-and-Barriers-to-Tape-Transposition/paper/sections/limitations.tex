@@ -1,0 +1,322 @@
+\section{Why complete continuation matters}
+\label{sec:limitations}
+
+The source-cover criteria require bounds on complete raw recovery.
+Neither disjoint exceptional spans nor small variation of raw reads
+transported through the exceptional maps supplies such a bound by itself.
+We give one native geometry that makes this distinction explicit.  It
+has a quadratic fractional cover at one root and phase, even though all
+exceptional-only transported profiles vanish on the nondistinguished
+core families.  The example does not satisfy a fixed inverse-square
+family-size envelope and is not a counterexample to an averaged cover
+criterion.
+
+We use the strictly clipped shadows of \cref{def:clipped-shadow}, with
+deleted families acting as the identity. Their ordinary orbit includes
+the seed and is not truncated at other paid vertices. It is therefore
+distinct from the actual dependency cone after paid lower vertices have
+been removed.
+
+For a retained core $\mathcal K$, let $B_{\mathcal K}(u)$ be the raw
+labels of its ordinary orbit from time $u$.  For a nonempty raw set $S$,
+define its arbitrary-seed fractional core-cover number by
+\begin{equation}
+ \kappa_{\mathcal K}^{\rm all}(S)
+ =\inf\left\{\sum_{u=0}^{T-1}w_u:
+ w_u\ge0,\quad
+ \sum_{u:\,a\in B_{\mathcal K}(u)}w_u\ge1
+       \text{ for every }a\in S\right\}.
+ \label{eq:arbitrary-seed-cover}
+\end{equation}
+Allowing every computation time as a seed can only make covering easier
+than requiring the seeds to lie in the original joint orbit.
+
+\begin{proposition}[Serial exceptional spans can require a quadratic cover]
+\label{prop:serial-quadratic-cover}
+\notformalized
+For every integer $M\ge4$ and $b\ge1$, there is a prescribed native
+geometry with
+\[
+ d=16M,\qquad L=d^2b,
+\]
+eight work heads, unit moves or pauses, at most three entries per work
+cell, fewer than $13L$ time vertices, and $L$ distinct increasing output
+times, with the following properties.  In particular the construction
+allows the logarithmic entry width $b=b(d)$.
+
+The complete actual return families consist of a core $\mathcal K_0$
+whose full spans partition into two disjoint-span classes, and two
+exceptional families $F,G$ with disjoint full spans.  There are no
+residual families.  A period-$M$ deletion of complete core families,
+together with payment of every selected outer lower endpoint, produces
+a retained core $\mathcal K$, a paid set $\Gamma$, and an output root
+$t$ such that, writing $S(t)$ for its complete ordinary raw orbit and
+$Q=(M-1)^2$,
+\begin{equation}
+ \kappa_{\mathcal K}^{\rm all}(S(t))=Q,
+ \qquad
+ \gaparea(S(t))\le\frac1{2Q}+\frac1{2L}.
+ \label{eq:serial-cover-conclusions}
+\end{equation}
+The same cover equality holds if covering seeds must lie in the joint
+orbit of $t$.  The paid physical dependency cone at $t$ contains $Q$
+raw coordinates with circular gaps at most $\lceil L/Q\rceil$.
+
+There is one core family $H$ such that, on the entire full span of every
+other original core family, $x\circ w$ is identically zero for every
+finite word $w$ in the two exceptional shadows, including the empty
+word.  Here $x$ is the raw input-head position.  Thus all these
+exceptional-only variation tails vanish, despite the quadratic cover.
+\end{proposition}
+
+\begin{informalproof}
+Put
+\[
+ m=M,\quad n=8m,\quad h=4nb,
+ \quad L=nh=4n^2b,
+ \quad A=4L,\quad E=11L,
+ \quad T=12L+h+1.
+\]
+All heads begin at zero.  Four heads form two copies of the following
+bank construction, beginning at times $A$ and $E$.  At time $D+2ih$,
+$0\le i<n/2$, head $i\bmod2$ moves up $h$, down $h$, and up $h$ from
+its current base, each leg at unit speed; it waits until its next bank.
+Before and after these movements it remains parked.  The base increases
+by $h$ after each bank on that head.  Direct inspection of the successive
+visits gives exactly the families
+\begin{equation}
+ \begin{split}
+ C_j^D:\quad &\text{span }(D+jh,D+(j+2)h],
+       \quad\text{owner }D+(j+1)h,\\
+ &\text{hops }(D+(j+1)h-u,D+(j+1)h+u),\quad1\le u\le h,
+ \end{split}
+ \label{eq:serial-bank-families}
+\end{equation}
+for $D\in\{A,E\}$ and $0\le j<n$.  The two families in each bank
+come from its upper and lower turn respectively.  Its interior cells
+are entered on its three legs; a later bank uses a fresh spatial
+interval.  The common boundary cell also has at most three entries.
+Parking adds only adjacent previous visits.  Thus
+\cref{eq:serial-bank-families} is the complete nonadjacent family list
+on those four heads.  Even and odd $j$ give two disjoint-span classes.
+
+A fifth head supplies $F$: it waits through $7L$, rises to $L$ by
+$8L$, holds through $11L$, and descends to zero by $12L$.  Its one
+complete family has
+\[
+ \text{span }(7L,12L],\quad\text{owner }8L,
+ \quad\text{hops }(7L+a,12L-a),\quad0\le a<L.
+\]
+A sixth head supplies the core family $H$: it rises to $L$ by time
+$L$, holds through $2L$, and descends to zero by $3L$.  Its family is
+\[
+ \text{span }(0,3L],\quad\text{owner }L,
+ \quad\text{hops }(a,3L-a),\quad0\le a<L.
+\]
+There is no later ascent on either head, hence no additional lower-turn
+family.  Their plateaux contribute adjacent visits.
+
+The eighth head will supply a core bridge $B$.  Set $i=4m-1$ and
+\[
+ r_k=8L-(i-k)h-h/2,\qquad0\le k<m.
+\]
+This head waits through $5L$, rises to $L$ by $6L$, descends at unit
+speed to height $m$ by $7L-m$, and then waits.  It descends by one at
+each time $r_0,\ldots,r_{m-1}$ and parks at zero.  These times increase,
+and $r_0>7L-m$, so the schedule is legal.  Its complete family has
+owner $6L$, span $(5L,r_{m-1}]$, and hops
+\[
+ (5L+a,7L-a)\quad(m\le a<L),\qquad
+ (5L+m-1-k,r_k)\quad(0\le k<m).
+\]
+In particular $B$ has $L$ actual hops.  Among bank spans it overlaps
+only $C_{n-1}^{A}$: the preceding span ends exactly at $5L$.  Assign
+$B$ to the even class and $H$ to that class as well.  The entire core
+still has two disjoint-span classes; the early overlap graph is the
+path $C_0^A,\ldots,C_{n-1}^A,B$.
+
+The input head follows
+\begin{equation}
+ x(t)=
+ \begin{cases}
+ t,&0\le t\le L-1,\\
+ 2L-2-t,&L-1\le t\le2L-2,\\
+ 0,&t\ge2L-2.
+ \end{cases}
+ \label{eq:serial-raw-walk}
+\end{equation}
+All raw coordinates have been visited before the prescribed output
+times $E,E+1,\ldots,E+L-1$.
+
+We next specify the seventh head and the paid phase.  On the early
+overlap path give $C_j^A$ rank $\min\{\max\{j,1\},n-1\}$ and $B$
+rank $n-1$.  On the late path give $C_j^E$ rank
+$\min\{\max\{j,1\},n-2\}$; give $H$ rank one.  Delete rank residue
+zero modulo $m$.  This deletes precisely
+$C_m^D,C_{2m}^D,\ldots,C_{7m}^D$ in each bank component and retains
+$H,B$.  These are also the path-spine ranks with the endpoint leaves
+assigned their adjacent spine rank.
+
+Choose
+\[
+ t=E+(4m-1)h+h/2.
+\]
+Its retained late-core orbit consists of
+$v_k=E+(4m-1-k)h+h/2$, $0\le k\le m-2$.
+Indeed each reflection reduces the window index by one, until the
+next required family is $C_{3m}^E$, which was deleted.  The actual
+$F$ hop from $v_k$ lands at $r_k$.  The actual $B$ hop then lands at
+$5L+a_k$, where $a_k=m-1-k$.  The last early bank family sends this
+point below the bridge's outer lower endpoint:
+\[
+ 5L+a_k\longmapsto5L-a_k<5L.
+\]
+Keeping the complete older continuation gives the $Q=(m-1)^2$ times
+\begin{equation}
+ z_{k,\ell}=A+(n-\ell)h+
+ \begin{cases}
+ a_k,&\ell\text{ even},\\
+ h-a_k,&\ell\text{ odd},
+ \end{cases}
+ \quad 0\le k\le m-2,\quad1\le\ell\le m-1.
+ \label{eq:serial-older-grid}
+\end{equation}
+They are distinct: different $\ell$ give different windows, and within
+a window the offsets $a_k$ are distinct.  They are all strictly
+interior to their windows, their maximum is $5L-1$, and their lowest
+window is $7m+1$.  The next older family $C_{7m}^A$ was deleted, so
+these are the complete older bank continuations.
+
+Order these times as $z_1<\cdots<z_Q$ and set
+\[
+ u_j=2L+\lfloor jL/Q\rfloor,\qquad0\le j<Q.
+\]
+This ordering defines the prescribed geometry; it is not an uncharged
+sorting operation in a claimed algorithm.
+The seventh head waits through $u_0=2L$.  It leaves cell $j$ at time
+$u_j+1$, reaches cell $j+1$, and waits until its next specified move.
+Its first peak is at $u_{Q-1}+1<3L$.  It holds at height $Q$ until
+$z_1-1$, then descends by one at each $z_i$ and parks.  Since both
+sequences are strictly increasing, all moves are unit moves or pauses.
+Its only family $G$ has
+\[
+ \text{span }(2L,z_Q]=(2L,5L-1],\quad
+ \text{owner }u_{Q-1}+1,\quad
+ \text{hops }(u_{Q-i},z_i),\quad1\le i\le Q.
+\]
+The lower endpoints use the last outward visits, including all waits.
+The full spans of $G$ and $F$ are disjoint and can share a third
+disjoint-span class.  We have now listed all $2n+4$ complete families;
+the new heads have no later ascent and no omitted opposite-side
+family.  All work cells have at most three entries.
+
+Pay every actual lower endpoint of the fourteen deleted bank families
+and every outer lower endpoint in the full selected family set.  The
+first set has $14h$ elements.  The second has $2n+4$ elements, of
+which fourteen already belong to the first.  Therefore
+\begin{equation}
+ |\Gamma|=14h+2n-10.
+ \label{eq:serial-paid-size}
+\end{equation}
+Every displayed path to a $z_i$ avoids these payments: all bank offsets
+are interior, all its windows avoid the deleted lower windows, and
+the $F$ and $B$ hops avoid their outer lowers.  For $1\le j<Q$ the
+actual $G$ and $H$ hops then give
+\[
+ z_{Q-j}\longmapsto u_j
+       \longmapsto L-\lfloor jL/Q\rfloor.
+\]
+These vertices also avoid $\Gamma$.  The last $G$ hop lands at the
+paid outer lower $u_0=2L$ and is discarded in the physical cone.
+Together with the root's direct read zero, the surviving paths prove
+that the physical cone contains
+\begin{equation}
+ R=\{0\}\cup
+   \{L-\lfloor jL/Q\rfloor:1\le j<Q\}.
+ \label{eq:serial-physical-grid}
+\end{equation}
+All state predecessors, other work predecessors and direct reads are
+still retained; they can only add sources to this witnessed subset.
+Its $Q$ circular gaps are at most $\lceil L/Q\rceil$.  Inserting
+points only decreases the sum of squared gaps, so
+\[
+ \gaparea(S(t))\le\gaparea(R)
+       \le\frac{\lceil L/Q\rceil}{2L}
+       \le\frac1{2Q}+\frac1{2L}.
+\]
+
+For the exact cover assertion, the ordinary joint time orbit consists
+of six groups: the $m-1$ times $v_k$, their $m-1$ images $r_k$, the
+$m-1$ images $5L+a_k$, the $Q$ times $z_i$, their $Q$ strict $G$
+images, and the $Q$ subsequent $H$ images.  The calculations above
+show that each is reached.  They also show that the union is closed
+under all retained maps: within a bank the only change is the next
+listed reflection; $B$ acts on the $r_k$; $F$ acts on the $v_k$;
+$G$ acts on the $z_i$; and $H$ acts on the $G$ images.  Other maps
+fix these points.  At the last $G$ return the ordinary clipping rule
+replaces $2L$ by $2L+1$, and $H$ then sends it to $L-1$.  Thus
+\begin{equation}
+ S(t)=\{0,L-1\}\cup
+      \{L-\lfloor jL/Q\rfloor:1\le j<Q\}.
+ \label{eq:serial-complete-raw}
+\end{equation}
+The extra label $L-1$ here is an ordinary clipped source; its displayed
+clipped path is not asserted to survive the physical payment.
+
+Give each of the $Q$ nonzero labels in
+\cref{eq:serial-complete-raw} weight one.  A complete retained core
+orbit from any computation time contains at most one of them.  To see
+this, after time $3L$ every core continuation stays after $3L$, where
+$x=0$.  Before time $L$ the core orbit is a singleton.  Between $L$
+and $2L$, the only possible extra core image is $H$'s held owner $L$,
+whose raw value is $L-2$; this is not a target because $L/Q>256$.
+Between $2L$ and $3L$, the root reads zero and the sole nonidentity
+core map $H$ adds at most one raw value.  The endpoints obey the same
+description.  Summing the fractional covering constraints for the
+$Q$ target labels therefore gives
+$\sum_u w_u\ge Q$.
+
+Conversely, use the $Q$ seeds
+\[
+ 2L+1,\quad u_1,\ldots,u_{Q-1}.
+\]
+Each lies in the joint orbit and has core raw set consisting of zero
+and one different nonzero target in
+\cref{eq:serial-complete-raw}.  Weight one on each seed covers $S(t)$.
+This proves both asserted cover equalities.
+
+Finally, $x$ is zero throughout $[2L,T-1]$.  Both exceptional shadows
+preserve that interval: their nonidentity images stay strictly above
+their outer lowers, which are $2L$ and $7L$, and elsewhere they are
+the identity.  Every original core span except $H$ lies in that
+interval.  Hence $x\circ w$ vanishes on each such full span for every
+word $w$ of exceptional shadows.  This proves the profile assertion
+and completes the construction.
+\end{informalproof}
+
+The obstruction in this example is the continuation after the bridge
+exit.  Many distinct intermediate times remain distinct through the
+older bank, and the final core return $H$ converts them into separated
+raw coordinates.  Looking only at raw reads immediately after an
+exceptional hop misses this last recovery step.  In particular,
+\cref{prop:serial-quadratic-cover} rules out a universal pointwise
+$O(M)$ fractional core-cover bound on the stated serial and zero-tail
+premises.  It also rules out a uniform pointwise lower bound
+$\gaparea(S(t))\ge c/(M+1)$ with $c>0$: along this family,
+$(M+1)\gaparea(S(t))\to0$.
+
+There are two essential restrictions on that conclusion.  First, the
+example ties $d=16M$ to the growing phase parameter and supplies one
+root and one phase.  It does not disprove a phase or column average
+whose parameters are fixed in the order required by the uniform
+source-cover theorem.  Second, selecting the four complete families
+$\{H,B,F,G\}$ leaves maximum family size $h=L/n=o(L)$.
+Thus \cref{cor:finite-skeleton} already excludes near-full correctness
+on this sequence of geometries; it does not provide a new hard native
+class.  Its $2n$ equal bank families also violate every common fixed
+inverse-square envelope: the $n$th largest core family has at least
+$h=L/n$ hops, so a bound $h_j\le CL/j^2$ would force $C\ge n$.
+These are prescribed legal geometries and source sets, not a
+transposition algorithm or a proof that every reachable source carries
+necessary information.  An affordable cut, an averaged cover bound,
+or a different complete recovery certificate may still handle them.

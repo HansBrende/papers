@@ -1,0 +1,258 @@
+\section{Paying shared raw support once}\label{sec:shared-support}
+
+The preceding covers estimate source gap area without adding revelations.
+Here we use a different mechanism: reveal a raw source set shared by many
+outputs, pay its union once, and apply the one-exception area bound to
+the sources that remain. All assertions in this section use $q=2$.
+
+\subsection{A finite global-sharing bound}
+
+Retain the notation $A_\rho$, $R_{e,\rho}$ and $Z_\rho(t)$ of
+\cref{eq:older-closure,eq:two-exception-decomposition}. Fix
+$J\ge R\ge\max(K,1)$, $M=2R+2$, and set
+\begin{equation}\label{eq:sharing-constants}
+ \ell=4R+7,\quad C_R=C_0(1+3C_0)^2,\quad
+ B_R=\ell(\ell+1),\quad A_R=\beta NC_Rc,
+ \qquad C_0=16+24M(M-1).
+\end{equation}
+Let $\mathcal T_{\rm out}$ be the set of all $L$ actual output-bit times,
+and define
+\[
+ Z_\rho^{\rm all}=\bigcup_{t\in\mathcal T_{\rm out}}Z_\rho(t),\qquad
+ G_\rho=\left|\max_{\succeq_e}Z_\rho^{\rm all}\right|,\qquad
+ \overline G_{J,R}=\mathbb E_\rho G_\rho.
+\]
+An empty seed set has $G_\rho=0$. The order $\succeq_e$ is complete
+older reachability, not merely temporal order. These maximal seeds are
+geometric witnesses, not independent records of bounded bit capacity.
+Let
+\begin{equation}\label{eq:global-newer-support}
+ S^{\rm new}_\rho
+ =x\left(\bigcup_{z\in Z_\rho^{\rm all}}R_{e,\rho}(z)\right).
+\end{equation}
+Transitivity and maximality cover this entire set by the older closures
+of the $G_\rho$ maximal seeds. Each has at most $B_R$ endpoints, so
+$|S^{\rm new}_\rho|\le B_RG_\rho$.
+
+\begin{proposition}[The full shared-support payment]\label{prop:finite-sharing}
+\notformalized
+With $\alpha,\tau,a$ as in \cref{sec:source-covers}, for every integer
+$w\ge1$,
+\begin{equation}\label{eq:finite-sharing}
+ \frac\Delta L\ge
+ \frac{(1-\alpha)_+^2}{4(K+1)(\ell+1)}
+ -\frac{wB_R\overline G_{J,R}}L
+ -\mathsf E_2(w;J,2R+2,R,a,\tau).
+\end{equation}
+The additional raw revelation has at most $wB_RG_\rho$ bits for every
+grid shift, so the residual-cut shift may be chosen using the original
+complete two-exception bank.
+\end{proposition}
+\begin{informalproof}
+Fix a phase and select its residual shift $\theta$ for the complete
+bank. In fixed raw-coordinate order reveal every bit in
+\[
+ U_{\rho,\theta}=
+       \bigcup_{y\in S^{\rm new}_\rho}B_\theta(y).
+\]
+Each block has at most $w$ bits, hence $|U_{\rho,\theta}|\le wB_RG_\rho$
+for every $\theta$. On a common fibre of this revelation and the
+original transcript, \cref{eq:two-exception-decomposition} makes every
+output depend only on blocks of $x(R_{e,\rho}(t))$ and the fixed joint
+transcript. Its frozen source gap has the one-exception lower bound
+$(1-\alpha)_+^2/[4(K+1)(\ell+1)]$ by
+\cref{lem:fractional-gap}. Use the older bank for these sources;
+its summed variation is at most the full bank's bound $C_R(T-1)$.
+\Cref{thm:cyclic-freezing} applies with total information charge
+$\beta|\Gamma|+|U_{\rho,\theta}|$. Average the resulting complete
+inequality over the same phases and use the average rank-payment bound.
+This gives \cref{eq:finite-sharing}. Revealing a seed vertex itself
+would not reveal its entire source closure; the raw bits above are
+what have actually been paid for.
+\end{informalproof}
+
+\subsection{Uniform sharing criteria}
+
+For the uniform statements below, select the first $J$ original core
+families in the hop ordering of \cref{sec:uniform}, protect the first
+$R$, and rebuild the selected core's forest and ranks before choosing
+a phase. All quantities indexed by $J,R$, including $\overline G_{J,R}$
+and the raw covering numbers below, refer to these prefix selections.
+Absent families are omitted.
+
+Let $(\eta_J)_{J\ge1}$ be a fixed positive sequence tending to zero that
+bounds the normalized size of the first omitted original core family:
+$|G_{J+1}|/L\le\eta_J$, uniformly over the class. The universal choice
+$\eta_J=c/(J+1)$ is available from sorted hop counts. Whenever another
+bound is given, it may be replaced by its minimum with $c/(J+1)$.
+
+\begin{theorem}[Theorem H: uniform exclusion by global sharing]\label{thm:uniform-sharing}
+\notformalized
+Fix $c,\beta,N$, a common sequence $\eta_J$ as above, and an unbounded
+set $\mathcal R\subseteq\{1,2,\ldots\}$. For each $R\in\mathcal R$
+fix a finite nonnegative function $g_R(J)$ on $J\ge R$ such that
+\begin{equation}\label{eq:sharing-smallness}
+ \liminf_{J\to\infty}\eta_Jg_R(J)=0.
+\end{equation}
+Consider admissible two-exception geometries for which
+$\overline G_{J,R}\le g_R(J)$ for every $R\in\mathcal R$ and $J\ge R$.
+These bounds and index sets are fixed independently of dimension.
+There exist $\eps>0,d_0$ such that every such geometry with
+$d\ge d_0$ and $a_0\le\eps L$ satisfies $\Delta\ge\eps L$.
+
+In particular it suffices, without a size envelope, that
+$\liminf_J g_R(J)/(J+1)=0$ for each $R\in\mathcal R$.
+Under $|G_i|\le HL/i^p$ with fixed $H>0$ and $p>1$, it suffices that
+$\liminf_J g_R(J)/(J+1)^p=0$; this includes subquadratic sharing
+for the inverse-square envelope.
+\end{theorem}
+\begin{informalproof}
+Negating the conclusion gives a near-full sequence with a joint profile.
+Choose a finite $K$ with $V_K<1$ and fix $R\in\mathcal R$ with $R\ge K$.
+For each finite $J\ge R$ use
+$a=\max(a_0,\lceil\eta_J L\rceil)$ and
+$w=\lceil\lambda L\rceil$, with $0<\lambda<1$ fixed before dimension.
+The dimension limit of \cref{eq:finite-sharing} gives
+\begin{equation}\label{eq:sharing-prefix-limit}
+ \frac{(1-V_{K,J})^2}{4(K+1)(\ell+1)}
+ -\frac{\beta\tau_{R,J}}{R+2}
+ \le \lambda[2+B_Rg_R(J)]+\frac{A_R\eta_J}\lambda.
+\end{equation}
+The finite sums $V_{K,J},\tau_{R,J}$ are as in
+\cref{eq:finite-prefix-limit}, and $V_{K,J}\le V_K<1$.
+For every sufficiently large fixed $J$, choose
+\[
+ \lambda_J=\sqrt{\frac{A_R\eta_J}{2+B_Rg_R(J)}}\in(0,1).
+\]
+This is allowed because \cref{eq:sharing-prefix-limit} holds for every
+fixed $\lambda$ after its dimension limit. The right side becomes
+$2\sqrt{A_R\eta_J[2+B_Rg_R(J)]}$, which tends to zero along a subsequence
+given by \cref{eq:sharing-smallness}. The finite sums converge along it.
+As $\ell+1=4(R+2)$, we obtain
+\[
+ \beta\tau_R\ge\frac{(1-V_K)^2}{16(K+1)}.
+\]
+This holds for every sufficiently large $R\in\mathcal R$, contradicting
+$\tau_R\to0$. The two special cases use respectively
+$\eta_J=c/(J+1)$ and $\eta_J=\min\{c/(J+1),H/(J+1)^p\}$.
+\end{informalproof}
+
+The bound $g_R$ may grow arbitrarily fast with the fixed protected
+scale $R$. Its uniformity in dimension is essential: for a single
+finite geometry, increasing $J$ beyond all its families proves no
+uniform statement. A common unbounded set of cutoffs $J$ for each $R$
+also suffices if the stated bounds and smallness hold on that set.
+
+\begin{corollary}[Necessary global continuation density]\label{cor:sharing-density}
+\notformalized
+Fix a near-full sequence with common omitted-size bound $\eta_J$,
+and restrict it to a subsequence realizing a joint profile. All dimension
+limits in this statement are along that subsequence. For fixed $K$
+with $V_K<1$ and $R\ge\max(K,1)$, define
+\[
+ \mu_R=\frac{(1-V_K)^2}{16(K+1)(R+2)}-
+                   \frac{\beta\tau_R}{R+2},\qquad
+ g^{\rm low}_{J,R}=\liminf_{\nu\to\infty}\overline G_{J,R}^{(\nu)}.
+\]
+If $\mu_R>0$, then
+\begin{equation}\label{eq:sharing-density}
+ \liminf_{J\to\infty}\eta_Jg^{\rm low}_{J,R}
+       \ge\frac{\mu_R^2}{4A_RB_R}.
+\end{equation}
+The condition $\mu_R>0$ holds for all sufficiently large fixed $R$.
+For $\eta_J=c/(J+1)$ this forces positive linear growth of
+$g^{\rm low}_{J,R}$ in $J$; an inverse-square omitted-size bound forces
+positive quadratic growth.
+\end{corollary}
+\begin{informalproof}
+For each fixed $J$ with finite $g^{\rm low}_{J,R}$, pass to a dimension
+subsequence realizing that liminf. The joint profile is unchanged.
+\Cref{eq:sharing-prefix-limit} holds with $g_R(J)$ replaced by this
+liminf. Optimize $\lambda$ as before. Its left side tends to $\mu_R$
+as $J$ grows and is positive for all sufficiently large $J$.
+Squaring and rearranging gives
+\[
+ \eta_Jg^{\rm low}_{J,R}
+ \ge\frac{\mu_{J,R}^2}{4A_RB_R}-\frac{2\eta_J}{B_R},
+\]
+where $\mu_{J,R}$ denotes that finite-prefix left side. Infinite
+$g^{\rm low}_{J,R}$ satisfies the inequality automatically. Take the
+liminf in $J$. Finally $\tau_R\to0$ shows that $\mu_R$ is positive for
+all sufficiently large $R$.
+\end{informalproof}
+
+This is a count of globally incomparable complete continuations. It is
+not a count of independent raw bits or a native gate lower bound.
+
+\subsection{Raw metric covers instead of temporal counts}
+
+For $0<\delta<1$, let $\mathcal N_{\rho,J,R}(\delta)$ be the minimum
+number of closed real intervals of length at most $\delta L$ covering
+$S^{\rm new}_\rho$. An empty set has covering number zero. These are
+intervals in the linear raw-coordinate range, not circular arcs.
+
+\begin{proposition}[Metric shared-support criterion]\label{prop:metric-sharing}
+\notformalized
+In the setting of \cref{thm:uniform-sharing}, replace its bounds on
+$\overline G_{J,R}$ by the following. For each $R$ in a fixed unbounded
+set, there are dimension-independent numbers $\delta_{J,R}\in(0,1)$
+and $n_{J,R}\ge0$ with
+\[
+ \mathbb E_\rho\mathcal N_{\rho,J,R}(\delta_{J,R})\le n_{J,R}.
+\]
+Along a common unbounded set of cutoffs $J$ for that $R$, assume jointly
+\begin{equation}\label{eq:metric-sharing-limits}
+ \delta_{J,R}\to0,\qquad
+ \delta_{J,R}n_{J,R}\to0,\qquad
+ \eta_J/\delta_{J,R}\to0.
+\end{equation}
+Then there are $\eps>0,d_0$ such that $a_0\le\eps L$ and $d\ge d_0$
+imply $\Delta\ge\eps L$ for this class.
+\end{proposition}
+\begin{informalproof}
+Put $w=\lceil\delta_{J,R}L\rceil$. At every grid shift, the blocks
+meeting any one covering interval have total capacity at most $3w$.
+Thus the raw revelation in \cref{prop:finite-sharing} costs at most
+$3w\mathcal N_{\rho,J,R}(\delta_{J,R})$. Its dimension limit replaces
+the right side of \cref{eq:sharing-prefix-limit} by
+\[
+ 2\delta_{J,R}+3\delta_{J,R}n_{J,R}
+              +A_R\eta_J/\delta_{J,R}.
+\]
+All three terms vanish along the cutoffs in
+\cref{eq:metric-sharing-limits}. The proof of
+\cref{thm:uniform-sharing} now gives the same contradiction.
+\end{informalproof}
+
+\begin{corollary}[Sublinear raw covering exponents]\label{cor:covering-exponents}
+\notformalized
+The metric criterion holds in either of the following classes, with
+constants uniform in dimension and cutoff and permitted to depend on
+each fixed $R$ in an unbounded set.
+\begin{enumerate}[label=(\alph*)]
+\item Without a size envelope,
+$\mathbb E_\rho\mathcal N_{\rho,J,R}(\delta)
+ \le H_R\delta^{-s_R}$ for all $J\ge R$ and
+$0<\delta<\delta_{0,R}$, where $H_R,\delta_{0,R}>0$ and $0\le s_R<1$.
+\item Under $|G_i|\le HL/i^p$ with fixed $p>1$,
+$\mathbb E_\rho\mathcal N_{\rho,J,R}(\delta)
+ \le H_RJ^{u_R}\delta^{-s_R}$ in the same range, where
+$0\le s_R<1$ and $0\le u_R<p(1-s_R)$.
+\end{enumerate}
+\end{corollary}
+\begin{informalproof}
+In (a) take $\eta_J=c/(J+1)$ and
+$\delta_{J,R}=(J+1)^{-1/2}$. In (b) choose a fixed exponent
+$u_R/(1-s_R)<v_R<p$ and set
+$\delta_{J,R}=(J+1)^{-v_R}$, with
+$\eta_J=\min\{c/(J+1),H/(J+1)^p\}$.
+The products $\delta n$ are respectively bounded by constants times
+$(J+1)^{-(1-s_R)/2}$ and $J^{u_R-v_R(1-s_R)}$; the residual ratios
+$\eta_J/\delta$ also tend to zero. Eventually $\delta<\delta_{0,R}$.
+Apply \cref{prop:metric-sharing}.
+\end{informalproof}
+
+These conditions concern raw-coordinate support shared by all outputs.
+They can be more economical than counting separate temporal occurrences.
+Supplying them for a still-open native class remains a geometric problem;
+the hypotheses are not consequences of a low entropy estimate alone.

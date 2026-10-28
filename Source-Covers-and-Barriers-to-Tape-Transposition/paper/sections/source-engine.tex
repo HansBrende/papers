@@ -1,0 +1,757 @@
+\section{Complete source banks and paid recovery}\label{sec:source-engine}
+
+This section proves the common finite statement used in the later exclusions.
+The bank must cover every surviving raw source. A list of selected return
+endpoints, without the state and unselected work dependencies, does not suffice.
+
+\subsection{Fixed geometries and complete return families}
+
+Fix integers $d,b\ge1$, and put $L=d^2b$, $W=db$ and
+$\Omega=\{0,\ldots,L-1\}$. The finite results allow arbitrary $b$; the
+application to~(T) takes $b=b(d)=\max(1,\lceil\log_2d\rceil)$. A
+\emph{fixed complete geometry} consists of the input-head and work-head
+walks on $\{0,\ldots,T-1\}$, the halting time, and the distinct increasing
+append times $t_0<\cdots<t_{L-1}$, where $T\le cL$. The walks move by at
+most one cell per step. For the Lean model, extend each walk constantly
+after $T-1$; this preserves its unit-step property and all hops before $T$.
+The output at time $t_r$ demands input coordinate
+\begin{equation}\label{eq:transpose-demand}
+ \pi(jW+ib+k)=iW+jb+k
+ \qquad(0\le i,j<d,\ 0\le k<b).
+\end{equation}
+The geometry can be an oblivious schedule or one trace shared by a set
+of inputs. We make no assertion that an arbitrary adaptive transposer has
+a trace containing nearly all its input information.
+
+The dependency graph has the state edges $t\to t-1$ and every work-head
+previous-visit edge $u\to p$, where $p$ is the last earlier visit of that
+head to its cell at time~$u$. A work edge of length one coincides with a
+state edge. Coincident edges may be identified for reachability, but an
+edge is retained whenever any physical dependency supplies it. Input
+reads are sources, not previous-visit edges. The complete value at a time
+contains its state after the step, its written work symbols and any output
+bit. Each such value has at most $\beta$ bits of capacity, for a fixed
+$\beta>0$; this includes all data needed by later steps.
+
+A \emph{genie} is a set $\Gamma$ of time vertices and its transcript
+$G_\Gamma$ consists of those complete values. Thus
+$H(G_\Gamma)\le\beta\card\Gamma$. A backward path
+$v_0\to\cdots\to v_s$ survives the genie if
+$v_1,\ldots,v_s\notin\Gamma$. In particular, its root is retained even
+when $v_0\in\Gamma$: we retain its direct read and every incoming
+dependency whose lower endpoint is unpaid. The full source relation at
+an output contains every input coordinate read at the end of such a path,
+including a path of length zero. The usual recursive evaluation of the
+dependency graph shows that this full source relation and $G_\Gamma$
+determine the output. This is the cone convention of
+\cite[Section~4.1]{FourthPaper2026}.
+
+Let $\mathcal C\subseteq\{0,1\}^{\Omega}$ be a nonempty set correctly
+transposed on the fixed geometry, and write
+\begin{equation}\label{eq:correctness-deficit}
+ \Delta=L-\log_2\card{\mathcal C}.
+\end{equation}
+All selections of families, time maps and paid vertices below depend on
+the fixed geometry, not on the input values within $\mathcal C$. We use
+ordinary base-two Shannon entropy only for finite random variables.
+
+Write $x(t)$ for the input-head position clamped to $[0,L-1]$. This does
+not increase its total variation. A read outside the input is a known
+blank; including the bit at the clamped position supplies extra
+information and is therefore a valid source overcover. For a real-valued
+path $Y$ and integers $a\le z$, put
+\[
+ \Var(Y;[a,z])=\sum_{e=a}^{z-1}|Y(e+1)-Y(e)|,
+ \qquad \Var(Y)=\Var(Y;[0,T-1]).
+\]
+In particular, $\Var(x)\le T-1$.
+
+\begin{definition}[Complete families and the two-class condition]
+\label{def:complete-families}
+\formal{SourceCovers/FamilyAccounting.lean}{SourceCovers.actualOwner,SourceCovers.ActualFamily,SourceCovers.HasSpanColoring,SourceCovers.mem_family_edges_iff,SourceCovers.constant_extension_isWalk}
+A long hop $(p,u)$ has $u-p\ge2$. Its side is upper or lower according
+as the work head stays strictly above or strictly below its endpoint cell
+between $p$ and~$u$. Its owner is the first time strictly between the
+endpoints at which its distance from that cell is largest. A
+\emph{complete actual family} consists of all long hops of one physical
+head, on one side, with one owner. For a family $G$, let $o_G$ be that
+owner, let $(p_G,U_G)$ be its outermost hop, let
+$I_G=(p_G,U_G]$ be its full half-open span, and let $h_G$ be its hop count.
+Families are formed from all actual long hops before any selection or
+payment. They are never redefined by deleting inconvenient hops.
+
+The full family system has an \emph{$N$-class span partition} if it
+partitions into $N$ classes whose spans are pairwise disjoint within each
+class. A selected core is \emph{Q2} if its complete spans admit such a
+partition into two classes. Empty classes are permitted. The full-system
+constant $N$ need not be two.
+\end{definition}
+
+These are the first-maximum families of
+\cite[Sections~2.2 and~3.2]{EighthPaper2026}. In that paper a bounded
+owner-load supplies a bounded number of disjoint-span classes. Here the
+existence of a fixed $N$-class partition is an explicit hypothesis; we
+do not infer it from the number of physical tapes alone.
+
+\begin{definition}[Admissible return geometry]\label{def:admissible-geometry}
+An admissible geometry with parameters $d,b,c,\beta,N,q,a_0$ consists
+of a fixed complete geometry and nonempty correctness set $\mathcal C$
+as above, with $T\le cL$, whole-step capacity at most $\beta$, an
+$N$-class partition of its full actual family system, an original Q2
+core $\mathcal K_0$, and a disjoint set $\mathcal E$ of at most $q$
+other complete families. Every family outside
+$\mathcal K_0\cup\mathcal E$ has at most $a_0$ hops.
+The local computation is deterministic; no linearity or product
+assumption is imposed on $\mathcal C$. The word ``admissible'' below
+includes all these premises. In a sequence, $c,\beta,N,q$ are fixed;
+the geometry, core and exceptional families may vary with dimension.
+\end{definition}
+
+\begin{lemma}[Family accounting]\label{lem:family-accounting}
+\formal{SourceCovers/FamilyAccounting.lean}{SourceCovers.family_owner_inside,SourceCovers.family_hops_nested,SourceCovers.family_span_hop,SourceCovers.family_size_le_owner_arms,SourceCovers.two_mul_sum_family_size_le,SourceCovers.sum_family_variation_eq,SourceCovers.q2_accounting,SourceCovers.mem_boundaryLowers,SourceCovers.boundary_lowers_le_crossings,SourceCovers.boundary_lowers_le_family_sizes,SourceCovers.boundary_lowers_le}
+The hops in a family are strictly nested. If its ends are
+$u_1<\cdots<u_{h_G}=U_G$, their starts satisfy
+$p_1>\cdots>p_{h_G}=p_G$, and every hop contains $o_G$ strictly.
+The outer span is itself a hop, and
+\[
+ h_G\le\min(o_G-p_G,U_G-o_G)\le\frac{U_G-p_G}{2}.
+\]
+For any set $\mathcal K$ of complete families, let
+$m_{\mathcal K}(e)=\card{\{G\in\mathcal K:p_G\le e<U_G\}}$
+be its overlap at the elementary boundary $e\mid e+1$. For every real path $Y$,
+\begin{align}\label{eq:family-overlap-profile}
+ 2\sum_{G\in\mathcal K}h_G
+ &\le\sum_{e=0}^{T-2}m_{\mathcal K}(e),\notag\\
+ \sum_{G\in\mathcal K}\Var(Y;[p_G,U_G])
+ &=\sum_{e=0}^{T-2}m_{\mathcal K}(e)|Y(e+1)-Y(e)|.
+\end{align}
+In particular, a Q2 core has $m_{\mathcal K}(e)\le2$, and
+\begin{equation}\label{eq:q2-mass-variation}
+ \sum_{G\in\mathcal K}h_G\le T-1,
+ \qquad
+ \sum_{G\in\mathcal K}\Var(x;[p_G,U_G])
+       \le2\Var(x)\le2(T-1).
+\end{equation}
+For a set $\mathcal U$ of unselected families, let $Z_{\mathcal U}(e)$
+be the distinct lower endpoints of its work edges and the state edge
+crossing $e\mid e+1$, and let
+$c_G(e)=\card{\{(p,u)\in G:p\le e<u\}}$. At every boundary inside the
+computation,
+\begin{equation}\label{eq:local-boundary-bill}
+ |Z_{\mathcal U}(e)|
+ \le1+\sum_{\substack{G\in\mathcal U\\ p_G\le e<U_G}}c_G(e)
+ \le1+\sum_{\substack{G\in\mathcal U\\ p_G\le e<U_G}}h_G.
+\end{equation}
+Thus, if every unselected family has at most $a$ hops, this count is at
+most $1+m_{\mathcal U}(e)a\le1+Na$. The same conclusion holds under
+the local bound $m_{\mathcal U}(e)\le N$, without supplying a span partition.
+\end{lemma}
+
+\begin{outline}
+The formalization imports the eighth paper's actual-hop, owner and
+family definitions and their verified nesting, outer-span and height
+bounds. Uniqueness of previous visits makes nesting strict. After
+reflection for a lower family, its hop count is at most the height
+of the common owner above the outer endpoint cell. The unit-step
+distance bound limits that height separately by $o_G-p_G$ and
+$U_G-o_G$, giving the owner-sensitive estimate.
+
+Index an elementary edge by its lower time $e$. The full span
+$(p_G,U_G]$ contains its upper time $e+1$ exactly when
+$p_G\le e<U_G$. Double counting these incidences gives
+\cref{eq:family-overlap-profile}: use unit edge weights for span
+lengths, and $|Y(e+1)-Y(e)|$ for variation. The shared counting
+identity works for weights in any additive commutative monoid.
+Families active at one boundary have distinct colors in any
+disjoint-span coloring. A Q2 core therefore has overlap at most two;
+the input's unit-step bound gives \cref{eq:q2-mass-variation}.
+
+For the boundary count, the Lean set contains the state lower
+endpoint and the union of all crossing-hop lowers in the active
+families. Its membership theorem proves that this restriction to
+active families omits no crossing hop. The finite-union and image
+cardinality bounds give \cref{eq:local-boundary-bill}. Applying the
+family-size bound $a$ and overlap bound $N$ gives $1+Na$.
+This last counting argument needs neither unit steps nor nesting
+once the local overlap and size bounds are supplied.
+\end{outline}
+
+The source-bank and grid-payment arguments below use the uniform
+specializations. The exact overlap and crossing-hop profiles retain
+information that can reduce a geometry's payment estimate; no stronger
+uniform exclusion is inferred from them here.
+
+\subsection{Clipped shadows and exact core orbits}
+
+\begin{definition}[Paid clipping and selected orbits]\label{def:clipped-shadow}
+\formal{SourceCovers/ClippedShadows.lean}{SourceCovers.ActualFamily.shadow,SourceCovers.ActualFamily.shadow_at_hop,SourceCovers.ActualFamily.shadow_exact,SourceCovers.shadowOrbit}
+Pay the outer lower endpoint $p_G$ of each selected family. Its
+\emph{clipped shadow} $s_G$ is the identity off $(o_G,U_G]$. On that
+interval it initially holds $o_G$; at each hop end $u_i$ it takes the
+value $p_i$ and holds it until the next end, with every held value
+replaced by its maximum with $p_G+1$. For a family set $\mathcal S$,
+let $\mathcal O_{\mathcal S}(t)$ be the set of values obtained from $t$
+by all finite compositions of its clipped shadows, including the empty
+composition.
+\end{definition}
+
+The shadow is antitone on its active interval, and every nonidentity
+action satisfies
+\begin{equation}\label{eq:strict-shadow}
+ p_G<s_G(t)\le o_G<t\le U_G.
+\end{equation}
+Clipping changes an actual hop value only at the outermost end $U_G$,
+whose lower endpoint has been paid. Hence every selected actual hop
+with an unpaid lower endpoint is represented exactly. We do not gate
+these maps at other paid vertices. Their orbits may retain extra paths
+through paid vertices, which is safe for a source overcover and preserves
+closure under each selected shadow.
+
+For a path $Y$ in a metric space, use the same variation notation with
+$\operatorname{dist}(Y(e),Y(e+1))$ in place of the absolute difference.
+This agrees with the earlier definition for real paths.
+
+\begin{lemma}[Variation of a shadow or successful path]
+\label{lem:shadow-variation}
+\formal{SourceCovers/ClippedShadows.lean}{SourceCovers.jointShadow_eq_on,SourceCovers.jointShadow_variation,SourceCovers.shadow_success_cons_iff,SourceCovers.shadow_word_structure,SourceCovers.shadow_word_variation,SourceCovers.variation_comp_le_crossings,SourceCovers.exists_sharp_patch}
+The joint map of clipped shadows with pairwise disjoint full spans has
+\[
+ \Var(Y\circ s)\le3\Var(Y)
+\]
+for every metric-valued path $Y$. For any fixed word of clipped shadows,
+the set of starting times at which every action is nonidentity is an
+integer interval, possibly empty. Its endpoint map is monotone in one
+direction on that interval and no greater than its argument. Extending
+that endpoint map by the identity outside the success interval also
+gives variation at most $3\Var(Y)$ for every $Y$. The word may be empty
+and may repeat families.
+
+More generally, for a time map $f:\{0,\ldots,n\}\to\{0,\ldots,N\}$,
+let $c_f(z)$ count the indices $e<n$ for which
+$\min(f(e),f(e+1))\le z<\max(f(e),f(e+1))$. Then
+\begin{equation}\label{eq:crossing-variation}
+ \Var(Y\circ f;[0,n])
+ \le\sum_{z=0}^{N-1}c_f(z)\operatorname{dist}(Y(z),Y(z+1)).
+\end{equation}
+The factor three is attained in the general class of regressive interval
+patches, even by one constant active map.
+\end{lemma}
+
+\begin{outline}
+The concrete held value is the minimum, over all hops in a complete
+family, of the hop's start if it has ended and the owner otherwise.
+It is antitone in time. Strict nesting identifies this minimum with
+the actual start at each hop end. Taking its maximum with $p_G+1$
+gives exactly the clipped shadow: every hop whose lower endpoint is
+unpaid is preserved. Its active interval is exactly its nonidentity set.
+
+For the reusable variation argument, sum the triangle inequality along
+the elementary edges crossed by each jump, then interchange the finite
+sums. The shared incidence identity gives \cref{eq:crossing-variation}.
+A map monotone in either direction on one interval and equal to the
+identity elsewhere has at most one downward crossing of each threshold.
+Indeed, two downward crossings would force the intervening points into
+the active interval. An antitone map could not rise between them; for a
+monotone map, both downward crossings would have to occur at the two
+joins, contradicting the order of the exterior identity values.
+Telescoping the threshold's zero--one indicator bounds the total number
+of crossings by twice the downward count plus one, hence by three.
+This argument needs only preservation of the finite time range, not
+regression of the patch.
+
+For a disjoint packing, a threshold outside a family's full span is
+unaffected: both the argument and its image stay on the same side.
+At most one full span straddles a given threshold, so the packed map
+has the same threshold indicator as that one shadow, or as the identity.
+The three-crossing bound therefore holds independently of the family count.
+
+Induct on a word. Its success domain is the first action's interval
+intersected with the preimage of the tail's success domain. Mathlib's
+order-convex preimage lemmas make this an interval. Composing the
+monotone restrictions preserves one of the two orientations, and every
+action weakly decreases time even when inactive. The successful endpoint
+map therefore has the required interval, monotonicity and range properties.
+Apply the single-patch bound to its identity extension. Empty success
+domains and the empty word are included.
+
+For sharpness of the general patch bound, take $f(t)=1$ on $(2,4]$ and
+$f(t)=t$ elsewhere, on times $0,\ldots,5$. With $Y(t)=0$ for $t<2$ and
+$Y(t)=1$ otherwise, $\Var(Y)=1$ and $\Var(Y\circ f)=3$. Lean
+checks this finite witness directly. No sharpness claim for a particular
+machine's source bank is inferred from this example.
+\end{outline}
+
+This lemma supplies the any-argument-path bound used repeatedly in the
+exact source bank, without a factor exponential in successful word length.
+The crossing profile can improve a particular map's estimate; the later
+uniform constants still use the factor-three specialization. The packed
+bank is formalized next; recovery through the residual dependencies remains
+the subsequent task.
+
+\begin{lemma}[The Q2 overlap forest and protected phases]
+\label{lem:protected-phase}
+\formal{SourceCovers/ProtectedPhases.lean}{SourceCovers.q2_caterpillar,SourceCovers.protected_survives,SourceCovers.admissiblePhases_card,SourceCovers.phase_payment_sum,SourceCovers.phase_average_exact,SourceCovers.protected_phase_average,SourceCovers.nonleaf_mass_le_total,SourceCovers.phase_path_length,SourceCovers.phase_success_length,SourceCovers.phase_shadowOrbit_exact,SourceCovers.phase_orbit_chains,SourceCovers.phase_orbit_card}
+Join core families whose half-open spans intersect. For a Q2 core this
+graph is a caterpillar forest: the vertices with at least two neighbors,
+called the \emph{original nonleaves}, form a path within each component
+where they occur. Let $\mathcal N$ be their set. Rank these paths from
+left to right, starting at one separately in each component. All these
+choices refer to the core before deletion.
+
+Fix $M\ge2$ and a protected set $\mathcal P$ of at most $R<M$ core
+families. Let $\mathcal A$ be the residues modulo $M$ not used by the
+ranks of $\mathcal P\cap\mathcal N$, and let $F$ be the number of
+distinct residues they use. For $\rho\in\mathcal A$, delete only the
+original nonleaves of rank congruent to $\rho$, paying every actual
+lower endpoint of their hops; call this union $\Gamma_{\rm rank}(\rho)$.
+Every protected family survives. Put
+$\tau_{\mathcal N}=\sum_{G\in\mathcal N\setminus\mathcal P}h_G$.
+Then
+\begin{equation}\label{eq:rank-phase-average}
+ \card{\mathcal A}=M-F\ge M-R,
+ \qquad
+ \frac1{\card{\mathcal A}}
+ \sum_{\rho\in\mathcal A}\card{\Gamma_{\rm rank}(\rho)}
+ \le\frac{\tau_{\mathcal N}}{\card{\mathcal A}}
+ \le\frac{\tau_{\mathcal N}}{M-R}.
+\end{equation}
+More precisely, the sum of paid-union sizes is at most
+$\sum_{G\in\mathcal N\setminus\mathcal P}\card{L_G}$, where
+$L_G$ is the set of actual hop lowers of $G$. The average bound with
+denominator $M-F$ only requires $F<M$, regardless of $\card{\mathcal P}$.
+
+In every phase, each surviving simple overlap path has at most $M+1$
+vertices; in particular each successful core word has at most $M+1$
+actions. The complete core orbit is the union of at most two deterministic
+chains from the root and has at most $\ell=2M+3$ time values. Original
+leaves and components of one or two vertices need not be deleted.
+\end{lemma}
+
+\begin{outline}
+The overlap graph has no triangle: three pairwise intersecting intervals
+have a common point, but one Q2 class would contain two of them. It has
+no longer cycle either. On a cycle choose a vertex with largest left
+endpoint. Its two cycle neighbors both extend strictly past that
+endpoint, hence overlap each other, giving a triangle. Thus the graph
+is a forest. Lean reuses Mathlib's cycle rotation and path operations.
+
+An interval contained in another can have no further neighbor without
+creating a triangle. Consequently nonleaf intervals have distinct left
+endpoints and strictly increasing right endpoints in that order. An
+overlap edge between nonleaves cannot skip a third nonleaf in the order:
+that third interval would meet both endpoints and create a triangle.
+Lean defines the rank as one plus the number of earlier nonleaves in
+the same connected component, and proves that adjacent ranks differ
+by one and distinct nonleaves have distinct ranks. Every internal vertex
+of a simple path is a nonleaf, so removing original leaves preserves
+connectivity between nonleaves. These facts give the connected nonleaf
+path and its maximum degree two.
+
+A finite unit-step integer chain avoiding one residue modulo $M$ visits
+at most $M-1$ distinct integers. Lean proves this using the first forbidden
+integer at or above the chain's minimum; a unit step cannot cross that
+integer without visiting it. Apply this to the internal vertices of a
+surviving simple path. Their ranks are distinct, so including the two
+endpoints gives at most $M+1$ vertices. This argument needs no deletion
+of leaves and also covers components of one or two vertices.
+
+By \eqref{eq:strict-shadow}, consecutive successful actions have
+overlapping spans and strictly decreasing owners. Their names form a
+simple path, to which the preceding bound applies.
+After an action from one Q2 class, its image lies in the same family's
+span at or before its owner. That family is now inactive and no other
+family of its class can act there. The only possible next action is
+therefore the unique active family of the other class. At the root
+there are at most two choices of first action; thereafter continuation
+is deterministic. Including all intermediate stopping points gives
+at most $1+2(M+1)=2M+3$ values.
+
+The shared finite-orbit proof erases inactive actions from an arbitrary
+word without changing its endpoint. It identifies the full word orbit
+exactly with the values reachable in at most $M+1$ nonidentity steps.
+This includes the empty word, intermediate stopping points and any
+collisions between the two chains.
+
+Only protected nonleaves forbid residues. Each unprotected nonleaf is
+deleted in at most one admissible phase. Mathlib's finite-union bound
+charges its actual lower support, whose size is at most its hop count.
+Interchanging the finite sums gives the payment inequality, and counting
+distinct forbidden residues gives $\card{\mathcal A}=M-F$.
+\end{outline}
+
+This supplies the finite core-orbit bound needed for the exact source
+bank. Compared with deleting leaves together with their neighbors, it
+retains the same orbit bound while paying only for original nonleaves.
+The earlier estimate using
+$\tau=\sum_{G\in\mathcal K\setminus\mathcal P}h_G$ still follows from
+$\tau_{\mathcal N}\le\tau$. The next theorem assembles these bounds into a uniform packed bank.
+
+\begin{theorem}[Theorem S: an exact source bank]\label{thm:exact-source-bank}
+\formal{SourceCovers/ExactSourceBank.lean}{SourceCovers.exact_source_bank,SourceCovers.exactSourceBank_length,SourceCovers.exactSourceBank_bounded,SourceCovers.exactSourceBank_exact,SourceCovers.exactSourceBank_cover,SourceCovers.exactSourceBank_raw_root,SourceCovers.exactSourceBank_raw_values_card,SourceCovers.exactSourceBank_raw_selected_edge,SourceCovers.exactSourceBank_raw_variation}
+Select a Q2 core of at most $J$ complete families, at most $q$ further
+complete exceptional families, and a protected subcore of size at most
+$R$. Let $M\ge\max(2,R+1)$ and use any admissible phase of
+\cref{lem:protected-phase}. Pay the rank lowers and the outer lower
+endpoints of all selected core and exceptional families. Put
+\begin{equation}\label{eq:bank-constants}
+ \begin{split}
+  \ell&=2M+3,\qquad m_0=4+2M(M-1),\qquad C_0=16+24M(M-1),\\
+  m_q&=m_0(1+m_0)^q,\qquad C_q=C_0(1+3C_0)^q.
+ \end{split}
+\end{equation}
+There is a list $\mathcal B$ of at most $m_q$ geometry-fixed total time
+maps such that, simultaneously for all time vertices $t$,
+\begin{enumerate}
+\item $\{a(t):a\in\mathcal B\}$ is exactly the complete orbit of the
+      retained core and all selected exceptional shadows;
+\item for every real-valued path $Y$,
+      $\sum_{a\in\mathcal B}\Var(Y\circ a)\le C_q\Var(Y)$;
+\item the time-value set is a union of at most $(\ell+1)^q$ complete
+      core orbits, each a union of the two chains in
+      \cref{lem:protected-phase}.
+\end{enumerate}
+Consequently the raw bank $Y_a=x\circ a$ contains the root read,
+has total variation at most $C_q(T-1)$, and is set-closed across every
+selected actual edge whose lower endpoint is unpaid. Its pointwise
+cardinality is at most $\ell(\ell+1)^q$. For fixed $M$ and $q$, the
+constants do not depend on $J$ or on the sizes or scales of the original
+families.
+\end{theorem}
+
+\begin{outline}
+Keep the original nonleaves as spine vertices. In each two-vertex
+component, add its color-zero vertex to the spine; leave isolated vertices
+in the leaf pack. The remaining leaves have pairwise disjoint spans,
+so their joint shadow $s$ has variation constant three.
+Every internal vertex of a successful word is an original nonleaf.
+Thus packing leaves occur only at the two ends of such a word.
+
+Label a surviving nonleaf by its original rank modulo $M$, excluding
+the deleted residue. These $H=M-1$ labels are injective within each
+surviving spine component: along a path, ranks make unit steps and avoid
+the deleted residue, so they stay in an interval shorter than one period.
+Equal residues therefore mean equal ranks and equal vertices. The extra
+spine vertices from two-vertex components are isolated in the spine and
+may use any of the $H$ labels. This uses $M\ge2$.
+
+For each unordered pair of labels, with repetition allowed, pack one map
+across all surviving spine components. In a component, choose the
+nonempty successful word with those endpoint labels, if one exists.
+The forest has a unique simple path between two vertices, and strictly
+decreasing owners fix its orientation. Hence that word is unique.
+Use its endpoint map on its success interval and identity elsewhere.
+If no word exists, use identity throughout that component.
+
+The union of the spans in a connected component is its interval hull,
+and distinct component hulls are disjoint. Each chosen word remains in
+its component hull. The shared disjoint-patch theorem therefore bounds
+each packed map's variation by three, including both joins to identity.
+Add an identity slot. Erasing inactive actions from any spine word shows
+that these slots give exactly its complete orbit, simultaneously at every
+root. Their number and summed variation coefficient are
+\[
+ m_S=1+\binom M2,
+ \qquad C_S=1+3\binom M2.
+\]
+All choices precede the root and the argument path; a slot's representing
+word is allowed to vary between components.
+
+For each spine slot $a$, use
+\[
+ a,\qquad a\circ s,\qquad s\circ a,\qquad s\circ a\circ s.
+\]
+The two endpoint leaves and the spine middle of every successful core
+word are represented by these four choices. Conversely each value follows
+a core word at that argument. This proves exactness, rather than merely
+coverage. The any-path variation bound composes: the four contributions
+are at most $C_S,3C_S,3C_S,9C_S$. Thus there are $4m_S=m_0$
+slots with total coefficient $16C_S=C_0$. The pointwise bound remains
+$\ell$, by \cref{lem:protected-phase}.
+
+Sort the exceptional families by decreasing owner, retaining a fixed tie
+order. Successful words have strictly decreasing owners, so each such word
+uses an ordered exceptional subsequence, with core words between its
+members. Let $B$ be the core bank and $D$ the bank for the remaining
+exception list. On inserting its first shadow $f$, form
+\[
+ D\ \mathbin{+\!+}\ \{b\circ f\circ a:b\in D,\ a\in B\},
+\]
+where $+\!+$ denotes list concatenation. Exactness follows by splitting a
+successful word at $f$, or omitting $f$ if it is absent. Every constructed
+value follows a selected word, even though a packed core slot need not
+represent one fixed word globally. Slot count and summed variation obey
+\[
+ m_{r+1}=(1+m_0)m_r,
+ \qquad C_{r+1}=(1+3C_0)C_r.
+\]
+These recurrences give \eqref{eq:bank-constants} without separately
+formalizing the binomial sums over subsequences.
+
+For the complete-core-orbit cover, retain the starting vertices of each
+final core continuation. Each inserted exception creates at most $\ell$
+new choices for each old continuation pattern, in addition to the pattern
+omitting it. Induction gives at most $(\ell+1)^q$ terminal core roots.
+The equality of the covered set with the enlarged orbit proves its
+pointwise cardinality bound.
+
+The empty word gives the root read. Prefixing a selected shadow gives
+orbit set-closure. For an original core family removed by the phase,
+every actual lower endpoint lies in the rank payment; it therefore has
+no unpaid actual edge. For every remaining selected family, strict
+clipping represents the actual hop exactly unless its outer lower was
+paid. This proves closure across all originally selected unpaid edges,
+and taking images under $x$ preserves it. Finally, the unit-step bound
+$\Var(x)\le T-1$ gives the raw variation estimate. Other paid vertices
+do not truncate the orbit.
+\end{outline}
+
+The formal variation bound holds for every pseudometric-valued path and
+every finite horizon, with the same constants. The geometric bank needs
+no unit-step assumption on the work walks; that assumption is used when
+identifying shadows with actual hops. It also needs no numerical bound
+on the number of core families. In the generic exceptional-list argument,
+repeated entries and overlap with the core are allowed; the displayed
+bounds count list entries.
+
+
+Theorem~S supplies a representation of complete selected dependence
+whose variation cost, for fixed $M$ and $q$, is independent of the number
+of selected core families.
+The next lemma pays for the remaining actual dependencies. Without this
+step, Theorem~S alone is not a transposition certificate.
+
+\subsection{Residual cuts and complete functional recovery}
+
+For an integer width $w\ge1$ and shift
+$\theta\in\{0,\ldots,w-1\}$, define the linear, endpoint-clipped block
+\begin{equation}\label{eq:raw-block}
+ B_\theta(y)=
+ \{z\in\Omega:\lfloor(z+\theta)/w\rfloor
+                   =\lfloor(y+\theta)/w\rfloor\}.
+\end{equation}
+Thus $|z-y|\le w-1$ within a block, including a partial block at either
+end of the input.
+
+\begin{lemma}[Paid residual-source recovery]\label{lem:residual-source-recovery}
+\notformalized
+Let $\Gamma_0$ be an initial paid set, and let $Y_1,\ldots,Y_m$ be
+geometry-fixed maps from the timeline to $\Omega$. Their value set
+$A(t)$ contains $x(t)$. Partition all dependency edges into selected
+and residual edges. Suppose $A(u)\subseteq A(v)$ for every selected
+edge $v\to u$ with $u\notin\Gamma_0$. For an unpaid lower endpoint
+$u$, let $m_R(u)$ be its latest residual successor, or $u$ if none.
+Define
+\[
+ V=\sum_i\Var(Y_i),\qquad
+ \mathcal R=\sum_{u\notin\Gamma_0}\sum_i
+   \operatorname{osc}(Y_i;[u,m_R(u)]),
+\]
+where oscillation is maximum minus minimum. If at most $H$ distinct
+unpaid residual lowers are live across every elementary time boundary,
+then, for every $w\ge1$, there are actual residual-lower sets
+$\Gamma_\theta$ satisfying
+\begin{equation}\label{eq:residual-average}
+ \mathbb E_\theta\card{\Gamma_\theta}
+       \le\frac{\mathcal R}{w}\le\frac{HV}{w}.
+\end{equation}
+For each shift, after paying
+$\Gamma=\Gamma_0\cup\Gamma_\theta$, every output at time $t_r$ is
+determined on $\mathcal C$ by the same transcript $G_\Gamma$ and the
+bits in
+\begin{equation}\label{eq:complete-bank-recovery}
+ \bigcup_{i=1}^m B_\theta(Y_i(t_r)).
+\end{equation}
+No bound on full path depth, linearity or independence on a genie fibre
+is needed.
+\end{lemma}
+
+\begin{informalproof}
+For each unpaid residual lower $u$, pay $u$ if, for some $i$, the label
+$\lfloor(Y_i(t)+\theta)/w\rfloor$ is not constant on
+$[u,m_R(u)]$. This is an actual union of lower endpoints, so a lower
+used by several dependencies is paid once. If the integer range of one
+slot on an interval has oscillation $z$, a uniformly shifted grid cuts
+that range with probability $\min(1,z/w)$. The union bound over slots
+and lowers gives the first inequality of \eqref{eq:residual-average}.
+Oscillation is at most variation on the interval. Summing that variation
+over lower lifetimes charges an elementary step at most $H$ times,
+giving $\mathcal R\le HV$.
+
+A surviving residual edge preserves every slot label. A surviving
+selected edge preserves inclusion of the sets of labels by the
+hypothesis. Along any surviving backward path, induct from its last
+vertex to its root: the label of its direct input read belongs to the
+root's label set, because $x(t)\in A(t)$ at the last vertex. Therefore
+every full surviving raw source belongs to
+\eqref{eq:complete-bank-recovery}. This treats paths of arbitrary
+length and all alternations of state and physical work edges.
+
+Finally recursively evaluate the deterministic step functions. A
+parent in $\Gamma$ is supplied by $G_\Gamma$; every other parent is
+evaluated from its own parents and direct read. Time strictly decreases,
+so this recursion terminates. Initial values and reads outside the input
+are constants. All unfixed raw reads belong to the displayed union,
+which therefore determines the output. The same reasoning starts at
+a revealed output root and retains its direct read and all unpaid
+parents; revealing the root was never used to delete them.
+\end{informalproof}
+
+For Theorem~S, take the surviving selected family edges as selected,
+retain all other state and physical work edges as residual, and disregard
+only edges already blocked at their lower endpoints. If every family
+outside the selected core and the selected exceptional set has at most
+$a$ hops,
+\cref{lem:family-accounting} gives $H\le1+Na$. In each admissible phase
+there is a shift with
+\begin{equation}\label{eq:native-genie-ledger}
+ \card\Gamma\le
+ J+q+\card{\Gamma_{\rm rank}(\rho)}
+       +\frac{(1+Na)C_q(T-1)}w.
+\end{equation}
+In particular a phase attaining the average in
+\eqref{eq:rank-phase-average} permits replacing its rank payment by
+$\tau_{\mathcal N}/(M-R)$, or the older upper bound $\tau/(M-R)$.
+More generally, one may average a complete signed
+reward-minus-payment expression over the admissible phases and their
+raw-grid shifts. A reward chosen in one phase or shift cannot be paired
+with a payment from another. Deleted selected families are blocked by
+their paid lowers; they are not silently reclassified as small residual
+families.
+
+\subsection{Cyclic freezing of actual transpose demands}
+
+View $\Omega$ as the integer points on a circle of circumference $L$.
+For a nonempty subset $S$, list the circular distances between consecutive
+distinct points as $g_1,\ldots,g_v$; their sum is $L$. A singleton has
+one gap of length $L$. Define its point-gap area by
+\begin{equation}\label{eq:gap-area}
+ \gaparea(S)=\frac1{2L^2}\sum_{h=1}^v g_h^2.
+\end{equation}
+The blocks in \eqref{eq:raw-block} remain linear blocks. The circle is
+used only for an overcover and a common ordering of raw coordinates.
+
+\begin{theorem}[Theorem F: cyclic freezing]\label{thm:cyclic-freezing}
+\notformalized
+Let $m\ge1$ and let $Y_i:\{0,\ldots,T-1\}\to\Omega$, $1\le i\le m$,
+be geometry-fixed bank maps. Let $Z$ be a
+deterministic helper determined by the input, with $H(Z)\le g$ for the
+uniform law on $\mathcal C$. Suppose every output is determined on
+$\mathcal C$ by $Z$ and the raw block union in
+\eqref{eq:complete-bank-recovery}, at one width $w$ and shift $\theta$. Put
+$V=\sum_i\Var(Y_i)$. For output column $j$, let
+$s_j=t_{jW}$ be its first append time and set
+$S_j=\{Y_i(s_j):1\le i\le m\}$ and $A_j=\gaparea(S_j)$. Then
+\begin{equation}\label{eq:cyclic-freezing}
+ \Delta\ge
+ W\sum_{j=0}^{d-1}A_j
+       -\frac{2V}{d}-2(w-1)-\frac{W+1}{2}
+       -g.
+\end{equation}
+In particular the bound holds with $g=\beta\card\Gamma$ for an actual
+whole-step genie. If $u$ additional raw bits at geometry-fixed coordinates
+are revealed jointly with that genie, it holds with
+$g=\beta\card\Gamma+u$.
+The bound permits arbitrary nonlinear recovery and a correlated
+correctness set. Its area term uses the actual transpose demand stripes,
+not an assumption that demands and sources are independent.
+\end{theorem}
+
+\begin{informalproof}
+Write $e_j=t_{(j+1)W-1}$ and
+$\delta_j=\sum_i\Var(Y_i;[s_j,e_j])$. These column intervals have
+disjoint elementary edges, so $\sum_j\delta_j\le V$. Every source
+block used during column $j$ lies in the fixed circular overcover
+\[
+ T_j=\{z\in\Omega:\dist_{\rm circ}(z,S_j)\le r_j\},
+ \qquad r_j=w-1+\delta_j.
+\]
+Indeed, its coordinate differs from the corresponding current anchor
+by at most $w-1$, and that anchor differs from its frozen value by at
+most $\delta_j$. This covers entire blocks, not just their representatives.
+
+Choose a uniformly random circular cut and an independent uniformly
+random orientation. They define one total order on all raw coordinates,
+shared by every column. Select a demanded coordinate $z$ of column $j$
+when $z\notin T_j$ and $z$ precedes every coordinate in $T_j$. Every
+recovery edge between selected coordinates then points forward in this
+same order, so their induced recovery relation is acyclic.
+
+Consider a complementary circular run of $T_j$ having $a$ integer
+points. For its $v$-th point, the two orientations give selection
+probabilities $v/L$ and $(a+1-v)/L$. Their average is the constant
+$(a+1)/(2L)$ throughout the run. The selection probability is zero
+on $T_j$. The sum of these constants over complementary runs is at
+most $1/2$: the run points together with one distinct covered endpoint
+per run number at most $L$. If $T_j=\Omega$, all these sums are empty.
+
+For a frozen point gap of length $g$, thickening by integer radius $r_j$
+leaves $(g-1-2r_j)_+$ integer points. The mean selection probability
+over all $L$ raw coordinates is consequently
+\[
+ A_{j,r_j}=\frac1{2L^2}
+       \sum_{g}(g-1-2r_j)_+\bigl((g-1-2r_j)_++1\bigr).
+\]
+For integers $g\ge1,r\ge0$,
+\[
+ g^2-(g-1-2r)_+\bigl((g-1-2r)_++1\bigr)\le(4r+1)g.
+\]
+When $g\ge2r+1$, expansion proves the inequality; otherwise its
+left side is $g^2\le(4r+1)g$. Summing and using $\sum g=L$ gives
+\begin{equation}\label{eq:thickening-area}
+ A_{j,r_j}\ge A_j-\frac{2r_j+1/2}{L}.
+\end{equation}
+There is no factor for the number of slots or distinct frozen points.
+
+The actual demanded coordinates in column $j$ form the stripe
+\[
+ D_j=\{iW+jb+k:0\le i<d,\ 0\le k<b\}.
+\]
+For every circular integer interval $I$,
+\begin{equation}\label{eq:stripe-discrepancy}
+ \left|\card(D_j\cap I)-\frac{\card I}{d}\right|
+       \le b(1-1/d)\le b.
+\end{equation}
+To see this, the indicator of $D_j$ has period $W$ and one occupied
+block of length $b$ per period. Its centered prefix count
+$F(n)=\card(D_j\cap[0,n))-n/d$ is periodic and has oscillation
+$b(1-1/d)$: it rises with slope $1-1/d$ on the occupied block and
+falls with slope $-1/d$ on its complement. An interval discrepancy
+is a difference of two prefix values, including intervals across the
+circular seam.
+
+Apply \eqref{eq:stripe-discrepancy} to the complementary runs, weighted
+by their constant selection probabilities. Their constants sum to at
+most $1/2$, so the expected number of selected demands in column $j$
+is at least
+\[
+ W A_{j,r_j}-b/2
+ \ge W A_j-\frac{2r_j}{d}-\frac1{2d}-\frac b2.
+\]
+Summing over columns and using
+$\sum_j r_j\le d(w-1)+V$ gives expected selected size at least
+the first four terms on the right of \eqref{eq:cyclic-freezing}.
+
+For any realized common order, let $A$ be its selected coordinates.
+Given $Z$ and the raw complement $\Omega\setminus A$, recover
+the selected coordinates in reverse order using the acyclic relation.
+For $X$ uniform on $\mathcal C$, it follows that
+\[
+ \log_2\card{\mathcal C}=H(X)
+       \le H(Z)+H(X_{\Omega\setminus A}\mid Z)
+       \le g+L-\card A.
+\]
+Average this inequality over the common cut and orientation to obtain
+\eqref{eq:cyclic-freezing}. This entropy argument does not infer a
+transcript cardinality bound from an entropy bound, and requires no
+product distribution on a helper fibre. The genie and joint-revelation
+special cases follow from subadditivity of entropy and the stated bit
+capacities.
+\end{informalproof}
+
+Theorem~F charges the same genie that supplies the complete bank.
+Own-source demands are rejected in its acyclic selection, so no separate
+own-block collision loss is added. If $M,q,c$ are fixed, Theorem~S gives
+$V=O(L)$, and the variation and stripe errors are $o(L)$ as
+$d\to\infty$. The substantive remaining question is whether the
+point-gap area exceeds the rank and residual payments; the following
+sections prove this under explicit source-cover hypotheses.

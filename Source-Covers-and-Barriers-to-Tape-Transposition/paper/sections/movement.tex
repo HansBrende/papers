@@ -1,0 +1,294 @@
+\section{Movement required by a specified recovery interface}
+\label{sec:movement}
+
+A source cover must satisfy two different requirements: it must contain
+enough information to recover the output, and its source positions must
+have an affordable joint trajectory.  This section separates those
+requirements on a familiar coded-caching example.  The code itself is
+known.  The movement bounds concern its specified raw-query interface;
+they do not exclude every decoder for that code.
+
+\subsection{A finite bound independent of query order}
+
+Write $\operatorname{dist}_L$ for distance on the circle of circumference
+$L$.  Fix $N\ge1$ equally spaced centres
+$c_i=(i+\tfrac12)L/N$, $0\le i<N$.  A query type is a $k$-element subset
+of these centres, where $1\le k\le N$.
+
+\begin{theorem}[Theorem M: movement to cover distinct query types]
+\label{thm:movement}
+\notformalized
+Let $S_1,\ldots,S_J$ be a nonempty sequence of query types, with $F$
+distinct types.  For $1\le\ell\le m$, let $y_\ell(j)$ be labelled source
+positions on the circle, where $m\ge1$.  Suppose every centre in $S_j$
+is within distance $\rho>0$ of some $y_\ell(j)$.  Put
+\[
+ V=\sum_{\ell=1}^{m}\sum_{j=1}^{J-1}
+       \operatorname{dist}_L(y_\ell(j+1),y_\ell(j)),\qquad
+ v=V/L,\qquad \lambda=\rho/L,
+\]
+\[
+ s=\min\left\{N,\;m\left(\left\lfloor\frac{5\lambda N}{2}
+                                  \right\rfloor+1\right)\right\},
+ \qquad B=\binom{s}{k},
+\]
+with $\binom{s}{k}=0$ for $s<k$.  Then
+\begin{equation}
+ F\le (1+4v/\lambda)B.
+ \label{eq:movement-finite}
+\end{equation}
+In particular $B>0$, and
+\begin{equation}
+ v\ge\frac{\lambda}{4}\left(\frac{F}{B}-1\right).
+ \label{eq:movement-lower}
+\end{equation}
+The bounds hold for every ordering of the queries and every matching of
+source positions between successive queries.  They also hold when $V$
+is measured by ordinary distance on the input line.
+\end{theorem}
+
+\begin{informalproof}
+Set $\delta=\rho/4$.  Greedily partition the sequence into consecutive
+stretches whose internal summed movement is at most $\delta$: end a
+stretch immediately before the next edge would exceed that threshold.
+Charge a nonfinal stretch its internal edges and the edge immediately
+after it.  These charged edge sets are disjoint, and each has total
+weight greater than $\delta$.  Thus there are at most $1+V/\delta$
+stretches, including the last.
+
+Within a stretch, each labelled position stays within distance $\delta$
+of its initial position.  Every queried centre is therefore within
+$5\rho/4$ of one of the $m$ initial positions.  A circular ball of that
+radius contains at most
+\[
+ \min\left\{N,\left\lfloor\frac{5\rho N}{2L}\right\rfloor+1\right\}
+\]
+of the equally spaced centres.  Indeed, if the ball is a proper arc, its
+length is $5\rho/2$, and consecutive centres are $L/N$ apart; if it is
+the whole circle, use $N$.  The union of the balls contains at most $s$
+centres and hence at most $B$ query types.  Summing over stretches proves
+\cref{eq:movement-finite}; rearranging proves
+\cref{eq:movement-lower}.  A nonempty sequence rules out $B=0$.
+
+No step used the ordering of the types.  Any chosen matching of the $m$
+positions between successive queries defines coherent labelled paths;
+apply the same argument to those paths.  Finally, circle distance never
+exceeds line distance, so replacing circle variation by line variation
+preserves the bound.
+\end{informalproof}
+
+For a tape construction, this theorem charges the movement of the entire
+source bank.  Relabelling the bank slots does not remove that charge.
+
+\begin{corollary}[Queries spread over a column interval]
+\label{cor:movement-interval}
+\notformalized
+Let $I_1,\ldots,I_J$ be disjoint, chronologically ordered intervals in a
+finite discrete timeline.  Let $m$ labelled source trajectories have
+total circle variation $V$ over that entire timeline, including the
+gaps between intervals.  Assign a query type $S_j$ to each interval,
+and suppose each of the $F$ distinct types occurs at least $r\ge1$
+times.  For every $c_i\in S_j$, suppose there is a raw point $a_{i,j}$
+with
+\[
+ \operatorname{dist}_L(a_{i,j},c_i)\le w
+\]
+that is within distance $\rho$ of a source position at some time in
+$I_j$.  The position and time may depend on $i$ and $j$.  With
+$v=V/L$, $\lambda=\rho/L$, and
+\[
+ s'=\min\{N,\;m(\lfloor3\lambda N+2wN/L\rfloor+1)\},
+ \qquad B'=\binom{s'}k,
+\]
+one has
+\begin{align}
+ F-\frac{4v}{\lambda r}&\le(1+4v/\lambda)B',
+   \label{eq:movement-interval-count}\\
+ v&\ge\frac{\lambda}{4}\frac{F-B'}{B'+1/r}.
+   \label{eq:movement-interval-lower}
+\end{align}
+\end{corollary}
+
+\begin{informalproof}
+Call an interval bad if its internal summed movement exceeds $\rho/4$.
+There are at most $4V/\rho=4v/\lambda$ bad intervals.  Removing them can
+remove every occurrence of at most $4v/(\lambda r)$ types.
+
+Freeze the positions at the start of each remaining interval.  A
+required centre is within distance $\rho+\rho/4+w$ of one of these
+frozen positions.  The sequence of frozen positions has total variation
+at most $V$, by the triangle inequality on each labelled trajectory.
+Partition that sequence into stretches of movement at most $\rho/4$
+as in \cref{thm:movement}.  Within each stretch, every required centre
+lies within distance $3\rho/2+w$ of one of its initial positions.
+There are at most $s'$ such centres and at most $B'$ types.  This proves
+\cref{eq:movement-interval-count}, including when no good intervals
+remain.  Collecting the terms involving $v$ gives
+\cref{eq:movement-interval-lower}.
+\end{informalproof}
+
+Thus queries made at different times during an output column do not
+permit us to freeze their positions for free.  Their internal movement
+and the possible loss of query types both appear in the bound.
+
+\subsection{A coded-caching calibration}
+
+We use the transpose of the subset placement-delivery array in
+\cite[Section IV, Theorem 2]{YanChengTangChen2017}.  Repeating its rows
+and columns gives the square matrix below.  We include the elementary
+decoding and entropy calculation to specify exactly which interface is
+being tested.
+
+Fix integers $N>k\ge2$ and $h\ge1$, and put
+\[
+ F=\binom Nk,\qquad d=NFh,\qquad L=d^2b,
+ \qquad W=db,\qquad a=L/N,
+\]
+where $b\ge1$ is an integer.  The asymptotic application permits
+$b=b(d)$.  Index the rows by $(i,u)\in\{0,\ldots,N-1\}\times
+\{0,\ldots,Fh-1\}$, grouping each fixed $i$ into one contiguous bin.
+Index columns by $(S,z)$, where $|S|=k$ and $0\le z<Nh$.  A column
+decoder may observe all raw rows in the bins $i\in S$, together with
+one common helper $G$.  The helper contains the following $b$-bit
+parities, for every $(k+1)$-element set $T$ and every $u,z$:
+\begin{equation}
+ Z_{T,u,z}=\bigoplus_{i\in T}
+              X_{(i,u),(T\setminus\{i\},z)}.
+ \label{eq:subset-helper}
+\end{equation}
+
+\begin{proposition}[Exact helper and gap-area calibration]
+\label{prop:subset-calibration}
+\notformalized
+The specified interface recovers every column on the full input cube.
+For a uniform input, the helper is uniform on $g$ bits, where
+\begin{equation}
+ g=H(G)=L\frac{N-k}{N(k+1)}.
+ \label{eq:subset-helper-size}
+\end{equation}
+Every helper fibre has size $2^{L-g}$.  Every entry with $i\in S$ is
+absent from all helper parities and is independent of $G$ and all other
+input entries.
+
+For $P_S=\{ia:i\in S\}$ on the raw circle,
+\begin{equation}
+ \frac1{\binom Nk}\sum_{|S|=k}\gaparea(P_S)
+   =\frac{2N-k+1}{2N(k+1)}
+   =\frac gL+\frac1{2N}.
+ \label{eq:subset-gap-area}
+\end{equation}
+Consequently, for fixed $k$ and $N\to\infty$, the queried row fraction
+$k/N$ tends to zero, whereas both $g/L$ and the mean point-gap area
+tend to $1/(k+1)$.
+\end{proposition}
+
+\begin{informalproof}
+If $i\in S$, the desired entry is read directly.  If $i\notin S$,
+take $T=S\cup\{i\}$ in \cref{eq:subset-helper}.  All the other terms
+have row-bin index in $S$, so the queried rows and that parity determine
+the entry.  Every nonqueried entry belongs to exactly one parity,
+specified by $T=S\cup\{i\}$ and its $u,z$.  The parity classes are
+disjoint, so their bits are independent and uniform.  Counting them
+gives
+\[
+ g=b\binom N{k+1}(Fh)(Nh)
+   =L\frac{N-k}{N(k+1)}.
+\]
+The parity map is surjective, with all fibres of size $2^{L-g}$.
+Queried entries occur in none of these parity classes, proving the
+independence assertion.
+
+For the gap formula, choose $S$ uniformly and mark one of its elements
+uniformly.  Starting at the marked element, the clockwise integer gaps
+$D_1,\ldots,D_k$ are uniform among positive compositions of $N$.
+Indeed, each composition and starting point specifies one marked set,
+and $N\binom{N-1}{k-1}=k\binom Nk$.  Put $E_i=D_i-1$ and $n=N-k$.
+Then $\sum_iE_i=n$.  Stars and bars gives
+\[
+ \mathbb E\sum_i E_i(E_i-1)
+ =\frac{2k\binom{n+k-1}{k+1}}{\binom{n+k-1}{k-1}}
+ =\frac{2n(n-1)}{k+1},
+\]
+with both sides zero when $n<2$.  The numerator follows, for example,
+by taking the coefficient of $z^n$ in
+$2kz^2(1-z)^{-k-2}$.  Expanding $\sum_i(E_i+1)^2$ now yields
+\[
+ \mathbb E\sum_iD_i^2=\frac{N(2N-k+1)}{k+1}.
+\]
+The geometric gaps are $aD_i$, so division by $2L^2$ proves
+\cref{eq:subset-gap-area}.  The limits follow from the displayed
+formulas.
+\end{informalproof}
+
+This example prevents an information-only inference from sparse queried
+rows to a deficit exceeding the helper cost.  The exact recovery code
+exists, and the normalized gap area approaches the same value as that
+cost.  The remaining issue is its geometric realization.
+
+\begin{corollary}[The dimension limit precedes the radius limit]
+\label{cor:subset-movement}
+\notformalized
+Fix $k\ge2$, $m\ge1$ and $h\ge1$, and take the preceding interfaces
+with $N\to\infty$.  For each $N$, allow arbitrary column order and
+arbitrary coherent source matching.  Let $v_N$ be the total circle
+variation divided by $L$.
+
+If every queried bin centre is covered at the column representative
+within radius $\rho=\lambda L$, then, for every fixed
+$0<\lambda<2/(5m)$,
+\begin{equation}
+ \liminf_{N\to\infty}v_N
+ \ge\frac{\lambda}{4}
+      \left[\left(\frac{5m\lambda}{2}\right)^{-k}-1\right].
+ \label{eq:subset-centre-limit}
+\end{equation}
+If instead one required raw point within $W$ of each queried bin centre
+is covered within radius $\lambda L$ at some time during its column
+interval, then, for every fixed $0<\lambda<1/(3m)$,
+\begin{equation}
+ \liminf_{N\to\infty}v_N
+ \ge\frac{\lambda}{4}
+      \bigl[(3m\lambda)^{-k}-1\bigr].
+ \label{eq:subset-interval-limit}
+\end{equation}
+Both right-hand sides tend to infinity as $\lambda\downarrow0$.
+Thus no fixed variation constant represents this interface with a fixed
+number of source trajectories at every sufficiently small fixed radius
+ratio.
+\end{corollary}
+
+\begin{informalproof}
+For the first assertion, $s/N\to5m\lambda/2<1$ in
+\cref{thm:movement}.  Since $k$ is fixed,
+\[
+ \frac{\binom{s}{k}}{\binom Nk}\longrightarrow
+        (5m\lambda/2)^k.
+\]
+Apply \cref{eq:movement-lower}.  For the second assertion, each type
+occurs $r=Nh$ times and $w=W=L/d$.  Hence
+$2wN/L=2/(Fh)\to0$, $s'/N\to3m\lambda<1$, and
+$\binom{s'}k/\binom Nk\to(3m\lambda)^k$.  Divide the numerator and
+denominator of \cref{eq:movement-interval-lower} by $\binom Nk$ to
+obtain \cref{eq:subset-interval-limit}.  Each lower bound is a positive
+constant times $\lambda^{1-k}$ minus $\lambda/4$, which proves the
+last assertion.
+\end{informalproof}
+
+The necessary-point premise has a precise information-theoretic use.
+Choose, for each queried bin, one bit of an own-column entry in a middle
+row.  Its raw coordinate is within $W$ of the bin centre.  That bit is
+independent of the specified helper and every other raw bit, so a
+decoder on the full cube cannot omit it from its raw dependency set.
+Any geometric representation of that dependency set must cover it.
+When those raw observations are represented during the column interval,
+\cref{cor:subset-movement} applies.
+
+This necessity assertion does not survive every change of helper.
+Revealing all entries with $i\in S$ costs exactly $kL/N=o(L)$ extra
+bits at fixed $k$ and removes these particular witnesses.  That payment
+does not show that the remaining recovery is cheap; it shows why the
+movement result is about the stated interface.  A native source-bank
+argument may reveal additional threshold or residual information, so
+its required queries must be established after those exact disclosures.
+The radius ratio is also fixed before the dimension limit; the
+conclusion does not interchange these limits by setting $\lambda=1/N$.

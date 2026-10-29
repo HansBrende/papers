@@ -48,6 +48,28 @@ theorem pathEdges_map {s t : V} (p : G.Path s t) :
     rw [H.pathEdges_cons, G.pathEdges_cons, List.map_append]
     simpa [path, prefunctor] using congrArg (fun l => l ++ [M.edge e.val]) ih
 
+/-- Merging edge identities adds their loads; injectivity is not required. -/
+theorem pathFlow_map_sum [Fintype E] {s t : V} (p : G.Path s t) (e' : E') :
+    H.pathFlow (M.path p) e' =
+      ∑ e : E, if M.edge e = e' then G.pathFlow p e else 0 := by
+  let := G.quiver
+  let := H.quiver
+  induction p with
+  | nil => simp [path, pathFlow]
+  | cons p a ih =>
+    change H.pathFlow ((M.prefunctor.mapPath p).cons (M.prefunctor.map a)) e' = _
+    rw [H.pathFlow_cons, Pi.add_apply]
+    change H.pathFlow (M.path p) e' + unit (M.edge a.val) e' = _
+    rw [ih]
+    simp only [G.pathFlow_cons, Pi.add_apply]
+    simp_rw [ite_add_zero, Finset.sum_add_distrib]
+    congr 1
+    rw [Finset.sum_eq_single a.val]
+    · simp [unit, eq_comm]
+    · intro e _ he
+      simp [unit, he]
+    · simp
+
 theorem pathFlow_map_of_injective (hinj : Function.Injective M.edge)
     {s t : V} (p : G.Path s t) (e : E) :
     H.pathFlow (M.path p) (M.edge e) = G.pathFlow p e := by

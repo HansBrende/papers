@@ -201,10 +201,13 @@ most one unit. This preserves every retained edge's load. All these bits
 have the same permitted row attachments; no particular bits need to be
 identified as entropy carriers.
 For each allocated bit append the memory path backwards from
-$\omega_a$ to that bit's original output node.  Every such return
-stays in $I_a$ and contributes at most the total group flow, hence at
-most $W_a$, to each edge of that interval.  The forward collector and
-these returns together cost at most $2W_a$ per edge of $I_a$.
+$\omega_a$ to that bit's original output node. This return crosses
+$(v,v+1)$ exactly when the bit's output is at most $v<\omega_a$.
+The unit bit caps therefore bound the return load by the same prefix
+size used by the collector. Their combined charge is at most twice
+that prefix size, hence at most $2W_a$ per edge of $I_a$; its total is
+at most $2\sum_\xi(\omega_a-o(\xi))$ over the group's bits. Collapsing
+collector copies onto original memory edges adds their traversal loads.
 
 Sum over groups.  On an original edge the group flows use at most
 $\sum_a c_{e,a}(z)\le c_e$.  The collector and return loads obey

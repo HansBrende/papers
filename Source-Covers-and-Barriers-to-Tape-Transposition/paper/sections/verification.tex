@@ -94,24 +94,21 @@ binomial asymptotic, rounding bounds and power divergence. An independent
 internal threshold tends to zero after the dimension limit, removing the
 extra interval loss. Extended lower limits avoid a boundedness hypothesis.
 
-Causal group typing uses Mathlib's function-factorization predicate for
-local rules on an arbitrary helper fibre. The shared causal-field library
-proves projection autonomy and recovery from every field entering a cut,
-including re-entries. Finite image counts give the joint-support capacity
-bound when the cut contains all requested outputs. The local collector
-now moves these outputs to a common sink, charging the exact size of each
-already-output prefix. Its total cost is the sum of output-to-sink delays.
-The formalization retains the actual memory edges and proves all
-supersource/sink cut inequalities, including cuts crossing row attachments.
-The shared real-capacity flow theorem uses Mathlib's compactness theorem
-and finite-box perturbations of residual walks. The actual augmentation
-yields a flow of value $\log_2|\mathcal A_a(z)|$ on each group fibre.
-Weighted Mathlib quiver paths carry that value with every traversal counted.
-Mathlib's path-lifting theorem removes the two artificial initial arcs,
-retaining actual row attachments. Uniform splitting preserves every
-original and collector edge load and gives each bit mass at most one.
-Combining collector copies with original edges, return walks and averaging
-in \cref{thm:causal-group-routing} remain unformalized.
+Causal group typing uses Mathlib's function-factorization predicate on each
+helper fibre. Causal induction retains every field entering a cut, including
+re-entries; finite image counting bounds the joint support. The collector
+uses already-output coordinates with exact prefix capacity and output-delay
+volume, on the actual memory spine. All supersource/sink cuts, including
+row-attachment crossings, are verified. The shared real-capacity flow theorem
+uses Mathlib's compactness theorem and finite-box residual perturbations;
+it gives flow value $\log_2|\mathcal A_a(z)|$. Mathlib quiver paths and path
+lifting retain actual row attachments and every traversal. Uniform splitting
+gives unit bit caps; actual backward walks complete the routes. Both
+orientations are charged, and copies merge onto original edges. Prefix
+counts bound collector and return loads, with extra volume at most twice
+the output-delay sum. Group combination, helper-fibre averaging and the
+entropy and metric consequences of \cref{thm:causal-group-routing} remain
+unformalized.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run

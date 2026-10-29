@@ -1265,20 +1265,49 @@ weights; the existence theorem supplies positive weights. No independence
 of rows, groups or helper fibres is used. The allocation is a choice of
 routing labels, not an assertion that particular bits carry the entropy.
 
-The paths still end at the collector sink. Mapping collector-copy arcs to
-their original memory edges, adding the return walks, and proving the
-averaged routing of Theorem 8.2 remain outstanding.
+These paths end at the collector sink; the following step completes their
+returns to the original outputs.
+
+## Completed: actual group routes with prefix charges
+
+The shared [`FlowWalks`](../lean-machine/LeanMachine/FlowWalks.lean)
+represents undirected walks with separate orientation copies of each original
+edge. Its charged load adds both orientations; capacities are not doubled or
+cancelled. The backward spine path crosses each edge of the prescribed
+half-open interval exactly once, and no other edge. Other network edges may
+be arbitrary. `FlowPathMap.pathFlow_map_sum` handles noninjective edge maps by
+adding all preimage loads.
+
+[`CausalReturns`](lean/SourceCovers/CausalReturns.lean) applies that construction
+to the actual memory spine, from the collector sink to each bit's own output.
+It maps collector-copy edges back to their original identities and retains
+parallel-edge distinctions. `copyCharge` is the actual prefix cardinality on
+each collector edge and zero elsewhere; its sum is exactly the output-delay
+sum. It is bounded by the whole group size on every edge.
+
+[`CausalGroupRoutes`](lean/SourceCovers/CausalGroupRoutes.lean) constructs
+`BitRoute` values recording the raw bit, an actual attachment of its own row,
+and the complete physical walk to that bit's original output. The finite
+family retains its positive weights and full projected-support logarithm.
+Every raw bit has mass in `[0,1]`, bits outside the group get zero mass, and
+unattached rows get zero mass. Forward-copy loads add to original field loads;
+return crossings sum precisely the allocated masses of the already-output
+bits. Their unit caps give the stronger bound
+
+`routedLoad(e) <= allocation(e,a) + 2*copyCharge(a,e)`.
+
+Thus collector and return traffic cost at most twice the actual prefix size
+on each interval edge, rather than twice the whole group size. Summing gives
+the extra volume bound `2*sum_bit(lastOutput-output)`. The per-group routing
+is now complete. No independence assumptions or free transport are used.
 
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Map collector-copy arcs to their original memory edges and append the
-   paid backward memory walks to each bit's own output. Preserve traversal
-   multiplicity and charge original fields, copies and returns separately
-   before combining their loads.
-2. Sum groups and average over attained helper values, proving the exact
-   augmented capacities and total mass `R_sup`. Derive conditional entropy,
-   total-correlation and short-distance/volume consequences.
+1. Sum groups and average over attained helper values, proving the exact
+   augmented capacities and total mass `R_sup`; retain the prefix improvement.
+2. Derive conditional entropy, total-correlation and short-distance/volume
+   consequences from those actual routes.
 3. Apply the verified native short-count theorem to Corollary 8.4, keeping
    arbitrary positive entry widths and all stated asymptotic quantifiers.
 

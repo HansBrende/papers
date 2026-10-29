@@ -1095,3 +1095,15 @@ import LeanMachine
 #print axioms LeanMachine.FiniteFlow.Network.pathComp
 #print axioms LeanMachine.FiniteFlow.Network.pathEdges_comp
 #print axioms LeanMachine.FiniteFlow.Network.pathFlow_comp
+
+-- Exact loads under edge merging and physical undirected walks.
+#print axioms LeanMachine.FiniteFlow.Network.Map.pathFlow_map_sum
+#print axioms LeanMachine.FiniteFlow.Network.bidirected
+#print axioms LeanMachine.FiniteFlow.Network.forwardMap
+#print axioms LeanMachine.FiniteFlow.Network.walkLoad
+#print axioms LeanMachine.FiniteFlow.Network.walkLoad_nonneg
+#print axioms LeanMachine.FiniteFlow.Network.walkLoad_comp
+#print axioms LeanMachine.FiniteFlow.Network.walkLoad_forward
+#print axioms LeanMachine.FiniteFlow.Network.Spine
+#print axioms LeanMachine.FiniteFlow.Network.Spine.edge_injective
+#print axioms LeanMachine.FiniteFlow.Network.Spine.exists_return

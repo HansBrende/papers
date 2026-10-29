@@ -111,6 +111,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FiniteFlow`](LeanMachine/FiniteFlow.lean) | Real-capacity max-flow/min-cut on finite directed multigraphs, preserving parallel edges; exact-demand flows from cut bounds | this repository |
 | [`FlowPaths`](LeanMachine/FlowPaths.lean) | Weighted paths carrying a flow's full nonnegative source value, with traversal loads bounded by the flow and at most one path per positive edge | this repository |
 | [`FlowPathMap`](LeanMachine/FlowPathMap.lean) | Incidence-preserving path maps and traversal counts; path lifting through an injective vertex map when all outgoing arrows lift | this repository |
+| [`FlowWalks`](LeanMachine/FlowWalks.lean) | Undirected walks retaining physical edge identities, with both orientations charged; actual backward spine paths and exact traversal counts | this repository |
 
 ## External code
 

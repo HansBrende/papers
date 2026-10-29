@@ -102,3 +102,5 @@ import SourceCovers.CausalFlow
 import SourceCovers.CausalPaths
 import SourceCovers.CausalAttachmentPaths
 import SourceCovers.CausalBitAllocation
+import SourceCovers.CausalReturns
+import SourceCovers.CausalGroupRoutes

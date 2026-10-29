@@ -174,6 +174,12 @@ a:hover { text-decoration-thickness: 2px; }
       <g class="r" tabindex="0" data-id="core" aria-label="Oblivious, depth reduction proved, proved coding class">
         <circle class="shape f-red" cx="520" cy="440" r="105" clip-path="url(#cD)"></circle>
       </g>
+      <!-- 9. bounded overlap, few large return families: excluded directly by source certificates (paper 9) -->
+      <g class="r" tabindex="0" data-id="geom" aria-label="Oblivious, bounded overlap, few large return families">
+        <circle class="shape f-red" cx="440" cy="322" r="32"></circle>
+        <text x="440" y="319" text-anchor="middle" class="tiny t-red" style="font-weight:700">few large</text>
+        <text x="440" y="333" text-anchor="middle" class="tiny t-red" style="font-weight:700">families</text>
+      </g>
 
       <!-- outlines -->
       <circle class="ol" cx="470" cy="375" r="265"></circle>
@@ -278,8 +284,11 @@ a:hover { text-decoration-thickness: 2px; }
       for the side information of the remaining bounded-depth cones need many bits. <i>Directed Recovery Structures</i> turns the crux into
       one machine-free storage-code question, Question 9.1.</p>
     <p>A piece is orange when one of the two is proved there, yellow when neither is. The red lens has both: depth reduction (Theorems F, B,
-      M) and a proved half-rate bound for its cone relations (papers 7 and 8 together). Adaptive machines enter only through
+      M) and a proved half-rate bound for its cone relations (papers 7, 8 and 10 together). Adaptive machines enter only through
       Corollary F″, which freezes the most likely trace.</p>
+    <p>Paper 9 adds a third route that needs no coding question. For an oblivious machine whose head excursions overlap boundedly,
+      complete source certificates on the actual return geometry show directly that the machine is wrong on most inputs, provided only
+      a few excursions are large. That is the small red island inside the depth-reduction region.</p>
     <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
       machines (Harvey and van der Hoeven). The best known upper bound is O(L·(log d)<sup>1−κ</sup>), from an unrefereed preprint.</p>
   </section>
@@ -297,8 +306,10 @@ a:hover { text-decoration-thickness: 2px; }
       <li><a href="https://hansbrende.github.io/papers/Directed-Recovery-Structures-in-Tape-Computations/paper/main.pdf">Directed Recovery Structures in Tape Computations</a></li>
       <li><b>Paper 7</b> · <a href="https://hansbrende.github.io/papers/Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/paper/main.pdf">Nested Elimination and Half-Rate Bounds for Storage Codes</a></li>
       <li><b>Paper 8</b> · <a href="https://hansbrende.github.io/papers/Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes/paper/main.pdf">Bounded Nesting and Depth Reduction for Matrix Transposition on Tapes</a></li>
+      <li><b>Paper 9</b> · <a href="https://hansbrende.github.io/papers/Source-Covers-and-Barriers-to-Tape-Transposition/paper/main.pdf">Source Covers and Barriers to Tape Transposition</a></li>
+      <li><b>Paper 10</b> · <a href="https://hansbrende.github.io/papers/Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes/paper/main.pdf">Directed Reciprocity and Deep-Nesting Bounds for Matrix Transposition on Tapes</a></li>
     </ul>
-    <p class="foot">Hans Brende and Claude Opus 5.5 (Anthropic) · status as of 26 October 2026 ·
+    <p class="foot">Hans Brende and Claude Opus 5.5 (Anthropic) · status as of 29 October 2026 ·
       <a href="https://github.com/HansBrende/papers">all papers</a></p>
   </section>
 </div>
@@ -333,26 +344,29 @@ const R = {
     text: "Traces carry at most ηL bits for a fixed η < ½, and every trace of probability at least 2^(−ηL) enters each cell O(1) times. Freezing the most likely trace reduces to the oblivious case, so an affirmative answer to the paired-distance question excludes these machines.",
     src: "Paper 8, Corollary F″" },
   deep: { name: "Oblivious, deep nesting", color: "yellow", status: "Impossible if TCP and the crux hold",
-    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Depth reduction is open here; the deep-nesting pair is its sharpest test, and the evidence suggests TCP(2) fails. If it fails, fixed-depth genie arguments cannot work for general computations (Theorem H of the information-depth memo), and this piece becomes effectively open.",
-    src: "Paper 4, Theorem D; paper 8, §5 and the corollary on where depth-robustness lives; information-depth memo, Theorem H" },
+    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Depth reduction is open here; the deep-nesting pair is its sharpest test, and the evidence suggests TCP(2) fails. Paper 10 adds to that evidence: for pairs of block labels it proves failure witnesses in every range of the modulus, at two fixed shifts (one for symmetric pairs), and it lists the four steps still needed to reach depth-robustness. If TCP fails, fixed-depth genie arguments cannot work for general computations (Theorem H of the information-depth memo), and this piece becomes effectively open.",
+    src: "Paper 4, Theorem D; paper 8, §5 and the corollary on where depth-robustness lives; paper 10, Theorems V*, LU and A; information-depth memo, Theorem H" },
   obD: { name: "Oblivious, depth reduction proved", color: "orange", status: "Impossible if the crux holds",
-    text: "The machine is oblivious, and its heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F, B and M prove depth reduction, so the crux alone, or an affirmative answer to Question 9.1, excludes them.",
-    src: "Paper 8, Theorem F, Corollaries F and F′, Theorem M; paper 4, Theorem B and Corollary B" },
+    text: "The machine is oblivious, and its heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F, B and M prove depth reduction, so the crux alone, or an affirmative answer to Question 9.1, excludes them. Paper 9 settles part of this piece without the crux (the red island). With boundedly overlapping excursions, what remains open must have more than q return families of linear size for every fixed q, and its large families cannot form two classes of non-overlapping spans plus one exception.",
+    src: "Paper 8, Theorem F, Corollaries F and F′, Theorem M; paper 4, Theorem B and Corollary B; paper 9, Theorem 4.2 and Corollaries 4.3 and 4.5" },
+  geom: { name: "Oblivious, boundedly overlapping excursions, few large return families", color: "red", status: "Impossible, unconditionally (Lean)",
+    text: "A return family is one head excursion: all long hops of one head, on one side, around one turning point. Suppose an oblivious linear-time machine's family spans overlap at most N at a time, for a fixed N. If only a fixed number of families are large and every other family has at most εL hops, or if the large families split into two classes of non-overlapping spans plus one arbitrary family, then the machine is correct on at most 2^((1−ε)L) inputs. No coding question is left: complete source certificates on the actual geometry give the deficit directly. Economical source covers or globally shared raw support give further exclusions of the same kind.",
+    src: "Paper 9, Corollaries 4.3, 4.4, 4.5 and 4.7, Theorems 4.2 and 4.6 (Lean)" },
   obPC: { name: "Oblivious, deep nesting, cone relations in a proved half-bound class", color: "orange", status: "Impossible if TCP holds",
     text: "The coding half is settled: every storage code on such cone relations has rate at most ½. What is missing is depth reduction at deep nesting.",
-    src: "Paper 7 (§8), Directed Recovery Structures; paper 4, Theorem D" },
+    src: "Paper 7 (§8), paper 10 (Theorem S*), Directed Recovery Structures; paper 4, Theorem D" },
   core: { name: "Oblivious, depth reduction proved, cone relations in a proved half-bound class", color: "red", status: "Impossible, unconditionally",
-    text: "Depth reduction holds, and the cone relations lie in a class where every storage code has rate at most ½. The classes are: TT-free with subcubic underlying graph; in-degree-3 vertices acyclic; blocks with private parents; TT-free Cayley relations Cay(G,{s,s⁻¹,t}); symmetric degree ≤ 3; χc < 3; hyperfinite; two-input components. A correct oblivious transposer cannot have cone relations of this kind on more than 2εL coordinates.",
-    src: "Paper 7 (Theorems N3, U3, T, PC, CC; §8), paper 8 (Theorems F, M), paper 4 (Theorem B), Directed Recovery Structures" },
+    text: "Depth reduction holds, and the cone relations lie in a class where every storage code has rate at most ½. The classes are: Class S, the TT-free relations of in-degree at most 3 in which every vertex with three parents has only reciprocal children (it contains the subcubic and the symmetric degree-3 cases); in-degree-3 vertices acyclic; blocks with private parents; TT-free Cayley relations Cay(G,{s,s⁻¹,t}); χc < 3; hyperfinite; two-input components. A correct oblivious transposer cannot have cone relations of this kind on more than 2εL coordinates.",
+    src: "Paper 7 (Theorems N3, U3, T, PC, CC; §8), paper 10 (Theorem S*), paper 8 (Theorems F, M), paper 4 (Theorem B), Directed Recovery Structures" },
   linear: { name: "Linear data path over a field", color: "dash", status: "Overlay: the crux becomes relative rigidity",
-    text: "Linearity is independent of the other circles. For machines that compute linearly over a field, linear depth reduction together with a linear crux excludes oblivious linear-time transposers. The linear crux is exactly relative rigidity: the transposition matrix is not a low-rank matrix plus one supported on the schedule's bounded-depth ball pattern. Both are open at deep nesting.",
-    src: "Paper 8, Lemma 7.3 and Theorem D_lin" }
+    text: "Linearity is independent of the other circles. For machines that compute linearly over a field, linear depth reduction together with a linear crux excludes oblivious linear-time transposers. The linear crux is exactly relative rigidity: the transposition matrix is not a low-rank matrix plus one supported on the schedule's bounded-depth ball pattern. Both are open at deep nesting. For scalar-linear codes the half bound also holds at degree 4, on triangle-free relations in which no two degree-4 vertices share a neighbour.",
+    src: "Paper 8, Lemma 7.3, Theorems D_lin and SH; paper 10, Theorem SH*" }
 };
 const QUESTIONS = {
-  deep: "Most likely here: oblivious, deep nesting on two heads, linear XOR coding, cone relations outside every proved class (degree four or more, or directed degree three beyond the proved classes). It needs a depth-robust schedule, a scratch area of fewer than εL cells each visited unboundedly often, and a Θ(log k) coding gain over routing.",
+  deep: "Most likely here: oblivious, deep nesting on two heads, linear XOR coding, cone relations outside every proved class (degree four or more, or directed in-degree three where a vertex with three parents has a one-way child). It needs a depth-robust schedule, a scratch area of fewer than εL cells each visited unboundedly often, a Θ(log k) coding gain over routing, and coupling between groups of adjacent columns during the computation: narrow groups processed autonomously need an almost complete helper (paper 9).",
   high: "Second: high adaptivity, where none of the oblivious-machine barriers apply."
 };
-const order = ["onetape","sweeps","movement","xor","packets","core","obD","obPC","lowad","linear","deep","leOpen","dHigh","high"];
+const order = ["onetape","sweeps","movement","xor","packets","core","geom","obD","obPC","lowad","linear","deep","leOpen","dHigh","high"];
 const chipText = { red: "unconditional", orange: "one open statement", yellow: "two open statements", open: "open", dash: "overlay" };
 const cards = document.getElementById("cards");
 for (const id of order) {

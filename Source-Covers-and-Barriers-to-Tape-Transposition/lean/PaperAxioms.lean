@@ -14,6 +14,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.AdmissibleGeometry.deficit_card_iff
 #print axioms SourceCovers.AdmissibleGeometry.inputLength
 #print axioms SourceCovers.AdmissibleGeometry.orbit_count_deficit
+#print axioms SourceCovers.AdmissibleGeometry.prefix_metric_deficit
 #print axioms SourceCovers.AdmissibleGeometry.relativeDeficit
 #print axioms SourceCovers.AdmissibleGeometry.withSkeleton
 #print axioms SourceCovers.CoverTailSmall
@@ -45,6 +46,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.NearFullSequence.JointProfile.necessary_superlinear_seed_growth
 #print axioms SourceCovers.NearFullSequence.JointProfile.not_summable_moment
 #print axioms SourceCovers.NearFullSequence.JointProfile.prefix_add_tail
+#print axioms SourceCovers.NearFullSequence.JointProfile.prefix_metric_limit
 #print axioms SourceCovers.NearFullSequence.JointProfile.prefix_sharing_limit
 #print axioms SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit
 #print axioms SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit_bounds
@@ -63,6 +65,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.NearFullSequence.exists_jointProfile
 #print axioms SourceCovers.NearFullSequence.ofGeometry
 #print axioms SourceCovers.NearFullSequence.one_exception_false
+#print axioms SourceCovers.RawIntervalCover.blockUnion_card_le
+#print axioms SourceCovers.RawIntervalCover.two_block_factor_sharp
 #print axioms SourceCovers.actualOwner
 #print axioms SourceCovers.admissiblePhases_card
 #print axioms SourceCovers.anchored_displacement_area_lower_bound
@@ -138,6 +142,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.meanReciprocalCover_bounds
 #print axioms SourceCovers.mem_boundaryLowers
 #print axioms SourceCovers.mem_family_edges_iff
+#print axioms SourceCovers.metric_sharing_uniform_deficit
+#print axioms SourceCovers.metric_sharing_uniform_deficit_of_limits
 #print axioms SourceCovers.nonleaf_mass_le_total
 #print axioms SourceCovers.olderLandingSuppliers
 #print axioms SourceCovers.olderLandingSuppliers_exact

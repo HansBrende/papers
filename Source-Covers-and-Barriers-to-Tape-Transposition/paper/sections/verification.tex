@@ -1,7 +1,7 @@
 \section{Building and checking this draft}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,lem:attached-short-count}
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
 \leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
@@ -54,6 +54,7 @@ The uniform-sharing proof retains the same original-order prefixes and
 uses the generalized paid-error limit. A shared quadratic tradeoff handles
 zero cost coefficients and arbitrary common good cutoffs. Mathlib supplies
 extended-real scaling and the decay of positive real powers.
+
 The continuation-density proof passes a convergent lower bound directly
 to the extended dimension lower limit. Positive slack permits a bound only
 on the limiting omitted coordinate. Sorted summability then makes that
@@ -61,6 +62,14 @@ coordinate decay faster than reciprocal rank, forcing superlinear seed
 growth without a size envelope. Both lower limits allow infinity, with
 dimension taken first; strictly positive rates and the separate zero-cost
 case avoid an ambiguous zero-times-infinity argument.
+
+Metric sharing adds an attained minimum closed-interval cover and a sharp
+two-block estimate at every shift. The existing shared-payment proof now
+accepts an arbitrary shift-uniform payment; the original count bounds
+specialize it. The same rounded-width proof and vanishing-tail contradiction
+serve both global-count and metric-cover criteria. The three metric limits
+use one common cutoff filter; separate favorable cutoff sets would not suffice.
+
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run
 \begin{samepage}
@@ -75,12 +84,14 @@ are not already available. The axiom output must contain no axioms
 beyond the three listed above. No heartbeat override is needed for
 the new proofs.
 
+\begin{samepage}
 From this paper's top-level directory, regenerate or check the statement
 index and axiom commands with
 \begin{verbatim}
 python3 tools/statement_index.py
 python3 tools/statement_index.py --check
 \end{verbatim}
+\end{samepage}
 The script reads the section order from \path{paper/main.tex}, checks
 stable labels, proof-status markers and the corresponding proof or
 outline environments, and generates the index appendix,

@@ -41,6 +41,7 @@ theorem prefix_error_limit_of_rate (J R M : ℕ) {η lam : ℝ}
         let O := S.order (P.subsequence n)
         0 < w n ∧ G.a0 ≤ a n ∧ η * G.inputLength ≤ (a n : ℝ) ∧
           G.prefixError O J R M (w n) (a n) ≤ F n) ∧
+      (∀ n, lam * (S.geometry (P.subsequence n)).inputLength ≤ (w n : ℝ)) ∧
       Tendsto (fun n => (w n : ℝ) / (S.geometry (P.subsequence n)).inputLength)
         atTop (𝓝 lam) ∧
       Tendsto (fun n => (S.geometry (P.subsequence n)).relativeDeficit + F n) atTop
@@ -95,7 +96,7 @@ theorem prefix_error_limit_of_rate (J R M : ℕ) {η lam : ℝ}
       ((hH.const_mul β).div_const ((M - R : ℕ) : ℝ))).add hres using 1
     congr 1
     ring
-  refine ⟨w, a, F, ?_, hwidth, ?_⟩
+  refine ⟨w, a, F, ?_, fun n => Nat.le_ceil _, hwidth, ?_⟩
   · intro n
     refine ⟨hw n, le_max_left _ _, ?_, ?_⟩
     · calc
@@ -119,7 +120,7 @@ theorem prefix_error_limit (J R M : ℕ) {lam : ℝ} (hlam : 0 < lam) :
         (𝓝 (β * (∑ i ∈ Ico R J, P.h i) / ((M - R : ℕ) : ℝ) + 2 * lam +
           β * N * (bankCost M q : ℝ) * c ^ 2 / (lam * (J + 1)))) := by
   have hc : 0 ≤ c := by simpa using P.hop_mass.2.1 ∅
-  obtain ⟨w, a, F, hdata, _, hlimit⟩ := P.prefix_error_limit_of_rate J R M
+  obtain ⟨w, a, F, hdata, _, _, hlimit⟩ := P.prefix_error_limit_of_rate J R M
     (η := c / (J + 1)) (div_nonneg hc (by positivity)) hlam
   refine ⟨w, a, F, ?_, ?_⟩
   · intro n

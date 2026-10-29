@@ -338,6 +338,24 @@ tradeoff; taking a convergent lower bound directly avoids another
 subsequence extraction. These are requirements on complete continuation
 counts, not information-capacity bounds or a decision of transposition.
 
+**Proposition 5.4, the metric shared-support criterion, is Lean-verified.**
+The actual minimum number of closed real intervals covering the shared raw
+support is averaged over the original legal phases. Every interval of length
+at most `delta*L` costs at most `2*ceil(delta*L)` raw bits at every shift,
+improving the written factor three to the sharp factor two. Empty supports,
+real endpoints, overlapping intervals and clipping at the input boundary
+are included; the total payment is also capped by `L`.
+
+The existing raw-payment proof now accepts any bound valid at every shift.
+The original per-coordinate and maximal-seed statements are direct
+specializations; the full two-exception residual bill is unchanged.
+The metric proof reuses this payment, the rounded-width limit and the same
+vanishing-tail contradiction. The three joint limits use a single common
+unbounded cutoff set, fixed independently of dimension. More generally,
+simultaneous smallness at arbitrarily late allowed cutoffs suffices, and
+no separate upper bound `delta < 1` is needed. This verifies a sufficient
+cover criterion without supplying it for arbitrary native computations.
+
 **Lemma 8.3, the attached short-distance count, is Lean-verified:**
 `S_ell <= min(d²b, (2 n - 1) b (2 k + 3)^(ell - 1))` for valid diagrams,
 every block length `0 <= r <= d b`, and every natural radius parameter `ell` (both subtractions are
@@ -353,8 +371,8 @@ bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **9 numbered results remain unformalized**,
-including metric-sharing criteria and causal-group results. The paper's
+`Quot.sound`. The other **8 numbered results remain unformalized**,
+including the covering-exponent criteria and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

@@ -53,3 +53,4 @@ import SourceCovers.GlobalSharing
 import SourceCovers.PrefixSharing
 import SourceCovers.UniformSharing
 import SourceCovers.SharingDensity
+import SourceCovers.MetricSharing

@@ -281,16 +281,16 @@ No such seed-count upper bound is established for arbitrary tape computations.
 
 \subsection{Raw metric covers instead of temporal counts}
 
-For $0<\delta<1$, let $\mathcal N_{\rho,J,R}(\delta)$ be the minimum
+For $\delta>0$, let $\mathcal N_{\rho,J,R}(\delta)$ be the minimum
 number of closed real intervals of length at most $\delta L$ covering
 $S^{\rm new}_\rho$. An empty set has covering number zero. These are
 intervals in the linear raw-coordinate range, not circular arcs.
 
 \begin{proposition}[Metric shared-support criterion]\label{prop:metric-sharing}
-\notformalized
+\formal{SourceCovers/MetricSharing.lean}{SourceCovers.metric_sharing_uniform_deficit_of_limits,SourceCovers.metric_sharing_uniform_deficit,SourceCovers.AdmissibleGeometry.prefix_metric_deficit,SourceCovers.NearFullSequence.JointProfile.prefix_metric_limit,SourceCovers.RawIntervalCover.blockUnion_card_le,SourceCovers.RawIntervalCover.two_block_factor_sharp}
 In the setting of \cref{thm:uniform-sharing}, replace its bounds on
 $\overline G_{J,R}$ by the following. For each $R$ in a fixed unbounded
-set, there are dimension-independent numbers $\delta_{J,R}\in(0,1)$
+set, there are dimension-independent numbers $\delta_{J,R}>0$
 and $n_{J,R}\ge0$ with
 \[
  \mathbb E_\rho\mathcal N_{\rho,J,R}(\delta_{J,R})\le n_{J,R}.
@@ -303,21 +303,49 @@ Along a common unbounded set of cutoffs $J$ for that $R$, assume jointly
 \end{equation}
 Then there are $\eps>0,d_0$ such that $a_0\le\eps L$ and $d\ge d_0$
 imply $\Delta\ge\eps L$ for this class.
+More generally, it suffices that for each fixed $R$, every $\varepsilon>0$
+and every $J_0$ admit a common allowed cutoff $J\ge J_0$ at which
+$\delta_{J,R}$, $\delta_{J,R}n_{J,R}$ and $\eta_J/\delta_{J,R}$ are
+all smaller than $\varepsilon$. The geometric bounds need only hold at
+the allowed cutoffs; these sets remain independent of dimension.
 \end{proposition}
-\begin{informalproof}
-Put $w=\lceil\delta_{J,R}L\rceil$. At every grid shift, the blocks
-meeting any one covering interval have total capacity at most $3w$.
-Thus the raw revelation in \cref{prop:finite-sharing} costs at most
-$3w\mathcal N_{\rho,J,R}(\delta_{J,R})$. Its dimension limit replaces
-the right side of \cref{eq:sharing-prefix-limit} by
+\begin{outline}
+Singleton intervals cover any finite raw set, so the set of achievable
+cover cardinalities has a least element, attained by a cover. This uses
+natural-number minimization; real endpoints and overlapping intervals
+are permitted.
+
+Put $w=\lceil\delta_{J,R}L\rceil>0$. A set contained in an interval of
+length at most $\delta_{J,R}L\le w$ has grid labels differing by at most
+one. It therefore meets at most two blocks, each containing at most $w$
+raw coordinates. The union of all covered blocks has cardinality at most
 \[
- 2\delta_{J,R}+3\delta_{J,R}n_{J,R}
+ \min\{L,\,2w\mathcal N_{\rho,J,R}(\delta_{J,R})\}
+\]
+at every shift, without a disjointness assumption on the cover. The factor
+two is sharp for this finite estimate: width-one blocks and the interval
+$[0,1]$ covering the two raw coordinates $\{0,1\}$ attain it.
+
+The generalized raw-payment theorem accepts any such shift-uniform bound.
+It retains the full two-exception residual bill and the older bank's
+movement bound; the original per-coordinate payment is a direct
+specialization. Average the new payment over the same phases and use the
+existing rounded-width limit, with all cutoffs and $\delta_{J,R}$ fixed
+before dimension. The right side of \cref{eq:sharing-prefix-limit} becomes
+\[
+ 2\delta_{J,R}+2\delta_{J,R}n_{J,R}
               +A_R\eta_J/\delta_{J,R}.
 \]
-All three terms vanish along the cutoffs in
-\cref{eq:metric-sharing-limits}. The proof of
-\cref{thm:uniform-sharing} now gives the same contradiction.
-\end{informalproof}
+Simultaneous smallness at arbitrarily late cutoffs makes the limiting
+credit at most zero after subtracting $\beta\tau_R/(R+2)$. The same
+vanishing-tail contradiction used in \cref{thm:uniform-sharing} completes
+the proof. The three joint limits in \cref{eq:metric-sharing-limits}
+imply this smallness condition on their common unbounded set.
+\end{outline}
+
+The improvement from three blocks to two sharpens the finite payment
+and its limiting coefficient; it does not change the vanishing conditions
+or establish metric covers for an unrestricted native class.
 
 \begin{corollary}[Sublinear raw covering exponents]\label{cor:covering-exponents}
 \notformalized

@@ -48,7 +48,7 @@ theorem prefix_seed_liminf_lower_eventually {K R J M : ℕ} {η lam : ℝ}
   obtain ⟨n₀, hηn₀⟩ := hη.exists
   have hη0 : 0 ≤ η :=
     ((S.order (P.subsequence n₀)).hopProfile_nonneg _ J).trans hηn₀
-  obtain ⟨w, a, F, hdata, hwlim, hF⟩ := P.prefix_error_limit_of_rate J R M hη0 hlam
+  obtain ⟨w, a, F, hdata, _, hwlim, hF⟩ := P.prefix_error_limit_of_rate J R M hη0 hlam
   let B := (2 * (M : ℝ) + 3) * (2 * (M : ℝ) + 4)
   let credit := fun n => max (1 - ∑ i ∈ Ico K J, S.variation (P.subsequence n) i) 0 ^ 2 /
     (2 * (2 * (K : ℝ) + 1) * (2 * (M : ℝ) + 4))

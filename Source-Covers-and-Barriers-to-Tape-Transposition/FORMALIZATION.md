@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-three of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-four of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -17,9 +17,10 @@ Corollary 4.8, necessary complete-observable movement;
 Proposition 5.1, the full shared-support payment;
 Theorem 5.2, uniform exclusion by global sharing;
 Corollary 5.3, necessary global continuation density and superlinear seed growth;
+Proposition 5.4, the metric shared-support criterion;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 9 results
+bounds and vanishing tails. The other 8 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -871,12 +872,49 @@ zero-coordinate theorem proves an infinite inner lower limit whenever the
 finite-prefix credit is positive. This avoids treating zero times infinity
 as a positive quantity. All original cases follow without an added premise.
 
-The **next target is Proposition 5.4, the metric shared-support criterion**.
-Reuse the finite raw-union payment and the uniform-gap adapter. Formalize
-that the blocks meeting one raw interval of length at most `delta*L` cost
-at most `3*ceil(delta*L)` at every shift, then average a common raw cover
-and retain the full residual payment through the dimension limit. The
-covering numbers and cutoff sets must remain uniform in dimension.
+## Completed: metric shared-support criterion
+
+[`MetricSharing.lean`](lean/SourceCovers/MetricSharing.lean) verifies all
+of Proposition 5.4, including its three joint limits on each common
+unbounded set of cutoffs. The formal class bounds the actual phase mean
+of the minimum number of short closed real intervals covering the
+complete shared raw support. The core prefixes, phase sets and omitted
+family coordinates all retain the same supplied original order.
+
+The shared [`RawIntervalCover`](../lean-machine/LeanMachine/RawIntervalCover.lean)
+constructs a finite cover by singleton intervals and uses natural-number
+minimization to prove that a minimum is attained. It permits real endpoints,
+overlap and the empty set. At each shift, a set of diameter at most one
+width meets at most two grid blocks. Summing over a minimum cover gives
+`min(L, 2*w*N_cover)`, improving the manuscript's factor three to two.
+A width-one example with two adjacent raw bits attains the factor two.
+This is a sharp elementary payment estimate, not a new asymptotic exclusion.
+
+The existing phase and averaged shared-support proofs now accept any
+raw-payment bound valid at every shift. The original raw-cardinality and
+maximal-seed theorems are direct specializations, with unchanged statements.
+This avoids a second recovery or entropy argument. The rounded-error
+lemma also retains its width lower bound, so the metric proof uses that
+same rounding construction. A common one-exception tail-contradiction
+lemma replaces duplicated final arguments for the two criteria.
+
+The dimension limit is taken at fixed cutoffs and fixed metric radius.
+It bounds the geometric credit by the hop-tail term plus
+`2*delta + 2*delta*n + A_R*eta/delta`, preserving the full residual bill.
+The stronger formal criterion only needs all three errors to be small
+simultaneously at arbitrarily late common allowed cutoffs. The original
+three limits imply this, using one restricted filter. No separate upper
+bound `delta < 1`, convergence at every cutoff, or positivity of the
+omitted rate is needed. All original cases are retained; no native
+cover-number upper bound is inferred from entropy alone.
+
+The **next target is Corollary 5.5, sublinear raw covering exponents**.
+Reuse the metric criterion and Mathlib's real-power limits. Choose one
+width exponent strictly between the raw-cover growth threshold and the
+omitted-family exponent; handle the no-envelope case with the sorted
+rank bound. Check whether the power case needs only `p > 0` and whether
+the two cases share one general proof. Keep all constants and good
+cutoffs independent of dimension.
 The general transposition question remains open.
 
 ## Dependency order and proof obligations

@@ -814,3 +814,16 @@ import LeanMachine
 #print axioms LeanMachine.ExtendedTradeoff.density_liminf
 #print axioms LeanMachine.ExtendedTradeoff.normalize_rate
 #print axioms LeanMachine.ExtendedTradeoff.eq_top_of_div_le
+
+-- RawIntervalCover.lean
+#print axioms LeanMachine.ShiftedGrid.blockUnion_card_le_of_span
+#print axioms LeanMachine.RawIntervalCover.Covers
+#print axioms LeanMachine.RawIntervalCover.Covers.mono_radius
+#print axioms LeanMachine.RawIntervalCover.exists_cover
+#print axioms LeanMachine.RawIntervalCover.number
+#print axioms LeanMachine.RawIntervalCover.number_le
+#print axioms LeanMachine.RawIntervalCover.exists_min_cover
+#print axioms LeanMachine.RawIntervalCover.number_empty
+#print axioms LeanMachine.RawIntervalCover.blockUnion_card_le_of_cover
+#print axioms LeanMachine.RawIntervalCover.blockUnion_card_le
+#print axioms LeanMachine.RawIntervalCover.two_block_factor_sharp

@@ -38,14 +38,15 @@ variable {k T : ℕ} {xs : Fin k → ℕ → ℤ} {K : Finset (ActualFamily xs T
 include hK hE hP hR hD hwalk hcolor hsize hd hb hw ht hn hx hstep hC
   hcapacity hlocal hcorrect hV hτ
 
-/-- Sharper finite payment: actual shared raw support, one-exception motion,
-and full two-exception residual cost. Protection and distinguished-family
-budgets may be independent, and every legal modulus is allowed. -/
-theorem shared_support_paid_deficit :
+/-- Average any raw-revelation payment that is valid at every shift.
+Protection and distinguished-family budgets remain independent. -/
+theorem shared_support_paid_deficit_of_payment (p : ℕ → ℝ)
+    (hpay : ∀ ρ ∈ admissiblePhases K P M, ∀ θ,
+      ((ShiftedGrid.blockUnion (d * d * b) w θ
+        (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ)).card : ℝ) ≤ p ρ) :
     ((d * d * b : ℝ) - Real.log (C.card : ℝ) / Real.log 2) / (d * d * b) ≥
       max (1 - α) 0 ^ 2 / (2 * (2 * (r : ℝ) + 1) * (2 * (M : ℝ) + 4)) -
-        w * ((∑ ρ ∈ admissiblePhases K P M,
-          ((sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card : ℝ)) /
+        ((∑ ρ ∈ admissiblePhases K P M, p ρ) /
             (admissiblePhases K P M).card) / (d * d * b) -
         (2 * bankCost M 1 * ((T - 1 : ℕ) : ℝ) / (d * (d * d * b)) +
           2 * ((w : ℝ) - 1) / (d * d * b) +
@@ -59,14 +60,15 @@ theorem shared_support_paid_deficit :
     β * ((1 + (N : ℝ) * a) * V₂ / w)
   let f := fun ρ => (d * d * b : ℝ) *
     (max (1 - α) 0 ^ 2 / (2 * (2 * (r : ℝ) + 1) * (2 * (M : ℝ) + 4))) -
-      w * (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card
+      p ρ
   have hpayment := initialPayment_average_of_budgets K E P hK hE hP hR hτ
   have hA : A.Nonempty := card_pos.mp hpayment.1
   have hpoint : ∀ ρ ∈ A, f ρ - c - β * (initialPayment K E M ρ).card ≤
       (d * d * b : ℝ) - Real.log (C.card : ℝ) / Real.log 2 := by
     intro ρ hρ
-    have h := phase_shared_deficit hc hM (admissiblePhase_lt hρ) E hE hwalk hcolor hsize
+    have h := phase_shared_deficit_of_payment hc hM (admissiblePhase_lt hρ) E hE hwalk hcolor hsize
       x t hd hb hw ht hn hx hstep C hC record output hcapacity hlocal hcorrect D hD hV
+      (p ρ) (hpay ρ hρ)
     convert h using 1
     dsimp [f, c, V₁, V₂]
     ring
@@ -79,9 +81,30 @@ theorem shared_support_paid_deficit :
   have hA0 : (A.card : ℝ) ≠ 0 := by exact_mod_cast (card_pos.mpr hA).ne'
   convert hnorm using 1
   dsimp only [f, c, V₁, V₂]
-  simp only [sum_sub_distrib, sum_const, nsmul_eq_mul, ← mul_sum]
+  simp only [sum_sub_distrib, sum_const, nsmul_eq_mul]
   field_simp
   ring
+
+/-- The actual raw-support count is the original per-coordinate payment.
+Its proof now reuses the same averaged theorem as interval covers. -/
+theorem shared_support_paid_deficit :
+    ((d * d * b : ℝ) - Real.log (C.card : ℝ) / Real.log 2) / (d * d * b) ≥
+      max (1 - α) 0 ^ 2 / (2 * (2 * (r : ℝ) + 1) * (2 * (M : ℝ) + 4)) -
+        w * ((∑ ρ ∈ admissiblePhases K P M,
+          ((sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card : ℝ)) /
+            (admissiblePhases K P M).card) / (d * d * b) -
+        (2 * bankCost M 1 * ((T - 1 : ℕ) : ℝ) / (d * (d * d * b)) +
+          2 * ((w : ℝ) - 1) / (d * d * b) +
+          ((d : ℝ) * b - b + 1) / (2 * (d * d * b)) +
+          β / (d * d * b) * (J + 2 + τ / ((M - R : ℕ) : ℝ) +
+            (1 + (N : ℝ) * a) * bankCost M 2 * ((T - 1 : ℕ) : ℝ) / w)) := by
+  have h := shared_support_paid_deficit_of_payment hc hM E P D hK hE hP hR hD hwalk hcolor hsize
+    x t hd hb hw ht hn hx hstep C hC record output hcapacity hlocal hcorrect hV hτ
+    (fun ρ => (w : ℝ) * (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card)
+    (fun ρ _ θ => by
+      exact_mod_cast (ShiftedGrid.blockUnion_card_le hw θ
+        (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ)).trans (min_le_right ..))
+  simpa only [← mul_sum, mul_div_assoc] using h
 
 /-- Proposition 5.1. Counting maximal older seeds is a direct relaxation of
 the raw-support theorem. At `M = 2R + 2` its constants are `ell + 1` and

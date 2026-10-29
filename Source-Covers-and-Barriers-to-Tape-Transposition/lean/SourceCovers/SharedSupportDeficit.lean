@@ -74,9 +74,11 @@ variable (hc : HasSpanColoring K 2) {M ρ d b w r N a : ℕ}
 
 include hM hρ hE hwalk hcolor hsize hd hb hw ht hn hx hstep hC hcapacity hlocal hcorrect hD hV
 
-/-- A single phase retains the actual shared raw support and the smaller
-one-exception movement constant. The residual bill uses both exceptions. -/
-theorem phase_shared_deficit :
+/-- Any bound valid at every shift may pay the common raw revelation.
+The residual bill retains the full two-exception bank. -/
+theorem phase_shared_deficit_of_payment (p : ℝ)
+    (hpay : ∀ θ, ((ShiftedGrid.blockUnion (d * d * b) w θ
+      (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ)).card : ℝ) ≤ p) :
     (d * d * b : ℝ) - Real.log (C.card : ℝ) / Real.log 2 ≥
       (d * d * b : ℝ) * (max (1 - α) 0 ^ 2 /
         (2 * (2 * (r : ℝ) + 1) * (2 * (M : ℝ) + 4))) -
@@ -84,7 +86,7 @@ theorem phase_shared_deficit :
       2 * ((w : ℝ) - 1) - ((d : ℝ) * b - b + 1) / 2 -
       β * ((initialPayment K E M ρ).card + (1 + (N : ℝ) * a) *
         ((bankCost M 2 : ℝ) * ((T - 1 : ℕ) : ℝ)) / w) -
-      w * (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card := by
+      p := by
   let B := exactSourceBank (ρ := ρ) hc hM E
   let O := exactSourceBank (ρ := ρ) hc hM (olderException E).toList.toFinset
   let Y := indexedRawBank B x
@@ -130,12 +132,26 @@ theorem phase_shared_deficit :
   have hp := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right
     (mul_le_mul_of_nonneg_left hVB (Nat.cast_nonneg (1 + N * a))) (Nat.cast_nonneg w))
     (recordCapacity_nonneg hcapacity)
-  have hraw : ((ShiftedGrid.blockUnion (d * d * b) w θ S).card : ℝ) ≤ w * S.card := by
-    exact_mod_cast (ShiftedGrid.blockUnion_card_le hw θ S).trans (min_le_right ..)
+  have hraw := hpay θ
   simp only [indexedRawBank_variation, B, O, Nat.cast_add, Nat.cast_mul,
     Nat.cast_one] at hdef hm hp
-  dsimp only [S, roots] at hraw
   linarith
+
+/-- The original per-coordinate payment is a direct specialization. -/
+theorem phase_shared_deficit :
+    (d * d * b : ℝ) - Real.log (C.card : ℝ) / Real.log 2 ≥
+      (d * d * b : ℝ) * (max (1 - α) 0 ^ 2 /
+        (2 * (2 * (r : ℝ) + 1) * (2 * (M : ℝ) + 4))) -
+      2 * ((bankCost M 1 : ℝ) * ((T - 1 : ℕ) : ℝ)) / d -
+      2 * ((w : ℝ) - 1) - ((d : ℝ) * b - b + 1) / 2 -
+      β * ((initialPayment K E M ρ).card + (1 + (N : ℝ) * a) *
+        ((bankCost M 2 : ℝ) * ((T - 1 : ℕ) : ℝ)) / w) -
+      w * (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ).card := by
+  apply phase_shared_deficit_of_payment hc hM hρ E hE hwalk hcolor hsize
+    x t hd hb hw ht hn hx hstep C hC record output hcapacity hlocal hcorrect D hD hV
+  intro θ
+  exact_mod_cast (ShiftedGrid.blockUnion_card_le hw θ
+    (sharedRawSupport hc hM E x ((range (d * d * b)).image t) ρ)).trans (min_le_right ..)
 
 end Phase
 

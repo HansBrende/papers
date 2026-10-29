@@ -46,7 +46,7 @@ theorem prefix_sharing_limit {K R J M : ℕ} {η g lam : ℝ}
         β * N * (bankCost M 2 : ℝ) * c * η / lam := by
   have hη0 : 0 ≤ η :=
     ((S.order (P.subsequence 0)).hopProfile_nonneg _ J).trans (hη 0)
-  obtain ⟨w, a, F, hdata, hwlim, hF⟩ := P.prefix_error_limit_of_rate J R M hη0 hlam
+  obtain ⟨w, a, F, hdata, _, hwlim, hF⟩ := P.prefix_error_limit_of_rate J R M hη0 hlam
   let credit := fun n => max (1 - ∑ i ∈ Ico K J, S.variation (P.subsequence n) i) 0 ^ 2 /
     (2 * (2 * (K : ℝ) + 1) * (2 * (M : ℝ) + 4))
   have hcredit : Tendsto credit atTop
@@ -107,17 +107,14 @@ theorem sharing_tail_lower {K R M : ℕ} {s : Set ℕ} {η g : ℕ → ℝ}
     linarith only [h]
 
 include P in
-/-- Any unbounded collection of protected scales suffices. A full sequence
-of small sharing products, a positive rate, and positive cost coefficients
-are all unnecessary. -/
-theorem false_of_sharing_bounds {radii : Set ℕ} {cutoffs : ℕ → Set ℕ}
-    {η : ℕ → ℝ} {g : ℕ → ℕ → ℝ}
+/-- A positive one-exception gap credit cannot be paid by vanishing hop
+tails at an unbounded set of protected scales. Shared by both raw-payment criteria. -/
+theorem false_of_one_exception_tail_bounds {radii : Set ℕ}
     (hradii : ∀ R₀ : ℕ, ∃ R ≥ R₀, R ∈ radii)
-    (hη : Tendsto η atTop (𝓝 0))
-    (hsmall : ∀ R ∈ radii, ∀ ε > 0, ∀ J₀ : ℕ,
-      ∃ J ≥ J₀, J ∈ cutoffs R ∧ η J * g R J < ε)
-    (hbound : ∀ n, (S.geometry n).HasSharingBounds (S.order n) radii cutoffs η g) :
-    False := by
+    (hbound : ∀ K R, R ∈ radii →
+      max (1 - P.variationTail K) 0 ^ 2 /
+        (2 * (2 * (K : ℝ) + 1) * (2 * ((2 * R + 2 : ℕ) : ℝ) + 4)) ≤
+      β * P.hopTail R / ((2 * R + 2 - R : ℕ) : ℝ)) : False := by
   obtain ⟨K, hK⟩ := (P.tails_tendsto_zero.2.eventually
     (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1))).exists
   let A := max (1 - P.variationTail K) 0 ^ 2 / (8 * (2 * (K : ℝ) + 1))
@@ -131,9 +128,7 @@ theorem false_of_sharing_bounds {radii : Set ℕ} {cutoffs : ℕ → Set ℕ}
     exact hlim.eventually (Iio_mem_nhds hA)
   obtain ⟨R₀, hR₀⟩ := eventually_atTop.mp hev
   obtain ⟨R, hRR, hR⟩ := hradii R₀
-  have h := P.sharing_tail_lower (K := K) (R := R)
-    (M := 2 * R + 2) (by omega) (by omega) hη (hsmall R hR)
-    (fun J hJ hRJ n => hbound (P.subsequence n) R hR J hJ hRJ)
+  have h := hbound K R hR
   rw [show 2 * R + 2 - R = R + 2 by omega] at h
   have hscaled := mul_le_mul_of_nonneg_right h (by positivity : (0 : ℝ) ≤ R + 2)
   have hpaid : A ≤ β * P.hopTail R := by
@@ -141,6 +136,24 @@ theorem false_of_sharing_bounds {radii : Set ℕ} {cutoffs : ℕ → Set ℕ}
       simp only [A, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat] <;> field_simp
     ring
   exact (not_lt_of_ge hpaid) (hR₀ R hRR)
+
+include P in
+/-- Any unbounded collection of protected scales suffices. A full sequence
+of small sharing products, a positive rate, and positive cost coefficients
+are all unnecessary. -/
+theorem false_of_sharing_bounds {radii : Set ℕ} {cutoffs : ℕ → Set ℕ}
+    {η : ℕ → ℝ} {g : ℕ → ℕ → ℝ}
+    (hradii : ∀ R₀ : ℕ, ∃ R ≥ R₀, R ∈ radii)
+    (hη : Tendsto η atTop (𝓝 0))
+    (hsmall : ∀ R ∈ radii, ∀ ε > 0, ∀ J₀ : ℕ,
+      ∃ J ≥ J₀, J ∈ cutoffs R ∧ η J * g R J < ε)
+    (hbound : ∀ n, (S.geometry n).HasSharingBounds (S.order n) radii cutoffs η g) :
+    False := by
+  apply P.false_of_one_exception_tail_bounds hradii
+  intro K R hR
+  exact P.sharing_tail_lower (K := K) (R := R)
+    (M := 2 * R + 2) (by omega) (by omega) hη (hsmall R hR)
+    (fun J hJ hRJ n => hbound (P.subsequence n) R hR J hJ hRJ)
 
 include P in
 /-- The paper's zero-liminf formulation is exactly the common-cutoff

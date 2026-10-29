@@ -78,3 +78,4 @@ import LeanMachine.IntervalClusterErosion
 import LeanMachine.FiniteHullVariation
 import LeanMachine.BoundedLiminf
 import LeanMachine.ShiftedGridUnion
+import LeanMachine.VanishingTradeoff

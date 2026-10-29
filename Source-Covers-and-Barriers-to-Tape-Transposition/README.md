@@ -298,6 +298,22 @@ distinguished-family budgets are allowed; no linear-runtime premise is
 needed. This verifies the finite sharing certificate, not a small-sharing
 property of arbitrary tape computations.
 
+**Theorem 5.2 (Theorem H), uniform exclusion by global sharing, is
+Lean-verified.** A common omitted-family rate `eta_J -> 0` and sharing
+budgets with `liminf_J eta_J*g_R(J) = 0` force a uniform positive
+correctness deficit, for any unbounded set of protected scales `R`.
+Only arbitrarily late good cutoffs are needed, and the formal theorem
+also permits common restricted cutoff sets and zero rates. The budgets
+and cutoff sets must be fixed independently of dimension.
+
+The no-envelope criterion uses the automatic rate `c/(J+1)`. The
+power-envelope criterion now allows every `p > 0` and `H >= 0`; for
+`p <= 1`, the no-envelope criterion already implies this case.
+The proof reuses the full finite payment, rounding limits, joint-profile
+tails and uniform-gap adapter. A short shared quadratic-tradeoff lemma
+handles zero cost coefficients without a square-root minimizer.
+It gives no automatic sharing bound for arbitrary tape computations.
+
 **Lemma 8.3, the attached short-distance count, is Lean-verified:**
 `S_ell <= min(d²b, (2 n - 1) b (2 k + 3)^(ell - 1))` for valid diagrams,
 every block length `0 <= r <= d b`, and every natural radius parameter `ell` (both subtractions are
@@ -313,8 +329,8 @@ bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **11 numbered results remain unformalized**,
-including uniform global-sharing criteria and causal-group results. The paper's
+`Quot.sound`. The other **10 numbered results remain unformalized**,
+including global continuation density, metric-sharing criteria and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

@@ -725,6 +725,7 @@ import LeanMachine
 -- TailLiminf.lean
 #print axioms LeanMachine.TailLiminf.liminf_ofReal_eq_zero_iff
 #print axioms LeanMachine.TailLiminf.liminf_ofReal_eq_zero_of_tendsto
+#print axioms LeanMachine.TailLiminf.liminf_ofReal_const_mul_eq_zero
 
 -- PowerEnvelope.lean
 #print axioms LeanMachine.PowerEnvelope.summable_moment
@@ -799,3 +800,7 @@ import LeanMachine
 #print axioms LeanMachine.ShiftedGrid.mem_blockUnion
 #print axioms LeanMachine.ShiftedGrid.blockUnion_empty
 #print axioms LeanMachine.ShiftedGrid.blockUnion_card_le
+
+-- VanishingTradeoff.lean
+#print axioms LeanMachine.VanishingTradeoff.sq_le
+#print axioms LeanMachine.VanishingTradeoff.limit_le_zero

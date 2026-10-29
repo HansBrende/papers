@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-one of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-two of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -15,9 +15,10 @@ complexity and its inverse-square probability consequence;
 Corollary 4.7, both uniform mean-cover criteria;
 Corollary 4.8, necessary complete-observable movement;
 Proposition 5.1, the full shared-support payment;
+Theorem 5.2, uniform exclusion by global sharing;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 11 results
+bounds and vanishing tails. The other 10 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -803,12 +804,40 @@ signed averaging pays the raw support and rank deletions together. The
 already proved gap-area congruence is exposed for reuse; its proof is unchanged.
 No earlier-paper mathematical source is changed.
 
-The **next target is Theorem 5.2, uniform exclusion by global sharing**.
-Adapt this finite bound to the original-order prefixes and reuse the paid-error
-limit and uniform-gap adapter. Keep dimension limits before prefix limits
-on the same joint-profile subsequence. Only arbitrarily large good cutoffs
-are assumed by `liminf eta_J*g_R(J) = 0`; do not replace this by convergence
-or assume a small-sharing property of arbitrary tape geometries.
+## Completed: uniform exclusion by global sharing
+
+[`UniformSharing.lean`](lean/SourceCovers/UniformSharing.lean) verifies all
+of Theorem 5.2, including its two special cases and the common-cutoff-set
+extension. The dimension limit precedes the prefix limit on one joint
+profile. Arbitrarily late small products suffice; the proof assumes
+neither convergence nor boundedness of the sharing budgets.
+
+[`PrefixSharing.lean`](lean/SourceCovers/PrefixSharing.lean) applies the
+verified full sharing payment to the actual original-order prefixes.
+The same supplied order determines the omitted-family rate and every
+seed-count budget. The generalized rounding lemma returns the width
+limit as well as the paid-error limit. The old default-rate lemma is a
+direct specialization, so cover and movement proofs retain their
+statements and reuse one rounding proof. Common prefix variation and
+nonleaf-mass lemmas replace repeated accounting arguments.
+
+The shared [`VanishingTradeoff`](../lean-machine/LeanMachine/VanishingTradeoff.lean)
+proves a quadratic credit bound and a zero-limit criterion on arbitrarily
+late good indices. It needs no positive cost coefficient or square-root
+minimizer. Mathlib's extended-real scaling law gives the two rate
+specializations. The power case now needs only `p > 0` and `H >= 0`, since
+the actual profile already has summable mass. For `p <= 1` this case is
+already subsumed by the no-envelope criterion. The general theorem also
+allows zero omitted-size rates, independent distinguished and protected
+cutoffs, any legal fixed modulus in the intermediate tail bound, and
+common restricted sets of cutoffs. The uniform conclusion includes the
+equivalent code-cardinality bound and all positive entry widths.
+
+The **next target is Corollary 5.3, necessary global continuation density**.
+Reuse the verified quadratic tradeoff and arbitrary-rate rounding limit.
+Treat the dimension lower limit before the prefix lower limit, allow
+infinite lower limits explicitly, and retain the same joint-profile
+subsequence. No sharing bound for arbitrary tape geometries is assumed.
 The general transposition question remains open.
 
 ## Dependency order and proof obligations

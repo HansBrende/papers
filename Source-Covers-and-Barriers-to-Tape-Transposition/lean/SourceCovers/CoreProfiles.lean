@@ -203,20 +203,26 @@ theorem hopProfile_le_mass_div (L J : ℕ) :
   apply (le_div_iff₀ (by positivity : (0 : ℝ) < J + 1)).mpr
   simpa only [mul_comm] using hbelow.trans hsum
 
-/-- Every actual family outside the first `J` has this hop-count bound. -/
-theorem omitted_hops_le_total_div {J : ℕ} {G : ActualFamily xs T}
+/-- Every omitted family's normalized size is at most the first omitted
+profile coordinate. Zero padding handles cutoffs beyond the actual list. -/
+theorem omitted_hops_le_profile (L : ℕ) {J : ℕ} {G : ActualFamily xs T}
     (hG : G ∈ K) (hout : G ∉ S.selectedPrefix J) :
-    (G.hops.card : ℝ) ≤ ((∑ H ∈ K, H.hops.card : ℕ) : ℝ) / (J + 1) := by
+    (G.hops.card : ℝ) / L ≤ S.hopProfile L J := by
   obtain ⟨i, hi, heq⟩ := List.mem_iff_getElem.mp (S.mem_families.mpr hG)
   have hJi : J ≤ i := by
     by_contra h
     apply hout
-    exact List.mem_toFinset.mpr (List.mem_take_iff_getElem.mpr
-      ⟨i, by omega, heq⟩)
-  have hvalue : S.hopProfile 1 i = G.hops.card := by
-    simp only [hopProfile, profile, dite_eq_left hi, heq, Nat.cast_one, div_one]
-  have h := (S.hopProfile_antitone 1 hJi).trans (S.hopProfile_le_mass_div 1 J)
-  simpa only [hvalue, Nat.cast_one, div_one] using h
+    exact List.mem_toFinset.mpr (List.mem_take_iff_getElem.mpr ⟨i, by omega, heq⟩)
+  have hvalue : S.hopProfile L i = (G.hops.card : ℝ) / L := by
+    simp only [hopProfile, profile, dite_eq_left hi, heq]
+  exact hvalue ▸ S.hopProfile_antitone L hJi
+
+/-- The original total-mass estimate follows from the actual omitted coordinate. -/
+theorem omitted_hops_le_total_div {J : ℕ} {G : ActualFamily xs T}
+    (hG : G ∈ K) (hout : G ∉ S.selectedPrefix J) :
+    (G.hops.card : ℝ) ≤ ((∑ H ∈ K, H.hops.card : ℕ) : ℝ) / (J + 1) := by
+  simpa only [Nat.cast_one, div_one] using
+    (S.omitted_hops_le_profile 1 hG hout).trans (S.hopProfile_le_mass_div 1 J)
 
 /-- Q2 family accounting supplies both mass bounds in the same hop ordering.
 The raw variation is never independently sorted. -/

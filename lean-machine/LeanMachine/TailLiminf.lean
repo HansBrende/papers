@@ -1,4 +1,5 @@
 import Mathlib.Topology.Instances.ENNReal.Lemmas
+import Mathlib.Order.Filter.ENNReal
 
 set_option autoImplicit false
 
@@ -42,5 +43,13 @@ theorem liminf_ofReal_eq_zero_of_tendsto {a : ℕ → ℝ}
     (ha : Tendsto a atTop (𝓝 0)) :
     liminf (fun R => ENNReal.ofReal (a R)) atTop = 0 := by
   simpa using (ENNReal.tendsto_ofReal ha).liminf_eq
+
+/-- Finite nonnegative scaling preserves a zero lower limit, including
+the zero coefficient. This is the standard extended-real scaling law. -/
+theorem liminf_ofReal_const_mul_eq_zero {a : ℕ → ℝ} {c : ℝ} (hc : 0 ≤ c)
+    (ha : liminf (fun R => ENNReal.ofReal (a R)) atTop = 0) :
+    liminf (fun R => ENNReal.ofReal (c * a R)) atTop = 0 := by
+  simp_rw [ENNReal.ofReal_mul hc]
+  rw [ENNReal.liminf_const_mul_of_ne_top ENNReal.ofReal_ne_top, ha, mul_zero]
 
 end LeanMachine.TailLiminf

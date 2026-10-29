@@ -9,6 +9,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.ActualFamily.shadow_exact
 #print axioms SourceCovers.AdmissibleGeometry
 #print axioms SourceCovers.AdmissibleGeometry.HasMeanCoverBound
+#print axioms SourceCovers.AdmissibleGeometry.HasSharingBounds
 #print axioms SourceCovers.AdmissibleGeometry.deficit
 #print axioms SourceCovers.AdmissibleGeometry.deficit_card_iff
 #print axioms SourceCovers.AdmissibleGeometry.inputLength
@@ -40,9 +41,11 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.NearFullSequence.JointProfile.necessary_reciprocal_cover_default
 #print axioms SourceCovers.NearFullSequence.JointProfile.not_summable_moment
 #print axioms SourceCovers.NearFullSequence.JointProfile.prefix_add_tail
+#print axioms SourceCovers.NearFullSequence.JointProfile.prefix_sharing_limit
 #print axioms SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit
 #print axioms SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit_bounds
 #print axioms SourceCovers.NearFullSequence.JointProfile.scaled_complete_movement_liminf
+#print axioms SourceCovers.NearFullSequence.JointProfile.sharing_tail_lower
 #print axioms SourceCovers.NearFullSequence.JointProfile.tail_floor
 #print axioms SourceCovers.NearFullSequence.JointProfile.tails_tendsto_zero
 #print axioms SourceCovers.NearFullSequence.JointProfile.variation_mass
@@ -119,6 +122,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.jointShadow_eq_on
 #print axioms SourceCovers.jointShadow_variation
 #print axioms SourceCovers.large_family_count_of_small_deficit
+#print axioms SourceCovers.liminf_sharing_uniform_deficit
 #print axioms SourceCovers.linear_mean_cover_uniform_deficit
 #print axioms SourceCovers.meanCoverCredit
 #print axioms SourceCovers.meanReciprocalCover
@@ -151,6 +155,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.power_envelope_tailSmall
 #print axioms SourceCovers.power_envelope_uniform_deficit
 #print axioms SourceCovers.power_mean_cover_uniform_deficit
+#print axioms SourceCovers.power_sharing_uniform_deficit
 #print axioms SourceCovers.protected_phase_average
 #print axioms SourceCovers.protected_survives
 #print axioms SourceCovers.q2_accounting
@@ -166,6 +171,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.sharedSeedCount
 #print axioms SourceCovers.shared_support_count_deficit
 #print axioms SourceCovers.shared_support_paid_deficit
+#print axioms SourceCovers.sharing_uniform_deficit
+#print axioms SourceCovers.sublinear_sharing_uniform_deficit
 #print axioms SourceCovers.sum_family_variation_eq
 #print axioms SourceCovers.twoExceptionBank_exact
 #print axioms SourceCovers.two_mul_sum_family_size_le

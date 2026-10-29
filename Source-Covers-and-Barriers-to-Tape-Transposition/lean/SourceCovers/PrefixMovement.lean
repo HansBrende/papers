@@ -77,19 +77,8 @@ theorem prefix_movement_deficit {K R J M w a : ℕ}
   let C := max (1 - α) 0 ^ 2 / (4 * (2 * (K : ℝ) + 1) * (2 * (M : ℝ) + 4))
   let move := fun ρ j => phaseMovement (G.core_coloring.mono (O.selectedPrefix_subset J))
     hM G.exceptions G.x G.inputLength ρ (columnFirst G.t (G.d * G.b) j)
-  have hV : (∑ F ∈ univ \ O.subprefix J K, ∑ e ∈ F.val.edges,
-      dist (G.x e : ℝ) (G.x (e + 1) : ℝ)) ≤ α * G.inputLength := by
-    rw [O.sum_subprefix_compl_eq (fun F => ∑ e ∈ F.edges,
-      dist (G.x e : ℝ) (G.x (e + 1) : ℝ)) G.inputLength_pos hKJ]
-    exact le_of_eq (mul_comm _ _)
-  have hτ : ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
-      F.val.hops.card : ℕ) : ℝ) ≤
-      (G.inputLength : ℝ) * ∑ i ∈ Ico R J, O.hopProfile G.inputLength i := by
-    have h := nonleaf_mass_le_total (O.selectedPrefix J) (O.subprefix J R)
-    have hc : ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
-        F.val.hops.card : ℕ) : ℝ) ≤ ∑ F ∈ univ \ O.subprefix J R, (F.val.hops.card : ℝ) :=
-      by exact_mod_cast h
-    exact hc.trans_eq (O.sum_subprefix_compl_eq (fun F => (F.hops.card : ℝ)) G.inputLength_pos hRJ)
+  have hV := G.prefix_variation_le O hKJ
+  have hτ := G.prefix_nonleaf_mass_le O hRJ
   have hpoint : ∀ ρ (hρ : ρ ∈ A), ∀ j < G.d,
       let S := rawBankValues (exactSourceBank (ρ := ρ)
         (G.core_coloring.mono (O.selectedPrefix_subset J)) hM G.exceptions) G.x

@@ -50,3 +50,5 @@ import SourceCovers.PaidSharedRecovery
 import SourceCovers.SharedSupport
 import SourceCovers.SharedSupportDeficit
 import SourceCovers.GlobalSharing
+import SourceCovers.PrefixSharing
+import SourceCovers.UniformSharing

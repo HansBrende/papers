@@ -120,7 +120,7 @@ $\eta_J=c/(J+1)$ is available from sorted hop counts. Whenever another
 bound is given, it may be replaced by its minimum with $c/(J+1)$.
 
 \begin{theorem}[Theorem H: uniform exclusion by global sharing]\label{thm:uniform-sharing}
-\notformalized
+\formal{SourceCovers/UniformSharing.lean}{SourceCovers.sharing_uniform_deficit,SourceCovers.liminf_sharing_uniform_deficit,SourceCovers.sublinear_sharing_uniform_deficit,SourceCovers.power_sharing_uniform_deficit,SourceCovers.AdmissibleGeometry.HasSharingBounds,SourceCovers.NearFullSequence.JointProfile.prefix_sharing_limit,SourceCovers.NearFullSequence.JointProfile.sharing_tail_lower}
 Fix $c,\beta,N$, a common sequence $\eta_J$ as above, and an unbounded
 set $\mathcal R\subseteq\{1,2,\ldots\}$. For each $R\in\mathcal R$
 fix a finite nonnegative function $g_R(J)$ on $J\ge R$ such that
@@ -131,21 +131,24 @@ Consider admissible two-exception geometries for which
 $\overline G_{J,R}\le g_R(J)$ for every $R\in\mathcal R$ and $J\ge R$.
 These bounds and index sets are fixed independently of dimension.
 There exist $\eps>0,d_0$ such that every such geometry with
-$d\ge d_0$ and $a_0\le\eps L$ satisfies $\Delta\ge\eps L$.
+$d\ge d_0$ and $a_0\le\eps L$ satisfies $\Delta\ge\eps L$, equivalently
+$|\mathcal C|\le2^{(1-\eps)L}$.
+The same conclusion holds for nonnegative $\eta_J$ tending to zero.
 
 In particular it suffices, without a size envelope, that
 $\liminf_J g_R(J)/(J+1)=0$ for each $R\in\mathcal R$.
-Under $|G_i|\le HL/i^p$ with fixed $H>0$ and $p>1$, it suffices that
+Under $|G_i|\le HL/i^p$ with fixed $H\ge0$ and $p>0$, it suffices that
 $\liminf_J g_R(J)/(J+1)^p=0$; this includes subquadratic sharing
 for the inverse-square envelope.
 \end{theorem}
-\begin{informalproof}
+\begin{outline}
 Negating the conclusion gives a near-full sequence with a joint profile.
-Choose a finite $K$ with $V_K<1$ and fix $R\in\mathcal R$ with $R\ge K$.
+Choose a finite $K$ with $V_K<1$ and fix $R\in\mathcal R$.
 For each finite $J\ge R$ use
 $a=\max(a_0,\lceil\eta_J L\rceil)$ and
-$w=\lceil\lambda L\rceil$, with $0<\lambda<1$ fixed before dimension.
-The dimension limit of \cref{eq:finite-sharing} gives
+$w=\lceil\lambda L\rceil$, with $\lambda>0$ fixed before dimension.
+Take $J\ge K$ as well. The finite sharing bound permits independent
+$K,R$ and any positive integer width. Its dimension limit gives
 \begin{equation}\label{eq:sharing-prefix-limit}
  \frac{(1-V_{K,J})^2}{2(2K+1)(\ell+1)}
  -\frac{\beta\tau_{R,J}}{R+2}
@@ -153,28 +156,42 @@ The dimension limit of \cref{eq:finite-sharing} gives
 \end{equation}
 The finite sums $V_{K,J},\tau_{R,J}$ are as in
 \cref{eq:finite-prefix-limit}, and $V_{K,J}\le V_K<1$.
-For every sufficiently large fixed $J$, choose
+Let $\mu_{J,R}$ be the left side and put $D_J=3+B_Rg_R(J)>0$.
+Increase the coefficient $2$ to $3$. Whenever $\mu_{J,R}>0$, test at
 \[
- \lambda_J=\sqrt{\frac{A_R\eta_J}{2+B_Rg_R(J)}}\in(0,1).
+ \lambda=\frac{\mu_{J,R}}{2D_J}
+ \quad\text{to obtain}\quad
+ \mu_{J,R}^2\le4A_R\eta_JD_J.
 \]
-This is allowed because \cref{eq:sharing-prefix-limit} holds for every
-fixed $\lambda$ after its dimension limit. The right side becomes
-$2\sqrt{A_R\eta_J[2+B_Rg_R(J)]}$, which tends to zero along a subsequence
-given by \cref{eq:sharing-smallness}. The finite sums converge along it.
-As $\ell+1=4(R+2)$, we obtain
+This uses no positive lower bound on $A_R$ or $\eta_J$ and no square-root
+minimizer. The right side tends to zero along arbitrarily late cutoffs
+provided by \cref{eq:sharing-smallness}, since $\eta_J\to0$.
+The finite sums converge along those cutoffs, so their limiting
+credit cannot be positive. As $\ell+1=4(R+2)$, this gives
 \[
  \beta\tau_R\ge\frac{(1-V_K)^2}{8(2K+1)}.
 \]
-This holds for every sufficiently large $R\in\mathcal R$, contradicting
+This holds for every $R\in\mathcal R$, contradicting
 $\tau_R\to0$. The two special cases use respectively
-$\eta_J=c/(J+1)$ and $\eta_J=\min\{c/(J+1),H/(J+1)^p\}$.
-\end{informalproof}
+$\eta_J=c/(J+1)$ and $\eta_J=H/(J+1)^p$.
+Any $p>0$ makes the latter tend to zero; summability of the actual
+profile was already proved and need not follow from the envelope.
+The formal lower limits take values in $[0,\infty]$; zero is equivalent
+to arbitrarily late values below every positive threshold.
+\end{outline}
 
 The bound $g_R$ may grow arbitrarily fast with the fixed protected
 scale $R$. Its uniformity in dimension is essential: for a single
 finite geometry, increasing $J$ beyond all its families proves no
 uniform statement. A common unbounded set of cutoffs $J$ for each $R$
-also suffices if the stated bounds and smallness hold on that set.
+also suffices if the stated bounds and smallness hold on that set;
+this is included in the formal statement. The omitted-size bound is
+then needed only at those same cutoffs. For $0<p\le1$, the power-law
+case is already covered by the no-envelope criterion; the broader
+exponent range removes an unnecessary restriction rather than adding
+a new obstruction in that range. The theorem requires these uniform
+sharing bounds as hypotheses; it does not establish them for arbitrary
+tape computations.
 
 \begin{corollary}[Necessary global continuation density]\label{cor:sharing-density}
 \notformalized
@@ -201,15 +218,14 @@ positive quadratic growth.
 For each fixed $J$ with finite $g^{\rm low}_{J,R}$, pass to a dimension
 subsequence realizing that liminf. The joint profile is unchanged.
 \Cref{eq:sharing-prefix-limit} holds with $g_R(J)$ replaced by this
-liminf. Optimize $\lambda$ as before. Its left side tends to $\mu_R$
-as $J$ grows and is positive for all sufficiently large $J$.
-Squaring and rearranging gives
+liminf. Its left side $\mu_{J,R}$ tends to $\mu_R$ as $J$ grows and is
+positive for all sufficiently large $J$. Testing at
+$\lambda=\mu_{J,R}/[2(2+B_Rg^{\rm low}_{J,R})]$ and rearranging gives
 \[
  \eta_Jg^{\rm low}_{J,R}
- \ge\frac{\mu_{J,R}^2}{4A_RB_R}-\frac{2\eta_J}{B_R},
+ \ge\frac{\mu_{J,R}^2}{4A_RB_R}-\frac{2\eta_J}{B_R}.
 \]
-where $\mu_{J,R}$ denotes that finite-prefix left side. Infinite
-$g^{\rm low}_{J,R}$ satisfies the inequality automatically. Take the
+Infinite $g^{\rm low}_{J,R}$ satisfies the inequality automatically. Take the
 liminf in $J$. Finally $\tau_R\to0$ shows that $\mu_R$ is positive for
 all sufficiently large $R$.
 \end{informalproof}

@@ -80,31 +80,72 @@ namespace AdmissibleGeometry
 variable {c β : ℝ} {N q : ℕ} (G : AdmissibleGeometry c β N q)
     (O : SortedCore G.core)
 
-/-- The original outside bound and the actual omitted-prefix bound account
-for every family outside the new selected core and the exceptions. -/
-theorem prefix_outside_small {J a : ℕ} (ha0 : G.a0 ≤ a)
-    (ha : c * G.inputLength / (J + 1) ≤ (a : ℝ)) :
-    ∀ F : ActualFamily G.xs G.T,
-      F ∉ O.selectedPrefix J ∪ G.exceptions → F.hops.card ≤ a := by
+/-- Variation outside the distinguished original prefix is an exact finite
+profile sum; this common adapter is used by each kind of geometric credit. -/
+theorem prefix_variation_le {K J : ℕ} (hKJ : K ≤ J) :
+    (∑ F ∈ univ \ O.subprefix J K, ∑ e ∈ F.val.edges,
+      dist (G.x e : ℝ) (G.x (e + 1) : ℝ)) ≤
+      (∑ i ∈ Ico K J, O.variationProfile G.x G.inputLength i) * G.inputLength := by
+  rw [O.sum_subprefix_compl_eq (fun F => ∑ e ∈ F.edges,
+    dist (G.x e : ℝ) (G.x (e + 1) : ℝ)) G.inputLength_pos hKJ]
+  exact le_of_eq (mul_comm _ _)
+
+/-- The protected rank payment uses only nonleaves and is bounded by the
+same original-order hop-profile block for all subsequent certificates. -/
+theorem prefix_nonleaf_mass_le {R J : ℕ} (hRJ : R ≤ J) :
+    ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
+      F.val.hops.card : ℕ) : ℝ) ≤
+      (G.inputLength : ℝ) * ∑ i ∈ Ico R J, O.hopProfile G.inputLength i := by
+  have hsum : ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
+      F.val.hops.card : ℕ) : ℝ) ≤
+      ∑ F ∈ univ \ O.subprefix J R, (F.val.hops.card : ℝ) := by
+    exact_mod_cast nonleaf_mass_le_total (O.selectedPrefix J) (O.subprefix J R)
+  exact hsum.trans_eq (O.sum_subprefix_compl_eq (fun F => (F.hops.card : ℝ))
+    G.inputLength_pos hRJ)
+
+/-- The full core's actual hop mass is paid by the linear runtime budget. -/
+theorem core_hop_mass_le :
+    ((∑ F ∈ G.core, F.hops.card : ℕ) : ℝ) ≤ c * G.inputLength := by
   have hacc := (q2_accounting G.work_walk G.core G.core_coloring
     (fun s => (G.x s : ℝ)) (fun e he => by
       simpa only [Real.dist_eq, abs_sub_comm] using G.raw_step e (mem_range.mp he))).1
-  have htotal : ((∑ F ∈ G.core, F.hops.card : ℕ) : ℝ) ≤ c * G.inputLength := by
-    calc
-      _ ≤ ((G.T - 1 : ℕ) : ℝ) := by exact_mod_cast hacc
-      _ ≤ (G.T : ℝ) := by exact_mod_cast Nat.sub_le G.T 1
-      _ ≤ _ := by simpa only [inputLength, Nat.cast_mul] using G.runtime
+  calc
+    _ ≤ ((G.T - 1 : ℕ) : ℝ) := by exact_mod_cast hacc
+    _ ≤ (G.T : ℝ) := by exact_mod_cast Nat.sub_le G.T 1
+    _ ≤ _ := by simpa only [inputLength, Nat.cast_mul] using G.runtime
+
+/-- The universal omitted-coordinate rate needs no common size envelope. -/
+theorem hopProfile_le_rank (J : ℕ) : O.hopProfile G.inputLength J ≤ c / (J + 1) :=
+  (O.hopProfile_le_mass_div G.inputLength J).trans (div_le_div_of_nonneg_right
+    ((div_le_iff₀ (by exact_mod_cast G.inputLength_pos)).mpr G.core_hop_mass_le)
+    (by positivity))
+
+/-- Any bound on the actual first omitted coordinate pays for every
+outside family, with zero-padding and zero rates allowed. -/
+theorem prefix_outside_small_of_rate {J a : ℕ} {η : ℝ}
+    (ha0 : G.a0 ≤ a) (hη : O.hopProfile G.inputLength J ≤ η)
+    (ha : η * G.inputLength ≤ (a : ℝ)) :
+    ∀ F : ActualFamily G.xs G.T,
+      F ∉ O.selectedPrefix J ∪ G.exceptions → F.hops.card ≤ a := by
   intro F hF
   by_cases hcore : F ∈ G.core
   · have hout : F ∉ O.selectedPrefix J := fun h => hF (mem_union_left _ h)
-    have h := (O.omitted_hops_le_total_div hcore hout).trans
-      ((div_le_div_of_nonneg_right htotal (by positivity)).trans ha)
-    exact_mod_cast h
+    have h := (O.omitted_hops_le_profile G.inputLength hcore hout).trans hη
+    have hL : (0 : ℝ) < G.inputLength := by exact_mod_cast G.inputLength_pos
+    exact_mod_cast ((div_le_iff₀ hL).mp h).trans ha
   · apply (G.outside_small F ?_).trans ha0
     intro h
     rcases mem_union.mp h with h | h
     · exact hcore h
     · exact hF (mem_union_right _ h)
+
+/-- The original default-rate bound is a direct specialization. -/
+theorem prefix_outside_small {J a : ℕ} (ha0 : G.a0 ≤ a)
+    (ha : c * G.inputLength / (J + 1) ≤ (a : ℝ)) :
+    ∀ F : ActualFamily G.xs G.T,
+      F ∉ O.selectedPrefix J ∪ G.exceptions → F.hops.card ≤ a :=
+  G.prefix_outside_small_of_rate O ha0 (G.hopProfile_le_rank O J)
+    (by simpa only [div_mul_eq_mul_div] using ha)
 
 /-- Actual complete-bank reciprocal mean, with the original first `J`
 families and original first `R` protected ranks. -/
@@ -146,22 +187,8 @@ theorem prefix_reciprocal_deficit {K R J M w a : ℕ}
             ((G.inputLength : ℝ) * ∑ i ∈ Ico R J, O.hopProfile G.inputLength i) /
               ((M - R : ℕ) : ℝ) +
             (1 + (N : ℝ) * a) * bankCost M q * ((G.T - 1 : ℕ) : ℝ) / w)) := by
-  have hV : (∑ F ∈ univ \ O.subprefix J K, ∑ e ∈ F.val.edges,
-      dist (G.x e : ℝ) (G.x (e + 1) : ℝ)) ≤
-      (∑ i ∈ Ico K J, O.variationProfile G.x G.inputLength i) * G.inputLength := by
-    rw [O.sum_subprefix_compl_eq
-      (fun F => ∑ e ∈ F.edges, dist (G.x e : ℝ) (G.x (e + 1) : ℝ))
-      G.inputLength_pos hKJ]
-    exact le_of_eq (mul_comm _ _)
-  have hτ : ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
-      F.val.hops.card : ℕ) : ℝ) ≤
-      (G.inputLength : ℝ) * ∑ i ∈ Ico R J, O.hopProfile G.inputLength i := by
-    have hsum : ((∑ F ∈ coreNonleaves (O.selectedPrefix J) \ O.subprefix J R,
-        F.val.hops.card : ℕ) : ℝ) ≤
-        ∑ F ∈ univ \ O.subprefix J R, (F.val.hops.card : ℝ) := by
-      exact_mod_cast nonleaf_mass_le_total (O.selectedPrefix J) (O.subprefix J R)
-    exact hsum.trans_eq (O.sum_subprefix_compl_eq (fun F => (F.hops.card : ℝ))
-      G.inputLength_pos hRJ)
+  have hV := G.prefix_variation_le O hKJ
+  have hτ := G.prefix_nonleaf_mass_le O hRJ
   simpa only [relativeDeficit, deficit, inputLength, prefixMeanReciprocal, Nat.cast_mul] using
     reciprocal_cover_paid_deficit (G.core_coloring.mono (O.selectedPrefix_subset J)) hM
       G.exceptions (O.subprefix J R) (O.subprefix J K)

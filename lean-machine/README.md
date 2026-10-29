@@ -91,6 +91,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`IntervalClusterErosion`](LeanMachine/IntervalClusterErosion.lean) | Anchored observable ranges over overlapping intervals, with a quadratic movement penalty | this repository |
 | [`FiniteHullVariation`](LeanMachine/FiniteHullVariation.lean) | Finite time hulls, degenerate empty sets and complete-bank movement accounting | this repository |
 | [`BoundedLiminf`](LeanMachine/BoundedLiminf.lean) | Explicit real lower-limit bounds, comparisons and converging lower bounds | this repository |
+| [`VanishingTradeoff`](LeanMachine/VanishingTradeoff.lean) | Quadratic credit bounds and vanishing two-term tradeoffs on arbitrarily late good indices, including zero cost coefficients | this repository |
 
 ## External code
 

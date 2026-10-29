@@ -1,0 +1,80 @@
+\section{Building and verifying the formalization}\label{app:verify}
+
+The Lean~4 formalization lives in \leanfile{lean/} next to this paper. It uses Lean and Mathlib at version \texttt{v4.34.1}
+(\leanfile{lean/lean-toolchain}, \leanfile{lean/lakefile.toml}, \leanfile{lean/lake-manifest.json}) and builds directly on
+the Lean libraries of the seventh paper (\texttt{halfRate},~\cite{SeventhPaper2026}) and the eighth paper
+(\texttt{boundedNesting},~\cite{EighthPaper2026}) via relative paths; through them it also imports the libraries of the
+fourth, fifth, second, and first papers~\cite{FourthPaper2026,DirectedRecovery2026,SecondPaper2026,FirstPaper2026} together
+with the repository's shared library \texttt{lean-machine}. Keep the repository's sibling directory layout intact so that
+these relative package paths resolve.
+
+\paragraph{Build.} On a fresh clone of the repository, first fetch the second paper's pinned external dependency as
+documented in its README (\texttt{python3 verification/fetch\_openai\_metric.py}, run inside
+\leanfile{../Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/}). Then, with \texttt{elan}
+installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads precompiled Mathlib \texttt{.olean} caches; the second compiles all eleven modules of
+\leanfile{lean/DirectedReciprocity/} and the root module \leanfile{lean/DirectedReciprocity.lean} at Lean's default
+\texttt{maxHeartbeats} setting ($200{,}000$), with zero errors and zero warnings.
+
+\paragraph{Axioms and declaration index.} The script \leanfile{tools/lean_index.py} scans \leanfile{paper/sections/*.tex}
+and regenerates both the declaration index of \cref{app:index} (\leanfile{paper/sections/leanindex.tex}) and
+\leanfile{lean/PaperAxioms.lean} (pass \texttt{--index-only} to write only the index). Running in \leanfile{lean/}:
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+executes \texttt{\#print axioms} on every declaration of \texttt{DirectedReciprocity}---and every declaration of earlier
+libraries---cited in this paper. Every declaration depends at most on the three standard foundational axioms
+\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}. No file of this library uses \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, \texttt{unsafe},
+or any custom \texttt{axiom}; finite graph and partition checks in \cref{sec:reciprocity} are verified inside Lean's kernel
+via \texttt{decide}, \texttt{decide +kernel}, and \texttt{decide +revert}.
+
+\paragraph{Standalone numerical cross-checks.} The portable Python~3 script \leanfile{tools/reproduce_numerics.py} uses
+only the Python standard library and independently reproduces the finite numerical illustrations of
+\cref{rem:deg4-numerics,rem:dnp-numerics}:
+\begin{center}
+\texttt{python3 tools/reproduce\_numerics.py}
+\end{center}
+Specifically, it constructs the bipartite degree-$4$ family $G_{8k}$ ($2 \le k \le 6$) of \cref{rem:deg4-numerics},
+verifying exact matching number $\nu(G_{8k}) = 4k$, packing numbers $\rho_3(G_{8k}, H) = k$ and $\rhom(G_{8k}, H) = 2k$,
+and explicit $\F_2$ kernel dimension $4k$; and it evaluates stroke-law counts (\cref{prop:SL}), parity-conditioned straddle
+sums (\cref{thm:Vstar}), super-Fibonacci band unwrapping (\cref{thm:LU}), block-path mean drift (\cref{prop:OC}), and the
+explicit reverse-Markov odd shift and three-regime error witnesses of \cref{thm:A} (\cref{rem:dnp-numerics}). None of the
+proofs in the paper depends on this script.
+
+\paragraph{Module guide (\texttt{lean/DirectedReciprocity/}).}
+\begin{itemize}[leftmargin=2em]
+\item \leanfile{PositionalNest.lean}: stateless positional characterization of \lean{HalfRate.RelCharged}, disjoint-record
+  nesting simplification, first-appearance supply forcing, and proper record coloring across digons (\cref{prop:PN}).
+\item \leanfile{StrideCycles.lean}: positional locking lemma on stride-$3$ hub cycles, unbounded-$m$ piece impossibility
+  when $s = 3$, and $2$-record (even $s \ge 4$) and $3$-record (all $s \ge 4$) co-supplied piece certificates on canonical
+  stride-$s$ cores (\cref{prop:CS}).
+\item \leanfile{DigonCycle.lean}: universal chordless digon cycle dichotomy ($L \ge 4$), non-stride-$3$ witness extraction,
+  and two-sided $(L+1)$-record piece expansion (\cref{thm:DC}).
+\item \leanfile{PetersenHierarchy.lean}: equivalence between global \lean{HalfRate.PieceCert} and \lean{HalfRate.ElimCert},
+  canonical partition reduction and unbounded-$m$ global impossibility on $\GP(5,2)$ (Petersen graph), $m \le 3$
+  impossibility and $m = 4$ certificate on $\GP(7,2)$, and $m = 3$ certificate on $\GP(9,2)$ (\cref{prop:GP}).
+\item \leanfile{ClassS.lean}: definition of $\ClassS$ and relative \lean{ClassSOn}, condensation to an in-closed strongly
+  connected component, minimal chordal one-way arc certificates, shortest digon cycle and $(g+2)$-record sequential hub
+  augmentation, Theorem~S$^*$ (\cref{thm:Sstar}), and the directed barrier bound Corollary~B$^*$ (\cref{cor:Bstar}).
+\item \leanfile{ClassSExamples.lean}: unbounded-$m$ core impossibility on $\Ex$ (\cref{cor:x15}), and construction and
+  complete cycle/peeling analysis of the $21$-vertex strongly connected triangle-free witness $\Gto \in \ClassS$
+  (\cref{prop:G21}).
+\item \leanfile{TheoremSHStar.lean}: unified final count \lean{F3_star} under~(S1) alone, odd-state lemma \lean{odd_state_star},
+  minimal-counterexample exclusion removing~(S2), Theorem~SH$^*$ in matrix, transpose, and graph forms (\cref{thm:SHstar}),
+  and the common-neighbor-free packing invariant \lean{rhoMatch} and Tutte--Berge deficiency bound Corollary~M$^*$
+  (\cref{cor:Mstar}).
+\item \leanfile{DNPStrokes.lean}: dyadic scales, stroke lengths, recursive stroke decomposition bijection, stopping-depth
+  and parity-independence counts, and $O(m)$ recursive turn potential \lean{evalPhiRec} (\cref{prop:SL}).
+\item \leanfile{DNPStraddle.lean}: straddle reflection involution, $\Z$-cancellation of nested stroke potentials, $m$-free
+  mod-$q$ pair and set bounds, and exact parity-conditioned straddle count $\Pi_\kappa^2 / 4$ (\cref{thm:Vstar}).
+\item \leanfile{DNPFibonacci.lean}: blind apex and valley-band error formulas on \lean{strokePhiRec}, exact $\Z$-unwrapping
+  under $\le q/8$ bounds, super-Fibonacci step $b_0(k) \ge b_0(k+1) + b_0(k+2) + 4$, and the $2\lfloor\log_2 q\rfloor + 2$
+  consecutive-level bound (\cref{thm:LU}).
+\item \leanfile{DNPConjectureApp.lean}: periodic block-cancellation family $B(a, K)$, forward/backward path bounds, positive
+  mean drift, Mersenne binary-clock straddle failure (\cref{prop:OC}), prefix lockstep of nested V-apices, simultaneous
+  reverse-Markov odd-shift selection, fine-scale doubling overflow, and the three-regime completeness Theorem~A
+  (\cref{thm:A}).
+\end{itemize}

@@ -1,0 +1,413 @@
+\section{Positional Nesting, Digon Cycles, and Theorem~S\texorpdfstring{$^*$}{*}}\label{sec:reciprocity}
+
+The multi-record nested elimination engine of~\cite{SeventhPaper2026} certifies the polymatroid half-rate bound
+$2 h(V) \le \sum_{v \in V} h(\{v\})$ on a finite recovery relation $(V, N)$ by peeling $V$ into certified pieces
+(\cref{sec:prelim}). In~\cite{SeventhPaper2026}, Theorem~N3 constructed piece decompositions for symmetric (undirected)
+triangle-free graphs of maximum degree~$3$, and Theorem~T constructed them for TT-free digraphs of maximum in-degree~$3$
+containing no reciprocal pairs; the intermediate target named in item~2 of~\cite[Section~9.2]{SeventhPaper2026} asked
+whether piece decompositions extend to the full directed class $\ClassS$ of Theorem~S of~\cite[Section~6.6]{FourthPaper2026}
+(the all-code version of the fourth paper's Theorem~S on its whole class, lying between Theorem~U3 and Conjecture~P,
+numbered Conjecture~9.1 there, which remains open), where reciprocal pairs and pure one-way arcs coexist freely subject to
+reciprocal closure at vertices of in-degree~$3$, while item~6 of~\cite[Section~9.2]{SeventhPaper2026} (see
+also~\cite[Remarks~7.3 and~7.5]{SeventhPaper2026}) asked whether unbounded record counts $m$ can rescue obstructed cores
+such as $\Ex$'s hexagon or supply global elimination certificates on cubic graphs such as the Petersen graph.
+
+In this section we resolve all three questions. We first give a stateless, purely positional reformulation of relational
+nestedness (\cref{prop:PN}) that turns impossibility proofs across unbounded record counts $m \ge 1$ into finite-order
+locking arguments. We then establish exact piece-certificate dichotomies for stride-$s$ hub cores (\cref{prop:CS,cor:x15})
+and arbitrary chordless digon cycles (\cref{thm:DC}), classify global record counts across generalized Petersen graphs
+(\cref{prop:GP}), and prove \textbf{Theorem~S$^*$} (\cref{thm:Sstar}), \textbf{Corollary~B$^*$} (\cref{cor:Bstar}), and
+the $21$-vertex sharpness witness $\Gto \in \ClassS$ (\cref{prop:G21}).
+
+\subsection{Positional characterization of nested elimination}\label{sec:reciprocity-pn}
+
+Fix a finite vertex set $V$, a recovery relation $N : V \to \mathcal{P}(V)$, a context $U \subseteq V$, an index set $I$
+of records $P_r \subseteq V$ ($r \in I$), a supplying-record map $b : V \to I$, an optional outside-parent map
+$\mathrm{par} : V \to \mathrm{Option}\ V$, an outside set $W \subseteq V$, and a list $l = [v_0, \dots, v_{k-1}]$ of
+vertices. For $0 \le j \le k$, write $S_j = \{v_0, \dots, v_{j-1}\}$ (\lean{HalfRate.rev} from $\emptyset$) for the
+prefix revealed strictly before step~$j$.
+
+\begin{proposition}[Positional characterization of nested supply]\label{prop:PN}
+\formal{PositionalNest.lean}{relCharged_of_nested, disjoint_nested_iff, relCharged_iff_nested, PieceCert.mem_supply_of_idxOf_lt, PieceCert.digon_ne}
+Let $V, N, U, P, b, \mathrm{par}, W, l$ be as above.
+\begin{enumerate}
+\item \emph{(Exact positional equivalence.)} The stateful predicate
+  \lean{HalfRate.RelCharged} applied to $(N, U, P, b, \mathrm{par}, W, \emptyset, \lambda\_.\,\emptyset, l)$ holds if and only if:
+  \begin{enumerate}
+  \item for every $0 \le j < k$ with $\mathrm{par}(v_j) = \mathrm{none}$, $N(v_j) \subseteq U \cup S_j \cup P_{b(v_j)}$;
+  \item for every $0 \le j < k$ and $w \in V$ with $\mathrm{par}(v_j) = \mathrm{some}\ w$, $w \in W$ and
+    $N(v_j) \subseteq U \cup \{w\} \cup S_j \cup P_{b(v_j)}$; and
+  \item for every $0 \le j < j' < k$ and $w \in V$ with $\mathrm{par}(v_j) = \mathrm{par}(v_{j'}) = \mathrm{some}\ w$,
+    \[
+      P_{b(v_j)} \subseteq S_{j'} \cup P_{b(v_{j'})}.
+    \]
+  \end{enumerate}
+\item \emph{(Disjoint-record simplification.)} Suppose the records $\{P_r\}_{r \in I}$ are pairwise disjoint, and let
+  $0 \le j, j' < k$. Then $P_{b(v_j)} \subseteq S_{j'} \cup P_{b(v_{j'})}$ holds if and only if either
+  $b(v_j) = b(v_{j'})$ or $P_{b(v_j)} \subseteq S_{j'}$.
+\item \emph{(First-appearance supply forcing and digon proper coloring.)} Let $c$ be a piece certificate
+  (\lean{HalfRate.PieceCert}) for $H \subseteq V$ in context $U$ with $U \cap H = \emptyset$, and write $\tau(u) =
+  \mathrm{idxOf}(u, c.l)$ for $u \in H$. If $u, v \in H$ satisfy $v \in N(u)$ and $\tau(u) < \tau(v)$, then
+  $v \in c.P_{c.b(u)}$ and $c.b(u) = c.a(v)$. Consequently, for any two distinct vertices $u, v \in H$ forming a digon
+  ($u \in N(v)$ and $v \in N(u)$), their own records are distinct: $c.a(u) \ne c.a(v)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+For~(1), induction along $l$ with general initial revealed set $S_0$ and state map $L_0$ (\lean{relCharged_step_none},
+\lean{relCharged_step_some}, \lean{relCharged_step_nested}) shows that if \lean{HalfRate.RelCharged} holds, then at step
+$j'$ charged to $w$ after an earlier step $j < j'$ charged to $w$, the state $L(w)$ contains $\{v_j\} \cup S_j \cup
+P_{b(v_j)}$ by monotonicity along intermediate updates, forcing $P_{b(v_j)} \subseteq S_{j'} \cup P_{b(v_{j'})}$.
+Conversely (\lean{relCharged_of_nested}), because $v_j \in S_{j'}$ and $S_j \subseteq S_{j'}$ hold automatically whenever
+$j < j'$, the inclusion $P_{b(v_j)} \subseteq S_{j'} \cup P_{b(v_{j'})}$ upgrades to $\{v_j\} \cup S_j \cup P_{b(v_j)}
+\subseteq S_{j'} \cup P_{b(v_{j'})}$, preserving the invariant that $L(w)$ equals either $L_0(w)$ or $\{v_{j_*}\} \cup
+S_{j_*} \cup P_{b(v_{j_*})}$ for the latest index $j_* < j'$ charged to~$w$. Specializing to $S_0 = \emptyset$ and
+$L_0 \equiv \emptyset$ gives \lean{relCharged_iff_nested}.
+
+For~(2) (\lean{disjoint_nested_iff}), if $b(v_j) \ne b(v_{j'})$, then $P_{b(v_j)} \cap P_{b(v_{j'})} = \emptyset$ by
+pairwise disjointness, so $P_{b(v_j)} \subseteq S_{j'} \cup P_{b(v_{j'})}$ forces every $x \in P_{b(v_j)}$ into $S_{j'}$;
+the converse is immediate.
+
+For~(3), let $j_u = \tau(u) < \tau(v)$. By definition of first appearance (\lean{not_mem_rev_empty_of_lt_idxOf}),
+$v \notin S_{j_u}$. Since $v \in H$ and $U \cap H = \emptyset$, we have $v \notin U$ and $v \notin V \setminus (U \cup H)$.
+Applying~(1a) or~(1b) at index $j_u$ to $v \in N(u)$ leaves only $v \in c.P_{c.b(u)}$. Because $v \in c.P_{c.a(v)}$ and
+the records of $c$ are pairwise disjoint, $c.b(u) = c.a(v)$ (\lean{PieceCert.mem_supply_of_idxOf_lt}). If $u \ne v$ form
+a digon in $H$, then $\tau(u) \ne \tau(v)$; assuming $\tau(u) < \tau(v)$ by symmetry gives $c.b(u) = c.a(v)$, whereas
+$c.a(u) \ne c.b(u)$, so $c.a(u) \ne c.a(v)$ (\lean{PieceCert.digon_ne}).
+\end{outline}
+
+\subsection{Stride-\texorpdfstring{$s$}{s} cores, chordless digon cycles, and generalized Petersen graphs}\label{sec:reciprocity-cycles}
+
+Let $s \ge 3$ and $k \ge 1$. Define the canonical \emph{stride-$s$ hub relation} \lean{strideRel}$(s, k)$ on
+$\Z_{sk} \sqcup \Z_s$ by giving each cycle vertex $i \in \Z_{sk}$ parents $\{i - 1, i + 1\} \subseteq \Z_{sk}$ together
+with the outside hub $w_{i \bmod s} \in \Z_s$, and giving hubs empty parent sets; let $H_{s,k} = \Z_{sk} \subseteq
+\Z_{sk} \sqcup \Z_s$ (\lean{strideCore}) be the cycle core. More generally, in any recovery relation $(V, N)$ with
+context $U \subseteq V$, an injective cycle $f : \Z_L \hookrightarrow V$ with image $H = f(\Z_L)$ is a \emph{stride-$3$
+cycle} in context $U$ (\lean{IsStride3Cycle}) if $3 \mid L$ and there exist three vertices $w_0, w_1, w_2 \in V \setminus
+(U \cup H)$ such that $w_{i \bmod 3} \in N(f(i))$ for every $i \in \Z_L$.
+
+\begin{proposition}[Stride-$s$ digon cycle dichotomy]\label{prop:CS}
+\formal{StrideCycles.lean}{stride3_no_pieceCert, strideRel, strideCore, strideCore3_no_pieceCert, strideGe4_pieceCert, strideEven_pieceCert_two, strideCore_pieceCert_iff}
+\begin{enumerate}
+\item \emph{(Unbounded-$m$ stride-$3$ impossibility.)} Let $(V, N)$ be a finite recovery relation, $U, H \subseteq V$
+  disjoint subsets, $k \ge 1$, and $f : \Z_{3k} \hookrightarrow V$ a bijection onto $H$ such that $f(i \pm 1) \in N(f(i))$
+  for all $i \in \Z_{3k}$. If there exist $w_0, w_1, w_2 \in V \setminus (U \cup H)$ with $w_{i \bmod 3} \in N(f(i))$ for
+  all $i \in \Z_{3k}$, then $H$ admits \emph{no} piece certificate (\lean{HalfRate.PieceCert} $N\ U\ H$) over any number of
+  records $m \in \N$.
+\item \emph{(Stride-$s$ threshold at $s = 4$.)} For all integers $s \ge 3$ and $k \ge 1$, the canonical stride-$s$ core
+  $H_{s,k}$ admits a piece certificate in context $\emptyset$ under \lean{strideRel}$(s, k)$ (for some $m \in \N$) if and
+  only if $s \ge 4$. Moreover, $m = 2$ co-supplied records suffice whenever $s \ge 4$ is even, and $m = 3$ co-supplied
+  records suffice for every $s \ge 4$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+For~(1) (\lean{stride3_no_pieceCert}), suppose $c$ is an $m$-record piece certificate for $H$ in context~$U$, and write
+$\tau(i) = \mathrm{idxOf}(f(i), c.l)$. Because $w_{i \bmod 3} \in N(f(i))$ lies outside $U \cup H$, step $\tau(i)$ must
+designate $\mathrm{par}(f(i)) = \mathrm{some}\ w_{i \bmod 3}$. We first establish the \emph{Locking Lemma}: if
+$f(u) \in N(f(i))$, $j \equiv i \pmod 3$, and $\tau(i) \le \tau(j) < \tau(u)$, then $c.b(f(j)) = c.a(f(u))$. Indeed,
+\cref{prop:PN}(3) gives $f(u) \in c.P_{c.b(f(i))}$ and $c.b(f(i)) = c.a(f(u))$; if $\tau(i) < \tau(j)$, then step $\tau(i)$
+and step $\tau(j)$ share outside parent $w_{i \bmod 3}$, so \cref{prop:PN}(1c,2) forces either $c.b(f(i)) = c.b(f(j))$ or
+$c.P_{c.b(f(i))} \subseteq S_{\tau(j)}$, and the latter is impossible because $f(u) \in c.P_{c.b(f(i))}$ has $\tau(j) <
+\tau(u)$ and so is unrevealed at $\tau(j)$. As an immediate consequence, if $j_1 \equiv j_2 \pmod 3$ satisfy
+$f(u_1) \in N(f(j_1))$, $f(u_2) \in N(f(j_2))$, and $\max(\tau(j_1), \tau(j_2)) < \min(\tau(u_1), \tau(u_2))$, applying
+locking at $\max(\tau(j_1), \tau(j_2))$ yields $c.a(f(u_1)) = c.a(f(u_2))$.
+
+Now let $z \in \Z_{3k}$ maximize $\tau(z)$ over all of $\Z_{3k}$, set $r_0 = z \bmod 3$, and let $x$ maximize $\tau(x)$
+among $\{i \in \Z_{3k} : i \not\equiv r_0 \pmod 3\}$. Let $r_x = x \bmod 3 \ne r_0$ and let $r_3 \in \{0,1,2\} \setminus
+\{r_0, r_x\}$ be the remaining residue class modulo~$3$. Since $f(y \pm 1)$ realize the two residues distinct from
+$y \bmod 3$ for every $y \in \Z_{3k}$, $x$ has a cycle neighbor $u_3 \equiv r_3 \pmod 3$ and $z$ has cycle neighbors
+$v_3 \equiv r_3 \pmod 3$ and $v_x \equiv r_x \pmod 3$. Because $u_3, v_3 \not\equiv r_0 \pmod 3$ and neither lies in
+$r_x$, the choice of $x$ gives $\tau(u_3) < \tau(x) < \tau(z)$ and $\tau(v_3) < \tau(x) < \tau(z)$. Since
+$u_3 \equiv v_3 \equiv r_3 \pmod 3$, the two-arc corollary forces $c.a(f(x)) = c.a(f(z))$. If $x = v_x$, then $f(x)$ and
+$f(z)$ form a digon along the cycle, contradicting $c.a(f(x)) \ne c.a(f(z))$ (\cref{prop:PN}(3)). Otherwise $v_x \ne x$
+lies in $r_x \ne r_0$, so $\tau(v_x) < \tau(x) < \tau(z)$; locking along $f(z) \in N(f(v_x))$ from $v_x$ to $x$ forces
+$c.b(f(x)) = c.a(f(z)) = c.a(f(x))$, contradicting $c.a(f(x)) \ne c.b(f(x))$.
+
+For~(2), when $s = 3$,~(1) rules out any \lean{HalfRate.PieceCert} (\lean{strideCore3_no_pieceCert}). When $s \ge 4$ is
+even (\lean{strideEven_pieceCert_two}), $2 \mid s \mid sk$, so partitioning $H_{s,k}$ by parity into two records $P_0,
+P_1$ and eliminating all even indices before all odd indices makes $b(i) = 1 - (i \bmod 2)$ constant on each hub fiber
+$i \bmod s$ (co-supplied). For general $s \ge 4$ (\lean{strideGe4_pieceCert}), pulling back the proper $3$-coloring
+\lean{HalfRate.ccol}$(s)$ of $\Z_s$ along $i \mapsto i \bmod s$ partitions $H_{s,k}$ into three records $P_0, P_1, P_2$;
+on each residue class $i \equiv r \pmod s$, both neighbors $i \pm 1$ have colors $(r \pm 1) \bmod s$ in $\Z_s$, and as in
+Theorem~N3 of~\cite[Theorem~4.3]{SeventhPaper2026} (\lean{HalfRate.cyclePiece}; see also~\cite[Lemma~5.7(b)]{SeventhPaper2026}),
+ordering the fibers so that one neighbor color is already revealed while the other serves as the constant supplying record
+$b(i)$ on fiber~$r$ yields an explicit $3$-record co-supplied certificate.
+\end{outline}
+
+Applying \cref{prop:CS}(1) to the $15$-vertex relation $\Ex$ of~\cite[Section~7.2, Remark~7.3]{SeventhPaper2026} (\lean{HalfRate.x15}),
+whose unique minimum nonempty core is the induced $6$-cycle $\{0,1,2,3,4,5\}$ (see~\cite[Remark~7.3]{SeventhPaper2026},
+Lean-verified as \lean{HalfRate.x15_cores}) attached to outside vertices $6, 7, 8$ with stride~$3$, immediately settles
+the unbounded-$m$ core question of~\cite[Remark~7.3; Section~9.2, item~6]{SeventhPaper2026}:
+
+\begin{corollary}[Unbounded-$m$ obstruction on $\Ex$]\label{cor:x15}
+\formal{ClassSExamples.lean}{x15_hexagon_no_pieceCert}
+The unique minimum nonempty core $\{0, 1, 2, 3, 4, 5\}$ of $\Ex$ admits no piece certificate
+\lean{HalfRate.PieceCert} \lean{HalfRate.x15} $\emptyset\ \{0,1,2,3,4,5\}$ for any number of records $m \ge 1$.
+\end{corollary}
+
+\begin{outline}
+Instantiate \lean{stride3_no_pieceCert} with $k = 2$, $f = [0,1,2,3,4,5]$, and outside hub triple $w = [6,7,8]$; all
+finite membership and injectivity side conditions discharge by \texttt{decide}.
+\end{outline}
+
+We next show that on \emph{any} chordless digon cycle $C_L$ ($L \ge 4$) in a TT-free relation where each cycle vertex has
+at most one active outside parent, the stride-$3$ hub configuration is the \emph{unique} obstruction to piece
+certifiability across all $m \ge 1$.
+
+\begin{theorem}[Universal chordless digon cycle dichotomy]\label{thm:DC}
+\formal{DigonCycle.lean}{IsStride3Cycle, not_pieceCert_of_isStride3Cycle, exists_non_stride3_pos, digonCycle4_pieceCert, digonCycleGe5_pieceCert, digonCycle_pieceCert_of_not_stride3, digonCycle_pieceCert_iff}
+Let $(V, N)$ be a finite recovery relation, $U \subseteq V$ a context, $L \ge 4$, and $f : \Z_L \hookrightarrow V$ an
+injective map with image $H = f(\Z_L)$ disjoint from~$U$. Assume that:
+\begin{enumerate}
+\item no outside vertex $w \in V \setminus (U \cup H)$ is a common parent of two consecutive cycle vertices $f(i)$ and
+  $f(i+1)$ (local TT-freeness);
+\item $f(i \pm 1) \in N(f(i))$ for every $i \in \Z_L$, and conversely $f(j) \in N(f(i)) \implies j \in \{i - 1, i + 1\}$
+  (chordless digon cycle); and
+\item each $f(i)$ has at most one active parent in $V \setminus (U \cup H)$.
+\end{enumerate}
+Then $H$ admits a piece certificate (\lean{HalfRate.PieceCert} $N\ U\ H$) if and only if $f$ is not a stride-$3$ cycle in
+context~$U$ (\lean{IsStride3Cycle} $N\ U\ f$ fails). When \lean{IsStride3Cycle} $N\ U\ f$ fails, there exists an explicit
+piece certificate with $m = 2$ records for $L = 4$ and $m \le L + 1$ records for $L \ge 5$.
+\end{theorem}
+
+\begin{outline}
+Necessity (\lean{not_pieceCert_of_isStride3Cycle}) follows directly from \cref{prop:CS}(1). For sufficiency
+(\lean{digonCycle_pieceCert_of_not_stride3}), write $\mathrm{op}(i) \in \mathrm{Option}\ V$ for the unique outside parent
+of $f(i)$ in $V \setminus (U \cup H)$ (or $\mathrm{none}$ if none exists).
+
+When $L = 4$ (\lean{digonCycle4_pieceCert}), partition $H$ into $P_0 = \{f(0), f(2)\}$ and $P_1 = \{f(1), f(3)\}$, set
+$b = 1 - a$, and eliminate in order $[f(0), f(2), f(1), f(3)]$. By~(1), $\mathrm{op}(i)$ cannot coincide on adjacent cycle
+vertices, so any shared outside parent occurs on opposite vertices $\{0, 2\}$ or $\{1, 3\}$, where $b$ is constant.
+
+When $L \ge 5$ (\lean{digonCycleGe5_pieceCert}), we first prove (\lean{exists_non_stride3_pos}) that failure of
+\lean{IsStride3Cycle} $N\ U\ f$ yields an index $s_0 \in \Z_L$ such that $\mathrm{op}(s_0) = \mathrm{none}$ or
+$\mathrm{op}(s_0) \ne \mathrm{op}(s_0 + 3)$: otherwise
+every $i \in \Z_L$ has $\mathrm{op}(i) = \mathrm{some}\ w_i$ periodic of period~$3$ along $\Z_L$, forcing $3 \mid L$ (since
+$3 \nmid L$ would make $\mathrm{op}$ constant on $\Z_L$, violating~(1)) and exhibiting $w_0, w_1, w_2$ witnessing
+\lean{IsStride3Cycle}. Rotating $f$ so that $s_0 = 2$ gives $\mathrm{op}(2) = \mathrm{none}$ or $\mathrm{op}(2) \ne
+\mathrm{op}(5 \bmod L)$. We then eliminate $H$ over $L + 1$ records $\{0, 1, \dots, L\}$ in the two-sided order
+\[
+  [f(1),\; f(2),\; f(0),\; f(L-1),\; f(L-2),\; \dots,\; f(4),\; f(3)]
+\]
+(\lean{dcPerm}), assigning own records (\lean{dcCol}) and supplying records (\lean{dcSupply}) as follows:
+\begin{itemize}
+\item $f(0)$ and $f(2)$ have own record~$0$; $f(1)$ has own record~$1$ and supplying record~$0$ (covering both neighbors
+  $f(0), f(2)$ at step~$0$);
+\item $f(3)$ has own record~$3$, and for $k \in \{4, \dots, L-1\}$ we set $a(f(k)) = 3$ if $\mathrm{op}(2) = \mathrm{some}\ w
+  = \mathrm{op}(k + 1 \bmod L)$ and $a(f(k)) = k$ otherwise. By our rotation $\mathrm{op}(5 \bmod L) \ne \mathrm{op}(2)$
+  (when $\mathrm{op}(2)$ is $\mathrm{some}\ w$), we always have $a(f(4)) = 4 \ne 3$, and by~(1) no two consecutive $k, k+1$
+  can both merge into record~$3$;
+\item at step~$1$, $f(2)$ uses supplying record~$3$ (covering $f(3)$, with $f(1)$ already revealed); for steps
+  $j \in \{2, \dots, L-2\}$ eliminating $f(k)$ ($k \in \{0, L-1, \dots, 4\}$), its successor $f(k+1 \bmod L)$ is already
+  revealed and we set $b(f(k)) = a(f(k - 1 \bmod L))$ covering its predecessor; at step $L - 1$, $f(3)$ has both neighbors
+  $f(2), f(4)$ already revealed and uses the empty auxiliary record~$L$.
+\end{itemize}
+To verify nestedness (\cref{prop:PN}(1c)), suppose $0 \le j < j' < L$ share $\mathrm{op} = \mathrm{some}\ w$. Step~$0$
+($f(1)$) has $P_{b(f(1))} = P_0 = \{f(0), f(2)\}$; by~(1) neither $f(2)$ ($j' = 1$) nor $f(0)$ ($j' = 2$) can share
+$\mathrm{op}(1)$, and for all $j' \ge 3$ we already have $P_0 \subseteq S_3 \subseteq S_{j'}$. Step~$1$ ($f(2)$) has
+$b(f(2)) = 3$; by~(1) the final vertex $f(3)$ ($j' = L - 1$) cannot share $\mathrm{op}(2)$, while for any $2 \le j' \le
+L - 2$ with $\mathrm{op}(k) = \mathrm{op}(2) = \mathrm{some}\ w$, our definition of \lean{dcCol} placed $f(k - 1 \bmod L)$
+into record~$3$, so $b(f(k)) = 3 = b(f(2))$ (co-supplied). Finally, for $2 \le j < j' < L$, either $b(v_j) = 3$, in which
+case $\mathrm{op}(v_j) = \mathrm{op}(2) = \mathrm{some}\ w = \mathrm{op}(v_{j'})$, excluding $j' = L - 1$ by~(1) and
+forcing $b(v_{j'}) = 3$ for $j' \le L - 2$, or else $b(v_j) = k - 1 \ge 4$ is a singleton $\{f(k-1)\}$ revealed
+immediately at step $j + 1$, whereas $j' = j + 1$ cannot share $w$ with $j$ by~(1), giving $P_{b(v_j)} \subseteq S_{j+2}
+\subseteq S_{j'}$.
+\end{outline}
+
+Before turning to $\ClassS$, we resolve the global-certificate question of~\cite[Remark~7.5; Section~9.2, item~6]{SeventhPaper2026} by
+determining exact global record thresholds across the cubic generalized Petersen family $\GP(m_{\mathrm{gp}}, 2)$
+($m_{\mathrm{gp}} \ge 5$, \lean{gpGraph}), on vertex set $\{0, \dots, 2 m_{\mathrm{gp}} - 1\}$ with outer rim edges
+$i \leftrightarrow (i \pm 1 \bmod m_{\mathrm{gp}})$, inner star edges $m_{\mathrm{gp}} + i \leftrightarrow m_{\mathrm{gp}} +
+(i \pm 2 \bmod m_{\mathrm{gp}})$, and spokes $i \leftrightarrow m_{\mathrm{gp}} + i$.
+
+\begin{proposition}[Non-monotone global record hierarchy on $\GP(m_{\mathrm{gp}}, 2)$]\label{prop:GP}
+\formal{PetersenHierarchy.lean}{nonempty_elimCert_iff_pieceCert_univ, gpGraph, gp52_eq_petersenGraph, gp52_no_elimCert, petersen_no_pieceCert_univ, gp72_no_elimCert_le3, gp72_elimCert4, gp92_elimCert3, generalizedPetersen_hierarchy}
+\begin{enumerate}
+\item \emph{(Global equivalence.)} For any finite recovery relation $(V, N)$ and $m \in \N$, there exists a global piece
+  certificate $p$ of type \lean{HalfRate.PieceCert} $N\ \emptyset\ V$ with $p.m = m$ if and only if
+  \lean{HalfRate.ElimCert} $N\ m$ is nonempty.
+\item \emph{($\GP(5,2)$, Petersen graph, $n = 10$.)} $\GP(5,2)$ coincides with \lean{MotionDepthCodes.petersenGraph} and
+  admits \emph{no} global elimination certificate (of type \lean{HalfRate.ElimCert} $(\mathrm{nbhd}\ \GP(5,2))\ m$, or
+  equivalently global \lean{HalfRate.PieceCert}) for \emph{any} number of records $m \in \N$.
+\item \emph{($\GP(7,2)$, $n = 14$.)} $\GP(7,2)$ admits no global elimination certificate with $m \le 3$ records, strictly
+  separating $m = 3$ from $m = 4$, and admits an explicit $4$-record global elimination certificate.
+\item \emph{($\GP(9,2)$, $n = 18$.)} $\GP(9,2)$ drops back from $4$ records to an explicit $3$-record global elimination
+  certificate.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+For~(1) (\lean{nonempty_elimCert_iff_pieceCert_univ}), when $U = \emptyset$ and $H = V$, the outside set $W = V \setminus V
+= \emptyset$ forces every step of a piece certificate $p$ to have $\mathrm{par}(v_j) = \mathrm{none}$; given any proper
+subset $S \subsetneq V$, taking the first index $j$ of $p.l$ with $v_j \notin S$ gives $S_j \subseteq S$ and hence
+$N(v_j) \subseteq S \cup P_{b(v_j)}$, yielding \lean{HalfRate.ElimCert} $N\ p.m$. Conversely, greedy extraction from
+\lean{HalfRate.ElimCert} $N\ m$ via \lean{HalfRate.exists_relCharged} produces a global \lean{HalfRate.PieceCert} with $m$
+records.
+
+By \cref{prop:PN}(3) (\lean{elimCert_adj_ne}), any $m$-record global elimination certificate on an undirected graph $G$
+induces a proper coloring $a : V \to \{0, \dots, m-1\}$ into independent sets; moreover, in an elimination certificate, no
+proper subset $S \subsetneq V$ can be \emph{stuck}, meaning that every $v \notin S$ has two neighbors outside $S$ of
+distinct $a$-colors (since a single supplying record $P_{b(v)}$ can belong to only one color class). For~(2)
+(\lean{gp52_no_elimCert}), replacing $a(u)$ by the minimum vertex index in its own record maps any arbitrary-$m$ global
+certificate on $\GP(5,2)$ to a canonical idempotent proper partition of $\{0, \dots, 9\}$, and an exhaustive kernel-checked
+Boolean certificate over all canonical proper partitions exhibits a stuck proper subset $S \subsetneq \{0,\dots,9\}$ in
+every case (\texttt{decide +kernel}). For~(3) (\lean{gp72_no_elimCert_le3}, \lean{gp72_elimCert4}), any $m \le 3$
+certificate embeds into a normalized proper $3$-coloring of $\GP(7,2)$, every one of which admits a kernel-verified stuck
+subset, while an explicit $4$-coloring and $14$-step schedule verify \lean{HalfRate.ElimCert} $(\mathrm{nbhd}\ \GP(7,2))\ 4$
+by \texttt{decide}. For~(4) (\lean{gp92_elimCert3}), an explicit $3$-coloring and $18$-step schedule verify
+\lean{HalfRate.ElimCert} $(\mathrm{nbhd}\ \GP(9,2))\ 3$ by \texttt{decide}.
+\end{outline}
+
+\subsection{Piece decomposition and barrier bound for \texorpdfstring{$\ClassS$}{Class S}}\label{sec:reciprocity-classS}
+
+Recall from~\cite[Section~6.6]{FourthPaper2026} that a finite recovery relation $(V, N)$ belongs to $\ClassS$
+(\lean{IsClassS}) if $N$ is irreflexive, TT-free (\lean{HalfRate.TTFree}), has maximum in-degree at most~$3$
+($\card{N(v)} \le 3$ for all $v \in V$), and satisfies \emph{reciprocal closure at full in-degree}:
+\[
+  \forall v \in V,\quad \card{N(v)} = 3 \implies \forall u \in V,\; v \in N(u) \implies u \in N(v).
+\]
+Equivalently, vertices of in-degree~$3$ may have only reciprocal incident arcs (hence out-degree~$3$), whereas vertices of
+in-degree at most~$2$ may send arbitrarily many pure one-way outgoing arcs. More generally, $(V, N)$ satisfies relative
+$\ClassS$ on $R \subseteq V$ (\lean{ClassSOn}) if the internal restriction $N|_R$ (\lean{resRel}) belongs to $\ClassS$ and
+$N$ is TT-free on~$R$. Note that \lean{ClassSOn} is hereditary under passing to arbitrary subsets $R' \subseteq R$.
+
+\begin{theorem}[Piece decomposition and half-rate bound for $\ClassS$]\label{thm:Sstar}
+\formal{ClassS.lean}{IsClassS, ClassSOn, exists_inClosed_scc, liftPieceCertInClosed, exists_piece_of_scc_classS, classSOn_decomp, classS_decomp, rateBound_classS, card_sq_le_classS}
+Let $(V, N)$ be a finite recovery relation.
+\begin{enumerate}
+\item For every subset $R \subseteq V$ satisfying \lean{ClassSOn} $N\ R$, $(V, N)$ admits a certified piece decomposition
+  (\lean{HalfRate.Decomp} $N\ (V \setminus R)\ \mathrm{pcs}$) from context $V \setminus R$.
+\item In particular, if $N \in \ClassS$, then $(V, N)$ admits a certified piece decomposition from $\emptyset$, satisfies
+  \lean{MotionDepthCodes.RateBound} $N\ (1/2)$ ($2 h(V) \le \sum_{v \in V} h(\{v\})$ for every valid polymatroid~$h$), and
+  every storage code $C \subseteq \alpha^V$ (linear or nonlinear, over any nonempty finite alphabet $\alpha$) satisfies
+  \[
+    \card{C}^2 \le \card{\alpha}^{\card{V}}.
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+By strong induction on $\card{R}$ (\lean{classSOn_decomp}), if $R$ is nonempty, condensation of the reachability relation
+on $R$ yields a nonempty \emph{in-closed} strongly connected component $S \subseteq R$ (\lean{exists_inClosed_scc}):
+every parent in $R$ of a vertex $v \in S$ already lies in~$S$, and every $u, v \in S$ reach one another via directed paths
+in $M := N|_S$. Because $S$ is in-closed inside $R$, any piece certificate for $H \subseteq S$ in empty context under $M$
+lifts immediately to a piece certificate for $H$ in context $V \setminus R$ under $N$ (\lean{liftPieceCertInClosed}), after
+which induction applies to $R \setminus H$.
+
+It therefore suffices to find a nonempty certified piece $H \subseteq S$ in context $\emptyset$ for a strongly connected
+relation $M \in \ClassS$ supported on~$S$ (\lean{exists_piece_of_scc_classS}). Let $\mathcal{D} = {}$\lean{digonGraph}$(M)$ be
+the undirected simple graph of reciprocal pairs on $S$; since $M$ is TT-free, $\mathcal{D}$ is triangle-free
+(\lean{digonGraph_cliqueFree3}). Write $W_S = \{v \in S : \card{M(v)} = 2\}$.
+\begin{enumerate}
+\item \emph{Low in-degree vertex.} If some $v \in S$ has $\card{M(v)} \le 1$, then $H = \{v\}$ is certified by two records
+  $\{v\}$ and $\emptyset$ (\lean{HalfRate.singlePiece}), uncharged if $\card{M(v)} = 0$ or charged to its sole parent if
+  $\card{M(v)} = 1$.
+\item \emph{Directed cycle in $W_S$.} Assume henceforth $\card{M(v)} \in \{2, 3\}$ on~$S$. If $W_S$ is not $M$-acyclic,
+  let $C$ be a shortest directed cycle of $M$ inside $W_S$. Every vertex of $C$ has in-degree~$2$ in $M$, hence one cycle
+  parent and at most one outside parent, and minimality plus TT-freeness make $C$ chordless with no shared outside parent
+  on consecutive vertices; if some $i$ has $f(i-1) \in M(f(i))$ and $f(i) \in M(f(i-1))$, minimality forces $\card{C} = 2$
+  (a digon of in-degree-$2$ vertices), while otherwise $C$ is a pure one-way chordless directed cycle of length $\ge 3$,
+  both certified by $m = 2$ records (\lean{HalfRate.i5Piece}, as in Theorem~T of~\cite{SeventhPaper2026}).
+\item \emph{Acyclic digon graph.} Assume $W_S$ is $M$-acyclic and $\mathcal{D}[S]$ is a forest. Fix a proper $2$-coloring
+  $\kappa : S \to \{0, 1\}$ of $\mathcal{D}[S]$. Neither color class $S_k = \{v \in S : \kappa(v) = k\}$ can contain a
+  directed cycle of $M$: any directed cycle inside $S_k$ cannot lie wholly in $W_S$ (since $W_S$ is $M$-acyclic), so it
+  must visit some $v \in S_k$ with $\card{M(v)} = 3$, whose predecessor $u \in S_k$ on the cycle satisfies $v \in M(u)$ and
+  hence $u \in M(v)$ by $\ClassS$, forming a monochromatic digon inside $S_k$. Thus each $S_k$ is $M$-acyclic, so printing
+  $S_0$ and $S_1$ in topological order with $b = 1 - \kappa$ gives a global $2$-record certificate on $H = S$.
+\item \emph{Shortest digon cycle and hub augmentation.} Finally, suppose $\mathcal{D}[S]$ contains cycles, and let $g \ge 4$
+  be the girth of $\mathcal{D}[S]$.
+  \begin{itemize}
+  \item \emph{Subcase 4a (minimal chordal arc).} Suppose some $g$-cycle $c'$ of $\mathcal{D}[S]$ carries a non-cycle $M$-arc
+    between vertices of cycle distance $d$; reversing $c'$ via \lean{cycRev} if necessary, we may assume $c'(i_0) \in
+    M(c'(i_0 + d))$ with $2 \le d \le \lfloor g/2 \rfloor$, and choose $(d, c', i_0)$ minimizing~$d$ ($d = 2$ is ruled out by
+    \lean{HalfRate.TTFree}, so $3 \le d$). Consider the $(d+1)$-vertex arc $H = \{p_0, \dots, p_d\}$ where $p_s = c'(i_0 + s)$.
+    Minimality of $g$ makes $p_0 \in M(p_d)$ a \emph{pure one-way} arc ($p_d \notin M(p_0)$), so $\ClassS$ forces
+    $\card{M(p_0)} \le 2$ ($p_1$ plus at most one outside parent), while every $p_s$ ($1 \le s \le d$) already has two
+    internal parents in $H$ ($p_{s-1}$ and $p_{s+1}$ for $s < d$, or $p_{d-1}$ and $p_0$ for $s = d$) and hence at most one
+    outside parent. Minimality of $d$ rules out all other internal $M$-arcs on $H$, and eliminating $[p_0, p_1, \dots, p_d]$
+    in forward order with singleton records $P_s = \{p_s\}$ ($0 \le s \le d$), empty record $P_{d+1} = \emptyset$, and
+    $b(p_s) = s + 1$ yields an explicit $(d+2)$-record nested certificate on~$H$ (\lean{minChordArc_pieceCert}).
+  \item \emph{Subcase 4b (chordless non-stride-$3$ cycle).} Suppose no $g$-cycle of $\mathcal{D}[S]$ has any non-cycle
+    $M$-chord. Pick any $g$-cycle $C = \{c(0), \dots, c(g-1)\}$. If $C$ is not a stride-$3$ cycle in context $\emptyset$
+    under $M$, \cref{thm:DC} immediately certifies $H = C$.
+  \item \emph{Subcase 4c (hub augmentation of a stride-$3$ cycle).} Suppose $C$ is a stride-$3$ cycle ($3 \mid g$, hence
+    $g \ge 6$ by triangle-freeness) with hubs $w_0, w_1, w_2 \in S \setminus C$. Because $S$ is strongly connected and
+    $w_0 \in S \setminus C$, some vertex $c(i_0) \in C$ sends an outgoing $M$-arc to some $y \in S \setminus C$, i.e.,
+    $c(i_0) \in M(y)$. Since every vertex of $C$ has $\card{M(c(i))} = 3$ (two cycle neighbors plus $w_{i \bmod 3}$),
+    reciprocal closure in $\ClassS$ forces $y \in M(c(i_0))$, so $y = w_{r_0}$ where $r_0 = i_0 \bmod 3$. Now $w_{r_0}$
+    forms a digon with $c(i_0)$ and cannot form a digon with any other $c(k)$ ($k \ne i_0$), as two digons from $w_{r_0}$
+    to $C$ would create a $\mathcal{D}$-cycle of length at most $\lfloor g/2 \rfloor + 2 < g$ (or a $4$-cycle when $g = 6$).
+    Because $w_{r_0} \in M(c(i_0 + 3))$ and $i_0 + 3 \not\equiv i_0 \pmod g$, $c(i_0 + 3) \notin M(w_{r_0})$, so $\ClassS$
+    forces $\card{M(w_{r_0})} = 2$: $w_{r_0}$ has parent $c(i_0)$ on $C$ and at most one parent outside $H := \{w_{r_0}\}
+    \cup C$ (which may even be another hub $w_r$). Rotating $C$ so $i_0 = 0$ and $r_0 = 0$, the $(g+1)$-vertex augmented
+    piece $H = \{w_0\} \cup C$ admits an explicit $(g+2)$-record sequential nested certificate
+    (\lean{augmentedStride3_pieceCert}): list $H$ in cyclic order $[v_0, \dots, v_g] = [w_0, c(0), c(1), \dots, c(g-1)]$,
+    assign own-record indices $(g, 1, 0, 3, 4, \dots, g-1, 0)$ with empty auxiliary record $P_{g+1} = \emptyset$, and set
+    sequential supply $b(v_j) = j + 1$ for $0 \le j \le g$, verifying nestedness across shared outside parents via
+    \cref{prop:PN}(1).
+  \end{itemize}
+\end{enumerate}
+Applying \lean{HalfRate.rateBound_of_decomp} and \lean{MotionDepthCodes.card_sq_le_of_rateBound_half} completes~(2).
+\end{outline}
+
+For any vertex cut $S \subseteq V$ of $(V, N)$, write $I_N(S) = \{v \in V \setminus S : N(v) \subseteq S\}$
+(\lean{isolatedOutDir}) for the set of vertices outside $S$ all of whose active recovery parents lie inside~$S$. Applying
+\cref{thm:Sstar}(1) in context $U = S \cup I_N(S)$ yields the directed barrier bound for $\ClassS$:
+
+\begin{corollary}[Directed barrier inequality for $\ClassS$]\label{cor:Bstar}
+\formal{ClassS.lean}{isolatedOutDir, barrier_ineq_classS, log_card_le_barrier_classS}
+Let $(V, N)$ be a finite recovery relation in $\ClassS$, and let $S \subseteq V$.
+\begin{enumerate}
+\item Every polymatroid $h$ valid for $N$ satisfies
+  \[
+    2 h(V) \le 2 \sum_{v \in S} h(\{v\}) + \sum_{v \in V \setminus (S \cup I_N(S))} h(\{v\}).
+  \]
+\item Every storage code $C \subseteq \alpha^V$ over a nonempty finite alphabet $\alpha$ satisfies
+  \[
+    2 \log \card{C} \le \bigl(\card{V} + \card{S} - \card{I_N(S)}\bigr) \log \card{\alpha}.
+  \]
+\end{enumerate}
+\end{corollary}
+
+\begin{outline}
+Let $U = S \cup I_N(S)$. By \cref{thm:Sstar}(1), $V \setminus U$ admits a piece decomposition (\lean{HalfRate.Decomp} $N\ U\ \mathrm{pcs}$),
+so \lean{HalfRate.decomp_ineq} gives $2(h(V) - h(U)) \le \sum_{v \notin U} (h(U \cup \{v\}) - h(U)) \le \sum_{v \notin U}
+h(\{v\})$. Since every $v \in I_N(S)$ has $N(v) \subseteq S$, validity gives $h(U) = h(S) \le \sum_{v \in S} h(\{v\})$,
+proving~(1) (\lean{barrier_ineq_classS}); evaluating on the uniform code-entropy polymatroid of $C$ proves~(2)
+(\lean{log_card_le_barrier_classS}).
+\end{outline}
+
+Finally, we exhibit a strongly connected, completely triangle-free digraph in $\ClassS$ on which the low-in-degree,
+$W_S$-cycle, and shortest-digon-cycle rules all stall simultaneously, whereas hub augmentation (Subcase~4c of
+\cref{thm:Sstar}) decomposes it.
+
+\begin{proposition}[Simultaneous stalling of earlier rules on $\Gto \in \ClassS$]\label{prop:G21}
+\formal{ClassSExamples.lean}{g21Rel, g21_isClassS, g21_no_any_triangle, g21_min_indeg_and_acyclic_W, g21_stronglyConnected, g21_hex_no_pieceCert, g21_shortest_digon_cycles, rateBound_g21}
+Let $\Gto$ (\lean{g21Rel}) be the recovery relation on $\{0, \dots, 20\}$ formed by three disjoint digon $6$-cycles
+$A = \{0,\dots,5\}$, $B = \{6,\dots,11\}$, $C = \{12,\dots,17\}$ and three hubs $18, 19, 20$, where each $i \in \{0,\dots,17\}$
+has cycle parents $i \pm 1$ (modulo~$6$ within its hexagon) plus hub parent $18 + (i \bmod 3)$, and the three hubs have
+parent sets $N(18) = \{0, 15\}$, $N(19) = \{1, 7\}$, $N(20) = \{8, 14\}$. Then:
+\begin{enumerate}
+\item $\Gto \in \ClassS$, $\Gto$ is strongly connected, and the underlying undirected support of $\Gto$ is triangle-free;
+\item every vertex of $\Gto$ has in-degree~$2$ or~$3$, and the in-degree-$2$ set $W = \{18, 19, 20\}$ has no internal arcs
+  (so low-in-degree and $W$-cycle rules do not apply);
+\item every cycle of length at most~$6$ in \lean{digonGraph}$(\Gto)$ has length~$6$ and vertex set $A$, $B$, or $C$ (each
+  forming a mutual $6$-cycle in $\Gto$), and none of $A$, $B$, $C$ admits a piece certificate (\lean{HalfRate.PieceCert}
+  $\Gto\ \emptyset\ H$) for any $m \in \N$;
+\item nevertheless, $\Gto$ admits a piece decomposition and satisfies \lean{MotionDepthCodes.RateBound} $\Gto\ (1/2)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+Membership $\Gto \in \ClassS$ (\lean{g21_isClassS}), complete triangle-freeness (\lean{g21_no_any_triangle}), minimum
+in-degree~$2$ and independence of $W = \{18,19,20\}$ (\lean{g21_min_indeg_and_acyclic_W}), and strong connectivity via an
+explicit $32$-step closed walk visiting all $21$ vertices (\lean{g21_stronglyConnected}) are verified in the kernel.
+Unbounded-$m$ impossibility on $A$, $B$, and $C$ (\lean{g21_hex_no_pieceCert}) follows by instantiating \cref{prop:CS}(1)
+with hub triple $[18, 19, 20]$. To classify all digon cycles of length $3 \le g \le 6$ (\lean{g21_shortest_digon_cycles}),
+a kernel-checked $4$-step BFS avoiding $w$ verifies that for every hub $w \in \{18,19,20\}$, its two digon neighbors lie in
+distinct hexagons and have no $\mathcal{D}$-walk of length $\le 4$ avoiding~$w$, so no cycle of length $g \le 6$ can visit
+any hub; projecting any remaining cycle into $\Z_6$ modulo~$6$ rules out $g \in \{3, 4, 5\}$ by parity and injectivity,
+leaving $A$, $B$, and $C$. Finally, \cref{thm:Sstar} (peeling, for instance, a $7$-vertex hub-augmented piece such as
+$\{18\} \cup A$ via Subcase~4c) yields \lean{MotionDepthCodes.RateBound} $\Gto\ (1/2)$ (\lean{rateBound_g21}).
+\end{outline}

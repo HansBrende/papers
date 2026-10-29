@@ -1,0 +1,104 @@
+\section{Open problems}\label{sec:open}
+
+\subsection{Updated map of half-rate and deep-nesting bounds}
+
+For oblivious machines, Theorem~D~\cite[Section~4.2, Theorem~4.10]{FourthPaper2026} reduces $\neg$(T) to depth reduction
+($\TCP(k)$) together with asymptotic coding bounds on paired-distance-separated recovery relations
+(\cite[Question~9.1]{DirectedRecovery2026}). The table below updates the status of exact radius-$3$ (loopless TT-free)
+half-rate bounds from~\cite[Section~9.1]{SeventhPaper2026} and~\cite[Section~8]{EighthPaper2026}:
+
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
+\toprule
+\textbf{regime} & \textbf{proved} & \textbf{open nearby} \\
+\midrule
+directed in-degree $\le 3$, full reciprocal closure at in-degree~$3$ ($\ClassS$) &
+  all codes, all alphabets: piece decomposition and $\card{C}^2 \le \card{\alpha}^{\card{V}}$ (\textbf{Theorem~S$^*$}, \cref{thm:Sstar}) &
+  general TT-free in-degree $\le 3$ (\cref{prob:conjP}; Conjecture~P of~\cite{SeventhPaper2026}) \\
+\addlinespace
+chordless digon cycles with $\le 1$ outside parent per vertex &
+  piece certificate exists for some $m \in \N$ iff not a stride-$3$ hub cycle (\textbf{Theorem~DC}, \cref{thm:DC}); $\Ex$ core and $\GP(5,2)$ ruled out for all $m \in \N$ (\cref{cor:x15,prop:GP}) &
+  chorded digon cycles with one-way chords (Conjecture~K of~\cite{SeventhPaper2026}); $O(1)$ record bound on $\ClassS$ (\cref{prob:records}) \\
+\addlinespace
+triangle-free degree $\le 4$, scalar linear ($\ker M$, unit diagonal) &
+  $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$ under~(S1) alone (heavy matchings allowed; \textbf{Theorem~SH$^*$}, \cref{thm:SHstar}), plus $\rhom$ barrier (\textbf{Corollary~M$^*$}, \cref{cor:Mstar}) &
+  heavy vertices at distance~$2$ sharing common neighbors; all codes at degree~$4$ (\cref{prob:deg4-dist2}) \\
+\addlinespace
+$\DNP(s_0, m)$, turn-supported mod-$q$ labels &
+  blind-error run $\le 2\lfloor\log_2 q\rfloor + 2$ (\textbf{Theorem~LU}, \cref{thm:LU}); three-regime failure witnesses for bounded-range block pairs at two odd shifts, one for symmetric pairs (\textbf{Theorem~A}, \cref{thm:A}) &
+  common asymmetric shift, fixed-shift blindness, served-level conversion, $a \asymp \tfrac{1}{2}\log_2 q$, and general $\TCP(2)$ (\cref{prob:App-full}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Open problems}
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Decide (T).} Construct a deterministic multitape Turing machine that transposes $d \times d$ matrices of
+  $b(d)$-bit entries ($b(d) = \max(1, \clog{d})$) in time $O(d^2 b(d))$, or prove that none exists (checked against
+  \lean{Transpose.LinearTimeTransposable} in~\cite{FirstPaper2026}). On adaptive machines, extending the complete
+  source-cover and return-profile barriers of~\cite{NinthPaper2026} beyond restricted return geometries remains the central
+  non-oblivious barrier question.
+
+\item \emph{Conjecture~P beyond $\ClassS$, and Conjecture~K.} \Cref{thm:Sstar} resolves the intermediate target named in
+  item~2 of~\cite[Section~9.2]{SeventhPaper2026} (the all-code version of the fourth paper's Theorem~S on its whole class).
+  Conjecture~P (\cite[Conjecture~9.1]{SeventhPaper2026}) remains open; the gap to the full directed degree-$3$ case lies
+  in vertices of in-degree~$3$ that send unreciprocated outgoing arcs:
+  \begin{problem}[Directed in-degree three without reciprocal closure]\label{prob:conjP}
+  Does every finite loopless TT-free recovery relation with $\card{N(v)} \le 3$ for all $v \in V$ admit a certified piece
+  decomposition (\lean{HalfRate.Decomp}, Conjecture~P of~\cite[Section~9.2]{SeventhPaper2026}), or at least satisfy the
+  polymatroid half-rate bound $2 h(V) \le \sum_{v \in V} h(\{v\})$? As a concrete special case (Conjecture~K
+  of~\cite[Section~9.2]{SeventhPaper2026}), does every loopless TT-free chorded digon cycle with at most one incoming and at
+  most one outgoing one-way chord per vertex admit a global elimination certificate?
+  \end{problem}
+  By~\cite[Proposition~8.1]{SeventhPaper2026} (\lean{HalfRate.dn3_rate_eventually_le}), an affirmative answer to
+  \cref{prob:conjP} implies an affirmative answer to the paired-distance coding question~\cite[Question~9.1]{DirectedRecovery2026}
+  for all recovery relations of in-degree at most~$3$, with no restriction on out-degree. On $\Ex \notin \ClassS$, vertex~$6$
+  has in-degree~$3$ and sends a pure one-way arc $6 \to 3$, obstructing its minimum core $\{0,\dots,5\}$ across all $m \in \N$
+  (\cref{cor:x15}), yet $\Ex$ still admits a $3$-record global certificate~\cite[Remark~7.3]{SeventhPaper2026}.
+
+\item \emph{Record complexity of piece decompositions in $\ClassS$.} In \cref{prop:GP} we showed that global elimination
+  certificates exhibit a strict record hierarchy ($m = \infty$ on $\GP(5,2)$, $m = 4$ on $\GP(7,2)$, and $m = 3$ on
+  $\GP(9,2)$). For piece decompositions in $\ClassS$, pure stride-$s$ cores ($s \ge 4$) use $m \le 3$ records
+  (\cref{prop:CS}(2)), whereas in \cref{thm:DC} and \cref{thm:Sstar} our certificates on non-stride-$3$ chordless digon
+  $L$-cycles ($L \ge 5$), minimal chordal arcs of span $d \ge 3$ (Subcase~4a), and hub-augmented stride-$3$ $g$-cycles
+  (Subcase~4c) use up to $L + 1$, $d + 2$, and $g + 2$ records, respectively.
+  \begin{problem}[Bounded-record decompositions for $\ClassS$]\label{prob:records}
+  Is there an absolute constant $m_0$ (for instance $m_0 = 3$ or $m_0 = 4$) such that every finite relation $N \in \ClassS$
+  admits a certified piece decomposition in which every piece certificate uses at most $m_0$ records?
+  \end{problem}
+
+\item \emph{Triangle-free storage codes at degree~$4$ with distance-$2$ heavy clusters.} \Cref{thm:SHstar} and
+  \cref{cor:Mstar} show that for scalar linear codes $\ker M$ on triangle-free graphs of maximum degree~$4$, heavy vertices
+  need not be non-adjacent: only shared neighbors between distinct heavy vertices ($\dist_G(u, v) = 2$, violating~(S1)) can
+  break the minimal-counterexample run.
+  \begin{problem}[Distance-$2$ heavy clusters and all-code degree-$4$ bounds]\label{prob:deg4-dist2}
+  (a) Over an arbitrary field~$F$, does $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$ hold for every unit-diagonal matrix
+  $M$ supported on a finite triangle-free graph $G$ of maximum degree~$4$, when $H_M$ contains vertices at distance~$2$
+  in~$G$---or at least up to $o(\card{V})$ along locally bipartite families of growing odd girth?
+  (b) Does the polymatroid half-rate bound $2 h(V) \le \sum_{v \in V} h(\{v\})$ hold on every triangle-free undirected graph
+  of maximum degree~$4$?
+  \end{problem}
+  Note that Barg and Z\'emor's high-rate binary linear codes on triangle-free $4$-regular Cayley graphs~\cite{BargZemor2022}
+  employ multi-bit vector symbols per vertex rather than scalar unit-diagonal checks, and at degree~$5$ scalar binary codes
+  already reach rate~$5/8$ on the Clebsch graph~\cite[Corollary~6.11]{FourthPaper2026}.
+
+\item \emph{Closing the block-pair gaps to Conjecture~A$''$, and $\TCP(2)$ on the deep-nesting pair.} \Cref{thm:A} gives
+  three-regime failure witnesses for block-label pairs $(B(a_1, K_1), B(a_2, K_2))$ of bounded block length on
+  $\DNP(s_0, m)$ across all $K_1, K_2 \in \Z$ and $q \ge 3$ at two fixed odd shifts (one shift for symmetric pairs). On the
+  $r$-fold periodic cover of $\DNP(s_0, m)$ (containing $n_{\mathrm{h}} = 2 r P = 8 r (m+1) 2^{s_0}$ long hops across the
+  two heads), the four steps of \cref{rem:scope-A} remain to establish Conjecture~A$''$~\cite[Section~5.6, Conjecture~5.24]{EighthPaper2026}
+  and decide $\TCP(2)$:
+  \begin{problem}[From Theorem~A to Conjecture~A$''$ and walk-DAG depth of $\DNP$]\label{prob:App-full}
+  (a) Prove the existence of a \emph{single} odd shift $\xi \in \Omega$ that works simultaneously for both coarse straddle
+  directions ($\mathrm{dir} = \mathrm{true}$ and $\mathrm{dir} = \mathrm{false}$) and satisfies half-blindness on fine
+  sub-bands, and deduce from \cref{thm:A} an explicit upper bound $C\log_2 q + C' + \eta(m+1)$ ($\eta < 1$) on doubly
+  $\theta_0$-served levels for all bounded-range block pairs.
+  (b) Extend the bound when $q$ is exponential in~$m$ and $\max(a_1, a_2) \asymp \tfrac{1}{2}\log_2 q$, and from block pairs
+  to \emph{every} mod-$q$ label of cost at most $n_{\mathrm{h}}/8$ on the $r$-fold cover (full Conjecture~A$''$).
+  (c) Are the walk DAGs of $\DNP(s_0, m)$ depth-robust as $m \to \infty$ at some sequence of odd shifts, refuting $\TCP(2)$
+  (and hence $4$-stack depth reduction $\mathrm{SR}(4)$; compare $\mathrm{SR}(3)$ and the Scratch Question
+  in~\cite[Section~10, Problems~10.2 and~10.5]{EighthPaper2026})?
+  \end{problem}
+\end{enumerate}

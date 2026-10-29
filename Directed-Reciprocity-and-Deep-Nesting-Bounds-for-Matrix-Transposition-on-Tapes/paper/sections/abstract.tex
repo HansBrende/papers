@@ -1,0 +1,37 @@
+Can a deterministic multitape Turing machine transpose a $d \times d$ matrix with $\max(1, \clog{d})$-bit entries in time
+linear in the input length? By the fourth paper of this series, excluding oblivious linear-time transposers splits into two
+combinatorial problems: a half-rate bound for storage codes on transitive-tournament-free recovery relations (the coding
+crux), and cheap depth reduction of head-walk dependency graphs (the trajectory cut problem). This paper advances three
+frontiers left open by the seventh, eighth and ninth papers of the series, and every new numbered theorem, proposition,
+lemma and corollary is kernel-verified in Lean~4.
+
+First, for nested elimination on directed recovery relations, we give a purely positional characterization of the
+nestedness hypothesis of the seventh paper, show that every reciprocal pair forces distinct record lists, and prove a
+sharp dichotomy for chordless digon cycles with at most one active outside parent per vertex: a piece certificate exists
+over some number of records if and only if the outside arcs do not form a unidirectional cycle of stride~$3$
+(Theorem~DC). In particular, the $15$-vertex obstruction $\Ex$ has no piece certificate on its unique minimum nonempty
+core over any number of records, and the Petersen graph $\GP(5,2)$ has no global elimination certificate over any number
+of records, whereas $\GP(7,2)$ and $\GP(9,2)$ require minimum record counts $4$ and~$3$, respectively (Proposition~GP),
+resolving two open formalization problems of the seventh paper. Using minimal chordal digon paths and hub-augmented
+stride-$3$ pieces, we then prove that the entire class $\ClassS$ of Theorem~S of the fourth paper---transitive-tournament-free
+relations of maximum in-degree~$3$ in which every vertex of in-degree~$3$ has only reciprocal children---admits a
+certified piece decomposition and satisfies the half-rate bound $\card{C}^2 \le \card{\alpha}^{\card{V}}$ over every
+finite alphabet and for all codes, linear or nonlinear (Theorem~S$^*$), resolving the all-code Theorem~S target of the
+seventh paper, together with a directed barrier inequality (Corollary~B$^*$) and a $21$-vertex strongly connected
+triangle-free witness $\Gto \in \ClassS$ on which earlier peeling rules stall (Proposition~G21).
+
+Second, for scalar linear codes on triangle-free graphs of maximum degree~$4$ defined as the kernel of a matrix $M$ with
+unit diagonal over an arbitrary field, we remove the heavy-separation hypothesis~(S2) of the eighth paper's Theorem~SH:
+adjacent degree-$4$ exceptional vertices and arbitrary matchings of exceptional vertices are allowed, provided no two
+exceptional vertices share a common neighbor (Theorem~SH$^*$), yielding a matching bound controlled by the heavy-matching
+invariant $\rhom(G,H) \ge \rho_3(G,H)$ (Corollary~M$^*$).
+
+Third, on the deep-nesting walk $U(s_0, m, 1)$, we formalize the recursive stroke structure and $O(m)$ turn-potential
+evaluator (Proposition~SL), prove an $m$-free mod-$q$ straddle lower bound and exact parity-conditioned straddle count
+$\Pi_\kappa^2 / 4$ (Theorem~V$^*$), establish a super-Fibonacci unwrapping theorem showing that level-uniform single-head
+cancellation admits at most $2\lfloor \log_2 q \rfloor + 2$ consecutive levels whose blind apex and band-$0,1,2$ errors are
+at most $q/8$ (Theorem~LU), determine the block-cancellation drift and Mersenne $q = 2^B - 1$ binary-clock failure residue
+(Proposition~OC), and prove an unconditional three-regime witness theorem with zero $\log q$ loss for block-label pairs of
+bounded block length across every $K_1, K_2 \in \Z$ and every modulus $q \ge 3$ at two fixed odd shifts, or a single shift
+for symmetric pairs (Theorem~A; translating its single-head regimes to actual two-head hop errors requires blindness at the
+chosen shift). The linear-time transposition question itself remains open.

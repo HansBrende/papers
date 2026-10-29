@@ -1,0 +1,145 @@
+\section{Preliminaries}\label{sec:prelim}
+
+We keep the notation and conventions of the fourth, seventh and eighth papers~\cite{FourthPaper2026,SeventhPaper2026,EighthPaper2026}
+so that cited declarations align directly with their Lean~4 libraries. Throughout, logarithms are base~$2$, $\N = \{0,1,2,\dots\}$,
+and for integers $a \le b$ we write $[a, b] = \{x \in \Z : a \le x \le b\}$ and $[a, b) = \{x \in \Z : a \le x < b\}$ (or
+their subsets in $\N$ when the endpoints are natural numbers). For $x \in \Z$ and $q > 0$, we write $x \bmod q \in
+\{0, 1, \dots, q-1\}$ for the non-negative Euclidean remainder (\texttt{Int.emod} in Lean).
+
+\subsection{Turing machines, transposition, and the depth--coding split}
+
+In the machine model of~\cite{FirstPaper2026,FourthPaper2026} (\lean{Transpose.TM}), a deterministic multitape Turing
+machine has a binary read-only two-way input tape, a binary write-only one-way output tape, and $k$ two-way read/write
+work tapes over a finite work alphabet $\{0, 1, \dots, g\}$. Given a $d \times d$ matrix of $b(d)$-bit entries in
+row-major order, where $b(d) = \max(1, \clog{d})$ and $L = d^2 b(d)$, the machine must halt with the transpose in
+row-major order on the output tape; statement~(T) is formalized as \lean{Transpose.LinearTimeTransposable}
+(see~\cite[Section~2]{FirstPaper2026}, Lean-verified). A transposer is \emph{oblivious} if its head trajectories,
+output-append times, and halting time depend only on the input dimension~$d$~\cite[Section~2]{FirstPaper2026}. By
+Theorem~D of~\cite[Section~4.2, Theorem~4.10]{FourthPaper2026} (proved in the text of~\cite{FourthPaper2026}; not
+formalized in Lean), if the $k$-head walk dependency DAG of an oblivious linear-time transposer admits $\eps T$-edge cuts
+to bounded hop-depth ($\TCP(k)$) and storage codes on the resulting bounded-in-degree TT-free recovery relations have rate
+bounded away from~$1$, then no such transposer exists.
+
+\subsection{Directed recovery relations, polymatroids, and nested elimination}
+
+Let $V$ be a finite vertex set. A \emph{recovery relation} on $V$ is a parent map $N : V \to \mathcal{P}(V)$; we write
+$u \to v$ when $u \in N(v)$ ($u$ is a \emph{parent} of $v$, and $v$ is a \emph{child} of $u$). The relation $N$ is
+\emph{irreflexive} (loopless) if $v \notin N(v)$ for all $v \in V$. Two distinct vertices $u, v$ form a \emph{reciprocal
+pair} or \emph{digon} if $u \in N(v)$ and $v \in N(u)$, and $u \to v$ is a \emph{pure one-way arc} if $u \in N(v)$ and
+$v \notin N(u)$. We say $N$ is \emph{transitive-tournament-free} (\lean{HalfRate.TTFree}) if there are no three distinct
+vertices $a, b, c \in V$ with $a \in N(b)$, $b \in N(c)$ and $a \in N(c)$; notice that an irreflexive symmetric relation is
+TT-free if and only if its underlying undirected simple graph is triangle-free. For a subset $S \subseteq V$, the induced
+restriction $N|_S$ on $S$ sets $N|_S(v) = N(v) \cap S$ (formalized on the subtype $S$ as
+\lean{DirectedRecovery.inducedNeighborhood} in~\cite{DirectedRecovery2026}, and on $V$ with empty parent sets outside $S$ as
+\lean{resRel} in \cref{sec:reciprocity-classS}).
+
+A \emph{storage code} on $(V, N)$ over a finite nonempty alphabet $\alpha$ (\lean{MotionDepthCodes.IsStorageCode}) is a
+nonempty subset $C \subseteq \alpha^V$ such that for every $v \in V$, the coordinate $x_v$ of $x \in C$ is determined by
+its parent coordinates $(x_u)_{u \in N(v)}$. Sampling $X \in C$ uniformly defines a Shannon polymatroid
+$h : \mathcal{P}(V) \to \R$ (\lean{MotionDepthCodes.IsPolymatroid}) satisfying $h(\emptyset) = 0$, monotonicity,
+submodularity, and validity $h(N(v) \cup \{v\}) = h(N(v))$ at every $v \in V$ (\lean{MotionDepthCodes.IsValid};
+see~\cite[Section~4]{FourthPaper2026} and~\cite[Section~2]{SeventhPaper2026}, Lean-verified). We say $(V, N)$ satisfies the
+polymatroid half-rate bound (\lean{MotionDepthCodes.RateBound} at~$1/2$) if every polymatroid $h$ valid for $N$ obeys
+\begin{equation}\label{eq:half-rate}
+  2 h(V) \le \sum_{v \in V} h(\{v\}),
+\end{equation}
+which specializes on any storage code $C \subseteq \alpha^V$ to $2 \log \card{C} \le \card{V} \log \card{\alpha}$, i.e.,
+$\card{C}^2 \le \card{\alpha}^{\card{V}}$ (\lean{MotionDepthCodes.card_sq_le_of_rateBound_half}).
+
+We recall the multi-record nested elimination engine of~\cite[Section~3]{SeventhPaper2026}. Let $U \subseteq V$ be a
+\emph{context} (already contracted vertices), $H \subseteq V \setminus U$ be a \emph{piece}, and $W = V \setminus (U \cup H)$
+be the set of \emph{outside} vertices. \emph{Elimination data} for $H$ over an index set $I$ of $m = \card{I}$ records
+consist of subsets $P_r \subseteq H$ ($r \in I$), an elimination list $l = [v_0, \dots, v_{k-1}]$ with underlying set $H$,
+an \emph{own record} map $a : V \to I$ and \emph{supplying record} map $b : V \to I$ with $v \in P_{a(v)}$ and $b(v) \ne a(v)$
+for all $v \in l$, and an optional outside-parent map $\mathrm{par} : V \to \mathrm{Option}\ V$. At step $j < k$, given an
+initial revealed set $S_0$, write $S_j = S_0 \cup \{v_0, \dots, v_{j-1}\}$ (\lean{HalfRate.rev}) for the revealed prefix
+and $Q_j = S_j \cup P_{b(v_j)}$ for the supply. In~\cite{SeventhPaper2026}, relational nestedness
+(\lean{HalfRate.RelCharged} applied to $N, U, P, b, \mathrm{par}, W, S_0, L_0, l$) is defined recursively along $l$ by
+threading a state map $L : V \to \mathcal{P}(V)$ recording for each outside vertex $w \in W$ the set $Q_{j'} \cup \{v_{j'}\}$
+at the most recent step $j'$ charged to~$w$:
+\begin{itemize}
+\item if $\mathrm{par}(v_j) = \mathrm{none}$ (\emph{free step}), $N(v_j) \subseteq U \cup Q_j$, and $L$ is unchanged;
+\item if $\mathrm{par}(v_j) = \mathrm{some}\ w$ (\emph{charged step}), $w \in W$, $N(v_j) \subseteq U \cup \{w\} \cup Q_j$,
+  and $L(w) \subseteq Q_j$, after which $L(w)$ is updated to $Q_j \cup \{v_j\}$.
+\end{itemize}
+By Lemma~E of~\cite[Section~3.1, Lemma~3.2]{SeventhPaper2026} (Lean-verified as \lean{HalfRate.nested_elimination}),
+whenever $g$ is a polymatroid and the charging is nested, $2 g(H) \le \sum_{r \in I} g(P_r) + \sum_{w \in W} I_g(w; H)$.
+A \emph{piece certificate} for $H$ in context $U$ (\lean{HalfRate.PieceCert}) bundles $m \in \N$ pairwise disjoint records
+$P_0, \dots, P_{m-1}$ partitioning $H$ (note $a(v) \ne b(v)$ forces $m \ge 2$ whenever $H \ne \emptyset$), a list $l$ with
+$l.\mathrm{toFinset} = H$, maps $a, b : V \to \{0, \dots, m-1\}$ with $v \in P_{a(v)}$ and $a(v) \ne b(v)$ for $v \in l$,
+and $\mathrm{par} : V \to \mathrm{Option}\ V$ satisfying \lean{HalfRate.RelCharged} from initial state $S_0 = \emptyset$,
+$L_0 \equiv \emptyset$ with outside set $W = V \setminus (U \cup H)$. A \emph{global elimination certificate} over $m$
+records (\lean{HalfRate.ElimCert}) is the global special case $U = \emptyset$, $H = V$ (where $W = \emptyset$ and every step
+is uncharged). A \emph{decomposition} of $N$ from context $U$ (\lean{HalfRate.Decomp}) is a sequence of disjoint pieces
+$H_1, \dots, H_t$ partitioning $V \setminus U$ such that each $H_s$ has a piece certificate in context
+$U \cup H_1 \cup \dots \cup H_{s-1}$. By Theorem~D of~\cite[Section~3.2]{SeventhPaper2026} (Lean-verified as
+\lean{HalfRate.rateBound_of_decomp} and \lean{HalfRate.card_sq_le_of_decomp}), a decomposition from context $\emptyset$
+implies~\eqref{eq:half-rate} and $\card{C}^2 \le \card{\alpha}^{\card{V}}$ for every storage code $C \subseteq \alpha^V$.
+
+\subsection{Scalar linear codes on triangle-free graphs of maximum degree~\texorpdfstring{$4$}{4}}
+
+Let $G = (V, E)$ be a finite simple undirected graph and $F$ be an arbitrary field. Following~\cite[Section~8]{EighthPaper2026},
+a matrix $M \in F^{V \times V}$ has unit diagonal and support in $G$ if $M_{v,v} = 1$ for all $v \in V$ and $M_{v,u} \ne 0
+\implies \{v, u\} \in E$ for $u \ne v$. Its subspace $\ker M = \{x \in F^V : M x = 0\}$ is a scalar linear storage code on
+$G$: each coordinate $x_v = -\sum_{u \ne v} M_{v,u} x_u$ is recovered linearly from its active recovery neighbors
+$N_M(v) = \{u \in V \setminus \{v\} : M_{v,u} \ne 0\}$ (\lean{MotionDepthCodes.recSet}). Following~\cite[Section~6.6]{FourthPaper2026}
+and~\cite[Section~8.2]{EighthPaper2026}, a vertex $v$ satisfies $(\star\star)$ (\lean{MotionDepthCodes.Star}) if either
+$\card{N_M(v)} \le 2$, or $\card{N_M(v)} = 3$ and $v$ reciprocates every outgoing recovery arc ($v \in N_M(u) \implies u \in
+N_M(v)$); it satisfies $(\star 4)$ (\lean{BoundedNesting.Star4}) if either $\card{N_M(v)} \le 3$, or $\card{N_M(v)} = 4$
+and $v$ reciprocates every outgoing recovery arc (automatically satisfied whenever $M$ is supported in an undirected graph
+$G$ of maximum degree at most~$4$). We call $v \in V$ \emph{heavy} (or exceptional) if $v$ violates $(\star\star)$, and
+write $H_M \subseteq V$ (\lean{BoundedNesting.heavyVerts}) for the set of heavy vertices. Theorem~SH
+of~\cite[Section~8.2, Theorem~8.3]{EighthPaper2026} (Lean-verified as \lean{BoundedNesting.theoremSH}) proved $\dim_F \ker M
+\le \lfloor \card{V}/2 \rfloor$ assuming $(\star 4)$ everywhere together with $\card{H_M} \le 2$ or \emph{both} (S1) no
+vertex has two distinct heavy recovery neighbors (\lean{BoundedNesting.SepS1}), and (S2) no heavy vertex has a heavy
+recovery neighbor (\lean{BoundedNesting.SepS2}).
+
+\subsection{Walks, turn labels, and the deep-nesting walk \texorpdfstring{$U(s_0, m, 1)$}{U(s0, m, 1)}}
+
+A $1$-head walk on $\Z$ is a map $x : \N \to \Z$ with $\abs{x(t+1) - x(t)} \le 1$; for $k$ work heads, each head $h \in
+\{0, \dots, k-1\}$ moves by $\{-1, 0, +1\}$ at every step. Following~\cite[Section~2.3]{EighthPaper2026}
+(\leanfile{BoundedNesting/WalkDag.lean}), the \emph{walk dependency DAG} over horizon $T$ has vertex set $\{0, \dots, T-1\}$,
+with \emph{state edges} $t \to t - 1$ for $1 \le t < T$ and \emph{long-hop edges} $u \to p$ whenever some head visits the
+same cell at times $p$ and $u$ with $p + 2 \le u < T$ and no intermediate visit in $(p, u)$ (\lean{BoundedNesting.allHops}).
+By the label-cut principle~\cite[Section~2.3, Lemma~2.3]{EighthPaper2026} (Lean-verified as
+\lean{BoundedNesting.labelCut_depth_walkDag}), for any label $\Psi : \N \to \{0, \dots, q-1\}$ ($q \ge 1$), deleting the
+state edges at step descents $\Psi(t) < \Psi(t-1)$ (\lean{BoundedNesting.descentsOf}) and the violated hop edges with
+$\Psi(u) \le \Psi(p)$ (\lean{BoundedNesting.violatedOf}) leaves at most $q - 1$ long-hop edges along any directed path in
+the walk DAG. On a cyclic schedule whose long hops partition into closed cell chains, Lemma~Zq
+of~\cite[Section~5.5, Lemma~5.15]{FourthPaper2026} (Lean-verified as \lean{MotionDepthCodes.lemma_Zq} and specialized to
+turn-counting labels in \lean{BoundedNesting.turnCounter_cost}) expresses $q$ times the total number of cut descents and
+violated hops identically as the sum of step increments $(\Psi(t) - \Psi(t-1)) \bmod q$ plus reduced hop errors
+$(\Psi(u) - \Psi(p) - 1) \bmod q$.
+
+For integers $0 \le m \le s_0$, define the dyadic scales $R_i = 2^{s_0 - i}$ for $0 \le i \le s_0$ (\lean{scaleR}) and the
+nested \emph{stroke lengths} $\Pi_\kappa = (m - \kappa + 1) R_\kappa$ for $0 \le \kappa \le m$ (\lean{strokeLen}). As in
+\cite[Definition~5.3]{FourthPaper2026} and~\cite[Section~2.5]{EighthPaper2026}, the \emph{deep-nesting walk} $U(s_0, m, 1)$ has fundamental period
+$P = 4 \Pi_0 = 4(m+1)2^{s_0}$ (\lean{dnpPeriod}) consisting of four level-$0$ strokes (forward, backward, backward,
+forward). Recursively, for $\kappa < m$, a level-$\kappa$ stroke of duration $\Pi_\kappa = R_\kappa + 2 \Pi_{\kappa+1}$
+executes a plain segment of $R_\kappa$ unit steps, followed by a level-$(\kappa+1)$ \emph{back stroke} of duration
+$\Pi_{\kappa+1}$ reversing direction across those $R_\kappa$ cells (making an \emph{apex} turn at offset $R_\kappa$),
+followed by a level-$(\kappa+1)$ \emph{forward stroke} of duration $\Pi_{\kappa+1}$ restoring the original direction (making
+a \emph{valley} turn at offset $R_\kappa + \Pi_{\kappa+1}$); at the base level $\kappa = m$, a stroke is simply $R_m =
+2^{s_0 - m}$ plain steps. On a single copy of $U(s_0, m, 1)$ (and on $\DNP(s_0, m)$ at any shift), the turn counter
+of~\cite[Section~5.2, Theorem~5.2 and Corollary~5.5]{EighthPaper2026} cuts hop-depth to $2^{m + O(1)}/\eps$ at edge density
+$\eps$. The \emph{deep-nesting pair} $\DNP(s_0, m)$ runs head~$1$ on $U(s_0, m, 1)$ and head~$2$ on a time-shifted copy
+$t \mapsto U(s_0, m, 1)((t + \xi) \bmod P)$ over a common tape.
+
+\subsection{Formal status of the results}\label{sec:prelim-lean}
+
+Every numbered theorem, proposition, lemma, and corollary introduced in \cref{sec:reciprocity,sec:crux,sec:dnp} has a
+complete, kernel-checked proof in the accompanying Lean~4 library \leanfile{lean/DirectedReciprocity/} (Lean and Mathlib
+version \texttt{v4.34.1}). Immediately below each numbered statement, a header line
+\[
+  \text{\textsf{Lean:} \leanname{declaration_1}, \leanname{declaration_2} \hfill [\leanname{Module.lean}]}
+\]
+names the exact Lean declarations (relative to the namespace \texttt{DirectedReciprocity}) and source file establishing
+that result. Each new result is followed by an \emph{Outline of the formal proof} explaining the mathematical structure of
+the machine-checked proof faithfully. As verified automatically by \leanfile{lean/PaperAxioms.lean}
+(\cref{app:index,app:verify}), every cited declaration of our library---and every declaration of earlier libraries named in
+the text---depends only on the three standard Lean axioms \texttt{propext}, \texttt{Classical.choice}, and
+\texttt{Quot.sound}; no file uses \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, \texttt{unsafe}, or any custom
+\texttt{axiom}. Finite case checks in \cref{sec:reciprocity} are discharged inside Lean's kernel via \texttt{decide},
+\texttt{decide +kernel}, or \texttt{decide +revert}. The standalone Python script \leanfile{tools/reproduce_numerics.py} is
+used solely to cross-check illustrative numerical remarks in \cref{rem:deg4-numerics,rem:dnp-numerics}, never inside any
+proof.

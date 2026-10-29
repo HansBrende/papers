@@ -1,0 +1,197 @@
+\section{Introduction}\label{sec:intro}
+
+Does there exist a deterministic multitape Turing machine that transposes every $d \times d$ matrix of $b(d)$-bit entries,
+where $b(d) = \max(1, \clog{d})$ and $L = d^2 b(d)$ is the bit-length of the input, in time $O(L)$? Following the earlier
+papers of this series~\cite{FirstPaper2026}, we write~(T) for this assertion:
+\begin{quote}
+(T)\quad There exists a deterministic multitape Turing machine---with a binary read-only two-way input tape, a binary
+write-only one-way output tape, and a fixed finite number of two-way read/write work tapes over a fixed finite work
+alphabet---that transposes $d \times d$ matrices of $b(d)$-bit entries in $O(d^2 b(d))$ steps.
+\end{quote}
+By a theorem of Harvey and van der Hoeven~\cite{HvdH2025}, $N$-bit integer multiplication reduces in linear time on a
+multitape Turing machine to matrix transposition; hence refuting~(T) would establish an $\Omega(N \log N)$ lower bound
+for deterministic off-line multitape integer multiplication. Whether~(T) holds remains open.
+
+\subsection{Context in the series}
+
+The fourth paper of this series~\cite{FourthPaper2026} reduced the impossibility of \emph{oblivious} linear-time
+transposers to the conjunction of two combinatorial statements that make no mention of Turing machine states:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{The trajectory cut problem} ($\TCP(k)$): in every $k$-head walk dependency DAG of length $T$, deleting at
+  most $\eps T$ edges reduces the longest directed path to length $O_{\eps,k}(1)$.
+\item \emph{The coding crux}: every storage code over a finite alphabet on a transitive-tournament-free (TT-free)
+  directed recovery relation of bounded degree has asymptotic rate bounded away from~$1$---and, in its sharpest form
+  (Conjecture~P of~\cite{SeventhPaper2026}), rate at most~$1/2$ whenever every vertex has in-degree at most~$3$.
+\end{enumerate}
+Subsequent papers sharpened both halves of this program while exposing concrete obstructions to naive extensions:
+\begin{itemize}
+\item On the \emph{directed coding} side, the fourth paper~\cite{FourthPaper2026} proved the half-rate bound for
+  \emph{scalar linear} codes on the mixed class $\ClassS$ of TT-free relations with maximum in-degree~$3$ in which every
+  vertex of in-degree~$3$ has only reciprocal children (its Theorem~S). The seventh paper~\cite{SeventhPaper2026}
+  introduced the nested elimination engine over general polymatroids (removing linearity altogether), proved the
+  all-code half-rate bound on all undirected subcubic triangle-free graphs (its Theorem~U3), and constructed the
+  $15$-vertex TT-free orientation $\Ex$ of maximum in-degree~$3$ on which minimum-core peeling fails. Within item~2
+  of~\cite[Section~9.2]{SeventhPaper2026}, alongside Conjecture~P (\cite[Conjecture~9.1]{SeventhPaper2026}, for general
+  in-degree at most~$3$), it singled out as an intermediate target whether the fourth paper's Theorem~S lifts from scalar
+  linear codes to \emph{all} codes on the entire class~$\ClassS$, and noted two unformalized impossibility
+  claims~\cite[Remarks~7.3 and~7.5; Section~9.2, item~6]{SeventhPaper2026}: that $\Ex$ admits no piece certificate on its
+  unique minimum nonempty core over any number of records, and that the Petersen graph admits no global elimination
+  certificate over any number of records.
+\item On the \emph{degree-$4$ linear coding} side, because Barg and Z\'emor~\cite{BargZemor2022} constructed binary
+  linear codes of rate strictly exceeding~$1/2$ on triangle-free $4$-regular Cayley graphs, no unrestricted degree-$4$
+  half-rate theorem can hold. The eighth paper~\cite{EighthPaper2026} isolated the exceptional set $H$ of degree-$4$
+  rows in a unit-diagonal check matrix $M = I + B$ on a triangle-free graph of maximum degree~$4$ and proved $\dim\ker M
+  \le \card{V}/2$ over every field under two hypotheses on $H$: (S1) no two vertices of $H$ share a common neighbor, and
+  (S2) no two vertices of $H$ are adjacent. Whether~(S2) is genuinely needed or an artifact of the induction was left
+  open~\cite[Section~8.2, Remark~8.8; Section~10, Problem~10.4]{EighthPaper2026}.
+\item On the \emph{head-motion and deep-nesting} side, the eighth paper~\cite{EighthPaper2026} proved $\TCP(k)$ for all
+  schedules of bounded nesting load (its Theorem~F) and isolated the $2$-head \emph{deep-nesting pair} $\DNP(s_0, m)$,
+  running two shifted copies of the recursive nested walk $U(s_0, m, 1)$, as the sharpest open case of $\TCP(2)$. On a
+  single copy of $U(s_0, m, 1)$, the eighth paper's turn counter~\cite[Section~5.2, Theorem~5.2 and Corollary~5.5]{EighthPaper2026}
+  (built on Lemma~Zq of~\cite[Section~5.5, Lemma~5.15]{FourthPaper2026}) cuts depth to $2^{m + O(1)}/\eps$; the eighth
+  paper introduced block-cancellation labels $B(a, K)$ to probe whether two heads can cancel turn-counter drift across
+  scales, stated Conjecture~A$''$~\cite[Section~5.6, Conjecture~5.24]{EighthPaper2026}---that at some odd shift, every
+  mod-$q$ label of cost at most $n_{\mathrm{h}}/8$ on the $r$-fold cover has at most $C\log_2 q + C' + \eta(m+1)$ doubly
+  $\theta_0$-served levels ($\eta < 1$)---and at the end of~\cite[Section~5.6]{EighthPaper2026} identified two open steps
+  for proving Conjecture~A$''$ even on block-label pairs: (1)~\emph{``a bound on $\abs{F}$ on the straddling hops, or a
+  version of Theorem~V that counts the window directly''}, and (2)~\emph{``at one fixed shift for all coarse classes,
+  equidistribution of a class's apex centres relative to the other head's canceller valleys of level about
+  $k + \log_2(m - k)$, a mixed-radix carry problem''}. Meanwhile, the ninth
+  paper~\cite{NinthPaper2026} developed an independent bypass of $\TCP$ via complete source covers and return-profile
+  barriers on restricted return geometries, leaving open the unrestricted adaptive regime.
+\end{itemize}
+
+\subsection{Summary of main results}
+
+This paper resolves the intermediate directed coding target of~\cite[Section~9.2, item~2]{SeventhPaper2026} (while
+Conjecture~P, its Conjecture~9.1, remains open), removes hypothesis~(S2) from Theorem~SH of~\cite{EighthPaper2026}, and
+proves and formalizes structural stroke, straddle, and super-Fibonacci laws together with three-regime failure witnesses for
+bounded-range block-label pairs on the deep-nesting walk. Every new numbered result in the paper is verified in Lean~4 using
+only the three standard foundational axioms (\cref{sec:prelim-lean,app:verify}).
+
+\paragraph{1.\ Directed reciprocity, digon-cycle dichotomy, and the all-code Theorem~S$^*$ (\cref{sec:reciprocity}).}
+We begin by recasting the stateful recursive predicate \lean{HalfRate.RelCharged} of~\cite{SeventhPaper2026} in purely
+positional terms (\cref{prop:PN}): an elimination list $l = [v_0, \dots, v_{k-1}]$ with records $\{P_r\}_{r \in I}$,
+supplying-record map $b$, and optional outside-parent map $\mathrm{par}$ is relationally nested from empty initial state
+if and only if every step covers its active parents from the revealed prefix $S_j$, its supplying record $P_{b(v_j)}$,
+and its optional outside parent, and whenever $j < j'$ share the same outside parent $w$, $P_{b(v_j)} \subseteq S_{j'}
+\cup P_{b(v_{j'})}$ (for disjoint records, either $b(v_j) = b(v_{j'})$ or all of $P_{b(v_j)}$ is revealed before step
+$j'$). As an immediate invariant on any piece certificate, no two vertices joined by a reciprocal pair (a \emph{digon})
+can belong to the same own record $P_{a(u)}$, so every connected digon component on at least two vertices requires
+$m \ge 2$ records.
+
+We then classify piece certificates on chordless digon cycles $C_L$ ($L \ge 4$) in TT-free relations where each cycle
+vertex has at most one active parent outside $U \cup C_L$ (\cref{prop:CS,thm:DC}): an $m$-record piece certificate
+exists on $C_L$ for \emph{some} $m \ge 1$ if and only if the outside parents do not form a \emph{stride-$3$ hub triple},
+that is, $3 \mid L$ together with outside vertices $w_0, w_1, w_2 \notin U \cup C_L$ such that $w_{i \bmod 3}$ is an
+active parent of cycle vertex $i$ for every $0 \le i < L$. When the stride-$3$ hub obstruction is absent, $m = 2$
+records suffice for $L = 4$ and $m = L + 1$ records suffice via two-sided arc expansion for every $L \ge 5$ (while on
+pure stride-$s$ hub cores $C_{sk}$, $m = 2$ suffices for even $s \ge 4$ and $m = 3$ suffices for every $s \ge 4$); when
+the stride-$3$ hub triple is present, a positional locking invariant rules out piece certificates across \emph{all}
+$m \ge 1$. Specializing to the unique minimum nonempty core $\{0,\dots,5\}$ of $\Ex$ (\cref{cor:x15}) and to generalized
+Petersen graphs (\cref{prop:GP}) resolves both parts of~\cite[Remarks~7.3 and~7.5; Section~9.2, Problem~6]{SeventhPaper2026}
+in Lean~4 and reveals
+a non-monotone global-certificate record hierarchy: $\GP(5,2)$ (the Petersen graph) requires $\infty$ records globally,
+$\GP(7,2)$ requires exactly $4$ records, and $\GP(9,2)$ drops back to $3$ records.
+
+Using these cycle tools, we prove \textbf{Theorem~S$^*$} (\cref{thm:Sstar}): every relation $N$ in the full class
+$\ClassS$ of Theorem~S of~\cite{FourthPaper2026} admits a certified piece decomposition (\lean{HalfRate.Decomp}), so
+every valid polymatroid $h$ on $V$ obeys $2 h(V) \le \sum_{v \in V} h(\{v\})$ and every
+storage code $C \subseteq \alpha^V$ (linear or nonlinear, over any finite alphabet $\alpha$) satisfies
+$\card{C}^2 \le \card{\alpha}^{\card{V}}$. The key mechanism overcoming embedded stride-$3$ hub cycles inside an
+in-closed strongly connected component $S$ of $\ClassS$ is \emph{hub augmentation}
+(\lean{exists_piece_of_scc_classS}): if $S$ has no minimal chordal digon arc and a shortest digon cycle $C_L \subseteq S$
+is obstructed as a standalone piece, then $C_L$ is a stride-$3$ hub cycle with hubs $w_0, w_1, w_2 \in S \setminus C_L$;
+strong connectivity forces an outgoing arc from some $u_{i_0} \in C_L$ to $S \setminus C_L$, which $\ClassS$ reciprocates
+into a digon between $u_{i_0}$ and its hub $w_{r_0}$ while girth minimality forces $w_{r_0}$ to have in-degree~$2$ and no
+other child on $C_L$, so adjoining $w_{r_0}$ yields an $(L+2)$-record sequential nested piece certificate on
+$C_L \cup \{w_{r_0}\}$. We deduce a directed vertex-cut and isolated-outside-vertex barrier inequality for all $\ClassS$
+relations (\cref{cor:Bstar}) and construct an explicit $21$-vertex strongly connected triangle-free witness $\Gto \in \ClassS$
+(\cref{prop:G21}) on which low-in-degree peeling, one-way cycle peeling, and shortest-digon-cycle rules all fail
+simultaneously, while Theorem~S$^*$ certifies rate at most~$1/2$.
+
+\paragraph{2.\ Scalar linear codes at degree~$4$ without heavy separation (\cref{sec:crux}).}
+In \cref{sec:crux} we prove \textbf{Theorem~SH$^*$} (\cref{thm:SHstar}): over any field $F$, if $M \in F^{V \times V}$
+has unit diagonal, no recovery triangle, and satisfies $(\star 4)$ at every vertex (for instance when $M$ is supported in a
+triangle-free simple graph $G = (V, E)$ of maximum degree~$4$), and the heavy set $H_M$ of vertices violating $(\star\star)$
+either has size at most~$2$ or satisfies~(S1) alone---no vertex has two distinct heavy recovery neighbors (in graph form,
+no two distinct vertices of $H_M$ share a common neighbor in~$G$)---then $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$
+(and likewise under the same hypotheses on $M^\T$). Hypothesis~(S2) of~\cite{EighthPaper2026} is eliminated
+completely: $G[H_M]$ may contain arbitrary induced matchings of adjacent degree-$4$ vertices. The proof replaces Phase~E
+of~\cite{EighthPaper2026} with a unified final count (\lean{F3_star}): under~(S1) alone, a pending triple of a heavy vertex
+$h$ contains at most one heavy member $g$, leaving two light members $u_1, u_2$ whose shared pending pair $\{a, b\}$ and
+neutral dimension drop contradict linear independence uniformly for all $\card{W \setminus X_0} \ge 3$, while in minimal
+counterexamples any degree-$4$ heavy vertex still retains at least three light neighbors under~(S1). Combining
+Theorem~SH$^*$ with Tutte--Berge deficiency yields \textbf{Corollary~M$^*$} (\cref{cor:Mstar}), improving the eighth
+paper's distance-$3$ packing invariant $\rho_3(G, H_M)$ to the common-neighbor-free packing invariant
+$\rhom(G, H_M) \ge \rho_3(G, H_M)$.
+
+\paragraph{3.\ Deep-nesting stroke laws, super-Fibonacci unwrapping, and bounded-range block pairs (\cref{sec:dnp}).}
+In \cref{sec:dnp} we formalize the algebraic and combinatorial theory of turn-supported periodic labels modulo~$q$ on the
+deep-nesting walk $U(s_0, m, 1)$ and on the deep-nesting pair $\DNP(s_0, m)$ (thereby also providing Lean~4
+counterparts for the unformalized stroke, band, block and straddle lemmas of~\cite[Section~5]{EighthPaper2026}):
+\begin{itemize}
+\item \textbf{Proposition~SL} (\cref{prop:SL}) establishes the exact stroke decomposition bijection in $[0, \Pi_0)$,
+  proves that under fair binary branch choices the stopping depth before the nested walk visits~$m$ has distribution
+  $2^{-(s+1)}$ on $\{0,\dots,m-1\}$ independently of directional parity, and constructs an $O(m)$ recursive turn-potential
+  evaluator \lean{evalPhiRec} proved equal to cumulative turn jumps over a full period $P = 4 \Pi_0$.
+\item \textbf{Theorem~V$^*$} (\cref{thm:Vstar}) proves an $m$-free mod-$q$ straddle involution bound: whenever a level-$k$
+  apex hop of one head straddles a level-$\kappa$ V-turn of the other head ($\Pi_\kappa \le R_k$), the paired half-widths
+  $(d, \Pi_\kappa - d)$ cancel the nested potential identically over $\Z$, forcing their reduced mod-$q$ errors to sum to
+  at least $(2 A' + 2(c_{\sigf}(\kappa) - c_{\sigb}(\kappa))) \bmod q$; moreover, summing the straddle set size over
+  centers of either fixed parity across a $2\Pi_\kappa$-window yields the \emph{exact} triangular identity
+  $(\Pi_\kappa / 2)^2 = \Pi_\kappa^2 / 4$.
+\item \textbf{Theorem~LU} (\cref{thm:LU}) proves that for any level-uniform turn-supported label modulo $q \ge 3$, if
+  $s \ge 1$ consecutive levels have single-head reduced apex and valley band-$0,1,2$ errors at most $q/8$, the modular
+  band relation unwraps over $\Z$ with zero wrap-around and forces the super-Fibonacci inequality
+  $b_0(\ell) \ge b_0(\ell+1) + b_0(\ell+2) + 4$, whence $32(F_s - 1) \le q$ and $s \le 2\lfloor \log_2 q \rfloor + 2$.
+\item \textbf{Proposition~OC} (\cref{prop:OC}) proves exact forward and backward block-cancellation bounds for $B(a, K)$,
+  establishes strictly positive mean drift $+(a(K+1)+1)/2$ per $(a+1)$-level block across all $2^{a+1}$ stroke-direction
+  choices, and shows that the pure binary clock $B(\infty, 0)$ fails modulo every Mersenne number $q = 2^B - 1$ ($B \ge 2$)
+  with straddle residue $q - 1$ at every third/periodic scale $B \mid (m - \kappa + 2)$.
+\item \textbf{Theorem~A} (\cref{thm:A}) combines these ingredients for block-label pairs $(B(a_1, K_1),\allowbreak B(a_2, K_2))$ of
+  bounded block length ($1 \le a_1, a_2$): Theorem~V$^*$ completely bypasses open step~(1) of~\cite[Section~5.6]{EighthPaper2026}
+  for level-uniform labels (paired straddle sums need no bound on $\abs{F}$ and no window assumption on~$q$), while
+  \lean{exists_oddShift_coarse_straddle} establishes a one-direction $\tfrac{1}{16}$-fraction form of step~(2) (weaker than
+  the all-coarse-classes hypothesis of~\cite[Proposition~5.23]{EighthPaper2026}, which is obstructed by prefix lockstep of
+  nested V-apices, \lean{apexOffset_diff_indep_prefix}). Whenever $m < s_0$ and
+  $4(\lfloor \log_2(m+1)\rfloor + 1 + \max(a_1, a_2)) \le m + 1$, Theorem~A produces two fixed odd shifts $\xi_1, \xi_2$
+  (a single odd shift $\xi$ for symmetric pairs $a_1 = a_2, K_1 = K_2$) giving three-regime failure witnesses on
+  $\Omega(m)$ levels across \emph{every} $K_1, K_2 \in \Z$ and \emph{every} modulus $q \ge 3$, with \emph{zero} $\log q$
+  loss: blind single-head error witnesses in Regimes~1 and~2, and two-head coarse straddle witnesses in Regime~3. We also
+  record the four remaining steps separating these witnesses from Conjecture~A$''$ (\cref{rem:scope-A}).
+\end{itemize}
+
+\subsection{Related work}
+
+The equivalence between locally recoverable storage capacity on a digraph $G$, index coding broadcast rate on the
+complement, and the guessing number $\gn(G) = \sup_{\card{\alpha} \ge 2} \sup_{C} \log_{\card{\alpha}} \card{C}$ (over
+locally recoverable codes $C \subseteq \alpha^V$,~\cite{Riis2007,SeventhPaper2026}) goes back to Birk and Kol~\cite{BirkKol2006},
+Riis~\cite{Riis2007}, Bar-Yossef, Birk, Jayram and Kol~\cite{BBJK2011}, Gadouleau and Riis~\cite{GadouleauRiis2011}, and
+Mazumdar~\cite{Mazumdar2014}. On undirected triangle-free graphs, Christofides and Markstr\"om~\cite{ChristofidesMarkstrom2011}
+bounded the guessing number by the fractional matching number (giving rate~$1/2$ for all undirected triangle-free graphs
+only on symmetric recovery neighborhoods), Cameron, Dang and Riis~\cite{CameronDangRiis2016} classified high-guessing
+triangle-free graphs in low degree, Atkins, Rombach and Skerman~\cite{AtkinsRombachSkerman2017} determined guessing
+numbers of odd cycles, and Mazumdar, McGregor and Vorotnikova~\cite{MMV2019} proved half-rate bounds under sparse global
+average degree, whereas Barg and Z\'emor~\cite{BargZemor2022} and Barg, Schwartz and Yohananov~\cite{BSY2024} constructed
+triangle-free coset and Cayley storage codes beating rate~$1/2$ at degree~$4$ and approaching unit rate as degree grows.
+On directed graphs without undirected symmetry, undirected fractional-matching duality breaks down because of directed
+cycles of pure one-way arcs; Theorem~S$^*$ (\cref{thm:Sstar}) is, to our knowledge, the first all-code half-rate theorem
+covering a class of TT-free digraphs that simultaneously permits full subcubic undirected reciprocity, unbounded
+directed one-way cycles, and mixed components combining both.
+
+On the complexity side, reductions from network coding and circuit depth to Valiant's edge-removal problem go back to
+Valiant~\cite{Valiant1977}; see~\cite{FirstPaper2026,FourthPaper2026,EighthPaper2026,NinthPaper2026} for a detailed
+account of the connections between $\TCP(k)$, monotone and non-monotone depth reduction, matrix rigidity, and source
+covers.
+
+\subsection{Organization and formal reading guide}
+
+\Cref{sec:prelim} fixes notation from the earlier papers of the series and explains our Lean~4 verification conventions
+(\cref{sec:prelim-lean}). \Cref{sec:reciprocity} develops positional nestedness, the digon-cycle dichotomy, the
+generalized Petersen record hierarchy, and Theorem~S$^*$. \Cref{sec:crux} proves Theorem~SH$^*$ and Corollary~M$^*$.
+\Cref{sec:dnp} proves Proposition~SL, Theorem~V$^*$, Theorem~LU, Proposition~OC, and Theorem~A on the deep-nesting walk
+and pair. \Cref{sec:construction} synthesizes what any hypothetical linear-time transposer must look like in light of
+these bounds, and \cref{sec:open} collects the sharpened open problems. \Cref{app:index} indexes every Lean declaration
+cited in the paper, and \Cref{app:verify} gives exact instructions for building the library, checking axioms, and
+reproducing the finite numerical examples.

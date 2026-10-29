@@ -1,0 +1,203 @@
+\section{Scalar Linear Codes at Degree~4 Without Heavy Separation}\label{sec:crux}
+
+On $2$-head tape computations whose dependency DAG is cut to bounded depth, vertices with up to four active parents arise
+naturally whenever two heads revisit cells across coupled scales~\cite[Section~8]{EighthPaper2026}. Over an arbitrary field
+$F$, let $M \in F^{V \times V}$ have unit diagonal ($M_{v,v} = 1$) and no recovery triangle: there are no three distinct
+vertices $a, b, c \in V$ with $b \in N_M(a)$, $c \in N_M(b)$ and $c \in N_M(a)$, where $N_M(v) = \{u \ne v : M_{v,u} \ne 0\}$
+(\lean{MotionDepthCodes.ThmSHyp}). Recall from \cref{sec:prelim} that $v \in V$ is \emph{light} if it satisfies $(\star\star)$
+(\lean{MotionDepthCodes.Star}: either $\card{N_M(v)} \le 2$, or $\card{N_M(v)} = 3$ and $v \in N_M(u) \implies u \in N_M(v)$)
+and \emph{heavy} otherwise, with heavy set $H_M = \{v \in V : \neg(\star\star)(v)\}$ (\lean{BoundedNesting.heavyVerts}), and
+that $(\star 4)$ (\lean{BoundedNesting.Star4}) requires $\card{N_M(v)} \le 3$, or $\card{N_M(v)} = 4$ with reciprocal
+outgoing recovery arcs.
+
+In~\cite[Section~8.2, Theorem~8.3]{EighthPaper2026}, the half-rate bound $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$ was
+proved under $(\star 4)$ assuming either $\card{H_M} \le 2$ or \emph{both}~(S1) (\lean{BoundedNesting.SepS1}: no $v \in V$
+has two distinct heavy recovery neighbors $p, q \in N_M(v) \cap H_M$) and~(S2) (\lean{BoundedNesting.SepS2}: no $h \in H_M$
+has any heavy recovery neighbor in $N_M(h) \cap H_M$). On an undirected triangle-free support graph $G = (V, E)$ of maximum
+degree~$4$, combining~(S1) and~(S2) forced heavy vertices to lie at graph distance at least~$3$ pairwise
+(\lean{BoundedNesting.Far3}), ruling out adjacent heavy pairs. Notice, however, that on a triangle-free graph $G$, two
+adjacent vertices $u, v \in H_M$ automatically share no common neighbor in~$G$. It is therefore natural to ask---as
+discussed in~\cite[Section~8.2, Remark~8.8; Section~10, Problem~10.4]{EighthPaper2026}---whether~(S2) is merely an artifact
+of the proof.
+
+We prove that~(S2) can be dropped altogether, both in the directed matrix setting and in the undirected graph setting, and
+deduce a strictly stronger matching-deficiency bound.
+
+\subsection{Theorem~SH\texorpdfstring{$^*$}{*}: eliminating \texorpdfstring{(S2)}{(S2)}}\label{sec:crux-shstar}
+
+For a subset $W \subseteq V$, write $\mathrm{rs}_W(v) = N_M(v) \cap W$ (\lean{BoundedNesting.rs}), let $(\star\star)_W$,
+$(\star 4)_W$, and $H_{M,W}$ (\lean{BoundedNesting.StarOn}, \lean{BoundedNesting.Star4On}, \lean{BoundedNesting.heavySet})
+be the restrictions of $(\star\star)$, $(\star 4)$, and $H_M$ to $W$, and write $\mathrm{S1}_W$ (\lean{BoundedNesting.S1On})
+for the condition that no $v \in W$ has two distinct recovery neighbors in $\mathrm{rs}_W(v) \cap H_{M,W}$. Define
+\lean{SHStarOn}$(M, W)$ to hold when every $v \in W$ satisfies $(\star 4)_W$ and either $\card{H_{M,W}} \le 2$ or
+$\mathrm{S1}_W$ holds. For an undirected graph $G = (V, E)$, write \lean{NoCommonNbhd}$(G, u, v)$ if there is no $w \in V$
+adjacent in $G$ to both $u$ and~$v$.
+
+\begin{theorem}[Half-rate kernel bound under (S1) alone]\label{thm:SHstar}
+\formal{TheoremSHStar.lean}{SHStarOn, F3_star, odd_state_star, MinCE.false_SHStar, finrank_subCode_le_half_SHStar, theoremSHStar, theoremSHStar_transpose, NoCommonNbhd, theoremSHStar_graph}
+Let $F$ be a field, $V$ a finite vertex set, and $M \in F^{V \times V}$.
+\begin{enumerate}
+\item \emph{(Hereditary subcode form.)} Suppose $M$ satisfies \lean{MotionDepthCodes.ThmSHyp} (unit diagonal and no recovery
+  triangle). For every $W \subseteq V$ satisfying \lean{SHStarOn}$(M, W)$, the restricted code $\mathrm{subCode}_M(W) =
+  \{x \in F^V : \mathrm{supp}(x) \subseteq W \text{ and } (Mx)|_W = 0\}$ satisfies
+  \[
+    \dim_F \mathrm{subCode}_M(W) \le \lfloor \card{W} / 2 \rfloor.
+  \]
+\item \emph{(Global matrix and transpose forms.)} Suppose $M$ satisfies \lean{MotionDepthCodes.ThmSHyp}. If every $v \in V$
+  satisfies $(\star 4)$ and either $\card{H_M} \le 2$ or \lean{BoundedNesting.SepS1}$(M)$ holds, then
+  \[
+    \dim_F \ker M \le \lfloor \card{V} / 2 \rfloor;
+  \]
+  the same bound holds if $M^\T$ satisfies $(\star 4)$ everywhere and either $\card{H_{M^\T}} \le 2$ or
+  \lean{BoundedNesting.SepS1}$(M^\T)$ holds.
+\item \emph{(Graph form.)} Let $G = (V, E)$ be a triangle-free simple graph of maximum degree at most~$4$, and suppose
+  $M_{v,v} = 1$ for all $v \in V$ and $M_{v,u} = 0$ whenever $v \ne u$ and $\{v, u\} \notin E$. If either $\card{H_M} \le 2$
+  or every pair of distinct $u, v \in H_M$ satisfies \lean{NoCommonNbhd}$(G, u, v)$, then
+  \[
+    \rank_F M \ge \lceil \card{V} / 2 \rceil \qquad\text{and}\qquad \dim_F \ker M \le \lfloor \card{V} / 2 \rfloor.
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+First observe that \lean{SHStarOn}$(M, W)$ is hereditary under passing to subsets $W' \subseteq W$ (\lean{SHStarOn.mono}),
+since $(\star 4)_{W'}$ and membership in $H_{M,W'}$ are monotone in~$W$. Thus~(1) (\lean{finrank_subCode_le_half_SHStar})
+reduces by strong induction on $\card{W}$ to ruling out a minimal counterexample (\lean{BoundedNesting.MinCE} $M\ W$) on
+which \lean{SHStarOn}$(M, W)$ holds (\lean{MinCE.false_SHStar}). Recall from~\cite[Section~8.2]{EighthPaper2026} that a
+minimal counterexample $W$ has odd cardinality $\card{W} = 2k + 1$, $\mathrm{cdim}_W(\emptyset) = k + 1$, every proper
+subset $W' \subsetneq W$ satisfies $\dim_F \mathrm{subCode}_M(W') \le \lfloor \card{W'}/2 \rfloor$, and every $v \in W$ has
+$\card{\mathrm{rs}_W(v)} \ge 2$. For a state $X \subseteq W$ from start vertex $v_0 \in X$, write
+$\mathrm{pend}_W(X, u) = \mathrm{rs}_W(u) \setminus X$ and $\mathrm{cdim}_W(X) = \dim_F(\mathrm{subCode}_M(W) \cap
+\mathrm{zeroOn}(X))$.
+
+Where did~\cite{EighthPaper2026} use~(S2)? Precisely in two places: Phase~E (when an odd state $Z$ expands along a heavy
+vertex $h \in Z$ with $\card{\mathrm{pend}_W(Z, h)} = 3$) and Case~3 of the starting split (when choosing a light neighbor
+$v_0$ of a heavy vertex $h$). Notice that Phases~F1 and~F2 of~\cite{EighthPaper2026} (\lean{BoundedNesting.F1},
+\lean{BoundedNesting.F2}) already operate under \lean{BoundedNesting.F2Mode}, which requires only either at most one
+remaining non-closed heavy vertex or $\mathrm{S1}_W$.
+
+\emph{Step~1: Unified Phase~E (\lean{F3_star}).} Suppose $Z \subseteq W$ has odd size, $h \in Z$, $P = \mathrm{pend}_W(Z, h)$
+has $\card{P} = 3$, $X_0 = Z \cup P$ is an even good state with neutral dimension drop $\mathrm{cdim}_W(Z) = 2 +
+\mathrm{cdim}_W(X_0)$, and \emph{at most one} member of $P$ violates $(\star\star)_W$. (When $\mathrm{S1}_W$ holds, $P
+\subseteq \mathrm{rs}_W(h)$ cannot contain two distinct heavy vertices by $\mathrm{S1}_W$ applied at $h$ itself; when
+$\card{H_{M,W}} \le 2$, $h \in Z \cap H_{M,W}$ is already consumed, leaving at most one heavy vertex outside~$Z$.) By
+recovery-triangle-freeness on $h$, $P$ is independent in $\mathrm{rs}_W$, and immediate closure (\lean{BoundedNesting.imm_closure})
+ensures $\mathrm{pend}_W(X_0, t) \ne \emptyset$ for all $t \in P$.
+\begin{itemize}
+\item If $\card{W \setminus X_0} = 1$, say $W \setminus X_0 = \{w\}$, then every $t \in P$ has $\mathrm{pend}_W(X_0, t) =
+  \{w\}$; taking a test vector $x \in \mathrm{subCode}_M(W)$ vanishing on $Z \cup \{t_1\}$ with $x_{t_2} \ne 0$
+  (\lean{BoundedNesting.test_vec}), row $t_1$ forces $x_w = 0$ and row $t_2$ then forces $x_{t_2} = 0$, contradiction.
+\item Suppose $\card{W \setminus X_0} \ge 3$ (recall $\card{W} - \card{X_0}$ is odd). Every light $t \in P$ has
+  $\card{\mathrm{pend}_W(X_0, t)} \le 2$ (and $\ne 1$ by Phase~F1), hence $\card{\mathrm{pend}_W(X_0, t)} = 2$. If all three
+  members of $P$ are light, Phase~F2 equates their $2$-element pending sets to a common pair $\{a, b\}$, so $P \cup
+  \bigcup_{t \in P} \mathrm{rs}_W(t) \subseteq P \cup \{h, a, b\}$ has size at most~$6 = 2 \card{P}$, violating Hall's
+  count~\cite{Hall1935} on minimal counterexamples (\lean{BoundedNesting.MinCE.hall_count}).
+\item Otherwise $P = \{u_1, u_2, g\}$ where $g$ is the unique heavy member of $P$ and $u_1, u_2$ are light. Both $u_1$ and
+  $u_2$ have $2$-element pending sets outside $X_0$, which coincide by Phase~F2: $\mathrm{pend}_W(X_0, u_1) =
+  \mathrm{pend}_W(X_0, u_2) = \{a, b\}$ ($a \ne b$). Making the neutral move from $X_0$ along $u_1$ gives the exact drop
+  $\mathrm{cdim}_W(X_0) = 1 + \mathrm{cdim}_W(X_0 \cup \{a, b\})$. If every $y \in \mathrm{subCode}_M(W) \cap
+  \mathrm{zeroOn}(X_0)$ had $y_a = 0$, row $u_1$ ($M_{u_1, a} y_a + M_{u_1, b} y_b = 0$ with $M_{u_1, b} \ne 0$) would also
+  force $y_b = 0$, contradicting $\mathrm{cdim}_W(X_0) > \mathrm{cdim}_W(X_0 \cup \{a, b\})$. Thus there exists $y \in
+  \mathrm{subCode}_M(W) \cap \mathrm{zeroOn}(X_0)$ with $y_a \ne 0$ satisfying $M_{u_i, a} y_a + M_{u_i, b} y_b = 0$ for
+  $i = 1, 2$. Meanwhile, \lean{BoundedNesting.test_vec} on $(u_2, g)$ gives $x \in \mathrm{subCode}_M(W)$ vanishing on
+  $Z \cup \{u_1\}$ with $x_{u_2} \ne 0$, so $M_{u_1, a} x_a + M_{u_1, b} x_b = 0$ while $x_{u_2} + M_{u_2, a} x_a +
+  M_{u_2, b} x_b = 0$, contradicting proportional two-row elimination (\lean{BoundedNesting.two_rows_zero}).
+\end{itemize}
+
+\emph{Step~2: Odd-state lemma and minimal counterexample exclusion (\lean{odd_state_star}, \lean{MinCE.false_SHStar}).}
+Strong induction on the remaining non-closed heavy count $t = \card{\mathrm{NC}_W(X)}$ and $\card{W \setminus X}$ proves
+\lean{BoundedNesting.OSAt}$(M, W, v_0, t)$ for all $t$: an odd state $X \subsetneq W$ has no pending singleton, preserves
+parity under pending pairs, and on a pending triple $h \in X$ drops $\card{\mathrm{NC}_W}$ and hits contradiction by
+\lean{F3_star}. Finally, on $W$ itself: if some $v_0 \in W$ has $\card{\mathrm{rs}_W(v_0)} = 2$ (Case~1), $X_0 = \{v_0\}
+\cup \mathrm{rs}_W(v_0)$ is an odd state of size~$3$; if some heavy $h \in W$ has $\card{\mathrm{rs}_W(h)} = 3$ (Case~2),
+expanding $\{h\}$ invokes \lean{F3_star} directly; otherwise (Case~3), every light vertex has degree~$3$, every heavy
+vertex has degree~$4$, and $(\star\star)_W$ plus $(\star 4)_W$ make $\mathrm{rs}_W$ a symmetric simple graph on $W$. Since
+$\card{W}$ is odd and the number of odd-degree (light) vertices in any simple graph is even, $\card{H_{M,W}}$ is odd
+(hence $\ge 1$, and $= 1$ whenever $\card{H_{M,W}} \le 2$, so $\mathrm{S1}_W$ holds unconditionally). Picking $h \in
+H_{M,W}$, $\mathrm{S1}_W$ at $h$ allows at most one heavy neighbor among the four elements of $\mathrm{rs}_W(h)$, leaving
+at least three light neighbors $v_0 \in \mathrm{rs}_W(h)$. Starting at $v_0$, $\mathrm{S1}_W$ at $v_0$ guarantees that the
+other two neighbors $s_1, s_2 \in \mathrm{rs}_W(v_0) \setminus \{h\}$ are light, and the exact Case~3 closure of
+\cite{EighthPaper2026} contradicts \lean{BoundedNesting.F1} or \lean{odd_state_star}.
+
+For~(2) and~(3), global instantiation $W = V$ gives \lean{theoremSHStar}; transpose invariance $\dim_F \ker M^\T =
+\dim_F \ker M$ gives \lean{theoremSHStar_transpose}; and on a triangle-free graph $G$ of maximum degree~$4$,
+\lean{NoCommonNbhd} on $H_M$ implies \lean{BoundedNesting.SepS1}, so~(2) bounds $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$
+and rank-nullity $\rank_F M + \dim_F \ker M = \card{V}$ gives \lean{theoremSHStar_graph}.
+\end{outline}
+
+\subsection{Corollary~M\texorpdfstring{$^*$}{*}: heavy-matching deficiency bound}\label{sec:crux-matching}
+
+For a simple graph $G = (V, E)$ and subset $H \subseteq V$, define the \emph{common-neighbor-free packing number}
+(\lean{rhoMatch}) by
+\begin{equation}\label{eq:rhom}
+  \rhom(G, H) := \max\bigl\{\card{D} : D \subseteq H \text{ and } \forall u, v \in D,\; u \ne v \implies
+  \lean{NoCommonNbhd}(G, u, v)\bigr\}.
+\end{equation}
+On a triangle-free graph $G$, two vertices $u \ne v$ satisfy \lean{NoCommonNbhd}$(G, u, v)$ if and only if
+$\dist_G(u, v) \ne 2$, i.e., either $\{u, v\} \in E$ or $\dist_G(u, v) \ge 3$. Consequently, an admissible subset $D
+\subseteq H$ is any disjoint union of edges and isolated vertices in $G[H]$ whose connected components lie at pairwise
+$G$-distance at least~$3$. In particular, every distance-$3$ packing (\lean{BoundedNesting.Far3}) is admissible, so
+$\rhom(G, H) \ge \rho_3(G, H)$ always holds, and whenever $H$ spans an induced matching of $r$ edges in $G$ at pairwise
+distance at least~$3$, $\rhom(G, H) = 2r = 2 \rho_3(G, H)$.
+
+\begin{corollary}[Barrier and matching bounds with $\rhom$]\label{cor:Mstar}
+\formal{TheoremSHStar.lean}{finrank_ker_le_barrier_SHStar, finrank_ker_add_card_le_matching_SHStar, rhoMatch, exists_rhoMatch, rho3_le_rhoMatch, finrank_ker_le_matching_rhoMatch, finrank_ker_le_matching_rhoMatch_transpose}
+Let $F$ be a field and $V$ be a finite vertex set.
+\begin{enumerate}
+\item \emph{(Barrier form.)} Suppose $M \in F^{V \times V}$ satisfies \lean{MotionDepthCodes.ThmSHyp}, $U \subseteq V$, and
+  $\mathcal{P}$ is a partition of $V \setminus U$ into pairwise disjoint blocks such that $M_{u,v} = 0$ between distinct
+  blocks $B \ne B'$ of $\mathcal{P}$ and \lean{SHStarOn}$(M, B)$ holds for every $B \in \mathcal{P}$. Then
+  \[
+    \dim_F \ker M \le \card{U} + \sum_{B \in \mathcal{P}} \lfloor \card{B} / 2 \rfloor.
+  \]
+\item \emph{(Matching-packing form.)} Let $G = (V, E)$ be a triangle-free simple graph of maximum degree at most~$4$ with
+  matching number $\nu(G)$, and suppose $M \in F^{V \times V}$ has unit diagonal and off-diagonal support in~$G$. Then
+  $\rho_3(G, H_M) \le \rhom(G, H_M)$ and
+  \[
+    \dim_F \ker M + \max\bigl(\rhom(G, H_M),\, \min(\card{H_M}, 2)\bigr) \le \nu(G) + \card{H_M},
+  \]
+  and the same inequality holds with $H_{M^\T}$ in place of $H_M$.
+\end{enumerate}
+\end{corollary}
+
+\begin{outline}
+For~(1) (\lean{finrank_ker_le_barrier_SHStar}), intersecting $\ker M$ with $\mathrm{zeroOn}(U)$ loses at most $\card{U}$
+dimensions and embeds into $\bigoplus_{B \in \mathcal{P}} \mathrm{subCode}_M(B)$ because $M$ has no cross-block entries;
+applying \cref{thm:SHstar}(1) to each block $B \in \mathcal{P}$ gives $\sum_{B \in \mathcal{P}} \lfloor \card{B}/2 \rfloor$.
+
+For~(2) (\lean{finrank_ker_add_card_le_matching_SHStar} and \lean{finrank_ker_le_matching_rhoMatch}), let $D \subseteq H_M$
+satisfy either $\card{D} \le 2$ or pairwise \lean{NoCommonNbhd} on $(G, u, v)$, and set $U = H_M \setminus D$. By the
+Tutte--Berge formula~\cite{Berge1958} (Lean-verified in \texttt{lean-machine} as
+\lean{SimpleGraph.exists_card_add_sum_card_div_two_eq_matchingNumber}), there is a Tutte barrier $U' \subseteq V$ such that
+$\card{U'} + \sum_{B \in \mathrm{comp}(G - U')} \lfloor \card{B}/2 \rfloor = \nu(G)$. On each punctured component $B' =
+B \setminus U$ of $V \setminus (U \cup U')$, every heavy vertex of $M$ in $B'$ belongs to $D$, so \lean{SHStarOn} holds on
+$(M, B')$. Applying~(1) with cut $U \cup U'$ gives
+\[
+  \dim_F \ker M \le \card{U \cup U'} + \sum_{B} \lfloor \card{B \setminus U}/2 \rfloor
+  \le \card{U} + \nu(G) = \card{H_M} - \card{D} + \nu(G).
+\]
+Choosing $D$ to attain $\rhom(G, H_M)$ (\lean{exists_rhoMatch}) or $\min(\card{H_M}, 2)$ completes the proof, and
+transpose invariance of $\dim_F \ker M$ gives \lean{finrank_ker_le_matching_rhoMatch_transpose}.
+\end{outline}
+
+\begin{remark}[Linear-size separation between $\rhom$ and $\rho_3$]\label{rem:deg4-numerics}
+For each integer $k \ge 2$, construct a connected bipartite (hence triangle-free) graph $G_{8k}$ on $8k$ vertices with
+bipartition $A \sqcup B$, where $A = \bigsqcup_{r=0}^{k-1} \{a_{r,0}, a_{r,1}, a_{r,2}, a_{r,3}\}$ and
+$B = \bigsqcup_{r=0}^{k-1} \{b_{r,0}, b_{r,1}, b_{r,2}, b_{r,3}\}$, by including, for each $0 \le r < k$, all seven edges
+incident to $a_{r,0}$ or $b_{r,0}$ inside block~$r$ ($\{a_{r,0}, b_{r,j}\}$ and $\{a_{r,j}, b_{r,0}\}$ for $0 \le j \le 3$)
+together with a $2$-regular bipartite subgraph on the remaining $6k$ vertices $\{a_{r,j}, b_{r,j} : 0 \le r < k,\; 1 \le j \le 3\}$
+having edges $\{a_{r,j}, b_{r,j}\}$ and $\{a_{r,j}, b_{(r+1)\bmod k,\,(j\bmod 3)+1}\}$ (a single $6k$-cycle when $3 \nmid k$,
+and three disjoint $2k$-cycles when $3 \mid k$). Then $G_{8k}$ is $4$-regular on $H = \{a_{r,0}, b_{r,0} : 0 \le r < k\}$
+($\card{H} = 2k$), $3$-regular on $V \setminus H$, and has a perfect matching $\nu(G_{8k}) = 4k$ (verified numerically for
+$2 \le k \le 6$ by \leanfile{tools/reproduce_numerics.py}). Because $G_{8k}$ is bipartite and the neighborhoods
+$N(a_{r,0}) = \{b_{r,0},\dots,b_{r,3}\}$ and $N(b_{r,0}) = \{a_{r,0},\dots,a_{r,3}\}$ are pairwise disjoint across $r$, no two
+distinct vertices of $H$ share a common neighbor in $G_{8k}$, whereas each pair $\{a_{r,0}, b_{r,0}\}$ is an edge:
+\begin{itemize}
+\item the eighth paper's distance-$3$ packing invariant satisfies $\rho_3(G_{8k}, H) = k$, yielding only the upper bound
+  $\dim_F \ker M \le 4k + 2k - k = 5k = \frac{5}{8}\card{V}$;
+\item by contrast, $\rhom(G_{8k}, H) = 2k = \card{H}$, so \cref{thm:SHstar} and \cref{cor:Mstar} certify the sharp half-rate
+  bound $\dim_F \ker M \le 4k = \frac{1}{2}\card{V}$ over every field~$F$; over $\F_2$, the all-ones unit-diagonal matrix
+  supported on $G_{8k}$ has heavy set $H$ and attains $\dim_{\F_2} \ker M = 4k$ (verified for $2 \le k \le 6$ by
+  \leanfile{tools/reproduce_numerics.py}).
+\end{itemize}
+\end{remark}

@@ -1,0 +1,416 @@
+\section{Deep-Nesting Stroke Laws, Super-Fibonacci Unwrapping, and Block Pairs}\label{sec:dnp}
+
+While \cref{sec:reciprocity,sec:crux} push half-rate coding barriers across $\ClassS$ and degree-$4$ graphs under~(S1),
+completing the conditional impossibility program of~\cite{FourthPaper2026,EighthPaper2026} for $2$-head tapes also
+requires understanding when $2$-head walk dependency DAGs admit $\eps T$-edge cuts to bounded depth ($\TCP(2)$). The
+canonical obstruction testbed recalled in~\cite[Section~2.5]{EighthPaper2026} (after~\cite[Definitions~5.3 and~5.9]{FourthPaper2026})
+is the \emph{deep-nesting pair} $\DNP(s_0, m)$, running two copies of the recursive turn-and-revisit walk $U(s_0, m, 1)$ at
+relative time shift $\xi \in \{0, \dots, P-1\}$ over a shared tape (\cref{sec:prelim}). On a single copy of $U(s_0, m, 1)$,
+a turn-supported label $\Phi : \Z \to \Z_q$ cuts depth to $2^{m + O(1)}$ by keeping $\Phi(t+1) - \Phi(t) \equiv 1 \pmod q$
+on plain steps and adjusting $\Phi$ at turns so that same-cell revisit hops satisfy $\Phi(u) - \Phi(p) \equiv 1 \pmod q$.
+On two shifted copies, however, a revisit hop $(p, u)$ of head~$1$ is \emph{interrupted} (non-blind) whenever head~$2$
+executes a turn in $(p, u]$, adding head~$2$'s net potential increment $F$ across $(p, u]$ to the mod-$q$ consistency
+relation.
+
+In~\cite[Section~5]{EighthPaper2026}, the path-sum law, band decomposition, block-label family $B(a, K)$, and straddle
+involution were developed on paper without Lean formalization, and Conjecture~A$''$~\cite[Section~5.6, Conjecture~5.24]{EighthPaper2026}---asserting
+that at some odd shift $\xi$, every mod-$q$ label of cost at most $n_{\mathrm{h}}/8$ on the $r$-fold cover has at most
+$C\log_2 q + C' + \eta(m+1)$ doubly $\theta_0$-served levels ($\eta < 1$)---left two explicit steps open at the end
+of~\cite[Section~5.6]{EighthPaper2026} even for pairs of block labels:
+\begin{enumerate}
+\item \emph{``a bound on $\abs{F}$ on the straddling hops, or a version of Theorem~V that counts the window directly''}
+  (since $\abs{F}$ in~\cite[Theorem~5.20]{EighthPaper2026} can grow linearly in~$m$ and wrap modulo~$q$ unless $q$ is of
+  order $(m - \kappa)Q$); and
+\item \emph{``at one fixed shift for all coarse classes, equidistribution of a class's apex centres relative to the other
+  head's canceller valleys of level about $k + \log_2(m - k)$, a mixed-radix carry problem''}.
+\end{enumerate}
+
+In this section we formalize the turn-potential, V-straddle, and super-Fibonacci apparatus in Lean~4: \cref{thm:Vstar}
+bypasses step~(1) altogether for level-uniform labels by summing straddling pairs directly modulo~$q$ with zero wrap-around
+loss, \lean{exists_oddShift_coarse_straddle} establishes a weaker one-direction $\tfrac{1}{16}$-fraction form of step~(2)
+over odd shifts, and \cref{thm:A} combines these with \cref{thm:LU} to produce three-regime failure witnesses for all
+block-label pairs $(B(a_1, K_1), B(a_2, K_2))$ of bounded block length at two fixed odd shifts (a single shift for
+symmetric pairs).
+
+\subsection{Exact stroke law and \texorpdfstring{$O(m)$}{O(m)} recursive turn potential}\label{sec:dnp-strokes}
+
+Fix integers $0 \le m \le s_0$, dyadic scales $R_i = 2^{s_0 - i}$ (\lean{scaleR}), stroke lengths $\Pi_\kappa =
+(m - \kappa + 1) R_\kappa$ (\lean{strokeLen}), and fundamental period $P = 4 \Pi_0 = 4(m+1)2^{s_0}$ (\lean{dnpPeriod}) of
+$U(s_0, m, 1)$~\cite[Definition~5.3]{FourthPaper2026},~\cite[Section~2.5]{EighthPaper2026}. A \emph{level-uniform turn-supported potential} on
+$U(s_0, m, 1)$ is specified by integer level parameters $A, E : \N \to \Z$ (or equivalently back-stroke and forward-stroke
+path-sum increments $c_{\sigb}(\kappa) = 1 + A_\kappa$ and $c_{\sigf}(\kappa) = 2 + A_\kappa + E_\kappa$, \lean{pathSumBack}
+and \lean{pathSumFwd}) together with an outer tip jump $j_{\mathrm{tip}} \in \Z$ at the period reversals $\Pi_0$ and
+$3\Pi_0$: at every internal apex of level $\kappa$ ($1 \le \kappa \le m$), the turn jump adds $c_{\sigb}(\kappa)$; at every
+internal valley of level $\kappa$, the turn jump adds $c_{\sigf}(\kappa) - c_{\sigb}(\kappa) - M_{\sigf}(\kappa)$, where
+$M_{\sigf}(\kappa) = \sum_{l = \kappa + 1}^m c_{\sigf}(l)$ (\lean{strokeMass}) is the cumulative turn jump inside one
+level-$\kappa$ stroke, arranged so that entering the level-$\kappa$ forward stroke starts at cumulative offset
+$c_{\sigf}(\kappa)$ and completing the entire level-$\kappa$ V contributes net turn jump
+$c_{\sigf}(\kappa) + M_{\sigf}(\kappa) = M_{\sigf}(\kappa - 1)$.
+
+\begin{proposition}[Exact stroke law and recursive turn potential]\label{prop:SL}
+\formal{DNPStrokes.lean}{scaleR, strokeLen, dnpPeriod, decompDepth_valid, reconstruct_decomp, decomp_reconstruct, card_stroke_stopDepth_branchWord, card_stroke_stopDepth, card_stroke_stopDepth_branchWord_parity, card_stroke_stopDepth_parity, strokePhiRec, strokePhiRec_back, strokePhiRec_fwd, evalPhiRec, evalPhiRec_eq_sum_turnJumps}
+Let $0 \le \kappa \le m \le s_0$.
+\begin{enumerate}
+\item \emph{(Stroke decomposition bijection.)} Recursive stroke decomposition (\lean{decompDepth}) and reconstruction
+  (\lean{reconstructDepth}) establish an explicit bijection between offsets $o \in \{0, \dots, \Pi_\kappa - 1\}$ of a
+  level-$\kappa$ stroke and valid triples $(s, w, \mathrm{rem})$ (\lean{ValidStrokeCode}) consisting of a stopping depth
+  $s \in \{0, \dots, m - \kappa\}$, a nested branch word $w \in \{\sigb, \sigf\}^s$ ($\mathrm{false} = \sigb$,
+  $\mathrm{true} = \sigf$), and a plain-segment remainder $\mathrm{rem} \in \{0, \dots, R_{\kappa + s} - 1\}$.
+\item \emph{(Uniform stopping depth, fair-coin branches, and parity independence.)} For each $0 \le s \le m - \kappa$ and
+  each word $w \in \{\sigb, \sigf\}^s$, there are exactly $R_{\kappa + s} = R_\kappa / 2^s$ offsets $o \in [0, \Pi_\kappa)$
+  with code $(s, w, \cdot)$, and summing over $w \in \{\sigb, \sigf\}^s$ gives \emph{exactly} $R_\kappa = \Pi_\kappa /
+  (m - \kappa + 1)$ offsets at stopping depth~$s$. Moreover, when $m < s_0$ (so every $R_i$ for $i \le m$ is even),
+  $o \equiv \mathrm{rem} \pmod 2$, and for each parity $p \in \{0, 1\}$, stopping depth $s$, and word $w \in \{\sigb,
+  \sigf\}^s$, the joint count is $R_{\kappa + s}/2$ and the marginal count at $(s, p)$ is $R_\kappa / 2$.
+\item \emph{($O(m)$ recursive turn potential and V-stroke decomposition.)} For any $c_{\sigb}, c_{\sigf} : \N \to \Z$ and
+  $j_{\mathrm{tip}} \in \Z$, let $Y_i(o) = {}$\lean{strokePhiRec}$(s_0, m, c_{\sigb}, c_{\sigf}, i, o)$ be the $O(m - i)$
+  recursive stroke potential at level $i \le m$. The $O(m)$-step period evaluator $\Phi(t) =
+  {}$\lean{evalPhiRec}$(s_0, m, c_{\sigb}, c_{\sigf}, j_{\mathrm{tip}}, t)$ equals the exact cumulative sum of turn jumps
+  $\sum_{0 < \tau \le t} J(\tau)$ (\lean{periodTurnJump}) for all $0 \le t < P$. Inside any enclosing level-$(\kappa - 1)$
+  stroke ($1 \le \kappa \le m$), its internal level-$\kappa$ V at apex offset $R_{\kappa - 1}$ satisfies, for all
+  $0 \le o < \Pi_\kappa$,
+  \begin{equation}\label{eq:v-decomp}
+    Y_{\kappa - 1}(R_{\kappa - 1} + o) = c_{\sigb}(\kappa) + Y_\kappa(o), \qquad
+    Y_{\kappa - 1}(R_{\kappa - 1} + \Pi_\kappa + o) = c_{\sigf}(\kappa) + Y_\kappa(o).
+  \end{equation}
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+Part~(1) (\lean{decompDepth_valid}, \lean{reconstruct_decomp}, \lean{decomp_reconstruct}) inducts on remaining depth
+$d = m - \kappa$ using the stroke-length identity $\Pi_\kappa = R_\kappa + 2 \Pi_{\kappa+1}$ (\lean{strokeLen_succ}),
+partitioning $[0, \Pi_\kappa)$ into the initial plain segment $[0, R_\kappa)$ ($s = 0$), the back sub-stroke $[R_\kappa,
+R_\kappa + \Pi_{\kappa+1})$ ($b_1 = \sigb$), and the forward sub-stroke $[R_\kappa + \Pi_{\kappa+1}, \Pi_\kappa)$
+($b_1 = \sigf$). Part~(2) (\lean{card_stroke_stopDepth_branchWord}, \lean{card_stroke_stopDepth},
+\lean{card_stroke_stopDepth_branchWord_parity}, and \lean{card_stroke_stopDepth_parity}) counts fibers via
+\texttt{Finset.card\_bij}; when $m < s_0$, $2 \mid R_m$ divides every summand $R_i$ and $\Pi_i$ added by
+\lean{reconstructDepth}, so $o \bmod 2 = \mathrm{rem} \bmod 2$ and $[0, R_{\kappa+s})$ splits into $R_{\kappa+s}/2$ even
+and $R_{\kappa+s}/2$ odd remainders. For~(3), unfolding one step of \lean{strokePhiRec} yields~\eqref{eq:v-decomp}
+(\lean{strokePhiRec_back}, \lean{strokePhiRec_fwd}), induction on $m - \kappa$ equates \lean{strokePhiRec} with the sum of
+\lean{strokeTurnJump} over $(0, o]$ (\lean{strokePhiRec_eq_sum_turnJumps}) by cancelling $-M_{\sigf}(\kappa)$ at the valley
+turn against the completed back-stroke jump sum $M_{\sigf}(\kappa)$, and summing across the four level-$0$ strokes of
+$[0, P)$ establishes \lean{evalPhiRec_eq_sum_turnJumps}.
+\end{outline}
+
+\subsection{Unconditional mod-\texorpdfstring{$q$}{q} V-straddle bound and odd-center straddle sums}\label{sec:dnp-straddle}
+
+Consider a coarse revisit hop $(c_0 - d, c_0 + d)$ of half-width $d \in \{1, \dots, R_k - 1\}$ centered at an apex mapped
+to time $c_0 \in \Z$ on the other head's timeline, and suppose the other head executes a level-$\kappa$ V on $[\alpha_V,
+\alpha_V + 2\Pi_\kappa)$ with $\Pi_\kappa \le R_k$. We say $d$ \emph{straddles} this V (\lean{straddleSet}) if its left
+endpoint lands in the back stroke and its right endpoint lands in the forward stroke:
+\begin{equation}\label{eq:straddle-set}
+  d \in \mathrm{Strad}(c_0, \alpha_V, \Pi_\kappa, R_k) \iff
+  1 \le d \le R_k - 1,\quad \alpha_V \le c_0 - d < \alpha_V + \Pi_\kappa \le c_0 + d < \alpha_V + 2\Pi_\kappa.
+\end{equation}
+Notice the reflection symmetry $d \mapsto \Pi_\kappa - d$ (\lean{mem_straddleSet_sub_iff}): when $\Pi_\kappa \le R_k$,
+$d \in \mathrm{Strad}(c_0, \alpha_V, \Pi_\kappa, R_k)$ if and only if $\Pi_\kappa - d \in \mathrm{Strad}(c_0, \alpha_V,
+\Pi_\kappa, R_k)$, because the back-stroke offset $o_p(d) = (c_0 - d) - \alpha_V$ and forward-stroke offset $o_u(d) =
+(c_0 + d) - (\alpha_V + \Pi_\kappa)$ swap under $d \leftrightarrow \Pi_\kappa - d$:
+\[
+  o_p(\Pi_\kappa - d) = (c_0 - \Pi_\kappa + d) - \alpha_V = o_u(d), \qquad
+  o_u(\Pi_\kappa - d) = (c_0 + \Pi_\kappa - d) - (\alpha_V + \Pi_\kappa) = o_p(d).
+\]
+
+\begin{theorem}[Unconditional mod-$q$ V-straddle inequality and parity-invariant straddle count]\label{thm:Vstar}
+\formal{DNPStraddle.lean}{straddleSet, mem_straddleSet_sub_iff, HasLevelUniformVDecomp, strokePhiRec_hasLevelUniformVDecomp, straddle_otherHeadInc_sum, theoremVStar_pair, theoremVStar_sum, sum_straddleSet_card_parity}
+Let $\Phi : \Z \to \Z$ admit a level-uniform V decomposition on $[\alpha_V, \alpha_V + 2\Pi_\kappa)$ with base constant
+$C_V \in \Z$ and parameters $(c_{\sigb}, c_{\sigf}, Y)$, i.e., $\Phi(\alpha_V + o) = C_V + c_{\sigb} + Y(o)$ and
+$\Phi(\alpha_V + \Pi_\kappa + o) = C_V + c_{\sigf} + Y(o)$ for $0 \le o < \Pi_\kappa$ (\lean{HasLevelUniformVDecomp};
+instantiated for \lean{strokePhiRec} via~\eqref{eq:v-decomp} by \lean{strokePhiRec_hasLevelUniformVDecomp}), and write
+$F(d) = \Phi(c_0 + d) - \Phi(c_0 - d)$ (\lean{otherHeadInc}) for the other head's net potential increment across
+$(c_0 - d, c_0 + d)$.
+\begin{enumerate}
+\item \emph{(Exact $\Z$-cancellation.)} For every $d \in \mathrm{Strad}(c_0, \alpha_V, \Pi_\kappa, R_k)$,
+  \[
+    F(d) + F(\Pi_\kappa - d) = 2(c_{\sigf} - c_{\sigb}) \quad\text{in }\Z.
+  \]
+\item \emph{(Unconditional mod-$q$ pair and set bounds.)} Let $q > 0$ and $A' \in \Z$, and define the reduced mod-$q$
+  interrupted hop error $e(d) = (A' + F(d)) \bmod q \in \{0, \dots, q - 1\}$. For every $d \in S := \mathrm{Strad}(c_0,
+  \alpha_V, \Pi_\kappa, R_k)$,
+  \begin{equation}\label{eq:vstar-pair}
+    \bigl(2 A' + 2(c_{\sigf} - c_{\sigb})\bigr) \bmod q \;\le\; e(d) + e(\Pi_\kappa - d),
+  \end{equation}
+  and whenever $\Pi_\kappa \le R_k$, summing over $d \in S$ yields
+  \begin{equation}\label{eq:vstar-sum}
+    \card{S} \cdot \bigl(\bigl(2 A' + 2(c_{\sigf} - c_{\sigb})\bigr) \bmod q\bigr) \;\le\; 2 \sum_{d \in S} e(d),
+  \end{equation}
+  with \emph{zero dependence on $m$ or on the integer magnitude of $Y$ or $F(d)$}.
+\item \emph{(Exact parity-conditioned straddle count.)} Suppose $\Pi_\kappa = 2L$ is even and $2L \le R_k$. For \emph{either}
+  fixed parity $p \in \{0, 1\}$, summing $\card{\mathrm{Strad}(c_0, \alpha_V, 2L, R_k)}$ over all centers $c_0 \in
+  [\alpha_V, \alpha_V + 4L)$ with $c_0 \bmod 2 = p$ equals \emph{exactly} $L^2 = \Pi_\kappa^2 / 4$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+For~(1) (\lean{straddle_otherHeadInc_sum}), the V decomposition gives $F(d) = (c_{\sigf} - c_{\sigb}) + Y(o_u(d)) -
+Y(o_p(d))$ and $F(\Pi_\kappa - d) = (c_{\sigf} - c_{\sigb}) + Y(o_p(d)) - Y(o_u(d))$; adding cancels $Y(o_u(d)) - Y(o_p(d))$
+identically in~$\Z$.
+
+For~(2) (\lean{theoremVStar_pair}, \lean{theoremVStar_sum}), $e(d) + e(\Pi_\kappa - d) \ge 0$ is congruent modulo $q$ to
+$(A' + F(d)) + (A' + F(\Pi_\kappa - d)) = 2A' + 2(c_{\sigf} - c_{\sigb})$; since for any integer $S_{\mathrm{sum}} \ge 0$ and
+$q > 0$ we always have $S_{\mathrm{sum}} \bmod q \le S_{\mathrm{sum}}$,~\eqref{eq:vstar-pair} holds without any wrap-around
+loss. Because $d \mapsto \Pi_\kappa - d$ is an involution of $S$ when $\Pi_\kappa \le R_k$, $\sum_{d \in S} (e(d) +
+e(\Pi_\kappa - d)) = 2 \sum_{d \in S} e(d)$, giving~\eqref{eq:vstar-sum}.
+
+For~(3) (\lean{sum_straddleSet_card_parity}), swap the order of summation between $c_0 \in [\alpha_V, \alpha_V + 4L)$
+($c_0 \bmod 2 = p$) and $d \in \{1, \dots, 2L - 1\}$. For each fixed $d \in \{1, \dots, 2L - 1\}$, solving the inequalities
+in~\eqref{eq:straddle-set} for $c_0$ shows that $\{c_0 : d \in \mathrm{Strad}(c_0, \alpha_V, 2L, R_k)\}$ is the half-open
+interval $[\alpha_V + \max(d, 2L - d),\, \alpha_V + \max(d, 2L - d) + 2 \min(d, 2L - d))$, whose length $2 \min(d, 2L - d)$
+is even. Every half-open integer interval $[a, a + 2M)$ of even length contains \emph{exactly} $M$ even integers and
+\emph{exactly} $M$ odd integers (\lean{card_Ico_even_len_mod_two}), so the parity-$p$ fiber has exact size $\min(d, 2L - d)$,
+and $\sum_{d=1}^{2L-1} \min(d, 2L - d) = L^2$ (\lean{sum_min_sub_two_mul}).
+\end{outline}
+
+\subsection{Super-Fibonacci unwrapping for level-uniform labels}\label{sec:dnp-fib}
+
+On a single head of $U(s_0, m, 1)$ carrying a level-uniform potential $(A, E)$ modulo $q \ge 3$, consider the blind
+(uninterrupted) revisit hops around the apices and valleys of level $k$:
+\begin{itemize}
+\item every blind apex hop at level $k$ has reduced mod-$q$ hop error $a(k) := A_k \bmod q \in [0, q)$
+  (\lean{blindApexErr}, verified on \lean{strokePhiRec} by \lean{strokePhiRec_apex_hop});
+\item for $1 \le k \le l \le m$, every blind valley hop at level $k$ whose half-width stops in the plain segment of nested
+  level $l$ (\emph{valley band $l - k$}) has reduced mod-$q$ hop error (\lean{strokePhiRec_valley_band_hop})
+  \begin{equation}\label{eq:band-err}
+    b_{l - k}(k) = \lean{blindBandErr}(A, E, q, k, l) :=
+    \Bigl(E_k - \sum_{i = k + 1}^l (A_i + E_i + 2)\Bigr) \bmod q \in [0, q).
+  \end{equation}
+\end{itemize}
+Whenever a level-$k$ class is $\theta$-served ($\theta \le 1/256$) and at least half of its apex hop family or valley
+sub-band $0, 1, 2$ is blind at the chosen shift (by~\cite[Proposition~5.17 and Corollary~5.18]{EighthPaper2026}, fine
+classes are mostly blind on average over shifts, whereas at a fixed shift half-blindness is an explicit hypothesis),
+Markov's inequality bounds each corresponding reduced blind error by $q / 8$ (\lean{blind_error_le_div_eight}).
+Unwrapping~\eqref{eq:band-err} across bands $0, 1, 2$ forces \emph{super-Fibonacci} growth of the blind errors from fine to
+coarse scales, unconditionally ruling out $s \ge 2\lfloor\log_2 q\rfloor + 3$ consecutive levels of blind errors at most
+$q/8$ (and hence bounding consecutive half-blind $\theta$-served levels conditionally on half-blindness at the chosen shift).
+
+\begin{theorem}[Super-Fibonacci unwrapping for level-uniform labels]\label{thm:LU}
+\formal{DNPFibonacci.lean}{strokePhiRec_apex_hop, strokePhiRec_valley_band_hop, blindApexErr, blindBandErr, unwrap_blindBand_step, superFib_step, superFib_lower_bound, log_bound_of_fib_le, blind_error_le_div_eight, theoremLU_consecutive}
+Let $A, E : \N \to \Z$ and $q \ge 3$.
+\begin{enumerate}
+\item \emph{(Exact $\Z$-unwrapping and super-Fibonacci step.)} For any $k \le l$, if
+  \lean{blindBandErr}$(A, E, q, k, l+1)$, \lean{blindApexErr}$(A, q, l+1)$, and
+  \lean{blindBandErr}$(A, E, q, l+1, l+1)$ are each at most $\lfloor q / 8 \rfloor$ (i.e., $8 e \le q$), then the mod-$q$
+  relation lifts to exact equality in~$\Z$:
+  \begin{align*}
+    &\lean{blindBandErr}(A, E, q, k, l) - \lean{blindBandErr}(A, E, q, k, l+1) \\
+    &\qquad = \lean{blindApexErr}(A, q, l+1) + \lean{blindBandErr}(A, E, q, l+1, l+1) + 2.
+  \end{align*}
+  Consequently, if $b_1(k), b_2(k), a(k+1), b_0(k+1), a(k+2), b_0(k+2)$ are each at most $q/8$, adding the $(k, k)$ and
+  $(k, k+1)$ identities telescopes $b_1(k)$ and yields the super-Fibonacci inequality
+  \begin{equation}\label{eq:super-fib}
+    b_0(k+1) + b_0(k+2) + 4 \;\le\; b_0(k).
+  \end{equation}
+\item \emph{(Fibonacci lower bound and $2\lfloor\log_2 q\rfloor + 2$ run limit.)} Suppose $s \ge 1$ consecutive levels
+  $k_0, \dots, k_0 + s - 1$ satisfy $8 a(k_0 + i) \le q$ and $8 b_0(k_0 + i) \le q$ for $0 \le i < s$, $8 b_1(k_0 + i) \le q$
+  for $i + 1 < s$, and $8 b_2(k_0 + i) \le q$ for $i + 2 < s$. Writing $F_s = \texttt{Nat.fib}(s)$ ($F_0 = 0, F_1 = F_2 = 1,
+  F_3 = 2, \dots$), we have
+  \[
+    4(F_s - 1) \le b_0(k_0), \qquad 32(F_s - 1) \le q, \qquad\text{and}\qquad s \le 2 \lfloor \log_2 q \rfloor + 2.
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+For~(1) (\lean{unwrap_blindBand_step}), write $\mathrm{ex}$, $\mathrm{ey}$, $\mathrm{ea}$, and $\mathrm{ee}$ for
+\lean{blindBandErr} at $(A, E, q, k, l)$, \lean{blindBandErr} at $(A, E, q, k, l+1)$, \lean{blindApexErr} at $(A, q, l+1)$,
+and \lean{blindBandErr} at $(A, E, q, l+1, l+1)$, and let $D = (\mathrm{ex} - \mathrm{ey}) - (\mathrm{ea} + \mathrm{ee} + 2)$.
+By~\eqref{eq:band-err}, $q \mid D$. Nonnegativity gives $D \le \mathrm{ex} - 2 < q$. For the lower bound, if $q \ge 8$, the
+hypotheses $8 \cdot \mathrm{ey} \le q$, $8 \cdot \mathrm{ea} \le q$, and $8 \cdot \mathrm{ee} \le q$ give $\mathrm{ey} +
+\mathrm{ea} + \mathrm{ee} + 2 \le 3q/8 + 2 < q$, while if $3 \le q < 8$, $8 x \le q$ forces $\mathrm{ey} = \mathrm{ea} =
+\mathrm{ee} = 0$ and hence $D = \mathrm{ex} - 2 \ge -2 > -q$. Thus $\abs{D} < q$ and $q \mid D$, forcing $D = 0$. Applying
+the step lemma \lean{unwrap_blindBand_step} at $l = k$ (using $8 b_1(k) \le q$) and at $l = k + 1$ (using $8 b_2(k) \le q$) sums to
+$b_0(k) - b_2(k) = a(k+1) + b_0(k+1) + a(k+2) + b_0(k+2) + 4$; dropping the nonnegative terms $b_2(k), a(k+1), a(k+2) \ge 0$
+yields~\eqref{eq:super-fib} (\lean{superFib_step}).
+
+For~(2) (\lean{superFib_lower_bound}, \lean{log_bound_of_fib_le}, \lean{theoremLU_consecutive}), strong induction on $s$
+shows $b_0(k_0) \ge 4(F_s - 1)$ since $4(F_{s-1} - 1) + 4(F_{s-2} - 1) + 4 = 4(F_s - 1)$. Combining with $8 b_0(k_0) \le q$
+gives $32(F_s - 1) \le q$. Using $F_{2k+3} \ge 2^k + 1$ (\lean{two_pow_add_one_le_fib}) for $s \ge 3$ ($k = \lfloor (s-3)/2
+\rfloor$) gives $2^{k+5} \le 32(F_s - 1) \le q$, so $k + 5 \le \lfloor \log_2 q \rfloor$ and $s \le 2k + 4 \le 2\lfloor
+\log_2 q \rfloor - 6 < 2\lfloor \log_2 q \rfloor + 2$.
+\end{outline}
+
+\subsection{Block-cancellation drift, Mersenne clocks, and bounded-range block pairs}\label{sec:dnp-block}
+
+To evade \cref{thm:LU} over more than $O(\log q)$ levels on a single walk,~\cite[Section~5.3]{EighthPaper2026} introduced
+the periodic \emph{block-cancellation family} $B(a, K)$ ($a \ge 1$, $K \in \Z$): partition $\{0, \dots, m\}$ from the bottom
+level~$m$ upward into blocks of length $a + 1$, designating $\kappa$ as a \emph{canceller} if $(m - \kappa) \bmod (a + 1)
+= a$ (\lean{isCanceller}) and as a \emph{served} level with $j = (m - \kappa) \bmod (a + 1) \in \{0, \dots, a-1\}$ served
+levels below it otherwise. Setting $Q(a, K) = (2^a - 1)(2K + 2)$ (\lean{blockQ}), define (\lean{blockA}, \lean{blockE}):
+\[
+  A_\kappa = \begin{cases} 0 & \text{if }\kappa\text{ is a canceller},\\ K & \text{if }\kappa\text{ is served},\end{cases}
+  \qquad
+  E_\kappa = \begin{cases} -Q(a, K) - 2 & \text{if }\kappa\text{ is a canceller},\\
+    K + (2^j - 1)(2K + 2) & \text{if }\kappa\text{ is served.}\end{cases}
+\]
+On served levels (\lean{block_served_mass}), $A_\kappa + E_\kappa + 2 = 2^j(2K + 2)$, $c_{\sigb}(\kappa) = 1 + K$, and
+$c_{\sigf}(\kappa) = 2^j(2K + 2)$; on cancellers (\lean{block_canceller_mass}), $c_{\sigb}(\kappa) = 1$, $c_{\sigf}(\kappa)
+= -Q(a, K)$, and $c_{\sigf}(\kappa) - c_{\sigb}(\kappa) = -Q(a, K) - 1$, resetting the cumulative sum $\sum (A_i + E_i + 2)$
+across each $(a+1)$-level block to~$0$. Moreover, reducing $K \mapsto K \bmod q$ leaves every mod-$q$ blind error invariant
+(\lean{block_blind_errors_mod_K}).
+
+We first record the exact path-sum drift laws of $B(a, K)$ and the Mersenne-modulus behavior of the pure binary clock
+$B(\infty, 0)$ ($c_{\sigb} = 1$, $c_{\sigf}(\kappa) = 2^{m - \kappa + 1}$, $A \equiv 0$, which makes every single-head hop
+error $0$ in $\Z$ before modular reduction, and modulo a Mersenne number $q = 2^B - 1$ makes single-head hop errors vanish
+periodically in~$B$, yet incurs straddle residue $q - 1$):
+
+\begin{proposition}[One-sided block drift and Mersenne straddle failure]\label{prop:OC}
+\formal{DNPConjectureApp.lean}{blockQ, blockA, blockE, block_served_mass, block_canceller_mass, block_blind_errors_mod_K, propOC_fwd_bounds, propOC_back_bounds, propOC_sum_all_paths, propOC_mersenne_straddle}
+Let $a \ge 1$ and $K \ge 0$, and for branch choices $(d_{\mathrm{canc}}, d_{\mathrm{srv}}) \in \{\sigb, \sigf\} \times
+\{\sigb, \sigf\}^a$ across one complete $(a+1)$-level block define the block path sum \lean{blockPathSum}$(a, K,
+d_{\mathrm{canc}}, d_{\mathrm{srv}})$.
+\begin{enumerate}
+\item \emph{(Forward vs.\ back canceller bounds.)} When $d_{\mathrm{canc}} = \sigf$, the block path sum lies in
+  $[-Q(a, K) + a(1 + K),\, 0]$ and equals $0$ when $d_{\mathrm{srv}} \equiv \sigf$. When $d_{\mathrm{canc}} = \sigb$, the
+  block path sum lies in $[1 + a(1 + K),\, Q(a, K) + 1]$.
+\item \emph{(Positive mean block drift.)} For every $K \in \Z$, summing \lean{blockPathSum}$(a, K, p_1, p_2)$ over all
+  $2^{a+1}$ branch choices $p \in \{\sigb, \sigf\} \times \{\sigb, \sigf\}^a$ equals $2^a\bigl(a(K + 1) + 1\bigr)$, which
+  is strictly positive for all $K \ge 0$ (mean drift $+\tfrac{1}{2}(a(K+1) + 1)$ per $(a+1)$-level block under the fair-coin
+  law of \cref{prop:SL}(2)).
+\item \emph{(Mersenne binary-clock straddle residue.)} For any $B \ge 2$ and Mersenne modulus $q = 2^B - 1$, the pure
+  binary clock ($c_{\sigb} = 1$, $c_{\sigf}(\kappa) = 2^{m - \kappa + 1}$, $A' = 0$) satisfies, at every level $\kappa \le m$
+  with $B \mid (m - \kappa + 2)$,
+  \[
+    \bigl(2 A' + 2(c_{\sigf}(\kappa) - c_{\sigb}(\kappa))\bigr) \bmod q = q - 1.
+  \]
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+Parts~(1) and~(2) (\lean{propOC_fwd_bounds}, \lean{propOC_back_bounds}, and \lean{propOC_sum_all_paths}, proved in Lean for
+all $a \ge 0$) use the geometric identity $\sum_{j=0}^{a-1} 2^j = 2^a - 1$ (\lean{sum_fin_two_pow}) and coordinatewise
+involution $f_j \mapsto \neg f_j$ on $\{\sigb, \sigf\}^a$: summing $d_{\mathrm{canc}} \in \{\sigb, \sigf\}$ gives
+$1 - Q(a, K)$, while each served coordinate $j$ averages $\tfrac{1}{2}(2^j(2K + 2) + 1 + K)$, summing to $Q(a, K) +
+a(1 + K)$ and leaving net mean $\tfrac{1}{2}(1 + a(1 + K))$. For~(3) (\lean{propOC_mersenne_straddle}), $B \mid (m -
+\kappa + 2)$ implies $(2^B - 1) \mid (2^{m - \kappa + 2} - 1)$, so $2(2^{m - \kappa + 1} - 1) = (2^{m - \kappa + 2} - 1) -
+1 \equiv -1 \equiv q - 1 \pmod q$.
+\end{outline}
+
+We now assemble \cref{prop:SL}, \cref{thm:Vstar}, and \cref{thm:LU} with prefix lockstep and simultaneous reverse-Markov
+shift selection to establish three-regime failure witnesses on $\DNP(s_0, m)$ for all block-label pairs
+$(B(a_1, K_1), B(a_2, K_2))$ of bounded block length. For $1 \le k \le \kappa \le m$, write
+\lean{periodVApices}$(s_0, m, \kappa) \subseteq [0, P)$ for the set of $2^{\kappa + 1}$ level-$\kappa$ V
+start times in one period, \lean{oddRange}$(P) = \{\xi \in [0, P) : \xi \bmod 2 = 1\}$, \lean{cancellerBelow}$(m, a, k)$
+for the first canceller level $\kappa \in [k + \lfloor \log_2(m+1) \rfloor + 1,\, k + \lfloor \log_2(m+1) \rfloor + 1 + a]$
+of $B(a, \cdot)$ satisfying $\Pi_\kappa \le R_k$, and \lean{classStraddleCount}$(s_0, m, k, \kappa, \mathrm{dir}, \xi)$ for
+the total number of straddling half-widths $d$ across all $2^{k+1}$ apices of level $k$ on the active head ($\mathrm{dir} =
+\mathrm{true}$ for head~$1$ at $(c + \xi) \bmod P$, $\mathrm{dir} = \mathrm{false}$ for head~$2$ at $(c + P - \xi) \bmod P$)
+against all level-$\kappa$ V's of the other head.
+
+\begin{theorem}[Three-regime witnesses for bounded-range block pairs on $\DNP$]\label{thm:A}
+\formal{DNPConjectureApp.lean}{apexOffset_diff_indep_prefix, periodVApices_spans_disjoint, card_periodVApices, even_of_mem_periodVApices, sum_classStraddleCount_odd, reverse_markov_simultaneous, classStraddleCount, cancellerBelow_props, exists_oddShift_coarse_straddle, block_straddle_residue_ge_half_q, block_overflow_band_witness, theoremA_three_regimes, theoremA_symmetric_blockPair}
+Let $a_1, a_2 \ge 1$, $m < s_0$, and $4(\lfloor \log_2(m+1) \rfloor + 1 + \max(a_1, a_2)) \le m + 1$. Set $\Omega =
+{}$\lean{oddRange}$(P)$ and $K_{\mathrm{coarse}} = \{1, \dots, \lfloor (m+1)/4 \rfloor\}$. There exist \emph{two fixed odd
+shifts} $\xi_1, \xi_2 \in \Omega$---chosen once and for all from $(s_0, m, a_1, a_2)$, \emph{independent of $K_1, K_2$,
+and $q$} (with a \emph{single} odd shift $\xi \in \Omega$, chosen solely from $(s_0, m, a_1)$, sufficing whenever $a_1 = a_2$
+and $K_1 = K_2$)---such that for \emph{every} $K_1, K_2 \in \Z$ and \emph{every} modulus $q \ge 3$, setting $\tilde{Q}_h =
+Q(a_h, K_h \bmod q)$, at least one of the following three failure regimes occurs:
+\begin{enumerate}
+\item \emph{(Small-$q$ super-Fibonacci regime, $3 \le q < 32$.)} For every $k_0 \in \N$, the window $[k_0, k_0 + 11)$ of
+  $11$ consecutive levels on head~$1$ contains at least one level whose reduced blind apex error or reduced blind band-$0,
+  1, 2$ error strictly exceeds $q / 8$ (realized as walk valley-band hop errors whenever $1 \le k_0$ and $k_0 + 10 \le m$).
+\item \emph{(Large-$\tilde{Q}$ blind fine-overflow regime, $q \ge 32$ and $q < 4\tilde{Q}_h + 4$ for some $h \in \{1, 2\}$.)}
+  On head~$h$, there is a served residue $\mathrm{rem} < a_h$ such that \emph{every} level $k < m$ with $(m - k) \bmod
+  (a_h + 1) = \mathrm{rem}$ has reduced blind apex error $\ge q/16$, or reduced blind band-$0$ or band-$1$ error $\ge q/8$.
+\item \emph{(Small-$\tilde{Q}$ coarse V-straddle regime, $q \ge 32$ and $4\tilde{Q}_1 + 4 \le q$, $4\tilde{Q}_2 + 4 \le q$.)}
+  \begin{itemize}
+  \item If $\tilde{Q}_1 \le \tilde{Q}_2$, then at odd shift $\xi_1$, at least $\tfrac{1}{16}\card{K_{\mathrm{coarse}}}$
+    coarse levels $k \in K_{\mathrm{coarse}}$ of head~$1$ simultaneously satisfy, against $\kappa =
+    {}$\lean{cancellerBelow}$(m, a_2, k)$ of head~$2$,
+    \begin{align*}
+      \lean{classStraddleCount}(s_0, m, k, \kappa, \mathrm{true}, \xi_1) &\;\ge\; \frac{2^{k+2} R_k}{2^{a_2 + 7}}, \\
+      \bigl(2 A^{(1)}_k + 2(c_{\sigf}^{(2)}(\kappa) - c_{\sigb}^{(2)}(\kappa))\bigr) \bmod q &\;\ge\; \frac{q}{2}.
+    \end{align*}
+  \item Symmetrically, if $\tilde{Q}_2 < \tilde{Q}_1$, then at odd shift $\xi_2$, at least
+    $\tfrac{1}{16}\card{K_{\mathrm{coarse}}}$ coarse levels $k \in K_{\mathrm{coarse}}$ of head~$2$ satisfy the analogous
+    bounds with $a_1$ and $(B(a_2, K_2), B(a_1, K_1))$.
+  \end{itemize}
+\end{enumerate}
+\end{theorem}
+
+In both subcases of Regime~3, combining the straddle count and residue lower bounds of \cref{thm:A}(3) with the per-V
+straddle inequality~\eqref{eq:vstar-sum} of \cref{thm:Vstar}(2) shows that at every such coarse level $k \in K_{\mathrm{coarse}}$,
+the straddling apex hops accumulate total reduced mod-$q$ hop error at least $\Omega(2^{-a} q \cdot 2^k R_k)$---a constant
+fraction $2^{-O(a)}$ of the entire class capacity $q \cdot 2^{k+1} R_k$.
+
+\begin{outline}
+We highlight the four formal components in \leanfile{DNPConjectureApp.lean} (which also establishes prefix lockstep
+$\alpha_\kappa(\eps) - \alpha_k(\eps)$ independent of $(\eps_1, \dots, \eps_{k-1})$, \lean{apexOffset_diff_indep_prefix}):
+\begin{enumerate}
+\item \emph{Exact odd-shift straddle sum (\lean{sum_classStraddleCount_odd}).} The $2^{\kappa+1}$ level-$\kappa$ V-spans
+  $[\alpha_V, \alpha_V + 2\Pi_\kappa)$ in $[0, P)$ are pairwise disjoint (\lean{periodVApices_spans_disjoint},
+  \lean{card_periodVApices}) and have even start times when $m < s_0$ (\lean{even_of_mem_periodVApices}). For each coarse
+  apex $c$ of level $k$, as $\xi$ ranges over the $P/2$ odd shifts \lean{oddRange}$(P)$, $(c + \xi) \bmod P$ (and likewise
+  $(c + P - \xi) \bmod P$) bijects onto the $P/2$ elements of $[0, P)$ of parity opposite to~$c$. Summing over $\alpha_V$
+  and applying \cref{thm:Vstar}(3) on each $[\alpha_V, \alpha_V + 2\Pi_\kappa)$ yields the exact identity
+  \[
+    \sum_{\xi \in \lean{oddRange}(P)} \lean{classStraddleCount}(s_0, m, k, \kappa, \mathrm{dir}, \xi)
+    = 2^{k+1} \cdot 2^{\kappa+1} \cdot (\Pi_\kappa / 2)^2.
+  \]
+\item \emph{Simultaneous reverse-Markov selection (\lean{reverse_markov_simultaneous} and \lean{exists_oddShift_coarse_straddle}).}
+  For every $k \in K_{\mathrm{coarse}}$ and $\kappa = \mathrm{cancellerBelow}(m, a, k)$ (\lean{cancellerBelow},
+  \lean{cancellerBelow_props}), we have $\Pi_\kappa \le R_k \le 2^{a+2} \Pi_\kappa$ and $m - \kappa + 1 \ge \tfrac{1}{2}(m+1)$,
+  so letting $X(\xi, k)$ denote \lean{classStraddleCount} at $(s_0, m, k, \kappa, \mathrm{dir}, \xi)$ gives
+  $X(\xi, k) \le M_k := 2^{k+1}\Pi_\kappa$ (because at most one V-span contains any shifted center,
+  \lean{totalStraddleAtCenter_le}), while its mean over $\Omega = \lean{oddRange}(P)$ ($\card{\Omega} = 2(m+1)2^{s_0}$) satisfies $2^{\kappa+1}(\Pi_\kappa/2)^2 / \card{\Omega} =
+  \tfrac{m - \kappa + 1}{4(m+1)} \Pi_\kappa \ge \tfrac{1}{8}\Pi_\kappa$, giving $\mathbb{E}_{\xi \in \Omega}[X(\xi, k)] \ge
+  \tfrac{1}{8} M_k$. Applying reverse Markov per level $k$ (\lean{reverse_markov_single}) gives $\Pr_{\xi \in \Omega}[X(\xi, k)
+  \ge \tfrac{1}{16} M_k] \ge \tfrac{1}{16}$, and double-counting over $K_{\mathrm{coarse}}$ (\lean{reverse_markov_simultaneous})
+  exhibits a \emph{single} odd shift $\xi \in \Omega$ at which at least $\tfrac{1}{16}\card{K_{\mathrm{coarse}}}$ coarse
+  levels satisfy $X(\xi, k) \ge \tfrac{1}{16} M_k \ge 2^{k+2} R_k / 2^{a+7}$.
+\item \emph{Mod-$q$ straddle residue without wrap-around (\lean{block_straddle_residue_ge_half_q}).} Suppose $q \ge 32$,
+  $\tilde{Q}_1 \le \tilde{Q}_2$, and $4\tilde{Q}_2 + 4 \le q$. Let $\tilde{K}_h = K_h \bmod q \in [0, q)$. At any level $k$
+  of $B(a_1, \tilde{K}_1)$, $A^{(1)}_k \in \{0, \tilde{K}_1\}$, while $2\tilde{K}_1 + 2 \le \tilde{Q}_1 \le \tilde{Q}_2$
+  (since $a_1 \ge 1$). At canceller $\kappa$ of $B(a_2, \tilde{K}_2)$, $c_{\sigf}^{(2)}(\kappa) - c_{\sigb}^{(2)}(\kappa) =
+  -\tilde{Q}_2 - 1$. Therefore the integer $Z := 2 A^{(1)}_k + 2(-\tilde{Q}_2 - 1)$ satisfies
+  \[
+    -\frac{q}{2} \;\le\; -2\tilde{Q}_2 - 2 \;\le\; Z \;\le\; 2\tilde{K}_1 - 2\tilde{Q}_2 - 2 \;\le\; -4 \;<\; 0.
+  \]
+  Because $Z \in [-q/2, -1]$, its Euclidean remainder $Z \bmod q = Z + q$ lies in $[q/2, q - 4]$, hence $\ge q/2$.
+\item \emph{Fine-scale doubling overflow (\lean{block_overflow_band_witness}).} Suppose $q \ge 32$ and $4\tilde{Q}_h + 4 > q$.
+  Set $\tilde{K} = K_h \bmod q \in [0, q)$. If $16\tilde{K} \ge q$, every served level ($\mathrm{rem} = 0 < a_h$) has
+  $a(k) = \tilde{K} \ge q/16$. If $16\tilde{K} < q$, consider the doubling sequence
+  $T_r = (2^r - 1)(2\tilde{K} + 2)$ for $0 \le r \le a_h$: we have $T_0 = 0$, $T_{r+1} = 2 T_r + (2\tilde{K} + 2)$, and
+  $4 T_{a_h} + 4 = 4\tilde{Q}_h + 4 > q$. Since $2\tilde{K} + 2 \le q/8 + 2 < q/4$ for $q \ge 32$, the first index $r \le
+  a_h$ where $\tilde{K} + T_r \ge q/8$ cannot jump past $7q/8$, landing strictly inside $[q/8, 7q/8] \subseteq [q/8, q - 1]$.
+  When $r < a_h$, $\tilde{K} + T_r = E_k \bmod q = b_0(k)$ on residue $\mathrm{rem} = r$; when $r = a_h$, $\tilde{K} +
+  T_{a_h} = (E_k - (A_{k+1} + E_{k+1} + 2)) \bmod q = b_1(k)$ across the canceller $k + 1$ on residue $\mathrm{rem} = 0$.
+\end{enumerate}
+Combining Regimes~1 (from \cref{thm:LU}(2) with $s = 11 > 2\lfloor\log_2 31\rfloor + 2 = 10$),~2, and~3 proves
+\lean{theoremA_three_regimes} and \lean{theoremA_symmetric_blockPair}.
+\end{outline}
+
+\begin{remark}[Scope relative to Conjecture~A$''$]\label{rem:scope-A}
+\Cref{thm:A} gives three-regime failure witnesses for block-label pairs $(B(a_1, K_1), B(a_2, K_2))$ of bounded block
+length across all $K_1, K_2 \in \Z$ and all $q \ge 3$ with \emph{zero logarithmic loss in $q$}, at two fixed odd shifts
+(one shift for symmetric pairs $a_1 = a_2, K_1 = K_2$). Deriving Conjecture~A$''$~\cite[Section~5.6, Conjecture~5.24]{EighthPaper2026}
+for block pairs---and ultimately for all low-cost labels on the $r$-fold cover---requires four further steps:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{One common odd shift for asymmetric pairs.} Conjecture~A$''$ fixes one odd shift $\xi$ defining the pair
+  $x_2 = x_1(\cdot + \xi)$ before quantifying over labels and~$q$. In Regime~3 of \cref{thm:A}, $\xi_1$ is used when
+  $\tilde{Q}_1 \le \tilde{Q}_2$ and $\xi_2$ when $\tilde{Q}_2 < \tilde{Q}_1$, which depends on $(K_1, K_2, q)$; applying
+  first-moment reverse Markov separately to $\mathrm{dir} = \mathrm{true}$ and $\mathrm{dir} = \mathrm{false}$ gives two
+  subsets of $\Omega$ of density at least $\tfrac{1}{16}$ that need not intersect without a joint second-moment
+  (carry-decorrelation) bound across \lean{periodVApices}.
+\item \emph{Half-blindness at the fixed shift.} Regimes~1 and~2 bound \emph{blind} single-head errors (\lean{blindApexErr}
+  and \lean{blindBandErr}, where $F = 0$), which coincide with actual two-head hop errors only on hops whose window contains
+  no turn of the other head. In~\cite[Proposition~5.17 and Corollary~5.18]{EighthPaper2026}, blindness of fine classes is
+  proved on average over shifts rather than at the specific shift chosen for Regime~3.
+\item \emph{From hop-error witnesses to doubly $\theta_0$-served level counts.} Conjecture~A$''$ bounds the number of doubly
+  $\theta_0$-served levels by $C\log_2 q + C' + \eta(m+1)$ ($\eta < 1$). Passing from \cref{thm:A}'s witnesses to that
+  level-count bound requires combining~(b) on fine levels with the explicit class-fraction weights of the apex and
+  valley-band hop families in Regimes~1--3 to determine $\theta_0(a_0)$ and $\eta < 1$.
+\item \emph{Unbounded block lengths and general low-cost labels.} Beyond bounded block lengths $a_1, a_2 \le a_0$, when
+  $\log_2 q \ll m \ll q$ and $a \asymp \tfrac{1}{2}\log_2 q$, the single-canceller straddle density $2^{-a} \asymp q^{-1/2}$
+  drops below constant $\theta_0$; and full Conjecture~A$''$ covers \emph{every} label of cost at most $n_{\mathrm{h}}/8$ on
+  every $r$-fold cover (not only turn-supported or level-uniform block potentials, and subject to period closure modulo
+  $rP$).
+\end{enumerate}
+\end{remark}
+
+\begin{remark}[Finite numerical illustration]\label{rem:dnp-numerics}
+The standalone script \leanfile{tools/reproduce_numerics.py} evaluates exact stroke counts, odd-center straddle sums,
+super-Fibonacci band unwrapping, exhaustive odd-shift straddle sums (e.g., on $s_0 = 7, m = 6$), and all three regimes of
+\cref{thm:A} on finite parameters (e.g., $s_0 = 24, m = 23, a_1 = a_2 = 1$, where $4(\lfloor\log_2 24\rfloor + 1 + 1) =
+24 = m + 1$ and $K_{\mathrm{coarse}} = \{1, \dots, 6\}$), confirming that the explicit odd-shift reverse-Markov witness
+and mod-$q$ straddle residues match the formal bounds across all tested $(K_1, K_2, q)$.
+\end{remark}

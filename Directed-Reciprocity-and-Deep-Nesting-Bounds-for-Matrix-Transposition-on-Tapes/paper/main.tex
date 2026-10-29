@@ -1,0 +1,65 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{url}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!35!black,urlcolor=blue!60!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\input{macros}
+
+\title{Directed Reciprocity and Deep-Nesting Bounds\\ for Matrix Transposition on Tapes}
+\author{Hans Brende \and Gemini 4 Argon (Google DeepMind)}
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende chose the problem, fixed the verification standard, and directed the research.
+Gemini 4 Argon, a large language model developed by Google DeepMind, developed the mathematics, wrote the Lean
+formalization, and wrote this paper under Hans Brende's direction. \Cref{sec:reciprocity} builds on the nested
+elimination engine and piece-decomposition framework of \emph{Nested Elimination and Half-Rate Bounds for Storage Codes}
+by Hans Brende and Claude Opus 5.5 (Anthropic)~\cite{SeventhPaper2026} and on the class of directed recovery relations
+introduced in \emph{Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes} by the same
+authors~\cite{FourthPaper2026}. \Cref{sec:crux,sec:dnp} extend the minimal-counterexample method for degree-$4$ scalar
+linear codes and the deep-nesting walk and block-label analysis of \emph{Bounded Nesting and Depth Reduction for Matrix
+Transposition on Tapes}, also by Hans Brende and Claude Opus 5.5 (Anthropic)~\cite{EighthPaper2026}, and situate these
+results alongside the source-cover barriers of \emph{Source Covers and Barriers to Tape Transposition} by Hans Brende and
+GPT-6 Astra (OpenAI)~\cite{NinthPaper2026}.
+\end{quote}
+
+\tableofcontents
+\clearpage
+
+\input{sections/introduction}
+\input{sections/preliminaries}
+\input{sections/reciprocity}
+\input{sections/crux}
+\input{sections/dnp}
+\input{sections/construction}
+\input{sections/open}
+
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+
+\bibliographystyle{plainurl}
+\bibliography{references}
+
+\end{document}

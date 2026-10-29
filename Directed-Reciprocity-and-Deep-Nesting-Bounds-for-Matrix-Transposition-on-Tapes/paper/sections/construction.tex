@@ -1,0 +1,110 @@
+\section{What a linear-time transposer would need}\label{sec:construction}
+
+Our aim across this series is to decide~(T), whether by constructing a linear-time transposer or by proving that none
+exists. Impossibility theorems and candidate constructions inform one another directly: every conditional or restricted
+half-rate bound and label-cut barrier rules out an entire mechanism on which a linear-time machine cannot rely, narrowing
+the design space to the exact structural regimes where impossibility is not yet certified. This section collects what the
+results of \cref{sec:reciprocity,sec:crux,sec:dnp} require of any linear-time transposer (oblivious unless stated
+otherwise) and identifies the specific mechanisms that fail. It introduces no new numbered theorems: every claim is one of
+the formalized results above, a cited result of an earlier paper in the series, or explicitly marked as a heuristic.
+
+\subsection{The depth--coding interface}\label{sec:con-interface}
+
+For an oblivious transposer~$M$ with $k$ work tapes, value width $\beta$, and running time $T \le C(L + 1)$ at input
+length $L = d^2 b(d)$ ($b(d) = \max(1, \clog{d})$), Theorem~D of the fourth paper~\cite[Section~4.2, Theorem~4.10]{FourthPaper2026}
+(proved in the text of~\cite{FourthPaper2026}) presents a dichotomy for every $\eps \in (0, 1]$ and $D \ge 0$:
+\begin{itemize}[leftmargin=2em]
+\item \emph{Either} the dependency DAG $H_M$ admits no genie of cost at most $\eps L$ and depth at most~$D$ (defeating
+  cheap depth reduction);
+\item \emph{or} the revealed word of such a genie forms an index code of at most $\eps L$ bits for the bounded-depth cone
+  side information $N_I$ on $[0, L)$, and its largest fibre is a binary storage code $C \subseteq \{0,1\}^L$ of rate at
+  least $1 - \eps$ on $N_I$~\cite[Remark~4.9(b)]{FourthPaper2026}.
+\end{itemize}
+By the fifth paper's paired-distance analysis~\cite[Theorem~3.3 and Corollaries~3.7 and~3.8]{DirectedRecovery2026}, for
+every fixed $\delta > 0$ and odd radius $r$, deleting a set $Z$ of at most $\delta L + O(L / \log d)$ coordinates
+(high-reuse positions together with short paired-incidence paths, measured by the short-pair count $b_E(r)$ in the
+bipartite incidence graph of $N_I$) leaves a bounded-degree relation $N_I - Z$ with $b_E(r) = 0$; at $r = 3$, $N_I - Z$
+is loopless and TT-free~\cite[Lemma~2.1]{SeventhPaper2026} (\lean{HalfRate.ttFree_iff_shortPaired_eq_empty}). Moreover, by
+paid coordinate deletion (\cite[Corollary~6.9]{SeventhPaper2026}, Lean-verified as
+\lean{HalfRate.card_sq_le_of_paidDeletion}), if $N_I - Z$ satisfies the polymatroid half-rate bound~\eqref{eq:half-rate},
+then $\card{C}^2 \le 2^{L + \card{Z}}$, bounding the rate of $C$ by $\tfrac{1}{2} + \card{Z}/(2L) \le \tfrac{1}{2} +
+\tfrac{\delta}{2} + o(1)$ and ruling out rate $1 - \eps$ whenever $\eps < \tfrac{1}{2} - \tfrac{\delta}{2}$.
+
+\subsection{Necessary conditions on the cone codes}\label{sec:con-codes}
+
+Suppose an oblivious linear-time transposer admits a bounded-depth genie of cost $\eps L$ ($\eps < \tfrac{1}{2}$),
+yielding a binary storage code $C$ of rate at least $1 - \eps$ on $N_I$, and let $N' = N_I - Z$ be the loopless TT-free
+sub-relation obtained after paid deletion of $\card{Z} \le \delta L + o(L)$ coordinates. In addition to the conditions
+established in~\cite{FourthPaper2026,DirectedRecovery2026,SeventhPaper2026,EighthPaper2026}, our coding theorems impose
+two sharp structural requirements on $N'$:
+
+\begin{enumerate}[label=(N\arabic*),leftmargin=3em]
+\item\label{it:con-N1} \emph{Positive density of unreciprocated full-in-degree vertices ($\neg\ClassS$).} For \emph{every}
+  subset $W$ of coordinates of $N'$ on which the induced relation $N'[W]$ belongs to $\ClassS$, we must have
+  \[
+    \card{W} \;\le\; (2\eps + \delta)L + o(L).
+  \]
+  Indeed, applying \cref{thm:Sstar}(2) (\lean{rateBound_classS}) to $N'[W]$ and paid deletion to the remaining
+  $L - \card{W}$ coordinates of $N_I$ gives $\card{C}^2 \le 2^{L + (L - \card{W})} = 2^{2L - \card{W}}$, whereas
+  $\card{C} \ge 2^{(1 - \eps)L}$ forces $2(1 - \eps)L \le 2L - \card{W}$, i.e., $\card{W} \le 2\eps L$ (and at most
+  $(2\eps + \delta)L + o(L)$ inside $N'$). Likewise, by \cref{cor:Bstar}, on any $\ClassS$ sub-relation no vertex cut $S$
+  can create an isolated-parent surplus $\card{I_{N'[W]}(S)} - \card{S}$ without correspondingly shrinking code capacity.
+
+  \emph{Design consequence:} When $N'$ has maximum in-degree~$3$, a coding gain above rate~$\tfrac{1}{2}$ (whether linear
+  or nonlinear, over any alphabet) cannot come from subcubic undirected exchange, pure one-way directed cycles of
+  in-degree-$2$ vertices, chordal one-way shortcuts across digon cycles, or even stride-$3$ hub cycles such as those of
+  $\Gto$ (\cref{prop:G21}) whose hubs have in-degree~$2$. Rather, a linear fraction of coordinates in strongly connected
+  components of $N'$ must have \emph{in-degree~$3$ together with at least one unreciprocated outgoing arc} ($v \in N'(u)$
+  with $u \notin N'(v)$), or else have in-degree at least~$4$.
+
+\item\label{it:con-N2} \emph{Distance-$2$ heavy clusters for degree-$4$ scalar linear codes.} Suppose the machine's data
+  path is linear over a field $F$ and a fibre code on a triangle-free symmetric support $G = (V, E)$ of maximum degree~$4$
+  is realized as $\ker M$ for a unit-diagonal check matrix $M \in F^{V \times V}$. By \cref{thm:SHstar} and
+  \cref{cor:Mstar} (\lean{finrank_ker_le_matching_rhoMatch}),
+  \[
+    \dim_F \ker M \;\le\; \nu(G) + \card{H_M} - \rhom(G, H_M) \;\le\; \frac{\card{V}}{2} + \card{H_M} - \rhom(G, H_M),
+  \]
+  and the same bound holds with $H_{M^\T}$ in place of $H_M$. To achieve $\dim_F \ker M \ge (1 - \eps)\card{V}$, the
+  code must satisfy
+  \[
+    \card{H_M} - \rhom(G, H_M) \;\ge\; \Bigl(\frac{1}{2} - \eps\Bigr)\card{V}, \qquad
+    \card{H_{M^\T}} - \rhom(G, H_{M^\T}) \;\ge\; \Bigl(\frac{1}{2} - \eps\Bigr)\card{V}.
+  \]
+  In~\cite{EighthPaper2026}, where $\rho_3(G, H_M)$ stood in place of $\rhom(G, H_M)$, adjacent pairs of degree-$4$ rows
+  remained a plausible source of linear excess (as on the bipartite family $G_{8k}$ of \cref{rem:deg4-numerics}, where
+  $\card{H} - \rho_3(G_{8k}, H) = k = \tfrac{1}{8}\card{V}$). \Cref{cor:Mstar} closes that loophole completely: isolated
+  heavy edges ($u \sim v$ with no shared neighbor, since $G$ is triangle-free) contribute full weight~$2$ to
+  $\rhom(G, H_M)$ and yield \emph{zero} rate gain above~$\tfrac{1}{2}$. Any degree-$4$ scalar linear gain must concentrate
+  a linear fraction of heavy vertices at pairwise distance \emph{exactly~$2$} in~$G$, sharing common neighbors.
+\end{enumerate}
+
+\subsection{Necessary conditions on head schedules and cut labels}\label{sec:con-walks}
+
+By Theorems~F and~M of~\cite{EighthPaper2026}, any oblivious linear-time transposer that defeats cheap depth reduction must
+employ unbounded owner-load on at least two work heads, or on one work head coupled with bounded-load heads across
+unboundedly many separated scales; the $2$-head deep-nesting pair $\DNP(s_0, m)$ is the minimal prototype of the two-head
+regime. Our results in \cref{sec:dnp} sharpen both sides of the $\DNP(s_0, m)$ frontier:
+
+\begin{itemize}[leftmargin=2em]
+\item \emph{Why simple turn-label cuts fail to prove $\TCP(2)$ on $\DNP(s_0, m)$.} An impossibility proof via $\TCP(2)$
+  must exhibit, for every $\eps > 0$, a bounded modulus $q = O_\eps(1)$ and a low-cost label $\Psi : [0, T) \to \Z_q$.
+  \Cref{thm:LU} proves that no level-uniform turn potential can keep blind apex and band-$0,1,2$ errors at most $q/8$ across
+  more than $2\lfloor\log_2 q\rfloor + 2$ consecutive levels without periodic negative resets; \cref{prop:OC}(2)--(3) proves
+  that periodic $(a+1)$-block resets carry strictly positive mean path drift $+\tfrac{1}{2}(a(K+1)+1)$ across random nested
+  branches while pure binary clocks modulo Mersenne numbers $q = 2^B - 1$ suffer $q - 1$ straddle error whenever
+  $B \mid (m - \kappa + 2)$; and \cref{thm:A} exhibits three-regime blind-error and coarse-straddle witnesses on $\Omega(m)$
+  levels at two fixed odd shifts $\xi_1, \xi_2$ (a single odd shift for symmetric pairs) for \emph{every} bounded-range block
+  pair $(B(a_1, K_1), B(a_2, K_2))$ across \emph{all} $K_1, K_2 \in \Z$ and \emph{all} $q \ge 3$. Thus any cut refuting
+  depth-robustness of $\DNP(s_0, m)$ at misaligned odd shifts where fine bands are half-blind must exploit mechanisms
+  outside \cref{thm:A} (\cref{rem:scope-A}), such as block lengths $a$ growing with $\log_2 q$, non-level-uniform jumps
+  varying across sibling V's at the same scale, or cuts not supported at turns.
+\item \emph{What a depth-robust $2$-head schedule must do (heuristic reading).} Conversely, if a $2$-head oblivious
+  transposer seeks to evade cheap depth cuts through deep nesting, aligned shifts ($\xi = 1$) fail because both heads
+  share a single doubled block potential~\cite[Proposition~5.14]{EighthPaper2026}, whereas misaligned odd shifts create the
+  simultaneous multi-scale V-straddle interference quantified by \cref{thm:Vstar} and \cref{thm:A}: coarse apex hops of
+  scale $R_k$ straddle canceller valleys of scale $\Pi_\kappa \asymp R_k$ on the other head with exact parity-invariant
+  weight $\Pi_\kappa^2 / 4$ per V (\cref{thm:Vstar}(3)). Even if such a schedule achieves depth-robustness on its deep
+  core, Theorem~F of~\cite{EighthPaper2026} restricts that core to $o(L)$ heavily visited scratch cells unless the machine
+  also overcomes the Scratch Question (\cite[Section~10, Problem~10.5]{EighthPaper2026})---or, for adaptive machines,
+  escapes the complete source-cover and return-profile barriers of~\cite{NinthPaper2026}.
+\end{itemize}

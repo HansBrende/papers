@@ -460,9 +460,12 @@ logarithm on each group fibre. Each row supplies at most `b g_a`, and
 unattached rows supply zero. A finite weighted path family now carries that
 exact value, with all traversal loads bounded by the flow and at most one
 path per positive edge. The reusable extraction allows cycles and preserves
-parallel-edge identities. Removing artificial arcs, per-bit allocation,
-return walks and averaging remain unformalized, so the full routing
-conclusion is still pending.
+parallel-edge identities. The artificial source and attachment arcs are now
+removed, retaining each path's actual row attachment. Uniform splitting among
+that row's original group bits preserves every original and collector edge
+load and gives each bit mass at most one. Mapping collector copies to the
+original memory edges, return walks and averaging remain unformalized, so
+the full routing conclusion is still pending.
 
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:

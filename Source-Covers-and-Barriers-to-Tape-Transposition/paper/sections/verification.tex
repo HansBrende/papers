@@ -106,11 +106,12 @@ supersource/sink cut inequalities, including cuts crossing row attachments.
 The shared real-capacity flow theorem uses Mathlib's compactness theorem
 and finite-box perturbations of residual walks. The actual augmentation
 yields a flow of value $\log_2|\mathcal A_a(z)|$ on each group fibre.
-Weighted Mathlib quiver paths carry that value, count every traversal and
-respect all capacities and row constraints, including zero supply from
-unattached rows. The extraction allows cycles and uses at most one path
-per positive edge. Removing artificial arcs, per-bit allocation, return
-walks and averaging in \cref{thm:causal-group-routing} remain unformalized.
+Weighted Mathlib quiver paths carry that value with every traversal counted.
+Mathlib's path-lifting theorem removes the two artificial initial arcs,
+retaining actual row attachments. Uniform splitting preserves every
+original and collector edge load and gives each bit mass at most one.
+Combining collector copies with original edges, return walks and averaging
+in \cref{thm:causal-group-routing} remain unformalized.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run

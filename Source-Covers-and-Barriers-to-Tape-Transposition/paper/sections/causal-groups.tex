@@ -195,10 +195,11 @@ path weight, capped by the remaining source value. This either finishes
 or exhausts a positive edge, so at most one path per originally positive
 edge is needed. Every traversal is charged with multiplicity.
 Remove the paths' artificial source and attachment arcs.
-Split the path mass from each row among its
-$bg_a$ original group bits, assigning at most one unit to each bit.
-This is possible because all those bits have the same permitted row
-attachments.  It need not identify particular bits as entropy carriers.
+Split each path's weight equally among the $bg_a$ original bits in its row.
+Each bit receives that row's total path mass divided by $bg_a$, hence at
+most one unit. This preserves every retained edge's load. All these bits
+have the same permitted row attachments; no particular bits need to be
+identified as entropy carriers.
 For each allocated bit append the memory path backwards from
 $\omega_a$ to that bit's original output node.  Every such return
 stays in $I_a$ and contributes at most the total group flow, hence at

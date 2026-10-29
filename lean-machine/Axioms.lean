@@ -1083,3 +1083,15 @@ import LeanMachine
 #print axioms LeanMachine.FiniteFlow.Network.packingLoad_divergence
 #print axioms LeanMachine.FiniteFlow.Network.packing_feasible
 #print axioms LeanMachine.FiniteFlow.Network.exists_path_packing
+
+-- FlowPathMap.lean
+#print axioms LeanMachine.FiniteFlow.Network.Map
+#print axioms LeanMachine.FiniteFlow.Network.Map.prefunctor
+#print axioms LeanMachine.FiniteFlow.Network.Map.path
+#print axioms LeanMachine.FiniteFlow.Network.Map.pathEdges_map
+#print axioms LeanMachine.FiniteFlow.Network.Map.pathFlow_map_of_injective
+#print axioms LeanMachine.FiniteFlow.Network.Map.pathFlow_map_outside
+#print axioms LeanMachine.FiniteFlow.Network.Map.lift_path
+#print axioms LeanMachine.FiniteFlow.Network.pathComp
+#print axioms LeanMachine.FiniteFlow.Network.pathEdges_comp
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_comp

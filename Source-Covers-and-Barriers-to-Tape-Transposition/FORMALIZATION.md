@@ -1226,16 +1226,56 @@ of exactly the projected-support logarithm, with feasible loads, the row
 caps and zero supply from unattached rows. `packing_row_mass` proves that
 the loads on source-to-row arcs sum to the whole path mass.
 
-These are paths in the augmented network. Per-bit paths starting at actual
-row attachments, return walks, and the averaged routing of Theorem 8.2
-remain to be constructed.
+These paths still contain their two artificial initial arcs; the following
+step removes them.
+
+## Completed: actual attachment paths and uniform bit allocation
+
+The shared [`FlowPathMap`](../lean-machine/LeanMachine/FlowPathMap.lean)
+defines incidence-preserving maps and reuses Mathlib's
+`Prefunctor.pathStar_surjective`. For an injective vertex map, surjectivity
+on outgoing arrows suffices to lift paths with specified endpoints; no
+incoming-arrow condition or full covering assumption is imposed.
+Mapped edge lists retain every traversal. Injective edge maps preserve
+each edge's exact load, and edges outside their image carry zero load.
+
+[`CausalAttachmentPaths`](lean/SourceCovers/CausalAttachmentPaths.lean)
+classifies the first two arcs of every augmented path as a source-to-row
+arc followed by an actual attachment. Every outgoing edge of a physical
+vertex belongs to the collected network, so Mathlib lifts the remaining
+path into that network. The attachment vertex may already be the sink;
+the resulting path can be empty. Reattaching the two initial arcs recovers
+the original path exactly. For the whole weighted family, both retained
+edge loads and row masses are unchanged. The support logarithm, row caps,
+zero supply from unattached rows and path-count bound all survive.
+
+[`CausalBitAllocation`](lean/SourceCovers/CausalBitAllocation.lean) assigns
+each path equally among the `b*g_a` original bits in its row. Its finite
+index retains list positions, so repeated paths are not merged or lost.
+`BitPath` records the bit, an attachment of its own row, and the actual
+path to the collector sink. The exact identities are:
+
+- total allocated mass equals the original path-family mass;
+- every original or collector edge load is unchanged, with multiplicity;
+- each bit's mass equals its row's path mass divided by `b*g_a`.
+
+The last identity and the row cap give mass at most one per bit, with zero
+mass in unattached rows. These splitting identities hold for arbitrary real
+weights; the existence theorem supplies positive weights. No independence
+of rows, groups or helper fibres is used. The allocation is a choice of
+routing labels, not an assertion that particular bits carry the entropy.
+
+The paths still end at the collector sink. Mapping collector-copy arcs to
+their original memory edges, adding the return walks, and proving the
+averaged routing of Theorem 8.2 remain outstanding.
 
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Remove artificial arcs, split each row's path mass among its
-   original group bits with mass at most one each, and append the paid
-   backward memory walks. Unattached rows must receive zero mass.
+1. Map collector-copy arcs to their original memory edges and append the
+   paid backward memory walks to each bit's own output. Preserve traversal
+   multiplicity and charge original fields, copies and returns separately
+   before combining their loads.
 2. Sum groups and average over attained helper values, proving the exact
    augmented capacities and total mass `R_sup`. Derive conditional entropy,
    total-correlation and short-distance/volume consequences.

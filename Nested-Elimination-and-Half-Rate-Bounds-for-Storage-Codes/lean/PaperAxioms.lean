@@ -5,6 +5,7 @@ import HalfRate.Circulant
 import HalfRate.Components
 import HalfRate.Corollaries
 import HalfRate.Decomposition
+import HalfRate.DegreeFour
 import HalfRate.Digon
 import HalfRate.IndexCoding
 import HalfRate.Limits
@@ -78,6 +79,14 @@ and `Quot.sound`. -/
 #print axioms HalfRate.contr_isPolymatroid
 #print axioms HalfRate.decomp_ineq
 #print axioms HalfRate.rateBound_of_decomp
+-- DegreeFour.lean
+#print axioms HalfRate.g13
+#print axioms HalfRate.g13_card_nbhd
+#print axioms HalfRate.g13_five_cycle
+#print axioms HalfRate.g13_not_rateBound
+#print axioms HalfRate.g13_triangleFree
+#print axioms HalfRate.g13code_card
+#print axioms HalfRate.g13code_isStorageCode
 -- Digon.lean
 #print axioms HalfRate.InducesDigonPath
 #print axioms HalfRate.digonComp
@@ -223,6 +232,11 @@ and `Quot.sound`. -/
 #print axioms HalfRate.c13_isChordedCycle
 #print axioms HalfRate.c13_spec
 #print axioms HalfRate.cyc1
+#print axioms HalfRate.g13code
+#print axioms HalfRate.g13enc
+#print axioms HalfRate.g13enc_rec
+#print axioms HalfRate.g13gen_id
+#print axioms HalfRate.g13gen_rec
 #print axioms HalfRate.mi
 #print axioms HalfRate.petersen_cliqueFree
 #print axioms HalfRate.petersen_decomp

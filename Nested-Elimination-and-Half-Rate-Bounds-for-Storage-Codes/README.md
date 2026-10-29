@@ -75,6 +75,10 @@ Lean declarations and file.
   (Remark 7.5). The global certificates printed for Cay(Z₉, {1, −1, 3}), for X₁₅ and for the displayed
   13-cycle, and certificates for the other eleven cycles, are checked, so each of these relations satisfies the
   half-rate bound.
+- **Degree four (Example 7.8).** The graph G₁₃ on 13 vertices is 4-regular and triangle-free, with odd girth five, and
+  carries a storage code over a four-letter alphabet with 4⁷ words: the row space of [I₇ | D] over the field F₄,
+  written in the Lean proof with symbols as bit pairs. So |C|² = 4¹⁴ > 4¹³, and the half-rate bound fails at degree
+  four; with Theorem N3, degree three is the exact limit for triangle-free graphs.
 
 Not formalized:
 - the remaining claims of the numerical remarks on the limits of the method, checked exactly by
@@ -91,7 +95,7 @@ Not formalized:
 
 - Conjecture P: every loopless relation of in-degree at most 3 without transitive triangles has a decomposition,
   which would give the half-rate bound for all of them.
-- The half-rate bound at degree four.
+- The half-rate bound at degree four along families with growing girth (it fails at odd girth five, Example 7.8).
 - The all-code question on paired-distance-separated relations of *Directed Recovery Structures in Tape
   Computations*.
 - See the open-problems section of the paper.

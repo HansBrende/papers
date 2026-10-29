@@ -2,6 +2,7 @@ import HalfRate.NestedElimination
 import HalfRate.Decomposition
 import HalfRate.Corollaries
 import HalfRate.Examples
+import HalfRate.DegreeFour
 import HalfRate.Positional
 import HalfRate.Pieces
 import HalfRate.N3

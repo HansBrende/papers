@@ -52,3 +52,14 @@ What it checks, by remark of the paper:
   global certificate of X15.
 - The folded cubes (Remark 7.6): the binary kernel of `I + A` has dimension `N/2 + 2^(k-1)` for `k = 2, 3`, a numerical
   check of the cited formula.
+
+## `degree_four.py`
+
+Generates the data of `lean/HalfRate/DegreeFour.lean` (Example 7.8 of the paper): the neighbour lists of the
+13-vertex graph G₁₃ (graph6 ``L?`@F@wlEcBoBo``, vertices numbered by networkx), the generator of the F₄-linear code
+[I₇ | D(ω)] with symbols written as bit pairs, and the 2 × 2 recovery blocks. It checks every identity that the Lean
+proof uses in exact arithmetic and prints the Lean definitions. It needs `networkx`.
+
+```sh
+python3 tools/degree_four.py
+```

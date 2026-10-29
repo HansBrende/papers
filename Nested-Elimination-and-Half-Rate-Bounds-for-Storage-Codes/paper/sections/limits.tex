@@ -173,15 +173,48 @@ Lean-verified in the fourth paper~\cite[Corollary~6.11]{FourthPaper2026}: its Cl
 degree, for every $k\ge2$; it holds on other graphs whose odd girth equals their degree, such as the $5$-regular
 Andrásfai graph $\Andr(5)=K_{14/5}$, of odd girth five (\cref{thm:circular}). In the symmetric case $\dist_E(L_p,R_p)$ is
 the length of the shortest odd closed walk through $p$, so here $b_E(r)=0$ for $r<2k+1$. Hence, for every odd $r\ge3$, an exact half bound that assumes only $b_E(r)=0$ can hold at most for maximum degree
-$r+1$: the folded $(r+2)$-cube violates it. The excess $2^{k-1}=\sqrt N/2$ is $o(N)$, which is consistent with the
+$r+1$: the folded $(r+2)$-cube violates it. For $r=3$ it fails already at maximum degree four (\cref{ex:deg4}), so the
+degree bound of Theorem~N3 cannot be raised. The excess $2^{k-1}=\sqrt N/2$ is $o(N)$, which is consistent with the
 asymptotic form of the paired-distance question~\cite[Question~9.1]{DirectedRecovery2026}.
 \end{remark}
 
 \begin{remark}[Heuristic: degree four]\label{rem:degree4}
 In the undirected setting, the method needs each step to have at most one outside parent. If a vertex $v$ of a shortest
 cycle has two outside neighbours $p$ and $p'$, the step that eliminates it costs $I(v;\{p,p'\}\mid Q)$, which is not a sum
-of charges on $p$ and $p'$ that telescope separately. This is a limitation of Lemma~E, not evidence against the half bound
-at degree four; \cref{thm:circular} covers graphs of circular chromatic number below three at every degree. The
+of charges on $p$ and $p'$ that telescope separately. This limitation of Lemma~E is not an artefact: the half bound itself
+fails at degree four, on a triangle-free graph of odd girth five (\cref{ex:deg4}), while \cref{thm:circular} covers graphs
+of circular chromatic number below three at every degree. The
 fourth paper shows that the local linear-algebraic necessary conditions on a smallest counterexample, checked inside
 tree-like regions, cannot give rate $\frac12+o(1)$ at degree four or more~\cite[Proposition~6.28]{FourthPaper2026}.
 \end{remark}
+
+\begin{example}[The half bound fails at degree four]\label{ex:deg4}
+\formal{DegreeFour.lean}{g13, g13_triangleFree, g13_five_cycle, g13_card_nbhd, g13code_isStorageCode, g13code_card,
+g13_not_rateBound}
+Let $G_{13}$ be the graph on $\{0,\dots,12\}$ in which the neighbours of $0,1,\dots,12$ are, in this order,
+$\{4,7,9,10\}$, $\{5,7,8,10\}$, $\{6,7,8,9\}$, $\{8,9,10,11\}$, $\{0,8,11,12\}$, $\{1,9,11,12\}$, $\{2,10,11,12\}$,
+$\{0,1,2,12\}$, $\{1,2,3,4\}$, $\{0,2,3,5\}$, $\{0,1,3,6\}$, $\{3,4,5,6\}$ and $\{4,5,6,7\}$. It is $4$-regular and
+triangle-free, and $0,4,8,1,7$ is a $5$-cycle, so its odd girth is five. Over the field $\F_4=\{0,1,\omega,\omega^2\}$,
+$\omega^2=\omega+1$, let $C\subseteq\F_4^{13}$ be the row space of the $7\times13$ matrix $[I_7\mid D]$, whose
+column~$v$ belongs to vertex~$v$, where the rows of~$D$ are
+\[
+  (1,0,1,1,0,1),\ (1,1,0,1,0,1),\ (1,1,1,0,0,1),\ (0,1,1,1,1,0),\ (1,1,0,0,\omega,\omega),\ (1,0,1,0,\omega,\omega),\
+  (1,0,0,1,\omega,\omega).
+\]
+Every column of $[I_7\mid D]$ is an $\F_4$-linear combination of the columns of the four neighbours of its vertex, so
+every symbol of a word of~$C$ is a function of the symbols at its neighbours: $C$ is a storage code for $N_{G_{13}}$ over the
+alphabet~$\F_4$, with $\card C=4^7$. Hence $\card C^2=4^{14}>4^{13}=\card\F_4^{\card V}$, and by \cref{thm:codes} the relation
+$N_{G_{13}}$ does not satisfy \eqref{eq:star}.
+\end{example}
+
+\begin{outline}
+The formal proof writes a symbol $a+b\omega$ of $\F_4$ as the bit pair $(a,b)$, so that $C$ is the image of a
+$\Z/2$-linear map on $(\Z/2)^{14}$ (\lean{g13enc}, \lean{g13code}); the generator and the recovery coefficients, $2\times2$
+blocks for multiplication by elements of $\F_4$, are produced by \leanfile{tools/degree_four.py}. The kernel checks that
+each of the fourteen basis words satisfies the recovery identity at every vertex (\lean{g13gen_rec}); linearity extends it
+to every word (\lean{g13enc_rec}), which is the storage property (\lean{g13code_isStorageCode}). The first seven symbols of
+a word are its message (\lean{g13gen_id}), so the encoding is injective and $\card C=2^{14}$ (\lean{g13code_card}). With
+\cref{thm:codes} this contradicts the half-rate bound (\lean{g13_not_rateBound}). Triangle-freeness, the $5$-cycle and the
+degrees are decided by the kernel (\lean{g13_triangleFree}, \lean{g13_five_cycle}, \lean{g13_card_nbhd}). The alphabet
+of the formal statement is $(\Z/2)^2$, of size four, as for~$\F_4$.
+\end{outline}

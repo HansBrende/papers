@@ -91,7 +91,9 @@ has a unique minimum nonempty core, which is not a piece, although the relation 
 certificate, although Theorem~N3 gives it a decomposition (\cref{rem:petersen}). The half bound fails on the folded
 cubes, whose odd girth equals their degree (\cref{rem:foldcube}, from a rank formula of Barg, Schwartz and
 Yohananov~\cite{BSY2024}); so an exact half bound that assumes only $b_E(r)=0$, for a fixed odd $r\ge3$, cannot
-hold at maximum degree $r+2$.
+hold at maximum degree $r+2$. For $r=3$ it fails already at maximum degree four: a $4$-regular triangle-free graph on
+thirteen vertices, of odd girth five, carries a linear storage code over~$\F_4$ with $\card C=4^7$ (\cref{ex:deg4}), so
+Theorem~N3 is sharp in the degree.
 
 \paragraph{What this means for (T) (\cref{sec:construction}).} These are unconditional storage-code theorems; they do not
 decide~(T). They constrain constructions: in the cone relations of a correct oblivious transposer left by
@@ -104,7 +106,8 @@ would give the degree-three case of the paired-distance question (\cref{prop:dn3
 Apart from three results of the fourth paper that we cite (\cref{thm:codes,lem:closure,lem:fewer-arcs}), which are
 Lean-verified there, every numbered theorem, proposition, lemma, corollary and example of this paper is formalized in
 Lean, including the guessing number and the broadcast rate (\cref{cor:gn,cor:broadcast}), the conditional transfer of
-\cref{prop:dn3-transfer}, \cref{prop:no-private} and \cref{ex:D9}; the finite checks are evaluated by the Lean kernel.
+\cref{prop:dn3-transfer}, \cref{prop:no-private}, \cref{ex:D9} and \cref{ex:deg4}; the finite checks are evaluated by the
+Lean kernel.
 Not formalized are the remaining claims of the numerical remarks of \cref{sec:limits}: that the $15$-vertex relation
 $\Ex$ is strongly connected and not $2$-dicolourable and that its minimum nonempty core is not a piece; that the twelve
 chorded cycles of \cref{rem:sweeps} have no valid sweep; and that the Petersen graph has no global certificate. They are
@@ -138,7 +141,10 @@ Christofides and Markström's fractional clique cover strategy~\cite{Christofide
 triangle-free subcubic graphs it is exact (\cref{thm:gn}). Without a degree bound, triangle-freeness does not force
 rate~$\frac12$: Barg and Zémor~\cite{BargZemor2022} and Barg, Schwartz and Yohananov~\cite{BSY2024} construct storage codes
 on triangle-free graphs of growing degree with rates approaching $\frac34$ and~$1$, and an earlier triangle-free family of
-rate approaching~$1$ is due to Golovnev and Haviv~\cite{GolovnevHaviv2022}, as noted in~\cite{BSY2024}.
+rate approaching~$1$ is due to Golovnev and Haviv~\cite{GolovnevHaviv2022}, as noted in~\cite{BSY2024}. The
+bounded-degree examples among these have degree at least five, such as the Clebsch graph (\cref{rem:foldcube}); we are
+not aware of an earlier triangle-free example of maximum degree four (\cref{ex:deg4}), and at degree three there is
+none (Theorem~N3).
 
 \paragraph{The series.} The fourth paper~\cite{FourthPaper2026} proved that rate bounds pull back along homomorphisms
 (Theorem~H), the half bound for scalar linear codes on triangle-free subcubic side information with its matching form

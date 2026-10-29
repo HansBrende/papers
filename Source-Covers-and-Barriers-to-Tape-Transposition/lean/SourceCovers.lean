@@ -54,3 +54,4 @@ import SourceCovers.PrefixSharing
 import SourceCovers.UniformSharing
 import SourceCovers.SharingDensity
 import SourceCovers.MetricSharing
+import SourceCovers.CoveringExponents

@@ -9,9 +9,11 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.ActualFamily.shadow_exact
 #print axioms SourceCovers.AdmissibleGeometry
 #print axioms SourceCovers.AdmissibleGeometry.HasMeanCoverBound
+#print axioms SourceCovers.AdmissibleGeometry.HasRawPowerCover
 #print axioms SourceCovers.AdmissibleGeometry.HasSharingBounds
 #print axioms SourceCovers.AdmissibleGeometry.deficit
 #print axioms SourceCovers.AdmissibleGeometry.deficit_card_iff
+#print axioms SourceCovers.AdmissibleGeometry.hasRawPowerCover_of_unshifted
 #print axioms SourceCovers.AdmissibleGeometry.inputLength
 #print axioms SourceCovers.AdmissibleGeometry.orbit_count_deficit
 #print axioms SourceCovers.AdmissibleGeometry.prefix_metric_deficit
@@ -170,6 +172,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.power_envelope_tailSmall
 #print axioms SourceCovers.power_envelope_uniform_deficit
 #print axioms SourceCovers.power_mean_cover_uniform_deficit
+#print axioms SourceCovers.power_metric_sharing_uniform_deficit
 #print axioms SourceCovers.power_sharing_uniform_deficit
 #print axioms SourceCovers.protected_phase_average
 #print axioms SourceCovers.protected_survives
@@ -187,6 +190,7 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.shared_support_count_deficit
 #print axioms SourceCovers.shared_support_paid_deficit
 #print axioms SourceCovers.sharing_uniform_deficit
+#print axioms SourceCovers.sublinear_metric_sharing_uniform_deficit
 #print axioms SourceCovers.sublinear_sharing_uniform_deficit
 #print axioms SourceCovers.sum_family_variation_eq
 #print axioms SourceCovers.twoExceptionBank_exact

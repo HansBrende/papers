@@ -1,7 +1,7 @@
 \section{Specification for subsequent formalization}
 \label{sec:formalization}
 
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,lem:attached-short-count}
 are Lean-verified;
 their declarations and axiom commands accompany the paper. The remaining results retain
 complete written proofs. The index in
@@ -89,11 +89,13 @@ linear loss follows directly. The full shared-support payment in
 at the recovery stage, and the finite mean-support bound uses the smaller
 older-bank movement constant while preserving the full residual-cut cost.
 The global seed set ranges over all actual output-bit times, and its raw
-payment is valid for every shift. The next target is the uniform global-sharing
-criterion in \cref{thm:uniform-sharing}. Its dimension and prefix limits
-must use the same joint-profile subsequence; its good cutoffs need only be
-arbitrarily large. Metric criteria will then replace temporal counts with
-raw interval covers.
+payment is valid for every shift. The uniform global-sharing criterion,
+necessary continuation density and superlinear seed growth are verified,
+with dimension taken first along the same joint-profile subsequence.
+The metric criterion and its covering-exponent corollary are also verified:
+short raw intervals cost at most two grid blocks each, and one power-scale
+argument gives both the envelope and no-envelope criteria. All geometric
+bounds use the same original order and common dimension-independent cutoffs.
 
 \item \emph{Independent construction tests.}
 Formalize the serial native geometry as an exact finite construction,

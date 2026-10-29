@@ -1,7 +1,7 @@
 \section{Building and checking this draft}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,lem:attached-short-count}
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
 \leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
@@ -69,6 +69,8 @@ accepts an arbitrary shift-uniform payment; the original count bounds
 specialize it. The same rounded-width proof and vanishing-tail contradiction
 serve both global-count and metric-cover criteria. The three metric limits
 use one common cutoff filter; separate favorable cutoff sets would not suffice.
+The covering-exponent corollary specializes this criterion using a shared
+lemma for three negative-power limits and the universal sorted-rank bound.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run
@@ -92,21 +94,17 @@ python3 tools/statement_index.py
 python3 tools/statement_index.py --check
 \end{verbatim}
 \end{samepage}
-The script reads the section order from \path{paper/main.tex}, checks
-stable labels, proof-status markers and the corresponding proof or
-outline environments, and generates the index appendix,
-\path{FORMALIZATION-INDEX.md}, and \path{lean/PaperAxioms.lean}.
-It does not itself verify the mathematics or execute the axiom commands.
-\path{FORMALIZATION.md} records completed work and the remaining plan.
+The script checks statement labels, proof-status markers and proof or
+outline environments, and generates the declaration appendix,
+\path{FORMALIZATION-INDEX.md} and \path{lean/PaperAxioms.lean} from the
+manuscript. It neither verifies proofs nor executes axiom audits.
+\path{FORMALIZATION.md} records progress and remaining work.
 
 Build the PDF from \path{paper/} with
 \begin{verbatim}
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 \end{verbatim}
-Resolve undefined references and citations, and inspect the rendered
-pages. Earlier-paper references are pinned in \path{paper/references.bib},
-and their proof status is stated where used. Public paths are relative
-to this repository. Run \path{tools/check_public_paths.py} from the
-repository root as described in \path{CONTRIBUTING.md} before publishing.
-That scan checks portability and local-path disclosure, not theorem
-correctness.
+Check references and citations and inspect the rendered pages. Earlier-paper
+citations are pinned in \path{paper/references.bib}. Before publishing,
+run the repository's public-path checks as described in
+\path{CONTRIBUTING.md}; they check portability, not theorem correctness.

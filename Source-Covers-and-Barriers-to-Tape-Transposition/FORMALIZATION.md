@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-four of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-five of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -18,9 +18,10 @@ Proposition 5.1, the full shared-support payment;
 Theorem 5.2, uniform exclusion by global sharing;
 Corollary 5.3, necessary global continuation density and superlinear seed growth;
 Proposition 5.4, the metric shared-support criterion;
+Corollary 5.5, sublinear raw covering exponents;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 8 results
+bounds and vanishing tails. The other 7 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -908,13 +909,42 @@ bound `delta < 1`, convergence at every cutoff, or positivity of the
 omitted rate is needed. All original cases are retained; no native
 cover-number upper bound is inferred from entropy alone.
 
-The **next target is Corollary 5.5, sublinear raw covering exponents**.
-Reuse the metric criterion and Mathlib's real-power limits. Choose one
-width exponent strictly between the raw-cover growth threshold and the
-omitted-family exponent; handle the no-envelope case with the sorted
-rank bound. Check whether the power case needs only `p > 0` and whether
-the two cases share one general proof. Keep all constants and good
-cutoffs independent of dimension.
+## Completed: sublinear raw covering exponents
+
+[`CoveringExponents.lean`](lean/SourceCovers/CoveringExponents.lean)
+verifies Corollary 5.5 by applying the metric criterion. Under an actual
+omitted-coordinate bound `A/(J+1)^p`, any mean raw-cover budget
+`H_R*(J+1)^u_R*delta^(-s_R)` with `s_R < 1` and
+`u_R < p*(1-s_R)` suffices. The exponent need only satisfy `p > 0`.
+The universal sorted-rank bound specializes this at `p = 1`, so the
+no-envelope case permits growth `u_R < 1-s_R`, including the original
+cutoff-independent case `u_R = 0`.
+
+The shared [`PowerEnvelope`](../lean-machine/LeanMachine/PowerEnvelope.lean)
+chooses one positive exponent between `max(0, u/(1-s))` and `p`.
+Its three-scale limit lemma works for any positive base tending to infinity
+and any real amplitudes. It uses Mathlib's negative-power limit and exact
+real-power identities. No new entropy, geometry, compactness or rounding
+proof is required. The two geometric conclusions reuse one application
+of `metric_sharing_uniform_deficit` and retain the code-cardinality bound.
+
+All cover constants, exponents and allowed cutoff sets are fixed before
+dimension. The cutoffs may be any common unbounded set for each protected
+scale. Removing finitely many cutoffs ensures the chosen radius is below
+the supplied positive upper radius. A separate monotonicity adapter proves
+that the original unshifted `J^u` budget implies the more permissive
+`(J+1)^u` budget for nonnegative `u`. No original case is lost.
+The formal theorem also permits signed `u` and `s < 1`; the manuscript
+keeps the customary nonnegative range. The enlarged no-envelope range is
+a stronger specialization of the existing metric criterion, not a new
+bound for unrestricted tape geometries.
+
+The **next target is Proposition 6.1, the serial-exception quadratic-cover
+example**. Start with explicit finite walks and exhaustive actual-family
+identification, then reuse the existing shadow and complete-orbit libraries
+for the raw-support certificate. Cover witnesses must range over every
+computation time; the lower bound must not assume that a convenient list
+contains all relevant families or roots.
 The general transposition question remains open.
 
 ## Dependency order and proof obligations

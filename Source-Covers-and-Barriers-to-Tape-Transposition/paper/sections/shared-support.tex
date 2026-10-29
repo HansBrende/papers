@@ -348,32 +348,57 @@ and its limiting coefficient; it does not change the vanishing conditions
 or establish metric covers for an unrestricted native class.
 
 \begin{corollary}[Sublinear raw covering exponents]\label{cor:covering-exponents}
-\notformalized
-The metric criterion holds in either of the following classes, with
-constants uniform in dimension and cutoff and permitted to depend on
-each fixed $R$ in an unbounded set.
+\formal{SourceCovers/CoveringExponents.lean}{SourceCovers.power_metric_sharing_uniform_deficit,SourceCovers.sublinear_metric_sharing_uniform_deficit,SourceCovers.AdmissibleGeometry.HasRawPowerCover,SourceCovers.AdmissibleGeometry.hasRawPowerCover_of_unshifted}
+In the setting of \cref{prop:metric-sharing}, suppose that for each $R$
+in a fixed unbounded set there are constants $H_R,\delta_{0,R}>0$,
+$0\le s_R<1$ and $u_R\ge0$ such that
+\[
+ \mathbb E_\rho\mathcal N_{\rho,J,R}(\delta)
+ \le H_R(J+1)^{u_R}\delta^{-s_R}
+ \qquad(0<\delta<\delta_{0,R}).
+\]
+This bound is required at all $J\ge R$, or just at those in a fixed
+unbounded set of cutoffs for that $R$. All constants and cutoff sets
+are independent of dimension, and the same original family order is
+used throughout. There are $\eps>0,d_0$ such that $a_0\le\eps L$ and
+$d\ge d_0$ imply $\Delta\ge\eps L$ in either of the following cases:
 \begin{enumerate}[label=(\alph*)]
-\item Without a size envelope,
-$\mathbb E_\rho\mathcal N_{\rho,J,R}(\delta)
- \le H_R\delta^{-s_R}$ for all $J\ge R$ and
-$0<\delta<\delta_{0,R}$, where $H_R,\delta_{0,R}>0$ and $0\le s_R<1$.
-\item Under $|G_i|\le HL/i^p$ with fixed $p>1$,
-$\mathbb E_\rho\mathcal N_{\rho,J,R}(\delta)
- \le H_RJ^{u_R}\delta^{-s_R}$ in the same range, where
-$0\le s_R<1$ and $0\le u_R<p(1-s_R)$.
+\item Without a size envelope, $u_R<1-s_R$ for every such $R$.
+\item Under $|G_i|\le HL/i^p$ with fixed $H>0$ and $p>0$,
+$u_R<p(1-s_R)$ for every such $R$.
 \end{enumerate}
 \end{corollary}
-\begin{informalproof}
-In (a) take $\eta_J=c/(J+1)$ and
-$\delta_{J,R}=(J+1)^{-1/2}$. In (b) choose a fixed exponent
-$u_R/(1-s_R)<v_R<p$ and set
-$\delta_{J,R}=(J+1)^{-v_R}$, with
-$\eta_J=\min\{c/(J+1),H/(J+1)^p\}$.
-The products $\delta n$ are respectively bounded by constants times
-$(J+1)^{-(1-s_R)/2}$ and $J^{u_R-v_R(1-s_R)}$; the residual ratios
-$\eta_J/\delta$ also tend to zero. Eventually $\delta<\delta_{0,R}$.
-Apply \cref{prop:metric-sharing}.
-\end{informalproof}
+\begin{outline}
+Both cases use one power bound $\eta_J=A/(J+1)^p$ on the first omitted
+normalized family size. In (a) the verified sorted-rank bound gives
+$A=c$ and $p=1$; in (b) use $A=H$ and the stated exponent.
+For each fixed $R$, choose
+\[
+ \max\{0,u_R/(1-s_R)\}<v_R<p,
+ \qquad \delta_{J,R}=(J+1)^{-v_R}.
+\]
+The strict exponent inequality makes this interval nonempty. Put
+$n_{J,R}=H_R(J+1)^{u_R}\delta_{J,R}^{-s_R}$. The three terms of the
+metric criterion are
+\[
+ (J+1)^{-v_R},\qquad
+ H_R(J+1)^{u_R-v_R(1-s_R)},\qquad
+ A(J+1)^{v_R-p}.
+\]
+All three exponents are negative. A shared algebraic lemma reduces their
+limits to Mathlib's negative-power limit; it applies to any positive base
+tending to infinity. The same limits ensure
+$\delta_{J,R}<\delta_{0,R}$ eventually. Intersecting this tail with each
+given unbounded cutoff set preserves the common cutoffs required by
+\cref{prop:metric-sharing}, which gives the uniform deficit.
+\end{outline}
+
+Case (a) includes cutoff-independent bounds ($u_R=0$) and allows positive
+cutoff growth below $1-s_R$. Case (b) needs only $p>0$; for $p\le1$,
+case (a) already permits at least as much growth. An unshifted budget
+$H_RJ^{u_R}\delta^{-s_R}$ implies the displayed one because $u_R\ge0$;
+the formal adapter verifies this comparison, so the original bounds
+are retained.
 
 These conditions concern raw-coordinate support shared by all outputs.
 They can be more economical than counting separate temporal occurrences.

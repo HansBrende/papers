@@ -356,6 +356,21 @@ simultaneous smallness at arbitrarily late allowed cutoffs suffices, and
 no separate upper bound `delta < 1` is needed. This verifies a sufficient
 cover criterion without supplying it for arbitrary native computations.
 
+**Corollary 5.5, sublinear raw covering exponents, is Lean-verified and
+strengthened.** A mean raw-cover bound
+`H_R*(J+1)^u_R*delta^(-s_R)` with `0 <= s_R < 1` gives a uniform deficit
+without a size envelope whenever `0 <= u_R < 1-s_R`. This includes
+cutoff-independent covers and permits positive cutoff growth. Under a
+power envelope with any `p > 0`, the corresponding condition is
+`u_R < p*(1-s_R)`; the earlier restriction `p > 1` is unnecessary.
+
+Both cases reuse the metric criterion and one shared power-balancing
+lemma. All constants and common unbounded cutoff sets are fixed before
+dimension. The original `J^u_R` budget implies the shifted budget by a
+verified monotonicity comparison. These are sufficient conditions on
+actual raw supports, not automatic consequences of low entropy or a
+new exclusion of unrestricted transposers.
+
 **Lemma 8.3, the attached short-distance count, is Lean-verified:**
 `S_ell <= min(d²b, (2 n - 1) b (2 k + 3)^(ell - 1))` for valid diagrams,
 every block length `0 <= r <= d b`, and every natural radius parameter `ell` (both subtractions are
@@ -371,8 +386,8 @@ bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **8 numbered results remain unformalized**,
-including the covering-exponent criteria and causal-group results. The paper's
+`Quot.sound`. The other **7 numbered results remain unformalized**,
+including the serial-exception example, query-movement and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

@@ -82,7 +82,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`TailMoments`](LeanMachine/TailMoments.lean) | Sorted summability gives decay faster than reciprocal rank; summable majorants control scaled tails, and positive tail floors force moment divergence | this repository |
 | [`UniformGap`](LeanMachine/UniformGap.lean) | Excluding sequences with increasing dimension and two vanishing nonnegative costs gives a uniform positive gap | this repository |
 | [`TailLiminf`](LeanMachine/TailLiminf.lean) | Zero extended-nonnegative lower limits are equivalent to arbitrarily late small values | this repository |
-| [`PowerEnvelope`](LeanMachine/PowerEnvelope.lean) | Power laws above a moment threshold have summable weighted mass and vanishing scaled tails | this repository |
+| [`PowerEnvelope`](LeanMachine/PowerEnvelope.lean) | Summable power-law moments and vanishing scaled tails; balanced power scales for covering and residual costs | this repository |
 | [`BoundedLimsup`](LeanMachine/BoundedLimsup.lean) | Bounded real upper limits, converging-coefficient inequalities, and nonnegative scaling | this repository |
 | [`InverseSquareTail`](LeanMachine/InverseSquareTail.lean) | Summable inverse-square envelopes and exact shifted-tail bounds from finite sum estimates | this repository |
 | [`PowerTail`](LeanMachine/PowerTail.lean) | Quantitative real-power tail estimates and decay under sub-power multipliers, reusing integral comparison | this repository |

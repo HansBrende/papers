@@ -732,6 +732,8 @@ import LeanMachine
 #print axioms LeanMachine.PowerEnvelope.summable_moment
 #print axioms LeanMachine.PowerEnvelope.summable
 #print axioms LeanMachine.PowerEnvelope.polynomial_tail_tendsto_zero
+#print axioms LeanMachine.PowerEnvelope.exists_balanced_exponent
+#print axioms LeanMachine.PowerEnvelope.balanced_scale_limits
 
 -- BoundedLimsup.lean
 #print axioms LeanMachine.BoundedLimsup.le_limsup

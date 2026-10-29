@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Thirty of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Thirty-one of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -24,10 +24,11 @@ Theorem 7.1, the ordering-independent query-movement bound;
 Corollary 7.2, queries spread over intervals;
 Proposition 7.3, the exact helper and gap-area calibration;
 Corollary 7.4, the dimension-first movement obstruction;
+Theorem 8.2, paid routing from causal groups;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1, 4.1 and 8.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 2 results
-retain complete written proofs.
+bounds and vanishing tails. Only Corollary 8.4, the asymptotic causal-group
+obstruction, remains unformalized; its written proof is complete.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
 manuscript in section order. It lists every numbered definition and result,
@@ -210,9 +211,9 @@ its ball and row counts, and Mathlib's injection and finite-union cardinality
 bounds. The existing build adapter reads the first paper's original sources;
 none are copied or changed. The [generated axiom audit](lean/PaperAxioms.lean)
 reports only `propext`, `Classical.choice` and `Quot.sound` for the cited
-declarations. The causal-group routing theorem and its asymptotic
-corollary remain unformalized. The improved constant does not change that
-corollary's asymptotic conclusion.
+declarations. The causal-group routing theorem is now formalized; its
+asymptotic corollary remains unformalized. The improved constant does not
+change that corollary's asymptotic conclusion.
 
 ## Completed: Q2 overlap forest and protected phases
 
@@ -1358,22 +1359,49 @@ group or conditional independence is introduced.
 `deficit_add_helper_ge_of_groupEntropy_le` derives the exact helper/deficit
 inequality from any upper bound on the group-entropy sum, retaining total
 correlation. `deficit_add_helper_ge_support` specializes it to the support
-mass. The later metric bound can therefore finish the stated inequality
+mass. The metric bound below completes the stated inequality
 without repeating the entropy argument. The two paper-specific quantities
 are expressions in existing finite-weight entropy, converted to bits.
 
-Next, complete Theorem 8.2 without replacing its routing conclusion by
-the weaker support-cut result:
+## Completed: actual distance, volume and Theorem Q
 
-1. Bound the support-routing mass by the short-bit count plus volume divided
-   by distance, and assemble the full routing and entropy statement.
-2. Apply the verified native short-count theorem to Corollary 8.4, keeping
-   arbitrary positive entry widths and all stated asymptotic quantifiers.
+The shared [`FlowDistance`](../lean-machine/LeanMachine/FlowDistance.lean)
+module identifies total physical traversal load with walk length and bounds
+ordinary undirected graph distance by that length. It reuses Mathlib's
+graph metric and triangle inequality. Loops, parallel edges and repeated
+traversals are allowed; none of acyclicity, connectedness or capacity bounds
+is needed for these general lemmas.
 
-The max-flow/min-cut and weighted-path obligations are now proved in the
-shared library. The two numbered results remain unformalized until their
-full metric and asymptotic conclusions are verified; all six numbered
-definitions have formal counterparts.
+[`CausalDistance`](lean/SourceCovers/CausalDistance.lean) takes the infimum
+over actual row attachments. An unattached row has infinite distance and is
+never counted as short. The exact weighted-volume identity and unit bit caps
+give `ell * (R.mass - shortBits.card) <= routingVolume`, including zero
+radius. For positive radius, any common physical capacity budget gives the
+divided bound. No substituted shortness predicate is assumed.
+
+[`CausalVolume`](lean/SourceCovers/CausalVolume.lean) injects the disjoint
+collector links into the original `n-1` memory slots. Mathlib's cardinality
+bound then gives the total interval-volume estimate for any group-width
+upper bound, including zero in degenerate cases.
+
+[`CausalRoutingBound`](lean/SourceCovers/CausalRoutingBound.lean) assembles
+the actual partial routing, exact support-log mass, conditional-entropy
+comparison, volume estimate, distance bound and helper/deficit inequality.
+`causal_group_routing_sharp` retains exact prefix charges;
+`causal_group_routing`, the paper's interval-budget theorem, is its direct
+corollary. It permits arbitrary correlated input laws, normalized
+nonnegative weights and an arbitrary ambient helper type. Choosing the
+declared domain to be the law's exact support identifies the mass with
+the stated `R_sup`, as verified by the existing support lemma.
+
+Next, formalize Corollary 8.4. Relate this actual network metric and its
+bit indexing to the native tape diagram's attachment/ball definitions,
+then apply the verified native short-count bound. Preserve arbitrary
+positive entry widths, constants depending only on `k,G,c`, and all
+stated asymptotic quantifiers. Neither a supplied routing premise nor a
+surrogate metric can replace that adapter. This is the sole numbered
+result still unformalized; all six numbered definitions have formal
+counterparts.
 
 ## Dependency order and proof obligations
 

@@ -99,7 +99,8 @@ bit's original output node.
 
 \begin{theorem}[Theorem Q: paid routing from causal groups]
 \label{thm:causal-group-routing}
-\notformalized
+\formal{SourceCovers/CausalRoutingBound.lean}{SourceCovers.CausalGroups.Network.causal_group_routing,
+SourceCovers.CausalGroups.Network.causal_group_routing_sharp}
 Assume \cref{def:causal-group-typing}.  For every attained $z$, let
 \[
  \mathcal A_a(z)=
@@ -135,7 +136,9 @@ one has
 No independence of the input rows, groups, or helper fibres is assumed.
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
+Represent the input law by weights on its exact support $C$; all these
+weights are positive. The helper is indexed by its attained values.
 Fix $a,z$.  Causal induction shows that evaluating all fields of type
 $a$ depends only on $X_a$ and $z$.  Indeed, this is true of the locally
 visible raw data, and it is preserved at each node by the local typing
@@ -219,7 +222,11 @@ first inequality in \cref{eq:causal-group-finite}.
 
 At most $S_\ell$ routed mass belongs to short-distance bits, since each
 bit has mass at most one.  Every unit of the remaining mass traverses
-at least $\ell$ physical edges.  Consequently
+at least $\ell$ physical edges. Formally, ordinary undirected graph
+distance is bounded by each physical walk's length, and total traversal
+load equals that length. Taking the infimum over actual row attachments
+gives the nearest-attachment distance, with infinity for an unattached row.
+Consequently
 $\ell(R_{\mathrm{sup}}-S_\ell)\le V$, proving the second inequality.
 Unattached rows contribute no routed mass and are not counted as
 zero-distance sources.  Finally, because $Z$ is determined by $X$,
@@ -228,7 +235,12 @@ zero-distance sources.  Finally, because $Z$ is determined by $X$,
  =L-\Delta-H(Z)+\operatorname{TC}(X_1;\ldots;X_h\mid Z).
 \]
 Substitution proves \cref{eq:causal-group-helper}.
-\end{informalproof}
+The conditional coordinate-cover inequality also verifies that the total
+correlation is nonnegative. The formal theorem retains the sharper prefix
+charges above; the stated interval-budget version follows directly.
+Finally, disjoint collector links inject into the $n-1$ memory slots,
+giving the last inequality in \cref{eq:group-volume}.
+\end{outline}
 
 The theorem supplies an explicit conversion from a restricted causal
 code to partial routing.  Its extra communication is fully charged.

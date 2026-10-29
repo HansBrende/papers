@@ -113,6 +113,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FlowPathMap`](LeanMachine/FlowPathMap.lean) | Incidence-preserving path maps and traversal counts; path lifting through an injective vertex map when all outgoing arrows lift | this repository |
 | [`FlowWalks`](LeanMachine/FlowWalks.lean) | Undirected walks retaining physical edge identities, with both orientations charged; actual backward spine paths and exact traversal counts | this repository |
 | [`FiniteWeightedFamily`](LeanMachine/FiniteWeightedFamily.lean) | Finite indexed weighted families, disjoint collection and probability mixtures; exact mass and observable sums retain multiplicity | this repository |
+| [`FlowDistance`](LeanMachine/FlowDistance.lean) | Physical walk volume equals length; ordinary undirected distance bounds every walk, allowing parallel edges, loops and repeated traversals | this repository |
 
 ## External code
 

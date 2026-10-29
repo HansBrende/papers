@@ -1,11 +1,11 @@
 \section{Building and checking this draft}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,cor:subset-movement,def:causal-group-typing,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,cor:subset-movement,def:causal-group-typing,thm:causal-group-routing,lem:attached-short-count}
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
 \leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
-numbered results have complete written proofs and are not formalized.
+asymptotic causal-group corollary has a written proof and is not formalized.
 No additional axiom, admitted proof or native decision procedure is
 used in the new library.
 
@@ -104,8 +104,12 @@ shared capacities. On the exact input support, the projected fibre support
 equals the positive-probability support. Existing support-entropy bounds,
 conditional averaging and coordinate covers give the entropy inequality
 and nonnegative total correlation, even for unnormalized weights. The
-helper/deficit conclusion then follows by algebra. Only the metric
-consequence of \cref{thm:causal-group-routing} remains unformalized.
+helper/deficit conclusion follows by algebra. Mathlib's graph-distance
+triangle inequality bounds each physical walk; summing its traversal loads
+gives its length. Unit bit caps bound short-distance mass. Disjoint collector
+links occupy at most $n-1$ memory slots. These complete
+\cref{thm:causal-group-routing}, whose interval-budget statement is a direct
+corollary of the prefix-budget theorem.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run

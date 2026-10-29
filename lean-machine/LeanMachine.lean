@@ -100,3 +100,4 @@ import LeanMachine.FlowPaths
 import LeanMachine.FlowPathMap
 import LeanMachine.FlowWalks
 import LeanMachine.FiniteWeightedFamily
+import LeanMachine.FlowDistance

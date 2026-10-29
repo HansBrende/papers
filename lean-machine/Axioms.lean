@@ -1125,3 +1125,12 @@ import LeanMachine
 #print axioms LeanMachine.FiniteWeightedFamily.sum_mix
 #print axioms LeanMachine.FiniteWeightedFamily.mix_nonnegative
 #print axioms LeanMachine.FiniteWeightedFamily.sum_mix_le
+
+-- Physical walk volume and undirected shortest-path distance.
+#print axioms LeanMachine.FiniteFlow.Network.pathLength
+#print axioms LeanMachine.FiniteFlow.Network.sum_pathFlow
+#print axioms LeanMachine.FiniteFlow.Network.sum_walkLoad
+#print axioms LeanMachine.FiniteFlow.Network.graph
+#print axioms LeanMachine.FiniteFlow.Network.graph_adj
+#print axioms LeanMachine.FiniteFlow.Network.edge_edist_le_one
+#print axioms LeanMachine.FiniteFlow.Network.edist_le_walk_length

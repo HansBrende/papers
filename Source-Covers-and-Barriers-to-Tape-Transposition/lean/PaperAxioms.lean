@@ -25,6 +25,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.CausalGroups.Network.FibreTyping
 #print axioms SourceCovers.CausalGroups.Network.FibreTyping.local_edge_function
 #print axioms SourceCovers.CausalGroups.Network.FibreTyping.local_output_function
+#print axioms SourceCovers.CausalGroups.Network.causal_group_routing
+#print axioms SourceCovers.CausalGroups.Network.causal_group_routing_sharp
 #print axioms SourceCovers.CoverTailSmall
 #print axioms SourceCovers.EnvelopeTailSmall
 #print axioms SourceCovers.HasSpanColoring

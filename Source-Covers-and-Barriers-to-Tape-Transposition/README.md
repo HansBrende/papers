@@ -445,41 +445,32 @@ all group fields on every attained helper fibre. Local dependence is
 expressed by Mathlib's function factorization, with verified actual local
 functions on all tuples. No independence is assumed.
 
-The supporting proofs verify autonomy of one group's fields, an evaluation
-on its actual joint projected support, and the support-capacity bound for
-cuts containing all its requested outputs. Every entering field is included,
-even after a previous departure from the cut. The collector of Theorem 8.2
-is also formalized on the actual memory interval. It carries only bits
-already output, so its exact capacity is the prefix size and its total
-cost is the sum of output-to-sink delays. Distinct groups have disjoint
-collector edge intervals. The resulting cut bound requires only the last
-output inside the cut and extends to every supersource/sink cut, paying
-all row attachments explicitly. A shared real-capacity max-flow/min-cut
-theorem and the exact augmentation now yield a flow of the projected-support
-logarithm on each group fibre. Each row supplies at most `b g_a`, and
-unattached rows supply zero. A finite weighted path family now carries that
-exact value, with all traversal loads bounded by the flow and at most one
-path per positive edge. The reusable extraction allows cycles and preserves
-parallel-edge identities. The artificial source and attachment arcs are now
-removed, retaining each path's actual row attachment. Uniform splitting among
-that row's original group bits preserves every original and collector edge
-load and gives each bit mass at most one. Actual backward memory walks now
-complete those routes to each bit's own output. Collapsing collector copies
-adds their loads to the original edges; both traversal directions are charged.
-The verified extra cost is at most twice each prefix size, with volume at most
-twice the sum of output delays. The group routings are now combined and
-averaged over attained helper values, preserving the exact support-log mass,
-unit bit caps and shared physical capacities. A support lemma verifies the
-probabilistic interpretation when the declared domain is the law's exact
-support. The conditional-entropy lower bound, nonnegative total correlation
-and helper/deficit algebra are now verified using the existing entropy
-library, even for unnormalized nonnegative weights. The metric consequence
-remains unformalized, so the full theorem is still pending.
+**Theorem 8.2 (Theorem Q), paid routing from causal groups, is Lean-verified.**
+Autonomy and joint-support counting give a cut bound on each group fibre,
+including every entering field and every row attachment. A reusable
+real-capacity max-flow/min-cut theorem and weighted path extraction turn
+that bound into actual paths. Uniform allocation among a row's group bits
+gives unit bit caps; backward memory walks reach each bit's own output.
+Collector copies and both traversal directions are charged on the original
+physical edges. Mixing groups and attained helper values preserves the
+exact support-log mass and shared capacities, without independence.
+
+The sharper theorem charges at most twice each collector's prefix size,
+with extra volume at most twice the sum of output delays. The stated
+whole-group interval budget follows directly, and disjoint collector links
+occupy at most `n-1` memory slots. Ordinary undirected graph distance is
+bounded by actual walk length, which equals total traversal load. Unit bit
+caps then give `R_sup <= S_ell + V/ell`, including the original entropy and
+helper/deficit inequalities. Unattached rows have infinite distance and
+contribute neither short bits nor routed mass. The support convention is
+verified on the law's exact support; the entropy comparison itself also
+holds for unnormalized nonnegative weights. This completes **31 of 32
+numbered results**, along with **all 6 numbered definitions**.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **2 numbered results remain unformalized**:
-the causal-group routing theorem and its obstruction corollary. The paper's
-verified finite criterion and remaining written proofs give the main chain:
+`Quot.sound`. Only **Corollary 8.4, the asymptotic causal-group obstruction,
+remains unformalized**; its written proof is complete. The paper's
+verified finite criterion and that written proof give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to
    retain actual state and work-tape dependencies, with explicit costs.

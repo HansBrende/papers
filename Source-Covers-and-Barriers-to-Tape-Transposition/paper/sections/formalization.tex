@@ -1,7 +1,7 @@
 \section{Specification for subsequent formalization}
 \label{sec:formalization}
 
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,lem:attached-short-count}
 are Lean-verified;
 their declarations and axiom commands accompany the paper. The remaining results retain
 complete written proofs. The index in
@@ -98,11 +98,13 @@ argument gives both the envelope and no-envelope criteria. All geometric
 bounds use the same original order and common dimension-independent cutoffs.
 
 \item \emph{Independent construction tests.}
-Formalize the serial native geometry as an exact finite construction,
+The serial native geometry is now verified as an exact finite construction,
 including all its return families, payments and arbitrary-seed cover
-lower bound. Separately prove the movement theorem and its specified
-query-interface applications. Finally formalize the causal-group
-support-to-flow argument, followed by its native metric application.
+lower bound. The finite movement theorem is also verified, strengthened
+to charge the largest slot movement at each step and retain the integer
+partition count. Its interval-query and coded-caching applications remain
+to be formalized, followed by the causal-group support-to-flow argument
+and its native metric application.
 The attached short-distance count for that application is already
 formalized, including its bridge to the nearest-attachment distance.
 These three branches do not serve as premises of the main uniform

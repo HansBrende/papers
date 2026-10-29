@@ -859,3 +859,28 @@ import LeanMachine
 #print axioms LeanMachine.CyclicSelection.pointArea_le_of_gap_le
 #print axioms LeanMachine.floor_step_le_ceilDiv
 #print axioms LeanMachine.ceilDiv_cast_le_div_add_one
+
+-- QueryMovement.lean
+#print axioms LeanMachine.QueryMovement.covered
+#print axioms LeanMachine.QueryMovement.mem_covered
+#print axioms LeanMachine.QueryMovement.abs_sub_lt_of_floor_eq
+#print axioms LeanMachine.QueryMovement.card_types_le
+#print axioms LeanMachine.QueryMovement.elapsed
+#print axioms LeanMachine.QueryMovement.elapsed_nonneg
+#print axioms LeanMachine.QueryMovement.elapsed_mono
+#print axioms LeanMachine.QueryMovement.dist_le_elapsed_sub
+#print axioms LeanMachine.QueryMovement.dist_le_elapsed_abs
+#print axioms LeanMachine.QueryMovement.card_types_le_charge
+#print axioms LeanMachine.QueryMovement.variation
+#print axioms LeanMachine.QueryMovement.maxStep
+#print axioms LeanMachine.QueryMovement.step_le_maxStep
+#print axioms LeanMachine.QueryMovement.maxStep_nonneg
+#print axioms LeanMachine.QueryMovement.elapsed_maxStep_le_variation
+#print axioms LeanMachine.QueryMovement.real_bounds
+
+-- CircleGridCapacity.lean
+#print axioms LeanMachine.CircleGridCapacity.card_le_floor_diameter
+#print axioms LeanMachine.CircleGridCapacity.centre
+#print axioms LeanMachine.CircleGridCapacity.card_ball_le
+#print axioms LeanMachine.CircleGridCapacity.dist_coe_le
+#print axioms LeanMachine.CircleGridCapacity.card_covered_le

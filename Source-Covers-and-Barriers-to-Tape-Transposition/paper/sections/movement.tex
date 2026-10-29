@@ -11,13 +11,15 @@ they do not exclude every decoder for that code.
 \subsection{A finite bound independent of query order}
 
 Write $\operatorname{dist}_L$ for distance on the circle of circumference
-$L$.  Fix $N\ge1$ equally spaced centres
+$L>0$.  Fix $N\ge1$ equally spaced centres
 $c_i=(i+\tfrac12)L/N$, $0\le i<N$.  A query type is a $k$-element subset
 of these centres, where $1\le k\le N$.
 
 \begin{theorem}[Theorem M: movement to cover distinct query types]
 \label{thm:movement}
-\notformalized
+\formal{SourceCovers/QueryMovement.lean}{SourceCovers.QueryMovement.movement_max,
+SourceCovers.QueryMovement.movement, SourceCovers.QueryMovement.movement_line,
+SourceCovers.QueryMovement.movement_of_charge}
 Let $S_1,\ldots,S_J$ be a nonempty sequence of query types, with $F$
 distinct types.  For $1\le\ell\le m$, let $y_\ell(j)$ be labelled source
 positions on the circle, where $m\ge1$.  Suppose every centre in $S_j$
@@ -42,43 +44,60 @@ In particular $B>0$, and
  v\ge\frac{\lambda}{4}\left(\frac{F}{B}-1\right).
  \label{eq:movement-lower}
 \end{equation}
+More sharply, put
+\[
+ C=\sum_{j=1}^{J-1}\max_{1\le\ell\le m}
+       \operatorname{dist}_L(y_\ell(j+1),y_\ell(j)).
+\]
+Then $C\le V$ and
+\[
+ F\le\left(\left\lfloor\frac{4C}{\rho}\right\rfloor+1\right)B.
+\]
+Both \cref{eq:movement-finite,eq:movement-lower} also hold with $v$
+replaced by $C/L$.
 The bounds hold for every ordering of the queries and every matching of
 source positions between successive queries.  They also hold when $V$
 is measured by ordinary distance on the input line.
 \end{theorem}
 
-\begin{informalproof}
-Set $\delta=\rho/4$.  Greedily partition the sequence into consecutive
-stretches whose internal summed movement is at most $\delta$: end a
-stretch immediately before the next edge would exceed that threshold.
-Charge a nonfinal stretch its internal edges and the edge immediately
-after it.  These charged edge sets are disjoint, and each has total
-weight greater than $\delta$.  Thus there are at most $1+V/\delta$
-stretches, including the last.
+\begin{outline}
+Set $\delta=\rho/4$.  Let $a_j$ be the cumulative maximum-slot movement
+before query $j$, so $a_1=0$ and $a_J=C$.  Give query $j$ the label
+$\lfloor a_j/\delta\rfloor$.  There are at most
+$\lfloor C/\delta\rfloor+1$ labels.  Two queries with the same label
+have cumulative movement differing by less than $\delta$; the triangle
+inequality therefore keeps each source within distance $\delta$ of its
+position at any chosen representative query with that label.
 
-Within a stretch, each labelled position stays within distance $\delta$
-of its initial position.  Every queried centre is therefore within
-$5\rho/4$ of one of the $m$ initial positions.  A circular ball of that
+Every centre queried with that label is consequently within $5\rho/4$
+of one of the $m$ representative positions.  A circular ball of that
 radius contains at most
 \[
  \min\left\{N,\left\lfloor\frac{5\rho N}{2L}\right\rfloor+1\right\}
 \]
-of the equally spaced centres.  Indeed, if the ball is a proper arc, its
-length is $5\rho/2$, and consecutive centres are $L/N$ apart; if it is
-the whole circle, use $N$.  The union of the balls contains at most $s$
-centres and hence at most $B$ query types.  Summing over stretches proves
-\cref{eq:movement-finite}; rearranging proves
-\cref{eq:movement-lower}.  A nonempty sequence rules out $B=0$.
+of the equally spaced centres.  The formal proof lifts each covered
+centre to a point of the real lattice of spacing $L/N$ inside an interval
+of length $5\rho/2$.  Distinct centre indices give distinct lattice
+points, whose count is at most the displayed floor bound; the count is
+also at most $N$.  The union of the balls contains at most $s$ centres
+and hence at most $B$ query types.  Summing over labels proves the integer
+bound.  A nonempty sequence forces $B>0$.  Dropping the floor and
+rearranging give the two real bounds with $C/L$; $C\le V$ gives the
+original summed-movement bounds.
 
 No step used the ordering of the types.  Any chosen matching of the $m$
 positions between successive queries defines coherent labelled paths;
 apply the same argument to those paths.  Finally, circle distance never
 exceeds line distance, so replacing circle variation by line variation
 preserves the bound.
-\end{informalproof}
+\end{outline}
 
 For a tape construction, this theorem charges the movement of the entire
-source bank.  Relabelling the bank slots does not remove that charge.
+source bank.  The sharper form requires progress even when simultaneous
+slot movements are charged only by their maximum.  Relabelling the bank
+slots does not remove the bound.  The shared Lean argument allows any
+positive partition width $\delta$ and any nonnegative edge charge that
+dominates each slot's movement; the ball radius becomes $\rho+\delta$.
 
 \begin{corollary}[Queries spread over a column interval]
 \label{cor:movement-interval}

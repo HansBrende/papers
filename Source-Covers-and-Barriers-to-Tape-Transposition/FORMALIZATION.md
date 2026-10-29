@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-six of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-seven of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -20,9 +20,10 @@ Corollary 5.3, necessary global continuation density and superlinear seed growth
 Proposition 5.4, the metric shared-support criterion;
 Corollary 5.5, sublinear raw covering exponents;
 Proposition 6.1, the native serial-exception quadratic-cover example;
+Theorem 7.1, the ordering-independent query-movement bound;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 6 results
+bounds and vanishing tails. The other 5 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -1012,6 +1013,32 @@ The physical cone keeps all state and work predecessors; the ordinary
 orbit uses the paper's strict clipping and is not truncated by payment.
 The theorem concerns one phase and root, with dimension tied to M.
 It leaves the general transposition question and averaged criteria open.
+
+## Completed: movement to cover distinct query types
+
+[`QueryMovement`](lean/SourceCovers/QueryMovement.lean) proves Theorem 7.1
+on Mathlib's metric circle, including its midpoint grid, exact binomial
+capacity, positivity and normalized lower bound. The sequence contains
+`n + 1` queries; the formal theorem also allows `k = 0`. Source paths
+and query order are arbitrary, so every coherent matching is included.
+The line-distance version uses the quotient metric's distance bound.
+
+The stronger theorem replaces total summed movement `V` by the sum `C`
+of maximum slot movements at each step and keeps the factor
+`floor(4C/rho) + 1`. The original theorem is derived from that theorem
+and `C <= V`, with no new hypothesis. The proof does not formalize a
+greedy partition: it groups query times by the integer part of cumulative
+movement divided by a positive width. Each group's query types belong
+to one finite set's `k`-element subsets, counted using Mathlib.
+
+The shared [`QueryMovement`](../lean-machine/LeanMachine/QueryMovement.lean)
+works in arbitrary pseudometric spaces with arbitrary nonnegative charges
+dominating each slot's movement and arbitrary positive partition widths.
+[`CircleGridCapacity`](../lean-machine/LeanMachine/CircleGridCapacity.lean)
+proves the required capacity for any translated regular grid, by lifting
+covered centres to distinct integers in a short interval. Thus circle
+capacity is proved rather than assumed in the paper's theorem. The next
+item is the interval-query corollary, reusing this general counting step.
 
 ## Dependency order and proof obligations
 

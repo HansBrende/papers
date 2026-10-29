@@ -83,3 +83,5 @@ import LeanMachine.ExtendedTradeoff
 import LeanMachine.RawIntervalCover
 import LeanMachine.ScheduledExcursion
 import LeanMachine.CyclicGapUpper
+import LeanMachine.QueryMovement
+import LeanMachine.CircleGridCapacity

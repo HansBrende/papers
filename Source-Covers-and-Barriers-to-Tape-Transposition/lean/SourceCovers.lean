@@ -88,3 +88,4 @@ import SourceCovers.SerialRanks
 import SourceCovers.SerialReachability
 import SourceCovers.SerialTimes
 import SourceCovers.SerialUnpaid
+import SourceCovers.QueryMovement

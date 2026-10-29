@@ -396,9 +396,21 @@ vanishing exceptional-only profiles on every nondistinguished core span.
 This rules out the stated pointwise linear-cover claim; it does not
 exclude general linear-time transposition or an averaged cover criterion.
 
+**Theorem 7.1, movement to cover distinct query types, is Lean-verified.**
+For any ordering and coherent source matching, the stronger bound is
+`F <= (floor(4C/rho) + 1) B`, where `C` sums the largest slot movement at
+each query step and `B` is the stated binomial capacity. The original
+sum-of-all-slots bound and its lower bound follow directly, including
+the line-distance version. The reusable counting argument permits any
+positive partition width and any charge dominating each slot's movement;
+the actual circle capacity is proved by lifting centres to an integer
+lattice. This concerns the specified query interface, not every possible
+decoder for the same code.
+
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **6 numbered results remain unformalized**,
-including the query-movement and causal-group results. The paper's
+`Quot.sound`. The other **5 numbered results remain unformalized**:
+the interval-query corollary, the coded-caching calibration and its
+asymptotic movement corollary, and the two causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

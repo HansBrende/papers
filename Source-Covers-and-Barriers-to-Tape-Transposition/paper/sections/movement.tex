@@ -101,18 +101,19 @@ dominates each slot's movement; the ball radius becomes $\rho+\delta$.
 
 \begin{corollary}[Queries spread over a column interval]
 \label{cor:movement-interval}
-\notformalized
+\formal{SourceCovers/IntervalQueryMovement.lean}{SourceCovers.QueryMovement.interval_movement_max,
+SourceCovers.QueryMovement.interval_movement}
 Let $I_1,\ldots,I_J$ be disjoint, chronologically ordered intervals in a
 finite discrete timeline.  Let $m$ labelled source trajectories have
 total circle variation $V$ over that entire timeline, including the
 gaps between intervals.  Assign a query type $S_j$ to each interval,
 and suppose each of the $F$ distinct types occurs at least $r\ge1$
-times.  For every $c_i\in S_j$, suppose there is a raw point $a_{i,j}$
+times.  For a width $w\ge0$ and every $c_i\in S_j$, suppose there is a raw point $a_{i,j}$
 with
 \[
  \operatorname{dist}_L(a_{i,j},c_i)\le w
 \]
-that is within distance $\rho$ of a source position at some time in
+that is within distance $\rho>0$ of a source position at some time in
 $I_j$.  The position and time may depend on $i$ and $j$.  With
 $v=V/L$, $\lambda=\rho/L$, and
 \[
@@ -126,29 +127,53 @@ one has
  v&\ge\frac{\lambda}{4}\frac{F-B'}{B'+1/r}.
    \label{eq:movement-interval-lower}
 \end{align}
+These bounds also hold with $v$ replaced by $C/L$, where
+\[
+ C=\sum_{t=0}^{T-1}\max_{1\le\ell\le m}
+       \operatorname{dist}_L(y_\ell(t+1),y_\ell(t))
+\]
+for the full timeline $\{0,\ldots,T\}$.  More precisely,
+\[
+ F-\frac{4C}{\rho r}
+ \le\left(\left\lfloor\frac{4C}{\rho}\right\rfloor+1\right)B'.
+\]
+It suffices that the intervals' internal edge sets are pairwise disjoint;
+their endpoints may coincide, and no ordering is needed.  The repetition
+bound $r$ may be any positive real number.
 \end{corollary}
 
-\begin{informalproof}
-Call an interval bad if its internal summed movement exceeds $\rho/4$.
-There are at most $4V/\rho=4v/\lambda$ bad intervals.  Removing them can
-remove every occurrence of at most $4v/(\lambda r)$ types.
+\begin{outline}
+Set $\delta=\rho/4$ and charge each time step by the largest movement of
+any source.  Call an interval bad if its internal charge exceeds $\delta$.
+Disjoint internal edge sets give at most $C/\delta$ bad intervals.
+Every type lost on removing them has all its at least $r$ occurrences
+among the deleted intervals.  Counting those disjoint occurrence sets
+bounds the number of lost types by $C/(\delta r)$.
 
 Freeze the positions at the start of each remaining interval.  A
 required centre is within distance $\rho+\rho/4+w$ of one of these
-frozen positions.  The sequence of frozen positions has total variation
-at most $V$, by the triangle inequality on each labelled trajectory.
-Partition that sequence into stretches of movement at most $\rho/4$
-as in \cref{thm:movement}.  Within each stretch, every required centre
-lies within distance $3\rho/2+w$ of one of its initial positions.
-There are at most $s'$ such centres and at most $B'$ types.  This proves
-\cref{eq:movement-interval-count}, including when no good intervals
-remain.  Collecting the terms involving $v$ gives
-\cref{eq:movement-interval-lower}.
-\end{informalproof}
+frozen positions: the raw point is within $w$ of its centre and $\rho$
+of a source at a time whose movement from the interval start costs at
+most $\delta$.  Apply the cumulative-clock count of \cref{thm:movement}
+to the good interval starts, using the full timeline clock and width
+$\delta$.  Each label's queried centres lie within $3\rho/2+w$ of
+one representative bank, so there are at most $B'$ types per label and
+at most $\lfloor C/\delta\rfloor+1$ labels.  The count applies also to
+an empty set of good intervals.
+
+Adding the lost types gives the sharper bound.  Dropping the floor and
+collecting terms gives both displayed bounds with $C/L$ in place of
+$v$; the denominator $B'+1/r$ is positive even when $B'=0$.
+Finally $C\le V$ yields the original bounds.  If the original interval
+family is empty, the result is immediate.
+\end{outline}
 
 Thus queries made at different times during an output column do not
 permit us to freeze their positions for free.  Their internal movement
 and the possible loss of query types both appear in the bound.
+The reusable proof allows independent positive thresholds for internal
+interval movement and for grouping interval starts; their sum replaces
+the two occurrences of $\rho/4$ in the enlarged radius.
 
 \subsection{A coded-caching calibration}
 

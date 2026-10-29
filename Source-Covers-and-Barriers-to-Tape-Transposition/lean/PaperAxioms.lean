@@ -67,6 +67,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.NearFullSequence.exists_jointProfile
 #print axioms SourceCovers.NearFullSequence.ofGeometry
 #print axioms SourceCovers.NearFullSequence.one_exception_false
+#print axioms SourceCovers.QueryMovement.interval_movement
+#print axioms SourceCovers.QueryMovement.interval_movement_max
 #print axioms SourceCovers.QueryMovement.movement
 #print axioms SourceCovers.QueryMovement.movement_line
 #print axioms SourceCovers.QueryMovement.movement_max

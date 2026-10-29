@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-seven of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-eight of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -21,9 +21,10 @@ Proposition 5.4, the metric shared-support criterion;
 Corollary 5.5, sublinear raw covering exponents;
 Proposition 6.1, the native serial-exception quadratic-cover example;
 Theorem 7.1, the ordering-independent query-movement bound;
+Corollary 7.2, queries spread over intervals;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 5 results
+bounds and vanishing tails. The other 4 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -1037,8 +1038,33 @@ dominating each slot's movement and arbitrary positive partition widths.
 [`CircleGridCapacity`](../lean-machine/LeanMachine/CircleGridCapacity.lean)
 proves the required capacity for any translated regular grid, by lifting
 covered centres to distinct integers in a short interval. Thus circle
-capacity is proved rather than assumed in the paper's theorem. The next
-item is the interval-query corollary, reusing this general counting step.
+capacity is proved rather than assumed in the paper's theorem. The
+interval-query corollary reuses this general counting step below.
+
+## Completed: queries spread over intervals
+
+[`IntervalQueryMovement`](lean/SourceCovers/IntervalQueryMovement.lean)
+proves Corollary 7.2, retaining the full timeline budget, the per-type
+occurrence lower bound, and each centre's own raw point, source slot and
+query time. It includes the empty interval family and the case where all
+intervals are discarded. No positivity of the binomial capacity is assumed.
+The original sum-of-all-slots inequalities follow from the stronger
+maximum-step theorem and `C <= V`.
+
+The shared [`IntervalQueries`](../lean-machine/LeanMachine/IntervalQueries.lean)
+uses Mathlib's fibre cardinality identity to bound lost types. Internal
+edge disjointness bounds the sum of interval bills. The earlier movement
+clock theorem then counts the good starts directly; no subsequence
+variation proof or new partition construction is needed. The two positive
+thresholds may be chosen independently, and the repetition lower bound
+may be any positive real. Only internal edges must be disjoint, so the
+formal theorem allows shared endpoints and arbitrary interval order.
+
+The prose now makes the radius conventions `rho > 0` and `w >= 0`
+explicit. For a nonempty family the raw-point premise already forces
+`w >= 0`, since query types are nonempty. The Lean theorem needs no
+separate sign premise on `w` and handles the empty family directly.
+The next item is Proposition 7.3, the exact helper and gap-area calibration.
 
 ## Dependency order and proof obligations
 

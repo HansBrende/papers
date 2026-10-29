@@ -407,9 +407,17 @@ the actual circle capacity is proved by lifting centres to an integer
 lattice. This concerns the specified query interface, not every possible
 decoder for the same code.
 
+**Corollary 7.2, queries spread over intervals, is Lean-verified.**
+It charges deleted types by their occurrence counts, then applies the
+same clock argument to good interval starts. The stronger form uses
+the maximum slot movement at each time step, retains the floor factor,
+and only requires disjoint internal interval edges: endpoints may coincide
+and the interval list need not be chronological. Empty families and no
+surviving good intervals are included. The original bounds follow directly.
+
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **5 numbered results remain unformalized**:
-the interval-query corollary, the coded-caching calibration and its
+`Quot.sound`. The other **4 numbered results remain unformalized**:
+the coded-caching calibration and its
 asymptotic movement corollary, and the two causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 

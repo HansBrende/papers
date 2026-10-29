@@ -884,3 +884,11 @@ import LeanMachine
 #print axioms LeanMachine.CircleGridCapacity.card_ball_le
 #print axioms LeanMachine.CircleGridCapacity.dist_coe_le
 #print axioms LeanMachine.CircleGridCapacity.card_covered_le
+
+-- IntervalQueries.lean
+#print axioms LeanMachine.QueryMovement.card_image_le_retained
+#print axioms LeanMachine.QueryMovement.edges_disjoint_of_intervals
+#print axioms LeanMachine.QueryMovement.sum_interval_charge_le
+#print axioms LeanMachine.QueryMovement.frozen_interval_cover
+#print axioms LeanMachine.QueryMovement.card_interval_types_le
+#print axioms LeanMachine.QueryMovement.interval_real_bounds

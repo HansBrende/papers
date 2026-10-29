@@ -85,3 +85,4 @@ import LeanMachine.ScheduledExcursion
 import LeanMachine.CyclicGapUpper
 import LeanMachine.QueryMovement
 import LeanMachine.CircleGridCapacity
+import LeanMachine.IntervalQueries

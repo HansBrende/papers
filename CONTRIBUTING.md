@@ -119,10 +119,11 @@ Tapes*, is a complete example: start from its `paper/macros.tex`,
   - Heuristics are labelled as heuristics.
 - **Say what is unformalized.** The abstract and the introduction say plainly
   which results are not formalized.
-- **Why it matters.** Every theorem says why it matters for deciding (T): what
-  it requires of a construction, or what it leaves for an impossibility proof.
-  The paper ends with the precise open problems that would decide the
-  question.
+- **Relevance.** For every theorem, make clear why it is there: what it
+  requires of a construction, or what it leaves for an impossibility proof.
+  A sentence wherever it fits best is enough; no fixed heading or separate
+  paragraph is required. The paper ends with the precise open problems that
+  would decide the question.
 - **Self-contained.** Rely only on the published literature and on earlier
   papers of this series. Never cite internal notes, private files, agent runs or
   internal result numbers.

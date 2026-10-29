@@ -108,6 +108,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`CausalFields`](LeanMachine/CausalFields.lean) | Local deterministic fields on ranked networks, projected-support autonomy and complete entering-cut recovery | this repository |
 | [`CausalCutCapacity`](LeanMachine/CausalCutCapacity.lean) | Joint support cardinality and bit-capacity bounds from causal cut recovery | this repository |
 | [`CausalCollector`](LeanMachine/CausalCollector.lean) | Local output collection on a memory interval, exact prefix capacity and delay-sum volume, and sink-cut support bounds | this repository |
+| [`FiniteFlow`](LeanMachine/FiniteFlow.lean) | Real-capacity max-flow/min-cut on finite directed multigraphs, preserving parallel edges; exact-demand flows from cut bounds | this repository |
 
 ## External code
 

@@ -1159,7 +1159,8 @@ It allows arbitrary correlated supports and arbitrary symbol alphabets;
 the bit-capacity statement specializes to Boolean coordinates.
 
 The binary collector cost is sharper than the whole-group reservation:
-`sum_v |prefix(v)| = sum_i (last - output(i)) <= |group| * (last - first)`.
+`sum_v |prefix(v)| = sum_i (last - output(i)) <= W_a * (last - first)`,
+where `W_a` is the number of bits in the group.
 Coincident endpoints give no collector edges. Mathlib's interval cardinality
 and finite sum interchange prove the exact count; no flow premise is used.
 
@@ -1171,34 +1172,56 @@ only the last output node in the sink-side set. `sourceCutCapacity` counts
 the source-to-row arcs, crossing row attachments, and every entering
 physical or collector edge. `collected_source_cut_bound` covers every
 sink-side physical set and every sink-side row set. An attachment capacity
-of `|group|` suffices; the general bound allows any nonnegative capacity
+of `W_a` suffices; the general bound allows any nonnegative capacity
 at least the support logarithm. The support-size upper bound itself needs
 no causal typing, only a nonempty correctness set.
 
-These are cut inequalities, not a max-flow or routing existence theorem.
-The future augmented-network definition must agree with these explicit
-arc counts; that bridge must be proved rather than assumed.
+## Completed: real-capacity flow and the actual supersource augmentation
+
+The shared [`FiniteFlow`](../lean-machine/LeanMachine/FiniteFlow.lean)
+proves the standard max-flow/min-cut theorem for finite directed
+multigraphs with arbitrary nonnegative real capacities. Parallel edges
+and loops are permitted. Feasible flows form a closed subset of a compact
+finite box, so Mathlib's extreme-value theorem supplies a maximum. Each
+residual edge gives an admissible signed direction. Addition telescopes
+the divergences along a residual walk, and one positive step stays in
+the capacity box. A maximum therefore has no residual route to the sink;
+the reachable cut is saturated. Weak duality and an exact-demand scaling
+corollary complete the reusable theorem. No integral-capacity assumption,
+augmenting-algorithm termination claim, or flow-existence axiom is used.
+
+[`CausalFlow`](lean/SourceCovers/CausalFlow.lean) defines the supersource,
+row vertices, physical vertices and three actual arc classes. Only real
+row attachments produce attachment arcs. Its `flowNetwork_cut` proves
+that every directed cut has exactly the earlier `sourceCutCapacity` value.
+`exists_support_flow` then obtains a flow whose source value is precisely
+the projected-support logarithm. The augmentation is ranked acyclic;
+source value is the sum of row supplies; row conservation, the `b*g_a`
+cap, and zero supply from unattached rows are all verified.
+
+This completes the flow-existence step on each fixed group and helper
+fibre. It does not yet provide paths, per-bit masses, return walks, or
+the averaged routing of Theorem 8.2.
 
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Establish real-capacity max-flow/min-cut, instantiate its augmented
-   network, and connect its cut expression to `sourceCutCapacity`.
-2. Obtain a flow of exactly the projected-support logarithm, retaining
-   every row's source-capacity constraint.
-3. Decompose flow, remove artificial arcs, split each row's mass among its
+1. Decompose the acyclic flow into paths with total weight equal to its
+   source value and edge loads bounded by the flow. Covering unused residual
+   flow is unnecessary; preserving total routed mass is essential.
+2. Remove artificial arcs, split each row's path mass among its
    original group bits with mass at most one each, and append the paid
    backward memory walks. Unattached rows must receive zero mass.
-4. Sum groups and average over attained helper values, proving the exact
+3. Sum groups and average over attained helper values, proving the exact
    augmented capacities and total mass `R_sup`. Derive conditional entropy,
    total-correlation and short-distance/volume consequences.
-5. Apply the verified native short-count theorem to Corollary 8.4, keeping
+4. Apply the verified native short-count theorem to Corollary 8.4, keeping
    arbitrary positive entry widths and all stated asymptotic quantifiers.
 
-No complete max-flow/min-cut theorem was found in the pinned Mathlib or
-repository libraries during this pass. Do not replace this obligation by
-an axiom or by a flow-existence hypothesis. The two numbered results remain
-unformalized; all six numbered definitions now have formal counterparts.
+The max-flow/min-cut obligation is now proved in the shared library. The
+two numbered results remain unformalized until their full routing and
+asymptotic conclusions are verified; all six numbered definitions have
+formal counterparts.
 
 ## Dependency order and proof obligations
 

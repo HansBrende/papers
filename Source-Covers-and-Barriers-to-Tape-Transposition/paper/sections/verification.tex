@@ -103,7 +103,12 @@ now moves these outputs to a common sink, charging the exact size of each
 already-output prefix. Its total cost is the sum of output-to-sink delays.
 The formalization retains the actual memory edges and proves all
 supersource/sink cut inequalities, including cuts crossing row attachments.
-The real-capacity flow theorem, path decomposition, return walks and
+The shared library now proves real-capacity max-flow/min-cut, using
+Mathlib's compactness theorem and a finite-box perturbation of residual
+walk directions. The actual augmentation has the verified cut capacities
+and yields a flow of value $\log_2|\mathcal A_a(z)|$ on each group fibre. Its row conservation,
+source-value formula, row caps and zero supply from unattached rows are
+also verified. Path decomposition, per-bit allocation, return walks and
 averaging of \cref{thm:causal-group-routing} remain unformalized.
 
 Readers need the whole repository, with sibling folders in place.

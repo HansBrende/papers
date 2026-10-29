@@ -454,9 +454,12 @@ already output, so its exact capacity is the prefix size and its total
 cost is the sum of output-to-sink delays. Distinct groups have disjoint
 collector edge intervals. The resulting cut bound requires only the last
 output inside the cut and extends to every supersource/sink cut, paying
-all row attachments explicitly. The flow theorem, path decomposition,
-return walks and averaging remain unformalized; the verified cut bounds
-do not assume or establish routing by themselves.
+all row attachments explicitly. A shared real-capacity max-flow/min-cut
+theorem and the exact augmentation now yield a flow of the projected-support
+logarithm on each group fibre. Each row supplies at most `b g_a`, and
+unattached rows supply zero. Path decomposition, per-bit allocation, return
+walks and averaging remain unformalized; the verified flow existence does
+not yet establish the full routing conclusion.
 
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:

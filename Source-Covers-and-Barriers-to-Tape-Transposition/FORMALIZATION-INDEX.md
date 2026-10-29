@@ -50,8 +50,8 @@ See [FORMALIZATION.md](FORMALIZATION.md) for the dependency and reuse plan.
 | `cor:subset-movement` | Corollary | The dimension limit precedes the radius limit | Lean-verified | [movement.tex:286](paper/sections/movement.tex#L286) |
 | `def:causal-group-typing` | Definition | Causal group typing | Lean-verified | [causal-groups.tex:34](paper/sections/causal-groups.tex#L34) |
 | `thm:causal-group-routing` | Theorem | Theorem Q: paid routing from causal groups | Written proof | [causal-groups.tex:100](paper/sections/causal-groups.tex#L100) |
-| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:233](paper/sections/causal-groups.tex#L233) |
-| `cor:causal-group-obstruction` | Corollary | Narrow causal groups require an almost complete helper | Written proof | [causal-groups.tex:298](paper/sections/causal-groups.tex#L298) |
+| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:234](paper/sections/causal-groups.tex#L234) |
+| `cor:causal-group-obstruction` | Corollary | Narrow causal groups require an almost complete helper | Written proof | [causal-groups.tex:299](paper/sections/causal-groups.tex#L299) |
 
 ## Verified declarations
 

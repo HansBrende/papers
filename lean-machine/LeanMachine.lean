@@ -95,3 +95,4 @@ import LeanMachine.FixedSubsetLimits
 import LeanMachine.CausalFields
 import LeanMachine.CausalCutCapacity
 import LeanMachine.CausalCollector
+import LeanMachine.FiniteFlow

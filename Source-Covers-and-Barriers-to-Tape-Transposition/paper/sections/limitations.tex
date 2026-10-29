@@ -33,7 +33,7 @@ than requiring the seeds to lie in the original joint orbit.
 
 \begin{proposition}[Serial exceptional spans can require a quadratic cover]
 \label{prop:serial-quadratic-cover}
-\notformalized
+\formal{SourceCovers/SerialQuadraticCover.lean}{SourceCovers.SerialGeometry.Parameters.SerialCertificate,SourceCovers.SerialGeometry.Parameters.serial_quadratic_cover}
 For every integer $M\ge4$ and $b\ge1$, there is a prescribed native
 geometry with
 \[
@@ -69,7 +69,7 @@ word.  Here $x$ is the raw input-head position.  Thus all these
 exceptional-only variation tails vanish, despite the quadratic cover.
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 Put
 \[
  m=M,\quad n=8m,\quad h=4nb,
@@ -148,14 +148,15 @@ The input head follows
 All raw coordinates have been visited before the prescribed output
 times $E,E+1,\ldots,E+L-1$.
 
-We next specify the seventh head and the paid phase.  On the early
-overlap path give $C_j^A$ rank $\min\{\max\{j,1\},n-1\}$ and $B$
-rank $n-1$.  On the late path give $C_j^E$ rank
-$\min\{\max\{j,1\},n-2\}$; give $H$ rank one.  Delete rank residue
-zero modulo $m$.  This deletes precisely
-$C_m^D,C_{2m}^D,\ldots,C_{7m}^D$ in each bank component and retains
-$H,B$.  These are also the path-spine ranks with the endpoint leaves
-assigned their adjacent spine rank.
+We next specify the seventh head and the paid phase.  The original
+core overlap graph consists of the early path
+$C_0^A,\ldots,C_{n-1}^A,B$, the late path
+$C_0^E,\ldots,C_{n-1}^E$, and the isolated family $H$.
+The nonleaf $C_j^D$ has original spine rank $j$.
+The original residue-zero phase deletes precisely
+$C_m^D,C_{2m}^D,\ldots,C_{7m}^D$ in each bank component;
+all leaves, including $H$ and $B$, are retained.
+The Lean proof derives these ranks from the actual full-span graph.
 
 Choose
 \[
@@ -183,8 +184,8 @@ Keeping the complete older continuation gives the $Q=(m-1)^2$ times
 \end{equation}
 They are distinct: different $\ell$ give different windows, and within
 a window the offsets $a_k$ are distinct.  They are all strictly
-interior to their windows, their maximum is $5L-1$, and their lowest
-window is $7m+1$.  The next older family $C_{7m}^A$ was deleted, so
+interior to their windows and lie below $5L$.  Their lowest window is
+$7m+1$.  The next older family $C_{7m}^A$ was deleted, so
 these are the complete older bank continuations.
 
 Order these times as $z_1<\cdots<z_Q$ and set
@@ -200,7 +201,7 @@ $z_1-1$, then descends by one at each $z_i$ and parks.  Since both
 sequences are strictly increasing, all moves are unit moves or pauses.
 Its only family $G$ has
 \[
- \text{span }(2L,z_Q]=(2L,5L-1],\quad
+ \text{span }(2L,z_Q],\quad
  \text{owner }u_{Q-1}+1,\quad
  \text{hops }(u_{Q-i},z_i),\quad1\le i\le Q.
 \]
@@ -211,13 +212,11 @@ the new heads have no later ascent and no omitted opposite-side
 family.  All work cells have at most three entries.
 
 Pay every actual lower endpoint of the fourteen deleted bank families
-and every outer lower endpoint in the full selected family set.  The
-first set has $14h$ elements.  The second has $2n+4$ elements, of
-which fourteen already belong to the first.  Therefore
-\begin{equation}
- |\Gamma|=14h+2n-10.
- \label{eq:serial-paid-size}
-\end{equation}
+and every outer lower endpoint in the full selected family set.  This is
+exactly the original initial-payment set $\Gamma$.  The formalization
+characterizes its phase-deletion part as the union of the lower windows
+$[D+jh,D+(j+1)h)$ and checks each displayed lower endpoint against
+this paid set.
 Every displayed path to a $z_i$ avoids these payments: all bank offsets
 are interior, all its windows avoid the deleted lower windows, and
 the $F$ and $B$ hops avoid their outer lowers.  For $1\le j<Q$ the
@@ -237,13 +236,8 @@ that the physical cone contains
 \end{equation}
 All state predecessors, other work predecessors and direct reads are
 still retained; they can only add sources to this witnessed subset.
-Its $Q$ circular gaps are at most $\lceil L/Q\rceil$.  Inserting
-points only decreases the sum of squared gaps, so
-\[
- \gaparea(S(t))\le\gaparea(R)
-       \le\frac{\lceil L/Q\rceil}{2L}
-       \le\frac1{2Q}+\frac1{2L}.
-\]
+The set $R$ has $Q$ elements.  We bound the gaps after identifying the
+complete ordinary raw orbit below.
 
 For the exact cover assertion, the ordinary joint time orbit consists
 of six groups: the $m-1$ times $v_k$, their $m-1$ images $r_k$, the
@@ -262,6 +256,23 @@ replaces $2L$ by $2L+1$, and $H$ then sends it to $L-1$.  Thus
 \end{equation}
 The extra label $L-1$ here is an ordinary clipped source; its displayed
 clipped path is not asserted to survive the physical payment.
+
+For each point of $R$, and also for the additional point $L-1$, there
+is a distinct clockwise point of $R$ at distance at most
+$\lceil L/Q\rceil$.  This follows from the floor-grid increment bound
+\[
+ \left\lfloor\frac{(j+1)L}{Q}\right\rfloor
+ -\left\lfloor\frac{jL}{Q}\right\rfloor
+ \le\left\lceil\frac LQ\right\rceil.
+\]
+A consecutive circular gap cannot skip such a point.  Thus every gap
+of any $S$ with $R\subseteq S\subseteq S(t)$ is at most
+$\lceil L/Q\rceil$.  Since its gap lengths sum to $L$,
+\[
+ \gaparea(S)\le\frac{\lceil L/Q\rceil}{2L}
+       \le\frac1{2Q}+\frac1{2L}.
+\]
+This proves the physical-grid gap claim and the ordinary-orbit area bound.
 
 Give each of the $Q$ nonzero labels in
 \cref{eq:serial-complete-raw} weight one.  A complete retained core
@@ -292,7 +303,7 @@ the identity.  Every original core span except $H$ lies in that
 interval.  Hence $x\circ w$ vanishes on each such full span for every
 word $w$ of exceptional shadows.  This proves the profile assertion
 and completes the construction.
-\end{informalproof}
+\end{outline}
 
 The obstruction in this example is the continuation after the bridge
 exit.  Many distinct intermediate times remain distinct through the

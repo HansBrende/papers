@@ -81,3 +81,5 @@ import LeanMachine.ShiftedGridUnion
 import LeanMachine.VanishingTradeoff
 import LeanMachine.ExtendedTradeoff
 import LeanMachine.RawIntervalCover
+import LeanMachine.ScheduledExcursion
+import LeanMachine.CyclicGapUpper

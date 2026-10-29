@@ -49,6 +49,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`IntervalCover`](LeanMachine/IntervalCover.lean) | Equal-size subcover and packing certificates for order-connected sets, and lossless fractional-cover rounding | this repository |
 | [`FiniteIncidence`](LeanMachine/FiniteIncidence.lean) | Exact weighted multiplicity sums for indexed families and overlap bounds from disjoint color classes | this repository |
 | [`MonotonePatches`](LeanMachine/MonotonePatches.lean) | Metric path variation from threshold crossings; sharp factor-three bounds for successful words and disjoint interval patches | this repository |
+| [`ScheduledExcursion`](LeanMachine/ScheduledExcursion.lean) | Constructed unit-step excursions with arbitrary pauses, exhaustive nonadjacent returns, and the canonical first peak | this repository |
 | [`ThinIntervals`](LeanMachine/ThinIntervals.lean) | Triangle-free interval forests, nonleaf component ranks, and periodic cuts bounding every surviving simple path | this repository |
 | [`PeriodicPhases`](LeanMachine/PeriodicPhases.lean) | Unit-step chain bounds and protected phase averaging with exact residue counts and actual payment unions | this repository |
 | [`FiniteOrbits`](LeanMachine/FiniteOrbits.lean) | Exact finite action orbits, removal of inactive actions, relabeling, and cardinality bounds for deterministic continuation | this repository |
@@ -63,6 +64,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`OrderedRecovery`](LeanMachine/OrderedRecovery.lean) | Reverse recovery from one helper and a coordinate complement along well-founded dependencies | this repository |
 | [`FrozenBank`](LeanMachine/FrozenBank.lean) | Entire-block freezing by maximum slot oscillation, with exact window-overlap and variation bounds | this repository |
 | [`GapErosion`](LeanMachine/GapErosion.lean) | Finite squared-gap area loss and selection-weight budget after integer erosion | this repository |
+| [`CyclicGapUpper`](LeanMachine/CyclicGapUpper.lean) | Circular gap and area upper bounds from successor witnesses; ceiling bounds for floor-grid increments | this repository |
 | [`CyclicSelection`](LeanMachine/CyclicSelection.lean), [`CyclicArcSelection`](LeanMachine/CyclicArcSelection.lean) | Actual consecutive circular gaps, disjoint eroded arcs, and safe common cut-and-orientation counts | this repository |
 | [`PeriodicStripe`](LeanMachine/PeriodicStripe.lean), [`PeriodicStripeSum`](LeanMachine/PeriodicStripeSum.lean) | Sharp circular stripe discrepancy and exact reindexing by transpose columns | this repository |
 | [`SelectionAverage`](LeanMachine/SelectionAverage.lean), [`CyclicStripeAverage`](LeanMachine/CyclicStripeAverage.lean) | Finite selection double counting and actual stripe selection bounds from eroded circular gaps | this repository |

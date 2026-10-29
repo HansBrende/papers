@@ -69,6 +69,8 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.NearFullSequence.one_exception_false
 #print axioms SourceCovers.RawIntervalCover.blockUnion_card_le
 #print axioms SourceCovers.RawIntervalCover.two_block_factor_sharp
+#print axioms SourceCovers.SerialGeometry.Parameters.SerialCertificate
+#print axioms SourceCovers.SerialGeometry.Parameters.serial_quadratic_cover
 #print axioms SourceCovers.actualOwner
 #print axioms SourceCovers.admissiblePhases_card
 #print axioms SourceCovers.anchored_displacement_area_lower_bound

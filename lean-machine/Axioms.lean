@@ -829,3 +829,33 @@ import LeanMachine
 #print axioms LeanMachine.RawIntervalCover.blockUnion_card_le_of_cover
 #print axioms LeanMachine.RawIntervalCover.blockUnion_card_le
 #print axioms LeanMachine.RawIntervalCover.two_block_factor_sharp
+
+-- ScheduledExcursion.lean
+#print axioms LeanMachine.ScheduledExcursion.Schedule
+#print axioms LeanMachine.ScheduledExcursion.Schedule.active
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height
+#print axioms LeanMachine.ScheduledExcursion.Schedule.mem_active
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_le
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_zero
+#print axioms LeanMachine.ScheduledExcursion.Schedule.active_downward
+#print axioms LeanMachine.ScheduledExcursion.Schedule.lt_height_iff
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_depart
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_arrive
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_step
+#print axioms LeanMachine.ScheduledExcursion.Schedule.min_height_le
+#print axioms LeanMachine.ScheduledExcursion.Schedule.return_iff
+#print axioms LeanMachine.ScheduledExcursion.Schedule.peak
+#print axioms LeanMachine.ScheduledExcursion.Schedule.depart_lt_peak
+#print axioms LeanMachine.ScheduledExcursion.Schedule.peak_lt_arrive
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_peak
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_lt_peak
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_mono_before
+#print axioms LeanMachine.ScheduledExcursion.Schedule.height_anti_after
+#print axioms LeanMachine.ScheduledExcursion.Schedule.plateau
+#print axioms LeanMachine.ScheduledExcursion.Schedule.plateau_peak
+
+-- CyclicGapUpper.lean
+#print axioms LeanMachine.CyclicSelection.gap_le_of_next
+#print axioms LeanMachine.CyclicSelection.pointArea_le_of_gap_le
+#print axioms LeanMachine.floor_step_le_ceilDiv
+#print axioms LeanMachine.ceilDiv_cast_le_div_add_one

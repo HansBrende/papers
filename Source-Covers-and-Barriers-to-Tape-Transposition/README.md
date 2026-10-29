@@ -385,9 +385,20 @@ proof imports its ball and row counts and applies Mathlib's finite-union
 bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
+**Proposition 6.1, the native serial-exception example, is Lean-verified.**
+For every `M ≥ 4` and `b ≥ 1`, eight legal work-head walks realize the
+quadratic cover `Q = (M-1)^2` at an output root and the original paid
+phase. The proof enumerates every actual family and verifies the full
+ordinary orbit, both unrestricted and joint-orbit-restricted cover optima,
+and the surviving physical grid. Its gap bound holds for every raw set
+between that grid and the complete ordinary raw orbit. It also verifies
+vanishing exceptional-only profiles on every nondistinguished core span.
+This rules out the stated pointwise linear-cover claim; it does not
+exclude general linear-time transposition or an averaged cover criterion.
+
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **7 numbered results remain unformalized**,
-including the serial-exception example, query-movement and causal-group results. The paper's
+`Quot.sound`. The other **6 numbered results remain unformalized**,
+including the query-movement and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

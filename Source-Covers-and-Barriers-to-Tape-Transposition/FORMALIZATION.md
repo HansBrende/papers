@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-five of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-six of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -19,9 +19,10 @@ Theorem 5.2, uniform exclusion by global sharing;
 Corollary 5.3, necessary global continuation density and superlinear seed growth;
 Proposition 5.4, the metric shared-support criterion;
 Corollary 5.5, sublinear raw covering exponents;
+Proposition 6.1, the native serial-exception quadratic-cover example;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 7 results
+bounds and vanishing tails. The other 6 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -939,13 +940,78 @@ keeps the customary nonnegative range. The enlarged no-envelope range is
 a stronger specialization of the existing metric criterion, not a new
 bound for unrestricted tape geometries.
 
-The **next target is Proposition 6.1, the serial-exception quadratic-cover
-example**. Start with explicit finite walks and exhaustive actual-family
-identification, then reuse the existing shadow and complete-orbit libraries
-for the raw-support certificate. Cover witnesses must range over every
-computation time; the lower bound must not assume that a convenient list
-contains all relevant families or roots.
-The general transposition question remains open.
+## Completed: serial-exception quadratic-cover example
+
+**Proposition 6.1 is Lean-verified.** The bundled statement is
+[`SerialCertificate`](lean/SourceCovers/SerialQuadraticCover.lean), proved
+by `serial_quadratic_cover` for every parameter pair `M ≥ 4`, `b ≥ 1`.
+The original statement is preserved. The proof is organized as follows:
+
+- [`ScheduledExcursion`](../lean-machine/LeanMachine/ScheduledExcursion.lean)
+  constructs unit-step walks from outward and inward visit schedules,
+  allowing arbitrary pauses. [`NativeExcursion`](lean/SourceCovers/NativeExcursion.lean)
+  derives their actual returns, canonical owners, complete families and
+  clipped shadows, with at most two entries per cell.
+- [`NativeSweep`](lean/SourceCovers/NativeSweep.lean) reuses Paper 2's
+  excursion pulses. [`FreshSweep`](lean/SourceCovers/FreshSweep.lean) and
+  [`NativeBank`](lean/SourceCovers/NativeBank.lean) prove that successive
+  banks preserve unit moves and the three-entry bound, including shared
+  boundary cells. No long return crosses between banks.
+  [`NativeBankReturns`](lean/SourceCovers/NativeBankReturns.lean) describes
+  every return by its bank, turn and radius, even for truncated horizons.
+  [`NativeBankFamily`](lean/SourceCovers/NativeBankFamily.lean) derives each
+  complete family's size, span, owner and clipped reflection. Only its own
+  outer return must precede the horizon.
+- [`SerialWalks`](lean/SourceCovers/SerialWalks.lean),
+  [`SerialFamilies`](lean/SourceCovers/SerialFamilies.lean) and
+  [`SerialPartition`](lean/SourceCovers/SerialPartition.lean) assemble all
+  eight legal heads and prove the exhaustive family list, exact count,
+  two-color core, and disjoint exceptional spans. The parameters, input/output
+  chronology and distinct older-grid times are in
+  [`SerialParameters`](lean/SourceCovers/SerialParameters.lean),
+  [`SerialBridge`](lean/SourceCovers/SerialBridge.lean) and
+  [`SerialGrid`](lean/SourceCovers/SerialGrid.lean).
+- [`SerialCoverNumber`](lean/SourceCovers/SerialCoverNumber.lean) proves
+  the exact fractional cover `Q = (M-1)^2` for the prescribed raw target
+  set, using the existing fractional-core-cover definition. All computation
+  times are allowed as seeds; any finite seed set containing the Q
+  exhibited seeds has the same cover number.
+  [`SerialCoreCertificates`](lean/SourceCovers/SerialCoreCertificates.lean)
+  discharges the geometric premises for every subset of the constructed
+  core retaining the early family H. It also proves that every finite word
+  in the two exceptional shadows, including the empty word, has zero raw
+  profile throughout every other original core span.
+
+- [`SerialCoreGraph`](lean/SourceCovers/SerialCoreGraph.lean),
+  [`SerialNonleaves`](lean/SourceCovers/SerialNonleaves.lean),
+  [`SerialRanks`](lean/SourceCovers/SerialRanks.lean) and
+  [`SerialPhase`](lean/SourceCovers/SerialPhase.lean) derive the original
+  overlap graph, ranks and residue-zero deletion. Precisely the seven
+  positive multiples of M are deleted in each bank copy.
+- [`SerialPayment`](lean/SourceCovers/SerialPayment.lean) and
+  [`SerialUnpaid`](lean/SourceCovers/SerialUnpaid.lean) characterize the
+  original payment. [`SerialReachability`](lean/SourceCovers/SerialReachability.lean)
+  checks the paths in the full actual parent relation and proves that the
+  paid physical cone contains the Q-point grid. The clipped first sparse
+  return is used only for the ordinary orbit.
+- [`SerialBankClosure`](lean/SourceCovers/SerialBankClosure.lean) and
+  [`SerialOrbit`](lean/SourceCovers/SerialOrbit.lean) prove that the six
+  displayed groups are exactly the full ordinary orbit, closed under
+  every retained family. [`SerialExactCover`](lean/SourceCovers/SerialExactCover.lean)
+  identifies the actual raw orbit with the prescribed targets and proves
+  both cover equalities, reusing the arbitrary-seed packing certificate.
+- [`SerialGap`](lean/SourceCovers/SerialGap.lean) uses explicit clockwise
+  successors and the shared
+  [`CyclicGapUpper`](../lean-machine/LeanMachine/CyclicGapUpper.lean) lemmas
+  to bound circular gaps without reconstructing the sorted enumeration.
+  The bound holds for every set between the physical grid and the complete
+  ordinary raw orbit, strengthening the two sets required by the proposition.
+
+No complete-orbit, payment or family-enumeration premise is assumed.
+The physical cone keeps all state and work predecessors; the ordinary
+orbit uses the paper's strict clipping and is not truncated by payment.
+The theorem concerns one phase and root, with dimension tied to M.
+It leaves the general transposition question and averaged criteria open.
 
 ## Dependency order and proof obligations
 

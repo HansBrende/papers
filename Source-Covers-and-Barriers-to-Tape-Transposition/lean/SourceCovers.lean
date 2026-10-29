@@ -106,3 +106,4 @@ import SourceCovers.CausalReturns
 import SourceCovers.CausalGroupRoutes
 import SourceCovers.CausalRouting
 import SourceCovers.CausalFibreMixture
+import SourceCovers.CausalEntropy

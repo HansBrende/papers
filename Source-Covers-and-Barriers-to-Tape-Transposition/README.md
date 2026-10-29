@@ -471,8 +471,10 @@ twice the sum of output delays. The group routings are now combined and
 averaged over attained helper values, preserving the exact support-log mass,
 unit bit caps and shared physical capacities. A support lemma verifies the
 probabilistic interpretation when the declared domain is the law's exact
-support. The entropy and metric consequences remain unformalized, so the full
-theorem is still pending.
+support. The conditional-entropy lower bound, nonnegative total correlation
+and helper/deficit algebra are now verified using the existing entropy
+library, even for unnormalized nonnegative weights. The metric consequence
+remains unformalized, so the full theorem is still pending.
 
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:

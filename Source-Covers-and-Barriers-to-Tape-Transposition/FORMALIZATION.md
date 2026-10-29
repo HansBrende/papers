@@ -1338,17 +1338,41 @@ conditional probability exactly when it belongs to that fibre's projected
 support. The routing construction is therefore not relying on a larger
 surrogate support.
 
+## Completed: conditional entropy and total correlation
+
+[`CausalEntropy`](lean/SourceCovers/CausalEntropy.lean) proves
+`conditionalGroupEntropy_le_supportRoutingMass`: the sum of the groups'
+conditional entropies in bits is at most the verified support-routing mass.
+It reuses `observationEntropy_le_log_support` on each normalized nonzero
+helper fibre and `sum_helperMass_mul_observationEntropy` for averaging.
+Zero-mass fibres contribute zero. The proof needs only nonnegative weights;
+normalization and causal typing are unnecessary for this entropy comparison.
+As above, the mass equals the paper's `R_sup` on the law's exact support.
+
+`groupTotalCorrelation_nonneg` reuses the existing conditional coordinate
+cover inequality. The column groups cover all raw coordinates, and observing
+the full input is injective on the code domain. This proves nonnegativity
+even for unnormalized weights and empty domains. No assumption of row,
+group or conditional independence is introduced.
+
+`deficit_add_helper_ge_of_groupEntropy_le` derives the exact helper/deficit
+inequality from any upper bound on the group-entropy sum, retaining total
+correlation. `deficit_add_helper_ge_support` specializes it to the support
+mass. The later metric bound can therefore finish the stated inequality
+without repeating the entropy argument. The two paper-specific quantities
+are expressions in existing finite-weight entropy, converted to bits.
+
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Derive conditional entropy, total-correlation and short-distance/volume
-   consequences from those actual routes.
+1. Bound the support-routing mass by the short-bit count plus volume divided
+   by distance, and assemble the full routing and entropy statement.
 2. Apply the verified native short-count theorem to Corollary 8.4, keeping
    arbitrary positive entry widths and all stated asymptotic quantifiers.
 
 The max-flow/min-cut and weighted-path obligations are now proved in the
 shared library. The two numbered results remain unformalized until their
-full entropy, metric and asymptotic conclusions are verified; all six numbered
+full metric and asymptotic conclusions are verified; all six numbered
 definitions have formal counterparts.
 
 ## Dependency order and proof obligations

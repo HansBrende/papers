@@ -68,11 +68,15 @@ Proved in the paper with complete written proofs, not formalized:
   every level class has exactly n_h/(2(m+1)) hops; for labels that change only at turns, fine classes are blind
   to the other head on average over shifts; when the other head carries a block label, coarse classes see its
   cancellations on average over shifts (Theorem V).
+- **The walk-DAG forms of the conjectures** (Lemma 5.25, Corollary 5.26). A label of the walk DAG of the
+  deep-nesting pair costs at most 2(2Λ + 1) + 1 more on the cyclic cover, so Conjecture A′ or A″, which are stated
+  on the covers, would make the pairs depth-robust and refute TCP(2).
 - **Consequences for transposers.** The crux alone excludes oblivious linear-time transposers whose work heads
   enter every cell boundedly often (Corollary F), and so does an affirmative answer to Question 9.1 of
   *Directed Recovery Structures in Tape Computations* (Corollary F′), which also covers adaptive machines whose
   traces have entropy at most ηL for a fixed η < 1/2 and whose likely traces enter every cell boundedly often
-  (Corollary F″); the machine form of Theorem M.
+  (Corollary F″); the machine form of Theorem M. The entropy hypothesis of Corollary F″ is not robust: padding the
+  input head's moves breaks it without changing the computation.
 - **Linear machines.** The passage from machines with a data path linear over a field to linear networks, and the
   form of Theorem D_lin over all sizes: linear depth reduction together with a linear crux excludes oblivious
   linear-time transposers, and the linear crux can be stated exactly as rigidity of the transposition matrix
@@ -90,7 +94,8 @@ Proved in the paper with complete written proofs, not formalized:
   for one arbitrary walk together with walks of owner-load one at unboundedly many separated scales.
 - Depth reduction for three-stack DAGs with a spine.
 - The all-code paired-distance question (Question 9.1 of *Directed Recovery Structures in Tape Computations*).
-- The half-rate bound for triangle-free side information of degree four.
+- The half-rate bound for triangle-free side information of degree four along families with growing girth; without
+  the girth condition it fails (Example 7.8 of *Nested Elimination and Half-Rate Bounds for Storage Codes*).
 - The scratch question and the relative rigidity of transposition.
 - See the open-problems section of the paper.
 

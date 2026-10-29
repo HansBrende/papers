@@ -4,7 +4,8 @@ The crux asks for a deficit below rate~$1$, and its undirected core asks whether
 information of bounded degree can beat rate~$\frac12$~\cite[Question~6.1]{FourthPaper2026}. For all codes this is open beyond
 the classes of the companion paper, \emph{Nested Elimination and Half-Rate Bounds for Storage Codes}~\cite{SeventhPaper2026},
 which proves the half bound for every storage code on triangle-free graphs of maximum degree three, among other classes, with
-the guessing number equal to the fractional matching number there. This section proves two linear cases in which a natural
+the guessing number equal to the fractional matching number there, and shows that triangle-freeness does not suffice at degree
+four~\cite[Example~7.8]{SeventhPaper2026}. This section proves two linear cases in which a natural
 source of high-rate codes fails: codes lifted along towers of covers in characteristic~$2$ (\cref{sec:crux-towers}), and scalar
 codes at degree four whose exceptional vertices are few or far apart (\cref{sec:crux-deg4}). By \cref{sec:linear}, linear codes
 are the relevant ones for linear machines.
@@ -236,7 +237,13 @@ triangle-free graph of maximum degree four needs $\card H-\rho_3(H)\ge\eps N$, f
 of heavy vertices that cannot be scattered, that is, dense clusters of vertices whose rows recover them from four neighbours
 or from three non-reciprocally. For all codes, guessing numbers of triangle-free graphs need not equal the lower bound
 given by fractional clique covers, as Cameron, Dang and Riis showed with the Higman--Sims graph~\cite{CameronDangRiis2016}. This is the regime of the fourth paper's tree code, in which every
-interior vertex is heavy and no locally confined argument can work~\cite[Proposition~6.28]{FourthPaper2026}. For linear machines,
+interior vertex is heavy and no locally confined argument can work~\cite[Proposition~6.28]{FourthPaper2026}. Such clusters
+also occur in codes of rate above one half. The companion paper gives a scalar code of dimension~$7$ over~$\F_4$ on a
+$4$-regular triangle-free graph with thirteen vertices, of odd girth five~\cite[Example~7.8]{SeventhPaper2026}. Let $M$ be
+the matrix with unit diagonal whose row~$v$ is the recovery equation of symbol~$v$, so that the code lies in~$\ker M$. Then
+$\dim\ker M\ge7>\lfloor13/2\rfloor$, so by \cref{thm:SH} the heavy vertices of~$M$ are clustered. In fact all thirteen are
+heavy: each symbol is a combination of all four neighbouring symbols with nonzero coefficients, as the script that generates
+the example's data checks. For linear machines,
 \cref{thm:Dlin} needs the linear crux, and the theorem says where a linear gain at degree four would have to live.
 
 \paragraph{Proof of \cref{thm:SH}.} Write $T_v=\{v\}\cup S_v$ for the support of the row $z_v$ of~$M$. The proof works with the

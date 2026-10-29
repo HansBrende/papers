@@ -14,8 +14,8 @@ that none exists. The first paper's frozen checker accepts either answer~\cite{F
 \item \emph{Depth reduction at unbounded owner-load.} By \cref{cor:where}, a depth-robust family of walks has two heads of
 unbounded owner-load, or one such head together with bounded heads whose families occupy unboundedly many separated scales.
 \begin{problem}[Two remaining cases of TCP]\label{prob:tcp-cases}
-(a) Are the deep-nesting pairs depth-robust as $m\to\infty$, for some sequence of odd shifts? Conjecture~A$''$ (\cref{conj:App}),
-with its walk-DAG analogue, would give depth $2^{\Omega(m)}$ at fixed cost and a negative answer to $\TCP(2)$; the counter gives
+(a) Are the deep-nesting pairs depth-robust as $m\to\infty$, for some sequence of odd shifts? Conjecture~A$''$ (\cref{conj:App})
+would give, by \cref{cor:wrap}, depth $2^{\Omega(m)}$ at fixed cost and a negative answer to $\TCP(2)$; the counter gives
 depth $2^{m+O(1)}/\eps$ at every shift (\cref{cor:counter-cut}). (b) Is TCP true for one arbitrary walk together with walks of
 owner-load one whose families occupy unboundedly many separated scales, for instance the pair of \cref{rem:umix-candidate}?
 \end{problem}
@@ -47,13 +47,17 @@ case and several others~\cite{DirectedRecovery2026}.
 
 \item \emph{Degree four.}
 \begin{problem}[Triangle-free side information of degree four]\label{prob:deg4}
-Does $2h(V)\le\sum_vh(\{v\})$ hold for every polymatroid valid for a triangle-free graph of maximum degree~$4$, so that every
-storage code there has rate at most~$\frac12$? For scalar linear codes, does $\dim\ker M\le\lfloor N/2\rfloor$ hold when the
-heavy vertices of \cref{thm:SH} form clusters?
+Do triangle-free graphs of maximum degree~$4$ have guessing number $N/2+o(N)$ along families with growing girth, so that
+storage codes there have rate at most $\frac12+o(1)$? For scalar linear codes, does $\dim\ker M\le N/2+o(N)$ hold there when
+the heavy vertices of \cref{thm:SH} form clusters?
 \end{problem}
-At degree three both are settled, for all codes by the companion paper~\cite{SeventhPaper2026} and for scalar linear codes by the
-fourth paper's Theorem~S. At degree four, \cref{thm:SH} reduces the scalar question to clusters of heavy vertices, the regime in
-which tree-local arguments are impossible~\cite[Proposition~6.28]{FourthPaper2026}.
+Without the girth condition both answers are negative: the companion paper gives a $4$-regular triangle-free graph on thirteen
+vertices, of odd girth five, with a scalar linear code of dimension~$7$ over~$\F_4$~\cite[Example~7.8]{SeventhPaper2026}, so
+that $2h(V)\le\sum_vh(\{v\})$ fails there for a valid polymatroid, and disjoint copies of it have rate~$\frac7{13}$. The heavy
+vertices of its recovery matrix form a cluster (\cref{sec:crux-deg4}). At degree three both questions are settled without a
+girth condition, for all codes by the companion paper~\cite{SeventhPaper2026} and for scalar linear codes by the fourth paper's
+Theorem~S. At degree four, \cref{thm:SH} reduces the scalar question to clusters of heavy vertices, the regime in which
+tree-local arguments are impossible~\cite[Proposition~6.28]{FourthPaper2026}.
 
 \item \emph{The scratch.} If TCP fails at unbounded owner-load, the route of Theorem~D needs input specific to transposition:
 fixed-depth genies, even charged by entropy, then fail for some easy oblivious bijections~\cite[Theorem~H]{InfoDepthMemo2026}.

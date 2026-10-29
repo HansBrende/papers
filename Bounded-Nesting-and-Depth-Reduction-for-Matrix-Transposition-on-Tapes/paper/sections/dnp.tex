@@ -171,8 +171,7 @@ $\eps\le1$.
 \paragraph{Why they matter.} The counter shows what Conjecture~A$'$ must look like: all $m+1$ levels are doubly served
 at $\log_2q=m+O(\log(1/\theta))$, within the cost budget, at every shift. So the conjecture, if true, is sharp up to the
 constant~$C$. The least depth $D(\eps)$ of a cut of $\eps T$ edges of the walk DAG satisfies
-$\log_2D(\eps)\le m+\log_2(1/\eps)+O(1)$ unconditionally, by \cref{cor:counter-cut}, while Conjecture~A$'$ with its walk-DAG
-analogue would give $\log_2D(\eps)\ge c(m+1)-c'$ for small~$\eps$, with $c\le1$ by the counter. So the open question is
+$\log_2D(\eps)\le m+\log_2(1/\eps)+O(1)$ unconditionally, by \cref{cor:counter-cut}, while Conjecture~A$'$ would give $\log_2D(\eps)\ge c(m+1)-c'$ for small~$\eps$ (\cref{cor:wrap}), with $c\le1$ by the counter. So the open question is
 exponential against subexponential depth in the nesting depth~$m$, and the base of an exponential is at most~$2$, not the
 $c/\eps$ of the clock labels.
 
@@ -218,7 +217,7 @@ $s_0>m$, every shift and every multiple $T$ of~$P$, the pair on $[0,T)$ has a se
 $\card R\le\delta(\eps)T$ and a cut of $G-R$ with at most $\eps T$ edges and depth at most $D(\eps)$.
 \item Suppose there are $\eps_0>0$, an integer $N_0\ge1$ and a function~$D_*$ such that for every $m\ge0$ there are $s_0>m$
 and an odd shift for which the walk DAG of the pair on $[0,N_0P)$ has no cut of at most $\eps_0N_0P$ edges and depth less
-than $D_*(m)$ (a walk-DAG form of Conjecture~A$'$). If $\mathrm{Cap}(D(\eps),\delta(\eps),\eps)$ holds for all~$\eps$,
+than $D_*(m)$ (a walk-DAG form of Conjecture~A$'$, which follows from Conjecture~A$'$ by \cref{cor:wrap}). If $\mathrm{Cap}(D(\eps),\delta(\eps),\eps)$ holds for all~$\eps$,
 then $D(\eps)\ge D_*(m)$ whenever $\eps\le\eps_0/2$ and $4(m+1)N_0\delta(\eps)\le\eps_0$. In particular, if
 $D_*(m)\ge2^{c(m+1)-c'}$, then $\delta(\eps)\ge c\eps_0/(4N_0(\log_2D(\eps)+c+c'))$ whenever $\eps\le\eps_0/2$ and
 $\delta(\eps)\le\eps_0/(4N_0)$.
@@ -240,7 +239,8 @@ and $m+1=\lfloor y\rfloor$; then $\log_2D(\eps)\ge c\lfloor y\rfloor-c'\ge c(y-1
 $y\le(\log_2D(\eps)+c+c')/c$.
 \end{informalproof}
 
-So on the deep-nesting family, under the walk-DAG form of Conjecture~A$'$ assumed in~(b), the scratch must have size about
+So on the deep-nesting family, under the walk-DAG form of Conjecture~A$'$ assumed in~(b), and so under Conjecture~A$'$
+itself (\cref{cor:wrap}), the scratch must have size about
 $T/\log D$ when the rest is cut at depth~$D$, and (a) achieves this: there $\log_2D(\eps)\approx2\log_2(1/\eps)+3.5$ and $\delta(\eps)\approx4/\log_2D(\eps)$.
 
 \subsection{Labels that change only at turns}\label{sec:dnp-turnlabels}
@@ -580,7 +580,7 @@ exists on such a cover, then, as in \cref{sec:prelim-dnp}, it doubly serves more
 \[
   \log_2q\;>\;\frac{(1-\eta-2\eps/\theta_0)(m+1)-C'}{C}.
 \]
-With its walk-DAG analogue this makes the pairs depth-robust as $m\to\infty$, and $\TCP(2)$ would fail; only the admissible
+By \cref{cor:wrap} this makes the pairs depth-robust as $m\to\infty$, and $\TCP(2)$ would fail; only the admissible
 range of~$\eps$ shrinks, from $\theta_0/2$ to $(1-\eta)\theta_0/2$. \Cref{prop:Vfixed} proves Conjecture~A$''$ for pairs of
 block labels, with $\eta=\beta+O(1/m)$ and no logarithmic term, from visibility in a window modulo~$q$ at a fixed shift.
 Theorem~V does not supply this hypothesis, even on average over shifts: it gives the integer event $F\le-Q-1$ with no lower
@@ -588,3 +588,58 @@ bound on~$F$, hence the window only for $q$ of order $(m-\kappa)Q$, and only on 
 bound on $\abs F$ on the straddling hops, or a version of Theorem~V that counts the window directly; and, at one fixed shift
 for all coarse classes, equidistribution of a class's apex centres relative to the other head's canceller valleys of level
 about $k+\log_2(m-k)$, a mixed-radix carry problem that we could not solve.
+
+\subsection{The walk-DAG forms of the conjectures}\label{sec:dnp-wrap}
+
+Conjectures~A$'$ and~A$''$ concern labels on the cyclic covers, where the chains of hops close up and Lemma~Zq is exact,
+while $\TCP(2)$ concerns cuts of the walk DAG on $[0,T)$, where the chains are open. A label of the walk DAG costs at most
+a constant more on the cover, so the conjectures already speak about the walk DAG; this is the elementary transfer in the
+spirit of the fourth paper's remark on the cover and the walk DAG~\cite[Remark~5.23]{FourthPaper2026}, written for
+served levels.
+
+\begin{lemma}[From the walk DAG to the cover]\label{lem:wrap}
+\notformalized
+Let $s_0\ge m+2$, let $\xi$ be odd, let $N\ge1$ and $T=NP$, and let $\Psi\colon[0,T)\to\{0,\dots,q-1\}$ be a label of the
+walk DAG of the pair $x_1=U(s_0,m,1)$, $x_2=x_1(\cdot+\xi)$ on $[0,T)$. Then $\Psi$, read as a label $G$ of the $N$-fold
+cover, satisfies $\cost(G)\le\cost(\Psi)+2(2\Lambda+1)+1$.
+\end{lemma}
+
+\begin{informalproof}
+Let $(p,u)$ be a hop of the cover, of head~$h$, lifted to~$\Z$ with $u\in[0,T)$, so that $p$ is the previous visit of
+head~$h$ to the cell $x_h(u)$. If $p\ge0$, then $p$ is also the previous visit within $[0,T)$; since $U$ has no pauses,
+$u\ge p+2$, so $(p,u)$ is a long hop of the walk DAG, and it is violated by~$G$ exactly when it is violated by~$\Psi$. If
+$p<0$, then $u$ is the first visit of head~$h$ within $[0,T)$ to its cell; each head stays in the $2\Lambda+1$ cells of
+$[-\Lambda,\Lambda]$, so there are at most $2(2\Lambda+1)$ such hops of the two heads. No pair is a hop of both heads, so
+every long hop of the walk DAG is counted once on the cover: all turn times and turn positions are multiples of~$R_m$, so
+a hop of~$x_1$ has $p+u\equiv0$ and a hop of~$x_2$ has $p+u\equiv-2\xi\pmod{R_m}$~\cite[Remark~5.23]{FourthPaper2026}, and
+$2\xi\not\equiv0\pmod{R_m}$ because $\xi$ is odd and $R_m=2^{s_0-m}\ge4$. Finally, the descents of~$G$ at the times
+$t\in[1,T)$ are those of~$\Psi$, and the cyclic comparison at $t=0$ adds at most one.
+\end{informalproof}
+
+\begin{corollary}[The conjectures on the walk DAG]\label{cor:wrap}
+\notformalized
+Suppose that Conjecture~A$''$ holds with constants $\theta_0$, $\eta$, $C$ and~$C'$. Let $0<\eps<\min(1/4,(1-\eta)\theta_0)$,
+$\delta=((1-\eta)-\eps/\theta_0)/2$ and $N_0=\lceil1/\min(1/8-\eps/2,\delta\theta_0/2)\rceil$. For every~$m$, with $s_0=m+2$
+and the shift~$\xi$ of the conjecture, and every $N\ge N_0$, every cut of at most $\eps NP$ edges of the walk DAG of the
+pair on $[0,NP)$ has depth at least $2^{(\delta(m+1)-C')/C}-1$. So the deep-nesting pairs are depth-robust as $m\to\infty$
+and $\TCP(2)$ fails. The same holds under Conjecture~A$'$, with $\eta=0$.
+\end{corollary}
+
+\begin{informalproof}
+Let $F$ be a cut with at most $\eps NP$ edges and depth~$D$. By the converse of \cref{lem:labels}~\cite[Lemma~5.2]{FourthPaper2026}
+there is a label~$\Psi$ with $q=D+1$ values and $\cost(\Psi)\le\eps NP$. By \cref{lem:wrap} the label~$G=\Psi$ of the
+$N$-fold cover has $\cost(G)\le\eps NP+4\Lambda+3\le\eps_cn_{\mathrm h}$ with $\eps_c=\eps/2+1/(N(m+1))$, because
+$n_{\mathrm h}=2NP$, $P=4(m+1)\Lambda$ and $4\Lambda+3\le8\Lambda$. Since $N\ge N_0$, $\eps_c\le1/8$ and
+$2\eps_c/\theta_0\le\eps/\theta_0+\delta<1-\eta$, so $\eps_c<\theta_0/2$. By the per-class split
+(\cref{sec:prelim-dnp}), $G$ doubly $\theta_0$-serves more than $(m+1)(1-2\eps_c/\theta_0)\ge(m+1)(1-\eps/\theta_0-\delta)$
+levels, and Conjecture~A$''$ bounds their number by $C\log_2q+C'+\eta(m+1)$. As $1-\eta-\eps/\theta_0=2\delta$, this gives
+$C\log_2q>\delta(m+1)-C'$, which is the claim.
+\end{informalproof}
+
+The proof uses Conjecture~A$''$ only through a bound on the number of doubly $\theta_0$-served levels by a function
+of~$q$ plus $\eta(m+1)$. So a weaker statement already refutes $\TCP(2)$: that for every~$q$ there are $F(q)$
+and~$m_0(q)$ such that for every $m\ge m_0(q)$, with $s_0=m+2$, some odd shift makes every label with $q$ values and cost at
+most $n_{\mathrm h}/8$ on every cover doubly $\theta_0$-serve at most $F(q)+\eta(m+1)$ levels. Indeed, if $\TCP(2)$ held with
+depth~$D$ at some $\eps<\min(1/4,(1-\eta)\theta_0)$, take $q=D+1$ and $m\ge\max(m_0(q),F(q)/\delta)$; the proof above gives
+$F(q)+\eta(m+1)>(m+1)(\eta+\delta)$, a contradiction. The function~$F$ need not be monotone, and the shift may depend on~$q$.
+

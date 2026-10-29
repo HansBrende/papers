@@ -48,10 +48,10 @@ See [FORMALIZATION.md](FORMALIZATION.md) for the dependency and reuse plan.
 | `cor:movement-interval` | Corollary | Queries spread over a column interval | Lean-verified | [movement.tex:102](paper/sections/movement.tex#L102) |
 | `prop:subset-calibration` | Proposition | Exact helper and gap-area calibration | Lean-verified | [movement.tex:204](paper/sections/movement.tex#L204) |
 | `cor:subset-movement` | Corollary | The dimension limit precedes the radius limit | Lean-verified | [movement.tex:286](paper/sections/movement.tex#L286) |
-| `def:causal-group-typing` | Definition | Causal group typing | Definition | [causal-groups.tex:33](paper/sections/causal-groups.tex#L33) |
-| `thm:causal-group-routing` | Theorem | Theorem Q: paid routing from causal groups | Written proof | [causal-groups.tex:84](paper/sections/causal-groups.tex#L84) |
-| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:211](paper/sections/causal-groups.tex#L211) |
-| `cor:causal-group-obstruction` | Corollary | Narrow causal groups require an almost complete helper | Written proof | [causal-groups.tex:276](paper/sections/causal-groups.tex#L276) |
+| `def:causal-group-typing` | Definition | Causal group typing | Lean-verified | [causal-groups.tex:34](paper/sections/causal-groups.tex#L34) |
+| `thm:causal-group-routing` | Theorem | Theorem Q: paid routing from causal groups | Written proof | [causal-groups.tex:100](paper/sections/causal-groups.tex#L100) |
+| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:227](paper/sections/causal-groups.tex#L227) |
+| `cor:causal-group-obstruction` | Corollary | Narrow causal groups require an almost complete helper | Written proof | [causal-groups.tex:292](paper/sections/causal-groups.tex#L292) |
 
 ## Verified declarations
 
@@ -125,6 +125,8 @@ The generated [axiom audit](lean/PaperAxioms.lean) checks these declarations.
   — `SourceCovers.SubsetHelper.helper_apply`, `SourceCovers.SubsetHelper.recovery`, `SourceCovers.SubsetHelper.helper_law`, `SourceCovers.SubsetHelper.queried_absent`, `SourceCovers.SubsetHelper.queried_independent`, `SourceCovers.SubsetHelper.mean_gap_formula`, `SourceCovers.SubsetHelper.gap_helper_calibration`, `SourceCovers.SubsetHelper.query_row_fraction`, `SourceCovers.SubsetHelper.calibration_limits`.
 - `cor:subset-movement`: [SourceCovers/SubsetMovementLimits.lean](lean/SourceCovers/SubsetMovementLimits.lean)
   — `SourceCovers.SubsetMovement.ColumnQueries`, `SourceCovers.SubsetMovement.ColumnQueries.ofRepresentatives`, `SourceCovers.SubsetMovement.ColumnQueries.finite_lower`, `SourceCovers.SubsetMovement.ColumnQueries.liminf_lower`, `SourceCovers.SubsetMovement.ColumnQueries.quarter_liminf`, `SourceCovers.SubsetMovement.ColumnQueries.quarter_total_liminf`, `SourceCovers.SubsetMovement.quarter_barrier_diverges`, `SourceCovers.SubsetMovement.ColumnQueries.eventually_exceeds`.
+- `def:causal-group-typing`: [SourceCovers/CausalGroups.lean](lean/SourceCovers/CausalGroups.lean)
+  — `SourceCovers.CausalGroups.ColumnPartition`, `SourceCovers.CausalGroups.Network`, `SourceCovers.CausalGroups.Network.FibreTyping`, `SourceCovers.CausalGroups.Network.CausalGroupTyping`, `SourceCovers.CausalGroups.Network.FibreTyping.local_edge_function`, `SourceCovers.CausalGroups.Network.FibreTyping.local_output_function`.
 - `lem:attached-short-count`: [SourceCovers/NativeShortCount.lean](lean/SourceCovers/NativeShortCount.lean)
   — `SourceCovers.attachedShortBits`, `SourceCovers.card_attachedShortBits_le_local`, `SourceCovers.card_attachedShortBits_le_profile`, `SourceCovers.card_attachedShortBits_le`, `SourceCovers.attachedShortBits_zero_radius`, `SourceCovers.attachedShortBits_zero_block`.
 
@@ -165,7 +167,7 @@ ebba7146877ca060d7953932b4ad4f10c92d6026d8ea320bbd121715d94e2410  thm:movement
 8c4506583be8dda137561a7d3a0254c62e5dc2e342e85a0d5f04b6def041d293  cor:movement-interval
 653b0bb895dfb0f0ed375c468514f59e2628eeae3149292b15c6d972f9b5df84  prop:subset-calibration
 265dd84dcf082e2386eda21f6e518d712203d165347e24e49db1c8c1f4923ae9  cor:subset-movement
-e10a6213d0f68a9c87659733abcd1ec3ba1be8f9b4ae5b312f82cde15e412f00  def:causal-group-typing
+c27a6143f2ab98b8c11fb4c8ae580de2bee48b3474a352067e1e3abe03683e53  def:causal-group-typing
 8a394daad3ebc541838ff69c63ba4cbb2d0f780ca1a211fb943cfb479b919ec1  thm:causal-group-routing
 62f250cbdde34431d5b3bf490691d85f868f6a696d0a276113b88d59fa9729ec  lem:attached-short-count
 06f1c95abf3e553071e1fbd9538545de30df736f567e59e7e15bd7d158d0b08b  cor:causal-group-obstruction

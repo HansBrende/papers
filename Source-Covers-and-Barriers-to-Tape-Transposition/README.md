@@ -438,6 +438,20 @@ radius tends to zero afterwards. It excludes uniformly bounded movement
 for this specified interface at all sufficiently small fixed radii, without
 assuming movement is bounded or claiming an unrestricted tape lower bound.
 
+**Definition 8.1, causal group typing, is formalized.** The model retains
+row attachments, the memory spine, ordered transpose outputs, nonempty
+consecutive column groups, and separate real capacity allocations for
+all group fields on every attained helper fibre. Local dependence is
+expressed by Mathlib's function factorization, with verified actual local
+functions on all tuples. No independence is assumed.
+
+The supporting proofs verify autonomy of one group's fields, an evaluation
+on its actual joint projected support, and the support-capacity bound for
+cuts containing all its requested outputs. Every entering field is included,
+even after a previous departure from the cut. The collector and flow
+construction of Theorem 8.2 remain unformalized; these support lemmas do
+not assume or establish the routing conclusion by themselves.
+
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:
 the causal-group routing theorem and its obstruction corollary. The paper's

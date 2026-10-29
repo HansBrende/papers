@@ -105,6 +105,8 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`ExtendedTradeoff`](LeanMachine/ExtendedTradeoff.lean) | Quantitative tradeoffs with unbounded nonnegative observables, extended lower limits, rate normalization and zero-cost divergence | this repository |
 | [`RawIntervalCover`](LeanMachine/RawIntervalCover.lean) | Attained minimum closed-real-interval covers of finite raw coordinates; sharp two-block payment per short interval at every grid shift | this repository |
 | [`FixedSubsetLimits`](LeanMachine/FixedSubsetLimits.lean) | Fixed-size binomial ratios, rounded capped capacities and inverse-power divergence, reusing Mathlib asymptotics | this repository |
+| [`CausalFields`](LeanMachine/CausalFields.lean) | Local deterministic fields on ranked networks, projected-support autonomy and complete entering-cut recovery | this repository |
+| [`CausalCutCapacity`](LeanMachine/CausalCutCapacity.lean) | Joint support cardinality and bit-capacity bounds from causal cut recovery | this repository |
 
 ## External code
 

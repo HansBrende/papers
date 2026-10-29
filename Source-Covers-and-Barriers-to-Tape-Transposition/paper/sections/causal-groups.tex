@@ -30,7 +30,13 @@ $J_1,\ldots,J_h$, in increasing order.  Write $g_a=|J_a|$,
 $g=\max_a g_a$, and $X_a=X|_{[d]\times J_a\times[b]}$.
 All entropies and logarithms in this section use base~$2$.
 
+\Needspace{17\baselineskip}
 \begin{definition}[Causal group typing]\label{def:causal-group-typing}
+\formal{SourceCovers/CausalGroups.lean}{SourceCovers.CausalGroups.ColumnPartition,
+SourceCovers.CausalGroups.Network, SourceCovers.CausalGroups.Network.FibreTyping,
+SourceCovers.CausalGroups.Network.CausalGroupTyping,
+SourceCovers.CausalGroups.Network.FibreTyping.local_edge_function,
+SourceCovers.CausalGroups.Network.FibreTyping.local_output_function}
 The computation has a \emph{capacity-conserving causal group typing
 conditional on $Z$} if the following holds for each attained $z$.
 For each edge $e$ there is one tuple of fields of each type
@@ -46,6 +52,15 @@ with these same permitted arguments.  The field alphabets, allocations
 and local functions are fixed on the whole fibre $Z=z$, and their
 evaluation agrees there with the computation and its outputs.
 \end{definition}
+
+The Lean definition expresses local dependence by equality of the
+permitted observations on the fibre. Mathlib's function-factorization
+theorem supplies actual functions on all local tuples; an attained fibre
+supplies default values on unattained tuples. Conversely, local functions
+with the stated agreement satisfy this equality-based condition. The
+formal network retains the row attachments, ordered outputs and memory
+spine. A monotone surjection assigns columns to their nonempty consecutive
+groups.
 
 All input-dependent control used by a local function must consequently
 be carried by its permitted fields or determined by $z$.  A shared
@@ -79,6 +94,7 @@ consecutive.  They may share endpoint nodes.  Define the paid volume
 The factor $2$ pays both collection at $\omega_a$ and return to each
 bit's original output node.
 
+\Needspace{12\baselineskip}
 \subsection{From autonomous recovery to partial routing}
 
 \begin{theorem}[Theorem Q: paid routing from causal groups]

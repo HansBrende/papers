@@ -19,6 +19,12 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.AdmissibleGeometry.prefix_metric_deficit
 #print axioms SourceCovers.AdmissibleGeometry.relativeDeficit
 #print axioms SourceCovers.AdmissibleGeometry.withSkeleton
+#print axioms SourceCovers.CausalGroups.ColumnPartition
+#print axioms SourceCovers.CausalGroups.Network
+#print axioms SourceCovers.CausalGroups.Network.CausalGroupTyping
+#print axioms SourceCovers.CausalGroups.Network.FibreTyping
+#print axioms SourceCovers.CausalGroups.Network.FibreTyping.local_edge_function
+#print axioms SourceCovers.CausalGroups.Network.FibreTyping.local_output_function
 #print axioms SourceCovers.CoverTailSmall
 #print axioms SourceCovers.EnvelopeTailSmall
 #print axioms SourceCovers.HasSpanColoring

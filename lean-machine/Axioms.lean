@@ -967,3 +967,28 @@ import LeanMachine
 #print axioms LeanMachine.FixedSubsetLimits.floor_successor_ratio
 #print axioms LeanMachine.FixedSubsetLimits.capped_capacity_ratio
 #print axioms LeanMachine.FixedSubsetLimits.inverse_power_diverges
+
+-- CausalFields.lean
+#print axioms LeanMachine.CausalFields.Layout
+#print axioms LeanMachine.CausalFields.Observation
+#print axioms LeanMachine.CausalFields.observe
+#print axioms LeanMachine.CausalFields.observe_eq_iff
+#print axioms LeanMachine.CausalFields.Evaluation
+#print axioms LeanMachine.CausalFields.Evaluation.ofRules
+#print axioms LeanMachine.CausalFields.Evaluation.edge_eq
+#print axioms LeanMachine.CausalFields.Evaluation.output_eq
+#print axioms LeanMachine.CausalFields.Evaluation.exists_edge_rule
+#print axioms LeanMachine.CausalFields.Evaluation.exists_output_rule
+#print axioms LeanMachine.CausalFields.Evaluation.value_eq_of_cut
+#print axioms LeanMachine.CausalFields.Evaluation.output_eq_of_cut
+#print axioms LeanMachine.CausalFields.Evaluation.value_factorsThrough_raw
+#print axioms LeanMachine.CausalFields.Evaluation.cutObservation
+#print axioms LeanMachine.CausalFields.Evaluation.raw_factorsThrough_cut
+#print axioms LeanMachine.CausalFields.Evaluation.comap
+#print axioms LeanMachine.CausalFields.Evaluation.projected
+#print axioms LeanMachine.CausalFields.Evaluation.projected_agrees
+
+-- CausalCutCapacity.lean
+#print axioms LeanMachine.CausalFields.card_range_le_of_factorsThrough
+#print axioms LeanMachine.CausalFields.Evaluation.card_raw_range_le
+#print axioms LeanMachine.CausalFields.Evaluation.log_support_le_cut

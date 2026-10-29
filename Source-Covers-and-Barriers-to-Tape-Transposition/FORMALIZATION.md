@@ -25,7 +25,7 @@ Corollary 7.2, queries spread over intervals;
 Proposition 7.3, the exact helper and gap-area calibration;
 Corollary 7.4, the dimension-first movement obstruction;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
-3.1 and 4.1 are also formalized, including joint-profile existence, mass
+3.1, 4.1 and 8.1 are also formalized, including joint-profile existence, mass
 bounds and vanishing tails. The other 2 results
 retain complete written proofs.
 
@@ -1122,8 +1122,52 @@ capping and inverse-power divergence. The final theorem quantifies the
 obstruction over all admissible families at every sufficiently small fixed
 radius. Dimension is taken first; no radius depending on dimension is
 substituted into the limit theorem. The exact helper and required-query
-premises remain essential. Next are Definition 8.1, causal-group typing,
-Theorem 8.2, its routing extraction, and Corollary 8.4, its native obstruction.
+premises remain essential.
+
+## Completed: causal group typing and its support-cut foundation
+
+[`CausalGroups`](lean/SourceCovers/CausalGroups.lean) formalizes Definition
+8.1 on the actual row/column/bit coordinates. Its finite directed network
+retains all memory edges, original row attachments, ordered transpose
+outputs, and per-edge real capacities. A monotone surjection specifies
+nonempty consecutive column groups. Each attained helper fibre has its
+own finite field alphabets and allocations whose sum is paid on each edge.
+
+The shared [`CausalFields`](../lean-machine/LeanMachine/CausalFields.lean)
+uses Mathlib's `FactorsThrough` rather than introducing a separate decoder
+framework. It verifies both actual local functions and the converse
+construction, raw-projection autonomy, and evaluation directly on the
+joint projected support. Its ranked causal induction retains every
+entering edge of an arbitrary cut, including re-entries; no product-support
+or independence assumption is introduced.
+[`CausalCutCapacity`](../lean-machine/LeanMachine/CausalCutCapacity.lean)
+converts that recovery into a finite image count and its base-two capacity
+bound. `cut_support_bound` instantiates the bound on actual group bits,
+with exactly `|B| * |J_a| * b` raw bits for sink-side row set `B`, when
+all group outputs lie inside the cut. This last condition must be supplied
+by the still-unformalized collector construction; it is not silently
+assumed for the original output nodes.
+
+Next, complete Theorem 8.2 without replacing its routing conclusion by
+the weaker support-cut result:
+
+1. Add the forward collector on each group's actual memory interval and
+   verify the `W_a` per-edge capacity and recovery at its last output node.
+2. Establish real-capacity max-flow/min-cut on the augmented finite network;
+   the existing cut recovery supplies the lower bound on every source/sink cut.
+3. Decompose flow, remove artificial arcs, split each row's mass among its
+   original group bits with mass at most one each, and append the paid
+   backward memory walks. Unattached rows must receive zero mass.
+4. Sum groups and average over attained helper values, proving the exact
+   augmented capacities and total mass `R_sup`. Derive conditional entropy,
+   total-correlation and short-distance/volume consequences.
+5. Apply the verified native short-count theorem to Corollary 8.4, keeping
+   arbitrary positive entry widths and all stated asymptotic quantifiers.
+
+No complete max-flow/min-cut theorem was found in the pinned Mathlib or
+repository libraries during this pass. Do not replace this obligation by
+an axiom or by a flow-existence hypothesis. The two numbered results remain
+unformalized; all six numbered definitions now have formal counterparts.
 
 ## Dependency order and proof obligations
 

@@ -110,3 +110,6 @@ import SourceCovers.CausalEntropy
 import SourceCovers.CausalDistance
 import SourceCovers.CausalVolume
 import SourceCovers.CausalRoutingBound
+import SourceCovers.CausalNativeNetwork
+import SourceCovers.CausalTapeBounds
+import SourceCovers.CausalTapeObstruction

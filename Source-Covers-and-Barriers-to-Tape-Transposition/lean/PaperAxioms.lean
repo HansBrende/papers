@@ -19,6 +19,14 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.AdmissibleGeometry.prefix_metric_deficit
 #print axioms SourceCovers.AdmissibleGeometry.relativeDeficit
 #print axioms SourceCovers.AdmissibleGeometry.withSkeleton
+#print axioms SourceCovers.CausalGroups.CausalTapeCode
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_isBigO
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_isLittleO
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_le_explicit
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_le_uniform
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.helper_deficit
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.not_both_small
+#print axioms SourceCovers.CausalGroups.CausalTapeCode.uniformConstant
 #print axioms SourceCovers.CausalGroups.ColumnPartition
 #print axioms SourceCovers.CausalGroups.Network
 #print axioms SourceCovers.CausalGroups.Network.CausalGroupTyping

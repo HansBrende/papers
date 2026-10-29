@@ -2,11 +2,11 @@
 
 **Hans Brende and GPT-6 Astra (OpenAI)** — October 2026
 
-**Draft with partial Lean formalization and complete written proofs for the remaining results.**
+**Draft: all 32 numbered results and 6 numbered definitions are formalized in Lean; final review is pending.**
 
 - [PDF](paper/main.pdf) and [LaTeX sources](paper/), licensed under [CC BY 4.0](paper/LICENSE).
 - [Lean library](lean/), licensed under [Apache 2.0](lean/LICENSE).
-- [Formalization plan](FORMALIZATION.md) and [generated statement index](FORMALIZATION-INDEX.md).
+- [Formalization record](FORMALIZATION.md) and [generated statement index](FORMALIZATION-INDEX.md).
 
 ## The question
 
@@ -464,13 +464,25 @@ caps then give `R_sup <= S_ell + V/ell`, including the original entropy and
 helper/deficit inequalities. Unattached rows have infinite distance and
 contribute neither short bits nor routed mass. The support convention is
 verified on the law's exact support; the entropy comparison itself also
-holds for unnormalized nonnegative weights. This completes **31 of 32
-numbered results**, along with **all 6 numbered definitions**.
+holds for unnormalized nonnegative weights.
+
+**Corollary 8.4, the asymptotic causal-group obstruction, is Lean-verified.**
+The adapter retains the actual native tape edges, attachments and transposed
+output nodes, and injects short bits into the existing native count. For
+`K = (c+1)G` and `d >= (2k+3)^4`, the group-entropy sum is at most
+`2KL/sqrt(d) + 4K(4k+2g)log(2k+3)L/log(d)`. The resulting big-O constant
+depends only on `k,G,c`; entry widths and input laws may vary arbitrarily.
+The finite estimate allows any block size with `1 <= r <= db` and `db <= rG`.
+
+When `g = o(log(d))`, the group-entropy sum itself is a nonnegative `o(L)`
+error in the pointwise bound `L - error <= deficit + helper entropy`.
+Consequently, both quantities on the right cannot be sublinear. No
+independence, regularity of the varying width, or supplied routing hypothesis
+is needed. This completes **all 32 numbered results and all 6 definitions**.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. Only **Corollary 8.4, the asymptotic causal-group obstruction,
-remains unformalized**; its written proof is complete. The paper's
-verified finite criterion and that written proof give the main chain:
+`Quot.sound`. The paper's verified finite criteria and uniform consequences
+give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to
    retain actual state and work-tape dependencies, with explicit costs.
@@ -549,4 +561,4 @@ them, Paper 8's `boundedNesting` package for actual families, and the shared
 patches, interval forests, protected phases, finite orbits, packed source
 banks, shifted-grid payment and causal recovery. Building
 requires the whole repository with sibling folders in place.
-The remaining plan is recorded in [FORMALIZATION.md](FORMALIZATION.md).
+The completed stages and review checklist are recorded in [FORMALIZATION.md](FORMALIZATION.md).

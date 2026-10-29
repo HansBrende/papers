@@ -1,34 +1,8 @@
-# Formalization plan
+# Formalization record
 
-This records completed formalization and the remaining specification.
-**Thirty-one of the 32 numbered results are Lean-verified: Lemma 2.3, family
-accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
-the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
-bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
-fractional interval covers; Lemma 3.3, the fractional raw-source gap bound;
-Lemma 3.4, anchored erosion; Theorem 3.5, complete covers with the full paid cost;
-Corollary 3.6, counting terminal core orbits; Proposition 3.7, complete
-continuation suppliers; Theorem 4.2, necessary hop tails;
-Corollary 4.3, the uniform one-exception deficit; Corollary 4.4, common envelopes;
-Corollary 4.5, the fixed finite skeleton; Theorem 4.6, necessary reciprocal-cover
-complexity and its inverse-square probability consequence;
-Corollary 4.7, both uniform mean-cover criteria;
-Corollary 4.8, necessary complete-observable movement;
-Proposition 5.1, the full shared-support payment;
-Theorem 5.2, uniform exclusion by global sharing;
-Corollary 5.3, necessary global continuation density and superlinear seed growth;
-Proposition 5.4, the metric shared-support criterion;
-Corollary 5.5, sublinear raw covering exponents;
-Proposition 6.1, the native serial-exception quadratic-cover example;
-Theorem 7.1, the ordering-independent query-movement bound;
-Corollary 7.2, queries spread over intervals;
-Proposition 7.3, the exact helper and gap-area calibration;
-Corollary 7.4, the dimension-first movement obstruction;
-Theorem 8.2, paid routing from causal groups;
-and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
-3.1, 4.1 and 8.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. Only Corollary 8.4, the asymptotic causal-group
-obstruction, remains unformalized; its written proof is complete.
+**All 32 numbered results and 6 numbered definitions are Lean-verified.**
+This records the completed stages, exact scope and reuse decisions.
+An independent review of the complete paper and Lean library is next.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
 manuscript in section order. It lists every numbered definition and result,
@@ -211,9 +185,9 @@ its ball and row counts, and Mathlib's injection and finite-union cardinality
 bounds. The existing build adapter reads the first paper's original sources;
 none are copied or changed. The [generated axiom audit](lean/PaperAxioms.lean)
 reports only `propext`, `Classical.choice` and `Quot.sound` for the cited
-declarations. The causal-group routing theorem is now formalized; its
-asymptotic corollary remains unformalized. The improved constant does not
-change that corollary's asymptotic conclusion.
+declarations. The causal-group routing theorem and its asymptotic corollary
+are now formalized. The improved constant does not change the asymptotic
+conclusion.
 
 ## Completed: Q2 overlap forest and protected phases
 
@@ -1394,14 +1368,40 @@ nonnegative weights and an arbitrary ambient helper type. Choosing the
 declared domain to be the law's exact support identifies the mass with
 the stated `R_sup`, as verified by the existing support lemma.
 
-Next, formalize Corollary 8.4. Relate this actual network metric and its
-bit indexing to the native tape diagram's attachment/ball definitions,
-then apply the verified native short-count bound. Preserve arbitrary
-positive entry widths, constants depending only on `k,G,c`, and all
-stated asymptotic quantifiers. Neither a supplied routing premise nor a
-surrogate metric can replace that adapter. This is the sole numbered
-result still unformalized; all six numbered definitions have formal
-counterparts.
+## Completed: the native causal-group obstruction
+
+[`CausalNativeNetwork`](lean/SourceCovers/CausalNativeNetwork.lean) constructs
+the network on the original finite edge set, retaining its memory spine,
+row attachments and transposed output nodes. Standard finite-product
+equivalences supply the raw bit indexing. Actual graph walks reach the
+native balls, so the short-bit injection imports the already verified
+native count. No supplied metric bound or disconnected-row default is used.
+
+[`CausalTapeBounds`](lean/SourceCovers/CausalTapeBounds.lean) supplies the
+rounded block size using Mathlib's ceiling division. It proves the sharper
+finite estimate for any `1 <= r <= db` with `db <= rG`, not just that rounded
+choice. With `K=(c+1)G`, it gives `n <= Kd`, total original capacity at most
+`4kKL`, and paid volume at most `K(4k+2g)L`. The shared
+[`LogarithmicRadius`](../lean-machine/LeanMachine/LogarithmicRadius.lean)
+uses ordinary floor/logarithm/power lemmas: when `d >= (2k+3)^4`, a positive
+radius has ball-growth factor at most `sqrt(d)` and is at least
+`log(d)/(4 log(2k+3))`. Thus the entropy sum is at most
+`2KL/sqrt(d) + 4K(4k+2g)log(2k+3)L/log(d)`.
+
+[`CausalTapeObstruction`](lean/SourceCovers/CausalTapeObstruction.lean)
+bundles an actual native diagram, its capacity profile, full causal typing
+and normalized nonnegative law. The explicit constant and big-O theorem
+are uniform in positive entry widths, groups, helpers and input laws.
+The limit theorems allow any dimension-cofinal family. Mathlib's quotient
+limits and big-O/little-o composition show that the entropy sum is `o(L)`
+when `g=o(log(d))`. That sum is the actual nonnegative error in the
+pointwise helper/deficit bound. A nontrivial cofinal filter then excludes
+simultaneously sublinear deficit and helper entropy. No independence or
+regularity of the varying width is assumed.
+
+All numbered results and definitions are now formalized. The next step is
+independent whole-paper and Lean review, followed by reassessment of the
+remaining research targets across the series.
 
 ## Dependency order and proof obligations
 
@@ -1435,7 +1435,7 @@ through relative paths rather than copying source. Preserve the first
 paper's frozen statements. General reusable lemmas belong in the shared
 library. No future declaration name is reserved by this document.
 
-## Acceptance criteria for the later Lean pass
+## Acceptance criteria for review and future changes
 
 1. Match each full Lean type against the paper, including inherited premises,
    endpoint conventions, quantifier order and the intended conclusion.

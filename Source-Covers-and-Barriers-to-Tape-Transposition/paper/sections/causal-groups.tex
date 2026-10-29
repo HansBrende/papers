@@ -28,7 +28,8 @@ transposed inputs, and let $Z$ be a deterministic function of $X$.
 Partition the columns into nonempty consecutive intervals
 $J_1,\ldots,J_h$, in increasing order.  Write $g_a=|J_a|$,
 $g=\max_a g_a$, and $X_a=X|_{[d]\times J_a\times[b]}$.
-All entropies and logarithms in this section use base~$2$.
+Entropies and support logarithms use base~$2$. In asymptotic estimates,
+$\log$ denotes the natural logarithm.
 
 \Needspace{17\baselineskip}
 \begin{definition}[Causal group typing]\label{def:causal-group-typing}
@@ -322,7 +323,14 @@ graph-ball estimate or the union bound is claimed.
 \Needspace{8\baselineskip}
 \begin{corollary}[Narrow causal groups require an almost complete helper]
 \label{cor:causal-group-obstruction}
-\notformalized
+\formal{SourceCovers/CausalTapeObstruction.lean}{SourceCovers.CausalGroups.CausalTapeCode,
+SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_le_explicit,
+SourceCovers.CausalGroups.CausalTapeCode.uniformConstant,
+SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_le_uniform,
+SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_isBigO,
+SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_isLittleO,
+SourceCovers.CausalGroups.CausalTapeCode.helper_deficit,
+SourceCovers.CausalGroups.CausalTapeCode.not_both_small}
 Fix $k\ge0$, an integer $G\ge1$, and $c>0$.  Along any sequence
 $d\to\infty$, let $b\ge1$, $L=d^2b$, and
 $r=\lceil db/G\rceil$.  Suppose valid $k$-work-tape diagrams have
@@ -340,6 +348,12 @@ depending only on $k,G,c$,
  \sum_aH(X_a\mid Z)
  =O\!\left(\frac{L}{\sqrt d}+\frac{(1+g)L}{\log d}\right).
 \end{equation}
+More explicitly, put $K=(c+1)G$. For $d\ge(2k+3)^4$,
+\begin{equation}\label{eq:causal-group-explicit}
+ \sum_aH(X_a\mid Z)\le
+ \frac{2KL}{\sqrt d}
+ +\frac{4K(4k+2g)\log(2k+3)L}{\log d}.
+\end{equation}
 In particular, if $g=o(\log d)$, then
 \[
  \Delta+H(Z)\ge L-o(L).
@@ -349,21 +363,48 @@ applies in particular to the series' standard width
 $b=b(d)=\max\{1,\lceil\log_2d\rceil\}$.
 \end{corollary}
 
-\begin{informalproof}
-Since $r\ge db/G$, one has $n\le cGd+1=O(d)$.  Also
-$nr\le T+r$ and $rG\le db+G$, so
-$\sum_e c_e=O(L)$.  Equation~\eqref{eq:group-volume} therefore gives
-$V=O((1+g)L)$.
-For sufficiently large $d$, take
-$\ell=\lfloor\tfrac12\log_{2k+3}d\rfloor\ge1$.
-Then $\ell$ is of order $\log d$, and
-\cref{lem:attached-short-count} gives
-$S_\ell=O(db\sqrt d)=O(L/\sqrt d)$.
-Apply \cref{thm:causal-group-routing} to obtain
-\cref{eq:causal-group-asymptotic}.  Finally,
-$L-\Delta-H(Z)=H(X\mid Z)\le\sum_aH(X_a\mid Z)$.
-The right side is $o(L)$ when $g=o(\log d)$.
-\end{informalproof}
+\begin{outline}
+The native network adapter uses exactly the diagram's edges, memory
+spine, row attachments and output blocks. A composition of finite-product
+equivalences maps $(i,j,t)$ to its row-major raw index and verifies the
+transposed output position. Every adjacency of the network is an original
+tape edge in one direction. Induction on graph walks then maps a bit
+counted by \cref{thm:causal-group-routing} to the same raw bit counted by
+\cref{lem:attached-short-count}. This injection uses actual attachments;
+the inherited zero-distance convention for unattached rows is never used.
+
+The finite estimate needs only $1\le r\le db$ and $db\le rG$;
+the canonical rounded block size satisfies these inequalities. Since
+$nr\le T+r$,
+\[
+ ndb\le nrG\le(T+r)G\le(cL+db)G\le Kd^2b,
+ \qquad
+ \sum_e c_e\le4kG(T+r)\le4kKL.
+\]
+Thus $n\le Kd$ and \cref{eq:group-volume} gives
+$V\le K(4k+2g)L$.
+Put $A=2k+3$. For $d\ge A^4$, the shared logarithmic-radius lemma chooses
+$\ell=\lfloor\tfrac12\log_A d\rfloor$ and proves
+\[
+ 1\le\ell,\qquad A^\ell\le\sqrt d,\qquad
+ \ell\ge\frac{\log d}{4\log A}.
+\]
+The native short-bit count is consequently at most
+$2nbA^\ell\le2KL/\sqrt d$.
+Applying \cref{thm:causal-group-routing} proves
+\cref{eq:causal-group-explicit}. A common constant depending only on
+$k,G,c$ gives \cref{eq:causal-group-asymptotic}; neither the entry width
+nor the input law enters that constant.
+
+For an arbitrary dimension-cofinal family, $1/\sqrt d$ and $1/\log d$
+tend to zero. If $g=o(\log d)$, division by $L>0$ therefore shows that
+$E=\sum_a H(X_a\mid Z)$ is $o(L)$. Nonnegative conditional total
+correlation gives the pointwise bound
+$L-E\le\Delta+H(Z)$. If both terms on the right were $o(L)$, this
+inequality divided by $L$ would contradict $1\le o(1)$.
+The formal statement permits arbitrary positive entry widths varying
+with dimension and arbitrary correlated laws and helpers.
+\end{outline}
 
 At the standard width, the block-profile volume hypothesis is supplied
 by the Lean-verified \lean{sum_cap_le} in~\cite{FirstPaper2026}.

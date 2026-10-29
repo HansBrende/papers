@@ -114,6 +114,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FlowWalks`](LeanMachine/FlowWalks.lean) | Undirected walks retaining physical edge identities, with both orientations charged; actual backward spine paths and exact traversal counts | this repository |
 | [`FiniteWeightedFamily`](LeanMachine/FiniteWeightedFamily.lean) | Finite indexed weighted families, disjoint collection and probability mixtures; exact mass and observable sums retain multiplicity | this repository |
 | [`FlowDistance`](LeanMachine/FlowDistance.lean) | Physical walk volume equals length; ordinary undirected distance bounds every walk, allowing parallel edges, loops and repeated traversals | this repository |
+| [`LogarithmicRadius`](LeanMachine/LogarithmicRadius.lean) | An explicit positive radius from `x >= A^4`, with `A^ell <= sqrt(x)` and `ell >= log(x)/(4 log(A))` | this repository |
 
 ## External code
 

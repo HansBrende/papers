@@ -1,16 +1,14 @@
-\section{Specification for subsequent formalization}
+\section{Formalization and reuse}
 \label{sec:formalization}
 
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,cor:subset-movement,def:causal-group-typing,thm:causal-group-routing,lem:attached-short-count}
+All 32 numbered results and 6 numbered definitions
 are Lean-verified;
-their declarations and axiom commands accompany the paper. The remaining
-asymptotic causal-group corollary has a complete written proof. The index in
+their declarations and axiom commands accompany the paper. The index in
 \cref{sec:theorem-index} gives a stable label for every numbered result
 and definition; it is generated from the manuscript, rather than from
 a separate list of proposed theorems. Each result's status is explicit.
-The statements include the hypotheses to preserve when creating Lean
-declarations. Further formalizations must identify their declarations
-and disclose any change of scope before calling them authoritative.
+The Lean statements, including their inherited model hypotheses, are
+authoritative. The proof outlines explain their mathematical content.
 
 \subsection{Dependency order}
 
@@ -129,9 +127,10 @@ support is identified by positive probability on the exact input support.
 The entropy and metric consequences now complete \cref{thm:causal-group-routing},
 including the total collector-volume bound and nonnegative total correlation.
 The original interval-budget statement follows from the sharper prefix-budget
-theorem. The native short-bit count is already formalized; its connection
-to this network interface and the asymptotic application remain for
-\cref{cor:causal-group-obstruction}.
+theorem. The native adapter identifies actual edges, attachments and
+transposed bit positions, allowing the verified short-bit count to apply.
+Explicit radius and volume estimates give \cref{cor:causal-group-obstruction},
+with uniform constants and arbitrary varying positive entry widths.
 These three branches do not serve as premises of the main uniform
 exclusion theorem.
 \end{enumerate}
@@ -199,11 +198,11 @@ A common paid-averaging theorem accepts any valid raw-gap credits;
 the terminal-orbit corollary reuses it with exact fractional covers.
 A shared unit-weight cover lemma and regression of the actual roots
 supply the finite fractional upper bound without a new covering premise.
-For the remaining results, inspect exact types and dependency pins
-before choosing imports. Use sibling packages
-through relative paths and shared lemmas through the repository's
-common library; do not duplicate the earlier developments or change
-their frozen theorem statements.
+The native adapter reuses finite-product equivalences and the first paper's
+output-block and graph-ball definitions. Mathlib supplies logarithm,
+square-root and quotient limits. The shared logarithmic-radius lemma gives
+an explicit dimension threshold. All imports use sibling packages through
+relative paths; the earlier frozen theorem statements are unchanged.
 
 The following distinctions are part of the specification: a physical
 head is not a return family; an endpoint witness is not a record with

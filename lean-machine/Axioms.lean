@@ -1134,3 +1134,6 @@ import LeanMachine
 #print axioms LeanMachine.FiniteFlow.Network.graph_adj
 #print axioms LeanMachine.FiniteFlow.Network.edge_edist_le_one
 #print axioms LeanMachine.FiniteFlow.Network.edist_le_walk_length
+
+-- An explicit logarithmic radius for polynomial ball-growth estimates.
+#print axioms LeanMachine.exists_logarithmic_radius

@@ -1,11 +1,10 @@
-\section{Building and checking this draft}\label{sec:verification}
+\section{Building and checking the proofs}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,cor:subset-movement,def:causal-group-typing,thm:causal-group-routing,lem:attached-short-count}
+All 32 numbered results and 6 numbered definitions
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
-\leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
-asymptotic causal-group corollary has a written proof and is not formalized.
+\leanname{Classical.choice} and \leanname{Quot.sound}.
 No additional axiom, admitted proof or native decision procedure is
 used in the new library.
 
@@ -16,100 +15,10 @@ It also requires the eighth paper's \path{boundedNesting} package for
 actual families and the shared \path{lean-machine/} package for finite
 combinatorics, source-bank accounting, causal recovery, flows, weighted
 paths and analytic limits. Its README lists the reusable modules.
-The joint-profile proofs reuse Mathlib's compact products, finite-sum
-limits, summability, normalized ceilings and nonnegative-series divergence.
-The uniform-deficit proof reuses reciprocal limits, the squeeze theorem
-and the logarithm/real-power equivalence. Common envelopes add Mathlib's
-extended-nonnegative lower limits and $p$-series theorem. The supplied
-family ordering is retained directly through the sequence construction.
-The finite-skeleton proof instead supplies the zero profile explicitly;
-its family-count consequence reuses Mathlib's natural-floor inequalities.
-The reciprocal-cover proof retains actual averages through both limits
-and reuses Mathlib's subsequence characterization of an upper limit.
-The probability bound uses a finite indicator comparison and the existing
-finite inverse-square sum estimate. The uniform mean-cover criteria reuse
-Mathlib's finite Cauchy inequality, integral comparison and improper-integral
-formula, followed by the existing uniform-gap adapter. A chosen family order
-is retained for both the envelope and the cover budget.
-The continuation suppliers reuse ordered-bank exactness, finite maximal
-elements obtained by greatest time, fractional-cover feasibility, interval
-oscillation and anchored erosion. Their source-bank slots include complete
-older continuations, and missing exceptions are identity maps.
-The complete-movement proof reuses finite interval hulls and the existing
-paid-error limit, now shared with the reciprocal-cover argument. Explicit
-bank-variation bounds justify the two real lower limits. The final radius
-lower limit uses the extended nonnegative reals to allow divergence.
-The shared-support proof reuses complete-closure maximality, residual-shift
-selection, joint record/raw entropy and signed phase averaging. A finite
-union of clipped grid blocks is paid once, with a bound valid for every
-shift; the older bank's movement never replaces the full bank's residual
-bill. Finite entropy is reused from the second paper's library.
-The uniform-sharing proof retains the same original-order prefixes and
-uses the generalized paid-error limit. A shared quadratic tradeoff handles
-zero cost coefficients and arbitrary common good cutoffs. Mathlib supplies
-extended-real scaling and the decay of positive real powers.
-
-The continuation-density proof passes a convergent lower bound directly
-to the extended dimension lower limit. Positive slack permits a bound only
-on the limiting omitted coordinate. Sorted summability then makes that
-coordinate decay faster than reciprocal rank, forcing superlinear seed
-growth without a size envelope. Both lower limits allow infinity, with
-dimension taken first; strictly positive rates and the separate zero-cost
-case avoid an ambiguous zero-times-infinity argument.
-
-Metric sharing adds an attained minimum closed-interval cover and a sharp
-two-block estimate at every shift. The existing shared-payment proof now
-accepts an arbitrary shift-uniform payment; the original count bounds
-specialize it. The same rounded-width proof and vanishing-tail contradiction
-serve both global-count and metric-cover criteria. The three metric limits
-use one common cutoff filter; separate favorable cutoff sets would not suffice.
-The covering-exponent corollary specializes this criterion using a shared
-lemma for three negative-power limits and the universal sorted-rank bound.
-
-The query-movement proof groups times by a cumulative movement clock.
-Mathlib supplies the finite-path triangle inequality, natural floors and
-the cardinality of fixed-size subsets. Circular-ball capacity is proved
-using integer lifts in Mathlib's quotient-metric circle; the line version
-uses the quotient distance inequality. The original summed-slot theorem
-is a corollary of the maximum-slot theorem.
-The interval-query proof reuses that clock argument and Mathlib's fibre
-cardinality identity. It charges lost repeated types by deleted intervals,
-whose disjoint internal edge sets fit in the full timeline budget.
-
-The subset calibration reuses finite homomorphism fibres, the second
-paper's uniform-entropy library, and the existing sorted circular gaps.
-Disjoint nonempty supports give a surjective encoder over any finite
-abelian group. Ignored-coordinate fibre counts prove joint independence
-of whole entries. Empty forward arcs count squared gaps, and existing
-monotone-image lemmas identify the scaled raw-circle gaps. The limits
-use Mathlib's constant-over-natural limit; repetition and word width may
-vary with dimension. The movement limits reuse Mathlib's fixed-size
-binomial asymptotic, rounding bounds and power divergence. An independent
-internal threshold tends to zero after the dimension limit, removing the
-extra interval loss. Extended lower limits avoid a boundedness hypothesis.
-
-Causal group typing uses Mathlib's function-factorization predicate. Causal
-induction retains cut re-entries; finite image counting bounds joint support.
-The collector follows the actual memory spine with exact prefix capacities.
-All augmented cuts, including row-attachment crossings, are verified.
-Compactness and finite-box residual perturbations give a real-capacity flow
-of value $\log_2|\mathcal A_a(z)|$. Mathlib quiver paths retain attachments
-and every traversal. Uniform splitting gives unit bit caps; backward walks
-reach each bit's own output. Both orientations and merged edge copies are
-charged. Collector and return loads cost at most twice each prefix size,
-with extra volume at most twice the output-delay sum. Finite weighted
-families combine groups and mix helper fibres using the second paper's
-helper-mass identities. This preserves paths, multiplicity, unit caps and
-shared capacities. On the exact input support, the projected fibre support
-equals the positive-probability support. Existing support-entropy bounds,
-conditional averaging and coordinate covers give the entropy inequality
-and nonnegative total correlation, even for unnormalized weights. The
-helper/deficit conclusion follows by algebra. Mathlib's graph-distance
-triangle inequality bounds each physical walk; summing its traversal loads
-gives its length. Unit bit caps bound short-distance mass. Disjoint collector
-links occupy at most $n-1$ memory slots. These complete
-\cref{thm:causal-group-routing}, whose interval-budget statement is a direct
-corollary of the prefix-budget theorem.
+The mathematical reuse and exact scope are recorded in
+\cref{sec:formalization}; the generated index in \cref{sec:theorem-index}
+identifies all cited declarations. These dependency records complement
+the builds and axiom audits; they do not replace either check.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run
@@ -136,7 +45,7 @@ python3 tools/statement_index.py --check
 The script checks labels, formal-status markers and proof environments,
 and generates the declaration appendix, \path{FORMALIZATION-INDEX.md} and
 \path{lean/PaperAxioms.lean}. It does not verify proofs or execute audits.
-\path{FORMALIZATION.md} records remaining work.
+\path{FORMALIZATION.md} records the completed stages and reuse decisions.
 
 Build the PDF from \path{paper/} with
 \begin{verbatim}

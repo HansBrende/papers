@@ -457,9 +457,12 @@ output inside the cut and extends to every supersource/sink cut, paying
 all row attachments explicitly. A shared real-capacity max-flow/min-cut
 theorem and the exact augmentation now yield a flow of the projected-support
 logarithm on each group fibre. Each row supplies at most `b g_a`, and
-unattached rows supply zero. Path decomposition, per-bit allocation, return
-walks and averaging remain unformalized; the verified flow existence does
-not yet establish the full routing conclusion.
+unattached rows supply zero. A finite weighted path family now carries that
+exact value, with all traversal loads bounded by the flow and at most one
+path per positive edge. The reusable extraction allows cycles and preserves
+parallel-edge identities. Removing artificial arcs, per-bit allocation,
+return walks and averaging remain unformalized, so the full routing
+conclusion is still pending.
 
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:

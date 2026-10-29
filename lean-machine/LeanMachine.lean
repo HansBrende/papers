@@ -96,3 +96,4 @@ import LeanMachine.CausalFields
 import LeanMachine.CausalCutCapacity
 import LeanMachine.CausalCollector
 import LeanMachine.FiniteFlow
+import LeanMachine.FlowPaths

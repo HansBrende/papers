@@ -1199,29 +1199,53 @@ the projected-support logarithm. The augmentation is ranked acyclic;
 source value is the sum of row supplies; row conservation, the `b*g_a`
 cap, and zero supply from unattached rows are all verified.
 
-This completes the flow-existence step on each fixed group and helper
-fibre. It does not yet provide paths, per-bit masses, return walks, or
-the averaged routing of Theorem 8.2.
+This completes the flow-existence step on each fixed group and helper fibre.
+
+## Completed: weighted path extraction with exact source value
+
+The shared [`FlowPaths`](../lean-machine/LeanMachine/FlowPaths.lean) uses
+Mathlib's `Quiver.Path`, with the original edge identities as arrows.
+`pathFlow_eq_count` identifies its unit load with the number of traversals;
+no edge multiplicity is discarded. `exists_path_packing` extracts the full
+nonnegative net source value of any feasible real flow between distinct
+terminals. Every weight is positive, every edge load is bounded by the
+original flow, and the number of paths is at most the number of originally
+positive edges. The result permits cycles, incoming source arcs and
+outgoing sink arcs; no acyclicity premise is needed.
+
+The proof uses the already verified cut identity to find a positive-flow
+path whenever the remaining source value is positive. The largest scalar
+step, capped by that value, either finishes or exhausts a positive edge.
+Induction on positive-edge count proves termination. Unused residual flow
+need not be decomposed. `packing_feasible` derives flow feasibility from
+nonnegative weights and the edge-capacity bounds on the path loads.
+
+[`CausalPaths`](lean/SourceCovers/CausalPaths.lean) applies this to the actual
+augmentation. `exists_support_path_packing` supplies a finite path family
+of exactly the projected-support logarithm, with feasible loads, the row
+caps and zero supply from unattached rows. `packing_row_mass` proves that
+the loads on source-to-row arcs sum to the whole path mass.
+
+These are paths in the augmented network. Per-bit paths starting at actual
+row attachments, return walks, and the averaged routing of Theorem 8.2
+remain to be constructed.
 
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Decompose the acyclic flow into paths with total weight equal to its
-   source value and edge loads bounded by the flow. Covering unused residual
-   flow is unnecessary; preserving total routed mass is essential.
-2. Remove artificial arcs, split each row's path mass among its
+1. Remove artificial arcs, split each row's path mass among its
    original group bits with mass at most one each, and append the paid
    backward memory walks. Unattached rows must receive zero mass.
-3. Sum groups and average over attained helper values, proving the exact
+2. Sum groups and average over attained helper values, proving the exact
    augmented capacities and total mass `R_sup`. Derive conditional entropy,
    total-correlation and short-distance/volume consequences.
-4. Apply the verified native short-count theorem to Corollary 8.4, keeping
+3. Apply the verified native short-count theorem to Corollary 8.4, keeping
    arbitrary positive entry widths and all stated asymptotic quantifiers.
 
-The max-flow/min-cut obligation is now proved in the shared library. The
-two numbered results remain unformalized until their full routing and
-asymptotic conclusions are verified; all six numbered definitions have
-formal counterparts.
+The max-flow/min-cut and weighted-path obligations are now proved in the
+shared library. The two numbered results remain unformalized until their
+full routing and asymptotic conclusions are verified; all six numbered
+definitions have formal counterparts.
 
 ## Dependency order and proof obligations
 

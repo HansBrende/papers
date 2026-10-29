@@ -188,8 +188,14 @@ respects every capacity bound. Such a walk would increase the maximum.
 Without one, the residual reachable set gives a cut of the same value.
 Row $i$ supplies at most $bg_a$, and an unattached row supplies zero.
 
-Decompose the flow into source-to-sink paths and remove their artificial
-source and attachment arcs.  Split the path mass from each row among its
+Extract weighted source-to-sink paths carrying the full flow value.
+A positive remaining source value forces a path of positive-flow edges,
+by conservation across the reachable cut. Subtract the largest permissible
+path weight, capped by the remaining source value. This either finishes
+or exhausts a positive edge, so at most one path per originally positive
+edge is needed. Every traversal is charged with multiplicity.
+Remove the paths' artificial source and attachment arcs.
+Split the path mass from each row among its
 $bg_a$ original group bits, assigning at most one unit to each bit.
 This is possible because all those bits have the same permitted row
 attachments.  It need not identify particular bits as entropy carriers.
@@ -231,6 +237,7 @@ For clarity we state the precise short-distance estimate needed for
 partial, possibly unequal, commodity masses.  The summed-distance bound
 alone would not suffice.
 
+\Needspace{10\baselineskip}
 \begin{lemma}[Attached short-distance count]\label{lem:attached-short-count}
 \formal{SourceCovers/NativeShortCount.lean}{SourceCovers.attachedShortBits, SourceCovers.card_attachedShortBits_le_local, SourceCovers.card_attachedShortBits_le_profile, SourceCovers.card_attachedShortBits_le, SourceCovers.attachedShortBits_zero_radius, SourceCovers.attachedShortBits_zero_block}
 Let a $k$-work-tape diagram have block length $r\ge0$, $n$ block
@@ -296,6 +303,7 @@ coefficient and first-block correction improve the finite estimate;
 they do not change the asymptotic obstruction below. No optimality of the
 graph-ball estimate or the union bound is claimed.
 
+\Needspace{8\baselineskip}
 \begin{corollary}[Narrow causal groups require an almost complete helper]
 \label{cor:causal-group-obstruction}
 \notformalized

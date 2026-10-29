@@ -1055,3 +1055,31 @@ import LeanMachine
 #print axioms LeanMachine.FiniteFlow.Network.value_le_cut
 #print axioms LeanMachine.FiniteFlow.Network.max_flow_min_cut
 #print axioms LeanMachine.FiniteFlow.Network.exists_flow_of_cut_bound
+
+-- FlowPaths.lean
+#print axioms LeanMachine.FiniteFlow.Network.quiver
+#print axioms LeanMachine.FiniteFlow.Network.Path
+#print axioms LeanMachine.FiniteFlow.Network.pathEdges
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow
+#print axioms LeanMachine.FiniteFlow.Network.pathEdges_cons
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_cons
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_eq_count
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_nonneg
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_pos_iff
+#print axioms LeanMachine.FiniteFlow.Network.pathEdges_ne_nil
+#print axioms LeanMachine.FiniteFlow.Network.divergence_sub
+#print axioms LeanMachine.FiniteFlow.Network.pathFlow_divergence
+#print axioms LeanMachine.FiniteFlow.Network.PositiveStep
+#print axioms LeanMachine.FiniteFlow.Network.positive_path_of_reachable
+#print axioms LeanMachine.FiniteFlow.Network.exists_positive_path
+#print axioms LeanMachine.FiniteFlow.Network.exhausting_step
+#print axioms LeanMachine.FiniteFlow.Network.packingMass
+#print axioms LeanMachine.FiniteFlow.Network.packingLoad
+#print axioms LeanMachine.FiniteFlow.Network.packingMass_nil
+#print axioms LeanMachine.FiniteFlow.Network.packingLoad_nil
+#print axioms LeanMachine.FiniteFlow.Network.packingMass_cons
+#print axioms LeanMachine.FiniteFlow.Network.packingLoad_cons
+#print axioms LeanMachine.FiniteFlow.Network.packingLoad_nonneg
+#print axioms LeanMachine.FiniteFlow.Network.packingLoad_divergence
+#print axioms LeanMachine.FiniteFlow.Network.packing_feasible
+#print axioms LeanMachine.FiniteFlow.Network.exists_path_packing

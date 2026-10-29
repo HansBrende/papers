@@ -109,6 +109,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`CausalCutCapacity`](LeanMachine/CausalCutCapacity.lean) | Joint support cardinality and bit-capacity bounds from causal cut recovery | this repository |
 | [`CausalCollector`](LeanMachine/CausalCollector.lean) | Local output collection on a memory interval, exact prefix capacity and delay-sum volume, and sink-cut support bounds | this repository |
 | [`FiniteFlow`](LeanMachine/FiniteFlow.lean) | Real-capacity max-flow/min-cut on finite directed multigraphs, preserving parallel edges; exact-demand flows from cut bounds | this repository |
+| [`FlowPaths`](LeanMachine/FlowPaths.lean) | Weighted paths carrying a flow's full nonnegative source value, with traversal loads bounded by the flow and at most one path per positive edge | this repository |
 
 ## External code
 

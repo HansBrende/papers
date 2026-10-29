@@ -16,6 +16,7 @@ zero at indices with no family. The variation profile uses this same ordering, n
 by variation.
 
 \begin{definition}[Near-full sequence and joint profile]\label{def:joint-profile}
+\formal{SourceCovers/JointProfiles.lean}{SourceCovers.NearFullSequence,SourceCovers.NearFullSequence.ofGeometry,SourceCovers.NearFullSequence.JointProfile,SourceCovers.NearFullSequence.exists_jointProfile,SourceCovers.NearFullSequence.JointProfile.hop_mass,SourceCovers.NearFullSequence.JointProfile.variation_mass,SourceCovers.NearFullSequence.JointProfile.hop_antitone,SourceCovers.NearFullSequence.JointProfile.hop_le_rank,SourceCovers.NearFullSequence.JointProfile.finite_sums_tendsto,SourceCovers.NearFullSequence.JointProfile.prefix_add_tail,SourceCovers.NearFullSequence.JointProfile.finite_tails_tendsto,SourceCovers.NearFullSequence.JointProfile.tails_tendsto_zero}
 A \emph{near-full sequence} consists of admissible fixed geometries and
 nonempty correctness sets indexed by $\nu$, with common $c,\beta,N,q$,
 such that
@@ -36,126 +37,306 @@ $(h_i,v_i)_{i\ge1}$ of both sequences of profiles. Write
 \]
 \end{definition}
 
-Such a further subsequence always exists: the family accounting in
-\cref{sec:source-engine} gives
-$\sum_i h_i^{(\nu)}\le c$ and $\sum_i v_i^{(\nu)}\le2c$.
-Successive bounded-coordinate extractions and a diagonal subsequence
-give simultaneous convergence. Passing each finite partial sum to the
-limit gives $\sum_i h_i\le c$ and $\sum_i v_i\le2c$.
-In particular both tails tend to zero. This does not assert that tails
-of the finite profiles converge or that family topologies stabilize.
+Every near-full sequence has a joint profile. For every such profile,
+both coordinates are nonnegative and summable, with
+\[
+ \sum_{i\ge1}h_i\le c,\qquad \sum_{i\ge1}v_i\le2c,
+ \qquad h_{i+1}\le h_i\le c/i\quad(i\ge1).
+\]
+Consequently $\tau_R\to0$ and $V_K\to0$. Finite coordinate sums converge
+along the common subsequence; afterwards, finite tails of the limiting
+profile converge to its infinite tails. None of these statements asserts
+convergence of the finite geometries' tail masses or stabilization of
+their family topology.
+
+\begin{outline}
+Order each geometry's complete core families by nonincreasing hop count,
+using any fixed tie-breaking rule, and pad both profiles with zero after
+the last family. The variation profile uses the same list. The formal
+proof uses Mathlib's list sorting and a sum identity for this enumeration.
+The Q2 accounting bounds every finite coordinate sum by $c$ for hops and
+$2c$ for variation, using $T\le cL$.
+
+Place both countable sets of coordinates in one product of compact real
+intervals. Mathlib's compactness theorem gives one strictly increasing
+subsequence along which all coordinates converge. For any such limit,
+nonnegativity and every finite-sum budget pass to the limit. Mathlib's
+bounded-partial-sum criterion then gives summability and the stated total
+bounds; it does not exchange an infinite sum with a limit. Hop
+antitonicity also passes to the limit, and
+$ih_i\le\sum_{j=1}^ih_j\le c$ gives the rank bound.
+
+The verified prefix-plus-tail identities and the convergence of partial
+sums give the two tail conclusions. Lean indices start at zero: its
+entry $i$ is the paper's $G_{i+1}$. Its shift by $R$ therefore corresponds
+exactly to the paper's tail after the first $R$ families. Strictly increasing subsequences
+preserve all three near-full conditions. These proofs allow arbitrary
+positive entry widths, including the logarithmic widths of~(T).
+\end{outline}
+
+This supplies the common numerical profile used by the next theorem.
+The next theorem applies the finite deficit to each selected prefix and
+justifies the successive limits in that inequality.
 
 \begin{theorem}[Theorem U: necessary hop tails]\label{thm:necessary-hop-tail}
-\notformalized
+\formal{SourceCovers/NecessaryHopTails.lean}{SourceCovers.NearFullSequence.JointProfile.necessary_hop_tail,SourceCovers.NearFullSequence.JointProfile.tail_floor,SourceCovers.NearFullSequence.JointProfile.not_summable_moment,SourceCovers.NearFullSequence.JointProfile.moment_partial_sums_tendsto_atTop}
 For every joint profile of every near-full sequence and all integers
-$K\ge0$, $R\ge K$, $M\ge\max(2,R+1)$,
+$K,R\ge0$, $M\ge\max(2,R+1)$,
 \begin{equation}\label{eq:necessary-hop-tail}
  \frac{\beta\tau_R}{M-R}
- \ge \frac{(1-V_K)_+^2}{4(K+1)(2M+4)^q}.
+ \ge \frac{(1-V_K)_+^2}{2(2K+1)(2M+4)^q}.
 \end{equation}
-Consequently, whenever $V_K<1$ and $R\ge\max(K,1)$,
+Consequently, for every $K,R\ge0$,
 \begin{equation}\label{eq:tail-floor}
  \tau_R\ge
- \frac{(1-V_K)^2}{\beta4^{q+1}(K+1)(R+2)^{q-1}}.
+ \frac{(1-V_K)_+^2}{2\beta4^q(2K+1)(R+2)^{q-1}}.
 \end{equation}
 If $q\ge2$, every such profile satisfies
 $\sum_{i\ge1}i^{q-1}h_i=\infty$.
 \end{theorem}
-\begin{informalproof}
+\begin{outline}
+The formal library first retains actual cover averages as in
+\cref{thm:necessary-cover}, then substitutes their terminal-orbit lower
+bound. We describe the shared finite-prefix calculation here.
 Fix a joint-profile subsequence and $K,R,M$. For each fixed integer
-$J\ge R$, select the first $J$ original core families, distinguish its
+$J\ge\max(K,R)$, select the first $J$ original core families, distinguish its
 first $K$, protect its first $R$, and rebuild the forest and ranks of
-that finite selection. Absent families are simply omitted. Sorted hop
+that finite selection. These are actual complete families; the formal
+prefix identities preserve their full-span weights. Distinguishing a family
+does not require protecting it. Absent families are simply omitted. Sorted hop
 counts and their total bound imply that every omitted core family has
 at most $cL_\nu/(J+1)$ hops. The finite theorem therefore applies with
 \[
  a_\nu=\max\{a_{0,\nu},\lceil cL_\nu/(J+1)\rceil\},\qquad
  w_\nu=\lceil\lambda L_\nu\rceil,
 \]
-where $0<\lambda<1$ is also fixed before $\nu$ tends to infinity.
-The finite-prefix quantities satisfy
+where $\lambda>0$ is also fixed before $\nu$ tends to infinity.
+Use the full undistinguished variation and unprotected hop sums as the
+finite budgets. The latter bounds the nonleaf-only payment after the
+forest is rebuilt. Their limits are
 \[
- \alpha_\nu\to V_{K,J}:=\sum_{K<i\le J}v_i,\qquad
- \tau_\nu/L_\nu\to\tau_{R,J}:=\sum_{R<i\le J}h_i.
+ \alpha_\nu=\sum_{K<i\le J}v_i^{(\nu)}
+   \longrightarrow V_{K,J}:=\sum_{K<i\le J}v_i,\qquad
+ \tau_\nu/L_\nu=\sum_{R<i\le J}h_i^{(\nu)}
+   \longrightarrow\tau_{R,J}:=\sum_{R<i\le J}h_i.
 \]
 The normalized residual bill is bounded in the limit by
 $\beta NC_qc^2/[\lambda(J+1)]$; the normalized movement, outer-lower
-and stripe errors vanish, and $2(w_\nu-1)/L_\nu\to2\lambda$.
+and stripe errors vanish. The width error is at most
+$2w_\nu/L_\nu\to2\lambda$. These limits reuse Mathlib's normalized-ceiling
+and finite-sum results, together with $T_\nu\le cL_\nu$; no convergence
+of $T_\nu/L_\nu$ is required.
 Using \cref{cor:orbit-count-deficit} and \cref{eq:near-full}, we obtain
 \begin{equation}\label{eq:finite-prefix-limit}
- \frac{(1-V_{K,J})_+^2}{4(K+1)(2M+4)^q}
+ \frac{(1-V_{K,J})_+^2}{2(2K+1)(2M+4)^q}
  \le\frac{\beta\tau_{R,J}}{M-R}+2\lambda
        +\frac{\beta NC_qc^2}{\lambda(J+1)}.
 \end{equation}
-This is an inequality for every finite $J$. Now let $J$ tend to infinity
-in these numerical inequalities, and then let $\lambda$ decrease to zero.
+This is an inequality for every fixed $J\ge\max(K,R)$ and $\lambda>0$.
+Now let $J$ tend to infinity in these numerical inequalities, using the
+verified summability of the limiting profiles. Finally let $\lambda$
+decrease to zero; formally, take $\lambda=\delta/2$ for each $\delta>0$
+and remove the resulting additive $\delta$.
 The constant $C_q$ depends on $M,q$, not $J$, so this proves
 \cref{eq:necessary-hop-tail}.
 
-Taking $M=2R+2$ gives $2M+4=4(R+2)$ and proves
+Taking $M=2R+2$, including $R=0$, gives $2M+4=4(R+2)$ and proves
 \cref{eq:tail-floor}. A finite $K$ with $V_K\le1/2$ always exists.
-If $\sum_i i^{q-1}h_i$ were finite, then for $R\ge1$
+If $\sum_i i^{q-1}h_i$ were finite, then for $R\ge0$
 \[
  (R+2)^{q-1}\tau_R
- \le2^{q-1}\sum_{i>R}i^{q-1}h_i\longrightarrow0,
+ \le3^{q-1}\sum_{i>R}i^{q-1}h_i\longrightarrow0,
 \]
-contrary to \cref{eq:tail-floor} for that $K$.
+contrary to \cref{eq:tail-floor} for that $K$. The shared formal lemma
+compares scaled tails with a summable majorant and permits any fixed
+nonnegative shift. Mathlib's nonnegative-series criterion turns the
+resulting nonsummability into divergence of the partial sums to $+\infty$.
 Every step used a finite certificate. Omitted families remained in the
 residual bill until after the dimension limit; no family was discarded
 by an exchange of limits.
-\end{informalproof}
+\end{outline}
+
+The independent cutoffs remove the earlier restriction $R\ge K$:
+the certificate may protect fewer families than it discounts in the
+variation estimate. This strengthens
+the necessary profile constraints without by itself enlarging the
+asymptotic exclusion classes below. The theorem still concerns the
+specified admissible geometries, not arbitrary tape computations.
 
 \begin{corollary}[One arbitrary exceptional family]\label{cor:one-exception}
-\notformalized
+\formal{SourceCovers/UniformDeficit.lean}{SourceCovers.one_exception_uniform_deficit,SourceCovers.uniform_deficit_of_no_nearFull,SourceCovers.NearFullSequence.one_exception_false,SourceCovers.AdmissibleGeometry.deficit_card_iff}
 Fix $c,\beta>0$ and $N\ge1$. There exist $\eps>0$ and $d_0$ such that
-every admissible geometry with a $\mathrm Q_2$ core, at most one other
+for every positive entry width $b$, every admissible geometry with
+$L=d^2b$, a $\mathrm Q_2$ core, at most one other
 complete exceptional family, $d\ge d_0$, and $a_0\le\eps L$ satisfies
 \begin{equation}\label{eq:uniform-deficit}
  \Delta\ge\eps L,\qquad
  |\mathcal C|\le2^{(1-\eps)L}.
 \end{equation}
-No envelope on the sorted core-family sizes is assumed.
+The same constants work for all $b$. No envelope on the sorted
+core-family sizes is assumed.
 \end{corollary}
-\begin{informalproof}
-If no such constants existed, choose a violating geometry for each
-$\eps=1/n$ and $d_0=n$. These form a near-full sequence and have a
-joint profile. Choose $K$ with $V_K\le1/2$. For $q=1$,
-\cref{eq:tail-floor} bounds $\tau_R$ below by a fixed positive constant
-for every $R\ge\max(K,1)$, contrary to $\tau_R\to0$.
-\end{informalproof}
+\begin{outline}
+The formal proof first excludes every near-full sequence with $q=1$.
+Its joint profile has summable hop mass. The verified critical-moment
+argument of \cref{thm:necessary-hop-tail} also applies at $q=1$, where
+the weight $i^{q-1}$ is one, and contradicts that summability.
+
+Next apply a shared sequential-exclusion lemma to the two nonnegative
+costs $a_0/L$ and $\Delta/L$. Nonnegativity of the latter follows from
+$1\le|\mathcal C|\le2^L$. If no uniform gap existed, for each
+$n\ge0$ one could choose an actual admissible geometry with
+\[
+ d_n\ge n,\qquad
+ a_{0,n}/L_n\le\frac1{n+1},\qquad
+ \Delta_n/L_n<\frac1{n+1}.
+\]
+Mathlib's reciprocal limit and squeeze theorem give a near-full
+sequence, contradicting the preceding step. The argument makes no
+choice of a width function before extracting these geometries, so the
+constants are uniform over all positive widths. A class-restricted
+version retains any additional predicate on every selected geometry;
+it is reusable for the later envelope criteria.
+
+Finally, for nonempty $\mathcal C$, Mathlib's base-two logarithm and
+real-power equivalence gives
+\[
+ \eps L\le\Delta
+ \quad\Longleftrightarrow\quad
+ |\mathcal C|\le2^{(1-\eps)L}.
+\]
+Thus both conclusions use the same constants. The Lean statement also
+covers nonpositive ambient capacity bounds: the necessary-tail
+inequality then contradicts the positive geometric credit directly.
+\end{outline}
+
+This verifies a uniform exclusion for the stated return geometries,
+including bit matrices and logarithmic-size entries. It does not bound
+general transposers without the full-span partition and core hypotheses.
+The proof gives existence of uniform constants, not numerical values.
 
 \begin{corollary}[Common size envelopes]\label{cor:common-envelope}
-\notformalized
+\formal{SourceCovers/CommonEnvelopes.lean}{SourceCovers.EnvelopeTailSmall,SourceCovers.finite_prefix_envelope_uniform_deficit,SourceCovers.common_envelope_uniform_deficit,SourceCovers.power_envelope_tailSmall,SourceCovers.power_envelope_uniform_deficit}
 Fix $c,\beta,N,q$ as above and a nonnegative summable sequence $(g_i)$
 such that
 \begin{equation}\label{eq:envelope-test}
  \liminf_{R\to\infty}(R+2)^{q-1}\sum_{i>R}g_i=0.
 \end{equation}
-There exist $\eps>0,d_0$ for which \cref{eq:uniform-deficit} holds
-whenever $d\ge d_0$, $a_0\le\eps L$ and $|G_i|\le Lg_i$ for all
-original core families in their sorted order. In particular every
-common power envelope $g_i=H/i^p$, with fixed $H>0$ and $p>q$, is covered.
+Write $s_i=|G_i|/L$ in the original hop-sorted order, with $s_i=0$
+after the last family. There exist $\eps>0$ and an integer $m\ge0$
+such that every admissible geometry satisfying
+\[
+ d\ge m,\qquad a_0\le\eps L,\qquad
+ s_i\le g_i+\eps\quad(1\le i\le m)
+\]
+satisfies \cref{eq:uniform-deficit}. The constants are common to all
+positive entry widths. No envelope condition is imposed beyond rank $m$.
+In particular, the conclusion holds under the original exact common bound
+$|G_i|\le Lg_i$ on all core families. Every common power envelope
+$g_i=H/i^p$, with fixed $H\ge0$ and real $p>q$, satisfies
+\cref{eq:envelope-test} and is covered.
 \end{corollary}
-\begin{informalproof}
-Negating the uniform conclusion again gives a near-full sequence.
-In a joint profile $h_i\le g_i$ for each $i$, so
-\cref{eq:envelope-test} contradicts \cref{eq:tail-floor} after choosing
-$K$ with $V_K<1$. For a power envelope,
-$\sum_{i>R}H/i^p\le H R^{1-p}/(p-1)$; multiplication by
-$(R+2)^{q-1}$ tends to zero when $p>q$.
-\end{informalproof}
+\begin{outline}
+First suppose a joint profile obeys $h_i\le g_i$ for every $i$.
+Both sequences are summable, so their tails satisfy
+$\tau_R\le\sum_{i>R}g_i$. Choose $K$ with $V_K<1$ in
+\cref{eq:tail-floor}. It gives a constant $A>0$ such that
+\[
+ A\le(R+2)^{q-1}\tau_R
+   \le(R+2)^{q-1}\sum_{i>R}g_i
+ \quad\text{for every }R\ge0,
+\]
+contradicting \cref{eq:envelope-test}. The lower limit is taken in
+$[0,+\infty]$: being zero means that for every $\eta>0$ and every
+$R_0$, some $R\ge R_0$ has scaled tail below $\eta$. The formal proof
+uses this equivalent condition, which needs no upper bound on the
+scaled tails.
+
+To obtain the stronger finite-prefix statement, consider an actual
+admissible geometry together with a cutoff $J$, a slack $\eta\ge0$,
+and one sorted order satisfying $s_i\le g_i+\eta$ for $1\le i\le J$.
+Apply the shared uniform-gap lemma to effective dimension $\min(d,J)$
+and the two costs
+\[
+ \max\{a_0/L,\eta\},\qquad \Delta/L.
+\]
+If effective dimension tended to infinity and both costs tended to zero,
+the geometries would form a near-full sequence with $J\to\infty$ and
+$\eta\to0$. Retain each supplied order for both numerical profiles.
+Along their common subsequence every fixed rank eventually lies below
+the cutoff, hence $h_i\le g_i$ by passage to the limit. The preceding
+contradiction excludes such a sequence. The uniform-gap lemma therefore
+provides $\eps,m$; taking $J=m$ and $\eta=\eps$ proves the claimed
+deficit, and the verified logarithmic equivalence gives its cardinality
+form. The exact-envelope conclusion follows by adding the positive slack.
+Only one order is supplied per geometry; no additional requirement on
+tie breaking is introduced.
+
+For $g_i=H/i^p$, Mathlib's $p$-series theorem gives
+\[
+ \sum_{i\ge1}i^{q-1}g_i
+   =H\sum_{i\ge1}i^{q-1-p}<\infty
+ \qquad(p>q).
+\]
+The existing moment-to-tail lemma then gives
+$(R+2)^{q-1}\sum_{i>R}g_i\to0$, which implies
+\cref{eq:envelope-test}. This reuses the weighted-tail argument of
+\cref{thm:necessary-hop-tail} without a separate integral estimate.
+Lean's rank $i$ corresponds to the paper's rank $i+1$ throughout.
+\end{outline}
+
+Thus ruling out a common limiting envelope also rules out a finite set
+of approximate leading-rank bounds. At sufficiently large dimension, a
+construction in this admissible class must violate at least one such bound if its outside families and
+correctness deficit are both small. The hypotheses on the full geometry
+remain necessary; the constants and cutoff are not given numerically.
 
 \begin{corollary}[A fixed finite skeleton]\label{cor:finite-skeleton}
-\notformalized
-For fixed $c,\beta,N$ and $q\ge1$, there are $\eps>0,d_0$ such that
-\cref{eq:uniform-deficit} holds for every admissible geometry in which
-all but at most $q$ complete families have at most $a_0$ hops,
-$a_0\le\eps L$, and $d\ge d_0$.
+\formal{SourceCovers/FiniteSkeleton.lean}{SourceCovers.AdmissibleGeometry.withSkeleton,SourceCovers.NearFullSequence.empty_core_false,SourceCovers.empty_core_uniform_deficit,SourceCovers.finite_skeleton_uniform_deficit,SourceCovers.large_family_count_of_small_deficit}
+Fix $c,\beta>0$, $N\ge1$ and an integer $q\ge0$.
+There are $\eps>0$ and $d_0$ such that \cref{eq:uniform-deficit} holds
+for every admissible geometry with $d\ge d_0$, any set $\mathcal E$
+of at most $q$ complete families, and any integer $a\ge0$ satisfying
+\[
+ |G|\le a\quad(G\notin\mathcal E),\qquad a\le\eps L.
+\]
+The chosen skeleton $\mathcal E$ need not agree with the geometry's
+previous core or exception labels. The constants are common to all
+positive entry widths and all previous classifications.
+Equivalently, with these constants, $d\ge d_0$ and $\Delta<\eps L$ force
+\[
+ \#\{G:\ |G|>\eps L\}>q,
+\]
+where the count ranges over all complete families of the computation.
 \end{corollary}
-\begin{informalproof}
-Take the core empty and use $g_i=0$ in \cref{cor:common-envelope}.
-The full geometry and its outside-family bound are unchanged.
-\end{informalproof}
+\begin{outline}
+Reclassify the complete families by taking the core empty, the exceptions
+to be $\mathcal E$, and the outside bound to be $a$. The full work walks,
+raw path, output times, records, parent relation, correctness set and
+$N$-class span partition are unchanged. The supplied size hypothesis
+justifies the new outside bound; no family or hop is deleted.
+
+A hypothetical near-full sequence with empty cores has an explicit zero
+joint profile, using the identity subsequence. The verified zero-padding
+lemmas give both coordinates. The verified form of
+\cref{eq:necessary-hop-tail} also permits $q=0$. At $K=R=0$ and $M=2$,
+it becomes $1/(2\cdot8^q)\le0$, a contradiction for every $q\ge0$.
+The existing uniform-gap theorem gives the empty-core deficit, and
+reclassification transfers it to the proposed skeleton. The constants
+are chosen before the original classification or entry width. The Lean
+proof also permits nonpositive ambient capacity bounds.
+
+For the counting form, take $\mathcal E$ to be the families with
+$|G|>\eps L$ and $a=\lfloor\eps L\rfloor$. If $|\mathcal E|\le q$,
+Mathlib's natural-floor bounds give the preceding hypotheses, contradicting
+$\Delta<\eps L$. Conversely, the count precludes any proposed skeleton of
+size at most $q$ when all remaining families have at most $a\le\eps L$ hops.
+\end{outline}
+
+Thus a construction with sufficiently small correctness deficit needs
+more than any prescribed fixed number $q$ of families of size proportional
+to $L$, with the proportionality constant allowed to depend on $q$.
+This conclusion retains the full-span partition hypothesis.
 
 These are restrictions on a common full geometry. In the one-exception
 case they settle the paid-deficit comparison without a coding conjecture.
@@ -166,79 +347,179 @@ numerical values of $\eps$ and $d_0$.
 
 \subsection{Necessary fractional-cover complexity}
 
-Along a fixed joint-profile subsequence, select the first $J$ families
-and use $M=2R+2$ as above. For each phase and column put
-$\kappa_{\nu,J,R,\rho,j}=\kappa_\rho(S_\rho(s_j))$.
-All these quantities are finite and at least one. Write
+Along a fixed joint-profile subsequence, select the first $J$ original
+core families, protect its first $R$, and fix $M\ge\max(2,R+1)$.
+Rebuild the forest and phases for each selected prefix. For every legal
+phase and column put
+$\kappa_{\nu,J,R,M,\rho,j}=\kappa_\rho(S_\rho(s_j))$.
+These are the fractional covers of the complete selected source banks;
+they are finite and at least one. Define
 \begin{equation}\label{eq:reciprocal-cover-limit}
- Q_R^*=\limsup_{J\to\infty}\limsup_{\nu\to\infty}
-                \mathbb E_{\rho,j}\frac1{\kappa_{\nu,J,R,\rho,j}},
+ Q_{R,M}^*=\limsup_{J\to\infty}\limsup_{\nu\to\infty}
+       \mathbb E_{\rho,j}\frac1{\kappa_{\nu,J,R,M,\rho,j}},
+ \qquad Q_R^*=Q_{R,2R+2}^*.
 \end{equation}
-where the expectation is the arithmetic mean over legal phases and
-columns. This order of limits is part of the definition.
+The expectation is the arithmetic mean over legal phases and columns.
+Both limits hold $R,M$ fixed. We suppress $M=2R+2$ in the subscript of
+$\kappa$ when using $Q_R^*$.
 
 \begin{theorem}[Necessary reciprocal-cover bound]\label{thm:necessary-cover}
-\notformalized
-For every near-full sequence, every joint profile, any $K$ with $V_K<1$
-and every $R\ge\max(K,1)$,
+\formal{SourceCovers/NecessaryCover.lean}{SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit,SourceCovers.NearFullSequence.JointProfile.reciprocalCoverLimit_bounds,SourceCovers.NearFullSequence.JointProfile.weighted_reciprocal_cover,SourceCovers.NearFullSequence.JointProfile.necessary_reciprocal_cover,SourceCovers.NearFullSequence.JointProfile.necessary_reciprocal_cover_default,SourceCovers.NearFullSequence.JointProfile.coverProbabilityLimit,SourceCovers.NearFullSequence.JointProfile.coverProbabilityLimit_le_reciprocal,SourceCovers.NearFullSequence.JointProfile.hop_le_of_pointwise,SourceCovers.NearFullSequence.JointProfile.inverse_square_cover_probability}
+For every joint profile of every near-full sequence, all integers
+$K,R\ge0$, and every $M\ge\max(2,R+1)$,
+\begin{equation}\label{eq:weighted-necessary-cover}
+ \frac{(1-V_K)_+^2}{2(2K+1)}Q_{R,M}^*
+ \le\frac{\beta\tau_R}{M-R}.
+\end{equation}
+If $V_K<1$, this gives
+\[
+ Q_{R,M}^*\le
+ \frac{2\beta(2K+1)\tau_R}{(1-V_K)^2(M-R)}.
+\]
+In particular,
 \begin{equation}\label{eq:necessary-cover}
  Q_R^*\le
- \frac{4\beta(K+1)\tau_R}{(1-V_K)^2(R+2)}.
+ \frac{2\beta(2K+1)\tau_R}{(1-V_K)^2(R+2)}.
 \end{equation}
-This holds for any fixed number $q$ of exceptions.
-If $|G_i|\le HL/i^2$ and $V_K\le1/2$, then for every fixed $s\ge1$,
+The cutoffs $K,R$ are independent, including $R=0$, and the statements
+hold for any fixed number $q$ of exceptions.
+If the limiting profile satisfies $h_i\le H/i^2$ for some $H\ge0$ and
+$V_K\le1/2$, then for every $R\ge1$ and every fixed real $s\ge0$,
 \begin{equation}\label{eq:cover-saturation}
  \limsup_J\limsup_\nu
  \Pr_{\rho,j}\{\kappa_{\nu,J,R,\rho,j}\le s\}
- \le \frac{16\beta(K+1)Hs}{R(R+2)}.
+ \le \frac{8\beta(2K+1)Hs}{R(R+2)}.
 \end{equation}
+A common bound $|G_i|\le HL_\nu/i^2$ in the supplied original hop order
+is sufficient for this limiting-envelope hypothesis.
 \end{theorem}
-\begin{informalproof}
-Use the exact witnesses in \cref{thm:paid-source-cover}. For fixed
-$J,R,K,\lambda$ the geometric coefficient tends to
-$(1-V_{K,J})^2/[4(K+1)]>0$. The same error calculation as in
-\cref{eq:finite-prefix-limit} bounds the limsup of the mean reciprocal
-cover by that coefficient's reciprocal times
+\begin{outline}
+Retain the actual mean reciprocal cover in the finite paid-deficit
+inequality. The prefix and rounding estimates described in the proof of
+\cref{thm:necessary-hop-tail} are proved once in this stronger form.
+For fixed $J\ge\max(K,R)$, $M$ and $\lambda>0$, they give
 \[
- \frac{\beta\tau_{R,J}}{R+2}+2\lambda
+ \frac{(1-V_{K,J})_+^2}{2(2K+1)}
+    \limsup_\nu\mathbb E_{\rho,j}\frac1{\kappa_{\nu,J,R,M,\rho,j}}
+ \le \frac{\beta\tau_{R,J}}{M-R}+2\lambda
        +\frac{\beta NC_qc^2}{\lambda(J+1)}.
 \]
-Take the limsup in $J$, then let $\lambda$ decrease to zero. This proves
-\cref{eq:necessary-cover}. The elementary pointwise inequality
-$\mathbf1_{\{\kappa\le s\}}\le s/\kappa$ and
-$\tau_R\le H/R$ give \cref{eq:cover-saturation}.
-\end{informalproof}
+The finite averages and their successive upper limits lie in
+$[(2M+4)^{-q},1]$. Thus real upper limits are bounded throughout.
+A shared lemma uses Mathlib's subsequence attaining the upper limit to
+pass a converging coefficient through this inequality. It also handles
+a zero limiting coefficient; no division is made at this stage.
+
+Apply the same lemma as $J$ tends to infinity. Summability gives
+$V_{K,J}\to V_K$ and $\tau_{R,J}\to\tau_R$, while the residual error
+tends to zero. Finally take $\lambda=\delta/2$ for every $\delta>0$
+and remove the additive $\delta$. This proves
+\cref{eq:weighted-necessary-cover}. When $V_K<1$, division by its
+positive coefficient gives the general bound, and $M=2R+2$ gives
+\cref{eq:necessary-cover}. The dimension limit, prefix limit and
+removal of the width error occur in that order.
+
+For the probability bound, $\kappa\ge1$ gives the finite pointwise
+inequality $\mathbf1_{\{\kappa\le s\}}\le s/\kappa$ for every
+$s\ge0$. Averaging and taking the same two upper limits preserves it.
+Mathlib's finite inverse-square sum estimate, followed by the summable
+limit, gives $\tau_R\le H/R$ when $R>0$. The bound
+$(1-V_K)^2\ge1/4$ then gives \cref{eq:cover-saturation}.
+Only the limiting envelope is used. The stated common finite envelope
+passes coordinatewise to the same joint profile.
+\end{outline}
+
+This strengthens the necessary condition by retaining the actual cover
+complexity: replacing $Q_{R,M}^*$ by its terminal-orbit lower bound
+$(2M+4)^{-q}$ recovers \cref{eq:necessary-hop-tail} directly.
+It does not prove that arbitrary admissible geometries have small
+covers. In the inverse-square case it limits the fraction of phase-column
+pairs with small cover, not only their mean cover complexity.
 
 \begin{corollary}[Uniform cover criteria]\label{cor:uniform-cover}
-\notformalized
-Fix $c,\beta,N,q$. Each of the following defines a class with constants
-$\eps>0,d_0$ for which \cref{eq:uniform-deficit} holds when
-$d\ge d_0$ and $a_0\le\eps L$.
+\formal{SourceCovers/UniformCover.lean}{SourceCovers.AdmissibleGeometry.HasMeanCoverBound,SourceCovers.CoverTailSmall,SourceCovers.uniform_deficit_of_no_ordered_nearFull,SourceCovers.linear_mean_cover_uniform_deficit,SourceCovers.envelope_mean_cover_uniform_deficit,SourceCovers.power_cover_tailSmall,SourceCovers.power_mean_cover_uniform_deficit}
+Fix $c,\beta>0$, $N\ge1$ and an integer $q\ge0$.
+Each of the following defines a class with constants $\eps>0,d_0$ for
+which \cref{eq:uniform-deficit} holds when $d\ge d_0$ and
+$a_0\le\eps L$, uniformly over all positive entry widths.
 \begin{enumerate}[label=(\alph*)]
-\item For some common constant $0<B<\infty$, selecting the first $J$
+\item For some common constant $B\ge0$, selecting the first $J$
 original core families and protecting the first $R$, for every
 $J\ge R\ge1$ and $M=2R+2$, gives
 $\mathbb E_{\rho,j}\kappa_{J,R,\rho,j}\le B(R+2)$.
 No size envelope is required.
-\item For fixed $H>0,p>1$ the original sizes satisfy $|G_i|\le HL/i^p$,
-and for a common positive function $f(R)=o(R^p)$ every such finite
-prefix selection satisfies $\mathbb E_{\rho,j}\kappa_{J,R,\rho,j}\le f(R)$.
+\item For fixed $H\ge0$ and real $p>1$, the original sizes satisfy
+$|G_i|\le HL/i^p$, and for a common nonnegative function
+$f(R)=o(R^p)$ every such finite prefix selection satisfies
+$\mathbb E_{\rho,j}\kappa_{J,R,\rho,j}\le f(R)$.
 \end{enumerate}
+More generally, in (b) one may replace the power envelope by any common
+nonnegative summable envelope $|G_i|\le Lg_i$, and the growth condition by
+\begin{equation}\label{eq:cover-tail-test}
+ \liminf_{R\to\infty}
+ \frac{f(R)}{R+2}\sum_{i>R}g_i=0,
+\end{equation}
+where the lower limit is taken in $[0,+\infty]$.
+The size and mean-cover bounds must hold in the same supplied original
+hop order. The constants are independent of the choice of that order.
 Here $\kappa_{J,R,\rho,j}$ is the fractional cover of the selected
 geometry's complete source set at the first output time of column $j$.
 The bounds are uniform over the class and dimension; $\eps,d_0$ may
 depend on all the fixed class data. In (b), the
 inverse-square case requires mean cover $o(R^2)$.
 \end{corollary}
-\begin{informalproof}
-Suppose either uniform conclusion fails and extract a joint profile of
-a near-full sequence. Jensen's inequality for $u\mapsto1/u$ gives,
-respectively, $Q_R^*\ge1/[B(R+2)]$ or $Q_R^*\ge1/f(R)$.
-Choose $K$ with $V_K<1$. In (a), \cref{eq:necessary-cover} then forces
-$\tau_R$ to stay above a positive constant, a contradiction.
-In (b), $\tau_R\le HR^{1-p}/(p-1)$ bounds its right side by
-a fixed multiple of $R^{-p}$, contradicting $f(R)=o(R^p)$.
-\end{informalproof}
+\begin{outline}
+The formal finite averaging lemma applies Mathlib's Cauchy inequality to
+the actual legal phase-column pairs. Their cover weights are finite and
+at least one, so
+\[
+ \mathbb E_{\rho,j}\frac1\kappa
+ \ge\frac1{\mathbb E_{\rho,j}\kappa}
+ \ge\frac1{f(R)}
+\]
+whenever the stated mean bound holds. Positivity of $f(R)$ for $R\ge1$
+follows from that bound itself. Holding $R$ fixed, pass first through the
+dimension upper limit, then through the prefix upper limit. Only the
+prefixes $J\ge R$ matter for the latter. The explicit bounds from
+\cref{thm:necessary-cover} justify both real upper limits.
+Its weighted inequality therefore gives, for every $K\ge0$ and $R\ge1$,
+\[
+ A_K:=\frac{(1-V_K)_+^2}{2(2K+1)}
+ \le\beta\frac{\tau_R f(R)}{R+2}.
+\]
+Choose $K$ with $V_K<1$, so $A_K>0$. In (a), the right side is
+$\beta B\tau_R\to0$, a contradiction. Under a common summable envelope,
+coordinatewise convergence gives $h_i\le g_i$ and summability gives
+$\tau_R\le\sum_{i>R}g_i$. Condition \cref{eq:cover-tail-test} provides
+arbitrarily late values below every positive threshold, again
+contradicting $A_K>0$. No boundedness of the scaled envelope tails is
+assumed.
+
+For the power case, Mathlib's integral comparison and improper-integral
+formula give, for every $R\ge1$,
+\[
+ \sum_{i>R}\frac H{i^p}
+ \le\frac H{p-1}R^{1-p}.
+\]
+Consequently the expression in \cref{eq:cover-tail-test} is at most
+$Hf(R)/[(p-1)R^p]\to0$. The shared formal result allows every real
+$p>1$ and compares genuinely summable series before taking their tails.
+
+Finally apply the existing uniform-gap theorem to the class of actual
+geometries together with an order witnessing the required bounds.
+The adapter retains that same order when forming a near-full sequence
+and extracting its joint profile. The contradictions above exclude such
+a sequence, giving uniform $\eps,d_0$. The existing deficit/cardinality
+equivalence yields both conclusions in \cref{eq:uniform-deficit} with
+the same constants. No width function is fixed during this extraction.
+\end{outline}
+
+The general criterion covers non-power-law and irregular envelopes;
+only arbitrarily late small values of the weighted tail are required.
+A proposed construction in this admissible class must therefore violate
+the corresponding mean-cover budget if its outside families and
+correctness deficit are sufficiently small. The result does not provide
+those budgets for arbitrary tape computations or numerical gap constants.
 
 The saturation bound also rules out a misleading average picture:
 in a near-full inverse-square sequence, rare very complicated columns
@@ -246,6 +527,7 @@ cannot compensate for a positive fraction with cover complexity
 $o(R^2)$, in the stated ordered limits. This is a necessary condition,
 not a construction of an economical cover.
 
+\Needspace{11\baselineskip}
 \subsection{The movement of complete older observables}
 
 For $q=2$, use one cluster for all nonroot elements of $F_\rho(s_j)$
@@ -260,14 +542,14 @@ Along every subsequence realizing a joint profile of a two-exception
 near-full sequence, for every integer $K\ge0$ and $R\ge\max(K,1)$,
 \begin{equation}\label{eq:necessary-exposure}
  e_R^*\ge
- \frac{(1-V_K)_+^2}{32(K+1)(R+2)}-\frac{\beta\tau_R}{R+2}.
+ \frac{(1-V_K)_+^2}{16(2K+1)(R+2)}-\frac{\beta\tau_R}{R+2}.
 \end{equation}
 For fixed $K$ with $V_K<1$ this implies
-$\liminf_{R\to\infty}(R+2)e_R^*\ge(1-V_K)^2/[32(K+1)]$.
+$\liminf_{R\to\infty}(R+2)e_R^*\ge(1-V_K)^2/[16(2K+1)]$.
 \end{corollary}
 \begin{informalproof}
 The one-cluster estimate, also valid when there are no nonroot seeds,
-is $(1-\alpha)_+^2/[8(K+1)(2M+4)]-E/L$.
+is $(1-\alpha)_+^2/[4(2K+1)(2M+4)]-E/L$.
 Insert it in \cref{thm:paid-source-cover} and move the mean $E/L$ to
 the other side. Take the liminf in $\nu$, then in $J$, and then let
 $\lambda$ decrease to zero exactly as in

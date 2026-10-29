@@ -141,12 +141,17 @@ def render(entries):
     ])
     md.extend(["", "## Verified declarations", "",
                "The generated [axiom audit](lean/PaperAxioms.lean) checks these declarations.", ""])
-    for e in formal_entries:
+    # Keep each file heading with its declarations, but let the growing
+    # declaration catalogue break across pages between entries.
+    for i, e in enumerate(formal_entries):
+        if i:
+            tex.append(r"\noindent\begin{minipage}{\textwidth}")
         tex.extend([rf"\noindent\leanfile{{{e['lean_file']}}}:\par",
-                    r"{\small\raggedright\leanlist{" + ",".join(e["declarations"]) + r"}\par}"])
+                    r"{\small\raggedright\leanlist{" + ",".join(e["declarations"]) + r"}\par}",
+                    r"\end{minipage}\par\smallskip"])
         md.extend([f"- `{e['label']}`: [{e['lean_file']}](lean/{e['lean_file']})",
                    "  — " + ", ".join(f"`{d}`" for d in e["declarations"]) + "."])
-    tex.extend([r"\end{minipage}\par", ""])
+    tex.append("")
     md.extend(["", "## Statement SHA-256 fingerprints", "", "```text"])
     md.extend(f"{e['digest']}  {e['label']}" for e in entries)
     md.extend(["```", ""])

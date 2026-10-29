@@ -9,10 +9,10 @@ sets; they are not additional records available to the machine.
 
 Fix an admissible geometry, a selected $\mathrm Q_2$ subcore of at most $J$
 families, and at most $q$ complete exceptional families. Choose integers
-$J\ge R\ge K\ge0$ and $M\ge\max(2,R+1)$, distinguish at most $K$ selected
+$K,R\ge0$, $J\ge\max(K,R)$ and $M\ge\max(2,R+1)$, distinguish at most $K$ selected
 core families, protect at most $R$ selected core families, and choose a legal rank phase
 $\rho$. All distinguished families are among those selected before the
-phase. Write
+phase; they need not be protected. Write
 \begin{equation}\label{eq:cover-parameters}
  \ell=2M+3,\qquad C_0=16+24M(M-1),\qquad C_q=C_0(1+3C_0)^q.
 \end{equation}
@@ -28,6 +28,7 @@ These sums use original full spans and hop counts, before rank deletion;
 in particular they do not depend on $\rho$.
 
 \begin{definition}[Fractional complete-core cover]\label{def:fractional-core-cover}
+\formal{SourceCovers/CoreFractionalCover.lean}{SourceCovers.coreRawSets,SourceCovers.fractionalCoreCover,SourceCovers.fractionalCoreCover_exists_optimal,SourceCovers.one_le_fractionalCoreCover_toReal,SourceCovers.coreRawSets_phase_shadowOrbit_eq,SourceCovers.fractionalCoreCover_ne_top_iff_subset,SourceCovers.fractionalCoreCover_exactSourceBank_ne_top}
 For a nonempty finite set $S_0\subseteq\{0,\ldots,L-1\}$, define
 $\kappa_\rho(S_0)$ as the minimum of
 \[
@@ -40,8 +41,11 @@ If no cover exists, set $\kappa_\rho(S_0)=+\infty$.
 Covering orbits may be rooted at any computation time; their raw sets
 may contain points outside $S_0$. A finite cover has an optimum, since
 weights may be truncated at one and the resulting feasible set is
-compact. It has weight at least one. For $S_0=S_\rho(t)$ a finite
-cover always exists, by the terminal-core-orbit decomposition.
+compact. It has weight at least one. In fact a finite cover exists
+exactly when $S_0\subseteq\{x(u):0\le u<T\}$: every complete core
+orbit contains its root and only earlier times. Thus unit weights at
+all computation times suffice whenever the condition holds, including
+for $S_0=S_\rho(t)$ at every computation time $t$.
 \end{definition}
 
 \begin{lemma}[Fractional interval covers]\label{lem:interval-rounding}
@@ -81,75 +85,135 @@ This rounding step preserves the total fractional weight in the
 raw-source gap bound below. It does not alter the complete recovery bank.
 
 \begin{lemma}[A fractional raw-source gap bound]\label{lem:fractional-gap}
-\notformalized
+\formal{SourceCovers/FractionalGap.lean}{SourceCovers.fractional_phase_gap,SourceCovers.fractional_core_gap,SourceCovers.fractional_core_gap_of_union_variation,SourceCovers.fractional_core_gap_of_weights}
 With the parameters above, any nonempty $S_0$ with finite
 $\kappa_\rho(S_0)$ satisfies
 \begin{equation}\label{eq:fractional-gap}
  \gaparea(S_0)\ge
- \frac{(1-\alpha)_+^2}{4(K+1)\kappa_\rho(S_0)},
+ \frac{(1-\alpha)_+^2}{2(2K+1)\kappa_\rho(S_0)},
  \qquad (z)_+=\max(z,0).
 \end{equation}
 Here $\gaparea(S)=\sum_g |g|^2/(2L^2)$, with the sum over the circular
 gaps of the distinct points in $S$; a singleton has one gap of length $L$.
+
+A sharper form retains actual component counts. Join consecutive
+computation times across the elementary edges in the union $B$ of the
+original nondistinguished full spans. Let $m_\rho(u)$ count the resulting
+time components met by $A_\rho(u)$ and put
+$V_B=\sum_{e\in B}|x(e+1)-x(e)|$. For any feasible cover weights,
+\begin{equation}\label{eq:fractional-gap-incidence}
+ \gaparea(S_0)\ge
+ \frac{(1-V_B/L)_+^2}{2\sum_{u=0}^{T-1}m_\rho(u)\lambda_u}.
+\end{equation}
+Here $V_B\le\alpha L$ and $m_\rho(u)\le2K+1$.
+The same conclusions hold for any retained subset of the selected
+$\mathrm Q_2$ core. No rank phase or unit-speed assumption on $x$ is
+needed for this estimate.
 \end{lemma}
-\begin{informalproof}
-If $\alpha\ge1$ the assertion is immediate. Otherwise take an optimum
-fractional cover. Each covering core orbit consists of two successful
-chains. Each chain uses a given family at most once. Cutting its edges
-labelled by distinguished families leaves at most $K+1$ vertex pieces.
-The closed time hull of each piece is covered by the original spans of
-its nondistinguished families, apart from isolated endpoints of zero
-variation. Indeed each successful action has both endpoints strictly
-above its family's outer lower and inside its full span, and successive
-action intervals meet at a vertex.
+\begin{outline}
+Label a time $t$ by the number of elementary edges before $t$ that are
+outside $B$. Equal labels define contiguous time components, including
+isolated times. Their internal edge sets partition $B$ within the
+computation horizon. The interval
+between the minimum and maximum raw coordinates on each component has
+length at most its internal variation. Thus the sum of all component
+interval lengths is at most $V_B$, with every elementary edge charged once.
 
-For each piece use the real interval between the smallest and largest
-values of $x$ on its time hull. Give that interval the weight of the
-covering orbit. The resulting intervals fractionally cover $S_0$ with
-total weight at most $2(K+1)\kappa_\rho(S_0)$. By
-\cref{lem:interval-rounding}, select at most that many intervals covering
-$S_0$, and retain their actual time hulls. Merge intersecting time
-hulls before measuring variation. The elementary time edges in their
-union lie in the same union of original nondistinguished spans, so their
-total variation is at most $\alpha L$; no edge is charged separately
-for each orbit using it. There are still at most
-$2(K+1)\kappa_\rho(S_0)$ components.
+A nondistinguished shadow stays in one component, since every edge
+between its endpoints belongs to its original full span. A complete
+core orbit has at most two initial successors and thereafter deterministic
+continuation. Along either branch, a label change uses a distinguished
+family whose owner precedes the current time. The new time is at most
+that owner, so this family cannot pay for another change on the branch.
+Counting the shared root label once gives $m_\rho(u)\le1+2K$.
+The formal proof keeps the smaller count of retained distinguished
+owners preceding the root before relaxing it to $K$.
 
-The raw range intervals of those components cover $S_0$ and have total
-length at most $\alpha L$. On the circle, their complement has length
-at least $(1-\alpha)L$ and at most $2(K+1)\kappa_\rho(S_0)$ gaps.
-Cauchy--Schwarz bounds the sum of their squared lengths below by
-$(1-\alpha)^2L^2/[2(K+1)\kappa_\rho(S_0)]$.
-Each complementary gap lies inside a point gap of $S_0$; several in one
-point gap only decrease the sum of squares. Division by $2L^2$ proves
-\cref{eq:fractional-gap}. Isolated time points count as components but
-cost no variation. The circle seam does not change the component bound.
-\end{informalproof}
+Give each component interval the sum of the weights of the covering
+orbits that meet it. These weights cover $S_0$ and have total
+$\sum_um_\rho(u)\lambda_u$. By \cref{lem:interval-rounding}, they
+admit an integral subcover with at most that many intervals. Their
+total length is at most $V_B$.
+
+Sort the distinct target points and append the first point plus $L$.
+Call a consecutive gap exposed if no chosen interval contains both
+endpoints. One interval can contain the left endpoint of at most one
+exposed gap: if it contained two, it would contain both endpoints of
+the earlier gap. Since every left endpoint is covered, the exposed
+gap count is at most the subcover size. The other gaps have disjoint
+elementary edge sets inside the covering intervals, so their total
+length is at most $V_B$. The exposed gaps therefore have total length
+at least $(L-V_B)_+$. Cauchy--Schwarz, followed by division by $2L^2$,
+gives \cref{eq:fractional-gap-incidence}. The unrolled last gap handles
+the circle seam and singleton target without an extra component.
+
+Finally take an attained minimum cover, use $V_B\le\alpha L$ and
+$m_\rho(u)\le2K+1$, and obtain \cref{eq:fractional-gap}. All extrema,
+gap lengths and component incidences in this argument are constructed
+from the actual time path and the complete core orbits.
+\end{outline}
+This supplies a verified geometric credit for the paid-deficit argument.
+The shared-root count improves the former factor $4(K+1)$ to $2(2K+1)$;
+the quantitative consequences below use the improved factor. It does not
+supply economical covers for arbitrary native geometries.
 
 \subsection{Anchored approximation}
 
+We represent finite circular geometry by a common subdivision containing
+all points and arc endpoints. Its elementary edges have real lengths
+$w_e\ge0$ summing to $L>0$. A closed arc contains consecutive edges and
+both endpoint vertices; its union length is the sum of the lengths of
+the edges in that union. Thus an edge covered several times is counted
+once. Subdivision indices are labels, not physical integer coordinates.
+The formalization identifies each weighted gap with its real endpoint
+displacement, including the gap across the chosen seam. Taking all edge
+lengths equal to one recovers the raw-coordinate definition used above.
+Write $\psi(e)=e-e^2/2$.
+
 \begin{lemma}[Anchored erosion of circular gaps]\label{lem:anchored-erosion}
-\notformalized
+\formal{SourceCovers/AnchoredErosion.lean}{SourceCovers.penalty, SourceCovers.area_lower_bound, SourceCovers.area_lower_bound_linear, SourceCovers.anchored_displacement_area_lower_bound, SourceCovers.anchored_point_area_lower_bound}
 Let $S_0,S$ be nonempty finite point sets on the circle of circumference
-$L$. Suppose that
+$L$, represented in a common subdivision as above. Suppose that
 $S\subseteq S_0\cup\bigcup_{i=1}^m I_i$, where the $I_i$ are closed
 circular arcs, each containing a point of $S_0$. If their union has
-length at most $E$, then
+length at most $E$, set $e=\min\{E/L,1\}$. Then
 \begin{equation}\label{eq:anchored-erosion}
- \gaparea(S)\ge\gaparea(S_0)-E/L.
+ \gaparea(S)\ge\gaparea(S_0)-\psi(e)
+             \ge\gaparea(S_0)-E/L.
 \end{equation}
-The statement permits points of $S_0$ outside $S$ and singleton arcs.
+The statement permits points of $S_0$ outside $S$, overlapping arcs,
+singleton arcs and full-circle arcs. For $0\le E\le L$, the loss bound is
+$E/L-E^2/(2L^2)$.
 \end{lemma}
-\begin{informalproof}
-First replace $S$ by $S\cup S_0$; adding points cannot increase gap area.
-Every component of the arc union contains an $S_0$ point. In an open
-gap of $S_0$ of length $g$, the union can therefore remove only portions
-attached to its ends, or the entire gap. A remaining open interval has
-length $r\le g$ and lies in a gap of $S\cup S_0$. Different original
-gaps give different such gaps. The lost squared-gap contribution is
-at most $(g^2-r^2)/(2L^2)\le(g-r)/L$. Summing gives a loss at most
-$E/L$. This also handles a full-circle arc union and zero-length arcs.
-\end{informalproof}
+\begin{outline}
+Let $U$ be the union of covered elementary edges and let
+$C=\sum_{a\in U}w_a$. Label each edge by the gap containing it, first
+for $S_0$ and then for $S$. Two uncovered edges in the same $S_0$ gap
+must share an $S$ gap. Indeed, any intervening $S$ point outside $S_0$
+lies in a covering arc. That arc also contains an $S_0$ point outside
+the intervening interval, so it must cross one of the two supposedly
+uncovered edges. This argument uses actual arc membership and does not
+assume $S_0\subseteq S$.
+
+For either gap labeling $c$, expand the squared-gap sum as
+$\sum_{a,b:\,c(a)=c(b)}w_aw_b$. The preceding implication preserves
+every old pair whose two edges are uncovered. Consequently the decrease
+in the squared-gap sum is at most the mass of all ordered pairs touching
+$U$, namely
+\[
+ L^2-(L-C)^2=2LC-C^2.
+\]
+Divide by $2L^2$ and use $0\le C/L\le\min\{E/L,1\}$ together with
+the monotonicity of $\psi$ on $[0,1]$. Finally $\psi(e)\le e\le E/L$
+gives the original linear bound directly. The shared proof uses finite
+partition sums and the previously verified actual circular gaps; the
+real-coordinate adapter follows by telescoping edge lengths.
+\end{outline}
+
+This verifies approximation by anchored arcs while retaining the complete
+source set in recovery. The quadratic saving increases the available
+finite geometric credit; it does not establish economical approximations
+for arbitrary tape geometries.
 
 The anchoring premise matters: adding the isolated point $L/2$ to
 $\{0\}$ lowers gap area from $1/2$ to $1/4$ despite adding zero
@@ -157,28 +221,34 @@ interval length. Small total measure without anchoring is insufficient.
 
 For a phase $\rho$ and the first output time $s_j$ of column $j$, call
 $(S_0,(I_i),E)$ an \emph{admissible cover witness} if
+$\varnothing\ne S_0\subseteq\{0,\ldots,L-1\}$,
 $\kappa_\rho(S_0)<\infty$, all arcs are anchored in $S_0$, their union
 has length at most $E$, and
 $S_\rho(s_j)\subseteq S_0\cup\bigcup_i I_i$.
+Each formal witness supplies a common real subdivision containing the
+arc endpoints and all raw coordinates, with the latter retaining their
+values under an order-preserving embedding.
 Choose any family of such witnesses and set
 \begin{equation}\label{eq:cover-credit}
  H_{\rho,j}=\sup\left(\{0\}\cup
- \left\{\frac{(1-\alpha)_+^2}{4(K+1)\kappa_\rho(S_0)}-\frac EL:
+ \left\{\frac{(1-\alpha)_+^2}{2(2K+1)\kappa_\rho(S_0)}
+           -\psi\!\left(\min\!\left\{\frac EL,1\right\}\right):
               \text{chosen admissible witnesses}\right\}\right).
 \end{equation}
 An empty witness family gives zero. The preceding lemmas show that
 $0\le H_{\rho,j}\le\gaparea(S_\rho(s_j))\le1/2$, whether or not the
-supremum is attained. In particular one may use the exact witness
+supremum is attained. Bounds below that subtract $E/L$ remain valid
+relaxations of this stronger credit. In particular one may use the exact witness
 $S_0=S_\rho(s_j)$, $E=0$. Let $\overline H$ be the arithmetic mean
 of $H_{\rho,j}$ over the same legal phases and all $d$ columns.
 
 \begin{theorem}[Theorem C: complete covers with the full paid cost]\label{thm:paid-source-cover}
-\notformalized
+\formal{SourceCovers/PaidSourceCover.lean}{SourceCovers.complete_cover_paid_deficit,SourceCovers.paid_deficit_of_gap_credit,SourceCovers.phaseCoverCredit_bounds,SourceCovers.meanCoverCredit}
 Suppose every actual family outside the selected core and the $q$
 exceptions has at most $a$ hops. For every integer $w\ge1$, define
 \begin{align}\label{eq:full-paid-error}
  \mathsf E_q(w;J,M,R,a,\tau)
- ={}&\frac{2C_q(T-1)}{dL}+\frac{2(w-1)}L+\frac{W+1}{2L}\notag\\
+ ={}&\frac{2C_q(T-1)}{dL}+\frac{2(w-1)}L+\frac{W-b+1}{2L}\notag\\
  &+\frac\beta L\left[J+q+\frac\tau{M-R}
                     +\frac{(1+Na)C_q(T-1)}w\right].
 \end{align}
@@ -188,20 +258,48 @@ Then the correctness deficit on the fixed full geometry satisfies
 \end{equation}
 All payments in this inequality use the complete bank, with the
 protected rank phase and the residual grid shift chosen compatibly.
+The same bound holds with $\tau$ replaced by the hop mass of the
+unprotected selected families that are nonleaves of the original core.
+The finite statement does not require $T\le cL$.
 \end{theorem}
-\begin{informalproof}
-For each legal phase use the residual-cut lemma to choose a shift for
-the complete bank. Its residual payment is at most
-$(1+Na)C_q(T-1)/w$, in addition to the actual deleted-family lowers and
-at most $J+q$ outer lowers. Its summed raw variation is at most
-$C_q(T-1)$. Apply \cref{thm:cyclic-freezing} with that very transcript,
-and replace its frozen gap areas by $H_{\rho,j}$ using
-\cref{lem:fractional-gap,lem:anchored-erosion}. The cover witnesses
-depend on the phase but not the residual shift, and do not replace any
-source in the functional recovery statement. Average the complete signed
-inequalities over the legal phases. The average deleted-family payment
-is at most $\tau/(M-R)$, giving \cref{eq:full-paid-error,eq:paid-source-cover}.
-\end{informalproof}
+\begin{outline}
+At every step the formal parent relation contains the state predecessor
+and every actual long work-tape hop; length-one work hops are state edges.
+The selected relation uses the original core and exceptions, before phase
+deletion. Pay the distinct outer lowers of those families and all actual
+lowers deleted by the phase. Across every unpaid selected edge, exact-bank
+source sets are nested. Every remaining live lower crosses its boundary
+through a state edge or a hop of an unselected family. Full-span coloring
+and the outside-family size bound therefore give at most $1+Na$ such lowers.
+
+Index the exact list bank by its slots. This preserves both its raw value
+sets and its summed variation, including coincident slots. For each legal
+phase, \cref{lem:residual-source-recovery} supplies one shift whose residual
+payment is at most $(1+Na)V_\rho/w$, where $V_\rho$ is that bank's actual
+raw variation. The whole-record tuple at all distinct paid times is one
+common transcript for every output. Local determinism and actual output
+correctness imply functional recovery from this tuple and the complete raw
+blocks. Thus \cref{thm:cyclic-freezing} applies to the same bank and tuple;
+no global recovery or final payment estimate is assumed.
+
+For each cover witness, telescoping in its supplied real subdivision
+identifies weighted gap area with the original raw point-gap area. Apply
+\cref{lem:fractional-gap,lem:anchored-erosion} to bound the witness score by
+the complete frozen set's gap area. The scores, together with zero, are
+bounded above by $1/2$, so their supremum satisfies the same bound without
+an attainment premise. Neither the witness nor its credit depends on the
+residual grid shift.
+
+Replace the frozen areas by these credits and use
+$V_\rho\le C_q(T-1)$. Average each phase's full signed inequality, keeping
+credit and payment together. The mean initial payment is at most the
+number of distinct selected outer lowers plus the unprotected nonleaf hop
+mass divided by the actual number of legal phases. The outer count is at
+most $J+q$, the hop mass at most $\tau$, and the phase count at least $M-R$.
+Divide by $L$ to obtain
+\cref{eq:full-paid-error,eq:paid-source-cover}. The formal proof retains the
+actual variation and payment quantities before these relaxations.
+\end{outline}
 
 This theorem separates the two obligations of an impossibility proof:
 establish a large geometric credit and keep the entire revelation bill
@@ -209,20 +307,52 @@ below it. Optimizing a witness is an analytic operation on the fixed
 geometry, not a claim that the machine can compute it cheaply.
 
 \begin{corollary}[Counting terminal core orbits]\label{cor:orbit-count-deficit}
-\notformalized
-Under the same hypotheses,
+\formal{SourceCovers/OrbitCountDeficit.lean}{SourceCovers.phaseCoreCover,SourceCovers.meanReciprocalCover,SourceCovers.meanReciprocalCover_bounds,SourceCovers.reciprocal_cover_paid_deficit,SourceCovers.orbit_count_paid_deficit}
+Under the same hypotheses, put
+\[
+ \kappa_{\rho,j}=\kappa_\rho(S_\rho(s_j)),\qquad
+ \mathcal R=\frac1{|\mathcal A|d}
+       \sum_{\rho\in\mathcal A}\sum_{j=0}^{d-1}\frac1{\kappa_{\rho,j}},
+\]
+where $\mathcal A$ is the set of legal phases and $s_j$ is the first
+output time of column $j$. Then
+\begin{gather}
+ \frac1{(2M+4)^{|\mathcal E|}}\le\mathcal R\le1,\notag\\
+ \frac\Delta L\ge
+ \frac{(1-\alpha)_+^2}{2(2K+1)}\mathcal R
+ -\mathsf E_q(w;J,M,R,a,\tau).\label{eq:reciprocal-cover-deficit}
+\end{gather}
+In particular, since $|\mathcal E|\le q$,
 \begin{equation}\label{eq:orbit-count-deficit}
  \frac\Delta L\ge
- \frac{(1-\alpha)_+^2}{4(K+1)(2M+4)^q}
+ \frac{(1-\alpha)_+^2}{2(2K+1)(2M+4)^q}
  -\mathsf E_q(w;J,M,R,a,\tau).
 \end{equation}
 \end{corollary}
-\begin{informalproof}
-The exact bank at every root is the union of at most $(\ell+1)^q$
-complete core orbits. Assign unit weights to those orbits in
-\cref{def:fractional-core-cover}, and use the exact witness in
-\cref{thm:paid-source-cover}.
-\end{informalproof}
+\begin{outline}
+The exact bank at time $s_j$ is a union of at most
+$(\ell+1)^{|\mathcal E|}$ complete core orbits. Each covering root
+belongs to its own orbit and hence to the bank. Regression puts it
+at a time at most $s_j<T$, so it is a permitted root in the fractional
+cover definition. Unit weights give
+$1\le\kappa_{\rho,j}\le(2M+4)^{|\mathcal E|}<\infty$;
+the lower bound uses the nonempty complete bank. Taking reciprocals
+and averaging proves the bounds on $\mathcal R$.
+
+Apply \cref{lem:fractional-gap} to each complete raw bank. Its credit
+is $(1-\alpha)_+^2/[2(2K+1)\kappa_{\rho,j}]$, the score of the exact
+zero-arc witness. The formal proof reuses the paid averaging argument
+of \cref{thm:paid-source-cover}, with these gap lower bounds as its
+credits. Factoring out the common numerator gives
+\cref{eq:reciprocal-cover-deficit}; the lower bound on $\mathcal R$
+then gives \cref{eq:orbit-count-deficit}.
+\end{outline}
+
+This completes the finite input to the necessary hop-tail theorem below.
+Retaining the mean reciprocal can improve the finite deficit when actual
+covers are cheaper than the terminal-orbit count. It preserves variation
+across columns and phases without assuming economical covers for arbitrary
+geometries or enlarging the uniform impossibility classes by itself.
 
 \subsection{Two-exception cover suppliers}
 
@@ -268,7 +398,7 @@ $E(t)=\sum_{v=1}^r\sum_i\Var(x\circ b_i;I_v)$.
 An empty remainder has $r=E(t)=0$. Then
 \begin{equation}\label{eq:cluster-gap}
  \gaparea(S_\rho(t))\ge
- \frac{(1-\alpha)_+^2}{4(K+1)(\ell+1)(r+1)}-\frac{E(t)}L.
+ \frac{(1-\alpha)_+^2}{2(2K+1)(\ell+1)(r+1)}-\frac{E(t)}L.
 \end{equation}
 \end{enumerate}
 \end{proposition}

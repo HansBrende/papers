@@ -94,6 +94,7 @@ existence of a fixed $N$-class partition is an explicit hypothesis; we
 do not infer it from the number of physical tapes alone.
 
 \begin{definition}[Admissible return geometry]\label{def:admissible-geometry}
+\formal{SourceCovers/AdmissibleGeometry.lean}{SourceCovers.AdmissibleGeometry,SourceCovers.AdmissibleGeometry.inputLength,SourceCovers.AdmissibleGeometry.deficit,SourceCovers.AdmissibleGeometry.relativeDeficit,SourceCovers.AdmissibleGeometry.orbit_count_deficit}
 An admissible geometry with parameters $d,b,c,\beta,N,q,a_0$ consists
 of a fixed complete geometry and nonempty correctness set $\mathcal C$
 as above, with $T\le cL$, whole-step capacity at most $\beta$, an
@@ -106,6 +107,13 @@ assumption is imposed on $\mathcal C$. The word ``admissible'' below
 includes all these premises. In a sequence, $c,\beta,N,q$ are fixed;
 the geometry, core and exceptional families may vary with dimension.
 \end{definition}
+
+The formal object supplies the finite record functions and their local
+dependence on the actual parent relation, using the clamped input path.
+It packages these fixed-geometry hypotheses; it does not assert that every
+such tuple is realized by a native Turing machine. In particular, a cover
+bound, global recovery and a correctness-deficit inequality are not fields
+of the object. The finite deficit is derived from these data.
 
 \begin{lemma}[Family accounting]\label{lem:family-accounting}
 \formal{SourceCovers/FamilyAccounting.lean}{SourceCovers.family_owner_inside,SourceCovers.family_hops_nested,SourceCovers.family_span_hop,SourceCovers.family_size_le_owner_arms,SourceCovers.two_mul_sum_family_size_le,SourceCovers.sum_family_variation_eq,SourceCovers.q2_accounting,SourceCovers.mem_boundaryLowers,SourceCovers.boundary_lowers_le_crossings,SourceCovers.boundary_lowers_le_family_sizes,SourceCovers.boundary_lowers_le}
@@ -533,26 +541,36 @@ Thus $|z-y|\le w-1$ within a block, including a partial block at either
 end of the input.
 
 \begin{lemma}[Paid residual-source recovery]\label{lem:residual-source-recovery}
-\notformalized
+\formal{SourceCovers/ResidualRecovery.lean}{SourceCovers.paid_residual_recovery}
 Let $\Gamma_0$ be an initial paid set, and let $Y_1,\ldots,Y_m$ be
 geometry-fixed maps from the timeline to $\Omega$. Their value set
 $A(t)$ contains $x(t)$. Partition all dependency edges into selected
 and residual edges. Suppose $A(u)\subseteq A(v)$ for every selected
 edge $v\to u$ with $u\notin\Gamma_0$. For an unpaid lower endpoint
 $u$, let $m_R(u)$ be its latest residual successor, or $u$ if none.
-Define
+Write $z_{u,i}=\operatorname{osc}(Y_i;[u,m_R(u)])$, where oscillation
+is maximum minus minimum, and let $\mathcal U$ be the set of initially
+unpaid lowers with an actual residual successor. Define
 \[
  V=\sum_i\Var(Y_i),\qquad
- \mathcal R=\sum_{u\notin\Gamma_0}\sum_i
-   \operatorname{osc}(Y_i;[u,m_R(u)]),
+ \mathcal R=\sum_{u\notin\Gamma_0}\sum_i z_{u,i},\qquad
+ \mathcal R_w=\sum_{u\in\mathcal U}\sum_i\min\{w,z_{u,i}\}.
 \]
-where oscillation is maximum minus minimum. If at most $H$ distinct
-unpaid residual lowers are live across every elementary time boundary,
-then, for every $w\ge1$, there are actual residual-lower sets
-$\Gamma_\theta$ satisfying
+At the elementary boundary $e\mid e+1$, put
+\[
+ h_e=\card{\{u\in\mathcal U:u\le e<m_R(u)\}},\qquad
+ D_e=\sum_i|Y_i(e+1)-Y_i(e)|.
+\]
+If $h_e\le H$ at every boundary for a real $H\ge0$, then, for every
+integer $w\ge1$, there are
+sets $\Gamma_\theta\subseteq\mathcal U$ satisfying
 \begin{equation}\label{eq:residual-average}
+ \begin{aligned}
  \mathbb E_\theta\card{\Gamma_\theta}
-       \le\frac{\mathcal R}{w}\le\frac{HV}{w}.
+       &\le\frac{\mathcal R_w}{w}\le\frac{\mathcal R}{w},\\
+ \frac{\mathcal R}{w}
+       &\le\frac1w\sum_{e=0}^{T-2}h_eD_e\le\frac{HV}{w}.
+ \end{aligned}
 \end{equation}
 For each shift, after paying
 $\Gamma=\Gamma_0\cup\Gamma_\theta$, every output at time $t_r$ is
@@ -565,17 +583,22 @@ No bound on full path depth, linearity or independence on a genie fibre
 is needed.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 For each unpaid residual lower $u$, pay $u$ if, for some $i$, the label
 $\lfloor(Y_i(t)+\theta)/w\rfloor$ is not constant on
 $[u,m_R(u)]$. This is an actual union of lower endpoints, so a lower
 used by several dependencies is paid once. If the integer range of one
-slot on an interval has oscillation $z$, a uniformly shifted grid cuts
-that range with probability $\min(1,z/w)$. The union bound over slots
-and lowers gives the first inequality of \eqref{eq:residual-average}.
-Oscillation is at most variation on the interval. Summing that variation
-over lower lifetimes charges an elementary step at most $H$ times,
-giving $\mathcal R\le HV$.
+slot on an interval has oscillation $z$, exactly $\min(w,z)$ of the
+$w$ shifts cut that range. The formal count reuses the bijection of
+residues over one period. The union bound over slots and lowers gives
+the capped cost $\mathcal R_w$. An unpaid vertex with no residual
+successor has a singleton lifetime and zero oscillation, so omitting
+these vertices changes neither cost.
+Oscillation is at most variation on the interval. The shared finite
+incidence identity sums those interval costs with exact multiplicity
+$h_e$. A lifetime crosses $e\mid e+1$ exactly when its lower has an
+actual residual successor after $e$. This gives the profile bound before
+using $h_e\le H$ and $\sum_eD_e=V$.
 
 A surviving residual edge preserves every slot label. A surviving
 selected edge preserves inclusion of the sets of labels by the
@@ -586,15 +609,26 @@ every full surviving raw source belongs to
 \eqref{eq:complete-bank-recovery}. This treats paths of arbitrary
 length and all alternations of state and physical work edges.
 
-Finally recursively evaluate the deterministic step functions. A
-parent in $\Gamma$ is supplied by $G_\Gamma$; every other parent is
-evaluated from its own parents and direct read. Time strictly decreases,
-so this recursion terminates. Initial values and reads outside the input
-are constants. All unfixed raw reads belong to the displayed union,
-which therefore determines the output. The same reasoning starts at
-a revealed output root and retains its direct read and all unpaid
-parents; revealing the root was never used to delete them.
-\end{informalproof}
+Finally compare two inputs in $\mathcal C$ with the same transcript and
+the same bits in the displayed union. Strong induction on time gives
+equality of their records: a paid parent's equality comes from the
+transcript, and an unpaid parent's equality comes from the induction
+hypothesis. Their direct reads agree by the cone containment, so the
+local deterministic rule gives equality of the current record.
+Mathlib's factorization theorem then supplies a decoder of the whole
+record, hence of its output component. Initial values and reads outside
+the input are constants. The same reasoning starts at a revealed output
+root and retains its direct read and all unpaid parents; revealing the
+root was never used to delete them.
+\end{outline}
+
+The capped cost and the actual boundary profile can improve the original
+$HV/w$ estimate without changing the recovery sets. The formal theorem
+uses $n=T-1$ as the last time and proves recovery of the whole step
+record in an arbitrary causal dependency graph. Its local premise is
+that the direct read and all parent records determine the current record
+on $\mathcal C$; it does not assume global recovery. Fixed initial values
+and outside-input blanks are constants in this local rule.
 
 For Theorem~S, take the surviving selected family edges as selected,
 retain all other state and physical work edges as residual, and disregard
@@ -631,7 +665,7 @@ The blocks in \eqref{eq:raw-block} remain linear blocks. The circle is
 used only for an overcover and a common ordering of raw coordinates.
 
 \begin{theorem}[Theorem F: cyclic freezing]\label{thm:cyclic-freezing}
-\notformalized
+\formal{SourceCovers/CyclicFreezing.lean}{SourceCovers.cyclic_freezing,SourceCovers.cyclic_freezing_oscillation,SourceCovers.cyclic_freezing_genie,SourceCovers.cyclic_freezing_genie_raw}
 Let $m\ge1$ and let $Y_i:\{0,\ldots,T-1\}\to\Omega$, $1\le i\le m$,
 be geometry-fixed bank maps. Let $Z$ be a
 deterministic helper determined by the input, with $H(Z)\le g$ for the
@@ -644,10 +678,17 @@ $S_j=\{Y_i(s_j):1\le i\le m\}$ and $A_j=\gaparea(S_j)$. Then
 \begin{equation}\label{eq:cyclic-freezing}
  \Delta\ge
  W\sum_{j=0}^{d-1}A_j
-       -\frac{2V}{d}-2(w-1)-\frac{W+1}{2}
+       -\frac{2V}{d}-2(w-1)-\frac{W-b+1}{2}
        -g.
 \end{equation}
-In particular the bound holds with $g=\beta\card\Gamma$ for an actual
+More precisely, write $e_j=t_{(j+1)W-1}$ and
+\[
+ \rho_j=\max_{1\le i\le m}
+ \left(\max_{s_j\le t\le e_j}Y_i(t)
+       -\min_{s_j\le t\le e_j}Y_i(t)\right).
+\]
+The bound holds with $V$ replaced by $\sum_j\rho_j\le V$.
+In particular it holds with $g=\beta\card\Gamma$ for an actual
 whole-step genie. If $u$ additional raw bits at geometry-fixed coordinates
 are revealed jointly with that genie, it holds with
 $g=\beta\card\Gamma+u$.
@@ -656,37 +697,38 @@ correctness set. Its area term uses the actual transpose demand stripes,
 not an assumption that demands and sources are independent.
 \end{theorem}
 
-\begin{informalproof}
-Write $e_j=t_{(j+1)W-1}$ and
-$\delta_j=\sum_i\Var(Y_i;[s_j,e_j])$. These column intervals have
-disjoint elementary edges, so $\sum_j\delta_j\le V$. Every source
-block used during column $j$ lies in the fixed circular overcover
+\begin{outline}
+Freeze the bank at each column's first append time and use the fixed
+circular overcover
 \[
  T_j=\{z\in\Omega:\dist_{\rm circ}(z,S_j)\le r_j\},
- \qquad r_j=w-1+\delta_j.
+ \qquad r_j=w-1+\rho_j.
 \]
-Indeed, its coordinate differs from the corresponding current anchor
-by at most $w-1$, and that anchor differs from its frozen value by at
-most $\delta_j$. This covers entire blocks, not just their representatives.
+Every coordinate of a source block differs from its current anchor by
+at most $w-1$, and that anchor differs from its frozen value by at most
+$\rho_j$. This covers entire linear blocks. The column time intervals
+have disjoint elementary edges, so $\sum_j\rho_j\le V$ by the
+finite-path variation bound. The formalization reuses the first paper's
+transpose-position formula to identify each output's actual column window.
 
 Choose a uniformly random circular cut and an independent uniformly
 random orientation. They define one total order on all raw coordinates,
 shared by every column. Select a demanded coordinate $z$ of column $j$
-when $z\notin T_j$ and $z$ precedes every coordinate in $T_j$. Every
-recovery edge between selected coordinates then points forward in this
-same order, so their induced recovery relation is acyclic.
+when it precedes every coordinate in $T_j$. Strict precedence rejects
+$z\in T_j$ automatically. Every recovery edge between selected
+coordinates points forward in this same order.
 
-Consider a complementary circular run of $T_j$ having $a$ integer
-points. For its $v$-th point, the two orientations give selection
-probabilities $v/L$ and $(a+1-v)/L$. Their average is the constant
-$(a+1)/(2L)$ throughout the run. The selection probability is zero
-on $T_j$. The sum of these constants over complementary runs is at
-most $1/2$: the run points together with one distinct covered endpoint
-per run number at most $L$. If $T_j=\Omega$, all these sums are empty.
+A consecutive frozen-anchor gap of length $g$ contains an eroded arc
+of $a=(g-1-2r_j)_+$ integer points. These arcs are pairwise disjoint
+and avoid $T_j$. For the $v$-th point of a nonempty arc, $v$ cuts in
+one orientation and $a+1-v$ cuts in the reverse orientation safely
+place that point before all of $T_j$. Thus its selection probability
+is at least $(a+1)/(2L)$. Only this injection of safe choices is needed;
+we need not enumerate every possible selection or every complementary run.
+The sum of the guaranteed weights over nonempty eroded arcs is at most
+$1/2$, since $a+1\le g$ for each such arc and the original gaps sum to $L$.
 
-For a frozen point gap of length $g$, thickening by integer radius $r_j$
-leaves $(g-1-2r_j)_+$ integer points. The mean selection probability
-over all $L$ raw coordinates is consequently
+Consequently the mean selection probability over all $L$ raw coordinates is at least
 \[
  A_{j,r_j}=\frac1{2L^2}
        \sum_{g}(g-1-2r_j)_+\bigl((g-1-2r_j)_++1\bigr).
@@ -695,8 +737,8 @@ For integers $g\ge1,r\ge0$,
 \[
  g^2-(g-1-2r)_+\bigl((g-1-2r)_++1\bigr)\le(4r+1)g.
 \]
-When $g\ge2r+1$, expansion proves the inequality; otherwise its
-left side is $g^2\le(4r+1)g$. Summing and using $\sum g=L$ gives
+Expansion proves the case $g\ge2r+1$; otherwise the left side is
+$g^2\le(4r+1)g$. Summing gives
 \begin{equation}\label{eq:thickening-area}
  A_{j,r_j}\ge A_j-\frac{2r_j+1/2}{L}.
 \end{equation}
@@ -709,44 +751,43 @@ The actual demanded coordinates in column $j$ form the stripe
 For every circular integer interval $I$,
 \begin{equation}\label{eq:stripe-discrepancy}
  \left|\card(D_j\cap I)-\frac{\card I}{d}\right|
-       \le b(1-1/d)\le b.
+       \le b(1-1/d).
 \end{equation}
-To see this, the indicator of $D_j$ has period $W$ and one occupied
-block of length $b$ per period. Its centered prefix count
-$F(n)=\card(D_j\cap[0,n))-n/d$ is periodic and has oscillation
-$b(1-1/d)$: it rises with slope $1-1/d$ on the occupied block and
-falls with slope $-1/d$ on its complement. An interval discrepancy
-is a difference of two prefix values, including intervals across the
-circular seam.
+Extend the stripe indicator periodically with period $W$. Its centered
+prefix count, obtained by subtracting $n/d$ from the count on $[0,n)$,
+has oscillation $b(1-1/d)$: it rises with slope $1-1/d$ on the occupied
+block and falls with slope $-1/d$ on its complement. Interval discrepancy
+is a difference of two prefix values. Since $L$ is a multiple of $W$,
+this also handles intervals across the circular seam.
 
-Apply \eqref{eq:stripe-discrepancy} to the complementary runs, weighted
-by their constant selection probabilities. Their constants sum to at
-most $1/2$, so the expected number of selected demands in column $j$
-is at least
+Apply \eqref{eq:stripe-discrepancy} to the disjoint eroded arcs, weighted
+by their guaranteed selection probabilities. The weights sum to at most
+$1/2$, so the expected selected demand count in column $j$ is at least
 \[
- W A_{j,r_j}-b/2
- \ge W A_j-\frac{2r_j}{d}-\frac1{2d}-\frac b2.
+ W A_{j,r_j}-\frac{b(1-1/d)}2
+ \ge W A_j-\frac{2r_j+1/2}{d}-\frac{b(1-1/d)}2.
 \]
-Summing over columns and using
-$\sum_j r_j\le d(w-1)+V$ gives expected selected size at least
-the first four terms on the right of \eqref{eq:cyclic-freezing}.
+Sum over the actual column stripes, which partition $\Omega$, and use
+$\sum_j r_j=d(w-1)+\sum_j\rho_j$. This gives the geometric part of
+\eqref{eq:cyclic-freezing}, with $V$ replaced by $\sum_j\rho_j$.
+Retaining the factor $1-1/d$ improves the former additive error
+$(W+1)/2$ by $b/2$; the earlier bound follows immediately.
 
 For any realized common order, let $A$ be its selected coordinates.
-Given $Z$ and the raw complement $\Omega\setminus A$, recover
-the selected coordinates in reverse order using the acyclic relation.
-For $X$ uniform on $\mathcal C$, it follows that
+Given $Z$ and the raw complement $\Omega\setminus A$, recover selected
+coordinates in reverse order. Reusing the second paper's finite-entropy
+library, for $X$ uniform on $\mathcal C$ we obtain
 \[
  \log_2\card{\mathcal C}=H(X)
-       \le H(Z)+H(X_{\Omega\setminus A}\mid Z)
+       \le H(Z)+H(X_{\Omega\setminus A})
        \le g+L-\card A.
 \]
-Average this inequality over the common cut and orientation to obtain
-\eqref{eq:cyclic-freezing}. This entropy argument does not infer a
-transcript cardinality bound from an entropy bound, and requires no
-product distribution on a helper fibre. The genie and joint-revelation
-special cases follow from subadditivity of entropy and the stated bit
-capacities.
-\end{informalproof}
+Average over the common cut and orientation. The same helper is used
+for every order, and no support-cardinality bound is inferred from its
+entropy. The genie and joint-revelation special cases use subadditivity
+and the record alphabet's real-valued bit capacity. No independence
+assumption is needed.
+\end{outline}
 
 Theorem~F charges the same genie that supplies the complete bank.
 Own-source demands are rejected in its acyclic selection, so no separate

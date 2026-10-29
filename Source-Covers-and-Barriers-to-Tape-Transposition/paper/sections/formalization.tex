@@ -1,7 +1,7 @@
 \section{Specification for subsequent formalization}
 \label{sec:formalization}
 
-\Cref{def:complete-families,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:interval-rounding,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,lem:attached-short-count}
 are Lean-verified;
 their declarations and axiom commands accompany the paper. The remaining results retain
 complete written proofs. The index in
@@ -21,30 +21,64 @@ partition and family accounting are now formalized by reusing the eighth
 paper and finite incidence counting. Strict clipped shadows and their
 variation bounds, including successful words and disjoint packing, are
 also formalized, as are protected nonleaf phases and the exact packed bank,
-including closure across selected unpaid actual edges. Formalize paid-root
-semantics and correctness on one fixed geometry, then residual recovery. The any-argument-path bound now covers metric-valued paths;
+including closure across selected unpaid actual edges. Paid residual recovery
+is formalized for arbitrary locally determined records, with revealed-root
+reads and unpaid parents retained. The any-argument-path bound covers metric-valued paths;
 it is not restricted to the original input-head timeline.
 
 \item \emph{Finite deficit.}
-Formalize circular gap area, a common cyclic ordering of all raw
-coordinates, stripe discrepancy, and entropy recovery from a deterministic
-helper. \Cref{thm:cyclic-freezing} permits a helper bounded in entropy;
-it does not infer a support-cardinality bound from entropy. The fractional
-interval-cover lemma is already formalized independently of this base.
-Use it to prove the fractional gap bound, formalize anchored erosion,
-then prove \cref{thm:paid-source-cover}. The complete bank and the
-phase used for its payment must be the same throughout.
+Circular gap area, one common cyclic ordering of all raw coordinates,
+sharp stripe discrepancy, and entropy recovery from a deterministic helper
+are formalized in \cref{thm:cyclic-freezing}. Its sharper finite bound
+retains maximum slot oscillations and improves the additive stripe error.
+The helper is charged by entropy, without inferring a support-cardinality
+bound. Minimum fractional core covers, interval rounding and the fractional
+raw-source gap bound are also formalized. The shared-root count sharpens
+its denominator to $2(2K+1)\kappa$; exact component incidences and
+union-edge variation are retained before this relaxation.
+Anchored erosion is now formalized with loss $e-e^2/2$, where
+$e=\min\{E/L,1\}$, and the cover credit retains that saving.
+The full paid-cover assembly in \cref{thm:paid-source-cover} is now verified:
+the actual parent relation, bank, phase and transcript are consistent
+throughout. Its terminal-core-orbit corollary,
+\cref{cor:orbit-count-deficit}, is also verified, with the stronger mean
+reciprocal of the actual fractional cover weights retained before applying
+the worst-case count. All covering roots lie within the computation.
 
 \item \emph{Uniform consequences.}
-Extract only the numerical joint profile. Formalize the order
-``finite parameters, dimension limit, cutoff limit, radius limit''
-in \cref{thm:necessary-hop-tail}. Derive one-exception, common-envelope,
-finite-skeleton and necessary-cover results from it and the finite
-certificate. Do not replace those ordered limits by a single growing
-finite certificate.
+The actual hop ordering, common numerical joint profile, inherited mass
+bounds and vanishing tails in \cref{def:joint-profile} are now formalized.
+Only numerical coordinates converge; no limiting geometry is asserted.
+\Cref{thm:necessary-hop-tail} is also verified, using actual prefixes,
+rounded widths and the full outside-family budget. The order is fixed
+finite parameters, dimension limit, cutoff limit, then vanishing width
+error. The distinguished and protected cutoffs are independent, and the
+critical-moment conclusion is literal divergence of nonnegative partial
+sums. The uniform one-exception deficit in \cref{cor:one-exception}
+is now verified as well, with constants independent of the positive entry
+width. A reusable sequential-exclusion lemma turns the absence of a
+near-full sequence into uniform constants, preserving any additional
+class restriction. \Cref{cor:common-envelope} is verified in the stronger
+form requiring only finitely many leading-rank bounds with positive slack.
+Its power-envelope case reuses Mathlib's $p$-series theorem and the
+moment-to-tail estimate. The finite-skeleton exclusion is verified for
+every $q\ge0$, using an explicit zero profile and reclassification of the
+same computation. Its contrapositive counts families with more than
+$\eps L$ hops. \Cref{thm:necessary-cover} is now verified, including its
+inverse-square probability bound. It retains the actual mean reciprocal
+cover through both upper limits; the earlier hop-tail inequality follows
+by the terminal-orbit bound. The stronger form permits any fixed legal
+modulus and independent cutoffs, and its probability consequence needs
+only an envelope on the limiting profile. Both uniform cover criteria in
+\cref{cor:uniform-cover} are now verified, including the real-power case
+for every $p>1$. A more general criterion permits any summable envelope
+whose cover-budget-weighted tail has lower limit zero. Finite Cauchy,
+Mathlib's integral comparison and the existing uniform-gap theorem supply
+the proof; the same chosen order witnesses both class restrictions.
+Do not replace the ordered limits by a single growing finite certificate.
 
 \item \emph{Two-exception refinements.}
-Prove the exact older-closure decomposition and its maximal-seed
+The next target is \cref{prop:continuation-covers}. Prove the exact older-closure decomposition and its maximal-seed
 reductions before the exposure and shared-support results. The global
 seed set ranges over all output-bit times. Its raw support is revealed
 once, at a cost valid for every grid shift, and all density limits use
@@ -65,7 +99,7 @@ exclusion theorem.
 
 \subsection{Reuse and statement fidelity}
 
-The first, fourth, fifth and eighth papers contain relevant tape,
+The first, second, fourth, fifth and eighth papers contain relevant tape,
 dependency, entropy and owner-order libraries. The native short-pair
 count in \cref{sec:causal-groups} already imports the first paper's
 row and ball counting declarations, and strengthens its output-block count.
@@ -93,10 +127,39 @@ list composition handles the leaf sandwich and exceptional families.
 The exact orbit proof permits the representing word of a packed slot to
 vary with the argument. All originally selected unpaid actual edges are
 covered, since the phase pays every lower of each deleted family.
+Paid residual recovery uses the shared causal induction and grid-payment
+lemmas. Cyclic freezing reuses finite-path variation and the first paper's
+transpose-position formula, constructs actual disjoint eroded gap arcs,
+and counts safe common orders. Sharp periodic-stripe discrepancy transfers
+those counts to actual demands. The second paper's entropy inequalities
+complete the deficit bound without new entropy machinery.
 The interval-cover lemma imports the shared library's greedy cover and
 packing certificate. It permits an empty target and arbitrary order-convex
 sets in a linear order. Its fractional bound uses Mathlib's finite-sum
 and order tools; no linear-programming development is needed.
+Minimum fractional covers use Mathlib's extreme value theorem on the
+finite weight cube. Canonical time components reuse path oscillation and
+have disjoint internal edge sets. The actual complete-orbit count spends
+distinguished owners and counts the common root once. Fractional weights
+are transferred to these shared components before interval rounding;
+the actual circular-gap estimate uses finite edge counting and
+Cauchy--Schwarz. No cover-dependent merging or new entropy lemma is needed.
+Anchored erosion uses arbitrary real lengths on a finite circular subdivision.
+The sorted gaps partition its elementary edges. Anchoring preserves the old
+gap relation on pairs of uncovered edges, and the shared partition-energy
+lemma charges exactly the pairs touching the covered union. Real-coordinate
+telescoping and a unit-weight specialization identify the area definitions.
+The formal model is this finite subdivision, not an intrinsic AddCircle
+or Haar-measure construction.
+The paid-cover assembly reuses these results and Mathlib's finite
+expectation identities. The subdivision-refinement adapter preserves raw
+coordinates and their actual gap area; boundedness, rather than attainment,
+justifies the supremum over chosen witnesses. Local record recovery and
+whole-record capacity supply the same transcript for every output.
+A common paid-averaging theorem accepts any valid raw-gap credits;
+the terminal-orbit corollary reuses it with exact fractional covers.
+A shared unit-weight cover lemma and regression of the actual roots
+supply the finite fractional upper bound without a new covering premise.
 For the remaining results, inspect exact types and dependency pins
 before choosing imports. Use sibling packages
 through relative paths and shared lemmas through the repository's

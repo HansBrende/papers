@@ -329,3 +329,423 @@ import LeanMachine
 #print axioms LeanMachine.SourceBank.compose_length
 #print axioms LeanMachine.SourceBank.mem_compose
 #print axioms LeanMachine.SourceBank.bounded_action
+
+-- ShiftedGrid.lean
+#print axioms LeanMachine.ShiftedGrid.label
+#print axioms LeanMachine.ShiftedGrid.separatingShifts
+#print axioms LeanMachine.ShiftedGrid.label_mono
+#print axioms LeanMachine.ShiftedGrid.label_ne_iff
+#print axioms LeanMachine.ShiftedGrid.separatingShifts_card
+#print axioms LeanMachine.ShiftedGrid.separatingShifts_card_le
+#print axioms LeanMachine.ShiftedGrid.constant_iff_extrema_eq
+#print axioms LeanMachine.ShiftedGrid.nonconstant_iff_extrema_ne
+#print axioms LeanMachine.ShiftedGrid.nonconstantShifts
+#print axioms LeanMachine.ShiftedGrid.nonconstantShifts_card
+#print axioms LeanMachine.ShiftedGrid.nonconstantShifts_card_le
+#print axioms LeanMachine.ShiftedGrid.sub_lt_of_label_eq
+#print axioms LeanMachine.ShiftedGrid.card_le_of_constant
+
+-- IntervalOscillation.lean
+#print axioms LeanMachine.IntervalOscillation.times
+#print axioms LeanMachine.IntervalOscillation.times_nonempty
+#print axioms LeanMachine.IntervalOscillation.lower
+#print axioms LeanMachine.IntervalOscillation.upper
+#print axioms LeanMachine.IntervalOscillation.oscillation
+#print axioms LeanMachine.IntervalOscillation.lower_attained
+#print axioms LeanMachine.IntervalOscillation.upper_attained
+#print axioms LeanMachine.IntervalOscillation.lower_le
+#print axioms LeanMachine.IntervalOscillation.le_upper
+#print axioms LeanMachine.IntervalOscillation.lower_le_upper
+#print axioms LeanMachine.IntervalOscillation.mem_times
+#print axioms LeanMachine.IntervalOscillation.dist_le_interval_variation
+#print axioms LeanMachine.IntervalOscillation.oscillation_le_interval_variation
+#print axioms LeanMachine.IntervalOscillation.multiplicity
+#print axioms LeanMachine.IntervalOscillation.sum_oscillation_le_profile
+#print axioms LeanMachine.IntervalOscillation.sum_oscillation_le_mul_variation
+
+-- GridPayment.lean
+#print axioms LeanMachine.GridPayment.cut
+#print axioms LeanMachine.GridPayment.cut_subset
+#print axioms LeanMachine.GridPayment.labels_eq_of_not_mem_cut
+#print axioms LeanMachine.GridPayment.sum_cut_card_le_capped
+#print axioms LeanMachine.GridPayment.sum_cut_card_le_oscillation
+#print axioms LeanMachine.GridPayment.average_cut_card_le_capped
+#print axioms LeanMachine.GridPayment.average_cut_card_le_oscillation
+#print axioms LeanMachine.GridPayment.average_cut_card_le_profile
+#print axioms LeanMachine.GridPayment.average_cut_card_le_mul_variation
+#print axioms LeanMachine.GridPayment.exists_cut_card_le
+
+-- CausalRecovery.lean
+#print axioms LeanMachine.CausalRecovery.Ancestor
+#print axioms LeanMachine.CausalRecovery.sourceCone
+#print axioms LeanMachine.CausalRecovery.Ancestor.trans
+#print axioms LeanMachine.CausalRecovery.Ancestor.le
+#print axioms LeanMachine.CausalRecovery.reads_subset_sourceCone
+#print axioms LeanMachine.CausalRecovery.sourceCone_subset_of_ancestor
+#print axioms LeanMachine.CausalRecovery.sourceCone_subset
+#print axioms LeanMachine.CausalRecovery.LocallyDetermined
+#print axioms LeanMachine.CausalRecovery.record_eq_of_sourceCone
+#print axioms LeanMachine.CausalRecovery.record_eq_of_closed_sources
+#print axioms LeanMachine.CausalRecovery.observation
+#print axioms LeanMachine.CausalRecovery.exists_decoder
+
+-- OrderedRecovery.lean
+#print axioms LeanMachine.OrderedRecovery.eq_of_wellFounded
+#print axioms LeanMachine.OrderedRecovery.eq_of_rank
+
+-- FrozenBank.lean
+#print axioms LeanMachine.FrozenBank.dist_le_oscillation
+#print axioms LeanMachine.FrozenBank.radius
+#print axioms LeanMachine.FrozenBank.oscillation_le_radius
+#print axioms LeanMachine.FrozenBank.radius_le_sum
+#print axioms LeanMachine.FrozenBank.label_dist_le
+#print axioms LeanMachine.FrozenBank.block_dist_le
+#print axioms LeanMachine.FrozenBank.sum_radius_le_profile
+#print axioms LeanMachine.FrozenBank.sum_radius_le_variation
+
+-- GapErosion.lean
+#print axioms LeanMachine.GapErosion.remaining
+#print axioms LeanMachine.GapErosion.loss_le
+#print axioms LeanMachine.GapErosion.pointArea
+#print axioms LeanMachine.GapErosion.erodedArea
+#print axioms LeanMachine.GapErosion.area_loss
+#print axioms LeanMachine.GapErosion.weight_sum_le_half
+
+-- CyclicSelection.lean
+#print axioms LeanMachine.CyclicSelection.arc
+#print axioms LeanMachine.CyclicSelection.rank
+#print axioms LeanMachine.CyclicSelection.rank_rotate
+#print axioms LeanMachine.CyclicSelection.rank_lt
+#print axioms LeanMachine.CyclicSelection.rank_nonneg
+#print axioms LeanMachine.CyclicSelection.forward
+#print axioms LeanMachine.CyclicSelection.forward_of_le
+#print axioms LeanMachine.CyclicSelection.forward_of_gt
+#print axioms LeanMachine.CyclicSelection.rank_eq_forward
+#print axioms LeanMachine.CyclicSelection.forward_lt
+#print axioms LeanMachine.CyclicSelection.mod_add_forward
+#print axioms LeanMachine.CyclicSelection.forward_rotate
+#print axioms LeanMachine.CyclicSelection.covered
+#print axioms LeanMachine.CyclicSelection.overcover
+#print axioms LeanMachine.CyclicSelection.mem_overcover
+#print axioms LeanMachine.CyclicSelection.overcover_subset
+#print axioms LeanMachine.CyclicSelection.anchors_subset_overcover
+#print axioms LeanMachine.CyclicSelection.overcover_nonempty
+#print axioms LeanMachine.CyclicSelection.covered_of_dist_le
+#print axioms LeanMachine.CyclicSelection.arc_subset
+#print axioms LeanMachine.CyclicSelection.arc_card
+#print axioms LeanMachine.CyclicSelection.point
+#print axioms LeanMachine.CyclicSelection.gap
+#print axioms LeanMachine.CyclicSelection.point_mem
+#print axioms LeanMachine.CyclicSelection.point_zero
+#print axioms LeanMachine.CyclicSelection.point_card
+#print axioms LeanMachine.CyclicSelection.point_mono
+#print axioms LeanMachine.CyclicSelection.point_strict
+#print axioms LeanMachine.CyclicSelection.gap_pos
+#print axioms LeanMachine.CyclicSelection.sum_gap
+#print axioms LeanMachine.CyclicSelection.gap_le
+#print axioms LeanMachine.CyclicSelection.exists_point_eq
+#print axioms LeanMachine.CyclicSelection.anchor_offset_zero_or_gap_le
+#print axioms LeanMachine.CyclicSelection.erodedArc
+#print axioms LeanMachine.CyclicSelection.erodedArc_uncovered
+#print axioms LeanMachine.CyclicSelection.erodedArc_card
+#print axioms LeanMachine.CyclicSelection.erodedArc_disjoint_overcover
+#print axioms LeanMachine.CyclicSelection.erodedArc_lift
+#print axioms LeanMachine.CyclicSelection.erodedArc_pairwiseDisjoint
+#print axioms LeanMachine.CyclicSelection.activeGaps
+#print axioms LeanMachine.CyclicSelection.sum_active_lengths_add_one_le
+
+-- CyclicArcSelection.lean
+#print axioms LeanMachine.CyclicSelection.orientedRank
+#print axioms LeanMachine.CyclicSelection.orientedRankNat
+#print axioms LeanMachine.CyclicSelection.orientedRank_lt_iff_nat
+#print axioms LeanMachine.CyclicSelection.selectingOrders
+#print axioms LeanMachine.CyclicSelection.mem_selectingOrders_iff_nat
+#print axioms LeanMachine.CyclicSelection.arc_selection_card_lower
+#print axioms LeanMachine.CyclicSelection.arc_selection_card_lower_of_mem
+
+-- PeriodicStripe.lean
+#print axioms LeanMachine.PeriodicStripe.occupied
+#print axioms LeanMachine.PeriodicStripe.occupied_periodic
+#print axioms LeanMachine.PeriodicStripe.occupied_iff_column
+#print axioms LeanMachine.PeriodicStripe.count_prefix_short
+#print axioms LeanMachine.PeriodicStripe.count_period
+#print axioms LeanMachine.PeriodicStripe.count_add_period
+#print axioms LeanMachine.PeriodicStripe.count_mul_period
+#print axioms LeanMachine.PeriodicStripe.count_prefix
+#print axioms LeanMachine.PeriodicStripe.centered
+#print axioms LeanMachine.PeriodicStripe.centered_eq_remainder
+#print axioms LeanMachine.PeriodicStripe.centered_bounds
+#print axioms LeanMachine.PeriodicStripe.arcCount
+#print axioms LeanMachine.PeriodicStripe.scaled_arcCount_eq_centered_sub
+#print axioms LeanMachine.PeriodicStripe.abs_scaled_arcCount_sub_le
+#print axioms LeanMachine.PeriodicStripe.stripe
+#print axioms LeanMachine.PeriodicStripe.mem_stripe_iff
+#print axioms LeanMachine.PeriodicStripe.occupied_mod_circle
+#print axioms LeanMachine.PeriodicStripe.pairwiseDisjoint_stripe
+#print axioms LeanMachine.PeriodicStripe.biUnion_stripe
+#print axioms LeanMachine.PeriodicStripe.sum_stripe_inter_card
+#print axioms LeanMachine.PeriodicStripe.stripe_inter_arc_card
+#print axioms LeanMachine.PeriodicStripe.abs_arcCount_sub_density_le
+#print axioms LeanMachine.PeriodicStripe.abs_stripe_inter_arc_sub_density_le
+#print axioms LeanMachine.PeriodicStripe.weighted_arcCount_lower_bound
+
+-- SelectionAverage.lean
+#print axioms LeanMachine.SelectionAverage.pointCount
+#print axioms LeanMachine.SelectionAverage.sum_card_inter_eq_sum_pointCount
+#print axioms LeanMachine.SelectionAverage.sum_credit_mul_card_inter_le
+
+-- PeriodicStripeSum.lean
+#print axioms LeanMachine.PeriodicStripe.sum_stripe_eq_sum_coordinates
+#print axioms LeanMachine.PeriodicStripe.sum_fin_stripe_eq_sum_coordinates
+#print axioms LeanMachine.PeriodicStripe.sum_fin_stripe_eq_sum_coordinates_of_pos
+
+-- CyclicStripeAverage.lean
+#print axioms LeanMachine.CyclicStripeAverage.sum_credit_le_selectingOrders
+#print axioms LeanMachine.CyclicStripeAverage.erodedArea_lower
+#print axioms LeanMachine.CyclicStripeAverage.pointArea_lower
+
+-- FractionalCover.lean
+#print axioms LeanMachine.FractionalCover.Covers
+#print axioms LeanMachine.FractionalCover.cost
+#print axioms LeanMachine.FractionalCover.cost_nonneg
+#print axioms LeanMachine.FractionalCover.one_le_cost
+#print axioms LeanMachine.FractionalCover.cap_covers
+#print axioms LeanMachine.FractionalCover.cap_cost_le
+#print axioms LeanMachine.FractionalCover.covers_closed
+#print axioms LeanMachine.FractionalCover.exists_minimum
+#print axioms LeanMachine.FractionalCover.value
+#print axioms LeanMachine.FractionalCover.exists_optimal
+#print axioms LeanMachine.FractionalCover.value_nonneg
+#print axioms LeanMachine.FractionalCover.one_le_value
+#print axioms LeanMachine.FractionalCover.number
+#print axioms LeanMachine.FractionalCover.number_ne_top_iff
+#print axioms LeanMachine.FractionalCover.number_toReal
+
+-- FractionalCoverBounds.lean
+#print axioms LeanMachine.FractionalCover.value_le_cost
+#print axioms LeanMachine.FractionalCover.number_toReal_le_cost
+#print axioms LeanMachine.FractionalCover.unit_covers
+#print axioms LeanMachine.FractionalCover.number_le_card
+
+-- IntervalGapArea.lean
+#print axioms LeanMachine.IntervalGapArea.containsGap
+#print axioms LeanMachine.IntervalGapArea.exposed
+#print axioms LeanMachine.IntervalGapArea.contained
+#print axioms LeanMachine.IntervalGapArea.exposed_left_card_le_one
+#print axioms LeanMachine.IntervalGapArea.exposed_card_le
+#print axioms LeanMachine.IntervalGapArea.gapEdges_pairwiseDisjoint
+#print axioms LeanMachine.IntervalGapArea.sum_contained_gap_le
+#print axioms LeanMachine.IntervalGapArea.sum_contained_add_exposed
+#print axioms LeanMachine.IntervalGapArea.exposed_mass_lower
+#print axioms LeanMachine.IntervalGapArea.exposed_mass_sq_le_energy
+#print axioms LeanMachine.IntervalGapArea.point_energy_lower
+#print axioms LeanMachine.IntervalGapArea.point_area_lower
+#print axioms LeanMachine.IntervalGapArea.point_area_lower_of_budgets
+
+-- TimeComponents.lean
+#print axioms LeanMachine.TimeComponents.label
+#print axioms LeanMachine.TimeComponents.label_mono
+#print axioms LeanMachine.TimeComponents.label_eq_of_Ico_subset
+#print axioms LeanMachine.TimeComponents.Ico_subset_of_label_eq
+#print axioms LeanMachine.TimeComponents.label_eq_iff_Ico_subset
+#print axioms LeanMachine.TimeComponents.label_eq_of_between
+#print axioms LeanMachine.TimeComponents.components
+#print axioms LeanMachine.TimeComponents.label_mem_components
+#print axioms LeanMachine.TimeComponents.ofTime
+#print axioms LeanMachine.TimeComponents.times
+#print axioms LeanMachine.TimeComponents.mem_times
+#print axioms LeanMachine.TimeComponents.times_nonempty
+#print axioms LeanMachine.TimeComponents.first
+#print axioms LeanMachine.TimeComponents.last
+#print axioms LeanMachine.TimeComponents.first_mem
+#print axioms LeanMachine.TimeComponents.last_mem
+#print axioms LeanMachine.TimeComponents.first_le_last
+#print axioms LeanMachine.TimeComponents.last_le
+#print axioms LeanMachine.TimeComponents.times_eq_Icc
+#print axioms LeanMachine.TimeComponents.edges
+#print axioms LeanMachine.TimeComponents.edges_subset
+#print axioms LeanMachine.TimeComponents.edges_subset_range
+#print axioms LeanMachine.TimeComponents.edges_pairwiseDisjoint
+#print axioms LeanMachine.TimeComponents.biUnion_edges
+#print axioms LeanMachine.TimeComponents.sum_edge_cost_le
+#print axioms LeanMachine.TimeComponents.times_eq_intervalTimes
+#print axioms LeanMachine.TimeComponents.rawLower
+#print axioms LeanMachine.TimeComponents.rawUpper
+#print axioms LeanMachine.TimeComponents.rawWidth
+#print axioms LeanMachine.TimeComponents.rawInterval
+#print axioms LeanMachine.TimeComponents.rawLower_le_rawUpper
+#print axioms LeanMachine.TimeComponents.rawLower_attained
+#print axioms LeanMachine.TimeComponents.rawUpper_attained
+#print axioms LeanMachine.TimeComponents.mem_rawInterval_of_mem_times
+#print axioms LeanMachine.TimeComponents.mem_rawInterval_ofTime
+#print axioms LeanMachine.TimeComponents.rawInterval_card
+#print axioms LeanMachine.TimeComponents.rawUpper_lt
+#print axioms LeanMachine.TimeComponents.rawInterval_subset_range
+#print axioms LeanMachine.TimeComponents.sum_rawWidth_le
+
+-- OrbitLabelBudget.lean
+#print axioms LeanMachine.OrbitLabelBudget.StepBudget
+#print axioms LeanMachine.OrbitLabelBudget.image_cloud_card_le_chain
+#print axioms LeanMachine.OrbitLabelBudget.image_cloud_card_le
+#print axioms LeanMachine.OrbitLabelBudget.mem_cloud_le
+
+-- FractionalIntervalGap.lean
+#print axioms LeanMachine.FractionalIntervalGap.componentWeight
+#print axioms LeanMachine.FractionalIntervalGap.componentWeight_nonneg
+#print axioms LeanMachine.FractionalIntervalGap.componentWeight_cost
+#print axioms LeanMachine.FractionalIntervalGap.componentWeight_covers
+#print axioms LeanMachine.FractionalIntervalGap.exists_subcover
+#print axioms LeanMachine.FractionalIntervalGap.point_area_lower_of_incidence_budget
+#print axioms LeanMachine.FractionalIntervalGap.incidence_le_uniform_cost
+#print axioms LeanMachine.FractionalIntervalGap.point_area_lower_of_uniform_bound
+#print axioms LeanMachine.FractionalIntervalGap.point_area_lower_of_finite_number
+
+-- PartitionEnergy.lean
+#print axioms LeanMachine.PartitionEnergy.energy
+#print axioms LeanMachine.PartitionEnergy.energy_eq_sum_fibers
+#print axioms LeanMachine.PartitionEnergy.energy_nonneg
+#print axioms LeanMachine.PartitionEnergy.energy_mono
+#print axioms LeanMachine.PartitionEnergy.energy_mono_finset
+#print axioms LeanMachine.PartitionEnergy.energy_loss_le_retained
+#print axioms LeanMachine.PartitionEnergy.energy_loss_le
+#print axioms LeanMachine.PartitionEnergy.energy_loss_le_paid_mass
+
+-- WeightedCircularGap.lean
+#print axioms LeanMachine.WeightedCircularGap.edges
+#print axioms LeanMachine.WeightedCircularGap.weightedGap
+#print axioms LeanMachine.WeightedCircularGap.circumference
+#print axioms LeanMachine.WeightedCircularGap.energy
+#print axioms LeanMachine.WeightedCircularGap.area
+#print axioms LeanMachine.WeightedCircularGap.cycle_pos
+#print axioms LeanMachine.WeightedCircularGap.edges_subset
+#print axioms LeanMachine.WeightedCircularGap.edges_card
+#print axioms LeanMachine.WeightedCircularGap.edges_lift
+#print axioms LeanMachine.WeightedCircularGap.edges_pairwiseDisjoint
+#print axioms LeanMachine.WeightedCircularGap.biUnion_edges
+#print axioms LeanMachine.WeightedCircularGap.edgeLabel
+#print axioms LeanMachine.WeightedCircularGap.edgeLabel_spec
+#print axioms LeanMachine.WeightedCircularGap.edgeLabel_lt
+#print axioms LeanMachine.WeightedCircularGap.edgeLabel_eq_of_mem
+#print axioms LeanMachine.WeightedCircularGap.mem_edges_iff_label
+#print axioms LeanMachine.WeightedCircularGap.edges_eq_filter
+#print axioms LeanMachine.WeightedCircularGap.label_image
+#print axioms LeanMachine.WeightedCircularGap.next_anchor_mem
+#print axioms LeanMachine.WeightedCircularGap.forward_mod_add
+#print axioms LeanMachine.WeightedCircularGap.edgeLabel_eq_of_no_target_between
+#print axioms LeanMachine.WeightedCircularGap.sum_weightedGap
+#print axioms LeanMachine.WeightedCircularGap.energy_eq_partitionEnergy
+#print axioms LeanMachine.WeightedCircularGap.energy_eq_pairSum
+#print axioms LeanMachine.WeightedCircularGap.weightedGap_nonneg
+#print axioms LeanMachine.WeightedCircularGap.circumference_nonneg
+#print axioms LeanMachine.WeightedCircularGap.energy_nonneg
+#print axioms LeanMachine.WeightedCircularGap.area_nonneg
+#print axioms LeanMachine.WeightedCircularGap.energy_le_circumference_sq
+#print axioms LeanMachine.WeightedCircularGap.area_le_half
+#print axioms LeanMachine.WeightedCircularGap.weightedGap_one
+#print axioms LeanMachine.WeightedCircularGap.area_one
+
+-- AnchoredCircularCover.lean
+#print axioms LeanMachine.AnchoredCircularCover.coveredEdges
+#print axioms LeanMachine.AnchoredCircularCover.coveredVertices
+#print axioms LeanMachine.AnchoredCircularCover.coveredEdges_subset
+#print axioms LeanMachine.AnchoredCircularCover.mem_arc_iff_forward_lt
+#print axioms LeanMachine.AnchoredCircularCover.mem_closedArc_iff_forward_le
+#print axioms LeanMachine.AnchoredCircularCover.arc_crosses_boundary
+#print axioms LeanMachine.AnchoredCircularCover.forward_relative
+#print axioms LeanMachine.AnchoredCircularCover.forward_between_iff
+#print axioms LeanMachine.AnchoredCircularCover.no_target_between
+#print axioms LeanMachine.AnchoredCircularCover.uncovered_pair_labels
+
+-- CircularSubdivision.lean
+#print axioms LeanMachine.CircularSubdivision.lift
+#print axioms LeanMachine.CircularSubdivision.lift_eq
+#print axioms LeanMachine.CircularSubdivision.lift_period
+#print axioms LeanMachine.CircularSubdivision.lift_eq_of_le
+#print axioms LeanMachine.CircularSubdivision.edgeLength
+#print axioms LeanMachine.CircularSubdivision.edgeLength_lift_nonneg
+#print axioms LeanMachine.CircularSubdivision.edgeLength_periodic
+#print axioms LeanMachine.CircularSubdivision.sum_arc
+#print axioms LeanMachine.CircularSubdivision.arc_length
+#print axioms LeanMachine.CircularSubdivision.total_length
+#print axioms LeanMachine.CircularSubdivision.weightedGap_eq_displacement
+#print axioms LeanMachine.CircularSubdivision.area_eq_displacements
+
+-- AnchoredGapErosion.lean
+#print axioms LeanMachine.AnchoredGapErosion.penalty
+#print axioms LeanMachine.AnchoredGapErosion.penalty_mono
+#print axioms LeanMachine.AnchoredGapErosion.penalty_le_self
+#print axioms LeanMachine.AnchoredGapErosion.penalty_nonneg
+#print axioms LeanMachine.AnchoredGapErosion.penalty_le_half
+#print axioms LeanMachine.AnchoredGapErosion.coveredLength
+#print axioms LeanMachine.AnchoredGapErosion.coveredLength_nonneg
+#print axioms LeanMachine.AnchoredGapErosion.coveredLength_le
+#print axioms LeanMachine.AnchoredGapErosion.normalized_loss
+#print axioms LeanMachine.AnchoredGapErosion.energy_loss_le
+#print axioms LeanMachine.AnchoredGapErosion.area_lower_bound
+#print axioms LeanMachine.AnchoredGapErosion.area_lower_bound_linear
+
+-- CircularRefinement.lean
+#print axioms LeanMachine.CircularRefinement.image_subset_range
+#print axioms LeanMachine.CircularRefinement.point_image
+#print axioms LeanMachine.CircularRefinement.min_image
+#print axioms LeanMachine.CircularRefinement.coordinate_point_image
+#print axioms LeanMachine.CircularRefinement.area_image_eq_pointArea
+
+-- IndexedSourceBank.lean
+#print axioms LeanMachine.SourceBank.indexed
+#print axioms LeanMachine.SourceBank.indexed_values
+#print axioms LeanMachine.SourceBank.indexed_cost
+#print axioms LeanMachine.SourceBank.indexed_nonempty
+
+-- PaidAveraging.lean
+#print axioms LeanMachine.PaidAveraging.mean_signed_eq
+#print axioms LeanMachine.PaidAveraging.mean_signed_le
+#print axioms LeanMachine.PaidAveraging.mean_credit_sub_cost_le
+
+-- ProfileCompactness.lean
+#print axioms LeanMachine.ProfileCompactness.exists_bounded_subsequence
+#print axioms LeanMachine.ProfileCompactness.limit_mass_of_finite_sums
+#print axioms LeanMachine.ProfileCompactness.exists_profile_subsequence
+#print axioms LeanMachine.ProfileCompactness.exists_joint_subsequence
+#print axioms LeanMachine.ProfileCompactness.finite_tail_tendsto
+
+-- PrefixError.lean
+#print axioms LeanMachine.PrefixError.finite_error_le
+#print axioms LeanMachine.PrefixError.ceil_scaled_tendsto
+#print axioms LeanMachine.PrefixError.max_ceil_scaled_tendsto
+
+-- TailMoments.lean
+#print axioms LeanMachine.TailMoments.scaled_tail_tendsto_zero
+#print axioms LeanMachine.TailMoments.polynomial_tail_tendsto_zero
+#print axioms LeanMachine.TailMoments.not_summable_moment_of_tail_floor
+
+-- UniformGap.lean
+#print axioms LeanMachine.UniformGap.exists_gap
+
+-- TailLiminf.lean
+#print axioms LeanMachine.TailLiminf.liminf_ofReal_eq_zero_iff
+#print axioms LeanMachine.TailLiminf.liminf_ofReal_eq_zero_of_tendsto
+
+-- PowerEnvelope.lean
+#print axioms LeanMachine.PowerEnvelope.summable_moment
+#print axioms LeanMachine.PowerEnvelope.summable
+#print axioms LeanMachine.PowerEnvelope.polynomial_tail_tendsto_zero
+
+-- BoundedLimsup.lean
+#print axioms LeanMachine.BoundedLimsup.le_limsup
+#print axioms LeanMachine.BoundedLimsup.limsup_nonneg
+#print axioms LeanMachine.BoundedLimsup.limsup_le_one
+#print axioms LeanMachine.BoundedLimsup.mul_limsup_le_of_tendsto
+#print axioms LeanMachine.BoundedLimsup.limsup_le_mul_limsup
+
+-- InverseSquareTail.lean
+#print axioms LeanMachine.InverseSquareTail.summable
+#print axioms LeanMachine.InverseSquareTail.tsum_tail_le
+#print axioms LeanMachine.InverseSquareTail.summable_of_le
+#print axioms LeanMachine.InverseSquareTail.tail_le
+
+-- PowerTail.lean
+#print axioms LeanMachine.PowerTail.tsum_tail_le
+#print axioms LeanMachine.PowerTail.summable_of_le
+#print axioms LeanMachine.PowerTail.tail_le
+#print axioms LeanMachine.PowerTail.scaled_tail_tendsto_zero

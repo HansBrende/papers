@@ -55,6 +55,38 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`IntervalComponents`](LeanMachine/IntervalComponents.lean) | Component interval hulls equal their unions; distinct components have disjoint hulls | this repository |
 | [`SourceBank`](LeanMachine/SourceBank.lean) | Finite lists of time maps, summed path variation, composition, and ordered-exception recurrences | this repository |
 | [`PackedWords`](LeanMachine/PackedWords.lean) | Exact uniform banks for interval-supported actions on forests, packed by unordered component labels | this repository |
+| [`ShiftedGrid`](LeanMachine/ShiftedGrid.lean) | Exact capped-diameter counts for separating grid shifts and same-block coordinate bounds | this repository |
+| [`IntervalOscillation`](LeanMachine/IntervalOscillation.lean) | Lifetime extrema and oscillation bounds preserving the exact interval overlap profile | this repository |
+| [`GridPayment`](LeanMachine/GridPayment.lean) | Finite lifetime payments from capped oscillation, overlap, and variation; constant labels on unpaid lifetimes | this repository |
+| [`CausalRecovery`](LeanMachine/CausalRecovery.lean) | Complete surviving source cones and functional recovery from local determinism and paid records | this repository |
+| [`OrderedRecovery`](LeanMachine/OrderedRecovery.lean) | Reverse recovery from one helper and a coordinate complement along well-founded dependencies | this repository |
+| [`FrozenBank`](LeanMachine/FrozenBank.lean) | Entire-block freezing by maximum slot oscillation, with exact window-overlap and variation bounds | this repository |
+| [`GapErosion`](LeanMachine/GapErosion.lean) | Finite squared-gap area loss and selection-weight budget after integer erosion | this repository |
+| [`CyclicSelection`](LeanMachine/CyclicSelection.lean), [`CyclicArcSelection`](LeanMachine/CyclicArcSelection.lean) | Actual consecutive circular gaps, disjoint eroded arcs, and safe common cut-and-orientation counts | this repository |
+| [`PeriodicStripe`](LeanMachine/PeriodicStripe.lean), [`PeriodicStripeSum`](LeanMachine/PeriodicStripeSum.lean) | Sharp circular stripe discrepancy and exact reindexing by transpose columns | this repository |
+| [`SelectionAverage`](LeanMachine/SelectionAverage.lean), [`CyclicStripeAverage`](LeanMachine/CyclicStripeAverage.lean) | Finite selection double counting and actual stripe selection bounds from eroded circular gaps | this repository |
+| [`FractionalCover`](LeanMachine/FractionalCover.lean) | Attained minimum finite fractional covers, capped optimal weights, and exact infeasibility at infinity | this repository |
+| [`FractionalCoverBounds`](LeanMachine/FractionalCoverBounds.lean) | Feasible-weight upper bounds and finite ordinary covers as unit-weight fractional covers | this repository |
+| [`TimeComponents`](LeanMachine/TimeComponents.lean) | Canonical finite path components, disjoint edge partitions, and raw-range variation charged once | this repository |
+| [`OrbitLabelBudget`](LeanMachine/OrbitLabelBudget.lean) | Label counts from decreasing budgets along deterministic continuations, with a shared branching root | this repository |
+| [`IntervalGapArea`](LeanMachine/IntervalGapArea.lean), [`FractionalIntervalGap`](LeanMachine/FractionalIntervalGap.lean) | Actual circular-gap energy from interval covers and minimum fractional weights, retaining weighted component incidence | this repository |
+| [`PartitionEnergy`](LeanMachine/PartitionEnergy.lean) | Squared fibre masses, partition coarsening, and paid-set energy loss with the quadratic saving | this repository |
+| [`WeightedCircularGap`](LeanMachine/WeightedCircularGap.lean), [`CircularSubdivision`](LeanMachine/CircularSubdivision.lean) | Actual gap partitions with arbitrary real edge lengths, pair-energy identities, and real-displacement/unit-weight adapters | this repository |
+| [`AnchoredCircularCover`](LeanMachine/AnchoredCircularCover.lean), [`AnchoredGapErosion`](LeanMachine/AnchoredGapErosion.lean) | Anchored arcs preserve uncovered gap pairs; their union pays once for a sharper normalized area loss | this repository |
+| [`CircularRefinement`](LeanMachine/CircularRefinement.lean) | Exact raw-coordinate gap area under a real subdivision, including the circle seam | this repository |
+| [`IndexedSourceBank`](LeanMachine/IndexedSourceBank.lean) | List banks as finite families, preserving distinct value sets and summed slot variation | this repository |
+| [`PaidAveraging`](LeanMachine/PaidAveraging.lean) | Signed credit and cost averaged together, with an optional mean-cost budget | this repository |
+| [`ProfileCompactness`](LeanMachine/ProfileCompactness.lean) | Common subsequences for countable bounded profiles, inherited finite-sum budgets, summability and finite-tail limits | this repository |
+| [`PrefixError`](LeanMachine/PrefixError.lean) | Finite payment normalization and limits of rounded widths and omitted-family budgets | this repository |
+| [`TailMoments`](LeanMachine/TailMoments.lean) | Summable majorants control scaled tails; positive polynomial tail floors force divergence of the matching moment | this repository |
+| [`UniformGap`](LeanMachine/UniformGap.lean) | Excluding sequences with increasing dimension and two vanishing nonnegative costs gives a uniform positive gap | this repository |
+| [`TailLiminf`](LeanMachine/TailLiminf.lean) | Zero extended-nonnegative lower limits are equivalent to arbitrarily late small values | this repository |
+| [`PowerEnvelope`](LeanMachine/PowerEnvelope.lean) | Power laws above a moment threshold have summable weighted mass and vanishing scaled tails | this repository |
+
+| [`BoundedLimsup`](LeanMachine/BoundedLimsup.lean) | Bounded real upper limits, converging-coefficient inequalities, and nonnegative scaling | this repository |
+| [`InverseSquareTail`](LeanMachine/InverseSquareTail.lean) | Summable inverse-square envelopes and exact shifted-tail bounds from finite sum estimates | this repository |
+
+| [`PowerTail`](LeanMachine/PowerTail.lean) | Quantitative real-power tail estimates and decay under sub-power multipliers, reusing integral comparison | this repository |
 
 ## External code
 

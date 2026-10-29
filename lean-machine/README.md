@@ -112,6 +112,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FlowPaths`](LeanMachine/FlowPaths.lean) | Weighted paths carrying a flow's full nonnegative source value, with traversal loads bounded by the flow and at most one path per positive edge | this repository |
 | [`FlowPathMap`](LeanMachine/FlowPathMap.lean) | Incidence-preserving path maps and traversal counts; path lifting through an injective vertex map when all outgoing arrows lift | this repository |
 | [`FlowWalks`](LeanMachine/FlowWalks.lean) | Undirected walks retaining physical edge identities, with both orientations charged; actual backward spine paths and exact traversal counts | this repository |
+| [`FiniteWeightedFamily`](LeanMachine/FiniteWeightedFamily.lean) | Finite indexed weighted families, disjoint collection and probability mixtures; exact mass and observable sums retain multiplicity | this repository |
 
 ## External code
 

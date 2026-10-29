@@ -1301,19 +1301,54 @@ on each interval edge, rather than twice the whole group size. Summing gives
 the extra volume bound `2*sum_bit(lastOutput-output)`. The per-group routing
 is now complete. No independence assumptions or free transport are used.
 
+## Completed: group combination and helper-fibre averaging
+
+The shared [`FiniteWeightedFamily`](../lean-machine/LeanMachine/FiniteWeightedFamily.lean)
+uses a finite index set, retaining repeated values. Disjoint collection,
+scaling and mixtures have exact identities for every real-valued observable.
+Thus mass, bit counts and edge loads use the same finite-sum proofs. A common
+linear bound survives a probability mixture, without sign assumptions on
+the observable or the bound itself.
+
+[`CausalRouting`](lean/SourceCovers/CausalRouting.lean) adapts the verified
+group routes to that interface. `IsPartialRouting` requires nonnegative
+weights and unit raw-bit caps; actual endpoints and row attachments are
+already part of every `BitRoute`. Unattached bits have zero mass. In a group
+union only a bit's own column group can contribute its mass. The original
+field allocations sum to at most the one original edge capacity. The result
+is an actual routing of the sum of group support logarithms, with capacity
+`c_e + 2*sum_a copyCharge(a,e)`. The formalization also proves that this sharper
+capacity and its total volume are bounded by the paper's whole-group
+interval capacity and volume.
+
+[`CausalFibreMixture`](lean/SourceCovers/CausalFibreMixture.lean) indexes only
+the attained helper image; its ambient type need not be finite. It reuses
+the second paper's helper-mass and conditional-weight definitions. The
+finite mixture preserves the exact helper-weighted support-log sum, all
+unit bit caps and the common physical capacity bound. The groups and helper
+fibres may be arbitrarily correlated.
+
+The support convention is explicit. The general mixture theorem permits
+nonnegative weights on a declared code domain `C`, which may contain
+zero-weight inputs. To recover exactly the paper's `R_sup`, take weights
+strictly positive on `C`, so `C` is the law's exact support. A fibre equivalence
+identifies the entropy library's samples with the original-input fibre, and
+`conditionalProjection_support` proves that a projected value has positive
+conditional probability exactly when it belongs to that fibre's projected
+support. The routing construction is therefore not relying on a larger
+surrogate support.
+
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Sum groups and average over attained helper values, proving the exact
-   augmented capacities and total mass `R_sup`; retain the prefix improvement.
-2. Derive conditional entropy, total-correlation and short-distance/volume
+1. Derive conditional entropy, total-correlation and short-distance/volume
    consequences from those actual routes.
-3. Apply the verified native short-count theorem to Corollary 8.4, keeping
+2. Apply the verified native short-count theorem to Corollary 8.4, keeping
    arbitrary positive entry widths and all stated asymptotic quantifiers.
 
 The max-flow/min-cut and weighted-path obligations are now proved in the
 shared library. The two numbered results remain unformalized until their
-full routing and asymptotic conclusions are verified; all six numbered
+full entropy, metric and asymptotic conclusions are verified; all six numbered
 definitions have formal counterparts.
 
 ## Dependency order and proof obligations

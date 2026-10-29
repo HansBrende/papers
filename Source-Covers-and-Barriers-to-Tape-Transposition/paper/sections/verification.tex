@@ -13,15 +13,9 @@ The package pins Lean and Mathlib to the repository's existing v4.34.1
 versions. It requires the existing second-paper build adapter, whose
 source directory points to the first paper's canonical Lean files.
 It also requires the eighth paper's \path{boundedNesting} package for
-actual families and the shared \path{lean-machine/} package for interval
-covers, finite incidence sums, monotone patches, thin interval graphs,
-protected phases, finite action orbits, uniform source banks,
-shifted-grid payment, causal recovery, circular gaps, periodic stripes,
-minimum fractional covers, canonical time components, weighted circular
-subdivisions, anchored partition-energy bounds, profile compactness,
-finite-error normalization, weighted-tail comparison and uniform gaps
-from sequential exclusion, extended lower limits, power-envelope moments,
-bounded upper limits, inverse-square tails and quantitative real-power tails.
+actual families and the shared \path{lean-machine/} package for finite
+combinatorics, source-bank accounting, causal recovery, flows, weighted
+paths and analytic limits. Its README lists the reusable modules.
 The joint-profile proofs reuse Mathlib's compact products, finite-sum
 limits, summability, normalized ceilings and nonnegative-series divergence.
 The uniform-deficit proof reuses reciprocal limits, the squeeze theorem
@@ -94,21 +88,21 @@ binomial asymptotic, rounding bounds and power divergence. An independent
 internal threshold tends to zero after the dimension limit, removing the
 extra interval loss. Extended lower limits avoid a boundedness hypothesis.
 
-Causal group typing uses Mathlib's function-factorization predicate on each
-helper fibre. Causal induction retains every field entering a cut, including
-re-entries; finite image counting bounds the joint support. The collector
-uses already-output coordinates with exact prefix capacity and output-delay
-volume, on the actual memory spine. All supersource/sink cuts, including
-row-attachment crossings, are verified. The shared real-capacity flow theorem
-uses Mathlib's compactness theorem and finite-box residual perturbations;
-it gives flow value $\log_2|\mathcal A_a(z)|$. Mathlib quiver paths and path
-lifting retain actual row attachments and every traversal. Uniform splitting
-gives unit bit caps; actual backward walks complete the routes. Both
-orientations are charged, and copies merge onto original edges. Prefix
-counts bound collector and return loads, with extra volume at most twice
-the output-delay sum. Group combination, helper-fibre averaging and the
-entropy and metric consequences of \cref{thm:causal-group-routing} remain
-unformalized.
+Causal group typing uses Mathlib's function-factorization predicate. Causal
+induction retains cut re-entries; finite image counting bounds joint support.
+The collector follows the actual memory spine with exact prefix capacities.
+All augmented cuts, including row-attachment crossings, are verified.
+Compactness and finite-box residual perturbations give a real-capacity flow
+of value $\log_2|\mathcal A_a(z)|$. Mathlib quiver paths retain attachments
+and every traversal. Uniform splitting gives unit bit caps; backward walks
+reach each bit's own output. Both orientations and merged edge copies are
+charged. Collector and return loads cost at most twice each prefix size,
+with extra volume at most twice the output-delay sum. Finite weighted
+families combine groups and mix helper fibres using the second paper's
+helper-mass identities. This preserves paths, multiplicity, unit caps and
+shared capacities. On the exact input support, the projected fibre support
+equals the positive-probability support. The entropy and metric consequences
+of \cref{thm:causal-group-routing} remain unformalized.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run
@@ -132,11 +126,10 @@ python3 tools/statement_index.py
 python3 tools/statement_index.py --check
 \end{verbatim}
 \end{samepage}
-The script checks statement labels, proof-status markers and proof or
-outline environments, and generates the declaration appendix,
-\path{FORMALIZATION-INDEX.md} and \path{lean/PaperAxioms.lean} from the
-manuscript. It neither verifies proofs nor executes axiom audits.
-\path{FORMALIZATION.md} records progress and remaining work.
+The script checks labels, formal-status markers and proof environments,
+and generates the declaration appendix, \path{FORMALIZATION-INDEX.md} and
+\path{lean/PaperAxioms.lean}. It does not verify proofs or execute audits.
+\path{FORMALIZATION.md} records remaining work.
 
 Build the PDF from \path{paper/} with
 \begin{verbatim}

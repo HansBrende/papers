@@ -1107,3 +1107,21 @@ import LeanMachine
 #print axioms LeanMachine.FiniteFlow.Network.Spine
 #print axioms LeanMachine.FiniteFlow.Network.Spine.edge_injective
 #print axioms LeanMachine.FiniteFlow.Network.Spine.exists_return
+
+-- Finite weighted collection and mixtures.
+#print axioms LeanMachine.FiniteWeightedFamily
+#print axioms LeanMachine.FiniteWeightedFamily.sum
+#print axioms LeanMachine.FiniteWeightedFamily.mass
+#print axioms LeanMachine.FiniteWeightedFamily.Nonnegative
+#print axioms LeanMachine.FiniteWeightedFamily.sum_nonneg
+#print axioms LeanMachine.FiniteWeightedFamily.mass_eq
+#print axioms LeanMachine.FiniteWeightedFamily.collect
+#print axioms LeanMachine.FiniteWeightedFamily.sum_collect
+#print axioms LeanMachine.FiniteWeightedFamily.collect_nonnegative
+#print axioms LeanMachine.FiniteWeightedFamily.scale
+#print axioms LeanMachine.FiniteWeightedFamily.sum_scale
+#print axioms LeanMachine.FiniteWeightedFamily.scale_nonnegative
+#print axioms LeanMachine.FiniteWeightedFamily.mix
+#print axioms LeanMachine.FiniteWeightedFamily.sum_mix
+#print axioms LeanMachine.FiniteWeightedFamily.mix_nonnegative
+#print axioms LeanMachine.FiniteWeightedFamily.sum_mix_le

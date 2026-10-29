@@ -2,7 +2,9 @@
 
 **All 32 numbered results and 6 numbered definitions are Lean-verified.**
 This records the completed stages, exact scope and reuse decisions.
-An independent review of the complete paper and Lean library is next.
+Independent whole-paper reviews checked every numbered statement against
+its Lean declaration, the proof outlines, citations and scope. No numbered
+statement required weakening; the resulting prose corrections are included.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
 manuscript in section order. It lists every numbered definition and result,
@@ -1399,9 +1401,9 @@ pointwise helper/deficit bound. A nontrivial cofinal filter then excludes
 simultaneously sublinear deficit and helper entropy. No independence or
 regularity of the varying width is assumed.
 
-All numbered results and definitions are now formalized. The next step is
-independent whole-paper and Lean review, followed by reassessment of the
-remaining research targets across the series.
+All numbered results and definitions are formalized, and independent
+whole-paper reviews are complete. The remaining research targets concern
+the mathematical interfaces identified in the paper's roadmap.
 
 ## Dependency order and proof obligations
 

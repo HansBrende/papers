@@ -2,12 +2,13 @@
 
 The source-cover results restrict the geometry of complete dependence.
 This section gives a complementary restriction on the functions computed
-along that geometry. If every local update obeys a capacity-conserving
-decomposition into fixed narrow groups of consecutive columns after one
-helper is fixed, then a
-linear-length computation must disclose almost the entire input through
-that helper.  Neither the return hypotheses nor final column purity
-alone supplies this causal decomposition.
+along that geometry. Under the stated native capacity bound, a
+linear-length computation whose local updates remain within fixed groups
+of $o(\log d)$ consecutive columns after a helper is fixed has input
+entropy deficit plus helper entropy at least $L-o(L)$. Thus on
+near-full-entropy inputs the helper
+discloses almost the entire input. Neither the return hypotheses nor
+final column purity alone supplies this causal decomposition.
 
 \subsection{The causal hypothesis and the routing convention}
 
@@ -321,7 +322,7 @@ they do not change the asymptotic obstruction below. No optimality of the
 graph-ball estimate or the union bound is claimed.
 
 \Needspace{8\baselineskip}
-\begin{corollary}[Narrow causal groups require an almost complete helper]
+\begin{corollary}[Helper entropy and deficit for narrow causal groups]
 \label{cor:causal-group-obstruction}
 \formal{SourceCovers/CausalTapeObstruction.lean}{SourceCovers.CausalGroups.CausalTapeCode,
 SourceCovers.CausalGroups.CausalTapeCode.groupEntropy_le_explicit,
@@ -406,20 +407,23 @@ The formal statement permits arbitrary positive entry widths varying
 with dimension and arbitrary correlated laws and helpers.
 \end{outline}
 
-At the standard width, the block-profile volume hypothesis is supplied
-by the Lean-verified \lean{sum_cap_le} in~\cite{FirstPaper2026}.
+For capacities within the first paper's block profile at the standard
+width, the Lean-verified \lean{sum_cap_le} in~\cite{FirstPaper2026}
+supplies the volume hypothesis. Its \lean{CapProfile} premise must be
+checked; the entry width alone does not supply it.
 The finite theorem also
 permits other profiles: a separate $O(L)$ total capacity allowance
 leaves the asymptotic conclusion unchanged.
 
 For the construction program, the corollary excludes a completion that
 preserves one fixed narrow consecutive grouping at every local update
-after a sublinear-entropy joint helper is fixed.  Arbitrarily many
+on near-full-entropy inputs after a sublinear-entropy joint helper is
+fixed. Arbitrarily many
 updates and arbitrary nonlinear operations inside each group remain
 allowed.  It does not exclude final column purity, which every correct
 transposer already has, nor a succession of small groups that migrate
-and cumulatively mix all columns.  For nonconsecutive groups the exact
-collector cost in \cref{eq:group-volume} is still available, but its
-$2gdb(n-1)$ upper bound need not hold.  Finally, none of the geometric
+and cumulatively mix all columns. Consecutiveness supplies the
+$2gdb(n-1)$ collector-volume bound and remains an assumption of the
+formal network interface. Finally, none of the geometric
 hypotheses elsewhere in this paper is asserted to produce this causal
 typing with a cheap helper; $Z=X$ always gives a vacuous expensive one.

@@ -46,12 +46,12 @@ See [FORMALIZATION.md](FORMALIZATION.md) for the dependency and reuse plan.
 | `prop:serial-quadratic-cover` | Proposition | Serial exceptional spans can require a quadratic cover | Lean-verified | [limitations.tex:34](paper/sections/limitations.tex#L34) |
 | `thm:movement` | Theorem | Theorem M: movement to cover distinct query types | Lean-verified | [movement.tex:18](paper/sections/movement.tex#L18) |
 | `cor:movement-interval` | Corollary | Queries spread over a column interval | Lean-verified | [movement.tex:102](paper/sections/movement.tex#L102) |
-| `prop:subset-calibration` | Proposition | Exact helper and gap-area calibration | Lean-verified | [movement.tex:204](paper/sections/movement.tex#L204) |
-| `cor:subset-movement` | Corollary | The dimension limit precedes the radius limit | Lean-verified | [movement.tex:286](paper/sections/movement.tex#L286) |
-| `def:causal-group-typing` | Definition | Causal group typing | Lean-verified | [causal-groups.tex:35](paper/sections/causal-groups.tex#L35) |
-| `thm:causal-group-routing` | Theorem | Theorem Q: paid routing from causal groups | Lean-verified | [causal-groups.tex:101](paper/sections/causal-groups.tex#L101) |
-| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:258](paper/sections/causal-groups.tex#L258) |
-| `cor:causal-group-obstruction` | Corollary | Narrow causal groups require an almost complete helper | Lean-verified | [causal-groups.tex:324](paper/sections/causal-groups.tex#L324) |
+| `prop:subset-calibration` | Proposition | Exact helper and gap-area calibration | Lean-verified | [movement.tex:206](paper/sections/movement.tex#L206) |
+| `cor:subset-movement` | Corollary | The dimension limit precedes the radius limit | Lean-verified | [movement.tex:288](paper/sections/movement.tex#L288) |
+| `def:causal-group-typing` | Definition | Causal group typing | Lean-verified | [causal-groups.tex:36](paper/sections/causal-groups.tex#L36) |
+| `thm:causal-group-routing` | Theorem | Theorem Q: paid routing from causal groups | Lean-verified | [causal-groups.tex:102](paper/sections/causal-groups.tex#L102) |
+| `lem:attached-short-count` | Lemma | Attached short-distance count | Lean-verified | [causal-groups.tex:259](paper/sections/causal-groups.tex#L259) |
+| `cor:causal-group-obstruction` | Corollary | Helper entropy and deficit for narrow causal groups | Lean-verified | [causal-groups.tex:325](paper/sections/causal-groups.tex#L325) |
 
 ## Verified declarations
 
@@ -174,5 +174,5 @@ ebba7146877ca060d7953932b4ad4f10c92d6026d8ea320bbd121715d94e2410  thm:movement
 c27a6143f2ab98b8c11fb4c8ae580de2bee48b3474a352067e1e3abe03683e53  def:causal-group-typing
 da4aa1f61b6985211ac12a42977c9e36d6fff009aa0b5b5bbc34953cc8efe223  thm:causal-group-routing
 62f250cbdde34431d5b3bf490691d85f868f6a696d0a276113b88d59fa9729ec  lem:attached-short-count
-1b349a6371e66ad9e927c2a89b51904aed671df1d56f4e883ba9ed02f545e8c6  cor:causal-group-obstruction
+706b20050ff5b7f529f17ad29e20806b506651e30b3dfce291c0a5154b912027  cor:causal-group-obstruction
 ```

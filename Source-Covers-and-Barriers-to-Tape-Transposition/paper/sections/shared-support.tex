@@ -35,7 +35,7 @@ of the $G_\rho$ maximal seeds. Each has at most $B_R$ endpoints, so
 $|S^{\rm new}_\rho|\le B_RG_\rho$.
 
 \begin{proposition}[The full shared-support payment]\label{prop:finite-sharing}
-\notformalized
+\formal{SourceCovers/GlobalSharing.lean}{SourceCovers.shared_support_count_deficit,SourceCovers.shared_support_paid_deficit,SourceCovers.phase_shared_deficit,SourceCovers.sharedRawSupport,SourceCovers.sharedSeedCount,SourceCovers.exactSourceBank_shared_cover,SourceCovers.sharedRawSupport_card_le_sum,SourceCovers.sharedRawSupport_blocks_card_le,SourceCovers.exists_paidBank_shared_deficit}
 With $\alpha,\tau,a$ as in \cref{sec:source-covers}, for every integer
 $w\ge1$,
 \begin{equation}\label{eq:finite-sharing}
@@ -47,29 +47,62 @@ $w\ge1$,
 The additional raw revelation has at most $wB_RG_\rho$ bits for every
 grid shift, so the residual-cut shift may be chosen using the original
 complete two-exception bank.
+
+More sharply, let $\overline S=\mathbb E_\rho|S^{\rm new}_\rho|$ and
+$C_1=C_0(1+3C_0)$. Define $\mathsf E_{1\mid2}$ by replacing only the
+first movement term $2C_R(T-1)/(dL)$ in $\mathsf E_2$ by
+$2C_1(T-1)/(dL)$; its residual-cut term still uses $C_R$. Then
+\[
+ \frac\Delta L\ge
+ \frac{(1-\alpha)_+^2}{2(2K+1)(\ell+1)}
+ -\frac{w\overline S}L-\mathsf E_{1\mid2}.
+\]
+Neither finite bound requires a linear-runtime hypothesis. The formal
+statements also allow any $M\ge2$ with $R<M$, taking $\ell=2M+3$;
+the distinguished-family budget $K$ and protection budget $R$ may be
+independent.
 \end{proposition}
-\begin{informalproof}
+\begin{outline}
 Fix a phase and select its residual shift $\theta$ for the complete
 bank. In fixed raw-coordinate order reveal every bit in
 \[
  U_{\rho,\theta}=
        \bigcup_{y\in S^{\rm new}_\rho}B_\theta(y).
 \]
-Each block has at most $w$ bits, hence $|U_{\rho,\theta}|\le wB_RG_\rho$
-for every $\theta$. On a common fibre of this revelation and the
-original transcript, \cref{eq:two-exception-decomposition} makes every
-output depend only on blocks of $x(R_{e,\rho}(t))$ and the fixed joint
-transcript. Its frozen source gap has the one-exception lower bound
+For every $\theta$, the finite-union and same-block cardinality bounds give
+\[
+ |U_{\rho,\theta}|\le\min\{L,w|S^{\rm new}_\rho|\}\le wB_RG_\rho.
+\]
+Complete older closure is unchanged when its seeds
+are replaced by maximal seeds, so the raw-support count also retains
+the sum of their actual closure sizes before using $B_RG_\rho$.
+The source-replacement lemma applies whenever the full bank's sources
+are contained in the remaining bank's sources and a common raw set.
+Equal original transcripts, equal revealed raw bits, and equal remaining
+source blocks then imply equal full-bank source blocks. Applying the original
+recovery theorem therefore gives every output from the older bank and
+one common joint transcript on the same correctness set. Its frozen
+source gap has the one-exception lower bound
 $(1-\alpha)_+^2/[2(2K+1)(\ell+1)]$ by
 \cref{lem:fractional-gap}. Use the older bank for these sources;
-its summed variation is at most the full bank's bound $C_R(T-1)$.
+its summed variation is at most $C_1(T-1)$, while the full-bank
+variation in the residual-cut payment is at most $C_R(T-1)$.
 \Cref{thm:cyclic-freezing} applies with total information charge
-$\beta|\Gamma|+|U_{\rho,\theta}|$. Average the resulting complete
-inequality over the same phases and use the average rank-payment bound.
-This gives \cref{eq:finite-sharing}. Revealing a seed vertex itself
+$\beta|\Gamma|+|U_{\rho,\theta}|$, without independence assumptions.
+The intermediate formal bound keeps the actual union cardinality and
+both actual variations. Average the complete signed inequality over
+the same phases and use the existing average rank-payment bound.
+This gives the sharper statement; $\overline S\le B_R\overline G_{J,R}$
+and $C_1\le C_R$ give \cref{eq:finite-sharing} directly.
+Revealing a seed vertex itself
 would not reveal its entire source closure; the raw bits above are
 what have actually been paid for.
-\end{informalproof}
+\end{outline}
+
+This supplies a verified finite certificate when many outputs share
+complete raw support. It does not assert that such support is small
+in an arbitrary tape computation; the following criteria isolate
+the quantitative bounds that would suffice.
 
 \subsection{Uniform sharing criteria}
 

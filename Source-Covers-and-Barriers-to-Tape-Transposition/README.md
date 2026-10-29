@@ -248,6 +248,56 @@ Mathlib's real-power integral comparison, and the existing uniform-gap
 machinery. It does not prove economical covers for arbitrary computations
 or supply numerical uniform constants.
 
+**Proposition 3.7, complete continuation suppliers, is Lean-verified.**
+Both maximal-seed reductions retain complete continuations. Their sharper
+fractional-cover bounds use the actual core-orbit sizes; the original
+`(ell+1)|F|` and `ell+1+s` estimates follow directly. Zero and one exception
+are included by identity padding, and all covering roots are valid
+computation times.
+
+The movement estimate works with any fixed exact older bank and any finite
+interval cover of the nonroot suppliers. Intervals can overlap, and their
+representatives need not be suppliers. The improved loss is
+`eta - eta^2/2`, where `eta = min(E/L,1)` and `E` counts the movement of every
+complete older-bank slot on those intervals. The original `E/L` loss is a
+corollary. These are sufficient certificates for the existing paid-deficit
+criterion, not automatic small-cover or small-movement bounds for arbitrary
+geometries.
+
+**Corollary 4.8, necessary complete-observable movement, is Lean-verified.**
+The mean movement of every older-bank slot over the nonroot suppliers' time
+hull is retained through the dimension lower limit, then the prefix lower
+limit on the same joint-profile subsequence. The stronger theorem bounds
+the mean clipped quadratic penalty, which is at most the mean movement.
+It permits independent `K,R >= 0` and any `M >= 2` with `R < M`.
+For `M = 2R+2`, it gives
+`e_R >= (1-V_K)_+²/[16(2K+1)(R+2)] - beta*tau_R/(R+2)`.
+The final scaled lower limit allows infinity and excludes `e_R = o(1/R)`
+when `V_K < 1`. These are necessary conditions on complete older
+observables, not on immediate raw reads alone.
+
+The proof fixes the exact older bank from Theorem 2.7 before choosing roots
+or residual widths. Empty and singleton nonroot sets have zero movement;
+explicit bank-variation bounds justify the real inner limits. The
+reciprocal-cover and movement proofs share one paid-error limit, avoiding
+another rounding and convergence argument.
+
+**Proposition 5.1, the full shared-support payment, is Lean-verified.**
+One raw-block union covers the newer support shared by all actual output
+roots. Its cardinality is bounded for every grid shift, so the original
+full two-exception bank still chooses and pays the residual cut. The older
+bank then supplies the one-exception gap credit on the same correctness set
+with the same joint record/raw transcript.
+
+The stronger finite bound keeps the actual mean raw-support size and uses
+the smaller one-exception constant for movement; the residual bill retains
+the two-exception constant. The intermediate recovery theorem retains the
+actual block union and both actual variations. The displayed maximal-seed
+bound follows directly. Any legal modulus and independent protection and
+distinguished-family budgets are allowed; no linear-runtime premise is
+needed. This verifies the finite sharing certificate, not a small-sharing
+property of arbitrary tape computations.
+
 **Lemma 8.3, the attached short-distance count, is Lean-verified:**
 `S_ell <= min(d²b, (2 n - 1) b (2 k + 3)^(ell - 1))` for valid diagrams,
 every block length `0 <= r <= d b`, and every natural radius parameter `ell` (both subtractions are
@@ -263,9 +313,8 @@ bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **14 numbered results remain unformalized**,
-including the continuation suppliers, complete-observable movement,
-global-sharing criteria and causal-group results. The paper's
+`Quot.sound`. The other **11 numbered results remain unformalized**,
+including uniform global-sharing criteria and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

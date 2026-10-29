@@ -1,7 +1,7 @@
 \section{Building and checking this draft}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,lem:attached-short-count}
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
 \leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
@@ -37,9 +37,21 @@ finite inverse-square sum estimate. The uniform mean-cover criteria reuse
 Mathlib's finite Cauchy inequality, integral comparison and improper-integral
 formula, followed by the existing uniform-gap adapter. A chosen family order
 is retained for both the envelope and the cover budget.
-Finite entropy is reused from the second paper's library.
+The continuation suppliers reuse ordered-bank exactness, finite maximal
+elements obtained by greatest time, fractional-cover feasibility, interval
+oscillation and anchored erosion. Their source-bank slots include complete
+older continuations, and missing exceptions are identity maps.
+The complete-movement proof reuses finite interval hulls and the existing
+paid-error limit, now shared with the reciprocal-cover argument. Explicit
+bank-variation bounds justify the two real lower limits. The final radius
+lower limit uses the extended nonnegative reals to allow divergence.
+The shared-support proof reuses complete-closure maximality, residual-shift
+selection, joint record/raw entropy and signed phase averaging. A finite
+union of clipped grid blocks is paid once, with a bound valid for every
+shift; the older bank's movement never replaces the full bank's residual
+bill. Finite entropy is reused from the second paper's library.
 Readers need the whole repository, with sibling folders in place.
-No earlier mathematical source is copied or modified. From \path{lean/}, run
+No source from an earlier paper is copied or modified. From \path{lean/}, run
 \begin{samepage}
 \begin{verbatim}
 lake exe cache get

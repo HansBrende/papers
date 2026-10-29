@@ -1,20 +1,23 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Eighteen of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-one of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
 fractional interval covers; Lemma 3.3, the fractional raw-source gap bound;
 Lemma 3.4, anchored erosion; Theorem 3.5, complete covers with the full paid cost;
-Corollary 3.6, counting terminal core orbits; Theorem 4.2, necessary hop tails;
+Corollary 3.6, counting terminal core orbits; Proposition 3.7, complete
+continuation suppliers; Theorem 4.2, necessary hop tails;
 Corollary 4.3, the uniform one-exception deficit; Corollary 4.4, common envelopes;
 Corollary 4.5, the fixed finite skeleton; Theorem 4.6, necessary reciprocal-cover
 complexity and its inverse-square probability consequence;
 Corollary 4.7, both uniform mean-cover criteria;
+Corollary 4.8, necessary complete-observable movement;
+Proposition 5.1, the full shared-support payment;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 14 results
+bounds and vanishing tails. The other 11 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -692,12 +695,120 @@ class predicate and retains that order in the extracted sequence. No
 compactness, geometry, deficit/cardinality or uniform-gap proof is copied.
 No earlier mathematical source is changed for this item.
 
-The **next target is Proposition 3.7, complete continuation suppliers**:
-verify the exact two-exception/older-closure decomposition, maximal-seed
-reductions and the cluster movement bound. These are prerequisites for
-Corollary 4.8 and the later global-sharing criteria. Reuse the exact source
-bank, finite reachability and strengthened anchored-erosion results; retain
-all older continuations rather than only immediate input coordinates.
+## Completed: complete continuation suppliers
+
+[`ContinuationBank`](lean/SourceCovers/ContinuationBank.lean) derives both
+complete two-exception decompositions from the existing ordered-bank
+exactness theorem. Optional actual families give identity padding, including
+zero and one exception. Sorting is required only to identify the full
+physical shadow closure. Core and exception overlap or repeated exceptions
+need no extra assumption.
+
+Shared [`CausalClosure`](../lean-machine/LeanMachine/CausalClosure.lean) and
+[`ContinuationSuppliers`](../lean-machine/LeanMachine/ContinuationSuppliers.lean)
+prove the maximal-seed reduction once. Among dominators of a seed, Mathlib's
+finite maximum selects the greatest time. Transitivity and regression make
+it maximal in the causal order. Taking complete closures commutes with this
+reduction. A second application discards older landing seeds already in the
+core-closed newer bank, then keeps the core-maximal remaining seeds.
+
+[`ContinuationCovers`](lean/SourceCovers/ContinuationCovers.lean) converts
+these exact time covers into legal `Fin T` fractional witnesses. The stronger
+bounds are `sum_{u in F} (1+|A(u)|)` and `1+|A(t)|+s(t)`. The original bounds
+are derived directly using the existing `|A(u)| <= ell` theorem. No
+functional recovery or fractional minimization argument is duplicated.
+
+Shared [`IntervalClusterErosion`](../lean-machine/LeanMachine/IntervalClusterErosion.lean)
+uses actual extrema on each time interval and the existing finite-path
+oscillation estimate. The raw intervals are anchored in the base and cover
+all omitted sources. The established anchored-erosion theorem then gives
+the clipped quadratic penalty `eta-eta^2/2`, `eta=min(E/L,1)`.
+[`ContinuationClusters`](lean/SourceCovers/ContinuationClusters.lean) applies
+this to every slot of any exact complete older bank, fixed before choosing
+the raw path or intervals. Multiplicity is retained in the movement bill.
+It only needs an interval cover of the nonroot suppliers, not a partition;
+representatives can be any times in their respective intervals. The original
+partition/hull statement and linear `E/L` loss follow without added premises.
+An empty interval index includes the `r=E=0` case. No unit-speed assumption
+on the raw path is needed beyond its range in the input.
+
+The full proposition is verified. These strengthen finite certificate
+credit; they do not establish small covers or movement for arbitrary native
+geometries. No earlier mathematical source was copied or modified.
+
+## Completed: necessary complete-observable movement
+
+[`ContinuationMovement.lean`](lean/SourceCovers/ContinuationMovement.lean)
+fixes the actual sorted exceptions and the canonical complete older bank.
+A single exception occupies the older slot; the newer slot is identity.
+The nonroot supplier set determines one closed time hull, with a degenerate
+interval at the root when it is empty. Empty sets and singletons have zero
+movement. Every older-bank slot is charged, including multiplicity.
+
+[`PrefixMovement.lean`](lean/SourceCovers/PrefixMovement.lean) inserts the
+one-cluster quadratic gap credit into the existing paid theorem and uses
+Mathlib's finite expectations to keep the mean penalty. The complete older
+bank supplies the uniform bound `0 <= E/L <= c*bankCost M 1` at fixed `M`.
+The clipped quadratic penalty is in `[0,1/2]`.
+
+[`PrefixErrorLimit.lean`](lean/SourceCovers/PrefixErrorLimit.lean) factors the
+existing reciprocal-cover proof's rounded width, outside-family budget and
+paid-error limit into one reusable theorem. The original reciprocal-cover
+statement now follows from that theorem without duplicating its analysis.
+
+[`NecessaryMovement.lean`](lean/SourceCovers/NecessaryMovement.lean) proves
+all of Corollary 4.8. It strengthens the statement to independent natural
+cutoffs `K,R`, any fixed `M >= 2` with `R < M`, and the smaller mean clipped
+quadratic loss. The linear loss is derived by comparison through both
+lower limits. The default modulus gives the original constant `16`.
+The final radius limit is in `ENNReal`; it can be infinite. Its positive-part
+form also covers `V_K >= 1`. No convergence of the finite movement means or
+of the underlying geometries is assumed.
+
+Shared finite-hull variation and bounded real lower-limit lemmas contain
+only the general endpoint, finite-sum, and subsequence arguments. All earlier
+statements are retained. The canonical older bank and lower-limit domains
+are now explicit in the manuscript; these make its movement quantity precise.
+No claim of a small movement bound for arbitrary native geometries is added.
+
+## Completed: the full shared-support payment
+
+[`GlobalSharing.lean`](lean/SourceCovers/GlobalSharing.lean) verifies all of
+Proposition 5.1. The original maximal-seed bound follows directly from the
+stronger mean raw-support theorem. The latter uses the one-exception bank's
+movement constant while retaining the two-exception residual-cut constant.
+It allows any legal modulus, independent protection and distinguished-family
+budgets, and arbitrary finite runtime.
+
+[`SharedSupport.lean`](lean/SourceCovers/SharedSupport.lean) derives the
+shared-support decomposition for every actual output root from the verified
+continuation identity. Maximal seeds are taken in complete older reachability.
+Their complete closures cover the shared raw union, with a sharper count
+retaining actual closure sizes. Zero and one exception use identity padding.
+
+[`PaidSharedRecovery.lean`](lean/SourceCovers/PaidSharedRecovery.lean)
+proves source replacement for any pair of finite banks and a common raw set.
+It reuses actual paid recovery and the existing joint record/raw entropy
+bound on the same correctness set. The full bank chooses the residual shift;
+the remaining bank supplies the gaps and movement. The stronger statement
+keeps the actual block-union cardinality and both actual variations.
+No independence, linearity, or fresh per-output transcript is assumed.
+
+Shared [`ShiftedGridUnion`](../lean-machine/LeanMachine/ShiftedGridUnion.lean)
+uses the existing same-block cardinality bound and Mathlib's finite-union
+bound to prove `|U| <= min(L,w|S|)` for every shift. The actual geometry in
+[`SharedSupportDeficit.lean`](lean/SourceCovers/SharedSupportDeficit.lean)
+then supplies the bank-containment and local-recovery hypotheses. Existing
+signed averaging pays the raw support and rank deletions together. The
+already proved gap-area congruence is exposed for reuse; its proof is unchanged.
+No earlier-paper mathematical source is changed.
+
+The **next target is Theorem 5.2, uniform exclusion by global sharing**.
+Adapt this finite bound to the original-order prefixes and reuse the paid-error
+limit and uniform-gap adapter. Keep dimension limits before prefix limits
+on the same joint-profile subsequence. Only arbitrarily large good cutoffs
+are assumed by `liminf eta_J*g_R(J) = 0`; do not replace this by convergence
+or assume a small-sharing property of arbitrary tape geometries.
 The general transposition question remains open.
 
 ## Dependency order and proof obligations

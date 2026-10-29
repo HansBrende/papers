@@ -95,7 +95,7 @@ def render(entries):
         "Stable labels below identify the statements; they are not Lean declaration names.",
         r"Source files and statement fingerprints are listed in \path{FORMALIZATION-INDEX.md}.",
         r"\begingroup\small",
-        r"\begin{longtable}{@{}p{.14\textwidth}p{.39\textwidth}p{.41\textwidth}@{}}",
+        r"\begin{longtable}{@{}p{.15\textwidth}p{.38\textwidth}p{.41\textwidth}@{}}",
         r"\toprule Reference & Statement & Stable label \\",
         r"\midrule\endfirsthead",
         r"\toprule Reference & Statement & Stable label \\",

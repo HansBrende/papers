@@ -39,3 +39,14 @@ import SourceCovers.CommonEnvelopes
 import SourceCovers.FiniteSkeleton
 import SourceCovers.CoverMeans
 import SourceCovers.UniformCover
+import SourceCovers.ContinuationBank
+import SourceCovers.ContinuationCovers
+import SourceCovers.ContinuationClusters
+import SourceCovers.ContinuationMovement
+import SourceCovers.PrefixErrorLimit
+import SourceCovers.PrefixMovement
+import SourceCovers.NecessaryMovement
+import SourceCovers.PaidSharedRecovery
+import SourceCovers.SharedSupport
+import SourceCovers.SharedSupportDeficit
+import SourceCovers.GlobalSharing

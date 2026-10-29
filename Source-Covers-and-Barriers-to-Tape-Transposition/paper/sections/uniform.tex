@@ -530,33 +530,81 @@ not a construction of an economical cover.
 \Needspace{11\baselineskip}
 \subsection{The movement of complete older observables}
 
-For $q=2$, use one cluster for all nonroot elements of $F_\rho(s_j)$
-in \cref{prop:continuation-covers}(c), and use $E=0$ when that set is
-empty or a singleton. Let $e_{\nu,J,R}$ be the mean of $E/L_\nu$
-over phases and columns, with $M=2R+2$, and put
-$e_R^*=\liminf_J\liminf_\nu e_{\nu,J,R}$.
+For $q=2$, use the fixed exact older bank constructed in
+\cref{thm:exact-source-bank}, including every slot and its multiplicity.
+At the first output time $s_j$ of each column, take the time hull of
+$F_\rho(s_j)\setminus\{s_j\}$ in \cref{prop:continuation-covers}(c).
+For an empty set take the degenerate interval $[s_j,s_j]$; both an
+empty set and a singleton have movement $E=0$.
+For a fixed modulus $M\ge2$ and protected cutoff $R<M$, define
+\[
+ e_{\nu,J,R,M}=\mathbb E_{\rho,j}\frac{E(s_j)}{L_\nu},
+ \qquad
+ \pi_{\nu,J,R,M}=\mathbb E_{\rho,j}
+   \psi\!\left(\min\!\left\{\frac{E(s_j)}{L_\nu},1\right\}\right),
+ \qquad \psi(z)=z-z^2/2,
+\]
+where the averages use the admissible phases and all columns for the
+first $J$ original core families. Put
+$e^*_{R,M}=\liminf_J\liminf_\nu e_{\nu,J,R,M}$ and
+$\pi^*_{R,M}=\liminf_J\liminf_\nu\pi_{\nu,J,R,M}$, on the same
+joint-profile subsequence. These are finite real lower limits:
+$0\le e_{\nu,J,R,M}\le cC_1$ and
+$0\le\pi_{\nu,J,R,M}\le1/2$, where $C_1$ is the one-exception bank
+coefficient of \cref{eq:bank-constants} at the fixed modulus $M$.
 
 \begin{corollary}[Necessary complete-observable movement]\label{cor:necessary-exposure}
-\notformalized
+\formal{SourceCovers/NecessaryMovement.lean}{SourceCovers.phaseMovement,SourceCovers.NearFullSequence.JointProfile.movementLimit,SourceCovers.NearFullSequence.JointProfile.completeMovement_bounds,SourceCovers.NearFullSequence.JointProfile.necessary_movement_penalty,SourceCovers.NearFullSequence.JointProfile.movementPenalty_le_complete,SourceCovers.NearFullSequence.JointProfile.necessary_complete_movement_default,SourceCovers.NearFullSequence.JointProfile.scaled_complete_movement_liminf}
 Along every subsequence realizing a joint profile of a two-exception
-near-full sequence, for every integer $K\ge0$ and $R\ge\max(K,1)$,
+near-full sequence, for all integers $K,R\ge0$ and $M\ge2$ with $R<M$,
+\[
+ e^*_{R,M}\ge\pi^*_{R,M}\ge
+ \frac{(1-V_K)_+^2}{4(2K+1)(2M+4)}-\frac{\beta\tau_R}{M-R}.
+\]
+In particular, set $e_R^*=e^*_{R,2R+2}$. For all $K,R\ge0$,
 \begin{equation}\label{eq:necessary-exposure}
  e_R^*\ge
  \frac{(1-V_K)_+^2}{16(2K+1)(R+2)}-\frac{\beta\tau_R}{R+2}.
 \end{equation}
 For fixed $K$ with $V_K<1$ this implies
-$\liminf_{R\to\infty}(R+2)e_R^*\ge(1-V_K)^2/[16(2K+1)]$.
+$\liminf_{R\to\infty}(R+2)e_R^*\ge(1-V_K)^2/[16(2K+1)]$,
+where this last lower limit is in $[0,\infty]$.
 \end{corollary}
-\begin{informalproof}
-The one-cluster estimate, also valid when there are no nonroot seeds,
-is $(1-\alpha)_+^2/[4(2K+1)(2M+4)]-E/L$.
-Insert it in \cref{thm:paid-source-cover} and move the mean $E/L$ to
-the other side. Take the liminf in $\nu$, then in $J$, and then let
-$\lambda$ decrease to zero exactly as in
-\cref{eq:finite-prefix-limit}. Substitution of $M=2R+2$ gives
-\cref{eq:necessary-exposure}; $\tau_R\to0$ gives the last assertion.
-\end{informalproof}
+\begin{outline}
+Sort the actual exceptions by decreasing owner, using the identity in
+the newer slot when only one exception is present. The verified
+ordered-bank identity identifies this representation with the complete
+bank used for the paid theorem. Apply
+\cref{prop:continuation-covers}(c) with one interval and its left endpoint
+as representative. The minimum and maximum supplier times determine
+the interval; a degenerate interval handles the empty set. The resulting
+credit is $(1-\alpha)_+^2/[4(2K+1)(2M+4)]$ minus the quadratic penalty.
+The whole older bank has movement at most $C_1(T-1)$, so $T\le cL$
+gives the stated uniform bounds on the means at fixed $M$.
+
+Insert this credit into the same paid-deficit theorem. Finite expectation
+identities leave exactly the mean penalty on the other side, with the
+original residual error unchanged. A shared error-limit lemma chooses
+the rounded width $w=\lceil\lambda L\rceil$ and omitted-family budget
+and proves the error limit independently of the chosen geometric credit.
+The reciprocal-cover proof and the present proof both reuse it.
+Pass first to the dimension lower limit, then to the prefix lower limit,
+using only the common joint profile and explicit boundedness. Eventually
+$J\ge\max(K,R)$, so no comparison of $K$ and $R$ is needed. Finally let
+$\lambda$ decrease to zero.
+
+Since $\psi(\min\{z,1\})\le z$ for $z\ge0$, comparison before each
+lower limit gives the linear-movement conclusion directly. Set $M=2R+2$
+and then multiply by $R+2$. The vanishing tail $\tau_R\to0$ gives the
+last assertion; the Lean proof uses an extended-nonnegative lower limit
+to include possible divergence to infinity.
+\end{outline}
 
 Here the moving observables include every older continuation, not just
-the immediate input coordinate at an exceptional landing. This is the
-quantity that a successful approximation argument would have to control.
+the immediate input coordinate at an exceptional landing. The quadratic bound caps each phase--column pair's penalty at $1/2$;
+arbitrarily large movement on that pair makes no further contribution
+to this mean.
+For fixed $K$ with $V_K<1$, the linear bound excludes
+$e_R^*=o(1/R)$. A successful approximation must obtain enough gap credit
+while paying this complete movement. The result does not establish the
+smaller movement estimates needed to contradict arbitrary native geometries.

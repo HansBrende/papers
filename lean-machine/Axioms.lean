@@ -749,3 +749,53 @@ import LeanMachine
 #print axioms LeanMachine.PowerTail.summable_of_le
 #print axioms LeanMachine.PowerTail.tail_le
 #print axioms LeanMachine.PowerTail.scaled_tail_tendsto_zero
+
+-- CausalClosure.lean
+#print axioms LeanMachine.CausalClosure
+#print axioms LeanMachine.CausalClosure.hull
+#print axioms LeanMachine.CausalClosure.maximal
+#print axioms LeanMachine.CausalClosure.maximal_subset
+#print axioms LeanMachine.CausalClosure.exists_maximal
+#print axioms LeanMachine.CausalClosure.hull_maximal
+#print axioms LeanMachine.CausalClosure.root_mem_maximal
+#print axioms LeanMachine.CausalClosure.closed_union_hull_maximal_diff
+
+-- ContinuationSuppliers.lean
+#print axioms LeanMachine.CausalClosure.landings
+#print axioms LeanMachine.CausalClosure.extend
+#print axioms LeanMachine.CausalClosure.suppliers
+#print axioms LeanMachine.CausalClosure.extend_eq_hull_suppliers
+#print axioms LeanMachine.CausalClosure.supplier_past
+#print axioms LeanMachine.CausalClosure.root_mem_suppliers
+#print axioms LeanMachine.CausalClosure.hull_extension_core_cover
+#print axioms LeanMachine.CausalClosure.hull_extension_core_cover_uniform
+#print axioms LeanMachine.CausalClosure.two_extension_eq
+#print axioms LeanMachine.CausalClosure.landing_diff_eq
+#print axioms LeanMachine.CausalClosure.two_extension_maximal_landings
+
+-- IntervalClusterErosion.lean
+#print axioms LeanMachine.IntervalClusterErosion.mem_closed_arc_of_between
+#print axioms LeanMachine.IntervalClusterErosion.area_lower_bound
+
+-- FiniteHullVariation.lean
+#print axioms LeanMachine.FiniteHullVariation.endpoints
+#print axioms LeanMachine.FiniteHullVariation.endpoints_empty
+#print axioms LeanMachine.FiniteHullVariation.endpoints_singleton
+#print axioms LeanMachine.FiniteHullVariation.endpoints_bounds
+#print axioms LeanMachine.FiniteHullVariation.mem_endpoints
+#print axioms LeanMachine.FiniteHullVariation.movement
+#print axioms LeanMachine.FiniteHullVariation.movement_nonneg
+#print axioms LeanMachine.FiniteHullVariation.movement_empty
+#print axioms LeanMachine.FiniteHullVariation.movement_singleton
+#print axioms LeanMachine.FiniteHullVariation.movement_le_cost
+
+-- BoundedLiminf.lean
+#print axioms LeanMachine.BoundedLiminf.bounds
+#print axioms LeanMachine.BoundedLiminf.le_of_tendsto
+#print axioms LeanMachine.BoundedLiminf.mono
+
+-- ShiftedGridUnion.lean
+#print axioms LeanMachine.ShiftedGrid.blockUnion
+#print axioms LeanMachine.ShiftedGrid.mem_blockUnion
+#print axioms LeanMachine.ShiftedGrid.blockUnion_empty
+#print axioms LeanMachine.ShiftedGrid.blockUnion_card_le

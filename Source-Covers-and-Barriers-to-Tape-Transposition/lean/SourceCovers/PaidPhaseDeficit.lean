@@ -19,7 +19,8 @@ open Transpose.Tape Transpose.Tape.Impl
 open scoped BigOperators
 noncomputable section
 
-private theorem rawGapArea_congr (L : ℕ) {S S' : Finset ℕ}
+/-- Gap area depends on the finite source set, not its nonemptiness witness. -/
+theorem rawGapArea_congr (L : ℕ) {S S' : Finset ℕ}
     (hS : S.Nonempty) (hS' : S'.Nonempty) (heq : S = S') :
     GapErosion.pointArea (range S.card) (CyclicSelection.gap L S hS) L =
       GapErosion.pointArea (range S'.card) (CyclicSelection.gap L S' hS') L := by

@@ -380,52 +380,90 @@ This is a partial order: a nonidentity step strictly decreases time.
 The point $t$ is maximal and belongs to $F_\rho(t)$.
 
 \begin{proposition}[Complete continuation suppliers]\label{prop:continuation-covers}
-\notformalized
-For two exceptions the following bounds hold for every phase and root.
+\formal{SourceCovers/ContinuationClusters.lean}{SourceCovers.oneExceptionBank_exact,SourceCovers.twoExceptionBank_exact,SourceCovers.continuationSuppliers,SourceCovers.continuationSuppliers_exact,SourceCovers.continuationSuppliers_exact_bank,SourceCovers.continuationSuppliers_root,SourceCovers.continuationSuppliers_past,SourceCovers.olderLandingSuppliers,SourceCovers.olderLandingSuppliers_exact,SourceCovers.continuationSuppliers_fractional_bound,SourceCovers.olderLandingSuppliers_fractional_bound,SourceCovers.continuation_fractional_bounds,SourceCovers.clusterVariation,SourceCovers.continuationClusters_erosion,SourceCovers.continuationClusters_gap,SourceCovers.continuationClusters_gap_linear}
+For at most two exceptions the following bounds hold for every legal phase
+and computation root $t<T$.
 \begin{enumerate}[label=(\alph*)]
-\item $\kappa_\rho(S_\rho(t))\le(\ell+1)|F_\rho(t)|$.
+\item $\displaystyle\kappa_\rho(S_\rho(t))
+ \le\sum_{u\in F_\rho(t)}(1+|A_\rho(u)|)
+ \le(\ell+1)|F_\rho(t)|$.
 \item Let $C_g(t)=A_\rho(t)\cup\bigcup_{u\in A_\rho(t)}A_\rho(g(u))$.
 Remove from $\{e(v):v\in C_g(t),\ e(v)\ne v\}$ the points already in
 $C_g(t)$, and let $s(t)$ be the number of maximal remaining points under
-core reachability. Then $\kappa_\rho(S_\rho(t))\le\ell+1+s(t)$.
-\item Partition $F_\rho(t)\setminus\{t\}$ into $r$ nonempty clusters
-with representatives $a_1,\ldots,a_r$ and closed time hulls $I_1,\ldots,I_r$.
+core reachability. Then
+$\kappa_\rho(S_\rho(t))\le1+|A_\rho(t)|+s(t)\le\ell+1+s(t)$.
+\item Cover $F_\rho(t)\setminus\{t\}$ by $r$ closed integer time intervals
+$I_1,\ldots,I_r\subseteq[0,T)$ and choose $a_v\in I_v$.
+The intervals may overlap, and the representatives need not be suppliers.
+In particular, the intervals may be the time hulls of a partition into
+nonempty clusters, with one representative in each cluster.
 Fix a finite bank of time maps $(b_i)_i$ satisfying
 $\{b_i(u):i\}=R_{e,\rho}(u)$ at every time $u$, as supplied by
 \cref{thm:exact-source-bank}. These geometry-dependent maps are fixed
 before any residual width or shift is chosen. Put
 $E(t)=\sum_{v=1}^r\sum_i\Var(x\circ b_i;I_v)$.
-An empty remainder has $r=E(t)=0$. Then
+An empty remainder permits $r=E(t)=0$. Then, with $\psi(e)=e-e^2/2$,
+\[
+ \gaparea(S_\rho(t))\ge
+ \frac{(1-\alpha)_+^2}{2(2K+1)(\ell+1)(r+1)}
+ -\psi\!\left(\min\!\left\{\frac{E(t)}L,1\right\}\right).
+\]
+Consequently,
 \begin{equation}\label{eq:cluster-gap}
  \gaparea(S_\rho(t))\ge
  \frac{(1-\alpha)_+^2}{2(2K+1)(\ell+1)(r+1)}-\frac{E(t)}L.
 \end{equation}
 \end{enumerate}
 \end{proposition}
-\begin{informalproof}
-Every element of a finite partially ordered set is dominated by a maximal
-one. Transitivity in \cref{eq:two-exception-decomposition} therefore replaces
-its seed set by $F_\rho(t)$ without losing any endpoint. Each older closure
-uses at most $\ell+1$ complete core orbits, proving (a).
-For (b), first complete the core and newer exception. Any additional
-endpoint is in a core orbit of an older landing seed. Core reachability
-is transitive, and $C_g(t)$ is core-closed; seeds already inside it add
-nothing. Maximal remaining seeds suffice, each contributing one core
-orbit. The newer-only part contributes at most $\ell+1$.
+\begin{outline}
+The existing ordered-bank exactness theorem gives both closure
+decompositions, including identity padding for missing exceptions.
+A shared finite causal-closure lemma proves that each seed is reached
+from a maximal seed: among its dominators, choose one of greatest time.
+Transitivity and regression show that it has no distinct dominator in
+the seed set. Replacing seeds by these maximal suppliers preserves the
+whole union of complete closures.
+
+The older closure from $u$ is covered by the core orbit rooted at $u$
+and those rooted at $e(v)$ for $v\in A_\rho(u)$. Thus it needs at most
+$1+|A_\rho(u)|$ core orbits, proving (a)'s sharper sum.
+For (b), expand the same ordered bank as $C_g(t)$ followed by all older
+landings and their complete core continuations. Since $C_g(t)$ is
+core-closed, landing seeds already in it add nothing. The shared closure
+lemma reduces the remaining seeds to their core-maximal elements.
+The newer-only part uses at most $1+|A_\rho(t)|$ core orbits. In both
+parts every covering root belongs to the complete source closure, so
+regression puts it at a legal time below $T$. Unit weights on these
+roots are feasible for the fractional minimum. The verified bound
+$|A_\rho(u)|\le\ell$ gives both original estimates directly.
 
 For (c) use the base raw set
 $S_0=x(R_{e,\rho}(t))\cup\bigcup_v x(R_{e,\rho}(a_v))$.
-It has a cover by $(r+1)(\ell+1)$ complete core orbits. For each cluster
-and older-bank slot, the raw range interval over $I_v$ contains its
-representative value and has length at most the corresponding variation.
-These intervals cover every raw source omitted from $S_0$, by (a)'s
-exact closure identity. They are anchored in $S_0$ and their summed
-length is at most $E(t)$. Apply
-\cref{lem:fractional-gap,lem:anchored-erosion}.
-\end{informalproof}
+It has a cover by at most $(r+1)(\ell+1)$ complete core orbits,
+even when representatives repeat or are not in $F_\rho(t)$.
+For each time interval and older-bank slot, take the minimum and maximum
+of $x\circ b_i$ on that interval. Both extrema are actual samples;
+the existing finite-path variation lemma bounds their difference by
+$\Var(x\circ b_i;I_v)$. The resulting closed raw interval contains
+the representative value, an anchor in $S_0$.
+
+The exact maximal-supplier identity shows that these raw intervals
+cover every source outside $S_0$. The proof uses all slots of any
+chosen exact older bank; repeated slots retain their movement charges.
+The union of raw intervals has length at most their summed lengths,
+hence at most $E(t)$. Apply \cref{lem:fractional-gap} to $S_0$ and
+the stronger anchored-erosion bound of \cref{lem:anchored-erosion}.
+Finally $\psi(\min\{E/L,1\})\le E/L$ gives \cref{eq:cluster-gap}.
+No disjointness of the time intervals or unit-speed premise on $x$ is
+needed for this argument.
+\end{outline}
 
 All three statements concern complete continuations after a return.
 Replacing $x\circ b_i$ by the immediate input coordinate $x$ would remove
-unaccounted older sources. These suppliers offer concrete sufficient
+unaccounted older sources. Actual orbit counts can reduce the fractional
+cover budget, and the quadratic saving increases the approximation credit
+for a given movement cost. Allowing interval covers permits suppliers to
+share an approximation without first assigning them to disjoint groups.
+These suppliers offer concrete sufficient
 conditions for \cref{thm:paid-source-cover}; no automatic bound on their
 values for all native geometries is asserted.

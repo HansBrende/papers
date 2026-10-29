@@ -56,6 +56,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`SourceBank`](LeanMachine/SourceBank.lean) | Finite lists of time maps, summed path variation, composition, and ordered-exception recurrences | this repository |
 | [`PackedWords`](LeanMachine/PackedWords.lean) | Exact uniform banks for interval-supported actions on forests, packed by unordered component labels | this repository |
 | [`ShiftedGrid`](LeanMachine/ShiftedGrid.lean) | Exact capped-diameter counts for separating grid shifts and same-block coordinate bounds | this repository |
+| [`ShiftedGridUnion`](LeanMachine/ShiftedGridUnion.lean) | Distinct clipped raw-block unions and their all-shifts cardinality bound | this repository |
 | [`IntervalOscillation`](LeanMachine/IntervalOscillation.lean) | Lifetime extrema and oscillation bounds preserving the exact interval overlap profile | this repository |
 | [`GridPayment`](LeanMachine/GridPayment.lean) | Finite lifetime payments from capped oscillation, overlap, and variation; constant labels on unpaid lifetimes | this repository |
 | [`CausalRecovery`](LeanMachine/CausalRecovery.lean) | Complete surviving source cones and functional recovery from local determinism and paid records | this repository |
@@ -82,11 +83,14 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`UniformGap`](LeanMachine/UniformGap.lean) | Excluding sequences with increasing dimension and two vanishing nonnegative costs gives a uniform positive gap | this repository |
 | [`TailLiminf`](LeanMachine/TailLiminf.lean) | Zero extended-nonnegative lower limits are equivalent to arbitrarily late small values | this repository |
 | [`PowerEnvelope`](LeanMachine/PowerEnvelope.lean) | Power laws above a moment threshold have summable weighted mass and vanishing scaled tails | this repository |
-
 | [`BoundedLimsup`](LeanMachine/BoundedLimsup.lean) | Bounded real upper limits, converging-coefficient inequalities, and nonnegative scaling | this repository |
 | [`InverseSquareTail`](LeanMachine/InverseSquareTail.lean) | Summable inverse-square envelopes and exact shifted-tail bounds from finite sum estimates | this repository |
-
 | [`PowerTail`](LeanMachine/PowerTail.lean) | Quantitative real-power tail estimates and decay under sub-power multipliers, reusing integral comparison | this repository |
+| [`CausalClosure`](LeanMachine/CausalClosure.lean) | Finite regressive transitive closures; maximal suppliers preserve the whole closure | this repository |
+| [`ContinuationSuppliers`](LeanMachine/ContinuationSuppliers.lean) | Ordered-extension decompositions, actual supplier counts and maximal remaining landings | this repository |
+| [`IntervalClusterErosion`](LeanMachine/IntervalClusterErosion.lean) | Anchored observable ranges over overlapping intervals, with a quadratic movement penalty | this repository |
+| [`FiniteHullVariation`](LeanMachine/FiniteHullVariation.lean) | Finite time hulls, degenerate empty sets and complete-bank movement accounting | this repository |
+| [`BoundedLiminf`](LeanMachine/BoundedLiminf.lean) | Explicit real lower-limit bounds, comparisons and converging lower bounds | this repository |
 
 ## External code
 

@@ -72,3 +72,9 @@ import LeanMachine.PowerEnvelope
 import LeanMachine.BoundedLimsup
 import LeanMachine.InverseSquareTail
 import LeanMachine.PowerTail
+import LeanMachine.CausalClosure
+import LeanMachine.ContinuationSuppliers
+import LeanMachine.IntervalClusterErosion
+import LeanMachine.FiniteHullVariation
+import LeanMachine.BoundedLiminf
+import LeanMachine.ShiftedGridUnion

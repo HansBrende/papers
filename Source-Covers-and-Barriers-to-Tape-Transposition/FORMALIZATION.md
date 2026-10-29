@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-nine of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Thirty of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -23,9 +23,10 @@ Proposition 6.1, the native serial-exception quadratic-cover example;
 Theorem 7.1, the ordering-independent query-movement bound;
 Corollary 7.2, queries spread over intervals;
 Proposition 7.3, the exact helper and gap-area calibration;
+Corollary 7.4, the dimension-first movement obstruction;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 3 results
+bounds and vanishing tails. The other 2 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -1098,8 +1099,31 @@ It obtains the full second moment without introducing a separate random
 composition model. [`CyclicGapScaling`](../lean-machine/LeanMachine/CyclicGapScaling.lean)
 reuses the existing monotone-image lemmas to identify the scaled raw gaps.
 The mean is therefore the area of the actual points `P_S`, not an assumed
-abstract gap distribution. The next item is Corollary 7.4, the asymptotic
-movement obstruction for this specified interface.
+abstract gap distribution.
+
+## Completed: subset-interface movement limits
+
+[`SubsetColumns`](lean/SourceCovers/SubsetColumns.lean) counts the actual
+columns, distinct types and repetitions, and embeds representative-time
+queries as zero-length intervals. [`SubsetColumnMovement`](lean/SourceCovers/SubsetColumnMovement.lean)
+uses independent discard and clock widths in the existing interval count.
+The exact normalized bound is `tau (1-q_N)/(q_N+tau/(sigma d))`; both the
+raw-point width and repetition error vanish with `1/d`.
+[`SubsetMovementLimits`](lean/SourceCovers/SubsetMovementLimits.lean) passes
+to the extended dimension lower limit, then sends `sigma` to zero. This
+improves the interval constant from `3m` to `5m/2`, matching representative
+queries, and retains a general positive clock-width parameter. It uses
+the smaller maximum-step bill and allows arbitrary positive repetitions
+and word widths as functions of `N`. No upper bound on movement is assumed.
+
+The shared [`FixedSubsetLimits`](../lean-machine/LeanMachine/FixedSubsetLimits.lean)
+reuses Mathlib's fixed-size binomial asymptotic; it also handles rounding,
+capping and inverse-power divergence. The final theorem quantifies the
+obstruction over all admissible families at every sufficiently small fixed
+radius. Dimension is taken first; no radius depending on dimension is
+substituted into the limit theorem. The exact helper and required-query
+premises remain essential. Next are Definition 8.1, causal-group typing,
+Theorem 8.2, its routing extraction, and Corollary 8.4, its native obstruction.
 
 ## Dependency order and proof obligations
 

@@ -104,6 +104,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`VanishingTradeoff`](LeanMachine/VanishingTradeoff.lean) | Quadratic credit bounds and vanishing two-term tradeoffs on arbitrarily late good indices, including zero cost coefficients | this repository |
 | [`ExtendedTradeoff`](LeanMachine/ExtendedTradeoff.lean) | Quantitative tradeoffs with unbounded nonnegative observables, extended lower limits, rate normalization and zero-cost divergence | this repository |
 | [`RawIntervalCover`](LeanMachine/RawIntervalCover.lean) | Attained minimum closed-real-interval covers of finite raw coordinates; sharp two-block payment per short interval at every grid shift | this repository |
+| [`FixedSubsetLimits`](LeanMachine/FixedSubsetLimits.lean) | Fixed-size binomial ratios, rounded capped capacities and inverse-power divergence, reusing Mathlib asymptotics | this repository |
 
 ## External code
 

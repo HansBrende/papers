@@ -146,23 +146,32 @@ theorem card_interval_types_le {X α ι τ : Type*} [PseudoMetricSpace X]
   rw [div_div] at hbad'
   linarith
 
-/-- Smooth the partition count and invert the interval-query inequality.
-No positive-capacity assumption is needed: `B + 1/r` is positive. -/
+/-- Smooth and invert the interval-query inequality with independent
+internal (`δ`) and grouping (`η`) widths. No positive capacity is needed. -/
+theorem interval_real_bounds_general {F B : ℕ} {E δ η r : ℝ}
+    (hE : 0 ≤ E) (hδ : 0 < δ) (hη : 0 < η) (hr : 0 < r)
+    (h : (F : ℝ) ≤ ((⌊E / η⌋₊ : ℝ) + 1) * B + E / (δ * r)) :
+    (F : ℝ) - E / (δ * r) ≤ (1 + E / η) * B ∧
+      η * (((F : ℝ) - B) / (B + η / (δ * r))) ≤ E := by
+  have hfloor := Nat.floor_le (div_nonneg hE hη.le)
+  have hs : (F : ℝ) - E / (δ * r) ≤ (1 + E / η) * B := by nlinarith
+  refine ⟨hs, ?_⟩
+  have hden : 0 < (B : ℝ) + η / (δ * r) := by positivity
+  have heq : (1 + E / η) * (B : ℝ) + E / (δ * r) =
+          B + (E / η) * (B + η / (δ * r)) := by field_simp; ring
+  have hf : (F : ℝ) - B ≤ (E / η) * (B + η / (δ * r)) := by linarith
+  have hd := (div_le_iff₀ hden).mpr hf
+  have hm := mul_le_mul_of_nonneg_left hd hη.le
+  simpa only [mul_div_cancel₀ _ hη.ne'] using hm
+
+/-- The original equal-width bound is a specialization of the general one. -/
 theorem interval_real_bounds {F B : ℕ} {E δ r : ℝ}
     (hE : 0 ≤ E) (hδ : 0 < δ) (hr : 0 < r)
     (h : (F : ℝ) ≤ ((⌊E / δ⌋₊ : ℝ) + 1) * B + E / (δ * r)) :
     (F : ℝ) - E / (δ * r) ≤ (1 + E / δ) * B ∧
       δ * (((F : ℝ) - B) / (B + 1 / r)) ≤ E := by
-  have hfloor := Nat.floor_le (div_nonneg hE hδ.le)
-  have hs : (F : ℝ) - E / (δ * r) ≤ (1 + E / δ) * B := by nlinarith
-  refine ⟨hs, ?_⟩
-  have hden : 0 < (B : ℝ) + 1 / r := by positivity
-  have heq : (1 + E / δ) * (B : ℝ) + E / (δ * r) =
-      B + (E / δ) * (B + 1 / r) := by ring
-  have hf : (F : ℝ) - B ≤ (E / δ) * (B + 1 / r) := by linarith
-  have hd := (div_le_iff₀ hden).mpr hf
-  have hm := mul_le_mul_of_nonneg_left hd hδ.le
-  simpa only [mul_div_cancel₀ _ hδ.ne'] using hm
+  have he : δ / (δ * r) = 1 / r := by field_simp
+  simpa only [he] using interval_real_bounds_general hE hδ hδ hr h
 
 end
 end LeanMachine.QueryMovement

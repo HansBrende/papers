@@ -1,7 +1,7 @@
 \section{Building and checking this draft}\label{sec:verification}
 
 The paper sources and PDF use CC BY 4.0; the Lean library uses Apache 2.0.
-\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,lem:attached-short-count}
+\Cref{def:complete-families,def:admissible-geometry,lem:family-accounting,def:clipped-shadow,lem:shadow-variation,lem:protected-phase,thm:exact-source-bank,lem:residual-source-recovery,thm:cyclic-freezing,def:fractional-core-cover,lem:interval-rounding,lem:fractional-gap,lem:anchored-erosion,thm:paid-source-cover,cor:orbit-count-deficit,prop:continuation-covers,def:joint-profile,thm:necessary-hop-tail,cor:one-exception,cor:common-envelope,cor:finite-skeleton,thm:necessary-cover,cor:uniform-cover,cor:necessary-exposure,prop:finite-sharing,thm:uniform-sharing,cor:sharing-density,prop:metric-sharing,cor:covering-exponents,prop:serial-quadratic-cover,thm:movement,cor:movement-interval,prop:subset-calibration,cor:subset-movement,lem:attached-short-count}
 are Lean-verified. Their cited
 declarations depend only on \leanname{propext},
 \leanname{Classical.choice} and \leanname{Quot.sound}. The remaining
@@ -89,7 +89,10 @@ abelian group. Ignored-coordinate fibre counts prove joint independence
 of whole entries. Empty forward arcs count squared gaps, and existing
 monotone-image lemmas identify the scaled raw-circle gaps. The limits
 use Mathlib's constant-over-natural limit; repetition and word width may
-vary with dimension.
+vary with dimension. The movement limits reuse Mathlib's fixed-size
+binomial asymptotic, rounding bounds and power divergence. An independent
+internal threshold tends to zero after the dimension limit, removing the
+extra interval loss. Extended lower limits avoid a boundedness hypothesis.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run

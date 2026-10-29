@@ -86,6 +86,14 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.SubsetHelper.queried_independent
 #print axioms SourceCovers.SubsetHelper.query_row_fraction
 #print axioms SourceCovers.SubsetHelper.recovery
+#print axioms SourceCovers.SubsetMovement.ColumnQueries
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.eventually_exceeds
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.finite_lower
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.liminf_lower
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.ofRepresentatives
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.quarter_liminf
+#print axioms SourceCovers.SubsetMovement.ColumnQueries.quarter_total_liminf
+#print axioms SourceCovers.SubsetMovement.quarter_barrier_diverges
 #print axioms SourceCovers.actualOwner
 #print axioms SourceCovers.admissiblePhases_card
 #print axioms SourceCovers.anchored_displacement_area_lower_bound

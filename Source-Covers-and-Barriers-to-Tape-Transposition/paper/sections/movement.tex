@@ -282,54 +282,96 @@ rows to a deficit exceeding the helper cost.  The exact recovery code
 exists, and the normalized gap area approaches the same value as that
 cost.  The remaining issue is its geometric realization.
 
+\Needspace{16\baselineskip}
 \begin{corollary}[The dimension limit precedes the radius limit]
 \label{cor:subset-movement}
-\notformalized
-Fix $k\ge2$, $m\ge1$ and $h\ge1$, and take the preceding interfaces
-with $N\to\infty$.  For each $N$, allow arbitrary column order and
-arbitrary coherent source matching.  Let $v_N$ be the total circle
-variation divided by $L$.
+\formal{SourceCovers/SubsetMovementLimits.lean}{SourceCovers.SubsetMovement.ColumnQueries,
+SourceCovers.SubsetMovement.ColumnQueries.ofRepresentatives,
+SourceCovers.SubsetMovement.ColumnQueries.finite_lower,
+SourceCovers.SubsetMovement.ColumnQueries.liminf_lower,
+SourceCovers.SubsetMovement.ColumnQueries.quarter_liminf,
+SourceCovers.SubsetMovement.ColumnQueries.quarter_total_liminf,
+SourceCovers.SubsetMovement.quarter_barrier_diverges,
+SourceCovers.SubsetMovement.ColumnQueries.eventually_exceeds}
+Fix $k\ge2$ and $m\ge1$, and take the preceding interfaces with
+$N\to\infty$. The repetition parameter $h=h(N)\ge1$ and entry width
+$b=b(N)\ge1$ may vary arbitrarily. For each $N$, allow arbitrary column
+order and arbitrary coherent source matching by $m$ labelled trajectories.
+Let $V_N$ be their total circle variation and put
+\[
+ C_N=\sum_t\max_{1\le\ell\le m}
+        \operatorname{dist}_L(y_\ell(t+1),y_\ell(t)),
+ \qquad v_N=V_N/L.
+\]
+All movement between queries is included. Lower limits are extended
+nonnegative lower limits, so no upper bound on $v_N$ is assumed.
 
-If every queried bin centre is covered at the column representative
-within radius $\rho=\lambda L$, then, for every fixed
-$0<\lambda<2/(5m)$,
+Suppose either every queried bin centre is covered at the column
+representative within radius $\lambda L$, or one required raw point
+within $W=L/d$ of each queried bin centre is covered within that radius
+at some time during its column interval. In the interval case, internal
+time edges of different column intervals are disjoint; endpoints may
+coincide. Then, for every fixed $0<\lambda<2/(5m)$,
 \begin{equation}
  \liminf_{N\to\infty}v_N
+ \ge \liminf_{N\to\infty}\frac{C_N}{L}
  \ge\frac{\lambda}{4}
       \left[\left(\frac{5m\lambda}{2}\right)^{-k}-1\right].
  \label{eq:subset-centre-limit}
 \end{equation}
-If instead one required raw point within $W$ of each queried bin centre
-is covered within radius $\lambda L$ at some time during its column
-interval, then, for every fixed $0<\lambda<1/(3m)$,
-\begin{equation}
- \liminf_{N\to\infty}v_N
- \ge\frac{\lambda}{4}
-      \bigl[(3m\lambda)^{-k}-1\bigr].
- \label{eq:subset-interval-limit}
-\end{equation}
-Both right-hand sides tend to infinity as $\lambda\downarrow0$.
-Thus no fixed variation constant represents this interface with a fixed
-number of source trajectories at every sufficiently small fixed radius
-ratio.
+More generally, for any fixed $\lambda,\tau>0$, the latter lower limit
+is at least
+\[
+ \tau\left[\min\{1,2m(\lambda+\tau)\}^{-k}-1\right].
+\]
+The right-hand side of \cref{eq:subset-centre-limit} tends to infinity
+as $\lambda\downarrow0$. Precisely, for each $K\ge0$ there is a
+$\lambda_0>0$ such that, for every fixed $0<\lambda<\lambda_0$, every
+such family satisfies $\liminf_{N\to\infty}C_N/L>K$.
 \end{corollary}
 
-\begin{informalproof}
-For the first assertion, $s/N\to5m\lambda/2<1$ in
-\cref{thm:movement}.  Since $k$ is fixed,
+\begin{outline}
+The actual columns are pairs $(S,z)$ with $|S|=k$ and $0\le z<Nh$.
+Thus there are $F=\binom Nk$ distinct query types, each repeated $r=Nh$
+times, and $rF=d$. Representative queries are singleton time intervals;
+their internal edge sets are empty, so they satisfy the interval premises
+without any restriction on their representative times.
+
+In the proof of \cref{cor:movement-interval}, choose the internal-movement
+threshold $\delta=\sigma L$ and clock width $\eta=\tau L$ independently,
+where $\sigma,\tau>0$. Put
 \[
- \frac{\binom{s}{k}}{\binom Nk}\longrightarrow
-        (5m\lambda/2)^k.
+ s_N=\min\left\{N,\;m\left(\left\lfloor
+           2(\lambda+\tau+\sigma+1/d)N\right\rfloor+1\right)\right\},
+ \qquad q_N=\frac{\binom{s_N}{k}}{\binom Nk}.
 \]
-Apply \cref{eq:movement-lower}.  For the second assertion, each type
-occurs $r=Nh$ times and $w=W=L/d$.  Hence
-$2wN/L=2/(Fh)\to0$, $s'/N\to3m\lambda<1$, and
-$\binom{s'}k/\binom Nk\to(3m\lambda)^k$.  Divide the numerator and
-denominator of \cref{eq:movement-interval-lower} by $\binom Nk$ to
-obtain \cref{eq:subset-interval-limit}.  Each lower bound is a positive
-constant times $\lambda^{1-k}$ minus $\lambda/4$, which proves the
-last assertion.
-\end{informalproof}
+The same verified counting argument gives
+$F\le(\lfloor C_N/\eta\rfloor+1)\binom{s_N}{k}+C_N/(\delta r)$.
+Smoothing the floor and rearranging, using $rF=d$, gives the exact
+normalized lower bound
+\[
+ \frac{C_N}{L}\ge
+ \tau\frac{1-q_N}{q_N+\tau/(\sigma d)}.
+\]
+Since $d\ge N$ for $N\ge k$, both $1/d$ and the repetition penalty tend
+to zero. Rounding contributes at most $m/N$ to the normalized capacity.
+Mathlib's fixed-$k$ binomial asymptotic then gives
+$q_N\to\min\{1,2m(\lambda+\tau+\sigma)\}^k>0$.
+Pass first to the dimension lower limit, then let $\sigma\downarrow0$.
+This proves the general bound. Taking $\tau=\lambda/4$ proves
+\cref{eq:subset-centre-limit}; $C_N\le V_N$ gives its total-variation
+version. Finally the displayed radius bound equals
+$[4(5m/2)^k]^{-1}\lambda^{1-k}-\lambda/4$ and diverges for $k\ge2$.
+The formal proof also quantifies the resulting obstruction over every
+admissible family at every sufficiently small fixed radius.
+\end{outline}
+
+The interval conclusion has the same constant as the representative
+conclusion because the internal-movement loss vanishes before its
+threshold is sent to zero. This is stronger than fixing both internal
+widths to $\lambda L/4$, which gives $3m$ in place of $5m/2$.
+It is a movement obstruction for the specified raw-query interface,
+including arbitrary query order and coherent matching.
 
 The necessary-point premise has a precise information-theoretic use.
 Choose, for each queried bin, one bit of an own-column entry in a middle

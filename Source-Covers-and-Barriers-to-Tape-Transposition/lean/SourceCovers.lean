@@ -93,3 +93,6 @@ import SourceCovers.IntervalQueryMovement
 import SourceCovers.UniformCoordinates
 import SourceCovers.SubsetHelper
 import SourceCovers.SubsetCalibration
+import SourceCovers.SubsetColumns
+import SourceCovers.SubsetColumnMovement
+import SourceCovers.SubsetMovementLimits

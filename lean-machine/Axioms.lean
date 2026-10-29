@@ -959,3 +959,11 @@ import LeanMachine
 #print axioms LeanMachine.CyclicSelection.point_scaled
 #print axioms LeanMachine.CyclicSelection.gap_scaled
 #print axioms LeanMachine.CyclicSelection.pointGapArea_scaled
+
+-- Independent interval widths and fixed-subset limits.
+#print axioms LeanMachine.QueryMovement.interval_real_bounds_general
+#print axioms LeanMachine.FixedSubsetLimits.atTop_of_ratio
+#print axioms LeanMachine.FixedSubsetLimits.choose_ratio
+#print axioms LeanMachine.FixedSubsetLimits.floor_successor_ratio
+#print axioms LeanMachine.FixedSubsetLimits.capped_capacity_ratio
+#print axioms LeanMachine.FixedSubsetLimits.inverse_power_diverges

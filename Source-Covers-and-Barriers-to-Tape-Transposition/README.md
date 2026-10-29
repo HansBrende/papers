@@ -425,9 +425,22 @@ for `1 <= k <= N`; the limits allow arbitrary positive repetitions and
 word widths. This is a formalization of the credited coded-caching example,
 not a new code or an unrestricted tape construction.
 
+**Corollary 7.4, the dimension-first movement obstruction, is Lean-verified.**
+Both representative and interval queries now satisfy the sharper bound
+`liminf(C_N/L) >= (lambda/4) [(5 m lambda/2)^(-k) - 1]`, for
+`0 < lambda < 2/(5m)`. Here `C_N` sums the maximum slot movement at each
+step, so the total-variation bound follows directly. An independent
+internal-movement threshold tends to zero after the dimension limit;
+this improves the interval constant from `3m` to `5m/2`. The more general
+clock-width bound is retained. The proof counts the actual repeated columns,
+allows arbitrary positive `h(N)` and `b(N)`, and verifies divergence as
+radius tends to zero afterwards. It excludes uniformly bounded movement
+for this specified interface at all sufficiently small fixed radii, without
+assuming movement is bounded or claiming an unrestricted tape lower bound.
+
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **3 numbered results remain unformalized**:
-the coded-caching asymptotic movement corollary and the two causal-group results. The paper's
+`Quot.sound`. The other **2 numbered results remain unformalized**:
+the causal-group routing theorem and its obstruction corollary. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

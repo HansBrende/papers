@@ -79,7 +79,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`PaidAveraging`](LeanMachine/PaidAveraging.lean) | Signed credit and cost averaged together, with an optional mean-cost budget | this repository |
 | [`ProfileCompactness`](LeanMachine/ProfileCompactness.lean) | Common subsequences for countable bounded profiles, inherited finite-sum budgets, summability and finite-tail limits | this repository |
 | [`PrefixError`](LeanMachine/PrefixError.lean) | Finite payment normalization and limits of rounded widths and omitted-family budgets | this repository |
-| [`TailMoments`](LeanMachine/TailMoments.lean) | Summable majorants control scaled tails; positive polynomial tail floors force divergence of the matching moment | this repository |
+| [`TailMoments`](LeanMachine/TailMoments.lean) | Sorted summability gives decay faster than reciprocal rank; summable majorants control scaled tails, and positive tail floors force moment divergence | this repository |
 | [`UniformGap`](LeanMachine/UniformGap.lean) | Excluding sequences with increasing dimension and two vanishing nonnegative costs gives a uniform positive gap | this repository |
 | [`TailLiminf`](LeanMachine/TailLiminf.lean) | Zero extended-nonnegative lower limits are equivalent to arbitrarily late small values | this repository |
 | [`PowerEnvelope`](LeanMachine/PowerEnvelope.lean) | Power laws above a moment threshold have summable weighted mass and vanishing scaled tails | this repository |
@@ -92,6 +92,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FiniteHullVariation`](LeanMachine/FiniteHullVariation.lean) | Finite time hulls, degenerate empty sets and complete-bank movement accounting | this repository |
 | [`BoundedLiminf`](LeanMachine/BoundedLiminf.lean) | Explicit real lower-limit bounds, comparisons and converging lower bounds | this repository |
 | [`VanishingTradeoff`](LeanMachine/VanishingTradeoff.lean) | Quadratic credit bounds and vanishing two-term tradeoffs on arbitrarily late good indices, including zero cost coefficients | this repository |
+| [`ExtendedTradeoff`](LeanMachine/ExtendedTradeoff.lean) | Quantitative tradeoffs with unbounded nonnegative observables, extended lower limits, rate normalization and zero-cost divergence | this repository |
 
 ## External code
 

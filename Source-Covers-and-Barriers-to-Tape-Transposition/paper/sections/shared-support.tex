@@ -194,44 +194,90 @@ sharing bounds as hypotheses; it does not establish them for arbitrary
 tape computations.
 
 \begin{corollary}[Necessary global continuation density]\label{cor:sharing-density}
-\notformalized
-Fix a near-full sequence with common omitted-size bound $\eta_J$,
-and restrict it to a subsequence realizing a joint profile. All dimension
-limits in this statement are along that subsequence. For fixed $K$
+\formal{SourceCovers/SharingDensity.lean}{SourceCovers.NearFullSequence.JointProfile.seedLiminf,SourceCovers.NearFullSequence.JointProfile.necessary_sharing_density,SourceCovers.NearFullSequence.JointProfile.sharingCredit_default,SourceCovers.NearFullSequence.JointProfile.sharingCredit_eventually_pos,SourceCovers.NearFullSequence.JointProfile.sharingCost_pos,SourceCovers.NearFullSequence.JointProfile.necessary_seed_growth,SourceCovers.NearFullSequence.JointProfile.necessary_power_seed_growth,SourceCovers.NearFullSequence.JointProfile.necessary_superlinear_seed_growth,SourceCovers.NearFullSequence.JointProfile.seedLiminf_eq_top_of_zero}
+Fix a near-full sequence with $c,\beta>0$ and $N\ge1$, and restrict it
+to a subsequence realizing a joint profile. All dimension limits below
+are along that subsequence and take values in $[0,\infty]$. For fixed $K$
 with $V_K<1$ and $R\ge\max(K,1)$, define
 \[
  \mu_R=\frac{(1-V_K)^2}{8(2K+1)(R+2)}-
                    \frac{\beta\tau_R}{R+2},\qquad
  g^{\rm low}_{J,R}=\liminf_{\nu\to\infty}\overline G_{J,R}^{(\nu)}.
 \]
-If $\mu_R>0$, then
+If $\mu_R>0$, then for every positive sequence $\eta_J\to0$ with
+$h_{J+1}\le\eta_J$ for all sufficiently large $J$,
 \begin{equation}\label{eq:sharing-density}
  \liminf_{J\to\infty}\eta_Jg^{\rm low}_{J,R}
        \ge\frac{\mu_R^2}{4A_RB_R}.
 \end{equation}
 The condition $\mu_R>0$ holds for all sufficiently large fixed $R$.
-For $\eta_J=c/(J+1)$ this forces positive linear growth of
-$g^{\rm low}_{J,R}$ in $J$; an inverse-square omitted-size bound forces
-positive quadratic growth.
+No bound uniform in dimension is required: it suffices to bound the
+limiting hop profile. For each such $R$, without any size envelope,
+the stronger conclusion is
+\begin{equation}\label{eq:sharing-superlinear}
+ \frac{g^{\rm low}_{J,R}}{J+1}\longrightarrow\infty.
+\end{equation}
+At the same fixed $R$, if $h_{J+1}\le H/(J+1)^p$ eventually,
+where $H,p>0$, then
+\[
+ \liminf_{J\to\infty}\frac{g^{\rm low}_{J,R}}{(J+1)^p}
+ \ge\frac{\mu_R^2}{4A_RB_RH}.
+\]
+In particular an inverse-square omitted-size bound forces positive
+quadratic growth. Any common finite-dimensional size bound passes to
+the limiting profile and therefore remains a sufficient hypothesis.
 \end{corollary}
-\begin{informalproof}
-For each fixed $J$ with finite $g^{\rm low}_{J,R}$, pass to a dimension
-subsequence realizing that liminf. The joint profile is unchanged.
-\Cref{eq:sharing-prefix-limit} holds with $g_R(J)$ replaced by this
-liminf. Its left side $\mu_{J,R}$ tends to $\mu_R$ as $J$ grows and is
-positive for all sufficiently large $J$. Testing at
-$\lambda=\mu_{J,R}/[2(2+B_Rg^{\rm low}_{J,R})]$ and rearranging gives
+\begin{outline}
+Fix $J$ and $\lambda>0$. Divide the finite sharing inequality by its
+positive seed-count coefficient before taking the dimension lower limit.
+The paid-error and width limits then give
+\[
+ g^{\rm low}_{J,R}\ge
+ \left(\frac{\mu_{J,R}-2\lambda-A_R\eta_J/\lambda}
+                  {\lambda B_R}\right)_+,
+\]
+where $\mu_{J,R}$ is the left side of
+\cref{eq:sharing-prefix-limit}. To use only $h_{J+1}\le\eta_J$,
+first replace $\eta_J$ by $\eta_J+\varepsilon$: coordinate convergence
+makes this bound valid in all sufficiently large dimensions. Continuity
+then removes $\varepsilon>0$. No further subsequence is needed.
+
+For finite $g^{\rm low}_{J,R}$ and positive $\mu_{J,R}$, the shared
+quadratic-tradeoff lemma gives
+$\mu_{J,R}^2\le4(2+B_Rg^{\rm low}_{J,R})A_R\eta_J$.
+Including nonpositive credit by its positive part yields
 \[
  \eta_Jg^{\rm low}_{J,R}
- \ge\frac{\mu_{J,R}^2}{4A_RB_R}-\frac{2\eta_J}{B_R}.
+ \ge\frac{(\mu_{J,R})_+^2}{4A_RB_R}-\frac{2\eta_J}{B_R}.
 \]
-Infinite $g^{\rm low}_{J,R}$ satisfies the inequality automatically. Take the
-liminf in $J$. Finally $\tau_R\to0$ shows that $\mu_R$ is positive for
-all sufficiently large $R$.
-\end{informalproof}
+An infinite inner lower limit satisfies this bound because $\eta_J>0$.
+Now take the lower limit in $J$, using $\mu_{J,R}\to\mu_R$.
+Also $\tau_R\to0$ makes $\mu_R>0$ at every sufficiently large $R$.
+Extended-real scaling gives the power-growth statement.
 
-This is a count of globally incomparable complete continuations. It is
-not a count of independent raw bits or a native gate lower bound.
+For the stronger no-envelope conclusion, nonnegativity, monotonicity
+and summability of the hop profile imply $(J+1)h_{J+1}\to0$.
+The shared proof compares $(J+1)h_{J+1}$ with twice any fixed tail,
+once $J$ is at least twice that tail's starting index.
+Thus, for every $H>0$, the rate $H/(J+1)$ eventually bounds
+$h_{J+1}$. The power-growth inequality at $p=1$ gives a lower bound
+$\mu_R^2/(4A_RB_RH)$ for the normalized seed liminf. Letting $H$
+decrease to zero proves \cref{eq:sharing-superlinear}.
+\end{outline}
+
+The formal density inequality also permits any $M\ge2$ with $R<M$
+and independent $K,R$, and retains the positive part of the limiting
+credit. At a fixed $J\ge\max(K,R)$, if $h_{J+1}=0$ and
+$\mu_{J,R}>0$, its separate zero-cost case gives
+$g^{\rm low}_{J,R}=\infty$.
+
+Consequently a bound $\overline G_{J,R}\le C_R'(J+1)$, with finite
+constants $C_R'$ independent of dimension, at arbitrarily large protected
+scales cannot coexist with a near-full sequence. This improves the
+sublinear no-envelope obstruction above.
+The count concerns globally incomparable complete continuations;
+it is not an information-capacity or native-gate lower bound.
+No such seed-count upper bound is established for arbitrary tape computations.
 
 \subsection{Raw metric covers instead of temporal counts}
 

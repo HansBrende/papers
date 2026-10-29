@@ -16,6 +16,32 @@ namespace LeanMachine.TailMoments
 open Filter
 open scoped BigOperators Topology
 
+/-- A nonnegative decreasing summable sequence is little-o of reciprocal
+rank. Compare a late coordinate with any fixed sufficiently small tail. -/
+theorem rank_mul_tendsto_zero {h : ℕ → ℝ}
+    (h0 : ∀ i, 0 ≤ h i) (hanti : Antitone h) (hs : Summable h) :
+    Tendsto (fun J : ℕ => (J + 1 : ℝ) * h J) atTop (𝓝 0) := by
+  apply tendsto_order.2
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun J => ha.trans_le (mul_nonneg (by positivity) (h0 J))
+  · intro ε hε
+    obtain ⟨R, hR⟩ := ((tendsto_sum_nat_add h).eventually
+      (Iio_mem_nhds (half_pos hε))).exists
+    apply eventually_atTop.2 ⟨2 * R, fun J hJ => ?_⟩
+    have hsum : ((J + 1 - R : ℕ) : ℝ) * h J ≤ ∑' i, h (i + R) := by
+      calc
+        _ = ∑ i ∈ Finset.range (J + 1 - R), h J := by simp
+        _ ≤ ∑ i ∈ Finset.range (J + 1 - R), h (i + R) := by
+          apply Finset.sum_le_sum
+          intro i hi
+          exact hanti (by have := Finset.mem_range.mp hi; omega)
+        _ ≤ _ := ((summable_nat_add_iff R).mpr hs).sum_le_tsum _ (fun i _ => h0 (i + R))
+    have hrank : (J + 1 : ℝ) ≤ 2 * ((J + 1 - R : ℕ) : ℝ) := by
+      exact_mod_cast (show J + 1 ≤ 2 * (J + 1 - R) by omega)
+    have := mul_le_mul_of_nonneg_right hrank (h0 J)
+    linarith
+
 /-- Compare each scaled tail term with the corresponding term of one
 summable sequence. No monotonicity of either sequence is needed. -/
 theorem scaled_tail_tendsto_zero {h g a : ℕ → ℝ}

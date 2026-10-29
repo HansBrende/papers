@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-two of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-three of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -16,9 +16,10 @@ Corollary 4.7, both uniform mean-cover criteria;
 Corollary 4.8, necessary complete-observable movement;
 Proposition 5.1, the full shared-support payment;
 Theorem 5.2, uniform exclusion by global sharing;
+Corollary 5.3, necessary global continuation density and superlinear seed growth;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 10 results
+bounds and vanishing tails. The other 9 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -833,11 +834,49 @@ cutoffs, any legal fixed modulus in the intermediate tail bound, and
 common restricted sets of cutoffs. The uniform conclusion includes the
 equivalent code-cardinality bound and all positive entry widths.
 
-The **next target is Corollary 5.3, necessary global continuation density**.
-Reuse the verified quadratic tradeoff and arbitrary-rate rounding limit.
-Treat the dimension lower limit before the prefix lower limit, allow
-infinite lower limits explicitly, and retain the same joint-profile
-subsequence. No sharing bound for arbitrary tape geometries is assumed.
+## Completed: necessary global continuation density
+
+[`SharingDensity.lean`](lean/SourceCovers/SharingDensity.lean) verifies all
+of Corollary 5.3. Both lower limits use the extended nonnegative reals,
+with the dimension limit first on the same joint-profile subsequence.
+The finite payment is divided by its positive seed coefficient before
+passing to this lower limit, avoiding a second subsequence and any
+boundedness assumption on the mean seed count.
+
+A useful weakening is that only the limiting omitted-hop coordinate must
+be bounded, eventually in the cutoff. Any positive slack makes that bound
+valid eventually in dimension; continuity then removes the slack.
+The shared [`ExtendedTradeoff`](../lean-machine/LeanMachine/ExtendedTradeoff.lean)
+reuses the quadratic tradeoff to give the exact density constant, retaining
+positive-part credit and infinite observables. Its rate normalization
+handles any positive diverging denominator. The power specialization needs
+only `p > 0`, with its envelope on the limiting profile.
+
+More substantially, the no-envelope conclusion strengthens from a positive
+linear floor to `g_low(J,R)/(J+1) -> infinity` whenever the fixed-scale
+credit is positive. The shared [`TailMoments`](../lean-machine/LeanMachine/TailMoments.lean)
+proves the standard fact that a nonnegative decreasing summable sequence
+is little-o of reciprocal rank, by comparing a late coordinate with a fixed
+tail. Thus every positive multiple of `1/(J+1)` eventually bounds the
+limiting hop coordinate; the density floor then diverges after normalization.
+No additional size envelope is assumed. This rules out dimension-uniform
+linear seed budgets at arbitrarily large protected scales along a near-full
+sequence, but supplies no seed upper bound for arbitrary tape computations.
+
+The formal statement also permits independent distinguished and protected
+cutoffs and any legal fixed modulus. The default credit is exactly the
+manuscript's expression and is positive at every sufficiently large protected
+scale. Positive rates are required for the density product; a separate
+zero-coordinate theorem proves an infinite inner lower limit whenever the
+finite-prefix credit is positive. This avoids treating zero times infinity
+as a positive quantity. All original cases follow without an added premise.
+
+The **next target is Proposition 5.4, the metric shared-support criterion**.
+Reuse the finite raw-union payment and the uniform-gap adapter. Formalize
+that the blocks meeting one raw interval of length at most `delta*L` cost
+at most `3*ceil(delta*L)` at every shift, then average a common raw cover
+and retain the full residual payment through the dimension limit. The
+covering numbers and cutoff sets must remain uniform in dimension.
 The general transposition question remains open.
 
 ## Dependency order and proof obligations

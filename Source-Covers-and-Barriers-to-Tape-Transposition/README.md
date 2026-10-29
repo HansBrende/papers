@@ -314,6 +314,30 @@ tails and uniform-gap adapter. A short shared quadratic-tradeoff lemma
 handles zero cost coefficients without a square-root minimizer.
 It gives no automatic sharing bound for arbitrary tape computations.
 
+**Corollary 5.3, necessary global continuation density, is Lean-verified
+and strengthened.** On any joint-profile subsequence, let `g_low(J,R)`
+be the dimension lower limit of the actual mean maximal-seed count.
+For positive credit `mu_R`, any positive rate tending to zero that
+eventually bounds the limiting omitted-hop coordinate satisfies
+`liminf_J eta_J*g_low(J,R) >= mu_R²/(4*A_R*B_R)`.
+A finite-dimensional common envelope is sufficient but no longer necessary.
+The lower limits take values in `[0,infinity]`, with dimension first.
+
+Sorted summability gives `(J+1)*h_(J+1) -> 0`. Applying the density bound
+with every positive multiple of `1/(J+1)` proves the stronger no-envelope
+conclusion `g_low(J,R)/(J+1) -> infinity`, improving the former positive
+linear floor. This excludes dimension-uniform linear seed budgets at
+arbitrarily large protected scales along a near-full sequence. A power-rate
+bound on the limiting profile gives an explicit corresponding growth floor.
+If a fixed omitted coordinate is zero and its finite-prefix credit is
+positive, the inner lower limit is infinite. The formal bounds also allow
+any legal modulus, independent cutoffs and positive-part credit.
+
+The proof reuses the finite payment, rounding limits and shared quadratic
+tradeoff; taking a convergent lower bound directly avoids another
+subsequence extraction. These are requirements on complete continuation
+counts, not information-capacity bounds or a decision of transposition.
+
 **Lemma 8.3, the attached short-distance count, is Lean-verified:**
 `S_ell <= min(d²b, (2 n - 1) b (2 k + 3)^(ell - 1))` for valid diagrams,
 every block length `0 <= r <= d b`, and every natural radius parameter `ell` (both subtractions are
@@ -329,8 +353,8 @@ bound. The initial block touches at most one row, saving one attachment
 over the two-per-block estimate.
 
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **10 numbered results remain unformalized**,
-including global continuation density, metric-sharing criteria and causal-group results. The paper's
+`Quot.sound`. The other **9 numbered results remain unformalized**,
+including metric-sharing criteria and causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

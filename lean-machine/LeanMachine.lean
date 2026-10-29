@@ -79,3 +79,4 @@ import LeanMachine.FiniteHullVariation
 import LeanMachine.BoundedLiminf
 import LeanMachine.ShiftedGridUnion
 import LeanMachine.VanishingTradeoff
+import LeanMachine.ExtendedTradeoff

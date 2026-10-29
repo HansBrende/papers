@@ -715,6 +715,7 @@ import LeanMachine
 #print axioms LeanMachine.PrefixError.max_ceil_scaled_tendsto
 
 -- TailMoments.lean
+#print axioms LeanMachine.TailMoments.rank_mul_tendsto_zero
 #print axioms LeanMachine.TailMoments.scaled_tail_tendsto_zero
 #print axioms LeanMachine.TailMoments.polynomial_tail_tendsto_zero
 #print axioms LeanMachine.TailMoments.not_summable_moment_of_tail_floor
@@ -804,3 +805,12 @@ import LeanMachine
 -- VanishingTradeoff.lean
 #print axioms LeanMachine.VanishingTradeoff.sq_le
 #print axioms LeanMachine.VanishingTradeoff.limit_le_zero
+
+-- ExtendedTradeoff.lean
+#print axioms LeanMachine.ExtendedTradeoff.ofReal_le_liminf
+#print axioms LeanMachine.ExtendedTradeoff.finite_sq_le
+#print axioms LeanMachine.ExtendedTradeoff.eq_top_of_zero_cost
+#print axioms LeanMachine.ExtendedTradeoff.density_lower
+#print axioms LeanMachine.ExtendedTradeoff.density_liminf
+#print axioms LeanMachine.ExtendedTradeoff.normalize_rate
+#print axioms LeanMachine.ExtendedTradeoff.eq_top_of_div_le

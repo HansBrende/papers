@@ -77,6 +77,15 @@ Allowed axioms: propext, Classical.choice, Quot.sound. -/
 #print axioms SourceCovers.RawIntervalCover.two_block_factor_sharp
 #print axioms SourceCovers.SerialGeometry.Parameters.SerialCertificate
 #print axioms SourceCovers.SerialGeometry.Parameters.serial_quadratic_cover
+#print axioms SourceCovers.SubsetHelper.calibration_limits
+#print axioms SourceCovers.SubsetHelper.gap_helper_calibration
+#print axioms SourceCovers.SubsetHelper.helper_apply
+#print axioms SourceCovers.SubsetHelper.helper_law
+#print axioms SourceCovers.SubsetHelper.mean_gap_formula
+#print axioms SourceCovers.SubsetHelper.queried_absent
+#print axioms SourceCovers.SubsetHelper.queried_independent
+#print axioms SourceCovers.SubsetHelper.query_row_fraction
+#print axioms SourceCovers.SubsetHelper.recovery
 #print axioms SourceCovers.actualOwner
 #print axioms SourceCovers.admissiblePhases_card
 #print axioms SourceCovers.anchored_displacement_area_lower_bound

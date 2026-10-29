@@ -86,3 +86,8 @@ import LeanMachine.CyclicGapUpper
 import LeanMachine.QueryMovement
 import LeanMachine.CircleGridCapacity
 import LeanMachine.IntervalQueries
+import LeanMachine.DisjointSums
+import LeanMachine.SubsetPlacement
+import LeanMachine.CyclicGapTails
+import LeanMachine.SubsetGapCounting
+import LeanMachine.CyclicGapScaling

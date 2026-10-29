@@ -892,3 +892,70 @@ import LeanMachine
 #print axioms LeanMachine.QueryMovement.frozen_interval_cover
 #print axioms LeanMachine.QueryMovement.card_interval_types_le
 #print axioms LeanMachine.QueryMovement.interval_real_bounds
+
+-- DisjointSums.lean
+#print axioms LeanMachine.card_fiber_mul_card
+#print axioms LeanMachine.DisjointSums
+#print axioms LeanMachine.DisjointSums.representative
+#print axioms LeanMachine.DisjointSums.representative_mem
+#print axioms LeanMachine.DisjointSums.representative_mem_iff
+#print axioms LeanMachine.DisjointSums.representative_injective
+#print axioms LeanMachine.DisjointSums.card_le
+#print axioms LeanMachine.DisjointSums.encode
+#print axioms LeanMachine.DisjointSums.encode_apply
+#print axioms LeanMachine.DisjointSums.encode_surjective
+#print axioms LeanMachine.DisjointSums.fiber_card
+#print axioms LeanMachine.DisjointSums.recover
+#print axioms LeanMachine.DisjointSums.encode_update
+#print axioms LeanMachine.coordinateFiberEquiv
+#print axioms LeanMachine.card_coordinate_fiber
+#print axioms LeanMachine.card_independent_coordinate
+
+-- SubsetPlacement.lean
+#print axioms LeanMachine.SubsetPlacement.Subset
+#print axioms LeanMachine.SubsetPlacement.Entry
+#print axioms LeanMachine.SubsetPlacement.Packet
+#print axioms LeanMachine.SubsetPlacement.support
+#print axioms LeanMachine.SubsetPlacement.mem_support
+#print axioms LeanMachine.SubsetPlacement.owner
+#print axioms LeanMachine.SubsetPlacement.mem_owner
+#print axioms LeanMachine.SubsetPlacement.support_nonempty
+#print axioms LeanMachine.SubsetPlacement.support_disjoint
+#print axioms LeanMachine.SubsetPlacement.code
+#print axioms LeanMachine.SubsetPlacement.queried_absent
+#print axioms LeanMachine.SubsetPlacement.eq_of_same_bin
+#print axioms LeanMachine.SubsetPlacement.summand
+#print axioms LeanMachine.SubsetPlacement.summand_mem
+#print axioms LeanMachine.SubsetPlacement.summand_injective
+#print axioms LeanMachine.SubsetPlacement.support_eq_image
+#print axioms LeanMachine.SubsetPlacement.encode_eq
+#print axioms LeanMachine.SubsetPlacement.other_bin_queried
+#print axioms LeanMachine.SubsetPlacement.entry_recovery
+#print axioms LeanMachine.SubsetPlacement.card_entry
+#print axioms LeanMachine.SubsetPlacement.card_packet
+
+-- CyclicGapTails.lean
+#print axioms LeanMachine.CyclicSelection.self_not_mem_forward_arc
+#print axioms LeanMachine.CyclicSelection.next_anchor
+#print axioms LeanMachine.CyclicSelection.gap_tail_iff
+#print axioms LeanMachine.CyclicSelection.sum_odd
+#print axioms LeanMachine.CyclicSelection.sum_points
+#print axioms LeanMachine.CyclicSelection.sum_gap_sq_eq_tails
+#print axioms LeanMachine.CyclicSelection.squareGapSum
+#print axioms LeanMachine.CyclicSelection.squareGapSum_eq_tails
+#print axioms LeanMachine.CyclicSelection.pointGapArea
+#print axioms LeanMachine.CyclicSelection.pointGapArea_eq
+
+-- SubsetGapCounting.lean
+#print axioms LeanMachine.CyclicSelection.card_subsets_containing_avoiding
+#print axioms LeanMachine.CyclicSelection.card_gap_tails
+#print axioms LeanMachine.CyclicSelection.sum_range_choose_fixed
+#print axioms LeanMachine.CyclicSelection.sum_odd_choose
+#print axioms LeanMachine.CyclicSelection.sum_squareGapSum
+#print axioms LeanMachine.CyclicSelection.mean_pointGapArea
+
+-- CyclicGapScaling.lean
+#print axioms LeanMachine.CyclicSelection.scaleEmbedding
+#print axioms LeanMachine.CyclicSelection.point_scaled
+#print axioms LeanMachine.CyclicSelection.gap_scaled
+#print axioms LeanMachine.CyclicSelection.pointGapArea_scaled

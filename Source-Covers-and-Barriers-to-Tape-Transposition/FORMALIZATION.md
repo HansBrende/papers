@@ -1,7 +1,7 @@
 # Formalization plan
 
 This records completed formalization and the remaining specification.
-**Twenty-eight of the 32 numbered results are Lean-verified: Lemma 2.3, family
+**Twenty-nine of the 32 numbered results are Lean-verified: Lemma 2.3, family
 accounting; Lemma 2.5, shadow and successful-word variation; Lemma 2.6,
 the Q2 overlap forest and protected phases; Theorem 2.7, the exact source
 bank; Lemma 2.8, paid residual-source recovery; Theorem 2.9, cyclic freezing; Lemma 3.2,
@@ -22,9 +22,10 @@ Corollary 5.5, sublinear raw covering exponents;
 Proposition 6.1, the native serial-exception quadratic-cover example;
 Theorem 7.1, the ordering-independent query-movement bound;
 Corollary 7.2, queries spread over intervals;
+Proposition 7.3, the exact helper and gap-area calibration;
 and Lemma 8.3, the attached short-distance count.** Definitions 2.1, 2.2, 2.4,
 3.1 and 4.1 are also formalized, including joint-profile existence, mass
-bounds and vanishing tails. The other 4 results
+bounds and vanishing tails. The other 3 results
 retain complete written proofs.
 
 The [statement index](FORMALIZATION-INDEX.md) is generated from the actual
@@ -1064,7 +1065,41 @@ The prose now makes the radius conventions `rho > 0` and `w >= 0`
 explicit. For a nonempty family the raw-point premise already forces
 `w >= 0`, since query types are nonempty. The Lean theorem needs no
 separate sign premise on `w` and handles the empty family directly.
-The next item is Proposition 7.3, the exact helper and gap-area calibration.
+The exact helper and gap-area calibration is now verified below.
+
+## Completed: exact helper and gap-area calibration
+
+[`SubsetCalibration`](lean/SourceCovers/SubsetCalibration.lean) completes
+Proposition 7.3. [`SubsetHelper`](lean/SourceCovers/SubsetHelper.lean)
+instantiates the actual subset placement code with the specified row and
+column repetitions and whole `b`-bit words. Its displayed parity formula,
+raw-row recovery, uniform helper law, entropy in bits, every fibre size,
+and joint independence from the helper and all other entries are checked.
+The original statement is preserved. The finite calibration also covers
+`k = 1` and `k = N`, and the three limits permit arbitrary positive integer
+functions for both repetitions and bit width.
+
+The proof reuses Mathlib's equal homomorphism fibres and the second paper's
+finite uniform entropy. The shared
+[`DisjointSums`](../lean-machine/LeanMachine/DisjointSums.lean) proves exact
+fibres for disjoint nonempty sums over any finite abelian group and the
+ignored-coordinate count identity. The explicit
+[`SubsetPlacement`](../lean-machine/LeanMachine/SubsetPlacement.lean) code
+proves its supports, parity formula and recovery without assumed rank or
+decoding hypotheses. [`UniformCoordinates`](lean/SourceCovers/UniformCoordinates.lean)
+connects the counts to the existing probability mass functions; independence
+is an exact joint/product equality, not a pairwise-only statement.
+
+For geometry, [`CyclicGapTails`](../lean-machine/LeanMachine/CyclicGapTails.lean)
+connects the actual sorted gaps to empty forward arcs, including wraparound.
+[`SubsetGapCounting`](../lean-machine/LeanMachine/SubsetGapCounting.lean)
+uses Mathlib's fixed-subset counts and a weighted hockey-stick identity.
+It obtains the full second moment without introducing a separate random
+composition model. [`CyclicGapScaling`](../lean-machine/LeanMachine/CyclicGapScaling.lean)
+reuses the existing monotone-image lemmas to identify the scaled raw gaps.
+The mean is therefore the area of the actual points `P_S`, not an assumed
+abstract gap distribution. The next item is Corollary 7.4, the asymptotic
+movement obstruction for this specified interface.
 
 ## Dependency order and proof obligations
 

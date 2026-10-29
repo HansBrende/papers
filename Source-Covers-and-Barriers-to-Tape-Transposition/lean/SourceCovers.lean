@@ -90,3 +90,6 @@ import SourceCovers.SerialTimes
 import SourceCovers.SerialUnpaid
 import SourceCovers.QueryMovement
 import SourceCovers.IntervalQueryMovement
+import SourceCovers.UniformCoordinates
+import SourceCovers.SubsetHelper
+import SourceCovers.SubsetCalibration

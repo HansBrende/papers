@@ -203,7 +203,11 @@ parities, for every $(k+1)$-element set $T$ and every $u,z$:
 
 \begin{proposition}[Exact helper and gap-area calibration]
 \label{prop:subset-calibration}
-\notformalized
+\formal{SourceCovers/SubsetCalibration.lean}{SourceCovers.SubsetHelper.helper_apply,
+SourceCovers.SubsetHelper.recovery, SourceCovers.SubsetHelper.helper_law,
+SourceCovers.SubsetHelper.queried_absent, SourceCovers.SubsetHelper.queried_independent,
+SourceCovers.SubsetHelper.mean_gap_formula, SourceCovers.SubsetHelper.gap_helper_calibration,
+SourceCovers.SubsetHelper.query_row_fraction, SourceCovers.SubsetHelper.calibration_limits}
 The specified interface recovers every column on the full input cube.
 For a uniform input, the helper is uniform on $g$ bits, where
 \begin{equation}
@@ -211,8 +215,8 @@ For a uniform input, the helper is uniform on $g$ bits, where
  \label{eq:subset-helper-size}
 \end{equation}
 Every helper fibre has size $2^{L-g}$.  Every entry with $i\in S$ is
-absent from all helper parities and is independent of $G$ and all other
-input entries.
+absent from all helper parities and is independent of the joint
+observation consisting of $G$ and all other input entries.
 
 For $P_S=\{ia:i\in S\}$ on the raw circle,
 \begin{equation}
@@ -226,7 +230,7 @@ $k/N$ tends to zero, whereas both $g/L$ and the mean point-gap area
 tend to $1/(k+1)$.
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 If $i\in S$, the desired entry is read directly.  If $i\notin S$,
 take $T=S\cup\{i\}$ in \cref{eq:subset-helper}.  All the other terms
 have row-bin index in $S$, so the queried rows and that parity determine
@@ -238,31 +242,40 @@ gives
  g=b\binom N{k+1}(Fh)(Nh)
    =L\frac{N-k}{N(k+1)}.
 \]
-The parity map is surjective, with all fibres of size $2^{L-g}$.
-Queried entries occur in none of these parity classes, proving the
-independence assertion.
+The formal proof works over any finite abelian group: choose one
+coordinate in each disjoint nonempty support to realize any prescribed
+list of sums. Surjectivity and equal homomorphism fibres give the exact
+fibre count and uniform helper law. Specializing to $b$-bit words gives
+the stated entropy in bits. Updating a queried entry changes neither
+the helper nor any other entry. Splitting off that coordinate in each
+joint-observation fibre proves the asserted joint independence.
 
-For the gap formula, choose $S$ uniformly and mark one of its elements
-uniformly.  Starting at the marked element, the clockwise integer gaps
-$D_1,\ldots,D_k$ are uniform among positive compositions of $N$.
-Indeed, each composition and starting point specifies one marked set,
-and $N\binom{N-1}{k-1}=k\binom Nk$.  Put $E_i=D_i-1$ and $n=N-k$.
-Then $\sum_iE_i=n$.  Stars and bars gives
+For the gap formula, let $D_S(i)$ be the clockwise integer gap after
+$i\in S$. For $0\le j<N$, the condition $D_S(i)>j$ says exactly that
+the next $j$ circular positions are absent from $S$. For a fixed $i$
+there are therefore $\binom{N-1-j}{k-1}$ such sets $S$: include $i$,
+exclude the next $j$ positions, and choose the other $k-1$ members.
+Using $D^2=\sum_{j=0}^{D-1}(2j+1)$ and exchanging finite sums gives
 \[
- \mathbb E\sum_i E_i(E_i-1)
- =\frac{2k\binom{n+k-1}{k+1}}{\binom{n+k-1}{k-1}}
- =\frac{2n(n-1)}{k+1},
+ \sum_{|S|=k}\sum_{i\in S}D_S(i)^2
+ =N\sum_{j=0}^{N-1}(2j+1)\binom{N-1-j}{k-1}
+ =N\left[\binom Nk+2\binom N{k+1}\right].
 \]
-with both sides zero when $n<2$.  The numerator follows, for example,
-by taking the coefficient of $z^n$ in
-$2kz^2(1-z)^{-k-2}$.  Expanding $\sum_i(E_i+1)^2$ now yields
-\[
- \mathbb E\sum_iD_i^2=\frac{N(2N-k+1)}{k+1}.
-\]
-The geometric gaps are $aD_i$, so division by $2L^2$ proves
-\cref{eq:subset-gap-area}.  The limits follow from the displayed
-formulas.
-\end{informalproof}
+The last equality follows from the binomial recurrence and the
+hockey-stick identity. Lean connects the empty-arc condition to the
+actual increasing anchor enumeration, including its wraparound gap.
+The existing monotone-image lemmas show that scaling anchors by $a$
+scales every gap by $a$, so normalized area is unchanged. Dividing by
+$2N^2\binom Nk$ and using
+$(k+1)\binom N{k+1}=(N-k)\binom Nk$ proves
+\cref{eq:subset-gap-area}. Finally,
+$g/L=(1-k/N)/(k+1)$ and the area differs from this by $1/(2N)$;
+the three limits follow from the limit of a constant divided by $N$.
+\end{outline}
+
+The finite calibration also holds for $1\le k\le N$, including
+singletons and the full set. The formal limits allow $h$ and $b$ to be
+arbitrary positive integer functions of $N$.
 
 This example prevents an information-only inference from sparse queried
 rows to a deficit exceeding the helper cost.  The exact recovery code

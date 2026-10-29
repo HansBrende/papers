@@ -415,10 +415,19 @@ and only requires disjoint internal interval edges: endpoints may coincide
 and the interval list need not be chronological. Empty families and no
 surviving good intervals are included. The original bounds follow directly.
 
+**Proposition 7.3, the exact helper and gap-area calibration, is Lean-verified.**
+The explicit subset code recovers every column from the specified raw rows
+and common helper, whose uniform law, entropy and every fibre are exact.
+Unused entries are independent of the joint observation of the helper and
+all other entries. The mean gap area is computed for the actual scaled
+raw-circle points, including wraparound. The finite identities also hold
+for `1 <= k <= N`; the limits allow arbitrary positive repetitions and
+word widths. This is a formalization of the credited coded-caching example,
+not a new code or an unrestricted tape construction.
+
 All cited declarations use only `propext`, `Classical.choice` and
-`Quot.sound`. The other **4 numbered results remain unformalized**:
-the coded-caching calibration and its
-asymptotic movement corollary, and the two causal-group results. The paper's
+`Quot.sound`. The other **3 numbered results remain unformalized**:
+the coded-caching asymptotic movement corollary and the two causal-group results. The paper's
 verified finite criterion and remaining written proofs give the main chain:
 
 1. The exact selected-family bank combines with paid residual recovery to

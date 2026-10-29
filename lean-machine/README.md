@@ -68,6 +68,11 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`QueryMovement`](LeanMachine/QueryMovement.lean) | Query-type counting from a movement clock in any pseudometric space; arbitrary partition width, maximum-slot charge and exact floor factor | this repository |
 | [`CircleGridCapacity`](LeanMachine/CircleGridCapacity.lean) | Regular-grid capacity of circular balls and banks, via integer lifts; circle distance bounded by line distance | this repository |
 | [`IntervalQueries`](LeanMachine/IntervalQueries.lean) | Lost repeated query types charged to deleted occurrences; edge-disjoint interval bills and movement bounds with independent internal and grouping thresholds | this repository |
+| [`DisjointSums`](LeanMachine/DisjointSums.lean) | Surjective sums on disjoint nonempty supports over finite abelian groups; exact fibres and ignored-coordinate independence counts | this repository |
+| [`SubsetPlacement`](LeanMachine/SubsetPlacement.lean) | Explicit subset placement parities and full-input recovery from the specified raw rows, with arbitrary repetitions and abelian-group entries | this repository |
+| [`CyclicGapTails`](LeanMachine/CyclicGapTails.lean) | Actual sorted squared gaps expressed as weighted counts of empty forward arcs | this repository |
+| [`SubsetGapCounting`](LeanMachine/SubsetGapCounting.lean) | Exact fixed-size-subset gap moments and mean normalized gap area, including singletons and the full set | this repository |
+| [`CyclicGapScaling`](LeanMachine/CyclicGapScaling.lean) | Positive integer scaling of sorted circular gaps preserves their normalized area | this repository |
 | [`CyclicSelection`](LeanMachine/CyclicSelection.lean), [`CyclicArcSelection`](LeanMachine/CyclicArcSelection.lean) | Actual consecutive circular gaps, disjoint eroded arcs, and safe common cut-and-orientation counts | this repository |
 | [`PeriodicStripe`](LeanMachine/PeriodicStripe.lean), [`PeriodicStripeSum`](LeanMachine/PeriodicStripeSum.lean) | Sharp circular stripe discrepancy and exact reindexing by transpose columns | this repository |
 | [`SelectionAverage`](LeanMachine/SelectionAverage.lean), [`CyclicStripeAverage`](LeanMachine/CyclicStripeAverage.lean) | Finite selection double counting and actual stripe selection bounds from eroded circular gaps | this repository |

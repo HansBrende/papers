@@ -144,18 +144,24 @@ recovering every bit of $y$, independently of which full input extending
 $y$ was used to define it.  This argument evaluates one projection at a
 time; it makes no product assumption about the conditional support.
 
-Add a forward collector of capacity $W_a$ along each edge of $I_a$.
-It carries the previously output bits of group $a$, in their fixed
-order.  At node $\omega_a$ this prefix together with the outputs at that
-node determines all of $y$.  These collector fields still obey group
-autonomy.  Their total added capacity is
-$W_a(\omega_a-\alpha_a)$, including zero when both endpoints coincide.
+Add a forward collector along each edge of $I_a$. At edge $(v,v+1)$ it
+carries precisely the group bits whose original output node is at most
+$v$, so it needs only their number of bits in capacity, at most $W_a$.
+At node $\omega_a$ this prefix together with the outputs at that node
+determines all of $y$. These collector fields still obey group autonomy.
+Their exact total capacity is
+\[
+ \sum_{\xi\in[d]\times J_a\times[b]}(\omega_a-o(\xi))
+ \le W_a(\omega_a-\alpha_a),
+\]
+including zero when both endpoints coincide. The equality follows by
+counting, for each output bit, the collector edges that carry it.
 
 Add a supersource $s$ and a source vertex $u_i$ for each row.  Give
 $(s,u_i)$ capacity $bg_a$, and give every arc from $u_i$ to a node of
-$A_i$ capacity $L+1$.  The sink is $\omega_a$.  Consider any
+$A_i$ capacity $W_a$.  The sink is $\omega_a$.  Consider any
 $s$--$\omega_a$ cut.  If it crosses one of the latter attachment arcs,
-its capacity exceeds $L\ge\log_2|\mathcal A_a(z)|$.  Otherwise let
+its capacity is at least $W_a\ge\log_2|\mathcal A_a(z)|$. Otherwise let
 $U$ be its sink-side physical nodes and let $B$ be its sink-side row
 vertices.  Every row attached in $U$ belongs to $B$.
 

@@ -448,9 +448,15 @@ functions on all tuples. No independence is assumed.
 The supporting proofs verify autonomy of one group's fields, an evaluation
 on its actual joint projected support, and the support-capacity bound for
 cuts containing all its requested outputs. Every entering field is included,
-even after a previous departure from the cut. The collector and flow
-construction of Theorem 8.2 remain unformalized; these support lemmas do
-not assume or establish the routing conclusion by themselves.
+even after a previous departure from the cut. The collector of Theorem 8.2
+is also formalized on the actual memory interval. It carries only bits
+already output, so its exact capacity is the prefix size and its total
+cost is the sum of output-to-sink delays. Distinct groups have disjoint
+collector edge intervals. The resulting cut bound requires only the last
+output inside the cut and extends to every supersource/sink cut, paying
+all row attachments explicitly. The flow theorem, path decomposition,
+return walks and averaging remain unformalized; the verified cut bounds
+do not assume or establish routing by themselves.
 
 All cited declarations use only `propext`, `Classical.choice` and
 `Quot.sound`. The other **2 numbered results remain unformalized**:

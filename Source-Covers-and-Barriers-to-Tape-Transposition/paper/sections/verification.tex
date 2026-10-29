@@ -98,9 +98,13 @@ Causal group typing uses Mathlib's function-factorization predicate for
 local rules on an arbitrary helper fibre. The shared causal-field library
 proves projection autonomy and recovery from every field entering a cut,
 including re-entries. Finite image counts give the joint-support capacity
-bound when the cut contains all requested outputs. These verified steps
-do not yet formalize the collector, flow or return-path construction of
-\cref{thm:causal-group-routing}.
+bound when the cut contains all requested outputs. The local collector
+now moves these outputs to a common sink, charging the exact size of each
+already-output prefix. Its total cost is the sum of output-to-sink delays.
+The formalization retains the actual memory edges and proves all
+supersource/sink cut inequalities, including cuts crossing row attachments.
+The real-capacity flow theorem, path decomposition, return walks and
+averaging of \cref{thm:causal-group-routing} remain unformalized.
 
 Readers need the whole repository, with sibling folders in place.
 No source from an earlier paper is copied or modified. From \path{lean/}, run

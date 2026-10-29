@@ -97,3 +97,4 @@ import SourceCovers.SubsetColumns
 import SourceCovers.SubsetColumnMovement
 import SourceCovers.SubsetMovementLimits
 import SourceCovers.CausalGroups
+import SourceCovers.CausalCollector

@@ -992,3 +992,30 @@ import LeanMachine
 #print axioms LeanMachine.CausalFields.card_range_le_of_factorsThrough
 #print axioms LeanMachine.CausalFields.Evaluation.card_raw_range_le
 #print axioms LeanMachine.CausalFields.Evaluation.log_support_le_cut
+
+-- CausalCollector.lean
+#print axioms LeanMachine.CausalFields.Collector
+#print axioms LeanMachine.CausalFields.Collector.Link
+#print axioms LeanMachine.CausalFields.Collector.next
+#print axioms LeanMachine.CausalFields.Collector.Prefix
+#print axioms LeanMachine.CausalFields.Collector.layout
+#print axioms LeanMachine.CausalFields.Collector.Field
+#print axioms LeanMachine.CausalFields.Collector.value
+#print axioms LeanMachine.CausalFields.Collector.original_observation_eq
+#print axioms LeanMachine.CausalFields.Collector.raw_eq_of_observation
+#print axioms LeanMachine.CausalFields.Collector.evaluation
+#print axioms LeanMachine.CausalFields.Collector.evaluation_original
+#print axioms LeanMachine.CausalFields.Collector.evaluation_collector
+#print axioms LeanMachine.CausalFields.Collector.card_link
+#print axioms LeanMachine.CausalFields.Collector.link_empty
+#print axioms LeanMachine.CausalFields.Collector.linksAfterEquiv
+#print axioms LeanMachine.CausalFields.Collector.card_links_after
+#print axioms LeanMachine.CausalFields.Collector.prefix_card_le
+#print axioms LeanMachine.CausalFields.Collector.sum_prefix_card
+#print axioms LeanMachine.CausalFields.Collector.sum_prefix_card_le
+#print axioms LeanMachine.CausalFields.Collector.fieldFintype
+#print axioms LeanMachine.CausalFields.Collector.card_field_collector
+#print axioms LeanMachine.CausalFields.Collector.cost
+#print axioms LeanMachine.CausalFields.Collector.cost_nonneg
+#print axioms LeanMachine.CausalFields.Collector.sum_cost
+#print axioms LeanMachine.CausalFields.Collector.log_support_le_collected_cut

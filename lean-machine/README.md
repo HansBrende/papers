@@ -107,6 +107,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FixedSubsetLimits`](LeanMachine/FixedSubsetLimits.lean) | Fixed-size binomial ratios, rounded capped capacities and inverse-power divergence, reusing Mathlib asymptotics | this repository |
 | [`CausalFields`](LeanMachine/CausalFields.lean) | Local deterministic fields on ranked networks, projected-support autonomy and complete entering-cut recovery | this repository |
 | [`CausalCutCapacity`](LeanMachine/CausalCutCapacity.lean) | Joint support cardinality and bit-capacity bounds from causal cut recovery | this repository |
+| [`CausalCollector`](LeanMachine/CausalCollector.lean) | Local output collection on a memory interval, exact prefix capacity and delay-sum volume, and sink-cut support bounds | this repository |
 
 ## External code
 

@@ -94,3 +94,4 @@ import LeanMachine.CyclicGapScaling
 import LeanMachine.FixedSubsetLimits
 import LeanMachine.CausalFields
 import LeanMachine.CausalCutCapacity
+import LeanMachine.CausalCollector

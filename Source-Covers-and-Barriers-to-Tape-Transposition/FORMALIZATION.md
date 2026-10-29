@@ -1144,17 +1144,48 @@ or independence assumption is introduced.
 converts that recovery into a finite image count and its base-two capacity
 bound. `cut_support_bound` instantiates the bound on actual group bits,
 with exactly `|B| * |J_a| * b` raw bits for sink-side row set `B`, when
-all group outputs lie inside the cut. This last condition must be supplied
-by the still-unformalized collector construction; it is not silently
-assumed for the original output nodes.
+all group outputs lie inside the cut. The collector below supplies this
+condition at a common sink; it is not assumed for the original output nodes.
+
+## Completed: paid collector and all source/sink cut inequalities
+
+The shared [`CausalCollector`](../lean-machine/LeanMachine/CausalCollector.lean)
+constructs a local evaluation with every output at the last node of a
+specified memory interval. Original fields and visible raw data are
+unchanged. Each added edge at `v` carries precisely the coordinates with
+original output at or before `v`. The proof uses the incoming prefix for
+earlier outputs and the original local rule for outputs at the current node.
+It allows arbitrary correlated supports and arbitrary symbol alphabets;
+the bit-capacity statement specializes to Boolean coordinates.
+
+The binary collector cost is sharper than the whole-group reservation:
+`sum_v |prefix(v)| = sum_i (last - output(i)) <= |group| * (last - first)`.
+Coincident endpoints give no collector edges. Mathlib's interval cardinality
+and finite sum interchange prove the exact count; no flow premise is used.
+
+The paper's [`CausalCollector`](lean/SourceCovers/CausalCollector.lean)
+instantiates the construction on actual nonempty column groups, proves
+disjoint collector edge intervals, and maps each copy to the original
+memory edge with unchanged endpoints. Its cut-support theorem requires
+only the last output node in the sink-side set. `sourceCutCapacity` counts
+the source-to-row arcs, crossing row attachments, and every entering
+physical or collector edge. `collected_source_cut_bound` covers every
+sink-side physical set and every sink-side row set. An attachment capacity
+of `|group|` suffices; the general bound allows any nonnegative capacity
+at least the support logarithm. The support-size upper bound itself needs
+no causal typing, only a nonempty correctness set.
+
+These are cut inequalities, not a max-flow or routing existence theorem.
+The future augmented-network definition must agree with these explicit
+arc counts; that bridge must be proved rather than assumed.
 
 Next, complete Theorem 8.2 without replacing its routing conclusion by
 the weaker support-cut result:
 
-1. Add the forward collector on each group's actual memory interval and
-   verify the `W_a` per-edge capacity and recovery at its last output node.
-2. Establish real-capacity max-flow/min-cut on the augmented finite network;
-   the existing cut recovery supplies the lower bound on every source/sink cut.
+1. Establish real-capacity max-flow/min-cut, instantiate its augmented
+   network, and connect its cut expression to `sourceCutCapacity`.
+2. Obtain a flow of exactly the projected-support logarithm, retaining
+   every row's source-capacity constraint.
 3. Decompose flow, remove artificial arcs, split each row's mass among its
    original group bits with mass at most one each, and append the paid
    backward memory walks. Unattached rows must receive zero mass.

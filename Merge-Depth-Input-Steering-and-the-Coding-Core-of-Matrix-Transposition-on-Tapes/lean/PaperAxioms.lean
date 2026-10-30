@@ -61,9 +61,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.cor_HC_step_formation
 #print axioms MergeDepth.hop_charging_HC
 #print axioms MergeDepth.hop_charging_machine
--- MergeDepth/HopRouting.lean
-#print axioms MergeDepth.hop_routing_a
-#print axioms MergeDepth.hop_routing_b
+-- MergeDepth/HopRoutingCount.lean
+#print axioms MergeDepth.card_exceptional_eq
+#print axioms MergeDepth.hop_routing_count
 -- MergeDepth/LowAdaptivity.lean
 #print axioms MergeDepth.low_adaptivity_a
 #print axioms MergeDepth.low_adaptivity_a_exists
@@ -181,6 +181,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hop_charging
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
+#print axioms MergeDepth.hop_routing_a
+#print axioms MergeDepth.hop_routing_b
 #print axioms MergeDepth.inClass_iff_runSkeleton
 #print axioms MergeDepth.inSkel
 #print axioms MergeDepth.isStorageCode_fibre_of_indexCode

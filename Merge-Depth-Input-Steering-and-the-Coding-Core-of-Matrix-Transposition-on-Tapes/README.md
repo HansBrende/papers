@@ -7,8 +7,8 @@
 - Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
   built on the libraries of the eighth, ninth and fifth papers). Formalized so far:
   - Section 3: the cold genie (Lemma 3.1), the covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (part (b) for
-    function DAGs refining the dependency DAG), Lemma 3.3 for function DAGs, Lemma 3.14(a) with the machine's read and
-    append steps as hypotheses, Proposition 3.16 given the count of Lemma 3.14(a), Proposition 3.17, Corollary HC at
+    function DAGs refining the dependency DAG), Lemma 3.3 for function DAGs, Lemma 3.14(a) and Proposition 3.16 with the
+    machine's read and append steps as hypotheses, Proposition 3.17, Corollary HC at
     one size, Corollary HC* at one size given Lemma 3.14(b), and the merge DAG with Proposition 3.20 (part (b) for
     refinements).
   - Section 4: Lemmas 4.2, 4.5 (the block machine, in the frozen machine model), 4.6, 4.7, the paired-distance group

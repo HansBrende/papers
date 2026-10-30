@@ -38,3 +38,4 @@ import MergeDepth.Trimming
 import MergeDepth.PairedSeparation
 import MergeDepth.ConeBridge
 import MergeDepth.BlockMachine
+import MergeDepth.HopRoutingCount

@@ -1,5 +1,8 @@
 # Papers
 
+**[The Frontier](https://hansbrende.github.io/papers/frontier/)**: an interactive map of the multitape machines for which
+linear-time transposition is ruled out, unconditionally or under open hypotheses, and of where it is still open.
+
 | Paper | Authors | Date | Contents |
 |---|---|---|---|
 | [Matrix Transposition and the Tape Coding Conjecture](Matrix-Transposition-and-the-Tape-Coding-Conjecture/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/main.pdf), LaTeX sources) and its Lean 4 formalization |
@@ -13,17 +16,20 @@
 | [Source Covers and Barriers to Tape Transposition](Source-Covers-and-Barriers-to-Tape-Transposition/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Source-Covers-and-Barriers-to-Tape-Transposition/paper/main.pdf), LaTeX sources), all 32 numbered results and 6 definitions formalized in Lean, source-cover bounds and restricted impossibility theorems |
 | [Directed Reciprocity and Deep-Nesting Bounds for Matrix Transposition on Tapes](Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes/) | Hans Brende and Gemini 4 Argon (Google DeepMind) | October 2026 | Paper ([PDF](https://hansbrende.github.io/papers/Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes/paper/main.pdf), LaTeX sources), complete Lean 4 formalization (Theorem S*, Theorem SH*, and deep-nesting bounds through Theorem A), and numerical reproduction script |
 
-**[The Frontier](https://hansbrende.github.io/papers/frontier/)**: an interactive map of the multitape machines for which
-linear-time transposition is ruled out, unconditionally or under open hypotheses, and of where it is still open.
+## Memos
+
+Each memo extends one paper and is kept in that paper's folder.
+
+| Memo | Extends | Authors | Date | Contents |
+|---|---|---|---|---|
+| [Adaptive Pass Bounds without a Runtime Assumption](Matrix-Transposition-and-the-Tape-Coding-Conjecture/memo-passes/) | [Matrix Transposition and the Tape Coding Conjecture](Matrix-Transposition-and-the-Tape-Coding-Conjecture/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Memo ([PDF](https://hansbrende.github.io/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/memo-passes/paper/main.pdf), LaTeX sources) and its Lean 4 formalization: removes the halting transposer's polynomial-runtime premise in the first paper's pass bound |
+| [The Padding Theorem Needs No Idle Tapes](Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/memo/) | [Local Coding Barriers and the Limits of Tape Geometry for Matrix Transposition](Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Write-up in its README and its Lean 4 formalization: the padding theorem holds without idle tapes, and the padded machine also meets the finer entry-cell inequality |
+| [Conditional Elimination and Circular Storage Codes](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo/) | [Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Memo ([PDF](https://hansbrende.github.io/papers/Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo/paper/main.pdf), LaTeX sources) and its Lean 4 formalization: extends the fourth paper's circular-clique half-rate range from p/q ≤ 14/5 to every p/q < 3 |
+| [Subcubic Storage Bounds beyond Scalar Recovery](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-subcubic/) | [Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Memo ([PDF](https://hansbrende.github.io/papers/Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-subcubic/paper/main.pdf), LaTeX sources) and its Lean 4 formalization: reversible rules, low-rank ports, two-step stability, and exact quadratic ranks |
+| [TCP and Information-Cheap Depth Reduction](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-information-depth/) | [Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/) | Hans Brende and GPT-6 Astra (OpenAI) | October 2026 | Written proof in its README, not formalized: TCP for every fixed number of walks is equivalent to information-cheap constant-depth revelation for linear-time oblivious native computations |
+| [Frozen Gap Areas and the Sharpness of Source-Cover Certificates](Source-Covers-and-Barriers-to-Tape-Transposition/memo-gap-area/) | [Source Covers and Barriers to Tape Transposition](Source-Covers-and-Barriers-to-Tape-Transposition/) | Hans Brende and Claude Opus 5.5 (Anthropic) | October 2026 | Memo ([PDF](https://hansbrende.github.io/papers/Source-Covers-and-Barriers-to-Tape-Transposition/memo-gap-area/paper/main.pdf), LaTeX sources) and its Lean 4 formalization: the frozen gap area as a certificate, funnels and single-sweep terminal landings excluded, and explicit two-exception geometries on which the certificate holds at moduli comparable to the protected rank |
 
 Shared Lean machinery used by the papers, including ported external formalizations, is in
 [`lean-machine/`](lean-machine/).
-
-Extension memos by Hans Brende and GPT-6 Astra (OpenAI):
-
-- [Adaptive Pass Bounds without a Runtime Assumption](Matrix-Transposition-and-the-Tape-Coding-Conjecture/memo-passes/)
-  removes the halting transposer's polynomial-runtime premise in the first paper's pass bound.
-- [Subcubic Storage Bounds beyond Scalar Recovery](Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo-subcubic/)
-  extends the fourth paper with reversible rules, low-rank ports, two-step stability, and exact quadratic ranks.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution and publishing guidance.

@@ -24,6 +24,21 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_monotone_le
 -- MergeDepth/Covering.lean
 #print axioms MergeDepth.covering
+-- MergeDepth/EMModel.lean
+#print axioms MergeDepth.EM.Alg
+#print axioms MergeDepth.EM.CorrectAt
+#print axioms MergeDepth.EM.HaltsWith
+#print axioms MergeDepth.EM.ObliviousOn
+#print axioms MergeDepth.EM.Runs
+#print axioms MergeDepth.EM.inputDisk
+-- MergeDepth/ExternalMemory.lean
+#print axioms MergeDepth.EM.EMLowerBound
+#print axioms MergeDepth.EM.corollaryEM
+#print axioms MergeDepth.EM.corollaryEM_some
+#print axioms MergeDepth.EM.em_core
+#print axioms MergeDepth.EM.em_oblivious
+#print axioms MergeDepth.EM.theoremEM
+#print axioms MergeDepth.EM.theoremEM_sharp
 -- MergeDepth/Formation.lean
 #print axioms MergeDepth.DeepFormation
 #print axioms MergeDepth.IsCopy
@@ -93,6 +108,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.Centred.not_mem_line
 #print axioms MergeDepth.DeepStep
 #print axioms MergeDepth.DepStep
+#print axioms MergeDepth.EM.emAlg
 #print axioms MergeDepth.FunDag.cone
 #print axioms MergeDepth.FunDag.isIndexCode
 #print axioms MergeDepth.IsColdGenie
@@ -158,3 +174,4 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MotionDepthCodes.IsStorageCode
 #print axioms SourceCovers.finite_skeleton_uniform_deficit
 #print axioms SourceCovers.one_exception_uniform_deficit
+#print axioms Transpose.LinearTimeTransposable

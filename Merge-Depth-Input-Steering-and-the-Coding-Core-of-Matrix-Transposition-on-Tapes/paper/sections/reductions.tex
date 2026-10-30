@@ -162,6 +162,7 @@ a constant number of bits. Fixing these crossings therefore costs little input e
 oblivious. We use the following form of the external-memory model of Aggarwal and Vitter~\cite{AggarwalVitter1988}.
 
 \begin{definition}[External-memory algorithms]\label{def:EM}
+\formal{MergeDepth/EMModel.lean}{MergeDepth.EM.Alg,MergeDepth.EM.Runs,MergeDepth.EM.inputDisk,MergeDepth.EM.HaltsWith,MergeDepth.EM.CorrectAt,MergeDepth.EM.ObliviousOn}
 Fix a finite alphabet $\Sigma$ containing $0$, $1$ and a blank~$\sqcup$, and integers $B,m\ge1$ and $r\ge0$. A
 \emph{block} is a word in $\Sigma^B$. A \emph{disk} is a map $D\colon\Z\to\Sigma^B$ whose values are blank blocks at all
 but finitely many \emph{addresses}. The \emph{internal memory} consists of $m$ \emph{slots}, each holding one block, and a
@@ -188,7 +189,7 @@ all inputs in~$\mathcal C$ have the same I/O sequence.
 \end{definition}
 
 \begin{theorem}[Theorem EM: an oblivious external-memory image]\label{thm:EM}
-\notformalized
+\formal{MergeDepth/ExternalMemory.lean}{MergeDepth.EM.theoremEM,MergeDepth.EM.theoremEM_sharp,MergeDepth.EM.em_core,MergeDepth.EM.em_oblivious}
 Let $M$ be a machine with $k$ work tapes, state set~$Q$ and work alphabet~$\Gamma$, let $c>0$, and put
 \[
  c_1=4(k+1)c+2,\qquad c_2=\bigl(2(k+1)c+1\bigr)\log_2(2k+4).
@@ -203,7 +204,7 @@ register of at most $\gamma\log_2(2L)$ bits, such that:
 \end{enumerate}
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
 Fix~$d$. Call the input tape tape~$0$ and the work tapes tapes $1,\dots,k$. Block~$j\in\Z$ of a tape consists of its cells
 $jB,\dots,jB+B-1$.
 
@@ -215,12 +216,16 @@ written to address $d+n$.
 
 \emph{Windows.} Slots $2\tau+1$ and $2\tau+2$ hold the \emph{window} of tape~$\tau\in\{0,\dots,k\}$: its blocks $j_\tau$
 and $j_\tau+1$, the lower one in slot $2\tau+1$. Slot $2k+3$ is an output buffer. The register holds the state of~$M$, the
-head positions $x_\tau$ and window indices $j_\tau$, the number of output bits appended so far, and a flag for a pending
-second I/O. We maintain three invariants: each window contains the current contents of its blocks; every work-tape block
+head positions $x_\tau$ and window indices $j_\tau$, the number of flushes, the number of bits in the buffer, and a
+\emph{phase}: before the first I/O, running, or the second I/O of a shift of work tape~$h$ in direction~$\pm$ pending,
+$2k+2$ values in all. A write sends slot~$i$ of the new contents~$\mu'$ (\cref{def:EM}), so the slot written cannot
+change in the same application; the register records the effect instead, and moves between slots are made by the next
+application. We maintain three invariants: each window contains the current contents of its blocks; every work-tape block
 outside its window has its current contents at its address; and the head of tape~$\tau$ lies in its window
 $[j_\tau B,(j_\tau+2)B)$. Initially $j_\tau=-1$ for every~$\tau$. The work windows are then blank and the lower input slot
 consists of end markers, both without an I/O, and the algorithm reads address~$0$ into slot~$2$; this first I/O is the
-same for all inputs.
+same for all inputs. Since a run starts with the zero register, the register values are stored by an injective encoding
+that maps the initial value, in the phase before the first I/O, to the zero word.
 
 \emph{Simulation.} With the windows in memory, the algorithm simulates the steps of~$M$ without I/Os: the symbols under
 the heads are in the windows, every work symbol written goes into its window, and every output bit appended goes into the
@@ -234,11 +239,13 @@ $0\le j_\tau+2<d$; otherwise it consists of end markers and is produced without 
 has reached $j_\tau B-1$, is symmetric: write back block $j_\tau+1$ if $\tau\ge1$, move the lower slot up, fill the lower
 slot with block $j_\tau-1$, and decrease~$j_\tau$.
 \item If the buffer holds $B$ bits (a \emph{flush}), it is written to address $d+n$, where $n$ is the number of earlier
-flushes, and emptied.
+flushes; the same application increases the flush count and sets the number of buffered bits to~$0$, which empties the
+buffer.
 \item If $M$ has halted, the algorithm halts.
 \end{itemize}
-A shift performs at most two I/Os, and a flush one. The pending flag lets the second I/O of a shift be issued by the next
-application of the map of \cref{def:EM}.
+A shift performs at most two I/Os, and a flush one. A shift of a work tape writes the leaving block back and enters the
+pending phase; the next application of the map of \cref{def:EM} moves the remaining window block to its new slot and
+issues the second I/O, which reads the entering block.
 
 \emph{Correctness.} The invariants are preserved: a shift writes back the block that leaves the window and fills the
 block that enters it with its current contents, and the head, which moves by at most one cell per step, is again inside
@@ -263,18 +270,34 @@ sequence of a run is a function of its event word. There are at most $\sum_{n=0}
 words of length at most~$n_0$, so some event word is shared by a set $\mathcal C$ of at least
 $2^L(2k+4)^{-n_0}=2^{L-c_2d}$ inputs, and the algorithm is oblivious on~$\mathcal C$.
 
-\emph{Register.} The register holds the state of~$M$, a flag with at most $2k+1$ values, and $2k+3$ integers: the $x_\tau$
-and $j_\tau$ and the output count. Each has absolute value at most $c(L+1)+2\le(2c+3)L$, since $\abs{x_\tau}\le T$ and
-$\abs{j_\tau}\le\abs{x_\tau}+2$. As $\log_2(2L)\ge1$, the register needs at most $\gamma\log_2(2L)$ bits with
-$\gamma=(2k+3)\bigl(\log_2(4c+7)+1\bigr)+\lceil\log_2\card Q\rceil+\lceil\log_2(2k+1)\rceil$.
-\end{informalproof}
+\emph{Register.} The register holds the state of~$M$, a phase with $2k+2$ values, and $2k+4$ integers: the $x_\tau$ and
+$j_\tau$, the flush count and the buffer count. Each has absolute value at most $T_0+2$, where $T_0=\lfloor c(L+1)\rfloor$,
+since $\abs{x_\tau}\le T_0$, $\abs{j_\tau}\le\abs{x_\tau}+2$ and both counts are at most $L$; so each takes at most
+$2T_0+5\le(4c+5)L$ values. As $\log_2(2L)\ge1$, the register needs
+$\bigl\lceil\log_2\bigl(\card Q\,(2T_0+5)^{2k+4}(2k+2)\bigr)\bigr\rceil\le\gamma\log_2(2L)$ bits with
+$\gamma=(2k+4)\bigl(\log_2(4c+5)+1\bigr)+\log_2\card Q+\log_2(2k+2)+1$.
+
+Formally, the algorithm is \lean{MergeDepth.EM.emAlg}: a step function that performs at most one I/O per step, collapsed
+so that one application of the map follows the internal steps up to the next I/O. Its invariant relates each state to
+the configuration of~$M$ at the same time. \lean{MergeDepth.EM.em_core} shows that every run on an input on which $M$
+halts within $T_0$ steps performs the first read followed by the I/Os of an event word with at most $\lfloor T_0/B\rfloor$
+shifts per tape and exactly $d$ flushes, and \lean{MergeDepth.EM.em_oblivious} chooses $\mathcal C$ by pigeonhole over
+the padded event words.
+\end{outline}
 
 \Cref{thm:EM} thus places every linear-time transposer, adaptive or not, inside one concrete external-memory question:
 a transposition with $O(d)$ I/Os and $O(B)$ bits of internal memory that is oblivious on a set of $2^{L-O(d)}$ inputs.
-The constants $c_1,c_2$ do not depend on the alphabet, which affects only the memory size in bits.
+The constants $c_1,c_2$ do not depend on the alphabet, which affects only the memory size in bits. The formal proof
+gives more. It needs only $c\ge0$, and it counts exactly: at most $1+(2k+1)\lfloor T_0/B\rfloor+d$ I/Os, since a shift of
+the input tape costs at most one, and $2^L\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$; asymptotically
+$c_1$ and $c_2$ improve to about $(2k+1)c+1$ and $((k+1)c+1)\log_2(2k+4)$ (\lean{MergeDepth.EM.theoremEM_sharp}). Nor is
+transposition used except for the output length: the simulation works for every machine that computes outputs of length
+$dB$ from inputs of length $dB$ within $T_0$ steps, and for every set~$W$ of such inputs it is oblivious on a subset
+$\mathcal C\subseteq W$ with $\card W\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$
+(\lean{MergeDepth.EM.em_oblivious}).
 
 \begin{corollary}[An external-memory route to the negation of (T)]\label{cor:EM}
-\notformalized
+\formal{MergeDepth/ExternalMemory.lean}{MergeDepth.EM.corollaryEM,MergeDepth.EM.EMLowerBound,MergeDepth.EM.corollaryEM_some}
 Suppose that for every finite alphabet $\Sigma$ containing $0$, $1$ and a blank, and all constants $m\ge1$, $\gamma\ge0$
 and $A\ge0$, there is $d_0$ such that for every $d\ge d_0$ the following holds at $L=d^2b(d)$ and $B=d\,b(d)$: every
 external-memory algorithm over~$\Sigma$ with block size~$B$, $m$ slots and a register of at most $\gamma\log_2(2L)$ bits
@@ -282,13 +305,16 @@ that is correct and oblivious on some set of at least $2^{L-Ad}$ inputs performs
 set. Then (T) fails: no machine, with any number of work tapes, transposes in linear time.
 \end{corollary}
 
-\begin{informalproof}
+\begin{outline}
 Suppose that (T) holds, witnessed by a machine~$M$ with $k$ work tapes and a constant~$c$. Let $\gamma$, $c_1$ and $c_2$
 be as in \cref{thm:EM}, and put $\Sigma=\Sigma_M$, $m=2k+3$ and $A=\max(c_1,c_2)$. Let $d_0$ be given by the hypothesis
 for these constants, and let $d\ge d_0$. By \cref{thm:EM} there is an algorithm over~$\Sigma$ with block size $d\,b(d)$,
 $m$ slots and a register of at most $\gamma\log_2(2L)$ bits that is correct on every input, oblivious on a set of at least
 $2^{L-c_2d}\ge2^{L-Ad}$ inputs, and performs at most $c_1d\le Ad$ I/Os on each input. This contradicts the hypothesis.
-\end{informalproof}
+Formally, the conclusion is the negation of the frozen statement of~(T), \lean{Transpose.LinearTimeTransposable}, and the
+hypothesis \lean{MergeDepth.EM.EMLowerBound} is needed at one dimension $d\ge1$ only, for each alphabet and choice of
+constants (\lean{MergeDepth.EM.corollaryEM_some}).
+\end{outline}
 
 At block scale, then, deciding (T) negatively requires no hypothesis on adaptivity, nesting or coding beyond one
 indivisibility-free I/O lower bound.

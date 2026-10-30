@@ -39,6 +39,8 @@ AXIOMS = LEAN / "PaperAxioms.lean"
 # Libraries whose declarations may be named in the text, with the label used in the index.
 LIBRARIES = [
     (LEAN / LIBRARY, "this paper's library"),
+    (ROOT.parent / "Matrix-Transposition-and-the-Tape-Coding-Conjecture" / "lean" / "Transpose",
+     "the first paper's library"),
     (ROOT.parent / "Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes" / "lean"
      / "BoundedNesting", "the eighth paper's library"),
     (ROOT.parent / "Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes" / "lean"

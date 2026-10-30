@@ -26,3 +26,6 @@ import MergeDepth.LowAdaptivity
 import MergeDepth.SpanPartition
 import MergeDepth.HopRouting
 import MergeDepth.HCStar
+import MergeDepth.EMModel
+import MergeDepth.EMSimulation
+import MergeDepth.ExternalMemory

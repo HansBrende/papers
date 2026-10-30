@@ -10,7 +10,8 @@
   Lemma 3.3 for function DAGs, Proposition 3.17, Corollary HC at one size, Corollary HC* at one size given Lemma 3.14(b), Proposition 3.16
   given the count of Lemma 3.14(a), and the merge DAG with Proposition 3.20 (part (b) for refinements); in Section 4, Lemmas 4.2, 4.6, 4.14 and
   4.15 (with a small entropy library), Lemma 4.5(a), (d), and Lemma 4.7 given the block machine's local recursion; in
-  Section 6, Theorem LA, with the modelling step from a frozen trace (this uses the ninth paper's library too). The status line of every numbered result in the PDF says
+  Section 6, Theorem LA, with the modelling step from a frozen trace (this uses the ninth paper's library too), the
+  external-memory model, Theorem EM and Corollary EM, whose conclusion is the negation of the frozen statement of (T). The status line of every numbered result in the PDF says
   what is formal, and its appendix lists the Lean declarations cited.
 
 ## The question

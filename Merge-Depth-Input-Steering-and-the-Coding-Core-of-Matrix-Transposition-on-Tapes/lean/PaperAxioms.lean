@@ -30,6 +30,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.copyForest
 #print axioms MergeDepth.dm_le_countP_deepFormation
 #print axioms MergeDepth.root
+-- MergeDepth/HCStar.lean
+#print axioms MergeDepth.cor_HCstar_step
 -- MergeDepth/HopFields.lean
 #print axioms MergeDepth.short_paths
 -- MergeDepth/HopMachine.lean
@@ -116,6 +118,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.entropy
 #print axioms MergeDepth.entropy_le_of_fibres
 #print axioms MergeDepth.exists_large_fibre
+#print axioms MergeDepth.exists_large_fibre_card
 #print axioms MergeDepth.fibreGeometry
 #print axioms MergeDepth.fibreGeometry_deficit_le
 #print axioms MergeDepth.finrank_revealed_coord_le
@@ -126,6 +129,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.inSkel
+#print axioms MergeDepth.isStorageCode_fibre_of_indexCode
 #print axioms MergeDepth.length_le_of_coldDep
 #print axioms MergeDepth.length_le_of_cov
 #print axioms MergeDepth.length_le_of_cut

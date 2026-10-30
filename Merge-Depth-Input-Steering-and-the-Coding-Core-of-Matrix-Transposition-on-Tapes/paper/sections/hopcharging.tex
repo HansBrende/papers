@@ -18,9 +18,9 @@ all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: 
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
 \cref{prop:capacity} and Theorem~HC$'$ and \cref{prop:merge-reduction} for refinements of the dependency DAG are
-formalized in Lean, and so are \cref{lem:expansion} for function DAGs, Corollary~HC at one size and
-\cref{prop:hop-routing} given the count of \cref{lem:balls}(a), as their status lines say; the other results of this
-section are not formalized yet.
+formalized in Lean, and so are \cref{lem:expansion} for function DAGs, Corollary~HC at one size, Corollary~HC$^*$ at
+one size given \cref{lem:balls}(b), and \cref{prop:hop-routing} given the count of \cref{lem:balls}(a), as their status
+lines say; \cref{lem:balls} is not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -533,7 +533,9 @@ Question~9.1 for the degree bound~$\Delta$.
 \end{informalproof}
 
 \begin{corollary}[Corollary HC$^*$: Question~9.1 excludes bounded merge depth for all codes]\label{cor:HCstar}
-\notformalized
+\partformal{MergeDepth/HCStar.lean}{MergeDepth.cor_HCstar_step}{\cref{lem:balls}(b), which the formal statement assumes at
+the size in question; that the field DAG of a pruning is a function DAG that refines the dependency DAG, as in
+\cref{thm:HCprime}(b); and the last sentence}
 Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed degree bound; the
 binary alphabet suffices. Let $k,V\ge1$ and $s\ge0$ be integers, $C\ge1$, and let $0<\eps\le1$ and $\eta\ge0$ satisfy
 $\eps+\eta<\frac12$. Then for every machine~$M$ with $k$ work tapes there is~$d_0$ such that for no $d\ge d_0$ do the
@@ -548,7 +550,7 @@ In particular, for all $V\ge1$ and $s\ge0$ there is~$d_0$ such that at no $d\ge 
 with a lineage assignment for the empty genie give the field DAG merge depth at most~$s$ with respect to the empty genie.
 \end{corollary}
 
-\begin{informalproof}
+\begin{outline}
 Put $\beta=\max(2,\beta(M))$, $\gamma=\frac12-\eps-\eta>0$ and $\tau=\lceil4\beta(k+2)kC/\gamma\rceil$, let $D$ be the
 depth of the cold genies at $(V,\eps)$, and put $r=(s+1)\tau D$; these depend only on $M$, $V$, $s$, $C$, $\eps$
 and~$\eta$. Let $d_1$ be given by \cref{lem:balls}(b) for $D'=r$ and $\delta=\gamma/4$, and let $d_0=\max(d_1,2)$.
@@ -563,7 +565,13 @@ $2^{(1/2+\gamma/2)L}$ elements, and it is a binary storage code for the relation
 $2^{(1/2+\gamma/4)L}$ elements, a contradiction. For the last sentence, a lineage assignment for the empty genie is one
 for every~$\Gamma_{\mathrm F}$, and $\Gamma_{\mathrm F}$-free paths are paths; so the hypothesis gives~(ii), with $\eta=0$,
 for a cold genie at $(V,\frac14)$, which exists by \cref{lem:cold}.
-\end{informalproof}
+Formally, \lean{MergeDepth.cor_HCstar_step} is the corollary at one size: for a refinement of width~$m$ with the
+hypotheses of \lean{MergeDepth.hop_charging_fields}, $T\le C(L+1)$, at most $\eta L$ exceptional positions and
+$4\beta mkC\le\gamma\tau$, and with the bound $2^{(1/2+\gamma/4)L}$ on binary storage codes for relations inside the balls
+of radius $(s+1)\tau D$ as a hypothesis, the hypotheses are contradictory. The large fibre is
+\lean{MergeDepth.exists_large_fibre_card}, and \lean{MergeDepth.isStorageCode_fibre_of_indexCode} shows that it is a
+storage code for $q\mapsto I(\tpos(q))$.
+\end{outline}
 
 Corollary~HC$^*$ is the deep-nesting companion of Corollary~F$'$~\cite[Corollary~6.3]{BoundedNesting2026}, which it
 contains, since bounded entry leaves no deep merges. Given Question~9.1, an oblivious linear-time transposer must

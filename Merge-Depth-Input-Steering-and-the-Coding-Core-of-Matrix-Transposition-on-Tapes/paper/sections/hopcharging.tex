@@ -18,7 +18,7 @@ all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: 
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). Every numbered result of this
 section is formalized in Lean, for machines that are oblivious up to their last output step and with [Q9.1] as a
-hypothesis where the statement assumes it, except that Corollary~HC is formalized at one size, as its status line says.
+hypothesis where the statement assumes it, as the status lines say.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -440,10 +440,7 @@ $(s+1)\tau D$ instead of $((s+1)\tau+1)D$, and it covers accumulators of fresh d
 \subsection{Exclusion of bounded merge depth}\label{sec:hop-excl}
 
 \begin{corollary}[Corollary HC: the linear crux excludes bounded merge depth]\label{cor:HC}
-\partformal{MergeDepth/HopMachine.lean}{MergeDepth.cor_HC_step,MergeDepth.cor_HC_step_formation}{the quantification over
-machines and sizes, and the linear crux as a statement about the class $\Sball_{k,C,\beta,r}$; the Lean theorems are the
-argument at one size: the ball system of radius~$r$ has minrank less than $(\rho-\eta')L$, $\eta'=(\rho-\eps)/2$, for
-merge depth and for formation depth}
+\formal{MergeDepth/LinearCrux.lean}{MergeDepth.cor_HC,MergeDepth.cor_HC_formation,MergeDepth.cor_HC_uniform,MergeDepth.cor_HC_formation_uniform,MergeDepth.LinDataPath,MergeDepth.SBall,MergeDepth.LinCrux,MergeDepth.MergeShallow,MergeDepth.FormationShallow}
 Let $k,m,V\ge1$, $\beta\ge2$ and $s\ge0$ be integers, $C\ge1$, $\F$ a field, $0<\eps<\rho$ with $\eps\le1$, and
 $0\le\eta<(\rho-\eps)/8$. Put
 \[
@@ -463,7 +460,8 @@ The same holds with merge depth replaced by formation depth.
 \end{corollary}
 
 \begin{outline}
-Let $d_0$ be given by the linear crux for $\eta'=(\rho-\eps)/2$, and suppose that (i) and~(ii) hold at some $d\ge d_0$,
+Let $d_0\ge1$ be at least the threshold that the linear crux gives for $\eta'=(\rho-\eps)/2$ (at $d=0$ there are no
+outputs, and (i) and~(ii) can both hold), and suppose that (i) and~(ii) hold at some $d\ge d_0$,
 with a representation of width $m'\le m$, a cold genie $\Gamma_{\mathrm F}$ and a lineage assignment; let $X$ be the set
 of output positions at which the merge depth exceeds~$s$, so $\card X\le\eta L$. \Cref{thm:HCprime}(a), with $m'$ in place
 of~$m$, gives $P_{\tpos}=R+S$ with row~$\ell$ of~$S$ supported in $B^r(\ell)$ and, as $\tau\ge8mkC/(\rho-\eps)$ and
@@ -476,11 +474,23 @@ The ball system $(B^r(\ell))_\ell$ of~$M$ belongs to $\Sball_{k,C,\beta,r}$, sin
 value width at most~$\beta$ and halting time at most $C(L+1)$, and appends exactly $L$ bits. Its minrank over~$\F$ is at
 most $\rank R<(\rho-\eta')L$, contrary to the linear crux. For formation depth, take the lineage assignment that gives every copy its out-edge
 (\cref{rem:hop-examples}); by \cref{lem:merge-formation} its merge depth is at most the formation depth.
+
+Formally, a data path is \lean{MergeDepth.LinDataPath}, the eighth paper's Definition~7.1 for a machine that is oblivious
+along a trace, and the values of its network are the encoded step values (\lean{MergeDepth.LinDataPath.val_eq_enc}); the class and
+the crux are \lean{MergeDepth.SBall} and \lean{MergeDepth.LinCrux}, and~(ii) is \lean{MergeDepth.MergeShallow} or
+\lean{MergeDepth.FormationShallow}, in the form of the coordinate DAG. \lean{MergeDepth.cor_HC} and
+\lean{MergeDepth.cor_HC_formation} are the corollary, through the bound \lean{MergeDepth.LinDataPath.minrank_ballSystem_le}
+at one size, and \lean{MergeDepth.cor_HC_uniform} and \lean{MergeDepth.cor_HC_formation_uniform} take $d_0$ uniform over
+the machines with $k$ work tapes and value width at most~$\beta$, for every $\eta<7(\rho-\eps)/8$. The hypotheses $V\ge1$,
+$\beta\ge2$, $\eps>0$, $\eps\le1$ and $\eta\ge0$ are not used, since they matter only for the existence of a cold genie,
+which~(ii) assumes, and $C>0$ suffices. On the way, \lean{MergeDepth.LinDataPath.rigidity_machine} is the eighth paper's
+Lemma~7.3 for machines, including the translation of a machine into a linear network.
 \end{outline}
 
 Given the linear crux at one fixed radius, an oblivious linear-time transposer with a linear code must therefore, for
 every~$s$ and on every schedule, merge deep lineages more than $s$ times along some path from each of more than
-$(\rho-\eps)L/8$ outputs.
+$\eta L$ outputs, for every $\eta<7(\rho-\eps)/8$ (\lean{MergeDepth.cor_HC_uniform}; the written proof gives
+$\eta<(\rho-\eps)/8$).
 
 \begin{remark}[Parameters and special cases]\label{rem:HC-scope}
 (a) The depth in Corollary~F depends only on $k$, $V$, $\beta$, $C$ and~$\eps$; the radius~$r$ here depends also on

@@ -106,14 +106,22 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.short_paths
 -- MergeDepth/HopMachine.lean
 #print axioms MergeDepth.cold_genie_exists
-#print axioms MergeDepth.cor_HC_step
-#print axioms MergeDepth.cor_HC_step_formation
 #print axioms MergeDepth.hop_charging_HC
 -- MergeDepth/HopRoutingTrace.lean
 #print axioms MergeDepth.hop_routing_trace
 -- MergeDepth/InputSteering.lean
 #print axioms MergeDepth.cor_IS
 #print axioms MergeDepth.cor_RV
+-- MergeDepth/LinearCrux.lean
+#print axioms MergeDepth.FormationShallow
+#print axioms MergeDepth.LinCrux
+#print axioms MergeDepth.LinDataPath
+#print axioms MergeDepth.MergeShallow
+#print axioms MergeDepth.SBall
+#print axioms MergeDepth.cor_HC
+#print axioms MergeDepth.cor_HC_formation
+#print axioms MergeDepth.cor_HC_formation_uniform
+#print axioms MergeDepth.cor_HC_uniform
 -- MergeDepth/Localization.lean
 #print axioms MergeDepth.thm_L_a
 #print axioms MergeDepth.thm_L_b
@@ -204,6 +212,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.IsRun
 #print axioms MergeDepth.IsRun.reverse
 #print axioms MergeDepth.IsSkeletonConstant
+#print axioms MergeDepth.LinDataPath.minrank_ballSystem_le
+#print axioms MergeDepth.LinDataPath.rigidity_machine
+#print axioms MergeDepth.LinDataPath.val_eq_enc
 #print axioms MergeDepth.ObliviousTransposer
 #print axioms MergeDepth.Pruning
 #print axioms MergeDepth.Pruning.field_cone

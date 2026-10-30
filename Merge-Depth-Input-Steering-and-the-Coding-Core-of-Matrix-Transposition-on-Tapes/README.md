@@ -6,8 +6,9 @@
 - Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet.
 - Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
   built on the libraries of the eighth, ninth, fifth and tenth papers). Formalized so far:
-  - Section 3: every numbered result (for machines oblivious up to their last output step, field DAGs of prunings
-    through the fourth paper's local recursion at the level of fields), except that Corollary HC is formal at one size.
+  - Section 3: every numbered result (for machines oblivious up to their last output step; field DAGs of prunings
+    through the fourth paper's local recursion at the level of fields; linear data paths, the class of ball systems and
+    the linear crux of the eighth paper for Corollary HC).
   - Section 4: every numbered result, including the block machine in the frozen machine model and the paired-distance
     group (with better constants).
   - Section 5: Theorem L.

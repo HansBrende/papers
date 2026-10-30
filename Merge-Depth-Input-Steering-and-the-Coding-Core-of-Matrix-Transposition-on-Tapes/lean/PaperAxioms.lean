@@ -11,8 +11,17 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.rigidity_finrank
 -- MergeDepth/Covering.lean
 #print axioms MergeDepth.covering
+-- MergeDepth/Formation.lean
+#print axioms MergeDepth.DeepFormation
+#print axioms MergeDepth.IsCopy
+#print axioms MergeDepth.copyForest
+#print axioms MergeDepth.dm_le_countP_deepFormation
+#print axioms MergeDepth.root
 -- MergeDepth/HopMachine.lean
 #print axioms MergeDepth.cold_genie_exists
+#print axioms MergeDepth.cor_HC_step
+#print axioms MergeDepth.cor_HC_step_formation
+#print axioms MergeDepth.hop_charging_HC
 #print axioms MergeDepth.hop_charging_machine
 -- MergeDepth/Lineage.lean
 #print axioms MergeDepth.paths_short

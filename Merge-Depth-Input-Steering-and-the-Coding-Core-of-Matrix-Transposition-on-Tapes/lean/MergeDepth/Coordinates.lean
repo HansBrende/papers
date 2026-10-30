@@ -6,7 +6,8 @@ import MergeDepth.Charging
 A linear network `net` of width `m` (the data path of an oblivious machine, as in the eighth paper)
 has a *coordinate network* `coordNet net hm` of width one: vertex `t * m + i` is coordinate `i` of
 step `t`. It has an edge to coordinate `i'` of an out-neighbour `s` of `t` exactly when the
-coefficient `A t s i i'` is nonzero, and it reads the position read by step `t`.
+coefficient `A t s i i'` is nonzero, and it reads the position read by step `t` exactly when its input
+coefficient `a t i` is nonzero.
 
 * `coord_val`: the coordinate network computes the coordinates of the step values.
 * `coord_paths`: its paths project to paths of `net` (divide by `m`), with the same length.
@@ -63,6 +64,7 @@ theorem mem_coordOut {net : LinNet F L m} {hm : 0 < m} {u v : ℕ} :
     refine mem_biUnion.mpr ⟨v / m, hs, mem_image.mpr ⟨crd hm v, mem_filter.mpr ⟨mem_univ _, hA⟩, ?_⟩⟩
     exact div_mul_add_crd hm v
 
+open Classical in
 /-- **The coordinate network** of a linear network of width `m ≥ 1`. -/
 noncomputable def coordNet (net : LinNet F L m) (hm : 0 < m) : LinNet F L 1 where
   out := coordOut net hm
@@ -73,7 +75,7 @@ noncomputable def coordNet (net : LinNet F L m) (hm : 0 < m) : LinNet F L 1 wher
   c u := fun _ => net.c (u / m) (crd hm u)
   A u v := fun _ _ => net.A (u / m) (v / m) (crd hm u) (crd hm v)
   a u := fun _ => net.a (u / m) (crd hm u)
-  rd u := net.rd (u / m)
+  rd u := if net.a (u / m) (crd hm u) ≠ 0 then net.rd (u / m) else none
 
 /-- **The coordinate network computes the coordinates of the step values.** -/
 theorem coord_val (net : LinNet F L m) (hm : 0 < m) (w : Fin L → F) :
@@ -111,7 +113,11 @@ theorem coord_val (net : LinNet F L m) (hm : 0 < m) (w : Fin L → F) :
         exact hne this.symm
     have hinp : (coordNet net hm).inp w u 0 = net.inp w (u / m) (crd hm u) := by
       simp only [LinNet.inp, coordNet]
-      cases net.rd (u / m) <;> simp
+      by_cases ha : net.a (u / m) (crd hm u) = 0
+      · simp only [ha, ne_eq, not_true_eq_false, ↓reduceIte, Pi.zero_apply]
+        cases net.rd (u / m) <;> simp [ha]
+      · simp only [ha, ne_eq, not_false_eq_true, ↓reduceIte]
+        cases net.rd (u / m) <;> simp
     rw [(coordNet net hm).val_eq w u, net.val_eq w (u / m)]
     simp only [Pi.add_apply, hsum, hinp]
     rfl
@@ -192,6 +198,8 @@ theorem coord_reach_subset (net : LinNet F L m) (hm : 0 < m) (D u : ℕ) :
   refine ⟨π.map (· / m), coord_paths net hm π u hπ, fun v _ => Finset.notMem_empty v, by simpa using hlen,
     ?_⟩
   rw [getLastD_map (· / m) π u]
-  exact hrd
+  simp only [coordNet] at hrd
+  split_ifs at hrd with ha
+  · exact hrd
 
 end MergeDepth

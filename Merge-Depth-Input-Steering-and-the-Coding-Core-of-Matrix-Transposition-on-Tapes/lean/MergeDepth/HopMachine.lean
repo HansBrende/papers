@@ -1,5 +1,6 @@
 import MergeDepth.Steps
 import MergeDepth.ColdGenie
+import MergeDepth.Formation
 
 /-!
 # Theorem HC′(a) for oblivious machines
@@ -129,5 +130,110 @@ theorem hop_charging_machine (net : LinNet F L m) (hm : 0 < m) (xs : Fin k → �
     rw [le_div_iff₀ hτ']; linarith
   have hr : (R.rank : ℝ) ≤ β * ΓF.card + q + X.card := by exact_mod_cast hrank
   linarith [hcold.1]
+
+open Classical in
+/-- **Corollary HC at one size.** Under the hypotheses of `hop_charging_machine`, with
+`τ ≥ 8mkC/(ρ - ε)` and at most `ηL` exceptional positions, `η < (ρ - ε)/8`, the ball system of
+radius `(s + 1) τ D` has minrank less than `(ρ - (ρ - ε)/2) L`; so a minrank of at least that much,
+as the linear crux provides at large sizes, is impossible. -/
+theorem cor_HC_step (net : LinNet F L m) (hm : 0 < m) (xs : Fin k → ℕ → ℤ) {T C V β : ℕ}
+    (hT : T ≤ C * (L + 1)) (hL : 1 ≤ L) {ε ρ η : ℝ} (hερ : ε < ρ) (hη : η < (ρ - ε) / 8)
+    {D : ℕ} {ΓF : Finset ℕ} (hcold : IsColdGenie (L := L) xs T V β ε D ΓF)
+    (hout : ∀ t, ∀ s ∈ net.out t, DepStep xs T t s)
+    (hval : ∀ s ∈ ΓF, ((binVecs L F).image fun w => net.val w s).card ≤ 2 ^ β)
+    (lin : Forest)
+    (hside : ∀ u v v' π, lin.nxt u = some v → v' ≠ v → (u :: v' :: π) ∈ (coordNet net hm).paths u →
+      LinNet.GFree (coordGenie m ΓF) (u :: v' :: π) →
+      rCount (fun u v => DeepStep xs T V (u / m) (v / m)) (u :: v' :: π) = 0)
+    {τ : ℕ} (hτ : 1 ≤ τ) (hτρ : 8 * m * k * C ≤ (ρ - ε) * τ) (s : ℕ) (tout : Fin L → ℕ)
+    (φ : Fin L → Fin m → F) (φc : Fin L → F) (tpos : Fin L → Fin L) (X : Finset (Fin L))
+    (hX : (X.card : ℝ) ≤ η * L)
+    (hround : ∀ ℓ ∉ X, ∀ i : Fin m, φ ℓ i ≠ 0 → ∀ π, π ∈ (coordNet net hm).paths (tout ℓ * m + i) →
+      LinNet.GFree (coordGenie m ΓF) π →
+      dm lin (fun u v => DeepStep xs T V (u / m) (v / m)) false π ≤ s)
+    (htrans : ∀ w ∈ binVecs L F, ∀ ℓ, φc ℓ + φ ℓ ⬝ᵥ net.val w (tout ℓ) = w (tpos ℓ)) :
+    (minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) : ℝ) <
+      (ρ - (ρ - ε) / 2) * L := by
+  obtain ⟨R, S, hPRS, hrank, hsupp⟩ := hop_charging_machine net hm xs hT hcold hout hval lin hside
+    hτ s tout φ φc tpos X hround htrans
+  have hmin : minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) ≤ R.rank := by
+    have hsub : Pmat tpos - R = S := by rw [hPRS]; abel
+    exact Nat.sInf_le ⟨R, rfl, fun ℓ j h => (hsupp ℓ j (by rwa [hsub] at h)).2⟩
+  have hmin' : (minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) : ℝ) ≤ R.rank := by
+    exact_mod_cast hmin
+  have hτ' : (0 : ℝ) < τ := by exact_mod_cast hτ
+  have hL' : (1 : ℝ) ≤ L := by exact_mod_cast hL
+  have hfrac : (m * k * C * (L + 1) / τ : ℝ) ≤ (ρ - ε) * (L + 1) / 8 := by
+    rw [div_le_div_iff₀ hτ' (by norm_num)]
+    nlinarith
+  nlinarith
+
+open Classical in
+/-- **Theorem HC** for an oblivious machine with a linear data path: the conclusion of
+`hop_charging_machine` when the `Γ`-free coordinate paths from the output coordinates of every
+position outside `X` contain at most `s` deep formations. It is `hop_charging_machine` for the
+lineage assignment of the copies, by Lemma 3.11. -/
+theorem hop_charging_HC (net : LinNet F L m) (hm : 0 < m) (xs : Fin k → ℕ → ℤ) {T C V β : ℕ}
+    (hT : T ≤ C * (L + 1)) {ε : ℝ} {D : ℕ} {ΓF : Finset ℕ}
+    (hcold : IsColdGenie (L := L) xs T V β ε D ΓF)
+    (hout : ∀ t, ∀ s ∈ net.out t, DepStep xs T t s)
+    (hval : ∀ s ∈ ΓF, ((binVecs L F).image fun w => net.val w s).card ≤ 2 ^ β)
+    {τ : ℕ} (hτ : 1 ≤ τ) (s : ℕ) (tout : Fin L → ℕ) (φ : Fin L → Fin m → F) (φc : Fin L → F)
+    (tpos : Fin L → Fin L) (X : Finset (Fin L))
+    (hround : ∀ ℓ ∉ X, ∀ i : Fin m, φ ℓ i ≠ 0 → ∀ π, π ∈ (coordNet net hm).paths (tout ℓ * m + i) →
+      LinNet.GFree (coordGenie m ΓF) π →
+      π.countP (DeepFormation (coordNet net hm) fun u v => DeepStep xs T V (u / m) (v / m)) ≤ s)
+    (htrans : ∀ w ∈ binVecs L F, ∀ ℓ, φc ℓ + φ ℓ ⬝ᵥ net.val w (tout ℓ) = w (tpos ℓ)) :
+    ∃ R S : Matrix (Fin L) (Fin L) F, Pmat tpos = R + S ∧
+      (R.rank : ℝ) ≤ ε * L + m * k * C * (L + 1) / τ + X.card ∧
+      ∀ ℓ j, S ℓ j ≠ 0 → ℓ ∉ X ∧ j ∈ net.reach ∅ ((s + 1) * τ * D) (tout ℓ) := by
+  set cn := coordNet net hm
+  have hlin : ∀ u v, (copyForest cn).nxt u = some v → v ∈ cn.out u := fun u v h => by
+    rw [(isCopy_of_copyForest h).2]
+    exact mem_singleton_self v
+  have hcopy : ∀ u, IsCopy cn u → (copyForest cn).nxt u ≠ none := fun u hc => by
+    obtain ⟨w, hw⟩ := card_eq_one.mp hc.1
+    rw [copyForest_nxt_of_copy hc (show w ∈ cn.out u by rw [hw]; exact mem_singleton_self w)]
+    simp
+  refine hop_charging_machine net hm xs hT hcold hout hval (copyForest cn) ?_ hτ s tout φ φc tpos
+    X ?_ htrans
+  · intro u v v' π hn hne hπ _
+    exfalso
+    obtain ⟨hv', -⟩ := cons_cons_mem_paths.mp hπ
+    rw [(isCopy_of_copyForest hn).2, mem_singleton] at hv'
+    exact hne hv'
+  · intro ℓ hℓ i hi π hπ hfree
+    exact (dm_le_countP_deepFormation cn _ (copyForest cn) hlin hcopy hπ).trans
+      (hround ℓ hℓ i hi π hπ hfree)
+
+open Classical in
+/-- **Corollary HC at one size, for formation depth.** -/
+theorem cor_HC_step_formation (net : LinNet F L m) (hm : 0 < m) (xs : Fin k → ℕ → ℤ) {T C V β : ℕ}
+    (hT : T ≤ C * (L + 1)) (hL : 1 ≤ L) {ε ρ η : ℝ} (hερ : ε < ρ) (hη : η < (ρ - ε) / 8)
+    {D : ℕ} {ΓF : Finset ℕ} (hcold : IsColdGenie (L := L) xs T V β ε D ΓF)
+    (hout : ∀ t, ∀ s ∈ net.out t, DepStep xs T t s)
+    (hval : ∀ s ∈ ΓF, ((binVecs L F).image fun w => net.val w s).card ≤ 2 ^ β)
+    {τ : ℕ} (hτ : 1 ≤ τ) (hτρ : 8 * m * k * C ≤ (ρ - ε) * τ) (s : ℕ) (tout : Fin L → ℕ)
+    (φ : Fin L → Fin m → F) (φc : Fin L → F) (tpos : Fin L → Fin L) (X : Finset (Fin L))
+    (hX : (X.card : ℝ) ≤ η * L)
+    (hround : ∀ ℓ ∉ X, ∀ i : Fin m, φ ℓ i ≠ 0 → ∀ π, π ∈ (coordNet net hm).paths (tout ℓ * m + i) →
+      LinNet.GFree (coordGenie m ΓF) π →
+      π.countP (DeepFormation (coordNet net hm) fun u v => DeepStep xs T V (u / m) (v / m)) ≤ s)
+    (htrans : ∀ w ∈ binVecs L F, ∀ ℓ, φc ℓ + φ ℓ ⬝ᵥ net.val w (tout ℓ) = w (tpos ℓ)) :
+    (minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) : ℝ) <
+      (ρ - (ρ - ε) / 2) * L := by
+  obtain ⟨R, S, hPRS, hrank, hsupp⟩ := hop_charging_HC net hm xs hT hcold hout hval hτ s tout φ φc
+    tpos X hround htrans
+  have hmin : minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) ≤ R.rank := by
+    have hsub : Pmat tpos - R = S := by rw [hPRS]; abel
+    exact Nat.sInf_le ⟨R, rfl, fun ℓ j h => (hsupp ℓ j (by rwa [hsub] at h)).2⟩
+  have hmin' : (minrank F tpos (fun ℓ => net.reach ∅ ((s + 1) * τ * D) (tout ℓ)) : ℝ) ≤ R.rank := by
+    exact_mod_cast hmin
+  have hτ' : (0 : ℝ) < τ := by exact_mod_cast hτ
+  have hL' : (1 : ℝ) ≤ L := by exact_mod_cast hL
+  have hfrac : (m * k * C * (L + 1) / τ : ℝ) ≤ (ρ - ε) * (L + 1) / 8 := by
+    rw [div_le_div_iff₀ hτ' (by norm_num)]
+    nlinarith
+  nlinarith
 
 end MergeDepth

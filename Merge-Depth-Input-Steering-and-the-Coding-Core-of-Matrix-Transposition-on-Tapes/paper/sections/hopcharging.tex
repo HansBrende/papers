@@ -16,9 +16,10 @@ splits into a part of small rank and a part supported on balls whose radius does
 number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma and
-Theorem~HC$'$(a) are formalized in Lean, and so are parts of \cref{lem:expansion,lem:short-paths}, as their status
-lines say; the other results of this section are not formalized yet.
+suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma,
+Theorems~HC and~HC$'$(a) and \cref{lem:merge-formation} are formalized in Lean, and so are parts of
+\cref{lem:expansion,lem:short-paths} and Corollary~HC, as their status lines say; the other results of this section
+are not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -192,6 +193,7 @@ and one per revealed coordinate, is the elementary extension proved above.
 \subsection{Hop charging along transport trees}\label{sec:hop-HC}
 
 \begin{definition}[Transport trees and deep formations]\label{def:transport}
+\formal{MergeDepth/Formation.lean}{MergeDepth.IsCopy,MergeDepth.copyForest,MergeDepth.root,MergeDepth.DeepFormation}
 Let $G$ be a refinement. A \emph{copy} is a node that has exactly one out-edge and is not input-marked; every other node
 is a \emph{formation}. Following the out-edges of copies from a node~$u$ leads, as steps decrease, to a formation
 $\mathrm{root}(u)$, with $\mathrm{root}(u)=u$ for a formation; the edges followed form the \emph{chain} of~$u$. The
@@ -208,20 +210,29 @@ for some $\lambda\ne0$. Storing a value in a cell, carrying it in the state, mov
 create no formations; combining it with anything else does.
 
 \begin{theorem}[Theorem HC: hop charging]\label{thm:HC}
-\notformalized
+\formal{MergeDepth/HopMachine.lean}{MergeDepth.hop_charging_HC}
 Let $M$ have an $\F$-linear data path at length~$L$ with a representation of width~$m$, let $\Gamma_{\mathrm F}$ be a
 cold genie at $(V,\eps)$ with depth~$D$, let $\tau\ge1$ and $s\ge0$ be integers, and let $X$ be the set of output
-positions at which the coordinate DAG has formation depth greater than~$s$. Let $Q_0$ be the set of roots of the
-$\tau$-tall transport trees. Then $\card{Q_0}\le mN_{\mathcal R}/\tau$, and every $(\Gamma_{\mathrm F},Q_0)$-free path
-that starts at an unrevealed output node of a position $\ell\notin X$ and ends at an input-marked node has fewer than
-$r_0=((s+1)\tau+1)D$ edges. If $M$ transposes all $d\times d$ matrices, then
+positions at which the coordinate DAG has formation depth greater than~$s$. If $M$ transposes all $d\times d$ matrices,
+then
 \[
   P_{\tpos}=R+S,\qquad\rank R\le\eps L+\frac{mkC(L+1)}{\tau}+\card X,
 \]
-and row~$\ell$ of~$S$ is supported in $B^{r_0}(\ell)$ for every~$\ell$.
+and row~$\ell$ of~$S$ is zero for $\ell\in X$ and supported in $B^{(s+1)\tau D}(\ell)$ otherwise.
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
+Give every copy its out-edge as lineage edge and no other node a lineage edge; this is a lineage assignment for every
+$\Gamma_{\mathrm F}$ (\cref{def:lineage,rem:hop-examples}). By \cref{lem:merge-formation}, its merge depth is at most the
+formation depth at every output position, so \cref{thm:HCprime}(a) applies with the same~$s$ and~$X$.
+\end{outline}
+
+\begin{remark}[A direct proof]\label{rem:HC-direct}
+Theorem~HC also has a direct proof with a simpler genie, the set~$Q_0$ of roots of the $\tau$-tall transport trees, at
+the slightly larger radius $r_0=((s+1)\tau+1)D$: $\card{Q_0}\le mN_{\mathcal R}/\tau$, and every
+$(\Gamma_{\mathrm F},Q_0)$-free path that starts at an unrevealed output node of a position $\ell\notin X$ and ends at an
+input-marked node has fewer than $r_0$ edges. This proof is not formalized.
+
 \emph{Counting tall trees.} For every tall tree fix a node whose chain contains at least $\tau$ deep edges. The tails of
 the edges of a chain lie at distinct steps, so the deep edges of a fixed chain project to distinct deep edges of~$H_M$.
 Fix a deep edge $t\to t'$ of~$H_M$. An edge of a fixed chain that projects to it has its tail at step~$t$ and its head at
@@ -250,11 +261,11 @@ $n\le h+(h+1)(D-1)\le r_0-1$.
 $I(\ell)$ lies in $B^{r_0-1}(\ell)\subseteq B^{r_0}(\ell)$ by the bound on paths, and
 $\rank R\le\beta\card{\Gamma_{\mathrm F}}+\card{Q_0}+\card X\le\eps L+mN_{\mathcal R}/\tau+\card X$; apply
 \eqref{eq:hop-NR}.
-\end{informalproof}
+\end{remark}
 
 Theorem~HC charges every deep hop on a long chain of copies to the root of the chain: storage, transport and multicast
 through deep cells cost rank $O(N_{\mathcal R}/\tau)$ on every schedule, and only formations at deep cells count. The
-proof applies verbatim to field DAGs, with \cref{lem:expansion}(b) in place of~(a); the revealed roots are then fields of
+direct proof applies verbatim to field DAGs, with \cref{lem:expansion}(b) in place of~(a); the revealed roots are then fields of
 any kind, a state or an output field among them, and cost up to $\beta$ bits each.
 
 \subsection{Hop charging along lineages}\label{sec:hop-HCprime}
@@ -390,25 +401,23 @@ and does not depend on~$\F$; counted in bits, a revealed coordinate would cost u
 $\min(\lceil\log_2\card\F\rceil,\beta)$.
 
 \begin{lemma}[Merge depth and formation depth]\label{lem:merge-formation}
-\notformalized
+\formal{MergeDepth/Formation.lean}{MergeDepth.dm_le_countP_deepFormation}
 Let $G$ be a refinement and $\Gamma_{\mathrm F}\subseteq[0,T)$, and fix a lineage assignment for $\Gamma_{\mathrm F}$ in
 which every copy is a continuation. Then every path of~$G$ contains at least as many deep formations as it has deep
 merges. In particular, the merge depth at every output position is at most the formation depth there.
 \end{lemma}
 
-\begin{informalproof}
-A copy has only one out-edge, which is therefore its lineage edge, and a merge node is not a copy, hence a formation. Let
-$\pi=(u_0\to\dots\to u_n)$ be a path; we map its deep merges injectively to deep formations on~$\pi$. A deep merge of
-type~($\alpha$) is the tail of a deep edge, hence a deep formation; map it to itself. Let $u_i$ be a deep merge of
-type~($\beta$) but not of type~($\alpha$), and let $j<i$ be the largest index such that $u_j\to u_{j+1}$ is deep and
-$u_{j'}\to u_{j'+1}$ is the lineage edge of $u_{j'}$ for $j\le j'<i$. If $u_j$ is not a copy, it is a formation and the
-tail of a deep edge; map $u_i$ to~$u_j$. If $u_j$ is a copy, let $z$ be the first vertex after~$u_j$ that is not a copy;
-it lies at or before~$u_i$, since $u_i$ is not a copy. The path follows out-edges of copies from~$u_j$ to~$z$, so
-$z=\mathrm{root}(u_j)$, and the transport tree of~$z$ contains the deep edge $u_j\to u_{j+1}$; map $u_i$ to~$z$. The image
-of~$u_i$ lies on the stretch from $u_j$ to~$u_i$ and is $u_i$ itself or a continuation. The stretches of distinct deep
-merges of type~($\beta$) are disjoint, because the vertices of a stretch before its end are continuations, while deep
-merges are merge nodes; and the images of deep merges of type~($\alpha$) are merge nodes. So the map is injective.
-\end{informalproof}
+\begin{outline}
+A copy has only one out-edge, which is therefore its lineage edge, and a merge node is not a copy, hence a formation.
+Walk along a path with a credit for the current stretch of lineage edges. When the path crosses a deep lineage edge out
+of a formation, that formation is a deep formation of the path and credits the stretch. When it crosses one out of a
+copy, the next formation on the path lies on the chain of that copy, so it is the root of a transport tree containing a
+deep edge, a deep formation; until it is reached, the deep copy edge lies in the transport tree of the current node. A
+deep merge of type~($\alpha$) is a formation with a deep out-edge, hence a deep formation itself; one of type~($\beta$)
+ends a stretch that contains a deep lineage edge, and is paid by the credit of that stretch or, if the deep edge left a
+copy and no formation has followed, is itself the root of the transport tree that contains it. A side edge ends the
+stretch, and stretches are disjoint, so no deep formation pays twice.
+\end{outline}
 
 So Theorem~HC$'$ applies, with the same~$s$, to every code to which Theorem~HC applies, at the smaller radius
 $(s+1)\tau D$ instead of $((s+1)\tau+1)D$, and it covers accumulators of fresh data as well. It is the form used below.
@@ -416,7 +425,10 @@ $(s+1)\tau D$ instead of $((s+1)\tau+1)D$, and it covers accumulators of fresh d
 \subsection{Exclusion of bounded merge depth}\label{sec:hop-excl}
 
 \begin{corollary}[Corollary HC: the linear crux excludes bounded merge depth]\label{cor:HC}
-\notformalized
+\partformal{MergeDepth/HopMachine.lean}{MergeDepth.cor_HC_step,MergeDepth.cor_HC_step_formation}{the quantification over
+machines and sizes, and the linear crux as a statement about the class $\Sball_{k,C,\beta,r}$; the Lean theorems are the
+argument at one size: the ball system of radius~$r$ has minrank less than $(\rho-\eta')L$, $\eta'=(\rho-\eps)/2$, for
+merge depth and for formation depth}
 Let $k,m,V\ge1$, $\beta\ge2$ and $s\ge0$ be integers, $C\ge1$, $\F$ a field, $0<\eps<\rho$ with $\eps\le1$, and
 $0\le\eta<(\rho-\eps)/8$. Put
 \[
@@ -435,7 +447,7 @@ $\eta L$ output positions.
 The same holds with merge depth replaced by formation depth.
 \end{corollary}
 
-\begin{informalproof}
+\begin{outline}
 Let $d_0$ be given by the linear crux for $\eta'=(\rho-\eps)/2$, and suppose that (i) and~(ii) hold at some $d\ge d_0$,
 with a representation of width $m'\le m$, a cold genie $\Gamma_{\mathrm F}$ and a lineage assignment; let $X$ be the set
 of output positions at which the merge depth exceeds~$s$, so $\card X\le\eta L$. \Cref{thm:HCprime}(a), with $m'$ in place
@@ -449,7 +461,7 @@ The ball system $(B^r(\ell))_\ell$ of~$M$ belongs to $\Sball_{k,C,\beta,r}$, sin
 value width at most~$\beta$ and halting time at most $C(L+1)$, and appends exactly $L$ bits. Its minrank over~$\F$ is at
 most $\rank R<(\rho-\eta')L$, contrary to the linear crux. For formation depth, take the lineage assignment that gives every copy its out-edge
 (\cref{rem:hop-examples}); by \cref{lem:merge-formation} its merge depth is at most the formation depth.
-\end{informalproof}
+\end{outline}
 
 Given the linear crux at one fixed radius, an oblivious linear-time transposer with a linear code must therefore, for
 every~$s$ and on every schedule, merge deep lineages more than $s$ times along some path from each of more than

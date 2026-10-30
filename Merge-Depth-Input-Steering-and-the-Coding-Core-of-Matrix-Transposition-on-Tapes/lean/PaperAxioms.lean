@@ -41,6 +41,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.Centred.graph
 #print axioms MergeDepth.Centred.separated_of_bipCompat
 #print axioms MergeDepth.Centred.two_mul_card_lt
+-- MergeDepth/SkeletonEntropy.lean
+#print axioms MergeDepth.coarse_entropy_le
+#print axioms MergeDepth.theta_tendsto
 -- MergeDepth/SkeletonWalk.lean
 #print axioms MergeDepth.card_block_changes_le
 #print axioms MergeDepth.card_entries_skel_le
@@ -69,12 +72,17 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.coord_reach_subset
 #print axioms MergeDepth.coord_val
 #print axioms MergeDepth.deepHops
+#print axioms MergeDepth.entropy
+#print axioms MergeDepth.entropy_le_of_fibres
+#print axioms MergeDepth.exists_large_fibre
 #print axioms MergeDepth.finrank_revealed_coord_le
 #print axioms MergeDepth.finrank_revealed_le_of_values
 #print axioms MergeDepth.hop_charging
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
+#print axioms MergeDepth.inSkel
 #print axioms MergeDepth.paths_short
 #print axioms MergeDepth.rpow_mono_of_le
 #print axioms MergeDepth.skel
+#print axioms MergeDepth.skelData
 #print axioms MergeDepth.sum_choose_le

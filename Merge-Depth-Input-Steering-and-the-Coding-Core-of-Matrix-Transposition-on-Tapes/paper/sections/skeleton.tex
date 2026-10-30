@@ -67,7 +67,8 @@ $\lfloor(z\pm1)/w\rfloor-\lfloor z/w\rfloor\in\{-1,0,1\}$, and $s_{\mathrm{out}}
 and~$1$. The trace of a run, that is, its head moves, append times and halting
 time~\cite[Section~2.1]{BoundedNesting2026}, determines its skeleton at every scale; at $w=1$ the skeleton determines
 the trace up to the moves of the last step and to whether that step appends. Finally, since
-$\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finitely many values,
+$\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finitely many values
+(\lean{MergeDepth.exists_large_fibre} for a function of a uniform input),
 \begin{equation}\label{eq:skel-heavy}
   \mathrm H(\sigma_w(X))\le\bigl(\tfrac12-\eta\bigr)L\quad\Longrightarrow\quad
   \card{\mathcal X_\sigma}\ge2^{(\frac12+\eta)L}\ \text{for some skeleton }\sigma .
@@ -670,7 +671,9 @@ at large scales the skeleton of a machine with bounded entry is almost determine
 revisit cells unboundedly often can carry a constant fraction of the input in their coarse motion.
 
 \begin{lemma}[Coarse entropy of bounded-entry heads]\label{lem:skel-entropy}
-\notformalized
+\partformal{MergeDepth/SkeletonEntropy.lean}{MergeDepth.coarse_entropy_le,MergeDepth.theta_tendsto}{that the runs of~$M$
+give data with the properties of the formal statement (a halting time, work-head walks from cell~$0$ and an output count
+from~$0$ with steps $0$ and~$1$), which is immediate from the machine model}
 Let $M$ have $k$ work tapes, let $V\ge1$ and $w\ge4V$ be integers, $c>0$, and let $L\ge\max(2w,16V)$ be a length.
 Suppose that on every input $X\in\{0,1\}^L$, $M$ appends exactly $L$ bits, halts within $c(L+1)$ steps and has entry at
 most~$V$ on every work tape. Then
@@ -681,7 +684,7 @@ where $\theta_{k,V,c}(w)=\bigl(4kVc\log_2(ew/V)+\log_2(2ecw)\bigr)/w$. For fixed
 $\theta_{k,V,c}(w)\to0$ as $w\to\infty$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 The skeleton $\sigma_w(X)$ is determined by the input skeleton, which fixes $T=T(X)$, together with the $k$ coarse work
 walks and the output component. So $\mathrm H(\sigma_w(X))\le\mathrm H(\sigma^{\mathrm{in}}_w(X))+\log_2N$, where $N$ is
 the largest number, over the values of~$T$, of possible values of these $k+1$ components given~$T$. Since $L$ bits are
@@ -691,7 +694,12 @@ it takes at most $2^{m_1\log_2(ew/V)}$ values, with $m_1=2V(T/w+2)\le4VcL/w+4V$.
 grows by $0$ or~$1$ per step, and ends at most at $m=\lfloor L/w\rfloor$, where $1\le m\le L/w\le T-1$ because $L\ge2w$
 and $w\ge4$; by \cref{lem:skeleton-count}(b) with $y=L/w$ it takes at most $(eTw/L)^{L/w}\le(2ecw)^{L/w}$ values. Hence
 $\log_2N\le k(4VcL/w+4V)\log_2(ew/V)+(L/w)\log_2(2ecw)$, which is the claim. The limit holds because $(\log_2w)/w\to0$.
-\end{informalproof}
+
+Formally, the run on an input is given by its halting time, its head walks and its output count; the skeleton and the
+input skeleton are \lean{MergeDepth.skelData} and \lean{MergeDepth.inSkel}, entropy is that of a function of a uniform
+input (\lean{MergeDepth.entropy}), the first inequality is \lean{MergeDepth.entropy_le_of_fibres}, the counts are
+\cref{lem:skeleton-count}, and the limit holds for real~$w$.
+\end{outline}
 
 The output component alone contributes at most $(L/w)\log_2(2ecw)$ bits, whatever the machine does, as long as it
 appends exactly $L$ bits within $c(L+1)$ steps; it could therefore be omitted from the skeleton, at the price of passing

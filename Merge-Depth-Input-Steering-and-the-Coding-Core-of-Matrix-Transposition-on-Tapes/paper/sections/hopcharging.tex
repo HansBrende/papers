@@ -16,15 +16,15 @@ splits into a part of small rank and a part supported on balls whose radius does
 number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
-\cref{prop:capacity} and Theorem~HC$'$ and \cref{prop:merge-reduction} for refinements of the dependency DAG are
-formalized in Lean, and so are \cref{lem:expansion} for function DAGs, Corollary~HC at one size, Corollary~HC$^*$ at
-one size given \cref{lem:balls}(b), and \cref{lem:balls}(a) and \cref{prop:hop-routing}, as their status lines say.
+suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering
+lemma, \cref{lem:short-paths,lem:merge-formation}, Theorems~HC and~HC$'$, and \cref{prop:capacity,prop:merge-reduction}
+are formalized in Lean, field DAGs for machines that are oblivious up to their last output step; \cref{lem:expansion,lem:balls},
+\cref{prop:hop-routing} and Corollaries~HC and~HC$^*$ are formalized in part, as their status lines say.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
 Throughout this section $M$ is a machine with $k$ work tapes that is oblivious at a length $L=d^2b(d)$ with halting
-time $T\le C(L+1)$, where $C\ge1$, and $\beta\ge\max(2,\beta(M))$ is an integer. We use the dependency DAG~$H_M$, the
+time $T\le C(L+1)$, where $C\ge1$, and $\beta\ge\beta(M)$ is an integer; note that $\beta(M)\ge2$. We use the dependency DAG~$H_M$, the
 work-head walks $x_1,\dots,x_k$ and the input-head walk~$x_0$ as in the eighth paper~\cite[Sections~2.2
 and~2.4]{BoundedNesting2026}; output bit~$\ell$ is appended at step~$t_\ell$, and $\mathrm{out}(t)$ is the set of
 out-neighbours of~$t$ in~$H_M$. A path $t_0\to\dots\to t_n$ is \emph{$\Gamma$-free} if $t_1,\dots,t_n\notin\Gamma$.
@@ -118,16 +118,17 @@ paper~\cite[Lemma~4.2 and its proof]{FourthPaper2026}, every field of step~$t$ i
 predecessors and, if $x_0(t)\in[0,L)$, of the input bit $w_{x_0(t)}$. A \emph{pruning} chooses for every field~$f$ a
 set $P(f)$ of its predecessors and whether $f$ \emph{keeps} its input bit, such that $f$ is still a function, on
 $\{0,1\}^L$, of the fields in $P(f)$ and of the kept input bit; keeping everything is a pruning. The \emph{field DAG} of
-a pruning has the edges $f\to g$ for $g\in P(f)$, input marks at the fields that keep their input bit, and the output
+a pruning has the edges $f\to g$ for $g\in P(f)$, input marks at the fields of steps with $x_0(t)\in[0,L)$ that keep their
+input bit, and the output
 node $o_{t_\ell}$ for~$\ell$. It is a refinement of width $k+2$. A deep edge of it leads from a field of step~$t$ to a
 field of a step $t'\le t-2$, so its head is a symbol field $\kappa_{t',j}$.
 
 \begin{lemma}[Expansion]\label{lem:expansion}
 \partformal{MergeDepth/Charging.lean}{MergeDepth.rigidity_core,MergeDepth.rigidity_finrank,MergeDepth.finrank_revealed_union_le,MergeDepth.finrank_revealed_le}{in
 part~(a), the support of row~$\ell$ when the $(\Gamma,Q)$-free paths from the output nodes of~$\ell$ have no common
-length bound (the formal statement assumes a bound~$D$ on their number of edges, as in all uses below); in part~(b),
-that the field DAG of a pruning is a function DAG, which is the fourth paper's local recursion~\cite[Lemma~4.2]{FourthPaper2026};
-for function DAGs, part~(b) is \lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode}}
+length bound (the formal statement assumes a bound~$D$ on their number of edges, as in all uses below); part~(b) is
+\lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode} for function DAGs, and
+\lean{MergeDepth.Pruning.field_cone} with \lean{MergeDepth.Pruning.field_isIndexCode} for the field DAG of a pruning}
 Let $\Gamma\subseteq[0,T)$, let $Q$ be a set of nodes of the coordinate DAG or of a field DAG, and let $X$ be a set of
 output positions. Let $P_{\tpos}$ be the $L\times L$ matrix with rows $e_{\tpos(\ell)}$, as
 in~\cite[Section~7.2]{BoundedNesting2026}.
@@ -363,9 +364,7 @@ definition of the depth. Hence $n\le h+(h+1)(D-1)=(h+1)D-1<(s'+1)\tau D$.
 \end{outline}
 
 \begin{theorem}[Theorem HC$'$: hop charging along lineages]\label{thm:HCprime}
-\partformal{MergeDepth/HopMachine.lean}{MergeDepth.hop_charging_machine}{in part~(b), that the field DAG of a pruning
-is a function DAG that refines the dependency DAG, which is the fourth paper's local recursion; for such refinements,
-part~(b) is \lean{MergeDepth.hop_charging_fields}}
+\formal{MergeDepth/FieldMachine.lean}{MergeDepth.hop_charging_pruning,MergeDepth.hop_charging_pruning_bits,MergeDepth.short_paths_pruning}
 Let $G$ be either the coordinate DAG of an $\F$-linear data path of~$M$ at length~$L$ of width~$m$, or the field DAG of
 a pruning, with $m=k+2$. Let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a lineage
 assignment for~$\Gamma_{\mathrm F}$, let $\tau\ge1$ and $s\ge0$ be integers, put $r=(s+1)\tau D$, and let $X$ be
@@ -394,7 +393,18 @@ $\beta\card{\Gamma_{\mathrm F}}+q+\card X$, where $\tau q$ is at most $m$ times 
 coordinate DAG is the network \lean{MergeDepth.coordNet}, whose values are the coordinates of the step values
 (\lean{MergeDepth.coord_val}) and whose paths and balls project to those of~$H_M$
 (\lean{MergeDepth.coord_paths}, \lean{MergeDepth.coord_reach_subset}); \lean{MergeDepth.hop_charging} combines
-\lean{MergeDepth.paths_short} with the decomposition \lean{MergeDepth.rigidity_finrank} of \cref{lem:expansion}(a).
+\lean{MergeDepth.paths_short} with the decomposition \lean{MergeDepth.rigidity_finrank} of \cref{lem:expansion}(a), and
+\lean{MergeDepth.hop_charging_machine} states~(a) with the constants above. For part~(b), the machine is oblivious before
+a time~$T$ by which it has appended $L$ bits (\lean{MergeDepth.ObliviousTransposer}), which holds for the frozen notion
+of obliviousness; a pruning is \lean{MergeDepth.Pruning}, and its field DAG \lean{MergeDepth.Pruning.toFunDag} is a
+function DAG that refines the dependency DAG. Keeping everything is a pruning (\lean{MergeDepth.Pruning.full}), by the
+local recursion of the fourth paper at the level of fields (\lean{MergeDepth.stepValue_eq_of_preds}).
+\lean{MergeDepth.hop_charging_pruning} and \lean{MergeDepth.hop_charging_pruning_bits} are~(b), through
+\lean{MergeDepth.hop_charging_fields} for refinements, and \lean{MergeDepth.short_paths_pruning} is the path bound.
+
+The checkpoints can be chosen among the heads of deep lineage edges (\lean{MergeDepth.hop_charging_fields_heads}). In a
+field DAG these heads are symbol fields, which take at most $\card\Gamma$ values, so in~(b) the term charged to the
+checkpoints improves to $\lceil\log_2\card\Gamma\rceil(k+2)kC(L+1)/\tau$ (\lean{MergeDepth.hop_charging_pruning_sym}).
 \end{outline}
 
 Theorem~HC$'$ reduces the depth of the code, not of the schedule: every output has bounded depth in~$G$ once
@@ -540,9 +550,8 @@ graph of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lea
 \end{outline}
 
 \begin{corollary}[Corollary HC$^*$: Question~9.1 excludes bounded merge depth for all codes]\label{cor:HCstar}
-\partformal{MergeDepth/HCStar.lean}{MergeDepth.cor_HCstar_step}{\cref{lem:balls}(b), which the formal statement assumes at
-the size in question; that the field DAG of a pruning is a function DAG that refines the dependency DAG, as in
-\cref{thm:HCprime}(b); and the last sentence}
+\partformal{MergeDepth/FieldMachine.lean}{MergeDepth.cor_HCstar_pruning,MergeDepth.cor_HCstar_frozen,MergeDepth.cor_HCstar_pruning_empty}{\cref{lem:balls}(b),
+which the formal statements assume at the size in question}
 Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed degree bound; the
 binary alphabet suffices. Let $k,V\ge1$ and $s\ge0$ be integers, $C\ge1$, and let $0<\eps\le1$ and $\eta\ge0$ satisfy
 $\eps+\eta<\frac12$. Then for every machine~$M$ with $k$ work tapes there is~$d_0$ such that for no $d\ge d_0$ do the
@@ -550,7 +559,7 @@ following hold together at $L=d^2b(d)$:
 \begin{enumerate}[label=(\roman*)]
 \item $M$ is oblivious at length~$L$ with halting time at most $C(L+1)$ and transposes all $d\times d$ matrices;
 \item for some pruning, the field DAG of~$M$ at length~$L$ has, for some cold genie at $(V,\eps)$, taken with
-$\beta=\max(2,\beta(M))$, and some lineage assignment for it, merge depth at most~$s$ at all but at most $\eta L$ output
+$\beta=\beta(M)$, and some lineage assignment for it, merge depth at most~$s$ at all but at most $\eta L$ output
 positions.
 \end{enumerate}
 In particular, for all $V\ge1$ and $s\ge0$ there is~$d_0$ such that at no $d\ge d_0$ at which (i) holds does a pruning
@@ -558,7 +567,7 @@ with a lineage assignment for the empty genie give the field DAG merge depth at 
 \end{corollary}
 
 \begin{outline}
-Put $\beta=\max(2,\beta(M))$, $\gamma=\frac12-\eps-\eta>0$ and $\tau=\lceil4\beta(k+2)kC/\gamma\rceil$, let $D$ be the
+Put $\beta=\beta(M)$, $\gamma=\frac12-\eps-\eta>0$ and $\tau=\lceil4\beta(k+2)kC/\gamma\rceil$, let $D$ be the
 depth of the cold genies at $(V,\eps)$, and put $r=(s+1)\tau D$; these depend only on $M$, $V$, $s$, $C$, $\eps$
 and~$\eta$. Let $d_1$ be given by \cref{lem:balls}(b) for $D'=r$ and $\delta=\gamma/4$, and let $d_0=\max(d_1,2)$.
 Suppose that (i) and~(ii) hold at some $d\ge d_0$, and let $X$ be the set of output positions at which the merge depth
@@ -577,7 +586,11 @@ hypotheses of \lean{MergeDepth.hop_charging_fields}, $T\le C(L+1)$, at most $\et
 $4\beta mkC\le\gamma\tau$, and with the bound $2^{(1/2+\gamma/4)L}$ on binary storage codes for relations inside the balls
 of radius $(s+1)\tau D$ as a hypothesis, the hypotheses are contradictory. The large fibre is
 \lean{MergeDepth.exists_large_fibre_card}, and \lean{MergeDepth.isStorageCode_fibre_of_indexCode} shows that it is a
-storage code for $q\mapsto I(\tpos(q))$.
+storage code for $q\mapsto I(\tpos(q))$. For the field DAG of a pruning, \lean{MergeDepth.cor_HCstar_pruning} and, from the
+frozen notion of obliviousness, \lean{MergeDepth.cor_HCstar_frozen} discharge the hypotheses on the refinement, and
+\lean{MergeDepth.cor_HCstar_pruning_empty} is the last sentence at one size. With checkpoints among the symbol fields
+(\cref{thm:HCprime}), $4\lceil\log_2\card\Gamma\rceil(k+2)kC\le\gamma\tau$ suffices
+(\lean{MergeDepth.cor_HCstar_pruning_sym}), which shrinks $\tau$ and the radius~$r$.
 \end{outline}
 
 Corollary~HC$^*$ is the deep-nesting companion of Corollary~F$'$~\cite[Corollary~6.3]{BoundedNesting2026}, which it
@@ -688,9 +701,7 @@ pruning and on the lineage assignment, and on $\Gamma_{\mathrm F}$ and~$\tau$; b
 schedule.
 
 \begin{proposition}[Code-level depth reduction suffices]\label{prop:merge-reduction}
-\partformal{MergeDepth/MergeSteps.lean}{MergeDepth.merge_reduction_machine}{for field DAGs, that the field DAG of a pruning
-is a function DAG that refines the dependency DAG, as in \cref{thm:HCprime}(b); for such refinements, the last claim is
-\lean{MergeDepth.merge_reduction_fields}}
+\formal{MergeDepth/MergeSteps.lean}{MergeDepth.merge_reduction_machine}
 In the setting of \cref{lem:short-paths}, with $G$ the coordinate DAG of an $\F$-linear data path of width~$m$ or the
 field DAG of a pruning with $m=k+2$, let $s\ge0$, $r=(s+1)\tau D$, and let $Z$ be a set of vertices of~$\mathcal M$
 that meets every path of~$\mathcal M$ with $s+1$ vertices whose first vertex is initial. Then every
@@ -714,7 +725,9 @@ deep merges of the paths in question by~$s$, and \lean{MergeDepth.length_le_of_c
 uses \lean{MergeDepth.rigidity_core_rev}, the form of \cref{lem:expansion}(a) in which a revealed output node
 contributes to~$R$ only; \lean{MergeDepth.merge_reduction_steps} passes to the coordinate DAG as in Theorem~HC$'$, with
 the rank bound $\beta\card{\Gamma_{\mathrm F}}+\card Q+\card Z$, and \lean{MergeDepth.merge_reduction_machine} states
-$\rank R\le\eps L+mkC(L+1)/\tau+\card Z$ with $\tau\card Q\le mkC(L+1)$.
+$\rank R\le\eps L+mkC(L+1)/\tau+\card Z$ with $\tau\card Q\le mkC(L+1)$. For field DAGs the last claim is
+\lean{MergeDepth.merge_reduction_fields} for refinements and \lean{MergeDepth.merge_reduction_pruning} for the field DAG
+of a pruning.
 \end{outline}
 
 The proposition gives a sufficient condition only. It moves the remaining difficulty from the schedule to the code: on
@@ -742,7 +755,7 @@ $\eps'>0$ there is~$r$ such that these ball systems have index codes, or minrank
 $\eps=\eps'/2$ and $\tau\ge4ckC/\eps'$ in one direction, any~$c$ in the other. The form with $N_{\mathcal R}$ records the
 rate at which~(a) charges deep hops; $V$ does not affect the truth of the conjecture. (c) The conjecture and an
 affirmative answer to Question~9.1 for every degree bound exclude every oblivious linear-time transposer: for a
-machine~$M$ take $V=1$, $\beta=\max(2,\beta(M))$, $\eps=\frac18$, $\tau\ge8ckC$ and $\eta=\frac1{16}$; at large~$d$ the
+machine~$M$ take $V=1$, $\beta=\beta(M)$, $\eps=\frac18$, $\tau\ge8ckC$ and $\eta=\frac1{16}$; at large~$d$ the
 ball system has an index code with at most $\frac7{16}L$ bits, so some fibre, a storage code for the relation
 $B^r(\tpos(q))$, has at least $2^{9L/16}$ elements, contrary to \cref{lem:balls}(b) with $\delta=\frac1{32}$. Likewise the
 linear form and $\LinCrux_\F(\Sball_{k,C,\beta,r},\rho)$, at the radius~$r$ attached to some $\tau\ge8ckC/(\rho-\eps)$

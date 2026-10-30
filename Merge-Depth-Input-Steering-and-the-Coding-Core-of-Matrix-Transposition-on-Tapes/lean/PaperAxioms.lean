@@ -45,14 +45,19 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.EM.em_oblivious
 #print axioms MergeDepth.EM.theoremEM
 #print axioms MergeDepth.EM.theoremEM_sharp
+-- MergeDepth/FieldMachine.lean
+#print axioms MergeDepth.cor_HCstar_frozen
+#print axioms MergeDepth.cor_HCstar_pruning
+#print axioms MergeDepth.cor_HCstar_pruning_empty
+#print axioms MergeDepth.hop_charging_pruning
+#print axioms MergeDepth.hop_charging_pruning_bits
+#print axioms MergeDepth.short_paths_pruning
 -- MergeDepth/Formation.lean
 #print axioms MergeDepth.DeepFormation
 #print axioms MergeDepth.IsCopy
 #print axioms MergeDepth.copyForest
 #print axioms MergeDepth.dm_le_countP_deepFormation
 #print axioms MergeDepth.root
--- MergeDepth/HCStar.lean
-#print axioms MergeDepth.cor_HCstar_step
 -- MergeDepth/HopFields.lean
 #print axioms MergeDepth.short_paths
 -- MergeDepth/HopMachine.lean
@@ -60,7 +65,6 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.cor_HC_step
 #print axioms MergeDepth.cor_HC_step_formation
 #print axioms MergeDepth.hop_charging_HC
-#print axioms MergeDepth.hop_charging_machine
 -- MergeDepth/HopRoutingCount.lean
 #print axioms MergeDepth.card_exceptional_eq
 #print axioms MergeDepth.hop_routing_count
@@ -139,6 +143,12 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.IsRun
 #print axioms MergeDepth.IsRun.reverse
 #print axioms MergeDepth.IsSkeletonConstant
+#print axioms MergeDepth.ObliviousTransposer
+#print axioms MergeDepth.Pruning
+#print axioms MergeDepth.Pruning.field_cone
+#print axioms MergeDepth.Pruning.field_isIndexCode
+#print axioms MergeDepth.Pruning.full
+#print axioms MergeDepth.Pruning.toFunDag
 #print axioms MergeDepth.TransposesAt
 #print axioms MergeDepth.ball_trimming
 #print axioms MergeDepth.blockStep_iff
@@ -164,6 +174,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.coord_paths
 #print axioms MergeDepth.coord_reach_subset
 #print axioms MergeDepth.coord_val
+#print axioms MergeDepth.cor_HCstar_pruning_sym
+#print axioms MergeDepth.cor_HCstar_step
 #print axioms MergeDepth.deepHops
 #print axioms MergeDepth.disjoint_paths_bound
 #print axioms MergeDepth.disjoint_paths_transport
@@ -180,6 +192,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hasSpanColoring_iff_activeFamilies_card_le
 #print axioms MergeDepth.hop_charging
 #print axioms MergeDepth.hop_charging_fields
+#print axioms MergeDepth.hop_charging_fields_heads
+#print axioms MergeDepth.hop_charging_machine
+#print axioms MergeDepth.hop_charging_pruning_sym
 #print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.hop_routing_a
 #print axioms MergeDepth.hop_routing_b
@@ -191,6 +206,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.length_le_of_cut
 #print axioms MergeDepth.merge_reduction
 #print axioms MergeDepth.merge_reduction_fields
+#print axioms MergeDepth.merge_reduction_pruning
 #print axioms MergeDepth.merge_reduction_steps
 #print axioms MergeDepth.outTime
 #print axioms MergeDepth.paths_short
@@ -212,6 +228,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.stepBall
 #print axioms MergeDepth.stepValue
 #print axioms MergeDepth.stepValue_eq_of_parents
+#print axioms MergeDepth.stepValue_eq_of_preds
 #print axioms MergeDepth.sum_choose_le
 #print axioms MergeDepth.trace
 #print axioms MergeDepth.traceProb

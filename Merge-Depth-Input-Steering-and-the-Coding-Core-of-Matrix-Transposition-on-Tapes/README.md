@@ -6,11 +6,11 @@
 - Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet.
 - Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
   built on the libraries of the eighth, ninth and fifth papers). Formalized so far:
-  - Section 3: the cold genie (Lemma 3.1), the covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (part (b) for
-    function DAGs refining the dependency DAG), Lemma 3.3 for function DAGs, Lemma 3.14(a) and Proposition 3.16 with the
-    machine's read and append steps as hypotheses, Proposition 3.17, Corollary HC at
-    one size, Corollary HC* at one size given Lemma 3.14(b), and the merge DAG with Proposition 3.20 (part (b) for
-    refinements).
+  - Section 3: the cold genie (Lemma 3.1), the covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (field DAGs of
+    prunings for machines oblivious up to their last output step, through the fourth paper's local recursion at the level
+    of fields), Lemma 3.3 (part (a) with a common length bound), Lemma 3.14(a) and Proposition 3.16 with the machine's
+    read and append steps as hypotheses, Proposition 3.17, Corollary HC at one size, Corollary HC* at one size given
+    Lemma 3.14(b), and the merge DAG with Proposition 3.20.
   - Section 4: Lemmas 4.2, 4.5 (the block machine, in the frozen machine model), 4.6, 4.7, the paired-distance group
     (Lemmas 4.8–4.10 and Proposition 4.11, with better constants), Lemma 4.14 and Lemma 4.15 in part (with a small entropy
     library).

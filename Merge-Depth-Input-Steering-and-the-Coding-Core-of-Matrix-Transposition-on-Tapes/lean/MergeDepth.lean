@@ -39,3 +39,5 @@ import MergeDepth.PairedSeparation
 import MergeDepth.ConeBridge
 import MergeDepth.BlockMachine
 import MergeDepth.HopRoutingCount
+import MergeDepth.FieldPruning
+import MergeDepth.FieldMachine

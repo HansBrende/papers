@@ -16,10 +16,10 @@ splits into a part of small rank and a part supported on balls whose radius does
 number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma,
-Theorems~HC and~HC$'$(a) and \cref{lem:merge-formation} are formalized in Lean, and so are parts of
-\cref{lem:expansion,lem:short-paths} and Corollary~HC, as their status lines say; the other results of this section
-are not formalized yet.
+suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
+\cref{prop:capacity} and Theorem~HC$'$ for refinements of the dependency DAG are formalized in Lean, and so are
+\cref{lem:expansion} for function DAGs and Corollary~HC at one size, as their status lines say; the other results of
+this section are not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -123,9 +123,11 @@ node $o_{t_\ell}$ for~$\ell$. It is a refinement of width $k+2$. A deep edge of 
 field of a step $t'\le t-2$, so its head is a symbol field $\kappa_{t',j}$.
 
 \begin{lemma}[Expansion]\label{lem:expansion}
-\partformal{MergeDepth/Charging.lean}{MergeDepth.rigidity_core,MergeDepth.rigidity_finrank,MergeDepth.finrank_revealed_union_le,MergeDepth.finrank_revealed_le}{part~(b);
-and, in part~(a), the support of row~$\ell$ when the $(\Gamma,Q)$-free paths from the output nodes of~$\ell$ have no
-common length bound: the formal statement assumes a bound~$D$ on their number of edges, as in all uses below}
+\partformal{MergeDepth/Charging.lean}{MergeDepth.rigidity_core,MergeDepth.rigidity_finrank,MergeDepth.finrank_revealed_union_le,MergeDepth.finrank_revealed_le}{in
+part~(a), the support of row~$\ell$ when the $(\Gamma,Q)$-free paths from the output nodes of~$\ell$ have no common
+length bound (the formal statement assumes a bound~$D$ on their number of edges, as in all uses below); in part~(b),
+that the field DAG of a pruning is a function DAG, which is the fourth paper's local recursion~\cite[Lemma~4.2]{FourthPaper2026};
+for function DAGs, part~(b) is \lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode}}
 Let $\Gamma\subseteq[0,T)$, let $Q$ be a set of nodes of the coordinate DAG or of a field DAG, and let $X$ be a set of
 output positions. Let $P_{\tpos}$ be the $L\times L$ matrix with rows $e_{\tpos(\ell)}$, as
 in~\cite[Section~7.2]{BoundedNesting2026}.
@@ -328,8 +330,7 @@ node, heads of marked edges at $\tau$ consecutive marked heights, one in each cl
 \end{outline}
 
 \begin{lemma}[Few deep merges, short paths]\label{lem:short-paths}
-\partformal{MergeDepth/Lineage.lean}{MergeDepth.rCount_add_le,MergeDepth.paths_short}{the count of~$Q$ for field DAGs;
-for the coordinate DAG it is part of \lean{MergeDepth.hop_charging_steps}}
+\formal{MergeDepth/HopFields.lean}{MergeDepth.short_paths}
 Let $G$ be a refinement of width~$m$, let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a
 lineage assignment for~$\Gamma_{\mathrm F}$, and let $\tau\ge1$. Apply \cref{lem:covering} to the forest of lineage
 edges, with its deep edges marked, and let $Q$ be the set obtained. Then $\card Q\le mN_{\mathcal R}/\tau$, and every
@@ -362,7 +363,9 @@ definition of the depth. Hence $n\le h+(h+1)(D-1)=(h+1)D-1<(s'+1)\tau D$.
 \end{outline}
 
 \begin{theorem}[Theorem HC$'$: hop charging along lineages]\label{thm:HCprime}
-\partformal{MergeDepth/HopMachine.lean}{MergeDepth.hop_charging_machine}{part~(b)}
+\partformal{MergeDepth/HopMachine.lean}{MergeDepth.hop_charging_machine}{in part~(b), that the field DAG of a pruning
+is a function DAG that refines the dependency DAG, which is the fourth paper's local recursion; for such refinements,
+part~(b) is \lean{MergeDepth.hop_charging_fields}}
 Let $G$ be either the coordinate DAG of an $\F$-linear data path of~$M$ at length~$L$ of width~$m$, or the field DAG of
 a pruning, with $m=k+2$. Let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a lineage
 assignment for~$\Gamma_{\mathrm F}$, let $\tau\ge1$ and $s\ge0$ be integers, put $r=(s+1)\tau D$, and let $X$ be
@@ -610,19 +613,22 @@ and whatever a transposer delivers beyond the $\eps L$ revealed bits needs a net
 routing grows with $D''/D$.
 
 \begin{proposition}[The number of deep cells]\label{prop:capacity}
-\notformalized
+\formal{MergeDepth/Capacity.lean}{MergeDepth.card_deep_mul_le,MergeDepth.card_deepHops_le,MergeDepth.two_mul_card_deepHops_le,MergeDepth.card_deep_le_of_lt}
 We have $\card{\mathcal R}\le kT/(V+1)$ and $N_{\mathcal R}\le\min\{kT,\card{\mathcal R}(T-1)/2\}$. In particular,
 $\card{\mathcal R}(T-1)/2<kT$ only if $\card{\mathcal R}<2kT/(T-1)$, which for $T>2k+1$ means $\card{\mathcal R}\le2k$.
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 Each head makes at most $T$ entries, and each pair of~$\mathcal R$ takes more than~$V$ of them; this gives the first
 bound, as in~\cite[Section~2.2]{BoundedNesting2026}. The bound $kT$ is~\eqref{eq:hop-NR}. For $(h,c)\in\mathcal R$, the
 hops of head~$h$ at~$c$ partition the interval from the first to the last visit of~$c$, of length at most $T-1$, into
 half-open intervals $(p,u]$~\cite[Section~2.2, (P1)]{BoundedNesting2026}; the long ones have length at least two, so
 there are at most $(T-1)/2$ of them. Summing over~$\mathcal R$ gives the second bound. Finally,
 $2kT/(T-1)=2k+2k/(T-1)<2k+1$ when $T>2k+1$.
-\end{informalproof}
+Formally, $\mathcal R$ is the eighth paper's \lean{BoundedNesting.heavyPairs} and the deep hops are the long hops outside its
+\lean{BoundedNesting.lightHops} (\lean{MergeDepth.deepHops}); the first bound is its
+\lean{BoundedNesting.card_heavyPairs_mul_le}, and the disjointness of the intervals is its hop uniqueness.
+\end{outline}
 
 Theorems~HC and~HC$'$, Corollaries~HC and~HC$^*$, \cref{prop:hop-routing} and \cref{prop:merge-reduction} below depend on
 the deep cells only through~$N_{\mathcal R}$ and the code; none uses $\card{\mathcal R}$. A scratch of fewer than $\eps L$

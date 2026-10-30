@@ -7,5 +7,8 @@ import MergeDepth.Coordinates
 import MergeDepth.Steps
 import MergeDepth.ColdGenie
 import MergeDepth.HopMachine
+import MergeDepth.Capacity
+import MergeDepth.FieldDag
+import MergeDepth.HopFields
 import MergeDepth.SkeletonWalk
 import MergeDepth.ProjectivePlane

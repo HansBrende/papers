@@ -1,0 +1,49 @@
+\section{What a linear-time transposer would need}\label{sec:construction}
+
+This section collects the necessary conditions that the series now places on a linear-time transposer and states the
+constructive target that remains. It proves nothing new except \cref{lem:PG}; its purpose is to say where a
+construction would have to live.
+
+\paragraph{Unconditional constraints.} A linear-time transposer needs at least two work tapes, since with one work
+tape transposition takes superlinear time~\cite{DMS1991}; it must make $\Omega(\log d)$ passes, by the first paper's
+Lean-verified pass bound~\cite[Theorems~5.9 and~5.12]{FirstPaper2026}; and conservative reversal-bounded machines are
+excluded~\cite{Kirchherr1988}. Among oblivious geometries with bounded span overlap, the source-cover paper
+excludes those with few large return families, so a survivor has at least two large exceptional families and a core
+profile of inverse-square type or heavier~\cite[Theorem~4.2 and Corollaries~4.3--4.5]{SourceCovers2026}, and the
+frozen gap-area certificate cannot exclude that boundary case at moduli comparable to the protected
+rank~\cite{GapAreaMemo2026}. By \cref{thm:LA}, a machine of sufficiently low adaptivity is excluded whenever one of its
+likely traces is. By the fourth paper's Theorem~Cq, in every macroscopic limit the work heads travel at least half a block
+unit along motion that is not countably-piecewise affine~\cite[Theorem~3.12]{FourthPaper2026}. By \cref{thm:EM}, at block
+scale every machine, adaptive or not, carries one oblivious external-memory transposition with linearly many I/Os on a
+set of $2^{L-O(d)}$ inputs.
+
+\paragraph{Constraints given [Q9.1].} Some tape is revisited unboundedly often (\cref{cor:RV}). If the work tapes have
+bounded entry, input cells are revisited unboundedly often and the input head carries about half of the input in its
+coarse motion at every fixed scale (\cref{cor:IS}); padding meets the second condition at no cost
+(\cref{rem:skel-padding}), so it shapes a construction only through the revisits. If the
+machine is oblivious, then for every fixed~$s$ more than a fixed fraction of its outputs have, whatever the pruning, cold
+genie and lineage assignment, a path with more than $s$ deep merges (\cref{cor:HCstar}); together with [Q9.1],
+\cref{conj:HV} would exclude such codes altogether (\cref{rem:HV}). Its cone
+relations must lie outside every class on which the half bound is proved: the degree-three and directed classes of the
+seventh and tenth papers~\cite{SeventhPaper2026,DirectedReciprocity2026}, circular chromatic number below three,
+hyperfinite and two-input relations~\cite{DirectedRecovery2026}.
+
+\paragraph{The target.} Put together, a construction must contain, at some scale, a near-full-rate code with a gain of
+order $\log d$ over routing on a network of the shape that tapes produce. Two forms remain open.
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Merge depth.} An oblivious machine with deeply nested work tapes whose code merges deep lineages along a
+depth-robust pattern, causally, with a logarithmic coding gain over routing on its deep hops.
+\item \emph{Adaptive revisits.} An adaptive machine that revisits a work tape unboundedly often in a data-dependent
+way, or one whose work tapes have bounded entry and which revisits input cells unboundedly often; Corollary~IS then puts
+about $L/2$ bits of the data into the coarse motion of the input head, which padding provides at no cost.
+\end{enumerate}
+In both forms the block-scale image is an oblivious external-memory transposition with linearly many I/Os on a large set
+of inputs (\cref{thm:EM}), so both need the same maximal-gap code at block scale. No mechanism of either kind is known.
+Undirected network codes beating routing by a growing factor exist~\cite{BravermanHe2026}, but the known gaps are far below
+logarithmic and are not causal on tape-shaped networks.
+
+\paragraph{A ruled-out building block.} The rest of this section rules out one natural way to assemble the
+near-full-rate codes that the target needs: Tanner codes built from projective planes, with every coordinate recovered
+from one line through it, violate the paired-distance condition.
+
+\input{sections/pglemma}

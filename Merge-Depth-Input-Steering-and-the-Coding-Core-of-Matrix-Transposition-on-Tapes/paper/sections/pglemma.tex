@@ -1,0 +1,132 @@
+\paragraph{Codes assembled from projective planes.}
+For an oblivious transposer whose work heads enter every cell boundedly often, Theorem~F of the eighth paper, with its
+conversion of cuts into genies, gives for every $\eps>0$ a genie of cost at most $\eps L$ and bounded full depth, and some
+fibre of the revealed word is a storage code of rate at least $1-\eps$ on the cone
+relation~\cite[proofs of Corollaries~6.1 and~6.3]{BoundedNesting2026}. After a paid trimming, the cone relations of
+linear-time schedules, for genies of bounded full depth, have bounded incidence degree and satisfy the paired-distance
+condition~\cite[Definition~2.3, Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}. A construction of this kind
+therefore needs storage codes of rate close to one on relations of bounded incidence degree with the paired-distance
+condition. Projective planes are natural building blocks. For $q=2^s$, the binary words on the points of
+$\mathrm{PG}(2,q)$ that have even weight on every line form a code of rate $1-(3^s+1)/(q^2+q+1)$, which tends to one,
+because the point--line incidence matrix of $\mathrm{PG}(2,2^s)$ has rank $3^s+1$ over~$\F_2$, a classical fact; and each
+point is recovered from the other $q$ points of any line through it. If every coordinate lies in one such local code and
+is recovered inside it, the incidence graph has components of at most $2(q^2+q+1)$ vertices, and the paired-distance
+condition limits every code to rate $\frac12+o(1)$~\cite[Theorem~4.2]{DirectedRecovery2026}. The Tanner form of the
+assembly avoids this. Its coordinates are the edges of a $(q^2+q+1)$-regular graph~$G$, the edges at each vertex are
+identified with the points of a copy of $\mathrm{PG}(2,q)$, a word is a codeword when its restriction to every vertex star
+is a codeword of the plane, which gives rate at least $1-2(3^s+1)/(q^2+q+1)$, and each coordinate is recovered at one of
+its two endpoints~$u$ from the other points of one line of the plane at~$u$.
+
+\Cref{lem:PG} below rules this assembly out for every $q\ge7$, whatever the graph and the choices of endpoints and lines.
+The coordinates recovered at a vertex~$u$, each with its line, form a centred set $S_u$ in the sense of
+\cref{def:PG-centred}, and its incidence graph $E(S_u)$ is a subgraph of the paired incidence graph of the whole
+recovery relation. If $S_u$ is not separated, some coordinate recovered at~$u$ therefore has its two ports at distance at
+most $2(q^2+q+1)$. Every coordinate is recovered at exactly one endpoint, so the sizes $\card{S_u}$ average
+$(q^2+q+1)/2$ over the vertices, while \cref{lem:PG} bounds every separated centred set by
+$\sigma_q=\max(4q,q^{3/2}+1)<(q^2+q+1)/2$. Hence at least a fraction
+$\kappa_q=\bigl((q^2+q+1)/2-\sigma_q\bigr)/\bigl(q^2+q+1-\sigma_q\bigr)>0$ of the vertices carry a centred set that is
+not separated, at least a fraction $2\kappa_q/(q^2+q+1)$ of all coordinates have their two ports at bounded distance, and
+the paired-distance condition fails. The lemma concerns recovery along single lines; recovery through sums of several
+lines, and assemblies whose local pieces have unequal sizes, are not covered.
+
+\begin{definition}[Centred sets in a projective plane]\label{def:PG-centred}
+Let $q$ be a prime power, let $\mathcal P$ and $\mathcal L$ be the sets of points and lines of the projective plane
+$\mathrm{PG}(2,q)$, and put $v=q^2+q+1=\card{\mathcal P}=\card{\mathcal L}$. A \emph{centred set} is a set
+$S\subseteq\mathcal P$ together with a line $\ell_s$ through~$s$ for every $s\in S$; the \emph{helpers} of~$s$ are the $q$
+points of $N(s)=\ell_s\setminus\{s\}$. Its \emph{incidence graph} $E(S)$ is the bipartite graph with vertices $L_p$ and
+$R_p$ for $p\in\mathcal P$ and an edge $L_hR_s$ whenever $s\in S$ and $h\in N(s)$; it is the paired incidence graph
+of~\cite[Definition~2.3]{DirectedRecovery2026} for the relation that recovers each $s\in S$ from~$N(s)$. The centred set
+is \emph{separated} if $L_s$ and $R_s$ lie in different components of $E(S)$ for every $s\in S$, and
+\emph{bipartite-compatible} if some colouring $\chi\colon\mathcal P\to\{0,1\}$ has $\chi(h)\ne\chi(s)$ whenever $s\in S$
+and $h\in N(s)$.
+\end{definition}
+
+\begin{lemma}[Lemma PG: separated centred sets are small]\label{lem:PG}
+\notformalized
+Let $q$ be a prime power and $S$ a centred set in $\mathrm{PG}(2,q)$. If $S$ is bipartite-compatible, then it is
+separated. If $S$ is separated, then
+\begin{equation}\label{eq:PG-bound}
+ \card S\le\max\bigl(4q,\;q^{3/2}+1\bigr)\le\max\Bigl(4q,\;\frac{(q^2+q+1)(1+\sqrt q)}{q+1}\Bigr),
+\end{equation}
+and consequently $\card S<(q^2+q+1)/2$ for every $q\ge7$.
+\end{lemma}
+
+\begin{informalproof}
+We use two properties of $\mathrm{PG}(2,q)$: two distinct lines meet in exactly one point, and every line has $q+1$
+points and every point lies on $q+1$ lines.
+
+\emph{Bipartite-compatible sets are separated.} Given~$\chi$, give $L_p$ the colour $\chi(p)$ and $R_p$ the colour
+$1-\chi(p)$. An edge $L_hR_s$ has $\chi(h)=1-\chi(s)$, so its two ends have the same colour, and colours are constant on
+the components of $E(S)$. Since $L_s$ and $R_s$ have different colours, they lie in different components.
+
+From now on let $S$ be separated and nonempty; for $S=\emptyset$ there is nothing to prove. Call distinct points
+$s,s'\in S$ \emph{adjacent} if $N(s)\cap N(s')\ne\emptyset$, and call the connected components of this adjacency graph
+on~$S$ the \emph{components} of~$S$.
+
+\emph{Step 1: the lines $\ell_s$ are distinct.} If $\ell_s=\ell_{s'}=\ell$ with $s\ne s'$, pick
+$h\in\ell\setminus\{s,s'\}$, which exists since $\card\ell=q+1\ge3$. Then $s'\in N(s)$ and $h\in N(s)\cap N(s')$, so
+$L_{s'}R_sL_hR_{s'}$ is a path in $E(S)$, contradicting separation.
+
+\emph{Step 2: a trichotomy.} For distinct $s,s'\in S$ exactly one of the following holds: (a) $s\in\ell_{s'}$;
+(b) $s'\in\ell_s$; (c) $s$ and $s'$ are adjacent. Indeed, by Step~1 the lines $\ell_s$ and $\ell_{s'}$ meet in exactly
+one point~$z$. If $z=s$, then (a) holds; (b) fails, since $s'\in\ell_s$ would give $s'\in\ell_s\cap\ell_{s'}=\{s\}$; and
+(c) fails, since $N(s)\cap N(s')\subseteq(\ell_s\cap\ell_{s'})\setminus\{s\}=\emptyset$. The case $z=s'$ is symmetric. If
+$z\notin\{s,s'\}$, then $z\in N(s)\cap N(s')$, so (c) holds, while (a) and (b) fail because each would force
+$z\in\{s,s'\}$.
+
+\emph{Step 3: components.} If distinct $s,s'$ lie in the same component, then neither (a) nor (b) holds. Indeed, a chain
+$s=s_0,s_1,\dots,s_m=s'$ of adjacent points with common helpers $h_i\in N(s_{i-1})\cap N(s_i)$ gives the path
+$R_{s_0}L_{h_1}R_{s_1}\cdots L_{h_m}R_{s_m}$ in $E(S)$. If (a) held, then $s\in N(s')$, and the edge $L_sR_{s'}$ would
+join $L_s$ to $R_{s'}$ and hence to $R_s$; (b) is excluded in the same way, with $s$ and $s'$ exchanged. By Step~2, two
+distinct points of one component therefore never lie on each other's lines, and two points of different components
+satisfy (a) or~(b).
+
+\emph{Step 4: one component.} Suppose that $S$ has a single component, and put $t=\card S\ge1$. By Step~3, a line
+$\ell_s$ contains no point of~$S$ other than~$s$. Two lines $\ell_s$ and $\ell_{s'}$ with $s\ne s'$ are distinct by
+Step~1, so they meet in exactly one point, and that point lies off~$S$, since a point of~$S$ on both lines would equal
+both $s$ and~$s'$. For a point $p\notin S$ let $d_p$ be the number of $s\in S$ with $p\in\ell_s$. Every line $\ell_s$ has
+$q$ points off~$S$, and every ordered pair of distinct points of~$S$ has its two lines meeting in one point off~$S$, so
+\[
+ \sum_{p\notin S}d_p=tq,\qquad\sum_{p\notin S}d_p(d_p-1)=t(t-1).
+\]
+There are $v-t$ points off~$S$, so the Cauchy--Schwarz inequality gives $(tq)^2\le(v-t)\bigl(tq+t(t-1)\bigr)$. Dividing
+by~$t$ and expanding with $v=q^2+q+1$ turns this into $(t-1)^2\le q^3$, that is, $t\le q^{3/2}+1$.
+
+\emph{Step 5: several components.} Suppose that $S$ has at least two components, let $K$ be one of them, and pick
+$s'\in S\setminus K$. By Step~3 every $s\in K$ satisfies $s\in N(s')$ or $s'\in\ell_s$. At most $\card{N(s')}=q$ points
+satisfy the first condition. The lines $\ell_s$ of the points that satisfy the second are distinct by Step~1, pass
+through~$s'$, and differ from $\ell_{s'}$ by Step~1; since only $q$ lines through~$s'$ differ from $\ell_{s'}$, at most $q$
+points satisfy the second condition. Hence every component has at most $2q$ points. Now let $\Pi$ be the set of unordered
+pairs of points of~$S$ that lie in different components. By Step~3, each pair in~$\Pi$ has one of its points among the
+helpers of the other, and every point has $q$ helpers, so $\card\Pi\le q\card S$. If $K_1,\dots,K_n$ are the components,
+then
+\[
+ \card\Pi=\frac12\Bigl(\card S^2-\sum_{i=1}^n\card{K_i}^2\Bigr)\ge\frac12\bigl(\card S^2-2q\card S\bigr),
+\]
+because $\sum_i\card{K_i}^2\le\max_i\card{K_i}\cdot\card S\le2q\card S$. Hence $\card S^2-2q\card S\le2q\card S$, that
+is, $\card S\le4q$.
+
+\emph{Step 6: the comparisons.} Since $v=(q+1+\sqrt q)(q+1-\sqrt q)$, we have
+$q^{3/2}+1=(1+\sqrt q)(q+1-\sqrt q)=v(1+\sqrt q)/(q+1+\sqrt q)\le v(1+\sqrt q)/(q+1)$, which is the
+second inequality in~\eqref{eq:PG-bound}. Finally, $4q<v/2$ is equivalent to $q^2-7q+1>0$, which holds for $q\ge7$, and
+$q^{3/2}+1<v/2$ is equivalent to $(q-\sqrt q)^2>1$, which holds for $q\ge3$.
+\end{informalproof}
+
+\begin{remark}[Sharpness of the one-component bound]\label{rem:PG-unital}
+When $q=r^2$ is a square, the bound of Step~4 is attained. The Hermitian curve $x^{r+1}+y^{r+1}+z^{r+1}=0$ in
+$\mathrm{PG}(2,q)$ has $r^3+1=q^{3/2}+1$ points and meets every line in $1$ or $r+1$ points, a classical fact. The $q+1$
+lines through one of its points~$s$ partition the other $r^3$ points of the curve, and each of these lines contains $0$ or
+$r$ of them; so exactly $r^2=q$ of the lines contain $r$ of them, and one line meets the curve only in~$s$. Taking that
+tangent line as~$\ell_s$ for every point~$s$ of the curve gives a centred set whose helpers all lie off the curve; it is
+bipartite-compatible, with $\chi=0$ on the curve and $\chi=1$ elsewhere.
+\end{remark}
+
+\begin{remark}[Numerical]\label{rem:PG-numerical}
+This remark is numerical and is used in no proof. An exact constraint solver gives the largest bipartite-compatible
+centred sets in $\mathrm{PG}(2,q)$ for $q=2,3,4,5$: they have $6$, $10$, $10$ and $12$ points. For separated centred sets
+the same solver, with the components of Step~3 as variables and every optimum rechecked against the definition, gives the
+same maxima $6$, $10$ and $10$ for $q=2,3,4$; it did not settle $q=5$ within its time limit. Since
+$(q^2+q+1)/2=3.5$, $6.5$, $10.5$ and $15.5$, a single plane can recover half of its points for $q=2$ and~$3$, but not
+for $q=4$, nor, with a bipartite-compatible pattern, for $q=5$. At $q=2$ the binary code of the plane has rate $3/7$,
+below one half, and $q=3$ is not a power of two.
+\end{remark}

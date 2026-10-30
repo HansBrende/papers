@@ -1,0 +1,79 @@
+\section{Introduction}\label{sec:intro}
+
+\paragraph{The question.} Let $b(d)=\max(1,\lceil\log_2d\rceil)$ and $L=d^2b(d)$. Statement~(T) asserts that one
+deterministic multitape Turing machine transposes every $d\times d$ matrix with $b(d)$-bit entries, given and returned in
+row-major order, within $O(L)$ steps. The obvious recursive algorithm takes $O(L\log d)$ steps. Whether (T) holds is
+open; the series this paper belongs to collects the necessary conditions that a linear-time transposer must satisfy, and
+the constructions they leave.
+
+\paragraph{Where the series stands.} For oblivious machines, three kinds of results now constrain a transposer.
+\emph{Depth}: the walk DAG of the work heads has cheap cuts of bounded depth whenever the heads enter every cell
+boundedly often (Theorem~F of~\cite{BoundedNesting2026}); whether this holds at unbounded nesting is the open
+statement $\TCP(2)$, and the deep-nesting pair is the test case~\cite{BoundedNesting2026,DirectedReciprocity2026}.
+\emph{Coding}: given depth reduction, a transposer carries a near-full-rate code on cone relations that are
+paired-distance separated, and Question~9.1 of \emph{Directed Recovery Structures in Tape
+Computations}~\cite{DirectedRecovery2026}, the \emph{crux}, asks whether such codes have rate at most one half; it is
+answered for many classes~\cite{SeventhPaper2026,DirectedReciprocity2026}. \emph{Source covers}: oblivious geometries with
+bounded span overlap and few large return families are excluded outright~\cite{SourceCovers2026}, and the frozen gap-area
+certificate cannot exclude the remaining two-exception inverse-square case at moduli comparable to the protected
+rank~\cite{GapAreaMemo2026}. For adaptive machines, the eighth paper's Corollary~F$''$ excludes bounded-entry machines
+whose traces carry less than $L/2$ bits~\cite[Corollary~6.4]{BoundedNesting2026}, a hypothesis that padding defeats.
+
+\paragraph{This paper.} We show that, given the crux, every linear-time transposer revisits some tape unboundedly
+often, that an oblivious one must do so through deep merges in its code, and that at block scale every transposer leads
+to the same coding problem.
+\begin{enumerate}
+\item \emph{Merge depth replaces schedule depth} (\cref{sec:hop}). For an oblivious machine whose step values are linear
+over a field, Theorems~HC and~HC$'$ split the transposition matrix into a part of small rank and a part supported on
+balls of bounded radius whenever the machine's code merges deep data lineages only boundedly often along each path, on
+\emph{every} schedule, however deeply nested and whatever its capacity. With the linear crux this excludes such
+transposers (Corollary~HC), and with an affirmative answer to Question~9.1 it excludes them for all codes
+(Corollary~HC$^*$). Routing through deep hops is hop-limited, capacity is not the operative resource, and the remaining
+oblivious question becomes depth reduction of the code's merge structure (\cref{conj:HV}).
+\item \emph{Skeleton entropy and input steering} (\cref{sec:skeleton}). Theorem~SE is a form of Corollary~F$''$
+that is robust against padding of bounded entry, as the eighth paper asks: it bounds the entropy of the coarse skeleton
+of the trace, the head positions rounded to blocks of a fixed width, rather than that of the trace. Its proof turns a
+machine into a \emph{block machine} that is oblivious on each skeleton class. Two corollaries follow. No linear-time
+transposer, adaptive or not, has bounded entry on every tape (Corollary~RV). A transposer whose work tapes have bounded
+entry must therefore revisit input cells unboundedly often, and its input head must carry about $L/2$ bits of the data
+in its coarse motion at every scale (Corollary~IS). Padding that revisits input cells meets this last condition at no
+cost, so it is a necessary condition rather than an obstruction.
+\item \emph{Localization} (\cref{sec:localization}). Theorem~L combines these: given the crux, every linear-time
+transposer revisits some tape unboundedly often; if it is oblivious, it revisits a work tape and its code merges deep
+lineages unboundedly often; and if its work tapes have bounded entry, it revisits input cells and carries about half of
+the input in the coarse motion of its input head.
+\item \emph{Unconditional reductions} (\cref{sec:reductions}). Machines of sufficiently low adaptivity are excluded
+whenever one of their likely traces falls under the source-cover exclusions (Theorem~LA). At block scale every
+linear-time transposer, adaptive or not, yields an external-memory transposition with linearly many I/Os that is
+oblivious on $2^{L-O(d)}$ inputs (Theorem~EM). Lower bounds of this kind are known only for algorithms that move records
+as indivisible atoms~\cite{AggarwalVitter1988} or under a network-coding conjecture~\cite{FHLS2019} that is false in
+general~\cite{BravermanHe2026}; an indivisibility-free bound would refute (T) for every number of tapes.
+\item \emph{Deep nesting} (\cref{sec:dnp}). Theorem~BP proves the eighth paper's Conjecture~A$''$ for block labels of the
+deep-nesting pair at one odd shift, conditional on a conjecture that the straddle counts of most coarse classes concentrate as the shift varies
+(\cref{conj:S}), with
+partial results on that conjecture. It is evidence that the deep-nesting pair is depth-robust.
+\item \emph{What a construction must contain} (\cref{sec:construction}). Put together, a linear-time transposer must
+contain, at some scale, a near-full-rate code with a gain of order $\log d$ over routing on a network of the shape that
+tapes produce: a causal code with depth-robust merges on deep hops, or adaptive revisits that the present methods do
+not constrain further. Lemma~PG rules out
+one natural building block, Tanner codes assembled from projective planes.
+\end{enumerate}
+
+\paragraph{How to read this draft.} Every numbered result carries a status line and a complete written proof. None has
+been checked by an independent referee yet, and none is formalized in Lean yet; the formalization is in progress and will
+replace the status lines result by result. Results that assume an affirmative answer to Question~9.1, the linear crux or
+\cref{conj:S} say so in their statements. Claims that rest on a sketch appear only in remarks marked ``Proof sketch only'',
+and numerical observations only in remarks marked as numerical. Results of earlier papers of the series are cited by
+their numbers at a pinned revision, with their formal status there.
+
+\paragraph{Related work.} The machine model, the dependency DAGs, genies, the cone lemma and the crux are those of the
+fourth and eighth papers~\cite{FourthPaper2026,BoundedNesting2026}; the paired-distance theorem and Question~9.1 are from
+the fifth~\cite{DirectedRecovery2026}; the source-cover exclusions are from the ninth~\cite{SourceCovers2026}; the
+deep-nesting results build on the tenth~\cite{DirectedReciprocity2026}. Theorem~EM is a standard simulation of tapes in
+external memory followed by the popular-trace argument that also underlies the non-oblivious case
+of~\cite{FHLS2019}; its point here is the conclusion for transposition at memory $O(B)$.
+
+\paragraph{Organization.} \Cref{sec:prelim} recalls the notation. \Cref{sec:hop,sec:skeleton} prove the hop-charging and
+skeleton-entropy theorems, and \cref{sec:localization} combines them. \Cref{sec:reductions} proves the unconditional
+reductions, \cref{sec:dnp} the block-pair theorem, \cref{sec:construction} states the constructive target, and
+\cref{sec:open} lists open problems.

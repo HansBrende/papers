@@ -1,0 +1,577 @@
+\section{Evidence at deep nesting: block pairs}\label{sec:dnp}
+
+The deep-nesting pairs of the eighth paper of the series~\cite[Section~2.5]{BoundedNesting2026} are the sharpest open
+instance of $\TCP(2)$: its Conjecture~A$''$~\cite[Conjecture~5.24]{BoundedNesting2026}, that at a suitable odd shift every
+label of cost at most $n_{\mathrm h}/8$ on every cover doubly $\theta_0$-serves at most $C\log_2q+C'+\eta(m+1)$ levels with
+$\eta<1$, would make them depth-robust, so that $\TCP(2)$ fails~\cite[Corollary~5.26]{BoundedNesting2026}. For pairs of
+block labels of bounded length, the tenth paper~\cite[Section~5]{DirectedReciprocity2026} proved failure witnesses in three
+regimes (its Theorem~A, which rests on its Theorems~V$^*$ and~LU, all Lean-verified there) and named four further steps
+towards Conjecture~A$''$~\cite[Remark~5.6]{DirectedReciprocity2026}: (a)~one odd shift serving both directions;
+(b)~half-blindness of the fine levels at that shift; (c)~from witnesses to counts of served levels; (d)~unbounded block
+lengths and general labels.
+
+This section closes steps~(b) and~(c) for bounded block length and reduces step~(a) to Conjecture~S (\cref{conj:S}): the
+straddle counts of most coarse classes concentrate as the shift varies. The result is Theorem~BP (\cref{thm:BP}): assuming
+Conjecture~S, Conjecture~A$''$ holds for pairs of block labels of length at most~$a_0$, at one odd shift, with no
+$\log q$ term and no cost hypothesis. \Cref{sec:dnp-partial} gives partial results on Conjecture~S and exact computations
+up to $m=4095$. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not decide $\TCP(2)$, since general
+labels remain: Conjecture~A$''$ concerns every label of cost at most $n_{\mathrm h}/8$ (\cref{rem:dnp-scope}). It uses the tenth paper's
+Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on the deep-nesting pair (written proofs
+there). No result of this section is formalized.
+
+\subsection{Setting}\label{sec:dnp-setting}
+
+We use the notation of~\cite[Sections~2.5 and~5]{BoundedNesting2026}: $s_0>m\ge1$, $\Lambda=2^{s_0}$, $R_i=2^{s_0-i}$,
+$n_i=m-i+1$, $\Pi_i=n_iR_i$ (the length of a stroke of level~$i$), $R_{m+1}=0$, and we put $N=m+1$, so $P=4N\Lambda=4\Pi_0$.
+The pair is $x_1=U=U(s_0,m,1)$ and $x_2=x_1(\cdot+\xi)$ for an odd shift~$\xi$, so that no time is a turn of both heads.
+On the $r$-fold cover a label~$G$ with $q$ values gives the hop $(p,u)$ the error $e(p,u)=(G(u)-G(p)-1)\bmod q$; the hops of
+head~$h$ of level~$k$ form the class $(h,k)$; and $G$ \emph{$\theta$-serves} level~$k$ for head~$h$ if the class has total
+error at most $\theta qn_{\mathrm h}/(2N)$, and \emph{doubly $\theta$-serves} it if it does so for both heads. Every class
+has exactly $n_{\mathrm h}/(2N)=4r\Lambda$ hops~\cite[Lemma~5.1(c)]{BoundedNesting2026}, so $\theta$-service means mean
+error at most $\theta q$. A hop is \emph{blind} if its half-open interval $(p,u]$ contains no turn of the other head.
+
+\paragraph{Block pairs.} For $a\ge1$ and $K\in\Z$, $B(a,K)$ is the block label of~\cite[Definition~5.11]{BoundedNesting2026};
+that definition takes $K\ge0$, but it and the identities of~\cite[Lemma~5.12]{BoundedNesting2026} used below hold verbatim
+for every integer~$K$, as in the tenth paper. Its \emph{cancellers} are the levels~$l$ with $m-l\equiv a\pmod{a+1}$; it
+has level parameters $A_l,E_l$, block mass $Q(a,K)=(2^a-1)(2K+2)$ and path-sum increments $c_\sigb(l)=1+A_l$ and
+$c_\sigf(l)=2+A_l+E_l$, with $c_\sigf(\kappa)-c_\sigb(\kappa)=-Q(a,K)-1$ at every canceller~$\kappa$. For $q\mid r$ the
+\emph{block-pair label} of $(B(a_1,K_1),B(a_2,K_2))$ modulo~$q$ on the $r$-fold cover is $G=(\Phi_1+\Phi_2)\bmod q$, where
+$\Phi_h$ is the potential of head~$h$ carrying $B(a_h,K_h)$ at its own turns~\cite[Section~5.3]{BoundedNesting2026}; it is
+well defined because each $\Phi_h$ grows by an integer per period and $q\mid r$, as
+in~\cite[Proposition~5.23]{BoundedNesting2026}, and it is turn-supported. For a head~$h$, a level~$k$ and $j\ge0$ with
+$k+j\le m$, the \emph{blind errors} of $B(a_h,K_h)$ are
+\[
+  a^{(h)}(k)=A^{(h)}_k\bmod q,\qquad
+  b^{(h)}_j(k)=\Bigl(E^{(h)}_k-\sum_{i=k+1}^{k+j}\bigl(A^{(h)}_i+E^{(h)}_i+2\bigr)\Bigr)\bmod q
+\]
+(the tenth paper's \lean{blindApexErr} and \lean{blindBandErr}), and $\tilde Q_h=Q(a_h,K_h\bmod q)$. By the band
+decomposition~\cite[Lemma~5.10]{BoundedNesting2026}, the apex hop $(\alpha-d,\alpha+d)$, $1\le d<R_k$, of a level-$k$~V of
+head~$h$ has error $(A^{(h)}_k+F)\bmod q$, and its valley hop of band~$j$, at a cell $v+\sigma x$ with
+$R_{k+j+1}<x<R_{k+j}$, has error $(b^{(h)}_j(k)+F)\bmod q$, where $F$ is the other head's increment over the hop; on a
+blind hop $F=0$.
+
+\paragraph{Four results of the tenth paper.} All four are Lean-verified there; the second and third are the shift-free
+components \lean{block_overflow_band_witness} and \lean{block_straddle_residue_ge_half_q} of the proof
+of~\cite[Theorem~5.5]{DirectedReciprocity2026} (its Regimes~2 and~3). Define $a(k)$, $b_j(k)$ as above for any integer
+sequences $(A_l)$, $(E_l)$ and $q\ge3$.
+\begin{enumerate}[label=(\Roman*)]
+\item \emph{Run bound}~\cite[Theorem~5.3(2)]{DirectedReciprocity2026}. If $s\ge1$ and the levels $k_0,\dots,k_0+s-1$
+  satisfy $8a(k_0+i)\le q$ and $8b_0(k_0+i)\le q$ for $i<s$, $8b_1(k_0+i)\le q$ for $i+1<s$, and $8b_2(k_0+i)\le q$ for
+  $i+2<s$, then $s\le2\lfloor\log_2q\rfloor+2$.
+\item \emph{Overflow bound.} If $a\ge1$, $K\in\Z$, $q\ge32$ and $4Q(a,K\bmod q)+4>q$, then there is
+  $\mathrm{rem}\in\{0,\dots,a-1\}$ such that every level $1\le k<m$ with $(m-k)\bmod(a+1)=\mathrm{rem}$ has
+  $16a(k)\ge q$, $8b_0(k)\ge q$ or $8b_1(k)\ge q$, for the blind errors of $B(a,K)$.
+\item \emph{Residue bound.} If $a_1,a_2\ge1$, $K_1,K_2\in\Z$, $q\ge1$, $\tilde Q_1\le\tilde Q_2$, $4\tilde Q_2+4\le q$, and
+  $\kappa$ is a canceller of $B(a_2,\cdot)$, then for every level~$k$,
+  $\bigl(2A^{(1)}_k+2(c^{(2)}_\sigf(\kappa)-c^{(2)}_\sigb(\kappa))\bigr)\bmod q\ge q/2$, where $A^{(1)}$ belongs to
+  $B(a_1,K_1)$ and $c^{(2)}_\sigb,c^{(2)}_\sigf$ to $B(a_2,K_2)$.
+\item \emph{Theorem~V$^*$}~\cite[Theorem~5.2(2)]{DirectedReciprocity2026}. Let $\Phi\colon\Z\to\Z$, let $k\ge1$
+  and~$\kappa$ satisfy $\Pi_\kappa\le R_k$, let $\alpha\in\Z$, and suppose that there are integers $C_V,c_\sigb,c_\sigf$
+  and a function~$Y$ with $\Phi(\alpha+o)=C_V+c_\sigb+Y(o)$ and $\Phi(\alpha+\Pi_\kappa+o)=C_V+c_\sigf+Y(o)$ for
+  $0\le o<\Pi_\kappa$. For an integer~$c_0$ let $S=\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)$ be the set of $d\in[1,R_k-1]$
+  with $\alpha\le c_0-d<\alpha+\Pi_\kappa\le c_0+d<\alpha+2\Pi_\kappa$, and for $A'\in\Z$ and $q\ge1$ put
+  $e(d)=(A'+\Phi(c_0+d)-\Phi(c_0-d))\bmod q$. Then
+  $\card S\cdot\bigl((2A'+2(c_\sigf-c_\sigb))\bmod q\bigr)\le2\sum_{d\in S}e(d)$.
+\end{enumerate}
+
+\subsection{Straddle counts and Conjecture S}\label{sec:dnp-S}
+
+\begin{definition}[Straddle counts and good levels]\label{def:dnp-straddle}
+Let $\mathcal K=\{1,\dots,\lfloor N/4\rfloor\}$ be the \emph{coarse zone} and $j_0=\lfloor\log_2N\rfloor+1$. For $a\ge1$
+and $k\ge1$ let $\kappa_a(k)$ be the least integer $\kappa\ge k+j_0$ with $m-\kappa\equiv a\pmod{a+1}$ (the tenth paper's
+\lean{cancellerBelow}$(m,a,k)$ if $k+j_0\le m$); thus $j_0\le\kappa_a(k)-k\le j_0+a$, and $\kappa_a(k)$ is a canceller of
+$B(a,\cdot)$ if $\kappa_a(k)\le m$. For $1\le i\le m$ let $\mathcal A_i\subseteq[0,P)$ be
+the set of the $2^{i+1}$ apex times of the level-$i$ V's of~$U$ in one period. For $1\le k<\kappa\le m$ with
+$\Pi_\kappa\le R_k$ and $\xi\in\Z$ put
+\[
+  X^\pm_{k,\kappa}(\xi)=\sum_{\alpha_1\in\mathcal A_k}\ \sum_{\alpha\in\mathcal A_\kappa}
+  \card{\mathrm{Strad}\bigl((\alpha_1\pm\xi)\bmod P,\ \alpha,\ \Pi_\kappa,\ R_k\bigr)},
+\]
+the tenth paper's \lean{classStraddleCount}$(s_0,m,k,\kappa,\mathrm{dir},\xi)$ with $\mathrm{dir}$ true for~$+$ and false
+for~$-$. A level $k\in\mathcal K$ is \emph{$a$-good in direction~$\pm$} at~$\xi$ if
+$X^\pm_{k,\kappa_a(k)}(\xi)\ge2^{k+2}R_k/2^{a+7}$, and $\Gamma_{a,\pm}(\xi)$ is the number of such levels.
+\end{definition}
+
+In head~$2$'s own time, where it is~$U$, the apex hop $(\alpha_1-d,\alpha_1+d)$ of head~$1$ is the window of
+half-width~$d$ around $\alpha_1+\xi$; so $X^+_{k,\kappa}(\xi)$ counts the apex hops with $d<R_k$ of the class $(1,k)$ that
+start in the back stroke and end in the forward stroke of a level-$\kappa$~V of head~$2$, and $X^-$ does the same with the
+heads exchanged. The threshold is that of~\cite[Theorem~5.5(3)]{DirectedReciprocity2026}. Given $a_0\ge1$, we use the
+\emph{size condition} $4(j_0+a_0)\le N$\quad\textup{($\ast$)}; under it, for $k\in\mathcal K$, $1\le a\le a_0$ and
+$\kappa=\kappa_a(k)$, the tenth paper's \lean{cancellerBelow_props} gives $\kappa\le m$, $\Pi_\kappa\le R_k$ and
+$N\le2n_\kappa$.
+
+\begin{definition}[Straddle profile]\label{def:dnp-profile}
+Let $1\le k<\kappa\le m$ and $\hat\Pi_i=n_i2^{-i}$, so that $\Pi_i=\Lambda\hat\Pi_i$. For $S\subseteq\{1,\dots,k-1\}$ and
+$S'\subseteq\{1,\dots,\kappa-1\}$ put
+\[
+  \hat a_S=\sum_{i=0}^{k-1}2^{-i}+\sum_{i\in S}\hat\Pi_i,\qquad
+  \hat v_{S'}=\sum_{i=0}^{\kappa-1}2^{-i}+\hat\Pi_\kappa+\sum_{i\in S'}\hat\Pi_i,
+\]
+let $\Delta(y)=\max(0,\hat\Pi_\kappa-2\abs y)$, and define the $N$-periodic function
+\[
+  x_k(t)=\frac1{2^{k-1}\hat\Pi_\kappa}\sum_{S}\ \sum_{S'}\ \sum_{l\in\Z}\Delta\bigl(\hat a_S+t-\hat v_{S'}-lN\bigr)
+  \qquad(t\in\R).
+\]
+For $t$ uniform on $[0,N)$ let $\mu_k=\mathbb E\,x_k(t)$ and $V_k=\operatorname{Var}x_k(t)/\mu_k^2$. Write $V^{(a)}_k$ for
+$V_k$ at $\kappa=\kappa_a(k)$, which is at most~$m$ for $k\in\mathcal K$ once $4(j_0+a)\le N$, and
+$\bar V^{(a)}_m=\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}V^{(a)}_k$.
+\end{definition}
+
+These depend on $m$, $k$ and~$\kappa$, not on~$s_0$. In units of~$\Lambda$, the $\hat a_S$ and $\hat v_{S'}$ are the
+level-$k$ apex and level-$\kappa$ valley times of one level-$0$ stroke, and $x_k$ is the normalized straddle count at a real
+shift (\cref{lem:dnp-transfer}). Each tent has integral $\hat\Pi_\kappa^2/2$, so $\mu_k=n_\kappa/(4N)$.
+
+\begin{conjecture}[Conjecture S]\label{conj:S}
+For every integer $a\ge1$, $\bar V^{(a)}_m\to0$ as $m\to\infty$.
+\end{conjecture}
+
+By \cref{prop:S-fourier}, Conjecture~S is an averaged $L^2$ bound for Riesz products along the mixed-radix digits
+$n_i2^{-i}$; by \cref{prop:S-resonance}, it fails class by class.
+
+\begin{lemma}[Straddle counts and the profile]\label{lem:dnp-transfer}
+\notformalized
+Let $1\le k<\kappa\le m<s_0$ with $\Pi_\kappa\le R_k$, and put $M_k=2^{k+1}\Pi_\kappa$.
+\begin{enumerate}[label=(\alph*)]
+\item For all integers $c_0$ and $\alpha$,
+  $\card{\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)}=\max\bigl(0,\Pi_\kappa-\abs{2(c_0-\alpha-\Pi_\kappa)+1}\bigr)$.
+\item For every integer~$\xi$, $X^+_{k,\kappa}(\xi)=M_k\,x_k\bigl((\xi+\frac12)/\Lambda\bigr)$ and
+  $X^-_{k,\kappa}(\xi)=X^+_{k,\kappa}(P-\xi)$.
+\item If $\xi$ is uniform over the odd residues modulo~$P$, then for every real~$\tau$ and each sign
+  \[
+    \Bigl|\Pr\bigl[X^\pm_{k,\kappa}(\xi)<\tau M_k\bigr]-\frac1N\,\mathrm{Leb}\{t\in[0,N):x_k(t)<\tau\}\Bigr|
+    \ \le\ 2^{\kappa+2-s_0}.
+  \]
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) With $z=c_0-\alpha$ the conditions say $\max(1,z-\Pi_\kappa+1,\Pi_\kappa-z)\le d\le\min(R_k-1,z,2\Pi_\kappa-1-z)$.
+The integers $z-\Pi_\kappa+1$, $\Pi_\kappa-z$ sum to~$1$ and $z$, $2\Pi_\kappa-1-z$ sum to $2\Pi_\kappa-1$, so the bounds
+$1$ and $R_k-1\ge\Pi_\kappa-1$ never bind; with $y=z-\Pi_\kappa$ the remaining bounds are $\frac12+\abs{y+\frac12}$ and
+$\Pi_\kappa-\frac12-\abs{y+\frac12}$, leaving $\max(0,\Pi_\kappa-\abs{2y+1})$ values of~$d$.
+
+(b) By~(a), $\card{\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)}=\Lambda\Delta((c_0+\frac12-\nu)/\Lambda)$ with
+$\nu=\alpha+\Pi_\kappa$ the valley time, and it vanishes unless $c_0\in[\alpha,\alpha+2\Pi_\kappa)$. The four level-$0$
+strokes of a period have length $\Pi_0=N\Lambda$ and the same turn times relative to their starts, and every~V lies inside
+one of them~\cite[Section~2.5]{BoundedNesting2026}; a stroke of level $l<m$ starting at~$t_0$ has the apex of its~V at
+$t_0+R_l$, and the strokes of that~V start at $t_0+R_l$ and $t_0+R_l+\Pi_{l+1}$. So in the stroke starting at~$0$ the
+level-$k$ apex times are the $\Lambda\hat a_S$ and the level-$\kappa$ valley times the $\Lambda\hat v_{S'}$
+and for integers $c_0\in[0,P)$,
+$\sum_{\alpha\in\mathcal A_\kappa}\card{\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)}=\Lambda H((c_0+\frac12)/\Lambda)$ with the
+$N$-periodic $H(y)=\sum_{S'}\sum_{l\in\Z}\Delta(y-\hat v_{S'}-lN)$. As $\mathcal A_k=\{\Lambda\hat a_S+j\Pi_0:0\le j\le3\}$,
+$X^+_{k,\kappa}(\xi)=4\Lambda\sum_SH(\hat a_S+t)=M_kx_k(t)$ with $t=(\xi+\frac12)/\Lambda$. The second identity holds as
+$(\alpha_1-\xi)\bmod P=(\alpha_1+(P-\xi))\bmod P$.
+
+(c) Let $g(u)=M_kx_k(u/\Lambda)$, so $X^+_{k,\kappa}(\xi)=g(\xi+\frac12)$. As the $\hat a_S,\hat v_{S'}$ are multiples
+of $2^{-\kappa}$ and $\hat\Pi_\kappa/2$ of $2^{-\kappa-1}$, $g$ is continuous, $\Pi_0$-periodic and affine on each of the
+$2N2^\kappa$ intervals $[iR_\kappa/2,(i+1)R_\kappa/2)$ of a period. For odd~$\xi$, $\xi+\frac12$ runs over $2\Z+\frac32$,
+hitting each of the $\Pi_0/2$ points modulo~$\Pi_0$ four times. If $s_0=\kappa+1$ the bound is~$2$; otherwise each interval
+contains exactly $R_\kappa/4$ points, and meets $\{g<\tau M_k\}$ in an interval of some length~$\lambda$ containing
+$\lambda/2\pm1$ of them. So the number of points of a period with $g<\tau M_k$ differs from half the measure of
+$\{g<\tau M_k\}$ by at most $2N2^\kappa$, and dividing by $\Pi_0/2$ gives $2^{\kappa+2-s_0}$. The sign~$-$ follows
+from~(b).
+\end{informalproof}
+
+\begin{proposition}[Conjecture S yields a good shift]\label{prop:S-shift}
+\notformalized
+Let $a_0\ge1$ and $0\le\gamma<1$, let $m<s_0$ satisfy~\textup{($\ast$)}, and let $\xi$ be uniform over the odd residues
+modulo~$P$. For $1\le a\le a_0$ and $k\in\mathcal K$ put $\kappa=\kappa_a(k)$ and
+$\theta_k=N2^{\kappa-k}/(2^{a+4}n_\kappa^2)$, and let $\beta^{(a)}_k$ be the probability that $k$ is not $a$-good in
+direction~$+$.
+\begin{enumerate}[label=(\alph*)]
+\item $\theta_k\le1/2$; $k$ fails to be $a$-good in direction~$-$ also with probability $\beta^{(a)}_k$; and
+  $\beta^{(a)}_k\le V^{(a)}_k/(V^{(a)}_k+(1-\theta_k)^2)+2^{\kappa+2-s_0}$.
+\item With $\beta_a=\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}\beta^{(a)}_k$, the probability that
+  $\Gamma_{a,\pm}(\xi)<\gamma\card{\mathcal K}$ for some $1\le a\le a_0$ and some sign is at most
+  $\frac2{1-\gamma}\sum_{a=1}^{a_0}\beta_a$.
+\item If Conjecture~S holds for $a=1,\dots,a_0$, there is $m_0=m_0(a_0,\gamma)$ such that for every $m\ge m_0$
+  \textup{($\ast$)} holds and, for every $s_0>m$, with probability at least~$1/2$,
+  $\Gamma_{a,\pm}(\xi)\ge\gamma\card{\mathcal K}$ for every $1\le a\le a_0$ and both signs.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) As $N\le2n_\kappa$, and $2^{\kappa-k}\le2^{j_0+a}\le2^{a+1}N$ because $2^{j_0}\le2N$, we get
+$\theta_k\le1/2$. The threshold of $a$-goodness is $\tau_kM_k$ with $\tau_k=R_k/(2^{a+6}\Pi_\kappa)=\theta_k\mu_k$. So by \cref{lem:dnp-transfer}(c), and by Cantelli's inequality
+$\Pr[x\le\mu-\lambda]\le\sigma^2/(\sigma^2+\lambda^2)$ ($\lambda>0$) with $\lambda=(1-\theta_k)\mu_k$, the bound holds; the
+sign~$-$ follows from \cref{lem:dnp-transfer}(b).
+
+(b) By~(a), $\card{\mathcal K}-\Gamma_{a,\pm}(\xi)$ has expectation $\beta_a\card{\mathcal K}$, so by Markov's inequality it
+exceeds $(1-\gamma)\card{\mathcal K}$ with probability at most $\beta_a/(1-\gamma)$; take a union bound over the $2a_0$
+pairs $(a,\pm)$.
+
+(c) For $k\in\mathcal K$, $\kappa\le N/4+j_0+a_0$ and $s_0\ge N$, so $2^{\kappa+2-s_0}\le2^{3+a_0}N2^{-3N/4}$; with
+$\theta_k\le1/2$, (a) gives $\beta_a\le4\bar V^{(a)}_m+2^{3+a_0}N2^{-3N/4}$ for every $s_0>m$. Under Conjecture~S this
+tends to~$0$ for each $a\le a_0$, and \textup{($\ast$)} holds for all large~$m$. Choose $m_0$ such that for $m\ge m_0$
+the size condition holds and $\sum_{a\le a_0}\beta_a\le(1-\gamma)/4$ for every $s_0>m$; then (b) bounds the failure
+probability by~$1/2$.
+\end{informalproof}
+
+\subsection{Half-blindness and witnesses}\label{sec:dnp-witness}
+
+\begin{definition}[Families and the fine zone]\label{def:dnp-family}
+Let $1\le k\le m-2$ and let $h$ be a head. The four \emph{families} of the class $(h,k)$ are the \emph{apex family}, the
+apex hops $(\alpha-d,\alpha+d)$ with $1\le d<R_k$ of the level-$k$ V's of head~$h$, and for $j\in\{0,1,2\}$ the
+\emph{band-$j$ family}, their valley hops at the cells $v+\sigma x$ with
+$R_{k+j+1}<x<R_{k+j}$~\cite[Lemma~5.1(b)]{BoundedNesting2026}. A family is \emph{half-blind} at~$\xi$ if at least half of
+its hops with later endpoint in $[0,P)$ are blind. For $0<\eps\le1/8$ the \emph{fine zone} is
+$\mathcal F_\eps=\{k\in\Z:m-\lfloor\eps m\rfloor\le k\le m-2\}$.
+\end{definition}
+
+The pair is $P$-periodic, so a family has the same fraction of blind hops in every period and on every cover.
+
+\begin{lemma}[Families of fine classes]\label{lem:dnp-family}
+\notformalized
+Let $s_0>m$, $1\le k\le m-2$, let $h$ be a head, and let $G$ be a block-pair label modulo~$q$ on the $r$-fold cover.
+\begin{enumerate}[label=(\alph*)]
+\item Each family of the class $(h,k)$ contains at least a fraction $1/32$ of the hops of the class.
+\item All blind hops of the apex family have error $a^{(h)}(k)$, and all blind hops of the band-$j$ family have error
+  $b^{(h)}_j(k)$.
+\item Let $\theta>0$. If $G$ $\theta$-serves level~$k$ for head~$h$ and a family of the class $(h,k)$ is half-blind
+  at~$\xi$, then the common error of its blind hops is at most $64\theta q$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+(a) Per level-$k$~V of head~$h$ the class has $2R_k$ hops~\cite[Lemma~5.1(b)]{BoundedNesting2026}, the apex family
+$R_k-1$, and the band-$j$ family ($l=k+j$) $R_{l+1}-1$ if $l<m$ and $R_m-1$ if $l=m$. As $s_0>m$, $R_k\ge2^{m-k+1}\ge8$, and
+$R_k\ge16$ if $k+2<m$. So the fractions are at least $\frac12-\frac1{16}$ (apex), $2^{-j-2}-\frac1{2R_k}\ge\frac1{32}$
+(band~$j$ with $l<m$; if $j=2$ then $k+2<m$) and $2^{-j-1}-\frac1{2R_k}\ge\frac1{16}$ (band~$j$ with $l=m$).
+
+(b) This is the band decomposition with $F=0$, as $A_V=A_{\lev V}$ and $E_V=E_{\lev V}$ for a block
+label~\cite[Definition~5.11]{BoundedNesting2026}. (c) The class has $4r\Lambda$ hops and total error at most $4r\Lambda\theta q$. By~(a) and periodicity the family has at
+least $4r\Lambda/32$ hops, at least half of them blind, each with the common error~$e$ of~(b); so
+$e\cdot4r\Lambda/64\le4r\Lambda\theta q$.
+\end{informalproof}
+
+\begin{lemma}[Half-blindness at a random odd shift]\label{lem:dnp-halfblind}
+\notformalized
+Let $0<\eps\le1/8$ and $m<s_0$ with $\eps m\ge4$, and let $\xi$ be uniform over the odd residues modulo~$P$. The expected
+number of triples $(h,k,f)$, with $h$ a head, $k\in\mathcal F_\eps$ and $f$ a family of the class $(h,k)$, that are not
+half-blind at~$\xi$ is at most $64\eps^2m$. Hence, for $a_0\ge1$ and $\delta=1/(48(a_0+1))$, more than
+$\delta\card{\mathcal F_\eps}$ such triples exist with probability at most $6144(a_0+1)\eps$.
+\end{lemma}
+
+\begin{informalproof}
+Let $k\in\mathcal F_\eps$ and $g=m-k$, so $2\le g\le\eps m$. By~\cite[Proposition~5.17]{BoundedNesting2026}, a hop of
+length~$\ell$ of either head is blind with probability at least $N^{-1}\sum_{i=0}^m(1-\ell/R_i)^+-2/(NR_m)$ over odd
+shifts, and $2/(NR_m)\le1/N$ as $R_m\ge2$. An apex hop of $(h,k)$ has length $2d<R_{k-1}$, so the sum is at least
+$\sum_{i<k}(1-2^{i-k+1})\ge k-2$. A valley hop of band~$j$, at level $l=k+j$, has length
+$(m-l)R_l+2x<(m-l+2)R_l\le R_{l-\lambda}$ with $\lambda=\lceil\log_2(m-l+2)\rceil\le\lceil\log_2(g+2)\rceil$
+\cite[Lemma~5.1(b)]{BoundedNesting2026}, so the sum is at least $l-\lambda-1$ if $l\ge\lambda$. So every hop of every
+family of $(h,k)$ fails to be blind with probability at most $\eps_g=(g+4+\lceil\log_2(g+2)\rceil)/N$ (trivially if
+$l<\lambda$, as then $\eps_g>1$), and $\eps_g\le4g/N$ as $\lceil\log_2(g+2)\rceil\le g$. Hence the expected non-blind
+fraction of a family is at most~$\eps_g$, and by Markov's inequality it fails to be half-blind with probability at
+most~$2\eps_g$. Summing over two heads, four families and
+$2\le g\le G=\lfloor\eps m\rfloor$ gives at most $16\sum_{g=2}^G4g/N\le64G^2/N\le64\eps^2m$. As
+$\card{\mathcal F_\eps}=G-1\ge\eps m/2$, Markov's inequality bounds the probability of more than
+$\delta\card{\mathcal F_\eps}$ such triples by $128\eps/\delta=6144(a_0+1)\eps$.
+\end{informalproof}
+
+\begin{lemma}[Witnesses give unserved levels]\label{lem:dnp-witness}
+\notformalized
+Let $a_0\ge1$, $0<\gamma\le1$, $0<\eps\le1/8$, $\theta_0=2^{-(a_0+11)}$ and $\delta=1/(48(a_0+1))$, and let $m<s_0$ satisfy
+$\eps m\ge4$ and~\textup{($\ast$)}. Let $\xi$ be an odd shift such that
+\begin{enumerate}[label=(\roman*)]
+\item $\Gamma_{a,\pm}(\xi)\ge\gamma\card{\mathcal K}$ for all $1\le a\le a_0$ and both signs, and
+\item at most $\delta\card{\mathcal F_\eps}$ triples $(h,k,f)$ with $k\in\mathcal F_\eps$ are not half-blind at~$\xi$.
+\end{enumerate}
+Then for all $1\le a_1,a_2\le a_0$, all $K_1,K_2\in\Z$, every $q\ge3$ and every multiple~$r$ of~$q$, at least $c(m+1)-2$
+levels are not doubly $\theta_0$-served by the block-pair label of $(B(a_1,K_1),B(a_2,K_2))$ modulo~$q$ on the $r$-fold
+cover, where $c=\min\bigl(\gamma/8,\ \eps/(26(a_0+1))\bigr)$.
+\end{lemma}
+
+\begin{informalproof}
+Call a triple \emph{bad} if it is not half-blind. As $\eps m\ge4$ and $\eps\le1/8$,
+$\card{\mathcal F_\eps}=\lfloor\eps m\rfloor-1\ge\eps m/2$ and $\mathcal F_\eps\subseteq[1,m-2]$. We find levels that are
+not $\theta_0$-served for some head, in three cases covering all $q\ge3$.
+
+\emph{Case 1: $q<32$.} Then $2\lfloor\log_2q\rfloor+2\le10$. Split $\mathcal F_\eps$ into
+$\lfloor\card{\mathcal F_\eps}/11\rfloor$ disjoint windows of $11$ consecutive levels and a remainder. For a window
+$\{k_0,\dots,k_0+10\}$, the run bound with $s=11$, applied to $B(a_1,K_1)$, fails: there are $0\le i\le10$ and a family~$f$
+of the class $(1,k_0+i)$, the apex family or the band-$j$ family with $i+j\le10$, whose blind error exceeds $q/8$; these
+quantities involve only the levels $k_0,\dots,k_0+10\le m-2$, so they are blind errors of actual hops
+(\cref{lem:dnp-family}(b)). Distinct windows give distinct levels, and at most
+$\delta\card{\mathcal F_\eps}\le\card{\mathcal F_\eps}/96$ of these triples are bad. If such a triple $(1,k,f)$ is
+half-blind and level~$k$ were $\theta_0$-served for head~$1$, \cref{lem:dnp-family}(c) would bound its blind error by
+$64\theta_0q<1$, so the error would be~$0$, not more than $q/8$. So at least
+$\lfloor\card{\mathcal F_\eps}/11\rfloor-\card{\mathcal F_\eps}/96\ge\card{\mathcal F_\eps}/13-1$ levels are not
+$\theta_0$-served for head~$1$.
+
+\emph{Case 2: $q\ge32$ and $4\tilde Q_h+4>q$ for some head~$h$.} The overflow bound for $B(a_h,K_h)$ gives
+$\mathrm{rem}<a_h$, and each of the at least $\lfloor\card{\mathcal F_\eps}/(a_h+1)\rfloor\ge\card{\mathcal F_\eps}/(a_0+1)-1$
+levels $k\in\mathcal F_\eps$ with $(m-k)\bmod(a_h+1)=\mathrm{rem}$ has a family~$f$ of the class $(h,k)$ (apex, band~$0$ or
+band~$1$) with blind error at least $q/16$. If $(h,k,f)$ is half-blind and level~$k$ were $\theta_0$-served for head~$h$,
+\cref{lem:dnp-family}(c) would bound this error by $64\theta_0q=2^{-(a_0+5)}q\le q/64$. Discarding the levels of the at
+most $\card{\mathcal F_\eps}/(48(a_0+1))$ bad triples leaves at least $\card{\mathcal F_\eps}/(2(a_0+1))-1$ levels that
+are not $\theta_0$-served for head~$h$.
+
+\emph{Case 3: $q\ge32$ and $4\tilde Q_h+4\le q$ for both heads.} Suppose that $\tilde Q_1\le\tilde Q_2$. By~(i), at
+least $\gamma\card{\mathcal K}$ levels $k\in\mathcal K$ are $a_2$-good in direction~$+$. Fix one and let
+$\kappa=\kappa_{a_2}(k)$, a canceller of $B(a_2,\cdot)$ with $\kappa\le m$ and $\Pi_\kappa\le R_k$. Let $\Phi$ be the
+potential of~$U$ carrying $B(a_2,K_2)$, so that head~$2$ has potential $\Phi(t+\xi)$ up to a constant, and let
+$\alpha\in\mathcal A_\kappa$ be the apex of a level-$\kappa$~V~$V$. By the path sums~\cite[Lemma~5.9]{BoundedNesting2026},
+for $0\le o<\Pi_\kappa$ the values $\Phi(\alpha+o)$ and $\Phi(\alpha+\Pi_\kappa+o)$ are a constant~$C_V$ (from the start of
+the level-$0$ stroke and the V's containing~$V$), plus $c^{(2)}_\sigb(\kappa)$ or $c^{(2)}_\sigf(\kappa)$ (from~$V$), plus the contribution~$Y(o)$ of the V's
+inside the stroke of~$V$ at offset~$o$, which is the same for both strokes because the increments of a block label depend
+only on the level~\cite[Lemma~5.12]{BoundedNesting2026}. This is the decomposition in the proof
+of~\cite[Lemma~5.20]{BoundedNesting2026}, and it is the hypothesis of Theorem~V$^*$.
+
+Let $\alpha_1\in\mathcal A_k$, $c_0=(\alpha_1+\xi)\bmod P$ and $S=\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)$. For $d\in S$,
+the apex hop $(\alpha_1-d,\alpha_1+d)$ of head~$1$ lies in the class $(1,k)$ with $d<R_k$, its other-head increment is
+$\Phi(c_0+d)-\Phi(c_0-d)$ because $\Phi$ has $P$-periodic increments, and so its error is
+$e(d)=(A^{(1)}_k+\Phi(c_0+d)-\Phi(c_0-d))\bmod q$ \cite[Lemma~5.10(a)]{BoundedNesting2026}. Theorem~V$^*$ with
+$A'=A^{(1)}_k$ and the residue bound give $\sum_{d\in S}e(d)\ge\card S\,q/4$. For fixed~$\alpha_1$ at most one~$\alpha$ has
+$S\ne\emptyset$, since $S\ne\emptyset$ puts $c_0$ in the span $[\alpha,\alpha+2\Pi_\kappa)$ and the spans of distinct V's of
+one level are disjoint (\lean{periodVApices_spans_disjoint}~\cite{DirectedReciprocity2026}); and distinct pairs
+$(\alpha_1,d)$ give distinct hops. Summing over $\alpha_1$ and~$\alpha$, the hops of the class $(1,k)$ in one period have
+total error at least $\frac q4X^+_{k,\kappa}(\xi)\ge\frac q4\cdot2^{k+2}R_k/2^{a_2+7}=q\Lambda/2^{a_2+7}$, as
+$2^kR_k=\Lambda$. Errors are $P$-periodic and the class has $4\Lambda$ hops per period, so its mean error is at least
+$q/2^{a_2+9}>\theta_0q$: level~$k$ is not $\theta_0$-served for head~$1$. This gives at least
+$\gamma\card{\mathcal K}\ge\gamma N/4-1$ levels.
+
+If $\tilde Q_2<\tilde Q_1$, exchange the heads: use the apex hops of head~$2$, centred at the times
+$(\alpha_1-\xi)\bmod P$ of head~$1$, the level-$\kappa_{a_1}(k)$ V's of head~$1$, $X^-$, condition~(i) with $a=a_1$, and
+the residue bound with the indices $1$ and~$2$ exchanged.
+
+In every case, since $\card{\mathcal F_\eps}\ge\eps m/2$, at least
+$\min\bigl(\eps m/(26(a_0+1)),\ \gamma N/4\bigr)-1\ge c(m+1)-2$ levels are not $\theta_0$-served for one of the heads,
+hence not doubly $\theta_0$-served.
+\end{informalproof}
+
+\subsection{Block pairs at one odd shift}\label{sec:dnp-BP}
+
+\begin{theorem}[Theorem BP: block pairs at one odd shift, assuming Conjecture~S]\label{thm:BP}
+\notformalized
+Let $a_0\ge1$, and assume that Conjecture~S holds for $a=1,\dots,a_0$. Put $\theta_0=2^{-(a_0+11)}$ and
+$c=2^{-16}/(26(a_0+1)^2)$. There is a constant~$C'$, depending only on~$a_0$ (through the rate of convergence in
+Conjecture~S), such that for all $m\ge1$ and $s_0>m$ some odd shift~$\xi$ has the following property: for all integers
+$1\le a_1,a_2\le a_0$ and $K_1,K_2$, every $q\ge3$ and every multiple~$r$ of~$q$, the block-pair label of
+$(B(a_1,K_1),B(a_2,K_2))$ modulo~$q$ on the $r$-fold cover of the pair $x_1=U(s_0,m,1)$, $x_2=x_1(\cdot+\xi)$ doubly
+$\theta_0$-serves at most $(1-c)(m+1)+C'$ levels.
+\end{theorem}
+
+\begin{informalproof}
+Put $\gamma=1/2$ and $\eps=2^{-16}/(a_0+1)$, so that $c=\min(\gamma/8,\eps/(26(a_0+1)))$. By \cref{prop:S-shift}(c) there
+is $m_0$ such that for $m\ge m_0$ and $s_0>m$ the size condition holds and condition~(i) of \cref{lem:dnp-witness} holds at
+a uniformly random odd shift with probability at least $1/2$. Let $m_1=\max(m_0,2^{18}(a_0+1))$ and $C'=\max(2,c(m_1+1))$.
+For $m\ge m_1$ and $s_0>m$ we have $\eps m\ge4$, and by \cref{lem:dnp-halfblind} condition~(ii) fails with probability at
+most $6144(a_0+1)\eps=3/32<1/2$. So both conditions hold at some odd shift~$\xi$, which depends only on $a_0$, $m$
+and~$s_0$, and \cref{lem:dnp-witness} leaves at most $(1-c)(m+1)+2\le(1-c)(m+1)+C'$ doubly $\theta_0$-served levels, for
+every block pair with $1\le a_1,a_2\le a_0$, every $q\ge3$ and every multiple~$r$ of~$q$. For $m<m_1$ every odd shift has
+the property, since $m+1<(1-c)(m+1)+c(m_1+1)\le(1-c)(m+1)+C'$.
+\end{informalproof}
+
+Theorem~BP matters because block labels are how one head alone serves most of its levels (the fraction $a/(a+1)$ in the
+single-head regime~\cite[Lemma~5.12]{BoundedNesting2026}), and it shows that at one fixed odd shift no pair of them, for
+any modulus, keeps more than a fraction $1-c$ of the levels doubly served, as Conjecture~A$''$ predicts for every label of
+cost at most $n_{\mathrm h}/8$.
+
+\begin{remark}[Scope of Theorem~BP]\label{rem:dnp-scope}
+In the notation of Conjecture~A$''$, Theorem~BP gives, for pairs of block labels of length at most~$a_0$ on covers with
+$q\mid r$, the constants $\theta_0$, $\eta=1-c$, $C=0$ and~$C'$, without the cost hypothesis; labels with $q\le2$ values
+cost at least $n_{\mathrm h}/2$ by Lemma~Zq~\cite[Lemma~2.7]{BoundedNesting2026}, so $q\ge3$ loses nothing. It leaves
+open Conjecture~S; block lengths growing with~$q$, such as $a\approx\frac12\log_2q$, where the straddle density $2^{-a}$ in
+Case~3 of the proof of \cref{lem:dnp-witness} falls below every fixed~$\theta_0$; and general labels (step~(d)). Even for a
+level-uniform label without cancellers the straddle residue $(2A_k+2E_\kappa+2)\bmod q$ can be small, so Case~3 does not
+apply. Theorem~BP therefore does not decide $\TCP(2)$; it is evidence for depth-robustness from the labels whose
+cancellations are understood.
+\end{remark}
+
+\subsection{Partial results on Conjecture S}\label{sec:dnp-partial}
+
+These results are not used in the proof of Theorem~BP. Throughout, $\operatorname{sinc}y=\sin(\pi y)/(\pi y)$ with
+$\operatorname{sinc}0=1$, and for $1\le k<\kappa\le m$ and $r\in\Z$
+\[
+  \varphi_k(r)=\operatorname{sinc}^4\Bigl(\frac{rn_\kappa}{N2^{\kappa+1}}\Bigr)
+  \prod_{i=1}^{k-1}\cos^4\Bigl(\frac{\pi rn_i}{N2^i}\Bigr)\prod_{i=k}^{\kappa-1}\cos^2\Bigl(\frac{\pi rn_i}{N2^i}\Bigr).
+\]
+
+\begin{proposition}[Exact form of $V_k$]\label{prop:S-fourier}
+\notformalized
+Let $1\le k<\kappa\le m$.
+\begin{enumerate}[label=(\alph*)]
+\item $V_k=\sum_{r\ne0}\varphi_k(r)$.
+\item Let $\zeta_1,\dots,\zeta_{\kappa-1},\omega_1,\dots,\omega_4$ be independent, with $\zeta_i+2\sim\mathrm{Bin}(4,\frac12)$
+  for $i<k$, $\zeta_i+1\sim\mathrm{Bin}(2,\frac12)$ for $k\le i<\kappa$, and $\omega_j$ uniform on $[-\frac14,\frac14]$, and
+  let $W=\sum_{i<\kappa}\zeta_i\hat\Pi_i+Z$ with $Z=\hat\Pi_\kappa(\omega_1+\dots+\omega_4)$. Then $W$ has a continuous
+  density~$f_W$, and $1+V_k=N\sum_{l\in\Z}f_W(lN)$.
+\item $V_k\ge F_k:=\sum_{t\ne0}\varphi_k(N2^{k-1}t)$, and $F_k=F(n_\kappa,\kappa-k)$, where
+  \[
+    F(n,D)=\sum_{t\ne0}\operatorname{sinc}^4\bigl(tn2^{-D-2}\bigr)\prod_{e=1}^{D}\cos^2\bigl(\pi t(n+D+1-e)2^{-e}\bigr).
+  \]
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) With $\Delta_N(y)=\sum_l\Delta(y-lN)$, $x_k(t)=(2^{k-1}\hat\Pi_\kappa)^{-1}\sum_{S,S'}\Delta_N(t+\hat a_S-\hat v_{S'})$,
+so the Fourier coefficients $\hat x(r)=N^{-1}\int_0^Nx_k(t)e^{-2\pi irt/N}dt$ are
+\[
+  \hat x(r)=\frac{\hat\Delta(r/N)}{2^{k-1}\hat\Pi_\kappa N}\sum_Se^{2\pi ir\hat a_S/N}\sum_{S'}e^{-2\pi ir\hat v_{S'}/N},
+\]
+with $\hat\Delta(\eta)=\int_\R\Delta(y)e^{-2\pi i\eta y}dy=\frac12\hat\Pi_\kappa^2\operatorname{sinc}^2(\hat\Pi_\kappa\eta/2)$,
+because $\Delta$ is twice the self-convolution of the indicator function of $[-\hat\Pi_\kappa/4,\hat\Pi_\kappa/4]$. As
+$\hat a_S$ is a constant plus $\sum_{i\in S}\hat\Pi_i$,
+$\abs{\sum_Se^{2\pi ir\hat a_S/N}}=\prod_{i<k}\abs{1+e^{2\pi ir\hat\Pi_i/N}}=2^{k-1}\prod_{i<k}\abs{\cos(\pi rn_i/(N2^i))}$,
+and likewise for the valleys with $\kappa-1$ factors. Hence $\abs{\hat x(r)}^2/\hat x(0)^2=\varphi_k(r)$, the factors with
+$i<k$ occurring in both sums; $\hat x(0)=\mu_k$, and
+Parseval's identity $\operatorname{Var}x_k=\sum_{r\ne0}\abs{\hat x(r)}^2$ gives~(a).
+
+(b) For $\zeta+2\sim\mathrm{Bin}(4,\frac12)$,
+$\mathbb Ee^{2\pi iy\zeta}=e^{-4\pi iy}((1+e^{2\pi iy})/2)^4=\cos^4(\pi y)$; for $\zeta+1\sim\mathrm{Bin}(2,\frac12)$ it is
+$\cos^2(\pi y)$; for $\omega$ uniform on $[-\frac14,\frac14]$ it is $\operatorname{sinc}(y/2)$. So
+$\mathbb E\exp(2\pi irW/N)=\varphi_k(r)$ for $r\in\Z$. Like~$Z$, $W$ has a continuous density with compact support, so its
+$N$-periodization $f(y)=\sum_lf_W(y+lN)$ is continuous, with Fourier coefficients
+$N^{-1}\mathbb E\exp(-2\pi irW/N)=\varphi_k(r)/N$ ($\varphi_k$ is even), which are summable as
+$\operatorname{sinc}^4y\le\min(1,(\pi y)^{-4})$. Hence $f(0)=N^{-1}\sum_r\varphi_k(r)=(1+V_k)/N$ by~(a).
+
+(c) All terms in~(a) are nonnegative. At $r=N2^{k-1}t$ the factors with $i<k$ equal~$1$, the factor at $k\le i<\kappa$ is
+$\cos^2(\pi tn_i2^{k-1-i})$, and the sinc factor is $\operatorname{sinc}^4(tn_\kappa2^{k-\kappa-2})$; with $D=\kappa-k$,
+$e=i-k+1$ and $n_i=n_\kappa+D+1-e$, this is the term~$t$ of $F(n_\kappa,D)$.
+\end{informalproof}
+
+So $1+V_k$ is $N$ times the density at~$0$ of a random sum of the digits $\hat\Pi_i$ modulo~$N$, smoothed at the scale
+$\hat\Pi_\kappa$. For $k\in\mathcal K$ and $\kappa=\kappa_a(k)$, splitting the frequencies $r\ne0$ into the multiples of
+$N2^{k-1}$, the \emph{semi-local} ones $r=N2^{k-h}s$ ($s$ odd, $2\le h\le k$) and the \emph{sidebands} $r\notin N\Z$ gives
+$V_k=F_k+\sum_{h=2}^kSL^{[h]}_k+SB_k$ with $SL^{[h]}_k=\sum_{s\text{ odd}}\varphi_k(N2^{k-h}s)$ and
+$SB_k=\sum_{r\notin N\Z}\varphi_k(r)$, all nonnegative. The argument of~(b) with period~$1$ gives
+$\sum_w\varphi_k(Nw)=\sum_lf_W(l)$, so $SB_k=N\sum_lf_W(lN)-\sum_lf_W(l)$ measures how far the law of~$W$ modulo~$N$ is
+from invariance under integer translations.
+
+\begin{proposition}[Classes with a large fine floor]\label{prop:S-resonance}
+\notformalized
+Let $a=1$, let $q\ge6$ be even, let $k\ge1$ with $3k\le2^q+4$, and let $m=2^q+k+3$. Then $k\in\mathcal K$,
+$\kappa_1(k)=k+q+2$, $n_{\kappa_1(k)}=2^q-q+2$, and $V^{(1)}_k\ge F_k>0.551$.
+\end{proposition}
+
+\begin{informalproof}
+Here $N=2^q+k+4$ and $k+4\le(2^q+16)/3<2^q$, so $j_0=q+1$, and $4k\le N$, so $k\in\mathcal K$. As $m-k-j_0=2^q-q+2$ is even,
+the least $\kappa\ge k+q+1$ with $m-\kappa$ odd is $k+q+2$, so $n_\kappa=2^q-q+2$ and $D=q+2$. By
+\cref{prop:S-fourier}(c), $V^{(1)}_k\ge F_k=F(n_\kappa,q+2)$, whose cosine factors are $\cos^2(\pi t(2^q+5-e)2^{-e})$ for
+$1\le e\le q+2$. Keep only the two equal terms $t=\pm4$. The sinc factor is $\operatorname{sinc}^4(y)$ with
+$y=(2^q-q+2)2^{-q-2}\in(0,\frac14]$, so it is at least $\operatorname{sinc}^4(\frac14)=(2\sqrt2/\pi)^4>0.65702$. For $t=4$
+the factor of index~$e$ is $\cos^2(\pi(2^q+5-e)2^{2-e})$: it is~$1$ for $e\in\{1,2,3,5\}$; $\frac12$ for $e=4$;
+$\cos^2(\pi(e-5)2^{2-e})$ for $6\le e\le q$; $\cos^2(\pi(q-4)2^{1-q})\ge\cos^2(\pi/16)$ for $e=q+1$; and
+$\cos^2(\pi(q-3)2^{-q})\ge\cos^2(3\pi/64)$ for $e=q+2$, since $(q-4)2^{-q}\le\frac1{32}$ and $(q-3)2^{-q}\le\frac3{64}$ for
+$q\ge6$. The factors with $6\le e\le q$ lie in $[0,1]$, so their product is at least
+$\prod_{e\ge6}\cos^2(\pi(e-5)2^{2-e})\ge\cos^4(\pi/16)\cos^2(3\pi/64)(1-\pi^2\sum_{j\ge4}j^24^{-j-3})>0.89142$, using the
+factors $e=6,7,8$ exactly, $\cos^2y\ge1-y^2$ and $\prod(1-y_e)\ge1-\sum y_e$ for $e\ge9$, and
+$\sum_{j\ge4}j^24^{-j}=\frac{20}{27}-\frac{41}{64}$. Hence
+$F_k\ge2\cdot0.65702\cdot\frac12\cdot0.89142\cdot\cos^2(\pi/16)\cos^2(3\pi/64)>0.551$.
+\end{informalproof}
+
+So $V^{(1)}_k\not\to0$ along classes $k\to\infty$ (at most one per~$m$), and variance bounds for single classes cannot show
+that every coarse class is good; Conjecture~S averages over classes, as \cref{prop:S-shift}(b) allows.
+
+\paragraph{Arithmetic of $\kappa_a$.} Let $\rho(k)=(m-k-j_0)\bmod(a+1)$. Then $\kappa_a(k)=k+j_0+((\rho(k)+1)\bmod(a+1))$,
+so $D(k)=\kappa_a(k)-k\in[j_0,j_0+a]$ depends only on $k\bmod(a+1)$, and $n_{\kappa_a(k)}=N-k-D(k)$, which is
+$m-k-j_0-\rho(k)$ if $\rho(k)<a$ and $m-k-j_0+1$ if $\rho(k)=a$, is a multiple of $a+1$. So on
+$\mathcal K_\rho=\{k\in\mathcal K:\rho(k)=\rho\}$, whose consecutive elements differ by $a+1$, $n_{\kappa_a(k)}$ runs over
+$\card{\mathcal K_\rho}\ge L_a:=\lfloor\lfloor N/4\rfloor/(a+1)\rfloor$ consecutive multiples of $a+1$. If $4(j_0+a)\le N$,
+then $n_{\kappa_a(k)}\ge3N/4-j_0-a\ge N/2$ on~$\mathcal K$, and $n_{\kappa_a(k)}2^{-D(k)-2}\ge2^{-a-4}$ as $2^{j_0}\le2N$.
+
+\begin{lemma}[Dyadic products along a progression]\label{lem:S-progression}
+\notformalized
+Let $a\ge1$ with $a+1=2^wo$ and $o$ odd; let $t=2^vt'$ with $t'$ odd and $v\ge0$; let $j\ge1$, let $c_e$ be real numbers
+for $v<e\le v+w+j$, and let $I$ be a set of $L\ge1$ consecutive integers. Then
+\[
+  \frac1L\sum_{\ell\in I}\ \prod_{e=v+1}^{v+w+j}\cos^2\bigl(\pi t((a+1)\ell+c_e)2^{-e}\bigr)\ \le\ 2^{-j}+\frac{2^j}{2L}.
+\]
+\end{lemma}
+
+\begin{informalproof}
+Write $\cos^2(\pi y)=\frac12+\frac14\exp(2\pi iy)+\frac14\exp(-2\pi iy)$ and expand the product over the $w+j$ indices
+$e\in(v,v+w+j]$: it is $2^{-w-j}\sum_\sigma\omega_\sigma\exp(2\pi i(\alpha_\sigma\ell+\beta_\sigma))$ over
+$\sigma\in\{0,\pm1\}^{(v,v+w+j]}$, with weights $\omega_\sigma=\prod_e(1\text{ if }\sigma_e=0,\ \frac12\text{ otherwise})$ of
+total $2^{w+j}$, $\alpha_\sigma=(a+1)t\sum_e\sigma_e2^{-e}$, and $\beta_\sigma$ independent of~$\ell$. The~$\sigma$ vanishing
+on $(v+w,v+w+j]$ have total weight $2^w$, and for them we bound the average by~$1$. For any other~$\sigma$, let $e^*>v+w$
+be the largest~$e$ with $\sigma_e\ne0$; then $\sum_e\sigma_e2^{-e}$ is $2^{-e^*}$ times an odd integer and
+$(a+1)t=2^{w+v}ot'$, so $\alpha_\sigma$ is $2^{-(e^*-v-w)}$ times an odd integer, its distance $\lVert\alpha_\sigma\rVert$ to
+the nearest integer is at least $2^{-j}$, and
+$\abs{\sum_{\ell\in I}\exp(2\pi i\alpha_\sigma\ell)}\le1/\abs{\sin(\pi\alpha_\sigma)}\le1/(2\lVert\alpha_\sigma\rVert)\le2^{j-1}$.
+So the average is at most $2^{-w-j}\bigl(2^w+2^{w+j}\cdot2^{j-1}/L\bigr)=2^{-j}+2^j/(2L)$.
+\end{informalproof}
+
+\begin{proposition}[Fine floors and near semi-local frequencies]\label{prop:S-local}
+\notformalized
+Let $a\ge1$ with $4(j_0+a)\le N$, and for $k\in\mathcal K$ let $\kappa=\kappa_a(k)$.
+\begin{enumerate}[label=(\alph*)]
+\item $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}F_k\le\dfrac{2^{a+7}}{3\pi}\cdot\dfrac{\log_2L_a+5}{\sqrt{L_a}}$.
+\item If $2\le H\le\frac12\log_2L_a$, then
+  $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le\dfrac{5\cdot2^{a+6}}{3\pi}\cdot
+  \dfrac{2^H}{\sqrt{L_a-H}}$.
+\item Let $H_N=\lfloor\frac14\log_2N\rfloor$ and
+  $NL_k=V_k-F_k-\sum_{h=2}^{\min(H_N,k)}SL^{[h]}_k=SB_k+\sum_{h=H_N+1}^{k}SL^{[h]}_k$. Then Conjecture~S holds for~$a$ if
+  and only if $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}NL_k\to0$ as $m\to\infty$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) It suffices to bound the average over each $\mathcal K_\rho$. There $D=D(k)$ is fixed and $F_k=F((a+1)\ell,D)$, with
+$\ell$ running over a set~$I$ of $\card{\mathcal K_\rho}\ge L_a$ consecutive integers. Let $H=\lfloor\frac12\log_2L_a\rfloor$,
+so $2^H\le\sqrt{L_a}<2^{H+1}$; then $H+w<D$, since $2^{H+w}\le(a+1)\sqrt{N/(4(a+1))}\le N/4$ (as $a+1\le N/4$) and
+$2^D\ge2^{j_0}>N$. Fix $t\ne0$ and let $v$ be the exponent of~$2$ in~$t$. The factors of $F(n,D)$ with $e\le v$ equal~$1$,
+and all factors are at most~$1$, so the product is at most $\prod_{e=v+1}^{H+w}\cos^2(\pi t((a+1)\ell+D+1-e)2^{-e})$. By
+\cref{lem:S-progression} with $j=H-v$, its average over $\ell\in I$ is at most $B_v=2^{-(H-v)}+2^{H-v}/(2L_a)$ if $v<H$; put
+$B_v=1$ if $v\ge H$. The sinc factor is at most $\min(1,(\pi\abs t2^{-a-4})^{-4})$, as
+$\abs{\operatorname{sinc}y}\le\min(1,1/(\pi\abs y))$ and $n_\kappa2^{-D-2}\ge2^{-a-4}$. Comparing each odd $t'\ge1$ with the
+interval $[t'-1,t']$, $\sum_{t'\text{ odd}}\min(1,(\pi2^vt'2^{-a-4})^{-4})\le\int_0^\infty\min(1,(\pi2^{v-a-4}y)^{-4})\,dy
+=2^{a+6-v}/(3\pi)$. With both signs of~$t$, the average of $F_k$ over $\mathcal K_\rho$ is at most
+$\frac{2^{a+7}}{3\pi}\sum_{v\ge0}2^{-v}B_v$. Finally $\sum_{v<H}2^{-v}B_v\le H2^{-H}+\frac23\cdot2^H/L_a$ and
+$\sum_{v\ge H}2^{-v}=2^{1-H}$, and with $2^{-H}\le2/\sqrt{L_a}$ and $2^H\le\sqrt{L_a}$ the total is at most
+$(2H+5)/\sqrt{L_a}\le(\log_2L_a+5)/\sqrt{L_a}$.
+
+(b) Fix $2\le h\le H$ and~$\rho$, and let $k\in\mathcal K_\rho$, $k\ge h$. At $r=N2^{k-h}s$ the factors of $\varphi_k$ with
+$i\le k-h$ equal~$1$; with $i=k-h+l$ and $m_l=n_{k-h+l}=n_\kappa+D+h-l$ the others are
+$\operatorname{sinc}^4(sn_\kappa2^{-D-h-1})$ and $\cos^4$ (for $l<h$) or $\cos^2$ (for $h\le l<D+h$) of $\pi sm_l2^{-l}$.
+The $\ell=n_\kappa/(a+1)$ of these~$k$ are $L'$ consecutive integers, $4\le L_a-h\le L'\le L_a+1$. Bound $\cos^4$
+by~$\cos^2$, drop the factors with $l>H'+w$, where $H'=\lfloor\frac12\log_2L'\rfloor\ge1$ (so
+$2^{H'+w}\le(a+1)\sqrt{L_a+1}<N<2^D$), and bound the sinc factor by $\min(1,(\pi\abs s2^{-a-3-h})^{-4})$.
+\Cref{lem:S-progression} with $t=s$, $v=0$, $j=H'$ bounds the average over~$\ell$ by $\frac52/\sqrt{L'}$, and the sinc
+bounds sum over odd~$s$ of both signs to at most $2^{a+h+6}/(3\pi)$. So the average of $SL^{[h]}_k$ over $\mathcal K_\rho$
+is at most $5\cdot2^{a+5}2^h/(3\pi\sqrt{L_a-h})$; sum over $2\le h\le H$.
+
+(c) For large~$N$, $2\le H_N\le\frac12\log_2L_a$, and (a) and (b) with $H=H_N$ are $O_a(N^{-1/2}\log N)$ and
+$O_a(N^{-1/4})$; so the averages of $V_k$ and $NL_k$ over $\mathcal K$ differ by $o(1)$.
+\end{informalproof}
+
+The method stops near $h\approx\frac12\log_2N$, where the about $2^h$ odd~$s$ in the sinc range outweigh the gain
+$L_a^{-1/2}$ of \cref{lem:S-progression}.
+
+\begin{remark}[The carry chain]\label{rem:S-carry}
+Proof sketch only: a representation for the non-local part. Let $b_1,\dots,b_{\kappa-1}$ be the binary digits of
+$\sum_{i<\kappa}\zeta_i2^{-i}\bmod1$, and define carries by $\varrho_\kappa=0$ and $\varrho_i=(\zeta_i+\varrho_{i+1}-b_i)/2$
+for $i=\kappa-1,\dots,1$. Each $\zeta_i$ is odd with probability~$\frac12$, so the $b_i$ are independent fair bits, and
+given them the carries, which stay in $\{-2,\dots,2\}$, form a Markov chain run downwards from level $\kappa-1$.
+Telescoping gives $\sum_i\zeta_i\hat\Pi_i\equiv\sum_ib_i\hat\Pi_i-2\varrho\pmod N$ with $\varrho=\sum_i\varrho_i2^{-i}$,
+so $1+V_k=N\,\mathbb E\bigl[\sum_lf_Z\bigl(\sum_ib_i\hat\Pi_i-2\varrho-lN\bigr)\bigr]$, where $f_Z$ is the density of~$Z$
+and $\sum_ib_i\hat\Pi_i$ is a uniformly random valley position of the comb. The difficulty is the correlation of
+the carries with the leading bits, the mixed-radix carry problem that also blocked the fixed-shift approach
+of~\cite[Section~5.6]{BoundedNesting2026}: the carries forget distant bits quickly (\cref{rem:S-numerics}), but a proof
+needs near-invariance of the law of~$W$ modulo~$N$ under integer translations, which $SB_k$ measures.
+\end{remark}
+
+\begin{remark}[Numerical: Conjecture S]\label{rem:S-numerics}
+The values below were computed from \cref{prop:S-fourier}(b) by propagating the exact law of the partial sums
+$\sum_{i\le j}\zeta_i\hat\Pi_i$ level by level ($O(\kappa N)$ floating-point operations per class, no sampling); where
+both were run, this agrees with direct summation of \cref{prop:S-fourier}(a) to four or five decimals.
+\begin{enumerate}[label=(\arabic*)]
+\item For $a=1$, $\bar V^{(1)}_m=0.268$, $0.134$, $0.061$, $0.0345$, $0.0189$, $0.0114$ at $m=127$, $255$, $511$, $1023$,
+  $2047$, $4095$; at the eleven values of~$m$ computed between $127$ and $4095$, $m\bar V^{(1)}_m$ lies between $30$
+  and~$47$, consistent with $\bar V^{(1)}_m=O(\log m/m)$. For $a=2$ and $a=3$, $\bar V^{(a)}_m=0.126$, $0.058$, $0.031$,
+  $0.021$ and $0.139$, $0.064$, $0.030$, $0.018$ at $m=255$, $511$, $1023$, $2047$.
+\item The sidebands of the first classes carry most of $\bar V$: for $a=1$ and $m\ge511$ the averages of $F_k$ and
+  $\sum_hSL^{[h]}_k$ are at most $0.0017$ and $0.0044$, while $\sum_kSB_k\in[6.5,10.5]$ for all eleven~$m$; at $m=2047$,
+  $SB_k\approx1.68$, $0.28$, $0.024$, $0.0017$, $10^{-5}$ at $k=1$, $8$, $16$, $24$, $40$.
+\item By concavity of $v\mapsto v/(v+s)$, \cref{prop:S-shift}(a) gives
+  $\beta_a\le\bar V^{(a)}_m/(\bar V^{(a)}_m+(1-\theta^*)^2)+2^{3+a_0}N2^{-3N/4}$ with $\theta^*=\max_k\theta_k\approx0.23$, so
+  $\beta_1\le0.055$, $0.031$, $0.019$ at $m=1023$, $2047$, $4095$; at $m=1023$, $2047$ the event of \cref{prop:S-shift}(c)
+  has probability at least $\frac12$ for all $s_0>m$, for $(a_0,\gamma)=(2,\frac12)$ ($\beta_1+\beta_2\le0.105$, $0.065$)
+  and $(3,\frac14)$ ($\beta_1+\beta_2+\beta_3\le0.154$, $0.094$).
+\item At the classes of \cref{prop:S-resonance}, $F_k=0.641$, $0.604$, $0.593$, $0.590$ for $q=6$, $8$, $10$, $12$; at
+  $(m,k)=(85,18)$ and $(89,22)$ the class is not $1$-good at about $24$--$29\%$ of sampled shifts.
+\item By exact enumeration, two copies of the carry chain of \cref{rem:S-carry} driven by the same bits coalesce within
+  two levels $i<k$ with probability at least $5/16$, whatever the bits and carries; so if $p+2j<k$, the bits $b_i$ with
+  $i>p+2j$ move the law of the carries at the levels $i\le p$ by at most $(11/16)^j$ in total variation.
+\end{enumerate}
+\end{remark}

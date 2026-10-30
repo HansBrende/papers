@@ -1,0 +1,48 @@
+\section{Localization}\label{sec:localization}
+
+The two preceding sections combine into one statement about where a linear-time transposer could still live, given an
+affirmative answer to Question~9.1. It is the paper's main conditional conclusion: every transposer must revisit some
+tape unboundedly often; an oblivious one must revisit a work tape and merge deep lineages unboundedly often in its code;
+and one whose work tapes have bounded entry must revisit input cells and carry about half of the input in the coarse
+motion of its input head.
+
+\begin{theorem}[Theorem L: localization]\label{thm:L}
+\notformalized
+Assume [Q9.1]. Let $M$ be a machine with $k$ work tapes, let $c>0$, and let $\mathcal D$ be an infinite set of
+dimensions~$d$ at which $M$ transposes all $d\times d$ matrices with $b(d)$-bit entries within $c(L+1)$ steps,
+$L=d^2b(d)$. Then the following hold at all large $d\in\mathcal D$, in each part from a threshold that depends on the
+parameters named there.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Revisits.)} For every integer $V\ge1$: on some input, some cell of some tape, the input tape or a work tape,
+is entered more than $V$ times.
+\item \emph{(Input steering.)} For all integers $V,w\ge1$ and every $\eta\in(0,\frac12)$: if on every input every
+work-tape cell is entered at most $V$ times, then $\mathrm H(\sigma^{\mathrm{in}}_w(X))>(\frac12-\eta)L$ for a uniformly
+random input~$X$.
+\item \emph{(Merge depth.)} For all integers $V\ge1$ and $s\ge0$ and all $\eps\in(0,1]$ and $\eta\ge0$ with
+$\eps+\eta<\frac12$: if $M$ is oblivious at length~$L$, then for every pruning of its field DAG, every cold genie at
+$(V,\eps)$ and every lineage assignment for it, more than $\eta L$ output positions have merge depth greater than~$s$.
+\end{enumerate}
+\end{theorem}
+
+\begin{informalproof}
+Part~(a) is \cref{cor:RV} for the entry bound~$V$: the dimensions in~$\mathcal D$ at which every input enters every cell
+at most $V$ times are finitely many. Part~(b) is \cref{cor:IS} for $k$, $V$, $w$, $c$ and~$\eta$: at all large lengths,
+its properties~(i) and~(ii) exclude~(iii), and~(i) holds at every $d\in\mathcal D$. Part~(c) is \cref{cor:HCstar} for
+$k$, $V$, $s$, $C=\max(1,c)$, $\eps$ and~$\eta$: at all large $d$, its properties~(i) and~(ii) exclude each other.
+\end{informalproof}
+
+Theorem~L leaves exactly three kinds of machines, and the open problems of \cref{sec:open} are about them.
+\begin{itemize}
+\item Oblivious machines whose code merges deep lineages unboundedly often. Hop charging cannot exclude them.
+\Cref{conj:HV} asks that the ball systems of oblivious machines have short index codes at a rate set by their deep
+hops; together with [Q9.1] it would exclude them (\cref{rem:HV}), and \cref{prop:merge-reduction} proves it for codes
+whose merge DAG has cheap cuts.
+\item Adaptive machines whose work tapes have bounded entry and which revisit input cells unboundedly often. Part~(b)
+puts about half of the input into the coarse motion of the input head, but padding meets this at no cost
+(\cref{rem:skel-padding}): a machine can copy its input to a work tape and then move its input head between two cells
+according to the bits. So the present methods constrain this class only through part~(a).
+\item Adaptive machines that revisit some work tape unboundedly often. Neither hop charging, which needs one schedule,
+nor skeleton entropy, which needs bounded entry, applies to them (\cref{prob:adaptive-deep}).
+\end{itemize}
+At block scale all three are subject to the same requirement (\cref{thm:EM}): on a large set of inputs they run one
+oblivious external-memory transposition with linearly many I/Os.

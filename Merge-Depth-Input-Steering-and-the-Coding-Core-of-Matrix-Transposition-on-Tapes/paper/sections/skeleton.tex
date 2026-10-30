@@ -20,10 +20,9 @@ gives Theorem~SE (\cref{thm:SE}). At large scales, heads of bounded entry carry 
 (\cref{lem:skeleton-count}). Hence, given [Q9.1], an affirmative answer to Question~9.1 for every degree bound, a
 linear-time transposer whose work tapes have bounded entry must steer its input head by about half of the input at every
 scale (Corollary~IS, \cref{cor:IS}), and no linear-time transposer, adaptive or not, has bounded entry on every tape,
-the input tape included (Corollary~RV, \cref{cor:RV}). Every result of this section has a complete written proof;
-\cref{lem:skel-coarse,lem:block-machine,lem:skel-genie,lem:skel-cones,lem:skel-transport,lem:skel-matching,lem:skel-disjoint,prop:skel-paired,lem:skeleton-count}
-are formalized in Lean, and so is \cref{lem:skel-entropy} in part, as their status lines say. Only
-\cref{lem:skel-uniform}, Theorem~SE and Corollaries~IS and~RV assume [Q9.1].
+the input tape included (Corollary~RV, \cref{cor:RV}). Every result of this section has a complete written proof and is
+formalized in Lean, with [Q9.1] as a hypothesis where the statement assumes it; only \cref{lem:skel-uniform}, Theorem~SE
+and Corollaries~IS and~RV assume [Q9.1].
 
 \subsection{Skeletons}\label{sec:skel-skeletons}
 
@@ -599,7 +598,7 @@ The \emph{induced relation} of a relation~$N$ on $Q\subseteq[0,L)$ is $N_Q(q)=N(
 \cite[Section~2]{DirectedRecovery2026}.
 
 \begin{lemma}[A uniform half-rate bound on class relations]\label{lem:skel-uniform}
-\notformalized
+\formal{MergeDepth/SkeletonSE.lean}{MergeDepth.skel_uniform_class}
 Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
 degree bound; the binary alphabet suffices. Let $M$ be a machine with $k$ work tapes, let $w\ge1$ and $D\ge0$ be
 integers, $c>0$ and $0<\delta<1$, and put $B=\sum_{h=0}^D(k+1)^h$ and $\vartheta=\lceil wB/\delta\rceil$. For a length
@@ -612,7 +611,7 @@ $L\ge L_\zeta$, every relation of $\mathcal N_L$, on its coordinate set~$Q$, and
 $\mathcal C\subseteq\{0,1\}^Q$ for it, $\log_2\card{\mathcal C}\le(\frac12+\zeta)\card Q$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Suppose not. Then there are $\zeta>0$ and infinitely many lengths~$L$, each with a relation $N'_L\in\mathcal N_L$ on a
 coordinate set~$Q_L$, coming from some $\sigma$ and~$\Gamma$, and a binary storage code $\mathcal C_L$ for $N'_L$ with
 $\log_2\card{\mathcal C_L}>(\frac12+\zeta)\card{Q_L}$. Along these lengths $d\to\infty$, so for all large ones $d\ge2$
@@ -626,10 +625,17 @@ $\mathcal C_L$ satisfy the hypotheses of Question~9.1 with the binary alphabet, 
 $\limsup\log_2\card{\mathcal C_L}/\card{Q_L}\le\frac12$, a contradiction. The relations are loopless, since $Q_L$ avoids
 $S_\Gamma$, so the argument does not depend on whether recovery relations in Question~9.1 may contain loops. This is the
 uniformity argument of the fifth paper's Proposition~9.2~\cite{DirectedRecovery2026}.
-\end{informalproof}
+Formally, \lean{MergeDepth.skel_uniform_binary} is the argument for subrelations of the cone relation of
+\cref{lem:skel-matching} under \lean{MergeDepth.Q91Binary}, through the uniformity argument \lean{MergeDepth.uniform_rate_binary},
+and \lean{MergeDepth.skel_uniform_class} states it for skeleton classes: the relation of \cref{lem:skel-cones} lies in the
+cone relation of the walks of one member (\lean{MergeDepth.classRel_subset_coneRel}), since the cones of output times
+before~$T_\sigma$ contain only earlier times. The proof gives more: the bound holds for every subrelation of~$N_\Gamma$
+and every $\vartheta\ge wB/\delta$, it needs only one member that appends at least $L$ bits, and $L_\zeta$ does not
+depend on the entry width.
+\end{outline}
 
 \begin{theorem}[Theorem SE: skeleton entropy]\label{thm:SE}
-\notformalized
+\formal{MergeDepth/SkeletonSE.lean}{MergeDepth.thm_SE,MergeDepth.thm_SE_class}
 Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
 degree bound; the binary alphabet suffices. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every
 machine~$M$ with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following
@@ -644,7 +650,7 @@ $2^{(\frac12+\eta)L}$ elements such that $M$ halts within $c(L+1)$ steps with ou
 $X\in\mathcal X_\sigma$ and has entry at most~$V$ on every work tape on some $X\in\mathcal X_\sigma$.
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
 The second statement implies the first: by~\eqref{eq:skel-heavy}, (iii) gives a class with at least
 $2^{(\frac12+\eta)L}$ elements, (i) holds on it, and (ii) holds on each of its members.
 
@@ -675,7 +681,11 @@ $\card{\mathcal H_\vartheta}\le wBL/\vartheta\le\delta L=\eta L/2$. Hence
   +\tfrac12\card{\mathcal H_\vartheta\cup S_\Gamma}\le\bigl(\tfrac12+\tfrac{3\eta}8\bigr)L+\frac{A^{(w)}_1L}{2\log_2d},
 \]
 which is less than $(\frac12+\frac\eta2)L$, a contradiction.
-\end{informalproof}
+Formally, \lean{MergeDepth.thm_SE_class} is the second statement and \lean{MergeDepth.thm_SE} the first, in entropy
+form; they use the genie \lean{MergeDepth.skeleton_genie}, the count \lean{MergeDepth.card_revealed_le} of revealed
+words, the storage codes \lean{MergeDepth.blockMachine_isStorageCode_fibre} and \cref{lem:skel-uniform}. Both hold for
+every $\eta>0$, the threshold does not depend on the entry width, and the time bound concerns only the class.
+\end{outline}
 
 The hypotheses enter the proof as follows: (iii) only through the existence of one large class; (ii) only for one member
 of that class, through its coarse work walks; and (i) for the time bound, for the number of appended bits and for
@@ -734,9 +744,7 @@ at large scales the skeleton of a machine with bounded entry is almost determine
 revisit cells unboundedly often can carry a constant fraction of the input in their coarse motion.
 
 \begin{lemma}[Coarse entropy of bounded-entry heads]\label{lem:skel-entropy}
-\partformal{MergeDepth/SkeletonEntropy.lean}{MergeDepth.coarse_entropy_le,MergeDepth.theta_tendsto}{that the runs of~$M$
-give data with the properties of the formal statement (a halting time, work-head walks from cell~$0$ and an output count
-from~$0$ with steps $0$ and~$1$), which is immediate from the machine model}
+\formal{MergeDepth/SkeletonEntropy.lean}{MergeDepth.coarse_entropy_le,MergeDepth.theta_tendsto}
 Let $M$ have $k$ work tapes, let $V\ge1$ and $w\ge4V$ be integers, $c>0$, and let $L\ge\max(2w,16V)$ be a length.
 Suppose that on every input $X\in\{0,1\}^L$, $M$ appends exactly $L$ bits, halts within $c(L+1)$ steps and has entry at
 most~$V$ on every work tape. Then
@@ -762,6 +770,7 @@ Formally, the run on an input is given by its halting time, its head walks and i
 input skeleton are \lean{MergeDepth.skelData} and \lean{MergeDepth.inSkel}, entropy is that of a function of a uniform
 input (\lean{MergeDepth.entropy}), the first inequality is \lean{MergeDepth.entropy_le_of_fibres}, the counts are
 \cref{lem:skeleton-count}, and the limit holds for real~$w$.
+The runs of a machine supply the data of the formal statement (\lean{MergeDepth.frozen_coarse_entropy_le}).
 \end{outline}
 
 The output component alone contributes at most $(L/w)\log_2(2ecw)$ bits, whatever the machine does, as long as it
@@ -769,7 +778,7 @@ appends exactly $L$ bits within $c(L+1)$ steps; it could therefore be omitted fr
 to a coarser scale and a smaller~$\eta$ in Theorem~SE.
 
 \begin{corollary}[Corollary IS: input steering]\label{cor:IS}
-\notformalized
+\formal{MergeDepth/InputSteering.lean}{MergeDepth.cor_IS}
 Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
 degree bound; the binary alphabet suffices. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every
 machine~$M$ with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following
@@ -781,7 +790,7 @@ three properties:
 \end{enumerate}
 \end{corollary}
 
-\begin{informalproof}
+\begin{outline}
 Choose an integer $m\ge1$ such that $w'=mw$ satisfies $w'\ge4V$ and $\theta_{k,V,c}(w')\le\eta/2$, which is possible by
 \cref{lem:skel-entropy}. Let $L_0$ be at least the length that Theorem~SE gives for $M$, $V$, $w'$, $c$ and $\eta/4$,
 and such that every length $L\ge L_0$ satisfies $L\ge\max(2w',16V)$ and $4kV\log_2(ew'/V)\le\eta L/4$. Suppose that $M$
@@ -792,7 +801,10 @@ $\mathrm H(\sigma^{\mathrm{in}}_{w'}(X))\le(\frac12-\eta)L$. By (i), (ii) and \c
   \mathrm H(\sigma_{w'}(X))\le\bigl(\tfrac12-\eta\bigr)L+\tfrac\eta2L+\tfrac\eta4L=\bigl(\tfrac12-\tfrac\eta4\bigr)L .
 \]
 So $M$ has the three properties of Theorem~SE at scale~$w'$ with $\eta/4$ in place of~$\eta$, which is impossible.
-\end{informalproof}
+Formally, \lean{MergeDepth.cor_IS} takes $w'=wm$ with $\theta(w')<\eta/2$ (\lean{MergeDepth.theta_tendsto}), compares the
+input skeletons at the scales $w$ and~$w'$ by \lean{MergeDepth.entropy_comp_le}, and applies
+\lean{MergeDepth.frozen_coarse_entropy_le} and Theorem~SE. It holds for every $\eta>0$.
+\end{outline}
 
 Corollary~IS reduces adaptivity, for machines whose work tapes have bounded entry, to the coarse motion of one head:
 given [Q9.1], such a linear-time transposer must move its input head, at every fixed scale, in a way that depends on the
@@ -802,14 +814,14 @@ constant, so Corollary~IS contains the eighth paper's Corollary~F$'$~\cite[Corol
 extends it to adaptive machines.
 
 \begin{corollary}[Corollary RV: revisits]\label{cor:RV}
-\notformalized
+\formal{MergeDepth/InputSteering.lean}{MergeDepth.cor_RV}
 Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
 degree bound; the binary alphabet suffices. For all integers $k,V\ge1$ and every $c>0$, no machine with $k$ work tapes
 is, at infinitely many lengths $L=d^2b(d)$, a transposer of all $d\times d$ matrices within $c(L+1)$ steps such that on
 every input every cell of every tape, the input tape included, is entered at most $V$ times.
 \end{corollary}
 
-\begin{informalproof}
+\begin{outline}
 Let $M$ be such a machine. Since $(\log_2w)/w\to0$, there is an integer $w\ge4V$ with $4Vc\log_2(ew/V)\le w/8$; fix it.
 At a length $L\ge16V$ at which $M$ has the stated properties, every input satisfies $L\le T(X)\le c(L+1)$, and the input
 skeleton at scale~$w$ is the coarse walk of a walk of length $T(X)$ that starts at~$0$ and enters every cell at most $V$
@@ -823,7 +835,9 @@ and $T(X)$ takes at most $c(L+1)+1$ values. Hence
 \]
 at all large such lengths. The work tapes satisfy~(ii) of Corollary~IS, so Corollary~IS with this~$w$ and $\eta=\frac14$
 excludes $M$ at all large lengths.
-\end{informalproof}
+Formally, \lean{MergeDepth.cor_RV} bounds the entropy of the input skeleton of a bounded-entry input head by counting
+coarse walks (\lean{MergeDepth.card_coarse_le}) and applies Corollary~IS with $\eta=\frac14$.
+\end{outline}
 
 Given [Q9.1], every linear-time transposer, adaptive or not, revisits cells unboundedly often: for every~$V$, at all
 large lengths, some input makes some head enter some cell more than $V$ times. Corollary~RV is incomparable with the

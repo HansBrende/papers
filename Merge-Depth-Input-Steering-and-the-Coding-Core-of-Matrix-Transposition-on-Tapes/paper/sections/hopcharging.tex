@@ -16,11 +16,9 @@ splits into a part of small rank and a part supported on balls whose radius does
 number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering
-lemma, \cref{lem:short-paths,lem:merge-formation}, Theorems~HC and~HC$'$, and \cref{prop:capacity,prop:merge-reduction}
-and \cref{lem:expansion} are formalized in Lean, field DAGs for machines that are oblivious up to their last output
-step; \cref{lem:balls}, \cref{prop:hop-routing} and Corollaries~HC and~HC$^*$ are formalized in part, as their status lines
-say.
+suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). Every numbered result of this
+section is formalized in Lean, for machines that are oblivious up to their last output step and with [Q9.1] as a
+hypothesis where the statement assumes it, except that Corollary~HC is formalized at one size, as its status line says.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -501,9 +499,7 @@ For all codes the crux has to be applied to relations that are not cone relation
 paper's structural theorem extends to them, because its proof uses the genie only through short paths.
 
 \begin{lemma}[Relations inside balls]\label{lem:balls}
-\partformal{MergeDepth/SkeletonPaired.lean}{MergeDepth.realizes_ball,MergeDepth.ball_paired_packing,MergeDepth.ball_self_demands}{part~(b),
-which assumes [Q9.1]; in part~(a), that the input head reads the position under it and that the output count is~$r$ at
-the step that appends output position~$r$, which the formal statements take as hypotheses on the walks of the machine}
+\formal{MergeDepth/HCStarQ91.lean}{MergeDepth.ball_paired_packing_trace,MergeDepth.ball_self_demands_trace,MergeDepth.ball_rate_trace}
 Let $D'\ge0$ be an integer and $K=\sum_{i=0}^{D'}(k+1)^i$. Suppose that $d\ge2$ and that $M$ appends exactly $L$ output
 bits, and let $N$ be a recovery relation on $[0,L)$ with $N(q)\subseteq B^{D'}(\tpos(q))$ for every~$q$.
 \begin{enumerate}[label=(\alph*)]
@@ -533,7 +529,7 @@ and~$B$. The last sentence of~(a) is Corollary~3.7, with the constant~$A_1$ of \
 $K_1=k+2$ and $wB$ becomes~$K$.
 
 (b) This is the proof of~\cite[Proposition~9.2]{DirectedRecovery2026}, with~(a) in place of the statements for cone
-relations. Let $\delta>0$, put $M_\delta=\lceil4K/\delta\rceil$ and $\Delta=\max(K,M_\delta)$, and suppose that the claim
+relations. We may assume $\delta\le\frac14$, since the claim for $\frac14$ implies it for larger~$\delta$. Let $\delta>0$, put $M_\delta=\lceil4K/\delta\rceil$ and $\Delta=\max(K,M_\delta)$, and suppose that the claim
 fails: there are machines as in the statement at sizes $d_j\to\infty$, relations~$N_j$ and codes~$\mathcal C_j$ over
 alphabets~$\mathcal A_j$ with $\log_{\card{\mathcal A_j}}\card{\mathcal C_j}>(\frac12+\delta)L_j$. Let $H_j$ be the set of
 coordinates~$p$ whose left vertex $L_p$ has degree greater than $M_\delta$ in the incidence
@@ -548,14 +544,20 @@ $\log_{\card{\mathcal A_j}}\card{\mathcal C'_j}\ge\log_{\card{\mathcal A_j}}\car
 Question~9.1 for the degree bound~$\Delta$.
 Formally, (a) is proved through \cref{sec:skel-paired} at scale $w=1$, where the block DAG is the dependency DAG: the
 head walks of the machine are the reference walks, and the steps that read input positions and append output bits are
-given with the facts named in the status line. \lean{MergeDepth.realizes_ball} realizes every matching of the incidence
-graph of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lean{MergeDepth.ball_self_demands} and
-\lean{MergeDepth.ball_trimming} are the analogues of the fifth paper's Theorem~3.3 and Corollaries~3.7 and~3.8.
+those of its trace (\lean{MergeDepth.trace_ball_data}). \lean{MergeDepth.realizes_ball} realizes every matching of the
+incidence graph of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lean{MergeDepth.ball_self_demands}
+and \lean{MergeDepth.ball_trimming} are the analogues of the fifth paper's Theorem~3.3 and Corollaries~3.7 and~3.8;
+\lean{MergeDepth.ball_paired_packing_trace} and \lean{MergeDepth.ball_self_demands_trace} state them for a trace. Part~(b)
+is \lean{MergeDepth.ball_rate_trace}, from the uniformity argument of the fifth paper's Proposition~9.2, proved once
+(\lean{MergeDepth.uniform_rate}), and paid conditioning (\lean{MergeDepth.logb_card_le_of_conditioning});
+\lean{MergeDepth.ball_rate_binary} is the binary form under \lean{MergeDepth.Q91Binary}. The formal proofs give more: both
+parts hold for every trace that appends at least $L$ bits before a time $T\le C(L+1)$, so neither obliviousness nor the
+exact output length nor correctness is used, and $d_1$ depends only on $k$, $D'$, $C$ and~$\delta$, not on the entry
+width or the alphabet.
 \end{outline}
 
 \begin{corollary}[Corollary HC$^*$: Question~9.1 excludes bounded merge depth for all codes]\label{cor:HCstar}
-\partformal{MergeDepth/FieldMachine.lean}{MergeDepth.cor_HCstar_pruning,MergeDepth.cor_HCstar_frozen,MergeDepth.cor_HCstar_pruning_empty}{\cref{lem:balls}(b),
-which the formal statements assume at the size in question}
+\formal{MergeDepth/HCStarQ91.lean}{MergeDepth.cor_HCstar_uniform,MergeDepth.cor_HCstar_uniform_frozen,MergeDepth.cor_HCstar_uniform_empty}
 Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed degree bound; the
 binary alphabet suffices. Let $k,V\ge1$ and $s\ge0$ be integers, $C\ge1$, and let $0<\eps\le1$ and $\eta\ge0$ satisfy
 $\eps+\eta<\frac12$. Then for every machine~$M$ with $k$ work tapes there is~$d_0$ such that for no $d\ge d_0$ do the
@@ -594,7 +596,12 @@ storage code for $q\mapsto I(\tpos(q))$. For the field DAG of a pruning, \lean{M
 frozen notion of obliviousness, \lean{MergeDepth.cor_HCstar_frozen} discharge the hypotheses on the refinement, and
 \lean{MergeDepth.cor_HCstar_pruning_empty} is the last sentence at one size. With checkpoints among the symbol fields
 (\cref{thm:HCprime}), $4\lceil\log_2\card\Gamma\rceil(k+2)kC\le\gamma\tau$ suffices
-(\lean{MergeDepth.cor_HCstar_pruning_sym}), which shrinks $\tau$ and the radius~$r$.
+(\lean{MergeDepth.cor_HCstar_pruning_sym}), which shrinks $\tau$ and the radius~$r$. Under [Q9.1],
+\lean{MergeDepth.hballs_of_obliviousTransposer} is \cref{lem:balls}(b) at that radius with $\delta=\gamma/4$, and
+\lean{MergeDepth.cor_HCstar_uniform} is the corollary at all sizes, with $d_0$ uniform over the machines with $k$ work
+tapes and value width at most~$\beta$ and over the entry width; \lean{MergeDepth.cor_HCstar_uniform_frozen} is its form
+for the frozen notion of obliviousness, and \lean{MergeDepth.cor_HCstar_uniform_empty} its last sentence. Only
+$\eps+\eta<\frac12$ is used, not $\eps\le1$, $V\ge1$ or $\eta\ge0$.
 \end{outline}
 
 Corollary~HC$^*$ is the deep-nesting companion of Corollary~F$'$~\cite[Corollary~6.3]{BoundedNesting2026}, which it
@@ -611,9 +618,7 @@ whole-step genies of bounded full depth.
 \subsection{Routing through deep hops, and the number of deep cells}\label{sec:hop-routing}
 
 \begin{proposition}[Routing through deep hops is hop-limited]\label{prop:hop-routing}
-\partformal{MergeDepth/HopRoutingCount.lean}{MergeDepth.hop_routing_count,MergeDepth.card_exceptional_eq}{as in
-\cref{lem:balls}(a), that the input head reads the position under it and that the output count is~$r$ at the step that
-appends output position~$r$, which the formal statement takes as hypotheses on the walks of the machine}
+\formal{MergeDepth/HopRoutingTrace.lean}{MergeDepth.hop_routing_trace}
 Suppose that $d\ge2$ and that $M$ appends exactly $L$ output bits. Let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$
 with depth~$D$, let $D''\ge D$ be an integer, and put
 \[
@@ -646,7 +651,9 @@ the positions $\ell$ with $\tpos(\ell)\in B^{D''}(\ell)$ as the exceptional set;
 \lean{MergeDepth.routing_count} and on \lean{MergeDepth.rCount_le_card_edgesOf}: the edges of a path of~$H_M$ are
 distinct, since steps decrease along it. \lean{MergeDepth.hop_routing_count} adds the count of \cref{lem:balls}(a):
 through the involution~$\tpos$, the exceptional positions are the self-demands of the relation $q\mapsto B^{D''}(\tpos(q))$
-(\lean{MergeDepth.card_exceptional_eq}), which \lean{MergeDepth.ball_self_demands} bounds.
+(\lean{MergeDepth.card_exceptional_eq}), which \lean{MergeDepth.ball_self_demands} bounds, and
+\lean{MergeDepth.hop_routing_trace} states the result for the trace of the machine, whose walks, read steps and append
+steps \lean{MergeDepth.trace_ball_data} supplies.
 \end{outline}
 
 The proposition is unconditional. Since $A=O((k+1)^{D''})$, the exceptional fraction tends to zero for every fixed~$D''$,

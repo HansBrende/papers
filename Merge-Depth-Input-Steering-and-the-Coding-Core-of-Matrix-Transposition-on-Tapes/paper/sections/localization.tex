@@ -7,7 +7,7 @@ and one whose work tapes have bounded entry must revisit input cells and carry a
 motion of its input head.
 
 \begin{theorem}[Theorem L: localization]\label{thm:L}
-\notformalized
+\formal{MergeDepth/Localization.lean}{MergeDepth.thm_L_a,MergeDepth.thm_L_b,MergeDepth.thm_L_c}
 Assume [Q9.1]. Let $M$ be a machine with $k$ work tapes, let $c>0$, and let $\mathcal D$ be an infinite set of
 dimensions~$d$ at which $M$ transposes all $d\times d$ matrices with $b(d)$-bit entries within $c(L+1)$ steps,
 $L=d^2b(d)$. Then the following hold at all large $d\in\mathcal D$, in each part from a threshold that depends on the
@@ -24,12 +24,16 @@ $(V,\eps)$ and every lineage assignment for it, more than $\eta L$ output positi
 \end{enumerate}
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
 Part~(a) is \cref{cor:RV} for the entry bound~$V$: the dimensions in~$\mathcal D$ at which every input enters every cell
 at most $V$ times are finitely many. Part~(b) is \cref{cor:IS} for $k$, $V$, $w$, $c$ and~$\eta$: at all large lengths,
 its properties~(i) and~(ii) exclude~(iii), and~(i) holds at every $d\in\mathcal D$. Part~(c) is \cref{cor:HCstar} for
 $k$, $V$, $s$, $C=\max(1,c)$, $\eps$ and~$\eta$: at all large $d$, its properties~(i) and~(ii) exclude each other.
-\end{informalproof}
+Formally, \lean{MergeDepth.thm_L_a}, \lean{MergeDepth.thm_L_b} and \lean{MergeDepth.thm_L_c} are the three parts, from
+\lean{MergeDepth.cor_RV}, \lean{MergeDepth.cor_IS} and \lean{MergeDepth.cor_HCstar_uniform_frozen}, with [Q9.1] as a
+hypothesis and the field DAGs of prunings of the frozen machine in~(c). They hold at all large $d\in\mathcal D$ for any
+set~$\mathcal D$, finite or not; in~(b) every $\eta>0$ is allowed, and in~(c) only $\eps+\eta<\frac12$ is used.
+\end{outline}
 
 Theorem~L leaves exactly three kinds of machines, and the open problems of \cref{sec:open} are about them.
 \begin{itemize}

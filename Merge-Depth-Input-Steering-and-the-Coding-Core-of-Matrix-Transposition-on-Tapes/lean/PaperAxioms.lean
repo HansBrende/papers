@@ -11,6 +11,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.rigidity_finrank
 -- MergeDepth/Covering.lean
 #print axioms MergeDepth.covering
+-- MergeDepth/HopMachine.lean
+#print axioms MergeDepth.cold_genie_exists
+#print axioms MergeDepth.hop_charging_machine
 -- MergeDepth/Lineage.lean
 #print axioms MergeDepth.paths_short
 #print axioms MergeDepth.rCount_add_le
@@ -23,17 +26,23 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.Centred.separated_of_bipCompat
 #print axioms MergeDepth.Centred.two_mul_card_lt
 -- MergeDepth/SkeletonWalk.lean
+#print axioms MergeDepth.card_block_changes_le
 #print axioms MergeDepth.card_entries_skel_le
 #print axioms MergeDepth.entries_skel_subset
--- MergeDepth/Steps.lean
-#print axioms MergeDepth.hop_charging_steps
 -- named in the text
 #print axioms BoundedNesting.entries
+#print axioms BoundedNesting.lightHops
+#print axioms BoundedNesting.theoremF_owner
 #print axioms MergeDepth.Centred.card_le_of_one
 #print axioms MergeDepth.Centred.card_le_of_two
 #print axioms MergeDepth.Centred.line_ne
 #print axioms MergeDepth.Centred.mem_line_of_not_reach
 #print axioms MergeDepth.Centred.not_mem_line
+#print axioms MergeDepth.DeepStep
+#print axioms MergeDepth.DepStep
+#print axioms MergeDepth.IsColdGenie
+#print axioms MergeDepth.card_allHops_le
+#print axioms MergeDepth.cold_genie
 #print axioms MergeDepth.coordNet
 #print axioms MergeDepth.coord_paths
 #print axioms MergeDepth.coord_reach_subset
@@ -41,4 +50,5 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.finrank_revealed_coord_le
 #print axioms MergeDepth.finrank_revealed_le_of_values
 #print axioms MergeDepth.hop_charging
+#print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.skel

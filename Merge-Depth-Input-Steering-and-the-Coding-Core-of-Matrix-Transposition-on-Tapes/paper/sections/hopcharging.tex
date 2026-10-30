@@ -16,9 +16,9 @@ splits into a part of small rank and a part supported on balls whose radius does
 number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The covering lemma is formalized in Lean,
-and so are the combinatorial core of hop charging and its linear part, as the status lines of
-\cref{lem:expansion,lem:short-paths,thm:HCprime} say; the other results of this section are not formalized yet.
+suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma and
+Theorem~HC$'$(a) are formalized in Lean, and so are parts of \cref{lem:expansion,lem:short-paths}, as their status
+lines say; the other results of this section are not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -34,19 +34,20 @@ is a long hop of a head~$h$ at a cell~$c$ with $(h,c)\in\mathcal R$, and $N_{\ma
 counted per head. An edge of~$H_M$ is determined by its endpoints~\cite[Section~2.4]{BoundedNesting2026}; we call it
 \emph{deep} if its endpoints form a deep hop of at least one head. So an edge of length at least two that is not deep is
 a long hop, for each head that makes it, at a pair outside~$\mathcal R$. A long hop $(p,u)$ of a head~$h$ ends at an
-entry~$u$ of its cell, since $x_h(u-1)\ne x_h(u)$, and distinct hops of~$h$ end at distinct times; hence
+entry~$u$ of its cell, since $x_h(u-1)\ne x_h(u)$, and distinct hops of~$h$ end at distinct times
+(\lean{MergeDepth.card_allHops_le}); hence
 \begin{equation}\label{eq:hop-NR}
   \#\{\text{deep edges of }H_M\}\;\le\;N_{\mathcal R}\;\le\;kT\;\le\;kC(L+1).
 \end{equation}
 
 \begin{lemma}[The cold genie]\label{lem:cold}
-\notformalized
+\formal{MergeDepth/HopMachine.lean}{MergeDepth.cold_genie_exists}
 Let $0<\eps\le1$, $D_1=\DF(k,2V-1,\eps/(4\beta C))$, $P=\lceil4\beta C/\eps\rceil$ and $D=D_1P$. There is a set
 $\Gamma_{\mathrm F}\subseteq[0,T)$ with $\beta\card{\Gamma_{\mathrm F}}\le\eps L$ such that every $\Gamma_{\mathrm F}$-free
 path of~$H_M$ that contains no deep edge has at most $D-1$ edges.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Let $H'$ be the set of long hops of the work heads at pairs outside~$\mathcal R$. Each of them lies at a cell that its
 head enters at most $V$ times, so $H'$ has owner-load at most $2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}, and
 Theorem~F~\cite[Theorem~3.6]{BoundedNesting2026}, both Lean-verified there, applied at
@@ -61,9 +62,16 @@ of~$\pi$ is an edge of $G(H')$, and none lies in~$F$, because it ends outside~$\
 $D_1-1$ edges of length at least two. They split~$\pi$ into at most $D_1$ runs of edges of length one; the vertices of a
 run after its first are consecutive integers, none congruent to $P-1$ modulo~$P$, so a run has at most $P-1$ edges.
 Thus $n\le D_1-1+D_1(P-1)=D-1$.
-\end{informalproof}
 
-We call such a set a \emph{cold genie at $(V,\eps)$}, and $D$ its \emph{depth}.
+Formally, the work heads are walks $\N\to\Z$ and $H_M$ is replaced by the DAG of their dependency steps, the state
+edges below~$T$ and the long hops of all heads (\lean{MergeDepth.DepStep}), which contains every edge of~$H_M$; a step
+is deep if some head makes it as a hop at a pair of~$\mathcal R$ (\lean{MergeDepth.DeepStep}). The cut is the eighth
+paper's \lean{BoundedNesting.theoremF_owner} on its \lean{BoundedNesting.lightHops}, and \lean{MergeDepth.cold_genie}
+proves the path bound for every~$\eps'>0$ and~$P\ge1$, with $P\card{\Gamma_{\mathrm F}}\le P\eps'T+T$.
+\end{outline}
+
+We call such a set a \emph{cold genie at $(V,\eps)$}, and $D$ its \emph{depth}
+(\lean{MergeDepth.IsColdGenie}).
 
 This is the conversion of~\cite[Lemma~2.6]{BoundedNesting2026}, with the long-edge
 conversion~\cite[Lemma~4.21]{FourthPaper2026}, restricted to paths without deep edges. It holds for every schedule,
@@ -309,9 +317,8 @@ node, heads of marked edges at $\tau$ consecutive marked heights, one in each cl
 \end{outline}
 
 \begin{lemma}[Few deep merges, short paths]\label{lem:short-paths}
-\partformal{MergeDepth/Lineage.lean}{MergeDepth.rCount_add_le,MergeDepth.paths_short}{the count of~$Q$ in terms of
-$N_{\mathcal R}$; for the coordinate DAG, \lean{MergeDepth.hop_charging_steps} proves that $\tau\card Q$ is at most $m$
-times the number of deep edges of~$H_M$, which is at most $N_{\mathcal R}$ by~\eqref{eq:hop-NR}}
+\partformal{MergeDepth/Lineage.lean}{MergeDepth.rCount_add_le,MergeDepth.paths_short}{the count of~$Q$ for field DAGs;
+for the coordinate DAG it is part of \lean{MergeDepth.hop_charging_steps}}
 Let $G$ be a refinement of width~$m$, let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a
 lineage assignment for~$\Gamma_{\mathrm F}$, and let $\tau\ge1$. Apply \cref{lem:covering} to the forest of lineage
 edges, with its deep edges marked, and let $Q$ be the set obtained. Then $\card Q\le mN_{\mathcal R}/\tau$, and every
@@ -344,10 +351,7 @@ definition of the depth. Hence $n\le h+(h+1)(D-1)=(h+1)D-1<(s'+1)\tau D$.
 \end{outline}
 
 \begin{theorem}[Theorem HC$'$: hop charging along lineages]\label{thm:HCprime}
-\partformal{MergeDepth/Steps.lean}{MergeDepth.hop_charging_steps}{part~(b); and, in part~(a), the existence of the
-cold genie (\cref{lem:cold}) and the bound~\eqref{eq:hop-NR}, which turn the formal bound
-$\rank R\le\beta\card{\Gamma_{\mathrm F}}+q+\card X$, with $\tau q$ at most $m$ times the number of deep edges of~$H_M$,
-into the stated one}
+\partformal{MergeDepth/HopMachine.lean}{MergeDepth.hop_charging_machine}{part~(b)}
 Let $G$ be either the coordinate DAG of an $\F$-linear data path of~$M$ at length~$L$ of width~$m$, or the field DAG of
 a pruning, with $m=k+2$. Let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a lineage
 assignment for~$\Gamma_{\mathrm F}$, let $\tau\ge1$ and $s\ge0$ be integers, put $r=(s+1)\tau D$, and let $X$ be
@@ -369,8 +373,10 @@ the sets $I(\ell)$ of \cref{lem:expansion}, applied with $\Gamma=\Gamma_{\mathrm
 $B^{r-1}(\ell)\subseteq B^r(\ell)$ for $\ell\notin X$, and they are empty for $\ell\in X$ in case~(b). The rank in~(a) is
 at most $\beta\card{\Gamma_{\mathrm F}}+\card Q+\card X\le\eps L+mN_{\mathcal R}/\tau+\card X$, and the code in~(b) has at
 most $\beta\card{\Gamma_{\mathrm F}}+\beta\card Q+\card X\le\eps L+\beta(k+2)N_{\mathcal R}/\tau+\card X$ bits;
-apply~\eqref{eq:hop-NR}. Formally, part~(a) is proved for a linear network of width~$m$ on the dependency DAG, with the
-cold depth, the value bound $2^\beta$ on the steps of~$\Gamma_{\mathrm F}$ and a finite set of deep edges as hypotheses: the
+apply~\eqref{eq:hop-NR}. Formally, part~(a) is proved for a linear network of width~$m$ whose edges are dependency steps
+of the work-head walks, whose steps take at most $2^\beta$ values on binary inputs, and a cold genie in the sense of
+\lean{MergeDepth.IsColdGenie}. \lean{MergeDepth.hop_charging_steps} proves it with the rank bound
+$\beta\card{\Gamma_{\mathrm F}}+q+\card X$, where $\tau q$ is at most $m$ times the number of deep edges; the
 coordinate DAG is the network \lean{MergeDepth.coordNet}, whose values are the coordinates of the step values
 (\lean{MergeDepth.coord_val}) and whose paths and balls project to those of~$H_M$
 (\lean{MergeDepth.coord_paths}, \lean{MergeDepth.coord_reach_subset}); \lean{MergeDepth.hop_charging} combines

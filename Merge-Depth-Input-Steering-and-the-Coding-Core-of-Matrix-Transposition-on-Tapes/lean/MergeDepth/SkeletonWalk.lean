@@ -101,4 +101,111 @@ theorem card_entries_skel_le {w : ℤ} (hw : 0 < w) {x : ℕ → ℤ} (hx : IsWa
     _ ≤ (entries x (w * b) T).card + (entries x (w * b + w - 1) T).card := card_union_le _ _
     _ ≤ 2 * ℓ := by have := hℓ (w * b); have := hℓ (w * b + w - 1); omega
 
+/-- A walk moves by at most one cell per step: `|x (a + n) - x a| ≤ n`. -/
+theorem walk_lip {x : ℕ → ℤ} (hx : IsWalk x) (a : ℕ) : ∀ n : ℕ, |x (a + n) - x a| ≤ n := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have h1 := hx (a + n)
+    have h2 : x (a + (n + 1)) - x a = (x (a + n + 1) - x (a + n)) + (x (a + n) - x a) := by
+      rw [← add_assoc]; ring
+    rw [h2]
+    push_cast
+    exact (abs_add_le _ _).trans (by linarith)
+
+/-- Two positions of a walk differ by at most the time between them. -/
+theorem walk_le {x : ℕ → ℤ} (hx : IsWalk x) (t t' : ℕ) : x t' ≤ x t + |(t' : ℤ) - t| := by
+  rcases le_total t t' with h | h
+  · obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_le h
+    have := abs_le.mp (walk_lip hx t n)
+    have : |((t + n : ℕ) : ℤ) - t| = n := by push_cast; simp
+    linarith
+  · obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_le h
+    have := abs_le.mp (walk_lip hx t' n)
+    have : |((t' : ℕ) : ℤ) - ((t' + n : ℕ) : ℤ)| = n := by push_cast; simp
+    linarith
+
+/-- **Lemma 4.2(c): few block changes.** A walk of length `T` that starts at `0` and enters every
+cell at most `V` times changes blocks of width `w` at most `2V((T - 1)/w + 2) - 1` times. -/
+theorem card_block_changes_le {w : ℕ} (hw : 0 < w) {x : ℕ → ℤ} (hx : IsWalk x) (h0 : x 0 = 0)
+    {V T : ℕ} (hT : 1 ≤ T) (hV : ∀ c, (entries x c (T - 1)).card ≤ V) :
+    ((Ico 1 T).filter fun t => skel w x t ≠ skel w x (t - 1)).card ≤
+      2 * V * ((T - 1) / w + 2) - 1 := by
+  classical
+  have hw' : (0 : ℤ) < w := by exact_mod_cast hw
+  set s := skel (w : ℤ) x with hs
+  -- the blocks met
+  set B := (range T).image s
+  have h0B : (0 : ℤ) ∈ B := mem_image.mpr ⟨0, mem_range.mpr hT, by simp [hs, skel, h0]⟩
+  -- every change is an entry of a met block, other than time `0`
+  have hsub : ((Ico 1 T).filter fun t => s t ≠ s (t - 1)) ⊆
+      B.biUnion fun b => (entries s b (T - 1)).erase 0 := by
+    intro t ht
+    obtain ⟨ht1, hne⟩ := mem_filter.mp ht
+    obtain ⟨h1, h2⟩ := mem_Ico.mp ht1
+    refine mem_biUnion.mpr ⟨s t, mem_image.mpr ⟨t, mem_range.mpr h2, rfl⟩, ?_⟩
+    refine mem_erase.mpr ⟨by omega, mem_filter.mpr ⟨mem_range.mpr (by omega), rfl, Or.inr ?_⟩⟩
+    exact fun h => hne h.symm
+  -- each block has at most `2V` entries, and block `0` has the entry at time `0`
+  have hblock : ∀ b, (entries s b (T - 1)).card ≤ 2 * V :=
+    card_entries_skel_le hw' hx h0 hV
+  have hcount : ∑ b ∈ B, ((entries s b (T - 1)).erase 0).card + 1 ≤ 2 * V * B.card := by
+    rw [← sum_erase_add _ _ h0B]
+    have h00 : 0 ∈ entries s 0 (T - 1) :=
+      mem_filter.mpr ⟨by simp, by simp [hs, skel, h0], Or.inl rfl⟩
+    have e0 : ((entries s 0 (T - 1)).erase 0).card + 1 = (entries s 0 (T - 1)).card :=
+      card_erase_add_one h00
+    have hrest : ∑ b ∈ B.erase 0, ((entries s b (T - 1)).erase 0).card ≤ ∑ _b ∈ B.erase 0, 2 * V :=
+      sum_le_sum fun b _ => (card_erase_le).trans (hblock b)
+    rw [sum_const, smul_eq_mul, card_erase_of_mem h0B] at hrest
+    have hB : 1 ≤ B.card := card_pos.mpr ⟨0, h0B⟩
+    have := hblock 0
+    calc ∑ b ∈ B.erase 0, ((entries s b (T - 1)).erase 0).card +
+          ((entries s 0 (T - 1)).erase 0).card + 1
+        ≤ (B.card - 1) * (2 * V) + 2 * V := by omega
+      _ = 2 * V * B.card := by
+          obtain ⟨n, hn⟩ : ∃ n, B.card = n + 1 := ⟨B.card - 1, by omega⟩
+          rw [hn]; simp; ring
+  -- the met blocks lie in an interval of at most `(T - 1)/w + 2` blocks
+  have hBcard : B.card ≤ (T - 1) / w + 2 := by
+    obtain ⟨t₀, ht₀, hmin⟩ := exists_min_image (range T) x ⟨0, mem_range.mpr hT⟩
+    set a := x t₀
+    have hrange : ∀ t ∈ range T, a ≤ x t ∧ x t ≤ a + ((T - 1 : ℕ) : ℤ) := by
+      intro t ht
+      refine ⟨hmin t ht, ?_⟩
+      have := walk_le hx t₀ t
+      have hlt := mem_range.mp ht
+      have hlt0 := mem_range.mp ht₀
+      have : |(t : ℤ) - t₀| ≤ ((T - 1 : ℕ) : ℤ) := by
+        rw [abs_le]; push_cast [Nat.cast_sub hT]; constructor <;> omega
+      linarith
+    have hBsub : B ⊆ Icc (a / w) ((a + ((T - 1 : ℕ) : ℤ)) / w) := by
+      intro b hb
+      obtain ⟨t, ht, rfl⟩ := mem_image.mp hb
+      obtain ⟨h1, h2⟩ := hrange t ht
+      exact mem_Icc.mpr ⟨Int.ediv_le_ediv hw' h1, Int.ediv_le_ediv hw' h2⟩
+    refine (card_le_card hBsub).trans ?_
+    rw [Int.card_Icc, Int.toNat_le]
+    -- `(a + N)/w ≤ a/w + N/w + 1`
+    obtain ⟨ha0, ha1⟩ := block_bounds hw' a
+    obtain ⟨hb0, hb1⟩ := block_bounds hw' (a + ((T - 1 : ℕ) : ℤ))
+    obtain ⟨hn0, hn1⟩ := block_bounds hw' ((T - 1 : ℕ) : ℤ)
+    have hdiv : (a + ((T - 1 : ℕ) : ℤ)) / w ≤ a / w + ((T - 1 : ℕ) : ℤ) / w + 1 := by
+      by_contra hc
+      push Not at hc
+      have := block_gap hw' (show a / w + ((T - 1 : ℕ) : ℤ) / w + 1 < (a + ((T - 1 : ℕ) : ℤ)) / w by
+        omega)
+      nlinarith
+    rw [Nat.cast_add, Int.natCast_div]
+    push_cast
+    linarith
+  calc ((Ico 1 T).filter fun t => s t ≠ s (t - 1)).card
+      ≤ (B.biUnion fun b => (entries s b (T - 1)).erase 0).card := card_le_card hsub
+    _ ≤ ∑ b ∈ B, ((entries s b (T - 1)).erase 0).card := card_biUnion_le
+    _ ≤ 2 * V * B.card - 1 := by omega
+    _ ≤ 2 * V * ((T - 1) / w + 2) - 1 := by
+        have := Nat.mul_le_mul_left (2 * V) hBcard
+        omega
+
 end MergeDepth

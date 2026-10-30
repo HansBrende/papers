@@ -4,5 +4,7 @@ import MergeDepth.Lineage
 import MergeDepth.Charging
 import MergeDepth.Coordinates
 import MergeDepth.Steps
+import MergeDepth.ColdGenie
+import MergeDepth.HopMachine
 import MergeDepth.SkeletonWalk
 import MergeDepth.ProjectivePlane

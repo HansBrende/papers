@@ -74,7 +74,7 @@ $\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finite
 \end{equation}
 
 \begin{lemma}[Coarse walks]\label{lem:skel-coarse}
-\partformal{MergeDepth/SkeletonWalk.lean}{MergeDepth.entries_skel_subset,MergeDepth.card_entries_skel_le}{part~(c)}
+\formal{MergeDepth/SkeletonWalk.lean}{MergeDepth.entries_skel_subset,MergeDepth.card_entries_skel_le,MergeDepth.card_block_changes_le}
 Let $V,w,T\ge1$ be integers, let $x$ be a walk of length~$T$ with $x(0)=0$ that enters every cell at most $V$ times, and
 let $s=\lfloor x/w\rfloor$.
 \begin{enumerate}[label=(\alph*)]
@@ -100,7 +100,7 @@ not such a time.
 
 Formally, walks are maps $\N\to\Z$ with steps in $\{-1,0,1\}$, as in the eighth paper's library, the coarse walk is
 \lean{MergeDepth.skel}, and the entries of a cell up to time~$T-1$ are the eighth paper's
-\lean{BoundedNesting.entries}.
+\lean{BoundedNesting.entries}. In~(c) the formal bound uses the integer part of $(T-1)/w$, which is stronger.
 \end{outline}
 
 \begin{remark}[Hops of two members need not match]\label{rem:naive-skeleton}

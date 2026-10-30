@@ -45,6 +45,8 @@ LIBRARIES = [
      / "BoundedNesting", "the eighth paper's library"),
     (ROOT.parent / "Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes" / "lean"
      / "MotionDepthCodes", "the fourth paper's library"),
+    (ROOT.parent / "Directed-Recovery-Structures-in-Tape-Computations" / "lean" / "DirectedRecovery",
+     "the fifth paper's library"),
     (ROOT.parent / "Source-Covers-and-Barriers-to-Tape-Transposition" / "lean" / "SourceCovers",
      "the ninth paper's library"),
     (ROOT.parent / "Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes" / "lean"

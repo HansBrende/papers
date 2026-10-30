@@ -29,3 +29,12 @@ import MergeDepth.HCStar
 import MergeDepth.EMModel
 import MergeDepth.EMSimulation
 import MergeDepth.ExternalMemory
+import MergeDepth.RowEntropy
+import MergeDepth.Transport
+import MergeDepth.PairedDistance
+import MergeDepth.Realization
+import MergeDepth.SkeletonPaired
+import MergeDepth.Trimming
+import MergeDepth.PairedSeparation
+import MergeDepth.ConeBridge
+import MergeDepth.BlockMachine

@@ -19,8 +19,7 @@ their number, the number of deep cells adds nothing, and a cheap depth reduction
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
 \cref{prop:capacity} and Theorem~HC$'$ and \cref{prop:merge-reduction} for refinements of the dependency DAG are
 formalized in Lean, and so are \cref{lem:expansion} for function DAGs, Corollary~HC at one size, Corollary~HC$^*$ at
-one size given \cref{lem:balls}(b), and \cref{prop:hop-routing} given the count of \cref{lem:balls}(a), as their status
-lines say; \cref{lem:balls} is not formalized yet.
+one size given \cref{lem:balls}(b), and \cref{prop:hop-routing} given the count of \cref{lem:balls}(a), and \cref{lem:balls}(a), as their status lines say.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -488,13 +487,16 @@ For all codes the crux has to be applied to relations that are not cone relation
 paper's structural theorem extends to them, because its proof uses the genie only through short paths.
 
 \begin{lemma}[Relations inside balls]\label{lem:balls}
-\notformalized
+\partformal{MergeDepth/SkeletonPaired.lean}{MergeDepth.realizes_ball,MergeDepth.ball_paired_packing,MergeDepth.ball_self_demands}{part~(b),
+which assumes [Q9.1]; in part~(a), that the input head reads the position under it and that output position~$r$ is
+appended at a step after which $r+1$ bits have been output, which the formal statements take as hypotheses on the walks
+of the machine}
 Let $D'\ge0$ be an integer and $K=\sum_{i=0}^{D'}(k+1)^i$. Suppose that $d\ge2$ and that $M$ appends exactly $L$ output
 bits, and let $N$ be a recovery relation on $[0,L)$ with $N(q)\subseteq B^{D'}(\tpos(q))$ for every~$q$.
 \begin{enumerate}[label=(\alph*)]
 \item The conclusions of~\cite[Theorem~3.3, Corollary~3.7 and Corollary~3.8]{DirectedRecovery2026} hold for~$N$, with
-$D'$ in place of the full depth of the genie and with the same constants. In particular, at most
-$(4C(K+1)(k+2)(k+6)+3)L/\log_2d$ positions~$p$ satisfy $p\in N(p)$.
+$D'$ in place of the full depth of the genie and with constants at least as good. In particular, at most
+$(2CK(k+2)(k+3)+3)L/\log_2d$ positions~$p$ satisfy $p\in N(p)$.
 \item If Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed degree bound, then for
 every $\delta>0$ there is~$d_1$, depending only on $k$, $D'$, $C$ and~$\delta$, such that for $d\ge d_1$ every storage
 code~$\mathcal C$ for~$N$~\cite[Definition~2.1]{DirectedRecovery2026} over a finite alphabet~$\mathcal A$ with
@@ -502,7 +504,7 @@ $\card{\mathcal A}\ge2$ satisfies $\log_{\card{\mathcal A}}\card{\mathcal C}\le(
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) In the fifth paper the relation is $N(q)=I_\Gamma(\Pi(q))$ for a genie~$\Gamma$ of full depth at most~$D$, where
 $\Pi=\tpos$ is the transpose permutation of~\cite[Section~3.1]{DirectedRecovery2026}, and $B=\sum_{i\le D}(k+1)^i$. The
 proofs there of Lemma~3.6, Theorem~3.3 and Corollaries~3.7 and~3.8 use the relation only through Lemma~3.5 and, in
@@ -514,7 +516,8 @@ that a vertex lies on the chosen paths of at most $B$ output steps. For our~$N$ 
 $t_{\tpos(q)}$ to a step that reads~$p$ exists for every $p\in N(q)$, by the definition of $B^{D'}(\tpos(q))$; and
 $\card{N(q)}\le K$, because at most $K$ steps are reachable from a step by paths of at most $D'$ edges, out-degrees being
 at most $k+1$, and each step reads at most one position. So the proofs apply verbatim, with $D'$ and~$K$ in place of $D$
-and~$B$. The last sentence of~(a) is Corollary~3.7, with the constant~$A_1$ of Lemma~3.6.
+and~$B$. The last sentence of~(a) is Corollary~3.7, with the constant~$A_1$ of \cref{lem:skel-disjoint} at $w=1$, where
+$K_1=k+2$ and $wB$ becomes~$K$.
 
 (b) This is the proof of~\cite[Proposition~9.2]{DirectedRecovery2026}, with~(a) in place of the statements for cone
 relations. Let $\delta>0$, put $M_\delta=\lceil4K/\delta\rceil$ and $\Delta=\max(K,M_\delta)$, and suppose that the claim
@@ -530,7 +533,12 @@ gives storage codes for~$N'_j$~\cite[Lemma~2.2]{DirectedRecovery2026}, one of wh
 $\log_{\card{\mathcal A_j}}\card{\mathcal C'_j}\ge\log_{\card{\mathcal A_j}}\card{\mathcal C_j}-\card{H_j}
 >(\frac12+\frac{3\delta}4)L_j\ge(\frac12+\frac{3\delta}4)\card{Q_j}$. This contradicts the affirmative answer to
 Question~9.1 for the degree bound~$\Delta$.
-\end{informalproof}
+Formally, (a) is proved through \cref{sec:skel-paired} at scale $w=1$, where the block DAG is the dependency DAG: the
+head walks of the machine are the reference walks, and the steps that read input positions and append output bits are
+given with the facts named in the status line. \lean{MergeDepth.realizes_ball} realizes every matching of the incidence
+graph of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lean{MergeDepth.ball_self_demands} and
+\lean{MergeDepth.ball_trimming} are the analogues of the fifth paper's Theorem~3.3 and Corollaries~3.7 and~3.8.
+\end{outline}
 
 \begin{corollary}[Corollary HC$^*$: Question~9.1 excludes bounded merge depth for all codes]\label{cor:HCstar}
 \partformal{MergeDepth/HCStar.lean}{MergeDepth.cor_HCstar_step}{\cref{lem:balls}(b), which the formal statement assumes at

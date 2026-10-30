@@ -20,8 +20,7 @@ Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on 
 there). \Cref{lem:dnp-transfer,prop:S-shift} and Definitions~\ref{def:dnp-straddle}, \ref{def:dnp-profile}
 and~\ref{def:dnp-family} are formalized in Lean, and so are \cref{lem:dnp-family,lem:dnp-halfblind,lem:dnp-witness} and
 Theorem~BP up to the identification of the model with the walk pair, as their status lines say; the blindness bound of
-the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are formalized,
-except part~(b) of \cref{prop:S-fourier}.
+the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are formalized.
 
 \subsection{Setting}\label{sec:dnp-setting}
 
@@ -433,8 +432,7 @@ $\operatorname{sinc}0=1$, and for $1\le k<\kappa\le m$ and $r\in\Z$
 \]
 
 \begin{proposition}[Exact form of $V_k$]\label{prop:S-fourier}
-\partformal{MergeDepth/StraddleFourier.lean}{MergeDepth.hasSum_straddlePhi_ne_zero,MergeDepth.relVariance_eq_tsum,MergeDepth.hasSum_phiGen,MergeDepth.fineFloorK_le_relVariance,MergeDepth.fineFloorK_eq}{part~(b),
-the representation of $1+V_k$ through the density of~$W$}
+\formal{MergeDepth/StraddleDensity.lean}{MergeDepth.exact_form_V,MergeDepth.density_W,MergeDepth.sideband_eq_densityW}
 Let $1\le k<\kappa\le m$.
 \begin{enumerate}[label=(\alph*)]
 \item $V_k=\sum_{r\ne0}\varphi_k(r)$.
@@ -478,7 +476,13 @@ Formally, $\varphi_k$ is \lean{MergeDepth.straddlePhi}, and~(a) is \lean{MergeDe
 Mathlib's Parseval identity on the circle of length~$N$ and the Fourier coefficients of the periodized tents; it needs only
 $1\le k\le\kappa$, and \lean{MergeDepth.hasSum_phiGen} is its general form for every $\kappa\ge1$. Part~(c) is
 \lean{MergeDepth.fineFloorK_le_relVariance} and \lean{MergeDepth.fineFloorK_eq}; only the identity $F_k=F(n_\kappa,\kappa-k)$
-uses $\kappa\le m$.
+uses $\kappa\le m$, and \lean{MergeDepth.exact_form_V} collects (a) and~(c). Part~(b) is \lean{MergeDepth.density_W}, for
+independent random variables on any probability space with these laws: $f_W$ is an explicit finite mixture of translates of
+the density of~$Z$, a convolution square of a tent; the law of~$W$ is identified by characteristic functions
+(\lean{MergeDepth.charFun_lawW_eq_straddlePhi}), and the identity follows from Mathlib's Poisson summation instead of the
+Fourier series of the periodization, which is equivalent. Part~(b) needs only $1\le\kappa$ and $k\le\kappa$, the
+hypotheses are satisfiable (\lean{MergeDepth.density_W_model_exists}), and the identity for $SB_k$ in the remark below is
+\lean{MergeDepth.sideband_eq_densityW}.
 \end{outline}
 
 So $1+V_k$ is $N$ times the density at~$0$ of a random sum of the digits $\hat\Pi_i$ modulo~$N$, smoothed at the scale

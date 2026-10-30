@@ -17,8 +17,7 @@
   - Section 7: Definitions 7.1, 7.2, 7.6, Lemma 7.4 and Proposition 7.5; Lemmas 7.7–7.9 and Theorem BP (with Conjecture S
     as its only hypothesis) up to the identification of the Lean model's families, turns and potentials with the walk
     pair; the blindness bound of the eighth paper's Proposition 5.17 is proved on the way. The partial results on
-    Conjecture S (Section 7.5) except Proposition 7.12(b), with sharper bounds than printed before (exact window sums
-    in Lemma 7.14).
+    Conjecture S (Section 7.5), with sharper bounds than printed before (exact window sums in Lemma 7.14).
   - Section 8: Lemma PG.
 
   Results that assume an affirmative answer to Question 9.1 of the fifth paper take it as an explicit hypothesis

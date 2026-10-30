@@ -62,3 +62,4 @@ import MergeDepth.StraddleProgression
 import MergeDepth.StraddleFourier
 import MergeDepth.StraddleResonance
 import MergeDepth.StraddleLocal
+import MergeDepth.StraddleDensity

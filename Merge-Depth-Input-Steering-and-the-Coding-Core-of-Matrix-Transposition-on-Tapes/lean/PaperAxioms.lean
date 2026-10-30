@@ -164,12 +164,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_block_changes_le
 #print axioms MergeDepth.card_entries_skel_le
 #print axioms MergeDepth.entries_skel_subset
--- MergeDepth/StraddleFourier.lean
-#print axioms MergeDepth.fineFloorK_eq
-#print axioms MergeDepth.fineFloorK_le_relVariance
-#print axioms MergeDepth.hasSum_phiGen
-#print axioms MergeDepth.hasSum_straddlePhi_ne_zero
-#print axioms MergeDepth.relVariance_eq_tsum
+-- MergeDepth/StraddleDensity.lean
+#print axioms MergeDepth.density_W
+#print axioms MergeDepth.exact_form_V
+#print axioms MergeDepth.sideband_eq_densityW
 -- MergeDepth/StraddleLocal.lean
 #print axioms MergeDepth.conjectureS_iff_meanNonLocal
 #print axioms MergeDepth.fineFloor_avg_le_paper
@@ -267,6 +265,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_straddleSet_eq
 #print axioms MergeDepth.card_traces_ge_a
 #print axioms MergeDepth.card_unit_le
+#print axioms MergeDepth.charFun_lawW_eq_straddlePhi
 #print axioms MergeDepth.classRel_subset_coneRel
 #print axioms MergeDepth.classStraddleCount_eq_profile
 #print axioms MergeDepth.classStraddleCount_false_eq
@@ -285,6 +284,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.cor_HCstar_pruning_sym
 #print axioms MergeDepth.cor_HCstar_step
 #print axioms MergeDepth.deepHops
+#print axioms MergeDepth.density_W_model_exists
 #print axioms MergeDepth.disjoint_paths_bound
 #print axioms MergeDepth.disjoint_paths_transport
 #print axioms MergeDepth.dm_le_of_cut
@@ -295,6 +295,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.exists_large_fibre_card
 #print axioms MergeDepth.fibreGeometry
 #print axioms MergeDepth.fibreGeometry_deficit_le
+#print axioms MergeDepth.fineFloorK_eq
+#print axioms MergeDepth.fineFloorK_le_relVariance
 #print axioms MergeDepth.finrank_revealed_coord_le
 #print axioms MergeDepth.finrank_revealed_le
 #print axioms MergeDepth.finrank_revealed_le_of_values
@@ -302,6 +304,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.frozenGeometry
 #print axioms MergeDepth.frozen_coarse_entropy_le
 #print axioms MergeDepth.hasSpanColoring_iff_activeFamilies_card_le
+#print axioms MergeDepth.hasSum_phiGen
+#print axioms MergeDepth.hasSum_straddlePhi_ne_zero
 #print axioms MergeDepth.hballs_of_obliviousTransposer
 #print axioms MergeDepth.hop_charging
 #print axioms MergeDepth.hop_charging_fields

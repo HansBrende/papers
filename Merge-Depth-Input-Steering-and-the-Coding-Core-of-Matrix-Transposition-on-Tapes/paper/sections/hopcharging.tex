@@ -18,8 +18,9 @@ all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: 
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering
 lemma, \cref{lem:short-paths,lem:merge-formation}, Theorems~HC and~HC$'$, and \cref{prop:capacity,prop:merge-reduction}
-are formalized in Lean, field DAGs for machines that are oblivious up to their last output step; \cref{lem:expansion,lem:balls},
-\cref{prop:hop-routing} and Corollaries~HC and~HC$^*$ are formalized in part, as their status lines say.
+and \cref{lem:expansion} are formalized in Lean, field DAGs for machines that are oblivious up to their last output
+step; \cref{lem:balls}, \cref{prop:hop-routing} and Corollaries~HC and~HC$^*$ are formalized in part, as their status lines
+say.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -124,11 +125,7 @@ node $o_{t_\ell}$ for~$\ell$. It is a refinement of width $k+2$. A deep edge of 
 field of a step $t'\le t-2$, so its head is a symbol field $\kappa_{t',j}$.
 
 \begin{lemma}[Expansion]\label{lem:expansion}
-\partformal{MergeDepth/Charging.lean}{MergeDepth.rigidity_core,MergeDepth.rigidity_finrank,MergeDepth.finrank_revealed_union_le,MergeDepth.finrank_revealed_le}{in
-part~(a), the support of row~$\ell$ when the $(\Gamma,Q)$-free paths from the output nodes of~$\ell$ have no common
-length bound (the formal statement assumes a bound~$D$ on their number of edges, as in all uses below); part~(b) is
-\lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode} for function DAGs, and
-\lean{MergeDepth.Pruning.field_cone} with \lean{MergeDepth.Pruning.field_isIndexCode} for the field DAG of a pruning}
+\formal{MergeDepth/ExpansionCone.lean}{MergeDepth.expansion_cone,MergeDepth.coneI,MergeDepth.C_eq_zero_of_not_mem_coneI}
 Let $\Gamma\subseteq[0,T)$, let $Q$ be a set of nodes of the coordinate DAG or of a field DAG, and let $X$ be a set of
 output positions. Let $P_{\tpos}$ be the $L\times L$ matrix with rows $e_{\tpos(\ell)}$, as
 in~\cite[Section~7.2]{BoundedNesting2026}.
@@ -185,7 +182,14 @@ each.
 Formally, the decomposition is \lean{MergeDepth.rigidity_core} and \lean{MergeDepth.rigidity_finrank}, for a linear
 network whose output~$\ell$ is an affine function of the values at a set of output nodes; the bound on the revealed rank
 is \lean{MergeDepth.finrank_revealed_union_le} with \lean{MergeDepth.finrank_revealed_le} for single coordinates, and
-\lean{MergeDepth.finrank_revealed_le_of_values} with \lean{MergeDepth.finrank_revealed_coord_le} for whole steps.
+\lean{MergeDepth.finrank_revealed_le_of_values} with \lean{MergeDepth.finrank_revealed_coord_le} for whole steps. The
+first claim is the eighth paper's \lean{BoundedNesting.LinNet.vlin_expand} together with
+\lean{MergeDepth.C_eq_zero_of_not_mem_coneI}: the path sums vanish outside the cone set \lean{MergeDepth.coneI}, because a
+path from a node~$u$ has at most $u+1$ nodes (\lean{MergeDepth.length_le_of_mem_paths}). \lean{MergeDepth.expansion_cone}
+is the decomposition with the support of~$S$ in the cone sets of the unrevealed output nodes; in the uses below the paths
+have a common length bound, and \lean{MergeDepth.rigidity_finrank} records the support in balls of that radius. Part~(b)
+is \lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode} for function DAGs, and
+\lean{MergeDepth.Pruning.field_cone} with \lean{MergeDepth.Pruning.field_isIndexCode} for the field DAG of a pruning.
 \end{outline}
 
 For whole steps, the rank bound of~(a) is the counting of the eighth paper's per-machine rigidity

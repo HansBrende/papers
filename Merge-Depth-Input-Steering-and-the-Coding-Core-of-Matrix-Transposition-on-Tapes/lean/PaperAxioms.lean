@@ -61,11 +61,6 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_deep_le_of_lt
 #print axioms MergeDepth.card_deep_mul_le
 #print axioms MergeDepth.two_mul_card_deepHops_le
--- MergeDepth/Charging.lean
-#print axioms MergeDepth.finrank_revealed_le
-#print axioms MergeDepth.finrank_revealed_union_le
-#print axioms MergeDepth.rigidity_core
-#print axioms MergeDepth.rigidity_finrank
 -- MergeDepth/CoarseCount.lean
 #print axioms MergeDepth.card_coarse_le
 #print axioms MergeDepth.card_monotone_le
@@ -78,6 +73,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.EM.ObliviousOn
 #print axioms MergeDepth.EM.Runs
 #print axioms MergeDepth.EM.inputDisk
+-- MergeDepth/ExpansionCone.lean
+#print axioms MergeDepth.C_eq_zero_of_not_mem_coneI
+#print axioms MergeDepth.coneI
+#print axioms MergeDepth.expansion_cone
 -- MergeDepth/ExternalMemory.lean
 #print axioms MergeDepth.EM.EMLowerBound
 #print axioms MergeDepth.EM.corollaryEM
@@ -151,6 +150,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.transport_sharp
 #print axioms MergeDepth.transport_tpos
 -- named in the text
+#print axioms BoundedNesting.LinNet.vlin_expand
 #print axioms BoundedNesting.card_heavyPairs_mul_le
 #print axioms BoundedNesting.entries
 #print axioms BoundedNesting.heavyPairs
@@ -241,7 +241,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.fibreGeometry
 #print axioms MergeDepth.fibreGeometry_deficit_le
 #print axioms MergeDepth.finrank_revealed_coord_le
+#print axioms MergeDepth.finrank_revealed_le
 #print axioms MergeDepth.finrank_revealed_le_of_values
+#print axioms MergeDepth.finrank_revealed_union_le
 #print axioms MergeDepth.frozenGeometry
 #print axioms MergeDepth.hasSpanColoring_iff_activeFamilies_card_le
 #print axioms MergeDepth.hop_charging
@@ -258,6 +260,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.length_le_of_coldDep
 #print axioms MergeDepth.length_le_of_cov
 #print axioms MergeDepth.length_le_of_cut
+#print axioms MergeDepth.length_le_of_mem_paths
 #print axioms MergeDepth.merge_reduction
 #print axioms MergeDepth.merge_reduction_fields
 #print axioms MergeDepth.merge_reduction_pruning
@@ -270,7 +273,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.rCount_deep_coarse_eq_zero
 #print axioms MergeDepth.rCount_le_card_edgesOf
 #print axioms MergeDepth.realize_paths
+#print axioms MergeDepth.rigidity_core
 #print axioms MergeDepth.rigidity_core_rev
+#print axioms MergeDepth.rigidity_finrank
 #print axioms MergeDepth.routing_count
 #print axioms MergeDepth.rpow_mono_of_le
 #print axioms MergeDepth.six_le_blockWidth

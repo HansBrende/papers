@@ -8,7 +8,7 @@
   built on the libraries of the eighth, ninth, fifth and tenth papers). Formalized so far:
   - Section 3: the cold genie (Lemma 3.1), the covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (field DAGs of
     prunings for machines oblivious up to their last output step, through the fourth paper's local recursion at the level
-    of fields), Lemma 3.3 (part (a) with a common length bound), Lemma 3.14(a) and Proposition 3.16 with the machine's
+    of fields), Lemma 3.3, Lemma 3.14(a) and Proposition 3.16 with the machine's
     read and append steps as hypotheses, Proposition 3.17, Corollary HC at one size, Corollary HC* at one size given
     Lemma 3.14(b), and the merge DAG with Proposition 3.20.
   - Section 4: Lemmas 4.2, 4.5 (the block machine, in the frozen machine model), 4.6, 4.7, the paired-distance group

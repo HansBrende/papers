@@ -17,3 +17,6 @@ import MergeDepth.SkeletonEntropy
 import MergeDepth.BlockDag
 import MergeDepth.SkeletonGenie
 import MergeDepth.ProjectivePlane
+import MergeDepth.MergeDag
+import MergeDepth.MergeFields
+import MergeDepth.MergeSteps

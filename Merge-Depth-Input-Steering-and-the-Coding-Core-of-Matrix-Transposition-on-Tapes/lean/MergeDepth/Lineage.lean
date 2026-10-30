@@ -214,4 +214,63 @@ theorem paths_short (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [DecidableR
   calc π.length ≤ (rCount Rr π + 1) * D := h4
     _ ≤ (s + 1) * τ * D := Nat.mul_le_mul_right _ h5
 
+/-- **Short paths, per path.** For any set `Q` with the covering property, a `(Γ₀ ∪ Q)`-free path
+with `s'` deep merges has at most `(s' + 1) τ D` vertices. -/
+theorem length_le_of_cov (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr] (lin : Forest)
+    (Γ₀ : Finset ℕ) (D : ℕ)
+    (hcold : ∀ t π, π ∈ net.paths t → LinNet.GFree Γ₀ π → rCount Rr π = 0 → π.length ≤ D)
+    (hside : ∀ u v v' π, lin.nxt u = some v → v' ≠ v → (u :: v' :: π) ∈ net.paths u →
+      LinNet.GFree Γ₀ (u :: v' :: π) → rCount Rr (u :: v' :: π) = 0)
+    (M : Finset ℕ) (hM : ∀ u v, lin.nxt u = some v → Rr u v → u ∈ M) {τ : ℕ} (hτ : 1 ≤ τ)
+    (Q : Finset ℕ)
+    (hcov : ∀ u ρ, IsChain lin (u :: ρ) → (∀ v ∈ ρ, v ∉ Q) → crossed M (u :: ρ) < τ)
+    {t : ℕ} {π : List ℕ} (hπ : π ∈ net.paths t) (hfree : LinNet.GFree (Γ₀ ∪ Q) π) :
+    π.length ≤ (dm lin Rr false π + 1) * τ * D := by
+  have h1 := rCount_add_le net Rr lin Γ₀ hside M hM Q hcov π t [t] (by simp) hπ hfree trivial rfl
+    (by simp)
+  simp only [rCount, add_zero, lt_irrefl, decide_false] at h1
+  have h4 := length_le_of_cold net Rr Γ₀ D hcold hπ (gfree_mono subset_union_left hfree)
+  have h5 : rCount Rr π + 1 ≤ (dm lin Rr false π + 1) * τ := by
+    have : (dm lin Rr false π + 1) * τ = τ + τ * dm lin Rr false π := by ring
+    omega
+  calc π.length ≤ (rCount Rr π + 1) * D := h4
+    _ ≤ (dm lin Rr false π + 1) * τ * D := Nat.mul_le_mul_right _ h5
+
+/-- The deep merges of a path, in order. -/
+def dmList (lin : Forest) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr] : Bool → List ℕ → List ℕ
+  | _, [] => []
+  | f, [u] => if lin.nxt u = none ∧ f = true then [u] else []
+  | f, u :: v :: π =>
+    if lin.nxt u = none then (if Rr u v ∨ f = true then [u] else []) ++ dmList lin Rr false (v :: π)
+    else if lin.nxt u = some v then dmList lin Rr (f || decide (Rr u v)) (v :: π)
+    else dmList lin Rr false (v :: π)
+
+theorem length_dmList (lin : Forest) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr] :
+    ∀ (f : Bool) (π : List ℕ), (dmList lin Rr f π).length = dm lin Rr f π
+  | _, [] => rfl
+  | f, [u] => by simp only [dmList, dm]; split_ifs <;> rfl
+  | f, u :: v :: π => by
+    simp only [dmList, dm]
+    split_ifs
+    all_goals (simp only [List.length_append, length_dmList lin Rr _ (v :: π)]; try split_ifs)
+    all_goals simp_all; try omega
+
+theorem mem_of_mem_dmList (lin : Forest) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr] :
+    ∀ (f : Bool) (π : List ℕ) (x : ℕ), x ∈ dmList lin Rr f π → x ∈ π
+  | _, [], x, h => by simp [dmList] at h
+  | f, [u], x, h => by
+    simp only [dmList] at h
+    split_ifs at h <;> simp_all
+  | f, u :: v :: π, x, h => by
+    simp only [dmList] at h
+    split_ifs at h with h1 h2
+    · rcases List.mem_append.mp h with h | h
+      · simp at h; simp [h]
+      · exact List.mem_cons_of_mem _ (mem_of_mem_dmList lin Rr false (v :: π) x h)
+    · rcases List.mem_append.mp h with h | h
+      · simp at h
+      · exact List.mem_cons_of_mem _ (mem_of_mem_dmList lin Rr false (v :: π) x h)
+    · exact List.mem_cons_of_mem _ (mem_of_mem_dmList lin Rr _ (v :: π) x h)
+    · exact List.mem_cons_of_mem _ (mem_of_mem_dmList lin Rr false (v :: π) x h)
+
 end MergeDepth

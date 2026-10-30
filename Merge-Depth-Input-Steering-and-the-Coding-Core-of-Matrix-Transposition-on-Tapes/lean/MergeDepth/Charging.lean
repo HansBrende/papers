@@ -93,6 +93,85 @@ theorem rigidity_core (net : LinNet F L m) (tout : Fin L → Finset ℕ)
     rw [hR, LinearMap.range_comp]
     exact Submodule.finrank_map_le _ _
 
+open Classical in
+/-- **Rigidity with revealed outputs.** As `rigidity_core`, but an output vertex in the genie
+contributes its whole revealed value to `R₀`: `P_tpos = R₀ + S₀` where row `ℓ` of `S₀` collects the
+path sums of the unrevealed output vertices of `ℓ` only. -/
+theorem rigidity_core_rev (net : LinNet F L m) (tout : Fin L → Finset ℕ)
+    (φ : Fin L → ℕ → Fin m → F) (φc : Fin L → F) (tpos : Fin L → Fin L) (Γ : Finset ℕ)
+    (htrans : ∀ w ∈ binVecs L F, ∀ ℓ,
+      φc ℓ + ∑ u ∈ tout ℓ, φ ℓ u ⬝ᵥ net.val w u = w (tpos ℓ)) :
+    ∃ R : Matrix (Fin L) (Fin L) F,
+      Pmat tpos = R + Matrix.of (fun ℓ j => ∑ u ∈ (tout ℓ).filter (· ∉ Γ), φ ℓ u ⬝ᵥ net.C Γ u j) ∧
+      R.rank ≤ finrank F (LinearMap.range (revealed net Γ)) := by
+  let E := revealed net Γ
+  -- revealed output vertices are read off `E`; the others are expanded through `Γ`
+  let g : Fin L → ℕ → (Γ → Fin m → F) → F := fun ℓ u e =>
+    if h : u ∈ Γ then φ ℓ u ⬝ᵥ e ⟨u, h⟩ else ∑ s : Γ, φ ℓ u ⬝ᵥ (net.Tm Γ s u *ᵥ e s)
+  have hg_add : ∀ ℓ u e e', g ℓ u (e + e') = g ℓ u e + g ℓ u e' := by
+    intro ℓ u e e'
+    simp only [g]
+    split_ifs
+    · simp [dotProduct_add]
+    · simp only [Pi.add_apply, Matrix.mulVec_add, dotProduct_add, Finset.sum_add_distrib]
+  have hg_smul : ∀ ℓ u (c : F) e, g ℓ u (c • e) = c * g ℓ u e := by
+    intro ℓ u c e
+    simp only [g]
+    split_ifs
+    · simp [dotProduct_smul]
+    · simp only [Pi.smul_apply, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul, Finset.mul_sum]
+  let G : (Γ → Fin m → F) →ₗ[F] (Fin L → F) :=
+    { toFun := fun e ℓ => ∑ u ∈ tout ℓ, g ℓ u e
+      map_add' := fun e e' => by
+        funext ℓ
+        simp only [Pi.add_apply, hg_add, Finset.sum_add_distrib]
+      map_smul' := fun c e => by
+        funext ℓ
+        simp only [Pi.smul_apply, hg_smul, smul_eq_mul, RingHom.id_apply, Finset.mul_sum] }
+  let R : Matrix (Fin L) (Fin L) F := LinearMap.toMatrix' (G ∘ₗ E)
+  refine ⟨R, ?_, ?_⟩
+  · ext ℓ j
+    have hb : ∀ w : Fin L → F, (∀ i, w i = 0 ∨ w i = 1) → w ∈ binVecs L F := fun w hw =>
+      Fintype.mem_piFinset.mpr fun i => by rcases hw i with h | h <;> simp [h]
+    have h0 := htrans 0 (hb 0 fun _ => Or.inl rfl) ℓ
+    have hj := htrans (Pi.single j 1) (hb _ fun i => by
+      by_cases h : i = j
+      · subst h; simp
+      · simp [h]) ℓ
+    -- each output vertex contributes its `g`-part plus its path sum if unrevealed
+    have hexp : ∀ u, φ ℓ u ⬝ᵥ net.val (Pi.single j 1) u = φ ℓ u ⬝ᵥ net.val 0 u +
+        (g ℓ u (E (Pi.single j 1)) + if u ∈ Γ then 0 else φ ℓ u ⬝ᵥ net.C Γ u j) := by
+      intro u
+      rw [net.val_eq_add (Pi.single j 1) u, dotProduct_add]
+      congr 1
+      simp only [g, E, revealed, LinearMap.pi_apply, vlinMap, LinearMap.coe_mk, AddHom.coe_mk]
+      split_ifs with hu
+      · simp
+      · rw [net.vlin_expand Γ (Pi.single j 1) u, dotProduct_add, dotProduct_sum, dotProduct_sum]
+        congr 1
+        · exact (Finset.sum_coe_sort Γ
+            fun s => φ ℓ u ⬝ᵥ (net.Tm Γ s u *ᵥ net.vlin (Pi.single j 1) s)).symm
+        · rw [Finset.sum_eq_single j (fun j' _ hj' => by simp [hj'])
+            (fun h => absurd (Finset.mem_univ j) h)]
+          simp
+    simp only [hexp, Finset.sum_add_distrib] at hj
+    have hRj : R ℓ j = ∑ u ∈ tout ℓ, g ℓ u (E (Pi.single j 1)) := rfl
+    have hP : Pmat (F := F) tpos ℓ j = (Pi.single j 1 : Fin L → F) (tpos ℓ) := by
+      simp [Pmat, Pi.single_apply, eq_comm]
+    have hS : ∑ u ∈ tout ℓ, (if u ∈ Γ then 0 else φ ℓ u ⬝ᵥ net.C Γ u j) =
+        ∑ u ∈ (tout ℓ).filter (· ∉ Γ), φ ℓ u ⬝ᵥ net.C Γ u j := by
+      rw [sum_filter]
+      refine sum_congr rfl fun u _ => ?_
+      split_ifs <;> simp_all
+    rw [Matrix.add_apply, hRj, Matrix.of_apply, hP, ← hS]
+    have : φc ℓ + ∑ u ∈ tout ℓ, φ ℓ u ⬝ᵥ net.val 0 u = 0 := by simpa using h0
+    linear_combination this - hj
+  · have hR : R.mulVecLin = G ∘ₗ E := by
+      rw [← Matrix.toLin'_apply', Matrix.toLin'_toMatrix']
+    change finrank F (LinearMap.range R.mulVecLin) ≤ _
+    rw [hR, LinearMap.range_comp]
+    exact Submodule.finrank_map_le _ _
+
 /-- Rank is subadditive. -/
 theorem rank_add_le' (A B : Matrix (Fin L) (Fin L) F) : (A + B).rank ≤ A.rank + B.rank := by
   unfold Matrix.rank

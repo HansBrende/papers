@@ -17,9 +17,9 @@ number of revisited cells (Corollary~HC), and an affirmative answer to Question~
 all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
-\cref{prop:capacity} and Theorem~HC$'$ for refinements of the dependency DAG are formalized in Lean, and so are
-\cref{lem:expansion} for function DAGs and Corollary~HC at one size, as their status lines say; the other results of
-this section are not formalized yet.
+\cref{prop:capacity} and Theorem~HC$'$ and \cref{prop:merge-reduction} for refinements of the dependency DAG are
+formalized in Lean, and so are \cref{lem:expansion} for function DAGs and Corollary~HC at one size, as their status lines
+say; the other results of this section are not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -650,6 +650,7 @@ After \cref{lem:short-paths}, every long path from an output alternates stretche
 with deep merges. What remains is the pattern of the merges.
 
 \begin{definition}[The merge DAG]\label{def:merge-dag}
+\formal{MergeDepth/MergeDag.lean}{MergeDepth.MEdge,MergeDepth.MInit,MergeDepth.MCut}
 In the setting of \cref{lem:short-paths}, let $Q$ be the set given there. The \emph{merge DAG}~$\mathcal M$ has as
 vertices the nodes of~$G$ that are deep merges of $(\Gamma_{\mathrm F},Q)$-free paths starting at unrevealed output
 nodes, and an edge $f\to f'$ whenever $f$ and~$f'$ are consecutive deep merges of such a path. A vertex is
@@ -661,7 +662,9 @@ pruning and on the lineage assignment, and on $\Gamma_{\mathrm F}$ and~$\tau$; b
 schedule.
 
 \begin{proposition}[Code-level depth reduction suffices]\label{prop:merge-reduction}
-\notformalized
+\partformal{MergeDepth/MergeSteps.lean}{MergeDepth.merge_reduction_machine}{for field DAGs, that the field DAG of a pruning
+is a function DAG that refines the dependency DAG, as in \cref{thm:HCprime}(b); for such refinements, the last claim is
+\lean{MergeDepth.merge_reduction_fields}}
 In the setting of \cref{lem:short-paths}, with $G$ the coordinate DAG of an $\F$-linear data path of width~$m$ or the
 field DAG of a pruning with $m=k+2$, let $s\ge0$, $r=(s+1)\tau D$, and let $Z$ be a set of vertices of~$\mathcal M$
 that meets every path of~$\mathcal M$ with $s+1$ vertices whose first vertex is initial. Then every
@@ -671,14 +674,22 @@ $(\Gamma_{\mathrm F},Q\cup Z)$ has fewer than $r$ edges. If $M$ transposes all $
 \cref{thm:HCprime}(b) with $X=\emptyset$ and the bit count increased by $\beta\card Z$.
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 Let $\pi$ be such a path, from an output node~$u_0$. It is $(\Gamma_{\mathrm F},Q)$-free and starts at an unrevealed
 output node, so its deep merges $f_1,\dots,f_{s'}$ form a path of~$\mathcal M$ whose first vertex is initial. If
 $s'\ge s+1$, then $Z$ contains one of $f_1,\dots,f_{s+1}$; it is a vertex of~$\pi$ other than~$u_0$, which is not in~$Z$,
 so $\pi$ would not be $Z$-free after its first vertex. Hence $s'\le s$, and $\pi$ has fewer than $r$ edges by
 \cref{lem:short-paths}. Apply \cref{lem:expansion} with $\Gamma=\Gamma_{\mathrm F}$, the set $Q\cup Z$ and $X=\emptyset$,
 as in the proof of \cref{thm:HCprime}; a node of~$Z$ costs rank at most one in~(a) and at most $\beta$ bits in~(b).
-\end{informalproof}
+Formally, the merge DAG and the cut condition are \lean{MergeDepth.MEdge}, \lean{MergeDepth.MInit} and
+\lean{MergeDepth.MCut}, for any network, deep relation and lineage assignment. \lean{MergeDepth.dm_le_of_cut} bounds the
+deep merges of the paths in question by~$s$, and \lean{MergeDepth.length_le_of_cut} adds the bound of
+\lean{MergeDepth.length_le_of_cov} (\cref{lem:short-paths}). For a linear network, \lean{MergeDepth.merge_reduction}
+uses \lean{MergeDepth.rigidity_core_rev}, the form of \cref{lem:expansion}(a) in which a revealed output node
+contributes to~$R$ only; \lean{MergeDepth.merge_reduction_steps} passes to the coordinate DAG as in Theorem~HC$'$, with
+the rank bound $\beta\card{\Gamma_{\mathrm F}}+\card Q+\card Z$, and \lean{MergeDepth.merge_reduction_machine} states
+$\rank R\le\eps L+mkC(L+1)/\tau+\card Z$ with $\tau\card Q\le mkC(L+1)$.
+\end{outline}
 
 The proposition gives a sufficient condition only. It moves the remaining difficulty from the schedule to the code: on
 any schedule, depth-robust or not, a code whose merge DAG has a cut of $o(L)$ vertices meeting all long merge paths is

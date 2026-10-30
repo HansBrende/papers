@@ -38,6 +38,12 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.cor_HC_step_formation
 #print axioms MergeDepth.hop_charging_HC
 #print axioms MergeDepth.hop_charging_machine
+-- MergeDepth/MergeDag.lean
+#print axioms MergeDepth.MCut
+#print axioms MergeDepth.MEdge
+#print axioms MergeDepth.MInit
+-- MergeDepth/MergeSteps.lean
+#print axioms MergeDepth.merge_reduction_machine
 -- MergeDepth/ProjectivePlane.lean
 #print axioms MergeDepth.Centred
 #print axioms MergeDepth.Centred.BipCompat
@@ -81,6 +87,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.coord_reach_subset
 #print axioms MergeDepth.coord_val
 #print axioms MergeDepth.deepHops
+#print axioms MergeDepth.dm_le_of_cut
 #print axioms MergeDepth.entropy
 #print axioms MergeDepth.entropy_le_of_fibres
 #print axioms MergeDepth.exists_large_fibre
@@ -90,9 +97,15 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.inSkel
+#print axioms MergeDepth.length_le_of_cov
+#print axioms MergeDepth.length_le_of_cut
+#print axioms MergeDepth.merge_reduction
+#print axioms MergeDepth.merge_reduction_fields
+#print axioms MergeDepth.merge_reduction_steps
 #print axioms MergeDepth.paths_short
 #print axioms MergeDepth.prevS
 #print axioms MergeDepth.rCount_deep_coarse_eq_zero
+#print axioms MergeDepth.rigidity_core_rev
 #print axioms MergeDepth.rpow_mono_of_le
 #print axioms MergeDepth.skel
 #print axioms MergeDepth.skelData

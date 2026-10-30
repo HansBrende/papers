@@ -13,6 +13,12 @@ Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
     from the paper's LaTeX sources;
   - [`verify_remarks.py`](tools/verify_remarks.py) checks the computational remarks exactly (plain Python 3).
 
+Extension memo: [Soft Recovery and Record Capacities in Nested Elimination](memo-soft-recovery/),
+by Hans Brende and GPT-6 Astra ([PDF](memo-soft-recovery/paper/main.pdf)), extends the decomposition
+bound to imperfect recovery and proves record-information bounds with coded retention, revelation
+credits, and explicit information-loss charges. Its Lean proofs derive the original exact bounds
+as corollaries; this paper's proofs are unchanged.
+
 ## The question
 
 A storage code for a recovery relation N on a finite set V is a set of words in which every symbol is

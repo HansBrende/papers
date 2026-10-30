@@ -1,0 +1,55 @@
+\section{Introduction}\label{sec:introduction}
+
+A storage code prescribes, for each coordinate $v$, a set $N(v)$ of
+coordinates from which its value is determined. The seventh paper of
+the series proves a half-rate bound whenever $N$ has a certified piece
+decomposition \cite{SeventhPaper2026}. Its proof applies to every
+normalized, monotone, submodular rank function satisfying those exact
+recovery equalities. The tenth paper constructs these certificates for
+the directed class called Class S \cite{TenthPaper2026}.
+
+In a computation, a useful relation may account for only part of a local
+recovery. Additional information can reside in coded records, be shared
+by several recoveries, or be lost when the available context changes.
+The purpose of this memo is to retain a certified relation while charging
+those remaining obligations explicitly.
+
+There are three steps. Theorem~\ref{thm:soft} keeps the recovery uncertainty
+in the decomposition argument. Lemma~\ref{lem:helper-loss} bounds the
+information supplied by one helper across arbitrary contexts.
+Theorem~\ref{thm:information} combines these statements with a cover of
+the actual helper occurrences. The resulting bound keeps the information
+revealed about the selected input, unused coordinate capacity, terminal
+helper information, and the remaining recovery uncertainty. Its simpler
+capacity corollaries expose which quantities a concrete application must
+control.
+
+\paragraph{Formal proofs.}
+Every new numbered theorem, lemma, corollary, and proposition below is
+proved in the accompanying Lean library. Those declarations are the
+proofs; the English statements and proof outlines are guides to them.
+The finite Shannon instances reuse the entropy library of the earlier
+papers \cite{SecondPaper2026,FourthPaper2026}. The general inequalities
+hold for all polymatroids, not only entropic ones. No numerical experiment
+or unformalized intermediate claim is used to prove a result. The
+application discussion identifies obligations still to be met; it is not
+a formalized transposition lower bound.
+
+\paragraph{Relation to earlier work.}
+Entropy and functional dependence are established tools for network
+coding bounds; see, for example, Thakor, Grant, and Chan
+\cite{ThakorGrantChan2009}. Elishco and Barg study recoverable systems
+whose local conditional entropy is bounded by a positive tolerance
+\cite[Section IV]{ElishcoBarg2022}. Thus neither the use of conditional
+entropy to describe imperfect recovery nor functional dependence as a
+form of information retention is new in itself. The contribution here
+is a residual extension of the seventh paper's specific decomposition
+engine, together with exact occurrence accounting for helper reuse and
+revelation. We claim neither a new class of exact half-rate relations nor
+a separation from all earlier information bounds.
+
+The relevance to the transposition program of the first paper
+\cite{FirstPaper2026} is conditional: these tools can certify an
+impossibility only when the available coordinate capacity exceeds all
+the charged information. \Cref{sec:applications} states that remaining
+task and the constraints it places on constructions.

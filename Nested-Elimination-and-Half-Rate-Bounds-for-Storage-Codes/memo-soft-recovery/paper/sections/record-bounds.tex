@@ -1,0 +1,225 @@
+\section{Record bounds and revelations}\label{sec:records}
+
+Let $A$ label all ambient variables $W_a$, let $X_v=W_{f(v)}$ for
+$v\in V$, and write $Y_e=W_e$ when label $e$ serves as a helper.
+Fix a common context $Z\subseteq A$, a relation $N$, and a certificate
+$\Decomp(N,\varnothing,\mathcal H)$. For each $v$ choose an ordered
+list of helper labels
+$F_v=(e_{v,1},\ldots,e_{v,m_v})$. Its $j$th occurrence is the triple
+\begin{equation}
+\bigl(e_{v,j},\ K_{v,j},\ f(v)\bigr),\qquad
+K_{v,j}=f(N(v))\cup\{e_{v,1},\ldots,e_{v,j-1}\}.
+\label{eq:actual-context}
+\end{equation}
+All conditioning on $Z$ is applied to the rank function, so it is not
+duplicated inside $K_{v,j}$.
+
+\begin{definition}[Occurrence cover]\label{def:cover}
+\formal{ChainCapacity.lean}{RecordUseCover,recordUses,allRecordUses,coveredUses}
+A record-use cover assigns to each label $e$ a finite list
+$\mathcal C_e$ of use lists for that helper. The multiset of triples
+obtained by tagging every use in every list with its helper $e$ must
+equal the multiset of all triples in \eqref{eq:actual-context}.
+Set $k_e=|\mathcal C_e|$. Each use list starts with
+$L_0=\varnothing$.
+\end{definition}
+
+The Lean field proving this equality is a permutation of lists. It
+preserves identities, contexts, targets, and multiplicities, including
+repeated occurrences. The definition imposes neither retention nor an
+entropy bound. A cover always permits the coarse option of singleton
+use lists; finding a cover with an affordable bill is a separate task.
+
+Put $B=\sum_v b_v$ for real numbers $b_v$, and assume
+\begin{equation}
+H(X_V\mid Z)\ge B-\delta.
+\label{eq:initial-deficit}
+\end{equation}
+For any set $Q\subseteq A$ revealed in common, write $C_Q=(Z,Y_Q)$
+and define
+\begin{align}
+S_Q&=\sum_v\bigl(b_v-H(X_v\mid C_Q)\bigr),&
+J_Q&=I(X_V;Y_Q\mid Z),\label{eq:credits}\\
+\Phi_Q&=\sum_e\sum_{\gamma\in\mathcal C_e}
+             I(Y_e;K_{\rm end}(\gamma)\mid C_Q),&
+D_Q&=\sum_e\sum_{\gamma\in\mathcal C_e}D_e(C_Q;\gamma),
+\label{eq:cover-information}\\
+\mathcal L_Q&=\sum_e\sum_{\gamma\in\mathcal C_e}
+                       \mathcal L(C_Q;\gamma),&
+E_Q&=\sum_v H(X_v\mid X_{N(v)},Y_{F_v},C_Q).
+\label{eq:cover-errors}
+\end{align}
+Sums over $\mathcal C_e$ count lists with multiplicity. The definitions
+of $D_e$ and $\mathcal L$ are \eqref{eq:helper-loss} and
+\eqref{eq:whole-loss}. The end context of an empty list is empty and
+contributes zero. The quantity $S_Q$ is unused coordinate capacity;
+$J_Q$ is the information disclosed about the selected input.
+
+\begin{lemma}[Revelation and coordinate credit]\label{lem:credit}
+\formal{Capacity.lean}{capacity_bound_with_credit,revealCredit_nonneg,capacity_bound_of_residual}
+Under the decomposition and lower-entropy assumptions above, if
+\[
+\sum_v H(X_v\mid X_{N(v)},C_Q)\le R,
+\]
+then
+\begin{equation}
+B+S_Q\le 2\delta+2J_Q+R.
+\label{eq:credit-bound}
+\end{equation}
+No individual upper bound on $H(X_v\mid Z)$ is required here. If
+$H(X_v\mid Z)\le b_v$ for all $v$, then $S_Q\ge0$ and consequently
+\[
+B\le 2\delta+2H(Y_Q\mid Z)+R.
+\]
+\end{lemma}
+\begin{outline}
+The exact entropy drop is
+$H(X_V\mid C_Q)=H(X_V\mid Z)-J_Q$.
+Apply \cref{cor:conditional-soft} after the reveal and substitute
+$\sum_v H(X_v\mid C_Q)=B-S_Q$. This gives
+$2(B-\delta-J_Q)\le B-S_Q+R$.
+Conditional monotonicity gives $S_Q\ge0$ under the additional singleton
+bounds, and $J_Q\le H(Y_Q\mid Z)$ gives the last inequality.
+\end{outline}
+This preserves the distinction between a reveal's entropy and the
+information it gives about the selected coordinates.
+
+\begin{theorem}[I: information bound]\label{thm:information}
+\formal{ChainCapacity.lean}{RecordUseCover.information_bound,RecordUseCover.residual_information_bound}
+For every occurrence cover, every common reveal $Q$, and the
+decomposition and lower-entropy assumptions above,
+\begin{equation}
+\boxed{\ B+S_Q\le 2\delta+2J_Q+\Phi_Q+D_Q+E_Q.\ }
+\label{eq:information-bound}
+\end{equation}
+Exact recovery, retention, and individual capacity bounds on $b_v$
+are not assumptions. The theorem holds for arbitrary ambient
+polymatroids as well as finite Shannon entropy.
+\end{theorem}
+\begin{outline}
+Use \cref{lem:helper-expansion} for every vertex, in common context
+$C_Q$. Exact occurrence coverage preserves the total innovation sum
+when regrouping by helper and use list. Apply
+\cref{lem:helper-loss} to each list. Since $L_0=\varnothing$, its
+initial mutual information is zero. This bounds the summed recovery
+uncertainty by $\Phi_Q+D_Q+E_Q$. Substitution in
+\cref{lem:credit} proves the result.
+\end{outline}
+The accounting permits coding and partial retention, but still requires
+the prescribed relation and every context in \eqref{eq:actual-context}
+to be justified. It is a necessary information inequality, not a
+construction of such a certificate from a tape computation.
+
+\begin{corollary}[Entropy and capacity forms]\label{cor:capacity}
+\formal{ChainCapacity.lean}{RecordUseCover.entropy_bound,chain_record_bound_with_loss,optimized_chain_record_bound_with_loss}
+In addition suppose $H(X_v\mid Z)\le b_v$. For every $Q$,
+\begin{equation}
+B\le2\delta+2H(Y_Q\mid Z)
+       +\sum_e k_eH(Y_e\mid C_Q)+\mathcal L_Q+E_Q.
+\label{eq:entropy-bound}
+\end{equation}
+If also $H(Y_e\mid Z)\le c_e$ for every ambient label $e$, then
+\begin{align}
+B&\le2\delta+2\sum_{e\in Q}c_e+\sum_{e\notin Q}k_ec_e
+                      +\mathcal L_{\varnothing}+E_{\varnothing},
+\label{eq:mixed-chains}\\
+B&\le2\delta+\sum_e c_e\min\{2,k_e\}
+                      +\mathcal L_{\varnothing}+E_{\varnothing}.
+\label{eq:optimized-loss}
+\end{align}
+The empty-subscript quantities are conditioned on $Z$ but on no
+additional reveal.
+\end{corollary}
+\begin{outline}
+For a fixed $Q$, discard the nonnegative credit and use
+\[
+J_Q\le H(Y_Q\mid Z),\qquad
+\Phi_Q\le\sum_e k_eH(Y_e\mid C_Q),\qquad
+D_Q\le\mathcal L_Q.
+\]
+This gives \eqref{eq:entropy-bound}. Subadditivity bounds the reveal
+by the sum of its capacities; a revealed helper has zero remaining
+conditional entropy. The whole-context loss and final recovery
+uncertainty decrease under added common conditioning, giving
+\eqref{eq:mixed-chains}. Choose $Q=\{e:k_e\ge2\}$. The exact
+sum identity \lean{threshold_bill} gives \eqref{eq:optimized-loss}.
+\end{outline}
+Thresholding minimizes this separable capacity bill. It does not
+assert optimality for the coupled information terms of
+\eqref{eq:information-bound}.
+
+\begin{corollary}[C: retained uses]\label{cor:retained-cover}
+\formal{ChainCapacity.lean}{RecordUseCover.retained_entropy_bound,optimized_retained_chain_record_bound,optimized_chain_record_bound}
+Assume the hypotheses of \cref{cor:capacity}, exact local recovery
+$H(X_v\mid X_{N(v)},Y_{F_v},Z)=0$, and semantic retention
+$H(L_i\mid K_i,Z)=0$ at every transition of every use list. Then
+\begin{align*}
+B&\le2\delta+2H(Y_Q\mid Z)+\sum_e k_eH(Y_e\mid Z,Y_Q)
+\quad\text{for every }Q,\\
+B&\le2\delta+\sum_e c_e\min\{2,k_e\}.
+\end{align*}
+In particular these bounds hold under literal nesting of every list.
+\end{corollary}
+\begin{outline}
+Retention makes $\mathcal L_{\varnothing}=0$ and exact recovery makes
+$E_{\varnothing}=0$. Both properties survive common conditioning.
+Apply \cref{cor:capacity}. Literal nesting implies semantic retention,
+so the original chain-count theorem is a direct corollary.
+\end{outline}
+One retained list pays at most one helper capacity, regardless of how
+many occurrences it contains. A record with several lists can instead
+be revealed in common, paying at most twice its capacity.
+
+\begin{proposition}[Helpers without a use cover]\label{prop:uncoupled}
+\formal{Capacity.lean}{mixed_record_entropy_bound,mixed_record_bound,optimized_record_bound}
+Let each $F_v$ now be a set of helper labels, without a specified cover.
+Keep the decomposition, lower-entropy assumption, and
+$H(X_v\mid Z)\le b_v$. For every $Q$,
+\begin{align}
+B\le 2\delta+2H(Y_Q\mid Z)
+ +\sum_v\bigl(&H(Y_{F_v}\mid X_{N(v)},C_Q)\notag\\[-2pt]
+              &+H(X_v\mid X_{N(v)},Y_{F_v},C_Q)\bigr).
+\label{eq:joint-helpers}
+\end{align}
+If recovery after the helpers is exact and the unconditional bounds
+$H(X_v)\le b_v$, $H(Y_e)\le c_e$ hold, then, writing
+$m_e=|\{v:e\in F_v\}|$,
+\begin{align*}
+B&\le2\delta+2\sum_{e\in Q}c_e+\sum_v\sum_{e\in F_v\setminus Q}c_e,\\
+B&\le2\delta+\sum_e c_e\min\{2,m_e\}.
+\end{align*}
+\end{proposition}
+\begin{outline}
+For each vertex, its recovery uncertainty is at most the helpers'
+joint conditional entropy plus the uncertainty left after those helpers.
+Use \cref{lem:credit} in its entropy form. In the exact case, remove
+already revealed helpers, bound the others by their individual
+capacities, and count occurrences by $m_e$. Choosing
+$Q=\{e:m_e\ge2\}$ gives the last inequality.
+\end{outline}
+This offers a coarser certificate when useful retained lists are not
+available. In the joint-entropy version, correlated helpers need not
+pay the sum of their separate capacities.
+
+\begin{lemma}[Supplying the initial entropy bound]\label{lem:initial}
+\formal{Capacity.lean}{conditional_lower_from_deficit}
+Let $I,C,O,G$ be sets of ambient variable labels with $I\subseteq C\cup O$,
+and let $M,B,\Delta,g\in\R$. If
+\[
+H(W_I)\ge M-\Delta,\qquad
+H(W_O)\le M-B,\qquad H(W_G)\le g,
+\]
+then
+\[
+H(W_C\mid W_O,W_G)\ge B-(\Delta+g).
+\]
+The same statement holds for any polymatroid.
+\end{lemma}
+\begin{outline}
+Monotonicity gives $h(I)\le h(C\cup O\cup G)$, and subadditivity
+gives $h(O\cup G)\le h(O)+h(G)$. Subtract and substitute the three
+bounds. No independence or disjointness is used.
+\end{outline}
+For selected input coordinates, this supplies \eqref{eq:initial-deficit}
+with $Z=(W_O,W_G)$ and $\delta=\Delta+g$, even under a correlated
+correctness-set distribution.

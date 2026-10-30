@@ -1,0 +1,62 @@
+\section{Use in the transposition program}\label{sec:applications}
+
+We keep the series' notation: $d$ is the matrix dimension,
+$b(d)=\max\{1,\lceil\log_2d\rceil\}$, and $L=d^2b(d)$ is the input
+bit-length. The question (T) asks for a deterministic multitape
+transposer taking $O(L)$ time \cite{FirstPaper2026}. In the nats used
+here, the full input capacity is $L\log 2$.
+
+\paragraph{What an impossibility application must establish.}
+An application first chooses a distribution on the same input family
+throughout, selects coordinates, and proves a lower bound of the form
+\eqref{eq:initial-deficit}. \Cref{lem:initial} permits a paid reveal
+and conditioning on the unselected input without assuming independence
+under that distribution. It must then provide a decomposable parent
+relation and actual helper values completing or partially completing
+the selected recoveries. The occurrence cover must preserve the local
+contexts \eqref{eq:actual-context}.
+
+For one chosen reveal $Q$, all remaining charges must be evaluated
+under that same distribution and common context. To contradict
+\cref{thm:information}, it would suffice to prove
+\begin{equation}
+2\delta+2J_Q+\Phi_Q+D_Q+E_Q<B+S_Q.
+\label{eq:paid-margin}
+\end{equation}
+Here the strict upper bound must follow from the assumed machine
+class, not be supplied as an independent certificate assumption. A
+uniform lower bound on the positive gap in
+\eqref{eq:paid-margin}, as $d$ grows, is a remaining target. No such
+gap for unrestricted native tape computations is established in this
+memo.
+
+\paragraph{What a construction must account for.}
+The same inequality is necessary for any compatible recovery scheme.
+Keeping earlier information in a new encoding is allowed. It can
+preserve semantic retention even when literal variable containment
+fails. If information is discarded, the helper-specific decrease is
+charged; if recovery is incomplete, $E_Q$ is charged. Merely changing
+record names does not remove the occurrence or entropy obligations.
+
+Records at different times are distinct observations, even if stored in
+the same tape cell. An equality or decoder between those observations
+may establish an entropy relation, but physical location alone does
+not. Nor may the contexts be enlarged by inserting earlier targets or
+whole tape blocks without proving that the revised recovery relation
+and occurrence cover meet their respective hypotheses. The memo's
+decoder lemmas certify information identities, not free computation.
+
+\paragraph{Remaining questions.}
+Three concrete tasks would establish further utility. First, identify
+a family of actual computations or recovery schemes for which the
+decomposition and occurrence-cover conditions can be obtained with
+quantitative bounds on all charges. Second, exhibit a substantial
+improvement over the applicable older bounds after their reveal and
+cover choices have also been optimized; the finite controls in
+\cref{sec:sharpness} compare individual charges only. Third, find
+conditions under which the sharper $D_Q$ can be bounded without solving
+the full joint information problem. A useful native instance of
+\eqref{eq:paid-margin} would advance the impossibility program;
+compatible instances instead constrain where a construction can
+retain or replenish the required information. The general transposition
+question remains open.

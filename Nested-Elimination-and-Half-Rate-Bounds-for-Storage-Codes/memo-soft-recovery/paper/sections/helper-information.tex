@@ -1,0 +1,115 @@
+\section{Information supplied by a reused helper}\label{sec:helpers}
+
+Fix a common context $C$ and one helper variable $Y_e$. A use is a pair
+$(K_i,x_i)$: $K_i$ is the set of available variable labels and $W_{x_i}$
+is the target. The target need not be fully recoverable. Its
+\emph{innovation} from the helper is
+\begin{equation}
+\iota_i=I(Y_e;W_{x_i}\mid W_{K_i},W_C)
+=I(Y_e;W_{K_i\cup\{x_i\}}\mid W_C)
+ -I(Y_e;W_{K_i}\mid W_C).
+\label{eq:innovation}
+\end{equation}
+For readability, subsequent expressions suppress $W$ on contexts.
+
+For a list of $r$ uses and an initial set $L_0$, put $L_1=L_0$ and
+$L_i=K_{i-1}\cup\{x_{i-1}\}$ for $2\le i\le r$. Its end context is
+$K_{\rm end}=K_r\cup\{x_r\}$ when $r>0$, and $L_0$ otherwise.
+This end context includes the target as an analysis variable; it does
+not assert that an incomplete decoder has obtained it. Define
+\begin{align}
+D_e(C)&=\sum_{i=1}^r
+ \pos{I(Y_e;L_i\mid C)-I(Y_e;K_i\mid C)},\label{eq:helper-loss}\\
+\mathcal L(C)&=\sum_{i=1}^r H(L_i\mid K_i,C),\label{eq:whole-loss}
+\end{align}
+where $[t]_+=\max\{0,t\}$. The first sum measures decreases in
+information about this particular helper; the second charges all
+information lost from the preceding context and target.
+
+\begin{lemma}[Helper potential]\label{lem:helper-loss}
+\formal{Innovation.lean}{innovations_le_helperLoss,helperLoss_le_chainLoss,innovations_le_helper_capacity,innovations_le_with_loss}
+For every list of uses,
+\begin{equation}
+\sum_{i=1}^r\iota_i
+\le I(Y_e;K_{\rm end}\mid C)-I(Y_e;L_0\mid C)+D_e(C).
+\label{eq:helper-potential}
+\end{equation}
+Moreover $0\le D_e(C)\le\mathcal L(C)$, and hence the right side may
+be replaced by either
+\[
+I(Y_e;K_{\rm end}\mid C)-I(Y_e;L_0\mid C)+\mathcal L(C)
+\quad\text{or}\quad H(Y_e\mid L_0,C)+D_e(C).
+\]
+The first inequality is purely algebraic: with the definitions in
+\cref{sec:preliminaries}, it holds for every real-valued set function,
+without the polymatroid axioms. The comparisons with conditional
+entropy and helper capacity require those axioms.
+\end{lemma}
+\begin{outline}
+Set $p(S)=I(Y_e;S\mid C)$. Summing
+$\iota_i=p(K_i\cup\{x_i\})-p(K_i)$ and inserting the intervening
+$p(L_i)$ gives the exact identity
+\[
+\sum_i\iota_i=p(K_{\rm end})-p(L_0)
+                  +\sum_i\bigl(p(L_i)-p(K_i)\bigr).
+\]
+Replace each last summand by its positive part. For a polymatroid,
+monotonicity and submodularity give
+$p(L_i)-p(K_i)\le H(L_i\mid K_i,C)$, proving the comparison of
+losses. Finally $p(K_{\rm end})\le H(Y_e\mid C)$ gives the capacity
+form. The Lean proof implements the telescoping by list induction.
+\end{outline}
+This permits information discarded between helper uses to be charged
+without requiring the whole context to be retained.
+
+\begin{lemma}[Retention through an encoding]\label{lem:retention}
+\formal{Innovation.lean}{retained_innovations_le,NestedUses.retained,RetainedUses.contr,chainLoss_contr_le}
+Suppose $H(L_i\mid K_i,C)=0$ at every transition. Then
+\[
+\sum_i\iota_i\le H(Y_e\mid L_0,C).
+\]
+Literal containment $L_i\subseteq K_i$ is sufficient. More generally,
+it suffices that the next context determines the preceding context and
+target, possibly under different variable names. Zero conditional
+entropy, and the resulting retention condition, survive any additional
+common conditioning. The whole-context loss $\mathcal L$ can only
+decrease under that conditioning.
+\end{lemma}
+\begin{outline}
+The predicate \lean{RetainedUses} requires exactly the displayed zero
+conditional entropies. They set the loss sum to zero in
+\cref{lem:helper-loss}. Inclusion implies zero conditional rank.
+Conditional monotonicity proves preservation under common revelation
+and the comparison of loss sums. An actual deterministic decoder
+certifies zero conditional entropy by
+\lean{entropy_conditionalRank_zero_of_recovery}; its proof uses equality
+of the fibers of the finite observations.
+\end{outline}
+The assertion concerns information retained, not a decoder's running
+time or physical availability. It does not license adding variables to
+an actual use context. The smaller loss $D_e$ does \emph{not} share the
+conditioning monotonicity of $\mathcal L$; see
+\cref{prop:conditioning-control}.
+
+\begin{lemma}[Ordered helpers]\label{lem:helper-expansion}
+\formal{Innovation.lean}{increment_eq_innovation_add,increment_eq_helperInnovations_add}
+For a target $X$ and an ordered list of helpers
+$(Y_{e_1},\ldots,Y_{e_m})$,
+\begin{align}
+H(X\mid K,C)
+&=\sum_{j=1}^m I(Y_{e_j};X\mid K,Y_{e_1},\ldots,Y_{e_{j-1}},C)
+\notag\\[-2pt]
+&\hspace{1em}+H(X\mid K,Y_{e_1},\ldots,Y_{e_m},C).
+\label{eq:helper-expansion}
+\end{align}
+The identity also holds for conditional ranks of any set function.
+Repeated helper identities are allowed.
+\end{lemma}
+\begin{outline}
+Subtract the conditional target entropy before and after one helper,
+then telescope over the list. A repeated helper contributes zero once
+its variable is already present in the conditioning set.
+\end{outline}
+This fixes the contexts that an occurrence cover must preserve. Charging
+the same helper in a larger, more convenient context would not be the
+expansion of the given local recovery.

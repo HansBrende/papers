@@ -1,0 +1,110 @@
+\section{Soft decomposition}\label{sec:soft}
+
+\begin{theorem}[S: residual decomposition]\label{thm:soft}
+\formal{Decomposition.lean}{decomp_ineq_residual,decomp_ineq_soft}
+Let $h:2^V\to\R$ be a polymatroid and let
+$\Decomp(N,U,(H_1,\ldots,H_t))$. With $U_j$ as above,
+\begin{align}
+2\bigl(h(V)-h(U)\bigr)
+&\le \sum_{v\notin U}h(v\mid U)
+   +\sum_{j=1}^t\sum_{v\in H_j}h(v\mid N(v)\cup U_j)
+\label{eq:soft-pieces}\\
+&\le \sum_{v\notin U}h(v\mid U)
+   +\sum_{v\notin U}h(v\mid N(v)\cup U).
+\label{eq:soft-simple}
+\end{align}
+No recovery equality is assumed.
+\end{theorem}
+\begin{outline}
+In a piece, work with $g=h_U$. A scan step with supplying context
+$K=S\cup P_{b(v)}$ and outside parent $w$ has the exact identity
+\[
+g(v\mid K)
+=I_g(w;K\cup\{v\})-I_g(w;K)+g(v\mid K\cup\{w\}).
+\]
+The last term is at most $h(v\mid N(v)\cup U)$ by the parent
+containment condition. A step without an outside parent has the same
+residual bound directly. If $v$ has already been scanned, its increment
+is zero; repetitions are therefore not charged again. The nested
+outside-parent potentials telescope, giving the piece bound
+\[
+2h(H\mid U)\le
+\sum_{v\in H}h(v\mid U)
++\sum_{w\notin U\cup H} I_h(w;H\mid U)
++\sum_{v\in H}h(v\mid N(v)\cup U).
+\]
+The original elimination inequality supplies its first two terms;
+\lean{totalDefect_le_residual} and \lean{piece_ineq_residual} keep the
+residuals. Induct over pieces. The identity
+$h(w\mid U\cup H)=h(w\mid U)-I_h(w;H\mid U)$ cancels the outside
+potentials with the next piece's singleton terms. This proves
+\eqref{eq:soft-pieces}. Conditional monotonicity and the disjoint
+partition of $V\setminus U$ give \eqref{eq:soft-simple}.
+\end{outline}
+
+The retained contexts $U_j$ can reduce the residual bill. The simpler
+form is useful when only a uniform estimate before the piece scan is
+available. Both allow uncertified dependencies to be paid as remaining
+uncertainty while keeping the same certified relation $N$.
+
+\begin{corollary}[Common observations]\label{cor:conditional-soft}
+\formal{Observations.lean}{conditional_soft,entropy_conditional_soft}
+Let $X_v=W_{f(v)}$, let $Z$ be any common tuple of ambient variables,
+and suppose $\Decomp(N,\varnothing,\mathcal H)$. Then
+\begin{equation}
+2H(X_V\mid Z)\le
+\sum_v H(X_v\mid Z)+\sum_v H(X_v\mid X_{N(v)},Z).
+\label{eq:conditional-soft}
+\end{equation}
+The law is arbitrary on a finite sample space and finite alphabet.
+The same inequality holds for conditional ranks of any ambient
+polymatroid under any coordinate map $f$.
+\end{corollary}
+\begin{outline}
+Apply \cref{thm:soft} to the polymatroid
+$S\mapsto h(f(S)\cup Z)-h(Z)$ with $U=\varnothing$.
+The finite entropy theorem substitutes the existing
+\leanfile{MotionDepthCodes.codeEntropy} instance.
+\end{outline}
+Thus common information may include nonlinear observations and
+correlated auxiliary variables; independent input coordinates are not
+required.
+
+\begin{corollary}[Exact recovery]\label{cor:exact}
+\formal{Decomposition.lean}{exact_decomp,exact_rateBound,exact_card_sq}
+Under the hypotheses of \cref{thm:soft}, if $h(v\mid N(v))=0$ for
+all $v$, the residuals vanish and
+\[
+2\bigl(h(V)-h(U)\bigr)\le\sum_{v\notin U}h(v\mid U).
+\]
+In particular a decomposition from $\varnothing$ gives the original
+half-rate bound. For every storage code $C\subseteq\alpha^V$ over a
+finite nonempty alphabet, it gives $|C|^2\le |\alpha|^{|V|}$.
+Here a storage code means that agreement on $N(v)$ determines agreement
+at $v$ for every pair of words in $C$.
+\end{corollary}
+\begin{outline}
+Nonnegativity and conditional monotonicity force every residual to
+zero. The original rate-to-cardinality theorem then supplies the
+cardinality claim, including the empty-code case.
+\end{outline}
+This derives the earlier exact theorem directly from the extension.
+
+\begin{corollary}[Relative Class S]\label{cor:class-s}
+\formal{ClassS.lean}{classSOn_soft,classS_soft}
+If $N$ satisfies relative Class S on $R\subseteq V$ and $h$ is any
+polymatroid, then
+\[
+2\bigl(h(V)-h(V\setminus R)\bigr)
+\le \sum_{v\in R}h(v\mid V\setminus R)
+ +\sum_{v\in R}h(v\mid N(v)\cup(V\setminus R)).
+\]
+Taking $R=V$ gives the global soft inequality on Class S.
+\end{corollary}
+\begin{outline}
+Use the tenth paper's relative decomposition certificate and apply
+\cref{thm:soft} with $U=V\setminus R$.
+\end{outline}
+Existing Class S certificates therefore remain usable with explicit
+nonzero recovery uncertainty; no additional graph classification is
+claimed.

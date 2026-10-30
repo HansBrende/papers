@@ -1,0 +1,110 @@
+\section{Sharp coefficients and finite controls}\label{sec:sharpness}
+
+The following examples are exact finite entropy computations. They
+test the accounting rules, not the existence of a native tape
+transposer. Write $\lambda=\log 2$ for the entropy of a fair bit.
+
+\begin{proposition}[Necessary coefficients]\label{prop:coefficients}
+\formal{Sharpness.lean}{oneBit_decomposable,residual_bound_attained,residual_coefficient_at_least_one,private_helper_recovers,private_helper_coefficient_at_least_one,shared_helper_coefficient_at_least_two,shared_helper_one_fails}
+The following universal coefficients cannot be reduced:
+\begin{enumerate}[label=(\roman*)]
+\item the coefficient $1$ on the residual sum in
+\eqref{eq:conditional-soft};
+\item the coefficient $1$ when a single private helper pays for a
+single recovered fair bit;
+\item the coefficient $2$ on an unrestricted shared helper that
+serves the two off-diagonal obligations of the earlier XOR row protocol.
+\end{enumerate}
+For (iii), at every integer width $b>0$ the protocol is correct on the
+full $2\times2$ input cube, has no message cost, and has a helper of
+entropy $b\lambda$. Any bound $2b\le c\,H(Y)/\lambda$ for these
+obligations therefore requires $c\ge2$.
+\end{proposition}
+\begin{outline}
+For (i), take the empty relation on one coordinate and let that
+coordinate be a fair bit. The relation has a certified decomposition;
+the two sides of the soft bound are both $2\lambda$. A coefficient
+$c$ on the residual would require $2\lambda\le\lambda+c\lambda$.
+For (ii), take the private helper to be the bit itself, so exact recovery
+costs $\lambda$. For (iii), reuse the full-cube XOR protocol and its
+entropy calculation from \cite{SecondPaper2026}: a shared parity of
+two independent $b$-bit off-diagonal words lets each row recover the
+other word. Its correctness and helper entropy are checked by the
+imported \leanfile{TransposeFollowup.SeparatorSharpness} declarations
+included in the audit. Substitution gives $2b\le cb$.
+\end{outline}
+These examples constrain universal capacity coefficients. They do not
+preclude savings from the more detailed quantities in
+\cref{thm:information}.
+
+\begin{proposition}[Retention is a strict relaxation]\label{prop:retention-control}
+\formal{Sharpness.lean}{copied_contexts_retained,copied_contexts_not_nested,xor_uses_not_nested,xor_uses_not_retained}
+There is a finite entropy instance and a use list satisfying semantic
+retention but not literal nesting. Conversely, the two XOR uses with
+contexts $\{B\}$ and $\{A\}$, targeting $A$ and $B$ respectively,
+fail semantic retention whenever $H(B\mid A)>0$; they also fail literal
+nesting.
+\end{proposition}
+\begin{outline}
+Let $A,B$ be independent fair bits, let $A'$ be a separately named
+copy of $A$, and include a helper holding $(A,B)$. The uses
+$(\varnothing,A)$ and $(\{A'\},B)$ retain $A$ through its copy, while
+the second context does not contain the first target's label.
+The formal observations embed these values in a common pair alphabet.
+For the XOR list, the second use would have to retain $\{A,B\}$ in
+context $\{A\}$; its missing entropy is $H(B\mid A)$.
+\end{outline}
+Thus a change of representation can preserve a cheap certificate, while
+the unrestricted XOR sharing example does not incorrectly receive a
+one-capacity retained-list bound.
+
+\begin{proposition}[Loss after a reveal]\label{prop:conditioning-control}
+\formal{Sharpness.lean}{parityRank_isPolymatroid,parityRank_singleton,parityRank_of_pair_subset,helperLoss_strictly_smaller,helperLoss_increases_after_reveal}
+Let $A,B$ be independent fair bits and let $P=A\oplus B$.
+Use helper $A$ twice, each time in empty context with target $B$,
+starting with $L_0=\varnothing$. Before any common reveal,
+\[
+D_A(\varnothing)=0,\qquad \mathcal L(\varnothing)=\lambda.
+\]
+After revealing $P$,
+\[
+D_A(\{P\})=\lambda.
+\]
+Therefore helper-specific loss can be strictly smaller than whole-context
+loss, and it need not decrease under additional common conditioning.
+\end{proposition}
+\begin{outline}
+Each of $A,B,P$ has entropy $\lambda$ and every pair has entropy
+$2\lambda$; the Lean proof computes these entropies from the uniform
+law on two Boolean variables. Before revelation $I(A;B)=0$, so the
+transition from $\{B\}$ to $\varnothing$ loses no information about
+$A$, although it loses one bit of context. After revelation
+$I(A;B\mid P)=\lambda$, so the same transition loses one bit of
+helper information.
+\end{outline}
+Before the reveal, helper $A$ does not decode target $B$; the recovery
+residual must be retained. This example establishes a strict comparison
+of charges and a failed monotonicity claim, not a cheaper certificate
+for a correct transposer. In particular, $D_{\varnothing}$ cannot be
+used in place of $D_Q$ after optimizing the choice of $Q$.
+
+\begin{proposition}[A revelation credit]\label{prop:credit-control}
+\formal{Sharpness.lean}{oneBitRank_univ,oneBit_reveal_credit}
+For a single fair selected bit $X$, take $b_X=\lambda$, no initial
+common context, and reveal $X$ itself. Then
+\[
+2J_Q-S_Q=\lambda,
+\qquad 2H(Y_Q)=2\lambda.
+\]
+Thus the effective revelation charge in
+\eqref{eq:information-bound} can be strictly smaller than the charge
+in \eqref{eq:entropy-bound}.
+\end{proposition}
+\begin{outline}
+The reveal supplies $J_Q=\lambda$ and leaves zero singleton entropy,
+giving $S_Q=\lambda$. The formal one-bit instance evaluates this
+difference exactly.
+\end{outline}
+The credit does not lower the unrestricted shared-helper coefficient:
+revealing a parity need not reduce either individual coordinate's
+uncertainty. The savings depend on the actual joint law.

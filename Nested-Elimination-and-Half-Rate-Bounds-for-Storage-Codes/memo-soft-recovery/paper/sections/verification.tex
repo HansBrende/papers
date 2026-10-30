@@ -1,0 +1,40 @@
+\section{Verification and reuse}\label{sec:verification}
+
+The new proofs are in the eight modules of \texttt{lean/SoftRecovery/}.
+The package imports the tenth paper through a relative dependency and,
+through it, the seventh and earlier papers. It reuses the original
+polymatroid, finite-entropy, nested-elimination, Class S, and XOR
+libraries. The original papers' proof sources are unchanged. In
+particular, the old exact decomposition theorem is re-derived as a
+corollary in this memo, rather than replaced in its original module.
+
+Lean and Mathlib are pinned to v4.34.1. Every audited declaration may
+depend only on \texttt{propext}, \texttt{Classical.choice}, and
+\texttt{Quot.sound}. There are no proof placeholders, added axioms,
+unsafe declarations, or kernel-bypassing evaluation proofs. No increased
+heartbeat limit is used. Finite Boolean checks use kernel-checked
+\texttt{decide}.
+
+Clone the complete repository, preserving sibling directories. From
+the memo directory, run
+\begin{verbatim}
+python3 tools/lean_index.py
+cd lean
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+The cache command is needed on a fresh checkout. The generator reads
+the manuscript's formal-status and inline declaration references to
+produce \cref{sec:leanindex}. In the same operation it generates the
+audit file \leanfile{lean/PaperAxioms.lean}, including every
+cited declaration, all public memo theorems, and the imported XOR
+witness. The existing \texttt{tools/generate\_axioms.py} command is an
+alias for that generator. The Lean command checks the generated audit;
+the script itself proves no mathematical assertion.
+
+In \texttt{paper/}, run \texttt{latexmk -pdf main.tex} to build this
+document. The manuscript is licensed under CC BY 4.0 and the Lean code
+under Apache 2.0. The bibliography pins the earlier papers to repository
+revision \texttt{10b94428cdc199369958661b3fae21096b40aca1}, whose imported
+sources supplied the extensions.

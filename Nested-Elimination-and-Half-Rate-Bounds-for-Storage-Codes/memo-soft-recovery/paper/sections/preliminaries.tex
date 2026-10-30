@@ -1,0 +1,74 @@
+\section{Ranks and decomposition certificates}\label{sec:preliminaries}
+
+All coordinate and record sets are finite. A \emph{polymatroid} is a
+function $h:2^A\to\R$ with $h(\varnothing)=0$, monotonicity under
+inclusion, and
+\[
+h(S\cup T)+h(S\cap T)\le h(S)+h(T).
+\]
+Write
+\begin{align*}
+h(S\mid K)&=h(S\cup K)-h(K),\\
+I_h(S;T\mid Z)&=h(S\mid Z)-h(S\mid T\cup Z),\\
+h_Z(S)&=h(S\mid Z).
+\end{align*}
+A singleton may be written without braces. Contraction $h_Z$ and
+pullback along any map $f:V\to A$ are again polymatroids. The map need
+not be injective. These are the existing contraction theorem and the
+memo's \lean{image_isPolymatroid} and
+\lean{conditionalImage_isPolymatroid}.
+
+For jointly distributed finite random variables $W_a$, Shannon entropy
+$h(S)=H(W_S)$ supplies an instance. We use natural logarithms, as does
+the Lean entropy library: a fair bit has entropy $\log 2$. All terms
+must use the same units. Symbols such as $H(L\mid K,Z)$ abbreviate the
+entropy of the corresponding tuples. No independence is implicit.
+
+\paragraph{The imported structural certificate.}
+Let $V$ be a finite vertex set and $N:V\to2^V$ a prescribed-parent
+relation. We recall the certificate of \cite{SeventhPaper2026} to make
+clear which hypothesis is retained. A piece $H\subseteq V\setminus U$
+has a certificate $\PieceCert(N,U,H)$ consisting of:
+\begin{enumerate}[label=(\roman*)]
+\item finitely many pairwise disjoint sets $P_1,\ldots,P_m$ whose union
+is $H$;
+\item a list $\ell$ whose set of entries is $H$, with repetitions
+allowed, and maps $a,b:V\to\{1,\ldots,m\}$ such that
+$v\in P_{a(v)}$ and $a(v)\ne b(v)$ for every entry;
+\item a fixed optional outside parent $\operatorname{par}(v)$ for each
+vertex, satisfying the following scan conditions.
+\end{enumerate}
+The scan starts with $S=\varnothing$ and $M_w=\varnothing$ for every
+$w\in V$. At an entry $v$, put $K=S\cup P_{b(v)}$. If there is no
+outside parent, require $N(v)\subseteq U\cup K$. If the outside parent
+is $w$, require
+\[
+w\in V\setminus(U\cup H),\qquad
+N(v)\subseteq U\cup K\cup\{w\},\qquad M_w\subseteq K,
+\]
+and update $M_w$ to $K\cup\{v\}$. In both cases insert $v$ into $S$.
+The supplying part $P_{b(v)}$ is part of this structural certificate;
+it is distinct from the actual helper records introduced later.
+
+An ordered list of pieces $\mathcal H=(H_1,\ldots,H_t)$ satisfies
+$\Decomp(N,U,\mathcal H)$ when the pieces partition $V\setminus U$
+and each $H_j$ has a piece certificate in context
+\[
+U_j=U\cup\bigcup_{i<j}H_i.
+\]
+This is precisely the imported predicate
+\leanfile{HalfRate.Decomp}, with piece type
+\leanfile{HalfRate.PieceCert}. These definitions contain no rank
+function or recovery equality. They are not inferred merely from the
+chronological order of a tape computation.
+
+\paragraph{Class S.}
+An arc $u\to v$ means $u\in N(v)$. Class S consists of loopless
+relations with no transitive triangle on three distinct vertices,
+in-degree at most three, and the property that every vertex of
+in-degree three reciprocates each outgoing arc. The relative condition
+on $R\subseteq V$ imposes these requirements on the induced relation
+inside $R$, counting only parents in $R$. The tenth paper proves that
+this relative condition supplies
+$\Decomp(N,V\setminus R,\mathcal H)$ for some $\mathcal H$
+\cite[Theorem S*]{TenthPaper2026}; its proof is Lean-verified there.

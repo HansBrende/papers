@@ -631,7 +631,7 @@ which the second statement of Theorem~SE excludes at all large lengths.
 \subsection{Bounded entry and input steering}\label{sec:skel-steering}
 
 \begin{lemma}[Few coarse walks]\label{lem:skeleton-count}
-\notformalized
+\formal{MergeDepth/CoarseCount.lean}{MergeDepth.card_coarse_le,MergeDepth.card_monotone_le}
 \begin{enumerate}[label=(\alph*)]
 \item Let $V\ge1$, $w\ge4V$ and $T\ge16V$ be integers. The coarse walks $\lfloor x/w\rfloor$ of all walks~$x$ of
 length~$T$ with $x(0)=0$ that enter every cell at most $V$ times are at most $2^{m_1\log_2(ew/V)}$ in number, where
@@ -641,7 +641,7 @@ for $t+1<T$, and $s(T-1)\le m$ are at most $(eT/y)^y$ in number, for every real 
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 We use $\sum_{i=0}^{m}\binom ni\le(en/m)^m$ for integers $1\le m\le n$.
 
 (a) By \cref{lem:skel-coarse}(c), $s=\lfloor x/w\rfloor$ changes value at most $m_0=2V((T-1)/w+2)-1$ times, each time
@@ -658,7 +658,12 @@ because $m_1\ge2VT/w$.
 (b) Such a map is determined by the set of times $t\in[1,T)$ with $s(t)\ne s(t-1)$, which has at most $m$ elements. So
 there are at most $\sum_{i\le m}\binom{T-1}i\le(e(T-1)/m)^m\le(eT/m)^m$ of them, and $y\mapsto y\ln(eT/y)$ increases on
 $(0,T]$, its derivative being $\ln(T/y)$.
-\end{informalproof}
+
+Formally, maps on $[0,T)$ are functions on $\{0,\dots,T-1\}$, the bound in~(a) is stated as $(ew/V)^{m_1}$, the
+encoding by change times and up-steps is \lean{MergeDepth.card_unit_le}, the binomial estimate is
+\lean{MergeDepth.sum_choose_le}, and the monotonicity of $y\mapsto(Ae/y)^y$ on $(0,A]$ is
+\lean{MergeDepth.rpow_mono_of_le}.
+\end{outline}
 
 A head that enters every cell at most $V$ times has a coarse walk that carries only $O(V\log(w/V)/w)$ bits per step; so
 at large scales the skeleton of a machine with bounded entry is almost determined by its length, and only heads that

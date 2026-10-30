@@ -7,8 +7,8 @@
 - Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
   built on the eighth paper's library). Formalized so far: Lemma PG; in Section 3, the cold genie (Lemma 3.1), the
   covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (part (b) for function DAGs refining the dependency DAG),
-  Lemma 3.3 for function DAGs, Proposition 3.17, and Corollary HC at one size; Lemma 4.2. The status line of every
-  numbered result in the PDF says what is formal, and its appendix lists the Lean declarations cited.
+  Lemma 3.3 for function DAGs, Proposition 3.17, and Corollary HC at one size; Lemmas 4.2 and 4.14. The status line
+  of every numbered result in the PDF says what is formal, and its appendix lists the Lean declarations cited.
 
 ## The question
 

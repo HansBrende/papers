@@ -14,6 +14,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.finrank_revealed_union_le
 #print axioms MergeDepth.rigidity_core
 #print axioms MergeDepth.rigidity_finrank
+-- MergeDepth/CoarseCount.lean
+#print axioms MergeDepth.card_coarse_le
+#print axioms MergeDepth.card_monotone_le
 -- MergeDepth/Covering.lean
 #print axioms MergeDepth.covering
 -- MergeDepth/Formation.lean
@@ -59,6 +62,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.FunDag.isIndexCode
 #print axioms MergeDepth.IsColdGenie
 #print axioms MergeDepth.card_allHops_le
+#print axioms MergeDepth.card_unit_le
 #print axioms MergeDepth.cold_genie
 #print axioms MergeDepth.coordNet
 #print axioms MergeDepth.coord_paths
@@ -71,4 +75,6 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.paths_short
+#print axioms MergeDepth.rpow_mono_of_le
 #print axioms MergeDepth.skel
+#print axioms MergeDepth.sum_choose_le

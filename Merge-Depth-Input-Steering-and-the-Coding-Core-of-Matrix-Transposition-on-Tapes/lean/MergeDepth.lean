@@ -11,4 +11,5 @@ import MergeDepth.Capacity
 import MergeDepth.FieldDag
 import MergeDepth.HopFields
 import MergeDepth.SkeletonWalk
+import MergeDepth.CoarseCount
 import MergeDepth.ProjectivePlane

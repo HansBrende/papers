@@ -164,6 +164,25 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_block_changes_le
 #print axioms MergeDepth.card_entries_skel_le
 #print axioms MergeDepth.entries_skel_subset
+-- MergeDepth/StraddleFourier.lean
+#print axioms MergeDepth.fineFloorK_eq
+#print axioms MergeDepth.fineFloorK_le_relVariance
+#print axioms MergeDepth.hasSum_phiGen
+#print axioms MergeDepth.hasSum_straddlePhi_ne_zero
+#print axioms MergeDepth.relVariance_eq_tsum
+-- MergeDepth/StraddleLocal.lean
+#print axioms MergeDepth.conjectureS_iff_meanNonLocal
+#print axioms MergeDepth.fineFloor_avg_le_paper
+#print axioms MergeDepth.nonLocal_eq
+#print axioms MergeDepth.relVariance_decomp
+#print axioms MergeDepth.semiLocal_avg_le_paper
+-- MergeDepth/StraddleProgression.lean
+#print axioms MergeDepth.progression_avg_le
+#print axioms MergeDepth.progression_avg_le_strong
+#print axioms MergeDepth.window_sum_prod_cos_sq
+-- MergeDepth/StraddleResonance.lean
+#print axioms MergeDepth.resonance_class
+#print axioms MergeDepth.resonance_class_paper
 -- MergeDepth/Transport.lean
 #print axioms MergeDepth.transport
 #print axioms MergeDepth.transport_sharp
@@ -255,6 +274,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.coneJ_subset_coneRel
 #print axioms MergeDepth.coneRel
 #print axioms MergeDepth.coneV
+#print axioms MergeDepth.conjectureS_iff_meanNonLocalGen
 #print axioms MergeDepth.coordNet
 #print axioms MergeDepth.coord_paths
 #print axioms MergeDepth.coord_reach_subset
@@ -330,7 +350,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.stepValue
 #print axioms MergeDepth.stepValue_eq_of_parents
 #print axioms MergeDepth.stepValue_eq_of_preds
+#print axioms MergeDepth.straddlePhi
 #print axioms MergeDepth.sum_choose_le
+#print axioms MergeDepth.sum_fineFloorK_le
+#print axioms MergeDepth.sum_semiLocal_le
 #print axioms MergeDepth.theoremBP
 #print axioms MergeDepth.trace
 #print axioms MergeDepth.traceProb

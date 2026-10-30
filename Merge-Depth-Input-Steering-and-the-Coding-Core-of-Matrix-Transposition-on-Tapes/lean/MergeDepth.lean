@@ -58,3 +58,7 @@ import MergeDepth.InputSteering
 import MergeDepth.Localization
 import MergeDepth.HopRoutingTrace
 import MergeDepth.LinearCrux
+import MergeDepth.StraddleProgression
+import MergeDepth.StraddleFourier
+import MergeDepth.StraddleResonance
+import MergeDepth.StraddleLocal

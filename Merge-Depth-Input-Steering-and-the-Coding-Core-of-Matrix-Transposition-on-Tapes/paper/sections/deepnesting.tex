@@ -20,8 +20,8 @@ Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on 
 there). \Cref{lem:dnp-transfer,prop:S-shift} and Definitions~\ref{def:dnp-straddle}, \ref{def:dnp-profile}
 and~\ref{def:dnp-family} are formalized in Lean, and so are \cref{lem:dnp-family,lem:dnp-halfblind,lem:dnp-witness} and
 Theorem~BP up to the identification of the model with the walk pair, as their status lines say; the blindness bound of
-the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are not
-formalized.
+the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are formalized,
+except part~(b) of \cref{prop:S-fourier}.
 
 \subsection{Setting}\label{sec:dnp-setting}
 
@@ -433,7 +433,8 @@ $\operatorname{sinc}0=1$, and for $1\le k<\kappa\le m$ and $r\in\Z$
 \]
 
 \begin{proposition}[Exact form of $V_k$]\label{prop:S-fourier}
-\notformalized
+\partformal{MergeDepth/StraddleFourier.lean}{MergeDepth.hasSum_straddlePhi_ne_zero,MergeDepth.relVariance_eq_tsum,MergeDepth.hasSum_phiGen,MergeDepth.fineFloorK_le_relVariance,MergeDepth.fineFloorK_eq}{part~(b),
+the representation of $1+V_k$ through the density of~$W$}
 Let $1\le k<\kappa\le m$.
 \begin{enumerate}[label=(\alph*)]
 \item $V_k=\sum_{r\ne0}\varphi_k(r)$.
@@ -448,7 +449,7 @@ Let $1\le k<\kappa\le m$.
 \end{enumerate}
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 (a) With $\Delta_N(y)=\sum_l\Delta(y-lN)$, $x_k(t)=(2^{k-1}\hat\Pi_\kappa)^{-1}\sum_{S,S'}\Delta_N(t+\hat a_S-\hat v_{S'})$,
 so the Fourier coefficients $\hat x(r)=N^{-1}\int_0^Nx_k(t)e^{-2\pi irt/N}dt$ are
 \[
@@ -473,7 +474,12 @@ $\operatorname{sinc}^4y\le\min(1,(\pi y)^{-4})$. Hence $f(0)=N^{-1}\sum_r\varphi
 (c) All terms in~(a) are nonnegative. At $r=N2^{k-1}t$ the factors with $i<k$ equal~$1$, the factor at $k\le i<\kappa$ is
 $\cos^2(\pi tn_i2^{k-1-i})$, and the sinc factor is $\operatorname{sinc}^4(tn_\kappa2^{k-\kappa-2})$; with $D=\kappa-k$,
 $e=i-k+1$ and $n_i=n_\kappa+D+1-e$, this is the term~$t$ of $F(n_\kappa,D)$.
-\end{informalproof}
+Formally, $\varphi_k$ is \lean{MergeDepth.straddlePhi}, and~(a) is \lean{MergeDepth.hasSum_straddlePhi_ne_zero}, through
+Mathlib's Parseval identity on the circle of length~$N$ and the Fourier coefficients of the periodized tents; it needs only
+$1\le k\le\kappa$, and \lean{MergeDepth.hasSum_phiGen} is its general form for every $\kappa\ge1$. Part~(c) is
+\lean{MergeDepth.fineFloorK_le_relVariance} and \lean{MergeDepth.fineFloorK_eq}; only the identity $F_k=F(n_\kappa,\kappa-k)$
+uses $\kappa\le m$.
+\end{outline}
 
 So $1+V_k$ is $N$ times the density at~$0$ of a random sum of the digits $\hat\Pi_i$ modulo~$N$, smoothed at the scale
 $\hat\Pi_\kappa$. For $k\in\mathcal K$ and $\kappa=\kappa_a(k)$, splitting the frequencies $r\ne0$ into the multiples of
@@ -484,28 +490,31 @@ $\sum_w\varphi_k(Nw)=\sum_lf_W(l)$, so $SB_k=N\sum_lf_W(lN)-\sum_lf_W(l)$ measur
 from invariance under integer translations.
 
 \begin{proposition}[Classes with a large fine floor]\label{prop:S-resonance}
-\notformalized
+\formal{MergeDepth/StraddleResonance.lean}{MergeDepth.resonance_class,MergeDepth.resonance_class_paper}
 Let $a=1$, let $q\ge6$ be even, let $k\ge1$ with $3k\le2^q+4$, and let $m=2^q+k+3$. Then $k\in\mathcal K$,
-$\kappa_1(k)=k+q+2$, $n_{\kappa_1(k)}=2^q-q+2$, and $V^{(1)}_k\ge F_k>0.551$.
+$\kappa_1(k)=k+q+2$, $n_{\kappa_1(k)}=2^q-q+2$, and $V^{(1)}_k\ge F_k>0.585$.
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 Here $N=2^q+k+4$ and $k+4\le(2^q+16)/3<2^q$, so $j_0=q+1$, and $4k\le N$, so $k\in\mathcal K$. As $m-k-j_0=2^q-q+2$ is even,
 the least $\kappa\ge k+q+1$ with $m-\kappa$ odd is $k+q+2$, so $n_\kappa=2^q-q+2$ and $D=q+2$. By
 \cref{prop:S-fourier}(c), $V^{(1)}_k\ge F_k=F(n_\kappa,q+2)$, whose cosine factors are $\cos^2(\pi t(2^q+5-e)2^{-e})$ for
 $1\le e\le q+2$. Keep only the two equal terms $t=\pm4$. The sinc factor is $\operatorname{sinc}^4(y)$ with
 $y=(2^q-q+2)2^{-q-2}\in(0,\frac14]$, so it is at least $\operatorname{sinc}^4(\frac14)=(2\sqrt2/\pi)^4>0.65702$. For $t=4$
-the factor of index~$e$ is $\cos^2(\pi(2^q+5-e)2^{2-e})$: it is~$1$ for $e\in\{1,2,3,5\}$; $\frac12$ for $e=4$;
-$\cos^2(\pi(e-5)2^{2-e})$ for $6\le e\le q$; $\cos^2(\pi(q-4)2^{1-q})\ge\cos^2(\pi/16)$ for $e=q+1$; and
-$\cos^2(\pi(q-3)2^{-q})\ge\cos^2(3\pi/64)$ for $e=q+2$, since $(q-4)2^{-q}\le\frac1{32}$ and $(q-3)2^{-q}\le\frac3{64}$ for
-$q\ge6$. The factors with $6\le e\le q$ lie in $[0,1]$, so their product is at least
+the factor of index~$e$ is $\cos^2(\pi(2^q+5-e)2^{2-e})$: it is~$1$ for $e\in\{1,2,3,5\}$; $\frac12$ for $e=4$; and
+$\cos^2(\pi(e-5)2^{2-e})$ for $6\le e\le q+2$, since $2^{q+2-e}$ is an integer. These factors lie in $[0,1]$, so their
+product is at least
 $\prod_{e\ge6}\cos^2(\pi(e-5)2^{2-e})\ge\cos^4(\pi/16)\cos^2(3\pi/64)(1-\pi^2\sum_{j\ge4}j^24^{-j-3})>0.89142$, using the
 factors $e=6,7,8$ exactly, $\cos^2y\ge1-y^2$ and $\prod(1-y_e)\ge1-\sum y_e$ for $e\ge9$, and
 $\sum_{j\ge4}j^24^{-j}=\frac{20}{27}-\frac{41}{64}$. Hence
-$F_k\ge2\cdot0.65702\cdot\frac12\cdot0.89142\cdot\cos^2(\pi/16)\cos^2(3\pi/64)>0.551$.
-\end{informalproof}
+$F_k\ge2\cdot0.65702\cdot\frac12\cdot0.89142>0.585$.
+Formally, \lean{MergeDepth.resonance_class} is the proposition, with the numerical bounds from exact values of the
+cosines at $\pi/8$ and Mathlib's bounds on~$\pi$; \lean{MergeDepth.resonance_class_paper} records the weaker constant
+$0.551$ of an earlier version of this proof, which multiplied the factors $e=q+1,q+2$ in a second time. The bound on~$F_k$
+does not use that $q$ is even; evenness gives $\kappa_1(k)=k+q+2$.
+\end{outline}
 
-So $V^{(1)}_k\not\to0$ along classes $k\to\infty$ (at most one per~$m$), and variance bounds for single classes cannot show
+So $V^{(1)}_k\not\to0$ along classes $k\to\infty$ (this family has at most one class per~$m$), and variance bounds for single classes cannot show
 that every coarse class is good; Conjecture~S averages over classes, as \cref{prop:S-shift}(b) allows.
 
 \paragraph{Arithmetic of $\kappa_a$.} Let $\rho(k)=(m-k-j_0)\bmod(a+1)$. Then $\kappa_a(k)=k+j_0+((\rho(k)+1)\bmod(a+1))$,
@@ -516,29 +525,30 @@ $\card{\mathcal K_\rho}\ge L_a:=\lfloor\lfloor N/4\rfloor/(a+1)\rfloor$ consecut
 then $n_{\kappa_a(k)}\ge3N/4-j_0-a\ge N/2$ on~$\mathcal K$, and $n_{\kappa_a(k)}2^{-D(k)-2}\ge2^{-a-4}$ as $2^{j_0}\le2N$.
 
 \begin{lemma}[Dyadic products along a progression]\label{lem:S-progression}
-\notformalized
-Let $a\ge1$ with $a+1=2^wo$ and $o$ odd; let $t=2^vt'$ with $t'$ odd and $v\ge0$; let $j\ge1$, let $c_e$ be real numbers
+\formal{MergeDepth/StraddleProgression.lean}{MergeDepth.progression_avg_le_strong,MergeDepth.progression_avg_le,MergeDepth.window_sum_prod_cos_sq}
+Let $a\ge1$ with $a+1=2^wo$ and $o$ odd; let $t=2^vt'$ with $t'$ odd and $v\ge0$; let $j\ge0$, let $c_e$ be real numbers
 for $v<e\le v+w+j$, and let $I$ be a set of $L\ge1$ consecutive integers. Then
 \[
-  \frac1L\sum_{\ell\in I}\ \prod_{e=v+1}^{v+w+j}\cos^2\bigl(\pi t((a+1)\ell+c_e)2^{-e}\bigr)\ \le\ 2^{-j}+\frac{2^j}{2L}.
+  \frac1L\sum_{\ell\in I}\ \prod_{e=v+w+1}^{v+w+j}\cos^2\bigl(\pi t((a+1)\ell+c_e)2^{-e}\bigr)\ \le\ 2^{-j}+\frac{1-2^{-j}}L.
 \]
+The same bound holds with the product over $v<e\le v+w+j$, and for $j\ge1$ it is at most $2^{-j}+2^j/(2L)$.
 \end{lemma}
 
-\begin{informalproof}
-Write $\cos^2(\pi y)=\frac12+\frac14\exp(2\pi iy)+\frac14\exp(-2\pi iy)$ and expand the product over the $w+j$ indices
-$e\in(v,v+w+j]$: it is $2^{-w-j}\sum_\sigma\omega_\sigma\exp(2\pi i(\alpha_\sigma\ell+\beta_\sigma))$ over
-$\sigma\in\{0,\pm1\}^{(v,v+w+j]}$, with weights $\omega_\sigma=\prod_e(1\text{ if }\sigma_e=0,\ \frac12\text{ otherwise})$ of
-total $2^{w+j}$, $\alpha_\sigma=(a+1)t\sum_e\sigma_e2^{-e}$, and $\beta_\sigma$ independent of~$\ell$. The~$\sigma$ vanishing
-on $(v+w,v+w+j]$ have total weight $2^w$, and for them we bound the average by~$1$. For any other~$\sigma$, let $e^*>v+w$
-be the largest~$e$ with $\sigma_e\ne0$; then $\sum_e\sigma_e2^{-e}$ is $2^{-e^*}$ times an odd integer and
-$(a+1)t=2^{w+v}ot'$, so $\alpha_\sigma$ is $2^{-(e^*-v-w)}$ times an odd integer, its distance $\lVert\alpha_\sigma\rVert$ to
-the nearest integer is at least $2^{-j}$, and
-$\abs{\sum_{\ell\in I}\exp(2\pi i\alpha_\sigma\ell)}\le1/\abs{\sin(\pi\alpha_\sigma)}\le1/(2\lVert\alpha_\sigma\rVert)\le2^{j-1}$.
-So the average is at most $2^{-w-j}\bigl(2^w+2^{w+j}\cdot2^{j-1}/L\bigr)=2^{-j}+2^j/(2L)$.
-\end{informalproof}
+\begin{outline}
+Put $u=t'o$, which is odd, and $e=v+w+s$, so that $t(a+1)2^{-e}=u2^{-s}$ and the product is
+$\prod_{s=1}^j\cos^2(\pi(u\ell2^{-s}+\gamma_s))$ with $\gamma_s=tc_e2^{-e}$. Any $2^j$ consecutive values of~$\ell$ give the
+sum exactly~$1$: for $j\ge1$, replacing $\ell$ by $\ell+2^{j-1}$ shifts the arguments with $s<j$ by integer multiples of~$\pi$
+and the argument with $s=j$ by $\pi u/2$, which turns $\cos^2$ into $\sin^2$; so pairing these values reduces the sum to the
+same sum for $j-1$. The terms are nonnegative, so at most $2^j$ consecutive values give at most~$1$, and the $L$ values of~$I$
+give at most $\lceil L/2^j\rceil\le L2^{-j}+1-2^{-j}$. Factors with $v<e\le v+w$ lie in $[0,1]$, which gives the second
+sentence, and $1-2^{-j}\le2^{j-1}$. The bound is attained: for $\gamma_s=-u\ell^*2^{-s}$ the product is the indicator
+function of $\ell\equiv\ell^*\pmod{2^j}$. Formally, the window identity is \lean{MergeDepth.window_sum_prod_cos_sq}, the lemma
+is \lean{MergeDepth.progression_avg_le_strong}, and \lean{MergeDepth.progression_avg_le} is the weaker form. (Expanding
+$\cos^2$ into exponentials, as an earlier version of this proof did, gives only $2^{-j}+(2^j-1)/(2L)$.)
+\end{outline}
 
 \begin{proposition}[Fine floors and near semi-local frequencies]\label{prop:S-local}
-\notformalized
+\formal{MergeDepth/StraddleLocal.lean}{MergeDepth.fineFloor_avg_le_paper,MergeDepth.semiLocal_avg_le_paper,MergeDepth.relVariance_decomp,MergeDepth.nonLocal_eq,MergeDepth.conjectureS_iff_meanNonLocal}
 Let $a\ge1$ with $4(j_0+a)\le N$, and for $k\in\mathcal K$ let $\kappa=\kappa_a(k)$.
 \begin{enumerate}[label=(\alph*)]
 \item $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}F_k\le\dfrac{2^{a+7}}{3\pi}\cdot\dfrac{\log_2L_a+5}{\sqrt{L_a}}$.
@@ -546,12 +556,12 @@ Let $a\ge1$ with $4(j_0+a)\le N$, and for $k\in\mathcal K$ let $\kappa=\kappa_a(
   $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le\dfrac{5\cdot2^{a+6}}{3\pi}\cdot
   \dfrac{2^H}{\sqrt{L_a-H}}$.
 \item Let $H_N=\lfloor\frac14\log_2N\rfloor$ and
-  $NL_k=V_k-F_k-\sum_{h=2}^{\min(H_N,k)}SL^{[h]}_k=SB_k+\sum_{h=H_N+1}^{k}SL^{[h]}_k$. Then Conjecture~S holds for~$a$ if
+  $NL_k=V_k-F_k-\sum_{h=2}^{\min(H_N,k)}SL^{[h]}_k=SB_k+\sum_{h=\max(2,H_N+1)}^{k}SL^{[h]}_k$. Then Conjecture~S holds for~$a$ if
   and only if $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}NL_k\to0$ as $m\to\infty$.
 \end{enumerate}
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 (a) It suffices to bound the average over each $\mathcal K_\rho$. There $D=D(k)$ is fixed and $F_k=F((a+1)\ell,D)$, with
 $\ell$ running over a set~$I$ of $\card{\mathcal K_\rho}\ge L_a$ consecutive integers. Let $H=\lfloor\frac12\log_2L_a\rfloor$,
 so $2^H\le\sqrt{L_a}<2^{H+1}$; then $H+w<D$, since $2^{H+w}\le(a+1)\sqrt{N/(4(a+1))}\le N/4$ (as $a+1\le N/4$) and
@@ -578,10 +588,19 @@ is at most $5\cdot2^{a+5}2^h/(3\pi\sqrt{L_a-h})$; sum over $2\le h\le H$.
 
 (c) For large~$N$, $2\le H_N\le\frac12\log_2L_a$, and (a) and (b) with $H=H_N$ are $O_a(N^{-1/2}\log N)$ and
 $O_a(N^{-1/4})$; so the averages of $V_k$ and $NL_k$ over $\mathcal K$ differ by $o(1)$.
-\end{informalproof}
+Formally, the decomposition $V_k=SB_k+F_k+\sum_{h=2}^kSL^{[h]}_k$ is \lean{MergeDepth.relVariance_decomp}, and (a), (b)
+and~(c) are \lean{MergeDepth.fineFloor_avg_le_paper}, \lean{MergeDepth.semiLocal_avg_le_paper} and
+\lean{MergeDepth.conjectureS_iff_meanNonLocal}, with sums of the sinc majorant bounded by telescoping instead of
+integrals. With the exact window sums of \cref{lem:S-progression} the formal proof gives more:
+$\sum_{k\in\mathcal K}F_k\le(a+1)\bigl(3(2^{a+4}/\pi)^2+8\cdot2^{a+4}/(3\pi)\bigr)$ uniformly in~$m$, so the average
+in~(a) is $O_a(1/N)$ (\lean{MergeDepth.sum_fineFloorK_le}); $\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le
+(a+1)2^{a+H+8}/(3\pi)$ for every~$H$ (\lean{MergeDepth.sum_semiLocal_le}); and~(c) holds with every cut-off $H=H(m)$ with
+$2^H=o(N)$ in place of~$H_N$ (\lean{MergeDepth.conjectureS_iff_meanNonLocalGen}).
+\end{outline}
 
-The method stops near $h\approx\frac12\log_2N$, where the about $2^h$ odd~$s$ in the sinc range outweigh the gain
-$L_a^{-1/2}$ of \cref{lem:S-progression}.
+The written proof stops near $h\approx\frac12\log_2N$, where the about $2^h$ odd~$s$ in the sinc range outweigh its gain
+$L_a^{-1/2}$; with the exact window sums the semi-local frequencies are controlled up to every~$h$ with $2^h=o(N)$, for
+instance $h=\lfloor\log_2N\rfloor-\lceil\log_2\log_2N\rceil$.
 
 \begin{remark}[The carry chain]\label{rem:S-carry}
 Proof sketch only: a representation for the non-local part. Let $b_1,\dots,b_{\kappa-1}$ be the binary digits of

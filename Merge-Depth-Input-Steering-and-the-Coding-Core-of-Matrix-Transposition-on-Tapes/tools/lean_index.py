@@ -54,7 +54,7 @@ LIBRARIES = [
 ]
 
 # Libraries that this paper's library does not import: their names are indexed but not axiom-checked here.
-EXTERNAL = {"the tenth paper's library"}
+EXTERNAL: set[str] = set()
 
 FORMAL = re.compile(r"\\(formal|partformal)\{([^{}]+)\}\{([^{}]+)\}")
 INLINE = re.compile(r"\\lean\{([^{}]+)\}")

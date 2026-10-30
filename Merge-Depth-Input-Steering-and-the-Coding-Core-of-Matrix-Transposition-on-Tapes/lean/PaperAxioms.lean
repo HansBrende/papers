@@ -15,6 +15,47 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_outTime_eq_le
 #print axioms MergeDepth.outTime_spec
 #print axioms MergeDepth.skeleton_entries_ownerLoad
+-- MergeDepth/BlockPairsBlindness.lean
+#print axioms MergeDepth.blindnessBound_holds
+#print axioms MergeDepth.prob_many_nonHalfBlind_le'
+#print axioms MergeDepth.sum_nonHalfBlind_le'
+#print axioms MergeDepth.theoremBP'
+-- MergeDepth/BlockPairsModel.lean
+#print axioms MergeDepth.HalfBlind
+#print axioms MergeDepth.apexFamily
+#print axioms MergeDepth.bandFamily
+#print axioms MergeDepth.family
+#print axioms MergeDepth.familyBlindErr_le_of_served
+#print axioms MergeDepth.family_card_ge
+#print axioms MergeDepth.fineZone
+#print axioms MergeDepth.pairHopErr_of_blind
+-- MergeDepth/BlockPairsProfile.lean
+#print axioms MergeDepth.apexHat
+#print axioms MergeDepth.coarseZone
+#print axioms MergeDepth.goodCount
+#print axioms MergeDepth.goodLevels
+#print axioms MergeDepth.jZero
+#print axioms MergeDepth.meanRelVariance
+#print axioms MergeDepth.perTent
+#print axioms MergeDepth.piHat
+#print axioms MergeDepth.profile
+#print axioms MergeDepth.profileMean
+#print axioms MergeDepth.profileVariance
+#print axioms MergeDepth.relVariance
+#print axioms MergeDepth.relVarianceA
+#print axioms MergeDepth.tent
+#print axioms MergeDepth.valleyHat
+-- MergeDepth/BlockPairsShift.lean
+#print axioms MergeDepth.good_shift_prob
+#print axioms MergeDepth.notGoodProb_le
+#print axioms MergeDepth.prob_some_bad_le
+-- MergeDepth/BlockPairsTransfer.lean
+#print axioms MergeDepth.prob_straddle_vs_profile
+-- MergeDepth/BlockPairsWitness.lean
+#print axioms MergeDepth.case1_unserved
+#print axioms MergeDepth.case2_unserved
+#print axioms MergeDepth.case3_unserved
+#print axioms MergeDepth.witnesses_unserved
 -- MergeDepth/Capacity.lean
 #print axioms MergeDepth.card_deepHops_le
 #print axioms MergeDepth.card_deep_le_of_lt
@@ -115,6 +156,14 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms BoundedNesting.heavyPairs
 #print axioms BoundedNesting.lightHops
 #print axioms BoundedNesting.theoremF_owner
+#print axioms DirectedReciprocity.blindApexErr
+#print axioms DirectedReciprocity.blindBandErr
+#print axioms DirectedReciprocity.block_overflow_band_witness
+#print axioms DirectedReciprocity.block_straddle_residue_ge_half_q
+#print axioms DirectedReciprocity.cancellerBelow
+#print axioms DirectedReciprocity.cancellerBelow_props
+#print axioms DirectedReciprocity.classStraddleCount
+#print axioms DirectedReciprocity.periodVApices_spans_disjoint
 #print axioms DirectedRecovery.self_demands_count_of_disjoint_transport
 #print axioms DirectedRecovery.short_paired_count_log_bound
 #print axioms MergeDepth.BlockFunDag
@@ -132,6 +181,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.Centred.line_ne
 #print axioms MergeDepth.Centred.mem_line_of_not_reach
 #print axioms MergeDepth.Centred.not_mem_line
+#print axioms MergeDepth.ConjectureS
 #print axioms MergeDepth.DeepStep
 #print axioms MergeDepth.DepStep
 #print axioms MergeDepth.EM.emAlg
@@ -154,6 +204,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.blockStep_iff
 #print axioms MergeDepth.blockVal_eq_of_coarseAgree
 #print axioms MergeDepth.blockVal_mem_admissible
+#print axioms MergeDepth.cantelli_interval
 #print axioms MergeDepth.card_admissible_le
 #print axioms MergeDepth.card_allHops_le
 #print axioms MergeDepth.card_blockIn_le
@@ -164,8 +215,11 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.card_correctSet_le_a
 #print axioms MergeDepth.card_correctSet_le_b
 #print axioms MergeDepth.card_correctSet_le_of_class
+#print axioms MergeDepth.card_straddleSet_eq
 #print axioms MergeDepth.card_traces_ge_a
 #print axioms MergeDepth.card_unit_le
+#print axioms MergeDepth.classStraddleCount_eq_profile
+#print axioms MergeDepth.classStraddleCount_false_eq
 #print axioms MergeDepth.cold_genie
 #print axioms MergeDepth.coneJ_subset_coneRel
 #print axioms MergeDepth.coneRel
@@ -212,6 +266,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.paths_short
 #print axioms MergeDepth.pot_run
 #print axioms MergeDepth.prevS
+#print axioms MergeDepth.profileMean_eq
 #print axioms MergeDepth.rCount_deep_coarse_eq_zero
 #print axioms MergeDepth.rCount_le_card_edgesOf
 #print axioms MergeDepth.realize_paths
@@ -230,6 +285,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.stepValue_eq_of_parents
 #print axioms MergeDepth.stepValue_eq_of_preds
 #print axioms MergeDepth.sum_choose_le
+#print axioms MergeDepth.theoremBP
 #print axioms MergeDepth.trace
 #print axioms MergeDepth.traceProb
 #print axioms MergeDepth.traceProb_le_a

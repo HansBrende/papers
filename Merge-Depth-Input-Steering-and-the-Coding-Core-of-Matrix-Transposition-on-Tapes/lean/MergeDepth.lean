@@ -41,3 +41,9 @@ import MergeDepth.BlockMachine
 import MergeDepth.HopRoutingCount
 import MergeDepth.FieldPruning
 import MergeDepth.FieldMachine
+import MergeDepth.BlockPairsProfile
+import MergeDepth.BlockPairsTransfer
+import MergeDepth.BlockPairsShift
+import MergeDepth.BlockPairsModel
+import MergeDepth.BlockPairsWitness
+import MergeDepth.BlockPairsBlindness

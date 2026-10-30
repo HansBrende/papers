@@ -5,7 +5,7 @@
 - [PDF](paper/main.pdf) and [LaTeX sources](paper/), licensed under [CC BY 4.0](paper/LICENSE).
 - Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet.
 - Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
-  built on the libraries of the eighth, ninth and fifth papers). Formalized so far:
+  built on the libraries of the eighth, ninth, fifth and tenth papers). Formalized so far:
   - Section 3: the cold genie (Lemma 3.1), the covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (field DAGs of
     prunings for machines oblivious up to their last output step, through the fourth paper's local recursion at the level
     of fields), Lemma 3.3 (part (a) with a common length bound), Lemma 3.14(a) and Proposition 3.16 with the machine's
@@ -16,6 +16,9 @@
     library).
   - Section 6: Theorem LA, with the modelling step from a frozen trace; the external-memory model, Theorem EM and
     Corollary EM, whose conclusion is the negation of the frozen statement of (T).
+  - Section 7: Definitions 7.1, 7.2, 7.6, Lemma 7.4 and Proposition 7.5; Lemmas 7.7–7.9 and Theorem BP (with Conjecture S
+    as its only hypothesis) up to the identification of the Lean model's families, turns and potentials with the walk
+    pair; the blindness bound of the eighth paper's Proposition 5.17 is proved on the way.
   - Section 8: Lemma PG.
 
   The status line of every numbered result in the PDF says what is formal, and its appendix lists the Lean declarations
@@ -71,8 +74,8 @@ From `paper/`:
 latexmk -pdf -interaction=nonstopmode main.tex
 ```
 
-To check the Lean formalization, from `lean/`, with the libraries of the eighth, ninth and fifth papers built and their
-dependencies linked into `.lake/packages` (see the eighth paper's README):
+To check the Lean formalization, from `lean/`, with the libraries of the eighth, ninth, fifth and tenth papers built and
+their dependencies linked into `.lake/packages` (see the eighth paper's README):
 
 ```sh
 lake build

@@ -17,7 +17,11 @@ $\log q$ term and no cost hypothesis. \Cref{sec:dnp-partial} gives partial resul
 up to $m=4095$. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not decide $\TCP(2)$, since general
 labels remain: Conjecture~A$''$ concerns every label of cost at most $n_{\mathrm h}/8$ (\cref{rem:dnp-scope}). It uses the tenth paper's
 Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on the deep-nesting pair (written proofs
-there). No result of this section is formalized.
+there). \Cref{lem:dnp-transfer,prop:S-shift} and Definitions~\ref{def:dnp-straddle}, \ref{def:dnp-profile}
+and~\ref{def:dnp-family} are formalized in Lean, and so are \cref{lem:dnp-family,lem:dnp-halfblind,lem:dnp-witness} and
+Theorem~BP up to the identification of the model with the walk pair, as their status lines say; the blindness bound of
+the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are not
+formalized.
 
 \subsection{Setting}\label{sec:dnp-setting}
 
@@ -78,6 +82,7 @@ sequences $(A_l)$, $(E_l)$ and $q\ge3$.
 \subsection{Straddle counts and Conjecture S}\label{sec:dnp-S}
 
 \begin{definition}[Straddle counts and good levels]\label{def:dnp-straddle}
+\formal{MergeDepth/BlockPairsProfile.lean}{MergeDepth.coarseZone,MergeDepth.jZero,MergeDepth.goodLevels,MergeDepth.goodCount}
 Let $\mathcal K=\{1,\dots,\lfloor N/4\rfloor\}$ be the \emph{coarse zone} and $j_0=\lfloor\log_2N\rfloor+1$. For $a\ge1$
 and $k\ge1$ let $\kappa_a(k)$ be the least integer $\kappa\ge k+j_0$ with $m-\kappa\equiv a\pmod{a+1}$ (the tenth paper's
 \lean{DirectedReciprocity.cancellerBelow}$(m,a,k)$ if $k+j_0\le m$); thus $j_0\le\kappa_a(k)-k\le j_0+a$, and $\kappa_a(k)$ is a canceller of
@@ -102,6 +107,7 @@ $\kappa=\kappa_a(k)$, the tenth paper's \lean{DirectedReciprocity.cancellerBelow
 $N\le2n_\kappa$.
 
 \begin{definition}[Straddle profile]\label{def:dnp-profile}
+\formal{MergeDepth/BlockPairsProfile.lean}{MergeDepth.piHat,MergeDepth.apexHat,MergeDepth.valleyHat,MergeDepth.tent,MergeDepth.perTent,MergeDepth.profile,MergeDepth.profileMean,MergeDepth.profileVariance,MergeDepth.relVariance,MergeDepth.relVarianceA,MergeDepth.meanRelVariance}
 Let $1\le k<\kappa\le m$ and $\hat\Pi_i=n_i2^{-i}$, so that $\Pi_i=\Lambda\hat\Pi_i$. For $S\subseteq\{1,\dots,k-1\}$ and
 $S'\subseteq\{1,\dots,\kappa-1\}$ put
 \[
@@ -126,16 +132,18 @@ shift (\cref{lem:dnp-transfer}). Each tent has integral $\hat\Pi_\kappa^2/2$, so
 For every integer $a\ge1$, $\bar V^{(a)}_m\to0$ as $m\to\infty$.
 \end{conjecture}
 
+In Lean, Conjecture~S for one~$a$ is \lean{MergeDepth.ConjectureS}.
+
 By \cref{prop:S-fourier}, Conjecture~S is an averaged $L^2$ bound for Riesz products along the mixed-radix digits
 $n_i2^{-i}$; by \cref{prop:S-resonance}, it fails class by class.
 
 \begin{lemma}[Straddle counts and the profile]\label{lem:dnp-transfer}
-\notformalized
+\formal{MergeDepth/BlockPairsTransfer.lean}{MergeDepth.prob_straddle_vs_profile}
 Let $1\le k<\kappa\le m<s_0$ with $\Pi_\kappa\le R_k$, and put $M_k=2^{k+1}\Pi_\kappa$.
 \begin{enumerate}[label=(\alph*)]
 \item For all integers $c_0$ and $\alpha$,
   $\card{\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)}=\max\bigl(0,\Pi_\kappa-\abs{2(c_0-\alpha-\Pi_\kappa)+1}\bigr)$.
-\item For every integer~$\xi$, $X^+_{k,\kappa}(\xi)=M_k\,x_k\bigl((\xi+\frac12)/\Lambda\bigr)$ and
+\item For every integer $0\le\xi\le P$, $X^+_{k,\kappa}(\xi)=M_k\,x_k\bigl((\xi+\frac12)/\Lambda\bigr)$ and
   $X^-_{k,\kappa}(\xi)=X^+_{k,\kappa}(P-\xi)$.
 \item If $\xi$ is uniform over the odd residues modulo~$P$, then for every real~$\tau$ and each sign
   \[
@@ -145,7 +153,7 @@ Let $1\le k<\kappa\le m<s_0$ with $\Pi_\kappa\le R_k$, and put $M_k=2^{k+1}\Pi_\
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) With $z=c_0-\alpha$ the conditions say $\max(1,z-\Pi_\kappa+1,\Pi_\kappa-z)\le d\le\min(R_k-1,z,2\Pi_\kappa-1-z)$.
 The integers $z-\Pi_\kappa+1$, $\Pi_\kappa-z$ sum to~$1$ and $z$, $2\Pi_\kappa-1-z$ sum to $2\Pi_\kappa-1$, so the bounds
 $1$ and $R_k-1\ge\Pi_\kappa-1$ never bind; with $y=z-\Pi_\kappa$ the remaining bounds are $\frac12+\abs{y+\frac12}$ and
@@ -171,10 +179,14 @@ contains exactly $R_\kappa/4$ points, and meets $\{g<\tau M_k\}$ in an interval 
 $\lambda/2\pm1$ of them. So the number of points of a period with $g<\tau M_k$ differs from half the measure of
 $\{g<\tau M_k\}$ by at most $2N2^\kappa$, and dividing by $\Pi_0/2$ gives $2^{\kappa+2-s_0}$. The sign~$-$ follows
 from~(b).
-\end{informalproof}
+Formally, (a) is \lean{MergeDepth.card_straddleSet_eq}, which needs only $\Pi_\kappa\le R_k$; (b) is
+\lean{MergeDepth.classStraddleCount_eq_profile} and \lean{MergeDepth.classStraddleCount_false_eq}, the second for
+$0\le\xi\le P$, since the tenth paper computes $X^-$ from residues; and~(c) is \lean{MergeDepth.prob_straddle_vs_profile}.
+The count of lattice points against the measure holds for every interval, so no case $s_0=\kappa+1$ is needed.
+\end{outline}
 
 \begin{proposition}[Conjecture S yields a good shift]\label{prop:S-shift}
-\notformalized
+\formal{MergeDepth/BlockPairsShift.lean}{MergeDepth.notGoodProb_le,MergeDepth.prob_some_bad_le,MergeDepth.good_shift_prob}
 Let $a_0\ge1$ and $0\le\gamma<1$, let $m<s_0$ satisfy~\textup{($\ast$)}, and let $\xi$ be uniform over the odd residues
 modulo~$P$. For $1\le a\le a_0$ and $k\in\mathcal K$ put $\kappa=\kappa_a(k)$ and
 $\theta_k=N2^{\kappa-k}/(2^{a+4}n_\kappa^2)$, and let $\beta^{(a)}_k$ be the probability that $k$ is not $a$-good in
@@ -191,7 +203,7 @@ direction~$+$.
 \end{enumerate}
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 (a) As $N\le2n_\kappa$, and $2^{\kappa-k}\le2^{j_0+a}\le2^{a+1}N$ because $2^{j_0}\le2N$, we get
 $\theta_k\le1/2$. The threshold of $a$-goodness is $\tau_kM_k$ with $\tau_k=R_k/(2^{a+6}\Pi_\kappa)=\theta_k\mu_k$. So by \cref{lem:dnp-transfer}(c), and by Cantelli's inequality
 $\Pr[x\le\mu-\lambda]\le\sigma^2/(\sigma^2+\lambda^2)$ ($\lambda>0$) with $\lambda=(1-\theta_k)\mu_k$, the bound holds; the
@@ -206,11 +218,16 @@ $\theta_k\le1/2$, (a) gives $\beta_a\le4\bar V^{(a)}_m+2^{3+a_0}N2^{-3N/4}$ for 
 tends to~$0$ for each $a\le a_0$, and \textup{($\ast$)} holds for all large~$m$. Choose $m_0$ such that for $m\ge m_0$
 the size condition holds and $\sum_{a\le a_0}\beta_a\le(1-\gamma)/4$ for every $s_0>m$; then (b) bounds the failure
 probability by~$1/2$.
-\end{informalproof}
+Formally, (a) is \lean{MergeDepth.notGoodProb_le}, with the mean of the profile computed in
+\lean{MergeDepth.profileMean_eq} and Cantelli's inequality in \lean{MergeDepth.cantelli_interval}; (b) is
+\lean{MergeDepth.prob_some_bad_le}, which needs neither the size condition nor $\gamma\ge0$; and (c) is
+\lean{MergeDepth.good_shift_prob}, with Conjecture~S as a hypothesis.
+\end{outline}
 
 \subsection{Half-blindness and witnesses}\label{sec:dnp-witness}
 
 \begin{definition}[Families and the fine zone]\label{def:dnp-family}
+\formal{MergeDepth/BlockPairsModel.lean}{MergeDepth.apexFamily,MergeDepth.bandFamily,MergeDepth.family,MergeDepth.HalfBlind,MergeDepth.fineZone}
 Let $1\le k\le m-2$ and let $h$ be a head. The four \emph{families} of the class $(h,k)$ are the \emph{apex family}, the
 apex hops $(\alpha-d,\alpha+d)$ with $1\le d<R_k$ of the level-$k$ V's of head~$h$, and for $j\in\{0,1,2\}$ the
 \emph{band-$j$ family}, their valley hops at the cells $v+\sigma x$ with
@@ -222,7 +239,9 @@ $\mathcal F_\eps=\{k\in\Z:m-\lfloor\eps m\rfloor\le k\le m-2\}$.
 The pair is $P$-periodic, so a family has the same fraction of blind hops in every period and on every cover.
 
 \begin{lemma}[Families of fine classes]\label{lem:dnp-family}
-\notformalized
+\partformal{MergeDepth/BlockPairsModel.lean}{MergeDepth.family_card_ge,MergeDepth.pairHopErr_of_blind,MergeDepth.familyBlindErr_le_of_served}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
+families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
+\cite[Section~5]{BoundedNesting2026}); the formal statements are per period}
 Let $s_0>m$, $1\le k\le m-2$, let $h$ be a head, and let $G$ be a block-pair label modulo~$q$ on the $r$-fold cover.
 \begin{enumerate}[label=(\alph*)]
 \item Each family of the class $(h,k)$ contains at least a fraction $1/32$ of the hops of the class.
@@ -233,7 +252,7 @@ Let $s_0>m$, $1\le k\le m-2$, let $h$ be a head, and let $G$ be a block-pair lab
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) Per level-$k$~V of head~$h$ the class has $2R_k$ hops~\cite[Lemma~5.1(b)]{BoundedNesting2026}, the apex family
 $R_k-1$, and the band-$j$ family ($l=k+j$) $R_{l+1}-1$ if $l<m$ and $R_m-1$ if $l=m$. As $s_0>m$, $R_k\ge2^{m-k+1}\ge8$, and
 $R_k\ge16$ if $k+2<m$. So the fractions are at least $\frac12-\frac1{16}$ (apex), $2^{-j-2}-\frac1{2R_k}\ge\frac1{32}$
@@ -243,17 +262,24 @@ $R_k\ge16$ if $k+2<m$. So the fractions are at least $\frac12-\frac1{16}$ (apex)
 label~\cite[Definition~5.11]{BoundedNesting2026}. (c) The class has $4r\Lambda$ hops and total error at most $4r\Lambda\theta q$. By~(a) and periodicity the family has at
 least $4r\Lambda/32$ hops, at least half of them blind, each with the common error~$e$ of~(b); so
 $e\cdot4r\Lambda/64\le4r\Lambda\theta q$.
-\end{informalproof}
+Formally, the families are given by the explicit formulas of~\cite[Lemma~5.1(b)]{BoundedNesting2026}, the label
+by the tenth paper's potentials along the strokes, and errors per period. (a) is \lean{MergeDepth.family_card_ge}, and
+its constant $\frac1{32}$ is attained; (b) is \lean{MergeDepth.pairHopErr_of_blind}, since the potential of the other
+head is constant on a blind window and the tenth paper's stroke recursion gives the increment of the own head; and (c)
+is \lean{MergeDepth.familyBlindErr_le_of_served}.
+\end{outline}
 
 \begin{lemma}[Half-blindness at a random odd shift]\label{lem:dnp-halfblind}
-\notformalized
+\partformal{MergeDepth/BlockPairsBlindness.lean}{MergeDepth.sum_nonHalfBlind_le',MergeDepth.prob_many_nonHalfBlind_le',MergeDepth.blindnessBound_holds}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
+families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
+\cite[Section~5]{BoundedNesting2026}); the formal statements are per period}
 Let $0<\eps\le1/8$ and $m<s_0$ with $\eps m\ge4$, and let $\xi$ be uniform over the odd residues modulo~$P$. The expected
 number of triples $(h,k,f)$, with $h$ a head, $k\in\mathcal F_\eps$ and $f$ a family of the class $(h,k)$, that are not
 half-blind at~$\xi$ is at most $64\eps^2m$. Hence, for $a_0\ge1$ and $\delta=1/(48(a_0+1))$, more than
 $\delta\card{\mathcal F_\eps}$ such triples exist with probability at most $6144(a_0+1)\eps$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Let $k\in\mathcal F_\eps$ and $g=m-k$, so $2\le g\le\eps m$. By~\cite[Proposition~5.17]{BoundedNesting2026}, a hop of
 length~$\ell$ of either head is blind with probability at least $N^{-1}\sum_{i=0}^m(1-\ell/R_i)^+-2/(NR_m)$ over odd
 shifts, and $2/(NR_m)\le1/N$ as $R_m\ge2$. An apex hop of $(h,k)$ has length $2d<R_{k-1}$, so the sum is at least
@@ -267,10 +293,18 @@ most~$2\eps_g$. Summing over two heads, four families and
 $2\le g\le G=\lfloor\eps m\rfloor$ gives at most $16\sum_{g=2}^G4g/N\le64G^2/N\le64\eps^2m$. As
 $\card{\mathcal F_\eps}=G-1\ge\eps m/2$, Markov's inequality bounds the probability of more than
 $\delta\card{\mathcal F_\eps}$ such triples by $128\eps/\delta=6144(a_0+1)\eps$.
-\end{informalproof}
+Formally, the blindness bound is proved here, without the level-$0$ term of
+\cite[Proposition~5.17]{BoundedNesting2026}, which the same final bounds do not need (\lean{MergeDepth.blindnessBound_holds}):
+after a turn of level~$l$ the walk makes $R_l$ steps without a turn, and a window that starts there is blind. The two
+applications of Markov's inequality are \lean{MergeDepth.sum_nonHalfBlind_le'} and
+\lean{MergeDepth.prob_many_nonHalfBlind_le'}.
+\end{outline}
 
 \begin{lemma}[Witnesses give unserved levels]\label{lem:dnp-witness}
-\notformalized
+\partformal{MergeDepth/BlockPairsWitness.lean}{MergeDepth.witnesses_unserved,MergeDepth.case1_unserved,MergeDepth.case2_unserved,MergeDepth.case3_unserved}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
+families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
+\cite[Section~5]{BoundedNesting2026}); the formal statements are per period; service is measured on the hops of the four families, which every
+$\theta_0$-served level satisfies}
 Let $a_0\ge1$, $0<\gamma\le1$, $0<\eps\le1/8$, $\theta_0=2^{-(a_0+11)}$ and $\delta=1/(48(a_0+1))$, and let $m<s_0$ satisfy
 $\eps m\ge4$ and~\textup{($\ast$)}. Let $\xi$ be an odd shift such that
 \begin{enumerate}[label=(\roman*)]
@@ -282,7 +316,7 @@ levels are not doubly $\theta_0$-served by the block-pair label of $(B(a_1,K_1),
 cover, where $c=\min\bigl(\gamma/8,\ \eps/(26(a_0+1))\bigr)$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Call a triple \emph{bad} if it is not half-blind. As $\eps m\ge4$ and $\eps\le1/8$,
 $\card{\mathcal F_\eps}=\lfloor\eps m\rfloor-1\ge\eps m/2$ and $\mathcal F_\eps\subseteq[1,m-2]$. We find levels that are
 not $\theta_0$-served for some head, in three cases covering all $q\ge3$.
@@ -338,12 +372,18 @@ the residue bound with the indices $1$ and~$2$ exchanged.
 In every case, since $\card{\mathcal F_\eps}\ge\eps m/2$, at least
 $\min\bigl(\eps m/(26(a_0+1)),\ \gamma N/4\bigr)-1\ge c(m+1)-2$ levels are not $\theta_0$-served for one of the heads,
 hence not doubly $\theta_0$-served.
-\end{informalproof}
+Formally, the three cases are \lean{MergeDepth.case1_unserved}, \lean{MergeDepth.case2_unserved} and
+\lean{MergeDepth.case3_unserved}, through the tenth paper's run bound of Theorem~LU, its overflow band witness and
+Theorem~V$^*$, and \lean{MergeDepth.witnesses_unserved} combines them; it needs only $\gamma\ge0$.
+\end{outline}
 
 \subsection{Block pairs at one odd shift}\label{sec:dnp-BP}
 
 \begin{theorem}[Theorem BP: block pairs at one odd shift, assuming Conjecture~S]\label{thm:BP}
-\notformalized
+\partformal{MergeDepth/BlockPairsBlindness.lean}{MergeDepth.theoremBP'}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
+families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
+\cite[Section~5]{BoundedNesting2026}); the formal statements are per period, which is
+equivalent on covers with $q\mid r$}
 Let $a_0\ge1$, and assume that Conjecture~S holds for $a=1,\dots,a_0$. Put $\theta_0=2^{-(a_0+11)}$ and
 $c=2^{-16}/(26(a_0+1)^2)$. There is a constant~$C'$, depending only on~$a_0$ (through the rate of convergence in
 Conjecture~S), such that for all $m\ge1$ and $s_0>m$ some odd shift~$\xi$ has the following property: for all integers
@@ -352,7 +392,7 @@ $(B(a_1,K_1),B(a_2,K_2))$ modulo~$q$ on the $r$-fold cover of the pair $x_1=U(s_
 $\theta_0$-serves at most $(1-c)(m+1)+C'$ levels.
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
 Put $\gamma=1/2$ and $\eps=2^{-16}/(a_0+1)$, so that $c=\min(\gamma/8,\eps/(26(a_0+1)))$. By \cref{prop:S-shift}(c) there
 is $m_0$ such that for $m\ge m_0$ and $s_0>m$ the size condition holds and condition~(i) of \cref{lem:dnp-witness} holds at
 a uniformly random odd shift with probability at least $1/2$. Let $m_1=\max(m_0,2^{18}(a_0+1))$ and $C'=\max(2,c(m_1+1))$.
@@ -361,7 +401,11 @@ most $6144(a_0+1)\eps=3/32<1/2$. So both conditions hold at some odd shift~$\xi$
 and~$s_0$, and \cref{lem:dnp-witness} leaves at most $(1-c)(m+1)+2\le(1-c)(m+1)+C'$ doubly $\theta_0$-served levels, for
 every block pair with $1\le a_1,a_2\le a_0$, every $q\ge3$ and every multiple~$r$ of~$q$. For $m<m_1$ every odd shift has
 the property, since $m+1<(1-c)(m+1)+c(m_1+1)\le(1-c)(m+1)+C'$.
-\end{informalproof}
+Formally, \lean{MergeDepth.theoremBP'} is the theorem with Conjecture~S as its only hypothesis besides
+the identification of the model, derived from \lean{MergeDepth.theoremBP}, which takes the blindness bound as a
+hypothesis; it holds also for $m=0$, and through \lean{MergeDepth.blindnessBound_holds} it no longer depends on the
+written proof of~\cite[Proposition~5.17]{BoundedNesting2026}.
+\end{outline}
 
 Theorem~BP matters because block labels are how one head alone serves most of its levels (the fraction $a/(a+1)$ in the
 single-head regime~\cite[Lemma~5.12]{BoundedNesting2026}), and it shows that at one fixed odd shift no pair of them, for

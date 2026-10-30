@@ -18,8 +18,9 @@ all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: 
 their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
 suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). The cold genie, the covering lemma, \cref{lem:short-paths,lem:merge-formation}, Theorem~HC,
 \cref{prop:capacity} and Theorem~HC$'$ and \cref{prop:merge-reduction} for refinements of the dependency DAG are
-formalized in Lean, and so are \cref{lem:expansion} for function DAGs and Corollary~HC at one size, as their status lines
-say; the other results of this section are not formalized yet.
+formalized in Lean, and so are \cref{lem:expansion} for function DAGs, Corollary~HC at one size and
+\cref{prop:hop-routing} given the count of \cref{lem:balls}(a), as their status lines say; the other results of this
+section are not formalized yet.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
@@ -578,7 +579,9 @@ whole-step genies of bounded full depth.
 \subsection{Routing through deep hops, and the number of deep cells}\label{sec:hop-routing}
 
 \begin{proposition}[Routing through deep hops is hop-limited]\label{prop:hop-routing}
-\notformalized
+\partformal{MergeDepth/HopRouting.lean}{MergeDepth.hop_routing_a,MergeDepth.hop_routing_b}{the bound $AL/\log_2d$ on the
+number of positions~$\ell$ with $\tpos(\ell)\in B^{D''}(\ell)$, which is \cref{lem:balls}(a); the formal statements
+count these positions}
 Suppose that $d\ge2$ and that $M$ appends exactly $L$ output bits. Let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$
 with depth~$D$, let $D''\ge D$ be an integer, and put
 \[
@@ -594,7 +597,7 @@ $\sum_\ell\sum_\pi f_\ell(\pi)\le AL/\log_2d+c_0N_{\mathcal R}/h\le AL/\log_2d+c
 \end{enumerate}
 \end{proposition}
 
-\begin{informalproof}
+\begin{outline}
 (a) Apply \cref{lem:balls}(a) to the relation $N(q)=B^{D''}(\tpos(q))$: at most $AL/\log_2d$ positions~$p$ satisfy
 $p\in B^{D''}(\tpos(p))$. For every other output position~$\ell$, the position $p=\tpos(\ell)$ satisfies $\tpos(p)=\ell$
 and $p\notin B^{D''}(\ell)$, so every path of~$H_M$ from~$t_\ell$ to a step that reads~$p$ has more than $D''$ edges. A
@@ -604,7 +607,13 @@ $(h'+1)D-1\ge D''+1$, that is, $h'\ge(D''+2-D)/D$, and $h'\ge h$.
 (b) The exceptional positions of~(a) contribute at most $AL/\log_2d$. For the others every path carries at least $h$
 deep edges, so $h$ times their total weight is at most $\sum_e\sum_\ell\sum_{\pi\ni e}f_\ell(\pi)$, summed over the deep
 edges, which is at most $c_0N_{\mathcal R}$ by~\eqref{eq:hop-NR}.
-\end{informalproof}
+Formally, \lean{MergeDepth.length_le_of_coldDep} is the splitting at deep edges, for a cold genie in the sense of
+\lean{MergeDepth.IsColdGenie}, and \lean{MergeDepth.hop_routing_a} is~(a) for one position, with the ball
+\lean{MergeDepth.stepBall}. Part~(b) is \lean{MergeDepth.hop_routing_b}, for weights on any finite sets of such paths and
+the positions $\ell$ with $\tpos(\ell)\in B^{D''}(\ell)$ as the exceptional set; it rests on the double counting
+\lean{MergeDepth.routing_count} and on \lean{MergeDepth.rCount_le_card_edgesOf}: the edges of a path of~$H_M$ are
+distinct, since steps decrease along it.
+\end{outline}
 
 The proposition is unconditional. Since $A=O((k+1)^{D''})$, the exceptional fraction tends to zero for every fixed~$D''$,
 and also when $D''$ grows with~$d$ so slowly that $(k+1)^{D''}=o(\log d)$; then $h$ grows too. Read heuristically: after

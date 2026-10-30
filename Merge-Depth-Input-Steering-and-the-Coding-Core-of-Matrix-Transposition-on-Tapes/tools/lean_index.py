@@ -41,6 +41,8 @@ LIBRARIES = [
     (LEAN / LIBRARY, "this paper's library"),
     (ROOT.parent / "Bounded-Nesting-and-Depth-Reduction-for-Matrix-Transposition-on-Tapes" / "lean"
      / "BoundedNesting", "the eighth paper's library"),
+    (ROOT.parent / "Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes" / "lean"
+     / "MotionDepthCodes", "the fourth paper's library"),
     (ROOT.parent / "Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes" / "lean"
      / "DirectedReciprocity", "the tenth paper's library"),
 ]

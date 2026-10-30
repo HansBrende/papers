@@ -9,7 +9,7 @@
   covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (part (b) for function DAGs refining the dependency DAG),
   Lemma 3.3 for function DAGs, Proposition 3.17, Corollary HC at one size, and the merge DAG with Proposition 3.20
   (part (b) for refinements); in Section 4, Lemmas 4.2, 4.6, 4.14 and
-  4.15 (with a small entropy library) and Lemma 4.5(a), (d). The status line of every numbered result in the PDF says
+  4.15 (with a small entropy library), Lemma 4.5(a), (d), and Lemma 4.7 given the block machine's local recursion. The status line of every numbered result in the PDF says
   what is formal, and its appendix lists the Lean declarations cited.
 
 ## The question

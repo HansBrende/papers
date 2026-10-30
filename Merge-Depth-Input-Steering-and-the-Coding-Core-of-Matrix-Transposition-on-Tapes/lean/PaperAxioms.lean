@@ -52,6 +52,11 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.Centred.graph
 #print axioms MergeDepth.Centred.separated_of_bipCompat
 #print axioms MergeDepth.Centred.two_mul_card_lt
+-- MergeDepth/SkeletonCones.lean
+#print axioms MergeDepth.BlockFunDag.cone
+#print axioms MergeDepth.BlockFunDag.isStorageCode_fibre
+#print axioms MergeDepth.BlockFunDag.output_eq
+#print axioms MergeDepth.card_coneV_le_of_blockStep
 -- MergeDepth/SkeletonEntropy.lean
 #print axioms MergeDepth.coarse_entropy_le
 #print axioms MergeDepth.theta_tendsto
@@ -67,6 +72,9 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms BoundedNesting.heavyPairs
 #print axioms BoundedNesting.lightHops
 #print axioms BoundedNesting.theoremF_owner
+#print axioms MergeDepth.BlockFunDag
+#print axioms MergeDepth.BlockFunDag.card_coneJ_le
+#print axioms MergeDepth.BlockFunDag.coneJ
 #print axioms MergeDepth.BlockStep
 #print axioms MergeDepth.Centred.card_le_of_one
 #print axioms MergeDepth.Centred.card_le_of_two
@@ -80,8 +88,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.IsColdGenie
 #print axioms MergeDepth.IsDepPath
 #print axioms MergeDepth.card_allHops_le
+#print axioms MergeDepth.card_coneV_le
 #print axioms MergeDepth.card_unit_le
 #print axioms MergeDepth.cold_genie
+#print axioms MergeDepth.coneV
 #print axioms MergeDepth.coordNet
 #print axioms MergeDepth.coord_paths
 #print axioms MergeDepth.coord_reach_subset
@@ -111,3 +121,4 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.skelData
 #print axioms MergeDepth.skel_genie
 #print axioms MergeDepth.sum_choose_le
+#print axioms MotionDepthCodes.IsStorageCode

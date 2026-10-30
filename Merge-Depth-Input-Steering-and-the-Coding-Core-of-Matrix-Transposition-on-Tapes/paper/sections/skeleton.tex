@@ -20,8 +20,10 @@ gives Theorem~SE (\cref{thm:SE}). At large scales, heads of bounded entry carry 
 (\cref{lem:skeleton-count}). Hence, given [Q9.1], an affirmative answer to Question~9.1 for every degree bound, a
 linear-time transposer whose work tapes have bounded entry must steer its input head by about half of the input at every
 scale (Corollary~IS, \cref{cor:IS}), and no linear-time transposer, adaptive or not, has bounded entry on every tape,
-the input tape included (Corollary~RV, \cref{cor:RV}). None of the results of this section is formalized; each has a
-complete written proof. Only \cref{lem:skel-uniform}, Theorem~SE and Corollaries~IS and~RV assume [Q9.1].
+the input tape included (Corollary~RV, \cref{cor:RV}). Every result of this section has a complete written proof;
+\cref{lem:skel-coarse,lem:skel-genie,lem:skeleton-count} are formalized in Lean, and so are
+\cref{lem:block-machine,lem:skel-cones,lem:skel-entropy} in part, as their status lines say. Only
+\cref{lem:skel-uniform}, Theorem~SE and Corollaries~IS and~RV assume [Q9.1].
 
 \subsection{Skeletons}\label{sec:skel-skeletons}
 
@@ -286,7 +288,9 @@ This is the eighth paper's conversion of cuts into genies~\cite[Lemma~2.6]{Bound
 machine. The genie is the same set of times for every member of the class; only the revealed values depend on the input.
 
 \begin{lemma}[Cones on a skeleton class]\label{lem:skel-cones}
-\notformalized
+\partformal{MergeDepth/SkeletonCones.lean}{MergeDepth.card_coneV_le_of_blockStep,MergeDepth.BlockFunDag.cone,MergeDepth.BlockFunDag.output_eq,MergeDepth.BlockFunDag.isStorageCode_fibre}{that
+the block machine has the local recursion and the output decoding of \cref{lem:block-machine}(b), (c), which the formal
+statements assume}
 Let $\sigma$ be a skeleton at scale~$w$ with $\mathcal X_\sigma\neq\emptyset$, every member of which appends exactly $L$
 bits, and let $\Gamma\subseteq[0,T_\sigma)$ have full depth at most~$D$ in~$\bar H_\sigma$. For $t<T_\sigma$ let
 $C_\Gamma(t)$ be the set of endpoints of $\Gamma$-free paths from~$t$ in~$\bar H_\sigma$, so that $t\in C_\Gamma(t)$,
@@ -307,7 +311,7 @@ the sense of the fifth paper~\cite[Definition~2.1]{DirectedRecovery2026}.
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) Every vertex of $C_\Gamma(t)$ is the endpoint of a $\Gamma$-free path from~$t$ with at most $D$ edges, and by
 \cref{lem:block-machine}(a) at most $(k+1)^h$ paths with $h$ edges start at~$t$. Every block has at most $w$ input
 cells, and $N_\Gamma(q)=J_\Gamma(\hat t_{\tpos(q)})$.
@@ -324,7 +328,18 @@ $t=\hat t_r$, by \cref{lem:block-machine}(c).
 
 (c) Let $X$ and~$Y$ lie in the fibre and agree on $N_\Gamma(q)=I_\Gamma(\tpos(q))$. By~(b) their output bits at position
 $\tpos(q)$ agree; since $M$ transposes and $\tpos$ is an involution, these bits are $X[q]$ and~$Y[q]$.
-\end{informalproof}
+
+Formally, \lean{MergeDepth.BlockFunDag} is a DAG on the times with out-edges to earlier times, an input block read at
+every time, and values determined on a class~$S$ of inputs by the block read and the values at the out-neighbours, as
+\cref{lem:block-machine}(b) provides; $C_\Gamma(t)$ is \lean{MergeDepth.coneV} and $J_\Gamma(t)$ is
+\lean{MergeDepth.BlockFunDag.coneJ}. Part~(a) is \lean{MergeDepth.card_coneV_le} and
+\lean{MergeDepth.BlockFunDag.card_coneJ_le}, and \lean{MergeDepth.card_coneV_le_of_blockStep} takes the out-degrees
+from \lean{MergeDepth.card_blockOut_le} and the depth from a genie for the dependency DAG of the coarse walks, as in
+\cref{lem:skel-genie}. Part~(b) is \lean{MergeDepth.BlockFunDag.cone} and \lean{MergeDepth.BlockFunDag.output_eq}, for
+output bits that are functions of the values at the times~$\hat t_r$, and part~(c) is
+\lean{MergeDepth.BlockFunDag.isStorageCode_fibre}, with the fourth paper's storage codes
+(\lean{MotionDepthCodes.IsStorageCode}).
+\end{outline}
 
 The relation $N_\Gamma$ depends only on $\sigma$ and~$\Gamma$. Compared with the cone relation of a single trace, every
 cone vertex contributes a block of $w$ input cells instead of one, and the at most $w$ output positions of one output

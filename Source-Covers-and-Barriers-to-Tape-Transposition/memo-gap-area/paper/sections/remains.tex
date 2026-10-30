@@ -1,0 +1,71 @@
+\section{What remains}\label{sec:remains}
+
+\paragraph{Scope.}
+Theorems~G, A and~B are certificates for specified geometries. They assume the
+admissible hypotheses of \cite[Definition~2.2]{SourceCovers2026}: one fixed full
+geometry with a $\mathrm Q_2$ core, a bounded number of exceptional families, a bounded
+full-span partition, and fixed runtime and capacity constants. These hypotheses are not
+derived for an arbitrary linear-time transposer, and passing from an adaptive machine
+to one geometry may lose entropy that must be paid for separately
+\cite[Sections~1.1 and~9.3]{SourceCovers2026}. Nothing here decides~(T).
+
+\paragraph{What a construction in the admissible class must do.}
+For an oblivious transposer that is correct on every input, $\Delta=0$ on its single
+geometry \cite[Section~1.1]{SourceCovers2026}. If its geometries are admissible with
+fixed parameters and $a_0=o(L)$, they form a near-full sequence as $d\to\infty$; more
+generally, every sequence of admissible geometries with $d\to\infty$, $a_0=o(L)$ and
+$\Delta=o(L)$ is near-full. Such a sequence must satisfy
+\eqref{eq:GA} at every protected scale, together with the necessary conditions of
+\cite[Theorems~4.2 and~4.6 and Corollaries~4.8 and~5.3]{SourceCovers2026}, the last two
+for two exceptional families. By Theorem~A, for every fixed depth $m$ and every fixed
+$\delta>0$ its family systems eventually admit no funnel of depth $m$ containing all
+reads of a raw interval of relative length $\delta$. By Theorem~B, its geometries
+eventually admit no single-sweep terminal-landing data. These are necessary conditions,
+not constructions of a transposer. By Theorem~Z, the condition \eqref{eq:GA} at moduli
+$M\le R+\beta R/(3.2\cdot10^8)$ is compatible with two exceptional families and an
+inverse-square hop envelope.
+
+\paragraph{Open problems.}
+
+\begin{problem}[Frozen gap areas for two exceptions]\label{prob:two-exception}
+Fix $c,\beta>0$, $N\ge1$ and $H\ge0$. Consider sequences of admissible geometries with at most
+two exceptional families and a common envelope $|G_i|\le HL/i^2$ in the supplied hop
+order, with $d\to\infty$ and $a_0/L\to0$ but no condition on the correctness deficit.
+Joint profiles and $\limarea_{R,M}$ are defined for them exactly as in
+\cref{sec:preliminaries} and \cref{def:gap-area-means}. Does every such sequence have
+a joint profile with $\limarea_{R,M}>\beta\tau_R/(M-R)$ for some $R$ and $M$? By
+Theorem~G, a positive answer would exclude every near-full sequence in the class; a
+negative answer would show that Theorem~G alone cannot exclude it. For $c\ge128$,
+$N\ge3$ and $H\ge512$, the sequence of \cref{cor:sharpness-limit} shows that no pair
+$(R,M)$ with $R\ge1$ and $3.2\cdot10^8(M-R)\le\beta R$, and no pair with $R=0$ and
+$M\le\beta/16$, suffices; for $\beta\ge10^9$ this includes $M=2R+2$ for every $R$. The
+question remains open for larger moduli relative to $R$ and for smaller constants. In
+particular, for the sharpness geometries themselves it is open whether \eqref{eq:GA}
+holds at every $R$ and $M$, and for which $\beta$.
+\end{problem}
+
+\begin{problem}[Transposition-specific input]\label{prob:transposition-input}
+The certificates here use the transposition demands only through the cyclic-freezing
+bound inside Theorem~G \cite[Theorem~2.9]{SourceCovers2026}. The curved-motion theorem
+of the fourth paper, \cite[Theorem~3.12]{FourthPaper2026} (Theorem~Cq, proved there and
+not formalized), states that in every macroscopic limit of a linear-time transposer the
+work heads travel a total distance of at least half a block unit along motion that is
+not countably-piecewise affine. Can such constraints on the work heads exclude, or
+bound the frozen point areas of, admissible two-exception geometries that have no
+funnels of bounded depth and are not single-sweep terminal-landing geometries? The
+sharpness geometries of \cref{def:sharp-geometry} are a test case. Their work heads move
+along affine legs, so in the macroscopic limit their paths are countably-piecewise affine.
+Theorem~Cq does not apply to them as it stands: its hypothesis is an inequality that the
+first paper's Theorem~M* proves for every limit of every machine
+\cite[Section~3]{FourthPaper2026}, while $\Gamma_\nu$ carries a single input and is not
+the run of a transposer. Bringing constraints of this kind into the admissible-geometry
+framework is the open step. It is also not established here whether $\Gamma_\nu$ meets
+the necessary complete-observable movement and global continuation density of
+\cite[Corollaries~4.8 and~5.3]{SourceCovers2026}.
+\end{problem}
+
+Deciding (T) needs more than these certificates: for instance one fixed machine with a
+proof that it transposes every input in $O(L)$ steps, or, as one possible route to the
+negative answer, a reduction of every candidate machine to admissible geometries and
+correctness sets with a positive net deficit, including the cost of selecting a geometry
+in the adaptive case \cite[Section~9.3]{SourceCovers2026}.

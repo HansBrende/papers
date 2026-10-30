@@ -1,0 +1,107 @@
+\section{Notation from the source-cover paper}\label{sec:preliminaries}
+
+We use the notation of~\cite{SourceCovers2026} and recall only what the statements
+below need. All objects in this section are defined and Lean-verified there.
+
+\paragraph{Geometries.}
+Fix integers $d,b\ge1$ and put $L=d^2b$, $W=db$ and $\Omega=\{0,\dots,L-1\}$; for~(T),
+$b=b(d)$. A fixed complete geometry consists of the input-head and work-head walks,
+the halting time $T$ and the append times $t_0<\dots<t_{L-1}<T$
+\cite[Section~2.1]{SourceCovers2026}. The \emph{raw path} $x$ is the input-head
+position clamped to $\Omega$; it moves by at most one cell per step. In the Lean model
+times are natural numbers, and statements about all times quantify over all of them.
+The first append time of column $j$ is $s_j=t_{jW}$
+\cite[Theorem~2.9]{SourceCovers2026}. An \emph{admissible geometry} with parameters
+$d,b,c,\beta,N,q,a_0$ \cite[Definition~2.2]{SourceCovers2026} adds a nonempty
+correctness set $\mathcal C$, the runtime bound $T\le cL$, whole-step record capacity
+at most $\beta$, an $N$-class span partition of the full family system, an original
+$\mathrm Q_2$ core $\mathcal K_0$, a disjoint set $\mathcal E$ of at most $q$
+exceptional complete families, and the bound $a_0$ on the hop count of every other
+family. Its correctness deficit is $\Delta=L-\log_2|\mathcal C|$
+\cite[(2.2)]{SourceCovers2026}.
+
+\paragraph{Families and shadows.}
+A complete actual family $F$ has an owner $o_F$, an outermost hop $(p_F,U_F)$, a full
+span $(p_F,U_F]$ and a hop count $|F|$ \cite[Definition~2.1]{SourceCovers2026}.
+We call $(p_F,o_F]$ its \emph{lower region} and $(o_F,U_F]$ its \emph{active
+interval}. Its clipped shadow $s_F$ is the identity off the active interval and moves
+every time of it; by \cite[Definition~2.4 and (2.6)]{SourceCovers2026},
+\begin{equation}\label{eq:strict-shadow}
+ p_F<s_F(t)\le o_F<t\le U_F\qquad\text{whenever }o_F<t\le U_F;
+\end{equation}
+on its active interval $s_F$ is antitone. We write $F(t)=s_F(t)$ and say that $F$
+\emph{acts} at $t$ if $F(t)\ne t$, that is, if $t$ lies in its active interval.
+For a set $\mathcal S$ of families, $\mathcal O_{\mathcal S}(t)$ is the set of values
+obtained from $t$ by finite compositions of their shadows, including the empty
+composition \cite[Definition~2.4]{SourceCovers2026}; its elements are at most $t$.
+A word $(F_1,\dots,F_n)$ of families is \emph{successful} from $t$ if $F_1$ acts at
+$t$, $F_2$ acts at $F_1(t)$, and so on; its \emph{endpoint} is
+$F_n(\cdots F_1(t)\cdots)$.
+
+\paragraph{Cores, phases and banks.}
+A set $\mathcal K$ of complete families is $\mathrm Q_2$ if its spans split into two
+classes of pairwise disjoint spans. Joining two families of $\mathcal K$ when their
+spans intersect gives a caterpillar forest, the \emph{overlap forest}; its
+\emph{original nonleaves} are the vertices with at least two neighbours. The nonleaves
+of each component form a path, so a nonleaf has at most two nonleaf neighbours, and a
+leaf has at most one neighbour \cite[Lemma~2.6]{SourceCovers2026}. Fix $M\ge2$ and a
+protected set of at most $R<M$ families of $\mathcal K$. For a residue
+$\rho\in\{0,\dots,M-1\}$, the original nonleaves whose rank along their nonleaf path
+is congruent to $\rho$ modulo $M$ are deleted, and the other families of $\mathcal K$
+\emph{survive}; they form the retained core. A residue is a \emph{legal phase} if no
+protected nonleaf has a rank congruent to it; there are at least $M-R$ legal phases.
+Let $A_\rho(u)$ be the orbit of the retained core at $u$. Every successful word of
+surviving families has at most $M+1$ letters, and $|A_\rho(u)|\le2M+3$
+\cite[Lemma~2.6]{SourceCovers2026}. At most two families of $\mathcal K$ act at any one
+time, since their spans contain that time and so lie in distinct classes. For an
+exceptional set $\mathcal E$, the exact source bank has value set $O_\rho(t)$ at $t$,
+the orbit of the retained core together with the exceptional families
+\cite[Theorem~2.7]{SourceCovers2026}. The raw source set is $S_\rho(t)=x(O_\rho(t))$
+\cite[Section~3.1]{SourceCovers2026}; it contains $x(t)$. In limit statements,
+$\mathcal K$ consists of the first $J$ families of the original core in its supplied
+order by nonincreasing hop count, the protected set consists of the first $R$, and the
+forest, ranks and phases are rebuilt for every selection
+\cite[Section~4.2]{SourceCovers2026}.
+
+\paragraph{Gap area and the paid error.}
+View $\Omega$ as the integer points of a circle of circumference $L$. For a nonempty
+$S\subseteq\Omega$ whose consecutive distinct points have circular gaps
+$g_1,\dots,g_v$, the point-gap area is \cite[(2.14)]{SourceCovers2026}
+\[
+ \gaparea(S)=\frac1{2L^2}\sum_{h=1}^vg_h^2\in\Bigl[0,\frac12\Bigr].
+\]
+We call $\gaparea(S_\rho(s_j))$ the \emph{frozen point area} of phase $\rho$ and
+column $j$. One counting fact is used repeatedly. If a nonempty $S\subseteq\Omega$
+lies in the union of at most $n$ closed integer intervals $[a_i,b_i]$ with
+$\sum_i(b_i-a_i)\le\alpha L$, then
+\begin{equation}\label{eq:interval-budget}
+ \gaparea(S)\ge\frac{(1-\alpha)_+^2}{2n},\qquad (z)_+=\max(z,0).
+\end{equation}
+This is the exposed-gap step in the proof of \cite[Lemma~3.3]{SourceCovers2026}:
+an interval contains the left endpoint of at most one gap that it does not contain,
+the exposed gaps therefore have total length at least $(1-\alpha)_+L$, and the
+Cauchy--Schwarz inequality applies to them. Its Lean form is
+\lean{LeanMachine.IntervalGapArea.point_area_lower_of_budgets} in the shared library.
+The paid error of \cite[(3.7)]{SourceCovers2026} is
+\[
+ \mathsf E_q(w;J,M,R,a,\tau)=\frac{2C_q(T-1)}{dL}+\frac{2(w-1)}L+\frac{W-b+1}{2L}
+ +\frac\beta L\Bigl[J+q+\frac\tau{M-R}+\frac{(1+Na)C_q(T-1)}w\Bigr],
+\]
+with $C_q=C_0(1+3C_0)^q$ and $C_0=16+24M(M-1)$.
+
+\paragraph{Near-full sequences and joint profiles.}
+A near-full sequence consists of admissible geometries indexed by $\nu$, with common
+$c,\beta,N,q$, such that $d_\nu\to\infty$, $a_{0,\nu}/L_\nu\to0$ and
+$\Delta_\nu/L_\nu\to0$ \cite[Definition~4.1]{SourceCovers2026}. Each geometry comes
+with an order $G_1,G_2,\dots$ of its original core by nonincreasing hop count.
+A joint profile is a coordinatewise limit $(h_i,v_i)_{i\ge1}$ of the normalized
+profiles $h_i^{(\nu)}=|G_i|/L_\nu$ and $v_i^{(\nu)}=\Var(x_\nu;[p_{G_i},U_{G_i}])/L_\nu$
+along one strictly increasing subsequence; both profiles are zero after the last
+family. Write
+\[
+ \tau_R=\sum_{i>R}h_i,\qquad \tau_{R,J}=\sum_{R<i\le J}h_i,\qquad V_K=\sum_{i>K}v_i.
+\]
+The limiting profiles are summable, so $\tau_R\to0$ as $R\to\infty$. Limits in $\nu$
+are taken along the subsequence of the profile. A strictly increasing subsequence of a
+near-full sequence is near-full, and every near-full sequence has a joint profile
+\cite[Section~4.1]{SourceCovers2026}.

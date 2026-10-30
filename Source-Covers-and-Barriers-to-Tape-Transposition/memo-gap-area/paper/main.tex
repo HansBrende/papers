@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+\ifdefined\pdftrailerid\pdftrailerid{}\fi
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable,needspace}
+\usepackage{xcolor,microtype,etoolbox,xurl}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Frozen Gap Areas and the Sharpness of Source-Cover Certificates},pdfauthor={Hans Brende and Claude Opus 5.5 (Anthropic)},pdfsubject={Frozen gap-area certificates for linear-time tape transposition, October 2026},pdfkeywords={matrix transposition, multitape Turing machines, source covers, circular gap area, Lean}}
+\numberwithin{equation}{section}
+\input{macros}
+% Notation specific to this memo; macros.tex is an unchanged copy of the source-cover paper's.
+\newcommand{\meanarea}{\overline{\gaparea}}
+\newcommand{\limarea}{\gaparea^{*}}
+\newcommand{\ZA}{Z^{\mathrm A}}
+\newcommand{\ZB}{Z^{\mathrm B}}
+\newcommand{\ZC}{Z^{\mathrm C}}
+\newcommand{\vdc}{\mathrm{vdC}}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\emergencystretch}{2em}
+\title{Frozen Gap Areas and the Sharpness of Source-Cover Certificates}
+\author{Hans Brende \and Claude Opus 5.5 (Anthropic)}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende chose the problem and directed the research.
+Claude Opus 5.5 (Anthropic) developed the mathematics, the Lean formalization and the
+text. The memo extends and reuses the Lean library of the source-cover paper by Hans
+Brende and GPT-6 Astra (OpenAI). All numbered theorems, lemmas, corollaries and
+definitions are formalized in Lean; \cref{rem:reciprocal-comparison} is a proof sketch, and the outlines of
+the formal proofs are explanatory guides.
+\end{quote}
+\begingroup\small\tableofcontents\endgroup
+\input{sections/introduction}
+\input{sections/preliminaries}
+\input{sections/gap-area}
+\input{sections/funnels}
+\input{sections/terminal-landings}
+\input{sections/sharpness}
+\input{sections/remains}
+\appendix
+\input{sections/leanindex}
+\input{sections/verification}
+\begingroup\small\raggedright
+\bibliographystyle{plainurl}
+\bibliography{references}
+\endgroup
+\end{document}

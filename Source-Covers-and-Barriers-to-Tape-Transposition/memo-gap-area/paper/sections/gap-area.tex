@@ -1,0 +1,136 @@
+\section{Theorem G: the necessary frozen gap area}\label{sec:gap-area}
+
+The paid inequality of \cite[Theorem~3.5]{SourceCovers2026} accepts any credit that is
+at most the frozen point area at each legal phase and column. Here the credit is the
+frozen point area itself, and the limits are taken as for the reciprocal-cover bound
+\cite[Theorem~4.6]{SourceCovers2026}.
+
+\begin{definition}[Frozen gap-area means]\label{def:gap-area-means}
+\formal{GapAreaMemo/GapArea.lean}{SourceCovers.phaseGapArea,SourceCovers.phaseGapArea_bounds,SourceCovers.meanGapArea,SourceCovers.AdmissibleGeometry.prefixMeanGapArea,SourceCovers.NearFullSequence.JointProfile.prefixGapArea,SourceCovers.NearFullSequence.JointProfile.gapAreaLimit,SourceCovers.NearFullSequence.JointProfile.gapAreaLimit_bounds}
+Fix a geometry, a $\mathrm Q_2$ selected core, an exceptional set, $M\ge2$ and a
+protected set of at most $R<M$ selected families. For a residue $\rho<M$ and a column
+$j<d$, the frozen point area $\gaparea(S_\rho(s_j))$ lies in $[0,1/2]$. Let $\meanarea$
+be its arithmetic mean over the legal phases $\rho$ and all columns $j$. For an admissible geometry and an order of its original core by
+nonincreasing hop count, $\meanarea_{J,R,M}$ denotes this mean when the first $J$
+original core families are selected and the first $R$ protected. Along a joint
+profile of a near-full sequence, $\meanarea_{\nu,J,R,M}$ is this mean for the
+geometry of index $\nu$ on the subsequence of the profile, and
+\begin{equation}\label{eq:gap-area-limit}
+ \limarea_{R,M}=\limsup_{J\to\infty}\,\limsup_{\nu\to\infty}\,\meanarea_{\nu,J,R,M},
+ \qquad \limarea_R=\limarea_{R,2R+2}.
+\end{equation}
+For $R<M$ both upper limits are real, and $0\le\limarea_{R,M}\le1/2$.
+\end{definition}
+
+\begin{theorem}[Theorem G: necessary frozen gap area]\label{thm:necessary-gap-area}
+\formal{GapAreaMemo/GapArea.lean}{SourceCovers.gap_area_paid_deficit,SourceCovers.AdmissibleGeometry.prefix_gap_area_deficit,SourceCovers.NearFullSequence.JointProfile.prefix_gap_area_limit,SourceCovers.NearFullSequence.JointProfile.necessary_gap_area,SourceCovers.NearFullSequence.JointProfile.necessary_gap_area_default}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Finite form.} Take the data of \cite[Theorem~3.5]{SourceCovers2026}: a
+fixed complete geometry with a nonempty correctness set, whole-step capacity at most
+$\beta$ and an $N$-class span partition of its full family system; a $\mathrm Q_2$
+selected core of at most $J$ families; at most $q$ exceptional families; $M\ge2$ and a
+protected set of at most $R<M$ selected families; a bound $a$ on the hop count of
+every family outside the selected core and the exceptions; and a real $\tau$ at least
+the hop mass of the unprotected original nonleaves of the selected core. Then, for
+every integer $w\ge1$,
+\begin{equation}\label{eq:finite-gap-area}
+ \frac\Delta L\ge\meanarea-\mathsf E_q(w;J,M,R,a,\tau).
+\end{equation}
+No runtime bound is used.
+\item \emph{Prefixes.} For an admissible geometry with any order $G_1,G_2,\dots$ of its
+original core by nonincreasing hop count, and integers $J\ge R\ge0$,
+$M\ge\max(2,R+1)$, $w\ge1$ and $a\ge a_0$ with $a\ge cL/(J+1)$,
+\[
+ \frac\Delta L\ge\meanarea_{J,R,M}
+ -\mathsf E_q\Bigl(w;J,M,R,a,\sum_{R<i\le J}|G_i|\Bigr).
+\]
+\item \emph{Dimension limit.} Along every joint profile of every near-full sequence,
+for all integers $J\ge R\ge0$ and $M\ge\max(2,R+1)$ and every real $\lambda>0$,
+\[
+ \limsup_{\nu\to\infty}\meanarea_{\nu,J,R,M}
+ \le\frac{\beta\tau_{R,J}}{M-R}+2\lambda+\frac{\beta NC_qc^2}{\lambda(J+1)}.
+\]
+\item \emph{The limit bound.} For every joint profile of every near-full sequence and
+all integers $R\ge0$ and $M\ge\max(2,R+1)$,
+\begin{equation}\label{eq:GA}
+ \limarea_{R,M}\le\frac{\beta\tau_R}{M-R}.\tag{GA}
+\end{equation}
+In particular $\limarea_R\le\beta\tau_R/(R+2)$.
+\end{enumerate}
+In (c) and (d) the cutoff $R$ and the modulus $M$ are fixed, and the number $q$ of
+exceptional families is any fixed integer.
+\end{theorem}
+
+\begin{outline}
+(a) Apply \lean{SourceCovers.paid_deficit_of_gap_credit}, the formal paid inequality
+of \cite[Theorem~3.5]{SourceCovers2026}, with the frozen point area
+$\gaparea(S_\rho(s_j))$ as the credit of each legal phase $\rho$ and column $j$. Its
+premise, that each credit is at most the frozen point area, holds with equality. The
+mean credit is then $\meanarea$, and the paid error is unchanged.
+
+(b) The first $J$ original families form a $\mathrm Q_2$ selection of at most $J$
+families, and the hop mass of its unprotected nonleaves is at most
+$\sum_{R<i\le J}|G_i|$. An omitted core family has at most $cL/(J+1)$ hops, by the
+sorted order and the total bound $\sum_i|G_i|\le cL$; every other non-exceptional
+family has at most $a_0$ hops. Hence (a) applies with this $a$, as in the proof of
+\cite[Theorem~4.2]{SourceCovers2026}.
+
+(c) For fixed $J,R,M,\lambda$, the error-limit lemma of the source-cover paper,
+\lean{SourceCovers.NearFullSequence.JointProfile.prefix_error_limit}, supplies along
+the subsequence widths $w_\nu\ge1$ and values $a_\nu$ admissible in (b), with widths
+$\lceil\lambda L_\nu\rceil$ as in the proof of \cite[Theorem~4.2]{SourceCovers2026},
+and upper bounds $F_\nu$ for the paid errors such that $\Delta_\nu/L_\nu+F_\nu$ tends
+to the right side of~(c). By (b), $\meanarea_{\nu,J,R,M}\le\Delta_\nu/L_\nu+F_\nu$, and
+the means lie in $[0,1/2]$; pass to the upper limit.
+
+(d) Let $J\to\infty$ in (c): $\tau_{R,J}\to\tau_R$ by summability, and the last term
+tends to zero. The finite upper limits lie in $[0,1/2]$, so the outer upper limit
+preserves the inequality. Finally take $\lambda=\delta/2$ for every $\delta>0$ and
+remove the additive $\delta$. For $M=2R+2$, $M-R=R+2$. As in
+\cite[Theorem~4.6]{SourceCovers2026}, the dimension limit, the prefix limit and the
+removal of the width error occur in that order.
+\end{outline}
+
+\paragraph{Why it matters.}
+Theorem~G is the necessary condition that the paid inequality gives without choosing a
+cover witness. For an impossibility proof it reduces the exclusion of a class of
+admissible geometries to one lower bound: it suffices to show that every near-full
+sequence in the class has a joint profile with $\limarea_{R,M}>\beta\tau_R/(M-R)$ for
+some $R$ and $M$. Such a bound concerns the geometries alone, since frozen point areas
+and hop profiles do not involve the correctness sets. Theorems~A and~B prove such
+bounds for two classes. For a construction it is a requirement on the frozen banks.
+For example, $\gaparea(S)\ge1/(2|S|)$ for every nonempty $S$ by the Cauchy--Schwarz
+inequality. Along a joint profile of a near-full sequence with an inverse-square
+limiting profile $h_i\le H/i^2$, for which $\tau_R\le H/R$ when $R\ge1$, the reciprocal
+sizes $1/|S_\rho(s_j)|$ of the frozen raw sets therefore have limiting mean at most
+$2\beta H/(R(R+2))$ at modulus $2R+2$ for every $R\ge1$, in the sense of
+\eqref{eq:gap-area-limit}. This consequence is elementary and
+is not formalized.
+
+\begin{remark}[Comparison with the reciprocal-cover bound]\label{rem:reciprocal-comparison}
+Proof sketch only: for every joint profile of every near-full sequence, and more
+generally of every sequence of admissible geometries with $d\to\infty$ (the argument
+does not use near-fullness, and $Q^*_{R,M}$ is defined along the profile as in
+\cite[(4.7)]{SourceCovers2026}), and all integers $K,R\ge0$ and $M\ge\max(2,R+1)$,
+\[
+ \frac{(1-V_K)_+^2}{2(2K+1)}\,Q^*_{R,M}\le\limarea_{R,M},
+\]
+where $Q^*_{R,M}$ is the reciprocal-cover limit of \cite[(4.7)]{SourceCovers2026}.
+Hence \eqref{eq:GA} implies the weighted reciprocal-cover bound
+\cite[(4.8)]{SourceCovers2026}, and through it the necessary hop-tail bound
+\cite[Theorem~4.2]{SourceCovers2026}. Indeed, for $J\ge\max(K,R)$ distinguish the first $K$
+selected families. At every legal phase and column, \cite[Lemma~3.3]{SourceCovers2026}
+gives
+\[
+ \gaparea(S_\rho(s_j))\ge\frac{(1-\alpha_\nu)_+^2}{2(2K+1)\kappa_{\nu,J,R,M,\rho,j}},
+ \qquad \alpha_\nu=\sum_{K<i\le J}v_i^{(\nu)},
+\]
+with the fractional cover $\kappa$ of \cite[Definition~3.1]{SourceCovers2026}; its
+formal form, \lean{SourceCovers.fractional_phase_gap}, is stated for the same point
+area. Average over legal phases and columns. Along the profile
+$\alpha_\nu\to\sum_{K<i\le J}v_i\le V_K$, and all averages lie in $[0,1]$, so the
+dimension upper limit of $\meanarea_{\nu,J,R,M}$ is at least $(1-V_K)_+^2/[2(2K+1)]$
+times that of the mean reciprocal cover. The prefix upper limit preserves this.
+Theorem~G retains the full frozen point area, including what the fractional-cover
+estimate gives up through the factors $(1-\alpha)_+^2$ and $2(2K+1)$.
+\end{remark}

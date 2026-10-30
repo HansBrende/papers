@@ -1,0 +1,298 @@
+\section{Sharpness for two exceptional families}\label{sec:sharpness}
+
+Theorems~A and~B exclude two classes by proving lower bounds on frozen point areas. The
+source-cover paper excludes every common power envelope $|G_i|\le HL/i^p$ with $p>q$
+\cite[Corollary~4.4]{SourceCovers2026}; for two exceptional families the inverse-square
+envelope $p=2$ is the boundary case. This section shows that the frozen gap-area condition
+\eqref{eq:GA} cannot exclude that boundary case at moduli comparable to $R$. We construct
+admissible geometries with two exceptional families and hop counts $|G_i|\le512L/i^2$
+whose frozen point areas have mean at most $10^7/R^2$ over legal phases and columns, at
+every modulus, and whose hop tails are at least $1/(32R)$. Hence \eqref{eq:GA} holds on
+them whenever $3.2\cdot10^8(M-R)\le\beta R$, for instance at $M=2R+2$ for every
+$\beta\ge10^9$ (\cref{thm:sharpness,cor:sharpness-limit}). The geometries carry a single
+input. Frozen point areas and hop profiles do not involve the correctness sets, so this is
+a statement about what the certificate can see; it constructs no transposer.
+
+\paragraph{The idea.}
+Two banks of zigzags, A and~B, carry the root of every column down through bank~A,
+across the newer exceptional family $g$ into bank~B, and down through bank~B; the input
+head does not move during them. Bank~A turns the column and the depth $p$ at which the
+chain leaves it into an offset $o$, one of about $2^\ell$ values when the protected
+zigzags have levels up to $\ell$. Bank~B carries every such offset to each of its
+zigzags $\ZB_k$. A third bank, C, is swept once by the input head. The older exceptional
+family $e$ sends the descent and the first rise of $\ZB_k$ into the second rise of the
+bank-C zigzag $\ZC_k$, at relative levels $\vdc(k)\mp o/4$ around a centre given by the
+base-$2$ van der Corput sequence. The landing levels of one column, about $4^\ell$ in
+number, fill the unit interval up to $O(4^{-\ell})$ (\cref{lem:rows}); a single bank
+would give only about $2^\ell$ of them. The chains of bank~C then copy every landing
+level into every earlier zigzag of bank~C, so the frozen raw values fill the input range
+except for one arc of length $O(L/2^\ell)$ (\cref{lem:dense-gaps}). Landings that fall
+outside a second rise are parked elsewhere and only add points.
+
+\begin{definition}[The dyadic sharpness geometries]\label{def:sharp-geometry}
+\formal{GapAreaMemo/Z3DGeometry.lean}{SourceCovers.Z3D.Index.geometry,SourceCovers.Z3D.Index.runtime_le}
+Fix an integer $\nu\ge3$ and put $d=2^{2^\nu}$, so that $b=b(d)=2^\nu$ and
+$L=d^2b=2^{2^{\nu+1}+\nu}$. Each bank has zigzags with indices
+$1\le k\le k_\nu=2^{\nu+1}-1$; the index $k$ has level $\ell(k)=\lfloor\log_2k\rfloor\le\nu$
+and weight $w_k=4^{-\ell(k)-1}$. Banks A and~B have heights $w_kL$ and bank~C has
+heights $8w_kL$; consecutive heights differ by a factor $1$ or~$4$. A zigzag of height
+$h$ rises $h$ cells, descends $h$ cells and rises $h$ cells again; every leg moves one
+cell per step, except that one rising leg may be slowed by a constant factor. Write
+$\vdc$ for the base-$2$ van der Corput sequence, which reverses binary digits:
+$\vdc\bigl(\sum_ik_i2^i\bigr)=\sum_ik_i2^{-i-1}$ for digits $k_i\in\{0,1\}$.
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Bank C} consists of $\ZC_1,\dots,\ZC_{k_\nu}$ in this time order. $\ZC_1$
+starts at time~$1$; for $k\ge2$, the first rise of $\ZC_k$ runs during the second rise
+of $\ZC_{k-1}$, slowed by the factor $w_{k-1}/w_k$. Let $U_k$ be the trough of $\ZC_k$,
+and let $U^*=U_{k_\nu}+8w_{k_\nu}L$ be the end of bank~C.
+\item \emph{Bank B} consists of $\ZB_{k_\nu},\dots,\ZB_1$ in this time order, after
+bank~C. The second rise of $\ZB_k$ runs during the first rise of $\ZB_{k-1}$, slowed by
+the factor $w_{k-1}/w_k$; that of $\ZB_1$ is slowed by~$4$ and takes $L$ steps. Bank~B
+ends at the trough $O_B$ of~$\ZB_1$.
+\item \emph{Bank A} consists of zigzags $\ZA_k$ laid out like those of bank~B, after the
+second rise of $\ZB_1$; it ends at the trough $O_A$ of $\ZA_1$. The outputs are appended
+during the second rise of $\ZA_1$, at $t_z=O_A+1+z$ for $z<L$.
+\item \emph{Heads.} One work head performs the zigzags of odd index of the three banks in
+time order, another those of even index. Each zigzag starts at a fresh cell above all
+cells its head has visited before. After
+the halting time each of these heads performs padding zigzags; complete families are
+formed from hops before the halting time only, so the padding adds no family. Two
+further work heads perform one excursion each. The newer family $g$ rises at unit speed
+from $O_B+1$ and descends at unit speed during bank~A, reaching level $i$ at time
+$O_A-i$, for $i<h_g=2\sum_kw_kL$. The older family $e$ descends at unit speed during
+bank~B, reaching level $l$ at time $O_B-l$, and rises earlier. Level $0$ departs at
+time $0$; for $l\ge1$, the level that reaches the bank-B time at offset $0\le r<2w_kL$
+from the start of $\ZB_k$ departs at the landing time
+\[
+ U_k+\psi_k\bigl(\lfloor4w_kL\,\vdc(k)\rfloor+w_kL-r\bigr),
+\]
+where $\psi_k(z)=2z$ for $0\le z\le4w_kL$ (a landing in the second rise of $\ZC_k$),
+$\psi_k(z)=z$ for $z<0$ and $\psi_k(z)=4w_kL+z$ for $z>4w_kL$ (parking in the descents
+of $\ZC_k$ and $\ZC_{k+1}$, or, for $k=k_\nu$, shortly after bank~C).
+\item \emph{Input head.} It sweeps once across bank~C:
+$x(t)=\min(\lfloor(t-1)/\sigma\rfloor,L-1)$ with $\sigma=\lfloor(U^*-1)/L\rfloor$.
+\item \emph{Computation.} A single input and a one-point record alphabet.
+\end{enumerate}
+The original core consists of the upper and lower families of the $3k_\nu$ bank
+zigzags; the exceptional families are $e$ and~$g$; and the bound on all other families
+is $a_0=0$. We write $\Gamma_\nu$ for this geometry.
+\end{definition}
+
+The Lean namespace is \texttt{Z3D}, for three banks of zigzags with dyadic parameters. The
+parameters are \lean{SourceCovers.Z3D.Index}, the heads
+\lean{SourceCovers.Z3D.Index.heads}, the raw path and the append times
+\lean{SourceCovers.Z3D.Index.raw} and \lean{SourceCovers.Z3D.Index.out}, the two
+exceptional schedules \lean{SourceCovers.Z3D.Index.eSchedule} and
+\lean{SourceCovers.Z3D.Index.gSchedule}, and the core
+\lean{SourceCovers.Z3D.Index.core}. Each zigzag splices two scheduled excursions of the
+shared library.
+
+\begin{lemma}[Admissibility]\label{lem:sharp-admissible}
+\formal{GapAreaMemo/Z3DFamilies.lean}{SourceCovers.Z3D.Index.family_mem,SourceCovers.Z3D.Index.core_disjoint,SourceCovers.Z3D.Index.exceptions_card,SourceCovers.Z3D.Index.outside_none}
+For every $\beta\ge0$, $\Gamma_\nu$ is an admissible geometry with $c=128$, $N=3$,
+$q=2$ and $a_0=0$. Every complete family is a core family, $e$ or~$g$; the core has a
+two-class span partition and the full family system a three-class one.
+\end{lemma}
+
+\begin{outline}
+The walk of each of the first two heads is a sequence of zigzags at fresh cells, and its
+complete families are exactly the upper families of its zigzags (the returns of the
+first rise and the descent, owned at the peak) and the lower ones (the returns of the
+descent and the second rise, owned at the trough); each exceptional excursion is one
+native family. Hence every family is a bank family or an exception. Upper families of
+distinct bank zigzags have disjoint spans, and so do lower families; colouring the core
+by upper and lower gives its two classes (\lean{SourceCovers.Z3D.Index.core_coloring}).
+The spans of $e$ and $g$ are disjoint, and they form the third class
+(\lean{SourceCovers.Z3D.Index.full_coloring}). The banks and the output phase take at
+most $128L$ steps.
+\end{outline}
+
+\begin{lemma}[Inverse-square sizes and protection]\label{lem:sharp-sizes}
+\formal{GapAreaMemo/Z3DProtected.lean}{SourceCovers.Z3D.Index.famA_card,SourceCovers.Z3D.Index.famB_card,SourceCovers.Z3D.Index.famC_card,SourceCovers.Z3D.Index.card_big_le,SourceCovers.Z3D.Index.hop_envelope,SourceCovers.Z3D.Index.famA_protected,SourceCovers.Z3D.Index.famB_protected,SourceCovers.Z3D.Index.famC_protected,SourceCovers.SortedCore.prefix_retained}
+In $\Gamma_\nu$, the upper and lower families of $\ZA_k$ and of $\ZB_k$ have $w_kL$ hops
+each, and those of $\ZC_k$ have $8w_kL$ hops. For every $\ell\ge0$, at most
+$16\cdot2^\ell-6$ core families have at least $L\,4^{-\ell-1}$ hops. Hence, in every order
+$G_1,G_2,\dots$ of the core by nonincreasing hop count:
+\begin{enumerate}[label=(\alph*)]
+\item $|G_i|\le512L/i^2$ for every $i$;
+\item if $16\cdot2^\ell\le R$, the first $R$ families contain the upper and lower families
+of every $\ZA_k$ and $\ZB_k$ with $\ell(k)\le\ell$ and of every $\ZC_k$ with
+$\ell(k)\le\ell+1$; and for all $J\ge R$ and $M$, every family among the first $R$
+survives at every legal phase.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+Each core family is the upper or lower family of one bank zigzag, and its hops are the
+returns of one pair of legs, one per cell. The families with at least $L4^{-\ell-1}$ hops
+belong to zigzags $\ZA_k$, $\ZB_k$ with $\ell(k)\le\ell$ and $\ZC_k$ with
+$\ell(k)\le\ell+1$, at most $4(2^{\ell+1}-1)+2(2^{\ell+2}-1)$ families. (a) If
+$L4^{-\ell-1}\le|G_i|<L4^{-\ell}$, then $G_1,\dots,G_i$ all have at least $L4^{-\ell-1}$
+hops, so $i<16\cdot2^\ell$; and every family has at most $2L$ hops. (b) If a family with
+at least $L4^{-\ell-1}$ hops stood at position $p>R$, the $p$ distinct families up to it
+would all have that many hops, more than $16\cdot2^\ell$. A protected family survives at a
+legal phase \cite[Lemma~2.6]{SourceCovers2026}.
+\end{outline}
+
+\begin{lemma}[Van der Corput rows with dyadic offsets]\label{lem:rows}
+\formal{GapAreaMemo/Covering.lean}{SourceCovers.Covering.vdC,SourceCovers.Covering.vdC_hits,SourceCovers.Covering.w,SourceCovers.Covering.t,SourceCovers.Covering.t_sub_succ,SourceCovers.Covering.offsets,SourceCovers.Covering.offsets_dense,SourceCovers.Covering.row_cover_quarter,SourceCovers.Covering.rowPoints_dense_of_le}
+For $p\ge1$ let $w_p$ be as in \cref{def:sharp-geometry}, put
+$t_p=(2^{\ell(p)+1}-p)2^{-2\ell(p)-1}+2^{-\ell(p)-1}$, so that $t_1=1$ and
+$t_p-t_{p+1}=2w_p$, and for $D\ge1$ and rational $\theta\in[0,1]$ let
+$O_D(\theta)=\{t_p-\theta w_p,\ t_p-(2-\theta)w_p:1\le p\le D\}$. Let $n\ge6$ and
+$2^n\le16D$. Then for every $k_0\ge0$ the points $\vdc(k)\pm o/4$ with $k_0\le k<k_0+2^n$
+and $o\in O_D(\theta)$ meet every interval $[x,y]\subseteq[0,1]$ with rational endpoints
+and $y-x\ge1152\cdot4^{-n}$.
+\end{lemma}
+
+\begin{outline}
+Any $2^n$ consecutive values of $\vdc$ meet every dyadic interval of length $2^{-n}$,
+hence every interval of length $2^{1-n}$ in $[0,1]$. The offsets lie in $(0,1]$, and above
+every $r\in[t_D,1/2]$ some offset lies in $[r,r+8r^2]$, because consecutive values $t_p$
+differ by $2w_p$ and $w_p\le r^2$ when $t_{p+1}\le r$. Given $[x,y]$, choose a centre
+$\vdc(k)$ at a distance of order $2^{-n}$ from one end of the interval and an offset close
+to four times that distance: the row point $\vdc(k)\pm o/4$ then lies in $[x,y]$. These
+covering properties are elementary, and we claim no novelty for them.
+\end{outline}
+
+\begin{lemma}[Point area from dense values]\label{lem:dense-gaps}
+\formal{GapAreaMemo/GapBound.lean}{SourceCovers.GapBound.window_cover,SourceCovers.GapBound.pointArea_le_of_dense'}
+\begin{enumerate}[label=(\alph*)]
+\item Let $\alpha_0,\dots,\alpha_n$ and $w'_0,\dots,w'_{n-1}$ be natural numbers with
+$\alpha_s+w'_s\le\alpha_{s+1}$, and let $\Lambda\ge1$ be at least every $w'_s$ and every
+$w'_s+w'_{s+1}$. If every window $[z,z+w'_s]\subseteq[\alpha_s,\alpha_{s+1}]$ meets a set
+$S$ of natural numbers, then every window $[z,z+\Lambda]\subseteq[\alpha_0,\alpha_n]$
+meets~$S$.
+\item Let $S\subseteq\Omega$ be nonempty with $L-1\in S$, and let $\gamma\le X\le L$ be
+integers such that every window $[u,u+\gamma]\subseteq[0,X]$ meets $S$. Then
+\[
+ \gaparea(S)\le\frac{(\gamma+1)L+(L-X+\gamma+1)^2}{2L^2}.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Let $\alpha_s\le z<\alpha_{s+1}$. If $z+w'_s\le\alpha_{s+1}$, use the window
+$[z,z+w'_s]$; otherwise use $[\alpha_{s+1},\alpha_{s+1}+w'_{s+1}]$, which lies in
+$[z,z+\Lambda]$. (b) A gap starting at a point $u$ with $u+\gamma+1\le X$ has length at
+most $\gamma+1$. The other gaps that do not wrap around lie in $[X-\gamma,L-1]$ and have
+total length at most $L-X+\gamma+1$, and the wraparound gap ends at a point at
+most~$\gamma$. Bound the sum of the squared gaps by the largest gap of each kind times the
+total length of that kind.
+\end{outline}
+
+\begin{theorem}[Theorem Z: frozen gap areas of the sharpness geometries]\label{thm:sharpness}
+\formal{GapAreaMemo/Z3DSharp.lean}{SourceCovers.Z3D.Index.phase_le,SourceCovers.Z3D.Index.mean_le,SourceCovers.Z3D.Index.gap_area_le,SourceCovers.Z3D.Index.hop_tail,SourceCovers.Z3D.Index.gap_area_condition,SourceCovers.Z3D.Index.gap_area_condition_default}
+Let $\nu\ge3$ and $\beta\ge0$, and fix an order $G_1,G_2,\dots$ of the core of
+$\Gamma_\nu$ by nonincreasing hop count.
+\begin{enumerate}[label=(\alph*)]
+\item If $1\le R\le2^\nu$, $M\ge R+1$ and $J\ge R$, then
+$\meanarea_{J,R,M}\le10^7/R^2$.
+\item If $R\ge1$, $4R\le2^\nu$ and $J\ge64R$, then $\sum_{R<i\le J}|G_i|\ge L/(32R)$.
+\item Hence, if $R\ge1$, $4R\le2^\nu$, $J\ge64R$, $M\ge R+1$ and
+$3.2\cdot10^8(M-R)\le\beta R$, then
+\[
+ \meanarea_{J,R,M}\le\frac{\beta}{M-R}\sum_{R<i\le J}\frac{|G_i|}L.
+\]
+In particular this holds for $M=2R+2$ whenever $\beta\ge10^9$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+(a) For $R^2\le2\cdot10^7$ the bound is at least $1/2$. Otherwise choose $\ell\ge8$ with
+$16\cdot2^\ell\le R<32\cdot2^\ell$. By \cref{lem:sharp-sizes}(b), at every legal phase the
+orbit families contain the families of all bank zigzags of indices below $2^{\ell+1}$
+and both exceptions. Fix a column $j\ge1$ and put $\theta=j/d$.
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Bank A.} The root $s_j$ lies in the second rise of $\ZA_1$ at level
+$\theta w_1L$. The lower family of $\ZA_1$ maps it into the descent, the upper family into
+the first rise, which runs during the second rise of $\ZA_2$, and so on: $\ZA_p$ is
+reached at the exact level $\theta w_pL$, in its descent and in its first rise
+(\lean{SourceCovers.Z3D.Index.late_chain}).
+\item \emph{Across $g$.} These times lie in the descent of $g$, which maps them into the
+second rise of $\ZB_1$ at relative level $1-o$, with $o=t_p-\theta w_p$ from the
+descent and $o=t_p-(2-\theta)w_p$ from the first rise, because
+$2\sum_{i<p}w_i=1-t_p$.
+\item \emph{Bank B and $e$.} The chain of bank~B reaches $\ZB_k$ at a level within $3$ of
+$(1-o)w_kL$, the levels being rounded down. The family $e$ maps the descent time of
+$\ZB_k$ into the second rise of $\ZC_k$ at a height $2\mu$ whose relative level
+$(2\mu+1)/(8w_kL)$ lies within $1/(w_kL)$ of $\vdc(k)-o/4$, and the first-rise time to
+one within $1/(w_kL)$ of $\vdc(k)+o/4$ (\lean{SourceCovers.Z3D.Index.landing}).
+\item \emph{Density.} By \cref{lem:rows} with $k_0=2^\ell$, $n=\ell$ and $D=2^\ell$,
+these relative levels, for $2^\ell\le k<2^{\ell+1}$, meet every window inside
+$[2/(w_kL),1-2/(w_kL)]$ of relative length about $1152\cdot4^{-\ell}$
+(\lean{SourceCovers.Z3D.Index.levels_window}).
+\item \emph{Bank C.} The chain of bank~C carries a landing at height $\eta$ in $\ZC_k$ to
+every $\ZC_i$ with $i\le k$, at the height $\eta'$ with
+$(\eta'+1)/(8w_iL)=(\eta+1)/(8w_kL)$, in its second rise, its descent and its first rise
+(\lean{SourceCovers.Z3D.Index.early_chain}). Hence every window of relative length about
+$1152\cdot4^{-\ell}$ inside the first rise or the descent of each of
+$\ZC_1,\dots,\ZC_{2^\ell}$ meets the orbit, and by \cref{lem:dense-gaps}(a) so does every
+time window of length $4608L4^{-\ell}+O(4^\ell)$ that ends by the end of the first rise
+of $\ZC_{2^\ell}$ (\lean{SourceCovers.Z3D.Index.time_cover}).
+\item \emph{Raw values.} Since $x$ advances one cell every $\sigma\ge1$ steps, the frozen
+raw set meets every window of that length inside $[0,X]$. Here
+$L-X\le40L/2^\ell+O(L4^{-\ell})$, because the rest of bank~C lasts at most
+$40\sum_{k>2^\ell}w_kL+16w_{2^\ell}L$ steps and $\sigma\ge2$; and $L-1=x(s_j)$ lies in the
+set. \Cref{lem:dense-gaps}(b) gives $\gaparea(S_\rho(s_j))\le4010\cdot4^{-\ell}$
+(\lean{SourceCovers.Z3D.Index.phase_bound}).
+\end{enumerate}
+None of this depends on $M$. Averaging over legal phases and columns, with the column
+$j=0$ bounded by $1/2$, gives at most $4011\cdot4^{-\ell}<4.2\cdot10^6/R^2$. (b) Let
+$2^r$ be the power of two with $2R<2^r\le4R$. The upper families of the zigzags $\ZA_k$
+with $2^r\le k<2^{r+1}$ are $2^r$ distinct families of $L4^{-r-1}$ hops each. Fewer than
+$16\cdot2^r\le J$ core families have that many hops, so all of them lie among the first $J$
+(\cref{lem:sharp-sizes}); at most $R$ of them lie among the first $R$; hence
+$\sum_{R<i\le J}|G_i|\ge(2^r-R)L4^{-r-1}\ge L/(32R)$. (c) Combine (a) and~(b):
+$10^7/R^2\le\beta/(32R(M-R))$; for $M=2R+2$ use $M-R\le3R$.
+\end{outline}
+
+\begin{corollary}[Limit form]\label{cor:sharpness-limit}
+\formal{GapAreaMemo/Z3DLimit.lean}{SourceCovers.Z3D.seq,SourceCovers.Z3D.limit_form,SourceCovers.Z3D.limit_GA,SourceCovers.Z3D.limit_GA_zero,SourceCovers.Z3D.limit_GA_default}
+Consider the sequence $(\Gamma_{\nu+3})_{\nu\ge0}$ with any orders of its cores by
+nonincreasing hop count, and any strictly increasing subsequence along which the
+normalized hop profiles $|G_i|/L$ converge to limits $h_i$. Define $\limarea_{R,M}$ and
+$\tau_R=\sum_{i>R}h_i$ as in \cref{def:gap-area-means} and \cref{sec:preliminaries}.
+Then $\limarea_{R,M}\le10^7/R^2$ and $\tau_R\ge1/(32R)$ for all $R\ge1$ and $M\ge R+1$.
+Hence
+\[
+ \limarea_{R,M}\le\frac{\beta\tau_R}{M-R}
+\]
+whenever $R\ge1$, $M\ge R+1$ and $3.2\cdot10^8(M-R)\le\beta R$, and whenever $R=0$ and
+$2\le M\le\beta/16$. In particular \eqref{eq:GA} holds at $M=2R+2$ for every $R\ge0$
+when $\beta\ge10^9$.
+\end{corollary}
+
+\begin{outline}
+For fixed $J\ge R$, the geometries of the subsequence eventually satisfy $R\le2^\nu$, and
+\cref{thm:sharpness}(a) bounds the inner upper limit; the outer one preserves the bound.
+The finite profile masses are at most $128$, so the limit profile is nonnegative and
+summable; \cref{thm:sharpness}(b) with $J=64R$ passes to the limit, and
+$\tau_R\ge\sum_{R<i\le64R}h_i$. For $R=0$, $\limarea_{0,M}\le1/2$ and
+$\tau_0\ge\tau_1\ge1/32$.
+\end{outline}
+
+\paragraph{Why it matters.}
+For an impossibility proof, Theorem~Z closes one route: the frozen gap-area condition at
+moduli up to $R+\beta R/(3.2\cdot10^8)$ cannot exclude the two-exception inverse-square
+class. An exclusion of that class must use larger moduli, the remaining necessary
+conditions of~\cite{SourceCovers2026}, or input specific to transposition
+(\cref{prob:transposition-input}). For a construction, the geometries show how two
+exceptional families can meet \eqref{eq:GA}: the older family lands the chains of the
+protected banks on both sides of well-spread centres in a bank that the input head
+sweeps, and the chains of that bank merge the landings of different zigzags.
+
+The sequence of \cref{cor:sharpness-limit} belongs to the class of
+\cref{prob:two-exception} for all $c\ge128$, $N\ge3$, $H\ge512$ and $\beta>0$, with
+$a_0=0$, and \eqref{eq:GA} holds along every joint profile at every modulus allowed in
+\cref{cor:sharpness-limit}. The argument of \cref{rem:reciprocal-comparison} does not
+use near-fullness; applied to this sequence (proof sketch only), it shows that the
+weighted reciprocal-cover bound \cite[(4.8)]{SourceCovers2026} holds at the same moduli.
+By \cref{lem:funnel-area}(c), \cref{thm:sharpness} also implies that for large $\nu$ the
+geometries have no funnel of a fixed depth over a raw interval of fixed positive
+relative length; and they are not single-sweep terminal-landing geometries, since the
+input head moves on the lower regions of the bank-C families. These two observations
+are elementary and are not formalized. The constants are not optimized. Nothing here
+concerns larger moduli, the necessary complete-observable movement and global
+continuation density of \cite[Corollaries~4.8 and~5.3]{SourceCovers2026}, or the
+existence of a transposer with such geometries.

@@ -1,0 +1,110 @@
+\section{Theorem A: funnels}\label{sec:funnels}
+
+A funnel restricts how shadows of the full family system can enter the times at which
+a raw interval is read. It involves no root, selection or phase.
+
+\begin{definition}[Feeding and funnels]\label{def:funnel}
+\formal{GapAreaMemo/Funnels.lean}{SourceCovers.ActualFamily.Feeds,SourceCovers.Funnel,SourceCovers.AdmissibleGeometry.HasFunnel}
+Fix a geometry. A complete family $F$ \emph{feeds} a set $D$ of times if $F(t)\ne t$
+and $F(t)\in D$ for some time $t$. For an integer $m\ge0$, a \emph{funnel of depth
+$m$} consists of sets $D_0,\dots,D_m$ of times and complete families
+$f_0,\dots,f_{m-1}$ such that
+\begin{enumerate}[label=(F\arabic*)]
+\item for each $i<m$, every complete family that feeds $D_i$ is $f_i$;
+\item for each $i<m$ and every time $t$ with $f_i(t)\ne t$ and $f_i(t)\in D_i$, the
+time $t$ lies in $D_{i+1}$;
+\item no complete family feeds $D_m$.
+\end{enumerate}
+Here the complete families range over the whole family system: core, exceptional and
+all other families. The formal definition indexes the sets and families by all
+$i\ge0$, of which only $D_0,\dots,D_m$ and $f_0,\dots,f_{m-1}$ matter; it therefore
+presupposes a nonempty family system. An admissible geometry \emph{has a funnel of
+depth $m$ over a raw interval of relative length $\delta$} if there are such a funnel
+and integers
+$0\le z_0\le z_1\le L$ with $z_1-z_0\ge\delta L$ such that every time $s$ with
+$z_0<x(s)<z_1$ lies in $D_0$.
+\end{definition}
+
+For $m=0$, conditions (F1) and (F2) are vacuous: a funnel of depth zero is a set $D_0$
+of times into which no shadow moves any time, and every orbit meets it at most in its
+root. For larger $m$, the set $D_i$ can be entered only through $f_i$ and only from
+$D_{i+1}$, and the chain ends in a set that nothing enters.
+
+\begin{lemma}[Lemma A: a funnel forces point area]\label{lem:funnel-area}
+\formal{GapAreaMemo/Funnels.lean}{SourceCovers.Funnel.reach,SourceCovers.Funnel.reach_card,SourceCovers.Funnel.orbit_inter_subset,SourceCovers.phaseGapArea_ge_of_funnel,SourceCovers.AdmissibleGeometry.prefixMeanGapArea_ge_of_funnel}
+Fix a geometry with a funnel of depth $m$.
+\begin{enumerate}[label=(\alph*)]
+\item For every set $\mathcal S$ of complete families and every time $s$, the orbit
+$\mathcal O_{\mathcal S}(s)$ meets $D_0$ in at most $m+1$ times. More precisely,
+$\mathcal O_{\mathcal S}(s)\cap D_0\subseteq P_m(s)$, where $P_0(s)=\{s\}$ and
+$P_{n+1}(s)=\{s\}\cup f_{m-n-1}(P_n(s))$ for $n<m$, so that $|P_n(s)|\le n+1$.
+\item Let $0\le z_0\le z_1\le L$ be integers such that every time $s$ with
+$z_0<x(s)<z_1$ lies in $D_0$. Then for every $\mathrm Q_2$ selected core, every
+exceptional set, every $M\ge2$, every residue $\rho<M$ and every column $j<d$,
+\[
+ \gaparea(S_\rho(s_j))\ge\frac{\bigl((z_1-z_0)/L\bigr)^2}{2(m+3)}.
+\]
+\item If an admissible geometry has a funnel of depth $m$ over a raw interval of
+relative length $\delta\ge0$, then $\meanarea_{J,R,M}\ge\delta^2/(2(m+3))$ for every
+hop order and all $J$, $R$ and $M\ge\max(2,R+1)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) We show that every word over families of $\mathcal S$ whose endpoint from $s$ lies
+in $D_{m-n}$ has its endpoint in $P_n(s)$, by induction on the word from its last
+letter. The empty word ends at $s\in P_n(s)$, and a last letter that does not act
+leaves the endpoint unchanged. Suppose the last letter $F$ moves the previous endpoint
+$u$ into $D_{m-n}$. Then $F$ feeds $D_{m-n}$, which (F3) excludes if $n=0$. If
+$n\ge1$, then $F=f_{m-n}$ by (F1), and $u\in D_{m-n+1}$ by (F2). By induction
+$u\in P_{n-1}(s)$, so the endpoint lies in $f_{m-n}(P_{n-1}(s))\subseteq P_n(s)$.
+Take $n=m$.
+
+(b) By the exactness of the bank \cite[Theorem~2.7]{SourceCovers2026}, every raw value
+of $S_\rho(s_j)$ strictly between $z_0$ and $z_1$ is the value of $x$ at an orbit
+point in $D_0$; by (a) there are at most $m+1$ such values. Hence $S_\rho(s_j)$ lies in
+$[0,z_0]$, $[z_1,L]$ and at most $m+1$ singletons: at most $m+3$ closed intervals of
+total length $L-(z_1-z_0)$. Apply \eqref{eq:interval-budget} with
+$\alpha=1-(z_1-z_0)/L$.
+
+(c) The bound of (b) holds at every legal phase and column; there is at least one
+legal phase. Average.
+\end{outline}
+
+\begin{theorem}[Theorem A: funnels are excluded]\label{thm:funnels}
+\formal{GapAreaMemo/Funnels.lean}{SourceCovers.NearFullSequence.not_eventually_funnel,SourceCovers.NearFullSequence.not_frequently_funnel}
+Fix an integer $m\ge0$ and a real $\delta>0$. In no near-full sequence do all
+geometries from some index on have a funnel of depth $m$ over a raw interval of
+relative length $\delta$, and in none do infinitely many of its geometries have one.
+Funnels are as in \cref{def:funnel}; in particular the family system is nonempty.
+The parameters $c,\beta,N,q$ of the sequence are arbitrary, and no envelope on the
+sizes of the core families is assumed.
+\end{theorem}
+
+\begin{outline}
+Choose a joint profile and put $B=\delta^2/(2(m+3))>0$. If the geometries have such
+funnels from some index on, then so do those on the subsequence of the profile, and
+\cref{lem:funnel-area}(c) with $R=0$ gives $\limarea_{0,M}\ge B$ for every $M\ge2$.
+Theorem~G with $R=0$ gives $\limarea_{0,M}\le\beta\tau_0/M$. An $M\ge2$ with
+$BM>\beta\tau_0$ gives a contradiction. If funnels occur in infinitely many geometries,
+these geometries form a strictly increasing subsequence, which is again a near-full
+sequence, and the first case applies to it.
+\end{outline}
+
+\paragraph{Why it matters.}
+Theorem~A excludes a property of the full family system with no hypothesis on the
+number of exceptional families or on the sizes of the core families. For an
+impossibility proof, it shows that bounded-depth unique feeding of the reads of a
+macroscopic raw interval already contradicts near-full correctness. For a construction
+in the admissible class it is a requirement, which can be read off by following
+feeders backwards. Let $X$ be the set of times that read the open interval
+$(z_0,z_1)$, put $D_0=X$, and as long as $D_i$ is fed by exactly one family $f_i$, let
+$D_{i+1}$ be the set of times that $f_i$ moves into $D_i$. If some $D_i$ with $i\le m$
+is fed by no family, then $D_0,\dots,D_i$, followed by empty sets with arbitrary
+families, form a funnel of depth $m$ over the interval; this needs a nonempty family
+system, and an empty one is excluded directly by Theorem~G, since then every frozen raw
+set is a single point, of area $1/2$, while $\tau_R=0$. So, in a near-full sequence,
+from some index on and for every raw interval of length at least $\delta L$, this
+backward chain either reaches, among $D_0,\dots,D_m$, a set fed by at least two
+families, or has $D_0,\dots,D_m$ each fed by exactly one family. This reformulation is
+elementary and is not formalized.

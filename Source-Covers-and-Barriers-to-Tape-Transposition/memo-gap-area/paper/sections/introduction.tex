@@ -1,0 +1,97 @@
+\section{Introduction}\label{sec:introduction}
+
+\paragraph{The question.}
+Let $b(d)=\max(1,\lceil\log_2d\rceil)$ and $L=d^2b(d)$. Question~(T) asks whether one
+deterministic multitape Turing machine, with a fixed finite number of tapes and a
+fixed finite alphabet, transposes every $d\times d$ matrix with $b(d)$-bit entries,
+given and returned in row-major order, in $O(L)$ steps.
+
+The source-cover paper of this series~\cite{SourceCovers2026} fixes one complete
+computation geometry and a nonempty set $\mathcal C$ of inputs that it transposes
+correctly. It bounds the correctness deficit $\Delta=L-\log_2|\mathcal C|$ below by a
+geometric credit minus the information revealed by a certificate
+\cite[Theorem~3.5]{SourceCovers2026}. At each legal phase $\rho$ and column $j$ the
+credit is at most the circular point-gap area $\gaparea(S_\rho(s_j))$ of the complete
+raw-source set of an exact source bank, frozen at the first output time $s_j$ of the
+column \cite[Theorems~2.7 and~2.9]{SourceCovers2026}. That paper bounds the frozen area
+below by fractional covers, anchored approximation and shared support. It obtains a
+uniform exclusion for one exceptional family, and further exclusions under
+economical-cover or shared-support conditions. For two exceptional families it
+identifies the inverse-square hop profiles as the nearest unresolved case
+\cite[Section~9.1]{SourceCovers2026}.
+
+\paragraph{Results.}
+\begin{enumerate}
+\item \emph{Theorem~G (\cref{thm:necessary-gap-area}).} We keep the frozen point area
+itself as the certificate. Along every joint profile of every near-full sequence, and
+for all integers $R\ge0$ and $M\ge\max(2,R+1)$,
+\[
+ \limarea_{R,M}\le\frac{\beta\tau_R}{M-R},
+\]
+where $\limarea_{R,M}$ is the limiting mean frozen point area over legal phases and
+columns, with the first $R$ core families protected (\cref{def:gap-area-means}). The
+limits are those of the reciprocal-cover bound \cite[Theorem~4.6]{SourceCovers2026},
+taken in the same order. Since the frozen point area dominates the fractional-cover
+credit \cite[Lemma~3.3]{SourceCovers2026}, Theorem~G implies that bound
+(\cref{rem:reciprocal-comparison}).
+\item \emph{Theorem~A (\cref{thm:funnels}).} A funnel is a property of the full family
+system: time sets $D_0,\dots,D_m$ such that each $D_i$ with $i<m$ is fed by at most
+one family, which moves into $D_i$ only times of $D_{i+1}$, while no family feeds
+$D_m$ (\cref{def:funnel}). Every orbit then meets $D_0$ in at most $m+1$ times
+(\cref{lem:funnel-area}). With Theorem~G, no near-full sequence has, from some index on
+or along a subsequence, funnels of a fixed depth whose first set contains every time
+that reads a raw interval of fixed positive relative length. The number of exceptional
+families and the sizes of the core families are arbitrary.
+\item \emph{Theorem~B (\cref{thm:terminal-landings}).} A single-sweep terminal-landing
+geometry (\cref{def:terminal-landing}) has two designated families, an older family
+$e$ and a newer family $g$, and its exceptional families are among them. Its raw path
+is constant on the lower regions of all core families and of $g$ and at all column
+roots, and nondecreasing on the lower region of $e$; no core family and not $g$ acts
+on that lower region. No near-full sequence consists, from some index on or along a
+subsequence, of such geometries. No size envelope is assumed.
+\item \emph{Theorem~Z (\cref{thm:sharpness,cor:sharpness-limit}).} At moduli
+comparable to $R$, Theorem~G cannot exclude the two-exception class with an
+inverse-square hop envelope $|G_i|\le HL/i^2$, the boundary case of the power envelopes
+excluded in \cite[Corollary~4.4]{SourceCovers2026}. We construct admissible geometries
+$\Gamma_\nu$ with two exceptional families and hop counts $|G_i|\le512L/i^2$
+(\cref{def:sharp-geometry}). In every hop order, at every protected prefix $J\ge R$ and
+every modulus $M>R$, their mean frozen point areas over legal phases and columns are at
+most $10^7/R^2$, and their hop tails after $R$ are at least $1/(32R)$. Hence
+$\limarea_{R,M}\le\beta\tau_R/(M-R)$ along every joint profile whenever
+$3.2\cdot10^8(M-R)\le\beta R$, for instance at $M=2R+2$ for every $\beta\ge10^9$.
+The geometries carry one input; frozen point areas and hop profiles do not involve the
+correctness sets. Two exceptional families thus suffice to meet the frozen gap-area
+condition at these moduli.
+\end{enumerate}
+
+\paragraph{How to read the memo and its formal proofs.}
+Every numbered theorem, lemma and definition is formalized in Lean. Each carries a
+status line naming its Lean file and declarations, and each theorem and lemma is
+followed by an outline of the formal proof. The Lean statements, including their
+inherited hypotheses, are authoritative; the outlines are guides.
+\Cref{rem:reciprocal-comparison}, the comparison with the reciprocal-cover bound, is
+not formalized: it is a remark with a proof sketch only. A few elementary consequences
+stated in prose, after Theorems~G and~A and in \cref{sec:terminal-landings,sec:sharpness},
+are not formalized either, and are labelled so where they occur. Results of the
+source-cover paper are cited by their numbers at the pinned revision; all of them are
+Lean-verified there. The memo's library imports that paper's library unchanged
+(\cref{sec:verification}).
+
+\paragraph{Related work.}
+The model, the exact source bank, cyclic freezing, the paid inequality, joint profiles
+and the necessary hop-tail and reciprocal-cover bounds are those
+of~\cite{SourceCovers2026}. The finite form of Theorem~G is the case of the formal paid
+inequality of \cite[Theorem~3.5]{SourceCovers2026},
+\lean{SourceCovers.paid_deficit_of_gap_credit}, whose credit is the frozen point area
+itself. The new content of Theorem~G is its limit form and its use in
+\cref{sec:funnels,sec:terminal-landings}. The counting there rests on the orbit
+structure of \cite[Lemma~2.6]{SourceCovers2026} and on the interval bound recalled in
+\cref{sec:preliminaries}. We claim no novelty for these elementary covering and
+counting principles.
+
+\paragraph{Organization.}
+\Cref{sec:preliminaries} recalls the notation. \Cref{sec:gap-area} proves Theorem~G,
+\cref{sec:funnels} Theorem~A and \cref{sec:terminal-landings} Theorem~B.
+\Cref{sec:sharpness} constructs the sharpness geometries and proves Theorem~Z, and
+\cref{sec:remains} states what remains. The appendices index the Lean declarations and give the build
+and check commands.

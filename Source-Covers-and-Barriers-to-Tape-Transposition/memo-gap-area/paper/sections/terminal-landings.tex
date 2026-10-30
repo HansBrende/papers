@@ -1,0 +1,304 @@
+\section{Theorem B: single-sweep terminal landings}\label{sec:terminal-landings}
+
+The class of this section has two designated families: an older family $e$, whose
+lower region carries the only raw sweep, and a newer family $g$. We first count orbit
+points of a $\mathrm Q_2$ selected core, then bound the frozen point area at one
+selection and phase, and finally combine two selections with Theorem~G.
+
+\subsection{Successful core words}
+
+\begin{lemma}[Successful core words]\label{lem:core-words}
+\formal{GapAreaMemo/CoreWords.lean}{SourceCovers.coreSuccess_prefix_or,SourceCovers.coreSuccess_internal_nonleaf,SourceCovers.core_root_count}
+Let $\mathcal K$ be a $\mathrm Q_2$ set of complete families, and consider words of
+families of $\mathcal K$.
+\begin{enumerate}[label=(\alph*)]
+\item Two words that are successful from the same time and have the same first letter
+are comparable: one is a prefix of the other.
+\item Every letter of a successful word other than its first and its last letter is
+an original nonleaf of the overlap forest of $\mathcal K$.
+\item Let $r$ be a time, $X$ a finite set of times and $\Phi\subseteq\mathcal K$.
+Suppose that each $v\in X$ is the endpoint of a nonempty word $w_v$ that is
+successful from $r$, and that the last letter of $w_v$ belongs to $\Phi$ whenever it is
+a nonleaf. Then $|X|\le2|\Phi|+4$.
+\end{enumerate}
+Part (b) holds for every set of complete families.
+\end{lemma}
+
+\begin{outline}
+(a) Induct on the words. After a nonidentity step of a family, the new time lies in
+its span at or before its owner. That family no longer acts there, no other family of
+its class acts there, and at most one family of the other class does
+\cite[proof of Lemma~2.6]{SourceCovers2026}; the formal statement is
+\lean{SourceCovers.core_unique_after}. So the second letters agree whenever both words
+continue.
+
+(b) Consecutive letters of a successful word have intersecting spans and strictly
+decreasing owners, so the word is a simple path of the overlap forest
+\cite[Lemma~2.6]{SourceCovers2026}. An internal letter has two distinct neighbours on
+that path.
+
+(c) Consider first the points whose words end in a nonleaf. Two such words with the
+same first and last letters are comparable by (a), and the letters of a successful word
+are distinct, so the words are equal. The first letter acts at $r$, and at most two
+families act there; this gives at most $2|\Phi|$ points. For words that end in a leaf,
+two words of length at least two with the same first letter are comparable by (a), and
+a proper prefix would make its last letter, a leaf, an internal letter of the longer
+word, contrary to (b). Recording the first letter and whether the length is one gives
+at most four such points.
+\end{outline}
+
+\subsection{A newer family and a terminal older family}
+
+\begin{lemma}[Adding a newer and a terminal older family]\label{lem:landing-orbits}
+\formal{GapAreaMemo/LandingOrbits.lean}{SourceCovers.shadowOrbit_insert_newer,SourceCovers.shadowOrbit_insert_terminal,SourceCovers.raw_landing_antitone}
+Let $\mathcal F$ be a set of complete families, $g$ and $e$ complete families, and $s$ a
+time.
+\begin{enumerate}[label=(\alph*)]
+\item Every point of $\mathcal O_{\mathcal F\cup\{g\}}(s)$ lies in
+$\mathcal O_{\mathcal F}(s)$, or in $\mathcal O_{\mathcal F}(g(u))$ for some
+$u\in\mathcal O_{\mathcal F}(s)$ at which $g$ acts.
+\item Suppose that no family of $\mathcal F$ acts at any time of the lower region
+$(p_e,o_e]$. Then every point of $\mathcal O_{\mathcal F\cup\{e\}}(s)$ lies in
+$\mathcal O_{\mathcal F}(s)$ or equals $e(u)$ for some $u\in\mathcal O_{\mathcal F}(s)$
+at which $e$ acts.
+\item If $x$ is nondecreasing on $(p_e,o_e]$, then $x(e(u'))\le x(e(u))$ whenever
+$o_e<u\le u'\le U_e$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+Parts (a) and (b) follow by induction over the letters of a word. (a) After a
+nonidentity step of $g$ the time is at most $o_g$, and no later step increases it, so
+$g$ never acts again. (b) After a nonidentity step of $e$ the time lies in
+$(p_e,o_e]$ by \eqref{eq:strict-shadow}, where neither $e$ nor a family of
+$\mathcal F$ acts; the point is final. (c) On its active interval the shadow of $e$ is
+antitone with values in $(p_e,o_e]$; compose with the nondecreasing raw path.
+\end{outline}
+
+\subsection{Landings at one selection and phase}
+
+\begin{definition}[Newer closure, landings and starts]\label{def:landings}
+\formal{GapAreaMemo/LandingCounts.lean}{SourceCovers.newerRoots,SourceCovers.newerClosure,SourceCovers.landingSet,SourceCovers.IsLandingStep,SourceCovers.stepJump,SourceCovers.stepMax,SourceCovers.landingStarts}
+Fix a $\mathrm Q_2$ selected core $\mathcal K$, $M\ge2$, a residue $\rho<M$, complete
+families $g$ and $e$, and a time $s$. The \emph{newer roots} of $s$ are
+$N_\rho(s)=\{s\}\cup\{g(u):u\in A_\rho(s),\ g(u)\ne u\}$, and its \emph{newer closure}
+is $C_\rho(s)=\bigcup_{r\in N_\rho(s)}A_\rho(r)$. Since orbits are closed under
+composition, this is the set $C_g(s)$ of \cite[Proposition~3.7(b)]{SourceCovers2026},
+with $g$ in the role of the newer exceptional map. Its \emph{landing times} are
+$\Lambda_\rho(s)=C_\rho(s)\cap(o_e,U_e]$. A \emph{landing step} is a pair $(u,F)$ of a
+landing time $u$ and a surviving family $F$ that acts at $u$ with
+$F(u)\in(o_e,U_e]$. Its \emph{jump} is $x(e(F(u)))-x(e(u))$, truncated at zero, and
+$\Gamma_\rho(s)$ is the largest jump of a landing step, or zero if there is none.
+The \emph{starts} $\Lambda^0_\rho(s)$ are the landing times $v$ for which there is no
+landing time $u$ and surviving family $F$ acting at $u$ with $F(u)=v$.
+\end{definition}
+
+\begin{lemma}[Counts at one selection and phase]\label{lem:landing-counts}
+\formal{GapAreaMemo/LandingCounts.lean}{SourceCovers.newerClosure_count,SourceCovers.newerClosure_count_span,SourceCovers.landingStarts_card,SourceCovers.landing_cover}
+In the setting of \cref{def:landings}:
+\begin{enumerate}[label=(\alph*)]
+\item If $D$ is a set of times and $\Phi\subseteq\mathcal K$ contains every original
+nonleaf whose lower region meets $D$, then $|C_\rho(s)\cap D|\le(2M+4)(2|\Phi|+5)$.
+\item If $F\in\mathcal K$, $p_F<a$ and $v\le U_F$, then
+$|C_\rho(s)\cap(a,v)|\le11(2M+4)$.
+\item $|\Lambda^0_\rho(s)|\le5(2M+4)$.
+\item If $x$ is nondecreasing on $(p_e,o_e]$, then every $v\in\Lambda_\rho(s)$ has a
+start $s_0\in\Lambda^0_\rho(s)$ with
+\[
+ x(e(s_0))\le x(e(v))\le x(e(s_0))+(M+1)\,\Gamma_\rho(s).
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) There are at most $1+|A_\rho(s)|\le2M+4$ newer roots. Fix one root $r$. Erasing
+inactive letters \cite[Lemma~2.6]{SourceCovers2026}, every point of $A_\rho(r)$ other
+than $r$ is the endpoint of a nonempty successful word of surviving families from $r$.
+By \eqref{eq:strict-shadow} the endpoint lies in the lower region of the last letter,
+so for an endpoint in $D$ a nonleaf last letter belongs to $\Phi$.
+\Cref{lem:core-words}(c) leaves at most $2|\Phi|+4$ such points, and with $r$ at most
+$2|\Phi|+5$ points per root.
+
+(b) Take for $\Phi$ the family $F$ together with the nonleaves adjacent to $F$. A
+nonleaf whose lower region meets $(a,v)\subseteq(p_F,U_F]$ is $F$ or has a span
+meeting that of $F$. A nonleaf has at most two nonleaf neighbours and a leaf has at
+most one neighbour, so $|\Phi|\le3$, and (a) gives $11(2M+4)$.
+
+(c) Every start is a newer root, or lies in $A_\rho(r)$ for a newer root $r$ and
+differs from it. In the second case it is the endpoint of a nonempty successful
+survivor word from $r$. Its last step starts at a point of the newer closure that is
+larger than the start and is not a landing time, since otherwise the start would be
+reached by a landing step; so that point exceeds $U_e$. The span of the last letter
+therefore contains the boundary between $U_e$ and $U_e+1$, which at most two families
+of $\mathcal K$ do. The first letter acts at $r$, so it is one of at most two
+families. Two such words with the same first and last letters are equal, by
+\cref{lem:core-words}(a) and the distinctness of the letters of a successful word.
+Each root thus contributes at most $1+4$ starts.
+
+(d) Use strong induction on $U_e-v$. A landing time $v$ that is not a start equals
+$F(u)$ for a landing time $u>v$ and a surviving family $F$; then $(u,F)$ is a landing
+step, which raises the raw value by at most $\Gamma_\rho(s)$. The chain of steps from
+a start $s_0$ to $v$ is a successful word of surviving families, so it has at most
+$M+1$ letters \cite[Lemma~2.6]{SourceCovers2026}. The lower bound is
+\cref{lem:landing-orbits}(c), since $v\le s_0$.
+\end{outline}
+
+\subsection{Single-sweep terminal-landing geometries}
+
+\begin{definition}[Single-sweep terminal-landing geometry]\label{def:terminal-landing}
+\formal{GapAreaMemo/LandingGaps.lean}{SourceCovers.AdmissibleGeometry.TerminalLanding}
+Single-sweep terminal-landing data for an admissible geometry, with original core
+$\mathcal K_0$ and exceptional set $\mathcal E$, consist of complete families $e$ and
+$g$, the \emph{older} and the \emph{newer} family, and a natural number $x_0$, such that
+\begin{enumerate}[label=(L\arabic*)]
+\item $\mathcal E\subseteq\{e,g\}$;
+\item $x(t)=x_0$ whenever $t$ lies in the lower region of a family of $\mathcal K_0$ or
+of $g$;
+\item $x(s_j)=x_0$ for every column $j<d$;
+\item $x$ is nondecreasing on the lower region $(p_e,o_e]$ of $e$;
+\item no family of $\mathcal K_0$, and not $g$, acts at any time of $(p_e,o_e]$.
+\end{enumerate}
+A geometry with such data is a \emph{single-sweep terminal-landing geometry}.
+The families $e$ and $g$ need not be distinct, and need not both be exceptional.
+Condition (L5) holds for $g$ whenever $o_e\le o_g$ (an elementary remark, not
+formalized).
+\end{definition}
+
+Thus the input is read in one nondecreasing sweep during the lower region of $e$,
+the input head is parked at $x_0$ at all other times that can contribute to a frozen
+bank (\cref{lem:landing-gaps}(a)), and no family of a bank moves a landing of $e$
+again.
+
+\begin{lemma}[Finite gap bounds for terminal landings]\label{lem:landing-gaps}
+\formal{GapAreaMemo/LandingGaps.lean}{SourceCovers.AdmissibleGeometry.TerminalLanding.raw_values,SourceCovers.AdmissibleGeometry.TerminalLanding.gap_of_step,SourceCovers.AdmissibleGeometry.TerminalLanding.gap_of_starts}
+Let an admissible geometry carry single-sweep terminal-landing data $(e,g,x_0)$. Let
+$\mathcal K\subseteq\mathcal K_0$ be a $\mathrm Q_2$ selected core, $M\ge2$, $\rho<M$ a
+residue and $j<d$ a column. Landing sets refer to $\mathcal K$, $M$, $\rho$, $g$, $e$
+and the root $s_j$, and $S_\rho(s_j)$ to the geometry's exceptional set.
+\begin{enumerate}[label=(\alph*)]
+\item Every element of $S_\rho(s_j)$ is $x_0$ or $x(e(v))$ for some
+$v\in\Lambda_\rho(s_j)$.
+\item Let $F\in\mathcal K$ act at a time $u<T$ with $o_e<u\le U_e$ and
+$o_e<F(u)\le U_e$, and let $\gamma=x(e(F(u)))-x(e(u))$, truncated at zero. Then
+\[
+ \gaparea(S_\rho(s_j))\ge\frac{(\gamma/L)^2}{2\bigl(11(2M+4)+3\bigr)}.
+\]
+The family $F$ need not survive at $\rho$.
+\item With $\Gamma=\Gamma_\rho(s_j)$,
+\[
+ \gaparea(S_\rho(s_j))\ge
+ \frac{\bigl(1-5(2M+4)(M+1)\Gamma/L\bigr)_+^2}{2\bigl(5(2M+4)+1\bigr)}.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) By (L1), the orbit $O_\rho(s_j)$ of the retained core with the exceptions lies in
+the orbit of the retained core together with $g$ and $e$. By (L5) and
+\cref{lem:landing-orbits}(b), each of its points lies in the orbit of the retained
+core with $g$, or equals $e(u)$ for a point $u$ of that orbit at which $e$ acts. A
+point of the first kind is the root, where $x=x_0$ by (L3), or lies in the lower
+region of a retained family or of $g$, where $x=x_0$ by (L2). For the second kind,
+$u\in C_\rho(s_j)$ by \cref{lem:landing-orbits}(a), and $u\in(o_e,U_e]$ because $e$
+acts at $u$.
+
+(b) Since $F(u)<u$, \cref{lem:landing-orbits}(c) gives $x(e(u))\le x(e(F(u)))$. By (a)
+and the same monotonicity, every raw value strictly between them is $x_0$ or
+$x(e(v))$ for a landing time $v$ with $F(u)<v<u$. Since $F$ acts at $u$, $p_F<F(u)$
+and $u\le U_F$, so \cref{lem:landing-counts}(b) leaves at most $1+11(2M+4)$ raw values
+in that open interval. Cover the raw set by the two complementary closed intervals and
+these singletons, and apply \eqref{eq:interval-budget}; the formal step is
+\lean{SourceCovers.pointArea_ge_of_sparse}.
+
+(c) By (a) and \cref{lem:landing-counts}(d), the raw set lies in $\{x_0\}$ and the
+closed intervals $[x(e(s_0)),x(e(s_0))+(M+1)\Gamma]$ with $s_0\in\Lambda^0_\rho(s_j)$.
+By \cref{lem:landing-counts}(c) these are at most $1+5(2M+4)$ intervals of total length
+at most $5(2M+4)(M+1)\Gamma$. Apply \eqref{eq:interval-budget}.
+\end{outline}
+
+\subsection{Theorem B}
+
+\begin{lemma}[Prefix bounds for terminal landings]\label{lem:landing-prefix}
+\formal{GapAreaMemo/TerminalLandings.lean}{SourceCovers.AdmissibleGeometry.landingGamma,SourceCovers.AdmissibleGeometry.landingEnergy,SourceCovers.AdmissibleGeometry.landingEnergy_bounds,SourceCovers.AdmissibleGeometry.prefixMeanGapArea_ge_later,SourceCovers.AdmissibleGeometry.prefixMeanGapArea_ge_own}
+Let an admissible geometry carry single-sweep terminal-landing data, and fix an order
+of its original core by nonincreasing hop count. For $J_0\ge0$ and a column $j$, let $\Gamma_{J_0}(j)$ be the largest of the
+jumps $\Gamma_\rho(s_j)$ over all selections of the first $J\le J_0$ original core
+families with the first $R\le J$ protected and modulus $2R+2$, and over the legal
+phases $\rho$ of each selection. The \emph{landing energy}
+\[
+ E(J_0)=\frac1d\sum_{j<d}\Bigl(\frac{\Gamma_{J_0}(j)}L\Bigr)^2
+\]
+lies in $[0,1]$. Put $f_R=20(R+2)(2R+3)$. For every $R\ge0$:
+\begin{enumerate}[label=(\alph*)]
+\item $\meanarea_{J,R,2R+2}\ge E(J_0)/(88R+182)$ for every $J\ge J_0$;
+\item $\meanarea_{J,R,2R+2}\ge\bigl(1/2-2f_R^2E(J)\bigr)/\bigl(2(20R+41)\bigr)$ for every
+$J\ge R$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+At $M=2R+2$ the constants are $88R+182=2(11(2M+4)+3)$, $20R+41=5(2M+4)+1$ and
+$f_R=5(2M+4)(M+1)$. Each jump is at most $L$, so $E(J_0)\le1$.
+
+(a) Either $\Gamma_{J_0}(j)=0$, or it is the jump of an actual landing step $(u,F)$ at
+a selection of the first $J'\le J_0$ families. Then $F$ also belongs to the first
+$J\ge J_0$ families, and \cref{lem:landing-gaps}(b) at the selection $(J,R,2R+2)$ and
+any of its legal phases gives
+$\gaparea(S_\rho(s_j))\ge(\Gamma_{J_0}(j)/L)^2/(88R+182)$; the family need not survive
+there. Average over legal phases and columns.
+
+(b) For $J\ge R$, the selection $(J,R,2R+2)$ is among those that define
+$\Gamma_J(j)$, so $\Gamma_\rho(s_j)\le\Gamma_J(j)$ at each of its legal phases. With
+$y=\Gamma_J(j)/L$ and $\alpha=f_R\Gamma_\rho(s_j)/L\le f_Ry$,
+\[
+ (1-\alpha)_+^2\ge1-2\alpha\ge1-2f_Ry\ge\tfrac12-2f_R^2y^2,
+\]
+the last step because $2(f_Ry-\tfrac12)^2\ge0$. Apply \cref{lem:landing-gaps}(c) and
+average over phases and columns.
+\end{outline}
+
+\begin{theorem}[Theorem B: single-sweep terminal landings are excluded]\label{thm:terminal-landings}
+\formal{GapAreaMemo/TerminalLandings.lean}{SourceCovers.NearFullSequence.not_eventually_terminalLanding,SourceCovers.NearFullSequence.not_frequently_terminalLanding}
+In no near-full sequence are all geometries from some index on single-sweep
+terminal-landing geometries, and in none are infinitely many of its geometries such
+geometries. The parameters $c,\beta,N,q$ of the sequence are arbitrary, and no envelope
+on the sizes of the core families is assumed.
+\end{theorem}
+
+\begin{outline}
+Fix a joint profile; along its subsequence the geometries eventually carry such data.
+
+\emph{Step 1: the landing energies vanish.} For every $J_0$, the landing energy of the
+geometry of index $\nu$ tends to zero along the subsequence. Otherwise it is at least
+some $\eps>0$ infinitely often. By \cref{lem:landing-prefix}(a), for every $R$ and
+every $J\ge\max(J_0,R)$ the inner upper limit of $\meanarea_{\nu,J,R,2R+2}$ is at least
+$\eps/(88R+182)$, so $\limarea_R\ge\eps/(88R+182)$. Theorem~G gives
+$\eps/(88R+182)\le\beta\tau_R/(R+2)$, and since $88R+182\le91(R+2)$, $\eps\le91\beta\tau_R$
+for every $R$, contrary to $\tau_R\to0$.
+
+\emph{Step 2: the selections themselves.} Fix $R$ and $J\ge R$. By Step~1, eventually
+$2f_R^2E(J)\le1/4$, and \cref{lem:landing-prefix}(b) gives
+$\meanarea_{\nu,J,R,2R+2}\ge1/(8(20R+41))$. Hence $\limarea_R\ge1/(8(20R+41))$, and
+Theorem~G gives
+\[
+ \beta\tau_R\ge\frac{R+2}{8(20R+41)}\ge\frac1{164}\qquad(R\ge0),
+\]
+contrary to $\tau_R\to0$. If such geometries occur infinitely often, they form a
+near-full subsequence, and the first case applies to it.
+\end{outline}
+
+\paragraph{Why it matters.}
+The two-exception class with an inverse-square hop envelope is the nearest unresolved
+case of \cite[Section~9.1]{SourceCovers2026}, and the necessary hop-tail bound
+\cite[Theorem~4.2]{SourceCovers2026} is compatible with it. Theorem~B excludes, with no
+envelope, the two-exception geometries in which the older family carries the only raw
+sweep and receives terminal landings. A near-full sequence whose geometries have at
+most two exceptional families must therefore, from some index on and for every choice
+of $e$, $g$ and $x_0$ with $\mathcal E\subseteq\{e,g\}$, violate one of (L2)--(L5): it reads a coordinate
+other than $x_0$ during the lower region of a core family or of $g$, or at a column
+root; or its raw path decreases somewhere on the lower region of $e$; or a core family
+or $g$ acts during that lower region. For an impossibility proof the argument shows
+how Theorem~G is used at two scales: a fixed prefix bounds the landing jumps of every
+larger selection (\cref{lem:landing-prefix}(a)), and at the selection itself few
+starts with small jumps confine the frozen raw set to a few short intervals
+(\cref{lem:landing-prefix}(b)).

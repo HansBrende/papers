@@ -6,6 +6,13 @@
 - [Lean library](lean/), licensed under [Apache 2.0](lean/LICENSE).
 - [Formalization record](FORMALIZATION.md) and [generated statement index](FORMALIZATION-INDEX.md).
 
+The extension [memo on frozen gap areas](memo-gap-area/README.md), by Hans Brende and
+Claude Opus 5.5 (Anthropic), takes the frozen point area of the complete raw-source bank
+itself as the certificate. It excludes funnels and single-sweep terminal-landing
+geometries, and shows that at moduli comparable to the protected rank this certificate
+cannot exclude the two-exception inverse-square class. Its Lean proofs in `memo-gap-area/lean/` require this
+paper's library unchanged.
+
 ## The question
 
 Does one deterministic multitape Turing machine transpose every square

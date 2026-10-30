@@ -1,0 +1,32 @@
+We continue the source-cover analysis of linear-time transposition of a $d\times d$
+matrix with $b(d)=\max(1,\lceil\log_2d\rceil)$-bit entries on a multitape Turing
+machine. For a fixed admissible return geometry, the source-cover paper of this series
+bounds the correctness deficit below by the mean circular gap area of the complete
+raw-source banks, frozen at the first output time of each column, minus an explicit
+revelation cost. We use this frozen gap area itself as the certificate. Along every
+joint profile of every near-full sequence, its limiting mean over legal phases and
+columns is at most $\beta\tau_R/(M-R)$, where $\tau_R$ is the limiting hop tail after
+the first $R$ core families (Theorem~G). This implies the source-cover paper's
+necessary reciprocal-cover bound. We apply Theorem~G to two classes of geometries, with
+no envelope on the sizes of the core families.
+A \emph{funnel} of depth $m$ is a chain of time sets in which each set is fed by at
+most one family, and only from the next set, while the last set is fed by none. In no
+near-full sequence do infinitely many geometries have funnels of a fixed depth that contain
+every read of a raw interval of fixed positive relative length, whatever the fixed number of
+exceptional families (Theorem~A). A \emph{single-sweep terminal-landing} geometry has two
+designated families, an older and a newer one, and its exceptional families are among
+them. It reads the input in one nondecreasing sweep during the lower region of the older
+one, keeps the input head at one coordinate during the lower regions of the core families
+and of the newer one and at every column root, and lets none of these families act during
+the sweep. No near-full sequence consists of such geometries (Theorem~B). Theorem~G cannot
+exclude the boundary case of the source-cover paper's power envelopes for two exceptional
+families. An explicit sequence of admissible geometries with two exceptional families and
+hop counts at most $512L/i^2$ has mean frozen gap areas at most $10^7/R^2$ at every
+modulus and hop tails at least $1/(32R)$, so the necessary condition of Theorem~G holds on
+it whenever $3.2\cdot10^8(M-R)\le\beta R$, for instance at $M=2R+2$ for every
+$\beta\ge10^9$ (Theorem~Z). These geometries carry a single input: they are not near-full,
+and they say what the certificate can see, not that a transposer exists. All numbered
+theorems, lemmas, corollaries and definitions are formalized in Lean; the comparison with
+the reciprocal-cover bound is a remark with a proof sketch only, and a few elementary
+consequences stated in prose are labelled as not formalized. These are certificates for
+specified geometries, not a decision of the transposition question.

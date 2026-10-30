@@ -1,0 +1,42 @@
+\section{Building and checking the proofs}\label{sec:verification}
+
+The memo's sources and PDF are licensed under CC BY 4.0, and its Lean library under
+Apache 2.0. Readers need the whole repository, with sibling directories in place. The
+memo's Lean package in \path{memo-gap-area/lean/} requires the source-cover paper's
+package through the relative path \path{../../lean}. That package brings in its own
+dependencies: the second paper's build adapter for the first paper's canonical sources,
+the eighth paper's \path{boundedNesting} package and the shared \path{lean-machine}
+library, and through them the second and fourth papers' libraries
+(\path{transposeFollowup}, \path{motionDepthCodes}) and the second paper's pinned external
+dependency, all at the repository's Lean and Mathlib v4.34.1 pins. Fetch or verify that
+external dependency as described in the second paper's README. No Lean source of an
+earlier paper is copied or modified; \path{paper/macros.tex} is an unchanged copy of the
+source-cover paper's macros.
+
+From the memo's \path{lean/} directory, run
+\begin{verbatim}
+lake exe cache get
+lake build
+lake env lean MemoAxioms.lean
+\end{verbatim}
+The cache command is needed only when the pinned dependency objects are not already
+available. The cited declarations depend at most on \leanname{propext},
+\leanname{Classical.choice} and \leanname{Quot.sound}. The memo's library uses no
+\texttt{sorry}, no \texttt{native\_decide}, no new axiom and no heartbeat override.
+
+From the memo directory, regenerate or check \cref{sec:leanindex} and
+\path{lean/MemoAxioms.lean} with
+\begin{verbatim}
+python3 tools/lean_index.py
+python3 tools/lean_index.py --check
+\end{verbatim}
+The script reads the status lines and the \texttt{\textbackslash lean} references of
+the manuscript. It also checks that every numbered result has one status line followed
+by the matching proof environment, that every declaration in a status line is declared
+in the cited file, and that every declaration named in the text exists in one of the
+libraries. It does not run Lean or check proofs.
+
+Build the PDF from \path{paper/} with
+\begin{verbatim}
+latexmk -pdf -interaction=nonstopmode main.tex
+\end{verbatim}

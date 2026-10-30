@@ -9,7 +9,8 @@
   covering lemma, Lemmas 3.9 and 3.11, Theorems HC and HC′ (part (b) for function DAGs refining the dependency DAG),
   Lemma 3.3 for function DAGs, Proposition 3.17, Corollary HC at one size, and the merge DAG with Proposition 3.20
   (part (b) for refinements); in Section 4, Lemmas 4.2, 4.6, 4.14 and
-  4.15 (with a small entropy library), Lemma 4.5(a), (d), and Lemma 4.7 given the block machine's local recursion. The status line of every numbered result in the PDF says
+  4.15 (with a small entropy library), Lemma 4.5(a), (d), and Lemma 4.7 given the block machine's local recursion; in
+  Section 6, Theorem LA, with the modelling step from a frozen trace (this uses the ninth paper's library too). The status line of every numbered result in the PDF says
   what is formal, and its appendix lists the Lean declarations cited.
 
 ## The question
@@ -62,8 +63,8 @@ From `paper/`:
 latexmk -pdf -interaction=nonstopmode main.tex
 ```
 
-To check the Lean formalization, from `lean/`, with the eighth paper's library built and its dependencies linked into
-`.lake/packages` (see that paper's README):
+To check the Lean formalization, from `lean/`, with the eighth and ninth papers' libraries built and their dependencies
+linked into `.lake/packages` (see the eighth paper's README):
 
 ```sh
 lake build

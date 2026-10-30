@@ -35,14 +35,14 @@ each class, and a set of complete families is a \emph{$\mathrm Q_2$ core} if it 
 classes~\cite[Definition~2.1]{SourceCovers2026}. An $N$-class span partition exists exactly when no time lies in more than
 $N$ full spans: one direction is clear, and for the other, colour the families greedily in the order of the left ends of
 their spans; when a family is coloured, the families already coloured whose spans meet its span all contain the first time
-of its span, so they use at most $N-1$ colours.
+of its span, so they use at most $N-1$ colours (\lean{MergeDepth.hasSpanColoring_iff_activeFamilies_card_le}).
 
 \begin{theorem}[Theorem LA: low adaptivity]\label{thm:LA}
-\notformalized
-Let $M$ be a machine with value width $\beta=\beta(M)$, let $c>0$, and let $N\ge1$ and $q\ge0$ be integers.
+\formal{MergeDepth/LowAdaptivity.lean}{MergeDepth.low_adaptivity_a,MergeDepth.low_adaptivity_b,MergeDepth.low_adaptivity_a_exists,MergeDepth.low_adaptivity_b_exists}
+Let $M$ be a machine, let $\beta\ge\beta(M)$ and $c>0$, and let $N\ge1$ and $q\ge0$ be integers.
 \begin{enumerate}[label=(\alph*)]
 \item Let $\eps>0$ and $d_0$ be the constants that~\cite[Corollary~4.5]{SourceCovers2026} provides for the parameters
-$(2c,\beta,N,q)$, and let $0\le\eta<\eps$. Then at no $d\ge d_0$ does $M$ have both of the following properties at
+$(2c,\beta,N,q)$, and let $\eta<\eps$. Then at no $d\ge\max(d_0,1)$ does $M$ have both of the following properties at
 $L=d^2b(d)$:
 \begin{enumerate}[label=(\roman*)]
 \item $M$ transposes at dimension~$d$ within $c(L+1)$ steps;
@@ -50,13 +50,13 @@ $L=d^2b(d)$:
 and at most $q$ of them have more than $\eps L$ hops.
 \end{enumerate}
 \item Let $\eps>0$ and $d_0$ be the constants that~\cite[Corollary~4.3]{SourceCovers2026} provides for the parameters
-$(2c,\beta,N)$, and let $0\le\eta<\eps$. Then the conclusion of~(a) holds when the last clause of~(ii) is replaced by:
+$(2c,\beta,N)$, and let $\eta<\eps$. Then the conclusion of~(a) holds when the last clause of~(ii) is replaced by:
 the complete families of $\tau_0$ split into a $\mathrm Q_2$ core, at most one further family, and families of at most
 $\eps L$ hops each.
 \end{enumerate}
 \end{theorem}
 
-\begin{informalproof}
+\begin{outline}
 We prove~(a). Suppose that $M$ has properties (i) and~(ii) at some $d\ge d_0$, and let $W$ be the set of inputs
 $X\in\{0,1\}^L$ with $\tau(X)=\tau_0$. Then
 \begin{equation}\label{eq:LA-fibre}
@@ -105,7 +105,18 @@ For~(b), label the given $\mathrm Q_2$ core as the core, the at most one further
 $a_0=\lfloor\eps L\rfloor$, which bounds the hop count of every remaining family. \Cref{eq:LA-fibre} and the same
 modelling give an admissible geometry with one exception and $a_0\le\eps L$, and \cite[Corollary~4.3]{SourceCovers2026},
 which is Lean-verified there, gives $\Delta\ge\eps L$. This contradicts $\Delta\le\eta L$ as before.
-\end{informalproof}
+
+Formally, the machines are those of the frozen model (\lean{MergeDepth.TransposesAt}); the trace of a run records the
+moves and whether a bit is appended at every step before the halting time (\lean{MergeDepth.trace},
+\lean{MergeDepth.traceProb}); the step values and the value width are \lean{MergeDepth.stepValue} and
+\lean{MergeDepth.valueWidth}. The constants are any $(\eps,d_0)$ that satisfy the conclusion of the ninth paper's
+\lean{SourceCovers.finite_skeleton_uniform_deficit} or \lean{SourceCovers.one_exception_uniform_deficit}
+(\lean{MergeDepth.IsSkeletonConstant}, \lean{MergeDepth.IsOneExceptionConstant}). The modelling step is
+\lean{MergeDepth.fibreGeometry}, which builds the admissible geometry of the ninth paper from the fibre of~$\tau_0$, with
+local determination \lean{MergeDepth.stepValue_eq_of_parents} and deficit bound
+\lean{MergeDepth.fibreGeometry_deficit_le}. In~(b) the core and the further family need not be disjoint. The formal
+statements need $d\ge1$: at $d=0$ the input is empty, and a machine that halts at once satisfies (i) and~(ii).
+\end{outline}
 
 Hypothesis~(ii) holds, for instance, if at most $2^{\eta L}$ distinct traces occur and each of them has the stated family
 structure. More generally it holds if the trace has Shannon entropy $H(\tau(X))\le\eta L$ for a uniformly random input and
@@ -123,15 +134,24 @@ from oblivious machines to machines of low adaptivity, without a coding hypothes
 convergent hop profiles by compactness~\cite[Section~4.1]{SourceCovers2026}. \Cref{thm:LA} therefore excludes adaptivity
 below an unspecified threshold, whereas the conditional Corollary~F$''$ of the eighth
 paper~\cite[Corollary~6.4]{BoundedNesting2026} allows every $\eta<\frac12$.
-\item The modelling step in the proof is a written argument. The formal object of the ninth paper packages the
-fixed-geometry data as hypotheses and does not derive them from a Turing machine~\cite[Section~2.1]{SourceCovers2026};
-the identification above is the one by which that paper applies its theorems to oblivious machines, used here for one
-frozen trace.
+\item The formal object of the ninth paper packages the fixed-geometry data as hypotheses and does not derive them
+from a Turing machine~\cite[Section~2.1]{SourceCovers2026}. Here the modelling step is formal: \lean{MergeDepth.frozenGeometry}
+derives every field of that object from one frozen trace of a machine in the frozen model.
 \item The proof uses~\cite[Corollary~4.5]{SourceCovers2026} only through its bound on the correctness set. The same
 freezing therefore transfers the other uniform deficit statements of~\cite[Section~4]{SourceCovers2026}, its
-Corollaries~4.4 and~4.7, with their hypotheses imposed on the geometry of~$\tau_0$.
+Corollaries~4.4 and~4.7, with their hypotheses imposed on the geometry of~$\tau_0$
+(\lean{MergeDepth.card_correctSet_le_of_class}).
 \item Like the entropy hypothesis of Corollary~F$''$, hypothesis~(ii) concerns the full trace. Padding the input head's
 motion with data-dependent detours that leave the computation unchanged can destroy it~\cite[Section~6.2]{BoundedNesting2026}.
+\item The formal proof gives more. Correctness is used only on the inputs that follow the trace: for every machine, at
+most $2^{(1-\eps)L}$ inputs whose traces agree with~$\tau_0$ before a time $T\le c(L+1)$ by which $\tau_0$ has appended
+$L$ bits, and on which the machine eventually outputs the transpose, if the families of~$\tau_0$ formed before~$T$ have
+the structure of~(ii) (\lean{MergeDepth.card_correctSet_le_a}, \lean{MergeDepth.card_correctSet_le_b}). So the motion
+after~$T$ is free, the time bound concerns $T$ only, and the halting time is not used; the entry width may be any $b\ge1$
+with the same constants, and the capacity may be $\log_2(3\card Q\card\Gamma^k)$ instead of~$\beta(M)$. For a transposer,
+every trace with the structure of~(ii) has probability at most $2^{-\eps L}$ (\lean{MergeDepth.traceProb_le_a},
+\lean{MergeDepth.traceProb_le_b}); if every trace has the structure of~(a), at least $2^{\eps L}$ distinct traces occur
+(\lean{MergeDepth.card_traces_ge_a}).
 \end{enumerate}
 \end{remark}
 

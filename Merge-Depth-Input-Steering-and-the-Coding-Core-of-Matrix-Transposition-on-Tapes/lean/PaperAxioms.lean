@@ -38,6 +38,11 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.cor_HC_step_formation
 #print axioms MergeDepth.hop_charging_HC
 #print axioms MergeDepth.hop_charging_machine
+-- MergeDepth/LowAdaptivity.lean
+#print axioms MergeDepth.low_adaptivity_a
+#print axioms MergeDepth.low_adaptivity_a_exists
+#print axioms MergeDepth.low_adaptivity_b
+#print axioms MergeDepth.low_adaptivity_b_exists
 -- MergeDepth/MergeDag.lean
 #print axioms MergeDepth.MCut
 #print axioms MergeDepth.MEdge
@@ -87,8 +92,15 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.FunDag.isIndexCode
 #print axioms MergeDepth.IsColdGenie
 #print axioms MergeDepth.IsDepPath
+#print axioms MergeDepth.IsOneExceptionConstant
+#print axioms MergeDepth.IsSkeletonConstant
+#print axioms MergeDepth.TransposesAt
 #print axioms MergeDepth.card_allHops_le
 #print axioms MergeDepth.card_coneV_le
+#print axioms MergeDepth.card_correctSet_le_a
+#print axioms MergeDepth.card_correctSet_le_b
+#print axioms MergeDepth.card_correctSet_le_of_class
+#print axioms MergeDepth.card_traces_ge_a
 #print axioms MergeDepth.card_unit_le
 #print axioms MergeDepth.cold_genie
 #print axioms MergeDepth.coneV
@@ -101,8 +113,12 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.entropy
 #print axioms MergeDepth.entropy_le_of_fibres
 #print axioms MergeDepth.exists_large_fibre
+#print axioms MergeDepth.fibreGeometry
+#print axioms MergeDepth.fibreGeometry_deficit_le
 #print axioms MergeDepth.finrank_revealed_coord_le
 #print axioms MergeDepth.finrank_revealed_le_of_values
+#print axioms MergeDepth.frozenGeometry
+#print axioms MergeDepth.hasSpanColoring_iff_activeFamilies_card_le
 #print axioms MergeDepth.hop_charging
 #print axioms MergeDepth.hop_charging_fields
 #print axioms MergeDepth.hop_charging_steps
@@ -120,5 +136,14 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.skel
 #print axioms MergeDepth.skelData
 #print axioms MergeDepth.skel_genie
+#print axioms MergeDepth.stepValue
+#print axioms MergeDepth.stepValue_eq_of_parents
 #print axioms MergeDepth.sum_choose_le
+#print axioms MergeDepth.trace
+#print axioms MergeDepth.traceProb
+#print axioms MergeDepth.traceProb_le_a
+#print axioms MergeDepth.traceProb_le_b
+#print axioms MergeDepth.valueWidth
 #print axioms MotionDepthCodes.IsStorageCode
+#print axioms SourceCovers.finite_skeleton_uniform_deficit
+#print axioms SourceCovers.one_exception_uniform_deficit

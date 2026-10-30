@@ -21,3 +21,6 @@ import MergeDepth.MergeDag
 import MergeDepth.MergeFields
 import MergeDepth.MergeSteps
 import MergeDepth.SkeletonCones
+import MergeDepth.Traces
+import MergeDepth.LowAdaptivity
+import MergeDepth.SpanPartition

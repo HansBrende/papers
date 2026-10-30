@@ -423,7 +423,7 @@ theorem charFun_withDensity_densityW (m k κ : ℕ) (t : ℝ) :
 open Complex ProbabilityTheory in
 /-- The characteristic function of the law of `W` is `t ↦ Ψ(t/(2π))`. -/
 theorem charFun_lawW {m k κ : ℕ} {Ω : Type*} {mΩ : MeasurableSpace Ω} {P : Measure Ω}
-    [IsProbabilityMeasure P] (ζ : Fin (κ - 1) → Ω → ℝ) (ω : Fin 4 → Ω → ℝ)
+    (ζ : Fin (κ - 1) → Ω → ℝ) (ω : Fin 4 → Ω → ℝ)
     (hind : iIndepFun (Sum.elim ζ ω) P)
     (hζ : ∀ i, HasLaw (fun x => ζ i x + (binN k i : ℝ) / 2) Bin(ℝ, binN k i, halfI) P)
     (hω : ∀ j, pdf.IsUniform (ω j) (Set.Icc (-1 / 4 : ℝ) (1 / 4)) P) (t : ℝ) :

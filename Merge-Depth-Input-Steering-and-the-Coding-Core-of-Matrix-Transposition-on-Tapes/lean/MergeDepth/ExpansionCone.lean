@@ -5,8 +5,10 @@ import MergeDepth.Charging
 
 The vertices decrease along every path of a linear network, so a path from `t` has at most `t + 1`
 vertices (`length_le_of_mem_paths`). Hence the cone set `I_Γ(u)` of all positions read at the ends
-of `Γ`-free paths from `u` (`coneI`) is a ball set of finite radius, and the path sums vanish
-outside it (`C_eq_zero_of_not_mem_coneI`). `expansion_cone` is Lemma 3.3(a) as stated: `P_tpos = R + S`
+of `Γ`-free paths from `u` (`coneI`) is a ball set of finite radius (`reach_subset_coneI`,
+`coneI_subset_reach`), and the path sums vanish outside it (`C_eq_zero_of_not_mem_coneI`). The cone
+set contains the position read at `u` (`rd_mem_coneI`) and the cone sets of its unrevealed
+out-neighbours (`coneI_mono`). `expansion_cone` is Lemma 3.3(a) as stated: `P_tpos = R + S`
 with `rank R ≤ rank(E_Γ) + |X|`, row `ℓ` of `S` zero for `ℓ ∈ X` and otherwise supported in the
 union of the cone sets of the unrevealed output vertices of `ℓ`, with no common length bound.
 -/
@@ -38,6 +40,24 @@ open Classical in
 /-- The cone set `I_Γ(u)`: the positions read at the ends of the `Γ`-free paths from `u`. -/
 noncomputable def coneI (net : LinNet F L m) (Γ : Finset ℕ) (u : ℕ) : Finset (Fin L) :=
   univ.filter fun j => ∃ π ∈ net.paths u, LinNet.GFree Γ π ∧ net.rd (π.getLastD u) = some j
+
+/-- The cone set of an unrevealed out-neighbour lies in the cone set. -/
+theorem coneI_mono (net : LinNet F L m) {Γ : Finset ℕ} {u v : ℕ} (hv : v ∈ net.out u)
+    (hvΓ : v ∉ Γ) : coneI net Γ v ⊆ coneI net Γ u := by
+  classical
+  intro j hj
+  simp only [coneI, mem_filter, mem_univ, true_and] at hj ⊢
+  obtain ⟨π, hπ, hfree, hrd⟩ := hj
+  obtain ⟨π', rfl⟩ := net.mem_paths_head hπ
+  refine ⟨u :: v :: π', cons_cons_mem_paths.mpr ⟨hv, hπ⟩, gfree_cons_cons.mpr ⟨hvΓ, hfree⟩, ?_⟩
+  rwa [LinNet.getLastD_cons_cons]
+
+/-- The position read at `u` lies in the cone set of `u`. -/
+theorem rd_mem_coneI (net : LinNet F L m) {Γ : Finset ℕ} {u : ℕ} {j : Fin L}
+    (h : net.rd u = some j) : j ∈ coneI net Γ u := by
+  classical
+  simp only [coneI, mem_filter, mem_univ, true_and]
+  exact ⟨[u], singleton_mem_paths _ _, gfree_singleton _ _, h⟩
 
 theorem reach_subset_coneI (net : LinNet F L m) (Γ : Finset ℕ) (D u : ℕ) :
     net.reach Γ D u ⊆ coneI net Γ u := by

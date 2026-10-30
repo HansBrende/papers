@@ -9,18 +9,16 @@ Throughout, `4(j₀ + a) ≤ N` (the size condition) and `κ = κ_a(k)` for `k �
   `summable_abs_mul_sincBound`: `∑_t |t| sb_c(t) ≤ 3/(πc)²` (telescoping, no integrals).
 * Arithmetic of `κ_a`: `rhoK`, `ellK`, `dRho`, `cancellerBelow_eq`, `nKappa_eq`
   (`n_κ = (a + 1)ℓ_k`), `rho_ell_injective`, `ell_range_card`, `sum_coarse_le_pairs`.
-* `sum_cosProd_le`, `sum_cosProd_le_dyadic`, `sum_slProd_le`: Lemma 7.14 (strong form) for the
-  products of `F(n, D)` and of the semi-local terms.
-* (a) `fineFloor_avg_le_paper`: **Proposition 7.15(a)** as stated;
-  `sum_fineFloorK_le`: strengthened, `∑_{k ∈ 𝒦} F_k ≤ (a+1)(3(2^{a+4}/π)² + 8·2^{a+4}/(3π))`, so
-  the average is `O_a(1/N)`; `sum_fineFloorK_le_dyadic`: the general dyadic form.
-* (b) `semiLocal` `= SL^{[h]}_k`; `semiLocal_avg_le_paper`: **Proposition 7.15(b)** as stated;
-  `sum_semiLocal_le`: strengthened,
+* `sum_cosProd_le`, `sum_slProd_le`: Lemma 7.14(b) for the products of `F(n, D)` and of the
+  semi-local terms.
+* (a) `sum_fineFloorK_le`: **Proposition 7.15(a)**,
+  `∑_{k ∈ 𝒦} F_k ≤ C_a = (a+1)(3(2^{a+4}/π)² + 8·2^{a+4}/(3π))`, so the average is `O_a(1/N)`.
+* (b) `semiLocal` `= SL^{[h]}_k`; `sum_semiLocal_le`: **Proposition 7.15(b)**,
   `∑_{k ∈ 𝒦} ∑_{h=2}^{min(H,k)} SL^{[h]}_k ≤ (a+1) 2^{a+H+8}/(3π)` for every `H`.
 * (c) `sideband` `= SB_k`, `relVariance_decomp`: `V_k = SB_k + F_k + ∑_{h=2}^{k} SL^{[h]}_k`;
-  `hN` `= H_N`, `nonLocal` `= NL_k`, `nonLocal_eq`: `NL_k = SB_k + ∑_{h=H_N+1}^{k} SL^{[h]}_k`;
-  `conjectureS_iff_meanNonLocal`: **Proposition 7.15(c)**; `conjectureS_iff_meanNonLocalGen`:
-  the same for every cut-off `H` with `2^H/N → 0`.
+  `nonLocalGen` `= NL_k` for a cut-off `H`; `conjectureS_iff_meanNonLocalGen`:
+  **Proposition 7.15(c)**, for every cut-off sequence `H` with `2^H/N → 0`;
+  `conjectureS_iff_meanNonLocal`: the case `H = H_N = ⌊¼ log₂ N⌋` (`hN`, `nonLocal`).
 -/
 
 namespace MergeDepth
@@ -168,8 +166,6 @@ noncomputable def sincBound (c : ℝ) (t : ℤ) : ℝ := min 1 ((π * c * |(t : 
 
 theorem sincBound_nonneg (c : ℝ) (t : ℤ) : 0 ≤ sincBound c t :=
   le_min zero_le_one (by positivity)
-
-theorem sincBound_le_one (c : ℝ) (t : ℤ) : sincBound c t ≤ 1 := min_le_left _ _
 
 theorem sincBound_zero (c : ℝ) : sincBound c 0 = 0 := by simp [sincBound]
 
@@ -370,7 +366,7 @@ theorem two_pow_le_abs {v : ℕ} {t t' : ℤ} (ht' : Odd t') (ht : t = 2 ^ v * t
   have : (0 : ℝ) < 2 ^ v := by positivity
   nlinarith
 
-/-- Lemma 7.14 (strong form) with the progression written as `ℓ₀ + i`, `i < L`. -/
+/-- Lemma 7.14(b) with the progression written as `ℓ₀ + i`, `i < L`. -/
 theorem progression_sum_le_range {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o)
     (hao : a + 1 = 2 ^ w * o) (ht' : Odd t') (ht : t = 2 ^ v * t') (c : ℕ → ℝ) (ℓ₀ : ℤ) :
     2 ^ j * ∑ i ∈ range L, ∏ e ∈ Ioc (v + w) (v + w + j),
@@ -556,7 +552,7 @@ theorem two_pow_jZero_le (m : ℕ) : 2 ^ jZero m ≤ 2 * (m + 1) := by
   have := Nat.pow_log_le_self 2 (by omega : m + 1 ≠ 0)
   omega
 
-/-- **Proposition 7.15(a), strengthened.** Under the size condition `4(j₀ + a) ≤ N`,
+/-- **Proposition 7.15(a).** Under the size condition `4(j₀ + a) ≤ N`,
 `∑_{k ∈ 𝒦} F_k ≤ (a + 1) (3 (2^{a+4}/π)² + 8 · 2^{a+4}/(3π))`; so the average of `F_k` over `𝒦`
 is `O_a(1/N)`. -/
 theorem sum_fineFloorK_le {m a : ℕ} (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1) :
@@ -962,7 +958,7 @@ theorem semiLocal_le_majorant {m a k h : ℕ} (w : ℕ) (ha : 1 ≤ a)
     exact key
   · exact le_rfl
 
-/-- **Proposition 7.15(b), strengthened.** Under `4(j₀ + a) ≤ N`, for every `H`,
+/-- **Proposition 7.15(b).** Under `4(j₀ + a) ≤ N`, for every `H`,
 `∑_{k ∈ 𝒦} ∑_{h=2}^{min(H,k)} SL^{[h]}_k ≤ (a + 1) 2^{a+H+8}/(3π)`; so the average over `𝒦` is
 `O_a(2^H/N)`. -/
 theorem sum_semiLocal_le {m a : ℕ} (H : ℕ) (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1) :
@@ -1147,8 +1143,9 @@ theorem tendsto_meanError {a : ℕ} (ha : 1 ≤ a) :
         tendsto_natCast_atTop_atTop)
     exact tendsto_const_nhds.div_atTop h1
 
-/-- **Proposition 7.15(c)**: Conjecture S holds for `a` if and only if the average of
-`NL_k = V^{(a)}_k - F_k - ∑_{h=2}^{min(H_N, k)} SL^{[h]}_k` over `𝒦` tends to `0`. -/
+/-- **Proposition 7.15(c) at the cut-off `H_N = ⌊¼ log₂ N⌋`**: Conjecture S holds for `a` if and
+only if the average of `NL_k = V^{(a)}_k - F_k - ∑_{h=2}^{min(H_N, k)} SL^{[h]}_k` over `𝒦` tends
+to `0`. -/
 theorem conjectureS_iff_meanNonLocal {a : ℕ} (ha : 1 ≤ a) :
     ConjectureS a ↔ Filter.Tendsto (fun m => meanNonLocal m a) Filter.atTop (nhds 0) := by
   have hE := tendsto_meanError ha
@@ -1162,68 +1159,6 @@ theorem conjectureS_iff_meanNonLocal {a : ℕ} (ha : 1 ≤ a) :
     have := h.add hE
     simp only [add_sub_cancel, add_zero] at this
     exact this
-
-/-- **Proposition 7.15(b)** as stated (a consequence of `sum_semiLocal_le`): with
-`L_a = ⌊⌊N/4⌋/(a + 1)⌋` and `2 ≤ H ≤ ½ log₂ L_a`, the average over `𝒦` of
-`∑_{h=2}^{min(H,k)} SL^{[h]}_k` is at most `(5 · 2^{a+6}/(3π)) · 2^H/√(L_a - H)`. -/
-theorem semiLocal_avg_le_paper {m a H : ℕ} (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1)
-    (hH2 : 2 ≤ H) (hHL : 2 * H ≤ Nat.log 2 ((m + 1) / 4 / (a + 1))) :
-    ((coarseZone m).card : ℝ)⁻¹ *
-        ∑ k ∈ coarseZone m, ∑ h ∈ Icc 2 (min H k), semiLocal m k (cancellerBelow m a k) h ≤
-      5 * 2 ^ (a + 6) / (3 * π) *
-        (2 ^ H / √((((m + 1) / 4 / (a + 1) : ℕ) : ℝ) - H)) := by
-  set K := (m + 1) / 4 with hK
-  set L := K / (a + 1) with hL
-  have hcard : (coarseZone m).card = K := by unfold coarseZone; simp [hK]
-  rw [hcard]
-  have hL0 : L ≠ 0 := by
-    intro h0; rw [h0, Nat.log_zero_right] at hHL; omega
-  have hpow : 2 ^ (2 * H) ≤ L := Nat.pow_le_of_le_log hL0 hHL
-  have h16 : 16 ≤ 2 ^ (2 * H) := by
-    calc 16 = 2 ^ 4 := by norm_num
-      _ ≤ 2 ^ (2 * H) := Nat.pow_le_pow_right (by norm_num) (by omega)
-  have hHL' : H < L := by
-    have : H < 2 ^ (2 * H) := by
-      have := Nat.lt_two_pow_self (n := 2 * H); omega
-    omega
-  have hKL : (a + 1) * L ≤ K := by rw [hL, mul_comm]; exact Nat.div_mul_le_self K (a + 1)
-  have hKpos : (0 : ℝ) < K := by
-    have : 0 < K := by
-      have : 1 ≤ L := by omega
-      nlinarith
-    exact_mod_cast this
-  have hLH : (0 : ℝ) < (L : ℝ) - H := by
-    have : (H : ℝ) < L := by exact_mod_cast hHL'
-    linarith
-  have hsq : 0 < √((L : ℝ) - H) := Real.sqrt_pos.mpr hLH
-  have hsqL : √((L : ℝ) - H) ≤ L := by
-    rw [Real.sqrt_le_left (by positivity)]
-    have h1 : (1 : ℝ) ≤ L := by exact_mod_cast (show 1 ≤ L by omega)
-    nlinarith
-  have hb := sum_semiLocal_le H ha hsize
-  calc (K : ℝ)⁻¹ * ∑ k ∈ coarseZone m, ∑ h ∈ Icc 2 (min H k), semiLocal m k (cancellerBelow m a k) h
-      ≤ (K : ℝ)⁻¹ * ((a + 1) * 2 ^ (a + H + 8) / (3 * π)) :=
-        mul_le_mul_of_nonneg_left hb (by positivity)
-    _ ≤ 5 * 2 ^ (a + 6) / (3 * π) * (2 ^ H / √((L : ℝ) - H)) := by
-        have hKL' : ((a : ℝ) + 1) * L ≤ K := by exact_mod_cast hKL
-        have key : ((a : ℝ) + 1) * √((L : ℝ) - H) * 4 ≤ 5 * K := by
-          have : ((a : ℝ) + 1) * √((L : ℝ) - H) ≤ ((a : ℝ) + 1) * L :=
-            mul_le_mul_of_nonneg_left hsqL (by positivity)
-          nlinarith
-        have hπ : 0 < 3 * π := by positivity
-        have hP : (0 : ℝ) < 2 ^ (a + 6) * 2 ^ H := by positivity
-        have e1 : (K : ℝ)⁻¹ * ((a + 1) * 2 ^ (a + H + 8) / (3 * π)) =
-            ((a + 1) * 4) * (2 ^ (a + 6) * 2 ^ H) / (3 * π * K) := by
-          rw [show a + H + 8 = (a + 6) + H + 2 by ring, pow_add, pow_add]; field_simp; ring
-        have e2 : 5 * 2 ^ (a + 6) / (3 * π) * (2 ^ H / √((L : ℝ) - H)) =
-            5 * (2 ^ (a + 6) * 2 ^ H) / (3 * π * √((L : ℝ) - H)) := by
-          field_simp
-        rw [e1, e2, div_le_div_iff₀ (by positivity) (by positivity)]
-        have h := mul_le_mul_of_nonneg_left key (le_of_lt (mul_pos hP hπ))
-        calc ((a : ℝ) + 1) * 4 * (2 ^ (a + 6) * 2 ^ H) * (3 * π * √((L : ℝ) - H))
-            = (2 ^ (a + 6) * 2 ^ H * (3 * π)) * (((a : ℝ) + 1) * √((L : ℝ) - H) * 4) := by ring
-          _ ≤ (2 ^ (a + 6) * 2 ^ H * (3 * π)) * (5 * K) := h
-          _ = 5 * (2 ^ (a + 6) * 2 ^ H) * (3 * π * K) := by ring
 
 /-! ### The decomposition `V_k = F_k + ∑_h SL^{[h]}_k + SB_k` -/
 
@@ -1349,406 +1284,6 @@ theorem relVariance_decomp {m k κ : ℕ} (hk : 1 ≤ k) (hkκ : k ≤ κ) :
       refine tsum_congr fun s => ?_
       rw [show k - (k - i) = i by omega, ← hN, mul_assoc]
 
-/-- **Proposition 7.15(c)**, the identity `NL_k = SB_k + ∑_{h=H_N+1}^{k} SL^{[h]}_k` (for
-`H_N ≥ 1`, i.e. `N ≥ 16`; for `H_N = 0` the second sum starts at `h = 2`). -/
-theorem nonLocal_eq {m a k : ℕ} (hk : 1 ≤ k) (hH : 1 ≤ hN m) :
-    nonLocal m a k = sideband m k (cancellerBelow m a k) +
-      ∑ h ∈ Icc (hN m + 1) k, semiLocal m k (cancellerBelow m a k) h := by
-  have hkκ : k ≤ cancellerBelow m a k := by rw [cancellerBelow_eq]; omega
-  unfold nonLocal relVarianceA
-  rw [relVariance_decomp hk hkκ]
-  have hsplit : Icc 2 k = Icc 2 (min (hN m) k) ∪ Icc (hN m + 1) k := by
-    ext x; simp only [mem_Icc, mem_union]; omega
-  have hdisj : Disjoint (Icc 2 (min (hN m) k)) (Icc (hN m + 1) k) := by
-    rw [Finset.disjoint_left]; intro x hx hx'; simp only [mem_Icc] at hx hx'; omega
-  rw [hsplit, sum_union hdisj]
-  ring
-
-/-! ### Proposition 7.15(a) as stated, via dyadic weights -/
-
-/-- The dyadic weight `2^{-H}(1 + ∑_{u=1}^{H} 2^{u-1} [2^u ∣ t]) = min(1, 2^{v₂(t) - H})`. -/
-noncomputable def dyadicWeight (H : ℕ) (t : ℤ) : ℝ :=
-  (1 + ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) * (if (2 : ℤ) ^ u ∣ t then 1 else 0)) / 2 ^ H
-
-theorem two_pow_dvd_iff {v u : ℕ} {t' : ℤ} (ht' : Odd t') : (2 : ℤ) ^ u ∣ 2 ^ v * t' ↔ u ≤ v := by
-  constructor
-  · intro h
-    by_contra hlt
-    push Not at hlt
-    have e : (2 : ℤ) ^ u = 2 ^ v * 2 ^ (u - v) := by rw [← pow_add]; congr 1; omega
-    rw [e] at h
-    have h2 := (mul_dvd_mul_iff_left (by positivity : (2 : ℤ) ^ v ≠ 0)).mp h
-    have h3 : (2 : ℤ) ∣ t' := dvd_trans (dvd_pow_self 2 (by omega)) h2
-    exact (Int.not_even_iff_odd.mpr ht') (even_iff_two_dvd.mpr h3)
-  · intro h
-    exact dvd_mul_of_dvd_left (pow_dvd_pow 2 h) _
-
-theorem sum_Icc_two_pow_pred (n : ℕ) : ∑ u ∈ Icc 1 n, (2 : ℝ) ^ (u - 1) = 2 ^ n - 1 := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [sum_Icc_succ_top (by omega), ih, show n + 1 - 1 = n by omega, pow_succ]
-    ring
-
-theorem dyadicWeight_eq {H v : ℕ} {t t' : ℤ} (ht' : Odd t') (ht : t = 2 ^ v * t') :
-    dyadicWeight H t = 2 ^ min H v / 2 ^ H := by
-  unfold dyadicWeight
-  congr 1
-  have : ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) * (if (2 : ℤ) ^ u ∣ t then 1 else 0) =
-      ∑ u ∈ Icc 1 (min H v), (2 : ℝ) ^ (u - 1) := by
-    rw [← sum_filter_add_sum_filter_not (Icc 1 H) (fun u => u ≤ v)]
-    have h1 : ∑ u ∈ (Icc 1 H).filter (fun u => u ≤ v),
-        (2 : ℝ) ^ (u - 1) * (if (2 : ℤ) ^ u ∣ t then 1 else 0) = ∑ u ∈ Icc 1 (min H v), (2 : ℝ) ^ (u - 1) := by
-      have hs : (Icc 1 H).filter (fun u => u ≤ v) = Icc 1 (min H v) := by
-        ext x; simp only [mem_filter, mem_Icc]; omega
-      rw [hs]
-      refine sum_congr rfl fun u hu => ?_
-      have hu' : u ≤ v := by have := (mem_Icc.mp hu).2; omega
-      have hd : (2 : ℤ) ^ u ∣ t := by rw [ht]; exact (two_pow_dvd_iff ht').mpr hu'
-      simp only [hd, ↓reduceIte, mul_one]
-    have h2 : ∑ u ∈ (Icc 1 H).filter (fun u => ¬ u ≤ v),
-        (2 : ℝ) ^ (u - 1) * (if (2 : ℤ) ^ u ∣ t then 1 else 0) = 0 := by
-      refine sum_eq_zero fun u hu => ?_
-      have hu' : ¬ u ≤ v := (mem_filter.mp hu).2
-      have hd : ¬ (2 : ℤ) ^ u ∣ t := by rw [ht]; exact fun h => hu' ((two_pow_dvd_iff ht').mp h)
-      simp only [hd, ↓reduceIte, mul_zero]
-    rw [h1, h2, add_zero]
-  rw [this, sum_Icc_two_pow_pred]
-  ring
-
-theorem dyadicWeight_nonneg (H : ℕ) (t : ℤ) : 0 ≤ dyadicWeight H t := by
-  unfold dyadicWeight
-  apply div_nonneg _ (by positivity)
-  refine add_nonneg zero_le_one (sum_nonneg fun u _ => mul_nonneg (by positivity) ?_)
-  split_ifs <;> norm_num
-
-/-- **Lemma 7.14 for `F(n, D)` with `j = H - v₂(t)`**: for `H + w ≤ D` and `t ≠ 0`,
-`∑_{i<Λ} cosProd((a+1)(ℓ₀+i), D, t) ≤ Λ · dyadicWeight H t + 1`. -/
-theorem sum_cosProd_le_dyadic {a w o D H : ℕ} (ho : Odd o) (hao : a + 1 = 2 ^ w * o)
-    (hHD : H + w ≤ D) {t : ℤ} (ht : t ≠ 0) (ℓ₀ Λ : ℕ) :
-    ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ Λ * dyadicWeight H t + 1 := by
-  obtain ⟨v, t', ht', htv⟩ := int_two_pow_mul_odd ht
-  rw [dyadicWeight_eq ht' htv]
-  have hΛ0 : (0 : ℝ) ≤ Λ := Nat.cast_nonneg _
-  rcases lt_or_ge v H with hvH | hvH
-  · obtain ⟨j, hj⟩ : ∃ j, H = v + j := ⟨H - v, by omega⟩
-    have key := progression_sum_le_range (L := Λ) (j := j) ho hao ht' htv
-      (fun e => (D : ℝ) + 1 - e) (ℓ₀ : ℤ)
-    have hle : ∀ i : ℕ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤
-        ∏ e ∈ Ioc (v + w) (v + w + j), cos (π * t * ((a + 1) * ((((ℓ₀ : ℤ)) : ℝ) + i) +
-          ((D : ℝ) + 1 - e)) / 2 ^ e) ^ 2 := by
-      intro i
-      unfold cosProd
-      have hsub : Ioc (v + w) (v + w + j) ⊆ Icc 1 D := by
-        intro x; simp only [mem_Ioc, mem_Icc]; omega
-      rw [← prod_sdiff hsub]
-      refine le_trans (mul_le_of_le_one_left (prod_cos_sq_nonneg _ _) (prod_cos_sq_le_one _ _))
-        (le_of_eq ?_)
-      refine prod_congr rfl fun e he => ?_
-      have he' := mem_Ioc.mp he
-      congr 4
-      rw [Nat.cast_sub (by omega)]
-      push_cast
-      ring
-    have hp : (0 : ℝ) < 2 ^ j := by positivity
-    have hsum : ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ (Λ + 2 ^ j - 1) / 2 ^ j := by
-      rw [le_div_iff₀ hp, mul_comm]
-      exact le_trans (mul_le_mul_of_nonneg_left (sum_le_sum fun i _ => hle i) hp.le) key
-    have h1 : ((Λ : ℝ) + 2 ^ j - 1) / 2 ^ j ≤ Λ / 2 ^ j + 1 := by
-      rw [div_add_one hp.ne']
-      exact div_le_div_of_nonneg_right (by linarith) hp.le
-    have h2 : (Λ : ℝ) / 2 ^ j = Λ * (2 ^ min H v / 2 ^ H) := by
-      rw [show min H v = v by omega, hj, pow_add]; field_simp
-    linarith
-  · rw [show min H v = H by omega, div_self (by positivity), mul_one]
-    have : ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ Λ := by
-      calc ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ ∑ i ∈ range Λ, (1 : ℝ) :=
-            sum_le_sum fun i _ => cosProd_le_one _ _ _
-        _ = Λ := by simp
-    linarith
-
-theorem sincBound_two_pow_mul (c : ℝ) (u : ℕ) (s : ℤ) :
-    sincBound c (2 ^ u * s) = sincBound (2 ^ u * c) s := by
-  unfold sincBound
-  push_cast
-  rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 ^ u)]
-  ring_nf
-
-/-- `∑_{t ∈ 2^u ℤ} sb_c(t) ≤ 8/(3π 2^u c)`. -/
-theorem tsum_sincBound_dvd {c : ℝ} (hc : 0 < c) (u : ℕ) :
-    Summable (fun t : ℤ => if (2 : ℤ) ^ u ∣ t then sincBound c t else 0) ∧
-      ∑' t : ℤ, (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0) ≤ 8 / (3 * (π * (2 ^ u * c))) := by
-  have hs := summable_sincBound (c := c) hc
-  refine ⟨summable_ite hs.1 _, ?_⟩
-  have hinj : Function.Injective (fun s : ℤ => 2 ^ u * s) := fun x y h =>
-    mul_left_cancel₀ (by positivity : (2 : ℤ) ^ u ≠ 0) h
-  rw [← hinj.tsum_eq]
-  · have e : ∀ s : ℤ, (if (2 : ℤ) ^ u ∣ 2 ^ u * s then sincBound c (2 ^ u * s) else 0) =
-        sincBound (2 ^ u * c) s := fun s => by
-      simp only [dvd_mul_right, ↓reduceIte, sincBound_two_pow_mul]
-    simp_rw [e]
-    exact (summable_sincBound (by positivity : 0 < 2 ^ u * c)).2
-  · intro t ht
-    rw [Function.mem_support] at ht
-    by_cases h : (2 : ℤ) ^ u ∣ t
-    · obtain ⟨s, hs⟩ := h
-      exact ⟨s, hs.symm⟩
-    · simp [h] at ht
-
-/-- `∑_{t} sb_c(t) · dyadicWeight H t ≤ (8/(3πc)) (1 + H/2)/2^H`. -/
-theorem tsum_sincBound_dyadicWeight {c : ℝ} (hc : 0 < c) (H : ℕ) :
-    Summable (fun t : ℤ => sincBound c t * dyadicWeight H t) ∧
-      ∑' t : ℤ, sincBound c t * dyadicWeight H t ≤ 8 / (3 * (π * c)) * (1 + H / 2) / 2 ^ H := by
-  have hs := summable_sincBound (c := c) hc
-  have hdvd := fun u => tsum_sincBound_dvd (c := c) hc u
-  have hpt : ∀ t : ℤ, sincBound c t * dyadicWeight H t =
-      (sincBound c t + ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) *
-        (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0)) / 2 ^ H := by
-    intro t
-    unfold dyadicWeight
-    rw [mul_div_assoc', mul_add, mul_one, Finset.mul_sum]
-    congr 2
-    refine sum_congr rfl fun u _ => ?_
-    split_ifs <;> ring
-  simp_rw [hpt]
-  have hsum_u : Summable (fun t : ℤ => ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) *
-      (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0)) :=
-    summable_sum fun u _ => (hdvd u).1.mul_left _
-  have hS : Summable (fun t : ℤ => (sincBound c t + ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) *
-      (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0))) := hs.1.add hsum_u
-  refine ⟨hS.div_const _, ?_⟩
-  rw [tsum_div_const, Summable.tsum_add hs.1 hsum_u,
-    Summable.tsum_finsetSum (fun u _ => (hdvd u).1.mul_left _)]
-  simp_rw [tsum_mul_left]
-  apply div_le_div_of_nonneg_right _ (by positivity)
-  have hb : ∑ u ∈ Icc 1 H, (2 : ℝ) ^ (u - 1) *
-      ∑' t : ℤ, (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0) ≤
-      ∑ u ∈ Icc 1 H, (8 / (3 * (π * c))) / 2 := by
-    refine sum_le_sum fun u hu => ?_
-    have hu1 : 1 ≤ u := (mem_Icc.mp hu).1
-    calc (2 : ℝ) ^ (u - 1) * ∑' t : ℤ, (if (2 : ℤ) ^ u ∣ t then sincBound c t else 0)
-        ≤ 2 ^ (u - 1) * (8 / (3 * (π * (2 ^ u * c)))) :=
-          mul_le_mul_of_nonneg_left (hdvd u).2 (by positivity)
-      _ = (8 / (3 * (π * c))) / 2 := by
-          rw [show u = (u - 1) + 1 by omega, pow_succ]
-          field_simp
-          rw [show u - 1 + 1 - 1 = u - 1 by omega]
-  rw [sum_const, Nat.card_Icc, nsmul_eq_mul] at hb
-  have h1 := hs.2
-  have : ((H + 1 - 1 : ℕ) : ℝ) = H := by norm_num
-  rw [this] at hb
-  nlinarith
-
-/-- The majorant summed over `Λ` consecutive `ℓ`, with dyadic weights. -/
-theorem sum_majorant_le_dyadic {a w o D H : ℕ} (ho : Odd o) (hao : a + 1 = 2 ^ w * o)
-    (hHD : H + w ≤ D) {c : ℝ} (hc : 0 < c) (ℓ₀ Λ : ℕ) :
-    ∑ i ∈ range Λ, fineMajorant c ((a + 1) * (ℓ₀ + i)) D ≤
-      8 / (3 * (π * c)) * (Λ * (1 + H / 2) / 2 ^ H + 1) := by
-  unfold fineMajorant
-  rw [← Summable.tsum_finsetSum (fun i _ => summable_majorant_terms hc _ D)]
-  simp_rw [← Finset.mul_sum]
-  have hs0 := summable_sincBound hc
-  have hdw := tsum_sincBound_dyadicWeight hc H
-  calc ∑' t : ℤ, sincBound c t * ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t
-      ≤ ∑' t : ℤ, (Λ * (sincBound c t * dyadicWeight H t) + sincBound c t) := by
-        refine Summable.tsum_le_tsum (fun t => ?_) ?_ ((hdw.1.mul_left _).add hs0.1)
-        · by_cases ht : t = 0
-          · subst ht; simp [sincBound_zero]
-          · have h := sum_cosProd_le_dyadic ho hao hHD ht ℓ₀ Λ
-            have h0 := sincBound_nonneg c t
-            calc sincBound c t * ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t
-                ≤ sincBound c t * (Λ * dyadicWeight H t + 1) := mul_le_mul_of_nonneg_left h h0
-              _ = _ := by ring
-        · refine Summable.of_nonneg_of_le (fun t => mul_nonneg (sincBound_nonneg c t)
-            (sum_nonneg fun i _ => cosProd_nonneg _ _ _)) (fun t => ?_) (hs0.1.mul_left (Λ : ℝ))
-          have hsum : ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ Λ := by
-            calc ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t ≤ ∑ i ∈ range Λ, (1 : ℝ) :=
-                  sum_le_sum fun i _ => cosProd_le_one _ _ _
-              _ = Λ := by simp
-          calc sincBound c t * ∑ i ∈ range Λ, cosProd ((a + 1) * (ℓ₀ + i)) D t
-              ≤ sincBound c t * Λ := mul_le_mul_of_nonneg_left hsum (sincBound_nonneg c t)
-            _ = Λ * sincBound c t := mul_comm _ _
-    _ = Λ * ∑' t : ℤ, sincBound c t * dyadicWeight H t + ∑' t : ℤ, sincBound c t := by
-        rw [Summable.tsum_add (hdw.1.mul_left _) hs0.1, tsum_mul_left]
-    _ ≤ Λ * (8 / (3 * (π * c)) * (1 + H / 2) / 2 ^ H) + 8 / (3 * (π * c)) := by
-        gcongr
-        · exact hdw.2
-        · exact hs0.2
-    _ = 8 / (3 * (π * c)) * (Λ * (1 + H / 2) / 2 ^ H + 1) := by ring
-
-/-- Step A of Proposition 7.15(a): `F_k ≤ fineMajorant c ((a + 1)ℓ_k) D(k)` with `c = 2^{-(a+4)}`. -/
-theorem fineFloorK_le_majorant_coarse {m a k : ℕ} (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1)
-    (hk : k ∈ coarseZone m) :
-    fineFloorK m k (cancellerBelow m a k) ≤
-      fineMajorant (1 / 2 ^ (a + 4)) ((a + 1) * ellK m a k) (dRho m a (rhoK m a k)) := by
-  obtain ⟨hk1, hfit, hkκ, hκm, hhalf⟩ := coarse_facts ha hsize hk
-  have hn := nKappa_eq hfit
-  rw [fineFloorK_eq hk1 hkκ hκm, hn]
-  have hD : cancellerBelow m a k - k = dRho m a (rhoK m a k) := by rw [cancellerBelow_eq]; omega
-  rw [hD]
-  apply fineFloor_le_majorant (by positivity)
-  · omega
-  · unfold dRho jZero; omega
-  · have hreal := two_pow_dRho_le ha hsize hk
-    rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (by positivity),
-      show a + 4 = (a + 2) + 2 by ring, pow_add, pow_add]
-    nlinarith
-
-/-- **Proposition 7.15(a), dyadic form.** For every `H` with `H + ⌊log₂(a + 1)⌋ ≤ j₀`,
-`∑_{k ∈ 𝒦} F_k ≤ (a + 1) (2^{a+7}/(3π)) (Λ (1 + H/2)/2^H + 1)`, where `Λ = ℓ_1 + 1 - ℓ_K`
-(`(a + 1)Λ ≤ ⌊N/4⌋ + 2a`). -/
-theorem sum_fineFloorK_le_dyadic {m a H : ℕ} (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1)
-    (hH : H + Nat.log 2 (a + 1) ≤ jZero m) :
-    ∑ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k) ≤
-      (a + 1) * (2 ^ (a + 7) / (3 * π)) *
-        (((ellK m a 1 + 1 - ellK m a ((m + 1) / 4) : ℕ) : ℝ) * (1 + H / 2) / 2 ^ H + 1) := by
-  obtain ⟨w, o, ho, hao⟩ := Nat.exists_eq_two_pow_mul_odd (by omega : a + 1 ≠ 0)
-  have hw : w ≤ Nat.log 2 (a + 1) :=
-    Nat.le_log_of_pow_le (by norm_num) (by rw [hao]; exact Nat.le_mul_of_pos_right _ ho.pos)
-  have hc : (0 : ℝ) < 1 / 2 ^ (a + 4) := by positivity
-  set Λ := ellK m a 1 + 1 - ellK m a ((m + 1) / 4)
-  calc ∑ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k)
-      ≤ ∑ k ∈ coarseZone m, fineMajorant (1 / 2 ^ (a + 4)) ((a + 1) * ellK m a k)
-          (dRho m a (rhoK m a k)) := sum_le_sum fun k hk => fineFloorK_le_majorant_coarse ha hsize hk
-    _ ≤ ∑ ρ ∈ range (a + 1), ∑ i ∈ range Λ, fineMajorant (1 / 2 ^ (a + 4))
-          ((a + 1) * (ellK m a ((m + 1) / 4) + i)) (dRho m a ρ) :=
-        sum_coarse_le_pairs ha hsize (fun ρ ℓ => fineMajorant (1 / 2 ^ (a + 4)) ((a + 1) * ℓ) (dRho m a ρ))
-          (fun _ _ => tsum_nonneg fun t => mul_nonneg (sincBound_nonneg _ t) (cosProd_nonneg _ _ _))
-    _ ≤ ∑ ρ ∈ range (a + 1), 8 / (3 * (π * (1 / 2 ^ (a + 4)))) * (Λ * (1 + H / 2) / 2 ^ H + 1) :=
-        sum_le_sum fun ρ _ => sum_majorant_le_dyadic ho hao
-          (by have := jZero_le_dRho m a ρ; omega) hc _ _
-    _ = (a + 1) * (2 ^ (a + 7) / (3 * π)) * (Λ * (1 + H / 2) / 2 ^ H + 1) := by
-        rw [sum_const, card_range, nsmul_eq_mul, show a + 7 = (a + 4) + 3 by ring, pow_add]
-        push_cast
-        field_simp
-        ring
-
-/-- **Proposition 7.15(a)** as stated: with `L_a = ⌊⌊N/4⌋/(a + 1)⌋`, the average of `F_k` over
-`𝒦` is at most `(2^{a+7}/(3π)) (log₂ L_a + 5)/√L_a`. -/
-theorem fineFloor_avg_le_paper {m a : ℕ} (ha : 1 ≤ a) (hsize : 4 * (jZero m + a) ≤ m + 1) :
-    ((coarseZone m).card : ℝ)⁻¹ * ∑ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k) ≤
-      2 ^ (a + 7) / (3 * π) *
-        ((Real.logb 2 (((m + 1) / 4 / (a + 1) : ℕ) : ℝ) + 5) /
-          √(((m + 1) / 4 / (a + 1) : ℕ) : ℝ)) := by
-  set K := (m + 1) / 4 with hK
-  set L := K / (a + 1) with hL
-  set C : ℝ := 2 ^ (a + 7) / (3 * π) with hC
-  have hC0 : 0 < C := by positivity
-  have hcard : (coarseZone m).card = K := by unfold coarseZone; simp [hK]
-  rw [hcard]
-  have hKa : a + 1 ≤ K := by unfold jZero at hsize; omega
-  have hL1 : 1 ≤ L := by rw [hL]; exact (Nat.le_div_iff_mul_le (by omega)).mpr (by omega)
-  have hKL : (a + 1) * L ≤ K := by rw [hL, mul_comm]; exact Nat.div_mul_le_self K (a + 1)
-  have hKpos : (0 : ℝ) < K := by exact_mod_cast (show 0 < K by omega)
-  have hLpos : (0 : ℝ) < L := by exact_mod_cast (show 0 < L by omega)
-  have hlogb : (Nat.log 2 L : ℝ) ≤ Real.logb 2 L := by
-    have := natLog_le_logb L 2; push_cast at this; exact this
-  have hlog0 : (0 : ℝ) ≤ Nat.log 2 L := Nat.cast_nonneg _
-  rcases eq_or_lt_of_le hL1 with hL1' | hL2
-  · -- `L_a = 1`: the trivial bound `F_k ≤ ∑_t sb(t) ≤ 2^{a+7}/(3π)`
-    rw [← hL1']
-    have hsb : ∀ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k) ≤ C := by
-      intro k hk
-      refine le_trans (fineFloorK_le_majorant_coarse ha hsize hk) ?_
-      have hs := summable_sincBound (c := 1 / 2 ^ (a + 4)) (by positivity)
-      calc fineMajorant (1 / 2 ^ (a + 4)) ((a + 1) * ellK m a k) (dRho m a (rhoK m a k))
-          ≤ ∑' t : ℤ, sincBound (1 / 2 ^ (a + 4)) t :=
-            Summable.tsum_le_tsum (fun t => mul_le_of_le_one_right (sincBound_nonneg _ t)
-              (cosProd_le_one _ _ _)) (summable_majorant_terms (by positivity) _ _) hs.1
-        _ ≤ 8 / (3 * (π * (1 / 2 ^ (a + 4)))) := hs.2
-        _ = C := by rw [hC, show a + 7 = (a + 4) + 3 by ring, pow_add]; field_simp; ring
-    have hsum : ∑ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k) ≤ K * C := by
-      calc _ ≤ ∑ k ∈ coarseZone m, C := sum_le_sum hsb
-        _ = K * C := by rw [sum_const, hcard, nsmul_eq_mul]
-    simp only [Nat.cast_one, Real.logb_one, Real.sqrt_one, zero_add, div_one]
-    rw [inv_mul_le_iff₀ hKpos]
-    nlinarith
-  · -- `L_a ≥ 2`: `H = ⌊½ log₂ L_a⌋`
-    set H := Nat.log 2 L / 2 with hHdef
-    have h2H : 2 * H ≤ Nat.log 2 L := by omega
-    have hpowH : 2 ^ (2 * H) ≤ L := Nat.pow_le_of_le_log (by omega) h2H
-    have hHj : H + Nat.log 2 (a + 1) ≤ jZero m := by
-      have hpa : 2 ^ Nat.log 2 (a + 1) ≤ a + 1 := Nat.pow_log_le_self 2 (by omega)
-      have hj := lt_two_pow_jZero m
-      have hsq : 2 ^ (2 * (H + Nat.log 2 (a + 1))) < 2 ^ (2 * jZero m) := by
-        have e1 : 2 ^ (2 * (H + Nat.log 2 (a + 1))) = 2 ^ (2 * H) * (2 ^ Nat.log 2 (a + 1)) ^ 2 := by
-          rw [← pow_mul, ← pow_add]; congr 1; ring
-        have e2 : 2 ^ (2 * jZero m) = (2 ^ jZero m) ^ 2 := by rw [← pow_mul, mul_comm]
-        rw [e1, e2]
-        have hK1 : K < 2 ^ jZero m := by omega
-        calc 2 ^ (2 * H) * (2 ^ Nat.log 2 (a + 1)) ^ 2 ≤ L * (a + 1) ^ 2 :=
-              Nat.mul_le_mul hpowH (Nat.pow_le_pow_left hpa 2)
-          _ = ((a + 1) * L) * (a + 1) := by ring
-          _ ≤ K * K := Nat.mul_le_mul hKL hKa
-          _ < 2 ^ jZero m * 2 ^ jZero m := Nat.mul_self_lt_mul_self hK1
-          _ = (2 ^ jZero m) ^ 2 := by ring
-      have := (Nat.pow_lt_pow_iff_right (by norm_num : 1 < 2)).mp hsq
-      omega
-    have hmain := sum_fineFloorK_le_dyadic ha hsize hHj
-    set Λ := ellK m a 1 + 1 - ellK m a ((m + 1) / 4) with hΛdef
-    have hK1 : 1 ≤ K := by omega
-    have hKfit : K + jZero m ≤ m := by unfold jZero at hsize ⊢; omega
-    have hΛ : (a + 1) * Λ ≤ K + 2 * a := ell_range_card (a := a) hK1 hKfit
-    -- the four elementary estimates
-    have h1 : ((a : ℝ) + 1) * Λ / K ≤ 2 := by
-      rw [div_le_iff₀ hKpos]
-      have : (a + 1) * Λ ≤ 2 * K := by
-        have : a * 2 ≤ K := by
-          have : a * L ≤ K := le_trans (Nat.mul_le_mul_right L (Nat.le_succ a)) hKL
-          nlinarith
-        omega
-      exact_mod_cast (by linarith [this] : ((a + 1) * Λ : ℕ) ≤ 2 * K)
-    have h2 : ((a : ℝ) + 1) / K ≤ 1 / L := by
-      rw [div_le_div_iff₀ hKpos hLpos, one_mul]
-      exact_mod_cast hKL
-    have hsqL : 0 < √(L : ℝ) := Real.sqrt_pos.mpr hLpos
-    have h3 : (1 + (H : ℝ) / 2) / 2 ^ H ≤ (2 + H) / √(L : ℝ) := by
-      have hlt : (L : ℝ) < 4 * ((2 : ℝ) ^ H) ^ 2 := by
-        have h' : L < 2 ^ (Nat.log 2 L + 1) := Nat.lt_pow_succ_log_self (by norm_num) L
-        have h'' : 2 ^ (Nat.log 2 L + 1) ≤ 2 ^ (2 * H + 2) := Nat.pow_le_pow_right (by norm_num) (by omega)
-        have : L < 4 * (2 ^ H) ^ 2 := by
-          calc L < 2 ^ (2 * H + 2) := lt_of_lt_of_le h' h''
-            _ = 4 * (2 ^ H) ^ 2 := by rw [pow_add, ← pow_mul, mul_comm H 2]; ring
-        exact_mod_cast this
-      have hs2 : √(L : ℝ) ≤ 2 * 2 ^ H := by
-        rw [Real.sqrt_le_left (by positivity)]
-        nlinarith
-      rw [div_le_div_iff₀ (by positivity) hsqL]
-      have hH0 : (0 : ℝ) ≤ 1 + (H : ℝ) / 2 := by positivity
-      calc (1 + (H : ℝ) / 2) * √(L : ℝ) ≤ (1 + (H : ℝ) / 2) * (2 * 2 ^ H) :=
-            mul_le_mul_of_nonneg_left hs2 hH0
-        _ = (2 + H) * 2 ^ H := by ring
-    have h4 : (1 : ℝ) / L ≤ 1 / √(L : ℝ) := by
-      rw [div_le_div_iff₀ hLpos hsqL, one_mul, one_mul]
-      rw [Real.sqrt_le_left hLpos.le]
-      have : (1 : ℝ) ≤ L := by exact_mod_cast hL1
-      nlinarith
-    have h5 : (2 * H : ℝ) ≤ Real.logb 2 L := by
-      have : (2 * H : ℝ) ≤ Nat.log 2 L := by exact_mod_cast h2H
-      linarith
-    -- combine
-    have hstep : (K : ℝ)⁻¹ * ∑ k ∈ coarseZone m, fineFloorK m k (cancellerBelow m a k) ≤
-        C * (((a : ℝ) + 1) * Λ / K * ((1 + (H : ℝ) / 2) / 2 ^ H) + ((a : ℝ) + 1) / K) := by
-      rw [inv_mul_le_iff₀ hKpos]
-      refine le_trans hmain (le_of_eq ?_)
-      rw [hC]
-      field_simp
-    refine le_trans hstep ?_
-    have hA0 : (0 : ℝ) ≤ (1 + (H : ℝ) / 2) / 2 ^ H := by positivity
-    have hB0 : (0 : ℝ) ≤ ((a : ℝ) + 1) * Λ / K := by positivity
-    have hX : ((a : ℝ) + 1) * Λ / K * ((1 + (H : ℝ) / 2) / 2 ^ H) ≤ 2 * ((2 + H) / √(L : ℝ)) := by
-      calc ((a : ℝ) + 1) * Λ / K * ((1 + (H : ℝ) / 2) / 2 ^ H)
-          ≤ 2 * ((1 + (H : ℝ) / 2) / 2 ^ H) := mul_le_mul_of_nonneg_right h1 hA0
-        _ ≤ 2 * ((2 + H) / √(L : ℝ)) := mul_le_mul_of_nonneg_left h3 (by norm_num)
-    have hY : ((a : ℝ) + 1) / K ≤ 1 / √(L : ℝ) := le_trans h2 h4
-    have hZ : (5 + 2 * (H : ℝ)) / √(L : ℝ) ≤ (Real.logb 2 L + 5) / √(L : ℝ) :=
-      div_le_div_of_nonneg_right (by linarith) hsqL.le
-    calc C * (((a : ℝ) + 1) * Λ / K * ((1 + (H : ℝ) / 2) / 2 ^ H) + ((a : ℝ) + 1) / K)
-        ≤ C * (2 * ((2 + H) / √(L : ℝ)) + 1 / √(L : ℝ)) :=
-          mul_le_mul_of_nonneg_left (add_le_add hX hY) hC0.le
-      _ = C * ((5 + 2 * H) / √(L : ℝ)) := by field_simp; ring
-      _ ≤ C * ((Real.logb 2 L + 5) / √(L : ℝ)) := mul_le_mul_of_nonneg_left hZ hC0.le
-
 /-! ### Proposition 7.15(c) for every cut-off `H` with `2^H = o(N)` -/
 
 /-- `NL^{(H)}_k = V^{(a)}_k - F_k - ∑_{h=2}^{min(H,k)} SL^{[h]}_k` for a cut-off `H`. -/
@@ -1760,7 +1295,7 @@ noncomputable def nonLocalGen (m a H k : ℕ) : ℝ :=
 noncomputable def meanNonLocalGen (m a H : ℕ) : ℝ :=
   ((coarseZone m).card : ℝ)⁻¹ * ∑ k ∈ coarseZone m, nonLocalGen m a H k
 
-/-- **Proposition 7.15(c), strengthened**: for every cut-off sequence `H(m)` with
+/-- **Proposition 7.15(c)**: for every cut-off sequence `H(m)` with
 `2^{H(m)}/N → 0` (e.g. `H(m) = ⌊log₂ N⌋ - ⌈log₂ log₂ N⌉`, far beyond `⌊¼ log₂ N⌋`), Conjecture S
 holds for `a` iff the average of `NL^{(H)}_k` over `𝒦` tends to `0`. -/
 theorem conjectureS_iff_meanNonLocalGen {a : ℕ} (ha : 1 ≤ a) (H : ℕ → ℕ)

@@ -7,52 +7,73 @@ statements below need.
 input tape, $k\ge1$ two-way work tapes over a finite alphabet, and a write-only one-way output tape that receives at most
 one bit per step; all heads start at cell~$0$ and move by $-1$, $0$ or~$+1$~\cite[Section~2.1]{BoundedNesting2026}. For
 $d\ge1$ let $b(d)=\max(1,\lceil\log_2d\rceil)$ and $L=d^2b(d)$. The input is a $d\times d$ matrix with $b(d)$-bit entries
-in row-major order, and the machine must write its transpose; on input~$w$, the output bit at position~$\ell$ is
-$w_{\tpos(\ell)}$. Statement~(T) says that some machine does this within $c(L+1)$ steps, for a constant~$c$ and
-every~$d$; its formal version is fixed in a frozen file of the first paper's library~\cite{FirstPaper2026}. A machine is
-\emph{oblivious} at a length if its head positions, append times and halting time do not depend on the input of that
-length. The \emph{trace} of a run is the sequence of all head moves together with the append times and the halting time;
-for a uniformly random input~$X$, $\tau(X)$ is a random trace. The \emph{value} $v_t$ of step~$t$ consists of the state
-after the step, the symbols written and the output bit or its absence; $\beta(M)$ bits suffice to encode it.
+in row-major order, and the machine must write its transpose: on input~$w$, the output bit at position~$\ell$ is
+$w_{\tpos(\ell)}$, where $\tpos((di+j)b+s)=(dj+i)b+s$ for $0\le i,j<d$ and $0\le s<b=b(d)$. Statement~(T) says that some
+machine does this within $c(L+1)$ steps, for a constant~$c$ and every~$d$; its formal version,
+\lean{Transpose.LinearTimeTransposable}, is fixed in a frozen file of the first paper's library~\cite{FirstPaper2026}. A
+machine is \emph{oblivious} at a length if its head positions, append times and halting time do not depend on the input
+of that length. The \emph{trace} of a run is the sequence of all head moves together with the append times and the
+halting time; for a uniformly random input~$X$, $\tau(X)$ is a random trace. The \emph{value} $v_t$ of step~$t$ consists
+of the state after the step, the symbols written and the output bit or its absence; $\beta(M)$ bits suffice to encode
+it, where $\beta(M)$ is the value width of~$M$~\cite[Section~4.1]{FourthPaper2026}.
 
 \paragraph{Walks, hops and entries.} A \emph{walk} of length~$T$ is a map $x\colon[0,T)\to\Z$ with
 $\abs{x(t+1)-x(t)}\le1$. For a head~$h$ and a time~$u$, $\prev_h(u)$ is the last earlier time at which head~$h$ was at
 the cell $x_h(u)$; the pair $(\prev_h(u),u)$ is a \emph{hop}, \emph{long} if $u-\prev_h(u)\ge2$. An \emph{entry} of a
-cell~$c$ by a walk~$x$ is a time~$t$ with $x(t)=c$ and either $t=0$ or $x(t-1)\ne c$~\cite[Definition~2.1]{BoundedNesting2026}.
-\emph{Owner-load} is defined in~\cite[Definition~2.2]{BoundedNesting2026}; if every cell is entered at most $V$ times,
-the long hops have owner-load at most $2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}. The \emph{walk DAG} of walks
-$x_1,\dots,x_k$ has vertex set $[0,T)$, \emph{state edges} $t\to t-1$ and \emph{hop edges} $u\to p$ for the long hops
-$(p,u)$; a \emph{cut} is a set of edges, of \emph{depth at most~$D$} if every path avoiding it has at most $D$ hop
+cell~$c$ by a walk~$x$ is a time~$t$ with $x(t)=c$ and either $t=0$ or
+$x(t-1)\ne c$~\cite[Definition~2.1]{BoundedNesting2026}. During a long hop $(p,u)$ at a cell~$c$ the head stays on one
+side of~$c$, and the \emph{owner} of the hop is the first time in $(p,u)$ at which the head is farthest from~$c$. A set of
+long hops has \emph{owner-load at most~$\ell$} if at every time~$t$, for every head and side, its hops of that head and
+side whose open intervals contain~$t$ have at most $\ell$ distinct
+owners~\cite[Definition~2.2]{BoundedNesting2026}. If every cell is entered at most $V$ times, the long hops have
+owner-load at most $2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}. The \emph{walk DAG} of walks $x_1,\dots,x_k$ has
+vertex set $[0,T)$, \emph{state edges} $t\to t-1$ and \emph{hop edges} $u\to p$ for the long hops $(p,u)$; a \emph{cut}
+is a set of edges, of \emph{depth at most~$D$} if every path avoiding it has at most $D$ hop
 edges~\cite[Section~2.3]{BoundedNesting2026}.
 
-\paragraph{Theorem F.} For walks $x_1,\dots,x_k$ of length~$T$, coupled arbitrarily, and a set of their long hops of
-owner-load at most~$\ell$, the corresponding sub-DAG of the walk DAG has a cut of at most $\eps T$ edges and depth less
-than a number $\DF(k,\ell,\eps)=2^{O(k^3\ell^3/\eps)}$ that does not depend on~$T$, on the coupling or on the scales of
-the walks~\cite[Theorem~3.6]{BoundedNesting2026}. Theorem~F is Lean-verified there; it is the only depth-reduction input
-of this paper.
+\paragraph{Theorem F.} For walks $x_1,\dots,x_k$ of length~$T$, coupled arbitrarily, a set of their long hops of
+owner-load at most~$\ell$ and $\eps\in(0,1]$, the corresponding sub-DAG of the walk DAG has a cut of at most $\eps T$
+edges and depth less than a number $\DF(k,\ell,\eps)=2^{O(k^3\ell^3/\eps)}$ that does not depend on~$T$, on the coupling
+or on the scales of the walks~\cite[Theorem~3.6]{BoundedNesting2026}. Theorem~F is Lean-verified there; it is the only
+depth-reduction input of this paper.
 
-\paragraph{Dependency DAGs, genies and the crux.} For an oblivious machine~$M$ at length~$L$, or for one trace~$\tau$ of
+\paragraph{Dependency DAGs, genies and cones.} For an oblivious machine~$M$ at length~$L$, or for one trace~$\tau$ of
 any machine, the \emph{dependency DAG} $H_M$ or $H_\tau$ has vertex set $[0,T)$, state edges $t\to t-1$ and cell edges
 $t\to\prev_j(t)$ along the work-head walks; the input head adds no edges~\cite[Section~2.4]{BoundedNesting2026}. A
-\emph{genie} is a set $\Gamma\subseteq[0,T)$ of revealed steps, of cost $\beta\card\Gamma$, and it has \emph{full depth
-at most~$D$} if every $\Gamma$-free path has at most $D$ edges. A cut of the walk DAG of small size and bounded depth
-yields a genie of small cost and bounded full depth~\cite[Lemma~2.6]{BoundedNesting2026}. By the cone lemma of the fourth
+\emph{genie} is a set $\Gamma\subseteq[0,T)$ of revealed steps, of cost $\beta\card\Gamma$. A path $t_0\to\dots\to t_n$
+is \emph{$\Gamma$-free} if $t_1,\dots,t_n\notin\Gamma$, and the genie has \emph{full depth at most~$D$} if every
+$\Gamma$-free path has at most $D$ edges. A cut of the walk DAG of small size and bounded depth yields a genie of small
+cost and bounded full depth~\cite[Lemma~2.6]{BoundedNesting2026}. By the cone lemma of the fourth
 paper~\cite[Lemma~4.4 and Corollary~4.5]{FourthPaper2026}, output bit~$\ell$ is then a function of the revealed word and
-of the input bits at a set $I_\Gamma(\ell)$ of at most $(k+1)^{D+1}$ positions; every fibre of the revealed word is a
-storage code for the \emph{cone relation} $N_\Gamma(q)=I_\Gamma(\tpos(q))$~\cite[Remark~4.9(b)]{FourthPaper2026}.
+of the input bits at a set $I_\Gamma(\ell)$ of at most $(k+1)^{D+1}$ positions.
 
-\paragraph{Question 9.1 and the linear crux.} \emph{Directed Recovery Structures in Tape Computations} shows that the cone
-relations of every linear-time schedule, and of every single frozen trace, satisfy the paired-distance condition after a
-paid deletion of few coordinates~\cite[Theorem~3.3, Corollary~3.8 and Remark~3.9]{DirectedRecovery2026}, and asks whether
-every code on such relations of bounded incidence degree has rate at most $\frac12+o(1)$, for every
+\paragraph{Storage codes and Question 9.1.} A \emph{recovery relation} on a finite coordinate set~$V$ assigns to every
+$q\in V$ a set $N(q)\subseteq V$. A \emph{storage code} for it over a finite alphabet~$\mathcal A$ is a set
+$\mathcal C\subseteq\mathcal A^V$ in which the value at every coordinate~$q$ is determined by the values on~$N(q)$, and
+its \emph{rate} is $\log_{\card{\mathcal A}}\card{\mathcal C}/\card V$~\cite[Definition~2.1]{DirectedRecovery2026}. The
+\emph{incidence graph} $E(N)$ has vertices $L_p$ and $R_p$ for $p\in V$ and an edge $L_pR_q$ whenever $p\in N(q)$; a
+sequence of relations satisfies the \emph{paired-distance condition} if for every fixed~$r$ only $o(\card V)$
+coordinates~$p$ have $L_p$ and $R_p$ at distance at most~$r$ in $E(N)$~\cite[Definition~2.3]{DirectedRecovery2026}. If
+$M$ is oblivious and transposes, every fibre of the revealed word of a genie is a binary storage code for the \emph{cone
+relation} $N_\Gamma(q)=I_\Gamma(\tpos(q))$~\cite[Remark~4.9(b)]{FourthPaper2026}. \emph{Directed Recovery Structures in Tape
+Computations} shows that the cone relations of every linear-time schedule, and of every single frozen trace, satisfy the
+paired-distance condition after a paid deletion of few coordinates~\cite[Theorem~3.3, Corollary~3.8 and
+Remark~3.9]{DirectedRecovery2026}, and asks whether every storage code on relations of bounded incidence degree that
+satisfy the paired-distance condition has rate at most $\frac12+o(1)$, for every
 alphabet~\cite[Question~9.1]{DirectedRecovery2026}. We write \emph{[Q9.1]} for an affirmative answer to that question for
 every degree bound; in Lean it is \lean{MergeDepth.Q91}, and its binary form \lean{MergeDepth.Q91Binary}, which follows
-from it (\lean{MergeDepth.Q91.binary}), is all that the formal proofs below use. By~\cite[Proposition~9.2]{DirectedRecovery2026}, [Q9.1] bounds by $2^{(1/2+o(1))L}$ every code on the
-cone relations of a linear-time schedule with a genie of bounded full depth; this is how [Q9.1] enters below, as in the
-eighth paper's Corollaries~F$'$ and~F$''$~\cite[Corollaries~6.3 and~6.4]{BoundedNesting2026}. For machines whose step
-values are vectors over a finite field~$\F$ and whose updates are $\F$-linear, the eighth paper states the \emph{linear
-crux} $\LinCrux_\F$ as relative rigidity of the transposition matrix with respect to the ball pattern of the
-schedule~\cite[Definition~7.4 and Theorem~7.5]{BoundedNesting2026}; we write \emph{[LinCrux]} for it.
+from it (\lean{MergeDepth.Q91.binary}), is all that the formal proofs below use.
+By~\cite[Proposition~9.2]{DirectedRecovery2026}, [Q9.1] bounds by $\frac12+o(1)$ the rate of every storage code on the
+cone relations of linear-time schedules with genies of bounded full depth, uniformly; the eighth paper's
+Corollaries~F$'$ and~F$''$ use it in this form~\cite[Corollaries~6.3 and~6.4]{BoundedNesting2026}. Here [Q9.1] enters
+in the same way, through analogues of that proposition for relations inside balls of bounded radius (\cref{lem:balls})
+and for the relations of skeleton classes (\cref{lem:skel-uniform}).
+
+\paragraph{The linear crux.} For machines whose step values are vectors over a field~$\F$ and whose updates are
+$\F$-linear, the eighth paper states the \emph{linear crux} $\LinCrux_\F$ as relative rigidity of the transposition
+matrix with respect to the ball pattern of the schedule~\cite[Definition~7.4 and Theorem~7.5]{BoundedNesting2026}; we
+write \emph{[LinCrux]} for it, and in Lean it is \lean{MergeDepth.LinCrux}. Corollary~HC (\cref{cor:HC}) states the
+form used.
 
 \paragraph{Admissible geometries.} The source-cover paper~\cite[Definition~2.2]{SourceCovers2026} models one fixed
 computation geometry, a set of inputs on which it is correct, records of bounded capacity determined by the actual
@@ -60,6 +81,9 @@ parents, a span partition of its return families, a core and a bounded number of
 \emph{admissible geometry}; \cref{sec:reductions} uses its exclusions of geometries with few large return
 families~\cite[Corollaries~4.3 and~4.5]{SourceCovers2026}.
 
-\paragraph{Dependencies.} Results that assume [Q9.1] or [LinCrux] say so in their statements. Theorem~F is used through
-its Lean-verified statement; the cone lemma, the paired-distance theorem and Proposition~9.2 of the fifth paper are used
-through their written proofs there.
+\paragraph{Dependencies.} Results that assume [Q9.1], [LinCrux] or Conjecture~S (\cref{conj:S}) say so in their
+statements, and their Lean versions take them as hypotheses. Theorem~F and the other results of earlier papers that the
+formal proofs use are Lean-verified in the libraries of those papers. Of the results recalled above, the fourth paper's
+cone lemma and the fifth paper's Proposition~9.2 are proved only in writing there, and the fifth paper's paired-distance
+theorem is formalized there only in part; the formal proofs below reprove them in the forms they need
+(\cref{lem:expansion,lem:skel-cones,prop:skel-paired,lem:balls,lem:skel-uniform}).

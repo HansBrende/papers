@@ -4,12 +4,14 @@ conversion of cuts into genies, gives for every $\eps>0$ a genie of cost at most
 fibre of the revealed word is a storage code of rate at least $1-\eps$ on the cone
 relation~\cite[proofs of Corollaries~6.1 and~6.3]{BoundedNesting2026}. After a paid trimming, the cone relations of
 linear-time schedules, for genies of bounded full depth, have bounded incidence degree and satisfy the paired-distance
-condition~\cite[Definition~2.3, Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}. A construction of this kind
-therefore needs storage codes of rate close to one on relations of bounded incidence degree with the paired-distance
-condition. Projective planes are natural building blocks. For $q=2^s$, the binary words on the points of
-$\mathrm{PG}(2,q)$ that have even weight on every line form a code of rate $1-(3^s+1)/(q^2+q+1)$, which tends to one,
-because the point--line incidence matrix of $\mathrm{PG}(2,2^s)$ has rank $3^s+1$ over~$\F_2$, a classical fact; and each
-point is recovered from the other $q$ points of any line through it. If every coordinate lies in one such local code and
+condition~\cite[Definition~2.3, Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}. The same holds for an oblivious
+transposer whose code has bounded merge depth, with the relations inside balls of \cref{thm:HCprime}(b) and
+\cref{lem:balls} in place of the cone relations. A construction of either kind therefore needs storage codes of rate
+close to one on relations of bounded incidence degree with the paired-distance condition. Projective planes are natural
+building blocks. For $q=2^s$, the binary words on the points of $\mathrm{PG}(2,q)$ that have even weight on every line
+form a code of rate $1-(3^s+1)/(q^2+q+1)$, which tends to one, because the point--line incidence matrix of
+$\mathrm{PG}(2,2^s)$ has rank $3^s+1$ over~$\F_2$, a classical fact; and each point is recovered from the other $q$
+points of any line through it. If every coordinate lies in one such local code and
 is recovered inside it, the incidence graph has components of at most $2(q^2+q+1)$ vertices, and the paired-distance
 condition limits every code to rate $\frac12+o(1)$~\cite[Theorem~4.2]{DirectedRecovery2026}. The Tanner form of the
 assembly avoids this. Its coordinates are the edges of a $(q^2+q+1)$-regular graph~$G$, the edges at each vertex are
@@ -53,13 +55,14 @@ and consequently $\card S<(q^2+q+1)/2$ for every $q\ge7$.
 \end{lemma}
 
 \begin{outline}
-We use two properties of a projective plane of order~$q$: two distinct lines meet in exactly one point, and every line
-has $q+1$ points and every point lies on $q+1$ lines. Formally, the bound~\eqref{eq:PG-bound} is stated as
-$\card S\le4q$ or $(\card S-1)^2\le q^3$ (\lean{MergeDepth.Centred.card_le}), the components below are the classes of
-points of~$S$ whose vertices~$R_s$ are connected in~$E(S)$, which are the components of the adjacency relation, and
-Steps~1 to~5 are \lean{MergeDepth.Centred.line_ne}, \lean{MergeDepth.Centred.mem_line_of_not_reach},
-\lean{MergeDepth.Centred.not_mem_line}, \lean{MergeDepth.Centred.card_le_of_one} and
-\lean{MergeDepth.Centred.card_le_of_two}, and the consequence for $q\ge7$ is
+We use only these properties of a projective plane of order~$q$: two distinct lines meet in exactly one point, every
+line has $q+1$ points, every point lies on $q+1$ lines, and there are $v=q^2+q+1$ points. Formally, the first assertion
+is \lean{MergeDepth.Centred.separated_of_bipCompat}, which uses no property of the plane; the bound~\eqref{eq:PG-bound}
+is stated as $\card S\le4q$ or $(\card S-1)^2\le q^3$ (\lean{MergeDepth.Centred.card_le}); the components below are the
+classes of points of~$S$ whose vertices~$R_s$ are connected in~$E(S)$, which are the components of the adjacency
+relation; Steps~1 to~3 are \lean{MergeDepth.Centred.line_ne}, \lean{MergeDepth.Centred.mem_line_of_not_reach} (Step~2
+for points in different components) and \lean{MergeDepth.Centred.not_mem_line}; Steps~4 and~5 are
+\lean{MergeDepth.Centred.card_le_of_one} and \lean{MergeDepth.Centred.card_le_of_two}; and the consequence for $q\ge7$ is
 \lean{MergeDepth.Centred.two_mul_card_lt}.
 
 \emph{Bipartite-compatible sets are separated.} Given~$\chi$, give $L_p$ the colour $\chi(p)$ and $R_p$ the colour
@@ -74,19 +77,16 @@ on~$S$ the \emph{components} of~$S$.
 $h\in\ell\setminus\{s,s'\}$, which exists since $\card\ell=q+1\ge3$. Then $s'\in N(s)$ and $h\in N(s)\cap N(s')$, so
 $L_{s'}R_sL_hR_{s'}$ is a path in $E(S)$, contradicting separation.
 
-\emph{Step 2: a trichotomy.} For distinct $s,s'\in S$ exactly one of the following holds: (a) $s\in\ell_{s'}$;
+\emph{Step 2: two lines.} For distinct $s,s'\in S$ at least one of the following holds: (a) $s\in\ell_{s'}$;
 (b) $s'\in\ell_s$; (c) $s$ and $s'$ are adjacent. Indeed, by Step~1 the lines $\ell_s$ and $\ell_{s'}$ meet in exactly
-one point~$z$. If $z=s$, then (a) holds; (b) fails, since $s'\in\ell_s$ would give $s'\in\ell_s\cap\ell_{s'}=\{s\}$; and
-(c) fails, since $N(s)\cap N(s')\subseteq(\ell_s\cap\ell_{s'})\setminus\{s\}=\emptyset$. The case $z=s'$ is symmetric. If
-$z\notin\{s,s'\}$, then $z\in N(s)\cap N(s')$, so (c) holds, while (a) and (b) fail because each would force
-$z\in\{s,s'\}$.
+one point~$z$. If $z=s$, then (a) holds, and if $z=s'$, then (b) holds; otherwise $z\in N(s)\cap N(s')$, and (c) holds.
 
 \emph{Step 3: components.} If distinct $s,s'$ lie in the same component, then neither (a) nor (b) holds. Indeed, a chain
 $s=s_0,s_1,\dots,s_m=s'$ of adjacent points with common helpers $h_i\in N(s_{i-1})\cap N(s_i)$ gives the path
 $R_{s_0}L_{h_1}R_{s_1}\cdots L_{h_m}R_{s_m}$ in $E(S)$. If (a) held, then $s\in N(s')$, and the edge $L_sR_{s'}$ would
-join $L_s$ to $R_{s'}$ and hence to $R_s$; (b) is excluded in the same way, with $s$ and $s'$ exchanged. By Step~2, two
-distinct points of one component therefore never lie on each other's lines, and two points of different components
-satisfy (a) or~(b).
+join $L_s$ to $R_{s'}$ and hence to $R_s$; (b) is excluded in the same way, with $s$ and $s'$ exchanged. So two
+distinct points of one component never lie on each other's lines, while two points of different components, which are
+not adjacent, satisfy (a) or~(b) by Step~2.
 
 \emph{Step 4: one component.} Suppose that $S$ has a single component, and put $t=\card S\ge1$. By Step~3, a line
 $\ell_s$ contains no point of~$S$ other than~$s$. Two lines $\ell_s$ and $\ell_{s'}$ with $s\ne s'$ are distinct by
@@ -123,7 +123,8 @@ $\mathrm{PG}(2,q)$ has $r^3+1=q^{3/2}+1$ points and meets every line in $1$ or $
 lines through one of its points~$s$ partition the other $r^3$ points of the curve, and each of these lines contains $0$ or
 $r$ of them; so exactly $r^2=q$ of the lines contain $r$ of them, and one line meets the curve only in~$s$. Taking that
 tangent line as~$\ell_s$ for every point~$s$ of the curve gives a centred set whose helpers all lie off the curve; it is
-bipartite-compatible, with $\chi=0$ on the curve and $\chi=1$ elsewhere.
+bipartite-compatible, with $\chi=0$ on the curve and $\chi=1$ elsewhere, hence separated. Two of its tangent lines meet
+in a point off the curve, a common helper, so it has a single component.
 \end{remark}
 
 \begin{remark}[Numerical]\label{rem:PG-numerical}

@@ -1,18 +1,22 @@
 import MergeDepth.Lineage
 
 /-!
-# Formations and merges (Lemma 3.11)
+# Formations and merges (Lemma 3.12)
 
 A *copy* is a vertex with exactly one out-edge and no input mark; every other vertex is a
-*formation*. Following the out-edges of copies leads to the *transport root* of a vertex
-(`troot`), a formation. A formation is *deep* (`DeepFormation`) if it is the tail of a deep edge or
-its transport tree contains a deep edge, that is, the out-edge of a copy with that transport root.
+*formation*. The copies and their out-edges form a forest (`copyForest`); following them leads to
+the *transport root* of a vertex (`root`), a formation. A formation is *deep* (`DeepFormation`) if it
+is the tail of a deep edge or its transport tree contains a deep edge, that is, the out-edge of a
+copy with that transport root.
 
-`dm_le_countP_deepFormation` is Lemma 3.11: for a lineage assignment whose lineage edges are
+`dm_le_countP_deepFormation` is Lemma 3.12: for a lineage assignment whose lineage edges are
 out-edges and in which every copy is a continuation, every path has at most as many deep merges as
 deep formations. The proof walks along the path with a credit: a deep lineage edge out of a
 formation credits that formation, and one out of a copy credits the next formation on the path,
 whose transport tree contains it; a deep merge of type β uses the credit of its stretch.
+
+`copyForest_lineage`: the lineage assignment of the copies is a lineage assignment for every genie
+(no path leaves a continuation by another edge), and its merge depth is at most the formation depth.
 -/
 
 namespace MergeDepth
@@ -98,7 +102,7 @@ def DeepFormation (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) (u : ℕ) : P
   ¬ IsCopy net u ∧ ((∃ v ∈ net.out u, Rr u v) ∨
     ∃ x v, (copyForest net).nxt x = some v ∧ Rr x v ∧ root (copyForest net) x = u)
 
-/-- **Lemma 3.11, with a credit.** Along a path, the deep merges number at most the deep formations
+/-- **Lemma 3.12, with a credit.** Along a path, the deep merges number at most the deep formations
 plus the credit `c`; the credit or a deep copy edge of the current transport tree pays for an open
 stretch with a deep edge. -/
 theorem dm_le_countP_aux (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr]
@@ -196,7 +200,7 @@ theorem dm_le_countP_aux (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [Decid
         rw [hcount]
         omega
 
-/-- **Lemma 3.11.** For a lineage assignment whose lineage edges are out-edges and in which every
+/-- **Lemma 3.12.** For a lineage assignment whose lineage edges are out-edges and in which every
 copy is a continuation, every path has at most as many deep merges as deep formations. -/
 theorem dm_le_countP_deepFormation (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr]
     [DecidablePred (DeepFormation net Rr)] (lin : Forest)
@@ -204,5 +208,25 @@ theorem dm_le_countP_deepFormation (net : LinNet F L m) (Rr : ℕ → ℕ → Pr
     (hcopy : ∀ u, IsCopy net u → lin.nxt u ≠ none) {π : List ℕ} {t : ℕ}
     (h : π ∈ net.paths t) : dm lin Rr false π ≤ π.countP (DeepFormation net Rr) := by
   simpa using dm_le_countP_aux net Rr lin hlin hcopy π t false 0 h (by simp)
+
+/-- **The lineage assignment of the copies**: every copy continues along its only out-edge. No path
+leaves a continuation by another edge, so it is a lineage assignment for every genie, and every path
+has at most as many deep merges as deep formations (Lemma 3.12). -/
+theorem copyForest_lineage (net : LinNet F L m) (Rr : ℕ → ℕ → Prop) [DecidableRel Rr]
+    [DecidablePred (DeepFormation net Rr)] :
+    (∀ u v v' π, (copyForest net).nxt u = some v → v' ≠ v → (u :: v' :: π) ∉ net.paths u) ∧
+      ∀ {π : List ℕ} {t : ℕ}, π ∈ net.paths t →
+        dm (copyForest net) Rr false π ≤ π.countP (DeepFormation net Rr) := by
+  refine ⟨fun u v v' π hn hne hπ => ?_, fun h => dm_le_countP_deepFormation net Rr _ ?_ ?_ h⟩
+  · obtain ⟨hv', -⟩ := cons_cons_mem_paths.mp hπ
+    rw [(isCopy_of_copyForest hn).2, mem_singleton] at hv'
+    exact hne hv'
+  · intro u v h
+    rw [(isCopy_of_copyForest h).2]
+    exact mem_singleton_self v
+  · intro u hc
+    obtain ⟨w, hw⟩ := card_eq_one.mp hc.1
+    rw [copyForest_nxt_of_copy hc (show w ∈ net.out u by rw [hw]; exact mem_singleton_self w)]
+    simp
 
 end MergeDepth

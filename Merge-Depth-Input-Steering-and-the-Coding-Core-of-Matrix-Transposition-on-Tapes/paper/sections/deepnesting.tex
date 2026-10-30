@@ -13,13 +13,15 @@ lengths and general labels.
 This section closes steps~(b) and~(c) for bounded block length and reduces step~(a) to Conjecture~S (\cref{conj:S}): the
 straddle counts of most coarse classes concentrate as the shift varies. The result is Theorem~BP (\cref{thm:BP}): assuming
 Conjecture~S, Conjecture~A$''$ holds for pairs of block labels of length at most~$a_0$, at one odd shift, with no
-$\log q$ term and no cost hypothesis. \Cref{sec:dnp-partial} gives partial results on Conjecture~S and exact computations
-up to $m=4095$. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not decide $\TCP(2)$, since general
-labels remain: Conjecture~A$''$ concerns every label of cost at most $n_{\mathrm h}/8$ (\cref{rem:dnp-scope}). It uses the tenth paper's
-Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on the deep-nesting pair (written proofs
-there). Every numbered result of this section is formalized in Lean, with Conjecture~S as a hypothesis where the
-statement assumes it; on the way, the deep-nesting walk, the eighth paper's Lemma~5.1(a)--(c) and its blindness bound
-(Proposition~5.17, without its level-$0$ term) are formalized too.
+$\log q$ term and no cost hypothesis. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not
+decide $\TCP(2)$, since Conjecture~A$''$ concerns every label of cost at most $n_{\mathrm h}/8$ (\cref{rem:dnp-scope}).
+\Cref{sec:dnp-partial} gives partial results on Conjecture~S and numerical evidence for it up to $m=4095$.
+
+The written proofs use the tenth paper's Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on
+the deep-nesting pair (written proofs there). Every numbered result of this section is formalized in Lean, with
+Conjecture~S as a hypothesis where the statement assumes it. The formalization includes the deep-nesting walk, the
+eighth paper's Lemma~5.1(a)--(c) and its blindness bound (Proposition~5.17, without its level-$0$ term), so no step of the
+formal proofs rests on a written proof of the eighth paper (\cref{sec:dnp-setting}).
 
 \subsection{Setting}\label{sec:dnp-setting}
 
@@ -62,7 +64,7 @@ sequences $(A_l)$, $(E_l)$ and $q\ge3$.
   satisfy $8a(k_0+i)\le q$ and $8b_0(k_0+i)\le q$ for $i<s$, $8b_1(k_0+i)\le q$ for $i+1<s$, and $8b_2(k_0+i)\le q$ for
   $i+2<s$, then $s\le2\lfloor\log_2q\rfloor+2$.
 \item \emph{Overflow bound.} If $a\ge1$, $K\in\Z$, $q\ge32$ and $4Q(a,K\bmod q)+4>q$, then there is
-  $\mathrm{rem}\in\{0,\dots,a-1\}$ such that every level $1\le k<m$ with $(m-k)\bmod(a+1)=\mathrm{rem}$ has
+  $\mathrm{rem}\in\{0,\dots,a-1\}$ such that every level $k<m$ with $(m-k)\bmod(a+1)=\mathrm{rem}$ has
   $16a(k)\ge q$, $8b_0(k)\ge q$ or $8b_1(k)\ge q$, for the blind errors of $B(a,K)$.
 \item \emph{Residue bound.} If $a_1,a_2\ge1$, $K_1,K_2\in\Z$, $q\ge1$, $\tilde Q_1\le\tilde Q_2$, $4\tilde Q_2+4\le q$, and
   $\kappa$ is a canceller of $B(a_2,\cdot)$, then for every level~$k$,
@@ -76,6 +78,25 @@ sequences $(A_l)$, $(E_l)$ and $q\ge3$.
   $e(d)=(A'+\Phi(c_0+d)-\Phi(c_0-d))\bmod q$. Then
   $\card S\cdot\bigl((2A'+2(c_\sigf-c_\sigb))\bmod q\bigr)\le2\sum_{d\in S}e(d)$.
 \end{enumerate}
+
+\paragraph{Formalization.} The walk~$U$ is \lean{MergeDepth.dnpWalk}. Its turns are the apex and valley times of its V's
+and two tips per period (\lean{MergeDepth.isTurnZ_dnpWalk_iff}), and the elements of the tenth paper's apex sets, used
+for~$\mathcal A_i$ in \cref{def:dnp-straddle}, are apices of V's of level~$i$ (\lean{MergeDepth.dnpWalk_V}). The eighth
+paper's Lemma~5.1 is proved: each head has $2^{m+3}-6$ turns per period (\lean{MergeDepth.card_turns_period}), the hops of
+level $k\ge1$ are those listed there (\lean{MergeDepth.levelHops_eq_listed}), and every class has $4\Lambda$ hops per
+period and $4r\Lambda=n_{\mathrm h}/(2N)$ on the $r$-fold cover (\lean{MergeDepth.levelCount_eq},
+\lean{MergeDepth.card_coverClass}). A block label is a jump function with the properties
+of~\cite[Definition~5.11]{BoundedNesting2026} (\lean{MergeDepth.IsBlockLabel}); there is exactly one, and its potential is
+that of the tenth paper's stroke recursion (\lean{MergeDepth.IsBlockLabel.potentialOf_eq}). The block-pair label, its
+errors, $\theta$-service and blindness are \lean{MergeDepth.blockPairLabel}, \lean{MergeDepth.hopError},
+\lean{MergeDepth.ThetaServes} and \lean{MergeDepth.IsBlind}. \Cref{lem:dnp-family,lem:dnp-halfblind,lem:dnp-witness} and
+Theorem~BP are first proved in one period, for the families of \cref{def:dnp-family} listed explicitly as pairs of times,
+with these potentials, and with service measured on the four families of a class. They transfer to the walk pair because
+the families consist of hops of their classes (\lean{MergeDepth.family_inHopClass}), the errors are those of the
+block-pair label (\lean{MergeDepth.hopError_blockPairLabel}), and a level that is $\theta$-served for a head on some cover
+is also served when service is measured on its four families (\lean{MergeDepth.ThetaServes.servedOnWitness}). The formal
+proofs do not use $q\mid r$, which is needed only for $G$ to be a label of the cover
+(\lean{MergeDepth.blockPairLabel_add_mul}).
 
 \subsection{Straddle counts and Conjecture S}\label{sec:dnp-S}
 
@@ -91,8 +112,9 @@ $\Pi_\kappa\le R_k$ and $\xi\in\Z$ put
   X^\pm_{k,\kappa}(\xi)=\sum_{\alpha_1\in\mathcal A_k}\ \sum_{\alpha\in\mathcal A_\kappa}
   \card{\mathrm{Strad}\bigl((\alpha_1\pm\xi)\bmod P,\ \alpha,\ \Pi_\kappa,\ R_k\bigr)},
 \]
-the tenth paper's \lean{DirectedReciprocity.classStraddleCount}$(s_0,m,k,\kappa,\mathrm{dir},\xi)$ with $\mathrm{dir}$ true for~$+$ and false
-for~$-$. A level $k\in\mathcal K$ is \emph{$a$-good in direction~$\pm$} at~$\xi$ if
+which for $0\le\xi\le P$ is the tenth paper's \lean{DirectedReciprocity.classStraddleCount} at
+$(s_0,m,k,\kappa,\mathrm{dir},\xi)$, with $\mathrm{dir}$ true for~$+$ and false for~$-$. A level $k\in\mathcal K$ is
+\emph{$a$-good in direction~$\pm$} at~$\xi$ if
 $X^\pm_{k,\kappa_a(k)}(\xi)\ge2^{k+2}R_k/2^{a+7}$, and $\Gamma_{a,\pm}(\xi)$ is the number of such levels.
 \end{definition}
 
@@ -133,7 +155,7 @@ For every integer $a\ge1$, $\bar V^{(a)}_m\to0$ as $m\to\infty$.
 In Lean, Conjecture~S for one~$a$ is \lean{MergeDepth.ConjectureS}.
 
 By \cref{prop:S-fourier}, Conjecture~S is an averaged $L^2$ bound for Riesz products along the mixed-radix digits
-$n_i2^{-i}$; by \cref{prop:S-resonance}, it fails class by class.
+$n_i2^{-i}$; by \cref{prop:S-resonance}, its analogue for single classes fails.
 
 \begin{lemma}[Straddle counts and the profile]\label{lem:dnp-transfer}
 \formal{MergeDepth/BlockPairsTransfer.lean}{MergeDepth.prob_straddle_vs_profile}
@@ -162,25 +184,24 @@ $\nu=\alpha+\Pi_\kappa$ the valley time, and it vanishes unless $c_0\in[\alpha,\
 strokes of a period have length $\Pi_0=N\Lambda$ and the same turn times relative to their starts, and every~V lies inside
 one of them~\cite[Section~2.5]{BoundedNesting2026}; a stroke of level $l<m$ starting at~$t_0$ has the apex of its~V at
 $t_0+R_l$, and the strokes of that~V start at $t_0+R_l$ and $t_0+R_l+\Pi_{l+1}$. So in the stroke starting at~$0$ the
-level-$k$ apex times are the $\Lambda\hat a_S$ and the level-$\kappa$ valley times the $\Lambda\hat v_{S'}$
-and for integers $c_0\in[0,P)$,
+level-$k$ apex times are the $\Lambda\hat a_S$ and the level-$\kappa$ valley times are the $\Lambda\hat v_{S'}$, and for
+integers $c_0\in[0,P)$,
 $\sum_{\alpha\in\mathcal A_\kappa}\card{\mathrm{Strad}(c_0,\alpha,\Pi_\kappa,R_k)}=\Lambda H((c_0+\frac12)/\Lambda)$ with the
 $N$-periodic $H(y)=\sum_{S'}\sum_{l\in\Z}\Delta(y-\hat v_{S'}-lN)$. As $\mathcal A_k=\{\Lambda\hat a_S+j\Pi_0:0\le j\le3\}$,
 $X^+_{k,\kappa}(\xi)=4\Lambda\sum_SH(\hat a_S+t)=M_kx_k(t)$ with $t=(\xi+\frac12)/\Lambda$. The second identity holds as
 $(\alpha_1-\xi)\bmod P=(\alpha_1+(P-\xi))\bmod P$.
 
-(c) Let $g(u)=M_kx_k(u/\Lambda)$, so $X^+_{k,\kappa}(\xi)=g(\xi+\frac12)$. As the $\hat a_S,\hat v_{S'}$ are multiples
-of $2^{-\kappa}$ and $\hat\Pi_\kappa/2$ of $2^{-\kappa-1}$, $g$ is continuous, $\Pi_0$-periodic and affine on each of the
-$2N2^\kappa$ intervals $[iR_\kappa/2,(i+1)R_\kappa/2)$ of a period. For odd~$\xi$, $\xi+\frac12$ runs over $2\Z+\frac32$,
-hitting each of the $\Pi_0/2$ points modulo~$\Pi_0$ four times. If $s_0=\kappa+1$ the bound is~$2$; otherwise each interval
-contains exactly $R_\kappa/4$ points, and meets $\{g<\tau M_k\}$ in an interval of some length~$\lambda$ containing
-$\lambda/2\pm1$ of them. So the number of points of a period with $g<\tau M_k$ differs from half the measure of
-$\{g<\tau M_k\}$ by at most $2N2^\kappa$, and dividing by $\Pi_0/2$ gives $2^{\kappa+2-s_0}$. The sign~$-$ follows
-from~(b).
+(c) Let $g(u)=M_kx_k(u/\Lambda)$, so $X^+_{k,\kappa}(\xi)=g(\xi+\frac12)$ by~(b). As the $\hat a_S,\hat v_{S'}$ are
+multiples of $2^{-\kappa}$ and $\hat\Pi_\kappa/2$ is a multiple of $2^{-\kappa-1}$, $g$ is affine on each of the $N2^{\kappa+3}$
+intervals $[iR_\kappa/2,(i+1)R_\kappa/2)$ that tile $[0,P)$. So each of them meets $\{g<\tau M_k\}$ in an interval of some
+length~$\lambda$, which contains $\lambda/2\pm1$ of the points $\xi+\frac12$ with $\xi$ odd, as these have spacing~$2$.
+Summing over the intervals, the number of odd $\xi\in[0,P)$ with $X^+_{k,\kappa}(\xi)<\tau M_k$ differs from half the measure
+of $\{u\in[0,P):g(u)<\tau M_k\}$, which is $4\Lambda\,\mathrm{Leb}\{t\in[0,N):x_k(t)<\tau\}$ by periodicity, by at most
+$N2^{\kappa+3}$; dividing by the number $P/2=2N\Lambda$ of odd residues gives the bound. The sign~$-$ follows from~(b), as
+$\xi\mapsto P-\xi$ permutes the odd residues.
 Formally, (a) is \lean{MergeDepth.card_straddleSet_eq}, which needs only $\Pi_\kappa\le R_k$; (b) is
-\lean{MergeDepth.classStraddleCount_eq_profile} and \lean{MergeDepth.classStraddleCount_false_eq}, the second for
-$0\le\xi\le P$, since the tenth paper computes $X^-$ from residues; and~(c) is \lean{MergeDepth.prob_straddle_vs_profile}.
-The count of lattice points against the measure holds for every interval, so no case $s_0=\kappa+1$ is needed.
+\lean{MergeDepth.classStraddleCount_eq_profile} and \lean{MergeDepth.classStraddleCount_false_eq}; and~(c) is
+\lean{MergeDepth.prob_straddle_vs_profile}.
 \end{outline}
 
 \begin{proposition}[Conjecture S yields a good shift]\label{prop:S-shift}
@@ -218,14 +239,14 @@ the size condition holds and $\sum_{a\le a_0}\beta_a\le(1-\gamma)/4$ for every $
 probability by~$1/2$.
 Formally, (a) is \lean{MergeDepth.notGoodProb_le}, with the mean of the profile computed in
 \lean{MergeDepth.profileMean_eq} and Cantelli's inequality in \lean{MergeDepth.cantelli_interval}; (b) is
-\lean{MergeDepth.prob_some_bad_le}, which needs neither the size condition nor $\gamma\ge0$; and (c) is
+\lean{MergeDepth.prob_some_bad_le}, which holds without the size condition; and (c) is
 \lean{MergeDepth.good_shift_prob}, with Conjecture~S as a hypothesis.
 \end{outline}
 
 \subsection{Half-blindness and witnesses}\label{sec:dnp-witness}
 
 \begin{definition}[Families and the fine zone]\label{def:dnp-family}
-\formal{MergeDepth/BlockPairsModel.lean}{MergeDepth.apexFamily,MergeDepth.bandFamily,MergeDepth.family,MergeDepth.HalfBlind,MergeDepth.fineZone}
+\formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.InFamily,MergeDepth.familyPerPeriod,MergeDepth.HalfBlindPair}
 Let $1\le k\le m-2$ and let $h$ be a head. The four \emph{families} of the class $(h,k)$ are the \emph{apex family}, the
 apex hops $(\alpha-d,\alpha+d)$ with $1\le d<R_k$ of the level-$k$ V's of head~$h$, and for $j\in\{0,1,2\}$ the
 \emph{band-$j$ family}, their valley hops at the cells $v+\sigma x$ with
@@ -234,7 +255,9 @@ its hops with later endpoint in $[0,P)$ are blind. For $0<\eps\le1/8$ the \emph{
 $\mathcal F_\eps=\{k\in\Z:m-\lfloor\eps m\rfloor\le k\le m-2\}$.
 \end{definition}
 
-The pair is $P$-periodic, so a family has the same fraction of blind hops in every period and on every cover.
+The pair is $P$-periodic, so a family has the same fraction of blind hops in every period and on every cover. In Lean, a
+family consists of the shifts by multiples of~$P$ of hops that \lean{MergeDepth.family} lists in one period, in the time of
+their head, and the fine zone is \lean{MergeDepth.fineZone}.
 
 \begin{lemma}[Families of fine classes]\label{lem:dnp-family}
 \formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.familyPerPeriod_subset_class,MergeDepth.class_card_le_family,MergeDepth.hopError_of_inFamily_blind,MergeDepth.familyBlindErr_le_of_thetaServes}
@@ -243,8 +266,8 @@ Let $s_0>m$, $1\le k\le m-2$, let $h$ be a head, and let $G$ be a block-pair lab
 \item Each family of the class $(h,k)$ contains at least a fraction $1/32$ of the hops of the class.
 \item All blind hops of the apex family have error $a^{(h)}(k)$, and all blind hops of the band-$j$ family have error
   $b^{(h)}_j(k)$.
-\item Let $\theta>0$. If $G$ $\theta$-serves level~$k$ for head~$h$ and a family of the class $(h,k)$ is half-blind
-  at~$\xi$, then the common error of its blind hops is at most $64\theta q$.
+\item If $G$ $\theta$-serves level~$k$ for head~$h$ and a family of the class $(h,k)$ is half-blind at~$\xi$, then the
+  common error of its blind hops is at most $64\theta q$.
 \end{enumerate}
 \end{lemma}
 
@@ -255,21 +278,15 @@ $R_k\ge16$ if $k+2<m$. So the fractions are at least $\frac12-\frac1{16}$ (apex)
 (band~$j$ with $l<m$; if $j=2$ then $k+2<m$) and $2^{-j-1}-\frac1{2R_k}\ge\frac1{16}$ (band~$j$ with $l=m$).
 
 (b) This is the band decomposition with $F=0$, as $A_V=A_{\lev V}$ and $E_V=E_{\lev V}$ for a block
-label~\cite[Definition~5.11]{BoundedNesting2026}. (c) The class has $4r\Lambda$ hops and total error at most $4r\Lambda\theta q$. By~(a) and periodicity the family has at
+label~\cite[Definition~5.11]{BoundedNesting2026}.
+
+(c) The class has $4r\Lambda$ hops and total error at most $4r\Lambda\theta q$. By~(a) and periodicity the family has at
 least $4r\Lambda/32$ hops, at least half of them blind, each with the common error~$e$ of~(b); so
 $e\cdot4r\Lambda/64\le4r\Lambda\theta q$.
-Formally, the families are given by the explicit formulas of~\cite[Lemma~5.1(b)]{BoundedNesting2026}, the label
-by the tenth paper's potentials along the strokes, and errors per period. (a) is \lean{MergeDepth.family_card_ge}, and
-its constant $\frac1{32}$ is attained; (b) is \lean{MergeDepth.pairHopErr_of_blind}, since the potential of the other
-head is constant on a blind window and the tenth paper's stroke recursion gives the increment of the own head; and (c)
-is \lean{MergeDepth.familyBlindErr_le_of_served}.
-For the walk pair itself: the deep-nesting walk is \lean{MergeDepth.dnpWalk}, the families are hops of the class $(h,k)$ in
-every period (\lean{MergeDepth.family_inHopClass}), a class has $4\Lambda$ hops per period and $4r\Lambda$ on the $r$-fold
-cover (\lean{MergeDepth.levelCount_eq}, \lean{MergeDepth.card_coverClass}, the eighth paper's Lemma~5.1(c)), the turns of~$U$
-are the model's (\lean{MergeDepth.isTurnZ_dnpWalk_iff}), and the errors of the block-pair label are the model's
-(\lean{MergeDepth.hopError_blockPairLabel}, through \lean{MergeDepth.IsBlockLabel.potentialOf_eq}: Definition~5.11 of the
-eighth paper determines the label uniquely). \lean{MergeDepth.class_card_le_family}, \lean{MergeDepth.hopError_of_inFamily_blind}
-and \lean{MergeDepth.familyBlindErr_le_of_thetaServes} are (a)--(c) for the walk pair.
+Formally, (a)--(c) are first proved for the families listed in one period (\lean{MergeDepth.family_card_ge},
+\lean{MergeDepth.pairHopErr_of_blind}, \lean{MergeDepth.familyBlindErr_le_of_served}); in~(b) the potential of the other
+head is constant on a blind window, and the tenth paper's stroke recursion gives the increment of the own head. They
+transfer to the walk pair as described in \cref{sec:dnp-setting}.
 \end{outline}
 
 \begin{lemma}[Half-blindness at a random odd shift]\label{lem:dnp-halfblind}
@@ -281,31 +298,35 @@ $\delta\card{\mathcal F_\eps}$ such triples exist with probability at most $6144
 \end{lemma}
 
 \begin{outline}
-Let $k\in\mathcal F_\eps$ and $g=m-k$, so $2\le g\le\eps m$. By~\cite[Proposition~5.17]{BoundedNesting2026}, a hop of
-length~$\ell$ of either head is blind with probability at least $N^{-1}\sum_{i=0}^m(1-\ell/R_i)^+-2/(NR_m)$ over odd
-shifts, and $2/(NR_m)\le1/N$ as $R_m\ge2$. An apex hop of $(h,k)$ has length $2d<R_{k-1}$, so the sum is at least
-$\sum_{i<k}(1-2^{i-k+1})\ge k-2$. A valley hop of band~$j$, at level $l=k+j$, has length
-$(m-l)R_l+2x<(m-l+2)R_l\le R_{l-\lambda}$ with $\lambda=\lceil\log_2(m-l+2)\rceil\le\lceil\log_2(g+2)\rceil$
-\cite[Lemma~5.1(b)]{BoundedNesting2026}, so the sum is at least $l-\lambda-1$ if $l\ge\lambda$. So every hop of every
-family of $(h,k)$ fails to be blind with probability at most $\eps_g=(g+4+\lceil\log_2(g+2)\rceil)/N$ (trivially if
-$l<\lambda$, as then $\eps_g>1$), and $\eps_g\le4g/N$ as $\lceil\log_2(g+2)\rceil\le g$. Hence the expected non-blind
+First, a window $(p,u]$ of length~$\ell$ of either head is blind with probability at least
+\[
+  N^{-1}\sum_{i=1}^m(1-\ell/R_i)^+-2/(NR_m)
+\]
+over odd shifts; this is~\cite[Proposition~5.17]{BoundedNesting2026} without its level-$0$ term. Indeed, in the time of
+the other head, where it is~$U$, each of the $2^{i+2}$ turns of level~$i\ge1$ per period is followed by $R_i$ steps without
+a turn, a window that starts in the first $R_i-\ell$ of them is blind, these starts are disjoint, and at least
+$((R_i-\ell)^+-1)/2$ of them have the parity that an odd shift requires; as $2^{i+2}R_i=P/N$ and
+$\sum_{i=1}^m2^{i+2}/P<2/(NR_m)$, the bound follows. If $\ell\le R_L$ with $L\le m$, the levels $1,\dots,L$ contribute
+at least $\sum_{i=1}^L(1-2^{i-L})\ge L-2$ to the sum, and $2/(NR_m)\le1/N$ as $R_m\ge2$.
+
+Let $k\in\mathcal F_\eps$ and $g=m-k$, so $2\le g\le\eps m$. An apex hop of $(h,k)$ has length $2d<R_{k-1}$, so the sum is
+at least $k-3$. A valley hop of band~$j$, at level $l=k+j$, has length $(m-l)R_l+2x<(m-l+2)R_l\le R_{l-\lambda}$ with
+$\lambda=\lceil\log_2(m-l+2)\rceil\le\lceil\log_2(g+2)\rceil$~\cite[Lemma~5.1(b)]{BoundedNesting2026}, so the sum is at
+least $l-\lambda-2$ if $l\ge\lambda$. So every hop of every family of $(h,k)$ fails to be blind with probability at most
+$\eps_g=(g+4+\lceil\log_2(g+2)\rceil)/N$ (trivially if $l<\lambda$, as then $\eps_g>1$). Hence the expected non-blind
 fraction of a family is at most~$\eps_g$, and by Markov's inequality it fails to be half-blind with probability at
-most~$2\eps_g$. Summing over two heads, four families and
-$2\le g\le G=\lfloor\eps m\rfloor$ gives at most $16\sum_{g=2}^G4g/N\le64G^2/N\le64\eps^2m$. As
+most~$2\eps_g$. With $G=\lfloor\eps m\rfloor$ we have $\eps_g\le4G/N$, as $\lceil\log_2(g+2)\rceil\le g$; summing over the
+two heads, the four families and the $G-1$ levels of~$\mathcal F_\eps$ gives at most $64(G-1)G/N\le64\eps^2m$. As
 $\card{\mathcal F_\eps}=G-1\ge\eps m/2$, Markov's inequality bounds the probability of more than
 $\delta\card{\mathcal F_\eps}$ such triples by $128\eps/\delta=6144(a_0+1)\eps$.
-Formally, the blindness bound is proved here, without the level-$0$ term of
-\cite[Proposition~5.17]{BoundedNesting2026}, which the same final bounds do not need (\lean{MergeDepth.blindnessBound_holds}):
-after a turn of level~$l$ the walk makes $R_l$ steps without a turn, and a window that starts there is blind. The two
-applications of Markov's inequality are \lean{MergeDepth.sum_nonHalfBlind_le'} and
-\lean{MergeDepth.prob_many_nonHalfBlind_le'}.
-For the walk pair itself, half-blindness is the model's (\lean{MergeDepth.halfBlindPair_iff}), and
-\lean{MergeDepth.sum_nonHalfBlindPair_le} and \lean{MergeDepth.prob_many_nonHalfBlindPair_le} are the lemma.
+Formally, the blindness bound is \lean{MergeDepth.blindnessBound_holds}, and the lemma is first proved for the families
+listed in one period (\lean{MergeDepth.sum_nonHalfBlind_le'}, \lean{MergeDepth.prob_many_nonHalfBlind_le'}); for the walk
+pair, half-blindness is the same condition (\lean{MergeDepth.halfBlindPair_iff}).
 \end{outline}
 
 \begin{lemma}[Witnesses give unserved levels]\label{lem:dnp-witness}
 \formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.witnesses_unserved_pair}
-Let $a_0\ge1$, $0<\gamma\le1$, $0<\eps\le1/8$, $\theta_0=2^{-(a_0+11)}$ and $\delta=1/(48(a_0+1))$, and let $m<s_0$ satisfy
+Let $a_0\ge1$, $0\le\gamma\le1$, $0<\eps\le1/8$, $\theta_0=2^{-(a_0+11)}$ and $\delta=1/(48(a_0+1))$, and let $m<s_0$ satisfy
 $\eps m\ge4$ and~\textup{($\ast$)}. Let $\xi$ be an odd shift such that
 \begin{enumerate}[label=(\roman*)]
 \item $\Gamma_{a,\pm}(\xi)\ge\gamma\card{\mathcal K}$ for all $1\le a\le a_0$ and both signs, and
@@ -374,9 +395,9 @@ $\min\bigl(\eps m/(26(a_0+1)),\ \gamma N/4\bigr)-1\ge c(m+1)-2$ levels are not $
 hence not doubly $\theta_0$-served.
 Formally, the three cases are \lean{MergeDepth.case1_unserved}, \lean{MergeDepth.case2_unserved} and
 \lean{MergeDepth.case3_unserved}, through the tenth paper's run bound of Theorem~LU, its overflow band witness and
-Theorem~V$^*$, and \lean{MergeDepth.witnesses_unserved} combines them; it needs only $\gamma\ge0$.
-For the walk pair itself, \lean{MergeDepth.witnesses_unserved_pair} is the lemma: a level that is doubly
-$\theta_0$-served on the cover is served on the witness hops of the model (\lean{MergeDepth.ThetaServes.servedOnWitness}).
+Theorem~V$^*$, and \lean{MergeDepth.witnesses_unserved} combines them for service measured on the families listed in one
+period; a level that is doubly $\theta_0$-served on a cover is served in this sense
+(\lean{MergeDepth.ThetaServes.servedOnWitness}).
 \end{outline}
 
 \subsection{Block pairs at one odd shift}\label{sec:dnp-BP}
@@ -400,18 +421,15 @@ most $6144(a_0+1)\eps=3/32<1/2$. So both conditions hold at some odd shift~$\xi$
 and~$s_0$, and \cref{lem:dnp-witness} leaves at most $(1-c)(m+1)+2\le(1-c)(m+1)+C'$ doubly $\theta_0$-served levels, for
 every block pair with $1\le a_1,a_2\le a_0$, every $q\ge3$ and every multiple~$r$ of~$q$. For $m<m_1$ every odd shift has
 the property, since $m+1<(1-c)(m+1)+c(m_1+1)\le(1-c)(m+1)+C'$.
-Formally, \lean{MergeDepth.theoremBP'} is the theorem with Conjecture~S as its only hypothesis besides
-the identification of the model, derived from \lean{MergeDepth.theoremBP}, which takes the blindness bound as a
-hypothesis; it holds also for $m=0$, and through \lean{MergeDepth.blindnessBound_holds} it no longer depends on the
-written proof of~\cite[Proposition~5.17]{BoundedNesting2026}.
-For the walk pair itself, \lean{MergeDepth.theoremBP_pair} is the theorem on every $r$-fold cover with $r\ge1$; the
-divisibility $q\mid r$, which makes the label a label of the cover, is not used in the proof.
+Formally, the theorem is first proved for service measured on the families listed in one period
+(\lean{MergeDepth.theoremBP'}), and \lean{MergeDepth.theoremBP_pair} follows, since a level that is doubly
+$\theta_0$-served on a cover is served in this sense; the hypothesis $q\mid r$ is not used.
 \end{outline}
 
 Theorem~BP matters because block labels are how one head alone serves most of its levels (the fraction $a/(a+1)$ in the
-single-head regime~\cite[Lemma~5.12]{BoundedNesting2026}), and it shows that at one fixed odd shift no pair of them, for
-any modulus, keeps more than a fraction $1-c$ of the levels doubly served, as Conjecture~A$''$ predicts for every label of
-cost at most $n_{\mathrm h}/8$.
+single-head regime~\cite[Lemma~5.12]{BoundedNesting2026}). Assuming Conjecture~S, it shows that at one fixed odd shift no
+pair of them with block lengths at most~$a_0$, for any modulus, doubly $\theta_0$-serves more than a fraction $1-c$ of the
+levels, up to the additive constant~$C'$, as Conjecture~A$''$ predicts for every label of cost at most $n_{\mathrm h}/8$.
 
 \begin{remark}[Scope of Theorem~BP]\label{rem:dnp-scope}
 In the notation of Conjecture~A$''$, Theorem~BP gives, for pairs of block labels of length at most~$a_0$ on covers with
@@ -455,9 +473,8 @@ so the Fourier coefficients $\hat x(r)=N^{-1}\int_0^Nx_k(t)e^{-2\pi irt/N}dt$ ar
 \[
   \hat x(r)=\frac{\hat\Delta(r/N)}{2^{k-1}\hat\Pi_\kappa N}\sum_Se^{2\pi ir\hat a_S/N}\sum_{S'}e^{-2\pi ir\hat v_{S'}/N},
 \]
-with $\hat\Delta(\eta)=\int_\R\Delta(y)e^{-2\pi i\eta y}dy=\frac12\hat\Pi_\kappa^2\operatorname{sinc}^2(\hat\Pi_\kappa\eta/2)$,
-because $\Delta$ is twice the self-convolution of the indicator function of $[-\hat\Pi_\kappa/4,\hat\Pi_\kappa/4]$. As
-$\hat a_S$ is a constant plus $\sum_{i\in S}\hat\Pi_i$,
+with $\hat\Delta(\eta)=\int_\R\Delta(y)e^{-2\pi i\eta y}dy=\frac12\hat\Pi_\kappa^2\operatorname{sinc}^2(\hat\Pi_\kappa\eta/2)$
+by direct integration. As $\hat a_S$ is a constant plus $\sum_{i\in S}\hat\Pi_i$,
 $\abs{\sum_Se^{2\pi ir\hat a_S/N}}=\prod_{i<k}\abs{1+e^{2\pi ir\hat\Pi_i/N}}=2^{k-1}\prod_{i<k}\abs{\cos(\pi rn_i/(N2^i))}$,
 and likewise for the valleys with $\kappa-1$ factors. Hence $\abs{\hat x(r)}^2/\hat x(0)^2=\varphi_k(r)$, the factors with
 $i<k$ occurring in both sums; $\hat x(0)=\mu_k$, and
@@ -465,38 +482,39 @@ Parseval's identity $\operatorname{Var}x_k=\sum_{r\ne0}\abs{\hat x(r)}^2$ gives~
 
 (b) For $\zeta+2\sim\mathrm{Bin}(4,\frac12)$,
 $\mathbb Ee^{2\pi iy\zeta}=e^{-4\pi iy}((1+e^{2\pi iy})/2)^4=\cos^4(\pi y)$; for $\zeta+1\sim\mathrm{Bin}(2,\frac12)$ it is
-$\cos^2(\pi y)$; for $\omega$ uniform on $[-\frac14,\frac14]$ it is $\operatorname{sinc}(y/2)$. So
-$\mathbb E\exp(2\pi irW/N)=\varphi_k(r)$ for $r\in\Z$. Like~$Z$, $W$ has a continuous density with compact support, so its
-$N$-periodization $f(y)=\sum_lf_W(y+lN)$ is continuous, with Fourier coefficients
-$N^{-1}\mathbb E\exp(-2\pi irW/N)=\varphi_k(r)/N$ ($\varphi_k$ is even), which are summable as
-$\operatorname{sinc}^4y\le\min(1,(\pi y)^{-4})$. Hence $f(0)=N^{-1}\sum_r\varphi_k(r)=(1+V_k)/N$ by~(a).
+$\cos^2(\pi y)$; for $\omega$ uniform on $[-\frac14,\frac14]$ it is $\operatorname{sinc}(y/2)$. By independence,
+$\psi(y)=\mathbb Ee^{2\pi iyW}$ is the product of these factors at $y\hat\Pi_i$ and $y\hat\Pi_\kappa$, and
+$\psi(r/N)=\varphi_k(r)$ for $r\in\Z$. Let $f_W$ be the mixture, with the probabilities of the values of
+$(\zeta_1,\dots,\zeta_{\kappa-1})$ as weights, of the translates by $\sum_i\zeta_i\hat\Pi_i$ of the density of~$Z$ (a
+constant times the convolution square of~$\Delta$). It is continuous, nonnegative and compactly supported, and its Fourier
+transform is~$\psi$, so it is the density of~$W$. Poisson summation for $y\mapsto f_W(Ny)$, whose Fourier transform at
+$r\in\Z$ is $\psi(r/N)/N=\varphi_k(r)/N$ ($\varphi_k$ is even) and is summable as
+$\operatorname{sinc}^4y\le\min(1,(\pi y)^{-4})$, gives $N\sum_lf_W(lN)=\sum_r\varphi_k(r)=1+V_k$ by~(a).
 
 (c) All terms in~(a) are nonnegative. At $r=N2^{k-1}t$ the factors with $i<k$ equal~$1$, the factor at $k\le i<\kappa$ is
 $\cos^2(\pi tn_i2^{k-1-i})$, and the sinc factor is $\operatorname{sinc}^4(tn_\kappa2^{k-\kappa-2})$; with $D=\kappa-k$,
 $e=i-k+1$ and $n_i=n_\kappa+D+1-e$, this is the term~$t$ of $F(n_\kappa,D)$.
-Formally, $\varphi_k$ is \lean{MergeDepth.straddlePhi}, and~(a) is \lean{MergeDepth.hasSum_straddlePhi_ne_zero}, through
-Mathlib's Parseval identity on the circle of length~$N$ and the Fourier coefficients of the periodized tents; it needs only
-$1\le k\le\kappa$, and \lean{MergeDepth.hasSum_phiGen} is its general form for every $\kappa\ge1$. Part~(c) is
-\lean{MergeDepth.fineFloorK_le_relVariance} and \lean{MergeDepth.fineFloorK_eq}; only the identity $F_k=F(n_\kappa,\kappa-k)$
-uses $\kappa\le m$, and \lean{MergeDepth.exact_form_V} collects (a) and~(c). Part~(b) is \lean{MergeDepth.density_W}, for
-independent random variables on any probability space with these laws: $f_W$ is an explicit finite mixture of translates of
-the density of~$Z$, a convolution square of a tent; the law of~$W$ is identified by characteristic functions
-(\lean{MergeDepth.charFun_lawW_eq_straddlePhi}), and the identity follows from Mathlib's Poisson summation instead of the
-Fourier series of the periodization, which is equivalent. Part~(b) needs only $1\le\kappa$ and $k\le\kappa$, the
-hypotheses are satisfiable (\lean{MergeDepth.density_W_model_exists}), and the identity for $SB_k$ in the remark below is
-\lean{MergeDepth.sideband_eq_densityW}.
+Formally, $\varphi_k$ is \lean{MergeDepth.straddlePhi}; (a) is \lean{MergeDepth.hasSum_straddlePhi_ne_zero}, through
+Mathlib's Parseval identity on the circle of length~$N$, and holds for $1\le k\le\kappa$ (for every $\kappa\ge1$ in the
+general form \lean{MergeDepth.hasSum_phiGen}); (c) is \lean{MergeDepth.fineFloorK_le_relVariance} and
+\lean{MergeDepth.fineFloorK_eq}, and only the identity $F_k=F(n_\kappa,\kappa-k)$ uses $\kappa\le m$;
+\lean{MergeDepth.exact_form_V} collects (a) and~(c). Part~(b) is \lean{MergeDepth.density_W}, for independent random
+variables with these laws on any probability space (they exist, \lean{MergeDepth.density_W_model_exists}); it needs only
+$1\le\kappa$ and $k\le\kappa$, the law of~$W$ is identified through characteristic functions, and the identity
+$\mathbb E\exp(2\pi irW/N)=\varphi_k(r)$ is \lean{MergeDepth.charFun_lawW_eq_straddlePhi}.
 \end{outline}
 
 So $1+V_k$ is $N$ times the density at~$0$ of a random sum of the digits $\hat\Pi_i$ modulo~$N$, smoothed at the scale
 $\hat\Pi_\kappa$. For $k\in\mathcal K$ and $\kappa=\kappa_a(k)$, splitting the frequencies $r\ne0$ into the multiples of
 $N2^{k-1}$, the \emph{semi-local} ones $r=N2^{k-h}s$ ($s$ odd, $2\le h\le k$) and the \emph{sidebands} $r\notin N\Z$ gives
 $V_k=F_k+\sum_{h=2}^kSL^{[h]}_k+SB_k$ with $SL^{[h]}_k=\sum_{s\text{ odd}}\varphi_k(N2^{k-h}s)$ and
-$SB_k=\sum_{r\notin N\Z}\varphi_k(r)$, all nonnegative. The argument of~(b) with period~$1$ gives
-$\sum_w\varphi_k(Nw)=\sum_lf_W(l)$, so $SB_k=N\sum_lf_W(lN)-\sum_lf_W(l)$ measures how far the law of~$W$ modulo~$N$ is
-from invariance under integer translations.
+$SB_k=\sum_{r\notin N\Z}\varphi_k(r)$, all nonnegative (formally \lean{MergeDepth.relVariance_decomp}, for $1\le k\le\kappa$).
+The argument of~(b) with period~$1$ gives $\sum_w\varphi_k(Nw)=\sum_lf_W(l)$, so $SB_k=N\sum_lf_W(lN)-\sum_lf_W(l)$
+(\lean{MergeDepth.sideband_eq_densityW}) measures how far the law of~$W$ modulo~$N$ is from invariance under integer
+translations.
 
 \begin{proposition}[Classes with a large fine floor]\label{prop:S-resonance}
-\formal{MergeDepth/StraddleResonance.lean}{MergeDepth.resonance_class,MergeDepth.resonance_class_paper}
+\formal{MergeDepth/StraddleResonance.lean}{MergeDepth.resonance_class}
 Let $a=1$, let $q\ge6$ be even, let $k\ge1$ with $3k\le2^q+4$, and let $m=2^q+k+3$. Then $k\in\mathcal K$,
 $\kappa_1(k)=k+q+2$, $n_{\kappa_1(k)}=2^q-q+2$, and $V^{(1)}_k\ge F_k>0.585$.
 \end{proposition}
@@ -514,99 +532,102 @@ $\prod_{e\ge6}\cos^2(\pi(e-5)2^{2-e})\ge\cos^4(\pi/16)\cos^2(3\pi/64)(1-\pi^2\su
 factors $e=6,7,8$ exactly, $\cos^2y\ge1-y^2$ and $\prod(1-y_e)\ge1-\sum y_e$ for $e\ge9$, and
 $\sum_{j\ge4}j^24^{-j}=\frac{20}{27}-\frac{41}{64}$. Hence
 $F_k\ge2\cdot0.65702\cdot\frac12\cdot0.89142>0.585$.
-Formally, \lean{MergeDepth.resonance_class} is the proposition, with the numerical bounds from exact values of the
-cosines at $\pi/8$ and Mathlib's bounds on~$\pi$; \lean{MergeDepth.resonance_class_paper} records the weaker constant
-$0.551$ of an earlier version of this proof, which multiplied the factors $e=q+1,q+2$ in a second time. The bound on~$F_k$
-does not use that $q$ is even; evenness gives $\kappa_1(k)=k+q+2$.
+Formally, the numerical bounds come from the exact value of $\cos(\pi/8)$, the bound $\cos y\ge1-y^2/2$ and Mathlib's
+bounds on~$\pi$. The bound on~$F_k$ does not use that $q$ is even; evenness gives $\kappa_1(k)=k+q+2$.
 \end{outline}
 
-So $V^{(1)}_k\not\to0$ along classes $k\to\infty$ (this family has at most one class per~$m$), and variance bounds for single classes cannot show
-that every coarse class is good; Conjecture~S averages over classes, as \cref{prop:S-shift}(b) allows.
+So $V^{(1)}_k\not\to0$ along classes $k\to\infty$ (this family has at most one class per~$m$), and variance bounds for
+single classes cannot show that every coarse class is good; Conjecture~S averages over classes, as \cref{prop:S-shift}(b)
+allows.
 
-\paragraph{Arithmetic of $\kappa_a$.} Let $\rho(k)=(m-k-j_0)\bmod(a+1)$. Then $\kappa_a(k)=k+j_0+((\rho(k)+1)\bmod(a+1))$,
-so $D(k)=\kappa_a(k)-k\in[j_0,j_0+a]$ depends only on $k\bmod(a+1)$, and $n_{\kappa_a(k)}=N-k-D(k)$, which is
-$m-k-j_0-\rho(k)$ if $\rho(k)<a$ and $m-k-j_0+1$ if $\rho(k)=a$, is a multiple of $a+1$. So on
-$\mathcal K_\rho=\{k\in\mathcal K:\rho(k)=\rho\}$, whose consecutive elements differ by $a+1$, $n_{\kappa_a(k)}$ runs over
-$\card{\mathcal K_\rho}\ge L_a:=\lfloor\lfloor N/4\rfloor/(a+1)\rfloor$ consecutive multiples of $a+1$. If $4(j_0+a)\le N$,
-then $n_{\kappa_a(k)}\ge3N/4-j_0-a\ge N/2$ on~$\mathcal K$, and $n_{\kappa_a(k)}2^{-D(k)-2}\ge2^{-a-4}$ as $2^{j_0}\le2N$.
+\paragraph{Arithmetic of $\kappa_a$.} Let $a\ge1$ with $4(j_0+a)\le N$, and for $k\in\mathcal K$ let
+$\rho(k)=(m-k-j_0)\bmod(a+1)$ and $\ell_k=\lfloor(m-k-j_0+1)/(a+1)\rfloor$. Then $\kappa_a(k)=k+D(k)$ with
+$D(k)=j_0+((\rho(k)+1)\bmod(a+1))\in[j_0,j_0+a]$, which depends only on~$\rho(k)$, and $n_{\kappa_a(k)}=(a+1)\ell_k$. The
+map $k\mapsto(\rho(k),\ell_k)$ is injective on~$\mathcal K$, and the $\ell_k$ lie in an interval~$I$ of integers with
+$(a+1)\card I\le\lfloor N/4\rfloor+2a\le N$. Moreover $2^{D(k)}\ge2^{j_0}>N$, and $N\le2n_{\kappa_a(k)}$ and
+$2^{j_0}\le2N$ give $2^{D(k)}\le2^{a+2}n_{\kappa_a(k)}$, that is, $n_{\kappa_a(k)}2^{-D(k)-2}\ge2^{-a-4}$.
 
 \begin{lemma}[Dyadic products along a progression]\label{lem:S-progression}
-\formal{MergeDepth/StraddleProgression.lean}{MergeDepth.progression_avg_le_strong,MergeDepth.progression_avg_le,MergeDepth.window_sum_prod_cos_sq}
-Let $a\ge1$ with $a+1=2^wo$ and $o$ odd; let $t=2^vt'$ with $t'$ odd and $v\ge0$; let $j\ge0$, let $c_e$ be real numbers
-for $v<e\le v+w+j$, and let $I$ be a set of $L\ge1$ consecutive integers. Then
-\[
-  \frac1L\sum_{\ell\in I}\ \prod_{e=v+w+1}^{v+w+j}\cos^2\bigl(\pi t((a+1)\ell+c_e)2^{-e}\bigr)\ \le\ 2^{-j}+\frac{1-2^{-j}}L.
-\]
-The same bound holds with the product over $v<e\le v+w+j$, and for $j\ge1$ it is at most $2^{-j}+2^j/(2L)$.
+\formal{MergeDepth/StraddleProgression.lean}{MergeDepth.window_sum_prod_cos_sq,MergeDepth.progression_avg_le_strong}
+Let $j\ge0$.
+\begin{enumerate}[label=(\alph*)]
+\item If $u$ is an odd integer and $\gamma_1,\dots,\gamma_j$ are real, then for every integer~$\ell_0$
+  \[
+    \sum_{\ell=\ell_0}^{\ell_0+2^j-1}\ \prod_{s=1}^j\cos^2\bigl(\pi(u\ell2^{-s}+\gamma_s)\bigr)=1.
+  \]
+\item Let $a+1=2^wo$ and $t=2^vt'$ with $o$, $t'$ odd and $w,v\ge0$, let $c_e$ be real numbers for $v+w<e\le v+w+j$, and
+  let $I$ be a set of $L\ge1$ consecutive integers. Then
+  \[
+    \frac1L\sum_{\ell\in I}\ \prod_{e=v+w+1}^{v+w+j}\cos^2\bigl(\pi t((a+1)\ell+c_e)2^{-e}\bigr)\ \le\ 2^{-j}+\frac{1-2^{-j}}L.
+  \]
+\end{enumerate}
 \end{lemma}
 
 \begin{outline}
-Put $u=t'o$, which is odd, and $e=v+w+s$, so that $t(a+1)2^{-e}=u2^{-s}$ and the product is
-$\prod_{s=1}^j\cos^2(\pi(u\ell2^{-s}+\gamma_s))$ with $\gamma_s=tc_e2^{-e}$. Any $2^j$ consecutive values of~$\ell$ give the
-sum exactly~$1$: for $j\ge1$, replacing $\ell$ by $\ell+2^{j-1}$ shifts the arguments with $s<j$ by integer multiples of~$\pi$
-and the argument with $s=j$ by $\pi u/2$, which turns $\cos^2$ into $\sin^2$; so pairing these values reduces the sum to the
-same sum for $j-1$. The terms are nonnegative, so at most $2^j$ consecutive values give at most~$1$, and the $L$ values of~$I$
-give at most $\lceil L/2^j\rceil\le L2^{-j}+1-2^{-j}$. Factors with $v<e\le v+w$ lie in $[0,1]$, which gives the second
-sentence, and $1-2^{-j}\le2^{j-1}$. The bound is attained: for $\gamma_s=-u\ell^*2^{-s}$ the product is the indicator
-function of $\ell\equiv\ell^*\pmod{2^j}$. Formally, the window identity is \lean{MergeDepth.window_sum_prod_cos_sq}, the lemma
-is \lean{MergeDepth.progression_avg_le_strong}, and \lean{MergeDepth.progression_avg_le} is the weaker form. (Expanding
-$\cos^2$ into exponentials, as an earlier version of this proof did, gives only $2^{-j}+(2^j-1)/(2L)$.)
+(a) For $j=0$ the sum has the single term~$1$. For $j\ge1$, replacing $\ell$ by $\ell+2^{j-1}$ shifts the arguments with
+$s<j$ by the integer multiples $u2^{j-1-s}\pi$ of~$\pi$ and the argument with $s=j$ by $\pi u/2$, which turns $\cos^2$ into
+$\sin^2$ as $u$ is odd. So pairing $\ell$ with $\ell+2^{j-1}$ for $\ell_0\le\ell<\ell_0+2^{j-1}$ turns the last factor
+into $\cos^2+\sin^2=1$ and reduces the sum to the same sum for $j-1$.
+
+(b) Put $u=t'o$, which is odd, and $e=v+w+s$; then $t(a+1)2^{-e}=u2^{-s}$, and the product is
+$\prod_{s=1}^j\cos^2(\pi(u\ell2^{-s}+\gamma_s))$ with $\gamma_s=tc_e2^{-e}$. Split~$I$ into $\lfloor L/2^j\rfloor$ runs of
+$2^j$ consecutive integers and a rest of fewer than $2^j$. By~(a) each run contributes exactly~$1$, and the rest at
+most~$1$, as the terms are nonnegative; so the sum is at most $\lceil L/2^j\rceil\le L2^{-j}+1-2^{-j}$.
+Formally, (a) is \lean{MergeDepth.window_sum_prod_cos_sq} and (b) is \lean{MergeDepth.progression_avg_le_strong}.
 \end{outline}
 
 \begin{proposition}[Fine floors and near semi-local frequencies]\label{prop:S-local}
-\formal{MergeDepth/StraddleLocal.lean}{MergeDepth.fineFloor_avg_le_paper,MergeDepth.semiLocal_avg_le_paper,MergeDepth.relVariance_decomp,MergeDepth.nonLocal_eq,MergeDepth.conjectureS_iff_meanNonLocal}
-Let $a\ge1$ with $4(j_0+a)\le N$, and for $k\in\mathcal K$ let $\kappa=\kappa_a(k)$.
+\formal{MergeDepth/StraddleLocal.lean}{MergeDepth.sum_fineFloorK_le,MergeDepth.sum_semiLocal_le,MergeDepth.relVariance_decomp,MergeDepth.conjectureS_iff_meanNonLocalGen}
+Let $a\ge1$, for $k\in\mathcal K$ let $\kappa=\kappa_a(k)$, and put $C_a=(a+1)\bigl(3(2^{a+4}/\pi)^2+8\cdot2^{a+4}/(3\pi)\bigr)$.
 \begin{enumerate}[label=(\alph*)]
-\item $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}F_k\le\dfrac{2^{a+7}}{3\pi}\cdot\dfrac{\log_2L_a+5}{\sqrt{L_a}}$.
-\item If $2\le H\le\frac12\log_2L_a$, then
-  $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le\dfrac{5\cdot2^{a+6}}{3\pi}\cdot
-  \dfrac{2^H}{\sqrt{L_a-H}}$.
-\item Let $H_N=\lfloor\frac14\log_2N\rfloor$ and
-  $NL_k=V_k-F_k-\sum_{h=2}^{\min(H_N,k)}SL^{[h]}_k=SB_k+\sum_{h=\max(2,H_N+1)}^{k}SL^{[h]}_k$. Then Conjecture~S holds for~$a$ if
-  and only if $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}NL_k\to0$ as $m\to\infty$.
+\item If $4(j_0+a)\le N$, then $\sum_{k\in\mathcal K}F_k\le C_a$.
+\item If $4(j_0+a)\le N$, then $\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le(a+1)2^{a+H+8}/(3\pi)$ for every
+  integer $H\ge0$.
+\item Let $H=H(m)\ge0$ be integers with $2^H/N\to0$ as $m\to\infty$, and put
+  $NL_k=V_k-F_k-\sum_{h=2}^{\min(H,k)}SL^{[h]}_k$, which is $SB_k+\sum_{h=\max(2,H+1)}^kSL^{[h]}_k$. Then Conjecture~S holds
+  for~$a$ if and only if $\card{\mathcal K}^{-1}\sum_{k\in\mathcal K}NL_k\to0$ as $m\to\infty$.
 \end{enumerate}
 \end{proposition}
 
 \begin{outline}
-(a) It suffices to bound the average over each $\mathcal K_\rho$. There $D=D(k)$ is fixed and $F_k=F((a+1)\ell,D)$, with
-$\ell$ running over a set~$I$ of $\card{\mathcal K_\rho}\ge L_a$ consecutive integers. Let $H=\lfloor\frac12\log_2L_a\rfloor$,
-so $2^H\le\sqrt{L_a}<2^{H+1}$; then $H+w<D$, since $2^{H+w}\le(a+1)\sqrt{N/(4(a+1))}\le N/4$ (as $a+1\le N/4$) and
-$2^D\ge2^{j_0}>N$. Fix $t\ne0$ and let $v$ be the exponent of~$2$ in~$t$. The factors of $F(n,D)$ with $e\le v$ equal~$1$,
-and all factors are at most~$1$, so the product is at most $\prod_{e=v+1}^{H+w}\cos^2(\pi t((a+1)\ell+D+1-e)2^{-e})$. By
-\cref{lem:S-progression} with $j=H-v$, its average over $\ell\in I$ is at most $B_v=2^{-(H-v)}+2^{H-v}/(2L_a)$ if $v<H$; put
-$B_v=1$ if $v\ge H$. The sinc factor is at most $\min(1,(\pi\abs t2^{-a-4})^{-4})$, as
-$\abs{\operatorname{sinc}y}\le\min(1,1/(\pi\abs y))$ and $n_\kappa2^{-D-2}\ge2^{-a-4}$. Comparing each odd $t'\ge1$ with the
-interval $[t'-1,t']$, $\sum_{t'\text{ odd}}\min(1,(\pi2^vt'2^{-a-4})^{-4})\le\int_0^\infty\min(1,(\pi2^{v-a-4}y)^{-4})\,dy
-=2^{a+6-v}/(3\pi)$. With both signs of~$t$, the average of $F_k$ over $\mathcal K_\rho$ is at most
-$\frac{2^{a+7}}{3\pi}\sum_{v\ge0}2^{-v}B_v$. Finally $\sum_{v<H}2^{-v}B_v\le H2^{-H}+\frac23\cdot2^H/L_a$ and
-$\sum_{v\ge H}2^{-v}=2^{1-H}$, and with $2^{-H}\le2/\sqrt{L_a}$ and $2^H\le\sqrt{L_a}$ the total is at most
-$(2H+5)/\sqrt{L_a}\le(\log_2L_a+5)/\sqrt{L_a}$.
+Write $a+1=2^wo$ with $o$ odd, and let $I$ be the interval of the arithmetic above, so that $2^w\card I\le(a+1)\card I\le N$.
 
-(b) Fix $2\le h\le H$ and~$\rho$, and let $k\in\mathcal K_\rho$, $k\ge h$. At $r=N2^{k-h}s$ the factors of $\varphi_k$ with
-$i\le k-h$ equal~$1$; with $i=k-h+l$ and $m_l=n_{k-h+l}=n_\kappa+D+h-l$ the others are
-$\operatorname{sinc}^4(sn_\kappa2^{-D-h-1})$ and $\cos^4$ (for $l<h$) or $\cos^2$ (for $h\le l<D+h$) of $\pi sm_l2^{-l}$.
-The $\ell=n_\kappa/(a+1)$ of these~$k$ are $L'$ consecutive integers, $4\le L_a-h\le L'\le L_a+1$. Bound $\cos^4$
-by~$\cos^2$, drop the factors with $l>H'+w$, where $H'=\lfloor\frac12\log_2L'\rfloor\ge1$ (so
-$2^{H'+w}\le(a+1)\sqrt{L_a+1}<N<2^D$), and bound the sinc factor by $\min(1,(\pi\abs s2^{-a-3-h})^{-4})$.
-\Cref{lem:S-progression} with $t=s$, $v=0$, $j=H'$ bounds the average over~$\ell$ by $\frac52/\sqrt{L'}$, and the sinc
-bounds sum over odd~$s$ of both signs to at most $2^{a+h+6}/(3\pi)$. So the average of $SL^{[h]}_k$ over $\mathcal K_\rho$
-is at most $5\cdot2^{a+5}2^h/(3\pi\sqrt{L_a-h})$; sum over $2\le h\le H$.
+(a) By the arithmetic above, $F_k=F((a+1)\ell_k,D(k))$ with $n_\kappa2^{-D(k)-2}\ge2^{-a-4}$. As
+$\abs{\operatorname{sinc}y}\le\min(1,1/(\pi\abs y))$, the sinc factor of the term~$t$ of~$F_k$ is at most
+$\mathrm{sb}(t)=\min(1,(\pi\abs t2^{-a-4})^{-4})$, so $F_k\le M(\ell_k,D(k))$ with
+$M(\ell,D)=\sum_{t\ne0}\mathrm{sb}(t)\prod_{e=1}^D\cos^2(\pi t((a+1)\ell+D+1-e)2^{-e})\ge0$. As $k\mapsto(\rho(k),\ell_k)$ is
+injective, $\sum_{k\in\mathcal K}F_k\le\sum_{\rho\le a}\sum_{\ell\in I}M(\ell,D(\rho))$. Fix $D=D(\rho)$ and $t\ne0$, and
+write $t=2^vt'$ with $t'$ odd. If $v+w<D$, drop the cosine factors with $e\le v+w$, which lie in $[0,1]$, and apply
+\cref{lem:S-progression}(b) with $j=D-v-w$ and $c_e=D+1-e$: the sum over $\ell\in I$ of the cosine products is at most
+$\card I2^{v+w-D}+1$. If $v+w\ge D$, it is at most $\card I\le\card I2^{v+w-D}$. As $2^v\le\abs t$ and $2^w\card I\le N<2^D$,
+it is at most $\abs t+1$ in both cases. So $\sum_{\ell\in I}M(\ell,D)\le\sum_t(\abs t+1)\,\mathrm{sb}(t)$, and telescoping
+bounds give $\sum_t\abs t\,\mathrm{sb}(t)\le3(2^{a+4}/\pi)^2$ and $\sum_t\mathrm{sb}(t)\le8\cdot2^{a+4}/(3\pi)$.
 
-(c) For large~$N$, $2\le H_N\le\frac12\log_2L_a$, and (a) and (b) with $H=H_N$ are $O_a(N^{-1/2}\log N)$ and
-$O_a(N^{-1/4})$; so the averages of $V_k$ and $NL_k$ over $\mathcal K$ differ by $o(1)$.
-Formally, the decomposition $V_k=SB_k+F_k+\sum_{h=2}^kSL^{[h]}_k$ is \lean{MergeDepth.relVariance_decomp}, and (a), (b)
-and~(c) are \lean{MergeDepth.fineFloor_avg_le_paper}, \lean{MergeDepth.semiLocal_avg_le_paper} and
-\lean{MergeDepth.conjectureS_iff_meanNonLocal}, with sums of the sinc majorant bounded by telescoping instead of
-integrals. With the exact window sums of \cref{lem:S-progression} the formal proof gives more:
-$\sum_{k\in\mathcal K}F_k\le(a+1)\bigl(3(2^{a+4}/\pi)^2+8\cdot2^{a+4}/(3\pi)\bigr)$ uniformly in~$m$, so the average
-in~(a) is $O_a(1/N)$ (\lean{MergeDepth.sum_fineFloorK_le}); $\sum_{k\in\mathcal K}\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\le
-(a+1)2^{a+H+8}/(3\pi)$ for every~$H$ (\lean{MergeDepth.sum_semiLocal_le}); and~(c) holds with every cut-off $H=H(m)$ with
-$2^H=o(N)$ in place of~$H_N$ (\lean{MergeDepth.conjectureS_iff_meanNonLocalGen}).
+(b) Fix $2\le h\le H$, and for $k\in\mathcal K$ with $k\ge h$ put $E=D(k)+h-1$. At $r=N2^{k-h}s$ with $s$ odd, the factors
+of~$\varphi_k$ with $i\le k-h$ equal~$1$. Bound the $\cos^4$ factors by~$\cos^2$, keep only the factors with $i=k-h+l$,
+$w<l\le E$, which are $\cos^2(\pi s(n_\kappa+E+1-l)2^{-l})$, and bound the sinc factor
+$\operatorname{sinc}^4(sn_\kappa2^{-D(k)-h-1})$ by $\min(1,(\pi\abs s2^{-a-3-h})^{-4})$. As in~(a), pass to the pairs
+$(\rho,\ell)$: \cref{lem:S-progression}(b) with $t=s$, $v=0$ and $j=E-w$ bounds the sum over $\ell\in I$ of the kept products
+by $\card I2^{w-E}+1\le2$, as $2^E\ge2^{j_0}>N$, and the sinc bounds sum to at most $8\cdot2^{a+3+h}/(3\pi)$. So
+$\sum_{k\in\mathcal K,\,k\ge h}SL^{[h]}_k\le(a+1)2^{a+7+h}/(3\pi)$, and summing over $2\le h\le H$ gives the bound.
+
+(c) The second form of $NL_k$ follows from the decomposition $V_k=SB_k+F_k+\sum_{h=2}^kSL^{[h]}_k$. For all large~$m$
+the size condition holds, and then (a) and~(b) give
+\[
+  0\le\bar V^{(a)}_m-\frac1{\card{\mathcal K}}\sum_{k\in\mathcal K}NL_k
+  =\frac1{\card{\mathcal K}}\sum_{k\in\mathcal K}\Bigl(F_k+\sum_{h=2}^{\min(H,k)}SL^{[h]}_k\Bigr)
+  \le\frac{C_a+(a+1)2^{a+H+8}/(3\pi)}{\card{\mathcal K}},
+\]
+which tends to~$0$ as $\card{\mathcal K}=\lfloor N/4\rfloor$ and $2^H/N\to0$; so the two averages tend to~$0$ together.
+Formally, (a), (b) and~(c) are \lean{MergeDepth.sum_fineFloorK_le}, \lean{MergeDepth.sum_semiLocal_le} and
+\lean{MergeDepth.conjectureS_iff_meanNonLocalGen}, and the decomposition is \lean{MergeDepth.relVariance_decomp}; for
+$H=\lfloor\frac14\log_2N\rfloor$, (c) is also \lean{MergeDepth.conjectureS_iff_meanNonLocal}.
 \end{outline}
 
-The written proof stops near $h\approx\frac12\log_2N$, where the about $2^h$ odd~$s$ in the sinc range outweigh its gain
-$L_a^{-1/2}$; with the exact window sums the semi-local frequencies are controlled up to every~$h$ with $2^h=o(N)$, for
-instance $h=\lfloor\log_2N\rfloor-\lceil\log_2\log_2N\rceil$.
+So the fine floors and the semi-local frequencies with $2^h=o(N)$, for instance
+$h\le\lfloor\log_2N\rfloor-\lceil\log_2\log_2N\rceil$, contribute $o(1)$ to~$\bar V^{(a)}_m$, and Conjecture~S is a statement
+about the sidebands and the semi-local frequencies with $2^h$ at least of order~$N$. By~(a), at most $2C_a$ coarse classes have
+$F_k\ge1/2$, for every $m$ with $4(j_0+a)\le N$; the classes of \cref{prop:S-resonance} are of this kind.
 
 \begin{remark}[The carry chain]\label{rem:S-carry}
 Proof sketch only: a representation for the non-local part. Let $b_1,\dots,b_{\kappa-1}$ be the binary digits of

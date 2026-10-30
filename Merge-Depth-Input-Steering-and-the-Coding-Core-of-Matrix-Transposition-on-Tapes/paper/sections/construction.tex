@@ -4,46 +4,64 @@ This section collects the necessary conditions that the series now places on a l
 constructive target that remains. It proves nothing new except \cref{lem:PG}; its purpose is to say where a
 construction would have to live.
 
-\paragraph{Unconditional constraints.} A linear-time transposer needs at least two work tapes, since with one work
-tape transposition takes superlinear time~\cite{DMS1991}; it must make $\Omega(\log d)$ passes, by the first paper's
-Lean-verified pass bound~\cite[Theorems~5.9 and~5.12]{FirstPaper2026}; and conservative reversal-bounded machines are
-excluded~\cite{Kirchherr1988}. Among oblivious geometries with bounded span overlap, the source-cover paper
-excludes those with few large return families, so a survivor has at least two large exceptional families and a core
-profile of inverse-square type or heavier~\cite[Theorem~4.2 and Corollaries~4.3--4.5]{SourceCovers2026}, and the
-frozen gap-area certificate cannot exclude that boundary case at moduli comparable to the protected
-rank~\cite{GapAreaMemo2026}. By \cref{thm:LA}, a machine of sufficiently low adaptivity is excluded whenever one of its
-likely traces is. By the fourth paper's Theorem~Cq, in every macroscopic limit the work heads travel at least half a block
-unit along motion that is not countably-piecewise affine~\cite[Theorem~3.12]{FourthPaper2026}. By \cref{thm:EM}, at block
-scale every machine, adaptive or not, carries one oblivious external-memory transposition with linearly many I/Os on a
-set of $2^{L-O(d)}$ inputs.
+\paragraph{Unconditional constraints on the motion.} A linear-time transposer needs at least two work tapes, since with
+one work tape transposition takes superlinear time~\cite[Corollary~3.18(c)]{FourthPaper2026}; much stronger bounds hold
+in the classical one-tape models~\cite{DMS1991,DietzfelbingerMaass1993}. Its heads must make
+$\Omega(\log d)$ passes, by the first paper's pass bound, Lean-verified there~\cite[Theorems~5.9 and~5.12]{FirstPaper2026},
+and conservative machines with $o(\log d)$ reversals cannot transpose at all~\cite{Kirchherr1988}. Among oblivious
+geometries with bounded span overlap, the ninth paper excludes those with boundedly many large return families, and
+those whose families form a $\mathrm Q_2$ core and at most one further family~\cite[Corollaries~4.3 and~4.5]{SourceCovers2026};
+with $q\ge2$ exceptional families, the sorted hop fractions $h_i$ of every near-full sequence satisfy
+$\sum_ii^{q-1}h_i=\infty$~\cite[Theorem~4.2]{SourceCovers2026}, and the frozen gap-area certificate cannot exclude the
+boundary case of two exceptional families with hop counts of order $L/i^2$ at moduli comparable to the protected
+rank~\cite{GapAreaMemo2026}. By \cref{thm:LA}, a machine is
+excluded as soon as, for a small enough $\eta>0$, one of its traces of probability at least $2^{-\eta L}$ falls under
+these exclusions. By the fourth paper's Theorem~Cq, in every macroscopic limit the work heads travel at least half a
+block unit along motion that is not countably-piecewise affine~\cite[Theorem~3.12]{FourthPaper2026}.
+
+\paragraph{Unconditional constraints on the coding.} By the first paper, every linear-time transposer carries, on the
+block network of its run, a causal code that solves complete exchange on a large set of inputs and beats multicommodity
+flow by a factor $\Omega(\log d)$~\cite[Theorems~8.8 and~9.2]{FirstPaper2026}, Lean-verified there. By \cref{thm:EM},
+every linear-time transposer, adaptive or not, yields an external-memory transposition with linearly many I/Os that is
+oblivious on a set of $2^{L-O(d)}$ inputs, and that algorithm must combine records (\cref{rem:EM-status}). An oblivious
+transposer whose code has bounded merge depth carries, by \cref{thm:HCprime}(b), an index code whose fibres are storage
+codes of rate close to one on relations inside balls of bounded radius, and these relations are paired-distance
+separated after a paid trimming (\cref{lem:balls}). They must therefore lie outside every class on which the half bound
+is proved: the degree-three, circular-chromatic and directed classes of the seventh and tenth
+papers~\cite{SeventhPaper2026,DirectedReciprocity2026}, and the hyperfinite and two-input relations of the
+fifth~\cite[Corollary~4.4 and Theorem~5.1]{DirectedRecovery2026}.
 
 \paragraph{Constraints given [Q9.1].} Some tape is revisited unboundedly often (\cref{cor:RV}). If the work tapes have
 bounded entry, input cells are revisited unboundedly often and the input head carries about half of the input in its
 coarse motion at every fixed scale (\cref{cor:IS}); padding meets the second condition at no cost
-(\cref{rem:skel-padding}), so it shapes a construction only through the revisits. If the
-machine is oblivious, then for every fixed~$s$ more than a fixed fraction of its outputs have, whatever the pruning, cold
-genie and lineage assignment, a path with more than $s$ deep merges (\cref{cor:HCstar}); together with [Q9.1],
-\cref{conj:HV} would exclude such codes altogether (\cref{rem:HV}). Its cone
-relations must lie outside every class on which the half bound is proved: the degree-three and directed classes of the
-seventh and tenth papers~\cite{SeventhPaper2026,DirectedReciprocity2026}, circular chromatic number below three,
-hyperfinite and two-input relations~\cite{DirectedRecovery2026}.
+(\cref{rem:skel-padding}), so it shapes a construction only through the revisits. If the machine is oblivious, it
+revisits a work tape unboundedly often, and for all fixed $V$, $s$ and~$\eps$ and every $\eta<\frac12-\eps$, more than
+$\eta L$ of its outputs have, whatever the pruning, cold genie at $(V,\eps)$ and lineage assignment, a genie-free path
+with more than $s$ deep merges (\cref{cor:HCstar,thm:L}). \Cref{prop:merge-reduction} excludes in the same way every
+code whose merge DAG has a cheap cut, and \cref{conj:HV} would exclude all remaining codes (\cref{rem:HV}).
 
-\paragraph{The target.} Put together, a construction must contain, at some scale, a near-full-rate code with a gain of
-order $\log d$ over routing on a network of the shape that tapes produce. Two forms remain open.
+\paragraph{The target.} Two forms of a construction remain open.
 \begin{enumerate}[label=(\roman*)]
-\item \emph{Merge depth.} An oblivious machine with deeply nested work tapes whose code merges deep lineages along a
-depth-robust pattern, causally, with a logarithmic coding gain over routing on its deep hops.
+\item \emph{Merge depth.} An oblivious machine that revisits some work-tape cells unboundedly often and whose code merges
+deep lineages unboundedly often, along merge DAGs without cheap cuts. After the cold genie, the genie-free paths from
+almost every output to its demanded input bit use many deep hops, so routing through the deep hops delivers little
+(\cref{prop:hop-routing}); heuristically, the code must beat routing on them by a factor that grows with the radius
+(\cref{rem:HV}(d)).
 \item \emph{Adaptive revisits.} An adaptive machine that revisits a work tape unboundedly often in a data-dependent
-way, or one whose work tapes have bounded entry and which revisits input cells unboundedly often; Corollary~IS then puts
-about $L/2$ bits of the data into the coarse motion of the input head, which padding provides at no cost.
+way, or one whose work tapes have bounded entry and which revisits input cells unboundedly often; in the second case
+Corollary~IS puts about $L/2$ bits of the data into the coarse motion of the input head, which padding provides at no
+cost.
 \end{enumerate}
-In both forms the block-scale image is an oblivious external-memory transposition with linearly many I/Os on a large set
-of inputs (\cref{thm:EM}), so both need the same maximal-gap code at block scale. No mechanism of either kind is known.
-Undirected network codes beating routing by a growing factor exist~\cite{BravermanHe2026}, but the known gaps are far below
-logarithmic and are not causal on tape-shaped networks.
+In both forms the block-scale image is an external-memory transposition with linearly many I/Os that is oblivious on a
+large set of inputs (\cref{thm:EM}), so both need, at block scale, a code that beats every indivisible algorithm by a
+logarithmic factor. No mechanism of either kind is known. Coding gains over multicommodity flow for multiple unicast that
+grow with the size of an undirected network exist~\cite{BravermanHe2026}, but the known growing gains are far below logarithmic, and none is known
+on networks of the shape that tapes produce.
 
-\paragraph{A ruled-out building block.} The rest of this section rules out one natural way to assemble the
-near-full-rate codes that the target needs: Tanner codes built from projective planes, with every coordinate recovered
-from one line through it, violate the paired-distance condition.
+\paragraph{A ruled-out building block.} Without [Q9.1], an oblivious transposer whose work heads enter every cell
+boundedly often, or whose code has bounded merge depth, is not excluded by the results above, but its codes would
+answer Question~9.1 negatively. The rest of this section rules out one natural way to assemble such codes: Tanner codes
+built from projective planes, with every coordinate recovered from one line through it, violate the paired-distance
+condition.
 
 \input{sections/pglemma}

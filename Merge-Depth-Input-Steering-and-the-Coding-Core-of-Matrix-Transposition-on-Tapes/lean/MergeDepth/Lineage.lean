@@ -57,21 +57,6 @@ theorem isChain_append (lin : Forest) {v : ℕ} :
     have := isChain_append lin (w :: σ) (by simp) hc' (by simpa using h)
     exact ⟨huw, this⟩
 
-theorem crossed_append (M : Finset ℕ) {v : ℕ} :
-    ∀ (σ : List ℕ) (hσ : σ ≠ []),
-      crossed M (σ ++ [v]) = crossed M σ + (if σ.getLast hσ ∈ M then 1 else 0)
-  | [], h => absurd rfl h
-  | [u], _ => by
-    show (if u ∈ M then 1 else 0) + 0 = 0 + (if u ∈ M then 1 else 0)
-    omega
-  | u :: w :: σ, _ => by
-    have ih := crossed_append M (v := v) (w :: σ) (by simp)
-    rw [List.getLast_cons_cons]
-    show (if u ∈ M then 1 else 0) + crossed M ((w :: σ) ++ [v]) =
-      (if u ∈ M then 1 else 0) + crossed M (w :: σ) + _
-    rw [ih]
-    ring
-
 theorem rCount_append (Rr : ℕ → ℕ → Prop) [DecidableRel Rr] {v : ℕ} :
     ∀ (σ : List ℕ) (hσ : σ ≠ []),
       rCount Rr (σ ++ [v]) = rCount Rr σ + (if Rr (σ.getLast hσ) v then 1 else 0)

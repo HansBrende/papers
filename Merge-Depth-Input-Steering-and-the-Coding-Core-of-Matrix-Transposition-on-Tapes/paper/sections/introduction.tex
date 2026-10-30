@@ -2,78 +2,124 @@
 
 \paragraph{The question.} Let $b(d)=\max(1,\lceil\log_2d\rceil)$ and $L=d^2b(d)$. Statement~(T) asserts that one
 deterministic multitape Turing machine transposes every $d\times d$ matrix with $b(d)$-bit entries, given and returned in
-row-major order, within $O(L)$ steps. The obvious recursive algorithm takes $O(L\log d)$ steps. Whether (T) holds is
-open; the series this paper belongs to collects the necessary conditions that a linear-time transposer must satisfy, and
-the constructions they leave.
+row-major order, within $O(L)$ steps. The obvious recursive algorithm takes $O(L\log d)$ steps. By a reduction of Harvey
+and van der Hoeven, discussed in the first paper of the series~\cite{FirstPaper2026}, a linear-time multiplication
+machine would give a linear-time transposer, so a proof of $\neg$(T) would give a superlinear lower bound for integer
+multiplication on multitape Turing machines. Whether (T) holds is open, and this paper does not decide it. It is the
+eleventh paper of a series that collects the necessary conditions a linear-time transposer must satisfy and the
+constructions they leave open.
 
-\paragraph{Where the series stands.} For oblivious machines, three kinds of results now constrain a transposer.
-\emph{Depth}: the walk DAG of the work heads has cheap cuts of bounded depth whenever the heads enter every cell
-boundedly often (Theorem~F of~\cite{BoundedNesting2026}); whether this holds at unbounded nesting is the open
-statement $\TCP(2)$, and the deep-nesting pair is the test case~\cite{BoundedNesting2026,DirectedReciprocity2026}.
-\emph{Coding}: given depth reduction, a transposer carries a near-full-rate code on cone relations that are
-paired-distance separated, and Question~9.1 of \emph{Directed Recovery Structures in Tape
-Computations}~\cite{DirectedRecovery2026}, the \emph{crux}, asks whether such codes have rate at most one half; it is
-answered for many classes~\cite{SeventhPaper2026,DirectedReciprocity2026}. \emph{Source covers}: oblivious geometries with
-bounded span overlap and few large return families are excluded outright~\cite{SourceCovers2026}, and the frozen gap-area
-certificate cannot exclude the remaining two-exception inverse-square case at moduli comparable to the protected
-rank~\cite{GapAreaMemo2026}. For adaptive machines, the eighth paper's Corollary~F$''$ excludes bounded-entry machines
-whose traces carry less than $L/2$ bits~\cite[Corollary~6.4]{BoundedNesting2026}, a hypothesis that padding defeats.
+\paragraph{Where the series stands.} The fourth paper reduced the impossibility of oblivious linear-time transposers to
+two statements~\cite{FourthPaper2026}: \emph{depth reduction}, that the dependency DAG of every linear-time schedule can
+be cut to bounded depth by a cheap genie, and a coding bound on the remaining bounded-depth cones, the \emph{crux}. On the
+depth side, the eighth paper's Theorem~F cuts the walk DAG of the work heads to bounded depth whenever the heads have
+bounded owner-load, in particular whenever they enter every cell boundedly
+often~\cite[Theorem~3.6 and Corollary~3.2]{BoundedNesting2026}; whether such cuts exist for all pairs of walks is the open statement
+$\TCP(2)$, and the deep-nesting pairs are its sharpest test case~\cite{BoundedNesting2026,DirectedReciprocity2026}. On the
+coding side, the fifth paper showed that the cone relations of every linear-time schedule are paired-distance separated
+after a paid trimming, and its Question~9.1 asks whether every storage code on such relations of bounded degree has rate
+at most one half~\cite{DirectedRecovery2026}. The answer is affirmative on several classes of
+relations~\cite{DirectedRecovery2026,SeventhPaper2026,DirectedReciprocity2026}; we write [Q9.1] for an affirmative answer in
+general. Together with Theorem~F, [Q9.1] excludes oblivious transposers whose work heads enter every cell boundedly often
+(the eighth paper's Corollary~F$'$~\cite[Corollary~6.3]{BoundedNesting2026}). Independently of coding hypotheses, the
+ninth paper excludes oblivious geometries with bounded span overlap and few large return families~\cite{SourceCovers2026},
+and the frozen gap-area certificate cannot exclude the remaining two-exception inverse-square case at moduli comparable to
+the protected rank~\cite{GapAreaMemo2026}. For adaptive machines, the eighth paper's Corollary~F$''$ extends Corollary~F$'$,
+given [Q9.1], to bounded-entry machines whose traces carry at most $\eta L$ bits for a fixed
+$\eta<\frac12$~\cite[Corollary~6.4]{BoundedNesting2026}; padding the motion of the input head defeats that
+hypothesis without changing the computation~\cite[Section~6.2]{BoundedNesting2026}.
 
-\paragraph{This paper.} We show that, given the crux, every linear-time transposer revisits some tape unboundedly
-often, that an oblivious one must do so through deep merges in its code, and that at block scale every transposer leads
-to the same coding problem.
+\paragraph{This paper.} Given [Q9.1], we show that every linear-time transposer revisits some tape unboundedly often,
+that an oblivious one must in addition merge deep lineages unboundedly often in its code, and that one whose work tapes
+have bounded entry must steer its input head by the data. Unconditionally, at block scale every linear-time transposer,
+adaptive or not, runs an oblivious external-memory transposition with linearly many I/Os on a large set of inputs, so
+that one coding problem underlies all cases.
 \begin{enumerate}
-\item \emph{Merge depth replaces schedule depth} (\cref{sec:hop}). For an oblivious machine whose step values are linear
-over a field, Theorems~HC and~HC$'$ split the transposition matrix into a part of small rank and a part supported on
-balls of bounded radius whenever the machine's code merges deep data lineages only boundedly often along each path, on
-\emph{every} schedule, however deeply nested and whatever its capacity. With the linear crux this excludes such
-transposers (Corollary~HC), and with an affirmative answer to Question~9.1 it excludes them for all codes
-(Corollary~HC$^*$). Routing through deep hops is hop-limited, capacity is not the operative resource, and the remaining
-oblivious question becomes depth reduction of the code's merge structure (\cref{conj:HV}).
-\item \emph{Skeleton entropy and input steering} (\cref{sec:skeleton}). Theorem~SE is a form of Corollary~F$''$
-that is robust against padding of bounded entry, as the eighth paper asks: it bounds the entropy of the coarse skeleton
-of the trace, the head positions rounded to blocks of a fixed width, rather than that of the trace. Its proof turns a
-machine into a \emph{block machine} that is oblivious on each skeleton class. Two corollaries follow. No linear-time
-transposer, adaptive or not, has bounded entry on every tape (Corollary~RV). A transposer whose work tapes have bounded
-entry must therefore revisit input cells unboundedly often, and its input head must carry about $L/2$ bits of the data
-in its coarse motion at every scale (Corollary~IS). Padding that revisits input cells meets this last condition at no
-cost, so it is a necessary condition rather than an obstruction.
-\item \emph{Localization} (\cref{sec:localization}). Theorem~L combines these: given the crux, every linear-time
+\item \emph{Merge depth replaces schedule depth} (\cref{sec:hop}). The eighth paper's Corollary~F cuts the whole schedule
+to bounded depth with Theorem~F, which needs bounded owner-load; schedules that revisit cells unboundedly often, such as
+the deep-nesting pairs, may have no such cut. Hop charging handles them. Theorem~F cuts only the hops at boundedly entered
+cells (the cold genie, \cref{lem:cold}); the hops at the other cells, the deep hops, are charged instead, one revealed
+coordinate for every $\tau$ deep hops along a lineage of the code. If the code merges deep lineages at most $s$ times
+along every path from most outputs, then, on \emph{every} schedule, however deeply nested and however many cells it
+revisits, the transposition matrix splits into a part of small rank and a part supported on balls of a radius that does
+not depend on the schedule (Theorems~HC and~HC$'$, for linear codes), and for all codes the side information inside
+such balls has a correspondingly short index code (Theorem~HC$'$(b)). So the linear crux excludes such transposers with
+linear codes (Corollary~HC), and [Q9.1] excludes them for all codes (Corollary~HC$^*$). This answers, under these
+hypotheses and for codes of bounded merge depth, the eighth paper's question whether a scratch of revisited cells can
+help~\cite[Problem~10.5]{BoundedNesting2026}. Routing through deep hops is limited by their number
+(\cref{prop:hop-routing}), the number of deep cells adds nothing (\cref{prop:capacity}), and a cheap cut of the code's
+merge structure would suffice (\cref{prop:merge-reduction}). What remains for oblivious machines is depth reduction of
+that structure (Conjecture~HV$^*$, \cref{conj:HV}).
+\item \emph{Skeleton entropy and input steering} (\cref{sec:skeleton}). Theorem~SE is the form of Corollary~F$''$ that
+is robust against padding of bounded entry, as the eighth paper asks: it bounds the entropy of the coarse skeleton at a
+fixed scale~$w$, the head positions and the output count rounded down to multiples of~$w$, instead of the entropy of the
+trace, and it contains Corollary~F$''$. Its proof turns the machine into a \emph{block machine} that is oblivious on
+each skeleton class, so that Theorem~F, the cone lemma and the paired-distance argument of the fifth paper apply class
+by class. Heads of bounded entry carry almost no coarse entropy at large scales, and two corollaries follow, given
+[Q9.1]. No linear-time transposer, adaptive or not, has bounded entry on every tape, the input tape included
+(Corollary~RV). A transposer whose work tapes have bounded entry must therefore revisit input cells unboundedly often,
+and its input head must carry about $L/2$ bits of the data in its coarse motion at every fixed scale (Corollary~IS,
+which contains Corollary~F$'$ and extends it to adaptive machines). Padding of bounded entry before the run does not
+help a machine meet this condition, but padding that revisits input cells unboundedly often meets it at no cost
+(\cref{rem:skel-padding}): it is a necessary condition, not an obstruction.
+\item \emph{Localization} (\cref{sec:localization}). Theorem~L combines these. Given [Q9.1], every linear-time
 transposer revisits some tape unboundedly often; if it is oblivious, it revisits a work tape and its code merges deep
-lineages unboundedly often; and if its work tapes have bounded entry, it revisits input cells and carries about half of
-the input in the coarse motion of its input head.
-\item \emph{Unconditional reductions} (\cref{sec:reductions}). Machines of sufficiently low adaptivity are excluded
-whenever one of their likely traces falls under the source-cover exclusions (Theorem~LA). At block scale every
-linear-time transposer, adaptive or not, yields an external-memory transposition with linearly many I/Os that is
-oblivious on $2^{L-O(d)}$ inputs (Theorem~EM). Lower bounds of this kind are known only for algorithms that move records
-as indivisible atoms~\cite{AggarwalVitter1988} or under a network-coding conjecture~\cite{FHLS2019} that is false in
-general~\cite{BravermanHe2026}; an indivisibility-free bound would refute (T) for every number of tapes.
-\item \emph{Deep nesting} (\cref{sec:dnp}). Theorem~BP proves the eighth paper's Conjecture~A$''$ for block labels of the
-deep-nesting pair at one odd shift, conditional on a conjecture that the straddle counts of most coarse classes concentrate as the shift varies
-(\cref{conj:S}), with
-partial results on that conjecture. It is evidence that the deep-nesting pair is depth-robust.
-\item \emph{What a construction must contain} (\cref{sec:construction}). Put together, a linear-time transposer must
-contain, at some scale, a near-full-rate code with a gain of order $\log d$ over routing on a network of the shape that
-tapes produce: a causal code with depth-robust merges on deep hops, or adaptive revisits that the present methods do
-not constrain further. Lemma~PG rules out
-one natural building block, Tanner codes assembled from projective planes.
+lineages unboundedly often, for every pruning, cold genie and lineage assignment; and if its work tapes have bounded
+entry, it revisits input cells and carries about half of the input in the coarse motion of its input head. Three kinds
+of machines remain, and the open problems concern them.
+\item \emph{Unconditional reductions} (\cref{sec:reductions}). A machine is excluded if, for a small enough $\eta>0$, it
+has a trace of probability at least $2^{-\eta L}$ whose return families fall under the source-cover exclusions
+(Theorem~LA); the passage from a machine to the ninth paper's admissible geometries is formal. At block scale every
+linear-time transposer, adaptive or not, yields an external-memory transposition with $O(d)$ I/Os, linear in the number
+of blocks, that is oblivious on a set of $2^{L-O(d)}$ inputs (Theorem~EM). External-memory lower bounds of this kind are
+known only for algorithms that move records as indivisible atoms~\cite{AggarwalVitter1988}, or conditionally on a
+network-coding conjecture~\cite{FHLS2019} that is false in general~\cite{BravermanHe2026}; an indivisibility-free bound
+for this oblivious, large-set form of transposition would refute (T) for every number of tapes (\cref{cor:EM}).
+\item \emph{Deep nesting} (\cref{sec:dnp}). The eighth paper's Conjecture~A$''$ would make the deep-nesting pairs
+depth-robust and so refute $\TCP(2)$. Theorem~BP proves it for pairs of block labels of bounded length at one odd shift,
+with no $\log q$ term and no cost hypothesis, conditional on Conjecture~S (\cref{conj:S}): the straddle counts of most
+coarse classes concentrate as the shift varies. We give partial results on Conjecture~S: an exact Fourier form of the
+normalized variances, a family of classes on which they stay large, and bounds that reduce the conjecture to the average
+of their non-local part. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not decide
+$\TCP(2)$, since general labels remain.
+\item \emph{What a construction would need} (\cref{sec:construction}). By the first paper, every linear-time transposer
+carries, on the block network of its run, a causal code that solves complete exchange on a large set of inputs and
+beats multicommodity flow by a factor $\Omega(\log d)$~\cite[Theorems~8.8 and~9.2]{FirstPaper2026}. \Cref{sec:construction} collects what the series now requires of
+such a machine and states the two forms that remain: an oblivious machine whose code merges deep lineages along patterns
+without cheap cuts, or an adaptive machine whose revisits the present methods do not constrain further. Lemma~PG rules
+out one natural building block: Tanner codes assembled from projective planes, with every coordinate recovered from one
+line of a plane, violate the paired-distance condition for every order $q\ge7$.
 \end{enumerate}
 
-\paragraph{How to read this draft.} Every numbered result carries a status line and a proof. None has been checked by
-an independent referee yet. Every numbered result is formalized in Lean: its status line names the declarations, and
-its proof is an outline that follows the Lean proof. Results that assume an affirmative answer to Question~9.1, the linear crux or
-\cref{conj:S} say so in their statements. Claims that rest on a sketch appear only in remarks marked ``Proof sketch only'',
-and numerical observations only in remarks marked as numerical. Results of earlier papers of the series are cited by
-their numbers at a pinned revision, with their formal status there.
+\paragraph{How to read this paper: the formal proofs.} Every numbered theorem, lemma, corollary and proposition is
+formalized in Lean~4 with Mathlib, and every declaration that the paper cites depends at most on the axioms
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. Each numbered result carries a status line that names
+its declarations and their file, and numbered definitions carry one when they have a Lean counterpart. The proof of a
+numbered result is an outline of the formal proof; the Lean statement is authoritative, and the outline says where it
+is stronger than the printed statement, for instance in its parameter ranges or because it uses only part of the
+hypotheses. Results that assume an affirmative answer to Question~9.1, the linear crux or \cref{conj:S} say so in their
+statements, and their Lean versions take these as explicit hypotheses: \lean{MergeDepth.Q91}, or its binary form
+\lean{MergeDepth.Q91Binary}, \lean{MergeDepth.LinCrux} and \lean{MergeDepth.ConjectureS}. The formal proofs build on the
+Lean libraries of the eighth, fifth, ninth and tenth papers, in which the results they use, Theorem~F among them, are
+Lean-verified; what they need from results that earlier papers formalize only in part or not at all, such as the cone
+lemma, the paired-distance theorem and the uniformity argument of the fifth paper's Proposition~9.2, is reproved in Lean
+in the forms used here. Results of earlier papers are cited by their numbers at a pinned revision. Claims that have only a
+proof sketch appear in remarks marked ``Proof sketch only'', numerical observations in remarks marked as numerical, and
+heuristics are labelled as such; none of them is used in a proof. \Cref{sec:leanindex} lists the declarations, and the
+paper's README explains how to build the library and check its axioms.
 
 \paragraph{Related work.} The machine model, the dependency DAGs, genies, the cone lemma and the crux are those of the
 fourth and eighth papers~\cite{FourthPaper2026,BoundedNesting2026}; the paired-distance theorem and Question~9.1 are from
 the fifth~\cite{DirectedRecovery2026}; the source-cover exclusions are from the ninth~\cite{SourceCovers2026}; the
 deep-nesting results build on the tenth~\cite{DirectedReciprocity2026}. Theorem~EM is a standard simulation of tapes in
-external memory followed by the popular-trace argument that also underlies the non-oblivious case
-of~\cite{FHLS2019}; its point here is the conclusion for transposition at memory $O(B)$.
+the external-memory model of Aggarwal and Vitter~\cite{AggarwalVitter1988}, followed by the popular-trace argument that
+also underlies the non-oblivious case of~\cite{FHLS2019}; its point here is the conclusion for transposition with
+internal memory of a constant number of blocks. The network-coding conjecture behind the conditional bounds
+of~\cite{FHLS2019} is false: Braverman and He showed that for multiple unicast in undirected networks, coding can beat
+multicommodity flow by a factor that grows with the size of the network~\cite{BravermanHe2026}.
 
 \paragraph{Organization.} \Cref{sec:prelim} recalls the notation. \Cref{sec:hop,sec:skeleton} prove the hop-charging and
 skeleton-entropy theorems, and \cref{sec:localization} combines them. \Cref{sec:reductions} proves the unconditional
-reductions, \cref{sec:dnp} the block-pair theorem, \cref{sec:construction} states the constructive target, and
-\cref{sec:open} lists open problems.
+reductions, and \cref{sec:dnp} the block-pair theorem and the partial results on Conjecture~S. \Cref{sec:construction}
+collects what a construction would need and proves Lemma~PG, and \cref{sec:open} lists the open problems.
+\Cref{sec:leanindex} indexes the Lean declarations.

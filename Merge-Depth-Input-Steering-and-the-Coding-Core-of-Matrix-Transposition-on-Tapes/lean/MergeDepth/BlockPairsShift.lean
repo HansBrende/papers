@@ -112,7 +112,6 @@ theorem profileMean_eq {m k κ : ℕ} (hκ : 1 ≤ κ) :
     exact (continuous_finsetSum _ fun S' _ => (continuous_perTent hN (piHat_le m κ)).comp
       (by fun_prop)).intervalIntegrable _ _
 
-
 /-- **Cantelli's inequality** for `t` uniform on `[0, L)`: with `μ` the mean and `σ²` the variance of
 a continuous `g`, the probability that `g(t) ≤ μ - λ` is at most `σ²/(σ² + λ²)` for `λ > 0`. -/
 theorem cantelli_interval {g : ℝ → ℝ} (hg : Continuous g) {L lam : ℝ} (hL : 0 < L) (hlam : 0 < lam) :
@@ -191,7 +190,6 @@ theorem cantelli_interval {g : ℝ → ℝ} (hg : Continuous g) {L lam : ℝ} (h
       _ = L * σ2 * (σ2 + lam ^ 2) := h2
   exact le_of_mul_le_mul_right key hden
 
-
 /-- The probability, over odd shifts, that the coarse level `k` is not `a`-good in direction `dir`
 (for `dir = true` this is `β^{(a)}_k`). -/
 noncomputable def notGoodProb (s0 m a k : ℕ) (dir : Bool) : ℝ :=
@@ -235,7 +233,6 @@ theorem coarse_canceller_props {s0 m a0 a k : ℕ} (ha : 1 ≤ a) (haa0 : a ≤ 
     Nat.mod_lt _ (by omega)
   refine ⟨hk.1, by omega, h2, h3, h4, h5, h6, ?_⟩
   unfold jZero; omega
-
 
 theorem profileVariance_nonneg (m k κ : ℕ) : 0 ≤ profileVariance m k κ := by
   unfold profileVariance
@@ -352,7 +349,6 @@ theorem notGoodProb_le {s0 m a0 a k : ℕ} (ha : 1 ≤ a) (haa0 : a ≤ a0) (hms
           2 ^ (κ + 2) / 2 ^ s0 := by gcongr
     _ ≤ relVarianceA m a k / (relVarianceA m a k + (1 - θ) ^ 2) + 2 ^ (κ + 2) / 2 ^ s0 := by
         gcongr
-
 
 /-- `β_a = |𝒦|⁻¹ ∑_{k ∈ 𝒦} β^{(a)}_k`. -/
 noncomputable def betaAvg (s0 m a : ℕ) : ℝ :=
@@ -503,7 +499,6 @@ theorem prob_some_bad_le (s0 m a0 : ℕ) {γ : ℝ} (hγ1 : γ < 1) :
         refine Finset.sum_congr rfl fun a _ => ?_
         push_cast
         field_simp
-
 
 theorem eight_mul_le_two_pow {L : ℕ} (hL : 8 ≤ L) : 8 * L ≤ 2 ^ L := by
   induction L, hL using Nat.le_induction with

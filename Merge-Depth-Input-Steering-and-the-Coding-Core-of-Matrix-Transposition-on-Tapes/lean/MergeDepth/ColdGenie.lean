@@ -15,7 +15,11 @@ genie reveals the heads of the edges of Theorem F's cut of the light hops (the e
 `theoremF_owner`, at owner-load `2V - 1`), and every step `≡ P - 1 (mod P)`; a path then has fewer than
 `DF k (2V - 1) ε` hop steps, and runs of state steps of fewer than `P` steps between them.
 
-`card_allHops_le`: there are at most `kT` long hops, since a hop of a head is determined by its end.
+`cold_genie_cost`: with `ε/(4βC)` in place of `ε` and `P = ⌈4βC/ε⌉`, the genie has cost
+`β |Γ| ≤ ε L` when `T ≤ C (L + 1)`, `C ≥ 1` and `L ≥ 1` (the cost computation of Lemma 3.1).
+
+`depStep_lt`: the edges of the dependency DAG go to earlier steps; `card_allHops_le`: there are at
+most `kT` long hops, since a hop of a head is determined by its end.
 -/
 
 namespace MergeDepth
@@ -37,6 +41,16 @@ def IsDepPath (xs : Fin k → ℕ → ℤ) (T : ℕ) : List ℕ → Prop
   | [] => True
   | [_] => True
   | a :: b :: π => DepStep xs T a b ∧ IsDepPath xs T (b :: π)
+
+/-- The edges of the dependency DAG go to earlier steps and leave steps before `T`. -/
+theorem depStep_lt {xs : Fin k → ℕ → ℤ} {T a b : ℕ} (h : DepStep xs T a b) : b < a ∧ a < T := by
+  rcases h with ⟨h1, h2⟩ | h
+  · exact ⟨by omega, h2⟩
+  · obtain ⟨η, hη, he⟩ := mem_image.mp h
+    obtain ⟨hl, hT, -, -⟩ := mem_allHops.mp hη
+    simp only [Prod.mk.injEq] at he
+    obtain ⟨rfl, rfl⟩ := he
+    exact ⟨by omega, hT⟩
 
 /-- A hop of a head is determined by its end, so there are at most `kT` long hops. -/
 theorem card_allHops_le (xs : Fin k → ℕ → ℤ) (T : ℕ) : (allHops xs T).card ≤ k * T := by
@@ -109,13 +123,7 @@ theorem state_path_eq (xs : Fin k → ℕ → ℤ) (T : ℕ) :
       by_contra hne
       simp [hopCount, hne] at hc
     have hc' : hopCount (b :: π) = 0 := by simpa [hopCount, hb] using hc
-    have hT : t < T := by
-      rcases hstep with ⟨-, h⟩ | h
-      · exact h
-      · obtain ⟨η, hη, he⟩ := mem_image.mp h
-        have := (mem_allHops.mp hη).2.1
-        simp only [Prod.mk.injEq] at he
-        omega
+    have hT : t < T := (depStep_lt hstep).2
     obtain ⟨hlen, hmem⟩ := state_path_eq xs T π b hp' hc'
     refine ⟨by simp; omega, fun i h1 h2 => ⟨?_, fun _ => hT⟩⟩
     rcases Nat.eq_or_lt_of_le h1 with rfl | hlt
@@ -302,5 +310,50 @@ theorem cold_genie (hk : 1 ≤ k) {V : ℕ} (hV : 1 ≤ V) {ε : ℝ} (hε : 0 <
     rw [zero_add] at hlen
     calc π.length ≤ (hopCount π + 1) * P := hlen
       _ ≤ DF k (2 * V - 1) ε * P := Nat.mul_le_mul_right _ hhops
+
+open Classical in
+/-- **Lemma 3.1 with its cost.** For `C ≥ 1`, `β ≥ 1`, `ε > 0`, `L ≥ 1` and `T ≤ C (L + 1)`, the
+cold genie of `cold_genie` with `ε/(4βC)` in place of `ε` and `P = ⌈4βC/ε⌉` has cost
+`β |Γ| ≤ ε L`. -/
+theorem cold_genie_cost (hk : 1 ≤ k) {V β L T : ℕ} (hV : 1 ≤ V) (hβ : 1 ≤ β) (hL : 1 ≤ L)
+    {C ε : ℝ} (hC : 1 ≤ C) (hε : 0 < ε) (hT : (T : ℝ) ≤ C * (L + 1)) (xs : Fin k → ℕ → ℤ)
+    (hx : ∀ h, IsWalk (xs h)) :
+    ∃ Γ : Finset ℕ, (β * Γ.card : ℝ) ≤ ε * L ∧
+      ∀ π, IsDepPath xs T π → LinNet.GFree Γ π → rCount (DeepStep xs T V) π = 0 →
+        π.length ≤ DF k (2 * V - 1) (ε / (4 * β * C)) * ⌈4 * β * C / ε⌉₊ := by
+  have hC0 : (0 : ℝ) < C := by linarith
+  have hβ' : (1 : ℝ) ≤ β := by exact_mod_cast hβ
+  have hβC : (0 : ℝ) < 4 * β * C := by positivity
+  set P := ⌈4 * β * C / ε⌉₊
+  have hP : 1 ≤ P := Nat.one_le_iff_ne_zero.mpr (by
+    rw [Ne, Nat.ceil_eq_zero, not_le]; positivity)
+  obtain ⟨Γ, hcard, hpath⟩ := cold_genie hk hV (div_pos hε hβC) hP xs hx T
+  refine ⟨Γ, ?_, hpath⟩
+  -- `β |Γ| ≤ β (ε/(4βC)) T + β T / P ≤ ε T / (2C) ≤ ε (L + 1)/2 ≤ ε L`
+  have hPge : 4 * β * C / ε ≤ (P : ℝ) := Nat.le_ceil _
+  have hPpos : (0 : ℝ) < P := by exact_mod_cast hP
+  have hL' : (1 : ℝ) ≤ L := by exact_mod_cast hL
+  have h1 : (Γ.card : ℝ) ≤ ε / (4 * β * C) * T + T / P := by
+    have : (P : ℝ) * Γ.card ≤ P * (ε / (4 * β * C)) * T + T := hcard
+    calc (Γ.card : ℝ) = (P * Γ.card) / P := by field_simp
+      _ ≤ (P * (ε / (4 * β * C)) * T + T) / P := by gcongr
+      _ = ε / (4 * β * C) * T + T / P := by field_simp
+  have h2 : (T : ℝ) / P ≤ ε / (4 * β * C) * T := by
+    rw [div_le_iff₀ hPpos]
+    have : ε / (4 * β * C) * P ≥ 1 := by
+      rw [ge_iff_le, ← div_le_iff₀' (div_pos hε hβC), one_div_div]
+      exact hPge
+    have hT0 : (0 : ℝ) ≤ T := by positivity
+    nlinarith
+  have h3 : (β : ℝ) * Γ.card ≤ ε * T / (2 * C) := by
+    have : (β : ℝ) * Γ.card ≤ β * (2 * (ε / (4 * β * C) * T)) := by
+      gcongr
+      linarith
+    calc (β : ℝ) * Γ.card ≤ β * (2 * (ε / (4 * β * C) * T)) := this
+      _ = ε * T / (2 * C) := by field_simp; ring
+  calc (β : ℝ) * Γ.card ≤ ε * T / (2 * C) := h3
+    _ ≤ ε * (C * (L + 1)) / (2 * C) := by gcongr
+    _ = ε * (L + 1) / 2 := by field_simp
+    _ ≤ ε * L := by nlinarith
 
 end MergeDepth

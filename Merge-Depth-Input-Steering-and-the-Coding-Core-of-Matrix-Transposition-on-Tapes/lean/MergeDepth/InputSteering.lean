@@ -11,9 +11,11 @@ count `outCountW M X`. The input skeleton at scale `w` is `inSkel w (haltT M) (i
 
 * `entropy_comp_le`: data processing, `H(g ∘ f) ≤ H(f)`; `entropy_le_logb_card`:
   `H(f) ≤ log₂ |image f|`.
-* `frozen_coarse_entropy_le`: Lemma 4.15 for the runs of a machine that transposes every input
-  within `c (L + 1)` steps with entry at most `V` on its work tapes (the hypotheses of the formal
-  `coarse_entropy_le` discharged from the frozen model).
+* `frozen_coarse_entropy_le_of_halts`: Lemma 4.15 as stated, for the runs of a machine that halts
+  within `⌊c (L + 1)⌋` steps with exactly `L` output bits on every input and has entry at most `V`
+  on its work tapes (the hypotheses of the formal `coarse_entropy_le` discharged from the frozen
+  model); `frozen_coarse_entropy_le`: the same for a machine that transposes every input within
+  `c (L + 1)` steps.
 * `runSkeleton_eq_skelOfData`, `inSkel_mul`: the frozen skeleton is a function of Lemma 4.15's
   skeleton data, and the input skeleton at scale `w m` is a function of that at scale `w`.
 * `cor_IS`: **Corollary IS.** Given binary [Q9.1], for `k ≥ 1`, `V, w ≥ 1`, `c > 0` and `η > 0`
@@ -116,6 +118,16 @@ theorem inPosW_isWalk (M : TM) {L : ℕ} (X : Fin L → Bool) : IsWalk (inPosW M
   rw [inPos_eq_input, inPos_eq_input]
   exact (trace M _).abs_input_succ_sub_le t
 
+/-- **A run that halts with `L` output bits.** If the run on `X ∈ {0,1}^L` halts at time `s` with
+exactly `L` output bits, then `haltT M X = s` and `L ≤ s`. -/
+theorem haltT_eq_of_haltsAt {M : TM} {L s : ℕ} {X : Fin L → Bool}
+    (hs : Transpose.Tape.HaltsAt M (List.ofFn X) s)
+    (hlen : (Transpose.Tape.run M (List.ofFn X) s).outRev.length = L) :
+    haltT M X = s ∧ L ≤ s := by
+  refine ⟨haltTime_eq_of_haltsAt hs, ?_⟩
+  have := Transpose.Tape.Impl.outLen_le_self (M := M) (List.ofFn X) s
+  omega
+
 /-- **A transposed input.** The run halts at `haltT M X`, which lies between `L` and `c (L + 1)`,
 and appends exactly `L` bits. -/
 theorem haltT_spec {M : TM} {d b : ℕ} {c : ℝ} {X : Fin (d * d * b) → Bool}
@@ -124,36 +136,44 @@ theorem haltT_spec {M : TM} {d b : ℕ} {c : ℝ} {X : Fin (d * d * b) → Bool}
       haltT M X ≤ ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊ ∧
       (Transpose.Tape.run M (List.ofFn X) (haltT M X)).outRev.length = d * d * b := by
   obtain ⟨s, hs, hhalt⟩ := h.halts
-  have hT : haltT M X = s := haltTime_eq_of_haltsAt hhalt
   obtain ⟨s', hs', hlen, -⟩ := h.outputsTranspose.output
   obtain rfl := Transpose.Tape.Impl.haltsAt_unique hs' hhalt
   have hlen' : (Transpose.Tape.run M (List.ofFn X) s').outRev.length = d * d * b := by
     rw [← List.length_reverse]
     exact hlen
+  obtain ⟨hT, hL⟩ := haltT_eq_of_haltsAt hhalt hlen'
   rw [hT]
-  refine ⟨hhalt, ?_, hs, hlen'⟩
-  have := Transpose.Tape.Impl.outLen_le_self (M := M) (List.ofFn X) s'
-  omega
+  exact ⟨hhalt, hL, hs, hlen'⟩
 
 open Classical in
-/-- **Lemma 4.15 for the runs of a machine** that transposes every input within `c (L + 1)` steps
-and enters every work-tape cell at most `V` times before its halting time, on every input. -/
-theorem frozen_coarse_entropy_le {M : TM} {d b V w : ℕ} {c : ℝ} (hc : 0 < c) (hV : 1 ≤ V)
-    (hw : 4 * V ≤ w) (hL2w : 2 * w ≤ d * d * b) (hL16 : 16 * V ≤ d * d * b)
-    (htr : ∀ X : Fin (d * d * b) → Bool, TransposesInput M d b c X)
-    (hentry : ∀ (X : Fin (d * d * b) → Bool) (T : ℕ), Transpose.Tape.HaltsAt M (List.ofFn X) T →
+/-- **Lemma 4.15 for the runs of a machine**, with the hypotheses of the lemma: on every input
+`X ∈ {0,1}^L` the machine halts within `⌊c (L + 1)⌋` steps with exactly `L` output bits, and before
+its halting time it enters every work-tape cell at most `V` times. -/
+theorem frozen_coarse_entropy_le_of_halts {M : TM} {L V w : ℕ} {c : ℝ} (hc : 0 < c) (hV : 1 ≤ V)
+    (hw : 4 * V ≤ w) (hL2w : 2 * w ≤ L) (hL16 : 16 * V ≤ L)
+    (hrun : ∀ X : Fin L → Bool, ∃ s ≤ ⌊c * ((L : ℝ) + 1)⌋₊,
+      Transpose.Tape.HaltsAt M (List.ofFn X) s ∧
+        (Transpose.Tape.run M (List.ofFn X) s).outRev.length = L)
+    (hentry : ∀ (X : Fin L → Bool) (T : ℕ), Transpose.Tape.HaltsAt M (List.ofFn X) T →
       ∀ j cell, (entries (workWalk M (List.ofFn X) j) cell (T - 1)).card ≤ V) :
-    entropy (skelData w (haltT M (L := d * d * b)) (inPosW M) (workPosW M) (outCountW M)) ≤
-      entropy (inSkel w (haltT M (L := d * d * b)) (inPosW M)) +
-      (4 * M.k * V * c * logb 2 (exp 1 * w / V) + logb 2 (2 * exp 1 * c * w)) / w *
-        (d * d * b : ℕ) + 4 * M.k * V * logb 2 (exp 1 * w / V) := by
+    entropy (skelData w (haltT M (L := L)) (inPosW M) (workPosW M) (outCountW M)) ≤
+      entropy (inSkel w (haltT M (L := L)) (inPosW M)) +
+      (4 * M.k * V * c * logb 2 (exp 1 * w / V) + logb 2 (2 * exp 1 * c * w)) / w * L +
+        4 * M.k * V * logb 2 (exp 1 * w / V) := by
+  have hX : ∀ X : Fin L → Bool, Transpose.Tape.HaltsAt M (List.ofFn X) (haltT M X) ∧
+      L ≤ haltT M X ∧ haltT M X ≤ ⌊c * ((L : ℝ) + 1)⌋₊ ∧
+      (Transpose.Tape.run M (List.ofFn X) (haltT M X)).outRev.length = L := fun X => by
+    obtain ⟨s, hsc, hs, hlen⟩ := hrun X
+    obtain ⟨hT, hL⟩ := haltT_eq_of_haltsAt hs hlen
+    rw [hT]
+    exact ⟨hs, hL, hsc, hlen⟩
   refine coarse_entropy_le hV hw hL2w hL16 (haltT M) (inPosW M) (workPosW M) (outCountW M)
     (fun X => ?_) (fun X j => ?_) (fun X => ?_)
-  · obtain ⟨-, h1, h2, -⟩ := haltT_spec (htr X)
+  · obtain ⟨-, h1, h2, -⟩ := hX X
     exact ⟨h1, (Nat.cast_le.mpr h2).trans (Nat.floor_le (by positivity))⟩
-  · obtain ⟨hh, -, -, -⟩ := haltT_spec (htr X)
+  · obtain ⟨hh, -, -, -⟩ := hX X
     exact ⟨workWalk_isWalk (List.ofFn X) j, rfl, fun c' => hentry X _ hh j c'⟩
-  · obtain ⟨-, -, -, hlen⟩ := haltT_spec (htr X)
+  · obtain ⟨-, -, -, hlen⟩ := hX X
     refine ⟨rfl, fun t _ => ?_, fun t ht => ?_⟩
     · simp only [outCountW]
       rw [Transpose.Tape.Impl.outRev_length_succ]
@@ -164,6 +184,23 @@ theorem frozen_coarse_entropy_le {M : TM} {d b V w : ℕ} {c : ℝ} (hc : 0 < c)
       have := Transpose.Tape.Impl.outRev_length_mono (M := M) (List.ofFn X) ht.le
       rw [hlen] at this
       exact_mod_cast this
+
+open Classical in
+/-- **Lemma 4.15 for the runs of a transposer**: a machine that transposes every input within
+`c (L + 1)` steps (`TransposesInput`) satisfies the hypotheses of
+`frozen_coarse_entropy_le_of_halts`. -/
+theorem frozen_coarse_entropy_le {M : TM} {d b V w : ℕ} {c : ℝ} (hc : 0 < c) (hV : 1 ≤ V)
+    (hw : 4 * V ≤ w) (hL2w : 2 * w ≤ d * d * b) (hL16 : 16 * V ≤ d * d * b)
+    (htr : ∀ X : Fin (d * d * b) → Bool, TransposesInput M d b c X)
+    (hentry : ∀ (X : Fin (d * d * b) → Bool) (T : ℕ), Transpose.Tape.HaltsAt M (List.ofFn X) T →
+      ∀ j cell, (entries (workWalk M (List.ofFn X) j) cell (T - 1)).card ≤ V) :
+    entropy (skelData w (haltT M (L := d * d * b)) (inPosW M) (workPosW M) (outCountW M)) ≤
+      entropy (inSkel w (haltT M (L := d * d * b)) (inPosW M)) +
+      (4 * M.k * V * c * logb 2 (exp 1 * w / V) + logb 2 (2 * exp 1 * c * w)) / w *
+        (d * d * b : ℕ) + 4 * M.k * V * logb 2 (exp 1 * w / V) :=
+  frozen_coarse_entropy_le_of_halts hc hV hw hL2w hL16 (fun X =>
+    ⟨haltT M X, (haltT_spec (htr X)).2.2.1, (haltT_spec (htr X)).1, (haltT_spec (htr X)).2.2.2⟩)
+    hentry
 
 /-- The frozen skeleton as a function of the skeleton data of Lemma 4.15. -/
 def skelOfData {k : ℕ} (p : ℕ × (ℕ → ℤ × (Fin k → ℤ) × ℤ)) : Skeleton k where

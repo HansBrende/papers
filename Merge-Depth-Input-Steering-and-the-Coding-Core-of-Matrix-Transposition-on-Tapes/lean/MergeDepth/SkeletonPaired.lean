@@ -1,28 +1,31 @@
 import MergeDepth.Realization
 import MergeDepth.HopFields
+import MergeDepth.Traces
 
 /-!
-# Paired distances on a skeleton class and inside balls (Lemmas 4.9, 4.10, Proposition 4.11, Lemma 3.14(a))
+# Paired distances on a skeleton class and inside balls (Lemmas 4.9, 4.10, Proposition 4.11, Lemma 3.15(a))
 
 The data of a skeleton class at scale `w` are abstract: reference walks `z c` for the input head
 (`none`), the output count (`some none`) and the work heads (`some (some j)`), of length `T`; the
 coarse work walks `s j = ⌊z (work j)/w⌋`, whose dependency DAG is the block DAG (Lemma 4.5(a)); a
 genie `Γ` of full depth at most `D` in it; and an output time `ot r < T` for every output position
-`r`, in the output block `⌊r/w⌋` (Lemma 4.5(c); the paper takes the last such time). The cone relation
+`r`, in the output block `⌊r/w⌋` (Lemma 4.5(c), which takes the last such time). The cone relation
 (`coneRel`, Lemma 4.7) puts `p ∈ N_Γ(q)` when some `Γ`-free path of the block DAG from the output time
 of `tpos q` ends at a time whose input block contains `p`.
 
+* `tape_tpos_eq`: the transposition permutation `MergeDepth.tpos` of the transport lemmas agrees with
+  the first paper's `Transpose.Tape.tpos` (used by `tposOf` and the frozen machine model);
+  `tpos_props`: the transposition demands are distinct cells of `[0, L)` that carry the rows of
+  their sources.
 * `realizes_cone`: **Lemma 4.9.** `N_Γ` has the realization property with `K_w = (k + 2)(2w - 1)` heads,
-  one register and occupancy `w B`, `B = ∑_{h ≤ D} (k + 1)^h` (the paper: `w B + 1`).
+  one register and occupancy `w B`, `B = ∑_{h ≤ D} (k + 1)^h`.
 * `skel_disjoint_paths`, `skel_disjoint_paths_transport`: **Lemma 4.10**,
   `m log₂ d ≤ w B K_w (K_w + 1) s T + 3L`, so `m ≤ A_s^{(w)} L/log₂ d` with
-  `A_s^{(w)} = 2 s c w B K_w (K_w + 1) + 3` when `T ≤ c (L + 1)` (the paper:
-  `4 s c (w B + 1) K_w (K_w + 4) + 3`).
+  `A_s^{(w)} = 2 s c w B K_w (K_w + 1) + 3` when `T ≤ c (L + 1)`.
 * `skel_paired_packing`, `skel_self_demands`: **Proposition 4.11(a), (b).**
-* `realizes_ball`, `ball_paired_packing`, `ball_self_demands`: **Lemma 3.14(a)**, the same for
+* `realizes_ball`, `ball_paired_packing`, `ball_self_demands`: **Lemma 3.15(a)**, the same for
   relations inside the balls `B^{D'}` of an oblivious schedule (`stepBall`), at scale `w = 1`, with
-  `K = k + 2` heads and occupancy `B_{D'}` (the paper: `B_{D'} + 1` and the constants of the fifth
-  paper).
+  `K = k + 2` heads and occupancy `B_{D'}`, `B_{D'} = ∑_{h ≤ D'} (k + 1)^h`.
 -/
 
 namespace MergeDepth
@@ -85,6 +88,13 @@ theorem realizes_cone {w : ℕ} (hw : 1 ≤ w) {z : Tp k → ℕ → ℤ} (hz : 
   omega
 
 /-! ### Lemma 4.10 and Proposition 4.11 on a skeleton class -/
+
+/-- The two encodings of the transposition permutation agree: the first paper's
+`Transpose.Tape.tpos` (used by `tposOf` and the frozen machine model) and `MergeDepth.tpos` (used by
+the transport lemmas). -/
+theorem tape_tpos_eq (d b p : ℕ) : Transpose.Tape.tpos d b p = MergeDepth.tpos d b p := by
+  unfold Transpose.Tape.tpos MergeDepth.tpos
+  rw [Nat.mod_mul_left_div_self, Nat.div_div_eq_div_mul, Nat.mul_comm b d]
 
 /-- The transposition demands are distinct cells of `[0, L)` that carry the rows of their sources. -/
 theorem tpos_props {d b : ℕ} (hb : 1 ≤ b) :
@@ -206,12 +216,12 @@ theorem skel_self_demands {w d b : ℕ} (hw : 1 ≤ w) (hd : 2 ≤ d) (hb : 1 �
   rw [card_heads] at h
   exact_mod_cast h
 
-/-! ### Lemma 3.14(a): relations inside balls -/
+/-! ### Lemma 3.15(a): relations inside balls -/
 
 theorem skel_one (x : ℕ → ℤ) : skel 1 x = x := funext fun t => by simp [skel]
 
 open Classical in
-/-- **Realizing relations inside balls** (the realization step of Lemma 3.14(a)). For an oblivious
+/-- **Realizing relations inside balls** (the realization step of Lemma 3.15(a)). For an oblivious
 schedule with head walks `z` (the input head `z none`, which reads position `j` at step `u` when
 `rdStep u = some j`; the output count `z (some none)`, equal to `ℓ` at the step `tout ℓ < T` that
 appends position `ℓ`; the work heads `z (some (some j))`), every relation with
@@ -242,7 +252,7 @@ theorem realizes_ball {z : Tp k → ℕ → ℤ} (hz : ∀ c, IsWalk (z c)) {T D
     exact (htout _).2.symm
 
 open Classical in
-/-- **Lemma 3.14(a), Theorem 3.3 of the fifth paper for relations inside balls**, with
+/-- **Lemma 3.15(a), Theorem 3.3 of the fifth paper for relations inside balls**, with
 `A_s = 2 s c B_{D'} (k + 2)(k + 3) + 3`. -/
 theorem ball_paired_packing {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {z : Tp k → ℕ → ℤ}
     (hz : ∀ c, IsWalk (z c)) {T D' : ℕ} (rdStep : ℕ → Option (Fin (d * d * b)))
@@ -264,7 +274,7 @@ theorem ball_paired_packing {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {z : Tp k 
   simpa using h
 
 open Classical in
-/-- **Lemma 3.14(a), Corollary 3.7 of the fifth paper for relations inside balls**: at most
+/-- **Lemma 3.15(a), Corollary 3.7 of the fifth paper for relations inside balls**: at most
 `(2 c B_{D'} (k + 2)(k + 3) + 3) L/log₂ d` positions `p` satisfy `p ∈ N(p)`. -/
 theorem ball_self_demands {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {z : Tp k → ℕ → ℤ}
     (hz : ∀ c, IsWalk (z c)) {T D' : ℕ} (rdStep : ℕ → Option (Fin (d * d * b)))

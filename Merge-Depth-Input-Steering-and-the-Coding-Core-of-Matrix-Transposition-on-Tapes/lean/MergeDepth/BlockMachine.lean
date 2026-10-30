@@ -28,9 +28,10 @@ The machine is the frozen `Transpose.TM`, run with the first paper's total run
   (on a class): `v̄_t` is determined by `v̄_{t-1}`, the values `v̄_{prev_j(t)}` and the input bits
   in the input block `ℬ^in_{s₀(t)}` (`inBlock`). `block_oblivious` is the functional form, with the
   function `Φ_t` of the paper.
-* **The block machine.** `blockMachine` (and `exists_blockFunDag`): the block machine of `σ` as a
-  `BlockFunDag`: out-edges the steps of the block DAG, input block `ℬ^in_{s₀(t)}`, class `𝒳_σ`,
-  values `v̄_t` (as `some`) for `t < T` and `none` from `T` on. No nonemptiness is needed.
+* **The block machine.** `blockMachine`: the block machine of `σ` as a `BlockFunDag`: out-edges the
+  steps of the block DAG, input block `ℬ^in_{s₀(t)}`, class `𝒳_σ`, values `v̄_t` (as `some`) for
+  `t < T` and `none` from `T` on (`blockMachine_out`, `blockMachine_blk`, `blockMachine_S`,
+  `blockMachine_val`, `blockMachine_val_of_le`). No nonemptiness is needed.
 * **Lemma 4.5(c).** `outTime σ w r` is `t̂_r = max {t < T : s_out(t) = ⌊r/w⌋}`; `outTime_spec`
   (and `outTime_spec_of_sout`, which uses only the output component of the skeleton) decodes the
   output bit `r` of a member that appends more than `r` bits; `card_outTime_eq_le` is the last
@@ -40,8 +41,9 @@ The machine is the frozen `Transpose.TM`, run with the first paper's total run
   coarse work walks of `σ` itself (via `allHops_congr`, `entries_congr`, `ownerLoadLE_congr`).
 * **Lemma 4.7 for the actual block machine.** `blockMachine_card_cone_le` (a), `blockMachine_cone`
   and `blockMachine_output_eq` (b), `blockMachine_isStorageCode_fibre` (c, for a class on which `M`
-  transposes). `skelClass_storageCode` composes them with the genie of Lemma 4.6
-  (`skel_genie_cost`, transferred to `σ` by `isDepPath_congr`).
+  transposes, with the output demands `tposOf`).
+* **Lemma 4.6 on the block DAG of `σ`.** `skeleton_genie`: the genie of `skel_genie_cost` for the
+  coarse walks of a member, transferred to the coarse walks of `σ` by `isDepPath_congr`.
 * **The value width.** `card_admissible_le`, `blockVal_mem_admissible`: block values take at most
   `2^{β_w}` values, `β_w = ⌈log₂ |Q|⌉ + k w ⌈log₂ |Σ|⌉ + (k + 1) ⌈log₂ (w + 2)⌉ + w + 1`
   (`blockWidth`), for every input and every time; `six_le_blockWidth`; `card_revealed_le`: the
@@ -504,13 +506,6 @@ end Decoding
 
 /-! ### Lemma 4.7 for the block machine -/
 
-/-- Transposing bit positions twice is the identity. -/
-theorem tpos_tpos_of_lt {n b d : ℕ} (hd : d < n * n * b) : tpos n b (tpos n b d) = d := by
-  obtain ⟨hi, hj, ht, hdec⟩ := pos_decomp hd
-  have h1 := tpos_spec (i := d / b / n) hj ht
-  rw [← hdec] at h1
-  rw [h1, tpos_spec hi ht]
-  exact hdec.symm
 
 /-- The output bit of `X` at position `r` at time `T` (`false` beyond the output). -/
 def outBitAt (M : TM) {L : ℕ} (T : ℕ) (X : Fin L → Bool) (r : Fin L) : Bool :=
@@ -584,13 +579,13 @@ theorem blockMachine_htr {d b : ℕ}
     ∀ X ∈ skelClass M w (d * d * b) σ,
       (run M (List.ofFn X) σ.T).outRev.length = d * d * b ∧
         ∀ r : Fin (d * d * b),
-          outBitAt M σ.T X r = X ⟨tpos d b r, tpos_lt r.2⟩ := by
+          outBitAt M σ.T X r = X (tposOf d b r) := by
   intro X hX
   obtain ⟨s, hs, hlen, hval⟩ := (htr X hX).output
   obtain rfl : s = σ.T := haltsAt_unique hs hX.1
   refine ⟨by rw [← List.length_reverse]; exact hlen, fun r => ?_⟩
-  have h := hval ⟨tpos d b r, tpos_lt r.2⟩
-  rw [show tpos d b (tpos d b r) = r from tpos_tpos_of_lt r.2] at h
+  have h := hval (tposOf d b r)
+  rw [show tpos d b (tposOf d b r) = r from Transpose.Tape.Impl.tpos_tpos r.2] at h
   rw [outBitAt, h]
   rfl
 
@@ -605,10 +600,8 @@ theorem blockMachine_isStorageCode_fibre {d b : ℕ}
         (blockMachine M hw (d * d * b) σ).coneJ Γ (outTime σ w (tpos d b q)))
       ((blockMachine M hw (d * d * b) σ).fibre Γ g) := by
   have hout := blockMachine_htr σ htr
-  have htp : ∀ q : Fin (d * d * b), (⟨tpos d b (⟨tpos d b q, tpos_lt q.2⟩ : Fin (d * d * b)),
-      tpos_lt (tpos_lt q.2)⟩ : Fin (d * d * b)) = q := fun q => Fin.ext (tpos_tpos_of_lt q.2)
   exact (blockMachine M hw (d * d * b) σ).isStorageCode_fibre Γ (fun r => outTime σ w r)
-    (fun q => ⟨tpos d b q, tpos_lt q.2⟩) htp (outBitAt M σ.T) outDec
+    (tposOf d b) (tposOf_tposOf d b) (outBitAt M σ.T) outDec
     (blockMachine_hdec hw σ fun X hX => (hout X hX).1.ge) (fun X hX r => (hout X hX).2 r) g
 
 end Cones
@@ -808,22 +801,6 @@ section Headline
 variable {M : TM} {w : ℕ}
 
 open Classical in
-/-- **Lemma 4.5(a), (b) as a `BlockFunDag`.** For every machine, scale `w ≥ 1`, length `L` and
-skeleton `σ`, the block machine of `σ` is a `BlockFunDag` whose out-neighbours are those of the
-block DAG of the coarse work walks, whose input block at `t` is `ℬ^in_{s₀(t)}`, whose class is
-`𝒳_σ` and whose values are the block values before `T` (`none` from `T` on). No nonemptiness is
-needed. -/
-theorem exists_blockFunDag (hw : 0 < w) (L : ℕ) (σ : Skeleton M.k) :
-    ∃ G : BlockFunDag L (Option (BlockVal M w)),
-      (∀ t, G.out t = (range σ.T).filter (BlockStep σ.s σ.T t ·)) ∧
-      (∀ t, G.blk t = inBlock L w (σ.s0 t)) ∧ G.S = skelClass M w L σ ∧
-      (∀ X t, t < σ.T → G.val X t = some (blockVal M w (List.ofFn X) t)) ∧
-      (∀ X t, σ.T ≤ t → G.val X t = none) :=
-  ⟨blockMachine M hw L σ, blockMachine_out hw L σ, blockMachine_blk hw L σ,
-    blockMachine_S hw L σ, fun _ _ ht => blockMachine_val hw L σ ht,
-    fun _ _ ht => blockMachine_val_of_le hw L σ ht⟩
-
-open Classical in
 /-- **The revealed word.** For a genie `Γ`, the revealed values `(v̄_u(X))_{u ∈ Γ}` take at most
 `2^{β_w |Γ|}` values on any set of inputs. -/
 theorem card_revealed_le (hw : 0 < w) {L : ℕ} (Γ : Finset ℕ) (S : Finset (Fin L → Bool)) :
@@ -963,7 +940,13 @@ theorem skeleton_entries_ownerLoad {w : ℕ} (hw : 0 < w) {σ : Skeleton M.k} {x
   · refine ⟨fun j a => ?_, ?_⟩
     · rw [entries_congr fun t ht => hagree j t (by omega)]
       exact card_entries_skel_le hwz (workWalk_isWalk x j) (h0 j) (hV j) a
-    · have h := coarse_ownerLoad_le hwz (fun j => workWalk_isWalk x j) h0 (T := σ.T) hV
+    · -- the eighth paper's owner-load bound for walks with at most `2V` entries per block
+      have h : OwnerLoadLE (fun j => skel (w : ℤ) (workWalk M x j))
+          (allHops (fun j => skel (w : ℤ) (workWalk M x j)) σ.T)
+          (fun η => hopOwner (skel (w : ℤ) (workWalk M x η.1)) η.2.1 η.2.2) (2 * (2 * V) - 1) :=
+        ownerLoad_le_of_entries (fun j => isWalk_skel hwz (workWalk_isWalk x j))
+          (fun _ hη => mem_allHops.mp hη)
+          (fun η _ => card_entries_skel_le hwz (workWalk_isWalk x η.1) (h0 η.1) (hV η.1) _)
       rw [show 2 * (2 * V) - 1 = 4 * V - 1 by omega] at h
       exact ownerLoadLE_congr hagree h
 
@@ -992,42 +975,6 @@ theorem skeleton_genie (hk : 1 ≤ M.k) {V w L : ℕ} (hV : 1 ≤ V) (hw : 0 < w
     (fun j => skel (w : ℤ) (workWalk M x₀ j))
     ⟨workWalk M x₀, workWalk_isWalk _, fun j => rfl, hV₀, fun j => rfl⟩
   exact ⟨Γ, hcost, fun π hπ hfree => hpath π ((isDepPath_congr hagree π).mp hπ) hfree⟩
-
-/-- **Lemmas 4.6 and 4.7 for the block machine of a transposer.** Let `M` have `k ≥ 1` work tapes,
-let `V, w ≥ 1`, `ε > 0`, `L = d² b ≥ 1`, and let `σ` be a skeleton at scale `w` with
-`T_σ ≤ c (L + 1)` such that some member of `𝒳_σ` has entry at most `V` on every work tape and `M`
-transposes every member. With `C = max(c, 1)`, `P = ⌈4 β_w C/ε⌉`,
-`D₁ = DF(k, 4V - 1, ε/(4 β_w C))`, `D = D₁ P - 1` and `B = ∑_{h ≤ D} (k + 1)^h`, there is a genie
-`Γ` of cost `β_w |Γ| ≤ ε L` such that `|C_Γ(t)| ≤ B` and `|J_Γ(t)| ≤ w B` for every `t` (so
-`|N_Γ(q)| ≤ w B`), and every fibre of the revealed word in `𝒳_σ` is a storage code for
-`N_Γ(q) = J_Γ(t̂_{tpos q})`. -/
-theorem skelClass_storageCode (hk : 1 ≤ M.k) {V w : ℕ} (hV : 1 ≤ V) (hw : 0 < w) {d b : ℕ}
-    (hL : 1 ≤ d * d * b) {c ε : ℝ} (hε : 0 < ε) (σ : Skeleton M.k)
-    (hT : (σ.T : ℝ) ≤ c * ((d * d * b : ℕ) + 1))
-    (hentry : ∃ X ∈ skelClass M w (d * d * b) σ,
-      ∀ j cell, (entries (workWalk M (List.ofFn X) j) cell (σ.T - 1)).card ≤ V)
-    (htr : ∀ X ∈ skelClass M w (d * d * b) σ, OutputsTranspose M d b X) :
-    ∃ Γ : Finset ℕ, ((blockWidth M w : ℝ) * Γ.card ≤ ε * (d * d * b : ℕ)) ∧
-      (∀ t,
-        (coneV (blockMachine M hw (d * d * b) σ).net Γ t).card ≤
-          ∑ h ∈ range (DF M.k (4 * V - 1) (ε / (4 * blockWidth M w * max c 1)) *
-            ⌈4 * blockWidth M w * max c 1 / ε⌉₊ - 1 + 1), (M.k + 1) ^ h ∧
-        ((blockMachine M hw (d * d * b) σ).coneJ Γ t).card ≤
-          w * ∑ h ∈ range (DF M.k (4 * V - 1) (ε / (4 * blockWidth M w * max c 1)) *
-            ⌈4 * blockWidth M w * max c 1 / ε⌉₊ - 1 + 1), (M.k + 1) ^ h) ∧
-      ∀ g, MotionDepthCodes.IsStorageCode
-        (fun q : Fin (d * d * b) =>
-          (blockMachine M hw (d * d * b) σ).coneJ Γ (outTime σ w (tpos d b q)))
-        ((blockMachine M hw (d * d * b) σ).fibre Γ g) := by
-  obtain ⟨X₀, hX₀, hV₀⟩ := hentry
-  obtain ⟨Γ, hcost, hpath⟩ := skeleton_genie hk hV hw hL hε σ hT ⟨_, hX₀, hV₀⟩
-  have hΓ : ∀ π, IsDepPath σ.s σ.T π → LinNet.GFree Γ π →
-      π.length ≤ DF M.k (4 * V - 1) (ε / (4 * blockWidth M w * max c 1)) *
-        ⌈4 * blockWidth M w * max c 1 / ε⌉₊ - 1 + 1 := fun π hπ hfree => by
-    have := hpath π hπ hfree
-    omega
-  exact ⟨Γ, hcost, fun t => blockMachine_card_cone_le hw σ hΓ t,
-    fun g => blockMachine_isStorageCode_fibre hw σ htr Γ g⟩
 
 end Genie
 

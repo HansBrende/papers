@@ -2,10 +2,10 @@ import MergeDepth.MergeDag
 import MergeDepth.HopMachine
 
 /-!
-# Proposition 3.20(a) for a linear data path
+# Proposition 3.21(a) for a linear data path
 
 The step-level form of `merge_reduction`: for the coordinate network of a linear data path, with
-the cold genie `ΓF` (whole steps) and the checkpoints `Q` of Lemma 3.9 (`τ |Q| ≤ m |Rset|`), every
+the cold genie `ΓF` (whole steps) and the checkpoints `Q` of Lemma 3.10 (`τ |Q| ≤ m |Rset|`), every
 cut `Z` of the merge DAG gives `P_tpos = R + S` with `rank R ≤ β |ΓF| + |Q| + |Z|` and row `ℓ` of `S`
 supported in the ball of radius `(s + 1) τ D` around the output step `tout ℓ`. The merge DAG is
 built from the paths that start at the output coordinates outside `coordGenie m ΓF ∪ Q`.
@@ -22,7 +22,7 @@ open Finset Matrix Module BoundedNesting BoundedNesting.LinNet
 variable {F : Type*} [Field F] {L m k : ℕ}
 
 open Classical in
-/-- **Proposition 3.20(a)** for a linear data path. -/
+/-- **Proposition 3.21(a)** for a linear data path. -/
 theorem merge_reduction_steps (net : LinNet F L m) (hm : 0 < m) (RH : ℕ → ℕ → Prop)
     [DecidableRel RH] (Rset : Finset (ℕ × ℕ)) (hRset : ∀ t s, RH t s → (t, s) ∈ Rset)
     (ΓF : Finset ℕ) (D β : ℕ)
@@ -93,7 +93,7 @@ theorem merge_reduction_steps (net : LinNet F L m) (hm : 0 < m) (RH : ℕ → �
     rwa [enc_div hm] at this
 
 open Classical in
-/-- **Proposition 3.20(a)** for a machine: the conclusion of `hop_charging_machine` with `X = ∅`
+/-- **Proposition 3.21(a)** for a machine: the conclusion of `hop_charging_machine` with `X = ∅`
 and the rank bound increased by `|Z|`, for every cut `Z` of the merge DAG. -/
 theorem merge_reduction_machine (net : LinNet F L m) (hm : 0 < m) (xs : Fin k → ℕ → ℤ)
     {T C V β : ℕ} (hT : T ≤ C * (L + 1)) {ε : ℝ} {D : ℕ} {ΓF : Finset ℕ}

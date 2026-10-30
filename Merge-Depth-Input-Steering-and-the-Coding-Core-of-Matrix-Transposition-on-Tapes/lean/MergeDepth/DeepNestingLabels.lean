@@ -1,7 +1,7 @@
 import MergeDepth.DeepNestingHops
 
 /-!
-# Block labels, the block-pair label on the cover, errors and service (paper 11, Section 7.1)
+# Block labels, the block-pair label on the cover, errors and service (Section 7.1)
 
 * `potentialOf J`: the potential of a jump function (`Φ(0) = 0`, `Φ(t) - Φ(t - 1) = J(t)`;
   `potentialOf_sub_one`, `eq_potentialOf`, `potentialOf_comp_add`, `sum_Ico_eq_potentialOf`).

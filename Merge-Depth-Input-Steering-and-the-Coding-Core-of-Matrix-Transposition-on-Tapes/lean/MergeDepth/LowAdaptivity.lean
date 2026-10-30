@@ -5,10 +5,11 @@ set_option autoImplicit false
 /-!
 # Theorem LA: low adaptivity
 
-A machine `M` *transposes at dimension `d` within `c (L + 1)` steps* (`TransposesAt`) when it
-does so on the encoding of every `d × d` matrix with `b(d)`-bit entries, `L = d² b(d)`. This is the
-frozen `TransposesWithin` at the one dimension `d` (`transposesAt_of_transposesWithin`).
-`TransposesAtWidth` allows any entry width `b`; `TransposesInput` asks for one input only, and
+A machine `M` *transposes at dimension `d` within `c (L + 1)` steps* (`TransposesAt`, in
+`MergeDepth/Traces.lean`) when it does so on the encoding of every `d × d` matrix with `b(d)`-bit
+entries, `L = d² b(d)`. This is the frozen `TransposesWithin` at the one dimension `d`
+(`transposesAt_of_transposesWithin`). `TransposesAtWidth` allows any entry width `b`;
+`TransposesInput` asks for one input only, and
 `OutputsTranspose` asks only that the run on one input halt, at any time, with the transposed
 output.
 
@@ -27,7 +28,8 @@ which `M` halts with the transposed output; and `capacityBits M ≤ β`.
 
 `fibreGeometry` is the paper's modelling step: for a transposer and a trace `τ₀` with a nonempty
 fibre `W`, the frozen geometry up to the halting time with correctness set exactly `W`;
-`fibreGeometry_deficit_le` is its deficit bound `Δ = L - log₂ |W| ≤ ηL` from `(6.1)`.
+`fibreGeometry_deficit_le` is its deficit bound `Δ = L - log₂ |W| ≤ ηL`, from the fibre bound
+`two_rpow_le_card_fibre`.
 
 **Theorem LA.** `low_adaptivity_a` and `low_adaptivity_b` are parts (a) and (b) as stated in the
 paper. They take constants `ε, d₀` of the ninth paper's Corollary 4.5 (`IsSkeletonConstant`,
@@ -45,7 +47,7 @@ machines of value width at most `β`.
   are transposed. The machine need not transpose any other input; its motion from time `T` on (for
   instance after its last append) and its halting time are unconstrained; and the capacity is the
   exact `log₂ (3 |Q| |Γ|^k)`.
-* `card_correctSet_le_of_class`: the transfer of Remark `rem:LA-scope`(3). Any bound
+* `card_correctSet_le_of_class`: the transfer of Remark 6.2(3). Any bound
   `|C| ≤ 2^{(1-ε)L}` valid on a class of admissible geometries holds for the transposed inputs
   along a trace prefix whose frozen geometry lies in the class.
 * `traceProb_le_a`, `traceProb_le_b`: for a transposer, every trace with the family structure has
@@ -59,30 +61,6 @@ namespace MergeDepth
 open Finset Transpose Transpose.Tape Transpose.Tape.Impl SourceCovers BoundedNesting LeanMachine
 
 /-! ### Transposition -/
-
-/-- `M` transposes `d × d` matrices with `b`-bit entries within `c (L + 1)` steps, `L = d² b`: on
-the encoding of every such matrix it halts within `⌊c (L + 1)⌋` steps with the encoding of the
-transpose. -/
-def TransposesAtWidth (M : TM) (d b : ℕ) (c : ℝ) : Prop :=
-  ∀ A : Transpose.Matrix, ComputesWithin M (encode d b A) (encode d b (transpose A))
-    ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊
-
-/-- `M` transposes at dimension `d` within `c (L + 1)` steps: entry width `b(d)`,
-`L = d² b(d)`. -/
-abbrev TransposesAt (M : TM) (d : ℕ) (c : ℝ) : Prop := TransposesAtWidth M d (entryBits d) c
-
-/-- A machine satisfying the frozen `TransposesWithin M (fun L => c (L + 1))` transposes at every
-dimension `d ≥ 1` within `c (L + 1)` steps. -/
-theorem transposesAt_of_transposesWithin {M : TM} {c : ℕ}
-    (h : TransposesWithin M fun L => c * (L + 1)) {d : ℕ} (hd : 1 ≤ d) :
-    TransposesAt M d c := by
-  intro A
-  have e : ⌊(c : ℝ) * (((d * d * entryBits d : ℕ) : ℝ) + 1)⌋₊ = c * (inputLength d + 1) := by
-    rw [show (c : ℝ) * (((d * d * entryBits d : ℕ) : ℝ) + 1) =
-        ((c * (inputLength d + 1) : ℕ) : ℝ) by push_cast [inputLength]; ring]
-    exact Nat.floor_natCast _
-  rw [e]
-  exact h d hd A
 
 /-- `M` transposes the input `X ∈ {0,1}^{d²b}`, the row-major encoding of a `d × d` matrix with
 `b`-bit entries, within `c (L + 1)` steps. -/
@@ -233,19 +211,6 @@ theorem prefix_pos (hd : 0 < d) (hb : 0 < b) (happ : d * d * b ≤ (appendList �
   have := length_appendList_le τ₀ T
   have := Nat.mul_pos (Nat.mul_pos hd hd) hb
   omega
-
-/-- A horizon through which `τ₀` runs is at most the halting time of every input that agrees with
-`τ₀` before it, hence at most `⌊c (L + 1)⌋` for an input transposed within `c (L + 1)` steps. -/
-theorem horizon_le_of_run (hrun : ∀ t < T, τ₀ t ≠ none) {X : Fin (d * d * b) → Bool}
-    (hag : ∀ t < T, trace M (List.ofFn X) t = τ₀ t) (htr : TransposesInput M d b c X) :
-    T ≤ ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊ := by
-  obtain ⟨s, hs, hhalt⟩ := htr.halts
-  refine le_trans ?_ hs
-  by_contra hlt
-  push Not at hlt
-  have h2 : trace M (List.ofFn X) s = none := (trace_eq_none_iff s).mpr hhalt.2
-  rw [hag s hlt] at h2
-  exact hrun s hlt h2
 
 end Prefix
 
@@ -486,7 +451,7 @@ theorem card_correctSet_le_b {c β ε : ℝ} {N d₀ : ℕ}
     hN K (E \ K) hK hE' disjoint_sdiff ⌊ε * ((d * d * b : ℕ) : ℝ)⌋₊ hsize
   exact (hcor G hd₀ (Nat.floor_le hεL)).2
 
-/-- **Transfer of class-uniform bounds** (Remark `rem:LA-scope`(3)). Every bound
+/-- **Transfer of class-uniform bounds** (Remark 6.2(3)). Every bound
 `|C| ≤ 2^{(1-ε)L}` valid on a class `P` of admissible geometries holds for the inputs that agree
 with `τ₀` before `T` and are transposed by `M`, provided the frozen geometry of `(τ₀, T)` with the
 labels `K, E, a₀` lies in `P`. This transfers, for instance, the ninth paper's Corollaries 4.4 and

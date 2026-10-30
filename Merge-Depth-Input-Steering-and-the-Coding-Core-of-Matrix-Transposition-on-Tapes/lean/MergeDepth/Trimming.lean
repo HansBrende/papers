@@ -12,7 +12,7 @@ import MergeDepth.SkeletonPaired
   has degree more than `ϑ` has `ϑ |H_ϑ| ≤ B' |V|`, and the incidence graph induced on its complement
   has maximum degree at most `max(B', ϑ)`.
 * `skel_trimming`: **Proposition 4.11(c)**; `ball_trimming`: the same for relations inside balls
-  (Corollary 3.8 of the fifth paper, as used in Lemma 3.14(a)).
+  (Corollary 3.8 of the fifth paper, as used in Lemma 3.15(a)).
 -/
 
 namespace MergeDepth
@@ -144,7 +144,7 @@ theorem card_fwdLevel_le (s : Fin k → ℕ → ℤ) (T : ℕ) :
       | nil => simp at hlen
       | cons t' π =>
         obtain ⟨hstep, hπ'⟩ := hπ
-        have hlt := depStep_lt_lt hstep
+        have hlt := depStep_lt hstep
         refine mem_biUnion.mpr ⟨t', mem_filter.mpr ⟨mem_range.mpr (by omega),
           (blockStep_iff s T t t').mpr hstep⟩, mem_filter.mpr ⟨?_, π, hπ', by simpa using hlen, ?_⟩⟩
         · have := getLastD_le hπ'
@@ -243,7 +243,7 @@ theorem skel_trimming {w : ℕ} (hw : 1 ≤ w) {z : Tp k → ℕ → ℤ} {T D :
   rwa [Fintype.card_fin] at h
 
 open Classical in
-/-- **Corollary 3.8 of the fifth paper for relations inside balls** (Lemma 3.14(a)). -/
+/-- **Corollary 3.8 of the fifth paper for relations inside balls** (Lemma 3.15(a)). -/
 theorem ball_trimming {L : ℕ} (xs : Fin k → ℕ → ℤ) (T : ℕ) (rdStep : ℕ → Option (Fin L))
     (D' : ℕ) (tout : Fin L → ℕ) (N : Fin L → Finset (Fin L))
     (hN : ∀ q, N q ⊆ stepBall xs T rdStep D' (tout q)) (ϑ : ℕ) :

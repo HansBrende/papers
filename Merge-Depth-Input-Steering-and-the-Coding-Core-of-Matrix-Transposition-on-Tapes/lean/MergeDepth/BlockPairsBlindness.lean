@@ -242,7 +242,6 @@ theorem card_apex_valley {s0 m l : ℕ} (hl1 : 1 ≤ l) (hlm : l ≤ m) (hms : m
     · omega
     · rcases periodVApices_spans_disjoint hl1 hlm hms hα hα'' he with h | h <;> omega
 
-
 theorem mem_periodTurnsLevels {s0 m : ℕ} {x : ℕ × ℕ}
     (hx : x ∈ periodTurnsLevels s0 m) :
     1 ≤ x.2 ∧ x.2 ≤ m ∧ x.1 ∈ periodTurns s0 m ∧

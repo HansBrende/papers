@@ -1,7 +1,7 @@
 import MergeDepth.ColdGenie
 
 /-!
-# The number of deep cells (Proposition 3.17)
+# The number of deep cells (Proposition 3.18)
 
 The deep cells are the eighth paper's `heavyPairs xs T V`, the pairs `(h, c)` such that head `h`
 enters cell `c` more than `V` times, and the deep hops are the long hops outside its `lightHops`.

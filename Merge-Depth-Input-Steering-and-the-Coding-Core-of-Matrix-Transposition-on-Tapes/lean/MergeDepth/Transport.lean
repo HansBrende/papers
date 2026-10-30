@@ -23,8 +23,6 @@ uniformly random label, in nats (`condEnt`).
   every slot holds at most `κ` labels; `pot_move`: a move of all heads, by at most `K` times that.
 * `pot_run`: along a run of `U` ticks the potential changes by at most `U K κ (K W + ρ) log 2`, in
   both directions; this is what allows reversed runs to be chained without being built.
-  `IsRun.reverse` builds them anyway: a run of `T` ticks is reversed in `2T` ticks with the same
-  occupancy.
 * `pot_start_le`, `pot_end_ge`: the potential when the labels lie in input cells and the input heads
   lie in `W` consecutive cells, and when the labels lie in distinct output cells whose row is
   `W`-periodic with `b` cells of each row per period.
@@ -125,40 +123,6 @@ theorem IsRun.mono [Fintype ι] {tape : η → τ} {H : ℕ → η → ℤ} {loc
     (hR : IsRun tape H loc U κ) {U' : ℕ} (h : U' ≤ U) : IsRun tape H loc U' κ :=
   ⟨fun u hu => hR.move u (by omega), fun u hu => hR.transfer u (by omega),
     fun u hu => hR.occ u (by omega)⟩
-
-omit [Fintype η] in
-/-- **Reversal.** A run of `T` ticks is reversed in `2T` ticks with the same occupancy: tick `2j` undoes
-the moves of tick `T - j - 1` with all labels held, and tick `2j + 1` undoes its transfers with the
-heads fixed. -/
-theorem IsRun.reverse [Fintype ι] {tape : η → τ} {H : ℕ → η → ℤ} {loc : ℕ → ι → Slot τ ρ}
-    {T κ : ℕ} (hR : IsRun tape H loc T κ) :
-    IsRun tape (fun v => H (T - (v + 1) / 2)) (fun v => loc (T - v / 2)) (2 * T) κ := by
-  refine ⟨fun v hv h => ?_, fun v hv i hi => ?_, fun v _ s => hR.occ _ (Nat.sub_le _ _) s⟩
-  · rcases Nat.even_or_odd' v with ⟨j, rfl | rfl⟩
-    · have e1 : (2 * j + 1 + 1) / 2 = j + 1 := by omega
-      have e2 : (2 * j + 1) / 2 = j := by omega
-      simp only [e1, e2]
-      have := hR.move (T - j - 1) (by omega) h
-      rw [show T - j - 1 + 1 = T - j by omega] at this
-      rw [show T - (j + 1) = T - j - 1 by omega, abs_sub_comm]
-      exact this
-    · have e1 : (2 * j + 1 + 1 + 1) / 2 = j + 1 := by omega
-      have e2 : (2 * j + 1 + 1) / 2 = j + 1 := by omega
-      simp only [e1, e2, sub_self, abs_zero]
-      exact zero_le_one
-  · rcases Nat.even_or_odd' v with ⟨j, rfl | rfl⟩
-    · exfalso
-      apply hi
-      congr 1
-      omega
-    · have e1 : (2 * j + 1 + 1) / 2 = j + 1 := by omega
-      have e2 : (2 * j + 1) / 2 = j := by omega
-      rw [e1, e2] at hi ⊢
-      rw [show T - (j + 1) = T - j - 1 by omega] at hi ⊢
-      have := hR.transfer (T - j - 1) (by omega) i
-      rw [show T - j - 1 + 1 = T - j by omega] at this
-      obtain ⟨h1, h2⟩ := this (Ne.symm hi)
-      exact ⟨h2, h1⟩
 
 /-- The bin of the cell `z` at offset `θ`: `⌊(z - θ)/W⌋`. -/
 def bin (W θ z : ℤ) : ℤ := (z - θ) / W
@@ -728,7 +692,7 @@ theorem card_le_of_cells [Fintype ι] {d W : ℕ} (dst : ι → ℤ) (hinj : Fun
   rwa [this] at h1
 
 /-- **Lemma 4.8.** Under the hypotheses of `transport_sharp`, with `d ≥ 2` and `L = d² b`,
-`m log₂ d ≤ κ K (K + ρ) U + 3 L`. The paper's bound has `K + ρ + 3` in place of `K + ρ`. -/
+`m log₂ d ≤ κ K (K + ρ) U + 3 L`. -/
 theorem transport [Fintype ι] (tape : η → τ) (inp out : τ) {H : ℕ → η → ℤ}
     {loc : ℕ → ι → Slot τ ρ} {U κ : ℕ} (hR : IsRun tape H loc U κ) {d b W : ℕ} (hd : 2 ≤ d)
     (hb : 1 ≤ b) (hW : W = d * b) (src dst : ι → ℤ) (hinj : Function.Injective dst)

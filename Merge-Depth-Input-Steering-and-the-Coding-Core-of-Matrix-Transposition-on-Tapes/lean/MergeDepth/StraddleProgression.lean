@@ -3,17 +3,14 @@ import Mathlib
 /-!
 # Partial results on Conjecture S: dyadic products along a progression (Lemma 7.14)
 
-* `window_sum_prod_cos_sq`: **the window identity**. For odd `u`, real `γ_s` and any `ℓ₀`,
+* `window_sum_prod_cos_sq`: **Lemma 7.14(a)**, the window identity. For odd `u`, real `γ_s` and any `ℓ₀`,
   `∑_{ℓ ∈ [ℓ₀, ℓ₀ + 2^j)} ∏_{s=1}^{j} cos²(π(u ℓ 2^{-s} + γ_s)) = 1` (split off the top bit:
   `cos²θ + cos²(θ + π u/2) = 1`).
 * `sum_prod_cos_sq_le`: hence the sum over any `L` consecutive integers is at most `⌈L/2^j⌉`.
-* `progression_sum_le`, `progression_avg_le_strong`: **Lemma 7.14, strengthened**. With
-  `a + 1 = 2^w o`, `t = 2^v t'` (`o`, `t'` odd) and `ℓ` over `L` consecutive integers, already the
-  products over the `j` indices `e ∈ (v + w, v + w + j]` satisfy
-  `2^j ∑_ℓ ∏_e cos²(π t((a+1)ℓ + c_e) 2^{-e}) ≤ L + 2^j - 1`, i.e. the average is at most
-  `2^{-j} + (1 - 2^{-j})/L`.
-* `progression_avg_le`: **Lemma 7.14** as stated (product over `e ∈ (v, v + w + j]`, bound
-  `2^{-j} + 2^j/(2L)`, `j ≥ 1`, `L ≥ 1`).
+* `progression_sum_le`, `progression_avg_le_strong`: **Lemma 7.14(b)**. With `a + 1 = 2^w o`,
+  `t = 2^v t'` (`o`, `t'` odd) and `ℓ` over `L` consecutive integers, the products over the `j`
+  indices `e ∈ (v + w, v + w + j]` satisfy `2^j ∑_ℓ ∏_e cos²(π t((a+1)ℓ + c_e) 2^{-e}) ≤ L + 2^j - 1`,
+  i.e. the average is at most `2^{-j} + (1 - 2^{-j})/L`.
 -/
 
 namespace MergeDepth
@@ -69,7 +66,6 @@ theorem window_sum_prod_cos_sq {u : ℤ} (hu : Odd u) (γ : ℕ → ℝ) (ℓ₀
         ring
       rw [this, cos_sq_pi_mul_add_half_odd _ hu]
     rw [h1, h2, ← mul_add, cos_sq_add_sin_sq, mul_one]
-
 
 theorem prod_cos_sq_nonneg {ι : Type*} (s : Finset ι) (f : ι → ℝ) :
     0 ≤ ∏ i ∈ s, cos (f i) ^ 2 := prod_nonneg fun _ _ => sq_nonneg _
@@ -135,9 +131,9 @@ theorem sum_Ico_int_eq_sum_range {M : Type*} [AddCommMonoid M] (f : ℤ → M) (
     · rintro ⟨i, hi, rfl⟩; omega
   rw [this, sum_image (fun a _ b _ h => by simpa using h)]
 
-/-- **Lemma 7.14, strengthened.** Let `a + 1 = 2^w o` and `t = 2^v t'` with `o`, `t'` odd, let
-`c_e` be real and let `ℓ` run over `L` consecutive integers. Then the products over only the `j`
-indices `e ∈ (v + w, v + w + j]` already satisfy
+/-- **Lemma 7.14(b), sum form.** Let `a + 1 = 2^w o` and `t = 2^v t'` with `o`, `t'` odd, let
+`c_e` be real and let `ℓ` run over `L` consecutive integers. Then the products over the `j`
+indices `e ∈ (v + w, v + w + j]` satisfy
 `2^j ∑_ℓ ∏_e cos²(π t((a+1)ℓ + c_e) 2^{-e}) ≤ L + 2^j - 1`, i.e. their average is at most
 `2^{-j} + (1 - 2^{-j})/L ≤ 2^{-j} + 1/L`. -/
 theorem progression_sum_le {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o) (hao : a + 1 = 2 ^ w * o)
@@ -159,7 +155,7 @@ theorem progression_sum_le {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o) (hao : 
   rw [pow_add, pow_add]
   field_simp
 
-/-- **Lemma 7.14, strengthened (average form).** -/
+/-- **Lemma 7.14(b)** (average form). -/
 theorem progression_avg_le_strong {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o)
     (hao : a + 1 = 2 ^ w * o) (ht' : Odd t') (ht : t = 2 ^ v * t') (c : ℕ → ℝ) (ℓ₀ : ℤ)
     (hL : 1 ≤ L) :
@@ -174,37 +170,5 @@ theorem progression_avg_le_strong {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o)
     field_simp; ring
   rw [this, le_div_iff₀ hp, mul_comm]
   exact key
-
-/-- **Lemma 7.14** as stated: for `j ≥ 1`, the average over `L ≥ 1` consecutive integers of the
-product over all `e ∈ (v, v + w + j]` is at most `2^{-j} + 2^j/(2L)`. -/
-theorem progression_avg_le {a w o v j L : ℕ} {t t' : ℤ} (ho : Odd o)
-    (hao : a + 1 = 2 ^ w * o) (ht' : Odd t') (ht : t = 2 ^ v * t') (hj : 1 ≤ j) (c : ℕ → ℝ)
-    (ℓ₀ : ℤ) (hL : 1 ≤ L) :
-    (L : ℝ)⁻¹ * ∑ ℓ ∈ Ico ℓ₀ (ℓ₀ + L), ∏ e ∈ Ioc v (v + w + j),
-      cos (π * t * ((a + 1) * ℓ + c e) / 2 ^ e) ^ 2 ≤ 2⁻¹ ^ j + 2 ^ j / (2 * L) := by
-  have hL' : (0 : ℝ) < L := by exact_mod_cast hL
-  have hsub : Ioc (v + w) (v + w + j) ⊆ Ioc v (v + w + j) := by
-    intro x; simp only [mem_Ioc]; omega
-  have hpt : ∀ ℓ : ℤ, ∏ e ∈ Ioc v (v + w + j), cos (π * t * ((a + 1) * ℓ + c e) / 2 ^ e) ^ 2 ≤
-      ∏ e ∈ Ioc (v + w) (v + w + j), cos (π * t * ((a + 1) * ℓ + c e) / 2 ^ e) ^ 2 := by
-    intro ℓ
-    rw [← prod_sdiff hsub]
-    exact mul_le_of_le_one_left (prod_cos_sq_nonneg _ _) (prod_cos_sq_le_one _ _)
-  calc (L : ℝ)⁻¹ * ∑ ℓ ∈ Ico ℓ₀ (ℓ₀ + L), ∏ e ∈ Ioc v (v + w + j),
-        cos (π * t * ((a + 1) * ℓ + c e) / 2 ^ e) ^ 2
-      ≤ (L : ℝ)⁻¹ * ∑ ℓ ∈ Ico ℓ₀ (ℓ₀ + L), ∏ e ∈ Ioc (v + w) (v + w + j),
-        cos (π * t * ((a + 1) * ℓ + c e) / 2 ^ e) ^ 2 :=
-        mul_le_mul_of_nonneg_left (sum_le_sum fun ℓ _ => hpt ℓ) (by positivity)
-    _ ≤ 2⁻¹ ^ j + (1 - 2⁻¹ ^ j) / L := progression_avg_le_strong ho hao ht' ht c ℓ₀ hL
-    _ ≤ 2⁻¹ ^ j + 2 ^ j / (2 * L) := by
-        have h1 : (1 : ℝ) - 2⁻¹ ^ j ≤ 2 ^ j / 2 := by
-          have : (2 : ℝ) ≤ 2 ^ j := by
-            calc (2 : ℝ) = 2 ^ 1 := by norm_num
-              _ ≤ 2 ^ j := pow_le_pow_right₀ (by norm_num) hj
-          have : (0 : ℝ) ≤ 2⁻¹ ^ j := by positivity
-          linarith
-        have : (1 - 2⁻¹ ^ j) / (L : ℝ) ≤ (2 ^ j / 2) / L := div_le_div_of_nonneg_right h1 hL'.le
-        rw [div_div] at this
-        linarith
 
 end MergeDepth

@@ -13,8 +13,8 @@ has bounded full depth.
 
 `skel_genie`: for `ε > 0` and `P ≥ 1` there is a set `Γ` with `P |Γ| ≤ P ε T + T` such that every
 `Γ`-free path of the dependency DAG of the coarse work walks has at most `DF k (4V - 1) ε ⋅ P`
-vertices. `skel_genie_cost` is Lemma 4.6 with its constants: cost `β_w |Γ| ≤ ε L` and full depth at
-most `D₁ P - 1`.
+vertices. `skel_genie_cost` is Lemma 4.6 with its constants (the cold genie with its cost,
+`cold_genie_cost`): cost `β_w |Γ| ≤ ε L` and full depth at most `D₁ P - 1`.
 -/
 
 namespace MergeDepth
@@ -78,45 +78,12 @@ theorem skel_genie_cost (hk : 1 ≤ k) {V β L T : ℕ} (hV : 1 ≤ V) (hβ : 1 
   obtain ⟨xs, hx, h0, hentry, hsx⟩ := hs
   have hseq : s = fun j => skel w (xs j) := funext hsx
   subst hseq
-  set C := max c 1
-  have hC : 1 ≤ C := le_max_right c 1
-  have hβC : (0 : ℝ) < 4 * β * C := by
-    have : (1 : ℝ) ≤ β := by exact_mod_cast hβ
-    positivity
-  set P := ⌈4 * β * C / ε⌉₊
-  have hP : 1 ≤ P := Nat.one_le_iff_ne_zero.mpr (by
-    rw [Ne, Nat.ceil_eq_zero, not_le]; positivity)
-  obtain ⟨Γ, hcard, hpath⟩ := skel_genie hk hV (div_pos hε hβC) hP hw xs hx h0 T hentry
-  refine ⟨Γ, ?_, hpath⟩
-  have hPge : 4 * β * C / ε ≤ (P : ℝ) := Nat.le_ceil _
-  have hPpos : (0 : ℝ) < P := by exact_mod_cast hP
-  have hT' : (T : ℝ) ≤ C * (L + 1) := hT.trans (by
-    have : (0 : ℝ) ≤ L + 1 := by positivity
-    exact mul_le_mul_of_nonneg_right (le_max_left c 1) this)
-  have hL' : (1 : ℝ) ≤ L := by exact_mod_cast hL
-  have hβ' : (1 : ℝ) ≤ β := by exact_mod_cast hβ
-  have h1 : (Γ.card : ℝ) ≤ ε / (4 * β * C) * T + T / P := by
-    have : (P : ℝ) * Γ.card ≤ P * (ε / (4 * β * C)) * T + T := hcard
-    calc (Γ.card : ℝ) = (P * Γ.card) / P := by field_simp
-      _ ≤ (P * (ε / (4 * β * C)) * T + T) / P := by gcongr
-      _ = ε / (4 * β * C) * T + T / P := by field_simp
-  have h2 : (T : ℝ) / P ≤ ε / (4 * β * C) * T := by
-    rw [div_le_iff₀ hPpos]
-    have : ε / (4 * β * C) * P ≥ 1 := by
-      rw [ge_iff_le, ← div_le_iff₀' (div_pos hε hβC), one_div_div]
-      exact hPge
-    have hT0 : (0 : ℝ) ≤ T := by positivity
-    nlinarith
-  have h3 : (β : ℝ) * Γ.card ≤ ε * T / (2 * C) := by
-    have : (β : ℝ) * Γ.card ≤ β * (2 * (ε / (4 * β * C) * T)) := by
-      gcongr
-      linarith
-    calc (β : ℝ) * Γ.card ≤ β * (2 * (ε / (4 * β * C) * T)) := this
-      _ = ε * T / (2 * C) := by field_simp; ring
-  have hC0 : (0 : ℝ) < C := by linarith
-  calc (β : ℝ) * Γ.card ≤ ε * T / (2 * C) := h3
-    _ ≤ ε * (C * (L + 1)) / (2 * C) := by gcongr
-    _ = ε * (L + 1) / 2 := by field_simp
-    _ ≤ ε * L := by nlinarith
+  have hT' : (T : ℝ) ≤ max c 1 * (L + 1) :=
+    hT.trans (mul_le_mul_of_nonneg_right (le_max_left c 1) (by positivity))
+  obtain ⟨Γ, hcost, hpath⟩ := cold_genie_cost hk (by omega : 1 ≤ 2 * V) hβ hL (le_max_right c 1)
+    hε hT' (fun j => skel w (xs j)) (fun j => isWalk_skel hw (hx j))
+  refine ⟨Γ, hcost, fun π hπ hfree => ?_⟩
+  have := hpath π hπ hfree (rCount_deep_coarse_eq_zero hw hx h0 hentry π)
+  rwa [show 2 * (2 * V) - 1 = 4 * V - 1 by omega] at this
 
 end MergeDepth

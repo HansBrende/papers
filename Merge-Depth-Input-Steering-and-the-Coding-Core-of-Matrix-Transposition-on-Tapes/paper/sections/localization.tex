@@ -10,8 +10,8 @@ motion of its input head.
 \formal{MergeDepth/Localization.lean}{MergeDepth.thm_L_a,MergeDepth.thm_L_b,MergeDepth.thm_L_c}
 Assume [Q9.1]. Let $M$ be a machine with $k$ work tapes, let $c>0$, and let $\mathcal D$ be an infinite set of
 dimensions~$d$ at which $M$ transposes all $d\times d$ matrices with $b(d)$-bit entries within $c(L+1)$ steps,
-$L=d^2b(d)$. Then the following hold at all large $d\in\mathcal D$, in each part from a threshold that depends on the
-parameters named there.
+$L=d^2b(d)$. Then the following hold at all large $d\in\mathcal D$, in each part from a threshold that depends only on
+$M$, $c$ and the parameters named there.
 \begin{enumerate}[label=(\alph*)]
 \item \emph{(Revisits.)} For every integer $V\ge1$: on some input, some cell of some tape, the input tape or a work tape,
 is entered more than $V$ times.
@@ -20,7 +20,8 @@ work-tape cell is entered at most $V$ times, then $\mathrm H(\sigma^{\mathrm{in}
 random input~$X$.
 \item \emph{(Merge depth.)} For all integers $V\ge1$ and $s\ge0$ and all $\eps\in(0,1]$ and $\eta\ge0$ with
 $\eps+\eta<\frac12$: if $M$ is oblivious at length~$L$, then for every pruning of its field DAG, every cold genie at
-$(V,\eps)$ and every lineage assignment for it, more than $\eta L$ output positions have merge depth greater than~$s$.
+$(V,\eps)$, taken with $\beta=\beta(M)$ and $C=\max(1,c)$, and every lineage assignment for it, more than $\eta L$ output
+positions have merge depth greater than~$s$.
 \end{enumerate}
 \end{theorem}
 
@@ -30,23 +31,33 @@ at most $V$ times are finitely many. Part~(b) is \cref{cor:IS} for $k$, $V$, $w$
 its properties~(i) and~(ii) exclude~(iii), and~(i) holds at every $d\in\mathcal D$. Part~(c) is \cref{cor:HCstar} for
 $k$, $V$, $s$, $C=\max(1,c)$, $\eps$ and~$\eta$: at all large $d$, its properties~(i) and~(ii) exclude each other.
 Formally, \lean{MergeDepth.thm_L_a}, \lean{MergeDepth.thm_L_b} and \lean{MergeDepth.thm_L_c} are the three parts, from
-\lean{MergeDepth.cor_RV}, \lean{MergeDepth.cor_IS} and \lean{MergeDepth.cor_HCstar_uniform_frozen}, with [Q9.1] as a
-hypothesis and the field DAGs of prunings of the frozen machine in~(c). They hold at all large $d\in\mathcal D$ for any
-set~$\mathcal D$, finite or not; in~(b) every $\eta>0$ is allowed, and in~(c) only $\eps+\eta<\frac12$ is used.
+\lean{MergeDepth.cor_RV}, \lean{MergeDepth.cor_IS} and \lean{MergeDepth.cor_HCstar_uniform_frozen}, with the binary form
+of [Q9.1] as a hypothesis and the field DAGs of prunings of the machine in the frozen model in~(c). The formal statements
+are slightly stronger. They hold at all large $d\in\mathcal D$ for any set~$\mathcal D$, finite or not. In~(b) every
+$\eta>0$ is allowed. In~(c) only $\eps+\eta<\frac12$ is used, and the cold genies may be taken with any integer
+$\beta\ge\beta(M)$ and with any depth bound in place of the depth of \cref{lem:cold}, the threshold then depending also
+on $\beta$ and on that bound.
 \end{outline}
 
-Theorem~L leaves exactly three kinds of machines, and the open problems of \cref{sec:open} are about them.
+Part~(c) implies that an oblivious machine revisits a work tape unboundedly often: for every~$V$, at all large
+$d\in\mathcal D$ at which $M$ is oblivious, some work-tape cell is entered more than $V$ times. Otherwise there are no
+deep edges at~$V$, hence no deep merges, and every output position has merge depth~$0$; but a cold genie at
+$(V,\frac14)$ exists (\cref{lem:cold}), keeping everything is a pruning, and giving every copy its out-edge is a lineage
+assignment (\cref{rem:hop-examples}), so~(c) with $s=0$, $\eps=\frac14$ and $\eta=0$ is violated.
+
+Given [Q9.1], Theorem~L leaves three kinds of machines, and the open problems of \cref{sec:open} concern them.
 \begin{itemize}
-\item Oblivious machines whose code merges deep lineages unboundedly often. Hop charging cannot exclude them.
-\Cref{conj:HV} asks that the ball systems of oblivious machines have short index codes at a rate set by their deep
-hops; together with [Q9.1] it would exclude them (\cref{rem:HV}), and \cref{prop:merge-reduction} proves it for codes
-whose merge DAG has cheap cuts.
+\item Oblivious machines that revisit a work tape unboundedly often and whose code merges deep lineages unboundedly often.
+Hop charging does not exclude them. \Cref{conj:HV} asks that the ball systems of oblivious machines have short index
+codes at a rate set by their deep hops; together with [Q9.1] it would exclude them (\cref{rem:HV}), and
+\cref{prop:merge-reduction} proves it for codes whose merge DAG has a cheap cut.
 \item Adaptive machines whose work tapes have bounded entry and which revisit input cells unboundedly often. Part~(b)
 puts about half of the input into the coarse motion of the input head, but padding meets this at no cost
-(\cref{rem:skel-padding}): a machine can copy its input to a work tape and then move its input head between two cells
-according to the bits. So the present methods constrain this class only through part~(a).
+(\cref{rem:skel-padding}): a machine can copy its input to an extra work tape and then step its input head between two
+cells according to the bits. For a construction, part~(b) therefore adds nothing to the revisits that part~(a)
+requires.
 \item Adaptive machines that revisit some work tape unboundedly often. Neither hop charging, which needs one schedule,
-nor skeleton entropy, which needs bounded entry, applies to them (\cref{prob:adaptive-deep}).
+nor skeleton entropy, which needs bounded entry on the work tapes, applies to them (\cref{prob:adaptive-deep}).
 \end{itemize}
-At block scale all three are subject to the same requirement (\cref{thm:EM}): on a large set of inputs they run one
-oblivious external-memory transposition with linearly many I/Os.
+At block scale all three are subject to the same unconditional requirement (\cref{thm:EM}): on a set of $2^{L-O(d)}$
+inputs they run one oblivious external-memory transposition with linearly many I/Os.

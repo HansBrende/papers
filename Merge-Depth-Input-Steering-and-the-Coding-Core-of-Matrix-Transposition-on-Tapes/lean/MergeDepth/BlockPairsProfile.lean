@@ -190,7 +190,6 @@ theorem card_straddleSet_eq {c0 α : ℤ} {p R : ℕ} (hpR : p ≤ R) :
       abs_of_neg (by omega : 2 * y + 1 < 0)]
     omega
 
-
 /-! ### The straddle profile -/
 
 /-- `Π̂_i = n_i 2^{-i}`, `n_i = m - i + 1`. -/

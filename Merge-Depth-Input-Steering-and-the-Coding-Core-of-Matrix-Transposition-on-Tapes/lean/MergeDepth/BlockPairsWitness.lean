@@ -8,7 +8,9 @@ The probabilities are over the odd residues `ξ` modulo `P` (`oddRange (dnpPerio
 * `BlindnessBound s0 m`: the odd-shift blindness bound of the eighth paper's Proposition 5.17 (in
   the form without its level-`0` term, which is all that is used): a window `(p, u]` of either head
   is blind with probability at least `N⁻¹ ∑_{i=1}^{m} (1 - (u - p)/R_i)^+ - 2/(N R_m)`. It is a
-  hypothesis of Lemma 7.8 and Theorem BP.
+  hypothesis of the forms of Lemma 7.8 and Theorem BP in this file; `blindnessBound_holds`
+  (`MergeDepth/BlockPairsBlindness.lean`) proves it, and `prob_many_nonHalfBlind_le'` and
+  `theoremBP'` there drop it.
 * `card_not_blind_le`: from it and the hop lengths of the families, every hop of a family of a
   level-`k` class is non-blind with probability at most `ε_g = (g + 4 + ⌈log₂(g + 2)⌉)/N`, `g = m - k`
   (`epsG`); `card_not_halfBlind_le`: the family fails to be half-blind with probability at most
@@ -23,8 +25,10 @@ The probabilities are over the odd residues `ξ` modulo `P` (`oddRange (dnpPerio
 * **Theorem BP**: `theoremBP`, assuming `ConjectureS a` for `a = 1, …, a₀` and `BlindnessBound`.
 
 Service is measured on the witness hops (`ServedOnWitness`); by the eighth paper's Lemma 5.1(b),(c)
-(not formalized) a level that is doubly `θ`-served is doubly `θ`-served on its witness hops, so the
-counts of `doublyServedLevels` bound the counts of doubly served levels from above.
+(formalized in `MergeDepth/DeepNestingHops.lean`, with the bridge `ThetaServes.servedOnWitness`) a
+level that is doubly `θ`-served is doubly `θ`-served on its witness hops, so the counts of
+`doublyServedLevels` bound the counts of doubly served levels from above; `theoremBP_pair` in
+`MergeDepth/DeepNestingBP.lean` is Theorem BP for the walk pair.
 -/
 
 namespace MergeDepth
@@ -92,7 +96,6 @@ theorem card_oddRange_pos (s0 m : ℕ) : (0 : ℝ) < (oddRange (dnpPeriod s0 m))
 
 theorem one_le_clog (g : ℕ) : 1 ≤ Nat.clog 2 (g + 2) :=
   Nat.lt_clog_iff_pow_lt (by norm_num) |>.mpr (by simp; omega)
-
 
 /-- Every hop of a family of a level-`k` class (`g = m - k`) fails to be blind with probability at most
 `ε_g` (from the blindness bound and the hop lengths). -/
@@ -207,7 +210,6 @@ theorem card_not_blind_le {s0 m k f : ℕ} (hB : BlindnessBound s0 m) (hms : m <
       have p2 := mul_le_mul_of_nonneg_left hlk hinv.le
       have p4 := mul_le_mul_of_nonneg_left hll' hinv.le
       nlinarith
-
 
 /-- A family fails to be half-blind with probability at most `2 ε_g` (Markov). -/
 theorem card_not_halfBlind_le {s0 m k f : ℕ} (hB : BlindnessBound s0 m) (hms : m < s0) (hk1 : 1 ≤ k)
@@ -377,7 +379,6 @@ theorem prob_many_nonHalfBlind_le {s0 m : ℕ} {ε : ℝ} (hB : BlindnessBound s
   have hpos : 0 < δ * (ε * m / 2) := by positivity
   nlinarith
 
-
 /-- Theorem V* summed over the level-`κ` V's of a period: the apex hops around a centre `c₀` that
 straddle a V of the other head carry, in total, at least `q/4` times their number. -/
 theorem straddle_err_ge {s0 m k κ : ℕ} (hκ1 : 1 ≤ κ) (hκm : κ ≤ m) (hms : m < s0)
@@ -453,7 +454,6 @@ theorem pairHopErr_apex {s0 m k : ℕ} (hk1 : 1 ≤ k) (hkm : k ≤ m) (hms : m 
     unfold blockPotential at hown ⊢
     rw [e1, e2, turnPotential_add_mul_period, turnPotential_add_mul_period]
     congr 1; linarith
-
 
 theorem apexFamily_subset_witness {s0 m k : ℕ} (hk1 : 1 ≤ k) (hkm : k + 2 ≤ m) :
     apexFamily s0 m k ⊆ witnessHops s0 m k := by
@@ -539,7 +539,6 @@ theorem witnessErr_ge_straddle {s0 m a1 a2 : ℕ} (hms : m < s0) {K1 K2 q : ℤ}
         rw [happex, Finset.mul_sum]
     _ ≤ 4 * witnessErr s0 m a1 a2 K1 K2 q ξ h k := by linarith
 
-
 noncomputable instance (s0 m a1 a2 : ℕ) (K1 K2 q ξ : ℤ) (θ : ℝ) (h : Bool) (k : ℕ) :
     Decidable (ServedOnWitness s0 m a1 a2 K1 K2 q ξ θ h k) := by
   unfold ServedOnWitness; infer_instance
@@ -619,11 +618,8 @@ theorem card_ge_of_blocks (S : Finset ℕ) (lo w n : ℕ)
         omega)
   simpa using this
 
-
 /-- `θ₀ = 2^{-(a₀+11)}`. -/
 noncomputable def theta0 (a0 : ℕ) : ℝ := (1 / 2) ^ (a0 + 11)
-
-theorem theta0_pos (a0 : ℕ) : 0 < theta0 a0 := by unfold theta0; positivity
 
 theorem sixtyfour_theta0_le {a0 : ℕ} (ha0 : 1 ≤ a0) : 64 * theta0 a0 ≤ 1 / 64 := by
   unfold theta0
@@ -707,7 +703,6 @@ theorem case1_unserved {s0 m a0 a1 a2 : ℕ} {K1 K2 q : ℤ} {ξ : ℕ} {ε : �
       _ ≤ 1 / 96 * (fineZone m ε).card := by gcongr
       _ = (fineZone m ε).card / 96 := by ring
   linarith
-
 
 /-- Every run of `b` consecutive levels below `m` contains one with `(m - k) mod b = r`. -/
 theorem exists_residue_in_block {m x b r : ℕ} (hb : 0 < b) (hr : r < b) (hxm : x + b ≤ m + 1) :
@@ -867,7 +862,6 @@ theorem case3_unserved {s0 m a0 a1 a2 : ℕ} {K1 K2 q : ℤ} {ξ : ℕ} (h : Boo
   unfold goodCount
   exact_mod_cast this
 
-
 theorem card_coarseZone_ge (m : ℕ) : ((m : ℝ) + 1) / 4 - 1 ≤ (coarseZone m).card := by
   unfold coarseZone
   rw [Nat.card_Icc, Nat.add_sub_cancel]
@@ -962,7 +956,6 @@ theorem witnesses_unserved {s0 m a0 : ℕ} {γ ε : ℝ} (ha0 : 1 ≤ a0) (hγ0 
     have hgood := hi a1 (mem_Icc.mpr ⟨ha1, ha1'⟩) false
     simp only [Bool.false_eq_true, ite_false] at h3
     linarith
-
 
 /-- The levels `k ∈ {0, …, m}` doubly `θ`-served (on their witness hops). -/
 noncomputable def doublyServedLevels (s0 m a1 a2 : ℕ) (K1 K2 q : ℤ) (ξ : ℕ) (θ : ℝ) : Finset ℕ :=

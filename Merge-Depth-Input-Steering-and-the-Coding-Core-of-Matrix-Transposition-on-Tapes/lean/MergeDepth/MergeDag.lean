@@ -1,16 +1,16 @@
 import MergeDepth.Charging
 
 /-!
-# The merge DAG (Definition 3.19, Proposition 3.20)
+# The merge DAG (Definition 3.20, Proposition 3.21)
 
 Fix a network, a deep-edge relation, a lineage assignment, a revealed set `Γ` (the cold genie and
-the checkpoints of Lemma 3.9) and a set `O` of output vertices. The merge DAG has an edge `f → f'`
+the checkpoints of Lemma 3.10) and a set `O` of output vertices. The merge DAG has an edge `f → f'`
 whenever `f` and `f'` are consecutive deep merges (`dmList`) of a `Γ`-free path from a vertex of `O`
 (`MEdge`), and a vertex is initial if it is the first deep merge of such a path (`MInit`).
 
 `dm_le_of_cut`: if `Z` meets every path of the merge DAG with `s + 1` vertices whose first vertex is
 initial, then every `(Γ ∪ Z)`-free path from a vertex of `O` outside `Z` has at most `s` deep merges.
-`length_le_of_cut` combines it with the per-path bound of Lemma 3.9: such a path has fewer than
+`length_le_of_cut` combines it with the per-path bound of Lemma 3.10: such a path has fewer than
 `(s + 1) τ D` edges.
 -/
 
@@ -70,7 +70,7 @@ theorem dm_le_of_cut {Z : Finset ℕ} {s : ℕ} (hZ : MCut net Rr lin Γ O Z s) 
     · exact h
   exact hfree z hz' (mem_union_right _ hzZ)
 
-/-- **Proposition 3.20, the paths.** For a set `Q` with the covering property and a cut `Z` of the
+/-- **Proposition 3.21, the paths.** For a set `Q` with the covering property and a cut `Z` of the
 merge DAG relative to `Γ₀ ∪ Q`, every `(Γ₀ ∪ Q ∪ Z)`-free path from an output vertex outside `Z` has
 at most `(s + 1) τ D` vertices. -/
 theorem length_le_of_cut (Γ₀ : Finset ℕ) (D : ℕ)
@@ -93,7 +93,7 @@ end MergeDag
 
 open Matrix Module BoundedNesting.LinNet in
 open Classical in
-/-- **Proposition 3.20(a).** For a set `Q` with the covering property and a cut `Z` of the merge DAG
+/-- **Proposition 3.21(a).** For a set `Q` with the covering property and a cut `Z` of the merge DAG
 (built from paths that start at the output vertices outside `Γ₀ ∪ Q`), a transposing linear network has `P_tpos = R + S` with `rank R ≤ rank(E_{Γ₀}) + m |Q| + m |Z|` and
 row `ℓ` of `S` supported in the balls of radius `(s + 1) τ D` around the output vertices of `ℓ`
 outside `Γ₀ ∪ Q ∪ Z`. -/

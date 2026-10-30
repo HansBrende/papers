@@ -1,7 +1,7 @@
 import MergeDepth.DeepNestingLabels
 
 /-!
-# Lemmas 7.7–7.9 and Theorem BP for the walk pair (paper 11, Section 7)
+# Lemmas 7.7–7.9 and Theorem BP for the walk pair (Section 7)
 
 The model of `BlockPairsModel`, `BlockPairsWitness` and `BlockPairsBlindness` works with explicit
 families, turn times and potentials in one period. The files `DeepNestingWalk`, `DeepNestingHops`

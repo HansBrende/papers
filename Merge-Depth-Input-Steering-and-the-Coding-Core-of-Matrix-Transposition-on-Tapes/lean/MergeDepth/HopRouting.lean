@@ -3,7 +3,7 @@ import MergeDepth.HopFields
 import MergeDepth.Capacity
 
 /-!
-# Routing through deep hops is hop-limited (Proposition 3.16)
+# Routing through deep hops is hop-limited (Proposition 3.17)
 
 * `length_le_of_coldDep`: under a cold genie of depth `D`, a `Γ_F`-free dependency path with `h'`
   deep edges has at most `(h' + 1) D` vertices (it splits at its deep edges into `h' + 1` paths
@@ -14,7 +14,7 @@ import MergeDepth.Capacity
 * `routing_count`: double counting. If every path of a position outside `X` carries at least `h`
   edges of a set `E`, weights of total at most one per position and load at most `c₀` on every edge
   of `E` give total weight at most `|X| + c₀ |E| / h`.
-* `hop_routing_b`: Proposition 3.16(b) with the positions in the balls of radius `D''` as the
+* `hop_routing_b`: Proposition 3.17(b) with the positions in the balls of radius `D''` as the
   exceptional set: total weight at most `|X| + c₀ N_R / h ≤ |X| + c₀ k C (L + 1) / h`.
 -/
 
@@ -23,15 +23,6 @@ namespace MergeDepth
 open Finset BoundedNesting
 
 variable {k : ℕ}
-
-/-- Steps decrease along the dependency DAG. -/
-theorem depStep_lt {xs : Fin k → ℕ → ℤ} {T a b : ℕ} (h : DepStep xs T a b) : b < a := by
-  rcases h with ⟨h, -⟩ | h
-  · omega
-  · obtain ⟨η, hη, he⟩ := mem_image.mp h
-    obtain ⟨hl, -, -, -⟩ := mem_allHops.mp hη
-    simp only [Prod.mk.injEq] at he
-    omega
 
 open Classical in
 /-- The cold-depth bound along dependency paths, with a prefix of `a` vertices already used. -/
@@ -85,7 +76,7 @@ theorem length_le_of_coldDep (xs : Fin k → ℕ → ℤ) (T V : ℕ) (Γ : Fins
       (fun ρ hρ hρΓ hρR => by simpa using hcold (u :: ρ) hρ (fun v hv => hρΓ v hv) hρR)
 
 open Classical in
-/-- **Proposition 3.16(a), per position.** If `tpos ℓ` is not in the ball of radius `D''` around
+/-- **Proposition 3.17(a), per position.** If `tpos ℓ` is not in the ball of radius `D''` around
 `t`, every `Γ_F`-free dependency path from `t` to a step that reads `tpos ℓ` has at least
 `⌈(D'' + 2 - D)/D⌉` deep edges. -/
 theorem hop_routing_a {L : ℕ} (xs : Fin k → ℕ → ℤ) {T V β : ℕ} {ε : ℝ} {D : ℕ} {ΓF : Finset ℕ}
@@ -122,7 +113,7 @@ theorem fst_le_of_mem_edgesOf : ∀ {π : List ℕ} {u : ℕ} {e : ℕ × ℕ}, 
   | [], _, _, _, he => by simp [edgesOf] at he
   | v :: π, u, e, hp, he => by
     obtain ⟨hstep, hp'⟩ := hp
-    have hvu := depStep_lt hstep
+    have hvu := (depStep_lt hstep).1
     rcases mem_insert.mp he with rfl | he
     · exact le_rfl
     · exact (fst_le_of_mem_edgesOf hp' he).trans hvu.le
@@ -140,7 +131,7 @@ theorem rCount_le_card_edgesOf (R : ℕ → ℕ → Prop) [DecidableRel R] (E : 
     have ih := rCount_le_card_edgesOf R E hE (v :: π) hp'
     have hnot : (u, v) ∉ edgesOf (v :: π) := fun h => by
       have := fst_le_of_mem_edgesOf hp' h
-      have := depStep_lt hstep
+      have := (depStep_lt hstep).1
       simp only at *
       omega
     simp only [rCount, edgesOf]
@@ -197,7 +188,7 @@ theorem routing_count {ι : Type*} [Fintype ι] [DecidableEq ι] (P : ι → Fin
   linarith
 
 open Classical in
-/-- **Proposition 3.16(b).** Let `P ℓ` be any finite set of `Γ_F`-free dependency paths from `tout ℓ`
+/-- **Proposition 3.17(b).** Let `P ℓ` be any finite set of `Γ_F`-free dependency paths from `tout ℓ`
 to steps that read `tpos ℓ`, with nonnegative weights of total at most one per position and load
 at most `c₀` on every deep edge. With `X` the positions `ℓ` such that `tpos ℓ` lies in the ball of
 radius `D''` around `tout ℓ`, the total weight is at most `|X| + c₀ N_R / h ≤ |X| + c₀ k T / h`,

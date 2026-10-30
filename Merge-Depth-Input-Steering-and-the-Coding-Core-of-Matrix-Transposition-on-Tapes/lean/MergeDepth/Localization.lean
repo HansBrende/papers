@@ -27,10 +27,6 @@ open Finset BoundedNesting Transpose
 
 set_option autoImplicit false
 
-theorem one_le_entryBits (d : ℕ) : 1 ≤ entryBits d := by
-  unfold entryBits
-  omega
-
 open Classical in
 /-- **Theorem L(a), revisits, given binary [Q9.1].** -/
 theorem thm_L_a (hQ : Q91Binary) {M : TM} (hk : 1 ≤ M.k) {c : ℝ} (hc : 0 < c) (𝒟 : Set ℕ)

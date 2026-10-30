@@ -16,10 +16,10 @@ The *predecessors* of the fields of step `t < T` (`stepPreds`) are the state nod
 (if `t ≥ 1`) and, for every work head `j` whose cell at time `t` was visited before, the symbol
 node `j` of its last visit `prev_j(t)`, along the work walks `τ₀.work` of a trace.
 
-* `stepValue_eq_of_fields`, `stepValue_eq_of_preds`: **the field-level local recursion** (the
-  fourth paper's Lemma 4.2 at field level). Two inputs whose traces agree with `τ₀` before `T`
-  give step `t < T` the same value, hence the same fields, if they agree on the predecessor fields
-  of step `t` and on the input bit read at step `t` (`readPos`).
+* `stepValue_eq_of_preds`: **the field-level local recursion** (the fourth paper's Lemma 4.2 at
+  field level, from `stepValue_eq_of_fields` of `MergeDepth/Traces.lean`). Two inputs whose traces
+  agree with `τ₀` before `T` give step `t < T` the same value, hence the same fields, if they agree
+  on the predecessor fields of step `t` and on the input bit read at step `t` (`readPos`).
 * `Pruning`: a pruning chooses for every field node `u` a set `P u` of predecessors and a flag
   `keep u` such that, on `{0,1}^L`, the field is a function of the fields in `P u` and of the kept
   input bit. `Pruning.full` (keeping everything) is a pruning when all inputs follow `τ₀` before
@@ -102,9 +102,6 @@ def decOut (n : ℕ) : Bool := decide (n = 2)
 
 theorem decOut_encOut (x : Bool) : decOut (encOut (some x)) = x := by
   cases x <;> rfl
-
-theorem encOut_lt (o : Option Bool) : encOut o < 3 := by
-  rcases o with _ | _ | _ <;> simp [encOut]
 
 variable (M : TM)
 
@@ -189,10 +186,6 @@ theorem stepPreds_lt {k : ℕ} {xs : Fin k → ℕ → ℤ} {T t v : ℕ} (hv : 
   calc v < (v / (k + 2) + 1) * (k + 2) := by rw [Nat.add_mul, one_mul]; exact h2
     _ ≤ t * (k + 2) := Nat.mul_le_mul_right _ h1
 
-theorem stepPreds_step_lt_T {k : ℕ} {xs : Fin k → ℕ → ℤ} {T t v : ℕ} (hv : v ∈ stepPreds k xs T t) :
-    t < T :=
-  (mem_stepPreds.mp hv).1
-
 /-- **Edges project to dependency steps.** A predecessor of step `t` lies at step `t - 1` (a state
 edge) or at the last visit `σ` of a head to its cell at time `t` (a state edge if `σ = t - 1`, and a
 long hop `(σ, t)` of that head otherwise). -/
@@ -245,57 +238,6 @@ theorem readPos_eq_some_iff {k : ℕ} {τ₀ : Trace k} {L t : ℕ} {j : Fin L} 
 section Local
 
 variable {M}
-
-/-- **The local recursion at field level** (the fourth paper's Lemma 4.2, with its fields). Two
-inputs `a, b ∈ {0,1}^L` whose traces agree with `τ₀` before `T`, and a step `t < T`: if the inputs
-agree under the input head at time `t` (when that cell lies in the input), the states at time `t`
-agree (the state field `σ_{t-1}`, for `t ≥ 1`), and for every work head `h` whose cell at time `t`
-was visited before, the symbols written on tape `h` at its last visit `σ` agree (the symbol field
-`κ_{σ,h}`), then the values of step `t` agree. -/
-theorem stepValue_eq_of_fields {L : ℕ} {τ₀ : Trace M.k} {a b : Fin L → Bool} {T t : ℕ}
-    (ha : ∀ s < T, trace M (List.ofFn a) s = τ₀ s) (hb : ∀ s < T, trace M (List.ofFn b) s = τ₀ s)
-    (ht : t < T) (hread : ∀ p : ℕ, (p : ℤ) = τ₀.input t → ∀ hp : p < L, a ⟨p, hp⟩ = b ⟨p, hp⟩)
-    (hstate : 1 ≤ t → (run M (List.ofFn a) t).state = (run M (List.ofFn b) t).state)
-    (hsym : ∀ (h : Fin M.k) (σ : ℕ), IsLastVisit (τ₀.work h) t σ →
-      writtenSym M (List.ofFn a) σ h = writtenSym M (List.ofFn b) σ h) :
-    stepValue M (List.ofFn a) t = stepValue M (List.ofFn b) t := by
-  have hwa : ∀ ρ ≤ t, ∀ h, workTraj M (List.ofFn a) ρ h = τ₀.work h ρ :=
-    fun ρ hρ h => workPos_eq_of_agree ha (by omega) h
-  have hwork : ∀ ρ ≤ t, ∀ h, workTraj M (List.ofFn a) ρ h = workTraj M (List.ofFn b) ρ h :=
-    fun ρ hρ h => (hwa ρ hρ h).trans (workPos_eq_of_agree hb (by omega) h).symm
-  -- the state at time `t`
-  have hst : (run M (List.ofFn a) t).state = (run M (List.ofFn b) t).state := by
-    rcases t with _ | s
-    · rfl
-    · exact hstate (by omega)
-  -- the input symbol at time `t`
-  have hin : inSym M (List.ofFn a) t = inSym M (List.ofFn b) t := by
-    unfold inSym
-    rw [inPos_eq_of_agree ha ht.le, inPos_eq_of_agree hb ht.le]
-    refine readInput_eq_of_nth (L := L) List.length_ofFn List.length_ofFn ?_
-    intro p hp hpL
-    rw [nth_eq_getElem?, nth_eq_getElem?, List.getElem?_ofFn, List.getElem?_ofFn,
-      dite_eq_left hpL, dite_eq_left hpL, hread p hp hpL]
-  -- the symbols under the work heads at time `t`
-  have hhead : headSym M (List.ofFn a) t = headSym M (List.ofFn b) t := by
-    funext h
-    have hpos : ∀ ρ ≤ t, workTraj M (List.ofFn a) ρ h = workTraj M (List.ofFn b) ρ h :=
-      fun ρ hρ => hwork ρ hρ h
-    by_cases hex : ∃ σ < t, workTraj M (List.ofFn a) σ h = workTraj M (List.ofFn a) t h
-    · obtain ⟨σ, hlast⟩ := exists_lastVisit hex
-      have hlast' := isLastVisit_congr hlast hpos
-      rw [headSym_eq_writtenSym h hlast, headSym_eq_writtenSym h hlast']
-      exact hsym h σ (isLastVisit_congr hlast fun ρ hρ => hwa ρ hρ h)
-    · push Not at hex
-      rw [headSym_eq_blank h hex, headSym_eq_blank h]
-      intro σ hσ
-      rw [← hpos σ hσ.le, ← hpos t le_rfl]
-      exact hex σ hσ
-  have htrans := transAt_eq_of_args hst hin hhead
-  simp only [stepValue, Prod.mk.injEq]
-  refine ⟨state_succ_eq_of_transAt' hst htrans,
-    funext fun h => writtenSym_eq_of_transAt' hhead htrans h, ?_⟩
-  simp only [outBit, htrans]
 
 /-- **The local recursion at field level, node form.** If two inputs whose traces agree with `τ₀`
 before `T` agree at the input position read at step `t < T` and at every predecessor node of the
@@ -471,13 +413,6 @@ theorem toFunDag_deep_edge {V : ℕ} {u v : ℕ} (hv : v ∈ Pr.toFunDag.out u)
 end Pruning
 
 /-! ### Output nodes of a transposer -/
-
-/-- The transposed position, as an element of `Fin (d² b)`. -/
-def tposOf (d b : ℕ) (u : Fin (d * d * b)) : Fin (d * d * b) :=
-  ⟨Transpose.Tape.tpos d b u, Transpose.Tape.Impl.tpos_lt u.2⟩
-
-theorem tposOf_tposOf (d b : ℕ) (u : Fin (d * d * b)) : tposOf d b (tposOf d b u) = u :=
-  Fin.ext (Transpose.Tape.Impl.tpos_tpos u.2)
 
 /-- The output node of output position `ℓ`: the output field of the step `appendTime τ₀ T ℓ` that
 appends bit `ℓ`. -/

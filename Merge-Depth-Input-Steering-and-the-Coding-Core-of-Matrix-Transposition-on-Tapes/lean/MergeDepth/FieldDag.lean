@@ -1,4 +1,4 @@
-import MergeDepth.Lineage
+import MergeDepth.ExpansionCone
 import MergeDepth.ColdGenie
 
 /-!
@@ -11,7 +11,8 @@ fourth paper's local recursion). Its paths, freeness and deep-edge counts are th
 underlying network `G.net` (with zero coefficients; only its edges and reads are used).
 
 * `FunDag.cone`: inputs that agree on the revealed vertices `Γ` and on the positions read at the
-  ends of the `Γ`-free paths from `u` (`coneSet`) give `u` the same value.
+  ends of the `Γ`-free paths from `u` (the cone set `coneI G.net Γ u` of Lemma 3.3) give `u` the
+  same value.
 * `FunDag.isIndexCode`: with output vertices whose values determine the transposed bits, the
   revealed values together with the bits of the positions in `X` form an index code for the system
   that is empty on `X` and on revealed outputs and is the cone set of the output elsewhere.
@@ -43,36 +44,18 @@ def net : LinNet ℚ L 1 where
   a := fun _ => 0
   rd := G.rd
 
-open Classical in
-/-- The cone set `I_Γ(u)`: the positions read at the ends of the `Γ`-free paths from `u`. -/
-noncomputable def coneSet (Γ : Finset ℕ) (u : ℕ) : Finset (Fin L) :=
-  univ.filter fun j => ∃ π ∈ G.net.paths u, LinNet.GFree Γ π ∧ G.rd (π.getLastD u) = some j
-
-theorem coneSet_mono {Γ : Finset ℕ} {u v : ℕ} (hv : v ∈ G.out u) (hvΓ : v ∉ Γ) :
-    G.coneSet Γ v ⊆ G.coneSet Γ u := by
-  intro j hj
-  simp only [coneSet, mem_filter, mem_univ, true_and] at hj ⊢
-  obtain ⟨π, hπ, hfree, hrd⟩ := hj
-  obtain ⟨π', rfl⟩ := G.net.mem_paths_head hπ
-  refine ⟨u :: v :: π', cons_cons_mem_paths.mpr ⟨hv, hπ⟩, gfree_cons_cons.mpr ⟨hvΓ, hfree⟩, ?_⟩
-  rwa [LinNet.getLastD_cons_cons]
-
-theorem rd_mem_coneSet {Γ : Finset ℕ} {u : ℕ} {j : Fin L} (h : G.rd u = some j) :
-    j ∈ G.coneSet Γ u := by
-  simp only [coneSet, mem_filter, mem_univ, true_and]
-  exact ⟨[u], singleton_mem_paths _ _, gfree_singleton _ _, h⟩
-
-/-- **The cone lemma.** -/
+/-- **The cone lemma.** Inputs that agree on the revealed vertices `Γ` and on the cone set
+`coneI G.net Γ u` give `u` the same value. -/
 theorem cone (Γ : Finset ℕ) (w w' : Fin L → Bool) (hΓ : ∀ v ∈ Γ, G.val w v = G.val w' v) :
-    ∀ u, (∀ j ∈ G.coneSet Γ u, w j = w' j) → G.val w u = G.val w' u := by
+    ∀ u, (∀ j ∈ coneI G.net Γ u, w j = w' j) → G.val w u = G.val w' u := by
   intro u
   induction u using Nat.strong_induction_on with
   | _ u ih =>
     intro hu
-    refine G.det w w' u (fun v hv => ?_) (fun j hj => hu j (G.rd_mem_coneSet hj))
+    refine G.det w w' u (fun v hv => ?_) (fun j hj => hu j (rd_mem_coneI G.net hj))
     by_cases hvΓ : v ∈ Γ
     · exact hΓ v hvΓ
-    · exact ih v (G.out_lt u v hv) fun j hj => hu j (G.coneSet_mono hv hvΓ hj)
+    · exact ih v (G.out_lt u v hv) fun j hj => hu j (coneI_mono G.net hv hvΓ hj)
 
 end FunDag
 
@@ -93,14 +76,14 @@ theorem isIndexCode_of {α : Type*} (E : (Fin L → Bool) → α) (Γ : Finset �
     (hdec : ∀ w ℓ, dec ℓ (G.val w (o ℓ)) = w (tpos ℓ))
     (hE : ∀ w w', E w = E w' → (∀ v ∈ Γ, G.val w v = G.val w' v) ∧
       ∀ ℓ ∈ X, w (tpos ℓ) = w' (tpos ℓ)) :
-    IsIndexCode E (fun ℓ => if ℓ ∈ X ∨ o ℓ ∈ Γ then ∅ else G.coneSet Γ (o ℓ)) tpos := by
+    IsIndexCode E (fun ℓ => if ℓ ∈ X ∨ o ℓ ∈ Γ then ∅ else coneI G.net Γ (o ℓ)) tpos := by
   intro ℓ w w' hEw hI
   obtain ⟨hΓ', hX⟩ := hE w w' hEw
   by_cases hℓ : ℓ ∈ X
   · exact hX ℓ hℓ
   by_cases ho : o ℓ ∈ Γ
   · rw [← hdec w ℓ, ← hdec w' ℓ, hΓ' _ ho]
-  · have hI' : ∀ j ∈ G.coneSet Γ (o ℓ), w j = w' j := fun j hj => hI j (by simp [hℓ, ho, hj])
+  · have hI' : ∀ j ∈ coneI G.net Γ (o ℓ), w j = w' j := fun j hj => hI j (by simp [hℓ, ho, hj])
     rw [← hdec w ℓ, ← hdec w' ℓ, G.cone Γ w w' hΓ' (o ℓ) hI']
 
 open Classical in
@@ -110,7 +93,7 @@ that is empty on `X` and on revealed outputs and is the cone set of `o ℓ` else
 theorem isIndexCode (Γ : Finset ℕ) (X : Finset (Fin L)) (o : Fin L → ℕ) (tpos : Fin L → Fin L)
     (dec : Fin L → ℕ → Bool) (hdec : ∀ w ℓ, dec ℓ (G.val w (o ℓ)) = w (tpos ℓ)) :
     IsIndexCode (fun w => ((fun v : Γ => G.val w v.1), (fun ℓ : X => w (tpos ℓ.1))))
-      (fun ℓ => if ℓ ∈ X ∨ o ℓ ∈ Γ then ∅ else G.coneSet Γ (o ℓ)) tpos := by
+      (fun ℓ => if ℓ ∈ X ∨ o ℓ ∈ Γ then ∅ else coneI G.net Γ (o ℓ)) tpos := by
   intro ℓ w w' hE hI
   simp only [Prod.mk.injEq] at hE
   obtain ⟨hΓ, hX⟩ := hE
@@ -119,7 +102,7 @@ theorem isIndexCode (Γ : Finset ℕ) (X : Finset (Fin L)) (o : Fin L → ℕ) (
   · exact congr_fun hX ⟨ℓ, hℓ⟩
   by_cases ho : o ℓ ∈ Γ
   · rw [← hdec w ℓ, ← hdec w' ℓ, hΓ' _ ho]
-  · have hI' : ∀ j ∈ G.coneSet Γ (o ℓ), w j = w' j := fun j hj => hI j (by simp [hℓ, ho, hj])
+  · have hI' : ∀ j ∈ coneI G.net Γ (o ℓ), w j = w' j := fun j hj => hI j (by simp [hℓ, ho, hj])
     rw [← hdec w ℓ, ← hdec w' ℓ, G.cone Γ w w' hΓ' (o ℓ) hI']
 
 end FunDag

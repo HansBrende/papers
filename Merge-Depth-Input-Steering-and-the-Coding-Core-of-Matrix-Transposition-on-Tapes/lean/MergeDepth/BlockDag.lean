@@ -2,7 +2,7 @@ import MergeDepth.ColdGenie
 import MergeDepth.SkeletonWalk
 
 /-!
-# The block DAG of a skeleton class (Lemma 4.5(a), (d))
+# The block DAG of a skeleton class (Lemma 4.5(a))
 
 For coarse work walks `s j`, `prevS (s j) t` is the last earlier time at which `s j` has the value
 `s j t`. The block DAG has a state edge `t → t - 1` and a block edge `t → prevS (s j) t` for every
@@ -11,9 +11,8 @@ work tape (`BlockStep`).
 * `blockStep_iff`: the block DAG is the dependency DAG of the coarse walks (state edges and long
   hops of the walks), `DepStep`.
 * `card_blockOut_le`, `card_blockIn_le`: every vertex has at most `k + 1` out- and in-neighbours.
-* `coarse_ownerLoad_le`: if one member's work walks start at `0` and enter every cell at most `V`
-  times, the long hops of the coarse walks have owner-load at most `4V - 1` (by Lemma 4.2 and the
-  eighth paper's `ownerLoad_le_of_entries`).
+
+Part (d) of Lemma 4.5 is `skeleton_entries_ownerLoad` in `MergeDepth/BlockMachine.lean`.
 -/
 
 namespace MergeDepth
@@ -126,14 +125,5 @@ theorem card_blockIn_le (s : Fin k → ℕ → ℤ) (T u : ℕ) :
             huniq j t t' (mem_filter.mp ht).2 (mem_filter.mp ht').2
       _ = k := by simp
   omega
-
-/-- **Lemma 4.5(d).** If one member's work walks start at `0` and enter every cell at most `V`
-times, the long hops of the coarse walks have owner-load at most `4V - 1`. -/
-theorem coarse_ownerLoad_le {w : ℤ} (hw : 0 < w) {xs : Fin k → ℕ → ℤ} (hx : ∀ j, IsWalk (xs j))
-    (h0 : ∀ j, xs j 0 = 0) {V T : ℕ} (hV : ∀ j c, (entries (xs j) c (T - 1)).card ≤ V) :
-    OwnerLoadLE (fun j => skel w (xs j)) (allHops (fun j => skel w (xs j)) T)
-      (fun η => hopOwner (skel w (xs η.1)) η.2.1 η.2.2) (2 * (2 * V) - 1) :=
-  ownerLoad_le_of_entries (fun j => isWalk_skel hw (hx j)) (fun _ hη => mem_allHops.mp hη)
-    (fun η _hη => card_entries_skel_le hw (hx η.1) (h0 η.1) (hV η.1) _)
 
 end MergeDepth

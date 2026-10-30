@@ -2,9 +2,9 @@ import MergeDepth.HopRoutingCount
 import MergeDepth.HCStarQ91
 
 /-!
-# Proposition 3.16 for a trace
+# Proposition 3.17 for a trace
 
-`hop_routing_trace`: Proposition 3.16(b) for the trace of a machine. The walks, read steps and
+`hop_routing_trace`: Proposition 3.17(b) for the trace of a machine. The walks, read steps and
 append steps that `hop_routing_count` takes as hypotheses are supplied by `trace_ball_data` for
 any trace that appends at least `L` bits before `T`.
 -/
@@ -16,7 +16,7 @@ open Finset BoundedNesting
 variable {k : ℕ}
 
 open Classical in
-/-- **Proposition 3.16(b)** for a trace `τ₀` that appends at least `L = d²b` bits before `T`,
+/-- **Proposition 3.17(b)** for a trace `τ₀` that appends at least `L = d²b` bits before `T`,
 `T ≤ c (L + 1)`, `d ≥ 2`, with a cold genie of depth `D ≥ 1` and `D ≤ D''`: weights on
 `Γ_F`-free dependency paths from the append step of each output position to steps that read the
 transposed position, of total at most one per position and load at most `c₀` on every deep edge,
@@ -28,7 +28,7 @@ theorem hop_routing_trace {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {τ₀ : Tra
     (P : Fin (d * d * b) → Finset (List ℕ))
     (hP : ∀ ℓ, ∀ π ∈ P ℓ, ∃ π', π = appendTime τ₀ T ℓ :: π' ∧ IsDepPath τ₀.work T π ∧
       LinNet.GFree ΓF π ∧ readPos τ₀ (d * d * b) (π.getLastD (appendTime τ₀ T ℓ)) =
-        some (tposF d b hb ℓ))
+        some (tposOf d b ℓ))
     (f : Fin (d * d * b) → List ℕ → ℝ) (hf0 : ∀ ℓ π, 0 ≤ f ℓ π)
     (hf1 : ∀ ℓ, ∑ π ∈ P ℓ, f ℓ π ≤ 1) (c₀ : ℝ) (hc₀ : 0 ≤ c₀)
     (hload : ∀ a b', DeepStep τ₀.work T V a b' →

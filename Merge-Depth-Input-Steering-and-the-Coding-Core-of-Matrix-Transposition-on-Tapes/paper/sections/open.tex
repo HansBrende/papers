@@ -1,15 +1,19 @@
 \section{Open problems}\label{sec:open}
 
-The following problems would decide (T), or decide it for the classes that remain after this paper.
+The following problems remain. A positive answer to \cref{prob:EM} would refute~(T). \Cref{prob:HV,prob:adaptive-deep}
+concern the three kinds of machines that Theorem~L leaves given [Q9.1] (\cref{sec:localization}), and
+\cref{prob:crux,prob:S} concern the hypotheses of the conditional results.
 
 \begin{problem}[Code-level depth reduction]\label{prob:HV}
 Prove or refute \cref{conj:HV}. A proof, together with [Q9.1], excludes every oblivious linear-time transposer
-(\cref{rem:HV}). A counterexample is a schedule-free description of where an oblivious
-construction must live: a depth-robust merge pattern inside the deep part of a deeply nested schedule.
+(\cref{rem:HV}). A counterexample would consist of oblivious linear-time transposers whose ball systems have no index
+codes of the conjectured length at any fixed radius; by \cref{rem:HV}, their codes merge deep lineages unboundedly often,
+along merge DAGs without cheap cuts, in the deep part of their schedules: the mechanism that an oblivious construction
+needs.
 \end{problem}
 
 \begin{problem}[Adaptive deep nesting]\label{prob:adaptive-deep}
-Given [Q9.1], \cref{cor:RV} leaves adaptive machines that revisit some tape unboundedly often. Is there an analogue
+Given [Q9.1], \cref{thm:L} leaves adaptive machines that revisit some tape unboundedly often. Is there an analogue
 of hop charging (\cref{thm:HC}) for those that revisit a work tape, with the coarse skeleton of \cref{sec:skeleton} in
 place of the fixed schedule? For those whose work tapes have bounded entry and which revisit input cells, the entropy
 condition of \cref{cor:IS} can be met by padding (\cref{rem:skel-padding}); what else must their input-head revisits
@@ -17,11 +21,13 @@ accomplish?
 \end{problem}
 
 \begin{problem}[An indivisibility-free external-memory bound]\label{prob:EM}
-Does every external-memory algorithm with block size $d\,b(d)$ and internal memory $O(d\,b(d))$ that is oblivious and
-correct on a set of $2^{L-O(d)}$ inputs need $\omega(d)$ I/Os to transpose? By \cref{cor:EM}, a positive answer refutes~(T)
-for every number of work tapes. Bounds of this kind are known only when records are moved as indivisible
-atoms~\cite{AggarwalVitter1988}, or conditionally on a network-coding conjecture~\cite{FHLS2019} that is false in
-general~\cite{BravermanHe2026}.
+Is it true that for every finite alphabet and all constants $m\ge1$, $\gamma\ge0$ and $A\ge0$, at all large~$d$, every
+external-memory algorithm with block size $d\,b(d)$, $m$ slots and a register of at most $\gamma\log_2(2L)$ bits that is
+correct and oblivious on a set of at least $2^{L-Ad}$ inputs performs more than $Ad$ I/Os on that set? By \cref{cor:EM},
+a positive answer refutes~(T) for every number of work tapes; by its formal form, a lower bound at a single dimension for
+each alphabet and choice of constants already suffices. Bounds of this kind are known only when records are
+moved as indivisible atoms~\cite{AggarwalVitter1988}, or conditionally on a network-coding conjecture~\cite{FHLS2019}
+that is false in general~\cite{BravermanHe2026}.
 \end{problem}
 
 \begin{problem}[The crux at large degree]\label{prob:crux}
@@ -33,7 +39,7 @@ odd girth, and the large degrees at which the cones of real machines live.
 
 \begin{problem}[Concentration of straddle counts]\label{prob:S}
 Prove \cref{conj:S}; by \cref{prop:S-local} it is equivalent to showing that the non-local part of the normalized variance
-averages to zero. With \cref{thm:BP} it gives the eighth paper's Conjecture~A$''$ for block labels of bounded length at
-one odd shift~\cite[Conjecture~5.24]{BoundedNesting2026}, which is evidence that the deep-nesting pair is depth-robust; the
-general labels that would refute $\TCP(2)$~\cite[Corollary~5.26]{BoundedNesting2026} remain.
+averages to zero. With \cref{thm:BP} it gives the eighth paper's Conjecture~A$''$ for pairs of block labels of bounded
+length at one odd shift~\cite[Conjecture~5.24]{BoundedNesting2026}, which is evidence that the deep-nesting pairs are
+depth-robust; the general labels that would refute $\TCP(2)$~\cite[Corollary~5.26]{BoundedNesting2026} remain.
 \end{problem}

@@ -7,10 +7,9 @@ set_option autoImplicit false
 /-!
 # Corollary HC with its quantifiers: the linear crux excludes bounded merge depth
 
-`cor_HC_step` and `cor_HC_step_formation` (`MergeDepth/HopMachine.lean`) are the argument of
-Corollary HC at one size, for a linear network. This file states and proves the corollary with its
-quantifiers over machines and sizes, in the frozen machine model, with the linear crux as a
-statement about the class `S_ball_{k,C,β,r}` of the eighth paper.
+This file states and proves Corollary HC with its quantifiers over machines and sizes, in the frozen
+machine model, with the linear crux as a statement about the class `S_ball_{k,C,β,r}` of the eighth
+paper.
 
 **Linear data paths** (Definition 7.1 of the eighth paper). `LinDataPath F M L τ₀ T m` is an
 `F`-linear data path of width `m` of the machine `M` at length `L`, along a trace `τ₀` before a
@@ -29,7 +28,7 @@ reads a position of `[0, L)` (`inTerm`, `readPos`); and output bit `ℓ`, append
   transposer of a nonempty input has no data path of width `0`.
 * `IsLineage`, `MergeDepthLE`, `FormationDepthLE`: a lineage assignment for a cold genie on the
   coordinate DAG (`coordNet`), merge depth and formation depth at most `s` at an output position.
-  `copy_lineage` is Lemma 3.11 for the coordinate DAG.
+  `copy_lineage` is Lemma 3.12 for the coordinate DAG (by `copyForest_lineage`).
 
 **Ball systems and the linear crux** (Definition 7.4 of the eighth paper).
 * `ballSystem τ₀ T r d b`: the balls `B^r(ℓ)`, the positions read at the steps reachable from the
@@ -42,19 +41,15 @@ reads a position of `[0, L)` (`inTerm`, `readPos`); and output bit `ℓ`, append
 * `LinCruxOn F B k C β D ρ`: `LinCrux_F(S_ball_{k,C,β,D}, ρ)` at the sizes `(d, b)` with `B d b`;
   `LinCrux`: at the paper's sizes `b = b(d)` (`entryBits`). `LinCruxOn.mono_radius`: the crux is
   antitone in the radius.
-* `SBallH`, `LinCruxOnH`: the same for machines oblivious only up to a horizon `T ≤ C (L + 1)`
-  (`FollowsTrace`); `LinCruxOnH.linCruxOn`: this crux implies `LinCruxOn`.
 
 **Corollary HC.**
 * `minrank_ballSystem_le`, `minrank_ballSystem_le_formation`: Theorems HC′(a) and HC for a data
   path of an oblivious transposer, in minrank form: the ball system of radius `(s + 1) τ D` of the
   machine has minrank at most `ε L + m k C (L + 1)/τ + |X|` over `F` (`hop_charging_machine_real`
   is `hop_charging_machine` for a real constant `C`).
-* `not_mergeShallow`, `not_formationShallow`: Corollary HC at one size, for a machine.
-* `cor_HC_gen`, `cor_HC_gen_formation`: Corollary HC for every `τ ≥ 1` and depth `D` with
-  `ε + η + m k C/τ < ρ`, at every set of sizes `B` with `b ≥ 1`, with a threshold uniform over
-  machines. `cor_HC_gen_horizon`, `cor_HC_gen_horizon_formation`: the same for machines oblivious
-  up to a horizon, given `LinCruxOnH`.
+* `not_mergeShallow`: Corollary HC at one size, for a machine.
+* `cor_HC_gen`: Corollary HC for every `τ ≥ 1` and depth `D` with `ε + η + m k C/τ < ρ`, at every
+  set of sizes `B` with `b ≥ 1`, with a threshold uniform over machines.
 * `cor_HC`, `cor_HC_formation`: **Corollary HC as stated**, with `τ = ⌈8mkC/(ρ - ε)⌉` (`hcTau`),
   `D = DF(k, 2V - 1, ε/(4βC)) ⌈4βC/ε⌉` (`coldDepth`), `r = (s + 1) τ D` and `L = d² b(d)`.
   `cor_HC_uniform`, `cor_HC_formation_uniform`: with a threshold uniform over machines and
@@ -74,17 +69,6 @@ section DepOut
 
 variable {k : ℕ}
 
-theorem lt_of_depStep {xs : Fin k → ℕ → ℤ} {T t s : ℕ} (h : DepStep xs T t s) : s < t ∧ t < T := by
-  rcases h with ⟨h1, h2⟩ | h
-  · exact ⟨by omega, h2⟩
-  · obtain ⟨η, hη, he⟩ := mem_image.mp h
-    have hh := mem_allHops.mp hη
-    simp only [Prod.mk.injEq] at he
-    obtain ⟨h1, h2⟩ := he
-    have := hh.1
-    have := hh.2.1
-    omega
-
 open Classical in
 /-- The out-neighbours `out(t)` of step `t` in the dependency DAG of the work walks `xs` before
 `T`: the steps `s` with `DepStep xs T t s`, that is, `t - 1` (for `1 ≤ t < T`) and the last visits
@@ -96,13 +80,13 @@ theorem mem_depOut {xs : Fin k → ℕ → ℤ} {T t s : ℕ} : s ∈ depOut xs 
   classical
   unfold depOut
   rw [mem_filter, mem_range]
-  exact ⟨fun h => h.2, fun h => ⟨(lt_of_depStep h).1, h⟩⟩
+  exact ⟨fun h => h.2, fun h => ⟨(depStep_lt h).1, h⟩⟩
 
 theorem depOut_eq_empty {xs : Fin k → ℕ → ℤ} {T t : ℕ} (ht : T ≤ t) : depOut xs T t = ∅ := by
   ext s
   simp only [mem_depOut, Finset.notMem_empty, iff_false]
   intro h
-  have := (lt_of_depStep h).2
+  have := (depStep_lt h).2
   omega
 
 end DepOut
@@ -191,7 +175,7 @@ dependency steps of the work walks of `τ₀` before `T`, the data `c, A, a` of 
 and the position read by each step `t < T`. -/
 noncomputable def net : LinNet F L m where
   out := depOut τ₀.work T
-  out_lt _ _ hs := (lt_of_depStep (mem_depOut.mp hs)).1
+  out_lt _ _ hs := (depStep_lt (mem_depOut.mp hs)).1
   c := P.c
   A := P.A
   a := P.a
@@ -227,7 +211,7 @@ theorem val_eq_enc (w : Fin L → Bool) :
     rw [P.net.val_eq, P.recursion w t ht, P.net_inp_of_lt _ ht]
     congr 2
     refine Finset.sum_congr rfl fun s hs => ?_
-    have hst := (lt_of_depStep (mem_depOut.mp hs)).1
+    have hst := (depStep_lt (mem_depOut.mp hs)).1
     rw [ih s hst (hst.trans ht)]
     rfl
 
@@ -387,32 +371,6 @@ def LinCruxOn (F : Type*) [Field F] (B : ℕ → ℕ → Prop) (k : ℕ) (C : �
 abbrev LinCrux (F : Type*) [Field F] (k : ℕ) (C : ℝ) (β D : ℕ) (ρ : ℝ) : Prop :=
   LinCruxOn F (fun d b => b = entryBits d) k C β D ρ
 
-/-- The class `S_ball` for machines that are oblivious only up to a horizon: the ball systems of
-the traces `τ₀` followed by all inputs of length `L` before a horizon `T ≤ C (L + 1)`, before
-which `τ₀` appends exactly `L` bits. It contains `SBall` (`sBall_subset_sBallH`). -/
-def SBallH (k : ℕ) (C : ℝ) (β D d b : ℕ) : Set (Fin (d * d * b) → Finset (Fin (d * d * b))) :=
-  {I | ∃ (M : TM) (τ₀ : Trace M.k) (T : ℕ), M.k = k ∧ valueWidth M ≤ β ∧
-    FollowsTrace M (d * d * b) τ₀ T ∧ (T : ℝ) ≤ C * ((d * d * b : ℕ) + 1) ∧
-    (appendList τ₀ T).length = d * d * b ∧ I = ballSystem τ₀ T D d b}
-
-/-- The linear crux for the horizon class `SBallH`. -/
-def LinCruxOnH (F : Type*) [Field F] (B : ℕ → ℕ → Prop) (k : ℕ) (C : ℝ) (β D : ℕ) (ρ : ℝ) :
-    Prop :=
-  ∀ η : ℝ, 0 < η → ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ b, B d b → ∀ I ∈ SBallH k C β D d b,
-    (ρ - η) * (d * d * b : ℕ) ≤ (minrank F (tposOf d b) I : ℝ)
-
-theorem sBall_subset_sBallH (k : ℕ) (C : ℝ) (β D d b : ℕ) :
-    SBall k C β D d b ⊆ SBallH k C β D d b := by
-  rintro I ⟨M, T, hk, hβ, hobl, hT, hlen, rfl⟩
-  exact ⟨M, traceAt M (d * d * b), T, hk, hβ, followsTrace_of_obliviousOn hobl _, hT, hlen, rfl⟩
-
-/-- The linear crux for the horizon class implies the linear crux. -/
-theorem LinCruxOnH.linCruxOn {F : Type*} [Field F] {B : ℕ → ℕ → Prop} {k : ℕ} {C : ℝ}
-    {β D : ℕ} {ρ : ℝ} (h : LinCruxOnH F B k C β D ρ) : LinCruxOn F B k C β D ρ := by
-  intro η hη
-  obtain ⟨d₀, hd₀⟩ := h η hη
-  exact ⟨d₀, fun d hd b hb I hI => hd₀ d hd b hb I (sBall_subset_sBallH k C β D d b hI)⟩
-
 /-- **The linear crux is antitone in the radius**: the crux at radius `D'` implies it at every
 radius `D ≤ D'`, since the balls grow with the radius. -/
 theorem LinCruxOn.mono_radius {F : Type*} [Field F] {B : ℕ → ℕ → Prop} {k : ℕ} {C : ℝ}
@@ -522,28 +480,16 @@ def FormationDepthLE (P : LinDataPath F M L τ₀ T m) (hm : 0 < m) (V : ℕ) (�
     π.countP (DeepFormation (coordNet P.net hm)
       fun u v => DeepStep τ₀.work T V (u / m) (v / m)) ≤ s
 
-/-- **Lemma 3.11 for the coordinate DAG**: the lineage assignment of the copies is a lineage
+/-- **Lemma 3.12 for the coordinate DAG**: the lineage assignment of the copies is a lineage
 assignment for every genie, and its merge depth is at most the formation depth. -/
 theorem copy_lineage (P : LinDataPath F M L τ₀ T m) (hm : 0 < m) (V : ℕ) (ΓF : Finset ℕ) :
     P.IsLineage hm V ΓF (copyForest (coordNet P.net hm)) ∧
       ∀ s ℓ, P.FormationDepthLE hm V ΓF s ℓ →
         P.MergeDepthLE hm V ΓF (copyForest (coordNet P.net hm)) s ℓ := by
   classical
-  set cn := coordNet P.net hm
-  have hlin : ∀ u v, (copyForest cn).nxt u = some v → v ∈ cn.out u := fun u v h => by
-    rw [(isCopy_of_copyForest h).2]
-    exact mem_singleton_self v
-  have hcopy : ∀ u, IsCopy cn u → (copyForest cn).nxt u ≠ none := fun u hc => by
-    obtain ⟨w, hw⟩ := card_eq_one.mp hc.1
-    rw [copyForest_nxt_of_copy hc (show w ∈ cn.out u by rw [hw]; exact mem_singleton_self w)]
-    simp
-  refine ⟨fun u v v' π hn hne hπ _ => ?_, fun s ℓ hF i hi π hπ hfree => ?_⟩
-  · exfalso
-    obtain ⟨hv', -⟩ := cons_cons_mem_paths.mp hπ
-    rw [(isCopy_of_copyForest hn).2, mem_singleton] at hv'
-    exact hne hv'
-  · exact (dm_le_countP_deepFormation cn _ (copyForest cn) hlin hcopy hπ).trans
-      (hF i hi π hπ hfree)
+  have hcf := copyForest_lineage (coordNet P.net hm) fun u v => DeepStep τ₀.work T V (u / m) (v / m)
+  exact ⟨fun u v v' π hn hne hπ _ => absurd hπ (hcf.1 u v v' π hn hne),
+    fun s ℓ hF i hi π hπ hfree => (hcf.2 hπ).trans (hF i hi π hπ hfree)⟩
 
 end LinDataPath
 
@@ -619,7 +565,7 @@ def FormationShallow (F : Type*) [Field F] (M : TM) (L : ℕ) (τ₀ : Trace M.k
     ∀ hm : 0 < m', ∃ X : Finset (Fin L), (X.card : ℝ) ≤ η * L ∧
       ∀ ℓ ∉ X, P.FormationDepthLE hm V ΓF s ℓ
 
-/-- Bounded formation depth implies bounded merge depth (Lemma 3.11, with the lineage assignment
+/-- Bounded formation depth implies bounded merge depth (Lemma 3.12, with the lineage assignment
 of the copies). -/
 theorem FormationShallow.mergeShallow {L : ℕ} {τ₀ : Trace M.k} {T m V β : ℕ} {ε : ℝ} {D s : ℕ}
     {η : ℝ} (h : FormationShallow F M L τ₀ T m V β ε D s η) :
@@ -664,17 +610,6 @@ theorem not_mergeShallow (hM : ObliviousTransposer M d b τ₀ T) {C : ℝ}
       _ ≤ m * (M.k * C * ((d * d * b : ℕ) + 1)) := mul_le_mul_of_nonneg_right hm'' hkC
       _ = m * M.k * C * ((d * d * b : ℕ) + 1) := by ring
   linarith
-
-/-- **Corollary HC at one size, formation depth.** -/
-theorem not_formationShallow (hM : ObliviousTransposer M d b τ₀ T) {C : ℝ}
-    (hT : (T : ℝ) ≤ C * ((d * d * b : ℕ) + 1)) (hL : 1 ≤ d * d * b) {V β s τ D : ℕ}
-    (hβ : valueWidth M ≤ β) (hτ : 1 ≤ τ) {ε η ρ' : ℝ}
-    (hcrux : ρ' * (d * d * b : ℕ) ≤
-      (minrank F (tposOf d b) (ballSystem τ₀ T ((s + 1) * τ * D) d b) : ℝ))
-    (hgap : ε * (d * d * b : ℕ) + m * M.k * C * ((d * d * b : ℕ) + 1) / τ + η * (d * d * b : ℕ) <
-      ρ' * (d * d * b : ℕ)) :
-    ¬ FormationShallow F M (d * d * b) τ₀ T m V β ε D s η :=
-  fun h => not_mergeShallow hM hT hL hβ hτ hcrux hgap h.mergeShallow
 
 end OneSize
 
@@ -744,7 +679,7 @@ theorem hc_threshold {B : ℕ → ℕ → Prop} (hB : ∀ d b, B d b → 1 ≤ b
   nlinarith
 
 /-- **Corollary HC, general form, frozen model.** Let `B` be a set of sizes `(d, b)` with `b ≥ 1`
-(the paper: `b = b(d)`), `τ ≥ 1` and `D` integers, and `ε + η + m k C/τ < ρ`. If
+(Corollary HC: `b = b(d)`), `τ ≥ 1` and `D` integers, and `ε + η + m k C/τ < ρ`. If
 `LinCrux_F(S_ball_{k,C,β,(s+1)τD}, ρ)` holds at the sizes `B`, there is `d₀` such that at no size
 `(d, b) ∈ B` with `d ≥ d₀` does a machine `M` with `k` work tapes and value width at most `β`
 satisfy both (i) (oblivious at length `L = d² b` with halting time `T ≤ C (L + 1)`, transposing all
@@ -768,50 +703,6 @@ theorem cor_HC_gen (F : Type*) [Field F] {B : ℕ → ℕ → Prop} (hB : ∀ d 
   subst hk
   exact not_mergeShallow hM hT hL hβ hτ hcr hgap' hII
 
-/-- **Corollary HC with formation depth, general form, frozen model.** -/
-theorem cor_HC_gen_formation (F : Type*) [Field F] {B : ℕ → ℕ → Prop}
-    (hB : ∀ d b, B d b → 1 ≤ b) {k m V β s τ D : ℕ} {C ε ρ η : ℝ} (hτ : 1 ≤ τ)
-    (hgap : ε + η + m * k * C / τ < ρ) (hcrux : LinCruxOn F B k C β ((s + 1) * τ * D) ρ) :
-    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ b, B d b → ∀ M : TM, M.k = k → valueWidth M ≤ β → ∀ T : ℕ,
-      ¬ (ObliviousLinTime M d b C T ∧
-        FormationShallow F M (d * d * b) (traceAt M (d * d * b)) T m V β ε D s η) := by
-  obtain ⟨d₀, hd₀⟩ := cor_HC_gen F hB (V := V) hτ hgap hcrux
-  exact ⟨d₀, fun d hd b hb M hk hβ T h => hd₀ d hd b hb M hk hβ T ⟨h.1, h.2.mergeShallow⟩⟩
-
-/-- **Corollary HC, general form, for machines oblivious up to a horizon.** As `cor_HC_gen`, for an
-oblivious transposer along any trace `τ₀` before a horizon `T ≤ C (L + 1)` (the machine need only
-follow `τ₀` up to `T`, for instance its last output step), given the linear crux for the
-corresponding class `SBallH`. -/
-theorem cor_HC_gen_horizon (F : Type*) [Field F] {B : ℕ → ℕ → Prop} (hB : ∀ d b, B d b → 1 ≤ b)
-    {k m V β s τ D : ℕ} {C ε ρ η : ℝ} (hτ : 1 ≤ τ) (hgap : ε + η + m * k * C / τ < ρ)
-    (hcrux : LinCruxOnH F B k C β ((s + 1) * τ * D) ρ) :
-    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ b, B d b → ∀ M : TM, M.k = k → valueWidth M ≤ β →
-      ∀ (τ₀ : Trace M.k) (T : ℕ), ObliviousTransposer M d b τ₀ T →
-        (T : ℝ) ≤ C * ((d * d * b : ℕ) + 1) →
-        ¬ MergeShallow F M (d * d * b) τ₀ T m V β ε D s η := by
-  obtain ⟨d₁, hd₁⟩ := hcrux ((ρ - (ε + η + m * k * C / τ)) / 2) (by linarith)
-  obtain ⟨d₀, hd₀₁, hd₀⟩ := hc_threshold hB hgap d₁
-  refine ⟨d₀, fun d hd b hb M hk hβ τ₀ T hM hT hII => ?_⟩
-  obtain ⟨hL, hgap'⟩ := hd₀ d hd b hb
-  have hlen := (prefix_output hM.appends (hM.follows fun _ => false)
-    (hM.transposes fun _ => false)).1
-  have hcr := hd₁ d (hd₀₁.trans hd) b hb _ (show ballSystem τ₀ T ((s + 1) * τ * D) d b ∈
-    SBallH k C β ((s + 1) * τ * D) d b from ⟨M, τ₀, T, hk, hβ, hM.follows, hT, hlen, rfl⟩)
-  subst hk
-  exact not_mergeShallow hM hT hL hβ hτ hcr hgap' hII
-
-/-- **Corollary HC with formation depth, for machines oblivious up to a horizon.** -/
-theorem cor_HC_gen_horizon_formation (F : Type*) [Field F] {B : ℕ → ℕ → Prop}
-    (hB : ∀ d b, B d b → 1 ≤ b) {k m V β s τ D : ℕ} {C ε ρ η : ℝ} (hτ : 1 ≤ τ)
-    (hgap : ε + η + m * k * C / τ < ρ) (hcrux : LinCruxOnH F B k C β ((s + 1) * τ * D) ρ) :
-    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ b, B d b → ∀ M : TM, M.k = k → valueWidth M ≤ β →
-      ∀ (τ₀ : Trace M.k) (T : ℕ), ObliviousTransposer M d b τ₀ T →
-        (T : ℝ) ≤ C * ((d * d * b : ℕ) + 1) →
-        ¬ FormationShallow F M (d * d * b) τ₀ T m V β ε D s η := by
-  obtain ⟨d₀, hd₀⟩ := cor_HC_gen_horizon F hB (V := V) hτ hgap hcrux
-  exact ⟨d₀, fun d hd b hb M hk hβ τ₀ T hM hT h =>
-    hd₀ d hd b hb M hk hβ τ₀ T hM hT h.mergeShallow⟩
-
 /-! ### The parameters of the paper -/
 
 /-- `τ = ⌈8 m k C / (ρ - ε)⌉`, the checkpoint spacing of Corollary HC. -/
@@ -831,7 +722,7 @@ theorem one_le_hcTau {m k : ℕ} {C ε ρ : ℝ} (hk : 1 ≤ k) (hm : 1 ≤ m) (
   positivity
 
 /-- With the paper's `τ = ⌈8mkC/(ρ - ε)⌉`, the gap condition `ε + η + m k C/τ < ρ` holds for every
-`η < 7 (ρ - ε)/8` (the paper assumes `η < (ρ - ε)/8`). -/
+`η < 7 (ρ - ε)/8` (Corollary HC assumes `η < (ρ - ε)/8`). -/
 theorem hcTau_gap {m k : ℕ} {C ε ρ η : ℝ} (hk : 1 ≤ k) (hm : 1 ≤ m) (hC : 0 < C) (hερ : ε < ρ)
     (hη : η < 7 * (ρ - ε) / 8) : ε + η + m * k * C / hcTau m k C ε ρ < ρ := by
   have hτ' : (0 : ℝ) < hcTau m k C ε ρ := by exact_mod_cast one_le_hcTau hk hm hC hερ
@@ -847,7 +738,7 @@ theorem hcTau_gap {m k : ℕ} {C ε ρ η : ℝ} (hk : 1 ≤ k) (hm : 1 ≤ m) (
 `ε < ρ`, `τ = ⌈8mkC/(ρ - ε)⌉`, `D = DF(k, 2V - 1, ε/(4βC)) ⌈4βC/ε⌉` and `r = (s + 1) τ D`. If
 `LinCrux_F(S_ball_{k,C,β,r}, ρ)` holds, there is `d₀` such that for every `d ≥ d₀` and every machine
 `M` with `k` work tapes and value width at most `β`, conditions (i) and (ii) do not hold together at
-`L = d² b(d)`. This needs only `η < 7 (ρ - ε)/8` (the paper: `0 ≤ η < (ρ - ε)/8`). -/
+`L = d² b(d)`. This needs only `η < 7 (ρ - ε)/8` (Corollary HC: `0 ≤ η < (ρ - ε)/8`). -/
 theorem cor_HC_uniform (F : Type*) [Field F] {k m V β s : ℕ} {C ε ρ η : ℝ} (hk : 1 ≤ k)
     (hm : 1 ≤ m) (hC : 0 < C) (hερ : ε < ρ) (hη : η < 7 * (ρ - ε) / 8)
     (hcrux : LinCrux F k C β ((s + 1) * hcTau m k C ε ρ * coldDepth k V β C ε) ρ) :

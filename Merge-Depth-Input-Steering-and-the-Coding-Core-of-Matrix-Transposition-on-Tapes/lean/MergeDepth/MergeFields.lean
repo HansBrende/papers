@@ -2,10 +2,10 @@ import MergeDepth.MergeDag
 import MergeDepth.HopFields
 
 /-!
-# Proposition 3.20(b): code-level depth reduction for all codes
+# Proposition 3.21(b): code-level depth reduction for all codes
 
 For a function DAG refining the dependency DAG (as in Theorem HC′(b)), let `Q` be the checkpoints of
-Lemma 3.9. If `Z` meets every path of the merge DAG with `s + 1` vertices whose first vertex is
+Lemma 3.10. If `Z` meets every path of the merge DAG with `s + 1` vertices whose first vertex is
 initial, then revealing the steps of the cold genie, the vertices of `Q` and those of `Z` is an
 index code, with at most `β |ΓF| + β |Q| + β |Z|` bits, for a system contained in the balls of
 radius `(s + 1) τ D` around the output steps (`merge_reduction_fields`).
@@ -18,7 +18,7 @@ open Finset BoundedNesting
 variable {L k : ℕ}
 
 open Classical in
-/-- **Proposition 3.20(b)** for a refinement of the dependency DAG. -/
+/-- **Proposition 3.21(b)** for a refinement of the dependency DAG. -/
 theorem merge_reduction_fields (G : FunDag L) (st : ℕ → ℕ) (nodesAt : ℕ → Finset ℕ) {m : ℕ}
     (hnodes : ∀ u t, u ∈ nodesAt t ↔ st u = t) (hwidth : ∀ t, (nodesAt t).card ≤ m)
     (xs : Fin k → ℕ → ℤ) {T V β : ℕ} (hedge : ∀ u, ∀ v ∈ G.out u, DepStep xs T (st u) (st v))
@@ -77,7 +77,7 @@ theorem merge_reduction_fields (G : FunDag L) (st : ℕ → ℕ) (nodesAt : ℕ 
   obtain ⟨Q, -, hQ, hcov⟩ := covering lin M hτ
   refine ⟨Q, hQ.trans hMcard, fun Z s hZ => ?_⟩
   refine ⟨fun ℓ => if ℓ ∈ (∅ : Finset (Fin L)) ∨ o ℓ ∈ Γ' ∪ Q ∪ Z then ∅
-      else G.coneSet (Γ' ∪ Q ∪ Z) (o ℓ), ?_, ?_, ?_⟩
+      else coneI G.net (Γ' ∪ Q ∪ Z) (o ℓ), ?_, ?_, ?_⟩
   · refine G.isIndexCode_of _ (Γ' ∪ Q ∪ Z) ∅ o tpos dec hdec fun w w' hE => ?_
     simp only [Prod.mk.injEq] at hE
     obtain ⟨h1, h2, h3⟩ := hE
@@ -97,7 +97,7 @@ theorem merge_reduction_fields (G : FunDag L) (st : ℕ → ℕ) (nodesAt : ℕ 
       have hoZ : o ℓ ∉ Z := fun h => ho (mem_union_right _ h)
       have hoO : o ℓ ∈ (univ.image o).filter (· ∉ Γ' ∪ Q) :=
         mem_filter.mpr ⟨mem_image_of_mem o (mem_univ ℓ), fun h => ho (mem_union_left _ h)⟩
-      simp only [FunDag.coneSet, mem_filter, mem_univ, true_and] at hj
+      simp only [coneI, mem_filter, mem_univ, true_and] at hj
       obtain ⟨π, hπ, hfree, hrdj⟩ := hj
       have hlen := length_le_of_cut G.net Rc lin _ Γ' D hcold' hside M hM hτ Q hcov
         hZ hoO hoZ hπ hfree

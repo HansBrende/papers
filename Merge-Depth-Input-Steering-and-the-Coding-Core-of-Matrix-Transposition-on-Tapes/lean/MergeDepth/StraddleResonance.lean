@@ -10,7 +10,7 @@ import MergeDepth.StraddleFourier
   multiply to `1/2`, and the tail is controlled by `∏ cos² ≥ 1 - ∑ y²` and the closed form of
   `∑_{j ≥ 4} j² 4^{-j}` (`sum_tail_eq`).
 * `fineFloor_resonance_gt`: `F(2^q - q + 2, q + 2) > 0.585` for every `q ≥ 6`.
-* `resonance_class`: **Proposition 7.13** with `0.585`; `resonance_class_paper`: with `0.551`.
+* `resonance_class`: **Proposition 7.13**.
 -/
 
 namespace MergeDepth
@@ -174,11 +174,6 @@ theorem prod_resFactor_one_five : ∏ e ∈ Icc 1 5, resFactor e = 1 / 2 := by
   rw [show Icc 1 5 = {1, 2, 3, 4, 5} by rfl]
   simp [h1, h2, h3, h4, h5]
 
-theorem resFactor_nonneg (e : ℕ) : 0 ≤ resFactor e := sq_nonneg _
-
-theorem resFactor_le_one (e : ℕ) : resFactor e ≤ 1 := by
-  unfold resFactor; rw [sq_le_one_iff_abs_le_one]; exact abs_cos_le_one _
-
 theorem resFactor_six : resFactor 6 = cos (π / 16) ^ 2 := by
   unfold resFactor
   rw [show π * (4 * (5 - ((6 : ℕ) : ℝ)) / 2 ^ 6) = -(π / 16) by norm_num; ring, cos_neg]
@@ -336,9 +331,9 @@ theorem fineFloor_resonance_gt {q : ℕ} (hq : 6 ≤ q) :
   rw [e] at h2
   linarith
 
-/-- **Proposition 7.13** (with the constant `0.585` in place of `0.551`). Let `a = 1`, `q ≥ 6`
-even, `k ≥ 1` with `3k ≤ 2^q + 4`, and `m = 2^q + k + 3`. Then `k ∈ 𝒦`, `κ_1(k) = k + q + 2`,
-`n_{κ_1(k)} = 2^q - q + 2`, and `V^{(1)}_k ≥ F_k > 0.585`. -/
+/-- **Proposition 7.13.** Let `a = 1`, `q ≥ 6` even, `k ≥ 1` with `3k ≤ 2^q + 4`, and
+`m = 2^q + k + 3`. Then `k ∈ 𝒦`, `κ_1(k) = k + q + 2`, `n_{κ_1(k)} = 2^q - q + 2`, and
+`V^{(1)}_k ≥ F_k > 0.585`. -/
 theorem resonance_class {q k : ℕ} (hq : 6 ≤ q) (hqe : Even q) (hk : 1 ≤ k)
     (hk3 : 3 * k ≤ 2 ^ q + 4) :
     k ∈ coarseZone (2 ^ q + k + 3) ∧
@@ -355,17 +350,5 @@ theorem resonance_class {q k : ℕ} (hq : 6 ≤ q) (hqe : Even q) (hk : 1 ≤ k)
       show 2 ^ q + k + 3 - (k + q + 2) + 1 = 2 ^ q - q + 2 by omega,
       show k + q + 2 - k = q + 2 by omega]
     exact fineFloor_resonance_gt hq
-
-/-- **Proposition 7.13** as stated: `V^{(1)}_k ≥ F_k > 0.551`. -/
-theorem resonance_class_paper {q k : ℕ} (hq : 6 ≤ q) (hqe : Even q) (hk : 1 ≤ k)
-    (hk3 : 3 * k ≤ 2 ^ q + 4) :
-    k ∈ coarseZone (2 ^ q + k + 3) ∧
-    cancellerBelow (2 ^ q + k + 3) 1 k = k + q + 2 ∧
-    (2 ^ q + k + 3) - cancellerBelow (2 ^ q + k + 3) 1 k + 1 = 2 ^ q - q + 2 ∧
-    fineFloorK (2 ^ q + k + 3) k (cancellerBelow (2 ^ q + k + 3) 1 k) ≤
-      relVarianceA (2 ^ q + k + 3) 1 k ∧
-    (0.551 : ℝ) < fineFloorK (2 ^ q + k + 3) k (cancellerBelow (2 ^ q + k + 3) 1 k) := by
-  obtain ⟨h1, h2, h3, h4, h5⟩ := resonance_class hq hqe hk hk3
-  exact ⟨h1, h2, h3, h4, by linarith⟩
 
 end MergeDepth

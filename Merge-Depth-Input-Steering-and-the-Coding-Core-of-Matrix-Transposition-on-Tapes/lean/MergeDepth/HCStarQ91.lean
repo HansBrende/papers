@@ -5,18 +5,18 @@ import MergeDepth.FieldMachine
 # Corollary HC* at all sizes, given binary [Q9.1]
 
 `cor_HCstar_pruning` (Corollary HC* at one size for the field DAG of a pruning of an oblivious
-transposer) assumes the conclusion of Lemma 3.14(b) at the size in question (`hballs`). Here that
+transposer) assumes the conclusion of Lemma 3.15(b) at the size in question (`hballs`). Here that
 hypothesis is discharged by `ball_rate_binary`, for the head walks of the oblivious schedule:
 
 * `traceWalks τ₀`: the input head `τ₀.input`, the append count `appendCount τ₀` (the number of
   appends before each time) and the work heads `τ₀.work`. `appendCount_isWalk`, and
   `appendCount_appendTime`: the count before the `r`-th append time is `r`.
-* `trace_ball_data`: the walk hypotheses of Lemma 3.14 hold for the head walks of any trace that
+* `trace_ball_data`: the walk hypotheses of Lemma 3.15 hold for the head walks of any trace that
   appends at least `L` bits before `T` (no obliviousness or correctness needed);
-  `ball_paired_packing_trace`, `ball_self_demands_trace`: Lemma 3.14(a) for traces, and
-  `ball_rate_trace`: Lemma 3.14(b) for traces as stated (all alphabets, from [Q9.1]), without walk
+  `ball_paired_packing_trace`, `ball_self_demands_trace`: Lemma 3.15(a) for traces, and
+  `ball_rate_trace`: Lemma 3.15(b) for traces as stated (all alphabets, from [Q9.1]), without walk
   hypotheses.
-* `hballs_of_obliviousTransposer`: Lemma 3.14(b) in the form of `hballs`, for all `d ≥ d₁`, every
+* `hballs_of_obliviousTransposer`: Lemma 3.15(b) in the form of `hballs`, for all `d ≥ d₁`, every
   width `b ≥ 1` and every oblivious transposer with `T ≤ C (L + 1)`.
 * `cor_HCstar_uniform`: **Corollary HC\*** for field DAGs of prunings: given binary [Q9.1], for
   `V`, `β`, `C`, `D`, `s`, `τ` and `ε, η` with `γ = 1/2 - ε - η > 0` and `4 β (k + 2) k C ≤ γ τ`
@@ -28,7 +28,8 @@ hypothesis is discharged by `ball_rate_binary`, for the head walks of the oblivi
 * `cor_HCstar_uniform_empty`: the last sentence of Corollary HC* (empty genie).
 
 The two encodings of the transposition permutation, `Transpose.Tape.tpos` (frozen model, used by
-`tposOf`) and `MergeDepth.tpos` (transport lemmas), agree: `tape_tpos_eq`.
+`tposOf`) and `MergeDepth.tpos` (transport lemmas), agree (`tape_tpos_eq`, in
+`MergeDepth/SkeletonPaired.lean`).
 -/
 
 namespace MergeDepth
@@ -37,10 +38,6 @@ open Finset Filter BoundedNesting DirectedRecovery MotionDepthCodes Transpose
 
 set_option autoImplicit false
 
-/-- The two encodings of the transposition permutation agree. -/
-theorem tape_tpos_eq (d b p : ℕ) : Transpose.Tape.tpos d b p = MergeDepth.tpos d b p := by
-  unfold Transpose.Tape.tpos MergeDepth.tpos
-  rw [Nat.mod_mul_left_div_self, Nat.div_div_eq_div_mul, Nat.mul_comm b d]
 
 /-! ### The append count of a trace -/
 
@@ -127,7 +124,7 @@ theorem traceWalks_isWalk {k : ℕ} (τ₀ : Trace k) : ∀ c, IsWalk (traceWalk
 
 /-- **The walk facts of a trace.** For a trace `τ₀` (of any machine with `k` work tapes) that
 appends at least `L = d² b` bits before `T`, the head walks of the trace (`traceWalks`) satisfy the
-hypotheses of Lemma 3.14 on the walks of the machine: the input head reads the position under it
+hypotheses of Lemma 3.15 on the walks of the machine: the input head reads the position under it
 (`readPos`), output position `tpos q` is appended at a step `< T` at which the append count is
 `tpos q`, and the balls around the output steps are those of the work walks. Neither obliviousness
 nor correctness is needed. -/
@@ -149,7 +146,7 @@ theorem trace_ball_data {k d b : ℕ} (hb : 1 ≤ b) {τ₀ : Trace k} {T : ℕ}
     rfl
 
 open Classical in
-/-- **Lemma 3.14(a) for a trace** (in particular, for oblivious machines in the frozen model):
+/-- **Lemma 3.15(a) for a trace** (in particular, for oblivious machines in the frozen model):
 Theorem 3.3 of the fifth paper for relations inside the balls `B^{D'}` around the output steps of a
 trace `τ₀` that appends at least `L` bits before `T ≤ c (L + 1)`, with the walk hypotheses of
 `ball_paired_packing` discharged. -/
@@ -168,7 +165,7 @@ theorem ball_paired_packing_trace {k d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {�
     (appendTime τ₀ T) htout N (fun q => hball D' q ▸ hN q) hc hT Q r Δ hdeg
 
 open Classical in
-/-- **Lemma 3.14(a), self-demands, for a trace**: at most `(2 c K (k + 2)(k + 3) + 3) L/log₂ d`
+/-- **Lemma 3.15(a), self-demands, for a trace**: at most `(2 c K (k + 2)(k + 3) + 3) L/log₂ d`
 positions `p` satisfy `p ∈ N(p)`. -/
 theorem ball_self_demands_trace {k d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {τ₀ : Trace k}
     {T D' : ℕ} (happ : d * d * b ≤ (appendList τ₀ T).length) {c : ℝ} (hc : 0 ≤ c)
@@ -183,7 +180,7 @@ theorem ball_self_demands_trace {k d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b) {τ�
     (appendTime τ₀ T) htout N (fun q => hball D' q ▸ hN q) hc hT
 
 open Classical in
-/-- **Lemma 3.14(b) for a trace, as stated (every finite alphabet), given [Q9.1].** For `k`, `D'`,
+/-- **Lemma 3.15(b) for a trace, as stated (every finite alphabet), given [Q9.1].** For `k`, `D'`,
 `c ≥ 0` and `δ > 0` there is `d₁`, depending only on `k`, `D'`, `c` and `δ`, such that for
 `d ≥ d₁`, every width `b ≥ 1` and every trace `τ₀` with `k` work heads that appends at least `L`
 bits before `T ≤ c (L + 1)`, every storage code over a finite alphabet `𝒜` with `|𝒜| ≥ 2` for a
@@ -203,7 +200,7 @@ theorem ball_rate_trace (hQ : Q91) (k D' : ℕ) {c δ : ℝ} (hc : 0 ≤ c) (hδ
     (appendTime τ₀ T) htout hT N (fun q => hball D' q ▸ hN q) A hA C hC
 
 open Classical in
-/-- **Lemma 3.14(b) in the form of the hypothesis `hballs` of `cor_HCstar_pruning`.** Given binary
+/-- **Lemma 3.15(b) in the form of the hypothesis `hballs` of `cor_HCstar_pruning`.** Given binary
 [Q9.1], for `k`, a radius `r`, `C` and `δ > 0` there is `d₁` such that for `d ≥ d₁`, every width
 `b ≥ 1` and every oblivious transposer `M` with `k` work tapes and `T ≤ C (L + 1)`, every binary
 storage code for a relation inside the balls of radius `r` around the output steps has at most

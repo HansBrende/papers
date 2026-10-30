@@ -1,4 +1,5 @@
 import MergeDepth.EMSimulation
+import MergeDepth.Traces
 
 /-!
 # Theorem EM and Corollary EM
@@ -196,11 +197,6 @@ end Counting
 
 /-! ## Theorem EM -/
 
-/-- `M` transposes at dimension `d` within `c (L + 1)` steps, `L = d² b(d)`: on the encoding of
-every matrix it halts within `⌊c (L + 1)⌋` steps with the encoding of the transpose. -/
-def TransposesAt (M : TM) (c : ℝ) (d : ℕ) : Prop :=
-  ∀ X : Transpose.Matrix, ComputesWithin M (encode d (entryBits d) X)
-    (encode d (entryBits d) (transpose X)) ⌊c * ((inputLength d : ℝ) + 1)⌋₊
 
 /-- The I/O constant `c₁ = 4(k + 1)c + 2`. -/
 noncomputable def emC1 (k : ℕ) (c : ℝ) : ℝ := 4 * (k + 1) * c + 2
@@ -386,11 +382,20 @@ theorem div_le_two_mul {c : ℝ} (hc : 0 ≤ c) {d B T₀ : ℕ} (hd : 1 ≤ d) 
   have := div_le_mul_add hc hB hT
   nlinarith
 
+/-- The time bound `T₀ = ⌊c (L + 1)⌋` in the form of `div_le_mul_add`: `T₀ ≤ c (d B + 1)` for the
+block size `B = d b(d)`. -/
+theorem floor_le_mul_block {c : ℝ} (hc : 0 ≤ c) (d : ℕ) :
+    (⌊c * ((inputLength d : ℝ) + 1)⌋₊ : ℝ) ≤ c * (d * (d * entryBits d : ℕ) + 1) := by
+  have := Nat.floor_le (show 0 ≤ c * ((inputLength d : ℝ) + 1) by positivity)
+  have e : (inputLength d : ℝ) = d * ((d * entryBits d : ℕ) : ℝ) := by
+    simp only [inputLength, Nat.mul_assoc]; push_cast; ring
+  exact this.trans (le_of_eq (by rw [e]))
+
 /-- **Theorem EM, real form**, for any real `s` bounding the number `⌊T₀/B⌋` of shifts per tape,
 `T₀ = ⌊c (L + 1)⌋`: at most `1 + (2k + 1)s + d` I/Os, and obliviousness on at least
 `2^(L - ((k + 1)s + d) log₂(2k + 4))` input words. -/
 theorem theoremEM_real (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d)
-    (hM : TransposesAt M c d) {s : ℝ}
+    (hM : TransposesAt M d c) {s : ℝ}
     (hs : ((⌊c * ((inputLength d : ℝ) + 1)⌋₊ / (d * entryBits d) : ℕ) : ℝ) ≤ s) :
     ∃ (r : ℕ) (A : Alg (Sym M) (d * entryBits d) (2 * M.k + 3) r),
       (r : ℝ) ≤ emGamma M.k M.q c * Real.logb 2 (2 * inputLength d) ∧
@@ -401,10 +406,11 @@ theorem theoremEM_real (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d
         (2 : ℝ) ^ ((inputLength d : ℝ) - ((M.k + 1) * s + d) * Real.logb 2 (2 * M.k + 4)) ≤
           C.card ∧
         ObliviousOn A (symAlph M) d C := by
-  obtain ⟨hcorr, C, hClen, hCcard, hobl⟩ := theoremEM_nat M hd hM
+  obtain ⟨hcorr, C, hClen, hCcard, hobl⟩ :=
+    theoremEM_nat M (T₀ := ⌊c * ((inputLength d : ℝ) + 1)⌋₊) hd hM
   set T₀ := ⌊c * ((inputLength d : ℝ) + 1)⌋₊ with hT₀_def
   set B := d * entryBits d with hB_def
-  have hb : 1 ≤ entryBits d := Nat.succ_le_succ (Nat.zero_le _)
+  have hb := one_le_entryBits d
   have hB : 1 ≤ B := by simpa using Nat.mul_le_mul hd hb
   have hLB : inputLength d = d * B := by simp only [inputLength, hB_def, Nat.mul_assoc]
   have hL : 1 ≤ inputLength d := by rw [hLB]; simpa using Nat.mul_le_mul hd hB
@@ -445,7 +451,7 @@ theorem theoremEM_real (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d
 `c ≥ 0`. Then there is an external-memory algorithm over `Σ_M` with block size `d b(d)`, `2k + 3`
 slots and a register of at most `γ log₂(2L)` bits that (i) is correct on every input, with at most
 `c₁ d` I/Os, and (ii) is oblivious on a set of at least `2^(L - c₂ d)` input words. -/
-theorem theoremEM (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d) (hM : TransposesAt M c d) :
+theorem theoremEM (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d) (hM : TransposesAt M d c) :
     ∃ (r : ℕ) (A : Alg (Sym M) (d * entryBits d) (2 * M.k + 3) r),
       (r : ℝ) ≤ emGamma M.k M.q c * Real.logb 2 (2 * inputLength d) ∧
       (∀ X : Transpose.Matrix, ∃ ios,
@@ -454,13 +460,8 @@ theorem theoremEM (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d) (hM
       ∃ C : Finset (List Bool), (∀ w ∈ C, w.length = inputLength d) ∧
         (2 : ℝ) ^ ((inputLength d : ℝ) - emC2 M.k c * d) ≤ C.card ∧
         ObliviousOn A (symAlph M) d C := by
-  have hb : 1 ≤ entryBits d := Nat.succ_le_succ (Nat.zero_le _)
-  have hB : 1 ≤ d * entryBits d := by simpa using Nat.mul_le_mul hd hb
-  have hT : (⌊c * ((inputLength d : ℝ) + 1)⌋₊ : ℝ) ≤ c * (d * (d * entryBits d : ℕ) + 1) := by
-    have := Nat.floor_le (show 0 ≤ c * ((inputLength d : ℝ) + 1) by positivity)
-    have e : (inputLength d : ℝ) = d * ((d * entryBits d : ℕ) : ℝ) := by
-      simp only [inputLength, Nat.mul_assoc]; push_cast; ring
-    exact this.trans (le_of_eq (by rw [e]))
+  have hB : 1 ≤ d * entryBits d := by simpa using Nat.mul_le_mul hd (one_le_entryBits d)
+  have hT := floor_le_mul_block hc d
   obtain ⟨r, A, hr, hcorr, C, hClen, hCcard, hobl⟩ :=
     theoremEM_real M hc hd hM (div_le_two_mul hc hd hB hT)
   have hd' : (1 : ℝ) ≤ d := by exact_mod_cast hd
@@ -479,7 +480,7 @@ theorem theoremEM (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d) (hM
 obliviousness on at least `2^(L - (((k + 1)c + 1)d + (k + 1)c) log₂(2k + 4))` input words; for
 large `d` this is `c₁ ≈ (2k + 1)c + 1` and `c₂ ≈ ((k + 1)c + 1) log₂(2k + 4)`. -/
 theorem theoremEM_sharp (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ d)
-    (hM : TransposesAt M c d) :
+    (hM : TransposesAt M d c) :
     ∃ (r : ℕ) (A : Alg (Sym M) (d * entryBits d) (2 * M.k + 3) r),
       (r : ℝ) ≤ emGamma M.k M.q c * Real.logb 2 (2 * inputLength d) ∧
       (∀ X : Transpose.Matrix, ∃ ios,
@@ -490,13 +491,8 @@ theorem theoremEM_sharp (M : TM) {c : ℝ} (hc : 0 ≤ c) {d : ℕ} (hd : 1 ≤ 
         (2 : ℝ) ^ ((inputLength d : ℝ) -
           (((M.k + 1) * c + 1) * d + (M.k + 1) * c) * Real.logb 2 (2 * M.k + 4)) ≤ C.card ∧
         ObliviousOn A (symAlph M) d C := by
-  have hb : 1 ≤ entryBits d := Nat.succ_le_succ (Nat.zero_le _)
-  have hB : 1 ≤ d * entryBits d := by simpa using Nat.mul_le_mul hd hb
-  have hT : (⌊c * ((inputLength d : ℝ) + 1)⌋₊ : ℝ) ≤ c * (d * (d * entryBits d : ℕ) + 1) := by
-    have := Nat.floor_le (show 0 ≤ c * ((inputLength d : ℝ) + 1) by positivity)
-    have e : (inputLength d : ℝ) = d * ((d * entryBits d : ℕ) : ℝ) := by
-      simp only [inputLength, Nat.mul_assoc]; push_cast; ring
-    exact this.trans (le_of_eq (by rw [e]))
+  have hB : 1 ≤ d * entryBits d := by simpa using Nat.mul_le_mul hd (one_le_entryBits d)
+  have hT := floor_le_mul_block hc d
   obtain ⟨r, A, hr, hcorr, C, hClen, hCcard, hobl⟩ :=
     theoremEM_real M hc hd hM (div_le_mul_add hc hB hT)
   refine ⟨r, A, hr, fun X => ?_, C, hClen, ?_, hobl⟩
@@ -550,13 +546,8 @@ theorem corollaryEM_some (h : EMLowerBoundSome) : ¬ LinearTimeTransposable := b
   obtain ⟨d, hd, hd₀⟩ := h (Sym M) (symAlph M) (2 * M.k + 3) (emGamma M.k M.q c)
     (max (emC1 M.k c) (emC2 M.k c)) (by omega) (emGamma_nonneg _ _ hc)
     (le_max_of_le_left hc1)
-  have hTA : TransposesAt (c := (c : ℝ)) M d := fun X => by
-    have e : ⌊(c : ℝ) * ((inputLength d : ℝ) + 1)⌋₊ = c * (inputLength d + 1) := by
-      rw [show (c : ℝ) * ((inputLength d : ℝ) + 1) = ((c * (inputLength d + 1) : ℕ) : ℝ) by
-        push_cast; ring, Nat.floor_natCast]
-    rw [e]
-    exact hM d hd X
-  obtain ⟨r, alg, hr, hcorr, C, hClen, hCcard, ios, hios⟩ := theoremEM M hc hd hTA
+  obtain ⟨r, alg, hr, hcorr, C, hClen, hCcard, ios, hios⟩ :=
+    theoremEM M hc hd (transposesAt_of_transposesWithin hM hd)
   have hcard : (2 : ℝ) ^ ((inputLength d : ℝ) - max (emC1 M.k c) (emC2 M.k c) * d) ≤ C.card := by
     refine le_trans (Real.rpow_le_rpow_of_exponent_le (by norm_num) ?_) hCcard
     have : emC2 M.k c * d ≤ max (emC1 M.k c) (emC2 M.k c) * d :=

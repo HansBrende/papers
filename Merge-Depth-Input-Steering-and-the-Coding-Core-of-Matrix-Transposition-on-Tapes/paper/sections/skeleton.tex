@@ -7,45 +7,47 @@ and~6.4]{BoundedNesting2026}. It also observes that this entropy hypothesis is n
 input head with a one-step detour at every~$1$ of the first half of the input makes the trace reveal half the input
 without changing the computation, and a form that survives such padding would bound the entropy of a coarse skeleton of
 the trace instead \cite[Section~6.2]{BoundedNesting2026}. This section supplies that form, Theorem~SE, and draws its
-consequences for heads that enter every cell boundedly often. At large scales the form is not affected by padding of
+consequences for heads that enter every cell boundedly often. At large scales Theorem~SE is not affected by padding of
 bounded entry before the run, such as that of the eighth paper; padding whose heads revisit cells unboundedly often can
 still affect it (\cref{rem:skel-padding}).
 
-The skeleton at scale~$w$ records the position of every head and the output count, rounded down to multiples of~$w$
-(\cref{def:skeleton}). The tool is the block machine (\cref{def:block-machine,lem:block-machine}): on the inputs that
-share a skeleton, the machine is an oblivious machine whose heads move on blocks of $w$ cells, its dependency DAG is the
-walk DAG of the coarse walks, and bounded entry of a head gives bounded entry of its coarse walk. Theorem~F, the cone
-lemma and the paired-distance argument of the fifth paper then apply to one recovery relation per skeleton class, which
-gives Theorem~SE (\cref{thm:SE}). At large scales, heads of bounded entry carry almost no skeleton entropy
-(\cref{lem:skeleton-count}). Hence, given [Q9.1], an affirmative answer to Question~9.1 for every degree bound, a
-linear-time transposer whose work tapes have bounded entry must steer its input head by about half of the input at every
-scale (Corollary~IS, \cref{cor:IS}), and no linear-time transposer, adaptive or not, has bounded entry on every tape,
-the input tape included (Corollary~RV, \cref{cor:RV}). Every result of this section has a complete written proof and is
-formalized in Lean, with [Q9.1] as a hypothesis where the statement assumes it; only \cref{lem:skel-uniform}, Theorem~SE
-and Corollaries~IS and~RV assume [Q9.1].
+The skeleton at scale~$w$ records, at every step, which block of $w$ consecutive cells contains each head, and the
+output count rounded down to a multiple of~$w$ (\cref{def:skeleton}). The tool is the block machine
+(\cref{def:block-machine,lem:block-machine}): on the inputs that share a skeleton, the machine is an oblivious machine
+whose heads move on blocks of $w$ cells, its dependency DAG is the walk DAG of the coarse walks, and bounded entry of a
+head gives bounded entry of its coarse walk. Theorem~F, the cone lemma and the paired-distance argument of the fifth
+paper then apply to one recovery relation per skeleton class, which gives Theorem~SE (\cref{thm:SE}). At large scales,
+heads of bounded entry carry almost no skeleton entropy (\cref{lem:skeleton-count,lem:skel-entropy}). Hence, given
+[Q9.1], a linear-time transposer whose work tapes have bounded entry must steer its input head by about half of the
+input at every scale (Corollary~IS, \cref{cor:IS}), and no linear-time transposer, adaptive or not, has bounded entry on
+every tape, the input tape included (Corollary~RV, \cref{cor:RV}).
+
+Every result of this section is formalized in Lean, with [Q9.1] as a hypothesis of \cref{lem:skel-uniform}, Theorem~SE
+and Corollaries~IS and~RV only. The formal statements of these four results hold for every entry width $b\ge1$ in place
+of~$b(d)$, at all dimensions~$d$ above a threshold that does not depend on~$b$.
 
 \subsection{Skeletons}\label{sec:skel-skeletons}
 
-We use the machine model of the eighth paper~\cite[Section~2.1]{BoundedNesting2026}. A machine~$M$ has a finite state
-set~$\mathcal Q$, a read-only two-way input tape, $k\ge1$ two-way work tapes over a finite alphabet~$\Sigma$ that
-contains the blank, and a write-only output tape that receives at most one bit per step; all heads start at cell~$0$ and
-move by $-1$, $0$ or~$+1$, and every step writes the cell under each work head. At a length $L=d^2b(d)$ the input is a
-word $X\in\{0,1\}^L$ with bits $X[p]$, $p\in[0,L)$, written in the cells $0,\dots,L-1$ of the input tape; every other
-cell of the input tape reads as an end marker. (We write~$X$ for the input because $w$ will denote a scale.) On
-input~$X$ the machine executes the steps $0,\dots,T(X)-1$ and then halts. For $0\le t\le T(X)$ we write $x_0(t)$ for the
-position of the input head at time~$t$, that is, before step~$t$, $x_j(t)$ for the position of work head~$j$
-($1\le j\le k$), and $n(t)$ for the number of bits appended at the steps before~$t$; we write $x_j(t;X)$ and $n(t;X)$
-when the input varies. $M$ is a \emph{transposer} at length~$L$ if on every input it appends exactly $L$ bits and its
-output bit at position~$r$ is $X[\tpos(r)]$, where $\tpos((di+j)b+s)=(dj+i)b+s$ for $0\le i,j<d$ and
-$0\le s<b=b(d)$~\cite[Section~2.1]{BoundedNesting2026}; it works \emph{within $c(L+1)$ steps} if $T(X)\le c(L+1)$ for
-every input. The map $\tpos$ is an involution; the fifth paper writes it~$\Pi$ \cite[(3.1)]{DirectedRecovery2026}.
-Walks, hops, long hops, owner-load and walk DAGs are those of the eighth paper \cite[Sections~2.2
-and~2.3]{BoundedNesting2026}, and entries are as in~\cite[Definition~2.1]{BoundedNesting2026}: an entry of a cell~$z$ by
-a walk~$x$ is a time~$t$ with $x(t)=z$ and either $t=0$ or $x(t-1)\ne z$. The machine has \emph{entry at most~$V$ on
-tape~$j$} on input~$X$ if the walk $x_j(\cdot\,;X)$ on $[0,T(X))$ enters every cell at most $V$ times. Entropies
-$\mathrm H(\cdot)$ are Shannon entropies in bits, for a uniformly random input $X\in\{0,1\}^L$.
+We use the machine model and the notation of \cref{sec:prelim}, with the following
+details~\cite[Section~2.1]{BoundedNesting2026}. A machine~$M$ has a finite state set~$\mathcal Q$ and $k\ge1$ work tapes
+over a finite alphabet~$\Sigma$ that contains the blank, and every step writes the cell under each work head. At a length
+$L=d^2b(d)$ the input is a word $X\in\{0,1\}^L$ (we write~$X$ because $w$ will denote a scale), with bits $X[p]$ in the
+cells $p\in[0,L)$ of the input tape; every other cell of the input tape reads as an end marker. On input~$X$ the machine
+executes the steps $0,\dots,T(X)-1$ and then halts. For $0\le t\le T(X)$ we write $x_0(t)$ for the position of the input
+head at time~$t$, that is, before step~$t$, $x_j(t)$ for the position of work head~$j$ ($1\le j\le k$), and $n(t)$ for
+the number of bits appended at the steps before~$t$; we write $x_j(t;X)$ and $n(t;X)$ when the input varies. $M$ is a
+\emph{transposer} at length~$L$ if on every input it appends exactly $L$ bits and its output bit at position~$r$ is
+$X[\tpos(r)]$, where $\tpos((di+j)b+s)=(dj+i)b+s$ for $0\le i,j<d$ and $0\le s<b=b(d)$; the map~$\tpos$ is an
+involution, written~$\Pi$ in the fifth paper~\cite[(3.1)]{DirectedRecovery2026}. It works \emph{within $c(L+1)$ steps}
+if $T(X)\le c(L+1)$ for every input. Walks, hops, entries, owner-load and walk DAGs are those of \cref{sec:prelim}. The
+machine has \emph{entry at most~$V$ on tape~$j$} on input~$X$ if the walk $x_j(\cdot\,;X)$ on $[0,T(X))$ enters every
+cell at most $V$ times. Entropies $\mathrm H(\cdot)$ are Shannon entropies in bits, for a uniformly random input
+$X\in\{0,1\}^L$. In the formal statements, machines and their runs are those of the first paper's library, in which~(T)
+is stated~\cite{FirstPaper2026}; walks are maps $\N\to\Z$ with steps in $\{-1,0,1\}$, and entries are the eighth paper's
+\lean{BoundedNesting.entries}.
 
 \begin{definition}[Skeletons]\label{def:skeleton}
+\formal{MergeDepth/BlockMachine.lean}{MergeDepth.Skeleton,MergeDepth.InClass,MergeDepth.skelClass,MergeDepth.runSkeleton}
 Let $w\ge1$ be an integer, the \emph{scale}. The \emph{block} of $a\in\Z$ is $\mathcal B_a=\{wa,\dots,wa+w-1\}$, and on
 the input tape $\mathcal B^{\mathrm{in}}_a=\mathcal B_a\cap[0,L)$. The \emph{coarse walk} of a walk~$x$ is
 $\lfloor x/w\rfloor$; its value at~$t$ is the index of the block that contains $x(t)$. The \emph{skeleton} at scale~$w$
@@ -63,13 +65,13 @@ work walks} of~$\sigma$.
 
 All members of a class $\mathcal X_\sigma$ halt at time~$T_\sigma$, and at every time $t<T_\sigma$ their heads on one
 tape lie in one block, as do their output counts; so their positions on each tape, and their output counts, differ by at
-most $w-1$. Every component $s_j$ is a walk with $s_j(0)=0$, because
-$\lfloor(z\pm1)/w\rfloor-\lfloor z/w\rfloor\in\{-1,0,1\}$, and $s_{\mathrm{out}}$ is nondecreasing with steps $0$
-and~$1$. The trace of a run, that is, its head moves, append times and halting
-time~\cite[Section~2.1]{BoundedNesting2026}, determines its skeleton at every scale; at $w=1$ the skeleton determines
-the trace up to the moves of the last step and to whether that step appends. Finally, since
-$\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finitely many values
-(\lean{MergeDepth.exists_large_fibre} for a function of a uniform input),
+most $w-1$. Formally, the class is the fibre of~$\sigma_w$ over~$\sigma$ among the halting runs
+(\lean{MergeDepth.inClass_iff_runSkeleton}). If $\mathcal X_\sigma\ne\emptyset$, every component $s_j$ is a walk with
+$s_j(0)=0$, because $\lfloor(z\pm1)/w\rfloor-\lfloor z/w\rfloor\in\{-1,0,1\}$, and $s_{\mathrm{out}}$ is nondecreasing
+with steps $0$ and~$1$. The trace of a run, that is, its head moves, append times and halting time, determines its
+skeleton at every scale; at $w=1$ the skeleton determines the trace up to the moves of the last step and to whether that
+step appends. Finally, since $\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finitely many
+values (\lean{MergeDepth.exists_large_fibre}),
 \begin{equation}\label{eq:skel-heavy}
   \mathrm H(\sigma_w(X))\le\bigl(\tfrac12-\eta\bigr)L\quad\Longrightarrow\quad
   \card{\mathcal X_\sigma}\ge2^{(\frac12+\eta)L}\ \text{for some skeleton }\sigma .
@@ -83,7 +85,7 @@ let $s=\lfloor x/w\rfloor$.
 \item If $t$ is an entry of an integer~$a$ by~$s$, then $x(t)\in\{wa,wa+w-1\}$ and $t$ is an entry of the cell $x(t)$
 by~$x$.
 \item The walk~$s$ enters every integer at most $2V$ times.
-\item There are at most $2V\bigl((T-1)/w+2\bigr)-1$ times $t\in[1,T)$ with $s(t)\ne s(t-1)$.
+\item There are at most $2V\bigl(\lfloor(T-1)/w\rfloor+2\bigr)-1$ times $t\in[1,T)$ with $s(t)\ne s(t-1)$.
 \end{enumerate}
 \end{lemma}
 
@@ -96,13 +98,10 @@ entered from outside the block, and $t$ is an entry of $x(t)$ by~$x$.
 of which is entered at most $V$ times.
 
 (c) The cells visited by~$x$ form an interval of at most $T$ consecutive integers, and such an interval meets at most
-$\lceil(T-1)/w\rceil+1\le(T-1)/w+2$ blocks. Every time $t\ge1$ with $s(t)\ne s(t-1)$ is an entry of $s(t)$ by~$s$.
-By~(b) each of the visited blocks has at most $2V$ entries, and one of these entries, the entry of~$0$ at time~$0$, is
-not such a time.
+$\lfloor(T-1)/w\rfloor+2$ blocks. Every time $t\ge1$ with $s(t)\ne s(t-1)$ is an entry of $s(t)$ by~$s$. By~(b) each of
+the visited blocks has at most $2V$ entries, and one of these entries, the entry of~$0$ at time~$0$, is not such a time.
 
-Formally, walks are maps $\N\to\Z$ with steps in $\{-1,0,1\}$, as in the eighth paper's library, the coarse walk is
-\lean{MergeDepth.skel}, and the entries of a cell up to time~$T-1$ are the eighth paper's
-\lean{BoundedNesting.entries}. In~(c) the formal bound uses the integer part of $(T-1)/w$, which is stronger.
+Formally, the coarse walk is \lean{MergeDepth.skel}, and part~(a) needs no entry bound.
 \end{outline}
 
 \begin{remark}[Hops of two members need not match]\label{rem:naive-skeleton}
@@ -129,6 +128,7 @@ avoids per-trace structure altogether: its cut is determined by the skeleton.
 Fix a scale~$w$ and a skeleton~$\sigma$ with $\mathcal X_\sigma\ne\emptyset$, and write $T=T_\sigma$.
 
 \begin{definition}[The block machine]\label{def:block-machine}
+\formal{MergeDepth/BlockMachine.lean}{MergeDepth.BlockVal,MergeDepth.blockVal,MergeDepth.blockWidth}
 For $X\in\mathcal X_\sigma$ and $0\le t<T$, the \emph{block value} $\bar v_t(X)$ consists of
 \begin{enumerate}[label=(\roman*)]
 \item the state after step~$t$;
@@ -150,9 +150,10 @@ $\mathcal X_\sigma$, the block DAG and the components of~$\sigma$ form the \emph
 The offset in~(iii) lies in $\{-1,0,\dots,w\}$, because $x_j(t)\in\mathcal B_{s_j(t)}$ and heads move by at most one
 cell, and the word in~(iv) has length at most~$w$, because $n(t+1)\le n(t)+1\le ws_{\mathrm{out}}(t)+w$. So a block
 value is described by at most $\beta_w$ bits: (ii) takes $kw\clog{\card\Sigma}$ bits, (iii) takes $(k+1)\clog{(w+2)}$
-bits, and (iv), one of the $2^{w+1}-1$ binary words of length at most~$w$, takes $w+1$ bits. Note that $\beta_w\ge6$. Formally, block values take at most $2^{\beta_w}$ values on every input and at
-every time (\lean{MergeDepth.card_admissible_le}, \lean{MergeDepth.blockVal_mem_admissible}), and $\beta_w\ge6$
-(\lean{MergeDepth.six_le_blockWidth}).
+bits, and (iv), one of the $2^{w+1}-1$ binary words of length at most~$w$, takes $w+1$ bits. Formally, block values take
+at most $2^{\beta_w}$ values on every input and at every time (\lean{MergeDepth.card_admissible_le},
+\lean{MergeDepth.blockVal_mem_admissible}).
+
 Genies, $\Gamma$-free paths and full depth are defined for $\bar H_\sigma$ as for the dependency DAG of a trace in the
 eighth paper \cite[Section~2.4]{BoundedNesting2026}: a \emph{genie} is a set $\Gamma\subseteq[0,T)$, it reveals the
 block values $\bar v_u(X)$, $u\in\Gamma$, with $\beta_w$ bits each, at \emph{cost} $\beta_w\card\Gamma$; a path
@@ -230,17 +231,15 @@ start at~$0$. By \cref{lem:skel-coarse}(b) they enter every integer at most $2V$
 Corollary~3.2, which is Lean-verified there, applied with $2V$ in place of~$V$, bounds the owner-load of the set of all
 their long hops by $2\cdot2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}.
 
-Formally, $\prev^\sigma_j$ is \lean{MergeDepth.prevS} and the block DAG is given by \lean{MergeDepth.BlockStep}; part~(a)
-identifies it with the dependency DAG of the coarse walks (\lean{MergeDepth.DepStep}, \lean{MergeDepth.blockStep_iff}),
-with the degree bounds \lean{MergeDepth.card_blockOut_le} and \lean{MergeDepth.card_blockIn_le}, and in part~(d) the bound on
-entries is \lean{MergeDepth.card_entries_skel_le} (\cref{lem:skel-coarse}), for the coarse walks of the skeleton itself
-in \lean{MergeDepth.skeleton_entries_ownerLoad}. Parts~(b) and~(c) are proved in the frozen machine model: a block value
-(\lean{MergeDepth.BlockVal}) stores the state, the $w$ cells of the current block of every work tape, the offsets of the
-heads and the output word; the class is the fibre of the skeleton of the run (\lean{MergeDepth.inClass_iff_runSkeleton});
-\lean{MergeDepth.blockVal_eq_of_args} and \lean{MergeDepth.block_oblivious} are~(b), and \lean{MergeDepth.outTime_spec}
-and \lean{MergeDepth.card_outTime_eq_le} are~(c), with $\hat t_r$ given by \lean{MergeDepth.outTime}. The proofs give
-more: (b) holds for inputs whose skeletons agree up to time~$t$ (\lean{MergeDepth.blockVal_eq_of_coarseAgree}); (c) uses
-only the output component of~$\sigma$, and decoding bit~$r$ needs only $r<n(T)$; and (a) and~(b) do not need
+Formally, $\prev^\sigma_j$ is \lean{MergeDepth.prevS}, the block DAG is \lean{MergeDepth.BlockStep}, and the
+dependency DAG of the coarse walks is \lean{MergeDepth.DepStep}; part~(a) is \lean{MergeDepth.blockStep_iff}, with the
+degree bounds \lean{MergeDepth.card_blockOut_le} and \lean{MergeDepth.card_blockIn_le}. Part~(b) is
+\lean{MergeDepth.block_oblivious}, derived from its relational form
+\lean{MergeDepth.blockVal_eq_of_args}; part~(c) is \lean{MergeDepth.outTime_spec} and
+\lean{MergeDepth.card_outTime_eq_le}, with $\hat t_r$ given by \lean{MergeDepth.outTime}; and part~(d) is
+\lean{MergeDepth.skeleton_entries_ownerLoad}. The formal proofs give more: (b) holds for inputs whose runs follow~$\sigma$
+up to time~$t$, halting or not (\lean{MergeDepth.blockVal_eq_of_coarseAgree}); (c) uses only the output component
+of~$\sigma$ and decodes bit~$r$ of every member that appends more than $r$ bits; and (a) and~(b) do not need
 $\mathcal X_\sigma\ne\emptyset$.
 \end{outline}
 
@@ -255,24 +254,24 @@ only the coarse walks enter the depth analysis.
 
 \begin{lemma}[A genie for a skeleton class]\label{lem:skel-genie}
 \formal{MergeDepth/SkeletonGenie.lean}{MergeDepth.skel_genie_cost}
-Let $M$ be a machine with $k$ work tapes, let $V,w\ge1$ be integers, $c>0$ and $0<\eps\le1$, and put $C=\max(c,1)$,
+Let $M$ be a machine with $k$ work tapes, let $V,w\ge1$ be integers, $c>0$ and $\eps>0$, and put $C=\max(c,1)$,
 \[
   \eps''=\frac{\eps}{4\beta_wC},\qquad P=\Bigl\lceil\frac{4\beta_wC}{\eps}\Bigr\rceil,\qquad
   D_1=\DF(k,4V-1,\eps''),\qquad D=D_1P-1,
 \]
 where $\DF$ is the bound of Theorem~F~\cite[Theorem~3.6]{BoundedNesting2026}. Let $\sigma$ be a skeleton of~$M$ at
 scale~$w$ at a length $L\ge1$, with $T_\sigma\le c(L+1)$, and suppose that some member of $\mathcal X_\sigma$ has entry
-at most~$V$ on every work tape. Then there is a genie $\Gamma\subseteq[0,T_\sigma)$, depending only on~$\sigma$, of cost
+at most~$V$ on every work tape. Then there is a genie~$\Gamma$, depending only on~$\sigma$, of cost
 $\beta_w\card\Gamma\le\eps L$ and full depth at most~$D$ in~$\bar H_\sigma$.
 \end{lemma}
 
 \begin{outline}
-Write $T=T_\sigma$. Since $\beta_w\ge6$, $\eps''\in(0,1]$. By \cref{lem:block-machine}(d) the set of all long hops of
-the coarse work walks $s_1,\dots,s_k$, which are walks of length~$T$, has owner-load at most $4V-1$. Theorem~F
-\cite[Theorem~3.6]{BoundedNesting2026}, which is Lean-verified there and allows pauses and any coupling of the walks,
-gives a cut~$F$ of their walk DAG with $\card F\le\eps''T$ such that every path that uses no edge of~$F$ has at most
-$D_1-1$ hop edges. By \cref{lem:block-machine}(a) this walk DAG is $\bar H_\sigma$, and its hop edges are its edges of
-length at least two. Fix such a cut; it depends only on~$\sigma$.
+Write $T=T_\sigma$. By \cref{lem:block-machine}(d) the set of all long hops of the coarse work walks $s_1,\dots,s_k$,
+which are walks of length~$T$, has owner-load at most $4V-1$. Theorem~F \cite[Theorem~3.6]{BoundedNesting2026}, which
+allows pauses and any coupling of the walks and whose Lean-verified form holds for every $\eps''>0$, gives a cut~$F$ of
+their walk DAG with $\card F\le\eps''T$ such that every path that uses no edge of~$F$ has at most $D_1-1$ hop edges. By
+\cref{lem:block-machine}(a) this walk DAG is $\bar H_\sigma$, and its hop edges are its edges of length at least two.
+Fix such a cut; it depends only on~$\sigma$.
 
 Let $\Gamma_0$ be the set of the vertices~$u$ such that some edge $t\to u$ lies in~$F$; so $\card{\Gamma_0}\le\card F$.
 Every edge of a $\Gamma_0$-free path ends outside~$\Gamma_0$, so it is not in~$F$, and such a path has at most $D_1-1$
@@ -280,23 +279,20 @@ edges of length at least two. Put $\Gamma=\Gamma_0\cup\{t<T:t\equiv P-1\pmod P\}
 Removing its at most $D_1-1$ edges of length at least two leaves at most $D_1$ maximal runs of state edges. The vertices
 of such a run other than its first are vertices of~$\pi$ other than its first, hence lie outside~$\Gamma$, and they are
 consecutive integers; so there are at most $P-1$ of them, and the run has at most $P-1$ edges. Hence $\pi$ has at most
-$(D_1-1)+D_1(P-1)=D$ edges. This is the long-edge conversion of the fourth paper~\cite[Lemma~4.21]{FourthPaper2026} with
-$\mu=1$, whose proof uses only the DAG. Finally $\card\Gamma\le\card F+\lfloor T/P\rfloor$, so, using $T\le C(L+1)$ and
-$L\ge1$,
+$(D_1-1)+D_1(P-1)=D$ edges. Finally $\card\Gamma\le\card F+\lfloor T/P\rfloor$, so, using $T\le C(L+1)$ and $L\ge1$,
 \[
   \beta_w\card\Gamma\le\beta_w\eps''T+\frac{\beta_wT}P\le\frac{\eps T}{4C}+\frac{\eps T}{4C}\le\frac{\eps(L+1)}2\le\eps L.
 \]
+This is the construction of the cold genie (\cref{lem:cold}), for the coarse work walks at the entry bound~$2V$, at
+which no hop is deep.
 
-Formally, $\bar H_\sigma$ is the dependency DAG of the coarse work walks, as in \cref{lem:block-machine}(a)
-(\lean{MergeDepth.IsDepPath}); no long hop of a coarse walk lies at a block entered more than $2V$ times
-(\lean{MergeDepth.rCount_deep_coarse_eq_zero}, by \cref{lem:skel-coarse}), so the genie is the cold genie of
-\cref{lem:cold} for the coarse walks at the entry bound~$2V$ (\lean{MergeDepth.skel_genie}). On the block DAG of the
-skeleton itself, whose walks agree with the coarse walks of a member only before $T_\sigma$, it is
-\lean{MergeDepth.skeleton_genie}.
+Formally, the proof applies \lean{MergeDepth.cold_genie} to the coarse walks of the member, with $2V$ in place of~$V$;
+none of their steps is deep (\lean{MergeDepth.rCount_deep_coarse_eq_zero}), and \lean{MergeDepth.skel_genie} is the
+resulting path bound. \lean{MergeDepth.skeleton_genie} states the lemma for the block DAG of~$\sigma$, whose walks agree
+with the coarse walks of the member only before~$T_\sigma$.
 \end{outline}
 
-This is the eighth paper's conversion of cuts into genies~\cite[Lemma~2.6]{BoundedNesting2026}, run on the block
-machine. The genie is the same set of times for every member of the class; only the revealed values depend on the input.
+The genie is the same set of times for every member of the class; only the revealed values depend on the input.
 
 \begin{lemma}[Cones on a skeleton class]\label{lem:skel-cones}
 \formal{MergeDepth/BlockMachine.lean}{MergeDepth.blockMachine,MergeDepth.blockMachine_card_cone_le,MergeDepth.blockMachine_cone,MergeDepth.blockMachine_output_eq,MergeDepth.blockMachine_isStorageCode_fibre}
@@ -338,20 +334,16 @@ $t=\hat t_r$, by \cref{lem:block-machine}(c).
 (c) Let $X$ and~$Y$ lie in the fibre and agree on $N_\Gamma(q)=I_\Gamma(\tpos(q))$. By~(b) their output bits at position
 $\tpos(q)$ agree; since $M$ transposes and $\tpos$ is an involution, these bits are $X[q]$ and~$Y[q]$.
 
-Formally, \lean{MergeDepth.BlockFunDag} is a DAG on the times with out-edges to earlier times, an input block read at
-every time, and values determined on a class~$S$ of inputs by the block read and the values at the out-neighbours, as
-\cref{lem:block-machine}(b) provides; $C_\Gamma(t)$ is \lean{MergeDepth.coneV} and $J_\Gamma(t)$ is
-\lean{MergeDepth.BlockFunDag.coneJ}. Part~(a) is \lean{MergeDepth.card_coneV_le} and
-\lean{MergeDepth.BlockFunDag.card_coneJ_le}, and \lean{MergeDepth.card_coneV_le_of_blockStep} takes the out-degrees
-from \lean{MergeDepth.card_blockOut_le} and the depth from a genie for the dependency DAG of the coarse walks, as in
-\cref{lem:skel-genie}. Part~(b) is \lean{MergeDepth.BlockFunDag.cone} and \lean{MergeDepth.BlockFunDag.output_eq}, for
-output bits that are functions of the values at the times~$\hat t_r$, and part~(c) is
-\lean{MergeDepth.BlockFunDag.isStorageCode_fibre}, with the fourth paper's storage codes
-(\lean{MotionDepthCodes.IsStorageCode}). The block machine of a skeleton class is such a DAG by
-\cref{lem:block-machine}(b) (\lean{MergeDepth.blockMachine}), and \lean{MergeDepth.blockMachine_card_cone_le},
-\lean{MergeDepth.blockMachine_cone}, \lean{MergeDepth.blockMachine_output_eq} and
-\lean{MergeDepth.blockMachine_isStorageCode_fibre} are (a)--(c) for it; (c) needs only that the members output the
-transpose, with no bound on their running time.
+Formally, the lemma is proved for an abstract structure, \lean{MergeDepth.BlockFunDag}: a DAG on the times with
+out-edges to earlier times, an input block read at every time, and values that are determined on a class of inputs by
+the block read and the values at the out-neighbours, as \cref{lem:block-machine}(b) provides. There $C_\Gamma(t)$ is
+\lean{MergeDepth.coneV} and $J_\Gamma(t)$ is \lean{MergeDepth.BlockFunDag.coneJ}; part~(a) is
+\lean{MergeDepth.card_coneV_le} and \lean{MergeDepth.BlockFunDag.card_coneJ_le}, part~(b) is
+\lean{MergeDepth.BlockFunDag.cone} and \lean{MergeDepth.BlockFunDag.output_eq}, and part~(c) is
+\lean{MergeDepth.BlockFunDag.isStorageCode_fibre}, for the storage codes \lean{MotionDepthCodes.IsStorageCode} of the
+fourth paper's library, which the fifth paper's library uses. The block machine of a skeleton class is such a structure
+(\lean{MergeDepth.blockMachine}), and the other declarations of the status line are (a)--(c) for it; (c) needs only that
+the members output the transpose, with no bound on their running time.
 \end{outline}
 
 The relation $N_\Gamma$ depends only on $\sigma$ and~$\Gamma$. Compared with the cone relation of a single trace, every
@@ -364,9 +356,10 @@ The fifth paper proves that, after the paid deletion of the coordinates of high 
 linear-time schedule with a genie of fixed full depth satisfy the paired-distance condition \cite[Theorem~3.3 and
 Corollaries~3.7 and~3.8]{DirectedRecovery2026}, and that the argument applies to a single frozen
 trace~\cite[Remark~3.9]{DirectedRecovery2026}. The relation $N_\Gamma$ of a skeleton class is not the cone relation of
-one trace, so we prove the three steps of that argument for it. There are three changes: the relaxation carries $2w-1$
-heads on each tape around the heads of one member of the class, the occupancy bound becomes $wB$ (the fifth paper has
-$B+1$), and the initial potential becomes $m\log_23$ instead of~$m$.
+one trace, so we prove the steps of that argument for it. There are three changes: the relaxation carries $2w-1$ heads
+on each tape around the heads of one member of the class, the occupancy bound becomes $wB$ (the fifth paper has $B+1$),
+and the initial potential becomes $m\log_23$ instead of~$m$. In addition, no realization needs to be reversed
+(\cref{lem:skel-disjoint}).
 
 We use the geometric relaxation of the fifth paper~\cite[Section~3.2]{DirectedRecovery2026}, with several heads allowed
 on one tape. There are finitely many tapes with cells indexed by~$\Z$, among them an \emph{input tape} and an
@@ -374,7 +367,7 @@ on one tape. There are finitely many tapes with cells indexed by~$\Z$, among the
 addresses. The \emph{slots} are the cells and the registers. A \emph{tick} first transfers labels arbitrarily among the
 cells under heads and the registers, leaving all other slots unchanged, and then moves every head by at most one cell;
 moving a head does not move labels. Every label follows one trajectory through the slots; trajectories may share a slot
-and separate later. The \emph{occupancy} of a slot is the number of labels in it, and it is bounded at every
+and separate later. The \emph{occupancy} of a slot is the number of labels in it; occupancy bounds are required at every
 \emph{placement}, that is, before and after the transfers of every tick. The fifth paper uses one head per tape, all
 starting at cell~$0$.
 
@@ -436,12 +429,12 @@ So finally $\Phi\ge m\log_2d-m\log_2((L+W)/m)$.
 $L+W\le\frac32L$, and $y\log_2(a/y)\le a/(e\ln2)$ for $0<y\le a$; so $m\log_2((L+W)/m)\le3L/(2e\ln2)<0.8L$, while
 $m\log_23<1.59L$ because $m\le L$. This gives the claim.
 
-Formally, a run of the relaxation is \lean{MergeDepth.IsRun}: slots are cells of tapes or registers, labels may share
-slots, and only transfers between open slots move labels. The potential is a sum over the offsets~$\theta$ of counting
-conditional entropies, and its bound per tick holds in both directions of time (\lean{MergeDepth.pot_run}). The proof
-needs only that the heads of the input tape start in $W$ consecutive cells, and that the row of each label is a function
-of its end cell (\lean{MergeDepth.transport}); \lean{MergeDepth.transport_sharp} is the bound before the last step,
-$m\log_2d\le m\log_23+m\log_2((d+1)db/m)+UK\kappa(K+\rho/W)$, for every $d\ge1$.
+Formally, runs of the relaxation are \lean{MergeDepth.IsRun}, and the potential is the sum over~$\theta$ of counting
+conditional entropies; its bound per tick holds in both directions of time (\lean{MergeDepth.pot_run}), which
+\cref{lem:skel-disjoint} uses. \lean{MergeDepth.transport} needs only that the heads of the input tape start in $W$
+consecutive cells and that the labels end in distinct cells $z\in[0,L)$ of the output tape with
+$\lfloor(z\bmod W)/b\rfloor$ equal to the row of their source; \lean{MergeDepth.transport_sharp} is the bound before
+the last step, $m\log_2d\le m\log_23+m\log_2((L+W)/m)+UK\kappa(K+\rho/W)$, for every $d\ge1$.
 \end{outline}
 
 \begin{lemma}[Realizing a matching of incidences]\label{lem:skel-matching}
@@ -455,8 +448,7 @@ tick~$t$ occupy the cells $z(t)+i$, $\abs i\le w-1$, where $z$ is the tape's ref
 $z_{\mathrm{out}}$; and with one register. So $K=K_w:=(2w-1)(k+2)$, $\rho=1$, every head starts in $[-(w-1),w-1]$, and
 the head configurations at all ticks are fixed in advance. Let $\mathcal M$ be a matching in~$E$. Then there is a
 realization in $T$ ticks that carries, for every edge $L_pR_q\in\mathcal M$, one label from input cell~$p$ to output
-cell $\tpos(q)$, with occupancy at most $wB$. It can be reversed in $2T$ ticks, from the head configuration after the
-last tick back to the initial one, with the same occupancy.
+cell $\tpos(q)$, with occupancy at most $wB$.
 \end{lemma}
 
 \begin{outline}
@@ -471,7 +463,7 @@ $0\le j\le k$, and every cell of $\mathcal B_{s_{\mathrm{out}}(t)}$ on the outpu
 choose a $\Gamma$-free path $\hat t_{\tpos(q)}=t_0\to t_1\to\dots\to t_\ell=u$ in $\bar H_\sigma$ with
 $p\in\mathcal B^{\mathrm{in}}_{s_0(u)}$, so $\ell\le D$. Assign a slot to every edge of $\bar H_\sigma$: to a state edge
 the register, and to an edge $t\to t'$ of length at least two the \emph{base cell} $ws_j(t)=ws_j(t')$ of tape~$j$, for
-the least~$j$ with $t'=\prev^\sigma_j(t)$. By coverage, the slot of an edge $t\to t'$ is the register or a head cell at
+a fixed~$j$ with $t'=\prev^\sigma_j(t)$. By coverage, the slot of an edge $t\to t'$ is the register or a head cell at
 the ticks $t'$ and~$t$.
 
 \emph{The realization.} Each label moves along its path read forwards in time. The label of $L_pR_q$ stays in input
@@ -498,18 +490,13 @@ spans a given time, so these labels belong to paths through one vertex, and ther
 cell holds at most its own label, and an output cell at most the label that ends there, because $\mathcal M$ is a
 matching. Input and output cells are never edge slots, so the occupancy is at most $wB$ at every placement.
 
-\emph{Reversal.} The heads follow the walks $z+i$, whatever $\mathcal M$ is. A tick is reversed in two ticks: one undoes
-its moves with all labels held, and one undoes its transfers with the heads fixed; the ends of each reversed transfer
-are again head cells or the register. The reversal passes through the placements of the realization in the opposite
-order, so it has the same occupancy.
-
-Formally, the relation is \lean{MergeDepth.coneRel}, defined from the reference walks and the coarse work walks: $p$ is
-related to~$q$ if a $\Gamma$-free path of the block DAG from the output time of~$q$ ends at a time whose input block
-contains~$p$. It contains the relation of \cref{lem:skel-cones} (\lean{MergeDepth.coneJ_subset_coneRel}), and
-realizations pass to subrelations. \lean{MergeDepth.realize_paths} realizes any family of paths of the block DAG along
-which the slots are as above, and \lean{MergeDepth.realizes_cone} applies it to all matchings at once; the output time
-of~$q$ may be any time at which the output count lies in the block of $\tpos(q)$. \lean{MergeDepth.IsRun.reverse} is the
-reversal, for any run.
+Formally, the relation is \lean{MergeDepth.coneRel}, defined from the reference walks alone: $p\in N(q)$ if a
+$\Gamma$-free path of the dependency DAG of the coarse work walks from the time $o(\tpos(q))$ ends at a time~$u$ with
+$\lfloor p/w\rfloor=\lfloor z_0(u)/w\rfloor$, where the output time $o(r)$ may be any time before~$T$ at which the output
+count lies in the block of~$r$. With $o(r)=\hat t_r$ this relation contains~$N_\Gamma$
+(\lean{MergeDepth.classRel_subset_coneRel}), and realizations pass to subrelations. \lean{MergeDepth.realize_paths}
+realizes every family of paths of the block DAG along which the slots are as above, and \lean{MergeDepth.realizes_cone}
+applies it to all matchings at once.
 \end{outline}
 
 \begin{lemma}[Disjoint short paired paths]\label{lem:skel-disjoint}
@@ -524,12 +511,12 @@ which joins $L_p$ to~$R_p$ for some~$p$, then
 
 \begin{outline}
 We follow the proof of the fifth paper's Lemma~3.6~\cite{DirectedRecovery2026}, with one simplification: the bounds on
-the potential of \cref{lem:skel-transport} hold in both directions of time, so no realization needs to be reversed. List
-the vertices of each path from its left end: $L_{y_0},R_{y_1},L_{y_2},\dots,R_{y_s}$, with $y_0=y_s=p$. Since the paths
-are vertex-disjoint, for each $i<s$ their $i$th edges form a matching $\mathcal M_i$ of~$E$, consisting of the edges
-$L_{y_i}R_{y_{i+1}}$ if $i$ is even and $L_{y_{i+1}}R_{y_i}$ if $i$ is odd. \Cref{lem:skel-matching} gives for each
-$\mathcal M_i$ a realization in $T$ ticks from the initial head configuration to the final one, with occupancy at
-most~$wB$. For even~$i$ it carries the label of each path from input cell~$y_i$ to output cell $\tpos(y_{i+1})$; for
+the potential in the proof of \cref{lem:skel-transport} hold in both directions of time, so no realization needs to be
+reversed. List the vertices of each path from its left end: $L_{y_0},R_{y_1},L_{y_2},\dots,R_{y_s}$, with $y_0=y_s=p$.
+Since the paths are vertex-disjoint, for each $i<s$ their $i$th edges form a matching $\mathcal M_i$ of~$E$, consisting
+of the edges $L_{y_i}R_{y_{i+1}}$ if $i$ is even and $L_{y_{i+1}}R_{y_i}$ if $i$ is odd. \Cref{lem:skel-matching} gives
+for each $\mathcal M_i$ a realization in $T$ ticks from the initial head configuration to the final one, with occupancy
+at most~$wB$. For even~$i$ it carries the label of each path from input cell~$y_i$ to output cell $\tpos(y_{i+1})$; for
 odd~$i$, read backwards, it carries it from output cell $\tpos(y_i)$ to input cell~$y_{i+1}$. At every junction the
 labels occupy the same cells and the heads the same configuration, so the potential of the end of one stage is that of
 the start of the next. Each stage changes the potential by at most $\kappa K(K+\rho)T$, forwards or backwards, so the
@@ -540,7 +527,8 @@ $W=db\ge2w-1$ and $T\le c(L+1)\le2cL$,
 \]
 which is the claim. Formally, \lean{MergeDepth.disjoint_paths_bound} is this argument for any relation with such
 realizations and any walks of length~$s$, not necessarily simple, with pairwise disjoint vertex sets;
-\lean{MergeDepth.skel_disjoint_paths} and \lean{MergeDepth.skel_disjoint_paths_transport} are the skeleton forms.
+\lean{MergeDepth.skel_disjoint_paths} and \lean{MergeDepth.skel_disjoint_paths_transport} are its forms for the relation
+\lean{MergeDepth.coneRel}.
 \end{outline}
 
 \begin{proposition}[Paired distances on a skeleton class]\label{prop:skel-paired}
@@ -582,13 +570,14 @@ $wBL/\vartheta$ coordinates have $\deg_E(L_p)>\vartheta$. Deleting both ports of
 degree; the remaining left degrees are at most~$\vartheta$, and the right degrees $\deg_E(R_q)=\card{N_\Gamma(q)}$ are
 at most $wB$.
 
-Formally, (a) is the fifth paper's \lean{DirectedRecovery.short_paired_count_log_bound}, which is Lean-verified there,
-applied with the transport bound \lean{MergeDepth.disjoint_paths_transport} to the induced relation, whose realizations
-are inherited; (b) is the fifth paper's \lean{DirectedRecovery.self_demands_count_of_disjoint_transport}; and (c) is
-\lean{MergeDepth.skel_trimming}, with $\card{N_\Gamma(q)}\le wB$ by \lean{MergeDepth.card_coneRel_le}. The same bounds
-hold for the relation of \cref{lem:skel-cones} (\lean{MergeDepth.BlockFunDag.coneJ_paired_packing},
-\lean{MergeDepth.BlockFunDag.coneJ_self_demands}), and along any sequence of skeleton data with $d\to\infty$ and bounded
-incidence degree the relations satisfy the fifth paper's paired-distance condition
+Formally, (a) and~(b) are stated for the relation \lean{MergeDepth.coneRel} of the reference walks
+(\cref{lem:skel-matching}); for every relation inside it, such as~$N_\Gamma$, they are
+\lean{MergeDepth.subrel_paired_packing} and \lean{MergeDepth.subrel_self_demands}. Part~(a) applies the fifth paper's
+\lean{DirectedRecovery.short_paired_count_log_bound}, which is Lean-verified there, to the induced relation, with the
+transport bound \lean{MergeDepth.disjoint_paths_transport}; (b) is the fifth paper's
+\lean{DirectedRecovery.self_demands_count_of_disjoint_transport}; and (c) is \lean{MergeDepth.skel_trimming}, or
+\lean{MergeDepth.paid_trimming} for any relation with $\card{N(q)}\le wB$. Along any sequence of such data with
+$d\to\infty$ and bounded incidence degree the relations satisfy the fifth paper's paired-distance condition
 (\lean{MergeDepth.skel_paired_separation}).
 \end{outline}
 
@@ -599,24 +588,23 @@ The \emph{induced relation} of a relation~$N$ on $Q\subseteq[0,L)$ is $N_Q(q)=N(
 
 \begin{lemma}[A uniform half-rate bound on class relations]\label{lem:skel-uniform}
 \formal{MergeDepth/SkeletonSE.lean}{MergeDepth.skel_uniform_class}
-Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
-degree bound; the binary alphabet suffices. Let $M$ be a machine with $k$ work tapes, let $w\ge1$ and $D\ge0$ be
-integers, $c>0$ and $0<\delta<1$, and put $B=\sum_{h=0}^D(k+1)^h$ and $\vartheta=\lceil wB/\delta\rceil$. For a length
+Assume [Q9.1]; binary codes suffice. Let $M$ be a machine with $k$ work tapes, let $w\ge1$ and $D\ge0$ be integers,
+$c>0$ and $0<\delta<1$, and put $B=\sum_{h=0}^D(k+1)^h$ and $\vartheta=\lceil wB/\delta\rceil$. For a length
 $L=d^2b(d)$ let $\mathcal N_L$ be the set of the induced relations $(N_\Gamma)_Q$, on the coordinate sets
 $Q=[0,L)\setminus(\mathcal H_\vartheta\cup S_\Gamma)$, for all skeletons~$\sigma$ of~$M$ at scale~$w$ at length~$L$ such
 that $\mathcal X_\sigma\ne\emptyset$, $T_\sigma\le c(L+1)$ and every member appends exactly $L$ bits, and all
 $\Gamma\subseteq[0,T_\sigma)$ of full depth at most~$D$ in $\bar H_\sigma$; here $S_\Gamma$ and $\mathcal H_\vartheta$
-are as in \cref{prop:skel-paired}. Then for every $\zeta>0$ there is $L_\zeta$ such that for every length
-$L\ge L_\zeta$, every relation of $\mathcal N_L$, on its coordinate set~$Q$, and every binary storage code
-$\mathcal C\subseteq\{0,1\}^Q$ for it, $\log_2\card{\mathcal C}\le(\frac12+\zeta)\card Q$.
+are as in \cref{prop:skel-paired}. Then for every $\zeta>0$ there is~$L_\zeta$, depending only on $k$, $w$, $D$, $c$,
+$\delta$ and~$\zeta$, such that for every length $L\ge L_\zeta$, every relation of $\mathcal N_L$, on its coordinate
+set~$Q$, and every binary storage code $\mathcal C\subseteq\{0,1\}^Q$ for it, $\log_2\card{\mathcal C}\le(\frac12+\zeta)\card Q$.
 \end{lemma}
 
 \begin{outline}
-Suppose not. Then there are $\zeta>0$ and infinitely many lengths~$L$, each with a relation $N'_L\in\mathcal N_L$ on a
-coordinate set~$Q_L$, coming from some $\sigma$ and~$\Gamma$, and a binary storage code $\mathcal C_L$ for $N'_L$ with
-$\log_2\card{\mathcal C_L}>(\frac12+\zeta)\card{Q_L}$. Along these lengths $d\to\infty$, so for all large ones $d\ge2$
-and $db(d)\ge2w-1$, and \cref{prop:skel-paired} applies. By its parts~(b) and~(c),
-$\card{Q_L}\ge(1-\delta-A^{(w)}_1/\log_2d)L$, which tends to infinity. The incidence graph of $N'_L$ is $E_{Q_L}$, which
+Suppose not. Then there are $\zeta>0$ and infinitely many lengths~$L$, each with a machine with $k$ work tapes, a
+relation $N'_L$ in its set~$\mathcal N_L$ on a coordinate set~$Q_L$, coming from some $\sigma$ and~$\Gamma$, and a binary
+storage code $\mathcal C_L$ for $N'_L$ with $\log_2\card{\mathcal C_L}>(\frac12+\zeta)\card{Q_L}$. Along these lengths
+$d\to\infty$, so for all large ones $d\ge2$ and $db(d)\ge2w-1$, and \cref{prop:skel-paired} applies. By its parts~(b)
+and~(c), $\card{Q_L}\ge(1-\delta-A^{(w)}_1/\log_2d)L$, which tends to infinity. The incidence graph of $N'_L$ is $E_{Q_L}$, which
 has maximum degree at most $\max(wB,\vartheta)=\vartheta$ by part~(c), since $\vartheta\ge wB/\delta>wB$. For every
 fixed $r\ge1$, part~(a) with $\Delta=\vartheta$ and $Q=Q_L$ shows that at most $O_r(L/\log_2d)=o(\card{Q_L})$
 coordinates $p\in Q_L$ have $\dist_{E_{Q_L}}(L_p,R_p)\le r$; this is the paired-distance condition
@@ -624,22 +612,21 @@ coordinates $p\in Q_L$ have $\dist_{E_{Q_L}}(L_p,R_p)\le r$; this is the paired-
 $\mathcal C_L$ satisfy the hypotheses of Question~9.1 with the binary alphabet, and its affirmative answer gives
 $\limsup\log_2\card{\mathcal C_L}/\card{Q_L}\le\frac12$, a contradiction. The relations are loopless, since $Q_L$ avoids
 $S_\Gamma$, so the argument does not depend on whether recovery relations in Question~9.1 may contain loops. This is the
-uniformity argument of the fifth paper's Proposition~9.2~\cite{DirectedRecovery2026}.
-Formally, \lean{MergeDepth.skel_uniform_binary} is the argument for subrelations of the cone relation of
-\cref{lem:skel-matching} under \lean{MergeDepth.Q91Binary}, through the uniformity argument \lean{MergeDepth.uniform_rate_binary},
-and \lean{MergeDepth.skel_uniform_class} states it for skeleton classes: the relation of \cref{lem:skel-cones} lies in the
-cone relation of the walks of one member (\lean{MergeDepth.classRel_subset_coneRel}), since the cones of output times
-before~$T_\sigma$ contain only earlier times. The proof gives more: the bound holds for every subrelation of~$N_\Gamma$
-and every $\vartheta\ge wB/\delta$, it needs only one member that appends at least $L$ bits, and $L_\zeta$ does not
-depend on the entry width.
+uniformity argument of the fifth paper's Proposition~9.2~\cite{DirectedRecovery2026}; the bounds of
+\cref{prop:skel-paired} depend on the machines only through~$k$.
+
+Formally, \lean{MergeDepth.skel_uniform_binary} is this argument, through the uniformity argument
+\lean{MergeDepth.uniform_rate_binary}, for every relation inside the relation \lean{MergeDepth.coneRel} of
+\cref{lem:skel-matching}, with its own heavy coordinates and self-demands removed; \lean{MergeDepth.skel_uniform_class}
+applies it to~$N_\Gamma$ (\lean{MergeDepth.classRel_subset_coneRel}). The formal statement allows every
+$\vartheta\ge wB/\delta$ and every $c\ge0$, and needs only one member that appends at least $L$ bits.
 \end{outline}
 
 \begin{theorem}[Theorem SE: skeleton entropy]\label{thm:SE}
 \formal{MergeDepth/SkeletonSE.lean}{MergeDepth.thm_SE,MergeDepth.thm_SE_class}
-Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
-degree bound; the binary alphabet suffices. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every
-machine~$M$ with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following
-three properties:
+Assume [Q9.1]; binary codes suffice. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every machine~$M$
+with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following three
+properties:
 \begin{enumerate}[label=(\roman*)]
 \item on every input $X\in\{0,1\}^L$ it halts within $c(L+1)$ steps with output $X^\T$;
 \item on every input, every work-tape cell is entered at most $V$ times;
@@ -681,10 +668,12 @@ $\card{\mathcal H_\vartheta}\le wBL/\vartheta\le\delta L=\eta L/2$. Hence
   +\tfrac12\card{\mathcal H_\vartheta\cup S_\Gamma}\le\bigl(\tfrac12+\tfrac{3\eta}8\bigr)L+\frac{A^{(w)}_1L}{2\log_2d},
 \]
 which is less than $(\frac12+\frac\eta2)L$, a contradiction.
-Formally, \lean{MergeDepth.thm_SE_class} is the second statement and \lean{MergeDepth.thm_SE} the first, in entropy
-form; they use the genie \lean{MergeDepth.skeleton_genie}, the count \lean{MergeDepth.card_revealed_le} of revealed
-words, the storage codes \lean{MergeDepth.blockMachine_isStorageCode_fibre} and \cref{lem:skel-uniform}. Both hold for
-every $\eta>0$, the threshold does not depend on the entry width, and the time bound concerns only the class.
+
+Formally, \lean{MergeDepth.thm_SE_class} is the second statement and \lean{MergeDepth.thm_SE} the first. The proof uses
+the genie \lean{MergeDepth.skeleton_genie}, the count \lean{MergeDepth.card_revealed_le} of revealed words, the storage
+codes \lean{MergeDepth.blockMachine_isStorageCode_fibre}, paid conditioning
+(\lean{MergeDepth.logb_card_le_of_conditioning}), and \lean{MergeDepth.skel_uniform_binary}, applied to $N_\Gamma$
+inside the relation \lean{MergeDepth.coneRel} of a member (\lean{MergeDepth.classRel_subset_coneRel}).
 \end{outline}
 
 The hypotheses enter the proof as follows: (iii) only through the existence of one large class; (ii) only for one member
@@ -708,7 +697,7 @@ which the second statement of Theorem~SE excludes at all large lengths.
 \formal{MergeDepth/CoarseCount.lean}{MergeDepth.card_coarse_le,MergeDepth.card_monotone_le}
 \begin{enumerate}[label=(\alph*)]
 \item Let $V\ge1$, $w\ge4V$ and $T\ge16V$ be integers. The coarse walks $\lfloor x/w\rfloor$ of all walks~$x$ of
-length~$T$ with $x(0)=0$ that enter every cell at most $V$ times are at most $2^{m_1\log_2(ew/V)}$ in number, where
+length~$T$ with $x(0)=0$ that enter every cell at most $V$ times are at most $(ew/V)^{m_1}$ in number, where
 $m_1=2V(T/w+2)$.
 \item Let $T\ge2$ and $1\le m\le T-1$ be integers. The maps $s\colon[0,T)\to\Z$ with $s(0)=0$, $s(t+1)-s(t)\in\{0,1\}$
 for $t+1<T$, and $s(T-1)\le m$ are at most $(eT/y)^y$ in number, for every real number~$y$ with $m\le y\le T$.
@@ -718,23 +707,22 @@ for $t+1<T$, and $s(T-1)\le m$ are at most $(eT/y)^y$ in number, for every real 
 \begin{outline}
 We use $\sum_{i=0}^{m}\binom ni\le(en/m)^m$ for integers $1\le m\le n$.
 
-(a) By \cref{lem:skel-coarse}(c), $s=\lfloor x/w\rfloor$ changes value at most $m_0=2V((T-1)/w+2)-1$ times, each time
-by~$\pm1$, at times in $[1,T)$; since $s(0)=0$, $s$ is determined by the set of these times and the signs of the
-changes. Let $m_0'=\lfloor m_0\rfloor$. Then $m_0'\ge4V-1\ge3$, and $m_0'\le(T-1)/2+4V-1\le T-1$, because $w\ge4V$ and
-$T\ge8V-1$. So the number of coarse walks is at most
+(a) By \cref{lem:skel-coarse}(c), $s=\lfloor x/w\rfloor$ changes value at most $m_0=2V(\lfloor(T-1)/w\rfloor+2)-1$
+times, each time by~$\pm1$, at times in $[1,T)$; since $s(0)=0$, $s$ is determined by the set of these times and the
+signs of the changes. Since $w\ge4V$ and $T\ge16V$, we have $3\le4V-1\le m_0\le(T-1)/2+4V-1\le T-1$. So the number of
+coarse walks is at most
 \[
-  \sum_{i=0}^{m_0'}\binom{T-1}i2^i\le2^{m_0'}\Bigl(\frac{e(T-1)}{m_0'}\Bigr)^{m_0'}\le\Bigl(\frac{2eT}{m_0'}\Bigr)^{m_0'} .
+  \sum_{i=0}^{m_0}\binom{T-1}i2^i\le2^{m_0}\Bigl(\frac{e(T-1)}{m_0}\Bigr)^{m_0}\le\Bigl(\frac{2eT}{m_0}\Bigr)^{m_0} .
 \]
 The function $y\mapsto y\ln(2eT/y)$ increases for $0<y<2T$, its derivative being $\ln(2T/y)$, and
-$m_0'<m_1\le T/2+4V\le3T/4$, because $w\ge4V$ and $T\ge16V$. So the count is at most $(2eT/m_1)^{m_1}\le(ew/V)^{m_1}$,
+$m_0<m_1\le T/2+4V\le3T/4$, because $w\ge4V$ and $T\ge16V$. So the count is at most $(2eT/m_1)^{m_1}\le(ew/V)^{m_1}$,
 because $m_1\ge2VT/w$.
 
 (b) Such a map is determined by the set of times $t\in[1,T)$ with $s(t)\ne s(t-1)$, which has at most $m$ elements. So
 there are at most $\sum_{i\le m}\binom{T-1}i\le(e(T-1)/m)^m\le(eT/m)^m$ of them, and $y\mapsto y\ln(eT/y)$ increases on
 $(0,T]$, its derivative being $\ln(T/y)$.
 
-Formally, maps on $[0,T)$ are functions on $\{0,\dots,T-1\}$, the bound in~(a) is stated as $(ew/V)^{m_1}$, the
-encoding by change times and up-steps is \lean{MergeDepth.card_unit_le}, the binomial estimate is
+Formally, the encoding by change times and up-steps is \lean{MergeDepth.card_unit_le}, the binomial estimate is
 \lean{MergeDepth.sum_choose_le}, and the monotonicity of $y\mapsto(Ae/y)^y$ on $(0,A]$ is
 \lean{MergeDepth.rpow_mono_of_le}.
 \end{outline}
@@ -761,16 +749,18 @@ walks and the output component. So $\mathrm H(\sigma_w(X))\le\mathrm H(\sigma^{\
 the largest number, over the values of~$T$, of possible values of these $k+1$ components given~$T$. Since $L$ bits are
 appended at distinct steps, $L\le T\le c(L+1)\le2cL$; in particular $T\ge16V$. Each coarse work walk is the coarse walk
 of a walk of length~$T$ that starts at~$0$ and enters every cell at most $V$ times, so by \cref{lem:skeleton-count}(a)
-it takes at most $2^{m_1\log_2(ew/V)}$ values, with $m_1=2V(T/w+2)\le4VcL/w+4V$. The output component starts at~$0$,
+it takes at most $(ew/V)^{m_1}$ values, with $m_1=2V(T/w+2)\le4VcL/w+4V$. The output component starts at~$0$,
 grows by $0$ or~$1$ per step, and ends at most at $m=\lfloor L/w\rfloor$, where $1\le m\le L/w\le T-1$ because $L\ge2w$
 and $w\ge4$; by \cref{lem:skeleton-count}(b) with $y=L/w$ it takes at most $(eTw/L)^{L/w}\le(2ecw)^{L/w}$ values. Hence
 $\log_2N\le k(4VcL/w+4V)\log_2(ew/V)+(L/w)\log_2(2ecw)$, which is the claim. The limit holds because $(\log_2w)/w\to0$.
 
-Formally, the run on an input is given by its halting time, its head walks and its output count; the skeleton and the
-input skeleton are \lean{MergeDepth.skelData} and \lean{MergeDepth.inSkel}, entropy is that of a function of a uniform
-input (\lean{MergeDepth.entropy}), the first inequality is \lean{MergeDepth.entropy_le_of_fibres}, the counts are
-\cref{lem:skeleton-count}, and the limit holds for real~$w$.
-The runs of a machine supply the data of the formal statement (\lean{MergeDepth.frozen_coarse_entropy_le}).
+Formally, the statement concerns abstract run data, the halting time, the head walks and the output count on every
+input, with $L\le T(X)\le c(L+1)$ and $n(t)\le L$ for $t<T(X)$ in place of the number of appended bits; the skeleton and
+the input skeleton are \lean{MergeDepth.skelData} and \lean{MergeDepth.inSkel}, entropies are those of functions of a
+uniform input (\lean{MergeDepth.entropy}), the first inequality is \lean{MergeDepth.entropy_le_of_fibres}, and the limit
+holds for real~$w$. For a machine that, on every input, halts within $c(L+1)$ steps with exactly $L$ output bits,
+\lean{MergeDepth.frozen_coarse_entropy_le_of_halts} supplies these data from its runs, and
+\lean{MergeDepth.frozen_coarse_entropy_le} is the special case of a transposer.
 \end{outline}
 
 The output component alone contributes at most $(L/w)\log_2(2ecw)$ bits, whatever the machine does, as long as it
@@ -779,10 +769,9 @@ to a coarser scale and a smaller~$\eta$ in Theorem~SE.
 
 \begin{corollary}[Corollary IS: input steering]\label{cor:IS}
 \formal{MergeDepth/InputSteering.lean}{MergeDepth.cor_IS}
-Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
-degree bound; the binary alphabet suffices. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every
-machine~$M$ with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following
-three properties:
+Assume [Q9.1]; binary codes suffice. Let $k,V,w\ge1$ be integers, $c>0$ and $0<\eta<\frac12$. For every machine~$M$
+with $k$ work tapes there is~$L_0$ such that at no length $L=d^2b(d)\ge L_0$ does $M$ have the following three
+properties:
 \begin{enumerate}[label=(\roman*)]
 \item on every input $X\in\{0,1\}^L$ it halts within $c(L+1)$ steps with output $X^\T$;
 \item on every input, every work-tape cell is entered at most $V$ times;
@@ -801,9 +790,9 @@ $\mathrm H(\sigma^{\mathrm{in}}_{w'}(X))\le(\frac12-\eta)L$. By (i), (ii) and \c
   \mathrm H(\sigma_{w'}(X))\le\bigl(\tfrac12-\eta\bigr)L+\tfrac\eta2L+\tfrac\eta4L=\bigl(\tfrac12-\tfrac\eta4\bigr)L .
 \]
 So $M$ has the three properties of Theorem~SE at scale~$w'$ with $\eta/4$ in place of~$\eta$, which is impossible.
-Formally, \lean{MergeDepth.cor_IS} takes $w'=wm$ with $\theta(w')<\eta/2$ (\lean{MergeDepth.theta_tendsto}), compares the
-input skeletons at the scales $w$ and~$w'$ by \lean{MergeDepth.entropy_comp_le}, and applies
-\lean{MergeDepth.frozen_coarse_entropy_le} and Theorem~SE. It holds for every $\eta>0$.
+Formally, \lean{MergeDepth.cor_IS} takes $w'=wm$ with $\theta_{k,V,c}(w')<\eta/2$ (\lean{MergeDepth.theta_tendsto}),
+compares the input skeletons at the scales $w$ and~$w'$ by data processing (\lean{MergeDepth.entropy_comp_le}), and
+applies \lean{MergeDepth.frozen_coarse_entropy_le} and \lean{MergeDepth.thm_SE}.
 \end{outline}
 
 Corollary~IS reduces adaptivity, for machines whose work tapes have bounded entry, to the coarse motion of one head:
@@ -815,17 +804,16 @@ extends it to adaptive machines.
 
 \begin{corollary}[Corollary RV: revisits]\label{cor:RV}
 \formal{MergeDepth/InputSteering.lean}{MergeDepth.cor_RV}
-Assume [Q9.1], an affirmative answer to Question~9.1 of the fifth paper~\cite{DirectedRecovery2026} for every fixed
-degree bound; the binary alphabet suffices. For all integers $k,V\ge1$ and every $c>0$, no machine with $k$ work tapes
-is, at infinitely many lengths $L=d^2b(d)$, a transposer of all $d\times d$ matrices within $c(L+1)$ steps such that on
-every input every cell of every tape, the input tape included, is entered at most $V$ times.
+Assume [Q9.1]; binary codes suffice. For all integers $k,V\ge1$ and every $c>0$, no machine with $k$ work tapes is, at
+infinitely many lengths $L=d^2b(d)$, a transposer of all $d\times d$ matrices within $c(L+1)$ steps such that on every
+input every cell of every tape, the input tape included, is entered at most $V$ times.
 \end{corollary}
 
 \begin{outline}
 Let $M$ be such a machine. Since $(\log_2w)/w\to0$, there is an integer $w\ge4V$ with $4Vc\log_2(ew/V)\le w/8$; fix it.
 At a length $L\ge16V$ at which $M$ has the stated properties, every input satisfies $L\le T(X)\le c(L+1)$, and the input
 skeleton at scale~$w$ is the coarse walk of a walk of length $T(X)$ that starts at~$0$ and enters every cell at most $V$
-times. By \cref{lem:skeleton-count}(a), for each value of $T(X)$ it takes at most $2^{m_1\log_2(ew/V)}$ values, where
+times. By \cref{lem:skeleton-count}(a), for each value of $T(X)$ it takes at most $(ew/V)^{m_1}$ values, where
 \[
   m_1=2V\bigl(T(X)/w+2\bigr)\le2V(2cL/w+2),
 \]
@@ -835,8 +823,8 @@ and $T(X)$ takes at most $c(L+1)+1$ values. Hence
 \]
 at all large such lengths. The work tapes satisfy~(ii) of Corollary~IS, so Corollary~IS with this~$w$ and $\eta=\frac14$
 excludes $M$ at all large lengths.
-Formally, \lean{MergeDepth.cor_RV} bounds the entropy of the input skeleton of a bounded-entry input head by counting
-coarse walks (\lean{MergeDepth.card_coarse_le}) and applies Corollary~IS with $\eta=\frac14$.
+Formally, \lean{MergeDepth.cor_RV} bounds the entropy of the input skeleton by counting coarse walks
+(\lean{MergeDepth.inSkel_entropy_le}) and applies \lean{MergeDepth.cor_IS} with $\eta=\frac14$.
 \end{outline}
 
 Given [Q9.1], every linear-time transposer, adaptive or not, revisits cells unboundedly often: for every~$V$, at all
@@ -848,22 +836,25 @@ specific to transposition, which enters through the row potential of \cref{lem:s
 output takes linear time and enters every cell of every tape at most once.
 
 \begin{remark}[Padding]\label{rem:skel-padding}
-(a) Padding of bounded entry before the run does not affect Corollary~IS. Let $c_0,V_0\ge1$ be integers, and let $M'$
-first move its input head along a walk that starts and ends at cell~$0$, has length between $L$ and $c_0L$ and enters
-every cell at most $V_0$ times, chosen in any way as a function of the input, and then run~$M$ from its initial
-configuration. The padding of the eighth paper~\cite[Section~6.2]{BoundedNesting2026}, a sweep across the input with a
-step out and back at every cell of the first half that holds a~$1$, followed by a return to cell~$0$, is of this kind
-with $c_0=3$ and $V_0=4$. The prefix does not move the work heads, so $M'$ inherits~(ii) of Corollary~IS from~$M$, and
-it satisfies~(i) with $c+c_0$ in place of~$c$. The input skeleton of~$M'$ at a scale~$w'$ is the coarse walk of the
-prefix followed by the input skeleton $\sigma^{\mathrm{in}}_{w'}(X;M)$ of~$M$. So, by \cref{lem:skeleton-count}(a)
-applied to each length of the prefix, for $w'\ge4V_0$ and $L\ge16V_0$,
+(a) Padding of bounded entry before the run affects neither Theorem~SE nor Corollary~IS at large scales. Let
+$c_0,V_0\ge1$ be integers, and let $M'$ first move its input head along a walk that starts and ends at cell~$0$, has
+length between $L$ and $c_0L$ and enters every cell at most $V_0$ times, chosen in any way as a function of the input,
+and then run~$M$ from its initial configuration. The padding of the eighth paper~\cite[Section~6.2]{BoundedNesting2026},
+a sweep across the input with a step out and back at every cell of the first half that holds a~$1$, followed by a
+return to cell~$0$, is of this kind with $c_0=3$ and $V_0=4$. The prefix moves neither the work heads nor the output
+count, so $M'$ inherits~(ii) of Theorem~SE and of Corollary~IS from~$M$, and it satisfies~(i) with $c+c_0$ in place
+of~$c$. At a scale~$w'$ the skeleton of~$M'$ is the coarse walk of the prefix, with the work heads and the output count
+in block~$0$, followed by the skeleton $\sigma_{w'}(X;M)$ of~$M$, and likewise for the input skeletons. So, by
+\cref{lem:skeleton-count}(a) applied to each length of the prefix, for $w'\ge4V_0$ and $L\ge16V_0$,
 \[
-  \mathrm H(\sigma^{\mathrm{in}}_{w'}(X;M'))\le\mathrm H(\sigma^{\mathrm{in}}_{w'}(X;M))
-  +2V_0\Bigl(\frac{c_0L}{w'}+2\Bigr)\log_2\frac{ew'}{V_0}+\log_2(c_0L+1).
+  \mathrm H(\sigma_{w'}(X;M'))\le\mathrm H(\sigma_{w'}(X;M))
+  +2V_0\Bigl(\frac{c_0L}{w'}+2\Bigr)\log_2\frac{ew'}{V_0}+\log_2(c_0L+1),
 \]
-If $M$ satisfies~(iii) of Corollary~IS at a scale~$w$ with~$\eta$, then for every multiple $w'\ge4V_0$ of~$w$ with
-$2V_0c_0\log_2(ew'/V_0)/w'\le\eta/2$, the machine~$M'$ satisfies~(iii) at~$w'$ with $\eta/4$ at all large lengths. So
-Corollary~IS excludes~$M'$ whenever its hypotheses~(ii) and~(iii) hold for~$M$.
+and the same bound holds for the input skeletons. If $M$ satisfies~(iii) of Theorem~SE or of Corollary~IS at a
+scale~$w$ with~$\eta$, then for every multiple $w'\ge4V_0$ of~$w$ with $2V_0c_0\log_2(ew'/V_0)/w'\le\eta/2$, the
+machine~$M'$ satisfies the same condition at~$w'$ with $\eta/4$ at all large lengths, because skeletons and input
+skeletons at scale~$w'$ are functions of those at scale~$w$. So Theorem~SE and Corollary~IS exclude~$M'$ whenever their
+hypotheses~(ii) and~(iii) hold for~$M$.
 
 (b) Padding in which the input head revisits cells unboundedly often can break hypothesis~(iii) of Theorem~SE and of
 Corollary~IS at every scale. Before running~$M$, a machine may copy its input to an extra work tape and then, reading
@@ -885,5 +876,5 @@ have rate at most $1-\rho(\Delta)+o(1)$. The proof of Theorem~SE, run on that cl
 contradiction as soon as $\rho(\Delta(w,\eps))>\theta'(w)+2\eps$ for some $w\ge4V$ and $\eps\in(0,1)$, where
 $\Delta(w,\eps)=\lceil wB/\eps\rceil$ is the trimming threshold and $B$ the cone bound at the depth of
 \cref{lem:skel-genie} for~$\eps$; here $\log\log\Delta(w,\eps)$ is of order $k^3V^3\beta_wC/\eps$, and $\beta_w$ is of
-order $kw\log\card\Sigma$ for large~$w$. Compare the eighth paper's Remark~6.5~\cite{BoundedNesting2026}.
+order $kw\log\card\Sigma$ for large~$w$. Compare~\cite[Remark~6.5]{BoundedNesting2026}.
 \end{remark}

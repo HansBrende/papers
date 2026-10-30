@@ -212,7 +212,6 @@ theorem card_lattice_ordConnected {J : Set ℝ} [DecidablePred (· ∈ J)] (hJ :
     rw [hcard, abs_le]
     constructor <;> linarith
 
-
 theorem tent_isAffineOn_grid {h w : ℝ} (hh : 0 < h) {p : ℕ} (hw : w = 2 * p * h) (j : ℤ) :
     IsAffineOn (tent w) (j * h) ((j + 1) * h) := by
   have := tent_isAffineOn_cell hh p j
@@ -345,7 +344,6 @@ theorem profile_add_period (m k κ : ℕ) (t : ℝ) :
   have := perTent_add_int_mul ((m : ℝ) + 1) (piHat m κ) (apexHat m k S + t - valleyHat m κ S') 1
   rw [← this]; congr 1; push_cast; ring
 
-
 /-- On a window of length at most `N/2`, the periodic tent is a sum of two tents. -/
 theorem perTent_eq_sum_two {N w a d y : ℝ} (hN : 0 < N) (hd : d ≤ N / 2) (hwN : w ≤ N)
     (hy : y ∈ Set.Icc a (a + d)) :
@@ -397,7 +395,6 @@ theorem continuous_profile (m k κ : ℕ) : Continuous (profile m k κ) := by
   unfold profile
   refine continuous_const.mul (continuous_finsetSum _ fun S _ => continuous_finsetSum _ fun S' _ => ?_)
   exact (continuous_perTent (by positivity) (piHat_le m κ)).comp (by fun_prop)
-
 
 theorem dnpPeriod_real (s0 m : ℕ) :
     (dnpPeriod s0 m : ℝ) = 4 * (2 ^ s0 * ((m : ℝ) + 1)) := by
@@ -581,7 +578,6 @@ theorem volume_sublevel_four (m k κ : ℕ) (τ : ℝ) :
       nlinarith
     · have : (j : ℝ) + 1 ≤ i := by exact_mod_cast hlt
       nlinarith
-
 
 /-- `ξ ↦ P - ξ` permutes the odd residues (`P` even). -/
 theorem card_filter_oddRange_neg {P : ℕ} (hP : P % 2 = 0) (p : ℕ → Prop) [DecidablePred p] :

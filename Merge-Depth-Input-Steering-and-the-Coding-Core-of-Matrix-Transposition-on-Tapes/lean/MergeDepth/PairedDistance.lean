@@ -9,7 +9,7 @@ import DirectedRecovery.SelfDemands
 coordinates `V`: for every matching of incidences `src j ∈ N (dst j)` (with `src`, `dst` injective)
 some run of `T` ticks with the fixed head schedule `H` and occupancy at most `κ` carries a label from
 the input cell `ip (src j)` to the output cell `op (dst j)`. It passes to induced relations
-(`Realizes.comap`).
+(`Realizes.comap`) and to subrelations (`Realizes.mono`).
 
 * `disjoint_paths_sharp`, `disjoint_paths_bound`: **Lemma 4.10.** If the incidence graph of `N` has
   `m` pairwise vertex-disjoint walks with `s` edges from `L_x` to `R_x`, then
@@ -48,6 +48,13 @@ theorem Realizes.comap {V V' : Type*} {tape : η → τ} {inp out : τ} {ρ T κ
     Realizes tape inp out ρ T κ H N' (fun v => ip (e v)) (fun v => op (e v)) := by
   intro m src dst hsrc hdst hinc
   exact hR m (e ∘ src) (e ∘ dst) (he.comp hsrc) (he.comp hdst) fun j => hN _ _ (hinc j)
+
+omit [Fintype η] in
+/-- Realizability passes to subrelations. -/
+theorem Realizes.mono {V : Type*} {tape : η → τ} {inp out : τ} {ρ T κ : ℕ} {H : ℕ → η → ℤ}
+    {N N' : V → Finset V} {ip op : V → ℤ} (hR : Realizes tape inp out ρ T κ H N ip op)
+    (h : ∀ q, N' q ⊆ N q) : Realizes tape inp out ρ T κ H N' ip op :=
+  fun m src dst hsrc hdst hinc => hR m src dst hsrc hdst fun j => h _ (hinc j)
 
 /-! ### Walks in the paired incidence graph -/
 
@@ -300,7 +307,7 @@ open Classical in
 /-- **Proposition 4.11(a).** For every `Q ⊆ V` whose induced incidence graph `E_Q` has maximum degree
 at most `Δ`, the coordinates of `Q` whose two ports lie within distance `r` in `E_Q` number at most
 `∑_{s ≤ r odd} (s + 1) ν_r A_s L/log₂ d` (`pathPackingConstant`), `A_s = 2 s c κ K (K + ρ) + 3`. -/
-theorem paired_distance_packing {V : Type*} [Fintype V] [DecidableEq V] {N : V → Finset V}
+theorem paired_distance_packing {V : Type*} [DecidableEq V] {N : V → Finset V}
     {tape : η → τ} {inp out : τ} {ρ T κ : ℕ} {H : ℕ → η → ℤ} {ip op : V → ℤ}
     (hreal : Realizes tape inp out ρ T κ H N ip op) {d b W : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b)
     (hW : W = d * b) (hop : Function.Injective op) (hrange : ∀ v, 0 ≤ op v ∧ op v < d * W)

@@ -3,8 +3,7 @@ import DirectedRecovery.Hyperfinite
 /-!
 # [Q9.1]: an affirmative answer to Question 9.1 of the fifth paper
 
-Question 9.1 of *Directed Recovery Structures in Tape Computations* (`prob:open-paired`): fix a
-degree bound `Δ`; let `N_j` be recovery relations on finite coordinate sets `V_j` with
+Question 9.1 of *Directed Recovery Structures in Tape Computations*: fix a degree bound `Δ`; let `N_j` be recovery relations on finite coordinate sets `V_j` with
 `|V_j| → ∞`, whose paired incidence graphs have maximum degree at most `Δ` and satisfy the
 paired-distance condition. Must every sequence of nonempty storage codes `𝒞_j ⊆ 𝒜_j^{V_j}`, over
 finite alphabets with `|𝒜_j| ≥ 2` that may vary, satisfy
@@ -18,7 +17,7 @@ infinite distance), storage codes `MotionDepthCodes.IsStorageCode` (arbitrary, n
 rate `storageCodeRate C = log_{|𝒜|} |C| / |V|`.
 
 * `Q91At Δ`: Question 9.1 at the degree bound `Δ`, all finite alphabets (the alphabets may vary
-  with the index). `Q91 = ∀ Δ, Q91At Δ` is [Q9.1] as the eleventh paper uses it.
+  with the index). `Q91 = ∀ Δ, Q91At Δ` is [Q9.1] as the paper uses it.
 * `Q91BinaryAt Δ`, `Q91Binary`: the same for binary codes (alphabet `Bool`), the case the paper's
   applications need ("the binary alphabet suffices").
 * `Q91At.binary`, `Q91.binary`: the all-alphabet form implies the binary one.
@@ -69,7 +68,7 @@ def Q91BinaryAt (Δ : ℕ) : Prop :=
       limsup (fun n => storageCodeRate (C n)) atTop ≤ 1 / 2
 
 /-- **Binary [Q9.1]**: an affirmative answer to Question 9.1 for every degree bound and binary
-codes. This is the form the eleventh paper's applications use. -/
+codes. This is the form the applications in the paper use. -/
 def Q91Binary : Prop := ∀ Δ, Q91BinaryAt Δ
 
 /-- The all-alphabet question at `Δ` contains the binary one (constant alphabet `Bool`). -/

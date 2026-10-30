@@ -20,7 +20,8 @@ The paper's normalized `sinc y = sin(πy)/(πy)` is Mathlib's `Real.sinc (π y)`
 * `fineFloorK` `= F_k`, `fineFloorTerm`, `fineFloor` `= F(n, D)`; `fineFloorK_le_relVariance`
   and `fineFloorK_eq`: **Proposition 7.12(c)**, `V_k ≥ F_k = F(n_κ, κ - k)`;
   `summable_fineFloorTerm`.
-* Proposition 7.12(b) (the density of `W`) is not formalized.
+* Proposition 7.12(b), the density of `W`, is `density_W` in `MergeDepth/StraddleDensity.lean`,
+  which also restates (a) and (c) (`exact_form_V`).
 -/
 
 namespace MergeDepth
@@ -141,7 +142,6 @@ theorem integral_exp_tent {N w : ℝ} (hw : 0 ≤ w) (hwN : w ≤ N) (θ : ℝ) 
   · simp
   · exact (Complex.continuous_ofReal.comp hc1).intervalIntegrable _ _
   · exact (continuous_const.mul (Complex.continuous_ofReal.comp hc2)).intervalIntegrable _ _
-
 
 /-! ### Fourier coefficients of the profile -/
 
@@ -397,7 +397,7 @@ theorem phiGen_nonneg (m k κ : ℕ) (r : ℤ) : 0 ≤ phiGen m k κ r := by
   exact mul_nonneg (mul_nonneg h4 (prod_nonneg fun _ _ => sq_nonneg _))
     (prod_nonneg fun _ _ => sq_nonneg _)
 
-/-! ### The paper's form of `φ_k` -/
+/-! ### The function `φ_k` -/
 
 /-- **`φ_k(r)`** as in Section 7.5, with the normalized `sinc y = sin(πy)/(πy)` written as
 Mathlib's `Real.sinc (π y)`:

@@ -31,7 +31,10 @@ library.
 
 The eighth paper's Lemma 5.1(b),(c) (with a written proof there) identifies these explicit families
 with hops of the class `(h, k)` and gives every class `4Λ` hops per period; a level that is
-`θ`-served for a head is therefore `ServedOnWitness` for it. This identification is not formalized.
+`θ`-served for a head is therefore `ServedOnWitness` for it. This identification is formalized in
+`MergeDepth/DeepNestingHops.lean` and `MergeDepth/DeepNestingLabels.lean` (`family_inHopClass`,
+`levelCount_eq`, `ThetaServes.servedOnWitness`), and `MergeDepth/DeepNestingBP.lean` states the
+results for the walk pair.
 -/
 
 namespace MergeDepth
@@ -147,7 +150,6 @@ theorem evalPhiRec_parent {s0 m k : ℕ} (hk : 1 ≤ k) (hkm : k ≤ m) (hms : m
   simp only [e1, e3]
   ring
 
-
 /-- The turn jumps inside a level-`i` stroke sit at the apices and valleys of its inner V's. -/
 theorem strokeTurnJumpAux_support {s0 m : ℕ} (cb cf : ℕ → ℤ) :
     ∀ (d i τ : ℕ), i + d ≤ m → strokeTurnJumpAux s0 m cb cf i d τ ≠ 0 →
@@ -245,14 +247,6 @@ theorem turnPotential_add_mul_period {s0 m : ℕ} (cb cf : ℕ → ℤ) (jTip : 
   rw [Int.add_mul_ediv_right _ _ hP, Int.add_mul_emod_self_right]
   ring
 
-theorem turnPotential_add_period {s0 m : ℕ} (cb cf : ℕ → ℤ) (jTip : ℤ) (t : ℤ) :
-    turnPotential s0 m cb cf jTip (t + dnpPeriod s0 m) =
-      turnPotential s0 m cb cf jTip t + (4 * strokeMass m cf 0 + 2 * jTip) := by
-  have := turnPotential_add_mul_period (s0 := s0) (m := m) cb cf jTip t 1
-  rw [one_mul, one_mul] at this
-  exact this
-
-
 theorem evalPhiRec_zero (s0 m : ℕ) (cb cf : ℕ → ℤ) (jTip : ℤ) : evalPhiRec s0 m cb cf jTip 0 = 0 := by
   have hpi0 := strokeLen_pos s0 m 0
   unfold evalPhiRec
@@ -324,7 +318,6 @@ theorem turnPotential_sub_one {s0 m : ℕ} (hms : m ≤ s0) (cb cf : ℕ → ℤ
     conv_lhs => rw [show R = (R - 1) + 1 by omega]
     rw [Finset.sum_Ioc_succ_top (by omega), show R - 1 + 1 = R by omega]
     ring
-
 
 /-- No turn of `U` lies at the times `t + c` for `p < t ≤ u` (times modulo `P`). -/
 def TurnFree (s0 m : ℕ) (c p u : ℤ) : Prop :=
@@ -430,7 +423,6 @@ theorem turnPotential_vDecomp {s0 m κ : ℕ} (hκ1 : 1 ≤ κ) (hκm : κ ≤ m
     rw [h1, turnPotential_of_lt _ _ _ (by omega), hC _ (by omega),
       strokePhiRec_fwd cb cf hκ1 hκm ho]
     ring
-
 
 /-! ### The block-pair label -/
 
@@ -583,7 +575,6 @@ theorem family_card_ge {s0 m k f : ℕ} (hk1 : 1 ≤ k) (hkm : k + 2 ≤ m) (hms
       calc 4 * (2 ^ k * (2 ^ j * R')) = 4 * 2 ^ k * (2 ^ j * R') := by ring
         _ ≤ 4 * 2 ^ k * (16 * (R' - 1)) := Nat.mul_le_mul_left _ hH
         _ = 32 * (2 ^ k * 2 * (R' - 0 - 1)) := by rw [Nat.sub_zero]; ring
-
 
 theorem blockPotential_eq_of_blind {s0 m : ℕ} (hms : m ≤ s0) (a : ℕ) (K : ℤ) {c p u : ℤ}
     (hpu : p ≤ u) (h : TurnFree s0 m c p u) :

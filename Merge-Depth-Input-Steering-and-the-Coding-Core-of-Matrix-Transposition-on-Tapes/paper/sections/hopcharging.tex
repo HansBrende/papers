@@ -7,31 +7,34 @@ are depth-robust if the eighth paper's Conjecture~A$'$ holds~\cite[Corollary~5.2
 therefore asks whether a transposer can use such a scratch to supply the information that the crux denies to the
 shallow part of its schedule~\cite[Problem~10.5]{BoundedNesting2026}.
 
-This section answers that question for codes that merge deep data only boundedly often. Theorem~F still cuts the hops
-at boundedly entered cells; the hops at the other cells are charged instead of cut. Along every lineage of the code, a
-chain of steps each of which continues one earlier value, one coordinate is revealed every $\tau$ deep hops, at a total
-rank of $O(L/\tau)$. If the code merges deep lineages at most $s$ times along every path, the transposition matrix then
-splits into a part of small rank and a part supported on balls whose radius does not depend on the schedule
-(Theorems~HC and~HC$'$). So the linear crux at that radius excludes such transposers on every schedule, whatever the
-number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper excludes them for
-all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep hops is limited by
-their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge structure would
-suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). Every numbered result of this
-section is formalized in Lean, for machines that are oblivious up to their last output step and with [Q9.1] as a
-hypothesis where the statement assumes it, as the status lines say.
+Given a crux, this section answers that question in the negative for codes that merge deep data only boundedly often.
+Theorem~F still cuts the hops at boundedly entered cells; the hops at the other cells are charged instead of cut. Along
+every lineage of the code, a chain of nodes each of which continues one earlier value, a checkpoint is revealed every
+$\tau$ deep hops, at a total cost of $O(L/\tau)$. If the code merges deep lineages at most $s$ times along every path,
+the transposition matrix then splits into a part of small rank and a part supported on balls whose radius does not
+depend on the schedule, and for codes that need not be linear the revealed values form a short index code for such
+balls (Theorems~HC and~HC$'$). So the linear crux at that radius excludes such linear transposers on every schedule,
+whatever the number of revisited cells (Corollary~HC), and an affirmative answer to Question~9.1 of the fifth paper
+excludes them for all codes (Corollary~HC$^*$). What remains concerns the code, not the schedule: routing through deep
+hops is limited by their number, the number of deep cells adds nothing, and a cheap depth reduction of the code's merge
+structure would suffice (\cref{prop:hop-routing,prop:capacity,prop:merge-reduction}, \cref{conj:HV}). Every numbered
+result of this section is formalized in Lean, with the linear crux or [Q9.1] as a hypothesis where the statement assumes
+it; the outlines say where a formal statement is more general than the written one.
 
 \subsection{Deep cells and the cold genie}\label{sec:hop-cold}
 
 Throughout this section $M$ is a machine with $k$ work tapes that is oblivious at a length $L=d^2b(d)$ with halting
-time $T\le C(L+1)$, where $C\ge1$, and $\beta\ge\beta(M)$ is an integer; note that $\beta(M)\ge2$. We use the dependency DAG~$H_M$, the
-work-head walks $x_1,\dots,x_k$ and the input-head walk~$x_0$ as in the eighth paper~\cite[Sections~2.2
-and~2.4]{BoundedNesting2026}; output bit~$\ell$ is appended at step~$t_\ell$, and $\mathrm{out}(t)$ is the set of
-out-neighbours of~$t$ in~$H_M$. A path $t_0\to\dots\to t_n$ is \emph{$\Gamma$-free} if $t_1,\dots,t_n\notin\Gamma$.
+time $T\le C(L+1)$, and $\beta\ge\beta(M)$; here $C\ge1$ and~$\beta$ are integers, which loses nothing, since a real
+bound~$C$ may be replaced by~$\lceil C\rceil$ (Corollaries~HC and~HC$^*$ are stated for real~$C$), and $\beta(M)\ge2$. We use the dependency DAG~$H_M$, the work-head walks $x_1,\dots,x_k$ and the
+input-head walk~$x_0$ as in the eighth paper~\cite[Sections~2.2 and~2.4]{BoundedNesting2026}; output bit~$\ell$ is
+appended at step~$t_\ell$, and $\mathrm{out}(t)$ is the set of out-neighbours of~$t$ in~$H_M$. A path
+$t_0\to\dots\to t_n$ is \emph{$\Gamma$-free} if $t_1,\dots,t_n\notin\Gamma$.
 
 Fix an integer $V\ge1$. As in~\cite[Corollary~3.8]{BoundedNesting2026}, let $\mathcal R$ be the set of pairs $(h,c)$
 such that the walk $x_h$ enters the cell~$c$ more than $V$ times on $[0,T)$, the \emph{deep cells}. A \emph{deep hop}
 is a long hop of a head~$h$ at a cell~$c$ with $(h,c)\in\mathcal R$, and $N_{\mathcal R}$ is the number of deep hops,
-counted per head. An edge of~$H_M$ is determined by its endpoints~\cite[Section~2.4]{BoundedNesting2026}; we call it
+counted per head. As for the walk DAG~\cite[Section~2.3]{BoundedNesting2026}, we identify parallel edges of~$H_M$, so an edge is
+determined by its endpoints; we call it
 \emph{deep} if its endpoints form a deep hop of at least one head. So an edge of length at least two that is not deep is
 a long hop, for each head that makes it, at a pair outside~$\mathcal R$. A long hop $(p,u)$ of a head~$h$ ends at an
 entry~$u$ of its cell, since $x_h(u-1)\ne x_h(u)$, and distinct hops of~$h$ end at distinct times
@@ -42,7 +45,7 @@ entry~$u$ of its cell, since $x_h(u-1)\ne x_h(u)$, and distinct hops of~$h$ end 
 
 \begin{lemma}[The cold genie]\label{lem:cold}
 \formal{MergeDepth/HopMachine.lean}{MergeDepth.cold_genie_exists}
-Let $0<\eps\le1$, $D_1=\DF(k,2V-1,\eps/(4\beta C))$, $P=\lceil4\beta C/\eps\rceil$ and $D=D_1P$. There is a set
+Let $\eps>0$, $D_1=\DF(k,2V-1,\eps/(4\beta C))$, $P=\lceil4\beta C/\eps\rceil$ and $D=D_1P$. There is a set
 $\Gamma_{\mathrm F}\subseteq[0,T)$ with $\beta\card{\Gamma_{\mathrm F}}\le\eps L$ such that every $\Gamma_{\mathrm F}$-free
 path of~$H_M$ that contains no deep edge has at most $D-1$ edges.
 \end{lemma}
@@ -50,8 +53,8 @@ path of~$H_M$ that contains no deep edge has at most $D-1$ edges.
 \begin{outline}
 Let $H'$ be the set of long hops of the work heads at pairs outside~$\mathcal R$. Each of them lies at a cell that its
 head enters at most $V$ times, so $H'$ has owner-load at most $2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}, and
-Theorem~F~\cite[Theorem~3.6]{BoundedNesting2026}, both Lean-verified there, applied at
-$\eps'=\eps/(4\beta C)\in(0,1]$, gives a cut~$F$ of $G(H')$ with at most $\eps'T$ edges and depth less than~$D_1$. Let
+Theorem~F~\cite[Theorem~3.6]{BoundedNesting2026}, both Lean-verified there, applied at $\eps'=\eps/(4\beta C)$, gives a
+cut~$F$ of the corresponding sub-DAG $G(H')$ of the walk DAG with at most $\eps'T$ edges and depth less than~$D_1$. Let
 $\Gamma_0$ be the set of steps at which an edge of~$F$ ends, and
 $\Gamma_{\mathrm F}=\Gamma_0\cup\{t<T:t\equiv P-1\pmod P\}$. Then
 $\beta\card{\Gamma_{\mathrm F}}\le\beta\eps'T+\beta T/P\le\eps T/(2C)\le\eps(L+1)/2\le\eps L$.
@@ -63,20 +66,23 @@ $D_1-1$ edges of length at least two. They split~$\pi$ into at most $D_1$ runs o
 run after its first are consecutive integers, none congruent to $P-1$ modulo~$P$, so a run has at most $P-1$ edges.
 Thus $n\le D_1-1+D_1(P-1)=D-1$.
 
-Formally, the work heads are walks $\N\to\Z$ and $H_M$ is replaced by the DAG of their dependency steps, the state
-edges below~$T$ and the long hops of all heads (\lean{MergeDepth.DepStep}), which contains every edge of~$H_M$; a step
-is deep if some head makes it as a hop at a pair of~$\mathcal R$ (\lean{MergeDepth.DeepStep}). The cut is the eighth
-paper's \lean{BoundedNesting.theoremF_owner} on its \lean{BoundedNesting.lightHops}, and \lean{MergeDepth.cold_genie}
-proves the path bound for every~$\eps'>0$ and~$P\ge1$, with $P\card{\Gamma_{\mathrm F}}\le P\eps'T+T$.
+Formally, the work heads are walks $\N\to\Z$, and the edges of~$H_M$ are their dependency steps
+(\lean{MergeDepth.DepStep}): the state edges below~$T$ and the long hops of all heads. A step is deep if some head makes
+it as a hop at a pair of~$\mathcal R$ (\lean{MergeDepth.DeepStep}). The cut is the eighth paper's
+\lean{BoundedNesting.theoremF_owner} on its \lean{BoundedNesting.lightHops}, and \lean{MergeDepth.cold_genie} proves the
+path bound for every~$\eps'>0$ and~$P\ge1$, with $P\card{\Gamma_{\mathrm F}}\le P\eps'T+T$.
 \end{outline}
 
-We call such a set a \emph{cold genie at $(V,\eps)$}, and $D$ its \emph{depth}
-(\lean{MergeDepth.IsColdGenie}).
+A set $\Gamma_{\mathrm F}\subseteq[0,T)$ with $\beta\card{\Gamma_{\mathrm F}}\le\eps L$ such that every
+$\Gamma_{\mathrm F}$-free path of~$H_M$ without deep edges has at most $D-1$ edges is a \emph{cold genie at $(V,\eps)$
+with depth~$D$} (\lean{MergeDepth.IsColdGenie}). When no depth is named, $D$ is the number $D_1P$ of \cref{lem:cold}; it
+is defined for every real $C>0$ and depends only on $k$, $V$, $\beta$, $C$ and~$\eps$, and the lemma shows that cold
+genies at $(V,\eps)$ exist.
 
-This is the conversion of~\cite[Lemma~2.6]{BoundedNesting2026}, with the long-edge
+\Cref{lem:cold} is the conversion of~\cite[Lemma~2.6]{BoundedNesting2026}, with the long-edge
 conversion~\cite[Lemma~4.21]{FourthPaper2026}, restricted to paths without deep edges. It holds for every schedule,
 because Theorem~F is applied only to the hops at boundedly entered cells. If every work-tape cell is entered at most $V$
-times, there are no deep edges and $\Gamma_{\mathrm F}$ is the genie of Corollary~F.
+times, there are no deep edges, and $\Gamma_{\mathrm F}$ is a genie of bounded full depth as in Corollary~F.
 
 \subsection{Refinements of the dependency DAG}\label{sec:hop-refine}
 
@@ -118,9 +124,8 @@ predecessors and, if $x_0(t)\in[0,L)$, of the input bit $w_{x_0(t)}$. A \emph{pr
 set $P(f)$ of its predecessors and whether $f$ \emph{keeps} its input bit, such that $f$ is still a function, on
 $\{0,1\}^L$, of the fields in $P(f)$ and of the kept input bit; keeping everything is a pruning. The \emph{field DAG} of
 a pruning has the edges $f\to g$ for $g\in P(f)$, input marks at the fields of steps with $x_0(t)\in[0,L)$ that keep their
-input bit, and the output
-node $o_{t_\ell}$ for~$\ell$. It is a refinement of width $k+2$. A deep edge of it leads from a field of step~$t$ to a
-field of a step $t'\le t-2$, so its head is a symbol field $\kappa_{t',j}$.
+input bit, and the output node $o_{t_\ell}$ for~$\ell$. It is a refinement of width $k+2$. A deep edge of it leads from a
+field of step~$t$ to a field of a step $t'\le t-2$, so its head is a symbol field $\kappa_{t',j}$.
 
 \begin{lemma}[Expansion]\label{lem:expansion}
 \formal{MergeDepth/ExpansionCone.lean}{MergeDepth.expansion_cone,MergeDepth.coneI,MergeDepth.C_eq_zero_of_not_mem_coneI}
@@ -148,10 +153,11 @@ $I(\ell)=\emptyset$ otherwise.
 (a) The linear parts satisfy
 $V^{\mathrm{lin}}_{(t,i)}=\sum_{t'\in\mathrm{out}(t)}\sum_{i'}(A_{t,t'})_{ii'}V^{\mathrm{lin}}_{(t',i')}+(a_t)_ie_{x_0(t)}$,
 the last term present only if $x_0(t)\in[0,L)$; the nonzero terms belong to the out-edges of $(t,i)$ and to its input
-mark. We prove the first claim by induction on~$t$. If $u=(t,i)$ is input-marked, the path of length zero shows
-$x_0(t)\in I_{\Gamma,Q}(u)$. For an edge $u\to z$, either $z$ is revealed and $V^{\mathrm{lin}}_z\in E$, or a
-$(\Gamma,Q)$-free path from~$z$, preceded by $u\to z$, is $(\Gamma,Q)$-free, so
-$I_{\Gamma,Q}(z)\subseteq I_{\Gamma,Q}(u)$ and the induction hypothesis applies to~$z$.
+mark. Unrolling this recursion along the paths from~$u$ and stopping at revealed nodes, as in the eighth
+paper~\cite[Section~7.1]{BoundedNesting2026}, writes $V^{\mathrm{lin}}_u$ as a combination of the forms of the revealed
+nodes and of the forms~$e_j$, where the coefficient of~$e_j$ is a sum over the $(\Gamma,Q)$-free paths from~$u$ that end
+at an input-marked node reading position~$j$. There are finitely many such paths, since steps decrease along paths, and
+none if $j\notin I_{\Gamma,Q}(u)$. This is the first claim.
 
 The forms of the nodes of~$Q$ span at most $\card Q$ dimensions. On binary inputs the formal values agree with the
 encoded values, $V_t(w)=v_t$, by induction on~$t$, so the linear map $\Phi\colon w\mapsto(V_t(w)-V_t(0))_{t\in\Gamma}$
@@ -171,29 +177,30 @@ and~$s_\ell$ are as claimed, since the rows $r_\ell$ lie in $E+\mathrm{span}\{e_
 (b) The first claim is the cone lemma of the fourth paper~\cite[Lemma~4.4 and Remark~4.6]{FourthPaper2026}, with the same
 proof by induction on the step of~$f$: $f$ is a function of the fields in $P(f)$ and of its kept input bit, whose
 position lies in $I_{\Gamma,Q}(f)$; a revealed field in $P(f)$ takes the same value on $w$ and~$w'$; and an unrevealed
-$g\in P(f)$ satisfies $I_{\Gamma,Q}(g)\subseteq I_{\Gamma,Q}(f)$, as in~(a). Now let $w,w'$ have the same image under the
-map and agree on $I(\ell)$. They agree on every revealed field, since $v_t$ determines the fields of step~$t$. If
-$\ell\in X$, the bit $w_{\tpos(\ell)}$ is part of the image. Otherwise $o_{t_\ell}$ takes the same value on $w$ and~$w'$,
-directly or by the first claim, and its bit is $w_{\tpos(\ell)}$. A step value and a field take at most $2^\beta$ values
-each.
+$g\in P(f)$ satisfies $I_{\Gamma,Q}(g)\subseteq I_{\Gamma,Q}(f)$, since a $(\Gamma,Q)$-free path from~$g$, preceded by the
+edge $f\to g$, is a $(\Gamma,Q)$-free path from~$f$. Now let $w,w'$ have the same image under the map and agree on
+$I(\ell)$. They agree on every revealed field, since $v_t$ determines the fields of step~$t$. If $\ell\in X$, the bit
+$w_{\tpos(\ell)}$ is part of the image. Otherwise $o_{t_\ell}$ takes the same value on $w$ and~$w'$, directly or by the
+first claim, and its bit is $w_{\tpos(\ell)}$. A step value and a field take at most $2^\beta$ values each.
 
-Formally, the decomposition is \lean{MergeDepth.rigidity_core} and \lean{MergeDepth.rigidity_finrank}, for a linear
-network whose output~$\ell$ is an affine function of the values at a set of output nodes; the bound on the revealed rank
-is \lean{MergeDepth.finrank_revealed_union_le} with \lean{MergeDepth.finrank_revealed_le} for single coordinates, and
-\lean{MergeDepth.finrank_revealed_le_of_values} with \lean{MergeDepth.finrank_revealed_coord_le} for whole steps. The
-first claim is the eighth paper's \lean{BoundedNesting.LinNet.vlin_expand} together with
-\lean{MergeDepth.C_eq_zero_of_not_mem_coneI}: the path sums vanish outside the cone set \lean{MergeDepth.coneI}, because a
-path from a node~$u$ has at most $u+1$ nodes (\lean{MergeDepth.length_le_of_mem_paths}). \lean{MergeDepth.expansion_cone}
-is the decomposition with the support of~$S$ in the cone sets of the unrevealed output nodes; in the uses below the paths
-have a common length bound, and \lean{MergeDepth.rigidity_finrank} records the support in balls of that radius. Part~(b)
-is \lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode} for function DAGs, and
+Formally, (a) is stated for a linear network whose output~$\ell$ is an affine function of the values at a set of output
+nodes. \lean{MergeDepth.expansion_cone} is the decomposition, with~$S$ supported in the cone sets \lean{MergeDepth.coneI}
+of the unrevealed output nodes. The path sums vanish outside these sets (\lean{MergeDepth.C_eq_zero_of_not_mem_coneI}),
+since the paths from a node have bounded length (\lean{MergeDepth.length_le_of_mem_paths}); with the eighth paper's
+expansion \lean{BoundedNesting.LinNet.vlin_expand} this is the first claim. The bound on $\dim E$ is
+\lean{MergeDepth.finrank_revealed_union_le}, with \lean{MergeDepth.finrank_revealed_le} for single coordinates and
+\lean{MergeDepth.finrank_revealed_le_of_values} with \lean{MergeDepth.finrank_revealed_coord_le} for whole steps. In the
+uses below, the $(\Gamma,Q)$-free paths from the output nodes of the positions outside~$X$ have a common length
+bound~$r$, and \lean{MergeDepth.rigidity_finrank} states the decomposition with row~$\ell$ of~$S$ supported in balls of
+radius~$r$. Part~(b) is \lean{MergeDepth.FunDag.cone} with \lean{MergeDepth.FunDag.isIndexCode} for function DAGs, and
 \lean{MergeDepth.Pruning.field_cone} with \lean{MergeDepth.Pruning.field_isIndexCode} for the field DAG of a pruning.
 \end{outline}
 
-For whole steps, the rank bound of~(a) is the counting of the eighth paper's per-machine rigidity
-lemma~\cite[Lemma~7.3]{BoundedNesting2026}. Its Lean statement charges $\beta$ per revealed node of a network, so applied to
-the coordinate DAG it would give only $\beta(m\card\Gamma+\card Q)$; the bound for mixed genies, $\beta$ per revealed step
-and one per revealed coordinate, is the elementary extension proved above.
+For whole steps, the bound on $\dim E$ is the counting of the eighth paper's per-machine rigidity
+lemma~\cite[Lemma~7.3]{BoundedNesting2026}, which \lean{MergeDepth.LinDataPath.rigidity_machine} proves for machines,
+with the translation of a machine into its linear network. The eighth paper's Lean statement charges $\beta$ per
+revealed node of a network, so applied to the coordinate DAG it would give only $\beta(m\card\Gamma+\card Q)$; part~(a)
+charges $\beta$ per revealed step and one per revealed coordinate.
 
 \subsection{Hop charging along transport trees}\label{sec:hop-HC}
 
@@ -230,6 +237,11 @@ and row~$\ell$ of~$S$ is zero for $\ell\in X$ and supported in $B^{(s+1)\tau D}(
 Give every copy its out-edge as lineage edge and no other node a lineage edge; this is a lineage assignment for every
 $\Gamma_{\mathrm F}$ (\cref{def:lineage,rem:hop-examples}). By \cref{lem:merge-formation}, its merge depth is at most the
 formation depth at every output position, so \cref{thm:HCprime}(a) applies with the same~$s$ and~$X$.
+
+Formally, \lean{MergeDepth.hop_charging_HC} derives the theorem in this way from \lean{MergeDepth.hop_charging_machine},
+the formal \cref{thm:HCprime}(a), with \lean{MergeDepth.copyForest} and \lean{MergeDepth.dm_le_countP_deepFormation}, in
+the setting described in the outline of \cref{thm:HCprime}; \lean{MergeDepth.LinDataPath.minrank_ballSystem_le_formation}
+is its minrank form for a machine with a data path, for a real constant~$C$.
 \end{outline}
 
 \begin{remark}[A direct proof]\label{rem:HC-direct}
@@ -259,7 +271,7 @@ which is a deep formation because its tree contains a deep edge, hence is $u_{i_
 deep edges of the piece, except possibly the one leaving $u_{i_a}$, lie on one chain of a tree that is not tall, and there
 are fewer than $\tau$ of them. Each piece thus has at most $\tau$ deep edges, and $\pi$ has at most $h\le(s+1)\tau$.
 Removing them leaves at most $h+1$ runs; the vertices of a run after its first are not revealed, so a run projects to a
-$\Gamma_{\mathrm F}$-free path of~$H_M$ without deep edges and has at most $D-1$ edges by \cref{lem:cold}. Hence
+$\Gamma_{\mathrm F}$-free path of~$H_M$ without deep edges and has at most $D-1$ edges. Hence
 $n\le h+(h+1)(D-1)\le r_0-1$.
 
 \emph{Expansion.} Apply \cref{lem:expansion}(a) with $\Gamma=\Gamma_{\mathrm F}$ and $Q=Q_0$. For $\ell\notin X$ the set
@@ -268,15 +280,18 @@ $\rank R\le\beta\card{\Gamma_{\mathrm F}}+\card{Q_0}+\card X\le\eps L+mN_{\mathc
 \eqref{eq:hop-NR}.
 \end{remark}
 
-Theorem~HC charges every deep hop on a long chain of copies to the root of the chain: storage, transport and multicast
-through deep cells cost rank $O(N_{\mathcal R}/\tau)$ on every schedule, and only formations at deep cells count. The
-direct proof applies verbatim to field DAGs, with \cref{lem:expansion}(b) in place of~(a); the revealed roots are then fields of
-any kind, a state or an output field among them, and cost up to $\beta$ bits each.
+Theorem~HC charges every deep hop on a long chain of copies to a checkpoint on that chain: storage, transport and
+multicast through deep cells cost rank $O(N_{\mathcal R}/\tau)$ on every schedule, and only deep formations count.
+Theorem~HC holds for field DAGs as well, with the index code of Theorem~HC$'$(b) in place of the decomposition and the
+same proof (\lean{MergeDepth.hop_charging_pruning_HC}). The direct proof also applies to field DAGs, with
+\cref{lem:expansion}(b) in place of~(a); the revealed roots are then fields of any kind, a state or an output field among
+them, and cost up to $\beta$ bits each.
 
 \subsection{Hop charging along lineages}\label{sec:hop-HCprime}
 
-Theorem~HC counts every formation at a deep cell, so it does not cover a deep cell that accumulates fresh data,
-$\sigma\leftarrow\sigma+x$, at each visit. Such an update keeps a single lineage, and lineages can be checkpointed.
+Theorem~HC counts every deep formation, so it does not cover a deep cell that accumulates fresh data,
+$\sigma\leftarrow\sigma+x$, at each visit: every such update is a deep formation. Such an update keeps a single lineage,
+and lineages can be checkpointed.
 
 \begin{definition}[Lineages and merge depth]\label{def:lineage}
 Let $G$ be a refinement and $\Gamma_{\mathrm F}\subseteq[0,T)$. A \emph{lineage assignment} for $\Gamma_{\mathrm F}$
@@ -293,8 +308,8 @@ merge} of~$\pi$ if it is a merge node and
 continuation and $u_{j'}\to u_{j'+1}$ is its lineage edge.
 \end{enumerate}
 The \emph{merge depth} at an output position~$\ell$ is the largest number of deep merges of a
-$\Gamma_{\mathrm F}$-free path of~$G$ from an output node of~$\ell$. The refinement has \emph{merge depth at most~$s$},
-or is \emph{$s$-round}, if its merge depth is at most~$s$ at every output position.
+$\Gamma_{\mathrm F}$-free path of~$G$ from an output node of~$\ell$. The refinement has \emph{merge depth at most~$s$}
+if its merge depth is at most~$s$ at every output position.
 \end{definition}
 
 Lineage edges are edges of~$G$, never input marks. A merge node with out-edges typically merges two deep lineages, or
@@ -302,18 +317,21 @@ deep content with data derived from deep cells. Whether a node is a deep merge d
 along a deep edge or arrive through a deep lineage edge followed only by lineage edges. Counting every merge node whose
 lineage tree contains a deep edge would not satisfy \cref{lem:merge-formation} below: such a node need not be a deep
 formation, since its transport tree may contain no deep edge, and a run of cold edges can pass through many such nodes
-without using their lineage trees.
+without using their lineage trees. In Lean the lineage edges form a forest (\lean{MergeDepth.Forest}), the defining
+condition of a lineage assignment is a hypothesis of the results that use it, and \lean{MergeDepth.dm} counts the deep
+merges of a path.
 
 \begin{remark}[Examples]\label{rem:hop-examples}
 Assigning to every copy its out-edge, and to no other node a lineage edge, is a lineage assignment for every
 $\Gamma_{\mathrm F}$. A deep-cell update that combines the previous content of the cell with data whose
-$\Gamma_{\mathrm F}$-free paths reach no deep edge, such as fresh input bits, is a continuation. If every tail of a deep
-edge is a continuation with that edge as lineage edge, and no lineage root of a tree containing a deep edge reaches a deep
-edge by a $\Gamma_{\mathrm F}$-free path, then ($\alpha$) never applies, nothing after a deep merge of type~($\beta$) is
-deep, and every path has at most one deep merge. This covers deep cells that only store, move, multicast or accumulate
-data not derived from deep cells, and pure data movement. Relays with boundedly many mixing steps, or butterflies of
-bounded depth, have bounded merge depth. A side edge into a step of $\Gamma_{\mathrm F}$ may be deep, as the one-edge path
-into a revealed step is not $\Gamma_{\mathrm F}$-free; the paths that matter below never use one.
+$\Gamma_{\mathrm F}$-free paths reach no deep edge, such as fresh input bits, can be a continuation, with the edge to the
+previous content as its lineage edge. If every tail of a deep edge is a continuation with that edge as lineage edge, and
+no lineage root of a tree containing a deep edge reaches a deep edge by a $\Gamma_{\mathrm F}$-free path, then
+($\alpha$) never applies, nothing after a deep merge of type~($\beta$) is deep, and every path has at most one deep
+merge. This covers deep cells that only store, move, multicast or accumulate data not derived from deep cells, and pure
+data movement. Relays with boundedly many mixing steps, or butterflies of bounded depth, have bounded merge depth. A
+side edge into a step of $\Gamma_{\mathrm F}$ may be deep, as the one-edge path into a revealed step is not
+$\Gamma_{\mathrm F}$-free; the paths that matter below never use one.
 \end{remark}
 
 \begin{lemma}[Covering]\label{lem:covering}
@@ -335,30 +353,31 @@ node, heads of marked edges at $\tau$ consecutive marked heights, one in each cl
 \begin{lemma}[Few deep merges, short paths]\label{lem:short-paths}
 \formal{MergeDepth/HopFields.lean}{MergeDepth.short_paths}
 Let $G$ be a refinement of width~$m$, let $\Gamma_{\mathrm F}$ be a cold genie at $(V,\eps)$ with depth~$D$, fix a
-lineage assignment for~$\Gamma_{\mathrm F}$, and let $\tau\ge1$. Apply \cref{lem:covering} to the forest of lineage
-edges, with its deep edges marked, and let $Q$ be the set obtained. Then $\card Q\le mN_{\mathcal R}/\tau$, and every
-$(\Gamma_{\mathrm F},Q)$-free path of~$G$ with $s'$ deep merges has at most $(s'+1)\tau-1$ deep edges and fewer than
-$(s'+1)\tau D$ edges.
+lineage assignment for~$\Gamma_{\mathrm F}$, and let $\tau\ge1$. There is a set~$Q$ of at most $mN_{\mathcal R}/\tau$
+nodes of~$G$, the \emph{checkpoints}, such that every $(\Gamma_{\mathrm F},Q)$-free path of~$G$ with $s'$ deep merges has
+at most $(s'+1)\tau-1$ deep edges and fewer than $(s'+1)\tau D$ edges.
 \end{lemma}
 
 \begin{outline}
-\emph{Counting.} A deep lineage edge projects to a deep edge $t\to t'$ of~$H_M$ and has its tail at step~$t$; every node
-has at most one lineage edge, and at most $m$ nodes lie at step~$t$. So there are at most $m$ times as many deep lineage
-edges as deep edges of~$H_M$, at most $mN_{\mathcal R}$ by~\eqref{eq:hop-NR}, and \cref{lem:covering} gives
+\emph{Counting.} The projection of a deep lineage edge is a deep edge of~$H_M$, so its tail lies at a step at which a
+deep hop ends. There are at most $N_{\mathcal R}$ such steps and at most $m$ nodes at each, and every node has at most
+one lineage edge. Mark the lineage edges whose tails lie at these steps: every deep lineage edge is marked, and at most
+$mN_{\mathcal R}$ edges are. Let $Q$ be the set that \cref{lem:covering} gives for the forest of lineage edges; then
 $\card Q\le mN_{\mathcal R}/\tau$.
 
 \emph{Deep edges.} Let $\pi=(u_0\to\dots\to u_n)$ be $(\Gamma_{\mathrm F},Q)$-free. If $\pi$ leaves a continuation~$u_i$
 by an edge other than its lineage edge, then the rest $u_i\to\dots\to u_n$ contains no deep edge, since it is
 $\Gamma_{\mathrm F}$-free. Walk along~$\pi$ and keep the current \emph{stretch}: the longest final segment of the part
 walked so far that follows lineage edges. Its vertices after the first are vertices of~$\pi$ after~$u_0$, hence not
-in~$Q$, so by \cref{lem:covering} it contains fewer than $\tau$ deep edges. By induction on the length of the rest of the
-path, the deep edges of the rest together with those of the current stretch number at most $\tau-1$ plus $\tau$ times the
-deep merges of the rest, where a merge node reached through the current stretch counts as of type~($\beta$) if the stretch
-contains a deep edge. Indeed, at a merge node~$u_i$ the stretch ends: if the edge $u_i\to u_{i+1}$ is deep or the stretch
-contains a deep edge, then $u_i$ is a deep merge, and its share~$\tau$ pays for the fewer than $\tau$ deep edges of the
-stretch and the edge leaving~$u_i$; otherwise the stretch contains no deep edge. At a continuation that $\pi$ leaves by
-its lineage edge the stretch grows by that edge, and at a continuation that $\pi$ leaves by another edge no deep edge
-follows. Starting with the stretch $(u_0)$, the path has at most $h\le\tau-1+\tau s'=(s'+1)\tau-1$ deep edges.
+in~$Q$, so by \cref{lem:covering} it contains fewer than $\tau$ marked edges, hence fewer than $\tau$ deep edges. By
+induction on the length of the rest of the path, the deep edges of the rest together with those of the current stretch
+number at most $\tau-1$ plus $\tau$ times the deep merges of the rest, where a merge node reached through the current
+stretch counts as of type~($\beta$) if the stretch contains a deep edge. Indeed, at a merge node~$u_i$ the stretch ends:
+if the edge $u_i\to u_{i+1}$ is deep or the stretch contains a deep edge, then $u_i$ is a deep merge, and its share~$\tau$
+pays for the fewer than $\tau$ deep edges of the stretch and the edge leaving~$u_i$; otherwise the stretch contains no
+deep edge. At a continuation that $\pi$ leaves by its lineage edge the stretch grows by that edge, and at a continuation
+that $\pi$ leaves by another edge no deep edge follows. Starting with the stretch $(u_0)$, the path has at most
+$h\le\tau-1+\tau s'=(s'+1)\tau-1$ deep edges.
 
 \emph{Length.} Removing the deep edges leaves at most $h+1$ runs. The vertices of a run after its first are not revealed,
 so a run projects to a $\Gamma_{\mathrm F}$-free path of~$H_M$ without deep edges and has at most $D-1$ edges by the
@@ -374,8 +393,8 @@ the set of output positions at which $G$ has merge depth greater than~$s$. There
 $mN_{\mathcal R}/\tau$ nodes of~$G$ such that every $(\Gamma_{\mathrm F},Q)$-free path of~$G$ from an output node of a
 position $\ell\notin X$ has fewer than $r$ edges. Suppose that $M$ transposes all $d\times d$ matrices.
 \begin{enumerate}[label=(\alph*)]
-\item If $G$ is the coordinate DAG, then $P_{\tpos}=R+S$ with $\rank R\le\eps L+mkC(L+1)/\tau+\card X$ and row~$\ell$
-of~$S$ supported in $B^r(\ell)$ for every~$\ell$.
+\item If $G$ is the coordinate DAG, then $P_{\tpos}=R+S$ with $\rank R\le\eps L+mkC(L+1)/\tau+\card X$, where row~$\ell$
+of~$S$ is zero for $\ell\in X$ and supported in $B^r(\ell)$ otherwise.
 \item If $G$ is a field DAG, there is an index code with at most $\eps L+\beta(k+2)kC(L+1)/\tau+\card X$ bits for a
 system $(I(\ell))_\ell$ with $I(\ell)\subseteq B^r(\ell)$ for every~$\ell$.
 \end{enumerate}
@@ -388,32 +407,38 @@ the sets $I(\ell)$ of \cref{lem:expansion}, applied with $\Gamma=\Gamma_{\mathrm
 $B^{r-1}(\ell)\subseteq B^r(\ell)$ for $\ell\notin X$, and they are empty for $\ell\in X$ in case~(b). The rank in~(a) is
 at most $\beta\card{\Gamma_{\mathrm F}}+\card Q+\card X\le\eps L+mN_{\mathcal R}/\tau+\card X$, and the code in~(b) has at
 most $\beta\card{\Gamma_{\mathrm F}}+\beta\card Q+\card X\le\eps L+\beta(k+2)N_{\mathcal R}/\tau+\card X$ bits;
-apply~\eqref{eq:hop-NR}. Formally, part~(a) is proved for a linear network of width~$m$ whose edges are dependency steps
-of the work-head walks, whose steps take at most $2^\beta$ values on binary inputs, and a cold genie in the sense of
-\lean{MergeDepth.IsColdGenie}. \lean{MergeDepth.hop_charging_steps} proves it with the rank bound
-$\beta\card{\Gamma_{\mathrm F}}+q+\card X$, where $\tau q$ is at most $m$ times the number of deep edges; the
-coordinate DAG is the network \lean{MergeDepth.coordNet}, whose values are the coordinates of the step values
-(\lean{MergeDepth.coord_val}) and whose paths and balls project to those of~$H_M$
-(\lean{MergeDepth.coord_paths}, \lean{MergeDepth.coord_reach_subset}); \lean{MergeDepth.hop_charging} combines
-\lean{MergeDepth.paths_short} with the decomposition \lean{MergeDepth.rigidity_finrank} of \cref{lem:expansion}(a), and
-\lean{MergeDepth.hop_charging_machine} states~(a) with the constants above. For part~(b), the machine is oblivious before
-a time~$T$ by which it has appended $L$ bits (\lean{MergeDepth.ObliviousTransposer}), which holds for the frozen notion
-of obliviousness; a pruning is \lean{MergeDepth.Pruning}, and its field DAG \lean{MergeDepth.Pruning.toFunDag} is a
-function DAG that refines the dependency DAG. Keeping everything is a pruning (\lean{MergeDepth.Pruning.full}), by the
-local recursion of the fourth paper at the level of fields (\lean{MergeDepth.stepValue_eq_of_preds}).
-\lean{MergeDepth.hop_charging_pruning} and \lean{MergeDepth.hop_charging_pruning_bits} are~(b), through
-\lean{MergeDepth.hop_charging_fields} for refinements, and \lean{MergeDepth.short_paths_pruning} is the path bound.
+apply~\eqref{eq:hop-NR}.
 
-The checkpoints can be chosen among the heads of deep lineage edges (\lean{MergeDepth.hop_charging_fields_heads}). In a
-field DAG these heads are symbol fields, which take at most $\card\Gamma$ values, so in~(b) the term charged to the
-checkpoints improves to $\lceil\log_2\card\Gamma\rceil(k+2)kC(L+1)/\tau$ (\lean{MergeDepth.hop_charging_pruning_sym}).
+Formally, (a) is stated for a linear network of width~$m$ whose edges are dependency steps of the work-head walks, whose
+steps in~$\Gamma_{\mathrm F}$ take at most $2^\beta$ values on binary inputs and whose output functionals transpose on
+binary inputs, and for a cold genie in the sense of \lean{MergeDepth.IsColdGenie}. The network
+\lean{MergeDepth.LinDataPath.net} of a data path of an oblivious transposer has these properties
+(\lean{MergeDepth.LinDataPath.net_depStep}, \lean{MergeDepth.LinDataPath.val_card_le},
+\lean{MergeDepth.LinDataPath.trans_of_transposer}). \lean{MergeDepth.hop_charging_steps} proves~(a) with the rank bound
+$\beta\card{\Gamma_{\mathrm F}}+q+\card X$, where $\tau q$ is at most $m$ times the number of deep edges. The coordinate
+DAG is the network \lean{MergeDepth.coordNet}, whose values are the coordinates of the step values
+(\lean{MergeDepth.coord_val}) and whose paths and balls project to those of~$H_M$ (\lean{MergeDepth.coord_paths},
+\lean{MergeDepth.coord_reach_subset}); \lean{MergeDepth.hop_charging} combines \lean{MergeDepth.paths_short} with the
+decomposition \lean{MergeDepth.rigidity_finrank} of \cref{lem:expansion}(a). \lean{MergeDepth.hop_charging_machine} states~(a)
+with the constants above, and \lean{MergeDepth.hop_charging_machine_real} for a real constant~$C$. For~(b), the machine
+need only be oblivious before a time~$T$ by which it has appended $L$ bits (\lean{MergeDepth.ObliviousTransposer}), which
+holds for the frozen notion of obliviousness, and its entries may have any width. A pruning is
+\lean{MergeDepth.Pruning}, and its field DAG \lean{MergeDepth.Pruning.toFunDag} is a function DAG that refines the
+dependency DAG. Keeping everything is a pruning (\lean{MergeDepth.Pruning.full}), by the local recursion of the fourth
+paper at the level of fields (\lean{MergeDepth.stepValue_eq_of_preds}). \lean{MergeDepth.hop_charging_pruning} and
+\lean{MergeDepth.hop_charging_pruning_bits} are~(b), through \lean{MergeDepth.hop_charging_fields} for refinements, and
+\lean{MergeDepth.short_paths_pruning} is the path bound.
+
+The checkpoints can be chosen among the heads of deep lineage edges, by marking only the deep lineage edges
+(\lean{MergeDepth.hop_charging_fields_heads}). In a field DAG these heads are symbol fields, so in~(b) a checkpoint costs
+$\lceil\log_2g\rceil$ bits instead of~$\beta$, where $g$ is the number of work-tape symbols, and the term charged to the
+checkpoints improves to $\lceil\log_2g\rceil(k+2)kC(L+1)/\tau$ (\lean{MergeDepth.hop_charging_pruning_sym}).
 \end{outline}
 
-Theorem~HC$'$ reduces the depth of the code, not of the schedule: every output has bounded depth in~$G$ once
-$\Gamma_{\mathrm F}$ and~$Q$ are revealed, as for the coordinate genies of~\cite[Remark~7.6(c)]{BoundedNesting2026},
-while paths of~$H_M$, which need not follow the dependencies of the code, may stay long. In~(a) the bound is on the rank
-and does not depend on~$\F$; counted in bits, a revealed coordinate would cost up to
-$\min(\lceil\log_2\card\F\rceil,\beta)$.
+Theorem~HC$'$ reduces the depth of the code, not of the schedule: every output outside~$X$ has bounded depth in~$G$ once
+$\Gamma_{\mathrm F}$ and~$Q$ are revealed, as for the coordinate genies of~\cite[Remark~7.6(c)]{BoundedNesting2026}, while
+paths of~$H_M$, which need not follow the dependencies of the code, may stay long. In~(a) the bound is on the rank and
+does not depend on~$\F$; counted in bits, a revealed coordinate would cost up to $\min(\lceil\log_2\card\F\rceil,\beta)$.
 
 \begin{lemma}[Merge depth and formation depth]\label{lem:merge-formation}
 \formal{MergeDepth/Formation.lean}{MergeDepth.dm_le_countP_deepFormation}
@@ -431,78 +456,77 @@ deep edge, a deep formation; until it is reached, the deep copy edge lies in the
 deep merge of type~($\alpha$) is a formation with a deep out-edge, hence a deep formation itself; one of type~($\beta$)
 ends a stretch that contains a deep lineage edge, and is paid by the credit of that stretch or, if the deep edge left a
 copy and no formation has followed, is itself the root of the transport tree that contains it. A side edge ends the
-stretch, and stretches are disjoint, so no deep formation pays twice.
+stretch, and stretches are disjoint, so no deep formation pays twice. The argument uses only the lineage edges, not the
+defining condition of a lineage assignment, and \lean{MergeDepth.dm_le_countP_deepFormation} is stated in that
+generality.
 \end{outline}
 
-So Theorem~HC$'$ applies, with the same~$s$, to every code to which Theorem~HC applies, at the smaller radius
-$(s+1)\tau D$ instead of $((s+1)\tau+1)D$, and it covers accumulators of fresh data as well. It is the form used below.
+So Theorem~HC$'$ applies, with the same~$s$, to every code to which Theorem~HC applies, which is how Theorem~HC is
+proved, and it covers accumulators of fresh data as well. It is the form used below.
 
 \subsection{Exclusion of bounded merge depth}\label{sec:hop-excl}
 
 \begin{corollary}[Corollary HC: the linear crux excludes bounded merge depth]\label{cor:HC}
 \formal{MergeDepth/LinearCrux.lean}{MergeDepth.cor_HC,MergeDepth.cor_HC_formation,MergeDepth.cor_HC_uniform,MergeDepth.cor_HC_formation_uniform,MergeDepth.LinDataPath,MergeDepth.SBall,MergeDepth.LinCrux,MergeDepth.MergeShallow,MergeDepth.FormationShallow}
-Let $k,m,V\ge1$, $\beta\ge2$ and $s\ge0$ be integers, $C\ge1$, $\F$ a field, $0<\eps<\rho$ with $\eps\le1$, and
-$0\le\eta<(\rho-\eps)/8$. Put
+Let $k,m,V\ge1$, $\beta\ge2$ and $s\ge0$ be integers, $C\ge1$ real, $\F$ a field, $0<\eps<\rho$ and
+$0\le\eta<7(\rho-\eps)/8$. Put
 \[
   \tau=\Bigl\lceil\frac{8mkC}{\rho-\eps}\Bigr\rceil,\qquad
   D=\DF\bigl(k,2V-1,\eps/(4\beta C)\bigr)\cdot\lceil4\beta C/\eps\rceil,\qquad r=(s+1)\tau D,
 \]
-and suppose that $\LinCrux_\F(\Sball_{k,C,\beta,r},\rho)$ holds~\cite[Definition~7.4]{BoundedNesting2026}. Then for every
-machine~$M$ with $k$ work tapes and value width at most~$\beta$ there is~$d_0$ such that for no $d\ge d_0$ do the
+and suppose that $\LinCrux_\F(\Sball_{k,C,\beta,r},\rho)$ holds~\cite[Definition~7.4]{BoundedNesting2026}. Then there
+is~$d_0$ such that for no $d\ge d_0$ and no machine~$M$ with $k$ work tapes and value width at most~$\beta$ do the
 following hold together at $L=d^2b(d)$:
 \begin{enumerate}[label=(\roman*)]
 \item $M$ is oblivious at length~$L$ with halting time at most $C(L+1)$ and transposes all $d\times d$ matrices;
 \item $M$ has an $\F$-linear data path at length~$L$ with a representation of width at most~$m$ whose coordinate DAG,
-for some cold genie at $(V,\eps)$ and some lineage assignment for it, has merge depth at most~$s$ at all but at most
-$\eta L$ output positions.
+for some cold genie at $(V,\eps)$ with depth~$D$ and some lineage assignment for it, has merge depth at most~$s$ at all
+but at most $\eta L$ output positions.
 \end{enumerate}
 The same holds with merge depth replaced by formation depth.
 \end{corollary}
 
 \begin{outline}
-Let $d_0\ge1$ be at least the threshold that the linear crux gives for $\eta'=(\rho-\eps)/2$ (at $d=0$ there are no
-outputs, and (i) and~(ii) can both hold), and suppose that (i) and~(ii) hold at some $d\ge d_0$,
-with a representation of width $m'\le m$, a cold genie $\Gamma_{\mathrm F}$ and a lineage assignment; let $X$ be the set
-of output positions at which the merge depth exceeds~$s$, so $\card X\le\eta L$. \Cref{thm:HCprime}(a), with $m'$ in place
-of~$m$, gives $P_{\tpos}=R+S$ with row~$\ell$ of~$S$ supported in $B^r(\ell)$ and, as $\tau\ge8mkC/(\rho-\eps)$ and
-$L\ge1$,
+By the choice of~$\tau$, $mkC/\tau\le(\rho-\eps)/8$, so $\eta'=\frac12\bigl(\frac78(\rho-\eps)-\eta\bigr)$ is positive and
+$\eps+\eta+mkC/\tau\le\rho-2\eta'$. Let $d_0$ be at least the threshold that the linear crux gives for~$\eta'$ and so
+large that $mkC/\tau<\eta'L$ for $d\ge d_0$. Suppose that (i) and~(ii) hold for a machine~$M$ at some $d\ge d_0$, with a
+representation of width $m'\le m$, a cold genie $\Gamma_{\mathrm F}$ and a lineage assignment, and let $X$ be the set of
+output positions at which the merge depth exceeds~$s$, so $\card X\le\eta L$. \Cref{thm:HCprime}(a), which holds for a
+real~$C$, with $m'$ in place of~$m$, gives $P_{\tpos}=R+S$ with row~$\ell$ of~$S$ supported in $B^r(\ell)$ and
 \[
-  \rank R\le\eps L+\frac{(\rho-\eps)(L+1)}8+\eta L<\eps L+\frac{(\rho-\eps)(2L+1)}8\le\eps L+\frac{(\rho-\eps)L}2
-  =(\rho-\eta')L.
+  \rank R\le\eps L+\frac{m'kC(L+1)}\tau+\eta L\le(\rho-2\eta')L+\frac{mkC}\tau<(\rho-\eta')L .
 \]
 The ball system $(B^r(\ell))_\ell$ of~$M$ belongs to $\Sball_{k,C,\beta,r}$, since $M$ is oblivious with $k$ work tapes,
 value width at most~$\beta$ and halting time at most $C(L+1)$, and appends exactly $L$ bits. Its minrank over~$\F$ is at
-most $\rank R<(\rho-\eta')L$, contrary to the linear crux. For formation depth, take the lineage assignment that gives every copy its out-edge
-(\cref{rem:hop-examples}); by \cref{lem:merge-formation} its merge depth is at most the formation depth.
+most $\rank R<(\rho-\eta')L$, contrary to the linear crux. For formation depth, take the lineage assignment that gives
+every copy its out-edge (\cref{rem:hop-examples}); by \cref{lem:merge-formation} its merge depth is at most the formation
+depth.
 
 Formally, a data path is \lean{MergeDepth.LinDataPath}, the eighth paper's Definition~7.1 for a machine that is oblivious
-along a trace, and the values of its network are the encoded step values (\lean{MergeDepth.LinDataPath.val_eq_enc}); the class and
-the crux are \lean{MergeDepth.SBall} and \lean{MergeDepth.LinCrux}, and~(ii) is \lean{MergeDepth.MergeShallow} or
-\lean{MergeDepth.FormationShallow}, in the form of the coordinate DAG. \lean{MergeDepth.cor_HC} and
-\lean{MergeDepth.cor_HC_formation} are the corollary, through the bound \lean{MergeDepth.LinDataPath.minrank_ballSystem_le}
-at one size, and \lean{MergeDepth.cor_HC_uniform} and \lean{MergeDepth.cor_HC_formation_uniform} take $d_0$ uniform over
-the machines with $k$ work tapes and value width at most~$\beta$, for every $\eta<7(\rho-\eps)/8$. The hypotheses $V\ge1$,
-$\beta\ge2$, $\eps>0$, $\eps\le1$ and $\eta\ge0$ are not used, since they matter only for the existence of a cold genie,
-which~(ii) assumes, and $C>0$ suffices. On the way, \lean{MergeDepth.LinDataPath.rigidity_machine} is the eighth paper's
-Lemma~7.3 for machines, including the translation of a machine into a linear network.
+along a trace; the values of its network, \lean{MergeDepth.LinDataPath.net}, are the encoded step values
+(\lean{MergeDepth.LinDataPath.val_eq_enc}). The class is \lean{MergeDepth.SBall}, the crux is \lean{MergeDepth.LinCrux},
+and condition~(ii) is \lean{MergeDepth.MergeShallow}, or \lean{MergeDepth.FormationShallow} for formation depth. The
+corollary is \lean{MergeDepth.cor_HC_uniform}, or \lean{MergeDepth.cor_HC_formation_uniform} for formation depth, proved
+through the minrank form \lean{MergeDepth.LinDataPath.minrank_ballSystem_le} of \cref{thm:HCprime}(a) at one size. The
+weaker forms \lean{MergeDepth.cor_HC} and \lean{MergeDepth.cor_HC_formation} have a threshold for each machine and
+$\eta<(\rho-\eps)/8$. The hypotheses $V\ge1$, $\beta\ge2$, $\eps>0$ and $\eta\ge0$ are not used, since they matter only
+for the existence of a cold genie, which~(ii) assumes, and $C>0$ suffices.
 \end{outline}
 
-Given the linear crux at one fixed radius, an oblivious linear-time transposer with a linear code must therefore, for
-every~$s$ and on every schedule, merge deep lineages more than $s$ times along some path from each of more than
-$\eta L$ outputs, for every $\eta<7(\rho-\eps)/8$ (\lean{MergeDepth.cor_HC_uniform}; the written proof gives
-$\eta<(\rho-\eps)/8$).
+Given the linear crux at the radius~$r$, an oblivious linear-time transposer with an $\F$-linear data path of width at
+most~$m$ must therefore, on every schedule, merge deep lineages more than $s$ times along some path from the output
+nodes of more than $\eta L$ output positions, whatever its cold genie at $(V,\eps)$ and its lineage assignment.
 
 \begin{remark}[Parameters and special cases]\label{rem:HC-scope}
-(a) The depth in Corollary~F depends only on $k$, $V$, $\beta$, $C$ and~$\eps$; the radius~$r$ here depends also on
-$\rho-\eps$, $m$ and~$s$, through~$\tau$. Excluding machines of every width, or of every merge depth, needs the linear crux
-along a sequence of radii. (b) If every work-tape cell is entered at most $V$ times, there are no deep edges, no deep
-merges and $Q=\emptyset$, and row~$\ell$ of~$S$ is supported in the cone of the whole-step genie~$\Gamma_{\mathrm F}$, of
-full depth less than~$D$. The argument then needs only a minrank bound for the cone systems of the class
-$\mathcal S_{k,C,\beta,D}$~\cite[Definition~4.8]{FourthPaper2026}: it is Corollary~F restricted to linear codes. Stated
-with balls, Corollary~HC contains only the ball form of Corollary~F, whose hypothesis
-$\LinCrux_\F(\Sball_{k,C,\beta,D},\rho)$ is stronger, as ball systems dominate cone
-systems~\cite[Remark~7.6(a)]{BoundedNesting2026}. (c) No depth reduction of the deep part is used, so the corollary applies
-to the deep-nesting pairs as to every other schedule.
+(a) The depth in Corollary~F depends only on $k$, $V$, $\beta$, $C$ and~$\eps$; the radius $r=(s+1)\tau D$ here depends
+also on~$s$, and on $m$ and $\rho-\eps$ through~$\tau$. Excluding machines of every width, or of every merge depth, needs
+the linear crux along a sequence of radii. (b) If every work-tape cell is entered at most $V$ times, there are no deep
+edges and no deep merges, $Q=\emptyset$, and row~$\ell$ of~$S$ is supported in the cone of the whole-step
+genie~$\Gamma_{\mathrm F}$, whose full depth is less than~$D$. The argument then needs only a minrank bound for the cone
+systems of the class $\mathcal S_{k,C,\beta,D}$~\cite[Definition~4.8]{FourthPaper2026}: it is Corollary~F restricted to
+linear codes. As stated, with balls of radius $r\ge D$, Corollary~HC contains only a ball form of Corollary~F, whose
+hypothesis is stronger, as ball systems dominate cone systems~\cite[Remark~7.6(a)]{BoundedNesting2026}. (c) No depth
+reduction of the deep part is used, so the corollary applies to the deep-nesting pairs as to every other schedule.
 \end{remark}
 
 For all codes the crux has to be applied to relations that are not cone relations of whole-step genies. The fifth
@@ -524,52 +548,54 @@ $\card{\mathcal A}\ge2$ satisfies $\log_{\card{\mathcal A}}\card{\mathcal C}\le(
 \end{lemma}
 
 \begin{outline}
-(a) In the fifth paper the relation is $N(q)=I_\Gamma(\Pi(q))$ for a genie~$\Gamma$ of full depth at most~$D$, where
-$\Pi=\tpos$ is the transpose permutation of~\cite[Section~3.1]{DirectedRecovery2026}, and $B=\sum_{i\le D}(k+1)^i$. The
-proofs there of Lemma~3.6, Theorem~3.3 and Corollaries~3.7 and~3.8 use the relation only through Lemma~3.5 and, in
-Corollary~3.8, through the bound $\card{N(q)}\le B$; Lemma~3.4 involves no relation. The proof of Lemma~3.5 uses the
-genie in one place only: for every edge $L_pR_q$ of a matching it chooses a $\Gamma$-free path of~$H_M$ with at most $D$
-edges from the step that appends output position $\Pi(q)$ to a step that reads~$p$. Afterwards it uses only that the
-chosen paths are paths of~$H_M$ with at most $D$ edges, and that every vertex of~$H_M$ has in-degree at most $k+1$, so
-that a vertex lies on the chosen paths of at most $B$ output steps. For our~$N$ a path with at most $D'$ edges from
-$t_{\tpos(q)}$ to a step that reads~$p$ exists for every $p\in N(q)$, by the definition of $B^{D'}(\tpos(q))$; and
-$\card{N(q)}\le K$, because at most $K$ steps are reachable from a step by paths of at most $D'$ edges, out-degrees being
-at most $k+1$, and each step reads at most one position. So the proofs apply verbatim, with $D'$ and~$K$ in place of $D$
-and~$B$. The last sentence of~(a) is Corollary~3.7, with the constant~$A_1$ of \cref{lem:skel-disjoint} at $w=1$, where
-$K_1=k+2$ and $wB$ becomes~$K$.
+(a) We run the argument of \cref{sec:skel-paired} at scale $w=1$, where the block DAG is the dependency DAG~$H_M$ and the
+relaxation has one head on each of the $k+2$ tapes, following the corresponding head of~$M$, and one register. That
+argument is the fifth paper's proof of its Theorem~3.3 and Corollaries~3.7 and~3.8, which uses the relation only through
+the realization of matchings of its incidence graph (the fifth paper's Lemma~3.5, our \cref{lem:skel-matching}) and
+through a bound on $\card{N(q)}$. For a matching of the incidence graph of~$N$, choose for every edge $L_pR_q$ a path
+of~$H_M$ with at most $D'$ edges from $t_{\tpos(q)}$ to a step that reads~$p$; it exists because
+$p\in B^{D'}(\tpos(q))$. In-degrees in~$H_M$ are at most $k+1$, so a step lies on the chosen paths of at most $K$ output
+steps, each of which appends one position, and the realization along the chosen paths, as in the proof of
+\cref{lem:skel-matching}, has occupancy at most~$K$. Likewise $\card{N(q)}\le K$, because at most $K$ steps are reachable
+from a step by paths of at most $D'$ edges, out-degrees being at most $k+1$, and each step reads at most one position.
+So \cref{lem:skel-disjoint} and \cref{prop:skel-paired} hold for~$N$ with $K_1=k+2$ heads and occupancy~$K$ in place
+of~$wB$. They give the conclusions of Theorem~3.3 and Corollaries~3.7 and~3.8 with
+$A_s=2sCK(k+2)(k+3)+3$ in place of the fifth paper's $4sC(B+1)(k+2)(k+6)+3$, and with $K$ in place of~$B$; the last
+sentence of~(a) is \cref{prop:skel-paired}(b).
 
-(b) This is the proof of~\cite[Proposition~9.2]{DirectedRecovery2026}, with~(a) in place of the statements for cone
-relations. We may assume $\delta\le\frac14$, since the claim for $\frac14$ implies it for larger~$\delta$. Let $\delta>0$, put $M_\delta=\lceil4K/\delta\rceil$ and $\Delta=\max(K,M_\delta)$, and suppose that the claim
-fails: there are machines as in the statement at sizes $d_j\to\infty$, relations~$N_j$ and codes~$\mathcal C_j$ over
-alphabets~$\mathcal A_j$ with $\log_{\card{\mathcal A_j}}\card{\mathcal C_j}>(\frac12+\delta)L_j$. Let $H_j$ be the set of
-coordinates~$p$ whose left vertex $L_p$ has degree greater than $M_\delta$ in the incidence
-graph~\cite[Definition~2.3]{DirectedRecovery2026}. The left degrees sum to $\sum_q\card{N_j(q)}\le KL_j$, so
-$\card{H_j}\le\delta L_j/4$. Let $Q_j$ be the complement of~$H_j$ and $N'_j$ the relation induced on~$Q_j$. Its incidence
-graph is the induced graph $E_{Q_j}$, of maximum degree at most~$\Delta$, and by~(a), Theorem~3.3 applied with $Q=Q_j$,
-for every fixed~$r$ at most $O(L_j/\log d_j)=o(\card{Q_j})$ coordinates of~$Q_j$ have their two ports at distance at
-most~$r$; so $(N'_j)$ satisfies the paired-distance condition. Fixing the coordinates in~$H_j$ and restricting to~$Q_j$
-gives storage codes for~$N'_j$~\cite[Lemma~2.2]{DirectedRecovery2026}, one of which, $\mathcal C'_j$, has
-$\log_{\card{\mathcal A_j}}\card{\mathcal C'_j}\ge\log_{\card{\mathcal A_j}}\card{\mathcal C_j}-\card{H_j}
->(\frac12+\frac{3\delta}4)L_j\ge(\frac12+\frac{3\delta}4)\card{Q_j}$. This contradicts the affirmative answer to
-Question~9.1 for the degree bound~$\Delta$.
-Formally, (a) is proved through \cref{sec:skel-paired} at scale $w=1$, where the block DAG is the dependency DAG: the
-head walks of the machine are the reference walks, and the steps that read input positions and append output bits are
-those of its trace (\lean{MergeDepth.trace_ball_data}). \lean{MergeDepth.realizes_ball} realizes every matching of the
-incidence graph of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lean{MergeDepth.ball_self_demands}
-and \lean{MergeDepth.ball_trimming} are the analogues of the fifth paper's Theorem~3.3 and Corollaries~3.7 and~3.8;
-\lean{MergeDepth.ball_paired_packing_trace} and \lean{MergeDepth.ball_self_demands_trace} state them for a trace. Part~(b)
-is \lean{MergeDepth.ball_rate_trace}, from the uniformity argument of the fifth paper's Proposition~9.2, proved once
-(\lean{MergeDepth.uniform_rate}), and paid conditioning (\lean{MergeDepth.logb_card_le_of_conditioning});
-\lean{MergeDepth.ball_rate_binary} is the binary form under \lean{MergeDepth.Q91Binary}. The formal proofs give more: both
-parts hold for every trace that appends at least $L$ bits before a time $T\le C(L+1)$, so neither obliviousness nor the
-exact output length nor correctness is used, and $d_1$ depends only on $k$, $D'$, $C$ and~$\delta$, not on the entry
-width or the alphabet.
+(b) We follow the proof of~\cite[Proposition~9.2]{DirectedRecovery2026}, with~(a) in place of the statements for cone
+relations. Put $\delta_0=\min(\delta,\frac14)$ and $\vartheta=\lceil4K/\delta_0\rceil$, and let $H$ be the set of
+coordinates~$p$ whose left vertex~$L_p$ has degree greater than~$\vartheta$ in the incidence
+graph~\cite[Definition~2.3]{DirectedRecovery2026}. The left degrees sum to $\sum_q\card{N(q)}\le KL$, so
+$\card H\le\delta_0L/4$. The relation~$N_Q$ induced on $Q=[0,L)\setminus H$ has $\card Q\ge L/2$, an incidence graph of
+maximum degree at most $\Delta=\max(K,\vartheta)$, and, by~(a), for every fixed~$r$ at most $O(L/\log d)$ coordinates
+whose two ports are at distance at most~$r$ in that graph. The uniformity argument of the fifth paper's
+Proposition~9.2 then gives~$d_1$, depending only on $k$, $D'$, $C$ and~$\delta$, such that for $d\ge d_1$ every storage
+code~$\mathcal D$ for~$N_Q$ over a finite alphabet~$\mathcal A$ with $\card{\mathcal A}\ge2$ has
+$\log_{\card{\mathcal A}}\card{\mathcal D}\le(\frac12+\frac{\delta_0}2)\card Q$: otherwise there are sizes $d_j\to\infty$
+with relations of this kind and codes that violate the bound, these relations satisfy the hypotheses of Question~9.1
+for the degree bound~$\Delta$, and the codes contradict its affirmative answer. Fixing the coordinates in~$H$ turns
+$\mathcal C$ into storage codes for~$N_Q$~\cite[Lemma~2.2]{DirectedRecovery2026}, so
+$\log_{\card{\mathcal A}}\card{\mathcal C}\le\card H+(\frac12+\frac{\delta_0}2)(L-\card H)
+\le(\frac12+\frac{\delta_0}2)L+\frac{\card H}2\le(\frac12+\delta)L$.
+
+Formally, (a) is proved through \cref{sec:skel-paired} at scale $w=1$: the head walks of the machine are the reference
+walks, and the steps that read input positions and append output bits are those of its trace
+(\lean{MergeDepth.trace_ball_data}). \lean{MergeDepth.realizes_ball} realizes every matching of the incidence graph
+of~$N$ with occupancy~$K$, and \lean{MergeDepth.ball_paired_packing}, \lean{MergeDepth.ball_self_demands} and
+\lean{MergeDepth.ball_trimming} are the analogues of the fifth paper's Theorem~3.3 and Corollaries~3.7 and~3.8;
+\lean{MergeDepth.ball_paired_packing_trace} and \lean{MergeDepth.ball_self_demands_trace} state the first two for a
+trace. Part~(b) is \lean{MergeDepth.ball_rate_trace}, from the uniformity argument, proved once for families of
+relations (\lean{MergeDepth.uniform_rate}), and paid conditioning (\lean{MergeDepth.logb_card_le_of_conditioning});
+\lean{MergeDepth.ball_rate_binary} is the binary form under \lean{MergeDepth.Q91Binary}. The formal statements are more
+general: both parts hold for every trace that appends at least $L$ bits before a time $T\le C(L+1)$, for every real
+$C\ge0$ and every entry width, so neither obliviousness nor the exact output length nor correctness is used.
 \end{outline}
 
 \begin{corollary}[Corollary HC$^*$: Question~9.1 excludes bounded merge depth for all codes]\label{cor:HCstar}
 \formal{MergeDepth/HCStarQ91.lean}{MergeDepth.cor_HCstar_uniform,MergeDepth.cor_HCstar_uniform_frozen,MergeDepth.cor_HCstar_uniform_empty}
 Suppose that Question~9.1 of~\cite{DirectedRecovery2026} has an affirmative answer for every fixed degree bound; the
-binary alphabet suffices. Let $k,V\ge1$ and $s\ge0$ be integers, $C\ge1$, and let $0<\eps\le1$ and $\eta\ge0$ satisfy
+binary alphabet suffices. Let $k,V\ge1$ and $s\ge0$ be integers, $C\ge1$ real, and let $\eps>0$ and $\eta\ge0$ satisfy
 $\eps+\eta<\frac12$. Then for every machine~$M$ with $k$ work tapes there is~$d_0$ such that for no $d\ge d_0$ do the
 following hold together at $L=d^2b(d)$:
 \begin{enumerate}[label=(\roman*)]
@@ -583,47 +609,52 @@ with a lineage assignment for the empty genie give the field DAG merge depth at 
 \end{corollary}
 
 \begin{outline}
-Put $\beta=\beta(M)$, $\gamma=\frac12-\eps-\eta>0$ and $\tau=\lceil4\beta(k+2)kC/\gamma\rceil$, let $D$ be the
-depth of the cold genies at $(V,\eps)$, and put $r=(s+1)\tau D$; these depend only on $M$, $V$, $s$, $C$, $\eps$
-and~$\eta$. Let $d_1$ be given by \cref{lem:balls}(b) for $D'=r$ and $\delta=\gamma/4$, and let $d_0=\max(d_1,2)$.
-Suppose that (i) and~(ii) hold at some $d\ge d_0$, and let $X$ be the set of output positions at which the merge depth
-exceeds~$s$. By \cref{thm:HCprime}(b) there is an index code with at most
+Put $\beta=\beta(M)$, $\gamma=\frac12-\eps-\eta>0$, $C'=\lceil C\rceil$ and $\tau=\lceil4\beta(k+2)kC'/\gamma\rceil$, let
+$D$ be the depth of the cold genies at $(V,\eps)$, and put $r=(s+1)\tau D$; these depend only on $M$, $V$, $s$, $C$,
+$\eps$ and~$\eta$. Let $d_1$ be given by \cref{lem:balls}(b) for $D'=r$, the constant~$C'$ and $\delta=\gamma/4$, and let
+$d_0=\max(d_1,2)$. Suppose that (i) and~(ii) hold at some $d\ge d_0$; then $T\le C'(L+1)$. Let $X$ be the set of output
+positions at which the merge depth exceeds~$s$. By \cref{thm:HCprime}(b), with $C'$ in place of~$C$, there is an index
+code with at most
 \[
-  \eps L+\frac{\beta(k+2)kC(L+1)}{\tau}+\eta L\le(\eps+\eta)L+\frac{\gamma(L+1)}4\le\Bigl(\frac12-\frac\gamma2\Bigr)L
+  \eps L+\frac{\beta(k+2)kC'(L+1)}{\tau}+\eta L\le(\eps+\eta)L+\frac{\gamma(L+1)}4\le\Bigl(\frac12-\frac\gamma2\Bigr)L
 \]
 bits for a system $(I(\ell))_\ell$ with $I(\ell)\subseteq B^r(\ell)$. Some fibre of it has at least
 $2^{(1/2+\gamma/2)L}$ elements, and it is a binary storage code for the relation $N(q)=I(\tpos(q))$
 \cite[Remark~4.9(b)]{FourthPaper2026}, with $N(q)\subseteq B^r(\tpos(q))$. By \cref{lem:balls}(b) the fibre has at most
-$2^{(1/2+\gamma/4)L}$ elements, a contradiction. For the last sentence, a lineage assignment for the empty genie is one
-for every~$\Gamma_{\mathrm F}$, and $\Gamma_{\mathrm F}$-free paths are paths; so the hypothesis gives~(ii), with $\eta=0$,
-for a cold genie at $(V,\frac14)$, which exists by \cref{lem:cold}.
+$2^{(1/2+\gamma/4)L}$ elements, a contradiction. For the last sentence, (i) holds with $C'$ in place of~$C$; a lineage
+assignment for the empty genie is one for every~$\Gamma_{\mathrm F}$, and $\Gamma_{\mathrm F}$-free paths are paths; so
+the hypothesis gives~(ii), with $\eta=0$ and $C'$ in place of~$C$, for a cold genie at $(V,\frac14)$, which exists by
+\cref{lem:cold}.
+
 Formally, \lean{MergeDepth.cor_HCstar_step} is the corollary at one size: for a refinement of width~$m$ with the
 hypotheses of \lean{MergeDepth.hop_charging_fields}, $T\le C(L+1)$, at most $\eta L$ exceptional positions and
 $4\beta mkC\le\gamma\tau$, and with the bound $2^{(1/2+\gamma/4)L}$ on binary storage codes for relations inside the balls
 of radius $(s+1)\tau D$ as a hypothesis, the hypotheses are contradictory. The large fibre is
 \lean{MergeDepth.exists_large_fibre_card}, and \lean{MergeDepth.isStorageCode_fibre_of_indexCode} shows that it is a
-storage code for $q\mapsto I(\tpos(q))$. For the field DAG of a pruning, \lean{MergeDepth.cor_HCstar_pruning} and, from the
-frozen notion of obliviousness, \lean{MergeDepth.cor_HCstar_frozen} discharge the hypotheses on the refinement, and
-\lean{MergeDepth.cor_HCstar_pruning_empty} is the last sentence at one size. With checkpoints among the symbol fields
-(\cref{thm:HCprime}), $4\lceil\log_2\card\Gamma\rceil(k+2)kC\le\gamma\tau$ suffices
-(\lean{MergeDepth.cor_HCstar_pruning_sym}), which shrinks $\tau$ and the radius~$r$. Under [Q9.1],
+storage code for $q\mapsto I(\tpos(q))$. For the field DAG of a pruning, \lean{MergeDepth.cor_HCstar_pruning} and, from
+the frozen notion of obliviousness, \lean{MergeDepth.cor_HCstar_frozen} discharge the hypotheses on the refinement, and
+\lean{MergeDepth.cor_HCstar_pruning_empty} is the last sentence at one size. Under [Q9.1],
 \lean{MergeDepth.hballs_of_obliviousTransposer} is \cref{lem:balls}(b) at that radius with $\delta=\gamma/4$, and
-\lean{MergeDepth.cor_HCstar_uniform} is the corollary at all sizes, with $d_0$ uniform over the machines with $k$ work
-tapes and value width at most~$\beta$ and over the entry width; \lean{MergeDepth.cor_HCstar_uniform_frozen} is its form
-for the frozen notion of obliviousness, and \lean{MergeDepth.cor_HCstar_uniform_empty} its last sentence. Only
-$\eps+\eta<\frac12$ is used, not $\eps\le1$, $V\ge1$ or $\eta\ge0$.
+\lean{MergeDepth.cor_HCstar_uniform} is the corollary at all sizes for an integer~$C$ and every $\tau\ge1$ with
+$4\beta(k+2)kC\le\gamma\tau$, with $d_0$ uniform over the machines with $k$ work tapes and value width at most~$\beta$ and
+over the entry width. \lean{MergeDepth.cor_HCstar_uniform_frozen} is the corollary as stated, for every $\beta\ge\beta(M)$,
+every entry width and cold genies of any fixed depth; it uses only $\eps+\eta<\frac12$, not $V\ge1$ or $\eta\ge0$.
+\lean{MergeDepth.cor_HCstar_uniform_empty} is the last sentence for an integer~$C$, which suffices because (i) with~$C$
+implies (i) with~$C'$. With checkpoints among the symbol fields (outline of \cref{thm:HCprime}),
+$4\lceil\log_2g\rceil(k+2)kC\le\gamma\tau$ suffices (\lean{MergeDepth.cor_HCstar_pruning_sym}), which shrinks $\tau$ and
+the radius~$r$.
 \end{outline}
 
 Corollary~HC$^*$ is the deep-nesting companion of Corollary~F$'$~\cite[Corollary~6.3]{BoundedNesting2026}, which it
 contains, since bounded entry leaves no deep merges. Given Question~9.1, an oblivious linear-time transposer must
-therefore, whatever its code, merge deep lineages more than $s$ times along some path from each of more than $\eta L$
-outputs, for all fixed~$s$ and $\eta<\frac12-\eps$ and all large~$d$. The proof uses Question~9.1 only through
-\cref{lem:balls}(b). An all-code crux for ball systems would serve as well, since the index code of
-\cref{thm:HCprime}(b) is also one for the ball system: $\Crux(\Sball_{k,C,\beta,r},\rho)$, in the sense
-of~\cite[Definition~4.8]{FourthPaper2026} for the class of~\cite[Definition~7.4]{BoundedNesting2026}, with
-$\rho>\eps+\eta$ and $\beta(k+2)kC/\tau<(\rho-\eps-\eta)/4$, excludes the same machines. The crux for the cone class
-$\mathcal S_{k,C,\beta,D}$ does not apply directly, because the systems of \cref{thm:HCprime}(b) are not cone systems of
-whole-step genies of bounded full depth.
+therefore, whatever its pruning, cold genie at $(V,\eps)$ and lineage assignment, merge deep lineages more than $s$
+times along some path from the output nodes of more than $\eta L$ output positions, for all fixed~$s$ and
+$\eta<\frac12-\eps$ and all large~$d$. The proof uses Question~9.1 only through \cref{lem:balls}(b). An all-code crux for
+ball systems would serve as well, since the index code of \cref{thm:HCprime}(b) is also one for the ball system:
+$\Crux(\Sball_{k,C,\beta,r},\rho)$, in the sense of~\cite[Definition~4.8]{FourthPaper2026} for the class
+of~\cite[Definition~7.4]{BoundedNesting2026}, with $\rho>\eps+\eta$ and $\beta(k+2)kC/\tau<(\rho-\eps-\eta)/4$, excludes
+the same machines. The crux for the cone class $\mathcal S_{k,C,\beta,D}$ does not apply directly, because the systems of
+\cref{thm:HCprime}(b) are not cone systems of whole-step genies of bounded full depth.
 
 \subsection{Routing through deep hops, and the number of deep cells}\label{sec:hop-routing}
 
@@ -649,21 +680,24 @@ $\sum_\ell\sum_\pi f_\ell(\pi)\le AL/\log_2d+c_0N_{\mathcal R}/h\le AL/\log_2d+c
 $p\in B^{D''}(\tpos(p))$. For every other output position~$\ell$, the position $p=\tpos(\ell)$ satisfies $\tpos(p)=\ell$
 and $p\notin B^{D''}(\ell)$, so every path of~$H_M$ from~$t_\ell$ to a step that reads~$p$ has more than $D''$ edges. A
 $\Gamma_{\mathrm F}$-free path with $h'$ deep edges splits at them into $h'+1$ $\Gamma_{\mathrm F}$-free paths without
-deep edges, each with at most $D-1$ edges by \cref{lem:cold}, so it has at most $(h'+1)D-1$ edges. Hence
+deep edges, each with at most $D-1$ edges by the definition of the depth, so it has at most $(h'+1)D-1$ edges. Hence
 $(h'+1)D-1\ge D''+1$, that is, $h'\ge(D''+2-D)/D$, and $h'\ge h$.
+
 (b) The exceptional positions of~(a) contribute at most $AL/\log_2d$. For the others every path carries at least $h$
 deep edges, so $h$ times their total weight is at most $\sum_e\sum_\ell\sum_{\pi\ni e}f_\ell(\pi)$, summed over the deep
 edges, which is at most $c_0N_{\mathcal R}$ by~\eqref{eq:hop-NR}.
+
 Formally, \lean{MergeDepth.length_le_of_coldDep} is the splitting at deep edges, for a cold genie in the sense of
-\lean{MergeDepth.IsColdGenie}, and \lean{MergeDepth.hop_routing_a} is~(a) for one position, with the ball
-\lean{MergeDepth.stepBall}. Part~(b) is \lean{MergeDepth.hop_routing_b}, for weights on any finite sets of such paths and
-the positions $\ell$ with $\tpos(\ell)\in B^{D''}(\ell)$ as the exceptional set; it rests on the double counting
-\lean{MergeDepth.routing_count} and on \lean{MergeDepth.rCount_le_card_edgesOf}: the edges of a path of~$H_M$ are
-distinct, since steps decrease along it. \lean{MergeDepth.hop_routing_count} adds the count of \cref{lem:balls}(a):
-through the involution~$\tpos$, the exceptional positions are the self-demands of the relation $q\mapsto B^{D''}(\tpos(q))$
-(\lean{MergeDepth.card_exceptional_eq}), which \lean{MergeDepth.ball_self_demands} bounds, and
-\lean{MergeDepth.hop_routing_trace} states the result for the trace of the machine, whose walks, read steps and append
-steps \lean{MergeDepth.trace_ball_data} supplies.
+\lean{MergeDepth.IsColdGenie}, and \lean{MergeDepth.hop_routing_a} is~(a) for each position~$\ell$ with
+$\tpos(\ell)\notin B^{D''}(\ell)$, the ball being \lean{MergeDepth.stepBall}. Part~(b) is \lean{MergeDepth.hop_routing_b},
+for weights on any finite sets of such paths and the positions~$\ell$ with $\tpos(\ell)\in B^{D''}(\ell)$ as the
+exceptional set; it rests on the double counting \lean{MergeDepth.routing_count} and on
+\lean{MergeDepth.rCount_le_card_edgesOf}: the edges of a path of~$H_M$ are distinct, since steps decrease along it.
+\lean{MergeDepth.hop_routing_count} adds the count of \cref{lem:balls}(a): through the involution~$\tpos$, the exceptional
+positions are the self-demands of the relation $q\mapsto B^{D''}(\tpos(q))$ (\lean{MergeDepth.card_exceptional_eq}),
+which \lean{MergeDepth.ball_self_demands} bounds. \lean{MergeDepth.hop_routing_trace} states the result for every trace
+that appends at least $L$ bits before a time $T\le C(L+1)$, for every real $C\ge0$, with the walks, read steps and
+append steps supplied by \lean{MergeDepth.trace_ball_data}.
 \end{outline}
 
 The proposition is unconditional. Since $A=O((k+1)^{D''})$, the exceptional fraction tends to zero for every fixed~$D''$,
@@ -681,12 +715,13 @@ $\card{\mathcal R}(T-1)/2<kT$ only if $\card{\mathcal R}<2kT/(T-1)$, which for $
 \begin{outline}
 Each head makes at most $T$ entries, and each pair of~$\mathcal R$ takes more than~$V$ of them; this gives the first
 bound, as in~\cite[Section~2.2]{BoundedNesting2026}. The bound $kT$ is~\eqref{eq:hop-NR}. For $(h,c)\in\mathcal R$, the
-hops of head~$h$ at~$c$ partition the interval from the first to the last visit of~$c$, of length at most $T-1$, into
-half-open intervals $(p,u]$~\cite[Section~2.2, (P1)]{BoundedNesting2026}; the long ones have length at least two, so
-there are at most $(T-1)/2$ of them. Summing over~$\mathcal R$ gives the second bound. Finally,
+long hops $(p,u)$ of head~$h$ at~$c$ give pairwise disjoint intervals $(p,u]\subseteq[1,T-1]$, since at most one hop
+of~$h$ at~$c$ spans a given time~\cite[Section~2.2, (P1)]{BoundedNesting2026}; each has length at least two, so there
+are at most $(T-1)/2$ of them. Summing over~$\mathcal R$ gives the second bound. Finally,
 $2kT/(T-1)=2k+2k/(T-1)<2k+1$ when $T>2k+1$.
-Formally, $\mathcal R$ is the eighth paper's \lean{BoundedNesting.heavyPairs} and the deep hops are the long hops outside its
-\lean{BoundedNesting.lightHops} (\lean{MergeDepth.deepHops}); the first bound is its
+
+Formally, $\mathcal R$ is the eighth paper's \lean{BoundedNesting.heavyPairs} and the deep hops are the long hops outside
+its \lean{BoundedNesting.lightHops} (\lean{MergeDepth.deepHops}); the first bound is its
 \lean{BoundedNesting.card_heavyPairs_mul_le}, and the disjointness of the intervals is its hop uniqueness.
 \end{outline}
 
@@ -706,20 +741,20 @@ of them uses it.
 
 \subsection{The merge DAG and code-level depth reduction}\label{sec:hop-merge}
 
-After \cref{lem:short-paths}, every long path from an output alternates stretches of fewer than $\tau$ deep lineage hops
-with deep merges. What remains is the pattern of the merges.
+After \cref{lem:short-paths}, every $(\Gamma_{\mathrm F},Q)$-free path from an output node alternates stretches with
+fewer than $\tau$ deep lineage edges and deep merges. What remains is the pattern of the merges.
 
 \begin{definition}[The merge DAG]\label{def:merge-dag}
 \formal{MergeDepth/MergeDag.lean}{MergeDepth.MEdge,MergeDepth.MInit,MergeDepth.MCut}
-In the setting of \cref{lem:short-paths}, let $Q$ be the set given there. The \emph{merge DAG}~$\mathcal M$ has as
-vertices the nodes of~$G$ that are deep merges of $(\Gamma_{\mathrm F},Q)$-free paths starting at unrevealed output
+In the setting of \cref{lem:short-paths}, let $Q$ be the set of checkpoints given there. The \emph{merge DAG}~$\mathcal M$
+has as vertices the nodes of~$G$ that are deep merges of $(\Gamma_{\mathrm F},Q)$-free paths starting at unrevealed output
 nodes, and an edge $f\to f'$ whenever $f$ and~$f'$ are consecutive deep merges of such a path. A vertex is
 \emph{initial} if it is the first deep merge of such a path.
 \end{definition}
 
-Steps decrease along paths, so $\mathcal M$ is acyclic. It depends on the code, that is, on the representation or the
-pruning and on the lineage assignment, and on $\Gamma_{\mathrm F}$ and~$\tau$; beyond that it does not depend on the
-schedule.
+Steps decrease along paths, so $\mathcal M$ is acyclic. It is determined by the code, that is, by the representation or
+the pruning together with the lineage assignment, and by $\Gamma_{\mathrm F}$ and~$Q$; paths of~$H_M$ that the code does
+not follow play no role in it.
 
 \begin{proposition}[Code-level depth reduction suffices]\label{prop:merge-reduction}
 \formal{MergeDepth/MergeSteps.lean}{MergeDepth.merge_reduction_machine}
@@ -739,6 +774,7 @@ $s'\ge s+1$, then $Z$ contains one of $f_1,\dots,f_{s+1}$; it is a vertex of~$\p
 so $\pi$ would not be $Z$-free after its first vertex. Hence $s'\le s$, and $\pi$ has fewer than $r$ edges by
 \cref{lem:short-paths}. Apply \cref{lem:expansion} with $\Gamma=\Gamma_{\mathrm F}$, the set $Q\cup Z$ and $X=\emptyset$,
 as in the proof of \cref{thm:HCprime}; a node of~$Z$ costs rank at most one in~(a) and at most $\beta$ bits in~(b).
+
 Formally, the merge DAG and the cut condition are \lean{MergeDepth.MEdge}, \lean{MergeDepth.MInit} and
 \lean{MergeDepth.MCut}, for any network, deep relation and lineage assignment. \lean{MergeDepth.dm_le_of_cut} bounds the
 deep merges of the paths in question by~$s$, and \lean{MergeDepth.length_le_of_cut} adds the bound of
@@ -746,9 +782,9 @@ deep merges of the paths in question by~$s$, and \lean{MergeDepth.length_le_of_c
 uses \lean{MergeDepth.rigidity_core_rev}, the form of \cref{lem:expansion}(a) in which a revealed output node
 contributes to~$R$ only; \lean{MergeDepth.merge_reduction_steps} passes to the coordinate DAG as in Theorem~HC$'$, with
 the rank bound $\beta\card{\Gamma_{\mathrm F}}+\card Q+\card Z$, and \lean{MergeDepth.merge_reduction_machine} states
-$\rank R\le\eps L+mkC(L+1)/\tau+\card Z$ with $\tau\card Q\le mkC(L+1)$. For field DAGs the last claim is
-\lean{MergeDepth.merge_reduction_fields} for refinements and \lean{MergeDepth.merge_reduction_pruning} for the field DAG
-of a pruning.
+$\rank R\le\eps L+mkC(L+1)/\tau+\card Z$ with $\tau\card Q\le mkC(L+1)$. For field DAGs, \lean{MergeDepth.merge_reduction_fields}
+for refinements and \lean{MergeDepth.merge_reduction_pruning} for the field DAG of a pruning give an index code with
+$\beta\card{\Gamma_{\mathrm F}}+\beta\card Q+\beta\card Z$ bits and $\tau\card Q\le(k+2)N_{\mathcal R}$.
 \end{outline}
 
 The proposition gives a sufficient condition only. It moves the remaining difficulty from the schedule to the code: on

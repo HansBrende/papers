@@ -71,11 +71,6 @@ theorem fs_le_of_imp {U : Finset ι} {f : ι → γ} {g : ι → δ}
   apply Real.log_le_log (by exact_mod_cast fcard_pos f hx)
   exact_mod_cast fcard_le_of_imp (h x hx)
 
-/-- Maps with the same fibres on `U` have the same fibre sum. -/
-theorem fs_congr {U : Finset ι} {f : ι → γ} {g : ι → δ}
-    (h : ∀ x ∈ U, ∀ y ∈ U, f y = f x ↔ g y = g x) : fs U f = fs U g :=
-  sum_congr rfl fun x hx => by rw [fcard_congr (h x hx)]
-
 /-- Every fibre contributes one in total: `∑_{x ∈ U} G (f x) / |fibre of x| = ∑_{t ∈ f(U)} G t`. -/
 theorem sum_div_fcard (U : Finset ι) (f : ι → γ) (G : γ → ℝ) :
     ∑ x ∈ U, G (f x) / fcard U f x = ∑ t ∈ U.image f, G t := by

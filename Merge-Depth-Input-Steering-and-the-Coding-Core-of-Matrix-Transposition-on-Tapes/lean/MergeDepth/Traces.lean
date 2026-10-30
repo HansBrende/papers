@@ -18,19 +18,27 @@ the written symbols `writtenSym` and the appended bits `outBit`.
   input-head walk, the append flags and the halting time read off a trace. `workPos_eq_work`,
   `inPos_eq_input`, `outBit_isSome_eq`, `haltsAt_iff_trace`: every run follows its trace.
   `Trace.work_isWalk`: the work walks are unit-step walks for all times.
+* `TransposesAtWidth M d b c`, `TransposesAt M d c`: `M` transposes `d × d` matrices with `b`-bit
+  (resp. `b(d)`-bit) entries within `c (L + 1)` steps; `transposesAt_of_transposesWithin`: the frozen
+  `TransposesWithin` gives this at every dimension `d ≥ 1`. `one_le_entryBits`: `b(d) ≥ 1`.
+* `tposOf d b`: the transposition of bit positions `Transpose.Tape.tpos` as an involution of
+  `Fin (d² b)` (`tposOf_tposOf`).
 * `fibre M L τ₀`: the inputs `X ∈ {0,1}^L` whose run has trace `τ₀`; `traceProb M L τ₀ =
-  |fibre| / 2^L` is the probability of `τ₀` for a uniform input. `two_rpow_le_card_fibre` is
-  `(6.1)`: probability at least `2^{-ηL}` means a fibre of at least `2^{(1-η)L}` inputs.
+  |fibre| / 2^L` is the probability of `τ₀` for a uniform input. `two_rpow_le_card_fibre`, the
+  fibre bound in the proof of Theorem LA: probability at least `2^{-ηL}` means a fibre of at least
+  `2^{(1-η)L}` inputs.
 * `stepValue M w t`: the value `v_t` of step `t` (the state after the step, the `k` symbols written,
   and the bit appended or `none`). `valueWidth M = ⌈log₂ |Q|⌉ + k ⌈log₂ |Γ|⌉ + 2` is `β(M)`, and
   `card_value_le`, `log_card_value_le`: the values take at most `2^{β(M)}` values.
 * `capacityBits M = log₂ (3 |Q| |Γ|^k) ≤ β(M)`: the exact capacity of a step value in bits.
-* `stepValue_eq_of_parents`: local determination along a frozen trace. For two inputs whose traces
-  agree with `τ` before `T` and a step `t < T`, the value of step `t` agrees if the input bit under
-  the input head (when that cell lies in the input) agrees and the values agree at every parent of
-  `t` in the ninth paper's `actualParents` of the work walks of `τ` (the state edge and the lower
-  ends of all long hops ending at `t`). Only agreement before `T` is used, so the traces may differ
-  from time `T` on.
+* `stepValue_eq_of_fields`: the local recursion at field level (the fourth paper's Lemma 4.2). For
+  two inputs whose traces agree with `τ₀` before `T` and a step `t < T`, the value of step `t` agrees
+  if the input bit under the input head (when that cell lies in the input) agrees, the states at
+  time `t` agree, and the symbols written at the last visits of the work heads to their cells agree.
+  Only agreement before `T` is used, so the traces may differ from time `T` on.
+* `stepValue_eq_of_parents`: local determination along a frozen trace, the same with the step values
+  at every parent of `t` in the ninth paper's `actualParents` of the work walks (the state edge and
+  the lower ends of all long hops ending at `t`).
 -/
 
 namespace MergeDepth
@@ -173,9 +181,6 @@ theorem inPos_eq_input (t : ℕ) : (run M w t).inPos = (trace M w).input t := by
     · simp [Trace.inStep, trace, hx]
     · simp [Trace.inStep, trace, hx, shift_eq_add_moveInt]
 
-theorem workTraj_eq_work (t : ℕ) (h : Fin M.k) : workTraj M w t h = (trace M w).work h t :=
-  workPos_eq_work h t
-
 theorem outBit_isSome_eq (t : ℕ) : (outBit M w t).isSome = (trace M w).appends t := by
   rcases hx : transAt M w t with _ | ⟨s, d, acts, o⟩ <;>
     simp [outBit, Trace.appends, trace, hx]
@@ -202,6 +207,51 @@ theorem outBit_isSome_eq_of_agree (hag : ∀ s < T, trace M w s = τ s) {t : ℕ
 
 end Runs
 
+/-! ### Transposition within a time bound -/
+
+/-- The entry width `b(d) = max(1, ⌈log₂ d⌉)` is positive. -/
+theorem one_le_entryBits (d : ℕ) : 1 ≤ entryBits d := by
+  unfold entryBits
+  omega
+
+/-- `M` transposes `d × d` matrices with `b`-bit entries within `c (L + 1)` steps, `L = d² b`: on
+the encoding of every such matrix it halts within `⌊c (L + 1)⌋` steps with the encoding of the
+transpose. -/
+def TransposesAtWidth (M : TM) (d b : ℕ) (c : ℝ) : Prop :=
+  ∀ A : Transpose.Matrix, ComputesWithin M (encode d b A) (encode d b (transpose A))
+    ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊
+
+/-- `M` transposes at dimension `d` within `c (L + 1)` steps: entry width `b(d)`,
+`L = d² b(d)`. -/
+abbrev TransposesAt (M : TM) (d : ℕ) (c : ℝ) : Prop := TransposesAtWidth M d (entryBits d) c
+
+/-- A machine satisfying the frozen `TransposesWithin M (fun L => c (L + 1))` transposes at every
+dimension `d ≥ 1` within `c (L + 1)` steps. -/
+theorem transposesAt_of_transposesWithin {M : TM} {c : ℕ}
+    (h : TransposesWithin M fun L => c * (L + 1)) {d : ℕ} (hd : 1 ≤ d) :
+    TransposesAt M d c := by
+  intro A
+  have e : ⌊(c : ℝ) * (((d * d * entryBits d : ℕ) : ℝ) + 1)⌋₊ = c * (inputLength d + 1) := by
+    rw [show (c : ℝ) * (((d * d * entryBits d : ℕ) : ℝ) + 1) =
+        ((c * (inputLength d + 1) : ℕ) : ℝ) by push_cast [inputLength]; ring]
+    exact Nat.floor_natCast _
+  rw [e]
+  exact h d hd A
+
+/-! ### The transposition of positions -/
+
+/-- The transposition of bit positions of the first paper, `Transpose.Tape.tpos`
+(`(d i + j) b + s ↦ (d j + i) b + s`), as a map of `Fin (d² b)`. -/
+def tposOf (d b : ℕ) (u : Fin (d * d * b)) : Fin (d * d * b) :=
+  ⟨Transpose.Tape.tpos d b u, Transpose.Tape.Impl.tpos_lt u.2⟩
+
+theorem tposOf_val (d b : ℕ) (u : Fin (d * d * b)) :
+    (tposOf d b u : ℕ) = Transpose.Tape.tpos d b u :=
+  rfl
+
+theorem tposOf_tposOf (d b : ℕ) (u : Fin (d * d * b)) : tposOf d b (tposOf d b u) = u :=
+  Fin.ext (Transpose.Tape.Impl.tpos_tpos u.2)
+
 /-! ### Fibres and probabilities -/
 
 open Classical in
@@ -223,18 +273,14 @@ theorem card_fibre_eq (M : TM) (L : ℕ) (τ₀ : Trace M.k) :
   unfold traceProb
   field_simp
 
-/-- Equation `(6.1)`: a trace of probability at least `2^{-ηL}` has a fibre of at least
-`2^{(1-η)L}` inputs. -/
+/-- **The fibre bound** in the proof of Theorem LA: a trace of probability at least `2^{-ηL}` has a
+fibre of at least `2^{(1-η)L}` inputs. -/
 theorem two_rpow_le_card_fibre {M : TM} {L : ℕ} {τ₀ : Trace M.k} {η : ℝ}
     (h : (2 : ℝ) ^ (-η * L) ≤ traceProb M L τ₀) :
     (2 : ℝ) ^ ((1 - η) * L) ≤ (fibre M L τ₀).card := by
   rw [card_fibre_eq, show (1 - η) * (L : ℝ) = L + -η * L by ring,
     Real.rpow_add (by norm_num : (0 : ℝ) < 2), Real.rpow_natCast]
   exact mul_le_mul_of_nonneg_left h (by positivity)
-
-/-- A fibre has at most `2^L` inputs. -/
-theorem card_fibre_le (M : TM) (L : ℕ) (τ₀ : Trace M.k) : (fibre M L τ₀).card ≤ 2 ^ L := by
-  simpa using card_le_univ (fibre M L τ₀)
 
 /-! ### Step values and the value width -/
 
@@ -299,25 +345,28 @@ theorem mem_actualParents_of_lastVisit {k : ℕ} {xs : Fin k → ℕ → ℤ} {p
       rw [← hpos s h2.le, ← hpos σ hσt.le, he]
       exact hgap s h1 h2
 
-/-- **Local determination.** Two inputs `a, b ∈ {0,1}^L` whose traces agree with `τ` before `T`,
-and a step `t < T`: if the inputs agree under the input head at time `t` (when that cell lies in
-the input) and the step values agree at every parent of `t` in `actualParents τ.work T` (the state
-edge and the lower ends of all long hops ending at `t`), then the values of step `t` agree. -/
-theorem stepValue_eq_of_parents {L : ℕ} {τ : Trace M.k} {a b : Fin L → Bool} {T t : ℕ}
-    (ha : ∀ s < T, trace M (List.ofFn a) s = τ s) (hb : ∀ s < T, trace M (List.ofFn b) s = τ s)
-    (ht : t < T) (hread : ∀ p : ℕ, (p : ℤ) = τ.input t → ∀ hp : p < L, a ⟨p, hp⟩ = b ⟨p, hp⟩)
-    (hpar : ∀ u ∈ actualParents τ.work T t,
-      stepValue M (List.ofFn a) u = stepValue M (List.ofFn b) u) :
+/-- **The local recursion at field level** (the fourth paper's Lemma 4.2, with its fields). Two
+inputs `a, b ∈ {0,1}^L` whose traces agree with `τ₀` before `T`, and a step `t < T`: if the inputs
+agree under the input head at time `t` (when that cell lies in the input), the states at time `t`
+agree (the state field `σ_{t-1}`, for `t ≥ 1`), and for every work head `h` whose cell at time `t`
+was visited before, the symbols written on tape `h` at its last visit `σ` agree (the symbol field
+`κ_{σ,h}`), then the values of step `t` agree. -/
+theorem stepValue_eq_of_fields {L : ℕ} {τ₀ : Trace M.k} {a b : Fin L → Bool} {T t : ℕ}
+    (ha : ∀ s < T, trace M (List.ofFn a) s = τ₀ s) (hb : ∀ s < T, trace M (List.ofFn b) s = τ₀ s)
+    (ht : t < T) (hread : ∀ p : ℕ, (p : ℤ) = τ₀.input t → ∀ hp : p < L, a ⟨p, hp⟩ = b ⟨p, hp⟩)
+    (hstate : 1 ≤ t → (run M (List.ofFn a) t).state = (run M (List.ofFn b) t).state)
+    (hsym : ∀ (h : Fin M.k) (σ : ℕ), IsLastVisit (τ₀.work h) t σ →
+      writtenSym M (List.ofFn a) σ h = writtenSym M (List.ofFn b) σ h) :
     stepValue M (List.ofFn a) t = stepValue M (List.ofFn b) t := by
-  have hwa : ∀ ρ ≤ t, ∀ h, workTraj M (List.ofFn a) ρ h = τ.work h ρ :=
+  have hwa : ∀ ρ ≤ t, ∀ h, workTraj M (List.ofFn a) ρ h = τ₀.work h ρ :=
     fun ρ hρ h => workPos_eq_of_agree ha (by omega) h
   have hwork : ∀ ρ ≤ t, ∀ h, workTraj M (List.ofFn a) ρ h = workTraj M (List.ofFn b) ρ h :=
     fun ρ hρ h => (hwa ρ hρ h).trans (workPos_eq_of_agree hb (by omega) h).symm
   -- the state at time `t`
-  have hstate : (run M (List.ofFn a) t).state = (run M (List.ofFn b) t).state := by
+  have hst : (run M (List.ofFn a) t).state = (run M (List.ofFn b) t).state := by
     rcases t with _ | s
     · rfl
-    · exact congrArg Prod.fst (hpar s (mem_actualParents.mpr (Or.inl rfl)))
+    · exact hstate (by omega)
   -- the input symbol at time `t`
   have hin : inSym M (List.ofFn a) t = inSym M (List.ofFn b) t := by
     unfold inSym
@@ -335,19 +384,34 @@ theorem stepValue_eq_of_parents {L : ℕ} {τ : Trace M.k} {a b : Fin L → Bool
     · obtain ⟨σ, hlast⟩ := exists_lastVisit hex
       have hlast' := isLastVisit_congr hlast hpos
       rw [headSym_eq_writtenSym h hlast, headSym_eq_writtenSym h hlast']
-      have hσ : σ ∈ actualParents τ.work T t :=
-        mem_actualParents_of_lastVisit h ht (fun ρ hρ => hwa ρ hρ h) hlast
-      exact congrFun (congrArg (fun v : Value M => v.2.1) (hpar σ hσ)) h
+      exact hsym h σ (isLastVisit_congr hlast fun ρ hρ => hwa ρ hρ h)
     · push Not at hex
       rw [headSym_eq_blank h hex, headSym_eq_blank h]
       intro σ hσ
       rw [← hpos σ hσ.le, ← hpos t le_rfl]
       exact hex σ hσ
-  have htrans := transAt_eq_of_args hstate hin hhead
+  have htrans := transAt_eq_of_args hst hin hhead
   simp only [stepValue, Prod.mk.injEq]
-  refine ⟨state_succ_eq_of_transAt' hstate htrans,
+  refine ⟨state_succ_eq_of_transAt' hst htrans,
     funext fun h => writtenSym_eq_of_transAt' hhead htrans h, ?_⟩
   simp only [outBit, htrans]
+
+/-- **Local determination.** Two inputs `a, b ∈ {0,1}^L` whose traces agree with `τ` before `T`,
+and a step `t < T`: if the inputs agree under the input head at time `t` (when that cell lies in
+the input) and the step values agree at every parent of `t` in `actualParents τ.work T` (the state
+edge and the lower ends of all long hops ending at `t`), then the values of step `t` agree. -/
+theorem stepValue_eq_of_parents {L : ℕ} {τ : Trace M.k} {a b : Fin L → Bool} {T t : ℕ}
+    (ha : ∀ s < T, trace M (List.ofFn a) s = τ s) (hb : ∀ s < T, trace M (List.ofFn b) s = τ s)
+    (ht : t < T) (hread : ∀ p : ℕ, (p : ℤ) = τ.input t → ∀ hp : p < L, a ⟨p, hp⟩ = b ⟨p, hp⟩)
+    (hpar : ∀ u ∈ actualParents τ.work T t,
+      stepValue M (List.ofFn a) u = stepValue M (List.ofFn b) u) :
+    stepValue M (List.ofFn a) t = stepValue M (List.ofFn b) t := by
+  refine stepValue_eq_of_fields ha hb ht hread (fun h1 => ?_) (fun h σ hlast => ?_)
+  · obtain ⟨s, rfl⟩ : ∃ s, t = s + 1 := ⟨t - 1, by omega⟩
+    exact congrArg Prod.fst (hpar s (mem_actualParents.mpr (Or.inl rfl)))
+  · have hσ : σ ∈ actualParents τ.work T t :=
+      mem_actualParents_of_lastVisit h ht (fun ρ _ => rfl) hlast
+    exact congrFun (congrArg (fun v : Value M => v.2.1) (hpar σ hσ)) h
 
 end Local
 

@@ -1,5 +1,4 @@
 import MergeDepth.BallsQ91
-import MergeDepth.ConeBridge
 
 /-!
 # Lemma 4.12: a uniform half-rate bound on class relations, given binary [Q9.1]
@@ -8,7 +7,8 @@ Skeleton data at scale `w` (as in `MergeDepth.SkeletonPaired`): reference walks 
 `z none`, output count `z (some none)`, work heads `z (some (some j))`), a length `T ≤ c (L + 1)`,
 `L = d² b`, a genie `Γ` of full depth at most `D` in the block DAG of the coarse work walks, and
 output times `ot` in the output blocks. The cone relation `coneRel` of these data contains the
-relation `N_Γ(q) = J_Γ(t̂_{tpos q})` of a skeleton class (Lemma 4.7, `coneJ_subset_coneRel`).
+relation `N_Γ(q) = J_Γ(t̂_{tpos q})` of a skeleton class (Lemma 4.7; `coneJ_subset_coneRel_of_lt` and
+`classRel_subset_coneRel` in `MergeDepth/SkeletonSE.lean`).
 
 * `subrel_realizes`, `subrel_self_demands`, `subrel_paired_packing`, `subrel_card_le`: Lemma 4.9,
   Proposition 4.11(b), (a) and Lemma 4.7(a) for every relation `N ⊆ N_Γ` (realizations pass to
@@ -17,7 +17,7 @@ relation `N_Γ(q) = J_Γ(t̂_{tpos q})` of a skeleton class (Lemma 4.7, `coneJ_s
   than `ϑ`) nor self-demands; `degree_induced_le`: the induced relation on any subset of the
   complement of `H_ϑ` has incidence degree at most `max(B', ϑ)` when `|N(q)| ≤ B'`.
 * `skel_uniform_binary`: **Lemma 4.12.** Given binary [Q9.1], for `k`, `w ≥ 1`, `D`, `c ≥ 0`,
-  `0 < δ < 1`, any `ϑ ≥ w B/δ` (the paper: `ϑ = ⌈w B/δ⌉`, `B = ∑_{h ≤ D} (k + 1)^h`) and `ζ > 0`,
+  `0 < δ < 1`, any `ϑ ≥ w B/δ` (Lemma 4.12 takes `ϑ = ⌈w B/δ⌉`, `B = ∑_{h ≤ D} (k + 1)^h`) and `ζ > 0`,
   there is `d₀` such that for `d ≥ d₀`, every width `b ≥ 1`, all skeleton data as above and every
   relation `N ⊆ N_Γ`, every binary storage code `𝒞` for the induced relation of `N` on
   `Q = skelRetained N ϑ` has `log₂ |𝒞| ≤ (1/2 + ζ) |Q|`. No machine appears: the threshold depends

@@ -2,22 +2,22 @@ import MergeDepth.Q91Uniform
 import MergeDepth.Trimming
 
 /-!
-# Lemma 3.14(b): relations inside balls, given [Q9.1]
+# Lemma 3.15(b): relations inside balls, given [Q9.1]
 
-The setting of Lemma 3.14 (`ball_paired_packing`, `ball_trimming`): head walks `z` of an oblivious
+The setting of Lemma 3.15 (`ball_paired_packing`, `ball_trimming`): head walks `z` of an oblivious
 schedule with `k` work tapes (input head `z none`, which reads position `j` at step `u` when
 `rdStep u = some j`; output count `z (some none)`, equal to `tpos q` at the step `tout (tpos q) < T`
 that appends position `tpos q`; work heads `z (some (some j))`), `T ≤ c (L + 1)`, `L = d² b`, and a
 relation `N` with `N(q) ⊆ B^{D'}(t_{tpos q})` (`stepBall`).
 
-* `ball_rate_binary`: **Lemma 3.14(b), binary codes**, from binary [Q9.1]. For every `δ > 0` there
+* `ball_rate_binary`: **Lemma 3.15(b), binary codes**, from binary [Q9.1]. For every `δ > 0` there
   is `d₁`, depending only on `k`, `D'`, `c` and `δ`, such that for `d ≥ d₁`, every width `b ≥ 1`,
   every such schedule and relation, every binary storage code `𝒞` for `N` has
   `log₂ |𝒞| ≤ (1/2 + δ) L`.
-* `ball_rate`: **Lemma 3.14(b) as stated** (every finite alphabet with `|𝒜| ≥ 2`, uniformly), from
+* `ball_rate`: **Lemma 3.15(b) as stated** (every finite alphabet with `|𝒜| ≥ 2`, uniformly), from
   [Q9.1] for all alphabets.
 
-The proof is the paper's (the fifth paper's Proposition 9.2 with Lemma 3.14(a)): with
+The proof is the paper's (the fifth paper's Proposition 9.2 with Lemma 3.15(a)): with
 `K = ∑_{h ≤ D'} (k + 1)^h`, `δ₀ = min(δ, 1/4)` and the trimming threshold `ϑ = ⌈4K/δ₀⌉`, the
 coordinates `H` of left degree more than `ϑ` number at most `δ₀ L/4` (`ball_trimming`); the
 induced relations on `Q = [0, L) ∖ H` (`BallInst`) have degree at most `max(K, ϑ)`, at least `L/2`
@@ -49,8 +49,8 @@ theorem card_heavy_le {H K L ϑ : ℕ} {δ : ℝ} (hδ : 0 < δ) (hK : 0 < K) (h
     nlinarith
   nlinarith
 
-/-- **The instances of Lemma 3.14(b).** At `(d, b)`: `b ≥ 1`, `d ≥ 2`, a schedule as in
-Lemma 3.14 with `T ≤ c (L + 1)`, a relation `N` inside the balls of radius `D'`, and the retained
+/-- **The instances of Lemma 3.15(b).** At `(d, b)`: `b ≥ 1`, `d ≥ 2`, a schedule as in
+Lemma 3.15 with `T ≤ c (L + 1)`, a relation `N` inside the balls of radius `D'`, and the retained
 set `Q = (H_ϑ)ᶜ` of coordinates whose left port has degree at most `ϑ`. -/
 def BallInst (k D' : ℕ) (c : ℝ) (ϑ : ℕ) : InstFamily := fun d b Q N =>
   1 ≤ b ∧ 2 ≤ d ∧
@@ -101,9 +101,9 @@ theorem ballInst_short (k D' : ℕ) {c : ℝ} (hc : 0 ≤ c) (ϑ : ℕ) :
   exact h
 
 open Classical in
-/-- **Lemma 3.14(b), binary codes, from binary [Q9.1].** For every `δ > 0` there is `d₁`,
+/-- **Lemma 3.15(b), binary codes, from binary [Q9.1].** For every `δ > 0` there is `d₁`,
 depending only on `k`, `D'`, `c` and `δ`, such that for `d ≥ d₁` and every width `b ≥ 1`: for
-every schedule as in Lemma 3.14 with `T ≤ c (L + 1)`, `L = d² b`, and every relation `N` on
+every schedule as in Lemma 3.15 with `T ≤ c (L + 1)`, `L = d² b`, and every relation `N` on
 `[0, L)` with `N(q) ⊆ B^{D'}(t_{tpos q})`, every binary storage code `𝒞` for `N` has
 `log₂ |𝒞| ≤ (1/2 + δ) L`. -/
 theorem ball_rate_binary (hQ : Q91Binary) (k D' : ℕ) {c δ : ℝ} (hc : 0 ≤ c) (hδ : 0 < δ) :
@@ -149,7 +149,7 @@ theorem ball_rate_binary (hQ : Q91Binary) (k D' : ℕ) {c δ : ℝ} (hc : 0 ≤ 
   nlinarith
 
 open Classical in
-/-- **Lemma 3.14(b) as stated in the paper, from [Q9.1] for all alphabets.** The threshold `d₁`
+/-- **Lemma 3.15(b) as stated in the paper, from [Q9.1] for all alphabets.** The threshold `d₁`
 depends only on `k`, `D'`, `c` and `δ`; it works for every finite alphabet `𝒜` with `|𝒜| ≥ 2`. -/
 theorem ball_rate (hQ : Q91) (k D' : ℕ) {c δ : ℝ} (hc : 0 ≤ c) (hδ : 0 < δ) :
     ∃ d₁ : ℕ, ∀ d ≥ d₁, ∀ b, 1 ≤ b → ∀ (z : Tp k → ℕ → ℤ), (∀ c', IsWalk (z c')) →

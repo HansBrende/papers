@@ -25,7 +25,7 @@ is reachable, using the in-degree bound `card_blockIn_le`).
   (`coneRel`) has the realization property with `K = (k + 2)(2w - 1)` heads, one register and
   occupancy `w B`.
 * `realizes_ball`: the same for relations inside the balls `B^{D'}` of an oblivious schedule, at
-  scale `w = 1` (the realization step of Lemma 3.14(a)).
+  scale `w = 1` (the realization step of Lemma 3.15(a)).
 -/
 
 namespace MergeDepth
@@ -67,15 +67,6 @@ theorem nbhd_move {w : ℕ} {z : Tp k → ℕ → ℤ} (hz : ∀ c, IsWalk (z c)
 
 /-! ### The block DAG -/
 
-theorem depStep_lt_lt {s : Fin k → ℕ → ℤ} {T a b : ℕ} (h : DepStep s T a b) : b < a ∧ a < T := by
-  rcases h with ⟨h1, h2⟩ | h
-  · exact ⟨by omega, h2⟩
-  · obtain ⟨η, hη, he⟩ := mem_image.mp h
-    obtain ⟨hl, hT, -, -⟩ := mem_allHops.mp hη
-    simp only [Prod.mk.injEq] at he
-    obtain ⟨rfl, rfl⟩ := he
-    exact ⟨by omega, hT⟩
-
 theorem depStep_hop {s : Fin k → ℕ → ℤ} {T a b : ℕ} (h : DepStep s T a b) (hne : b + 1 ≠ a) :
     ∃ j, IsHop (s j) T b a := by
   rcases h with ⟨h1, -⟩ | h
@@ -90,7 +81,7 @@ theorem isDepPath_lt {s : Fin k → ℕ → ℤ} {T : ℕ} :
   | _, [], _, v, hv => absurd hv List.not_mem_nil
   | a, b :: π, hp, v, hv => by
     obtain ⟨hab, hp'⟩ := hp
-    have hba := (depStep_lt_lt hab).1
+    have hba := (depStep_lt hab).1
     rcases List.mem_cons.mp hv with rfl | hv
     · exact hba
     · exact (isDepPath_lt b π hp' v hv).trans hba
@@ -158,7 +149,7 @@ theorem pathLoc_at :
     simp [pathLoc]
   | a, b :: π, u, hp, hu => by
     obtain ⟨hab, hp'⟩ := hp
-    have hba := (depStep_lt_lt hab).1
+    have hba := (depStep_lt hab).1
     rcases List.mem_cons.mp hu with rfl | hu'
     · right
       refine ⟨b, hab, ?_⟩
@@ -186,7 +177,7 @@ theorem pathLoc_at_succ :
     exact ⟨pathLoc_of_lt σ pin pout [] (Nat.lt_succ_self u), rfl⟩
   | a, b :: π, u, hp, hu => by
     obtain ⟨hab, hp'⟩ := hp
-    have hba := (depStep_lt_lt hab).1
+    have hba := (depStep_lt hab).1
     rcases List.mem_cons.mp hu with rfl | hu'
     · left
       exact ⟨pathLoc_of_lt σ pin pout _ (Nat.lt_succ_self u), rfl⟩
@@ -310,7 +301,7 @@ theorem card_levelSet_le (s : Fin k → ℕ → ℤ) (T : ℕ) : ∀ h t, (level
       | cons o' π =>
         obtain ⟨hstep, hπ'⟩ := hπ
         refine mem_biUnion.mpr ⟨o', mem_filter.mpr ⟨?_, π, hπ', by simpa using hlen, ?_⟩, ?_⟩
-        · exact mem_range.mpr ((depStep_lt_lt hstep).1.trans (mem_range.mp hoT))
+        · exact mem_range.mpr ((depStep_lt hstep).1.trans (mem_range.mp hoT))
         · simp only [List.getLastD_cons] at ht ⊢; exact ht
         · exact mem_filter.mpr ⟨hoT, (blockStep_iff s T o o').mpr hstep⟩
     refine (card_le_card hsub).trans (card_biUnion_le.trans ?_)

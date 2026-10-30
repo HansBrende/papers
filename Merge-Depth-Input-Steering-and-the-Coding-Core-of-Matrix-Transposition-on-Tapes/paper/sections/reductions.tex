@@ -1,47 +1,45 @@
 \section{Unconditional reductions}\label{sec:reductions}
 
-This section contains the paper's unconditional results; neither uses a coding hypothesis. Both reduce adaptive
-machines to oblivious ones. \Cref{thm:LA} shows that the uniform exclusions of the ninth paper~\cite{SourceCovers2026},
-which are proved there for one fixed computation geometry, apply to every machine of sufficiently low adaptivity: such a
-machine collapses to the oblivious case. \Cref{thm:EM} works at block scale. There every linear-time transposer,
-adaptive or not, yields one external-memory transposition with linearly many I/Os that is oblivious on a set of inputs of
-almost full entropy. Consequently an I/O lower bound of order $\omega(d)$ for this oblivious form of transposition, proved
-without the indivisibility assumption of the classical external-memory bounds, would decide~(T) negatively
-(\cref{cor:EM}).
+This section proves two reductions that use no coding hypothesis. Both reduce adaptive machines to oblivious ones, at a
+price in input entropy. \Cref{thm:LA} freezes one likely trace: the exclusions of the ninth
+paper~\cite{SourceCovers2026}, which are proved there for one fixed computation geometry, then apply to every machine of
+sufficiently low adaptivity whose likely trace has the family structure they require. \Cref{thm:EM} works at block
+scale, where no hypothesis on adaptivity is needed: every linear-time transposer yields an external-memory transposition
+with $O(d)$ I/Os, linear in the number of blocks, that is oblivious on a set of $2^{L-O(d)}$ inputs. Consequently an
+I/O lower bound of order $\omega(d)$ for this form of transposition, proved without the indivisibility assumption of the
+classical external-memory bounds, would refute~(T) (\cref{cor:EM}).
 
-\paragraph{Machines and traces.} We use the machine model of~\cite[Section~2.1]{BoundedNesting2026}. A machine~$M$ is a
-deterministic Turing machine with a finite state set~$Q$, a read-only two-way input tape, $k\ge1$ two-way work tapes over
-a finite alphabet~$\Gamma$ that contains the blank, and a write-only one-way output tape that receives at most one bit per
-step. All heads start at cell~$0$, every head moves by $-1$, $0$ or $+1$ per step, every step writes the cell under each
-work head, and the input cells outside $[0,L)$ hold an end marker. The \emph{trace} $\tau(X)$ of the run on an input~$X$
-is the sequence of all head moves together with the append times and the halting time; for $X$ uniform on $\{0,1\}^L$,
-the \emph{probability} of a trace $\tau_0$ is $\Pr[\tau(X)=\tau_0]$. The \emph{value} $v_t(X)$ of step~$t$ consists of
-the state after the step, the $k$ symbols written and the output bit appended at the step (or a symbol for ``none''). It
-takes at most $2^{\beta(M)}$ values, where $\beta(M)=\lceil\log_2\card Q\rceil+k\lceil\log_2\card\Gamma\rceil+2$ is the
-\emph{value width} of~$M$~\cite[Section~4.1]{FourthPaper2026}. We say that $M$ \emph{transposes at dimension~$d$ within
-$c(L+1)$ steps} if on every input $X\in\{0,1\}^L$, $L=d^2b(d)$, it halts within $c(L+1)$ steps with output~$X^\T$.
+\paragraph{Machines and traces.} We use the machine model and the notation of \cref{sec:prelim}, with the following
+details~\cite[Section~2.1]{BoundedNesting2026}. A machine~$M$ has state set~$Q$ and $k$ work tapes over the
+alphabet~$\Gamma$, which contains the blank; every step writes the cell under each work head, and the input cells outside
+$[0,L)$ hold an end marker. For $X$ uniform on $\{0,1\}^L$, the \emph{probability} of a trace~$\tau_0$ is
+$\Pr[\tau(X)=\tau_0]$. The value $v_t(X)$ of step~$t$ consists of the state after the step, the $k$ symbols written and
+the output bit appended at the step, or a symbol for ``none''. It takes at most $2^{\beta(M)}$ values, where
+$\beta(M)=\lceil\log_2\card Q\rceil+k\lceil\log_2\card\Gamma\rceil+2$ is the \emph{value width} of~$M$~\cite[Section~4.1]{FourthPaper2026}.
+We say that $M$ \emph{transposes at dimension~$d$ within $c(L+1)$ steps} if on every input $X\in\{0,1\}^L$, $L=d^2b(d)$,
+it halts within $c(L+1)$ steps with output~$X^\T$.
 
 \subsection{Low adaptivity}\label{sec:reductions-LA}
 
-We recall the return families of the ninth paper. Let $x_1,\dots,x_k$ be the work-head walks of a trace on the times
-$0,\dots,T-1$. A \emph{long hop} of head~$h$ is a pair $(p,u)$ of times with $u-p\ge2$, $x_h(p)=x_h(u)$ and
-$x_h(t)\ne x_h(u)$ for $p<t<u$~\cite[Section~2.2]{BoundedNesting2026}. Its \emph{side} is upper or lower according as the
-head stays above or below the cell $x_h(u)$ between $p$ and~$u$, and its \emph{owner} is the first time in $(p,u)$ at which
-the head is farthest from that cell. A \emph{complete family} is the set of all long hops of one head, on one side, with
-one owner; its \emph{hop count} is its number of hops, and its \emph{full span} is the interval $(p_G,U_G]$ of times, where
-$(p_G,U_G)$ is its outermost hop~\cite[Definition~2.1]{SourceCovers2026}. The complete families of the trace admit an
-\emph{$N$-class span partition} if they can be partitioned into $N$ classes whose full spans are pairwise disjoint within
-each class, and a set of complete families is a \emph{$\mathrm Q_2$ core} if it admits such a partition into two
-classes~\cite[Definition~2.1]{SourceCovers2026}. An $N$-class span partition exists exactly when no time lies in more than
-$N$ full spans: one direction is clear, and for the other, colour the families greedily in the order of the left ends of
-their spans; when a family is coloured, the families already coloured whose spans meet its span all contain the first time
-of its span, so they use at most $N-1$ colours (\lean{MergeDepth.hasSpanColoring_iff_activeFamilies_card_le}).
+We recall the return families of the ninth paper. Let $x_1,\dots,x_k$ be the work-head walks of a trace with halting
+time~$T$, on the times $0,\dots,T-1$. A long hop $(p,u)$ of head~$h$ (\cref{sec:prelim}) has $u-p\ge2$, $x_h(p)=x_h(u)$
+and $x_h(t)\ne x_h(u)$ for $p<t<u$. Its \emph{side} is upper or lower according as the head stays above or below the
+cell $x_h(u)$ between $p$ and~$u$, and its \emph{owner} is the first time in $(p,u)$ at which the head is farthest from
+that cell~\cite[Section~2.2]{BoundedNesting2026}. A \emph{complete family} is the set of all long hops of one head, on one
+side, with one owner; its \emph{hop count} is its number of hops, and its \emph{full span} is the interval $(p_G,U_G]$ of
+times, where $(p_G,U_G)$ is its outermost hop. The complete families of the trace admit an \emph{$N$-class span
+partition} if they can be partitioned into $N$ classes whose full spans are pairwise disjoint within each class, and a
+set of complete families is a \emph{$\mathrm Q_2$ core} if it admits such a partition into two
+classes~\cite[Definition~2.1]{SourceCovers2026}. An $N$-class span partition exists exactly when no time lies in more
+than $N$ full spans: one direction is clear, and for the other, colour the families greedily in the order of the left
+ends of their spans; when a family is coloured, the families already coloured whose spans meet its span all contain the
+first time of its span, so they use at most $N-1$ colours (\lean{MergeDepth.hasSpanColoring_iff_activeFamilies_card_le}).
 
 \begin{theorem}[Theorem LA: low adaptivity]\label{thm:LA}
 \formal{MergeDepth/LowAdaptivity.lean}{MergeDepth.low_adaptivity_a,MergeDepth.low_adaptivity_b,MergeDepth.low_adaptivity_a_exists,MergeDepth.low_adaptivity_b_exists}
 Let $M$ be a machine, let $\beta\ge\beta(M)$ and $c>0$, and let $N\ge1$ and $q\ge0$ be integers.
 \begin{enumerate}[label=(\alph*)]
-\item Let $\eps>0$ and $d_0$ be the constants that~\cite[Corollary~4.5]{SourceCovers2026} provides for the parameters
+\item Let $\eps>0$ and $d_0$ be constants that~\cite[Corollary~4.5]{SourceCovers2026} provides for the parameters
 $(2c,\beta,N,q)$, and let $\eta<\eps$. Then at no $d\ge\max(d_0,1)$ does $M$ have both of the following properties at
 $L=d^2b(d)$:
 \begin{enumerate}[label=(\roman*)]
@@ -49,7 +47,7 @@ $L=d^2b(d)$:
 \item some trace $\tau_0$ has probability at least $2^{-\eta L}$, its complete families admit an $N$-class span partition,
 and at most $q$ of them have more than $\eps L$ hops.
 \end{enumerate}
-\item Let $\eps>0$ and $d_0$ be the constants that~\cite[Corollary~4.3]{SourceCovers2026} provides for the parameters
+\item Let $\eps>0$ and $d_0$ be constants that~\cite[Corollary~4.3]{SourceCovers2026} provides for the parameters
 $(2c,\beta,N)$, and let $\eta<\eps$. Then the conclusion of~(a) holds when the last clause of~(ii) is replaced by:
 the complete families of $\tau_0$ split into a $\mathrm Q_2$ core, at most one further family, and families of at most
 $\eps L$ hops each.
@@ -57,34 +55,33 @@ $\eps L$ hops each.
 \end{theorem}
 
 \begin{outline}
-We prove~(a). Suppose that $M$ has properties (i) and~(ii) at some $d\ge d_0$, and let $W$ be the set of inputs
+We prove~(a). Suppose that $M$ has properties (i) and~(ii) at some $d\ge\max(d_0,1)$, and let $W$ be the set of inputs
 $X\in\{0,1\}^L$ with $\tau(X)=\tau_0$. Then
 \begin{equation}\label{eq:LA-fibre}
  \card W=2^L\Pr[\tau(X)=\tau_0]\ge2^{(1-\eta)L}.
 \end{equation}
-We show that $\tau_0$ and~$W$ form an admissible geometry in the sense of~\cite[Definition~2.2]{SourceCovers2026}. This
-is the modelling step by which the ninth paper applies its theorems to computations; its fixed geometry ``can be an
-oblivious schedule or one trace shared by a set of inputs''~\cite[Section~2.1]{SourceCovers2026}.
+The ninth paper allows its fixed geometry to be one trace shared by a set of inputs~\cite[Section~2.1]{SourceCovers2026};
+we show that $\tau_0$ and~$W$ form an admissible geometry in the sense of~\cite[Definition~2.2]{SourceCovers2026}.
 
 \emph{The geometry.} The trace $\tau_0$ fixes the halting time~$T$, the input-head walk~$x_0$ and the work-head walks
 $x_1,\dots,x_k$ on $\{0,\dots,T-1\}$, all of which move by at most one cell per step, and the append times. By~(i), the
-machine appends exactly $L$ bits on every $X\in W$; since it appends at most one bit per step, the append times are
+machine appends exactly $L$ bits on every $X\in W$, at most one per step, so the append times are
 $t_0<t_1<\dots<t_{L-1}<T$, and output position~$r$ is appended at step~$t_r$. Moreover $T\le c(L+1)\le2cL$, because
-$L\ge1$. Let $x(t)$ be $x_0(t)$ clamped to $[0,L-1]$.
+$L\ge1$; this is why the runtime constant is~$2c$, as the ninth paper's geometries have $T\le cL$. Let $x(t)$ be $x_0(t)$
+clamped to $[0,L-1]$.
 
 \emph{Local determination.} Let $X\in W$ and $t<T$. Step~$t$ applies the transition function of~$M$ to the state at
-time~$t$, which is the initial state if $t=0$ and the state component of $v_{t-1}(X)$ otherwise; to the input symbol, which
-is $X_{x_0(t)}$ if $0\le x_0(t)<L$ and the end marker otherwise; and to the symbols under the work heads. All runs on~$W$
-move their heads as $\tau_0$ prescribes, and every step writes the cell under each work head. Hence the cell under work
-head~$h$ at time~$t$ holds the symbol written at step $\prev_h(t)=\max\{u<t:x_h(u)=x_h(t)\}$, a component of
-$v_{\prev_h(t)}(X)$, and the blank if that set is empty. This is the local recursion
-of~\cite[Lemma~4.2]{FourthPaper2026}, which has a written proof there; its proof uses only the head positions, so it holds
-for all inputs that follow~$\tau_0$, as in the proof of~\cite[Corollary~6.4]{BoundedNesting2026}. If
-$\prev_h(t)\ne t-1$, then $(\prev_h(t),t)$ is a long hop of head~$h$. Consequently, for $X,Y\in W$: if
-$X_{x(t)}=Y_{x(t)}$ and $v_u(X)=v_u(Y)$ for $u=t-1$ (when $t\ge1$) and for the lower ends~$u$ of all long hops ending
-at~$t$, then $v_t(X)=v_t(Y)$. These parents are the state edge and the work previous-visit edges
-of~\cite[Section~2.1]{SourceCovers2026}, and the input bit at the clamped position $x(t)$ is the direct read there; when
-$x_0(t)$ lies outside the input, that read is superfluous, which only enlarges the source sets, as noted there.
+time~$t$, which is the initial state if $t=0$ and the state component of $v_{t-1}(X)$ otherwise; to the input symbol,
+which is $X_{x_0(t)}$ if $0\le x_0(t)<L$ and the end marker otherwise; and to the symbols under the work heads. All runs
+on~$W$ move their heads as $\tau_0$ prescribes, and every step writes the cell under each work head. Hence the cell under
+work head~$h$ at time~$t$ holds the symbol written at step $\prev_h(t)=\max\{u<t:x_h(u)=x_h(t)\}$, a component of
+$v_{\prev_h(t)}(X)$, and the blank if that set is empty. If $\prev_h(t)\ne t-1$, then $(\prev_h(t),t)$ is a long hop of
+head~$h$. Consequently, for $X,Y\in W$: if $X_{x(t)}=Y_{x(t)}$ and $v_u(X)=v_u(Y)$ for $u=t-1$ (when $t\ge1$) and for the
+lower ends~$u$ of all long hops ending at~$t$, then $v_t(X)=v_t(Y)$. This is the local recursion
+of~\cite[Lemma~4.2]{FourthPaper2026}, for all inputs that follow~$\tau_0$. Its parents are the state edge and the work
+previous-visit edges of~\cite[Section~2.1]{SourceCovers2026}, and the input bit at the clamped position $x(t)$ is the
+direct read there; when $x_0(t)$ lies outside the input, that read is superfluous, which only enlarges the source sets,
+as noted there.
 
 \emph{Correctness and capacity.} For $X\in W$ and $0\le u<L$, the output bit at position $\tpos(u)$ is appended at step
 $t_{\tpos(u)}$ and is a component of $v_{t_{\tpos(u)}}(X)$; by~(i) it equals~$X_u$. This is the transpose demand
@@ -97,36 +94,51 @@ empty and let $a_0$ be the largest hop count of any family, or $0$ if there is n
 $\Delta=L-\log_2\card W\le\eta L$, by~\eqref{eq:LA-fibre}.
 
 Let $\mathcal E$ be the set of complete families of~$\tau_0$ with more than $\eps L$ hops. By~(ii), $\card{\mathcal E}\le q$.
-Every other family has at most $\eps L$ hops, hence at most $a=\lfloor\eps L\rfloor$, and $a\le\eps L$. Since $d\ge d_0$,
-\cite[Corollary~4.5]{SourceCovers2026}, which is Lean-verified there and permits a skeleton~$\mathcal E$ that differs from
-the geometry's labels, gives $\Delta\ge\eps L$. Hence $\eps L\le\eta L$, contradicting $\eta<\eps$.
+Every other family has at most $a=\lfloor\eps L\rfloor$ hops, and $a\le\eps L$. Since $d\ge d_0$,
+\cite[Corollary~4.5]{SourceCovers2026}, which permits a skeleton~$\mathcal E$ that differs from the geometry's labels,
+gives $\Delta\ge\eps L$. Hence $\eps L\le\eta L$, contradicting $\eta<\eps$.
 
-For~(b), label the given $\mathrm Q_2$ core as the core, the at most one further family as the exceptional set, and put
-$a_0=\lfloor\eps L\rfloor$, which bounds the hop count of every remaining family. \Cref{eq:LA-fibre} and the same
-modelling give an admissible geometry with one exception and $a_0\le\eps L$, and \cite[Corollary~4.3]{SourceCovers2026},
-which is Lean-verified there, gives $\Delta\ge\eps L$. This contradicts $\Delta\le\eta L$ as before.
+For~(b), take the given $\mathrm Q_2$ core as the core and the further family, unless it lies in the core, as the
+exceptional set, and put $a_0=\lfloor\eps L\rfloor$, which bounds the hop count of every remaining family. The same
+modelling gives an admissible geometry with at most one exception and $a_0\le\eps L$, and
+\cite[Corollary~4.3]{SourceCovers2026} gives $\Delta\ge\eps L$, which contradicts $\Delta\le\eta L$ as before.
 
-Formally, the machines are those of the frozen model (\lean{MergeDepth.TransposesAt}); the trace of a run records the
-moves and whether a bit is appended at every step before the halting time (\lean{MergeDepth.trace},
-\lean{MergeDepth.traceProb}); the step values and the value width are \lean{MergeDepth.stepValue} and
-\lean{MergeDepth.valueWidth}. The constants are any $(\eps,d_0)$ that satisfy the conclusion of the ninth paper's
-\lean{SourceCovers.finite_skeleton_uniform_deficit} or \lean{SourceCovers.one_exception_uniform_deficit}
-(\lean{MergeDepth.IsSkeletonConstant}, \lean{MergeDepth.IsOneExceptionConstant}). The modelling step is
-\lean{MergeDepth.fibreGeometry}, which builds the admissible geometry of the ninth paper from the fibre of~$\tau_0$, with
-local determination \lean{MergeDepth.stepValue_eq_of_parents} and deficit bound
-\lean{MergeDepth.fibreGeometry_deficit_le}. In~(b) the core and the further family need not be disjoint. The formal
-statements need $d\ge1$: at $d=0$ the input is empty, and a machine that halts at once satisfies (i) and~(ii).
+Formally, the machines are those of the frozen model, and~(i) is \lean{MergeDepth.TransposesAt}, the time bound of the
+frozen statement of~(T) at the one dimension~$d$. The trace of a run records, for every step before the halting time,
+the moves and whether a bit is appended (\lean{MergeDepth.trace}); its probability is \lean{MergeDepth.traceProb}, and
+the step values and the value width are \lean{MergeDepth.stepValue} and \lean{MergeDepth.valueWidth}. The constants are
+any $(\eps,d_0)$ that satisfy the conclusion of the ninth paper's corollaries (\lean{MergeDepth.IsSkeletonConstant},
+\lean{MergeDepth.IsOneExceptionConstant}), which provide them as
+\lean{SourceCovers.finite_skeleton_uniform_deficit} and \lean{SourceCovers.one_exception_uniform_deficit};
+\lean{MergeDepth.low_adaptivity_a_exists} and \lean{MergeDepth.low_adaptivity_b_exists} choose them depending only
+on $(c,\beta,N,q)$ and $(c,\beta,N)$, for all machines of value width at most~$\beta$ at once. The modelling step is \lean{MergeDepth.fibreGeometry}, with local
+determination \lean{MergeDepth.stepValue_eq_of_parents} and the deficit bound \lean{MergeDepth.fibreGeometry_deficit_le}.
+The bound $d\ge1$ is needed: at $d=0$ the input is empty, and a machine that halts at once has properties (i) and~(ii).
+The proof gives more. It needs the inputs to follow~$\tau_0$ only up to a time by which $\tau_0$ has appended $L$ bits,
+and correctness only on those inputs: with the same constants, for every machine whose step values have capacity
+$\log_2(3\card Q\card\Gamma^k)\le\beta$, every entry width $b\ge1$ in place of $b(d)$, and every time $T'\le c(L+1)$
+before which $\tau_0$ appends at least $L$ bits, at most $2^{(1-\eps)L}$ inputs
+follow~$\tau_0$ up to time~$T'$ and are eventually transposed, if the families of~$\tau_0$ formed before~$T'$ have the
+structure of~(ii) (\lean{MergeDepth.card_correctSet_le_a}, \lean{MergeDepth.card_correctSet_le_b}). The motion after~$T'$
+and the halting time are unconstrained.
 \end{outline}
 
 Hypothesis~(ii) holds, for instance, if at most $2^{\eta L}$ distinct traces occur and each of them has the stated family
-structure. More generally it holds if the trace has Shannon entropy $H(\tau(X))\le\eta L$ for a uniformly random input and
-every trace of probability at least $2^{-\eta L}$ has that structure, since
-$H(\tau(X))\ge-\log_2\max_{\tau}\Pr[\tau(X)=\tau]$.
+structure; more generally, it holds if the trace has Shannon entropy $\mathrm H(\tau(X))\le\eta L$ for a uniformly random
+input and every trace of probability at least $2^{-\eta L}$ has that structure, since
+$\mathrm H(\tau(X))\ge-\log_2\max_{\tau}\Pr[\tau(X)=\tau]$. In probability form, for a machine that transposes at
+dimension $d\ge\max(d_0,1)$ within $c(L+1)$ steps, every trace with the family structure of~(ii) has probability at most
+$2^{-\eps L}$ (\lean{MergeDepth.traceProb_le_a}, \lean{MergeDepth.traceProb_le_b}), which gives (a) and~(b) for all
+$\eta<\eps$ at once. In particular, a transposer all of whose traces have the structure of~(a) has at least $2^{\eps L}$
+distinct traces (\lean{MergeDepth.card_traces_ge_a}).
 
 The theorem is the freezing argument of the proof of~\cite[Corollary~6.4]{BoundedNesting2026} applied to the unconditional
 exclusions of the ninth paper: the information of the trace is paid once, through the probability of~$\tau_0$, and it is
 smaller than the deficit $\eps L$ that the frozen geometry forces. It thereby moves the classes excluded by the ninth paper
-from oblivious machines to machines of low adaptivity, without a coding hypothesis.
+from oblivious machines to machines of low adaptivity, without a coding hypothesis. The ninth paper's formal object for a
+fixed geometry takes the geometric data as hypotheses and does not derive them from a Turing
+machine~\cite[Section~2.1]{SourceCovers2026}; here that modelling step is formal too, since
+\lean{MergeDepth.frozenGeometry} derives every field of the object from a trace of a machine in the frozen model.
 
 \begin{remark}[Scope of Theorem~LA]\label{rem:LA-scope}
 \begin{enumerate}[label=(\arabic*)]
@@ -134,31 +146,23 @@ from oblivious machines to machines of low adaptivity, without a coding hypothes
 convergent hop profiles by compactness~\cite[Section~4.1]{SourceCovers2026}. \Cref{thm:LA} therefore excludes adaptivity
 below an unspecified threshold, whereas the conditional Corollary~F$''$ of the eighth
 paper~\cite[Corollary~6.4]{BoundedNesting2026} allows every $\eta<\frac12$.
-\item The formal object of the ninth paper packages the fixed-geometry data as hypotheses and does not derive them
-from a Turing machine~\cite[Section~2.1]{SourceCovers2026}. Here the modelling step is formal: \lean{MergeDepth.frozenGeometry}
-derives every field of that object from one frozen trace of a machine in the frozen model.
-\item The proof uses~\cite[Corollary~4.5]{SourceCovers2026} only through its bound on the correctness set. The same
-freezing therefore transfers the other uniform deficit statements of~\cite[Section~4]{SourceCovers2026}, its
-Corollaries~4.4 and~4.7, with their hypotheses imposed on the geometry of~$\tau_0$
-(\lean{MergeDepth.card_correctSet_le_of_class}).
-\item Like the entropy hypothesis of Corollary~F$''$, hypothesis~(ii) concerns the full trace. Padding the input head's
-motion with data-dependent detours that leave the computation unchanged can destroy it~\cite[Section~6.2]{BoundedNesting2026}.
-\item The formal proof gives more. Correctness is used only on the inputs that follow the trace: for every machine, at
-most $2^{(1-\eps)L}$ inputs whose traces agree with~$\tau_0$ before a time $T\le c(L+1)$ by which $\tau_0$ has appended
-$L$ bits, and on which the machine eventually outputs the transpose, if the families of~$\tau_0$ formed before~$T$ have
-the structure of~(ii) (\lean{MergeDepth.card_correctSet_le_a}, \lean{MergeDepth.card_correctSet_le_b}). So the motion
-after~$T$ is free, the time bound concerns $T$ only, and the halting time is not used; the entry width may be any $b\ge1$
-with the same constants, and the capacity may be $\log_2(3\card Q\card\Gamma^k)$ instead of~$\beta(M)$. For a transposer,
-every trace with the structure of~(ii) has probability at most $2^{-\eps L}$ (\lean{MergeDepth.traceProb_le_a},
-\lean{MergeDepth.traceProb_le_b}); if every trace has the structure of~(a), at least $2^{\eps L}$ distinct traces occur
-(\lean{MergeDepth.card_traces_ge_a}).
+\item Like the entropy hypothesis of Corollary~F$''$, hypothesis~(ii) concerns the full trace, including the motion of
+the input head, so padding that motion with data-dependent detours that leave the computation unchanged can destroy
+it~\cite[Section~6.2]{BoundedNesting2026}. Theorem~SE (\cref{thm:SE}) avoids this for Corollary~F$''$ by passing to the
+coarse skeleton; the admissible geometries of the ninth paper, however, fix the fine walks of all heads, the input head
+included.
+\item The proof uses~\cite[Corollary~4.5]{SourceCovers2026} only through its bound on the correctness set, which holds
+uniformly over a class of admissible geometries. The same freezing therefore transfers the other class-uniform bounds
+of~\cite[Section~4]{SourceCovers2026}, its Corollaries~4.4 and~4.7, with their hypotheses imposed on the frozen geometry
+of~$\tau_0$ (\lean{MergeDepth.card_correctSet_le_of_class}).
 \end{enumerate}
 \end{remark}
 
 \subsection{Block scale: an oblivious external-memory image}\label{sec:reductions-EM}
 
-An external-memory simulation sees a machine's motion only when a head crosses a block boundary, and each crossing carries
-a constant number of bits. Fixing these crossings therefore costs little input entropy, and it makes the simulation
+A simulation that keeps two consecutive blocks of each tape in internal memory sees the motion of a machine only when a
+head leaves its two blocks. A linear-time machine does so $O(d)$ times, each time carrying a constant number of bits; so
+fixing this coarse motion costs only $O(d)$ bits of input entropy, and on the inputs that share it the simulation is
 oblivious. We use the following form of the external-memory model of Aggarwal and Vitter~\cite{AggarwalVitter1988}.
 
 \begin{definition}[External-memory algorithms]\label{def:EM}
@@ -185,8 +189,11 @@ For transposition at dimension~$d$ the block size is $B=d\,b(d)$, one matrix row
 $X\in\{0,1\}^L$ the initial disk holds row~$i$ of~$X$, that is the bits at input positions $iB,\dots,iB+B-1$, at
 address~$i$ for $0\le i<d$, and is blank elsewhere. The algorithm is \emph{correct} on~$X$ if its run halts with row~$j$
 of~$X^\T$ at address $d+j$ for every $0\le j<d$. It is \emph{oblivious on a set}~$\mathcal C$ of inputs if its runs on
-all inputs in~$\mathcal C$ have the same I/O sequence.
+all inputs in~$\mathcal C$ halt with the same I/O sequence.
 \end{definition}
+
+In the formal model a disk is any map $\Z\to\Sigma^B$; nothing changes, since runs from the input disks keep all but
+finitely many addresses blank.
 
 \begin{theorem}[Theorem EM: an oblivious external-memory image]\label{thm:EM}
 \formal{MergeDepth/ExternalMemory.lean}{MergeDepth.EM.theoremEM,MergeDepth.EM.theoremEM_sharp,MergeDepth.EM.em_core,MergeDepth.EM.em_oblivious}
@@ -196,8 +203,8 @@ Let $M$ be a machine with $k$ work tapes, state set~$Q$ and work alphabet~$\Gamm
 \]
 There is $\gamma>0$, depending only on $k$, $c$ and $\card Q$, with the following property. Let $d\ge1$ be a dimension at
 which $M$ transposes within $c(L+1)$ steps, and put $B=d\,b(d)$. Then there is an external-memory algorithm over the
-alphabet~$\Sigma_M$ formed by $0$, $1$, the blank, the end marker and~$\Gamma$, with block size~$B$, $2k+3$ slots and a
-register of at most $\gamma\log_2(2L)$ bits, such that:
+alphabet~$\Sigma_M$ that consists of $0$, $1$, the end marker and the symbols of~$\Gamma$, with the blank of~$\Gamma$ as
+its blank, with block size~$B$, $2k+3$ slots and a register of at most $\gamma\log_2(2L)$ bits, such that:
 \begin{enumerate}[label=(\roman*)]
 \item it is correct on every input $X\in\{0,1\}^L$ and performs at most $c_1d$ I/Os on each;
 \item it is oblivious on a set $\mathcal C$ of at least $2^{L-c_2d}$ inputs.
@@ -205,8 +212,8 @@ register of at most $\gamma\log_2(2L)$ bits, such that:
 \end{theorem}
 
 \begin{outline}
-Fix~$d$. Call the input tape tape~$0$ and the work tapes tapes $1,\dots,k$. Block~$j\in\Z$ of a tape consists of its cells
-$jB,\dots,jB+B-1$.
+Fix~$d$, and let $T_0=\lfloor c(L+1)\rfloor$, so that $M$ halts within $T_0$ steps on every input. Call the input tape
+tape~$0$ and the work tapes tapes $1,\dots,k$. Block~$j\in\Z$ of a tape consists of its cells $jB,\dots,jB+B-1$.
 
 \emph{Layout.} Block~$i$ of the input tape, for $0\le i<d$, is row~$i$ of the input, stored at address~$i$. The other
 blocks of the input tape consist of end markers and are never stored. Block~$j$ of work tape~$h$ is stored at address
@@ -214,49 +221,50 @@ $2d+k\,z(j)+h-1$, where $z(j)=2j$ for $j\ge0$ and $z(j)=-2j-1$ for $j<0$; these 
 $2d$, and they are blank initially, as the work tapes are. The $n$-th group of $B$ consecutive output bits, $0\le n<d$, is
 written to address $d+n$.
 
-\emph{Windows.} Slots $2\tau+1$ and $2\tau+2$ hold the \emph{window} of tape~$\tau\in\{0,\dots,k\}$: its blocks $j_\tau$
+\emph{Memory.} Slots $2\tau+1$ and $2\tau+2$ hold the \emph{window} of tape~$\tau\in\{0,\dots,k\}$: its blocks $j_\tau$
 and $j_\tau+1$, the lower one in slot $2\tau+1$. Slot $2k+3$ is an output buffer. The register holds the state of~$M$, the
-head positions $x_\tau$ and window indices $j_\tau$, the number of flushes, the number of bits in the buffer, and a
-\emph{phase}: before the first I/O, running, or the second I/O of a shift of work tape~$h$ in direction~$\pm$ pending,
-$2k+2$ values in all. A write sends slot~$i$ of the new contents~$\mu'$ (\cref{def:EM}), so the slot written cannot
-change in the same application; the register records the effect instead, and moves between slots are made by the next
-application. We maintain three invariants: each window contains the current contents of its blocks; every work-tape block
-outside its window has its current contents at its address; and the head of tape~$\tau$ lies in its window
-$[j_\tau B,(j_\tau+2)B)$. Initially $j_\tau=-1$ for every~$\tau$. The work windows are then blank and the lower input slot
-consists of end markers, both without an I/O, and the algorithm reads address~$0$ into slot~$2$; this first I/O is the
-same for all inputs. Since a run starts with the zero register, the register values are stored by an injective encoding
-that maps the initial value, in the phase before the first I/O, to the zero word.
+head positions $x_\tau$, the window indices $j_\tau$, the number~$n$ of flushes so far, the number of bits in the buffer,
+and a \emph{phase}: before the first I/O, running, or waiting for the second I/O of a shift of work tape~$h$ in one of
+the two directions, $2k+2$ phases in all. Since a run starts with the zero register, the register values are stored by
+an injective encoding that maps the initial value, in the phase before the first I/O, to the zero word.
+
+\emph{Invariants.} Each window contains the current contents of its blocks; every work-tape block outside its window has
+its current contents at its address; the head of tape~$\tau$ lies in its window $[j_\tau B,(j_\tau+2)B)$, or, right
+after a step of~$M$, one cell outside it; and the output bits appended so far are those at the addresses
+$d,\dots,d+n-1$ followed by those in the buffer. Initially $j_\tau=-1$ for every~$\tau$. The work windows are then blank
+and the lower input slot consists of end markers, both without an I/O, and the algorithm reads address~$0$ into
+slot~$2$; this first I/O is the same for all inputs.
 
 \emph{Simulation.} With the windows in memory, the algorithm simulates the steps of~$M$ without I/Os: the symbols under
 the heads are in the windows, every work symbol written goes into its window, and every output bit appended goes into the
-buffer. It stops simulating when, after a step, a head has left its window, or the buffer holds $B$ bits, or $M$ has
-halted. These are the \emph{events}; the events of one step are processed in the order of the tapes, then the buffer.
+buffer. After each step it processes the \emph{events} of that step, first the shifts in the order of the tapes, then a
+flush, and then it simulates the next step, or halts if $M$ has halted.
 \begin{itemize}
-\item If the head of tape~$\tau$ has reached $(j_\tau+2)B$ (a \emph{right shift}), the algorithm writes the lower slot to the
-address of block~$j_\tau$ if $\tau\ge1$, copies the upper slot into the lower one, fills the upper slot with block
+\item If the head of tape~$\tau$ has reached $(j_\tau+2)B$ (a \emph{right shift}), the algorithm writes the lower slot to
+the address of block~$j_\tau$ if $\tau\ge1$, copies the upper slot into the lower one, fills the upper slot with block
 $j_\tau+2$, and increases $j_\tau$ by one. The block is read from its address if $\tau\ge1$ or if $\tau=0$ and
 $0\le j_\tau+2<d$; otherwise it consists of end markers and is produced without an I/O. A \emph{left shift}, when the head
 has reached $j_\tau B-1$, is symmetric: write back block $j_\tau+1$ if $\tau\ge1$, move the lower slot up, fill the lower
 slot with block $j_\tau-1$, and decrease~$j_\tau$.
-\item If the buffer holds $B$ bits (a \emph{flush}), it is written to address $d+n$, where $n$ is the number of earlier
-flushes; the same application increases the flush count and sets the number of buffered bits to~$0$, which empties the
-buffer.
-\item If $M$ has halted, the algorithm halts.
+\item If the buffer holds $B$ bits (a \emph{flush}), it is written to address $d+n$, and $n$ increases by one.
 \end{itemize}
-A shift performs at most two I/Os, and a flush one. A shift of a work tape writes the leaving block back and enters the
-pending phase; the next application of the map of \cref{def:EM} moves the remaining window block to its new slot and
-issues the second I/O, which reads the entering block.
+A write sends slot~$i$ of the new contents~$\mu'$ (\cref{def:EM}), so an application of the map cannot both write a slot
+and change it. A flush therefore empties the buffer by resetting the count of buffered bits in the register, and a shift
+of a work tape takes two applications: the first writes back the leaving block and enters the waiting phase, and the
+second moves the remaining window block to its new slot and reads the entering block. A shift performs at most two I/Os,
+a shift of the input tape at most one, and a flush one.
 
 \emph{Correctness.} The invariants are preserved: a shift writes back the block that leaves the window and fills the
-block that enters it with its current contents, and the head, which moves by at most one cell per step, is again inside
-the window. Hence the simulation follows the run of~$M$ exactly. By transposition, $M$ appends exactly $L=dB$ bits, so
-there are exactly $d$ flushes, all before~$M$ halts, and address $d+n$ receives output bits $nB,\dots,nB+B-1$, which form
-row~$n$ of~$X^\T$. The algorithm is correct on every input.
+block that enters it with its current contents, after which the head, which moves by at most one cell per step, lies
+inside the window again; and a flush moves the buffer to the next output address. Hence the simulation follows the run
+of~$M$ exactly. By transposition, $M$ appends exactly $L=dB$ bits, so there are exactly $d$ flushes, all before~$M$ halts,
+and address $d+n$ receives output bits $nB,\dots,nB+B-1$, which form row~$n$ of~$X^\T$. The algorithm is correct on every
+input.
 
 \emph{Counting I/Os.} After a shift of tape~$\tau$ the head lies at offset $B$ (right shift) or $B-1$ (left shift) in the
 new window, and at the start it lies at offset~$B$. In each case it is at distance at least~$B$ from both cells just
-outside the window, so the next shift of that tape comes after at least $B$ moves of its head. A head moves at most $T$
-times, where $T\le c(L+1)$ is the running time, so tape~$\tau$ shifts at most
+outside the window, so the next shift of that tape comes after at least $B$ moves of its head. A head moves at most $T_0$
+times, so tape~$\tau$ shifts at most
 \[
  \frac{c(L+1)}B=c\Bigl(d+\frac1B\Bigr)\le2cd
 \]
@@ -270,31 +278,34 @@ sequence of a run is a function of its event word. There are at most $\sum_{n=0}
 words of length at most~$n_0$, so some event word is shared by a set $\mathcal C$ of at least
 $2^L(2k+4)^{-n_0}=2^{L-c_2d}$ inputs, and the algorithm is oblivious on~$\mathcal C$.
 
-\emph{Register.} The register holds the state of~$M$, a phase with $2k+2$ values, and $2k+4$ integers: the $x_\tau$ and
-$j_\tau$, the flush count and the buffer count. Each has absolute value at most $T_0+2$, where $T_0=\lfloor c(L+1)\rfloor$,
-since $\abs{x_\tau}\le T_0$, $\abs{j_\tau}\le\abs{x_\tau}+2$ and both counts are at most $L$; so each takes at most
-$2T_0+5\le(4c+5)L$ values. As $\log_2(2L)\ge1$, the register needs
+\emph{Register.} The register holds the state of~$M$, the phase, and $2k+4$ integers: the $x_\tau$, the $j_\tau$, the
+flush count and the buffer count. Each has absolute value at most $T_0+2$: $\abs{x_\tau}\le T_0$,
+$\abs{j_\tau}\le\abs{x_\tau}+2$ because the head is within one cell of its window, and both counts are at most the number
+of bits appended so far, hence at most~$T_0$. So each integer takes at most $2T_0+5\le(4c+5)L$ values, and since
+$\log_2(2L)\ge1$, the register needs
 $\bigl\lceil\log_2\bigl(\card Q\,(2T_0+5)^{2k+4}(2k+2)\bigr)\bigr\rceil\le\gamma\log_2(2L)$ bits with
 $\gamma=(2k+4)\bigl(\log_2(4c+5)+1\bigr)+\log_2\card Q+\log_2(2k+2)+1$.
 
 Formally, the algorithm is \lean{MergeDepth.EM.emAlg}: a step function that performs at most one I/O per step, collapsed
 so that one application of the map follows the internal steps up to the next I/O. Its invariant relates each state to
-the configuration of~$M$ at the same time. \lean{MergeDepth.EM.em_core} shows that every run on an input on which $M$
-halts within $T_0$ steps performs the first read followed by the I/Os of an event word with at most $\lfloor T_0/B\rfloor$
-shifts per tape and exactly $d$ flushes, and \lean{MergeDepth.EM.em_oblivious} chooses $\mathcal C$ by pigeonhole over
-the padded event words.
+the configuration of~$M$ at the same time. \lean{MergeDepth.EM.em_core} shows that on every input on which $M$ computes
+an output of length $dB$ within $T_0$ steps, the run halts with that output at the addresses $d,\dots,2d-1$ and performs
+the first read followed by the I/Os of an event word with at most $\lfloor T_0/B\rfloor$ shifts per tape and exactly $d$
+flushes, and \lean{MergeDepth.EM.em_oblivious} chooses $\mathcal C$ by pigeonhole over the event words, padded to a
+common length.
+The proof gives more. It counts exactly: at most $1+(2k+1)\lfloor T_0/B\rfloor+d$ I/Os, since a shift of the input tape
+costs at most one, and $2^L\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$
+(\lean{MergeDepth.EM.theoremEM_nat}). As $\lfloor T_0/B\rfloor\le c(d+1)$, this gives at most $((2k+1)c+1)(d+1)$ I/Os
+and $\card{\mathcal C}\ge2^{L-(((k+1)c+1)d+(k+1)c)\log_2(2k+4)}$ (\lean{MergeDepth.EM.theoremEM_sharp}), so that for
+large~$d$ the constants $c_1$ and~$c_2$ improve to about $(2k+1)c+1$ and $((k+1)c+1)\log_2(2k+4)$. Transposition is used
+only through the output length: for every machine that computes outputs of length $dB$ from inputs of length $dB$ within
+$T_0$ steps, and every set~$W$ of such inputs, the algorithm is oblivious on a subset $\mathcal C\subseteq W$ with
+$\card W\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$ (\lean{MergeDepth.EM.em_oblivious}).
 \end{outline}
 
 \Cref{thm:EM} thus places every linear-time transposer, adaptive or not, inside one concrete external-memory question:
 a transposition with $O(d)$ I/Os and $O(B)$ bits of internal memory that is oblivious on a set of $2^{L-O(d)}$ inputs.
-The constants $c_1,c_2$ do not depend on the alphabet, which affects only the memory size in bits. The formal proof
-gives more. It needs only $c\ge0$, and it counts exactly: at most $1+(2k+1)\lfloor T_0/B\rfloor+d$ I/Os, since a shift of
-the input tape costs at most one, and $2^L\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$; asymptotically
-$c_1$ and $c_2$ improve to about $(2k+1)c+1$ and $((k+1)c+1)\log_2(2k+4)$ (\lean{MergeDepth.EM.theoremEM_sharp}). Nor is
-transposition used except for the output length: the simulation works for every machine that computes outputs of length
-$dB$ from inputs of length $dB$ within $T_0$ steps, and for every set~$W$ of such inputs it is oblivious on a subset
-$\mathcal C\subseteq W$ with $\card W\le\card{\mathcal C}\,(2k+4)^{(k+1)\lfloor T_0/B\rfloor+d}$
-(\lean{MergeDepth.EM.em_oblivious}).
+The constants $c_1,c_2$ do not depend on the alphabet, which affects only the memory size in bits.
 
 \begin{corollary}[An external-memory route to the negation of (T)]\label{cor:EM}
 \formal{MergeDepth/ExternalMemory.lean}{MergeDepth.EM.corollaryEM,MergeDepth.EM.EMLowerBound,MergeDepth.EM.corollaryEM_some}
@@ -308,31 +319,30 @@ set. Then (T) fails: no machine, with any number of work tapes, transposes in li
 \begin{outline}
 Suppose that (T) holds, witnessed by a machine~$M$ with $k$ work tapes and a constant~$c$. Let $\gamma$, $c_1$ and $c_2$
 be as in \cref{thm:EM}, and put $\Sigma=\Sigma_M$, $m=2k+3$ and $A=\max(c_1,c_2)$. Let $d_0$ be given by the hypothesis
-for these constants, and let $d\ge d_0$. By \cref{thm:EM} there is an algorithm over~$\Sigma$ with block size $d\,b(d)$,
-$m$ slots and a register of at most $\gamma\log_2(2L)$ bits that is correct on every input, oblivious on a set of at least
-$2^{L-c_2d}\ge2^{L-Ad}$ inputs, and performs at most $c_1d\le Ad$ I/Os on each input. This contradicts the hypothesis.
-Formally, the conclusion is the negation of the frozen statement of~(T), \lean{Transpose.LinearTimeTransposable}, and the
-hypothesis \lean{MergeDepth.EM.EMLowerBound} is needed at one dimension $d\ge1$ only, for each alphabet and choice of
-constants (\lean{MergeDepth.EM.corollaryEM_some}).
+for these constants, and let $d\ge\max(d_0,1)$. By \cref{thm:EM} there is an algorithm over~$\Sigma$ with block size
+$d\,b(d)$, $m$ slots and a register of at most $\gamma\log_2(2L)$ bits that is correct on every input, oblivious on a set
+of at least $2^{L-c_2d}\ge2^{L-Ad}$ inputs, and performs at most $c_1d\le Ad$ I/Os on each input. This contradicts the
+hypothesis. Formally, the conclusion is the negation of the frozen statement of~(T), \lean{Transpose.LinearTimeTransposable},
+and the hypothesis \lean{MergeDepth.EM.EMLowerBound} is needed at one dimension $d\ge1$ only, for each alphabet and choice
+of constants (\lean{MergeDepth.EM.corollaryEM_some}).
 \end{outline}
 
-At block scale, then, deciding (T) negatively requires no hypothesis on adaptivity, nesting or coding beyond one
-indivisibility-free I/O lower bound.
+At block scale, then, one indivisibility-free I/O lower bound would refute~(T), with no hypothesis on adaptivity, nesting
+or coding.
 
 \begin{remark}[What the hypothesis of \cref{cor:EM} asks]\label{rem:EM-status}
 The lower bounds of Aggarwal and Vitter for permuting and for matrix transposition~\cite{AggarwalVitter1988} assume that
 records are indivisible: they are moved and copied but never combined. Under that assumption, transposition with a
-constant number of blocks of internal memory needs more I/Os than linearly many, by a logarithmic factor; so a linear-time
-machine yields, through \cref{thm:EM}, an algorithm that combines records, that is, a code. The hypothesis of
-\cref{cor:EM} asks for a superlinear bound, of any order, without indivisibility, for algorithms that need only be correct and
-oblivious on a set of $2^{L-O(d)}$ inputs, which need not be a product set. Farhadi, Hajiaghayi, Larsen and Shi prove
-external-memory lower bounds for sorting without indivisibility, by network coding~\cite{FHLS2019}. They reduce
+constant number of blocks of internal memory needs more I/Os than linearly many, by a logarithmic factor; so the
+algorithm that \cref{thm:EM} builds from a linear-time machine must combine records, that is, it must code. The
+hypothesis of \cref{cor:EM} asks for a bound of order $\omega(d)$ without indivisibility, for algorithms that need only be
+correct and oblivious on a set of $2^{L-O(d)}$ inputs, which need not be a product set. Farhadi, Hajiaghayi, Larsen and
+Shi prove external-memory lower bounds for sorting without indivisibility, by network coding~\cite{FHLS2019}. They reduce
 non-oblivious algorithms to a fixed I/O graph by a pigeonhole over I/O graphs, the step that produces~$\mathcal C$ in
 \cref{thm:EM}. Their bounds are conditional on the conjecture that network coding gives no advantage over multicommodity
 flow in undirected graphs, and that conjecture is false in general~\cite{BravermanHe2026}. We know of no unconditional
-bound of the required kind. An indivisibility-free bound for this oblivious, large-set form of transposition is therefore
-exactly what an impossibility proof needs at block scale. Adaptivity does not help there: fixing the I/O sequence costs
-only $O(d)=o(L)$ bits of input entropy, so a machine's adaptivity can shape only its motion within blocks. There is no
-converse to \cref{thm:EM}: internal computation is free and blocks are accessed at random, so an external-memory
-transposition with $O(d)$ I/Os would not by itself give a linear-time machine.
+bound of the required kind. Such a bound need not deal with adaptivity: fixing the I/O sequence costs only $O(d)=o(L)$
+bits of input entropy, so on~$\mathcal C$ a machine's adaptivity shapes only its motion within blocks. The reduction goes
+one way only: since internal computation is free and blocks are accessed at random, an external-memory transposition with
+$O(d)$ I/Os would not by itself give a linear-time machine.
 \end{remark}

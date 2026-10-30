@@ -1,16 +1,22 @@
-We continue the study of linear-time transposition of $d\times d$ matrices with entries of
-$b(d)=\max(1,\lceil\log_2d\rceil)$ bits on multitape Turing machines, where $L=d^2b(d)$ is the input length. Assuming an affirmative answer to the coding question of
-\emph{Directed Recovery Structures in Tape Computations} (the crux), we locate where a linear-time transposer could still
-exist. For oblivious machines, depth of the schedule no longer matters: a rank decomposition (hop charging) excludes every
-transposer whose code merges deep data lineages only boundedly often along each path, on every schedule and with any
-capacity, so the remaining oblivious question is depth reduction of the code's merge structure. For adaptive machines,
-we prove a form of an earlier low-adaptivity bound that is robust against padding of bounded entry: the coarse skeleton
-of the trace must carry about $L/2$ bits. Hence no linear-time transposer has bounded entry on every tape, and one whose
-work tapes have bounded entry must revisit input cells unboundedly often and carry about half of the input in the
-coarse motion of its input head, a condition that such revisits can meet by padding. Unconditionally, sufficiently low adaptivity reduces to the
-oblivious source-cover exclusions, and every linear-time transposer, adaptive or not, yields an external-memory
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\lceil\log_2d\rceil)$-bit
+entries in time linear in the input length $L=d^2b(d)$? Assuming an affirmative answer to Question~9.1 of \emph{Directed
+Recovery Structures in Tape Computations}, which asks whether storage codes on paired-distance separated relations of
+bounded degree have rate at most one half, we locate where such a machine could still exist. For oblivious machines the
+depth of the schedule no longer matters: a rank decomposition (hop charging) excludes every transposer whose code merges
+deep data lineages only boundedly often along its paths, on every schedule, however deeply nested and however many cells
+it revisits; for linear codes the linear crux of the series suffices. What remains for oblivious machines is depth
+reduction of the code's merge structure. For adaptive machines we prove a form of an earlier low-adaptivity bound that
+is robust against padding of bounded entry: if the work heads enter every cell boundedly often, the coarse skeleton of
+the run, its head positions and output count rounded to multiples of a fixed width, must carry about $L/2$ bits. Hence
+no linear-time transposer has bounded entry on every tape, and one whose work tapes have bounded entry must revisit
+input cells unboundedly often and carry about half of the input in the coarse motion of its input head, a condition
+that padding meets at no cost. Unconditionally, the source-cover exclusions for oblivious geometries extend to machines
+of sufficiently low adaptivity, and every linear-time transposer, adaptive or not, yields an external-memory
 transposition with linearly many I/Os that is oblivious on $2^{L-O(d)}$ inputs; an external-memory lower bound without
 the indivisibility assumption would therefore refute linear-time transposition. We also prove a deep-nesting conjecture
-of the series for block labels at one shift, conditional on a conjecture that the straddle counts of a random shift concentrate, and rule out one
-natural building block for constructions. All proofs are written out and formalized in Lean; this is a draft, not yet
-refereed.
+of the series for pairs of block labels at one shift, conditional on a conjecture that straddle counts concentrate as
+the shift varies, with partial results on that conjecture, and we rule out one natural building block for
+constructions: Tanner codes assembled from projective planes, with every coordinate recovered from one line, violate the
+paired-distance condition. Every numbered result is formalized in Lean~4 on the standard axioms; Question~9.1, the
+linear crux and the straddle conjecture enter the formal statements as explicit hypotheses. The question itself remains
+open.

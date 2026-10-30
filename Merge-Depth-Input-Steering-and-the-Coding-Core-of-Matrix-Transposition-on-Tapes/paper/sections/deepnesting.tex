@@ -44,14 +44,15 @@ $k+j\le m$, the \emph{blind errors} of $B(a_h,K_h)$ are
   a^{(h)}(k)=A^{(h)}_k\bmod q,\qquad
   b^{(h)}_j(k)=\Bigl(E^{(h)}_k-\sum_{i=k+1}^{k+j}\bigl(A^{(h)}_i+E^{(h)}_i+2\bigr)\Bigr)\bmod q
 \]
-(the tenth paper's \lean{blindApexErr} and \lean{blindBandErr}), and $\tilde Q_h=Q(a_h,K_h\bmod q)$. By the band
+and $\tilde Q_h=Q(a_h,K_h\bmod q)$; in the tenth paper's library these errors are
+\lean{DirectedReciprocity.blindApexErr} and \lean{DirectedReciprocity.blindBandErr}. By the band
 decomposition~\cite[Lemma~5.10]{BoundedNesting2026}, the apex hop $(\alpha-d,\alpha+d)$, $1\le d<R_k$, of a level-$k$~V of
 head~$h$ has error $(A^{(h)}_k+F)\bmod q$, and its valley hop of band~$j$, at a cell $v+\sigma x$ with
 $R_{k+j+1}<x<R_{k+j}$, has error $(b^{(h)}_j(k)+F)\bmod q$, where $F$ is the other head's increment over the hop; on a
 blind hop $F=0$.
 
 \paragraph{Four results of the tenth paper.} All four are Lean-verified there; the second and third are the shift-free
-components \lean{block_overflow_band_witness} and \lean{block_straddle_residue_ge_half_q} of the proof
+components \lean{DirectedReciprocity.block_overflow_band_witness} and \lean{DirectedReciprocity.block_straddle_residue_ge_half_q} of the proof
 of~\cite[Theorem~5.5]{DirectedReciprocity2026} (its Regimes~2 and~3). Define $a(k)$, $b_j(k)$ as above for any integer
 sequences $(A_l)$, $(E_l)$ and $q\ge3$.
 \begin{enumerate}[label=(\Roman*)]
@@ -79,7 +80,7 @@ sequences $(A_l)$, $(E_l)$ and $q\ge3$.
 \begin{definition}[Straddle counts and good levels]\label{def:dnp-straddle}
 Let $\mathcal K=\{1,\dots,\lfloor N/4\rfloor\}$ be the \emph{coarse zone} and $j_0=\lfloor\log_2N\rfloor+1$. For $a\ge1$
 and $k\ge1$ let $\kappa_a(k)$ be the least integer $\kappa\ge k+j_0$ with $m-\kappa\equiv a\pmod{a+1}$ (the tenth paper's
-\lean{cancellerBelow}$(m,a,k)$ if $k+j_0\le m$); thus $j_0\le\kappa_a(k)-k\le j_0+a$, and $\kappa_a(k)$ is a canceller of
+\lean{DirectedReciprocity.cancellerBelow}$(m,a,k)$ if $k+j_0\le m$); thus $j_0\le\kappa_a(k)-k\le j_0+a$, and $\kappa_a(k)$ is a canceller of
 $B(a,\cdot)$ if $\kappa_a(k)\le m$. For $1\le i\le m$ let $\mathcal A_i\subseteq[0,P)$ be
 the set of the $2^{i+1}$ apex times of the level-$i$ V's of~$U$ in one period. For $1\le k<\kappa\le m$ with
 $\Pi_\kappa\le R_k$ and $\xi\in\Z$ put
@@ -87,7 +88,7 @@ $\Pi_\kappa\le R_k$ and $\xi\in\Z$ put
   X^\pm_{k,\kappa}(\xi)=\sum_{\alpha_1\in\mathcal A_k}\ \sum_{\alpha\in\mathcal A_\kappa}
   \card{\mathrm{Strad}\bigl((\alpha_1\pm\xi)\bmod P,\ \alpha,\ \Pi_\kappa,\ R_k\bigr)},
 \]
-the tenth paper's \lean{classStraddleCount}$(s_0,m,k,\kappa,\mathrm{dir},\xi)$ with $\mathrm{dir}$ true for~$+$ and false
+the tenth paper's \lean{DirectedReciprocity.classStraddleCount}$(s_0,m,k,\kappa,\mathrm{dir},\xi)$ with $\mathrm{dir}$ true for~$+$ and false
 for~$-$. A level $k\in\mathcal K$ is \emph{$a$-good in direction~$\pm$} at~$\xi$ if
 $X^\pm_{k,\kappa_a(k)}(\xi)\ge2^{k+2}R_k/2^{a+7}$, and $\Gamma_{a,\pm}(\xi)$ is the number of such levels.
 \end{definition}
@@ -97,7 +98,7 @@ half-width~$d$ around $\alpha_1+\xi$; so $X^+_{k,\kappa}(\xi)$ counts the apex h
 start in the back stroke and end in the forward stroke of a level-$\kappa$~V of head~$2$, and $X^-$ does the same with the
 heads exchanged. The threshold is that of~\cite[Theorem~5.5(3)]{DirectedReciprocity2026}. Given $a_0\ge1$, we use the
 \emph{size condition} $4(j_0+a_0)\le N$\quad\textup{($\ast$)}; under it, for $k\in\mathcal K$, $1\le a\le a_0$ and
-$\kappa=\kappa_a(k)$, the tenth paper's \lean{cancellerBelow_props} gives $\kappa\le m$, $\Pi_\kappa\le R_k$ and
+$\kappa=\kappa_a(k)$, the tenth paper's \lean{DirectedReciprocity.cancellerBelow_props} gives $\kappa\le m$, $\Pi_\kappa\le R_k$ and
 $N\le2n_\kappa$.
 
 \begin{definition}[Straddle profile]\label{def:dnp-profile}
@@ -323,7 +324,7 @@ $\Phi(c_0+d)-\Phi(c_0-d)$ because $\Phi$ has $P$-periodic increments, and so its
 $e(d)=(A^{(1)}_k+\Phi(c_0+d)-\Phi(c_0-d))\bmod q$ \cite[Lemma~5.10(a)]{BoundedNesting2026}. Theorem~V$^*$ with
 $A'=A^{(1)}_k$ and the residue bound give $\sum_{d\in S}e(d)\ge\card S\,q/4$. For fixed~$\alpha_1$ at most one~$\alpha$ has
 $S\ne\emptyset$, since $S\ne\emptyset$ puts $c_0$ in the span $[\alpha,\alpha+2\Pi_\kappa)$ and the spans of distinct V's of
-one level are disjoint (\lean{periodVApices_spans_disjoint}~\cite{DirectedReciprocity2026}); and distinct pairs
+one level are disjoint (\lean{DirectedReciprocity.periodVApices_spans_disjoint}~\cite{DirectedReciprocity2026}); and distinct pairs
 $(\alpha_1,d)$ give distinct hops. Summing over $\alpha_1$ and~$\alpha$, the hops of the class $(1,k)$ in one period have
 total error at least $\frac q4X^+_{k,\kappa}(\xi)\ge\frac q4\cdot2^{k+2}R_k/2^{a_2+7}=q\Lambda/2^{a_2+7}$, as
 $2^kR_k=\Lambda$. Errors are $P$-periodic and the class has $4\Lambda$ hops per period, so its mean error is at least

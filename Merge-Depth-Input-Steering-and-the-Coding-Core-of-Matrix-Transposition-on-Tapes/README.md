@@ -3,8 +3,11 @@
 **Hans Brende and Claude Opus 5.5 (Anthropic)** — October 2026. **Draft.**
 
 - [PDF](paper/main.pdf) and [LaTeX sources](paper/), licensed under [CC BY 4.0](paper/LICENSE).
-- Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet,
-  and none is formalized in Lean yet; the Lean formalization is in progress and will be added here result by result.
+- Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet.
+- Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
+  built on the eighth paper's library). Formalized so far: Lemma PG; the covering lemma; the combinatorial core of hop
+  charging and Theorem HC′(a) up to the cold genie (Lemmas 3.3(a), 3.9); Lemma 4.2(a), (b). The status line of every
+  numbered result in the PDF says what is formal, and its appendix lists the Lean declarations cited.
 
 ## The question
 
@@ -55,3 +58,14 @@ From `paper/`:
 ```sh
 latexmk -pdf -interaction=nonstopmode main.tex
 ```
+
+To check the Lean formalization, from `lean/`, with the eighth paper's library built and its dependencies linked into
+`.lake/packages` (see that paper's README):
+
+```sh
+lake build
+lake env lean PaperAxioms.lean
+```
+
+Every declaration should report at most the axioms `propext`, `Classical.choice` and `Quot.sound`.
+

@@ -74,7 +74,7 @@ $\mathrm H(Y)\ge-\log_2\max_y\Pr[Y=y]$ for every random variable~$Y$ with finite
 \end{equation}
 
 \begin{lemma}[Coarse walks]\label{lem:skel-coarse}
-\notformalized
+\partformal{MergeDepth/SkeletonWalk.lean}{MergeDepth.entries_skel_subset,MergeDepth.card_entries_skel_le}{part~(c)}
 Let $V,w,T\ge1$ be integers, let $x$ be a walk of length~$T$ with $x(0)=0$ that enters every cell at most $V$ times, and
 let $s=\lfloor x/w\rfloor$.
 \begin{enumerate}[label=(\alph*)]
@@ -85,7 +85,7 @@ by~$x$.
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) If $t=0$, then $a=s(0)=0$ and $t$ is the entry of the cell $x(0)=0=wa$. If $t\ge1$, then $s(t-1)\ne a=s(t)$, so
 $x(t-1)\notin\mathcal B_a\ni x(t)$. Hence $x(t)=x(t-1)\pm1$ is an end cell of $\mathcal B_a$, namely $wa$ or $wa+w-1$,
 entered from outside the block, and $t$ is an entry of $x(t)$ by~$x$.
@@ -97,7 +97,11 @@ of which is entered at most $V$ times.
 $\lceil(T-1)/w\rceil+1\le(T-1)/w+2$ blocks. Every time $t\ge1$ with $s(t)\ne s(t-1)$ is an entry of $s(t)$ by~$s$.
 By~(b) each of the visited blocks has at most $2V$ entries, and one of these entries, the entry of~$0$ at time~$0$, is
 not such a time.
-\end{informalproof}
+
+Formally, walks are maps $\N\to\Z$ with steps in $\{-1,0,1\}$, as in the eighth paper's library, the coarse walk is
+\lean{MergeDepth.skel}, and the entries of a cell up to time~$T-1$ are the eighth paper's
+\lean{BoundedNesting.entries}.
+\end{outline}
 
 \begin{remark}[Hops of two members need not match]\label{rem:naive-skeleton}
 A natural route to a robust form of Corollary~F$''$ applies Theorem~F to the trace of each member of a skeleton class

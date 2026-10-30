@@ -30,8 +30,9 @@ the paired-distance condition fails. The lemma concerns recovery along single li
 lines, and assemblies whose local pieces have unequal sizes, are not covered.
 
 \begin{definition}[Centred sets in a projective plane]\label{def:PG-centred}
-Let $q$ be a prime power, let $\mathcal P$ and $\mathcal L$ be the sets of points and lines of the projective plane
-$\mathrm{PG}(2,q)$, and put $v=q^2+q+1=\card{\mathcal P}=\card{\mathcal L}$. A \emph{centred set} is a set
+\formal{MergeDepth/ProjectivePlane.lean}{MergeDepth.Centred,MergeDepth.Centred.graph,MergeDepth.Centred.Separated,MergeDepth.Centred.BipCompat}
+Let $q\ge2$, let $\mathcal P$ and $\mathcal L$ be the sets of points and lines of a finite projective plane of order~$q$,
+such as $\mathrm{PG}(2,q)$ for a prime power~$q$, and put $v=q^2+q+1=\card{\mathcal P}=\card{\mathcal L}$. A \emph{centred set} is a set
 $S\subseteq\mathcal P$ together with a line $\ell_s$ through~$s$ for every $s\in S$; the \emph{helpers} of~$s$ are the $q$
 points of $N(s)=\ell_s\setminus\{s\}$. Its \emph{incidence graph} $E(S)$ is the bipartite graph with vertices $L_p$ and
 $R_p$ for $p\in\mathcal P$ and an edge $L_hR_s$ whenever $s\in S$ and $h\in N(s)$; it is the paired incidence graph
@@ -42,18 +43,24 @@ and $h\in N(s)$.
 \end{definition}
 
 \begin{lemma}[Lemma PG: separated centred sets are small]\label{lem:PG}
-\notformalized
-Let $q$ be a prime power and $S$ a centred set in $\mathrm{PG}(2,q)$. If $S$ is bipartite-compatible, then it is
+\formal{MergeDepth/ProjectivePlane.lean}{MergeDepth.Centred.separated_of_bipCompat,MergeDepth.Centred.card_le,MergeDepth.Centred.two_mul_card_lt}
+Let $S$ be a centred set in a finite projective plane of order~$q$. If $S$ is bipartite-compatible, then it is
 separated. If $S$ is separated, then
 \begin{equation}\label{eq:PG-bound}
- \card S\le\max\bigl(4q,\;q^{3/2}+1\bigr)\le\max\Bigl(4q,\;\frac{(q^2+q+1)(1+\sqrt q)}{q+1}\Bigr),
+ \card S\le\max\bigl(4q,\;q^{3/2}+1\bigr),
 \end{equation}
 and consequently $\card S<(q^2+q+1)/2$ for every $q\ge7$.
 \end{lemma}
 
-\begin{informalproof}
-We use two properties of $\mathrm{PG}(2,q)$: two distinct lines meet in exactly one point, and every line has $q+1$
-points and every point lies on $q+1$ lines.
+\begin{outline}
+We use two properties of a projective plane of order~$q$: two distinct lines meet in exactly one point, and every line
+has $q+1$ points and every point lies on $q+1$ lines. Formally, the bound~\eqref{eq:PG-bound} is stated as
+$\card S\le4q$ or $(\card S-1)^2\le q^3$ (\lean{MergeDepth.Centred.card_le}), the components below are the classes of
+points of~$S$ whose vertices~$R_s$ are connected in~$E(S)$, which are the components of the adjacency relation, and
+Steps~1 to~5 are \lean{MergeDepth.Centred.line_ne}, \lean{MergeDepth.Centred.mem_line_of_not_reach},
+\lean{MergeDepth.Centred.not_mem_line}, \lean{MergeDepth.Centred.card_le_of_one} and
+\lean{MergeDepth.Centred.card_le_of_two}, and the consequence for $q\ge7$ is
+\lean{MergeDepth.Centred.two_mul_card_lt}.
 
 \emph{Bipartite-compatible sets are separated.} Given~$\chi$, give $L_p$ the colour $\chi(p)$ and $R_p$ the colour
 $1-\chi(p)$. An edge $L_hR_s$ has $\chi(h)=1-\chi(s)$, so its two ends have the same colour, and colours are constant on
@@ -106,11 +113,9 @@ then
 because $\sum_i\card{K_i}^2\le\max_i\card{K_i}\cdot\card S\le2q\card S$. Hence $\card S^2-2q\card S\le2q\card S$, that
 is, $\card S\le4q$.
 
-\emph{Step 6: the comparisons.} Since $v=(q+1+\sqrt q)(q+1-\sqrt q)$, we have
-$q^{3/2}+1=(1+\sqrt q)(q+1-\sqrt q)=v(1+\sqrt q)/(q+1+\sqrt q)\le v(1+\sqrt q)/(q+1)$, which is the
-second inequality in~\eqref{eq:PG-bound}. Finally, $4q<v/2$ is equivalent to $q^2-7q+1>0$, which holds for $q\ge7$, and
+\emph{Step 6: the consequence.} $4q<v/2$ is equivalent to $q^2-7q+1>0$, which holds for $q\ge7$, and
 $q^{3/2}+1<v/2$ is equivalent to $(q-\sqrt q)^2>1$, which holds for $q\ge3$.
-\end{informalproof}
+\end{outline}
 
 \begin{remark}[Sharpness of the one-component bound]\label{rem:PG-unital}
 When $q=r^2$ is a square, the bound of Step~4 is attained. The Hermitian curve $x^{r+1}+y^{r+1}+z^{r+1}=0$ in

@@ -157,7 +157,8 @@ $t_0\to\dots\to t_m$ is \emph{$\Gamma$-free} if $t_1,\dots,t_m\notin\Gamma$; and
 most~$D$} if every $\Gamma$-free path has at most $D$ edges.
 
 \begin{lemma}[The block machine]\label{lem:block-machine}
-\notformalized
+\partformal{MergeDepth/BlockDag.lean}{MergeDepth.blockStep_iff,MergeDepth.card_blockOut_le,MergeDepth.card_blockIn_le,MergeDepth.coarse_ownerLoad_le}{parts~(b)
+and~(c), about the block values of the machine}
 Let $\sigma$ be a skeleton at scale~$w$ with $\mathcal X_\sigma\ne\emptyset$, and $T=T_\sigma$.
 \begin{enumerate}[label=(\alph*)]
 \item \emph{(Dependency DAG.)} $\bar H_\sigma$ is the walk DAG of the coarse work walks $s_1,\dots,s_k$, and every
@@ -180,7 +181,7 @@ owner-load at most $4V-1$~\cite[Definition~2.2]{BoundedNesting2026}.
 \end{enumerate}
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 (a) For a walk~$y$ and a time~$u$, the hop of~$y$ ending at~$u$ is $(\prev_y(u),u)$, where
 $\prev_y(u)=\max\{t<u:y(t)=y(u)\}$, and it is long if $u-\prev_y(u)\ge2$~\cite[Section~2.2]{BoundedNesting2026}. For
 $y=s_j$ this is $\prev^\sigma_j$. So the block edges of length at least two are the edges $u\to p$ for the long hops
@@ -226,7 +227,11 @@ distinct values of $\lfloor r/w\rfloor$ have distinct times, and at most $w$ pos
 start at~$0$. By \cref{lem:skel-coarse}(b) they enter every integer at most $2V$ times, and the eighth paper's
 Corollary~3.2, which is Lean-verified there, applied with $2V$ in place of~$V$, bounds the owner-load of the set of all
 their long hops by $2\cdot2V-1$~\cite[Corollary~3.2]{BoundedNesting2026}.
-\end{informalproof}
+
+Formally, $\prev^\sigma_j$ is \lean{MergeDepth.prevS} and the block DAG is given by \lean{MergeDepth.BlockStep}; part~(a)
+identifies it with the dependency DAG of the coarse walks (\lean{MergeDepth.DepStep}), and in part~(d) the bound on
+entries is \lean{MergeDepth.card_entries_skel_le} (\cref{lem:skel-coarse}).
+\end{outline}
 
 So on a skeleton class, $M$ is an oblivious machine of value width~$\beta_w$: its work heads move along the coarse work
 walks on tapes whose cells are blocks, its input head reads one block of $w$ input cells per step, its output is written
@@ -238,7 +243,7 @@ only the coarse walks enter the depth analysis.
 \subsection{One recovery relation per skeleton class}\label{sec:skel-class}
 
 \begin{lemma}[A genie for a skeleton class]\label{lem:skel-genie}
-\notformalized
+\formal{MergeDepth/SkeletonGenie.lean}{MergeDepth.skel_genie_cost}
 Let $M$ be a machine with $k$ work tapes, let $V,w\ge1$ be integers, $c>0$ and $0<\eps\le1$, and put $C=\max(c,1)$,
 \[
   \eps''=\frac{\eps}{4\beta_wC},\qquad P=\Bigl\lceil\frac{4\beta_wC}{\eps}\Bigr\rceil,\qquad
@@ -250,7 +255,7 @@ at most~$V$ on every work tape. Then there is a genie $\Gamma\subseteq[0,T_\sigm
 $\beta_w\card\Gamma\le\eps L$ and full depth at most~$D$ in~$\bar H_\sigma$.
 \end{lemma}
 
-\begin{informalproof}
+\begin{outline}
 Write $T=T_\sigma$. Since $\beta_w\ge6$, $\eps''\in(0,1]$. By \cref{lem:block-machine}(d) the set of all long hops of
 the coarse work walks $s_1,\dots,s_k$, which are walks of length~$T$, has owner-load at most $4V-1$. Theorem~F
 \cite[Theorem~3.6]{BoundedNesting2026}, which is Lean-verified there and allows pauses and any coupling of the walks,
@@ -269,9 +274,13 @@ $\mu=1$, whose proof uses only the DAG. Finally $\card\Gamma\le\card F+\lfloor T
 $L\ge1$,
 \[
   \beta_w\card\Gamma\le\beta_w\eps''T+\frac{\beta_wT}P\le\frac{\eps T}{4C}+\frac{\eps T}{4C}\le\frac{\eps(L+1)}2\le\eps L.
-  \qedhere
 \]
-\end{informalproof}
+
+Formally, $\bar H_\sigma$ is the dependency DAG of the coarse work walks, as in \cref{lem:block-machine}(a)
+(\lean{MergeDepth.IsDepPath}); no long hop of a coarse walk lies at a block entered more than $2V$ times
+(\lean{MergeDepth.rCount_deep_coarse_eq_zero}, by \cref{lem:skel-coarse}), so the genie is the cold genie of
+\cref{lem:cold} for the coarse walks at the entry bound~$2V$ (\lean{MergeDepth.skel_genie}).
+\end{outline}
 
 This is the eighth paper's conversion of cuts into genies~\cite[Lemma~2.6]{BoundedNesting2026}, run on the block
 machine. The genie is the same set of times for every member of the class; only the revealed values depend on the input.

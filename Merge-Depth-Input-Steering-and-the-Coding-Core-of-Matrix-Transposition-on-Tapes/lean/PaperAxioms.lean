@@ -4,6 +4,11 @@ import MergeDepth
 for every declaration that the paper cites. Each should report at most `propext`,
 `Classical.choice` and `Quot.sound`. -/
 
+-- MergeDepth/BlockDag.lean
+#print axioms MergeDepth.blockStep_iff
+#print axioms MergeDepth.card_blockIn_le
+#print axioms MergeDepth.card_blockOut_le
+#print axioms MergeDepth.coarse_ownerLoad_le
 -- MergeDepth/Capacity.lean
 #print axioms MergeDepth.card_deepHops_le
 #print axioms MergeDepth.card_deep_le_of_lt
@@ -44,6 +49,8 @@ for every declaration that the paper cites. Each should report at most `propext`
 -- MergeDepth/SkeletonEntropy.lean
 #print axioms MergeDepth.coarse_entropy_le
 #print axioms MergeDepth.theta_tendsto
+-- MergeDepth/SkeletonGenie.lean
+#print axioms MergeDepth.skel_genie_cost
 -- MergeDepth/SkeletonWalk.lean
 #print axioms MergeDepth.card_block_changes_le
 #print axioms MergeDepth.card_entries_skel_le
@@ -54,6 +61,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms BoundedNesting.heavyPairs
 #print axioms BoundedNesting.lightHops
 #print axioms BoundedNesting.theoremF_owner
+#print axioms MergeDepth.BlockStep
 #print axioms MergeDepth.Centred.card_le_of_one
 #print axioms MergeDepth.Centred.card_le_of_two
 #print axioms MergeDepth.Centred.line_ne
@@ -64,6 +72,7 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.FunDag.cone
 #print axioms MergeDepth.FunDag.isIndexCode
 #print axioms MergeDepth.IsColdGenie
+#print axioms MergeDepth.IsDepPath
 #print axioms MergeDepth.card_allHops_le
 #print axioms MergeDepth.card_unit_le
 #print axioms MergeDepth.cold_genie
@@ -82,7 +91,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms MergeDepth.hop_charging_steps
 #print axioms MergeDepth.inSkel
 #print axioms MergeDepth.paths_short
+#print axioms MergeDepth.prevS
+#print axioms MergeDepth.rCount_deep_coarse_eq_zero
 #print axioms MergeDepth.rpow_mono_of_le
 #print axioms MergeDepth.skel
 #print axioms MergeDepth.skelData
+#print axioms MergeDepth.skel_genie
 #print axioms MergeDepth.sum_choose_le

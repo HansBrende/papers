@@ -14,4 +14,6 @@ import MergeDepth.SkeletonWalk
 import MergeDepth.CoarseCount
 import MergeDepth.Entropy
 import MergeDepth.SkeletonEntropy
+import MergeDepth.BlockDag
+import MergeDepth.SkeletonGenie
 import MergeDepth.ProjectivePlane

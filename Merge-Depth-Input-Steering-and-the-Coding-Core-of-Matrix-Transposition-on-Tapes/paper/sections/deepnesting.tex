@@ -17,10 +17,9 @@ $\log q$ term and no cost hypothesis. \Cref{sec:dnp-partial} gives partial resul
 up to $m=4095$. Theorem~BP is evidence that the deep-nesting pairs are depth-robust; it does not decide $\TCP(2)$, since general
 labels remain: Conjecture~A$''$ concerns every label of cost at most $n_{\mathrm h}/8$ (\cref{rem:dnp-scope}). It uses the tenth paper's
 Theorems~V$^*$, LU and~A (Lean-verified there) and the eighth paper's lemmas on the deep-nesting pair (written proofs
-there). \Cref{lem:dnp-transfer,prop:S-shift} and Definitions~\ref{def:dnp-straddle}, \ref{def:dnp-profile}
-and~\ref{def:dnp-family} are formalized in Lean, and so are \cref{lem:dnp-family,lem:dnp-halfblind,lem:dnp-witness} and
-Theorem~BP up to the identification of the model with the walk pair, as their status lines say; the blindness bound of
-the eighth paper's Proposition~5.17 is proved formally on the way. The results of \cref{sec:dnp-partial} are formalized.
+there). Every numbered result of this section is formalized in Lean, with Conjecture~S as a hypothesis where the
+statement assumes it; on the way, the deep-nesting walk, the eighth paper's Lemma~5.1(a)--(c) and its blindness bound
+(Proposition~5.17, without its level-$0$ term) are formalized too.
 
 \subsection{Setting}\label{sec:dnp-setting}
 
@@ -238,9 +237,7 @@ $\mathcal F_\eps=\{k\in\Z:m-\lfloor\eps m\rfloor\le k\le m-2\}$.
 The pair is $P$-periodic, so a family has the same fraction of blind hops in every period and on every cover.
 
 \begin{lemma}[Families of fine classes]\label{lem:dnp-family}
-\partformal{MergeDepth/BlockPairsModel.lean}{MergeDepth.family_card_ge,MergeDepth.pairHopErr_of_blind,MergeDepth.familyBlindErr_le_of_served}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
-families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
-\cite[Section~5]{BoundedNesting2026}); the formal statements are per period}
+\formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.familyPerPeriod_subset_class,MergeDepth.class_card_le_family,MergeDepth.hopError_of_inFamily_blind,MergeDepth.familyBlindErr_le_of_thetaServes}
 Let $s_0>m$, $1\le k\le m-2$, let $h$ be a head, and let $G$ be a block-pair label modulo~$q$ on the $r$-fold cover.
 \begin{enumerate}[label=(\alph*)]
 \item Each family of the class $(h,k)$ contains at least a fraction $1/32$ of the hops of the class.
@@ -266,12 +263,17 @@ by the tenth paper's potentials along the strokes, and errors per period. (a) is
 its constant $\frac1{32}$ is attained; (b) is \lean{MergeDepth.pairHopErr_of_blind}, since the potential of the other
 head is constant on a blind window and the tenth paper's stroke recursion gives the increment of the own head; and (c)
 is \lean{MergeDepth.familyBlindErr_le_of_served}.
+For the walk pair itself: the deep-nesting walk is \lean{MergeDepth.dnpWalk}, the families are hops of the class $(h,k)$ in
+every period (\lean{MergeDepth.family_inHopClass}), a class has $4\Lambda$ hops per period and $4r\Lambda$ on the $r$-fold
+cover (\lean{MergeDepth.levelCount_eq}, \lean{MergeDepth.card_coverClass}, the eighth paper's Lemma~5.1(c)), the turns of~$U$
+are the model's (\lean{MergeDepth.isTurnZ_dnpWalk_iff}), and the errors of the block-pair label are the model's
+(\lean{MergeDepth.hopError_blockPairLabel}, through \lean{MergeDepth.IsBlockLabel.potentialOf_eq}: Definition~5.11 of the
+eighth paper determines the label uniquely). \lean{MergeDepth.class_card_le_family}, \lean{MergeDepth.hopError_of_inFamily_blind}
+and \lean{MergeDepth.familyBlindErr_le_of_thetaServes} are (a)--(c) for the walk pair.
 \end{outline}
 
 \begin{lemma}[Half-blindness at a random odd shift]\label{lem:dnp-halfblind}
-\partformal{MergeDepth/BlockPairsBlindness.lean}{MergeDepth.sum_nonHalfBlind_le',MergeDepth.prob_many_nonHalfBlind_le',MergeDepth.blindnessBound_holds}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
-families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
-\cite[Section~5]{BoundedNesting2026}); the formal statements are per period}
+\formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.sum_nonHalfBlindPair_le,MergeDepth.prob_many_nonHalfBlindPair_le}
 Let $0<\eps\le1/8$ and $m<s_0$ with $\eps m\ge4$, and let $\xi$ be uniform over the odd residues modulo~$P$. The expected
 number of triples $(h,k,f)$, with $h$ a head, $k\in\mathcal F_\eps$ and $f$ a family of the class $(h,k)$, that are not
 half-blind at~$\xi$ is at most $64\eps^2m$. Hence, for $a_0\ge1$ and $\delta=1/(48(a_0+1))$, more than
@@ -297,13 +299,12 @@ Formally, the blindness bound is proved here, without the level-$0$ term of
 after a turn of level~$l$ the walk makes $R_l$ steps without a turn, and a window that starts there is blind. The two
 applications of Markov's inequality are \lean{MergeDepth.sum_nonHalfBlind_le'} and
 \lean{MergeDepth.prob_many_nonHalfBlind_le'}.
+For the walk pair itself, half-blindness is the model's (\lean{MergeDepth.halfBlindPair_iff}), and
+\lean{MergeDepth.sum_nonHalfBlindPair_le} and \lean{MergeDepth.prob_many_nonHalfBlindPair_le} are the lemma.
 \end{outline}
 
 \begin{lemma}[Witnesses give unserved levels]\label{lem:dnp-witness}
-\partformal{MergeDepth/BlockPairsWitness.lean}{MergeDepth.witnesses_unserved,MergeDepth.case1_unserved,MergeDepth.case2_unserved,MergeDepth.case3_unserved}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
-families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
-\cite[Section~5]{BoundedNesting2026}); the formal statements are per period; service is measured on the hops of the four families, which every
-$\theta_0$-served level satisfies}
+\formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.witnesses_unserved_pair}
 Let $a_0\ge1$, $0<\gamma\le1$, $0<\eps\le1/8$, $\theta_0=2^{-(a_0+11)}$ and $\delta=1/(48(a_0+1))$, and let $m<s_0$ satisfy
 $\eps m\ge4$ and~\textup{($\ast$)}. Let $\xi$ be an odd shift such that
 \begin{enumerate}[label=(\roman*)]
@@ -374,15 +375,14 @@ hence not doubly $\theta_0$-served.
 Formally, the three cases are \lean{MergeDepth.case1_unserved}, \lean{MergeDepth.case2_unserved} and
 \lean{MergeDepth.case3_unserved}, through the tenth paper's run bound of Theorem~LU, its overflow band witness and
 Theorem~V$^*$, and \lean{MergeDepth.witnesses_unserved} combines them; it needs only $\gamma\ge0$.
+For the walk pair itself, \lean{MergeDepth.witnesses_unserved_pair} is the lemma: a level that is doubly
+$\theta_0$-served on the cover is served on the witness hops of the model (\lean{MergeDepth.ThetaServes.servedOnWitness}).
 \end{outline}
 
 \subsection{Block pairs at one odd shift}\label{sec:dnp-BP}
 
 \begin{theorem}[Theorem BP: block pairs at one odd shift, assuming Conjecture~S]\label{thm:BP}
-\partformal{MergeDepth/BlockPairsBlindness.lean}{MergeDepth.theoremBP'}{that the explicitly given families, turn times and potentials of the Lean model are those of the walk pair (the
-families and the hop counts of a class are~\cite[Lemma~5.1(b),(c)]{BoundedNesting2026}, the turns are those of~$U$
-\cite[Section~5]{BoundedNesting2026}); the formal statements are per period, which is
-equivalent on covers with $q\mid r$}
+\formal{MergeDepth/DeepNestingBP.lean}{MergeDepth.theoremBP_pair}
 Let $a_0\ge1$, and assume that Conjecture~S holds for $a=1,\dots,a_0$. Put $\theta_0=2^{-(a_0+11)}$ and
 $c=2^{-16}/(26(a_0+1)^2)$. There is a constant~$C'$, depending only on~$a_0$ (through the rate of convergence in
 Conjecture~S), such that for all $m\ge1$ and $s_0>m$ some odd shift~$\xi$ has the following property: for all integers
@@ -404,6 +404,8 @@ Formally, \lean{MergeDepth.theoremBP'} is the theorem with Conjecture~S as its o
 the identification of the model, derived from \lean{MergeDepth.theoremBP}, which takes the blindness bound as a
 hypothesis; it holds also for $m=0$, and through \lean{MergeDepth.blindnessBound_holds} it no longer depends on the
 written proof of~\cite[Proposition~5.17]{BoundedNesting2026}.
+For the walk pair itself, \lean{MergeDepth.theoremBP_pair} is the theorem on every $r$-fold cover with $r\ge1$; the
+divisibility $q\mid r$, which makes the label a label of the cover, is not used in the proof.
 \end{outline}
 
 Theorem~BP matters because block labels are how one head alone serves most of its levels (the fraction $a/(a+1)$ in the

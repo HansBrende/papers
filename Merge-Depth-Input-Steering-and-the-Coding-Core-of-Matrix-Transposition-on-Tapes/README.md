@@ -4,25 +4,14 @@
 
 - [PDF](paper/main.pdf) and [LaTeX sources](paper/), licensed under [CC BY 4.0](paper/LICENSE).
 - Status: every numbered result has a written proof in the PDF. None has been checked by an independent referee yet.
-- Lean: the formalization is in progress and is published result by result in [`lean/`](lean/) (Lean 4, Mathlib,
-  built on the libraries of the eighth, ninth, fifth and tenth papers). Formalized so far:
-  - Section 3: every numbered result (for machines oblivious up to their last output step; field DAGs of prunings
-    through the fourth paper's local recursion at the level of fields; linear data paths, the class of ball systems and
-    the linear crux of the eighth paper for Corollary HC).
-  - Section 4: every numbered result, including the block machine in the frozen machine model and the paired-distance
-    group (with better constants).
-  - Section 5: Theorem L.
-  - Section 6: Theorem LA, with the modelling step from a frozen trace; the external-memory model, Theorem EM and
-    Corollary EM, whose conclusion is the negation of the frozen statement of (T).
-  - Section 7: Definitions 7.1, 7.2, 7.6, Lemma 7.4 and Proposition 7.5; Lemmas 7.7–7.9 and Theorem BP (with Conjecture S
-    as its only hypothesis) up to the identification of the Lean model's families, turns and potentials with the walk
-    pair; the blindness bound of the eighth paper's Proposition 5.17 is proved on the way. The partial results on
-    Conjecture S (Section 7.5), with sharper bounds than printed before (exact window sums in Lemma 7.14).
-  - Section 8: Lemma PG.
-
-  Results that assume an affirmative answer to Question 9.1 of the fifth paper take it as an explicit hypothesis
-  (`MergeDepth.Q91`). The status line of every numbered result in the PDF says what is formal, and its appendix lists
-  the Lean declarations cited.
+- Lean: every numbered result is formalized in [`lean/`](lean/) (Lean 4, Mathlib, built on the libraries of the eighth,
+  ninth, fifth and tenth papers), on the standard axioms. Results that assume an affirmative answer to Question 9.1 of
+  the fifth paper, the linear crux of the eighth paper, or Conjecture S take them as explicit hypotheses
+  (`MergeDepth.Q91`, `MergeDepth.LinCrux`, `MergeDepth.ConjectureS`). The formalization covers the machine model
+  throughout: oblivious machines and prunings of their field DAGs, skeleton classes and their block machines, frozen
+  traces, external-memory simulation, and the deep-nesting walk of the eighth paper. Formalizing also gave several
+  statements stronger than first written, now in the PDF, and closed a few gaps in the written proofs. The status line of
+  every numbered result in the PDF names its declarations, and the appendix lists them.
 
 ## The question
 

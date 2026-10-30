@@ -63,3 +63,7 @@ import MergeDepth.StraddleFourier
 import MergeDepth.StraddleResonance
 import MergeDepth.StraddleLocal
 import MergeDepth.StraddleDensity
+import MergeDepth.DeepNestingWalk
+import MergeDepth.DeepNestingHops
+import MergeDepth.DeepNestingLabels
+import MergeDepth.DeepNestingBP

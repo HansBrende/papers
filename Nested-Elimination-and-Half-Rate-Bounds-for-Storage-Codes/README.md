@@ -107,8 +107,9 @@ Not formalized:
   paired-distance-separated relations of *Directed Recovery Structures in Tape Computations* (Question 9.1 there), has a
   negative answer by the thirteenth paper of the series,
   [*Storage Codes above Half Rate under Paired-Distance Separation*](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/),
-  at an astronomically large degree. For that form, a bound 1 − ρ in place of 1/2, F₂-linear codes and the least degree
-  at which it fails remain open; Conjecture P would answer it affirmatively for recovery sets of size at most 3.
+  at an astronomically large degree. For that form, a bound 1 − ρ in place of 1/2 with ρ independent of the degree,
+  F₂-linear codes and the least degree at which it fails remain open; Conjecture P would answer it affirmatively for
+  recovery sets of size at most 3.
 - See the open-problems section of the paper.
 
 ## Building and verifying

@@ -81,7 +81,7 @@ Remarks labelled as proof sketches, heuristics or numerical observations are not
 
 (T) itself; the native coding hypotheses on which the [Q9.1] results rest, half-rate bounds for relations inside balls
 and for skeleton-class relations (Question 9.1 itself has a negative answer at large degree, by the thirteenth paper; its
-deficit form, its form for F₂-linear codes and the least degree at which it fails are open); Conjecture HV* (code-level
+deficit form with a deficit that decays slowly enough in the degree, its form for F₂-linear codes and the least degree at which it fails are open); Conjecture HV* (code-level
 depth reduction); adaptive machines that revisit some tape unboundedly often; an indivisibility-free external-memory
 bound for transposition; Conjecture S. See the open-problems section of the paper.
 

@@ -77,7 +77,7 @@ Theorem A\*. Remarks labelled as heuristics or numerical are not used in any pro
 ## What is open
 
 Question 9.1 for the actual cone relations of oblivious linear-time machines (the form that lower bounds for
-transposition need); a fixed deficit below rate 1 on bounded-degree relations with the paired-distance property; `𝔽₂`-linear
+transposition need); a bound 1 − ρ, with ρ > 0 independent of the degree, on relations with the paired-distance property; `𝔽₂`-linear
 codes; small degree bounds; rates above `4 − 2√3`; and linear codes in characteristic zero. See the open-problems section
 of the paper.
 

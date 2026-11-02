@@ -1,0 +1,45 @@
+\section{Binary codes}\label{sec:binary}
+
+The fifth paper singles out the fixed binary alphabet. A code over a larger alphabet becomes binary by writing every
+symbol in bits, and the recovery relation is enlarged accordingly; this is the blow-up of guessing-number
+theory~\cite{ChristofidesMarkstrom2011}, and we only record the bookkeeping of degrees and paired distances.
+
+\begin{lemma}[Blow-up]\label{lem:blowup}
+\formal{AboveHalfRate/BlowUp.lean}{AboveHalf.blowUp,AboveHalf.blowCode,AboveHalf.isStorageCode_blowCode,AboveHalf.card_blowCode,AboveHalf.degree_blowUp_le,AboveHalf.edist_le_blowUp,AboveHalf.shortPairedCoordinates_blowUp_subset}
+Let $N$ be a recovery relation on $V$, $\mathcal C\subseteq\mathcal A^V$ a storage code for $N$, and
+$\iota\colon\mathcal A\to\{0,1\}^b$ injective. On $V\times[b]$ let $N^{(b)}(p,i)=N(p)\times[b]$, and let $\mathcal C^{(b)}$ be the
+set of words $(p,i)\mapsto\iota(x_p)_i$ for $x\in\mathcal C$. Then $\mathcal C^{(b)}$ is a binary storage code for $N^{(b)}$
+with $\abs{\mathcal C^{(b)}}=\abs{\mathcal C}$; every incidence degree of $N^{(b)}$ is at most $b$ times the largest incidence
+degree of $N$; and the paired distance of $(p,i)$ in $N^{(b)}$ is at least that of $p$ in $N$.
+\end{lemma}
+\begin{outline}
+Words of $\mathcal C^{(b)}$ that agree on $N(p)\times[b]$ come from words of $\mathcal C$ that agree on $N(p)$, because
+$\iota$ is injective, so they agree at $p$ and at every bit of~$p$. Encoding is injective on words. The recovery set of
+$(p,i)$ has $b\abs{N(p)}$ elements, and $(q,j)$ lies in $b$ times as many recovery sets as $q$. Forgetting the bit index
+is a homomorphism from the paired incidence graph of $N^{(b)}$ to that of $N$, and homomorphisms do not increase
+distances.
+\end{outline}
+
+The rate of $\mathcal C^{(b)}$ is $\log_2\abs{\mathcal C}/(b\abs V)=(\log_2\abs{\mathcal A}/b)$ times the rate of
+$\mathcal C$. For $\mathcal A=\F_{127^2}$ we take $b=14$, since $127^2=16129\le2^{14}$; the loss is the factor
+$\log_2(16129)/14>0.9983$.
+
+\begin{corollary}[Corollary A$'$]\label{cor:Aprime}
+\partformal{AboveHalfRate/Main.lean}{AboveHalf.not_Q91BinaryAt_of_tower}{the inputs of
+\cref{thm:A} listed there.}
+The blow-up with $b=14$ of the relations and codes of \cref{thm:A} gives binary storage codes of rate at least
+\[
+  \frac{8100}{16130}\cdot\frac{\log_2 16129}{14}>0.5013
+\]
+on recovery relations of incidence degree at most $14\Delta$ on which every paired distance tends to infinity. Hence
+\cref{prob:q91} has a negative answer for the fixed binary alphabet, at the degree bound $14\Delta$.
+\end{corollary}
+\begin{outline}
+Apply \cref{lem:blowup} to the relations and codes of \cref{thm:A} with an injection $\F_{127^2}\to\{0,1\}^{14}$; this is
+Theorem T(c). The Lean theorem \lean{AboveHalf.not_Q91BinaryAt_of_tower} is the last step, and
+\lean{AboveHalf.Numbers.binary_rate} checks that $127^2\le2^{14}$ and
+$\frac{8100}{16130}\cdot\frac{\log_216129}{14}>0.5013$, using $\log_216129>615/44$, that is, $2^{615}<16129^{44}$.
+\end{outline}
+
+The binary codes are not linear over $\F_2$: they are $\F_{127^2}$-linear codes written in bits. Whether \cref{prob:q91} has a
+negative answer for $\F_2$-linear codes is open (\cref{sec:open}).

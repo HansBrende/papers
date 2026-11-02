@@ -1,0 +1,193 @@
+\section{Lift selections of low degeneracy}\label{sec:lifts}
+
+This section is pure graph theory. It produces, on a finite regular graph, the structure that \cref{sec:peeling} turns
+into private checks on the tree.
+
+\subsection{Lift selections}\label{sec:lifts-def}
+
+Let $X$ be a finite simple graph. Its \emph{lifted vertices} are the pairs $(v,i)$ with $v\in X^0$ and $i\in\{0,1\}$,
+and the \emph{swap} is $\sigma(v,i)=(v,1-i)$. An edge $e=\{x,y\}$ of $X$ has four \emph{lifts}
+$\{(x,i),(y,j)\}$, exchanged in pairs by~$\sigma$.
+
+\begin{definition}[Lift selection]\label{def:selection}
+\formal{AboveHalfRate/LiftSelection.lean}{AboveHalf.IsLift,AboveHalf.isLift_iff,AboveHalf.liftSwap,AboveHalf.IsLift.map_liftSwap,AboveHalf.IsEarlierEnd,AboveHalf.IsDegenerateFor,AboveHalf.liftPos_injective}
+A \emph{lift selection} $A$ of $X$ consists of one lift $\tilde a(e)$ of each edge $e$ of $X$. Its \emph{complement} is
+$B=\sigma(A)$, the set of lifts $\sigma(\tilde a(e))$. A lift selection is \emph{$t$-degenerate} if there is a linear
+order of the lifted vertices in which every lifted vertex is the earlier endpoint of at most $t$ lifts in~$A$.
+\end{definition}
+
+In Lean, $t$-degeneracy is stated for the order given by real positions of the lifted vertices; it is the notion of
+\cref{def:selection} when the positions are distinct, as the positions we use are (\lean{AboveHalf.liftPos_injective}).
+
+The lifts in $A\cup B$ form a graph $\Ftil X$ on the lifted vertices, and $(v,i)\mapsto v$ is a two-sheeted covering
+$\Ftil X\to X$: for each edge $e$ at $x$, the lifted vertex $(x,i)$ lies in exactly one of $\tilde a(e)$ and
+$\sigma(\tilde a(e))$. The swap is a deck transformation exchanging $A$ and $B$, so $B$ is $t$-degenerate whenever $A$
+is, for the order transported by~$\sigma$. A lift selection is the same as a voltage assignment in $\Z/2$ together with
+a choice, for each edge, of which of its two lifts in the double cover is called~$A$.
+
+\begin{theorem}[Theorem D]\label{thm:D}
+\partformal{AboveHalfRate/LiftSelection.lean}{AboveHalf.exists_liftSelection_of_fluid,AboveHalf.liftPos_injective}{the probabilistic existence of labels with small loads (\cref{lem:concentration}),
+which uses Bernstein's inequality.}
+Let $X$ be a finite simple graph on $n$ vertices, regular of degree $\delta\ge1$. Put $\tau=2-\sqrt3$ and
+$\nu=\tau(1-\tau)\delta$, and let $\lambda>0$ satisfy
+\begin{equation}\label{eq:Dcond}
+  2n\exp\Bigl(-\frac{\lambda^2}{2(\nu+\lambda/3)}\Bigr)<1.
+\end{equation}
+Then $X$ has a lift selection that is $t$-degenerate for $t=\lceil\tau\delta+\lambda\rceil$. The order can be taken as
+follows, for injective labels $\xi\colon X^0\to(0,1)$: the lifted vertex $(v,0)$ has position $\xi_v$, the lifted vertex
+$(v,1)$ has position $2-\xi_v$, and lifted vertices are ordered by position.
+\end{theorem}
+\begin{outline}
+The formal part is \lean{AboveHalf.exists_liftSelection_of_fluid}. From injective labels in $(0,1)$ whose fluid loads
+(\cref{sec:lifts-fluid}) are at most an integer $t$, it produces a lift selection $A$ such that $A$ is $t$-degenerate
+for the order by position and $\sigma(A)$ for its transport by~$\sigma$. It rounds the fluid rule by Hall's theorem
+(\cref{lem:rounding}) and realizes the chosen options by lifts (\cref{lem:options}); \lean{AboveHalf.liftPos_injective}
+says that the positions are distinct. The existence of labels with loads at most $\lceil\tau\delta+\lambda\rceil$ is the
+probabilistic step, proved in \cref{sec:lifts-proof}.
+\end{outline}
+
+Since $\lambda=O(\sqrt{\delta\log n}+\log n)$ satisfies \eqref{eq:Dcond}, the degeneracy is
+$(2-\sqrt3)\delta+O(\sqrt{\delta\log n})$ when $\log n=O(\delta)$. The constant $2-\sqrt3\approx0.268$ is what the
+construction of \cref{sec:theoremA} pays: local codes of redundancy $t$ carry the separated structure, and the rate
+obtained is about $(1-t/\delta)^2$. A naive selection does much worse; \cref{rem:naive} explains why some cleverness is
+needed.
+
+\subsection{Options and rounding}\label{sec:lifts-options}
+
+Fix injective labels $\xi\colon X^0\to(0,1)$ and order the lifted vertices by position as in \cref{thm:D}. All first
+copies $(v,0)$ come before all second copies $(v,1)$; the first copies are in increasing order of label, the second
+copies in decreasing order.
+
+\begin{lemma}[Options]\label{lem:options}
+\formal{AboveHalfRate/LiftSelection.lean}{AboveHalf.isEarlierEnd_lifts,AboveHalf.isOption_mk_iff,AboveHalf.isOption_iff_exists_lift,AboveHalf.liftOf_options,AboveHalf.isEarlierEnd_liftOf,AboveHalf.isDegenerateFor_image_liftOf}
+Let $e=\{x,y\}$ be an edge with $\xi_x<\xi_y$. The earlier endpoints of its four lifts are
+\begin{gather*}
+  \{(x,0),(y,0)\}\mapsto(x,0),\qquad \{(x,0),(y,1)\}\mapsto(x,0),\\
+  \{(x,1),(y,0)\}\mapsto(y,0),\qquad \{(x,1),(y,1)\}\mapsto(y,1).
+\end{gather*}
+Call $O(e)=\{(x,0),(y,0),(y,1)\}$ the \emph{options} of~$e$. For every map $o$ that assigns to each edge one of its
+options, the lift selection
+\[
+  \tilde a(e)=\{(x,0),(y,1)\},\ \{(x,1),(y,0)\},\ \{(x,1),(y,1)\}\quad\text{for}\quad o(e)=(x,0),\ (y,0),\ (y,1)
+\]
+has earlier endpoint $o(e)$ on every edge. Hence it is $t$-degenerate if $o$ chooses every lifted vertex for at most
+$t$ edges.
+\end{lemma}
+\begin{outline}
+The positions satisfy $\xi_x<\xi_y<1<2-\xi_y<2-\xi_x$, which gives the four earlier endpoints. The construction realizes
+each option by a lift whose earlier endpoint is that option.
+\end{outline}
+
+A \emph{fractional assignment} gives each edge $e$ nonnegative weights $w(e,z)$ on its options $z\in O(e)$, with sum~$1$.
+The \emph{load} of a lifted vertex $z$ is $\sum_ew(e,z)$, the sum over the edges having $z$ as an option.
+
+\begin{lemma}[Rounding]\label{lem:rounding}
+\formal{AboveHalfRate/LiftSelection.lean}{AboveHalf.exists_assignment_of_fractional}
+If a fractional assignment has all loads at most an integer $T$, then some assignment of options has every lifted
+vertex chosen by at most $T$ edges.
+\end{lemma}
+\begin{outline}
+Make $T$ copies of each lifted vertex and join each edge to the copies of its options. For a set $S$ of edges, the
+total weight $\abs S$ is spread over the options of $S$, each receiving at most $T$, so the copies of those options
+number at least $\abs S$. By Hall's theorem~\cite{Hall1935} the edges can be matched to distinct copies.
+\end{outline}
+
+\subsection{The fluid rule}\label{sec:lifts-fluid}
+
+Put $\tau=2-\sqrt3$, the smaller root of $\tau^2-4\tau+1=0$; equivalently $(1-\tau)^2=2\tau$. For an edge $\{x,y\}$ with
+$\xi_x<\xi_y$, write $\eta=\xi_y$ and send
+\[
+  \min\Bigl(1,\frac\tau\eta\Bigr)\ \text{to}\ (y,1),\qquad
+  \Bigl(1-\frac\tau\eta\Bigr)_+\frac{\eta-\tau}{2\eta}\ \text{to}\ (y,0),\qquad
+  \Bigl(1-\frac\tau\eta\Bigr)_+\frac{\eta+\tau}{2\eta}\ \text{to}\ (x,0).
+\]
+The weights are nonnegative and sum to~$1$. They depend only on the larger label. For a vertex $z$ with label $u$ and a
+neighbour with label $s\ne u$, the weight that the edge between them sends to $(z,1)$ and to $(z,0)$ is
+\[
+  f_1(u,s)=\begin{cases}\min(1,\tau/u)&s<u,\\0&s>u,\end{cases}\qquad
+  f_0(u,s)=\begin{cases}(1-\tau/u)_+\,\dfrac{u-\tau}{2u}&s<u,\\[1ex](1-\tau/s)_+\,\dfrac{s+\tau}{2s}&s>u,\end{cases}
+\]
+so the load of $(z,i)$ is $\sum_{w\sim z}f_i(u,\xi_w)$.
+
+\begin{lemma}[Fluid loads]\label{lem:fluid}
+\formal{AboveHalfRate/Fluid.lean}{AboveHalf.Fluid.charges_sum,AboveHalf.Fluid.f1_nonneg,AboveHalf.Fluid.f1_le_one,AboveHalf.Fluid.f0_nonneg,AboveHalf.Fluid.f0_le_half,AboveHalf.Fluid.integral_f1,AboveHalf.Fluid.integral_f0,AboveHalf.Fluid.one_sub_tau_sq,AboveHalf.Fluid.integral_f1_sq_sub_le,AboveHalf.Fluid.integral_f0_sq_le,AboveHalf.Fluid.integral_f0_sq_sub_le}
+For every $u\in(0,1]$:
+\begin{enumerate}[label=(\alph*)]
+\item $0\le f_1(u,s)\le1$ and $0\le f_0(u,s)\le\frac12$ for $s\in(0,1]$;
+\item $\int_0^1f_1(u,s)\,ds=\min(u,\tau)\le\tau$ and $\int_0^1f_0(u,s)\,ds=\frac{(1-\tau)^2}2=\tau$;
+\item $\int_0^1f_1(u,s)^2\,ds-\bigl(\int_0^1f_1(u,s)\,ds\bigr)^2\le\tau(1-\tau)$ and
+$\int_0^1f_0(u,s)^2\,ds\le\tau/2\le\tau(1-\tau)$.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+(a) is direct. (b) For $f_1$ the integral is $u\min(1,\tau/u)$. For $f_0$ it is
+$(u-\tau)_+^2/(2u)+\frac12\int_{\max(u,\tau)}^1(1-\tau^2/s^2)\,ds$. When $u\le\tau$ this is
+$\frac12(1-\tau)-\frac12\tau(1-\tau)=\frac12(1-\tau)^2$. When $u>\tau$ it is
+$\bigl((u-\tau)^2+u(1-u)-\tau^2(1-u)\bigr)/(2u)=\frac12(1-\tau)^2$. Finally $(1-\tau)^2=2\tau$. (c) For $u\le\tau$ the
+first variance is $u(1-u)\le\tau(1-\tau)$; for $u>\tau$ it is $\tau^2(1-u)/u\le\tau(1-\tau)$. The second bound follows
+from $f_0\le\frac12$ and~(b).
+\end{outline}
+
+So each lifted vertex receives load $\tau$ per unit degree in expectation, or less, whatever its label: the rule is
+balanced exactly at $\tau=2-\sqrt3$.
+
+\subsection{Concentration and the proof of Theorem D}\label{sec:lifts-proof}
+
+We use Bernstein's inequality~\cite[Section~2.8]{BLM2013}: if $Y_1,\dots,Y_\delta$ are independent random variables
+with $Y_i-\mathbb EY_i\le M$ and $\sum_i\operatorname{Var}Y_i\le\nu$, then
+$\Pr\bigl(\sum_i(Y_i-\mathbb EY_i)\ge\lambda\bigr)\le\exp\bigl(-\lambda^2/(2(\nu+M\lambda/3))\bigr)$ for $\lambda>0$.
+
+\begin{lemma}[Concentration]\label{lem:concentration}
+\notformalized
+Let the labels $\xi_v$ be independent and uniform on $(0,1)$. For every lifted vertex $(z,i)$ and every $\lambda>0$,
+the load of $(z,i)$ under the fluid rule is at least $\tau\delta+\lambda$ with probability at most
+$\exp\bigl(-\lambda^2/(2(\nu+\lambda/3))\bigr)$, where $\nu=\tau(1-\tau)\delta$.
+\end{lemma}
+\begin{informalproof}
+Condition on $\xi_z=u$. Since $X$ is simple, the $\delta$ neighbours $w$ of $z$ are distinct vertices other than $z$, so
+their labels are independent and uniform on $(0,1)$ given $\xi_z$. The load is $\sum_{w\sim z}f_i(u,\xi_w)$, a sum of
+$\delta$ independent terms with values in $[0,1]$. By \cref{lem:fluid}(b) its conditional mean is at most $\tau\delta$,
+and by \cref{lem:fluid}(c) the conditional variances sum to at most $\nu$. Bernstein's inequality with $M=1$ bounds the
+conditional probability that the load exceeds its mean by $\lambda$, hence the conditional probability that it is at
+least $\tau\delta+\lambda$, by $\exp(-\lambda^2/(2(\nu+\lambda/3)))$. Integrating over $u$ gives the claim.
+\end{informalproof}
+
+\begin{proof}[Proof of \cref{thm:D}]
+Choose the labels independently and uniformly on $(0,1)$. They are injective with probability $1$, and by
+\cref{lem:concentration} and a union bound over the $2n$ lifted vertices, all loads are below $\tau\delta+\lambda$ with
+probability at least $1-2n\exp(-\lambda^2/(2(\nu+\lambda/3)))>0$. Fix injective labels with this property. The fluid rule is a
+fractional assignment with all loads at most the integer $t=\lceil\tau\delta+\lambda\rceil$. By \cref{lem:rounding} some
+assignment of options has every lifted vertex chosen by at most $t$ edges, and by \cref{lem:options} the corresponding
+lift selection is $t$-degenerate for the order by position.
+\end{proof}
+
+Only the probabilistic step is not formalized. Given injective labels in $(0,1)$ whose fluid loads are at most $t$,
+\lean{AboveHalf.exists_liftSelection_of_fluid} produces a lift selection $A$ such that $A$ and $\sigma(A)$ are
+$t$-degenerate for the order by position and its transport by $\sigma$ (\cref{lem:options,lem:rounding}); and the Lean
+library proves the expected loads and second moments of \cref{lem:fluid} and the range bounds
+\lean{AboveHalf.Fluid.f1_sub_le_one} and \lean{AboveHalf.Fluid.f0_sub_le_one}, which are the inputs of Bernstein's
+inequality.
+
+\begin{corollary}[The base for $p=127$]\label{cor:base}
+\partformal{AboveHalfRate/Numbers.lean}{AboveHalf.Numbers.base_degeneracy,AboveHalf.Numbers.base_bernstein}{the application of \cref{thm:D}, whose probabilistic step is not formalized.}
+Every simple $16130$-regular graph on $n=2\,197\,862$ vertices has a $4640$-degenerate lift selection.
+\end{corollary}
+\begin{outline}
+Take $\delta=16130$ and $\lambda=317$ in \cref{thm:D}. Since $\tau(1-\tau)=3\sqrt3-5<0.1961527$, we have $\nu<3163.95$
+and $\lambda^2/(2(\nu+\lambda/3))>100489/6539.24>15.367$, while $\log(2n)=\log4\,395\,724<15.297$. So \eqref{eq:Dcond}
+holds, and $t=\lceil16130\tau+317\rceil=\lceil4639.02\ldots\rceil=4640$. The Lean theorems \lean{AboveHalf.Numbers.base_degeneracy} and \lean{AboveHalf.Numbers.base_bernstein} check
+\eqref{eq:Dcond} and $t=4640\le4663$ exactly, through their own rational bounds on $\sqrt3$, on $e$ and on the
+exponent; the decimals above are numerical evaluations.
+\end{outline}
+
+\begin{remark}[Why the order must be deep]\label{rem:naive}
+\Cref{sec:theoremA} needs selections whose degeneracy is a fraction of $\delta$ below $1-1/\sqrt2\approx0.293$.
+Orders with only two levels cannot give that. Suppose every lift in $A$ has an endpoint with at most $t$ lifts of $A$
+(an \emph{$A$-light} vertex), every lift in $B$ an endpoint with at most $t$ lifts of $B$ (a \emph{$B$-light}
+vertex), and $t<\delta/2$; then the private checks of \cref{sec:peeling} could all be single local checks. The swap
+exchanges $A$-light and $B$-light vertices, so there are equally many, say $\ell$. A $B$-light vertex carries at least
+$\delta-t>t$ lifts of $A$, and each has its other end $A$-light; an $A$-light vertex carries at most $t$. Hence
+$\ell(\delta-t)\le\ell t$, so $\ell=0$, which is impossible because $A$ is not empty. So $t\ge\delta/2$, and the rate
+$(1-t/\delta)^2$ of \cref{sec:theoremA} would be at most $1/4$. Deep orders, as in \cref{thm:D}, are what make a smaller
+degeneracy possible, and they are why the private checks have large support. This remark is not used in any proof.
+\end{remark}

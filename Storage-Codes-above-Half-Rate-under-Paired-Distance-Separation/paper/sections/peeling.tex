@@ -1,0 +1,119 @@
+\section{Private checks and separated structures}\label{sec:peeling}
+
+Let $G$ be a locally finite graph with a local datum over a field $\F$ whose local checks interpolate on $t$
+coordinates (\cref{sec:prelim-tanner}). A \emph{private check} of an edge $a$ in a set $\Ftil A$ of edges is an element
+$h\in D(G)$ with $h(a)=1$ and $h(f)=0$ for every other edge $f\in\Ftil A$. Private checks are recovery rules: on the
+Tanner code, the symbol at $a$ is a linear function of the symbols outside $\Ftil A$ (\cref{lem:valid}).
+
+\subsection{Peeling}\label{sec:peeling-lemma}
+
+A \emph{rank function} for a set $\Ftil A$ of edges is a map $r\colon G^0\to\N$ such that the two ends of every edge
+of $\Ftil A$ have different ranks. An edge of $\Ftil A$ at $w$ goes \emph{up} from $w$ if its other end has larger rank.
+A \emph{step down} goes from $w$ to a neighbour of smaller rank along an edge of $\Ftil A$, and the \emph{down-set} of
+$u$ consists of the vertices reachable from $u$ by steps down.
+
+\begin{lemma}[Peeling]\label{lem:peeling}
+\formal{AboveHalfRate/Peeling.lean}{AboveHalf.exists_private_check,AboveHalf.support_downChecks,AboveHalf.exists_walk_of_down}
+Suppose every vertex has at most $t$ edges of $\Ftil A$ going up. Then every edge $a=\{u,v\}\in\Ftil A$ with $r(u)<r(v)$ has a
+private check in $\Ftil A$ that is a sum of local checks at vertices of the down-set of $u$, and every vertex of the
+down-set is joined to $u$ by a walk of length at most $r(u)$.
+\end{lemma}
+\begin{outline}
+By strong induction on the rank, every edge $\{w,y\}\in\Ftil A$ going up from $w$ and every value $c\in\F$ admit a sum
+$h$ of local checks at the down-set of $w$ with $h(\{w,y\})=c$ and $h=0$ on the rest of $\Ftil A$. At most $t$ edges of
+$\Ftil A$ go up from $w$, so a local check $g_w$ at $w$ takes the value $c$ on $\{w,y\}$ and $0$ on the other edges going
+up. For each edge $\{w,z\}\in\Ftil A$ going down from $w$, the induction hypothesis at $z$, with value $-g_w(\{w,z\})$,
+gives a correction $h_z$ at the down-set of $z$, which lies in the down-set of $w$. Then
+$h=g_w+\sum_zh_z$ has the required values. On the edges at $w$ this holds because no edge of $\Ftil A$ at $w$ joins
+vertices of equal rank. Away from $w$ it holds because each $h_z$ vanishes on $\Ftil A$ outside its own edge
+$\{w,z\}$. Each step down lowers the rank by at least $1$, which bounds the walks.
+\end{outline}
+
+A sum of local checks at the down-set of $u$ is supported in the stars of its vertices, so by the definition of the
+distance between edges (\cref{sec:prelim-graphs}) every edge $f$ in the support of the private check of $a$ satisfies
+$\dist(a,f)\le r(u)+1$. This step uses the line-graph metric, which is not formalized.
+
+The recursion explores the whole down-set, so the support of a private check is controlled only by the depth of the
+rank function, not by its degeneracy alone. The checks are explicit given the local checks and the ranks.
+
+\subsection{Separated structures}\label{sec:peeling-structure}
+
+From now on a group $\Gamma$ acts on $G$ freely on vertices and without inversions, hence freely on edges, and the local
+datum is $\Gamma$-equivariant.
+
+\begin{definition}[Twisted separated structure]\label{def:structure}
+A \emph{twisted separated structure} of degeneracy $t$ and depth $R$ consists of a homomorphism $\chi\colon\Gamma\to\Z/2$,
+a partition $G^1=\Ftil A\sqcup\Ftil B$ with
+\[
+  \gamma\Ftil A=\Ftil A\ \text{if}\ \chi(\gamma)=0,\qquad \gamma\Ftil A=\Ftil B\ \text{if}\ \chi(\gamma)=1,
+\]
+and rank functions $r_A,r_B\colon G^0\to\{0,\dots,R\}$ for $\Ftil A$ and for $\Ftil B$ such that every vertex has at most
+$t$ edges of $\Ftil A$ going up for $r_A$, and at most $t$ edges of $\Ftil B$ going up for~$r_B$. The \emph{class} of an
+edge is $\operatorname{cls}(e)=0$ on $\Ftil A$ and $1$ on $\Ftil B$, so that
+$\operatorname{cls}(\gamma e)=\operatorname{cls}(e)+\chi(\gamma)$.
+\end{definition}
+
+\begin{proposition}[Separated checks]\label{prop:checks}
+\notformalized
+Suppose $G$ carries a twisted separated structure of degeneracy $t$ and depth $R$, and the local checks interpolate on
+$t$ coordinates. Then there is a family $(h_e)_{e\in G^1}$ in $D(G)$ such that for all $e\in G^1$ and $\gamma\in\Gamma$:
+\begin{enumerate}[label=(\alph*)]
+\item $h_{\gamma e}=\gamma h_e$;
+\item $h_e(e)=1$, and $h_e(f)=0$ for every edge $f\ne e$ of the class of $e$;
+\item every edge $f$ in the support of $h_e$ satisfies $\dist(e,f)\le R$.
+\end{enumerate}
+\end{proposition}
+\begin{informalproof}
+Choose one edge in every $\Gamma$-orbit of edges. For a chosen edge $a=\{u,v\}$ of class $c$, orient it so that
+$r(u)<r(v)$ for the rank function $r$ of its class, and let $h_a$ be the private check of \cref{lem:peeling} in that
+class. Since $r(u)<r(v)\le R$, every edge $f$ of its support has $\dist(a,f)\le r(u)+1\le R$, by the paragraph after
+\cref{lem:peeling}. Every edge $e$ is
+$\gamma a$ for exactly one chosen $a$ and exactly one $\gamma\in\Gamma$, because the action on edges is free; put
+$h_e=\gamma h_a$. It lies in $D(G)$ because the datum is equivariant. Then (a) holds by uniqueness of $\gamma$, and
+(c) because $\Gamma$ acts by isometries. For (b), $h_e(e)=h_a(a)=1$. If $f\ne e$ has the class of $e$, then
+$\gamma^{-1}f\ne a$ has class $\operatorname{cls}(f)-\chi(\gamma)=\operatorname{cls}(e)-\chi(\gamma)=c$, so
+$h_e(f)=h_a(\gamma^{-1}f)=0$.
+\end{informalproof}
+
+Of \cref{prop:checks} only \cref{lem:peeling} is formalized; the transport and the metric bookkeeping are written
+proofs, and the Lean main theorems take the family of checks as a hypothesis. The family is the input of the descent of
+\cref{sec:descent}. In Lean it is a \lean{AboveHalf.CheckSystem}, whose fields \texttt{check\_smul},
+\texttt{check\_self} with \texttt{sep}, and \texttt{radius} are (a), (b) and~(c); its other fields are the class
+function and the twist of \cref{def:structure}, related by \texttt{cls\_smul}, and a metric on the coordinates.
+
+The recovery relation $e\mapsto\supp h_e\setminus\{e\}$ on the edges of $G$ is perfectly separated by the classes, so
+its incidence graph never joins $L_e$ to $R_e$. The twist $\chi$ is what lets quotients escape the half bound of
+perfectly separated relations: an element of $\Gamma$ with $\chi=1$ exchanges the classes.
+
+\subsection{Separated structures from lift selections}\label{sec:peeling-lift}
+
+\begin{proposition}[Lifting a selection]\label{prop:lift}
+\notformalized
+Let $\Tree$ be a tree, $\Gamma$ a group acting on it freely on vertices and without inversions with $s(\Gamma)\ge3$, and
+$X=\Gamma\backslash\Tree$, a finite simple graph on $n$ vertices. If $X$ has a $t$-degenerate lift selection, then
+$\Tree$ carries a twisted separated structure of degeneracy $t$ and depth $2n-1$.
+\end{proposition}
+\begin{informalproof}
+Let $A$ be the selection, $B=\sigma(A)$, and $\Ftil X$ the double cover of \cref{sec:lifts-def}, with covering maps
+$\pi\colon\Tree\to X$ and $\varpi_0\colon\Ftil X\to X$. Number the $2n$ lifted vertices $0,\dots,2n-1$ in the order of
+degeneracy. Fix a vertex $x_0$ of $\Tree$ and a lift of $\pi(x_0)$ to $\Ftil X$, and define $\varpi\colon\Tree\to\Ftil X$ by
+lifting along $\varpi_0$ the images under $\pi$ of the unique paths from $x_0$ (\cref{sec:prelim-graphs}). Then
+$\varpi_0\circ\varpi=\pi$, and $\varpi$ maps the edges at each vertex bijectively onto the edges at its image, since
+$\pi$ and $\varpi_0$ do.
+
+For $\gamma\in\Gamma$, $\varpi\circ\gamma$ also lifts $\pi$, because $\pi\circ\gamma=\pi$. Two lifts of a map from a
+connected graph agree everywhere if they agree at one vertex, and a vertex of $X$ has two lifts; so
+$\varpi\circ\gamma=\varpi$ or $\varpi\circ\gamma=\sigma\circ\varpi$. Put $\chi(\gamma)=0$ or $1$ accordingly. Since
+$\sigma^2=1$ this is a homomorphism. Let $\Ftil A=\varpi^{-1}(A)$ and $\Ftil B=\varpi^{-1}(B)$, a partition of the edges
+of $\Tree$, with $\gamma\Ftil A=\Ftil A$ if $\chi(\gamma)=0$ and $\gamma\Ftil A=\varpi^{-1}(\sigma A)=\Ftil B$ if
+$\chi(\gamma)=1$.
+
+Let $r_A(x)$ be the number of $\varpi(x)$ and $r_B(x)$ that of $\sigma(\varpi(x))$. The edges of $\Ftil A$ at $x$
+correspond bijectively to the lifts of $A$ at $\varpi(x)$, with the same numbers at their other ends, so their ends have
+different ranks and at most $t$ of them go up. The same holds for $\Ftil B$, with $\sigma\circ\varpi$ in place of
+$\varpi$, since $B=\sigma(A)$ is $t$-degenerate for the order transported by~$\sigma$.
+\end{informalproof}
+
+Combined with \cref{thm:D}, \cref{prop:lift} turns every quotient of a regular tree by a group acting freely and
+without inversions, with simple quotient, into the input of \cref{prop:checks}. Depth $2n-1$ is what makes the incidence degree bound of
+\cref{sec:theoremA} astronomically large: the private checks of \cref{lem:peeling} may reach every rank.

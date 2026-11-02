@@ -1,0 +1,87 @@
+\section{The undirected crux}\label{sec:undirected}
+
+The fourth paper of the series asks the undirected form of \cref{prob:q91}~\cite[Question~6.1]{CurvedMotion2026}. A
+storage code on a simple graph $H$ is a storage code for its neighbourhood relation, which assigns to each vertex the set
+of its neighbours~\cite[Section~2.3]{CurvedMotion2026}. A sequence of graphs is \emph{locally bipartite} if, for each
+fixed~$\ell$, only a vanishing fraction of the vertices lie on odd cycles of length at most~$\ell$.
+
+\begin{question*}[{\cite[Question~6.1]{CurvedMotion2026}}]
+Let $(H_n)$ be locally bipartite graphs of maximum degree at most~$\Delta$. Does every storage code on $H_n$ have rate at
+most $\tfrac12+o(1)$, over every alphabet?
+\end{question*}
+
+Theorem T answers it as well, once the directions of the recovery relations are forgotten. The \emph{symmetrization} of
+a relation $N$ on $V$ is the simple graph $H(N)$ on $V$ in which two different coordinates $p,q$ are adjacent when
+$p\in N(q)$ or $q\in N(p)$. If $N$ has no loops, that is, $q\notin N(q)$ for every $q$, then every recovery set $N(q)$ lies
+in the neighbourhood of $q$ in $H(N)$, so every storage code for $N$ is a storage code on $H(N)$. The degree of $q$ in
+$H(N)$ is at most the sum of its two incidence degrees.
+
+\begin{proposition}[Symmetrized quotients]\label{prop:sym}
+\formal{AboveHalfRate/Descent.lean}{AboveHalf.CheckSystem.proj_not_mem_qrel,AboveHalf.CheckSystem.symGraph,AboveHalf.CheckSystem.degree_symGraph_le,AboveHalf.CheckSystem.le_mul_of_odd_walk,AboveHalf.CheckSystem.isStorageCode_nbhd_symGraph}
+In the setting of \cref{prop:descent}, suppose that every element of $\Gamma'\setminus\{1\}$ moves every edge by at least
+$s>R$. Then the descended relation $N'$ has no loops, and its symmetrization $H'=H(N')$ satisfies:
+\begin{enumerate}[label=(\alph*)]
+\item every vertex has degree at most $2(\beta-1)$;
+\item every closed walk of odd length $k$ in $H'$ satisfies $kR\ge s$;
+\item every storage code for $N'$ is a storage code on~$H'$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+(a) follows from \cref{prop:descent}(b). (b) An edge of $H'$ joins $\pi e$ to $\pi f$ for a check $h_e$ and an edge
+$f\ne e$ of its support, in one direction or the other. By (b) and (c) of \cref{prop:checks}, $e$ and $f$ have
+different classes and $\dist(e,f)\le R$. As in the proof of \cref{prop:descent}(c), a closed walk of length $k$ at $\pi a$
+therefore lifts to a walk from $a$ to some $\gamma a$ with $\gamma\in\Gamma'$, along which the class changes at every
+step and the edge moves by at most $kR$. For odd $k$ this gives $\operatorname{cls}(\gamma a)=\operatorname{cls}(a)+1$, so
+$\chi(\gamma)=1$, hence $\gamma\ne1$ and $s\le\dist(a,\gamma a)\le kR$. (c) A loop $\pi e\in N'(\pi e)$ would give an
+edge $f=\gamma e\ne e$ in the support of $h_e$; then $\gamma\ne1$ and $s\le\dist(e,\gamma e)\le R$, which is excluded. So
+$N'$ has no loops, and (c) follows.
+\end{outline}
+
+For binary codes, the blow-up of \cref{sec:binary} has to keep odd cycles long, so the copies of a vertex are not joined
+to each other.
+
+\begin{lemma}[Blow-up of a graph]\label{lem:graphblowup}
+\formal{AboveHalfRate/Undirected.lean}{AboveHalf.graphBlowUp,AboveHalf.nbhd_graphBlowUp,AboveHalf.isStorageCode_graphBlowUp,AboveHalf.degree_graphBlowUp_le,AboveHalf.graphBlowUpHom,AboveHalf.exists_walk_of_graphBlowUp}
+Let $H$ be a simple graph on $V$, $\mathcal C\subseteq\mathcal A^V$ a storage code on $H$, and
+$\iota\colon\mathcal A\to\{0,1\}^b$ injective. Let $H^{(b)}$ be the graph on $V\times[b]$ in which $(p,i)$ and $(q,j)$
+are adjacent when $p$ and $q$ are. Then the binary code $\mathcal C^{(b)}$ of \cref{lem:blowup} is a storage code on
+$H^{(b)}$; every degree of $H^{(b)}$ is at most $b$ times the largest degree of $H$; and every walk in $H^{(b)}$ projects
+to a walk in $H$ of the same length.
+\end{lemma}
+\begin{outline}
+The neighbourhood of $(p,i)$ in $H^{(b)}$ is $N_H(p)\times[b]$, which is the recovery set of $(p,i)$ in the blow-up of
+the neighbourhood relation of~$H$, so \cref{lem:blowup} applies. Forgetting the second coordinate is a homomorphism
+$H^{(b)}\to H$, and homomorphisms map walks to walks of the same length.
+\end{outline}
+
+\begin{corollary}[Corollary U]\label{cor:U}
+\partformal{AboveHalfRate/Undirected.lean}{AboveHalf.undirected_tower,AboveHalf.undirected_tower_binary}{the inputs of
+\cref{thm:A} listed there.}
+Keep the notation of \cref{thm:A}, and let $H_j$ be the symmetrization of $N_j$, for the levels $j$ with
+$s(\Gamma^+(\lambda_0^j))>R$, which include all large~$j$.
+\begin{enumerate}[label=(\alph*)]
+\item The graph $H_j$ has maximum degree at most $2\Delta$, and every closed walk in $H_j$ of odd length $k$ has
+$k\ge(j\log509-\log4)/(n\log127)$. So for every $K$, eventually no vertex of $H_j$ lies on an odd cycle of length at
+most~$K$.
+\item The $\F_{127^2}$-linear code $T_{\mathrm{tw}}(X_j)$ is a storage code on $H_j$ of rate at least $8100/16130>0.5021$.
+\item The blow-ups $H_j^{(14)}$ have maximum degree at most $28\Delta$, satisfy the same bound on closed walks of odd
+length, and carry binary storage codes of rate greater than $0.5013$.
+\end{enumerate}
+Hence the fourth paper's Question~6.1 has a negative answer, at the degree bound $2\Delta$ over the alphabet $\F_{127^2}$ and at the
+degree bound $28\Delta$ over the binary alphabet.
+\end{corollary}
+\begin{outline}
+For the levels with $s(\Gamma^+(\lambda_0^j))>R$, apply \cref{prop:sym} with $\Gamma'=\Gamma^+(\lambda_0^j)$ and
+$\beta-1=\Delta$. The bound on odd closed walks is $s(\Gamma^+(\lambda_0^j))/R$, which is at least the bound in (a), as in
+\cref{thm:A}(b), and it tends to infinity, since $s(\Gamma^+(\lambda_0^j))\ge2(j\log509-\log4)/\log127$ by
+\cref{lem:girth}. Part (b) is \cref{thm:A}(c) with \cref{prop:sym}(c). For (c), apply \cref{lem:graphblowup} with an
+injection $\F_{127^2}\to\{0,1\}^{14}$; the rate is computed as in \cref{cor:Aprime}. The Lean theorems
+\lean{AboveHalf.undirected_tower} and \lean{AboveHalf.undirected_tower_binary} prove, from the hypotheses of
+\lean{AboveHalf.not_Q91At_of_tower} other than $\rho>1/2$, and for the binary one an injective encoding, that for every $K$, eventually the graphs have the stated degrees, no closed walk of
+odd length at most $K$, and storage codes of rate at least $\rho$, respectively $\rho\log_2\abs\F/b$.
+\end{outline}
+
+By \cref{thm:Astar}, the same construction gives, for every large prime $p$ inert in $\Q(\sqrt5)$, locally bipartite graphs
+of bounded degree with $\F_{p^2}$-linear storage codes of rate at least $4-2\sqrt3-\eps$ for $p\ge p_0(\eps)$. \Cref{cor:U} concerns arbitrary
+graphs. The crux of the fourth paper itself~\cite[Definition~4.8]{CurvedMotion2026} is a statement about the
+side-information systems of oblivious machines, and \cref{cor:U} does not decide it.

@@ -1,0 +1,75 @@
+\section{What the counterexample changes}\label{sec:limits}
+
+\subsection{For lower bounds and for constructions}\label{sec:limits-machines}
+
+The fifth paper proposed \cref{prob:q91} as a machine-free route to lower bounds: an affirmative answer, for every fixed
+$\Delta$, would bound by $1/2+o(1)$ the rate of every finite-alphabet storage code on the actual cone relations of
+oblivious linear-time computations~\cite[Proposition~9.2]{DirectedRecovery2026}, and combined with cheap depth reduction
+this would exclude oblivious linear-time transposers. Theorems A and~A$'$ close this route in its machine-free form:
+bounded degree and the paired-distance condition do not force rate $1/2$, for linear codes over a fixed field or for
+binary codes. Corollary U closes the undirected form of the route, the fourth paper's
+Question~6.1~\cite{CurvedMotion2026}, in the same way: bounded degree without short odd cycles does not force rate $1/2$
+either. The conclusion of the fifth paper's Proposition~9.2 for actual cone relations is not refuted, because nothing here shows that
+our relations arise from tape computations. A half-rate bound for the cone relations of linear-time machines, or any bound
+below the rates of Theorems A and A$^*$, must therefore use structure of tape computations beyond bounded degree and
+paired distances. A fixed deficit below rate $1$ is not excluded by our construction (\cref{sec:open}). The fifth paper
+records such structure, for instance its transport bound for matchings of cone
+relations~\cite[Lemmas~3.4 and~3.5]{DirectedRecovery2026}. Several later papers of the series state results conditional on an
+affirmative answer to \cref{prob:q91}; as implications they remain correct, but their hypothesis is now known to be false in the
+generality stated, and they need the native form of the hypothesis instead.
+
+On the construction side, a linear-time transposer needs its cone relations to carry codes whose rate beats the genie
+cost~\cite[Section~2]{DirectedRecovery2026}; for genies of cost $\eps L$ this means rate close to $1$. The relations of
+Theorem A carry codes of rate above one half, which defeats the half-bound route but not this requirement; they come with
+an astronomically large degree, a characteristic-$127$ linear structure and a twist by a character of the congruence
+subgroup $\Gamma^+(\lambda_0)$, and no tape realization of them is known. Whether a linear-time oblivious machine can have
+cone relations with this kind of twisted, locally separated structure is the question that the counterexample leaves for
+the construction side.
+
+\subsection{Limits of the method}\label{sec:limits-method}
+
+The rates guaranteed by Theorem A$^*$ approach $(\sqrt3-1)^2=4-2\sqrt3\approx0.536$. Two features of the construction set
+this limit. Our lower bound for the Goren--Oort codes, from Riemann--Roch, is the rate $(1-t/(p^2+1))^2$ of a tensor
+product of two local codes, up to lower-order terms; we prove no upper bound beyond the trivial one, but a rate close to
+$1$ would need a different source. And the separated structures of \cref{thm:D} have degeneracy at least about
+$(2-\sqrt3)(p^2+1)$, since the fluid rule gives every lifted vertex expected load $\tau$ per unit degree; whether other
+lift selections can do better is \cref{rem:optimal}.
+
+\begin{remark}[Heuristic: the constant of Theorem D is optimal]\label{rem:optimal}
+Heuristic, not used in any proof. The fluid rule balances the loads exactly: every lifted vertex has expected load
+$\tau$ per unit degree whatever its label (\cref{lem:fluid}). For an order of the lifted vertices of a random-like graph,
+a lifted vertex at a given position has a definite fraction of its neighbours later, and summing the resulting
+constraints over all positions suggests that no lift selection of such a graph has degeneracy below
+$(2-\sqrt3-o(1))\delta$. If so, constructions of the present type, with tensor-shaped rates, cannot exceed $4-2\sqrt3$.
+\end{remark}
+
+\begin{remark}[Congruence levels are never untwisted]\label{rem:untwisted}
+This remark is not used elsewhere. In the setting of \cref{thm:A}, no $\Gamma^+(\lambda_0^j)$ is contained in the kernel of
+the twist $\chi$. Otherwise the classes would descend to $X_j^1$, every recovery set of $N_j$ would lie in the other class,
+and the signed class of the proof of \cref{prop:descent}(c) would separate $L_x$ from $R_x$ in the incidence graph; by the
+fifth paper's half bound for such relations~\cite[Lemma~4.1]{DirectedRecovery2026}, every storage code would then have rate
+at most $1/2$, contradicting \cref{thm:G}. So the arithmetic forces the twist: the subgroup $\ker\chi$ contains none of
+the congruence subgroups $\Gamma^+(\lambda_0^j)$.
+\end{remark}
+
+\subsection{Characteristic \texorpdfstring{$p$}{p}}\label{sec:limits-char}
+
+Theorem G is a phenomenon of positive characteristic. Along the congruence tower the normalized dimension of the Tanner
+codes stays at least $(k-1)^2/(p^2+1)$, while along towers with $p$-group quotients the normalized dimension of the same Tanner
+operator converges to a rank over a division ring, as shown by Jaikin-Zapirain and Souza~\cite[Theorem~8.1]{JaikinSouza2026};
+the twelfth paper of the series uses this difference to show that L\"uck approximation fails in positive
+characteristic~\cite{Luck2026}. The sixth paper of the series bounds linear storage codes along towers obtained from pro-$p$
+embeddings in characteristic~$p$, through the same theorem of Jaikin-Zapirain and Souza~\cite{Covers2026}; our tower has
+quotients of order a power of $509$ and codes of characteristic $127$, so it lies outside those results.
+
+\begin{remark}[Heuristic: characteristic zero]\label{rem:char0}
+Heuristic, not used in any proof. Over subfields of $\C$, L\"uck's approximation theorem~\cite{Luck1994} and its
+extensions~\cite[Section~1 and Theorem~10.1]{JaikinSurvey2019} make
+normalized dimensions of Tanner codes converge, along every tower of normal subgroups with trivial intersection, to the
+von Neumann dimension of the Tanner code on the tree, which is the same for all towers. For relations that are perfectly
+separated on the tree, as ours are, this common limit appears to be at most $1/2$, by comparison with the untwisted
+covers, which obey the half bound. This suggests that linear codes in characteristic zero cannot replace the
+Goren--Oort codes, and that the half bound may hold for complex-linear codes on all bounded-degree relations with the
+paired-distance property; the fifth paper proves it for complex-linear codes with bounded coefficients at fixed vector
+width~\cite[Theorem~4.5]{DirectedRecovery2026}.
+\end{remark}

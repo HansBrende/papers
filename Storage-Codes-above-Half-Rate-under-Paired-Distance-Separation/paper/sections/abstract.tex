@@ -1,0 +1,22 @@
+Question~9.1 of \emph{Directed Recovery Structures in Tape Computations} asks whether every storage code on a recovery
+relation of bounded incidence degree with the paired-distance property has rate at most $1/2+o(1)$; the fifth paper of
+the series proposed it as a machine-free route to lower bounds for linear-time matrix transposition on multitape
+machines. We show that the answer is negative. For the prime $p=127$ we construct recovery relations of incidence degree at
+most an explicit, astronomically large bound $\Delta<127^{8\,791\,448}$, on which the paired distance of every coordinate
+tends to infinity, carrying $\F_{127^2}$-linear storage codes of rate at least $8100/16130>0.5021$; writing each symbol in
+$14$ bits gives binary storage codes of rate above $0.5013$. For large primes inert in $\Q(\sqrt5)$ the guaranteed rates
+approach $4-2\sqrt3\approx0.536$. Forgetting the directions of the relations gives graphs of bounded degree in which every odd
+cycle is long, carrying the same codes, so the fourth paper's undirected crux (its Question~6.1, on locally bipartite graphs of bounded
+degree) has a negative answer as well. The relations are twisted quotients of the Bruhat--Tits tree of $\PGL_2(\Q_{p^2})$, and the codes
+are Tanner codes with Reed--Solomon local codes. Their large dimension comes from Riemann--Roch on Hilbert modular surfaces
+in characteristic $p$, through the Goren--Oort divisor, whose dual graph is the quotient of the tree. The combinatorial
+ingredients are lift selections of degeneracy $(2-\sqrt3)\delta+O(\sqrt{\delta\log n})$ in double covers of $\delta$-regular
+graphs on $n$ vertices, and private checks built by peeling, which make the degree bound explicit.
+
+The combinatorics is formalized in Lean~4 with Mathlib, on the standard axioms only: the deterministic part of the
+lift-selection theorem, the peeling lemma, the descent to quotients and its symmetrization, the binary blow-ups, the
+numerical facts used in the proofs, and the deduction of the negation of the eleventh paper's formal statement of
+Question~9.1 from a tower of quotients. Not formalized are the probabilistic step of the lift-selection theorem, the
+covering-theoretic passage to the tree, the count of balls in the tree, the structure of the icosian group and its
+congruence subgroups with the girth bound, the arithmetic dimension bound, which uses Riemann--Roch, partial Hasse
+invariants and the uniformization of the supersingular locus, and the extension to all large primes.

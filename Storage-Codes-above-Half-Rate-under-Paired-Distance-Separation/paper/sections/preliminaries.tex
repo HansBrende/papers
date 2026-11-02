@@ -1,0 +1,149 @@
+\section{Recovery relations, graphs and Tanner codes}\label{sec:prelim}
+
+\subsection{Recovery relations and the question}\label{sec:prelim-question}
+
+We use the definitions of the fifth paper of the series~\cite[Section~2]{DirectedRecovery2026}. A \emph{recovery
+relation} on a finite coordinate set $V$ assigns to every $q\in V$ a recovery set $N(q)\subseteq V$. A \emph{storage code}
+over a finite alphabet $\mathcal A$ with $\abs{\mathcal A}\ge2$ is a set $\mathcal C\subseteq\mathcal A^V$ such that two
+words of $\mathcal C$ that agree on $N(q)$ agree at $q$, for every $q$~\cite[Definition~2.1]{DirectedRecovery2026}; the
+recovery functions may be nonlinear. Its \emph{rate} is $\abs{V}^{-1}\log_{\abs{\mathcal A}}\abs{\mathcal C}$.
+The \emph{paired incidence graph} $E(N)$ is the bipartite graph on two copies $L_p$, $R_q$ ($p,q\in V$) of the
+coordinates, with an edge $L_pR_q$ exactly when $p\in N(q)$~\cite[Definition~2.3]{DirectedRecovery2026}. The
+\emph{paired distance} of $p$ is $\dist_{E(N)}(L_p,R_p)$, infinite if the two ports are disconnected; the pair
+$L_p,R_p$ is not an extra edge ($L_pR_p$ is an edge exactly when $p\in N(p)$). Its two degrees are $\deg R_q=\abs{N(q)}$ and $\deg L_p=\abs{\{q:p\in N(q)\}}$. A sequence
+of relations $N_j$ on $V_j$ with $\abs{V_j}\to\infty$ satisfies the \emph{paired-distance condition} if for every fixed
+$r$ the number of coordinates of paired distance at most $r$ is $o(\abs{V_j})$.
+
+\begin{question}[{\cite[Question~9.1]{DirectedRecovery2026}}]\label{prob:q91}
+Fix a degree bound~$\Delta$. Let $N_j$ be recovery relations on finite coordinate sets $V_j$ with $\abs{V_j}\to\infty$.
+Suppose their incidence graphs have maximum degree at most~$\Delta$ and satisfy the paired-distance condition. Must
+every sequence of nonempty finite-alphabet storage codes $\mathcal C_j\subseteq\mathcal A_j^{V_j}$ satisfy
+\[
+  \limsup_{j\to\infty}\frac{\log_{\abs{\mathcal A_j}}\abs{\mathcal C_j}}{\abs{V_j}}\le\frac12?
+\]
+Here $\abs{\mathcal A_j}\ge2$; the alphabets may vary.
+\end{question}
+
+The fifth paper adds that ``the fixed binary alphabet is already an important open case''. The eleventh paper of the
+series formalizes the question as \lean{MergeDepth.Q91At} (at a degree bound $\Delta$, all alphabets) and
+\lean{MergeDepth.Q91BinaryAt} (binary codes)~\cite{MergeDepth2026}, on top of the fourth paper's Lean definition of
+storage codes (\lean{MotionDepthCodes.IsStorageCode})~\cite{CurvedMotion2026} and the fifth paper's definitions of the
+paired incidence graph (\lean{DirectedRecovery.pairedIncidenceGraph}) and of the paired-distance condition
+(\lean{DirectedRecovery.HasPairedDistanceSeparation}). Our formal
+results are negations of these statements.
+
+Two classes of relations are known to obey the half bound, and they explain the shape of our construction. If the
+incidence components separate the two ports of every coordinate, every storage code has at most
+$\abs{\mathcal A}^{\lfloor\abs V/2\rfloor}$ words~\cite[Lemma~4.1]{DirectedRecovery2026}, a Lean-verified result there.
+In particular this holds when the coordinates split into two classes and every recovery set of a coordinate lies in the
+other class: the code is then determined by its restriction to either class. We call such relations \emph{perfectly
+separated}. Our relations are perfectly separated locally, on balls of growing radius, but not globally: a global twist
+can connect the two ports of a coordinate, though only through very long paths.
+
+\subsection{Graphs, trees and quotients}\label{sec:prelim-graphs}
+
+Graphs may be infinite but are always locally finite and without loops. For a graph $G$ we write $G^0$ for its vertex
+set, $G^1$ for its edge set and $\st(w)\subseteq G^1$ for the set of edges at a vertex~$w$. Unless we say otherwise,
+graphs are simple. The distance between two edges is their distance in the line graph: $\dist(e,e)=0$, and for $e\ne f$,
+$\dist(e,f)=1+\min\{\dist_G(x,y):x\in e,\ y\in f\}$. It is a metric, and automorphisms of $G$ preserve it. For an edge
+$e$ and $R\ge0$, the \emph{ball} $B(e,R)$ is the set of edges at distance at most $R$ from~$e$.
+
+\begin{lemma}[Balls in a regular tree]\label{lem:ball}
+\notformalized
+Let $\Tree$ be the $(q+1)$-regular tree with $q\ge2$. Every ball of radius $R\ge1$ around an edge has
+\[
+  \beta_q(R)=\frac{2(q^{R+1}-1)}{q-1}-1
+\]
+edges, and $\beta_q(R)<q^{R+1}$ for $q\ge4$.
+\end{lemma}
+\begin{informalproof}
+Let $e=\{u,v\}$. An edge $f\ne e$ has $\dist(e,f)\le R$ if and only if its endpoint nearer to $e$ is at distance at
+most $R-1$ from $\{u,v\}$. Since $\Tree$ is a tree, $f$ is then the edge from that endpoint away from $e$, so the edges
+of $B(e,R)$ other than $e$ correspond bijectively to the vertices at distance $1,\dots,R$ from $\{u,v\}$. There are $2q^i$
+vertices at distance~$i$, so $\abs{B(e,R)}=1+2\sum_{i=1}^Rq^i=2(q^{R+1}-1)/(q-1)-1$. For $q\ge4$ this is less than
+$\tfrac23q^{R+1}<q^{R+1}$.
+\end{informalproof}
+
+A group $\Gamma$ acting on $G$ by automorphisms acts \emph{without inversions} if no element exchanges the two ends of an
+edge. If $\Gamma$ acts freely on $G^0$ and without inversions, it acts freely on $G^1$: an element fixing an edge fixes
+or exchanges its ends. The \emph{displacement} of a group $\Gamma'$ acting on $G$ is
+\[
+  s(\Gamma')=\inf\{\dist(e,\gamma e):e\in G^1,\ \gamma\in\Gamma'\setminus\{1\}\}.
+\]
+For an automorphism $\gamma$ without fixed vertices put $\ell(\gamma)=\min_x\dist_G(x,\gamma x)\ge1$. If $\gamma e\ne e$,
+$x\in e$ and $y\in\gamma e$, then $y$ is within distance $1$ of $\gamma x$, so $\dist_G(x,y)\ge\ell(\gamma)-1$ and
+\begin{equation}\label{eq:disp}
+  \dist(e,\gamma e)\ge1+\bigl(\ell(\gamma)-1\bigr)=\ell(\gamma).
+\end{equation}
+Hence the displacement of a group acting freely and without inversions is at least the least value of $\ell$ on its
+nontrivial elements.
+
+For a subgroup $\Gamma'\subseteq\Gamma$ acting freely and without inversions, the quotient $X=\Gamma'\backslash G$ has
+the orbits of vertices and of edges as vertices and edges, and two edges of $G$ have the same image under the projection
+$\pi\colon G\to X$ if and only if they differ by an element of~$\Gamma'$. If $s(\Gamma')\ge2$, then $X$ has no loops
+and $\pi$ maps the edges at each vertex $w$ bijectively onto the edges at $\pi(w)$: two edges at $w$ are at distance
+at most $1$, so they are not identified, and an edge with both ends in one orbit would be at distance at most $1$ from
+its translate. If $s(\Gamma')\ge3$, then $X$ is simple: if $e=\{u,v\}$ and $\{u,\gamma v\}$ are edges with
+$\gamma\in\Gamma'\setminus\{1\}$, then $\{u,\gamma v\}$ meets both $e$ and $\gamma e$, so $\dist(e,\gamma e)\le2$. So for $s(\Gamma')\ge2$ the projection is a covering map of graphs.
+When $G=\Tree$ is a tree it is a universal covering: paths lift uniquely from any lift of their start, and a map from a
+tree to $X$ that is a local isomorphism on stars lifts to any covering of $X$ once one vertex is lifted, by lifting the
+unique paths from that vertex.
+
+\subsection{Local codes, Tanner codes and local checks}\label{sec:prelim-tanner}
+
+Let $\F$ be a field and $G$ a graph. A \emph{local datum} on $G$ assigns to each vertex $w$ a subspace
+$C_w\subseteq\F^{\st(w)}$, the \emph{local code}. The \emph{Tanner code}~\cite{Tanner1981} is
+\[
+  T(G)=\{c\colon G^1\to\F \;:\; c|_{\st(w)}\in C_w\text{ for every }w\in G^0\};
+\]
+when $G$ is infinite its words may have infinite support. A \emph{local check} at $w$ is a function on $G^1$ supported in
+$\st(w)$ whose restriction to $\st(w)$ lies in the dual code $C_w^\perp$ for the standard bilinear form. Let $D(G)$ be the
+space of finite sums of local checks. For a finitely supported $h$ and any $c$ on $G^1$ put
+$\langle h,c\rangle=\sum_eh(e)c(e)$.
+
+\begin{lemma}[Checks annihilate Tanner words]\label{lem:valid}
+\formal{AboveHalfRate/Tanner.lean}{AboveHalf.pairing_eq_zero_of_mem_iSup,AboveHalf.pairing_eq_zero_of_mem_downChecks}
+For every $h\in D(G)$ and every $c\in T(G)$, $\langle h,c\rangle=0$.
+\end{lemma}
+\begin{outline}
+For a local check $g$ at $w$, $\langle g,c\rangle$ is the pairing of $g|_{\st(w)}\in C_w^\perp$ with
+$c|_{\st(w)}\in C_w$. The pairing is additive in~$h$, so induction over sums of local checks finishes the proof.
+\end{outline}
+
+The local checks at $w$ \emph{interpolate on $t$ coordinates} if for every set $S\subseteq\st(w)$ of at most $t$ edges
+and every $f\colon S\to\F$ some local check at $w$ restricts to $f$ on~$S$.
+
+\begin{lemma}[MDS local codes interpolate]\label{lem:mds}
+\formal{AboveHalfRate/Tanner.lean}{AboveHalf.interpolates_of_minWeight}
+If every nonzero word of $C_w$ has more than $t$ nonzero coordinates, the local checks at $w$ interpolate on $t$
+coordinates.
+\end{lemma}
+\begin{outline}
+Let $S\subseteq\st(w)$ with $\abs S\le t$ and $Q=\st(w)\setminus S$. Restriction $C_w\to\F^Q$ is injective, since a word
+vanishing on $Q$ has at most $\abs S\le t$ nonzero coordinates. So the functional $c\mapsto-\sum_{e\in S}f(e)c(e)$ on
+$C_w$ factors through it, by a left inverse of the restriction, and is represented on $\F^Q$ by a vector~$g'$. The
+function equal to $f$ on $S$ and to $g'$ on $Q$ is a local check with the required values.
+\end{outline}
+
+\begin{lemma}[Reed--Solomon local codes]\label{lem:grs}
+\notformalized
+Let $\F=\F_q$, let $\st(w)$ have $q+1$ elements, identified with the points of $\Pone(\F_q)$, and let $0\le m\le q-1$.
+Choose a nonzero vector $x_e\in\F_q^2$ on the line of each point $e$ and scalars $a_e\ne0$. The code
+$\{(a_ef(x_e))_e : f\text{ a binary form of degree }m\}$ has dimension $m+1$, every nonzero word has at least $q+1-m$
+nonzero coordinates, and its local checks interpolate on $t=q-m$ coordinates.
+\end{lemma}
+\begin{informalproof}
+A nonzero binary form of degree $m$ over $\F_q$ vanishes at no more than $m$ points of $\Pone$, because each zero
+contributes a distinct linear factor. So evaluation is injective, since $m<q+1$, and every nonzero word has at most $m$
+zero coordinates. The last claim is \cref{lem:mds}.
+\end{informalproof}
+
+A group $\Gamma$ acting on $G$ acts on functions by $(\gamma c)(e)=c(\gamma^{-1}e)$. A local datum is
+\emph{$\Gamma$-equivariant} if $\gamma C_w=C_{\gamma w}$ for all $\gamma$ and~$w$. Then $\gamma D(G)=D(G)$ and
+$\gamma T(G)=T(G)$. For a subgroup $\Gamma'$ acting freely and without inversions, with finite quotient
+$X=\Gamma'\backslash G$, the \emph{Tanner code of the quotient} is
+\[
+  T(X)=\{c\colon X^1\to\F \;:\; c\circ\pi\in T(G)\}.
+\]
+When the projection maps stars bijectively, $T(X)$ is the Tanner code of the local datum that the equivariant datum
+induces on~$X$.

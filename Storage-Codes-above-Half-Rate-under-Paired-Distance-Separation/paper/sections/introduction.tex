@@ -1,0 +1,103 @@
+\section{Introduction}\label{sec:intro}
+
+\paragraph{The problem.} A \emph{storage code} for a recovery relation $N$ on a finite coordinate set $V$ is a set of
+words $\mathcal C\subseteq\mathcal A^V$ in which every symbol $x_q$ is determined by the symbols on its recovery set
+$N(q)$. Storage codes are the fibres of index codes, and their rates measure how much a common broadcast can be
+compressed given side information. The series of papers to which this one belongs studies whether a deterministic
+multitape Turing machine can transpose a $d\times d$ matrix of $b(d)=\max(1,\lceil\log_2d\rceil)$-bit entries in time
+linear in $L=d^2b(d)$, the statement~(T). For oblivious machines, the fifth paper reduced a large part of the
+impossibility question to a machine-free coding question~\cite{DirectedRecovery2026}. The actual recovery relations of
+linear-time computations have bounded incidence degree after cheap trimming, and only $o(\abs V)$ coordinates have short
+\emph{paired distance} $\dist(L_q,R_q)$ between the two copies of $q$ in the bipartite incidence graph. Question~9.1 of
+that paper asks whether these two properties alone force every storage code to have rate at most $1/2+o(1)$
+(\cref{prob:q91}). An affirmative answer would bound the rate of all finite-alphabet codes on the cone relations of oblivious
+linear-time machines~\cite[Proposition~9.2]{DirectedRecovery2026}, and several later papers of the series state results
+conditional on it~\cite{BoundedNesting2026,DirectedReciprocity2026,MergeDepth2026}.
+
+\paragraph{The results.} The answer is negative.
+\begin{itemize}
+\item \textbf{Theorem~A} (\cref{thm:A}). For $p=127$ there are recovery relations of incidence degree at most
+$\Delta<127^{8\,791\,448}$, on which every paired distance tends to infinity, carrying $\F_{127^2}$-linear storage codes of
+rate at least $8100/16130>0.5021$.
+\item \textbf{Corollary~A$'$} (\cref{cor:Aprime}). Writing each symbol in $14$ bits gives binary storage codes of rate
+greater than $0.5013$ on recovery relations of incidence degree at most $14\Delta$ with the same property. So the fixed
+binary alphabet, singled out in Question~9.1, has a negative answer too.
+\item \textbf{Theorem~A$^*$} (\cref{thm:Astar}). For all large primes $p$ inert in $\Q(\sqrt5)$, the guaranteed rates come
+arbitrarily close to $(\sqrt3-1)^2=4-2\sqrt3\approx0.536$.
+\item \textbf{Corollary~U} (\cref{cor:U}). Forgetting the directions of the relations of Theorem~A gives graphs of maximum
+degree at most $2\Delta$ in which every odd cycle is long, carrying the same codes, and binary codes of rate greater than
+$0.5013$ on graphs of degree at most $28\Delta$. So the undirected form of the question, the fourth paper's undirected
+crux~\cite[Question~6.1]{CurvedMotion2026}, has a negative answer too.
+\end{itemize}
+
+The relations are \emph{twisted quotients} of the Bruhat--Tits tree $\Tree$ of $\PGL_2(\Q_{p^2})$, and the codes are
+Tanner codes~\cite{Tanner1981} whose local codes are Reed--Solomon codes of length $p^2+1$. Theorem~T (\cref{thm:T})
+separates the argument into two halves.
+\begin{itemize}
+\item \emph{The combinatorial half.} \textbf{Theorem~D} (\cref{thm:D}) shows that every $\delta$-regular graph on $n$
+vertices has a \emph{lift selection} (one lift of each edge in a double cover) of degeneracy
+$(2-\sqrt3)\delta+O(\sqrt{\delta\log n})$, through an explicit balanced charging rule. On the tree, such a selection splits
+the edges into two classes, exchanged by a character $\chi$ of the group. Every edge then has a \emph{private check}, a
+finite sum of local parity checks that sees no other edge of its class; we construct it explicitly by \emph{peeling}
+(\cref{lem:peeling}). The resulting recovery relation never connects the two copies of a coordinate on the tree. On a
+quotient, a path between them must lift to a path from an edge to a translate in the other class, which is far away when
+the quotient has large girth (\cref{prop:descent}).
+\item \emph{The algebraic half.} \textbf{Theorem~G} (\cref{thm:G}) shows that the Tanner codes of an explicit twisted
+datum over $\F_{p^2}$ on the congruence quotients $\Gamma^+(\lambda_0^j)\backslash\Tree$ of the icosian group have dimension at
+least $(k-1)^2/(p^2+1)$ times their length, for every weight $2\le k\le p-2$. These codes are spaces of sections of the
+bundle of parallel weight $k$ on the Goren--Oort divisor of a Hilbert modular surface in characteristic~$p$, whose dual
+graph is the quotient of the tree~\cite{BachmatGoren1999,KudlaRapoport1999,TianXiao2016}; Riemann--Roch and the Hasse
+invariant give their dimension. Counting constraints would give less than one half.
+\end{itemize}
+At $p=127$ and $k=91$ the two halves just fit: \cref{thm:D} needs local redundancy $t\ge4640$, the weight gives
+$t=127^2-91\cdot126=4663$, and the rate is $(91-1)^2/(127^2+1)>1/2$.
+
+\paragraph{How to read the paper and its formal proofs.} Every numbered result states its status. A line \textsf{Lean:}
+names the Lean declarations of a formalized result and their file, and the result is followed by an outline of the formal
+proof; the Lean statement is authoritative. A line \textsf{Lean (partial):} names what is formalized and what is not.
+Results marked \textsf{Not formalized} have complete proofs in the text. Remarks labelled as heuristic or numerical are not used in
+any proof.
+
+The combinatorics is formalized in Lean~4 with Mathlib, on the standard axioms only: the deterministic part of
+\cref{thm:D} (options, rounding by Hall's theorem, and the fluid identities), the peeling lemma, the validity of checks on
+Tanner codes and the interpolation property of MDS local codes, the descent to quotients (storage, incidence degrees,
+paired distances), the binary blow-ups, the symmetrized graphs of \cref{sec:undirected}, the numerical facts used in the
+proofs, and the final step: from a family of separated checks and a tower of quotients carrying codes of rate $\rho>1/2$
+annihilated by the descended checks, the Lean library proves the negation of the eleventh paper's formal statement of
+\cref{prob:q91}, \lean{MergeDepth.Q91At}~\cite{MergeDepth2026}, and, given in addition an injective encoding of the field
+in $b$ bits with $\rho\log_2\abs\F/b>1/2$, the negation of its binary form \lean{MergeDepth.Q91BinaryAt}. For the
+symmetrized graphs and their blow-ups it proves that, for every $K$, eventually the degrees are bounded, no closed walk of
+odd length is at most $K$, and the codes are storage codes of rate at least $\rho$, respectively $\rho\log_2\abs\F/b$;
+the fourth paper's Question~6.1 has no formal statement, so its negation is not formalized. Not formalized are the probabilistic step of \cref{thm:D}
+(Bernstein's inequality and a union bound), the passage from a lift selection on a finite graph to separated checks on
+the tree (covering theory and transport), the annihilation of quotient Tanner codes by the descended checks, the
+counting of balls in the tree, the Reed--Solomon local codes, the icosian group and its congruence subgroups, the girth
+bound, the whole arithmetic \cref{sec:arith}, which uses Riemann--Roch on compactified Hilbert modular surfaces in
+characteristic $p$, partial Hasse invariants and the uniformization of the supersingular locus, and Theorem~A$^*$;
+none of the geometry is available in Mathlib.
+
+\paragraph{Related work.} Half bounds for storage codes are known for bipartite side information, where they follow from a
+cut argument~\cite{ChristofidesMarkstrom2011,Mazumdar2015}, for odd cycles~\cite{AtkinsRombachSkerman2017}, and for
+side-information graphs with a partition into two independent sides~\cite[Theorem~9]{MazumdarMcGregorVorotnikova2019}; the
+fifth paper proves them for relations whose incidence components separate the two copies of every coordinate, for
+hyperfinite relations, and for complex-linear codes with bounded coefficients~\cite{DirectedRecovery2026}. Rates above one
+half, even tending to one, are known on graphs without short odd cycles at unbounded degree: Golovnev and Haviv construct
+generalized Kneser graphs with no short odd cycles and small minrank over every finite field~\cite[Theorem~1.10]{GolovnevHaviv2022},
+refuting a conjecture of Codenotti, Pudl\'ak and Resta~\cite{CodenottiPudlakResta2000}, and Haviv treats the real
+case~\cite{Haviv2019}. Their degrees grow with the number of vertices, and disjoint copies of a fixed graph have bounded
+degree but bounded paired distances. We found no earlier example of rate above one half at bounded degree with growing
+paired distances, or on graphs of bounded degree without short odd cycles. Algebraic geometry has supplied good codes since the work of Tsfasman, Vl\u{a}du\c{t} and
+Zink~\cite{TsfasmanVladutZink1982}; Tanner codes on Ramanujan graphs~\cite{LPS1988} with Reed--Solomon local codes are
+classical, and Kopparty and Tamo have recently studied algebraic expander codes~\cite{KoppartyTamo2026}. We know of no
+earlier use of Goren--Oort strata for codes. The twelfth paper of the series uses the same Goren--Oort Tanner operators at
+$p=3$ to show that L\"uck approximation fails in positive characteristic~\cite{Luck2026}; Theorem G is the analogous
+dimension bound for every inert prime $p\ge7$ and every weight $2\le k\le p-2$, and \cref{sec:arith} follows that
+paper.
+
+\paragraph{Organization.} \Cref{sec:prelim} recalls the question and sets up graphs and Tanner codes. \Cref{sec:lifts}
+proves Theorem D, \cref{sec:peeling} constructs private checks and separated structures, and \cref{sec:descent} proves the
+descent and Theorem T. \Cref{sec:arith} proves Theorem G. \Cref{sec:theoremA} assembles Theorems A and A$^*$, and
+\cref{sec:binary} the binary Corollary A$'$; \cref{sec:undirected} answers the undirected crux (Corollary U).
+\Cref{sec:limits} discusses what the counterexample changes for lower bounds
+and constructions, and the limits of the method; \cref{sec:open} lists open problems. The appendices list the Lean
+declarations and explain how to build and check them.

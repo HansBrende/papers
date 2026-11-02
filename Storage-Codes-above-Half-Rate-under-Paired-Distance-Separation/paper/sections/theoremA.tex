@@ -1,0 +1,87 @@
+\section{Question 9.1 has a negative answer}\label{sec:theoremA}
+
+\subsection{The explicit instance}\label{sec:theoremA-explicit}
+
+Take $p=127$, which is inert in $E$ because $127\equiv2\pmod5$; the weight $k=91$, so $m=91\cdot126=11466$ and $t=127^2-m=4663$;
+and a prime $\lambda_0$ of $\OO_E$ above $\ell=509$, which splits in $E$ because $509\equiv4\pmod5$. Then $\ell>4p=508$, and
+\[
+  \abs{\PSL_2(\F_{509})}=65\,935\,860,\qquad c_1=1\,098\,931,\qquad n=2c_1=2\,197\,862.
+\]
+Put $R=2n-1$ and
+\[
+  \Delta=\beta_{p^2}(R)-1=\frac{2(p^{2(R+1)}-1)}{p^2-1}-2<p^{4n}=127^{8\,791\,448}.
+\]
+
+\begin{theorem}[Theorem A]\label{thm:A}
+\partformal{AboveHalfRate/Main.lean}{AboveHalf.not_Q91At_of_tower}{the arithmetic input (\cref{thm:G}), the probabilistic step of \cref{thm:D}, the passage from a
+lift selection to separated checks (\cref{prop:lift,prop:checks}), the ball count (\cref{lem:ball}) and the girth bound
+(\cref{lem:girth}), the icosian group and its congruence subgroups (\cref{lem:group}) and the Reed--Solomon local codes
+(\cref{lem:grs}).}
+With these parameters and $X_j=\Gamma^+(\lambda_0^j)\backslash\Tree$ ($j\ge1$), there are recovery relations $N_j$ on the
+edge sets $X_j^1$ such that:
+\begin{enumerate}[label=(\alph*)]
+\item every incidence degree is at most $\Delta$;
+\item every coordinate has paired distance at least $(j\log509-\log4)/(n\log127)$, which tends to infinity;
+\item the $\F_{127^2}$-linear Tanner code $T_{\mathrm{tw}}(X_j)$ is a storage code for $N_j$ of rate at least
+$8100/16130>0.5021$.
+\end{enumerate}
+Hence \cref{prob:q91} has a negative answer at the degree bound $\Delta$, with the fixed alphabet $\F_{127^2}$ and linear codes.
+\end{theorem}
+\begin{outline}
+Let $\Gamma=\Gamma^+(\lambda_0)$. By \cref{lem:group,lem:girth}, $\Gamma$ acts freely and without inversions with
+$s(\Gamma)\ge4$, and $X_1=\Gamma\backslash\Tree$ is a simple $16130$-regular graph on $n$ vertices. By \cref{cor:base} it
+has a $4640$-degenerate lift selection, so by \cref{prop:lift} the tree carries a twisted separated structure for $\Gamma$
+of degeneracy $4640$ and depth $R$. By \cref{thm:G} the twisted datum is $\Gamma$-equivariant over $\F_{127^2}$, its local
+checks interpolate on $t=4663\ge4640$ coordinates, and $\dim T_{\mathrm{tw}}(X_j)\ge8100\,c_j=\frac{8100}{16130}\abs{X_j^1}$.
+The balls of radius $R$ have $\beta_{p^2}(R)$ edges (\cref{lem:ball}). The subgroups $\Gamma_j=\Gamma^+(\lambda_0^j)$ lie in
+$\Gamma$, have finite quotients $X_j$ with $\abs{X_j^1}=16130\,c_j\to\infty$, and displacement
+$s(\Gamma_j)\ge2(j\log509-\log4)/\log127\to\infty$ (\cref{lem:girth}). Theorem T(a) and (b) (\cref{thm:T}) give the
+claims, with paired distance at least $s(\Gamma_j)/R$, which is at least the bound in (b). The rate exceeds $1/2$ because
+$2\cdot8100>16130$. The Lean theorem \lean{AboveHalf.not_Q91At_of_tower} is the last step, from the checks and the
+tower to the negation of \lean{MergeDepth.Q91At}$(\Delta)$, and \lean{AboveHalf.Numbers.params} checks the arithmetic of
+the parameters, including $8100/16130>0.5021$ and $4n=8\,791\,448$.
+\end{outline}
+
+The incidence degree is astronomically large because the private checks of \cref{lem:peeling} may reach the whole
+down-set, whose depth we bound only by the number $2n$ of ranks. The rate margin is small, $0.00217$ above one half, and
+so is the margin in \cref{cor:base}: $23$ out of $t=4663$. Larger primes give rates up to the limit of the method.
+
+\begin{remark}[Numerical: the least prime]\label{rem:leastprime}
+Numerical, not used in any proof. Among the primes $p$ inert in $\Q(\sqrt5)$, $p=127$ is the least for which the
+method fits as we apply it: with $\ell$ the least prime $\equiv\pm1\pmod5$ above $4p$, the optimal $\lambda$ in
+\eqref{eq:Dcond} and the least weight $k$ with $2(k-1)^2>p^2+1$, the redundancy $p^2-k(p-1)$ reaches
+$\lceil\tau(p^2+1)+\lambda\rceil$ for no inert $p<127$. Smaller primes are not excluded for other selections or other
+bases.
+\end{remark}
+
+\subsection{All large inert primes}\label{sec:theoremA-general}
+
+\begin{theorem}[Theorem A$^*$]\label{thm:Astar}
+\notformalized
+For every $\eps>0$ there is $p_0$ such that for every prime $p\ge p_0$ inert in $\Q(\sqrt5)$ there are a degree bound
+$\Delta_p$, a sequence of recovery relations with incidence degree at most $\Delta_p$ on which every paired distance tends to
+infinity, and $\F_{p^2}$-linear storage codes on them of rate at least $(\sqrt3-1)^2-\eps=4-2\sqrt3-\eps\approx0.536-\eps$.
+\end{theorem}
+\begin{informalproof}
+Let $\tau=2-\sqrt3$, so $1-\tau=\sqrt3-1$, and choose $\eta$ with $0<\eta<1-\tau$ and
+$(1-\tau-\eta)^2>4-2\sqrt3-\eps/2$. For $p$ large
+choose a prime $\ell\equiv\pm1\pmod5$ with $4p<\ell\le8p$; it exists for all large $p$ by the prime number theorem for
+arithmetic progressions. Let $\lambda_0$ be a prime of $\OO_E$ above $\ell$. Then $X_1$ is simple (\cref{lem:girth}) and has
+$n=\ell(\ell^2-1)/60\le9p^3$ vertices. Let $k=\lfloor(1-\tau-\eta)p\rfloor$, so $2\le k\le p-2$ for large $p$, and
+\[
+  t=p^2-k(p-1)\ge p^2-(1-\tau-\eta)p^2=(\tau+\eta)p^2.
+\]
+Let $\lambda_p=1+\lambda_*$, where $\lambda_*$ is the positive root of
+$\lambda^2=2\log(2n)\bigl(\tau(1-\tau)(p^2+1)+\lambda/3\bigr)$; then \eqref{eq:Dcond} holds and $\lambda_p=O(p\sqrt{\log p})$.
+\Cref{thm:D}, applied to $X_1$, which is regular of degree $p^2+1$, gives a lift selection of degeneracy at most
+$\tau(p^2+1)+\lambda_p+1\le t$ for large $p$. As in the proof of \cref{thm:A}, Theorem T and Theorem G
+give storage codes of rate at least
+\[
+  \frac{(k-1)^2}{p^2+1}\ge\frac{\bigl((1-\tau-\eta)p-2\bigr)^2}{p^2+1}\longrightarrow(1-\tau-\eta)^2>4-2\sqrt3-\eps/2.
+\]
+\end{informalproof}
+
+The binary blow-up of \cref{sec:binary} gives binary codes with the same limit of rates, because the factor
+$\log_2(p^2)/\lceil\log_2(p^2)\rceil$ tends to~$1$.
+The limit $4-2\sqrt3$ is that of the method, not of the question: it comes from the constant of \cref{thm:D} and the
+tensor shape $(1-t/(p^2+1))^2$ of the lower bound on the rate in \cref{thm:G}; see \cref{sec:limits}.

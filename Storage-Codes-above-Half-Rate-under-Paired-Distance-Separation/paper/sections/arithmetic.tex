@@ -1,0 +1,407 @@
+\section{Twisted Goren--Oort Tanner codes}\label{sec:arith}
+
+This section is not formalized. It supplies the algebraic half of Theorem T: an equivariant datum with MDS local codes
+on the Bruhat--Tits tree of $\PGL_2(\Q_{p^2})$, and a tower of congruence quotients whose Tanner codes have rate close to
+the square of the local rate (\cref{thm:G}). The twelfth paper of the series proves the case $p=3$ in weight $2$ in
+detail~\cite[Section~6]{Luck2026}, from the same sources, and we follow it. Three steps are new: the Riemann--Roch
+estimate in weight~$k$, where the Hasse invariant gives the vanishing (\cref{lem:RRk}); the girth bound
+(\cref{lem:girth}); and rigidity (\cref{lem:rigid}), which uses the group $\SL_2(\Q_{p^2})$ rather than the icosian group,
+because for $p>3$ the icosian group has many orbits on the edges of the tree.
+
+\subsection{The icosian group at an inert prime}\label{sec:arith-group}
+
+Let $E=\Q(\sqrt5)$, with ring of integers $\OO_E=\Z[\theta]$, $\theta=(1+\sqrt5)/2$; it has narrow class number one,
+$\theta$ has norm $-1$, and every totally positive unit is a square. Let $B$ be the quaternion algebra over $E$ ramified
+exactly at the two infinite places, and $I\subset B$ the icosian ring, a maximal order of class number one and type
+number one whose norm-one units form the binary icosahedral group $2I\cong\SL_2(\F_5)$ of
+order~$120$~\cite[Proposition~V.3.4, Corollaire~I.4.11 and p.~155]{Vigneras1980}.
+
+Fix a prime $p\ge7$ inert in $E$, that is, $p\equiv\pm2\pmod5$. The completion of $E$ at $p$ is the unramified quadratic
+extension $\Q_{p^2}$ of $\Q_p$, with ring of integers $\Z_{p^2}$ and residue field $\F_{p^2}$, and $B$ splits there:
+$B\otimes_E\Q_{p^2}\cong M_2(\Q_{p^2})$ with $I\otimes\Z_{p^2}\cong M_2(\Z_{p^2})$. The group
+\[
+  \Gamma^+=I[1/p]^1/\{\pm1\}\subset\PSL_2(\Q_{p^2})
+\]
+acts on the Bruhat--Tits tree $\Tree$ of $\PGL_2(\Q_{p^2})$. Its vertices are the homothety classes of
+$\Z_{p^2}$-lattices in $\Q_{p^2}^2$; the neighbours of $[\Lambda]$ are the classes of the lattices $\Lambda'$ with
+$p\Lambda\subset\Lambda'\subset\Lambda$ and $\Lambda/\Lambda'\cong\F_{p^2}$, so the edges at $[\Lambda]$ correspond to
+the points of $\Pone(\Lambda/p\Lambda)$, and $\Tree$ is $(p^2+1)$-regular. The vertices have two parities, the parity of
+$\log_p\abs{\det}$ of a basis, which elements of determinant one preserve. Let $\Lambda_0$ be the vertex of
+$I\otimes\Z_{p^2}$.
+
+\begin{lemma}[The icosian group and its congruence subgroups]\label{lem:group}
+\notformalized
+\begin{enumerate}[label=(\alph*)]
+\item There is $\alpha_0\in I$ of reduced norm $p$, and $\Lambda_1=\alpha_0\Lambda_0$ is a neighbour of $\Lambda_0$.
+The group $\Gamma^+$ acts on $\Tree$ without inversions and transitively on the vertices of each parity; the stabilizers
+of $\Lambda_0$ and $\Lambda_1$ are $A_5=2I/\{\pm1\}$ and $\alpha_0A_5\alpha_0^{-1}$.
+\item Let $\lambda_0$ be a prime of $\OO_E$ of prime norm $\ell\ge7$, and for $j\ge1$ let
+$\Gamma^+(\lambda_0^j)=\ker\bigl(\Gamma^+\to\PSL_2(\OO_E/\lambda_0^j)\bigr)$. The map is onto,
+$\Gamma^+(\lambda_0^j)$ is torsion-free and acts freely on $\Tree$, the groups $\Gamma^+(\lambda_0^j)$ strictly decrease
+with trivial intersection, and $X_j=\Gamma^+(\lambda_0^j)\backslash\Tree$ has
+\[
+  c_j=\abs{\PSL_2(\OO_E/\lambda_0^j)}/60
+\]
+vertices of each parity.
+\end{enumerate}
+\end{lemma}
+\begin{informalproof}
+(a) This is the argument of~\cite[Lemma~6.2]{Luck2026} with $3$ replaced by $p$. A vertex is the class of the completion
+at $p$ of a right $I$-ideal $\mathfrak a$ with $\mathfrak a_{\mathfrak q}=I_{\mathfrak q}$ for $\mathfrak q\nmid p$, and
+$\mathfrak a=\beta I$ with $\beta\in I[1/p]^\times$ because $I$ has class number one. The reduced norm of $\beta$ is a
+totally positive unit of $\OO_E[1/p]$, hence $p^a\theta^{2b}$, and we may take $b=0$. Applied to a neighbour $\Lambda'$ of
+$\Lambda_0$ with $\Lambda'\subset\Lambda_0$, whose ideal has reduced norm the prime ideal $(p)$, this gives $\alpha_0$.
+For a general vertex, $\beta/p^{a/2}$ (for even $a$) or $(\beta/p^{(a-1)/2})\alpha_0^{-1}$ (for odd $a$) lies in
+$I[1/p]^1$ and moves $\Lambda_0$ or $\Lambda_1$ to it. Elements of reduced norm one preserve parity, so there are no
+inversions. The stabilizer of $\Lambda_0$ in $I[1/p]^1$ consists of the elements that are integral at $p$, which is
+$I^1=2I$; conjugation by $\alpha_0\in I[1/p]^\times$ preserves $I[1/p]^1$ and gives the stabilizer of $\Lambda_1$.
+
+(b) This is~\cite[Lemma~6.3]{Luck2026} with $3$ and $11$ replaced by $p$ and $\ell$. Strong approximation for the
+simply connected group $B^1$, which is not compact at $p$~\cite[Section~7.4]{PlatonovRapinchuk1994}, gives
+surjectivity. A nontrivial element of finite order of $\Gamma^+$ fixes a vertex~\cite[Section~I.4]{Serre1980}, so it is
+conjugate into $A_5$ or $\alpha_0A_5\alpha_0^{-1}$, which map injectively to $\PSL_2(\OO_E/\lambda_0)$ because
+$1+\lambda_0M_2(\OO_{E,\lambda_0})$ is torsion-free for odd~$\ell$. Hence $\Gamma^+(\lambda_0^j)$ is torsion-free and,
+acting without inversions, acts freely. It is normal and meets no vertex stabilizer, so the vertices of $X_j$ of a given
+parity form the double coset space $\Gamma^+(\lambda_0^j)\backslash\Gamma^+/A_5$, of size
+$\abs{\PSL_2(\OO_E/\lambda_0^j)}/60$, and likewise for the other parity. The decrease and the trivial intersection are
+proved as in~\cite[Lemma~6.3]{Luck2026}.
+\end{informalproof}
+
+So $X_j$ is bipartite, with $c_j$ vertices of each parity and $(p^2+1)c_j$ edges, and it is $(p^2+1)$-regular because
+$s(\Gamma^+(\lambda_0^j))\ge2$ (\cref{lem:girth} below, with $r=0$, and \cref{sec:prelim-graphs}); it is the dual graph
+of the Goren--Oort divisor below. Its girth grows along the tower, by an archimedean argument in the style of
+Lubotzky, Phillips and Sarnak~\cite{LPS1988}.
+
+\begin{lemma}[Girth]\label{lem:girth}
+\notformalized
+Let $j\ge1$ and $r\ge0$ with $4p^r<\ell^j$. Then every element of $\Gamma^+(\lambda_0^j)\setminus\{1\}$ moves every
+vertex of $\Tree$ by at least $2r+2$. Hence $s(\Gamma^+(\lambda_0^j))\ge2r+2$; in particular $X_1$ is simple when
+$\ell>4p$, and $s(\Gamma^+(\lambda_0^j))\ge2(j\log\ell-\log4)/\log p$ for all~$j$.
+\end{lemma}
+\begin{informalproof}
+Elements of $\Gamma^+$ preserve parity, so they move vertices by even distances. Suppose $\gamma\ne1$ in
+$\Gamma^+(\lambda_0^j)$ moves a vertex $x$ by $2r'$ with $1\le r'\le r$. By \cref{lem:group}(a), $x=g\Lambda_0$ or
+$x=g\alpha_0\Lambda_0$ with $g\in\Gamma^+$; conjugating by $g$ and by $\alpha_0$, which preserve $\Gamma^+(\lambda_0^j)$
+(the first because it is normal, the second because $\alpha_0$ is a unit at $\lambda_0$), we may assume $x=\Lambda_0$.
+Let $\tilde\gamma\in I[1/p]^1$ be the lift with $\tilde\gamma\equiv1\pmod{\lambda_0^j}$; it is unique because
+$-1\not\equiv1\pmod{\lambda_0}$~\cite[Lemma~6.3]{Luck2026}. By the Cartan decomposition,
+$\alpha=p^{r'}\tilde\gamma$ lies in $M_2(\Z_{p^2})=I\otimes\Z_{p^2}$, hence in $I$, and $\alpha\equiv p^{r'}\pmod{\lambda_0^jI}$.
+Let $\pi$ be a totally positive generator of $\lambda_0^j$ and write $\alpha=p^{r'}+\pi\beta$ with $\beta\in I$. Then
+$\beta\ne0$ because $\gamma\ne1$, and
+\[
+  p^{2r'}=\operatorname{Nrd}\alpha=p^{2r'}+p^{r'}\pi\operatorname{Tr}\beta+\pi^2\operatorname{Nrd}\beta
+\]
+gives $p^{r'}\operatorname{Tr}\beta=-\pi\operatorname{Nrd}\beta$. Since $\pi$ is prime to $p$, $\operatorname{Tr}\beta=\pi u$
+with $u\in\OO_E$, and then $\operatorname{Nrd}\beta=-p^{r'}u$, so $u\ne0$. At each real embedding $\iota$ of $E$,
+$B\otimes_\iota\R$ is the algebra of Hamilton quaternions, so
+$\iota(\operatorname{Tr}\beta)^2\le4\,\iota(\operatorname{Nrd}\beta)$, that is,
+$\iota(\pi)^2\iota(u)^2\le4p^{r'}\abs{\iota(u)}$, hence $\iota(\pi)^2\abs{\iota(u)}\le4p^{r'}$. Multiplying over the two
+embeddings gives $\ell^{2j}\abs{N(u)}\le16p^{2r'}$, and $\abs{N(u)}\ge1$, so $\ell^j\le4p^{r'}\le4p^r$, a contradiction.
+The displacement bound follows from~\eqref{eq:disp}. For $j=1$ and $r=1$ the quotient is simple by
+\cref{sec:prelim-graphs}. The last bound takes the largest admissible~$r$.
+\end{informalproof}
+
+\subsection{Riemann--Roch in weight \texorpdfstring{$k$}{k}}\label{sec:arith-RR}
+
+Let $\mathfrak n=\lambda_0^j$, an ideal prime to $p$ with a totally positive generator, and
+$\mathcal K(\mathfrak n)\subset\GL_2(\hat\OO_E)$ its principal congruence subgroup. It is neat: a root of unity congruent
+to $1$ modulo a prime above $\ell$ has $\ell$-power order, so it is $1$ or has degree at least $\ell-1\ge6$ over $\Q$,
+while eigenvalues of elements of $\GL_2(E)$ have degree at most~$4$. As in~\cite[Section~6.2]{Luck2026}, choose a smooth
+projective toroidal compactification over $W(\bar\F_p)$ of the closure of one geometric connected component of the
+Hilbert modular surface of $E$ of level $\mathcal K(\mathfrak n)$, and let $S$ be its special fibre, with boundary $D$.
+We take the one given at every cusp by Hirzebruch's minimal cone decomposition~\cite[Section~2.5]{Hirzebruch1973}. Every
+cusp has type $(\OO_E,\mathcal U_{\mathfrak n})$ up to a totally positive scalar~\cite[Section~6.2, (G4)]{Luck2026}, and
+$\theta^2=3-\theta^{-2}$ has the purely periodic continued fraction $[[3]]$, so the rays of the decomposition are spanned by
+lattice points $A_k$ ($k\in\Z$) with $A_{k-1}+A_{k+1}=3A_k$, any two consecutive ones forming a basis of the
+lattice~\cite[Sections~2.5 and~2.6]{Hirzebruch1973}. So the decomposition is smooth. It is also projective in the sense
+of~\cite[Definitions~7.3.1.1 and~7.3.1.3]{Lan2013}. Let $\varphi$ be the function that is linear on each cone and equal
+to $1$ at every $A_k$. It takes positive integer values at nonzero lattice points, by smoothness. If
+$x=aA_{k-1}+a'A_k$ and $y=c'A_k+cA_{k+1}$ with nonnegative coefficients, then
+$\varphi(x+y)-\varphi(x)-\varphi(y)=\min(a,c)$, by $A_{k-1}+A_{k+1}=3A_k$. So $\varphi$ bends at every ray, hence it is
+concave (superadditive, Lan's convexity) and its maximal domains of linearity are exactly the cones: it is a
+polarization function. The complex fibre of the component is $\Gamma(\mathfrak n)\backslash\mathfrak H^2$ with
+$\Gamma(\mathfrak n)\subset\SL_2(\OO_E)$. We use the facts (G1)--(G4) of~\cite[Section~6.2]{Luck2026}, whose sources hold
+for every prime unramified in $E$ and every level prime to it; we restate them for~$p$.
+\begin{itemize}
+\item[(G1)] $S$ is smooth, projective and connected, and $D\ne0$ is a disjoint union of cycles of smooth rational curves,
+one for each cusp~\cite[Theorem~5.1, Proposition~5.2 and Corollary~5.3]{Rapoport1978},
+\cite{Chai1990}, \cite[Section~7]{Dimitrov2004}, \cite[Theorems~6.4.1.1 and~7.3.3.4]{Lan2013}.
+\item[(G2)] The Hodge bundle splits as $\omega_1\oplus\omega_2$ because $p$ is unramified, and
+$K_S+D\cong\omega_1^2\otimes\omega_2^2$~\cite[Theorem~6.4.1.1(4)]{Lan2013}. Write $H=\omega_1\otimes\omega_2$ and, for an
+integer $k$, $L_k=H^{\otimes k}$, the bundle of parallel weight~$k$; so $K_S+D=2H$ in additive notation.
+\item[(G3)] The partial Hasse invariants $h_1\in H^0(\omega_1^{-1}\omega_2^p)$ and $h_2\in H^0(\omega_1^p\omega_2^{-1})$
+have reduced divisors $Z_1$, $Z_2$, regular curves meeting in finitely many
+points~\cite[Section~1 and Theorem~2.1(1)]{Goren2001}; they extend to $S$ by the Koecher
+principle~\cite[Theorem~8.3]{Dimitrov2004} and do not vanish on $D$, because their $q$-expansions at every cusp are
+$1$~\cite[Theorem~2.1(2)]{Goren2001}. So $h=h_1h_2\in H^0(L_{p-1})$ has divisor $Y=Z_1+Z_2$, and $\OO(Y)\cong L_{p-1}$.
+Since $p$ is inert, $Y$ is the reduced supersingular locus~\cite[Proposition~4.1]{BachmatGoren1999}.
+\item[(G4)] Let $e=\abs{\PSL_2(\OO_E/\mathfrak n)}\cdot2\zeta_E(-1)=\abs{\PSL_2(\OO_E/\mathfrak n)}/15$, the Euler
+number of $\Gamma(\mathfrak n)\backslash\mathfrak H^2$~\cite[Sections~1.6 and~1.7]{Hirzebruch1973}. Every cusp is resolved
+by a cycle of curves of self-intersection $-3$~\cite[Sections~2.5 and~2.6]{Hirzebruch1973}, and
+$K_S^2=2e+\sum(2-b)=2e-\#\{\text{boundary curves}\}$, where the sum runs over the boundary curves, of self-intersection
+$-b=-3$~\cite[Sections~3.2 and~3.6]{Hirzebruch1973}. Noether's formula $\chi(\OO_S)=(K_S^2+c_2(S))/12$, with
+$c_2(S)=e+\#\{\text{boundary curves}\}$, then gives $\chi(\OO_S)=e/4=c_j$, as in~\cite[Section~6.2, (G4)]{Luck2026}. The
+boundary curves over each cusp are the closures of the strata of the rays of the decomposition, which are smooth over
+$W(\bar\F_p)$~\cite[Theorem~6.4.1.1(2) and~(3)]{Lan2013}, so the configuration of the boundary is the same on $S$ and on the
+complex fibre; $\chi(\OO)$ and intersection numbers of line bundles are constant in the smooth proper family over
+$W(\bar\F_p)$. So these facts may be checked on the complex fibre, where they are Hirzebruch's. Each cycle has at least five
+curves: its length is the index of the squares of the units congruent to $1$ modulo $\mathfrak n$ in the totally positive
+units~\cite[Section~6.2, (G4)]{Luck2026}, which is the order of $\theta$ in $(\OO_E/\mathfrak n)^\times/\{\pm1\}$, and for
+$1\le a\le4$ the numbers $\theta^a\mp1$ have norms $\pm1$, $\pm4$, $\pm5$ or~$9$, which no prime $\ell\ge7$ divides.
+\end{itemize}
+
+\begin{lemma}[Sections in weight $k$]\label{lem:RRk}
+\notformalized
+For $2\le k\le p-2$, $h^0(S,L_k)\ge(k-1)^2c_j$, and restriction $H^0(S,L_k)\to H^0(Y,L_k|_Y)$ is injective. Hence
+$h^0(Y,L_k|_Y)\ge(k-1)^2c_j$.
+\end{lemma}
+\begin{informalproof}
+\emph{Intersection numbers.} Each boundary cycle $D_i$ has arithmetic genus $1$, and the cycles are disjoint, so
+adjunction gives $(K_S+D)\cdot D=0$; hence $H\cdot D=0$ and $K_S\cdot D=-D^2$. A cycle of curves of
+self-intersections $-b$ has square $\sum(2-b)$, so $D^2=-\#\{\text{boundary curves}\}$. Then
+$(2H)^2=(K_S+D)^2=K_S^2-D^2=2e$ by (G4), so $H^2=e/2=2c_j$, and $H\cdot K_S=H\cdot(2H-D)=4c_j$.
+
+\emph{Riemann--Roch.} For a line bundle $L$ on the smooth projective surface $S$,
+$\chi(L)=\chi(\OO_S)+\frac12L\cdot(L-K_S)$~\cite[Section~4.1]{Liedtke2013}. For $L=L_k=kH$ this is
+\[
+  \chi(L_k)=c_j+\tfrac12\bigl(k^2H^2-kH\cdot K_S\bigr)=c_j+k^2c_j-2kc_j=(k-1)^2c_j.
+\]
+
+\emph{Vanishing.} By Serre duality $h^2(L_k)=h^0(K_S-L_k)=h^0((2-k)H-D)$. A nonzero section of this bundle, multiplied
+by a nonzero section of $\OO(D)$, gives a nonzero section of $-(k-2)H$ when $k\ge3$, and is a nonzero section of $\OO(-D)$
+when $k=2$. The latter does not exist because $D$ is a nonzero effective divisor on the integral projective surface $S$.
+If $s\ne0$ is a section of $-aH$ with $a\ge1$, then $s^{p-1}h^a$ is a nonzero section of $\OO_S$, hence a nonzero
+constant, so $h$ vanishes nowhere and $(p-1)H\cong\OO(Y)$ is trivial by (G3). This contradicts $H^2=2c_j>0$. So
+$h^2(L_k)=0$ and $h^0(L_k)\ge\chi(L_k)=(k-1)^2c_j$.
+
+\emph{Injectivity.} The kernel of restriction to $Y$ is $H^0(L_k(-Y))=H^0(-(p-1-k)H)$, by (G3), and $p-1-k\ge1$; it
+vanishes by the same argument.
+\end{informalproof}
+
+\subsection{Uniformization of the supersingular locus}\label{sec:arith-unif}
+
+Let $\mathcal M$ be the Rapoport--Zink space of supersingular polarized $p$-divisible groups with $\OO_E\otimes\Z_p$-action,
+$J$ the group of $\OO_E$-linear self-quasi-isogenies of its framing object that multiply the polarization by a factor in
+$\Q_p^\times$, and $\mathcal M^{(n)}_{\mathrm{red}}$ the part of its reduced
+locus described in~\cite[Section~6.3]{Luck2026}, after Kudla and Rapoport~\cite[Section~4]{KudlaRapoport1999} and
+Stamm~\cite{Stamm1997}. It is a union of projective lines: a line $C_\Lambda=\Pone(\Lambda/p\Lambda)$ of the first kind for
+each $\Z_{p^2}$-lattice $\Lambda$ of a two-dimensional $\Q_{p^2}$-space $U_0$ with $\langle\Lambda,\Lambda\rangle=p^n\Z_{p^2}$,
+and a line of the second kind for each such lattice of a second space $U_1$, which a $\sigma$-semilinear bijection
+$\Phi\colon U_1\to U_0$ commuting with $J$ identifies with $U_0$. Here $\OO_E\otimes\Z_p$ acts on $U_0$ by scalars,
+through the embedding into $W=W(\bar\F_p)$ that defines the grading of the isocrystal~\cite[(4.3)]{KudlaRapoport1999}.
+Lines of the same kind are disjoint; each line meets
+exactly one line of the other kind at each of its $p^2+1$ points rational over $\F_{p^2}$, the superspecial points, and no
+line elsewhere~\cite[Lemma~4.3(iii), the text after~(4.9) and Proposition~4.4]{KudlaRapoport1999}; the crossings are ordinary double
+points~\cite[Theorem~6.1]{BachmatGoren1999}. Sending a line of the first kind to $[\Lambda]$ and one of the second kind to
+$[\Phi\Lambda']$ identifies the dual graph with the tree $\Tree_{U_0}$ of $U_0$, equivariantly for the subgroup $J^0$ of
+elements whose similitude factor is a $p$-adic unit~\cite[Section~6.3]{Luck2026}. The Hodge bundles of the universal
+$p$-divisible group, and so the bundles $L_k$, carry a canonical action of~$J$.
+
+\begin{lemma}[Uniformization]\label{lem:unif}
+\notformalized
+There are an integer $n$, an action of $\Gamma^+$ on $\mathcal M^{(n)}_{\mathrm{red}}$ through $J^0$, and a bijection
+$\Psi\colon U_0\to\Q_{p^2}^2$, either $\Q_{p^2}$-linear or $\sigma$-semilinear, carrying $\Tree_{U_0}$ to $\Tree$, such
+that:
+\begin{enumerate}[label=(\alph*)]
+\item the identification of the dual graph of $\mathcal M^{(n)}_{\mathrm{red}}$ with $\Tree$ is $\Gamma^+$-equivariant;
+\item $Y\cong\Gamma^+(\lambda_0^j)\backslash\mathcal M^{(n)}_{\mathrm{red}}$, and under this isomorphism $L_k|_Y$ is the
+descent of $L_k$ with its $J$-action; in particular the dual graph of $Y$ is~$X_j$;
+\item $L_k$ has degree $m=k(p-1)$ on every line of $\mathcal M^{(n)}_{\mathrm{red}}$.
+\end{enumerate}
+\end{lemma}
+\begin{informalproof}
+Parts (a) and (b) are~\cite[Lemma~6.6]{Luck2026} with $3$, $11$ and $\Gamma^+(\lambda_0^{k+1})$ replaced by $p$, $\ell$ and
+$\Gamma^+(\lambda_0^j)$, and with $L_k$ in place of $L_2$; its proof uses the uniformization theorem of Rapoport and
+Zink~\cite[Theorem~6.30]{RapoportZink1996}, the Hasse principle for the group of the moduli problem, Tate's
+theorem~\cite{Tate1966}, the type number one of $I$, the norm theorem of Hasse and
+Schilling~\cite[Theorem~III.4.1]{Vigneras1980} and strong approximation, none of which depends on $p$ or on the weight.
+It also needs a supersingular point on $S$, which exists because $h^0(Y,L_k|_Y)\ge(k-1)^2c_j>0$ (\cref{lem:RRk}), so
+$Y\ne\emptyset$. There the identification is chosen by the Skolem--Noether theorem: the action of $B$ on $U_0$, composed with the main
+involution, becomes the isomorphism $B\otimes_E\Q_{p^2}\cong M_2(\Q_{p^2})$ of \cref{sec:arith-group}, composed with
+$\sigma$ when the embedding of $\OO_E\otimes\Z_p$ into $W$ that defines the grading differs from the identification of
+the completion of $E$ at $p$ with $\Q_{p^2}$ used there~\cite[proof of Lemma~6.6(a)]{Luck2026}. In that case we compose
+the identification with $\sigma$ on coordinates. This makes $\Psi$ $\sigma$-semilinear and turns the action of $\Gamma^+$
+on $\Q_{p^2}^2$, and so on $\Tree$, into the standard one.
+The element $-1$ acts trivially on $\mathcal M^{(n)}_{\mathrm{red}}$ and on $L_k=(\omega_1\otimes\omega_2)^{\otimes k}$,
+by $(-1)^{2k}=1$, so $I[1/p]^1$ acts through $\Gamma^+$.
+
+(c) Since $\Gamma^+(\lambda_0^j)$ acts freely, every line maps isomorphically onto a component of $Y$, compatibly
+with $L_k$. Let $C$ be a component of $Z_1$, and $a=\deg\omega_1|_C$, $b=\deg\omega_2|_C$. The section $h_2$ vanishes on
+$C$ exactly at its $p^2+1$ superspecial points, simply, because the crossings are ordinary double points of the reduced
+curve $Z_1+Z_2$; so $pa-b=p^2+1$. The components of $Z_1$ are disjoint and $Z_1\sim p\omega_2-\omega_1$ by (G3), so
+$C^2=Z_1\cdot C=-a+pb$; and adjunction with $K_S=2H-D$ and $D\cdot C=0$ gives
+$-2=(K_S+C)\cdot C=2a+2b-a+pb=a+(p+2)b$. Hence $(a,b)=(p,-1)$, and $\deg L_k|_C=k(a+b)=k(p-1)$. The components of $Z_2$ are
+symmetric.
+\end{informalproof}
+
+A \emph{geometric datum} on $\Tree$ consists of a smooth rational curve $C_v$ over $\bar\F_p$ and a line bundle $L_v$ of
+degree $m$ on it for every vertex $v$, a point $P_{v,e}\in C_v$ for every edge $e$ at $v$ (its \emph{special points}), and
+for every edge $e=\{v,w\}$ an isomorphism $\varphi_e$ between the fibres of $L_v$ at $P_{v,e}$ and of $L_w$ at $P_{w,e}$.
+For a group $\Gamma$ acting on the datum and freely on $\Tree$, its \emph{Tanner code} on $\Gamma\backslash\Tree$ is the space of
+$\Gamma$-invariant families of sections $s_v\in H^0(C_v,L_v)$ whose values at the two special points of each edge
+correspond under $\varphi_e$. By \cref{lem:unif}, the lines of $\mathcal M^{(n)}_{\mathrm{red}}$ with the restrictions of
+$L_k$, their superspecial points and the identifications of the fibres of $L_k$ at the crossings form a geometric datum
+$D_{\mathrm{geo}}$ on~$\Tree$, the same for every~$j$.
+
+\begin{lemma}[Sections are Tanner codes]\label{lem:sections}
+\notformalized
+For every subgroup $\Gamma\subseteq\Gamma^+(\lambda_0)$ of finite index, $H^0(\Gamma\backslash\mathcal M^{(n)}_{\mathrm{red}},L_k)$
+is isomorphic to the Tanner code of $D_{\mathrm{geo}}$ on $\Gamma\backslash\Tree$.
+\end{lemma}
+\begin{informalproof}
+This is~\cite[Lemma~6.7]{Luck2026}: the curve $\Gamma\backslash\mathcal M^{(n)}_{\mathrm{red}}$ has the lines as
+components and ordinary double points exactly at the superspecial points, so by the normalization sequence a section of
+$L_k$ is a family of sections on the components whose values at each node correspond.
+\end{informalproof}
+
+\subsection{Rigidity and the twisted model over \texorpdfstring{$\F_{p^2}$}{F\_{p\textasciicircum2}}}\label{sec:arith-rigid}
+
+Let $G=\SL_2(\Q_{p^2})$. It acts on $\Tree$ without inversions, transitively on the vertices of each parity and on the
+edges. Let $v_0=[\Z_{p^2}^2]$, $v_1=[\Z_{p^2}e_1\oplus p\Z_{p^2}e_2]$ and $e_0=\{v_0,v_1\}$. The
+stabilizers are $K_0=\SL_2(\Z_{p^2})$, $K_1=g_1K_0g_1^{-1}$ with $g_1=\operatorname{diag}(1,p)$, and the Iwahori subgroup
+$K_0\cap K_1$ of matrices with lower left entry divisible by~$p$. Let $\rho_0\colon K_0\to\SL_2(\F_{p^2})$ be reduction modulo
+$p$ and $\rho_1(g)=\rho_0(g_1^{-1}gg_1)$ on $K_1$; then $\rho_0$ maps the Iwahori subgroup onto the upper and $\rho_1$ onto
+the lower triangular matrices, with the same diagonal: if $g=(\begin{smallmatrix}a&b\\pc&d\end{smallmatrix})$, then
+$\rho_0(g)=(\begin{smallmatrix}\bar a&\bar b\\0&\bar d\end{smallmatrix})$ and
+$\rho_1(g)=(\begin{smallmatrix}\bar a&0\\\bar c&\bar d\end{smallmatrix})$, with $\bar a\bar d=1$. Let $\sigma$ be the Frobenius
+of $\F_{p^2}$, applied to matrices entrywise.
+
+A \emph{$G$-equivariant} geometric datum carries an action of $G$ compatible with all its pieces, such that the stabilizer
+$K$ of each vertex $v$ acts on $(C_v,L_v)$ through the reduction of $K$ modulo $p$, that is, through
+$\SL(\Lambda_v/p\Lambda_v)\cong\SL_2(\F_{p^2})$ for a lattice $\Lambda_v$ of $v$. Its \emph{type} at $v_0$ (respectively
+$v_1$) is \emph{standard} if $C_v$ with this action is isomorphic to $\Pone_{\bar\F_p}$ with the action through $\rho_0$
+(respectively $\rho_1$), and \emph{twisted} if it is isomorphic to $\Pone_{\bar\F_p}$ with the action through
+$\sigma\circ\rho_0$ (respectively $\sigma\circ\rho_1$).
+
+\paragraph{The twisted model.} Let $m=k(p-1)$. At $v_0$ take $C_0=\Pone_{\F_{p^2}}$ with $K_0$ acting through $\rho_0$, at
+$v_1$ take $C_1=\Pone_{\F_{p^2}}$ with $K_1$ acting through $\sigma\circ\rho_1$, and on both the bundle $\OO(m)$, whose
+sections are the binary forms of degree $m$, with its natural linearization. The special points of $e_0$ are the points
+$[e_1]\in C_0$ and $[e_2]\in C_1$: they are the unique fixed points of the images of the Iwahori subgroup, upper and lower
+triangular. The fibre of $\OO(m)$ at $[e_1]$ has the basis $(e_1^\vee)^{\otimes m}$, on which the Iwahori subgroup acts by
+$\bar a^{-m}$; the fibre at $[e_2]$ has the basis $(e_2^\vee)^{\otimes m}$, on which it acts by $\sigma(\bar d)^{-m}=\bar a^{pm}$.
+Since $\bar a^{(p+1)m}=\bar a^{k(p^2-1)}=1$, the identification
+$\varphi_{e_0}\colon(e_1^\vee)^{\otimes m}\mapsto(e_2^\vee)^{\otimes m}$ is equivariant. Transporting these data by~$G$, which
+is possible because $G$ acts on $\Tree$ with the edge $e_0$ as a fundamental domain and every piece is equivariant for the
+relevant stabilizer, defines a $G$-equivariant geometric datum $D_{\mathrm{tw}}$ of degree $m$, standard at the vertices
+of the parity of $v_0$ and twisted at the others. Every piece of it is defined over $\F_{p^2}$, and $G$ acts through
+$\F_{p^2}$-rational maps. The element $-1$ acts trivially, since $m$ is even, so subgroups of $\PSL_2(\Q_{p^2})$ act on it.
+Let $D^\sigma_{\mathrm{tw}}$ be its image under~$\sigma$, twisted at the vertices of the parity of $v_0$ and standard at the
+others.
+
+Restrict $D_{\mathrm{tw}}$ to $\Gamma_B=\Gamma^+(\lambda_0)$, which acts freely on edges. Choose an $\F_{p^2}$-basis of the
+fibre at one edge of each $\Gamma_B$-orbit and transport it by $\Gamma_B$. Every fibre becomes $\F_{p^2}$, and evaluation of
+sections at the special points turns the datum into a $\Gamma_B$-equivariant local datum over $\F_{p^2}$ in the sense of
+\cref{sec:prelim-tanner}. Its local codes are the codes of \cref{lem:grs} with $q=p^2$: evaluation is injective because
+$m\le p^2-1$, so the Tanner code of the geometric datum on $\Gamma\backslash\Tree$ is the Tanner code $T_{\mathrm{tw}}(\Gamma\backslash\Tree)$
+of \cref{sec:prelim-tanner} for every $\Gamma\subseteq\Gamma_B$ of finite index, and the local checks interpolate on
+$t=p^2-m$ coordinates. Extending scalars to $\bar\F_p$ gives the Tanner code of $D_{\mathrm{tw}}\otimes\bar\F_p$, which is
+therefore $T_{\mathrm{tw}}(\Gamma\backslash\Tree)\otimes_{\F_{p^2}}\bar\F_p$.
+
+\begin{lemma}[The geometric datum is twisted]\label{lem:geo}
+\notformalized
+The datum $D_{\mathrm{geo}}$ extends to a $G$-equivariant geometric datum of degree $m=k(p-1)$, under the identification
+$\Psi$ of $U_0$ with $\Q_{p^2}^2$ of \cref{lem:unif}, whose action extends that of $\Gamma^+$; its type is standard at the
+vertices of one parity and twisted at the others.
+\end{lemma}
+\begin{informalproof}
+The group $J$ consists of the automorphisms of the isocrystal that commute with $F$, respect the $\OO_E$-grading and
+multiply the polarization by a factor in $\Q_p^\times$~\cite[(4.5)]{KudlaRapoport1999}. Such an automorphism is determined
+by its action on $U_0$, because it commutes with $\Phi$, and any $g\in\GL(U_0)$ with $\det g\in\Q_p^\times$ extends to
+one. So conjugation by $\Psi$ identifies $J$ with $\{g\in\GL_2(\Q_{p^2}):\det g\in\Q_p^\times\}$, as
+in~\cite[(5.12)]{KudlaRapoport1999}; if $\Psi$ is $\sigma$-semilinear, conjugation by it applies $\sigma$ to determinants,
+which preserves $\Q_p^\times$. In particular $G\subseteq J^0$. The group $J$
+acts on $\mathcal M^{(n)}_{\mathrm{red}}$ and on $L_k$ compatibly with the crossings and with the identification of the dual
+graph with $\Tree$~\cite[Section~6.3]{Luck2026}, so $D_{\mathrm{geo}}$ is $G$-equivariant, and the action of $\Gamma^+$ of
+\cref{lem:unif} is the restriction.
+
+Let $\Lambda$ be a lattice of the first kind and $K$ its stabilizer in $G$. A point of $C_\Lambda$ is a Dieudonn\'e
+lattice $M=M_0\oplus M_1$ with $M_0=\Lambda\otimes W$, for which the index $0$ is critical, $F^2M_0=pM_0$, equivalently
+$V^2M_0=pM_0$~\cite[Definition~4.1, Lemma~4.3 and~(4.9)]{KudlaRapoport1999}. The group $K$ acts on
+$C_\Lambda=\Pone(\Lambda/p\Lambda)$ through its action on $\Lambda/p\Lambda$~\cite[Lemma~4.3]{KudlaRapoport1999}. After a
+change of coordinates this is the action through $\rho_i$ if $\Psi$ is linear, and through $\sigma\circ\rho_i$ if $\Psi$
+is $\sigma$-semilinear, where $v_i$ is the vertex among $v_0,v_1$ of the parity of $[\Psi\Lambda]$; in the second case
+$\Psi$ induces a $\sigma$-semilinear bijection of $\Lambda/p\Lambda$ onto $\Psi\Lambda/p\Psi\Lambda$. If $g\in K$ is congruent to $1$ modulo $p\Lambda$, then $g$ fixes $C_\Lambda$ pointwise. It
+also acts trivially on $VM/pM$, the fibre of the Hodge bundle at the point $M$ in the contravariant Dieudonn\'e theory
+of~\cite{KudlaRapoport1999}. Indeed $(g-1)M_0\subseteq pM_0$, and, since $g$ commutes with $F$ and $V$
+and $FM_1\subseteq M_0$~\cite[(4.6)]{KudlaRapoport1999}, $(g-1)M_1=F^{-1}(g-1)FM_1\subseteq F^{-1}pM_0=VM_0$. Hence
+$(g-1)VM_1=V(g-1)M_1\subseteq V^2M_0=pM_0$ and $(g-1)VM_0=V(g-1)M_0\subseteq pVM_0\subseteq pM_1$. So $g$ acts
+trivially on the fibres of $\omega_1$, $\omega_2$ and $L_k$ over $C_\Lambda$, and the stabilizer acts on $(C_\Lambda,L_k)$
+through its reduction modulo~$p$. For lines of the second kind the same holds with the roles of $M_0$ and $M_1$ exchanged,
+and the action on $C_{\Lambda'}$, in the coordinates of $U_0$ transported by $\Phi$, is conjugated by $\sigma$ because
+$\Phi$ is $\sigma$-semilinear and commutes with $J$~\cite[Lemma~6.9, steps (1)--(2)]{Luck2026}. So if $\Psi$ is linear,
+the type is standard at the vertices that carry lines of the first kind and twisted at the others; if $\Psi$ is
+$\sigma$-semilinear, both are replaced by their images under $\sigma$, as in~\cite[Lemma~6.9, step~(5)]{Luck2026}. Lines
+of the first kind sit at the vertices of one parity and lines of the second kind at the others, so in both cases the type
+is standard at one parity and twisted at the other. By \cref{lem:unif}(c) the degree is~$m$.
+\end{informalproof}
+
+\begin{lemma}[Rigidity]\label{lem:rigid}
+\notformalized
+Two $G$-equivariant geometric data of degree $m$ with the same types at $v_0$ and at $v_1$ are isomorphic,
+$G$-equivariantly. If moreover $-1\in G$ acts trivially on both data, then for every subgroup
+$\Gamma\subseteq\PSL_2(\Q_{p^2})$ acting freely on $\Tree$ with finite quotient, their Tanner codes on $\Gamma\backslash\Tree$
+are isomorphic.
+\end{lemma}
+\begin{informalproof}
+Let $D$ and $D'$ be the data. (1) At $v_i$ the types agree, so there is a $K_i$-equivariant isomorphism
+$\psi_i\colon C_{v_i}\to C'_{v_i}$. (2) The bundles $L_{v_i}$ and $\psi_i^*L'_{v_i}$ have the same degree, hence are
+isomorphic; the two actions of $K_i$ on $L_{v_i}$ that result factor through $\SL_2(\F_{p^2})$ and cover the same action on
+the curve, so they differ by a character of $\SL_2(\F_{p^2})$ with values in $\bar\F_p^\times$. Such a character is trivial:
+$\SL_2(\F_{p^2})$ is generated by the elementary matrices $(\begin{smallmatrix}1&a\\0&1\end{smallmatrix})$ and
+$(\begin{smallmatrix}1&0\\a&1\end{smallmatrix})$, which have order dividing $p$, and $\bar\F_p^\times$ has no element of
+order~$p$. So the isomorphism of bundles can be chosen $K_i$-equivariant. (3) The special
+point $P_{v_0,e_0}$ is fixed by the Iwahori subgroup, whose image in the action on $C_{v_0}$ is a Borel subgroup of
+$\SL_2(\F_{p^2})$; it contains a nontrivial unipotent element, which has exactly one fixed point on $\Pone$. So
+$\psi_0(P_{v_0,e_0})=P'_{v_0,e_0}$, and likewise at~$v_1$. (4) The two identifications of fibres at $e_0$ now differ by a
+scalar; rescaling the isomorphism of bundles at $v_1$ makes them agree. (5) Transport the isomorphisms by $G$, setting
+$\psi_{gv_i}=g\psi_ig^{-1}$; this is well defined because $\psi_i$ is $K_i$-equivariant. Every edge is $ge_0$ for some
+$g\in G$, so the special points and identifications match at every edge, and the transported maps form a $G$-equivariant
+isomorphism of data. It descends to $\Gamma\backslash\Tree$ and maps one Tanner code onto the other.
+\end{informalproof}
+
+\begin{remark}[The twist is forced]\label{rem:forced}
+For $k\ne(p+1)/2$, equivariance alone forces the twist, independently of the computation with lines of the second kind
+in the proof of \cref{lem:geo}: a $G$-equivariant geometric datum of degree $m$ whose types at $v_0$ and $v_1$ are each
+standard or twisted is standard at one of them and twisted at the other. In a datum that is standard at
+both $v_0$ and $v_1$, the Iwahori subgroup acts on the fibres at the two special points of $e_0$ by $\bar a^{-m}$ and
+$\bar d^{-m}=\bar a^m$, and an equivariant identification exists only if $\bar a^{2m}=1$ for all $\bar a\in\F_{p^2}^\times$,
+that is, if $p+1$ divides $2k$. For $2\le k\le p-2$ this means $k=(p+1)/2$. The same holds when both types are twisted.
+The weight $k=(p+1)/2$ of the twelfth paper, where $p=3$ and $k=2$, is exactly the exceptional case, which is why that paper
+needed an explicit identification of the type~\cite[Lemma~6.9]{Luck2026}.
+\end{remark}
+
+\begin{theorem}[Theorem G]\label{thm:G}
+\notformalized
+Let $p\ge7$ be a prime inert in $E=\Q(\sqrt5)$, let $2\le k\le p-2$, $m=k(p-1)$ and $t=p^2-m$, and let $\lambda_0$ be a
+prime of $\OO_E$ of prime norm $\ell\ge7$. The twisted datum $D_{\mathrm{tw}}$ is a $\Gamma^+(\lambda_0)$-equivariant local
+datum over $\F_{p^2}$ on the $(p^2+1)$-regular tree, whose local codes are generalized Reed--Solomon codes of length
+$p^2+1$ and dimension $m+1$, with local checks interpolating on $t$ coordinates. For every $j\ge1$,
+\[
+  \dim_{\F_{p^2}}T_{\mathrm{tw}}(X_j)\ \ge\ (k-1)^2c_j=\frac{(k-1)^2}{p^2+1}\,\abs{X_j^1}.
+\]
+\end{theorem}
+\begin{informalproof}
+The first sentence summarizes the construction of the twisted model. By \cref{lem:geo}, $D_{\mathrm{geo}}$ is a
+$G$-equivariant datum of degree $m$, standard at the vertices of one parity and twisted at the others. If the vertices
+of the parity of $v_0$ are standard, \cref{lem:rigid} gives $D_{\mathrm{geo}}\cong D_{\mathrm{tw}}\otimes\bar\F_p$;
+otherwise $D_{\mathrm{geo}}\cong D^\sigma_{\mathrm{tw}}\otimes\bar\F_p$, whose Tanner codes are the images under $\sigma$
+of those of $D_{\mathrm{tw}}$. In both cases, by \cref{lem:unif}(b), \cref{lem:sections,lem:RRk},
+\[
+  \dim_{\F_{p^2}}T_{\mathrm{tw}}(X_j)=\dim_{\bar\F_p}T_{D_{\mathrm{geo}}}(X_j)=h^0(Y,L_k|_Y)\ge(k-1)^2c_j.
+\]
+Finally $\abs{X_j^1}=(p^2+1)c_j$ by \cref{lem:group}(b).
+\end{informalproof}
+
+Counting constraints gives only $\dim T_{\mathrm{tw}}(X_j)\ge(p^2+1-2t)c_j$, since each vertex imposes $t$ conditions. For
+$t$ near $(2-\sqrt3)(p^2+1)$ this is less than half the length, while Theorem G gives a rate of at least about
+$(\sqrt3-1)^2\approx0.536$. The excess comes from the geometry of the Goren--Oort configuration and is a phenomenon of
+characteristic $p$ (\cref{sec:limits}).
+
+\begin{remark}[A numerical check]\label{rem:numericalG}
+The script \path{tools/twisted_tanner.py} builds the twisted datum for $p=7$ and a prime $\lambda_0$ above $\ell=11$,
+where $c_1=11$, and computes $\dim_{\F_{49}}T_{\mathrm{tw}}(X_1)$ exactly. For $k=2,3,4,5$ it finds $22$, $44$, $111$
+and~$176$, against the bounds $11$, $44$, $99$ and~$176$ of Theorem~G. As controls, the untwisted gluing, which is
+equivariant only for $k=(p+1)/2=4$ (\cref{rem:forced}), gives $60<99$ there, and random gauges on the edges give the
+counting bound $\max(0,(p^2+1-2t)c_1)$ or one dimension more. Here $\ell<4p$, so $X_1$ is not simple, which Theorem~G
+does not need. The computation is not used in any proof.
+\end{remark}

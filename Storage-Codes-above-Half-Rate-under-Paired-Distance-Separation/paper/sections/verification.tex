@@ -1,0 +1,48 @@
+\section{Building and verifying the formalization}\label{sec:verify}
+
+The Lean project is the directory \path{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\path{lean-toolchain}, \path{lakefile.toml}, \path{lake-manifest.json}), and requires the library of the eleventh paper of
+the series through a relative path; through it, it uses the libraries of the fourth and fifth papers, the shared
+library \texttt{lean-machine} and the other libraries those depend on. The sibling directories of the repository must
+therefore stay in place.
+
+\paragraph{Build.} With \texttt{elan} installed, run in \path{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library and the libraries it requires. No
+heartbeat limit is raised; the only option set is \texttt{autoImplicit false}.
+
+\paragraph{Axioms.} The file \path{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\path{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration named in the paper (\cref{sec:leanindex}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of
+the library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an \texttt{axiom}.
+
+\paragraph{The statement.} The target statements are those of the eleventh paper, \lean{MergeDepth.Q91At} and
+\lean{MergeDepth.Q91BinaryAt}. They are built from three earlier definitions:
+\begin{itemize}
+\item the paired incidence graph \lean{DirectedRecovery.pairedIncidenceGraph} of the fifth paper;
+\item the paired-distance condition \lean{DirectedRecovery.HasPairedDistanceSeparation} of the fifth paper;
+\item storage codes, \lean{MotionDepthCodes.IsStorageCode}, of the fourth paper.
+\end{itemize}
+The main formal results, \lean{AboveHalf.not_Q91At_of_tower} and \lean{AboveHalf.not_Q91BinaryAt_of_tower}, prove their
+negations. The first needs a family of separated checks (\lean{AboveHalf.CheckSystem}) and a tower of quotients carrying
+codes of rate $\rho>1/2$ annihilated by the descended checks; the second needs in addition an injective encoding of the
+field in $b$ bits with $\rho\log_2\abs\F/b>1/2$. They are stated for an abstract set of coordinates with a group action and a distance, rather than for
+the Bruhat--Tits tree, which is not available in Mathlib; \cref{sec:peeling,sec:descent} explain how the tree provides
+these data.
+
+\paragraph{Where things are.} \path{Fluid.lean} (\cref{lem:fluid}), \path{LiftSelection.lean} (\cref{def:selection},
+\cref{lem:options,lem:rounding} and the deterministic part of \cref{thm:D}), \path{Peeling.lean} (\cref{lem:peeling}),
+\path{Tanner.lean} (\cref{lem:valid,lem:mds}), \path{Descent.lean} (\cref{prop:descent} and the symmetrized graphs of
+\cref{sec:undirected}),
+\path{Incidence.lean} (degrees and distances in paired incidence graphs), \path{BlowUp.lean} (\cref{lem:blowup}),
+\path{Main.lean} (the formal parts of \cref{thm:T}, \cref{thm:A} and \cref{cor:Aprime}), \path{Undirected.lean}
+(\cref{lem:graphblowup} and the formal part of \cref{cor:U}) and \path{Numbers.lean} (the numerical facts of
+\cref{cor:base,thm:A,cor:Aprime}). \path{Main.lean} and \path{Undirected.lean} do not import \path{Peeling.lean},
+\path{Tanner.lean}, \path{LiftSelection.lean}, \path{Fluid.lean} or \path{Numbers.lean}: the main theorems take the
+family of checks, the annihilation of the codes and the rate as hypotheses, and the composition of the formal parts is
+on paper.

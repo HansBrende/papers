@@ -1,0 +1,94 @@
+\section{Twisted quotients}\label{sec:descent}
+
+\subsection{Descent of separated checks}\label{sec:descent-lemma}
+
+Keep the setting of \cref{prop:checks}: a family $(h_e)_{e\in G^1}$ in $D(G)$ satisfying (a)--(c) there. Let
+$\Gamma'\subseteq\Gamma$ be a subgroup with finite quotient $X'=\Gamma'\backslash G$ and projection $\pi$, and let
+$\beta=\sup_e\abs{B(e,R)}$, assumed finite. The \emph{descended relation} on the coordinate set $V'=X'^1$ is
+\[
+  N'(\pi e)=\pi\bigl(\supp h_e\setminus\{e\}\bigr),
+\]
+which does not depend on the choice of $e$ in its orbit, by~(a). A word $c\colon V'\to\F$ is \emph{annihilated by the
+descended checks} if $\sum_fh_e(f)\,c(\pi f)=0$ for every $e\in G^1$.
+
+\begin{proposition}[Descent]\label{prop:descent}
+\formal{AboveHalfRate/Descent.lean}{AboveHalf.CheckSystem.qrel,AboveHalf.CheckSystem.isStorageCode_qrel,AboveHalf.CheckSystem.card_qrel_le,AboveHalf.CheckSystem.card_in_qrel_le,AboveHalf.CheckSystem.le_mul_of_edist_le}
+\begin{enumerate}[label=(\alph*)]
+\item Every set of words annihilated by the descended checks is a storage code for~$N'$.
+\item Both incidence degrees of $N'$ are at most $\beta-1$.
+\item If every element of $\Gamma'\setminus\{1\}$ moves every edge by at least $s$, then every coordinate of $N'$ has
+paired distance at least $s/R$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+(a) For $e\in G^1$, split the relation $\sum_fh_e(f)c(\pi f)=0$ into the term $f=e$, which is $c(\pi e)$ because
+$h_e(e)=1$, and the other terms, whose coordinates $\pi f$ lie in $N'(\pi e)$. So two annihilated words that agree on
+$N'(\pi e)$ agree at $\pi e$.
+
+(b) The recovery set $N'(\pi e)$ is the image of $\supp h_e\setminus\{e\}\subseteq B(e,R)\setminus\{e\}$. For the other
+degree fix $p\in G^1$. Every recovery set $N'(\pi e)$ containing $\pi p$ has a representative $e$ with $p\in\supp h_e$
+and $e\ne p$: if $\pi y=\pi p$ with $y\in\supp h_{e_0}\setminus\{e_0\}$, translate $e_0$ by the element of $\Gamma'$ that
+carries $y$ to $p$. Different recovery sets get different representatives, all in $B(p,R)\setminus\{p\}$.
+
+(c) Give a port $L_f$ the signed class $\operatorname{cls}(f)$ and a port $R_f$ the signed class
+$\operatorname{cls}(f)+1$. An incidence edge $L_yR_e$ upstairs has $y\in\supp h_e$ and $y\ne e$, so $y$ and $e$ have
+different classes by~(b) of \cref{prop:checks}, and the two ports have the same signed class; they are within distance
+$R$ by~(c). Every incidence edge of $N'$ lifts to such an edge at a prescribed lift of either end, as in the proof of~(b).
+So a path of length $k$ from $L_{\pi a}$ to $R_{\pi a}$ lifts to a path from $L_a$ to $R_{\gamma a}$ with
+$\gamma\in\Gamma'$, along which the signed class is constant and the coordinate moves by at most $kR$. Constancy gives
+$\operatorname{cls}(a)=\operatorname{cls}(\gamma a)+1=\operatorname{cls}(a)+\chi(\gamma)+1$, so $\chi(\gamma)=1$ and
+$\gamma\ne1$. Hence $s\le\dist(a,\gamma a)\le kR$.
+\end{outline}
+
+Part (a) does not use the displacement at all. Neither does (b). Without displacement, however, recovery sets may
+contain their own coordinate and paired distances may be short. Part (c) is where the twist pays: a paired path must
+travel from a coordinate to a translate of it in the other class, and translates by $\Gamma'$ are far apart.
+
+\begin{lemma}[Validity on quotients]\label{lem:valid-quotient}
+\notformalized
+Every word of the Tanner code $T(X')$ is annihilated by the descended checks.
+\end{lemma}
+\begin{informalproof}
+For $c\in T(X')$ the function $c\circ\pi$ lies in $T(G)$, and $\sum_fh_e(f)c(\pi f)=\langle h_e,c\circ\pi\rangle=0$ by
+\cref{lem:valid}, since $h_e\in D(G)$. The last step is \lean{AboveHalf.pairing_eq_zero_of_mem_iSup}; the Lean library
+has no quotient Tanner codes, and its main theorems take the annihilation as a hypothesis.
+\end{informalproof}
+
+\subsection{The combinatorial core}\label{sec:descent-core}
+
+\begin{theorem}[Theorem T]\label{thm:T}
+\partformal{AboveHalfRate/Main.lean}{AboveHalf.not_Q91At_of_tower,AboveHalf.not_Q91BinaryAt_of_tower}{the passage from a
+twisted separated structure to the family of separated checks (\cref{prop:checks}) and the facts about the line-graph
+metric used there, and the annihilation of the codes $T(X_j)$ by the descended checks (\cref{lem:valid-quotient}); the
+Lean theorems take the family of checks, with its radius and ball sizes, and the annihilation as hypotheses.}
+Let $G$ be a locally finite graph and $\Gamma$ a group acting on it freely on vertices and without inversions, with a
+$\Gamma$-equivariant local datum over a finite field $\F$ whose local checks interpolate on $t$ coordinates. Suppose $G$
+carries a twisted separated structure of degeneracy $t$ and depth $R\ge1$, and let $\beta=\sup_e\abs{B(e,R)}<\infty$.
+Let $(\Gamma_j)_{j\ge0}$ be subgroups of $\Gamma$ with finite quotients $X_j=\Gamma_j\backslash G$, such that
+$\abs{X_j^1}\to\infty$, the displacement $s(\Gamma_j)\to\infty$, and $\dim_\F T(X_j)\ge\rho\abs{X_j^1}$ for all~$j$.
+\begin{enumerate}[label=(\alph*)]
+\item The descended relations $N_j$ on $X_j^1$ have incidence degree at most $\beta-1$, every coordinate has paired
+distance at least $s(\Gamma_j)/R$, and $T(X_j)$ is an $\F$-linear storage code for $N_j$ of rate at least~$\rho$.
+\item If $\rho>1/2$, \cref{prob:q91} has a negative answer at the degree bound $\Delta=\beta-1$, with the fixed alphabet~$\F$.
+\item If moreover $\iota\colon\F\to\{0,1\}^b$ is injective and $\rho\log_2\abs\F/b>1/2$, \cref{prob:q91} has a negative answer
+for binary codes at the degree bound $b(\beta-1)$.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+\Cref{prop:checks} gives the family of checks. Part (a) is \cref{prop:descent,lem:valid-quotient}; the rate of $T(X_j)$
+over $\F$ is $\dim T(X_j)/\abs{X_j^1}$. The paired-distance condition holds in the strongest form: for every radius $K$,
+once $s(\Gamma_j)>RK$ no coordinate has paired distance at most~$K$. In (b) the codes $T(X_j)$ violate the conclusion of
+\cref{prob:q91}. In (c), the binary blow-up of \cref{sec:binary} multiplies degrees by at most $b$, does not shorten paired
+distances, and multiplies rates by $\log_2\abs\F/b$, so its rate is at least $\rho\log_2\abs\F/b$. The Lean statements conclude
+$\neg\,$\lean{MergeDepth.Q91At}$(\beta-1)$ and $\neg\,$\lean{MergeDepth.Q91BinaryAt}$(b(\beta-1))$ from a family of
+checks satisfying (a)--(c) of \cref{prop:checks}, balls of size at most $\beta$, a tower of subgroups with finite
+quotients of size tending to infinity and displacement tending to infinity, and codes on the quotients annihilated by
+the descended checks with dimension at least $\rho$ times their length.
+\end{outline}
+
+Theorem T separates the two halves of the problem. The combinatorial half asks for an equivariant MDS datum on a tree
+with a twisted separated structure. The algebraic half asks for quotients whose Tanner codes are much larger than
+counting predicts: dimension counting alone gives $\dim T(X_j)\ge(1-2t/(q+1))\abs{X_j^1}$ for local codes of redundancy
+$t$ on a $(q+1)$-regular graph, which is less than $1/2$ whenever $t$ is above a quarter of the degree. The next section
+supplies quotients whose Tanner codes have rate at least about $(1-t/(q+1))^2$, the rate of a tensor product of two
+local codes.

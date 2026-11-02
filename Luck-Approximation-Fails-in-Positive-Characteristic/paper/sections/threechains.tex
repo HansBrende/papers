@@ -1,0 +1,141 @@
+\section{Chains with \texorpdfstring{$3$}{3}-group quotients}\label{sec:threechains}
+
+This section proves Theorem~P: along chains with $3$-group quotients that are cofinal in the pro-$3$ topology, the
+normalized rank of $A_K$ tends to the full rank. One finite certificate controls the cyclic covers $F/U_j$ defined by
+one homomorphism, and monotonicity of ranks along $3$-group extensions carries the bound to every chain that passes below them.
+
+\subsection{The certificate}\label{sec:certificate}
+
+The data fix a homomorphism $\chi\colon F\to\Z/3$ on the generators, with $\chi(x_0)=1$ for the first generator. For an
+edge $e$ let $v(e)\in\{0,1,2\}$ represent $\chi(\gamma_e)$, and let $M_e\in M_{110}(\F_3)$ be the block of $e$ in~$A$, so
+that $A=\sum_eM_e\gamma_e$. Put
+\[
+  B_0=\sum_eM_e,\qquad B_1=\sum_ev(e)M_e,\qquad B_2=\sum_{e\colon v(e)=2}M_e.
+\]
+Under $F\to\Z/3=\langle t\rangle$, $\F_3[\Z/3]=\F_3[u]/(u^3)$ with $u=t-1$, and $t^v=(1+u)^v$ for $v\in\{0,1,2\}$, so the
+image of $A$ is $B_0+uB_1+u^2B_2$. For a field $K$ of characteristic~$3$ write $B_i$ also for the images in $M_{110}(K)$.
+
+\begin{lemma}[The certificate]\label{lem:certificate}
+\formal{LuckApproximation/Level1.lean}{Luck.Op.hW,Luck.Op.hb,Luck.Op.hy,Luck.Op.hC,Luck.Op.hCinv,Luck.Op.finrank_ker_B0_K,Luck.Op.connecting_K}
+Let $K$ be a field of characteristic~$3$.
+\begin{enumerate}[label=(\alph*)]
+\item $\dim_K\ker(x\mapsto xB_0)\le42$.
+\item If $x,z\in K^{110}$ satisfy $xB_0=0$ and $xB_1=zB_0$, then $x=0$.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+The certificate consists of matrices over $\F_3$: a $68\times68$ submatrix $B_0[R,S]$ with an inverse $W$; $42$ vectors
+$b_a$ with $b_aB_0=0$ and $42$ vectors $y_k$ with $B_0y_k=0$; and the matrix $C=(b_aB_1y_k)_{a,k}$ with an inverse. Their
+identities are checked by the Lean kernel (\texttt{decide +kernel}). The rows of the right-hand factors, with entries in
+$\{0,1,2\}$, are packed in base~$512$, so that the product of a row $x$ with a matrix becomes one natural number
+$\sum_kx_k\hat Y_k$, whose base-$512$ digits are too small to carry (Kronecker substitution,
+\lean{LeanMachine.PackedCheck.prodOK_sound}). Mapping the identities along $\F_3\to K$, the
+invertible minor gives~(a) (\lean{LeanMachine.KernelCertificate.finrank_ker_add_le_of_minor}). For~(b), the $b_a$ span
+$\ker(x\mapsto xB_0)$, because they are independent ($C$ is invertible) and the kernel has dimension at most~$42$; if
+$x=\sum_a\lambda_ab_a$ and $xB_1=zB_0$, then $\sum_a\lambda_aC_{ak}=xB_1y_k=zB_0y_k=0$ for every~$k$, so $\lambda=0$
+(\lean{LeanMachine.KernelCertificate.connecting_injective}).
+\end{outline}
+
+\begin{remark}[Numerical]\label{rem:base}
+At $N=F$ the matrix $\varphi_{F/F}(A)$ is $B_0$. The certificate contains $42$ vectors $b_a$ with $b_aB_0=0$, independent
+because $C$ is invertible, so $\dim_{\F_3}\ker B_0=42$, and $\dim_{\F_9}T_{\mathrm{tw}}(X_0)=21$ by \cref{lem:tanner}. The
+untwisted datum gives $20$ (\path{python3 tools/icosian_graph.py 11 tw untw}).
+\end{remark}
+
+The certificate is the only computation in the proof of Theorem~P. Part~(b) says that the connecting map
+$\ker B_0\to\operatorname{coker}B_0$, $x\mapsto[xB_1]$, is injective; the next lemma turns this into a bound at
+infinitely many levels.
+
+\subsection{Cyclic \texorpdfstring{$3$}{3}-power covers}\label{sec:cyclic}
+
+For $j\ge0$ let $\chi_j\colon F\to\Z/3^j$ send the generator $x_e$ to $v(e)$, read modulo $3^j$, and let
+$U_j=\ker\chi_j$. Since $\chi_j(x_0)=1$, $\chi_j$ is onto, and $F/U_j$ is cyclic of order~$3^j$.
+
+\begin{lemma}[Cyclic covers]\label{lem:cyclic}
+\formal{LuckApproximation/CyclicTower.lean}{Luck.Op.chiPow,Luck.Op.Ncyc,Luck.Op.index_Ncyc,Luck.Op.isPGroup_Ncyc,Luck.Op.finrank_ker_Ncyc_le,Luck.Op.rk_Ncyc}
+Let $K$ be a field of characteristic~$3$ and $j\ge0$. Then $\abs{F:U_j}=3^j$, $F/U_j$ is a $3$-group,
+$\dim_K\ker\varphi_{F/U_j}(A_K)\le42$, and
+\[
+  \rk_{F/U_j}(A_K)\ \ge\ 110-\frac{42}{3^j}.
+\]
+\end{lemma}
+\begin{outline}
+Let $M=3^j$ and let $t$ generate $\Z/M$. In characteristic~$3$, $(t-1)^M=t^M-1=0$, so with $u=t-1$ the powers $u^k$,
+$k<M$, span $K[\Z/M]$ and are linearly independent (\lean{LeanMachine.CyclicAlg.span_eq_top},
+\lean{LeanMachine.CyclicAlg.linIndep}). Since each $v(e)\in\{0,1,2\}$, the image of $A_K$ in $K[\Z/M]$ is $B_0+uB_1+u^2B_2$ with the same $B_i$ for every~$j$. In the basis $u^k$, right multiplication by
+it sends $x=\sum_kx_ku^k$ to the vector with coordinates $x_kB_0+x_{k-1}B_1+x_{k-2}B_2$. If this vanishes, then
+$x_0B_0=0$ and $x_0B_1=-x_1B_0$, so $x_0=0$ by \cref{lem:certificate}(b); repeating the argument gives $x_k=0$ for
+$k<M-1$, so every kernel vector is $u^{M-1}b$ with $bB_0=0$ (\lean{LeanMachine.CyclicAlg.finrank_ker_le}). Hence the
+kernel has dimension at most $\dim\ker B_0\le42$, and \cref{lem:basic} gives the rank bound.
+\end{outline}
+
+\subsection{Monotonicity and chains}\label{sec:monotone}
+
+\begin{lemma}[Monotonicity]\label{lem:monotone}
+\formal{LuckApproximation/Monotone.lean}{Luck.rk_le_rk_of_isPGroup}
+Let $K$ be a field of characteristic~$p$, $G$ a group, $N'\le N$ normal subgroups of finite index with $G/N'$ a $p$-group,
+and $A$ a matrix over $K[G]$. Then $\rk_{G/N}(A)\le\rk_{G/N'}(A)$.
+\end{lemma}
+\begin{outline}
+The lemma is a lemma of Bergeron, Linnell, L\"uck and Sauer~\cite[Lemma~4.1]{BLLS2014}, applied to the cokernel of~$A$.
+We follow the argument of Kionke~\cite[Lemma~2.6 and Theorem~2.5]{Kionke2017}, peeling off one central subgroup of
+order~$p$ at a time. By induction
+on $\abs{G:N'}$, it suffices to treat $N'\le M$ with $M/N'$ generated by a central element $\zeta$ of order $p$ in
+$G/N'$; such a $\zeta$ exists in the image of $N$ because a nontrivial normal subgroup of a $p$-group meets its centre.
+Put $s=\zeta-1\in K[G/N']$. Then $s^p=\zeta^p-1=0$, and the kernel of $K[G/N']\to K[G/M]$ lies in $sK[G/N']$. If
+$R'\subseteq V'=K[G/N']^m$ is the image of $\varphi_{G/N'}(A)$, then the spaces $R'+s^iV'$, $i=0,\dots,p$, descend from
+$V'$ to~$R'$, and each step has dimension at most $\dim V'/(R'+sV')\le m\abs{G:M}-\dim\im\varphi_{G/M}(A)$. Hence
+$m\abs{G:N'}-\dim R'\le p\,(m\abs{G:M}-\dim\im\varphi_{G/M}(A))$, which is the claim because
+$\abs{G:N'}=p\abs{G:M}$.
+\end{outline}
+
+\begin{theorem}[Convergence along $p$-chains]\label{thm:convergence}
+\formal{LuckApproximation/Monotone.lean}{Luck.exists_tendsto_of_isPGroup}
+Let $K$ be a field of characteristic~$p$ and $(G_i)$ a chain of a group~$G$ whose quotients $G/G_i$ are $p$-groups. For
+every matrix $A$ over $K[G]$ the rank sequence $\rk_{G/G_i}(A)$ converges.
+\end{theorem}
+\begin{outline}
+By \cref{lem:monotone} the sequence is non-decreasing, and it is bounded by \cref{lem:basic}.
+\end{outline}
+
+This is known~\cite[Proposition~11.2]{JaikinSurvey2019}, as a consequence of~\cite[Lemma~4.1]{BLLS2014}; we include it
+because its formal proof is short.
+
+So part~(1) of the conjecture holds along every chain with $p$-group quotients in characteristic~$p$; a counterexample
+to part~(1) would have to use other chains. The chains of Theorem~P are of this kind.
+
+\begin{lemma}[$p$-chains below given subgroups]\label{lem:pchain}
+\formal{LuckApproximation/PChain.lean}{Luck.exists_pChain_le}
+Let $p$ be a prime, $r\ge1$, and $(M_j)_{j\ge0}$ normal subgroups of finite index of the free group of rank~$r$ whose
+quotients are $p$-groups. There is a chain $(G_j)$ of the free group whose quotients are $p$-groups and with
+$G_j\le M_j$ for all~$j$.
+\end{lemma}
+\begin{outline}
+Free groups of finite rank are residually finite $p$-groups (\lean{LeanMachine.freeGroup_residually_pGroup}; the Lean
+proof uses unitriangular matrices over $\Z/p^k$, a matrix form of Magnus' embedding). Below every normal subgroup of
+$p$-power index there is a strictly smaller one (\lean{LeanMachine.ResidualP.exists_goodP_lt}). Put $G_0=M_0$,
+enumerate the group as $g_0,g_1,\dots$, and choose $G_{j+1}$ of $p$-power index strictly below $G_j\cap M_{j+1}$ and, if
+$g_j\ne1$, not containing~$g_j$; then the intersection is trivial.
+\end{outline}
+
+\begin{theorem}[Theorem P: the full limit along pro-$3$-cofinal chains]\label{thm:P}
+\formal{LuckApproximation/Main.lean}{Luck.Op.tendsto_full_of_cofinal,Luck.Op.ProThreeCofinal,Luck.Op.tendsto_full_of_proThreeCofinal,Luck.Op.exists_chain_tendsto_full}
+Let $K$ be a field of characteristic~$3$ and $(G_i)$ a chain of $F$ whose quotients are $3$-groups.
+\begin{enumerate}[label=(\alph*)]
+\item If every $U_j$ contains some $G_i$, then $\rk_{F/G_i}(A_K)\to110$.
+\item In particular $\rk_{F/G_i}(A_K)\to110$ if the chain is cofinal in the pro-$3$ topology, that is, if every normal
+subgroup of $3$-power index contains some~$G_i$.
+\item There is a chain as in~(a): a chain of~$F$ with $3$-group quotients and $G_j\le U_j$ for all~$j$, along which
+$\rk(A_K)\to110$.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+(a) The ranks are at most $110$. Given $a<110$, choose $j$ with $42/3^j<110-a$ and $i_0$ with $G_{i_0}\le U_j$. For
+$i\ge i_0$ we have $G_i\le U_j$ and $F/G_i$ is a $3$-group, so \cref{lem:monotone,lem:cyclic} give
+$\rk_{F/G_i}(A_K)\ge\rk_{F/U_j}(A_K)\ge110-42/3^j>a$. (b) Each $U_j$ is normal of $3$-power index. (c) \Cref{lem:pchain}
+applied to the sequence $(U_j)$ gives such a chain (\lean{Luck.exists_pChain_le}); \lean{Luck.Op.exists_chain_tendsto_full}
+records the chain with these properties and its limit.
+\end{outline}
+
+Theorem~P is the side of Theorem~A that a computation can reach: one certificate and two uniform arguments give the limit
+at infinitely many levels. The other side, Theorem~H, has no known proof of this kind (\cref{sec:limits}).

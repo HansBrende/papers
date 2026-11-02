@@ -1,0 +1,19 @@
+Jaikin-Zapirain's arbitrary-field form of the L\"uck approximation conjecture concerns a group $G$, a field $K$, a
+matrix $A$ over the group algebra $K[G]$, and the normalized ranks of $A$ over the finite quotients $G/G_i$ along a chain
+of normal subgroups of finite index with trivial intersection. It asserts that these ranks converge (part~(1)) to a
+limit that does not depend on the chain (part~(2)). We show that part~(2) fails in characteristic~$3$ for the free group
+$F$ of rank~$89$. There is one $110\times110$ matrix $A$ over $\F_3[F]$ such that, over every field of characteristic~$3$,
+its normalized ranks tend to the full rank $110$ along every chain with $3$-group quotients that is cofinal in the pro-$3$
+topology, while along the congruence chain of an arithmetic lattice, whose quotients are $11$-groups, its normalized
+kernel stays at least $20$, so that a subchain converges to a limit at most~$90$. The matrix is the Tanner operator of the
+Goren--Oort configuration of the Hilbert modular surface of $\Q(\sqrt5)$ in characteristic~$3$.
+
+The deduction is formalized in Lean~4 with Mathlib, on the standard axioms only: the criterion that separates two chains,
+a kernel-checked certificate, the limit $110$ along pro-$3$-cofinal chains, convergence along chains with $p$-group
+quotients in characteristic~$p$, and the failure of part~(2) from one hypothesis. That hypothesis, that along some chain
+the normalized kernel of $A$ does not tend to~$0$, is proved here but not formalized, by Riemann--Roch on a compactified
+Hilbert modular surface in characteristic~$3$ and the uniformization of its supersingular locus. The Lean matrix is
+defined from the construction itself; generated data enter only as kernel-checked certificates and caches, and as two
+free choices, a spanning tree and a voltage. We explain why any refutation
+of part~(2) must prove something about infinitely many levels, and why, for this matrix, no argument that applies to all
+covers of the base graph can supply it; heuristically, it must use the arithmetic of congruence covers.

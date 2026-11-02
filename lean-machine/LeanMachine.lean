@@ -102,3 +102,7 @@ import LeanMachine.FlowWalks
 import LeanMachine.FiniteWeightedFamily
 import LeanMachine.FlowDistance
 import LeanMachine.LogarithmicRadius
+import LeanMachine.FreeGroupResiduallyP
+import LeanMachine.PackedMatrixCheck
+import LeanMachine.KernelCertificate
+import LeanMachine.CyclicBandedKernel

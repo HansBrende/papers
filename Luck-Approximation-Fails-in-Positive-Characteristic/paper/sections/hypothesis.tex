@@ -1,0 +1,454 @@
+\section{Proof of Theorem H}\label{sec:hypothesis}
+
+This section is not formalized. We keep the notation of \cref{sec:operator}: $E=\Q(\sqrt5)$, $\OO_E=\Z[\theta]$, the
+icosian ring $I$, the group $\Gamma^+=I[1/3]^1/\{\pm1\}$ acting on the tree $\Tree$ of $\PGL_2(\Q_9)$, and the prime
+$\lambda_0\mid11$. We use that $\theta$ has norm $-1$, that $E$ has narrow class number one, and that every totally
+positive unit of $\OO_E$ is a square.
+
+Theorem~H (\cref{thm:H}) is proved in four steps. (H1)~The group $\Gamma^+$ is an amalgam of two copies of~$A_5$
+(\cref{lem:A5,lem:amalgam}), its congruence subgroups form a chain (\cref{lem:chain}), and the kernels of $A$ along that
+chain are Tanner codes of quotients of~$\Tree$ (\cref{lem:tanner,lem:covering}). (H2)~Riemann--Roch on a Hilbert modular
+surface in characteristic~$3$ gives many sections of a line bundle on its Goren--Oort divisor (\cref{lem:RR}). (H3)~That
+divisor is a quotient of a union of projective lines indexed by~$\Tree$, on which the line bundle has degree~$4$
+(\cref{lem:uniformization}), so its sections form a Tanner code (\cref{lem:sections}). (H4)~This Tanner code is the one of
+the twisted datum (\cref{lem:rigidity,lem:twist}). Steps (H2) and~(H3) rest on published theorems, listed where they are
+used. The new arguments are \cref{lem:rigidity}, the degree computation in \cref{lem:uniformization}, \cref{lem:twist},
+and the assembly in \cref{sec:proofH}.
+
+\subsection{The group, the chain and the covering}\label{sec:groupchain}
+
+Let $\sigma$ be the Frobenius of $\F_9$, and also its lift to~$\Q_9$.
+
+\begin{lemma}[$A_5$ on the projective line]\label{lem:A5}
+\notformalized
+Let $A_5$ act faithfully on $\Pone$ over $\bar\F_3$.
+\begin{enumerate}[label=(\alph*)]
+\item The action comes from an irreducible faithful representation of degree~$2$ of the Schur cover $2I\cong\SL_2(\F_5)$
+on which $-1$ acts by~$-1$. Up to isomorphism there are exactly two such representations; they are defined over $\F_9$,
+are not isomorphic, and are exchanged by~$\sigma$.
+\item The centralizer of $A_5$ in $\PGL_2(\bar\F_3)$ is trivial.
+\item The orbits of $A_5$ on $\Pone(\bar\F_3)$ have sizes $10$, $12$ and $60$ only. The orbit of size $10$ consists of the
+fixed points of the ten subgroups $S_3$ of~$A_5$; each of them fixes exactly one point, and $S_3$ is self-normalizing
+in~$A_5$.
+\end{enumerate}
+\end{lemma}
+\begin{informalproof}
+(a) A faithful action of $A_5$ on $\Pone$ is a faithful projective representation of degree~$2$. The group $A_5$ has no
+faithful representation of degree~$2$ in characteristic~$3$ (its $3$-modular irreducible representations have degrees
+$1,3,3,4$~\cite{JLPW1995}), so the action lifts to a faithful representation of $2I$ on which $-1$ acts by~$-1$. It is
+irreducible, since a reducible one has image in a Borel subgroup, which is solvable. The faithful $3$-modular irreducible
+representations of $\SL_2(\F_5)$ have degrees $2,2,6$~\cite{JLPW1995}, so there are exactly two of degree~$2$. Their
+traces on an element of order~$5$ are the two roots of $x^2+x-1$ in~$\F_9$, so they are defined over $\F_9$, not
+isomorphic, and exchanged by~$\sigma$.
+
+(b) If $g\in\PGL_2(\bar\F_3)$ commutes with the image of $A_5$, and $\rho$ is a representation as in~(a), then
+$g\rho(h)g^{-1}=c(h)\rho(h)$ for a character $c$ of $2I$, which is trivial because $2I$ is perfect; so $g$ commutes with
+the absolutely irreducible $\rho(2I)$ and is a scalar.
+
+(c) The stabilizer of a point lies in a Borel subgroup, whose finite subgroups are extensions of a cyclic group of order
+prime to~$3$ by a $3$-group. Among the subgroups of $A_5$ only $1$, $C_2$, $C_3$, $C_5$ and $S_3$ have this form. An
+element of order~$3$ is unipotent and has one fixed point, which is fixed by its normalizer~$S_3$; so each $S_3$ fixes
+exactly that point, and two different subgroups $S_3$ fix different points, because together they generate~$A_5$, which
+fixes no point. The ten subgroups $S_3$ are conjugate, so their fixed points form one orbit of size~$10$. Each of these
+points is fixed by the three involutions of its~$S_3$, which accounts for all $15\cdot2$ fixed points of the fifteen
+involutions; so no point has stabilizer~$C_2$. An element of order~$5$ is semisimple with two fixed points, whose
+stabilizer is $C_5$, since the dihedral group of order~$10$ is not of the form above. This leaves orbits of sizes $10$,
+$12$ and~$60$. Finally $S_3$ is maximal and not normal in~$A_5$, hence self-normalizing.
+\end{informalproof}
+
+\begin{lemma}[The amalgam]\label{lem:amalgam}
+\notformalized
+$\Gamma^+$ acts on $\Tree$ without inversions, transitively on the even vertices, on the odd vertices and on the edges.
+The stabilizers of $\Lambda_0$, $\Lambda_1$ and $e_0$ are $A_5=2I/\{\pm1\}$, $\alpha A_5\alpha^{-1}$ and a subgroup $S_3$,
+whose preimage $\Gamma_e\subset2I$ is binary dihedral of order~$12$. Hence $\Gamma^+=A_5*_{S_3}\alpha A_5\alpha^{-1}$, and
+$\Gamma^+$ is perfect.
+\end{lemma}
+\begin{informalproof}
+Elements of reduced norm $1$ preserve the parity of vertices. A vertex of $\Tree$ is the class of a $\Z_9$-lattice in
+$\Q_9^2$; by the local--global correspondence for lattices~\cite[Section~III.5.A]{Vigneras1980} it is the class of the
+completion at~$3$ of a right $I$-ideal $\mathfrak a$ with $\mathfrak a_{\mathfrak q}=I_{\mathfrak q}$ for all primes
+$\mathfrak q\nmid3$, and such an $\mathfrak a$ is principal, $\mathfrak a=\beta I$ with $\beta\in I[1/3]^\times$, because
+$I$ has class number one (\cite[p.~155]{Vigneras1980}, the case $m=5$, $D=N=1$ of the table there). The reduced norm of
+$\beta$ is a totally positive unit of $\OO_E[1/3]$, so it is $3^a\theta^{2b}$; replacing $\beta$ by $\beta\theta^{-b}$ we may
+take $b=0$. If $a$ is even, $\beta/3^{a/2}\in\Gamma^+$ moves $\Lambda_0$ to the vertex of~$\mathfrak a$; if $a$ is odd,
+$(\beta/3^{(a-1)/2})\alpha^{-1}$ moves $\Lambda_1$ to it. So $\Gamma^+$ is transitive on the vertices of each parity. The
+stabilizer of $\Lambda_0$ is the image of $I^1=2I$. Reduction modulo~$3$ is injective on the finite group $2I$, because
+$1+3M_2(\Z_9)$ is torsion-free, so $A_5$ acts faithfully on the $10$ points of $\Pone(\Lambda_0/3\Lambda_0)=\Pone(\F_9)$,
+which correspond to the edges at~$\Lambda_0$. By \cref{lem:A5}(c) they form one orbit, with stabilizer $S_3$, whose
+preimage in $2I\cong\SL_2(\F_5)$ is binary dihedral of order~$12$. Hence $\Gamma^+$ is transitive on edges, and Bass--Serre
+theory~\cite[Section~I.4]{Serre1980} gives the amalgam. As a check, the Euler characteristic $22-110=-88$ of $X_0$ equals
+$660\,(1/60+1/60-1/6)$. An amalgam of perfect groups is perfect.
+\end{informalproof}
+
+\begin{lemma}[The chain]\label{lem:chain}
+\notformalized
+For $m\ge1$ the map $\Gamma^+\to\PSL_2(\OO_E/\lambda_0^m)=\PSL_2(\Z/11^m)$ is onto, and $\Gamma^+(\lambda_0^m)$ is a
+torsion-free normal subgroup of $\Gamma^+$ that acts freely on~$\Tree$. The groups $\Gamma^+(\lambda_0^{k+1})$,
+$k\ge0$, are strictly decreasing, $\abs{\Gamma^+(\lambda_0):\Gamma^+(\lambda_0^{k+1})}=11^{3k}$, and their intersection is
+trivial. Moreover $\Gamma^+(\lambda_0^m)\cong\{\gamma\in I[1/3]^1:\gamma\equiv1\pmod{\lambda_0^m}\}$.
+\end{lemma}
+\begin{informalproof}
+The algebraic group $B^1$ of norm-one elements is simply connected and absolutely almost simple, and $B^1(E_3)=\SL_2(\Q_9)$
+is not compact. Strong approximation~\cite[Section~7.4]{PlatonovRapinchuk1994} makes $I[1/3]^1$ dense in
+$\prod_{\mathfrak q\nmid3}(I\otimes\OO_{E,\mathfrak q})^1$, so $I[1/3]^1\to\SL_2(\OO_E/\lambda_0^m)$ is onto. The kernel
+$\Gamma^+(\lambda_0^m)$ is normal. A nontrivial element of finite order fixes a vertex of~$\Tree$~\cite[Section~I.4]{Serre1980},
+so it lies in a $\Gamma^+$-conjugate of $A_5$ or of $\alpha A_5\alpha^{-1}$; these map injectively to
+$\PSL_2(\F_{11})$, because reduction modulo~$\lambda_0$ is injective on $2I$ ($1+\lambda_0M_2(\OO_{E,\lambda_0})$ is
+torsion-free). So $\Gamma^+(\lambda_0^m)$ is torsion-free, and since $\Gamma^+$ acts without inversions, it acts freely.
+Since $-1\not\equiv1\pmod{\lambda_0}$, each class $\pm\gamma$ in $\Gamma^+(\lambda_0^m)$ has exactly one representative
+$\gamma\equiv1\pmod{\lambda_0^m}$. The index is the order of $\ker(\PSL_2(\Z/11^{k+1})\to\PSL_2(\F_{11}))$, which is
+$11^{3k}$. If $g\in I[1/3]^1$ satisfies $g\equiv\pm1\pmod{\lambda_0^{k+1}}$ for every~$k$, the sign is constant because
+$1\not\equiv-1\pmod{\lambda_0}$, so $g=\pm1$ in $I\otimes\OO_{E,\lambda_0}$, and $g=\pm1$ because $B\to B\otimes E_{\lambda_0}$ is
+injective.
+\end{informalproof}
+
+\begin{lemma}[Covering theory]\label{lem:covering}
+\notformalized
+There is an isomorphism $\psi\colon F=\pi_1(X_0,\tau)\to\Gamma^+(\lambda_0)$ such that for every normal subgroup $N$ of $F$
+of finite index the cover $X_N$ of \cref{lem:tanner}, with its lifted datum, is isomorphic to $\psi(N)\backslash\Tree$ with
+the datum descended from $D_{\mathrm{tw}}$. Consequently
+$\dim_{\F_3}\ker\varphi_{F/N}(A)=2\dim_{\F_9}T_{\mathrm{tw}}(\psi(N)\backslash\Tree)$.
+\end{lemma}
+\begin{informalproof}
+Since $\Gamma^+(\lambda_0)$ acts freely and without inversions, $\Tree\to X_0$ is a universal covering, and lifting the
+spanning tree $\tau$ to~$\Tree$ gives an isomorphism $\psi$ that sends the generator of an edge $e$ to the deck
+transformation of the fundamental cycle of~$e$. The identification must match the data, not only the graphs, since $X_0$
+has many automorphisms. We use the identification of \cref{lem:basegraph}, through which the data of \cref{def:operator}
+are defined: labels are transported by coset representatives, so the datum of $X_0$ is the descent of $D_{\mathrm{tw}}$.
+Then $X_N$ and $\psi(N)\backslash\Tree$ carry the descent of the same datum. The last formula is \cref{lem:tanner}.
+\end{informalproof}
+
+Let $N_k=\psi^{-1}(\Gamma^+(\lambda_0^{k+1}))$ for $k\ge0$. By \cref{lem:chain}, $(N_k)$ is a chain of $F$ with
+$\abs{F:N_k}=11^{3k}$, and with $X_k=\Gamma^+(\lambda_0^{k+1})\backslash\Tree$, \cref{lem:covering} gives
+\begin{equation}\label{eq:H1}
+  \dim_{\F_3}\ker\varphi_{F/N_k}(A)=2\dim_{\F_9}T_{\mathrm{tw}}(X_k).
+\end{equation}
+
+\subsection{Riemann--Roch on the Hilbert modular surface}\label{sec:RR}
+
+Let $\mathfrak n=\lambda_0^{k+1}$, an ideal prime to~$3$ with a totally positive generator, and let
+$\mathcal K(\mathfrak n)=\ker\bigl(\GL_2(\hat\OO_E)\to\GL_2(\OO_E/\mathfrak n)\bigr)$ be the principal congruence subgroup
+of level~$\mathfrak n$. It is neat: a root of unity congruent to~$1$ modulo a prime above~$11$ has $11$-power order, so it
+is $1$ or has degree at least $10$ over~$\Q$, while the eigenvalues of elements of $\GL_2(E)$ have degree at most~$4$. Choose a
+smooth projective toroidal compactification, over $W(\bar\F_3)$, of the closure of one geometric connected component of the
+Hilbert modular surface of $E$ of level $\mathcal K(\mathfrak n)$, compatibly as $k$ varies, and let $S_k$ be its special
+fibre. The complex fibre of that component is
+$\Gamma(\mathfrak n)\backslash\mathfrak H^2$ with $\Gamma(\mathfrak n)\subset\SL_2(\OO_E)$, since $E$ has narrow class number
+one and every totally positive unit is a square. We use the following published facts. The sources state them for full level $n\ge3$, for
+$\Gamma_1(\mathfrak c,\mathfrak n)$-structures or for general neat levels; the facts we use are local on the moduli space or
+descend along the finite \'etale maps between levels prime to~$3$, so they hold at level~$\mathcal K(\mathfrak n)$.
+\begin{itemize}
+\item[(G1)] $S_k$ is smooth, projective and connected. Its boundary $D_k$ is a disjoint union of $c_k\ge1$ cycles of smooth
+rational curves, one for each cusp~\cite[Theorem~5.1, Proposition~5.2 and Corollary~5.3]{Rapoport1978}, \cite{Chai1990},
+\cite[Section~7]{Dimitrov2004}, \cite[Theorems~6.4.1.1 and~7.3.3.4]{Lan2013}.
+\item[(G2)] Since $3$ is unramified in~$E$, $\OO_E\otimes W=W\times W$ and the Hodge bundle splits as
+$\omega_1\oplus\omega_2$. The Kodaira--Spencer map with logarithmic poles gives
+$\Omega^1_{S_k}(\log D_k)\cong\omega_1^2\oplus\omega_2^2$~\cite[Theorem~6.4.1.1(4)]{Lan2013}: Lan's Kodaira--Spencer sheaf is the
+symmetric square of $\omega$ over $\OO_E\otimes\OO$, because $\omega$ is locally free of rank one over $\OO_E\otimes\OO$ and a
+polarization of degree prime to~$3$ identifies the Hodge bundle of the dual with~$\omega$. Hence
+\[
+  K_{S_k}+D_k\cong\omega_1^2\otimes\omega_2^2=:L,
+\]
+the bundle of parallel weight~$2$.
+\item[(G3)] The partial Hasse invariants $h_1\in H^0(\omega_1^{-1}\omega_2^3)$ and $h_2\in H^0(\omega_1^3\omega_2^{-1})$ have
+reduced divisors $Z_1$, $Z_2$, the Goren--Oort divisors, which are regular curves meeting in finitely many
+points~\cite[Section~1 and Theorem~2.1(1)]{Goren2001}; see also~\cite{GorenOort2000,TianXiao2016}. They extend to the
+compactification by the Koecher principle~\cite[Theorem~8.3]{Dimitrov2004}, and they do not vanish on~$D_k$, because their
+$q$-expansion at every cusp is~$1$~\cite[Theorem~2.1(2)]{Goren2001}. So $h_1h_2\in H^0(L)$ has divisor $Y_k=Z_1+Z_2$ and
+$L(-Y_k)\cong\OO$. Since $3$ is inert, $Y_k$ is the reduced supersingular locus~\cite[Proposition~4.1]{BachmatGoren1999}.
+\item[(G4)] $\chi(\OO_{S_k})=V_k:=e_{\mathrm{top}}/4=11^{3k+1}$, where $e_{\mathrm{top}}$ is the Euler number of
+$\Gamma(\mathfrak n)\backslash\mathfrak H^2$. Since $\chi(\OO)$ is constant in flat families and a birational invariant, it
+may be computed in characteristic~$0$ with any resolution of the cusps. Every cusp of $\Gamma(\mathfrak n)$ is conjugate
+to~$\infty$ and has type $(\mathfrak n,\mathcal U_{\mathfrak n})$, which is isomorphic to $(\OO_E,\mathcal U_{\mathfrak n})$
+through a totally positive generator of~$\mathfrak n$, where
+$\mathcal U_{\mathfrak n}=\{\eps^2:\eps\in\OO_E^\times,\ \eps\equiv1\pmod{\mathfrak n}\}$. The module $\OO_E=\Z+\Z\theta^2$ has
+reduced number $\theta^2=3-1/\theta^2$, with purely periodic minus continued fraction $[[3]]$, so every cusp is resolved by a
+cycle of $[\OO_E^{\times,+}:\mathcal U_{\mathfrak n}]$ curves of self-intersection~$-3$~\cite[Sections~2.5 and~2.6]{Hirzebruch1973},
+\cite{vanderGeer1988}:
+$5$ curves for $k=0$, since $\theta\equiv4$ has order~$5$ modulo~$\lambda_0$, and $55$ for $k=1$, since $\theta\equiv37$ has
+order~$55$ modulo~$\lambda_0^2$. Noether's formula, with $K^2=2e_{\mathrm{top}}+\sum_j(2-b_j)$ and
+$c_2=e_{\mathrm{top}}+\#\{\text{curves}\}$ for curves of self-intersection $-b_j=-3$, gives
+$\chi=(K^2+c_2)/12=e_{\mathrm{top}}/4+\sum_j(3-b_j)/12=e_{\mathrm{top}}/4$. Finally $e_{\mathrm{top}}=\abs{\PSL_2(\F_{11})}\cdot
+2\zeta_E(-1)=660/15=44$ at level $\lambda_0$, since $2\zeta_E(-1)=1/15$~\cite[Sections~1.6 and~1.7]{Hirzebruch1973}, and $e_{\mathrm{top}}$ is multiplied by $11^{3k}$ at
+level $\lambda_0^{k+1}$.
+\end{itemize}
+
+\begin{lemma}[Sections on the Goren--Oort divisor]\label{lem:RR}
+\notformalized
+$h^0(Y_k,L|_{Y_k})\ge V_k-1$.
+\end{lemma}
+\begin{informalproof}
+By Riemann--Roch, $\chi(L)=\chi(\OO)+\frac12L\cdot(L-K)=\chi(\OO)+\frac12(K+D)\cdot D$. Each boundary cycle $D_j$ has
+arithmetic genus~$1$ and the $D_j$ are disjoint, so adjunction gives $(K+D)\cdot D=\sum_j(K+D_j)\cdot D_j=0$. Hence
+$\chi(L)=\chi(\OO)=V_k$ by (G4). By Serre duality $h^2(L)=h^0(K-L)=h^0(-D)=0$, because $D\ne0$ and $S_k$ is integral.
+So $h^0(L)\ge\chi(L)=V_k$. The exact sequence $0\to L(-Y_k)\cong\OO\to L\to L|_{Y_k}\to0$ and $h^0(\OO)=1$ give
+$h^0(Y_k,L|_{Y_k})\ge h^0(L)-1\ge V_k-1$.
+\end{informalproof}
+
+If moreover $h^1(\OO_{S_k})=0$, then $h^1(L)=h^1(-D)=c_k-1$ and $h^0(L|_{Y_k})=V_k+c_k-2$ exactly; the proof uses only the
+lower bound.
+
+\subsection{Uniformization of the supersingular locus}\label{sec:uniformization}
+
+We use the description of the supersingular locus of Hilbert--Blumenthal surfaces at an inert prime by Stamm, as
+presented by Kudla and Rapoport~\cite[Section~4]{KudlaRapoport1999}, \cite{Stamm1997}, the uniformization theorem of
+Rapoport and Zink~\cite[Theorem~6.30]{RapoportZink1996}, and the intersection behaviour of the Goren--Oort divisors found
+by Bachmat and Goren~\cite[Theorem~6.1]{BachmatGoren1999}. Kudla and Rapoport work with abelian varieties of
+dimension~$8$ with an action of $C(V)\otimes k$, for the Clifford algebra $C(V)$ of a quadratic space attached to a
+quaternion algebra $B_0$ over~$\Q$; for $B_0=M_2(\Q)$ and $k=E$ their moduli space is the Hilbert--Blumenthal surface,
+and Morita equivalence identifies their Dieudonn\'e lattices with ours~\cite[Introduction and Section~3]{KudlaRapoport1999}.
+
+\paragraph{The local picture.} Let $\mathcal M$ be the Rapoport--Zink space of supersingular polarized $3$-divisible
+groups with $\OO_E\otimes\Z_3$-action, with framing object~$\mathbb X$: a point is such a group $X$ with a framing
+quasi-isogeny $\varrho$ between $X$ and~$\mathbb X$. The group $J$ of $\OO_E$-linear self-quasi-isogenies of $\mathbb X$
+that multiply the polarization by a factor in $\Q_3^\times$ acts on $\mathcal M$ by changing~$\varrho$, so the Hodge bundles
+$\omega_1$, $\omega_2$ of the universal $3$-divisible group, and $L=\omega_1^2\otimes\omega_2^2$, carry a canonical
+$J$-action. Following~\cite[Section~4]{KudlaRapoport1999}, the isocrystal of $\mathbb X$ yields two-dimensional
+$\Q_9$-spaces $U_0$ and $U_1$ with alternating forms $\langle\,,\rangle$, on which $J$ acts, and Frobenius gives a
+$\sigma$-semilinear bijection $\Phi\colon U_1\to U_0$ that commutes with~$J$; Frobenius maps $U_0$ to $U_1$ by
+$3\Phi^{-1}$, and $\langle\Phi x,\Phi y\rangle=3\sigma\langle x,y\rangle$. For $n\in\Z$ let $\mathcal M^{(n)}_{\mathrm{red}}$ be the
+open and closed part of the reduced locus whose Dieudonn\'e lattices $L_0\oplus L_1$ satisfy $\langle L_i,L_i\rangle=3^nW$;
+its stabilizer $J^0$ in $J$ consists of the elements whose factor is a $3$-adic unit.
+By~\cite[Lemma~4.3 and Proposition~4.4]{KudlaRapoport1999}, $\mathcal M^{(n)}_{\mathrm{red}}$ is a union of projective lines
+over~$\bar\F_3$: a line $C_\Lambda=\Pone(\Lambda/3\Lambda)$ of
+the first kind for each $\Z_9$-lattice $\Lambda\subset U_0$ with $\langle\Lambda,\Lambda\rangle=3^n\Z_9$, and a line
+$C_{\Lambda'}=\Pone(\Lambda'/3\Lambda')$ of the second kind for each $\Z_9$-lattice $\Lambda'\subset U_1$ with
+$\langle\Lambda',\Lambda'\rangle=3^n\Z_9$. Lines of the same kind are disjoint. The lines $C_\Lambda$ and $C_{\Lambda'}$ meet
+if and only if $3\Lambda\subset\Phi\Lambda'\subset\Lambda$, and then in one point, which is $\Phi\Lambda'/3\Lambda$ on
+$C_\Lambda$ and $\Phi^{-1}(3\Lambda)/3\Lambda'$ on $C_{\Lambda'}$~\cite[Lemma~4.3(ii)]{KudlaRapoport1999}. Each line meets
+exactly one line of the other kind at each of its ten $\F_9$-rational points, the superspecial points, and no line
+elsewhere~\cite[Lemma~4.3(iii) and the text after~(4.9)]{KudlaRapoport1999}. As schemes over~$\F_9$, the lines are the
+projective lines $\Pone(\Lambda/3\Lambda)$ and $\Pone(\Lambda'/3\Lambda')$, with quasi-isogenies acting through the lattices:
+the morphism from their union to the supersingular locus is its normalization, equivariantly~\cite[(4.10)]{KudlaRapoport1999},
+after Stamm~\cite{Stamm1997}. The crossings are ordinary double points~\cite[Theorem~6.1]{BachmatGoren1999}. These two
+statements concern the global moduli space, and they transfer to $\mathcal M$ through the uniformization theorem used below;
+the proof of the second is local deformation theory. Scaling a lattice by $3$
+multiplies $\langle\,,\rangle$ by~$9$, and $\langle\Phi\Lambda',\Phi\Lambda'\rangle=3^{n+1}\Z_9$; so $C_\Lambda\mapsto[\Lambda]$
+and $C_{\Lambda'}\mapsto[\Phi\Lambda']$ map the lines of the two kinds bijectively to the homothety classes of lattices in
+$U_0$ of the two parities, and they identify the dual graph of $\mathcal M^{(n)}_{\mathrm{red}}$ with the tree
+$\Tree_{U_0}$ of~$U_0$, equivariantly for~$J^0$.
+
+\begin{lemma}[Uniformization]\label{lem:uniformization}
+\notformalized
+There exist an integer~$n$, an action of $\Gamma^+$ on $\mathcal M^{(n)}_{\mathrm{red}}$ through~$J^0$, and an isomorphism
+$U_0\cong\Q_9^2$ that carries $\Tree_{U_0}$ to~$\Tree$, with the following properties.
+\begin{enumerate}[label=(\alph*)]
+\item The resulting identification of the dual graph of $\mathcal M^{(n)}_{\mathrm{red}}$ with $\Tree$ is equivariant for
+the action of $\Gamma^+$ on $\Tree$ of \cref{sec:operator}.
+\item For every $k\ge0$, $Y_k\cong\Gamma^+(\lambda_0^{k+1})\backslash\mathcal M^{(n)}_{\mathrm{red}}$, and under this
+isomorphism $L|_{Y_k}$ is the descent of $L$ with its $J$-action. In particular the dual graph of $Y_k$ is~$X_k$.
+\item $L$ has degree~$4$ on every line of $\mathcal M^{(n)}_{\mathrm{red}}$.
+\end{enumerate}
+\end{lemma}
+\begin{informalproof}
+\emph{The global picture.} Let $G'=\{g\in B^\times:\Nrd g\in\Q^\times\}$, write $\mathcal K(\mathfrak n)=\mathcal
+K_3\mathcal K^{(3)}$ with $\mathcal K^{(3)}$ the part away from~$3$, and let $\mathbb A_f^{(3)}$ be the finite adeles away
+from~$3$. Fix a supersingular base point $x_0$ of $S_0$ with integral level structure, which exists by \cref{lem:RR},
+with compatible lifts to the~$S_k$, and frame $\mathcal M$ by its $3$-divisible group. The supersingular points form one
+isogeny class, the class~$I_0$ of~\cite[Section~3]{KudlaRapoport1999}, which is basic. The uniformization
+theorem~\cite[Theorem~6.30]{RapoportZink1996} identifies the formal completion of the Shimura variety of level
+$\mathcal K(\mathfrak n)$ along an open and closed part $Z'$ of the supersingular locus $Z$ with
+$G'(\Q)\backslash(\mathcal M\times G'(\mathbb A_f^{(3)})/\mathcal K^{(3)})$, a finite disjoint union of quotients of~$\mathcal M$.
+Here $G'(\Q)$ is the group of $\OO_E$-linear self-quasi-isogenies of~$x_0$ that multiply the polarization by a factor
+in~$\Q^\times$; it acts on $\mathcal M$ through~$J$, and on $G'(\mathbb A_f^{(3)})$ through the Tate modules of $x_0$ and its
+level structure. Moreover $Z'=Z$, because the group $G^*=\{g\in\GL_2(E):\det g\in\Q^\times\}$ of the moduli problem
+satisfies the Hasse principle: its derived group $\operatorname{Res}_{E/\Q}\SL_2$ is simply connected, so it satisfies the
+Hasse principle~\cite[Chapter~6]{PlatonovRapinchuk1994}; $G^*/G^{*,\mathrm{der}}\cong\mathbb G_m$ has trivial first Galois
+cohomology; and $\det\colon G^*(\Q_v)\to\Q_v^\times$ is onto at every place~$v$. The endomorphisms of~$x_0$, with $3$
+inverted, form a maximal $\OO_E[1/3]$-order of the definite quaternion algebra~$B$, by Tate's theorem~\cite{Tate1966} at
+the primes $\ell\ne3$. Since $B$ has class number one, it has type number one~\cite[Corollaire~I.4.11 and p.~155]{Vigneras1980},
+and we may choose the identification of $B$ with the endomorphism algebra of $x_0$ so that this order is $I[1/3]$. By the norm theorem of Hasse and Schilling, which gives $\Q_{>0}\subseteq\Nrd B^\times$~\cite[Theorem~III.4.1]{Vigneras1980},
+and strong approximation for $B^1$ with respect to~$\{3\}$, every supersingular point of~$S_k$ has a representative in the slice $\mathcal M^{(n)}_{\mathrm{red}}\times\{\mathcal K^{(3)}\}$ that contains~$x_0$. The
+stabilizer of that slice is $\{\gamma\in G'(\Q)\cap\mathcal K^{(3)}:v_3(\Nrd\gamma)=0\}$. Its reduced norms are positive
+rationals that are units at every prime, so they equal~$1$, and the stabilizer is
+$\{\gamma\in I[1/3]^1:\gamma\equiv1\pmod{\mathfrak n}\}\cong\Gamma^+(\lambda_0^{k+1})$ (\cref{lem:chain}). The element
+$-1\in I[1/3]^1$ acts trivially on $\mathcal M_{\mathrm{red}}$, since $(X,\varrho)$ is isomorphic to $(X,-\varrho)$ through
+$-1\in\operatorname{Aut}X$, and on~$L$, by $(-1)^4=1$; so $I[1/3]^1$ acts through $\Gamma^+$, and through $J^0$ since its
+reduced norms are~$1$. The uniformization is compatible with the universal $3$-divisible groups, hence with $\omega_1$,
+$\omega_2$ and~$L$. This proves~(b), given~(a).
+
+\emph{The identification with $\Tree$.} The algebra $B$ acts on the isocrystal of $x_0$ contravariantly. Composed with
+the main involution $b\mapsto\bar b$, this action gives a homomorphism $B\otimes_EE_3\to\operatorname{End}_{\Q_9}(U_0)$, an
+isomorphism of central simple algebras, which on elements of reduced norm one is their action on lattices. Here $E_3$ is
+identified with $\Q_9$ through the embedding of $\OO_E\otimes\Z_3$ into $W$ that defines~$L_0$. By the Skolem--Noether
+theorem we may choose $U_0\cong\Q_9^2$ so that this homomorphism becomes the isomorphism $B\otimes_EE_3\cong M_2(\Q_9)$ of
+\cref{sec:operator}, composed with $\sigma$ if that embedding reduces to $\theta\mapsto2-i$ (a case treated in
+\cref{lem:twist}); then the identification of the dual graph with $\Tree_{U_0}\cong\Tree$ is $\Gamma^+$-equivariant, which
+is~(a).
+
+\emph{The degree.} Since $\Gamma^+(\lambda_0^{k+1})$ acts freely on $\Tree$ (\cref{lem:chain}), every line maps
+isomorphically onto a component of~$Y_k$, compatibly with~$L$. Let $C$ be a component of $Z_1$, and put
+$a=\deg\omega_1|_C$ and $b=\deg\omega_2|_C$. The section $h_2$ vanishes on $C$ exactly at the ten superspecial points, simply,
+because the crossings are ordinary double points of the reduced curve $Z_1+Z_2$~\cite[Theorem~6.1]{BachmatGoren1999}; so
+$3a-b=10$. Lines of the same kind are disjoint, so $C^2=Z_1\cdot C=-a+3b$, and adjunction with $K=L-D$ and $D\cdot C=0$
+gives $-2=(K+C)\cdot C=a+5b$. Hence $(a,b)=(3,-1)$ and $\deg L|_C=2a+2b=4$; the components of $Z_2$ are symmetric. This
+is~(c). As a check, $Z_1\sim3\omega_2-\omega_1$, $Z_2\sim3\omega_1-\omega_2$ and $\omega_i^2=0$ give
+$Z_1\cdot Z_2=10\,\omega_1\omega_2=10\,e_{\mathrm{top}}/4$, while each of the $n_1$ lines of one kind meets ten lines of the
+other, so $Z_1\cdot Z_2=10n_1$; thus $n_1=e_{\mathrm{top}}/4=11^{3k+1}=\abs{\Gamma^+:\Gamma^+(\lambda_0^{k+1})}/60$, as $X_k$
+requires.
+\end{informalproof}
+
+\paragraph{Geometric data.} A \emph{geometric datum} on $\Tree$ is a $\Gamma^+$-equivariant family consisting of a smooth
+rational curve $C_v$ over $\bar\F_3$ for each vertex~$v$, on which the stabilizer of $v$ acts faithfully; a line bundle
+$L_v$ of degree~$4$ on~$C_v$, with an action of that stabilizer; for each edge $e$ at~$v$ a point $P_{v,e}\in C_v$, the
+\emph{special points}; and for each edge $e=\{v,w\}$ an isomorphism between the fibres of $L_v$ at $P_{v,e}$ and of $L_w$
+at~$P_{w,e}$. Its \emph{type} is the pair of the isomorphism classes of the actions of the stabilizers of $\Lambda_0$ and
+$\Lambda_1$ on $C_{\Lambda_0}$ and~$C_{\Lambda_1}$. For a subgroup $\Gamma\subseteq\Gamma^+(\lambda_0)$ of finite index,
+its \emph{Tanner code} on $\Gamma\backslash\Tree$ is the space of $\Gamma$-invariant families of sections
+$s_v\in H^0(C_v,L_v)$ whose values at the two special points of each edge correspond.
+
+By \cref{lem:uniformization}, the lines of $\mathcal M^{(n)}_{\mathrm{red}}$ with the restrictions of~$L$, their
+superspecial points and the identifications of the fibres of $L$ at the crossings form a geometric datum $D_{\mathrm{geo}}$
+on~$\Tree$, the same for every~$k$. The stabilizers act faithfully on the lines: the stabilizer of a vertex acts on its
+line through its action on $\Lambda/3\Lambda$, or, for a line of the second kind, through its action on
+$\Phi\Lambda'/3\Phi\Lambda'$ conjugated by~$\sigma$, since $J$ commutes with~$\Phi$; and $2I\to\SL_2(\F_9)$ is injective (proof
+of \cref{lem:amalgam}).
+
+\begin{lemma}[Sections are Tanner codes]\label{lem:sections}
+\notformalized
+For every subgroup $\Gamma\subseteq\Gamma^+(\lambda_0)$ of finite index, $H^0(\Gamma\backslash\mathcal M^{(n)}_{\mathrm{red}},L)$
+is isomorphic to the Tanner code of $D_{\mathrm{geo}}$ on $\Gamma\backslash\Tree$.
+\end{lemma}
+\begin{informalproof}
+Since $\Gamma$ acts freely on $\Tree$ (\cref{lem:chain}), the curve $Y=\Gamma\backslash\mathcal M^{(n)}_{\mathrm{red}}$ has
+the lines as components and ordinary nodes exactly at the superspecial points. So
+$0\to\OO_Y\to\nu_*\OO_{\tilde Y}\to\bigoplus_{\text{nodes}}\bar\F_3\to0$ for the normalization~$\nu$, and a section of $L$
+on $Y$ is a family of sections on the components whose values at each node correspond, that is, an element of the Tanner
+code.
+\end{informalproof}
+
+\subsection{Rigidity and the twist}\label{sec:rigidity}
+
+Let $\rho\colon2I\to\SL_2(\F_9)$ be reduction modulo~$3$ through $I\otimes_{\OO_E}\OO_{E,3}\cong M_2(\Z_9)$, that is, the
+action of $2I$ on $\Lambda_0/3\Lambda_0=\F_9^2$. It is one of the two representations of \cref{lem:A5}(a), and the other
+is $\rho^\sigma$, obtained by applying $\sigma$ to the entries. Applying $\sigma$ to the coefficients turns a datum into
+another one, whose Tanner codes are the images of the old ones under~$\sigma$, so of the same dimension.
+
+The data $D_{\mathrm{untw}}$ and $D_{\mathrm{tw}}$ of \cref{sec:datum} are geometric data: at every vertex take $\Pone$
+with $\OO(4)$, whose sections are the binary quartic forms; take as special points the points $[x]$ of the labels~$x$; and
+at an edge with labels $x$ and $y$ at its two ends, identify the fibres so that sections $f$ and $g$ correspond when
+$f(x)=g(y)$, which is well defined because labels are defined up to scalars $c$ with $c^4=1$. Since evaluation of quartics
+at ten points is injective (\cref{lem:selfdual}), the Tanner code of $D_{\mathrm{tw}}$ on $\Gamma\backslash\Tree$ in this
+sense is $T_{\mathrm{tw}}(\Gamma\backslash\Tree)\otimes_{\F_9}\bar\F_3$. In both data the stabilizer of $\Lambda_0$ acts
+through~$\rho$, since $u\in2I$ maps the edge $u'e_0$, with label $u'p_0$, to the edge $uu'e_0$, with label $\rho(u)u'p_0$.
+In the coordinates transported by~$\alpha$, the stabilizer of $\Lambda_1$ acts through $\rho\circ\Ad\alpha^{-1}$ in
+$D_{\mathrm{untw}}$, and through $(\rho\circ\Ad\alpha^{-1})^\sigma$ in $D_{\mathrm{tw}}$, since $s=\alpha s'\alpha^{-1}$ maps the
+label $\Frob(t'k_0)$ to $\Frob(s't'k_0)=\Frob(s')\Frob(t'k_0)$. So $D_{\mathrm{untw}}$ has type $(\rho,\rho\circ\Ad\alpha^{-1})$
+and $D_{\mathrm{tw}}$ has type $(\rho,(\rho\circ\Ad\alpha^{-1})^\sigma)$.
+
+\begin{lemma}[Rigidity]\label{lem:rigidity}
+\notformalized
+Let $D$ and $D'$ be geometric data on~$\Tree$.
+\begin{enumerate}[label=(\alph*)]
+\item If $D$ and $D'$ have the same type, their Tanner codes on $\Gamma\backslash\Tree$ are isomorphic for every subgroup
+$\Gamma\subseteq\Gamma^+(\lambda_0)$ of finite index.
+\item Every geometric datum has the type of one of $D_{\mathrm{untw}}$, $D_{\mathrm{tw}}$, $D_{\mathrm{untw}}^\sigma$
+and~$D_{\mathrm{tw}}^\sigma$, and these four types are different.
+\end{enumerate}
+\end{lemma}
+\begin{informalproof}
+(1) By \cref{lem:A5}(a), the stabilizer $A_5$ of $\Lambda_0$ acts on $C_{\Lambda_0}$ through $\rho$ or $\rho^\sigma$, up to
+isomorphism, and $\alpha A_5\alpha^{-1}$ acts on $C_{\Lambda_1}$ through $\rho\circ\Ad\alpha^{-1}$ or its $\sigma$-twist. So
+there are at most four types, and since $\rho\not\cong\rho^\sigma$, the four data in~(b) have four different ones. This
+is~(b).
+
+(2) By \cref{lem:A5}(b), an equivariant isomorphism between two such vertex curves is unique. An $A_5$-linearization of
+$\OO(4)$ is unique because $A_5$ is perfect, and its equivariant automorphisms are scalars.
+
+(3) The ten special points at a vertex are permuted by its stabilizer, transitively with stabilizer $S_3$
+(\cref{lem:amalgam}), so by \cref{lem:A5}(c) they form the orbit of size~$10$; since $S_3$ is self-normalizing, the
+equivariant bijection between the edges at a vertex and its special points is unique.
+
+(4) Take $D$ and $D'$ of the same type, fix equivariant isomorphisms of their vertex data at $\Lambda_0$ and $\Lambda_1$,
+unique up to scalars by~(2) and~(3), and transport them by~$\Gamma^+$. The edge stabilizers act on the fibres at the
+special points through the same character, the inverse fourth power of the character of $\Gamma_e$ on the line of the
+edge, which is trivial (\cref{sec:datum}). So the ratio of the two identifications at an edge is a $\Gamma^+$-invariant
+function on edges, hence a constant $r$ by edge-transitivity (\cref{lem:amalgam}), and scaling the sections at the odd
+vertices by $r$ is an isomorphism of Tanner codes on every $\Gamma\backslash\Tree$. This is~(a).
+\end{informalproof}
+
+\begin{lemma}[The twisted type]\label{lem:twist}
+\notformalized
+$D_{\mathrm{geo}}$ has the type of $D_{\mathrm{tw}}$ or of $D_{\mathrm{tw}}^\sigma$. Hence
+$h^0(Y_k,L|_{Y_k})=\dim_{\F_9}T_{\mathrm{tw}}(X_k)$ for every $k\ge0$.
+\end{lemma}
+\begin{informalproof}
+We use the local picture of \cref{sec:uniformization} and the identification $U_0\cong\Q_9^2$ of
+\cref{lem:uniformization}.
+
+(1) An element $g\in J$ commutes with~$\Phi$. So if $b_1,b_2$ is a basis of $U_0$ and $U_1$ is given the basis
+$\Phi^{-1}b_1,\Phi^{-1}b_2$, the matrix of $g$ on $U_1$ is $\sigma^{-1}=\sigma$ applied to its matrix on~$U_0$.
+
+(2) Hence the stabilizer of a vertex acts on a line $C_\Lambda$ of the first kind through its action on $\Lambda/3\Lambda$,
+and on a line $C_{\Lambda'}$ of the second kind through its action on $M/3M$, for $M=\Phi\Lambda'$, with the entries
+conjugated by~$\sigma$: $\Phi$ identifies $C_{\Lambda'}$ with the Frobenius twist of $\Pone(M/3M)$.
+
+(3) Suppose that the lines at the even vertices are of the first kind. Then $A_5$ acts on $C_{\Lambda_0}$ through~$\rho$, and
+$\alpha A_5\alpha^{-1}$ acts on $C_{\Lambda_1}$ through its action on $\alpha\Lambda_0/3\alpha\Lambda_0$ conjugated by~$\sigma$,
+which in the coordinates transported by~$\alpha$ is $(\rho\circ\Ad\alpha^{-1})^\sigma$. This is the type of~$D_{\mathrm{tw}}$.
+The special points match the labels of \cref{sec:datum}. Up to the same power of~$3$, the lattices at $\Lambda_0$ and
+$\Lambda_1$ are $\Lambda_0$ and $M=\alpha\Lambda_0$. On $C_{\Lambda_0}$ the special point towards $\Lambda_1$ is
+$\alpha\Lambda_0/3\Lambda_0=\im(\alpha\bmod3)=\langle p_0\rangle$. On $C_{\Lambda_1}$ the special point towards $\Lambda_0$ is
+$\Phi^{-1}(3\Lambda_0)/3\Lambda'$, which $\Phi$ maps to $3\Lambda_0/3\alpha\Lambda_0$; in the coordinates transported by
+$\alpha$ this is $\bar\alpha\Lambda_0/3\Lambda_0=\ker(\alpha\bmod3)=\langle k_0\rangle$, so the special point is
+$[\Frob(k_0)]$.
+
+(4) If the lines at the even vertices are of the second kind, the same computation gives the type
+$(\rho^\sigma,\rho\circ\Ad\alpha^{-1})$, which is that of~$D_{\mathrm{tw}}^\sigma$.
+
+(5) If the embedding of $\OO_E\otimes\Z_3$ into $W$ that defines $L_0$ reduces to $\theta\mapsto2-i$, both entries of the
+type are replaced by their images under~$\sigma$. In every case the type is that of $D_{\mathrm{tw}}$ or
+of~$D_{\mathrm{tw}}^\sigma$.
+
+For the last claim, $Y_k\cong\Gamma^+(\lambda_0^{k+1})\backslash\mathcal M^{(n)}_{\mathrm{red}}$ (\cref{lem:uniformization}),
+so by \cref{lem:sections,lem:rigidity} $h^0(Y_k,L|_{Y_k})$ is the dimension over $\bar\F_3$ of the Tanner code on $X_k$ of
+$D_{\mathrm{tw}}$ or of $D_{\mathrm{tw}}^\sigma$. This is $\dim_{\F_9}T_{\mathrm{tw}}(X_k)$: the first code is
+$T_{\mathrm{tw}}(X_k)\otimes_{\F_9}\bar\F_3$, and the second its image under~$\sigma$.
+\end{informalproof}
+
+\subsection{Conclusion}\label{sec:proofH}
+
+\begin{theorem}[Theorem H]\label{thm:H}
+\notformalized
+For the chain $N_k=\psi^{-1}(\Gamma^+(\lambda_0^{k+1}))$ of $F$, with $\abs{F:N_k}=11^{3k}$, and every $k\ge0$,
+\[
+  \dim_{\F_3}\ker\varphi_{F/N_k}(A)\ \ge\ 22\,\abs{F:N_k}-2\ \ge\ 20\,\abs{F:N_k}.
+\]
+In particular hypothesis (KD) holds with $\eps=20$, and so does (KN).
+\end{theorem}
+\begin{informalproof}
+By \cref{eq:H1}, \cref{lem:twist} and \cref{lem:RR},
+\[
+  \dim_{\F_3}\ker\varphi_{F/N_k}(A)=2\dim_{\F_9}T_{\mathrm{tw}}(X_k)=2h^0(Y_k,L|_{Y_k})\ge2(V_k-1)=22\,\abs{F:N_k}-2,
+\]
+since $V_k=11^{3k+1}=11\,\abs{F:N_k}$; and $22\abs{F:N_k}-2\ge20\abs{F:N_k}$ because $\abs{F:N_k}\ge1$.
+\end{informalproof}
+
+At $k=0$ the last inequality is an equality, $20=22-2$, while the actual kernel dimension is $42$ (\cref{rem:base}).
+
+\subsection{Numerical checks}\label{sec:numerics}
+
+\begin{remark}[Numerical]\label{rem:numerics}
+The script \path{tools/lambda_level1.py} computes the first nested level $k=1$ exactly. It lifts the coset
+representatives to $\PSL_2(\Z/121)$, obtains voltages in $\ker(\PSL_2(\Z/121)\to\PSL_2(\F_{11}))\cong\F_{11}^3$, and sums the
+kernels of the $1331$ twisted $55\times55$ operators over $\F_{3^{10}}$. With $c_k$ the number of cusps
+($c_0=12$, $c_1=132$):
+\begin{center}
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+$k$ & $\abs{F:N_k}$ & $V_k$ & $c_k$ & $\dim T_{\mathrm{tw}}(X_k)$ & $V_k+c_k-2$ & $V_k-1$ & $\dim T_{\mathrm{untw}}(X_k)$\\
+\midrule
+$0$ & $1$ & $11$ & $12$ & $21$ & $21$ & $10$ & $20$\\
+$1$ & $1331$ & $14641$ & $132$ & $14771$ & $14771$ & $14640$ & $2460$\\
+\bottomrule
+\end{tabular}
+\end{center}
+So the exact formula $V_k+c_k-2$ holds at $k=0,1$. At $k=1$ the untwisted datum falls below the bound of \cref{lem:RR},
+which confirms \cref{lem:twist} independently, by elimination between the types of \cref{lem:rigidity}. By
+\cref{lem:tanner,lem:covering} the value $14771$ means $\dim_{\F_3}\ker\varphi_{F/N_1}(A)=29542$, a normalized kernel of
+about $22.2$. Each of the $1330$ nontrivial characters of $\F_{11}^3$ contributes a twisted kernel of dimension $11$ or~$12$.
+With random voltages in $\F_{11}^3$ on the same graph, which define connected covers of the same degree that are not
+congruence covers (\cref{rem:congruence}), only the kernel of dimension $21$ pulled back from $X_0$ survives
+(\path{tools/lambda_level1.py random s}, $s=1,2,3$). The finite group theory of \cref{lem:A5} is also checked by
+exhaustive computation in \path{tools/a5_checks.py}.
+\end{remark}

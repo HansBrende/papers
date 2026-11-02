@@ -115,6 +115,10 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FiniteWeightedFamily`](LeanMachine/FiniteWeightedFamily.lean) | Finite indexed weighted families, disjoint collection and probability mixtures; exact mass and observable sums retain multiplicity | this repository |
 | [`FlowDistance`](LeanMachine/FlowDistance.lean) | Physical walk volume equals length; ordinary undirected distance bounds every walk, allowing parallel edges, loops and repeated traversals | this repository |
 | [`LogarithmicRadius`](LeanMachine/LogarithmicRadius.lean) | An explicit positive radius from `x >= A^4`, with `A^ell <= sqrt(x)` and `ell >= log(x)/(4 log(A))` | this repository |
+| [`FreeGroupResiduallyP`](LeanMachine/FreeGroupResiduallyP.lean) | Free groups of finite rank are residually finite `p`-groups (a matrix form of the Magnus embedding), and strictly smaller normal subgroups of `p`-power index | this repository (*Lück Approximation Fails in Positive Characteristic*) |
+| [`PackedMatrixCheck`](LeanMachine/PackedMatrixCheck.lean) | Kernel-evaluated checks of matrix identities over `𝔽₃` by Kronecker substitution (base-512 packed rows) | this repository (same paper) |
+| [`KernelCertificate`](LeanMachine/KernelCertificate.lean) | Kernel bounds from an invertible minor, and injectivity of a connecting map into the cokernel | this repository (same paper) |
+| [`CyclicBandedKernel`](LeanMachine/CyclicBandedKernel.lean) | The basis `uᵏ` of `K[C_N]` when `uᴺ = 0`, and kernels of banded operators `B₀ + u B₁ + u² B₂` | this repository (same paper) |
 
 ## External code
 

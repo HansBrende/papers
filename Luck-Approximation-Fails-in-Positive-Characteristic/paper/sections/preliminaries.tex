@@ -1,0 +1,69 @@
+\section{The conjecture and its formal statement}\label{sec:prelim}
+
+Throughout, $G$ is a group, $K$ a field, and $K[G]$ the group algebra. Vectors are row vectors and matrices act on the
+right, as in the survey~\cite[Section~1]{JaikinSurvey2019}.
+
+\begin{definition}[Normalized rank]\label{def:rank}
+\formal{LuckApproximation/Statement.lean}{Luck.quotientMatrix,Luck.phi,Luck.rk}
+Let $A$ be an $n\times m$ matrix over $K[G]$ and $N$ a normal subgroup of finite index. Write $\bar A$ for the image of
+$A$ under the ring map $K[G]\to K[G/N]$ induced by $G\to G/N$. The $K$-linear map
+$\varphi_{G/N}(A)\colon K[G/N]^n\to K[G/N]^m$ is $x\mapsto x\bar A$, and
+\[
+  \rk_{G/N}(A)=\frac{\dim_K\im\varphi_{G/N}(A)}{\abs{G:N}}.
+\]
+\end{definition}
+
+\begin{lemma}[Basic properties]\label{lem:basic}
+\formal{LuckApproximation/Sanity.lean}{Luck.finrank_domain,Luck.rk_le,Luck.rk_eq_sub,Luck.rk_one}
+Let $N$ be a normal subgroup of finite index and $A$ an $n\times m$ matrix over $K[G]$. Then
+$\dim_K K[G/N]^n=n\abs{G:N}$, $\rk_{G/N}(A)\le n$,
+\[
+  \rk_{G/N}(A)=n-\frac{\dim_K\ker\varphi_{G/N}(A)}{\abs{G:N}},
+\]
+and the identity matrix has $\rk_{G/N}(I_n)=n$.
+\end{lemma}
+\begin{outline}
+The group elements of $G/N$ form a basis of $K[G/N]$. The formula for $\rk_{G/N}(A)$ in terms of the kernel is rank--nullity.
+\end{outline}
+
+We call $\dim_K\ker\varphi_{G/N}(A)/\abs{G:N}$ the \emph{normalized kernel} of $A$ at~$N$; we use it for square
+matrices.
+
+\begin{definition}[Chains]\label{def:chain}
+\formal{LuckApproximation/Statement.lean}{Luck.Chain,Luck.Chain.rkSeq}
+A \emph{chain} of $G$ is a sequence $(G_i)_{i\ge0}$ of normal subgroups of finite index that is strictly decreasing,
+$G_0>G_1>\cdots$, and has trivial intersection. Along a chain, $A$ has the rank sequence $i\mapsto\rk_{G/G_i}(A)$.
+\end{definition}
+
+A chain whose quotients $G/G_i$ are all $p$-groups is a \emph{$p$-chain}, for instance a $3$-chain. The first term of a
+chain may be $G$ itself; adding or dropping finitely many initial terms changes no limit. A group with a chain
+is infinite and residually finite. Requiring strict inclusions only weakens the conjecture below, so a disproof of the
+strict version also disproves the non-strict one (\lean{Luck.Literal.nonStrict_imp_luck}).
+
+\begin{definition}[L\"uck approximation over a field]\label{def:luck}
+\formal{LuckApproximation/Statement.lean}{Luck.Convergence,Luck.ChainIndependence,Luck.LuckApproximation,Luck.LuckApproximationConjecture}
+Let $K$ be a field and $G$ a group.
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{Convergence:} for every matrix $A$ over $K[G]$ and every chain of $G$, the rank sequence of $A$ converges.
+\item \emph{Chain independence:} for every matrix $A$ over $K[G]$ and any two chains along which the rank sequences of
+$A$ converge, the two limits are equal.
+\end{enumerate}
+\emph{L\"uck approximation over $K$ for $G$} is the conjunction of (1) and~(2). The \emph{arbitrary-field L\"uck
+approximation conjecture}~\cite[Conjecture~1.2(1),(2)]{JaikinSurvey2019} asserts it for every field and every group.
+\end{definition}
+
+Part~(2) as stated compares only chains along which the ranks converge, so it does not presuppose part~(1). Together, (1)
+and~(2) say that for each matrix one number is the limit along every chain (\lean{Luck.luckApproximation_iff}). The
+formal target of this paper is the negation for one free group over~$\F_3$,
+\[
+  \exists\, r,\ \neg\,\text{L\"uck approximation over }\F_3\text{ for the free group of rank }r,
+\]
+stated as \lean{Luck.MainTheoremTarget}; it refutes the conjecture (\lean{Luck.not_conjecture_of_target}).
+
+\paragraph{Checks of the statement.} The library contains two independent checks of these definitions. A second
+formalization, written independently from the survey's text, is proved equivalent to \cref{def:luck}
+(\lean{Luck.Literal.equiv}). A set of semantic checks confirms on examples what the definitions mean:
+$\rk(0)=0$, $\rk_{G/N}(1-g)=1-1/\mathrm{ord}(gN)$ for $1\times1$ matrices, convergence of $\rk(1-g)$ to~$1$ along the
+chain $2^i\Z$ for $g$ a generator of~$\Z$, and the fact that only infinite groups carry chains
+(\lean{Luck.Checks.rk_zero}, \lean{Luck.Checks.rk_one_sub_single}, \lean{Luck.Checks.intChain_tendsto},
+\lean{Luck.Checks.infinite_of_chain}).

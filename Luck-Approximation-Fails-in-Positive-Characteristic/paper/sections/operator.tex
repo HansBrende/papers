@@ -1,0 +1,190 @@
+\section{The Goren--Oort operator}\label{sec:operator}
+
+This section defines the matrix $A$ and relates its kernels to Tanner codes on covers of a finite graph. The arithmetic
+that makes these kernels large is in \cref{sec:hypothesis}; here we need only the combinatorial structure.
+
+\subsection{The icosian group and the base graph}\label{sec:icosian}
+
+Let $E=\Q(\sqrt5)$, with ring of integers $\OO_E=\Z[\theta]$, $\theta=(1+\sqrt5)/2$. The prime $3$ is inert in~$E$; we
+identify $\OO_E/3$ with $\F_9=\F_3[i]/(i^2+1)$ by $\theta\mapsto2+i$. The prime $11$ splits; let $\lambda_0$ be the prime
+above~$11$ with $\theta\equiv4\pmod{\lambda_0}$, so that $\OO_E/\lambda_0^m\cong\Z/11^m$. Let $B$ be the quaternion algebra
+over $E$ ramified exactly at the two infinite places, and $I\subset B$ the icosian ring, a maximal order of class
+number~$1$ whose norm-one units form the binary icosahedral group $2I\cong\SL_2(\F_5)$ of order
+$120$~\cite[Proposition~V.3.4 and p.~155]{Vigneras1980}. Since $B$ splits at~$3$, $B\otimes_EE_3\cong M_2(\Q_9)$, where $\Q_9$ is the unramified
+quadratic extension of~$\Q_3$ with ring of integers $\Z_9$, and
+\[
+  \Gamma^+=I[1/3]^1/\{\pm1\}\subset\PSL_2(\Q_9)
+\]
+acts on the Bruhat--Tits tree $\Tree$ of $\PGL_2(\Q_9)$, which is $10$-regular; it preserves the bipartition of the
+vertices into even and odd ones. Let $\Lambda_0$ be the vertex fixed by $I\otimes\OO_{E,3}\cong M_2(\Z_9)$, let
+$\alpha=1+i+j\in I$, of reduced norm~$3$, and put $\Lambda_1=\alpha\Lambda_0$, a neighbour of~$\Lambda_0$. The stabilizers
+of $\Lambda_0$, $\Lambda_1$ and the edge $e_0=\{\Lambda_0,\Lambda_1\}$ are $A_5=2I/\{\pm1\}$, $\alpha A_5\alpha^{-1}$ and a
+group $S_3$, whose preimage $\Gamma_e\subset2I$ is binary dihedral of order~$12$; and
+$\Gamma^+=A_5*_{S_3}\alpha A_5\alpha^{-1}$ (\cref{lem:amalgam}).
+
+For $m\ge1$ let $\Gamma^+(\lambda_0^m)=\ker\bigl(\Gamma^+\to\PSL_2(\OO_E/\lambda_0^m)\bigr)$. It is torsion-free and acts
+freely on~$\Tree$ (\cref{lem:chain}). The \emph{base graph} is $X_0=\Gamma^+(\lambda_0)\backslash\Tree$.
+
+\begin{lemma}[The base graph]\label{lem:basegraph}
+\notformalized
+Let $P=\PSL_2(\F_{11})$, and let $H_0$, $H_1$ and $H_e$ be the images of $A_5$, $\alpha A_5\alpha^{-1}$ and $S_3$ under
+reduction modulo~$\lambda_0$. Then $H_e=H_0\cap H_1$, and $X_0$ is the coset graph with even vertices $P/H_0$, odd
+vertices $P/H_1$ and edges $P/H_e$, the edge $gH_e$ joining $gH_0$ to $gH_1$. It has $11$ vertices of each parity and
+$110$ edges, every even vertex is joined to $10$ distinct odd vertices, and $X_0$ is the complete bipartite graph
+$K_{11,11}$ with a perfect matching removed. Its fundamental group is free of rank $110-22+1=89$.
+\end{lemma}
+\begin{informalproof}
+By \cref{lem:chain}, $\Gamma^+\to P$ is onto with kernel $\Gamma^+(\lambda_0)$, which meets no vertex stabilizer. Since
+$\Gamma^+$ acts transitively on the even vertices, on the odd vertices and on the edges (\cref{lem:amalgam}), the even
+vertices of $X_0$ are $\Gamma^+(\lambda_0)\backslash\Gamma^+/A_5=P/H_0$, and likewise for odd vertices and edges, with
+incidences as stated. This gives $660/60=11$ vertices of each parity and $660/6=110$ edges. The edges $hH_e$
+($h\in H_0$) at the even vertex $H_0$ have odd ends $hH_1$, and two of them have the same odd end exactly when they differ
+by an element of $H_0\cap H_1$. This group contains $H_e\cong S_3$, which is maximal in $H_0\cong A_5$. If it were all of
+$H_0$, then $H_1=H_0$, every edge at $gH_0$ would end at the odd vertex $gH_1$, and the quotient $X_0$ of the connected
+tree $\Tree$ would be disconnected. So $H_0\cap H_1=H_e$, and the ten edges at an even vertex end at ten distinct odd
+vertices. By symmetry every odd vertex is joined to ten distinct even vertices, so the missing pairs form a perfect
+matching. A connected graph with $22$ vertices and $110$ edges has free fundamental group of rank $89$.
+\end{informalproof}
+
+Lifting a spanning tree of $X_0$ to $\Tree$ identifies $\pi_1(X_0)$ with $\Gamma^+(\lambda_0)$; we write $\psi$ for this
+isomorphism (\cref{lem:covering}).
+
+\subsection{Local codes and data}\label{sec:datum}
+
+The $10$ edges at a vertex $\Lambda$ correspond to the lattices $\Lambda'$ with $3\Lambda\subset\Lambda'\subset\Lambda$
+of index~$9$, that is, to the points of the projective line $\Pone(\Lambda/3\Lambda)$ over~$\F_9$.
+
+\begin{definition}[Local codes]\label{def:localcode}
+For vectors $x_1,\dots,x_{10}\in\F_9^2$ representing the $10$ points of $\Pone(\F_9)$, the \emph{local code} is
+$C=\{(f(x_1),\dots,f(x_{10})): f\text{ a binary quartic form over }\F_9\}\subseteq\F_9^{10}$.
+\end{definition}
+
+\begin{lemma}[Self-duality]\label{lem:selfdual}
+\notformalized
+The local code has dimension $5$ and equals its dual for the standard bilinear form, for every choice of the
+representatives $x_j$.
+\end{lemma}
+\begin{informalproof}
+A nonzero binary quartic vanishes at no more than four points of $\Pone$, so evaluation is injective and $\dim C=5$. For
+quartics $f,g$ put $h=fg$, of degree~$8$. Since $c^8=1$ for $c\in\F_9^\times$, $h(cx)=h(x)$, so
+$\sum_{v\in\F_9^2\setminus0}h(v)=8\sum_jh(x_j)=-\sum_jh(x_j)$. For a monomial $h=X^aY^{8-a}$,
+$\sum_{(s,t)\in\F_9^2}s^at^{8-a}=\bigl(\sum_ss^a\bigr)\bigl(\sum_tt^{8-a}\bigr)$, and $\sum_{s\in\F_9}s^a=0$ unless $a$ is a
+positive multiple of~$8$ (with $s^0=1$, the sum for $a=0$ is $9=0$). One of the two factors therefore vanishes for every
+$0\le a\le8$, and $\sum_jf(x_j)g(x_j)=0$. So $C\subseteq C^\perp$, and equality holds because $\dim C=5=10-\dim C$.
+\end{informalproof}
+
+A \emph{datum} on $\Tree$, or on a quotient of $\Tree$, assigns to every vertex a local code on the edges at that vertex,
+given by labels in the sense of \cref{def:localcode}. Its \emph{Tanner code} on a quotient graph $X$ consists of the
+functions on the edges of $X$ whose restriction to the edges at each vertex lies in the local code there.
+
+Choose $p_0\in\F_9^2$ spanning the image and $k_0$ spanning the kernel of $\alpha\bmod3\in M_2(\F_9)$, in the coordinates
+of $\Lambda_0/3\Lambda_0=\F_9^2$. The edges at $\Lambda_0$ are $u\,e_0$ for $u\in2I$; label $u\,e_0$ by the vector
+$u\,p_0$. At $\Lambda_1$, in the coordinates transported by~$\alpha$, label the edge $t\,e_0$, where
+$t=\alpha t'\alpha^{-1}$ with $t'\in2I$, by $\Frob(t'k_0)$, where $\Frob$ cubes both coordinates. Two elements give the
+same edge exactly when they differ by an element of~$\Gamma_e$, and then their labels differ by a scalar $c$ with
+$c^4=1$: $\Gamma_e$ acts on the line of the edge through a character, which factors through the abelianization $C_4$ of
+the binary dihedral group of order~$12$. The space of binary quartic forms is $\GL_2(\F_9)$-stable, and $f(cx)=f(x)$ when
+$c^4=1$; so the local codes at $\Lambda_0$ and $\Lambda_1$ are well defined, and transporting them by $\Gamma^+$ gives a
+$\Gamma^+$-equivariant datum on $\Tree$, the \emph{twisted datum} $D_{\mathrm{tw}}$. The \emph{untwisted datum}
+$D_{\mathrm{untw}}$ is the same without $\Frob$. For $\Gamma\subseteq\Gamma^+(\lambda_0)$ these data descend to
+$\Gamma\backslash\Tree$; write $T_{\mathrm{tw}}(\Gamma\backslash\Tree)$ for the Tanner code of the descent of
+$D_{\mathrm{tw}}$. \Cref{sec:hypothesis} shows that the datum that geometry produces has the type of $D_{\mathrm{tw}}$ or
+of its image under the Frobenius (\cref{lem:twist}), which have Tanner codes of the same dimensions.
+
+\subsection{The matrix}\label{sec:matrix}
+
+Fix a spanning tree $\tau$ of~$X_0$. Its $21$ edges leave $89$ edges, and $F=\pi_1(X_0,\tau)$ is free on generators
+$x_0,\dots,x_{88}$, one for each edge outside~$\tau$, in the order of the data. Put $\gamma_e$ equal to the generator of
+$e$ for an edge outside $\tau$ and $\gamma_e=1$ for an edge of~$\tau$. For an edge~$e$, let
+$m_0(e)=(x^{4-a}y^a)_{a=0,\dots,4}$ be the quartic monomials evaluated at the label of $e$ at its even end, and $m_1(e)$
+the same at its odd end, with the twisted labels.
+
+\begin{definition}[The operator]\label{def:operator}
+\formal{LuckApproximation/Operator.lean}{Luck.Op.F,Luck.Op.gamma,Luck.Op.entryEdge,Luck.Op.coupling,Luck.Op.opA}
+The $55\times55$ matrix $A_9$ over $\F_9[F]$ has rows indexed by pairs $(v_0,c)$ of an even vertex and $c\in\{0,\dots,4\}$
+and columns by pairs $(v_1,r)$ of an odd vertex and $r\in\{0,\dots,4\}$, and
+\[
+  A_9[(v_0,c),(v_1,r)]=\sum_{e\colon v_0\text{---}v_1}m_1(e)_r\,m_0(e)_c\,\gamma_e\in\F_9[F].
+\]
+By \cref{lem:basegraph} each entry has at most one term. The matrix $A\in M_{110}(\F_3[F])$ is the restriction of scalars
+of $A_9$ along $\F_9=\F_3[i]/(i^2+1)$: an entry $c_0+c_1i$ becomes the block
+$\bigl(\begin{smallmatrix}c_0&c_1\\-c_1&c_0\end{smallmatrix}\bigr)$, row $(v_0,c)$, component~$a$, has index
+$10v_0+2c+a$, and column $(v_1,r)$, component~$b$, has index $10v_1+2r+b$. For a field $K$ of characteristic~$3$, $A_K$ is the image of $A$ under $\F_3\to K$ (\lean{Luck.Op.opK}).
+\end{definition}
+
+In Lean the matrix is this construction, computed on natural numbers (\path{LuckApproximation/Construction.lean}).
+The $120$ icosians are given by the standard formula (\lean{Luck.Con.icosians}): the units $\pm1,\pm i,\pm j,\pm k$, the
+elements $(\pm1\pm i\pm j\pm k)/2$, and the elements whose coordinates are an even permutation of
+$(0,\pm\frac12,\pm\frac{\theta^{-1}}2,\pm\frac\theta2)$. They are reduced by the splittings $i\mapsto(\begin{smallmatrix}1&1\\1&-1\end{smallmatrix})$,
+$j\mapsto(\begin{smallmatrix}0&1\\-1&0\end{smallmatrix})$ over $\F_9$ and $i\mapsto(\begin{smallmatrix}1&3\\3&-1\end{smallmatrix})$,
+$j\mapsto(\begin{smallmatrix}0&1\\-1&0\end{smallmatrix})$ over $\F_{11}$ (\lean{Luck.Con.red3}, \lean{Luck.Con.red11}), and the
+labels, the quartic monomials and the blocks are computed from them (\lean{Luck.Con.label0}, \lean{Luck.Con.label1},
+\lean{Luck.Con.mono}, \lean{Luck.Con.blockNat}). Generated data enter only as a coset certificate and packed caches,
+both checked by the kernel, and as free choices. The certificate (\path{ConData.lean}) gives coset representatives of the
+vertices, the position icosians, and the positions of each edge at its two ends; \cref{lem:enumeration} checks it. Packed
+copies of the incidences and blocks speed up the certificate of \cref{sec:certificate}; the kernel checks that they agree
+with the construction (\lean{Luck.Con.blockNat_eq_cache}, \lean{Luck.Con.edgeOfNat_eq_cache}), so nothing in the proof
+trusts them. The choices are the spanning tree, with a numbering of the other edges, which \cref{lem:enumeration} checks
+to be a spanning tree, and the voltage $\chi$ of \cref{sec:certificate}. The coset representatives are also a choice: they
+fix coordinates at each vertex. Another choice multiplies the labels at a vertex by a fixed matrix in the image of $2I$,
+and so multiplies its five rows (or columns) of $A_9$ by a fixed invertible $5\times5$ matrix over~$\F_9$, which changes no
+kernel dimension; another choice of position icosians multiplies labels by scalars $c$ with $c^4=1$ and leaves the matrix
+unchanged.
+
+\begin{lemma}[The Lean enumeration]\label{lem:enumeration}
+\formal{LuckApproximation/ConChecks.lean}{Luck.Con.splittings_ok,Luck.Con.subgroups_ok,Luck.Con.cosetGraph_ok,Luck.Con.spanningTree_ok,Luck.Con.labels_ok}
+Let $\pm H_0$ and $\pm H_1$ be the sets of images in $\SL_2(\F_{11})$ of the $120$ icosians and of their conjugates
+by~$\alpha$, and of their negatives, and $\pm H_e=\pm H_0\cap\pm H_1$. Then:
+\begin{enumerate}[label=(\alph*)]
+\item the two splittings respect $i^2=j^2=-1$ and $ij=-ji$, and $\alpha$ is invertible modulo~$\lambda_0$;
+\item $\pm H_0$ and $\pm H_1$ consist of matrices of determinant~$1$, and the product of any two of the $120$ images lies
+in $\pm H_0$ (resp.\ $\pm H_1$); so $\pm H_0$ and $\pm H_1$ are subgroups of $\SL_2(\F_{11})$;
+\item the representatives of the even vertices have determinant~$1$ and lie in distinct cosets of $\pm H_0$ that cover
+$\SL_2(\F_{11})$, and likewise the representatives of the odd vertices and $\pm H_1$;
+\item the ten position icosians at the even vertices, and the conjugates by~$\alpha$ of the ten position icosians at the
+odd vertices, represent the ten cosets of $\pm H_e$ in $\pm H_0$ (resp.\ $\pm H_1$) once each;
+\item the ends and positions of the edges are in range, no two edges have the same ends, the pairs of an end and a
+position are distinct, and each edge is the same coset of $\pm H_e$ seen from its two ends;
+\item the edges without a generator form a spanning tree, and the other edges carry distinct generators;
+\item $p_0\ne0$, $k_0\ne0$ and $(\alpha\bmod3)\,k_0=0$; since $p_0$ is a column of $\alpha\bmod3$, it spans the image
+and $k_0$ the kernel.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Each statement is a Boolean computation on natural numbers, evaluated by the kernel (\texttt{decide +kernel}). Matrices
+over $\F_{11}$ are coded as single numbers and the sets $\pm H_0$, $\pm H_1$ as bit masks, which are closed under negation
+by construction; coverage is checked over all $11^4$ matrices.
+\end{outline}
+
+By~(b), $\pm H_0$ and $\pm H_1$ are subgroups, the preimages in $\SL_2(\F_{11})$ of $H_0$ and $H_1$, and by
+\cref{lem:basegraph} $\pm H_e$ is the preimage of~$H_e$. So (c)--(e) say that the enumeration is the coset graph of
+\cref{lem:basegraph}, and~(g) that the labels are those of \cref{sec:datum}. So the Lean operator \lean{Luck.Op.opA} is
+the matrix of \cref{def:operator}, with no step resting on generated data.
+
+\begin{lemma}[Kernels are Tanner codes of covers]\label{lem:tanner}
+\notformalized
+Let $N$ be a normal subgroup of $F$ of finite index, and let $X_N\to X_0$ be the regular cover with group $F/N$ and
+voltages $\gamma_eN$, with the datum lifted from~$X_0$. Then
+\[
+  \dim_{\F_3}\ker\varphi_{F/N}(A)=2\dim_{\F_9}T_{\mathrm{tw}}(X_N).
+\]
+\end{lemma}
+\begin{informalproof}
+Restriction of scalars commutes with passing to $F/N$, and it doubles dimensions of kernels, so it suffices to show
+$\dim_{\F_9}\ker\varphi_{F/N}(A_9)=\dim_{\F_9}T_{\mathrm{tw}}(X_N)$. The vertices of $X_N$ are the pairs $(v,g)$ with
+$g\in F/N$, and an edge $e$ of $X_0$ from $v_0$ to $v_1$ lifts to the edges from $(v_0,g)$ to $(v_1,g\gamma_e)$. A row
+vector $x\in\F_9[F/N]^{55}$ assigns to each even vertex $(v_0,g)$ of $X_N$ the quartic form $f_{v_0,g}$ whose
+coefficients are the coefficients $x_{(v_0,c)}(g)$ of $g$ in $x_{(v_0,c)}$, $c=0,\dots,4$. Let $w$ be the function on the
+edges of $X_N$ whose value on an edge is the value of the form at its even end at the label of the edge. For $h\in F/N$,
+the coefficient of $h$ in $(x\bar A_9)_{(v_1,r)}$ is
+\[
+  \sum_{e}m_1(e)_r\sum_{c}m_0(e)_c\,x_{(v_0,c)}(h\gamma_e^{-1})=\sum_{e}m_1(e)_r\,w(\tilde e),
+\]
+where $e$ runs over the edges of $X_0$ at $v_1$, $v_0$ is the even end of~$e$, and $\tilde e$ is the lift of $e$ with odd
+end $(v_1,h)$, whose even end is $(v_0,h\gamma_e^{-1})$. So it is the $r$-th parity check at the odd vertex $(v_1,h)$.
+The map $x\mapsto w$ is injective because evaluation of quartics at ten points is injective (\cref{lem:selfdual}), and its
+image is the set of edge functions whose restriction to every even vertex lies in the local code. The vectors
+$(m_1(e)_r)_e$, $r=0,\dots,4$, span the local code at the odd vertex, which is self-dual (\cref{lem:selfdual}); so the
+parity checks at $(v_1,h)$ vanish exactly when the restriction of $w$ to its edges lies in the local code there. Hence
+$\ker\varphi_{F/N}(A_9)\cong T_{\mathrm{tw}}(X_N)$.
+\end{informalproof}

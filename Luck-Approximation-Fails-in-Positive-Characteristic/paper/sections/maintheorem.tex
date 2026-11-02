@@ -1,0 +1,113 @@
+\section{The criterion and the main theorem}\label{sec:main}
+
+\subsection{A criterion for the failure of part (2)}\label{sec:criterion}
+
+\begin{lemma}[Subchains and frequent drops]\label{lem:frequent}
+\formal{LuckApproximation/Chains.lean}{Luck.Chain.comp,Luck.not_chainIndependence_of_frequently}
+A subsequence of a chain is a chain. Let $A$ be an $n\times m$ matrix over $K[G]$ and let $(G_i)$, $(G'_i)$ be chains of
+$G$. If $\rk_{G/G_i}(A)\to l$ and $\rk_{G/G'_i}(A)\le l-\eps$ for infinitely many $i$, for some $\eps>0$, then part~(2)
+fails for $G$ over~$K$.
+\end{lemma}
+\begin{outline}
+The infinitely many indices with $\rk_{G/G'_i}(A)\le l-\eps$ form a subchain. Its ranks lie in $[0,n]$
+(\cref{lem:basic}), so by Bolzano--Weierstrass a further subchain converges, to a limit at most $l-\eps$. Two chains
+then have convergent rank sequences with different limits.
+\end{outline}
+
+\begin{proposition}[The criterion]\label{prop:criterion}
+\formal{LuckApproximation/Chains.lean}{Luck.Chain.kerSeq,Luck.Chain.rkSeq_eq_sub,Luck.not_chainIndependence_of_full}
+Let $A$ be an $n\times n$ matrix over $K[G]$, and let $(G_i)$, $(G'_i)$ be chains of~$G$. If $\rk_{G/G_i}(A)\to n$ and the
+normalized kernel $\dim_K\ker\varphi_{G/G'_i}(A)/\abs{G:G'_i}$ does not tend to~$0$, then part~(2) fails for $G$
+over~$K$.
+\end{proposition}
+\begin{outline}
+The normalized kernel is non-negative, so if it does not tend to~$0$ it is at least some $\eps>0$ infinitely often.
+There $\rk_{G/G'_i}(A)\le n-\eps$ (\cref{lem:basic}), and \cref{lem:frequent} applies with $l=n$.
+\end{outline}
+
+The criterion is general: it needs one chain on which a square matrix becomes asymptotically injective and one on which it
+does not.
+
+\paragraph{Inner rank.} If $A=PQ$ with $P$ of size $n\times r$, then $\varphi_{G/N}(A)$ factors through $K[G/N]^r$, so
+$\rk_{G/N}(A)\le r$ at every level. Hence every limit of a rank sequence is at most the inner rank of~$A$, the least such
+$r$. For a free group, the inner rank over $K[F]$ equals the rank over Cohn's universal division ring of
+fractions~\cite{Cohn2006,JaikinSouza2026}. For the matrix of \cref{sec:operator}, Theorem~P gives the limit $110$ along some
+chain, so its inner rank is $110$: the first chain of the criterion is the best possible, and the second is the whole
+difficulty.
+
+\subsection{Base change}\label{sec:basechange}
+
+\begin{lemma}[Kernels grow under field extension]\label{lem:basechange}
+\formal{LuckApproximation/BaseChange.lean}{Luck.quotientMatrix_map,Luck.finrank_ker_le_map}
+Let $k\to K$ be a field extension, $A$ a matrix over $k[G]$ and $A_K$ its image over $K[G]$. For every normal subgroup $N$
+of finite index, $\dim_k\ker\varphi_{G/N}(A)\le\dim_K\ker\varphi_{G/N}(A_K)$.
+\end{lemma}
+\begin{outline}
+Mapping coefficients commutes with passing to $G/N$. A $k$-basis of the kernel stays in the kernel over~$K$, and stays
+linearly independent: in the basis of group elements its coordinates are vectors over~$k$, and a family over $k$ is
+linearly independent over $K$ if it is over~$k$ (Mathlib's \texttt{linearIndependent\_algebraMap\_comp\_iff}).
+\end{outline}
+
+Equality holds, since the rank of a matrix over a field does not change under extension, but only the inequality enters
+the proofs: it carries a large kernel over $\F_3$ to every field of characteristic~$3$.
+
+\subsection{The hypothesis and Theorem A}\label{sec:thmA}
+
+\begin{definition}[The hypothesis]\label{def:hypothesis}
+\formal{LuckApproximation/Hypothesis.lean}{Luck.Op.kerDensity,Luck.Op.KernelNotNegligible,Luck.Op.KernelDensityHypothesis}
+For a chain $(G_i)$ of $F$, the normalized kernel of $A$ at level $i$ is
+$\dim_{\F_3}\ker\varphi_{F/G_i}(A)/\abs{F:G_i}$ (\lean{Luck.Op.kerDensity}). The hypothesis \emph{(KN)} is that along some
+chain of~$F$ the normalized kernel of $A$ does not tend to~$0$. The hypothesis \emph{(KD)} is that along some chain there is $\eps>0$ with
+$\eps\abs{F:G_i}\le\dim_{\F_3}\ker\varphi_{F/G_i}(A)$ for every~$i$.
+\end{definition}
+
+\begin{lemma}\label{lem:KDtoKN}
+\formal{LuckApproximation/Hypothesis.lean}{Luck.Op.kernelNotNegligible_of_density}
+(KD) implies (KN).
+\end{lemma}
+\begin{outline}
+A sequence bounded below by $\eps>0$ does not tend to~$0$.
+\end{outline}
+
+Theorem~H (\cref{sec:hypothesis}) proves (KD) with $\eps=20$ along the congruence chain, and hence (KN).
+
+\begin{theorem}[Theorem A]\label{thm:A}
+\partformal{LuckApproximation/Main.lean}{Luck.Op.kerDensity_le,Luck.Op.chainIndependence_fails,Luck.Op.CharThreeChainTarget,Luck.Op.charThreeChainTarget,Luck.Op.charThreeChainTarget_of_density}{the hypothesis (KN), an explicit hypothesis of the Lean theorem, which follows from Theorem~H (\cref{thm:H}).}
+For every field $K$ of characteristic~$3$, part~(2) of the conjecture fails for the free group $F$ of rank~$89$
+over~$K$.
+\end{theorem}
+\begin{outline}
+By Theorem~P there is a chain along which $\rk(A_K)\to110$. Let $(G'_i)$ be a chain as in (KN). By \cref{lem:basechange},
+the normalized kernel of $A_K$ over $K$ is at least that of $A$ over $\F_3$, so it does not tend to~$0$ either
+(\lean{Luck.Op.kerDensity_le}). \Cref{prop:criterion} applies to~$A_K$.
+\end{outline}
+
+The proof gives more. With Theorem~H, the rank sequence of $A_K$ is at most $110-20=90$ along the whole congruence
+chain, so a subchain converges to a limit at most $90$, while every pro-$3$-cofinal chain with $3$-group quotients has
+limit $110$ (Theorem~P). The Lean theorem states the conclusion as \lean{Luck.ChainIndependence} failing, for every
+$K$ (\lean{Luck.Op.CharThreeChainTarget}).
+
+\begin{corollary}[The conjecture is false]\label{cor:target}
+\partformal{LuckApproximation/Main.lean}{Luck.Op.luckApproximation_fails,Luck.Op.mainTheorem,Luck.Op.conjecture_false}{the hypothesis (KN), which follows from Theorem~H.}
+Parts (1) and (2) do not both hold for $F$ over $\F_3$. Hence the target $\exists\,r,\ \neg$\,L\"uck approximation over
+$\F_3$ for the free group of rank~$r$ holds, and the arbitrary-field L\"uck approximation conjecture is false.
+\end{corollary}
+\begin{outline}
+Theorem~A with $K=\F_3$ refutes part~(2), hence the conjunction; \lean{Luck.not_conjecture_of_target} gives the last
+claim.
+\end{outline}
+
+\begin{corollary}[Unconditional form]\label{cor:unconditional}
+\formal{LuckApproximation/Main.lean}{Luck.Op.kernel_density_tendsto_zero,Luck.Op.kernel_density_tendsto_zero_of_luck}
+If part~(2) holds for $F$ over some field of characteristic~$3$, then the normalized kernel of $A$ over $\F_3$ tends to $0$
+along every chain of~$F$. The same holds if parts (1) and (2) hold over~$\F_3$.
+\end{corollary}
+\begin{outline}
+Otherwise (KN) holds along some chain, and Theorem~A refutes the assumption.
+\end{outline}
+
+Conversely, if (KN) fails, then the ranks of $A$ tend to $110$ along every chain (\cref{lem:basic}), and by equality in
+\cref{lem:basechange} so do those of $A_K$. So for this matrix the limits along all chains with convergent rank sequences
+agree exactly when its normalized kernel tends to~$0$ along every chain, and (KN) cannot be weakened. The formal and
+informal parts meet in this one statement about one matrix: \cref{cor:unconditional} is proved in Lean without
+hypotheses, and Theorem~H, proved in the next section, contradicts its conclusion along the congruence chain.

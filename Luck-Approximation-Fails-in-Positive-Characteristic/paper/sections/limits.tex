@@ -1,0 +1,79 @@
+\section{What a proof of the hypothesis needs}\label{sec:limits}
+
+Theorem~A is formalized except for hypothesis~(KN). This section explains why (KN), and any statement that could replace it, needs an argument about
+infinitely many levels, and why for the matrix~$A$ that argument cannot apply to all covers of the base graph;
+heuristically, it must use the arithmetic of congruence covers. Nothing in this section is used in a proof.
+
+\begin{remark}[Limits ignore finitely many levels]\label{rem:finite}
+Part~(2) of the conjecture is a statement about limits, and changing a rank sequence at finitely many places changes no
+limit. So no finite computation, however large, can refute part~(2): a refutation must prove something about infinitely
+many levels of some chain. The proof of Theorem~P does this with a finite certificate (\cref{lem:certificate}) and two
+uniform arguments, the induction over the coordinates $u^k$ in \cref{lem:cyclic} and the monotonicity of
+\cref{lem:monotone}. For the congruence chain the kernel is certified at $k=0$ (\cref{rem:base}) and computed at $k=1$
+(\cref{rem:numerics}), but no uniform step that carries them to all levels is known apart from \cref{sec:hypothesis}.
+\end{remark}
+
+\begin{remark}[No monotonicity along $\ell$-steps]\label{rem:ellsteps}
+For a prime $\ell\ne3$, call $N'\le N$ an $\ell$-step if $N/N'$ is an $\ell$-group. The steps of the congruence chain are
+$11$-steps, and along $\ell$-steps, in characteristic~$3$, the normalized kernel can go up or down. Let $x$ be a free
+generator of $F$ and consider the cyclic $11$-cover $F\to\Z/11$ that sends $x$ to a generator. Up: the $1\times1$ matrix
+$a=1+x+\dots+x^{10}$ over $\F_3[F]$ has normalized kernel $0$ at $F$ itself, where $a\mapsto11\ne0$, and $10/11$ on the
+cyclic $11$-cover, where $a$ maps to the norm element, whose kernel is the augmentation ideal. Down: the $1\times1$ matrix
+$1-x$ has normalized kernel $1$ at $F$ and $1/11$ on the cyclic $11$-cover. So, unlike \cref{lem:monotone}, no general
+inequality passes a bound from one level of the congruence chain to the next. (\Cref{rem:numerics} records the values for
+$A$ itself at $k=0,1$.)
+\end{remark}
+
+\begin{remark}[Congruence separates the chains]\label{rem:congruence}
+Proof sketch only: no proper normal subgroup of $F$ of $3$-power index is a congruence subgroup, that is, contains some
+$\psi^{-1}(\Gamma^+(\mathfrak m)\cap\Gamma^+(\lambda_0))$, where for an ideal $\mathfrak m$ prime to~$3$ we write $\Gamma^+(\mathfrak m)$
+for the image in $\Gamma^+$ of $\{\gamma\in I[1/3]^1:\gamma\equiv1\pmod{\mathfrak m}\}$. Indeed, by strong approximation
+the closure of (a lift to $I[1/3]^1$ of) $\Gamma^+(\lambda_0)$ in $\prod_{\mathfrak q\nmid3}\SL_2(\OO_{E,\mathfrak q})$ is
+$\mathcal P\times\prod_{\mathfrak q\nmid3\lambda_0}\SL_2(\OO_{E,\mathfrak q})$, with
+$\mathcal P=\ker(\SL_2(\Z_{11})\to\SL_2(\F_{11}))$ a pro-$11$ group. A finite $3$-group quotient of this product
+is trivial on $\mathcal P$ and on the pro-$p$ congruence kernel of each other factor ($p\ne3$ the residue
+characteristic), and what remains is a product of groups $\SL_2(\F_q)$ with $q\ge4$, since the residue fields of $E$ away
+from~$3$ are $\F_4,\F_5,\F_{11},\dots$; these groups are perfect. The same argument shows that $N_1$ is the only congruence
+subgroup of $F$ with quotient $\F_{11}^3$, because the Frattini quotient of $\mathcal P$ is
+$\mathfrak{sl}_2(\F_{11})\cong\F_{11}^3$.
+
+So the random $\F_{11}^3$-covers of \cref{rem:numerics} are not congruence covers, and every proper level of a
+pro-$3$-cofinal chain with $3$-group quotients is a non-congruence subgroup; along such chains the normalized kernel tends
+to~$0$ (Theorem~P). Independently of this sketch, Theorem~P shows that no proof of (KN) for the matrix~$A$ can apply to
+every cover of~$X_0$. Nor can it work in characteristic~$0$: for an integral lift of $A$ the ranks over $\Q$ dominate
+those over~$\F_3$, so they tend to $110$ along the chains of Theorem~P, hence, by L\"uck's theorem, along every chain.
+Heuristically, the property that distinguishes the congruence covers is their moduli interpretation, as supersingular
+loci of Hilbert modular surfaces with level structure, and that is what \cref{sec:hypothesis} uses.
+\end{remark}
+
+\begin{remark}[Twists only move the problem]\label{rem:twists}
+A step $N_k\to N_{k+1}$ has abelian quotient $\F_{11}^3$, of order prime to~$3$, so after extending scalars to contain the
+$11$-th roots of unity, the kernel at level $k+1$ is the sum over the $11^3$ characters $\xi$ of $N_k/N_{k+1}$ of the kernels
+of $\xi$-twisted operators on the level-$k$ cover. Keeping the normalized kernel at~$\eps$ requires the twisted kernels to
+have normalized dimension~$\eps$ on average, a statement of the same kind about forms with a character.
+\Cref{rem:numerics} records the twisted kernels at $k=1$.
+\end{remark}
+
+\begin{remark}[The shape of a counterexample]\label{rem:shape}
+Over a free group every limit of a rank sequence is at most the inner rank (\cref{sec:criterion}). A counterexample to
+part~(2) consists of two chains with convergent rank sequences and limits $l_1>l_2$, so along the second chain the ranks
+are at most $l_1-\eps$ infinitely often. For a square matrix whose inner rank is reached along some chain, this is the
+shape of~(KN), and \cref{rem:finite} applies. A counterexample of another shape would still need an argument about
+infinitely many levels.
+\end{remark}
+
+\paragraph{What a complete formalization needs.} Formalizing \cref{sec:hypothesis} needs Hilbert modular surfaces and
+their toroidal compactifications over $\Z_{(3)}$, coherent cohomology with Serre duality and Riemann--Roch for surfaces,
+the logarithmic Kodaira--Spencer isomorphism, partial Hasse invariants, and the uniformization of the supersingular
+locus. None of this is in Mathlib. Two smaller steps would move parts of the informal argument into Lean.
+\begin{itemize}
+\item \emph{The explicit chain.} The groups $N_k$ can be defined in Lean by $89$ explicit matrices modulo $11^{k+1}$, the
+images of the generators. Strictness follows from the binomial theorem: if $g\equiv1$ modulo $11^k$ but not modulo
+$11^{k+1}$, then the same holds for $g^{11}$ one level deeper. Trivial intersection follows from the injectivity of
+$F\to\Gamma^+(\lambda_0)$, which a ping-pong argument on the ends of~$\Tree$ would prove (Mathlib has the ping-pong lemma
+for free groups). Hypothesis (KD) would then concern an explicit chain.
+\item \emph{More levels.} A direct certificate for the kernel at $k=1$ would have about $4\cdot10^9$ entries ($29542$
+vectors of length $146410$), beyond the reach of the kernel checker. Through the character decomposition of
+\cref{rem:twists} it would be $1331$ small certificates over $\F_{3^5}$ and a formal Fourier decomposition. This would
+add one level and would not change the logical status of Theorem~A.
+\end{itemize}

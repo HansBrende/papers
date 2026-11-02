@@ -1137,3 +1137,24 @@ import LeanMachine
 
 -- An explicit logarithmic radius for polynomial ball-growth estimates.
 #print axioms LeanMachine.exists_logarithmic_radius
+
+-- FreeGroupResiduallyP.lean
+#print axioms LeanMachine.freeGroup_residually_pGroup
+#print axioms LeanMachine.ResidualP.isPGroup_quotient_iff
+#print axioms LeanMachine.ResidualP.goodP_of_residual
+#print axioms LeanMachine.ResidualP.exists_goodP_lt
+
+-- PackedMatrixCheck.lean
+#print axioms LeanMachine.PackedCheck.prodOK_sound
+#print axioms LeanMachine.PackedCheck.smallDigits_spec
+#print axioms LeanMachine.PackedCheck.pk_spec
+#print axioms LeanMachine.PackedCheck.packedSmall_of_check
+
+-- KernelCertificate.lean
+#print axioms LeanMachine.KernelCertificate.finrank_ker_add_le_of_minor
+#print axioms LeanMachine.KernelCertificate.connecting_injective
+
+-- CyclicBandedKernel.lean
+#print axioms LeanMachine.CyclicAlg.u_pow_eq_zero
+#print axioms LeanMachine.CyclicAlg.finrank_RN
+#print axioms LeanMachine.CyclicAlg.finrank_ker_le

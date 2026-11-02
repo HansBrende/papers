@@ -1,0 +1,98 @@
+\section{Introduction}\label{sec:intro}
+
+\paragraph{The problem.} Let $G$ be a group, $K$ a field and $A$ an $n\times m$ matrix over the group algebra $K[G]$. For
+a normal subgroup $N$ of finite index, right multiplication by the image of $A$ is a $K$-linear map
+$\varphi_{G/N}(A)\colon K[G/N]^n\to K[G/N]^m$, and
+\[
+  \rk_{G/N}(A)=\frac{\dim_K\im\varphi_{G/N}(A)}{\abs{G:N}}
+\]
+is its normalized rank. A \emph{chain} is a strictly decreasing sequence $G_0>G_1>\cdots$ of normal subgroups of finite
+index with trivial intersection. Over subfields of~$\C$ the sequence $\rk_{G/G_i}(A)$ converges along every chain of a
+residually finite group, to a limit that does not depend on the chain: this is L\"uck's approximation
+theorem~\cite{Luck1994} and its extension to all subfields of~$\C$ (see~\cite[Section~1 and Theorem~10.1]{JaikinSurvey2019}).
+In his survey of $L^2$-Betti numbers and their analogues in positive characteristic, Jaikin-Zapirain conjectures the
+same over an arbitrary field~\cite[Conjecture~1.2]{JaikinSurvey2019}: for every group $G$, every field~$K$ and every
+matrix~$A$ over $K[G]$,
+\begin{enumerate}[label=(\arabic*)]
+\item along every chain the sequence $\rk_{G/G_i}(A)$ converges, and
+\item the limit does not depend on the chain.
+\end{enumerate}
+The survey calls parts (1) and (2) together the L\"uck approximation conjecture; its part~(3), the strong Atiyah
+conjecture, is not considered here. The same two statements are parts (1) and (2) of Conjecture~2 of
+Jaikin-Zapirain and Souza~\cite{JaikinSouza2026}. In positive characteristic both parts are known for amenable
+groups~\cite[Section~1]{JaikinSurvey2019}, \cite[Section~8]{JaikinSouza2026}, and along the chains obtained from suitable
+embeddings into pro-$p$ groups the limit exists and is a rank over a division ring~\cite[Theorem~8.1]{JaikinSouza2026}.
+In a blog post Jaikin-Zapirain expects that in positive characteristic the conjecture holds only under conditions on the
+completion, and states a refined conjecture for embeddings into virtually pro-$p$ groups~\cite{JaikinBlog2024}.
+
+\paragraph{The results.} Let $F$ be the free group of rank~$89$. In \cref{sec:operator} we define one matrix
+$A\in M_{110}(\F_3[F])$, the Tanner operator of the Goren--Oort configuration of a Hilbert modular surface of
+$\Q(\sqrt5)$ in characteristic~$3$, written over~$\F_3$. For a field $K$ of characteristic~$3$ let $A_K$ be its image
+under $\F_3\to K$.
+
+\begin{itemize}
+\item \textbf{Theorem~A} (\cref{thm:A}). For every field $K$ of characteristic~$3$, part~(2) of the conjecture fails for
+$F$ over~$K$. Hence parts (1) and (2) do not both hold for $F$ over~$\F_3$, and the arbitrary-field conjecture is false
+(\cref{cor:target}).
+\item \textbf{Theorem~P} (\cref{thm:P}). Along every chain of $F$ with $3$-group quotients that is cofinal in the pro-$3$
+topology, $\rk(A_K)\to110$, the full rank.
+\item \textbf{Theorem~H} (\cref{thm:H}). Along the congruence chain $(N_k)_{k\ge0}$ defined by a prime $\lambda_0$ above
+$11$, whose quotients $F/N_k$ are $11$-groups of order $11^{3k}$,
+\[
+  \dim_{\F_3}\ker\varphi_{F/N_k}(A)\ \ge\ 22\,\abs{F:N_k}-2\ \ge\ 20\,\abs{F:N_k}\qquad(k\ge0).
+\]
+\end{itemize}
+Theorem~A follows from Theorems P and~H by a general criterion (\cref{prop:criterion}): for a square matrix, a full-rank
+limit along one chain and a normalized kernel that does not tend to~$0$ along another chain refute part~(2). By
+Bolzano--Weierstrass a subchain of $(N_k)$ then has a limit at most $90$, while every pro-$3$-cofinal chain with
+$3$-group quotients has limit~$110$. The deduction uses only that the normalized kernel of $A$ does not tend to~$0$ along
+some chain, and for this matrix nothing weaker suffices: the limits of $A_K$ along all chains with convergent rank
+sequences agree exactly when its normalized kernel tends to~$0$ along every chain (\cref{sec:thmA}).
+
+One further formal result puts Theorem~A in context: in characteristic~$p$ the ranks of every matrix over every group
+converge along every chain with $p$-group quotients (\cref{thm:convergence}, a known fact that we formalize), so a
+counterexample to part~(1) must use other chains. Moreover, by Theorem~P the bad chain cannot be pro-$3$-cofinal with
+$3$-group quotients; the congruence chain is pro-$11$. This agrees with Jaikin-Zapirain's expectation, and leaves his
+refined conjecture for virtually pro-$p$ completions untouched.
+
+\paragraph{How to read the paper and its formal proofs.} Every numbered result states its status. A line
+\textsf{Lean:} names the Lean declarations of a formalized result and their file, and the result is followed by an
+outline of the formal proof; the Lean statement is authoritative. A line \textsf{Lean (partial):} names what is
+formalized and what is not. Results marked \textsf{Not formalized} have complete proofs in the text. Remarks labelled as
+numerical, as proof sketches or as heuristics are not used in any proof.
+
+Everything is formalized except Theorem~H and the results used only in its proof: the lemmas of \cref{sec:hypothesis}
+and \cref{lem:basegraph,lem:selfdual,lem:tanner} of \cref{sec:operator}. The Lean matrix is defined by the construction
+of \cref{def:operator} itself, from the icosians. Generated data enter only as a coset certificate and packed caches,
+both checked by the kernel (\cref{lem:enumeration}, \lean{Luck.Con.blockNat_eq_cache}), and as free choices of a spanning
+tree, checked to be one, and of a voltage. The Lean form of Theorem~A (\lean{Luck.Op.chainIndependence_fails}) takes as an
+explicit hypothesis (\lean{Luck.Op.KernelNotNegligible}) that the normalized kernel of $A$ does not tend to~$0$ along some
+chain, which Theorem~H implies; it uses no axiom beyond \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound}. The proof of Theorem~H uses Riemann--Roch on a toroidal
+compactification of a Hilbert modular surface in characteristic~$3$, the partial Hasse invariants of Goren and the
+uniformization of the supersingular locus by Rapoport--Zink and Stamm; none of this is available in Mathlib. The formal
+statement of the conjecture (\cref{sec:prelim}) comes with two independent checks, described there.
+
+\paragraph{Related work.} L\"uck proved the approximation theorem for $L^2$-Betti numbers and rational
+matrices~\cite{Luck1994}; Jaikin-Zapirain's survey~\cite{JaikinSurvey2019} and the paper of Jaikin-Zapirain and
+Souza~\cite{JaikinSouza2026} develop the positive-characteristic theory through Sylvester rank functions and division
+rings. Monotonicity of normalized ranks along $p$-group extensions in characteristic~$p$, the key to Theorem~P, goes back
+to an argument of Bergeron, Linnell, L\"uck and Sauer~\cite[Lemma~4.1]{BLLS2014}. The geometry behind Theorem~H is the
+Goren--Oort stratification of Hilbert modular varieties~\cite{GorenOort2000,Goren2001}, the description of the
+non-ordinary locus of Hilbert--Blumenthal surfaces by Bachmat and Goren~\cite{BachmatGoren1999}, and its uniformization
+by Stamm and by Kudla--Rapoport~\cite{Stamm1997,KudlaRapoport1999}, through the Rapoport--Zink
+spaces~\cite{RapoportZink1996}.
+
+Two earlier papers, \emph{Covers and Local Generation in Linear Storage Codes} by Hans Brende and GPT-6
+Astra~\cite{Covers2026} and \emph{Bounded Nesting and Depth Reduction for Matrix Transposition on Tapes} by the present
+authors~\cite{BoundedNesting2026}, use Jaikin-Zapirain
+and Souza's approximation theorem along towers of covers that come from pro-$p$ embeddings. The second notes that along
+other towers, positive asymptotic rate for lifted binary codes would contradict the characteristic-$2$ case of the
+conjecture~\cite[Section~8.1]{BoundedNesting2026}. Theorem~A shows that in characteristic~$3$ such limits can depend on the
+tower (\cref{sec:open}).
+
+\paragraph{Organization.} \Cref{sec:prelim} states the conjecture and its formal version. \Cref{sec:operator} defines
+the matrix. \Cref{sec:threechains} proves Theorem~P and convergence along $p$-chains. \Cref{sec:main} proves the
+criterion and Theorem~A from the hypothesis. \Cref{sec:hypothesis} proves Theorem~H. \Cref{sec:limits} explains what a
+proof of the hypothesis needs and why it cannot be replaced by a computation, and \cref{sec:open} lists open problems. The
+appendices list the Lean declarations and explain how to build and check them.

@@ -1,0 +1,57 @@
+\section{Building and verifying the formalization}\label{sec:verify}
+
+The Lean project is the directory \path{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\path{lean-toolchain}, \path{lakefile.toml}, \path{lake-manifest.json}), and requires the repository's shared library
+\texttt{lean-machine} through a relative path, so the sibling directory \path{lean-machine/} must stay in place.
+Four modules of \texttt{lean-machine} come from this paper: \path{FreeGroupResiduallyP.lean} (free groups are residually
+finite $p$-groups), \path{PackedMatrixCheck.lean} (kernel checks of matrix identities over $\F_3$ by Kronecker
+substitution), \path{KernelCertificate.lean} (kernel bounds from an invertible minor and from an injective connecting
+map) and \path{CyclicBandedKernel.lean} (the basis $u^k$ of $K[\Z/N]$ when $u^N=0$, and banded kernels).
+
+\paragraph{Build.} With \texttt{elan} installed, run in \path{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library, in about $45$ seconds on a laptop.
+The three certificate files \path{CertB0.lean}, \path{CertB1.lean} and \path{CertRest.lean} are checked by
+\texttt{decide +kernel} and build in parallel. No heartbeat limit is changed.
+
+\paragraph{Axioms.} The file \path{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\path{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration named in the paper (\cref{sec:leanindex}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of
+the library or of the four modules above uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, or declares an
+\texttt{axiom}.
+
+\paragraph{The statement.} \path{Statement.lean} contains the definitions of \cref{sec:prelim}. It imports only Mathlib.
+\path{Sanity.lean} checks basic properties of the definitions (\cref{lem:basic}), \path{Literal.lean} contains the second,
+independent formalization and its equivalence proof, and \path{SemanticChecks.lean} the semantic checks. None of these
+three files is needed by the proof of Theorem~A apart from four lemmas of \path{Sanity.lean}.
+
+\paragraph{The construction and generated data.} \path{Construction.lean} defines the operator from the icosians
+(\cref{sec:matrix}); \path{Operator.lean} assembles \lean{Luck.Op.opA} from it. Three files are generated, and none is
+trusted: \path{ConData.lean} (the coset certificate, checked in \path{ConChecks.lean}), \path{Data.lean} (packed caches
+of the incidences and blocks, checked against the construction in \path{ConCache.lean}; the spanning tree, checked in
+\path{ConChecks.lean}; and the voltage~$\chi$, a free choice) and \path{CertData.lean} (the certificate of
+\cref{lem:certificate}). They are written by
+\begin{center}
+\path{python3 tools/gen_operator.py}
+\end{center}
+run in the paper directory; it needs \texttt{numpy} and regenerates the three files byte for byte. It uses
+\path{tools/icosian_graph.py}, which builds the icosians, the coset graph and the labels, and \path{tools/gf.py} for
+arithmetic in finite fields.
+
+\paragraph{Numerical remarks.} \path{tools/lambda_level1.py} computes the kernel at the first nested level of the
+congruence chain, with the arguments \texttt{untw} for the untwisted datum and \texttt{random}~$s$ for a random cover
+with seed~$s$ (\cref{rem:numerics}); it runs in a few seconds. \path{python3 tools/icosian_graph.py 11 tw untw} computes the base
+level, and \path{python3 tools/a5_checks.py} checks the finite group theory of \cref{lem:A5} in about half a minute.
+
+\paragraph{Where things are.} \path{Statement.lean} (the conjecture), \path{Construction.lean}, \path{ConData.lean}
+and \path{Operator.lean} (the matrix), \path{ConChecks.lean} (\cref{lem:enumeration}), \path{ConCache.lean} and
+\path{Bridge.lean} (the caches and the passage to the certificate), \path{CertChecks.lean}, \path{CertB0.lean}, \path{CertB1.lean}, \path{CertRest.lean} and \path{Level1.lean}
+(\cref{lem:certificate}), \path{CyclicTower.lean} (\cref{lem:cyclic}), \path{Monotone.lean} (\cref{lem:monotone} and
+\cref{thm:convergence}), \path{PChain.lean} (\cref{lem:pchain}), \path{Chains.lean} (\cref{lem:frequent} and
+\cref{prop:criterion}), \path{BaseChange.lean} (\cref{lem:basechange}), \path{Hypothesis.lean} (the hypotheses) and
+\path{Main.lean} (Theorems P and~A and their corollaries).

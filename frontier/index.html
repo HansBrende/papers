@@ -24,6 +24,7 @@ body { margin: 0; }
   --red: #d24a38;         /* impossible, unconditionally */
   --on-red: #ffffff;
   --orange: #f2a058;      /* one open hypothesis */
+  --orange-pale: #fbdcbc; /* with --orange: hatched = one open half-rate bound */
   --on-orange: #1a1d22;
   --yellow: #fbeaa9;      /* two open hypotheses */
   --on-yellow: #1a1d22;
@@ -40,7 +41,7 @@ body { margin: 0; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
-    --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --on-orange: #fff7ef;
+    --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --orange-pale: #5c3b1f; --on-orange: #fff7ef;
     --yellow: #5f5428; --on-yellow: #f6efd6; --green: #3fd07f; --dash: #c2cad6; --card: #141820;
     --focus: #7aa2ff; --link: #8fb3ff; color-scheme: dark;
   }
@@ -48,7 +49,7 @@ body { margin: 0; }
 :root[data-theme="dark"] {
   --link: #8fb3ff;
   --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
-  --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --on-orange: #fff7ef;
+  --red: #b8402f; --on-red: #ffffff; --orange: #b9732f; --orange-pale: #5c3b1f; --on-orange: #fff7ef;
   --yellow: #5f5428; --on-yellow: #f6efd6; --green: #3fd07f; --dash: #c2cad6; --card: #141820;
   --focus: #7aa2ff; color-scheme: dark;
 }
@@ -70,6 +71,7 @@ h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 
 .sw { width: 26px; height: 16px; border-radius: 3px; border: 1px solid var(--rule); flex: none; display: inline-block; }
 .sw.red { background: var(--red); border-color: transparent; }
 .sw.orange { background: var(--orange); border-color: transparent; }
+.sw.hatch { background: repeating-linear-gradient(135deg, var(--orange) 0 4px, var(--orange-pale) 4px 8px); border-color: transparent; }
 .sw.yellow { background: var(--yellow); border-color: transparent; }
 .sw.open { background: var(--paper); }
 .sw.dash { background: transparent; border: 2px dashed var(--dash); }
@@ -81,6 +83,7 @@ svg text { font-family: var(--label); fill: var(--ink); }
 .r:focus-visible .shape, .r.active .shape { stroke: var(--focus); stroke-width: 3.5; }
 .shape { stroke: none; }
 .f-red { fill: var(--red); } .f-orange { fill: var(--orange); } .f-yellow { fill: var(--yellow); } .f-open { fill: var(--paper); }
+.f-hatch { fill: url(#hatch); } .hatch-bg { fill: var(--orange-pale); } .hatch-fg { fill: var(--orange); }
 .ol { fill: none; stroke: var(--outline); stroke-width: 1.6; pointer-events: none; }
 .t-red { fill: var(--on-red) !important; } .t-orange { fill: var(--on-orange) !important; } .t-yellow { fill: var(--on-yellow) !important; }
 .t-muted { fill: var(--muted) !important; }
@@ -125,6 +128,7 @@ a:hover { text-decoration-thickness: 2px; }
   <div class="legend" role="list" aria-label="Legend">
     <div class="key" role="listitem"><span class="sw red"></span>impossible, unconditionally</div>
     <div class="key" role="listitem"><span class="sw orange"></span>impossible if one open statement holds</div>
+    <div class="key" role="listitem"><span class="sw hatch"></span>impossible if one open half-rate bound holds (asks more than the crux)</div>
     <div class="key" role="listitem"><span class="sw yellow"></span>impossible if two open statements hold</div>
     <div class="key" role="listitem"><span class="sw open"></span>open</div>
     <div class="key" role="listitem"><span class="sw dash"></span>overlay: changes the hypothesis, not the colour</div>
@@ -138,6 +142,10 @@ a:hover { text-decoration-thickness: 2px; }
         <clipPath id="cLE"><circle cx="470" cy="375" r="265"></circle></clipPath>
         <clipPath id="cOb"><circle cx="470" cy="405" r="195"></circle></clipPath>
         <clipPath id="cD"><circle cx="330" cy="330" r="165"></circle></clipPath>
+        <pattern id="hatch" patternUnits="userSpaceOnUse" width="9" height="9" patternTransform="rotate(45)">
+          <rect class="hatch-bg" width="9" height="9"></rect>
+          <rect class="hatch-fg" width="4.5" height="9"></rect>
+        </pattern>
       </defs>
       <text x="14" y="26" class="tiny t-muted">All deterministic multitape TMs that transpose · white = open</text>
       <rect x="10" y="38" width="980" height="672" rx="6" class="f-open" style="stroke: var(--rule); stroke-width: 1.5"></rect>
@@ -154,9 +162,10 @@ a:hover { text-decoration-thickness: 2px; }
       <g class="r" tabindex="0" data-id="leOpen" aria-label="Low adaptivity without bounded entry">
         <circle class="shape f-open" cx="470" cy="375" r="265"></circle>
       </g>
-      <!-- 4. bounded entry on every tape: Corollary F'' (low adaptivity), Corollary RV (any adaptivity, paper 11) -->
+      <!-- 4. bounded entry on every tape: Corollary F'' (low adaptivity), Corollary RV (any adaptivity, paper 11);
+           hatched: the remaining hypothesis is a half-rate bound for the machine's own relations -->
       <g class="r" tabindex="0" data-id="lowad" aria-label="Every cell of every tape entered O(1) times">
-        <circle class="shape f-orange" cx="300" cy="312" r="100"></circle>
+        <circle class="shape f-hatch" cx="300" cy="312" r="100"></circle>
       </g>
       <!-- 5. oblivious: deep nesting, two hypotheses -->
       <g class="r" tabindex="0" data-id="deep" aria-label="Oblivious with deep nesting">
@@ -181,7 +190,7 @@ a:hover { text-decoration-thickness: 2px; }
         <text x="440" y="333" text-anchor="middle" class="tiny t-red" style="font-weight:700">families</text>
       </g>
 
-      <!-- 10. oblivious, code of bounded merge depth: Q9.1 alone (paper 11, Corollary HC*) -->
+      <!-- 10. oblivious, code of bounded merge depth: the crux for ball systems alone (paper 11, after Corollary HC*) -->
       <g class="r" tabindex="0" data-id="merge" aria-label="Oblivious, code of bounded merge depth">
         <circle class="shape f-orange" cx="606" cy="332" r="29"></circle>
         <text x="606" y="330" text-anchor="middle" class="tiny t-orange" style="font-weight:700">bounded</text>
@@ -219,7 +228,7 @@ a:hover { text-decoration-thickness: 2px; }
 
         <text x="300" y="262" text-anchor="middle" class="lbl t-orange">Each cell entered</text>
         <text x="300" y="279" text-anchor="middle" class="lbl t-orange">O(1) times</text>
-        <text x="300" y="296" text-anchor="middle" class="tiny t-orange">every tape: needs Q9.1 (F″, RV)</text>
+        <text x="300" y="296" text-anchor="middle" class="tiny t-orange">needs a half-rate bound (F″, RV)</text>
 
         <text x="352" y="405" text-anchor="middle" class="sub t-orange" style="font-weight:600">needs the crux</text>
         <text x="352" y="420" text-anchor="middle" class="tiny t-orange">Theorems F, B, M + D</text>
@@ -246,7 +255,8 @@ a:hover { text-decoration-thickness: 2px; }
         <text x="790" y="210" class="hdr">HIGH ADAPTIVITY</text>
         <text x="790" y="227" class="sub">traces carry about L/2 bits or more</text>
         <text x="790" y="244" class="tiny t-muted">no reduction to coding known; sweeps and</text>
-        <text x="790" y="259" class="tiny t-muted">fold-back, and input steering given Q9.1</text>
+        <text x="790" y="259" class="tiny t-muted">fold-back; input steering given a</text>
+        <text x="790" y="274" class="tiny t-muted">half-rate bound (paper 11)</text>
         <text x="185" y="334" text-anchor="middle" class="tiny t-muted">open</text>
       </g>
 
@@ -288,22 +298,38 @@ a:hover { text-decoration-thickness: 2px; }
     <h2>How the colours are decided</h2>
     <p><b>Theorem D</b> of the fourth paper splits impossibility for oblivious machines into two statements. <b>Depth reduction
       (TCP)</b>: a genie revealing εL bits cuts the machine's time–space dependency graph to bounded depth. <b>The crux</b>: index codes
-      for the side information of the remaining bounded-depth cones need many bits. <i>Directed Recovery Structures</i> turns the crux into
-      one machine-free storage-code question, Question 9.1.</p>
+      for the side information of the remaining bounded-depth cones need many bits. <i>Directed Recovery Structures</i> proposed a
+      machine-free sufficient condition for the crux, Question 9.1: rate at most ½ for every storage code on recovery relations of bounded
+      degree with paired-distance separation. Paper 13 answers it negatively, so the map uses only statements about the machine's own
+      relations.</p>
     <p>A piece is orange when one of the two is proved there, yellow when neither is. The red lens has both: depth reduction (Theorems F, B,
-      M) and a proved half-rate bound for its cone relations (papers 7, 8 and 10 together). Adaptive machines enter only through
-      Corollary F″, which freezes the most likely trace.</p>
+      M) and a proved half-rate bound for its cone relations (papers 7, 8 and 10 together). Hatched orange marks a piece whose one remaining
+      statement is a half-rate bound for the machine's own relations. That asks more than the crux, which needs only rate bounded away
+      from 1, and since paper 13 it has no support from a machine-free statement. Adaptive machines enter through Corollary F″, which
+      freezes the most likely trace, and through paper 11.</p>
     <p>Paper 9 adds a third route that needs no coding question. For an oblivious machine whose head excursions overlap boundedly,
       complete source certificates on the actual return geometry show directly that the machine is wrong on most inputs, provided only
       a few excursions are large. That is the small red island inside the depth-reduction region.</p>
-    <p>Paper 11 adds three things. Given Question 9.1, hop charging excludes every oblivious transposer whose code merges
+    <p>Paper 11 adds three things. Given the crux for ball systems, hop charging excludes every oblivious transposer whose code merges
       deep data lineages only boundedly often, on every schedule however deeply nested (the orange island in the deep-nesting
-      piece; for linear codes the linear crux suffices). For adaptive machines, bounded entry on every tape, the input tape
-      included, is excluded at any adaptivity (Corollary RV), and a machine whose work tapes have bounded entry must carry
-      about L/2 bits of the data in the coarse motion of its input head (Corollary IS). Unconditionally, paper 9's exclusions
+      piece; for linear codes the linear crux suffices). Given a half-rate bound for the relations of its coarse-skeleton classes,
+      bounded entry on every tape, the input tape included, is excluded at any adaptivity (Corollary RV, the hatched disc), and a
+      machine whose work tapes have bounded entry must carry about L/2 bits of the data in the coarse motion of its input head
+      (Corollary IS). Paper 11 states these results under Question 9.1, but its proofs use it only for the machine's own relations,
+      inside balls and of skeleton classes, and for hop charging the crux for ball systems serves as well. Unconditionally, paper 9's
+      exclusions
       extend to machines of sufficiently low adaptivity (Theorem LA), and every linear-time transposer, adaptive or not, runs
       an external-memory transposition with O(d) I/Os that is oblivious on 2<sup>L−O(d)</sup> inputs (Theorem EM), so an I/O
       lower bound without the indivisibility assumption would refute (T).</p>
+    <p>Paper 13 answers Question 9.1 negatively. Twisted Goren–Oort Tanner codes give recovery relations of bounded, though
+      astronomically large, degree on which every paired distance tends to infinity, with storage codes of rate above 0.5021, and
+      binary ones above 0.5013; the guaranteed rates approach 4−2√3 ≈ 0.536. Forgetting directions, it also answers the fourth paper's
+      undirected crux (its Question 6.1) negatively. Its relations are not known to arise from tape machines, and its codes are not shown
+      to have rate near 1, which a transposer needs, so no piece changes colour. What changes is the evidence. An impossibility proof
+      through storage codes must use the structure of tape computations, not only bounded degree and paired distances; a half-rate
+      bound on a machine's own relations now stands on its own (hence the hatching); and a construction now knows one way to beat rate ½:
+      expansion, a two-class twisted structure and algebraic local codes. Expanding dependency structures are compatible with tape
+      geometry (papers 4 and 8), but rate near 1 would need a different mechanism.</p>
     <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
       machines (Harvey and van der Hoeven). The best known upper bound is O(L·(log d)<sup>1−κ</sup>), from an unrefereed preprint.</p>
   </section>
@@ -325,8 +351,9 @@ a:hover { text-decoration-thickness: 2px; }
       <li><b>Paper 10</b> · <a href="https://hansbrende.github.io/papers/Directed-Reciprocity-and-Deep-Nesting-Bounds-for-Matrix-Transposition-on-Tapes/paper/main.pdf">Directed Reciprocity and Deep-Nesting Bounds for Matrix Transposition on Tapes</a></li>
       <li><b>Frozen gap-area memo</b> · <a href="https://hansbrende.github.io/papers/Source-Covers-and-Barriers-to-Tape-Transposition/memo-gap-area/paper/main.pdf">Frozen Gap Areas and the Sharpness of Source-Cover Certificates</a></li>
       <li><b>Paper 11</b> · <a href="https://hansbrende.github.io/papers/Merge-Depth-Input-Steering-and-the-Coding-Core-of-Matrix-Transposition-on-Tapes/paper/main.pdf">Merge Depth, Input Steering, and the Coding Core of Matrix Transposition on Tapes</a></li>
+      <li><b>Paper 13</b> · <a href="https://hansbrende.github.io/papers/Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/paper/main.pdf">Storage Codes above Half Rate under Paired-Distance Separation</a></li>
     </ul>
-    <p class="foot">Hans Brende and Claude Opus 5.5 (Anthropic) · status as of 30 October 2026 ·
+    <p class="foot">Hans Brende and Claude Opus 5.5 (Anthropic) · status as of 2 November 2026 ·
       <a href="https://github.com/HansBrende/papers">all papers</a></p>
   </section>
 </div>
@@ -349,26 +376,26 @@ const R = {
     text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too.",
     src: "Paper 2 (Local Coding Barriers), with its packet and adaptive-coding extensions" },
   high: { name: "High adaptivity", color: "open", status: "Open",
-    text: "Head movements carry about half of the input's information or more. No reduction to coding is known here. Unconditionally, every transposer needs Ω(log d) sweeps and fold-back of its head paths, and at block scale it runs an external-memory transposition with O(d) I/Os that is oblivious on 2^(L−O(d)) inputs, so an I/O lower bound without indivisibility would settle this piece too (paper 11, Theorem EM). Given Question 9.1, such a machine revisits some tape unboundedly often, and if its work tapes have bounded entry, the coarse motion of its input head carries about L/2 bits of the data (paper 11, Theorem L and Corollary IS); padding the input head meets that condition at no cost.",
+    text: "Head movements carry about half of the input's information or more. No reduction to coding is known here. Unconditionally, every transposer needs Ω(log d) sweeps and fold-back of its head paths, and at block scale it runs an external-memory transposition with O(d) I/Os that is oblivious on 2^(L−O(d)) inputs, so an I/O lower bound without indivisibility would settle this piece too (paper 11, Theorem EM). Given paper 11's half-rate bounds for the machine's own relations (Question 9.1 itself is false, paper 13), such a machine revisits some tape unboundedly often, and if its work tapes have bounded entry, the coarse motion of its input head carries about L/2 bits of the data (paper 11, Theorem L and Corollary IS); padding the input head meets that condition at no cost.",
     src: "Paper 1 (Theorems P′, M*), Adaptive Pass Bounds memo; paper 11, Theorems EM, L and Corollary IS" },
   dHigh: { name: "Depth reduction proved, but high adaptivity", color: "open", status: "Open",
-    text: "Each trace has bounded nesting load, home-based heads or the Theorem M structure, so depth reduction holds trace by trace. Theorem D needs a single schedule, though, and these machines have too many likely traces. When every cell of every tape is entered O(1) times, paper 11 makes the machine oblivious on each coarse-skeleton class and excludes it given Question 9.1 (the orange disc).",
+    text: "Each trace has bounded nesting load, home-based heads or the Theorem M structure, so depth reduction holds trace by trace. Theorem D needs a single schedule, though, and these machines have too many likely traces. When every cell of every tape is entered O(1) times, paper 11 makes the machine oblivious on each coarse-skeleton class and excludes it given a half-rate bound for the relations of those classes (the hatched disc).",
     src: "Paper 8, Theorems F and M; paper 4, Theorem B; paper 11, Theorem SE and Corollary RV" },
   leOpen: { name: "Low adaptivity, without bounded entry", color: "open", status: "Open",
     text: "The traces carry at most ηL bits, but some likely trace revisits cells unboundedly often. Corollary F″ is stated only when every likely trace enters each cell O(1) times.",
     src: "Paper 8, Corollary F″ (hypotheses)" },
-  lowad: { name: "Each cell of every tape entered O(1) times", color: "orange", status: "Impossible if Question 9.1 holds",
-    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given Question 9.1, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV).",
-    src: "Paper 8, Corollary F″; paper 11, Theorem SE and Corollary RV" },
+  lowad: { name: "Each cell of every tape entered O(1) times", color: "hatch", status: "Impossible if a half-rate bound for the machine's own relations holds",
+    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19).",
+    src: "Paper 8, Corollary F″ and Remark 6.5; paper 11, Theorem SE, Corollary RV and Remark 4.19; paper 13" },
   deep: { name: "Oblivious, deep nesting", color: "yellow", status: "Impossible if TCP and the crux hold",
-    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Depth reduction is open here; the deep-nesting pair is its sharpest test, and the evidence suggests TCP(2) fails. Paper 10 adds to that evidence: for pairs of block labels it proves failure witnesses in every range of the modulus, at two fixed shifts (one for symmetric pairs). Paper 11 proves, assuming its Conjecture S on straddle counts, that at one odd shift every pair of block labels of bounded length leaves a fixed fraction of the levels not doubly served, which is the eighth paper's Conjecture A″ for these labels (Theorem BP). If TCP fails, fixed-depth genie arguments cannot work for general computations (Theorem H of the information-depth memo). Paper 11 replaces schedule depth by the merge depth of the code: given Question 9.1, a transposer here must merge deep data lineages unboundedly often (the orange island), and what remains is depth reduction of the code's merge structure (Conjecture HV*).",
+    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Depth reduction is open here; the deep-nesting pair is its sharpest test, and the evidence suggests TCP(2) fails. Paper 10 adds to that evidence: for pairs of block labels it proves failure witnesses in every range of the modulus, at two fixed shifts (one for symmetric pairs). Paper 11 proves, assuming its Conjecture S on straddle counts, that at one odd shift every pair of block labels of bounded length leaves a fixed fraction of the levels not doubly served, which is the eighth paper's Conjecture A″ for these labels (Theorem BP). If TCP fails, fixed-depth genie arguments cannot work for general computations (Theorem H of the information-depth memo). Paper 11 replaces schedule depth by the merge depth of the code: given the crux for ball systems, a transposer here must merge deep data lineages unboundedly often (the orange island), and what remains is depth reduction of the code's merge structure (Conjecture HV*).",
     src: "Paper 4, Theorem D; paper 8, §5 and the corollary on where depth-robustness lives; paper 10, Theorems V*, LU and A; information-depth memo, Theorem H; paper 11, Theorems BP and L, Conjecture HV*" },
   obD: { name: "Oblivious, depth reduction proved", color: "orange", status: "Impossible if the crux holds",
-    text: "The machine is oblivious, and its heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F, B and M prove depth reduction, so the crux alone, or an affirmative answer to Question 9.1, excludes them. Paper 9 settles part of this piece without the crux (the red island). With boundedly overlapping excursions, what remains open must have more than q return families of linear size for every fixed q, and its large families cannot form two classes of non-overlapping spans plus one exception.",
+    text: "The machine is oblivious, and its heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F, B and M prove depth reduction, so the crux alone excludes them. Paper 9 settles part of this piece without the crux (the red island). With boundedly overlapping excursions, what remains open must have more than q return families of linear size for every fixed q, and its large families cannot form two classes of non-overlapping spans plus one exception.",
     src: "Paper 8, Theorem F, Corollaries F and F′, Theorem M; paper 4, Theorem B and Corollary B; paper 9, Theorem 4.2 and Corollaries 4.3 and 4.5" },
-  merge: { name: "Oblivious, code of bounded merge depth", color: "orange", status: "Impossible if Question 9.1 holds",
-    text: "Along every path from most outputs, the code merges deep data lineages (those carried through cells entered unboundedly often) at most s times, for a fixed s; the schedule may be deeply nested and revisit cells unboundedly often. Hop charging cuts only the hops at boundedly entered cells and charges the deep hops to checkpoints along the lineages, so the side information inside balls of bounded radius has a short index code. Given Question 9.1 this excludes the machine; for linear codes, the linear crux suffices.",
-    src: "Paper 11, Theorems HC and HC′, Corollaries HC and HC* (Lean)" },
+  merge: { name: "Oblivious, code of bounded merge depth", color: "orange", status: "Impossible if the crux for ball systems holds",
+    text: "Along every path from most outputs, the code merges deep data lineages (those carried through cells entered unboundedly often) at most s times, for a fixed s; the schedule may be deeply nested and revisit cells unboundedly often. Hop charging cuts only the hops at boundedly entered cells and charges the deep hops to checkpoints along the lineages, so the side information inside balls of bounded radius has a short index code. The crux for these ball systems therefore excludes the machine, and so does a half-rate bound for storage codes on relations inside balls, the form that the proof of Corollary HC* uses (the corollary is stated under Question 9.1, which is false); for linear codes, the linear crux suffices.",
+    src: "Paper 11, Theorems HC and HC′, Corollaries HC and HC* (Lean) and the crux for ball systems after Corollary HC*; paper 13" },
   geom: { name: "Boundedly overlapping excursions, few large return families", color: "red", status: "Impossible, unconditionally (Lean)",
     text: "A return family is one head excursion: all long hops of one head, on one side, around one turning point. Suppose an oblivious linear-time machine's family spans overlap at most N at a time, for a fixed N. If only a fixed number of families are large and every other family has at most εL hops, or if the large families split into two classes of non-overlapping spans plus one arbitrary family, then the machine is correct on at most 2^((1−ε)L) inputs. No coding question is left: complete source certificates on the actual geometry give the deficit directly. Economical source covers or globally shared raw support give further exclusions of the same kind, and the frozen gap-area memo excludes funnels and single-sweep terminal landings. Paper 11 extends these exclusions beyond oblivious machines: a machine with a trace of probability at least 2^(−ηL), for a small enough η, whose geometry has this structure does not transpose (Theorem LA).",
     src: "Paper 9, Corollaries 4.3, 4.4, 4.5 and 4.7, Theorems 4.2 and 4.6 (Lean); frozen gap-area memo, Theorems A and B (Lean); paper 11, Theorem LA (Lean)" },
@@ -383,11 +410,11 @@ const R = {
     src: "Paper 8, Lemma 7.3, Theorems D_lin and SH; paper 10, Theorem SH*; paper 11, Corollary HC" }
 };
 const QUESTIONS = {
-  deep: "Most likely here: oblivious, deep nesting on two heads, linear XOR coding, cone relations outside every proved class (degree four or more, or directed in-degree three where a vertex with three parents has a one-way child). It needs a depth-robust schedule, a scratch area of fewer than εL cells each visited unboundedly often, a Θ(log k) coding gain over routing, and coupling between groups of adjacent columns during the computation: narrow groups processed autonomously need an almost complete helper (paper 9). Given Question 9.1 its code must merge deep lineages unboundedly often, along a pattern without cheap cuts (paper 11); Tanner codes assembled from projective planes, with every coordinate recovered from one line, are ruled out as a building block (paper 11, Lemma PG).",
-  high: "Second: high adaptivity, where none of the oblivious-machine barriers apply; given Question 9.1 such a machine revisits some tape unboundedly often (paper 11)."
+  deep: "Most likely here: oblivious, deep nesting on two heads, linear XOR coding, cone relations outside every proved class (degree four or more, or directed in-degree three where a vertex with three parents has a one-way child). It needs a depth-robust schedule, a scratch area of fewer than εL cells each visited unboundedly often, a Θ(log k) coding gain over routing, and coupling between groups of adjacent columns during the computation: narrow groups processed autonomously need an almost complete helper (paper 9). Given the crux for ball systems, its code must merge deep lineages unboundedly often, along a pattern without cheap cuts (paper 11); Tanner codes assembled from projective planes, with every coordinate recovered from one line, are ruled out as a building block (paper 11, Lemma PG). Twisted Goren–Oort Tanner codes beat rate ½ on bounded-degree relations whose paired distances grow, but their guaranteed rates stay near 0.54 and their relations are not known to arise from tape machines (paper 13).",
+  high: "Second: high adaptivity, where none of the oblivious-machine barriers apply; given paper 11's half-rate bounds for the machine's own relations, such a machine revisits some tape unboundedly often (paper 11)."
 };
 const order = ["onetape","sweeps","movement","xor","packets","core","geom","obD","obPC","merge","lowad","linear","deep","leOpen","dHigh","high"];
-const chipText = { red: "unconditional", orange: "one open statement", yellow: "two open statements", open: "open", dash: "overlay" };
+const chipText = { red: "unconditional", orange: "one open statement", hatch: "one open half-rate bound", yellow: "two open statements", open: "open", dash: "overlay" };
 const cards = document.getElementById("cards");
 for (const id of order) {
   const r = R[id];

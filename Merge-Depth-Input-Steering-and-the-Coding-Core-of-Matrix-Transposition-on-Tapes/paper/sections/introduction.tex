@@ -29,6 +29,20 @@ given [Q9.1], to bounded-entry machines whose traces carry at most $\eta L$ bits
 $\eta<\frac12$~\cite[Corollary~6.4]{BoundedNesting2026}; padding the motion of the input head defeats that
 hypothesis without changing the computation~\cite[Section~6.2]{BoundedNesting2026}.
 
+\textbf{Update (November 2026).} The thirteenth paper of the series has answered Question~9.1
+negatively~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}: there are recovery relations of bounded, though
+astronomically large, incidence degree on which every paired distance tends to infinity and which carry storage codes of
+rate above $0.5021$, and binary ones of rate above $0.5013$. So [Q9.1] is false, and so are its Lean forms
+\lean{MergeDepth.Q91} and \lean{MergeDepth.Q91Binary}. The results below that assume it, \cref{lem:balls}(b),
+Corollary~HC$^*$, \cref{lem:skel-uniform}, Theorem~SE, Corollaries~IS and~RV, Theorem~L and \cref{rem:HV}(c), remain true
+as implications, and we leave them and their Lean forms unchanged, but as stated they are vacuous. Their proofs use
+[Q9.1] only through half-rate bounds for relations inside balls of bounded radius and for the relations of skeleton
+classes, the native hypotheses of \cref{sec:prelim}. These are open: the thirteenth paper's relations are not known to
+arise from tape machines, and it constructs no transposer. The localization therefore holds under the native
+hypotheses; for Corollary~HC$^*$ the all-code crux for ball systems serves as well, and for Corollary~RV a deficit bound
+(\cref{rem:skel-weak-crux}, a proof sketch only). The other results, among them Theorems~HC and~HC$'$, Corollary~HC given
+the linear crux, Theorems~LA and~EM, Corollary~EM, Theorem~BP given Conjecture~S and Lemma~PG, are not affected.
+
 \paragraph{This paper.} Given [Q9.1], we show that every linear-time transposer revisits some tape unboundedly often,
 that an oblivious one must in addition merge deep lineages unboundedly often in its code, and that one whose work tapes
 have bounded entry must steer its input head by the data. Unconditionally, at block scale every linear-time transposer,
@@ -110,7 +124,8 @@ paper's README explains how to build the library and check its axioms.
 
 \paragraph{Related work.} The machine model, the dependency DAGs, genies, the cone lemma and the crux are those of the
 fourth and eighth papers~\cite{FourthPaper2026,BoundedNesting2026}; the paired-distance theorem and Question~9.1 are from
-the fifth~\cite{DirectedRecovery2026}; the source-cover exclusions are from the ninth~\cite{SourceCovers2026}; the
+the fifth~\cite{DirectedRecovery2026}, and the negative answer to that question from the
+thirteenth~\cite{StorageCodes2026}; the source-cover exclusions are from the ninth~\cite{SourceCovers2026}; the
 deep-nesting results build on the tenth~\cite{DirectedReciprocity2026}. Theorem~EM is a standard simulation of tapes in
 the external-memory model of Aggarwal and Vitter~\cite{AggarwalVitter1988}, followed by the popular-trace argument that
 also underlies the non-oblivious case of~\cite{FHLS2019}; its point here is the conclusion for transposition with

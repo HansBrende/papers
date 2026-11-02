@@ -4,8 +4,9 @@ The second hypothesis of Theorem~D is an all-codes index-coding statement, the c
 produced by a bounded-depth genie, every index code for the transposition demand must broadcast a constant fraction of
 the input. An oblivious linear-time transposer whose dependency DAG has cheap genies of bounded depth needs the
 opposite, broadcasts of $\eps L$ bits with $\eps$ as small as the trade-off of \cref{prop:tradeoff} allows. Rate~$\tfrac12$ is the natural threshold: when the receivers can be paired so
-that each knows its partner's demand, broadcasting the XOR of each pair serves everyone with $L/2$ bits, and no
-construction we know does better on bounded-degree side information of growing odd girth.
+that each knows its partner's demand, broadcasting the XOR of each pair serves everyone with $L/2$ bits. On
+bounded-degree side information of growing odd girth, the only constructions we know that do better are those of the
+thirteenth paper of the series, at astronomically large degree~\cite[Corollary~U]{StorageCodes2026}.
 
 In the hardest instances we know, coming from schedules whose head motion expands (the ones \cref{sec:motion} leaves
 open), the side information that matters is symmetric and sparse: two receivers that know each other's demands form an
@@ -19,9 +20,23 @@ $o(\card{V(G_n)})$ vertices lie on odd cycles of length at most $\ell$. Does eve
 $\tfrac12+o(1)$, over every alphabet?
 \end{question}
 
+\textbf{Update (November 2026).} For large~$\Delta$ the answer is negative, by the thirteenth paper of the
+series~\cite[Corollary~U]{StorageCodes2026}. It constructs graphs of maximum degree less than $2\cdot127^{8\,791\,448}$
+in which every closed walk of odd length is long (for each~$K$, eventually none has length at most~$K$), carrying
+$\F_{127^2}$-linear storage codes of rate greater than~$0.5021$. Writing each symbol in $14$ bits gives binary storage
+codes, which are not $\F_2$-linear, of rate greater than~$0.5013$ on graphs with the same property and maximum degree
+less than $28\cdot127^{8\,791\,448}$. For $\Delta=3$ the answer is positive for all codes: the seventh paper of the
+series proves that every triangle-free graph of maximum degree~$3$ is good, and deduces this
+answer~\cite[Theorem~N3 and Section~4.2]{NestedElimination2026}. Open are the least~$\Delta$ for which the answer is
+negative ($\Delta=4$ is open), the question for $\F_2$-linear codes, and the crux of \cref{def:crux} itself, which
+concerns the directed, depth-bounded side information of oblivious machines; Theorem~D needs it only at some rate
+$\rho>\eps$, which follows from a bound $1-\rho$ on the rates of binary storage codes for that side information
+(\cref{rem:dec-crux}(b)). The graphs of the thirteenth paper are not known to arise from tape computations, and the
+rates of its codes are not shown to approach~$1$.
+
 A negative answer is necessary for the kind of coding gain a linear-time transposer would exploit on such side
-information; a positive answer, in the directed and depth-bounded generality of \cref{def:crux}, would combine with depth
-reduction to refute oblivious~(T). This section proves the positive answer for restricted classes of codes and of
+information; a positive answer for the directed, depth-bounded side information of oblivious machines
+(\cref{def:crux}) would combine with depth reduction to refute oblivious~(T). This section proves the positive answer for restricted classes of codes and of
 graphs, and shows where the remaining difficulty lies:
 \begin{itemize}[leftmargin=2em]
 \item every storage code, linear or not, on any graph that maps homomorphically to $C_5$, to the circular clique
@@ -273,8 +288,8 @@ version, asked for the exact guessing numbers of the strongly regular graphs the
 Kleinberg and Lubetzky~\cite{BKL2013}.
 
 \paragraph{Why it matters.} The Clebsch graph is triangle-free with odd girth~$5$ and degree~$5$, and its codes beat the
-pairing by a constant factor. So bounded degree alone does not force rate~$\tfrac12$: any proof of the undirected crux must
-use local bipartiteness (few short odd cycles), not only sparsity. It also rules out
+pairing by a constant factor. So bounded degree alone does not force rate~$\tfrac12$: any proof of the undirected crux,
+at the degrees where it holds, must use local bipartiteness (few short odd cycles), not only sparsity. It also rules out
 targets: it is not good, although every subcubic graph of girth at least~$17$ maps to it~\cite{DeVosSamal2006}, and
 by Theorem~H no graph that receives it is good, which makes iterated Mycielski graphs bad (\cref{prop:M}). On the
 construction side it shows what a coding gain can look like

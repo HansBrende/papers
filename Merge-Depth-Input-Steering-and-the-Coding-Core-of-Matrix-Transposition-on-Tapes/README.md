@@ -1,6 +1,6 @@
 # Merge Depth, Input Steering, and the Coding Core of Matrix Transposition on Tapes
 
-Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
+Hans Brende and Claude Opus 5.5 (Anthropic), October 2026, revised November 2026.
 
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
@@ -28,15 +28,28 @@ In Lean these are explicit hypotheses (`MergeDepth.Q91`, or its binary form `Mer
 field DAGs, skeleton classes and their block machines, frozen traces, external-memory simulation, and the deep-nesting
 walk of the eighth paper.
 
+**Update (November 2026).** Question 9.1 has a negative answer: the thirteenth paper of the series,
+[*Storage Codes above Half Rate under Paired-Distance Separation*](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/),
+constructs recovery relations of bounded, though astronomically large, incidence degree on which every paired distance
+tends to infinity, with storage codes of rate above 0.5021, and binary ones of rate above 0.5013. So `MergeDepth.Q91` and
+`MergeDepth.Q91Binary` are false, and Corollary HC* and the results marked [Q9.1] are vacuous as stated; they remain true
+as implications, and their statements and Lean forms are unchanged. Their proofs use [Q9.1] only through half-rate bounds
+for relations inside balls of bounded radius (Lemma 3.15(b)) and for the relations of skeleton classes (Lemma 4.12).
+These native hypotheses are open, since the thirteenth paper's relations are not known to arise from tape machines, and
+the results hold under them. For Corollary HC* the all-code crux for ball systems also suffices, and for Corollary RV a
+deficit bound (Remark 4.19, a proof sketch only). The other results, and the one-size Lean forms of Corollary HC*
+(`MergeDepth.cor_HCstar_step` and its relatives), which take the ball bound at one size as a hypothesis, are not
+affected.
+
 - **Merge depth replaces schedule depth.** For oblivious machines, Theorem F cuts only the hops at boundedly entered
   cells (the cold genie), and the deep hops at the other cells are charged to checkpoints along the lineages of the code.
   If the code merges deep data lineages at most s times along every path from most outputs, then on every schedule,
   however deeply nested, the transposition matrix of a linear code splits into a low-rank part and a part supported on
   balls of bounded radius (Theorems HC and HC′), and for all codes the side information in such balls has a short index
   code (Theorem HC′(b)). Hence the linear crux excludes such transposers with linear codes (Corollary HC), and [Q9.1]
-  excludes them for all codes (Corollary HC*). Routing through deep hops is limited by their number, the number of deep
-  cells adds nothing, and a cheap cut of the code's merge structure suffices; what remains for oblivious machines is depth
-  reduction of that structure (Conjecture HV*).
+  excludes them for all codes (Corollary HC*; vacuous as stated, see the update above). Routing through deep hops is
+  limited by their number, the number of deep cells adds nothing, and a cheap cut of the code's merge structure
+  suffices; what remains for oblivious machines is depth reduction of that structure (Conjecture HV*).
 - **Skeleton entropy and input steering** [Q9.1]. A form of the eighth paper's Corollary F″ that is robust against
   padding of bounded entry: a linear-time transposer whose work heads enter every cell boundedly often has coarse
   skeleton entropy above (1/2 − η) L at every fixed scale, for every η > 0 at all large sizes (Theorem SE). Consequently
@@ -66,9 +79,11 @@ Remarks labelled as proof sketches, heuristics or numerical observations are not
 
 ## What is open
 
-(T) itself; Conjecture HV* (code-level depth reduction); adaptive machines that revisit some tape unboundedly often; an
-indivisibility-free external-memory bound for transposition; Question 9.1 at large degree; Conjecture S. See the
-open-problems section of the paper.
+(T) itself; the native coding hypotheses on which the [Q9.1] results rest, half-rate bounds for relations inside balls
+and for skeleton-class relations (Question 9.1 itself has a negative answer at large degree, by the thirteenth paper; its
+deficit form, its form for F₂-linear codes and the least degree at which it fails are open); Conjecture HV* (code-level
+depth reduction); adaptive machines that revisit some tape unboundedly often; an indivisibility-free external-memory
+bound for transposition; Conjecture S. See the open-problems section of the paper.
 
 ## Building and verifying
 

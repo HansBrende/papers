@@ -2,10 +2,12 @@
 
 Theorem~D of the fourth paper (\cref{thm:D4}) excludes oblivious linear-time transposers under two hypotheses, depth
 reduction and the crux. For machines whose work heads enter every cell boundedly often, Theorem~F supplies the first: the
-crux alone excludes them (Corollary~F). \emph{Directed Recovery Structures in Tape Computations} shows that the cone
-relations of every linear-time schedule are paired-distance separated after paid trimming, and asks whether all codes on
-such relations have rate at most $\frac12+o(1)$~\cite[Question~9.1]{DirectedRecovery2026}; an affirmative answer excludes
-bounded-entry transposers, oblivious (Corollary~F$'$) or of low adaptivity (Corollary~F$''$). Theorem~M gives the analogous
+crux alone excludes them (Corollary~F). \emph{Directed Recovery Structures in Tape Computations} showed that the cone
+relations of every linear-time schedule are paired-distance separated after paid trimming, and asked whether all codes on
+such relations have rate at most $\frac12+o(1)$~\cite[Question~9.1]{DirectedRecovery2026}; an affirmative answer would exclude
+bounded-entry transposers, oblivious (Corollary~F$'$) or of low adaptivity (Corollary~F$''$). The thirteenth paper of the
+series answers that question negatively~\cite{StorageCodes2026}, but the proofs of the two corollaries need the half bound
+only on the cone relations of the machine, where it is open. Theorem~M gives the analogous
 statement for machines with one unrestricted work head (\cref{cor:M-machine}).
 
 \subsection{Corollary F}\label{sec:trans-F}
@@ -56,7 +58,7 @@ bound~\cite{Kirchherr1988}.
 
 \subsection{Corollaries F\texorpdfstring{$'$}{'} and F\texorpdfstring{$''$}{''}}\label{sec:trans-Fprime}
 
-Question~9.1 of \emph{Directed Recovery Structures} asks: for a fixed degree bound~$\Delta$ and recovery relations $N_j$ on
+Question~9.1 of \emph{Directed Recovery Structures} asked: for a fixed degree bound~$\Delta$ and recovery relations $N_j$ on
 finite sets $V_j$ with $\card{V_j}\to\infty$, whose incidence graphs have maximum degree at most~$\Delta$ and satisfy
 the paired-distance condition, must every sequence of storage codes have rate at most $\frac12+o(1)$, for every
 alphabet?~\cite[Question~9.1]{DirectedRecovery2026} The incidence graph has vertices $L_p$ and $R_p$ for every
@@ -70,7 +72,10 @@ frozen trace of an adaptive machine, as argued in prose in~\cite[Remark~3.9]{Dir
 proof that is not formalized, that an affirmative answer to Question~9.1 for every~$\Delta$ gives rate at most
 $\frac12+o(1)$ for all codes on these cone relations, uniformly over the schedules and
 genies~\cite[Proposition~9.2]{DirectedRecovery2026}; the proof of that proposition uses the schedule only through the cone
-bound, the paid trimming and the paired-distance theorem.
+bound, the paid trimming and the paired-distance theorem. The thirteenth paper answers Question~9.1 negatively, also for the
+binary alphabet~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}, so Proposition~9.2 is vacuous. Its conclusion, the
+half bound for all codes on these cone relations, is open, and the corollaries below use Question~9.1 only through this
+bound, on the cone relations of a schedule or of a frozen trace.
 
 \begin{corollary}[Corollary F$'$: Question 9.1 excludes bounded-entry oblivious transposers]\label{cor:Fprime}
 \notformalized
@@ -93,7 +98,8 @@ for large~$d$.
 For home-based schedules the same conclusion is the remark of \emph{Directed Recovery Structures} that every class of
 schedules with arbitrarily cheap genies of fixed depth would be excluded by the all-code half bound
 \cite[Section~9.1]{DirectedRecovery2026}, combined with the fourth paper's Corollary~B; the bounded-entry class is supplied by
-Theorem~F. The same argument extends to adaptive machines whose traces have entropy at most $\eta L$ for a fixed
+Theorem~F. As the proof above shows, the half bound for all codes on the cone relations of the class suffices in place of
+the all-code half bound. The same argument extends to adaptive machines whose traces have entropy at most $\eta L$ for a fixed
 $\eta<\frac12$, provided that every trace of probability at least $2^{-\eta L}$ has bounded entry.
 
 \begin{corollary}[Corollary F$''$: low adaptivity]\label{cor:Fsecond}
@@ -130,10 +136,22 @@ through them, so it bounds $\log_2\card{W_g}$ by $(\frac12+o(1))L$, uniformly in
 $k$, $c$ and $D(\eps)$. Since $\eta+\eps<\frac12$, this is a contradiction for all $L\ge L_0$, for a suitable $L_0$.
 \end{informalproof}
 
+\textbf{Update (November 2026).} The hypothesis of Corollaries F$'$ and~F$''$ is false: Question~9.1 has a negative answer,
+also for the binary alphabet, by the thirteenth paper of the series~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}.
+As stated, both corollaries are therefore vacuous. Their proofs use Question~9.1 only through
+\cite[Proposition~9.2]{DirectedRecovery2026} and its proof, to bound every binary storage code for the cone relation of
+the schedule, or of the frozen trace~$\tau_0$, by $2^{(\frac12+o(1))L}$ words, uniformly as in that proposition. Both
+corollaries hold, with the same proofs, if this native bound is assumed instead. It is open: the thirteenth paper does not
+decide it, since its relations have no known tape realization. By the argument of \cref{rem:weak-crux}, Corollary~F$'$ also
+follows from the deficit form of Question~9.1 with $\rho(\Delta)\log\log\Delta\to\infty$, and Corollary~F$''$ from a deficit
+that also exceeds~$\eta$. These forms are open as well, since the thirteenth paper's codes are not shown to have rate
+near~$1$.
+
 The trace's information is paid for once, in the choice of~$\tau_0$. This is the kind of paid treatment of adaptivity that
 the fourth paper anticipated, with a coding bound for codes that are correct only on a large set of
 inputs~\cite[Remark~4.24]{FourthPaper2026}, and that \emph{Directed Recovery Structures} leaves open in
-general~\cite[Section~9.3]{DirectedRecovery2026}; here it is available only for traces of entropy below~$L/2$.
+general~\cite[Section~9.3]{DirectedRecovery2026}; here it is available, conditionally on a native coding bound, only for
+traces of entropy below~$L/2$.
 
 \paragraph{The entropy hypothesis is not robust.} Hypothesis~(iii) can be broken by changes that do not affect the
 computation. Given a transposer~$M$, let $M'$ first sweep its input head across the input, adding a step out and back
@@ -171,6 +189,10 @@ The proof of Corollary~F uses Theorem~F only through a cut of the walk DAG with 
 than~$D_1$. \Cref{thm:M}, applied with the unrestricted work head as~$x_0$ and the long hops of the other $k-1$ work heads
 as~$H'$, at $\eps/(4\beta C)$, supplies such a cut with $D_1=\DM(k-1,\ell,q,h,\eps/(4\beta C))$.
 \end{informalproof}
+
+\textbf{Update (November 2026).} The last sentence of \cref{cor:M-machine} is vacuous as stated, since Question~9.1 has a
+negative answer~\cite{StorageCodes2026}. Like Corollary~F$'$, it holds with the native bound of the update in
+\cref{sec:trans-Fprime} as hypothesis, by the proof of Corollary~F$'$ with the cut of \cref{thm:M}.
 
 Corollary~F also holds with an owner-load hypothesis on all work heads instead of bounded entry, with
 $D_1=\DF(k,\ell,\eps/(4\beta C))$, since its proof uses only the owner-load. Together the two corollaries say the following.

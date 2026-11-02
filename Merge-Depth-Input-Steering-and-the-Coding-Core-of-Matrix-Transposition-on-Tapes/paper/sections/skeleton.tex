@@ -835,6 +835,17 @@ many reversals~\cite[Remark~6.2]{BoundedNesting2026}, Corollary~RV does not foll
 specific to transposition, which enters through the row potential of \cref{lem:skel-transport}: copying the input to the
 output takes linear time and enters every cell of every tape at most once.
 
+\textbf{Update (November 2026).} [Q9.1] is false, also for binary
+codes~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}, so \cref{lem:skel-uniform}, Theorem~SE and Corollaries~IS
+and~RV are vacuous as stated, and so are their Lean forms, which assume \lean{MergeDepth.Q91Binary}. Theorem~SE uses
+[Q9.1] only through \cref{lem:skel-uniform}, and Corollaries~IS and~RV use it only through Theorem~SE. So all three hold
+with the conclusion of \cref{lem:skel-uniform}, a half-rate bound for binary storage codes on the relations of skeleton
+classes, as hypothesis in place of [Q9.1]. That native bound is open, since the thirteenth paper's relations are not
+known to arise from tape machines, and the requirements that this section states for constructions hold only under it.
+For Corollary~RV a deficit bound, rate at most $1-\rho(\Delta)+o(1)$ with $\rho$ decaying slowly enough, would suffice in
+place of rate~$\frac12$ (\cref{rem:skel-weak-crux}, a proof sketch only); the thirteenth paper does not decide such
+bounds either, since its codes are not shown to have rate near one.
+
 \begin{remark}[Padding]\label{rem:skel-padding}
 (a) Padding of bounded entry before the run affects neither Theorem~SE nor Corollary~IS at large scales. Let
 $c_0,V_0\ge1$ be integers, and let $M'$ first move its input head along a walk that starts and ends at cell~$0$, has

@@ -69,6 +69,20 @@ Corollaries~F$'$ and~F$''$ use it in this form~\cite[Corollaries~6.3 and~6.4]{Bo
 in the same way, through analogues of that proposition for relations inside balls of bounded radius (\cref{lem:balls})
 and for the relations of skeleton classes (\cref{lem:skel-uniform}).
 
+\textbf{Update (November 2026).} Question~9.1 has a negative answer. The thirteenth paper of the series constructs
+recovery relations of incidence degree at most a bound $\Delta<127^{8\,791\,448}$, on which every paired distance tends
+to infinity, with $\F_{127^2}$-linear storage codes of rate at least $8100/16130>0.5021$, and binary storage codes, not
+$\F_2$-linear, of rate above $0.5013$ at incidence degree at most
+$14\Delta$~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}. So [Q9.1] is false, and so are \lean{MergeDepth.Q91}
+and \lean{MergeDepth.Q91Binary}; the thirteenth paper's Lean library derives their negations from explicit hypotheses
+that it proves in writing but does not formalize. The native statements through which [Q9.1] enters here are the
+conclusions of \cref{lem:balls}(b) and \cref{lem:skel-uniform}: storage codes on relations inside balls of bounded
+radius, and binary storage codes on the relations of skeleton classes, have rate at most $\frac12+o(1)$, uniformly, as
+for the cone relations in the conclusion of the fifth paper's Proposition~9.2. The thirteenth paper does not decide them,
+since its relations are not known to arise from tape machines, and they remain open. The other results that assume
+[Q9.1] use it only through these two conclusions, so they hold with them as hypotheses in place of [Q9.1]; as stated,
+all of them are vacuous.
+
 \paragraph{The linear crux.} For machines whose step values are vectors over a field~$\F$ and whose updates are
 $\F$-linear, the eighth paper states the \emph{linear crux} $\LinCrux_\F$ as relative rigidity of the transposition
 matrix with respect to the ball pattern of the schedule~\cite[Definition~7.4 and Theorem~7.5]{BoundedNesting2026}; we

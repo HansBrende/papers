@@ -2,8 +2,8 @@
 
 Our aim is to decide~(T), and we would prefer a construction. This section says what the results above require of a
 linear-time transposer, and of an oblivious one in particular. Apart from \cref{prop:dn3-transfer}, a formalized
-conditional statement, it contains no new theorems: every claim is one of the results above, a result of an
-earlier paper of the series, or explicitly labelled as a heuristic.
+conditional statement, it contains no new theorems: every claim is one of the results above, a result of another
+paper of the series, or explicitly labelled as a heuristic.
 
 \subsection{The interface}\label{sec:con-interface}
 
@@ -25,7 +25,17 @@ $O(L/\log d)$ coordinates $p$ have $\dist_E(L_p,R_p)\le r$, for every fixed $r$ 
 Deleting these coordinates leaves a relation with $b_E(r)=0$, since deleting coordinates does not shorten paired paths;
 for $r=3$ it is loopless and TT-free (\cref{lem:tt-paired}). Its Question~9.1 asks whether all codes on bounded-degree
 relations with $b_E(r)=o(\card V)$ for every fixed $r$ have rate at most $\frac12+o(1)$; by its Proposition~9.2, an
-affirmative answer gives this bound on all actual cone relations.
+affirmative answer would give this bound on all actual cone relations.
+
+\textbf{Update (November 2026).} The thirteenth paper of the series answers Question~9.1
+negatively~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}. It constructs recovery relations of bounded but
+astronomically large degree, on which every paired distance tends to infinity, with $\F_{127^2}$-linear storage codes of
+rate above $0.5021$, and, at a larger degree bound, binary storage codes of rate above $0.5013$ that are not
+$\F_2$-linear. So the premise of~\cite[Proposition~9.2]{DirectedRecovery2026} is false. Its conclusion, the half bound
+for all codes on the actual cone relations, is open, and it is all that the interface above needs from storage codes.
+Question~9.1 also remains open with a bound $1-\rho$ in place of~$\frac12$, for some $\rho>0$ depending on the degree
+bound, and for $\F_2$-linear codes; the least degree at which it fails is unknown. The recovery sets of these relations
+are large, so \cref{prop:dn3-transfer} below is unaffected.
 
 Our theorems are exact half bounds, at radius three, on classes of TT-free relations, several of them with no degree
 bound. With \cref{cor:paid} they answer Question~9.1 affirmatively for every sequence of relations that, after deleting
@@ -98,8 +108,10 @@ theorems allow them, so they are not by themselves a source of coding gain.
 above rate $\frac12$, and their odd girth does not exceed their degree (\cref{rem:foldcube};
 \cite[Corollary~6.11]{FourthPaper2026}). After paid degree trimming, cone relations have only $O(L/\log d)$ coordinates with
 paired distance at most $r$, for every fixed~$r$~\cite[Theorem~3.3]{DirectedRecovery2026}, so such local structure can occupy only a vanishing fraction of a cone relation (heuristic
-reading: a gain must come from structure at growing paired distance, which is the open territory of
-Question~9.1).
+reading: a gain must come from structure at growing paired distance, the territory of Question~9.1). Such structure can
+carry a gain: the relations of the thirteenth paper of the series have all paired distances tending to infinity and
+carry codes above rate~$\frac12$~\cite[Theorem~A]{StorageCodes2026}. Those codes are not shown to have rate near~$1$,
+which a transposer needs, and whether cone relations carry such structure is open.
 \end{enumerate}
 
 \subsection{Mechanisms that fail}\label{sec:con-fail}

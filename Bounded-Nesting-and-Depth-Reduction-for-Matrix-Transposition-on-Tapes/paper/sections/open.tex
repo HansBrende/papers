@@ -2,10 +2,13 @@
 
 For oblivious machines the series reduces $\neg$(T) to depth reduction and a coding bound (\cref{thm:D4}). This paper settles
 depth reduction for bounded owner-load and for one arbitrary head plus bounded heads at boundedly many scales, and reduces the
-coding side, for bounded-entry machines, to Question~9.1 of \emph{Directed Recovery Structures}. The first item below is the
-question itself. For the others, by \cref{thm:D4} and the proof of Corollary~F$'$, $\TCP(k)$ for every~$k$ together with an
-affirmative answer to \cref{prob:q91} would exclude oblivious linear-time transposers, while a depth-robust family of walks
-(\cref{prob:tcp-cases,prob:sr3}) or a negative answer to \cref{prob:q91} would show where a construction has to work.
+coding side, for bounded-entry machines, to the native form of Question~9.1 of \emph{Directed Recovery Structures}: a half
+bound for all codes on their cone relations. The first item below is~(T) itself. For the others, by \cref{thm:D4} and the
+proof of Corollary~F$'$, $\TCP(k)$ for every~$k$ together with the native form of \cref{prob:q91} would exclude oblivious
+linear-time transposers, while a depth-robust family of walks (\cref{prob:tcp-cases,prob:sr3}) would show where a
+construction has to work. Question~9.1 itself has a negative answer (\cref{prob:q91}), but the counterexamples do not show
+where a construction has to work: their relations have astronomically large degree and no known tape realization, and their
+codes are not shown to have rate near~$1$, as a transposer would need (\cref{sec:construction}).
 
 \begin{enumerate}[label=\arabic*.,leftmargin=2em]
 \item \emph{Decide (T).} Construct a machine that transposes $d\times d$ matrices with $b(d)$-bit entries in time $O(L)$, or prove
@@ -33,13 +36,17 @@ Is every family of $3$-stack DAGs with a spine depth-reducible, that is, does $\
 $3$-stack or $4$-stack DAGs, each realized as the walk DAG of two walks, would refute $\TCP(2)$.
 \end{problem}
 
-\item \emph{The coding bound.} By Corollaries F$'$ and~F$''$, an affirmative answer to the following question excludes oblivious
+\item \emph{The coding bound.} By Corollaries F$'$ and~F$''$, an affirmative answer to the following question would exclude oblivious
 bounded-entry transposers, and adaptive ones whose traces have entropy at most $\eta L$ for a fixed $\eta<\frac12$ and whose
 traces of probability at least $2^{-\eta L}$ have bounded entry.
 \begin{problem}[Question~9.1 of~\cite{DirectedRecovery2026}]\label{prob:q91}
 Do all storage codes, over every alphabet, on recovery relations of bounded incidence degree that satisfy the paired-distance
-condition have rate at most $\frac12+o(1)$? By \cref{rem:weak-crux}, Corollary~F$'$ already follows from a deficit $\rho(\Delta)$
-with $\rho(\Delta)\log\log\Delta\to\infty$.
+condition have rate at most $\frac12+o(1)$? \emph{Answered negatively}, also for the binary
+alphabet~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}. By \cref{rem:weak-crux}, Corollary~F$'$ already follows from a
+deficit $\rho(\Delta)$ with $\rho(\Delta)\log\log\Delta\to\infty$. Open remain the \emph{native form}, the half bound for all
+codes on the cone relations of linear-time machines (for oblivious ones, the conclusion
+of~\cite[Proposition~9.2]{DirectedRecovery2026}), which suffices for Corollaries F$'$ and~F$''$ (\cref{sec:trans-Fprime}); and
+this \emph{deficit form}, which the thirteenth paper does not decide, since its codes are not shown to have rate near~$1$.
 \end{problem}
 The companion paper proves exact half bounds on several classes of relations without short paired paths and states the
 directed degree-three case as a conjecture~\cite{SeventhPaper2026}; \emph{Directed Recovery Structures} proves the hyperfinite
@@ -56,7 +63,9 @@ vertices, of odd girth five, with a scalar linear code of dimension~$7$ over~$\F
 that $2h(V)\le\sum_vh(\{v\})$ fails there for a valid polymatroid, and disjoint copies of it have rate~$\frac7{13}$. The heavy
 vertices of its recovery matrix form a cluster (\cref{sec:crux-deg4}). At degree three both questions are settled without a
 girth condition, for all codes by the companion paper~\cite{SeventhPaper2026} and for scalar linear codes by the fourth paper's
-Theorem~S. At degree four, \cref{thm:SH} reduces the scalar question to clusters of heavy vertices, the regime in which
+Theorem~S. At large degree, growing odd girth does not give the half bound: the thirteenth paper gives graphs of bounded but
+astronomically large degree whose odd girth tends to infinity, with storage codes of rate above~$0.5021$~\cite[Corollary~U]{StorageCodes2026}.
+At degree four, \cref{thm:SH} reduces the scalar question to clusters of heavy vertices, the regime in which
 tree-local arguments are impossible~\cite[Proposition~6.28]{FourthPaper2026}.
 
 \item \emph{The scratch.} If TCP fails at unbounded owner-load, the route of Theorem~D needs input specific to transposition:

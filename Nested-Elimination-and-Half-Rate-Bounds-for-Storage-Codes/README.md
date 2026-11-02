@@ -1,6 +1,6 @@
 # Nested Elimination and Half-Rate Bounds for Storage Codes
 
-Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
+Hans Brende and Claude Opus 5.5 (Anthropic), October 2026, revised November 2026.
 
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
@@ -101,9 +101,14 @@ Not formalized:
 
 - Conjecture P: every loopless relation of in-degree at most 3 without transitive triangles has a decomposition,
   which would give the half-rate bound for all of them.
-- The half-rate bound at degree four along families with growing girth (it fails at odd girth five, Example 7.8).
-- The all-code question on paired-distance-separated relations of *Directed Recovery Structures in Tape
-  Computations*.
+- The half-rate bound at degree four along families with growing girth (it fails at odd girth five, Example 7.8). At
+  an astronomically large degree, growing odd girth does not suffice (Corollary U of the thirteenth paper, below).
+- The all-code bound on the cone relations of tape computations. Its machine-free form, the all-code question on
+  paired-distance-separated relations of *Directed Recovery Structures in Tape Computations* (Question 9.1 there), has a
+  negative answer by the thirteenth paper of the series,
+  [*Storage Codes above Half Rate under Paired-Distance Separation*](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/),
+  at an astronomically large degree. For that form, a bound 1 − ρ in place of 1/2, F₂-linear codes and the least degree
+  at which it fails remain open; Conjecture P would answer it affirmatively for recovery sets of size at most 3.
 - See the open-problems section of the paper.
 
 ## Building and verifying

@@ -1,6 +1,6 @@
 # Curved Motion, Depth Reduction, and Storage Codes for Matrix Transposition on Tapes
 
-Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
+Hans Brende and Claude Opus 5.5 (Anthropic), October 2026, revised November 2026.
 
 **Strengthening memo:** [Conditional Elimination and Circular Storage Codes](memo/)
 extends the circular-clique half-rate range below from `p/q ≤ 14/5` to every
@@ -34,7 +34,10 @@ row, in time linear in the input length L = d²⌈log₂ d⌉? This is the state
 This paper asks what a linear-time transposer would need. We find three ingredients:
 - head motion that is curved and head-dependent;
 - time–space dependencies that resist depth reduction, or else extreme coding on shallow ones;
-- storage codes that beat rate ½ on sparse, locally bipartite side information.
+- storage codes that beat rate ½ on sparse, locally bipartite side information. Such codes exist at astronomically
+  large degree (Corollary U of the
+  [thirteenth paper](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)), but they are not known to
+  arise from tape computations.
 
 We prove restricted versions of all three. Theorem D reduces the oblivious case of (T) to two precisely stated open
 problems: depth reduction for interacting walks, and an index-coding lower bound on the side information of shallow
@@ -115,9 +118,15 @@ observations are labelled as such and are never used in proofs.
 - (T) itself.
 - Depth reduction for interacting walks at fixed ε (TCP, the trajectory cut problem). Its first open case has two
   walks, and its sharpest instance is the deep-nesting pair (Conjecture A′).
-- The crux in positive characteristic and for nonlinear codes. On locally bipartite graphs, it is open for
-  scalar linear codes over finite fields at degree at least 4 (vector-linear ones already at degree 3) and for nonlinear codes at
-  degree at least 3. Its directed, depth-bounded form, which Theorem D needs, is open in general.
+- The crux in positive characteristic and for nonlinear codes. Its undirected form, Question 6.1, has a negative
+  answer at astronomically large degree: the
+  [thirteenth paper](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/) (Corollary U) gives graphs
+  of bounded degree in which every odd cycle is long, carrying GF(127²)-linear storage codes of rate above 0.5021 and
+  binary ones of rate above 0.5013. At maximum degree 3 the answer is positive for all codes
+  ([seventh paper](../Nested-Elimination-and-Half-Rate-Bounds-for-Storage-Codes/), Theorem N3). Open are the least
+  degree at which it fails (degree 4 is open) and GF(2)-linear codes. Its directed, depth-bounded form, which
+  Theorem D needs, is open in general; the graphs of the thirteenth paper are not known to arise from tape
+  computations.
 - Question G: is the fractional chromatic number unbounded on good graphs?
 
 ## Formalization to-dos

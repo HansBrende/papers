@@ -656,6 +656,16 @@ of~\cite[Definition~7.4]{BoundedNesting2026}, with $\rho>\eps+\eta$ and $\beta(k
 the same machines. The crux for the cone class $\mathcal S_{k,C,\beta,D}$ does not apply directly, because the systems of
 \cref{thm:HCprime}(b) are not cone systems of whole-step genies of bounded full depth.
 
+\textbf{Update (November 2026).} Question~9.1 has a negative answer, also for binary
+codes~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}, so \cref{lem:balls}(b) and Corollary~HC$^*$ are vacuous as
+stated, and so are the Lean theorems that state them under [Q9.1]; \cref{lem:balls}(a) is unconditional and not
+affected. The proof above needs only the conclusion of \cref{lem:balls}(b), for $D'=r$ and $\delta=\gamma/4$: a half-rate
+bound for storage codes on relations inside balls, a native statement that the thirteenth paper does not decide. With
+that conclusion, or with $\Crux(\Sball_{k,C,\beta,r},\rho)$ as above, in place of Question~9.1, the corollary holds; both
+hypotheses are open. At one size this is formal: \lean{MergeDepth.cor_HCstar_step} and the other one-size forms named
+in the outline take the bound for relations inside the balls at that size as a hypothesis, not [Q9.1], and are not
+affected.
+
 \subsection{Routing through deep hops, and the number of deep cells}\label{sec:hop-routing}
 
 \begin{proposition}[Routing through deep hops is hop-limited]\label{prop:hop-routing}
@@ -816,7 +826,11 @@ machine~$M$ take $V=1$, $\beta=\beta(M)$, $\eps=\frac18$, $\tau\ge8ckC$ and $\et
 ball system has an index code with at most $\frac7{16}L$ bits, so some fibre, a storage code for the relation
 $B^r(\tpos(q))$, has at least $2^{9L/16}$ elements, contrary to \cref{lem:balls}(b) with $\delta=\frac1{32}$. Likewise the
 linear form and $\LinCrux_\F(\Sball_{k,C,\beta,r},\rho)$, at the radius~$r$ attached to some $\tau\ge8ckC/(\rho-\eps)$
-with $\eps<\rho$, exclude linear ones, as in the proof of Corollary~HC. (d) Heuristically, the conjecture is of
+with $\eps<\rho$, exclude linear ones, as in the proof of Corollary~HC. Since [Q9.1] is
+false~\cite{StorageCodes2026}, the first statement of~(c) is vacuous as stated. It uses [Q9.1] only through the
+conclusion of \cref{lem:balls}(b), which is open; and since the index code is one for the ball system itself, the
+all-code crux $\Crux(\Sball_{k,C,\beta,r},\rho)$ for some $\rho>\frac7{16}$, also open, serves in its place, as after
+Corollary~HC$^*$. (d) Heuristically, the conjecture is of
 network-coding type: after the cold genie the deep hops are the only long-range carriers (\cref{prop:hop-routing}), and
 the conjecture bounds what they deliver against side information in balls of bounded radius by a constant times their
 number, divided by~$\tau$. In general networks such bounds fail: coding can beat routing by a factor that grows with the

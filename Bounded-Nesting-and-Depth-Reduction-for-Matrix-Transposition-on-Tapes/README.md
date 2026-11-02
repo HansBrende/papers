@@ -1,6 +1,6 @@
 # Bounded Nesting and Depth Reduction for Matrix Transposition on Tapes
 
-Hans Brende and Claude Opus 5.5 (Anthropic), October 2026.
+Hans Brende and Claude Opus 5.5 (Anthropic), October 2026, revised November 2026.
 
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
@@ -72,11 +72,15 @@ Proved in the paper with complete written proofs, not formalized:
   deep-nesting pair costs at most 2(2Λ + 1) + 1 more on the cyclic cover, so Conjecture A′ or A″, which are stated
   on the covers, would make the pairs depth-robust and refute TCP(2).
 - **Consequences for transposers.** The crux alone excludes oblivious linear-time transposers whose work heads
-  enter every cell boundedly often (Corollary F), and so does an affirmative answer to Question 9.1 of
-  *Directed Recovery Structures in Tape Computations* (Corollary F′), which also covers adaptive machines whose
+  enter every cell boundedly often (Corollary F), and so would an affirmative answer to Question 9.1 of
+  *Directed Recovery Structures in Tape Computations* (Corollary F′), which would also cover adaptive machines whose
   traces have entropy at most ηL for a fixed η < 1/2 and whose likely traces enter every cell boundedly often
-  (Corollary F″); the machine form of Theorem M. The entropy hypothesis of Corollary F″ is not robust: padding the
-  input head's moves breaks it without changing the computation.
+  (Corollary F″); the machine form of Theorem M. Question 9.1 has since been answered negatively by the thirteenth
+  paper of the series, *Storage Codes above Half Rate under Paired-Distance Separation*, so Corollaries F′ and F″
+  are vacuous as stated. Their proofs use Question 9.1 only for codes on the machine's own cone relations, where
+  the half bound is open, and Corollary F′ also follows from a deficit form of Question 9.1 (Remark 6.5). The
+  entropy hypothesis of Corollary F″ is not robust: padding the input head's moves breaks it without changing the
+  computation.
 - **Linear machines.** The passage from machines with a data path linear over a field to linear networks, and the
   form of Theorem D_lin over all sizes: linear depth reduction together with a linear crux excludes oblivious
   linear-time transposers, and the linear crux can be stated exactly as rigidity of the transposition matrix
@@ -93,9 +97,15 @@ Proved in the paper with complete written proofs, not formalized:
 - TCP for two heads of unbounded owner-load, in particular whether the deep-nesting pairs are depth-robust, and
   for one arbitrary walk together with walks of owner-load one at unboundedly many separated scales.
 - Depth reduction for three-stack DAGs with a spine.
-- The all-code paired-distance question (Question 9.1 of *Directed Recovery Structures in Tape Computations*).
+- The native and deficit forms of the all-code paired-distance question (Question 9.1 of *Directed Recovery
+  Structures in Tape Computations*): the half bound for all codes on the cone relations of linear-time machines,
+  and the rate bound 1 − ρ(Δ) + o(1) with ρ(Δ) log log Δ → ∞ on all relations of incidence degree at most Δ with
+  the paired-distance property. Question 9.1 itself has a negative answer (*Storage Codes above Half Rate under
+  Paired-Distance Separation*).
 - The half-rate bound for triangle-free side information of degree four along families with growing girth; without
-  the girth condition it fails (Example 7.8 of *Nested Elimination and Half-Rate Bounds for Storage Codes*).
+  the girth condition it fails (Example 7.8 of *Nested Elimination and Half-Rate Bounds for Storage Codes*), and at
+  large degree it fails even along families of growing odd girth (Corollary U of *Storage Codes above Half Rate
+  under Paired-Distance Separation*).
 - The scratch question and the relative rigidity of transposition.
 - See the open-problems section of the paper.
 

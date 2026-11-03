@@ -1,6 +1,6 @@
 # Directed Reciprocity and Deep-Nesting Bounds for Matrix Transposition on Tapes
 
-Hans Brende and Gemini 4 Argon (Google DeepMind), October 2026.
+Hans Brende and Gemini 4 Argon (Google DeepMind), October 2026, revised November 2026.
 
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
@@ -18,8 +18,10 @@ Hans Brende and Gemini 4 Argon (Google DeepMind), October 2026.
 
 Can a deterministic multitape Turing machine transpose a d×d matrix of max(1, ⌈log₂ d⌉)-bit entries in time linear in
 the input bit-length? For oblivious machines, the fourth paper of the series reduced impossibility to two combinatorial problems: *depth
-reduction* of multi-head walk dependency DAGs (TCP(k)), and *half-rate bounds* for storage codes on bounded-degree
-transitive-tournament-free (TT-free) directed recovery relations. Subsequent papers established the all-code half-rate
+reduction* of multi-head walk dependency DAGs (TCP(k)), and a *storage-code deficit on the actual cone relations*
+large enough to exceed the reveal and trimming costs. [Paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)
+refutes the abstract half bound under bounded degree and paired-distance separation; the native form remains open.
+Subsequent papers established the all-code half-rate
 bound on undirected subcubic triangle-free graphs (Paper 7), proved a degree-4 scalar linear half-rate bound under
 heavy-vertex separation hypotheses (S1) and (S2) (Paper 8), and isolated the 2-head deep-nesting pair DNP(s₀, m) and
 block-cancellation labels B(a, K) (Conjecture A″, Paper 8) at the frontier of TCP(2). This paper resolves the open
@@ -84,8 +86,9 @@ Not formalized (illustrative finite checks only, never used in proofs):
 - Conjecture P beyond Class S (TT-free relations of in-degree at most 3 with unreciprocated arcs out of in-degree-3
   vertices) and Conjecture K on chorded digon cycles.
 - Whether every relation in Class S admits a piece decomposition using O(1) (for instance ≤ 3) records per piece.
-- Degree-4 triangle-free codes when heavy vertices lie at distance 2 (sharing common neighbours), and nonlinear codes at
-  degree 4.
+- The asymptotic half bound at degree 4 with growing odd girth, including heavy vertices sharing common neighbours.
+  The general finite scalar-linear and all-code half bounds are false: Paper 7's Example 7.8 has rate 7/13 over F₄
+  on a triangle-free 4-regular graph of odd girth five. The update to the degree-4 problem explains both consequences.
 - Closing the remaining steps from Theorem A to Conjecture A″—selecting one common odd shift for asymmetric block pairs,
   establishing fine-band half-blindness at that fixed shift, converting the three-regime witnesses into doubly θ₀-served
   level counts, and extending to block lengths a ≍ (1/2) log₂ q and general low-cost labels on the r-fold cover—and

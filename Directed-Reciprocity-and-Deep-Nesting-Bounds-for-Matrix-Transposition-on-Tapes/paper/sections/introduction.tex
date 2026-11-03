@@ -15,13 +15,16 @@ for deterministic off-line multitape integer multiplication. Whether~(T) holds r
 \subsection{Context in the series}
 
 The fourth paper of this series~\cite{FourthPaper2026} reduced the impossibility of \emph{oblivious} linear-time
-transposers to the conjunction of two combinatorial statements that make no mention of Turing machine states:
+transposers to the conjunction of a depth-reduction statement and a coding bound on the resulting side information:
 \begin{enumerate}[label=(\roman*)]
 \item \emph{The trajectory cut problem} ($\TCP(k)$): in every $k$-head walk dependency DAG of length $T$, deleting at
   most $\eps T$ edges reduces the longest directed path to length $O_{\eps,k}(1)$.
-\item \emph{The coding crux}: every storage code over a finite alphabet on a transitive-tournament-free (TT-free)
-  directed recovery relation of bounded degree has asymptotic rate bounded away from~$1$---and, in its sharpest form
-  (Conjecture~P of~\cite{SeventhPaper2026}), rate at most~$1/2$ whenever every vertex has in-degree at most~$3$.
+\item \emph{The coding crux}: storage codes on the actual cone relations have a rate deficit large enough to exceed
+  the reveal and trimming costs at the depth supplied by the first statement. A half-rate bound would suffice with
+  sufficiently cheap revelation. An abstract half bound under bounded degree and paired-distance separation is false
+  \cite{StorageCodes2026}; a positive degree-dependent deficit alone is elementary and need not beat those costs.
+  Conjecture~P of~\cite{SeventhPaper2026} instead asks for half rate on loopless transitive-tournament-free (TT-free)
+  relations of in-degree at most~$3$, and remains open.
 \end{enumerate}
 Subsequent papers sharpened both halves of this program while exposing concrete obstructions to naive extensions:
 \begin{itemize}
@@ -38,11 +41,12 @@ Subsequent papers sharpened both halves of this program while exposing concrete 
   claims~\cite[Remarks~7.3 and~7.5; Section~9.2, item~6]{SeventhPaper2026}: that $\Ex$ admits no piece certificate on its
   unique minimum nonempty core over any number of records, and that the Petersen graph admits no global elimination
   certificate over any number of records.
-\item On the \emph{degree-$4$ linear coding} side, while at degree~$5$ scalar binary storage codes already exceed
-  rate~$1/2$ on the Clebsch graph (rate~$5/8$, Lean-verified in~\cite[Corollary~6.11]{FourthPaper2026}), whether any
-  storage code on a triangle-free graph of maximum degree~$4$ can exceed rate~$1/2$ remains open
-  (\cite[Section~9.2, item~4]{SeventhPaper2026}; \cite[Section~10, Problem~10.4]{EighthPaper2026}), and tree-local
-  arguments cannot handle arbitrary clusters of degree-$4$ vertices~\cite[Proposition~6.28]{FourthPaper2026}. The eighth
+\item On the \emph{degree-$4$ linear coding} side, scalar binary storage codes reach rate~$5/8$ on the degree-$5$
+  Clebsch graph (Lean-verified in~\cite[Corollary~6.11]{FourthPaper2026}), and the seventh paper's degree-$4$
+  triangle-free example has an $\mathbb F_4$-linear storage code of rate~$7/13>1/2$
+  \cite[Example~7.8]{SeventhPaper2026}. Its odd girth is five; half rate at degree four with growing odd girth remains
+  open. Tree-local arguments cannot handle arbitrary clusters of degree-$4$ vertices
+  \cite[Proposition~6.28]{FourthPaper2026}. The eighth
   paper~\cite{EighthPaper2026} isolated the exceptional set $H$ of degree-$4$ rows in a unit-diagonal check matrix
   $M = I + B$ on a triangle-free graph of maximum degree~$4$ and proved $\dim\ker M \le \card{V}/2$ over every field
   under two hypotheses on $H$: (S1)~no two vertices of $H$ share a common neighbor, and (S2)~no two vertices of $H$ are

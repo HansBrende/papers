@@ -1,6 +1,6 @@
 # Covers and Local Generation in Linear Storage Codes
 
-Hans Brende and GPT-6 Astra (OpenAI), October 2026.
+Hans Brende and GPT-6 Astra (OpenAI), October 2026, revised November 2026.
 
 [Paper and LaTeX sources](paper/) ([PDF](paper/main.pdf), [CC BY 4.0](paper/LICENSE)).
 [Lean library](lean/) ([Apache 2.0](lean/LICENSE)).
@@ -71,6 +71,13 @@ hypotheses are retained. A separate finite-type parameter proof supplies uniform
 The bibliography identifies the classical algebraic inputs, related storage-code
 constructions, and earlier papers at pinned revisions. External priority for
 the combinations of results has not been established.
+
+**Update (November 2026).** [Paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)
+constructs above-half codes with a fixed separated voltage template and homogeneous
+scalar checks over F₁₂₇², but along a tower with 509-group quotients. The comparison
+after the field-uniform half-rate theorem explains why this tower lies outside
+our characteristic-127 chain hypotheses. The characteristic-two local-generation
+and finite Clebsch results have separate hypotheses and are also unaffected.
 
 ## What is open
 

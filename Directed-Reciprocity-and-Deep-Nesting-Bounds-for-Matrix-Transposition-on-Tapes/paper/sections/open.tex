@@ -3,8 +3,9 @@
 \subsection{Updated map of half-rate and deep-nesting bounds}
 
 For oblivious machines, Theorem~D~\cite[Section~4.2, Theorem~4.10]{FourthPaper2026} reduces $\neg$(T) to depth reduction
-($\TCP(k)$) together with asymptotic coding bounds on paired-distance-separated recovery relations
-(\cite[Question~9.1]{DirectedRecovery2026}). The table below updates the status of exact radius-$3$ (loopless TT-free)
+($\TCP(k)$) together with a sufficiently strong coding deficit on the actual cone relations.
+The proposed abstract half bound~\cite[Question~9.1]{DirectedRecovery2026} is false~\cite{StorageCodes2026}; its native
+form remains open. The table below updates the status of exact radius-$3$ (loopless TT-free)
 half-rate bounds from~\cite[Section~9.1]{SeventhPaper2026} and~\cite[Section~8]{EighthPaper2026}:
 
 \begin{center}
@@ -23,7 +24,7 @@ chordless digon cycles with $\le 1$ outside parent per vertex &
 \addlinespace
 triangle-free degree $\le 4$, scalar linear ($\ker M$, unit diagonal) &
   $\dim_F \ker M \le \lfloor \card{V}/2 \rfloor$ under~(S1) alone (heavy matchings allowed; \textbf{Theorem~SH$^*$}, \cref{thm:SHstar}), plus $\rhom$ barrier (\textbf{Corollary~M$^*$}, \cref{cor:Mstar}) &
-  heavy vertices at distance~$2$ sharing common neighbors; all codes at degree~$4$ (\cref{prob:deg4-dist2}) \\
+  degree~$4$ with growing odd girth; the general finite half bound is false (\cref{prob:deg4-dist2}) \\
 \addlinespace
 $\DNP(s_0, m)$, turn-supported mod-$q$ labels &
   blind-error run $\le 2\lfloor\log_2 q\rfloor + 2$ (\textbf{Theorem~LU}, \cref{thm:LU}); three-regime failure witnesses for bounded-range block pairs at two odd shifts, one for symmetric pairs (\textbf{Theorem~A}, \cref{thm:A}) &
@@ -80,6 +81,15 @@ $\DNP(s_0, m)$, turn-supported mod-$q$ labels &
   (b) Does the polymatroid half-rate bound $2 h(V) \le \sum_{v \in V} h(\{v\})$ hold on every triangle-free undirected graph
   of maximum degree~$4$?
   \end{problem}
+  \textbf{Update (November 2026).} The finite assertion in (a) and the assertion in (b) are false by
+  \cite[Example~7.8]{SeventhPaper2026}. That triangle-free $4$-regular graph has $13$ vertices and an
+  $\mathbb F_4$-linear storage code $C$ of dimension $7$. Its linear recovery equations give a matrix $M=I-A$
+  with unit diagonal, supported on the graph, and $C\subseteq\ker M$, so $\dim\ker M\ge7>\lfloor13/2\rfloor$.
+  By \cref{thm:SHstar}, its heavy set must contain two vertices with a common neighbor; triangle-freeness makes
+  their distance exactly two, as required in (a).
+  Taking the entropy of the uniform codeword also refutes the polymatroid bound in (b). The storage-code
+  counterexample is Lean-verified in the seventh paper; the matrix and entropy interpretations here are written
+  consequences. Its odd girth is five, so the growing-odd-girth alternative in (a) remains open.
   At degree~$5$, scalar binary codes already reach rate~$5/8$ on the Clebsch graph
   (Lean-verified in~\cite[Corollary~6.11]{FourthPaper2026}), whereas at degree~$4$ tree-local arguments cannot handle
   arbitrary clusters of heavy vertices~\cite[Proposition~6.28]{FourthPaper2026}.

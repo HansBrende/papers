@@ -1,6 +1,6 @@
 # Directed Recovery Structures in Tape Computations
 
-Hans Brende and GPT-6 Astra (OpenAI), October 2026.
+Hans Brende and GPT-6 Astra (OpenAI), October 2026, revised November 2026.
 
 [Paper and LaTeX sources](paper/) ([PDF](paper/main.pdf), [CC BY 4.0](paper/LICENSE)).
 [Lean library](lean/) ([Apache 2.0](lean/LICENSE)).
@@ -70,10 +70,22 @@ code classes, graph premises, and missing native implications. The fourth
 paper's [circular strengthening memo](../Curved-Motion-Depth-Reduction-and-Storage-Codes-for-Matrix-Transposition-on-Tapes/memo/)
 is cited as a separate all-alphabet tool.
 
+**Update (November 2026).** [Paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)
+answers Question 9.1 negatively, including for binary nonlinear codes and symmetric
+recovery relations. Proposition 9.2 remains a valid implication with a false
+premise; its conclusion for the full native cone relations remains open. Appendix C
+now applies the torsion diagnostic to Paper 13: every permitted uniformly bounded
+integer-lift sequence of its characteristic-127 checks has a linear number of
+nonzero Smith invariant factors divisible by 127. This application uses written
+arithmetic and construction proofs, not a new complete Lean formalization.
+
 ## What is open
 
-The general finite-alphabet paired-distance coding question, unrestricted cheap
-depth reduction, and an all-input treatment of adaptivity remain open. No
+The all-code half bound on actual native cone relations, a quantitative abstract
+deficit large enough to exceed the reduction's costs, Question 9.1 for F₂-linear
+codes, the least degree at which the general half bound fails, unrestricted cheap
+depth reduction, and an all-input treatment of adaptivity remain open. Mere positivity of a degree-dependent deficit
+is elementary: 1/(Δ+1) already follows from the acyclic-set argument. No
 unrestricted transposition time lower bound is claimed.
 
 ## Building and verifying

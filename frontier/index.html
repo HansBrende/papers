@@ -151,9 +151,9 @@ a:hover { text-decoration-thickness: 2px; }
       <g class="r" tabindex="0" data-id="high" aria-label="High adaptivity">
         <rect class="shape f-open" x="88" y="96" width="902" height="558"></rect>
       </g>
-      <!-- 2. low adaptivity, no result -->
+      <!-- 2. low adaptivity: Corollary L of paper 14, given the native half bound for frozen traces -->
       <g class="r" tabindex="0" data-id="leOpen" aria-label="Low adaptivity without bounded entry">
-        <circle class="shape f-open" cx="470" cy="375" r="265"></circle>
+        <circle class="shape f-yellow" cx="470" cy="375" r="265"></circle>
       </g>
       <!-- 3. bounded entry on every tape: Corollary F'' (low adaptivity), Corollary RV (any adaptivity, paper 11);
            yellow: the remaining hypothesis is a half-rate bound for the machine's own relations -->
@@ -206,8 +206,9 @@ a:hover { text-decoration-thickness: 2px; }
 
       <!-- labels -->
       <g pointer-events="none">
-        <text x="470" y="146" text-anchor="middle" class="hdr">LOW ADAPTIVITY</text>
-        <text x="470" y="162" text-anchor="middle" class="sub">traces carry at most ηL bits, η &lt; ½</text>
+        <text x="470" y="146" text-anchor="middle" class="hdr t-yellow">LOW ADAPTIVITY</text>
+        <text x="470" y="162" text-anchor="middle" class="sub t-yellow">traces carry at most ηL bits, η &lt; ½</text>
+        <text x="470" y="177" text-anchor="middle" class="tiny t-yellow">needs a half-rate bound (Corollary L)</text>
 
         <text x="296" y="243" text-anchor="middle" class="lbl t-yellow">Each cell entered</text>
         <text x="285" y="260" text-anchor="middle" class="lbl t-yellow">O(1) times</text>
@@ -234,7 +235,7 @@ a:hover { text-decoration-thickness: 2px; }
         <text x="405" y="553" text-anchor="middle" class="sub t-orange">Theorem T's depth</text>
         <text x="755" y="598" class="tiny" style="font-weight:600">linear over a field: linear crux alone</text>
 
-        <text x="696" y="334" class="tiny">XOR-frame template</text>
+        <text x="736" y="334" class="tiny">XOR-frame template</text>
         <text x="738" y="474" class="tiny">Local packet coding</text>
 
         <text x="790" y="210" class="hdr">HIGH ADAPTIVITY</text>
@@ -295,7 +296,7 @@ a:hover { text-decoration-thickness: 2px; }
       bounded away from 1; since paper 13 such a bound has no support from a machine-free statement. So the colours run from red
       through dark orange and orange to yellow as the open statement gets stronger, and white marks pieces with no conditional result. The red circle combines depth
       reduction with a proved half-rate bound for its cone relations (papers 7, 8 and 10). Adaptive machines enter through
-      Corollary F″, which freezes the most likely trace, and through paper 11.</p>
+      Corollary L of paper 14, which freezes a likely trace, and through paper 11.</p>
     <p>Paper 9 adds a third route that needs no coding question. For an oblivious machine whose head excursions overlap boundedly,
       complete source certificates on the actual return geometry show directly that the machine is wrong on most inputs, provided only
       a few excursions are large. That is the small red island inside the dark orange piece.</p>
@@ -331,7 +332,8 @@ a:hover { text-decoration-thickness: 2px; }
       earlier versions of the map, oblivious deep nesting under two open statements, and turned the whole half-bound circle red.
       Conversely, an oblivious transposer needs, for every ε, storage codes of rate at least 1 − ε on its own cone relations at the
       depth of Corollary O: for oblivious machines the coding side is the whole question. Adaptive machines are reached only through single
-      traces; under the native half bound for frozen traces, paper 14 sketches Corollary F″ without bounded entry (Remark 9.5).</p>
+      traces: under the native half bound for frozen traces, Corollary L excludes every machine whose trace carries at most ηL
+      bits, η &lt; ½, however often it enters its cells (Lean). This turned the whole low-adaptivity circle yellow.</p>
     <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
       machines (Harvey and van der Hoeven). The best known upper bound is O(L·(log d)<sup>1−κ</sup>), from an unrefereed preprint.</p>
   </section>
@@ -379,14 +381,14 @@ const R = {
     text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too.",
     src: "Paper 2 (Local Coding Barriers), with its packet and adaptive-coding extensions" },
   high: { name: "High adaptivity", color: "open", status: "Open",
-    text: "Head movements carry about half of the input's information or more. Every trace is cut to bounded depth (paper 14, Corollary O(a), Lean), but no reduction to coding is known here: the index-code argument needs a schedule shared by many inputs. Unconditionally, every transposer needs Ω(log d) sweeps and fold-back of its head paths, and at block scale it runs an external-memory transposition with O(d) I/Os that is oblivious on 2^(L−O(d)) inputs, so an I/O lower bound without indivisibility would settle this piece too (paper 11, Theorem EM). Given paper 11's half-rate bounds for the machine's own relations (Question 9.1 itself is false, paper 13), such a machine revisits some tape unboundedly often, and if its work tapes have bounded entry, the coarse motion of its input head carries about L/2 bits of the data (paper 11, Theorem L and Corollary IS); padding the input head meets that condition at no cost.",
-    src: "Paper 1 (Theorems P′, M*), Adaptive Pass Bounds memo; paper 11, Theorems EM, L and Corollary IS; paper 14, Corollary O(a)" },
-  leOpen: { name: "Low adaptivity, without bounded entry", color: "open", status: "Open",
-    text: "The traces carry at most ηL bits, but some likely trace revisits cells unboundedly often. Corollary F″ is stated only when every likely trace enters each cell O(1) times. Paper 14 sketches how to drop that hypothesis: the proof of Corollary F″ uses bounded entry only to obtain a cut from Theorem F, and Theorem T supplies a cut for all walks. So, under the native half bound for frozen traces, no machine transposes in linear time with a trace whose entropy is at most ηL, η < ½ (Remark 9.5, a proof sketch). Written out in full, this would make the piece yellow like the disc.",
-    src: "Paper 8, Corollary F″ (hypotheses); paper 14, Remark 9.5 (proof sketch)" },
+    text: "Head movements carry about half of the input's information or more. Every trace is cut to bounded depth (paper 14, Corollary O(a), Lean), but no reduction to coding is known here: the index-code argument needs a schedule shared by many inputs. Given the native bound at a coarse scale w, though, every linear-time transposer's skeleton at that scale carries more than (½ − η)L bits, however often it enters its cells (paper 14, Corollary L(a), Lean; paper 11's Theorem SE assumed bounded entry). Unconditionally, every transposer needs Ω(log d) sweeps and fold-back of its head paths, and at block scale it runs an external-memory transposition with O(d) I/Os that is oblivious on 2^(L−O(d)) inputs, so an I/O lower bound without indivisibility would settle this piece too (paper 11, Theorem EM). Given paper 11's half-rate bounds for the machine's own relations (Question 9.1 itself is false, paper 13), such a machine revisits some tape unboundedly often, and if its work tapes have bounded entry, the coarse motion of its input head carries about L/2 bits of the data (paper 11, Theorem L and Corollary IS); padding the input head meets that condition at no cost.",
+    src: "Paper 1 (Theorems P′, M*), Adaptive Pass Bounds memo; paper 11, Theorems EM, L, SE and Corollary IS; paper 14, Corollaries O(a) and L(a)" },
+  leOpen: { name: "Low adaptivity", color: "yellow", status: "Impossible if a half-rate bound for the machine's own relations holds (the native bound for frozen traces)",
+    text: "The traces carry at most ηL bits, η < ½, so some trace is followed by at least 2^((1−η)L) inputs. Theorem T gives that trace a genie of cost εL and bounded depth, so some fibre of the revealed word is a storage code on the trace's cone relation with at least 2^((1−η−ε)L) words, and the native half bound for frozen traces excludes the machine, however often it enters its cells (paper 14, Corollary L, Lean). This is the eighth paper's Corollary F″ without its bounded-entry hypothesis. The entropy hypothesis is not robust: padding the input head's motion defeats it (paper 8, Section 6.2).",
+    src: "Paper 14, Corollary L (Lean); paper 8, Corollary F″ and its update; paper 11, Theorem SE" },
   lowad: { name: "Each cell of every tape entered O(1) times", color: "yellow", status: "Impossible if a half-rate bound for the machine's own relations holds",
-    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19). Paper 14 sketches Corollary F″ without bounded entry under the native half bound for frozen traces (Remark 9.5; the low-adaptivity piece).",
-    src: "Paper 8, Corollary F″ and Remark 6.5; paper 11, Theorem SE, Corollary RV and Remark 4.19; paper 13; paper 14, Remark 9.5" },
+    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19). Inside the low-adaptivity circle the bounded-entry hypothesis is no longer needed (paper 14, Corollary L); the disc matters beyond it, through Corollary RV.",
+    src: "Paper 8, Corollary F″ and Remark 6.5; paper 11, Theorem SE, Corollary RV and Remark 4.19; paper 13; paper 14, Corollary L" },
   ob: { name: "Oblivious, deep nesting", color: "orange", status: "Impossible if the crux holds (Corollary O, Lean)",
     text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. Paper 14 proves depth reduction for every number of heads (Theorem T, Lean): every trace has a genie of cost εL and full depth below D, where log log D = O(k² log(kβC/ε)). So the crux alone, at that depth and a rate above ε, excludes every oblivious linear-time transposer, whatever its head motion (Corollary O, Lean in the frozen machine model of paper 1); the same genies prove paper 11's Conjecture HV*, code-level depth reduction (Corollary HV, Lean). Since D is doubly exponential, the crux is needed at rate about (log D)^(−c/k²) (Remark 9.4); the heads of Theorems F, B and M need it only at smaller depths (the darker piece). The deep-nesting pairs, which the series took for the sharpest candidates for depth-robust schedules, are cut to depth D(2,ε) whatever their nesting depth (Corollary N; the cut is Lean-verified), so Conjectures A′ and A″ are false. The lower bounds for restricted labels (paper 10's block-label witnesses; paper 11's Theorem BP, under its Conjecture S) are untouched but are no longer evidence of depth-robustness, and Theorem H of the information-depth memo, which assumes that TCP fails, is vacuous.",
     src: "Paper 14, Theorem T, Corollaries N, O and HV (Lean), Remark 9.4; paper 4, Theorem D; paper 10, Theorems V*, LU and A; paper 11, Theorem BP; information-depth memo, Theorem H" },

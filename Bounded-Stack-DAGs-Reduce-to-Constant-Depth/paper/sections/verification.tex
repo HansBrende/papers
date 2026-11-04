@@ -1,0 +1,44 @@
+\section{Building and verifying the formalization}\label{app:verify}
+
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the library of the eighth
+paper~\cite{EighthPaper2026} through a relative path; that library requires the earlier libraries of the series in the same way.
+Keep the repository's directory layout, so that these sibling directories stay in place.
+
+\paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib; the second compiles the library and the parts of the earlier libraries that it
+uses. Before the first build, fetch the second paper's pinned external dependency as its README describes
+(\texttt{python3 verification/fetch\_openai\_metric.py}, run in that paper's directory).
+
+\paragraph{Axioms.} The file \leanfile{PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration of this library named here (\cref{app:index}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of this
+library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, declares an \texttt{axiom}, or raises
+\texttt{maxHeartbeats}. The script regenerates both the index of \cref{app:index} and \leanfile{PaperAxioms.lean}; with the
+option \texttt{--index-only} it writes only the index.
+
+\paragraph{Where things are.} The library \leanfile{lean/BoundedStackDepth/} has five layers, each a group of modules.
+\begin{itemize}[leftmargin=1.5em]\raggedright
+\item \emph{Statements and foundations:} \leanfile{Statement.lean} (the main statement and its corollary for stack DAGs),
+\leanfile{Assembly.lean} (the probabilistic method for label cuts), \leanfile{Basic.lean}, \leanfile{Grid.lean},
+\leanfile{BandSums.lean}, \leanfile{Choice.lean}, \leanfile{Walks.lean}, \leanfile{Prominence.lean} and
+\leanfile{TopProminence.lean}.
+\item \emph{One walk} (\cref{sec:ladders}): \leanfile{Decomposition.lean}, \leanfile{Excursions.lean}, \leanfile{FramesU.lean},
+\leanfile{FrameSystem.lean}, \leanfile{FrameDynamics.lean}, \leanfile{FrameWeight.lean}, \leanfile{FrameWeightU.lean},
+\leanfile{LadderBands.lean}, \leanfile{CostModel.lean}, \leanfile{HopData.lean}, \leanfile{Events.lean},
+\leanfile{PerExcursion.lean} and \leanfile{TheoremA.lean}.
+\item \emph{The label} (\cref{sec:label}): \leanfile{Label.lean} and \leanfile{Global.lean}.
+\item \emph{Displays} (\cref{sec:displays}): \leanfile{Display.lean}, \leanfile{Revealing.lean}, \leanfile{DisplayTail.lean},
+\leanfile{DisplayView.lean}, \leanfile{Entries.lean}, \leanfile{Composition.lean}, \leanfile{ViewInvariance.lean} and
+\leanfile{Exposure.lean}.
+\item \emph{Accounting and the proof} (\cref{sec:accounting,sec:proof}): \leanfile{Budgets.lean}, \leanfile{EventWeight.lean},
+\leanfile{Accounting.lean}, \leanfile{Truncation.lean}, \leanfile{Wrap.lean}, \leanfile{WrapGlobal.lean},
+\leanfile{CutDescents.lean}, \leanfile{CutHops.lean}, \leanfile{Totals.lean} and \leanfile{Main.lean}.
+\end{itemize}
+The root module \leanfile{BoundedStackDepth.lean} imports all of them.

@@ -1,0 +1,154 @@
+\section{Proof of the main theorem}\label{sec:proof}
+
+This section chooses the parameters and adds up the bounds of \cref{sec:accounting}. Throughout, $k\in\N$, $n=2k$ is the number
+of heads, and $\eps>0$.
+
+\subsection{The parameters}\label{sec:proof-params}
+
+\begin{definition}[The parameters]\label{def:params}
+\formal{Main.lean}{parH, parQ, parJ, parP, parK}
+The \emph{grid width}~$h_0$, the \emph{bit size}~$Q$, the number of \emph{blocks}~$j$, the number of \emph{digits}~$P$ and the
+\emph{radix}~$K$ are
+\[
+\begin{aligned}
+  h_0&=\Bigl\lceil\frac{14n+80n^2}{\eps/4}\Bigr\rceil+1, &\qquad
+  Q&=\Bigl\lceil\frac{2n^2}{\eps/4}\Bigr\rceil+1, &\qquad
+  j&=\Bigl\lceil\ln\bigl(\max(1,8n^2/\eps)\bigr)\cdot Q^{n^2}\Bigr\rceil,\\
+  P&=1+2n(jn+1), &
+  K&=\Bigl\lceil\frac{5Pn+140\cdot2^{h_0}n^2}{\eps/4}\Bigr\rceil+1. &&
+\end{aligned}
+\]
+\end{definition}
+
+The parameters depend only on $k$ and~$\eps$, and they are fixed in this order: $h_0$ and~$Q$ from $n$ and~$\eps$, $j$ from~$Q$,
+$P$ from~$j$, and $K$ from $P$ and~$h_0$. By construction $h_0,Q,K\ge1$ and $P\ge1$. The grid width pays for the terms that decay
+like $1/h_0$, the bit size for exposure, the number of blocks, and with it the number of digits, for truncation, and the radix for
+the wraps. The cut will have depth at most $K^P-1$.
+
+\begin{lemma}[The parameters suffice]\label{lem:params}
+\formal{Main.lean}{parH_spec, parQ_spec, parJ_spec, parK_spec}
+\formal{Choice.lean}{le_natCeil_add_one_mul, one_sub_pow_le_inv, one_sub_pow_natCeil_le_inv, trunc_term_le}
+The parameters of \cref{def:params} satisfy
+\[
+  14n+80n^2\le h_0\frac\eps4,\qquad 2n^2\le Q\frac\eps4,\qquad 2n^2\bigl(1-Q^{-n^2}\bigr)^j\le\frac\eps4,\qquad
+  5Pn+140\cdot2^{h_0}n^2\le K\frac\eps4.
+\]
+\end{lemma}
+
+\begin{outline}
+For $\delta>0$ and every real~$C$, $C\le(\lceil C/\delta\rceil+1)\delta$, where $\lceil\cdot\rceil$ is the ceiling truncated at~$0$
+(\lean{le_natCeil_add_one_mul}). With $\delta=\eps/4$ this gives the first, the second and the
+fourth inequality (\lean{parH_spec}, \lean{parQ_spec}, \lean{parK_spec}). For the third (\lean{parJ_spec}, \lean{trunc_term_le}),
+put $x=Q^{-n^2}\in(0,1]$ and $A=\max(1,8n^2/\eps)\ge1$, so that $j=\lceil\ln A/x\rceil$. Then $(1-x)^j\le e^{-xj}\le1/A$
+(\lean{one_sub_pow_le_inv}, \lean{one_sub_pow_natCeil_le_inv}), and $2n^2/A\le\eps/4$: if $8n^2/\eps\le1$, then $2n^2\le\eps/4$,
+and otherwise $2n^2/A=\eps/4$.
+\end{outline}
+
+\subsection{The cut, summed over the random choices}\label{sec:proof-total}
+
+As in \cref{sec:accounting}, $\Omega=[0,h_0)\times[0,K)^P\times[0,Q)^\iota$ is the set of the random choices $(r,\omega,\xi)$,
+$\Psi_{r,\omega,\xi}$ is the label of \cref{def:global}, and $\mathrm{Bad}_{r,\xi}$ is the set of bad times of \cref{lem:trunc}.
+The following proposition adds up the bounds of \cref{sec:accounting} in natural numbers, for arbitrary parameters.
+
+\begin{proposition}[The cut in natural numbers]\label{prop:total}
+\formal{Main.lean}{sum_weight_events_head_le, sum_violated_head_le, sum_labelCutSize_le, sum_bad_le}
+Let $h_0,P\in\N$ and $K,Q\ge1$.
+\begin{enumerate}[label=(\alph*)]
+\item For every head~$v$, $\sum_{r<h_0}\sum_{(t,g)}2^{\theta_r(g)}\le8T$, the inner sum over
+$\mathrm{Rise}_r(v)\cup\mathrm{Last}_r(v)$.
+\item For every head~$v$, the upper hops $(p,u)$ of~$v$ with $\Psi_{r,\omega,\xi}(u)\le\Psi_{r,\omega,\xi}(p)$, summed over
+$(r,\omega,\xi)\in\Omega$, number at most
+\begin{multline*}
+  B_v=K^PQ^\iota\cdot6T+K^P\sum_{r<h_0}\sum_\xi\card{\mathrm{Bad}_{r,\xi}}+K^PQ^\iota\cdot80nT\\
+  +K^Ph_0T\cdot2nQ^{\iota-1}+h_0Q^\iota K^{P-1}\cdot20\cdot2^{h_0}n(6T+1).
+\end{multline*}
+\item The cuts, summed over~$\Omega$, satisfy
+\[
+  \sum_{(r,\omega,\xi)\in\Omega}\card{F_{\Psi_{r,\omega,\xi}}}\le K^PQ^\iota\cdot8nT+Q^\iota h_0\cdot PK^{P-1}\cdot n(4T+1)+n\cdot B,
+\]
+where $B$ is the common value of the bounds~$B_v$ of~(b).
+\item If $P\ge1+2n(jn+1)$ for some $j\in\N$, then $\sum_{r<h_0}\sum_\xi\card{\mathrm{Bad}_{r,\xi}}\le h_0T\cdot2n(1-Q^{-n^2})^jQ^\iota$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+(a) \Cref{lem:budgets}(c) with $N=T$, and \cref{lem:W1}(b) (\lean{sum_weight_events_head_le}). (b) (\lean{sum_violated_head_le})
+By \cref{lem:hopterms}(a), for each choice the violated upper hops of~$v$ are at most its lost, truncated, charged, exposed and
+wrapping hops; we sum each kind over~$\Omega$, the offsets in the sums being below~$h_0$. \emph{Lost:} the lost set depends only
+on~$r$, and by Theorem~A (\cref{thm:A}) its size, summed over the offsets, is at most $6$ times the number of upper hops, hence at
+most $6T$ (\cref{lem:totals}(a)); the other two coordinates contribute the factor $K^PQ^\iota$. \emph{Truncated:} at most
+$\card{\mathrm{Bad}_{r,\xi}}$ for every~$\omega$ (\cref{lem:trunc}(a), \lean{card_truncSet_le_bad}). \emph{Charged:} the charged
+set depends only on~$r$; by \cref{lem:hopterms}(b) and part~(a), summed over the offsets, its size is at most $10\sum_w8T=80nT$.
+\emph{Exposed:} independent of~$\omega$, and summed over~$\xi$ at most $T\cdot2nQ^{\iota-1}$ for every~$r$ (\cref{lem:hopterms}(c),
+\cref{lem:totals}(a)). \emph{Wrapping:} for every $r$ and~$\xi$, summed over~$\omega$, at most
+$K^{P-1}\cdot20\cdot2^{h_0}\sum_w(6T+1)$ (\cref{lem:hopterms}(d), \cref{lem:totals}(e)). (c) (\lean{sum_labelCutSize_le}) The cut
+consists of the descents and the violated hop edges. \Cref{lem:heads}(c) bounds the latter by the violated upper hops of the
+$n$ heads, each of which is bounded by~(b), and \cref{lem:totals}(f) bounds the descents. (d) (\lean{sum_bad_le}) Exchanging the
+sums, $\sum_\xi\card{\mathrm{Bad}_{r,\xi}}=\sum_{t<T}\#\{\xi:t\text{ is bad}\}$, and \cref{lem:trunc}(b) bounds every term.
+\end{outline}
+
+\subsection{The main estimate}\label{sec:proof-main}
+
+The four error terms of the main estimate are, as expectations over uniform random choices, the following. The terms \emph{paid
+by the grid} are the descents at event times, $8nT/h_0$, the lost hops, $6nT/h_0$ (Theorem~A), and the charged hops,
+$80n^2T/h_0$; the term of \emph{truncation} is $2n^2(1-Q^{-n^2})^jT$ (Lemma~D); the term of \emph{exposure} is $2n^2T/Q$
+(\cref{prop:exposure}); and the term of the \emph{wraps} collects the wrap times, $Pn(4T+1)/K$, and the wrapping hops,
+$20\cdot2^{h_0}n^2(6T+1)/K$. With the parameters of \cref{def:params}, each term is at most $\eps T/4$.
+
+\begin{proposition}[The main estimate]\label{prop:mainest}
+\formal{Main.lean}{exists_avgLabel}
+Let $T\in\N$ and let $x_1,\dots,x_k$ be walks, pauses allowed. With the parameters of \cref{def:params}, there are a nonempty
+finite set~$A$ and labels $\Psi_a$, $a\in A$, with values below~$K^P$, such that
+\[
+  \sum_{a\in A}\card{F_{\Psi_a}}\le\card A\cdot\eps T .
+\]
+\end{proposition}
+
+\begin{outline}
+The formal proof takes $A=\Omega$ and the labels $\Psi_{r,\omega,\xi}$ of \cref{def:global}. They take fewer than $K^P$ values by
+\cref{lem:heads}(a), and $\Omega$ is nonempty. For $T=0$ there are no edges. Let
+$T\ge1$. Since $P=1+2n(jn+1)$, \cref{prop:total}(d) applies; insert it into \cref{prop:total}(c) and divide by
+$\card\Omega=h_0K^PQ^\iota$. The result is a sum of four terms, each at most $\eps T/4$ by \cref{lem:params}:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{paid by the grid:} $(8n+6n+80n^2)T/h_0=(14n+80n^2)T/h_0\le\eps T/4$;
+\item \emph{truncation:} $n\cdot2n(1-Q^{-n^2})^jT=2n^2(1-Q^{-n^2})^jT\le\eps T/4$;
+\item \emph{exposure:} $n\cdot2nTQ^{\iota-1}/Q^\iota=2n^2T/Q\le\eps T/4$; here $Q^\iota=Q\cdot Q^{\iota-1}$, since for $k\ge1$ every
+head has the root as a frame, so that $\iota\ge1$, and for $k=0$ the term vanishes;
+\item \emph{wraps:} $n\bigl(P(4T+1)+20\cdot2^{h_0}n(6T+1)\bigr)/K\le(5Pn+140\cdot2^{h_0}n^2)T/K\le\eps T/4$, since $4T+1\le5T$ and
+$6T+1\le7T$.
+\end{enumerate}
+So the average cut is at most $\eps T$ (\lean{exists_avgLabel}).
+\end{outline}
+
+\subsection{Theorem T}\label{sec:proof-T}
+
+\begin{theorem}[Theorem T]\label{thm:T}
+\formal{Main.lean}{tcpAt_direct, tcp, main, sr}
+For $k\in\N$ and $\eps>0$ let $D(k,\eps)=K^P-1$, with $K$ and~$P$ as in \cref{def:params}. For every horizon~$T$ and all walks
+$x_1,\dots,x_k$, with or without pauses, the walk DAG of $x_1,\dots,x_k$ before~$T$ has a cut of at most $\eps T$ edges and depth
+at most $D(k,\eps)$. Consequently:
+\begin{enumerate}[label=(\alph*)]
+\item $\TCP(k)$ holds for every~$k$, for walks with pauses, and hence for pause-free walks: this is the main statement;
+\item $\SR(s)$ holds for every~$s$: DAGs with a spine whose arcs form $s$ stacks reduce to constant depth.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+The first statement is \lean{tcpAt_direct}, that is, $\TCP(k)$ at $(\eps,D(k,\eps))$ in the sense of \cref{def:tcp}
+(\lean{BoundedNesting.TCPat}). By \cref{prop:mainest} some nonempty finite family of labels with values below~$K^P$ (in the formal
+proof, the labels $\Psi_{r,\omega,\xi}$) has cuts of average size at most $\eps T$; by the probabilistic method (\cref{prop:avg},
+\lean{exists_cut_of_avg}) one of these labels has a cut of at most $\eps T$ edges, whose depth is at most $K^P-1$ by
+\cref{prop:labelcut}. (a) For every $\eps>0$ the first statement provides
+the depth $D(k,\eps)$ (\lean{tcp}); the main statement, $\TCP(k)$ for every~$k$ (\lean{MainStatement}), is \lean{main}. Walks
+without pauses are walks, so $\TCP(k)$ contains its pause-free form (\lean{BoundedNesting.tcpnp_of_tcp}). (b) (\lean{sr},
+\lean{sr_of_main}) By the reduction of the eighth paper (\cref{prop:stacksred}, \lean{BoundedNesting.sr_of_tcpnp}), an $s$-stack
+DAG on $[0,N)$ is realized by $s$ pause-free walks of length~$2N$, and a cut of their walk DAG of at most $(\eps/2)(2N)$ edges and
+depth~$D$ pulls back to a cut of the stack DAG of at most $\eps N$ edges and depth at most~$D$. The formal proof takes the depth
+of~(a) at $\eps/2$, so every $s$-stack DAG on $[0,N)$ has a cut of at most $\eps N$ edges and depth at most $D(s,\eps/2)$.
+\end{outline}
+
+The construction never uses pause-freeness: Theorem~A and the composition hold for walks with pauses, so the first statement covers
+them directly, at the depth of $k$ walks, without the reduction to $2k$ pause-free walks of \cref{prop:stacksred}. The depth
+$D(k,\eps)$ does not depend on~$T$, so no family of $k$-tuples of walks is depth-robust, and with~(b) every family of DAGs with a
+spine whose arcs form a bounded number of stacks is depth-reducible; in particular $\SR(3)$, the first open case left by the
+eighth paper~\cite[Problem~10.2]{EighthPaper2026}, holds.

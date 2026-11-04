@@ -1,0 +1,43 @@
+\section{Open problems}\label{sec:open}
+
+\Cref{thm:T} settles depth reduction for every bounded number of walks and every bounded number of stacks. The questions it
+leaves are quantitative, algorithmic, or about other layouts; the first item is (T) itself.
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Decide (T).} Construct a machine that transposes $d\times d$ matrices with $b(d)$-bit entries in time $O(L)$, or prove
+that none exists. The first paper's frozen checker accepts either answer~\cite{FirstPaper2026}. By \cref{sec:consequences},
+depth reduction is no longer an obstacle on the way to a lower bound for oblivious machines: what remains is the coding side.
+To exclude the oblivious machines with $k$ work tapes, value width at most~$\beta$ and running time $C(L+1)$, it suffices to
+prove $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ for a single $\eps\in(0,1]$, at the depth~$D$ of \cref{cor:oblivious} and some rate
+$\rho>\eps$ (\cref{rem:rate}), and to exclude all oblivious linear-time transposers, to do so for all $k$, $\beta$ and~$C$. The
+native half bound would give the crux at rate~$\frac12$ at every depth (\cref{rem:native}); for machines with a linear data path
+the linear crux suffices, which the eighth paper states as a question of relative rigidity~\cite[Problem~10.6]{EighthPaper2026}.
+Conversely, an oblivious linear-time transposer must carry, for every~$\eps$, codes of rate at least $1-\eps$ on its own cone
+relations at that depth (\cref{sec:cons-construction}). Adaptive machines are reached only through single traces
+(\cref{rem:native}).
+
+\item \emph{The order of the depth.} With the parameters of \cref{def:params}, the depth $D(k,\eps)=K^P-1$ satisfies
+$\log\log D(k,\eps)=O(k^2\log(k/\eps))$ for $\eps\le\frac12$: the number of digits is $P=(O(k^2/\eps))^{4k^2+1}$, since
+$Q=O(k^2/\eps)$ and $j=O(Q^{4k^2}\log(k/\eps))$, and the radix satisfies $\log K=O(k^2/\eps+k^2\log(k/\eps))$.
+\begin{problem}[The true depth]\label{prob:depth}
+What is the smallest $D(k,\eps)$ for which $\TCP(k)$ holds at~$\eps$? Is it bounded by $2^{\poly(k/\eps)}$, or even by
+$\poly(k/\eps)$?
+\end{problem}
+The doubly exponential bound comes from Lemma~D (\cref{lem:D}), whose tail decays at the rate $1-Q^{-n^2}$ per block of $n$
+steps: a block stops the front process only when all of its at most $n^2$ fresh bits are broken. A rate of $1-Q^{-O(n)}$ per
+block would lower the exponent $4k^2$ in~$P$ to $O(k)$, and so give $\log\log D(k,\eps)=O(k\log(k/\eps))$; a rate bounded away
+from~$1$ would give $P=O(k^2\log(k/\eps))$ and, since $\log K=O(k^2/\eps+\log P)$, a depth $2^{\poly(k/\eps)}$. Heuristically, a
+better rate is plausible, since a front process advances only while some head has an unbroken candidate, and each head offers
+at most one candidate per value.
+
+\item \emph{Other layouts.} \Cref{thm:T} covers DAGs with a spine whose arcs form a bounded number of stacks. Bounded queue
+number is the natural next class: expanders with bounded queue number exist~\cite{DSW2016}, but expansion is not
+depth-robustness in the sense of TCP, since the spine is free and only arcs are counted.
+\begin{problem}[Queues]\label{prob:queues}
+Is every family of DAGs with a spine whose arcs form a bounded number of queues depth-reducible?
+\end{problem}
+
+\item \emph{Explicit cuts.} The proof is an averaging argument over the random choices $(r,\omega,\xi)$ (\cref{prop:avg}), and
+the label of one choice is easy to evaluate. Finding a good choice deterministically, and in near-linear time, is open; the
+number of choices is $h_0K^PQ^{\iota}$, where $\iota$, the number of pairs of a head and one of its frames, grows with~$T$.
+\end{enumerate}

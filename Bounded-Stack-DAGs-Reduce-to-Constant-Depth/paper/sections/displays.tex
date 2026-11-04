@@ -1,0 +1,397 @@
+\section{Displays with break bits}\label{sec:displays}
+
+This section constructs the shown sets of the label: at every time, the band groups of all heads together with a \emph{display}
+of the frozen groups of suspended frames. \Cref{sec:displays-why} explains informally why the display is random.
+\Cref{sec:displays-one} defines displays at one time, \cref{sec:displays-entries} the entries of a frame system and the composed
+display of all heads, and \cref{sec:displays-D} proves that the display is small (Lemma~D). The last three subsections control the
+case (ABOVE) of Lemma~V: the display above a group is a function of a \emph{view} (\cref{sec:displays-view}), the view changes
+only at standard events (Proposition~W, \cref{sec:displays-W}), and a hop without a standard event above its group is exposed only
+through a broken bit (\cref{sec:displays-exposure}).
+
+\subsection{Why break bits}\label{sec:displays-why}
+
+This subsection is an informal explanation; nothing below depends on it.
+
+By Lemma~V, an upper hop $(p,u)$ of a head with deciding group~$d$ is violated only through truncation, a wrap, or the case
+(ABOVE): the shown groups above~$d$ differ at $p$ and at~$u$. The shown sets must contain the band groups of all heads, since the
+deciding group of an aligned hop is the band group of its head at both ends. Band groups alone are not enough. When a head enters
+a frame (a \emph{push}), the band of the suspended segment freezes, and when the frame ends (a \emph{pop}) the segment resumes at
+its frozen band. If only the current band groups were shown, a pop at a high band would add a group to the shown set, and hops of
+other heads spanning the pop, with lower deciding groups, would fall into (ABOVE). The display therefore also shows frozen groups,
+the \emph{tops} of the \emph{entries} of \cref{def:entries}.
+
+The question is which tops to show. To keep the shown groups above~$d$ independent of what happens below~$d$, an entry should be
+displayed as soon as its \emph{window}, the range of groups between the current activity inside it and its top, contains a shown
+value. With this rule the display above~$d$ is a function of the configuration above~$d$ (\cref{lem:view-static}), and that part of
+the configuration changes only at standard events, which are paid for (\cref{prop:W}). But the rule cascades: an entry displayed
+because its window contains a displayed top makes the next entry whose window contains its own top displayed, and so on up the
+stacks of suspended frames. When the stacks are deep, so is the cascade, and no bounded number of digits can carry the display.
+
+Random \emph{break bits} cut the cascade. Every entry carries a bit that is~$0$, making the entry \emph{broken}, with probability
+$1/Q$, independently of the other bits, and the cascade passes only through unbroken entries. From a value~$y$ it moves to the
+tops of the \emph{candidates} at~$y$, at most one per head, and it stops as soon as all the candidates it meets are broken; each
+step reveals at most $n$ new bits, so long cascades are unlikely (Lemma~D, \cref{lem:D}). The display above~$d$ still depends only
+on the configuration above~$d$, except through the candidates at~$d$: when these are unbroken and $d$ is shown, they are displayed
+exactly as under the cascading rule. So a hop can be exposed only through one of at most $2n$ candidates, $n$ at each end, being
+broken, which has probability at most $2n/Q$ (\cref{prop:exposure}).
+
+\subsection{Displays at one time}\label{sec:displays-one}
+
+A \emph{configuration} consists of a finite set~$I$ of \emph{entries}, each with a \emph{head} $h(e)\in\{0,\dots,n-1\}$, a
+\emph{bottom} $m(e)\in\N$ and a \emph{top} $c(e)\in\N$; a set $U\subseteq I$ of \emph{unbroken} entries; and a finite set
+$\Sigma\subseteq\N$ of \emph{seeds}. The \emph{window} of~$e$ is the set of groups $[m(e),c(e)]$, which is empty if $m(e)>c(e)$. An
+entry~$e$ is a \emph{candidate} at a value~$y$ if $m(e)\le y<c(e)$.
+
+\begin{definition}[Displays]\label{def:display}
+\formal{Display.lean}{Disp, OneCandidate, dispVals, shownSet}
+The \emph{display} $\Disp$ of a configuration is the least set of entries with the following three properties.
+\begin{itemize}[leftmargin=3em]
+\item[\textup{(Z)}] If $m(e)=0$, then $e\in\Disp$.
+\item[\textup{(S)}] If $e\in U$, $z\in\Sigma$ and $m(e)\le z\le c(e)$, then $e\in\Disp$.
+\item[\textup{(C)}] If $e\in U$, $e'\in\Disp$ and $m(e)\le c(e')\le c(e)$, then $e\in\Disp$.
+\end{itemize}
+The \emph{displayed values} are the seeds and the tops of the displayed entries (\lean{dispVals}), and the \emph{shown set} is
+$\Ok=\{0\}\cup\Sigma\cup\{c(e):e\in\Disp\}$ (\lean{shownSet}). The configuration has the \emph{candidate property} if for every
+head~$v$ and every value~$y$ at most one entry~$e$ with $h(e)=v$ is a candidate at~$y$ (\lean{OneCandidate}).
+\end{definition}
+
+Rule~(Z) displays the \emph{fresh} entries, whose window starts at~$0$, whatever their bits; rules (S) and~(C) are the cascade,
+through unbroken entries only. In Lean, $\Disp$ is an inductive predicate with one constructor for each rule. An entry with an
+empty window is never displayed. The only structural fact about stacks that Lemma~D uses is a consequence of the candidate
+property: every value has at most $n$ candidates (\lean{cands}, \lean{card_cands_le}).
+
+\subsection{Entries and the composed display}\label{sec:displays-entries}
+
+Let $\mathcal S$ be a frame system on $[0,T)$ with walk~$x$ (\cref{def:framesystem}), and fix a grid $(h_0,r)$. A frame $F=(f_1,f_2)$
+is the interval $[f_1,f_2)$, and $F'\subseteq F$ denotes inclusion of intervals. We write $\inner(t)$ for the innermost frame
+of~$t$, and $s_F(t)$ and $M_F(t)$ for the segment start and the running maximum of a frame~$F$ at~$t$
+(\lean{FrameSystem.segStart}, \lean{FrameSystem.runMax}); the band is $\beta(t)=\band(M_{\inner(t)}(t))$. The \emph{segment of~$F$
+current at~$t$} is the segment of~$F$ that starts at $s_F(t)$.
+
+\begin{definition}[Entries, tops and bottoms]\label{def:entries}
+\formal{Entries.lean}{FrameSystem.parent, FrameSystem.IsEntry, FrameSystem.headGroup, FrameSystem.entryTop, FrameSystem.innerEntries, FrameSystem.entryBot}
+\begin{enumerate}[label=(\alph*)]
+\item The \emph{parent} $\pi(F)$ of a frame~$F$ is a shortest frame strictly containing~$F$, and the root if there is none. For a
+nonempty frame other than the root, $\pi(F)$ lies inside every frame strictly containing~$F$ (\lean{FrameSystem.parent_within}).
+\item A frame~$F$ is an \emph{entry} if it is nonempty, it is not the root, and its \emph{parent segment}, the segment of $\pi(F)$
+current at~$f_1$, is innermost again after~$F$ ends: some time $t'\ge f_2$ is an own time of~$\pi(F)$ with
+$s_{\pi(F)}(t')=s_{\pi(F)}(f_1)$. The entries containing~$t$ form the \emph{stack} at~$t$.
+\item The \emph{band group} at~$t$ is $g(t)=G(\beta(t))$.
+\item The \emph{top} of a frame~$F$ is $c_F=G\bigl(\band(M_{\pi(F)}(f_1))\bigr)$, the group of the band at which the parent segment is
+suspended.
+\item The \emph{bottom} of~$F$ at~$t$ is
+\[
+  m_F(t)=\max\bigl(\{g(t)\}\cup\{c_{F'}:F'\text{ an entry with }F'\subseteq F,\ F'\ne F,\ t\in F'\}\bigr),
+\]
+and $[m_F(t),c_F]$ is the \emph{window} of~$F$ at~$t$.
+\end{enumerate}
+\end{definition}
+
+An entry is a \emph{suspend child}: a frame after which its parent segment resumes. For a nonempty frame other than the root that
+is not an entry, the parent segment is never innermost again from the start of the frame on. While an entry is open, the running
+maximum of its parent does not change, because the times of the entry are not own times of the parent (\cref{lem:dynamics}); so its
+top is the group of the frozen band of the parent segment, the band group with which that segment resumes, unless its running
+maximum rises at that time. The
+bottom starts at the band group of the head and rises with the tops of the entries stacked inside; the window becomes empty when
+the activity inside~$F$ rises above~$c_F$. Lean chooses $\pi(F)$ among the frames of minimal length; only nonempty frames are
+entries, and their parents are determined.
+
+\begin{definition}[The composed display]\label{def:composed}
+\formal{Composition.lean}{EntryIdx, dispBot, dispTop, seeds}
+Let $\mathcal S_0,\dots,\mathcal S_{n-1}$ be frame systems on $[0,T)$, one for each head, with a common grid $(h_0,r)$, and write $g_v$, $c^{(v)}_F$
+and $m^{(v)}_F$ for the band groups, tops and bottoms of~$\mathcal S_v$. The \emph{composed display} at time~$t$ is the configuration whose
+entries are the pairs $(v,F)$ of a head~$v$ and a frame~$F$ of~$\mathcal S_v$ (\lean{EntryIdx}); $\iota$ denotes their number. The entry
+$(v,F)$ has head~$v$ and top $c^{(v)}_F$; its bottom is $m^{(v)}_F(t)$ if $F$ is an entry of~$\mathcal S_v$ containing~$t$, and $c^{(v)}_F+1$
+otherwise. The seeds are the band groups $g_v(t)$ of all heads. Bits $\xi$, one value $\xi_{(v,F)}\in\{0,\dots,Q-1\}$ for every
+entry, decide the unbroken entries: those with $\xi_{(v,F)}\ne0$.
+\end{definition}
+
+The bits do not depend on~$t$. A pair $(v,F)$ whose frame is not on the stack of~$v$ at~$t$ has an empty window, so it is neither a
+candidate nor displayed at~$t$; the composed display lives on the stacks of the heads.
+
+\begin{lemma}[One candidate per head]\label{lem:onecandidate}
+\formal{Entries.lean}{FrameSystem.entryTop_le_entryBot, FrameSystem.entry_candidate_unique}
+\formal{Composition.lean}{onStack_of_cand, card_seeds_le, oneCandidate_disp}
+\begin{enumerate}[label=(\alph*)]
+\item If $F'\subseteq F$ are distinct entries of~$\mathcal S$ containing~$t$, then $c_{F'}\le m_F(t)$.
+\item If $F$ and~$F'$ are entries of~$\mathcal S$ containing~$t$ with $m_F(t)\le y<c_F$ and $m_{F'}(t)\le y<c_{F'}$, then $F=F'$.
+\item At every time, the composed display has the candidate property and at most $n$ seeds.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) holds by the definition of the bottom as a maximum (\lean{FrameSystem.entryTop_le_entryBot}). (b) Two frames containing~$t$
+are nested, by laminarity (\cref{def:framesystem}). If $F'\subseteq F$ and $F'\ne F$, then $y<c_{F'}\le m_F(t)\le y$ by~(a), a
+contradiction, and symmetrically (\lean{FrameSystem.entry_candidate_unique}). (c) A candidate has a nonempty window, so its frame
+is an entry of its head's stack and its bottom is the true bottom (\lean{onStack_of_cand}); apply~(b) within one head
+(\lean{oneCandidate_disp}). The seeds are the $n$ band groups (\lean{card_seeds_le}).
+\end{outline}
+
+Along the stack of a head, inner windows lie below outer bottoms. This is why the candidates at any value are few: at most one per
+head, and at most $n$ in all.
+
+\subsection{Lemma D: the display is small}\label{sec:displays-D}
+
+Fix a configuration with entries~$I$ in which every value has at most $n$ candidates; this holds for every configuration with
+$n$ heads and the candidate property (\lean{card_cands_le}). Let a bit vector $\xi\in\{0,\dots,Q-1\}^I$ decide the unbroken entries,
+$U=\{e:\xi_e\ne0\}$. Probability bounds are counts of bit vectors: a bound ``for at most $N$ bit vectors'' means probability at
+most $N/Q^{\card I}$ for uniformly random bits.
+
+The \emph{front} from a value~$z$ is the sequence $y_0=z$ and
+\[
+  y_{i+1}=\min\{c(e):e\text{ an unbroken candidate at }y_i\},
+\]
+with $y_{i+1}=y_i$ if there is no unbroken candidate at~$y_i$ (\lean{front}, \lean{frontStep}). The front \emph{runs} at step~$i$
+if some candidate at~$y_i$ is unbroken (\lean{Running}); then $y_i<y_{i+1}$ (\lean{lt_frontStep}). A front that does not run at
+step~$i$ stays at~$y_i$ from then on (\lean{front_add_of_not_running}), so the steps at which it runs form an initial segment
+(\lean{Running.anti}). Let $\Sigma_0$ be the set of the tops $c(e)\ge1$ of the entries with $m(e)=0$ (\lean{zeroTops}); these
+entries are candidates at~$0$, so $\card{\Sigma_0}\le n$ (\lean{card_zeroTops_le}). The \emph{new candidates} of step~$i$ are the
+candidates at~$y_i$ that are not candidates at any $y_{i'}$ with $i'<i$ (\lean{newCands}).
+
+The front reads the bits adaptively: which bits it reads next depends on the bits read so far. The following lemma is the
+probabilistic tool for such processes.
+
+\begin{lemma}[Adaptive revealing]\label{lem:revealing}
+\formal{Revealing.lean}{RevAgree, IsRevealing, card_le_pow_mul_card_zero, card_le_pow_mul_card_block, card_blocks_le}
+Let $I$ be a finite set and $Q\ge1$. For every $i\in\N$ and every bit vector $\xi\in\{0,\dots,Q-1\}^I$ let $R_i(\xi)\subseteq I$
+be the set of entries \emph{revealed} in round~$i$. Suppose that the rounds are \emph{adaptive}, $R_i(\xi')=R_i(\xi)$ whenever
+$\xi'$ agrees with~$\xi$ on $R_{i'}(\xi)$ for all $i'<i$, and \emph{fresh}, $R_i(\xi)\cap R_{i'}(\xi)=\emptyset$ for $i'<i$. If every
+round reveals at most~$\mu$ entries, then for all $a,\ell,j\in\N$ at most
+\[
+  \bigl(1-Q^{-\ell\mu}\bigr)^j\,Q^{\card I}
+\]
+bit vectors have the property that each of the $j$ blocks of rounds $[a+b\ell,a+b\ell+\ell)$, $b<j$, contains a round that reveals
+an unbroken entry.
+\end{lemma}
+
+\begin{outline}
+\emph{Zeroing} (\lean{card_le_pow_mul_card_zero}). Let $A$ be a set of bit vectors determined by the rounds before~$i$: if $\xi\in
+A$ and $\xi'$ agrees with~$\xi$ on these rounds (\lean{RevAgree}), then $\xi'\in A$. Setting the bits of round~$i$ to~$0$ maps~$A$
+into itself and keeps the earlier rounds and round~$i$ itself, by adaptivity and freshness. The vectors with a given image differ
+only on round~$i$, so there are at most $Q^\mu$ of them. Hence $\card A\le Q^\mu\card{\{\xi\in A:\text{round $i$ reveals only
+broken entries}\}}$, and for $\ell$ consecutive rounds the factor is $Q^{\ell\mu}$ (\lean{card_le_pow_mul_card_block}).
+\emph{Blocks} (\lean{card_blocks_le}), by induction on~$j$. Let $E_j$ be the set of bit vectors whose first $j$ blocks each reveal
+an unbroken entry; it is determined by the rounds before $a+j\ell$. By zeroing, at least a fraction $Q^{-\ell\mu}$ of~$E_j$ has
+block~$j$ all broken, and these vectors are not in $E_{j+1}\subseteq E_j$; so $\card{E_{j+1}}\le(1-Q^{-\ell\mu})\card{E_j}$, and
+$\card{E_0}\le Q^{\card I}$.
+\end{outline}
+
+\begin{lemma}[The front process]\label{lem:front}
+\formal{DisplayTail.lean}{exists_front_eq_top, disp_top, shownSet_subset, card_shownSet_le, isRevealing_newCands, card_newCands_le, card_ucands_succ_lt, card_ucands_add_le, exists_newCands_unbroken, card_running_le}
+Suppose that every value has at most $n$ candidates.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Closure.} Every element of the shown set is~$0$ or a value~$y_i$ of the front from some $z\in\Sigma\cup\Sigma_0$. Hence,
+if no front from a value of $\Sigma\cup\Sigma_0$ runs at step~$N_0$, the shown set has at most $1+\card{\Sigma\cup\Sigma_0}(N_0+1)$
+elements.
+\item For each~$z$, the new candidates of the steps of the front from~$z$ form an adaptive and fresh revealing scheme with at
+most $n$ entries per round. A front that runs at step $a+n$ has an unbroken new candidate at one of the steps $a+1,\dots,a+n$.
+\item For all $z$ and~$j$, at most $(1-Q^{-n^2})^jQ^{\card I}$ bit vectors make the front from~$z$ run at step~$jn$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The key fact (\lean{exists_front_eq_top}): an unbroken candidate~$e$ at~$y_i$ has its top among the later values of the front.
+Indeed $y_{i+1}\le c(e)$, and if $y_{i+1}<c(e)$, then $e$ is still an unbroken candidate at~$y_{i+1}$; induct on $c(e)-y_i$. Now
+induct over the rules of the display (\lean{disp_top}). An entry displayed by~(Z) has top~$0$ or a top in~$\Sigma_0$, the
+value~$y_0$ of its own front. An entry~$e$ displayed by~(S) through a seed~$z$ has $c(e)=z$ or is an unbroken candidate at
+$z=y_0$. An entry~$e$ displayed by~(C) through~$e'$, whose top is $0$ or a front value~$y_i$ by induction, has $c(e)=c(e')$,
+or $m(e)=0$ as under~(Z), or is an unbroken candidate at~$y_i$. The seeds are the values~$y_0$ of their own fronts
+(\lean{shownSet_subset}). A front that does not run at step~$N_0$ is constant from then on, so it takes at most $N_0+1$ values
+(\lean{card_shownSet_le}).
+(b) The first $i$ steps of the front read only the bits of the candidates at $y_0,\dots,y_{i-1}$ (\lean{front_congr}), and each of
+these is a new candidate at some earlier step (\lean{exists_mem_newCands}); this gives adaptivity, and freshness holds by
+definition (\lean{isRevealing_newCands}). The new candidates of a step are candidates at one value, so there are at most~$n$ of
+them (\lean{card_newCands_le}). If the front runs at step~$i$ and the new candidates of step $i+1$ are all broken, then the unbroken
+candidates at~$y_{i+1}$ form a proper subset of those at~$y_i$ (\lean{card_ucands_succ_lt}): an unbroken candidate~$e$ at~$y_{i+1}$
+is not new, so it is a candidate at some $y_{i'}$ with $i'\le i$, and hence at~$y_i$, because $m(e)\le y_{i'}\le y_i\le
+y_{i+1}<c(e)$; and the candidate whose top is~$y_{i+1}$ is no longer a candidate at~$y_{i+1}$. A running front has at least one and
+at most $n$ unbroken candidates, so $n$ consecutive steps whose new candidates are all broken stop it (\lean{card_ucands_add_le},
+\lean{exists_newCands_unbroken}).
+(c) If the front runs at step~$jn$, it runs at step $bn+n$ for every $b<j$ (\lean{Running.anti}), and by~(b) each block of steps
+$[1+bn,1+bn+n)$ reveals an unbroken entry. \Cref{lem:revealing} with $a=1$ and $\ell=\mu=n$ gives the bound
+(\lean{card_running_le}).
+\end{outline}
+
+\begin{lemma}[Lemma D: the display is small]\label{lem:D}
+\formal{DisplayTail.lean}{card_shownSet_tail}
+Suppose that every value has at most $n$ candidates, and let $j\in\N$. At most $(\card\Sigma+n)(1-Q^{-n^2})^jQ^{\card I}$ bit
+vectors give a shown set with more than $1+(\card\Sigma+n)(jn+1)$ elements. Equivalently, for uniformly random bits,
+\[
+  \Pr\bigl[\card{\Ok}>1+(\card\Sigma+n)(jn+1)\bigr]\le(\card\Sigma+n)\bigl(1-Q^{-n^2}\bigr)^j .
+\]
+\end{lemma}
+
+\begin{outline}
+If the shown set is larger, then some front from a value of $\Sigma\cup\Sigma_0$ runs at step~$jn$: otherwise \cref{lem:front}(a)
+with $N_0=jn$ bounds the shown set by $1+\card{\Sigma\cup\Sigma_0}(jn+1)$, and $\card{\Sigma\cup\Sigma_0}\le\card\Sigma+n$. A
+union bound over the at most $\card\Sigma+n$ starting values, with \cref{lem:front}(c), gives the claim.
+\end{outline}
+
+The bound depends neither on the number of entries nor on the depth of the stacks. The seeds are the values~$y_0$ of their own
+fronts, so they need no separate term. The composed display has the candidate property and $\card\Sigma\le n$
+(\cref{lem:onecandidate}), so every value has at most $n$ candidates (\lean{card_cands_le}) and a time has more than $1+2n(jn+1)$
+shown groups with probability at most $2n(1-Q^{-n^2})^j$ (\cref{lem:trunc}); this is what the number of
+digits~$P$ of \cref{def:params} is chosen for. The rate $1-Q^{-n^2}$ per block of $n$ steps comes from asking all of the at most
+$n^2$ new bits of a block to be broken; it is the reason why $P$, and with it the depth, is so large.
+
+\subsection{The display above a group}\label{sec:displays-view}
+
+Fix a configuration and a value~$d$. An entry~$e$ is \emph{visible} above~$d$ if $d<m(e)\le c(e)$; a candidate at~$d$ has
+$m(e)\le d<c(e)$. The \emph{view} above~$d$ consists of the set~$X_d$ of the seeds above~$d$ and the tops of the candidates at~$d$
+(\lean{aboveVals}), and the set~$V_d$ of the windows $(m(e),c(e))$ of the unbroken visible entries (\lean{visPairs}). A value is
+\emph{reachable} from~$X_d$ through~$V_d$ if it belongs to the least set that contains~$X_d$ and contains~$c$ whenever it contains a
+value~$y$ with $m\le y\le c$ for some $(m,c)\in V_d$ (\lean{Reach}).
+
+\begin{lemma}[The display above $d$]\label{lem:view-static}
+\formal{DisplayView.lean}{aboveVals, visPairs, Reach, disp_of_cand, mem_dispVals_iff_reach, shown_above_eq}
+\begin{enumerate}[label=(\alph*)]
+\item A candidate at~$d$ is displayed if its bottom is~$0$, or if it is unbroken and $d$ is a seed.
+\item If every candidate at~$d$ is displayed, then a value $y>d$ is displayed if and only if it is reachable from~$X_d$
+through~$V_d$.
+\item Consider two configurations on the same set of entries, with the same view above~$d$, and in each of which every candidate
+at~$d$ is displayed. Then their shown sets have the same elements above~$d$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Rules (Z) and~(S), the latter with the seed~$d$ (\lean{disp_of_cand}). (b) (\lean{mem_dispVals_iff_reach}) A seed above~$d$
+lies in~$X_d$. The top of a displayed entry~$e$ with $c(e)>d$ is reachable, by induction over the rules: if $m(e)\le d$, then $e$
+is a candidate and $c(e)\in X_d$; otherwise $e$ is unbroken and visible, displayed by~(S) through a seed~$z$ or by~(C) through an
+entry~$e'$, and $z$, resp.\ $c(e')$, lies in the window of~$e$ and above~$d$, hence is reachable, so that $c(e)$ is reachable in one
+more step. Conversely, by induction over reachability: the elements of~$X_d$ are seeds or tops of candidates, and these are
+displayed by hypothesis; and if a displayed value lies in the window of an unbroken visible entry~$e$, then $e$ is displayed by~(S)
+or~(C). (c) Apply~(b) to both configurations (\lean{shown_above_eq}).
+\end{outline}
+
+So, once the candidates at~$d$ are displayed, the display above~$d$ is a function of the view above~$d$. The view is local to the
+heads: it consists of their band groups above~$d$, the tops of their candidates at~$d$ and their visible windows. The next
+subsection shows that the part of the view belonging to one head changes only at standard events of that head.
+
+\subsection{View invariance}\label{sec:displays-W}
+
+Let $\mathcal S$ be a frame system on $[0,T)$ with a grid $(h_0,r)$, and let $d\in\N$. Its entries, tops, bottoms and band groups are those
+of \cref{def:entries}.
+
+\begin{definition}[Standard events and views]\label{def:view}
+\formal{ViewInvariance.lean}{FrameSystem.RiseAt, FrameSystem.LastStintAt, FrameSystem.PopsAtZero, FrameSystem.stackEntries, FrameSystem.headAbove, FrameSystem.headVisible}
+Let $1\le t<T$ and $g\ge1$.
+\begin{enumerate}[label=(\alph*)]
+\item There is a \emph{rise} into~$g$ at~$t$ if $t$ is an own time of $J=\inner(t)$, after the start of~$J$ and not a restart
+of~$J$, at which the running maximum of~$J$ crosses the floor of~$g$:
+$\band(M_J(t-1))<\theta(g)\le\band(M_J(t))$.
+\item There is a \emph{last-stint end} at~$t$ at the group~$g$ if, with $J=\inner(t-1)$, $\theta(g)\le\band(M_J(t-1))$ and the
+segment of~$J$ current at $t-1$ is never innermost again from~$t$ on: no own time $t'\ge t$ of~$J$ has $s_J(t')=s_J(t-1)$.
+\item Rises and last-stint ends are the \emph{standard events}; $t$ is the \emph{time} and $g$ the \emph{group} of the event.
+\item $\mathcal S$ \emph{pops at band zero} if every nonempty frame~$F$ other than the root ends at band~$0$: $\beta(f_2-1)=0$.
+\item The \emph{view} of~$\mathcal S$ above~$d$ at any time~$t\in\N$ consists of the set $\mathcal A_d(t)$ of the values above~$d$ among the band group
+$g(t)$ and the tops~$c_F$ of the entries~$F$ of the stack with $m_F(t)\le d<c_F$, the \emph{candidates} at~$d$
+(\lean{FrameSystem.stackEntries}); and the set $\mathcal V_d(t)$ of the pairs $(F,m_F(t))$ for the entries~$F$ of the stack with
+$d<m_F(t)\le c_F$, the \emph{visible} entries.
+\end{enumerate}
+\end{definition}
+
+The frame system of class~U of every walk pops at band zero (\cref{lem:W2b}); so do the frame systems~$\mathcal S_v$ of the heads
+(\lean{popsAtZero_headFrames}).
+
+\begin{proposition}[Proposition W: view invariance]\label{prop:W}
+\formal{ViewInvariance.lean}{FrameSystem.view_step, FrameSystem.view_interval}
+Suppose that $\mathcal S$ pops at band zero and $r<h_0$, and let $p\le u<T$. If no standard event of a group $g\ge d+1$ has its time in
+$(p,u]$, then the view above~$d$ is the same at~$p$ and at~$u$: $\mathcal A_d(p)=\mathcal A_d(u)$ and $\mathcal V_d(p)=\mathcal V_d(u)$.
+\end{proposition}
+
+\begin{outline}
+The statement for $u=p+1$ is \lean{FrameSystem.view_step}, and \lean{FrameSystem.view_interval} follows by induction on~$u$. Fix
+$t$ with $1\le t<T$ and no standard event of a group $g\ge d+1$ at~$t$. A frame containing $t-1$ or~$t$ is \emph{common} if it
+contains both, \emph{popped} if it contains only $t-1$ (it ends at~$t$), and \emph{pushed} if it contains only~$t$ (it starts
+at~$t$); popped and pushed frames lie strictly inside every common frame (\lean{FrameSystem.within_of_contains_not}). Let $C$ be
+the innermost common frame (\lean{FrameSystem.InnermostCommon}, \lean{FrameSystem.exists_innermostCommon}; the root is common),
+and let $c=G(\band(M_C(t-1)))$.
+
+\emph{Popped and pushed entries.} If some frame is popped at~$t$, the innermost frame at $t-1$ is popped too, so $g(t-1)=0$ because
+$\mathcal S$ pops at band zero (\lean{FrameSystem.headGroup_pred_eq_zero}). No entry lies strictly inside a popped entry on the stack at
+$t-1$: it would end at~$t$, and its parent, which lies inside the popped entry, would have no own time from~$t$ on. So popped
+entries have bottom~$0$ at $t-1$ (\lean{FrameSystem.entryBot_popped}). If some frame is pushed at~$t$, the innermost frame at~$t$
+starts at~$t$, so $g(t)=0$; an entry strictly inside a pushed entry and containing~$t$ starts at~$t$ together with its parent, so its
+top is the group of a running maximum at the start of a frame, which is~$0$ (\lean{FrameSystem.headGroup_eq_zero_of_push},
+\lean{FrameSystem.entryTop_eq_zero}). So pushed entries have bottom~$0$ at~$t$ (\lean{FrameSystem.entryBot_pushed}). Hence popped
+and pushed entries are never visible, and they are candidates at~$d$ exactly when their tops exceed~$d$.
+
+\emph{Children of~$C$.} The parent of a popped entry is~$C$: it contains $t-1$, and it contains~$t$ because it has an own time after
+the entry ends (\lean{FrameSystem.parent_eq_of_popped}). The parent of a pushed frame is~$C$ or starts at~$t$
+(\lean{FrameSystem.parent_of_pushed}), and in the second case the pushed frame has top~$0$. A popped or pushed child of~$C$ has
+top~$c$, since the
+running maximum of~$C$ is frozen while $C$ is suspended (\lean{FrameSystem.runMax_frozen}), and it is an entry if and only if the
+segment of~$C$ current at $t-1$ \emph{returns}, that is, is innermost again at some time $t'\ge t$ (\lean{FrameSystem.Returns},
+\lean{FrameSystem.popped_child}, \lean{FrameSystem.pushed_child}).
+
+\emph{Local values.} The \emph{local values} at $t-1$ are the band group $g(t-1)$ and the tops of the entries popped at~$t$; the
+local values at~$t$ are $g(t)$ and the tops of the entries pushed at~$t$ (\lean{FrameSystem.LocalPre},
+\lean{FrameSystem.LocalPost}). By the above, a positive value is a local value at $t-1$ if and only if it equals~$c$ and $C$ is
+innermost at $t-1$ or its segment returns; and it is a local value at~$t$ if and only if either $C$ is innermost at~$t$ and the value
+equals $G(\band(M_C(t)))$, or $C$ is not innermost at~$t$, its segment returns, and the value equals~$c$
+(\lean{FrameSystem.localPre_iff}, \lean{FrameSystem.localPost_iff}). The key claim
+is that the local values at $t-1$ and at~$t$ agree above~$d$ (\lean{FrameSystem.localPre_iff_localPost}). First, if $C$ is innermost
+at $t-1$ and its segment does not return, then $c\le d$: otherwise the last stint of that segment ends at~$t$ at the group $c\ge
+d+1$, whose floor lies within its band. If $C$ is innermost at~$t$ and restarts there, its band group at~$t$ is~$0$ and its old
+segment does not return (\lean{FrameSystem.not_returns_of_restart}), so neither side has a value above~$d$. If $C$ is innermost
+at~$t$ without a restart, its segment returns at~$t$ itself, and its group can only rise, from~$c$ to $c'=G(\band(M_C(t)))$; a rise
+to $c'>\max(c,d)$ would be a rise into~$c'$ at~$t$, so $c$ and~$c'$ agree above~$d$. If $C$ is not innermost at~$t$, so that some
+frame is pushed, both sides are $\{c\}$ when the segment returns; otherwise only the side at $t-1$ can contain~$c$, which is then at
+most~$d$.
+
+\emph{Common entries.} The bottom of a common entry at $t-1$, resp.\ at~$t$, is the largest of the tops of the common entries
+stacked inside it and of the local values at $t-1$, resp.\ at~$t$ (\lean{FrameSystem.entryBot_pre_le_iff},
+\lean{FrameSystem.entryBot_post_le_iff}). Since the local values agree above~$d$, $\max(d,m_F(t-1))=\max(d,m_F(t))$ for every
+common entry~$F$ (\lean{FrameSystem.max_entryBot_eq}): it is a candidate at~$d$ at both times or at neither, and if it is visible,
+its bottom does not change.
+
+\emph{The view.} A value above~$d$ in $\mathcal A_d(t-1)$ is a local value at $t-1$ (the band group, or the top of a popped entry,
+which is a candidate) or the top of a common candidate (\lean{FrameSystem.above_pre_iff}), and likewise at~$t$
+(\lean{FrameSystem.above_post_iff}); so $\mathcal A_d(t-1)=\mathcal A_d(t)$. A visible entry at $t-1$ is not popped, since popped
+entries have bottom~$0$; so it is common, and visible at~$t$ with the same bottom. Conversely for~$t$, and so
+$\mathcal V_d(t-1)=\mathcal V_d(t)$.
+\end{outline}
+
+Pushes and pops of entries cost nothing in this proof. At a push, the top of the pushed entry, which is a candidate, equals the band
+group of the suspended segment that it replaces; at a pop, the top of the popped entry is replaced by the equal band group of the
+resumed segment, unless the running maximum rises at the resumption, which is a rise. What remains are the rises and last-stint
+ends above~$d$. A segment rises into a given group at most once and ends its last stint at most once, and on average over the
+offset these events are rare (\cref{lem:budgets}).
+
+\subsection{Exposure}\label{sec:displays-exposure}
+
+Let $\mathcal S_0,\dots,\mathcal S_{n-1}$ be frame systems on $[0,T)$ with the composed display at offset~$r$ (\cref{def:composed}), let bits~$\xi$
+decide the unbroken entries, and let $d\in\N$. Write $\mathcal A^{(v)}_d(t)$ and $\mathcal V^{(v)}_d(t)$ for the view of~$\mathcal S_v$
+above~$d$ at~$t$, and $\Ok_\xi(t)$ for the shown set of the composed display at~$t$.
+
+\begin{proposition}[Exposure]\label{prop:exposure}
+\formal{Exposure.lean}{mem_aboveVals_iff, mem_visPairs_iff, views_eq, exposed_of_ne, card_exposed_le}
+Let $p,u\in\N$.
+\begin{enumerate}[label=(\alph*)]
+\item The view of the composed display is assembled from the views of the heads: at every time~$t$, $X_d$ is the union of the
+sets $\mathcal A^{(v)}_d(t)$, and $V_d$ consists of the windows $(m,c^{(v)}_F)$ of the unbroken entries $(v,F)$ with
+$(F,m)\in\mathcal V^{(v)}_d(t)$. Hence, if every head has the same view above~$d$ at~$p$ and at~$u$, so does the composed display,
+whatever the bits.
+\item Suppose that $d$ is a seed at~$p$ and at~$u$, and that every head has the same view above~$d$ at~$p$ and at~$u$. If
+$\Ok_\xi(p)\cap(d,\infty)\ne\Ok_\xi(u)\cap(d,\infty)$, then some candidate at~$d$, at~$p$ or at~$u$, is broken.
+\item Under the hypotheses of~(b), at most $2nQ^{\iota-1}$ of the $Q^\iota$ bit vectors give
+$\Ok_\xi(p)\cap(d,\infty)\ne\Ok_\xi(u)\cap(d,\infty)$: for uniformly random bits, the probability is at most $2n/Q$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+(a) A candidate at~$d$ and a visible entry have nonempty windows, so their frames are entries of the stacks of their heads, and
+their bottoms are the bottoms of \cref{def:entries} (\lean{mem_aboveVals_iff}, \lean{mem_visPairs_iff}); the seeds are the band
+groups. The bits do not depend on the time (\lean{views_eq}). (b) (\lean{exposed_of_ne}) If every candidate at~$d$, at~$p$ and
+at~$u$, is unbroken, then each of them is displayed, $d$ being a seed (\cref{lem:view-static}(a)); by~(a) the two configurations
+have the same view above~$d$, and \cref{lem:view-static}(c) gives equal shown sets above~$d$. (c) By the candidate property
+(\cref{lem:onecandidate}) there are at most $n$ candidates at~$d$ at each time (\lean{cands}, \lean{card_cands_le}). The bit
+vectors that break a given entry are determined by their other $\iota-1$ coordinates, so there are $Q^{\iota-1}$ of them
+(\lean{card_some_broken_le}); a union bound over the at most $2n$ candidates gives the claim (\lean{card_exposed_le}).
+\end{outline}
+
+In the accounting (\cref{lem:hopterms}), $p<u$ are the ends of an upper hop of a head~$v$, neither lost nor charged, so that no
+standard event above its deciding group~$d$ lies in $(p,u]$ and, by \cref{prop:W}, every head has the same view above~$d$ at~$p$
+and at~$u$. If the hop is aligned, $d$ is the band group of~$v$ at both ends, a seed, and the proposition applies. If it is not
+aligned, $d=0$: every candidate at~$0$ has bottom~$0$ and is displayed by~(Z), so by \cref{lem:view-static}(c) the shown sets
+above~$0$ agree for all bits, and the hop is never exposed.

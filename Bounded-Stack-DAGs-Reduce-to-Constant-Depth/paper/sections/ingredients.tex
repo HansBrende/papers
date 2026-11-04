@@ -1,0 +1,60 @@
+\section{Why each ingredient is needed}\label{sec:ingredients}
+
+Beyond the label framework of the eighth paper~\cite{EighthPaper2026}, the proof uses three ingredients: bands measured from
+homes adapted to the walk (the ladders and frames of \cref{sec:ladders}, with their hybrid running maximum), displays of
+suspended frames (\cref{sec:displays}), and random break bits. This section records why simpler choices fail. The remarks are
+not formalized and no proof in this paper uses them; each is labelled as a proof sketch, a heuristic or numerical.
+
+\begin{remark}[Homes at turning points fail]\label{rem:runstart}
+\emph{Proof sketch only.} The simplest band measures the distance from the start of the current monotone run of the walk: it is
+the band of the frame system whose only frame is the root and whose restart points are the times at which the walk reverses
+direction. Theorem~A fails for it on the \emph{nested mountains}. Let $\mathrm{St}(g)=(+1,+1,-1)^g$ be a slow staircase and
+$\mathrm{Dn}(g)=(-1)^g$ a fast descent, put $M_0=(+1,+1,-1,-1)$ and, for $j\ge1$ and integers $0\le a_j\le2^{j-1}$,
+\[
+  M_j=\mathrm{St}(a_j)\,M_{j-1}\,M_{j-1}\,\mathrm{St}(2^j-a_j)\,\mathrm{Dn}(2^j),
+\]
+and take the walk with the steps of $M_J$, of length $T=4(J+1)2^J$. A copy of~$M_j$ climbs slowly by~$2^j$, carrying two copies
+of $M_{j-1}$ that stay below its summit, and returns in a single run. On a slow climb the last visit to a cell is a reversal, so
+the hops that end on the lower half of the final descent of a copy of~$M_j$ start at band~$0$; they end at distance more than
+$2^{j-1}$ from the summit, at band at least $j-1$, and their extent exceeds $2^{j-1}$. For $j\ge h_0+1$ their two ends therefore
+lie in different groups at every offset, and by (P1) of \cref{prop:prom} their owners have scale at least $j-1\ge h_0$, so they
+are not ground: they are lost (\cref{def:kept}) at every offset. Each~$j$ contributes at least $2^{J-j}\cdot2^{j-1}=T/(8(J+1))$
+such hops, so at least $(J-h_0)\,T/(8(J+1))$ hops are lost at every offset, a fraction of~$T$ that tends to~$\frac18$ as $J$
+grows, whereas Theorem~A allows $O(T/h_0)$. Bands that measure from turning points measure speed, not distance. Measuring the
+distance from the base of the excursion instead (\cref{sec:ladders}) makes these walks cheap: the climb of an excursion has no
+restart, and its descent restarts only at the passages $D(y+2^e)$.
+\end{remark}
+
+\begin{remark}[Frames must be displayed]\label{rem:popfreeze}
+\emph{Heuristic.} Frames make the hops of each walk cheap on their own (\cref{thm:A}), but they create an interaction between
+walks. While a frame runs, the segment that it suspends keeps its band frozen; when the segment resumes, its band group
+reappears. A label that shows only the current band groups of the walks therefore changes its shown set at every pop at a high
+band. Such a change can produce a descent (\cref{lem:stateedge}), and it falls under the case (ABOVE) of Lemma~V (\cref{lem:V})
+for every hop of another walk that spans it with a lower deciding group. On walks whose long excursions carry dense nested
+structures at many scales these pops are frequent, and the label pays for them. Either the frozen band is shown while the frame
+runs, or the pop that ends the frame changes the shown set at a high group; this pop-or-freeze dichotomy forces the label to show
+suspended frames, which is what the entries of \cref{sec:displays} do.
+\end{remark}
+
+\begin{remark}[Exact displays are unbounded]\label{rem:exact}
+\emph{Proof sketch only.} Call a display \emph{exact} if, with every entry unbroken, its shown set above every group~$d$ depends
+only on the view above~$d$ (\cref{sec:displays-view}), so that view invariance alone, with no random bits, would control every
+hop. The view above~$d$ does not distinguish a candidate at~$d$ from a seed at its top, and seeds are always shown; so an exact
+display shows the top of every candidate at every value, and in particular the whole cascade of windows: an entry whose window
+contains a shown value is shown, and so on upwards. On the \emph{dense tower}, a walk whose stack of suspended frames carries,
+at a constant fraction of times, unboundedly many entries with distinct tops and windows of more than one group, exact displays
+therefore have unbounded size, and no bounded number of digits can carry them. Random break bits cut the cascade at the first
+broken entry: Lemma~D (\cref{lem:D}) bounds the size of the display independently of the depth of the stacks, and a hop is
+exposed only through a broken candidate, with probability at most $2n/Q$ (\cref{prop:exposure}).
+\end{remark}
+
+\begin{remark}[The three definitional choices]\label{rem:fixes}
+\emph{Numerical.} Three details of \cref{def:entries,def:view} matter: an entry is a suspend child (its parent segment is
+innermost again after it ends), its top is the group of the frozen band of its parent segment at the push, and a rise of the
+running maximum at the time a frame resumes is a standard event. Under each alternative reading (every suspend frame is an
+entry; the top is the head's band group just before the push, which differs from the frozen band of the parent at a
+simultaneous push; a rise at a resumption is not an event), an exact search over pairs of short walks, with $h_0=1$ and all
+bits unbroken, finds a kept hop whose shown sets above its deciding group differ at its two ends although no standard event
+lies between them; the smallest instances found have lengths $23$, $41$ and~$23$. So the analogue of view invariance fails
+under each alternative reading. With the three choices, view invariance holds for all walks (\cref{prop:W}).
+\end{remark}

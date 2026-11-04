@@ -1,0 +1,19 @@
+A DAG with a spine on $[0,N)$ has the edges $t\to t-1$ and further arcs $u\to p$ with $u\ge p+2$; it is an $s$-stack DAG if
+its arcs split into $s$ families, each of pairwise non-crossing arcs with distinct left ends and distinct right ends. We prove
+that bounded-stack DAGs reduce to constant depth: for all $s$ and $\eps>0$ there is a $D$ such that every $s$-stack DAG with a
+spine has a set of at most $\eps N$ edges whose deletion leaves no path with more than $D$ arcs. Equivalently, the trajectory
+cut problem $\TCP(k)$ of this series holds for every number~$k$ of walks: the walk DAG of any $k$ walks of length~$T$, with or
+without pauses, has a cut of at most $\eps T$ edges and depth at most $D(k,\eps)$, independent of~$T$, where
+$\log\log D(k,\eps)=O(k^2\log(k/\eps))$ for $\eps\le\frac12$. This settles $\SR(3)$, the first open case left by the eighth
+paper of the series. It also shows that the deep-nesting pairs, which the series regarded as the sharpest candidates for
+depth-robust walk DAGs, are cut to a depth independent of their nesting depth, so Conjectures~A$'$ and~A$''$ of the fourth and
+eighth papers are false. For oblivious machines, depth reduction now holds unconditionally, and the series' reduction of a
+lower bound for linear-time matrix transposition rests on the coding side alone.
+
+The proof builds a random label from three ingredients: a decomposition of each walk into ladders of nested hops, which makes
+the hops of each walk cheap on average over a random grid (Theorem~A); a display of suspended frames, which controls the
+interaction between walks (view invariance); and random break bits, which keep the display bounded where exact displays are
+unbounded (Lemma~D). The main theorem and every numbered result of its proof are formalized in Lean~4 with Mathlib, with no
+axioms beyond \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. Not formalized are the two corollaries, for
+the conjectures of the series and for oblivious machines, which combine the main theorem with results proved in the text of
+earlier papers, and the remarks, which explain why simpler constructions fail or discuss the consequences.

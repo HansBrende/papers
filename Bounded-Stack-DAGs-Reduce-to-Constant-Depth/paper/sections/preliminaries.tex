@@ -1,0 +1,280 @@
+\section{Preliminaries}\label{sec:prelim}
+
+This section fixes the objects of the paper and the facts about them that the proof uses: walks, hops and walk DAGs
+(\cref{sec:prelim-walks}); cuts, labels, $\TCP$ and $\SR$, and the probabilistic method for label cuts
+(\cref{sec:prelim-tcp}); owners and prominence (\cref{sec:prelim-prom}); and bands and the random grid
+(\cref{sec:prelim-grid}). We follow the eighth paper of the series~\cite{EighthPaper2026} and reuse its formal definitions
+and results; its Lean declarations carry the namespace \texttt{BoundedNesting}. All other Lean names are relative to the
+namespace \texttt{BoundedStackDepth} of this paper's library.
+
+The proof is an averaging argument. Its random choices are finitely many and equally likely, so every probability is a
+number of choices divided by the number of all choices, and every expectation is an average. The Lean statements are the
+corresponding inequalities between sums over finite sets; we state them in this form and read them as probabilities.
+
+\subsection{Walks, hops and walk DAGs}\label{sec:prelim-walks}
+
+A \emph{walk} is a map $x\colon\N\to\Z$ with $\abs{x(t+1)-x(t)}\le1$ for every $t$ (\lean{BoundedNesting.IsWalk}); a
+step with $x(t+1)=x(t)$ is a \emph{pause}. A \emph{horizon} $T\in\N$ fixes the times $[0,T)=\{0,\dots,T-1\}$. The objects
+defined below depend only on the values of the walks at times below~$T$, so a walk of length~$T$ in the sense of the eighth
+paper~\cite[Section~2.2]{EighthPaper2026} is a walk extended by $x(t)=x(T-1)$ for $t\ge T$. A walk is \emph{pause-free}
+before~$T$ if $x(t+1)\ne x(t)$ whenever $t+1<T$. A tuple of $k$ walks $x_1,\dots,x_k$ is, in Lean, a map
+$\Fin k\to(\N\to\Z)$; the walks may be coupled arbitrarily.
+
+A \emph{long hop}, or simply a \emph{hop}, of a walk~$x$ before~$T$ is a pair $(p,u)$ of times with $p+2\le u<T$,
+$x(u)=x(p)$ and $x(t)\ne x(p)$ for $p<t<u$ (\lean{BoundedNesting.IsHop}, \lean{BoundedNesting.hops}): two consecutive
+visits to the \emph{cell} $z=x(p)$ that are not consecutive times. The hop \emph{spans} a time~$c$ if $p<c\le u$. Two hops
+at one cell that span a common time coincide, and two hops with the same start coincide
+(\lean{BoundedNesting.hop_unique}, \lean{BoundedNesting.hop_start_unique}); in particular a walk has at most $T$ hops
+before~$T$. A hop is \emph{upper} if $x(t)>z$ for all $t\in(p,u)$ and \emph{lower} if $x(t)<z$ for all of them
+(\lean{BoundedNesting.IsUpperHop}, \lean{BoundedNesting.IsLowerHop}). Its \emph{owner} is the first time $o\in(p,u)$ at which
+the distance $\abs{x(o)-z}$ is largest (\lean{BoundedNesting.hopOwner}), and its \emph{extent} is this largest distance,
+$\ext(p,u)=\max_{p<t<u}\abs{x(t)-z}$ (\lean{extent}).
+
+\begin{lemma}[Sides and owners of hops]\label{lem:hops}
+\formal{Walks.lean}{IsHop.upper_or_lower, isOwner_hopOwner_of_upper}
+Let $x$ be a walk.
+\begin{enumerate}[label=(\alph*)]
+\item Every hop of $x$ is upper or lower.
+\item The owner of an upper hop $(p,u)$ is the first time in $(p,u)$ at which $x$ is largest. (This part holds for every
+$x\colon\N\to\Z$.)
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The first step of a hop leaves its cell, so $x(p+1)>z$ or $x(p+1)<z$; a hop whose first step goes up lies strictly above
+its cell, since the walk would otherwise return to~$z$ inside the hop (the eighth paper's \lean{BoundedNesting.above_of_step}),
+and the case of a first step down is the same for $-x$. (b) Inside an upper hop $\abs{x(t)-z}=x(t)-z$, and the
+characterization of \lean{BoundedNesting.hopOwner} by \lean{BoundedNesting.hopOwner_spec} gives the owner predicate
+\lean{BoundedNesting.IsOwner}.
+\end{outline}
+
+The lower hops of~$x$ are the upper hops of~$-x$ (\lean{BoundedNesting.IsLowerHop.neg}), and the owner of a lower hop is the
+first time inside it at which $x$ is smallest. The proof treats lower hops in this way, as upper hops of the reflected walk.
+Upper hops do not cross: if $p<p'<u<u'$, then $x(p')>x(p)$ because $p'$ lies inside $(p,u)$, while $u$ lies inside $(p',u')$
+and $x(u)=x(p)<x(p')$ (\lean{BoundedNesting.upper_no_cross}).
+
+The \emph{walk DAG} of walks $x_1,\dots,x_k$ before~$T$ has the vertex set $[0,T)$, a \emph{state edge} $t\to t-1$ for
+$1\le t<T$, and a \emph{hop edge} $u\to p$ for every pair $(p,u)$ that is a hop of at least one of the walks
+(\lean{BoundedNesting.allHops}, \lean{BoundedNesting.hopPairs}); an edge is determined by its endpoints. A \emph{cut} is a set
+of state edges, given by their upper ends $t\in[1,T)$, together with a set of hop edges. A path
+$t_0\to t_1\to\dots\to t_n$ \emph{avoids} the cut if none of its edges belongs to it (\lean{BoundedNesting.AvoidPath}), and
+the \emph{depth} of the cut is the largest number of hop edges on a path that avoids it (\lean{BoundedNesting.arcCount} counts
+them). Paths run backwards in time.
+
+\subsection{Cuts, labels, TCP and SR}\label{sec:prelim-tcp}
+
+A \emph{label} with $q$ values is a map $\Psi\colon\N\to\{0,\dots,q-1\}$; only its values on $[0,T)$ matter. Its
+\emph{descents} are the times $t\in[1,T)$ with $\Psi(t)<\Psi(t-1)$ (\lean{BoundedNesting.descentsOf}), and a hop edge
+$u\to p$ is \emph{violated} if $\Psi(u)\le\Psi(p)$ (\lean{BoundedNesting.violatedOf}). The cut $F_\Psi$ consists of the state
+edges at the descents and of the violated hop edges, and its size is the \emph{cost} of~$\Psi$ (\lean{labelCutSize}).
+
+\begin{proposition}[Cuts are labels]\label{prop:labelcut}
+\cited{\raggedright the eighth paper~\cite{EighthPaper2026}, Lemma~2.3; Lean-verified there
+(\lean{BoundedNesting.labelCut_depth_walkDag}, from \lean{BoundedNesting.labelCut_depth} and
+\lean{BoundedNesting.depth_le_of_label}).\par}
+Let $\Psi$ be a label with $q\ge1$ values. For all walks and every horizon, the cut $F_\Psi$ of the walk DAG has depth at
+most $q-1$.
+\end{proposition}
+
+Along a path that avoids $F_\Psi$, the label does not increase along a state edge and decreases strictly along a hop edge,
+and it takes $q$ values. Every cut in this paper is of this form, so the task is to find labels with few values and small
+cost.
+
+\begin{definition}[TCP and SR]\label{def:tcp}
+\cited{\raggedright the eighth paper~\cite{EighthPaper2026}, Definition~2.4 and Section~4.3, where these are Lean
+definitions (\lean{BoundedNesting.TCPat}, \lean{BoundedNesting.TCP}, \lean{BoundedNesting.TCPnpAt},
+\lean{BoundedNesting.TCPnp}, \lean{BoundedNesting.StackDag}, \lean{BoundedNesting.SRat}, \lean{BoundedNesting.SR}).\par}
+Let $k,s\in\N$, $\eps\in\R$ and $D\in\N$.
+\begin{enumerate}[label=(\alph*)]
+\item $\TCP(k)$ holds at $(\eps,D)$ if for every horizon~$T$ and all walks $x_1,\dots,x_k$ the walk DAG before~$T$ has a cut
+of at most $\eps T$ edges and depth at most~$D$. $\TCP_{\mathrm{np}}(k)$ holds at $(\eps,D)$ if the same is true for all
+walks that are pause-free before~$T$.
+\item $\TCP(k)$ is the statement that for every $\eps>0$ there is a~$D$ such that $\TCP(k)$ holds at $(\eps,D)$, and
+likewise for $\TCP_{\mathrm{np}}(k)$.
+\item An \emph{$s$-stack DAG} on $[0,N)$ has the \emph{spine edges} $t\to t-1$ and \emph{arcs} $u\to p$, given as pairs
+$(p,u)$ with $p+2\le u<N$ and partitioned into $s$ families; within a family no two arcs cross, and every vertex is the left
+endpoint of at most one arc of the family and the right endpoint of at most one. Cuts, paths and depth are as for walk DAGs,
+with arcs in place of hop edges.
+\item $\SR(s)$ is the statement that for every $\eps>0$ there is a~$D$ such that every $s$-stack DAG on $[0,N)$, for every
+$N$, has a cut of at most $\eps N$ edges and depth at most~$D$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[TCP is depth reduction for stack DAGs]\label{prop:stacksred}
+\cited{\raggedright the eighth paper~\cite{EighthPaper2026}, Proposition~4.5; Lean-verified there
+(\lean{BoundedNesting.walkDag_isStack}, \lean{BoundedNesting.srAt_of_tcpnpAt}, \lean{BoundedNesting.tcpAt_of_srAt},
+\lean{BoundedNesting.sr_of_tcpnp}, \lean{BoundedNesting.tcp_of_sr}, \lean{BoundedNesting.tcp_of_tcpnp_two_mul}).\par}
+\begin{enumerate}[label=(\alph*)]
+\item The walk DAG of $k$ walks, pauses allowed, is a $2k$-stack DAG; its families are indexed by a walk and a side.
+\item Every $s$-stack DAG on $[0,N)$ is realized by $s$ walks of length $2N$ without pauses, the arc $(p,u)$ of family~$i$
+being the upper hop $(2p,2u)$ of walk~$i$, and a cut of their walk DAG pulls back to a cut of the stack DAG of no larger
+size and depth.
+\end{enumerate}
+Consequently, if $\TCP_{\mathrm{np}}(s)$ holds at $(\eps/2,D)$, then every $s$-stack DAG on $[0,N)$ has a cut of at most
+$\eps N$ edges and depth at most~$D$; if every $2k$-stack DAG on $[0,T)$ has a cut of at most $\eps T$ edges and depth at
+most~$D$, then $\TCP(k)$ holds at $(\eps,D)$; and $\TCP_{\mathrm{np}}(2k)$ implies $\TCP(k)$.
+\end{proposition}
+
+We prove TCP for walks with pauses directly; the construction never uses pause-freeness. By \cref{prop:stacksred}, $\SR(s)$
+then follows from the pause-free form for $s$ walks, a special case.
+
+\begin{definition}[The main statement]\label{def:main}
+\formal{Statement.lean}{MainStatement}
+The \emph{main statement} is $\TCP(k)$ for every $k\in\N$.
+\end{definition}
+
+\begin{corollary}[Stack DAGs]\label{cor:main}
+\formal{Statement.lean}{sr_of_main}
+If the main statement holds, then $\SR(s)$ holds for every~$s$.
+\end{corollary}
+
+\begin{outline}
+Pause-free walks are walks, so $\TCP(s)$ gives $\TCP_{\mathrm{np}}(s)$, and \cref{prop:stacksred} turns it into $\SR(s)$
+(\lean{BoundedNesting.tcpnp_of_tcp}, \lean{BoundedNesting.sr_of_tcpnp}).
+\end{outline}
+
+The main statement is proved by the probabilistic method. For $k$ walks we build a finite family of labels, indexed by the
+random choices, whose values lie below a bound $q$ that depends only on $k$ and~$\eps$ and whose average cost is at most
+$\eps T$. Some member of the family is then a cut of the required kind. The following proposition is this argument; the rest
+of the paper constructs the families and bounds their average cost.
+
+\begin{proposition}[The probabilistic method for label cuts]\label{prop:avg}
+\formal{Assembly.lean}{labelCutSize, exists_cut_of_avg}
+Let $x_1,\dots,x_k$ be walks, $T$ a horizon, $\eps\in\R$, $\Omega$ a nonempty finite set, and $(\Psi_\omega)_{\omega\in\Omega}$
+labels with values below~$q$. If $\sum_{\omega\in\Omega}\card{F_{\Psi_\omega}}\le\card\Omega\cdot\eps T$, then the walk DAG
+before~$T$ has a cut of at most $\eps T$ edges and depth at most $q-1$.
+\end{proposition}
+
+\begin{outline}
+Some $\omega\in\Omega$ has $\card{F_{\Psi_\omega}}\le\eps T$, since the sum is at most $\card\Omega$ times this bound
+(Mathlib's \texttt{Finset.exists\_le\_of\_sum\_le}). The cut $F_{\Psi_\omega}$ consists of the descents and the violated hop
+pairs of $\Psi_\omega$ (\lean{labelCutSize}), and \cref{prop:labelcut} bounds its depth by $q-1$ (\lean{exists_cut_of_avg}).
+\end{outline}
+
+\subsection{Owners and prominence}\label{sec:prelim-prom}
+
+By \cref{lem:hops}(b), the owner of an upper hop is the first time inside it at which the walk is highest. We call the owners
+of the upper hops of~$x$ its \emph{tops} (\lean{tops}), and the number of upper hops owned by a top~$\tau$ its \emph{height}
+$H_\tau$ (\lean{height}); \cref{sec:ladders} is about the hops of one top. The proof measures the scale of a top by how far the
+walk must descend from it before it reaches a higher point. Ties are broken in time: an earlier point of equal height counts
+as higher, a later point only if it is strictly higher.
+
+\begin{definition}[Prominence]\label{def:prom}
+\formal{Prominence.lean}{colL, colR, peak, valley, prom, extent}
+Let $x\colon\N\to\Z$, $T$ a horizon, $t<T$ and $v=x(t)$. Let $\min x$ denote the minimum of $x$ over $[0,T)$.
+\begin{enumerate}[label=(\alph*)]
+\item The \emph{left col} $L(t)$ is the minimum of $x$ over $[s_L,t]$, where $s_L$ is the last time $s<t$ with $x(s)\ge v$;
+if there is no such time, $L(t)=\min x$.
+\item The \emph{right col} $R(t)$ is the minimum of $x$ over $[t,s_R]$, where $s_R$ is the first time $s$ with $t<s<T$ and
+$x(s)>v$; if there is no such time, $R(t)=\min x$.
+\item The \emph{peak prominence} is $\max(0,\,v-\max(L(t),R(t)))$, the \emph{valley prominence} is the peak prominence of $-x$
+at~$t$, and the \emph{prominence} $\prom(t)$ is the larger of the two.
+\end{enumerate}
+\end{definition}
+
+A missing side contributes the global minimum, which is at most the other col, so it is ignored; if both sides are missing,
+the peak prominence is $v-\min x$. For example, on the walk $0,1,2,1,2,3,2,1,0$ ($T=9$) the peak prominences are
+$0,0,1,0,0,3,0,0,0$ and the valley prominences $3,0,0,1,0,0,0,0,3$; on $0,1,1,0$ the peak prominences are $0,1,0,0$, so of two
+equal neighbouring maxima only the first is prominent. These values are checked by the kernel in \leanfile{Prominence.lean}.
+By definition, the prominence does not change when $x$ is replaced by $-x$.
+
+\begin{proposition}[Prominence]\label{prop:prom}
+\formal{Prominence.lean}{sub_le_prom, sum_prom_le, sum_prom_le_two_mul, card_spanning_hops_lt}
+\formal{TopProminence.lean}{height_le_prom, prom_le_of_left, prom_le_of_right}
+Let $x\colon\N\to\Z$ and let $T$ be a horizon.
+\begin{enumerate}[label=(P\arabic*)]
+\item \emph{(Owners.)} If $(p,u)$ is an upper hop with $u<T$ and owner~$o$, then $\prom(o)\ge x(o)-x(p)$, the extent of the
+hop.
+\item \emph{(The prominence sum.)} If $x$ is a walk, then $\sum_{t<T}\prom(t)$ is at most the number of non-pause steps among
+the first $T-1$ steps plus $\max x-\min x$ (over $[0,T)$), and hence at most $2(T-1)$.
+\item \emph{(Spanning hops.)} For every time~$c$ and every $R\ge1$, fewer than $2R$ hops $(p,u)$ of~$x$ before~$T$ with
+$p<c\le u$ have extent less than~$R$.
+\item \emph{(Tops.)} If $x$ is a walk, every top $\tau$ has $\prom(\tau)\ge H_\tau$.
+\item \emph{(Caps.)} Let $1\le t<T$ with $x(t-1)<x(t)$, and let $y\in\Z$. If some $s<t$ has $x(s)\ge x(t)$ and $x\ge y$
+on $[s,t]$, or some $s$ with $t<s<T$ has $x(s)>x(t)$ and $x\ge y$ on $[t,s]$, then $\prom(t)\le x(t)-y$.
+\end{enumerate}
+\end{proposition}
+
+\begin{outline}
+(P1) The extent is attained at the owner (\lean{extent_le_owner}). The walk is below $x(o)$ on $[p,o)$, since $o$ is the
+first maximum, and at most $x(o)$ on $(o,u]$. So the last earlier
+time at least as high as~$o$ lies before~$p$, the first later time strictly higher lies after~$u$, and both cols are at most
+$x(p)=x(u)$ (\lean{colL_le_of}, \lean{colR_le_of}, \lean{sub_le_peak}). (P2) A double count over levels (\lean{sum_peak_le}, \lean{sum_valley_le}). Fix a level~$y$ and call
+a time~$\tau$ \emph{active} if $x(\tau)>y$ and both of its cols are at most~$y$, that is, if $y$ lies in
+$[x(\tau)-\mathrm{peak}(\tau),x(\tau))$. Two active times never lie in one maximal run of times at which the walk is above~$y$:
+of the two, the lower one, or the later one at equal height, has a point at least as high on the other one's side, which lifts
+its col above~$y$ (\lean{active_unique}). Each such run starts at time~$0$ or at an up-step through~$y$
+(\lean{card_active_le}), so summing over~$y$ bounds the peak prominences by the number of up-steps plus $x(0)-\min x$, and the
+valley prominences by the number of down-steps plus $\max x-x(0)$ (\lean{sum_prom_le}). Both terms of the sum are at most
+$T-1$ for a walk. (P3) The cell of such a hop is within $R-1$ of $x(c)$: either $c=u$ and $x(c)$ is the cell, or $c$ lies
+inside the hop. These are $2R-1$ cells, and at each of them at most one hop spans~$c$
+(\lean{BoundedNesting.hop_unique}). (P4) The hop of~$\tau$ at the lowest cell has extent $H_\tau$ (\cref{lem:ladder}), so
+(P1) applies to it. (P5) Since the walk steps up into~$t$, the valley prominence of~$t$ vanishes
+(\lean{valley_eq_zero_of_step_up}); the higher point~$s$, reached without going below~$y$, lifts the corresponding col above
+$y-1$ (\lean{lt_colL}, \lean{lt_colR}).
+\end{outline}
+
+The owner bound (P1) makes every owner a turning point of positive prominence, which is how the label sees a hop
+(\cref{lem:validity}); (P2) and (P3) bound the weight of turning points and the number of short hops at a time in the
+accounting of \cref{sec:accounting}; (P4) and (P5) are the two estimates for tops that \cref{sec:ladders} needs.
+
+\subsection{Bands and the random grid}\label{sec:prelim-grid}
+
+Distances enter the label only through their binary orders of magnitude, grouped in a random grid of width~$h_0$.
+
+\begin{definition}[Bands, groups and floors]\label{def:grid}
+\formal{Basic.lean}{band, grp, flr}
+The \emph{band} of $M\in\N$ is $\band(M)=\lfloor\log_2M\rfloor$ for $M\ge1$, and $\band(0)=0$. For a \emph{width} $h_0\ge1$
+and an \emph{offset} $r\in\{0,\dots,h_0-1\}$, the \emph{group} of a band~$b$ is $G(b)=\lfloor(b+r)/h_0\rfloor$, and the
+\emph{floor} of a group~$g$ is $\theta(g)=\max(h_0g-r,0)$. The \emph{grid floors} of the offset~$r$ are the floors $\theta(g)$
+with $g\ge1$.
+\end{definition}
+
+The group map and the floors depend on $h_0$ and~$r$, which will be clear from the context. The groups are the blocks
+$[\theta(g),\theta(g+1))$ of $h_0$ consecutive bands (the block of group~$0$ is shorter when $r>0$), and the offset shifts
+the blocks. The offset will be uniform on $\{0,\dots,h_0-1\}$. Every probability bound that the paper needs about the grid
+is then an upper bound on a number of offsets, and all of them come from one fact: an integer $\theta\ge1$ is a grid floor
+for at most one offset. Indeed, $\theta=h_0g-r$ with $g\ge1$ means $h_0\mid\theta+r$, and two offsets below~$h_0$ that are
+congruent modulo~$h_0$ are equal.
+
+\begin{lemma}[The random grid]\label{lem:grid}
+\formal{Grid.lean}{flr_grp_le, lt_flr_grp_succ, grp_mono, card_dvd_add_le_one, exists_floor_of_grp_lt, card_grp_ne_le, card_one_le_grp_le, card_flr_grp_succ_le, card_lt_flr_grp_le, sum_two_pow_flr_grp_le}
+Let $h_0\ge1$, let the offset $r$ range over $\{0,\dots,h_0-1\}$, and let $a,b,c,s,\beta\in\N$. Subtraction of natural numbers
+is truncated at~$0$.
+\begin{enumerate}[label=(\alph*)]
+\item $\theta(G(b))\le b<\theta(G(b)+1)$, and $G$ is nondecreasing.
+\item For every $\theta\in\N$, at most one offset $r<h_0$ has $h_0\mid\theta+r$.
+\item If $G(a)<G(b)$, then $h_0\mid\theta+r$ for some $\theta$ with $a<\theta\le b$.
+\item If $a\le b$, then $G(a)\ne G(b)$ for at most $b-a$ offsets. Moreover $G(s)\ge1$ for at most $s$ offsets;
+$\theta(G(b)+1)\le c$ for at most $c-b$ offsets; and $\theta(G(\beta))>s$ for at most $\beta-s$ offsets.
+\item The sum of $2^{\theta(G(s))}$ over the offsets with $\theta(G(s))\ge1$ is at most $2^{s+1}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Division with remainder of $b+r$ by~$h_0$. (b) Two offsets $r,r'<h_0$ with $\theta+r\equiv\theta+r'\pmod{h_0}$ are equal
+(\lean{card_dvd_add_le_one}). (c) The floor
+$h_0G(b)-r$ lies in $(a,b]$. (d) Each count is bounded by the number of integers in an interval that are grid floors, each for
+at most one offset by~(b). If $G(a)\ne G(b)$, then $G(a)<G(b)$ by~(a), and a grid floor lies in $(a,b]$ by~(c), an interval of
+$b-a$ integers (\lean{card_grp_ne_le}). The other three reduce to this one: $G(s)\ge1$ means $G(0)\ne G(s)$, since $G(0)=0$;
+$\theta(G(b)+1)\le c$ forces $G(b)<G(c)$; and $\theta(G(\beta))>s$ forces $G(s)<G(\beta)$. (e) Distinct offsets give distinct
+positive floors $\theta(G(s))\le s$ (\lean{flr_grp_injOn}), so the sum is at most $\sum_{\theta\le s}2^\theta<2^{s+1}$.
+\end{outline}
+
+With $r$ uniform, part~(d) says that the groups of two bands $a\le b$ differ with probability at most $(b-a)/h_0$: this is how
+band differences become costs in \cref{lem:cost}. Part~(e) prices the events of the accounting: for an event of scale~$s$, the
+largest grid floor $\theta\le s$, weighted by $2^\theta$, averages at most $2^{s+1}/h_0$ over the offsets. The costs of one walk
+are added up with the following exact sum, Lemma~E, which bounds the climb side of every ladder in \cref{sec:ladders}.
+
+\begin{lemma}[Lemma E: band sums]\label{lem:bandsums}
+\formal{BandSums.lean}{sum_band_sub_eq}
+Let $N\in\N$ and $B=\band(N)$. Then $\sum_{x=1}^{N}(B-\band(x))=2^{B+1}-B-2$.
+\end{lemma}
+
+\begin{outline}
+From $N$ to $N+1$ the band either stays or rises by one, and it rises only when $N+1$ is a power of two
+(\lean{band_succ}); induction on~$N$ gives $\sum_{x=1}^{N}\band(x)+2^{B+1}=NB+B+2$ (\lean{sum_band_add_pow}), which is the
+identity (\lean{sum_band_sub_eq}).
+\end{outline}
+
+Since $2^B\le N$ for $N\ge1$, the sum is at most $2N$: most integers up to~$N$ have a band close to $\band(N)$.

@@ -1,0 +1,316 @@
+\section{Accounting}\label{sec:accounting}
+
+This section bounds the cut of the label of \cref{def:global}, summed over the random choices. Fix walks $x_1,\dots,x_k$, pauses
+allowed, a horizon~$T$, $n=2k$, the heads~$v$ with their walks~$x^{(v)}$ and frame systems~$\mathcal S_v$, and parameters
+$h_0,K,P,Q\in\N$ with $K,Q\ge1$. The random choices are an offset $r\in[0,h_0)$, digit offsets $\omega\in[0,K)^P$, and bits
+$\xi\in[0,Q)^\iota$, one for each entry of the composed display (\cref{def:composed}). Their set~$\Omega$ has
+$\card\Omega=h_0K^PQ^\iota$ elements, and an expectation over uniform choices is a sum over~$\Omega$ divided by~$\card\Omega$; the
+Lean statements are the sums. The cut $F_\Psi$ of a label~$\Psi$ consists of its descents and its violated hop edges
+(\lean{labelCutSize}), and by \cref{lem:heads}(c) the violated hop edges are at most the violated upper hops of the heads. We bound
+the descents (\cref{lem:descents}) and, for each head, its violated upper hops (\cref{lem:hopterms}); \cref{lem:totals} collects
+the totals that \cref{sec:proof} adds up.
+
+\subsection{Events and standard events}\label{sec:acc-events}
+
+Two kinds of events enter the accounting. The \emph{events} of \cref{sec:label-global}, the turning points and segment starts of
+the heads, do not depend on the random choices. They drive the counters $N^{(v)}_\theta$ and $\bar N_\theta=\sum_vN^{(v)}_\theta$
+(\lean{eventCount}, \lean{globalCount}), and for $p\le u$ the increase $N^{(v)}_\theta(u)-N^{(v)}_\theta(p)$ is the number of events
+of head~$v$ in $(p,u]$ of scale at least~$\theta$ (\lean{turnCount_sub}, \lean{segEventCount_sub}). The \emph{standard events} of
+\cref{def:view}, rises and last-stint ends, depend on the offset~$r$; they are what changes the views. For a head~$v$ and an
+offset~$r$, let $\mathrm{Rise}_r(v)$ be the set of pairs $(t,g)$ with $t,g<T$ such that $\mathcal S_v$ has a rise into~$g$ at~$t$,
+and $\mathrm{Last}_r(v)$ the set of pairs $(t,g)$ with $1\le t<T$ and $g<T$ such that $\mathcal S_v$ has a last-stint end at~$t$
+at the group~$g$ (\lean{FrameSystem.rises}, \lean{FrameSystem.lastStints}). The restriction $g<T$ loses nothing, by
+\cref{lem:budgets}(e).
+
+A standard event belongs to a segment: a rise at~$t$ to the segment of~$t$, and a last-stint end at~$t$ to the segment of~$t-1$.
+Recall from \cref{lem:W1} that a segment $(F,s)$ has the maximum $m(F,s)$, the largest distance $\abs{x(t)-x(s)}$ over its own
+times, and that for the frame system of class~U of a walk $\sum_{(F,s)}2^{\band(m(F,s))}\le T$, the sum running over the
+segments. A segment start $(F,s)$ has the scale $\band(m(F,s))$, which is~$0$ if $(F,s)$ has no own times
+(\lean{FrameSystem.segScale_eq}). The \emph{weight} of a standard event of group~$g$ is $2^{\theta(g)}$, and the weight of an
+event of scale~$s$ is~$2^s$.
+
+\begin{lemma}[Budgets]\label{lem:budgets}
+\formal{Budgets.lean}{FrameSystem.rise_unique, FrameSystem.lastStint_unique, FrameSystem.flr_le_of_rise, FrameSystem.flr_le_of_lastStint, FrameSystem.sum_two_pow_flr_le, FrameSystem.sum_offsets_top_floor_le, FrameSystem.sum_stdWeight_le}
+\formal{EventWeight.lean}{sum_turns_weight_le, card_segStarts_le, sum_segStarts_weight_le, lt_of_rise, lt_of_lastStint}
+Let $\mathcal S$ be a frame system with walk~$x$ and horizon~$T$.
+\begin{enumerate}[label=(\alph*)]
+\item A segment rises into a given group at most once, and its last stint ends at most once.
+\item The floor of a standard event lies within the scale of its segment: $\theta(g)\le\band(m(F,s))$.
+\item For every $N\in\N$, the standard events with groups below~$N$, weighted by $2^{\theta_r(g)}$ and summed over the offsets
+$r<h_0$, total at most $8\sum_{(F,s)}2^{\band(m(F,s))}$, the sum running over the segments of~$\mathcal S$.
+\item If $x$ is a walk, the turning points of~$x$ weigh $\sum_s2^{\band(\prom(s))}\le2(T-1)$; $\mathcal S$ has at most
+$\#\text{frames}+T$ segment starts; and the segment starts weigh at most $\sum_{(F,s)}2^{\band(m(F,s))}$ plus their number.
+\item If $x$ is a walk and $r<h_0$, every standard event at a time $t<T$ has its group below~$T$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Within a segment the running maximum does not decrease (\lean{FrameSystem.runMax_mono_of_segStart_eq}). If $t<t'$ were rises
+into~$g$ of one segment, with running maximum~$M$, then $\band(M(t'-1))<\theta(g)\le\band(M(t))\le\band(M(t'-1))$
+(\lean{FrameSystem.rise_unique}). If $t<t'$ were last-stint ends of one segment, then $t'-1\ge t$ would be an own time of the same
+frame with the same segment start, contrary to the last-stint end at~$t$ (\lean{FrameSystem.lastStint_unique}). (b) The floor is
+at most the band of the running maximum, which is at most the scale of the segment (\lean{beta_le_segScale},
+\lean{FrameSystem.flr_le_of_rise}, \lean{FrameSystem.flr_le_of_lastStint}). (c) By (a) and~(b), at each offset the rises inject into
+the pairs of a segment $(F,s)$ and a group $g\ge1$ with $\theta(g)\le\band(m(F,s))$, and so do the last-stint ends
+(\lean{FrameSystem.sum_rises_le}, \lean{FrameSystem.sum_lastStints_le}). The floors $\theta(g)$, $g\ge1$, are distinct, so the
+weights of those at most~$s$ add up to at most $2\cdot2^{\theta(G(s))}$ if $G(s)\ge1$, and to~$0$ otherwise
+(\lean{FrameSystem.sum_two_pow_flr_le}). Over the offsets with $G_r(s)\ge1$, the top floors $\theta_r(G_r(s))$ are distinct
+positive integers at most~$s$ (\cref{lem:grid}(e)), so $\sum_r2\cdot2^{\theta_r(G_r(s))}\le4\cdot2^s$
+(\lean{FrameSystem.sum_offsets_top_floor_le}, \lean{sum_two_pow_flr_grp_le}). The two kinds of standard events give
+$2\cdot4=8$ (\lean{FrameSystem.sum_stdWeight_le}). (d) $2^{\band(m)}\le m$ for $m\ge1$, and the prominences add up to at most
+$2(T-1)$ by~(P2) of \cref{prop:prom} (\lean{sum_prom_le_two_mul}). A segment start is a frame start $(F,f_1)$ or a restart $(F,s)$,
+and then $F=\inner(s)$; so there are at most $\#\text{frames}+T$. A segment start with own times is a segment; one without has
+scale~$0$ and weight~$1$. (e) $g\le\theta(g)\le\band(M)\le M\le t$ for the running maximum~$M$ at the time of the event, since a
+walk moves at most one cell per step (\lean{le_flr}, \lean{band_le_self}, \lean{runMax_le_self}).
+\end{outline}
+
+With \cref{lem:W1}, part~(c) bounds the weighted standard events of a head by $8T$, summed over the offsets
+(\cref{prop:total}(a)): on average over the grid, a head has $O(T/h_0)$ weighted standard events. Their weight $2^{\theta(g)}$ is
+exactly what an event costs in the counting facts below.
+
+\subsection{The counting facts}\label{sec:acc-counting}
+
+A standard event, or a wrapping digit, at a time~$c$ affects the hops that span~$c$. The counting facts bound the hops that span a
+time and are \emph{low}, in the sense that their deciding group lies below a given one. For a hop $e=(p,u)$ with owner~$\tau$ we
+use the data of \cref{def:kept}: the owner scale $\sigma_e=\band(\prom(\tau))$ and the home band $\lambda_e=\band(S_e)$, where
+$S_e$ is the largest distance from the cell $x(p)$ to a home active during the hop.
+
+\begin{lemma}[The counting facts]\label{lem:counting}
+\formal{Accounting.lean}{card_spanning_near_lt, card_aligned_spanning_lt, card_ground_spanning_lt}
+\formal{WrapGlobal.lean}{card_kept_spanning_le}
+Let $\mathcal S$ be a frame system with walk~$x$ and horizon~$T$, let $c$ be a time and $r$ an offset; alignment, groundness,
+loss and deciding groups refer to~$\mathcal S$ and~$r$.
+\begin{enumerate}[label=(\alph*)]
+\item For every $h\in\Z$ and $R\ge1$, fewer than $2R$ hops $(p,u)$ of~$x$ span~$c$ and have $\abs{x(p)-h}<R$.
+\item For every $\theta^*\in\N$, fewer than $2^{\theta^*+3}$ hops $(p,u)$ of~$x$ span~$c$, are aligned, and have
+$\theta(G(\beta(u))+1)\le\theta^*$.
+\item If $x$ is a walk, $h_0\ge1$ and $\theta^*\ge\theta(1)$, fewer than $2\cdot2^{\theta^*}$ upper hops of~$x$ span~$c$ and are
+ground.
+\item If $x$ is a walk and $r<h_0$, then for every group~$g$ at most $10\cdot2^{\theta(g+1)}$ upper hops of~$x$ span~$c$, are not
+lost, and have deciding group at most~$g$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) At each cell at most one hop spans~$c$ (\lean{BoundedNesting.hop_unique}, \cref{sec:prelim}), and the cells lie in the open
+interval $(h-R,h+R)$ of $2R-1$ integers (\lean{card_spanning_near_lt}). (b) An aligned hop with $d=G(\beta(u))$ is home-near:
+$\lambda_e<\theta(d+1)+2\le\theta^*+2$. Since $c\in[p,u]$, the distance $\abs{x(p)-\home(c)}$ is at most $S_e<2^{\lambda_e+1}\le
+2^{\theta^*+2}$, and~(a) applies with $h=\home(c)$ and $R=2^{\theta^*+2}$ (\lean{card_aligned_spanning_lt}). (c) A ground hop has
+$G(\sigma_e)=0$, that is, $\sigma_e<\theta(1)$. Its extent is at most $x(\tau)-x(p)$ (\lean{extent_le_owner}), which is at most
+$\prom(\tau)<2^{\sigma_e+1}\le2^{\theta(1)}\le2^{\theta^*}$ by~(P1) of \cref{prop:prom}; by~(P3) fewer than $2\cdot2^{\theta^*}$ hops of
+extent below $2^{\theta^*}$ span~$c$ (\lean{card_spanning_hops_lt}, \lean{card_ground_spanning_lt}). (d) A hop that is not lost is
+aligned or ground. An aligned hop with deciding group $d\le g$ has $\theta(d+1)\le\theta(g+1)$ (\lean{flr_mono}), so~(b) with
+$\theta^*=\theta(g+1)$ counts fewer than $8\cdot2^{\theta(g+1)}$ of them, and~(c) with the same~$\theta^*\ge\theta(1)$ counts fewer
+than $2\cdot2^{\theta(g+1)}$ ground hops (\lean{card_kept_spanning_le}).
+\end{outline}
+
+So a standard event of group~$g$ is charged with at most $10\cdot2^{\theta(g)}$ kept hops whose deciding group lies below~$g$, ten
+times its weight. This is where alignment pays off: home-nearness confines the low aligned hops spanning a time to few cells, and the
+cap on the owner's scale confines the ground hops to short ones.
+
+\subsection{Truncation}\label{sec:acc-trunc}
+
+For an offset~$r$, bits~$\xi$ and $P\in\N$, a time $t<T$ is \emph{bad} if $\card{\Ok_{r,\xi}(t)}>P$; let $\mathrm{Bad}_{r,\xi}$ be the
+set of bad times (\lean{badTimes}).
+
+\begin{lemma}[Truncation]\label{lem:trunc}
+\formal{Truncation.lean}{badTimes, card_trunc_le_bad, card_bad_le}
+\begin{enumerate}[label=(\alph*)]
+\item For every head~$v$, the upper hops $(p,u)$ of~$x^{(v)}$ whose deciding group has rank at least~$P$ in $\Ok_{r,\xi}(p)$ are at
+most $\card{\mathrm{Bad}_{r,\xi}}$ in number.
+\item If $P\ge1+2n(jn+1)$ for some $j\in\N$, then for every offset~$r$ and every time~$t$, at most $2n(1-Q^{-n^2})^jQ^\iota$ of the
+$Q^\iota$ bit vectors make~$t$ bad.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The deciding group~$d$ is shown at~$p$ (\cref{lem:heads}(d)), so its rank is below $\card{\Ok_{r,\xi}(p)}$ by
+\cref{lem:lex}(a), and a rank at least~$P$ makes $p$ bad. Distinct hops of one walk have distinct starts
+(\lean{BoundedNesting.hop_start_unique}), so the starts inject the truncated hops into the bad times (\lean{card_trunc_le_bad}).
+(b) The composed display at~$t$ has the candidate property (\cref{lem:onecandidate}), so every value has at most $n$ candidates
+(\lean{card_cands_le}), and it has at most $n$ seeds. Lemma~D (\cref{lem:D}) applies, and $1+(\card\Sigma+n)(jn+1)\le1+2n(jn+1)\le
+P$ and $\card\Sigma+n\le2n$ (\lean{card_bad_le}).
+\end{outline}
+
+\subsection{Wraps}\label{sec:acc-wraps}
+
+A digit of a group~$g$ wraps between $p$ and~$u$ only if its counter $\bar N_{\theta(g)}$ rises, that is, only if events of scale at
+least~$\theta(g)$ occur in $(p,u]$; by \cref{lem:wrapoffsets} a rise by~$\Delta$ makes the digit wrap for at most a fraction
+$\Delta/K$ of the digit offsets. The following lemma turns this into a bound by exchanging the sums over hops and over events.
+
+\begin{lemma}[Wraps]\label{lem:wraps}
+\formal{Wrap.lean}{flr_le_iff, flr_grp_succ_le, sum_two_pow_flr_succ_le, sum_hops_events_le}
+\formal{WrapGlobal.lean}{card_wrap_le_sum, sum_ten_two_pow_flr_le, sum_kept_family_le}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Exchange of sums.)} Let $A$ be a finite set of events~$a$ with times $\tau(a)$ and scales $\sigma(a)$, $H$ a finite set of
+hops $e=(p(e),u(e))$ with groups $d(e)$, and $B(e)$, for each $e\in H$, a finite set of groups at least $d(e)$. Let
+$\vartheta,\Gamma\colon\N\to\N$ satisfy $g\le\Gamma(s)$ whenever $\vartheta(g)\le s$. Then
+\begin{multline*}
+  \sum_{e\in H}\sum_{g\in B(e)}\#\{a\in A:p(e)<\tau(a)\le u(e),\ \vartheta(g)\le\sigma(a)\}\\
+  \le\sum_{a\in A}\sum_{g=0}^{\Gamma(\sigma(a))}\#\{e\in H:p(e)<\tau(a)\le u(e),\ d(e)\le g\}.
+\end{multline*}
+\item \emph{(Wraps of one hop.)} Let $O,B\subseteq\N$ be finite and $c,c'\colon\N\to\N$ with $c(g)\le c'(g)$ for $g\in B$. At most
+$\sum_{g\in B}(c'(g)-c(g))K^{P-1}$ vectors $\omega\in[0,K)^P$ have some $g\in B$ of rank $i=\operatorname{rk}_O(g)<P$ with
+$\lfloor(c(g)+\omega_i)/K\rfloor\ne\lfloor(c'(g)+\omega_i)/K\rfloor$.
+\item \emph{(The kept hops of a head.)} Let $\mathcal S$ be a frame system whose walk~$x$ is a walk, let $r<h_0$, and let $A$ be a
+finite set of events with times $\tau(a)$ and scales $\sigma(a)$. If, for every upper hop~$e$ of~$x$, $B(e)$ is a finite set of
+groups at least the deciding group of~$e$ at~$r$, then
+\[
+  \sum_{e}\sum_{g\in B(e)}\#\{a\in A:p<\tau(a)\le u,\ \theta(g)\le\sigma(a)\}\le\sum_{a\in A}20\cdot2^{h_0}\cdot2^{\sigma(a)},
+\]
+the first sum running over the upper hops $e=(p,u)$ of~$x$ that are not lost at~$r$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Both sides count triples $(e,g,a)$ with $p(e)<\tau(a)\le u(e)$ and $d(e)\le g$: the left side those with $g\in B(e)$ and
+$\vartheta(g)\le\sigma(a)$, the right side those with $g\le\Gamma(\sigma(a))$, and the first condition implies the second
+(\lean{sum_hops_events_le}). (b) A union bound over $g\in B$ (\lean{card_wrap_le_sum}): a group of rank at least~$P$ has no digit,
+and a group of rank $i<P$ is \cref{lem:wrapoffsets}. (c) Apply~(a) with $\vartheta=\theta_r$ and $\Gamma=G_r$, which is valid since
+$\theta(g)\le s$ if and only if $g\le G(s)$ (\lean{flr_le_iff}). For each event~$a$ and each $g\le G(\sigma(a))$, the inner count is
+at most $10\cdot2^{\theta(g+1)}$ by \cref{lem:counting}(d) at the time~$\tau(a)$. The floors $\theta(g+1)$, $g\le G(s)$, are
+distinct and at most $\theta(G(s)+1)\le s+h_0$ (\lean{flr_grp_succ_le}), so $\sum_{g\le G(s)}2^{\theta(g+1)}<2^{s+h_0+1}$
+(\lean{sum_two_pow_flr_succ_le}), and $\sum_{g\le G(s)}10\cdot2^{\theta(g+1)}\le20\cdot2^{h_0}\cdot2^s$
+(\lean{sum_ten_two_pow_flr_le}, \lean{sum_kept_family_le}).
+\end{outline}
+
+The factor $2^{h_0}$ comes from the top group of an event, whose floor $\theta(G(s)+1)$ can exceed the event's scale~$s$ by
+up to~$h_0$; the radix~$K$ of \cref{def:params} is chosen to pay for it.
+
+\subsection{The cut state edges}\label{sec:acc-descents}
+
+Let $r<h_0$. A time $t\in[1,T)$ is an \emph{event time} if some head has a rise or a last-stint end at~$t$ of a group~$g$ with
+$1\le g<T$ (\lean{eventTimes}). For digit offsets~$\omega$ and bits~$\xi$, it is a \emph{wrap time} if the digit of some
+$g\in\Ok_{r,\xi}(t-1)$, at its rank $i<P$ in $\Ok_{r,\xi}(t-1)$, wraps between $t-1$ and~$t$ for the counter $\bar N_{\theta(g)}$
+(\lean{wrapTimes}).
+
+\begin{lemma}[The cut state edges]\label{lem:descents}
+\formal{CutDescents.lean}{eventTimes, wrapTimes, shown_eq_of_not_eventTime, card_descents_le, card_eventTimes_le, globalCount_sub_le, sum_card_wrapTimes_le}
+Let $r<h_0$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(The shown set changes only at standard events.)} If $t\in[1,T)$ is not an event time, then
+$\Ok_{r,\xi}(t-1)=\Ok_{r,\xi}(t)$ for all bits~$\xi$.
+\item The descents of $\Psi_{r,\omega,\xi}$ are at most as many as the event times and the wrap times together.
+\item The event times number at most $\sum_v\bigl(\card{\mathrm{Rise}_r(v)}+\card{\mathrm{Last}_r(v)}\bigr)$.
+\item For all bits~$\xi$, the wrap times, summed over the $K^P$ digit offsets, number at most
+\[
+  PK^{P-1}\sum_v\bigl(\#\text{turning points of }x^{(v)}+\#\text{segment starts of }\mathcal S_v\bigr).
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) This is view invariance at $d=0$ (\lean{shown_eq_of_not_eventTime}). The frame systems of the heads pop at band zero
+(\cref{lem:W2b}, \lean{popsAtZero_headFrames}), and every rise or last-stint end at~$t$ has its group below~$T$
+(\cref{lem:budgets}(e)); so if $t$ is not an event time, no head has a standard event at~$t$ of a group $g\ge1$, and
+\cref{prop:W} for one step gives the same view above~$0$ for every head at $t-1$ and~$t$. By \cref{prop:exposure}(a) the composed
+display has the same view above~$0$ at both times. Every candidate at~$0$ has bottom~$0$ and is displayed by rule~(Z), so
+\cref{lem:view-static}(c) gives the same shown values above~$0$, and $0$ is shown at all times. (b) The counters do not decrease
+(\lean{globalCount_mono}), so by \cref{lem:stateedge} with $p=t-1$ and $u=t$ a descent at~$t$ changes the shown set, and then $t$
+is an event time by~(a), or it is a wrap time (\lean{card_descents_le}). (c) Every event time is the time of a rise or a last-stint
+end (\lean{card_eventTimes_le}). (d) Fix~$t$. At most $P$ groups of $\Ok_{r,\xi}(t-1)$ have rank below~$P$ (\cref{lem:lex}(a)), and
+the counter of each rises at~$t$ by at most the number $E(t)$ of turning points and segment starts of all heads at~$t$
+(\lean{globalCount_sub_le}); by \cref{lem:wraps}(b), at most $PK^{P-1}E(t)$ digit offsets make $t$ a wrap time. Summed over~$t$,
+every turning point and every segment start is counted at one time (\lean{sum_card_fiber_le}, \lean{sum_card_wrapTimes_le}).
+\end{outline}
+
+Part~(a) is the reason why pushes and pops cost no state edges: the shown set changes only when a band group rises across a grid
+floor or a segment ends its last stint at a positive group, both standard events.
+
+\subsection{The violated hops}\label{sec:acc-hops}
+
+Fix a head~$v$, an offset~$r$, digit offsets~$\omega$ and bits~$\xi$, and write $\Ok=\Ok_{r,\xi}$. For an upper hop $e=(p,u)$
+of~$x^{(v)}$, let $d$ be its deciding group at~$r$ in~$\mathcal S_v$.
+
+\begin{definition}[The kinds of violated hops]\label{def:hopsets}
+\formal{CutHops.lean}{lostSet, truncSet, Charged, chargedSet, exposedSet, wrapSet}
+The upper hop~$e$ of head~$v$ is
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{lost} if it is lost at~$r$ (\cref{def:kept});
+\item \emph{truncated} if $\operatorname{rk}_{\Ok(p)}(d)\ge P$;
+\item \emph{charged} if some head~$w$ has a standard event $(t,g)\in\mathrm{Rise}_r(w)\cup\mathrm{Last}_r(w)$ with $p<t\le u$ and
+$g\ge d+1$;
+\item \emph{exposed} if it is neither lost nor charged, and $\Ok(p)\cap(d,\infty)\ne\Ok(u)\cap(d,\infty)$;
+\item \emph{wrapping} if it is not lost, and for some $g\in\Ok(p)$ with $g\ge d$ the digit at position
+$\operatorname{rk}_{\Ok(p)}(g)<P$ wraps for~$g$ between $p$ and~$u$, for the counter $\bar N_{\theta(g)}$.
+\end{itemize}
+The \emph{lost}, \emph{truncated}, \emph{charged}, \emph{exposed} and \emph{wrapping} sets of~$v$ consist of the upper hops of~$v$
+of these kinds, the charged set of those that are moreover not lost.
+\end{definition}
+
+The lost and charged sets depend only on~$r$, the truncated and exposed sets on $r$ and~$\xi$, and the wrapping set on all three
+choices.
+
+\begin{lemma}[The violated hops of a head]\label{lem:hopterms}
+\formal{CutHops.lean}{card_violated_le_cut, card_chargedSet_le, views_eq_of_no_event, card_exposed_hop_le, sum_card_exposedSet_le, card_wrap_hop_le, globalCount_sub_le_events, sum_card_wrapSet_le}
+Let $v$ be a head.
+\begin{enumerate}[label=(\alph*)]
+\item For every choice $(r,\omega,\xi)$, the upper hops $(p,u)$ of~$v$ with $\Psi_{r,\omega,\xi}(u)\le\Psi_{r,\omega,\xi}(p)$ number at
+most the sizes of the lost, truncated, charged, exposed and wrapping sets of~$v$ together.
+\end{enumerate}
+Let moreover $r<h_0$.
+\begin{enumerate}[label=(\alph*),resume]
+\item The charged set of~$v$ has at most $\sum_w\sum_{(t,g)}10\cdot2^{\theta(g)}$ elements, the inner sum over
+$\mathrm{Rise}_r(w)\cup\mathrm{Last}_r(w)$.
+\item Every upper hop of~$v$ is exposed for at most $2nQ^{\iota-1}$ of the $Q^\iota$ bit vectors. Hence the exposed sets of~$v$,
+summed over the bit vectors, have at most $\#\{\text{upper hops of }x^{(v)}\}\cdot2nQ^{\iota-1}$ elements.
+\item For all bits~$\xi$, the wrapping sets of~$v$, summed over the $K^P$ digit offsets, have at most
+\[
+  K^{P-1}\sum_w\Bigl(\sum_s20\cdot2^{h_0}\cdot2^{\band(\prom(s))}+\sum_{(F,s)}20\cdot2^{h_0}\cdot2^{\band(m(F,s))}\Bigr)
+\]
+elements, where $s$ runs over the turning points of~$x^{(w)}$ and $(F,s)$ over the segment starts of~$\mathcal S_w$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) (\lean{card_violated_le_cut}) A violated hop that is not lost satisfies (TRUNC), (ABOVE) or (WRAP) by \cref{lem:heads}(d); in
+the case (ABOVE) it is charged or exposed. (b) (\lean{card_chargedSet_le}) A charged hop spans the time~$t$ of a standard event
+$(t,g)$ with $g\ge1$ and $d\le g-1$. By \cref{lem:counting}(d) with the group $g-1$ at the time~$t$, at most $10\cdot2^{\theta(g)}$
+upper hops of~$v$ that are not lost are charged through that event. (c) (\lean{card_exposed_hop_le}) Let $e$ be neither lost nor
+charged. Then no head has a standard event of a group at least $d+1$ in $(p,u]$, and by \cref{prop:W}, applied to every head, every
+head has the same view above~$d$ at $p$ and~$u$ (\lean{views_eq_of_no_event}; the heads pop at band zero, and groups below~$T$
+suffice by \cref{lem:budgets}(e)). If $e$ is aligned, $d=G(\beta_v(p))=G(\beta_v(u))$ is the band group of~$v$ at both ends, a seed
+at both times, and \cref{prop:exposure}(c) bounds the bit vectors by $2nQ^{\iota-1}$. Otherwise $d=0$; every candidate at~$0$ has
+bottom~$0$ and is displayed by rule~(Z), so by \cref{prop:exposure}(a) and \cref{lem:view-static}(c) the shown sets above~$0$
+agree for all bits, and $e$ is never exposed. Summing over the hops is a double count (\lean{sum_card_eq_sum_card_filter},
+\lean{sum_card_exposedSet_le}). (d) (\lean{sum_card_wrapSet_le}) For one hop that is not lost, \cref{lem:wraps}(b) with
+$B=\{g\in\Ok(p):g\ge d\}$ bounds the digit offsets that make it wrapping by
+$K^{P-1}\sum_{g\in B}(\bar N_{\theta(g)}(u)-\bar N_{\theta(g)}(p))$ (\lean{card_wrap_hop_le}), and the increase of a global
+counter is at most the number of turning points and segment starts of all heads in $(p,u]$ of scale at least~$\theta(g)$
+(\lean{globalCount_sub_le_events}). Exchanging the sums over hops and heads~$w$, \cref{lem:wraps}(c) applies to the hops of~$v$ and
+to each of the two event families of each head~$w$.
+\end{outline}
+
+Part~(c) is where the break bits are used, and only for aligned hops: a hop that is not aligned has deciding group~$0$ and is never
+exposed. Parts (b) and~(d) rest on the counting fact for kept hops, \cref{lem:counting}(d): in~(b) the deciding group lies below the
+group of the charged event, and in~(d) at or below the group whose digit wraps.
+
+\subsection{Totals}\label{sec:acc-totals}
+
+\begin{lemma}[Totals]\label{lem:totals}
+\formal{Totals.lean}{card_upperHops_head_le, sum_events_head_le, card_frames_head_le, card_events_head_le, weight_events_head_le, sum_descents_le}
+Let $v$ be a head.
+\begin{enumerate}[label=(\alph*)]
+\item $x^{(v)}$ has at most $T$ upper hops.
+\item $\sum_{r<h_0}\bigl(\card{\mathrm{Rise}_r(v)}+\card{\mathrm{Last}_r(v)}\bigr)\le8T$.
+\item $\mathcal S_v$ has at most $2T+1$ frames.
+\item The turning points of~$x^{(v)}$ and the segment starts of~$\mathcal S_v$ number at most $4T+1$ together.
+\item They weigh at most $6T+1$: $\sum_s2^{\band(\prom(s))}+\sum_{(F,s)}2^{\band(m(F,s))}\le6T+1$.
+\item The descents of the labels, summed over~$\Omega$, number at most
+\[
+  K^PQ^\iota\cdot n\cdot8T+Q^\iota h_0\cdot PK^{P-1}\cdot n(4T+1).
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The upper hops and the tops of a walk together number at most~$T$ (\lean{card_upperHops_add_card_tops_le}). (b) By
+\cref{lem:budgets}(c) with $N=T$ and \cref{lem:W1}(b), since every weight is at least~$1$ (\lean{sum_events_head_le}). (c) A walk
+has at most $2T$ suspend frames (\cref{lem:W1}(c)), and there is the root (\lean{card_frames_head_le}). (d) The turning points are
+times before~$T$, and by \cref{lem:budgets}(d) and part~(c) there are at most $(2T+1)+T$ segment starts
+(\lean{card_events_head_le}). (e) By \cref{lem:budgets}(d), the turning points weigh at most $2(T-1)$, and the segment starts at most
+$T+(3T+1)$, by \cref{lem:W1}(b) and the count of part~(d) (\lean{weight_events_head_le}). (f) By \cref{lem:descents}(b), each choice
+has at most as many descents as event times and wrap times. The event times do not depend on $(\omega,\xi)$, and summed over the
+offsets they number at most $\sum_v8T=8nT$ by \cref{lem:descents}(c) and part~(b). For each~$r$ and~$\xi$, the wrap times, summed
+over~$\omega$, number at most $PK^{P-1}\cdot n(4T+1)$ by \cref{lem:descents}(d) and part~(d) (\lean{sum_descents_le}).
+\end{outline}

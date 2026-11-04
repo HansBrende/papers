@@ -1,0 +1,209 @@
+\section{The label}\label{sec:label}
+
+The label combines the walks. At every time~$t$ it shows a finite set of band groups, and each of the $P$ highest shown
+groups~$g$ contributes one digit: the number of events of scale at least the floor~$\theta(g)$ up to time~$t$, shifted by a
+random offset and reduced modulo a radix~$K$. The digits are ordered by their groups, the highest group first, and labels are compared as digit vectors in the
+lexicographic order. A hop whose deciding group is shown at both of its ends then increases the label unless its group is not
+among the $P$ highest shown groups, the shown groups above it change, or a digit wraps: this is Lemma~V (\cref{lem:V}).
+\Cref{sec:label-digits} defines the label for arbitrary shown sets and counters. \Cref{sec:label-global} specializes it to $k$
+walks, with the shown sets of the displays of \cref{sec:displays}, and reduces the cut of the walk DAG to the hops of the
+individual heads.
+
+\subsection{Shown sets and digits}\label{sec:label-digits}
+
+Throughout this subsection, $O$ maps every time $t\in\N$ to a finite set $O(t)\subseteq\N$ of \emph{shown groups}, $\cnt(g,t)\in\N$
+is a \emph{counter} for every group~$g$ and time~$t$, $K\ge1$ is the \emph{radix}, $P\in\N$ is the number of \emph{digits}, and
+$\omega=(\omega_0,\dots,\omega_{P-1})\in\N^P$ are the \emph{digit offsets}. Vectors in $\N^P$ are compared in the lexicographic
+order, position~$0$ being the most significant.
+
+\begin{definition}[The label of a family of shown sets]\label{def:digitlabel}
+\formal{Label.lean}{topRank, digits, lexRank, label}
+The \emph{rank} of $g\in\N$ in a finite set $S\subseteq\N$, counted from the top, is
+$\operatorname{rk}_S(g)=\card{\{g'\in S:g'>g\}}$; the largest element of~$S$ has rank~$0$. The \emph{digits} at time~$t$ are, for
+$i<P$,
+\[
+  \delta_i(t)=\begin{cases}(\cnt(g,t)+\omega_i)\bmod K&\text{if $g\in O(t)$ and $\operatorname{rk}_{O(t)}(g)=i$,}\\
+  0&\text{if no element of $O(t)$ has rank~$i$.}\end{cases}
+\]
+The \emph{lexicographic rank} $\operatorname{lex}(a)$ of a vector $a\in\N^P$ is the number of vectors $y\in\{0,\dots,K-1\}^P$ that
+are lexicographically smaller than~$a$. The \emph{label} at~$t$ is $\Psi(t)=\operatorname{lex}(\delta_0(t),\dots,\delta_{P-1}(t))$.
+\end{definition}
+
+By \cref{lem:lex}(a) below, at most one element of $O(t)$ has rank~$i$; Lean writes $\delta_i(t)$ as the sum of
+$(\cnt(g,t)+\omega_i)\bmod K$ over the elements~$g$ of rank~$i$. We say that the digit at position~$i$ \emph{wraps} for the
+group~$g$ between the times $p$ and~$u$ if
+\[
+  \bigl\lfloor(\cnt(g,p)+\omega_i)/K\bigr\rfloor\ne\bigl\lfloor(\cnt(g,u)+\omega_i)/K\bigr\rfloor .
+\]
+If $\cnt(g,p)\le\cnt(g,u)$ and the digit does not wrap, then $(\cnt(g,\cdot)+\omega_i)\bmod K$ does not decrease from $p$ to~$u$,
+and it increases strictly if the counter does (\lean{BoundedNesting.digit_le_of_no_wrap},
+\lean{BoundedNesting.digit_lt_of_no_wrap}).
+
+\begin{lemma}[Ranks and lexicographic ranks]\label{lem:lex}
+\formal{Label.lean}{topRank_lt_of_lt, lt_of_topRank_lt, topRank_injOn, topRank_lt_card, topRank_eq_of_above, toLex_lt_of_prefix, lexRank_le_of_le, lexRank_lt_of_lt, lexRank_lt_pow, digits_lt, label_lt}
+Let $S,S'\subseteq\N$ be finite.
+\begin{enumerate}[label=(\alph*)]
+\item If $g<g'$ and $g'\in S$, then $\operatorname{rk}_S(g')<\operatorname{rk}_S(g)$; conversely, if $g\in S$ and
+$\operatorname{rk}_S(g')<\operatorname{rk}_S(g)$, then $g<g'$. Hence $\operatorname{rk}_S$ is injective on~$S$, and
+$\operatorname{rk}_S(g)<\card S$ for every $g\in S$.
+\item If $d\le g$ and $S\cap(d,\infty)=S'\cap(d,\infty)$, then $\operatorname{rk}_S(g)=\operatorname{rk}_{S'}(g)$: the rank of a group
+depends only on the elements above it.
+\item If $a\le b$ lexicographically, then $\operatorname{lex}(a)\le\operatorname{lex}(b)$; if $a<b$ lexicographically and all
+entries of~$a$ are below~$K$, then $\operatorname{lex}(a)<\operatorname{lex}(b)$. If $a_{i'}\le b_{i'}$ for all $i'<i$ and
+$a_i<b_i$, then $a<b$ lexicographically.
+\item Every digit is below~$K$, and the label takes fewer than $K^P$ values.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Every element of~$S$ above~$g'$ is above~$g$, and $g'$ itself is above~$g$ but not above~$g'$ (\lean{topRank_lt_of_lt});
+the converse follows, since $g'=g$ gives equal ranks and $g'<g$ the opposite inequality (\lean{lt_of_topRank_lt}). So two elements
+of~$S$ with the same
+rank are equal (\lean{topRank_injOn}), and the elements above $g\in S$ form a subset of~$S$ that misses~$g$
+(\lean{topRank_lt_card}). (b) The elements of~$S$ above $g\ge d$ are the elements of $S\cap(d,\infty)$ above~$g$
+(\lean{topRank_eq_of_above}). (c) Every vector below~$a$ is below~$b$; in the strict case $a$ itself is counted for~$b$ and not
+for~$a$ (\lean{lexRank_le_of_le}, \lean{lexRank_lt_of_lt}). For the last statement, $a$ and~$b$ first differ at a position
+$i'\le i$, and there $a_{i'}<b_{i'}$ (\lean{toLex_lt_of_prefix}). (d) A digit is a residue modulo~$K$ or~$0$
+(\lean{digits_lt}), and the vectors below the digit vector form a subset of $\{0,\dots,K-1\}^P$ that misses the digit vector itself
+(\lean{lexRank_lt_pow}, \lean{label_lt}).
+\end{outline}
+
+\begin{lemma}[Lemma V]\label{lem:V}
+\formal{Label.lean}{label_lt_label, trunc_or_above_or_wrap}
+Let $p,u,d\in\N$ with $d\in O(p)\cap O(u)$. Suppose that $\cnt(g,p)\le\cnt(g,u)$ for every $g\in O(p)$ with $g\ge d$, and that
+$\cnt(d,p)<\cnt(d,u)$. If
+\begin{enumerate}[label=(\roman*)]
+\item $\operatorname{rk}_{O(p)}(d)<P$,
+\item $O(p)\cap(d,\infty)=O(u)\cap(d,\infty)$, and
+\item for every $g\in O(p)$ with $g\ge d$ and $i=\operatorname{rk}_{O(p)}(g)<P$, the digit at position~$i$ does not wrap for~$g$
+between $p$ and~$u$,
+\end{enumerate}
+then $\Psi(p)<\Psi(u)$. Consequently, if $\Psi(u)\le\Psi(p)$, then one of the following holds:
+\begin{itemize}[leftmargin=4.5em]
+\item[\textup{(TRUNC)}] $\operatorname{rk}_{O(p)}(d)\ge P$;
+\item[\textup{(ABOVE)}] $O(p)\cap(d,\infty)\ne O(u)\cap(d,\infty)$;
+\item[\textup{(WRAP)}] for some $g\in O(p)$ with $g\ge d$, the digit at position $i=\operatorname{rk}_{O(p)}(g)<P$ wraps for~$g$ between
+$p$ and~$u$.
+\end{itemize}
+\end{lemma}
+
+\begin{outline}
+Let $i_0=\operatorname{rk}_{O(p)}(d)<P$. By \cref{lem:lex}(c) it suffices that $\delta_i(p)\le\delta_i(u)$ for $i<i_0$ and
+$\delta_{i_0}(p)<\delta_{i_0}(u)$ (\lean{toLex_lt_of_prefix}, \lean{lexRank_lt_of_lt}). Let $i<i_0$. If no element of $O(p)$ has
+rank~$i$, then $\delta_i(p)=0$. Otherwise the element~$g$ of rank~$i$ lies above~$d$ by \cref{lem:lex}(a), so $g\in O(u)$ by~(ii),
+and $g$ has rank~$i$ in $O(u)$ as well by \cref{lem:lex}(b); its counter does not decrease and its digit does not wrap, so
+$\delta_i(p)\le\delta_i(u)$ (\lean{BoundedNesting.digit_le_of_no_wrap}). At position~$i_0$, the group~$d$ has rank~$i_0$ at both ends
+by \cref{lem:lex}(b) with $g=d$; its counter increases strictly and its digit does not wrap, so $\delta_{i_0}(p)<\delta_{i_0}(u)$
+(\lean{BoundedNesting.digit_lt_of_no_wrap}, \lean{label_lt_label}). The second statement is the contrapositive
+(\lean{trunc_or_above_or_wrap}).
+\end{outline}
+
+Lemma~V is where the order of the digits matters. The groups above~$d$ occupy the leading positions, so nothing that happens
+below~$d$ affects the comparison, provided the shown groups above~$d$ stay the same and their digits do not wrap. In
+\cref{sec:label-global}, $(p,u)$ is an upper hop of a head, $d$ is its deciding group, and the strict increase of the counter
+of~$d$ is validity (\cref{lem:validity}). The three exceptions are bounded separately: (TRUNC) by the size of the display
+(Lemma~D, \cref{lem:D}), (ABOVE) by view invariance and exposure (\cref{prop:W,prop:exposure}), and (WRAP) by the randomness of the
+digit offsets (\cref{lem:wrapoffsets}).
+
+\begin{lemma}[State edges]\label{lem:stateedge}
+\formal{Label.lean}{label_le_label_of_eq, shown_ne_or_wrap}
+Let $p,u\in\N$ with $\cnt(g,p)\le\cnt(g,u)$ for every $g\in O(p)$. If $O(p)=O(u)$, and for no $g\in O(p)$ the digit at position
+$\operatorname{rk}_{O(p)}(g)<P$ wraps for~$g$ between $p$ and~$u$, then $\Psi(p)\le\Psi(u)$. Consequently, if $\Psi(u)<\Psi(p)$,
+then $O(p)\ne O(u)$, or the digit at position $\operatorname{rk}_{O(p)}(g)<P$ wraps for some $g\in O(p)$ between $p$ and~$u$.
+\end{lemma}
+
+\begin{outline}
+Since $O(p)=O(u)$, each position holds at both ends the digit of the same group, and this digit does not decrease
+(\lean{BoundedNesting.digit_le_of_no_wrap}), or it holds~$0$ at~$p$. So the digit vector does not decrease in any coordinate, hence
+not lexicographically, and \cref{lem:lex}(c) applies (\lean{label_le_label_of_eq}). The second statement is the contrapositive
+(\lean{shown_ne_or_wrap}).
+\end{outline}
+
+With $p=t-1$ and $u=t$, the lemma says that a \emph{descent} at~$t$, a cut state edge $t\to t-1$, requires a change of the shown
+set at~$t$ or a wrap at~$t$ (\cref{lem:descents}).
+
+\begin{lemma}[Wraps over the digit offsets]\label{lem:wrapoffsets}
+\formal{Label.lean}{card_wrap_offsets_le}
+Let $i<P$ and $n_1\le n_2$. Of the $K^P$ vectors $\omega\in\{0,\dots,K-1\}^P$, at most $(n_2-n_1)K^{P-1}$ satisfy
+$\lfloor(n_1+\omega_i)/K\rfloor\ne\lfloor(n_2+\omega_i)/K\rfloor$.
+\end{lemma}
+
+\begin{outline}
+The condition depends only on~$\omega_i$, and the vectors whose $i$th coordinate lies in a set of~$m$ values number $mK^{P-1}$
+(\lean{BoundedNesting.Fam.card_piFinset_coord}). At most $n_2-n_1$ values $c<K$ have
+$\lfloor(n_1+c)/K\rfloor\ne\lfloor(n_2+c)/K\rfloor$ (\lean{BoundedNesting.Fam.card_wrap_le}): if $n_2-n_1<K$, the residue of
+$n_1+c$ modulo~$K$ is then one of the $n_2-n_1$ largest residues, and it determines~$c$. Both counts are lemmas of the eighth
+paper's library.
+\end{outline}
+
+So, for uniform digit offsets, the digit of a group whose counter rises by~$\Delta$ wraps with probability at most $\Delta/K$; this
+is how the radix~$K$ pays for the wraps (\cref{lem:wraps}).
+
+\subsection{The label of $k$ walks}\label{sec:label-global}
+
+Fix $k\in\N$, walks $x_1,\dots,x_k\colon\N\to\Z$ with $\abs{x_i(t+1)-x_i(t)}\le1$ for all~$t$ (pauses are allowed), a
+horizon~$T$, and a grid $(h_0,r)$ with groups~$G$ and floors~$\theta$ (\cref{def:grid}); put $n=2k$. Recall the \emph{events}
+of a frame system~$\mathcal S$ with walk~$x$ and horizon~$T$ (\cref{lem:validity}): its \emph{turning points}, the times $s<T$
+with $\prom(s)\ge1$, of \emph{scale} $\band(\prom(s))$; and its \emph{segment starts}, the pairs $(F,s)$ of a frame~$F$ and a
+time $s<T$ that is the start of~$F$ or a restart of~$F$, of scale $\band(m(F,s))$, where $m(F,s)$ is the largest distance
+$\abs{x(t)-x(s)}$ over the own times~$t$ of the segment $(F,s)$ (\lean{segStarts}, \lean{segScale}). The counter $N_\theta(t)$
+is the number of events at times at most~$t$ of scale at least~$\theta$ (\lean{eventCount}); it does not decrease in~$t$
+(\lean{eventCount_mono}). The \emph{deciding group} $d_r(e)$ of an upper hop $e=(p,u)$ of~$x$ is $G(\beta(u))$ if $e$ is aligned
+at offset~$r$ (\cref{def:kept}), and $0$ otherwise (\lean{decGroup}). By validity (\cref{lem:validity}),
+$N_{\theta(d_r(e))}(p)<N_{\theta(d_r(e))}(u)$ for every upper hop~$e$, kept or not.
+
+\begin{definition}[The label of $k$ walks]\label{def:global}
+\formal{Global.lean}{headOf, headWalk, headFrames, globalCount, shown, labelOf}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Heads.} The $n=2k$ \emph{heads} are the pairs $(i,j)$ of a walk $i<k$ and a \emph{class} $j\in\{0,1\}$, indexed by
+$\{0,\dots,n-1\}$ through Mathlib's bijection \texttt{finProdFinEquiv} (\lean{headOf}). The head $(i,0)$, of class~U, sees the
+walk~$x_i$, and the head $(i,1)$, of class~L, sees~$-x_i$ (\lean{headWalk}, through the eighth paper's
+\lean{BoundedNesting.sw}). Write $x^{(v)}$ for the walk seen by head~$v$. Head~$v$ carries the frame system~$\mathcal S_v$ of
+class~U of~$x^{(v)}$ on $[0,T)$ (\cref{def:framesU}, \lean{headFrames}), so class~L uses the frames of~$-x_i$; $\beta_v$ is the
+band of~$\mathcal S_v$, and $g_v(t)=G(\beta_v(t))$ is the \emph{band group} of head~$v$.
+\item \emph{Counters.} With $N^{(v)}_\theta(t)$ the counter of~$\mathcal S_v$, the \emph{global counter}
+$\bar N_\theta(t)=\sum_vN^{(v)}_\theta(t)$ counts the events of all heads up to~$t$ of scale at least~$\theta$; the turning
+points of $x_i$ and of $-x_i$ are counted separately.
+\item \emph{Shown sets.} For bits~$\xi$, one value in $\{0,\dots,Q-1\}$ for every frame of every head, $\Ok_{r,\xi}(t)$ is the
+shown set at~$t$ of the composed display of the heads (\cref{def:composed}). It contains~$0$ and the band groups $g_v(t)$ of all
+heads.
+\item \emph{The label.} For a radix $K\ge1$, a number of digits~$P$ and digit offsets $\omega\in\N^P$, $\Psi_{r,\omega,\xi}$ is the
+label of \cref{def:digitlabel} for the shown sets $\Ok_{r,\xi}$ and the counters $\cnt(g,t)=\bar N_{\theta(g)}(t)$: the digit of
+a shown group~$g$ counts the events of all heads whose scale reaches the floor of~$g$.
+\end{enumerate}
+\end{definition}
+
+The heads, frames, events and counters depend only on the walks. The shown sets depend on the offset~$r$, through the band groups
+and the tops of entries, and on the bits; the label depends in addition on the digit offsets. So the label of a time~$t$ is
+determined by the walks, $r$, $\omega$ and~$\xi$, and \cref{sec:accounting} averages over these three random choices.
+
+\begin{lemma}[The label of $k$ walks]\label{lem:heads}
+\formal{Global.lean}{labelOf_lt, hops_subset_heads, card_violated_le_heads, decGroup_mem_shown, trunc_or_above_or_wrap_head}
+Let $K\ge1$.
+\begin{enumerate}[label=(\alph*)]
+\item $\Psi_{r,\omega,\xi}$ takes fewer than $K^P$ values.
+\item Every long hop of~$x_i$ is an upper hop of the head $(i,0)$ or of the head $(i,1)$.
+\item For every map $\Psi\colon\N\to\N$, the number of violated hop edges of the walk DAG of $x_1,\dots,x_k$ before~$T$ is at
+most the sum over the heads~$v$ of the number of upper hops $(p,u)$ of~$x^{(v)}$ with $\Psi(u)\le\Psi(p)$.
+\item Let $e=(p,u)$ be an upper hop of head~$v$, and let $d=d_r(e)$ be its deciding group in~$\mathcal S_v$. Then $d$ is shown
+at~$p$ and at~$u$, and if $\Psi_{r,\omega,\xi}(u)\le\Psi_{r,\omega,\xi}(p)$, then (TRUNC), (ABOVE) or (WRAP) of \cref{lem:V} holds
+for $O=\Ok_{r,\xi}$ and the counters $\cnt(g,t)=\bar N_{\theta(g)}(t)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) is \cref{lem:lex}(d) (\lean{labelOf_lt}). (b) A long hop is an upper or a lower hop (\lean{upperHops_union_lowerHops}), and the
+lower hops of~$x_i$ are the upper hops of~$-x_i$ (\lean{upperHops_neg}, \lean{headWalk_up}, \lean{headWalk_down}). (c) A violated
+hop edge $u\to p$ comes from a long hop $(p,u)$ of some~$x_i$; a pair that is a long hop of several walks is a single edge
+(\lean{BoundedNesting.hopPairs}). By~(b) it is an upper hop of a head of~$x_i$ with $\Psi(u)\le\Psi(p)$, and a union bound over the
+heads gives the claim. (d) If $e$ is aligned at offset~$r$, then $d=G(\beta_v(u))=G(\beta_v(p))$ is the band group of~$v$ at both
+ends, a seed of the composed display (\lean{headGroup_mem_shown}); otherwise $d=0$, which is shown at all times
+(\lean{zero_mem_shown}, \lean{decGroup_mem_shown}). The global counters do not decrease (\lean{globalCount_mono}), and
+$\bar N_{\theta(d)}(p)<\bar N_{\theta(d)}(u)$, because the counter $N^{(v)}_{\theta(d)}$ of~$\mathcal S_v$ alone increases
+strictly by validity (\cref{lem:validity}) and is a summand of the global counter (\lean{globalCount_lt_of_head}). So
+\cref{lem:V} applies (\lean{trunc_or_above_or_wrap_head}).
+\end{outline}
+
+Every violated upper hop of a head is therefore lost (\cref{def:kept}) or, if it is not lost, satisfies (TRUNC), (ABOVE) or
+(WRAP). Theorem~A (\cref{thm:A}) pays for the lost hops. \Cref{sec:displays} constructs the shown sets and provides the tools for
+(TRUNC) and (ABOVE), and \cref{sec:accounting} adds up all terms.

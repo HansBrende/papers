@@ -1,0 +1,474 @@
+\section{Ladders: the structure of one walk}\label{sec:ladders}
+
+This section is about a single walk~$x$, pauses allowed, and a horizon~$T$. It equips $x$ with two frame systems, one for its
+upper hops (\emph{class~U}) and one for its lower hops (\emph{class~L}, the same construction for $-x$), and proves Theorem~A
+(\cref{thm:A}): for a uniformly random offset of the grid of width~$h_0$, the expected number of lost hops of each class is at
+most $6/h_0$ times the number of hops of the class. The other walks and the label enter only in
+\cref{sec:label,sec:displays,sec:accounting}.
+
+A frame system gives the walk a \emph{band} $\beta(t)$ at every time: the band of the running maximum of its distance from a
+reference cell, its \emph{home}. A hop is cheap if the bands at its ends lie in the same group of the grid and two side
+conditions hold; bands that differ by~$\Delta$ lie in different groups for at most $\Delta$ of the $h_0$ offsets
+(\cref{lem:grid}). So the homes must make
+the band differences, summed over all hops, linear in the number of hops. We treat upper hops; lower hops are the upper hops
+of~$-x$ (\cref{lem:ladder}(e)).
+
+\subsection{The decomposition by tops}\label{sec:ladders-tops}
+
+\begin{definition}[Tops, ladders and excursions]\label{def:ladder}
+\formal{Decomposition.lean}{upperHops, lowerHops, tops, ladder, height}
+\formal{FramesU.lean}{base, ladderHop, ladL, ladD, exc, levels}
+Let $x$ be a walk and $T$ a horizon.
+\begin{enumerate}[label=(\alph*)]
+\item The \emph{upper hops} of~$x$ are its hops $(p,u)$ with $x(p+1)>x(p)$, and its \emph{lower hops} those with
+$x(p+1)<x(p)$. An upper hop stays above its cell and a lower hop below it (\cref{lem:hops}).
+\item The \emph{top} of an upper hop is its owner. The \emph{ladder} of a top~$\tau$ is the set of upper hops with top~$\tau$,
+its \emph{height} $H_\tau$ is the number of these hops, its \emph{base} is $y_\tau=x(\tau)-H_\tau$, and its \emph{levels} are the
+integers~$w$ with $y_\tau<w<x(\tau)$.
+\item For $y_\tau\le z<x(\tau)$, $(L_\tau(z),D_\tau(z))$ denotes the hop of the ladder of~$\tau$ at the cell~$z$; by
+\cref{lem:ladder}(a) there is exactly one.
+\item The \emph{canonical excursion} of~$\tau$ is $E_\tau=(L_\tau(y_\tau),D_\tau(y_\tau))$, the hop of its ladder at the base.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[Ladders]\label{lem:ladder}
+\formal{Decomposition.lean}{image_cell_ladder, ladder_cell_iff, ladder_eq_of_cell, mem_ladder_hopOwner, eq_of_mem_ladder, ladder_lt, ladder_above, ladder_last_visit, ladder_first_visit, ladder_nested, exists_ladder_outer, top_spec, top_ne_start, top_ne_end, card_upperHops_add_card_tops_le, sum_height_eq, upperHops_neg, upperHops_union_lowerHops}
+Let $x$ be a walk, $T$ a horizon, and $\tau$ a top of height~$H$ and base~$y$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(One hop per cell.)} The cells of the hops of the ladder of~$\tau$ are exactly $y,y+1,\dots,x(\tau)-1$, and the
+ladder has exactly one hop at each of them. Every upper hop lies in exactly one ladder, that of its top.
+\item \emph{(Rungs.)} Let $(p,u)$ be the hop of the ladder at the cell~$z$. Then $p<\tau<u$, the walk is above~$z$ on
+$(p,u)$, $p$ is the last visit to~$z$ at or before~$\tau$, and $u$ is the first visit to~$z$ at or after~$\tau$. A higher cell
+gives a later start and an earlier end, so $E_\tau$ contains every hop of the ladder.
+\item \emph{(Tops.)} $1\le\tau$, $\tau+1<T$, $x(\tau-1)<x(\tau)$ and $x(\tau+1)\le x(\tau)$. A top is neither the start nor
+the end of an upper hop.
+\item \emph{(Counting.)} The number of upper hops plus the number of tops is at most~$T$, and $\sum_\tau H_\tau$, over all
+tops, is the number of upper hops.
+\item \emph{(Reflection.)} The upper hops of $-x$ are the lower hops of~$x$, and every hop of~$x$ is upper or lower.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Every hop of the ladder contains~$\tau$ (\lean{ladder_lt}), so two of them at one cell coincide by
+\lean{BoundedNesting.hop_unique} (\lean{ladder_eq_of_cell}). If the ladder has a hop at the cell $z_0$ and $z_0\le z<x(\tau)$,
+the last visit to~$z$ before~$\tau$ and the first visit after it (\lean{exists_last_visit}, \lean{exists_first_visit}) form an
+upper hop on which $\tau$ is again the first maximum (\lean{exists_ladder_cell}); so the cells form an interval ending at
+$x(\tau)-1$. Owners are unique (\lean{mem_ladder_hopOwner}, \lean{eq_of_mem_ladder}). (b) A visit to~$z$ in $(p,\tau]$ or
+$[\tau,u)$ would lie inside the hop. For $z<z'$ the walk passes~$z'$ between $L_\tau(z)$ and~$\tau$, so $L_\tau(z)<L_\tau(z')$;
+symmetrically $D_\tau(z')<D_\tau(z)$. (c) $\tau$ is the first maximum of a hop $(p,u)$, so $x(\tau-1)<x(\tau)$ and
+$x(\tau+1)\le x(\tau)$, with $\tau+1\le u<T$; an upper hop starting at~$\tau$ would need $x(\tau+1)>x(\tau)$, and one ending
+at~$\tau$ would need $x(\tau-1)>x(\tau)$. (d) Hops with the same start coincide (\lean{BoundedNesting.hop_start_unique}), so the
+starts of the upper hops are distinct, and by~(c) they are not tops. The ladders are the fibres of the owner map.
+(e) Reflection preserves hops and reverses their first step, which leaves the cell.
+\end{outline}
+
+\begin{example}\label{ex:ladders}
+On the walk $0,1,2,3,2,3,2,1,0$ with $T=9$, the upper hops are $(0,8)$, $(1,7)$, $(2,4)$ and $(4,6)$, the only lower hop is
+$(3,5)$, and the tops are $3$ and~$5$. The ladder of~$3$ is $\{(0,8),(1,7),(2,4)\}$, of height~$3$ and base~$0$; the ladder
+of~$5$ is $\{(4,6)\}$, of height~$1$ and base~$2$. The hop $(2,4)$ of the top~$3$ ends where the excursion $E_5=(4,6)$ starts:
+an excursion may start at a ladder time of another top. On $0,1,1,0$ the only top is~$1$, and the walk pauses there. These
+values are checked by the kernel in \leanfile{Decomposition.lean}.
+\end{example}
+
+\paragraph{Why ladders make every hop cheap.} The ladders partition the upper hops, and a top of height~$H$ owns $H$ of them,
+one per cell between its base~$y$ and its peak (\cref{lem:ladder}); Theorem~A charges every hop to its ladder. The rung at the
+cell $y+d$ starts on the climb, after the walk has risen by~$d$ from the base, and ends on the descent, after the walk has been
+at the top. Measured from the base, the band at its start is about $\band(d)$, and the band at its end, a running maximum, is
+about $B=\band(H)$. The rung costs at most the sum of the deficits of the two bands below~$B$ (\cref{lem:cost}). The deficit
+$B-\band(d)$ exceeds~$j$ only for $d<2^{B-j}\le H/2^j$, so the deficits along the climb sum to $O(H)$ (Lemma~E,
+\cref{lem:bandsums}); restarting the descent at geometrically spaced passages adds $O(H)$ more (\cref{lem:perexc}). Between the
+rungs the walk is arbitrary and may contain tall excursions; the frames below suspend them, so that they do not disturb the bands
+on the ladder.
+
+\subsection{Excursions and structures}\label{sec:ladders-exc}
+
+Let $\tau$ be a top with base~$y$, and $w$ a level of~$\tau$. Between the rungs $L_\tau(w-1)$ and $L_\tau(w)$ of the climb the
+walk stays at or above~$w$, and it is at~$w$ at both ends of the \emph{hanging structure} $[L_\tau(w-1)+1,L_\tau(w)]$.
+Symmetrically, $[D_\tau(w),D_\tau(w-1)-1]$ is the \emph{descent structure} at level~$w$. A structure is a sequence of upper
+excursions above its level, possibly with pauses at the level. The \emph{hanging frame} and the \emph{descent frame} of~$\tau$ at
+level~$w$ are
+\[
+  [L_\tau(w-1)+1,\,L_\tau(w))\qquad\text{and}\qquad[D_\tau(w)+1,\,D_\tau(w-1))
+\]
+(\lean{hangFrame}, \lean{descFrame}), possibly empty. The descent frame starts one step after its structure, so that the ladder
+time $D_\tau(w)$ stays a time of the frame of the ladder. The frames of~$\tau$ are its hanging and descent frames at all its
+levels (\lean{framesOf}), and the \emph{suspend frames} of~$x$ are the frames of all its tops (\lean{suspendFrames}).
+
+\begin{lemma}[Excursions and structures]\label{lem:excursions}
+\formal{Excursions.lean}{exc_range, upper_laminar, exc_laminar, exc_structure, framesOf_bounds, exists_framesOf_nested, frames_laminar, ladder_time_not_mem_framesOf}
+Let $x$ be a walk and $T$ a horizon; let $\tau$ and $\tau'$ be tops, with $E_\tau=(a,b)$ and $E_{\tau'}=(a',b')$. Say that
+$E_{\tau'}$ \emph{lies in} $E_\tau$ if $a\le a'$ and $b'\le b$.
+\begin{enumerate}[label=(\alph*)]
+\item On $[a,b]$ the walk stays in $[y_\tau,x(\tau)]$. Two upper hops are nested or meet in at most one endpoint; in
+particular, so are $E_\tau$ and $E_{\tau'}$.
+\item \emph{(Structures.)} If $\tau'\ne\tau$ and $E_{\tau'}$ lies in $E_\tau$, then some level~$w$ of~$\tau$ with $w\le
+y_{\tau'}$ satisfies either $\tau'<\tau$ and $[a',b']\subseteq[L_\tau(w-1)+1,L_\tau(w)]$, or $\tau<\tau'$ and
+$[a',b']\subseteq[D_\tau(w),D_\tau(w-1)-1]$.
+\item Every frame $[f_1,f_2)$ of~$\tau$ has $a<f_1$ and $f_2\le b$. In the situation of~(b), $[a'+1,b')$ lies in a frame
+of~$\tau$. The root $[0,T)$ and the suspend frames form a laminar family: any two of them are nested or disjoint.
+\item The ladder times of~$\tau$, that is, $\tau$ and the times $L_\tau(z)$ and $D_\tau(z)$ for $y_\tau\le z<x(\tau)$, lie in no
+frame of~$\tau$ and in no frame of a top whose canonical excursion lies in~$E_\tau$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The walk is above~$y_\tau$ inside the outermost ladder hop and at most its maximum $x(\tau)$ (\lean{exc_range}). Upper hops
+do not cross (\lean{BoundedNesting.upper_no_cross}), hence are nested or meet in at most an endpoint (\lean{upper_laminar}).
+(b) $\tau\notin[a',b']$, since there it would be the first maximum of $E_{\tau'}$ (\lean{top_eq_of_mem}). Say $b'<\tau$. The
+time $a'$ is a visit to $y_{\tau'}$ before~$\tau$, so $a'\le L_\tau(y_{\tau'})$, while $L_\tau(y_\tau)=a<a'$ because ladder hops
+with a common start have a common top (\lean{top_eq_of_start}). Take the level~$w$ with $L_\tau(w-1)<a'\le L_\tau(w)$
+(\lean{exists_switch}); an upper hop that ends by~$\tau$ cannot contain the last visit $L_\tau(w)$ strictly inside
+(\lean{not_lt_ladL_lt}), so $b'\le L_\tau(w)$. The case $\tau<a'$ is symmetric (\lean{not_lt_ladD_lt}, \lean{top_eq_of_end}).
+(c) The frames of~$\tau$ lie between consecutive rungs inside $(a,b)$ and are pairwise disjoint (\lean{framesOf_disjoint}); by~(b)
+the interior of a nested excursion lies in one of them, so frames of nested excursions are nested or disjoint
+(\lean{framesOf_laminar_of_nested}), and frames of disjoint excursions are disjoint. (d) A frame of~$\tau$ lies strictly between
+consecutive rungs. A frame of another top whose excursion lies in~$E_\tau$ lies strictly inside that excursion, which does not
+contain~$\tau$ by~(b), nor any $L_\tau(z)$ or $D_\tau(z)$ strictly inside (\lean{not_lt_ladL_lt}, \lean{not_lt_ladD_lt}).
+\end{outline}
+
+The excursions thus form a forest under inclusion, and a nested excursion lies in a single structure of its parent. In
+\cref{ex:ladders}, $E_5=(4,6)$ starts at $D_3(2)=4$, a ladder time of its parent, and lies in the descent structure $[4,6]$ of
+the top~$3$ at level~$2$, whose descent frame is $[5,7)$: this is why the structures are closed intervals.
+
+\subsection{Frame systems}\label{sec:ladders-framesystems}
+
+\begin{definition}[Frame systems]\label{def:framesystem}
+\formal{FrameSystem.lean}{FrameSystem, FrameSystem.Own, FrameSystem.inner, FrameSystem.segStart, FrameSystem.runMax, FrameSystem.home, FrameSystem.beta}
+A \emph{frame system}~$\mathcal S$ consists of a horizon~$T$, a map $x\colon\N\to\Z$, a finite set of \emph{frames}, pairs
+$F=(f_1,f_2)$ with $f_2\le T$ read as intervals $[f_1,f_2)$, possibly empty, and a finite set~$R$ of \emph{restart points}, such
+that the root $[0,T)$ is a frame and any two frames are nested or disjoint.
+\begin{enumerate}[label=(\alph*)]
+\item A time~$t$ is an \emph{own time} of a frame~$F$ if $F$ contains~$t$ and lies inside every frame that contains~$t$. For
+$t<T$, $\inner(t)$ is the frame of which $t$ is an own time (unique by \cref{lem:dynamics}).
+\item The \emph{segment start} $s_F(t)$ is the largest element of the set consisting of $f_1$ and of the restart points
+$s\in R$ with $f_1<s\le t$ that are own times of~$F$. The pair $(F,s_F(t))$ is the \emph{segment} of~$F$ at~$t$.
+\item The \emph{running maximum} $M_F(t)$ is the largest $\abs{x(t')-x(s_F(t))}$ over the own times~$t'$ of~$F$ with
+$s_F(t)\le t'\le t$, and $0$ if there is none.
+\item The \emph{home} of~$t$ is $\home(t)=x(s_{\inner(t)}(t))$, and its \emph{band} is $\beta(t)=\band(M_{\inner(t)}(t))$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[Dynamics of a frame system]\label{lem:dynamics}
+\formal{FrameDynamics.lean}{FrameSystem.Restart, FrameSystem.segStart_of_restart, FrameSystem.segStart_start, FrameSystem.segStart_succ, FrameSystem.runMax_of_restart, FrameSystem.runMax_start, FrameSystem.runMax_succ_of_not_own, FrameSystem.runMax_succ_of_own, FrameSystem.runMax_frozen, FrameSystem.runMax_le_succ}
+\formal{FrameSystem.lean}{FrameSystem.exists_own, FrameSystem.Own.unique, FrameSystem.band_dist_home_le_beta}
+Let $\mathcal S$ be a frame system and $F=(f_1,f_2)$ a pair of times. Call~$t$ a \emph{restart} of~$F$ if $t\in R$, $f_1<t$,
+and $t$ is an own time of~$F$.
+\begin{enumerate}[label=(\alph*)]
+\item Every time $t<T$ is an own time of exactly one frame.
+\item $s_F(f_1)=f_1$ and $M_F(f_1)=0$. If $t$ is a restart of~$F$, then $s_F(t)=t$ and $M_F(t)=0$.
+\item Let $f_1<t$, and let $t$ not be a restart of~$F$. Then $s_F(t)=s_F(t-1)$; moreover $M_F(t)=M_F(t-1)$ if $t$ is not an
+own time of~$F$, and $M_F(t)=\max\bigl(M_F(t-1),\abs{x(t)-x(s_F(t))}\bigr)$ if it is.
+\item If $f_1\le t_0\le t$ and $F$ has no own time in $(t_0,t]$, then $M_F(t)=M_F(t_0)$. If $f_1<t$ and $t$ is not a
+restart of~$F$, then $M_F(t-1)\le M_F(t)$.
+\item For $t<T$, $\beta(t)\ge\band\abs{x(t)-\home(t)}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) A shortest frame containing~$t$ lies inside every frame containing~$t$, since such frames are nested
+(\lean{FrameSystem.nested_of_contains}). (b), (c) The candidate segment starts up to~$t$ are those up to $t-1$, and~$t$ if it is
+a restart (\lean{FrameSystem.segStart_eq}); the own times of the current segment up to~$t$ are those up to $t-1$, and~$t$ if it
+is an own time. (d) Induction with~(c). (e) $t$ is an own time of $\inner(t)$ in its current segment.
+\end{outline}
+
+\paragraph{The hybrid convention.} Only own times enter a running maximum: while a nested frame is innermost, its parent's
+running maximum is frozen, and when the nested frame ends, the parent resumes it. Frames are nested, their maxima are not; and a
+restart point starts a new segment only in the frame of which it is an own time. The proof uses three consequences. The bands
+at the ends of every rung are bounded in terms of the ladder alone, however tall the suspended structures between the rungs are
+(\cref{lem:ladderbands}). Consecutive own times of a frame of class~U are at most one level apart, so the maximum of a segment is less than its number of own times, which bounds the weight of the segments as
+events of the label (\cref{lem:W1}). And a suspended frame's band is a fixed value that the label can display while the frame is
+suspended (\cref{sec:displays}); since every suspend frame ends at band~$0$ (\cref{lem:W2b}), the end of a frame only returns the
+walk from band~$0$ to its parent's frozen band, up to the update of the parent's running maximum when it resumes.
+
+\subsection{The frames of class U}\label{sec:ladders-framesU}
+
+\begin{definition}[The frames of class U]\label{def:framesU}
+\formal{FramesU.lean}{hangFrame, descFrame, suspendFrames, passages, innerDescents, restartPts}
+\formal{Excursions.lean}{framesOf, upperFrames}
+Let $x$ be a walk and $T$ a horizon.
+\begin{enumerate}[label=(\alph*)]
+\item The \emph{suspend frames} are the hanging frames $[L_\tau(w-1)+1,L_\tau(w))$ and the descent frames
+$[D_\tau(w)+1,D_\tau(w-1))$ of all tops~$\tau$ at all their levels~$w$.
+\item The \emph{passages} of a top~$\tau$ are the times $D_\tau(y_\tau+2^e)$ for the integers $e\ge0$ with $2^e<H_\tau$.
+\item The \emph{restart points} are the passages of all tops, and the starts $L_\tau(y_\tau)$ of the canonical excursions of
+all tops except those that equal a descent-ladder time $D_\sigma(w)$ of a top~$\sigma$ at a level~$w$ of~$\sigma$.
+\item The frame system of \emph{class~U} of~$x$ has the horizon~$T$, the walk~$x$, the frames $[0,T)$ and the suspend frames,
+and these restart points; it is a frame system by \cref{lem:excursions}(c). The frame system of \emph{class~L} of~$x$ is that
+of class~U of~$-x$. The upper hops of~$x$ belong to class~U, its lower hops to class~L.
+\end{enumerate}
+\end{definition}
+
+The starts excluded in~(c) are those of the first excursions of descent structures that begin with their structure, at a
+ladder time of the parent; their segments start one step later, at the start of the descent frame. Inside $E_\tau$, the own
+times of the frame $\inner(\tau)$ are the times in no frame of~$\tau$ or of a descendant, among them the ladder times, and its
+restarts are the passages (see the outline of \cref{lem:ladderbands}): the climb, the top and the descent down to the highest
+passage form one segment, with home $y_\tau$ or $y_\tau+1$.
+
+\paragraph{Why passages at powers of two.} Every suspend frame must end at band~$0$ (\cref{lem:W2b} below; the display needs
+this), and its last time typically lies at the end of the descent of the frame's last excursion. Without a restart on the descent, the
+running maximum reached at the top would stay until the excursion ends. The lowest passage, $D_\tau(y_\tau+1)$, restarts the
+segment one level above the base; it is the passage that the proof of \cref{lem:W2b} uses. Every restart lowers the bands at the
+ends of the rungs below it, and each lowered band costs its deficit below $B=\band(H)$. Restarting at the levels $y_\tau+2^e$
+lets the band on the descent come down with the remaining height, as the band on the climb goes up with the height reached, and
+it keeps the cost linear: the rung at $y_\tau+d$ with $2^{e-1}<d\le2^e<H_\tau$ ends at a band of at least $\band(2^e-d)$, and
+the deficits $B-\band(2^e-d)$ over this dyadic block add up to $2^{e-1}(B-e+3)-2$ (\cref{lem:perexc}(a)), a series that is
+geometric in $B-e$.
+Restarts at every level of the descent would instead cost about~$B$ per rung, about $H\log_2H$ on a single excursion.
+
+To state the bands at the ladder times, let $\lceil\log_2d\rceil$ be the least~$e$ with $d\le2^e$, and for $1\le d<H$ let
+\[
+  \mathrm{ub}(H,d)=\begin{cases}\band\bigl(2^{\lceil\log_2d\rceil}-d\bigr)&\text{if }2^{\lceil\log_2d\rceil}\le H-1,\\
+  \band(H-1)&\text{otherwise}\end{cases}
+\]
+(\lean{uband}). The first case concerns the rungs at and below the \emph{top passage}, the highest passage of the excursion.
+
+\begin{lemma}[Bands at ladder times]\label{lem:ladderbands}
+\formal{LadderBands.lean}{home_mem_exc, beta_le_band_height, beta_ladL_bounds, beta_ladD_bounds, ladL_lt_segStart_ladD}
+Let $x$ be a walk, take the frame system of class~U of~$x$, and let $\tau$ be a top with $E_\tau=(a,b)$, base~$y$, height~$H$
+and $B=\band(H)$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Homes.)} For $a<t<b$, $y\le\home(t)\le x(\tau)$ and $\beta(t)\le B$.
+\item \emph{(The climb.)} For $1\le d<H$, $\band(d-1)\le\beta(L_\tau(y+d))\le B$.
+\item \emph{(The descent.)} For $1\le d<H$, $\mathrm{ub}(H,d)\le\beta(D_\tau(y+d))\le B$.
+\item \emph{(Restarted rungs.)} If $1\le d<H$ and $2^{\lceil\log_2d\rceil}<H$, then the segment of the innermost frame at
+$D_\tau(y+d)$ starts after $L_\tau(y+d)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+Let $F=\inner(\tau)$. Call a time \emph{free} if no frame of~$\tau$ or of a top whose excursion lies in~$E_\tau$ contains it
+(\lean{Free}, \lean{frame_cases}); ladder times are free (\cref{lem:excursions}(d)). For $a<t<b$, $t$ is an own time of~$F$ if
+and only if it is free (\lean{own_of_free}, \lean{free_of_own}), and the free restart points are the passages
+(\lean{restart_inside}, \lean{passage_spec}). The excursion's segment starts at $\max(f_1,a)$, at the cell $y$ or $y+1$: $F$
+starts at or before~$a$, or it is a descent frame starting at $a+1$ (\lean{inner_fst_cases}, \lean{excStart_spec},
+\lean{x_excStart}). It is the segment of~$F$ at the climb ladder times, at~$\tau$, and at the descent ladder times above the top
+passage (\lean{segStart_eq_excStart}, \lean{segStart_ladD_of_not}); below it, the segment at $D_\tau(y+d)$ starts at the passage
+$D_\tau(y+2^{\lceil\log_2d\rceil})$ (\lean{segStart_ladD}). (a) Strictly inside the excursion every segment starts in $[a,t]$
+(\lean{segStart_inner_mem}), so homes and own times lie in $[y,x(\tau)]$ (\lean{runMax_le_height}). (b) At $L_\tau(y+d)$ the
+walk is at distance at least $d-1$ from the home (\cref{lem:dynamics}(e)). (c) Below the top passage the home is
+$y+2^{\lceil\log_2d\rceil}$; above it the segment contains the own time~$\tau$, at distance at least $H-1$ from the home.
+(d) The passage follows~$\tau$.
+\end{outline}
+
+\begin{lemma}[Lemma W2: suspend frames end at band~0]\label{lem:W2b}
+\formal{LadderBands.lean}{beta_last_eq_zero, runMax_last_le_one, struct_exc, own_of_le_level}
+Let $x$ be a walk, and take the frame system of class~U of~$x$. For every nonempty suspend frame $[f_1,f_2)$,
+$\beta(f_2-1)=0$.
+\end{lemma}
+
+\begin{outline}
+It suffices that the running maximum at $\ell=f_2-1$ is at most~$1$. Let $w$ be the level of $J=[f_1,f_2)$; on~$J$ the walk is at
+least~$w$, and $x(f_2)\le w$ (\lean{frameAt_walk}), so $x(\ell)\in\{w,w+1\}$. Times of~$J$ at the level~$w$ are own times of~$J$
+(\lean{own_of_le_level}), and the upper hops at the cell~$w$ in the structure are canonical excursions with frame~$J$
+(\lean{struct_exc}). If $x(\ell)=w$ (\lean{runMax_last_le_one}), either the walk stays at~$w$ on~$J$, or the segment at~$\ell$
+started at the lowest passage $D_E(w+1)$ of the last excursion~$E$ of the structure, or, if $H_E=1$, at the start of~$E$ or
+one step later; as the descent structures of~$E$ are suspended, the own times of the segment are at the levels $w$ and $w+1$. If $x(\ell)=w+1$, the last
+excursion~$E$ ends at~$f_2$, and $\ell$ is a time of~$E$ of height~$1$, the restart $D_E(w+1)$, or the last time of the descent
+frame of~$E$ at level $w+1$, to which the first case applies.
+\end{outline}
+
+Lemma~W2 is the hypothesis \lean{FrameSystem.PopsAtZero} of view invariance (\cref{prop:W}), for the frame systems of all heads
+(\lean{popsAtZero_headFrames}).
+
+\subsection{Frame weight}\label{sec:ladders-weight}
+
+The label counts segment starts as events, weighted by $2^{\text{scale}}$, where the scale of a segment is the band of its
+maximum. Lemma~W1 bounds the total weight of each class of each walk by~$T$.
+
+\begin{lemma}[Lemma W1: frame weight]\label{lem:W1}
+\formal{FrameWeight.lean}{sup_add_one_le_card, FrameSystem.segOf, FrameSystem.segments, FrameSystem.segTimes, FrameSystem.segMax, FrameSystem.sum_segWeight_le}
+\formal{FrameWeightU.lean}{own_step, exists_outer_subframe, own_frame_end, segMax_add_one_le, sum_segWeight_upperFrames_le, card_levels, card_framesOf_le, card_suspendFrames_le}
+Let $\mathcal S$ be a frame system. The \emph{segment} of a time $t<T$ is $(\inner(t),s_{\inner(t)}(t))$, and the segments
+of~$\mathcal S$ are the segments of these times. The \emph{own times} of a segment $(F,s)$ are the times $t<T$ whose segment it
+is, and its \emph{maximum} $m(F,s)$ is the largest $\abs{x(t)-x(s)}$ over its own times ($0$ if there is none).
+\begin{enumerate}[label=(\alph*)]
+\item If every segment $(F,s)$ has $m(F,s)$ smaller than its number of own times, then the weights $2^{\band(m(F,s))}$ of all
+segments add up to at most~$T$.
+\item The frame system of class~U of a walk satisfies the hypothesis of~(a), so its segment weights add up to at most~$T$.
+\item A walk has at most $2T$ suspend frames.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) The segments partition $[0,T)$, and $2^{\band(m)}\le m+1$. (b) The \emph{staircase} (\lean{sup_add_one_le_card}): a function
+that vanishes at the least element of a finite set~$A$, and at every other element is at most one above its value at some
+earlier element, has maximum at most $\card A-1$. Consecutive own times of a frame are at most one level apart
+(\lean{own_step}): they are consecutive, or the times between them form a frame of a top whose excursion lies directly in the
+frame (\lean{exists_outer_subframe}), and they are the rungs $L(w-1),L(w)$ or $D(w),D(w-1)$ around it (\lean{x_frame_ends},
+\lean{own_frame_end}). The first own time of a segment is at its home: it is~$s$, or, if $s$ is the start of~$F$ but not an own
+time, the end of the outermost hanging frame that starts there, where the walk is again at its level (\lean{x_hangFrame_fst}).
+(c) A top of height~$H$ has $H-1$ levels (\lean{card_levels}), hence at most $2(H-1)$ frames (\lean{card_framesOf_le}), and the
+heights add up to at most~$T$ (\cref{lem:ladder}(d)).
+\end{outline}
+
+\subsection{Kept and lost hops}\label{sec:ladders-kept}
+
+The following definitions apply to every frame system~$\mathcal S$ with walk~$x$ and horizon~$T$, and every hop $e=(p,u)$
+of~$x$, with owner~$\tau$ and cell $z=x(p)$. In Theorem~A the frame system is that of the hop's class.
+
+\begin{definition}[Kept and lost hops]\label{def:kept}
+\formal{HopData.lean}{bandP, bandU, ownerScale, homeBand, segScale, pushMax, FrameMicro, Lost, cstar}
+\formal{CostModel.lean}{Aligned, Ground, hopCost}
+The \emph{data} of the hop are the bands $\beta_p=\beta(p)$ and $\beta_u=\beta(u)$; the \emph{owner scale}
+$\sigma_e=\band(\prom(\tau))$; the \emph{home band} $\lambda_e=\band(S_e)$, where $S_e=\max_{p\le c\le u}\abs{z-\home(c)}$; the
+largest scale $\pi_e$ of a segment that starts in $(p,u]$, that is, the maximum of $\band(m(F,s))$ over the frames~$F$ and the
+times $s\in(p,u]$ that are the start or a restart of~$F$ ($0$ if there are none); and whether the hop is \emph{frame-micro}, that
+is, whether the segment of~$u$ started at or before~$p$: $s_{\inner(u)}(u)\le p$. Let $h_0\ge1$ and $r<h_0$, with $G$
+and~$\theta$ as in \cref{def:grid}. The hop is
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{aligned} at~$r$ if $G(\beta_p)=G(\beta_u)=:d$, $\lambda_e<\theta(d+1)+2$ (it is \emph{home-near}:
+$S_e<2^{\theta(d+1)+2}$), and it is not frame-micro or $\theta(d)\le\sigma_e$ or $\theta(d)\le\pi_e$ (it is \emph{eventful});
+\item \emph{ground} at~$r$ if $G(\sigma_e)=0$;
+\item \emph{kept} at~$r$ if it is aligned or ground, and \emph{lost} at~$r$ otherwise.
+\end{itemize}
+Its \emph{cost} is
+\[
+  c_e=\bigl(\max(\beta_p,\beta_u)-\min(\beta_p,\beta_u)\bigr)+\bigl(\lambda_e-2-\max(\beta_p,\beta_u)\bigr)^+
+  +[\text{frame-micro}]\cdot\bigl(\beta_u-\max(\sigma_e,\pi_e)\bigr)^+,
+\]
+where $a^+=\max(a,0)$ and $[\cdot]\in\{0,1\}$, and its \emph{capped cost} is $c^*_e=\min(c_e,\sigma_e)$.
+\end{definition}
+
+By Lemma~V (\cref{lem:V}), a kept hop is cut only if the display is truncated, changes above the hop's deciding group~$d$,
+or a digit wraps. In one group, both ends read the same digit; home-nearness places the cell within $2^{\theta(d+1)+2}$ of every
+home active during the hop, which bounds the number of kept hops that span a time (\cref{sec:accounting}); eventfulness provides
+an event of scale at least $\theta(d)$ inside the hop (\cref{lem:validity}). A ground hop has extent less than $2^{\theta(1)}$, by
+\cref{prop:prom} (\lean{sub_le_prom}). Lost hops are cut, and Theorem~A bounds their number.
+
+\begin{lemma}[The cost model]\label{lem:cost}
+\formal{CostModel.lean}{card_lost_le, hopCost_le_of_bands}
+\formal{HopData.lean}{sum_card_lost_le_sum_cstar, sum_cstar_le_of_ladders}
+Let $h_0\in\N$.
+\begin{enumerate}[label=(\alph*)]
+\item For all values of the data $(\beta_p,\beta_u,\sigma,\lambda,\pi)$ and of frame-micro, the hop is lost for at most
+$\min(c,\sigma)$ of the offsets $r<h_0$, where $c$ is its cost.
+\item If $\beta_p,\beta_u,\lambda\le B$, and $\beta_u\le\max(\sigma,\pi)$ in case the hop is frame-micro, then
+$c\le B-\min(\beta_p,\beta_u)$.
+\item For every frame system and every finite set~$\mathcal H$ of hops,
+$\sum_{r<h_0}\#\{e\in\mathcal H:e\text{ lost at }r\}\le\sum_{e\in\mathcal H}c^*_e$.
+\item Let $f$ be a function on hops and $C\in\N$. If $\sum_{e\in\text{ladder}(\tau)}f(e)\le C\,H_\tau$ for every top~$\tau$ of a
+map $x\colon\N\to\Z$, then $\sum_ef(e)\le C\cdot\#\{\text{upper hops of }x\}$, the sum running over the upper hops of~$x$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) A union bound with \cref{lem:grid}. A hop that is neither aligned nor ground has differing groups at its ends, for at most
+$\max-\min$ offsets; or equal groups and $\theta(G(\max(\beta_p,\beta_u))+1)\le\lambda-2$, for at most $(\lambda-2-\max)^+$
+offsets; or it is frame-micro with $\max(\sigma,\pi)<\theta(G(\beta_u))$, for at most $(\beta_u-\max(\sigma,\pi))^+$ offsets.
+And a hop that is not ground has $G(\sigma)\ge1$, for at most~$\sigma$ offsets. (b) The last term vanishes, and
+$(\lambda-2-\max)^+\le B-\max$; so $c\le B-\min$. (c) Exchange the sums and apply~(a). (d) Group the upper hops by their tops
+and use $\sum_\tau H_\tau=\#\{\text{upper hops}\}$ (\lean{sum_height_eq}).
+\end{outline}
+
+So, for a uniform offset, a hop is lost with probability at most $c^*_e/h_0$. The cap~$\sigma_e$ matters for hops whose owner is
+not prominent: their ends may have unrelated bands, but they can be lost only if a grid floor lies at or below the owner's scale.
+
+\paragraph{Events.} The \emph{events} of a frame system are the \emph{turning points}, the times $s<T$ with $\prom(s)\ge1$, of
+scale $\band(\prom(s))$, and the \emph{segment starts}, the pairs $(F,s)$ of a frame~$F$ and a time $s<T$ that is the start or a
+restart of~$F$, of scale $\band(m(F,s))$. $N_\theta(t)$ is the number of events at times at most~$t$ of scale at least~$\theta$
+(\lean{eventCount}); it is nondecreasing in~$t$ (\lean{eventCount_mono}). The \emph{deciding group} of a hop at the offset~$r$
+is $G(\beta_u)$ if the hop is aligned at~$r$, and $0$ otherwise (\lean{decGroup}).
+
+\begin{lemma}[Validity]\label{lem:validity}
+\formal{Events.lean}{turnCount, segStarts, segEventCount, eventCount, eventCount_mono, decGroup, owner_turn, eventCount_lt_decGroup}
+Let $\mathcal S$ be a frame system with walk~$x$ and horizon~$T$, let $(p,u)$ be a hop of~$x$ that is an upper hop, and let
+$h_0,r\in\N$. If $d$ is the deciding group of the hop at~$r$, then $N_{\theta(d)}(p)<N_{\theta(d)}(u)$.
+\end{lemma}
+
+\begin{outline}
+The owner~$\tau\in(p,u)$ has $\prom(\tau)\ge x(\tau)-x(p)\ge1$ by \cref{prop:prom} (\lean{owner_turn}), so it is a turning point
+of scale~$\sigma_e$. If the hop is not aligned, $d=0$ and $\theta(0)=0\le\sigma_e$. If it is aligned, eventfulness provides the
+event: if it is not frame-micro, the segment of~$u$ starts in $(p,u]$, a segment start of scale at least
+$\beta(u)\ge\theta(G(\beta_u))$ (\lean{beta_le_segScale}, \cref{lem:grid}); if $\theta(d)\le\sigma_e$, the owner serves; if
+$\theta(d)\le\pi_e$, the owner serves when $\theta(d)=0$, and otherwise a segment start in $(p,u]$ of scale $\pi_e\ge\theta(d)$.
+\end{outline}
+
+Lemma~V needs this only for kept hops; the formal statement holds for every upper hop, since a hop that is not aligned has
+deciding group~$0$. For class~L it applies to the frame system of~$-x$.
+
+\subsection{The per-excursion bound}\label{sec:ladders-perexc}
+
+We add up the capped costs along one ladder. The arithmetic is separate from the walk: the rung at the level $d\ge1$ above the
+base costs at most the deficits $B-\band(d-1)$ and $B-\mathrm{ub}(H,d)$ of its ends, and the hop at the base at most~$B$.
+
+\begin{lemma}[The ladder sum]\label{lem:perexc}
+\formal{PerExcursion.lean}{uband, sum_range_two_pow_sub_band, sum_sub_band_two_pow_clog, ladder_sum_le_six, sum_range_le_six_of_ladder}
+Subtraction of natural numbers is truncated at~$0$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(A dyadic block.)} For $C,e\in\N$ with $e\le C+1$, $\sum_{w<2^e}(C-\band(w))+2=2^e(C+2-e)$.
+\item \emph{(The descent up to a passage.)} For $C,e\in\N$ with $e\le C+1$,
+$\sum_{d=1}^{2^e}\bigl(C-\band(2^{\lceil\log_2d\rceil}-d)\bigr)+2e+4=2^e(C+4-e)$.
+\item \emph{(The ladder sum.)} For every $H\in\N$, with $B=\band(H)$,
+\[
+  B+\sum_{d=1}^{H-1}\Bigl(\bigl(B-\band(d-1)\bigr)+\bigl(B-\mathrm{ub}(H,d)\bigr)\Bigr)\le6H.
+\]
+\item Consequently, if $c\colon\N\to\N$ satisfies $c(0)\le B$ and $c(d)\le(B-\band(d-1))+(B-\mathrm{ub}(H,d))$ for $1\le
+d<H$, then $\sum_{d<H}c(d)\le6H$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Induction on~$e$: the levels $w\in[2^e,2^{e+1})$ have band~$e$ (\lean{band_eq_of_mem_Ico}). (b) Induction on~$e$: the levels
+$d\in(2^e,2^{e+1}]$ have $\lceil\log_2d\rceil=e+1$ (\lean{clog_eq_of_lt_of_le}), and $w=2^{e+1}-d$ maps them onto the block of~(a).
+(c) For $H\le1$ by inspection. Otherwise let $e=\band(H-1)$, so that $2^e\le H-1<2^{e+1}$, $B\in\{e,e+1\}$, and the top passage
+is at the level $2^e$. The climb side is at most $\sum_{j=0}^{H}(B-\band(j))=2^{B+1}-2$, by Lemma~E (\lean{sum_band_sub_eq},
+\cref{lem:bandsums}). The descent side contributes $2^e(B+4-e)-2e-4$ for $d\le2^e$, by~(b) with $C=B$, and at most $1$ for each
+$d\in(2^e,H)$, where $\mathrm{ub}(H,d)=\band(H-1)\ge B-1$. If $B=e$, the total is at most $5\cdot2^e+H-e-7\le6H$; if $B=e+1$, then
+$H=2^{e+1}$ and the total is at most $5H-e-6$. (d) Apply~(c).
+\end{outline}
+
+\begin{lemma}[The per-excursion bound]\label{lem:perexc-bound}
+\formal{TheoremA.lean}{ownerScale_ladderHop, cstar_exc_le, cstar_ladder_le, sum_ladder_cstar_le}
+Let $x$ be a walk, take the frame system of class~U of~$x$, and let $\tau$ be a top of height~$H$ and base~$y$, with
+$B=\band(H)$. Every hop of the ladder of~$\tau$ has owner scale $\band(\prom(\tau))$, and:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(The base hop.)} $c^*_{E_\tau}\le B$.
+\item \emph{(The rungs.)} For $1\le d<H$, the hop of the ladder at the cell $y+d$ has $c^*\le(B-\band(d-1))+(B-\mathrm{ub}(H,d))$.
+\item \emph{(The ladder.)} $\sum_{e\in\text{ladder}(\tau)}c^*_e\le6H$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(b) The owner is~$\tau$, so $\sigma\ge B$ by \cref{prop:prom} (\lean{height_le_prom}). By \cref{lem:ladderbands}, the bands at the
+ends lie between $\band(d-1)$, respectively $\mathrm{ub}(H,d)$, and~$B$, and the home band is at most~$B$. The hop is eventful:
+below the top passage it is not frame-micro (\cref{lem:ladderbands}(d)), and above it $\beta_u\le B\le\sigma$. So
+$c\le B-\min(\beta_p,\beta_u)$ by \cref{lem:cost}(b). (a) If $E_\tau$ is the first excursion of a descent structure of a top~$P$,
+then $P$ is earlier and at least as high as~$\tau$; if it is the last excursion of a hanging structure of~$P$, then $P$ is later
+and strictly higher (\lean{inner_fst_cases}, \lean{inner_snd_cases}). In both cases the walk stays at or above~$y$ in between, so
+$\prom(\tau)\le H$ by \cref{prop:prom} (\lean{prom_le_of_left}, \lean{prom_le_of_right}) and $c^*\le\sigma\le B$: this is where
+the cap is needed, as one end of the hop lies in the parent's frame. Otherwise the segments at the times of $[a,b]$ start in the
+excursion (\lean{segStart_inner_mem_Icc}), the bands and the home band are at most~$B$ (\lean{runMax_le_height}), and the hop is
+frame-micro only if $H=1$, when $\beta_u=0$: for $H\ge2$ the passage $D_\tau(y+1)$ restarts the segment of~$b$ after~$a$. (c) The
+hops at the cells $y+d$, $d<H$, are the ladder (\cref{lem:ladder}(a)); apply \cref{lem:perexc}(d).
+\end{outline}
+
+\subsection{Theorem A}\label{sec:ladders-thmA}
+
+\begin{theorem}[Theorem A: lost hops of one walk]\label{thm:A}
+\formal{TheoremA.lean}{thmA_upper, thmA_lower}
+Let $x$ be a walk, $T$ a horizon and $h_0\in\N$. Then
+\begin{align*}
+  \sum_{r=0}^{h_0-1}\#\{\text{upper hops of $x$ lost at $r$ in class U}\}&\le6\cdot\#\{\text{upper hops of $x$}\},\\
+  \sum_{r=0}^{h_0-1}\#\{\text{lower hops of $x$ lost at $r$ in class L}\}&\le6\cdot\#\{\text{lower hops of $x$}\}.
+\end{align*}
+That is, for $h_0\ge1$ and a uniformly random offset $r\in\{0,\dots,h_0-1\}$, the expected number of lost hops of each class is
+at most $6/h_0$ times the number of hops of that class.
+\end{theorem}
+
+\begin{outline}
+For class~U, \cref{lem:cost}(c) bounds the left side by $\sum_ec^*_e$ over the upper hops, and \cref{lem:cost}(d) with
+\cref{lem:perexc-bound}(c) bounds this by $6$ times their number (\lean{thmA_upper}). For class~L, apply this to the walk~$-x$,
+whose upper hops are the lower hops of~$x$ (\cref{lem:ladder}(e), \lean{thmA_lower}).
+\end{outline}
+
+Since a walk has at most $T$ hops (\cref{sec:prelim-walks}), the expected number of lost hops of its two classes together is at
+most $6T/h_0$; the proof of the main theorem chooses $h_0$ so large that this is a small fraction of~$T$ (\cref{sec:proof}).
+Lemmas~W1 and~W2 are the other two inputs from this section; the kept hops are the subject of the following sections.
+
+\begin{remark}[No pause-freeness is needed]\label{rem:A-pauses}
+Every result of this section assumes only that $x$ is a walk; pauses are allowed. A walk may pause at its top
+(\cref{ex:ladders}), and then the own times of an excursion's frame are not all ladder times; the proofs use only own times,
+ladder times and passages. Since the composition of the following sections does not use pause-freeness either, the main theorem
+is proved for walks with pauses directly, at the depth of $k$ walks (\lean{tcpAt_direct}), with no detour through pause-free
+walks.
+\end{remark}

@@ -1,0 +1,137 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\clog d)$-bit entries, written
+row by row, in time linear in the input length $L=d^2b(d)$? This is the statement~(T) of the first paper of this
+series~\cite{FirstPaper2026}. By a reduction of Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a linear-time
+multiplication machine would give a linear-time transposer, so a proof of $\neg$(T) would give the first superlinear lower
+bound for off-line integer multiplication on multitape Turing machines. The question is open, and this paper does not decide it.
+
+For oblivious machines the fourth paper of the series~\cite{FourthPaper2026} reduced $\neg$(T) to two statements of different
+kinds (its Theorem~D). The first is \emph{depth reduction}: the time--space dependency DAG of every oblivious linear-time run
+can be cut to bounded depth by revealing $\eps L$ bits. At the level of head walks this is the \emph{trajectory cut problem}.
+A \emph{walk} is a sequence $x(0),x(1),\dots$ of integers with $\abs{x(t+1)-x(t)}\le1$, the positions of one head; a
+\emph{long hop} is a pair $p<u$ of consecutive visits to one cell with $u\ge p+2$. The \emph{walk DAG} of $k$ walks of length~$T$
+has the vertices $0,\dots,T-1$, the state edges $t\to t-1$, and an edge $u\to p$ for every long hop of every walk. $\TCP(k)$
+says: for every $\eps>0$ there is a $D$ such that, for every $T$ and every $k$ walks of length~$T$, deleting some $\eps T$ edges
+leaves no path with more than $D$ hop edges. The second statement, the \emph{crux}, is about codes: every index code for the
+side information of the remaining bounded-depth cones needs more than $\eps L$ bits.
+
+Depth reduction has been settled step by step. The fourth paper proved TCP for home-based work heads, whose legs all begin or
+end near fixed homes, for every coupling of the heads (its Theorem~B). The eighth paper~\cite{EighthPaper2026} proved it for
+walks of bounded nesting load (its Theorem~F), and for one arbitrary walk together with walks of bounded load at boundedly many
+scales (its Theorem~M). It also showed that TCP is, up to a factor~$2$ in~$k$, depth reduction for \emph{stack DAGs}
+(\cite[Proposition~4.5]{EighthPaper2026}; \cref{prop:stacksred} here). An $s$-stack DAG on $[0,N)$ has the spine edges
+$t\to t-1$ and arcs $u\to p$ with $u\ge p+2$, partitioned into $s$ families in which no two arcs cross and each vertex is the
+left end of at most one arc and the right end of at most one. $\SR(s)$ says that every family of $s$-stack DAGs is
+depth-reducible in the above sense. Two stacks are planar, so $\SR(2)$ holds; $\SR(3)$ was the first open
+case~\cite[Problem~10.2]{EighthPaper2026}.
+
+\subsection{The expected answer, and the actual one}
+
+The series expected $\TCP(2)$ to fail. Its sharpest candidate for a depth-robust family of walks was the \emph{deep-nesting
+pair} of the fourth paper: a walk whose strokes are nested at $m+1$ levels, together with a copy shifted in time. Conjecture~A$'$
+of the fourth paper and its weakening, Conjecture~A$''$ of the eighth, would make these pairs depth-robust as $m$ grows, with depth
+$2^{\Omega(m)}$ at fixed cost~\cite[Corollary~5.26]{EighthPaper2026}; lower bounds for several restricted classes of labels
+supported this expectation~\cite{FourthPaper2026,EighthPaper2026,DirectedReciprocity2026,MergeDepth2026}. The actual answer is the
+opposite: $\TCP(k)$ holds for every~$k$.
+
+\subsection{Results}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Theorem~T} (\cref{thm:T}). For every $k\ge1$ and $\eps>0$ there is a $D(k,\eps)$ such that the walk DAG of any $k$
+walks of any length~$T$, with or without pauses, has a cut of at most $\eps T$ edges that leaves no path with more than
+$D(k,\eps)$ hop edges. So $\TCP(k)$ holds for every~$k$, and by the reduction of the eighth paper \textbf{$\SR(s)$ holds for every
+$s$}: bounded-stack DAGs with a spine reduce to constant depth. The bound is explicit, $D(k,\eps)=K^P-1$ with the parameters of
+\cref{def:params}, and $\log\log D(k,\eps)=O(k^2\log(k/\eps))$ for $\eps\le\frac12$ (\cref{sec:open}).
+\item \textbf{Corollary~N} (\cref{cor:dnp}). The deep-nesting pairs are cut to depth $D(2,\eps)$, independently of the nesting
+depth~$m$ and of the shift. Hence Conjectures~A$'$ and~A$''$ are false.
+\item \textbf{Corollary~O} (\cref{cor:oblivious}). Every oblivious machine with $k$ work tapes running in time $C(L+1)$ has, for
+every $\eps>0$, a genie of cost at most $\eps L$ whose full depth is bounded in terms of $k$, $C$, the value width and~$\eps$. So
+the crux alone excludes oblivious linear-time transposers, whatever their head motion, and for machines with a linear data path
+the linear crux alone does. In particular, the native form of Question~9.1 of \emph{Directed Recovery
+Structures}~\cite{DirectedRecovery2026}, the half bound for all codes on the cone relations of linear-time machines, would exclude
+them (\cref{rem:native}). On the side of constructions, an oblivious linear-time transposer must carry codes of rate close to~$1$
+on the cone relations of its own schedule at bounded depth: the coding side is the whole question (\cref{sec:cons-construction}).
+\end{itemize}
+
+\subsection{How the proof works}
+
+The proof has three layers.
+
+\emph{Cuts are labels.} A labelling $\Psi:[0,T)\to\{0,\dots,q-1\}$ defines a cut: the state edges where $\Psi$ decreases and the
+hop edges $u\to p$ with $\Psi(p)\ge\Psi(u)$. Every path avoiding the cut increases $\Psi$ at each hop edge, so its depth is less than
+$q$ (\cite{EighthPaper2026}; \cref{prop:labelcut} here). We build a random label with $q=K^P$ values and expected cut at most
+$\eps T$; some outcome gives the cut (\cref{prop:avg}).
+
+\emph{Ladders, one walk at a time} (\cref{sec:ladders}). The label gives each hop a \emph{deciding group}, a coarse scale, and
+pays for the hops whose two ends see different scales. To make this rare we measure scales from homes adapted to the walk. Every
+upper hop has a \emph{top}, the first time inside it where the walk is highest; the hops with a common top are nested, one per
+cell, and form the \emph{ladder} of the top. Their ends are the last visits to each cell before the top and the first visits after
+it. The ladders partition the upper hops. The outermost hop of a ladder, the \emph{canonical excursion} of its top, starts and
+ends at the \emph{base}~$y$ of the ladder; the walk between consecutive rungs forms a \emph{hanging structure} on the climb and a
+\emph{descent structure} on the descent, and the canonical excursion of every other top that it contains lies in one of these
+structures. Measuring the distance from the base of each excursion, suspending the structures as \emph{frames} and restarting
+the descent at the levels $y+2^e$, makes every hop cheap on average over a random grid: \emph{Theorem~A} (\cref{thm:A}) bounds
+the expected number of hops lost per walk by $6$ times the number of hops divided by the grid width~$h_0$.
+
+\emph{Displays with break bits, all walks together} (\cref{sec:label,sec:displays,sec:accounting}). Frames create an interaction
+between walks: while a frame runs, the segment that it suspends keeps its band frozen, and the band reappears when the segment
+resumes. The label therefore shows, besides the current band group of each walk, a \emph{display} of suspended frames, and
+digits that count events at each shown scale.
+\emph{Lemma~V} (\cref{lem:V}) shows that a hop whose deciding group is shown at both ends increases the label unless the display
+is truncated, the shown set above the hop's group changes, or a digit wraps. The second case is the heart of the matter.
+\emph{View invariance} (\cref{prop:W}) shows that the part of the display above a group depends only on a \emph{view} that changes
+only at standard events, which are paid for; the display is defined by random \emph{break bits}, and the hops exposed despite
+view invariance are those with a broken candidate, at most a $2n/Q$ fraction (\cref{prop:exposure}). Exact displays would be
+unbounded (\cref{rem:exact}); with break bits, \emph{Lemma~D} (\cref{lem:D}) bounds the size of the display independently of the
+depth of the stacks.
+
+\subsection{Formal status and how to read the paper}
+
+Theorem~T and every numbered result of \cref{sec:prelim,sec:ladders,sec:label,sec:displays,sec:accounting,sec:proof} are
+formalized in Lean~4 with Mathlib, in the library \leanfile{BoundedStackDepth} next to this paper, which builds on the eighth
+paper's library. Each result is followed by a status line naming its Lean declarations and file, and by an outline of the
+formal proof; the Lean statement is authoritative. The formal main theorem is \lean{tcpAt_direct}: for $k$ walks with
+pauses, cuts of at most $\eps T$ edges and depth at most $K^P-1$. Its corollaries are \lean{tcp} and \lean{main} ($\TCP(k)$ for
+every~$k$, the statement \lean{MainStatement} of \leanfile{Statement.lean}) and \lean{sr} ($\SR(s)$ for every~$s$, through the
+eighth paper's reduction). All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verify}). The
+results of the eighth paper that the proof uses are Lean-verified there and are marked as cited.
+
+Not formalized are Corollaries~N and~O of \cref{sec:consequences}, which combine Theorem~T with results of the fourth and eighth
+papers that are proved there in the text (Theorem~$\mathrm{D}_{\mathrm{lin}}$ of the eighth paper is formalized there in part),
+and the remarks of \cref{sec:ingredients,sec:consequences}. The remarks explain why simpler constructions fail, or discuss the
+consequences; they are labelled as proof sketches, heuristics or numerical observations, and no proof uses them.
+
+\subsection{Related work}
+
+\emph{Depth-robust graphs.} Erd\H{o}s, Graham and Szemer\'edi~\cite{EGS1975} constructed sparse DAGs in which every large set of
+vertices leaves a long path; Valiant~\cite{Valiant1977} used depth reduction as a route to lower bounds for circuits;
+Schnitger~\cite{Schnitger1983} constructed depth-robust graphs of constant degree; and depth-robust graphs are a basic tool for
+memory-hard functions~\cite{ABP2017}. Theorem~T says that no family of bounded-stack DAGs with a spine is depth-robust, when
+only arcs are counted along paths.
+
+\emph{Time and space.} The computation graphs of multitape machines were studied through pebbling by Hopcroft, Paul and
+Valiant~\cite{HPV1977}, through edge-deletion depth reduction by Paul and Reischuk~\cite{PaulReischuk1980}, and through
+segregators, whose removal leaves every vertex with few ancestors, by Paul, Pippenger, Szemer\'edi and Trotter~\cite{PPST1983}
+and by Santhanam~\cite{Santhanam2001}. Theorem~T is a statement of another kind about the walk DAGs of the work heads: after
+the removal of $\eps T$ edges, every path uses a bounded number of long hops, although it may use many state edges.
+
+\emph{Layouts.} Galil, Kannan and Szemer\'edi~\cite{GKS1989separators,GKS1989pushdown} studied separators of $k$-page graphs
+and showed that $3$-page graphs can lack small separators. Some bounded-degree expanders have $3$-page and $2$-queue
+layouts~\cite{DSW2016}, and monotone expanders exist~\cite{DvirWigderson2010,BourgainYehudayoff2013}. Expansion is not
+depth-robustness in our sense: the spine is free, and only arcs are counted.
+
+\emph{Long paths.} The decomposition of a tree into long paths is a standard data-structure tool, used for example for level
+ancestors~\cite{BenderFarachColton2004}, where the paths extended upwards are also called ladders. Our ladders are such a
+decomposition, without the extension, of the forest of nested upper hops; its use to bound label costs appears to be new.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} fixes walks, hops, cuts, prominence and the random grid. \Cref{sec:ladders} proves Theorem~A, one walk at a
+time. \Cref{sec:label} defines the label and proves Lemma~V. \Cref{sec:displays} defines displays with break bits and proves
+Lemma~D, view invariance and the exposure bound. \Cref{sec:accounting} adds up the costs, and \cref{sec:proof} chooses the
+parameters and proves Theorem~T. \Cref{sec:ingredients} explains why each ingredient is needed, \cref{sec:consequences} draws the
+consequences for tape machines, and \cref{sec:open} lists open problems. \Cref{app:index} indexes the Lean declarations, and
+\cref{app:verify} explains how to build and verify them.

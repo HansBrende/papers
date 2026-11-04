@@ -1,0 +1,173 @@
+\section{Consequences for the series and for tape machines}\label{sec:consequences}
+
+This section combines Theorem~T with results of earlier papers of the series. Theorem~T itself is formalized; the earlier
+results used here are proved in the text of those papers and are not formalized there, or only in part
+(Theorem~$\mathrm{D}_{\mathrm{lin}}$ of the eighth paper), so the two corollaries below are not formalized either. Throughout,
+$D(k,\eps)=K^P-1$ is the depth of Theorem~T, with $K=K(k,\eps)$ and $P=P(k,\eps)$ as in \cref{def:params}.
+
+\subsection{The deep-nesting pairs}\label{sec:cons-dnp}
+
+The fourth paper singled out the \emph{deep-nesting pair} as the sharpest open instance of $\TCP(2)$
+\cite[Definitions~5.3 and~5.9]{FourthPaper2026}. For integers $s_0>m\ge0$ it consists of a periodic walk $U=U(s_0,m,1)$ without
+pauses, whose strokes are nested at $m+1$ levels, a stroke of level~$i$ moving the head by $\pm2^{s_0-i}$, and of its shift
+$U(\cdot+\xi)$ by an odd~$\xi$. The fourth paper fixes one odd shift, the golden shift; like the eighth paper, which recalls the
+definition in its Section~2.5~\cite{EighthPaper2026}, we call the pair a deep-nesting pair for every odd shift. Conjecture~A$'$
+of the fourth paper~\cite[Conjecture~5.25]{FourthPaper2026} and its weakening, Conjecture~A$''$ of the eighth
+paper~\cite[Conjecture~5.24]{EighthPaper2026}, bound the number of levels that a cheap label on a cyclic cover of the pair can
+serve; the eighth paper showed that either conjecture makes the pairs depth-robust as $m\to\infty$, so that $\TCP(2)$ fails
+\cite[Corollary~5.26]{EighthPaper2026}. Its turn counter cuts the pair, on a whole number of periods, to depth
+$\lceil11\cdot2^{m+1}/((m+1)\eps)\rceil-1$, exponential in~$m$~\cite[Corollary~5.5]{EighthPaper2026}, and it asked whether the
+pairs are depth-robust \cite[Problem~10.1(a)]{EighthPaper2026}; the tenth paper asks the same
+question~\cite[Section~7]{DirectedReciprocity2026}.
+
+\begin{corollary}[Corollary N: the deep-nesting pairs are not depth-robust]\label{cor:dnp}
+\notformalized
+For every $\eps>0$, all integers $s_0>m\ge0$, every shift~$\xi$ and every $T\ge1$, the walk DAG of the pair $x_1=U(s_0,m,1)$,
+$x_2=x_1(\cdot+\xi)$ on $[0,T)$ has a cut of at most $\eps T$ edges and depth at most $D(2,\eps)$. Consequently Conjecture~A$'$
+of the fourth paper and Conjecture~A$''$ of the eighth paper are false, and the answer to Problem~10.1(a) of the eighth paper is
+negative.
+\end{corollary}
+
+\begin{informalproof}
+The pair consists of two walks, so the first statement is the case $k=2$ of Theorem~T (\cref{thm:T}); in Lean it is an instance
+of \lean{tcpAt_direct}. Suppose that Conjecture~A$''$ holds with constants $\theta_0$, $\eta<1$, $C$ and~$C'$. Fix $\eps$ with
+$0<\eps<\min(1/4,(1-\eta)\theta_0)$ and put $\delta=((1-\eta)-\eps/\theta_0)/2>0$. By Corollary~5.26 of the eighth
+paper~\cite{EighthPaper2026}, which has a written proof there, there is $N_0$ such that for every~$m$, with $s_0=m+2$, the
+shift~$\xi$ of the conjecture and every $N\ge N_0$, every cut of at most $\eps T$ edges of the walk DAG of the pair on $[0,T)$,
+where $T=4N(m+1)2^{s_0}$ is $N$ times the period of~$U$, has depth at least $2^{(\delta(m+1)-C')/C}-1$. By the first
+statement such a cut exists with depth at most $D(2,\eps)$, which does not depend on~$m$. For $m$ so large that
+$2^{(\delta(m+1)-C')/C}-1>D(2,\eps)$ this is a contradiction. The same corollary of the eighth paper covers Conjecture~A$'$,
+with $\eta=0$. Problem~10.1(a) asks whether the pairs are depth-robust as $m\to\infty$ for some sequence of odd shifts; by the
+first statement they are not, at any shifts.
+\end{informalproof}
+
+The lower bounds of the series for this instance, some of them proof sketches or conditional on a conjecture, concern
+restricted classes of labels, for example per-head band rules, labels that change only at turns, and block
+labels~\cite{FourthPaper2026,EighthPaper2026,DirectedReciprocity2026,MergeDepth2026}. Corollary~N does not contradict them: the
+labels of Theorem~T lie outside these classes, since they show suspended frames of both heads, count events at many scales,
+and have displays cut by random break bits (\cref{sec:label,sec:displays}). Where those papers read their lower bounds as
+evidence that the pairs are depth-robust, Corollary~N shows that the reading does not stand.
+
+\subsection{Oblivious machines: the crux alone}\label{sec:cons-machines}
+
+We use the language of the fourth and eighth papers~\cite[Section~4]{FourthPaper2026}, \cite[Section~2.4]{EighthPaper2026}.
+For a machine~$M$ with $k$ work tapes and value width at most~$\beta$ (the number of bits in which the value of a step is
+written; in this section $\beta$ is not a band), and a trace of~$M$ at length~$L$ with halting time~$T$, the \emph{dependency
+DAG} of the trace has the vertex set $[0,T)$, the state edges $t\to t-1$, and an edge from~$t$ to the previous visit of the cell
+under work head~$j$, for every~$j$. A \emph{genie} is a set~$\Gamma$ of revealed steps, of \emph{cost} $\beta\card\Gamma$, and it
+has \emph{full depth} at most~$D$ if every path whose vertices after the first lie outside~$\Gamma$ has at most $D$ edges. If $M$
+is oblivious at length~$L$, all inputs share one trace. The statement $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ asks for
+genies of cost at most $\eps L$ and full depth at most~$D$ for all oblivious machines with $k$ work tapes, value width at
+most~$\beta$ and halting time at most $C(L+1)$, at all large lengths~\cite[Definition~4.7]{FourthPaper2026}. The \emph{crux}
+$\Crux(\mathcal S_{k,C,\beta,D},\rho)$ says that, for every $\eta>0$ and all large sizes~$d$, every index code for the side
+information of the cones of such genies has at least $(\rho-\eta)L$ bits~\cite[Definition~4.8]{FourthPaper2026}. Theorem~D
+of the fourth paper~\cite[Theorem~4.10]{FourthPaper2026}, with a written proof there, says: if depth-TCP$(k,C,\beta,\eps,D)$ and
+$\Crux(\mathcal S_{k,C,\beta,D},\rho)$ hold with $0<\eps<\rho$, then for every machine with $k$ work tapes and value width at
+most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is it oblivious at length $L=d^2b(d)$ with halting time at most
+$C(L+1)$ and a transposer of all $d\times d$ matrices with $b(d)$-bit entries. The eighth paper proves the analogue for machines
+with a data path that is linear over a field~$F$, Theorem~$\mathrm{D}_{\mathrm{lin}}$, with linear depth-TCP and a linear crux
+$\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ in place of the two
+hypotheses~\cite[Definition~7.4 and Theorem~7.5]{EighthPaper2026}.
+
+\begin{corollary}[Corollary O: depth reduction for oblivious machines]\label{cor:oblivious}
+\notformalized
+Let $k\ge1$ and $\beta\ge2$ be integers, $C\ge1$ and $0<\eps\le1$. Put $\eps'=\eps/(4\beta C)$ and
+\[
+  D_1=D(k,\eps')+1,\qquad D=D_1\lceil4\beta C/\eps\rceil .
+\]
+\begin{enumerate}[label=(\alph*)]
+\item For every machine with $k$ work tapes and value width at most~$\beta$, every length $L\ge1$ and every trace at
+length~$L$ with halting time $T\le C(L+1)$, the dependency DAG of the trace has a genie of cost at most $\eps L$ and full depth at
+most $D-1$. In particular, $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ holds.
+\item If $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds for some $\rho>\eps$, then for every machine~$M$ with $k$ work tapes and value
+width at most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length $L=d^2b(d)$ with halting time at
+most $C(L+1)$ and a transposer of all $d\times d$ matrices with $b(d)$-bit entries.
+\item If $\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ holds for a field~$F$ and some $\rho>\eps$, the
+conclusion of~(b) holds for oblivious machines with an $F$-linear data path: for every machine~$M$ with $k$ work tapes and value
+width at most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length $L=d^2b(d)$ with an $F$-linear data
+path, halting time at most $C(L+1)$, and a transposer of all $d\times d$ matrices with $b(d)$-bit entries.
+\end{enumerate}
+\end{corollary}
+
+\begin{informalproof}
+(a) The walks of the work heads along the trace are $k$ walks of length~$T$, possibly with pauses. By Theorem~T at~$\eps'$, their
+walk DAG has a cut of at most $\eps'T=\eps T/(4\beta C)$ edges and depth at most $D(k,\eps')<D_1$. By the eighth paper's lemma
+from cuts to genies~\cite[Lemma~2.6]{EighthPaper2026}, which has a written proof there, the dependency DAG of the trace has a
+genie of cost at most $\eps L$ and full depth at most $D_1\lceil4\beta C/\eps\rceil-1=D-1$. If $M$ is oblivious at length~$L$,
+its dependency DAG is that of its unique trace, so depth-TCP$(k,C,\beta,\eps,D)$ holds, with $d_0=1$.
+(b) Theorem~D of the fourth paper, with its first hypothesis supplied by~(a).
+(c) Theorem~$\mathrm{D}_{\mathrm{lin}}$ of the eighth paper. Its first hypothesis, linear depth-TCP$(k,C,\beta,\eps,D;F)$, asks for
+a representation of the data path and a genie of cost at most $\eps L$ under which every output step has linear depth at
+most~$D$. Every representation will do: the genie~$\Gamma$ of~(a) has full depth less than~$D$, so every $\Gamma$-free path from
+an output step has fewer than $D$ edges, and the path sums that define linear depth run over such paths; so every output step has
+linear depth at most~$D$, as structural depth at most~$D$ implies linear depth at most~$D$~\cite[Section~7.1]{EighthPaper2026}.
+\end{informalproof}
+
+So the crux alone, at the depth~$D$ and a rate above~$\eps$, excludes every oblivious linear-time transposer, whatever its head
+motion; this extends the eighth paper's Corollary~F~\cite[Corollary~6.1]{EighthPaper2026} from heads that enter every cell
+boundedly often to all heads, and the fourth paper's Corollary~B~\cite[Corollary~4.23]{FourthPaper2026} from home-based heads to all
+heads. For linear machines, part~(c) leaves only the linear crux, which the eighth paper states exactly as a question of
+relative rigidity~\cite[Problem~10.6]{EighthPaper2026}.
+
+\begin{remark}[The rate needed]\label{rem:rate}
+\emph{Proof sketch only.} Fix $k$, $\beta$ and~$C$, write $D_\eps$ for the depth~$D$ of \cref{cor:oblivious} at~$\eps$, and let
+$\rho^*(D)$ be the supremum of the rates~$\rho$ at which $\Crux(\mathcal S_{k,C,\beta,D},\rho)$
+holds~\cite[Remark~4.15]{FourthPaper2026}. By \cref{cor:oblivious}(b), the oblivious machines with these parameters are excluded
+as soon as $\rho^*(D_\eps)>\eps$ for a single $\eps\in(0,1]$. By the estimates of \cref{sec:open},
+$\log\log D_\eps\le c_1k^2\log(k\beta C/\eps)$ for an absolute constant~$c_1$, that is, $\eps\le k\beta C(\log D_\eps)^{-1/(c_1k^2)}$.
+Hence a crux whose rate at every large depth~$D$ is at least $k\beta C(\log D)^{-c/k^2}$, for an absolute constant $c<1/c_1$,
+suffices. For bounded-entry heads the eighth paper needs a rate of order $1/\log D$ instead~\cite[Section~6.1]{EighthPaper2026}.
+Both requirements tend to zero with~$D$, the present one much more slowly, since the depth is doubly exponential.
+\end{remark}
+
+\begin{remark}[The native half bound, and adaptive machines]\label{rem:native}
+\emph{Proof sketch only.} Question~9.1 of \emph{Directed Recovery Structures}~\cite{DirectedRecovery2026} asked for a half
+bound for all storage codes on bounded-degree relations with the paired-distance property; the thirteenth paper answers it
+negatively~\cite[Theorem~A and Corollary~A$'$]{StorageCodes2026}. Its \emph{native form}, the half bound for all codes on the
+cone relations of linear-time machines, uniform over the schedules and genies as in the conclusion
+of~\cite[Proposition~9.2]{DirectedRecovery2026}, is open~\cite[Problem~10.3]{EighthPaper2026}. Every fibre of an index code is a
+binary storage code for the cone relation~\cite[Remark~4.9(b)]{FourthPaper2026}, and an index code with $m$ bits has a fibre with
+at least $2^{L-m}$ words; so the native half bound for oblivious machines gives $\Crux(\mathcal S_{k,C,\beta,D},\frac12)$ at every
+depth~$D$, and by \cref{cor:oblivious}(b) with $\eps=\frac14$ it excludes oblivious linear-time transposers. This is the
+conditional statement anticipated in the eighth paper's open problems. In the same way, the proofs of the eighth paper's
+Corollaries~F$'$ and~F$''$~\cite[Corollaries~6.3 and~6.4]{EighthPaper2026}, with the native bound assumed in place of
+Question~9.1 as that paper allows, use the bounded entry of the heads only to obtain a cut from its Theorem~F, and Theorem~T
+supplies the cut for all walks. So, under the native bound for frozen traces, Corollary~F$''$ holds without its
+hypothesis~(ii): for every machine~$M$, every $c>0$ and every $\eta<\frac12$ there is $L_0$ such that at no length
+$L=d^2b(d)\ge L_0$ does $M$ transpose every input within $c(L+1)$ steps with a trace whose Shannon entropy, for a uniformly
+random input, is at most $\eta L$. That hypothesis on the entropy of the trace is not robust~\cite[Section~6.2]{EighthPaper2026}.
+The deficit form of the eighth paper's Remark~6.5 adapts as well. There the paid trimming works at the incidence degree
+$\Delta=\lceil B/\delta\rceil$, for a fixed $\delta\in(0,1)$, where $B=\sum_{i\le D}(k+1)^i$ bounds the cone sizes. With the
+depth~$D$ of \cref{cor:oblivious}, $\log\log\Delta\le(k\beta C/\eps)^{O(k^2)}$, so a bound $1-\rho(\Delta)+o(1)$ on the rates of
+the codes on paired-distance separated relations of incidence degree at most~$\Delta$, with
+$\rho(\Delta)(\log\log\Delta)^a\to\infty$ for every $a>0$, suffices to exclude oblivious linear-time transposers.
+\end{remark}
+
+The equivalence between $\TCP$ for every number of walks and information-cheap depth reduction~\cite[Theorem~I]{InfoDepthMemo2026}
+now has both sides true. The obstruction that assumes that $\TCP(k)$ fails for some~$k$~\cite[Theorem~H]{InfoDepthMemo2026} is
+vacuous, and so is the motivation that the eighth paper gives for its scratch question~\cite[Problem~10.5]{EighthPaper2026}.
+
+\subsection{What a linear-time transposer would need}\label{sec:cons-construction}
+
+The eighth paper summarized the interface between the two halves of Theorem~D: an oblivious linear-time transposer must either
+defeat cheap depth reduction or carry, on its own cone relation, a binary storage code of rate at least $1-\eps$, a relation
+that is paired-distance separated after a paid trimming~\cite[Section~9]{EighthPaper2026},
+\cite[Theorem~3.3 and Corollary~3.8]{DirectedRecovery2026}. \Cref{cor:oblivious}(a) removes the first alternative. For every
+$\eps\in(0,1]$, an oblivious transposer with $k$ work tapes, value width~$\beta$ and running time $C(L+1)$ has a genie of cost at
+most $\eps L$ and full depth less than the~$D$ of \cref{cor:oblivious}; its revealed word is an index code with at most $\eps L$
+bits for the side information of its own cones, and some fibre is a storage code of rate at least $1-\eps$ on its cone
+relation~\cite[Theorem~4.10 and Remark~4.9(b)]{FourthPaper2026}. An oblivious linear-time transposer therefore exists only if,
+for every $\eps>0$, such codes exist on the cone relations of linear-time schedules at depth~$D$. The coding side is the whole
+question.
+
+Earlier expectations about constructions change accordingly. The fourth paper expected that an oblivious design whose heads are
+not all home-based would need, if the crux holds, a depth-robust dependency structure, with the deep-nesting pair as the
+template~\cite[Section~7]{FourthPaper2026}. The eighth paper required unbounded nesting under the crux at the depths of its
+Corollary~F, and located any depth-robustness of a schedule on few cells~\cite[Section~9]{EighthPaper2026}. Now no family of
+schedules is depth-robust, and under the crux at the depth of \cref{cor:oblivious} no oblivious linear-time transposer exists at
+all, whatever its head motion.
+
+Theorem~T does not decide~(T). It says nothing about the crux, which is open; the counterexamples to Question~9.1 have relations
+of astronomically large degree with no known tape realization, and their codes are not shown to have rate near~$1$, as a
+transposer would need~\cite{StorageCodes2026}. And it reaches adaptive machines only through single traces, as
+in \cref{rem:native}: the index-code argument needs a schedule shared by many inputs.

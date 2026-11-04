@@ -28,6 +28,7 @@ import BoundedStackDepth.Grid
 import BoundedStackDepth.HopData
 import BoundedStackDepth.Label
 import BoundedStackDepth.LadderBands
+import BoundedStackDepth.LowAdaptivity
 import BoundedStackDepth.Machines
 import BoundedStackDepth.Main
 import BoundedStackDepth.PerExcursion
@@ -391,6 +392,12 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.segStart_ladD_of_not
 #print axioms BoundedStackDepth.struct_exc
 #print axioms BoundedStackDepth.x_excStart
+-- LowAdaptivity.lean
+#print axioms BoundedStackDepth.NativeBound
+#print axioms BoundedStackDepth.fSecond_native
+#print axioms BoundedStackDepth.fSecond_native_class
+#print axioms BoundedStackDepth.se_class_native
+#print axioms BoundedStackDepth.se_native
 -- Machines.lean
 #print axioms BoundedStackDepth.ConjHVStar
 #print axioms BoundedStackDepth.ConjHVStarLin

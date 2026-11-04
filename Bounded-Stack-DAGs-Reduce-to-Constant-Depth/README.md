@@ -49,6 +49,10 @@ with its Lean declarations and file):
 - **Corollary HV (code-level depth reduction).** The ball systems of these machines, at the same bounded radius, have
   index codes of at most εL bits, and minrank at most εL for machines with a linear data path: Conjecture HV* of the
   eleventh paper holds in both its forms, so its Problem 9.1 has an affirmative answer.
+- **Corollary L (low adaptivity).** Given the native half bound for the cone relations of frozen traces, stated as an
+  explicit hypothesis: no machine transposes in linear time with a trace of entropy at most ηL, η < 1/2, however often
+  it enters its cells. This is the eighth paper's Corollary F″ without its bounded-entry hypothesis. The eleventh
+  paper's Theorem SE loses its bounded-entry hypothesis in the same way.
 - **The composition.** The label and Lemma V (along a kept hop the label increases unless the display is truncated,
   the shown set above the hop's group changes, or a digit wraps); displays of suspended frames as a least fixed point
   with random break bits; Lemma D (the size of the display has a tail independent of T and of the depth of the

@@ -41,4 +41,5 @@ import BoundedStackDepth.Choice
 import BoundedStackDepth.CutHops
 import BoundedStackDepth.Main
 import BoundedStackDepth.DeepNesting
+import BoundedStackDepth.LowAdaptivity
 import BoundedStackDepth.Machines

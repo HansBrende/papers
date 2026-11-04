@@ -1,7 +1,8 @@
 \section{Consequences for the series and for tape machines}\label{sec:consequences}
 
-This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines, and
-Corollary~HV, which proves the eleventh paper's conjecture on code-level depth reduction, are formalized: in the frozen machine
+This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines,
+Corollary~HV, which proves the eleventh paper's conjecture on code-level depth reduction, and Corollary~L, on low adaptivity, are
+formalized: in the frozen machine
 model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
 codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. The first statement of
 Corollary~N, on the deep-nesting pairs, is formalized through the deep-nesting walk of the same library; its second statement
@@ -185,7 +186,7 @@ Question~9.1 as that paper allows, use the bounded entry of the heads only to ob
 supplies the cut for all walks. So, under the native bound for frozen traces, Corollary~F$''$ holds without its
 hypothesis~(ii): for every machine~$M$, every $c>0$ and every $\eta<\frac12$ there is $L_0$ such that at no length
 $L=d^2b(d)\ge L_0$ does $M$ transpose every input within $c(L+1)$ steps with a trace whose Shannon entropy, for a uniformly
-random input, is at most $\eta L$. That hypothesis on the entropy of the trace is not robust~\cite[Section~6.2]{EighthPaper2026}.
+random input, is at most $\eta L$. \Cref{cor:L} below proves this formally. That hypothesis on the entropy of the trace is not robust~\cite[Section~6.2]{EighthPaper2026}.
 The deficit form of the eighth paper's Remark~6.5 adapts as well. There the paid trimming works at the incidence degree
 $\Delta=\lceil B/\delta\rceil$, for a fixed $\delta\in(0,1)$, where $B=\sum_{i\le D}(k+1)^i$ bounds the cone sizes. With the
 depth~$D$ of \cref{cor:oblivious}, $\log\log\Delta\le(k\beta C/\eps)^{O(k^2)}$, so a bound $1-\rho(\Delta)+o(1)$ on the rates of
@@ -240,6 +241,65 @@ What changes is the expected shape of a construction. The eleventh paper read a 
 merges deep lineages along a pattern without cheap cuts, as the mechanism an oblivious construction would
 need~\cite[Remark~3.23(d)]{MergeDepth2026}. No such counterexample exists. By \cref{sec:cons-construction}, what a construction
 needs is codes of rate near~$1$ on its own cone relations.
+
+The genie of Theorem~T also removes the bounded-entry hypotheses from the eighth paper's corollary on low adaptivity, as
+\cref{rem:native} sketched, and from the eleventh paper's Theorem~SE, given a native coding bound. For an input~$X$ and a
+scale $w\ge1$, the \emph{skeleton} $\sigma_w(X)$ of the run records its halting time and, at every earlier time, the blocks of
+width~$w$ that hold the heads and the output count; the \emph{class} of a skeleton is the set of inputs with that
+skeleton~\cite[Definition~4.1]{MergeDepth2026}. At $w=1$ the skeleton records the positions of all heads and the output count
+before the halting time; it is a function of the trace, and its class is a union of the classes of inputs that follow one
+trace. For a set~$\Gamma$ of steps, the \emph{cone relation} of a run maps each input position~$q$ to the input blocks read
+at the ends of the $\Gamma$-free paths of the dependency DAG of the coarse work walks that start at the output time
+of~$\tpos(q)$~\cite[Lemma~4.7]{MergeDepth2026}. The \emph{native bound} for a machine~$M$ at scale~$w$ and depth~$D$, with
+runtime constant~$c$ and at a set of widths, says the following. For every $\delta>0$ there is~$d_0$ such that for $d\ge d_0$,
+every width~$b$ in the set and $L=d^2b$, every binary storage code for the cone relation has at most $2^{(\frac12+\delta)L}$
+words. Here the cone relation is that of the run of~$M$ on any input of length~$L$ before its halting time $T\le c(L+1)$, for
+any set~$\Gamma$ of full depth at most~$D$, and with any output times in their output blocks. At $w=1$ the output times are the
+append times and this is the native bound for the frozen traces of~$M$. The eighth paper's update to its Corollaries~F$'$
+and~F$''$ assumes it uniformly over the machines with $k$ work tapes, at the widths~$b(d)$~\cite[Section~6.2]{EighthPaper2026},
+which implies it for each such machine. Like the
+crux, it is open: the thirteenth paper's codes live on relations with no known tape realization~\cite{StorageCodes2026}.
+
+\begin{corollary}[Corollary L: low adaptivity]\label{cor:L}
+\formal{LowAdaptivity.lean}{NativeBound, se_class_native, se_native, fSecond_native_class, fSecond_native}
+Let $M$ be a machine with $k$ work tapes and $c>0$, and let $\beta_w$ be its block width at scale~$w$, the number of bits of a
+block value~\cite[Definition~4.4]{MergeDepth2026}. Fix a set of widths, for instance all widths or $b=b(d)$ only, and let
+$d$ and~$b$ below range over it.
+\begin{enumerate}[label=(\alph*)]
+\item Let $w\ge1$ and $\eta>0$, and suppose that the native bound for~$M$ holds at scale~$w$ and at the depth~$D$ of
+\cref{cor:oblivious} for $\beta=\beta_w$, $C=\max(c,1)$ and $\eps=\eta/2$. There is~$d_0$ such that for $d\ge d_0$ and every $b\ge1$, no skeleton
+class at scale~$w$ with at least $2^{(\frac12+\eta)L}$ members is transposed by~$M$ within $c(L+1)$ steps. In particular, if $M$
+transposes every input within $c(L+1)$ steps, then $H(\sigma_w(X))>(\frac12-\eta)L$ for a uniformly random input~$X$.
+\item Let $\eta<\frac12$, and suppose that the native bound for the frozen traces of~$M$ holds at the depth~$D$ of
+\cref{cor:oblivious} for $\beta=\beta_1$, $C=\max(c,1)$ and $\eps=(\frac12-\eta)/2$. There is~$d_0$ such that for $d\ge d_0$ and
+every $b\ge1$, no skeleton class at scale~$1$ with at least $2^{(1-\eta)L}$ members is transposed by~$M$ within $c(L+1)$ steps.
+In particular, if $M$ transposes every input within $c(L+1)$ steps, then no trace is followed by $2^{(1-\eta)L}$ inputs, and
+$H(\sigma_1(X))>\eta L$, so its trace has entropy above~$\eta L$.
+\end{enumerate}
+\end{corollary}
+
+\begin{outline}
+(\lean{se_class_native}) The proof is that of the eleventh paper's Theorem~SE~\cite[Theorem~4.13]{MergeDepth2026}
+(\lean{MergeDepth.thm_SE_class}). A member of a large class gives a genie on the coarse work walks of its run. The revealed
+block values take at most $2^{\beta_w\card\Gamma}$ values, so some fibre~$W$ of the class has at least
+$2^{(\frac12+\eta-\eps)L}$ elements. $W$ is a storage code for the relation of the class
+(\lean{MergeDepth.blockMachine_isStorageCode_fibre}), which lies inside the cone relation
+(\lean{MergeDepth.classRel_subset_coneRel}). That proof used bounded entry only for the genie, through the eighth paper's
+Theorem~F (\lean{MergeDepth.skeleton_genie}), and Question~9.1 only to bound~$W$; the native bound is needed only for the runs
+of~$M$ and at the widths of the conclusion. Here the genie is that of Theorem~T
+(\lean{genie_cost}) for the coarse work walks of the member, which are walks (\lean{MergeDepth.isWalk_skel}); it transfers to the
+skeleton by \lean{MergeDepth.isDepPath_congr}, and its cost is $\beta_w\card\Gamma\le\eps L$. The native bound at $\delta=\eta/4$
+bounds $\log_2\card W$ by $(\frac12+\eta/4)L$, which contradicts the lower bound $(\frac12+\eta/2)L$. (\lean{se_native}) If
+$H(\sigma_w(X))\le(\frac12-\eta)L$, some skeleton class has at least $2^{(\frac12+\eta)L}$ members
+(\lean{MergeDepth.exists_large_fibre}). (\lean{fSecond_native_class}, \lean{fSecond_native}) Part~(b) is part~(a) at $w=1$,
+with $\frac12-\eta$ in place of~$\eta$; a trace class lies in a skeleton class at scale~$1$, and $\sigma_1(X)$ is a function of
+the trace, so its entropy bounds that of the trace from below.
+\end{outline}
+
+Part~(b) is the eighth paper's Corollary~F$''$~\cite[Corollary~6.4]{EighthPaper2026} without its hypothesis~(ii), that likely
+traces have bounded entry, with the native bound in place of Question~9.1 as that paper's update allows, and at any set of
+widths at which the native bound holds. Part~(a) removes the bounded-entry hypothesis from the eleventh paper's Theorem~SE in the same way. Hypothesis~(iii)
+of Corollary~F$''$, on the entropy of the whole trace, is still not robust~\cite[Section~6.2]{EighthPaper2026}.
 
 \subsection{What a linear-time transposer would need}\label{sec:cons-construction}
 

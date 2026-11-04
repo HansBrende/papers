@@ -20,6 +20,10 @@ through them the earlier libraries of the series, so the sibling directories of 
 - Corollary HV (`Machines.lean`): `ballSystem_indexCode` and `ballSystem_minrank` (the ball systems of radius
   `genieDepth k β C ε` of oblivious transposers have index codes of at most `εL` bits, and minrank at most `εL`), and
   `hvStar`, `hvStar_linear`: the eleventh paper's Conjecture HV*, stated as `ConjHVStar` and `ConjHVStarLin`, holds.
+- Corollary L (`LowAdaptivity.lean`): given `NativeBound` (the native half bound for the cone relations of the frozen traces of the
+  machine, at scale `w` and at the widths assumed), `se_class_native` and `se_native` (the eleventh paper's Theorem SE without bounded entry), and
+  `fSecond_native_class` and `fSecond_native` (the eighth paper's Corollary F″ without bounded entry: a linear-time
+  transposer has trace entropy above `ηL` for every `η < 1/2`).
 - Every declaration that the paper cites depends at most on `propext`, `Classical.choice` and `Quot.sound`:
   `lake env lean PaperAxioms.lean` prints them. `PaperAxioms.lean` is generated from the paper's LaTeX sources by
   `../tools/lean_index.py`.
@@ -35,7 +39,7 @@ The root module `BoundedStackDepth.lean` imports all of them.
 | the label | `Label` (Lemma V), `Global` (the label of `k` walks) |
 | displays | `Display` (the display as a least fixed point), `Revealing` (adaptive revealing), `DisplayTail` (Lemma D), `DisplayView` (the display above a group), `Entries`, `Composition` (the composed display), `ViewInvariance` (Proposition W), `Exposure` |
 | accounting and the proof | `Budgets`, `EventWeight`, `Accounting` (counting facts), `Truncation`, `Wrap`, `WrapGlobal`, `CutDescents`, `CutHops`, `Totals`, `Main` |
-| consequences | `DeepNesting` (Corollary N, first statement), `Machines` (Corollaries O and HV) |
+| consequences | `DeepNesting` (Corollary N, first statement), `Machines` (Corollaries O and HV), `LowAdaptivity` (Corollary L) |
 
 The paper names, for each numbered result, its declarations and file; its appendix indexes all of them by module.
 

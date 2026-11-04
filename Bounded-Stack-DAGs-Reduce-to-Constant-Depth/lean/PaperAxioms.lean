@@ -9,6 +9,7 @@ import BoundedStackDepth.CostModel
 import BoundedStackDepth.CutDescents
 import BoundedStackDepth.CutHops
 import BoundedStackDepth.Decomposition
+import BoundedStackDepth.DeepNesting
 import BoundedStackDepth.Display
 import BoundedStackDepth.DisplayTail
 import BoundedStackDepth.DisplayView
@@ -149,6 +150,10 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.upperHops
 #print axioms BoundedStackDepth.upperHops_neg
 #print axioms BoundedStackDepth.upperHops_union_lowerHops
+-- DeepNesting.lean
+#print axioms BoundedStackDepth.dnpPair
+#print axioms BoundedStackDepth.dnpPair_isWalk
+#print axioms BoundedStackDepth.dnp_cut
 -- Display.lean
 #print axioms BoundedStackDepth.Disp
 #print axioms BoundedStackDepth.OneCandidate

@@ -6,9 +6,9 @@ Hans Brende and Claude Opus 5.5 (Anthropic), November 2026.
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0
   ([`lean/LICENSE`](lean/LICENSE)). It builds on the eighth paper's library, which it requires by relative path,
-  so the sibling directories of this repository must be in place. Corollary O also requires the eleventh paper's library
-  (*Merge Depth, Input Steering, and the Coding Core of Matrix Transposition on Tapes*), for its traces, dependency DAGs
-  and index codes in the first paper's frozen machine model. [`lean/README.md`](lean/README.md) is a guide to
+  so the sibling directories of this repository must be in place. The corollaries also require the eleventh paper's
+  library (*Merge Depth, Input Steering, and the Coding Core of Matrix Transposition on Tapes*), for its deep-nesting walk
+  and for its traces, dependency DAGs and index codes in the first paper's frozen machine model. [`lean/README.md`](lean/README.md) is a guide to
   its modules.
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean`
   from the paper's LaTeX sources.
@@ -37,6 +37,9 @@ with its Lean declarations and file):
 - **Theorem A (one walk).** The decomposition of a walk into ladders of nested hops, frames and passages; summed over
   the offsets of a random grid of size h₀, at most 6 times the number of hops are lost, for upper and lower hops
   separately.
+- **Corollary N, first statement (the deep-nesting pairs).** For every ε > 0, the walk DAG of the deep-nesting pair
+  x₁ = U(s₀, m, 1), x₂ = x₁(· + ξ) on [0, T) has a cut of at most εT edges and depth at most D(2, ε), whatever the
+  nesting depth m, the shift ξ and the length T: the pairs are not depth-robust.
 - **Corollary O (oblivious machines).** In the frozen machine model of the first paper: every trace of every machine,
   up to a horizon T ≤ C(L + 1), has a genie of cost at most εL whose full depth is bounded in terms of k, C, the value
   width and ε, so depth-TCP holds; the crux
@@ -50,8 +53,8 @@ with its Lean declarations and file):
 
 Proved in the paper with a complete written proof, not formalized:
 
-- **Corollary N.** The deep-nesting pairs are cut to a depth independent of their nesting depth, so Conjectures A′
-  and A″ of the fourth and eighth papers are false (through Corollary 5.26 of the eighth paper, a written proof there).
+- **Corollary N, second statement.** Conjectures A′ and A″ of the fourth and eighth papers are false (from the first
+  statement, through Corollary 5.26 of the eighth paper, a written proof there).
 
 The remarks are labelled as proof sketches, heuristics or numerical observations. They explain why simpler constructions
 fail, estimate the crux rate that Corollary O needs, and note that the native half bound (the half bound for codes on the

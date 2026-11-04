@@ -46,7 +46,8 @@ $D(k,\eps)$ hop edges. So $\TCP(k)$ holds for every~$k$, and by the reduction of
 $s$}: bounded-stack DAGs with a spine reduce to constant depth. The bound is explicit, $D(k,\eps)=K^P-1$ with the parameters of
 \cref{def:params}, and $\log\log D(k,\eps)=O(k^2\log(k/\eps))$ for $\eps\le\frac12$ (\cref{sec:open}).
 \item \textbf{Corollary~N} (\cref{cor:dnp}). The deep-nesting pairs are cut to depth $D(2,\eps)$, independently of the nesting
-depth~$m$ and of the shift. Hence Conjectures~A$'$ and~A$''$ are false.
+depth~$m$ and of the shift; this statement is Lean-verified. Hence, by a result of the eighth paper proved there in the text,
+Conjectures~A$'$ and~A$''$ are false.
 \item \textbf{Corollary~O} (\cref{cor:oblivious}). Every oblivious machine with $k$ work tapes running in time $C(L+1)$ has, for
 every $\eps>0$, a genie of cost at most $\eps L$ whose full depth is bounded in terms of $k$, $C$, the value width and~$\eps$. So
 the crux alone excludes oblivious linear-time transposers, whatever their head motion, and for machines with a linear data path
@@ -90,18 +91,19 @@ depth of the stacks.
 
 \subsection{Formal status and how to read the paper}
 
-Theorem~T, every numbered result of \cref{sec:prelim,sec:ladders,sec:label,sec:displays,sec:accounting,sec:proof}, and
-Corollary~O with its definitions are formalized in Lean~4 with Mathlib, in the library \leanfile{BoundedStackDepth} next to this
-paper, which builds on the eighth paper's library and, for Corollary~O, on the eleventh paper's library~\cite{MergeDepth2026},
-which formalizes traces, dependency DAGs and index codes in the frozen machine model of the first paper. Each result is followed by a status line naming its Lean declarations and file, and by an outline of the
+Theorem~T, every numbered result of \cref{sec:prelim,sec:ladders,sec:label,sec:displays,sec:accounting,sec:proof}, the first
+statement of Corollary~N, and Corollary~O with its definitions are formalized in Lean~4 with Mathlib, in the library
+\leanfile{BoundedStackDepth} next to this paper, which builds on the eighth paper's library and, for the corollaries, on the
+eleventh paper's library~\cite{MergeDepth2026}, which formalizes the deep-nesting walk, and traces, dependency DAGs and index
+codes in the frozen machine model of the first paper. Each result is followed by a status line naming its Lean declarations and file, and by an outline of the
 formal proof; the Lean statement is authoritative. The formal main theorem is \lean{tcpAt_direct}: for $k$ walks with
 pauses, cuts of at most $\eps T$ edges and depth at most $K^P-1$. Its corollaries are \lean{tcp} and \lean{main} ($\TCP(k)$ for
 every~$k$, the statement \lean{MainStatement} of \leanfile{Statement.lean}) and \lean{sr} ($\SR(s)$ for every~$s$, through the
 eighth paper's reduction). All of them depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verify}). The
 results of the eighth paper that the proof uses are Lean-verified there and are marked as cited.
 
-Not formalized are Corollary~N of \cref{sec:consequences}, which combines Theorem~T with a result of the eighth paper that
-is proved there in the text, and the remarks of \cref{sec:ingredients,sec:consequences}. The remarks explain why simpler constructions fail, or discuss the
+Not formalized are the second statement of Corollary~N, that Conjectures~A$'$ and~A$''$ are false, which combines the first
+with a result of the eighth paper that is proved there in the text, and the remarks of \cref{sec:ingredients,sec:consequences}. The remarks explain why simpler constructions fail, or discuss the
 consequences; they are labelled as proof sketches, heuristics or numerical observations, and no proof uses them.
 
 \subsection{Related work}

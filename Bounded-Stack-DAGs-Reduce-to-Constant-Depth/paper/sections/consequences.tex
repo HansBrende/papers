@@ -2,8 +2,9 @@
 
 This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines, is
 formalized: in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
-codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. Corollary~N, on the
-deep-nesting pairs, rests on a result of the eighth paper that has a written proof there, and is not formalized. Throughout,
+codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. The first statement of
+Corollary~N, on the deep-nesting pairs, is formalized through the deep-nesting walk of the same library; its second statement
+rests on a result of the eighth paper that has a written proof there, and is not formalized. Throughout,
 $D(k,\eps)=K^P-1$ is the depth of Theorem~T, with $K=K(k,\eps)$ and $P=P(k,\eps)$ as in \cref{def:params}.
 
 \subsection{The deep-nesting pairs}\label{sec:cons-dnp}
@@ -22,16 +23,24 @@ pairs are depth-robust \cite[Problem~10.1(a)]{EighthPaper2026}; the tenth paper 
 question~\cite[Section~7]{DirectedReciprocity2026}.
 
 \begin{corollary}[Corollary N: the deep-nesting pairs are not depth-robust]\label{cor:dnp}
-\notformalized
+\partformal{DeepNesting.lean}{dnpPair, dnpPair_isWalk, dnp_cut}{the second statement, whose refutation of the conjectures rests on
+Corollary~5.26 of the eighth paper, a written proof there.}
 For every $\eps>0$, all integers $s_0>m\ge0$, every shift~$\xi$ and every $T\ge1$, the walk DAG of the pair $x_1=U(s_0,m,1)$,
 $x_2=x_1(\cdot+\xi)$ on $[0,T)$ has a cut of at most $\eps T$ edges and depth at most $D(2,\eps)$. Consequently Conjecture~A$'$
 of the fourth paper and Conjecture~A$''$ of the eighth paper are false, and the answer to Problem~10.1(a) of the eighth paper is
 negative.
 \end{corollary}
 
+\begin{outline}[Outline of the formal proof of the first statement]
+The pair consists of two walks, so the first statement is the case $k=2$ of Theorem~T (\cref{thm:T}). The eleventh paper's
+library defines the walk~$U$ (\lean{MergeDepth.dnpWalk}) and the two heads of the pair
+(\lean{MergeDepth.headWalk})~\cite[Section~7]{MergeDepth2026}, and proves that $U$ moves by~$\pm1$ at every step
+(\lean{MergeDepth.dnpStep_pm}). So both heads of the pair \lean{dnpPair} are walks (\lean{dnpPair_isWalk}), and
+\lean{dnp_cut} is an instance of \lean{tcpAt_direct} for $k=2$. The Lean statement assumes only $m\le s_0$.
+\end{outline}
+
 \begin{informalproof}
-The pair consists of two walks, so the first statement is the case $k=2$ of Theorem~T (\cref{thm:T}); in Lean it is an instance
-of \lean{tcpAt_direct}. Suppose that Conjecture~A$''$ holds with constants $\theta_0$, $\eta<1$, $C$ and~$C'$. Fix $\eps$ with
+We derive the second statement from the first. Suppose that Conjecture~A$''$ holds with constants $\theta_0$, $\eta<1$, $C$ and~$C'$. Fix $\eps$ with
 $0<\eps<\min(1/4,(1-\eta)\theta_0)$ and put $\delta=((1-\eta)-\eps/\theta_0)/2>0$. By Corollary~5.26 of the eighth
 paper~\cite{EighthPaper2026}, which has a written proof there, there is $N_0$ such that for every~$m$, with $s_0=m+2$, the
 shift~$\xi$ of the conjecture and every $N\ge N_0$, every cut of at most $\eps T$ edges of the walk DAG of the pair on $[0,T)$,

@@ -26,7 +26,8 @@ body { margin: 0; }
   --orange-dark: #e27548; /* one open hypothesis, implied by the orange one (asks less) */
   --on-orange-dark: #1a1d22;
   --orange: #f2a058;      /* one open hypothesis */
-  --orange-pale: #fbdcbc; /* with --orange: hatched = one open half-rate bound */
+  --yellow: #f6c955;      /* one open hypothesis that asks more than the crux (a half-rate bound) */
+  --on-yellow: #1a1d22;
   --on-orange: #1a1d22;
   --green: #14894a;       /* likely home of a construction */
   --dash: #374151;
@@ -41,7 +42,7 @@ body { margin: 0; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
-    --red: #a3392b; --on-red: #ffffff; --orange-dark: #b0552c; --on-orange-dark: #fff7ef; --orange: #b9732f; --orange-pale: #5c3b1f; --on-orange: #fff7ef;
+    --red: #a3392b; --on-red: #ffffff; --orange-dark: #b0552c; --on-orange-dark: #fff7ef; --orange: #b9732f; --on-orange: #fff7ef; --yellow: #c49a45; --on-yellow: #1a1d22;
     --green: #3fd07f; --dash: #c2cad6; --card: #141820;
     --focus: #7aa2ff; --link: #8fb3ff; color-scheme: dark;
   }
@@ -49,7 +50,7 @@ body { margin: 0; }
 :root[data-theme="dark"] {
   --link: #8fb3ff;
   --bg: #0e1116; --paper: #171b22; --ink: #e7e9ee; --muted: #9aa3b2; --rule: #2c333e; --outline: #8b95a5;
-  --red: #a3392b; --on-red: #ffffff; --orange-dark: #b0552c; --on-orange-dark: #fff7ef; --orange: #b9732f; --orange-pale: #5c3b1f; --on-orange: #fff7ef;
+  --red: #a3392b; --on-red: #ffffff; --orange-dark: #b0552c; --on-orange-dark: #fff7ef; --orange: #b9732f; --on-orange: #fff7ef; --yellow: #c49a45; --on-yellow: #1a1d22;
   --green: #3fd07f; --dash: #c2cad6; --card: #141820;
   --focus: #7aa2ff; color-scheme: dark;
 }
@@ -71,7 +72,7 @@ h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 
 .sw { width: 26px; height: 16px; border-radius: 3px; border: 1px solid var(--rule); flex: none; display: inline-block; }
 .sw.red { background: var(--red); border-color: transparent; }
 .sw.orange { background: var(--orange); border-color: transparent; }
-.sw.hatch { background: repeating-linear-gradient(135deg, var(--orange) 0 4px, var(--orange-pale) 4px 8px); border-color: transparent; }
+.sw.yellow { background: var(--yellow); border-color: transparent; }
 .sw.orange-dark { background: var(--orange-dark); border-color: transparent; }
 .sw.open { background: var(--paper); }
 .sw.dash { background: transparent; border: 2px dashed var(--dash); }
@@ -83,9 +84,9 @@ svg text { font-family: var(--label); fill: var(--ink); }
 .r:focus-visible .shape, .r.active .shape { stroke: var(--focus); stroke-width: 3.5; }
 .shape { stroke: none; }
 .f-red { fill: var(--red); } .f-orange-dark { fill: var(--orange-dark); } .f-orange { fill: var(--orange); } .f-open { fill: var(--paper); }
-.f-hatch { fill: url(#hatch); } .hatch-bg { fill: var(--orange-pale); } .hatch-fg { fill: var(--orange); }
+.f-yellow { fill: var(--yellow); }
 .ol { fill: none; stroke: var(--outline); stroke-width: 1.6; pointer-events: none; }
-.t-red { fill: var(--on-red) !important; } .t-orange-dark { fill: var(--on-orange-dark) !important; } .t-orange { fill: var(--on-orange) !important; }
+.t-red { fill: var(--on-red) !important; } .t-orange-dark { fill: var(--on-orange-dark) !important; } .t-orange { fill: var(--on-orange) !important; } .t-yellow { fill: var(--on-yellow) !important; }
 .t-muted { fill: var(--muted) !important; }
 .hdr { font-weight: 700; letter-spacing: .07em; font-size: 12.5px; }
 .lbl { font-weight: 600; font-size: 14.5px; }
@@ -129,7 +130,7 @@ a:hover { text-decoration-thickness: 2px; }
     <div class="key" role="listitem"><span class="sw red"></span>impossible, unconditionally</div>
     <div class="key" role="listitem"><span class="sw orange-dark"></span>impossible if one weaker open statement holds (implied by the orange one)</div>
     <div class="key" role="listitem"><span class="sw orange"></span>impossible if one open statement holds</div>
-    <div class="key" role="listitem"><span class="sw hatch"></span>impossible if one open half-rate bound holds (asks more than the crux)</div>
+    <div class="key" role="listitem"><span class="sw yellow"></span>impossible if one stronger open statement holds (a half-rate bound: asks more than the crux)</div>
     <div class="key" role="listitem"><span class="sw open"></span>open</div>
     <div class="key" role="listitem"><span class="sw dash"></span>overlay: changes the hypothesis, not the colour</div>
     <div class="key" role="listitem"><span class="q">?</span>where a linear-time machine is most likely</div>
@@ -142,10 +143,6 @@ a:hover { text-decoration-thickness: 2px; }
         <clipPath id="cLE"><circle cx="470" cy="375" r="265"></circle></clipPath>
         <clipPath id="cOb"><circle cx="470" cy="405" r="195"></circle></clipPath>
         <clipPath id="cD"><circle cx="330" cy="330" r="165"></circle></clipPath>
-        <pattern id="hatch" patternUnits="userSpaceOnUse" width="9" height="9" patternTransform="rotate(45)">
-          <rect class="hatch-bg" width="9" height="9"></rect>
-          <rect class="hatch-fg" width="4.5" height="9"></rect>
-        </pattern>
       </defs>
       <text x="14" y="26" class="tiny t-muted">All deterministic multitape TMs that transpose · white = open</text>
       <rect x="10" y="38" width="980" height="672" rx="6" class="f-open" style="stroke: var(--rule); stroke-width: 1.5"></rect>
@@ -159,9 +156,9 @@ a:hover { text-decoration-thickness: 2px; }
         <circle class="shape f-open" cx="470" cy="375" r="265"></circle>
       </g>
       <!-- 3. bounded entry on every tape: Corollary F'' (low adaptivity), Corollary RV (any adaptivity, paper 11);
-           hatched: the remaining hypothesis is a half-rate bound for the machine's own relations -->
+           yellow: the remaining hypothesis is a half-rate bound for the machine's own relations -->
       <g class="r" tabindex="0" data-id="lowad" aria-label="Every cell of every tape entered O(1) times">
-        <circle class="shape f-hatch" cx="300" cy="312" r="100"></circle>
+        <circle class="shape f-yellow" cx="300" cy="312" r="100"></circle>
       </g>
       <!-- 4. oblivious, deep nesting: the crux at the depth of Theorem T (paper 14, Corollary O) -->
       <g class="r" tabindex="0" data-id="ob" aria-label="Oblivious, deep nesting">
@@ -212,9 +209,10 @@ a:hover { text-decoration-thickness: 2px; }
         <text x="470" y="146" text-anchor="middle" class="hdr">LOW ADAPTIVITY</text>
         <text x="470" y="162" text-anchor="middle" class="sub">traces carry at most ηL bits, η &lt; ½</text>
 
-        <text x="300" y="262" text-anchor="middle" class="lbl t-orange">Each cell entered</text>
-        <text x="300" y="279" text-anchor="middle" class="lbl t-orange">O(1) times</text>
-        <text x="300" y="296" text-anchor="middle" class="tiny t-orange">needs a half-rate bound (F″, RV)</text>
+        <text x="296" y="243" text-anchor="middle" class="lbl t-yellow">Each cell entered</text>
+        <text x="285" y="260" text-anchor="middle" class="lbl t-yellow">O(1) times</text>
+        <text x="270" y="278" text-anchor="middle" class="tiny t-yellow">needs a half-rate</text>
+        <text x="265" y="292" text-anchor="middle" class="tiny t-yellow">bound (F″, RV)</text>
 
         <text x="350" y="370" text-anchor="middle" class="lbl t-orange-dark">Shallower cuts</text>
         <text x="350" y="387" text-anchor="middle" class="sub t-orange-dark">bounded nesting,</text>
@@ -292,9 +290,10 @@ a:hover { text-decoration-thickness: 2px; }
       relations.</p>
     <p>A piece is red when nothing open remains and orange when one open statement remains. Dark orange marks a piece whose one open
       statement is implied by the orange piece's, so it asks less: there the crux is needed only at the smaller depths of the earlier
-      depth reductions (Theorems F, B, M), and a crux at a larger depth implies the crux at a smaller one. Hatched orange marks a piece
-      whose one remaining statement is a half-rate bound for the machine's own relations. That asks more than the crux, which needs
-      only rate bounded away from 1, and since paper 13 it has no support from a machine-free statement. The red circle combines depth
+      depth reductions (Theorems F, B, M), and a crux at a larger depth implies the crux at a smaller one. Yellow marks a piece whose one
+      remaining statement asks more than the crux: a half-rate bound for the machine's own relations, where the crux needs only rate
+      bounded away from 1; since paper 13 such a bound has no support from a machine-free statement. So the colours run from red
+      through dark orange and orange to yellow as the open statement gets stronger, and white marks pieces with no conditional result. The red circle combines depth
       reduction with a proved half-rate bound for its cone relations (papers 7, 8 and 10). Adaptive machines enter through
       Corollary F″, which freezes the most likely trace, and through paper 11.</p>
     <p>Paper 9 adds a third route that needs no coding question. For an oblivious machine whose head excursions overlap boundedly,
@@ -304,7 +303,7 @@ a:hover { text-decoration-thickness: 2px; }
       deep data lineages only boundedly often, on every schedule however deeply nested (the dashed island; for linear codes the
       linear crux suffices). Before paper 14 this was the only route to deep nesting; now it changes the hypothesis, not the
       colour. Given a half-rate bound for the relations of its coarse-skeleton classes,
-      bounded entry on every tape, the input tape included, is excluded at any adaptivity (Corollary RV, the hatched disc), and a
+      bounded entry on every tape, the input tape included, is excluded at any adaptivity (Corollary RV, the yellow disc), and a
       machine whose work tapes have bounded entry must carry about L/2 bits of the data in the coarse motion of its input head
       (Corollary IS). Paper 11 states these results under Question 9.1, but its proofs use it only for the machine's own relations,
       inside balls and of skeleton classes, and for hop charging the crux for ball systems serves as well. Unconditionally, paper 9's
@@ -318,7 +317,7 @@ a:hover { text-decoration-thickness: 2px; }
       undirected crux (its Question 6.1) negatively. Its relations are not known to arise from tape machines, and its codes are not shown
       to have rate near 1, which a transposer needs, so no piece changes colour. What changes is the evidence. An impossibility proof
       through storage codes must use the structure of tape computations, not only bounded degree and paired distances; a half-rate
-      bound on a machine's own relations now stands on its own (hence the hatching); and a construction now knows one way to beat rate ½:
+      bound on a machine's own relations now stands on its own (hence the yellow); and a construction now knows one way to beat rate ½:
       expansion, a two-class twisted structure and algebraic local codes. Expanding dependency structures are compatible with tape
       geometry (papers 4 and 8), but rate near 1 would need a different mechanism.</p>
     <p><b>Paper 14</b> proves the trajectory cut problem for every number of heads: the walk DAG of any k walks, with or without
@@ -381,9 +380,9 @@ const R = {
     text: "Head movements carry about half of the input's information or more. Every trace is cut to bounded depth (paper 14, Corollary O(a), Lean), but no reduction to coding is known here: the index-code argument needs a schedule shared by many inputs. Unconditionally, every transposer needs Ω(log d) sweeps and fold-back of its head paths, and at block scale it runs an external-memory transposition with O(d) I/Os that is oblivious on 2^(L−O(d)) inputs, so an I/O lower bound without indivisibility would settle this piece too (paper 11, Theorem EM). Given paper 11's half-rate bounds for the machine's own relations (Question 9.1 itself is false, paper 13), such a machine revisits some tape unboundedly often, and if its work tapes have bounded entry, the coarse motion of its input head carries about L/2 bits of the data (paper 11, Theorem L and Corollary IS); padding the input head meets that condition at no cost.",
     src: "Paper 1 (Theorems P′, M*), Adaptive Pass Bounds memo; paper 11, Theorems EM, L and Corollary IS; paper 14, Corollary O(a)" },
   leOpen: { name: "Low adaptivity, without bounded entry", color: "open", status: "Open",
-    text: "The traces carry at most ηL bits, but some likely trace revisits cells unboundedly often. Corollary F″ is stated only when every likely trace enters each cell O(1) times. Paper 14 sketches how to drop that hypothesis: the proof of Corollary F″ uses bounded entry only to obtain a cut from Theorem F, and Theorem T supplies a cut for all walks. So, under the native half bound for frozen traces, no machine transposes in linear time with a trace whose entropy is at most ηL, η < ½ (Remark 9.5, a proof sketch). Written out in full, this would hatch the piece like the disc.",
+    text: "The traces carry at most ηL bits, but some likely trace revisits cells unboundedly often. Corollary F″ is stated only when every likely trace enters each cell O(1) times. Paper 14 sketches how to drop that hypothesis: the proof of Corollary F″ uses bounded entry only to obtain a cut from Theorem F, and Theorem T supplies a cut for all walks. So, under the native half bound for frozen traces, no machine transposes in linear time with a trace whose entropy is at most ηL, η < ½ (Remark 9.5, a proof sketch). Written out in full, this would make the piece yellow like the disc.",
     src: "Paper 8, Corollary F″ (hypotheses); paper 14, Remark 9.5 (proof sketch)" },
-  lowad: { name: "Each cell of every tape entered O(1) times", color: "hatch", status: "Impossible if a half-rate bound for the machine's own relations holds",
+  lowad: { name: "Each cell of every tape entered O(1) times", color: "yellow", status: "Impossible if a half-rate bound for the machine's own relations holds",
     text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19). Paper 14 sketches Corollary F″ without bounded entry under the native half bound for frozen traces (Remark 9.5; the low-adaptivity piece).",
     src: "Paper 8, Corollary F″ and Remark 6.5; paper 11, Theorem SE, Corollary RV and Remark 4.19; paper 13; paper 14, Remark 9.5" },
   ob: { name: "Oblivious, deep nesting", color: "orange", status: "Impossible if the crux holds (Corollary O, Lean)",
@@ -410,7 +409,7 @@ const QUESTIONS = {
   high: "Second: high adaptivity, where none of the oblivious-machine barriers apply: every trace is cut to bounded depth, but no schedule is shared by many inputs. Given paper 11's half-rate bounds for the machine's own relations, such a machine revisits some tape unboundedly often (paper 11)."
 };
 const order = ["onetape","sweeps","movement","xor","packets","pc","geom","obS","ob","merge","lowad","linear","leOpen","high"];
-const chipText = { red: "unconditional", "orange-dark": "one weaker open statement", orange: "one open statement", hatch: "one open half-rate bound", open: "open", dash: "overlay" };
+const chipText = { red: "unconditional", "orange-dark": "one weaker open statement", orange: "one open statement", yellow: "one stronger open statement", open: "open", dash: "overlay" };
 const cards = document.getElementById("cards");
 for (const id of order) {
   const r = R[id];

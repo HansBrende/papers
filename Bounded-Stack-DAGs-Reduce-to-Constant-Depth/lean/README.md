@@ -10,9 +10,10 @@ through them the earlier libraries of the series, so the sibling directories of 
   edges and depth at most `K^P − 1`, with the explicit parameters `parH`, `parQ`, `parJ`, `parP`, `parK`.
 - `tcp`: `TCP k` for every `k`; `main : MainStatement`, the same statement as stated in `Statement.lean`; and `sr`:
   `SR s` for every `s`, through the eighth paper's reduction.
-- Corollary N, first statement (`DeepNesting.lean`): `dnp_cut`, the deep-nesting pair `dnpPair` (built from the
+- Corollary N (`DeepNesting.lean`, `Conjectures.lean`): `dnp_cut`, the deep-nesting pair `dnpPair` (built from the
   eleventh paper's `MergeDepth.dnpWalk`) has, for every nesting depth, shift and length, a cut of at most `εT` edges and
-  depth at most `K^P − 1` for `k = 2`.
+  depth at most `K^P − 1` for `k = 2`; `not_conjAprime` and `not_conjAsecond`: Conjectures A′ and A″, stated as
+  `ConjAprime` and `ConjAsecond` on the cyclic covers of the eleventh paper's library, are false.
 - Corollary O (`Machines.lean`), in the frozen machine model of the first paper, through the eleventh paper's
   library: `genie_of_trace` and `depthTCP` (genies of cost `εL` and bounded full depth for every trace), `crux_excludes`
   (the crux alone excludes oblivious linear-time transposers) and `linCrux_excludes` (the linear crux, for machines with a
@@ -39,7 +40,7 @@ The root module `BoundedStackDepth.lean` imports all of them.
 | the label | `Label` (Lemma V), `Global` (the label of `k` walks) |
 | displays | `Display` (the display as a least fixed point), `Revealing` (adaptive revealing), `DisplayTail` (Lemma D), `DisplayView` (the display above a group), `Entries`, `Composition` (the composed display), `ViewInvariance` (Proposition W), `Exposure` |
 | accounting and the proof | `Budgets`, `EventWeight`, `Accounting` (counting facts), `Truncation`, `Wrap`, `WrapGlobal`, `CutDescents`, `CutHops`, `Totals`, `Main` |
-| consequences | `DeepNesting` (Corollary N, first statement), `Machines` (Corollaries O and HV), `LowAdaptivity` (Corollary L) |
+| consequences | `DeepNesting` and `Conjectures` (Corollary N), `Machines` (Corollaries O and HV), `LowAdaptivity` (Corollary L) |
 
 The paper names, for each numbered result, its declarations and file; its appendix indexes all of them by module.
 

@@ -4,9 +4,9 @@ This section combines Theorem~T with results of earlier papers of the series. Co
 Corollary~HV, which proves the eleventh paper's conjecture on code-level depth reduction, and Corollary~L, on low adaptivity, are
 formalized: in the frozen machine
 model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
-codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. The first statement of
-Corollary~N, on the deep-nesting pairs, is formalized through the deep-nesting walk of the same library; its second statement
-rests on a result of the eighth paper that has a written proof there, and is not formalized. Throughout,
+codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. Corollary~N, on
+the deep-nesting pairs, is formalized through the deep-nesting walk and the cyclic covers of the same library.
+Throughout,
 $D(k,\eps)=K^P-1$ is the depth of Theorem~T, with $K=K(k,\eps)$ and $P=P(k,\eps)$ as in \cref{def:params}.
 
 \subsection{The deep-nesting pairs}\label{sec:cons-dnp}
@@ -25,8 +25,7 @@ pairs are depth-robust \cite[Problem~10.1(a)]{EighthPaper2026}; the tenth paper 
 question~\cite[Section~7]{DirectedReciprocity2026}.
 
 \begin{corollary}[Corollary N: the deep-nesting pairs are not depth-robust]\label{cor:dnp}
-\partformal{DeepNesting.lean}{dnpPair, dnpPair_isWalk, dnp_cut}{the second statement, whose refutation of the conjectures rests on
-Corollary~5.26 of the eighth paper, a written proof there.}
+\formal{DeepNesting.lean, Conjectures.lean}{dnpPair, dnpPair_isWalk, dnp_cut, IsCoverLabel, coverCost, ThetaServesLevel, doublyServedCount, ConjAprime, ConjAsecond, not_conjAprime, not_conjAsecond}
 For every $\eps>0$, all integers $s_0>m\ge0$, every shift~$\xi$ and every $T\ge1$, the walk DAG of the pair $x_1=U(s_0,m,1)$,
 $x_2=x_1(\cdot+\xi)$ on $[0,T)$ has a cut of at most $\eps T$ edges and depth at most $D(2,\eps)$. Consequently Conjecture~A$'$
 of the fourth paper and Conjecture~A$''$ of the eighth paper are false, and the answer to Problem~10.1(a) of the eighth paper is
@@ -41,17 +40,28 @@ library defines the walk~$U$ (\lean{MergeDepth.dnpWalk}) and the two heads of th
 \lean{dnp_cut} is an instance of \lean{tcpAt_direct} for $k=2$. The Lean statement assumes only $m\le s_0$.
 \end{outline}
 
-\begin{informalproof}
-We derive the second statement from the first. Suppose that Conjecture~A$''$ holds with constants $\theta_0$, $\eta<1$, $C$ and~$C'$. Fix $\eps$ with
-$0<\eps<\min(1/4,(1-\eta)\theta_0)$ and put $\delta=((1-\eta)-\eps/\theta_0)/2>0$. By Corollary~5.26 of the eighth
-paper~\cite{EighthPaper2026}, which has a written proof there, there is $N_0$ such that for every~$m$, with $s_0=m+2$, the
-shift~$\xi$ of the conjecture and every $N\ge N_0$, every cut of at most $\eps T$ edges of the walk DAG of the pair on $[0,T)$,
-where $T=4N(m+1)2^{s_0}$ is $N$ times the period of~$U$, has depth at least $2^{(\delta(m+1)-C')/C}-1$. By the first
-statement such a cut exists with depth at most $D(2,\eps)$, which does not depend on~$m$. For $m$ so large that
-$2^{(\delta(m+1)-C')/C}-1>D(2,\eps)$ this is a contradiction. The same corollary of the eighth paper covers Conjecture~A$'$,
-with $\eta=0$. Problem~10.1(a) asks whether the pairs are depth-robust as $m\to\infty$ for some sequence of odd shifts; by the
-first statement they are not, at any shifts.
-\end{informalproof}
+\begin{outline}[Outline of the formal proof of the second statement]
+The conjectures concern labels on the $r$-fold covers of the pair, whose hops, classes and errors are those of the eleventh
+paper's library (\lean{MergeDepth.coverHops}, \lean{MergeDepth.coverClass}, \lean{MergeDepth.hopError}).
+\lean{IsCoverLabel}, \lean{coverCost}, \lean{ThetaServesLevel} and \lean{doublyServedCount} state the eighth paper's
+definitions of labels on the cover, their cost and the doubly served levels~\cite[Section~2.5]{EighthPaper2026}, and
+\lean{ConjAprime} and \lean{ConjAsecond} state the two conjectures. The refutation follows the eighth paper's
+Corollary~5.26~\cite{EighthPaper2026} with two simplifications. First, the label is that of Theorem~T itself
+(\lean{exists_label}): for $k=2$ it has $q=K^P$ values and cost at most $\eps T$ on the walk DAG of the pair on $[0,T)$, so no
+label has to be built from a cut. Second, its transfer to the $N$-fold cover (\lean{periodize}, \lean{coverCost_periodize_le})
+uses the crude bound $2\cost(\Psi)+2P+1$. That bound counts a hop of the walk DAG once per head, so it needs no parity argument;
+the hops of the cover with a negative earlier endpoint end in the first period. The per-head form of Lemma~Zq on the cover
+(\lean{sum_hopError_le}), total error at most $q$ times the number of violated hops, follows from a telescoping identity: the
+earlier endpoints of the hops of a head run over every time of the cover once (\lean{sum_headPrev_eq}). Since a hop has one level
+(\lean{headHopLevelIs_unique}), the classes split this error (\lean{sum_classError_le}), and a label of cost~$\kappa$
+leaves at most $2(m+1)\kappa/(\theta n_{\mathrm h})$ levels not doubly $\theta$-served (\lean{unserved_mul_le}). Given
+$\theta_0$, $\eta<1$, $C$ and~$C'$, take $\eps=\min(1/32,(1-\eta)\theta_0/16)$, the nesting depth~$m$ with
+$(m+1)(1-\eta)/2>C\log_2q+C'$, $s_0=m+2$ and $N\ge2/\eps$. At every shift, the label of Theorem~T on $N$ periods, read on
+the $N$-fold cover, costs at most $2\eps n_{\mathrm h}\le n_{\mathrm h}/8$ and doubly serves at least
+$(m+1)(1-(1-\eta)/4)$ levels, more than Conjecture~A$''$ allows (\lean{not_conjAsecond}). Conjecture~A$'$ is the case
+$\eta=0$ (\lean{conjAsecond_of_conjAprime}, \lean{not_conjAprime}). Problem~10.1(a) of the eighth paper asks whether the
+pairs are depth-robust as $m\to\infty$ for some sequence of odd shifts; by the first statement they are not, at any shifts.
+\end{outline}
 
 The lower bounds of the series for this instance, some of them proof sketches or conditional on a conjecture, concern
 restricted classes of labels, for example per-head band rules, labels that change only at turns, and block

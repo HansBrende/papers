@@ -40,6 +40,7 @@ import BoundedStackDepth.Totals
 import BoundedStackDepth.Choice
 import BoundedStackDepth.CutHops
 import BoundedStackDepth.Main
+import BoundedStackDepth.Conjectures
 import BoundedStackDepth.DeepNesting
 import BoundedStackDepth.LowAdaptivity
 import BoundedStackDepth.Machines

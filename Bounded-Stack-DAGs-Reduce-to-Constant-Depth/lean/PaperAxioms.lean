@@ -5,6 +5,7 @@ import BoundedStackDepth.Basic
 import BoundedStackDepth.Budgets
 import BoundedStackDepth.Choice
 import BoundedStackDepth.Composition
+import BoundedStackDepth.Conjectures
 import BoundedStackDepth.CostModel
 import BoundedStackDepth.CutDescents
 import BoundedStackDepth.CutHops
@@ -91,6 +92,24 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.onStack_of_cand
 #print axioms BoundedStackDepth.oneCandidate_disp
 #print axioms BoundedStackDepth.seeds
+-- Conjectures.lean
+#print axioms BoundedStackDepth.ConjAprime
+#print axioms BoundedStackDepth.ConjAsecond
+#print axioms BoundedStackDepth.IsCoverLabel
+#print axioms BoundedStackDepth.ThetaServesLevel
+#print axioms BoundedStackDepth.conjAsecond_of_conjAprime
+#print axioms BoundedStackDepth.coverCost
+#print axioms BoundedStackDepth.coverCost_periodize_le
+#print axioms BoundedStackDepth.doublyServedCount
+#print axioms BoundedStackDepth.exists_label
+#print axioms BoundedStackDepth.headHopLevelIs_unique
+#print axioms BoundedStackDepth.not_conjAprime
+#print axioms BoundedStackDepth.not_conjAsecond
+#print axioms BoundedStackDepth.periodize
+#print axioms BoundedStackDepth.sum_classError_le
+#print axioms BoundedStackDepth.sum_headPrev_eq
+#print axioms BoundedStackDepth.sum_hopError_le
+#print axioms BoundedStackDepth.unserved_mul_le
 -- CostModel.lean
 #print axioms BoundedStackDepth.Aligned
 #print axioms BoundedStackDepth.Ground

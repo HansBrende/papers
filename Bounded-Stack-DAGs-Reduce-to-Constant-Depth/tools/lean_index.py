@@ -9,7 +9,7 @@ Usage (from the paper directory, i.e. the parent of paper/ and lean/):
 Collects every declaration named in a \\formal{file}{names} or \\partformal{file}{names}{...}
 line of paper/sections/*.tex, and every name in a \\lean{name} reference to this library, finds the
 module that declares each of them by scanning lean/BoundedStackDepth/ (warning when a status line names another
-file), and writes
+file; a status line may name several files, separated by commas), and writes
   * paper/sections/leanindex.tex: the declarations grouped by the Lean module that declares them, after a
     sentence listing the names of other libraries cited in \\lean{...} (those starting with a prefix in
     LIBRARIES), which are checked in their own libraries;
@@ -68,7 +68,7 @@ def group(by_file, inline):
             if actual is None:
                 unknown.append(name)
                 continue
-            if actual != file:
+            if actual not in [f.strip() for f in file.split(",")]:
                 print(f"warning: {name} is declared in {actual}, not in {file}")
             grouped.setdefault(actual, set()).add(name)
     for name in inline:

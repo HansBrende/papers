@@ -37,9 +37,12 @@ with its Lean declarations and file):
 - **Theorem A (one walk).** The decomposition of a walk into ladders of nested hops, frames and passages; summed over
   the offsets of a random grid of size h₀, at most 6 times the number of hops are lost, for upper and lower hops
   separately.
-- **Corollary N, first statement (the deep-nesting pairs).** For every ε > 0, the walk DAG of the deep-nesting pair
+- **Corollary N (the deep-nesting pairs).** For every ε > 0, the walk DAG of the deep-nesting pair
   x₁ = U(s₀, m, 1), x₂ = x₁(· + ξ) on [0, T) has a cut of at most εT edges and depth at most D(2, ε), whatever the
-  nesting depth m, the shift ξ and the length T: the pairs are not depth-robust.
+  nesting depth m, the shift ξ and the length T: the pairs are not depth-robust. Hence Conjectures A′ and A″ of the
+  fourth and eighth papers are false: on a cyclic cover, the label of Theorem T is cheap and doubly serves almost every
+  level with a number of values independent of m. The conjectures are stated in Lean from the papers' definitions of
+  labels on cyclic covers, their cost and the doubly served levels.
 - **Corollary O (oblivious machines).** In the frozen machine model of the first paper: every trace of every machine,
   up to a horizon T ≤ C(L + 1), has a genie of cost at most εL whose full depth is bounded in terms of k, C, the value
   width and ε, so depth-TCP holds; the crux
@@ -57,11 +60,6 @@ with its Lean declarations and file):
   the shown set above the hop's group changes, or a digit wraps); displays of suspended frames as a least fixed point
   with random break bits; Lemma D (the size of the display has a tail independent of T and of the depth of the
   stacks); view invariance; the exposure bound; the event budgets and the accounting of all cut edges.
-
-Proved in the paper with a complete written proof, not formalized:
-
-- **Corollary N, second statement.** Conjectures A′ and A″ of the fourth and eighth papers are false (from the first
-  statement, through Corollary 5.26 of the eighth paper, a written proof there).
 
 The remarks are labelled as proof sketches, heuristics or numerical observations. They explain why simpler constructions
 fail, estimate the crux rate that Corollary O needs, and note that the native half bound (the half bound for codes on the

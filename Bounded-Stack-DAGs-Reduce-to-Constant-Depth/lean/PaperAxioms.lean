@@ -392,14 +392,19 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.struct_exc
 #print axioms BoundedStackDepth.x_excStart
 -- Machines.lean
+#print axioms BoundedStackDepth.ConjHVStar
+#print axioms BoundedStackDepth.ConjHVStarLin
 #print axioms BoundedStackDepth.Crux
 #print axioms BoundedStackDepth.CruxOn
 #print axioms BoundedStackDepth.DepthTCP
 #print axioms BoundedStackDepth.IsIndexCode.bits
 #print axioms BoundedStackDepth.IsIndexCode.mono
 #print axioms BoundedStackDepth.SCone
+#print axioms BoundedStackDepth.ballSystem_indexCode
+#print axioms BoundedStackDepth.ballSystem_minrank
 #print axioms BoundedStackDepth.coneI_subset_depCone
 #print axioms BoundedStackDepth.coneSystem
+#print axioms BoundedStackDepth.coneSystem_subset_ballSystem
 #print axioms BoundedStackDepth.crux_excludes
 #print axioms BoundedStackDepth.depCone
 #print axioms BoundedStackDepth.depthTCP
@@ -408,6 +413,8 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.genieDepth
 #print axioms BoundedStackDepth.genie_cost
 #print axioms BoundedStackDepth.genie_of_trace
+#print axioms BoundedStackDepth.hvStar
+#print axioms BoundedStackDepth.hvStar_linear
 #print axioms BoundedStackDepth.linCrux_excludes
 -- Main.lean
 #print axioms BoundedStackDepth.exists_avgLabel

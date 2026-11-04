@@ -46,6 +46,9 @@ with its Lean declarations and file):
   Crux(S_{k,C,β,D}, ρ), for some ρ > ε at that depth, excludes oblivious transposers in time C(L + 1) at all large sizes,
   uniformly over the machines with k work tapes and value width at most β; and the linear crux does the same for machines
   with a linear data path.
+- **Corollary HV (code-level depth reduction).** The ball systems of these machines, at the same bounded radius, have
+  index codes of at most εL bits, and minrank at most εL for machines with a linear data path: Conjecture HV* of the
+  eleventh paper holds in both its forms, so its Problem 9.1 has an affirmative answer.
 - **The composition.** The label and Lemma V (along a kept hop the label increases unless the display is truncated,
   the shown set above the hop's group changes, or a digit wraps); displays of suspended frames as a least fixed point
   with random break bits; Lemma D (the size of the display has a tail independent of T and of the depth of the

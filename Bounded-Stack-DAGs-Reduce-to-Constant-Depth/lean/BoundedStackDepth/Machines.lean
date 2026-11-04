@@ -3,7 +3,7 @@ import MergeDepth.LinearCrux
 import MergeDepth.FieldMachine
 
 /-!
-# Corollary O: depth reduction for oblivious machines
+# Corollaries O and HV: depth reduction for oblivious machines and for their codes
 
 The machine-level consequences of Theorem T, in the frozen machine model of the first paper, through
 the eleventh paper's library (`MergeDepth`): its traces, dependency DAGs (`DepStep`, `IsDepPath`),
@@ -26,9 +26,15 @@ genies (`LinNet.GFree`), index codes (`IsIndexCode`) and linear data paths (`Lin
 * `crux_excludes`: **(b).** If `Crux(S_{k,C,β,D}, ρ)` holds for some `ρ > ε`, then at all large
   sizes `d` no machine with `k` work tapes and value width at most `β` is oblivious at length
   `L = d² b(d)`, halts within `C (L + 1)` steps and transposes.
-* `linCrux_excludes`: **(c).** The same for machines with an `F`-linear data path, under the linear
-  crux `LinCrux_F(S_ball_{k,C,β,D}, ρ)` (the eighth paper's Definition 7.4, as formalized in the
-  eleventh paper's library).
+* `ballSystem_minrank`, `linCrux_excludes`: **(c).** The same for machines with an `F`-linear data
+  path, under the linear crux `LinCrux_F(S_ball_{k,C,β,D}, ρ)` (the eighth paper's Definition 7.4, as
+  formalized in the eleventh paper's library): the rigidity step bounds the minrank of the ball system
+  of radius `genieDepth k β C ε` by `εL`.
+* `coneSystem_subset_ballSystem`, `ballSystem_indexCode`: **Corollary HV.** The cones of the genie lie
+  in the balls `B^D(ℓ)` of the eleventh paper (`MergeDepth.ballSystem`), so the ball system of radius
+  `genieDepth k β C ε` of an oblivious transposer has an index code with at most `εL` bits.
+* `ConjHVStar`, `ConjHVStarLin`, `hvStar`, `hvStar_linear`: the eleventh paper's Conjecture HV*
+  (code-level depth reduction, its Conjecture 3.22) holds, in both its forms.
 -/
 
 namespace BoundedStackDepth
@@ -333,22 +339,21 @@ theorem crux_excludes {k β : ℕ} {C ε ρ : ℝ} (hC : 1 ≤ C) (hε : 0 < ε)
   push_cast at hbits hcost hL'
   nlinarith
 
-/-- **(c) of Corollary O: the linear crux alone excludes oblivious linear-time transposers with a
-linear data path.** Let `C ≥ 1` and `ε > 0`. If `LinCrux_F(S_ball_{k,C,β,D}, ρ)` holds for some
-`ρ > ε`, with `D = genieDepth k β C ε`, then there is `d₀` such that for no `d ≥ d₀` is any machine
-with `k` work tapes and value width at most `β` oblivious at length `L = d² b(d)` with halting time
-at most `C (L + 1)`, a transposer, and equipped with an `F`-linear data path. -/
-theorem linCrux_excludes (F : Type*) [Field F] {k β : ℕ} {C ε ρ : ℝ} (hC : 1 ≤ C) (hε : 0 < ε)
-    (hερ : ε < ρ) (hcrux : LinCrux F k C β (genieDepth k β C ε) ρ) :
-    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ M : TM, M.k = k → valueWidth M ≤ β → ∀ T : ℕ,
-      ¬ (ObliviousLinTime M d (entryBits d) C T ∧
-        ∃ m, Nonempty (LinDataPath F M (d * d * entryBits d) (traceAt M (d * d * entryBits d)) T m)) := by
+/-- **The ball systems of linear oblivious transposers have small minrank** (the rigidity step of
+(c)). For a machine with `k` work tapes and value width at most `β` that is oblivious at length
+`L = d² b(d)` with halting time `T ≤ C (L + 1)`, transposes, and has an `F`-linear data path, the
+minrank over `F` of its ball system of radius `genieDepth k β C ε` is at most `εL`. -/
+theorem ballSystem_minrank (F : Type*) [Field F] {k β : ℕ} {C ε : ℝ} (hC : 1 ≤ C) (hε : 0 < ε)
+    {d : ℕ} (hd : 1 ≤ d) (M : TM) (hk : M.k = k) (hβ : valueWidth M ≤ β) {T m : ℕ}
+    (hM : ObliviousLinTime M d (entryBits d) C T)
+    (P : LinDataPath F M (d * d * entryBits d) (traceAt M (d * d * entryBits d)) T m) :
+    (LinNet.minrank F (tposOf d (entryBits d))
+        (ballSystem (traceAt M (d * d * entryBits d)) T (genieDepth k β C ε) d (entryBits d)) : ℝ) ≤
+      ε * (d * d * entryBits d : ℕ) := by
   classical
-  obtain ⟨d₁, hd₁⟩ := hcrux ((ρ - ε) / 2) (by linarith)
-  refine ⟨max d₁ 1, fun d hd M hk hβ T ⟨⟨hobl, hT, htr⟩, m, ⟨P⟩⟩ => ?_⟩
-  have hd1 : 1 ≤ d := (le_max_right _ _).trans hd
-  have hL : 1 ≤ d * d * entryBits d := Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
-  obtain ⟨hM, hlen⟩ := obliviousTransposer_of_transposes hobl htr (fun _ => false)
+  obtain ⟨hobl, hT, htr⟩ := hM
+  have hL : 1 ≤ d * d * entryBits d := Nat.mul_pos (Nat.mul_pos hd hd) (one_le_entryBits d)
+  obtain ⟨hO, -⟩ := obliviousTransposer_of_transposes hobl htr (fun _ => false)
   have hβ1 : 1 ≤ β := (two_le_valueWidth M).trans' (by omega) |>.trans hβ
   obtain ⟨Γ, hcost, hpath⟩ := genie_of_trace M (List.ofFn fun _ : Fin (d * d * entryBits d) => false)
     hβ1 hL hC hε hT
@@ -366,15 +371,129 @@ theorem linCrux_excludes (F : Type*) [Field F] {k β : ℕ} {C ε ρ : ℝ} (hC 
       exact ⟨π, hπp, hfree, (hpath π (isDepPath_of_paths P.net_depStep π _ hπp) hfree).trans
         (Nat.le_succ _), hrd⟩
     rw [hC0, dotProduct_zero]
-  obtain ⟨-, hrank⟩ := P.rigidity_machine hM hβ Γ _ hdepth
-  have hmem : ballSystem (traceAt M (d * d * entryBits d)) T (genieDepth M.k β C ε) d (entryBits d) ∈
-      SBall M.k C β (genieDepth M.k β C ε) d (entryBits d) :=
-    ⟨M, T, rfl, hβ, hobl, hT, hlen, rfl⟩
-  have hcr := hd₁ d ((le_max_left _ _).trans hd) (entryBits d) rfl _ hmem
+  obtain ⟨-, hrank⟩ := P.rigidity_machine hO hβ Γ _ hdepth
   have hrank' : (LinNet.minrank F (tposOf d (entryBits d))
       (ballSystem (traceAt M (d * d * entryBits d)) T (genieDepth M.k β C ε) d (entryBits d)) : ℝ) ≤
       β * Γ.card := by exact_mod_cast hrank
+  linarith
+
+/-- **(c) of Corollary O: the linear crux alone excludes oblivious linear-time transposers with a
+linear data path.** Let `C ≥ 1` and `ε > 0`. If `LinCrux_F(S_ball_{k,C,β,D}, ρ)` holds for some
+`ρ > ε`, with `D = genieDepth k β C ε`, then there is `d₀` such that for no `d ≥ d₀` is any machine
+with `k` work tapes and value width at most `β` oblivious at length `L = d² b(d)` with halting time
+at most `C (L + 1)`, a transposer, and equipped with an `F`-linear data path. -/
+theorem linCrux_excludes (F : Type*) [Field F] {k β : ℕ} {C ε ρ : ℝ} (hC : 1 ≤ C) (hε : 0 < ε)
+    (hερ : ε < ρ) (hcrux : LinCrux F k C β (genieDepth k β C ε) ρ) :
+    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ M : TM, M.k = k → valueWidth M ≤ β → ∀ T : ℕ,
+      ¬ (ObliviousLinTime M d (entryBits d) C T ∧
+        ∃ m, Nonempty (LinDataPath F M (d * d * entryBits d) (traceAt M (d * d * entryBits d)) T m)) := by
+  obtain ⟨d₁, hd₁⟩ := hcrux ((ρ - ε) / 2) (by linarith)
+  refine ⟨max d₁ 1, fun d hd M hk hβ T ⟨hM, m, ⟨P⟩⟩ => ?_⟩
+  have hd1 : 1 ≤ d := (le_max_right _ _).trans hd
+  have hL : 1 ≤ d * d * entryBits d := Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
+  have hrank := ballSystem_minrank F hC hε hd1 M hk hβ hM P
+  obtain ⟨hobl, hT, htr⟩ := hM
+  obtain ⟨-, hlen⟩ := obliviousTransposer_of_transposes hobl htr (fun _ => false)
+  subst hk
+  have hcr := hd₁ d ((le_max_left _ _).trans hd) (entryBits d) rfl _
+    ⟨M, T, rfl, hβ, hobl, hT, hlen, rfl⟩
   have hL' : (1 : ℝ) ≤ (d * d * entryBits d : ℕ) := by exact_mod_cast hL
   nlinarith
+
+/-! ### Corollary HV: code-level depth reduction -/
+
+/-- **The cones of a genie lie in the balls.** If every `Γ`-free path of the dependency DAG has at
+most `D` vertices, the cone set of every output position lies in its ball `B^D(ℓ)` of the eleventh
+paper: the input positions read at the ends of dependency paths of at most `D` edges from its append
+step. -/
+theorem coneSystem_subset_ballSystem {k : ℕ} {τ₀ : Trace k} {T : ℕ} {Γ : Finset ℕ} {D : ℕ}
+    (hpath : ∀ π, IsDepPath τ₀.work T π → LinNet.GFree Γ π → π.length ≤ D) (d b : ℕ)
+    (ℓ : Fin (d * d * b)) : coneSystem τ₀ T Γ d b ℓ ⊆ ballSystem τ₀ T D d b ℓ := by
+  intro j hj
+  simp only [coneSystem, depCone, ballSystem, stepBall, mem_filter, mem_univ, true_and] at hj ⊢
+  obtain ⟨π, hπ, hfree, hrd⟩ := hj
+  have hlen := hpath _ hπ hfree
+  simp only [List.length_cons] at hlen
+  exact ⟨π, hπ, by omega, hrd⟩
+
+/-- **Corollary HV: the ball systems of oblivious transposers have short index codes.** For a
+machine with `k` work tapes and value width at most `β` that is oblivious at length `L = d² b(d)`
+with halting time `T ≤ C (L + 1)` and transposes, and for `C ≥ 1` and `ε > 0`, the ball system of
+radius `genieDepth k β C ε` of its trace has an index code with at most `εL` bits: the code of the
+genie of (a), for the larger side information. -/
+theorem ballSystem_indexCode {k β : ℕ} {C ε : ℝ} (hC : 1 ≤ C) (hε : 0 < ε) {d : ℕ} (hd : 1 ≤ d)
+    (M : TM) (hk : M.k = k) (hβ : valueWidth M ≤ β) {T : ℕ}
+    (hM : ObliviousLinTime M d (entryBits d) C T) :
+    ∃ m : ℕ, (m : ℝ) ≤ ε * (d * d * entryBits d : ℕ) ∧
+      ∃ E : (Fin (d * d * entryBits d) → Bool) → (Fin m → Bool),
+        IsIndexCode E (ballSystem (traceAt M (d * d * entryBits d)) T (genieDepth k β C ε) d
+          (entryBits d)) (tposOf d (entryBits d)) := by
+  obtain ⟨hobl, hT, htr⟩ := hM
+  have hL : 1 ≤ d * d * entryBits d := Nat.mul_pos (Nat.mul_pos hd hd) (one_le_entryBits d)
+  obtain ⟨hO, -⟩ := obliviousTransposer_of_transposes hobl htr (fun _ => false)
+  have hβ1 : 1 ≤ β := (two_le_valueWidth M).trans' (by omega) |>.trans hβ
+  obtain ⟨Γ, hcost, hpath⟩ := genie_of_trace M (List.ofFn fun _ : Fin (d * d * entryBits d) => false)
+    hβ1 hL hC hε hT
+  obtain ⟨E, hE⟩ := exists_indexCode hO hβ Γ
+  subst hk
+  exact ⟨β * Γ.card, by exact_mod_cast hcost, E,
+    IsIndexCode.mono hE fun ℓ => coneSystem_subset_ballSystem hpath d (entryBits d) ℓ⟩
+
+/-- **Conjecture HV\* of the eleventh paper** (code-level depth reduction, its Conjecture 3.22),
+all-code form, in the frozen machine model at the lengths `L = d² b(d)`: there is `c > 0` such that
+for every `τ ≥ 1` there is a radius `r` with the following property. For every `η > 0` there is `d₀`
+such that, for every `d ≥ d₀`, every machine with `k` work tapes and value width at most `β` that is
+oblivious at length `L` with halting time `T ≤ C (L + 1)` and transposes all `d × d` matrices
+(`ObliviousLinTime`) has an index code with at most `εL + c N_R / τ + ηL` bits for its ball system
+of radius `r` (`MergeDepth.ballSystem`), where `N_R` counts the deep hops at `V` of its trace
+(`MergeDepth.deepHops`). The conjecture assumes `k, V ≥ 1`, `β ≥ 2`, `C ≥ 1` and `0 < ε ≤ 1`; here
+`C` is real, and the eleventh paper's integer `C` is a special case. -/
+def ConjHVStar (k V β : ℕ) (C ε : ℝ) : Prop :=
+  ∃ c : ℝ, 0 < c ∧ ∀ τ : ℕ, 1 ≤ τ → ∃ r : ℕ, ∀ η : ℝ, 0 < η → ∃ d₀ : ℕ, ∀ d ≥ d₀,
+    ∀ (M : TM) (T : ℕ), M.k = k → valueWidth M ≤ β → ObliviousLinTime M d (entryBits d) C T →
+      ∃ m : ℕ, (m : ℝ) ≤ ε * (d * d * entryBits d : ℕ) +
+          c * ((deepHops (traceAt M (d * d * entryBits d)).work T V).card : ℝ) / τ +
+          η * (d * d * entryBits d : ℕ) ∧
+        ∃ E : (Fin (d * d * entryBits d) → Bool) → (Fin m → Bool),
+          IsIndexCode E (ballSystem (traceAt M (d * d * entryBits d)) T r d (entryBits d))
+            (tposOf d (entryBits d))
+
+/-- **Conjecture HV\* of the eleventh paper, linear form**: for a field `F` and a width `m` (the
+constant `c` may depend on both), the same holds for the machines that moreover have an `F`-linear
+data path of width at most `m` at length `L`, with the minrank over `F` of the ball system in place
+of the length of an index code. -/
+def ConjHVStarLin (F : Type*) [Field F] (k V β : ℕ) (C ε : ℝ) (m : ℕ) : Prop :=
+  ∃ c : ℝ, 0 < c ∧ ∀ τ : ℕ, 1 ≤ τ → ∃ r : ℕ, ∀ η : ℝ, 0 < η → ∃ d₀ : ℕ, ∀ d ≥ d₀,
+    ∀ (M : TM) (T : ℕ), M.k = k → valueWidth M ≤ β → ObliviousLinTime M d (entryBits d) C T →
+      ∀ m' ≤ m, Nonempty (LinDataPath F M (d * d * entryBits d) (traceAt M (d * d * entryBits d))
+          T m') →
+        (LinNet.minrank F (tposOf d (entryBits d))
+            (ballSystem (traceAt M (d * d * entryBits d)) T r d (entryBits d)) : ℝ) ≤
+          ε * (d * d * entryBits d : ℕ) +
+            c * ((deepHops (traceAt M (d * d * entryBits d)).work T V).card : ℝ) / τ +
+            η * (d * d * entryBits d : ℕ)
+
+/-- **Corollary HV: Conjecture HV\* holds**, for all `k, V, β`, every `C ≥ 1` and every `ε > 0`,
+with `c = 1`, the radius `genieDepth k β C ε` for every `τ`, and `d₀ = 1`. -/
+theorem hvStar {k V β : ℕ} {C ε : ℝ} (hC : 1 ≤ C) (hε : 0 < ε) : ConjHVStar k V β C ε := by
+  refine ⟨1, one_pos, fun τ _ => ⟨genieDepth k β C ε, fun η hη => ⟨1, fun d hd M T hk hβ hM => ?_⟩⟩⟩
+  obtain ⟨m, hm, E, hE⟩ := ballSystem_indexCode hC hε hd M hk hβ hM
+  refine ⟨m, ?_, E, hE⟩
+  have h1 : (0 : ℝ) ≤ 1 * ((deepHops (traceAt M (d * d * entryBits d)).work T V).card : ℝ) / τ := by
+    positivity
+  have h2 : (0 : ℝ) ≤ η * (d * d * entryBits d : ℕ) := by positivity
+  linarith
+
+/-- **Corollary HV, linear form: Conjecture HV\* holds in its linear form**, for every field `F`
+and every width `m`, with the same `c`, radius and `d₀`. -/
+theorem hvStar_linear (F : Type*) [Field F] {k V β : ℕ} {C ε : ℝ} (hC : 1 ≤ C) (hε : 0 < ε)
+    (m : ℕ) : ConjHVStarLin F k V β C ε m := by
+  refine ⟨1, one_pos, fun τ _ => ⟨genieDepth k β C ε, fun η hη =>
+    ⟨1, fun d hd M T hk hβ hM m' _ ⟨P⟩ => ?_⟩⟩⟩
+  have hrank := ballSystem_minrank F hC hε hd M hk hβ hM P
+  have h1 : (0 : ℝ) ≤ 1 * ((deepHops (traceAt M (d * d * entryBits d)).work T V).card : ℝ) / τ := by
+    positivity
+  have h2 : (0 : ℝ) ≤ η * (d * d * entryBits d : ℕ) := by positivity
+  linarith
 
 end BoundedStackDepth

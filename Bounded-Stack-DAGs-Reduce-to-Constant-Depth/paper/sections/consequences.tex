@@ -1,7 +1,8 @@
 \section{Consequences for the series and for tape machines}\label{sec:consequences}
 
-This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines, is
-formalized: in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
+This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines, and
+Corollary~HV, which proves the eleventh paper's conjecture on code-level depth reduction, are formalized: in the frozen machine
+model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
 codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. The first statement of
 Corollary~N, on the deep-nesting pairs, is formalized through the deep-nesting walk of the same library; its second statement
 rests on a result of the eighth paper that has a written proof there, and is not formalized. Throughout,
@@ -195,6 +196,50 @@ $\rho(\Delta)(\log\log\Delta)^a\to\infty$ for every $a>0$, suffices to exclude o
 The equivalence between $\TCP$ for every number of walks and information-cheap depth reduction~\cite[Theorem~I]{InfoDepthMemo2026}
 now has both sides true. The obstruction that assumes that $\TCP(k)$ fails for some~$k$~\cite[Theorem~H]{InfoDepthMemo2026} is
 vacuous, and so is the motivation that the eighth paper gives for its scratch question~\cite[Problem~10.5]{EighthPaper2026}.
+
+The same genies settle the eleventh paper's conjecture on code-level depth reduction. For a trace and a radius~$r$, the
+\emph{ball} $B^r(\ell)$ of an output position~$\ell$ is the set of input positions read at the ends of the dependency paths of
+at most $r$ edges from the step at which $\ell$ is appended, and $(B^r(\ell))_\ell$ is the \emph{ball system} of
+radius~$r$~\cite[Definitions~7.2 and~7.4]{EighthPaper2026}. Conjecture~HV$^*$ of the eleventh paper~\cite[Conjecture~3.22]{MergeDepth2026}
+concerns the machines with $k$ work tapes and value width at most~$\beta$ that are oblivious at length $L=d^2b(d)$ with halting
+time at most $C(L+1)$ and transpose. It asks for some $c>0$ and, for every $\tau\ge1$, a radius~$r$ such that, for every $\eta>0$
+and all large~$d$, the ball system of radius~$r$ of every such machine has an index code with at most
+$\eps L+cN_{\mathcal R}/\tau+\eta L$ bits, where $N_{\mathcal R}$ counts the deep hops of its trace. Its linear form asks the
+same of the minrank over a field~$F$ for the machines with an $F$-linear data path of bounded width. The eleventh paper proved
+the conjecture for codes of bounded merge depth~\cite[Remark~3.23(a)]{MergeDepth2026} and asked for a proof or a
+refutation~\cite[Problem~9.1]{MergeDepth2026}.
+
+\begin{corollary}[Corollary HV: code-level depth reduction]\label{cor:HV}
+\formal{Machines.lean}{coneSystem_subset_ballSystem, ballSystem_indexCode, ballSystem_minrank, ConjHVStar, ConjHVStarLin, hvStar, hvStar_linear}
+Let $k\in\N$, $\beta\ge1$, $C\ge1$ and $\eps>0$, and let $D$ be as in \cref{cor:oblivious}. For every machine with $k$ work
+tapes and value width at most~$\beta$ that is oblivious at length $L=d^2b(d)$ with halting time at most $C(L+1)$ and transposes
+all $d\times d$ matrices with $b(d)$-bit entries, the ball system of radius~$D$ of its trace has an index code with at most
+$\eps L$ bits; if the machine also has an $F$-linear data path, of any width, the ball system has minrank at most $\eps L$
+over~$F$. Consequently Conjecture~HV$^*$ of the eleventh paper holds in both its forms, with $c=1$, the radius~$D$ for
+every~$\tau$, and $d_0=1$.
+\end{corollary}
+
+\begin{outline}
+(\lean{coneSystem_subset_ballSystem}) Under the genie~$\Gamma$ of \cref{cor:oblivious}(a) every $\Gamma$-free path of the
+dependency DAG has at most $D$ vertices, so the cone set of every output position lies in its ball of radius~$D$
+(\lean{MergeDepth.ballSystem}). (\lean{ballSystem_indexCode}) The index code of \cref{cor:oblivious}(b), with
+$\beta\card\Gamma\le\eps L$ bits, stays an index code when the side information grows (\lean{IsIndexCode.mono}).
+(\lean{ballSystem_minrank}) The rigidity step of \cref{cor:oblivious}(c) bounds the minrank of the ball system of radius~$D$ by
+$\beta\card\Gamma\le\eps L$, whatever the width of the data path. (\lean{hvStar}, \lean{hvStar_linear}) \lean{ConjHVStar} and
+\lean{ConjHVStarLin} state the two forms of the conjecture, with $N_{\mathcal R}$ the number of deep hops of the trace
+(\lean{MergeDepth.deepHops}). Since $N_{\mathcal R}\ge0$ and $\eta L\ge0$, the bound $\eps L$ implies the conjectured one. The
+conjecture assumes $k,V\ge1$, $\beta\ge2$ and $\eps\le1$; the formal statements need none of these.
+\end{outline}
+
+Corollary~HV answers the eleventh paper's Problem~9.1 affirmatively, in the strong form of its
+Remark~3.23(b)~\cite{MergeDepth2026}: the radius does not depend on~$\tau$, and no deep-hop term is needed. It excludes no
+machine that \cref{cor:oblivious} does not already exclude. By the eleventh paper's Remark~3.23(c), the conjecture and the crux
+for ball systems together exclude oblivious linear-time transposers. \Cref{cor:oblivious}(b) needs only the crux for cone
+systems at the same radius, which asks less, since ball systems dominate cone systems~\cite[Remark~7.6(a)]{EighthPaper2026}.
+What changes is the expected shape of a construction. The eleventh paper read a counterexample to the conjecture, a code that
+merges deep lineages along a pattern without cheap cuts, as the mechanism an oblivious construction would
+need~\cite[Remark~3.23(d)]{MergeDepth2026}. No such counterexample exists. By \cref{sec:cons-construction}, what a construction
+needs is codes of rate near~$1$ on its own cone relations.
 
 \subsection{What a linear-time transposer would need}\label{sec:cons-construction}
 

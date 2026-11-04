@@ -40,3 +40,4 @@ import BoundedStackDepth.Totals
 import BoundedStackDepth.Choice
 import BoundedStackDepth.CutHops
 import BoundedStackDepth.Main
+import BoundedStackDepth.Machines

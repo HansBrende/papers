@@ -6,7 +6,9 @@ Hans Brende and Claude Opus 5.5 (Anthropic), November 2026.
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0
   ([`lean/LICENSE`](lean/LICENSE)). It builds on the eighth paper's library, which it requires by relative path,
-  so the sibling directories of this repository must be in place. [`lean/README.md`](lean/README.md) is a guide to
+  so the sibling directories of this repository must be in place. Corollary O also requires the eleventh paper's library
+  (*Merge Depth, Input Steering, and the Coding Core of Matrix Transposition on Tapes*), for its traces, dependency DAGs
+  and index codes in the first paper's frozen machine model. [`lean/README.md`](lean/README.md) is a guide to
   its modules.
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean`
   from the paper's LaTeX sources.
@@ -35,21 +37,26 @@ with its Lean declarations and file):
 - **Theorem A (one walk).** The decomposition of a walk into ladders of nested hops, frames and passages; summed over
   the offsets of a random grid of size h₀, at most 6 times the number of hops are lost, for upper and lower hops
   separately.
+- **Corollary O (oblivious machines).** In the frozen machine model of the first paper: every trace of every machine,
+  up to a horizon T ≤ C(L + 1), has a genie of cost at most εL whose full depth is bounded in terms of k, C, the value
+  width and ε, so depth-TCP holds; the crux
+  Crux(S_{k,C,β,D}, ρ), for some ρ > ε at that depth, excludes oblivious transposers in time C(L + 1) at all large sizes,
+  uniformly over the machines with k work tapes and value width at most β; and the linear crux does the same for machines
+  with a linear data path.
 - **The composition.** The label and Lemma V (along a kept hop the label increases unless the display is truncated,
   the shown set above the hop's group changes, or a digit wraps); displays of suspended frames as a least fixed point
   with random break bits; Lemma D (the size of the display has a tail independent of T and of the depth of the
   stacks); view invariance; the exposure bound; the event budgets and the accounting of all cut edges.
 
-Proved in the paper with complete written proofs, not formalized:
+Proved in the paper with a complete written proof, not formalized:
 
 - **Corollary N.** The deep-nesting pairs are cut to a depth independent of their nesting depth, so Conjectures A′
   and A″ of the fourth and eighth papers are false (through Corollary 5.26 of the eighth paper, a written proof there).
-- **Corollary O.** Every oblivious machine with k work tapes running in linear time has genies of cost εL and bounded
-  full depth; so the crux alone excludes oblivious linear-time transposers, and so would the native half bound for
-  codes on the cone relations of linear-time machines (through Theorem D of the fourth paper and Lemma 2.6 and
-  Theorem D_lin of the eighth paper, written proofs there).
 
-The remarks that explain why simpler constructions fail are labelled as proof sketches or numerical observations.
+The remarks are labelled as proof sketches, heuristics or numerical observations. They explain why simpler constructions
+fail, estimate the crux rate that Corollary O needs, and note that the native half bound (the half bound for codes on the
+cone relations of linear-time machines) would give the crux at rate one half, and so, by Corollary O, exclude oblivious
+linear-time transposers.
 
 ## What is open
 
@@ -61,7 +68,7 @@ The remarks that explain why simpler constructions fail are labelled as proof sk
 
 ## Building and verifying
 
-The Lean package imports the eighth paper's package and, through it, the earlier packages of the series and the
+The Lean package imports the eighth and eleventh papers' packages and, through them, the earlier packages of the series and the
 shared library [`lean-machine`](../lean-machine/), by relative paths. Clone the whole papers repository so that the
 sibling directories stay in place. Then fetch the second paper's pinned external dependency as described in its
 [README](../Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/).

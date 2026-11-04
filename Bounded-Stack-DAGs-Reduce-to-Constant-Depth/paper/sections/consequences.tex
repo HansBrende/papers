@@ -1,8 +1,9 @@
 \section{Consequences for the series and for tape machines}\label{sec:consequences}
 
-This section combines Theorem~T with results of earlier papers of the series. Theorem~T itself is formalized; the earlier
-results used here are proved in the text of those papers and are not formalized there, or only in part
-(Theorem~$\mathrm{D}_{\mathrm{lin}}$ of the eighth paper), so the two corollaries below are not formalized either. Throughout,
+This section combines Theorem~T with results of earlier papers of the series. Corollary~O, on oblivious machines, is
+formalized: in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, genies, cones and index
+codes formalized in the eleventh paper's library~\cite{MergeDepth2026}, which this library imports. Corollary~N, on the
+deep-nesting pairs, rests on a result of the eighth paper that has a written proof there, and is not formalized. Throughout,
 $D(k,\eps)=K^P-1$ is the depth of Theorem~T, with $K=K(k,\eps)$ and $P=P(k,\eps)$ as in \cref{def:params}.
 
 \subsection{The deep-nesting pairs}\label{sec:cons-dnp}
@@ -67,41 +68,80 @@ most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is it oblivious at lengt
 $C(L+1)$ and a transposer of all $d\times d$ matrices with $b(d)$-bit entries. The eighth paper proves the analogue for machines
 with a data path that is linear over a field~$F$, Theorem~$\mathrm{D}_{\mathrm{lin}}$, with linear depth-TCP and a linear crux
 $\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ in place of the two
-hypotheses~\cite[Definition~7.4 and Theorem~7.5]{EighthPaper2026}.
+hypotheses~\cite[Definition~7.4 and Theorem~7.5]{EighthPaper2026}. Corollary~O below proves both conclusions again, formally and
+for all machines at once, with depth reduction supplied by Theorem~T.
+
+The formal statements follow these definitions in the frozen machine model.
+
+\begin{definition}[depth-TCP and the crux]\label{def:crux}
+\formal{Machines.lean}{DepthTCP, depCone, coneSystem, SCone, CruxOn, Crux}
+Let $k,\beta,D\in\N$ and $C,\eps,\rho\in\R$. Write $L=d^2b(d)$.
+\begin{enumerate}[label=(\alph*)]
+\item $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ holds if every machine with $k$ work tapes and value width at most~$\beta$
+has a~$d_0$ such that, for every $d\ge d_0$ at which it is oblivious at length~$L$ with halting time $T\le C(L+1)$, the
+dependency DAG of its trace has a genie~$\Gamma$ with $\beta\card\Gamma\le\eps L$ and full depth at most~$D$.
+\item The \emph{cone set} $I_\Gamma(t)$ of a step~$t$ is the set of input positions read at the ends of the $\Gamma$-free paths of
+the dependency DAG from~$t$. The \emph{cone system} of a trace assigns to every output position~$\ell$ the cone set of the step at
+which $\ell$ is appended. $\mathcal S_{k,C,\beta,D}$ is the class of the cone systems, at size~$d$, of the machines with $k$ work
+tapes and value width at most~$\beta$ that are oblivious at length~$L$ with halting time $T\le C(L+1)$ and append exactly $L$
+bits, for the sets~$\Gamma$ of full depth at most~$D$.
+\item An \emph{index code} with $m$ bits for a system~$I$ is a map $E\colon\{0,1\}^L\to\{0,1\}^m$ such that $E(w)$ and the bits
+of~$w$ at the positions of $I(\ell)$ determine the bit of~$w$ at the position $\tpos(\ell)$ that output~$\ell$ copies, for every
+input~$w$ and every~$\ell$. $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds if for every $\eta>0$ there is~$d_0$ such that every
+index code for every system of $\mathcal S_{k,C,\beta,D}$ at a size $d\ge d_0$ has at least $(\rho-\eta)L$ bits.
+\end{enumerate}
+\end{definition}
+
+These are the fourth paper's Definitions~4.7 and~4.8~\cite{FourthPaper2026}. The linear crux
+$\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ of the eighth paper, a minrank bound for the balls of
+radius~$D$ of the same machines~\cite[Definition~7.4]{EighthPaper2026}, is formalized in the eleventh paper's library
+(\lean{MergeDepth.LinCrux}).
 
 \begin{corollary}[Corollary O: depth reduction for oblivious machines]\label{cor:oblivious}
-\notformalized
-Let $k\ge1$ and $\beta\ge2$ be integers, $C\ge1$ and $0<\eps\le1$. Put $\eps'=\eps/(4\beta C)$ and
+\formal{Machines.lean}{genieDepth, genie_of_trace, depthTCP, crux_excludes, linCrux_excludes}
+Let $k\in\N$, $\beta\ge1$, $C\ge1$ and $\eps>0$. Put $\eps'=\eps/(4\beta C)$ and
 \[
   D_1=D(k,\eps')+1,\qquad D=D_1\lceil4\beta C/\eps\rceil .
 \]
 \begin{enumerate}[label=(\alph*)]
-\item For every machine with $k$ work tapes and value width at most~$\beta$, every length $L\ge1$ and every trace at
-length~$L$ with halting time $T\le C(L+1)$, the dependency DAG of the trace has a genie of cost at most $\eps L$ and full depth at
-most $D-1$. In particular, $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ holds.
-\item If $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds for some $\rho>\eps$, then for every machine~$M$ with $k$ work tapes and value
-width at most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length $L=d^2b(d)$ with halting time at
-most $C(L+1)$ and a transposer of all $d\times d$ matrices with $b(d)$-bit entries.
-\item If $\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ holds for a field~$F$ and some $\rho>\eps$, the
-conclusion of~(b) holds for oblivious machines with an $F$-linear data path: for every machine~$M$ with $k$ work tapes and value
-width at most~$\beta$ there is $d_0$ such that for no $d\ge d_0$ is $M$ oblivious at length $L=d^2b(d)$ with an $F$-linear data
-path, halting time at most $C(L+1)$, and a transposer of all $d\times d$ matrices with $b(d)$-bit entries.
+\item For every machine with $k$ work tapes, every input, every $L\ge1$ and every horizon $T\le C(L+1)$, the dependency DAG
+of the trace of the input before~$T$ has a genie of cost $\beta\card\Gamma\le\eps L$ and full depth at most $D-1$. In
+particular, $\mathrm{depth}\text{-}\TCP(k,C,\beta,\eps,D)$ holds, with $d_0=1$.
+\item If $\Crux(\mathcal S_{k,C,\beta,D},\rho)$ holds for some $\rho>\eps$, then there is~$d_0$ such that for no $d\ge d_0$ is a
+machine with $k$ work tapes and value width at most~$\beta$ oblivious at length $L=d^2b(d)$ with halting time at most $C(L+1)$
+and a transposer of all $d\times d$ matrices with $b(d)$-bit entries.
+\item If $\mathrm{LinCrux}_F(\mathcal S^{\mathrm{ball}}_{k,C,\beta,D},\rho)$ holds for a field~$F$ and some $\rho>\eps$, then there
+is~$d_0$ such that for no $d\ge d_0$ is a machine with $k$ work tapes and value width at most~$\beta$ oblivious at length
+$L=d^2b(d)$ with halting time at most $C(L+1)$, a transposer of all $d\times d$ matrices with $b(d)$-bit entries, and equipped
+with an $F$-linear data path.
 \end{enumerate}
 \end{corollary}
 
-\begin{informalproof}
-(a) The walks of the work heads along the trace are $k$ walks of length~$T$, possibly with pauses. By Theorem~T at~$\eps'$, their
-walk DAG has a cut of at most $\eps'T=\eps T/(4\beta C)$ edges and depth at most $D(k,\eps')<D_1$. By the eighth paper's lemma
-from cuts to genies~\cite[Lemma~2.6]{EighthPaper2026}, which has a written proof there, the dependency DAG of the trace has a
-genie of cost at most $\eps L$ and full depth at most $D_1\lceil4\beta C/\eps\rceil-1=D-1$. If $M$ is oblivious at length~$L$,
-its dependency DAG is that of its unique trace, so depth-TCP$(k,C,\beta,\eps,D)$ holds, with $d_0=1$.
-(b) Theorem~D of the fourth paper, with its first hypothesis supplied by~(a).
-(c) Theorem~$\mathrm{D}_{\mathrm{lin}}$ of the eighth paper. Its first hypothesis, linear depth-TCP$(k,C,\beta,\eps,D;F)$, asks for
-a representation of the data path and a genie of cost at most $\eps L$ under which every output step has linear depth at
-most~$D$. Every representation will do: the genie~$\Gamma$ of~(a) has full depth less than~$D$, so every $\Gamma$-free path from
-an output step has fewer than $D$ edges, and the path sums that define linear depth run over such paths; so every output step has
-linear depth at most~$D$, as structural depth at most~$D$ implies linear depth at most~$D$~\cite[Section~7.1]{EighthPaper2026}.
-\end{informalproof}
+\begin{outline}
+(a) (\lean{genie}, \lean{genie_cost}, \lean{genie_of_trace}) The work-head walks of a trace are $k$ walks, possibly with pauses
+(\lean{MergeDepth.Trace.work_isWalk}). Theorem~T at~$\eps'$ cuts their walk DAG by at most $\eps'T$ edges to depth at most
+$D_1-1$. The genie~$\Gamma$ reveals the lower end of every cut edge and every step $t\equiv R-1\pmod R$, where
+$R=\lceil4\beta C/\eps\rceil$. A $\Gamma$-free path of the dependency DAG uses no cut edge, so it has fewer than $D_1$ edges along
+long hops, and between two of them, or at either end, fewer than $R$ consecutive state edges. Hence it has at most $D_1R=D$
+vertices. The cost is $\beta\card\Gamma\le\beta(\eps'T+T/R)\le\eps T/(2C)\le\eps L$. This is the eleventh paper's cold
+genie~\cite[Lemma~3.1]{MergeDepth2026} with Theorem~T in place of the eighth paper's Theorem~F, so it bounds all $\Gamma$-free
+paths, not only those without deep edges; it replaces the eighth paper's Lemma~2.6. For an oblivious machine the trace is that
+of any input, and depth-TCP follows with $d_0=1$ (\lean{depthTCP}). (b) (\lean{exists_indexCode}, \lean{crux_excludes}) A machine as in~(b) is an oblivious transposer
+along the trace of any input (\lean{MergeDepth.obliviousTransposer_of_transposes}). By the eleventh paper's index-code
+lemma~\cite[Lemma~3.3(b)]{MergeDepth2026} for the field DAG of the pruning that keeps every edge
+(\lean{MergeDepth.Pruning.field_isIndexCode}), the values of the steps of~$\Gamma$ take at most $2^{\beta\card\Gamma}$ values and
+form an index code for the cone sets of that field DAG. A field path projects to a $\Gamma$-free path of the dependency DAG, so
+these cone sets lie in the cone sets~$I_\Gamma$ (\lean{coneI_subset_depCone}); an index code stays one when the side information
+grows (\lean{IsIndexCode.mono}), and one with at most $2^m$ code words gives one with $m$ bits (\lean{IsIndexCode.bits}). So the
+genie of~(a) gives an index code with $\beta\card\Gamma\le\eps L$ bits for a system of $\mathcal S_{k,C,\beta,D}$, and for $d$ at
+least the~$d_0$ of the crux at $\eta=(\rho-\eps)/2$, and $d\ge1$, this contradicts the bound $(\rho+\eps)L/2$. (c)
+(\lean{linCrux_excludes}) The $\Gamma$-free paths of the data path's network from an append step are paths of the dependency DAG
+(\lean{MergeDepth.isDepPath_of_paths}) with at most $D$ vertices, so the path sums that define linear depth vanish at every
+position that no $\Gamma$-free path of at most $D$ edges from the append step reads: every output step has linear depth at
+most~$D$~\cite[Definition~7.2]{EighthPaper2026}. The eighth paper's rigidity at one size, for machines
+(\lean{MergeDepth.LinDataPath.rigidity_machine}), then bounds the minrank of the ball system of radius~$D$ by
+$\beta\card\Gamma\le\eps L$, which contradicts the linear crux as in~(b).
+\end{outline}
 
 So the crux alone, at the depth~$D$ and a rate above~$\eps$, excludes every oblivious linear-time transposer, whatever its head
 motion; this extends the eighth paper's Corollary~F~\cite[Corollary~6.1]{EighthPaper2026} from heads that enter every cell

@@ -1,8 +1,8 @@
 # Lean library `BoundedStackDepth`
 
 The formalization of *Bounded-Stack DAGs Reduce to Constant Depth* (Lean and Mathlib v4.34.1). It requires the eighth
-paper's library `boundedNesting` by relative path, and through it the earlier libraries of the series, so the sibling
-directories of the repository must be in place. Declarations below are relative to the namespace `BoundedStackDepth`.
+paper's library `boundedNesting` and, for Corollary O, the eleventh paper's library `mergeDepth` by relative paths, and
+through them the earlier libraries of the series, so the sibling directories of the repository must be in place. Declarations below are relative to the namespace `BoundedStackDepth`.
 
 ## Main results
 
@@ -10,6 +10,10 @@ directories of the repository must be in place. Declarations below are relative 
   edges and depth at most `K^P − 1`, with the explicit parameters `parH`, `parQ`, `parJ`, `parP`, `parK`.
 - `tcp`: `TCP k` for every `k`; `main : MainStatement`, the same statement as stated in `Statement.lean`; and `sr`:
   `SR s` for every `s`, through the eighth paper's reduction.
+- Corollary O (`Machines.lean`), in the frozen machine model of the first paper, through the eleventh paper's
+  library: `genie_of_trace` and `depthTCP` (genies of cost `εL` and bounded full depth for every trace), `crux_excludes`
+  (the crux alone excludes oblivious linear-time transposers) and `linCrux_excludes` (the linear crux, for machines with a
+  linear data path).
 - Every declaration that the paper cites depends at most on `propext`, `Classical.choice` and `Quot.sound`:
   `lake env lean PaperAxioms.lean` prints them. `PaperAxioms.lean` is generated from the paper's LaTeX sources by
   `../tools/lean_index.py`.
@@ -25,6 +29,7 @@ The root module `BoundedStackDepth.lean` imports all of them.
 | the label | `Label` (Lemma V), `Global` (the label of `k` walks) |
 | displays | `Display` (the display as a least fixed point), `Revealing` (adaptive revealing), `DisplayTail` (Lemma D), `DisplayView` (the display above a group), `Entries`, `Composition` (the composed display), `ViewInvariance` (Proposition W), `Exposure` |
 | accounting and the proof | `Budgets`, `EventWeight`, `Accounting` (counting facts), `Truncation`, `Wrap`, `WrapGlobal`, `CutDescents`, `CutHops`, `Totals`, `Main` |
+| consequences | `Machines` (Corollary O) |
 
 The paper names, for each numbered result, its declarations and file; its appendix indexes all of them by module.
 

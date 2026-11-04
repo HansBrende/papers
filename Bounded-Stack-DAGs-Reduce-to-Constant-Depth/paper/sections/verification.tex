@@ -1,8 +1,9 @@
 \section{Building and verifying the formalization}\label{app:verify}
 
 The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
-(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the library of the eighth
-paper~\cite{EighthPaper2026} through a relative path; that library requires the earlier libraries of the series in the same way.
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the libraries of the eighth
+paper~\cite{EighthPaper2026} and, for Corollary~O, of the eleventh paper~\cite{MergeDepth2026} through relative paths; those
+libraries require the earlier libraries of the series in the same way.
 Keep the repository's directory layout, so that these sibling directories stay in place.
 
 \paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
@@ -23,7 +24,7 @@ library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, declares
 \texttt{maxHeartbeats}. The script regenerates both the index of \cref{app:index} and \leanfile{PaperAxioms.lean}; with the
 option \texttt{--index-only} it writes only the index.
 
-\paragraph{Where things are.} The library \leanfile{lean/BoundedStackDepth/} has five layers, each a group of modules.
+\paragraph{Where things are.} The library \leanfile{lean/BoundedStackDepth/} has six layers, each a group of modules.
 \begin{itemize}[leftmargin=1.5em]\raggedright
 \item \emph{Statements and foundations:} \leanfile{Statement.lean} (the main statement and its corollary for stack DAGs),
 \leanfile{Assembly.lean} (the probabilistic method for label cuts), \leanfile{Basic.lean}, \leanfile{Grid.lean},
@@ -40,5 +41,6 @@ option \texttt{--index-only} it writes only the index.
 \item \emph{Accounting and the proof} (\cref{sec:accounting,sec:proof}): \leanfile{Budgets.lean}, \leanfile{EventWeight.lean},
 \leanfile{Accounting.lean}, \leanfile{Truncation.lean}, \leanfile{Wrap.lean}, \leanfile{WrapGlobal.lean},
 \leanfile{CutDescents.lean}, \leanfile{CutHops.lean}, \leanfile{Totals.lean} and \leanfile{Main.lean}.
+\item \emph{Consequences} (\cref{sec:consequences}): \leanfile{Machines.lean}, Corollary~O.
 \end{itemize}
 The root module \leanfile{BoundedStackDepth.lean} imports all of them.

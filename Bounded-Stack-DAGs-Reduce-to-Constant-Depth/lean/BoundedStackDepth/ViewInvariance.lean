@@ -431,7 +431,7 @@ theorem max_entryBot_eq {t d : ℕ}
 
 /-- **Local values at `t − 1`** (above `0`): the group `c` of the band of `K` at `t − 1`, unless the
 head pops at `t` and the segment of `K` does not return. -/
-theorem localPre_iff (hr : r < h₀) (hW : S.PopsAtZero) {t : ℕ} (ht : 1 ≤ t) (htT : t < S.T)
+theorem localPre_iff (hr : r < h₀) (hW : S.PopsAtZero) {t : ℕ} (htT : t < S.T)
     {K : ℕ × ℕ} (hK : S.InnermostCommon K t) {y : ℕ} (hy : 0 < y) :
     S.LocalPre h₀ r t y ↔
       y = grp h₀ r (band (S.runMax K (t - 1))) ∧ (S.Own K (t - 1) ∨ S.Returns K t) := by
@@ -462,7 +462,7 @@ theorem localPre_iff (hr : r < h₀) (hW : S.PopsAtZero) {t : ℕ} (ht : 1 ≤ t
 
 /-- **Local values at `t`** (above `0`): the group of the band of `K` at `t` if `t` is an own time of
 `K`; at a push, the group `c` if the segment of `K` returns, and nothing otherwise. -/
-theorem localPost_iff (hr : r < h₀) {t : ℕ} (ht : 1 ≤ t) {K : ℕ × ℕ} (hK : S.InnermostCommon K t)
+theorem localPost_iff (hr : r < h₀) {t : ℕ} {K : ℕ × ℕ} (hK : S.InnermostCommon K t)
     {y : ℕ} (hy : 0 < y) : S.LocalPost h₀ r t y ↔
       (S.Own K t ∧ y = grp h₀ r (band (S.runMax K t))) ∨
         (¬ S.Own K t ∧ S.Returns K t ∧ y = grp h₀ r (band (S.runMax K (t - 1)))) := by
@@ -502,7 +502,7 @@ theorem localPre_iff_localPost (hr : r < h₀) (hW : S.PopsAtZero) {t : ℕ} (ht
     S.LocalPre h₀ r t y ↔ S.LocalPost h₀ r t y := by
   obtain ⟨K, hK⟩ := exists_innermostCommon (S := S) htT
   have hKlt : K.1 < t := lt_of_le_of_lt hK.2.1.1 (by omega)
-  rw [localPre_iff hr hW ht htT hK (by omega), localPost_iff hr ht hK (by omega)]
+  rw [localPre_iff hr hW htT hK (by omega), localPost_iff hr hK (by omega)]
   -- last-stint end: if the segment of `K` innermost at `t − 1` does not return, its group is at most `d`.
   have hlast : S.Own K (t - 1) → ¬ S.Returns K t → grp h₀ r (band (S.runMax K (t - 1))) ≤ d := by
     intro hown hret

@@ -28,6 +28,7 @@ INLINE = re.compile(r"\\lean\{([^{}]+)\}")
 # Other libraries, by namespace: how the index names them, and their citation key (None: no citation).
 LIBRARIES = {
     "BoundedNesting": ("the eighth paper's library", "EighthPaper2026"),
+    "MergeDepth": ("the eleventh paper's library", "MergeDepth2026"),
 }
 FOREIGN = tuple(LIBRARIES)
 LEAN_DIR = ROOT / "lean" / "BoundedStackDepth"

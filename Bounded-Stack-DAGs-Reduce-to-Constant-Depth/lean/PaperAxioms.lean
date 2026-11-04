@@ -27,6 +27,7 @@ import BoundedStackDepth.Grid
 import BoundedStackDepth.HopData
 import BoundedStackDepth.Label
 import BoundedStackDepth.LadderBands
+import BoundedStackDepth.Machines
 import BoundedStackDepth.Main
 import BoundedStackDepth.PerExcursion
 import BoundedStackDepth.Prominence
@@ -385,6 +386,24 @@ and `Quot.sound`. -/
 #print axioms BoundedStackDepth.segStart_ladD_of_not
 #print axioms BoundedStackDepth.struct_exc
 #print axioms BoundedStackDepth.x_excStart
+-- Machines.lean
+#print axioms BoundedStackDepth.Crux
+#print axioms BoundedStackDepth.CruxOn
+#print axioms BoundedStackDepth.DepthTCP
+#print axioms BoundedStackDepth.IsIndexCode.bits
+#print axioms BoundedStackDepth.IsIndexCode.mono
+#print axioms BoundedStackDepth.SCone
+#print axioms BoundedStackDepth.coneI_subset_depCone
+#print axioms BoundedStackDepth.coneSystem
+#print axioms BoundedStackDepth.crux_excludes
+#print axioms BoundedStackDepth.depCone
+#print axioms BoundedStackDepth.depthTCP
+#print axioms BoundedStackDepth.exists_indexCode
+#print axioms BoundedStackDepth.genie
+#print axioms BoundedStackDepth.genieDepth
+#print axioms BoundedStackDepth.genie_cost
+#print axioms BoundedStackDepth.genie_of_trace
+#print axioms BoundedStackDepth.linCrux_excludes
 -- Main.lean
 #print axioms BoundedStackDepth.exists_avgLabel
 #print axioms BoundedStackDepth.main

@@ -15,7 +15,7 @@ ports of every remaining coordinate whose paired distance is at most the
 chosen radius. Denote the retained input positions by $U_\tau$ and set
 $m_\tau=|U_\tau|$. The choices of steps and positions are common to the
 whole trace. The existence of such cuts with bounded depth is proved in
-\lean{TapeStorageRates.native_typical_partition} using the walk theorem
+\lean{TapeStorageRates.native_joint_typical_partition} using the walk theorem
 of \cite[Corollary~O(a)]{PaperFourteen}.
 
 For a fixed $\tau$, record the values at $\Gamma_\tau$ and the input bits
@@ -73,7 +73,7 @@ $Z_\Delta=2^{\sqrt{\log_2\Delta}}$. There are constants $K,A>0$ such
 that at every sufficiently large integer cap $\Delta$ one can fix
 an integer $s\ge1$ with
 \[
-       f_{2p}(\Delta)\le 1/s\le K f_{2p}(\Delta).
+       f_p(\Delta)\le 1/s\le K f_p(\Delta).
 \]
 For every fixed integer radius $r\ge0$, all sufficiently large $d$,
 every $b\ge1$ and every nonempty $G\subseteq G_{d,b}$, the bit simulator
@@ -90,38 +90,72 @@ The simulator halts within $(11c+1)(L+1)$ steps on $G$. For $X$ uniform
 on $G$, let $R_X=\log_2|C_{\tau,z}|/m_\tau$ for its cell.
 On this same partition, for every $u\ge0$,
 \[
- \Pr\!\left[R_X<\frac{\log_2|G|}{L}-A f_{2p}(\Delta)-u\right]
+ \Pr\!\left[R_X<\frac{\log_2|G|}{L}-A f_p(\Delta)-u\right]
       \le 2^{-uL}.
 \]
 \end{theorem}
 \begin{outline}
-Let $\beta_s$ be the number of bits sufficient for a scale-one step
-record of $N_s$. The simulator keeps its tape alphabet, and its control
-uses $O_M(s)$ bits, so $\beta_s=O_M(s)$. At fixed $s$ the startup
-cost fits in $L+1$ steps for all sufficiently large $d$, uniformly in
-$b\ge1$. The exact clock and trace count in \cref{thm:simulator} then
-give the displayed time bound and at most $2^{aL/s}$ traces on $G$, for
-a constant $a=a(M,c)$. All inputs in $G$ have the same output length.
+At fixed $s$ the startup cost fits in $L+1$ steps for all
+sufficiently large $d$, uniformly in $b\ge1$. The exact clock and trace
+count in \cref{thm:simulator} give the displayed time bound and at most
+$2^{aL/s}$ traces on $G$, for a constant $a=a(M,c)$. All inputs in $G$
+have the same output length.
 
-On each trace spend at most $L/s$ bits on revealed steps. In the cut
-theorem the parameter controlling the depth is
-$x=4\beta_s(11c+1)s=O_{M,c}(s^2)$
-\cite[Definition~7.1 and Corollary~9.3(a)]{PaperFourteen}. If $D_s$ is
-the resulting depth parameter, put $B_s=\sum_{j=0}^{D_s}(k+1)^j$.
-This bounds the number of permitted input helpers at each output.
-The degree calculation of \cref{sec:proof} now gives
-$\log_2\log_2(2s^2 B_s)=O_{M,c}(s^{2p}\log_2(s+1))$.
-Choose the constant in the inversion so that this double logarithm is
-at most $\tfrac12\log_2\log_2\Delta$. Then
-$\max(s,B_s)\le Z_\Delta$ at the stated scale for $s$, as proved in
-\lean{TapeStorageRates.native_batch_size_for_cap}. This extra factor
-of $s$ in the cut parameter accounts for the change from $f_p$ to
-$f_{2p}$.
+On each trace, group the physical steps into the simulator's batches.
+A complete batch has $10s+1$ steps. Each head sweeps all cells in three
+aligned blocks and otherwise stays in those blocks. Replace its physical
+position by its block index. The simultaneous work-head trajectory admits
+nine coarse slots per complete batch and one for the final drain. This
+is still a trajectory of $k$ unit-step work heads, with $O_c(L/s)$
+vertices. Batch boundaries are retained, including when the heads stay
+in the same blocks.
+
+Apply the full-path cut theorem to this coarse trajectory with cut
+fraction $\eta_s=\Theta_{M,c}(1/s)$
+\cite[Definition~7.1 and Corollary~9.3(a)]{PaperFourteen}. Mark the
+whole batch containing each selected coarse vertex, and reveal every
+physical step record in the marked batches. A last-visit dependency
+between distinct batches lifts to a coarse last-visit chain confined to
+those endpoint batches: an intermediate complete batch visiting the same
+block would also visit the precise physical cell, contrary to the
+last-visit property. The chronological spine lifts as well. Counting
+path lengths in vertices, a coarse free-path bound $H_s$ gives a physical bound
+$(10s+1)H_s+1$. The extra vertex allows a revealed root; the suffix of
+the path must avoid every marked batch. The path transfer is
+\lean{TapeStorageRates.BatchCoarsening.Coarsening.path_length_le}.
+
+We bound the joint support of these revelations using one local seed
+per marked batch. At entry to a marked batch, the full simulator
+control and the initial contents of its three-block input and work
+windows determine every step record in that batch. The control includes
+the buffered values and pending output. The seed uses $O_M(s)$ bits, so
+a set $J$ of marked batches has at most $2^{O_M(s)|J|}$ joint record values;
+no independence is assumed. Since $|J|\le O_c(\eta_s L/s)$, choosing
+the constant in $\eta_s$ makes this support at most $2^{L/s}$. We fix
+the complete records themselves. The seeds only bound their number.
+The joint support estimate is
+\lean{TapeStorageRates.NativeBatchRecord.compiler_joint_record_support}.
+
+The coarse cut parameter is now $x=4/\eta_s=O_{M,c}(s)$. For the
+physical depth parameter $D_s$, put
+$B_s=\sum_{j=0}^{D_s}(k+1)^j$. The factor $10s+1$ in the lifted depth
+preserves the estimate
+\[
+ \log_2\log_2(2sB_s)=O_{M,c}(s^p\log_2(s+1)).
+\]
+The numerical argument is formalized in
+\lean{TapeStorageRates.genie_scaled_cap_degree_bound_at}. Choose the
+constant in the inversion so that the double logarithm is at most
+$\tfrac12\log_2\log_2\Delta$. Then $\max(s,B_s)\le Z_\Delta$ at the
+stated scale for $s$, by
+\lean{TapeStorageRates.native_batch_size_for_cap}. This gives the same
+function $f_p$ as the packet bound while retaining the physical bit
+positions and actual append roots.
 
 There are at most $B_sL$ incidences. Removing input coordinates of degree
 greater than $\Delta$ therefore removes at most $B_sL/(\Delta+1)$
 coordinates. In the induced graph, the short-pair estimate bounds the
-second deletion by $J L/\log_2 d$ for a constant $J$ depending on the
+second deletion by $E_r L/\log_2 d$ for a constant $E_r$ depending on the
 fixed parameters and radius, uniformly over the traces and the widths
 $b\ge1$ \cite[Proposition~4.11(a), accompanying Lean theorem]{PaperEleven}.
 Since $B_s/(\Delta+1)<Z_\Delta/\Delta$, both deletions fit in the
@@ -138,7 +172,7 @@ an event of probability at most $2^{-uL}$ we obtain
 \]
 The code is nonempty, so its rate on $m_\tau\le L$ coordinates is at
 least $\log_2|C_{\tau,z}|/L$. The loss
-$\lambda+(a+1)/s$ is at most $(a+2)K f_{2p}(\Delta)$. This proves the
+$\lambda+(a+1)/s$ is at most $(a+2)K f_p(\Delta)$. This proves the
 tail with a single partition for every confidence level.
 \end{outline}
 
@@ -146,6 +180,9 @@ For a full successful cube $\log_2|G|/L=1$. Taking $u=1/s$ gives rate
 $1-O_{M,c}(1/s)$ except on input mass at most $2^{-L/s}$. For a smaller
 success set its own rate enters with coefficient one. The retained
 positions and recovery relation may vary from trace to trace. The code can also vary with the revealed word and the exterior values.
+The native coding target has the same rate-loss scale as the packet
+target, while keeping the physical positions and append times available
+for a more specific upper bound. Establishing such an upper bound remains open.
 
 \subsection{A sufficient native coding bound}\label{sec:native-test}
 

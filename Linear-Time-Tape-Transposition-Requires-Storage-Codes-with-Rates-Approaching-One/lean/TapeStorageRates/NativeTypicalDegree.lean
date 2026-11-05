@@ -1,7 +1,5 @@
 import TapeStorageRates.DegreeGenie
 import TapeStorageRates.FiniteTransfer
-import TapeStorageRates.NativeCompiler
-import BoundedStackDepth.LowAdaptivity
 
 /-! # Degree budgets on the physical bit cones of the aligned simulator -/
 
@@ -11,30 +9,16 @@ open Filter Finset Transpose MergeDepth BoundedStackDepth
 
 set_option autoImplicit false
 
-/-- Every scale-one physical record of the simulator has width linear in its batch size,
-including its full finite control and its actual work alphabet. -/
-theorem native_blockWidth_bound (M : TM) :
-    ∃ b : ℕ, ∀ s (hs : 0 < s), blockWidth (Native.machine M hs) 1 ≤ b*s := by
-  obtain ⟨K,hK⟩ := Native.control_bits M
-  let a := M.k * Nat.clog 2 (M.g+1) + (M.k+1) * Nat.clog 2 3 + 2
-  refine ⟨K+a, fun s hs => ?_⟩
-  have h := Nat.clog_le_of_le_pow (hK s hs)
-  have ha : a ≤ a*s := Nat.le_mul_of_pos_right a hs
-  change Nat.clog 2 ((Native.machine M hs).q+1) + M.k*1*Nat.clog 2 (M.g+1) +
-    (M.k+1)*Nat.clog 2 3 + 1+1 ≤ (K+a)*s
-  rw [Nat.mul_one, Nat.add_mul K a]
-  calc
-    _ = Nat.clog 2 ((Native.machine M hs).q+1) + a := by simp only [a, Nat.add_assoc]
-    _ ≤ _ := Nat.add_le_add h ha
+/-- The physical depth obtained by revealing complete batches of length `10s+1`.
+The positive constant `a` pays for each seed and the coarse schedule size. -/
+noncomputable def jointPhysicalDepth (k a s : ℕ) : ℕ :=
+  (10*s+1) * (genieDepth k (a*s) 1 1 + 1)
 
-/-- Maximum number of input coordinates in one raw-bit append-time cone with a
-genie budget of one bit per batch's worth of input bits. -/
-noncomputable def alignedConeFan (M : TM) {s : ℕ} (hs : 0 < s) (C : ℝ) : ℕ :=
-  packetFan M.k (genieDepth M.k (blockWidth (Native.machine M hs) 1) C (1/(s:ℝ)))
-
-private theorem genieDepth_rescale (k β s : ℕ) (C : ℝ) :
-    genieDepth k β C (1 / (s : ℝ)) = genieDepth k (β*s) C 1 := by
-  simp only [genieDepth, Nat.cast_mul, div_div, div_one, div_div_eq_mul_div]
+/-- The reciprocal cut budget and effective-width forms give exactly the same genie. -/
+theorem joint_genie_rescale (k a s : ℕ) :
+    genieDepth k 1 1 (1 / ((a:ℝ)*s)) = genieDepth k (a*s) 1 1 := by
+  simp only [genieDepth, Nat.cast_one, Nat.cast_mul, mul_one, div_one,
+    div_div, div_div_eq_mul_div]
   congr 2 <;> ring_nf
 
 /-- Reserving half the double-logarithmic degree budget bounds the physical fan by
@@ -67,52 +51,37 @@ private theorem le_nativeFanBound {n Δ : ℕ} (hn : 1 < n) (hΔ : 1 < Δ)
   apply (Real.logb_le_logb (by norm_num : (1:ℝ)<2) (sq_pos_of_pos h₁) h₂).mp
   simpa only [Real.logb_pow,Nat.cast_ofNat,degreeLogLog] using hg
 
-/-- At a single batch size chosen before the dimension, both the batch and the fan fit
-under the subpower bound. The native inverse-degree exponent is unchanged. -/
-theorem native_batch_size_for_cap (M : TM) {C : ℝ} (hC : 1 ≤ C) :
-    ∃ K : ℝ, 0 < K ∧ ∀ᶠ Δ : ℕ in atTop, ∃ s : ℕ, ∃ hs : 0 < s,
-      ((max s (alignedConeFan M hs C) : ℕ) : ℝ) ≤ nativeFanBound Δ ∧
-      1 / (s : ℝ) ≤ K * inverseDegreeScale (2*(4*M.k^2+1)) Δ ∧
-      inverseDegreeScale (2*(4*M.k^2+1)) Δ ≤ 1 / s := by
-  obtain ⟨b,hb⟩ := native_blockWidth_bound M
-  obtain ⟨B,hB,hbound⟩ := genie_packet_cap_degree_bound_at M.k b hC
-  let p := 4*M.k^2+1
-  obtain ⟨K,hK,hchoose⟩ := sizes_for_degree_growth (p := 2*p) (by dsimp [p]; omega)
-    (show 0 < 4*B by positivity) 1
+/-- One batch size, chosen before the dimension, puts the physical fan under the
+subpower bound. Joint batch records give the packet exponent `4k²+1` also for native bits. -/
+theorem native_batch_size_for_cap (k a : ℕ) (ha : 0<a) :
+    ∃ K : ℝ, 0 < K ∧ ∀ᶠ Δ : ℕ in atTop, ∃ s : ℕ, ∃ _hs : 0 < s,
+      ((max s (packetFan k (jointPhysicalDepth k a s)) : ℕ) : ℝ) ≤ nativeFanBound Δ ∧
+      1 / (s : ℝ) ≤ K * inverseDegreeScale (4*k^2+1) Δ ∧
+      inverseDegreeScale (4*k^2+1) Δ ≤ 1 / s := by
+  obtain ⟨B,hB,hbound⟩ := genie_scaled_cap_degree_bound_at k a 10 (by norm_num : (1:ℝ)≤1)
+  let p := 4*k^2+1
+  obtain ⟨K,hK,hchoose⟩ := sizes_for_degree_growth (p := p) (by dsimp [p]; omega)
+    (show 0 < 2*B by positivity) 1
   refine ⟨K,hK,?_⟩
   filter_upwards [hchoose,eventually_ge_atTop 2] with Δ h hΔ
   obtain ⟨s,_,hs,hcap,hupper,hlower⟩ := h
   refine ⟨s,hs,?_,hupper,hlower⟩
-  let β := blockWidth (Native.machine M hs) 1
-  let D := genieDepth M.k (β*s) C 1
-  let A := packetIncidenceCap M.k (s^2) D
-  have hs2 : 1 ≤ s^2 := Nat.pow_pos hs
-  have hw : β*s ≤ b*s^2 := by simpa [sq, Nat.mul_assoc] using Nat.mul_le_mul_right s (hb s hs)
-  have hA := hbound (s^2) (β*s) hs2 (Nat.mul_pos (one_le_blockWidth _ 1) hs) hw
-  have hfan : 1 ≤ packetFan M.k D := by
+  let D := jointPhysicalDepth k a s
+  let A := packetIncidenceCap k s D
+  have hA := hbound s (a*s) hs (Nat.mul_pos ha hs) le_rfl
+  have hfan : 1 ≤ packetFan k D := by
     unfold packetFan
-    simpa using single_le_sum (fun i (_ : i ∈ range (D+1)) => Nat.zero_le ((M.k+1)^i))
+    simpa using single_le_sum (fun i (_ : i ∈ range (D+1)) => Nat.zero_le ((k+1)^i))
       (show 0 ∈ range (D+1) by simp)
-  have hform : A = 2*s^2*packetFan M.k D := rfl
-  have hA2 : 1 < A := by rw [hform]; nlinarith [Nat.mul_le_mul hs2 hfan]
-  have hlog : Real.logb 2 ((s : ℝ)^2+1) ≤ 2*Real.logb 2 ((s : ℝ)+1) := calc
-    _ ≤ Real.logb 2 (((s : ℝ)+1)^2) :=
-      Real.logb_le_logb_of_le (by norm_num) (by positivity) (by nlinarith only [Nat.cast_nonneg s (α := ℝ)])
-    _ = _ := by rw [Real.logb_pow]; norm_num
+  have hform : A = 2*s*packetFan k D := rfl
+  have hA2 : 1 < A := by rw [hform]; nlinarith [Nat.mul_le_mul hs hfan]
   have hd : 2 * degreeLogLog A ≤ degreeLogLog Δ := by
-    change degreeLogLog A ≤ _ at hA
-    push_cast at hA
-    rw [← pow_mul] at hA
-    have hmajor := mul_le_mul_of_nonneg_left hlog (show 0 ≤ B*(s : ℝ)^(2*p) by positivity)
-    change degreeLogLog A ≤ B*(s : ℝ)^(2*p)*_ at hA
-    nlinarith only [hA,hmajor,hcap]
+    change degreeLogLog A ≤ B*(s:ℝ)^p*Real.logb 2 ((s:ℝ)+1) at hA
+    nlinarith only [hA,hcap]
   apply le_trans _ (le_nativeFanBound hA2 (by omega) hd)
   apply Nat.cast_le.mpr
-  rw [alignedConeFan,genieDepth_rescale,hform]
-  apply max_le
-  · calc
-      s ≤ s^2 := Nat.le_self_pow (by decide) _
-      _ ≤ 2*s^2*packetFan M.k D := by nlinarith [Nat.mul_le_mul_left (s^2) hfan]
-  · exact Nat.le_mul_of_pos_left _ (by positivity : 0 < 2*s^2)
+  rw [hform]
+  exact max_le (by nlinarith [Nat.mul_le_mul_left s hfan])
+    (Nat.le_mul_of_pos_left _ (by positivity : 0<2*s))
 
 end TapeStorageRates

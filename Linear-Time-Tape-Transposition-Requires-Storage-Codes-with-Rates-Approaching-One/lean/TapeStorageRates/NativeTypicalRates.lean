@@ -1,6 +1,7 @@
 import TapeStorageRates.NativeTypical
 import TapeStorageRates.NativeTypicalDegree
 import TapeStorageRates.NativeTypicalResources
+import TapeStorageRates.NativeJointPartition
 
 /-! # Typical high-rate codes on induced physical bit cones
 
@@ -17,8 +18,8 @@ noncomputable section
 
 namespace NativeTypicalPartition
 
-variable {M : TM} {d b Δ r : ℕ} {c ε : ℝ} {G : Finset (Fin (d*d*b) → Bool)}
-variable (P : NativeTypicalPartition M d b c ε Δ r G)
+variable {M : TM} {d b Δ r D : ℕ} {c ε : ℝ} {G : Finset (Fin (d*d*b) → Bool)}
+variable (P : NativeTypicalPartition M d b c ε Δ r G D)
 
 open Classical in
 /-- The fraction of inputs in G whose own projected code has rate strictly below ρ. -/
@@ -47,7 +48,7 @@ theorem lowRateProbability_le_badProbability {ρ bill : ℝ}
 /-- A two-sided cap and an explicit bound on the fraction of omitted native bit positions.
 The partition also supplies the true append roots and the paired-distance certificate. -/
 def coversAtCap : Prop :=
-  nativeConeFan M c ε ≤ Δ ∧
+  packetFan M.k D ≤ Δ ∧
     ∀ x : G, (1-nativeFanBound Δ/(Δ:ℝ))*((d*d*b : ℕ):ℝ) ≤ (P.cut x).U.card
 
 end NativeTypicalPartition
@@ -55,42 +56,42 @@ end NativeTypicalPartition
 /-- One partition witnesses both coordinate coverage and the fraction of inputs below ρ. -/
 def HasTypicalNativeRate (N : TM) (d b Δ r : ℕ) (C ε : ℝ) (G : Finset (Fin (d*d*b) → Bool))
     (ρ failure : ℝ) : Prop :=
-  ∃ P : NativeTypicalPartition N d b C ε Δ r G, P.coversAtCap ∧ P.lowRateProbability ρ ≤ failure
+  ∃ D : ℕ, ∃ P : NativeTypicalPartition N d b C ε Δ r G D, P.coversAtCap ∧ P.lowRateProbability ρ ≤ failure
 
 /-- At a fixed cap, radius, dimension and success set, one partition works at *every*
 excess loss u. The rate baseline is the log-cardinality rate of the successful inputs
 themselves. Its coefficient is one, even for exponentially sparse success sets. -/
 theorem typical_native_rate_tail (M : TM) {c : ℝ} (hc : 0 ≤ c) :
     ∃ K A : ℝ, 0 < K ∧ 0 < A ∧ ∀ᶠ Δ : ℕ in atTop, ∃ s : ℕ, ∃ hs : 0 < s,
-      1 / (s:ℝ) ≤ K * inverseDegreeScale (2*(4*M.k^2+1)) Δ ∧
-      inverseDegreeScale (2*(4*M.k^2+1)) Δ ≤ 1 / s ∧
+      1 / (s:ℝ) ≤ K * inverseDegreeScale (4*M.k^2+1) Δ ∧
+      inverseDegreeScale (4*M.k^2+1) Δ ≤ 1 / s ∧
       ∀ r : ℕ, ∀ᶠ d : ℕ in atTop, ∀ b : ℕ, 1 ≤ b →
         ∀ G : Finset (Fin (d*d*b) → Bool), G.Nonempty →
           (∀ x ∈ G, TransposesInput M d b c x) →
           let L : ℝ := (d*d*b : ℕ)
-          ∃ P : NativeTypicalPartition (Native.machine M hs) d b (11*c+1) (1/(s:ℝ)) Δ r G,
+          ∃ P : NativeTypicalPartition (Native.machine M hs) d b (11*c+1) (1/(s:ℝ)) Δ r G
+              (jointPhysicalDepth M.k (nativeJointCoefficient M c) s),
             P.coversAtCap ∧ ∀ u : ℝ, P.lowRateProbability
-              (Real.logb 2 G.card/L - A*inverseDegreeScale (2*(4*M.k^2+1)) Δ - u) ≤
+              (Real.logb 2 G.card/L - A*inverseDegreeScale (4*M.k^2+1) Δ - u) ≤
               (2:ℝ)^(-u*L) := by
   let C := 11*c+1
-  have hC : 1 ≤ C := by dsimp [C]; linarith
   let a := (2*c+1) * Real.logb 2 (1+2*3^(M.k+1) : ℕ)
   have ha : 0 ≤ a := mul_nonneg (by linarith) (Real.logb_nonneg (by norm_num)
     (by exact_mod_cast Nat.le_add_right 1 _))
-  obtain ⟨K,hK,hbatch⟩ := native_batch_size_for_cap M hC
+  obtain ⟨K,hK,hbatch⟩ := native_batch_size_for_cap M.k (nativeJointCoefficient M c) (nativeJointCoefficient_pos M c)
   refine ⟨K,(a+2)*K,hK,by positivity,?_⟩
   filter_upwards [hbatch,eventually_ge_atTop 4,
     nativeFanBound_eventually_le_power (a := 1/2) (by norm_num)] with Δ hb hdg hbound
   obtain ⟨s,hs,hfan,hspread,hsmall⟩ := hb
   refine ⟨s,hs,hspread,hsmall,fun r => ?_⟩
-  let N := Native.machine M hs
   let ε := 1/(s:ℝ)
-  let B := nativeConeFan N C ε
+  let D := jointPhysicalDepth M.k (nativeJointCoefficient M c) s
+  let B := packetFan M.k D
   let loss := nativeFanBound Δ / (Δ:ℝ)
   have hΔ : 0 < (Δ:ℝ) := by exact_mod_cast (by omega : 0 < Δ)
   have hsR : 0 < (s:ℝ) := by exact_mod_cast hs
   have hsB : ((max s B : ℕ):ℝ) ≤ nativeFanBound Δ := by
-    simpa only [B,N,ε,nativeConeFan,alignedConeFan,max_eq_left hC,Native.machine_tapes] using hfan
+    exact hfan
   have hB : (B:ℝ) ≤ nativeFanBound Δ := (Nat.cast_le.mpr (le_max_right s B)).trans hsB
   have hs' : (s:ℝ) ≤ nativeFanBound Δ := (Nat.cast_le.mpr (le_max_left s B)).trans hsB
   rw [← Real.sqrt_eq_rpow] at hbound
@@ -117,12 +118,12 @@ theorem typical_native_rate_tail (M : TM) {c : ℝ} (hc : 0 ≤ c) :
   have hdL : d ≤ d*d*b := (Nat.le_mul_self d).trans (Nat.le_mul_of_pos_right _ hb)
   have hL : 0 < L := by change 0 < ((d*d*b:ℕ):ℝ); exact_mod_cast (by omega : 0 < d*d*b)
   have hy : 0 < Real.logb 2 (d:ℝ) := Real.logb_pos (by norm_num) (by exact_mod_cast hd2)
-  obtain ⟨hng,htr⟩ := native_success_resources M hs hc (show 11*s+1 ≤ d*d*b+1 by omega) G hgood
-  obtain ⟨P⟩ := native_typical_partition N hd2 hb (zero_lt_one.trans_le hC)
-    (one_div_pos.mpr hsR) G hng Δ r
+  obtain ⟨_,htr⟩ := native_success_resources M hs hc (show 11*s+1 ≤ d*d*b+1 by omega) G hgood
+  obtain ⟨P⟩ := native_joint_typical_partition M hs hc hd2 hb
+    (show 11*s+1 ≤ d*d*b+1 by omega) G hgood Δ r
   have hret (x : G) : (1-loss)*L ≤ (P.cut x).U.card :=
     retained_fraction_of_trim (θ := Δ) hL.le hy
-      (by simpa only [mul_comm] using (div_le_iff₀ hslack).mp hj) (P.cut x).retention
+      (by simpa only [J,C,mul_comm] using (div_le_iff₀ hslack).mp hj) (P.cut x).retention
   refine ⟨P,⟨hBle,hret⟩,fun u => ?_⟩
   let bill := L-Real.logb 2 G.card+(a+1)*L/s+u*L
   apply (P.lowRateProbability_le_badProbability (bill := bill) (fun x => by
@@ -135,7 +136,7 @@ theorem typical_native_rate_tail (M : TM) {c : ℝ} (hc : 0 ≤ c) :
       exact_mod_cast ((P.cut x).U.card_le_univ.trans_eq (Fintype.card_coe _)).trans
         ((P.cut x).Q.card_le_univ.trans_eq (Fintype.card_fin _))
     have hsCost := mul_le_mul_of_nonneg_left hspread (show 0 ≤ a+2 by linarith)
-    have hcharge : loss + (a+1)/s ≤ (a+2)*K*inverseDegreeScale (2*(4*M.k^2+1)) Δ := by
+    have hcharge : loss + (a+1)/s ≤ (a+2)*K*inverseDegreeScale (4*M.k^2+1) Δ := by
       calc
         _ ≤ 1/(s:ℝ) + (a+1)/s := add_le_add hpay le_rfl
         _ = (a+2)*(1/s) := by ring
@@ -155,22 +156,22 @@ theorem typical_native_rate_tail (M : TM) {c : ℝ} (hc : 0 ≤ c) :
 The retained proportion and the leading success-set rate are both explicit. -/
 theorem typical_native_rates (M : TM) {c : ℝ} (hc : 0 < c) :
     ∃ K A : ℝ, 0 < K ∧ 0 < A ∧ ∀ᶠ Δ : ℕ in atTop, ∃ s : ℕ, ∃ hs : 0 < s,
-      1 / (s:ℝ) ≤ K * inverseDegreeScale (2*(4*M.k^2+1)) Δ ∧
-      inverseDegreeScale (2*(4*M.k^2+1)) Δ ≤ 1 / s ∧
+      1 / (s:ℝ) ≤ K * inverseDegreeScale (4*M.k^2+1) Δ ∧
+      inverseDegreeScale (4*M.k^2+1) Δ ≤ 1 / s ∧
       ∀ r : ℕ, ∀ᶠ d : ℕ in atTop, ∀ b : ℕ, 1 ≤ b →
         ∀ G : Finset (Fin (d*d*b) → Bool), G.Nonempty →
           (∀ x ∈ G, TransposesInput M d b c x) →
           let L : ℝ := (d*d*b : ℕ)
           HasTypicalNativeRate (Native.machine M hs) d b Δ r (11*c+1) (1/(s:ℝ)) G
-            (Real.logb 2 G.card / L - A*inverseDegreeScale (2*(4*M.k^2+1)) Δ)
+            (Real.logb 2 G.card / L - A*inverseDegreeScale (4*M.k^2+1) Δ)
             ((2:ℝ)^(-L/s)) := by
   obtain ⟨K,A,hK,hA,he⟩ := typical_native_rate_tail M hc.le
   refine ⟨K,A+K,hK,by positivity,he.mono fun Δ h => ?_⟩
   obtain ⟨s,hs,hspread,hsmall,h⟩ := h
   refine ⟨s,hs,hspread,hsmall,fun r => (h r).mono fun d hd b hb G hG hgood => ?_⟩
   obtain ⟨P,hP,ht⟩ := hd b hb G hG hgood
-  refine ⟨P,hP,?_⟩
-  have hbound := ht (K*inverseDegreeScale (2*(4*M.k^2+1)) Δ)
+  refine ⟨_,P,hP,?_⟩
+  have hbound := ht (K*inverseDegreeScale (4*M.k^2+1) Δ)
   rw [add_mul,sub_add_eq_sub_sub]
   apply hbound.trans (Real.rpow_le_rpow_of_exponent_le (by norm_num : (1:ℝ) ≤ 2) ?_)
   have h := mul_le_mul_of_nonneg_right hspread (Nat.cast_nonneg (d*d*b) (α := ℝ))
@@ -182,7 +183,7 @@ theorem typical_native_rates_full (M : TM) {c : ℝ} (hc : 0 < c) :
     ∃ A : ℝ, 0 < A ∧ ∀ᶠ Δ : ℕ in atTop, ∃ s : ℕ, ∃ hs : 0 < s,
       ∀ r : ℕ, ∀ᶠ d : ℕ in atTop, ∀ b : ℕ, 1 ≤ b → TransposesAtWidth M d b c →
         HasTypicalNativeRate (Native.machine M hs) d b Δ r (11*c+1) (1/(s:ℝ)) univ
-          (1-A*inverseDegreeScale (2*(4*M.k^2+1)) Δ)
+          (1-A*inverseDegreeScale (4*M.k^2+1) Δ)
           ((2:ℝ)^(-((d*d*b : ℕ):ℝ)/s)) := by
   obtain ⟨_,A,_,hA,he⟩ := typical_native_rates M hc
   refine ⟨A,hA,he.mono fun Δ h => ?_⟩

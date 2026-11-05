@@ -17,7 +17,8 @@ open Classical in
 /-- Geometry and decoding on a nonempty set of timely correct raw inputs following one trace.
 The retained coordinates are nested subtypes of the original input positions. -/
 structure NativeTypicalCut (M : TM) (d b : ℕ) (c ε : ℝ) (θ r : ℕ)
-    (S : Finset (Fin (d*d*b) → Bool)) where
+    (S : Finset (Fin (d*d*b) → Bool))
+    (D : ℕ := genieDepth M.k (blockWidth M 1) (max c 1) ε) where
   representative : Fin (d*d*b) → Bool
   representative_mem : representative ∈ S
   common_trace : ∀ x ∈ S, trace M (List.ofFn x) = trace M (List.ofFn representative)
@@ -25,9 +26,10 @@ structure NativeTypicalCut (M : TM) (d b : ℕ) (c ε : ℝ) (θ r : ℕ)
   halt : ∀ x ∈ S, HaltsAt M (List.ofFn x) time
   time_le : (time : ℝ) ≤ c * ((d*d*b : ℕ) + 1)
   genie : Finset ℕ
-  cost : (blockWidth M 1 * genie.card : ℝ) ≤ ε * (d*d*b : ℕ)
+  record_count : ((S.image fun x => fun t : genie => blockVal M 1 (List.ofFn x) t).card : ℝ) ≤
+    (2:ℝ) ^ (ε * (d*d*b : ℕ))
   depth : ∀ π, IsDepPath (fun j => (runWalks M (List.ofFn representative)) (some (some j)))
-    time π → LinNet.GFree genie π → π.length ≤ genieDepth M.k (blockWidth M 1) (max c 1) ε + 1
+    time π → LinNet.GFree genie π → π.length ≤ D + 1
   outputTime : ℕ → ℕ
   append : ∀ x ∈ S, ∀ q : Fin (d*d*b),
     outputTime q = appendTime (trace M (List.ofFn x)) time q
@@ -37,23 +39,28 @@ structure NativeTypicalCut (M : TM) (d b : ℕ) (c ε : ℝ) (θ r : ℕ)
       (fun v : Fin (d*d*b) => MergeDepth.tpos d b v) q, x u = y u) → x q = y q
   Q : Finset (Fin (d*d*b))
   U : Finset Q
-  retention : ((d*d*b : ℕ) : ℝ) ≤ U.card + (nativeConeFan M c ε : ℝ) * (d*d*b : ℕ) / (θ+1) +
-    shortPairCost M.k (nativeConeFan M c ε) θ r c * ((d*d*b : ℕ) / Real.logb 2 d)
+  retention : ((d*d*b : ℕ) : ℝ) ≤ U.card + (packetFan M.k D : ℝ) * (d*d*b : ℕ) / (θ+1) +
+    shortPairCost M.k (packetFan M.k D) θ r c * ((d*d*b : ℕ) / Real.logb 2 d)
   degree : ∀ v, (pairedIncidenceGraph (inducedNeighborhood (inducedNeighborhood
     (coneRel 1 (runWalks M (List.ofFn representative)) time genie outputTime
-      (fun q : Fin (d*d*b) => MergeDepth.tpos d b q)) Q) U)).degree v ≤ max (nativeConeFan M c ε) θ
+      (fun q : Fin (d*d*b) => MergeDepth.tpos d b q)) Q) U)).degree v ≤ max (packetFan M.k D) θ
   far : ∀ q : U, ¬ (pairedIncidenceGraph (inducedNeighborhood (inducedNeighborhood
     (coneRel 1 (runWalks M (List.ofFn representative)) time genie outputTime
       (fun q : Fin (d*d*b) => MergeDepth.tpos d b q)) Q) U)).edist (Sum.inl q) (Sum.inr q) ≤ r
 
-/-- Choose a cut and retained bit coordinates on any attained correct trace, regardless of
-how unlikely that trace is. Its inputs may form an arbitrary subset of the trace class. -/
-theorem exists_native_typical_cut (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b)
-    {c ε : ℝ} (hc : 0<c) (hε : 0<ε) {S : Finset (Fin (d*d*b) → Bool)}
+open Classical in
+/-- Decode and trim at any physical depth, charging the joint record support. -/
+theorem exists_native_typical_cut_of_genie (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b)
+    {c ε : ℝ} (hc : 0<c) {S : Finset (Fin (d*d*b) → Bool)}
     {x₀ : Fin (d*d*b) → Bool} (hx₀ : x₀ ∈ S)
     (htr : ∀ x ∈ S, trace M (List.ofFn x) = trace M (List.ofFn x₀))
-    (hgood : ∀ x ∈ S, TransposesInput M d b c x) (θ r : ℕ) :
-    Nonempty (NativeTypicalCut M d b c ε θ r S) := by
+    (hgood : ∀ x ∈ S, TransposesInput M d b c x) (θ r : ℕ)
+    {D : ℕ} (Γ : Finset ℕ)
+    (hcount : ((S.image fun x => fun t : Γ => blockVal M 1 (List.ofFn x) t).card : ℝ) ≤
+      (2:ℝ) ^ (ε * (d*d*b : ℕ)))
+    (hpath : ∀ π, IsDepPath (runSkeleton M 1 (List.ofFn x₀)).s
+      (runSkeleton M 1 (List.ofFn x₀)).T π → LinNet.GFree Γ π → π.length ≤ D + 1) :
+    Nonempty (NativeTypicalCut M d b c ε θ r S D) := by
   classical
   let L := d*d*b
   let σ := runSkeleton M 1 (List.ofFn x₀)
@@ -61,8 +68,6 @@ theorem exists_native_typical_cut (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 �
     native_inClass_of_trace_eq (hgood x hx) (htr x hx)
   have hcomplete {x} (hx : x∈S) := (native_class_output (hσ hx) (hgood x hx).outputsTranspose).1.ge
   have hT := native_class_time hc.le (hσ hx₀) (hgood x₀ hx₀)
-  have hlen : 0<L := Nat.mul_pos (Nat.mul_pos (by omega) (by omega)) hb
-  obtain ⟨Γ,hcost,hpath⟩ := native_class_genie (hσ hx₀) hlen hT hε
   obtain ⟨hdepthR, hotR, hcone⟩ := classRel_subset_coneRel (by decide : 0<1) hb
     (mem_skelClass.mpr (hσ hx₀)) (hcomplete hx₀) hpath
   simp only [Nat.cast_one, skel_one] at hdepthR
@@ -71,7 +76,7 @@ theorem exists_native_typical_cut (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 �
     Γ _ hdepthR hotR hc.le (by simpa only [L, Nat.cast_mul] using hT) θ r
   refine ⟨{
     representative := x₀, representative_mem := hx₀, common_trace := htr
-    time := σ.T, halt := fun _ hx => (hσ hx).1, time_le := hT, genie := Γ, cost := hcost
+    time := σ.T, halt := fun _ hx => (hσ hx).1, time_le := hT, genie := Γ, record_count := hcount
     depth := hdepthR, outputTime := outTime σ 1, Q := Q, U := U, degree := hdeg, far := hfar
     append := ?_, decode := ?_, retention := ?_ }⟩
   · intro x hx q
@@ -81,5 +86,26 @@ theorem exists_native_typical_cut (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 �
     exact native_class_decode hb (hσ hx) (hσ hy) (hgood x hx).outputsTranspose
       (hgood y hy).outputsTranspose hxy q (fun u hu => hN u (hcone q hu))
   · exact packet_trim_retention hheavy hshort
+
+/-- The original whole-step genie is a constructor of the support-based interface. -/
+theorem exists_native_typical_cut (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤ b)
+    {c ε : ℝ} (hc : 0<c) (hε : 0<ε) {S : Finset (Fin (d*d*b) → Bool)}
+    {x₀ : Fin (d*d*b) → Bool} (hx₀ : x₀ ∈ S)
+    (htr : ∀ x ∈ S, trace M (List.ofFn x) = trace M (List.ofFn x₀))
+    (hgood : ∀ x ∈ S, TransposesInput M d b c x) (θ r : ℕ) :
+    Nonempty (NativeTypicalCut M d b c ε θ r S) := by
+  classical
+  have hσ := native_inClass_of_trace_eq (hgood x₀ hx₀) (htr x₀ hx₀)
+  have hT := native_class_time hc.le hσ (hgood x₀ hx₀)
+  have hlen : 0 < d*d*b := Nat.mul_pos (Nat.mul_pos (by omega) (by omega)) hb
+  obtain ⟨Γ,hcost,hpath⟩ := native_class_genie hσ hlen hT hε
+  refine exists_native_typical_cut_of_genie M hd hb hc hx₀ htr hgood θ r Γ ?_ hpath
+  calc
+    _ ≤ ((2 ^ (blockWidth M 1 * Γ.card) : ℕ) : ℝ) :=
+      Nat.cast_le.mpr (card_revealed_le (M := M) (by decide : 0<1) Γ S)
+    _ ≤ _ := by
+      simp only [Nat.cast_pow, Nat.cast_ofNat, ← Real.rpow_natCast]
+      apply Real.rpow_le_rpow_of_exponent_le (by norm_num)
+      simpa only [Nat.cast_mul] using hcost
 
 end TapeStorageRates

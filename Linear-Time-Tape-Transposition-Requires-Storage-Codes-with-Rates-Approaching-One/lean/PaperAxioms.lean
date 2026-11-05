@@ -38,10 +38,12 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms TapeStorageRates.native_tests_exclude_linear
 -- named in the text
 #print axioms MergeDepth.skel_paired_packing
+#print axioms TapeStorageRates.BatchCoarsening.Coarsening.path_length_le
 #print axioms TapeStorageRates.Native.control_bits
 #print axioms TapeStorageRates.Native.copy_trace_card
 #print axioms TapeStorageRates.Native.simulates_halt
 #print axioms TapeStorageRates.Native.trace_support_rate_limsup
+#print axioms TapeStorageRates.NativeBatchRecord.compiler_joint_record_support
 #print axioms TapeStorageRates.NativeFibreWitness.outputTime_eq_appendTime
 #print axioms TapeStorageRates.NativeTypicalCut.mem_code_iff
 #print axioms TapeStorageRates.NativeTypicalCut.storage
@@ -60,9 +62,10 @@ for every declaration that the paper cites. Each should report at most `propext`
 #print axioms TapeStorageRates.aligned_low_trace_dimensions
 #print axioms TapeStorageRates.elementary_gap_ratio_tendsto_zero
 #print axioms TapeStorageRates.family_of_packet_classes_at_threshold
+#print axioms TapeStorageRates.genie_scaled_cap_degree_bound_at
 #print axioms TapeStorageRates.native_batch_size_for_cap
 #print axioms TapeStorageRates.native_five_eighths
-#print axioms TapeStorageRates.native_typical_partition
+#print axioms TapeStorageRates.native_joint_typical_partition
 #print axioms TapeStorageRates.noisy_pair_prediction_sharp
 #print axioms TapeStorageRates.patch_coverage_limsup
 #print axioms TapeStorageRates.patch_deficit_packing

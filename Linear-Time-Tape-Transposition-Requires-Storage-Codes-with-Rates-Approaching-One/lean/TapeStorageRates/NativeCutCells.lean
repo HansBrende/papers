@@ -9,8 +9,8 @@ open Finset Transpose MergeDepth DirectedRecovery MotionDepthCodes
 set_option autoImplicit false
 noncomputable section
 
-variable {M : TM} {d b θ r : ℕ} {c ε : ℝ} {S : Finset (Fin (d*d*b) → Bool)}
-variable (F : NativeTypicalCut M d b c ε θ r S)
+variable {M : TM} {d b θ r D : ℕ} {c ε : ℝ} {S : Finset (Fin (d*d*b) → Bool)}
+variable (F : NativeTypicalCut M d b c ε θ r S D)
 
 open Classical in
 /-- Distinct genie words actually attained on this trace, including correlations between
@@ -97,13 +97,8 @@ theorem tag_count :
       congr 2
       omega
 
-theorem revealed_le : (F.revealed.card : ℝ) ≤ (2:ℝ) ^ (ε*(d*d*b : ℕ)) := by
-  have h := card_revealed_le (M := M) (by decide : 0<1) F.genie S
-  calc
-    _ ≤ ((2 ^ (blockWidth M 1 * F.genie.card) : ℕ) : ℝ) := Nat.cast_le.mpr h
-    _ ≤ _ := by
-      simp only [Nat.cast_pow, Nat.cast_ofNat, ← Real.rpow_natCast]
-      exact Real.rpow_le_rpow_of_exponent_le (by norm_num) (by simpa only [Nat.cast_mul] using F.cost)
+theorem revealed_le : (F.revealed.card : ℝ) ≤ (2:ℝ) ^ (ε*(d*d*b : ℕ)) :=
+  F.record_count
 
 open Classical in
 /-- Exact exponential moment of the projected deficit on this trace. All inputs in a

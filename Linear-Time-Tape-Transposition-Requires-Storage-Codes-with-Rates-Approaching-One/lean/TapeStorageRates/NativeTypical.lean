@@ -25,9 +25,10 @@ def nativeTraceSlice {L : ℕ} (M : TM) (G : Finset (Fin L → Bool)) (τ : Trac
 
 /-- One geometry choice per attained full trace. -/
 structure NativeTypicalPartition (M : TM) (d b : ℕ) (c ε : ℝ) (θ r : ℕ)
-    (G : Finset (Fin (d*d*b) → Bool)) where
+    (G : Finset (Fin (d*d*b) → Bool))
+    (D : ℕ := BoundedStackDepth.genieDepth M.k (blockWidth M 1) (max c 1) ε) where
   onTrace : ∀ τ : nativeTraceSupport M G,
-    NativeTypicalCut M d b c ε θ r (nativeTraceSlice M G τ)
+    NativeTypicalCut M d b c ε θ r (nativeTraceSlice M G τ) D
 
 /-- Every set of timely, correct inputs admits such a policy. No condition is imposed on
 the other inputs of the same length. -/
@@ -45,13 +46,13 @@ theorem native_typical_partition (M : TM) {d b : ℕ} (hd : 2 ≤ d) (hb : 1 ≤
 
 namespace NativeTypicalPartition
 
-variable {M : TM} {d b θ r : ℕ} {c ε : ℝ} {G : Finset (Fin (d*d*b) → Bool)}
+variable {M : TM} {d b θ r D : ℕ} {c ε : ℝ} {G : Finset (Fin (d*d*b) → Bool)}
 
 /-- A raw input determines the attained trace used to select its cut. -/
 def traceKey (M : TM) {L : ℕ} {G : Finset (Fin L → Bool)} (x : G) : nativeTraceSupport M G :=
   ⟨trace M (List.ofFn x.val), by classical exact mem_image_of_mem _ x.property⟩
 
-variable (P : NativeTypicalPartition M d b c ε θ r G)
+variable (P : NativeTypicalPartition M d b c ε θ r G D)
 
 abbrev cut (x : G) := P.onTrace (traceKey M x)
 
@@ -157,7 +158,7 @@ theorem tail_of_reveal_support (hG : G.Nonempty) {h g : ℝ}
     _ ≤ ∑ _τ : nativeTraceSupport M G, (2:ℝ)^g := sum_le_sum fun τ _ => hwords τ
     _ ≤ _ := by simpa using mul_le_mul_of_nonneg_right htags (Real.rpow_nonneg (by norm_num) g)
 
-/-- The whole-step cost of a native genie bounds the number of values it reveals.
+/-- The joint-record support bound pays for each trace's revealed word.
 Positive t gives an exponential exceptional fraction. -/
 theorem tail (hG : G.Nonempty) {h : ℝ} (htr : Real.logb 2 (nativeTraceSupport M G).card ≤ h)
     (t : ℝ) :

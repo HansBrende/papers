@@ -60,18 +60,14 @@ theorem degreeLogLog_packetIncidenceCap_le (k s D L : ℕ) (hD : D ≤ 2 ^ L) :
   apply hcap.trans (Nat.pow_le_pow_right (by decide) ?_)
   exact hsum.trans (Nat.pow_le_pow_right (by decide) (by omega))
 
-/-- For the actual Paper 14 genie with a fixed time coefficient, unit revealed-bit budget and
-step-value width at most linear in packet size, the cap has the required double-logarithmic
-upper bound. All constants precede the packet-size and code-length limits. -/
-theorem genie_packet_cap_degree_bound_at (k b : ℕ) {C : ℝ} (hC : 1 ≤ C) :
-    ∃ B : ℝ, 0 < B ∧ ∀ s β : ℕ, 1 ≤ s → 1 ≤ β → β ≤ b*s →
-      degreeLogLog (packetIncidenceCap k s (genieDepth k β C 1)) ≤
-        B * (s : ℝ) ^ (4 * k ^ 2 + 1) * Real.logb 2 ((s : ℝ) + 1) := by
+/-- A uniform exponential majorant for the actual full genie depth. The effective
+record width may grow linearly with the size parameter. -/
+theorem genie_depth_exponential_bound_at (k b : ℕ) {C : ℝ} (hC : 1 ≤ C) :
+    ∃ E : ℕ, ∀ s β : ℕ, 1 ≤ s → 1 ≤ β → β ≤ b*s →
+      genieDepth k β C 1 ≤ 2 ^ (E * (s ^ (4*k^2+1) * packetLogCeil s)) := by
   let a : ℕ := ⌈4 * (b : ℝ) * C⌉₊
   obtain ⟨E, P, hparameters⟩ := paper14_radix_bounds k a
-  let V := E * P + a + k + 6
-  have hV : 0 < V := by dsimp [V]; omega
-  refine ⟨2 * (V : ℝ), by positivity, ?_⟩
+  refine ⟨E*P+a, ?_⟩
   intro s β hs hβ1 hβb
   let x := 4 * (β : ℝ) * C
   have hCpos : 0 < C := zero_lt_one.trans_le hC
@@ -87,27 +83,79 @@ theorem genie_packet_cap_degree_bound_at (k b : ℕ) {C : ℝ} (hC : 1 ≤ C) :
   have hu : 1 ≤ s ^ m * packetLogCeil s := Nat.mul_pos (pow_pos hs _) (packetLogCeil_pos hs)
   have hsU : s ≤ U := by
     dsimp [U]; rw [pow_succ]; nlinarith [Nat.mul_le_mul_left s hu]
-  have hU : 1 ≤ U := hs.trans hsU
   have hKp : parK k x⁻¹ ^ parP k x⁻¹ ≤ 2 ^ ((E * s) * (P * s ^ m * packetLogCeil s)) := calc
     _ ≤ (2 ^ (E * s)) ^ parP k x⁻¹ := Nat.pow_le_pow_left hK _
     _ = 2 ^ ((E * s) * parP k x⁻¹) := (pow_mul _ _ _).symm
     _ ≤ _ := Nat.pow_le_pow_right (by decide) (Nat.mul_le_mul_left _ hP)
-  have hceil : ⌈x⌉₊ ≤ 2 ^ (a * s) := (Nat.ceil_le.2 (by exact_mod_cast hxe : x ≤ ((a * s : ℕ) : ℝ))).trans
-    (Nat.lt_two_pow_self (n := a * s)).le
+  have hceil : ⌈x⌉₊ ≤ 2 ^ (a * s) :=
+    (Nat.ceil_le.2 (by exact_mod_cast hxe : x ≤ ((a * s : ℕ) : ℝ))).trans
+      (Nat.lt_two_pow_self (n := a * s)).le
   have hdepth : genieDepth k β C 1 ≤ 2 ^ (E * P * U + a * s) := by
     simp only [genieDepth, one_div, div_one]
     have h := mul_le_two_pow hKp hceil
     convert h using 1
     congr 2
     dsimp [U]; rw [pow_succ]; ring
-  have hsize : s + k + (E * P * U + a * s) + 5 ≤ V * U := by
+  apply hdepth.trans (Nat.pow_le_pow_right (by decide) ?_)
+  change E*P*U+a*s ≤ (E*P+a)*U
+  nlinarith [Nat.mul_le_mul_left a hsU]
+
+/-- Multiplying the depth by a linear batch length preserves its degree-growth exponent.
+This covers physical path bounds obtained by lifting a coarse cut. -/
+theorem genie_scaled_cap_degree_bound_at (k b z : ℕ) {C : ℝ} (hC : 1 ≤ C) :
+    ∃ B : ℝ, 0 < B ∧ ∀ s β : ℕ, 1 ≤ s → 1 ≤ β → β ≤ b*s →
+      degreeLogLog (packetIncidenceCap k s ((z*s+1)*(genieDepth k β C 1+1))) ≤
+        B * (s : ℝ) ^ (4*k^2+1) * Real.logb 2 ((s : ℝ)+1) := by
+  obtain ⟨E,hE⟩ := genie_depth_exponential_bound_at k b hC
+  let V := E+z+k+9
+  refine ⟨2*(V:ℝ),by dsimp [V]; positivity,?_⟩
+  intro s β hs hβ hβb
+  let U := s^(4*k^2+1)*packetLogCeil s
+  have hu : 1 ≤ s^(4*k^2)*packetLogCeil s :=
+    Nat.mul_pos (pow_pos hs _) (packetLogCeil_pos hs)
+  have hsU : s ≤ U := by
+    dsimp [U]; rw [pow_succ]; nlinarith [Nat.mul_le_mul_left s hu]
+  have hU : 1 ≤ U := hs.trans hsU
+  have hscale : z*s+1 ≤ 2^((z+1)*s) := by
+    apply le_trans _ (Nat.lt_two_pow_self (n := (z+1)*s)).le
+    nlinarith
+  have hdepth := mul_le_two_pow hscale
+    (add_le_two_pow (hE s β hs hβ hβb) (by decide : 1 ≤ 2^0))
+  have hsize : s+k+((z+1)*s+(E*U+0+1))+5 ≤ V*U := by
     dsimp [V]
-    nlinarith [Nat.mul_le_mul_left a hsU, Nat.mul_le_mul_left k hU]
+    nlinarith [Nat.mul_le_mul_left (z+1) hsU, Nat.mul_le_mul_left (k+6) hU]
   calc
-    _ ≤ ((s + k + (E * P * U + a * s) + 5 : ℕ) : ℝ) := degreeLogLog_packetIncidenceCap_le _ _ _ _ hdepth
-    _ ≤ ((V * U : ℕ) : ℝ) := by exact_mod_cast hsize
-    _ = ((V : ℝ) * (s : ℝ) ^ (m + 1)) * packetLogCeil s := by dsimp [U]; push_cast; ring
-    _ ≤ ((V : ℝ) * (s : ℝ) ^ (m + 1)) * (2 * Real.logb 2 ((s : ℝ) + 1)) :=
+    _ ≤ ((s+k+((z+1)*s+(E*U+0+1))+5:ℕ):ℝ) :=
+      degreeLogLog_packetIncidenceCap_le _ _ _ _ hdepth
+    _ ≤ ((V*U:ℕ):ℝ) := by exact_mod_cast hsize
+    _ = ((V:ℝ)*(s:ℝ)^(4*k^2+1)) * packetLogCeil s := by dsimp [U]; push_cast; ring
+    _ ≤ ((V:ℝ)*(s:ℝ)^(4*k^2+1)) * (2*Real.logb 2 ((s:ℝ)+1)) :=
+      mul_le_mul_of_nonneg_left (packetLogCeil_le_twice hs) (by positivity)
+    _ = _ := by ring
+
+/-- For the actual Paper 14 genie at unit revealed-bit budget, a linear effective
+record width gives the required double-logarithmic degree bound. -/
+theorem genie_packet_cap_degree_bound_at (k b : ℕ) {C : ℝ} (hC : 1 ≤ C) :
+    ∃ B : ℝ, 0 < B ∧ ∀ s β : ℕ, 1 ≤ s → 1 ≤ β → β ≤ b*s →
+      degreeLogLog (packetIncidenceCap k s (genieDepth k β C 1)) ≤
+        B * (s : ℝ) ^ (4*k^2+1) * Real.logb 2 ((s : ℝ)+1) := by
+  obtain ⟨E,hE⟩ := genie_depth_exponential_bound_at k b hC
+  let V := E+k+6
+  refine ⟨2*(V:ℝ),by dsimp [V]; positivity,?_⟩
+  intro s β hs hβ hβb
+  let U := s^(4*k^2+1)*packetLogCeil s
+  have hu : 1 ≤ s^(4*k^2)*packetLogCeil s :=
+    Nat.mul_pos (pow_pos hs _) (packetLogCeil_pos hs)
+  have hsU : s ≤ U := by
+    dsimp [U]; rw [pow_succ]; nlinarith [Nat.mul_le_mul_left s hu]
+  have hU : 1 ≤ U := hs.trans hsU
+  have hsize : s+k+E*U+5 ≤ V*U := by
+    dsimp [V]; nlinarith [Nat.mul_le_mul_left (k+5) hU]
+  calc
+    _ ≤ ((s+k+E*U+5:ℕ):ℝ) := degreeLogLog_packetIncidenceCap_le _ _ _ _ (hE s β hs hβ hβb)
+    _ ≤ ((V*U:ℕ):ℝ) := by exact_mod_cast hsize
+    _ = ((V:ℝ)*(s:ℝ)^(4*k^2+1)) * packetLogCeil s := by dsimp [U]; push_cast; ring
+    _ ≤ ((V:ℝ)*(s:ℝ)^(4*k^2+1)) * (2*Real.logb 2 ((s:ℝ)+1)) :=
       mul_le_mul_of_nonneg_left (packetLogCeil_le_twice hs) (by positivity)
     _ = _ := by ring
 

@@ -1,0 +1,59 @@
+\subsection{From successful inputs to a common packet schedule}
+
+Fix a packet size $s\ge1$. Use the hypothesis of \cref{thm:main} with $\eta=1/(2s)$.
+We can choose $d$ as large as needed with $b\ge s$ and a nonempty success
+set $G=G_{d,b}$ of deficit $h=L-\log_2|G|\le L/(2s)$. Write $b=as+r$
+with $a\ge1$ and $0\le r<s$. Each matrix entry consists of $a$ complete
+$s$-bit packets followed by $r$ tail bits. There are $n=d^2a$ complete
+packets. The packet at $(i,j,\ell)$ is demanded at $(j,i,\ell)$ for $0\le\ell<a$. Since $L=sn+rd^2\le2sn$, we have $h\le n$.
+
+Partition $G$ by the entire string of $rd^2$ tail bits. Some fixed
+assignment $z$ leaves a set $F_z$ of successful packet arrays with
+\[
+  |F_z|\ge |G|\,2^{-rd^2}=2^{sn-h}.
+\]
+Thus fixing the tails preserves the bound $h$ on the absolute deficit,
+with $sn$ as the new ambient bit count. Throughout this computation the
+tail of an entry is the fixed string specified by its address in $z$.
+
+The auxiliary input tape uses one cell per packet. The last cell of each
+entry holds its $s$ payload bits followed by its fixed tail, so its length
+in the original input is $s+r$. All other in-range cells have length $s$.
+Each cell outside the input represents $s$ end markers, and each work cell
+holds $s$ ordinary work symbols. Starting from any offset in a cell, $s$
+source transitions can visit only that cell and its two neighbours.
+
+One batch evaluates these transitions in eleven packet ticks. The input
+and work heads move one cell left and read the left, centre and right
+cells in succession. A stationary tick evaluates the batch on these
+windows. The heads traverse the windows in reverse to write back the
+three work cells, return to the old centres, and move by at most one cell
+to the new centres. Other work writes preserve the scanned symbols. The final stationary tick may append one packet.
+At the start of a batch the pending output is shorter than its next
+cell. The batch adds at most $s$ raw output bits, so it completes at
+most one cell. On completion, emit its first $s$ bits, pass over its
+tail, and keep the suffix for the next cell. Every successful run emits
+exactly the $n$ payload packets in transposed order. The public cell
+lengths and tail values belong to this auxiliary computation.
+\Cref{sec:simulation} will return to ordinary bit tapes.
+
+Use $R=\lfloor\lfloor c(L+1)\rfloor/s\rfloor+1$ batches on every input,
+keeping the source configuration fixed after halt. For
+$J=2\lceil c\rceil+1$, the bounds $R\le J(n+1)$ and $T=11R\le11J(n+1)$
+are uniform in $s,d,b$. Within each batch the varying part of the
+schedule consists of the $k+1$ displacements to the new centres and the
+packet-append flag. These give at most $(2\cdot3^{k+1})^R$ schedule
+words. Hence for an integer $A_0=A_0(k,c)$ some fixed schedule has a
+class $W$ satisfying
+\[
+  \log_2|W|\ \ge\ sn-h-A_0 n\ \ge\ sn-(A_0+1)n.
+\]
+The compiler further records the finite control, offsets, windows,
+pending output, work writes and any output packet. They fit in
+$\beta_s=O_M(s)$ bits per tick. On the fixed schedule the input address,
+cell type, tick within the batch, and count of previously appended
+packets are public. The record at a tick is determined by its input
+packet, the preceding control record, and the records from the last
+visits to the scanned work cells. Initial values and exterior input
+symbols are fixed. This locality and the output at each designated
+append tick are proved by \lean{TapeStorageRates.PaidClasses.compiler}.

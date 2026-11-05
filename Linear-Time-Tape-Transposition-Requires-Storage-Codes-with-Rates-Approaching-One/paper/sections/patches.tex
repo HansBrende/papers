@@ -1,0 +1,204 @@
+\section{What can overlapping patches predict?}\label{sec:patches}
+
+A bit that is zero with probability \(0.9\) can be predicted with \(90\%\)
+accuracy without reading any helper. The information supplied by an allowed
+helper set \(B\) is \(I(X_q;X_B)=H(X_q)-H(X_q\mid X_B)\). In the prediction credit
+\[
+  1-H(X_q\mid X_B)=[1-H(X_q)]+I(X_q;X_B),
+\]
+the first term is due to the marginal bias and the second measures the
+gain from observing the helpers. The geometry of the relation bounds
+the sum of these gains, even when different
+patches use the same bits. Write \(X_S=(X_v)_{v\in S}\) and use entropy
+\(H\) in bits. The Shannon entropy in the Lean declarations is measured in
+nats, so its value in bits is obtained by division by \(\ln 2\).
+
+Let \(V\) be a finite set of coordinates. Each member of a finite indexed family of \emph{patches} \(P_j\subseteq V\)
+has a set \(A_j\subseteq P_j\) of scored targets. For each \(q\in A_j\),
+choose the helpers \(B_{jq}\subseteq P_j\) available to its predictor.
+A target scored in two patches contributes two occurrences \((j,q)\).
+Form the bipartite graph on the two copies of \(A_j\) by joining \(L_v\) to
+\(R_q\) when \(v\in B_{jq}\cap A_j\). A patch satisfies the
+\emph{separation condition} if \(L_q\) and \(R_q\) lie in different
+components of this graph for every \(q\in A_j\).
+
+An ambient distance bound gives a sufficient separation test. Take a
+relation \(N\). Suppose \(B_{jq}\subseteq N(q)\cap P_j\),
+\(\card{A_j}\le w\) with \(w\ge1\), and
+\(\dist(L_q,R_q)>2w-1\) for every scored occurrence. A connection inside
+the patch would contain a simple path on at most \(2\card{A_j}\) ports.
+The same path in the ambient graph would have length at most \(2w-1\).
+Thus the separation condition holds. The patch can contain arbitrarily
+many unscored helpers.
+
+\begin{theorem}[Theorem P, information supplied by overlapping patches]
+\label{thm:patch-credit}
+\formal{TapeStorageRates/PatchResidual.lean}{TapeStorageRates.weighted_patch_capacity,TapeStorageRates.patch_capacity_of_long_targets}
+Let \(h\) be a polymatroid rank on \(V\), that is, a normalized, monotone,
+submodular set function. Write \(h(q\mid B)=h(B\cup\{q\})-h(B)\).
+Give each coordinate a capacity \(c_q\ge h(\{q\})\) and each patch a
+weight \(\lambda_j\ge0\). Suppose the separation condition holds, and
+\(\sum_{j:v\in P_j}\lambda_j\le r\) for every coordinate \(v\). Then
+\[
+ \sum_j\lambda_j\sum_{q\in A_j}\bigl(c_q-h(q\mid B_{jq})\bigr)
+ \le r\left[\left(\sum_{v\in V}c_v-h(V)\right)
+              +\left(\sum_{v\in V}h(\{v\})-h(V)\right)\right].
+\]
+For a finite random vector \(X\), write
+\(\mathrm{TC}(X)=\sum_v H(X_v)-H(X_V)\) for its total correlation.
+Taking \(h(S)=H(X_S)\) and \(c_v=H(X_v)\) gives
+\[
+ \sum_j\lambda_j\sum_{q\in A_j} I(X_q;X_{B_{jq}})
+ \le 2r\,\mathrm{TC}(X).
+\]
+\end{theorem}
+\begin{outline}
+Fix one patch and write \(P=P_j\), \(A=A_j\), \(D=P\setminus A\).
+Condition on \(D\). All remaining helpers of a target \(q\) have their
+left ports in the component of \(R_q\). Order the components and first
+supply the targets whose left component precedes their right component.
+Then process the other targets in order of their left components. For
+each such target its right component came earlier, so all of its helpers
+are available. A supplied target costs at most \(h(q\mid D)\) in the
+chain rule, and a target reached with its helpers costs at most
+\(h(q\mid B_{jq})\). Reversing the order exchanges the two roles for
+each target. Adding the bounds gives
+\[
+ 2\bigl(h(P)-h(D)\bigr)
+ \le \sum_{q\in A} h(q\mid D)+\sum_{q\in A}h(q\mid B_{jq}).
+\]
+The formal proof groups the targets by their left components to obtain
+a single elimination piece in the sense of~\cite{PaperSeven}. The
+common-observations corollary of the soft-recovery memo gives this
+inequality~\cite[Corollary~3.2]{SoftRecovery}. The two component orders explain the
+same factor two as in the exact reconstruction argument
+of~\cite[Lemma~4.1]{PaperFive}.
+
+Use \(h(q\mid D)\le h(\{q\})\) and bound \(h(D)\) both by
+\(\sum_{v\in D} h(\{v\})\) and by \(\sum_{v\in D} c_v\).
+The contribution of this patch is at most the sum of the two deficits
+on the right side of the theorem, evaluated on \(P\).
+To sum either deficit, let \(a_v\) stand for \(c_v\) or \(h(\{v\})\)
+and fix an order on \(V\), with \(V_{<v}\) its initial segment before
+\(v\). Diminishing returns gives
+\[
+ \sum_{v\in P}a_v-h(P)\le\sum_{v\in P}
+                   \bigl(a_v-h(v\mid V_{<v})\bigr).
+\]
+On weighting and summing, each nonnegative term on the right has
+coefficient at most \(r\). The chain rule on \(V\) gives the claim.
+The formal summation in \lean{TapeStorageRates.patch_deficit_packing}
+uses the weighted submodular cover inequality from the Lean library
+of~\cite{PaperTwo}.
+\end{outline}
+
+\begin{corollary}[Errors of local predictors]\label{cor:patch-prediction}
+\formal{TapeStorageRates/PatchPrediction.lean}{TapeStorageRates.PatchPredictor.prediction_capacity,TapeStorageRates.PatchPredictor.prediction_deficit}
+Let \(X\) be a random binary word on \(n=\card V\) coordinates.
+Use unit patch weights and the ambient distance test above. Let \(r\)
+bound the number of patches containing any coordinate. Each occurrence
+\(i=(j,q)\) uses a fixed Boolean predictor of \(X_q\) from \(X_{B_{jq}}\)
+with error probability \(e_i\). Assume the number \(m\) of scored occurrences is positive. Set
+\(\bar e=m^{-1}\sum_i e_i\), and \(\delta=n-H(X_V)\).
+With \(h_2(t)=-t\log_2t-(1-t)\log_2(1-t)\) and \(0\log_2 0=0\),
+\[
+ m[1-h_2(\bar e)]
+ \le \sum_i[1-h_2(e_i)]
+ \le r\bigl(\delta+\mathrm{TC}(X)\bigr)
+ \le 2r\delta .
+\]
+\end{corollary}
+\begin{outline}
+The predictor and its error bit together determine \(X_q\). Thus
+\(H(X_q\mid X_{B_{jq}})\le h_2(e_i)\), so \(c_q-h_2(e_i)\)
+is a lower bound on the contribution of occurrence \(i\) in
+\cref{thm:patch-credit} for every choice of the capacities. Use \(c_v=1\) in
+\cref{thm:patch-credit} and \(H(X_v)\le1\). Concavity of binary
+entropy gives the bound in terms of \(\bar e\).
+\end{outline}
+
+Equality holds at every error level \(0\le e\le1\).
+In one patch, score both coordinates of \((U,U\mathbin{\oplus}Z)\),
+where \(U\) is a fair bit and \(Z\) is an independent bit with
+\(\Pr(Z=1)=e\). Each predictor copies its partner. Both paired
+distances are infinite, \(r=1\), both errors equal \(e\), and the joint
+entropy is \(1+h_2(e)\). Thus the two sides of the bound
+\(m[1-h_2(\bar e)]\le2r\delta\) equal \(2[1-h_2(e)]\).
+For \(e\ne 1/2\) this proves that the factor two is necessary for general binary laws. The example is \lean{TapeStorageRates.noisy_pair_prediction_sharp}.
+
+For a uniform word in a binary code of length \(n>0\), suppose
+\(\delta/n\le D/s\) with \(D,s>0\). If \(m\ge\alpha n\), then
+\[
+ r\ \ge\ \frac{\alpha[1-h_2(\bar e)]}{2D}\,s.
+\]
+This is \lean{TapeStorageRates.PatchPredictor.overlap_of_near_unit_rate}.
+Predicting a positive density of separated targets with a fixed advantage
+over a fair guess therefore requires overlap growing at least linearly
+in \(s\). For the families constructed in \cref{thm:main}, take the radius
+\(2w-1\) after fixing \(s\) and \(w\). For a native fibre supplied by
+\cref{thm:native-tail}, \(X\) can be taken uniform on that particular
+fibre, using its own actual permitted helpers and entropy deficit.
+
+\begin{corollary}[Exact recovery over a finite alphabet]
+\label{prop:patch-coverage}
+\formal{TapeStorageRates/Patches.lean}{TapeStorageRates.recovery_patch_coverage}
+Let \(C\subseteq\Sigma^V\) be nonempty, where \(a=\card{\Sigma}\ge2\).
+Each patch \(P_j\) serves at most \(w\ge1\) targets in \(A_j\subseteq P_j\).
+For each \(q\in A_j\), its value on \(C\) is determined by the
+coordinates in \(N(q)\cap P_j\). Each coordinate belongs to at most
+\(r\) patches. Let \(S\subseteq\bigcup_j A_j\), and let \(b_N(t)\)
+count all coordinates in \(V\) at paired distance at most \(t\).
+Then
+\[
+ \card S\le b_N(2w-1)+2r\bigl(n-\log_a\card C\bigr).
+\]
+In fact the last term alone bounds the number of distinct targets in
+\(S\) at distance greater than \(2w-1\).
+\end{corollary}
+\begin{outline}
+Give \(C\) the uniform law. In each patch score only the served targets
+at distance greater than \(2w-1\). Their conditional entropies given the
+permitted helpers vanish. In \cref{thm:patch-credit} take
+\(c_v=\log_2 a\). Each long occurrence contributes \(\log_2 a\), and
+every distinct long target in \(S\) contributes at least once. Both
+global deficits are at most \(n\log_2 a-\log_2\card C\).
+\end{outline}
+
+Thus even if the alphabet varies with the code, a family with a
+vanishing fraction of short pairs at radius \(2w-1\) has upper
+limiting covered fraction at most \(2r(1-\liminf_i R_i)\), where
+\(R_i=\log_{\card{\Sigma_i}}\card{C_i}/\card{V_i}\) and \(w,r\)
+are fixed. This is \lean{TapeStorageRates.patch_coverage_limsup}.
+Disjoint repeated pairs attain the finite bound at \(r=1\), as in
+\lean{TapeStorageRates.repetition_pairs_sharp}.
+
+\begin{corollary}[Input-dependent choice of predictors]\label{cor:patch-menu}
+\formal{TapeStorageRates/PatchPredictionEvent.lean}{TapeStorageRates.patch_prediction_menu_probability,TapeStorageRates.patch_prediction_event_probability}
+Let \(E\subseteq\{0,1\}^V\), \(n=\card V\), \(0\le e\le1/2\), and
+\(r\ge1\). Fix a menu of at most \(2^h\) predictor systems satisfying
+the ambient distance test with common bounds \(w,r\). A system specifies
+its relation, patches, scored targets, helpers and prediction rules.
+Suppose that, for each \(x\in E\), some system scores at least \(m\)
+occurrences and errs on at most a fraction \(e\) of all the occurrences
+it scores on \(x\). Then
+\[
+ \frac{\card E}{2^n}\le
+ 2^{\,h-m[1-h_2(e)]/(2r)}.
+\]
+In particular a transcript selecting the system can be charged
+\(h=\log_2\card{\{\text{labels attained on }E\}}\) when \(E\ne\varnothing\).
+\end{corollary}
+\begin{outline}
+For each system, restrict to the inputs of \(E\) on which it meets
+the two requirements. Under the uniform law on any such nonempty subset,
+its mean error is at most \(e\). By \cref{cor:patch-prediction} and
+monotonicity of \(h_2\) on \([0,1/2]\), the subset has at most
+\(2^{\,n-m[1-h_2(e)]/(2r)}\) elements. Their union contains \(E\).
+\end{outline}
+
+A tape lower bound along this route still requires a proof that
+successful executions admit predictors with the stated accuracy and
+overlap. On a fixed native fibre one can test the predictors under its
+uniform law. On the full cube one must also bound the number of distinct
+systems selected by the trace, the genie word and any other observation
+used to choose the targets.

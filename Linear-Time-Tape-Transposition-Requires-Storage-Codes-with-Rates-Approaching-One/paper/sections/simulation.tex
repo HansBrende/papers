@@ -1,0 +1,49 @@
+\section{A bit simulator with few motion traces}\label{sec:simulation}
+
+We now keep the matrix in its original binary layout. The batch size
+controls how often a simulator reveals an input-dependent decision in
+its head motions. The purpose is to leave a large set of inputs on which
+the physical cone at each append has the same meaning.
+
+\begin{theorem}[Theorem S, native trace count]\label{thm:simulator}
+\formal{TapeStorageRates/NativeCompiler.lean}{TapeStorageRates.Native.same_partial_function,TapeStorageRates.Native.source_support_fixed,TapeStorageRates.Native.source_support}
+Fix a deterministic machine $M$ with $k$ work tapes and an integer $s\ge1$.
+There is a machine $N_s$ with the same number of tapes and the same work alphabet that computes the same partial function. On a halting run of $t$ successful transitions of $M$, its running time is exactly
+\[
+ (10s+1)(\lfloor t/s\rfloor+1)+s.
+\]
+Its finite control can be encoded in $O_M(s)$ bits. On any set of halting inputs with $t\le U$ and common output length, its number of distinct full motion traces is at most
+\[
+ (1+H_k)^{\lfloor U/s\rfloor+1},\qquad H_k=2\cdot3^{k+1}.
+\]
+If the output lengths vary, multiply this bound by $s$.
+\end{theorem}
+\begin{outline}
+At the start of a batch the physical head on tape $j$ sits at an anchor $p_j\in s\Z$. Its simulated head is at $p_j+r_j$, where $0\le r_j<s$. The simulated work tapes agree with the physical ones. The control holds the offsets, simulated state and a word of fewer than $s$ pending output bits. The physical output followed by this word is the simulated output so far. All anchors and offsets start at zero.
+
+Move the heads left $s$ cells. In the next $3s$ ticks read the windows $[p_j-s,p_j+2s-1]$, moving right except on the final read. In one stationary tick a finite table simulates up to $s$ transitions on these windows and stops if it detects halt. Every visited cell and the final position are inside the scanned window, since the starting offset is in $[0,s-1]$. Each ending offset relative to the old anchor has a unique expression $se_j+r'_j$, where $e_j\in\{-1,0,1\}$ and $0\le r'_j<s$. The table also joins the new output bits to the pending word. Their total length is at most $2s-1$. If there are at least $s$ bits, schedule the first $s$ for emission.
+
+Write the updated work windows back from right to left in $3s$ ticks, moving left except on the last write. Every head follows this sweep, including the input head. Return each head to its old anchor in $s$ rightward ticks. In the next $s$ ticks each takes direction $e_j$, reaching its new anchor. Hold the heads still for $s$ ticks and append the scheduled bits, or idle throughout if none were scheduled. The pending word is the unprinted suffix. These phases preserve the boundary conditions. Work writes outside the writeback phase preserve the scanned symbol.
+
+In Lean, \lean{TapeStorageRates.Native.simulates_halt} proves the exact clock and equality of completed outputs. Each batch costs $10s+1$ ticks. If a batch discovers halt, drain the pending word during $s$ final stationary ticks, idling after its last bit, then halt. When $s$ divides $t$, the extra batch discovers halt before simulating any further transition. An infinite simulated run executes infinitely many batches. The windows, pending output, offsets, counters and finite state admit $O_M(s)$ bits of control by \lean{TapeStorageRates.Native.control_bits}. For fixed $M,s$ the update on this finite set is a transition table.
+
+A batch's $k+1$ directions $e_j$ and its full-word emission flag determine all its native moves and append flags. Pad the sequence of batch descriptors, using a distinct symbol, to length $\lfloor U/s\rfloor+1$. Its unpadded length determines when to drain and halt. At a common output length $\ell$ the drain emits exactly $\ell\bmod s$ bits. At variable lengths this count takes at most $s$ values. This gives the claimed trace bounds.
+\end{outline}
+
+For inputs of length $L$ with $t\le c(L+1)$ and common output length, the limiting upper value of $L^{-1}\log_2|\operatorname{supp}(\mathrm{trace})|$ is at most $c\log_2(1+H_k)/s$. The limsup inequality is \lean{TapeStorageRates.Native.trace_support_rate_limsup}. Thus any prescribed positive trace rate selects one simulator before $L$ grows.
+
+The time coefficient can also be made uniform in $s$ on all halting inputs. Simulate the first $2s$ successful transitions directly, stopping if $M$ halts earlier. In the batched phase, use the current physical head positions as grid origins and start with empty pending output. For $t<2s$ the total cost is $t$. Otherwise it is
+\[
+ 3s+(10s+1)(\lfloor t/s\rfloor-1)\le 11t .
+\]
+The variant uses $O_M(s)$ bits of control. Its prefix adds $O_k(s)$ bits
+to the trace description. The prefix flags specify how many bits were
+already emitted there, so a fixed total output length still determines
+the length of the final drain. The formal bounds are
+\par{\small\raggedright
+\lean{TapeStorageRates.Prefix.simulates_halt},
+\lean{TapeStorageRates.Prefix.time_le_eleven},
+\lean{TapeStorageRates.Prefix.control_bits}, and
+\lean{TapeStorageRates.Prefix.source_support}.\par}
+
+For this compiler the order $1/s$ can be attained, as proved in \lean{TapeStorageRates.Native.copy_trace_card}. Consider a copying machine that advances a dummy work head exactly on a $1$, and advances the input head after each copied bit. Independently choose each of the first $\lfloor L/s\rfloor$ aligned input blocks to be all zeros or all ones, fixing the suffix. In each batch the dummy head stays at its anchor or advances to the next anchor. These choices give $2^{\lfloor L/s\rfloor}$ different simulator traces. The example measures the compiler's trace count on a specified machine. Copying also admits an oblivious implementation.

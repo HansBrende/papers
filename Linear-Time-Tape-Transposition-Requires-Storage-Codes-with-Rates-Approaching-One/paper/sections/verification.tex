@@ -1,0 +1,64 @@
+\section{Formal statements and verification}\label{sec:verification}
+
+The accompanying Lean development is authoritative for the numbered
+statements and their proofs. The human-readable outlines give the
+mathematical arguments and explain the hypotheses. Inputs, moves, output
+and halting use the first paper's frozen machine model \cite{PaperOne}.
+
+\paragraph{Packet coordinates.}
+\lean{TapeStorageRates.PaidInputs.GrowingWidthSuccess} quantifies over a common
+choice of dimension and entry width for each size threshold and accuracy
+tolerance. The source machine supplies its own class of successful inputs.
+\lean{TapeStorageRates.PaidClasses.compiler} realizes the eleven-tick
+batch computation. \lean{TapeStorageRates.packet_code_at_threshold}
+performs the finite extraction and
+\lean{TapeStorageRates.family_of_packet_classes_at_threshold} chooses
+dimensions to give a family. The positive lengths, two-sided degree
+bounds and paired distances belong to
+\lean{TapeStorageRates.SeparatedBinaryFamily}. The comparison with the
+supremum of limiting upper rates is
+\lean{TapeStorageRates.RateWitnesses.extremal_rates}.
+
+\paragraph{Native coordinates.}
+\lean{TapeStorageRates.NativeTypicalPartition} chooses one cut and
+retained coordinate set per attained trace. Each input restricts to a
+word of its own cell code. The membership proof is
+\lean{TapeStorageRates.NativeTypicalPartition.projected_mem}. The tail theorem concerns the uniform
+probability on $G$ under these assignments. Depth reduction is applied
+at the compiled machine's own step width. \Cref{cor:native} uses the
+native coding hypothesis of the fourteenth paper at that width and depth
+\cite[Corollary~L]{PaperFourteen}.
+
+\paragraph{Predictions.}
+\lean{TapeStorageRates.PatchPredictor.missed} masks all inputs outside
+a predictor's permitted helpers before evaluating its guess.
+The development uses natural logarithms for Shannon entropy. Dividing
+by $\ln 2$ gives the bit units of \cref{sec:patches}. Counting one scored
+occurrence for each patch and target allows one target to occur in
+several patches. The finite-alphabet exact-coverage result counts
+distinct covered targets.
+
+\begin{corollary}[The original qualitative target]\label{cor:formal}
+\formal{TapeStorageRates/Main.lean}{TapeStorageRates.qualitative_transfer}
+Under \textnormal{(T)}, for each $\varepsilon>0$ and every sufficiently large
+cap there is an admissible family of limiting lower rate at least
+$1-\varepsilon$.
+\end{corollary}
+\begin{outline}
+A witness to (T) succeeds at all canonical dimensions. The original target uses $\max(1,k)$ in place of the actual tape count
+$k$. The quantitative statement is proved by \lean{TapeStorageRates.quantitative_transfer}. Its qualitative consequence follows by \lean{TapeStorageRates.qualitative_of_quantitative}. At that fixed tape
+count the deficit scale tends to zero. \Cref{thm:main} also gives the
+bound with $k$ itself, including $k=0$.
+\end{outline}
+
+\paragraph{Reproducing the checks.}
+Use the complete repository so the sibling Lean packages are available.
+The project pins Lean and Mathlib v4.34.1. From this paper's directory run
+\begin{verbatim}
+(cd lean && lake build && lake env lean PaperAxioms.lean)
+python3 tools/lean_index.py --check
+\end{verbatim}
+The generated axiom file queries the declarations cited in the text and
+in the formal status lines. Their dependencies use at most
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+The README gives the preparation steps for a fresh checkout.

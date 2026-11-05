@@ -1,0 +1,10 @@
+import TapeStorageRates.Main
+import TapeStorageRates.ExtremalRate
+import TapeStorageRates.GapExamples
+import TapeStorageRates.NativeSharpness
+import TapeStorageRates.NativeTypicalRates
+import TapeStorageRates.PatchPredictionBias
+import TapeStorageRates.PatchPredictionEvent
+import TapeStorageRates.PatchResidualSharpness
+import TapeStorageRates.PatchesSharpness
+import TapeStorageRates.PrefixTrace

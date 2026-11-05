@@ -1,0 +1,196 @@
+\section{Typical codes on physical bit positions}\label{sec:native}
+
+Run the simulator $N_s$ of \cref{thm:simulator} on a nonempty set
+$G\subseteq G_{d,b}$. We will count inputs in $G$ with equal weight. The
+construction has to keep track of which physical bit positions survive,
+because the most frequently read bits can differ between traces.
+
+\subsection{Counting the cells of a frozen trace}\label{sec:records}
+
+For each attained full trace $\tau$, choose one set of revealed steps
+$\Gamma_\tau$. Root the cone for input coordinate $q$ at the step that
+appends output bit $\tpos(q)$. Delete both ports of each coordinate
+whose input port has excessive degree. In the induced graph delete both
+ports of every remaining coordinate whose paired distance is at most the
+chosen radius. Denote the retained input positions by $U_\tau$ and set
+$m_\tau=|U_\tau|$. The choices of steps and positions are common to the
+whole trace. The existence of such cuts with bounded depth is proved in
+\lean{TapeStorageRates.native_typical_partition} using the walk theorem
+of \cite[Corollary~O(a)]{PaperFourteen}.
+
+For a fixed $\tau$, record the values at $\Gamma_\tau$ and the input bits
+outside $U_\tau$. Call this complete record $z$. Let $G_{\tau,z}$ be
+the inputs with that trace and record, and $C_{\tau,z}$ their
+projections onto $U_\tau$. Fixing the exterior makes the projection
+injective. It also turns every omitted helper into a constant, so
+$C_{\tau,z}$ is a code for the induced relation on the retained ports.
+Each codeword extends to a member of $G_{\tau,z}$.
+These are the storage and extension statements of
+\lean{TapeStorageRates.NativeTypicalCut.storage} and
+\lean{TapeStorageRates.NativeTypicalCut.mem_code_iff}. The full trace fixes the successive append flags, hence the step at
+which each output position is written.
+
+\begin{proposition}[Counting native fibres]\label{prop:moment}
+\formal{TapeStorageRates/NativeTypical.lean}{TapeStorageRates.NativeTypicalPartition.deficit_moment,TapeStorageRates.NativeTypicalPartition.tail_of_joint_count}
+Let $X$ be uniform on $G$ and use a native partition as above. For an
+attained cell define its deficit
+$D_{\tau,z}=m_\tau-\log_2|C_{\tau,z}|$. Write $D_X$ for the deficit of
+the cell containing $X$. For any real budget $\ell_{\tau,z}$ on each
+attained record, with $\ell_X$ the corresponding random budget,
+\[
+ \mathbb E\,2^{D_X-\ell_X}
+   =\frac{1}{|G|}\sum_\tau\sum_{z:\,G_{\tau,z}\ne\varnothing}
+                2^{m_\tau-\ell_{\tau,z}} .
+\]
+If at most $2^h$ distinct pairs of trace and revealed step values occur
+on $G$, then for every $t\ge0$,
+\[
+ \Pr\!\left[D_X>L-\log_2|G|+h+t\right]\le 2^{-t}.
+\]
+\end{proposition}
+\begin{outline}
+The $|G_{\tau,z}|$ inputs in a cell all contribute the same power of two.
+Since $|C_{\tau,z}|=|G_{\tau,z}|$, this cardinality cancels when we sum
+over the cell, giving its term in the identity.
+
+For the second display, use the constant budget
+$\ell=L-\log_2|G|+h+t$. A fixed trace and fixed revealed word allow at
+most $2^{L-m_\tau}$ exterior assignments. Their combined contribution
+to the unnormalized sum is at most $2^{L-\ell}$, independently of
+$m_\tau$. Summing over the attained pairs gives
+$\mathbb E\,2^{D_X-\ell}\le2^{-t}$. On the event $D_X>\ell$ its
+integrand exceeds one. The same argument with the individual budgets
+bounds $\Pr[D_X>\ell_X]$ when the set of possible exterior assignments
+is known more precisely.
+\end{outline}
+
+\subsection{A tail bound at fixed degree}\label{sec:native-rate}
+
+\begin{theorem}[Theorem N, typical native rate]\label{thm:native-tail}
+\formal{TapeStorageRates/NativeTypicalRates.lean}{TapeStorageRates.typical_native_rate_tail,TapeStorageRates.typical_native_rates_full}
+Fix $M$ with $k$ work tapes and $c\ge0$. Put $p=4k^2+1$ and
+$Z_\Delta=2^{\sqrt{\log_2\Delta}}$. There are constants $K,A>0$ such
+that at every sufficiently large integer cap $\Delta$ one can fix
+an integer $s\ge1$ with
+\[
+       f_{2p}(\Delta)\le 1/s\le K f_{2p}(\Delta).
+\]
+For every fixed integer radius $r\ge0$, all sufficiently large $d$,
+every $b\ge1$ and every nonempty $G\subseteq G_{d,b}$, the bit simulator
+$N_s$ has a partition of $G$ with the following properties.
+
+Projecting an attained cell as in \cref{sec:records} gives a storage code
+on the retained input positions of its trace. Every
+input and recovery port has degree at most $\Delta$, every surviving paired distance
+exceeds $r$, and
+\[
+               m_\tau\ge (1-Z_\Delta/\Delta)L .
+\]
+The simulator halts within $(11c+1)(L+1)$ steps on $G$. For $X$ uniform
+on $G$, let $R_X=\log_2|C_{\tau,z}|/m_\tau$ for its cell.
+On this same partition, for every $u\ge0$,
+\[
+ \Pr\!\left[R_X<\frac{\log_2|G|}{L}-A f_{2p}(\Delta)-u\right]
+      \le 2^{-uL}.
+\]
+\end{theorem}
+\begin{outline}
+Let $\beta_s$ be the number of bits sufficient for a scale-one step
+record of $N_s$. The simulator keeps its tape alphabet, and its control
+uses $O_M(s)$ bits, so $\beta_s=O_M(s)$. At fixed $s$ the startup
+cost fits in $L+1$ steps for all sufficiently large $d$, uniformly in
+$b\ge1$. The exact clock and trace count in \cref{thm:simulator} then
+give the displayed time bound and at most $2^{aL/s}$ traces on $G$, for
+a constant $a=a(M,c)$. All inputs in $G$ have the same output length.
+
+On each trace spend at most $L/s$ bits on revealed steps. In the cut
+theorem the parameter controlling the depth is
+$x=4\beta_s(11c+1)s=O_{M,c}(s^2)$
+\cite[Definition~7.1 and Corollary~9.3(a)]{PaperFourteen}. If $D_s$ is
+the resulting depth parameter, put $B_s=\sum_{j=0}^{D_s}(k+1)^j$.
+This bounds the number of permitted input helpers at each output.
+The degree calculation of \cref{sec:proof} now gives
+$\log_2\log_2(2s^2 B_s)=O_{M,c}(s^{2p}\log_2(s+1))$.
+Choose the constant in the inversion so that this double logarithm is
+at most $\tfrac12\log_2\log_2\Delta$. Then
+$\max(s,B_s)\le Z_\Delta$ at the stated scale for $s$, as proved in
+\lean{TapeStorageRates.native_batch_size_for_cap}. This extra factor
+of $s$ in the cut parameter accounts for the change from $f_p$ to
+$f_{2p}$.
+
+There are at most $B_sL$ incidences. Removing input coordinates of degree
+greater than $\Delta$ therefore removes at most $B_sL/(\Delta+1)$
+coordinates. In the induced graph, the short-pair estimate bounds the
+second deletion by $J L/\log_2 d$ for a constant $J$ depending on the
+fixed parameters and radius, uniformly over the traces and the widths
+$b\ge1$ \cite[Proposition~4.11(a), accompanying Lean theorem]{PaperEleven}.
+Since $B_s/(\Delta+1)<Z_\Delta/\Delta$, both deletions fit in the
+claimed fraction at all sufficiently large $d$. Deleting coordinates
+can only increase the remaining paired distances.
+
+Put $\lambda=Z_\Delta/\Delta$. For large caps $Z_\Delta^2\le\Delta$,
+so $\lambda\le1/s$. The chosen traces and genie words jointly cost at
+most $(a+1)L/s$ bits. Apply \cref{prop:moment} with $t=uL$. Outside
+an event of probability at most $2^{-uL}$ we obtain
+\[
+ \log_2 |C_{\tau,z}|
+ \ge\log_2|G|-\bigl(\lambda+(a+1)/s+u\bigr)L .
+\]
+The code is nonempty, so its rate on $m_\tau\le L$ coordinates is at
+least $\log_2|C_{\tau,z}|/L$. The loss
+$\lambda+(a+1)/s$ is at most $(a+2)K f_{2p}(\Delta)$. This proves the
+tail with a single partition for every confidence level.
+\end{outline}
+
+For a full successful cube $\log_2|G|/L=1$. Taking $u=1/s$ gives rate
+$1-O_{M,c}(1/s)$ except on input mass at most $2^{-L/s}$. For a smaller
+success set its own rate enters with coefficient one. The retained
+positions and recovery relation may vary from trace to trace. The code can also vary with the revealed word and the exterior values.
+
+\subsection{A sufficient native coding bound}\label{sec:native-test}
+
+The native half-rate hypothesis concerns the full cone relation of a
+specified machine at a specified depth. It asks for an upper bound
+$2^{(1/2+\delta)L}$ on every binary storage code on each eligible cone
+relation for all sufficiently large $d$, for every fixed $\delta>0$.
+The step width $\operatorname{blockWidth}(N_s,1)$ is the number of bits
+charged for revealing one complete physical record.
+
+\begin{corollary}[The native frozen-trace criterion]\label{cor:native}
+\formal{TapeStorageRates/TraceTransfer.lean}{TapeStorageRates.native_frozen_trace_exclusion,TapeStorageRates.native_tests_exclude_linear}
+For each $M$ and $c>0$ one can choose a single aligned simulator $N_s$ and
+time coefficient $c'>0$ with the following implication. Suppose the
+native half-rate hypothesis of \cite[Corollary L(b)]{PaperFourteen}
+holds at canonical widths for $N_s$ at scale one, time coefficient
+$c'$, and depth parameter $\operatorname{genieDepth}
+(k,\operatorname{blockWidth}(N_s,1),\max(c',1),1/8)$. Then $M$
+succeeds on the full cube at only finitely many canonical dimensions.
+If this hypothesis holds on the chosen simulator for each source machine
+and coefficient, \textnormal{(T)} is false.
+\end{corollary}
+\begin{outline}
+An eligible run halts by the specified time bound. The hypothesis
+ranges over cuts with the prescribed
+remaining depth and all choices of times before halt at the prescribed
+output-counter positions. In particular it includes the actual append
+steps. Choose $s$ so that the complete trace support costs at most $L/4$
+bits at large successful dimensions, using
+\lean{TapeStorageRates.aligned_low_trace_dimensions}, which supplies
+$c'=11c+1$. A largest trace
+contains at least $2^{3L/4}$ inputs. Revealing at most $L/8$ bits on
+that trace leaves a common word with at least $2^{5L/8}$ inputs. These
+inputs form a code on the untrimmed append-time cones by the same
+predecessor induction as in \cref{sec:model}. This exceeds the hypothesized
+bound for every $0<\delta<1/8$. The formal criterion applies the skeleton-entropy lower bound of
+Corollary~L(b). Skeleton entropy is at most the logarithm of the full
+trace support. The separate witness theorem
+\lean{TapeStorageRates.native_five_eighths} constructs the native code
+and \lean{TapeStorageRates.NativeFibreWitness.outputTime_eq_appendTime}
+identifies its roots.
+\end{outline}
+
+The same checked criterion allows any fixed $0<\eta<1/2$. Choose the
+simulator so that its full trace support costs at most $\eta L$ bits
+at large successful dimensions. In the depth parameter, replace the
+cut fraction $1/8$ by $(1/2-\eta)/2$. The common trace and genie fibre
+then has rate at least $1-\eta-(1/2-\eta)/2>1/2$.

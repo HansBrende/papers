@@ -2,6 +2,8 @@
 
 Hans Brende and Claude Opus 5.5 (Anthropic), November 2026.
 
+Paper 15 applies Corollary L(b) to a fixed simulator with few motion traces. A native half-rate bound at the simulator's own resources would exclude transposers of any adaptivity. [Paper 15](../Linear-Time-Tape-Transposition-Requires-Storage-Codes-with-Rates-Approaching-One/README.md).
+
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (Lean and Mathlib v4.34.1). License: Apache 2.0

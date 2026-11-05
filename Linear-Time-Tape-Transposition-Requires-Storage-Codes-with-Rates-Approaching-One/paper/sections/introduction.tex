@@ -1,0 +1,69 @@
+\section{Introduction}\label{sec:introduction}
+
+The entries of a matrix's first column are a row apart on the input tape
+and consecutive in the output. A transposer may store coded information
+as it works, and its head movements may depend on what it has read. If
+we fix those movements, we can trace the possible dependencies of an
+output bit. Fixing the movements also restricts the input. The question
+is how much information survives the restriction.
+
+For a fixed tape trajectory, a depth-reduction theorem supplies a small
+set of steps whose values can be revealed so that the remaining
+dependency paths have bounded length \cite[Corollary~O]{PaperFourteen}.
+On the inputs sharing both the trajectory and the revealed values, each
+output can then be recovered from a bounded set of input coordinates.
+The recovered coordinate and its input copy can be far apart in the
+incidence graph of that relation. Such separation is compatible with
+binary storage codes of rate above one half
+\cite[Corollary~A$'$]{PaperThirteen}. A linear-time transposer would
+require rates arbitrarily close to one.
+
+\Cref{thm:main} gives the degree dependence of this requirement. For
+every sufficiently large degree cap it produces a family with rates
+bounded below while its minimum paired distance tends to infinity. The
+coordinates are bits of packets. Grouping bits this way gives our
+strongest rate estimate. A coding upper bound with a larger deficit would
+rule out the assumed machine. \Cref{cor:gap} makes the comparison precise,
+including the success probability when the machine is correct only on
+some inputs.
+
+A second question concerns the individual bit positions of a physical
+machine. \Cref{thm:simulator} groups source transitions into batches but
+executes each head move and each append on an ordinary bit machine.
+\Cref{thm:native-tail} uses its actual append times. The packet graph connects every bit of a permitted helper packet to
+every bit of its target packet. The native graph follows each physical
+append backwards through the simulator. On a set $G$ of correctly
+transposed inputs, the native theorem bounds the input mass in fibres
+whose rate falls appreciably below $\log_2|G|/L$. Each fibre keeps nearly
+all of its trace's original bit positions. The native exponent is half
+the packet exponent.
+
+Finally, \cref{sec:patches} asks how much a local set of helpers can tell
+us about the bit it is meant to recover. The answer accounts separately
+for a bit's own bias and the information supplied by its helpers. A
+fixed advantage over chance on a positive fraction of separated targets
+requires increasingly large patch overlap as the code rate approaches
+one. The outstanding question is whether a linear-time tape computation
+would have to provide such an advantage at smaller overlap.
+
+\paragraph{Relation to earlier work.}
+The finite-control simulation of Hartmanis and Stearns evaluates
+consecutive tape operations from a bounded neighbourhood
+\cite[Theorem~2]{HartmanisStearns}. Hopcroft, Paul and Valiant synchronize
+tape-block crossings \cite[\S2]{HPV1977}. Williams describes the
+computation graph of an aligned machine using a constant number of
+movement bits per block \cite[\S\S2--3]{Williams}. Here the sequence of batch descriptors determines the in-batch append
+flags and when the terminal drain starts. The common output length
+then fixes the number of bits appended during the drain. Earlier in this series, an external-memory
+simulation fixed an event word at the scale of entire rows
+\cite[Theorem~EM]{PaperEleven}. Our batch size is fixed before the
+matrix dimension grows. Conditional entropy as a measure of imperfect
+local recovery appears in earlier work on recoverable systems
+\cite[\S IV]{ElishcoBarg}. Our prediction bound uses the separated-port
+argument of \cite[Lemma~4.1]{PaperFive} and the soft-recovery inequality
+for nested elimination \cite[Theorem~S]{SoftRecovery}.
+
+\paragraph{Formal proofs.}
+The Lean declarations named with each numbered result are its proofs.
+The English outlines explain the constructions, estimates and choices of
+parameters. \Cref{sec:verification} gives the verification procedure. The declaration index identifies the corresponding source modules.

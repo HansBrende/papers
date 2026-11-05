@@ -1,0 +1,105 @@
+\subsection{Extracting and separating a code}
+
+Call $W$ a \emph{frozen packet class} on $n=d^2a$ packets if its nonempty
+set of packet arrays has common unit walks for the input head, the $k$
+work heads and the output position, and its tick records obey the
+locality rule above. It also has a designated tick before the deadline
+for each demanded packet. At that tick the output position is the
+packet's transposed address and the record determines the packet on
+$W$. In the compiled class this is its append tick.
+
+\begin{proposition}[Retention at a chosen degree threshold]\label{prop:packet-retention}
+\formal{TapeStorageRates/PacketFamily.lean}{TapeStorageRates.packet_code_at_threshold}
+Fix integers $k,A\ge0$, $s,\beta\ge1$ and a time coefficient $c_0\ge1$.
+Let $D=\operatorname{genieDepth}(k,\beta,c_0,1)$ be the depth bound
+of the bounded-stack walk theorem, and put
+$B=\sum_{j=0}^{D}(k+1)^j$. Fix a degree threshold $\theta\ge0$, a
+radius $u\ge0$, both integers, and a real $\alpha$ with
+$0<\alpha<1-B/(\theta+1)$.
+For all sufficiently large $d$, every $a\ge1$ and every frozen class $W$
+on $n=d^2a$ packets with $\beta$-bit records, at most $c_0(n+1)$ ticks
+and $\log_2|W|\ge sn-An$, there is an integer $m$ with $\alpha n\le m\le n$ and a binary
+storage code on $sm$ coordinates.
+Its degree is at most $s\max(B,\theta)$, every paired distance exceeds
+$u$, and its rate is at least $1-(A+1)/(\alpha s)$.
+\end{proposition}
+
+\begin{outline}
+Point each tick back to its control and work predecessors. The walk
+theorem supplies a set $\Gamma$ of ticks with $\beta|\Gamma|\le n$.
+On a dependency path starting at an output tick and avoiding $\Gamma$
+after its first vertex, the depth bound is $D$.
+Fix a most frequent joint value for the records at $\Gamma$. This
+costs at most $n$ bits in log cardinality. For a source packet $q$, let
+$N(q)$ contain the input addresses reached by these paths from its
+designated output tick. Two arrays in the resulting fibre that agree on
+$N(q)$ have the same output record there. Indeed the revealed records
+already agree, and the locality rule gives agreement at the remaining
+ticks by induction in time. Thus $N(q)$ recovers $q$. This application
+uses the whole-step walk cut of \cite[Corollary~O(a)]{PaperFourteen} and
+the common-schedule recovery argument of \cite[proof of Corollary~6.4]{PaperEight}.
+
+Each tick has at most $k+1$ predecessors. Consequently $|N(q)|\le B$,
+and the sum of all input-port degrees is at most $Bn$. Remove both ports
+of each coordinate whose input degree exceeds $\theta$. There are at
+most $Bn/(\theta+1)$ such coordinates. In the induced graph the maximum
+degree is at most $\max(B,\theta)$. The paired-path packing theorem bounds
+the number of remaining matched pairs at distance at most $u$ by
+$O_{k,c_0,D,\theta,u}(n/\log_2 d)$, uniformly in $a$. At bounded degree, a positive density of short paths would yield many
+vertex-disjoint ones. Following their dependency edges forwards and
+backwards through the walks would transport the corresponding input
+coordinates to their transposed positions. The row-entropy transport
+bound limits the number that can be served in $O(n)$ ticks. This is
+where the transposed addresses enter the estimate. The formal packing
+bound uses the walks, the cut and the positions of the transposed demands
+\cite[Theorem~3.3 and Remark~3.9]{PaperFive}. At block scale one, the Lean estimate
+\lean{MergeDepth.skel_paired_packing} underlying
+\cite[Proposition~4.11(a)]{PaperEleven} also permits $k=0$. The strict inequality defining $\alpha$
+leaves room to remove these short pairs and retain $m\ge\alpha n$.
+Every surviving path was already a path before deletion.
+
+Fix the omitted packets to common values when projecting the code through
+the two deletions. The total cost is at most $s(n-m)$ bits, one $s$-bit
+payment for each omitted coordinate. Its former occurrences in the
+recovery rules are now constants \cite[Corollary~3.8]{PaperFive}. The
+projected code has log cardinality at least $sm-(A+1)n$.
+Replace every surviving packet by its $s$ bits and each incidence by
+all $s^2$ incidences between the corresponding copies. The bits of the
+helper packets determine each demanded bit. Expansion preserves code
+cardinality, multiplies the degree bound by $s$, and sends every paired
+path back to a packet walk of the same length when its bit indices are
+forgotten \cite[Lemma~8.1]{PaperThirteen}. Dividing the cardinality
+bound by $sm$ gives the rate in the statement.
+\end{outline}
+
+\begin{outline}[Completion of the proof of Theorem A]
+Apply \cref{prop:packet-retention} with $c_0=11J$, $\beta=\beta_s$ and
+$A=A_0+1$ from the schedule count. Taking $\theta=2B$ permits
+$\alpha=1/2$, since $B/(2B+1)<1/2$. Thus the cap is $\Delta_s=2sB$
+and the rate loss is at most $2(A+1)/s$. At cap $10sB$, taking $\theta=10B$ permits
+a retained fraction of at least $9/10$.
+For each successive radius $u$, take a qualifying $d,b$ large enough
+for the proposition and with $d\ge2(u+1)$. Their lengths tend to infinity, and
+the $u$th code has every paired distance greater than $u$.
+
+It remains to fit $\Delta_s$ below a prescribed $\Delta$.
+Write $x=4\beta_s c_0=O_{M,c}(s)$. In the walk cut the full depth is
+$D=K_0^{P_0}\lceil x\rceil$, with its radix $K_0$ and digit count $P_0$
+taken at cut fraction $1/x$ \cite[Definition~7.1]{PaperFourteen}.
+For fixed $k$ the parameter bounds give
+$\log_2 K_0=O_k(x)$ and
+$P_0=O_k(x^{4k^2}\log_2(x+1))$.
+Since $B\le(k+2)^{D+1}$, these inequalities yield
+\[
+   \log_2\log_2\Delta_s
+      =O_{M,c}\!\left(s^{\,4k^2+1}\log_2(s+1)\right).
+\]
+With $y=\log_2\log_2\Delta$ and $p=4k^2+1$, choose $s$ as the
+integer part of a sufficiently small fixed multiple of
+$(y/\log_2 y)^{1/p}$. For all sufficiently large $\Delta$ this gives
+$\Delta_s\le\Delta$ and $1/s=O_{M,c}(f_p(\Delta))$.
+The family at that $s$ proves the limiting lower rate bound.
+The supremum $R(\Delta)$ is at least this family's limiting upper rate,
+and every binary code has rate at most one. This proves the convergence
+asserted in \cref{thm:main}.
+\end{outline}

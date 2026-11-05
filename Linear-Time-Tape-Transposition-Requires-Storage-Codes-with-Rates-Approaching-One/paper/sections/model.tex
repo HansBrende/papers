@@ -1,0 +1,78 @@
+\section{Tape computations and recovery relations}\label{sec:model}
+
+\paragraph{The machine and its task.}
+We use the deterministic multitape model of the first paper in the series
+\cite{PaperOne}. The machine has finite control, a two-way read-only input
+tape, $k\ge0$ two-way work tapes over a fixed finite alphabet, and an
+append-only binary output. All heads start at zero and move by at most one
+cell per transition. A transition writes at the scanned work cells and
+appends at most one bit. Reading beyond the input gives an end marker.
+The \emph{full motion trace} records the head directions and whether a bit
+was appended at each transition, together with termination. The next control state, written symbols and appended bit belong to the
+step value \cite[\S2]{PaperEleven}.
+
+A $d\times d$ matrix with $b\ge1$ bits per entry occupies $L=d^2b$ bits in
+row-major order. For $0\le i,j<d$ and $0\le t<b$, the input bit at address
+$q=(id+j)b+t$ must be appended at output position
+$\tpos(q)=(jd+i)b+t$. Fix a machine $M$ and a time coefficient $c$.
+Write $G_{d,b}$ for the inputs on which $M$ halts within $c(L+1)$ steps
+with this output. At the canonical width $b(d)=\max(1,\lceil\log_2 d\rceil)$,
+statement \textnormal{(T)} asks for a single $M,c$ with
+$G_{d,b(d)}=\{0,1\}^L$ for every positive $d$.
+
+\paragraph{A code and its paired distances.}
+Let $V$ be a finite nonempty coordinate set and $\mathcal A$ a finite
+alphabet of size at least two. A relation $N$ assigns to each $q\in V$
+a set $N(q)\subseteq V$ of permitted helpers. A nonempty set
+$C\subseteq\mathcal A^V$ is a \emph{storage code} for $N$ if two words of
+$C$ agreeing on $N(q)$ agree at $q$, for every $q$. Its rate is
+$\log_{|\mathcal A|}|C|/|V|$. No linearity is assumed.
+
+The incidence graph has an input port $L_v$ and a recovery port $R_v$
+for each $v$. Join $L_v$ to $R_q$ when $v\in N(q)$. The \emph{paired
+distance} of $q$ is the undirected graph distance from $L_q$ to $R_q$,
+with value $\infty$ for disconnected ports. For example, take two
+coordinates that store the same bit and let each use its partner as its
+only helper. The two incidence edges are disjoint. Both paired distances
+are infinite, although each coordinate is recovered exactly. This graph
+measurement concerns the permitted observations at the two ports. The example has rate $1/2$ \cite[\S3]{PaperFive}.
+
+A binary family $(V_i,N_i,C_i)$ is \emph{admissible at cap $\Delta$} if
+every port has degree at most $\Delta$, $|V_i|\to\infty$, and for each
+fixed integer radius $r$ every paired distance exceeds $r$ for all
+sufficiently large $i$. Let $R(\Delta)$ be the supremum, over these
+families, of their limiting upper rates. Our constructions give lower
+bounds on the limiting \emph{lower} rate. For large $\Delta$, write
+\[
+ p=4k^2+1,\qquad
+ f_j(\Delta)=\left(\frac{\log_2\log_2\log_2\Delta}
+                         {\log_2\log_2\Delta}\right)^{1/j}\quad(j>0).
+\]
+The packet and native bounds below use $j=p$ and $j=2p$, respectively.
+
+\paragraph{How a tape run gives a recovery relation.}
+Freeze a motion trace. In the diagram of step dependencies, a step has
+at most $k+1$ earlier predecessors, one for the previous control step
+and one for the last visit to the scanned cell on each work tape. Missing predecessors
+give initial values. The input head supplies the bit at its current
+address, or the end marker. Choose a set $\Gamma$ of steps and reveal
+their full values. This collection of observations is called a
+\emph{genie}. Start at the append of output bit $\tpos(q)$ and follow
+the predecessor edges backwards, requiring every vertex after the root to lie outside $\Gamma$. The root
+itself may be revealed.
+The input addresses encountered form the \emph{cone} of that append.
+Once the trace and the revealed values have been fixed, agreement on
+these input bits forces agreement at the append, by induction on time.
+On correctly transposed inputs, it therefore forces agreement at $q$.
+This is the recovery relation used at physical bit scale. The same
+recursion with packet inputs and packet records will be used in
+\cref{sec:proof} \cite[\S4]{PaperEleven}.
+
+For $k$ work walks with $T\le C(n+1)$ steps, $C\ge1$, $n\ge1$, a cut
+budget $\varepsilon>0$ and records of width $\beta\ge1$, the bounded-stack theorem gives a cut with
+$\beta|\Gamma|\le\varepsilon n$. Each permitted path then has at most
+$D+1$ vertices, where $D=\operatorname{genieDepth}(k,\beta,C,\varepsilon)$
+is independent of $n$ \cite[Corollary~O(a)]{PaperFourteen}. Here $n$
+counts input units. A unit is one packet in \cref{sec:proof} and one
+physical bit in \cref{sec:native}. In both applications the revealed
+record values are charged in bits.

@@ -1,0 +1,40 @@
+\section{The rate forced by a packet computation}\label{sec:proof}
+
+\begin{theorem}[Theorem A, quantitative packet transfer]\label{thm:main}
+\formal{TapeStorageRates/Main.lean}{TapeStorageRates.rate_witnesses_of_growing_widths,TapeStorageRates.rate_witnesses_of_near_full,TapeStorageRates.rate_witnesses_of_full}
+Fix a deterministic machine $M$ with $k$ work tapes and a time coefficient $c>0$.
+Suppose that for every $n\ge1$ and $\eta>0$ there are $d,b\ge n$ for which
+\[
+  G_{d,b}\ne\varnothing,\qquad
+  \log_2|G_{d,b}|\ge(1-\eta)d^2b .
+\]
+There is a constant $K=K(M,c)>0$ such that for every sufficiently large
+integer $\Delta$ some admissible binary family at cap $\Delta$ satisfies
+\[
+  \liminf_{i\to\infty}\frac{\log_2|C_i|}{|V_i|}
+     \ \ge\ 1-K f_{4k^2+1}(\Delta).
+\]
+Consequently $R(\Delta)\ge1-K f_{4k^2+1}(\Delta)$ for all sufficiently
+large $\Delta$, and $R(\Delta)\to1$.
+\end{theorem}
+\begin{outline}
+Fix $s$ bits per packet. On a sufficiently large successful instance,
+conditioning on the incomplete ends of entries, the packet schedule and
+the revealed steps leaves a code with a deficit of $O_{M,c}(1)$ bits
+per original packet. The trimming estimate below retains at least half
+the packets at the chosen cap. Expanding those packets into bits gives
+a rate loss of $O_{M,c}(1/s)$. The required degree cap $\Delta_s$ satisfies
+$\log_2\log_2\Delta_s=O_{M,c}(s^p\log_2(s+1))$. Inverting it gives
+the claimed rate. The following two subsections establish the finite
+estimates and make the order of the choices explicit.
+\end{outline}
+
+Both thresholds $d,b\ge n$ apply to the same success set. In particular,
+the hypothesis holds if $M$ succeeds on $2^{L-o(L)}$ inputs along a sequence
+of canonical dimensions tending to infinity. A machine satisfying (T)
+succeeds on all $2^L$ inputs at those dimensions. The family in the
+conclusion may depend on $\Delta$. Once the cap is fixed, its length
+and its minimum paired distance grow together.
+
+\input{sections/paid-success}
+\input{sections/codes}

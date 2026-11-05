@@ -1,0 +1,39 @@
+\section{What remains open}\label{sec:open}
+
+\paragraph{How close to one can the abstract rate get?}
+Known binary constructions exceed $0.5013$ at a fixed degree cap.
+For larger caps the large-prime construction gives guaranteed rates
+arbitrarily close to $4-2\sqrt3$ from below
+\cite[Theorem~A$^*$, Lemma~8.1 and Corollary~A$'$]{PaperThirteen}.
+Both facts leave room for the rate upper bound in \cref{cor:gap}.
+A proof along this route must control all admissible families at the
+caps used in the test. A concrete construction target for a given tape
+count $k$ is a family of limiting lower rate at least
+$1-K f_{4k^2+1}(\Delta)$ at each sufficiently large cap, with one
+constant $K$. Such families would preclude the gap in \cref{cor:gap}
+for that $k$. A tape algorithm would also have to realize their
+recoveries by one causal computation within its running-time budget.
+
+\paragraph{Which helpers can a physical computation use?}
+\Cref{thm:native-tail} keeps the time at which each retained bit is
+appended. This allows a prospective impossibility proof to choose
+patches from a tape schedule and test them on its actual code. Fix a positive prediction advantage $\xi$ and a target
+density $\alpha>0$. For each simulator batch size $s$, choose a per-patch
+target bound $w_s$ before the dimension grows and use paired-distance
+radius $2w_s-1$. Consider cells with the following property. Under the
+uniform law on that cell, one fixed system scores at least an $\alpha$
+fraction of its retained coordinates and predicts them from permitted
+helpers with mean accuracy at least $1/2+\xi$. Its overlap is bounded by
+a common $r_s=o(s)$. Must such cells carry a fraction of the uniform input
+mass bounded away from zero as the dimension grows?
+
+For a full successful cube at fixed $s$, the cells of deficit fraction
+$O(1/s)$ carry all but at most $2^{-L/s}$ of the input mass. A positive
+mass bound independent of the dimension would give a cell meeting both
+conditions. On that cell \cref{cor:patch-prediction} would require overlap
+of order $s$, contradicting the proposed upper bound at large $s$. If
+targets or predictors are chosen separately for each input, the menu
+test of \cref{cor:patch-menu} charges the number of systems used.
+Establishing a prediction advantage on actual runs remains open.
+Two independent fair helpers can determine their XOR exactly even though
+either one alone gives chance accuracy.

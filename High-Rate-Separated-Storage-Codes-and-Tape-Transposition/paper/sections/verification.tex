@@ -1,0 +1,106 @@
+\section{Formal statements and verification}\label{sec:verification}
+
+The accompanying Lean development is authoritative for the statements
+marked as formalized and their proofs. The human-readable outlines
+explain the hypotheses and arguments. \Cref{prop:seed-exists} is
+explicitly a written proof using an earlier construction. Inputs,
+moves, output and halting use the first paper's frozen machine model
+\cite{PaperOne}.
+
+\paragraph{The seed boundary.}
+\lean{TapeStorageRates.OddGirthLinearSeed} is an ordinary structure
+passed as a hypothesis, not an added axiom. It records a finite field,
+a growing sequence of coordinate sets, bounded-degree graphs, an
+eventual lower bound on every odd closed walk, and linear storage
+subspaces of the stated dimension. The amplification endpoints
+separately require odd characteristic and $1/2<\rho<1$.
+\Cref{prop:seed-exists} supplies this structure on paper from
+\cite[Theorem~A and Corollary~U(a,b)]{PaperThirteen}. That paper's
+arithmetic-geometric seed existence is not formalized here. All
+subsequent matrix, rank, syndrome, family, padding and gap-comparison
+arguments are kernel-checked with the seed as an explicit input.
+
+\paragraph{Construction and common partitions.}
+\lean{TapeStorageRates.Majority.operator} is the actual signed-corner
+linear map on a finite tensor product. Its matrix uses the standard
+coordinate tensor basis, whereas its independent fixed tensors use a
+basis extending the seed subspace. The support and rank arguments
+therefore concern the same operator without identifying those two
+bases. \lean{TapeStorageRates.BinaryPartitionFamily.ofMatrices}
+turns any growing sequence of suitable check matrices into actual
+syndrome partitions; it is independent of the majority formula.
+\lean{TapeStorageRates.AllLengthPartitionTarget} quantifies the
+relations and encoders before all source sets and confidence
+parameters. It retains all coordinates and charges leftover bits.
+Its all-length assertion is an existence statement, not a bound on
+uniform computational complexity.
+
+The generic moment identity lives in
+\lean{LeanMachine.FinitePartition.deficit_moment}. Both the original
+native moment theorem and the new syndrome tail reuse it. Tensor
+bases, image cardinalities, binomial sums and finite-dimensional
+linear algebra reuse Mathlib; the seed adapter and sparse-rank bound
+reuse the shared Lean library. No external Lean code is copied for
+this update.
+
+\paragraph{Packet coordinates.}
+\lean{TapeStorageRates.PaidInputs.GrowingWidthSuccess} quantifies over a common
+choice of dimension and entry width for each size threshold and accuracy
+tolerance. The source machine supplies its own class of successful inputs.
+\lean{TapeStorageRates.PaidClasses.compiler} realizes the eleven-tick
+batch computation. \lean{TapeStorageRates.packet_code_at_threshold}
+performs the finite extraction and
+\lean{TapeStorageRates.family_of_packet_classes_at_threshold} chooses
+dimensions to give a family. The positive lengths, two-sided degree
+bounds and paired distances belong to
+\lean{TapeStorageRates.SeparatedBinaryFamily}. The comparison with the
+supremum of limiting upper rates is
+\lean{TapeStorageRates.RateWitnesses.extremal_rates}.
+
+\paragraph{Native coordinates.}
+\lean{TapeStorageRates.NativeTypicalPartition} chooses one cut and
+retained coordinate set per attained trace. Each input restricts to a
+word of its own cell code. The membership proof is
+\lean{TapeStorageRates.NativeTypicalPartition.projected_mem}. The tail theorem concerns the uniform
+probability on $G$ under these assignments. For \cref{thm:native-tail},
+depth reduction is applied to the coarse work walks; the joint support
+of complete batch records pays for the physical revelations.
+\Cref{cor:native} instead uses the native coding hypothesis of the
+fourteenth paper at its specified physical step width and depth
+\cite[Corollary~L]{PaperFourteen}.
+
+\paragraph{Predictions.}
+\lean{TapeStorageRates.PatchPredictor.missed} masks all inputs outside
+a predictor's permitted helpers before evaluating its guess.
+The development uses natural logarithms for Shannon entropy. Dividing
+by $\ln 2$ gives the bit units of \cref{sec:patches}. Counting one scored
+occurrence for each patch and target allows one target to occur in
+several patches. The finite-alphabet exact-coverage result counts
+distinct covered targets.
+
+\begin{corollary}[The original qualitative target]\label{cor:formal}
+\formal{TapeStorageRates/Main.lean}{TapeStorageRates.qualitative_transfer}
+Under \textnormal{(T)}, for each $\varepsilon>0$ and every sufficiently large
+cap there is an admissible family of limiting lower rate at least
+$1-\varepsilon$.
+\end{corollary}
+\begin{outline}
+A witness to (T) succeeds at all canonical dimensions. The original target uses $\max(1,k)$ in place of the actual tape count
+$k$. The quantitative statement is proved by \lean{TapeStorageRates.quantitative_transfer}. Its qualitative consequence follows by \lean{TapeStorageRates.qualitative_of_quantitative}. At that fixed tape
+count the deficit scale tends to zero. \Cref{thm:main} also gives the
+bound with $k$ itself, including $k=0$.
+\end{outline}
+
+\paragraph{Reproducing the checks.}
+Use the complete repository so the sibling Lean packages are available.
+The project pins Lean and Mathlib v4.34.1. From this paper's directory run
+\begin{verbatim}
+(cd lean && lake build && lake env lean PaperAxioms.lean)
+python3 tools/lean_index.py --check
+\end{verbatim}
+The generated axiom file queries the declarations cited in the text and
+in the formal status lines. Their dependencies use at most
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+The finite phase calculations use locally increased heartbeat limits;
+their proof terms are checked by the same kernel.
+The README gives the preparation steps for a fresh checkout.

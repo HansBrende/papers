@@ -106,3 +106,7 @@ import LeanMachine.FreeGroupResiduallyP
 import LeanMachine.PackedMatrixCheck
 import LeanMachine.KernelCertificate
 import LeanMachine.CyclicBandedKernel
+import LeanMachine.FinitePartition
+import LeanMachine.BinomialTail
+import LeanMachine.OddPowerChoice
+import LeanMachine.SlowIndex

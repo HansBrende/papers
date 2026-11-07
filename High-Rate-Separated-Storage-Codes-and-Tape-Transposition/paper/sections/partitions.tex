@@ -1,0 +1,111 @@
+\section{One partition for every source set and length}\label{sec:partitions}
+
+The tower in \cref{thm:construction} already uses one syndrome map on
+the full binary cube at each level. A general repetition argument fills
+the gaps between its lengths. The leftover coordinates are retained and
+revealed as raw bits; their cost is included in the label budget.
+
+\begin{theorem}[Theorem F: all-length common partitions]\label{thm:all-length}
+\formal{TapeStorageRates/AllLengthConstruction.lean}{TapeStorageRates.AllLengthPartitionTarget,TapeStorageRates.BinaryPartitionFamily.all_lengths,TapeStorageRates.OddGirthLinearSeed.all_length_partitions}
+Assume the seed and constants of \cref{thm:construction}, fix
+$\Delta\ge D+1$, and put $\varepsilon=C\Delta^{-\alpha}$.
+For each positive integer $L$, there are a helper relation $N_L$ on
+all $L$ coordinates and a map $f_L:\{0,1\}^L\to Y_L$ with the
+following properties. Every incidence degree is at most $\Delta$;
+for each fixed radius $r$, all paired distances exceed $r$ for all
+sufficiently large $L$. Every nonempty set
+\[
+ G_z=\{x\in G:f_L(x)=z\},\qquad G\subseteq\{0,1\}^L,
+\]
+is a storage code for $N_L$. For all sufficiently large $L$,
+\begin{equation}\label{eq:all-length-labels}
+ |f_L(\{0,1\}^L)|\le 2^{\varepsilon L+\sqrt L}.
+\end{equation}
+At each such length, simultaneously for every nonempty $G$ and every
+real $u$, writing $r(G)=\log_2|G|/L$, one has
+\begin{equation}\label{eq:all-length-tail}
+ \Pr_{x\ \mathrm{uniform\ on}\ G}
+ \left[r(G_{f_L(x)})<r(G)-\varepsilon-L^{-1/2}-u\right]
+ \le 2^{-uL}.
+\end{equation}
+The relations and encoders are chosen before $G$ and $u$.
+\end{theorem}
+\begin{outline}
+More generally, take any positive tower lengths $n_j$ and common
+partitions with at most $2^{\varepsilon n_j}$ labels,
+$\varepsilon\ge0$, bounded incidence degree and diverging paired
+distance. For large $L$, choose
+\[
+ j(L)=\max\{j\le L:n_j\le\lfloor\sqrt L\rfloor\}.
+\]
+This index tends to infinity: any fixed $j$ is eligible once
+$L\ge\max(j,n_j^2)$. No monotonicity or bound on the growth of $n_j$
+is needed. The Lean construction defines the finitely many small
+lengths as well, using index zero when the displayed set is empty.
+
+Write $L=cn_{j(L)}+a$, $0\le a<n_{j(L)}$. Apply the tower encoder
+independently to $c$ disjoint blocks, and include the remaining $a$
+bits in the label. The helper relation is the disjoint union of the
+block relations, with empty helper sets at the leftover coordinates.
+In each fibre those leftover bits are fixed, so recovery holds there
+too. The block degrees are unchanged and leftover ports are isolated.
+Since $j(L)\to\infty$, the paired distances diverge. The number of
+labels is at most
+\[
+ (2^{\varepsilon n_{j(L)}})^c2^a
+   \le2^{\varepsilon L+a}\le2^{\varepsilon L+\sqrt L}.
+\]
+The generic index choice is \lean{LeanMachine.SlowIndex.tendsto_index}.
+The exact repetition count is
+\lean{TapeStorageRates.PartitionPadding.encoder_image_card_le}.
+The finite-partition bound
+\lean{LeanMachine.FinitePartition.normalized_tail} applies to every
+source subset using this same encoder and proves
+\cref{eq:all-length-tail}.
+\end{outline}
+
+For each fixed cap, the extra rate loss $L^{-1/2}$ tends to zero.
+In particular the total exponent in \cref{eq:all-length-labels} is
+at most $2\varepsilon L$ eventually; this comparison is checked by
+\lean{TapeStorageRates.AllLengthPartitions.encoder_image_card_le_double}.
+The theorem concerns uniform input mass on each chosen subset, which
+may be correlated or chosen after the encoder. It makes no assertion
+about an arbitrary nonuniform probability distribution on that subset.
+
+\begin{corollary}[The unrestricted gap test has a false premise]\label{cor:abstract-gap}
+\formal{TapeStorageRates/ConstructiveConsequences.lean}{TapeStorageRates.OddGirthLinearSeed.uniform_familyRateGap_bound,TapeStorageRates.OddGirthLinearSeed.rate_witnesses,TapeStorageRates.OddGirthLinearSeed.not_unbounded_familyRateGap,TapeStorageRates.OddGirthLinearSeed.not_all_powers_familyRateGap}
+Assume an odd-characteristic seed with $1/2<\rho<1$.
+There are constants $A,\beta>0$, fixed before the function $g$, such
+that the following holds: if, for all sufficiently large $\Delta$,
+$g(\Delta)\ge0$ and every admissible family at cap $\Delta$ has
+limiting upper rate at most $1-g(\Delta)$, then
+\[
+ g(\Delta)\le A\Delta^{-\beta}
+ \qquad\text{for all sufficiently large }\Delta.
+\]
+For every fixed tape count $k$, the abstract rate-witness conclusion
+of Theorem~A holds without a machine assumption. In particular, no
+sequence of caps and universal limiting-lower-rate bounds can satisfy
+the hypothesis of \cref{cor:gap}.
+\end{corollary}
+\begin{outline}
+At each sufficiently large cap, compare the constructed family's
+limiting lower rate with the proposed limiting upper bound. The
+constants in the construction do not depend on $g$. For the second
+claim, a negative power of $\Delta$ is eventually smaller than
+$f_{4k^2+1}(\Delta)$, up to a fixed positive constant. The formal
+comparison first uses
+\lean{TapeStorageRates.polynomial_mul_loglog_tendsto_zero}, then the
+monotonicity of the deficit scale in the tape count.
+The stronger sparse-cap premise of \cref{cor:gap} is excluded by
+combining the constructed witnesses with
+\lean{TapeStorageRates.no_witnesses_of_sparse_rate_bounds}.
+\end{outline}
+
+Together with the written seed proof, this closes the unrestricted
+rate-gap route at the scale used by Theorem~A. It does not settle (T).
+These complete partitions have high-rate typical fibres on all input
+coordinates, bounded incidence degree and diverging paired distance.
+The construction supplies no realization as cone partitions of a tape
+computation. The cost of generating, moving and using the coded
+information is absent from these abstract properties.

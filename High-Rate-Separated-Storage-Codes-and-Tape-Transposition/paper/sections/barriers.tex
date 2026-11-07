@@ -1,0 +1,120 @@
+\section{Limits of simpler amplification schemes}\label{sec:barriers}
+
+The majority construction addresses a geometric difficulty with tensor
+products: a low-rank check matrix can create short paths between its
+own coordinate and equation ports. The following finite results delimit
+two simpler constructions and bound the exponent of the present one.
+
+\begin{proposition}[Literal tensor checks]\label{prop:tensor-barrier}
+\formal{TapeStorageRates/TensorObstruction.lean}{TapeStorageRates.active_cross_union_subset_shortPaired,TapeStorageRates.tensor_shortPaired_card_ge_nullities}
+Let $A$ and $B$ be square matrices over any field, each with diagonal
+one. Let $I_A$ and $O_A$ be the sets of rows and columns of $A$ having
+a nonzero off-diagonal entry, and define $I_B,O_B$ likewise. For the
+check matrix $H=A\otimes B$, use its displayed row-coordinate pairing
+and helpers $N_H(v)=\{w\ne v:H_{vw}\ne0\}$.
+Every coordinate in
+\[
+ (I_A\times O_B)\ \cup\ (O_A\times I_B)
+\]
+has paired distance at most three. Consequently at least
+$(\dim\ker A)(\dim\ker B)$ coordinates have paired distance at
+most three.
+\end{proposition}
+\begin{outline}
+For $a\in I_A$ and $c\in O_B$, choose $b\ne a$ and $d\ne c$ with
+$A_{ab}\ne0$ and $B_{dc}\ne0$. The diagonal-one entries give the walk
+\[
+ L_{(a,c)}\;--\;R_{(a,d)}\;--\;L_{(b,c)}\;--\;R_{(a,c)}.
+\]
+Its middle edge uses $A_{ab}B_{dc}\ne0$. Transposing both matrices
+and swapping incidence ports proves the other crossed product.
+The nonzero rows of $I-A$ are contained in $I_A$, so
+$\dim\ker A\le\operatorname{rank}(I-A)\le|I_A|$ by rank
+subadditivity. Transposition gives $\dim\ker A\le|O_A|$, and
+similarly for $B$. Counting $I_A\times O_B$ yields the stated lower
+bound.
+\end{outline}
+
+This obstruction concerns the literal Kronecker checks with their
+displayed pairing. It makes no claim about a different check matrix,
+a different pairing, or a nonlinear presentation of the same code.
+The signed majority construction avoids this particular obstruction
+by cancelling the even-change support terms.
+
+\paragraph{Local projection deficits.}
+Let $E$ and $V$ be finite sets of edge coordinates and vertices, with endpoint maps
+$\ell,r:E\to V$ satisfying $\ell(e)\ne r(e)$. Distinct coordinates
+may have the same endpoints. Put
+$S_v=\{e:\ell(e)=v\text{ or }r(e)=v\}$ and $d_v=|S_v|$.
+
+\begin{proposition}[A local-code and two-slot ceiling]\label{prop:tanner-barrier}
+\formal{TapeStorageRates/TannerCeiling.lean}{TapeStorageRates.tanner_logb_card_le_of_local_sizes,TapeStorageRates.tanner_three_quarters_of_local_sizes_and_loads}
+Let $C\subseteq\mathcal A^E$ be nonempty, with $|\mathcal A|=q\ge2$.
+Suppose real numbers $t_v$ satisfy the actual projection bounds
+\[
+ |\pi_{S_v}(C)|\le q^{d_v-t_v}\qquad(v\in V),
+\]
+where $\pi_{S_v}$ restricts a word to $S_v$. Then
+\begin{equation}\label{eq:tanner-deficit}
+ \log_q|C|\le |E|-\tfrac12\sum_v t_v.
+\end{equation}
+If, in addition, there is an assignment
+$o:E\to V\times\{0,1\}$ with
+$|o^{-1}(v,i)|\le t_v$ for every $v,i$, then
+$\log_q|C|\le3|E|/4$.
+No linearity, regularity or girth assumption is required, and the
+assignment need not send an edge to one of its endpoints.
+\end{proposition}
+\begin{outline}
+For a uniform word $X$ of $C$, the stars cover every coordinate
+exactly twice. The submodular-cover inequality gives
+$2H(X)\le\sum_v H(X_{S_v})$.
+Each summand is at most $(d_v-t_v)\log q$, and
+$\sum_vd_v=2|E|$, proving \cref{eq:tanner-deficit}.
+For the second assertion, every edge is assigned once, so
+$|E|=\sum_{v,i}|o^{-1}(v,i)|\le2\sum_vt_v$. Substitute this
+inequality into \cref{eq:tanner-deficit}. The Lean proof reuses the
+uniform-code entropy and submodular-cover formalizations accompanying
+\cite{PaperTwo}.
+\end{outline}
+
+For example, in a two-sheet construction, assigning each selected
+lifted edge to its earlier endpoint is such a two-slot assignment;
+\lean{TapeStorageRates.tanner_three_quarters_of_local_sizes} checks
+that specialization. The ceiling applies when both the load bounds
+and the projection bounds hold for the code actually used. Support
+conditions on selected checks alone do not establish those projection
+bounds for their full kernel. Thus this result rules out that local-code
+route to rates approaching one, without claiming to rule out all
+check-selection constructions.
+
+\begin{proposition}[The amplification exponent is below one half]\label{prop:exponent}
+\formal{TapeStorageRates/MajorityExponent.lean}{TapeStorageRates.matrix_card_le_support_mul_rank,TapeStorageRates.OddGirthLinearSeed.rate_le_degree_fraction,TapeStorageRates.Majority.decay_eq_neg_half_log,TapeStorageRates.Majority.exponent_mem_Ioo}
+A matrix $H$ on $N$ coordinates, with nonzero diagonal and at most
+$s$ nonzero entries per row, satisfies $N\le s\operatorname{rank}H$.
+Every seed in \cref{def:seed} therefore satisfies
+$\rho\le D/(D+1)$. For an above-half seed and the constants of
+\cref{eq:construction-constants}, one has $0<\alpha<1/2$.
+\end{proposition}
+\begin{outline}
+View $H$ as a linear map. Its restriction to each single-coordinate
+input has rank one, because the corresponding diagonal entry is
+nonzero. The scalar case of the shared block-rank theorem
+\lean{LeanMachine.SparseProjection.sum_column_ranks_le} bounds the
+sum of those ranks by $s\operatorname{rank}H$, giving the first
+inequality.
+Apply it to a seed check $I-A$, whose rows have support at most $D+1$.
+Since $U\le\ker(I-A)$, rank--nullity gives
+$\rho\le D/(D+1)$. Thus $(1-\rho)(D+1)\ge1$; together with
+$4\rho>2$, this gives $4\rho(1-\rho)>1/(D+1)$. Taking logarithms
+in \cref{eq:decay} gives $\lambda<\tfrac12\log(D+1)$, and
+positivity yields $0<\alpha<1/2$.
+\end{outline}
+
+The exponent bound is consistent with the elementary inverse-degree
+rate gap. It limits this particular amplification guarantee; it is
+not an upper bound on the rate of arbitrary constructions. For the
+explicit seed, $\lambda=-\tfrac12\log(1-(7/1613)^2)$ and $D$ is very
+large. The resulting exponent is positive but small. Its importance
+here is asymptotic: every fixed inverse power of $\Delta$ decays
+faster than the tape theorem's iterated-logarithm allowance.

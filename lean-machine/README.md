@@ -119,6 +119,10 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`PackedMatrixCheck`](LeanMachine/PackedMatrixCheck.lean) | Kernel-evaluated checks of matrix identities over `𝔽₃` by Kronecker substitution (base-512 packed rows) | this repository (same paper) |
 | [`KernelCertificate`](LeanMachine/KernelCertificate.lean) | Kernel bounds from an invertible minor, and injectivity of a connecting map into the cokernel | this repository (same paper) |
 | [`CyclicBandedKernel`](LeanMachine/CyclicBandedKernel.lean) | The basis `uᵏ` of `K[C_N]` when `uᴺ = 0`, and kernels of banded operators `B₀ + u B₁ + u² B₂` | this repository (same paper) |
+| [`FinitePartition`](LeanMachine/FinitePartition.lean) | Exact fibre-deficit moments and confidence tails from attained label counts, on arbitrary finite source subsets | this repository |
+| [`BinomialTail`](LeanMachine/BinomialTail.lean) | Sharp exponential half-threshold bounds for finite binomial sums, derived from the geometric mean and the binomial theorem | this repository |
+| [`OddPowerChoice`](LeanMachine/OddPowerChoice.lean) | Positive odd exponents under every power cap, with exact exponential-to-polynomial loss conversion | this repository |
+| [`SlowIndex`](LeanMachine/SlowIndex.lean) | Diverging family indices with square-root size budgets, without monotone sizes; vanishing padding costs | this repository |
 
 ## External code
 

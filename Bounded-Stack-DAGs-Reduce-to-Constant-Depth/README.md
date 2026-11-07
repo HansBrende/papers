@@ -2,7 +2,7 @@
 
 Hans Brende and Claude Opus 5.5 (Anthropic), November 2026.
 
-Paper 15 applies Corollary L(b) to a fixed simulator with few motion traces. A native half-rate bound at the simulator's own resources would exclude transposers of any adaptivity. [Paper 15](../Linear-Time-Tape-Transposition-Requires-Storage-Codes-with-Rates-Approaching-One/README.md).
+Paper 15 applies Corollary L(b) to a fixed simulator with few motion traces. A native half-rate bound at the simulator's own resources would exclude transposers of any adaptivity. [Paper 15](../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/README.md).
 
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).

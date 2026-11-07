@@ -1158,3 +1158,34 @@ import LeanMachine
 #print axioms LeanMachine.CyclicAlg.u_pow_eq_zero
 #print axioms LeanMachine.CyclicAlg.finrank_RN
 #print axioms LeanMachine.CyclicAlg.finrank_ker_le
+
+-- FinitePartition.lean
+#print axioms LeanMachine.FinitePartition.deficit_moment
+#print axioms LeanMachine.FinitePartition.bad_card_le
+#print axioms LeanMachine.FinitePartition.tail_of_image_card
+#print axioms LeanMachine.FinitePartition.normalized_tail
+
+-- BinomialTail.lean
+#print axioms LeanMachine.BinomialTail.monomial_le
+#print axioms LeanMachine.BinomialTail.half_sum_le
+#print axioms LeanMachine.BinomialTail.decay_pos
+#print axioms LeanMachine.BinomialTail.half_sum_le_exp
+
+-- OddPowerChoice.lean
+#print axioms LeanMachine.OddPowerChoice.exponent_pos
+#print axioms LeanMachine.OddPowerChoice.exponent_odd
+#print axioms LeanMachine.OddPowerChoice.exponent_le_log
+#print axioms LeanMachine.OddPowerChoice.log_lt_exponent_add_two
+#print axioms LeanMachine.OddPowerChoice.power_bounds
+#print axioms LeanMachine.OddPowerChoice.exp_le_rpow_of_le_pow
+#print axioms LeanMachine.OddPowerChoice.exponent_exp_le_rpow
+#print axioms LeanMachine.OddPowerChoice.exists_odd_power_and_decay
+#print axioms LeanMachine.OddPowerChoice.eventually_exists_odd_power_and_decay
+
+-- SlowIndex.lean
+#print axioms LeanMachine.SlowIndex.size_le_sqrt
+#print axioms LeanMachine.SlowIndex.tendsto_index
+#print axioms LeanMachine.SlowIndex.eventually_size_le_sqrt
+#print axioms LeanMachine.SlowIndex.remainder_le_sqrt
+#print axioms LeanMachine.SlowIndex.sqrt_div_tendsto
+#print axioms LeanMachine.SlowIndex.eventually_sqrt_le_mul

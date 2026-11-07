@@ -1,0 +1,217 @@
+\section{Amplifying an above-half-rate seed}\label{sec:amplification}
+
+The construction uses a fixed finite field of odd characteristic; its
+finite operator only needs $2\ne0$ in the field. All
+logarithms in the decay constants of this section are natural logarithms;
+binary rates and label budgets use $\log_2$.
+
+\begin{definition}[The seed hypothesis]\label{def:seed}
+\formal{TapeStorageRates/OddGirthLinearSeed.lean}{TapeStorageRates.OddGirthLinearSeed}
+An \emph{odd-girth linear seed} over a finite field $\mathbb F_q$, with
+degree bound $D$ and rate parameter $\rho$, consists of simple graphs
+$G_j$ on $n_j$ coordinates and linear subspaces
+$U_j\le\mathbb F_q^{n_j}$ such that $n_j\to\infty$, every degree is at
+most $D$, $U_j$ is a storage code for the neighbourhood relation of
+$G_j$, and $\dim U_j\ge\rho n_j$. For every fixed $r$, eventually every
+odd closed walk in $G_j$ has length greater than $r$.
+\end{definition}
+
+\begin{proposition}[A concrete seed]\label{prop:seed-exists}
+\notformalized
+There is an odd-girth linear seed with
+$q=127^2$, $\rho=810/1613>1/2$, and a fixed finite degree bound $D$.
+\end{proposition}
+\begin{informalproof}
+Use the graphs and linear codes of \cite[Corollary~U(a,b)]{PaperThirteen}.
+Write $\Delta_{13}$ for the fixed incidence-degree bound of that paper's
+Theorem~A, and set $D=2\Delta_{13}<2\cdot127^{8\,791\,448}$.
+Discard the finite initial set of
+levels for which the displacement bound does not yet exceed the check
+radius. Corollary~U(a) gives simple graphs of maximum degree at most
+$D$. Every odd closed walk at level $j$ has length at least
+\[
+ \frac{j\log509-\log4}{a\log127},\qquad a=2{,}197{,}862,
+\]
+which tends to infinity. Part~(b) supplies an $\mathbb F_{127^2}$-linear
+storage code on the same graph with dimension at least
+$(8100/16130)n_j=(810/1613)n_j$. Theorem~A's construction has
+$n_j=16130c_j\to\infty$. Relabel each finite coordinate set by
+$\{0,\ldots,n_j-1\}$ and reindex the remaining levels. Relabelling
+preserves dimension, recovery, degrees and walk lengths, giving every
+condition of \cref{def:seed}. The field has odd characteristic, and
+$1/2<810/1613<1$.
+
+This application uses the written arithmetic-geometric existence proof
+in the cited paper. It does not assert that the concrete seed has been
+constructed in Lean. The results below take precisely
+\cref{def:seed} as their existence hypothesis.
+\end{informalproof}
+
+On a linear code, deterministic recovery from a set of coordinates
+can be represented by a linear functional on those coordinates.
+Consequently each seed level has a matrix $A$ supported on the edges
+of $G_j$, with $Ax=x$ for $x\in U_j$. This adapter is
+\lean{TapeStorageRates.OddGirthLinearSeed.exists_recovery_matrix}, reusing
+\lean{LeanMachine.LinearRecovery.IsRecoverable.exists_recovery_matrix}.
+No linear decoder is an additional seed assumption.
+
+\paragraph{The finite operator.}
+For a matrix $A$ on $V$ over a field $K$, an odd integer $m\ge1$, and
+$\sigma\in\{-1,1\}^m$, let $\operatorname{Maj}(\sigma)$ be the sign
+occurring more often. Take this majority before interpreting the signs
+in the field. Define, on $(K^V)^{\otimes m}$,
+\begin{equation}\label{eq:majority}
+ B_m=2^{-m}\sum_{\sigma\in\{-1,1\}^m}
+       \operatorname{Maj}(\sigma)
+       \bigotimes_{i=1}^m(I+\sigma_i A),
+ \qquad H_m=I-B_m.
+\end{equation}
+Matrices on $V^m$ always use the standard coordinate tensor basis.
+For $1/2<\rho<1$, put
+\begin{equation}\label{eq:decay}
+ \lambda=-\log\bigl(2\sqrt{\rho(1-\rho)}\bigr)
+         =-\tfrac12\log\bigl(4\rho(1-\rho)\bigr)>0.
+\end{equation}
+
+\begin{theorem}[Theorem M: finite majority amplification]\label{thm:majority}
+\formal{TapeStorageRates/MajorityRank.lean}{TapeStorageRates.Majority.check_rank_add_binomial_le,TapeStorageRates.Majority.check_rank_le_exp}
+Let $G$ be a simple graph on $N>0$ vertices, with maximum degree at
+most $D$. Let $A$ be a matrix over a field of characteristic different
+from two, supported on edges of $G$, and let $U\le\ker(I-A)$ have
+dimension $h$. For every odd $m\ge1$, the matrix $H_m$ in
+\cref{eq:majority} has diagonal one and satisfies
+\begin{equation}\label{eq:exact-rank}
+ \operatorname{rank}H_m+
+ \sum_{\substack{0\le a\le m\\2a>m}}\binom ma h^a(N-h)^{m-a}\le N^m.
+\end{equation}
+If $h\ge\rho N$ with $1/2<\rho<1$, then
+$\operatorname{rank}H_m\le e^{-\lambda m}N^m$.
+Define $N_{H_m}(v)=\{w\ne v:(H_m)_{vw}\ne0\}$.
+Every port in its incidence graph has degree at most $(D+1)^m-1$.
+If every odd closed walk in $G$ has length greater than $r$, then
+every paired distance for $N_{H_m}$ is greater than $r$.
+\end{theorem}
+\begin{outline}
+Choose a basis of $U$ and extend it by an arbitrary complementary basis.
+A pure tensor using more than $m/2$ basis vectors from $U$ is fixed by
+$B_m$: any corner with negative majority has a negative sign at a fixed
+factor and therefore kills the tensor. The sum of all unsigned corners
+is $2^mI$. The independent tensor basis vectors with a strict majority
+of fixed factors number exactly the sum in \cref{eq:exact-rank}.
+Rank--nullity gives the inequality. The complement need not be
+$A$-invariant. This is checked by
+\lean{TapeStorageRates.Majority.operator_tprod_eq_self_of_majority} and
+\lean{TapeStorageRates.Majority.subspace_goodIndices_card_le_finrank_ker}.
+
+For the exponential estimate, put $t=h/N\ge\rho$. The fraction of
+excluded basis vectors is the binomial lower tail
+$\sum_{a=0}^{\lfloor m/2\rfloor}\binom ma t^a(1-t)^{m-a}$.
+For $t\ge1/2$ and $2a\le m$, each product is at most
+$[t(1-t)]^{m/2}$. Summing the binomial coefficients gives
+$[2\sqrt{t(1-t)}]^m\le e^{-\lambda m}$.
+\lean{LeanMachine.BinomialTail.half_sum_le_exp} proves this finite-sum
+bound, including the endpoint $t=1$.
+
+For the support statement, $A$ has zero diagonal. Negating all signs
+in \cref{eq:majority} negates their majority. Pairing these sign patterns
+shows that a nonzero entry of $B_m$ changes an odd number of coordinates;
+each changed coordinate follows an edge of $G$. The stationary tuple
+is excluded, so the containing graph has degree at most $(D+1)^m-1$.
+An odd closed walk in this graph makes an odd total number of coordinate
+changes. Some coordinate projection, after stationary steps are removed,
+is an odd closed walk in $G$ of no greater length. Finally a paired
+incidence walk projects to an odd closed walk of this kind. The support,
+degree and distance conclusions are
+\lean{TapeStorageRates.Majority.check_diagonal},
+\lean{TapeStorageRates.Majority.check_helpers_degree_add_one_le} and
+\lean{TapeStorageRates.Majority.check_helpers_paired_far}.
+\end{outline}
+
+\paragraph{Binary conversion on the same coordinates.}
+For a matrix $H$ over $\mathbb F_q$, embed each input bit as $0$ or $1$
+and let $\sigma_H(x)=Hx$. The nominal syndrome has $N$ field entries,
+but its attained labels lie in an image of dimension $\operatorname{rank}H$.
+We charge that image size, not the nominal output width.
+
+\begin{proposition}[Syndrome fibres]\label{prop:syndrome}
+\formal{TapeStorageRates/SyndromeRates.lean}{TapeStorageRates.matrixSyndrome_subset_fibre_storage,TapeStorageRates.matrixSyndrome_image_card_le_rpow,TapeStorageRates.matrix_exists_binary_code_rate,TapeStorageRates.matrixSyndrome_binary_rate_tail}
+Let $H$ be an $N\times N$ matrix over $\mathbb F_q$, with $N>0$ and
+nonzero diagonal, and put $h=\operatorname{rank}H$.
+The map $\sigma_H:\{0,1\}^N\to\mathbb F_q^N$ has at most $q^h$
+attained labels. Every nonempty intersection of a fibre with a source
+subset is a binary storage code for
+$N_H(v)=\{w\ne v:H_{vw}\ne0\}$.
+Some fibre has rate at least $1-h\log_2q/N$.
+For every nonempty $S\subseteq\{0,1\}^N$, write
+$S_x=\{y\in S:\sigma_H(y)=\sigma_H(x)\}$ and
+$r(S)=\log_2|S|/N$. For every real $u$,
+\begin{equation}\label{eq:syndrome-tail}
+ \Pr_{x\ \mathrm{uniform\ on}\ S}
+ \left[r(S_x)<r(S)-\frac{h\log_2q}{N}-u\right]
+ \le 2^{-uN}.
+\end{equation}
+The same map and helper relation work for every $S$ and $u$.
+\end{proposition}
+\begin{outline}
+If two words have the same syndrome and agree on $N_H(v)$, subtracting
+their $v$th equations gives $H_{vv}(x_v-y_v)=0$. The nonzero diagonal
+and the injective binary embedding give $x_v=y_v$.
+The linear image contains $q^h$ elements, so pigeonhole counting gives
+a fibre of size at least $2^N/q^h$. More generally, partition $S$ by its
+attained labels. For each attained cell, summing $1/|S_x|$ over its
+members gives one. Hence
+\[
+ \sum_{x\in S}2^{\log_2|S|-\log_2|S_x|}
+     =|S|\,|\sigma_H(S)|\le |S|q^h.
+\]
+Counting the terms above $q^h2^{uN}$ gives
+\cref{eq:syndrome-tail}. The exact identity is
+\lean{TapeStorageRates.matrixSyndrome_deficit_moment}; it is an instance
+of the same finite-partition identity used for the native tail theorem.
+\end{outline}
+
+\begin{theorem}[Theorem C: every sufficiently large degree cap]\label{thm:construction}
+\formal{TapeStorageRates/MajorityPartitions.lean}{TapeStorageRates.OddGirthLinearSeed.exists_majority_partition_family,TapeStorageRates.OddGirthLinearSeed.exists_partition_family_at_cap}
+Assume an odd-girth linear seed over $\mathbb F_q$ of odd characteristic,
+with $1/2<\rho<1$. With $\lambda$ as in \cref{eq:decay}, set
+\begin{equation}\label{eq:construction-constants}
+ C=(\log_2q)e^{2\lambda},\qquad
+ \alpha=\frac{\lambda}{\log(D+1)},\qquad
+ \varepsilon_\Delta=C\Delta^{-\alpha}.
+\end{equation}
+Here $C,\alpha>0$. For each integer $\Delta\ge D+1$, there are positive
+lengths $n_j\to\infty$, helper relations $N_j$, and maps
+$f_j:\{0,1\}^{n_j}\to Y_j$ such that every incidence degree is at
+most $\Delta$, the minimum paired distance tends to infinity, and
+\[
+ |f_j(\{0,1\}^{n_j})|\le2^{\varepsilon_\Delta n_j}
+ \qquad\text{for every }j.
+\]
+Each attained fibre is a storage code for $N_j$. In particular, there
+is an admissible binary family at cap $\Delta$ whose rate is at least
+$1-\varepsilon_\Delta$ at every index.
+\end{theorem}
+\begin{outline}
+A positive-dimensional seed forces $D>0$. Fix an odd amplification
+order $m$ before the seed level grows. Apply \cref{thm:majority} to
+the supported recovery matrices at every level, and then
+\cref{prop:syndrome}. The resulting partitions have label exponent
+$(\log_2q)e^{-\lambda m}$. Their sizes grow, and every fixed paired
+distance threshold is inherited from the seed. A finite initial prefix
+is discarded to make every size positive.
+
+For $\Delta\ge D+1$, choose the largest odd $m$ with
+$(D+1)^m\le\Delta$. Then
+$m>\log\Delta/\log(D+1)-2$, which gives
+$e^{-\lambda m}\le e^{2\lambda}\Delta^{-\alpha}$.
+The discrete choice and estimate reuse
+\lean{LeanMachine.OddPowerChoice.exists_odd_power_and_decay}.
+The field, seed and constants precede the degree cap; $m$ precedes
+the family index. Choosing one largest fibre at each level gives
+\lean{TapeStorageRates.OddGirthLinearSeed.exists_family_at_cap}.
+\end{outline}
+
+The theorem is an existence construction. Its recovery matrices and
+syndrome labels have not been supplied with an efficient uniform
+generation or evaluation algorithm. Its relevance is that the abstract
+rate requirement of Theorem~A already holds without a transposer.

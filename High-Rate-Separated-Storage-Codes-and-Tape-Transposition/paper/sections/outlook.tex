@@ -1,0 +1,49 @@
+\section{What remains open}\label{sec:open}
+
+\paragraph{Which abstract recoveries can a tape realize cheaply?}
+\Cref{thm:construction,thm:all-length} attain a rate loss
+$O(\Delta^{-\alpha})$, including common partitions at every large
+length with the all-subset tail bound. The unrestricted slow-gap
+premise of \cref{cor:gap} is therefore false. Improving the seed or
+the exponent may give stronger coding bounds, but that alone does
+not decide (T).
+
+The constructive question is whether a single uniform machine can
+generate and evaluate useful recovery data, move it to the required
+locations, and emit the transposed bits within linear time. The
+abstract construction pays only for the number of labels. It does
+not pay for accessing their coefficients or their values. Conversely,
+a lower bound needs a restriction obeyed by the paid physical
+computation that our unrestricted partitions need not satisfy.
+Merely requiring a common partition, typical high-rate cells,
+retention of the original coordinates, or all sufficiently large
+lengths does not provide that distinction.
+
+\paragraph{Which helpers can a physical computation use?}
+\Cref{thm:native-tail} keeps the time at which each retained bit is
+appended. This allows a prospective impossibility proof to choose
+patches from a tape schedule and test them on its actual code. Fix a positive prediction advantage $\xi$ and a target
+density $\alpha>0$. For each simulator batch size $s$, choose a per-patch
+target bound $w_s$ before the dimension grows and use paired-distance
+radius $2w_s-1$. Consider cells with the following property. Under the
+uniform law on that cell, one fixed system scores at least an $\alpha$
+fraction of its retained coordinates and predicts them from permitted
+helpers with mean accuracy at least $1/2+\xi$. Its overlap is bounded by
+a common $r_s=o(s)$. Must such cells carry a fraction of the uniform input
+mass bounded away from zero as the dimension grows?
+
+For a full successful cube at fixed $s$, the cells of deficit fraction
+$O(1/s)$ carry all but at most $2^{-L/s}$ of the input mass. A positive
+mass bound independent of the dimension would give a cell meeting both
+conditions. On that cell \cref{cor:patch-prediction} would require overlap
+of order $s$, contradicting the proposed upper bound at large $s$. If
+targets or predictors are chosen separately for each input, the menu
+test of \cref{cor:patch-menu} charges the number of systems used.
+Establishing a prediction advantage on actual runs remains open.
+Two independent fair helpers can determine their XOR exactly even though
+either one alone gives chance accuracy.
+Thus neither the abstract amplification nor the prediction inequality
+supplies the missing physical-access theorem. A useful next result
+would either derive the stated prediction advantage and overlap bound
+from a linear-time schedule, or exhibit and account for a schedule that
+avoids them while implementing the required recoveries.

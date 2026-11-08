@@ -7,8 +7,9 @@ Usage, from any directory:
 Without an argument it reads the index.html next to this script. It rebuilds every drawn piece of the SVG as
 a polygon and checks with exact polygon operations that
 
-  * the two dark-outlined pieces, one work tape and oblivious data movement, overlap exactly the pieces
-    listed in BANDS (with at least AREA_MIN square units) and stay at least GAP_MIN units from all others;
+  * the dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings and one
+    long-range work head) overlap exactly the pieces listed in BANDS (with at least AREA_MIN square units)
+    and stay at least GAP_MIN units from all others;
   * every inclusion listed in INSIDE holds;
   * no drawn shape lies inside another unless the inclusion is listed in ALLOWED (drawing a shape inside
     another is a claim of inclusion);
@@ -40,10 +41,13 @@ PIECES = {"high": "T", "leOpen": "LE", "ob": "O", "obS": "CD", "lowad": "BE", "p
 DERIVED = {"S": lambda R: R["CD"].intersection(R["O"]), "D": lambda R: R["O"].difference(R["CD"]),
            "LAO": lambda R: R["LE"].difference(R["O"]), "HA": lambda R: R["T"].difference(R["LE"])}
 
-# the pieces each band piece is proved to share a transposer with; it must stay apart from every other piece
+# the pieces each dark-outlined piece is proved to share a transposer with; it must stay apart from every
+# other piece (pairwise claims only: no combination of three or more pieces is claimed)
 BANDS = {
     "ONETAPE": {"S", "LAO", "HA", "PC", "GEOM", "CROSS", "ONEHEAD", "MOVE", "MERGE", "LINEAR"},
     "MOVE": {"S", "D", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MERGE", "LINEAR"},
+    "CROSS": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "ONEHEAD"},
+    "ONEHEAD": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS"},
 }
 # pieces the band rule compares against (the low-adaptivity circle, the oblivious circle and the shallow
 # circle are covered through S, D, LAO and HA)
@@ -61,7 +65,8 @@ ALLOWED = {("O", "LE"), ("S", "O"), ("S", "LE"), ("D", "O"), ("D", "LE"), ("LAO"
            ("LINEAR", "LE"), ("MOVE", "O"), ("MOVE", "LE"), ("MOVE", "MERGE"), ("MOVE", "LINEAR")}
 
 # pairs joined by a dotted ? link: not known whether they share a transposer
-UNKNOWN = {frozenset({"ONETAPE", "BE"}), frozenset({"PHASES", "T"})}
+UNKNOWN = {frozenset({"ONETAPE", "BE"}), frozenset({"CROSS", "BE"}), frozenset({"ONEHEAD", "BE"}),
+           frozenset({"PHASES", "T"})}
 
 # green question marks: (pieces that must contain the glyph centre, pieces it must keep clear of)
 QMARKS = [({"D", "LINEAR"}, {"PC", "MOVE", "CROSS", "ONEHEAD", "MERGE"}),

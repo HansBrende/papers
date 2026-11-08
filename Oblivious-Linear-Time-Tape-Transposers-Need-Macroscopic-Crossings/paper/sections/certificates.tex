@@ -39,7 +39,7 @@ codes for the demand-shifted relation, and pigeonhole over the messages gives th
 \subsection{Cruxes}
 
 \begin{definition}[Cruxes]\label{def:crux}
-\formal{EnvelopeCrux.lean}{MachineCruxAt, MachineCutCruxAt, SubpopCutCruxAt}
+\formal{MachineCrux.lean, EnvelopeCrux.lean}{MachineCruxAt, MachineCutCruxAt, SubpopCutCruxAt}
 Let $M$ be a machine, $C\ge1$, $D\ge0$ and $\rho,\delta,\alpha_0>0$.
 \begin{enumerate}[label=(\alph*)]
 \item $M$ has \emph{crux rate $\rho$ at depth $D$} if for every $\eta>0$ and all large $d$, whenever $M$ is oblivious at length $L$
@@ -71,7 +71,7 @@ respectively $\eps L+\delta\abs{V_0}$ bits, contradicting the crux for small $\e
 
 Acyclic sets give cruxes. If, for every $\eta>0$ and all large $d$, every cone relation of depth $D$ in \cref{def:crux}(a) contains
 an acyclic set of at least $(\rho-\eta)L$ input positions, then $M$ has crux rate $\rho$ at depth~$D$, by \cref{lem:acyclic-code}
-(\lean{machineCrux_of_isAcyclicIn}, \lean{oblivious_excludes_of_isAcyclicIn}). The same holds for ball relations, which contain the
+(\lean{machineCruxAt_of_isAcyclicIn}, \lean{machineCrux_of_isAcyclicIn}, \lean{oblivious_excludes_of_isAcyclicIn}). The same holds for ball relations, which contain the
 cone relations of depth~$D$ (\lean{machineCutCruxAt_of_ballAvoid_isAcyclicIn}).
 
 The next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in the cone
@@ -127,7 +127,7 @@ $q\to p$ means $p\in N(q)$.
 \begin{enumerate}[label=(\alph*)]
 \item If a potential strictly decreases along every arc inside $S$, then $S$ is acyclic.
 \item Let $\varphi,\psi$ be real potentials and $w\ge0$. The \emph{window} $\{q\in V_0:q\notin N(q),\ \varphi(q)+2w<\psi(q)\}$ is acyclic if
-every arc $q\to p$ inside it is \emph{near}, $\abs{\psi(p)-\varphi(q)}\le w$. If instead every vertex of the window has at most $\beta$
+every arc $q\to p$ inside it is \emph{near}, $\abs{\psi(p)-\varphi(q)}\le w$. If instead every vertex of the window is incident to at most $\beta$
 far arcs inside it, the window contains an acyclic set of at least a $1/(\beta+1)$ fraction of its elements.
 \end{enumerate}
 \end{lemma}
@@ -151,14 +151,14 @@ $\abs{A(q)}\le a$ and $\abs{E(q)}\le e$ throughout.
 Along an arc $q\to p$ inside the set, a block of $A(q)\cap E(p)$ shows that the largest rank in $A(p)$ is below the smallest rank in $E(p)$,
 hence below that block's rank, hence at most the largest rank in $A(q)$; so the largest rank of $A$ strictly decreases along arcs, and
 \cref{lem:window}(a) applies. For disjoint $A(q),E(q)$, exactly a fraction $\binom{\abs{A(q)}+\abs{E(q)}}{\abs{A(q)}}^{-1}$ of all rankings
-put $A(q)$ below $E(q)$ (\lean{choose_mul_card_goodPerms_eq_factorial}), so the average size of the set over all rankings is the stated
+put $A(q)$ below $E(q)$ (\lean{LeanMachine.BlockRanking.choose_mul_card_goodPerms_eq_factorial}), so the average size of the set over all rankings is the stated
 sum.
 \end{outline}
 
 \begin{lemma}[Step-invariant windows]\label{lem:stepinv}
 \formal{EnvelopeCrux.lean}{isAcyclicIn_ballAvoid_window_of_stepInvariant, isAcyclicIn_ballAvoid_window_of_constStepInvariant}
 Let a trace, a set $B$ of steps, a depth $D$ and a set $V_0$ of input positions be given, with regions $R(0),\dots,R(D)$ of steps, a
-\emph{sink} region, a step potential $\mu$ and potentials $\varphi,\psi$ on input positions. Suppose: the roots of $V_0$ lie in
+\emph{sink} region, a step potential $\mu$, potentials $\varphi,\psi$ on input positions and $c_0,\Delta,c_1\ge0$. Suppose: the roots of $V_0$ lie in
 $R(D)$ with $\abs{\mu(\Out(q))-\varphi(q)}\le c_0$; every edge from the sink that avoids $B$ stays in the sink, and the sink reads no
 position of $V_0$; every edge from $R(r+1)$ that avoids $B$ enters the sink or enters $R(r)$ changing $\mu$ by at most $\Delta$; and
 a read of $p\in V_0$ at a step $u\in R(r)$ has $\abs{\psi(p)-\mu(u)}\le c_1$. Then
@@ -173,5 +173,5 @@ reads nothing in $V_0$, every arc $q\to p$ inside $V_0$ has $\abs{\psi(p)-\varph
 \end{outline}
 
 \Cref{lem:window,lem:blockcut,lem:stepinv} are statements about traces only. They are the tools behind the exclusions of the
-schedule families in \cref{app:catalogue}. The first form of \cref{thm:pullback} was a far-reaching use of \cref{lem:blockcut};
+schedule families in \cref{app:catalogue}. The first form of \cref{thm:pullback} (\lean{timePullback_blockCut_mais}) was a far-reaching use of \cref{lem:blockcut};
 the present form replaces the uniform block cut by a single interval on which the block sets are constant.

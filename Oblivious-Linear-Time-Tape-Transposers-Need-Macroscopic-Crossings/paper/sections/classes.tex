@@ -39,7 +39,7 @@ exceptions, is independent in the cone relation; it has $(1/(4K_0)-o(1))L$ eleme
 \begin{theorem}[Suffix phases]\label{thm:BMsuffix}
 \formal{SuffixMassCrux.lean}{suffixMacroBank_has_crux, suffixMacroBank_excludes}
 Theorem~B holds, with crux rate $\delta_0/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$, for machines that satisfy the conditions of \cref{def:BM} only on a
-final interval of steps that contains every append, provided at least $\delta_0d$ input rows are not read before that interval. The
+final interval of steps that contains every append, provided $\delta_0>0$ and at least $\delta_0d$ input rows are not read before that interval. The
 motion before it is unrestricted.
 \end{theorem}
 
@@ -52,11 +52,11 @@ For adaptive machines the phases and the workspaces may depend on the input, and
 
 \begin{theorem}[Theorem~J, jittered phases, any adaptivity]\label{thm:J}
 \formal{JitterMacroBank.lean, AdaptiveSuffixJitterBM.lean}{native_machine_preserves_jitterBM, nativeGapBound_of_adaptiveJitterBM, adaptiveJitterBM_excludes_transposesAt, adaptiveJitterBM_not_linearTimeTransposer, adaptiveSuffixJitterBM_excludes_transposesAt, adaptiveSuffixJitterBM_not_linearTimeTransposer}
-Let $M$ be any machine, $c>0$, and $A(d),S(d)=o(L)$. Suppose that for all large $d$ every run of $M$ on an input of length $L$ that halts
+Let $M$ be any machine, $c>0$, $M_{\mathrm{ph}}\ge1$, $B$ a set of work heads, and $A(d),S(d)=o(L)$. Suppose that for all large $d$ every run of $M$ on an input of length $L$ that halts
 within $c(L+1)$ steps splits into $M_{\mathrm{ph}}$ intervals on each of which the input head and the bank heads are $A(d)$-coarsely
 monotone, while every other work head visits at most $S(d)$ cells; the intervals and cells may depend on the input. Then $M$ does not
-transpose within time $c$ at all large $d$; in particular $M$ is not a linear-time transposer. The same holds if the conditions hold only
-on a final interval containing every append and at least $\delta_0d$ rows are not entered by the input head before it.
+transpose within time $c$ at all large $d$; if such $M_{\mathrm{ph}}$, $B$, $A$ and $S$ exist for every $c\ge1$, then $M$ is not a linear-time transposer. The same holds if $\delta_0>0$ and the conditions hold only
+on a final interval containing every append with at least $\delta_0d$ rows not entered by the input head before it.
 \end{theorem}
 
 \begin{outline}
@@ -128,7 +128,7 @@ load at most $2V-1$.
 
 \begin{theorem}[Theorem~Q, scale-gap pigeonhole]\label{thm:Q}
 \formal{ZeroFreeHeadQWindow.lean}{zeroFreeHead_qWindow_excludes, zeroFreeHead_entries_qWindow_excludes, zeroFreeHead_qWindow_oblivious_excludes}
-Let $c,\beta$ be reals and $k,\ell,q,h$ integers. There are $\eps>0$ and $d_0$ such that for every $\eta<\eps$ and $d\ge d_0$ no machine with at
+Let $c,\beta$ be reals and $k,\ell,q,h$ natural numbers. There are $\eps>0$ and $d_0$ such that for every $\eta<\eps$ and $d\ge d_0$ no machine with at
 most $k$ work tapes and value width at most $\beta$ transposes at size $d$ within time $c$ with an $\eta$-heavy trace on which every work
 head has owner load at most $\ell$ and the binary logarithms of the heights of all families lie in at most $q$ windows of width~$h$. The
 input head is unrestricted. For oblivious machines the statement holds at every $d\ge d_0$ with $\eta=0$.

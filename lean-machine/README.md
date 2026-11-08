@@ -123,6 +123,8 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`BinomialTail`](LeanMachine/BinomialTail.lean) | Sharp exponential half-threshold bounds for finite binomial sums, derived from the geometric mean and the binomial theorem | this repository |
 | [`OddPowerChoice`](LeanMachine/OddPowerChoice.lean) | Positive odd exponents under every power cap, with exact exponential-to-polynomial loss conversion | this repository |
 | [`SlowIndex`](LeanMachine/SlowIndex.lean) | Diverging family indices with square-root size budgets, without monotone sizes; vanishing padding costs | this repository |
+| [`BlockRanking`](LeanMachine/BlockRanking.lean) | Exact permutation counts for ranking disjoint block sets and LYM-type separation lower bounds | this repository |
+| [`ThresholdRefinement`](LeanMachine/ThresholdRefinement.lean) | Common refinement of finite threshold sets into elementary intervals on which clamped comparisons are constant | this repository |
 
 ## External code
 

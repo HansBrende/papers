@@ -1189,3 +1189,13 @@ import LeanMachine
 #print axioms LeanMachine.SlowIndex.remainder_le_sqrt
 #print axioms LeanMachine.SlowIndex.sqrt_div_tendsto
 #print axioms LeanMachine.SlowIndex.eventually_sqrt_le_mul
+
+-- BlockRanking.lean
+#print axioms LeanMachine.BlockRanking.cutSet_subset
+#print axioms LeanMachine.BlockRanking.choose_mul_card_goodPerms_eq_factorial
+#print axioms LeanMachine.BlockRanking.exists_ranking_card_ge
+#print axioms LeanMachine.BlockRanking.choose_add_mono
+
+-- ThresholdRefinement.lean
+#print axioms LeanMachine.ThresholdRefinement.exists_strictMono_equiv_of_finset
+#print axioms LeanMachine.ThresholdRefinement.exists_refinement_cell

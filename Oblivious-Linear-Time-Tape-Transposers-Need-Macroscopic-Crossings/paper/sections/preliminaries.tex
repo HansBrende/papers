@@ -65,7 +65,7 @@ A revisit lies on one side of its cell: the head stays strictly above it, or str
 revisits lie on opposite sides (\cref{lem:zigzag}(a); compare~\cite[\S2]{EighthPaper2026}). Every step is the earlier end of at most one revisit on each tape.
 
 \begin{definition}[Crossing steps]\label{def:crossing}
-\formal{ConjectureEBridge.lean}{crossingLowerEtaSteps}
+\formal{CrossingBridge.lean}{crossingLowerEtaSteps}
 For a trace with horizon $T$ and an integer $H\ge1$, let $\CL_H$ be the set of steps $v<T$ such that, on some work tape, $v$ is
 the earlier end of a revisit of excursion greater than $2H$ that crosses another revisit of excursion greater than $2H$ on the same
 tape.
@@ -92,7 +92,7 @@ path} is a sequence $t_0\to t_1\to\dots\to t_m$ of edges.
 
 Every edge decreases the step, so the DAG is acyclic. The value written at step $t$ is a function of the values at its
 out-neighbours and of the input bit read at~$t$: the state edge carries the state, and the revisit edges carry the contents of the
-scanned cells. In Lean the edge relation is \lean{DepStep} and paths are \lean{IsDepPath} (from the eleventh
+scanned cells. In Lean the edge relation is \lean{MergeDepth.DepStep} and paths are \lean{MergeDepth.IsDepPath} (from the eleventh
 paper's library~\cite{MergeDepth2026}).
 
 \begin{definition}[Cuts]\label{def:cut}
@@ -110,7 +110,7 @@ separating sets directly.
 Let $\Gamma$ be a set of steps. For a step $t$, the \emph{cone} of $t$ avoiding $\Gamma$ is the set of input positions $p$ such
 that some dependency path $t\to t_1\to\dots\to t_m$ with $t_1,\dots,t_m\notin\Gamma$ ends at a step $t_m$ (or at $t$ itself, if
 $m=0$) at which the input head reads position $p$. The root $t$ itself need not avoid~$\Gamma$. The \emph{cone relation}
-assigns to each input position $q$ the cone of its root $\Out(q)$ (in Lean, \lean{coneSystem} evaluated at $\tpos(q)$). The
+assigns to each input position $q$ the cone of its root $\Out(q)$ (in Lean, \lean{BoundedStackDepth.coneSystem} evaluated at $\tpos(q)$). The
 \emph{ball relation of radius $D$ avoiding $B$} is defined in the same way using only paths with at most $D$ edges after the
 root (\lean{ballAvoidSystem}). A set $U$ of input positions is \emph{acyclic} in a relation $N$ if every nonempty $S\subseteq U$
 has an element $v$ with $N(v)\cap S=\emptyset$ (\lean{HalfRate.IsAcyclicIn}). It is \emph{independent} in $N$ if

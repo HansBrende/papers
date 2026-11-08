@@ -1,15 +1,63 @@
 \section{Building and verifying the formalization}\label{app:verification}
 
-% Draft placeholder, to be completed when the Lean library is added.
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the libraries of the fourteenth
+paper~\cite{BoundedStack2026} and the fifteenth paper~\cite{HighRate2026} through relative paths; through them it also uses the
+libraries of the first, fifth, seventh, eighth and eleventh papers of the series and the shared \leanfile{lean-machine/} library
+(including \leanfile{LeanMachine/BlockRanking.lean} and \leanfile{LeanMachine/ThresholdRefinement.lean}). Keep the repository's
+directory layout so that these sibling directories stay in place.
 
-The library builds with the Lean toolchain and the Mathlib revision pinned in \leanfile{lean/lean-toolchain} and
-\leanfile{lean/lake-manifest.json}, the same as the earlier papers of the series. Because it requires sibling libraries by relative path,
-the whole repository must be checked out. From \leanfile{lean/}:
-\begin{verbatim}
-lake exe cache get
-lake build
-lake env lean PaperAxioms.lean
-\end{verbatim}
-The last command prints, for every declaration cited in this paper, the axioms it depends on; each depends at most on
-\lean{propext}, \lean{Classical.choice} and \lean{Quot.sound}. The library contains no \texttt{sorry}, no \texttt{native\_decide}, no new
-axioms and no code that bypasses the kernel.
+\paragraph{Build.} Before the first build, fetch the second paper's pinned external dependency as described in its README
+(\texttt{python3 verification/fetch\_openai\_metric.py}, run in that paper's directory). With \texttt{elan} installed, run in
+\leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib cache; the second compiles \leanfile{NativeRelations} and the parts of the earlier
+libraries that it uses.
+
+\paragraph{Axioms and index.} The file \leanfile{lean/PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper by
+\leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration cited in this paper (\cref{app:leanindex}), both in
+\texttt{NativeRelations} and in the earlier and shared libraries:
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file of this
+library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, declares an \texttt{axiom}, bypasses the kernel via
+\texttt{unsafe}, \texttt{implemented\_by} or \texttt{extern}, or raises \texttt{maxHeartbeats}. Running
+\texttt{python3 tools/lean\_index.py} from the paper's root directory regenerates both \leanfile{paper/sections/leanindex.tex} and
+\leanfile{lean/PaperAxioms.lean} (\texttt{--index-only} writes only the index; \texttt{--check} verifies that every cited name
+resolves and that both generated files are current).
+
+\paragraph{Where things are.} The library \leanfile{lean/NativeRelations/} has eighteen modules, all imported by the root module
+\leanfile{lean/NativeRelations.lean}:
+\begin{itemize}[leftmargin=1.5em]\raggedright
+\item \emph{Certificates and acyclic-set tools} (\cref{sec:certificates}): \leanfile{MachineCrux.lean},
+\leanfile{DichromaticCrux.lean} and \leanfile{EnvelopeCrux.lean}.
+\item \emph{Two long-range heads} (\cref{sec:heads}): \leanfile{OneFreeHeadSmallExcursion.lean}.
+\item \emph{Macroscopic crossings} (\cref{sec:crossings}): \leanfile{CrossingBridge.lean} and
+\leanfile{MacroscopicThreshold.lean} (crossing sets, the first forms of the pullback, bridge, dichotomy and crossing theorem using
+uniform block cuts and genie depth), and \leanfile{TightConstants.lean} (the common-refinement time pullback, the single-cell guarded
+bridge, the constants of \cref{sec:constants}, and the main forms of \cref{lem:acyclic-cost}(b) and Theorems~D, X, S and~E).
+\item \emph{Skeletons and expanding waves} (\cref{sec:skeletons} and \cref{rem:waves}): \leanfile{MacroscopicSkeleton.lean} and
+\leanfile{ScaleProfile.lean}.
+\item \emph{Rows to columns} (\cref{sec:demand}): \leanfile{TranspositionCut.lean}.
+\item \emph{Adaptive machines} (\cref{sec:adaptive}): \leanfile{SimulatorBridge.lean} (frozen-trace deficit bounds, used with
+\leanfile{TightConstants.lean}).
+\item \emph{Class exclusions} (\cref{sec:classes}): \leanfile{MacroBankCrux.lean}, \leanfile{SuffixMassCrux.lean},
+\leanfile{JitterMacroBank.lean}, \leanfile{AdaptiveSuffixJitterBM.lean}, \leanfile{NativeGapCriterion.lean} and
+\leanfile{ZeroFreeHeadQWindow.lean}.
+\item \emph{Coarse pass counting} (\cref{sec:construction}): \leanfile{CoarseGroupedPass.lean}.
+\end{itemize}
+
+\paragraph{What is not formalized.} Complete written proofs in the text, not formalized in Lean, are given for
+\cref{cor:scale-separated} and \cref{prop:onecut}. Proof sketches only are given for \cref{rem:rare}, for the perfect-unshuffle
+transposer realizing the $\theta=2$ parameters after \cref{cor:subcritical}, and for the exclusions of the individual schedule
+families in \cref{app:catalogue} (built on the formal class theorems of \cref{sec:classes} and certificate lemmas of
+\cref{sec:certificates}).
+
+\paragraph{Constants and numerical remarks.} The script \leanfile{tools/print_constants.py} (Python~3 standard library only)
+reproduces the exact rational values and scientific approximations of the constants in \cref{sec:heads,sec:constants,sec:skeletons}.
+The exploratory measurement scripts behind the numerical observations in \cref{rem:numerics-crossings,rem:skeleton-limits,rem:cascades},
+the numerical sentence after \cref{prob:multiscale}, and the numerical entries of \cref{app:catalogue} are not shipped with this
+paper; those observations are labelled as numerical throughout and no proof in the paper or the formal library depends on them.

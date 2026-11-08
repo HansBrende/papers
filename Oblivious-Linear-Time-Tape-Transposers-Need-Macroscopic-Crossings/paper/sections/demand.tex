@@ -1,0 +1,86 @@
+\section{Rows to columns}\label{sec:demand}
+
+Theorems~H, X and~S use transposition only through the certificate method: a transposer cannot have a large acyclic set after
+a cheap cut. This section uses the transposition demand directly. Information from a set of input rows must reach the output rows
+into which transposition sends it, and every cut between the two must carry it.
+
+For sets $A_0,A_1\subseteq\{0,\dots,d-1\}$ of rows let $\Lin(A_0)$ be the set of steps at which the input head reads a position in
+an input row of $A_0$ (\lean{inSlabReadSteps}), and let $\Qstar(A_0,A_1)$ be the set of input positions whose input row lies in
+$A_0$ and whose output row lies in $A_1$ (\lean{bichromaticRect}): the bits that rows $A_0$ send into output rows $A_1$. It has
+exactly $\abs{A_0}\abs{A_1}b$ elements (\lean{card_bichromaticRect}).
+
+\begin{lemma}[Lemma~R, rows to columns]\label{lem:R}
+\formal{TranspositionCut.lean}{isAcyclicIn_coneSystem_uncutRootedBichromaticRect, frozenTrace_bichromatic_tposOf_cut_ge, oblivious_bichromatic_tposOf_cut_ge}
+Let $M$ transpose at size $d\ge1$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$; for an oblivious $M$ take its common
+trace and $\eta=0$. For all sets $A_0,A_1$ of rows and every set $\Gamma$ of steps separating $\Out(\Qstar(A_0,A_1))$ from $\Lin(A_0)$,
+\[
+  \wval\abs\Gamma+\abs{\Gamma\cap\Out(\Qstar(A_0,A_1))}\ \ge\ \abs{A_0}\abs{A_1}b-\eta L,
+  \qquad\text{hence}\qquad \abs\Gamma\ \ge\ \frac{\abs{A_0}\abs{A_1}b-\eta L}{\wval+1}.
+\]
+\end{lemma}
+
+\begin{outline}
+Let $Q'$ be the set of $q\in\Qstar(A_0,A_1)$ whose root is not in $\Gamma$; since $\Out$ is injective,
+$\abs{Q'}\ge\abs{A_0}\abs{A_1}b-\abs{\Gamma\cap\Out(\Qstar)}$. For $q\in Q'$, a dependency path from $\Out(q)$ that avoids $\Gamma$ after
+its root cannot end at a read of rows $A_0$: the root is not in $\Gamma$, so the path would avoid $\Gamma$ altogether. Hence the cone of
+every $q\in Q'$ avoiding $\Gamma$ contains no position of rows $A_0$, while $Q'$ lies in rows $A_0$. No element of $Q'$ sees another, so
+$Q'$ is acyclic, and \cref{lem:frozen} gives $\abs{Q'}-\wval\abs\Gamma\le\eta L$.
+\end{outline}
+
+With $A_0=A_1$ the set of all rows, Lemma~R says that every cut between the input and the output carries the whole input:
+$\abs\Gamma\ge(1-\eta)L/(\wval+1)$. With smaller row sets it says the same for every block of the transposition demand separately. The
+filtering of roots matters: $\Gamma=\Out(\Qstar)$ is a separating set, and the cone relation avoiding it need not be acyclic on all of
+$\Qstar$, because roots in $\Gamma$ may still see their own inputs.
+
+The lemma becomes a statement about a single set of steps through a colouring.
+
+\begin{theorem}[Colouring criterion]\label{thm:colouring}
+\formal{TranspositionCut.lean}{isMengerVertexCut_of_bichromaticColoring, frozenTrace_bichromaticColoring_wave_cut_ge}
+Let $M$, $d$, $c$, $\eta$ and $\tau$ be as in \cref{lem:R}, with halting time $T$, and let $A_0,A_1$ be sets of rows. Let $Y$ be a set of
+steps and $\chi$ a colouring of the steps by $\{0,1\}$ such that
+\begin{enumerate}[label=(\roman*)]
+\item $\chi=0$ on $\Lin(A_0)\setminus Y$ and $\chi=1$ on $\Out(\Qstar(A_0,A_1))\setminus Y$;
+\item every revisit $(u,t)$ with $u,t\notin Y$ has $\chi(t)\le\chi(u)$.
+\end{enumerate}
+Let $\partial\chi$ be the set of steps $t\in[1,T)$ with $t,t-1\notin Y$, $\chi(t)=1$ and $\chi(t-1)=0$. Then every set $B$ of steps separating
+the roots of all input positions from $Y$ satisfies
+\[
+  \abs B\ \ge\ \frac{\abs{A_0}\abs{A_1}b-\eta L}{\wval+1}-\abs{\partial\chi}.
+\]
+\end{theorem}
+
+\begin{outline}
+$B\cup\partial\chi$ separates $\Out(\Qstar)$ from $\Lin(A_0)$. Take a dependency path from a root to a read of rows $A_0$ that avoids
+$B\cup\partial\chi$. It avoids $Y$, since its part up to a vertex of $Y$ would be a path from a root to $Y$ avoiding $B$. By (i) the path
+starts with colour $1$ and ends with colour $0$, so some edge drops from colour $1$ to colour $0$ as the path moves to an earlier step. A
+state edge $t\to t-1$ with $\chi(t)=1$ and $\chi(t-1)=0$ would put $t$ in $\partial\chi$, and a revisit edge $t\to u$ with $\chi(t)=1$ and
+$\chi(u)=0$ is excluded by (ii), a contradiction. \Cref{lem:R} bounds $\abs{B\cup\partial\chi}$.
+\end{outline}
+
+Taking $B=Y$ shows $\abs Y\ge(\abs{A_0}\abs{A_1}b-\eta L)/(\wval+1)-\abs{\partial\chi}$: a set of steps across which the colour can only
+jump at few places must itself be large. Several such sets that are pairwise disjoint give a time bound. For $d\ge16$ let $K=\lfloor
+\log_2d\rfloor$ and $d_1=2^K$, and for $0\le s\le K-2$ let $A_s^0$ and $A_s^1$ be the rows $i<d_1$ whose bit $K-1-s$ is $0$, respectively $1$.
+
+\begin{corollary}[Scale-separated traces]\label{cor:scale-separated}
+\notformalized
+Let $M$, $d$, $c$, $\eta$ and $\tau$ be as in \cref{lem:R}, with $d\ge16$, $\eta\le\frac1{32}$, $K_{\mathrm{flip}}\ge0$ and
+$d\ge64(\wval+1)K_{\mathrm{flip}}$. Suppose that for each $s$ in a set $S\subseteq\{0,\dots,K-2\}$ there are a set $Y_s$ of steps and a
+colouring $\chi_s$ satisfying (i) and (ii) of \cref{thm:colouring} for $(A_s^0,A_s^1)$ with $\abs{\partial\chi_s}\le K_{\mathrm{flip}}d$, and
+that the sets $Y_s$ are pairwise disjoint. Then $T\ge\abs S\cdot L/(64(\wval+1))$.
+\end{corollary}
+
+\begin{informalproof}
+Since $d_1>d/2$, $\abs{A_s^0}\abs{A_s^1}b=(d_1/2)^2b>L/16$. Since $d\ge64(\wval+1)K_{\mathrm{flip}}$ and $b\ge1$,
+$K_{\mathrm{flip}}d\le d^2/(64(\wval+1))\le L/(64(\wval+1))$. \Cref{thm:colouring} with $B=Y_s$ gives
+\[
+  \abs{Y_s}\ \ge\ \frac{(1/16-\eta)L}{\wval+1}-K_{\mathrm{flip}}d\ \ge\ \frac{L}{32(\wval+1)}-\frac{L}{64(\wval+1)}=\frac{L}{64(\wval+1)} .
+\]
+The $Y_s$ are pairwise disjoint subsets of $\Range T$, so $T\ge\sum_{s\in S}\abs{Y_s}$.
+\end{informalproof}
+
+With $S$ all $K-1$ scales the bound is $T\ge(\lfloor\log_2d\rfloor-1)L/(64(\wval+1))$, so no linear-time transposer has a trace that is
+scale-separated across all scales. The corollary should be read with \cref{prop:onecut} in mind: one set of steps, together with the
+colouring that changes once, at the step after the last input read, satisfies (i) and (ii) for every pair of row sets at once, so the content
+of the hypothesis is the disjointness of the sets $Y_s$, which says roughly that live storage is rewritten once per scale. The corollary is
+therefore a time bound for schedules that refine the row index one bit at a time in separate passes, whatever they compute; it does not
+show that a linear-time transposer must do so.

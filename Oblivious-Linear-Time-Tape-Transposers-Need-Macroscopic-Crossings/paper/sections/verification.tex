@@ -1,0 +1,15 @@
+\section{Building and verifying the formalization}\label{app:verification}
+
+% Draft placeholder, to be completed when the Lean library is added.
+
+The library builds with the Lean toolchain and the Mathlib revision pinned in \leanfile{lean/lean-toolchain} and
+\leanfile{lean/lake-manifest.json}, the same as the earlier papers of the series. Because it requires sibling libraries by relative path,
+the whole repository must be checked out. From \leanfile{lean/}:
+\begin{verbatim}
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+The last command prints, for every declaration cited in this paper, the axioms it depends on; each depends at most on
+\lean{propext}, \lean{Classical.choice} and \lean{Quot.sound}. The library contains no \texttt{sorry}, no \texttt{native\_decide}, no new
+axioms and no code that bypasses the kernel.

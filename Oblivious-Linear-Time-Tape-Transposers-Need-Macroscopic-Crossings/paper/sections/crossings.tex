@@ -1,0 +1,206 @@
+\section{Macroscopic crossings}\label{sec:crossings}
+
+This section proves the dichotomy for arbitrary linear-time traces (Theorem~D) and its consequence for oblivious transposers
+(Theorem~X). Both rest on one implication, proved for every trace without any hypothesis on what the machine computes: if a
+small set of steps cuts a large set of outputs off from the crossing steps $\CL_H$, then the remaining cone relation contains a
+linear-size acyclic set. \Cref{sec:certificates} has shown that such an acyclic set is incompatible with transposition.
+
+\subsection{Constants}\label{sec:constants}
+
+Fix $k\ge1$, reals $C\ge1$ and $\alpha>0$, and a depth $D\ge0$. Put
+\[
+  m_0(k)=(2k+1)(k+1)^{2k},\qquad K_{\mathrm{row}}=\lceil24C/\alpha\rceil,\qquad B_{\mathrm{time}}=\lceil8m_0C/\alpha\rceil,
+\]
+\[
+  \rho_0(k,C,\alpha)=\frac{1}{3\binom{m_0+2K_{\mathrm{row}}}{m_0}},\qquad
+  N_{\mathrm{thr}}=(2k+1)+m_0(2k+1)(B_{\mathrm{time}}+1),\qquad
+  E_0(k,D,C,\alpha)=(k+2)^D N_{\mathrm{thr}}(5k+1),
+\]
+\[
+  \theta_{\mathrm{E}}(k,D,C,\alpha)=\frac{\alpha}{12\,E_0(k,D,C,\alpha)},\qquad
+  d_{\mathrm{pb}}(k,C,\alpha)=\max\Bigl(K_{\mathrm{row}}B_{\mathrm{time}},\Bigl\lceil\frac{12m_0(2B_{\mathrm{time}}+3)}{\alpha}\Bigr\rceil\Bigr).
+\]
+Here $m_0(k)$ counts the \emph{phase-exit chains} of the proof below; $m_0=12$, $405$ and $28672$ for $k=1,2,3$. The constant
+$\rho_0$ does not depend on $D$ or on the alphabet. For a machine $M$ with $k$ work tapes and value width $\wval$, and $\alpha>0$,
+put
+\[
+  \cE(M,C,\alpha)=\frac{\rho_0(k,C,\alpha)}{2\wval},\qquad
+  D_{\mathrm{E}}(M,C,\alpha)=\mathrm{genieDepth}\bigl(k,\wval,C,\alpha\rho_0(k,C,\alpha)/4\bigr),
+\]
+\[
+  \thetaM(M,C,\alpha)=\theta_{\mathrm{E}}\bigl(k,D_{\mathrm{E}}(M,C,\alpha/2),C,\alpha/2\bigr)
+  =\frac{\alpha}{24\,E_0\bigl(k,D_{\mathrm{E}}(M,C,\alpha/2),C,\alpha/2\bigr)},
+\]
+where $\mathrm{genieDepth}$ is the depth bound of the fourteenth paper's genie (\cref{lem:genie}). In Lean these are
+\lean{conjectureE_m0}, \lean{conjectureE_bridge_rho0} (through \lean{timePullbackRhoMin}), \lean{conjectureE_Nthresh},
+\lean{conjectureE_E0}, \lean{conjectureE_theta}, \lean{timePullback_gen_d0}, \lean{conjectureE_cE}, \lean{conjectureE_DE} and
+\lean{conjectureE_thetaMacro}.
+
+These constants are positive and astronomically small. For $k=2$, $C=1$: $1/\rho_0(2,1,1)\approx10^{65.8}$ and
+$1/\rho_0(2,1,\tfrac12)\approx10^{105.4}$; for $k=1$ and $k=3$ at $C=\alpha=1$ the values are $10^{12.6}$ and $10^{153.4}$. The
+threshold $\thetaM$ is far smaller, because $E_0$ grows like $(k+2)^{D}$ and the genie depth $D_{\mathrm{E}}$ is itself at least
+$32\wval C/(\alpha\rho_0)$: for $k=2$ and $C=\alpha=1$, $\thetaM\le4^{-10^{107}}$. Nothing in the problem suggests that the true
+values are this small (\cref{rem:numerics-crossings}).
+
+\subsection{The time-pullback bound}
+
+The first ingredient turns a structure in time into an acyclic set. Split $\Range T$ into $B_{\mathrm{time}}$ consecutive
+\emph{time blocks} $T_0,\dots,T_{B_{\mathrm{time}}-1}$ of length $\lfloor T/B_{\mathrm{time}}\rfloor$, the last one extended to end
+at~$T$.
+
+\begin{theorem}[Time pullback]\label{thm:pullback}
+\formal{MacroscopicThreshold.lean}{theorem_51_2_general_zbad_mais}
+Let $\tau$ be a trace with $k$ work tapes that appends exactly $L=d^2b$ bits before step $T\le C(L+1)$, with $d,b,m_0\ge1$, $C\ge1$ and
+$\alpha>0$, and let $d\ge d_{\mathrm{pb}}$ computed with this $m_0$. Let $V_0\subseteq\Range L$ with $\abs{V_0}\ge\alpha L$, let
+$Z\subseteq\Range L$ with $\abs Z\le\abs{V_0}/12$, let $B$ be a set of steps and $D\ge0$. Suppose there are at most $m_0$ indices
+$\nu$, each with a nondecreasing sequence $\xi_\nu(0)\le\dots\le\xi_\nu(B_{\mathrm{time}})$ and a permutation $\pi_\nu$ of the
+blocks, such that the following holds for every $q\in V_0\setminus Z$: whenever a dependency path from $\Out(q)$ with at most $D$
+edges, whose vertices after the root avoid $B$, ends at a step of block $T_\beta$ at which the input head reads a position of $V_0$,
+the root $\Out(q)$ lies in $[\xi_\nu(\pi_\nu(\beta)),\xi_\nu(\pi_\nu(\beta)+1))$ for some~$\nu$. Then the ball relation of radius
+$D$ avoiding $B$ contains an acyclic set $U\subseteq V_0$ with
+\[
+  \abs U\ \ge\ \frac{\abs{V_0}}{3\binom{m_0+2K_{\mathrm{row}}}{m_0}} .
+\]
+\end{theorem}
+
+\begin{outline}
+For each $q$ let $A(q)$ be the set of blocks $\beta$ such that $\Out(q)$ lies in an interval assigned to $\beta$; since the
+intervals of one $\nu$ are disjoint, $\abs{A(q)}\le m_0$. For an input position $p$ let $E(p)$ be the set of blocks in which $p$
+is read. The hypothesis says that if $p$ is in the ball of $q$ then $A(q)$ and $E(p)$ meet. A kinematic count
+(\lean{kinematic_goodInputRows_card_ge}) shows that all but at most $3T/(K_{\mathrm{row}}W)$ input rows are touched by the input head
+in at most $K_{\mathrm{row}}$ runs, each shorter than a block, so $\abs{E(p)}\le2K_{\mathrm{row}}$ off a quarter of $V_0$. Pairs
+with $A(q)\cap E(q)\ne\emptyset$, self-collisions, are bounded without any anti-concentration assumption, using the row and column
+structure of $\tpos$ and the monotonicity of append steps: for a fixed $\nu$ each threshold splits at most one output row
+(\lean{card_selfCollisions_singleFamily_le}). Off the bad sets the relation is contained in the \emph{block relation}
+$A(q)\cap E(p)\ne\emptyset$ with $\abs A\le m_0$, $\abs E\le2K_{\mathrm{row}}$ and no self-loops, and a uniform block cut
+(\lean{exists_isAcyclicIn_card_ge_of_uniformBlockCut}) extracts an acyclic set of the stated size.
+\end{outline}
+
+\Cref{thm:pullback} is purely about the trace. The constant $1/\binom{m_0+2K_{\mathrm{row}}}{m_0}$ is the price of the uniform
+block cut over all possible block sets, and it is the source of the size of $\rho_0$.
+
+\subsection{The bridge}
+
+The second ingredient finds the time-pullback structure whenever $\CL_H$ can be cut off. We need a separation notion that
+ignores the roots themselves.
+
+\begin{definition}[Separation within depth $D$]\label{def:ballsep}
+\formal{EnvelopeCrux.lean}{IsBallPathSeparator}
+Let $V_0$ be a set of input positions and $S$, $B$ sets of steps. $B$ \emph{separates $V_0$ from $S$ within depth $D$} if every
+dependency path from a root $\Out(q)$, $q\in V_0$, with at most $D$ edges and with all its vertices after the root outside $B$,
+also has all its vertices after the root outside $S$ (\lean{IsBallPathSeparator}).
+\end{definition}
+
+If $B$ separates $\Out(V_0)$ from $S$ in the sense of \cref{def:cut}, then $B$ separates $V_0'=\{q\in V_0:\Out(q)\notin B\}$
+from $S$ within every depth (\lean{isBallPathSeparator_of_isMengerVertexCut}).
+
+\begin{theorem}[Bridge]\label{thm:bridge}
+\formal{MacroscopicThreshold.lean}{conjectureE_bridge_exists_isAcyclicIn_crossingLowerGT2H, conjectureE_bridge_exists_isAcyclicIn_crossingLowerH}
+Let $\tau$ be a trace with $k$ work tapes that appends exactly $L=d^2b$ bits before step $T\le C(L+1)$, with $C\ge1$ and
+$\alpha>0$. Let $D\ge0$, let $1\le H\le\theta_{\mathrm{E}}(k,D,C,\alpha)\,L$, and let $d\ge d_{\mathrm{pb}}(k,C,\alpha)$. If $V_0$ has
+at least $\alpha L$ elements and $B$ separates $V_0$ from $\CL_H$ within depth $D$, then the ball relation of radius $D$ avoiding
+$B$ contains an acyclic set $U\subseteq V_0$ with $\abs U\ge\rho_0(k,C,\alpha)\abs{V_0}$.
+\end{theorem}
+
+\begin{outline}
+\emph{Two cuts per tape.} On every unit-speed walk there are two steps $\vartheta_+,\vartheta_-$ such that every revisit of
+excursion greater than $H$ that crosses no other such revisit straddles one of them: the upper ones straddle $\vartheta_+$, the
+lower ones $\vartheta_-$ (\lean{exists_two_cuts_covering_nonCrossingLargeHops}). \emph{Dichotomy along paths.} Along a dependency
+path from $V_0$ that avoids $B$ after the root, every edge is a state edge, a revisit edge of excursion at most $2H$, or a revisit
+edge whose revisit crosses nothing large and therefore straddles one of the $2k$ cut steps; the separation hypothesis excludes
+large crossing revisits (\lean{depPath_nonCrossing_dichotomy_of_isBallPathSeparator_crossingLowerH}). \emph{Phases and chains.}
+The cut steps split time into at most $2k+1$ work phases; a path visits the phases along one of at most $m_0(k)$ phase-exit chains
+(\lean{card_chainIdx_le}), and along a chain each passage between phases is a strictly antitone partial bijection between times
+(\lean{crossingCut_nonCrossing_strictAnti}). Pulling the block boundaries back along each chain gives, for every chain, monotone
+root intervals of both parities, which is the structure required by \cref{thm:pullback} with $m_0=m_0(k)$. \emph{Guards.} Small
+revisits and the state edge are handled by a guard set of at most $(5k+1)H$ steps per threshold
+(\lean{card_microHopStepGuard_le}); the roots that reach a guard within $D$ edges form the exceptional set $Z$, of size at most
+$(k+2)^D N_{\mathrm{thr}}(5k+1)H=E_0H\le\alpha L/12$ by the choice of~$H$ (\lean{card_ancestors_le}). \Cref{thm:pullback} applies.
+\end{outline}
+
+The second Lean declaration is the same statement for banded crossing sets with an explicit clause on overshooting revisits;
+for the unbanded set $\CL_H$ the clause holds for every trace (\lean{clauseE1H_uncapped}). The form with $H=W$ is
+\lean{conjectureE_bridge_exists_isAcyclicIn_crossingLower}.
+
+\subsection{Theorem D: a dichotomy for every linear-time trace}
+
+\begin{theorem}[Theorem~D]\label{thm:D}
+\formal{MacroscopicThreshold.lean}{linearTimeTrace_crossingLowerGT2H_menger_dichotomy, linearTimeTrace_crossingLowerGT2H_ballSep_dichotomy}
+Let $\tau$ be any trace with $k$ work tapes that appends exactly $L=d^2b$ bits before step $T\le C(L+1)$, with $C\ge1$ and
+$\alpha>0$. Let $D\ge0$, $1\le H\le\theta_{\mathrm{E}}(k,D,C,\alpha/2)\,L$, $d\ge d_{\mathrm{pb}}(k,C,\alpha/2)$, and $c\le\frac12$.
+For every set $V_0$ of at least $\alpha L$ input positions, exactly one of the following holds:
+\begin{enumerate}[label=(\roman*)]
+\item some set $B$ of fewer than $c\abs{V_0}$ steps separates $\Out(V_0)$ from $\CL_H$, and the ball relation of radius $D$ avoiding
+$B$ contains an acyclic set $U\subseteq V_0$ with $\abs U\ge\frac12\rho_0(k,C,\alpha/2)\abs{V_0}$;
+\item every set separating $\Out(V_0)$ from $\CL_H$ has at least $c\abs{V_0}$ elements.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+If (ii) fails, take a separating set $B$ with $\abs B<c\abs{V_0}\le\abs{V_0}/2$. Since $\Out$ is injective, at least half of the
+roots of $V_0$ lie outside $B$; the set $V_0'$ of these has at least $(\alpha/2)L$ elements, and $B$ separates it from $\CL_H$
+within depth~$D$. \Cref{thm:bridge} at density $\alpha/2$ gives $U$.
+\end{outline}
+
+Theorem~D mentions neither a machine nor transposition. Its content is the implication from (i)'s first half to its second: a
+cheap cut from the crossing steps leaves a large acyclic set. Read the other way, it says that a trace whose cone relations have
+no large acyclic set after cheap cuts must reach $\CL_H$ with linear expansion from every large output set. The transposition
+hypothesis enters only through the certificate method.
+
+\subsection{Theorem X}
+
+\begin{theorem}[Theorem~X, macroscopic crossings]\label{thm:X}
+\formal{MacroscopicThreshold.lean}{conjectureE_obliviousLinTime_macroscopicCrossingLowers_menger_lb, conjectureE_obliviousLinTime_crossingLowerGT2H_menger_lb}
+Let $M$ be a machine with $k$ work tapes and value width $\wval$, and let $C\ge1$ and $\alpha>0$. Put $\theta=\thetaM(M,C,\alpha)$ and
+\[
+  d_0=\max\Bigl(1,\ d_{\mathrm{pb}}(k,C,\alpha/2),\ \Bigl\lceil\frac{24E_0(k,D_{\mathrm{E}}(M,C,\alpha/2),C,\alpha/2)}{\alpha}\Bigr\rceil,\
+  \Bigl\lceil\frac2\theta\Bigr\rceil\Bigr).
+\]
+Let $d\ge d_0$, suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$, and let $H^*=\lfloor\theta L\rfloor$. Then $W\le H^*$ and
+$\theta L\le2H^*$, and for every set $V_0$ of at least $\alpha L$ input positions, every set of steps separating $\Out(V_0)$ from
+$\CL_{H^*}$ in the dependency DAG of the common trace has at least
+\[
+  \tfrac12\,\cE(M,C,\alpha/2)\,\abs{V_0}\ =\ \frac{\rho_0(k,C,\alpha/2)}{4\wval}\,\abs{V_0}
+\]
+elements. The same bound holds for $\CL_H$ at every $1\le H\le\theta L$ and every $d\ge\max(1,d_{\mathrm{pb}}(k,C,\alpha/2))$.
+\end{theorem}
+
+Every revisit counted in $\CL_{H^*}$ has excursion greater than $2H^*\ge\theta L$: these are crossings of macroscopic revisits.
+When $\alpha\le1$, taking $V_0$ to be a set of $\lceil\alpha L\rceil$ input positions and the separating set to be $\CL_{H^*}$ itself gives the
+following.
+
+\begin{corollary}[Linearly many macroscopic crossings]\label{cor:many}
+\formal{MacroscopicThreshold.lean}{conjectureE_obliviousLinTime_macroscopicCrossingLowers_menger_lb}
+Under the hypotheses of \cref{thm:X}, if moreover $\alpha\le1$, the common trace has at least $\frac{\alpha\rho_0(k,C,\alpha/2)}{4\wval}L$ steps that are
+earlier ends of crossing revisits of excursion greater than $\theta L$.
+\end{corollary}
+
+\begin{outline}[Outline of the formal proof of \cref{thm:X,cor:many}]
+\emph{Thresholds.} From $d\ge d_0$ one gets $W\le\theta L$, so $1\le W\le H^*$, and $\theta L\ge2$, so $\theta L<H^*+1\le2H^*$.
+\emph{Reduction.} Let $B$ separate $\Out(V_0)$ from $\CL_{H^*}$. If $\abs B\ge\abs{V_0}/2$ we are done, since
+$\frac12\cE\le\frac1{24}$. Otherwise the set $V_0'$ of $q\in V_0$ with $\Out(q)\notin B$ has at least $\abs{V_0}/2\ge(\alpha/2)L$
+elements, and $B$ separates it from $\CL_{H^*}$ within the depth $D_{\mathrm{E}}(M,C,\alpha/2)$. \emph{Bridge.} By the definition of
+$\thetaM$, $H^*\le\theta_{\mathrm{E}}(k,D_{\mathrm{E}},C,\alpha/2)L$, and \cref{thm:bridge} at density $\alpha/2$ gives an acyclic
+$U\subseteq V_0'$ in the ball relation with $\abs U\ge\rho_0\abs{V_0'}$. \emph{Coding.} \Cref{lem:acyclic-cost} with the genie of
+cost $(\alpha\rho_0/8)L$ and depth $D_{\mathrm{E}}$ gives $\wval\abs B\ge\abs U-(\alpha\rho_0/8)L\ge(\rho_0/2)\abs{V_0'}$, hence
+$\abs B\ge\cE\abs{V_0'}\ge\frac12\cE\abs{V_0}$.
+\end{outline}
+
+\begin{remark}[The earlier, row-scale form]\label{rem:2W}
+With $H=W$ the threshold condition is automatic for large $d$, and the conclusion holds with $\CL_W$, the crossing steps of
+revisits longer than two rows (\lean{conjectureE_obliviousLinTime_crossingLowerGT2W_menger_lb}); the same bound holds with the
+larger set of both ends of revisits that cross or share a cell and a turning point with another revisit
+(\lean{conjectureE_obliviousLinTime_mixGT2W_menger_lb}). Theorem~X is stronger: raising the threshold from $2W$ to $\theta L$
+shrinks the target set, so rearrangements below a fixed fraction of $L$ can never substitute for macroscopic crossings.
+\end{remark}
+
+\begin{remark}[Numerical]\label{rem:numerics-crossings}
+We computed exact minimum separating sets, by maximum flow, from large output sets to the earlier ends of crossing revisits of
+excursion greater than $E$, for $E\in\{2W,L/64,L/16,L/4,L/2,L\}$, on several explicit oblivious schedules at
+$d\in\{32,64,128\}$ and $b=1$. On the five linear-time cascade schedules of \cref{sec:cascades}, and on two superlinear transposers,
+the ratio of the minimum separating set to $\abs{V_0}$ was exactly $1$ for every $E\le L/2$. At $E=L$ three of the cascades make no
+such crossings at all, so the empty set separates, while heuristic bounds on their largest acyclic sets fell towards~$0$ as the
+radius grew. So, numerically, the threshold in Theorem~D appears not to be a universal constant such as $\frac12$. These measurements are far below the
+sizes at which the theorems apply and are no evidence for them; they suggest only that the true expansion constant may be of
+order~$1$ at thresholds of order $L/C$.
+\end{remark}

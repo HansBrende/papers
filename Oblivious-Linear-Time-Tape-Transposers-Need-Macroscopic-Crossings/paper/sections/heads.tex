@@ -1,0 +1,76 @@
+\section{Two long-range heads}\label{sec:heads}
+
+The first universal consequence of the certificate method concerns how far the heads must travel. It has polynomial constants
+and holds for every trace that carries a fixed exponentially small fraction of the inputs.
+
+For reals $c,\beta\ge1$ and an integer $k\ge1$ put
+\[
+  N=\lfloor160\beta c^2\rfloor,\qquad \eps_*=\frac1{8(N+1)},\qquad \eps_{\mathrm{sm}}=\frac{\eps_*}{4\beta(N+2)\max(1,2k)},
+\]
+\[
+  d_{\mathrm{H}}=\max\Bigl(\lceil80\beta c\rceil,\ \Bigl\lceil\frac{20(N+2)}{\eps_*}\Bigr\rceil,\
+  \Bigl\lceil\frac{16\beta(N+2)k}{\eps_*}\Bigr\rceil,\ 10\Bigr)
+\]
+(\lean{slabWallCap}, \lean{slabAutonomyEps}, \lean{slabSmallExcursion}, \lean{slabDimThreshold}). For $c=1$, $\beta=2$ and $k=2$:
+$\eps_*\approx3.9\cdot10^{-4}$, $\eps_{\mathrm{sm}}\approx3.8\cdot10^{-8}$ and $d_{\mathrm{H}}\approx5.3\cdot10^7$.
+
+\begin{theorem}[Theorem~H, two long-range heads]\label{thm:H}
+\formal{OneFreeHeadSmallExcursion.lean}{oneFreeHead_smallExcursion_excludes, twoMacroscopicHeads_of_linearTimeTransposer, twoMacroscopicHeads_of_oblivious_linearTimeTransposer, offCarrier_vertexExpansion_of_linearTimeTransposer, offCarrier_vertexExpansion_of_obliviousLinTime}
+Let $c,\beta\ge1$ and $k\ge1$. Let $M$ have at most $k$ work tapes and value width at most $\beta$, let $d\ge d_{\mathrm{H}}$, and suppose $M$
+transposes at size $d$ within time~$c$. Let $\tau$ be an $\eta$-heavy trace of $M$ with halting time $T$; for an oblivious $M$, take its
+common trace and $\eta=0$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Slab autonomy.} If $\eta<\eps_*$, there is no set of at most one work head such that every work head outside it has all its
+revisits of excursion at most $\lfloor\eps_{\mathrm{sm}}L\rfloor$ on~$\tau$. The input head and the excepted head are unrestricted.
+\item \emph{Two heads.} If $\eta<\eps_*$, two distinct work heads each make, on $\tau$, a revisit of excursion greater than
+$\eps_{\mathrm{sm}}L$.
+\item \emph{Off-carrier expansion.} For every set $S$ of at most one work head and every $H\le\lfloor\eps_{\mathrm{sm}}L\rfloor$, there is a
+set $V_*$ of input positions with $3\eps_*L\le\abs{V_*}\le L/2$ such that every set $B$ of steps separating $\Out(V_*)$ from the earlier
+ends of revisits of excursion greater than $H$ on the work heads outside $S$ satisfies
+\[
+  (\eps_*-\eta)L\ \le\ \beta\abs B+\abs{B\cap\Out(V_*)} .
+\]
+\end{enumerate}
+\end{theorem}
+
+Part (b) is part (a) applied to the set of heads that make long revisits. In (c) the set $V_*$ depends on the trace and on $S$; unlike
+Theorem~X, (c) does not hold for every large output set, and its targets are all long revisits off one head, not only crossing
+ones. It has no hypothesis on $\eta$, but is vacuous for $\eta\ge\eps_*$.
+
+\begin{outline}
+\emph{Frozen-trace chunks.} If every dependency path that starts in a set $C$ of steps and avoids $\Gamma$ after its first vertex
+stays in $C$, then the input positions whose output copies are appended in $C$, minus those read in $C$, form an independent set
+$U_*$, and counting the fibre as in \cref{lem:frozen} gives $\abs{U_*}-\beta\abs\Gamma\le\eta L$ (\lean{frozenTrace_chunk_deficit_le}).
+\emph{Slabs.} Cut the tape of the unrestricted head into slabs of width about $L/(80\beta c)$; some offset makes it cross slab walls at
+most $N$ times (\lean{exists_offset_slabTransitions_le}). \emph{A chunk.} Some time interval inside one slab epoch, of at most $L/2$
+steps, appends at least $3\eps_*L$ output bits (\lean{exists_slab_chunk_dichotomy}). \emph{Trapping.} A genie made of the slab
+transitions, the last visits of the free head before it leaves the slab, and the earlier ends of the other heads' revisits that span
+the chunk boundaries traps every path from the chunk (\lean{depPath_trapped_in_chunk}); the last part is small because those
+revisits are short, and a short revisit can span a given step on at most $2H+1$ cells (\lean{card_smallCrossingLowers_le}).
+\emph{Counting.} The chunk has at most $N+1$ runs, and every output row meets every input row in $b$ bits, so the independent set
+keeps about half the outputs of the chunk (\lean{outIn_card_le_two_indep_add_six_runs}). The resulting deficit $\eps_*L$ exceeds
+$\eta L$, a contradiction. For (c), keep in the genie only the short revisits, which are always few, and add the separating set $B$:
+paths that avoid both stay in the chunk, and the same count gives the inequality.
+\end{outline}
+
+\begin{corollary}[Sublinear excursions, family heights, one tape]\label{cor:H}
+\formal{OneFreeHeadSmallExcursion.lean}{oneFreeHead_sublinearExcursion_excludes, oneFreeHead_sublinearExcursion_oblivious_excludes, oneFreeHead_sublinearFamHeight_excludes, atMostOneWorkTape_lowAdaptivity_excludes, atMostOneWorkTape_oblivious_excludes}
+Let $c,\beta\ge1$, $k\ge1$ and $H(d)=o(L)$. For all large $d$, no machine with at most $k$ work tapes and value width at most $\beta$
+that transposes at size $d$ within time $c$ has an $\eta$-heavy trace, $\eta<\eps_*$, on which all but one work head make only revisits
+of excursion at most $H(d)$; the same holds with the excursion replaced by the height of every family of revisits that share a side
+and a turning point. In particular no such machine has at most one work tape.
+\end{corollary}
+
+\begin{outline}[Outline of the formal proof of \cref{cor:H}]
+For $d$ large, $H(d)\le\eps_{\mathrm{sm}}L$, so \cref{thm:H}(a) applies; the height of a family bounds the excursions of its revisits
+(\lean{hopExcursionLEOn_of_famd_le}). With at most one work tape, take the excepted set to contain every work head.
+\end{outline}
+
+Superlinear lower bounds for one work tape are classical in the one-tape models~\cite{DMS1991,DietzfelbingerMaass1993}, and in the present
+model the fourth paper's analysis of macroscopic limits already excludes one work tape~\cite[Corollary~3.18(c)]{FourthPaper2026}; we
+include the case only because it falls out. The fourth paper also showed, by a written proof, that in every macroscopic limit of a
+linear-time transposer at least two work-head limits are non-monotone~\cite[Corollaries~3.18 and~3.24]{FourthPaper2026}.
+Theorem~H(b) is a quantitative form of this at a single size, with explicit polynomial constants, on every $\eta$-heavy trace with
+$\eta<\eps_*$. Theorem~H(a) excludes one free head even when the other heads make excursions up to a small fixed fraction of $L$, which the
+limit statement does not exclude, and part~(c) is new. Every oblivious linear-time transposer therefore has at least two work tapes on
+which information is stored and retrieved across distances that are a fixed fraction of~$L$.

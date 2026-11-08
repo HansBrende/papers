@@ -1,0 +1,44 @@
+\section{Open problems}\label{sec:open}
+
+The results of this paper confine an oblivious linear-time transposer to macroscopic queue-like reuse with linear expansion, on one
+leg of a bounded skeleton, with two long-range heads. The following problems would take the next step; the first three are on the
+side of impossibility, the fourth on both sides.
+
+\begin{problem}[Pass bounds across scales]\label{prob:multiscale}
+For a run and $1\le j\le\log_2L$ let $r_j$ be the total number of legs of its skeletons at scale $\lfloor2^{-j}L\rfloor$. A linear-time run has
+$r_j\le k(4C\,2^j+1)$ (\cref{lem:finite}), and pass counting at a single scale requires only $r_j\gtrsim\frac j2\log_{k+1}2$
+(\cref{rem:onescale}). Is there, for every $k$ and $C$, a function $f$ with $f(d)\to\infty$ such that no oblivious machine with $k$ work tapes
+whose runs satisfy $r_j\le Cj$ for all $j$ transposes at size $d$ in time less than $f(d)L$? More generally, find a coding-proof inequality
+that involves all the $r_j$ at once and fails for every linear-time run.
+\end{problem}
+
+The schedules with $r_j=O(j)$ include, as far as we can tell, the cascades of \cref{sec:cascades}. A positive answer would exclude every
+transposer whose motion looks like a cascade at all scales; a negative answer would be a transposer of that shape, faster than
+$O(L\log d)$.
+
+\begin{problem}[From the simulator back to the machine]\label{prob:pullback}
+Let $M$ transpose in linear time, and let $\Ns$ be its bit simulator. Does the conclusion of \cref{thm:X} hold in $M$'s own dependency
+DAG, on a set of traces followed by all but an exponentially small fraction of the inputs? A positive answer would remove the word
+``oblivious'' from Theorem~X. The question is whether a macroscopic crossing in the dependency DAG of $\Ns$, which rewrites windows of $3s$
+cells in each round, forces a macroscopic crossing of the heads of~$M$.
+\end{problem}
+
+\begin{problem}[Constants]\label{prob:constants}
+Does \cref{thm:X} hold with a threshold $\theta\ge c_1/C$ and an expansion constant $c_2$, where $c_1,c_2>0$ depend polynomially on $1/k$,
+$1/\wval$ and $\alpha$? Numerically, the threshold of Theorem~D appears not to be a universal constant (\cref{rem:numerics-crossings}), but
+nothing we know rules out thresholds of order $1/C$.
+\end{problem}
+
+\begin{problem}[The cascades]\label{prob:cascades}
+For each of the five cascade schedules of \cref{sec:cascades}, decide whether some machine with that oblivious trace transposes. Each is a
+linear-time schedule that met every necessary condition of this paper in our tests (\cref{rem:cascades}). A transposer with one of these
+traces would prove~(T); an exclusion of one of them would, as far as our tests indicate, need an argument that uses more than
+Theorems~D, X, S and Lemma~R.
+\end{problem}
+
+A linear-time transposer, if one exists, must solve a coding problem on its own schedule: codes of rate approaching one on the cone
+relations of macroscopic queue-like reuse~\cite[Corollary~O]{BoundedStack2026}. The fifteenth paper shows that binary storage codes of
+rate approaching one exist on suitable separated relations~\cite{HighRate2026}; realizing such codes on the relations of a schedule that
+meets conditions (i)--(iv) of \cref{sec:construction} would be a construction. In the other direction, showing that the cone relations of
+every such schedule, after a cheap genie, have a fixed rate deficit would exclude oblivious linear-time transposers
+(\cref{thm:crux-excludes};~\cite[Corollary~O]{BoundedStack2026}); deciding (T) itself needs the uniform native form of \cref{thm:G}.

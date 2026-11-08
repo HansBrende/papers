@@ -1,0 +1,153 @@
+\section{Skeletons: where the crossings must be}\label{sec:skeletons}
+
+Theorem~X says how much information must reach macroscopic crossings. This section says where they can be. At a scale that is
+a fixed fraction of $L$, a linear-time head can turn only boundedly often, so its coarse motion is one of finitely many words;
+crossings force two turns with overlapping legs; and the expansion of Theorem~X can always be found on one leg of one tape. A leg is
+monotone only at the coarse scale: inside it the head may move back and forth over distances up to the scale.
+
+\subsection{Crossings are zigzags}
+
+\begin{lemma}[Crossing revisits are zigzags]\label{lem:zigzag}
+\formal{MacroscopicSkeleton.lean}{crossing_isHop_opposite_polarity, exists_crossingZigzag_of_crossingHopsGT2H, card_tapeCrossingLowers_ge_of_macroOverlap}
+Let $y$ be a unit-speed walk with horizon $T$ and $H\ge1$.
+\begin{enumerate}[label=(\alph*)]
+\item Two crossing revisits $(v_1,u_1)$, $(v_2,u_2)$ with $v_1<v_2<u_1<u_2$ visit different cells and lie on opposite sides of them:
+one stays strictly above its cell and the other strictly below.
+\item If two crossing revisits both have excursion greater than $2H$, there are a sign $\varepsilon\in\{\pm1\}$ and steps
+$s_0<s_1<s_2<s_3<T$ such that $h=\varepsilon y$ satisfies
+\[
+  h(s_1)-h(s_0)\ge2H+1,\quad h(s_1)-h(s_2)\ge2H+1,\quad h(s_3)-h(s_2)\ge2H+1,\quad
+  \min(h(s_1),h(s_3))-\max(h(s_0),h(s_2))\ge1 .
+\]
+\item Conversely, for every $\varepsilon$ and $s_0<s_1<s_2<s_3<T$, the walk has at least $2N$ steps that are earlier ends of
+crossing revisits of excursion greater than $2H$, where $N=\max\bigl(0,\min(h(s_1),h(s_3))-\max(h(s_0),h(s_2))-2H\bigr)$, whatever the
+walk does between these steps.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) A walk with unit steps cannot pass a cell without visiting it (\lean{isWalk_ivt}); a revisit therefore stays on one side of its
+cell, and the side of the second revisit is forced by the fact that the first cell is visited inside it but its own cell is not.
+(b) Take the extreme points of the two excursions. (c) Every level strictly inside the overlap is crossed upward between $s_0$ and
+$s_1$, downward between $s_1$ and $s_2$ and upward again between $s_2$ and $s_3$; the last visits before the turns give, for each
+level, one upper and one lower revisit of excursion greater than $2H$, and these cross.
+\end{outline}
+
+\subsection{Skeletons}
+
+\begin{definition}[Skeleton at scale $\Lambda$]\label{def:skeleton}
+\formal{MacroscopicSkeleton.lean}{milestones, tapeSkeleton, macroTurns, traceSkeletonTuple}
+Let $y$ be a walk with $y(0)=0$ and let $\Lambda\ge1$. Scan the steps $t=0,1,\dots,T-1$ keeping a grid point $g\in\Z$, initially
+$0$. Whenever $\abs{y(t)-g\Lambda}\ge\Lambda$, record a \emph{milestone} $(t,\sigma)$ with $\sigma=+$ if $y(t)>g\Lambda$ and
+$\sigma=-$ otherwise, and move $g$ one step in the direction~$\sigma$. The \emph{skeleton} of $y$ at scale $\Lambda$ is the word
+$\sigma_1\sigma_2\cdots$ of recorded signs (\lean{tapeSkeleton}). A \emph{leg} is a maximal run of equal signs, and the number of
+\emph{turns} is the number of sign changes (\lean{macroTurns}). The skeleton of a trace is the $k$-tuple of the skeletons of its
+work tapes.
+\end{definition}
+
+\begin{lemma}[Confinement and finiteness]\label{lem:finite}
+\formal{MacroscopicSkeleton.lean}{epochGrid_confines_and_exact, tapeSkeleton_length_mul_le, card_boundedSkeletonTuple, traceSkeletonTuple_mem_boundedSkeletonTuple}
+\begin{enumerate}[label=(\alph*)]
+\item At every step $\abs{y(t)-g(t)\Lambda}<\Lambda$, where $g(t)$ is the current grid point, and $y(t)=g(t)\Lambda$ exactly at
+each milestone. A skeleton of length $m$ has $m\Lambda\le T$.
+\item Let $\tau$ be any trace with $k$ work tapes and $T\le C(L+1)$, with $d,b\ge1$, $C\ge1$, $\theta>0$ and $d\ge\lceil8/\theta\rceil$.
+At scale $\Lambda=\lfloor\theta L/4\rfloor$ we have $\Lambda\ge1$, and every work tape's skeleton has at most
+$\Mmax=\lfloor16C/\theta\rfloor$ letters. Hence the skeleton of $\tau$ belongs to the set of $k$-tuples of words of length at most
+$\Mmax$ over $\{+,-\}$, which has exactly $(2^{\Mmax+1}-1)^k$ elements and does not depend on~$d$.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) is an induction over the scan. (b) Each milestone after the first needs the head to move $\Lambda$ cells, so $m\Lambda\le T\le
+2CL$, while $\Lambda\ge\theta L/8$ once $\theta L\ge8$; hence $m\le16C/\theta$. The count of words of length at most $\Mmax$ is
+$\sum_{i\le\Mmax}2^i$.
+\end{outline}
+
+\begin{definition}[Crossing-capable skeletons]\label{def:capable}
+\formal{MacroscopicSkeleton.lean}{IsScaleFreeCrossingCapable, CrossingCapableSkeletonTuple}
+Let $s$ be a skeleton and let $\gamma(i)$ be its grid coordinate after $i$ letters. The skeleton is \emph{crossing-capable} if for
+some sign $\varepsilon$ and indices $i_0<i_1<i_2<i_3\le\abs s$ the function $h=\varepsilon\gamma$ satisfies
+\[
+  h(i_1)-h(i_0)\ge3,\quad h(i_1)-h(i_2)\ge3,\quad h(i_3)-h(i_2)\ge3,\quad \min(h(i_1),h(i_3))-\max(h(i_0),h(i_2))\ge-1
+\]
+(\lean{IsScaleFreeCrossingCapable}): up three grid steps, down three, up three, with overlapping ranges. Such a skeleton has at
+least two turns.
+\end{definition}
+
+\begin{proposition}[Which skeletons carry crossings]\label{prop:capable}
+\formal{MacroscopicSkeleton.lean}{isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty, isScaleFreeCrossingCapable_of_two_mul_le, two_le_macroTurns_of_isScaleFreeCrossingCapable, tapeCrossingLowers_nonempty_of_isDetourProofSkeleton}
+Let $y$ be a walk with $y(0)=0$, $\Lambda\ge1$ and $H\ge2\Lambda$. If the tape of $y$ has an earlier end of a crossing pair of revisits
+of excursion greater than $2H$, then its skeleton at scale $\Lambda$ is crossing-capable; in particular it has at least nine
+letters and at least two turns. Conversely, if for some sign and indices $i_0<i_1<i_2<i_3$ the skeleton's grid satisfies
+$(\min(h(i_1),h(i_3))-\max(h(i_0),h(i_2)))\Lambda\ge2H+1$, then the tape has such crossing steps.
+\end{proposition}
+
+\begin{outline}
+The first part combines \cref{lem:zigzag}(b) with the confinement of \cref{lem:finite}(a): the four extreme steps lie within
+$\Lambda$ of grid points, which turns the inequalities with margin $2H+1\ge4\Lambda+1$ into the grid inequalities above
+(\lean{isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty}, which proves a finer statement at every scale). The converse is
+\cref{lem:zigzag}(c) applied at the milestone steps, where the walk is exactly on the grid.
+\end{outline}
+
+Between the two conditions there is a narrow band of skeletons that may or may not carry crossings, depending on the motion inside
+the legs; this band is non-empty, so no condition on the skeleton alone decides whether crossings occur.
+
+\begin{lemma}[No macroscopic revisit within a leg]\label{lem:legs}
+\formal{MacroscopicSkeleton.lean}{legOfEpoch_lt_of_isHop_gt2H}
+Let $y$ be a walk with $y(0)=0$, $\Lambda\ge1$ and $H\ge2\Lambda$. Every revisit of excursion greater than $2H$ starts in an earlier
+leg of the skeleton than the one in which it ends.
+\end{lemma}
+
+\begin{outline}
+Within one leg the grid point moves monotonically. A revisit returns to its cell, so if it started and ended in the same leg it
+would be confined to at most two adjacent epochs, with excursion less than $3\Lambda\le2H$.
+\end{outline}
+
+\subsection{Theorem S}
+
+For an oblivious linear-time transposer $M$ with time constant $C$ and $\alpha>0$, put $\theta=\thetaM(M,C,\alpha)$,
+$\Lambda^*=\lfloor\theta L/4\rfloor$, $H^*=\lfloor\theta L\rfloor$ and $\Mmax=\lfloor16C/\theta\rfloor$, and for a work tape $j$ and
+$r\ge0$ let $\CL^{j,r}$ be the set of steps of $\CL_{H^*}$ that are earlier ends of revisits on tape $j$ and lie in the $r$-th leg of
+tape $j$'s skeleton at scale $\Lambda^*$ (\lean{legCrossingLowers}).
+
+\begin{theorem}[Theorem~S, skeletons and a single leg]\label{thm:S}
+\formal{MacroscopicSkeleton.lean}{obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg, obliviousLinTime_infinite_pinned_skeleton_and_leg}
+Let $M$ be a machine with $k$ work tapes, $C\ge1$ and $0<\alpha\le1$, and let $d\ge\max(d_0,\lceil8/\theta\rceil)$ with $d_0$ as in
+\cref{thm:X}. Suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+\begin{enumerate}[label=(\alph*)]
+\item $1\le\Lambda^*$ and $2\Lambda^*\le H^*$, and the skeleton of the common trace at scale $\Lambda^*$ belongs to the explicit
+finite family of $k$-tuples of words of length at most $\Mmax$ in which some tape's word is crossing-capable.
+\item For every set $V_0$ of at least $\alpha L$ input positions there are a work tape $j$, whose skeleton is crossing-capable
+with at least nine letters and two turns, and a leg $r\le\Mmax$ such that every set separating $\Out(V_0)$ from $\CL^{j,r}$ has at
+least
+\[
+  \frac{\cE(M,C,\alpha/2)}{2k(\Mmax+1)}\,\abs{V_0}
+\]
+elements.
+\item If $\mathrm{ObliviousLinTime}(M,d,C,T_d)$ holds for all $d$ in an infinite set $S$, then there are one tuple of words, one tape
+and one leg such that, for infinitely many $d\in S$, the skeleton is that tuple and (b) holds with that tape and leg for $V_0$ the
+set of all input positions (with $\alpha=1$).
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+(a) is \cref{lem:finite}(b) together with \cref{prop:capable}, since $\CL_{H^*}$ is non-empty by \cref{cor:many}. (b) By
+\cref{lem:legs} each step of $\CL_{H^*}$ lies in a slot $(j,r)$ with $r\le\Mmax$, and there are at most $k(\Mmax+1)$ slots. If every
+slot had a separating set smaller than the stated bound, their union would separate $\Out(V_0)$ from all of $\CL_{H^*}$
+(\lean{isMengerVertexCut_biUnion}) with fewer than $\frac12\cE\abs{V_0}$ elements, contradicting \cref{thm:X}. (c) The skeleton,
+tape and leg take finitely many values, independent of $d$, so one of them recurs infinitely often
+(\lean{exists_infinite_fiber_of_mapsTo_finset}).
+\end{outline}
+
+The tape and the leg in (b) may depend on $V_0$ and on~$d$; (c) removes the dependence on $d$ along a subsequence. The finite
+family in (a) is astronomically large, because $\Mmax=\lfloor16C/\theta\rfloor$ inherits the size of~$\theta$; what matters is that
+it does not grow with~$d$. The Lean proves only that the crossing-capable tuples form a proper subfamily of all tuples (the idle
+tuple is excluded, \lean{card_crossingCapableSkeletonTuple_lt}), not how much smaller it is.
+
+\begin{remark}[Numerical: what the skeleton does not see]\label{rem:skeleton-limits}
+Inside a leg the head may move back and forth over distances up to $\Lambda^*$, which is a fixed fraction of $L$. The skeleton does
+not see this motion, and the explicit cascades of \cref{sec:cascades} hide all but boundedly many of their refinement stages inside
+it. Our measurements on those schedules, and on a one-pass shear that \cref{thm:J} excludes, found skeletons independent of $d$ with a
+single leg carrying linear expansion ($d\le128$). So, as far as these measurements go, the skeleton condition does not separate these
+schedules from a transposer.
+\end{remark}

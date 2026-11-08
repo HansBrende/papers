@@ -1,0 +1,126 @@
+\section{Class exclusions}\label{sec:classes}
+
+The results of this section exclude classes of machines defined by their head motion. They use the certificate method directly and
+reach machines that Theorems~X and~S do not: schedules with macroscopic crossings that are nevertheless excluded, and adaptive machines
+with no heavy trace.
+
+\subsection{Boundedly many macroscopic phases}
+
+A walk is \emph{weakly monotone} on an interval of steps if it never moves left there, or never moves right (pauses allowed). It is
+\emph{$A$-coarsely monotone} if it never moves more than $A$ cells against a fixed direction: $x(t')\ge x(t)-A$ for all $t\le t'$ in the
+interval, or $x(t')\le x(t)+A$ for all such $t\le t'$ (\lean{CoarseMonoOnInterval}).
+
+\begin{definition}[Bounded macro-phases]\label{def:BM}
+\formal{MacroBankCrux.lean}{WeakMonoOnInterval, BoundedMacroBank}
+Let $M$ be a machine, $C\ge1$, $M_{\mathrm{ph}}\ge1$, $B$ a set of work heads (the \emph{bank}) and $S:\N\to\N$ with $S(d)/L\to0$. $M$ has
+\emph{bounded macro-phases} with these parameters (\lean{BoundedMacroBank}) if for all large $d$, whenever $M$ is oblivious at length $L$
+with halting time $T\le C(L+1)$, the interval $\Range T$ splits into $M_{\mathrm{ph}}$ consecutive intervals on each of which the input
+head and every bank head are weakly monotone, and every other work head visits at most $S(d)$ cells before~$T$.
+\end{definition}
+
+The heads outside the bank are unrestricted inside their $o(L)$ workspaces: any number of reversals, any nesting, any coding.
+
+\begin{theorem}[Theorem~B, bounded macro-phases]\label{thm:BM}
+\formal{MacroBankCrux.lean}{boundedMacroBank_has_crux, boundedMacroBank_excludes}
+If $M$ has bounded macro-phases with bank $B$ and $M_{\mathrm{ph}}$ phases, then $M$ has crux rate $1/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$ at every
+depth, and for all large $d$ there is no $T$ with $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+\end{theorem}
+
+\begin{outline}
+Let $K_0=(\abs B+1)^{M_{\mathrm{ph}}-1}$ and cut workspace revisits longer than $\lceil\sqrt{S(T+1)}\rceil$; there are $o(L)$ of them. Inside a
+phase a bank revisit goes back by one step; between phases, bank revisits are strictly monotone partial injections of fixed sign.
+So after deleting $o_D(L)$ exceptional outputs, every short dependency path from an output has a \emph{signature}, the decreasing
+sequence of phases it enters through bank heads, and at most $K_0$ signatures start in a given phase. Thresholds on input addresses
+pull back along signatures to thresholds in time. Split the input rows into $2K_0$ buckets: each unsplit output row forbids at most
+$K_0$ buckets, so some bucket is missed by half of the output rows, and the rectangle of that bucket and those output rows, minus the
+exceptions, is independent in the cone relation; it has $(1/(4K_0)-o(1))L$ elements (\lean{macroBank_independent_exists}).
+\end{outline}
+
+\begin{theorem}[Suffix phases]\label{thm:BMsuffix}
+\formal{SuffixMassCrux.lean}{suffixMacroBank_has_crux, suffixMacroBank_excludes}
+Theorem~B holds, with crux rate $\delta_0/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$, for machines that satisfy the conditions of \cref{def:BM} only on a
+final interval of steps that contains every append, provided at least $\delta_0d$ input rows are not read before that interval. The
+motion before it is unrestricted.
+\end{theorem}
+
+\begin{outline}
+Dependency paths decrease time, so a path from an output to a read of an untouched row stays inside the final interval
+(\lean{getLastD_le_of_mem_depPath}); run the proof of Theorem~B there, with the buckets taken among the untouched rows.
+\end{outline}
+
+For adaptive machines the phases and the workspaces may depend on the input, and the walks may jitter.
+
+\begin{theorem}[Theorem~J, jittered phases, any adaptivity]\label{thm:J}
+\formal{JitterMacroBank.lean, AdaptiveSuffixJitterBM.lean}{native_machine_preserves_jitterBM, nativeGapBound_of_adaptiveJitterBM, adaptiveJitterBM_excludes_transposesAt, adaptiveJitterBM_not_linearTimeTransposer, adaptiveSuffixJitterBM_excludes_transposesAt, adaptiveSuffixJitterBM_not_linearTimeTransposer}
+Let $M$ be any machine, $c>0$, and $A(d),S(d)=o(L)$. Suppose that for all large $d$ every run of $M$ on an input of length $L$ that halts
+within $c(L+1)$ steps splits into $M_{\mathrm{ph}}$ intervals on each of which the input head and the bank heads are $A(d)$-coarsely
+monotone, while every other work head visits at most $S(d)$ cells; the intervals and cells may depend on the input. Then $M$ does not
+transpose within time $c$ at all large $d$; in particular $M$ is not a linear-time transposer. The same holds if the conditions hold only
+on a final interval containing every append and at least $\delta_0d$ rows are not entered by the input head before it.
+\end{theorem}
+
+\begin{outline}
+The bit simulator of the fifteenth paper preserves the shape, with the jitter and the workspace enlarged by $O(s)$
+(\lean{native_machine_preserves_jitterBM}). On each frozen trace of the simulator, the proof of Theorem~B goes through with jitter: the
+revisits that straddle a pulled-back cut on a bank head occupy at most $2A+1$ cells (\lean{hop_upper_injOn}), and input reads are pulled back
+up to a band of width~$A$. This gives every storage code on the simulator's frozen cone relations rate at most $1-1/(4K_0)+o(1)$
+(\lean{nativeGapBound_of_adaptiveJitterBM}), and \cref{thm:G} below, applied to the simulator, which has few traces, excludes~$M$.
+\end{outline}
+
+At a fixed number of phases these classes probably also yield to the grouped pass bound of the first
+paper~\cite[Theorems~5.8 and~5.12]{FirstPaper2026} once the jitter and the workspaces are absorbed into the finite control;
+\cref{rem:onescale} sketches why. What is new here is a kernel-checked proof with an explicit native coding deficit. The suffix forms are
+not reached that way: an unrestricted prefix may read $(1-\delta_0)d$ rows, and conditioning on the configuration at the start of the suffix
+leaves classes of inputs of co-entropy up to $(1-\delta_0)L$, for which the published robust pass bounds~\cite{FirstPaper2026,PassesMemo2026}
+say nothing.
+
+\subsection{A native gap suffices}
+
+\begin{theorem}[Theorem~G, native gap criterion]\label{thm:G}
+\formal{NativeGapCriterion.lean}{nativeGapBound_half_iff, native_gap_tests_exclude_linear, native_gap_exists_exclude_linear}
+Suppose that for every $k$ and $C\ge1$ there is $\rho(k,C)>0$ such that, for every machine with $k$ work tapes and every depth $D$, every
+binary storage code on the cone relation, after a genie of full depth $D$, of every run that halts within $C(L+1)$ steps on an input of
+length $L$ (entries of $b(d)$ bits) has rate at most $1-\rho(k,C)+o(1)$. Then (T) fails.
+\end{theorem}
+
+\begin{outline}
+If (T) held, some machine $M$ would transpose in time $c(L+1)$ at infinitely many sizes. Fix $C=11c+1$ and $\rho_*=\rho(k,C)$, and then choose
+the simulator $\Ns$ of~\cite[Theorem~S]{HighRate2026} with at most $2^{(\rho_*/2)L}$ traces. Some trace of $\Ns$ carries $2^{(1-\rho_*/2)L}$
+inputs; after the genie, its fibre splits into storage codes on its cone relation
+(\lean{MergeDepth.blockMachine_isStorageCode_fibre}), one of which has rate at least $1-\rho_*/2-o(1)$, contradicting the hypothesis. At
+$\rho=\frac12$ the hypothesis is the native half bound of the fourteenth paper~\cite[Corollary~L]{BoundedStack2026}, assumed uniformly over
+the machines with $k$ work tapes and over all depths, as in the eighth paper~\cite[\S6.2]{EighthPaper2026}.
+\end{outline}
+
+The fifteenth paper reaches the same conclusion from the half bound on chosen simulators~\cite{HighRate2026}; Theorem~G accepts any
+fixed deficit, uniformly over the machines with $k$ work tapes. The hypothesis is at least as strong as a uniform crux; its value is
+that the deficit may be tiny, which is the form that Theorems~B and~J produce, but only for their classes.
+
+\subsection{Few scales and no free head}
+
+For a work head, a \emph{family} is the set of its revisits on one side that share their \emph{turning point}, the first step inside the
+revisit at which the head is farthest from the cell; its \emph{height} is the distance from the turning point to the family's outermost
+cell, the cell of its longest revisit, as in the eighth paper~\cite{EighthPaper2026}. The head has \emph{owner load} at most $\ell$ if
+at every step, on each side, the revisits open at that step have at most $\ell$ distinct turning points. Bounded cell entry $V$ gives owner
+load at most $2V-1$.
+
+\begin{theorem}[Theorem~Q, scale-gap pigeonhole]\label{thm:Q}
+\formal{ZeroFreeHeadQWindow.lean}{zeroFreeHead_qWindow_excludes, zeroFreeHead_entries_qWindow_excludes, zeroFreeHead_qWindow_oblivious_excludes}
+Let $c,\beta$ be reals and $k,\ell,q,h$ integers. There are $\eps>0$ and $d_0$ such that for every $\eta<\eps$ and $d\ge d_0$ no machine with at
+most $k$ work tapes and value width at most $\beta$ transposes at size $d$ within time $c$ with an $\eta$-heavy trace on which every work
+head has owner load at most $\ell$ and the binary logarithms of the heights of all families lie in at most $q$ windows of width~$h$. The
+input head is unrestricted. For oblivious machines the statement holds at every $d\ge d_0$ with $\eta=0$.
+\end{theorem}
+
+\begin{outline}
+Owner load $\ell$ colours the families with $N=2k\max(\ell,1)$ classes of non-overlapping spans, so their heights sum to less than $NcL$. Choose
+thresholds $Q_0<Q_1<\dots<Q_q$, each so large compared with the last that a window can be \emph{bad}, that is contain the height of a
+family longer than the current threshold, for at most one index. With $q$ windows and $q+1$ indices some index is bad for no window, so
+only boundedly many families are large, and the eleventh paper's low-adaptivity theorem for boundedly many large
+families~\cite{MergeDepth2026} gives the contradiction. Its constant comes from a compactness argument and is not
+explicit~\cite{SourceCovers2026}.
+\end{outline}
+
+Theorem~Q is the case without a free work head of the eighth paper's bounded-load, boundedly-many-scales class, which is
+conditional on the crux there~\cite{EighthPaper2026}; here it is unconditional, with any input motion and low adaptivity. With
+$\Theta(\log d)$ scales instead of boundedly many, the question is open already for two work tapes.

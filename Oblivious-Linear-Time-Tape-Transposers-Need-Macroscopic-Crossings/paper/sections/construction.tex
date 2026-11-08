@@ -1,0 +1,109 @@
+\section{What a linear-time transposer needs}\label{sec:construction}
+
+This section reads the results backwards, as a specification that any oblivious linear-time transposer must meet, and then
+describes how close known schedules come to meeting it.
+
+\subsection{The specification}
+
+Suppose $M$ is an oblivious machine with $k$ work tapes that transposes in time $C(L+1)$ at infinitely many sizes. By the
+results of this paper and of the series, at all large such sizes:
+\begin{enumerate}[leftmargin=2em,label=(\roman*)]
+\item \emph{Shape.} At scale $\theta L/4$ each work tape's walk is one of finitely many words, and some tape turns at least
+twice with overlapping legs, so it reuses a stretch of tape like a queue (\cref{thm:S}). Along infinitely many sizes the shape
+is one fixed tuple of words.
+\item \emph{Crossings.} From every set of at least $\alpha L$ outputs, a linear number of vertex-disjoint dependency paths reach
+the earlier ends of crossing revisits of excursion more than $\theta L$ (\cref{thm:X}), and the crossing steps of one coarsely monotone leg
+of one tape already carry a linear fraction of them; the tape and the leg may depend on the output set and on the size, and are fixed along
+infinitely many sizes for the set of all outputs (\cref{thm:S}).
+\item \emph{Two long-range heads.} At least two work heads revisit cells after moving a fixed fraction of $L$ away, and for each work head
+some set containing a fixed fraction of the outputs reaches long revisits off that head with linear expansion (\cref{thm:H}).
+\item \emph{Rows to columns.} For every two sets of rows $A_0,A_1$, every set of steps separating the reads of rows $A_0$ from
+the outputs that rows $A_0$ feed into output rows $A_1$ has at least $\abs{A_0}\abs{A_1}b/(\wval+1)$ elements (\cref{lem:R}).
+\item \emph{Codes.} After a genie of cost $\eps L$ and bounded depth, the cone relations of the schedule carry an index code of at most
+$\eps L$ bits, one of whose fibres is a storage code of rate at least $1-\eps$~\cite[Corollary~O]{BoundedStack2026}; by (i)--(iii), the
+relations involved are those of macroscopic queue-like reuse.
+\end{enumerate}
+Conditions (i)--(iv) are proved here without any coding hypothesis. Condition (v) is the coding question itself: a linear-time
+oblivious transposer is a code of rate close to $1$ on the cone relations of a schedule meeting (i)--(iv). Machine-free relations carry
+storage codes above rate one half~\cite{StorageCodes2026}, and binary codes of rate approaching one exist on suitable separated
+relations~\cite{HighRate2026}.
+
+\subsection{Mechanisms that fail}
+
+Each of the following design patterns is excluded for oblivious linear-time transposition, whatever the machine computes on
+its tapes.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Stack-like reuse at macroscopic scale.} A schedule whose long revisits are nested, so that every tape reuses its
+storage like a stack at scale $\theta L$, has no macroscopic crossing steps, and is excluded by \cref{thm:X}.
+\item \emph{One long-range head.} One unrestricted work head together with heads whose revisits stay below a small fixed fraction
+of $L$ is excluded by \cref{thm:H}, whatever the input head does.
+\item \emph{Boundedly many macroscopic phases.} Schedules in which the input head and some bank heads are weakly monotone on boundedly many
+phases while the other heads move inside sublinear workspaces are excluded by \cref{thm:BM}; with sublinear jitter on the bank heads, and
+for adaptive machines, by \cref{thm:J}.
+\item \emph{Cheap row-to-column cuts.} A schedule with a set of fewer than $\abs{A_0}\abs{A_1}b/(\wval+1)$ steps separating the reads
+of some rows $A_0$ from their outputs in output rows $A_1$ is excluded by \cref{lem:R}; \cref{thm:colouring} gives a convenient
+way to exhibit such cuts.
+\item \emph{The explicit families of \cref{app:catalogue}}, each excluded by a class theorem of \cref{sec:classes} or a certificate of
+\cref{sec:certificates} (in proof sketches). Several of them make macroscopic crossings with linear expansion (numerically, at $d\le128$), so
+\cref{thm:X} alone does not exclude them.
+\end{itemize}
+
+\subsection{Schedules that meet every condition we could test}\label{sec:cascades}
+
+\input{sections/cascades}
+
+\subsection{Why cuts alone cannot finish}
+
+The certificates of this paper are cuts: they bound from below the number of steps that must separate inputs from outputs. A
+single cut can only certify storage, and the next proposition shows that for transposition one set of steps serves as the cut
+for every pair of row sets at once.
+
+\begin{proposition}[One cut for every pair of row sets]\label{prop:onecut}
+\notformalized
+Let a run with horizon $T$ read its last input cell at step $t_{\mathrm{in}}$, and put $t^*=t_{\mathrm{in}}+1$. Let $W^*$ consist of
+\begin{itemize}[leftmargin=1.5em]
+\item every step $u<t^*$ that is the earlier end of a revisit $(u,t)$ with $t\ge t^*$,
+\item every output step before $t^*$, and
+\item the step $t^*$, if $t^*<T$.
+\end{itemize}
+Then for every two sets $A_0,A_1$ of rows, $W^*$ meets every dependency path from the output steps of the entries that rows $A_0$
+feed into output rows $A_1$ to the steps that read rows $A_0$. The steps of the first kind number at most the number of work cells that
+are visited both before $t^*$ and at or after~$t^*$.
+\end{proposition}
+
+\begin{informalproof}
+Take a dependency path from an output step $t_0$ to an input-reading step $u$. Every edge of the dependency DAG goes from a step to
+a strictly earlier step: the state edge $a\to a-1$, or the revisit edge $a\to a'$ for a revisit $(a',a)$. If $t_0<t^*$, then $t_0$ is
+an output step before $t^*$ and lies in $W^*$. Otherwise $t_0\ge t^*>t_{\mathrm{in}}\ge u$, so the path has an edge $a\to a'$ with
+$a\ge t^*>a'$. If it is a state edge, then $a'=a-1$, so $a=t^*$, and $t^*\in W^*$. If it is a revisit edge, then $(a',a)$ is a revisit
+with $a'<t^*\le a$, so $a'\in W^*$. In each case the path meets $W^*$; this argument does not use $A_0$ or $A_1$. A step of the first kind
+is the earlier end of a revisit of some tape that spans $t^*$; on each tape, each cell is the cell of at most one such revisit, namely
+the one from its last visit before $t^*$ to its next visit.
+\end{informalproof}
+
+For a transposer, \cref{lem:R} with $A_0=A_1$ the set of all rows gives $\abs{W^*}\ge(1-\eta)L/(\wval+1)$. When few outputs precede the last
+input read, this says that the storage live across $t^*$ is linear. In any case \cref{prop:onecut} shows that this one bound already
+accounts for every pair of row sets: however finely the rows are split, cut certificates for different splits may coincide, and a lower bound
+beyond linear time cannot come from counting disjoint cuts unless something other than the cut property forces the cuts apart. The
+colouring criterion of \cref{sec:demand} verifies such a separation on specific schedules (\cref{cor:scale-separated}), but it does not supply
+one in general.
+
+Outside such restricted classes, the only coding-proof logarithmic factor known on tapes is of a different kind. For an oblivious transposer
+whose run has $r$ monotone passes, Theorem~P of the first paper gives $k\,db\le((k+1)^r-1)(2b+\sigma_M)$, where $\sigma_M$ is the number of
+bits of a state and the scanned symbols, so a fixed machine needs $r\ge\log_{k+1}d-O(1)$ passes~\cite[Theorem~5.9]{FirstPaper2026}; for
+adaptive machines an extra term appears~\cite[Theorem~5.12]{FirstPaper2026}. Its grouped form~\cite[Theorem~5.8]{FirstPaper2026} reads
+$d^2b\le H_{\mathrm{addr}}\bigl((\gamma+1)db+\lceil d/\gamma\rceil\sigma_M\bigr)$ for every $\gamma\ge1$, where $H_{\mathrm{addr}}=((k+1)^r-1)/k$
+bounds the number of addresses of the forests in its proof.
+
+\begin{remark}[Pass counting at one scale]\label{rem:onescale}
+Proof sketch only: suppose a run splits into $r$ phases in each of which every head stays within distance $S$ of a monotone trend. Adapting
+the proof of the grouped bound so that the nodes of its forests carry the windows of $O(S)$ cells around the trends, at the cost of
+bookkeeping for the offsets within each phase, plays the role of a finite control of $\sigma\approx\sigma_M+O(kS\log(g+1))$ bits, and choosing
+$\gamma\approx\sqrt{\sigma/b}$ in the grouped inequality gives $(k+1)^r\gtrsim\tfrac k2\sqrt{L/\sigma}$. So boundedly many phases with $S=o(L)$
+cannot transpose. At $S=\eps L$, however, the bound only asks for $r\ge\frac12\log_{k+1}(1/\eps)-O(1)$ phases. A linear-time run may have up to
+about $4kC/\eps$ legs at scale $\eps L$ (\cref{lem:finite}), and schedules whose number of legs at scale $\eps L$ grows like $\log(1/\eps)$, such
+as the cascades of \cref{sec:cascades}, meet the bound at every scale.
+\end{remark}
+
+So pass counting, like cut counting, cannot exclude linear time one scale at a time. \Cref{prob:multiscale} asks for a pass bound
+that counts phases across all scales at once.

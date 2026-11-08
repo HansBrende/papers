@@ -1,0 +1,172 @@
+\section{The certificate method}\label{sec:certificates}
+
+Every exclusion in this paper has the same shape: find, in the cone relation of a run, a linear-size acyclic set, possibly after
+revealing a cheap set of steps, and conclude that the run cannot belong to a linear-time transposer. This section states the
+method and the tools used to find acyclic sets.
+
+\subsection{Genies and index codes}
+
+\begin{lemma}[Genies and index codes]\label{lem:genie}
+\cited{\cite[Corollary~O]{BoundedStack2026}, Lean-verified there (\lean{BoundedStackDepth.genie_cost},
+\lean{BoundedStackDepth.genie_of_trace}, \lean{BoundedStackDepth.exists_indexCode}).}
+\begin{enumerate}[label=(\alph*)]
+\item For every $k\ge1$, $\beta\ge1$, $C\ge1$, $\eps>0$ and every trace with $k$ work tapes and $T\le C(L+1)$, there is a set $\Gamma$
+of steps with $\beta\abs\Gamma\le\eps L$ such that every dependency path whose vertices after the first avoid $\Gamma$ has at most
+$\mathrm{genieDepth}(k,\beta,C,\eps)$ vertices. The depth bound depends only on $k$, $\beta$, $C$ and~$\eps$.
+\item If $M$ is oblivious at length $L$ with common trace $\tau$ and transposes, then for every set $\Gamma$ of steps the values
+written at the steps of $\Gamma$ form an index code of $\wval\abs\Gamma$ bits for the cone relation avoiding $\Gamma$: two inputs
+with the same values on $\Gamma$ that agree on the cone of $\Out(q)$ agree on the output bit at $\Out(q)$.
+\end{enumerate}
+\end{lemma}
+
+The genie comes from the fourteenth paper's solution of the trajectory cut problem~\cite[Theorem~T]{BoundedStack2026}; its depth
+$\mathrm{genieDepth}(k,\beta,C,\eps)$ is explicit, with $\log\log\mathrm{genieDepth}=O(k^2\log(k\beta C/\eps))$~\cite[Remark~9.4 and
+\S10]{BoundedStack2026}.
+
+\begin{lemma}[Acyclic sets bound codes]\label{lem:acyclic-code}
+\formal{DichromaticCrux.lean}{storageCode_card_le_of_isAcyclicIn, indexCode_bits_ge_of_isAcyclicIn}
+Let $N$ be a relation on a finite set $V$ and $A\subseteq V$ acyclic in~$N$. Every storage code for $N$ over an alphabet $\Sigma$ has
+at most $\abs\Sigma^{\abs V-\abs A}$ words, and every index code for $N$ and the demand $\tpos$ has at least $\abs A$ bits, provided
+$A$ is acyclic for $q\mapsto N(\tpos(q))$.
+\end{lemma}
+
+\begin{outline}
+On a storage code a word is determined by its letters outside $A$: recover the letters in $A$ in an order in which each letter's
+neighbourhood lies outside the not-yet-recovered part (\lean{acyclicIn_outside_injOn}). The fibres of an index code are storage
+codes for the demand-shifted relation, and pigeonhole over the messages gives the bound.
+\end{outline}
+
+\subsection{Cruxes}
+
+\begin{definition}[Cruxes]\label{def:crux}
+\formal{EnvelopeCrux.lean}{MachineCruxAt, MachineCutCruxAt, SubpopCutCruxAt}
+Let $M$ be a machine, $C\ge1$, $D\ge0$ and $\rho,\delta,\alpha_0>0$.
+\begin{enumerate}[label=(\alph*)]
+\item $M$ has \emph{crux rate $\rho$ at depth $D$} if for every $\eta>0$ and all large $d$, whenever $M$ is oblivious at length $L$
+with halting time $T\le C(L+1)$ and exactly $L$ appends, every index code for the cone relation avoiding any $\Gamma$ that cuts
+all dependency paths to at most $D+1$ vertices has at least $(\rho-\eta)L$ bits (\lean{MachineCruxAt}).
+\item $M$ has \emph{cut-crux rate $\rho$ at cost $\delta$ and depth $D$} if, under the same conditions, there is a set $B$ of steps
+with $\wval\abs B\le\delta L$ such that every index code for the cone relation avoiding $\Gamma\cup B$ has at least $(\rho-\eta)L$
+bits (\lean{MachineCutCruxAt}).
+\item $M$ has \emph{subpopulation cut-crux rate $\rho$ at density $\alpha_0$, cost $\delta$ and depth $D$} if, under the same
+conditions, there are a set $V_0$ of at least $\alpha_0L$ input positions and a set $B$ with $\wval\abs B\le\delta\abs{V_0}$ such
+that every index code for the cone relation avoiding $\Gamma\cup B$ has at least $(\rho-\eta)\abs{V_0}$ bits
+(\lean{SubpopCutCruxAt}).
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Cruxes exclude]\label{thm:crux-excludes}
+\formal{EnvelopeCrux.lean}{subpop_cutcrux_excludes, machine_cutcrux_excludes}
+Let $C\ge1$ and $\eps>0$, and put $D_\eps=\mathrm{genieDepth}(k,\wval,C,\eps)$. If $M$ has crux rate $\rho>\eps$ at depth $D_\eps$, or
+cut-crux rate $\rho$ at cost $\delta$ with $\eps+\delta<\rho$, or subpopulation cut-crux rate $\rho$ at density $\alpha_0$ and cost
+$\delta$ with $\eps<\alpha_0(\rho-\delta)$, then for all large $d$ there is no $T$ with $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+\end{theorem}
+
+\begin{outline}
+Suppose $M$ transposes obliviously in time $C(L+1)$. Reveal the genie $\Gamma$ of \cref{lem:genie}(a), of cost $\eps L$ and depth
+$D_\eps$, together with~$B$. By \cref{lem:genie}(b) the values on $\Gamma\cup B$ form an index code of at most $(\eps+\delta)L$ bits,
+respectively $\eps L+\delta\abs{V_0}$ bits, contradicting the crux for small $\eta$. The crux form is \lean{machine_crux_excludes}
+(\lean{MachineCrux.lean}).
+\end{outline}
+
+Acyclic sets give cruxes. If, for every $\eta>0$ and all large $d$, every cone relation of depth $D$ in \cref{def:crux}(a) contains
+an acyclic set of at least $(\rho-\eta)L$ input positions, then $M$ has crux rate $\rho$ at depth~$D$, by \cref{lem:acyclic-code}
+(\lean{machineCrux_of_isAcyclicIn}, \lean{oblivious_excludes_of_isAcyclicIn}). The same holds for ball relations, which contain the
+cone relations of depth~$D$ (\lean{machineCutCruxAt_of_ballAvoid_isAcyclicIn}).
+
+The next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in the ball
+relation costs at least $\abs U$ bits, up to the genie.
+
+\begin{lemma}[Acyclic sets cost cuts]\label{lem:acyclic-cost}
+\formal{EnvelopeCrux.lean}{obliviousLinTime_separator_card_ge_of_isAcyclicIn, obliviousLinTime_ballSeparator_card_ge}
+Let $\mathrm{ObliviousLinTime}(M,d,C,T)$ with $d\ge1$, $C\ge1$ and $\eps>0$. For every set $B$ of steps and every set $U$ of input
+positions that is acyclic in the ball relation of radius $\mathrm{genieDepth}(k,\wval,C,\eps)$ avoiding $B$,
+\[
+  \wval\abs B\ \ge\ \abs U-\eps L .
+\]
+\end{lemma}
+
+\begin{outline}
+Reveal the genie of cost $\eps L$ together with $B$. The cone relation avoiding both is contained in the ball relation
+(\lean{coneSystem_subset_ballAvoidSystem}), so $U$ is acyclic in it, and \cref{lem:genie}(b) with \cref{lem:acyclic-code} gives
+$\wval(\abs\Gamma+\abs B)\ge\abs U$.
+\end{outline}
+
+\subsection{Heavy traces of arbitrary machines}
+
+For a machine that is not oblivious, the index code of \cref{lem:genie}(b) is not available, but counting the fibre of a single
+trace replaces it.
+
+\begin{lemma}[Frozen-trace deficit]\label{lem:frozen}
+\formal{SimulatorBridge.lean}{frozenTrace_isAcyclicIn_coneSystem_deficit_le, frozenTrace_isAcyclicIn_ballAvoid_separator_card_ge}
+Let $M$ transpose at size $d\ge1$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$ with halting time $T$. Then
+$T\le2cL$, $\tau$ appends exactly $L$ bits, and for every set $\Gamma$ of steps and every set $U$ acyclic in the cone relation of
+$\tau$ avoiding $\Gamma$,
+\[
+  \abs U-\wval\abs\Gamma\ \le\ \eta L .
+\]
+\end{lemma}
+
+\begin{outline}
+On the fibre of $\tau$ all inputs share the dependency DAG. Split the fibre according to the $2^{\wval\abs\Gamma}$ possible values on
+$\Gamma$. Each part is a storage code for the cone relation, so it has at most $2^{L-\abs U}$ elements by \cref{lem:acyclic-code}.
+Hence $2^{(1-\eta)L}\le\abs{\text{fibre}}\le2^{\wval\abs\Gamma+L-\abs U}$.
+\end{outline}
+
+\subsection{Tools for finding acyclic sets}
+
+Acyclic sets in cone relations are found by potentials. The following statements hold for any relation $N$ on a finite set; an arc
+$q\to p$ means $p\in N(q)$.
+
+\begin{lemma}[Envelopes and windows]\label{lem:window}
+\formal{EnvelopeCrux.lean}{acyclicIn_of_lt_on_nbhd, upperEnvelope_isAcyclicIn, oneSidedEnvelope_isAcyclicIn, window_isAcyclicIn_of_noFarArcs, exists_isAcyclicIn_of_window_maxDeg}
+\begin{enumerate}[label=(\alph*)]
+\item If a potential strictly decreases along every arc inside $S$, then $S$ is acyclic.
+\item Let $\varphi,\psi$ be real potentials and $w\ge0$. The \emph{window} $\{q\in V_0:q\notin N(q),\ \varphi(q)+2w<\psi(q)\}$ is acyclic if
+every arc $q\to p$ inside it is \emph{near}, $\abs{\psi(p)-\varphi(q)}\le w$. If instead every vertex of the window has at most $\beta$
+far arcs inside it, the window contains an acyclic set of at least a $1/(\beta+1)$ fraction of its elements.
+\end{enumerate}
+\end{lemma}
+
+\begin{outline}
+(a) Inside $S$ an element of least potential has no out-arc into $S$. (b) A near arc $q\to p$ inside the window has
+$\varphi(p)<\psi(p)-2w\le\varphi(q)-w$, so $\varphi$ strictly decreases along it and (a) applies. With far arcs, remove the far neighbours of the
+vertices one at a time; a greedy choice keeps a $1/(\beta+1)$ fraction.
+\end{outline}
+
+\begin{lemma}[Cut sets and block ranking]\label{lem:blockcut}
+\formal{EnvelopeCrux.lean}{cutSet_isAcyclicIn, exists_isAcyclicIn_card_ge_of_blockCut, exists_isAcyclicIn_card_ge_of_uniformBlockCut, exists_isAcyclicIn_of_shiftBlockCutFamily_gen}
+Assign to each $q\in V_0$ two disjoint sets $A(q),E(q)$ of blocks in $\{0,\dots,B-1\}$, and suppose every arc $q\to p$ inside $V_0$ has
+$A(q)\cap E(p)\ne\emptyset$. For a ranking $\sigma$ of the blocks, the set of $q$ with $\sigma(A(q))<\sigma(E(q))$ (every block of $A(q)$
+ranked below every block of $E(q)$) is acyclic, and some ranking makes it contain at least
+$\sum_q\binom{\abs{A(q)}+\abs{E(q)}}{\abs{A(q)}}^{-1}$ elements, hence at least $\abs{V_0}/\binom{a+e}{a}$ elements when
+$\abs{A(q)}\le a$ and $\abs{E(q)}\le e$ throughout.
+\end{lemma}
+
+\begin{outline}
+Along an arc $q\to p$ inside the set, a block of $A(q)\cap E(p)$ shows that the largest rank in $A(p)$ is below the smallest rank in $E(p)$,
+hence below that block's rank, hence at most the largest rank in $A(q)$; so the largest rank of $A$ strictly decreases along arcs, and
+\cref{lem:window}(a) applies. For disjoint $A(q),E(q)$, exactly a fraction $\binom{\abs{A(q)}+\abs{E(q)}}{\abs{A(q)}}^{-1}$ of all rankings
+put $A(q)$ below $E(q)$ (\lean{choose_mul_card_goodPerms_eq_factorial}), so the average size of the set over all rankings is the stated
+sum.
+\end{outline}
+
+\begin{lemma}[Step-invariant windows]\label{lem:stepinv}
+\formal{EnvelopeCrux.lean}{isAcyclicIn_ballAvoid_window_of_stepInvariant, isAcyclicIn_ballAvoid_window_of_constStepInvariant}
+Let a trace, a set $B$ of steps, a depth $D$ and a set $V_0$ of input positions be given, with regions $R(0),\dots,R(D)$ of steps, a
+\emph{sink} region, a step potential $\mu$ and potentials $\varphi,\psi$ on input positions. Suppose: the roots of $V_0$ lie in
+$R(D)$ with $\abs{\mu(\Out(q))-\varphi(q)}\le c_0$; every edge from the sink that avoids $B$ stays in the sink, and the sink reads no
+position of $V_0$; every edge from $R(r+1)$ that avoids $B$ enters the sink or enters $R(r)$ changing $\mu$ by at most $\Delta$; and
+a read of $p\in V_0$ at a step $u\in R(r)$ has $\abs{\psi(p)-\mu(u)}\le c_1$. Then
+$\{q\in V_0:\varphi(q)+2(c_0+D\Delta+c_1)<\psi(q)\}$ is acyclic in the ball relation of radius $D$ avoiding~$B$.
+\end{lemma}
+
+\begin{outline}
+By induction along a dependency path from a root with at most $D$ edges that avoids $B$ after the root, its end lies in the sink or in the
+region $R(D-\ell)$ after $\ell$ edges, with $\mu$ changed by at most $\ell\Delta$ (\lean{depPath_stepInvariant_with_sink}). Since the sink
+reads nothing in $V_0$, every arc $q\to p$ inside $V_0$ has $\abs{\psi(p)-\varphi(q)}\le c_0+D\Delta+c_1$: it is near, and
+\cref{lem:window}(b) applies.
+\end{outline}
+
+\Cref{lem:window,lem:blockcut,lem:stepinv} are statements about traces only. They are the tools behind the exclusions of the
+schedule families in \cref{app:catalogue}; \cref{thm:pullback} is a far-reaching use of \cref{lem:blockcut}.

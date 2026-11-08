@@ -1,0 +1,55 @@
+\section{Adaptive machines}\label{sec:adaptive}
+
+An adaptive machine has many traces and no common dependency DAG. Two routes lead from the oblivious results to adaptive machines.
+The first uses a single heavy trace of the machine itself; the second passes through the bit simulator of the fifteenth paper, whose
+traces are few.
+
+\begin{theorem}[Theorem~E, heavy traces and simulators]\label{thm:E}
+\formal{SimulatorBridge.lean}{frozenTrace_macroscopicCrossingLowers_menger_lb, frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg, adaptive_simulator_heavyTrace_macroscopicExpansion, simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Heavy traces.} Let $M$ be any machine with $k$ work tapes, $1\le C$, $0<c\le C$ and $\alpha>0$, and let $d\ge d_0$ with $d_0$ as in
+\cref{thm:X}. Suppose $M$ transposes at size $d$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$ with
+$\eta\le(\alpha/8)\rho_0(k,C,\alpha/2)$. Then the conclusion of \cref{thm:X} holds in the dependency DAG of $\tau$, with the same constants;
+if moreover $\alpha\le1$ and $d\ge\lceil8/\thetaM(M,C,\alpha)\rceil$, so do the conclusions (a) and (b) of \cref{thm:S}.
+\item \emph{Simulators.} Let $M$ be any machine with $k$ work tapes, $c>0$ and $0<\alpha\le1$, and put $\eta^*=(\alpha/32)\rho_0(k,11c+1,\alpha/2)$.
+There are $s\ge1$ and $d_{\mathrm{sim}}$ such that the simulator $\Ns$ of~\cite[Theorem~S]{HighRate2026}, which has the same work tapes and
+work alphabet as $M$ and computes the same partial function, satisfies the following at every $d\ge d_{\mathrm{sim}}$ at which $M$
+transposes within time $c$: $\Ns$ transposes within time $11c+1$; it has at most $2^{\eta^*L}$ distinct traces on the inputs of length
+$L$; its $2\eta^*$-heavy traces are followed together by more than $(1-2^{-\eta^*L})2^L$ inputs; and on each of its $2\eta^*$-heavy traces
+the conclusions of \cref{thm:X} and of \cref{thm:S}(a),(b) hold in the dependency DAG of that trace, with the constants of $\Ns$ and the
+time constant $11c+1$.
+\end{enumerate}
+\end{theorem}
+
+\begin{outline}
+(a) The proof of \cref{thm:X} goes through on the fixed trace $\tau$: \cref{thm:bridge} is a statement about traces, and in the coding
+step \cref{lem:frozen} replaces the index code of \cref{lem:genie}(b). With the genie of cost $(\alpha\rho_0/8)L$ and the heaviness
+$\eta\le(\alpha/8)\rho_0$, the two losses together are at most $(\rho_0/4)\abs{V_0}$. (b) The constant $\eta^*$ depends only on $k$, $c$
+and $\alpha$. The fifteenth paper's trace transfer at $\eta^*$ (\lean{TapeStorageRates.aligned_low_trace_dimensions}) gives $s$ and the
+simulator, with at most $2^{\eta^*L}$ traces; the light traces are followed by fewer than $2^{\eta^*L}2^{(1-2\eta^*)L}$ inputs. Since $\Ns$ has
+$k$ work tapes and runs in time $11c+1$, $2\eta^*\le(\alpha/8)\rho_0(k,11c+1,\alpha/2)$, and part (a) applies to $\Ns$ on each heavy trace.
+The quantifiers are ordered $\eta^*$, then $s$ and $\Ns$, then the constants of $\Ns$ and $d_{\mathrm{sim}}$.
+\end{outline}
+
+Part (b) is the only route by which the macroscopic condition reaches arbitrary linear-time transposers so far, and it reaches them
+through a different machine's dependency DAG. The simulator rewrites windows of $3s$ cells in each round, and a separating set in its
+DAG need not correspond to one in the DAG of $M$ (\cref{prob:pullback}). Its value width grows with $s$, so its constants are much smaller
+than those of $M$. Statements in this paper about the dependency DAG of a general machine therefore always assume a heavy trace or name the
+simulator.
+
+\begin{remark}[The heaviness hypothesis cannot simply be dropped]\label{rem:rare}
+Proof sketch only: given any machine $M_0$, add three states so that the new machine first scans the input for a $1$; on the all-zero
+input it writes the all-zero output with its work heads standing still, and otherwise it returns its input head and runs $M_0$. The
+new machine transposes whenever $M_0$ does, within a constant more time, and its all-zero trace makes no revisits at all. Hence the
+version of \cref{thm:E}(a) without a lower bound on the trace probability would exclude this machine, and so would imply $\neg$(T).
+It is not refuted: it is false if (T) holds.
+\end{remark}
+
+\begin{remark}[Wave counts on heavy traces]\label{rem:waves}
+Because every expanding set of steps is as large as its expansion, $m$ pairwise disjoint sets of steps into which a set of $\alpha L$ outputs
+expands by a factor $c$ need time at least $mc\alpha L$ (\lean{disjointWave_mengerExpansion_counting_le}); for oblivious machines in time
+$C(L+1)$ there are at most $2C/(c\alpha)$ of them (\lean{obliviousLinTime_expandingWaves_le}). A hypothesis asserting unboundedly many such
+sets on every heavy trace of every linear-time transposer is therefore equivalent to there being no linear-time transposer at
+infinitely many sizes, and gives no route to $\neg$(T). For oblivious machines, a hypothesis asserting unboundedly many such sets on every
+transposer, of any running time, would exclude oblivious linear-time transposers; the converse is not known.
+\end{remark}

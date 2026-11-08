@@ -1,0 +1,29 @@
+Five explicit oblivious schedules, which we call \emph{two-sided cascades}, meet every necessary condition of this paper that we could
+test. Each loads the input onto two or three work tapes and then runs a cascade over the scales $M_r=L/2^r$, $1\le r<\log_2d$. A forward
+stage folds the data at each scale: one half by a transfer at varying relative speed, the other merged in with a cyclic shift of about
+$M_r/3$. A backward stage unfolds it by $1$-to-$2$ doublings with an unshifted and a shifted half. A final sweep emits the $L$ output bits.
+Every stage at scale $r$ moves the heads over $O(M_r)$ cells a bounded number of times, so the running time is $O(\sum_rM_r)=O(L)$. The five
+differ as follows.
+\begin{enumerate}[leftmargin=2em]
+\item Two work tapes; before the cascade, two symmetric pairs of two-dimensional cyclic shifts of the entry grid are applied to a copy of
+the input.
+\item Two work tapes; before the cascade, an anti-diagonal reflection and two butterfly shifts, by $2^{m-1}(d-1)b$ and $(d-1)b$ where
+$d=2^m$, are applied to a copy.
+\item Three work tapes, every cell entered at most ten times; the third tape holds disjoint zones for the folded data at all scales and
+moves through them monotonically in each stage.
+\item Three work tapes; the forward and backward stages use disjoint zones for all scales, and no zone is overwritten.
+\item Two work tapes; the folds are $2$-to-$1$ compressions, and every scale has a comb pass in which one tape makes $2^r$ teeth while the
+other waits.
+\end{enumerate}
+The machines that realise them in our experiments compute other functions; whether some machine with one of these oblivious traces
+transposes is \cref{prob:cascades}.
+
+\begin{remark}[Numerical]\label{rem:cascades}
+At $d\le128$ and $b=1$ the measured running times of the five schedules lay between $18L$ and $90L$ and stabilised as $d$ grew. On all five,
+the minimum set separating a large output set from the earlier ends of crossing revisits of excursion greater than $E$ had exactly as many
+elements as the output set, for every tested $E\le L/2$. Their skeletons at scale about $L/6$ were independent of $d$, with a single leg
+carrying linear expansion, and their numbers of disjoint expanding sets of steps stayed bounded, as linear time requires. So, as far as
+these measurements go, the conditions (i)--(iv) of the specification do not distinguish these schedules from a transposer. A one-pass shear,
+excluded by \cref{thm:J}, and a multi-scale stack schedule, excluded by a certificate (in a proof sketch, \cref{app:catalogue}), also make
+macroscopic crossings with linear expansion in these measurements, which suggests that (i)--(iv) are not sufficient for transposition.
+\end{remark}

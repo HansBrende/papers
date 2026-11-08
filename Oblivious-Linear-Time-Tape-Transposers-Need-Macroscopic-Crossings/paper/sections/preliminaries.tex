@@ -1,0 +1,124 @@
+\section{The model, traces and the dependency DAG}\label{sec:prelim}
+
+\subsection{Machines and transposition}
+
+We work in the frozen machine model of the first paper~\cite{FirstPaper2026}. A machine $M$ has a read-only two-way input
+tape, $k=k(M)$ work tapes over the alphabet $\{0,\dots,g\}$ with blank~$0$, states $\{0,\dots,q\}$ with start state~$0$, and a
+one-way write-only output tape that receives at most one bit per step. Every step writes a symbol on every work tape (possibly
+the scanned one) and moves every head by at most one cell. The \emph{value width}
+\[
+  \wval(M)=\clog{(q+1)}+k\clog{(g+1)}+2
+\]
+bounds the number of bits needed to record what one step does: the new state, the $k$ written symbols and the appended output
+bit. Always $\wval\ge2$.
+
+For a side length $d\ge1$ put $b=b(d)=\max(1,\clog d)$, $W=db$ and $L=d^2b$. A $d\times d$ matrix with $b$-bit entries is
+written row by row as a word of $L$ bits: the bit $\gamma$ of entry $(i,j)$ sits at position $(di+j)b+\gamma$. The transpose
+has the same encoding with $i$ and $j$ exchanged, so output position $\tpos(q)$ carries input bit~$q$, where
+\[
+  \tpos\bigl((di+j)b+\gamma\bigr)=(dj+i)b+\gamma ,
+\]
+an involution of $\Range L$. For $q=(di+j)b+\gamma$ we call $i$ the \emph{input row} of $q$ and $j$ its \emph{output row}: the
+copy of $q$ is written in row~$j$ of the output. $M$ \emph{transposes at size $d$ within time $c$}, written
+$\mathrm{TransposesAt}(M,d,c)$, if on every matrix input it halts within $\lfloor c(L+1)\rfloor$ steps with the encoding of the
+transpose on its output tape. Statement~(T) asks for a machine and a constant $c$ with this property at every~$d$.
+
+$M$ is \emph{oblivious at length $L$ with halting time $T$} if every input of length $L$ halts at exactly step~$T$ and any two
+such inputs have the same input-head position, the same work-head positions and the same append decision at every step. We
+write $\mathrm{ObliviousLinTime}(M,d,C,T)$ if $M$ is oblivious at length $L$ with halting time $T\le C(L+1)$ and transposes at
+size~$d$. This is a condition at a single size~$d$.
+
+\subsection{Traces}
+
+The \emph{trace} of $M$ on an input $w$ records, step by step, the move of the input head, the moves of the work heads and
+whether a bit is appended~\cite{MergeDepth2026}. It determines the positions $y_j(t)$ of work head $j$ after $t$ steps, with
+$y_j(0)=0$ and $\abs{y_j(t+1)-y_j(t)}\le1$, the input-head position, and the \emph{append steps} $u_0<u_1<\dots$ at which output
+bits are written. For an oblivious machine all inputs of length $L$ share one trace, the trace on the all-zero input.
+
+For a trace $\tau$ the \emph{fibre} of $\tau$ is the set of inputs $X\in\{0,1\}^L$ whose trace is~$\tau$, and the \emph{trace
+probability} $\Pr(\tau)$ is the size of the fibre divided by $2^L$. A trace is \emph{$\eta$-heavy} if $\Pr(\tau)\ge2^{-\eta L}$. An
+oblivious machine has a single trace, of probability~$1$.
+
+If a run appends exactly $L$ bits before step $T$, let $a(r)$ be the step at which output bit $r$ is appended. For an input
+position $q$ the \emph{root} of $q$ is
+\[
+  \Out(q)=a(\tpos(q)),
+\]
+the step at which the output copy of input bit $q$ is written, and $\Out(V)=\{\Out(q):q\in V\}$ for $V\subseteq\Range L$. The
+map $\Out$ is injective, because append steps are distinct and $\tpos$ is a bijection
+(\lean{appendTime_tposOf_injective}). Results quantified over sets $V_0$ of input positions are therefore statements about the
+output steps of the corresponding output sets $\tpos(V_0)$.
+
+\subsection{Revisits, excursions and crossings}
+
+Fix a work tape, with head positions $y(t)$, and a horizon $T$.
+
+\begin{definition}[Revisits]\label{def:hop}
+\formal{EnvelopeCrux.lean}{BoundedNesting.IsHop, HasHopExcursionGTAt, HopsCross}
+A \emph{revisit} (in Lean, a hop) is a pair of steps $p<u<T$ with $p+2\le u$, $y(u)=y(p)$, and $y(t)\ne y(p)$ for all $p<t<u$:
+two consecutive visits to one cell between which the head leaves it. Its \emph{excursion} is
+$\max_{p<t<u}\abs{y(t)-y(p)}$, the farthest the head travels from the cell before returning. Its \emph{earlier end} is~$p$.
+Two revisits $(p,u)$ and $(p',u')$ of the same tape \emph{cross} if $p<p'<u<u'$ or $p'<p<u'<u$.
+\end{definition}
+
+A revisit lies on one side of its cell: the head stays strictly above it, or strictly below it, in between. Two crossing
+revisits lie on opposite sides (\cref{lem:zigzag}(a); compare~\cite[\S2]{EighthPaper2026}). Every step is the earlier end of at most one revisit on each tape.
+
+\begin{definition}[Crossing steps]\label{def:crossing}
+\formal{ConjectureEBridge.lean}{crossingLowerEtaSteps}
+For a trace with horizon $T$ and an integer $H\ge1$, let $\CL_H$ be the set of steps $v<T$ such that, on some work tape, $v$ is
+the earlier end of a revisit of excursion greater than $2H$ that crosses another revisit of excursion greater than $2H$ on the same
+tape.
+\end{definition}
+
+In Lean $\CL_H$ is \lean{crossingLowerEtaSteps}~$\tau\,T\,H\,1\,T$. The set shrinks as $H$ grows
+(\lean{crossingLowerEtaSteps_anti_H}), so a lower bound on the cost of separating from $\CL_H$ is stronger for larger~$H$.
+
+To see what $\CL_H$ measures, consider a head that sweeps right across a stretch of tape, turns, sweeps back, turns again and
+sweeps right. A cell visited on the first sweep and revisited on the second is the earlier end of a revisit above it; a cell
+visited on the second sweep and revisited on the third is the earlier end of a revisit below it; and when the second turn
+overlaps the first stretch these revisits cross. This is how a tape is used as a queue. A tape used as a stack, written while the
+head moves one way and read back while it returns, makes only nested revisits. \Cref{sec:skeletons} turns this picture into
+theorems.
+
+\subsection{The dependency DAG, cuts and cone relations}
+
+\begin{definition}[Dependency DAG]\label{def:dag}
+\formal{MergeDepth/ColdGenie.lean}{MergeDepth.DepStep, MergeDepth.IsDepPath}
+The \emph{dependency DAG} of a trace with horizon $T$ has the vertices $0,\dots,T-1$ and two kinds of edges: the \emph{state edge}
+$t\to t-1$ for $1\le t<T$, and the \emph{revisit edge} $u\to p$ for every revisit $(p,u)$ of every work tape. A \emph{dependency
+path} is a sequence $t_0\to t_1\to\dots\to t_m$ of edges.
+\end{definition}
+
+Every edge decreases the step, so the DAG is acyclic. The value written at step $t$ is a function of the values at its
+out-neighbours and of the input bit read at~$t$: the state edge carries the state, and the revisit edges carry the contents of the
+scanned cells. In Lean the edge relation is \lean{DepStep} and paths are \lean{IsDepPath} (from the eleventh
+paper's library~\cite{MergeDepth2026}).
+
+\begin{definition}[Cuts]\label{def:cut}
+\formal{OneFreeHeadSmallExcursion.lean}{IsMengerVertexCut}
+For sets $S$ and $D$ of steps, a set $B$ of steps \emph{separates $S$ from $D$} if every dependency path that starts in $S$ and
+ends in $D$ contains a vertex of $B$, its endpoints included. In Lean this is \lean{IsMengerVertexCut}.
+\end{definition}
+
+By Menger's theorem the least size of a set separating $S$ from $D$ equals the largest number of vertex-disjoint dependency paths
+from $S$ to $D$. We use Menger's theorem only to explain statements; the theorems and their formal proofs bound the size of
+separating sets directly.
+
+\begin{definition}[Cones, balls and acyclic sets]\label{def:cone}
+\formal{EnvelopeCrux.lean}{BoundedStackDepth.depCone, BoundedStackDepth.coneSystem, ballAvoidSystem, HalfRate.IsAcyclicIn}
+Let $\Gamma$ be a set of steps. For a step $t$, the \emph{cone} of $t$ avoiding $\Gamma$ is the set of input positions $p$ such
+that some dependency path $t\to t_1\to\dots\to t_m$ with $t_1,\dots,t_m\notin\Gamma$ ends at a step $t_m$ (or at $t$ itself, if
+$m=0$) at which the input head reads position $p$. The root $t$ itself need not avoid~$\Gamma$. The \emph{cone relation}
+assigns to each input position $q$ the cone of its root $\Out(q)$ (in Lean, \lean{coneSystem} evaluated at $\tpos(q)$). The
+\emph{ball relation of radius $D$ avoiding $B$} is defined in the same way using only paths with at most $D$ edges after the
+root (\lean{ballAvoidSystem}). A set $U$ of input positions is \emph{acyclic} in a relation $N$ if every nonempty $S\subseteq U$
+has an element $v$ with $N(v)\cap S=\emptyset$ (\lean{HalfRate.IsAcyclicIn}).
+\end{definition}
+
+An acyclic set is a set of receivers none of which can see, in its cone, the bits wanted by the receivers that come after it in
+a suitable order. In index coding, a message that lets every receiver of an acyclic set recover its bit must carry at least as
+many bits as the set has elements~\cite{BBJK2011}. For machines this takes the following form: what the cut steps write, together
+with what a small \emph{genie} reveals, is a message from which each output of the acyclic set is computed using only its cone.
+The fourteenth paper's genie (\cref{lem:genie} below) bounds the depth of the cones at small cost, and the eleventh paper's
+index-code lemma turns an oblivious transposer into such a message~\cite{MergeDepth2026}.

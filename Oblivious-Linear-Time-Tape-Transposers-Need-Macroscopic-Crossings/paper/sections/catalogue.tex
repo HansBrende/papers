@@ -1,0 +1,75 @@
+\section{Catalogue of excluded schedule families}\label{app:catalogue}
+
+This appendix lists the explicit oblivious linear-time schedule families excluded by the results of this paper. A schedule family
+prescribes, for each size $d$ in its domain, the motion of the input head and of the work heads and the append steps; a family is
+\emph{excluded} if for every $C\ge1$ and every value width $w$ there is $d_0$ such that, at every size $d\ge d_0$ in its domain, no machine of
+value width at most $w$ whose trace is the prescribed one transposes within $C(L+1)$ steps.
+
+\paragraph{Status.} For rows 1--20 the excluding theorem is formal; that the schedule belongs to the class is checked by inspection of
+the schedule, and for the few schedules defined only for even $d$ or for powers of two (rows 3, 5 and 6) the class theorem is applied along
+those sizes, which the formal class predicates, quantified over all large $d$, do not literally cover. For rows 21--38 the certificate is
+built from formal lemmas of \cref{sec:certificates}, but its verification on the schedule is a written argument; each is stated below as a
+proof sketch only. \emph{None of these exclusions is a numbered result of this paper.}
+
+\paragraph{Crossings (numerical).} The last column records whether \cref{thm:X} alone could exclude the family. ``Yes'' means that the
+schedule's work heads stay within $O(b)$ cells, so it has no crossing revisits of linear excursion at all. The other entries are
+numerical, from exact computations at $d\le128$: ``no'' when the minimum set separating a large output set from the crossing steps of
+revisits of excursion more than $2W$ had at least $0.25$ times as many elements as the output set; ``small'' when that ratio was at most
+$0.07$, which suggests, as a heuristic, that \cref{thm:X} applies; and ``---'' when nothing was measured.
+
+{\small
+\begin{longtable}{@{}r p{0.42\textwidth} c p{0.2\textwidth} c@{}}
+\toprule
+& Schedule & $k$ & Excluded by & Crossings \\
+\midrule
+\endhead
+1 & Direct copy: output bit $\ell$ emitted while reading input bit $\ell$; work tape idle (computes the identity) & 1 & \cref{cor:H}, \cref{thm:BM} & yes \\
+2 & Persistent triangles: output $(j,i,s)$ emitted while reading input $(j,-j-i\bmod d,s)$; work head within $b$ cells & 1 & \cref{cor:H}, \cref{thm:J} & yes \\
+3 & One-pass shear with row rotations, two banks and a row buffer; seven monotone phases ($d$ even) & 3 & \cref{thm:BM,thm:J} & no \\
+4 & Ruler schedule: two banks moving one row per episode, a third head making excursions of $2$-adic lengths inside one row & 3 & \cref{thm:J} & --- \\
+5 & Row expander: rows mixed in a two-head deep-nesting workspace of width $W$, two banks, four monotone phases ($d$ even) & 4 & \cref{thm:BM} & --- \\
+6 & Fan-out cascade fed by fresh input slices at each scale ($d=2^m$) & 2 & \cref{thm:J} (suffix form) & --- \\
+7 & Unit-slope passes: load, reflection, shifted sweep, emit; at most three constant-velocity segments per pass & 2 & \cref{thm:J} & small \\
+8 & Bounce: zig-zag input, one tape sweeping $[0,L)$, nested excursions of height at most $L/(4d)$ on the other & 2 & \cref{thm:J}, \cref{cor:H} & small \\
+9 & Sublinear stack: blocks of $L/(4d)$ outputs pushed and popped on fresh cells while the other tape sweeps & 2 & \cref{thm:J}, \cref{cor:H} & --- \\
+10--11 & Free pseudo-random Dyck walk of length $L$ on one tape while the other sweeps the tape six times (two variants) & 2 & \cref{thm:J}, \cref{cor:H} & --- \\
+12 & One push and one pop of height $2L$ on a stack tape while the other tape bounces & 2 & \cref{thm:J} & --- \\
+13--16 & One free head with all other excursions $O(L/\log d)$: slot cascades and skewed wavefronts (four variants) & 2 & \cref{cor:H} & small (16) \\
+17--20 & No free head, owner load at most $4$, family heights in at most $4$ scale windows: multi-scale push--pop, two-excursion hub, LIFO Dyck stack, torus shifts & 2 & \cref{thm:Q} & --- \\
+21--23 & One push--pop excursion on a stack tape, with a free tape running a multi-scale cascade or bouncing in a hub (three variants) & 2 & slab-chunk genie on a two-scale grid & --- \\
+24 & Multi-scale Dyck stack: $d$ sawtooth waves on a stack tape while the free tape runs a cascade and bounces in a hub ($d=2^\kappa$) & 2 & block cut on the hub & no \\
+25--26 & Two push--pop excursions on a stack tape, with a mandatory cut at the second excursion (two variants) & 2 & block cut & --- \\
+27 & Two-exception inverse-square geometry, swept variant~\cite{GapAreaMemo2026} ($d\ge64$) & 10 & closed post-region, $O(d^{1/3})$ boundary steps & no \\
+28--29 & Two-exception inverse-square geometries~\cite{GapAreaMemo2026} ($d\ge64$) & 9, 11 & window lemma after two cut steps & small \\
+30 & Mirrored dyadic fold cascade & 2 & window lemma (\cref{lem:stepinv}), uncut & small \\
+31 & Unit-slope dyadic cascade ($d=2^m$) & 2 & sub-row window, uncut & --- \\
+32 & Dyadic fold cascade with row blocks of doubling width & 2 & window lemma, uncut & no \\
+33--34 & Two stack excursions with the free tape in a hub of width $L/2^s$ ($s$ fixed) or $d$ & 2 & block cut; space--time potential & --- \\
+35 & Daisy-chained stack copies with golden-ratio shifts & 2 & piecewise-isometric windows & --- \\
+36 & LIFO fan-out cascades of $\log d$ levels (two variants; $d=2^\kappa$) & 2 & laminar cut of $2^{1-p}L+3$ steps, $p=O(\log\wval)$ & no \\
+37 & Equal-volume tapped cascade with $\log d$ meso-scale stages & 2 & meso-hub cut of $O(L/\log d)$ steps & no \\
+38 & Two-band meso cascade & 2 & closed post-region, $O(L/\log d)$ boundary steps & --- \\
+\bottomrule
+\end{longtable}
+}
+
+\paragraph{Rows 1--20.} For bounded macro-phases (\cref{thm:BM,thm:J}) the crux rate is $1/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$ with the bank $B$ and
+the number of phases read off the schedule: for example, row~3 has banks $\{0,1\}$ and seven phases, row~5 banks $\{0,1\}$ and four phases.
+Rows 13--16 satisfy the hypotheses of \cref{cor:H} with the free head named and all other excursions $o(L)$; rows 17--20 those of
+\cref{thm:Q} with owner load and window counts read off the schedule. For row~1, \cref{thm:BM} gives crux rate $\frac14$; the true rate is at
+most $\frac12$, because pairing $q$ with $\tpos(q)$ gives an exclusive-or code of $L/2$ bits.
+
+\paragraph{Rows 21--38.} Proof sketch only. Rows 21--23 are excluded by the frozen-trace count used in the proof of \cref{thm:H}: on the pop
+leg of the stack, revisits that span the peak are order-reversing, and a two-scale slab grid with a greedy slicing gives a trapped chunk whose
+genie costs less than its output surplus. Rows 24--38 are excluded through \cref{thm:crux-excludes} by an explicit certificate. Rows 24--26 and 33:
+the cut at a mandatory part of the stack motion makes every relevant output carry at most $a$ blocks of potential sources and every input
+at most $e$ blocks, and \cref{lem:blockcut} gives an acyclic set of density $1/\binom{a+e}{a}$, uniformly in the depth. Rows 27--30 and 32: the
+window lemma (\cref{lem:window,lem:stepinv}) with potentials $\varphi(q)=\tpos(q)$ and $\psi(p)=L-1-p$ or a row-local variant, possibly after
+cutting a sublinear boundary. The geometries of rows 27--29 have hop counts of order $L/i^2$ in their $i$-th family; the gap-area memo of the
+ninth paper shows that its frozen-gap-area certificate cannot exclude this case~\cite{GapAreaMemo2026}, whereas the certificates here use cut
+steps and a window potential instead. Row 34 uses a space--time potential, row 35 a bound for piecewise-isometric motion with boundedly many
+segments, row 36 a bounded-level laminar cut, row 37 a meso-scale hub cut, and row 38 the formal closed-post-region criterion
+(\lean{isAcyclicIn_ballAvoidSystem_of_closedPostRegion}).
+
+As a numerical check on the method, the same classification was run on explicit transposers that run in time $\omega(L)$ (shuffle and
+butterfly transposers, a radix transposer on a stack, and one-tape transposers); none of the exclusions was triggered by them.

@@ -1,0 +1,158 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $b(d)=\max(1,\clog d)$-bit entries, written
+row by row, in time linear in the input length $L=d^2b(d)$? This is the statement~(T) of the first paper of this
+series~\cite{FirstPaper2026}. By a reduction of Harvey and van der Hoeven~\cite[Cor.~6.9]{HvdH2025}, a linear-time
+multiplication machine would give a linear-time transposer, so a proof of $\neg$(T) would give the first superlinear lower
+bound for off-line integer multiplication on multitape Turing machines. The question is open, and this paper does not decide
+it.
+
+A machine is \emph{oblivious} if its head motion and the steps at which it appends output bits depend only on~$d$. Every machine can
+be made oblivious at a logarithmic cost in time~\cite{PippengerFischer1979}, so oblivious machines are the natural first target. The
+run of an oblivious machine is a fixed time--space network, and a linear-time oblivious transposer is a network code for the
+transposition demands on that network. Adler, Harvey, Jain, Kleinberg and Lehman showed that if coding could not beat routing on
+undirected networks, oblivious two-tape transposition would need time $\Omega(L\log d)$~\cite[\S6]{AHJKL2006}; Braverman and He, and
+concurrently Zhang, Li and Li, have refuted that hypothesis~\cite{BravermanHe2026,ZhangLiLi2026}, so for oblivious machines the question
+is genuinely one about codes. The series has reduced it to codes in two steps. The fourth paper reduced $\neg$(T) for oblivious machines
+to depth reduction and a coding statement, the \emph{crux}~\cite[Theorem~D]{FourthPaper2026}. Lower bounds for several restricted
+classes of labels suggested that depth reduction might fail~\cite{FourthPaper2026,EighthPaper2026,DirectedReciprocity2026,MergeDepth2026},
+but the fourteenth paper proved it for every number of heads, so that the crux alone would exclude oblivious linear-time
+transposers~\cite[Corollary~O]{BoundedStack2026}. The crux asks whether the \emph{cone relations} of a linear-time schedule, the
+relations between each output bit and the input bits it can see without crossing a small revealed set, admit codes of rate close to~$1$.
+Machine-free relations of this kind carry storage codes above rate one half~\cite{StorageCodes2026}, and binary codes of rate approaching
+one exist on suitable separated relations~\cite{HighRate2026}; whether the relations of an actual linear-time schedule can carry them is
+the question.
+
+This paper attacks the crux from the side of the schedule. Instead of a coding bound for all relations, we ask which schedules make the
+crux \emph{provable}. We show that it holds, with an explicit deficit, for every schedule in which a small enough set of steps separates a
+large set of outputs from the \emph{macroscopic crossings} of the tapes. An oblivious linear-time transposer must therefore route a linear
+amount of information through macroscopic crossings, and we describe where it must do so.
+
+\subsection{Results}
+
+The run of a machine defines a \emph{dependency DAG} on its steps $0,\dots,T-1$: every step depends on the step before it, which
+carries the state, and on the previous visit of every work head to the cell it is scanning, which carries that cell's
+contents. A \emph{revisit} of a work tape is a pair $u<t$ of consecutive visits of its head to one cell between which the head leaves the
+cell; its \emph{excursion} is the farthest the head travels from the cell before returning. Two revisits $u<t$ and $u'<t'$ of the same tape
+\emph{cross} if $u<u'<t<t'$. A unit-speed head makes crossing revisits only when it reuses a stretch of tape like a queue, across two
+turns: write a stretch moving right, return, and read it again moving right. Reuse like a stack, across one turn, makes only nested
+revisits. Given $\theta>0$, a step is a \emph{macroscopic crossing step} if it is the earlier end of a revisit of excursion more than
+$\theta L$ that crosses another revisit of excursion more than $\theta L$ on the same tape. A trace of a machine is \emph{$\eta$-heavy} if at
+least a $2^{-\eta L}$ fraction of the inputs follow it; an oblivious machine has one trace, and it is $0$-heavy. \Cref{sec:prelim} states
+these definitions exactly.
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Theorem~X, macroscopic crossings} (\cref{thm:X}). Let $M$ be an oblivious machine with $k$ work tapes that
+transposes $d\times d$ matrices within $C(L+1)$ steps, and let $\alpha>0$. There are explicit $\theta>0$, $c>0$ and $d_0$,
+depending only on $k$, the alphabet and state counts of~$M$, $C$ and~$\alpha$, such that for every $d\ge d_0$ the following
+holds. For every set $V_0$ of at least $\alpha L$ output positions, every set of steps that meets every dependency path from
+the output steps of $V_0$ to the macroscopic crossing steps has at least $c\abs{V_0}$ elements. By Menger's theorem, there are then
+$c\abs{V_0}$ vertex-disjoint dependency paths from these outputs into macroscopic crossings.
+\item \textbf{Theorem~D, a dichotomy for all traces} (\cref{thm:D}). Theorem~X is the transposer case of a statement about
+arbitrary linear-time traces, with no hypothesis on what the machine computes: for every output set of size at least $\alpha L$,
+either the macroscopic crossings are reached with linear expansion, or a cheap separator leaves a linear-size acyclic set in the cone
+relation. A separator cheaper than the acyclic set it leaves, at a radius at least the genie depth, is impossible for a transposer
+(\cref{lem:acyclic-cost}).
+\item \textbf{Theorem~S, skeletons} (\cref{thm:S}). At scale $\theta L/4$ the walk of each work tape of a linear-time run is a
+word of at most $\Mmax=\lfloor16C/\theta\rfloor$ steps $\pm1$, so the coarse shapes of all runs come from an explicit finite
+family of $(2^{\Mmax+1}-1)^k$ tuples, independent of~$d$. For an oblivious linear-time transposer the shape is
+\emph{crossing-capable} (some tape turns at least twice at this scale with overlapping legs), and for every large output set the
+expansion of Theorem~X is carried by the crossing steps of a \emph{single coarsely monotone leg of a single tape}. Along infinitely many
+sizes, one fixed shape, tape and leg serve for the set of all input positions.
+\item \textbf{Theorem~H, two long-range heads} (\cref{thm:H}). No machine that transposes in linear time with an $\eta$-heavy trace, for a
+small fixed $\eta$, has on that trace one unrestricted work head while every other work head keeps its revisits within a small fixed
+fraction of~$L$, whatever the input head does. Every such transposer, in particular every oblivious one, therefore has at least two work
+heads that return to cells after moving a fixed fraction of $L$ away; and for each work head, some set containing a fixed fraction of its
+outputs reaches long revisits off that head with linear expansion.
+\item \textbf{Theorem~E, adaptive machines} (\cref{thm:E}). The conclusion of Theorem~X holds for every $\eta$-heavy trace of an arbitrary
+linear-time transposer, for an explicit $\eta>0$. It holds on all heavy traces of the bit simulator of the fifteenth
+paper~\cite[Theorem~S]{HighRate2026} applied to any linear-time transposer; that simulator has the same tapes and work alphabet, runs in
+linear time, and its heavy traces carry all but a $2^{-\eta L}$ fraction of the inputs. Transferring the conclusion back to the original
+machine's own dependency DAG is open; every statement in this paper about the dependency DAG of a general machine assumes a heavy trace or
+names the simulator.
+\item \textbf{Lemma~R, rows to columns} (\cref{lem:R}). For every machine that transposes at size $d$, every $\eta$-heavy trace, and every two
+sets $A_0,A_1$ of rows, every set of steps that separates the input reads of the rows in $A_0$ from the output steps of the entries that go
+from rows $A_0$ to output rows $A_1$ has at least $(\abs{A_0}\abs{A_1}b-\eta L)/(\wval+1)$ elements, where $\wval$ is the number of bits of
+one step's value.
+\item \textbf{Class exclusions} (\cref{sec:classes}). Machines whose heads make boundedly many macroscopic phases, oblivious or adaptive with
+sublinear jitter, are excluded by an explicit native deficit (Theorems~B and~J); a fixed native deficit suffices in place of the half-rate
+hypothesis of the fourteenth paper's low-adaptivity corollary (Theorem~G); and machines with no free work head, bounded nesting load and
+boundedly many scales are excluded by a scale-gap pigeonhole (Theorem~Q). \Cref{app:catalogue} lists explicit schedule families excluded
+by these theorems and by certificates, with proof sketches.
+\end{itemize}
+
+\paragraph{What remains.} Explicit oblivious linear-time schedules, realized in our experiments by machines that compute other functions,
+meet the necessary conditions above in every test we could run (numerically, at $d\le128$; \cref{sec:construction}). So these conditions
+are not known to decide the question. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
+together with the earlier output steps, separates the inputs from the outputs for every pair of row sets at once (\cref{prop:onecut}).
+Outside restricted schedule classes (\cref{cor:scale-separated}), the only coding-proof logarithmic factor known on tapes comes from counting
+passes (Theorem~P of the first paper), and \cref{sec:open} states the multi-scale question it leaves open.
+
+\paragraph{Constants.} The constants of Theorems~X, D and~S are explicit, positive and astronomically small. For two work tapes, time
+constant $C=1$ and $\alpha=1$, the expansion constant of Theorem~X is $\rho_0/(4\wval)$ with $\rho_0\approx10^{-105}$, and the threshold $\theta$
+is smaller still; \cref{sec:crossings} gives the formulas. The constants of Theorem~H are polynomial in the time constant and the value width,
+and those of Theorem~Q come from a compactness argument and are not explicit. The small constants come from the proofs: on the schedules we
+measured, the expansion ratio was exactly~$1$ at every tested threshold up to $L/2$ (numerically, at $d\le128$; \cref{rem:numerics-crossings}).
+
+\subsection{How to read the paper and its formal proofs}
+
+Every numbered result states its status. \textsf{Lean:} lines name the declarations of the accompanying Lean~4 library that
+prove it, in the file named at the right; the Lean statement is authoritative and the text gives a faithful outline of the formal
+proof. A result marked \textsf{Not formalized} has a complete written proof in the text. \textsf{Cited:} lines name results of
+earlier papers of the series used without proof, and say whether they are Lean-verified there. Numerical observations appear
+only in remarks or parentheses labelled as numerical and are never used in proofs. The formal library depends only on the axioms
+\lean{propext}, \lean{Classical.choice} and \lean{Quot.sound} (\cref{app:verification}).
+
+The formalization is in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, dependency DAGs
+and index codes of the eleventh paper~\cite{MergeDepth2026}, the genies of the fourteenth~\cite{BoundedStack2026} and the
+simulator of the fifteenth~\cite{HighRate2026}. Not formalized: \cref{prop:onecut} and \cref{cor:scale-separated}, which
+have complete proofs in the text; the remarks marked as proof sketches; and the exclusions of the individual schedule families of
+\cref{app:catalogue}, which are not numbered results and are given as proof sketches over the formal class theorems and certificate
+lemmas.
+
+\subsection{Related work}
+
+\emph{Lower bounds on tapes.} Superlinear lower bounds for explicit problems are known for one work tape: Hennie's crossing
+sequences~\cite{Hennie1965}, Maass's combinatorial arguments~\cite{Maass1985}, and for transposition itself the bounds of
+Dietzfelbinger, Maass and Schnitger~\cite{DMS1991} and Dietzfelbinger and Maass~\cite{DietzfelbingerMaass1993} in the classical one-tape
+models. With two or more work tapes the only superlinear lower bounds known are those that follow from the separation of deterministic
+and nondeterministic linear time~\cite{PPST1983}, for problems that are hard for nondeterministic linear time~\cite{Grandjean1988}; none is
+known for off-line multiplication, sorting, the discrete Fourier transform or transposition~\cite[\S1.4]{HvdH2025}. The simulation of time
+by space~\cite{HPV1977} also rests on the structure of multitape computation graphs. For transposition, moving the entries as indivisible
+items along a fixed pattern needs time $\Omega(L\log d)$~\cite{Stoss1973}, and similar bounds hold for indivisible records in external
+memory~\cite{AggarwalVitter1988}; Kirchherr proved an $\Omega(\log d)$ bound on reversals for conservative machines~\cite{Kirchherr1988}, and
+the first paper of this series an $\Omega(\log d)$ bound on monotone passes for arbitrary computation, with coding
+allowed~\cite[Theorems~P and~P$'$]{FirstPaper2026}, extended to adaptive machines without a runtime assumption
+in~\cite{PassesMemo2026}. The stream lower bounds of Grohe, Hernich and Schweikardt~\cite{GroheSchweikardt2005,GHS2009} bound reversals
+for sorting-type problems with small internal memory. A linear-time machine, however, may reverse its heads $\Theta(L)$ times at small
+scales, so pass and reversal bounds apply to it only after its small-scale motion is absorbed into the finite control.
+
+\emph{Macroscopic motion.} The first paper's Theorem~M*~\cite[Theorems~7.8 and~7.9]{FirstPaper2026} passes to the limit of rescaled head
+trajectories and shows that the heads of any linear-time transposer, oblivious or adaptive, satisfy an integral inequality forcing
+returns to macroscopically earlier positions. The fourth paper deduced, by a written proof, that in every macroscopic limit of a linear-time
+transposer at least two work-head limits are non-monotone~\cite[Corollaries~3.18 and~3.24]{FourthPaper2026}. Theorem~H(b) is a
+quantitative form of this at a single size, with explicit constants and on heavy traces. Theorem~X asks for more than non-monotone motion: a
+run whose heads reuse their tapes only like stacks has no macroscopic crossing steps, so Theorem~X excludes it whatever its macroscopic limit.
+
+\emph{Network and index coding.} The time--space view of oblivious machines and the conditional lower bound are due to Adler et
+al.~\cite{AHJKL2006}; the multiple-unicast conjecture was refuted by Braverman and He~\cite{BravermanHe2026} and, concurrently, by Zhang, Li
+and Li~\cite{ZhangLiLi2026}. Our exclusions use the acyclic-set lower bound of index coding~\cite{BBJK2011}, in the machine form of the
+eleventh paper~\cite{MergeDepth2026}.
+
+\emph{Upper bounds.} Recursive block transposition takes time $O(L\log d)$. An unrefereed preprint claims time
+$O(L(\log d)^{1-\kappa})$ for a small $\kappa>0$ through an address-interchange primitive that mixes data by exclusive
+or~\cite{OpenAI2026mult}; if it is correct, coding already beats routing on tapes by a factor $(\log d)^{\kappa}$, and any
+proof of $\neg$(T) must allow such gains.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} sets out the model, the dependency DAG, revisits and crossings, cuts and cone relations. \Cref{sec:certificates}
+gives the certificate method: an acyclic set of linear size in a cone relation, possibly after a cheap cut, excludes linear-time
+transposition. \Cref{sec:heads} proves Theorem~H, \cref{sec:crossings} Theorems~D and~X, and \cref{sec:skeletons} Theorem~S.
+\Cref{sec:demand} proves Lemma~R and the colouring criterion built on it. \Cref{sec:adaptive} treats adaptive machines,
+\cref{sec:classes} the class exclusions. \Cref{sec:construction} turns the results around into a specification for a linear-time
+transposer and describes the schedules that meet it, and \cref{sec:open} lists the open problems that would decide the question.
+\Cref{app:catalogue} catalogues the excluded schedule families, \cref{app:leanindex} indexes the Lean declarations, and
+\cref{app:verification} explains how to build and check the formalization.

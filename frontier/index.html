@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Transposition Impossibility Frontier</title>
-<meta name="description" content="A Venn map of all multitape Turing machines that transpose matrices, coloured by whether linear-time transposition is ruled out unconditionally, conditionally, or still open.">
+<meta name="description" content="A Venn map of multitape Turing machines: the transposers, coloured by whether linear-time transposition is ruled out unconditionally, conditionally, or still open, and the properties no transposer has.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
@@ -93,6 +93,14 @@ svg text { font-family: var(--label); fill: var(--ink); }
 .tiny { font-size: 11.5px; }
 .qmark { font-weight: 700; fill: var(--green) !important; }
 .qmark.on-yellow { fill: #12552f !important; }
+.frame { fill: var(--bg); stroke: var(--outline); stroke-width: 1.4; }
+.ol.band { stroke: var(--ink); stroke-width: 2; }
+.ovl { fill: none; stroke: var(--dash); stroke-width: 2; pointer-events: stroke; }
+.conn { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 0.5 4.5; stroke-linecap: round; fill: none; }
+.connq { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+.connd { fill: var(--ink); }
+.connt { font-family: var(--label); font-weight: 700; font-size: 13px; fill: var(--ink) !important; }
+.lead { stroke: var(--ink); stroke-width: 1; opacity: .6; }
 .inspector { min-height: 78px; padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); display: grid; gap: 4px; }
 .inspector .name { font-family: var(--label); font-weight: 600; font-size: 16px; display: flex; gap: 10px; align-items: center; }
 .inspector .stat { font-family: var(--label); font-size: 13px; color: var(--muted); }
@@ -119,15 +127,18 @@ a:hover { text-decoration-thickness: 2px; }
   <header>
     <div class="eyebrow">Linear-time matrix transposition on multitape Turing machines · statement (T)</div>
     <h1>Transposition Impossibility Frontier</h1>
-    <p class="lede">The rectangle is every deterministic multitape Turing machine that transposes a <i>d</i>&nbsp;×&nbsp;<i>d</i> matrix of
-      ⌈log<sub>2</sub>&nbsp;<i>d</i>⌉-bit entries (read-only input, <i>k</i> work tapes, write-only output), at any running time. Circles are machine
-      properties, drawn as in a Venn diagram. Each piece is coloured by what is known about transposing in time <b>O(L)</b>,
+    <p class="lede">The outer frame is every deterministic multitape Turing machine (read-only input, <i>k</i> work tapes, write-only
+      output). The inner rectangle is the machines that transpose a <i>d</i>&nbsp;×&nbsp;<i>d</i> matrix of
+      ⌈log<sub>2</sub>&nbsp;<i>d</i>⌉-bit entries, at any running time. Inside it, a property stands for the transposers that have it,
+      and the pieces are drawn as in a Venn diagram. Each piece is coloured by what is known about transposing in time <b>O(L)</b>,
       <i>L</i>&nbsp;=&nbsp;<i>d</i><sup>2</sup>⌈log<sub>2</sub>&nbsp;<i>d</i>⌉: red where every transposer in the piece provably needs more
-      time. The four red bands cut across every circle: a one-tape machine,
-      for instance, may or may not be oblivious. Only inclusions are claims: a shape drawn inside another is a proved inclusion,
-      but shapes drawn apart may still share transposers (the red islands of paper 16 may meet the half-bound circle), and a drawn
-      overlap may contain none (no transposer of any speed makes only o(log d) monotone passes). Hover or tap any piece for its
-      status and sources.</p>
+      time. A red strip outside the rectangle is a property that no transposer has, unless a dotted ? joins it to the
+      rectangle. Only inclusions are claims: a shape drawn inside
+      another is a proved inclusion. For the two pieces with a dark outline, one work tape and oblivious data movement, overlaps
+      are claims too. Each meets exactly the pieces it is proved to share a transposer with, by an explicit slow machine or a
+      published result, and stays apart from the rest. A dotted line with a <b>?</b> joins two shapes when it is not known whether
+      they share a transposer. Elsewhere, shapes drawn apart may still share transposers (the red islands of paper 16 may meet the
+      half-bound circle), and a drawn overlap may contain none. Hover or tap any piece for its status and sources.</p>
   </header>
 
   <div class="legend" role="list" aria-label="Legend">
@@ -137,158 +148,178 @@ a:hover { text-decoration-thickness: 2px; }
     <div class="key" role="listitem"><span class="sw yellow"></span>impossible under one open statement stronger than the crux: a native rate bound (half rate, or any fixed deficit)</div>
     <div class="key" role="listitem"><span class="sw dash"></span>overlay: changes the hypothesis, not the colour</div>
     <div class="key" role="listitem"><span class="q">?</span>where a linear-time machine is most likely</div>
+    <div class="key" role="listitem"><svg width="40" height="18" viewBox="0 0 40 18" aria-hidden="true" style="width:40px; min-width:0; height:18px; display:inline-block; flex:none"><line x1="2" y1="9" x2="38" y2="9" class="conn"></line><circle cx="20" cy="9" r="7.5" class="connq"></circle><text x="20" y="13" text-anchor="middle" class="connt" style="font-size:11px">?</text></svg>not known whether the two share a transposer</div>
   </div>
 
   <div class="map">
-    <svg viewBox="0 0 1000 720" role="img" aria-labelledby="maptitle">
-      <title id="maptitle">Venn map of machine classes, coloured by the status of linear-time transposition</title>
+    <svg viewBox="0 0 1000 972" role="img" aria-labelledby="maptitle">
+      <title id="maptitle">Venn map of all multitape machines: the transposers form the inner rectangle, coloured by the status of linear-time transposition; strips outside it are properties no transposer has</title>
       <defs>
-        <clipPath id="cLE"><circle cx="470" cy="375" r="265"></circle></clipPath>
-        <clipPath id="cOb"><circle cx="470" cy="405" r="195"></circle></clipPath>
-        <clipPath id="cD"><circle cx="330" cy="330" r="165"></circle></clipPath>
+        <clipPath id="cOb"><circle cx="530" cy="540" r="245"></circle></clipPath>
       </defs>
-      <text x="14" y="26" class="tiny t-muted">All deterministic multitape transposers · the question remains open; abstract high-rate codes alone do not supply tape computations (paper 15)</text>
-      <rect x="10" y="38" width="980" height="672" rx="6" class="f-yellow" style="stroke: var(--rule); stroke-width: 1.5"></rect>
+      <!-- The outer frame is every machine. The inner rectangle is every transposer, at any running time; inside it a
+           property stands for the transposers that have it. Geometry checked by a script: every band piece overlaps
+           exactly the pieces it provably shares a transposer with, and every shape drawn inside another is a proved
+           inclusion (oblivious in low adaptivity; shallow, deep, half-bound circle, data movement and both overlays in
+           oblivious; few families in shallow; data movement in both overlays; one work tape inside the oblivious circle
+           only within shallow and the one-head island; bounded entry inside the oblivious circle only within shallow). -->
+      <text x="14" y="21" class="tiny t-muted">All deterministic multitape machines · the inner rectangle: those that transpose, at any running time</text>
+      <rect x="8" y="30" width="984" height="862" rx="6" class="frame"></rect>
+      <text x="24" y="47" class="tiny t-muted" style="font-weight:600; letter-spacing:.06em">NOT TRANSPOSERS · properties that no transposer has; with a dotted ?, none is known to have</text>
 
-      <!-- 1. high adaptivity: apply Corollary L(b) to the fixed simulator in Paper 15; the native rate hypothesis remains open -->
+      <!-- outside the transposers: a property no transposer has, at any running time -->
+      <g class="r" tabindex="0" data-id="passes" aria-label="Only o(log d) monotone passes: no transposer">
+        <rect class="shape f-red" x="24" y="54" width="952" height="44" rx="4"></rect>
+        <text x="40" y="73" class="lbl t-red">Only o(log d) monotone passes</text>
+        <text x="40" y="90" class="tiny t-red">every halting transposer needs log<tspan dy="3" font-size="9">k+1</tspan><tspan dy="-3"> d − O(1) passes, at any running time · passes memo; paper 1, Theorems P, P′ (Lean)</tspan></text>
+      </g>
+      <!-- not known to contain a transposer: drawn apart, with a ? link to the transposers -->
+      <g class="r" tabindex="0" data-id="phases" aria-label="Output produced in O(1) monotone macro-phases with sublinear workspace; not known whether any transposer has it">
+        <rect class="shape f-red" x="24" y="106" width="952" height="44" rx="4"></rect>
+        <text x="40" y="125" class="lbl t-red">Output phase: O(1) monotone sweeps of the large tapes (o(L) jitter), other heads in o(L) cells</text>
+        <text x="40" y="142" class="tiny t-red">while a fixed fraction of the input rows is unread · no linear-time transposer (paper 16, Lean) · slower ones: not known</text>
+      </g>
+      <g class="unk" aria-label="Not known whether a transposer has the output-phase property">
+        <line x1="930" y1="150" x2="930" y2="190" class="conn"></line>
+        <circle cx="930" cy="170" r="9" class="connq"></circle>
+        <text x="930" y="174.5" text-anchor="middle" class="connt">?</text>
+      </g>
+
+      <!-- the transposers; outside the low-adaptivity circle: high adaptivity -->
       <g class="r" tabindex="0" data-id="high" aria-label="High adaptivity, conditional on a native deficit for the simulator's frozen traces">
-        <rect class="shape f-yellow" x="88" y="146" width="902" height="508"></rect>
+        <rect class="shape f-yellow" x="24" y="190" width="952" height="690" rx="4"></rect>
       </g>
-      <!-- 2. low adaptivity: Corollary L of paper 14, given the native half bound for frozen traces -->
-      <g class="r" tabindex="0" data-id="leOpen" aria-label="Low adaptivity without bounded entry">
-        <circle class="shape f-yellow" cx="470" cy="375" r="265"></circle>
+      <g class="r" tabindex="0" data-id="leOpen" aria-label="Low adaptivity">
+        <circle class="shape f-yellow" cx="520" cy="515" r="305"></circle>
       </g>
-      <!-- 3. bounded entry on every tape: Corollary F'' (low adaptivity), Corollary RV (any adaptivity, paper 11);
-           yellow: the remaining hypothesis is a half-rate bound for the machine's own relations -->
       <g class="r" tabindex="0" data-id="lowad" aria-label="Every cell of every tape entered O(1) times">
-        <circle class="shape f-yellow" cx="300" cy="312" r="100"></circle>
+        <circle class="shape f-yellow" cx="285" cy="480" r="112"></circle>
       </g>
-      <!-- 4. oblivious, deep nesting: the crux at the depth of Theorem T (paper 14, Corollary O) -->
       <g class="r" tabindex="0" data-id="ob" aria-label="Oblivious, deep nesting">
-        <circle class="shape f-orange" cx="470" cy="405" r="195"></circle>
+        <circle class="shape f-orange" cx="530" cy="540" r="245"></circle>
       </g>
-      <!-- 5. oblivious with the shallower cuts of Theorems F, B, M: the crux at a smaller depth, a weaker statement -->
       <g class="r" tabindex="0" data-id="obS" aria-label="Oblivious, bounded nesting load, home-based heads, or one free head">
-        <circle class="shape f-orange-dark" cx="330" cy="330" r="165" clip-path="url(#cOb)"></circle>
-      </g>
-      <!-- 6. oblivious, cone relations in a proved half-bound class: unconditional since Theorem T -->
-      <g class="r" tabindex="0" data-id="pc" aria-label="Oblivious, cone relations in a proved half-bound class">
-        <circle class="shape f-red" cx="520" cy="440" r="105"></circle>
-      </g>
-      <!-- 7. bounded overlap, few large return families: excluded directly by source certificates (paper 9) -->
-      <g class="r" tabindex="0" data-id="geom" aria-label="Oblivious, bounded overlap, few large return families">
-        <circle class="shape f-red" cx="440" cy="322" r="32"></circle>
-        <text x="440" y="319" text-anchor="middle" class="tiny t-red" style="font-weight:700">few large</text>
-        <text x="440" y="333" text-anchor="middle" class="tiny t-red" style="font-weight:700">families</text>
+        <circle class="shape f-orange-dark" cx="390" cy="520" r="225" clip-path="url(#cOb)"></circle>
       </g>
 
-      <!-- 8. paper 16: classes excluded on oblivious machines and on heavy traces of any machine; each meets
-           the shallow and the deep oblivious pieces and leaves the oblivious and the low-adaptivity circles -->
+      <!-- red pieces inside the transposers -->
+      <g class="r" tabindex="0" data-id="pc" aria-label="Oblivious, ball relations in a proved half-bound class">
+        <circle class="shape f-red" cx="565" cy="575" r="90"></circle>
+      </g>
       <g class="r" tabindex="0" data-id="crossings" aria-label="Few macroscopic crossings">
-        <ellipse class="shape f-red" cx="296" cy="476" rx="86" ry="32"></ellipse>
+        <ellipse class="shape f-red" cx="477.5" cy="730" rx="147.6" ry="36" transform="rotate(79.3 477.5 730)"></ellipse>
       </g>
       <g class="r" tabindex="0" data-id="onehead" aria-label="One long-range work head">
-        <ellipse class="shape f-red" cx="288" cy="512" rx="70" ry="32"></ellipse>
+        <ellipse class="shape f-red" cx="400" cy="708" rx="250" ry="30" transform="rotate(-4 400 708)"></ellipse>
+      </g>
+      <g class="r" tabindex="0" data-id="geom" aria-label="Oblivious, few large return families">
+        <circle class="shape f-red" cx="448" cy="531" r="31"></circle>
+      </g>
+      <g class="r" tabindex="0" data-id="onetape" aria-label="Exactly one work tape">
+        <ellipse class="shape f-red" cx="343.5" cy="668.5" rx="223" ry="22" transform="rotate(-41 343.5 668.5)"></ellipse>
+      </g>
+      <g class="r" tabindex="0" data-id="movement" aria-label="Oblivious data movement">
+        <ellipse class="shape f-red" cx="487.5" cy="602.5" rx="157" ry="28" transform="rotate(38.5 487.5 602.5)"></ellipse>
       </g>
 
       <!-- outlines -->
-      <circle class="ol" cx="470" cy="375" r="265" style="stroke: var(--on-yellow)"></circle>
-      <circle class="ol" cx="470" cy="405" r="195" style="stroke-width: 2.2"></circle>
-      <circle class="ol" cx="330" cy="330" r="165" clip-path="url(#cOb)"></circle>
-      <circle class="ol" cx="300" cy="312" r="100" style="stroke-dasharray: 2 3"></circle>
-      <circle class="ol" cx="520" cy="440" r="105"></circle>
-      <ellipse class="ol" cx="296" cy="476" rx="86" ry="32"></ellipse>
-      <ellipse class="ol" cx="288" cy="512" rx="70" ry="32"></ellipse>
+      <circle class="ol" cx="520" cy="515" r="305" style="stroke: var(--on-yellow)"></circle>
+      <circle class="ol" cx="285" cy="480" r="112" style="stroke-dasharray: 2 3"></circle>
+      <circle class="ol" cx="530" cy="540" r="245" style="stroke-width: 2.2"></circle>
+      <circle class="ol" cx="390" cy="520" r="225" clip-path="url(#cOb)"></circle>
+      <circle class="ol" cx="565" cy="575" r="90"></circle>
+      <ellipse class="ol" cx="477.5" cy="730" rx="147.6" ry="36" transform="rotate(79.3 477.5 730)"></ellipse>
+      <ellipse class="ol" cx="400" cy="708" rx="250" ry="30" transform="rotate(-4 400 708)"></ellipse>
+      <circle class="ol" cx="448" cy="531" r="31"></circle>
+      <ellipse class="ol band" cx="343.5" cy="668.5" rx="223" ry="22" transform="rotate(-41 343.5 668.5)"></ellipse>
+      <ellipse class="ol band" cx="487.5" cy="602.5" rx="157" ry="28" transform="rotate(38.5 487.5 602.5)"></ellipse>
 
-      <!-- overlays: they change the hypothesis, not the colour -->
+      <!-- overlays: they change the hypothesis, not the colour; both contain oblivious data movement -->
       <g class="r" tabindex="0" data-id="merge" aria-label="Oblivious, code of bounded merge depth">
-        <circle class="shape" cx="606" cy="332" r="29" style="fill: transparent; stroke: var(--dash); stroke-width: 2; stroke-dasharray: 5 4"></circle>
-        <text x="606" y="330" text-anchor="middle" class="tiny t-orange" style="font-weight:700">bounded</text>
-        <text x="606" y="343" text-anchor="middle" class="tiny t-orange" style="font-weight:700">merging</text>
+        <ellipse class="shape ovl" cx="475" cy="592" rx="185" ry="40" transform="rotate(38.5 475 592)" style="stroke-dasharray: 5 4"></ellipse>
+        <text x="748" y="628" text-anchor="end" class="tiny t-orange" style="font-weight:700">bounded merging</text>
+        <line x1="660" y1="632" x2="618" y2="686" class="lead"></line>
       </g>
       <g class="r" tabindex="0" data-id="linear" aria-label="Linear data path over a field">
-        <ellipse class="shape" cx="572" cy="594" rx="176" ry="34" style="fill: transparent; stroke: var(--dash); stroke-width: 2; stroke-dasharray: 7 6; pointer-events: stroke"></ellipse>
+        <ellipse class="shape ovl" cx="471.9" cy="622.1" rx="200" ry="60" transform="rotate(38.5 471.9 622.1)" style="stroke-dasharray: 7 6"></ellipse>
+        <text x="744" y="646" text-anchor="end" class="tiny t-orange" style="font-weight:700">linear data path</text>
+        <line x1="660" y1="650" x2="630" y2="713" class="lead"></line>
       </g>
 
-      <!-- small red islands -->
-      <g class="r" tabindex="0" data-id="xor" aria-label="XOR-frame recursions">
-        <circle class="shape f-red" cx="666" cy="330" r="24"></circle>
-      </g>
-      <g class="r" tabindex="0" data-id="packets" aria-label="Local packet coding">
-        <circle class="shape f-red" cx="700" cy="470" r="30"></circle>
+      <!-- unknown: one work tape with bounded cell entry -->
+      <g class="unk" aria-label="Not known whether a one-tape transposer enters every cell O(1) times">
+        <line x1="358.5" y1="564.5" x2="390" y2="600.7" class="conn"></line>
+        <circle cx="358.5" cy="564.5" r="2.6" class="connd"></circle>
+        <circle cx="390" cy="600.7" r="2.6" class="connd"></circle>
+        <circle cx="374.2" cy="582.6" r="9" class="connq"></circle>
+        <text x="374.2" y="587.1" text-anchor="middle" class="connt">?</text>
       </g>
 
       <!-- labels -->
       <g pointer-events="none">
-        <text x="470" y="166" text-anchor="middle" class="hdr t-yellow">LOW ADAPTIVITY</text>
-        <text x="470" y="182" text-anchor="middle" class="sub t-yellow">traces carry at most ηL bits, η &lt; ½</text>
-        <text x="470" y="197" text-anchor="middle" class="tiny t-yellow">needs a native rate bound below 1 − η (Corollary L)</text>
+        <text x="36" y="214" class="hdr t-yellow">TRANSPOSERS · ANY RUNNING TIME</text>
+        <text x="36" y="232" class="tiny t-yellow">The question remains open; abstract</text>
+        <text x="36" y="246" class="tiny t-yellow">high-rate codes alone do not supply</text>
+        <text x="36" y="260" class="tiny t-yellow">tape computations (paper 15).</text>
 
-        <text x="296" y="243" text-anchor="middle" class="lbl t-yellow">Each cell entered</text>
-        <text x="285" y="260" text-anchor="middle" class="lbl t-yellow">O(1) times</text>
-        <text x="270" y="278" text-anchor="middle" class="tiny t-yellow">needs a half-rate</text>
-        <text x="265" y="292" text-anchor="middle" class="tiny t-yellow">bound (F″, RV)</text>
+        <text x="770" y="232" class="hdr t-yellow">HIGH ADAPTIVITY</text>
+        <text x="770" y="250" class="sub t-yellow">Trace entropy can reach L/2 or more</text>
+        <text x="770" y="270" class="tiny t-yellow">Excluded if a native deficit holds</text>
+        <text x="770" y="285" class="tiny t-yellow">on the simulator’s frozen traces.</text>
+        <text x="770" y="300" class="tiny t-yellow">Paper 15, Corollary 9.3</text>
+        <text x="770" y="320" class="tiny t-yellow">Any fixed deficit: paper 16</text>
 
-        <text x="350" y="356" text-anchor="middle" class="lbl t-orange-dark">Shallower cuts</text>
-        <text x="350" y="373" text-anchor="middle" class="sub t-orange-dark">bounded nesting,</text>
-        <text x="350" y="388" text-anchor="middle" class="sub t-orange-dark">home-based heads,</text>
-        <text x="350" y="403" text-anchor="middle" class="sub t-orange-dark">or one free head</text>
-        <text x="350" y="421" text-anchor="middle" class="tiny t-orange-dark" style="font-weight:600">crux at a smaller depth</text>
-        <text x="350" y="435" text-anchor="middle" class="tiny t-orange-dark">Theorems F, B, M + D</text>
+        <text x="520" y="237" text-anchor="middle" class="hdr t-yellow">LOW ADAPTIVITY</text>
+        <text x="520" y="253" text-anchor="middle" class="sub t-yellow">traces carry at most ηL bits, η &lt; ½</text>
+        <text x="520" y="268" text-anchor="middle" class="tiny t-yellow">needs a native rate bound below 1 − η (Corollary L)</text>
 
-        <text x="566" y="262" text-anchor="middle" class="hdr t-orange">OBLIVIOUS</text>
-        <text x="566" y="278" text-anchor="middle" class="sub t-orange">head moves depend only on d</text>
-        <text x="566" y="294" text-anchor="middle" class="tiny t-orange">Corollary O: the crux alone</text>
+        <text x="530" y="318" text-anchor="middle" class="hdr t-orange">OBLIVIOUS</text>
+        <text x="530" y="334" text-anchor="middle" class="sub t-orange">head moves depend only on d</text>
+        <text x="530" y="349" text-anchor="middle" class="tiny t-orange">Corollary O: the crux alone</text>
 
-        <text x="520" y="425" text-anchor="middle" class="lbl t-red">Cone relations in a</text>
-        <text x="520" y="442" text-anchor="middle" class="lbl t-red">proved half-bound class</text>
-        <text x="520" y="462" text-anchor="middle" class="tiny t-red">ruled out, with Theorem T</text>
+        <text x="40" y="304" class="lbl t-yellow">Each cell entered O(1) times</text>
+        <text x="40" y="320" class="tiny t-yellow">needs a half-rate bound (F″, RV)</text>
+        <line x1="150" y1="326" x2="222" y2="398" class="lead"></line>
 
-        <text x="204" y="470" text-anchor="end" class="tiny t-yellow">Few macroscopic</text>
-        <text x="204" y="483" text-anchor="end" class="tiny t-yellow">crossings</text>
-        <text x="212" y="523" text-anchor="end" class="tiny t-yellow">One long-range</text>
-        <text x="212" y="536" text-anchor="end" class="tiny t-yellow">work head</text>
-        <text x="405" y="520" text-anchor="middle" class="lbl t-orange">Deep nesting</text>
-        <text x="415" y="537" text-anchor="middle" class="sub t-orange">needs the crux at</text>
-        <text x="425" y="553" text-anchor="middle" class="sub t-orange">Theorem T's depth</text>
-        <text x="755" y="591" class="tiny t-yellow" style="font-weight:600">Linear data path over a field</text>
-        <text x="755" y="606" class="tiny t-yellow">Oblivious case uses the linear crux</text>
+        <text x="488" y="384" text-anchor="middle" class="lbl t-orange-dark">Shallower cuts</text>
+        <text x="488" y="401" text-anchor="middle" class="sub t-orange-dark">bounded nesting,</text>
+        <text x="488" y="416" text-anchor="middle" class="sub t-orange-dark">home-based heads,</text>
+        <text x="488" y="431" text-anchor="middle" class="sub t-orange-dark">or one free head</text>
+        <text x="488" y="449" text-anchor="middle" class="tiny t-orange-dark" style="font-weight:600">crux at a smaller depth</text>
+        <text x="488" y="463" text-anchor="middle" class="tiny t-orange-dark">Theorems F, B, M + D</text>
+        <text x="448" y="494" text-anchor="middle" class="tiny t-orange-dark" style="font-weight:700">few large families</text>
 
-        <text x="736" y="334" class="tiny t-yellow">XOR-frame template</text>
-        <text x="738" y="474" class="tiny t-yellow">Local packet coding</text>
+        <text x="672" y="420" text-anchor="middle" class="lbl t-orange">Deep nesting</text>
+        <text x="672" y="437" text-anchor="middle" class="sub t-orange">needs the crux at</text>
+        <text x="672" y="452" text-anchor="middle" class="sub t-orange">Theorem T’s depth</text>
 
-        <text x="770" y="210" class="hdr t-yellow">HIGH ADAPTIVITY</text>
-        <text x="770" y="228" class="sub t-yellow">Trace entropy can reach L/2 or more</text>
-        <text x="770" y="249" class="tiny t-yellow">Excluded if a native deficit holds</text>
-        <text x="770" y="264" class="tiny t-yellow">on the simulator’s frozen traces.</text>
-        <text x="770" y="279" class="tiny t-yellow">Paper 15, Corollary 9.3</text>
-        <text x="770" y="299" class="tiny t-yellow">Any fixed deficit: paper 16</text>
+        <text x="590" y="533" text-anchor="middle" class="lbl t-red">Half-bound</text>
+        <text x="590" y="550" text-anchor="middle" class="lbl t-red">ball relations</text>
+        <text x="590" y="566" text-anchor="middle" class="tiny t-red">ruled out, Theorem T</text>
+
+        <text transform="translate(406 538) rotate(38.5)" dy="4" text-anchor="middle" class="tiny t-red" style="font-weight:700">data movement</text>
+
+        <text x="36" y="768" class="tiny t-yellow" style="font-weight:700">One long-range work head</text>
+        <text x="36" y="782" class="tiny t-yellow">(or none: heads never fold back)</text>
+        <line x1="124" y1="758" x2="162" y2="733" class="lead"></line>
+        <text x="40" y="842" class="tiny t-yellow" style="font-weight:700">One work tape</text>
+        <line x1="122" y1="838" x2="168" y2="818" class="lead"></line>
+        <text x="526" y="866" class="tiny t-yellow" style="font-weight:700">Few macroscopic crossings</text>
       </g>
 
-      <!-- question marks -->
-      <text x="497" y="594" class="qmark" font-size="38" pointer-events="none">?</text>
-      <text x="868" y="560" class="qmark on-yellow" font-size="34" pointer-events="none">?</text>
+      <!-- question marks: where a linear-time machine is most likely -->
+      <text x="591" y="764" class="qmark" font-size="34" pointer-events="none">?</text>
+      <text x="896" y="740" class="qmark on-yellow" font-size="34" pointer-events="none">?</text>
 
-      <!-- red bands across the universe -->
-      <g class="r" tabindex="0" data-id="onetape" aria-label="Exactly one work tape">
-        <rect class="shape f-red" x="10" y="38" width="78" height="672" rx="6"></rect>
-        <text transform="translate(44 374) rotate(-90)" text-anchor="middle" class="lbl t-red">Exactly one work tape</text>
-        <text transform="translate(64 374) rotate(-90)" text-anchor="middle" class="tiny t-red">Dietzfelbinger–Maass–Schnitger 1991</text>
+      <!-- beside the diagram: exclusions inside abstract models, which are not sets of machines -->
+      <text x="14" y="914" class="tiny t-muted" style="font-weight:600; letter-spacing:.06em">EXCLUSIONS INSIDE ABSTRACT MODELS · not sets of machines, so not placed in the diagram</text>
+      <g class="r" tabindex="0" data-id="xor" aria-label="XOR-frame recursions">
+        <circle class="shape f-red" cx="40" cy="944" r="15"></circle>
+        <text x="64" y="948" class="sub">XOR-frame recursions (paper 1 §12)</text>
       </g>
-      <g class="r" tabindex="0" data-id="sweeps" aria-label="Few sweeps">
-        <rect class="shape f-red" x="88" y="38" width="902" height="58"></rect>
-        <text x="106" y="63" class="lbl t-red">Heads make only o(log d) monotone sweeps, or never fold back</text>
-        <text x="106" y="82" class="tiny t-red">Theorems P, P′, M* (paper 1, Lean) · no runtime premise (passes memo)</text>
-      </g>
-      <g class="r" tabindex="0" data-id="phases" aria-label="Output produced in O(1) monotone macro-phases with sublinear workspace">
-        <rect class="shape f-red" x="88" y="96" width="902" height="50"></rect>
-        <text x="106" y="117" class="lbl t-red">Output phase: O(1) monotone sweeps of the large tapes (o(L) jitter), other heads in o(L) cells</text>
-        <text x="106" y="136" class="tiny t-red">while a fixed fraction of the input rows is still unread · any adaptivity · paper 16, Lean</text>
-      </g>
-      <g class="r" tabindex="0" data-id="movement" aria-label="Data movement only">
-        <rect class="shape f-red" x="88" y="654" width="902" height="56"></rect>
-        <text x="106" y="679" class="lbl t-red">Data movement only: entries are copied, never combined</text>
-        <text x="106" y="698" class="tiny t-red">Stoß 1973 · Kirchherr 1988 · oblivious routing needs a log L coding gain (paper 1 §11)</text>
+      <g class="r" tabindex="0" data-id="packets" aria-label="Local packet coding">
+        <circle class="shape f-red" cx="400" cy="944" r="15"></circle>
+        <text x="424" y="948" class="sub">Local packet coding with a small helper budget (paper 2)</text>
       </g>
     </svg>
   </div>
@@ -315,7 +346,7 @@ a:hover { text-decoration-thickness: 2px; }
       arising from tape computations, including the frozen traces of a fixed simulator. Paper 15 now constructs abstract
       codes with polynomially small rate deficits, ruling out the unrestricted slow-gap premise that was previously another
       sufficient condition. It does not settle the native coding hypotheses.</p>
-    <p>Red means an unconditional exclusion. The red circle combines depth reduction with proved half-rate bounds for its cone
+    <p>Red means an unconditional exclusion. The red circle combines depth reduction with proved half-rate bounds for its ball
       relations (papers 7, 8 and 10). Orange needs the coding crux at a rate above the reveal cost. Dark orange needs it only
       at the smaller depths of Theorems F, B and M. Yellow uses a stronger coding hypothesis, a half-rate bound for native
       recovery relations. In the low-adaptivity circle Corollary L(b) uses the original machine’s frozen traces. In the outer
@@ -402,8 +433,11 @@ a:hover { text-decoration-thickness: 2px; }
       (Lemma R), but one set of steps is such a cut for every pair of row sets at once, so counting cuts alone cannot go further. These
       necessary conditions do not settle the orange pieces: five explicit linear-time cascade schedules, realized by
       machines that compute other functions, meet all of them in numerical tests.
-      Two of these exclusions are drawn as red islands at the lower left of the oblivious circle: few macroscopic crossings (Theorems X and S) and one long-range work head (Theorem H). Each is drawn across both oblivious pieces, and since both theorems hold on every heavy trace of any machine, each also reaches into the low- and high-adaptivity regions. No existing piece turns red as a whole.</p>
-    <p>Paper 16 also adds a red band, the one below the sweeps band: no machine, adaptive or not, transposes in linear time if on every run its output is produced in a final stretch in
+      Two of these exclusions are drawn as red islands, stated without a time bound: few macroscopic crossings (Theorems X and S),
+      the upright island at the bottom, and one long-range work head (Theorem H), the flat one. Each is drawn across both oblivious
+      pieces, and since both theorems hold on every heavy trace of any machine, each also reaches into the low- and high-adaptivity
+      regions. No existing piece turns red as a whole.</p>
+    <p>Paper 16 also adds the output-phase strip: no machine, adaptive or not, transposes in linear time if on every run its output is produced in a final stretch in
       which the input head and a fixed set of bank heads make O(1) monotone phases, up to o(L) jitter, every other head stays within
       o(L) cells, and a fixed fraction of the input rows is still unread. Its proof gives a depth-independent coding deficit on the
       cone relations of paper 15’s simulator. With the whole run as the stretch, the class probably also yields to paper 1’s
@@ -418,15 +452,29 @@ a:hover { text-decoration-thickness: 2px; }
       that each return to a cell after moving a fixed fraction of L away: one arbitrary work head, with every other work head
       confined to smaller excursions, is excluded whatever the input head does, because a slab partition of the free head’s
       tape cuts the computation into nearly autonomous pieces (Theorem H).
-      Outside the red band, a transposer must use unboundedly many macro-phases on its large tapes, or linear workspace, while a fixed
-      fraction of the input is unread.</p>
+      Outside that strip, a linear-time transposer must use unboundedly many macro-phases on its large tapes, or linear workspace, while
+      a fixed fraction of the input is unread.</p>
+    <p><b>How the pieces are drawn.</b> Every class on the map is stated without a time bound, so that it contains transposers of
+      every speed, and red means that none of them runs in linear time. Where a theorem takes a threshold from the time constant,
+      the class asks for its condition at every fixed threshold: every θ &gt; 0 for crossings, excursions of o(L) cells for the free
+      head, every radius for the half-bound circle, every ε &gt; 0 for few large families. The passes strip lies outside the
+      transposers because the passes memo bounds every transposer, at any running time. Three slow machines witness the overlaps of
+      the two dark-outlined pieces. A round-trip machine copies the input to its one work tape and makes d round trips, writing one
+      output row per rightward pass. A counter machine keeps O(log L)-bit counters on its one work tape and walks the input head to
+      each entry in output order. A fresh-copy machine writes each pass to new cells of another tape, so that every cell is entered
+      at most three times. All three are oblivious and only copy data. Input-dependent pauses move them to any adaptivity, and two
+      extra tapes running paper 8’s deep-nesting pairs move them into the deep piece. Two placements are proved: an oblivious
+      one-tape machine lies in the shallow piece and in the one-head island, and oblivious data movement lies inside the oblivious
+      circle and both overlays. Two questions are open: whether a one-tape transposer can enter every cell O(1) times, and whether
+      any transposer has the output-phase property (the dotted ? links). XOR-frame recursions and local packet coding are
+      exclusions inside abstract models, not sets of machines, and are listed below the frame.</p>
     <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
       machines (Harvey and van der Hoeven). The best known upper bound is O(L·(log d)<sup>1−κ</sup>), from an unrefereed preprint.</p>
   </section>
   <section class="notes" id="sources">
     <h2>Sources</h2>
     <p>The papers of the series cited on the map, with the external results: Dietzfelbinger, Maass and Schnitger (1991) and Dietzfelbinger
-      and Maass (1993) for one work tape; Stoß (1973) and Kirchherr (1988) for data movement; Harvey and van der Hoeven (2025) for the link
+      and Maass (1993) for one work tape; Stoß (1973) for data movement along a fixed pattern; Kirchherr (1988) for conservative machines with few reversals; Harvey and van der Hoeven (2025) for the link
       to integer multiplication.</p>
     <ul class="srclist">
       <li><b>Paper 1</b> · <a href="https://hansbrende.github.io/papers/Matrix-Transposition-and-the-Tape-Coding-Conjecture/paper/main.pdf">Matrix Transposition and the Tape Coding Conjecture</a></li>
@@ -454,62 +502,62 @@ a:hover { text-decoration-thickness: 2px; }
 <script>
 const R = {
   onetape: { name: "Exactly one work tape", color: "red", status: "Impossible, unconditionally",
-    text: "Off-line machines with a read-only input tape and a single work tape need superlinear time to transpose.",
-    src: "Dietzfelbinger, Maass and Schnitger 1991; Dietzfelbinger and Maass 1993" },
-  sweeps: { name: "Only o(log d) monotone sweeps, or head paths that never fold back", color: "red", status: "Impossible, unconditionally (Lean)",
-    text: "Every transposer needs Ω(log d) passes in which all heads move monotonically, oblivious or not, even when correct on a tiny fraction of inputs. Along its most popular trace, the rescaled head paths of a linear-time transposer must fold back (Theorem M*), so paths that never fold back at macroscopic scale are excluded too.",
-    src: "Paper 1, Theorems P, P′, M*; Adaptive Pass Bounds memo (no runtime premise)" },
-  phases: { name: "Output produced in O(1) monotone macro-phases, other heads in o(L) cells", color: "red", status: "Impossible, unconditionally (Lean)",
-    text: "On every run within the time bound, the output is produced in a final stretch, which may start at an input-dependent time and follow an arbitrary prefix. In it the input head and a fixed set of bank heads each make O(1) phases that are monotone up to o(L) cells of back-and-forth jitter, every other head visits only o(L) cells, and when the stretch begins a fixed fraction of the input rows has not yet been read. Such a machine does not transpose in linear time, adaptive or not. The proof bounds every storage code on the cone relations of each frozen trace of paper 15’s simulator by rate 1 − ρ for a fixed ρ > 0, at every depth, and applies the native gap criterion. With the whole run as the stretch, this class probably also yields to paper 1’s column-grouped pass bound once the jitter and the workspace are folded into the finite control (a proof sketch in paper 16); with an unrestricted prefix the published pass bounds say nothing, and the exclusion is new.",
+    text: "Off-line machines with a read-only input tape and a single work tape need superlinear time to transpose. Slower ones exist, and two of them witness the drawn overlaps. A round-trip machine copies the input to its work tape, parks the input head and makes d round trips, writing one output row per rightward pass. It is oblivious and only copies data; it lies in the shallow piece, in the one-head island and in the half-bound circle, since after its first r + 1 round trips no output reaches an input read within r dependency steps. A counter machine keeps O(log L)-bit counters on its tape and walks the input head to each entry in output order. Its work head never leaves O(log L) cells, so it has no macroscopic crossings; with its counters run by a head that sweeps them, its return families have O(log L) hops and spans in two classes of disjoint spans, which puts it in the few-families island. Input-dependent pauses, which enter no cell, put the round-trip machine in the low-adaptivity region (one bit of trace entropy) or in the high-adaptivity region (all L bits). An oblivious one-tape machine has one free work head and no other, so it lies in the shallow piece (paper 8, Lemma W and Theorem M), never in the deep one, and inside the one-head island (paper 16, Corollary 4.2). Whether a one-tape transposer can enter every cell of both its tapes O(1) times is not known (the dotted ?).",
+    src: "Dietzfelbinger, Maass and Schnitger 1991; Dietzfelbinger and Maass 1993 · paper 8, Lemma W and Theorem M · paper 16, Corollary 4.2 · paper 4, Corollary 3.18 (linear time)" },
+  passes: { name: "Only o(log d) monotone passes", color: "red", status: "No transposer has it, at any running time (Lean)",
+    text: "A pass is a stretch of steps in which every head, the input head included, moves monotonically. Every halting machine that transposes every input needs at least log_(k+1) d − O(1) passes, with a constant that depends only on the machine, whatever its running time, oblivious or not (passes memo, Lean). Paper 1’s Theorems P and P′ prove the bound under a polynomial runtime, also for machines that are correct on only a 2^(−O(db)) fraction of the inputs, and at coarser column scales. So no transposer makes only o(log d) passes, and the strip lies outside the transposers. Kirchherr’s bound for conservative machines with o(log d) reversals is a special case.",
+    src: "Passes memo (Adaptive Pass Bounds without a Runtime Assumption), run-length bound and Theorem “Logarithmic passes without a runtime assumption” (Lean) · paper 1, Theorems P and P′ (Lean) · Kirchherr 1988" },
+  phases: { name: "Output in O(1) monotone macro-phases, other heads in o(L) cells", color: "red", status: "No linear-time transposer (Lean); not known whether any transposer has it",
+    text: "On every run, the output is produced in a final stretch, which may start at an input-dependent time after an arbitrary prefix. In it the input head and a fixed set of bank heads each make O(1) phases that are monotone up to o(L) cells of back-and-forth jitter, every other head visits only o(L) cells, and when the stretch begins a fixed fraction of the input rows has not yet been read. No such machine transposes in linear time, adaptive or not. The proof bounds every storage code on the cone relations of each frozen trace of paper 15’s simulator by rate 1 − ρ for a fixed ρ > 0, at every depth, and applies the native gap criterion. Whether a slower transposer can have the property is not known, so the strip is drawn outside the transposers, with a dotted ? to them. With the whole run as the stretch, the class probably yields to paper 1’s column-grouped pass bound once the jitter and the workspace are folded into the finite control, which would exclude it at every running time (a proof sketch in paper 16); with an unrestricted prefix the published pass bounds say nothing.",
     src: "Paper 16, Theorems B and J with their suffix forms, and the native gap criterion, Theorem G (Lean) · paper 15, aligned simulator (Lean) · paper 1, Theorem P′ (grouped columns)" },
-  movement: { name: "Data movement only", color: "red", status: "Impossible, unconditionally",
-    text: "Machines that only copy whole entries, never combining symbols, cannot transpose in linear time. For oblivious machines, a linear-time transposer needs a coding gain of order log L over routing, so pure routing fails.",
-    src: "Stoß 1973; Kirchherr 1988; paper 1 §11 (written proof)" },
+  movement: { name: "Oblivious data movement", color: "red", status: "Impossible, unconditionally",
+    text: "Entries are moved as indivisible items along a pattern that does not depend on the input: copied, never combined. Such machines cannot transpose in linear time (Stoß, for Turing machines). In the series’ terms, a linear-time oblivious transposer yields a code on its own block network that beats every routing by a factor of order log d (paper 1, Theorem “The code gap”, Lean), and a pure data mover is a routing. For data movement that depends on the entries, which repeat because b = ⌈log₂ d⌉, no such bound is known (paper 1, condition (N1)), so the piece lies inside the oblivious circle. Copying is linear over every field (paper 8’s definition of a linear data path), and pure data movement has bounded merge depth (paper 11, Remark “Examples”), so the piece lies inside both dashed overlays. Slow members witness every drawn overlap: the one-tape round-trip and counter machines (see the one-work-tape card); a fresh-copy machine that writes each pass to new cells of another tape and rewinds, so that every cell is entered at most three times (bounded entry); and any of these with two extra tapes running paper 8’s deep-nesting pairs, whose two heads of unbounded owner load escape Theorems F, B and M (deep piece).",
+    src: "Stoß 1973 · paper 1, condition (N1) and Theorem “The code gap” (Lean) · paper 8, Definition “Linear data path” and Section 5 · paper 11, Remark “Examples” (hop charging)" },
   xor: { name: "XOR-frame recursions", color: "red", status: "Impossible within the template",
-    text: "The recursion behind the only claimed sub-(L log d) construction, which mixes data by XOR in address-shear frames, makes at least as many frame changes as its gadget has wires. Within the template, linear time is excluded.",
+    text: "The recursion behind the only claimed sub-(L log d) construction, which mixes data by XOR in address-shear frames, makes at least as many frame changes as its gadget has wires. Within the template, linear time is excluded. The template is an abstract model of the recursion, not a set of machines, so it is listed below the frame rather than drawn as a piece.",
     src: "Paper 1 §12" },
   packets: { name: "Local packet coding with a small helper budget", color: "red", status: "Impossible within the model",
-    text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too.",
+    text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too. The model is an information-access model, not a set of machines, so it is listed below the frame rather than drawn as a piece.",
     src: "Paper 2 (Local Coding Barriers), with its packet and adaptive-coding extensions" },
   high: { name: "High adaptivity", color: "yellow", status: "Excluded if a fixed native deficit (half rate is one) holds for the fixed simulator’s frozen traces",
-    text: "The original trace may carry half the input’s information or more. For each fixed machine and time coefficient, batching gives a fixed simulator whose trace entropy is at most L/4 at all sufficiently large dimensions where the original transposes within that time bound. Under the native half-rate hypothesis for the simulator at its own value width and depth, Corollary L(b) forces its entropy above L/4. This would exclude the original machine at those dimensions. Any fixed deficit suffices in place of half rate: if for each k and C the frozen-trace cone relations of every k-tape machine with time constant C carry storage codes of rate at most 1 − ρ(k, C), for some ρ(k, C) > 0 and at every depth, then no machine transposes in linear time (paper 16, Theorem G, Lean). Machines whose output phase is a bounded number of monotone sweeps with sublinear workspace are excluded unconditionally (the red band below the sweeps band). Also unconditionally, paper 15’s simulator of any linear-time transposer has heavy traces that together carry all but an exponentially small fraction of the inputs, and on each of them a linear amount of information must reach macroscopic crossings, on one coarsely monotone leg of one tape (paper 16, Theorem E(b), Lean); carrying this back to the original machine’s own dependency graph is open. A machine of any entropy that has one trace followed by at least a 2^(−ηL) fraction of the inputs, for a small fixed η, is excluded if that trace has few macroscopic crossings or only one long-range work head, which is why the two paper 16 islands reach into this region. Paper 15 now constructs abstract binary codes with rates at least 1 − CΔ^(−α), for fixed C > 0 and 0 < α < ½. At each sufficiently large fixed degree cap Δ, the length and minimum paired distance tend to infinity; the rate bound approaches one as the cap grows. This is stronger than the abstract requirement forced by a linear-time transposer (Theorem A). One common partition at every sufficiently large length works for every nonempty source subset and retains all coordinates, with an exponential tail for fibre-rate loss (Theorem F). These constructions refute the unrestricted slow-gap premise (Corollary 6.2), but they supply no tape realization or bound on physical access cost. Their amplification, counting and padding are Lean-verified from an explicit seed hypothesis; seed existence is proved in writing from paper 13. The native criterion remains open.",
+    text: "The original trace may carry half the input’s information or more. For each fixed machine and time coefficient, batching gives a fixed simulator whose trace entropy is at most L/4 at all sufficiently large dimensions where the original transposes within that time bound. Under the native half-rate hypothesis for the simulator at its own value width and depth, Corollary L(b) forces its entropy above L/4. This would exclude the original machine at those dimensions. Any fixed deficit suffices in place of half rate: if for each k and C the frozen-trace cone relations of every k-tape machine with time constant C carry storage codes of rate at most 1 − ρ(k, C), for some ρ(k, C) > 0 and at every depth, then no machine transposes in linear time (paper 16, Theorem G, Lean). Machines whose output phase is a bounded number of monotone sweeps with sublinear workspace do not transpose in linear time (the output-phase strip, drawn outside the transposers because no slower transposer with that property is known). Also unconditionally, paper 15’s simulator of any linear-time transposer has heavy traces that together carry all but an exponentially small fraction of the inputs, and on each of them a linear amount of information must reach macroscopic crossings, on one coarsely monotone leg of one tape (paper 16, Theorem E(b), Lean); carrying this back to the original machine’s own dependency graph is open. A machine of any entropy that has one trace followed by at least a 2^(−ηL) fraction of the inputs, for a small fixed η, is excluded if that trace has few macroscopic crossings or only one long-range work head, which is why the two paper 16 islands reach into this region. Paper 15 now constructs abstract binary codes with rates at least 1 − CΔ^(−α), for fixed C > 0 and 0 < α < ½. At each sufficiently large fixed degree cap Δ, the length and minimum paired distance tend to infinity; the rate bound approaches one as the cap grows. This is stronger than the abstract requirement forced by a linear-time transposer (Theorem A). One common partition at every sufficiently large length works for every nonempty source subset and retains all coordinates, with an exponential tail for fibre-rate loss (Theorem F). These constructions refute the unrestricted slow-gap premise (Corollary 6.2), but they supply no tape realization or bound on physical access cost. Their amplification, counting and padding are Lean-verified from an explicit seed hypothesis; seed existence is proved in writing from paper 13. The native criterion remains open.",
     src: "Paper 15, Theorems S and A, Corollary 9.3 (Lean); Theorems M, C and F and Corollary 6.2 (Lean from an explicit seed; written existence proof from paper 13) · paper 14, Corollary L(b) (Lean) · paper 16, Theorems G and E(b) (Lean)" },
   leOpen: { name: "Low adaptivity", color: "yellow", status: "Impossible if the machine’s frozen-trace relations obey a native rate bound below 1 − η (the half-rate bound is one)",
     text: "The traces carry at most ηL bits, η < ½, so some trace is followed by at least 2^((1−η)L) inputs. Theorem T gives that trace a genie of cost εL and bounded depth, so some fibre of the revealed word is a storage code on the trace's cone relation with at least 2^((1−η−ε)L) words, and the native half bound for frozen traces excludes the machine, however often it enters its cells (paper 14, Corollary L, Lean). Rate at most 1 − ρ for a fixed ρ > η suffices in place of ½ (paper 16, proof of Theorem G, Lean). This is the eighth paper's Corollary F″ without its bounded-entry hypothesis. The entropy hypothesis is not robust: padding the input head's motion defeats it (paper 8, Section 6.2). Without any coding hypothesis, such a machine needs at least two work heads that each make excursions of linear size (paper 16, Theorem H, Lean). If η is below an explicit, astronomically small constant, its most likely trace must also route a linear amount of information through macroscopic crossings, as in the oblivious case (paper 16, Theorem E(a), Lean). Both statements hold on every heavy trace, so the red islands “Few macroscopic crossings” and “One long-range work head” reach into this circle.",
     src: "Paper 14, Corollary L (Lean); paper 8, Corollary F″ and its update; paper 11, Theorem SE; paper 16, proof of Theorem G and Theorems H and E(a) (Lean)" },
   lowad: { name: "Each cell of every tape entered O(1) times", color: "yellow", status: "Impossible if a half-rate bound for the machine's own relations holds",
-    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19). Inside the low-adaptivity circle the bounded-entry hypothesis is no longer needed (paper 14, Corollary L); the disc matters beyond it, through Corollary RV.",
+    text: "With low adaptivity, freezing the most likely trace reduces to the oblivious case (Corollary F″). Paper 11 removes the adaptivity hypothesis: on each class of inputs with the same coarse skeleton the machine is oblivious at block scale, and if the work heads enter every cell O(1) times, the coarse skeleton must carry about L/2 bits (Theorem SE). So, given a half-rate bound for the recovery relations of the skeleton classes, no linear-time transposer, adaptive or not, enters every cell of every tape, the input tape included, O(1) times (Corollary RV). The papers state these results under Question 9.1, which is false (paper 13), but their proofs use only such bounds for the machine's own relations. A half-rate bound asks more than the crux, and weaker bounds suffice in part: rate at most 1−ρ, with ρ above the trace-entropy rate η, gives Corollary F″ (paper 8, Remark 6.5), and a slowly decaying deficit gives Corollary RV by a proof sketch (paper 11, Remark 4.19). Inside the low-adaptivity circle the bounded-entry hypothesis is no longer needed (paper 14, Corollary L); the disc matters beyond it, through Corollary RV. Slow bounded-entry transposers exist: a fresh-copy machine writes each pass to new cells of another tape and rewinds, so that every cell is entered at most three times, and pauses, which enter no cell, give it any adaptivity. Inside the oblivious circle the disc lies in the shallow piece, since entering every cell at most V times bounds the owner load by 2V − 1 (paper 8). Whether a one-tape transposer can have bounded entry is not known (the dotted ?).",
     src: "Paper 8, Corollary F″ and Remark 6.5; paper 11, Theorem SE, Corollary RV and Remark 4.19; paper 13; paper 14, Corollary L" },
   ob: { name: "Oblivious, deep nesting", color: "orange", status: "Impossible if the crux holds (Corollary O, Lean)",
-    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. In the second case the bounded heads cannot keep all their excursions below a small fixed fraction of L: one arbitrary work head with all other excursions that small is excluded unconditionally, whatever the input head does (paper 16, Theorem H, Lean; the red island “One long-range work head”), so every oblivious transposer has at least two work heads making excursions of linear size. It must also route a linear amount of information through macroscopic crossings: from every set containing a fixed fraction of the outputs, linearly many vertex-disjoint dependency paths reach the starts of crossing revisits whose excursions exceed a fixed fraction of L, so some tape is reused like a queue at macroscopic scale and stack-like reuse is excluded. At that scale the coarse head walks come from a finite family independent of d, and one coarsely monotone leg of one tape carries the expansion (paper 16, Theorems X and S, Lean; the red island “Few macroscopic crossings”). Paper 14 proves depth reduction for every number of heads (Theorem T, Lean): every trace has a genie of cost εL and full depth below D, where log log D = O(k² log(kβC/ε)). So the crux alone, at that depth and a rate above ε, excludes every oblivious linear-time transposer, whatever its head motion (Corollary O, Lean in the frozen machine model of paper 1); the same genies prove paper 11's Conjecture HV*, code-level depth reduction (Corollary HV, Lean). Since D is doubly exponential, the crux is needed at rate about (log D)^(−c/k²) (Remark 9.4); the heads of Theorems F, B and M need it only at smaller depths (the darker piece). The crux may be taken one machine at a time: a crux for one machine’s own cone systems, at a rate above the cost of its genie, excludes that machine (paper 16, Lean). For machines whose output phase makes O(1) monotone sweeps of the large tapes with sublinear workspace, paper 16 proves such a deficit unconditionally (the red band). The deep-nesting pairs, which the series took for the sharpest candidates for depth-robust schedules, are cut to depth D(2,ε) whatever their nesting depth (Corollary N, Lean), so Conjectures A′ and A″ are false. The lower bounds for restricted labels (paper 10's block-label witnesses; paper 11's Theorem BP, under its Conjecture S) are untouched but are no longer evidence of depth-robustness, and Theorem H of the information-depth memo, which assumes that TCP fails, is vacuous.",
+    text: "Two work heads have unboundedly many distinct turning points open at once, or one does while bounded heads use unboundedly many scales. In the second case the bounded heads cannot keep all their excursions below a small fixed fraction of L: one arbitrary work head with all other excursions that small is excluded unconditionally, whatever the input head does (paper 16, Theorem H, Lean; the red island “One long-range work head”), so every oblivious transposer has at least two work heads making excursions of linear size. It must also route a linear amount of information through macroscopic crossings: from every set containing a fixed fraction of the outputs, linearly many vertex-disjoint dependency paths reach the starts of crossing revisits whose excursions exceed a fixed fraction of L, so some tape is reused like a queue at macroscopic scale and stack-like reuse is excluded. At that scale the coarse head walks come from a finite family independent of d, and one coarsely monotone leg of one tape carries the expansion (paper 16, Theorems X and S, Lean; the red island “Few macroscopic crossings”). Paper 14 proves depth reduction for every number of heads (Theorem T, Lean): every trace has a genie of cost εL and full depth below D, where log log D = O(k² log(kβC/ε)). So the crux alone, at that depth and a rate above ε, excludes every oblivious linear-time transposer, whatever its head motion (Corollary O, Lean in the frozen machine model of paper 1); the same genies prove paper 11's Conjecture HV*, code-level depth reduction (Corollary HV, Lean). Since D is doubly exponential, the crux is needed at rate about (log D)^(−c/k²) (Remark 9.4); the heads of Theorems F, B and M need it only at smaller depths (the darker piece). The crux may be taken one machine at a time: a crux for one machine’s own cone systems, at a rate above the cost of its genie, excludes that machine (paper 16, Lean). For machines whose output phase makes O(1) monotone sweeps of the large tapes with sublinear workspace, paper 16 proves such a deficit unconditionally (the output-phase strip). The deep-nesting pairs, which the series took for the sharpest candidates for depth-robust schedules, are cut to depth D(2,ε) whatever their nesting depth (Corollary N, Lean), so Conjectures A′ and A″ are false. The lower bounds for restricted labels (paper 10's block-label witnesses; paper 11's Theorem BP, under its Conjecture S) are untouched but are no longer evidence of depth-robustness, and Theorem H of the information-depth memo, which assumes that TCP fails, is vacuous.",
     src: "Paper 14, Theorem T, Corollaries N, O and HV (Lean), Remark 9.4; paper 4, Theorem D; paper 10, Theorems V*, LU and A; paper 11, Theorem BP; information-depth memo, Theorem H; paper 16, Theorems X, D, S and H, per-machine crux and bounded-macro-phase deficit (Lean)" },
   obS: { name: "Oblivious, bounded nesting load, home-based heads, or one free head", color: "orange-dark", status: "Impossible if the crux holds at the smaller depths of Theorems F, B and M",
-    text: "The heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F and B cut these schedules to depth 2^O(1/ε) for fixed k and class parameters, and Theorem M to a depth that depends only on its parameters, against the doubly exponential depth of Theorem T. A crux at a larger depth implies the crux at a smaller one, and Corollary O applies here too, so the statement that remains is implied by the orange piece's: for heads that enter every cell O(1) times, a crux of rate of order 1/log D suffices (paper 8, Section 6.1), against about (log D)^(−c/k²) in general (paper 14, Remark 9.4). Paper 9 settles part of this piece without the crux (the red island). With no free work head, the island contains every machine whose work heads all have bounded nesting load and family heights in a fixed number of dyadic windows of fixed width (paper 16, Theorem Q, Lean), so the open part of this piece has a free work head, home-based heads, or families at unboundedly many scales. A free work head is excluded too when every other work head’s excursions stay below a small fraction of L fixed by k, the time constant and the value width (paper 16, Theorem H, Lean; the red island “One long-range work head”), so what remains open here needs a second work head with excursions of linear size and, like every oblivious linear-time transposer, macroscopic crossings with linear expansion (paper 16, Theorem X, Lean; the red island “Few macroscopic crossings”). With boundedly overlapping excursions, what remains open must have more than q return families of linear size for every fixed q, and its large families cannot form two classes of non-overlapping spans plus one exception.",
+    text: "The heads have bounded nesting load (each head has O(1) distinct turning points among its open nested hops, in particular when every cell is entered O(1) times), or are home-based, or form one free head plus bounded heads at O(1) dyadic scales. Theorems F and B cut these schedules to depth 2^O(1/ε) for fixed k and class parameters, and Theorem M to a depth that depends only on its parameters, against the doubly exponential depth of Theorem T. A crux at a larger depth implies the crux at a smaller one, and Corollary O applies here too, so the statement that remains is implied by the orange piece's: for heads that enter every cell O(1) times, a crux of rate of order 1/log D suffices (paper 8, Section 6.1), against about (log D)^(−c/k²) in general (paper 14, Remark 9.4). Every oblivious one-tape machine is in this piece: its only work head is the free head. Paper 9 settles part of this piece without the crux (the red island). With no free work head, the island contains every machine whose work heads all have bounded nesting load and family heights in a fixed number of dyadic windows of fixed width (paper 16, Theorem Q, Lean), so the open part of this piece has a free work head, home-based heads, or families at unboundedly many scales. A free work head is excluded too when every other work head’s excursions stay below a small fraction of L fixed by k, the time constant and the value width (paper 16, Theorem H, Lean; the red island “One long-range work head”), so what remains open here needs a second work head with excursions of linear size and, like every oblivious linear-time transposer, macroscopic crossings with linear expansion (paper 16, Theorem X, Lean; the red island “Few macroscopic crossings”). With boundedly overlapping excursions, what remains open must have more than q return families of linear size for every fixed q, and its large families cannot form two classes of non-overlapping spans plus one exception.",
     src: "Paper 8, Theorem F, Corollaries F and F′, Theorem M, Section 6.1; paper 4, Theorem B and Corollary B; paper 14, Corollary O and Remark 9.4; paper 9, Theorem 4.2 and Corollaries 4.3 and 4.5; paper 16, Theorems Q, H and X (Lean)" },
   merge: { name: "Oblivious, code of bounded merge depth", color: "dash", status: "Overlay: the crux for ball systems at the radius of hop charging",
-    text: "Along every path from most outputs, the code merges deep data lineages (those carried through cells entered unboundedly often) at most s times, for a fixed s; the schedule may be deeply nested and revisit cells unboundedly often. Hop charging cuts only the hops at boundedly entered cells and charges the deep hops to checkpoints along the lineages, so the side information inside balls of bounded radius has a short index code. The crux for these ball systems therefore excludes the machine, and so does a half-rate bound for storage codes on relations inside balls, the form that the proof of Corollary HC* uses (the corollary is stated under Question 9.1, which is false); for linear codes, the linear crux suffices. Before paper 14 this was the only route to deep nesting. Now the crux at the depth of Theorem T excludes every oblivious machine, so the island changes the hypothesis, not the colour. Neither hypothesis is known to imply the other: ball systems dominate cone systems at equal radius, but the radius here depends on the merge bound and on the eighth paper's depth for bounded entry, not on Theorem T's. Paper 11's Conjecture HV*, code-level depth reduction for every oblivious transposer, holds: at the depth of Theorem T every such ball system has an index code of at most εL bits, and minrank at most εL for linear codes (paper 14, Corollary HV, Lean), which answers paper 11's Problem 9.1.",
-    src: "Paper 11, Theorems HC and HC′, Corollaries HC and HC* (Lean) and the crux for ball systems after Corollary HC*; paper 8, Remark 7.6(a); paper 13; paper 14, Corollaries O and HV (Lean)" },
+    text: "Along every path from most outputs, the code merges deep data lineages (those carried through cells entered unboundedly often) at most s times, for a fixed s; the schedule may be deeply nested and revisit cells unboundedly often. Pure data movement has bounded merge depth (paper 11, Remark “Examples”), so the overlay contains the oblivious data-movement piece and meets both oblivious pieces. Hop charging cuts only the hops at boundedly entered cells and charges the deep hops to checkpoints along the lineages, so the side information inside balls of bounded radius has a short index code. The crux for these ball systems therefore excludes the machine, and so does a half-rate bound for storage codes on relations inside balls, the form that the proof of Corollary HC* uses (the corollary is stated under Question 9.1, which is false); for linear codes, the linear crux suffices. Before paper 14 this was the only route to deep nesting. Now the crux at the depth of Theorem T excludes every oblivious machine, so the island changes the hypothesis, not the colour. Neither hypothesis is known to imply the other: ball systems dominate cone systems at equal radius, but the radius here depends on the merge bound and on the eighth paper's depth for bounded entry, not on Theorem T's. Paper 11's Conjecture HV*, code-level depth reduction for every oblivious transposer, holds: at the depth of Theorem T every such ball system has an index code of at most εL bits, and minrank at most εL for linear codes (paper 14, Corollary HV, Lean), which answers paper 11's Problem 9.1.",
+    src: "Paper 11, Theorems HC and HC′, Corollaries HC and HC* (Lean) and the crux for ball systems after Corollary HC*; paper 11, Remark “Examples”; paper 8, Remark 7.6(a); paper 13; paper 14, Corollaries O and HV (Lean)" },
   geom: { name: "Boundedly overlapping excursions, few large return families", color: "red", status: "Impossible, unconditionally (Lean)",
-    text: "A return family is one head excursion: all long hops of one head, on one side, around one turning point. Suppose an oblivious linear-time machine's family spans overlap at most N at a time, for a fixed N. If only a fixed number of families are large and every other family has at most εL hops, or if the large families split into two classes of non-overlapping spans plus one arbitrary family, then the machine is correct on at most 2^((1−ε)L) inputs. No coding question is left: complete source certificates on the actual geometry give the deficit directly. Economical source covers or globally shared raw support give further exclusions of the same kind, and the frozen gap-area memo excludes funnels and single-sweep terminal landings. Paper 11 extends these exclusions beyond oblivious machines: a machine with a trace of probability at least 2^(−ηL), for a small enough η, whose geometry has this structure does not transpose (Theorem LA). With no free work head, this covers every machine whose work heads have bounded nesting load and family heights in a fixed number of dyadic windows of fixed width, whatever the input head does: some gap of scales then contains no family, so only a fixed number of families are large (paper 16, Theorem Q, Lean). The island is drawn for oblivious machines; the extensions to heavy traces (Theorems LA and Q) are not drawn.",
+    text: "A return family is one head excursion: all long hops of one work head, on one side, around one turning point. Stated without a time bound, the class asks, for fixed N and q, that the family spans of an oblivious machine split into N classes of disjoint spans and that, for every ε > 0, all but q families have at most εL hops at all large dimensions, or that the large families split into two classes of non-overlapping spans plus one arbitrary family. For a linear-time machine this is paper 9’s setting: the machine is correct on at most 2^((1−ε)L) inputs, and no coding question is left, since complete source certificates on the actual geometry give the deficit directly. N classes of disjoint spans leave at most N families open at any step, so the owner load is at most N and the island lies in the shallow piece. Economical source covers or globally shared raw support give further exclusions of the same kind, and the frozen gap-area memo excludes funnels and single-sweep terminal landings. Paper 11 extends these exclusions beyond oblivious machines: a machine with a trace of probability at least 2^(−ηL), for a small enough η, whose geometry has this structure does not transpose in linear time (Theorem LA). With no free work head, this covers every machine whose work heads have bounded nesting load and family heights in a fixed number of dyadic windows of fixed width, whatever the input head does (paper 16, Theorem Q, Lean). The island is drawn for oblivious machines; the extensions to heavy traces are not drawn. Slow transposers belong to it, for instance the one-tape counter machine with a sweeping work head, whose families all have O(log L) hops.",
     src: "Paper 9, Corollaries 4.3, 4.4, 4.5 and 4.7, Theorems 4.2 and 4.6 (Lean); frozen gap-area memo, Theorems A and B (Lean); paper 11, Theorem LA (Lean); paper 16, Theorem Q (Lean)" },
   crossings: { name: "Few macroscopic crossings (stack-like reuse at macroscopic scale)", color: "red", status: "Impossible, unconditionally (Lean)",
-    text: "Two revisits on one tape cross when one begins inside the other and ends after it, as when a stretch of tape is written moving right and later read moving right again, like a queue; reusing a tape like a stack makes only nested revisits. Fix a fraction θ > 0 that is explicit in k, the machine’s alphabet and state counts, the time constant and α. An oblivious machine does not transpose in linear time if, for some set of at least αL outputs, fewer than a fixed fraction of that many steps cut every dependency path from those outputs to the starts of crossing revisits that travel more than θL away (Theorem X). In particular it is excluded if fewer than a fixed fraction of L steps start such crossings (Corollary 5.6), for instance if every tape is reused only like a stack above scale θL, or if no work head’s coarse walk at scale θL/4 turns back over its own range and then forward again, by at least three grid steps each way (Theorem S). The same holds for any machine on a trace followed by at least a 2^(−ηL) fraction of the inputs, for η below an explicit constant, whatever its other traces do (Theorem E(a)); so the island is drawn across both oblivious pieces and into the low- and high-adaptivity regions. A larger θ would enlarge the class.",
+    text: "Two revisits on one tape cross when one begins inside the other and ends after it, as when a stretch of tape is written moving right and later read moving right again, like a queue; reusing a tape like a stack makes only nested revisits. Stated without a time bound, the class asks, on some trace followed by a 2^(−o(L)) fraction of the inputs (the only trace, if the machine is oblivious): for every fixed θ > 0, a fixed fraction of the outputs can be cut off by o(L) steps from the starts of crossing revisits that travel more than θL away. It contains every machine with o(L) such starts for each θ (Corollary 5.6), for instance one whose tapes are reused only like stacks at macroscopic scale, or whose work heads never return from an excursion of a fixed fraction of L. For a linear-time machine, Theorem X gives a θ and a fraction, explicit in k, the alphabet and state counts, the time constant and the output fraction, at which every such cut is linear in the outputs, on oblivious machines and on every heavy trace (Theorem E(a)); so no linear-time transposer is in the class. Slower transposers are, for instance the one-tape counter machine, whose work head never leaves O(log L) cells. The island is drawn across both oblivious pieces and into the low- and high-adaptivity regions.",
     src: "Paper 16, Theorems X and S, Corollary 5.6 and Theorem E(a) (Lean)" },
-  onehead: { name: "One long-range work head", color: "red", status: "Impossible, unconditionally (Lean)",
-    text: "All work heads but one make only short revisits: each may travel far, but never returns to a cell after moving more than a small fixed fraction of L away from it. The remaining work head and the input head are unrestricted. No such machine transposes in linear time (Theorem H). The free head crosses the walls of a suitable partition of its tape into slabs only boundedly often, which cuts the computation into nearly autonomous pieces; one piece appends a fixed fraction of the output, but its boundary, made of the slab crossings and the other heads’ short revisits, carries too little information for those outputs. The fraction is explicit and polynomial in the time constant and the value width. The theorem holds for oblivious machines and for any machine on a trace followed by at least a 2^(−ηL) fraction of the inputs, for an explicit fixed η, whatever its other traces do; so the island is drawn across both oblivious pieces and into the low- and high-adaptivity regions. Hence every such transposer has two work heads that store and retrieve information across distances that are a fixed fraction of L, and in particular two work tapes (Corollary 4.2).",
-    src: "Paper 16, Theorem H and Corollary 4.2 (Lean)" },
-  pc: { name: "Oblivious, cone relations in a proved half-bound class", color: "red", status: "Impossible, unconditionally",
-    text: "The cone relations lie in a class where every storage code has rate at most ½. The classes are: Class S, the TT-free relations of in-degree at most 3 in which every vertex with three parents has only reciprocal children (it contains the subcubic and the symmetric degree-3 cases); in-degree-3 vertices acyclic; blocks with private parents; TT-free Cayley relations Cay(G,{s,s⁻¹,t}); χc < 3; hyperfinite; two-input components. Together with depth reduction, a correct oblivious transposer cannot have cone relations of this kind on more than 2εL coordinates. Depth reduction was known only for the heads of Theorems F, B and M, and deep nesting needed TCP; paper 14 proves it for all heads, so the whole circle is ruled out.",
-    src: "Paper 7 (Theorems N3, U3, T, PC, CC; §8), paper 10 (Theorem S*), Directed Recovery Structures; paper 14 (Theorem T, Corollary O); paper 4 (Theorem D)" },
+  onehead: { name: "One long-range work head (or none)", color: "red", status: "Impossible, unconditionally (Lean)",
+    text: "All work heads but one make only short revisits: each may travel far, but comes back to a cell only after excursions of o(L) cells. Stated without a time bound, the class asks this on some trace followed by a 2^(−o(L)) fraction of the inputs (the only trace, if the machine is oblivious); the remaining work head and the input head are unrestricted. No linear-time transposer is in the class: for time constant c and value width β, Theorem H excludes every trace followed by a 2^(−ηL) fraction of the inputs, η < ε*, on which all work heads but one keep their excursions below ε_sm·L, with ε* and ε_sm explicit and polynomial in c and β. The free head crosses the walls of a suitable partition of its tape into slabs only boundedly often, which cuts the computation into nearly autonomous pieces; one piece appends a fixed fraction of the output, but its boundary carries too little information for those outputs. Hence every linear-time transposer has two work heads that store and retrieve information across distances that are a fixed fraction of L, and in particular two work tapes (Corollary 4.2). The class contains the machines whose work heads never return from a macroscopic excursion, which paper 1’s Theorem M* already excludes: along the popular trace of a linear-time transposer, the rescaled work-head paths must fold back. It contains every oblivious one-tape machine, including slow transposers such as the one-tape round-trip and counter machines. The island is drawn across both oblivious pieces and into the low- and high-adaptivity regions.",
+    src: "Paper 16, Theorem H and Corollary 4.2 (Lean) · paper 1, Theorem M* (Lean)" },
+  pc: { name: "Oblivious, ball relations in a proved half-bound class", color: "red", status: "Impossible, unconditionally",
+    text: "For every fixed radius r, the ball relation of radius r, which assigns to each output the input positions read at the ends of dependency paths of at most r steps from it, lies, apart from o(L) outputs, in a class where every storage code has rate at most ½. The classes are: Class S, the TT-free relations of in-degree at most 3 in which every vertex with three parents has only reciprocal children (it contains the subcubic and the symmetric degree-3 cases); in-degree-3 vertices acyclic; blocks with private parents; TT-free Cayley relations Cay(G,{s,s⁻¹,t}); χc < 3; hyperfinite; two-input components. The class is stated without a time bound. A linear-time oblivious machine has, for every ε > 0, a genie of cost εL whose cones lie in the balls of a fixed radius (paper 14, Corollary O(a), from Theorem T); the revealed word is then an index code, and its largest fibre is a storage code of rate about 1 − ε on these relations (paper 4, Remark 4.9(b)), which the half bound forbids. Depth reduction was known only for the heads of Theorems F, B and M, and deep nesting needed TCP; paper 14 proves it for all heads, so the whole circle is ruled out. Slow transposers belong to it, for instance the one-tape round-trip machine: after its first r + 1 round trips no output reaches an input read within r steps.",
+    src: "Paper 7 (Theorems N3, U3, T, PC, CC; §8), paper 10 (Theorem S*), Directed Recovery Structures; paper 14 (Theorem T, Corollary O); paper 4 (Theorem D, Remark 4.9(b))" },
   linear: { name: "Linear data path over a field", color: "dash", status: "Overlay: the crux becomes relative rigidity",
-    text: "Linearity is independent of the other circles. For machines that compute linearly over a field, depth reduction now holds on every schedule, so the linear crux alone excludes oblivious linear-time transposers, whatever their head motion (paper 14, Corollary O(c), Lean); at the radius of hop charging it also excludes those whose code merges deep lineages boundedly often (paper 11). The linear crux is exactly relative rigidity: the transposition matrix is not a low-rank matrix plus one supported on the schedule's bounded-depth ball pattern. It is open. For scalar-linear codes the half bound also holds at degree 4, on triangle-free relations in which no two degree-4 vertices share a neighbour.",
-    src: "Paper 8, Lemma 7.3, Theorems D_lin and SH, Problem 10.6; paper 10, Theorem SH*; paper 11, Corollary HC; paper 14, Corollary O(c) (Lean)" }
+    text: "Every step value is an affine function, over a fixed field, of the values it depends on and of the input bit it reads, with coefficients that do not depend on the input. Paper 8 defines this for oblivious machines, so the overlay lies inside the oblivious circle; there it is independent of the other pieces, and since copying is linear it contains oblivious data movement. For machines that compute linearly over a field, depth reduction now holds on every schedule, so the linear crux alone excludes oblivious linear-time transposers, whatever their head motion (paper 14, Corollary O(c), Lean); at the radius of hop charging it also excludes those whose code merges deep lineages boundedly often (paper 11). The linear crux is exactly relative rigidity: the transposition matrix is not a low-rank matrix plus one supported on the schedule's bounded-depth ball pattern. It is open. For scalar-linear codes the half bound also holds at degree 4, on triangle-free relations in which no two degree-4 vertices share a neighbour.",
+    src: "Paper 8, Definition “Linear data path”, Lemma 7.3, Theorems D_lin and SH, Problem 10.6; paper 10, Theorem SH*; paper 11, Corollary HC; paper 14, Corollary O(c) (Lean)" }
 };
 const QUESTIONS = {
   ob: "Most likely here: oblivious, deep nesting, linear XOR coding, cone relations outside every proved class. No schedule is depth-robust (paper 14), so such a machine needs, for every ε > 0, storage codes of rate at least 1 − ε on its own cone relations at the depth of Theorem T: the crux must fail there, and for heads of the kinds of Theorems F, B and M it would have to fail at a smaller depth, which keeps deep nesting the likelier home. Those cone relations must have growing degree: if the recovery sets have at most d bits on average, some n/(2d+1) bits form an independent set (Turán) and are determined by the rest, so the rate is at most 1 − 1/(2d+1). At genie cost εL the average recovery set therefore has at least (1/ε − 1)/2 bits, and no class of bounded in-degree, proved or open, can describe the cones at fine cuts. It also needs a Θ(log k) coding gain over routing, and coupling between groups of adjacent columns during the computation: narrow groups processed autonomously need an almost complete helper (paper 9). Given the crux for ball systems at the radius of hop charging, its code must merge deep lineages unboundedly often (paper 11), though such merging does not escape code-level depth reduction, which holds for every oblivious transposer (paper 14, Corollary HV); Tanner codes assembled from projective planes, with every coordinate recovered from one line, are ruled out as a building block (paper 11, Lemma PG). Twisted Goren–Oort Tanner codes supply above-half-rate seeds (paper 13). Paper 15 amplifies them to abstract binary codes of rate at least 1 − CΔ^(−α), with fixed C > 0 and 0 < α < ½, while the length and minimum paired distance grow at each sufficiently large fixed cap Δ. This exceeds the abstract rate requirement forced by a transposer, and common partitions work at every sufficiently large length for all source subsets (Theorems C and F). What remains missing is a physical tape computation that generates, moves and uses the coded information at the required cost. Nor can its recoveries stay inside boundedly overlapping patches: at rate 1 − ε, patches that each serve at most w bits at paired distance above 2w − 1, with every bit in at most r of them, recover at most 2rεL bits (paper 15, Theorem P and Corollary 10.3). It must reuse some tape like a queue at macroscopic scale: from every large set of outputs, linearly many disjoint dependency paths reach crossings of revisits whose excursions are a fixed fraction of L, one coarsely monotone leg of one tape carries them, and at least two work heads travel that far (paper 16, Lean). Five explicit linear-time cascade schedules meet these conditions in numerical tests, so the conditions do not settle the question; whether some transposer follows one of these schedules is open (paper 16, Problem 11.4).",
   high: "An adaptive construction would also yield a batched simulator whose motion carries at most L/4 bits. On the simulator’s physical bit positions, recovered at their actual append times, all but a 2^(−uL) fraction of the inputs would lie in cells that are storage codes of rate at least 1 − A·(log log log Δ / log log Δ)^(1/(4k²+1)) − u for a constant A of the machine, at every large incidence-degree cap Δ and with every paired distance above any fixed radius (paper 15, Theorem N, Lean). The codes retain at least (1 − 2^(√(log₂ Δ))/Δ)L original bit positions. Whole-batch revelation with joint record counting gives the same exponent as the packet theorem; one partition works for every u ≥ 0. By Theorem P, its high-rate cells could not recover most bits using patches of bounded target count and overlap. Its heavy traces would also route a linear amount of information through macroscopic crossings (paper 16, Theorem E(b), Lean)."
 };
-const order = ["onetape","sweeps","phases","movement","xor","packets","pc","geom","crossings","onehead","obS","ob","merge","lowad","linear","leOpen","high"];
+const order = ["passes","phases","onetape","movement","pc","geom","crossings","onehead","obS","ob","merge","lowad","linear","leOpen","high","xor","packets"];
 const chipText = { red: "unconditional", "orange-dark": "one weaker open statement", orange: "one open statement", yellow: "one stronger open statement", dash: "overlay" };
 const cards = document.getElementById("cards");
 for (const id of order) {

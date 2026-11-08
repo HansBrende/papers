@@ -7,13 +7,16 @@ Usage, from any directory:
 Without an argument it reads the index.html next to this script. It rebuilds every drawn piece of the SVG as
 a polygon and checks with exact polygon operations that
 
-  * the dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings and one
-    long-range work head) overlap exactly the pieces listed in BANDS (with at least AREA_MIN square units)
-    and stay at least GAP_MIN units from all others;
+  * the dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
+    long-range work head and few large families) overlap exactly the pieces listed in BANDS, each overlap
+    containing a disc of diameter at least MIN_WIDTH, and stay at least GAP_MIN units from all others;
+  * every certified cell listed in CELLS is drawn: the region inside its pieces and outside the others
+    contains a disc of diameter at least MIN_WIDTH;
   * every inclusion listed in INSIDE holds;
   * no drawn shape lies inside another unless the inclusion is listed in ALLOWED (drawing a shape inside
     another is a claim of inclusion);
-  * every dotted ? link joins the outlines of the two shapes listed in UNKNOWN, and those shapes are apart;
+  * every dotted ? link joins the outlines of the two shapes listed in UNKNOWN, those shapes are apart, and
+    the link crosses no other piece;
   * the strips outside the transposers miss the transposer rectangle, and the green question marks sit in
     the pieces their cards describe.
 
@@ -26,8 +29,20 @@ from pathlib import Path
 
 from shapely import affinity
 from shapely.geometry import LineString, Point, box
+from shapely.ops import polylabel
+
+
+def width(region):
+    """Diameter of the largest disc inside the region (pole of inaccessibility, per component)."""
+    parts = getattr(region, "geoms", [region])
+    best = 0.0
+    for p in parts:
+        if p.geom_type == "Polygon" and p.area > 0:
+            best = max(best, 2 * polylabel(p, tolerance=0.25).distance(p.exterior))
+    return best
 
 AREA_MIN = 120.0  # a drawn overlap must have at least this area to be visible
+MIN_WIDTH = 12.0  # ... and contain a disc of at least this diameter
 GAP_MIN = 6.0     # shapes drawn apart must be at least this far apart
 ON_LINE = 1.5     # a link end must lie within this distance of the outline it joins
 
@@ -48,7 +63,16 @@ BANDS = {
     "MOVE": {"S", "D", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MERGE", "LINEAR"},
     "CROSS": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "ONEHEAD"},
     "ONEHEAD": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS"},
+    "GEOM": {"S", "BE", "PC", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD"},
 }
+
+# certified cells that the drawing shows as regions: (pieces the region lies in, pieces it lies outside).
+# The cancelling-copies machine lies in few large families and both overlays, and outside every other red
+# piece and the bounded-entry disc.
+CELLS = [({"GEOM", "S", "MERGE", "LINEAR"}, {"BE", "PC", "CROSS", "ONEHEAD", "ONETAPE", "MOVE"})]
+
+# pieces a dotted ? link must not cross, apart from the two it joins
+LINK_CLEAR = ["BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "PASSES", "PHASES"]
 # pieces the band rule compares against (the low-adaptivity circle, the oblivious circle and the shallow
 # circle are covered through S, D, LAO and HA)
 COMPARED = ["S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR"]
@@ -120,13 +144,24 @@ def main():
             if other == band:
                 continue
             if other in shared:
-                area = R[band].intersection(R[other]).area
-                if area < AREA_MIN:
-                    problems.append(f"{band} must overlap {other} (area {area:.0f})")
+                both = R[band].intersection(R[other])
+                if both.area < AREA_MIN:
+                    problems.append(f"{band} must overlap {other} (area {both.area:.0f})")
+                elif width(both) < MIN_WIDTH:
+                    problems.append(f"{band} overlaps {other} too thinly (width {width(both):.1f})")
             else:
                 gap = R[band].distance(R[other])
                 if gap < GAP_MIN:
                     problems.append(f"{band} must stay apart from {other} (gap {gap:.1f})")
+    for ins, outs in CELLS:
+        region = R["T"]
+        for n in ins:
+            region = region.intersection(R[n])
+        for n in outs:
+            region = region.difference(R[n])
+        if width(region) < MIN_WIDTH:
+            problems.append(f"cell inside {sorted(ins)} and outside {sorted(outs)} is not drawn "
+                            f"(width {width(region):.1f})")
     for part, whole in INSIDE:
         outside = get(part).difference(get(whole)).area
         if outside > 1.0:
@@ -161,6 +196,11 @@ def main():
                 problems.append(f"{x} and {y} are joined by a ? link but drawn touching")
             if LineString(ends).length < 2 * GAP_MIN:
                 problems.append(f"the ? link between {x} and {y} is too short to see")
+            seg = LineString(ends)
+            inner = LineString([seg.interpolate(3), seg.interpolate(seg.length - 3)])
+            for n in LINK_CLEAR:
+                if n not in pair and inner.intersects(R[n].buffer(-0.5)):
+                    problems.append(f"the ? link between {x} and {y} crosses {n}")
     for pair in UNKNOWN - set(joined):
         problems.append(f"no dotted ? link joins {sorted(pair)}")
 

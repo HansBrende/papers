@@ -15,8 +15,8 @@ follow the root README.
 - A red strip outside the rectangle is a property that no transposer has, unless a dotted ? joins it to
   the rectangle.
 - A shape drawn inside another is a proved inclusion.
-- The four dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings and
-  one long-range work head) follow a stricter rule. Each overlaps exactly the pieces it is proved to
+- The five dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
+  long-range work head and few large families) follow a stricter rule. Each overlaps exactly the pieces it is proved to
   share a transposer with and stays apart from the rest. A dotted ? joins it to a piece when this is not
   known. These claims are pairwise: where an outlined piece passes through several pieces at once, no
   combination of them is claimed. Other overlaps carry no claim: shapes drawn apart may share
@@ -36,6 +36,7 @@ changes only the motion of the heads, never the output, as its row explains.
 | Counter | One work tape holding O(log L)-bit counters, run by a head that sweeps the counter cells. For each output bit in column-major order, walk the input head to its source and append the bit as it is read. | Oblivious, one work tape, pure data movement. The work head stays within O(log L) cells, so no revisit has an excursion of a fixed fraction of L and no step starts a macroscopic crossing. Every return family has O(log L) hops, and the family spans form two classes of disjoint spans. Each output reads its own source, so its balls contain it. |
 | Parked counter | The counter machine, except that after reading each source bit it keeps the bit in its finite control, walks the input head off the input, and lets its work head sweep the counter cells for L steps before appending the bit, then walks the input head back, finding the input's end as the first non-blank cell. The appended bit is the source bit carried unchanged, so the output is the counter machine's. | As the counter machine. In addition, every dependency edge near a wait spans o(L) steps, so a dependency path of at most r edges from an output stays inside its wait for large d, where no input is read; all balls of radius r are empty. |
 | Fresh copy | Two work tapes. Each pass writes the matrix minus its current first column to fresh cells of the other tape, outputting the removed entries, then rewinds. Counters are kept by alternating fresh copies. | Oblivious, pure data movement, and every cell of every tape, the input tape included, is entered at most three times. Late outputs have empty dependency balls. |
+| Cancelling copies | The counter machine with two extra work tapes. In a first pass the input head reads the input once while both extra heads copy it, one cell per bit; both extra heads then rewind. The counter machine then runs, and the extra heads advance one cell after each append, so at the append step of output bit i both are at cell i. The machine appends the source bit XORed with the two copied bits of cell i. | The copied bits are equal, so the XOR returns the source bit: the machine transposes every input at every size, and it is oblivious. It combines data, so it is not pure data movement, and it has three work tapes. Each extra head makes one large return family per turn, four in all, and every other family has O(log L) hops. Each output reads its own source at the append step. Each extra-tape read at an append step ends a revisit that starts in the rewind and crosses the write-to-rewind revisits of cells nearer the start, both of order L. |
 | Pauses | Pause for one step after appending an output bit 1, under one of four rules: (a) only after output bit 0; (b) only within the first ⌈d/4⌉ output rows; (c) after every output bit; (d) after every output bit of rows 1 to d − 1, unless output row 0 is all zeros, in which case never. | A pause step moves no head, writes back the scanned symbols and appends nothing, so the tapes and the output are those of the base machine, which still transposes every input; each rule reads only output bits already appended. Pauses enter no cell, so entries, revisits and crossings are unchanged. (a) gives two traces of probability ½: low adaptivity, not oblivious. (b) gives entropy about L/4 with every trace of probability 2^(−Ω(L)): low adaptivity, no trace of probability 2^(−o(L)). (c) gives entropy L: high adaptivity, no such trace. (d) gives entropy L − o(L), high adaptivity, and keeps the base trace on the inputs whose output row 0 is all zeros, a set of probability 2^(−db) = 2^(−o(L)): the kind of trace the crossings and one-head classes ask about. |
 | Deep-nesting tapes | Add two data-free work tapes whose heads run paper 8's deep-nesting pair U(s₀, m, 1), with m growing with d and stroke length Λ = 2^s₀ chosen with mΛ = o(L), steered by counters on a third data-free tape whose head sweeps its O(log L) cells. The parameters are computed from L at the start. | The extra tapes run alongside the base machine and never influence its transitions or its output, so the machine still transposes every input; their motion depends only on d, so obliviousness is kept. The two walking heads have unbounded owner load and are outside Theorems F, B and M, so an oblivious machine with these tapes lies in the deep piece. Their excursions are O(Λ) = o(L), the counter head's are O(log L), and all their dependency edges span o(L) steps, so they add no macroscopic revisit, no long-range head and no input read near an output. |
 
@@ -158,6 +159,24 @@ macroscopic crossing, and every set of outputs is cut off by the empty set for e
 | Oblivious data movement | overlap | Round trip, Counter |
 | Few macroscopic crossings | overlap | Counter |
 
+**Few large families**
+
+The class lies in the shallow piece (see Inclusions), so it is apart from the deep piece and from both
+adaptive regions, and every other pair has a witness: no relation is open.
+
+| Piece | Drawn | Reason |
+|---|---|---|
+| Oblivious, shallow | overlap | Counter, Round trip, Parked counter, Fresh copy, Cancelling copies |
+| Oblivious, deep | apart: disjoint | The class lies in the shallow piece |
+| Low adaptivity not oblivious, high adaptivity | apart: disjoint | The class is defined for oblivious machines |
+| Each cell entered O(1) times | overlap | Fresh copy |
+| Half-bound circle | overlap | Round trip, Parked counter, Fresh copy |
+| Bounded merging, linear data path | overlap | Counter, Round trip, Parked counter, Fresh copy, Cancelling copies |
+| One work tape | overlap | Counter, Round trip, Parked counter |
+| Oblivious data movement | overlap | Counter, Round trip, Parked counter, Fresh copy |
+| Few macroscopic crossings | overlap | Counter, Parked counter |
+| One long-range work head | overlap | Counter, Round trip, Parked counter |
+
 ## Inclusions
 
 Drawn, each proved:
@@ -165,8 +184,11 @@ Drawn, each proved:
 - oblivious inside low adaptivity, since an oblivious machine has a single trace;
 - the shallow and deep pieces, the half-bound circle, oblivious data movement and both overlays inside
   the oblivious circle, by definition (paper 8 defines a linear data path only for oblivious machines);
-- few large families inside the shallow piece, since N classes of disjoint spans leave at most N families
-  open at any step, so the owner load is at most N;
+- few large families inside the shallow piece. Both conditions of the class ask for a partition of the
+  family spans into N classes of disjoint spans (paper 9, Definition "Admissible return geometry"). Every
+  hop of a family lies inside its span (paper 8, Definition "Families"), so at most N owners are open at
+  any step. That bounds the owner load by N (paper 8, Definition "Owner-load"): Theorem F's class of
+  bounded nesting load;
 - the oblivious part of the bounded-entry disc inside the shallow piece, since entering every cell at
   most V times bounds the owner load by 2V − 1 (paper 8);
 - the oblivious part of one work tape inside the shallow piece (see the table above);
@@ -187,8 +209,8 @@ one-head island.
   never-fold-back half lies in the one-head island.
 - XOR-frame recursions (paper 1, §12) and local packet coding (paper 2) are no longer drawn as pieces; see
   the next section.
-- The two paper 16 islands, few macroscopic crossings and one long-range work head, are dark-outlined
-  pieces with pairwise claims, like the two former bands.
+- The two paper 16 islands, few macroscopic crossings and one long-range work head, and paper 9's few large
+  families are dark-outlined pieces with pairwise claims, like the two former bands.
 
 ## Construction strategies ruled out
 
@@ -227,6 +249,7 @@ HA: high adaptivity; ✓ member, · not a member).
 | Counter | S | · | · | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Parked counter | S | · | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Fresh copy | S | ✓ | ✓ | ✓ | ✓ | ✓ | · | ✓ | · | · |
+| Cancelling copies | S | · | · | ✓ | ✓ | ✓ | · | · | · | · |
 | Round trip + deep-nesting tapes | D | · | ✓ | · | ✓ | ✓ | · | ✓ | · | ✓ |
 | Counter + deep-nesting tapes | D | · | · | · | ✓ | ✓ | · | ✓ | ✓ | ✓ |
 | Parked counter + deep-nesting tapes | D | · | ✓ | · | ✓ | ✓ | · | ✓ | ✓ | ✓ |
@@ -261,8 +284,23 @@ Reasons for the entries that are not immediate from the constructions:
   break bounded entry and change no other entry.
 - The crossings and one-head classes ask for a trace of probability 2^(−o(L)). Pause variants (b) and (c)
   leave none, so those witnesses lie outside both classes, even with one work tape.
+- Cancelling copies is in few large families by the first condition. Its four large families are the
+  write-to-rewind and rewind-to-read families of the two extra heads; at any step at most six families
+  are open, so the spans split into six classes of disjoint spans.
+- Cancelling copies has merge depth 0, since no data passes through a cell entered more than three times
+  (paper 11, Definition "Lineages and merge depth"), and its data path is linear over F₂: the output is
+  the input bit plus the two copied bits.
+- Cancelling copies is not in the half-bound circle, for the counter machine's reason. It is not in the
+  one-head class, since both extra heads return after excursions of order L.
+- Cancelling copies is not in the crossings class either. At the append step of output bit i, each extra
+  head reads cell i, whose previous visit, in the rewind, starts a revisit of excursion i. That revisit
+  crosses the write-to-rewind revisit of every cell nearer the start, of excursion about L. So every
+  output with i above θL is one edge from its own crossing start, and cutting k such outputs off costs at
+  least k steps.
 
-The rows certify 16 distinct cells as non-empty. Proved inclusions and disjointness settle every cell
+The rows certify 17 distinct cells as non-empty. One of them is the cell inside few large families and
+both overlays and outside every other red piece and the bounded-entry disc. Cancelling copies certifies
+it, and the drawing shows it as the stretch of few large families outside the others. Proved inclusions and disjointness settle every cell
 that would put a transposer in two places the map keeps apart:
 
 - one work tape in the deep piece;
@@ -295,11 +333,15 @@ uv run --no-project --with shapely python frontier/check_layout.py
 
 It checks that
 
-- every required overlap of each dark-outlined piece has visible area, and it misses every other piece;
+- every required overlap of each dark-outlined piece contains a disc of diameter at least 12, and the
+  piece misses every other piece;
+- every certified cell that the drawing shows (here, the one certified by cancelling copies) contains such
+  a disc;
 - every required separation has a gap;
 - every required inclusion holds;
 - no shape lies inside another unless the inclusion is listed above;
-- every dotted ? link joins the outlines of the two shapes whose relation is open;
+- every dotted ? link joins the outlines of the two shapes whose relation is open, and crosses no other
+  piece;
 - the green question marks sit in the pieces their cards describe.
 
 It exits with status 1 if any check fails. Its lists of overlaps, separations and inclusions mirror the

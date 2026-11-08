@@ -22,9 +22,10 @@ To be stated with the Lean declarations and the axiom statement when the formali
 - **Theorem X (macroscopic crossings).** For every oblivious machine that transposes in time C(L+1) and every set V₀ of at least αL output
   positions, every set of steps separating the output steps of V₀ from the earlier ends of crossing revisits of excursion more than θL
   has at least c|V₀| elements at all large d, with explicit θ, c > 0 depending only on the number of tapes, the alphabet, the number of
-  states, C and α.
+  states, C and α: polynomial in C, 1/α and the number of bits of a step's value, and exponential in the number of tapes.
 - **Theorem D.** The same mechanism for every linear-time trace, with no hypothesis on what the machine computes: either such crossings
-  are reached with linear expansion, or a cheap separator leaves a linear-size acyclic set in the cone relation.
+  are reached with linear expansion, or a cheap separator, enlarged by a small guard, leaves a linear-size independent set in the
+  cone relation.
 - **Theorem S.** At scale θL/4 the run's coarse skeleton comes from an explicit finite family independent of d, and the expansion of
   Theorem X is carried by a single coarsely monotone leg of a single tape.
 - **Theorem H.** Every oblivious or low-adaptivity linear-time transposer has two work heads that make revisits of linear excursion.
@@ -33,7 +34,11 @@ To be stated with the Lean declarations and the axiom statement when the formali
 - **Lemma R.** For every two sets of rows, every cut between the reads of the first and the outputs they feed into the second carries
   the corresponding information, whatever the coding.
 - **Class exclusions.** Bounded macroscopic phases, oblivious and adaptive with sublinear jitter (Theorems B and J); a native gap
-  criterion (Theorem G); a scale-gap pigeonhole for machines without a free work head (Theorem Q).
+  criterion (Theorem G) and its form for a single machine of low adaptivity (Corollary 9.6); a scale-gap pigeonhole for machines without
+  a free work head (Theorem Q).
+- **Pass counting with coarse passes (Theorem 10.3, Corollary 10.4).** The first paper's grouped pass bound extended to passes that are
+  monotone only up to a fixed amplitude, with heads in small workspaces folded in. Phase profiles that grow more slowly than a threshold
+  across scales are excluded at any running time for oblivious machines, and at any polynomial running time for adaptive ones.
 
 Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets) and Corollary 7.3 (scale-separated
 traces). The exclusions of the individual schedule families of the appendix are proof sketches.
@@ -41,7 +46,7 @@ traces). The exclusions of the individual schedule families of the appendix are 
 ## What is open
 
 The paper ends with four problems: a pass bound that counts phases across all scales; transferring the simulator results back to the
-machine's own dependency DAG; sharper constants; and the five explicit linear-time cascade schedules that met every necessary
+machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules that met every necessary
 condition proved here in our numerical tests (d ≤ 128).
 
 ## Building and verifying

@@ -111,7 +111,7 @@ $r\ge0$ let $\CL^{j,r}$ be the set of steps of $\CL_{H^*}$ that are earlier ends
 tape $j$'s skeleton at scale $\Lambda^*$ (\lean{legCrossingLowers}).
 
 \begin{theorem}[Theorem~S, skeletons and a single leg]\label{thm:S}
-\formal{MacroscopicSkeleton.lean}{obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg, obliviousLinTime_infinite_pinned_skeleton_and_leg}
+\formal{TightConstants.lean}{obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight, obliviousLinTime_infinite_pinned_skeleton_and_leg_tight}
 Let $M$ be a machine with $k$ work tapes, $C\ge1$ and $0<\alpha\le1$, and let $d\ge\max(d_0,\lceil8/\theta\rceil)$ with $d_0$ as in
 \cref{thm:X}. Suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$.
 \begin{enumerate}[label=(\alph*)]
@@ -121,7 +121,7 @@ finite family of $k$-tuples of words of length at most $\Mmax$ in which some tap
 with at least nine letters and two turns, and a leg $r\le\Mmax$ such that every set separating $\Out(V_0)$ from $\CL^{j,r}$ has at
 least
 \[
-  \frac{\cE(M,C,\alpha/2)}{2k(\Mmax+1)}\,\abs{V_0}
+  \frac{\cE(M,C,\alpha)}{k(\Mmax+1)}\,\abs{V_0}
 \]
 elements.
 \item If $\mathrm{ObliviousLinTime}(M,d,C,T_d)$ holds for all $d$ in an infinite set $S$, then there are one tuple of words, one tape
@@ -134,14 +134,14 @@ set of all input positions (with $\alpha=1$).
 (a) is \cref{lem:finite}(b) together with \cref{prop:capable}, since $\CL_{H^*}$ is non-empty by \cref{cor:many}. (b) By
 \cref{lem:legs} each step of $\CL_{H^*}$ lies in a slot $(j,r)$ with $r\le\Mmax$, and there are at most $k(\Mmax+1)$ slots. If every
 slot had a separating set smaller than the stated bound, their union would separate $\Out(V_0)$ from all of $\CL_{H^*}$
-(\lean{isMengerVertexCut_biUnion}) with fewer than $\frac12\cE\abs{V_0}$ elements, contradicting \cref{thm:X}. (c) The skeleton,
+(\lean{isMengerVertexCut_biUnion}) with fewer than $\cE\abs{V_0}$ elements, contradicting \cref{thm:X}. (c) The skeleton,
 tape and leg take finitely many values, independent of $d$, so one of them recurs infinitely often
 (\lean{exists_infinite_fiber_of_mapsTo_finset}).
 \end{outline}
 
 The tape and the leg in (b) may depend on $V_0$ and on~$d$; (c) removes the dependence on $d$ along a subsequence. The finite
-family in (a) is astronomically large, because $\Mmax=\lfloor16C/\theta\rfloor$ inherits the size of~$\theta$; what matters is that
-it does not grow with~$d$. The Lean proves only that the crossing-capable tuples form a proper subfamily of all tuples (the idle
+family in (a) is still very large: for two tapes, $C=\alpha=1$ and value width $8$, $\Mmax=\lfloor16C/\theta\rfloor$ is about
+$9.0\cdot10^9$. What matters is that it does not grow with~$d$. The Lean proves only that the crossing-capable tuples form a proper subfamily of all tuples (the idle
 tuple is excluded, \lean{card_crossingCapableSkeletonTuple_lt}), not how much smaller it is.
 
 \begin{remark}[Numerical: what the skeleton does not see]\label{rem:skeleton-limits}

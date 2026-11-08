@@ -7,14 +7,17 @@ side of impossibility, the fourth on both sides.
 \begin{problem}[Pass bounds across scales]\label{prob:multiscale}
 For a run and $1\le j\le\log_2L$ let $r_j$ be the total number of legs of its skeletons at scale $\lfloor2^{-j}L\rfloor$. A linear-time run has
 $r_j\le k(4C\,2^j+1)$ (\cref{lem:finite}), and pass counting at a single scale requires only $r_j\gtrsim\frac j2\log_{k+1}2$
-(\cref{rem:onescale}). Is there, for every $k$ and $C$, a function $f$ with $f(d)\to\infty$ such that no oblivious machine with $k$ work tapes
+(\cref{cor:subcritical} and the paragraph after it). Is there, for every $k$ and $C$, a function $f$ with $f(d)\to\infty$ such that no oblivious machine with $k$ work tapes
 whose runs satisfy $r_j\le Cj$ for all $j$ transposes at size $d$ in time less than $f(d)L$? More generally, find a coding-proof inequality
 that involves all the $r_j$ at once and fails for every linear-time run.
 \end{problem}
 
 The schedules with $r_j=O(j)$ include, as far as we can tell, the cascades of \cref{sec:cascades}. A positive answer would exclude every
 transposer whose motion looks like a cascade at all scales; a negative answer would be a transposer of that shape, faster than
-$O(L\log d)$.
+$O(L\log d)$. The interval forests of Theorem~P do not obviously help: in our tests (numerically, at $d\le128$), the smallest charge of such forests
+over all the group widths we tried was at least $L$ on every transposer, as the cut lemma of the first paper requires, and about $2L$ and
+$3L$ on the two cascades we tested, whereas an exclusion needs a charge below $L$; localizing the forests to windows in which tapes overlap
+at two scales did not bring any charge below~$L$.
 
 \begin{problem}[From the simulator back to the machine]\label{prob:pullback}
 Let $M$ transpose in linear time, and let $\Ns$ be its bit simulator. Does the conclusion of \cref{thm:X} hold in $M$'s own dependency
@@ -23,10 +26,13 @@ DAG, on a set of traces followed by all but an exponentially small fraction of t
 cells in each round, forces a macroscopic crossing of the heads of~$M$.
 \end{problem}
 
-\begin{problem}[Constants]\label{prob:constants}
-Does \cref{thm:X} hold with a threshold $\theta\ge c_1/C$ and an expansion constant $c_2$, where $c_1,c_2>0$ depend polynomially on $1/k$,
-$1/\wval$ and $\alpha$? Numerically, the threshold of Theorem~D appears not to be a universal constant (\cref{rem:numerics-crossings}), but
-nothing we know rules out thresholds of order $1/C$.
+\begin{problem}[Constants and the number of tapes]\label{prob:constants}
+The constants of \cref{sec:constants} are polynomial in $C$, $1/\alpha$ and $\wval$, but exponential in $k$, through the chain counts
+$m_0(k)$ and $g(k)$. Does \cref{thm:X} hold with a threshold and an expansion constant that are polynomial in $1/k$ as well? The
+proof must handle $2^k$ compatible phase-exit chains on some configurations (\lean{card_cutValidStepsAux_unitValidTapes_eq_pow_two}),
+so this needs a different argument. Numerically, the expansion ratio was $1$ at every tested threshold up to $L/2$
+(\cref{rem:numerics-crossings}), far above the proved constants, and nothing we know rules out an expansion constant of order $1$ at
+thresholds of order $1/C$.
 \end{problem}
 
 \begin{problem}[The cascades]\label{prob:cascades}

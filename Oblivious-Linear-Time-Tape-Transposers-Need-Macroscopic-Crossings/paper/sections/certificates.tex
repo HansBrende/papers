@@ -66,7 +66,7 @@ $\delta$ with $\eps<\alpha_0(\rho-\delta)$, then for all large $d$ there is no $
 Suppose $M$ transposes obliviously in time $C(L+1)$. Reveal the genie $\Gamma$ of \cref{lem:genie}(a), of cost $\eps L$ and depth
 $D_\eps$, together with~$B$. By \cref{lem:genie}(b) the values on $\Gamma\cup B$ form an index code of at most $(\eps+\delta)L$ bits,
 respectively $\eps L+\delta\abs{V_0}$ bits, contradicting the crux for small $\eta$. The crux form is \lean{machine_crux_excludes}
-(\lean{MachineCrux.lean}).
+(\leanfile{MachineCrux.lean}).
 \end{outline}
 
 Acyclic sets give cruxes. If, for every $\eta>0$ and all large $d$, every cone relation of depth $D$ in \cref{def:crux}(a) contains
@@ -74,22 +74,26 @@ an acyclic set of at least $(\rho-\eta)L$ input positions, then $M$ has crux rat
 (\lean{machineCrux_of_isAcyclicIn}, \lean{oblivious_excludes_of_isAcyclicIn}). The same holds for ball relations, which contain the
 cone relations of depth~$D$ (\lean{machineCutCruxAt_of_ballAvoid_isAcyclicIn}).
 
-The next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in the ball
-relation costs at least $\abs U$ bits, up to the genie.
+The next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in the cone
+relation costs at least $\abs U$ bits, and for the ball relation of a bounded radius it does so up to the genie.
 
 \begin{lemma}[Acyclic sets cost cuts]\label{lem:acyclic-cost}
-\formal{EnvelopeCrux.lean}{obliviousLinTime_separator_card_ge_of_isAcyclicIn, obliviousLinTime_ballSeparator_card_ge}
-Let $\mathrm{ObliviousLinTime}(M,d,C,T)$ with $d\ge1$, $C\ge1$ and $\eps>0$. For every set $B$ of steps and every set $U$ of input
-positions that is acyclic in the ball relation of radius $\mathrm{genieDepth}(k,\wval,C,\eps)$ avoiding $B$,
-\[
-  \wval\abs B\ \ge\ \abs U-\eps L .
-\]
+\formal{EnvelopeCrux.lean, TightConstants.lean}{obliviousLinTime_separator_card_ge_of_isAcyclicIn, obliviousLinTime_coneSystem_isAcyclicIn_card_le, obliviousLinTime_ballSeparator_card_ge}
+Let $\mathrm{ObliviousLinTime}(M,d,C,T)$ with $d\ge1$, $C\ge1$ and $\eps>0$, put $D_\eps=\mathrm{genieDepth}(k,\wval,C,\eps)$, and let
+$B$ be a set of steps.
+\begin{enumerate}[label=(\alph*)]
+\item For every set $U$ of input positions that is acyclic in the ball relation of radius $D_\eps$ avoiding $B$,
+$\wval\abs B\ge\abs U-\eps L$.
+\item For every set $U$ of input positions that is acyclic in the cone relation avoiding $B$, $\wval\abs B\ge\abs U$; this part needs
+only $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+\end{enumerate}
 \end{lemma}
 
 \begin{outline}
-Reveal the genie of cost $\eps L$ together with $B$. The cone relation avoiding both is contained in the ball relation
+(a) Reveal the genie of cost $\eps L$ together with $B$. The cone relation avoiding both is contained in the ball relation
 (\lean{coneSystem_subset_ballAvoidSystem}), so $U$ is acyclic in it, and \cref{lem:genie}(b) with \cref{lem:acyclic-code} gives
-$\wval(\abs\Gamma+\abs B)\ge\abs U$.
+$\wval(\abs\Gamma+\abs B)\ge\abs U$. (b) The values on $B$ alone already form an index code for the cone relation avoiding $B$,
+which has no depth bound, and \cref{lem:acyclic-code} applies with no genie.
 \end{outline}
 
 \subsection{Heavy traces of arbitrary machines}
@@ -169,4 +173,5 @@ reads nothing in $V_0$, every arc $q\to p$ inside $V_0$ has $\abs{\psi(p)-\varph
 \end{outline}
 
 \Cref{lem:window,lem:blockcut,lem:stepinv} are statements about traces only. They are the tools behind the exclusions of the
-schedule families in \cref{app:catalogue}; \cref{thm:pullback} is a far-reaching use of \cref{lem:blockcut}.
+schedule families in \cref{app:catalogue}. The first form of \cref{thm:pullback} was a far-reaching use of \cref{lem:blockcut};
+the present form replaces the uniform block cut by a single interval on which the block sets are constant.

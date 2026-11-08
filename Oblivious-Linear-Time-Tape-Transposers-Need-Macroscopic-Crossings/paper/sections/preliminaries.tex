@@ -106,14 +106,15 @@ from $S$ to $D$. We use Menger's theorem only to explain statements; the theorem
 separating sets directly.
 
 \begin{definition}[Cones, balls and acyclic sets]\label{def:cone}
-\formal{EnvelopeCrux.lean}{BoundedStackDepth.depCone, BoundedStackDepth.coneSystem, ballAvoidSystem, HalfRate.IsAcyclicIn}
+\formal{EnvelopeCrux.lean}{BoundedStackDepth.depCone, BoundedStackDepth.coneSystem, ballAvoidSystem, HalfRate.IsAcyclicIn, DirectedRecovery.IsIndependent}
 Let $\Gamma$ be a set of steps. For a step $t$, the \emph{cone} of $t$ avoiding $\Gamma$ is the set of input positions $p$ such
 that some dependency path $t\to t_1\to\dots\to t_m$ with $t_1,\dots,t_m\notin\Gamma$ ends at a step $t_m$ (or at $t$ itself, if
 $m=0$) at which the input head reads position $p$. The root $t$ itself need not avoid~$\Gamma$. The \emph{cone relation}
 assigns to each input position $q$ the cone of its root $\Out(q)$ (in Lean, \lean{coneSystem} evaluated at $\tpos(q)$). The
 \emph{ball relation of radius $D$ avoiding $B$} is defined in the same way using only paths with at most $D$ edges after the
 root (\lean{ballAvoidSystem}). A set $U$ of input positions is \emph{acyclic} in a relation $N$ if every nonempty $S\subseteq U$
-has an element $v$ with $N(v)\cap S=\emptyset$ (\lean{HalfRate.IsAcyclicIn}).
+has an element $v$ with $N(v)\cap S=\emptyset$ (\lean{HalfRate.IsAcyclicIn}). It is \emph{independent} in $N$ if
+$N(v)\cap U=\emptyset$ for every $v\in U$ (\lean{DirectedRecovery.IsIndependent}); an independent set is acyclic.
 \end{definition}
 
 An acyclic set is a set of receivers none of which can see, in its cone, the bits wanted by the receivers that come after it in
@@ -121,4 +122,5 @@ a suitable order. In index coding, a message that lets every receiver of an acyc
 many bits as the set has elements~\cite{BBJK2011}. For machines this takes the following form: what the cut steps write, together
 with what a small \emph{genie} reveals, is a message from which each output of the acyclic set is computed using only its cone.
 The fourteenth paper's genie (\cref{lem:genie} below) bounds the depth of the cones at small cost, and the eleventh paper's
-index-code lemma turns an oblivious transposer into such a message~\cite{MergeDepth2026}.
+index-code lemma turns an oblivious transposer into such a message~\cite{MergeDepth2026}. For the cone relation itself, which has
+no depth bound, no genie is needed (\cref{lem:acyclic-cost}(b)).

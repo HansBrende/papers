@@ -5,29 +5,33 @@ The first uses a single heavy trace of the machine itself; the second passes thr
 traces are few.
 
 \begin{theorem}[Theorem~E, heavy traces and simulators]\label{thm:E}
-\formal{SimulatorBridge.lean}{frozenTrace_macroscopicCrossingLowers_menger_lb, frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg, adaptive_simulator_heavyTrace_macroscopicExpansion, simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg}
+\formal{TightConstants.lean}{frozenTrace_macroscopicCrossingLowers_menger_lb_tight, frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, adaptive_simulator_heavyTrace_macroscopicExpansion_tight, simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight}
 \begin{enumerate}[label=(\alph*)]
 \item \emph{Heavy traces.} Let $M$ be any machine with $k$ work tapes, $1\le C$, $0<c\le C$ and $\alpha>0$, and let $d\ge d_0$ with $d_0$ as in
 \cref{thm:X}. Suppose $M$ transposes at size $d$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$ with
-$\eta\le(\alpha/8)\rho_0(k,C,\alpha/2)$. Then the conclusion of \cref{thm:X} holds in the dependency DAG of $\tau$, with the same constants;
-if moreover $\alpha\le1$ and $d\ge\lceil8/\thetaM(M,C,\alpha)\rceil$, so do the conclusions (a) and (b) of \cref{thm:S}.
-\item \emph{Simulators.} Let $M$ be any machine with $k$ work tapes, $c>0$ and $0<\alpha\le1$, and put $\eta^*=(\alpha/32)\rho_0(k,11c+1,\alpha/2)$.
+$\eta\le(\alpha/8)\rho_0(k,C,\tfrac{19}{20}\alpha)$. Then the conclusion of \cref{thm:X} at $H^*$ holds in the dependency DAG of $\tau$,
+with the same $\theta$ and $d_0$ and with the expansion constant $\cE'(M,C,\alpha)=\frac38\rho_0(k,C,\tfrac{19}{20}\alpha)/\wval$ in place of
+$\cE(M,C,\alpha)$; if moreover $\alpha\le1$ and $d\ge\lceil8/\thetaM(M,C,\alpha)\rceil$, so do the conclusions (a) and (b) of
+\cref{thm:S}, with $\cE'$ in place of $\cE$ in (b).
+\item \emph{Simulators.} Let $M$ be any machine with $k$ work tapes, $c>0$ and $0<\alpha\le1$, and put $\eta^*=(\alpha/16)\rho_0(k,11c+1,\tfrac{19}{20}\alpha)$.
 There are $s\ge1$ and $d_{\mathrm{sim}}$ such that the simulator $\Ns$ of~\cite[Theorem~S]{HighRate2026}, which has the same work tapes and
 work alphabet as $M$ and computes the same partial function, satisfies the following at every $d\ge d_{\mathrm{sim}}$ at which $M$
 transposes within time $c$: $\Ns$ transposes within time $11c+1$; it has at most $2^{\eta^*L}$ distinct traces on the inputs of length
-$L$; its $2\eta^*$-heavy traces are followed together by more than $(1-2^{-\eta^*L})2^L$ inputs; and on each of its $2\eta^*$-heavy traces
-the conclusions of \cref{thm:X} and of \cref{thm:S}(a),(b) hold in the dependency DAG of that trace, with the constants of $\Ns$ and the
-time constant $11c+1$.
+$L$; its $2\eta^*$-heavy traces are followed together by more than $(1-2^{-\eta^*L})2^L$ inputs; and on each of its $2\eta^*$-heavy traces,
+with $\theta$ and $H^*$ computed for $\Ns$ and the time constant $11c+1$, $\theta L\le2H^*$ and the separation bound of \cref{thm:X} at
+$H^*$ hold with the expansion constant $\cE'$ of $\Ns$. With a possibly different $s$ and threshold, the conclusions of
+\cref{thm:S}(a),(b) hold on these heavy traces in the same way.
 \end{enumerate}
 \end{theorem}
 
 \begin{outline}
 (a) The proof of \cref{thm:X} goes through on the fixed trace $\tau$: \cref{thm:bridge} is a statement about traces, and in the coding
-step \cref{lem:frozen} replaces the index code of \cref{lem:genie}(b). With the genie of cost $(\alpha\rho_0/8)L$ and the heaviness
-$\eta\le(\alpha/8)\rho_0$, the two losses together are at most $(\rho_0/4)\abs{V_0}$. (b) The constant $\eta^*$ depends only on $k$, $c$
+step \cref{lem:frozen}, applied to $B\cup X$, replaces the index code. The heaviness $\eta\le(\alpha/8)\rho_0$ costs at most
+$\eta L\le\frac18\rho_0\abs{V_0}$, which lowers the expansion constant from $\frac12\rho_0/\wval$ to $\frac38\rho_0/\wval$. (b) The constant $\eta^*$ depends only on $k$, $c$
 and $\alpha$. The fifteenth paper's trace transfer at $\eta^*$ (\lean{TapeStorageRates.aligned_low_trace_dimensions}) gives $s$ and the
 simulator, with at most $2^{\eta^*L}$ traces; the light traces are followed by fewer than $2^{\eta^*L}2^{(1-2\eta^*)L}$ inputs. Since $\Ns$ has
-$k$ work tapes and runs in time $11c+1$, $2\eta^*\le(\alpha/8)\rho_0(k,11c+1,\alpha/2)$, and part (a) applies to $\Ns$ on each heavy trace.
+$k$ work tapes and runs in time $11c+1$, and $2\eta^*=(\alpha/8)\rho_0(k,11c+1,\tfrac{19}{20}\alpha)$, part (a) applies to $\Ns$ on each heavy
+trace.
 The quantifiers are ordered $\eta^*$, then $s$ and $\Ns$, then the constants of $\Ns$ and $d_{\mathrm{sim}}$.
 \end{outline}
 

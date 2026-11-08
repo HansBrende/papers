@@ -52,8 +52,8 @@ the output steps of $V_0$ to the macroscopic crossing steps has at least $c\abs{
 $c\abs{V_0}$ vertex-disjoint dependency paths from these outputs into macroscopic crossings.
 \item \textbf{Theorem~D, a dichotomy for all traces} (\cref{thm:D}). Theorem~X is the transposer case of a statement about
 arbitrary linear-time traces, with no hypothesis on what the machine computes: for every output set of size at least $\alpha L$,
-either the macroscopic crossings are reached with linear expansion, or a cheap separator leaves a linear-size acyclic set in the cone
-relation. A separator cheaper than the acyclic set it leaves, at a radius at least the genie depth, is impossible for a transposer
+either the macroscopic crossings are reached with linear expansion, or a cheap separator, enlarged by a small guard, leaves a
+linear-size independent set in the cone relation. A separator cheaper than the independent set it leaves is impossible for a transposer
 (\cref{lem:acyclic-cost}).
 \item \textbf{Theorem~S, skeletons} (\cref{thm:S}). At scale $\theta L/4$ the walk of each work tape of a linear-time run is a
 word of at most $\Mmax=\lfloor16C/\theta\rfloor$ steps $\pm1$, so the coarse shapes of all runs come from an explicit finite
@@ -78,7 +78,7 @@ from rows $A_0$ to output rows $A_1$ has at least $(\abs{A_0}\abs{A_1}b-\eta L)/
 one step's value.
 \item \textbf{Class exclusions} (\cref{sec:classes}). Machines whose heads make boundedly many macroscopic phases, oblivious or adaptive with
 sublinear jitter, are excluded by an explicit native deficit (Theorems~B and~J); a fixed native deficit suffices in place of the half-rate
-hypothesis of the fourteenth paper's low-adaptivity corollary (Theorem~G); and machines with no free work head, bounded nesting load and
+hypothesis of the fourteenth paper's low-adaptivity corollary (Theorem~G and \cref{cor:G-low}); and machines with no free work head, bounded nesting load and
 boundedly many scales are excluded by a scale-gap pigeonhole (Theorem~Q). \Cref{app:catalogue} lists explicit schedule families excluded
 by these theorems and by certificates, with proof sketches.
 \end{itemize}
@@ -88,13 +88,18 @@ meet the necessary conditions above in every test we could run (numerically, at 
 are not known to decide the question. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
 together with the earlier output steps, separates the inputs from the outputs for every pair of row sets at once (\cref{prop:onecut}).
 Outside restricted schedule classes (\cref{cor:scale-separated}), the only coding-proof logarithmic factor known on tapes comes from counting
-passes (Theorem~P of the first paper), and \cref{sec:open} states the multi-scale question it leaves open.
+passes (Theorem~P of the first paper). We extend it to passes that are monotone only up to a fixed amplitude (\cref{thm:coarsepass}), which
+excludes every phase profile that grows more slowly than a threshold across scales, at any running time for oblivious machines and at any
+polynomial running time for adaptive ones (\cref{cor:subcritical}). The cascades lie above the threshold (numerically, at $d\le128$), and
+\cref{sec:open} states the multi-scale question that remains.
 
-\paragraph{Constants.} The constants of Theorems~X, D and~S are explicit, positive and astronomically small. For two work tapes, time
-constant $C=1$ and $\alpha=1$, the expansion constant of Theorem~X is $\rho_0/(4\wval)$ with $\rho_0\approx10^{-105}$, and the threshold $\theta$
-is smaller still; \cref{sec:crossings} gives the formulas. The constants of Theorem~H are polynomial in the time constant and the value width,
-and those of Theorem~Q come from a compactness argument and are not explicit. The small constants come from the proofs: on the schedules we
-measured, the expansion ratio was exactly~$1$ at every tested threshold up to $L/2$ (numerically, at $d\le128$; \cref{rem:numerics-crossings}).
+\paragraph{Constants.} The constants of Theorems~X, D and~S are explicit. They are polynomial in the time constant $C$, in
+$1/\alpha$ and in the value width $\wval$, and singly exponential in the number $k$ of work tapes. For two work tapes, $C=\alpha=1$ and
+$\wval=8$, the expansion constant of Theorem~X is about $5.8\cdot10^{-6}$, its threshold is $\theta\approx1.8\cdot10^{-9}$, and it
+applies from $d\approx1.1\cdot10^9$ on; \cref{sec:constants} gives the formulas. The constants of Theorem~H are polynomial in the
+time constant and the value width, and those of Theorem~Q come from a compactness argument and are not explicit. The constants
+come from the proofs: on the schedules we measured, the expansion ratio was exactly~$1$ at every tested threshold up to $L/2$
+(numerically, at $d\le128$; \cref{rem:numerics-crossings}).
 
 \subsection{How to read the paper and its formal proofs}
 

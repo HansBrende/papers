@@ -67,10 +67,11 @@ up to a band of width~$A$. This gives every storage code on the simulator's froz
 (\lean{nativeGapBound_of_adaptiveJitterBM}), and \cref{thm:G} below, applied to the simulator, which has few traces, excludes~$M$.
 \end{outline}
 
-At a fixed number of phases these classes probably also yield to the grouped pass bound of the first
-paper~\cite[Theorems~5.8 and~5.12]{FirstPaper2026} once the jitter and the workspaces are absorbed into the finite control;
-\cref{rem:onescale} sketches why. What is new here is a kernel-checked proof with an explicit native coding deficit. The suffix forms are
-not reached that way: an unrestricted prefix may read $(1-\delta_0)d$ rows, and conditioning on the configuration at the start of the suffix
+At a fixed number of phases these classes, in their whole-run forms, also yield to pass counting at their own time bounds, by
+\cref{thm:coarsepass}, which extends the grouped pass bound of the first paper~\cite[Theorems~5.8 and~5.12]{FirstPaper2026} to coarse
+passes with small workspaces. Moreover, the same theorem excludes these shapes, imposed on whole runs of any length, at any running time
+for oblivious machines and at any polynomial running time for adaptive ones. What Theorems~B and~J add is an explicit native coding
+deficit, and the suffix forms, which pass counting does not reach: an unrestricted prefix may read $(1-\delta_0)d$ rows, and conditioning on the configuration at the start of the suffix
 leaves classes of inputs of co-entropy up to $(1-\delta_0)L$, for which the published robust pass bounds~\cite{FirstPaper2026,PassesMemo2026}
 say nothing.
 
@@ -95,6 +96,27 @@ the machines with $k$ work tapes and over all depths, as in the eighth paper~\ci
 The fifteenth paper reaches the same conclusion from the half bound on chosen simulators~\cite{HighRate2026}; Theorem~G accepts any
 fixed deficit, uniformly over the machines with $k$ work tapes. The hypothesis is at least as strong as a uniform crux; its value is
 that the deficit may be tiny, which is the form that Theorems~B and~J produce, but only for their classes.
+
+For a single machine of low adaptivity the same counting needs no simulator: a deficit above the entropy of the trace suffices.
+
+\begin{corollary}[A native gap above the trace entropy]\label{cor:G-low}
+\formal{NativeGapCriterion.lean}{fSecond_native_gap, native_gap_exclusion_of_trace_support}
+Let $M$ be a machine with $k$ work tapes, let $c>0$ and $\eta<\rho$, let $\beta_1$ be the block width of $M$ at scale~$1$
+(\lean{MergeDepth.blockWidth}), and put $D=\mathrm{genieDepth}\bigl(k,\beta_1,\max(c,1),(\rho-\eta)/2\bigr)$. Suppose that every binary storage code on
+the cone relation, after a genie of full depth $D$, of every run of $M$ that halts within $c(L+1)$ steps has rate at most
+$1-\rho+o(1)$. Then at all large $d$ at which $M$ transposes within time $c$, the skeleton of $M$ at scale~$1$, and hence its trace, has
+entropy greater than $\eta L$ on a uniformly random input (\lean{TapeStorageRates.skeletonOfTrace_eq}, \lean{MergeDepth.entropy_comp_le}).
+Moreover, if a machine $N$ satisfies the same hypothesis, with its own $k$, $\beta_1$ and $D$, and for all large $d$ every $d$ at which $M$
+transposes within time $c$ is one at which $N$ transposes within time $c$ with at most $2^{\eta L}$ distinct traces, then $M$ transposes
+within time $c$ at only finitely many~$d$.
+\end{corollary}
+
+\begin{outline}
+If the trace entropy were at most $\eta L$, some trace would be followed by at least $2^{(1-\eta)L}$ inputs. After the genie of cost
+$\frac12(\rho-\eta)L$, its fibre splits into storage codes on the cone relation, one of which has rate at least
+$1-\eta-\frac12(\rho-\eta)>1-\rho$, contradicting the hypothesis. This is the argument of \cref{thm:G} with $M$ in place of the
+simulator; at $\rho=\frac12$ it is the fourteenth paper's low-adaptivity corollary~\cite[Corollary~L]{BoundedStack2026}.
+\end{outline}
 
 \subsection{Few scales and no free head}
 

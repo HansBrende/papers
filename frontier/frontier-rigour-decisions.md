@@ -135,8 +135,29 @@ one-head island.
 - The bands were drawn across every circle by convention. They are now drawn by proof, as above.
 - The sweeps band is split. Its passes half contains no transposer and sits outside the rectangle; its
   never-fold-back half lies in the one-head island.
-- XOR-frame recursions (paper 1, §12) and local packet coding (paper 2) are exclusions inside abstract
-  models, not sets of machines, so they are no longer drawn as pieces.
+- XOR-frame recursions (paper 1, §12) and local packet coding (paper 2) are no longer drawn as pieces; see
+  the next section.
+
+## Construction strategies ruled out
+
+Two results on the page rule out informal construction strategies rather than machine properties, and are
+listed below the frame instead of being drawn as pieces.
+
+- **XOR-frame recursions** (paper 1, §12). The model is a recursion that interchanges address chunks with
+  XOR gadgets in sheared frames, where each frame change costs a recursive interchange of narrower chunks.
+  Every gadget needs at least as many frame changes as it has wires, so the recursion cannot reach linear
+  time within the template. Paper 1 calls the link between the template and the preprint's construction
+  informal, and says the results rule out a class of constructions, not linear-time transposition.
+- **Local packet coding with a small helper budget** (paper 2). The model is an information-access model:
+  receivers that each hold one original row read a broadcast of fixed two-coordinate Boolean packets and a
+  helper. Such broadcasts cannot save a fixed fraction of the bits. No theorem turns a machine's run into
+  such a broadcast.
+
+In both cases nothing decides, yes or no, whether a given machine follows the strategy, so there is no set
+of machines to draw. They stay on the page because they close two routes to a construction: the recursion
+behind the only claimed transposer faster than O(L log d), and a natural local coding scheme. A
+machine-level version of either, turning the machines that follow it into runs of the model, would make it
+a set of machines and an island of the diagram.
 
 ## Open questions
 
@@ -146,11 +167,23 @@ one-head island.
   stretch, paper 16 sketches a reduction to paper 1's grouped pass bound; for the suffix forms, the
   published pass bounds say nothing.
 
-## How the geometry was checked
+## How the geometry is checked
 
-The shapes were read back out of the published SVG and checked with exact polygon operations:
+[`check_layout.py`](check_layout.py) reads the shapes back out of the SVG in `index.html` and checks them with
+exact polygon operations. Run it from the repository root with
 
-- every required overlap has visible area;
+```sh
+uv run --no-project --with shapely python frontier/check_layout.py
+```
+
+It checks that
+
+- every required overlap of the two dark-outlined pieces has visible area, and they miss every other piece;
 - every required separation has a gap;
 - every required inclusion holds;
-- no shape lies inside another unless the inclusion is listed above.
+- no shape lies inside another unless the inclusion is listed above;
+- every dotted ? link joins the outlines of the two shapes whose relation is open;
+- the green question marks sit in the pieces their cards describe.
+
+It exits with status 1 if any check fails. Its lists of overlaps, separations and inclusions mirror the
+tables above; change both together.

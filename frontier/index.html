@@ -158,7 +158,7 @@ a:hover { text-decoration-thickness: 2px; }
         <clipPath id="cOb"><circle cx="530" cy="540" r="245"></circle></clipPath>
       </defs>
       <!-- The outer frame is every machine. The inner rectangle is every transposer, at any running time; inside it a
-           property stands for the transposers that have it. Geometry checked by a script: every band piece overlaps
+           property stands for the transposers that have it. Geometry checked by check_layout.py in this folder: every band piece overlaps
            exactly the pieces it provably shares a transposer with, and every shape drawn inside another is a proved
            inclusion (oblivious in low adaptivity; shallow, deep, half-bound circle, data movement and both overlays in
            oblivious; few families in shallow; data movement in both overlays; one work tape inside the oblivious circle
@@ -308,11 +308,12 @@ a:hover { text-decoration-thickness: 2px; }
       </g>
 
       <!-- question marks: where a linear-time machine is most likely -->
-      <text x="591" y="764" class="qmark" font-size="34" pointer-events="none">?</text>
+      <text x="592" y="747" class="qmark" font-size="34" pointer-events="none">?</text>
       <text x="896" y="740" class="qmark on-yellow" font-size="34" pointer-events="none">?</text>
 
-      <!-- beside the diagram: exclusions inside abstract models, which are not sets of machines -->
-      <text x="14" y="914" class="tiny t-muted" style="font-weight:600; letter-spacing:.06em">EXCLUSIONS INSIDE ABSTRACT MODELS · not sets of machines, so not placed in the diagram</text>
+      <!-- beside the diagram: construction strategies ruled out inside abstract models; no definition decides whether a
+           given machine follows them, so they are not properties of machines and are not drawn as pieces -->
+      <text x="14" y="914" class="tiny t-muted" style="font-weight:600; letter-spacing:.06em">RULED-OUT CONSTRUCTION STRATEGIES · informal templates, not machine properties, so not placed in the diagram</text>
       <g class="r" tabindex="0" data-id="xor" aria-label="XOR-frame recursions">
         <circle class="shape f-red" cx="40" cy="944" r="15"></circle>
         <text x="64" y="948" class="sub">XOR-frame recursions (paper 1 §12)</text>
@@ -466,8 +467,9 @@ a:hover { text-decoration-thickness: 2px; }
       extra tapes running paper 8’s deep-nesting pairs move them into the deep piece. Two placements are proved: an oblivious
       one-tape machine lies in the shallow piece and in the one-head island, and oblivious data movement lies inside the oblivious
       circle and both overlays. Two questions are open: whether a one-tape transposer can enter every cell O(1) times, and whether
-      any transposer has the output-phase property (the dotted ? links). XOR-frame recursions and local packet coding are
-      exclusions inside abstract models, not sets of machines, and are listed below the frame. Every decision, with its
+      any transposer has the output-phase property (the dotted ? links). XOR-frame recursions and local packet coding rule out
+      informal construction strategies, not machine properties: their abstract models do not decide, yes or no, whether a
+      given machine follows them, so they are listed below the frame rather than drawn. Every decision, with its
       witness, is recorded in the <a href="https://github.com/HansBrende/papers/blob/master/frontier/frontier-rigour-decisions.md">companion
       notes</a>.</p>
     <p>A negative answer to (T) for all machines would give the first superlinear lower bound for integer multiplication on multitape
@@ -515,11 +517,11 @@ const R = {
   movement: { name: "Oblivious data movement", color: "red", status: "Impossible, unconditionally",
     text: "Entries are moved as indivisible items along a pattern that does not depend on the input: copied, never combined. Such machines cannot transpose in linear time (Stoß, for Turing machines). In the series’ terms, a linear-time oblivious transposer yields a code on its own block network that beats every routing by a factor of order log d (paper 1, Theorem “The code gap”, Lean), and a pure data mover is a routing. For data movement that depends on the entries, which repeat because b = ⌈log₂ d⌉, no such bound is known (paper 1, condition (N1)), so the piece lies inside the oblivious circle. Copying is linear over every field (paper 8’s definition of a linear data path), and pure data movement has bounded merge depth (paper 11, Remark “Examples”), so the piece lies inside both dashed overlays. Slow members witness every drawn overlap: the one-tape round-trip and counter machines (see the one-work-tape card); a fresh-copy machine that writes each pass to new cells of another tape and rewinds, so that every cell is entered at most three times (bounded entry); and any of these with two extra tapes running paper 8’s deep-nesting pairs, whose two heads of unbounded owner load escape Theorems F, B and M (deep piece).",
     src: "Stoß 1973 · paper 1, condition (N1) and Theorem “The code gap” (Lean) · paper 8, Definition “Linear data path” and Section 5 · paper 11, Remark “Examples” (hop charging)" },
-  xor: { name: "XOR-frame recursions", color: "red", status: "Impossible within the template",
-    text: "The recursion behind the only claimed sub-(L log d) construction, which mixes data by XOR in address-shear frames, makes at least as many frame changes as its gadget has wires. Within the template, linear time is excluded. The template is an abstract model of the recursion, not a set of machines, so it is listed below the frame rather than drawn as a piece.",
+  xor: { name: "XOR-frame recursions", color: "red", status: "A construction strategy, ruled out within its abstract model",
+    text: "The recursion behind the only claimed sub-(L log d) construction, which mixes data by XOR in address-shear frames, makes at least as many frame changes as its gadget has wires. Within the template, linear time is excluded. This rules out a construction strategy, not a property of machines: the template is an informal reading of the preprint’s construction, and nothing decides, yes or no, whether a given machine follows it. So it is listed below the frame rather than drawn as a piece of the diagram.",
     src: "Paper 1 §12" },
-  packets: { name: "Local packet coding with a small helper budget", color: "red", status: "Impossible within the model",
-    text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too. The model is an information-access model, not a set of machines, so it is listed below the frame rather than drawn as a piece.",
+  packets: { name: "Local packet coding with a small helper budget", color: "red", status: "A construction strategy, ruled out within its abstract model",
+    text: "Coding by fixed two-coordinate Boolean packets at bounded degree, with a sublinear budget of input deficit and helper entropy, cannot save a fixed fraction. Low-treewidth interaction graphs and affine limiting motion are excluded in the same model, and public-adaptive variants are covered too. This rules out a construction strategy, not a property of machines: the model is an information-access model, and no theorem turns a machine’s run into such a broadcast, so nothing decides, yes or no, whether a given machine follows it. It is listed below the frame rather than drawn as a piece of the diagram.",
     src: "Paper 2 (Local Coding Barriers), with its packet and adaptive-coding extensions" },
   high: { name: "High adaptivity", color: "yellow", status: "Excluded if a fixed native deficit (half rate is one) holds for the fixed simulator’s frozen traces",
     text: "The original trace may carry half the input’s information or more. For each fixed machine and time coefficient, batching gives a fixed simulator whose trace entropy is at most L/4 at all sufficiently large dimensions where the original transposes within that time bound. Under the native half-rate hypothesis for the simulator at its own value width and depth, Corollary L(b) forces its entropy above L/4. This would exclude the original machine at those dimensions. Any fixed deficit suffices in place of half rate: if for each k and C the frozen-trace cone relations of every k-tape machine with time constant C carry storage codes of rate at most 1 − ρ(k, C), for some ρ(k, C) > 0 and at every depth, then no machine transposes in linear time (paper 16, Theorem G, Lean). Machines whose output phase is a bounded number of monotone sweeps with sublinear workspace do not transpose in linear time (the output-phase strip, drawn outside the transposers because no slower transposer with that property is known). Also unconditionally, paper 15’s simulator of any linear-time transposer has heavy traces that together carry all but an exponentially small fraction of the inputs, and on each of them a linear amount of information must reach macroscopic crossings, on one coarsely monotone leg of one tape (paper 16, Theorem E(b), Lean); carrying this back to the original machine’s own dependency graph is open. A machine of any entropy that has one trace followed by at least a 2^(−ηL) fraction of the inputs, for a small fixed η, is excluded if that trace has few macroscopic crossings or only one long-range work head, which is why the two paper 16 islands reach into this region. Paper 15 now constructs abstract binary codes with rates at least 1 − CΔ^(−α), for fixed C > 0 and 0 < α < ½. At each sufficiently large fixed degree cap Δ, the length and minimum paired distance tend to infinity; the rate bound approaches one as the cap grows. This is stronger than the abstract requirement forced by a linear-time transposer (Theorem A). One common partition at every sufficiently large length works for every nonempty source subset and retains all coordinates, with an exponential tail for fibre-rate loss (Theorem F). These constructions refute the unrestricted slow-gap premise (Corollary 6.2), but they supply no tape realization or bound on physical access cost. Their amplification, counting and padding are Lean-verified from an explicit seed hypothesis; seed existence is proved in writing from paper 13. The native criterion remains open.",

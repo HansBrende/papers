@@ -67,9 +67,11 @@ the class asks for its condition at every fixed threshold.
   Theorem H, excludes linear time at the explicit thresholds ε* and ε_sm. The machines whose work heads
   never return from a macroscopic excursion form a subclass, which paper 1's Theorem M* already
   excludes.
-- **Few macroscopic crossings.** On such a trace, for every fixed θ > 0, a fixed fraction of the outputs
-  is cut off by o(L) steps from the starts of crossing revisits of excursion more than θL. Paper 16,
-  Theorem X and Corollary 5.6, together with Theorem E(a) for heavy traces, excludes linear time.
+- **Few macroscopic crossings.** On such a trace, some fixed fraction of the outputs, the same for every
+  θ, is cut off by o(L) steps from the starts of crossing revisits of excursion more than θL, for every
+  fixed θ > 0. Paper 16, Theorem X and Corollary 5.6, together with Theorem E(a) for heavy traces,
+  excludes linear time. The order of quantifiers matters: Theorem X's threshold shrinks with the output
+  fraction, so the fraction must be fixed before θ is chosen.
 - **Half-bound circle.** The machine is oblivious and, for every fixed radius r, its ball relations of
   radius r lie in a proved half-bound class, apart from o(L) outputs. A linear-time oblivious machine has
   genies of cost εL whose cones lie in balls of a fixed radius (paper 14, Corollary O(a)). The revealed

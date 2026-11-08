@@ -39,15 +39,21 @@ A class that is defined only for machines with a given time constant contains no
 every class on the map is stated without one. Where a theorem takes a threshold from the time constant,
 the class asks for its condition at every fixed threshold.
 
-- **Only o(log d) monotone passes** (outside the rectangle). A pass is a stretch in which every head
-  moves monotonically. Every halting transposer needs at least log_(k+1) d − O(1) passes, at any running
-  time (passes memo, Lean; paper 1, Theorems P and P′). Kirchherr's conservative machines with
-  o(log d) reversals are a special case.
+- **Only o(log d) monotone passes; if oblivious, only O(1) coarse passes** (outside the rectangle). A pass
+  is a stretch in which every head moves monotonically. Every halting transposer needs at least
+  log_(k+1) d − O(1) passes, at any running time (passes memo, Lean; paper 1, Theorems P and P′).
+  Kirchherr's conservative machines with o(log d) reversals are a special case. In a coarse pass the input
+  head and a bank of work heads are monotone up to o(L) cells and every other head stays within o(L)
+  cells; boundedly many coarse passes over the whole run cannot transpose at any running time if the
+  machine is oblivious (paper 16, Theorem 10.3; Corollary 10.4 across scales). Adaptive machines with
+  O(1) coarse passes are excluded only in polynomial time, so they are not in the strip.
 - **Output phase** (outside, with a dotted ?). On every run, the output is produced in a final stretch in
   which the input head and a fixed set of bank heads make O(1) phases, monotone up to o(L) jitter. Every
   other head visits o(L) cells, and a fixed fraction of the input rows is unread when the stretch
-  begins. Paper 16, Theorems B and J with their suffix forms, excludes linear time. Whether a slower
-  transposer has the property is not known.
+  begins. Paper 16, Theorems B and J with their suffix forms, excludes linear time. With the whole run as
+  the stretch, no oblivious transposer has the property at any running time, and no adaptive one in
+  polynomial time (paper 16, Theorem 10.3). Whether a transposer with an unrestricted prefix, or an
+  adaptive one of superpolynomial running time, can have the property is not known.
 - **Exactly one work tape.** Superlinear time is necessary (Dietzfelbinger, Maass and Schnitger 1991;
   Dietzfelbinger and Maass 1993; in this model also paper 4, Corollary 3.18, and paper 16,
   Corollary 4.2).
@@ -163,9 +169,9 @@ a set of machines and an island of the diagram.
 
 - Can a one-tape transposer enter every cell of both its tapes O(1) times? No published result settles
   this. A crossing-sequence argument is a likely route to a negative answer.
-- Does any transposer, at any running time, have the output-phase property? For the whole run as the
-  stretch, paper 16 sketches a reduction to paper 1's grouped pass bound; for the suffix forms, the
-  published pass bounds say nothing.
+- Does any transposer, at any running time, have the output-phase property? With the whole run as the
+  stretch, coarse pass counting (paper 16, Theorem 10.3) rules out oblivious transposers at any running
+  time and adaptive ones in polynomial time; with an unrestricted prefix, the pass bounds say nothing.
 
 ## How the geometry is checked
 

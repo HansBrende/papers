@@ -8,7 +8,8 @@ Without an argument it reads the index.html next to this script. It rebuilds eve
 a polygon and checks with exact polygon operations that
 
   * the dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
-    long-range work head and few large families) overlap exactly the pieces listed in BANDS, each overlap
+    long-range work head, few large families and the half-bound piece) overlap exactly the pieces listed
+    in BANDS, each overlap
     containing a disc of diameter at least MIN_WIDTH, and stay at least GAP_MIN units from all others;
   * every certified cell listed in CELLS is drawn: the region inside its pieces and outside the others
     contains a disc of diameter at least MIN_WIDTH;
@@ -64,6 +65,7 @@ BANDS = {
     "CROSS": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "ONEHEAD"},
     "ONEHEAD": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS"},
     "GEOM": {"S", "BE", "PC", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD"},
+    "PC": {"S", "D", "BE", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD"},
 }
 
 # certified cells that the drawing shows as regions: (pieces the region lies in, pieces it lies outside).

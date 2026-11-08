@@ -15,8 +15,8 @@ follow the root README.
 - A red strip outside the rectangle is a property that no transposer has, unless a dotted ? joins it to
   the rectangle.
 - A shape drawn inside another is a proved inclusion.
-- The five dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
-  long-range work head and few large families) follow a stricter rule. Each overlaps exactly the pieces it is proved to
+- The six dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
+  long-range work head, few large families and half-bound ball relations) follow a stricter rule. Each overlaps exactly the pieces it is proved to
   share a transposer with and stays apart from the rest. A dotted ? joins it to a piece when this is not
   known. These claims are pairwise: where an outlined piece passes through several pieces at once, no
   combination of them is claimed. Other overlaps carry no claim: shapes drawn apart may share
@@ -79,7 +79,7 @@ the class asks for its condition at every fixed threshold.
   fixed θ > 0. Paper 16, Theorem X and Corollary 5.6, together with Theorem E(a) for heavy traces,
   excludes linear time. The order of quantifiers matters: Theorem X's threshold shrinks with the output
   fraction, so the fraction must be fixed before θ is chosen.
-- **Half-bound circle.** The machine is oblivious and, for every fixed radius r, its ball relations of
+- **Half-bound piece.** The machine is oblivious and, for every fixed radius r, its ball relations of
   radius r lie in a proved half-bound class, apart from o(L) outputs. A linear-time oblivious machine has
   genies of cost εL whose cones lie in balls of a fixed radius (paper 14, Corollary O(a)). The revealed
   word is then an index code whose largest fibre is a storage code of rate about 1 − ε on these relations
@@ -99,7 +99,7 @@ the class asks for its condition at every fixed threshold.
 | Low adaptivity, not oblivious | overlap | Round trip with pause variant (a) |
 | High adaptivity | overlap | Round trip with pause variant (c) |
 | Each cell entered O(1) times | apart, dotted ? | Not known |
-| Half-bound circle | overlap | Round trip |
+| Half-bound piece | overlap | Round trip |
 | Few large families | overlap | Counter |
 | Few macroscopic crossings | overlap | Counter |
 | One long-range work head | overlap | Every oblivious one-tape machine lies in it (an inclusion, stated on the cards but not drawn) |
@@ -115,7 +115,7 @@ the class asks for its condition at every fixed threshold.
 | Oblivious, shallow | overlap | Round trip |
 | Oblivious, deep | overlap | Round trip with deep-nesting tapes |
 | Each cell entered O(1) times | overlap | Fresh copy |
-| Half-bound circle | overlap | Round trip |
+| Half-bound piece | overlap | Round trip |
 | Few large families | overlap | Counter |
 | Few macroscopic crossings | overlap | Counter |
 | One long-range work head | overlap | Counter |
@@ -136,7 +136,7 @@ macroscopic crossing, and every set of outputs is cut off by the empty set for e
 | Low adaptivity, not oblivious | overlap | Counter with pause variant (a) |
 | High adaptivity | overlap | Counter with pause variant (d) |
 | Each cell entered O(1) times | apart, dotted ? | Not known |
-| Half-bound circle | overlap | Parked counter |
+| Half-bound piece | overlap | Parked counter |
 | Few large families | overlap | Counter |
 | Bounded merging, linear data path | overlap | Counter |
 | One work tape | overlap | Counter |
@@ -152,7 +152,7 @@ macroscopic crossing, and every set of outputs is cut off by the empty set for e
 | Low adaptivity, not oblivious | overlap | Counter with pause variant (a) |
 | High adaptivity | overlap | Counter with pause variant (d) |
 | Each cell entered O(1) times | apart, dotted ? | Not known |
-| Half-bound circle | overlap | Round trip |
+| Half-bound piece | overlap | Round trip |
 | Few large families | overlap | Counter |
 | Bounded merging, linear data path | overlap | Round trip, Counter |
 | One work tape | overlap | Round trip, Counter |
@@ -170,19 +170,51 @@ adaptive regions, and every other pair has a witness: no relation is open.
 | Oblivious, deep | apart: disjoint | The class lies in the shallow piece |
 | Low adaptivity not oblivious, high adaptivity | apart: disjoint | The class is defined for oblivious machines |
 | Each cell entered O(1) times | overlap | Fresh copy |
-| Half-bound circle | overlap | Round trip, Parked counter, Fresh copy |
+| Half-bound piece | overlap | Round trip, Parked counter, Fresh copy |
 | Bounded merging, linear data path | overlap | Counter, Round trip, Parked counter, Fresh copy, Cancelling copies |
 | One work tape | overlap | Counter, Round trip, Parked counter |
 | Oblivious data movement | overlap | Counter, Round trip, Parked counter, Fresh copy |
 | Few macroscopic crossings | overlap | Counter, Parked counter |
 | One long-range work head | overlap | Counter, Round trip, Parked counter |
 
+**Half-bound ball relations**
+
+The class is defined for oblivious machines, so it is apart from both adaptive regions; every other pair
+has a witness, and no relation is open.
+
+| Piece | Drawn | Reason |
+|---|---|---|
+| Oblivious, shallow | overlap | Round trip, Parked counter, Fresh copy |
+| Oblivious, deep | overlap | Round trip, Parked counter or Fresh copy, each with deep-nesting tapes (see below) |
+| Low adaptivity not oblivious, high adaptivity | apart: disjoint | The class is defined for oblivious machines |
+| Each cell entered O(1) times | overlap | Fresh copy |
+| Few large families | overlap | Round trip, Parked counter, Fresh copy |
+| Bounded merging, linear data path | overlap | Round trip, Parked counter, Fresh copy |
+| One work tape | overlap | Round trip, Parked counter |
+| Oblivious data movement | overlap | Round trip, Parked counter, Fresh copy |
+| Few macroscopic crossings | overlap | Parked counter |
+| One long-range work head | overlap | Round trip, Parked counter |
+
+The deep witnesses need one check, because the dependency DAG has a revisit edge for every work tape,
+including the data-free deep-nesting tapes. Their walk U(s₀, m, 1) is periodic with period
+P = 4(m+1)Λ = o(L), so every revisit edge on them spans at most P steps, and the steering counter sweeps
+its cells, so its edges are short too. Without the extra tapes, every edge after the copy phase spans at
+most one round trip, one pass or one wait. Two cases follow.
+
+- Round trip and parked counter: a round trip and a wait each last at least L steps, so a path of r edges
+  from an output stays within r round trips, or inside the wait, and never reaches an input read.
+- Fresh copy: its passes shrink, but every pass except the last o(d) lasts longer than P, so an edge
+  still crosses at most one of them, and the outputs of the last o(d) passes are o(L) in number.
+
+So in all three the balls of every fixed radius stay empty apart from o(L) outputs, and the half-bound
+membership survives.
+
 ## Inclusions
 
 Drawn, each proved:
 
 - oblivious inside low adaptivity, since an oblivious machine has a single trace;
-- the shallow and deep pieces, the half-bound circle, oblivious data movement and both overlays inside
+- the shallow and deep pieces, the half-bound piece, oblivious data movement and both overlays inside
   the oblivious circle, by definition (paper 8 defines a linear data path only for oblivious machines);
 - few large families inside the shallow piece. Both conditions of the class ask for a partition of the
   family spans into N classes of disjoint spans (paper 9, Definition "Admissible return geometry"). Every
@@ -209,8 +241,10 @@ one-head island.
   never-fold-back half lies in the one-head island.
 - XOR-frame recursions (paper 1, §12) and local packet coding (paper 2) are no longer drawn as pieces; see
   the next section.
-- The two paper 16 islands, few macroscopic crossings and one long-range work head, and paper 9's few large
-  families are dark-outlined pieces with pairwise claims, like the two former bands.
+- The two paper 16 islands, few macroscopic crossings and one long-range work head, paper 9's few large
+  families and the half-bound piece are dark-outlined pieces with pairwise claims, like the two former
+  bands. The half-bound piece is drawn as an ellipse along data movement, so that it can meet the
+  bounded-entry disc.
 
 ## Construction strategies ruled out
 
@@ -265,7 +299,7 @@ HA: high adaptivity; ✓ member, · not a member).
 
 Reasons for the entries that are not immediate from the constructions:
 
-- The half-bound circle, few large families and both overlays are defined for oblivious machines only,
+- The half-bound piece, few large families and both overlays are defined for oblivious machines only,
   so the adaptive witnesses lie outside them, and oblivious data movement is oblivious by definition.
 - The round trip is not in the crossings class. For θ small compared with the output fraction, most
   outputs are written at cells that the head revisits only after going more than θL to the right. That
@@ -278,7 +312,7 @@ Reasons for the entries that are not immediate from the constructions:
 - The round trip and the fresh copy are in few large families by the variant condition: their large
   families are the turn families, which alternate along a chain of overlapping spans and so split into
   two classes of disjoint spans.
-- The counter machine is not in the half-bound circle: each output reads its own source at the append
+- The counter machine is not in the half-bound piece: each output reads its own source at the append
   step, so its relations contain loops and admit storage codes of rate 1.
 - The deep-nesting tapes put a machine outside the shallow piece and so outside few large families. They
   break bounded entry and change no other entry.
@@ -290,7 +324,7 @@ Reasons for the entries that are not immediate from the constructions:
 - Cancelling copies has merge depth 0, since no data passes through a cell entered more than three times
   (paper 11, Definition "Lineages and merge depth"), and its data path is linear over F₂: the output is
   the input bit plus the two copied bits.
-- Cancelling copies is not in the half-bound circle, for the counter machine's reason. It is not in the
+- Cancelling copies is not in the half-bound piece, for the counter machine's reason. It is not in the
   one-head class, since both extra heads return after excursions of order L.
 - Cancelling copies is not in the crossings class either. At the append step of output bit i, each extra
   head is at cell i. It returned there one step after the previous append, by a revisit that starts in
@@ -302,13 +336,15 @@ Reasons for the entries that are not immediate from the constructions:
 
 The rows certify 17 distinct cells as non-empty. One of them is the cell inside few large families and
 both overlays and outside every other red piece and the bounded-entry disc. Cancelling copies certifies
-it, and the drawing shows it as the stretch of few large families outside the others. Proved inclusions and disjointness settle every cell
-that would put a transposer in two places the map keeps apart:
+it, and the drawing shows it as the stretch of few large families outside the others. No row is in the
+half-bound piece and outside every other red piece: every half-bound row is in oblivious data movement, so
+that cell is open. Proved inclusions and disjointness settle every cell that would put a transposer in two
+places the map keeps apart:
 
 - one work tape in the deep piece;
 - an oblivious one-tape transposer outside the one-head class;
 - oblivious data movement outside the oblivious circle or outside either overlay;
-- the half-bound circle, few large families or an overlay outside the oblivious circle;
+- the half-bound piece, few large families or an overlay outside the oblivious circle;
 - few large families or bounded entry in the deep piece.
 
 Those cells are empty. Every other cell inside an outlined piece is open: no witness for it is known, and

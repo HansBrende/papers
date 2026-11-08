@@ -481,7 +481,8 @@ a:hover { text-decoration-thickness: 2px; }
       the four dark-outlined pieces. A round-trip machine copies the input to its one work tape and makes d round trips, writing one
       output row per rightward pass. A counter machine keeps O(log L)-bit counters on its one work tape and walks the input head to
       each entry in output order; a parked variant waits with the input head off the input before each output. A fresh-copy machine writes each pass to new cells of another tape, so that every cell is entered
-      at most three times. All three are oblivious and only copy data. Input-dependent pauses move them to any adaptivity while keeping a trace of
+      at most three times. Each of them transposes every input at every size, is oblivious, and only copies
+      data; the variants below change only the motion of the heads, never the output. Input-dependent pauses move them to any adaptivity while keeping a trace of
       probability 2^(−o(L)), and two extra tapes running short deep-nesting pairs (paper 8) move them into the deep piece. Two placements are proved: an oblivious
       one-tape machine lies in the shallow piece and in the one-head island, and oblivious data movement lies inside the oblivious
       circle and both overlays. Open: whether a bounded-entry transposer can have one work tape, few macroscopic crossings or only one

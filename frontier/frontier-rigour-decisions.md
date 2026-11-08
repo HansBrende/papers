@@ -1,0 +1,156 @@
+# How the frontier map is drawn
+
+Companion to the [frontier map](index.html), 8 November 2026. It records, piece by piece, how each class
+on the map is stated and why each overlap, separation and inclusion is drawn as it is. Paper numbers
+follow the root README.
+
+## Semantics
+
+- The outer frame is every deterministic multitape Turing machine in the frozen model of paper 1: a
+  read-only two-way input tape, k work tapes and a one-way write-only output tape.
+- The inner rectangle is the transposers: machines that, for every d, transpose every d × d matrix of
+  b(d) = max(1, ⌈log₂ d⌉)-bit entries, at any running time.
+- Inside the rectangle a property stands for the transposers that have it. A piece is red when no
+  transposer in it runs in time O(L), where L = d² b(d).
+- A red strip outside the rectangle is a property that no transposer has, unless a dotted ? joins it to
+  the rectangle.
+- A shape drawn inside another is a proved inclusion.
+- The two dark-outlined pieces, one work tape and oblivious data movement, follow a stricter rule. Each
+  overlaps exactly the pieces it is proved to share a transposer with and stays apart from the rest. A
+  dotted ? joins it to a piece when this is not known. Other overlaps carry no claim: shapes drawn apart
+  may share transposers, and a drawn overlap may contain none.
+
+## Witness machines
+
+These explicit machines are all slow; they show that the drawn overlaps of the dark-outlined pieces are
+non-empty.
+
+| Name | Construction | What it shows |
+|---|---|---|
+| Round trip | One work tape. Compute d and b from L, copy the input with marker tracks for entries and rows, and park the input head off the input. Then make d round trips, writing output row j on the j-th rightward pass. Time about 2dL. | Oblivious, one work tape, pure data movement. For every radius r, an output written after the first r + 1 round trips reaches no input read within r dependency steps, so its ball of radius r is empty. |
+| Counter | One work tape holding O(log L)-bit counters. For each output bit in column-major order, walk the input head to its source and copy it. In the sweeping variant, a head that sweeps the counter cells runs the counters. | Oblivious, one work tape, pure data movement. The work head stays within O(log L) cells, so no revisit has an excursion of a fixed fraction of L. In the sweeping variant every return family has O(log L) hops, and the family spans form two classes of disjoint spans. |
+| Fresh copy | Two work tapes. Each pass writes the matrix minus its current first column to fresh cells of the other tape, outputting the removed entries, then rewinds. Counters are kept by alternating fresh copies. | Oblivious, pure data movement, and every cell of every tape, the input tape included, is entered at most three times. Late outputs have empty dependency balls. |
+| Pauses | Add a pause after reading a 1 bit during the copy phase. | Pauses enter no cell. Pausing on one bit gives trace entropy 1 (low adaptivity, not oblivious); pausing on every bit gives entropy L (high adaptivity). |
+| Deep-nesting tapes | Add two work tapes, carrying no data, that run paper 8's deep-nesting pair U(s₀, m, 1) with m growing with d. | Two heads of unbounded owner load, outside Theorems F, B and M: an oblivious machine with these tapes lies in the deep piece. |
+
+## Classes stated without a time bound
+
+A class that is defined only for machines with a given time constant contains no slower transposer, so
+every class on the map is stated without one. Where a theorem takes a threshold from the time constant,
+the class asks for its condition at every fixed threshold.
+
+- **Only o(log d) monotone passes** (outside the rectangle). A pass is a stretch in which every head
+  moves monotonically. Every halting transposer needs at least log_(k+1) d − O(1) passes, at any running
+  time (passes memo, Lean; paper 1, Theorems P and P′). Kirchherr's conservative machines with
+  o(log d) reversals are a special case.
+- **Output phase** (outside, with a dotted ?). On every run, the output is produced in a final stretch in
+  which the input head and a fixed set of bank heads make O(1) phases, monotone up to o(L) jitter. Every
+  other head visits o(L) cells, and a fixed fraction of the input rows is unread when the stretch
+  begins. Paper 16, Theorems B and J with their suffix forms, excludes linear time. Whether a slower
+  transposer has the property is not known.
+- **Exactly one work tape.** Superlinear time is necessary (Dietzfelbinger, Maass and Schnitger 1991;
+  Dietzfelbinger and Maass 1993; in this model also paper 4, Corollary 3.18, and paper 16,
+  Corollary 4.2).
+- **Oblivious data movement.** Entries are moved as indivisible items along an input-independent
+  pattern. Superlinear time is necessary (Stoß 1973). In the series' terms, a linear-time oblivious
+  transposer beats every routing by a factor of order log d (paper 1, Theorem "The code gap"), and a pure
+  data mover is a routing. Data movement that depends on the entries is not covered (paper 1, condition
+  (N1)).
+- **One long-range work head, or none.** On some trace followed by a 2^(−o(L)) fraction of the inputs
+  (the only trace, if oblivious), all work heads but one make only excursions of o(L) cells. Paper 16,
+  Theorem H, excludes linear time at the explicit thresholds ε* and ε_sm. The machines whose work heads
+  never return from a macroscopic excursion form a subclass, which paper 1's Theorem M* already
+  excludes.
+- **Few macroscopic crossings.** On such a trace, for every fixed θ > 0, a fixed fraction of the outputs
+  is cut off by o(L) steps from the starts of crossing revisits of excursion more than θL. Paper 16,
+  Theorem X and Corollary 5.6, together with Theorem E(a) for heavy traces, excludes linear time.
+- **Half-bound circle.** The machine is oblivious and, for every fixed radius r, its ball relations of
+  radius r lie in a proved half-bound class, apart from o(L) outputs. A linear-time oblivious machine has
+  genies of cost εL whose cones lie in balls of a fixed radius (paper 14, Corollary O(a)). The revealed
+  word is then an index code whose largest fibre is a storage code of rate about 1 − ε on these relations
+  (paper 4, Remark 4.9(b)), which the half bound forbids.
+- **Few large families.** The machine is oblivious, its family spans split into N classes of disjoint
+  spans, and for every ε > 0 all but q families have at most εL hops (or the variant with two span
+  classes plus one family). For linear time this is paper 9's admissible geometry, which is excluded.
+
+## Decisions for the dark-outlined pieces
+
+**One work tape**
+
+| Piece | Drawn | Reason |
+|---|---|---|
+| Oblivious, shallow | overlap | Round trip |
+| Oblivious, deep | apart: disjoint | An oblivious one-tape machine has one work head, the free head of paper 8's Theorem M with no other heads (Lemma W), so it lies in the shallow piece |
+| Low adaptivity, not oblivious | overlap | Round trip with a pause on one bit |
+| High adaptivity | overlap | Round trip with a pause on every bit |
+| Each cell entered O(1) times | apart, dotted ? | Not known |
+| Half-bound circle | overlap | Round trip |
+| Few large families | overlap | Counter, sweeping variant |
+| Few macroscopic crossings | overlap | Counter |
+| One long-range work head | overlap | Every oblivious one-tape machine lies in it (an inclusion, stated on the cards but not drawn) |
+| Oblivious data movement | overlap | Round trip, Counter |
+| Bounded merging, linear data path | overlap | Round trip |
+
+**Oblivious data movement**
+
+| Piece | Drawn | Reason |
+|---|---|---|
+| Oblivious | inside | Definition |
+| Low adaptivity not oblivious, high adaptivity | apart: disjoint | It lies inside the oblivious circle |
+| Oblivious, shallow | overlap | Round trip |
+| Oblivious, deep | overlap | Round trip with deep-nesting tapes |
+| Each cell entered O(1) times | overlap | Fresh copy |
+| Half-bound circle | overlap | Round trip |
+| Few large families | overlap | Counter, sweeping variant |
+| Few macroscopic crossings | overlap | Counter |
+| One long-range work head | overlap | Counter |
+| One work tape | overlap | Round trip, Counter |
+| Bounded merging | inside | Pure data movement has bounded merge depth (paper 11, Remark "Examples") |
+| Linear data path | inside | Copying is linear over every field (paper 8, Definition "Linear data path") |
+
+## Inclusions
+
+Drawn, each proved:
+
+- oblivious inside low adaptivity, since an oblivious machine has a single trace;
+- the shallow and deep pieces, the half-bound circle, oblivious data movement and both overlays inside
+  the oblivious circle, by definition (paper 8 defines a linear data path only for oblivious machines);
+- few large families inside the shallow piece, since N classes of disjoint spans leave at most N families
+  open at any step, so the owner load is at most N;
+- the oblivious part of the bounded-entry disc inside the shallow piece, since entering every cell at
+  most V times bounds the owner load by 2V − 1 (paper 8);
+- the oblivious part of one work tape inside the shallow piece (see the table above);
+- oblivious data movement inside both overlays.
+
+Proved but not drawn, to keep the centre readable: the oblivious part of one work tape lies inside the
+one-head island.
+
+## Changes from the previous drawing
+
+- "Data movement only" claimed every data mover. Only input-independent movement is excluded (paper 1,
+  (N1)), so the piece is now oblivious data movement.
+- The bounded-merging overlay sat inside the deep piece only. Nothing proves that, and the round-trip
+  machine is a shallow member, so the overlay now meets both oblivious pieces.
+- The linear data path overlay reached the adaptive regions, where paper 8's definition does not apply.
+- The bands were drawn across every circle by convention. They are now drawn by proof, as above.
+- The sweeps band is split. Its passes half contains no transposer and sits outside the rectangle; its
+  never-fold-back half lies in the one-head island.
+- XOR-frame recursions (paper 1, §12) and local packet coding (paper 2) are exclusions inside abstract
+  models, not sets of machines, so they are no longer drawn as pieces.
+
+## Open questions
+
+- Can a one-tape transposer enter every cell of both its tapes O(1) times? No published result settles
+  this. A crossing-sequence argument is a likely route to a negative answer.
+- Does any transposer, at any running time, have the output-phase property? For the whole run as the
+  stretch, paper 16 sketches a reduction to paper 1's grouped pass bound; for the suffix forms, the
+  published pass bounds say nothing.
+
+## How the geometry was checked
+
+The shapes were read back out of the published SVG and checked with exact polygon operations:
+
+- every required overlap has visible area;
+- every required separation has a gap;
+- every required inclusion holds;
+- no shape lies inside another unless the inclusion is listed above.

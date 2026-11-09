@@ -8,7 +8,7 @@ Without an argument it reads the index.html next to this script. It rebuilds eve
 a polygon and checks with exact polygon operations that
 
   * the dark-outlined pieces (one work tape, oblivious data movement, few macroscopic crossings, one
-    long-range work head, few large families and the half-bound piece) overlap exactly the pieces listed
+    long-range work head, regular head motion, few large families and the half-bound piece) overlap exactly the pieces listed
     in BANDS, each overlap
     containing a disc of diameter at least MIN_WIDTH, and stay at least GAP_MIN units from all others;
   * every certified cell listed in CELLS is drawn: the region inside its pieces and outside the others
@@ -50,7 +50,7 @@ ON_LINE = 1.5     # a link end must lie within this distance of the outline it j
 # data-id in the SVG -> name used below
 PIECES = {"high": "T", "leOpen": "LE", "ob": "O", "obS": "CD", "lowad": "BE", "pc": "PC", "geom": "GEOM",
           "crossings": "CROSS", "onehead": "ONEHEAD", "onetape": "ONETAPE", "movement": "MOVE", "merge": "MERGE",
-          "linear": "LINEAR", "passes": "PASSES", "phases": "PHASES"}
+          "linear": "LINEAR", "passes": "PASSES", "phases": "PHASES", "motion": "MOT"}
 
 # regions derived from the circles: shallow and deep oblivious pieces, low adaptivity without obliviousness,
 # high adaptivity
@@ -60,32 +60,34 @@ DERIVED = {"S": lambda R: R["CD"].intersection(R["O"]), "D": lambda R: R["O"].di
 # the pieces each dark-outlined piece is proved to share a transposer with; it must stay apart from every
 # other piece (pairwise claims only: no combination of three or more pieces is claimed)
 BANDS = {
-    "ONETAPE": {"S", "LAO", "HA", "PC", "GEOM", "CROSS", "ONEHEAD", "MOVE", "MERGE", "LINEAR"},
-    "MOVE": {"S", "D", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MERGE", "LINEAR"},
-    "CROSS": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "ONEHEAD"},
-    "ONEHEAD": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS"},
-    "GEOM": {"S", "BE", "PC", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD"},
-    "PC": {"S", "D", "BE", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD"},
+    "ONETAPE": {"S", "LAO", "HA", "PC", "GEOM", "CROSS", "ONEHEAD", "MOVE", "MERGE", "LINEAR", "MOT"},
+    "MOVE": {"S", "D", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MERGE", "LINEAR", "MOT"},
+    "CROSS": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "ONEHEAD", "MOT"},
+    "ONEHEAD": {"S", "D", "LAO", "HA", "PC", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "MOT"},
+    "GEOM": {"S", "BE", "PC", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD", "MOT"},
+    "PC": {"S", "D", "BE", "GEOM", "MERGE", "LINEAR", "ONETAPE", "MOVE", "CROSS", "ONEHEAD", "MOT"},
+    # regular head motion: slow witnesses with piecewise-straight motion lie in every other piece
+    "MOT": {"S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR"},
 }
 
 # certified cells that the drawing shows as regions: (pieces the region lies in, pieces it lies outside).
-# The cancelling-copies machine lies in few large families and both overlays, and outside every other red
-# piece and the bounded-entry disc.
-CELLS = [({"GEOM", "S", "MERGE", "LINEAR"}, {"BE", "PC", "CROSS", "ONEHEAD", "ONETAPE", "MOVE"})]
+# The cancelling-copies machine lies in few large families, regular head motion and both overlays, and outside
+# every other red piece and the bounded-entry disc.
+CELLS = [({"GEOM", "S", "MERGE", "LINEAR", "MOT"}, {"BE", "PC", "CROSS", "ONEHEAD", "ONETAPE", "MOVE"})]
 
 # pieces a dotted ? link must not cross, apart from the two it joins
-LINK_CLEAR = ["BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "PASSES", "PHASES"]
+LINK_CLEAR = ["BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MOT", "PASSES", "PHASES"]
 # pieces the band rule compares against (the low-adaptivity circle, the oblivious circle and the shallow
 # circle are covered through S, D, LAO and HA)
-COMPARED = ["S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR"]
+COMPARED = ["S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR", "MOT"]
 
 # required inclusions: (part, whole); "A&B" is an intersection
 INSIDE = [("O", "LE"), ("PC", "O"), ("GEOM", "S"), ("MERGE", "O"), ("LINEAR", "O"), ("MOVE", "O"),
           ("MOVE", "MERGE"), ("MOVE", "LINEAR"), ("BE&O", "S"), ("ONETAPE&O", "S")]
-INSIDE += [(p, "T") for p in ["LE", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR"]]
+INSIDE += [(p, "T") for p in ["LE", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR", "MOT"]]
 
 # drawn inclusions that are proved; any other shape drawn inside another is an error
-DRAWN = ["LE", "O", "S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR"]
+DRAWN = ["LE", "O", "S", "D", "LAO", "HA", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MERGE", "LINEAR", "MOT"]
 ALLOWED = {("O", "LE"), ("S", "O"), ("S", "LE"), ("D", "O"), ("D", "LE"), ("LAO", "LE"), ("PC", "O"), ("PC", "LE"),
            ("GEOM", "S"), ("GEOM", "O"), ("GEOM", "LE"), ("MERGE", "O"), ("MERGE", "LE"), ("LINEAR", "O"),
            ("LINEAR", "LE"), ("MOVE", "O"), ("MOVE", "LE"), ("MOVE", "MERGE"), ("MOVE", "LINEAR")}
@@ -95,8 +97,8 @@ UNKNOWN = {frozenset({"ONETAPE", "BE"}), frozenset({"CROSS", "BE"}), frozenset({
            frozenset({"PHASES", "T"})}
 
 # green question marks: (pieces that must contain the glyph centre, pieces it must keep clear of)
-QMARKS = [({"D", "LINEAR"}, {"PC", "MOVE", "CROSS", "ONEHEAD", "MERGE"}),
-          ({"HA"}, {"BE", "CROSS", "ONEHEAD", "ONETAPE"})]
+QMARKS = [({"D", "LINEAR"}, {"PC", "MOVE", "CROSS", "ONEHEAD", "MERGE", "MOT"}),
+          ({"HA"}, {"BE", "CROSS", "ONEHEAD", "ONETAPE", "MOT"})]
 
 
 def attrs(text):
@@ -185,7 +187,7 @@ def main():
         ends = [Point(float(a["x1"]), float(a["y1"])), Point(float(a["x2"]), float(a["y2"]))]
         names = []
         for p in ends:
-            near = [n for n in ["T", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "PASSES", "PHASES"]
+            near = [n for n in ["T", "BE", "PC", "GEOM", "CROSS", "ONEHEAD", "ONETAPE", "MOVE", "MOT", "PASSES", "PHASES"]
                     if R[n].exterior.distance(p) <= ON_LINE]
             names.append(near)
         pair = next((frozenset({x, y}) for x in names[0] for y in names[1] if frozenset({x, y}) in UNKNOWN), None)

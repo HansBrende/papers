@@ -3,8 +3,8 @@
 This section proves the dichotomy for arbitrary linear-time traces (Theorem~D) and its consequence for oblivious transposers
 (Theorem~X). Both rest on one implication, proved for every trace without any hypothesis on what the machine computes: if a
 small set of steps cuts a large set of outputs off from the crossing steps $\CL_H$, then, after a further guard of $O(H)$ steps, the
-cone relation contains a linear-size independent set. \Cref{sec:certificates} has shown that such a set is incompatible with
-transposition.
+cone relation contains a linear-size independent set. \Cref{sec:certificates} has shown that, for an oblivious transposer, revealing
+the steps that leave such a set costs at least as many bits as the set has elements (\cref{lem:acyclic-cost}(b)).
 
 \subsection{Constants}\label{sec:constants}
 
@@ -19,7 +19,8 @@ of nodes, and put
 \[
   m_0(k)=1+\sum_{n=0}^{2k}\bigl(\chi_k(n)-1\bigr),\qquad g(k)=2k+2\sum_{n=0}^{2k}\nu_k(n).
 \]
-Then $m_0=5$, $45$, $346$ and $g=26$, $266$, $2532$ for $k=1,2,3$, and $m_0(k)\le3^{2k+1}$. For an integer $m\ge1$ and reals $C\ge1$ and
+Then $m_0=5$, $45$, $346$ and $g=26$, $266$, $2532$ for $k=1,2,3$, and $m_0(k)\le3^{2k+1}$ and $g(k)\le(2k+1)3^{2k+1}$, since
+$\chi_k(n)\le3^n$ and $\nu_k(n)\le(n+1)\chi_k(n)$. For an integer $m\ge1$ and reals $C\ge1$ and
 $\alpha>0$ put
 \[
   B_{\mathrm{time}}(m,C,\alpha)=\Bigl\lceil\frac{2mC}{\alpha}\Bigr\rceil,\qquad
@@ -42,14 +43,17 @@ For a machine $M$ with $k$ work tapes and value width $\wval$ put
 In Lean, $\chi_k$ and $\nu_k$ are \lean{chainCapAt} and \lean{nodeCapAt}; $m_0$ and $g$ are \lean{sharpFamCount} and
 \lean{sharpCellGuardThresh}; the constants of the time pullback are \lean{tightBtime}, \lean{tightTimePullbackRhoMin} and
 \lean{tightTimePullback_d0}; $\rho_0$ is \lean{tightBridgeRho0}, through \lean{tightBridgeRefCells}, and $d_{\mathrm{br}}$ is
-\lean{tightBridge_d0}; and $\cE$ and $\thetaM$ are \lean{cE_menger_tight} and \lean{thetaMacro_tight}. The values for $k\le3$ are
-\lean{sharpCounts_small_values}, and the bound on $m_0(k)$ is \lean{sharpChainCount_le_pow_three}.
+\lean{tightBridge_d0}; $\cE$ and $\thetaM$ are \lean{cE_menger_tight} and \lean{thetaMacro_tight}; and the constant
+$\cE(M,C,\alpha,\eta)$ of \cref{thm:E} is \lean{cE_frozen_eta_tight}. The values for $k\le3$ are \lean{sharpCounts_small_values},
+and the bounds on $m_0(k)$ and $g(k)$ are \lean{sharpChainCount_le_pow_three} and \lean{sharpCellGuardThresh_le_pow_three} (through
+\lean{chainCapAt_le_pow_three} and \lean{nodeCapAt_le_succ_mul_chainCapAt}).
 \end{sloppypar}
 
 These constants are polynomial in $C$, $1/\alpha$ and $\wval$, and singly exponential in $k$. At $C=\alpha=1$:
 $\rho_0(1,1,1)\approx7.0\cdot10^{-3}$, $\rho_0(2,1,1)\approx9.8\cdot10^{-5}$ and $\rho_0(3,1,1)\approx1.7\cdot10^{-6}$. For $k=2$,
 $C=\alpha=1$ and value width $8$, the expansion constant of \cref{thm:X} is $\cE\approx5.8\cdot10^{-6}$, its threshold is
-$\thetaM\approx1.8\cdot10^{-9}$, and it applies from $d_0\approx1.1\cdot10^9$ on. The numerics suggest that the true values are much
+$\thetaM\approx1.8\cdot10^{-9}$, and it applies from $d_0=d_{\mathrm{br}}(2,1,\frac{19}{20})=90953$ on; only its clause $W\le H^*$
+needs $d\ge\lceil1/\thetaM\rceil\approx5.6\cdot10^8$. The numerics suggest that the true values are much
 larger (\cref{rem:numerics-crossings}).
 
 The first forms of the results of this section, which remain in the library (\lean{obliviousLinTime_macroscopicCrossingLowers_menger_lb_genie}), used the genie of \cref{lem:genie} in the coding step
@@ -150,29 +154,31 @@ $H$, with polynomial constants and an independent set in the full cone relation.
 \subsection{Theorem D: a dichotomy for every linear-time trace}
 
 \begin{theorem}[Theorem~D]\label{thm:D}
-\formal{TightConstants.lean}{linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight}
+\formal{TightConstants.lean}{linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight, linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight}
 Let $\tau$ be any trace with $k$ work tapes that appends exactly $L=d^2b$ bits before step $T\le C(L+1)$, with $C\ge1$ and
-$\alpha>0$. Let $H\ge1$, $d\ge d_{\mathrm{br}}(k,C,\tfrac{19}{20}\alpha)$ and $c\le\frac1{20}$. For every set $V_0$ of at least $\alpha L$
-input positions, exactly one of the following holds:
-\begin{enumerate}[label=(\roman*)]
-\item some set $B$ of fewer than $c\abs{V_0}$ steps separates $\Out(V_0)$ from $\CL_H$, and for some set $X$ of at most $g(k)(5k+1)H$
-steps the cone relation avoiding $B\cup X$ contains an independent set $U\subseteq V_0$ with
-$\abs U\ge\frac{19}{20}\rho_0(k,C,\tfrac{19}{20}\alpha)\abs{V_0}$;
-\item every set separating $\Out(V_0)$ from $\CL_H$ has at least $c\abs{V_0}$ elements.
-\end{enumerate}
+$\alpha>0$. Let $H\ge1$, $0\le c<1$ and $d\ge d_{\mathrm{br}}(k,C,(1-c)\alpha)$, and let $V_0$ be a set of at least $\alpha L$ input
+positions. If a set $B$ of at most $c\abs{V_0}$ steps separates $\Out(V_0)$ from $\CL_H$, then for some set $X$ of at most
+$g(k)(5k+1)H$ steps the cone relation avoiding $B\cup X$ contains an independent set $U\subseteq V_0$ with
+\[
+  \abs U\ \ge\ (1-c)\,\rho_0\bigl(k,C,(1-c)\alpha\bigr)\abs{V_0}.
+\]
 \end{theorem}
 
 \begin{outline}
-If (ii) fails, take a separating set $B$ with $\abs B<c\abs{V_0}\le\abs{V_0}/20$. Since $\Out$ is injective, at least
-$\frac{19}{20}$ of the roots of $V_0$ lie outside $B$; the set $V_0'$ of these has at least $\frac{19}{20}\alpha L$ elements, and $B$
-separates it from $\CL_H$ within every depth. \Cref{thm:bridge} at density $\frac{19}{20}\alpha$ gives $X$ and $U$. The two cases exclude
-each other, since the set $B$ in (i) violates (ii).
+Since $\Out$ is injective, at least $\abs{V_0}-\abs B\ge(1-c)\abs{V_0}$ of the roots of $V_0$ lie outside $B$; the set $V_0'$ of these
+has at least $(1-c)\alpha L$ elements, and $B$ separates it from $\CL_H$ within every depth. \Cref{thm:bridge} at density $(1-c)\alpha$
+gives $X$ and $U\subseteq V_0'$ with $\abs U\ge\rho_0(k,C,(1-c)\alpha)\abs{V_0'}\ge(1-c)\rho_0(k,C,(1-c)\alpha)\abs{V_0}$.
 \end{outline}
 
-Theorem~D mentions neither a machine nor transposition. Its content is the implication from (i)'s first half to its second: a
-cheap cut from the crossing steps, together with a guard of $O(H)$ steps, leaves a large independent set. Read the other way, it
-says that a trace whose cone relations have no large independent set after such cuts must reach $\CL_H$ with linear expansion from
-every large output set. The transposition hypothesis enters only through the certificate method. The first forms of Theorem~D need no guard in (i) and give an acyclic set in the ball relation of a radius $D$:
+Read as a dichotomy, Theorem~D says that for every set $V_0$ of at least $\alpha L$ input positions, either every set separating
+$\Out(V_0)$ from $\CL_H$ has more than $c\abs{V_0}$ elements, or such a cheap separator, together with a guard of $O(H)$ steps, leaves
+an independent set of linear size. At $c=\frac1{20}$ the threshold is $d_{\mathrm{br}}(k,C,\frac{19}{20}\alpha)$ and the density is
+$\frac{19}{20}\rho_0(k,C,\frac{19}{20}\alpha)$; this is the earlier statement of Theorem~D as a dichotomy for $c\le\frac1{20}$
+(\lean{linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight}).
+
+Theorem~D mentions neither a machine nor transposition: a cheap cut from the crossing steps, together with a guard of $O(H)$ steps,
+leaves a large independent set. Read the other way, it says that a trace whose cone relations have no large independent set after such cuts must reach $\CL_H$ with linear expansion from
+every large output set. The transposition hypothesis enters only through the certificate method. The first forms of Theorem~D need no guard and give an acyclic set in the ball relation of a radius $D$:
 \lean{linearTimeTrace_crossingLowerGT2H_menger_dichotomy} for $c\le\frac12$, and \lean{linearTimeTrace_crossingLowerGT2H_ballSep_dichotomy}
 for separation within depth~$D$ and any $c$. Both hold only for $H$ below a fraction of $L$ that decreases exponentially with $D$, as
 for the first form of the bridge.
@@ -180,13 +186,13 @@ for the first form of the bridge.
 \subsection{Theorem X}
 
 \begin{theorem}[Theorem~X, macroscopic crossings]\label{thm:X}
-\formal{TightConstants.lean}{obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight, obliviousLinTime_crossingLowerGT2H_menger_lb_tight}
+\formal{TightConstants.lean}{obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight, obliviousLinTime_crossingLowerGT2H_menger_lb_tight, linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight}
 Let $M$ be a machine with $k$ work tapes and value width $\wval$, and let $C\ge1$ and $\alpha>0$. Put $\theta=\thetaM(M,C,\alpha)$ and
 \[
-  d_0=\max\Bigl(1,\ d_{\mathrm{br}}(k,C,\tfrac{19}{20}\alpha),\ \Bigl\lceil\frac2\theta\Bigr\rceil\Bigr).
+  d_0=\max\Bigl(1,\ d_{\mathrm{br}}(k,C,\tfrac{19}{20}\alpha),\ \bigl\lceil\theta^{-1/2}\bigr\rceil\Bigr).
 \]
-Let $d\ge d_0$, suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$, and let $H^*=\lfloor\theta L\rfloor$. Then $W\le H^*$ and
-$\theta L\le2H^*$, and for every set $V_0$ of at least $\alpha L$ input positions, every set of steps separating $\Out(V_0)$ from
+Let $d\ge d_0$, suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$, and let $H^*=\lfloor\theta L\rfloor$. Then $\theta L\le2H^*$, and
+$W\le H^*$ if moreover $d\ge\lceil1/\theta\rceil$; and for every set $V_0$ of at least $\alpha L$ input positions, every set of steps separating $\Out(V_0)$ from
 $\CL_{H^*}$ in the dependency DAG of the common trace has at least
 \[
   \cE(M,C,\alpha)\,\abs{V_0}\ =\ \frac{\rho_0(k,C,\tfrac{19}{20}\alpha)}{2\wval}\,\abs{V_0}
@@ -205,16 +211,17 @@ earlier ends of crossing revisits of excursion greater than $\theta L$.
 \end{corollary}
 
 \begin{outline}[Outline of the formal proof of \cref{thm:X,cor:many}]
-\emph{Thresholds.} From $d\ge d_0$ one gets $\theta d\ge2$, so $W\le\theta L/2\le H^*$, and $\theta L\ge2$, so $\theta L<H^*+1\le2H^*$.
+\emph{Thresholds.} From $d\ge d_0$ one gets $\theta L\ge\theta d^2\ge1$, so $\theta L<H^*+1\le2H^*$; if $d\ge\lceil1/\theta\rceil$,
+then $\theta d\ge1$, so $W\le\theta L$ and $W\le H^*$.
 \emph{Reduction.} Let $B$ separate $\Out(V_0)$ from $\CL_{H^*}$. If $\abs B\ge\abs{V_0}/20$ we are done, since $\cE\le\frac1{30}$
-(\lean{cE_menger_tight_le_one_thirtieth}). Otherwise the set $V_0'$ of $q\in V_0$ with $\Out(q)\notin B$ has at least
-$\frac{19}{20}\abs{V_0}\ge\frac{19}{20}\alpha L$ elements, and $B$ separates it from $\CL_{H^*}$ within every depth. \emph{Bridge.}
-\Cref{thm:bridge} at density $\frac{19}{20}\alpha$ gives a guard $X$ with $\abs X\le g(k)(5k+1)H^*$ and a set $U\subseteq V_0'$,
-independent in the cone relation avoiding $B\cup X$, with $\abs U\ge\rho_0\abs{V_0'}\ge\frac{19}{20}\rho_0\abs{V_0}$, where
-$\rho_0=\rho_0(k,C,\frac{19}{20}\alpha)$. \emph{Coding.} No genie is needed: the cone relation has no depth bound, so the values on
+(\lean{cE_menger_tight_le_one_thirtieth}). \emph{Bridge.} Otherwise \cref{thm:D} at $c=\frac1{20}$ gives a guard $X$ with
+$\abs X\le g(k)(5k+1)H^*$ and a set $U\subseteq V_0$, independent in the cone relation avoiding $B\cup X$, with
+$\abs U\ge\frac{19}{20}\rho_0\abs{V_0}$, where $\rho_0=\rho_0(k,C,\frac{19}{20}\alpha)$. \emph{Coding.} No genie is needed: the cone relation has no depth bound, so the values on
 $B\cup X$ form an index code for it, and \cref{lem:acyclic-cost}(b) gives $\wval(\abs B+\abs X)\ge\abs U$. By the choice of $\theta$,
 $\wval\abs X\le\wval\,g(k)(5k+1)\theta L=\frac9{20}\alpha\rho_0L\le\frac9{20}\rho_0\abs{V_0}$, hence $\wval\abs B\ge\frac12\rho_0\abs{V_0}$,
-that is, $\abs B\ge\cE\abs{V_0}$.
+that is, $\abs B\ge\cE\abs{V_0}$. The formal proof does this on any trace on which every set $U$ acyclic in the cone relation
+avoiding a set $\Gamma$ of steps satisfies $\abs U-\wval\abs\Gamma\le\delta$, and gives $\wval\abs B\ge\frac12\rho_0\abs{V_0}-\delta$
+(\lean{linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight}); \cref{lem:acyclic-cost}(b) gives $\delta=0$.
 \end{outline}
 
 \begin{remark}[The earlier, row-scale form]\label{rem:2W}

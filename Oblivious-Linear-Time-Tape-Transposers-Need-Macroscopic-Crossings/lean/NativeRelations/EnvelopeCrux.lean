@@ -6,11 +6,14 @@ import NativeRelations.DichromaticCrux
 # Window, Block-Ranking, and Step-Invariant Certificates; Cut Cruxes
 
 Establishes the trace-level certificate toolkit (`acyclicIn_of_lt_on_nbhd`, `upperEnvelope_isAcyclicIn`,
-`oneSidedEnvelope_isAcyclicIn`, `window_isAcyclicIn_of_noFarArcs`, `exists_isAcyclicIn_of_window_maxDeg`,
-`cutSet_isAcyclicIn`, `exists_isAcyclicIn_card_ge_of_blockCut` via `LeanMachine.BlockRanking`,
-`isAcyclicIn_ballAvoid_window_of_stepInvariant`), defines `MachineCutCruxAt`, `SubpopCutCruxAt`,
-`ballAvoidSystem`, and `IsBallPathSeparator`, and proves `subpop_cutcrux_excludes` and the two-cut
-covering of non-crossing large revisits (`exists_two_cuts_covering_nonCrossingLargeHops`).
+`oneSidedEnvelope_isAcyclicIn`, `exists_isAcyclicIn_of_oneSidedEnvelope_maxDeg`, and their two-sided
+forms `window_isAcyclicIn_of_noFarArcs`, `exists_isAcyclicIn_of_window_maxDeg`, `cutSet_isAcyclicIn`,
+`exists_isAcyclicIn_card_ge_of_blockCut` via `LeanMachine.BlockRanking`,
+`isAcyclicIn_ballAvoid_window_of_stepInvariant`), defines `MachineCutCruxAt`, `SubpopCutCruxAt` (with
+the crux and the cut-crux as the cases of cost `0` and density `1`: `machineCutCruxAt_zero_iff`,
+`subpopCutCruxAt_one_iff`), `ballAvoidSystem`, and `IsBallPathSeparator`, and proves
+`subpop_cutcrux_excludes` and the two-cut covering of non-crossing large revisits
+(`exists_two_cuts_covering_nonCrossingLargeHops`).
 -/
 
 set_option autoImplicit false
@@ -180,23 +183,25 @@ noncomputable def windowSet (N : V → Finset V) (V₀ : Finset V) (φ ψ : V �
   oneSidedEnvelopeSet N V₀ φ ψ (2 * w)
 
 /-- **Window Lemma, Zero-Far-Arc Case (`β = 0`).**
-When `0 ≤ w` and every arc `p ∈ N q` inside `U_win` is a near arc (`|ψ p - φ q| ≤ w`), `U_win`
-is strictly acyclic. -/
+When every arc `p ∈ N q` inside `U_win` is a near arc (`|ψ p - φ q| ≤ w`), `U_win` is strictly
+acyclic: the two-sided window is the one-sided envelope at margin `2 * w`, and a near arc has
+`0 ≤ w` and `ψ p ≤ φ q + w ≤ φ q + 2 * w`, so no sign condition on `w` is needed. -/
 theorem window_isAcyclicIn_of_noFarArcs {N : V → Finset V} {V₀ : Finset V} {φ ψ : V → ℝ} {w : ℝ}
-    (hw : 0 ≤ w)
     (hnear : ∀ q ∈ windowSet N V₀ φ ψ w,
       ∀ p ∈ N q, p ∈ windowSet N V₀ φ ψ w → |ψ p - φ q| ≤ w) :
     HalfRate.IsAcyclicIn N (windowSet N V₀ φ ψ w) := by
   refine oneSidedEnvelope_isAcyclicIn fun q hq p hpq hp => ?_
-  have habs := (abs_le.mp (hnear q hq p hpq hp)).2
+  have habs := hnear q hq p hpq hp
+  have h0 := (abs_nonneg _).trans habs
+  have h2 := (abs_le.mp habs).2
   linarith
 
 /-- **Window Lemma with Bounded Far-Arc Degree `≤ β`.**
-If `0 ≤ w` and every `q ∈ U_win` participates in at most `β` incoming+outgoing far arcs
+If every `q ∈ U_win` participates in at most `β` incoming+outgoing far arcs
 (`¬ |ψ p - φ q| ≤ w`) inside `U_win`, then `U_win` contains an acyclic subset `S` of size at least
-`U_win.card / (β + 1)` (`U_win.card ≤ (β + 1) * S.card`). -/
+`U_win.card / (β + 1)` (`U_win.card ≤ (β + 1) * S.card`); no sign condition on `w` is needed. -/
 theorem exists_isAcyclicIn_of_window_maxDeg
-    {N : V → Finset V} {V₀ : Finset V} {φ ψ : V → ℝ} {w : ℝ} {β : ℕ} (hw : 0 ≤ w)
+    {N : V → Finset V} {V₀ : Finset V} {φ ψ : V → ℝ} {w : ℝ} {β : ℕ}
     (hdeg : ∀ q ∈ windowSet N V₀ φ ψ w,
       (((windowSet N V₀ φ ψ w).erase q).filter fun p =>
         (p ∈ N q ∧ ¬ |ψ p - φ q| ≤ w) ∨ (q ∈ N p ∧ ¬ |ψ q - φ p| ≤ w)).card ≤ β) :
@@ -209,9 +214,11 @@ theorem exists_isAcyclicIn_of_window_maxDeg
   refine mem_filter.mpr ⟨hp_er, ?_⟩
   rcases hbad with ⟨hpq, hnle⟩ | ⟨hqp, hnle⟩
   · refine Or.inl ⟨hpq, fun habs => hnle ?_⟩
+    have h0 := (abs_nonneg _).trans habs
     have h2 := (abs_le.mp habs).2
     linarith
   · refine Or.inr ⟨hqp, fun habs => hnle ?_⟩
+    have h0 := (abs_nonneg _).trans habs
     have h2 := (abs_le.mp habs).2
     linarith
 
@@ -408,6 +415,32 @@ def MachineCutCruxAt (M : TM) (C : ℝ) (D : ℕ) (ρ δ : ℝ) : Prop :=
             (tposOf d (entryBits d)) →
           (ρ - η) * (d * d * entryBits d : ℕ) ≤ m
 
+/-- **A crux is a cut-crux at cost `0`.** `MachineCutCruxAt M C D ρ 0` holds iff
+`MachineCruxAt M C D ρ`: a separator with `valueWidth M * |B| ≤ 0` is empty (`valueWidth M ≥ 2`),
+and conversely `B = ∅` turns a crux into a cut-crux at cost `0`. -/
+theorem machineCutCruxAt_zero_iff {M : TM} {C : ℝ} {D : ℕ} {ρ : ℝ} :
+    MachineCutCruxAt M C D ρ 0 ↔ MachineCruxAt M C D ρ := by
+  constructor
+  · intro h η hη
+    obtain ⟨d₀, hd₀⟩ := h η hη
+    refine ⟨d₀, fun d hd I hI m E hE => ?_⟩
+    obtain ⟨T, Γ, hobl, hT, hlen, hΓ, rfl⟩ := hI
+    obtain ⟨B, hB, hcode⟩ := hd₀ d hd T hobl hT hlen
+    have hvw : (0 : ℝ) < valueWidth M := by
+      have := two_le_valueWidth M
+      positivity
+    have hB0 : B = ∅ := by
+      rw [zero_mul] at hB
+      have hcard : (B.card : ℝ) ≤ 0 := by nlinarith
+      exact card_eq_zero.mp (by exact_mod_cast hcard.antisymm (Nat.cast_nonneg _))
+    subst hB0
+    exact hcode Γ hΓ m E (by rwa [union_empty])
+  · intro h η hη
+    obtain ⟨d₀, hd₀⟩ := h η hη
+    refine ⟨d₀, fun d hd T hobl hT hlen => ⟨∅, by simp, fun Γ hΓ m E hE => ?_⟩⟩
+    rw [union_empty] at hE
+    exact hd₀ d hd _ ⟨T, Γ, hobl, hT, hlen, hΓ, rfl⟩ m E hE
+
 /-- **`machine_cutcrux_excludes`: paying `δ * L` bits in the
 genie for an extra separator `B` excludes oblivious linear-time transposers whenever `ε + δ < ρ`.** -/
 theorem machine_cutcrux_excludes {M : TM} {C ε ρ δ : ℝ}
@@ -552,30 +585,55 @@ section StepInvariantWindow
 
 open scoped Classical
 
-/-- If `0 ≤ w` and every `N`-arc inside `V₀` is a near arc (`|ψ p - φ q| ≤ w`), then every
-`q ∈ V₀` satisfying `φ q + 2 * w < ψ q` is automatically loop-free (`q ∉ N q`), so
-`windowSet N V₀ φ ψ w` equals the pure arithmetic filter `V₀.filter (fun q => φ q + 2 * w < ψ q)`. -/
-theorem windowSet_eq_filter_of_nearArcs {V : Type*} [DecidableEq V]
-    {N : V → Finset V} {V₀ : Finset V}
-    {φ ψ : V → ℝ} {w : ℝ} (hw : 0 ≤ w)
-    (hnear : ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ N q → |ψ p - φ q| ≤ w) :
-    windowSet N V₀ φ ψ w = V₀.filter fun q => φ q + 2 * w < ψ q := by
+/-- If every `N`-arc inside `V₀` satisfies `ψ p ≤ φ q + w`, then every `q ∈ V₀` satisfying
+`φ q + w < ψ q` is automatically loop-free (`q ∉ N q`), so `oneSidedEnvelopeSet N V₀ φ ψ w` equals
+the pure arithmetic filter `V₀.filter (fun q => φ q + w < ψ q)`, for every real `w`. -/
+theorem oneSidedEnvelopeSet_eq_filter_of_oneSidedArcs {V : Type*} [DecidableEq V]
+    {N : V → Finset V} {V₀ : Finset V} {φ ψ : V → ℝ} {w : ℝ}
+    (harc : ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ N q → ψ p ≤ φ q + w) :
+    oneSidedEnvelopeSet N V₀ φ ψ w = V₀.filter fun q => φ q + w < ψ q := by
   ext q
-  unfold windowSet oneSidedEnvelopeSet
+  unfold oneSidedEnvelopeSet
   simp only [mem_filter]
   refine ⟨fun ⟨hq, _, hlt⟩ => ⟨hq, hlt⟩, fun ⟨hq, hlt⟩ => ⟨hq, fun hloop => ?_, hlt⟩⟩
-  have habs := (abs_le.mp (hnear q hq q hq hloop)).2
+  have hle := harc q hq q hq hloop
   linarith
 
-/-- **Pure-Filter Window Acyclicity Lemma**: if `0 ≤ w` and every `N`-arc inside `V₀` satisfies
+/-- **Pure-Filter One-Sided Window Lemma**: if every `N`-arc inside `V₀` satisfies
+`ψ p ≤ φ q + w`, then `V₀.filter (fun q => φ q + w < ψ q)` is strictly acyclic in `N`, for every
+real `w` (`φ` strictly decreases along its arcs). -/
+theorem isAcyclicIn_filter_of_oneSidedArcs {V : Type*} [DecidableEq V]
+    {N : V → Finset V} {V₀ : Finset V} {φ ψ : V → ℝ} {w : ℝ}
+    (harc : ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ N q → ψ p ≤ φ q + w) :
+    HalfRate.IsAcyclicIn N (V₀.filter fun q => φ q + w < ψ q) := by
+  rw [← oneSidedEnvelopeSet_eq_filter_of_oneSidedArcs harc]
+  exact oneSidedEnvelope_isAcyclicIn fun q hq p hpq hp =>
+    harc q (mem_filter.mp hq).1 p (mem_filter.mp hp).1 hpq
+
+/-- If every `N`-arc inside `V₀` is a near arc (`|ψ p - φ q| ≤ w`), then every
+`q ∈ V₀` satisfying `φ q + 2 * w < ψ q` is automatically loop-free (`q ∉ N q`), so
+`windowSet N V₀ φ ψ w` equals the pure arithmetic filter `V₀.filter (fun q => φ q + 2 * w < ψ q)`
+(the case `2 * w` of `oneSidedEnvelopeSet_eq_filter_of_oneSidedArcs`). -/
+theorem windowSet_eq_filter_of_nearArcs {V : Type*} [DecidableEq V]
+    {N : V → Finset V} {V₀ : Finset V}
+    {φ ψ : V → ℝ} {w : ℝ}
+    (hnear : ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ N q → |ψ p - φ q| ≤ w) :
+    windowSet N V₀ φ ψ w = V₀.filter fun q => φ q + 2 * w < ψ q :=
+  oneSidedEnvelopeSet_eq_filter_of_oneSidedArcs fun q hq p hp hpq => by
+    have habs := hnear q hq p hp hpq
+    have h0 := (abs_nonneg _).trans habs
+    have h2 := (abs_le.mp habs).2
+    linarith
+
+/-- **Pure-Filter Window Acyclicity Lemma**: if every `N`-arc inside `V₀` satisfies
 `|ψ p - φ q| ≤ w`, then `V₀.filter (fun q => φ q + 2 * w < ψ q)` is strictly acyclic in `N`. -/
 theorem isAcyclicIn_filter_of_nearArcs {V : Type*} [DecidableEq V]
     {N : V → Finset V} {V₀ : Finset V}
-    {φ ψ : V → ℝ} {w : ℝ} (hw : 0 ≤ w)
+    {φ ψ : V → ℝ} {w : ℝ}
     (hnear : ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ N q → |ψ p - φ q| ≤ w) :
     HalfRate.IsAcyclicIn N (V₀.filter fun q => φ q + 2 * w < ψ q) := by
-  rw [← windowSet_eq_filter_of_nearArcs hw hnear]
-  exact window_isAcyclicIn_of_noFarArcs hw fun q hq p hpq hp =>
+  rw [← windowSet_eq_filter_of_nearArcs hnear]
+  exact window_isAcyclicIn_of_noFarArcs fun q hq p hpq hp =>
     hnear q (mem_filter.mp hq).1 p (mem_filter.mp hp).1 hpq
 
 /-- Set-based absorbing-sink persistence along any `B`-free `IsDepPath`. -/
@@ -597,25 +655,25 @@ theorem depPath_getLastD_mem_sink {k T : ℕ} {work : Fin k → ℕ → ℤ}
     rw [LinNet.getLastD_cons_cons]
     exact depPath_getLastD_mem_sink hsink ρ' u₁ hu₁_sink hdep_tail hfree_tail
 
-/-- **Hop-Budget-Indexed Step-Invariant & Absorbing-Sink Path Lemma.**
+/-- **One-Sided Hop-Budget-Indexed Step-Invariant & Absorbing-Sink Path Lemma.**
 Starting at `u₀ ∈ R_act K` with hop budget `K`, if each `B`-free single-step edge out of
 `R_act (r + 1)` (`r < K`) either enters the `B`-closed absorbing sink `A_sink` or lands in
-`R_act r` shifting `μ` by at most `Δ`, then along any `B`-free `IsDepPath` `u₀ :: ρ` of length
-`ρ.length ≤ K`, its endpoint either lies in `A_sink` or lies in `R_act (K - ρ.length)` with
-`|μ u_last - μ u₀| ≤ (ρ.length : ℝ) * Δ`. -/
-theorem depPath_stepInvariant_with_sink {k T : ℕ} {work : Fin k → ℕ → ℤ}
+`R_act r` raising `μ` by at most `Δ` (`μ v ≤ μ u + Δ`), then along any `B`-free `IsDepPath`
+`u₀ :: ρ` of length `ρ.length ≤ K`, its endpoint either lies in `A_sink` or lies in
+`R_act (K - ρ.length)` with `μ u_last ≤ μ u₀ + (ρ.length : ℝ) * Δ`. -/
+theorem depPath_oneSidedStepInvariant_with_sink {k T : ℕ} {work : Fin k → ℕ → ℤ}
     {B : Finset ℕ} {R_act : ℕ → Set ℕ} {A_sink : Set ℕ} {μ : ℕ → ℝ} {Δ : ℝ}
     (hsink : ∀ u ∈ A_sink, ∀ v : ℕ, IsDepPath work T [u, v] → v ∉ B → v ∈ A_sink) :
     ∀ (ρ : List ℕ) (K : ℕ) (u₀ : ℕ),
       ρ.length ≤ K →
       u₀ ∈ R_act K →
       (∀ r < K, ∀ u ∈ R_act (r + 1), ∀ v : ℕ, IsDepPath work T [u, v] → v ∉ B →
-        v ∈ A_sink ∨ (v ∈ R_act r ∧ |μ v - μ u| ≤ Δ)) →
+        v ∈ A_sink ∨ (v ∈ R_act r ∧ μ v ≤ μ u + Δ)) →
       IsDepPath work T (u₀ :: ρ) →
       LinNet.GFree B (u₀ :: ρ) →
       (u₀ :: ρ).getLastD u₀ ∈ A_sink ∨
         ((u₀ :: ρ).getLastD u₀ ∈ R_act (K - ρ.length) ∧
-          |μ ((u₀ :: ρ).getLastD u₀) - μ u₀| ≤ (ρ.length : ℝ) * Δ)
+          μ ((u₀ :: ρ).getLastD u₀) ≤ μ u₀ + (ρ.length : ℝ) * Δ)
   | [], K, u₀, _, hu₀, _, _, _ => by
     refine Or.inr ⟨by simpa using hu₀, ?_⟩
     simp
@@ -631,23 +689,79 @@ theorem depPath_stepInvariant_with_sink {k T : ℕ} {work : Fin k → ℕ → �
       hu₁_sink | ⟨hu₁_act, hdrift0⟩
     · exact Or.inl (depPath_getLastD_mem_sink hsink ρ' u₁ hu₁_sink hdep_tail hfree_tail)
     · have hlen' : ρ'.length ≤ K' := by simp at hlen; omega
-      have hstep' : ∀ r < K', ∀ u ∈ R_act (r + 1), ∀ v : ℕ, IsDepPath work T [u, v] → v ∉ B →
-          v ∈ A_sink ∨ (v ∈ R_act r ∧ |μ v - μ u| ≤ Δ) :=
-        fun r hr => hstep r (Nat.lt_succ_of_lt hr)
-      rcases depPath_stepInvariant_with_sink hsink ρ' K' u₁ hlen' hu₁_act hstep' hdep_tail hfree_tail with
+      rcases depPath_oneSidedStepInvariant_with_sink hsink ρ' K' u₁ hlen' hu₁_act
+          (fun r hr => hstep r (Nat.lt_succ_of_lt hr)) hdep_tail hfree_tail with
         hlast_sink | ⟨hlast_act, hdrift_tail⟩
       · exact Or.inl hlast_sink
       · refine Or.inr ⟨by simpa [Nat.succ_sub_succ_eq_sub] using hlast_act, ?_⟩
-        have htri : |μ ((u₁ :: ρ').getLastD u₁) - μ u₀| ≤
-            |μ ((u₁ :: ρ').getLastD u₁) - μ u₁| + |μ u₁ - μ u₀| := by
-          simpa [sub_add_sub_cancel] using
-            abs_add_le (μ ((u₁ :: ρ').getLastD u₁) - μ u₁) (μ u₁ - μ u₀)
         have hcast : (((u₁ :: ρ').length : ℕ) : ℝ) * Δ = (ρ'.length : ℝ) * Δ + Δ := by
           simp [List.length_cons, Nat.cast_add]; ring
         linarith
 
+/-- **Hop-Budget-Indexed Step-Invariant & Absorbing-Sink Path Lemma.**
+Starting at `u₀ ∈ R_act K` with hop budget `K`, if each `B`-free single-step edge out of
+`R_act (r + 1)` (`r < K`) either enters the `B`-closed absorbing sink `A_sink` or lands in
+`R_act r` shifting `μ` by at most `Δ`, then along any `B`-free `IsDepPath` `u₀ :: ρ` of length
+`ρ.length ≤ K`, its endpoint either lies in `A_sink` or lies in `R_act (K - ρ.length)` with
+`|μ u_last - μ u₀| ≤ (ρ.length : ℝ) * Δ` (`depPath_oneSidedStepInvariant_with_sink` for `μ` and
+`-μ`). -/
+theorem depPath_stepInvariant_with_sink {k T : ℕ} {work : Fin k → ℕ → ℤ}
+    {B : Finset ℕ} {R_act : ℕ → Set ℕ} {A_sink : Set ℕ} {μ : ℕ → ℝ} {Δ : ℝ}
+    (hsink : ∀ u ∈ A_sink, ∀ v : ℕ, IsDepPath work T [u, v] → v ∉ B → v ∈ A_sink) :
+    ∀ (ρ : List ℕ) (K : ℕ) (u₀ : ℕ),
+      ρ.length ≤ K →
+      u₀ ∈ R_act K →
+      (∀ r < K, ∀ u ∈ R_act (r + 1), ∀ v : ℕ, IsDepPath work T [u, v] → v ∉ B →
+        v ∈ A_sink ∨ (v ∈ R_act r ∧ |μ v - μ u| ≤ Δ)) →
+      IsDepPath work T (u₀ :: ρ) →
+      LinNet.GFree B (u₀ :: ρ) →
+      (u₀ :: ρ).getLastD u₀ ∈ A_sink ∨
+        ((u₀ :: ρ).getLastD u₀ ∈ R_act (K - ρ.length) ∧
+          |μ ((u₀ :: ρ).getLastD u₀) - μ u₀| ≤ (ρ.length : ℝ) * Δ) := by
+  intro ρ K u₀ hlen hu₀ hstep hdep hfree
+  rcases depPath_oneSidedStepInvariant_with_sink (μ := μ) hsink ρ K u₀ hlen hu₀
+      (fun r hr u hu v huv hvB => (hstep r hr u hu v huv hvB).imp_right fun h =>
+        ⟨h.1, by linarith [(abs_le.mp h.2).2]⟩) hdep hfree with hlast | ⟨hlast_act, hup⟩
+  · exact Or.inl hlast
+  rcases depPath_oneSidedStepInvariant_with_sink (μ := fun t => -μ t) hsink ρ K u₀ hlen hu₀
+      (fun r hr u hu v huv hvB => (hstep r hr u hu v huv hvB).imp_right fun h =>
+        ⟨h.1, by linarith [(abs_le.mp h.2).1]⟩) hdep hfree with hlast | ⟨-, hdown⟩
+  · exact Or.inl hlast
+  exact Or.inr ⟨hlast_act, abs_le.mpr ⟨by linarith, by linarith⟩⟩
+
+/-- **One-Sided Absorbing-Sink & Step-Invariant Arc Bound on `ballAvoidSystem`**
+(combinatorial core of Lemma 3.9): with the root of `q` at most `c₀` above `φ q`, each hop raising
+`μ` by at most `Δ ≥ 0`, and each read of `p ∈ V₀` at most `c₁` above `μ`, every arc `q → p` inside
+`V₀` has `ψ p ≤ φ q + (c₀ + D * Δ + c₁)`. -/
+theorem ballAvoidSystem_oneSidedArcs_of_stepInvariant {k T D d b : ℕ} (τ₀ : Trace k)
+    (B : Finset ℕ) (V₀ : Finset (Fin (d * d * b)))
+    (R_act : ℕ → Set ℕ) (A_sink : Set ℕ) (μ : ℕ → ℝ)
+    (φ ψ : Fin (d * d * b) → ℝ) {c₀ Δ c₁ : ℝ} (hΔ : 0 ≤ Δ)
+    (hstart : ∀ q ∈ V₀, appendTime τ₀ T (tposOf d b q).1 ∈ R_act D ∧
+      μ (appendTime τ₀ T (tposOf d b q).1) ≤ φ q + c₀)
+    (hsink : ∀ u ∈ A_sink, ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B → v ∈ A_sink)
+    (hsink_noread : ∀ u ∈ A_sink, ∀ p ∈ V₀, readPos τ₀ (d * d * b) u ≠ some p)
+    (hstep : ∀ r < D, ∀ u ∈ R_act (r + 1), ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B →
+      v ∈ A_sink ∨ (v ∈ R_act r ∧ μ v ≤ μ u + Δ))
+    (hread : ∀ r ≤ D, ∀ u ∈ R_act r, ∀ p ∈ V₀,
+      readPos τ₀ (d * d * b) u = some p → ψ p ≤ μ u + c₁) :
+    ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ ballAvoidSystem τ₀ T D B d b q →
+      ψ p ≤ φ q + (c₀ + (D : ℝ) * Δ + c₁) := by
+  intro q hq p hp hp_mem
+  unfold ballAvoidSystem at hp_mem
+  obtain ⟨_, ρ, hdep, hfree, hrd, hlen⟩ := mem_filter.mp hp_mem
+  obtain ⟨hu₀_act, hstart_q⟩ := hstart q hq
+  rcases depPath_oneSidedStepInvariant_with_sink hsink ρ D (appendTime τ₀ T (tposOf d b q).1)
+      hlen hu₀_act hstep hdep hfree with hlast_sink | ⟨hlast_act, hdrift⟩
+  · exact absurd hrd (hsink_noread _ hlast_sink p hp)
+  · have hread_p := hread (D - ρ.length) (Nat.sub_le D ρ.length) _ hlast_act p hp hrd
+    have hlen_r : (ρ.length : ℝ) ≤ (D : ℝ) := by exact_mod_cast hlen
+    have hdrift_D : (ρ.length : ℝ) * Δ ≤ (D : ℝ) * Δ := mul_le_mul_of_nonneg_right hlen_r hΔ
+    linarith
+
 /-- **Shared Absorbing-Sink & Step-Invariant Near-Arc Bound on `ballAvoidSystem`**
-(combinatorial core of Lemma 3.9). -/
+(two-sided form; `ballAvoidSystem_oneSidedArcs_of_stepInvariant` for `(μ, φ, ψ)` and
+`(-μ, -φ, -ψ)`). -/
 theorem ballAvoidSystem_nearArcs_of_stepInvariant {k T D d b : ℕ} (τ₀ : Trace k)
     (B : Finset ℕ) (V₀ : Finset (Fin (d * d * b)))
     (R_act : ℕ → Set ℕ) (A_sink : Set ℕ) (μ : ℕ → ℝ)
@@ -663,71 +777,65 @@ theorem ballAvoidSystem_nearArcs_of_stepInvariant {k T D d b : ℕ} (τ₀ : Tra
     ∀ q ∈ V₀, ∀ p ∈ V₀, p ∈ ballAvoidSystem τ₀ T D B d b q →
       |ψ p - φ q| ≤ c₀ + (D : ℝ) * Δ + c₁ := by
   intro q hq p hp hp_mem
-  unfold ballAvoidSystem at hp_mem
-  obtain ⟨_, ρ, hdep, hfree, hrd, hlen⟩ := mem_filter.mp hp_mem
-  obtain ⟨hu₀_act, hstart_q⟩ := hstart q hq
-  rcases depPath_stepInvariant_with_sink hsink ρ D (appendTime τ₀ T (tposOf d b q).1)
-      hlen hu₀_act hstep hdep hfree with hlast_sink | ⟨hlast_act, hdrift⟩
-  · exact absurd hrd (hsink_noread _ hlast_sink p hp)
-  · have hread_p : |ψ p - μ ((appendTime τ₀ T (tposOf d b q).1 :: ρ).getLastD
-        (appendTime τ₀ T (tposOf d b q).1))| ≤ c₁ :=
-      hread (D - ρ.length) (Nat.sub_le D ρ.length) _ hlast_act p hp hrd
-    have hlen_r : (ρ.length : ℝ) ≤ (D : ℝ) := by exact_mod_cast hlen
-    have hdrift_D : |μ ((appendTime τ₀ T (tposOf d b q).1 :: ρ).getLastD
-        (appendTime τ₀ T (tposOf d b q).1)) - μ (appendTime τ₀ T (tposOf d b q).1)| ≤
-        (D : ℝ) * Δ :=
-      hdrift.trans (mul_le_mul_of_nonneg_right hlen_r hΔ)
-    let u₀ := appendTime τ₀ T (tposOf d b q).1
-    let u_end := (u₀ :: ρ).getLastD u₀
-    have htri1 : |ψ p - φ q| ≤ |ψ p - μ u_end| + |μ u_end - φ q| := by
-      simpa [sub_add_sub_cancel] using abs_add_le (ψ p - μ u_end) (μ u_end - φ q)
-    have htri2 : |μ u_end - φ q| ≤ |μ u_end - μ u₀| + |μ u₀ - φ q| := by
-      simpa [sub_add_sub_cancel] using abs_add_le (μ u_end - μ u₀) (μ u₀ - φ q)
-    linarith
+  have hup := ballAvoidSystem_oneSidedArcs_of_stepInvariant τ₀ B V₀ R_act A_sink μ φ ψ
+    (c₀ := c₀) (c₁ := c₁) hΔ
+    (fun q hq => ⟨(hstart q hq).1, by linarith [(abs_le.mp (hstart q hq).2).2]⟩) hsink hsink_noread
+    (fun r hr u hu v huv hvB => (hstep r hr u hu v huv hvB).imp_right fun h =>
+      ⟨h.1, by linarith [(abs_le.mp h.2).2]⟩)
+    (fun r hr u hu p hp hrd => by linarith [(abs_le.mp (hread r hr u hu p hp hrd)).2])
+    q hq p hp hp_mem
+  have hdown := ballAvoidSystem_oneSidedArcs_of_stepInvariant τ₀ B V₀ R_act A_sink
+    (fun t => -μ t) (fun q => -φ q) (fun p => -ψ p) (c₀ := c₀) (c₁ := c₁) hΔ
+    (fun q hq => ⟨(hstart q hq).1, by linarith [(abs_le.mp (hstart q hq).2).1]⟩) hsink hsink_noread
+    (fun r hr u hu v huv hvB => (hstep r hr u hu v huv hvB).imp_right fun h =>
+      ⟨h.1, by linarith [(abs_le.mp h.2).1]⟩)
+    (fun r hr u hu p hp hrd => by linarith [(abs_le.mp (hread r hr u hu p hp hrd)).1])
+    q hq p hp hp_mem
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
 
 /-- **Shared Absorbing-Sink & Step-Invariant Window Acyclicity Theorem**
-(Lemma 3.9 common engine): under a hop-budget-indexed active
-region `R_act` with absorbing sink `A_sink` and per-hop `μ`-drift `≤ Δ`, the pure arithmetic
-window `{q ∈ V₀ : φ q + 2 * (c₀ + D * Δ + c₁) < ψ q}` equals `windowSet` and is strictly
-acyclic in `ballAvoidSystem τ₀ T D B d b`. -/
+(Lemma 3.9 common engine): under a hop-budget-indexed active region `R_act` with absorbing sink
+`A_sink`, one-sided bounds (the root of `q` at most `c₀` above `φ q`, each hop raising `μ` by at
+most `Δ`, each read of `p ∈ V₀` at most `c₁` above `μ`) and `0 ≤ Δ`, the pure arithmetic window
+`{q ∈ V₀ : φ q + (c₀ + D * Δ + c₁) < ψ q}` equals `oneSidedEnvelopeSet` and is strictly acyclic in
+`ballAvoidSystem τ₀ T D B d b`. No sign condition on `c₀` or `c₁` is needed; `0 ≤ Δ` is (for
+`D = 1`, `Δ = -1` a root that reads its own position is a loop inside the window). -/
 theorem isAcyclicIn_ballAvoid_window_of_stepInvariant {k T D d b : ℕ} (τ₀ : Trace k)
     (B : Finset ℕ) (V₀ : Finset (Fin (d * d * b)))
     (R_act : ℕ → Set ℕ) (A_sink : Set ℕ) (μ : ℕ → ℝ)
-    (φ ψ : Fin (d * d * b) → ℝ) {c₀ Δ c₁ : ℝ}
-    (hc₀ : 0 ≤ c₀) (hΔ : 0 ≤ Δ) (hc₁ : 0 ≤ c₁)
+    (φ ψ : Fin (d * d * b) → ℝ) {c₀ Δ c₁ : ℝ} (hΔ : 0 ≤ Δ)
     (hstart : ∀ q ∈ V₀, appendTime τ₀ T (tposOf d b q).1 ∈ R_act D ∧
-      |μ (appendTime τ₀ T (tposOf d b q).1) - φ q| ≤ c₀)
+      μ (appendTime τ₀ T (tposOf d b q).1) ≤ φ q + c₀)
     (hsink : ∀ u ∈ A_sink, ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B → v ∈ A_sink)
     (hsink_noread : ∀ u ∈ A_sink, ∀ p ∈ V₀, readPos τ₀ (d * d * b) u ≠ some p)
     (hstep : ∀ r < D, ∀ u ∈ R_act (r + 1), ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B →
-      v ∈ A_sink ∨ (v ∈ R_act r ∧ |μ v - μ u| ≤ Δ))
+      v ∈ A_sink ∨ (v ∈ R_act r ∧ μ v ≤ μ u + Δ))
     (hread : ∀ r ≤ D, ∀ u ∈ R_act r, ∀ p ∈ V₀,
-      readPos τ₀ (d * d * b) u = some p → |ψ p - μ u| ≤ c₁) :
-    windowSet (ballAvoidSystem τ₀ T D B d b) V₀ φ ψ (c₀ + (D : ℝ) * Δ + c₁) =
-      (V₀.filter fun q => φ q + 2 * (c₀ + (D : ℝ) * Δ + c₁) < ψ q) ∧
+      readPos τ₀ (d * d * b) u = some p → ψ p ≤ μ u + c₁) :
+    oneSidedEnvelopeSet (ballAvoidSystem τ₀ T D B d b) V₀ φ ψ (c₀ + (D : ℝ) * Δ + c₁) =
+      (V₀.filter fun q => φ q + (c₀ + (D : ℝ) * Δ + c₁) < ψ q) ∧
     HalfRate.IsAcyclicIn (ballAvoidSystem τ₀ T D B d b)
-      (V₀.filter fun q => φ q + 2 * (c₀ + (D : ℝ) * Δ + c₁) < ψ q) := by
-  have hw : 0 ≤ c₀ + (D : ℝ) * Δ + c₁ := by positivity
-  have hnear := ballAvoidSystem_nearArcs_of_stepInvariant τ₀ B V₀ R_act A_sink μ φ ψ hΔ
+      (V₀.filter fun q => φ q + (c₀ + (D : ℝ) * Δ + c₁) < ψ q) := by
+  have harc := ballAvoidSystem_oneSidedArcs_of_stepInvariant τ₀ B V₀ R_act A_sink μ φ ψ hΔ
     hstart hsink hsink_noread hstep hread
-  exact ⟨windowSet_eq_filter_of_nearArcs hw hnear, isAcyclicIn_filter_of_nearArcs hw hnear⟩
+  exact ⟨oneSidedEnvelopeSet_eq_filter_of_oneSidedArcs harc,
+    isAcyclicIn_filter_of_oneSidedArcs harc⟩
 
 /-- **Hop-Independent Active-Region Specialization** (hop-budget-independent active region `R₀` for Lemma 3.9). -/
 theorem isAcyclicIn_ballAvoid_window_of_constStepInvariant {k T D d b : ℕ} (τ₀ : Trace k)
     (B : Finset ℕ) (V₀ : Finset (Fin (d * d * b)))
     (R₀ A_sink : Set ℕ) (μ : ℕ → ℝ)
-    (φ ψ : Fin (d * d * b) → ℝ) {c₀ Δ c₁ : ℝ}
-    (hc₀ : 0 ≤ c₀) (hΔ : 0 ≤ Δ) (hc₁ : 0 ≤ c₁)
+    (φ ψ : Fin (d * d * b) → ℝ) {c₀ Δ c₁ : ℝ} (hΔ : 0 ≤ Δ)
     (hstart : ∀ q ∈ V₀, appendTime τ₀ T (tposOf d b q).1 ∈ R₀ ∧
-      |μ (appendTime τ₀ T (tposOf d b q).1) - φ q| ≤ c₀)
+      μ (appendTime τ₀ T (tposOf d b q).1) ≤ φ q + c₀)
     (hsink : ∀ u ∈ A_sink, ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B → v ∈ A_sink)
     (hsink_noread : ∀ u ∈ A_sink, ∀ p ∈ V₀, readPos τ₀ (d * d * b) u ≠ some p)
     (hstep : ∀ u ∈ R₀, ∀ v : ℕ, IsDepPath τ₀.work T [u, v] → v ∉ B →
-      v ∈ A_sink ∨ (v ∈ R₀ ∧ |μ v - μ u| ≤ Δ))
-    (hread : ∀ u ∈ R₀, ∀ p ∈ V₀, readPos τ₀ (d * d * b) u = some p → |ψ p - μ u| ≤ c₁) :
+      v ∈ A_sink ∨ (v ∈ R₀ ∧ μ v ≤ μ u + Δ))
+    (hread : ∀ u ∈ R₀, ∀ p ∈ V₀, readPos τ₀ (d * d * b) u = some p → ψ p ≤ μ u + c₁) :
     HalfRate.IsAcyclicIn (ballAvoidSystem τ₀ T D B d b)
-      (V₀.filter fun q => φ q + 2 * (c₀ + (D : ℝ) * Δ + c₁) < ψ q) :=
-  (isAcyclicIn_ballAvoid_window_of_stepInvariant τ₀ B V₀ (fun _ => R₀) A_sink μ φ ψ hc₀ hΔ hc₁
+      (V₀.filter fun q => φ q + (c₀ + (D : ℝ) * Δ + c₁) < ψ q) :=
+  (isAcyclicIn_ballAvoid_window_of_stepInvariant τ₀ B V₀ (fun _ => R₀) A_sink μ φ ψ hΔ
     hstart hsink hsink_noread (fun _ _ => hstep) (fun _ _ => hread)).2
 
 end StepInvariantWindow
@@ -759,6 +867,30 @@ def SubpopCutCruxAt (M : TM) (C : ℝ) (D : ℕ) (α₀ ρ₀ δ₀ : ℝ) : Pro
 /-- **`SubpopCutCrux M C α₀ ρ₀ δ₀`: depth-uniform output-subpopulation cut-crux.** -/
 def SubpopCutCrux (M : TM) (C α₀ ρ₀ δ₀ : ℝ) : Prop :=
   ∀ D : ℕ, SubpopCutCruxAt M C D α₀ ρ₀ δ₀
+
+/-- **A cut-crux is a subpopulation cut-crux at density `1`.** `SubpopCutCruxAt M C D 1 ρ δ` holds
+iff `MachineCutCruxAt M C D ρ δ`: at density `1` the subpopulation `V₀` is all of `[0, L)`, so
+`|V₀| = L`, and conversely `V₀ = univ` turns a cut-crux into a subpopulation cut-crux at density
+`1`. With `machineCutCruxAt_zero_iff`, a crux of rate `ρ` is the case density `1`, cost `0`. -/
+theorem subpopCutCruxAt_one_iff {M : TM} {C : ℝ} {D : ℕ} {ρ δ : ℝ} :
+    SubpopCutCruxAt M C D 1 ρ δ ↔ MachineCutCruxAt M C D ρ δ := by
+  constructor
+  · intro h η hη
+    obtain ⟨d₀, hd₀⟩ := h η hη
+    refine ⟨d₀, fun d hd T hobl hT hlen => ?_⟩
+    obtain ⟨V₀, B, hV₀, hB, hcode⟩ := hd₀ d hd T hobl hT hlen
+    have hcard : (V₀.card : ℝ) = (d * d * entryBits d : ℕ) := by
+      have h1 : V₀.card ≤ d * d * entryBits d := by simpa using V₀.card_le_univ
+      have h2 : ((d * d * entryBits d : ℕ) : ℝ) ≤ V₀.card := by simpa using hV₀
+      exact_mod_cast le_antisymm h1 (by exact_mod_cast h2)
+    rw [hcard] at hB hcode
+    exact ⟨B, hB, hcode⟩
+  · intro h η hη
+    obtain ⟨d₀, hd₀⟩ := h η hη
+    refine ⟨d₀, fun d hd T hobl hT hlen => ?_⟩
+    obtain ⟨B, hB, hcode⟩ := hd₀ d hd T hobl hT hlen
+    refine ⟨univ, B, by simp, by simpa using hB, fun Γ hΓ m E hE => ?_⟩
+    simpa using hcode Γ hΓ m E hE
 
 /-- **`subpop_cutcrux_excludes`: an output-subpopulation cut-crux on `|V₀| ≥ α₀ L`
 with subpopulation rate `ρ₀` and separator bit-cost `≤ δ₀ |V₀|` excludes oblivious linear-time

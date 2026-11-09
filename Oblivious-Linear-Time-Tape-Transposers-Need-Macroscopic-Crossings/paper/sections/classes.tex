@@ -21,37 +21,30 @@ head and every bank head are weakly monotone, and every other work head visits a
 The heads outside the bank are unrestricted inside their $o(L)$ workspaces: any number of reversals, any nesting, any coding.
 
 \begin{theorem}[Theorem~B, bounded macro-phases]\label{thm:BM}
-\formal{MacroBankCrux.lean}{boundedMacroBank_has_crux, boundedMacroBank_excludes}
+\formal{SuffixMassCrux.lean}{boundedMacroBank_has_crux, boundedMacroBank_excludes, suffixMacroBank_has_crux, suffixMacroBank_excludes}
 If $M$ has bounded macro-phases with bank $B$ and $M_{\mathrm{ph}}$ phases, then $M$ has crux rate $1/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$ at every
-depth, and for all large $d$ there is no $T$ with $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+depth, and for all large $d$ there is no $T$ with $\mathrm{ObliviousLinTime}(M,d,C,T)$. The same holds, with crux rate
+$\delta_0/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$, if $\delta_0>0$ and the conditions of \cref{def:BM} hold only on a final interval of steps that
+contains every append, with at least $\delta_0d$ input rows not read before that interval; the motion before it is unrestricted.
 \end{theorem}
 
 \begin{outline}
-Let $K_0=(\abs B+1)^{M_{\mathrm{ph}}-1}$ and cut workspace revisits longer than $\lceil\sqrt{S(T+1)}\rceil$; there are $o(L)$ of them. Inside a
-phase a bank revisit goes back by one step; between phases, bank revisits are strictly monotone partial injections of fixed sign.
-So after deleting $o_D(L)$ exceptional outputs, every short dependency path from an output has a \emph{signature}, the decreasing
-sequence of phases it enters through bank heads, and at most $K_0$ signatures start in a given phase. Thresholds on input addresses
-pull back along signatures to thresholds in time. Split the input rows into $2K_0$ buckets: each unsplit output row forbids at most
-$K_0$ buckets, so some bucket is missed by half of the output rows, and the rectangle of that bucket and those output rows, minus the
-exceptions, is independent in the cone relation; it has $(1/(4K_0)-o(1))L$ elements (\lean{macroBank_independent_exists}).
-\end{outline}
-
-\begin{theorem}[Suffix phases]\label{thm:BMsuffix}
-\formal{SuffixMassCrux.lean}{suffixMacroBank_has_crux, suffixMacroBank_excludes}
-Theorem~B holds, with crux rate $\delta_0/(4(\abs B+1)^{M_{\mathrm{ph}}-1})$, for machines that satisfy the conditions of \cref{def:BM} only on a
-final interval of steps that contains every append, provided $\delta_0>0$ and at least $\delta_0d$ input rows are not read before that interval. The
-motion before it is unrestricted.
-\end{theorem}
-
-\begin{outline}
-Dependency paths decrease time, so a path from an output to a read of an untouched row stays inside the final interval
-(\lean{getLastD_le_of_mem_depPath}); run the proof of Theorem~B there, with the buckets taken among the untouched rows.
+We prove the suffix form; the whole-run form is its case $\delta_0=1$, with the whole run as the final interval
+(\lean{boundedSuffixMacroBank_of_boundedMacroBank}). Dependency paths decrease time, so a path from an output to a read of an untouched
+row stays inside the final interval (\lean{getLastD_le_of_mem_depPath}). Let $K_0=(\abs B+1)^{M_{\mathrm{ph}}-1}$ and cut workspace revisits
+in the final interval longer than $\lceil\sqrt{S(T+1)}\rceil$; there are $o(L)$ of them. Inside a phase a bank revisit goes back by one step;
+between phases, bank revisits are strictly monotone partial injections of fixed sign. So after deleting $o_D(L)$ exceptional outputs,
+every short dependency path from an output has a \emph{signature}, the decreasing sequence of phases it enters through bank heads, and at
+most $K_0$ signatures start in a given phase. Thresholds on input addresses pull back along signatures to thresholds in time. Split the
+untouched input rows into $2K_0$ buckets: each unsplit output row forbids at most $K_0$ buckets, so some bucket is missed by half of the
+output rows, and the rectangle of that bucket and those output rows, minus the exceptions, is independent in the cone relation; it has
+$(\delta_0/(4K_0)-o(1))L$ elements (\lean{suffixMacroBank_independent_exists}).
 \end{outline}
 
 For adaptive machines the phases and the workspaces may depend on the input, and the walks may jitter.
 
 \begin{theorem}[Theorem~J, jittered phases, any adaptivity]\label{thm:J}
-\formal{JitterMacroBank.lean, AdaptiveSuffixJitterBM.lean}{native_machine_preserves_jitterBM, nativeGapBound_of_adaptiveJitterBM, adaptiveJitterBM_excludes_transposesAt, adaptiveJitterBM_not_linearTimeTransposer, adaptiveSuffixJitterBM_excludes_transposesAt, adaptiveSuffixJitterBM_not_linearTimeTransposer}
+\formal{AdaptiveSuffixJitterBM.lean}{native_machine_preserves_suffixJitterBM, nativeGapBound_of_adaptiveJitterBM, adaptiveJitterBM_excludes_transposesAt, adaptiveJitterBM_not_linearTimeTransposer, adaptiveSuffixJitterBM_excludes_transposesAt, adaptiveSuffixJitterBM_not_linearTimeTransposer}
 Let $M$ be any machine, $c>0$, $M_{\mathrm{ph}}\ge1$, $B$ a set of work heads, and $A(d),S(d)=o(L)$. Suppose that for all large $d$ every run of $M$ on an input of length $L$ that halts
 within $c(L+1)$ steps splits into $M_{\mathrm{ph}}$ intervals on each of which the input head and the bank heads are $A(d)$-coarsely
 monotone, while every other work head visits at most $S(d)$ cells; the intervals and cells may depend on the input. Then $M$ does not
@@ -60,42 +53,67 @@ on a final interval containing every append with at least $\delta_0d$ rows not e
 \end{theorem}
 
 \begin{outline}
-The bit simulator of the fifteenth paper preserves the shape, with the jitter and the workspace enlarged by $O(s)$
-(\lean{native_machine_preserves_jitterBM}). On each frozen trace of the simulator, the proof of Theorem~B goes through with jitter: the
-revisits that straddle a pulled-back cut on a bank head occupy at most $2A+1$ cells (\lean{hop_upper_injOn}), and input reads are pulled back
-up to a band of width~$A$. This gives every storage code on the simulator's frozen cone relations rate at most $1-1/(4K_0)+o(1)$
-(\lean{nativeGapBound_of_adaptiveJitterBM}), and \cref{thm:G} below, applied to the simulator, which has few traces, excludes~$M$.
+The bit simulator of the fifteenth paper preserves the shape, also in its suffix form, with the jitter and the workspace enlarged by
+$O(s)$ (\lean{native_machine_preserves_suffixJitterBM}). On each frozen trace of the simulator, the proof of Theorem~B goes through with
+jitter: the revisits that straddle a pulled-back cut on a bank head occupy at most $2A+1$ cells (\lean{hop_upper_injOn}), and input reads
+are pulled back up to a band of width~$A$. This gives every storage code on the frozen cone relations of every simulator rate at most
+$1-1/(4K_0)+o(1)$ at the sizes at which $M$ transposes within time~$c$ (\lean{nativeGapBound_of_adaptiveJitterBM}), which is the hypothesis
+of \cref{thm:G} below; so Theorem~G excludes~$M$.
 \end{outline}
 
 At a fixed number of phases these classes, in their whole-run forms, also yield to pass counting at their own time bounds, by
 \cref{thm:coarsepass}, which extends the grouped pass bound of the first paper~\cite[Theorems~5.8 and~5.12]{FirstPaper2026} to coarse
 passes with small workspaces. Moreover, the same theorem excludes these shapes, imposed on whole runs of any length, at any running time
-for oblivious machines and at any polynomial running time for adaptive ones. What Theorems~B and~J add is an explicit native coding
+for oblivious machines and at any polynomial running time for adaptive ones, even with jitter and workspaces up to a small fixed fraction
+of $L$ (\cref{cor:boundedpasses}). What Theorems~B and~J add is an explicit native coding
 deficit, and the suffix forms, which pass counting does not reach: an unrestricted prefix may read $(1-\delta_0)d$ rows, and conditioning on the configuration at the start of the suffix
 leaves classes of inputs of co-entropy up to $(1-\delta_0)L$, for which the published robust pass bounds~\cite{FirstPaper2026,PassesMemo2026}
 say nothing.
 
 \subsection{A native gap suffices}
 
+\paragraph{Roots.} The hypotheses of \cref{thm:G} and \cref{cor:G-uniform,cor:G-low} below are those of the fourteenth paper's native
+bound~\cite[Corollary~L]{BoundedStack2026} with a general deficit (\lean{NativeGapBound}). They concern the cone relation of a run
+\emph{with arbitrary roots}: for each output position, the root may be any step before the halting step at which the output head is on
+that position's cell, and the rate bound is required for every such choice of roots. The append steps are one such choice; whether the
+results hold when the bound is required only for them is not proved.
+
 \begin{theorem}[Theorem~G, native gap criterion]\label{thm:G}
-\formal{NativeGapCriterion.lean}{nativeGapBound_half_iff, native_gap_tests_exclude_linear, native_gap_exists_exclude_linear}
-Suppose that for every $k$ and $C\ge1$ there is $\rho(k,C)>0$ such that, for every machine with $k$ work tapes and every depth $D$, every
-binary storage code on the cone relation, after a genie of full depth $D$, of every run that halts within $C(L+1)$ steps on an input of
-length $L$ (entries of $b(d)$ bits) has rate at most $1-\rho(k,C)+o(1)$. Then (T) fails.
+\formal{NativeGapCriterion.lean}{nativeGapBound_half_iff, native_gap_excludes_transposesAt, native_gap_excludes_linear}
+Let $M$ be a machine and $c>0$. Suppose that there is $\rho>0$ such that, for every $s\ge1$ and every depth $D$, every binary storage
+code on the cone relation with arbitrary roots, after a genie of full depth $D$, of every run of the simulator $\Ns$ of $M$~\cite[Theorem~S]{HighRate2026}
+that halts within $(11c+1)(L+1)$ steps on an input of length $L$ (entries of $b(d)$ bits) has rate at most $1-\rho+o(1)$, where $d$ ranges
+over the sizes at which $M$ transposes within time~$c$. Then $M$ transposes within time $c$ at only finitely many $d$. If such a $\rho$
+exists for every machine $M$ and every $c>0$, then (T) fails.
 \end{theorem}
 
 \begin{outline}
-If (T) held, some machine $M$ would transpose in time $c(L+1)$ at infinitely many sizes. Fix $C=11c+1$ and $\rho_*=\rho(k,C)$, and then choose
-the simulator $\Ns$ of~\cite[Theorem~S]{HighRate2026} with at most $2^{(\rho_*/2)L}$ traces. Some trace of $\Ns$ carries $2^{(1-\rho_*/2)L}$
-inputs; after the genie, its fibre splits into storage codes on its cone relation
-(\lean{MergeDepth.blockMachine_isStorageCode_fibre}), one of which has rate at least $1-\rho_*/2-o(1)$, contradicting the hypothesis. At
-$\rho=\frac12$ the hypothesis is the native half bound of the fourteenth paper~\cite[Corollary~L]{BoundedStack2026}, assumed uniformly over
-the machines with $k$ work tapes and over all depths, as in the eighth paper~\cite[\S6.2]{EighthPaper2026}.
+Choose $s$ so that, at all large $d$ at which $M$ transposes within time $c$, $\Ns$ transposes within time $11c+1$ with at most
+$2^{(\rho/2)L}$ traces~\cite[Theorem~S]{HighRate2026}. Some trace of $\Ns$ carries $2^{(1-\rho/2)L}$ inputs; after the genie, of cost
+$\frac14\rho L$, its fibre splits into storage codes on its cone relation (\lean{MergeDepth.blockMachine_isStorageCode_fibre}), one of
+which has rate at least $1-\frac34\rho-o(1)$, contradicting the hypothesis. If (T) held, some machine $M$ would transpose in time
+$c(L+1)$ at infinitely many sizes. At $\rho=\frac12$ the hypothesis is the native half bound of the fourteenth
+paper~\cite[Corollary~L]{BoundedStack2026} on the simulators of~$M$.
+\end{outline}
+
+\begin{corollary}[Theorem~G, uniform form]\label{cor:G-uniform}
+\formal{NativeGapCriterion.lean}{native_gap_exists_exclude_linear, native_gap_tests_exclude_linear}
+Suppose that for every $k$ and $C\ge1$ there is $\rho(k,C)>0$ such that, for every machine with $k$ work tapes and every depth $D$, every
+binary storage code on the cone relation with arbitrary roots, after a genie of full depth $D$, of every run that halts within $C(L+1)$ steps on an input of
+length $L$ (entries of $b(d)$ bits) has rate at most $1-\rho(k,C)+o(1)$. Then (T) fails.
+\end{corollary}
+
+\begin{outline}
+The simulators of a machine $M$ with $k$ work tapes have $k$ work tapes (\lean{native_machine_k}), so for every $c>0$ the deficit
+$\rho(k,11c+1)$ satisfies the hypothesis of \cref{thm:G} for $M$ and $c$. At $\rho=\frac12$ the hypothesis is the native half bound of the
+fourteenth paper~\cite[Corollary~L]{BoundedStack2026}, assumed uniformly over the machines with $k$ work tapes and over all depths, as in
+the eighth paper~\cite[\S6.2]{EighthPaper2026}.
 \end{outline}
 
 The fifteenth paper reaches the same conclusion from the half bound on chosen simulators~\cite{HighRate2026}; Theorem~G accepts any
-fixed deficit, uniformly over the machines with $k$ work tapes. The hypothesis is at least as strong as a uniform crux; its value is
-that the deficit may be tiny, which is the form that Theorems~B and~J produce, but only for their classes.
+fixed deficit, chosen for each machine and time bound separately and needed only on that machine's simulators. In the uniform form of
+\cref{cor:G-uniform} the hypothesis is at least as strong as a uniform crux; its value is that the deficit may be tiny, which is the
+form that Theorems~B and~J produce, but only for their classes.
 
 For a single machine of low adaptivity the same counting needs no simulator: a deficit above the entropy of the trace suffices.
 
@@ -103,7 +121,7 @@ For a single machine of low adaptivity the same counting needs no simulator: a d
 \formal{NativeGapCriterion.lean}{fSecond_native_gap, native_gap_exclusion_of_trace_support}
 Let $M$ be a machine with $k$ work tapes, let $c>0$ and $\eta<\rho$, let $\beta_1$ be the block width of $M$ at scale~$1$
 (\lean{MergeDepth.blockWidth}), and put $D=\mathrm{genieDepth}\bigl(k,\beta_1,\max(c,1),(\rho-\eta)/2\bigr)$. Suppose that every binary storage code on
-the cone relation, after a genie of full depth $D$, of every run of $M$ that halts within $c(L+1)$ steps has rate at most
+the cone relation with arbitrary roots, after a genie of full depth $D$, of every run of $M$ that halts within $c(L+1)$ steps has rate at most
 $1-\rho+o(1)$. Then at all large $d$ at which $M$ transposes within time $c$, the skeleton of $M$ at scale~$1$, and hence its trace, has
 entropy greater than $\eta L$ on a uniformly random input (\lean{TapeStorageRates.skeletonOfTrace_eq}, \lean{MergeDepth.entropy_comp_le}).
 Moreover, if a machine $N$ satisfies the same hypothesis, with its own $k$, $\beta_1$ and $D$, and for all large $d$ every $d$ at which $M$

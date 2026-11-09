@@ -2,16 +2,22 @@ import Transpose.Tape.PPrime
 import NativeRelations.TightConstants
 
 /-!
-# Grouped Pass Counting with Coarse Passes (Theorem 10.3 and Corollary 10.4)
+# Grouped Pass Counting with Coarse Passes (Theorem 10.3 and Its Corollaries)
 
 Extends the first paper's grouped pass bound to passes that are coarsely monotone up to a bounded
 amplitude with auxiliary small-workspace tapes (`CoarseWorkspacePartition`,
 `theoremP_coarseWorkspace_grouped_on_bits`, `theoremPprime_coarseWorkspace_grouped_on_bits`,
 `oblivious_singleScale_coarseWorkspace_closed_lb`, `adaptive_singleScale_coarseWorkspace_closed_lb`),
 and deduces subcritical phase-profile exclusions (`subcriticalPhaseProfile_oblivious_excludes`,
-`subcriticalDimPhaseProfile_oblivious_excludes`, `subcriticalPhaseProfile_adaptive_polyTime_excludes`)
-together with the `θ = 2` sharpness clauses (`groupedBound_thetaTwo_not_excluded_above_half`,
-`perfectUnshuffleSlopeProduct_tendsto_half`, `unshuffleStep_iter_transpose`).
+`subcriticalDimPhaseProfile_oblivious_excludes`,
+`subcriticalPhaseProfile_adaptive_polyTime_excludes`), the exclusion of boundedly many coarse
+passes with amplitudes and workspaces up to a small fixed fraction of `L`, in particular of size
+`o(L)` (`boundedCoarsePasses_oblivious_excludes`, `boundedCoarsePasses_adaptive_polyTime_excludes`,
+`boundedCoarsePasses_sublinear_oblivious_excludes`,
+`boundedCoarsePasses_sublinear_adaptive_polyTime_excludes`), the `θ = 2` sharpness clauses
+(`groupedBound_thetaTwo_not_excluded_above_half`, `perfectUnshuffleSlopeProduct_tendsto_half`,
+`unshuffleStep_iter_transpose`), and the non-exclusion above `1 / 2` at every `θ > 0` and every
+bank size (`groupedBound_not_excluded_above_half`).
 -/
 
 set_option autoImplicit false
@@ -1926,7 +1932,7 @@ theorem adaptive_singleScale_coarseWorkspace_closed_lb {M : TM} {d b T r γ A_in
   rw [← Real.rpow_natCast, Real.logb_rpow (by linarith) (ne_of_gt hbase)] at hlog
   exact hlog
 
-/-! ## §5. Sub-Critical Phase-Profile Exclusions and `θ = 2` Uniform-in-`k_b` Sharpness -/
+/-! ## §5. Sub-Critical Phase-Profile and Bounded-Pass Exclusions, and the Limit `1 / 2` -/
 
 private theorem self_le_two_pow_entryBits {d : ℕ} (hd : 1 ≤ d) : d ≤ 2 ^ entryBits d := by
   unfold entryBits
@@ -2240,6 +2246,85 @@ theorem subcriticalDimPhaseProfile_oblivious_excludes
     rw [hlog_sqrt] at hr_dim; linarith
   exact hexcl T r A_in A S w₀ p hobl hcorr hw₀ hp hAin hA hws hr
 
+/-- Adaptive per-node bits at polynomial running time and linear workspaces: if `T ≤ C_T L^κ` and
+`S_tot ≤ C_W L` (`L = d² entryBits d`), then
+`γ_T + σ^{adap} ≤ (3 k_b A + S_tot) ⌈log₂(g + 1)⌉ + c b` with `c` depending only on `M`, `k_b`,
+`C_T`, `κ` and `C_W`. -/
+private theorem adaptiveNodeBits_le_of_polyTime (M : TM) (B_bank : Finset (Fin M.k))
+    (C_T κ C_W : ℕ) {d T A : ℕ} {S : Fin M.k → ℕ} (hd1 : 1 ≤ d)
+    (hT : T ≤ C_T * (d * d * entryBits d) ^ κ)
+    (hws : workspaceCellSum B_bank S ≤ C_W * (d * d * entryBits d)) :
+    structBitsAtTime M.k T + adapEntryBits M B_bank A S ≤
+      (B_bank.card * 3 * A + workspaceCellSum B_bank S) * Nat.clog 2 (M.g + 1) +
+        ((M.k + 4) * (Nat.clog 2 (2 * C_T + 1) + 3 * κ) + M.k * (Nat.clog 2 (C_W + 2) + 3) +
+          (Nat.clog 2 (M.q + 1) + B_bank.card + B_bank.card * Nat.clog 2 (M.g + 1))) *
+          entryBits d := by
+  set b := entryBits d
+  have hb1 : 1 ≤ b := by unfold b entryBits; omega
+  set L := d * d * b
+  have hL_pow : L ≤ 2 ^ (3 * b) := canonicalLen_le_two_pow_three_entryBits hd1
+  set c_time := (M.k + 4) * (Nat.clog 2 (2 * C_T + 1) + 3 * κ)
+  set c_ws := M.k * (Nat.clog 2 (C_W + 2) + 3)
+  set c_base := Nat.clog 2 (M.q + 1) + B_bank.card + B_bank.card * Nat.clog 2 (M.g + 1)
+  have hclog_T : structBitsAtTime M.k T ≤ c_time * b := by
+    unfold structBitsAtTime
+    have h2T : 2 * T + 1 ≤ 2 ^ ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := by
+      have h1 : 2 * T + 1 ≤ (2 * C_T + 1) * L ^ κ := by
+        have hL_pos : 1 ≤ L ^ κ := Nat.one_le_pow κ L (by dsimp [L]; positivity)
+        calc 2 * T + 1 ≤ 2 * (C_T * L ^ κ) + 1 := by omega
+          _ ≤ 2 * C_T * L ^ κ + 1 * L ^ κ := by nlinarith
+          _ = (2 * C_T + 1) * L ^ κ := by ring
+      have h2 : (2 * C_T + 1) * L ^ κ ≤
+          2 ^ Nat.clog 2 (2 * C_T + 1) * (2 ^ (3 * b)) ^ κ :=
+        Nat.mul_le_mul (Nat.le_pow_clog (by norm_num) _) (Nat.pow_le_pow_left hL_pow κ)
+      have h3 : Nat.clog 2 (2 * C_T + 1) + 3 * b * κ ≤
+          (Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b := by
+        nlinarith [hb1]
+      calc 2 * T + 1 ≤ 2 ^ Nat.clog 2 (2 * C_T + 1) * (2 ^ (3 * b)) ^ κ := h1.trans h2
+        _ = 2 ^ (Nat.clog 2 (2 * C_T + 1) + 3 * b * κ) := by rw [← pow_mul, ← pow_add]
+        _ ≤ 2 ^ ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := Nat.pow_le_pow_right (by norm_num) h3
+    have hcl : Nat.clog 2 (2 * T + 1) ≤ (Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b :=
+      (Nat.clog_le_iff_le_pow (by norm_num)).2 h2T
+    calc (M.k + 4) * Nat.clog 2 (2 * T + 1)
+        ≤ (M.k + 4) * ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := Nat.mul_le_mul_left _ hcl
+      _ = c_time * b := by dsimp [c_time]; ring
+  have hclog_ws : ∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1) ≤ c_ws * b := by
+    have hper_t : ∀ t ∈ Finset.univ \ B_bank,
+        Nat.clog 2 (S t + 1) ≤ (Nat.clog 2 (C_W + 2) + 3) * b := by
+      intro t ht
+      have hSt : S t ≤ workspaceCellSum B_bank S :=
+        Finset.single_le_sum (fun _ _ => Nat.zero_le _) ht
+      have hL_ge1 : 1 ≤ L := Nat.one_le_iff_ne_zero.2 (by dsimp [L]; positivity)
+      have hSt1 : S t + 1 ≤ (C_W + 2) * L := by nlinarith
+      have hpow : S t + 1 ≤ 2 ^ ((Nat.clog 2 (C_W + 2) + 3) * b) := by
+        calc S t + 1 ≤ (C_W + 2) * L := hSt1
+          _ ≤ 2 ^ Nat.clog 2 (C_W + 2) * 2 ^ (3 * b) :=
+              Nat.mul_le_mul (Nat.le_pow_clog (by norm_num) _) hL_pow
+          _ = 2 ^ (Nat.clog 2 (C_W + 2) + 3 * b) := by rw [← pow_add]
+          _ ≤ 2 ^ ((Nat.clog 2 (C_W + 2) + 3) * b) :=
+              Nat.pow_le_pow_right (by norm_num) (by nlinarith [hb1])
+      exact (Nat.clog_le_iff_le_pow (by norm_num)).2 hpow
+    calc ∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1)
+        ≤ ∑ _t ∈ Finset.univ \ B_bank, (Nat.clog 2 (C_W + 2) + 3) * b :=
+          Finset.sum_le_sum hper_t
+      _ = (Finset.univ \ B_bank).card * ((Nat.clog 2 (C_W + 2) + 3) * b) := by
+          rw [Finset.sum_const, smul_eq_mul]
+      _ ≤ M.k * ((Nat.clog 2 (C_W + 2) + 3) * b) :=
+          Nat.mul_le_mul_right _ (by
+            calc (Finset.univ \ B_bank).card ≤ (Finset.univ : Finset (Fin M.k)).card :=
+                  Finset.card_le_card (Finset.sdiff_subset)
+              _ = M.k := by simp)
+      _ = c_ws * b := by dsimp [c_ws]; ring
+  have hbase_le : c_base ≤ c_base * b := Nat.le_mul_of_pos_right c_base hb1
+  have hmul : (c_time + c_ws + c_base) * b = c_time * b + c_ws * b + c_base * b := by ring
+  have hexp : structBitsAtTime M.k T + adapEntryBits M B_bank A S =
+      (B_bank.card * 3 * A + workspaceCellSum B_bank S) * Nat.clog 2 (M.g + 1) +
+        structBitsAtTime M.k T + (∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1)) + c_base := by
+    dsimp [adapEntryBits, c_base]
+    ring
+  rw [hexp, hmul]
+  linarith [hclog_T, hclog_ws, hbase_le]
+
 /-- **Sub-Critical Phase-Profile Exclusion (Adaptive — Arbitrary Polynomial Running Time
 `T ≤ C_T * L_d ^ κ` across all `θ ∈ (0, 2]`)**:
 for any `M : TM`, bank subset `B_bank` with `k_b = B_bank.card ≥ 1`, exponent `θ ∈ (0, 2]`,
@@ -2278,94 +2363,32 @@ theorem subcriticalPhaseProfile_adaptive_polyTime_excludes
     with d hd2 ⟨γ, hγ, hbound⟩ T r A_in A S hT hrun hAin hA hws hr
   have hd1 : 1 ≤ d := by omega
   set b := entryBits d
-  have hb1 : 1 ≤ b := by unfold b entryBits; omega
   set L := d * d * b
-  have hL_pow : L ≤ 2 ^ (3 * b) := canonicalLen_le_two_pow_three_entryBits hd1
-  have hclog_T : structBitsAtTime M.k T ≤ c_time * b := by
-    unfold structBitsAtTime
-    have h2T : 2 * T + 1 ≤ 2 ^ ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := by
-      have h1 : 2 * T + 1 ≤ (2 * C_T + 1) * L ^ κ := by
-        have hL_pos : 1 ≤ L ^ κ := Nat.one_le_pow κ L (by dsimp [L]; positivity)
-        calc 2 * T + 1 ≤ 2 * (C_T * L ^ κ) + 1 := by omega
-          _ ≤ 2 * C_T * L ^ κ + 1 * L ^ κ := by nlinarith
-          _ = (2 * C_T + 1) * L ^ κ := by ring
-      have h2 : (2 * C_T + 1) * L ^ κ ≤
-          2 ^ Nat.clog 2 (2 * C_T + 1) * (2 ^ (3 * b)) ^ κ :=
-        Nat.mul_le_mul (Nat.le_pow_clog (by norm_num) _) (Nat.pow_le_pow_left hL_pow κ)
-      have h3 : Nat.clog 2 (2 * C_T + 1) + 3 * b * κ ≤
-          (Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b := by
-        nlinarith [hb1]
-      calc 2 * T + 1 ≤ 2 ^ Nat.clog 2 (2 * C_T + 1) * (2 ^ (3 * b)) ^ κ := h1.trans h2
-        _ = 2 ^ (Nat.clog 2 (2 * C_T + 1) + 3 * b * κ) := by rw [← pow_mul, ← pow_add]
-        _ ≤ 2 ^ ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := Nat.pow_le_pow_right (by norm_num) h3
-    have hcl : Nat.clog 2 (2 * T + 1) ≤ (Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b :=
-      (Nat.clog_le_iff_le_pow (by norm_num)).2 h2T
-    dsimp [c_time]
-    calc (M.k + 4) * Nat.clog 2 (2 * T + 1)
-        ≤ (M.k + 4) * ((Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b) := Nat.mul_le_mul_left _ hcl
-      _ = (M.k + 4) * (Nat.clog 2 (2 * C_T + 1) + 3 * κ) * b := by ring
-  have hclog_ws : ∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1) ≤ c_ws * b := by
+  have hws_L : workspaceCellSum B_bank S ≤ Nat.ceil C_ws * L := by
     have hd_mθ_le1 : (d : ℝ) ^ (-θ) ≤ 1 := by
       calc (d : ℝ) ^ (-θ) ≤ (d : ℝ) ^ (0 : ℝ) :=
             Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hd1) (by linarith)
         _ = 1 := Real.rpow_zero _
-    have hws_L : workspaceCellSum B_bank S ≤ Nat.ceil C_ws * L := by
-      have hL_cast : (d : ℝ) * (d : ℝ) * (b : ℝ) = (L : ℝ) := by dsimp [L]; push_cast; ring
-      have hws' : (workspaceCellSum B_bank S : ℝ) ≤ C_ws * (d : ℝ) ^ (-θ) * (L : ℝ) := by
-        rwa [← hL_cast]
-      have hr1 : (workspaceCellSum B_bank S : ℝ) ≤ (Nat.ceil C_ws : ℝ) * (L : ℝ) := by
-        calc (workspaceCellSum B_bank S : ℝ)
-            ≤ C_ws * (d : ℝ) ^ (-θ) * (L : ℝ) := hws'
-          _ ≤ C_ws * 1 * (L : ℝ) :=
-              mul_le_mul_of_nonneg_right
-                (mul_le_mul_of_nonneg_left hd_mθ_le1 hCws) (by positivity)
-          _ = C_ws * (L : ℝ) := by ring
-          _ ≤ (Nat.ceil C_ws : ℝ) * (L : ℝ) :=
-              mul_le_mul_of_nonneg_right (Nat.le_ceil C_ws) (by positivity)
-      exact_mod_cast hr1
-    have hper_t : ∀ t ∈ Finset.univ \ B_bank,
-        Nat.clog 2 (S t + 1) ≤ (Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b := by
-      intro t ht
-      have hSt : S t ≤ workspaceCellSum B_bank S :=
-        Finset.single_le_sum (fun _ _ => Nat.zero_le _) ht
-      have hL_ge1 : 1 ≤ L := Nat.one_le_iff_ne_zero.2 (by dsimp [L]; positivity)
-      have hSt1 : S t + 1 ≤ (Nat.ceil C_ws + 2) * L := by nlinarith
-      have hpow : S t + 1 ≤ 2 ^ ((Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b) := by
-        calc S t + 1 ≤ (Nat.ceil C_ws + 2) * L := hSt1
-          _ ≤ 2 ^ Nat.clog 2 (Nat.ceil C_ws + 2) * 2 ^ (3 * b) :=
-              Nat.mul_le_mul (Nat.le_pow_clog (by norm_num) _) hL_pow
-          _ = 2 ^ (Nat.clog 2 (Nat.ceil C_ws + 2) + 3 * b) := by rw [← pow_add]
-          _ ≤ 2 ^ ((Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b) :=
-              Nat.pow_le_pow_right (by norm_num) (by nlinarith [hb1])
-      exact (Nat.clog_le_iff_le_pow (by norm_num)).2 hpow
-    calc ∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1)
-        ≤ ∑ _t ∈ Finset.univ \ B_bank, (Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b :=
-          Finset.sum_le_sum hper_t
-      _ = (Finset.univ \ B_bank).card * ((Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b) := by
-          rw [Finset.sum_const, smul_eq_mul]
-      _ ≤ M.k * ((Nat.clog 2 (Nat.ceil C_ws + 2) + 3) * b) :=
-          Nat.mul_le_mul_right _ (by
-            calc (Finset.univ \ B_bank).card ≤ (Finset.univ : Finset (Fin M.k)).card :=
-                  Finset.card_le_card (Finset.sdiff_subset)
-              _ = M.k := by simp)
-      _ = c_ws * b := by dsimp [c_ws]; ring
+    have hL_cast : (d : ℝ) * (d : ℝ) * (b : ℝ) = (L : ℝ) := by dsimp [L]; push_cast; ring
+    have hws' : (workspaceCellSum B_bank S : ℝ) ≤ C_ws * (d : ℝ) ^ (-θ) * (L : ℝ) := by
+      rwa [← hL_cast]
+    have hr1 : (workspaceCellSum B_bank S : ℝ) ≤ (Nat.ceil C_ws : ℝ) * (L : ℝ) := by
+      calc (workspaceCellSum B_bank S : ℝ)
+          ≤ C_ws * (d : ℝ) ^ (-θ) * (L : ℝ) := hws'
+        _ ≤ C_ws * 1 * (L : ℝ) :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hd_mθ_le1 hCws) (by positivity)
+        _ = C_ws * (L : ℝ) := by ring
+        _ ≤ (Nat.ceil C_ws : ℝ) * (L : ℝ) :=
+            mul_le_mul_of_nonneg_right (Nat.le_ceil C_ws) (by positivity)
+    exact_mod_cast hr1
   set σ_tot := structBitsAtTime M.k T + adapEntryBits M B_bank A S
   have hσ : (σ_tot : ℝ) ≤
       C_coeff * (d : ℝ) ^ (-θ) * (d * d * entryBits d : ℝ) + C_log * (entryBits d : ℝ) := by
     have hnat : σ_tot ≤
         (B_bank.card * 3 * A + workspaceCellSum B_bank S) * Nat.clog 2 (M.g + 1) +
-          (c_time + c_ws + c_base) * b := by
-      have hbase_le : c_base ≤ c_base * b := Nat.le_mul_of_pos_right c_base hb1
-      have hmul : (c_time + c_ws + c_base) * b = c_time * b + c_ws * b + c_base * b := by ring
-      have hexp : σ_tot =
-          (B_bank.card * 3 * A + workspaceCellSum B_bank S) * Nat.clog 2 (M.g + 1) +
-            structBitsAtTime M.k T +
-            (∑ t ∈ Finset.univ \ B_bank, Nat.clog 2 (S t + 1)) +
-            c_base := by
-        dsimp [σ_tot, adapEntryBits, c_base]
-        ring
-      rw [hexp, hmul]
-      linarith [hclog_T, hclog_ws, hbase_le]
+          (c_time + c_ws + c_base) * b :=
+      adaptiveNodeBits_le_of_polyTime M B_bank C_T κ (Nat.ceil C_ws) hd1 hT hws_L
     have hreal_nat : (σ_tot : ℝ) ≤
         (3 * (B_bank.card : ℝ) * (A : ℝ) + (workspaceCellSum B_bank S : ℝ)) * β_g +
           C_log * (b : ℝ) := by
@@ -2393,6 +2416,245 @@ theorem subcriticalPhaseProfile_adaptive_polyTime_excludes
   have hlt := hbound r A_in σ_tot hr hAin hσ
   exact adaptive_singleScale_coarseWorkspace_excludes (m := 0) hrun hγ hco
     (by simpa [σ_tot] using hlt)
+
+/-! ### Boundedly Many Coarse Passes with Amplitudes and Workspaces `≤ ε L` -/
+
+/-- Bounded-pass engine: for fixed `k_b`, `r₀` and `C_coeff ≥ 0` there is `ε ∈ (0, 1]` such that,
+for every `C_log ≥ 0` and all large `d`, the group width `γ_d = ⌊d / N⌋ + 1` with
+`N = 4 (H(k_b, r₀) + 1)` (so `γ_d ≍ √(σ / b)` when `σ ≍ C_coeff ε L`) makes the grouped pass RHS
+smaller than `d² b` for every `b ≥ 1`, `r ≤ r₀`, `A_in ≤ ε d² b` and
+`σ_tot ≤ C_coeff ε d² b + C_log b`. -/
+private theorem boundedPass_grouped_rhs_lt_eventually (k_b r₀ : ℕ) {C_coeff : ℝ}
+    (hC : 0 ≤ C_coeff) :
+    ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 ∧ ∀ C_log : ℝ, 0 ≤ C_log →
+      ∀ᶠ d : ℕ in atTop, ∃ γ : ℕ, 1 ≤ γ ∧
+        ∀ (b r A_in σ_tot : ℕ), 1 ≤ b → r ≤ r₀ →
+          (A_in : ℝ) ≤ ε * (d * d * b : ℝ) →
+          (σ_tot : ℝ) ≤ C_coeff * ε * (d * d * b : ℝ) + C_log * (b : ℝ) →
+          addrCount k_b r * ((γ + 1) * d * b + 2 * A_in + numGroups d γ * σ_tot) <
+            d * d * b := by
+  set H₀ := addrCount k_b r₀
+  set N : ℕ := 4 * (H₀ + 1) with hN
+  have hN_pos : 0 < N := by omega
+  have hNr : (N : ℝ) = 4 * ((H₀ : ℝ) + 1) := by rw [hN]; push_cast; ring
+  have hH₀ : (0 : ℝ) ≤ (H₀ : ℝ) := Nat.cast_nonneg _
+  have hden : (0 : ℝ) < (N : ℝ) * (2 + (N : ℝ) * C_coeff) := by positivity
+  refine ⟨1 / ((N : ℝ) * (2 + (N : ℝ) * C_coeff)), by positivity, ?_, ?_⟩
+  · rw [div_le_one hden]
+    nlinarith [mul_nonneg (Nat.cast_nonneg (α := ℝ) N) hC]
+  intro C_log hClog
+  filter_upwards [eventually_gt_atTop (4 * H₀ + 2 * H₀ * N * ⌈C_log⌉₊)] with d hd
+  refine ⟨d / N + 1, le_add_self, fun b r A_in σ_tot hb hr hA hσ => ?_⟩
+  set ε : ℝ := 1 / ((N : ℝ) * (2 + (N : ℝ) * C_coeff))
+  have hε : 0 < ε := by positivity
+  have hH : addrCount k_b r ≤ H₀ := Finset.sum_le_sum_of_subset (Finset.range_mono hr)
+  have hG : numGroups d (d / N + 1) ≤ N := by
+    unfold numGroups
+    generalize hq : d / N = q
+    have hlt : d < N * (q + 1) := hq ▸ Nat.lt_mul_div_succ d hN_pos
+    have h2 : d + (q + 1) - 1 < (N + 1) * (q + 1) := by rw [add_one_mul]; omega
+    have h3 := (Nat.div_lt_iff_lt_mul (by omega : 0 < q + 1)).2 h2
+    omega
+  have hx1 : (1 : ℝ) ≤ (d : ℝ) := by
+    have : 1 ≤ d := by omega
+    exact_mod_cast this
+  have hy1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hb
+  have hdx : ((4 * H₀ + 2 * H₀ * N * ⌈C_log⌉₊ : ℕ) : ℝ) + 1 ≤ (d : ℝ) := by
+    have hd' : 4 * H₀ + 2 * H₀ * N * ⌈C_log⌉₊ + 1 ≤ d := hd
+    exact_mod_cast hd'
+  push_cast at hdx
+  have hγr : (((d / N : ℕ) : ℝ) + 1) + 1 ≤ (d : ℝ) / (N : ℝ) + 2 := by
+    have : ((d / N : ℕ) : ℝ) ≤ (d : ℝ) / (N : ℝ) := Nat.cast_div_le
+    linarith
+  set x : ℝ := (d : ℝ)
+  set y : ℝ := (b : ℝ)
+  have hGr : (numGroups d (d / N + 1) : ℝ) ≤ (N : ℝ) := by exact_mod_cast hG
+  have hHr : (addrCount k_b r : ℝ) ≤ (H₀ : ℝ) := by exact_mod_cast hH
+  have hεN : ε * (2 + (N : ℝ) * C_coeff) = 1 / (N : ℝ) := by
+    dsimp only [ε]; field_simp
+  have hHN : (H₀ : ℝ) * (2 / (N : ℝ)) ≤ 1 / 2 := by
+    rw [hNr, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+    linarith
+  have hd_large : 2 * (H₀ : ℝ) * (2 * x + (N : ℝ) * C_log) < x * x := by
+    have e1 := mul_le_mul_of_nonneg_left hdx (by positivity : (0 : ℝ) ≤ x)
+    have e2 : 2 * (H₀ : ℝ) * (N : ℝ) * C_log ≤ 2 * (H₀ : ℝ) * (N : ℝ) * ((⌈C_log⌉₊ : ℝ) * x) :=
+      mul_le_mul_of_nonneg_left ((Nat.le_ceil C_log).trans
+        (le_mul_of_one_le_right (Nat.cast_nonneg _) hx1)) (by positivity)
+    nlinarith
+  have hinner : ((((d / N + 1) + 1) * d * b + 2 * A_in +
+      numGroups d (d / N + 1) * σ_tot : ℕ) : ℝ) ≤
+        x * x * y * (2 / (N : ℝ)) + y * (2 * x + (N : ℝ) * C_log) := by
+    push_cast
+    have h1 : (((d / N : ℕ) : ℝ) + 1 + 1) * x * y ≤ (x / (N : ℝ) + 2) * x * y :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hγr (by positivity)) (by positivity)
+    have h2 : (numGroups d (d / N + 1) : ℝ) * (σ_tot : ℝ) ≤
+        (N : ℝ) * (C_coeff * ε * (x * x * y) + C_log * y) :=
+      mul_le_mul hGr hσ (Nat.cast_nonneg _) (by positivity)
+    calc (((d / N : ℕ) : ℝ) + 1 + 1) * x * y + 2 * (A_in : ℝ) +
+          (numGroups d (d / N + 1) : ℝ) * (σ_tot : ℝ)
+        ≤ (x / (N : ℝ) + 2) * x * y + 2 * (ε * (x * x * y)) +
+            (N : ℝ) * (C_coeff * ε * (x * x * y) + C_log * y) := by linarith
+      _ = x * x * y * (1 / (N : ℝ) + ε * (2 + (N : ℝ) * C_coeff)) +
+            y * (2 * x + (N : ℝ) * C_log) := by ring
+      _ = x * x * y * (2 / (N : ℝ)) + y * (2 * x + (N : ℝ) * C_log) := by rw [hεN]; ring
+  have key : ((addrCount k_b r * (((d / N + 1) + 1) * d * b + 2 * A_in +
+      numGroups d (d / N + 1) * σ_tot) : ℕ) : ℝ) < ((d * d * b : ℕ) : ℝ) := by
+    rw [Nat.cast_mul (addrCount k_b r)]
+    calc (addrCount k_b r : ℝ) * ((((d / N + 1) + 1) * d * b + 2 * A_in +
+          numGroups d (d / N + 1) * σ_tot : ℕ) : ℝ)
+        ≤ (H₀ : ℝ) * (x * x * y * (2 / (N : ℝ)) + y * (2 * x + (N : ℝ) * C_log)) :=
+          mul_le_mul hHr hinner (Nat.cast_nonneg _) hH₀
+      _ = x * x * y * ((H₀ : ℝ) * (2 / (N : ℝ))) + y * ((H₀ : ℝ) * (2 * x + (N : ℝ) * C_log)) := by
+          ring
+      _ < x * x * y * (1 / 2) + y * (x * x / 2) := by
+          have e1 := mul_le_mul_of_nonneg_left hHN (by positivity : (0 : ℝ) ≤ x * x * y)
+          have e2 : y * ((H₀ : ℝ) * (2 * x + (N : ℝ) * C_log)) < y * (x * x / 2) :=
+            mul_lt_mul_of_pos_left (by linarith) (by positivity)
+          linarith
+      _ = ((d * d * b : ℕ) : ℝ) := by push_cast; ring
+  exact_mod_cast key
+
+/-- **Boundedly Many Coarse Passes Are Excluded (Oblivious — Arbitrary Running Time)**: for any
+`M : TM`, bank `B_bank` and pass bound `r₀`, there is `ε > 0` such that for all sufficiently large
+`d` and **every** halting time `T`, `M` is not an oblivious transposer of the `d × d` matrices of
+`entryBits d`-bit entries whose run has a `CoarseWorkspacePartition` with at most `r₀` passes,
+amplitudes `A_in, A ≤ ε L` and workspaces `S_tot ≤ ε L` (`L = d² entryBits d`). The proof takes
+`ε` depending only on `k_b`, `r₀` and the work alphabet of `M`. -/
+theorem boundedCoarsePasses_oblivious_excludes (M : TM) (B_bank : Finset (Fin M.k)) (r₀ : ℕ) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ᶠ d : ℕ in atTop,
+      ∀ (T r A_in A : ℕ) (S : Fin M.k → ℕ) (w₀ : List Bool) (p : ℕ → ℕ),
+        ObliviousOn M (matrixInputs d (entryBits d)) T →
+        ClassCorrect M d (entryBits d) T (matrixInputs d (entryBits d)) →
+        w₀ ∈ matrixInputs d (entryBits d) →
+        CoarseWorkspacePartition M w₀ T r B_bank A_in A S p → r ≤ r₀ →
+        (A_in : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        (A : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        (workspaceCellSum B_bank S : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        False := by
+  obtain ⟨ε, hε, -, heng⟩ := boundedPass_grouped_rhs_lt_eventually B_bank.card r₀
+    (C_coeff := (3 * (B_bank.card : ℝ) + 1) * (Nat.clog 2 (M.g + 1) : ℝ)) (by positivity)
+  refine ⟨ε, hε, ?_⟩
+  filter_upwards [heng ((Nat.clog 2 (M.q + 1) + B_bank.card * Nat.clog 2 (M.g + 1) : ℕ) : ℝ)
+    (Nat.cast_nonneg _)] with d ⟨γ, hγ, hbound⟩ T r A_in A S w₀ p hobl hcorr hw₀ hp hr hAin hA hws
+  have hb1 : 1 ≤ entryBits d := by unfold entryBits; omega
+  have hσ : (oblEntryBits M B_bank A S : ℝ) ≤
+      (3 * (B_bank.card : ℝ) + 1) * (Nat.clog 2 (M.g + 1) : ℝ) * ε * (d * d * entryBits d : ℝ) +
+        ((Nat.clog 2 (M.q + 1) + B_bank.card * Nat.clog 2 (M.g + 1) : ℕ) : ℝ) *
+          (entryBits d : ℝ) := by
+    have hsum : 3 * (B_bank.card : ℝ) * (A : ℝ) + (workspaceCellSum B_bank S : ℝ) ≤
+        (3 * (B_bank.card : ℝ) + 1) * (ε * (d * d * entryBits d : ℝ)) := by
+      nlinarith [mul_le_mul_of_nonneg_left hA (by positivity : (0 : ℝ) ≤ 3 * (B_bank.card : ℝ))]
+    have h1 := mul_le_mul_of_nonneg_right hsum (Nat.cast_nonneg (α := ℝ) (Nat.clog 2 (M.g + 1)))
+    have h2 := le_mul_of_one_le_right
+      (Nat.cast_nonneg (α := ℝ) (Nat.clog 2 (M.q + 1) + B_bank.card * Nat.clog 2 (M.g + 1)))
+      (show (1 : ℝ) ≤ (entryBits d : ℝ) by exact_mod_cast hb1)
+    unfold oblEntryBits
+    push_cast at h2 ⊢
+    nlinarith
+  have hco : 2 ^ (d * d * entryBits d) ≤ 2 ^ 0 * (matrixInputs d (entryBits d)).ncard := by
+    rw [ncard_matrixInputs, pow_zero, one_mul]
+  exact oblivious_singleScale_coarseWorkspace_excludes (m := 0) hobl hcorr hw₀ hp hγ hco
+    (by simpa using hbound (entryBits d) r A_in _ hb1 hr hAin hσ)
+
+/-- **Boundedly Many Coarse Passes Are Excluded (Adaptive — Arbitrary Polynomial Running Time)**:
+for any `M : TM`, bank `B_bank` and pass bound `r₀`, there is `ε > 0` such that for all time
+constants `C_T, κ : ℕ` and all sufficiently large `d`, `M` does not transpose every `d × d`
+matrix of `entryBits d`-bit entries within `T ≤ C_T L^κ` steps if the run on each input `w` has,
+up to a step `T' ≤ T` at which its output is the transpose, a `CoarseWorkspacePartition` with at
+most `r₀` passes, amplitudes `A_in, A ≤ ε L` and workspaces `S_tot ≤ ε L` (`L = d² entryBits d`);
+the passes may depend on `w`. The same `ε` serves every `C_T` and `κ`. -/
+theorem boundedCoarsePasses_adaptive_polyTime_excludes (M : TM) (B_bank : Finset (Fin M.k))
+    (r₀ : ℕ) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ C_T κ : ℕ, ∀ᶠ d : ℕ in atTop,
+      ∀ (T A_in A : ℕ) (S : Fin M.k → ℕ),
+        T ≤ C_T * (d * d * entryBits d) ^ κ →
+        (∀ w ∈ matrixInputs d (entryBits d), ∃ T' ≤ T, ∃ r ≤ r₀, ∃ p,
+          CoarseWorkspacePartition M w T' r B_bank A_in A S p ∧
+          ∃ Mat : Matrix, w = encode d (entryBits d) Mat ∧
+            (run M w T').outRev.reverse = encode d (entryBits d) (transpose Mat)) →
+        (A_in : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        (A : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        (workspaceCellSum B_bank S : ℝ) ≤ ε * (d * d * entryBits d : ℝ) →
+        False := by
+  obtain ⟨ε, hε, hε1, heng⟩ := boundedPass_grouped_rhs_lt_eventually B_bank.card r₀
+    (C_coeff := (3 * (B_bank.card : ℝ) + 1) * (Nat.clog 2 (M.g + 1) : ℝ)) (by positivity)
+  refine ⟨ε, hε, fun C_T κ => ?_⟩
+  filter_upwards [eventually_ge_atTop (1 : ℕ), heng
+    (((M.k + 4) * (Nat.clog 2 (2 * C_T + 1) + 3 * κ) + M.k * (Nat.clog 2 (1 + 2) + 3) +
+      (Nat.clog 2 (M.q + 1) + B_bank.card + B_bank.card * Nat.clog 2 (M.g + 1)) : ℕ) : ℝ)
+    (Nat.cast_nonneg _)] with d hd1 ⟨γ, hγ, hbound⟩ T A_in A S hT hrun hAin hA hws
+  have hb1 : 1 ≤ entryBits d := by unfold entryBits; omega
+  have hL0 : (0 : ℝ) ≤ (d * d * entryBits d : ℝ) := by positivity
+  have hws_L : workspaceCellSum B_bank S ≤ 1 * (d * d * entryBits d) := by
+    have : (workspaceCellSum B_bank S : ℝ) ≤ (d * d * entryBits d : ℝ) := by nlinarith
+    rw [one_mul]; exact_mod_cast this
+  have hnat := adaptiveNodeBits_le_of_polyTime M B_bank C_T κ 1 (A := A) hd1 hT hws_L
+  have hσ : ((structBitsAtTime M.k T + adapEntryBits M B_bank A S : ℕ) : ℝ) ≤
+      (3 * (B_bank.card : ℝ) + 1) * (Nat.clog 2 (M.g + 1) : ℝ) * ε * (d * d * entryBits d : ℝ) +
+        (((M.k + 4) * (Nat.clog 2 (2 * C_T + 1) + 3 * κ) + M.k * (Nat.clog 2 (1 + 2) + 3) +
+          (Nat.clog 2 (M.q + 1) + B_bank.card + B_bank.card * Nat.clog 2 (M.g + 1)) : ℕ) : ℝ) *
+          (entryBits d : ℝ) := by
+    have hsum : 3 * (B_bank.card : ℝ) * (A : ℝ) + (workspaceCellSum B_bank S : ℝ) ≤
+        (3 * (B_bank.card : ℝ) + 1) * (ε * (d * d * entryBits d : ℝ)) := by
+      nlinarith [mul_le_mul_of_nonneg_left hA (by positivity : (0 : ℝ) ≤ 3 * (B_bank.card : ℝ))]
+    have h1 := mul_le_mul_of_nonneg_right hsum (Nat.cast_nonneg (α := ℝ) (Nat.clog 2 (M.g + 1)))
+    have h0 := (Nat.cast_le (α := ℝ)).2 hnat
+    push_cast at h0 h1 ⊢
+    nlinarith
+  have hco : 2 ^ (d * d * entryBits d) ≤ 2 ^ 0 * (matrixInputs d (entryBits d)).ncard := by
+    rw [ncard_matrixInputs, pow_zero, one_mul]
+  exact adaptive_singleScale_coarseWorkspace_excludes (r := r₀) (m := 0) hrun hγ hco
+    (by simpa using hbound (entryBits d) r₀ A_in _ hb1 le_rfl hAin hσ)
+
+/-- **Boundedly Many Coarse Passes with `o(L)` Amplitudes and Workspaces (Oblivious)**: for any
+`M : TM`, bank `B_bank`, pass bound `r₀` and `ω(d) = o(L_d)` (`L_d = d² entryBits d`), for all
+sufficiently large `d` and **every** halting time `T`, `M` is not an oblivious transposer at size
+`d` whose run has a `CoarseWorkspacePartition` with at most `r₀` passes, `A_in, A ≤ ω(d)` and
+`S_tot ≤ ω(d)`. -/
+theorem boundedCoarsePasses_sublinear_oblivious_excludes (M : TM) (B_bank : Finset (Fin M.k))
+    (r₀ : ℕ) {ω : ℕ → ℝ}
+    (hω : Asymptotics.IsLittleO atTop ω fun d : ℕ => (d * d * entryBits d : ℝ)) :
+    ∀ᶠ d : ℕ in atTop,
+      ∀ (T r A_in A : ℕ) (S : Fin M.k → ℕ) (w₀ : List Bool) (p : ℕ → ℕ),
+        ObliviousOn M (matrixInputs d (entryBits d)) T →
+        ClassCorrect M d (entryBits d) T (matrixInputs d (entryBits d)) →
+        w₀ ∈ matrixInputs d (entryBits d) →
+        CoarseWorkspacePartition M w₀ T r B_bank A_in A S p → r ≤ r₀ →
+        (A_in : ℝ) ≤ ω d → (A : ℝ) ≤ ω d → (workspaceCellSum B_bank S : ℝ) ≤ ω d →
+        False := by
+  obtain ⟨ε, hε, hev⟩ := boundedCoarsePasses_oblivious_excludes M B_bank r₀
+  filter_upwards [hev, hω.def hε]
+    with d hexcl hωd T r A_in A S w₀ p hobl hcorr hw₀ hp hr hAin hA hws
+  have hle : ω d ≤ ε * (d * d * entryBits d : ℝ) := by
+    rw [Real.norm_of_nonneg (by positivity : (0 : ℝ) ≤ (d * d * entryBits d : ℝ))] at hωd
+    exact (le_abs_self _).trans hωd
+  exact hexcl T r A_in A S w₀ p hobl hcorr hw₀ hp hr (hAin.trans hle) (hA.trans hle)
+    (hws.trans hle)
+
+/-- **Boundedly Many Coarse Passes with `o(L)` Amplitudes and Workspaces (Adaptive — Polynomial
+Running Time)**: for any `M : TM`, bank `B_bank`, pass bound `r₀`, time constants `C_T, κ : ℕ` and
+`ω(d) = o(L_d)`, for all sufficiently large `d`, `M` does not transpose every input at size `d`
+within `T ≤ C_T L^κ` steps if the run on each input has, up to a step at which its output is the
+transpose, a `CoarseWorkspacePartition` with at most `r₀` passes, `A_in, A ≤ ω(d)` and
+`S_tot ≤ ω(d)`. -/
+theorem boundedCoarsePasses_sublinear_adaptive_polyTime_excludes (M : TM)
+    (B_bank : Finset (Fin M.k)) (r₀ C_T κ : ℕ) {ω : ℕ → ℝ}
+    (hω : Asymptotics.IsLittleO atTop ω fun d : ℕ => (d * d * entryBits d : ℝ)) :
+    ∀ᶠ d : ℕ in atTop,
+      ∀ (T A_in A : ℕ) (S : Fin M.k → ℕ),
+        T ≤ C_T * (d * d * entryBits d) ^ κ →
+        (∀ w ∈ matrixInputs d (entryBits d), ∃ T' ≤ T, ∃ r ≤ r₀, ∃ p,
+          CoarseWorkspacePartition M w T' r B_bank A_in A S p ∧
+          ∃ Mat : Matrix, w = encode d (entryBits d) Mat ∧
+            (run M w T').outRev.reverse = encode d (entryBits d) (transpose Mat)) →
+        (A_in : ℝ) ≤ ω d → (A : ℝ) ≤ ω d → (workspaceCellSum B_bank S : ℝ) ≤ ω d →
+        False := by
+  obtain ⟨ε, hε, hev⟩ := boundedCoarsePasses_adaptive_polyTime_excludes M B_bank r₀
+  filter_upwards [hev C_T κ, hω.def hε] with d hexcl hωd T A_in A S hT hrun hAin hA hws
+  have hle : ω d ≤ ε * (d * d * entryBits d : ℝ) := by
+    rw [Real.norm_of_nonneg (by positivity : (0 : ℝ) ≤ (d * d * entryBits d : ℝ))] at hωd
+    exact (le_abs_self _).trans hωd
+  exact hexcl T A_in A S hT hrun (hAin.trans hle) (hA.trans hle) (hws.trans hle)
 
 /-! ### `θ = 2` Uniform-in-`k_b` Sharpness via `f`-Way Perfect Unshuffle -/
 
@@ -2576,5 +2838,159 @@ theorem groupedBound_thetaTwo_not_excluded_above_half {c : ℝ} (hc : 1 / 2 < c)
               ((γ + 1) * f ^ P * b + 2 * A_in +
                 numGroups (f ^ P) γ * oblEntryBits M B_bank A S) :=
             Nat.mul_le_mul haddr_ge hpar_ge
+
+/-! ### Non-Exclusion Above `1 / 2` at Every `θ` and Every Bank Size -/
+
+/-- **Algebraic Non-Exclusion Above `1 / 2` at Every `θ > 0` and Every Bank Size**: let
+`ψ = A_slope * log₂(k_b + 1) > 1 / 2`, `θ > 0`, `C_ws > 0` and `ε_d = d^{-θ}`. For all large `d`,
+the oblivious grouped inequality of `theoremP_coarseWorkspace_grouped_on_bits` (at `m = 0`) holds
+for **every** group width `γ ≥ 1`, every machine whose work alphabet has at least two symbols,
+every bank of size `k_b`, every `b`, `A_in` and `A`, every pass count `r` with
+`A_slope log₂(1/ε_d) + C_0 ≤ r + 1` and every workspace vector with `C_ws ε_d d² b ≤ S_tot + 1`.
+These include `r = ⌊A_slope log₂(1/ε_d) + C_0⌋₊` and `S_tot = ⌊C_ws ε_d d² b⌋₊`, the largest values
+admitted by `subcriticalPhaseProfile_oblivious_excludes`, so that exclusion cannot be pushed above
+`1 / 2` by the grouped bound. The proof uses `H(k_b, r) ≥ (k_b + 1)^{C_0 - 2} d^{θψ}` and
+`(γ + 1) d b + ⌈d/γ⌉ σ ≥ 2 √C_ws d^{2 - θ/2} b`. -/
+theorem groupedBound_not_excluded_above_half {k_b : ℕ} {θ A_slope C_0 C_ws : ℝ} (hθ : 0 < θ)
+    (hslope : 1 / 2 < A_slope * Real.logb 2 ((k_b : ℝ) + 1)) (hCws : 0 < C_ws) :
+    ∀ᶠ d : ℕ in atTop,
+      ∀ (M : TM) (B_bank : Finset (Fin M.k)), B_bank.card = k_b → 1 ≤ M.g →
+        ∀ (b r γ A_in A : ℕ) (S : Fin M.k → ℕ), 1 ≤ γ →
+          A_slope * Real.logb 2 (1 / (d : ℝ) ^ (-θ)) + C_0 ≤ (r : ℝ) + 1 →
+          C_ws * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ≤ (workspaceCellSum B_bank S : ℝ) + 1 →
+          d * d * b ≤ addrCount B_bank.card r *
+            ((γ + 1) * d * b + 2 * A_in + numGroups d γ * oblEntryBits M B_bank A S) := by
+  obtain ⟨l, hl⟩ : ∃ l, l = Real.logb 2 ((k_b : ℝ) + 1) := ⟨_, rfl⟩
+  rw [← hl] at hslope
+  have hl_nonneg : 0 ≤ l := by
+    rw [hl]
+    exact Real.logb_nonneg (by norm_num) (by linarith [(Nat.cast_nonneg k_b : (0 : ℝ) ≤ k_b)])
+  have hl_pos : 0 < l := by
+    rcases hl_nonneg.lt_or_eq with h | h
+    · exact h
+    · rw [← h, mul_zero] at hslope; norm_num at hslope
+  have hkb : (2 : ℝ) ^ l = (k_b : ℝ) + 1 := by
+    rw [hl]; exact Real.rpow_logb (by norm_num) (by norm_num) (by positivity)
+  have hA_pos : 0 < A_slope := pos_of_mul_pos_left (by linarith) hl_nonneg
+  have hgap : 0 < θ * (2 * (A_slope * l) - 1) := mul_pos hθ (by linarith)
+  have htend : Tendsto (fun d : ℕ => Real.logb 2 (d : ℝ)) atTop atTop :=
+    (Real.tendsto_logb_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop
+  have hev1 : ∀ᶠ d : ℕ in atTop, 1 < A_slope * θ * Real.logb 2 (d : ℝ) + C_0 :=
+    (tendsto_atTop_add_const_right _ C_0
+      (htend.const_mul_atTop (mul_pos hA_pos hθ))).eventually_gt_atTop 1
+  have hev2 : ∀ᶠ d : ℕ in atTop, 0 ≤ Real.logb 2 (4 * C_ws) + 2 * (C_0 - 2) * l +
+      θ * (2 * (A_slope * l) - 1) * Real.logb 2 (d : ℝ) :=
+    (tendsto_atTop_add_const_left _ _ (htend.const_mul_atTop hgap)).eventually_ge_atTop 0
+  filter_upwards [eventually_gt_atTop 0, hev1, hev2] with d hd0 h1 h2
+  intro M B_bank hcard hg b r γ A_in A S hγ hr hS
+  rcases Nat.eq_zero_or_pos b with rfl | hb
+  · simp
+  have hd_pos : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd0
+  have hlog_inv : Real.logb 2 (1 / (d : ℝ) ^ (-θ)) = θ * Real.logb 2 (d : ℝ) := by
+    rw [one_div, ← Real.rpow_neg (le_of_lt hd_pos), neg_neg,
+      Real.logb_rpow_eq_mul_logb_of_pos hd_pos]
+  rw [hlog_inv] at hr
+  -- `H = H(k_b, r) ≥ (k_b + 1)^{r - 1} = 2^{l (r - 1)}`, hence `d^θ ≤ 4 C_ws H²`
+  have hr1 : 1 ≤ r := by
+    have : (0 : ℝ) < (r : ℝ) := by linarith
+    exact_mod_cast this
+  obtain ⟨H, hH_def⟩ : ∃ H, H = addrCount B_bank.card r := ⟨_, rfl⟩
+  rw [← hH_def]
+  have hH_nat : (k_b + 1) ^ (r - 1) ≤ H := by
+    rw [hH_def, hcard]
+    exact Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_range.2 (by omega))
+  have hHr : (2 : ℝ) ^ (l * ((r : ℝ) - 1)) ≤ (H : ℝ) := by
+    have hr_cast : ((r - 1 : ℕ) : ℝ) = (r : ℝ) - 1 := by rw [Nat.cast_sub hr1]; simp
+    calc (2 : ℝ) ^ (l * ((r : ℝ) - 1)) = ((2 : ℝ) ^ l) ^ ((r - 1 : ℕ) : ℝ) := by
+          rw [← Real.rpow_mul (by norm_num), hr_cast]
+      _ = ((k_b : ℝ) + 1) ^ (r - 1) := by rw [hkb, Real.rpow_natCast]
+      _ ≤ (H : ℝ) := by exact_mod_cast hH_nat
+  have hkey : (d : ℝ) ^ θ ≤ 4 * C_ws * (H : ℝ) ^ 2 := by
+    have hdθ : (d : ℝ) ^ θ = (2 : ℝ) ^ (θ * Real.logb 2 (d : ℝ)) := by
+      rw [mul_comm, Real.rpow_mul (by norm_num), Real.rpow_logb (by norm_num) (by norm_num) hd_pos]
+    have h4C : (2 : ℝ) ^ Real.logb 2 (4 * C_ws) = 4 * C_ws :=
+      Real.rpow_logb (by norm_num) (by norm_num) (by positivity)
+    have hH2 : (2 : ℝ) ^ (2 * (l * ((r : ℝ) - 1))) ≤ (H : ℝ) ^ 2 := by
+      calc (2 : ℝ) ^ (2 * (l * ((r : ℝ) - 1))) = ((2 : ℝ) ^ (l * ((r : ℝ) - 1))) ^ 2 := by
+            rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; ring_nf
+        _ ≤ (H : ℝ) ^ 2 := pow_le_pow_left₀ (by positivity) hHr 2
+    have hexp : θ * Real.logb 2 (d : ℝ) ≤ Real.logb 2 (4 * C_ws) + 2 * (l * ((r : ℝ) - 1)) := by
+      have := mul_le_mul_of_nonneg_left hr (by linarith : (0 : ℝ) ≤ 2 * l)
+      linarith
+    calc (d : ℝ) ^ θ = (2 : ℝ) ^ (θ * Real.logb 2 (d : ℝ)) := hdθ
+      _ ≤ (2 : ℝ) ^ (Real.logb 2 (4 * C_ws) + 2 * (l * ((r : ℝ) - 1))) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) hexp
+      _ = 4 * C_ws * (2 : ℝ) ^ (2 * (l * ((r : ℝ) - 1))) := by
+          rw [Real.rpow_add (by norm_num), h4C]
+      _ ≤ 4 * C_ws * (H : ℝ) ^ 2 := mul_le_mul_of_nonneg_left hH2 (by positivity)
+  -- the grouped right-hand side is at least `H (u + v)` with `u = γ d b`, `v = (d / γ) Y` and
+  -- `Y = C_ws ε_d d² b ≤ S_tot + 1 ≤ σ + 1`, and `(u + v)² ≥ 4 u v = 4 C_ws ε_d (d² b)²`
+  obtain ⟨σ, hσ_def⟩ : ∃ σ, σ = oblEntryBits M B_bank A S := ⟨_, rfl⟩
+  obtain ⟨G, hG_def⟩ : ∃ G, G = numGroups d γ := ⟨_, rfl⟩
+  rw [← hσ_def, ← hG_def]
+  have hσS : workspaceCellSum B_bank S ≤ σ := by
+    have hclog : 0 < Nat.clog 2 (M.g + 1) := Nat.clog_pos (by norm_num) (by omega)
+    rw [hσ_def]
+    unfold oblEntryBits
+    calc workspaceCellSum B_bank S ≤ workspaceCellSum B_bank S * Nat.clog 2 (M.g + 1) :=
+          Nat.le_mul_of_pos_right _ hclog
+      _ ≤ (B_bank.card * (3 * A + 1) + workspaceCellSum B_bank S) * Nat.clog 2 (M.g + 1) :=
+          Nat.mul_le_mul_right _ (Nat.le_add_left _ _)
+      _ ≤ _ := Nat.le_add_left _ _
+  have hGγ : d ≤ G * γ := by
+    rw [hG_def]
+    unfold numGroups
+    have := Nat.lt_div_mul_add (a := d + γ - 1) (by omega : 0 < γ)
+    omega
+  have hγr : (1 : ℝ) ≤ (γ : ℝ) := by exact_mod_cast hγ
+  have hbr : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hb
+  have hGr : (d : ℝ) / (γ : ℝ) ≤ (G : ℝ) := by
+    rw [div_le_iff₀ (by positivity)]; exact_mod_cast hGγ
+  have hdγ : (d : ℝ) / (γ : ℝ) ≤ (d : ℝ) * (b : ℝ) :=
+    (div_le_self (le_of_lt hd_pos) hγr).trans (le_mul_of_one_le_right (le_of_lt hd_pos) hbr)
+  obtain ⟨Y, hY⟩ : ∃ Y, Y = C_ws * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) := ⟨_, rfl⟩
+  rw [← hY] at hS
+  have hσY : Y - 1 ≤ (σ : ℝ) := by
+    have : (workspaceCellSum B_bank S : ℝ) ≤ (σ : ℝ) := by exact_mod_cast hσS
+    linarith
+  obtain ⟨u, hu⟩ : ∃ u, u = (γ : ℝ) * (d : ℝ) * (b : ℝ) := ⟨_, rfl⟩
+  obtain ⟨v, hv⟩ : ∃ v, v = (d : ℝ) / (γ : ℝ) * Y := ⟨_, rfl⟩
+  have huv_nonneg : 0 ≤ u + v := by rw [hu, hv, hY]; positivity
+  have hX_le : u + v ≤ (((γ + 1) * d * b + 2 * A_in + G * σ : ℕ) : ℝ) := by
+    have e1 : (d : ℝ) / (γ : ℝ) * (σ : ℝ) ≤ (G : ℝ) * (σ : ℝ) :=
+      mul_le_mul_of_nonneg_right hGr (Nat.cast_nonneg _)
+    have e2 : (d : ℝ) / (γ : ℝ) * (Y - 1) ≤ (d : ℝ) / (γ : ℝ) * (σ : ℝ) :=
+      mul_le_mul_of_nonneg_left hσY (by positivity)
+    have e3 : (0 : ℝ) ≤ (A_in : ℝ) := Nat.cast_nonneg _
+    rw [hu, hv]
+    push_cast
+    linarith
+  have hX2 : 4 * C_ws * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ^ 2 ≤ (u + v) ^ 2 := by
+    have hγ0 : (γ : ℝ) ≠ 0 := by positivity
+    have h4 : 4 * C_ws * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ^ 2 = 4 * (u * v) := by
+      rw [hu, hv, hY]
+      calc 4 * C_ws * (d : ℝ) ^ (-θ) * ((d : ℝ) * (d : ℝ) * (b : ℝ)) ^ 2
+          = ((γ : ℝ) / (γ : ℝ)) *
+              (4 * C_ws * (d : ℝ) ^ (-θ) * ((d : ℝ) * (d : ℝ) * (b : ℝ)) ^ 2) := by
+            rw [div_self hγ0, one_mul]
+        _ = _ := by ring
+    rw [h4, show (u + v) ^ 2 = 4 * (u * v) + (u - v) ^ 2 by ring]
+    linarith [sq_nonneg (u - v)]
+  have hdθ_inv : (d : ℝ) ^ θ * (d : ℝ) ^ (-θ) = 1 := by
+    rw [Real.rpow_neg (le_of_lt hd_pos), mul_inv_cancel₀ (Real.rpow_pos_of_pos hd_pos θ).ne']
+  have hHX : (d * d * b : ℝ) ≤ (H : ℝ) * (u + v) := by
+    apply le_of_sq_le_sq _ (mul_nonneg (Nat.cast_nonneg _) huv_nonneg)
+    calc (d * d * b : ℝ) ^ 2 = (d : ℝ) ^ θ * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ^ 2 := by
+          rw [hdθ_inv, one_mul]
+      _ ≤ 4 * C_ws * (H : ℝ) ^ 2 * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ^ 2 := by gcongr
+      _ = (H : ℝ) ^ 2 * (4 * C_ws * (d : ℝ) ^ (-θ) * (d * d * b : ℝ) ^ 2) := by ring
+      _ ≤ (H : ℝ) ^ 2 * (u + v) ^ 2 := mul_le_mul_of_nonneg_left hX2 (by positivity)
+      _ = ((H : ℝ) * (u + v)) ^ 2 := by ring
+  have key : ((d * d * b : ℕ) : ℝ) ≤ ((H * ((γ + 1) * d * b + 2 * A_in + G * σ) : ℕ) : ℝ) := by
+    rw [Nat.cast_mul H]
+    calc ((d * d * b : ℕ) : ℝ) = (d * d * b : ℝ) := by push_cast; ring
+      _ ≤ (H : ℝ) * (u + v) := hHX
+      _ ≤ _ := mul_le_mul_of_nonneg_left hX_le (Nat.cast_nonneg _)
+  exact_mod_cast key
 
 end NativeRelations

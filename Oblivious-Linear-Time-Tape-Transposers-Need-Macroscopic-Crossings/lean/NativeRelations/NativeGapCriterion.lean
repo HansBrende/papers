@@ -7,8 +7,9 @@ import BoundedStackDepth.LowAdaptivity
 
 Formalizes the native storage-code gap predicate `NativeGapBound` on single-run cone relations,
 relates it to the fourteenth paper's half-rate bound (`nativeGapBound_half_iff`), and proves
-Theorem G (`native_gap_tests_exclude_linear`, `native_gap_exists_exclude_linear`) and Corollary 9.6
-(`fSecond_native_gap`, `native_gap_exclusion_of_trace_support`).
+Theorem G, machine by machine (`native_gap_excludes_transposesAt`, `native_gap_excludes_linear`) and
+in its uniform form (`native_gap_exists_exclude_linear`, `native_gap_tests_exclude_linear`), and
+Corollary 9.6 (`fSecond_native_gap`, `native_gap_exclusion_of_trace_support`).
 -/
 
 namespace NativeRelations
@@ -221,12 +222,12 @@ theorem fSecond_native_gap {ρ : ℝ} {B : ℕ → ℕ → Prop} {M : TM} {c η 
 
 open Classical Transpose.Tape Transpose.Tape.Impl in
 /-- Gap generalization of `TapeStorageRates.native_exclusion_of_trace_support`: any deficit `ρ > η`
-on `N`'s scale-`1` frozen-trace cone relations excludes any dimension property transmitted to `N`
-with trace support at most `2^{η L}`. -/
+on `N`'s scale-`1` frozen-trace cone relations, needed only at the sizes `d` with `Good d`, excludes
+any dimension property `Good` transmitted to `N` with trace support at most `2^{η L}`. -/
 theorem native_gap_exclusion_of_trace_support (N : TM) {ρ c η : ℝ} (hc : 0 < c) (hη : η < ρ)
-    (hnative : NativeGapBound ρ (fun d b => b = entryBits d) N 1
-      (genieDepth N.k (blockWidth N 1) (max c 1) ((ρ - η) / 2)) c)
     (Good : ℕ → Prop)
+    (hnative : NativeGapBound ρ (fun d b => b = entryBits d ∧ Good d) N 1
+      (genieDepth N.k (blockWidth N 1) (max c 1) ((ρ - η) / 2)) c)
     (htransfer : ∀ᶠ d in atTop, Good d → TransposesAt N d c ∧
       Real.logb 2 (univ.image
         (fun x : Fin (d * d * entryBits d) → Bool => trace N (List.ofFn x))).card
@@ -238,28 +239,72 @@ theorem native_gap_exclusion_of_trace_support (N : TM) {ρ c η : ℝ} (hc : 0 <
   obtain ⟨hsuccess, hsize⟩ := h hgood
   have hlow := (skeleton_entropy_le_trace_support N 1
     (fun x : Fin (d * d * entryBits d) → Bool => List.ofFn x)).trans hsize
-  exact (not_lt_of_ge hlow) (h₀ d hd _ rfl (one_le_entryBits d) hsuccess.transposesInput)
+  exact (not_lt_of_ge hlow) (h₀ d hd _ ⟨rfl, hgood⟩ (one_le_entryBits d) hsuccess.transposesInput)
 
 /-- Gap generalization of `TapeStorageRates.native_frozen_trace_exclusion`: for a source machine `M`,
 time constant `c > 0`, and any `0 < η < ρ`, there exists an aligned simulator `Native.machine M hs`
 (having `(Native.machine M hs).k = M.k` and physical time constant `11 * c + 1`) whose scale-`1`
-`NativeGapBound ρ` excludes `TransposesAt M d c` for all sufficiently large `d`. -/
+`NativeGapBound ρ` at one genie depth, needed only at the sizes `d` at which `M` transposes within
+time `c`, excludes `TransposesAt M d c` for all sufficiently large `d`. -/
 theorem native_gap_frozen_trace_exclusion (M : TM) {ρ c η : ℝ} (hc : 0 < c)
     (hη0 : 0 < η) (hηρ : η < ρ) :
-    ∃ s : ℕ, ∃ hs : 0 < s, ∃ c' : ℝ, c' = 11 * c + 1 ∧ 1 ≤ c' ∧
+    ∃ s : ℕ, ∃ hs : 0 < s,
       let N := Native.machine M hs
-      NativeGapBound ρ (fun d b => b = entryBits d) N 1
-        (genieDepth N.k (blockWidth N 1) (max c' 1) ((ρ - η) / 2)) c' →
+      NativeGapBound ρ (fun d b => b = entryBits d ∧ TransposesAt M d c) N 1
+        (genieDepth N.k (blockWidth N 1) (max (11 * c + 1) 1) ((ρ - η) / 2)) (11 * c + 1) →
       ∀ᶠ d in atTop, ¬ TransposesAt M d c := by
   obtain ⟨s, hs, h⟩ := aligned_low_trace_dimensions M hc.le hη0
-  have hc1 : 1 ≤ 11 * c + 1 := by linarith
-  have hc0 : 0 < 11 * c + 1 := by linarith
-  refine ⟨s, hs, 11 * c + 1, rfl, hc1, fun hnative => ?_⟩
-  apply native_gap_exclusion_of_trace_support (Native.machine M hs) hc0 hηρ hnative
-    (fun d => TransposesAt M d c)
+  refine ⟨s, hs, fun hnative => ?_⟩
+  refine native_gap_exclusion_of_trace_support (Native.machine M hs) (by linarith) hηρ
+    (fun d => TransposesAt M d c) hnative ?_
   exact h.mono fun d hd => hd (entryBits d) (one_le_entryBits d)
 
-/-- **Corollary 9.6: The native gap form of the fifteenth paper's low-adaptivity criterion.**
+/-- **Theorem G, machine by machine (`native_gap_excludes_transposesAt`).** Let `M` be a machine
+and `c > 0`. If some deficit `ρ > 0` makes every aligned simulator `Native.machine M hs` satisfy
+`NativeGapBound ρ` at scale `1`, every genie depth `D` and physical time constant `11 * c + 1`, at
+the sizes `d` at which `M` transposes within time `c`, then `M` transposes within time `c` at only
+finitely many `d`. -/
+theorem native_gap_excludes_transposesAt (M : TM) {c ρ : ℝ} (hc : 0 < c) (hρ : 0 < ρ)
+    (hgap : ∀ (s : ℕ) (hs : 0 < s) (D : ℕ),
+      NativeGapBound ρ (fun d b => b = entryBits d ∧ TransposesAt M d c) (Native.machine M hs) 1 D
+        (11 * c + 1)) :
+    ∀ᶠ d in atTop, ¬ TransposesAt M d c := by
+  obtain ⟨s, hs, h⟩ := native_gap_frozen_trace_exclusion M hc (half_pos hρ) (half_lt_self hρ)
+  exact h (hgap s hs _)
+
+/-- **Theorem G, `¬ (T)` form (`native_gap_excludes_linear`).** If for every machine `M` and every
+`c > 0` there is a deficit `ρ > 0` as in `native_gap_excludes_transposesAt`, then linear-time matrix
+transposition on multitape Turing machines is impossible (`¬ LinearTimeTransposable`). -/
+theorem native_gap_excludes_linear
+    (h : ∀ (M : TM) (c : ℝ), 0 < c → ∃ ρ : ℝ, 0 < ρ ∧ ∀ (s : ℕ) (hs : 0 < s) (D : ℕ),
+      NativeGapBound ρ (fun d b => b = entryBits d ∧ TransposesAt M d c) (Native.machine M hs) 1 D
+        (11 * c + 1)) :
+    ¬ LinearTimeTransposable := by
+  intro hlinear
+  obtain ⟨M, c, hc, hgood⟩ := unbounded_success_of_linear hlinear
+  obtain ⟨ρ, hρ, hgap⟩ := h M c hc
+  obtain ⟨d₀, hd₀⟩ := eventually_atTop.mp (native_gap_excludes_transposesAt M hc hρ hgap)
+  obtain ⟨d, hd, htr⟩ := hgood d₀
+  exact hd₀ d hd htr
+
+/-- **Theorem G, uniform form (`native_gap_exists_exclude_linear`).** Suppose for every work-tape
+count `k` and physical time constant `C ≥ 1` there is a deficit `ρ > 0`, uniform over all machines
+`M` with `M.k = k` and all genie depths `D`, such that
+`NativeGapBound ρ (fun d b => b = entryBits d) M 1 D C` holds. Then linear-time matrix
+transposition on multitape Turing machines is impossible (`¬ LinearTimeTransposable`): the aligned
+simulators of a machine keep its work-tape count (`native_machine_k`), so
+`native_gap_excludes_linear` applies with `C = 11 * c + 1`. -/
+theorem native_gap_exists_exclude_linear
+    (h : ∀ (k : ℕ) (C : ℝ), 1 ≤ C → ∃ ρ : ℝ, 0 < ρ ∧
+      ∀ (M : TM), M.k = k → ∀ D : ℕ,
+        NativeGapBound ρ (fun d b => b = entryBits d) M 1 D C) :
+    ¬ LinearTimeTransposable := by
+  refine native_gap_excludes_linear fun M c hc => ?_
+  obtain ⟨ρ, hρ, hgap⟩ := h M.k (11 * c + 1) (by linarith)
+  exact ⟨ρ, hρ, fun s hs D δ hδ =>
+    (hgap _ (native_machine_k M hs) D δ hδ).imp fun _ h d hd b hb => h d hd b hb.1⟩
+
+/-- **Theorem G, uniform form with a deficit function (`native_gap_tests_exclude_linear`).**
 Suppose for every work-tape count `k` and physical time constant `C ≥ 1` there is a deficit
 `ρ k C > 0`, uniform over all machines `M` with `M.k = k` and all genie depths `D`, such that
 `NativeGapBound (ρ k C) (fun d b => b = entryBits d) M 1 D C` holds. Then linear-time matrix
@@ -268,38 +313,7 @@ theorem native_gap_tests_exclude_linear (ρ : ℕ → ℝ → ℝ)
     (hρ : ∀ (k : ℕ) (C : ℝ), 1 ≤ C → 0 < ρ k C)
     (hgap : ∀ (k : ℕ) (C : ℝ), 1 ≤ C → ∀ (M : TM), M.k = k → ∀ D : ℕ,
       NativeGapBound (ρ k C) (fun d b => b = entryBits d) M 1 D C) :
-    ¬ LinearTimeTransposable := by
-  intro hlinear
-  obtain ⟨M, c, hc, hgood⟩ := unbounded_success_of_linear hlinear
-  set C : ℝ := 11 * c + 1
-  have hC1 : 1 ≤ C := by dsimp [C]; linarith
-  have hρpos : 0 < ρ M.k C := hρ M.k C hC1
-  obtain ⟨s, hs, c', rfl, -, htest⟩ :=
-    native_gap_frozen_trace_exclusion M (ρ := ρ M.k C) (η := ρ M.k C / 2) hc
-      (by linarith) (by linarith)
-  have hN : NativeGapBound (ρ M.k C) (fun d b => b = entryBits d) (Native.machine M hs) 1
-      (genieDepth (Native.machine M hs).k (blockWidth (Native.machine M hs) 1)
-        (max (11 * c + 1) 1) ((ρ M.k C - ρ M.k C / 2) / 2)) (11 * c + 1) :=
-    hgap M.k (11 * c + 1) hC1 (Native.machine M hs) (native_machine_k M hs) _
-  obtain ⟨d₀, hd₀⟩ := eventually_atTop.mp (htest hN)
-  obtain ⟨d, hd, htr⟩ := hgood d₀
-  exact hd₀ d hd htr
-
-/-- Existential variant of `native_gap_tests_exclude_linear`. -/
-theorem native_gap_exists_exclude_linear
-    (h : ∀ (k : ℕ) (C : ℝ), 1 ≤ C → ∃ ρ : ℝ, 0 < ρ ∧
-      ∀ (M : TM), M.k = k → ∀ D : ℕ,
-        NativeGapBound ρ (fun d b => b = entryBits d) M 1 D C) :
-    ¬ LinearTimeTransposable := by
-  classical
-  let ρ : ℕ → ℝ → ℝ := fun k C =>
-    if hC : 1 ≤ C then Classical.choose (h k C hC) else 1
-  refine native_gap_tests_exclude_linear ρ (fun k C hC => ?_) (fun k C hC M hMk D => ?_)
-  · dsimp only [ρ]
-    rw [dite_eq_left_of_eq_true (eq_true hC)]
-    exact (Classical.choose_spec (h k C hC)).1
-  · dsimp only [ρ]
-    rw [dite_eq_left_of_eq_true (eq_true hC)]
-    exact (Classical.choose_spec (h k C hC)).2 M hMk D
+    ¬ LinearTimeTransposable :=
+  native_gap_exists_exclude_linear fun k C hC => ⟨ρ k C, hρ k C hC, hgap k C hC⟩
 
 end NativeRelations

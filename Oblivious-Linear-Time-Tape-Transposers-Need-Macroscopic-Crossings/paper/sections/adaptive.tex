@@ -5,14 +5,20 @@ The first uses a single heavy trace of the machine itself; the second passes thr
 traces are few.
 
 \begin{theorem}[Theorem~E, heavy traces and simulators]\label{thm:E}
-\formal{TightConstants.lean}{frozenTrace_macroscopicCrossingLowers_menger_lb_tight, frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, simulator_heavyTrace_expansion_and_skeleton_tight, adaptive_simulator_heavyTrace_macroscopicExpansion_tight, simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight}
+\formal{TightConstants.lean}{frozenTrace_crossingLowerGT2H_menger_lb_tight, frozenTrace_macroscopicCrossingLowers_menger_lb_tight, frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, simulator_heavyTrace_expansion_and_skeleton_tight, adaptive_simulator_heavyTrace_macroscopicExpansion_tight}
 \begin{enumerate}[label=(\alph*)]
-\item \emph{Heavy traces.} Let $M$ be any machine with $k$ work tapes, $1\le C$, $0<c\le C$ and $\alpha>0$, and let $d\ge d_0$ with $d_0$ as in
-\cref{thm:X}. Suppose $M$ transposes at size $d$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$ with
-$\eta\le(\alpha/8)\rho_0(k,C,\tfrac{19}{20}\alpha)$. Then the conclusion of \cref{thm:X} at $H^*$ holds in the dependency DAG of $\tau$,
-with the same $\theta$ and $d_0$ and with the expansion constant $\cE'(M,C,\alpha)=\frac38\rho_0(k,C,\tfrac{19}{20}\alpha)/\wval$ in place of
-$\cE(M,C,\alpha)$; if moreover $\alpha\le1$ and $d\ge\lceil8/\thetaM(M,C,\alpha)\rceil$, so do the conclusions (a) and (b) of
-\cref{thm:S}, with $\cE'$ in place of $\cE$ in (b).
+\item \emph{Heavy traces.} Let $M$ be any machine with $k$ work tapes, $C\ge1$ and $\alpha>0$, put $\theta=\thetaM(M,C,\alpha)$ and
+$\rho_0=\rho_0(k,C,\tfrac{19}{20}\alpha)$, and let $d\ge\max\bigl(1,d_{\mathrm{br}}(k,C,\tfrac{19}{20}\alpha)\bigr)$. Suppose $M$ transposes at size
+$d$ within time $C$ (as it does if it transposes within a smaller time), and let $\tau$ be an $\eta$-heavy trace of $M$. Then for every
+$1\le H\le\theta L$ and every set $V_0$ of at least $\alpha L$ input positions, every set separating $\Out(V_0)$ from $\CL_H$ in the
+dependency DAG of $\tau$ has at least
+\[
+  \cE(M,C,\alpha,\eta)\,\abs{V_0},\qquad \cE(M,C,\alpha,\eta)=\frac{\rho_0/2-\eta/\alpha}{\wval},
+\]
+elements; at $\eta=0$ this is $\cE(M,C,\alpha)$. If moreover $\eta\le(\alpha/8)\rho_0$ and $d\ge d_0$ with $d_0$ as in \cref{thm:X}, the
+conclusion of \cref{thm:X} at $H^*$ holds in the dependency DAG of $\tau$ with the expansion constant
+$\cE'(M,C,\alpha)=\frac38\rho_0/\wval\le\cE(M,C,\alpha,\eta)$ in place of $\cE(M,C,\alpha)$; if in addition $\alpha\le1$ and
+$d\ge\lceil(8/\theta)^{1/2}\rceil$, so do the conclusions (a) and (b) of \cref{thm:S}, with $\cE'$ in place of $\cE$ in (b).
 \item \emph{Simulators.} Let $M$ be any machine with $k$ work tapes, $c>0$ and $0<\alpha\le1$, and put $\eta^*=(\alpha/16)\rho_0(k,11c+1,\tfrac{19}{20}\alpha)$.
 There are $s\ge1$ and $d_{\mathrm{sim}}$ such that the simulator $\Ns$ of~\cite[Theorem~S]{HighRate2026}, which has the same work tapes and
 work alphabet as $M$ and computes the same partial function, satisfies the following at every $d\ge d_{\mathrm{sim}}$ at which $M$
@@ -24,9 +30,11 @@ $H^*$, and the conclusions of \cref{thm:S}(a),(b) all hold with the expansion co
 \end{theorem}
 
 \begin{outline}
-(a) The proof of \cref{thm:X} goes through on the fixed trace $\tau$: \cref{thm:bridge} is a statement about traces, and in the coding
-step \cref{lem:frozen}, applied to $B\cup X$, replaces the index code. The heaviness $\eta\le(\alpha/8)\rho_0$ costs at most
-$\eta L\le\frac18\rho_0\abs{V_0}$, which lowers the expansion constant from $\frac12\rho_0/\wval$ to $\frac38\rho_0/\wval$. (b) The constant $\eta^*$ depends only on $k$, $c$
+(a) \Cref{lem:frozen} gives $\abs U-\wval\abs\Gamma\le\eta L$ for every set $\Gamma$ of steps and every set $U$ acyclic in the cone
+relation of $\tau$ avoiding $\Gamma$. The proof of \cref{thm:X} uses the transposition hypothesis only through such a bound, with $0$ in
+place of $\eta L$, and gives $\wval\abs B\ge\frac12\rho_0\abs{V_0}-\eta L\ge(\frac12\rho_0-\eta/\alpha)\abs{V_0}$, since
+$\alpha L\le\abs{V_0}$ (\lean{linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight}). For $\eta\le(\alpha/8)\rho_0$ this is at
+least $\frac38\rho_0\abs{V_0}$. (b) The constant $\eta^*$ depends only on $k$, $c$
 and $\alpha$. The fifteenth paper's trace transfer at $\eta^*$ (\lean{TapeStorageRates.aligned_low_trace_dimensions}) gives $s$ and the
 simulator, with at most $2^{\eta^*L}$ traces; the light traces are followed by fewer than $2^{\eta^*L}2^{(1-2\eta^*)L}$ inputs. Since $\Ns$ has
 $k$ work tapes and runs in time $11c+1$, and $2\eta^*=(\alpha/8)\rho_0(k,11c+1,\tfrac{19}{20}\alpha)$, part (a) applies to $\Ns$ on each heavy
@@ -56,3 +64,44 @@ sets on every heavy trace of every linear-time transposer is therefore equivalen
 infinitely many sizes, and gives no route to $\neg$(T). For oblivious machines, a hypothesis asserting unboundedly many such sets on every
 transposer, of any running time, would exclude oblivious linear-time transposers; the converse is not known.
 \end{remark}
+
+The fibre argument needs correctness only on the inputs it counts, so \cref{thm:X} and the separation bound of \cref{thm:E}(a)
+extend to machines that transpose correctly at least a $2^{-\eta L}$ fraction of their inputs. The constant $\cE(M,C,\alpha,\eta)$
+of \cref{thm:E}(a) equals $\cE(M,C,\alpha)-\eta/(\alpha\wval)$, and it is positive exactly for
+$\eta<\frac12\alpha\rho_0(k,C,\tfrac{19}{20}\alpha)$.
+
+\begin{corollary}[Approximate transposers]\label{cor:approx}
+\formal{TightConstants.lean}{correctSubset_crossingLowerGT2H_menger_lb_tight, obliviousOn_correctSubset_macroscopicCrossingLowers_menger_lb_tight}
+Let $M$ be any machine with $k$ work tapes, $C\ge1$, $\alpha>0$ and $\eta\ge0$.
+\begin{enumerate}[label=(\alph*)]
+\item Let $d\ge\max\bigl(1,d_{\mathrm{br}}(k,C,\tfrac{19}{20}\alpha)\bigr)$, and let $\tau$ be a trace of $M$ followed by at least
+$2^{(1-\eta)L}$ inputs that $M$ transposes within time $C$. For every $1\le H\le\thetaM(M,C,\alpha)L$ and every set $V_0$ of at least
+$\alpha L$ input positions, every set of steps separating $\Out(V_0)$ from $\CL_H$ in the dependency DAG of $\tau$ has at least
+$\cE(M,C,\alpha,\eta)\abs{V_0}$ elements.
+\item Let $d\ge d_0$ with $d_0$ as in \cref{thm:X}, and let $M$ be oblivious at length $L$ with halting time $T$ and transpose at least
+$2^{(1-\eta)L}$ inputs within time $C$. Then the conclusion of \cref{thm:X} at $H^*$ holds in the common trace, with $\cE(M,C,\alpha,\eta)$
+in place of $\cE(M,C,\alpha)$; for other $H$, (a) applies, since every input follows the common trace.
+\end{enumerate}
+\end{corollary}
+
+\begin{outline}
+(a) The proof of \cref{thm:E}(a) goes through with \cref{lem:frozen} applied to the correctly transposed inputs that follow $\tau$; the
+deficit $\eta L\le(\eta/\alpha)\abs{V_0}$ lowers the constant by $\eta/(\alpha\wval)$. (b) All inputs follow the common trace, which halts
+at $T$, and any correctly transposed input gives $T\le C(L+1)$; apply (a) at $H^*$. With $\eta=0$, (b) is \cref{thm:X}.
+\end{outline}
+
+Read the other way, a certificate on each of few traces bounds the fraction of inputs that a machine transposes correctly.
+
+\begin{corollary}[Deficient traces carry few correct inputs]\label{cor:frozen-count}
+\formal{SimulatorBridge.lean}{card_correctInputs_le_of_coneDeficit}
+Let $M$ be any machine, $d\ge1$, $c>0$, and $\mathcal T$ a finite set of traces of $M$, each with a \emph{deficit certificate}: a set
+$\Gamma_\tau$ of steps and a set $U_\tau$ acyclic in the cone relation of $\tau$ avoiding $\Gamma_\tau$ with
+$\abs{U_\tau}-\wval\abs{\Gamma_\tau}\ge\delta L$. Then at most $\abs{\mathcal T}\,2^{(1-\delta)L}$ inputs follow a trace in $\mathcal T$
+and are transposed by $M$ within time $c$. If $\abs{\mathcal T}\le2^{\eta L}$, these inputs are at most a $2^{-(\delta-\eta)L}$ fraction of
+all inputs.
+\end{corollary}
+
+\begin{outline}
+For each $\tau\in\mathcal T$ followed by correctly transposed inputs, \cref{lem:frozen} applied to the set $S_\tau$ of these inputs gives
+$\delta L\le L-\log_2\abs{S_\tau}$. Sum $\abs{S_\tau}\le2^{(1-\delta)L}$ over $\mathcal T$.
+\end{outline}

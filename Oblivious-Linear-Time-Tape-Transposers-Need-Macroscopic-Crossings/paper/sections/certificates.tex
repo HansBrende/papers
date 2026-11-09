@@ -39,34 +39,37 @@ codes for the demand-shifted relation, and pigeonhole over the messages gives th
 \subsection{Cruxes}
 
 \begin{definition}[Cruxes]\label{def:crux}
-\formal{MachineCrux.lean, EnvelopeCrux.lean}{MachineCruxAt, MachineCutCruxAt, SubpopCutCruxAt}
-Let $M$ be a machine, $C\ge1$, $D\ge0$ and $\rho,\delta,\alpha_0>0$.
+\formal{MachineCrux.lean, EnvelopeCrux.lean}{SubpopCutCruxAt, MachineCutCruxAt, MachineCruxAt, subpopCutCruxAt_one_iff, machineCutCruxAt_zero_iff}
+Let $M$ be a machine, $C\ge1$, $D\ge0$, $0<\alpha_0\le1$ and $\rho,\delta\ge0$. $M$ has \emph{subpopulation cut-crux rate $\rho$ at
+density $\alpha_0$, cost $\delta$ and depth $D$} if for every $\eta>0$ and all large $d$, whenever $M$ is oblivious at length $L$
+with halting time $T\le C(L+1)$ and exactly $L$ appends, there are a set $V_0$ of at least $\alpha_0L$ input positions and a set $B$
+of steps with $\wval\abs B\le\delta\abs{V_0}$ such that every index code for the cone relation avoiding $\Gamma\cup B$, for any
+$\Gamma$ that cuts all dependency paths to at most $D+1$ vertices, has at least $(\rho-\eta)\abs{V_0}$ bits (\lean{SubpopCutCruxAt}).
+Two cases have their own names.
 \begin{enumerate}[label=(\alph*)]
-\item $M$ has \emph{crux rate $\rho$ at depth $D$} if for every $\eta>0$ and all large $d$, whenever $M$ is oblivious at length $L$
-with halting time $T\le C(L+1)$ and exactly $L$ appends, every index code for the cone relation avoiding any $\Gamma$ that cuts
-all dependency paths to at most $D+1$ vertices has at least $(\rho-\eta)L$ bits (\lean{MachineCruxAt}).
-\item $M$ has \emph{cut-crux rate $\rho$ at cost $\delta$ and depth $D$} if, under the same conditions, there is a set $B$ of steps
-with $\wval\abs B\le\delta L$ such that every index code for the cone relation avoiding $\Gamma\cup B$ has at least $(\rho-\eta)L$
-bits (\lean{MachineCutCruxAt}).
-\item $M$ has \emph{subpopulation cut-crux rate $\rho$ at density $\alpha_0$, cost $\delta$ and depth $D$} if, under the same
-conditions, there are a set $V_0$ of at least $\alpha_0L$ input positions and a set $B$ with $\wval\abs B\le\delta\abs{V_0}$ such
-that every index code for the cone relation avoiding $\Gamma\cup B$ has at least $(\rho-\eta)\abs{V_0}$ bits
-(\lean{SubpopCutCruxAt}).
+\item At density $1$ and cost $0$, $M$ has \emph{crux rate $\rho$ at depth $D$}. Then $V_0=[0,L)$ and $B=\emptyset$, since $\wval\ge2$:
+every index code for the cone relation avoiding $\Gamma$ has at least $(\rho-\eta)L$ bits (\lean{MachineCruxAt},
+\lean{machineCutCruxAt_zero_iff}).
+\item At density $1$, $M$ has \emph{cut-crux rate $\rho$ at cost $\delta$ and depth $D$}. Then $V_0=[0,L)$: there is a set $B$ with
+$\wval\abs B\le\delta L$ such that every index code for the cone relation avoiding $\Gamma\cup B$ has at least $(\rho-\eta)L$ bits
+(\lean{MachineCutCruxAt}, \lean{subpopCutCruxAt_one_iff}).
 \end{enumerate}
 \end{definition}
 
 \begin{theorem}[Cruxes exclude]\label{thm:crux-excludes}
-\formal{EnvelopeCrux.lean}{subpop_cutcrux_excludes, machine_cutcrux_excludes}
-Let $C\ge1$ and $\eps>0$, and put $D_\eps=\mathrm{genieDepth}(k,\wval,C,\eps)$. If $M$ has crux rate $\rho>\eps$ at depth $D_\eps$, or
-cut-crux rate $\rho$ at cost $\delta$ with $\eps+\delta<\rho$, or subpopulation cut-crux rate $\rho$ at density $\alpha_0$ and cost
-$\delta$ with $\eps<\alpha_0(\rho-\delta)$, then for all large $d$ there is no $T$ with $\mathrm{ObliviousLinTime}(M,d,C,T)$.
+\formal{EnvelopeCrux.lean, MachineCrux.lean}{subpop_cutcrux_excludes, machine_cutcrux_excludes, machine_crux_excludes}
+Let $C\ge1$ and $\eps>0$, and put $D_\eps=\mathrm{genieDepth}(k,\wval,C,\eps)$. If $M$ has subpopulation cut-crux rate $\rho$ at
+density $\alpha_0$, cost $\delta$ and depth $D_\eps$ with $\eps<\alpha_0(\rho-\delta)$, then for all large $d$ there is no $T$ with
+$\mathrm{ObliviousLinTime}(M,d,C,T)$. In particular a cut-crux rate $\rho$ at cost $\delta$ with $\eps+\delta<\rho$, and a crux rate
+$\rho>\eps$, at depth $D_\eps$ exclude.
 \end{theorem}
 
 \begin{outline}
 Suppose $M$ transposes obliviously in time $C(L+1)$. Reveal the genie $\Gamma$ of \cref{lem:genie}(a), of cost $\eps L$ and depth
-$D_\eps$, together with~$B$. By \cref{lem:genie}(b) the values on $\Gamma\cup B$ form an index code of at most $(\eps+\delta)L$ bits,
-respectively $\eps L+\delta\abs{V_0}$ bits, contradicting the crux for small $\eta$. The crux form is \lean{machine_crux_excludes}
-(\leanfile{MachineCrux.lean}).
+$D_\eps$, together with~$B$. By \cref{lem:genie}(b) the values on $\Gamma\cup B$ form an index code of at most $\eps L+\delta\abs{V_0}$
+bits, so $(\rho-\delta-\eta)\abs{V_0}\le\eps L$, which contradicts $\abs{V_0}\ge\alpha_0L$ for small $\eta$. The two special cases
+are $\alpha_0=1$, where $\eps<\alpha_0(\rho-\delta)$ reads $\eps+\delta<\rho$, and in addition $\delta=0$, where it reads $\eps<\rho$;
+their direct forms are \lean{machine_cutcrux_excludes} and \lean{machine_crux_excludes}.
 \end{outline}
 
 Acyclic sets give cruxes. If, for every $\eta>0$ and all large $d$, every cone relation of depth $D$ in \cref{def:crux}(a) contains
@@ -74,8 +77,9 @@ an acyclic set of at least $(\rho-\eta)L$ input positions, then $M$ has crux rat
 (\lean{machineCruxAt_of_isAcyclicIn}, \lean{machineCrux_of_isAcyclicIn}, \lean{oblivious_excludes_of_isAcyclicIn}). The same holds for ball relations, which contain the
 cone relations of depth~$D$ (\lean{machineCutCruxAt_of_ballAvoid_isAcyclicIn}).
 
-The next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in the cone
-relation costs at least $\abs U$ bits, and for the ball relation of a bounded radius it does so up to the genie.
+Part~(b) of the next lemma is the form used by Theorems~X and~S: at a single size, revealing a set $B$ that leaves an acyclic set $U$ in
+the cone relation costs at least $\abs U$ bits. Part~(a), used by the first forms, does the same for the ball relation of a bounded
+radius, up to the genie.
 
 \begin{lemma}[Acyclic sets cost cuts]\label{lem:acyclic-cost}
 \formal{EnvelopeCrux.lean, TightConstants.lean}{obliviousLinTime_separator_card_ge_of_isAcyclicIn, obliviousLinTime_coneSystem_isAcyclicIn_card_le, obliviousLinTime_ballSeparator_card_ge}
@@ -102,19 +106,22 @@ For a machine that is not oblivious, the index code of \cref{lem:genie}(b) is no
 trace replaces it.
 
 \begin{lemma}[Frozen-trace deficit]\label{lem:frozen}
-\formal{SimulatorBridge.lean}{frozenTrace_isAcyclicIn_coneSystem_deficit_le, frozenTrace_isAcyclicIn_ballAvoid_separator_card_ge}
-Let $M$ transpose at size $d\ge1$ within time $c$, and let $\tau$ be an $\eta$-heavy trace of $M$ with halting time $T$. Then
-$T\le2cL$, $\tau$ appends exactly $L$ bits, and for every set $\Gamma$ of steps and every set $U$ acyclic in the cone relation of
-$\tau$ avoiding $\Gamma$,
+\formal{SimulatorBridge.lean}{correctSubset_isAcyclicIn_coneSystem_deficit_le_logb, correctSubset_isAcyclicIn_coneSystem_deficit_le, frozenTrace_isAcyclicIn_coneSystem_deficit_le, frozenTrace_isAcyclicIn_ballAvoid_separator_card_ge}
+Let $M$ be any machine, $d\ge1$, $\tau$ a trace of $M$ with halting time $T$, and $S$ a nonempty set of inputs that follow $\tau$ and
+that $M$ transposes within time $c$. Then $T\le2cL$, $\tau$ appends exactly $L$ bits, and for every set $\Gamma$ of steps and every set
+$U$ acyclic in the cone relation of $\tau$ avoiding $\Gamma$,
 \[
-  \abs U-\wval\abs\Gamma\ \le\ \eta L .
+  \abs U-\wval\abs\Gamma\ \le\ L-\log_2\abs S .
 \]
+In particular $\abs U-\wval\abs\Gamma\le\eta L$ if $\abs S\ge2^{(1-\eta)L}$; for instance, if $M$ transposes at size $d$ within time
+$c$ and $\tau$ is $\eta$-heavy, $S$ can be the set of all inputs that follow $\tau$.
 \end{lemma}
 
 \begin{outline}
-On the fibre of $\tau$ all inputs share the dependency DAG. Split the fibre according to the $2^{\wval\abs\Gamma}$ possible values on
-$\Gamma$. Each part is a storage code for the cone relation, so it has at most $2^{L-\abs U}$ elements by \cref{lem:acyclic-code}.
-Hence $2^{(1-\eta)L}\le\abs{\text{fibre}}\le2^{\wval\abs\Gamma+L-\abs U}$.
+All inputs of $S$ share the dependency DAG of $\tau$, and any one of them gives the facts about $T$. Split $S$ according to the
+$2^{\wval\abs\Gamma}$ possible values on $\Gamma$. Since the inputs of $S$ are transposed, the bit appended at $\Out(q)$ is input
+bit $q$, so each part is a storage code for the cone relation and has at most $2^{L-\abs U}$ elements by \cref{lem:acyclic-code}.
+Hence $\abs S\le2^{\wval\abs\Gamma+L-\abs U}$. Correctness is used only on~$S$.
 \end{outline}
 
 \subsection{Tools for finding acyclic sets}
@@ -123,19 +130,23 @@ Acyclic sets in cone relations are found by potentials. The following statements
 $q\to p$ means $p\in N(q)$.
 
 \begin{lemma}[Envelopes and windows]\label{lem:window}
-\formal{EnvelopeCrux.lean}{acyclicIn_of_lt_on_nbhd, upperEnvelope_isAcyclicIn, oneSidedEnvelope_isAcyclicIn, window_isAcyclicIn_of_noFarArcs, exists_isAcyclicIn_of_window_maxDeg}
+\formal{EnvelopeCrux.lean}{acyclicIn_of_lt_on_nbhd, upperEnvelope_isAcyclicIn, oneSidedEnvelope_isAcyclicIn, exists_isAcyclicIn_of_oneSidedEnvelope_maxDeg, window_isAcyclicIn_of_noFarArcs, exists_isAcyclicIn_of_window_maxDeg}
 \begin{enumerate}[label=(\alph*)]
 \item If a potential strictly decreases along every arc inside $S$, then $S$ is acyclic.
-\item Let $\varphi,\psi$ be real potentials and $w\ge0$. The \emph{window} $\{q\in V_0:q\notin N(q),\ \varphi(q)+2w<\psi(q)\}$ is acyclic if
-every arc $q\to p$ inside it is \emph{near}, $\abs{\psi(p)-\varphi(q)}\le w$. If instead every vertex of the window is incident to at most $\beta$
-far arcs inside it, the window contains an acyclic set of at least a $1/(\beta+1)$ fraction of its elements.
+\item Let $\varphi,\psi$ be real potentials and $w$ a real number. The \emph{window} $\{q\in V_0:q\notin N(q),\ \varphi(q)+w<\psi(q)\}$
+is acyclic if every arc $q\to p$ inside it is \emph{near}, $\psi(p)\le\varphi(q)+w$. If instead every vertex of the window is
+incident to at most $\beta$ far arcs inside it, the window contains an acyclic set of at least a $1/(\beta+1)$ fraction of its
+elements.
 \end{enumerate}
 \end{lemma}
 
 \begin{outline}
 (a) Inside $S$ an element of least potential has no out-arc into $S$. (b) A near arc $q\to p$ inside the window has
-$\varphi(p)<\psi(p)-2w\le\varphi(q)-w$, so $\varphi$ strictly decreases along it and (a) applies. With far arcs, remove the far neighbours of the
-vertices one at a time; a greedy choice keeps a $1/(\beta+1)$ fraction.
+$\varphi(p)<\psi(p)-w\le\varphi(q)$, so $\varphi$ strictly decreases along it and (a) applies. With far arcs, remove the far neighbours
+of the vertices one at a time; a greedy choice keeps a $1/(\beta+1)$ fraction. A two-sided bound $\abs{\psi(p)-\varphi(q)}\le w$ is
+near at margin $2w$; with two-sided bounds the statements are \lean{window_isAcyclicIn_of_noFarArcs} and
+\lean{exists_isAcyclicIn_of_window_maxDeg}. The upper-envelope form of (a), that $\{q\in V_0:\Psi(q)<\varphi(q)\}$ is acyclic when
+$\varphi(r)\le\Psi(p)$ for every arc $r\to p$ inside $V_0$, is \lean{upperEnvelope_isAcyclicIn}.
 \end{outline}
 
 \begin{lemma}[Cut sets and block ranking]\label{lem:blockcut}
@@ -152,24 +163,28 @@ Along an arc $q\to p$ inside the set, a block of $A(q)\cap E(p)$ shows that the 
 hence below that block's rank, hence at most the largest rank in $A(q)$; so the largest rank of $A$ strictly decreases along arcs, and
 \cref{lem:window}(a) applies. For disjoint $A(q),E(q)$, exactly a fraction $\binom{\abs{A(q)}+\abs{E(q)}}{\abs{A(q)}}^{-1}$ of all rankings
 put $A(q)$ below $E(q)$ (\lean{LeanMachine.BlockRanking.choose_mul_card_goodPerms_eq_factorial}), so the average size of the set over all rankings is the stated
-sum.
+sum. For a family of $m$ block assignments, of which $s$ elements in total exceed the sizes $a,e$ and at most $\kappa$ per assignment
+have $A(q)\cap E(q)\ne\emptyset$, the assignment with the fewest exceptions gives an acyclic set of at least
+$(\abs{V_0}-s/m-\kappa)/\binom{a+e}{a}$ elements (\lean{exists_isAcyclicIn_of_shiftBlockCutFamily_gen}).
 \end{outline}
 
 \begin{lemma}[Step-invariant windows]\label{lem:stepinv}
 \formal{EnvelopeCrux.lean}{isAcyclicIn_ballAvoid_window_of_stepInvariant, isAcyclicIn_ballAvoid_window_of_constStepInvariant}
 Let a trace, a set $B$ of steps, a depth $D$ and a set $V_0$ of input positions be given, with regions $R(0),\dots,R(D)$ of steps, a
-\emph{sink} region, a step potential $\mu$, potentials $\varphi,\psi$ on input positions and $c_0,\Delta,c_1\ge0$. Suppose: the roots of $V_0$ lie in
-$R(D)$ with $\abs{\mu(\Out(q))-\varphi(q)}\le c_0$; every edge from the sink that avoids $B$ stays in the sink, and the sink reads no
-position of $V_0$; every edge from $R(r+1)$ that avoids $B$ enters the sink or enters $R(r)$ changing $\mu$ by at most $\Delta$; and
-a read of $p\in V_0$ at a step $u\in R(r)$ has $\abs{\psi(p)-\mu(u)}\le c_1$. Then
-$\{q\in V_0:\varphi(q)+2(c_0+D\Delta+c_1)<\psi(q)\}$ is acyclic in the ball relation of radius $D$ avoiding~$B$.
+\emph{sink} region, a step potential $\mu$, potentials $\varphi,\psi$ on input positions, reals $c_0,c_1$ and $\Delta\ge0$. Suppose:
+the roots of $V_0$ lie in $R(D)$ with $\mu(\Out(q))\le\varphi(q)+c_0$; every edge from the sink that avoids $B$ stays in the sink,
+and the sink reads no position of $V_0$; every edge $u\to v$ from $R(r+1)$ that avoids $B$ enters the sink or enters $R(r)$ with
+$\mu(v)\le\mu(u)+\Delta$; and a read of $p\in V_0$ at a step $u\in R(r)$ has $\psi(p)\le\mu(u)+c_1$. Then
+$\{q\in V_0:\varphi(q)+c_0+D\Delta+c_1<\psi(q)\}$ is acyclic in the ball relation of radius $D$ avoiding~$B$.
 \end{lemma}
 
 \begin{outline}
-By induction along a dependency path from a root with at most $D$ edges that avoids $B$ after the root, its end lies in the sink or in the
-region $R(D-\ell)$ after $\ell$ edges, with $\mu$ changed by at most $\ell\Delta$ (\lean{depPath_stepInvariant_with_sink}). Since the sink
-reads nothing in $V_0$, every arc $q\to p$ inside $V_0$ has $\abs{\psi(p)-\varphi(q)}\le c_0+D\Delta+c_1$: it is near, and
-\cref{lem:window}(b) applies.
+By induction along a dependency path from a root with at most $D$ edges that avoids $B$ after the root, its end lies in the sink or in
+the region $R(D-\ell)$ after $\ell$ edges, with $\mu$ raised by at most $\ell\Delta\le D\Delta$
+(\lean{depPath_oneSidedStepInvariant_with_sink}). Since the sink reads nothing in $V_0$, every arc $q\to p$ inside $V_0$ has
+$\psi(p)\le\varphi(q)+c_0+D\Delta+c_1$: it is near, and \cref{lem:window}(b) applies. The strict inequality excludes loops, so no
+sign condition on $c_0,c_1$ is needed. The condition $\Delta\ge0$ is needed: for $D=1$ and $\Delta=-1$, a root that reads its own
+position is a loop inside the set.
 \end{outline}
 
 \Cref{lem:window,lem:blockcut,lem:stepinv} are statements about traces only. They are the tools behind the exclusions of the

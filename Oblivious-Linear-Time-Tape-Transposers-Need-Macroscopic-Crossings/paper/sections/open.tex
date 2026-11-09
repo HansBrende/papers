@@ -5,10 +5,12 @@ leg of a bounded skeleton, with two long-range heads. The following problems wou
 side of impossibility, the fourth on both sides.
 
 \begin{problem}[Pass bounds across scales]\label{prob:multiscale}
-For a run and $1\le j\le\log_2L$ let $r_j$ be the total number of legs of its skeletons at scale $\lfloor2^{-j}L\rfloor$. A linear-time run has
-$r_j\le k(4C\,2^j+1)$ (\cref{lem:finite}), and pass counting at a single scale requires only $r_j\gtrsim\frac j2\log_{k+1}2$
-(\cref{cor:subcritical} and the paragraph after it). Is there, for every $k$ and $C$, a function $f$ with $f(d)\to\infty$ such that no oblivious machine with $k$ work tapes
-whose runs satisfy $r_j\le Cj$ for all $j$ transposes at size $d$ in time less than $f(d)L$? More generally, find a coding-proof inequality
+For a run and $1\le j\le\log_2L$ let $r_j$ be the total number of legs of the skeletons of all its heads, the input head included, at scale
+$\lfloor2^{-j}L\rfloor$; coarse pass counting (\cref{thm:coarsepass}) constrains the input head's motion as well as the work heads'. A
+linear-time run has $r_j\le(k+1)(4C\,2^j+1)$, by the argument of \cref{lem:finite}, and pass counting at a single scale requires only $r_j\gtrsim\frac j2\log_{k+1}2$
+(\cref{cor:subcritical} and the paragraph after it). Is there, for every $k$, $C$ and $w$, a function $f$ with $f(d)\to\infty$ such that no oblivious machine with $k$ work tapes
+and value width at most $w$ whose runs satisfy $r_j\le Cj$ for all $j$ transposes at size $d$ in time less than $f(d)L$? (The value width
+must be bounded: a machine with enough states can read the whole input of one size into its control and transpose it in one pass.) More generally, find a coding-proof inequality
 that involves all the $r_j$ at once and fails for every linear-time run.
 \end{problem}
 
@@ -47,4 +49,5 @@ relations of macroscopic queue-like reuse~\cite[Corollary~O]{BoundedStack2026}. 
 rate approaching one exist on suitable separated relations~\cite{HighRate2026}; realizing such codes on the relations of a schedule that
 meets conditions (i)--(iv) of \cref{sec:construction} would be a construction. In the other direction, showing that the cone relations of
 every such schedule, after a cheap genie, have a fixed rate deficit would exclude oblivious linear-time transposers
-(\cref{thm:crux-excludes};~\cite[Corollary~O]{BoundedStack2026}); deciding (T) itself needs the uniform native form of \cref{thm:G}.
+(\cref{thm:crux-excludes};~\cite[Corollary~O]{BoundedStack2026}); along this route, deciding (T) itself would follow from the native form of \cref{thm:G},
+machine by machine: a fixed deficit on the cone relations, with arbitrary roots, of the runs of each machine's simulators.

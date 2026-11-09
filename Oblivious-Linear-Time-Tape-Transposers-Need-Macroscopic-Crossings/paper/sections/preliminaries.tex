@@ -19,9 +19,9 @@ has the same encoding with $i$ and $j$ exchanged, so output position $\tpos(q)$ 
   \tpos\bigl((di+j)b+\gamma\bigr)=(dj+i)b+\gamma ,
 \]
 an involution of $\Range L$. For $q=(di+j)b+\gamma$ we call $i$ the \emph{input row} of $q$ and $j$ its \emph{output row}: the
-copy of $q$ is written in row~$j$ of the output. $M$ \emph{transposes at size $d$ within time $c$}, written
-$\mathrm{TransposesAt}(M,d,c)$, if on every matrix input it halts within $\lfloor c(L+1)\rfloor$ steps with the encoding of the
-transpose on its output tape. Statement~(T) asks for a machine and a constant $c$ with this property at every~$d$.
+copy of $q$ is written in row~$j$ of the output. $M$ \emph{transposes an input $X$ within time $c$} if on $X$ it halts within
+$\lfloor c(L+1)\rfloor$ steps with the encoding of the transpose of $X$ on its output tape (\lean{MergeDepth.TransposesInput}), and
+\emph{transposes at size $d$ within time $c$}, written $\mathrm{TransposesAt}(M,d,c)$, if it does so on every matrix input. Statement~(T) asks for a machine and a constant $c$ with this property at every~$d$.
 
 $M$ is \emph{oblivious at length $L$ with halting time $T$} if every input of length $L$ halts at exactly step~$T$ and any two
 such inputs have the same input-head position, the same work-head positions and the same append decision at every step. We
@@ -71,8 +71,10 @@ the earlier end of a revisit of excursion greater than $2H$ that crosses another
 tape.
 \end{definition}
 
-In Lean $\CL_H$ is \lean{crossingLowerEtaSteps}~$\tau\,T\,H\,1\,T$. The set shrinks as $H$ grows
+\begin{sloppypar}
+In Lean, $\CL_H$ is \lean{crossingLowerEtaSteps} $\tau\,T\,H\,1\,T$. The set shrinks as $H$ grows
 (\lean{crossingLowerEtaSteps_anti_H}), so a lower bound on the cost of separating from $\CL_H$ is stronger for larger~$H$.
+\end{sloppypar}
 
 To see what $\CL_H$ measures, consider a head that sweeps right across a stretch of tape, turns, sweeps back, turns again and
 sweeps right. A cell visited on the first sweep and revisited on the second is the earlier end of a revisit above it; a cell

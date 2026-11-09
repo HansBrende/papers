@@ -27,9 +27,15 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.adaptiveSuffixJitterBM_excludes_transposesAt
 #print axioms NativeRelations.adaptiveSuffixJitterBM_not_linearTimeTransposer
 #print axioms NativeRelations.nativeGapBound_of_adaptiveJitterBM
+#print axioms NativeRelations.native_machine_preserves_suffixJitterBM
 -- CoarseGroupedPass.lean
 #print axioms NativeRelations.CoarseWorkspacePartition
 #print axioms NativeRelations.adaptive_singleScale_coarseWorkspace_closed_lb
+#print axioms NativeRelations.boundedCoarsePasses_adaptive_polyTime_excludes
+#print axioms NativeRelations.boundedCoarsePasses_oblivious_excludes
+#print axioms NativeRelations.boundedCoarsePasses_sublinear_adaptive_polyTime_excludes
+#print axioms NativeRelations.boundedCoarsePasses_sublinear_oblivious_excludes
+#print axioms NativeRelations.groupedBound_not_excluded_above_half
 #print axioms NativeRelations.groupedBound_thetaTwo_not_excluded_above_half
 #print axioms NativeRelations.oblEntryBits_zero_univ_eq
 #print axioms NativeRelations.oblivious_singleScale_coarseWorkspace_closed_lb
@@ -63,9 +69,10 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.coneSystem_subset_ballAvoidSystem
 #print axioms NativeRelations.crossingCut_nonCrossing_strictAnti
 #print axioms NativeRelations.cutSet_isAcyclicIn
-#print axioms NativeRelations.depPath_stepInvariant_with_sink
+#print axioms NativeRelations.depPath_oneSidedStepInvariant_with_sink
 #print axioms NativeRelations.exists_isAcyclicIn_card_ge_of_blockCut
 #print axioms NativeRelations.exists_isAcyclicIn_card_ge_of_uniformBlockCut
+#print axioms NativeRelations.exists_isAcyclicIn_of_oneSidedEnvelope_maxDeg
 #print axioms NativeRelations.exists_isAcyclicIn_of_shiftBlockCutFamily_gen
 #print axioms NativeRelations.exists_isAcyclicIn_of_window_maxDeg
 #print axioms NativeRelations.exists_two_cuts_covering_nonCrossingLargeHops
@@ -73,26 +80,24 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.isAcyclicIn_ballAvoid_window_of_constStepInvariant
 #print axioms NativeRelations.isAcyclicIn_ballAvoid_window_of_stepInvariant
 #print axioms NativeRelations.machineCutCruxAt_of_ballAvoid_isAcyclicIn
+#print axioms NativeRelations.machineCutCruxAt_zero_iff
 #print axioms NativeRelations.machine_cutcrux_excludes
 #print axioms NativeRelations.obliviousLinTime_ballSeparator_card_ge
 #print axioms NativeRelations.obliviousLinTime_separator_card_ge_of_isAcyclicIn
 #print axioms NativeRelations.oneSidedEnvelope_isAcyclicIn
+#print axioms NativeRelations.subpopCutCruxAt_one_iff
 #print axioms NativeRelations.subpop_cutcrux_excludes
 #print axioms NativeRelations.upperEnvelope_isAcyclicIn
 #print axioms NativeRelations.window_isAcyclicIn_of_noFarArcs
 -- JitterMacroBank.lean
 #print axioms NativeRelations.CoarseMonoOnInterval
 #print axioms NativeRelations.hop_upper_injOn
-#print axioms NativeRelations.native_machine_preserves_jitterBM
 -- MachineCrux.lean
 #print axioms NativeRelations.MachineCruxAt
 #print axioms NativeRelations.machine_crux_excludes
 -- MacroBankCrux.lean
 #print axioms NativeRelations.BoundedMacroBank
 #print axioms NativeRelations.WeakMonoOnInterval
-#print axioms NativeRelations.boundedMacroBank_excludes
-#print axioms NativeRelations.boundedMacroBank_has_crux
-#print axioms NativeRelations.macroBank_independent_exists
 -- MacroscopicSkeleton.lean
 #print axioms NativeRelations.CrossingCapableSkeletonTuple
 #print axioms NativeRelations.IsScaleFreeCrossingCapable
@@ -107,7 +112,9 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.isScaleFreeCrossingCapable_of_two_mul_le
 #print axioms NativeRelations.isWalk_ivt
 #print axioms NativeRelations.legCrossingLowers
+#print axioms NativeRelations.legOfEpoch_le_macroTurns
 #print axioms NativeRelations.legOfEpoch_lt_of_isHop_gt2H
+#print axioms NativeRelations.linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg
 #print axioms NativeRelations.macroTurns
 #print axioms NativeRelations.milestones
 #print axioms NativeRelations.tapeCrossingLowers_nonempty_of_isDetourProofSkeleton
@@ -126,21 +133,26 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.obliviousLinTime_macroscopicCrossingLowers_menger_lb_genie
 #print axioms NativeRelations.timePullback_blockCut_mais
 -- NativeGapCriterion.lean
+#print axioms NativeRelations.NativeGapBound
 #print axioms NativeRelations.fSecond_native_gap
 #print axioms NativeRelations.nativeGapBound_half_iff
+#print axioms NativeRelations.native_gap_excludes_linear
+#print axioms NativeRelations.native_gap_excludes_transposesAt
 #print axioms NativeRelations.native_gap_exclusion_of_trace_support
 #print axioms NativeRelations.native_gap_exists_exclude_linear
 #print axioms NativeRelations.native_gap_tests_exclude_linear
+#print axioms NativeRelations.native_machine_k
 -- OneFreeHeadSmallExcursion.lean
 #print axioms NativeRelations.IsMengerVertexCut
 #print axioms NativeRelations.atMostOneWorkTape_lowAdaptivity_excludes
 #print axioms NativeRelations.atMostOneWorkTape_oblivious_excludes
-#print axioms NativeRelations.card_smallCrossingLowers_le
-#print axioms NativeRelations.depPath_trapped_in_chunk
+#print axioms NativeRelations.card_smallCrossingLowers_erase_le
+#print axioms NativeRelations.depStep_trapped_in_chunk
 #print axioms NativeRelations.exists_offset_slabTransitions_le
 #print axioms NativeRelations.exists_slab_chunk_dichotomy
-#print axioms NativeRelations.frozenTrace_chunk_deficit_le
+#print axioms NativeRelations.frozenTrace_subpop_deficit_le
 #print axioms NativeRelations.hopExcursionLEOn_of_famd_le
+#print axioms NativeRelations.offCarrier_longRevisits_card_ge
 #print axioms NativeRelations.offCarrier_vertexExpansion_of_linearTimeTransposer
 #print axioms NativeRelations.offCarrier_vertexExpansion_of_obliviousLinTime
 #print axioms NativeRelations.oneFreeHead_smallExcursion_excludes
@@ -152,6 +164,8 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.slabDimThreshold
 #print axioms NativeRelations.slabSmallExcursion
 #print axioms NativeRelations.slabWallCap
+#print axioms NativeRelations.twoHeads_manyLongRevisits_of_linearTimeTransposer
+#print axioms NativeRelations.twoHeads_manyLongRevisits_of_oblivious_linearTimeTransposer
 #print axioms NativeRelations.twoMacroscopicHeads_of_linearTimeTransposer
 #print axioms NativeRelations.twoMacroscopicHeads_of_oblivious_linearTimeTransposer
 -- ScaleProfile.lean
@@ -159,28 +173,42 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.isMengerVertexCut_biUnion
 #print axioms NativeRelations.obliviousLinTime_expandingWaves_le
 -- SimulatorBridge.lean
+#print axioms NativeRelations.card_correctInputs_le_of_coneDeficit
+#print axioms NativeRelations.correctSubset_isAcyclicIn_coneSystem_deficit_le
+#print axioms NativeRelations.correctSubset_isAcyclicIn_coneSystem_deficit_le_logb
 #print axioms NativeRelations.frozenTrace_isAcyclicIn_ballAvoid_separator_card_ge
 #print axioms NativeRelations.frozenTrace_isAcyclicIn_coneSystem_deficit_le
 -- SuffixMassCrux.lean
+#print axioms NativeRelations.boundedMacroBank_excludes
+#print axioms NativeRelations.boundedMacroBank_has_crux
+#print axioms NativeRelations.boundedSuffixMacroBank_of_boundedMacroBank
 #print axioms NativeRelations.getLastD_le_of_mem_depPath
 #print axioms NativeRelations.suffixMacroBank_excludes
 #print axioms NativeRelations.suffixMacroBank_has_crux
+#print axioms NativeRelations.suffixMacroBank_independent_exists
 -- TightConstants.lean
 #print axioms NativeRelations.adaptive_simulator_heavyTrace_macroscopicExpansion_tight
+#print axioms NativeRelations.cE_frozen_eta_tight
 #print axioms NativeRelations.cE_menger_tight
 #print axioms NativeRelations.cE_menger_tight_le_one_thirtieth
 #print axioms NativeRelations.card_cutValidStepsAux_unitValidTapes_eq_pow_two
 #print axioms NativeRelations.card_microHopStepGuard_tight
 #print axioms NativeRelations.chainCapAt
+#print axioms NativeRelations.chainCapAt_le_pow_three
 #print axioms NativeRelations.coneSystem_eq_ballAvoidSystem_at_T
+#print axioms NativeRelations.correctSubset_crossingLowerGT2H_menger_lb_tight
 #print axioms NativeRelations.exists_commonRefinement_cell_core
 #print axioms NativeRelations.exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H
 #print axioms NativeRelations.exists_singleCell_guard_coneSystem_isIndependent_crossingLowerH
+#print axioms NativeRelations.frozenTrace_crossingLowerGT2H_menger_lb_tight
 #print axioms NativeRelations.frozenTrace_macroscopicCrossingLowers_menger_lb_tight
 #print axioms NativeRelations.frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
 #print axioms NativeRelations.johnsonSetPair_isAcyclicIn_card_le_one
 #print axioms NativeRelations.linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight
+#print axioms NativeRelations.linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight
+#print axioms NativeRelations.linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight
 #print axioms NativeRelations.nodeCapAt
+#print axioms NativeRelations.nodeCapAt_le_succ_mul_chainCapAt
 #print axioms NativeRelations.obliviousLinTime_coneSystem_isAcyclicIn_card_le
 #print axioms NativeRelations.obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight
 #print axioms NativeRelations.obliviousLinTime_crossingLowerGT2H_menger_lb_tight
@@ -190,12 +218,13 @@ and `Quot.sound`. -/
 #print axioms NativeRelations.obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight
 #print axioms NativeRelations.obliviousLinTime_mixGT2W_menger_lb_tight
 #print axioms NativeRelations.obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
+#print axioms NativeRelations.obliviousOn_correctSubset_macroscopicCrossingLowers_menger_lb_tight
 #print axioms NativeRelations.sharpCellGuardThresh
+#print axioms NativeRelations.sharpCellGuardThresh_le_pow_three
 #print axioms NativeRelations.sharpChainCount_le_pow_three
 #print axioms NativeRelations.sharpCounts_small_values
 #print axioms NativeRelations.sharpFamCount
 #print axioms NativeRelations.simulator_heavyTrace_expansion_and_skeleton_tight
-#print axioms NativeRelations.simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
 #print axioms NativeRelations.thetaMacro_tight
 #print axioms NativeRelations.tightBridgeRefCells
 #print axioms NativeRelations.tightBridgeRho0
@@ -229,6 +258,7 @@ and `Quot.sound`. -/
 #print axioms LeanMachine.BlockRanking.choose_mul_card_goodPerms_eq_factorial
 #print axioms MergeDepth.DepStep
 #print axioms MergeDepth.IsDepPath
+#print axioms MergeDepth.TransposesInput
 #print axioms MergeDepth.blockMachine_isStorageCode_fibre
 #print axioms MergeDepth.blockWidth
 #print axioms MergeDepth.entropy_comp_le

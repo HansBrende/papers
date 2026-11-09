@@ -16,12 +16,17 @@ one stays strictly above its cell and the other strictly below.
 \item If two crossing revisits both have excursion greater than $2H$, there are a sign $\varepsilon\in\{\pm1\}$ and steps
 $s_0<s_1<s_2<s_3<T$ such that $h=\varepsilon y$ satisfies
 \[
-  h(s_1)-h(s_0)\ge2H+1,\quad h(s_1)-h(s_2)\ge2H+1,\quad h(s_3)-h(s_2)\ge2H+1,\quad
+  h(s_1)-h(s_0)\ge2H+1,\qquad h(s_1)-h(s_2)\ge2H+1,\qquad h(s_3)-h(s_2)\ge2H+1,
+\]
+\[
   \min(h(s_1),h(s_3))-\max(h(s_0),h(s_2))\ge1 .
 \]
-\item Conversely, for every $\varepsilon$ and $s_0<s_1<s_2<s_3<T$, the walk has at least $2N$ steps that are earlier ends of
-crossing revisits of excursion greater than $2H$, where $N=\max\bigl(0,\min(h(s_1),h(s_3))-\max(h(s_0),h(s_2))-2H\bigr)$, whatever the
-walk does between these steps.
+\item Conversely, for every $\varepsilon$ and $s_0<s_1<s_2<s_3<T$, put
+\[
+  N=\max\bigl(0,\ \min(h(s_1),h(s_3))-\max(h(s_0),h(s_2))-2H\bigr).
+\]
+Then the walk has at least $2N$ steps that are earlier ends of crossing revisits of excursion greater than $2H$, whatever the walk
+does between these steps.
 \end{enumerate}
 \end{lemma}
 
@@ -50,7 +55,8 @@ work tapes.
 \begin{enumerate}[label=(\alph*)]
 \item At every step $\abs{y(t)-g(t)\Lambda}<\Lambda$, where $g(t)$ is the current grid point, and $y(t)=g(t)\Lambda$ exactly at
 each milestone. A skeleton of length $m$ has $m\Lambda\le T$.
-\item Let $\tau$ be any trace with $k$ work tapes and $T\le C(L+1)$, with $d,b\ge1$, $C\ge1$, $\theta>0$ and $d\ge\lceil8/\theta\rceil$.
+\item Let $\tau$ be any trace with $k$ work tapes and $T\le C(L+1)$, with $C\ge1$, $\theta>0$ and $\theta L\ge8$ (for instance $b\ge1$
+and $d\ge\lceil(8/\theta)^{1/2}\rceil$, since $L\ge d^2$).
 At scale $\Lambda=\lfloor\theta L/4\rfloor$ we have $\Lambda\ge1$, and every work tape's skeleton has at most
 $\Mmax=\lfloor16C/\theta\rfloor$ letters. Hence the skeleton of $\tau$ belongs to the set of $k$-tuples of words of length at most
 $\Mmax$ over $\{+,-\}$, which has exactly $(2^{\Mmax+1}-1)^k$ elements and does not depend on~$d$.
@@ -83,14 +89,19 @@ $(\min(h(i_1),h(i_3))-\max(h(i_0),h(i_2)))\Lambda\ge2H+1$, then the tape has suc
 \end{proposition}
 
 \begin{outline}
+\begin{sloppypar}
 The first part combines \cref{lem:zigzag}(b) with the confinement of \cref{lem:finite}(a): the four extreme steps lie within
 $\Lambda$ of grid points, which turns the inequalities with margin $2H+1\ge4\Lambda+1$ into the grid inequalities above
 (\lean{isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty}, which proves a finer statement at every scale). The converse is
 \cref{lem:zigzag}(c) applied at the milestone steps, where the walk is exactly on the grid.
+\end{sloppypar}
 \end{outline}
 
 Between the two conditions there is a narrow band of skeletons that may or may not carry crossings, depending on the motion inside
-the legs; this band is non-empty, so no condition on the skeleton alone decides whether crossings occur.
+the legs. This band is non-empty, so no condition on the skeleton alone decides whether crossings occur. For instance, let $\Lambda\ge2$ and
+$2H=K\Lambda$ with an integer $K\ge4$. The walks $0\to K\Lambda\to-K\Lambda\to0$ and $0\to-1\to K\Lambda\to-(K\Lambda+1)\to0$ both have the skeleton
+$(+1)^K(-1)^{2K}(+1)^K$. In the first, any two revisits are nested or disjoint. In the second, the revisit of cell $-1$ across the right
+turn crosses the revisit of cell $0$ across the left turn, and both have excursion $2H+1$.
 
 \begin{lemma}[No macroscopic revisit within a leg]\label{lem:legs}
 \formal{MacroscopicSkeleton.lean}{legOfEpoch_lt_of_isHop_gt2H}
@@ -107,21 +118,21 @@ would be confined to at most two adjacent epochs, with excursion less than $3\La
 
 For an oblivious linear-time transposer $M$ with time constant $C$ and $\alpha>0$, put $\theta=\thetaM(M,C,\alpha)$,
 $\Lambda^*=\lfloor\theta L/4\rfloor$, $H^*=\lfloor\theta L\rfloor$ and $\Mmax=\lfloor16C/\theta\rfloor$, and for a work tape $j$ and
-$r\ge0$ let $\CL^{j,r}$ be the set of steps of $\CL_{H^*}$ that are earlier ends of revisits on tape $j$ and lie in the $r$-th leg of
-tape $j$'s skeleton at scale $\Lambda^*$ (\lean{legCrossingLowers}).
+$r\ge0$ let $\CL^{j,r}$ be the set of steps that are earlier ends of crossing revisits of excursion greater than $2H^*$ on tape $j$
+and lie in the $r$-th leg of tape $j$'s skeleton at scale $\Lambda^*$ (\lean{legCrossingLowers}); it is contained in $\CL_{H^*}$.
 
 \begin{theorem}[Theorem~S, skeletons and a single leg]\label{thm:S}
-\formal{TightConstants.lean}{obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight, obliviousLinTime_infinite_pinned_skeleton_and_leg_tight}
-Let $M$ be a machine with $k$ work tapes, $C\ge1$ and $0<\alpha\le1$, and let $d\ge\max(d_0,\lceil8/\theta\rceil)$ with $d_0$ as in
+\formal{TightConstants.lean, MacroscopicSkeleton.lean}{obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight, obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight, obliviousLinTime_infinite_pinned_skeleton_and_leg_tight, linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg}
+Let $M$ be a machine with $k$ work tapes, $C\ge1$ and $0<\alpha\le1$, and let $d\ge\max(d_0,\lceil(8/\theta)^{1/2}\rceil)$ with $d_0$ as in
 \cref{thm:X}. Suppose $\mathrm{ObliviousLinTime}(M,d,C,T)$.
 \begin{enumerate}[label=(\alph*)]
 \item $1\le\Lambda^*$ and $2\Lambda^*\le H^*$, and the skeleton of the common trace at scale $\Lambda^*$ belongs to the explicit
 finite family of $k$-tuples of words of length at most $\Mmax$ in which some tape's word is crossing-capable.
 \item For every set $V_0$ of at least $\alpha L$ input positions there are a work tape $j$, whose skeleton is crossing-capable
-with at least nine letters and two turns, and a leg $r\le\Mmax$ such that every set separating $\Out(V_0)$ from $\CL^{j,r}$ has at
+with at least nine letters and two turns, and a leg $r<\Mmax$ such that every set separating $\Out(V_0)$ from $\CL^{j,r}$ has at
 least
 \[
-  \frac{\cE(M,C,\alpha)}{k(\Mmax+1)}\,\abs{V_0}
+  \frac{\cE(M,C,\alpha)}{k\Mmax}\,\abs{V_0}
 \]
 elements.
 \item If $\mathrm{ObliviousLinTime}(M,d,C,T_d)$ holds for all $d$ in an infinite set $S$, then there are one tuple of words, one tape
@@ -131,10 +142,14 @@ set of all input positions (with $\alpha=1$).
 \end{theorem}
 
 \begin{outline}
-(a) is \cref{lem:finite}(b) together with \cref{prop:capable}, since $\CL_{H^*}$ is non-empty by \cref{cor:many}. (b) By
-\cref{lem:legs} each step of $\CL_{H^*}$ lies in a slot $(j,r)$ with $r\le\Mmax$, and there are at most $k(\Mmax+1)$ slots. If every
-slot had a separating set smaller than the stated bound, their union would separate $\Out(V_0)$ from all of $\CL_{H^*}$
-(\lean{isMengerVertexCut_biUnion}) with fewer than $\cE\abs{V_0}$ elements, contradicting \cref{thm:X}. (c) The skeleton,
+(a) is \cref{lem:finite}(b) together with \cref{prop:capable}, since $\CL_{H^*}$ is non-empty by \cref{cor:many}. (b) Each
+step of $\CL_{H^*}$ that is the earlier end of a crossing revisit on tape $j$ lies in some leg $r$ of tape $j$'s skeleton, with $r$ at most
+its number of turns (\lean{legOfEpoch_le_macroTurns}); a word of at most $\Mmax$ letters has at most $\Mmax-1$ turns, so $r<\Mmax$ and
+there are at most $k\Mmax$ slots $(j,r)$. If every slot had a separating set smaller than the stated bound, their union would separate
+$\Out(V_0)$ from all of $\CL_{H^*}$ (\lean{isMengerVertexCut_biUnion}) with fewer than $\cE\abs{V_0}$ elements, contradicting
+\cref{thm:X}. The formal proof does this once, for any trace with $T\le C(L+1)$, $\theta L\ge8$ and a lower bound $c\abs{V_0}>0$ on the
+sets separating $\Out(V_0)$ from $\CL_{H^*}$ (\lean{linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg}); Theorem~S and
+the skeleton parts of Theorem~E are its instances. (c) The skeleton,
 tape and leg take finitely many values, independent of $d$, so one of them recurs infinitely often
 (\lean{exists_infinite_fiber_of_mapsTo_finset}).
 \end{outline}

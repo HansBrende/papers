@@ -49,25 +49,28 @@ transposes $d\times d$ matrices within $C(L+1)$ steps, and let $\alpha>0$. There
 depending only on $k$, the alphabet and state counts of~$M$, $C$ and~$\alpha$, such that for every $d\ge d_0$ the following
 holds. For every set $V_0$ of at least $\alpha L$ output positions, every set of steps that meets every dependency path from
 the output steps of $V_0$ to the macroscopic crossing steps has at least $c\abs{V_0}$ elements. By Menger's theorem, there are then
-$c\abs{V_0}$ vertex-disjoint dependency paths from these outputs into macroscopic crossings.
+$c\abs{V_0}$ vertex-disjoint dependency paths from these outputs into macroscopic crossings. The same holds, with $c$ lowered by
+$\eta/(\alpha\wval)$, for every oblivious machine that runs in linear time and transposes at least a $2^{-\eta L}$ fraction of the
+inputs correctly (\cref{cor:approx}).
 \item \textbf{Theorem~D, a dichotomy for all traces} (\cref{thm:D}). Theorem~X is the transposer case of a statement about
 arbitrary linear-time traces, with no hypothesis on what the machine computes: for every output set of size at least $\alpha L$,
 either the macroscopic crossings are reached with linear expansion, or a cheap separator, enlarged by a small guard, leaves a
-linear-size independent set in the cone relation. A separator cheaper than the independent set it leaves is impossible for a transposer
-(\cref{lem:acyclic-cost}).
+linear-size independent set in the cone relation. For an oblivious transposer, a separator cheaper than the independent set it leaves is
+impossible (\cref{lem:acyclic-cost}); on an $\eta$-heavy trace of any transposer this holds up to $\eta L$ (\cref{lem:frozen}).
 \item \textbf{Theorem~S, skeletons} (\cref{thm:S}). At scale $\theta L/4$ the walk of each work tape of a linear-time run is a
 word of at most $\Mmax=\lfloor16C/\theta\rfloor$ steps $\pm1$, so the coarse shapes of all runs come from an explicit finite
 family of $(2^{\Mmax+1}-1)^k$ tuples, independent of~$d$. For an oblivious linear-time transposer the shape is
-\emph{crossing-capable} (some tape turns at least twice at this scale with overlapping legs), and for every large output set the
-expansion of Theorem~X is carried by the crossing steps of a \emph{single coarsely monotone leg of a single tape}. Along infinitely many
+\emph{crossing-capable} (some tape turns at least twice at this scale with overlapping legs), and for every large output set a
+fixed fraction of the expansion of Theorem~X, smaller by a factor $k\Mmax$, is carried by the crossing steps of a
+\emph{single coarsely monotone leg of a single tape}. Along infinitely many
 sizes, one fixed shape, tape and leg serve for the set of all input positions.
 \item \textbf{Theorem~H, two long-range heads} (\cref{thm:H}). No machine that transposes in linear time with an $\eta$-heavy trace, for a
 small fixed $\eta$, has on that trace one unrestricted work head while every other work head keeps its revisits within a small fixed
 fraction of~$L$, whatever the input head does. Every such transposer, in particular every oblivious one, therefore has at least two work
-heads that return to cells after moving a fixed fraction of $L$ away; and for each work head, some set containing a fixed fraction of its
+heads that each return to cells linearly often after moving a fixed fraction of $L$ away; and for each work head, some set containing a fixed fraction of its
 outputs reaches long revisits off that head with linear expansion.
-\item \textbf{Theorem~E, adaptive machines} (\cref{thm:E}). The conclusion of Theorem~X holds for every $\eta$-heavy trace of an arbitrary
-linear-time transposer, for an explicit $\eta>0$. It holds on all heavy traces of the bit simulator of the fifteenth
+\item \textbf{Theorem~E, adaptive machines} (\cref{thm:E}). The conclusion of Theorem~X, with a slightly smaller expansion constant, holds
+for every $\eta$-heavy trace of an arbitrary linear-time transposer, for an explicit $\eta>0$. It holds on all heavy traces of the bit simulator of the fifteenth
 paper~\cite[Theorem~S]{HighRate2026} applied to any linear-time transposer; that simulator has the same tapes and work alphabet, runs in
 linear time, and its heavy traces carry all but a $2^{-\eta L}$ fraction of the inputs. Transferring the conclusion back to the original
 machine's own dependency DAG is open; every statement in this paper about the dependency DAG of a general machine assumes a heavy trace or
@@ -77,8 +80,9 @@ sets $A_0,A_1$ of rows, every set of steps that separates the input reads of the
 from rows $A_0$ to output rows $A_1$ has at least $(\abs{A_0}\abs{A_1}b-\eta L)/(\wval+1)$ elements, where $\wval$ is the number of bits of
 one step's value.
 \item \textbf{Class exclusions} (\cref{sec:classes}). Machines whose heads make boundedly many macroscopic phases, oblivious or adaptive with
-sublinear jitter, are excluded by an explicit native deficit (Theorems~B and~J); a fixed native deficit suffices in place of the half-rate
-hypothesis of the fourteenth paper's low-adaptivity corollary (Theorem~G and \cref{cor:G-low}); and machines with no free work head, bounded nesting load and
+sublinear jitter, are excluded by an explicit native deficit (Theorems~B and~J); a fixed native deficit, for each machine on its own
+simulators, suffices in place of the half-rate hypothesis of the fourteenth paper's low-adaptivity corollary (Theorem~G and
+\cref{cor:G-low}); and machines with no free work head, bounded nesting load and
 boundedly many scales are excluded by a scale-gap pigeonhole (Theorem~Q). \Cref{app:catalogue} lists explicit schedule families excluded
 by these theorems and by certificates, with proof sketches.
 \end{itemize}
@@ -96,7 +100,7 @@ polynomial running time for adaptive ones (\cref{cor:subcritical}). The cascades
 \paragraph{Constants.} The constants of Theorems~X, D and~S are explicit. They are polynomial in the time constant $C$, in
 $1/\alpha$ and in the value width $\wval$, and singly exponential in the number $k$ of work tapes. For two work tapes, $C=\alpha=1$ and
 $\wval=8$, the expansion constant of Theorem~X is about $5.8\cdot10^{-6}$, its threshold is $\theta\approx1.8\cdot10^{-9}$, and it
-applies from $d\approx1.1\cdot10^9$ on; \cref{sec:constants} gives the formulas. The constants of Theorem~H are polynomial in the
+applies from $d=90953$ on; \cref{sec:constants} gives the formulas. The constants of Theorem~H are polynomial in the
 time constant and the value width, and those of Theorem~Q come from a compactness argument and are not explicit. The constants
 come from the proofs: on the schedules we measured, the expansion ratio was exactly~$1$ at every tested threshold up to $L/2$
 (numerically, at $d\le128$; \cref{rem:numerics-crossings}).

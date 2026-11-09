@@ -8,8 +8,9 @@ import Mathlib.Data.Fintype.Pi
 Discretizes each work-tape walk at spatial scale `Λ` into milestones and a sign word (`milestones`,
 `tapeSkeleton`, `traceSkeletonTuple`), proves confinement and finiteness (`epochGrid_confines_and_exact`,
 `card_boundedSkeletonTuple`), characterizes crossing-capable skeletons (`IsScaleFreeCrossingCapable`,
-`isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty`), and shows that macroscopic revisits cross
-leg boundaries (`legOfEpoch_lt_of_isHop_gt2H`, `legCrossingLowers`).
+`isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty`), shows that macroscopic revisits cross
+leg boundaries (`legOfEpoch_lt_of_isHop_gt2H`, `legCrossingLowers`), and proves the single-leg reduction
+of Theorem S on any linear-time trace (`linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg`).
 -/
 
 set_option autoImplicit false
@@ -499,15 +500,15 @@ def traceSkeletonTuple {k : ℕ} (τ₀ : Trace k) (T Λ : ℕ) : Fin k → List
 noncomputable def skeletonMaxLen (C θ : ℝ) : ℕ :=
   ⌊16 * C / θ⌋₊
 
-/-- **Linear-Time Trace Skeleton Finiteness Theorem (Lemma 6.3(b)).** For every `k`-tape trace `τ₀` with `(T : ℝ) ≤ C * (L + 1)` (`L = d * d * b`, `d, b ≥ 1`, `C ≥ 1`)
-and every macroscopic scale `θ > 0` (`with d ≥ ⌈8 / θ⌉₊`), setting `Λ := ⌊(θ / 4) * L⌋₊` gives:
+/-- **Linear-Time Trace Skeleton Finiteness Theorem (Lemma 6.3(b)).** For every `k`-tape trace `τ₀` with `(T : ℝ) ≤ C * (L + 1)` (`L = d * d * b`, `C ≥ 1`)
+and every macroscopic scale `θ > 0` with `θ L ≥ 8` (for instance `b ≥ 1` and `d ≥ ⌈√(8 / θ)⌉₊`, since `L ≥ d²`),
+setting `Λ := ⌊(θ / 4) * L⌋₊` gives:
 1. `1 ≤ Λ`,
 2. every tape `j : Fin k` has `macroTurns (traceSkeletonTuple τ₀ T Λ j) ≤ skeletonMaxLen C θ`, and
 3. `traceSkeletonTuple τ₀ T Λ ∈ BoundedSkeletonTuple k (skeletonMaxLen C θ)` (`finitely many types
    bounded purely by (k, C, θ) and independent of d!`). -/
 theorem traceSkeletonTuple_mem_boundedSkeletonTuple {k T d b : ℕ} {C θ : ℝ} (τ₀ : Trace k)
-    (hd1 : 1 ≤ d) (hb1 : 1 ≤ b) (hC : 1 ≤ C) (hθ : 0 < θ)
-    (hd_θ : ⌈8 / θ⌉₊ ≤ d)
+    (hC : 1 ≤ C) (hθ : 0 < θ) (hθL : 8 ≤ θ * ((d * d * b : ℕ) : ℝ))
     (hT : (T : ℝ) ≤ C * (((d * d * b : ℕ) : ℝ) + 1)) :
     let L := d * d * b
     let Λ := ⌊(θ / 4) * (L : ℝ)⌋₊
@@ -515,18 +516,7 @@ theorem traceSkeletonTuple_mem_boundedSkeletonTuple {k T d b : ℕ} {C θ : ℝ}
       (∀ j : Fin k, macroTurns (traceSkeletonTuple τ₀ T Λ j) ≤ skeletonMaxLen C θ) ∧
       traceSkeletonTuple τ₀ T Λ ∈ BoundedSkeletonTuple k (skeletonMaxLen C θ) := by
   intro L Λ
-  have hL_ge_d : (d : ℝ) ≤ (L : ℝ) := by
-    have : d ≤ d * d * b := by
-      calc d = d * 1 * 1 := by ring
-        _ ≤ d * d * b := Nat.mul_le_mul (Nat.mul_le_mul le_rfl hd1) hb1
-    exact_mod_cast this
-  have h8_le_θd : 8 ≤ θ * (d : ℝ) := by
-    have hge : 8 / θ ≤ (d : ℝ) := (Nat.le_ceil _).trans (by exact_mod_cast hd_θ)
-    have hmul := (div_le_iff₀ hθ).mp hge
-    linarith
-  have h8_le_θL : 8 ≤ θ * (L : ℝ) := by
-    calc (8 : ℝ) ≤ θ * (d : ℝ) := h8_le_θd
-      _ ≤ θ * (L : ℝ) := mul_le_mul_of_nonneg_left hL_ge_d hθ.le
+  have h8_le_θL : 8 ≤ θ * (L : ℝ) := hθL
   have h2_le_q : (2 : ℝ) ≤ (θ / 4) * (L : ℝ) := by linarith
   have hΛ_ge_2 : 2 ≤ Λ := Nat.le_floor h2_le_q
   have hΛ_pos : 1 ≤ Λ := by omega
@@ -535,9 +525,10 @@ theorem traceSkeletonTuple_mem_boundedSkeletonTuple {k T d b : ℕ} {C θ : ℝ}
     linarith
   have hΛ_ge_θ8 : (θ / 8) * (L : ℝ) ≤ (Λ : ℝ) := by linarith
   have hL1 : (1 : ℝ) ≤ (L : ℝ) := by
-    have : 1 ≤ d := hd1
-    have : (1 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd1
-    linarith
+    rcases Nat.eq_zero_or_pos L with hL0 | hL_pos
+    · rw [hL0, Nat.cast_zero, mul_zero] at h8_le_θL
+      linarith
+    · exact_mod_cast hL_pos
   have hT_2CL : (T : ℝ) ≤ 2 * C * (L : ℝ) := by
     have hCL : C ≤ C * (L : ℝ) := by simpa using mul_le_mul_of_nonneg_left hL1 (by linarith)
     change (T : ℝ) ≤ 2 * C * (L : ℝ)
@@ -1428,6 +1419,141 @@ theorem exists_infinite_fiber_of_mapsTo_finset {α : Type*} {S : Set ℕ} (hS : 
     F.finite_toSet.biUnion fun x hx => hall x hx
   refine hS (hfin.subset fun d hd => ?_)
   exact Set.mem_biUnion (hf d hd) ⟨hd, rfl⟩
+
+/-- **Theorem S on any trace (`one-slot pigeonhole`):** let `τ₀` be a `k`-tape trace with
+`T ≤ C (L + 1)` (`L = d * d * b`, `C ≥ 1`), `θ > 0` and `θ L ≥ 8`, and suppose every Menger vertex
+cut from `u₀(V₀)` to `crossingLowerEtaSteps τ₀ T H_* 1 T` (`H_* = ⌊θ L⌋₊`) has at least `c |V₀|`
+elements, where `c |V₀| > 0`. At scale `Λ_* = ⌊θ L / 4⌋₊`, with `M_max = skeletonMaxLen C θ`:
+1. `1 ≤ Λ_*`, `2 Λ_* ≤ H_*`, and the skeleton tuple is crossing-capable with words of length `≤ M_max`;
+2. some tape `j_*` with a crossing-capable skeleton and some leg `r_* < M_max` carry Menger expansion
+   `c / (k M_max)`. A slot `(j, r)` has `r ≤ macroTurns ≤ length - 1 < M_max`, so there are at most
+   `k M_max` slots, and a cheap cut on every slot would give a cheap cut of `H_*`-crossings. -/
+theorem linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg {k T d b : ℕ} {C θ c : ℝ}
+    (τ₀ : Trace k) (hC : 1 ≤ C) (hθ : 0 < θ) (hθL : 8 ≤ θ * ((d * d * b : ℕ) : ℝ))
+    (hT : (T : ℝ) ≤ C * (((d * d * b : ℕ) : ℝ) + 1))
+    (V₀ : Finset (Fin (d * d * b))) (hcV : 0 < c * (V₀.card : ℝ))
+    (hmenger : ∀ B : Finset ℕ,
+      IsMengerVertexCut τ₀.work T (V₀.image fun q => appendTime τ₀ T (tposOf d b q).1)
+        (crossingLowerEtaSteps τ₀ T ⌊θ * ((d * d * b : ℕ) : ℝ)⌋₊ 1 T) B →
+      c * (V₀.card : ℝ) ≤ (B.card : ℝ)) :
+    let L := d * d * b
+    let H_star := ⌊θ * (L : ℝ)⌋₊
+    let Λ_star := ⌊(θ / 4) * (L : ℝ)⌋₊
+    let M_max := skeletonMaxLen C θ
+    1 ≤ Λ_star ∧ 2 * Λ_star ≤ H_star ∧
+      traceSkeletonTuple τ₀ T Λ_star ∈ CrossingCapableSkeletonTuple k M_max ∧
+      ∃ (j_star : Fin k) (r_star : ℕ),
+        IsScaleFreeCrossingCapable (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
+        2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
+        9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
+        r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
+        r_star < M_max ∧
+        ∀ B : Finset ℕ,
+          IsMengerVertexCut τ₀.work T (V₀.image fun q => appendTime τ₀ T (tposOf d b q).1)
+            (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
+          (c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
+  intro L H_star Λ_star M_max
+  obtain ⟨hΛ1, -, hmem_bdd⟩ := traceSkeletonTuple_mem_boundedSkeletonTuple τ₀ hC hθ hθL hT
+  have hlen_le : ∀ j, (traceSkeletonTuple τ₀ T Λ_star j).length ≤ M_max :=
+    mem_boundedSkeletonTuple.mp hmem_bdd
+  have h2Λ_le_H : 2 * Λ_star ≤ H_star := by
+    apply Nat.le_floor
+    have hΛ_le : (Λ_star : ℝ) ≤ (θ / 4) * (L : ℝ) := Nat.floor_le (by positivity)
+    push_cast; linarith
+  set Src := V₀.image fun q => appendTime τ₀ T (tposOf d b q).1
+  let Slots : Finset (Fin k × ℕ) :=
+    ((univ : Finset (Fin k)) ×ˢ range M_max).filter fun jr =>
+      IsScaleFreeCrossingCapable (traceSkeletonTuple τ₀ T Λ_star jr.1) ∧
+      jr.2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star jr.1)
+  have hcover : crossingLowerEtaSteps τ₀ T H_star 1 T ⊆
+      Slots.biUnion (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) := by
+    intro v hv
+    rw [crossingLowerEtaSteps_eq_biUnion_tapeCrossingLowers] at hv
+    obtain ⟨j, _, hv_tape⟩ := mem_biUnion.mp hv
+    have hcap_j : IsCrossingCapableSkeleton H_star Λ_star (tapeSkeleton (τ₀.work j) T Λ_star) :=
+      isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty (τ₀.work_isWalk j)
+        (τ₀.work_zero j) hΛ1 ⟨v, hv_tape⟩
+    obtain ⟨hsf_j, _⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_j
+    let r := legOfEpoch (tapeSkeleton (τ₀.work j) T Λ_star) (epochIdx (τ₀.work j) Λ_star v)
+    have hr_turns : r ≤ macroTurns (tapeSkeleton (τ₀.work j) T Λ_star) :=
+      legOfEpoch_le_macroTurns _ _
+    have hr_max : r < M_max := by
+      have h2 := two_le_macroTurns_of_isScaleFreeCrossingCapable hsf_j
+      have hpred := macroTurns_le_pred (tapeSkeleton (τ₀.work j) T Λ_star)
+      have hlen := hlen_le j
+      unfold traceSkeletonTuple at h2 hlen
+      omega
+    refine mem_biUnion.mpr ⟨(j, r), ?_, mem_filter.mpr ⟨hv_tape, rfl⟩⟩
+    exact mem_filter.mpr ⟨mem_product.mpr ⟨mem_univ j, mem_range.mpr hr_max⟩, hsf_j, hr_turns⟩
+  have hSlots_ne : Slots.Nonempty := by
+    by_contra hemp
+    rw [Finset.not_nonempty_iff_eq_empty] at hemp
+    have hdst_empty : crossingLowerEtaSteps τ₀ T H_star 1 T = ∅ := by
+      rw [← subset_empty]; exact hcover.trans (by simp [hemp])
+    have h0 := hmenger ∅ (by rw [hdst_empty]; exact isMengerVertexCut_dst_self _ _ ∅)
+    simp only [card_empty, Nat.cast_zero] at h0
+    linarith
+  obtain ⟨⟨j₀, r₀⟩, hj₀_mem⟩ := hSlots_ne
+  have hmem_cap : traceSkeletonTuple τ₀ T Λ_star ∈ CrossingCapableSkeletonTuple k M_max :=
+    mem_filter.mpr ⟨hmem_bdd, j₀, (mem_filter.mp hj₀_mem).2.1⟩
+  have hk : (0 : ℝ) < (k : ℝ) := by exact_mod_cast Fin.pos j₀
+  have hM : (0 : ℝ) < (M_max : ℝ) := by
+    exact_mod_cast Nat.lt_of_le_of_lt (Nat.zero_le r₀)
+      (mem_range.mp (mem_product.mp (mem_filter.mp hj₀_mem).1).2)
+  have hdenom_pos : (0 : ℝ) < (k : ℝ) * (M_max : ℝ) := mul_pos hk hM
+  have hSlots_card : (Slots.card : ℝ) ≤ (k : ℝ) * (M_max : ℝ) := by
+    have hle : Slots.card ≤ k * M_max :=
+      (card_le_card (filter_subset _ _)).trans (by simp [card_product])
+    exact_mod_cast hle
+  have hexists_slot : ∃ jr ∈ Slots, ∀ B : Finset ℕ,
+      IsMengerVertexCut τ₀.work T Src (legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) B →
+      (c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
+    by_contra hall_cheap
+    push Not at hall_cheap
+    choose B_of hB_cut hB_lt using fun jr : {x // x ∈ Slots} => hall_cheap jr.1 jr.2
+    let B_u := Slots.attach.biUnion fun jr => B_of jr
+    have hcut_bu : IsMengerVertexCut τ₀.work T Src
+        (Slots.attach.biUnion fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_u :=
+      isMengerVertexCut_biUnion Slots.attach Src
+        (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_of
+        (fun jr _ => hB_cut jr)
+    have hcut_tot : IsMengerVertexCut τ₀.work T Src (crossingLowerEtaSteps τ₀ T H_star 1 T) B_u := by
+      intro π t₀ hsrc hdep hlast
+      obtain ⟨jr, hjrS, hmem_jr⟩ := mem_biUnion.mp (hcover hlast)
+      exact hcut_bu π t₀ hsrc hdep (mem_biUnion.mpr ⟨⟨jr, hjrS⟩, mem_attach _ _, hmem_jr⟩)
+    have hbu_card : (B_u.card : ℝ) ≤ ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) := by
+      exact_mod_cast card_biUnion_le
+    have hsum_lt : ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) <
+        ∑ _jr ∈ Slots.attach, (c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ) :=
+      sum_lt_sum_of_nonempty (Slots.attach_nonempty_iff.mpr ⟨⟨j₀, r₀⟩, hj₀_mem⟩)
+        (fun jr _ => hB_lt jr)
+    have hconst_sum : (∑ _jr ∈ Slots.attach, (c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ)) ≤
+        c * (V₀.card : ℝ) := by
+      rw [sum_const, card_attach, nsmul_eq_mul]
+      have hc_nn : 0 ≤ (c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ) := by
+        rw [div_mul_eq_mul_div]; exact div_nonneg hcV.le hdenom_pos.le
+      calc (Slots.card : ℝ) * ((c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ))
+          ≤ ((k : ℝ) * (M_max : ℝ)) * ((c / ((k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ)) :=
+            mul_le_mul_of_nonneg_right hSlots_card hc_nn
+        _ = c * (V₀.card : ℝ) := by field_simp [hk.ne', hM.ne']
+    have htot_lb := hmenger B_u hcut_tot
+    linarith
+  obtain ⟨⟨j_star, r_star⟩, hjr_mem, hjr_exp⟩ := hexists_slot
+  obtain ⟨hprod_mem, hsf_star, hr_turns⟩ := mem_filter.mp hjr_mem
+  have hr_max : r_star < M_max := mem_range.mp (mem_product.mp hprod_mem).2
+  have hleg_ne : (legCrossingLowers τ₀ T H_star Λ_star j_star r_star).Nonempty := by
+    by_contra hemp
+    rw [Finset.not_nonempty_iff_eq_empty] at hemp
+    have h0 := hjr_exp ∅ (by rw [hemp]; exact isMengerVertexCut_dst_self _ _ ∅)
+    simp only [card_empty, Nat.cast_zero] at h0
+    rw [div_mul_eq_mul_div] at h0
+    linarith [div_pos hcV hdenom_pos]
+  obtain ⟨v_w, hv_w⟩ := hleg_ne
+  have hcap_star := isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty
+    (τ₀.work_isWalk j_star) (τ₀.work_zero j_star) hΛ1 ⟨v_w, (mem_filter.mp hv_w).1⟩
+  obtain ⟨_, hlen9⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_star
+  exact ⟨hΛ1, h2Λ_le_H, hmem_cap, j_star, r_star, hsf_star,
+    two_le_macroTurns_of_isScaleFreeCrossingCapable hsf_star, hlen9, hr_turns, hr_max, hjr_exp⟩
 
 end OpenTerritoryReduction
 

@@ -5,9 +5,9 @@ Hans Brende, Claude Opus 5.5 (Anthropic) and Gemini 4 Argon (Google DeepMind), N
 - [`paper/`](paper/): the paper ([`main.pdf`](paper/main.pdf)) and its LaTeX sources. License: CC BY 4.0
   ([`paper/LICENSE`](paper/LICENSE)).
 - [`lean/`](lean/): the Lean 4 formalization (`NativeRelations`, Lean and Mathlib v4.34.1). License: Apache 2.0
-  ([`lean/LICENSE`](lean/LICENSE)). It requires the libraries of the fourteenth and fifteenth papers by relative path, and through
-  them the earlier libraries of the series and [`lean-machine/`](../lean-machine/), so the sibling directories of this repository
-  must be in place. [`lean/README.md`](lean/README.md) is a guide to its modules.
+  ([`lean/LICENSE`](lean/LICENSE)). It requires the fifteenth paper's library by a relative path, and through it the fourteenth
+  paper's library, the earlier libraries of the series it builds on and [`lean-machine/`](../lean-machine/), so the sibling
+  directories of this repository must be in place. [`lean/README.md`](lean/README.md) is a guide to its modules.
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean` from the paper's
   LaTeX sources; [`tools/print_constants.py`](tools/print_constants.py) prints the explicit constants of Sections 4, 5.1 and 6.3.
 
@@ -33,45 +33,59 @@ declarations and file; declarations below are in the namespace `NativeRelations`
   elements at all large d, with explicit θ, c > 0 (`thetaMacro_tight`, `cE_menger_tight`) polynomial in C, 1/α and the value width and
   singly exponential in the number of work tapes.
 - **Theorem D, bridge and time pullback (`TightConstants.lean`, `CrossingBridge.lean`, `MacroscopicThreshold.lean`):**
+  `linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight` and its dichotomy form
   `linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight` (first forms `linearTimeTrace_crossingLowerGT2H_menger_dichotomy` and
   `linearTimeTrace_crossingLowerGT2H_ballSep_dichotomy`), built on the common-refinement time pullback
   `timePullback_commonRefinement_mais_tight` (first form `timePullback_blockCut_mais`) and the single-cell guarded bridge
   `exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H` (first form `bridge_exists_isAcyclicIn_crossingLowerH`): on every
-  linear-time trace, either macroscopic crossings are reached with linear expansion, or a cheap separator plus an O(H)-step guard leaves a
-  linear-size independent set in the cone relation, which no transposer can afford (`obliviousLinTime_coneSystem_isAcyclicIn_card_le`).
+  linear-time trace, a separator of at most c|V₀| steps between the outputs of V₀ and the macroscopic crossings (any c < 1), plus an
+  O(H)-step guard, leaves a linear-size independent set in the cone relation, which an oblivious transposer can afford only if the
+  separator and the guard carry at least as many bits as the set has elements
+  (`obliviousLinTime_coneSystem_isAcyclicIn_card_le`); Theorem X follows through `linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight`.
 - **Theorem S (skeletons and single-leg localization; `MacroscopicSkeleton.lean`, `TightConstants.lean`):**
   `obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight`,
-  `obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight` and `obliviousLinTime_infinite_pinned_skeleton_and_leg_tight`.
-  At scale ⌊θL/4⌋ the run's coarse skeleton lies in an explicit finite family independent of d, some tape's word is crossing-capable, and
-  the expansion of Theorem X is carried by a single coarsely monotone leg of a single tape.
+  `obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight` and `obliviousLinTime_infinite_pinned_skeleton_and_leg_tight`,
+  all instances of the trace-level `linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg`. At scale ⌊θL/4⌋ the run's coarse skeleton lies in an explicit finite family independent of d, some tape's word is crossing-capable, and
+  a fixed fraction of the expansion of Theorem X is carried by a single coarsely monotone leg of a single tape.
 - **Theorem H (two long-range heads; `OneFreeHeadSmallExcursion.lean`):** `oneFreeHead_smallExcursion_excludes`,
   `twoMacroscopicHeads_of_linearTimeTransposer`, `twoMacroscopicHeads_of_oblivious_linearTimeTransposer`,
-  `offCarrier_vertexExpansion_of_linearTimeTransposer` and `offCarrier_vertexExpansion_of_obliviousLinTime` (with Corollary 4.2 in the
-  same file). Every oblivious or low-adaptivity linear-time transposer has at least two work heads that make revisits of linear excursion,
+  `twoHeads_manyLongRevisits_of_linearTimeTransposer`, `twoHeads_manyLongRevisits_of_oblivious_linearTimeTransposer`,
+  `offCarrier_longRevisits_card_ge`, `offCarrier_vertexExpansion_of_linearTimeTransposer` and `offCarrier_vertexExpansion_of_obliviousLinTime` (with Corollary 4.2 in the
+  same file). Every oblivious or low-adaptivity linear-time transposer has at least two work heads that each make linearly many revisits of linear excursion,
   with polynomial constants.
 - **Theorem E (adaptive heavy traces and simulators; `SimulatorBridge.lean`, `TightConstants.lean`):**
-  `frozenTrace_macroscopicCrossingLowers_menger_lb_tight`, `frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight` and
-  `simulator_heavyTrace_expansion_and_skeleton_tight` (alongside `adaptive_simulator_heavyTrace_macroscopicExpansion_tight` and
-  `simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight`). The conclusions of Theorems X and S hold on every
-  η-heavy trace (η ≤ (α/8)ρ₀) of an arbitrary linear-time transposer, and simultaneously on every 2η*-heavy trace of the fifteenth
-  paper's bit simulator of any linear-time transposer.
+  `frozenTrace_crossingLowerGT2H_menger_lb_tight`, `frozenTrace_macroscopicCrossingLowers_menger_lb_tight`,
+  `frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight` and `simulator_heavyTrace_expansion_and_skeleton_tight` (alongside
+  `adaptive_simulator_heavyTrace_macroscopicExpansion_tight`). On every η-heavy trace of an arbitrary linear-time transposer the
+  separation bound of Theorem X holds with expansion constant (ρ₀/2 − η/α)/w_val, and for η ≤ (α/8)ρ₀ the conclusion of Theorem X
+  and parts (a) and (b) of Theorem S hold with (3/8)ρ₀/w_val; the same conclusions hold simultaneously on every 2η*-heavy trace of the
+  fifteenth paper's bit simulator of any linear-time transposer.
+- **Approximate transposers (`SimulatorBridge.lean`, `TightConstants.lean`):** `correctSubset_isAcyclicIn_coneSystem_deficit_le`,
+  `correctSubset_crossingLowerGT2H_menger_lb_tight`, `obliviousOn_correctSubset_macroscopicCrossingLowers_menger_lb_tight` and
+  `card_correctInputs_le_of_coneDeficit` (Lemma 3.6 and Corollaries 8.4 and 8.5). The fibre argument needs correctness only on the
+  inputs it counts: Theorem X holds, with expansion constant c_E − η/(αw_val), for every oblivious linear-time machine that transposes at
+  least a 2^(−ηL) fraction of the inputs correctly, and for at most 2^(ηL) traces with certificate deficit δL, the correctly transposed inputs that
+  follow them are at most a 2^(−(δ−η)L) fraction of all inputs.
 - **Lemma R and the colouring criterion (`TranspositionCut.lean`):** `frozenTrace_bichromatic_tposOf_cut_ge`,
   `oblivious_bichromatic_tposOf_cut_ge` and `frozenTrace_bichromaticColoring_wave_cut_ge`. Every cut between the reads of input rows A₀
   and the outputs they feed into output rows A₁ carries at least (|A₀||A₁|b − ηL)/(w_val + 1) steps.
-- **Class exclusions:** bounded macroscopic phases (`boundedMacroBank_has_crux`, `boundedMacroBank_excludes` in `MacroBankCrux.lean`;
-  suffix forms `suffixMacroBank_has_crux`, `suffixMacroBank_excludes` in `SuffixMassCrux.lean`); adaptive jittered phases
-  (`native_machine_preserves_jitterBM`, `nativeGapBound_of_adaptiveJitterBM`, `adaptiveJitterBM_excludes_transposesAt`,
+- **Class exclusions:** bounded macroscopic phases (`boundedMacroBank_has_crux`, `boundedMacroBank_excludes` and the suffix forms
+  `suffixMacroBank_has_crux`, `suffixMacroBank_excludes` in `SuffixMassCrux.lean`, with the class in `MacroBankCrux.lean`); adaptive
+  jittered phases (`native_machine_preserves_suffixJitterBM`, `nativeGapBound_of_adaptiveJitterBM`, `adaptiveJitterBM_excludes_transposesAt`,
   `adaptiveJitterBM_not_linearTimeTransposer`, `adaptiveSuffixJitterBM_excludes_transposesAt`,
-  `adaptiveSuffixJitterBM_not_linearTimeTransposer` in `JitterMacroBank.lean` and `AdaptiveSuffixJitterBM.lean`); the native gap
-  criterion and its low-adaptivity corollary (`nativeGapBound_half_iff`, `native_gap_tests_exclude_linear`,
-  `native_gap_exists_exclude_linear`, `fSecond_native_gap`, `native_gap_exclusion_of_trace_support` in `NativeGapCriterion.lean`); and the
+  `adaptiveSuffixJitterBM_not_linearTimeTransposer` in `AdaptiveSuffixJitterBM.lean`, with the class in `JitterMacroBank.lean`); the native gap
+  criterion, machine by machine and in its uniform form, and its low-adaptivity corollary (`nativeGapBound_half_iff`,
+  `native_gap_excludes_transposesAt`, `native_gap_excludes_linear`, `native_gap_tests_exclude_linear`, `native_gap_exists_exclude_linear`,
+  `fSecond_native_gap`, `native_gap_exclusion_of_trace_support` in `NativeGapCriterion.lean`); and the
   scale-gap pigeonhole for machines without a free work head (`zeroFreeHead_qWindow_excludes`,
   `zeroFreeHead_entries_qWindow_excludes`, `zeroFreeHead_qWindow_oblivious_excludes` in `ZeroFreeHeadQWindow.lean`).
 - **Pass counting with coarse passes (`CoarseGroupedPass.lean`):** `theoremP_coarseWorkspace_grouped_on_bits`,
   `theoremPprime_coarseWorkspace_grouped_on_bits`, `oblivious_singleScale_coarseWorkspace_closed_lb` and
   `adaptive_singleScale_coarseWorkspace_closed_lb` (Theorem 10.3), and `subcriticalPhaseProfile_oblivious_excludes`,
-  `subcriticalDimPhaseProfile_oblivious_excludes` and `subcriticalPhaseProfile_adaptive_polyTime_excludes` (Corollary 10.4), together with
-  the θ = 2 grouped-inequality non-exclusion (`groupedBound_thetaTwo_not_excluded_above_half`,
+  `subcriticalDimPhaseProfile_oblivious_excludes` and `subcriticalPhaseProfile_adaptive_polyTime_excludes` (Corollary 10.4); boundedly
+  many coarse passes with amplitudes and workspaces up to a small fixed fraction of L (`boundedCoarsePasses_oblivious_excludes`,
+  `boundedCoarsePasses_adaptive_polyTime_excludes` and their o(L) forms, Corollary 10.5); and the limit ½ of the grouped inequality
+  (`groupedBound_not_excluded_above_half`, and at θ = 2 `groupedBound_thetaTwo_not_excluded_above_half`,
   `perfectUnshuffleSlopeProduct_tendsto_half`, `unshuffleStep_iter_transpose`).
 
 Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets) and Corollary 7.3 (scale-separated

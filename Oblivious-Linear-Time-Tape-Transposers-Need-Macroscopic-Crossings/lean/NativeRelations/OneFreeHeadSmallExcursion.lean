@@ -6,11 +6,13 @@ import DirectedRecovery.StorageCode
 # Two Long-Range Work Heads and Off-Carrier Expansion (Theorem H)
 
 Defines vertex cuts (`IsMengerVertexCut`), proves the slab-chunk trapping inequality
-(`frozenTrace_chunk_deficit_le`, `depPath_trapped_in_chunk`), and establishes Theorem H
-(`oneFreeHead_smallExcursion_excludes`, `twoMacroscopicHeads_of_linearTimeTransposer`,
-`twoMacroscopicHeads_of_oblivious_linearTimeTransposer`,
-`offCarrier_vertexExpansion_of_linearTimeTransposer`, `offCarrier_vertexExpansion_of_obliviousLinTime`)
-and Corollary 4.2 (`oneFreeHead_sublinearExcursion_excludes`, `atMostOneWorkTape_lowAdaptivity_excludes`).
+(`frozenTrace_subpop_deficit_le`, `depStep_trapped_in_chunk`), and establishes Theorem H: part (c)
+(`offCarrier_vertexExpansion_of_linearTimeTransposer`, `offCarrier_vertexExpansion_of_obliviousLinTime`),
+and parts (a) (`oneFreeHead_smallExcursion_excludes`) and (b)
+(`twoMacroscopicHeads_of_linearTimeTransposer`, `twoMacroscopicHeads_of_oblivious_linearTimeTransposer`,
+and the counting forms `twoHeads_manyLongRevisits_of_linearTimeTransposer`,
+`twoHeads_manyLongRevisits_of_oblivious_linearTimeTransposer`) as corollaries of (c); and Corollary 4.2
+(`oneFreeHead_sublinearExcursion_excludes`, `atMostOneWorkTape_lowAdaptivity_excludes`).
 -/
 
 set_option autoImplicit false
@@ -36,15 +38,35 @@ noncomputable def slabSmallExcursion (c β : ℝ) (k : ℕ) : ℝ :=
   slabAutonomyEps c β /
     (4 * β * ((slabWallCap c β : ℝ) + 2) * ((max 1 (2 * k) : ℕ) : ℝ))
 
-/-- Explicit dimension threshold `d_0(c, β, k)` of Theorem 4.1 (Theorem H). -/
-noncomputable def slabDimThreshold (c β : ℝ) (k : ℕ) : ℕ :=
-  max
-    (max ⌈80 * β * c⌉₊ ⌈20 * ((slabWallCap c β : ℝ) + 2) / slabAutonomyEps c β⌉₊)
-    (max ⌈16 * β * ((slabWallCap c β : ℝ) + 2) * (k : ℝ) / slabAutonomyEps c β⌉₊ 10)
+/-- Explicit dimension threshold `d_H(c, β) = 160 (N_wall + 1) (N_wall + 2) = 20 (N_wall + 2) / ε_*` of
+Theorem 4.1 (Theorem H). It does not depend on the number of work tapes. -/
+noncomputable def slabDimThreshold (c β : ℝ) : ℕ :=
+  160 * (slabWallCap c β + 1) * (slabWallCap c β + 2)
 
 theorem slabAutonomyEps_pos (c β : ℝ) : 0 < slabAutonomyEps c β := by
   unfold slabAutonomyEps
   positivity
+
+theorem ten_le_slabDimThreshold (c β : ℝ) : 10 ≤ slabDimThreshold c β := by
+  unfold slabDimThreshold
+  nlinarith [Nat.zero_le (slabWallCap c β)]
+
+/-- `d_H = 20 (N_wall + 2) / ε_*`, the form in which the threshold enters the error budget. -/
+theorem slabDimThreshold_cast_eq (c β : ℝ) :
+    (slabDimThreshold c β : ℝ) = 20 * ((slabWallCap c β : ℝ) + 2) / slabAutonomyEps c β := by
+  unfold slabDimThreshold slabAutonomyEps
+  push_cast
+  field_simp
+  ring
+
+/-- `80 β c ≤ d_H`, so the slab width `⌈L / (80 β c)⌉` is positive once `d ≥ d_H`. -/
+theorem eighty_mul_le_slabDimThreshold {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) :
+    80 * β * c ≤ (slabDimThreshold c β : ℝ) := by
+  have hN : 160 * β * c ^ 2 < (slabWallCap c β : ℝ) + 1 := Nat.lt_floor_add_one _
+  have hN0 : (0 : ℝ) ≤ (slabWallCap c β : ℝ) := Nat.cast_nonneg _
+  unfold slabDimThreshold
+  push_cast
+  nlinarith [mul_le_mul_of_nonneg_left hc (by positivity : (0 : ℝ) ≤ 80 * β * c)]
 
 theorem slabSmallExcursion_pos {c β : ℝ} (hβ : 0 < β) (k : ℕ) :
     0 < slabSmallExcursion c β k := by
@@ -696,60 +718,13 @@ theorem exists_slab_chunk_dichotomy {L T : ℕ} (hL : 2 ≤ L) {m : ℕ → ℤ}
           Nat.mul_le_mul_right C_card (Nat.mul_le_mul_left 2 hQ_mul_H)
       _ = 4 * T * C_card := by ring
 
-/-! ## §4. Bounded-Excursion Crossing Count and `DepDag` Cone Trapping -/
+/-! ## §4. Slab-Chunk Genie and `DepDag` Cone Trapping -/
 
 /-- Lower endpoints `p ≤ θ` of long hops `(p, u)` of `y` before `T` that strictly pass `θ`
 (`θ < u < T`). -/
 noncomputable def crossingLowers (y : ℕ → ℤ) (T θ : ℕ) : Finset ℕ := by
   classical
   exact (Finset.range T).filter fun p => p ≤ θ ∧ ∃ u, θ < u ∧ IsHop y T p u
-
-/-- **Bounded-excursion crossing bound**:
-under `HopExcursionLEOn y 0 T H`, at most `2 * H + 1` long hops `(p, u)` satisfy `p ≤ θ < u < T`,
-proved via `JitterMacroBank.card_subset_crossingHops_le` (which wraps `hop_upper_injOn`). -/
-theorem card_crossingLowers_le {y : ℕ → ℤ} {T H : ℕ} (hhop_le : HopExcursionLEOn y 0 T H)
-    (θ : ℕ) :
-    (crossingLowers y T θ).card ≤ 2 * H + 1 := by
-  classical
-  let u_of : ℕ → ℕ := fun p =>
-    if h : ∃ u, θ < u ∧ IsHop y T p u then Classical.choose h else 0
-  have hu_spec : ∀ p ∈ crossingLowers y T θ,
-      p ≤ θ ∧ θ < u_of p ∧ IsHop y T p (u_of p) := by
-    intro p hp
-    obtain ⟨_, hpθ, hex⟩ := Finset.mem_filter.mp hp
-    have hch := Classical.choose_spec hex
-    simpa only [u_of, hex, ↓reduceDIte] using ⟨hpθ, hch.1, hch.2⟩
-  have hinj : Set.InjOn u_of (crossingLowers y T θ : Set ℕ) := by
-    intro p₁ hp₁ p₂ hp₂ heq
-    obtain ⟨_, _, hh₁⟩ := hu_spec p₁ (Finset.mem_coe.mp hp₁)
-    obtain ⟨_, _, hh₂⟩ := hu_spec p₂ (Finset.mem_coe.mp hp₂)
-    change u_of p₁ = u_of p₂ at heq
-    rw [← heq] at hh₂
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · exact hh₁.2.2.2 p₂ (Finset.mem_Ioo.mpr ⟨hlt, by have := hh₂.1; omega⟩)
-        (by have := hh₁.2.2.1; have := hh₂.2.2.1; omega)
-    · exact hh₂.2.2.2 p₁ (Finset.mem_Ioo.mpr ⟨hgt, by have := hh₁.1; omega⟩)
-        (by have := hh₁.2.2.1; have := hh₂.2.2.1; omega)
-  let G := (crossingLowers y T θ).image u_of
-  have hsub : G ⊆ crossingHops y T (θ + 1) := by
-    intro u hu
-    obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hu
-    obtain ⟨hpθ, hθu, hhop⟩ := hu_spec p hp
-    unfold crossingHops
-    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hhop.2.1, by omega, p, by omega, hhop⟩
-  have himg : ∀ u ∈ G, y θ - (H : ℤ) ≤ y u ∧ y u ≤ y θ + (H : ℤ) := by
-    intro u hu
-    obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hu
-    obtain ⟨hpθ, hθu, hhop⟩ := hu_spec p hp
-    have hy_eq : y (u_of p) = y p := hhop.2.2.1
-    rcases eq_or_lt_of_le hpθ with rfl | hlt
-    · rw [hy_eq]; omega
-    · have hex := abs_le.mp (hhop_le p (u_of p) (Nat.zero_le p) hhop.2.1 hhop θ hlt hθu)
-      rw [hy_eq]; omega
-  calc (crossingLowers y T θ).card
-      = G.card := (Finset.card_image_of_injOn hinj).symm
-    _ ≤ 2 * H + 1 := card_subset_crossingHops_le hsub himg
 
 /-- Cells `[u + m_* W, u + (m_* + 1) W) ∩ ℤ` belonging to 1D slab `m_*`. -/
 def slabCells (W u_off : ℕ) (m_star : ℤ) : Finset ℤ :=
@@ -946,28 +921,6 @@ theorem depStep_trapped_in_chunk {k : ℕ} {xs : Fin k → ℕ → ℤ} {S_free 
             ⟨Finset.mem_range.mpr (hba.trans hhop.2.1), hbθ, a, hθa, hhop⟩
         exact hb_not_cross (Finset.mem_biUnion.mpr ⟨j, hj_sdiff,
           Finset.mem_biUnion.mpr ⟨θ, hθ_mem, hb_cr⟩⟩)
-
-/-- **Path-level cone trapping**:
-every `Γ_*`-free dependency path starting at `t₀ ∈ C_*` stays entirely inside `C_*`. -/
-theorem depPath_trapped_in_chunk {k : ℕ} {xs : Fin k → ℕ → ℤ} {S_free : Finset (Fin k)}
-    {x_free : ℕ → ℤ} (hfree_eq : ∀ i ∈ S_free, xs i = x_free) {W u_off T t_start t_end : ℕ}
-    (hW : 1 ≤ W) (hend : t_end ≤ T) {m_star : ℤ} :
-    ∀ (π : List ℕ) (t₀ : ℕ),
-      t₀ ∈ (Finset.Ico t_start t_end).filter (fun t => slabIdx W u_off (x_free t) = m_star) →
-      IsDepPath xs T (t₀ :: π) →
-      LinNet.GFree (slabChunkGenie xs S_free x_free W u_off T t_start m_star) (t₀ :: π) →
-      ∀ v ∈ t₀ :: π,
-        v ∈ (Finset.Ico t_start t_end).filter (fun t => slabIdx W u_off (x_free t) = m_star)
-  | [], t₀, ht₀, _, _ => fun v hv => by
-      simp only [List.mem_singleton] at hv
-      rwa [hv]
-  | t₁ :: ρ, t₀, ht₀, ⟨hstep, htail⟩, hfree => by
-      obtain ⟨ht₁_not, hfree'⟩ := gfree_cons_cons.mp hfree
-      have ht₁ := depStep_trapped_in_chunk hfree_eq hW hend ht₀ hstep ht₁_not
-      intro v hv
-      rcases List.mem_cons.mp hv with rfl | hv'
-      · exact ht₀
-      · exact depPath_trapped_in_chunk hfree_eq hW hend ρ t₁ ht₁ htail hfree' v hv'
 
 /-! ## §5. Standalone Untouched-Raw-Row and Transposed-Column Coverage Lemmas -/
 
@@ -1422,7 +1375,7 @@ theorem outIn_card_le_two_indep_add_six_runs {d b T : ℕ} (hd : 1 ≤ d) (hb : 
       linarith [hprod_ge, hexpand, hnonneg_sq, h2s_Od]
     exact_mod_cast hfinalR
 
-/-! ## §6. Frozen-Trace Genie Bridge, Theorem 4.1 (Theorem H), and Corollary 4.2 -/
+/-! ## §6. Frozen-Trace Genie Bridge and the Slab-Chunk Error Budget -/
 
 private theorem getLastD_mem_cons_self : ∀ (t : ℕ) (ρ : List ℕ), (t :: ρ).getLastD t ∈ t :: ρ
   | t, [] => by simp
@@ -1608,32 +1561,6 @@ theorem frozenTrace_subpop_deficit_le {M : TM} {β c η : ℝ} {d : ℕ} (hd : 1
     mul_le_mul_of_nonneg_right hvw (Nat.cast_nonneg _)
   linarith
 
-/-- **Frozen-trace `BlockFunDag` + `DirectedRecovery` storage-code bridge**:
-if `M` transposes at `(d, c)` with `(valueWidth M : ℝ) ≤ β`, `τ₀` has probability `≥ 2^{-η L}`,
-and `Γ` traps every `Γ`-free `DepPath` from `ot r` (`r ∈ outIn ot C`) inside `C`, then
-`U_* := (outIn ot C).image (tposOf d b) \ inCells L τ₀.input C` satisfies
-`U_*.card - β * Γ.card ≤ η * L`. -/
-theorem frozenTrace_chunk_deficit_le {M : TM} {β c η : ℝ} {d : ℕ} (hd : 1 ≤ d)
-    (hvw : (valueWidth M : ℝ) ≤ β) (htr : TransposesAt M d c) {τ₀ : Trace M.k}
-    (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) :
-    let b := entryBits d
-    let T := τ₀.haltTime
-    let ot : Fin (d * d * b) → ℕ := fun r => appendTime τ₀ T r.1
-    T ≤ ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊ ∧
-    0 < T ∧
-    (T : ℝ) ≤ 2 * c * ((d * d * b : ℕ) : ℝ) ∧
-    StrictMono ot ∧
-    (∀ r : Fin (d * d * b), ot r < T) ∧
-    ∀ (C Γ : Finset ℕ),
-      (∀ (π : List ℕ) (t₀ : ℕ), t₀ ∈ C → IsDepPath τ₀.work T (t₀ :: π) →
-        LinNet.GFree Γ (t₀ :: π) → ∀ v ∈ t₀ :: π, v ∈ C) →
-      ((((outIn ot C).image (tposOf d b) \ inCells (d * d * b) τ₀.input C).card : ℝ) -
-        β * (Γ.card : ℝ)) ≤ η * ((d * d * b : ℕ) : ℝ) := by
-  obtain ⟨h1, h2, h3, h4, h5, hsub⟩ := frozenTrace_subpop_deficit_le hd hvw htr hprob
-  refine ⟨h1, h2, h3, h4, h5, fun C Γ htrap => hsub C Γ (outIn _ C) fun π t₀ ht₀ => ?_⟩
-  obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp ht₀
-  exact htrap π _ (Finset.mem_filter.mp hr).2
-
 private theorem slab_wall_cap_bound {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
     {L T : ℕ} (hL_pos : 0 < L) (hT_2c : (T : ℝ) ≤ 2 * c * (L : ℝ)) :
     (T - 1) / ⌈(L : ℝ) / (80 * β * c)⌉₊ ≤ slabWallCap c β := by
@@ -1655,13 +1582,17 @@ private theorem slab_wall_cap_bound {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
   field_simp [hL_posR.ne', h80_pos.ne']
   ring
 
+/-- Error budget of the slab-chunk count. The crossing part `Γcr_card` of the genie counts, for each
+of at most `k` heads and each of at most `N_wall + 1` walls `θ`, the earlier ends other than `θ`
+itself of short revisits spanning `θ` (at most `2 H_max` each); the walls are counted in
+`Kall_card`. -/
 private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
     {d b k T O_card U_card Kall_card Γcr_card Γsl_card Γ_card runs_card : ℕ}
-    (hd : d ≥ slabDimThreshold c β k) (hb1 : 1 ≤ b)
+    (hd : d ≥ slabDimThreshold c β) (hb1 : 1 ≤ b)
     (hT_floor : T ≤ ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊)
     (hKall_le : Kall_card ≤ slabWallCap c β + 1)
     (hcross_le : Γcr_card ≤ k * (slabWallCap c β + 1) *
-      (2 * ⌊slabSmallExcursion c β k * ((d * d * b : ℕ) : ℝ)⌋₊ + 1))
+      (2 * ⌊slabSmallExcursion c β k * ((d * d * b : ℕ) : ℝ)⌋₊))
     (hslab_le : Γsl_card ≤ ⌈((d * d * b : ℕ) : ℝ) / (80 * β * c)⌉₊)
     (hΓ_le : Γ_card ≤ Kall_card + Γcr_card + Γsl_card)
     (hruns_le : runs_card ≤ slabWallCap c β + 1)
@@ -1670,8 +1601,7 @@ private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
       (d * d * b) * ((d * d * b) / 2) < 4 * T * O_card) :
     3 * slabAutonomyEps c β * ((d * d * b : ℕ) : ℝ) ≤ (O_card : ℝ) ∧
     slabAutonomyEps c β * ((d * d * b : ℕ) : ℝ) ≤ (U_card : ℝ) - β * (Γ_card : ℝ) := by
-  have hd10 : 10 ≤ d := le_of_max_le_right (le_of_max_le_right hd)
-  have hd1 : 1 ≤ d := by omega
+  have hd10 : 10 ≤ d := (ten_le_slabDimThreshold c β).trans hd
   set L := d * d * b with hL_def
   have hL100 : 100 ≤ L := by
     calc 100 = 10 * 10 * 1 := by norm_num
@@ -1680,17 +1610,10 @@ private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
   set N_wall := slabWallCap c β
   set ε_star := slabAutonomyEps c β
   have hε_pos : 0 < ε_star := slabAutonomyEps_pos c β
-  have hd_80 : 80 * β * c ≤ (d : ℝ) :=
-    (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_left (le_of_max_le_left hd))
+  have hdR : (slabDimThreshold c β : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd
+  have hd_80 : 80 * β * c ≤ (d : ℝ) := (eighty_mul_le_slabDimThreshold hc hβ).trans hdR
   have hd_20 : 20 * ((N_wall : ℝ) + 2) / ε_star ≤ (d : ℝ) :=
-    (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_right (le_of_max_le_left hd))
-  have hd_16 : 16 * β * ((N_wall : ℝ) + 2) * (k : ℝ) / ε_star ≤ (d : ℝ) :=
-    (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_left (le_of_max_le_right hd))
-  have hd_le_L : (d : ℝ) ≤ (L : ℝ) := by
-    have : d ≤ d * d * b := by
-      calc d = d * 1 * 1 := by ring
-        _ ≤ d * d * b := Nat.mul_le_mul (Nat.mul_le_mul le_rfl hd1) hb1
-    exact_mod_cast this
+    (slabDimThreshold_cast_eq c β).symm.le.trans hdR
   have hd2_le_L : (d : ℝ) * (d : ℝ) ≤ (L : ℝ) := by
     have : d * d ≤ d * d * b := by
       calc d * d = d * d * 1 := by ring
@@ -1730,13 +1653,12 @@ private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
       have : Kall_card ≤ N_wall + 2 := by omega
       exact_mod_cast this
     exact (mul_le_mul_of_nonneg_left hkR (by positivity)).trans hβN_le
-  have herr_cross : β * (Γcr_card : ℝ) ≤ (5 / 16) * ε_star * (L : ℝ) := by
+  have herr_cross : β * (Γcr_card : ℝ) ≤ (1 / 4) * ε_star * (L : ℝ) := by
     set H_max := ⌊slabSmallExcursion c β k * (L : ℝ)⌋₊
-    have hcrR : (Γcr_card : ℝ) ≤
-        2 * (k : ℝ) * ((N_wall : ℝ) + 1) * (H_max : ℝ) + (k : ℝ) * ((N_wall : ℝ) + 1) := by
-      have h1 : Γcr_card ≤ 2 * k * (N_wall + 1) * H_max + k * (N_wall + 1) := by
-        calc Γcr_card ≤ k * (N_wall + 1) * (2 * H_max + 1) := hcross_le
-          _ = 2 * k * (N_wall + 1) * H_max + k * (N_wall + 1) := by ring
+    have hcrR : (Γcr_card : ℝ) ≤ 2 * (k : ℝ) * ((N_wall : ℝ) + 1) * (H_max : ℝ) := by
+      have h1 : Γcr_card ≤ 2 * k * (N_wall + 1) * H_max := by
+        calc Γcr_card ≤ k * (N_wall + 1) * (2 * H_max) := hcross_le
+          _ = 2 * k * (N_wall + 1) * H_max := by ring
       exact_mod_cast h1
     have hH_le : (H_max : ℝ) ≤ slabSmallExcursion c β k * (L : ℝ) :=
       Nat.floor_le (mul_nonneg (slabSmallExcursion_pos (by positivity) k).le hL_posR.le)
@@ -1759,28 +1681,7 @@ private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
             have hβ_ne : β ≠ 0 := by linarith only [hβ]
             have hN2_ne : (N_wall : ℝ) + 2 ≠ 0 := by positivity
             field_simp [hβ_ne, hN2_ne, hmax_pos.ne']
-    have hterm2 : β * ((k : ℝ) * ((N_wall : ℝ) + 1)) ≤ (1 / 16) * ε_star * (L : ℝ) := by
-      have h16 : 16 * β * ((N_wall : ℝ) + 2) * (k : ℝ) ≤ (L : ℝ) * ε_star :=
-        (div_le_iff₀ hε_pos).mp (hd_16.trans hd_le_L)
-      have hle1 : 16 * (β * ((k : ℝ) * ((N_wall : ℝ) + 1))) ≤ ε_star * (L : ℝ) := by
-        calc 16 * (β * ((k : ℝ) * ((N_wall : ℝ) + 1)))
-            = (16 * β * (k : ℝ)) * ((N_wall : ℝ) + 1) := by ring
-          _ ≤ (16 * β * (k : ℝ)) * ((N_wall : ℝ) + 2) :=
-              mul_le_mul_of_nonneg_left (by linarith only) (by positivity)
-          _ = 16 * β * ((N_wall : ℝ) + 2) * (k : ℝ) := by ring
-          _ ≤ (L : ℝ) * ε_star := h16
-          _ = ε_star * (L : ℝ) := by ring
-      linarith only [hle1]
-    have hmul_cr : β * (Γcr_card : ℝ) ≤
-        β * (2 * (k : ℝ) * ((N_wall : ℝ) + 1) * (H_max : ℝ)) +
-          β * ((k : ℝ) * ((N_wall : ℝ) + 1)) := by
-      calc β * (Γcr_card : ℝ)
-          ≤ β * (2 * (k : ℝ) * ((N_wall : ℝ) + 1) * (H_max : ℝ) +
-              (k : ℝ) * ((N_wall : ℝ) + 1)) :=
-            mul_le_mul_of_nonneg_left hcrR (by positivity)
-        _ = β * (2 * (k : ℝ) * ((N_wall : ℝ) + 1) * (H_max : ℝ)) +
-              β * ((k : ℝ) * ((N_wall : ℝ) + 1)) := by ring
-    linarith only [hmul_cr, hterm1, hterm2]
+    exact (mul_le_mul_of_nonneg_left hcrR (by positivity)).trans hterm1
   have herr_rows : 3 * ((N_wall : ℝ) + 1) * (d : ℝ) * (b : ℝ) ≤ (3 / 20) * ε_star * (L : ℝ) := by
     have h20 : 20 * ((N_wall : ℝ) + 2) ≤ (d : ℝ) * ε_star := (div_le_iff₀ hε_pos).mp hd_20
     have hN1 : 20 * ((N_wall : ℝ) + 1) ≤ (d : ℝ) * ε_star := by linarith only [h20]
@@ -1900,174 +1801,8 @@ private theorem slab_step4_net_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
     linarith only [hmain_ge, hβΓsl_nn, hεL_pos]
   exact ⟨hO_ge, hnet_ge⟩
 
-private theorem slab_step4_budget_contra {c β η : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
-    (hη : η < slabAutonomyEps c β)
-    {d b k T O_card U_card Kall_card Γcr_card Γsl_card Γ_card runs_card : ℕ}
-    (hd : d ≥ slabDimThreshold c β k) (hb1 : 1 ≤ b)
-    (hT_floor : T ≤ ⌊c * (((d * d * b : ℕ) : ℝ) + 1)⌋₊)
-    (hKall_le : Kall_card ≤ slabWallCap c β + 1)
-    (hcross_le : Γcr_card ≤ k * (slabWallCap c β + 1) *
-      (2 * ⌊slabSmallExcursion c β k * ((d * d * b : ℕ) : ℝ)⌋₊ + 1))
-    (hslab_le : Γsl_card ≤ ⌈((d * d * b : ℕ) : ℝ) / (80 * β * c)⌉₊)
-    (hΓ_le : Γ_card ≤ Kall_card + Γcr_card + Γsl_card)
-    (hruns_le : runs_card ≤ slabWallCap c β + 1)
-    (hcov_U : O_card ≤ 2 * U_card + 6 * runs_card * d * b)
-    (hcases : (Γsl_card = 0 ∧ d * d * b ≤ 2 * (slabWallCap c β + 1) * O_card) ∨
-      (d * d * b) * ((d * d * b) / 2) < 4 * T * O_card)
-    (hnet_le : (U_card : ℝ) - β * (Γ_card : ℝ) ≤ η * ((d * d * b : ℕ) : ℝ)) :
-    False := by
-  have hd10 : 10 ≤ d := le_of_max_le_right (le_of_max_le_right hd)
-  have hL_posR : (0 : ℝ) < ((d * d * b : ℕ) : ℝ) := by
-    exact_mod_cast (by
-      have hd1 : 1 ≤ d := by omega
-      exact Nat.mul_pos (Nat.mul_pos hd1 hd1) hb1)
-  obtain ⟨_, hnet_ge⟩ := slab_step4_net_ge hc hβ hd hb1 hT_floor hKall_le hcross_le hslab_le
-    hΓ_le hruns_le hcov_U hcases
-  have hcontra := hnet_ge.trans hnet_le
-  exact absurd (le_of_mul_le_mul_right hcontra hL_posR) (not_le.mpr hη)
-
-/-- **Theorem 4.1 (Theorem H)**:
-Fix `c ≥ 1`, `β ≥ 1`, and `k : ℕ`. For every machine `M : TM` with `M.k ≤ k` and
-`(valueWidth M : ℝ) ≤ β`, every adaptivity rate `η < slabAutonomyEps c β`, and every dimension
-`d ≥ slabDimThreshold c β k`, `M` cannot simultaneously satisfy `TransposesAt M d c` and possess a
-trace `τ₀` of probability `≥ 2^{-η L}` on which all work heads outside a set `S_free` of size `≤ 1`
-have hop excursion at most `⌊slabSmallExcursion c β k * L⌋₊` (`τ₀.input` and `S_free` unrestricted). -/
-theorem oneFreeHead_smallExcursion_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ) :
-    ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
-      ∀ η < slabAutonomyEps c β, ∀ d ≥ slabDimThreshold c β k,
-        ¬ (TransposesAt M d c ∧
-          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
-            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
-            S_free.card ≤ 1 ∧
-            ∀ j : Fin M.k, j ∉ S_free →
-              HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime
-                ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊) := by
-  classical
-  intro M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hprob, hS_card, hhop_small⟩
-  have hd10 : 10 ≤ d := le_of_max_le_right (le_of_max_le_right hd)
-  have hd1 : 1 ≤ d := by omega
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hL100 : 100 ≤ d * d * entryBits d := by
-    calc 100 = 10 * 10 * 1 := by norm_num
-      _ ≤ d * d * entryBits d := Nat.mul_le_mul (Nat.mul_le_mul hd10 hd10) hb1
-  obtain ⟨hT_floor, _, hT_2c, hot_mono, hot_lt, hbridge⟩ :=
-    frozenTrace_chunk_deficit_le hd1 hvw htr hprob
-  -- Extract unit-step walk `x_free` representing `S_free` (`0` if `S_free = ∅`).
-  have hex_free : ∃ x_free : ℕ → ℤ, IsWalk x_free ∧ ∀ i ∈ S_free, τ₀.work i = x_free := by
-    by_cases hSne : S_free.Nonempty
-    · obtain ⟨i₀, hi₀⟩ := hSne
-      refine ⟨τ₀.work i₀, τ₀.work_isWalk i₀, fun i hi => ?_⟩
-      rw [Finset.card_le_one.mp hS_card i hi i₀ hi₀]
-    · rw [Finset.not_nonempty_iff_eq_empty] at hSne
-      refine ⟨fun _ => 0, fun _ => by simp, fun i hi => ?_⟩
-      rw [hSne] at hi
-      simp at hi
-  obtain ⟨x_free, hx_free, hfree_eq⟩ := hex_free
-  -- Step 1: Averaged spatial slab grid on `x_free`.
-  let W_cut := ⌈((d * d * entryBits d : ℕ) : ℝ) / (80 * β * c)⌉₊
-  have hW_pos : 1 ≤ W_cut := by
-    have h80_pos : 0 < 80 * β * c := by positivity
-    have hd_80 : 80 * β * c ≤ (d : ℝ) :=
-      (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_left (le_of_max_le_left hd))
-    have hd_le_L : (d : ℝ) ≤ ((d * d * entryBits d : ℕ) : ℝ) := by
-      have : d ≤ d * d * entryBits d := by
-        calc d = d * 1 * 1 := by ring
-          _ ≤ d * d * entryBits d := Nat.mul_le_mul (Nat.mul_le_mul le_rfl hd1) hb1
-      exact_mod_cast this
-    have h1 : (1 : ℝ) ≤ ((d * d * entryBits d : ℕ) : ℝ) / (80 * β * c) :=
-      (le_div_iff₀ h80_pos).mpr (by simpa only [one_mul] using hd_80.trans hd_le_L)
-    exact_mod_cast h1.trans (Nat.le_ceil _)
-  obtain ⟨u_star, _, hK_div⟩ := exists_offset_slabTransitions_le hx_free hW_pos τ₀.haltTime
-  let K := slabTransitions x_free W_cut τ₀.haltTime u_star
-  let m : ℕ → ℤ := fun t => slabIdx W_cut u_star (x_free t)
-  have hK_mem : ∀ t < τ₀.haltTime - 1, m t ≠ m (t + 1) → t ∈ K := fun t ht hne =>
-    Finset.mem_filter.mpr ⟨Finset.mem_range.mpr ht, hne⟩
-  have hK_le_Nwall : K.card ≤ slabWallCap c β :=
-    hK_div.trans (slab_wall_cap_bound hc hβ (by omega) hT_2c)
-  -- Step 2: Select short or long slab chunk `C_*` in pure `ℕ`.
-  let ot : Fin (d * d * entryBits d) → ℕ := fun r => appendTime τ₀ τ₀.haltTime r.1
-  have hex_chunk : ∃ (m_star : ℤ) (t_start t_end : ℕ),
-      t_end ≤ τ₀.haltTime ∧
-      ((Finset.Ico t_start t_end).filter (fun t => m t = m_star)).card ≤
-        (d * d * entryBits d) / 2 ∧
-      ((t_start = 0 ∧ d * d * entryBits d ≤ 2 * (slabWallCap c β + 1) *
-          (outIn ot ((Finset.Ico t_start t_end).filter (fun t => m t = m_star))).card) ∨
-        (d * d * entryBits d) * ((d * d * entryBits d) / 2) < 4 * τ₀.haltTime *
-          (outIn ot ((Finset.Ico t_start t_end).filter (fun t => m t = m_star))).card) := by
-    rcases exists_slab_chunk_dichotomy (by omega : 2 ≤ d * d * entryBits d) hK_mem hot_lt with
-      ⟨m_star, hC_half, hO_short⟩ | ⟨m_star, t_start, t_end, _, hend_T, hC_half, hO_long⟩
-    · refine ⟨m_star, 0, τ₀.haltTime, le_rfl, hC_half, Or.inl ⟨rfl, ?_⟩⟩
-      exact hO_short.trans
-        (Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (Nat.add_le_add_right hK_le_Nwall 1)))
-    · exact ⟨m_star, t_start, t_end, hend_T, hC_half, Or.inr hO_long⟩
-  obtain ⟨m_star, t_start, t_end, hend_T, hC_half, hO_cases⟩ := hex_chunk
-  let C_star := (Finset.Ico t_start t_end).filter (fun t => m t = m_star)
-  have hCT : ∀ t ∈ C_star, t < τ₀.haltTime := fun t ht =>
-    (Finset.mem_Ico.mp (Finset.mem_filter.mp ht).1).2.trans_le hend_T
-  -- Step 3: Genie `Γ_*` traps `DepDag` inside `C_star` and has bounded size.
-  let Γ_star := slabChunkGenie τ₀.work S_free x_free W_cut u_star τ₀.haltTime t_start m_star
-  have htrap := depPath_trapped_in_chunk (u_off := u_star) (t_start := t_start)
-    (t_end := t_end) (m_star := m_star) hfree_eq hW_pos hend_T
-  let H_max := ⌊slabSmallExcursion c β k * ((d * d * entryBits d : ℕ) : ℝ)⌋₊
-  let K_all := if t_start = 0 then K else insert (t_start - 1) K
-  let Γ_cross := (Finset.univ \ S_free).biUnion fun j =>
-    K_all.biUnion fun θ => crossingLowers (τ₀.work j) τ₀.haltTime θ
-  let Γ_slab := slabEntryGenie x_free W_cut u_star m_star t_start
-  have hKall_le : K_all.card ≤ slabWallCap c β + 1 := by
-    dsimp [K_all]
-    split_ifs
-    · exact hK_le_Nwall.trans (Nat.le_succ _)
-    · exact (Finset.card_insert_le _ _).trans (Nat.add_le_add_right hK_le_Nwall 1)
-  have hcross_le : Γ_cross.card ≤ k * (slabWallCap c β + 1) * (2 * H_max + 1) := by
-    have hcard_j : (Finset.univ \ S_free).card ≤ k :=
-      ((Finset.univ \ S_free).card_le_univ.trans_eq (Fintype.card_fin M.k)).trans hMk
-    calc Γ_cross.card
-        ≤ ∑ j ∈ Finset.univ \ S_free,
-            (K_all.biUnion fun θ => crossingLowers (τ₀.work j) τ₀.haltTime θ).card :=
-          Finset.card_biUnion_le
-      _ ≤ ∑ j ∈ Finset.univ \ S_free,
-            ∑ θ ∈ K_all, (crossingLowers (τ₀.work j) τ₀.haltTime θ).card :=
-          Finset.sum_le_sum fun _ _ => Finset.card_biUnion_le
-      _ ≤ ∑ _j ∈ Finset.univ \ S_free, ∑ _θ ∈ K_all, (2 * H_max + 1) :=
-          Finset.sum_le_sum fun j hj => Finset.sum_le_sum fun θ _ =>
-            card_crossingLowers_le (hhop_small j (Finset.mem_sdiff.mp hj).2) θ
-      _ = (Finset.univ \ S_free).card * (K_all.card * (2 * H_max + 1)) := by
-          simp [Finset.sum_const, smul_eq_mul]
-      _ ≤ k * ((slabWallCap c β + 1) * (2 * H_max + 1)) :=
-          Nat.mul_le_mul hcard_j (Nat.mul_le_mul_right _ hKall_le)
-      _ = k * (slabWallCap c β + 1) * (2 * H_max + 1) := (Nat.mul_assoc _ _ _).symm
-  have hslab_le : Γ_slab.card ≤ W_cut :=
-    card_slabEntryGenie_le x_free W_cut u_star m_star t_start
-  have hΓ_card_le : Γ_star.card ≤ K_all.card + Γ_cross.card + Γ_slab.card := by
-    change (K_all ∪ Γ_cross ∪ Γ_slab).card ≤ _
-    exact (Finset.card_union_le _ _).trans
-      (Nat.add_le_add_right (Finset.card_union_le _ _) _)
-  have hcases_sl : (Γ_slab.card = 0 ∧
-      d * d * entryBits d ≤ 2 * (slabWallCap c β + 1) * (outIn ot C_star).card) ∨
-      (d * d * entryBits d) * ((d * d * entryBits d) / 2) <
-        4 * τ₀.haltTime * (outIn ot C_star).card := by
-    rcases hO_cases with ⟨hts0, hA⟩ | hB
-    · refine Or.inl ⟨?_, hA⟩
-      dsimp [Γ_slab]
-      rw [hts0, slabEntryGenie_zero]
-      rfl
-    · exact Or.inr hB
-  -- Step 4: Stripe-discrepancy bound + scalar budget contradiction.
-  have hs_le : (runStarts C_star).card ≤ slabWallCap c β + 1 :=
-    (card_runStarts_chunk_le hend_T hK_mem).trans (Nat.add_le_add_right hK_le_Nwall 1)
-  have hcov_U := outIn_card_le_two_indep_add_six_runs hd1 hb1 τ₀.abs_input_succ_sub_le
-    hot_mono hCT hC_half
-  have hnet_le := hbridge C_star Γ_star htrap
-  exact slab_step4_budget_contra hc hβ hη hd hb1 hT_floor hKall_le hcross_le hslab_le
-    hΓ_card_le hs_le hcov_U hcases_sl hnet_le
-
-/-! ### Corollary 4.2 -/
-
-private theorem hopExcursionLEOn_mono {y : ℕ → ℤ} {lo hi H₁ H₂ : ℕ} (hH : H₁ ≤ H₂)
-    (hhop : HopExcursionLEOn y lo hi H₁) :
-    HopExcursionLEOn y lo hi H₂ :=
-  fun p u hlo hhi hh t hpt htu => (hhop p u hlo hhi hh t hpt htu).trans (by exact_mod_cast hH)
-
+/-- An oblivious linear-time transposer transposes at `(d, c)`, and its common trace halts at `T`
+with probability `1 = 2^{-0 L}`. -/
 private theorem obliviousLinTime_to_transposesAt_prob {M : TM} {d T : ℕ} {c : ℝ}
     (hoblT : ObliviousLinTime M d (entryBits d) c T) :
     TransposesAt M d c ∧
@@ -2114,209 +1849,6 @@ private theorem obliviousLinTime_to_transposesAt_prob {M : TM} {d T : ℕ} {c : 
     exact le_of_eq (div_self (by positivity)).symm
   exact ⟨htrAt, hT_eq, hprob1⟩
 
-/-- **Corollary 4.2 (low-adaptivity sublinear-excursion form)**:
-for any `H(d) = o(inputLength d)`, there is `d₁` above which no machine with `M.k ≤ k` and
-`(valueWidth M : ℝ) ≤ β` can transpose in time `c (L + 1)` with a trace of probability
-`≥ 2^{-η L}` (`η < slabAutonomyEps c β`) whose work heads outside at most one unrestricted head
-have hop excursion `≤ H(d)`. -/
-theorem oneFreeHead_sublinearExcursion_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ)
-    {H : ℕ → ℕ}
-    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
-    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
-      ∀ η < slabAutonomyEps c β, ∀ d ≥ d₁,
-        ¬ (TransposesAt M d c ∧
-          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
-            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
-            S_free.card ≤ 1 ∧
-            ∀ j : Fin M.k, j ∉ S_free →
-              HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime (H d)) := by
-  have hε_sm : 0 < slabSmallExcursion c β k := slabSmallExcursion_pos (by positivity) k
-  have hev := (tendsto_order.mp hH).2 (slabSmallExcursion c β k) hε_sm
-  rw [Filter.eventually_atTop] at hev
-  obtain ⟨d_H, hd_H⟩ := hev
-  refine ⟨max (slabDimThreshold c β k) d_H, fun M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hp, hS, hh⟩ => ?_⟩
-  have hd_thr : slabDimThreshold c β k ≤ d := le_of_max_le_left hd
-  have hd1 : 1 ≤ d := by
-    have : 10 ≤ slabDimThreshold c β k := le_max_right _ _ |> le_trans (le_max_right _ _)
-    omega
-  have hL_pos : (0 : ℝ) < (inputLength d : ℝ) := by
-    exact_mod_cast inputLength_pos (by omega : 0 < d)
-  have hH_le : H d ≤ ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊ := by
-    apply Nat.le_floor
-    exact ((div_lt_iff₀ hL_pos).mp (hd_H d (le_of_max_le_right hd))).le
-  exact oneFreeHead_smallExcursion_excludes hc hβ k M hMk hvw η hη d hd_thr
-    ⟨htr, τ₀, S_free, hp, hS, fun j hj => hopExcursionLEOn_mono hH_le (hh j hj)⟩
-
-/-- **Corollary 4.2 (oblivious sublinear-excursion form)**:
-specialization of `oneFreeHead_sublinearExcursion_excludes` to `ObliviousLinTime` (`η = 0`). -/
-theorem oneFreeHead_sublinearExcursion_oblivious_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
-    (k : ℕ) {H : ℕ → ℕ}
-    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
-    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β → ∀ d ≥ d₁, ∀ T : ℕ,
-      ¬ (ObliviousLinTime M d (entryBits d) c T ∧
-        ∃ S_free : Finset (Fin M.k),
-          S_free.card ≤ 1 ∧
-          ∀ j : Fin M.k, j ∉ S_free →
-            HopExcursionLEOn ((traceAt M (inputLength d)).work j) 0 T (H d)) := by
-  obtain ⟨d₁, hexcl⟩ := oneFreeHead_sublinearExcursion_excludes hc hβ k hH
-  refine ⟨d₁, fun M hMk hvw d hd T ⟨hoblT, S_free, hS, hh⟩ => ?_⟩
-  obtain ⟨htrAt, hT_eq, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hoblT
-  exact hexcl M hMk hvw 0 (slabAutonomyEps_pos c β) d hd
-    ⟨htrAt, traceAt M (inputLength d), S_free, hprob1, hS, fun j hj => by rw [hT_eq]; exact hh j hj⟩
-
-/-- Every complete-family height bound `famd ≤ H` outside `S_free` implies `HopExcursionLEOn _ 0 T H`
-outside `S_free`. -/
-theorem hopExcursionLEOn_of_famd_le {k T H : ℕ} {xs : Fin k → ℕ → ℤ} (hx : ∀ h, IsWalk (xs h))
-    {S_free : Finset (Fin k)}
-    (hfam : ∀ F : Keys xs (allHops xs T) (owners xs), F.1.1 ∉ S_free →
-      famd xs (allHops xs T) (owners xs) F ≤ H) :
-    ∀ j : Fin k, j ∉ S_free → HopExcursionLEOn (xs j) 0 T H := by
-  intro j hj p u _ _ hhop t hpt htu
-  let η : Fin k × ℕ × ℕ := (j, p, u)
-  have hη : η ∈ allHops xs T := mem_allHops.mpr hhop
-  let F : Keys xs (allHops xs T) (owners xs) :=
-    ⟨key xs (owners xs) η, Finset.mem_image_of_mem _ hη⟩
-  have hη_fam : η ∈ fam xs (allHops xs T) (owners xs) F.1 :=
-    Finset.mem_filter.mpr ⟨hη, rfl⟩
-  have hF_not : F.1.1 ∉ S_free := hj
-  exact (hop_excursion_le_famd hx F hη_fam hpt htu).trans (by exact_mod_cast hfam F hF_not)
-
-/-- **Corollary 4.2 (`BoundedNesting` family-height form, low-adaptivity)**:
-if every complete family `F` outside at most one unrestricted work head has height
-`famd ≤ H(d) = o(L)` (with no bound on `OwnerLoadLE`, cell entries, or scale-window count `q`),
-transposition fails for all `d ≥ d₁` whenever `η < slabAutonomyEps c β`. -/
-theorem oneFreeHead_sublinearFamHeight_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ)
-    {H : ℕ → ℕ}
-    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
-    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
-      ∀ η < slabAutonomyEps c β, ∀ d ≥ d₁,
-        ¬ (TransposesAt M d c ∧
-          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
-            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
-            S_free.card ≤ 1 ∧
-            ∀ F : Keys τ₀.work (allHops τ₀.work τ₀.haltTime) (owners τ₀.work),
-              F.1.1 ∉ S_free →
-              famd τ₀.work (allHops τ₀.work τ₀.haltTime) (owners τ₀.work) F ≤ H d) := by
-  obtain ⟨d₁, hexcl⟩ := oneFreeHead_sublinearExcursion_excludes hc hβ k hH
-  refine ⟨d₁, fun M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hp, hS, hfam⟩ => ?_⟩
-  exact hexcl M hMk hvw η hη d hd
-    ⟨htr, τ₀, S_free, hp, hS, hopExcursionLEOn_of_famd_le τ₀.work_isWalk hfam⟩
-
-/-- **Corollary 4.2 (`M.k ≤ 1` low-adaptivity exclusion)**:
-no machine with at most one work tape (`M.k ≤ 1`) and `(valueWidth M : ℝ) ≤ β` can transpose in
-time `c (L + 1)` with a trace of probability `≥ 2^{-η L}` (`η < slabAutonomyEps c β`) for any
-`d ≥ slabDimThreshold c β 1`. -/
-theorem atMostOneWorkTape_lowAdaptivity_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) :
-    ∀ M : TM, M.k ≤ 1 → (valueWidth M : ℝ) ≤ β →
-      ∀ η < slabAutonomyEps c β, ∀ d ≥ slabDimThreshold c β 1,
-        ¬ (TransposesAt M d c ∧
-          ∃ τ₀ : Trace M.k,
-            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) := by
-  intro M hMk hvw η hη d hd ⟨htr, τ₀, hprob⟩
-  refine oneFreeHead_smallExcursion_excludes hc hβ 1 M hMk hvw η hη d hd
-    ⟨htr, τ₀, Finset.univ, hprob, ?_, fun j hj => absurd (Finset.mem_univ j) hj⟩
-  simpa using hMk
-
-/-- **Corollary 4.2 (`M.k ≤ 1` oblivious exclusion)**:
-no oblivious linear-time machine with `M.k ≤ 1` and `(valueWidth M : ℝ) ≤ β` transposes at
-dimension `d ≥ slabDimThreshold c β 1`. -/
-theorem atMostOneWorkTape_oblivious_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) :
-    ∀ M : TM, M.k ≤ 1 → (valueWidth M : ℝ) ≤ β →
-      ∀ d ≥ slabDimThreshold c β 1, ∀ T : ℕ,
-        ¬ ObliviousLinTime M d (entryBits d) c T := by
-  intro M hMk hvw d hd T hoblT
-  obtain ⟨htrAt, _, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hoblT
-  exact atMostOneWorkTape_lowAdaptivity_excludes hc hβ M hMk hvw 0
-    (slabAutonomyEps_pos c β) d hd ⟨htrAt, traceAt M (inputLength d), hprob1⟩
-
-/-! ### Two-Macroscopic-Heads Contrapositive (Theorem 4.1 / Theorem H) -/
-
-/-- Walk `y` makes a completed hop `(p, u)` strictly before `T` (`IsHop y T p u`) whose interior
-spatial excursion `|(y t : ℝ) - (y p : ℝ)|` at some step `t ∈ (p, u)` strictly exceeds `B`. -/
-def HasHopExcursionGT (y : ℕ → ℤ) (T : ℕ) (B : ℝ) : Prop :=
-  ∃ p u : ℕ, u < T ∧ IsHop y T p u ∧ ∃ t : ℕ, p < t ∧ t < u ∧ B < |(y t : ℝ) - (y p : ℝ)|
-
-/-- Equivalence between `HasHopExcursionGT y T B` and `¬ HopExcursionLEOn y 0 T ⌊B⌋₊` for `0 ≤ B`. -/
-theorem hasHopExcursionGT_iff_not_hopExcursionLEOn {y : ℕ → ℤ} {T : ℕ} {B : ℝ} (hB : 0 ≤ B) :
-    HasHopExcursionGT y T B ↔ ¬ HopExcursionLEOn y 0 T ⌊B⌋₊ := by
-  constructor
-  · rintro ⟨p, u, huT, hhop, t, hpt, htu, hgt⟩ hLE
-    have hle_z : |y t - y p| ≤ (⌊B⌋₊ : ℤ) := hLE p u (Nat.zero_le p) huT hhop t hpt htu
-    have hle_r : |(y t : ℝ) - (y p : ℝ)| ≤ (⌊B⌋₊ : ℝ) := by
-      have hcast : ((|y t - y p| : ℤ) : ℝ) ≤ ((⌊B⌋₊ : ℤ) : ℝ) := by exact_mod_cast hle_z
-      simpa only [Int.cast_abs, Int.cast_sub, Int.cast_natCast] using hcast
-    exact not_le_of_gt hgt (hle_r.trans (Nat.floor_le hB))
-  · intro hnot
-    unfold HopExcursionLEOn at hnot
-    push Not at hnot
-    obtain ⟨p, u, _, huT, hhop, t, hpt, htu, hlt_z⟩ := hnot
-    refine ⟨p, u, huT, hhop, t, hpt, htu, ?_⟩
-    have hn_eq : ((y t - y p).natAbs : ℤ) = |y t - y p| := Int.natCast_natAbs _
-    have hlt_n : ⌊B⌋₊ < (y t - y p).natAbs := by
-      exact_mod_cast hlt_z.trans_eq hn_eq.symm
-    have hlt_r : B < ((y t - y p).natAbs : ℝ) := (Nat.floor_lt hB).mp hlt_n
-    have hr_eq : ((y t - y p).natAbs : ℝ) = |(y t : ℝ) - (y p : ℝ)| := by
-      have hcast : (((y t - y p).natAbs : ℤ) : ℝ) = ((|y t - y p| : ℤ) : ℝ) :=
-        congrArg Int.cast hn_eq
-      simpa only [Int.cast_natCast, Int.cast_abs, Int.cast_sub] using hcast
-    exact hlt_r.trans_eq hr_eq
-
-/-- **Theorem 4.1 (Theorem H, two-macroscopic-heads lower bound, low-adaptivity form)**:
-every linear-time transposer (`TransposesAt M d c`) with `M.k ≤ k`, `(valueWidth M : ℝ) ≤ β`, and
-a trace `τ₀` of probability `≥ 2^{-η L}` (`η < slabAutonomyEps c β`) has, for all
-`d ≥ slabDimThreshold c β k`, **at least two distinct work heads** that each make a completed hop
-of spatial excursion strictly greater than `slabSmallExcursion c β k * L`. -/
-theorem twoMacroscopicHeads_of_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
-    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
-    {η : ℝ} (hη : η < slabAutonomyEps c β)
-    {d : ℕ} (hd : slabDimThreshold c β k ≤ d)
-    (htr : TransposesAt M d c)
-    {τ₀ : Trace M.k}
-    (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) :
-    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
-      HasHopExcursionGT (τ₀.work j₁) τ₀.haltTime
-        (slabSmallExcursion c β k * (inputLength d : ℝ)) ∧
-      HasHopExcursionGT (τ₀.work j₂) τ₀.haltTime
-        (slabSmallExcursion c β k * (inputLength d : ℝ)) := by
-  classical
-  let B : ℝ := slabSmallExcursion c β k * (inputLength d : ℝ)
-  have hB_nonneg : 0 ≤ B :=
-    mul_nonneg (slabSmallExcursion_pos (by positivity) k).le (Nat.cast_nonneg _)
-  let S_free : Finset (Fin M.k) :=
-    Finset.univ.filter fun j => ¬ HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime ⌊B⌋₊
-  have hcard : 1 < S_free.card := by
-    by_contra hle
-    push Not at hle
-    refine oneFreeHead_smallExcursion_excludes hc hβ k M hMk hvw η hη d hd
-      ⟨htr, τ₀, S_free, hprob, hle, fun j hj => ?_⟩
-    by_contra hnot
-    exact hj (Finset.mem_filter.mpr ⟨Finset.mem_univ j, hnot⟩)
-  obtain ⟨j₁, hj₁, j₂, hj₂, hne⟩ := Finset.one_lt_card.mp hcard
-  exact ⟨j₁, j₂, hne,
-    (hasHopExcursionGT_iff_not_hopExcursionLEOn hB_nonneg).mpr (Finset.mem_filter.mp hj₁).2,
-    (hasHopExcursionGT_iff_not_hopExcursionLEOn hB_nonneg).mpr (Finset.mem_filter.mp hj₂).2⟩
-
-/-- **Theorem 4.1 (Theorem H, two-macroscopic-heads lower bound, oblivious form)**:
-every oblivious linear-time transposer (`ObliviousLinTime M d (entryBits d) c T`) with `M.k ≤ k`
-and `(valueWidth M : ℝ) ≤ β` has, for all `d ≥ slabDimThreshold c β k`, **at least two distinct
-work heads** that each make a completed hop of spatial excursion strictly greater than
-`slabSmallExcursion c β k * L`. -/
-theorem twoMacroscopicHeads_of_oblivious_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
-    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
-    {d : ℕ} (hd : slabDimThreshold c β k ≤ d) {T : ℕ}
-    (hobl : ObliviousLinTime M d (entryBits d) c T) :
-    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
-      HasHopExcursionGT ((traceAt M (inputLength d)).work j₁) T
-        (slabSmallExcursion c β k * (inputLength d : ℝ)) ∧
-      HasHopExcursionGT ((traceAt M (inputLength d)).work j₂) T
-        (slabSmallExcursion c β k * (inputLength d : ℝ)) := by
-  obtain ⟨htrAt, hT_eq, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hobl
-  obtain ⟨j₁, j₂, hne, hh₁, hh₂⟩ :=
-    twoMacroscopicHeads_of_linearTimeTransposer hc hβ k M hMk hvw
-      (slabAutonomyEps_pos c β) hd htrAt hprob1
-  rw [hT_eq] at hh₁ hh₂
-  exact ⟨j₁, j₂, hne, hh₁, hh₂⟩
-
 /-! ## §7. Unconditional All-Machines Off-Carrier Vertex-Expansion Necessary Condition -/
 
 /-- Lower endpoints `p ≤ θ` of revisit hops `(p, u)` (`p ≤ θ < u`) on `y` whose excursion is at
@@ -2326,23 +1858,27 @@ noncomputable def smallCrossingLowers (y : ℕ → ℤ) (T H θ : ℕ) : Finset 
   exact (Finset.range T).filter fun p =>
     p ≤ θ ∧ ∃ u, θ < u ∧ IsHop y T p u ∧ ∀ t ∈ Finset.Ioo p u, |y t - y p| ≤ (H : ℤ)
 
-/-- Unconditional spatial-injectivity bound `|smallCrossingLowers y T H θ| ≤ 2 * H + 1` on **any**
-walk `y : ℕ → ℤ` (no global excursion bound on `y` required). -/
-theorem card_smallCrossingLowers_le (y : ℕ → ℤ) (T H θ : ℕ) :
-    (smallCrossingLowers y T H θ).card ≤ 2 * H + 1 := by
+/-- Without `θ` itself, `smallCrossingLowers y T H θ` has at most `2 * H` elements: a revisit
+`(p, u)` with `p < θ < u` is away from its cell at step `θ`, so the later ends lie at distinct cells
+within distance `H` of `y θ`, none of them at `y θ`. (The genie of Theorem H contains `θ` anyway.) -/
+theorem card_smallCrossingLowers_erase_le (y : ℕ → ℤ) (T H θ : ℕ) :
+    ((smallCrossingLowers y T H θ).erase θ).card ≤ 2 * H := by
   classical
+  set P := (smallCrossingLowers y T H θ).erase θ
   let u_of : ℕ → ℕ := fun p =>
     if h : ∃ u, θ < u ∧ IsHop y T p u ∧ ∀ t ∈ Finset.Ioo p u, |y t - y p| ≤ (H : ℤ) then
       Classical.choose h
     else 0
-  have hu_spec : ∀ p ∈ smallCrossingLowers y T H θ,
-      p ≤ θ ∧ θ < u_of p ∧ IsHop y T p (u_of p) ∧
+  have hu_spec : ∀ p ∈ P,
+      p < θ ∧ θ < u_of p ∧ IsHop y T p (u_of p) ∧
       ∀ t ∈ Finset.Ioo p (u_of p), |y t - y p| ≤ (H : ℤ) := by
     intro p hp
+    obtain ⟨hpθ_ne, hp⟩ := Finset.mem_erase.mp hp
     obtain ⟨_, hpθ, hex⟩ := Finset.mem_filter.mp hp
     have hch := Classical.choose_spec hex
-    simpa only [u_of, hex, ↓reduceDIte] using ⟨hpθ, hch.1, hch.2.1, hch.2.2⟩
-  have hinj : Set.InjOn u_of (smallCrossingLowers y T H θ : Set ℕ) := by
+    simpa only [u_of, hex, ↓reduceDIte] using
+      ⟨lt_of_le_of_ne hpθ hpθ_ne, hch.1, hch.2.1, hch.2.2⟩
+  have hinj : Set.InjOn u_of (P : Set ℕ) := by
     intro p₁ hp₁ p₂ hp₂ heq
     obtain ⟨_, _, hh₁, _⟩ := hu_spec p₁ (Finset.mem_coe.mp hp₁)
     obtain ⟨_, _, hh₂, _⟩ := hu_spec p₂ (Finset.mem_coe.mp hp₂)
@@ -2354,25 +1890,45 @@ theorem card_smallCrossingLowers_le (y : ℕ → ℤ) (T H θ : ℕ) :
         (by have := hh₁.2.2.1; have := hh₂.2.2.1; omega)
     · exact hh₂.2.2.2 p₁ (Finset.mem_Ioo.mpr ⟨hgt, by have := hh₁.1; omega⟩)
         (by have := hh₁.2.2.1; have := hh₂.2.2.1; omega)
-  let G := (smallCrossingLowers y T H θ).image u_of
+  let G := P.image u_of
   have hsub : G ⊆ crossingHops y T (θ + 1) := by
     intro u hu
     obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hu
     obtain ⟨hpθ, hθu, hhop, _⟩ := hu_spec p hp
     unfold crossingHops
     exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hhop.2.1, by omega, p, by omega, hhop⟩
-  have himg : ∀ u ∈ G, y θ - (H : ℤ) ≤ y u ∧ y u ≤ y θ + (H : ℤ) := by
-    intro u hu
+  have hinj_y : Set.InjOn y (G : Set ℕ) :=
+    (hop_upper_injOn y T (θ + 1)).mono (Finset.coe_subset.mpr hsub)
+  -- Cells within distance `H` of `y θ`, other than `y θ`.
+  let box : Finset ℤ :=
+    ((Finset.range (2 * H + 1)).erase H).image fun i : ℕ => y θ - (H : ℤ) + (i : ℤ)
+  have hbox : G.image y ⊆ box := by
+    intro z hz
+    obtain ⟨u, hu, rfl⟩ := Finset.mem_image.mp hz
     obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hu
     obtain ⟨hpθ, hθu, hhop, hle_H⟩ := hu_spec p hp
     have hy_eq : y (u_of p) = y p := hhop.2.2.1
-    rcases eq_or_lt_of_le hpθ with rfl | hlt
-    · rw [hy_eq]; omega
-    · have hex := abs_le.mp (hle_H θ (Finset.mem_Ioo.mpr ⟨hlt, hθu⟩))
-      rw [hy_eq]; omega
-  calc (smallCrossingLowers y T H θ).card
+    have hθ_mem : θ ∈ Finset.Ioo p (u_of p) := Finset.mem_Ioo.mpr ⟨hpθ, hθu⟩
+    have hne : y θ ≠ y p := hhop.2.2.2 θ hθ_mem
+    have hex := abs_le.mp (hle_H θ hθ_mem)
+    refine Finset.mem_image.mpr ⟨(y (u_of p) - (y θ - (H : ℤ))).toNat,
+      Finset.mem_erase.mpr ⟨?_, Finset.mem_range.mpr ?_⟩, ?_⟩ <;> omega
+  calc P.card
       = G.card := (Finset.card_image_of_injOn hinj).symm
-    _ ≤ 2 * H + 1 := card_subset_crossingHops_le hsub himg
+    _ = (G.image y).card := (Finset.card_image_of_injOn hinj_y).symm
+    _ ≤ box.card := Finset.card_le_card hbox
+    _ ≤ ((Finset.range (2 * H + 1)).erase H).card := Finset.card_image_le
+    _ = 2 * H := by
+        rw [Finset.card_erase_of_mem (Finset.mem_range.mpr (by omega)), Finset.card_range]
+        omega
+
+/-- Unconditional spatial-injectivity bound `|smallCrossingLowers y T H θ| ≤ 2 * H + 1` on **any**
+walk `y : ℕ → ℤ` (no global excursion bound on `y` required). -/
+theorem card_smallCrossingLowers_le (y : ℕ → ℤ) (T H θ : ℕ) :
+    (smallCrossingLowers y T H θ).card ≤ 2 * H + 1 := by
+  have h1 := Finset.pred_card_le_card_erase (s := smallCrossingLowers y T H θ) (a := θ)
+  have h2 := card_smallCrossingLowers_erase_le y T H θ
+  omega
 
 /-- **Intrinsic Off-Carrier `> H` Revisit Step Set** (defined from head motion alone):
 lower endpoints `p < T` of revisit hops `(p, u)` on any head `j ∉ S_free` whose excursion exceeds `H`
@@ -2481,7 +2037,7 @@ private theorem depPath_trapped_of_avoidsDst {k : ℕ} {xs : Fin k → ℕ → �
 Off-Carrier Vertex-Expansion Necessary Condition — Low-Adaptivity Form)**:
 Fix `c ≥ 1`, `β ≥ 1`, and `k : ℕ`. For **every** machine `M : TM` with `M.k ≤ k` and
 `(valueWidth M : ℝ) ≤ β`, **every** adaptivity rate `η < slabAutonomyEps c β`, **every**
-`d ≥ slabDimThreshold c β k` with `TransposesAt M d c`, **every** trace `τ₀` of probability
+`d ≥ slabDimThreshold c β` with `TransposesAt M d c`, **every** trace `τ₀` of probability
 `≥ 2^{-η L}`, **every** excluded carrier head set `S_free` of size `≤ 1`, and **every** excursion
 threshold `H ≤ ⌊slabSmallExcursion c β k * L⌋₊` (in particular `H = 2 * W` for large `d`), there
 exists an output subpopulation `V_* ⊆ Fin L` of size `3 * ε_* L ≤ |V_*| ≤ L / 2` such that **every**
@@ -2491,7 +2047,7 @@ Menger vertex cut `B` disconnecting `V_*`'s output steps `Src_*` from
 is disjoint from `Src_*`, and `(β + 1) * |B| ≥ (ε_* - η) * L` unconditionally). -/
 theorem offCarrier_vertexExpansion_of_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
     (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
-    {η : ℝ} {d : ℕ} (hd : slabDimThreshold c β k ≤ d)
+    {η : ℝ} {d : ℕ} (hd : slabDimThreshold c β ≤ d)
     (htr : TransposesAt M d c) {τ₀ : Trace M.k}
     (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀)
     (S_free : Finset (Fin M.k)) (hS_card : S_free.card ≤ 1)
@@ -2508,7 +2064,7 @@ theorem offCarrier_vertexExpansion_of_linearTimeTransposer {c β : ℝ} (hc : 1 
           (offCarrierLargeLowers τ₀.work S_free τ₀.haltTime H) B →
         (slabAutonomyEps c β - η) * (L : ℝ) ≤ β * (B.card : ℝ) + ((B ∩ Src).card : ℝ) := by
   classical
-  have hd10 : 10 ≤ d := le_of_max_le_right (le_of_max_le_right hd)
+  have hd10 : 10 ≤ d := (ten_le_slabDimThreshold c β).trans hd
   have hd1 : 1 ≤ d := by omega
   have hb1 : 1 ≤ entryBits d := one_le_entryBits d
   let b := entryBits d
@@ -2528,7 +2084,7 @@ theorem offCarrier_vertexExpansion_of_linearTimeTransposer {c β : ℝ} (hc : 1 
   have hW_pos : 1 ≤ W_cut := by
     have h80_pos : 0 < 80 * β * c := by positivity
     have hd_80 : 80 * β * c ≤ (d : ℝ) :=
-      (Nat.le_ceil _).trans (by exact_mod_cast le_of_max_le_left (le_of_max_le_left hd))
+      (eighty_mul_le_slabDimThreshold hc hβ).trans (by exact_mod_cast hd)
     have hd_le_L : (d : ℝ) ≤ (L : ℝ) := by
       have : d ≤ d * d * b := by
         calc d = d * 1 * 1 := by ring
@@ -2582,36 +2138,52 @@ theorem offCarrier_vertexExpansion_of_linearTimeTransposer {c β : ℝ} (hc : 1 
     K_all.biUnion fun θ => smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ
   let Γ_slab := slabEntryGenie x_free W_cut u_star m_star t_start
   let H_max := ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊
+  -- The walls `θ ∈ K_all` are already in `Γ₀`; the other crossers number `≤ 2 H` per head and wall.
+  let Γ_cross := (Finset.univ \ S_free).biUnion fun j =>
+    K_all.biUnion fun θ => (smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ).erase θ
   have hKall_le : K_all.card ≤ slabWallCap c β + 1 := by
     dsimp [K_all]
     split_ifs
     · exact hK_le_Nwall.trans (Nat.le_succ _)
     · exact (Finset.card_insert_le _ _).trans (Nat.add_le_add_right hK_le_Nwall 1)
-  have hsmall_le : Γ_small.card ≤ k * (slabWallCap c β + 1) * (2 * H_max + 1) := by
+  have hcross_le : Γ_cross.card ≤ k * (slabWallCap c β + 1) * (2 * H_max) := by
     have hcard_j : (Finset.univ \ S_free).card ≤ k :=
       ((Finset.univ \ S_free).card_le_univ.trans_eq (Fintype.card_fin M.k)).trans hMk
-    have h2H : 2 * H + 1 ≤ 2 * H_max + 1 := by omega
-    calc Γ_small.card
+    have h2H : 2 * H ≤ 2 * H_max := by omega
+    calc Γ_cross.card
         ≤ ∑ j ∈ Finset.univ \ S_free,
-            (K_all.biUnion fun θ => smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ).card :=
+            (K_all.biUnion fun θ =>
+              (smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ).erase θ).card :=
           Finset.card_biUnion_le
       _ ≤ ∑ j ∈ Finset.univ \ S_free,
-            ∑ θ ∈ K_all, (smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ).card :=
+            ∑ θ ∈ K_all, ((smallCrossingLowers (τ₀.work j) τ₀.haltTime H θ).erase θ).card :=
           Finset.sum_le_sum fun _ _ => Finset.card_biUnion_le
-      _ ≤ ∑ _j ∈ Finset.univ \ S_free, ∑ _θ ∈ K_all, (2 * H_max + 1) :=
+      _ ≤ ∑ _j ∈ Finset.univ \ S_free, ∑ _θ ∈ K_all, 2 * H_max :=
           Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun θ _ =>
-            (card_smallCrossingLowers_le (τ₀.work j) τ₀.haltTime H θ).trans h2H
-      _ = (Finset.univ \ S_free).card * (K_all.card * (2 * H_max + 1)) := by
+            (card_smallCrossingLowers_erase_le (τ₀.work j) τ₀.haltTime H θ).trans h2H
+      _ = (Finset.univ \ S_free).card * (K_all.card * (2 * H_max)) := by
           simp [Finset.sum_const, smul_eq_mul]
-      _ ≤ k * ((slabWallCap c β + 1) * (2 * H_max + 1)) :=
+      _ ≤ k * ((slabWallCap c β + 1) * (2 * H_max)) :=
           Nat.mul_le_mul hcard_j (Nat.mul_le_mul_right _ hKall_le)
-      _ = k * (slabWallCap c β + 1) * (2 * H_max + 1) := (Nat.mul_assoc _ _ _).symm
+      _ = k * (slabWallCap c β + 1) * (2 * H_max) := (Nat.mul_assoc _ _ _).symm
   have hslab_le : Γ_slab.card ≤ W_cut :=
     card_slabEntryGenie_le x_free W_cut u_star m_star t_start
-  have hΓ₀_le : Γ₀.card ≤ K_all.card + Γ_small.card + Γ_slab.card := by
-    change (K_all ∪ Γ_small ∪ Γ_slab).card ≤ _
-    exact (Finset.card_union_le _ _).trans
-      (Nat.add_le_add_right (Finset.card_union_le _ _) _)
+  have hΓ₀_le : Γ₀.card ≤ K_all.card + Γ_cross.card + Γ_slab.card := by
+    have hsub : Γ₀ ⊆ K_all ∪ Γ_cross ∪ Γ_slab := by
+      intro t ht
+      change t ∈ K_all ∪ Γ_small ∪ Γ_slab at ht
+      rcases Finset.mem_union.mp ht with hKs | hsl
+      · rcases Finset.mem_union.mp hKs with hK | hs
+        · exact Finset.mem_union_left _ (Finset.mem_union_left _ hK)
+        · obtain ⟨j, hj, hjt⟩ := Finset.mem_biUnion.mp hs
+          obtain ⟨θ, hθ, htθ⟩ := Finset.mem_biUnion.mp hjt
+          by_cases hteq : t = θ
+          · exact Finset.mem_union_left _ (Finset.mem_union_left _ (hteq ▸ hθ))
+          · exact Finset.mem_union_left _ (Finset.mem_union_right _ (Finset.mem_biUnion.mpr
+              ⟨j, hj, Finset.mem_biUnion.mpr ⟨θ, hθ, Finset.mem_erase.mpr ⟨hteq, htθ⟩⟩⟩))
+      · exact Finset.mem_union_right _ hsl
+    exact (Finset.card_le_card hsub).trans ((Finset.card_union_le _ _).trans
+      (Nat.add_le_add_right (Finset.card_union_le _ _) _))
   have hcases_sl : (Γ_slab.card = 0 ∧ L ≤ 2 * (slabWallCap c β + 1) * O_star.card) ∨
       L * (L / 2) < 4 * τ₀.haltTime * O_star.card := by
     rcases hO_cases with ⟨hts0, hA⟩ | hB
@@ -2624,7 +2196,7 @@ theorem offCarrier_vertexExpansion_of_linearTimeTransposer {c β : ℝ} (hc : 1 
   let U_star := V_star \ inCells L τ₀.input C_star
   have hcov_U := outIn_card_le_two_indep_add_six_runs hd1 hb1 τ₀.abs_input_succ_sub_le
     hot_mono hCT hC_half
-  obtain ⟨hO_ge, hnet_ge⟩ := slab_step4_net_ge hc hβ hd hb1 hT_floor hKall_le hsmall_le hslab_le
+  obtain ⟨hO_ge, hnet_ge⟩ := slab_step4_net_ge hc hβ hd hb1 hT_floor hKall_le hcross_le hslab_le
     hΓ₀_le hs_le hcov_U hcases_sl
   refine ⟨V_star, hO_ge.trans_eq (by exact_mod_cast hV_card_eq.symm),
     hV_card_eq.trans_le (hO_le_C.trans hC_half), fun B hcut => ?_⟩
@@ -2703,7 +2275,7 @@ vertex separator `B` disconnecting `V_*`'s output steps `Src_*` from
 for arbitrary `B`, and `β * |B| ≥ slabAutonomyEps c β * L` when `Disjoint B Src_*`). -/
 theorem offCarrier_vertexExpansion_of_obliviousLinTime {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
     (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
-    {d : ℕ} (hd : slabDimThreshold c β k ≤ d) {T : ℕ}
+    {d : ℕ} (hd : slabDimThreshold c β ≤ d) {T : ℕ}
     (hobl : ObliviousLinTime M d (entryBits d) c T)
     (S_free : Finset (Fin M.k)) (hS_card : S_free.card ≤ 1)
     {H : ℕ} (hH : H ≤ ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊) :
@@ -2725,5 +2297,408 @@ theorem offCarrier_vertexExpansion_of_obliviousLinTime {c β : ℝ} (hc : 1 ≤ 
   refine ⟨V_star, hV_lo, hV_hi, fun B hcut => ?_⟩
   have h1 := hsep B (by simpa only [hT_eq] using hcut)
   simpa only [hT_eq, sub_zero] using h1
+
+/-! ## §8. Theorem 4.1 (Theorem H) (a) and (b) from Theorem H(c), and Corollary 4.2 -/
+
+/-- **Theorem 4.1 (Theorem H)**:
+Fix `c ≥ 1`, `β ≥ 1`, and `k : ℕ`. For every machine `M : TM` with `M.k ≤ k` and
+`(valueWidth M : ℝ) ≤ β`, every adaptivity rate `η < slabAutonomyEps c β`, and every dimension
+`d ≥ slabDimThreshold c β`, `M` cannot simultaneously satisfy `TransposesAt M d c` and possess a
+trace `τ₀` of probability `≥ 2^{-η L}` on which all work heads outside a set `S_free` of size `≤ 1`
+have hop excursion at most `⌊slabSmallExcursion c β k * L⌋₊` (`τ₀.input` and `S_free` unrestricted).
+A corollary of Theorem H(c) at `H = ⌊slabSmallExcursion c β k * L⌋₊`: the target set is empty, so
+`B = ∅` separates, and `(slabAutonomyEps c β - η) * L ≤ 0` contradicts `η < slabAutonomyEps c β`. -/
+theorem oneFreeHead_smallExcursion_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ) :
+    ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
+      ∀ η < slabAutonomyEps c β, ∀ d ≥ slabDimThreshold c β,
+        ¬ (TransposesAt M d c ∧
+          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
+            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
+            S_free.card ≤ 1 ∧
+            ∀ j : Fin M.k, j ∉ S_free →
+              HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime
+                ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊) := by
+  classical
+  intro M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hprob, hS_card, hhop_small⟩
+  obtain ⟨V_star, _, _, hsep⟩ := offCarrier_vertexExpansion_of_linearTimeTransposer hc hβ k M hMk
+    hvw hd htr hprob S_free hS_card (H := ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊) le_rfl
+  -- Every work head outside `S_free` keeps its excursions small, so the target set is empty.
+  have hempty : offCarrierLargeLowers τ₀.work S_free τ₀.haltTime
+      ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊ = ∅ := by
+    unfold offCarrierLargeLowers
+    rw [Finset.eq_empty_iff_forall_notMem]
+    intro p hp
+    obtain ⟨j, hj, hpj⟩ := Finset.mem_biUnion.mp hp
+    obtain ⟨-, u, hhop, t, ht, hgt⟩ := Finset.mem_filter.mp hpj
+    obtain ⟨hpt, htu⟩ := Finset.mem_Ioo.mp ht
+    have hle := hhop_small j (Finset.mem_sdiff.mp hj).2 p u (Nat.zero_le p) hhop.2.1 hhop t hpt htu
+    omega
+  -- Hence `B = ∅` separates, and Theorem H(c) gives `(ε_* - η) L ≤ 0`.
+  have h0 := hsep ∅ fun π t₀ _ _ hdst => by
+    rw [hempty] at hdst
+    exact absurd hdst (Finset.notMem_empty _)
+  simp only [Finset.card_empty, Nat.cast_zero, mul_zero, Finset.empty_inter, add_zero] at h0
+  have hd1 : 1 ≤ d := le_trans (by norm_num) ((ten_le_slabDimThreshold c β).trans hd)
+  have hL : (0 : ℝ) < ((d * d * entryBits d : ℕ) : ℝ) := by
+    exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
+  nlinarith
+
+/-! ### Two-Macroscopic-Heads Contrapositive (Theorem 4.1 / Theorem H) -/
+
+/-- Walk `y` makes a completed hop `(p, u)` strictly before `T` (`IsHop y T p u`) whose interior
+spatial excursion `|(y t : ℝ) - (y p : ℝ)|` at some step `t ∈ (p, u)` strictly exceeds `B`. -/
+def HasHopExcursionGT (y : ℕ → ℤ) (T : ℕ) (B : ℝ) : Prop :=
+  ∃ p u : ℕ, u < T ∧ IsHop y T p u ∧ ∃ t : ℕ, p < t ∧ t < u ∧ B < |(y t : ℝ) - (y p : ℝ)|
+
+/-- Equivalence between `HasHopExcursionGT y T B` and `¬ HopExcursionLEOn y 0 T ⌊B⌋₊` for `0 ≤ B`. -/
+theorem hasHopExcursionGT_iff_not_hopExcursionLEOn {y : ℕ → ℤ} {T : ℕ} {B : ℝ} (hB : 0 ≤ B) :
+    HasHopExcursionGT y T B ↔ ¬ HopExcursionLEOn y 0 T ⌊B⌋₊ := by
+  constructor
+  · rintro ⟨p, u, huT, hhop, t, hpt, htu, hgt⟩ hLE
+    have hle_z : |y t - y p| ≤ (⌊B⌋₊ : ℤ) := hLE p u (Nat.zero_le p) huT hhop t hpt htu
+    have hle_r : |(y t : ℝ) - (y p : ℝ)| ≤ (⌊B⌋₊ : ℝ) := by
+      have hcast : ((|y t - y p| : ℤ) : ℝ) ≤ ((⌊B⌋₊ : ℤ) : ℝ) := by exact_mod_cast hle_z
+      simpa only [Int.cast_abs, Int.cast_sub, Int.cast_natCast] using hcast
+    exact not_le_of_gt hgt (hle_r.trans (Nat.floor_le hB))
+  · intro hnot
+    unfold HopExcursionLEOn at hnot
+    push Not at hnot
+    obtain ⟨p, u, _, huT, hhop, t, hpt, htu, hlt_z⟩ := hnot
+    refine ⟨p, u, huT, hhop, t, hpt, htu, ?_⟩
+    have hn_eq : ((y t - y p).natAbs : ℤ) = |y t - y p| := Int.natCast_natAbs _
+    have hlt_n : ⌊B⌋₊ < (y t - y p).natAbs := by
+      exact_mod_cast hlt_z.trans_eq hn_eq.symm
+    have hlt_r : B < ((y t - y p).natAbs : ℝ) := (Nat.floor_lt hB).mp hlt_n
+    have hr_eq : ((y t - y p).natAbs : ℝ) = |(y t : ℝ) - (y p : ℝ)| := by
+      have hcast : (((y t - y p).natAbs : ℤ) : ℝ) = ((|y t - y p| : ℤ) : ℝ) :=
+        congrArg Int.cast hn_eq
+      simpa only [Int.cast_natCast, Int.cast_abs, Int.cast_sub] using hcast
+    exact hlt_r.trans_eq hr_eq
+
+/-- **Theorem 4.1 (Theorem H, two-macroscopic-heads lower bound, low-adaptivity form)**:
+every linear-time transposer (`TransposesAt M d c`) with `M.k ≤ k`, `(valueWidth M : ℝ) ≤ β`, and
+a trace `τ₀` of probability `≥ 2^{-η L}` (`η < slabAutonomyEps c β`) has, for all
+`d ≥ slabDimThreshold c β`, **at least two distinct work heads** that each make a completed hop
+of spatial excursion strictly greater than `slabSmallExcursion c β k * L`. -/
+theorem twoMacroscopicHeads_of_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
+    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
+    {η : ℝ} (hη : η < slabAutonomyEps c β)
+    {d : ℕ} (hd : slabDimThreshold c β ≤ d)
+    (htr : TransposesAt M d c)
+    {τ₀ : Trace M.k}
+    (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) :
+    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
+      HasHopExcursionGT (τ₀.work j₁) τ₀.haltTime
+        (slabSmallExcursion c β k * (inputLength d : ℝ)) ∧
+      HasHopExcursionGT (τ₀.work j₂) τ₀.haltTime
+        (slabSmallExcursion c β k * (inputLength d : ℝ)) := by
+  classical
+  let B : ℝ := slabSmallExcursion c β k * (inputLength d : ℝ)
+  have hB_nonneg : 0 ≤ B :=
+    mul_nonneg (slabSmallExcursion_pos (by positivity) k).le (Nat.cast_nonneg _)
+  let S_free : Finset (Fin M.k) :=
+    Finset.univ.filter fun j => ¬ HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime ⌊B⌋₊
+  have hcard : 1 < S_free.card := by
+    by_contra hle
+    push Not at hle
+    refine oneFreeHead_smallExcursion_excludes hc hβ k M hMk hvw η hη d hd
+      ⟨htr, τ₀, S_free, hprob, hle, fun j hj => ?_⟩
+    by_contra hnot
+    exact hj (Finset.mem_filter.mpr ⟨Finset.mem_univ j, hnot⟩)
+  obtain ⟨j₁, hj₁, j₂, hj₂, hne⟩ := Finset.one_lt_card.mp hcard
+  exact ⟨j₁, j₂, hne,
+    (hasHopExcursionGT_iff_not_hopExcursionLEOn hB_nonneg).mpr (Finset.mem_filter.mp hj₁).2,
+    (hasHopExcursionGT_iff_not_hopExcursionLEOn hB_nonneg).mpr (Finset.mem_filter.mp hj₂).2⟩
+
+/-- **Theorem 4.1 (Theorem H, two-macroscopic-heads lower bound, oblivious form)**:
+every oblivious linear-time transposer (`ObliviousLinTime M d (entryBits d) c T`) with `M.k ≤ k`
+and `(valueWidth M : ℝ) ≤ β` has, for all `d ≥ slabDimThreshold c β`, **at least two distinct
+work heads** that each make a completed hop of spatial excursion strictly greater than
+`slabSmallExcursion c β k * L`. -/
+theorem twoMacroscopicHeads_of_oblivious_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
+    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
+    {d : ℕ} (hd : slabDimThreshold c β ≤ d) {T : ℕ}
+    (hobl : ObliviousLinTime M d (entryBits d) c T) :
+    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
+      HasHopExcursionGT ((traceAt M (inputLength d)).work j₁) T
+        (slabSmallExcursion c β k * (inputLength d : ℝ)) ∧
+      HasHopExcursionGT ((traceAt M (inputLength d)).work j₂) T
+        (slabSmallExcursion c β k * (inputLength d : ℝ)) := by
+  obtain ⟨htrAt, hT_eq, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hobl
+  obtain ⟨j₁, j₂, hne, hh₁, hh₂⟩ :=
+    twoMacroscopicHeads_of_linearTimeTransposer hc hβ k M hMk hvw
+      (slabAutonomyEps_pos c β) hd htrAt hprob1
+  rw [hT_eq] at hh₁ hh₂
+  exact ⟨j₁, j₂, hne, hh₁, hh₂⟩
+
+/-! ### Two Heads with Linearly Many Long Revisits (Theorem 4.1 / Theorem H(b), Counting Form) -/
+
+/-- Earlier ends `p < T` of revisit hops `(p, u)` of `y` whose excursion exceeds `H`
+(`∃ t ∈ Ioo p u, H < |y t - y p|`); `offCarrierLargeLowers` is the union of these sets over the work
+heads outside the carrier set. A step is the earlier end of at most one hop of `y`. -/
+noncomputable def largeLowers (y : ℕ → ℤ) (T H : ℕ) : Finset ℕ := by
+  classical
+  exact (Finset.range T).filter fun p =>
+    ∃ u, IsHop y T p u ∧ ∃ t ∈ Finset.Ioo p u, (H : ℤ) < |y t - y p|
+
+theorem offCarrierLargeLowers_eq_biUnion {k : ℕ} (xs : Fin k → ℕ → ℤ) (S_free : Finset (Fin k))
+    (T H : ℕ) :
+    offCarrierLargeLowers xs S_free T H =
+      (Finset.univ \ S_free).biUnion fun j => largeLowers (xs j) T H := rfl
+
+/-- **Theorem H(c) with `B` the target set**: for every set `S_free` of at most one work head and
+every `H ≤ ⌊slabSmallExcursion c β k * L⌋₊`, the earlier ends of revisits of excursion greater than
+`H` on the work heads outside `S_free` number at least `(slabAutonomyEps c β - η) * L / (β + 1)`.
+The target set separates itself from every source set, so Theorem H(c) applies with `B` equal to it. -/
+theorem offCarrier_longRevisits_card_ge {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
+    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
+    {η : ℝ} {d : ℕ} (hd : slabDimThreshold c β ≤ d)
+    (htr : TransposesAt M d c) {τ₀ : Trace M.k}
+    (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀)
+    (S_free : Finset (Fin M.k)) (hS_card : S_free.card ≤ 1)
+    {H : ℕ} (hH : H ≤ ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊) :
+    (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤
+      (β + 1) * ((offCarrierLargeLowers τ₀.work S_free τ₀.haltTime H).card : ℝ) := by
+  classical
+  obtain ⟨V_star, _, _, hsep⟩ := offCarrier_vertexExpansion_of_linearTimeTransposer hc hβ k M hMk
+    hvw hd htr hprob S_free hS_card hH
+  set Dst := offCarrierLargeLowers τ₀.work S_free τ₀.haltTime H
+  -- Every dependency path ending in `Dst` meets `Dst` at its last vertex.
+  have h := hsep Dst fun π t₀ _ _ hdst => ⟨_, getLastD_mem_cons_self t₀ π, hdst⟩
+  have hinter : (((Dst ∩ ((V_star.image (tposOf d (entryBits d))).image
+      fun r : Fin (d * d * entryBits d) => appendTime τ₀ τ₀.haltTime r.1)).card : ℕ) : ℝ) ≤
+      (Dst.card : ℝ) := by
+    exact_mod_cast Finset.card_le_card Finset.inter_subset_left
+  show (slabAutonomyEps c β - η) * ((d * d * entryBits d : ℕ) : ℝ) ≤ _
+  linarith
+
+/-- **Theorem 4.1 (Theorem H(b), two heads with linearly many long revisits, low-adaptivity form)**:
+every linear-time transposer (`TransposesAt M d c`) with `M.k ≤ k`, `(valueWidth M : ℝ) ≤ β`, and a
+trace `τ₀` of probability `≥ 2^{-η L}` (`η < slabAutonomyEps c β`) has, for all
+`d ≥ slabDimThreshold c β`, **two distinct work heads** each of which is the earlier end of a revisit
+of excursion greater than `⌊slabSmallExcursion c β k * L⌋₊` at no fewer than
+`(slabAutonomyEps c β - η) * L / ((β + 1) * (k - 1))` steps. Let `j₁` be a head with the most such
+steps: `offCarrier_longRevisits_card_ge` off `{j₁}` and pigeonhole over the other `≤ k - 1` heads
+give `j₂`. -/
+theorem twoHeads_manyLongRevisits_of_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
+    (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
+    {η : ℝ} (hη : η < slabAutonomyEps c β)
+    {d : ℕ} (hd : slabDimThreshold c β ≤ d)
+    (htr : TransposesAt M d c)
+    {τ₀ : Trace M.k}
+    (hprob : (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) :
+    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
+      (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤ (β + 1) * ((k : ℝ) - 1) *
+        ((largeLowers (τ₀.work j₁) τ₀.haltTime
+          ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊).card : ℝ) ∧
+      (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤ (β + 1) * ((k : ℝ) - 1) *
+        ((largeLowers (τ₀.work j₂) τ₀.haltTime
+          ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊).card : ℝ) := by
+  classical
+  set H₀ := ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊
+  set cnt : Fin M.k → ℕ := fun j => (largeLowers (τ₀.work j) τ₀.haltTime H₀).card
+  have hd1 : 1 ≤ d := le_trans (by norm_num) ((ten_le_slabDimThreshold c β).trans hd)
+  have hL_pos : (0 : ℝ) < (inputLength d : ℝ) := by
+    exact_mod_cast inputLength_pos (by omega : 0 < d)
+  have hgap : 0 < (slabAutonomyEps c β - η) * (inputLength d : ℝ) :=
+    mul_pos (sub_pos.mpr hη) hL_pos
+  have hβ1 : 0 < β + 1 := by linarith
+  -- Off every set `S` of at most one head: `(ε_* - η) L ≤ (β + 1) ∑_{j ∉ S} cnt j`.
+  have hoff : ∀ S : Finset (Fin M.k), S.card ≤ 1 →
+      (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤
+        (β + 1) * ∑ j ∈ Finset.univ \ S, (cnt j : ℝ) := by
+    intro S hS
+    have h := offCarrier_longRevisits_card_ge hc hβ k M hMk hvw hd htr hprob S hS le_rfl
+    have hsum : ((offCarrierLargeLowers τ₀.work S τ₀.haltTime H₀).card : ℝ) ≤
+        ∑ j ∈ Finset.univ \ S, (cnt j : ℝ) := by
+      rw [offCarrierLargeLowers_eq_biUnion]
+      exact_mod_cast Finset.card_biUnion_le
+    exact h.trans (mul_le_mul_of_nonneg_left hsum hβ1.le)
+  -- `j₁`: a head with the most long-revisit steps.
+  have huniv : (Finset.univ : Finset (Fin M.k)).Nonempty := by
+    by_contra hemp
+    have h := hoff ∅ (by simp)
+    rw [Finset.sdiff_empty, Finset.not_nonempty_iff_eq_empty.mp hemp, Finset.sum_empty,
+      mul_zero] at h
+    linarith
+  obtain ⟨j₁, -, hj₁⟩ := Finset.exists_max_image Finset.univ cnt huniv
+  -- `j₂`: a head other than `j₁` with the most long-revisit steps.
+  have hoff₁ := hoff {j₁} (Finset.card_singleton j₁).le
+  have hrest : (Finset.univ \ {j₁}).Nonempty := by
+    by_contra hemp
+    rw [Finset.not_nonempty_iff_eq_empty.mp hemp, Finset.sum_empty, mul_zero] at hoff₁
+    linarith
+  obtain ⟨j₂, hj₂, hj₂max⟩ := Finset.exists_max_image (Finset.univ \ {j₁}) cnt hrest
+  have hne : j₁ ≠ j₂ := fun h => (Finset.mem_sdiff.mp hj₂).2 (Finset.mem_singleton.mpr h.symm)
+  have hcard : ((Finset.univ \ {j₁}).card : ℝ) ≤ (k : ℝ) - 1 := by
+    have h1 := Finset.card_sdiff_add_card_eq_card (Finset.subset_univ {j₁})
+    rw [Finset.card_univ, Fintype.card_fin, Finset.card_singleton] at h1
+    have h2 : ((Finset.univ \ {j₁}).card : ℝ) + 1 ≤ (k : ℝ) := by exact_mod_cast h1.trans_le hMk
+    linarith
+  have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := (Nat.cast_nonneg _).trans hcard
+  have hsum₂ : ∑ j ∈ Finset.univ \ {j₁}, (cnt j : ℝ) ≤ ((k : ℝ) - 1) * (cnt j₂ : ℝ) := by
+    calc ∑ j ∈ Finset.univ \ {j₁}, (cnt j : ℝ)
+        ≤ ∑ _j ∈ Finset.univ \ {j₁}, (cnt j₂ : ℝ) :=
+          Finset.sum_le_sum fun j hj => by exact_mod_cast hj₂max j hj
+      _ = ((Finset.univ \ {j₁}).card : ℝ) * (cnt j₂ : ℝ) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ ((k : ℝ) - 1) * (cnt j₂ : ℝ) := mul_le_mul_of_nonneg_right hcard (Nat.cast_nonneg _)
+  have h₂ : (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤
+      (β + 1) * ((k : ℝ) - 1) * (cnt j₂ : ℝ) := by
+    calc (slabAutonomyEps c β - η) * (inputLength d : ℝ)
+        ≤ (β + 1) * ∑ j ∈ Finset.univ \ {j₁}, (cnt j : ℝ) := hoff₁
+      _ ≤ (β + 1) * (((k : ℝ) - 1) * (cnt j₂ : ℝ)) := mul_le_mul_of_nonneg_left hsum₂ hβ1.le
+      _ = (β + 1) * ((k : ℝ) - 1) * (cnt j₂ : ℝ) := by ring
+  have h₁ : (slabAutonomyEps c β - η) * (inputLength d : ℝ) ≤
+      (β + 1) * ((k : ℝ) - 1) * (cnt j₁ : ℝ) :=
+    h₂.trans (mul_le_mul_of_nonneg_left (by exact_mod_cast hj₁ j₂ (Finset.mem_univ _))
+      (mul_nonneg hβ1.le hk1))
+  exact ⟨j₁, j₂, hne, h₁, h₂⟩
+
+/-- **Theorem 4.1 (Theorem H(b), two heads with linearly many long revisits, oblivious form)**:
+every oblivious linear-time transposer (`ObliviousLinTime M d (entryBits d) c T`) with `M.k ≤ k`
+and `(valueWidth M : ℝ) ≤ β` has, for all `d ≥ slabDimThreshold c β`, **two distinct work heads**
+each of which is, on the common trace, the earlier end of a revisit of excursion greater than
+`⌊slabSmallExcursion c β k * L⌋₊` at no fewer than `slabAutonomyEps c β * L / ((β + 1) * (k - 1))`
+steps. -/
+theorem twoHeads_manyLongRevisits_of_oblivious_linearTimeTransposer {c β : ℝ} (hc : 1 ≤ c)
+    (hβ : 1 ≤ β) (k : ℕ) (M : TM) (hMk : M.k ≤ k) (hvw : (valueWidth M : ℝ) ≤ β)
+    {d : ℕ} (hd : slabDimThreshold c β ≤ d) {T : ℕ}
+    (hobl : ObliviousLinTime M d (entryBits d) c T) :
+    ∃ j₁ j₂ : Fin M.k, j₁ ≠ j₂ ∧
+      slabAutonomyEps c β * (inputLength d : ℝ) ≤ (β + 1) * ((k : ℝ) - 1) *
+        ((largeLowers ((traceAt M (inputLength d)).work j₁) T
+          ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊).card : ℝ) ∧
+      slabAutonomyEps c β * (inputLength d : ℝ) ≤ (β + 1) * ((k : ℝ) - 1) *
+        ((largeLowers ((traceAt M (inputLength d)).work j₂) T
+          ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊).card : ℝ) := by
+  obtain ⟨htrAt, hT_eq, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hobl
+  obtain ⟨j₁, j₂, hne, h₁, h₂⟩ :=
+    twoHeads_manyLongRevisits_of_linearTimeTransposer hc hβ k M hMk hvw
+      (slabAutonomyEps_pos c β) hd htrAt hprob1
+  rw [hT_eq, sub_zero] at h₁ h₂
+  exact ⟨j₁, j₂, hne, h₁, h₂⟩
+
+/-! ### Corollary 4.2 -/
+
+private theorem hopExcursionLEOn_mono {y : ℕ → ℤ} {lo hi H₁ H₂ : ℕ} (hH : H₁ ≤ H₂)
+    (hhop : HopExcursionLEOn y lo hi H₁) :
+    HopExcursionLEOn y lo hi H₂ :=
+  fun p u hlo hhi hh t hpt htu => (hhop p u hlo hhi hh t hpt htu).trans (by exact_mod_cast hH)
+
+/-- **Corollary 4.2 (low-adaptivity sublinear-excursion form)**:
+for any `H(d) = o(inputLength d)`, there is `d₁` above which no machine with `M.k ≤ k` and
+`(valueWidth M : ℝ) ≤ β` can transpose in time `c (L + 1)` with a trace of probability
+`≥ 2^{-η L}` (`η < slabAutonomyEps c β`) whose work heads outside at most one unrestricted head
+have hop excursion `≤ H(d)`. -/
+theorem oneFreeHead_sublinearExcursion_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ)
+    {H : ℕ → ℕ}
+    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
+    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
+      ∀ η < slabAutonomyEps c β, ∀ d ≥ d₁,
+        ¬ (TransposesAt M d c ∧
+          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
+            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
+            S_free.card ≤ 1 ∧
+            ∀ j : Fin M.k, j ∉ S_free →
+              HopExcursionLEOn (τ₀.work j) 0 τ₀.haltTime (H d)) := by
+  have hε_sm : 0 < slabSmallExcursion c β k := slabSmallExcursion_pos (by positivity) k
+  have hev := (tendsto_order.mp hH).2 (slabSmallExcursion c β k) hε_sm
+  rw [Filter.eventually_atTop] at hev
+  obtain ⟨d_H, hd_H⟩ := hev
+  refine ⟨max (slabDimThreshold c β) d_H, fun M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hp, hS, hh⟩ => ?_⟩
+  have hd_thr : slabDimThreshold c β ≤ d := le_of_max_le_left hd
+  have hd1 : 1 ≤ d := by
+    have := ten_le_slabDimThreshold c β
+    omega
+  have hL_pos : (0 : ℝ) < (inputLength d : ℝ) := by
+    exact_mod_cast inputLength_pos (by omega : 0 < d)
+  have hH_le : H d ≤ ⌊slabSmallExcursion c β k * (inputLength d : ℝ)⌋₊ := by
+    apply Nat.le_floor
+    exact ((div_lt_iff₀ hL_pos).mp (hd_H d (le_of_max_le_right hd))).le
+  exact oneFreeHead_smallExcursion_excludes hc hβ k M hMk hvw η hη d hd_thr
+    ⟨htr, τ₀, S_free, hp, hS, fun j hj => hopExcursionLEOn_mono hH_le (hh j hj)⟩
+
+/-- **Corollary 4.2 (oblivious sublinear-excursion form)**:
+specialization of `oneFreeHead_sublinearExcursion_excludes` to `ObliviousLinTime` (`η = 0`). -/
+theorem oneFreeHead_sublinearExcursion_oblivious_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β)
+    (k : ℕ) {H : ℕ → ℕ}
+    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
+    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β → ∀ d ≥ d₁, ∀ T : ℕ,
+      ¬ (ObliviousLinTime M d (entryBits d) c T ∧
+        ∃ S_free : Finset (Fin M.k),
+          S_free.card ≤ 1 ∧
+          ∀ j : Fin M.k, j ∉ S_free →
+            HopExcursionLEOn ((traceAt M (inputLength d)).work j) 0 T (H d)) := by
+  obtain ⟨d₁, hexcl⟩ := oneFreeHead_sublinearExcursion_excludes hc hβ k hH
+  refine ⟨d₁, fun M hMk hvw d hd T ⟨hoblT, S_free, hS, hh⟩ => ?_⟩
+  obtain ⟨htrAt, hT_eq, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hoblT
+  exact hexcl M hMk hvw 0 (slabAutonomyEps_pos c β) d hd
+    ⟨htrAt, traceAt M (inputLength d), S_free, hprob1, hS, fun j hj => by rw [hT_eq]; exact hh j hj⟩
+
+/-- Every complete-family height bound `famd ≤ H` outside `S_free` implies `HopExcursionLEOn _ 0 T H`
+outside `S_free`. -/
+theorem hopExcursionLEOn_of_famd_le {k T H : ℕ} {xs : Fin k → ℕ → ℤ} (hx : ∀ h, IsWalk (xs h))
+    {S_free : Finset (Fin k)}
+    (hfam : ∀ F : Keys xs (allHops xs T) (owners xs), F.1.1 ∉ S_free →
+      famd xs (allHops xs T) (owners xs) F ≤ H) :
+    ∀ j : Fin k, j ∉ S_free → HopExcursionLEOn (xs j) 0 T H := by
+  intro j hj p u _ _ hhop t hpt htu
+  let η : Fin k × ℕ × ℕ := (j, p, u)
+  have hη : η ∈ allHops xs T := mem_allHops.mpr hhop
+  let F : Keys xs (allHops xs T) (owners xs) :=
+    ⟨key xs (owners xs) η, Finset.mem_image_of_mem _ hη⟩
+  have hη_fam : η ∈ fam xs (allHops xs T) (owners xs) F.1 :=
+    Finset.mem_filter.mpr ⟨hη, rfl⟩
+  have hF_not : F.1.1 ∉ S_free := hj
+  exact (hop_excursion_le_famd hx F hη_fam hpt htu).trans (by exact_mod_cast hfam F hF_not)
+
+/-- **Corollary 4.2 (`BoundedNesting` family-height form, low-adaptivity)**:
+if every complete family `F` outside at most one unrestricted work head has height
+`famd ≤ H(d) = o(L)` (with no bound on `OwnerLoadLE`, cell entries, or scale-window count `q`),
+transposition fails for all `d ≥ d₁` whenever `η < slabAutonomyEps c β`. -/
+theorem oneFreeHead_sublinearFamHeight_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) (k : ℕ)
+    {H : ℕ → ℕ}
+    (hH : Tendsto (fun d : ℕ => (H d : ℝ) / (inputLength d : ℝ)) atTop (nhds 0)) :
+    ∃ d₁ : ℕ, ∀ M : TM, M.k ≤ k → (valueWidth M : ℝ) ≤ β →
+      ∀ η < slabAutonomyEps c β, ∀ d ≥ d₁,
+        ¬ (TransposesAt M d c ∧
+          ∃ (τ₀ : Trace M.k) (S_free : Finset (Fin M.k)),
+            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀ ∧
+            S_free.card ≤ 1 ∧
+            ∀ F : Keys τ₀.work (allHops τ₀.work τ₀.haltTime) (owners τ₀.work),
+              F.1.1 ∉ S_free →
+              famd τ₀.work (allHops τ₀.work τ₀.haltTime) (owners τ₀.work) F ≤ H d) := by
+  obtain ⟨d₁, hexcl⟩ := oneFreeHead_sublinearExcursion_excludes hc hβ k hH
+  refine ⟨d₁, fun M hMk hvw η hη d hd ⟨htr, τ₀, S_free, hp, hS, hfam⟩ => ?_⟩
+  exact hexcl M hMk hvw η hη d hd
+    ⟨htr, τ₀, S_free, hp, hS, hopExcursionLEOn_of_famd_le τ₀.work_isWalk hfam⟩
+
+/-- **Corollary 4.2 (`M.k ≤ 1` low-adaptivity exclusion)**:
+no machine with at most one work tape (`M.k ≤ 1`) and `(valueWidth M : ℝ) ≤ β` can transpose in
+time `c (L + 1)` with a trace of probability `≥ 2^{-η L}` (`η < slabAutonomyEps c β`) for any
+`d ≥ slabDimThreshold c β`. -/
+theorem atMostOneWorkTape_lowAdaptivity_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) :
+    ∀ M : TM, M.k ≤ 1 → (valueWidth M : ℝ) ≤ β →
+      ∀ η < slabAutonomyEps c β, ∀ d ≥ slabDimThreshold c β,
+        ¬ (TransposesAt M d c ∧
+          ∃ τ₀ : Trace M.k,
+            (2 : ℝ) ^ (-η * (inputLength d : ℝ)) ≤ traceProb M (inputLength d) τ₀) := by
+  intro M hMk hvw η hη d hd ⟨htr, τ₀, hprob⟩
+  refine oneFreeHead_smallExcursion_excludes hc hβ 1 M hMk hvw η hη d hd
+    ⟨htr, τ₀, Finset.univ, hprob, ?_, fun j hj => absurd (Finset.mem_univ j) hj⟩
+  simpa using hMk
+
+/-- **Corollary 4.2 (`M.k ≤ 1` oblivious exclusion)**:
+no oblivious linear-time machine with `M.k ≤ 1` and `(valueWidth M : ℝ) ≤ β` transposes at
+dimension `d ≥ slabDimThreshold c β`. -/
+theorem atMostOneWorkTape_oblivious_excludes {c β : ℝ} (hc : 1 ≤ c) (hβ : 1 ≤ β) :
+    ∀ M : TM, M.k ≤ 1 → (valueWidth M : ℝ) ≤ β →
+      ∀ d ≥ slabDimThreshold c β, ∀ T : ℕ,
+        ¬ ObliviousLinTime M d (entryBits d) c T := by
+  intro M hMk hvw d hd T hoblT
+  obtain ⟨htrAt, _, hprob1⟩ := obliviousLinTime_to_transposesAt_prob hoblT
+  exact atMostOneWorkTape_lowAdaptivity_excludes hc hβ M hMk hvw 0
+    (slabAutonomyEps_pos c β) d hd ⟨htrAt, traceAt M (inputLength d), hprob1⟩
 
 end NativeRelations

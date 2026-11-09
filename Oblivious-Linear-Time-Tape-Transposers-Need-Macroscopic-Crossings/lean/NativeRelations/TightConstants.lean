@@ -9,10 +9,15 @@ thresholds (`exists_commonRefinement_cell_core`, `timePullback_commonRefinement_
 counts valid phase-exit chains and single-cell guards sharply (`sharpFamCount`,
 `sharpCellGuardThresh`), and proves the genie-free `coneSystem` bridge
 (`exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H`), Theorem D
-(`linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight`), Theorem X
-(`obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight`), Theorem S
-(`obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight`), and Theorem E
-(`frozenTrace_macroscopicCrossingLowers_menger_lb_tight`, `simulator_heavyTrace_expansion_and_skeleton_tight`).
+(`linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight`,
+`linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight`), Theorem X from Theorem D on any trace
+with a cone deficit (`linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight`,
+`obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight`), Theorem S
+(`obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight`), Theorem E
+(`frozenTrace_crossingLowerGT2H_menger_lb_tight`, `frozenTrace_macroscopicCrossingLowers_menger_lb_tight`,
+`simulator_heavyTrace_expansion_and_skeleton_tight`), and their forms for machines that transpose only
+a set of at least `2^{(1-η)L}` inputs (`correctSubset_crossingLowerGT2H_menger_lb_tight`,
+`obliviousOn_correctSubset_macroscopicCrossingLowers_menger_lb_tight`).
 -/
 
 set_option autoImplicit false
@@ -564,20 +569,8 @@ theorem sharpCounts_small_values :
     (sharpCellGuardThresh 1 = 26 ∧ sharpCellGuardThresh 2 = 266 ∧ sharpCellGuardThresh 3 = 2532) :=
   ⟨⟨rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl⟩⟩
 
-/-- Universal singly-exponential upper bound `chainCapAt k n ≤ 3 ^ n` and
-`sharpFamCount k ≤ sharpChainCount k ≤ 3 ^ (2 * k + 1)` for **every** `k : ℕ`. -/
-theorem sharpChainCount_le_pow_three (k : ℕ) :
-    sharpFamCount k ≤ sharpChainCount k ∧ sharpChainCount k ≤ 3 ^ (2 * k + 1) := by
-  have hfam : sharpFamCount k ≤ sharpChainCount k := by
-    unfold sharpFamCount
-    rw [sharpNonEmptyChains_eq_sum, sharpChainCount_eq_sum]
-    rw [sum_range_succ']
-    have hc0 : chainCapAt k 0 - 1 = 0 := rfl
-    rw [hc0, add_zero]
-    rw [sum_range_succ' (chainCapAt k) (2 * k)]
-    have hc0' : chainCapAt k 0 = 1 := rfl
-    rw [hc0', add_comm _ 1]
-    exact Nat.add_le_add_left (sum_le_sum fun m _ => Nat.sub_le _ _) 1
+/-- Universal singly-exponential bound `chainCapAt k n ≤ 3 ^ n` for **every** `k, n : ℕ`. -/
+theorem chainCapAt_le_pow_three (k n : ℕ) : chainCapAt k n ≤ 3 ^ n := by
   have hpow_id : ∀ n : ℕ, 1 + ∑ m ∈ range (n + 1), (n + 1 - m) * 3 ^ m ≤ 3 ^ (n + 1) := by
     intro n
     induction n with
@@ -607,19 +600,32 @@ theorem sharpChainCount_le_pow_three (k : ℕ) :
       rw [hsplit]
       have hpow_succ : 3 ^ (n + 2) = 3 * 3 ^ (n + 1) := by ring
       omega
-  have hcap_pow : ∀ n : ℕ, chainCapAt k n ≤ 3 ^ n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-      rcases n with _ | n
-      · simp
-      · rw [chainCapAt_succ]
-        have hle_sum : ∑ m ∈ range (n + 1), min k (n + 1 - m) * chainCapAt k m ≤
-            ∑ m ∈ range (n + 1), (n + 1 - m) * 3 ^ m := by
-          refine sum_le_sum fun m hm => ?_
-          have hm_lt : m < n + 1 := mem_range.mp hm
-          exact Nat.mul_le_mul (Nat.min_le_right _ _) (ih m hm_lt)
-        exact (Nat.add_le_add_left hle_sum 1).trans (hpow_id n)
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    rcases n with _ | n
+    · simp
+    · rw [chainCapAt_succ]
+      have hle_sum : ∑ m ∈ range (n + 1), min k (n + 1 - m) * chainCapAt k m ≤
+          ∑ m ∈ range (n + 1), (n + 1 - m) * 3 ^ m := by
+        refine sum_le_sum fun m hm => ?_
+        have hm_lt : m < n + 1 := mem_range.mp hm
+        exact Nat.mul_le_mul (Nat.min_le_right _ _) (ih m hm_lt)
+      exact (Nat.add_le_add_left hle_sum 1).trans (hpow_id n)
+
+/-- Universal singly-exponential upper bound
+`sharpFamCount k ≤ sharpChainCount k ≤ 3 ^ (2 * k + 1)` for **every** `k : ℕ`. -/
+theorem sharpChainCount_le_pow_three (k : ℕ) :
+    sharpFamCount k ≤ sharpChainCount k ∧ sharpChainCount k ≤ 3 ^ (2 * k + 1) := by
+  have hfam : sharpFamCount k ≤ sharpChainCount k := by
+    unfold sharpFamCount
+    rw [sharpNonEmptyChains_eq_sum, sharpChainCount_eq_sum]
+    rw [sum_range_succ']
+    have hc0 : chainCapAt k 0 - 1 = 0 := rfl
+    rw [hc0, add_zero]
+    rw [sum_range_succ' (chainCapAt k) (2 * k)]
+    have hc0' : chainCapAt k 0 = 1 := rfl
+    rw [hc0', add_comm _ 1]
+    exact Nat.add_le_add_left (sum_le_sum fun m _ => Nat.sub_le _ _) 1
   refine ⟨hfam, ?_⟩
   rw [sharpChainCount_eq_sum]
   have hgeom2 : ∑ n ∈ range (2 * k + 1), 3 ^ n ≤ 3 ^ (2 * k + 1) := by
@@ -629,7 +635,56 @@ theorem sharpChainCount_le_pow_three (k : ℕ) :
       | succ r ihr => rw [sum_range_succ, Nat.mul_add, ← add_assoc, ihr]; ring
     have := h2 (2 * k + 1)
     omega
-  exact (sum_le_sum fun n _ => hcap_pow n).trans hgeom2
+  exact (sum_le_sum fun n _ => chainCapAt_le_pow_three k n).trans hgeom2
+
+/-- `ν_k(n) ≤ (n + 1) χ_k(n)`: summed over the cut-valid chains from cumulative cut weight `n`,
+`steps.length + 1 ≤ n + 1`. -/
+theorem nodeCapAt_le_succ_mul_chainCapAt (k n : ℕ) : nodeCapAt k n ≤ (n + 1) * chainCapAt k n := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    rcases n with _ | n
+    · simp
+    · rw [nodeCapAt_succ, chainCapAt_succ]
+      have hle : ∑ m ∈ range (n + 1), min k (n + 1 - m) * (nodeCapAt k m + chainCapAt k m) ≤
+          (n + 2) * ∑ m ∈ range (n + 1), min k (n + 1 - m) * chainCapAt k m := by
+        rw [Finset.mul_sum]
+        refine sum_le_sum fun m hm => ?_
+        have hm_lt : m < n + 1 := mem_range.mp hm
+        calc min k (n + 1 - m) * (nodeCapAt k m + chainCapAt k m)
+            ≤ min k (n + 1 - m) * ((m + 2) * chainCapAt k m) :=
+              Nat.mul_le_mul_left _ (by linarith [ih m hm_lt])
+          _ = (m + 2) * (min k (n + 1 - m) * chainCapAt k m) := by ring
+          _ ≤ (n + 2) * (min k (n + 1 - m) * chainCapAt k m) :=
+              Nat.mul_le_mul_right _ (by omega)
+      nlinarith
+
+/-- **Singly-exponential guard count `g(k) = sharpCellGuardThresh k ≤ (2k + 1) 3^(2k+1)`:**
+from `ν_k(n) ≤ (n + 1) χ_k(n) ≤ (n + 1) 3^n` and `4 ∑_{n ≤ N} (n + 1) 3^n = (2N + 1) 3^(N+1) + 1`. -/
+theorem sharpCellGuardThresh_le_pow_three (k : ℕ) :
+    sharpCellGuardThresh k ≤ (2 * k + 1) * 3 ^ (2 * k + 1) := by
+  have hsum : ∀ N : ℕ,
+      4 * ∑ n ∈ range (N + 1), (n + 1) * 3 ^ n = (2 * N + 1) * 3 ^ (N + 1) + 1 := by
+    intro N
+    induction N with
+    | zero => simp
+    | succ N ih => rw [sum_range_succ, Nat.mul_add, ih]; ring
+  have hnode : ∑ n ∈ range (2 * k + 1), nodeCapAt k n ≤
+      ∑ n ∈ range (2 * k + 1), (n + 1) * 3 ^ n :=
+    sum_le_sum fun n _ => (nodeCapAt_le_succ_mul_chainCapAt k n).trans
+      (Nat.mul_le_mul_left _ (chainCapAt_le_pow_three k n))
+  have hpow : ∀ j : ℕ, 4 * j + 1 ≤ 3 ^ (2 * j + 1) := by
+    intro j
+    induction j with
+    | zero => norm_num
+    | succ j ih =>
+      rw [show 2 * (j + 1) + 1 = 2 * j + 1 + 2 by ring, pow_add]
+      norm_num
+      linarith
+  have h4 := hsum (2 * k)
+  have h3 := hpow k
+  unfold sharpCellGuardThresh
+  rw [sharpChainNodeSum_eq_sum]
+  nlinarith
 
 /-- Tightened micro-hop step guard cardinality `(microHopStepGuard τ₀ T H ψ).card ≤ 4 * k * H + k + 1`
 (`holds for ALL k, H : ℕ without needing 1 ≤ H, improving (5 * k + 1) * H`). -/
@@ -2183,18 +2238,63 @@ noncomputable def bridgeMenger_d0_tight (k : ℕ) (C α : ℝ) : ℕ :=
 noncomputable def rowWidthMenger_d0_tight (M : TM) (C α : ℝ) : ℕ :=
   max (bridgeMenger_d0_tight M.k C α) ⌈1 / thetaMacro_tight M C α⌉₊
 
-/-- Explicit dimension threshold for Theorem X (`1.12 × 10⁹` at `k = 2, C = α = 1, w_val = 8`!). -/
+/-- Explicit dimension threshold for Theorem X: the bridge threshold and `⌈θ^(-1/2)⌉₊`, which gives
+`θ L ≥ 1` because `L = d² b ≥ d²` (`= 90953` at `k = 2, C = α = 1, w_val = 8`, where
+`⌈θ^(-1/2)⌉₊ = 23714`). -/
 noncomputable def d0Macro_tight (M : TM) (C α : ℝ) : ℕ :=
-  max (bridgeMenger_d0_tight M.k C α) ⌈2 / thetaMacro_tight M C α⌉₊
+  max (bridgeMenger_d0_tight M.k C α) ⌈Real.sqrt (1 / thetaMacro_tight M C α)⌉₊
 
 /-- Tightened `d`-independent macroscopic skeleton turn/length cap `M_max = ⌊16 * C / θ_macro_tight⌋₊`
 (Lemma 6.3 tight; `9.00 × 10⁹` at `k = 2, C = α = 1, w_val = 8` vs tower-type!). -/
 noncomputable def skeletonMachineMaxLen_tight (M : TM) (C α : ℝ) : ℕ :=
   skeletonMaxLen C (thetaMacro_tight M C α)
 
-/-- Explicit dimension threshold for Theorem S (`finite crossing-capable skeleton + single leg`). -/
+/-- Explicit dimension threshold for Theorem S (`finite crossing-capable skeleton + single leg`):
+`d0Macro_tight` and `⌈(8 / θ)^(1/2)⌉₊`, which gives `θ L ≥ 8` (`= 90953` at `k = 2, C = α = 1,
+w_val = 8`, where `⌈(8 / θ)^(1/2)⌉₊ = 67071`). -/
 noncomputable def skeleton_d0Macro_tight (M : TM) (C α : ℝ) : ℕ :=
-  max (d0Macro_tight M C α) ⌈8 / thetaMacro_tight M C α⌉₊
+  max (d0Macro_tight M C α) ⌈Real.sqrt (8 / thetaMacro_tight M C α)⌉₊
+
+/-- `d ≥ ⌈√(a / θ)⌉₊` gives `a ≤ θ L` for `L = d * d * b`, `b ≥ 1`. -/
+private theorem le_mul_of_ceil_sqrt_div_le {θ a : ℝ} {d b : ℕ} (hθ : 0 < θ) (ha : 0 ≤ a)
+    (hb : 1 ≤ b) (hd : ⌈Real.sqrt (a / θ)⌉₊ ≤ d) : a ≤ θ * ((d * d * b : ℕ) : ℝ) := by
+  have hs : Real.sqrt (a / θ) ≤ (d : ℝ) := (Nat.le_ceil _).trans (by exact_mod_cast hd)
+  have hsq : a / θ ≤ (d : ℝ) * (d : ℝ) := by
+    have h0 := Real.sqrt_nonneg (a / θ)
+    have := Real.sq_sqrt (div_nonneg ha hθ.le)
+    nlinarith
+  have hb' : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hb
+  have h1 : a ≤ θ * ((d : ℝ) * (d : ℝ)) := by rw [div_le_iff₀ hθ] at hsq; linarith
+  have hdd : (0 : ℝ) ≤ θ * ((d : ℝ) * (d : ℝ)) := by positivity
+  push_cast
+  nlinarith
+
+/-- `d ≥ ⌈1 / θ⌉₊` gives `W = d * b ≤ θ L` for `L = d * d * b`. -/
+private theorem rowWidth_le_mul_of_ceil_inv_le {θ : ℝ} {d b : ℕ} (hθ : 0 < θ)
+    (hd : ⌈1 / θ⌉₊ ≤ d) : ((d * b : ℕ) : ℝ) ≤ θ * ((d * d * b : ℕ) : ℝ) := by
+  have h1 : 1 ≤ θ * (d : ℝ) := by
+    have hge : 1 / θ ≤ (d : ℝ) := (Nat.le_ceil _).trans (by exact_mod_cast hd)
+    rw [div_le_iff₀ hθ] at hge
+    linarith
+  calc ((d * b : ℕ) : ℝ) = 1 * ((d * b : ℕ) : ℝ) := (one_mul _).symm
+    _ ≤ (θ * (d : ℝ)) * ((d * b : ℕ) : ℝ) := mul_le_mul_of_nonneg_right h1 (Nat.cast_nonneg _)
+    _ = θ * ((d * d * b : ℕ) : ℝ) := by push_cast; ring
+
+/-- `H_* = ⌊x⌋₊` with `x ≥ 1` satisfies `1 ≤ H_*`, `H_* ≤ x` and `x ≤ 2 H_*`. -/
+private theorem floor_bounds_of_one_le {x : ℝ} (hx : 1 ≤ x) :
+    1 ≤ ⌊x⌋₊ ∧ (⌊x⌋₊ : ℝ) ≤ x ∧ x ≤ ((2 * ⌊x⌋₊ : ℕ) : ℝ) := by
+  have h1 : 1 ≤ ⌊x⌋₊ := Nat.le_floor (by exact_mod_cast hx)
+  have h1r : (1 : ℝ) ≤ (⌊x⌋₊ : ℝ) := by exact_mod_cast h1
+  refine ⟨h1, Nat.floor_le (by linarith), ?_⟩
+  have := Nat.lt_floor_add_one x
+  push_cast
+  linarith
+
+/-- The bridge threshold is at least `1` at every positive density. -/
+private theorem one_le_tightBridge_d0 (k : ℕ) (C : ℝ) {α : ℝ} (hα : 0 < α) :
+    1 ≤ tightBridge_d0 k C α := by
+  unfold tightBridge_d0
+  exact Nat.ceil_pos.mpr (by positivity)
 
 /-- **Zero-Genie Oblivious `coneSystem` Acyclic Deficit Bound:**
 On any `ObliviousLinTime M d b C T` trace, cutting any step set `Γ` yields an `(valueWidth M * |Γ|)`-bit
@@ -2212,6 +2312,57 @@ theorem obliviousLinTime_coneSystem_isAcyclicIn_card_le {M : TM} {d b T : ℕ} {
   have hbits := indexCode_bits_ge_of_isAcyclicIn hE hacyc
   simpa [Nat.cast_mul] using hbits
 
+/-- The empty set is acyclic in every relation. -/
+private theorem isAcyclicIn_empty_of {V : Type*} (N : V → Finset V) : HalfRate.IsAcyclicIn N ∅ :=
+  fun _ hT hne => by
+    obtain ⟨x, hx⟩ := hne
+    exact absurd (hT hx) (Finset.notMem_empty x)
+
+/-- **Theorem D, implication form, for every cut ratio `c < 1`:**
+On **any** `k`-tape linear-time trace `τ₀` (`zero transposition hypothesis`), for every `1 ≤ H`, every
+`V₀` with `|V₀| ≥ α L` and every `d ≥ tightBridge_d0 k C ((1 - c) * α)`: if a set `B` of at most
+`c |V₀|` steps separates `u₀(V₀)` from `crossingLowerEtaSteps τ₀ T H 1 T`, then a single-cell guard
+`X` (`|X| ≤ sharpCellGuardThresh k * (5k + 1) * H`) leaves a subset `U ⊆ V₀` that is independent,
+hence acyclic, in the full cone relation avoiding `B ∪ X`, with
+`|U| ≥ (1 - c) * tightBridgeRho0 k C ((1 - c) * α) * |V₀|`. At `c = 1 / 20` these are the constants
+of `linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight`. -/
+theorem linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight
+    {k T d b H : ℕ} {C α c : ℝ}
+    (τ₀ : Trace k) (hb : 1 ≤ b) (hH : 1 ≤ H) (hC : 1 ≤ C) (hα0 : 0 < α) (hc1 : c < 1)
+    (hd : tightBridge_d0 k C ((1 - c) * α) ≤ d)
+    (hlen : (appendList τ₀ T).length = d * d * b)
+    (hT : (T : ℝ) ≤ C * (((d * d * b : ℕ) : ℝ) + 1))
+    (V₀ : Finset (Fin (d * d * b)))
+    (hV₀ : α * ((d * d * b : ℕ) : ℝ) ≤ (V₀.card : ℝ))
+    (B : Finset ℕ)
+    (hmenger : IsMengerVertexCut τ₀.work T (V₀.image fun q => appendTime τ₀ T (tposOf d b q).1)
+      (crossingLowerEtaSteps τ₀ T H 1 T) B)
+    (hB : (B.card : ℝ) ≤ c * (V₀.card : ℝ)) :
+    ∃ (X : Finset ℕ) (U : Finset (Fin (d * d * b))),
+      X.card ≤ sharpCellGuardThresh k * (5 * k + 1) * H ∧ U ⊆ V₀ ∧
+      DirectedRecovery.IsIndependent (fun q => coneSystem τ₀ T (B ∪ X) d b (tposOf d b q)) U ∧
+      HalfRate.IsAcyclicIn (fun q => coneSystem τ₀ T (B ∪ X) d b (tposOf d b q)) U ∧
+      (1 - c) * tightBridgeRho0 k C ((1 - c) * α) * (V₀.card : ℝ) ≤ (U.card : ℝ) := by
+  have hcα : 0 < (1 - c) * α := mul_pos (by linarith) hα0
+  let V₀' := V₀.filter fun q => appendTime τ₀ T (tposOf d b q).1 ∉ B
+  obtain ⟨hcard_split, hsep'⟩ :=
+    isBallPathSeparator_of_isMengerVertexCut (D := T) τ₀ hlen V₀ _ B hmenger
+  have hcard_r : (V₀.card : ℝ) ≤ (V₀'.card : ℝ) + (B.card : ℝ) := by exact_mod_cast hcard_split
+  have hV₀'_ge : (1 - c) * (V₀.card : ℝ) ≤ (V₀'.card : ℝ) := by linarith
+  have hV₀'_dens : ((1 - c) * α) * ((d * d * b : ℕ) : ℝ) ≤ (V₀'.card : ℝ) :=
+    calc ((1 - c) * α) * ((d * d * b : ℕ) : ℝ) = (1 - c) * (α * ((d * d * b : ℕ) : ℝ)) := by ring
+      _ ≤ (1 - c) * (V₀.card : ℝ) := mul_le_mul_of_nonneg_left hV₀ (by linarith)
+      _ ≤ (V₀'.card : ℝ) := hV₀'_ge
+  obtain ⟨X, U, hX, hUV₀', hind, hacyc, hU_ge⟩ :=
+    exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H τ₀
+      ((one_le_tightBridge_d0 k C hcα).trans hd) hb hH hC hcα hlen hT V₀' B hV₀'_dens hd hsep'
+  refine ⟨X, U, hX, hUV₀'.trans (filter_subset _ V₀), hind, hacyc, ?_⟩
+  calc (1 - c) * tightBridgeRho0 k C ((1 - c) * α) * (V₀.card : ℝ)
+      = tightBridgeRho0 k C ((1 - c) * α) * ((1 - c) * (V₀.card : ℝ)) := by ring
+    _ ≤ tightBridgeRho0 k C ((1 - c) * α) * (V₀'.card : ℝ) :=
+        mul_le_mul_of_nonneg_left hV₀'_ge (tightBridgeRho0_pos k C _).le
+    _ ≤ (U.card : ℝ) := hU_ge
+
 /-- **Tightened `S3` Genie-Free Trace-Only Menger Dichotomy on `coneSystem` (`Zero Transposition Hypothesis!`):**
 For **every** `k`-tape linear-time trace `τ₀`, **every** `V₀` (`|V₀| ≥ α * L`), **every** `1 ≤ H`
 (`with NO upper cap on H!`), **every** `d ≥ bridgeMenger_d0_tight k C α` (`= 90953` at `k = 2, C = α = 1`),
@@ -2222,7 +2373,8 @@ and **every** cut ratio `c ≤ 1 / 20`, EITHER:
    contains an **independent (`hence acyclic`)** subset `U ⊆ V₀` of size
    `|U| ≥ (19 / 20) * tightBridgeRho0 k C ((19 / 20) * α) * |V₀|`; OR
 2. **every** Menger vertex cut `B` disconnecting `u₀(V₀)` from `crossingLowerEtaSteps τ₀ T H 1 T`
-   satisfies `|B| ≥ c * |V₀|`. -/
+   satisfies `|B| ≥ c * |V₀|`.
+This is `linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight` at cut ratio `1 / 20`. -/
 theorem linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight
     {k T d b H : ℕ} {C α c : ℝ}
     (τ₀ : Trace k) (hd : bridgeMenger_d0_tight k C α ≤ d) (hb : 1 ≤ b) (hH : 1 ≤ H)
@@ -2247,143 +2399,95 @@ theorem linearTimeTrace_crossingLowerGT2H_cone_menger_dichotomy_tight
       IsMengerVertexCut τ₀.work T Src (crossingLowerEtaSteps τ₀ T H 1 T) B →
       c * (V₀.card : ℝ) ≤ (B.card : ℝ)) := by
   intro Src
-  have hd1 : 1 ≤ d := (le_max_left _ _).trans hd
-  have hd0 : tightBridge_d0 k C ((19 / 20) * α) ≤ d := (le_max_right _ _).trans hd
+  have h1920 : (1 - 1 / 20 : ℝ) = 19 / 20 := by norm_num
   by_cases hex : ∃ B : Finset ℕ,
       IsMengerVertexCut τ₀.work T Src (crossingLowerEtaSteps τ₀ T H 1 T) B ∧
       (B.card : ℝ) < c * (V₀.card : ℝ)
   · left
     obtain ⟨B, hmenger, hB_lt⟩ := hex
-    let V₀' := V₀.filter fun q => appendTime τ₀ T (tposOf d b q).1 ∉ B
-    obtain ⟨hcard_split, hsep'⟩ :=
-      isBallPathSeparator_of_isMengerVertexCut (D := T) τ₀ hlen V₀ _ B hmenger
-    have hcard_r : (V₀.card : ℝ) ≤ (V₀'.card : ℝ) + (B.card : ℝ) := by
-      have hr : (V₀.card : ℝ) ≤ ((V₀'.card + B.card : ℕ) : ℝ) := by exact_mod_cast hcard_split
-      simpa [Nat.cast_add] using hr
-    have hB_tw : (B.card : ℝ) ≤ (1 / 20 : ℝ) * (V₀.card : ℝ) := by
-      have hcV : c * (V₀.card : ℝ) ≤ (1 / 20 : ℝ) * (V₀.card : ℝ) :=
-        mul_le_mul_of_nonneg_right hc_cap (by positivity)
-      linarith
-    have hV₀'_ge : (19 / 20 : ℝ) * (V₀.card : ℝ) ≤ (V₀'.card : ℝ) := by linarith
-    have hV₀'_dens : ((19 / 20) * α) * ((d * d * b : ℕ) : ℝ) ≤ (V₀'.card : ℝ) := by nlinarith
-    obtain ⟨X_cell, U, hX, hUV₀', hind, hacyc, hU_ge⟩ :=
-      exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H τ₀ hd1 hb hH hC
-        (by positivity) hlen hT V₀' B hV₀'_dens hd0 hsep'
-    have hρ_nn : 0 ≤ tightBridgeRho0 k C ((19 / 20) * α) :=
-      (tightBridgeRho0_pos k C ((19 / 20) * α)).le
-    have hU_lb :
-        (19 / 20 : ℝ) * tightBridgeRho0 k C ((19 / 20) * α) * (V₀.card : ℝ) ≤ (U.card : ℝ) := by
-      calc (19 / 20 : ℝ) * tightBridgeRho0 k C ((19 / 20) * α) * (V₀.card : ℝ)
-          = tightBridgeRho0 k C ((19 / 20) * α) * ((19 / 20 : ℝ) * (V₀.card : ℝ)) := by ring
-        _ ≤ tightBridgeRho0 k C ((19 / 20) * α) * (V₀'.card : ℝ) :=
-            mul_le_mul_of_nonneg_left hV₀'_ge hρ_nn
-        _ ≤ (U.card : ℝ) := hU_ge
-    exact ⟨B, hmenger, hB_lt, X_cell, U, hX, hUV₀'.trans (filter_subset _ V₀), hind, hacyc, hU_lb⟩
+    have hB : (B.card : ℝ) ≤ 1 / 20 * (V₀.card : ℝ) :=
+      hB_lt.le.trans (mul_le_mul_of_nonneg_right hc_cap (Nat.cast_nonneg _))
+    obtain ⟨X, U, hX, hU, hind, hacyc, hU_ge⟩ :=
+      linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight τ₀ hb hH hC hα0
+        (by norm_num) (by rw [h1920]; exact (le_max_right _ _).trans hd) hlen hT V₀ hV₀ B hmenger hB
+    rw [h1920] at hU_ge
+    exact ⟨B, hmenger, hB_lt, X, U, hX, hU, hind, hacyc, hU_ge⟩
   · right
     intro B hmenger
     by_contra hnot
     push Not at hnot
     exact hex ⟨B, hmenger, hnot⟩
 
-/-- **Tightened Depth-`∞` Menger Vertex-Separator Lower Bound at Arbitrary `1 ≤ H ≤ thetaMacro_tight * L`:**
-Eliminates both the `1 / 2` outer loss and the `α / 2` density halving via the `1 / 20` root-hit split! -/
-private theorem clauseE1H_menger_lb_tight
-    {M : TM} {d T H ηInv L_cap : ℕ} {C α : ℝ}
-    (hC : 1 ≤ C) (hα0 : 0 < α) (hH : 1 ≤ H)
-    (hd : bridgeMenger_d0_tight M.k C α ≤ d)
-    (hobl_lt : ObliviousLinTime M d (entryBits d) C T)
-    (V₀ : Finset (Fin (d * d * entryBits d))) (B : Finset ℕ)
-    (hV₀ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤ (V₀.card : ℝ))
-    (hH_le : (H : ℝ) ≤ thetaMacro_tight M C α * ((d * d * entryBits d : ℕ) : ℝ))
-    (hmenger : IsMengerVertexCut (traceAt M (d * d * entryBits d)).work T
-      (V₀.image fun q => appendTime (traceAt M (d * d * entryBits d)) T
-        (tposOf d (entryBits d) q).1)
-      (crossingLowerEtaSteps (traceAt M (d * d * entryBits d)) T H ηInv L_cap) B)
-    (hE1 : ClauseE1H (traceAt M (d * d * entryBits d)) T T
-      d (entryBits d) H ηInv L_cap
-      (V₀.filter fun q => appendTime (traceAt M (d * d * entryBits d)) T
-        (tposOf d (entryBits d) q).1 ∉ B) B) :
-    cE_menger_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
-  let L := d * d * entryBits d
+/-- **Theorem X on any trace with a cone-relation deficit (`from Theorem D`):**
+let `τ₀ : Trace M.k` be a linear-time trace on which every set `U` acyclic in the cone relation
+avoiding a step set `Γ` satisfies `|U| - w_val |Γ| ≤ δ`. Then for every `1 ≤ H ≤ θ L`
+(`θ = thetaMacro_tight M C α`), every `V₀` with `|V₀| ≥ α L` and every `d ≥ bridgeMenger_d0_tight`,
+every Menger vertex cut `B` from `u₀(V₀)` to `crossingLowerEtaSteps τ₀ T H 1 T` satisfies
+`w_val |B| ≥ ρ₀ |V₀| / 2 - δ`, `ρ₀ = tightBridgeRho0 M.k C ((19 / 20) * α)`. If `|B| < |V₀| / 20`,
+Theorem D at cut ratio `1 / 20` gives `X` and `U` with `|U| ≥ (19 / 20) ρ₀ |V₀|`, and
+`w_val |X| ≤ w_val g(k) (5k + 1) θ L = (9 / 20) α ρ₀ L ≤ (9 / 20) ρ₀ |V₀|`. Lemma 3.5(b) gives
+`δ = 0` on oblivious traces and Lemma 3.6 gives `δ = η L` on `η`-heavy traces. -/
+theorem linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight
+    {M : TM} {T d b H : ℕ} {C α δ : ℝ}
+    (τ₀ : Trace M.k) (hd : bridgeMenger_d0_tight M.k C α ≤ d) (hb : 1 ≤ b) (hH : 1 ≤ H)
+    (hC : 1 ≤ C) (hα0 : 0 < α)
+    (hlen : (appendList τ₀ T).length = d * d * b)
+    (hT : (T : ℝ) ≤ C * (((d * d * b : ℕ) : ℝ) + 1))
+    (hH_le : (H : ℝ) ≤ thetaMacro_tight M C α * ((d * d * b : ℕ) : ℝ))
+    (hdef : ∀ (Γ : Finset ℕ) (U : Finset (Fin (d * d * b))),
+      HalfRate.IsAcyclicIn (fun q => coneSystem τ₀ T Γ d b (tposOf d b q)) U →
+      (U.card : ℝ) - (valueWidth M : ℝ) * (Γ.card : ℝ) ≤ δ)
+    (V₀ : Finset (Fin (d * d * b))) (hV₀ : α * ((d * d * b : ℕ) : ℝ) ≤ (V₀.card : ℝ))
+    (B : Finset ℕ)
+    (hmenger : IsMengerVertexCut τ₀.work T (V₀.image fun q => appendTime τ₀ T (tposOf d b q).1)
+      (crossingLowerEtaSteps τ₀ T H 1 T) B) :
+    tightBridgeRho0 M.k C ((19 / 20) * α) / 2 * (V₀.card : ℝ) - δ ≤
+      (valueWidth M : ℝ) * (B.card : ℝ) := by
   have hd1 : 1 ≤ d := (le_max_left _ _).trans hd
-  have hd0 : tightBridge_d0 M.k C ((19 / 20) * α) ≤ d := (le_max_right _ _).trans hd
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hL_pos : (0 : ℝ) < (L : ℝ) := by exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) hb1
-  have hα_le_1 : α ≤ 1 := by
-    have hV_le : (V₀.card : ℝ) ≤ (L : ℝ) := by
-      exact_mod_cast (card_le_card (subset_univ V₀)).trans_eq (by simp [L])
-    have h1 : α * (L : ℝ) ≤ 1 * (L : ℝ) := by
-      change α * ((d * d * entryBits d : ℕ) : ℝ) ≤ 1 * (L : ℝ); linarith
-    exact le_of_mul_le_mul_right h1 hL_pos
-  have hc_le : cE_menger_tight M C α ≤ 1 / 20 :=
-    (cE_menger_tight_le_one_thirtieth M hC hα0 hα_le_1).trans (by norm_num)
-  rcases le_or_gt ((1 / 20 : ℝ) * (V₀.card : ℝ)) (B.card : ℝ) with hB_big | hB_small
-  · calc cE_menger_tight M C α * (V₀.card : ℝ)
-        ≤ (1 / 20 : ℝ) * (V₀.card : ℝ) := mul_le_mul_of_nonneg_right hc_le (by positivity)
-      _ ≤ (B.card : ℝ) := hB_big
-  · obtain ⟨hobl, hT, htr⟩ := hobl_lt
-    obtain ⟨_, hlen⟩ := obliviousTransposer_of_transposes hobl htr (fun _ => false)
-    let V₀' := V₀.filter fun q => appendTime (traceAt M L) T (tposOf d (entryBits d) q).1 ∉ B
-    obtain ⟨hcard_split, hsep'⟩ :=
-      isBallPathSeparator_of_isMengerVertexCut (D := T) (traceAt M L) hlen V₀ _ B hmenger
-    have hcard_r : (V₀.card : ℝ) ≤ (V₀'.card : ℝ) + (B.card : ℝ) := by
-      have hr : (V₀.card : ℝ) ≤ ((V₀'.card + B.card : ℕ) : ℝ) := by exact_mod_cast hcard_split
-      simpa [Nat.cast_add] using hr
-    have hV₀'_ge : (19 / 20 : ℝ) * (V₀.card : ℝ) ≤ (V₀'.card : ℝ) := by linarith
-    have hV₀'_dens : ((19 / 20) * α) * (L : ℝ) ≤ (V₀'.card : ℝ) := by nlinarith
-    obtain ⟨X_cell, U, hX_card, _, _, hacyc_cone, hU_ge⟩ :=
-      exists_singleCell_guard_coneSystem_isIndependent_crossingLowerH
-        (traceAt M L) hd1 hb1 hH hC (by positivity) hlen hT V₀' B hV₀'_dens hd0 hsep' hE1
-    have hbits := obliviousLinTime_coneSystem_isAcyclicIn_card_le
-      ⟨hobl, hT, htr⟩ (B ∪ X_cell) U hacyc_cone
-    have hunion_r : ((B ∪ X_cell).card : ℝ) ≤ (B.card : ℝ) + (X_cell.card : ℝ) := by
-      exact_mod_cast card_union_le B X_cell
-    have hvw_ge2 : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
-    have hvw_pos : (0 : ℝ) < (valueWidth M : ℝ) := by linarith
-    have hsh_pos : (0 : ℝ) < (sharpCellGuardThresh M.k : ℝ) := by
-      exact_mod_cast sharpCellGuardThresh_pos M.k
-    have h5k_pos : (0 : ℝ) < ((5 * M.k + 1 : ℕ) : ℝ) := by positivity
-    let ρ' := tightBridgeRho0 M.k C ((19 / 20) * α)
-    have hρ'_pos : 0 < ρ' := tightBridgeRho0_pos M.k C ((19 / 20) * α)
-    have hX_r : (X_cell.card : ℝ) ≤
-        (sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) * (H : ℝ) := by
-      have hc : (X_cell.card : ℝ) ≤ ((sharpCellGuardThresh M.k * (5 * M.k + 1) * H : ℕ) : ℝ) := by
-        exact_mod_cast hX_card
-      simpa [Nat.cast_mul, mul_assoc] using hc
-    have hvw_X : (valueWidth M : ℝ) * (X_cell.card : ℝ) ≤ (9 / 20 : ℝ) * ρ' * (V₀.card : ℝ) := by
-      calc (valueWidth M : ℝ) * (X_cell.card : ℝ)
-          ≤ (valueWidth M : ℝ) *
-              ((sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) * (H : ℝ)) :=
-            mul_le_mul_of_nonneg_left hX_r hvw_pos.le
-        _ ≤ (valueWidth M : ℝ) *
-              ((sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) *
-                (thetaMacro_tight M C α * (L : ℝ))) :=
-            mul_le_mul_of_nonneg_left
-              (mul_le_mul_of_nonneg_left hH_le (by positivity)) hvw_pos.le
-        _ = (9 / 20 : ℝ) * ρ' * (α * (L : ℝ)) := by
-            dsimp [ρ']; unfold thetaMacro_tight; field_simp
-        _ ≤ (9 / 20 : ℝ) * ρ' * (V₀.card : ℝ) :=
-            mul_le_mul_of_nonneg_left hV₀ (by positivity)
-    have hU_lb : (19 / 20 : ℝ) * ρ' * (V₀.card : ℝ) ≤ (U.card : ℝ) := by
-      calc (19 / 20 : ℝ) * ρ' * (V₀.card : ℝ)
-          = ρ' * ((19 / 20 : ℝ) * (V₀.card : ℝ)) := by ring
-        _ ≤ ρ' * (V₀'.card : ℝ) := mul_le_mul_of_nonneg_left hV₀'_ge hρ'_pos.le
-        _ ≤ (U.card : ℝ) := hU_ge
-    have htot_bits : (U.card : ℝ) ≤
-        (valueWidth M : ℝ) * (B.card : ℝ) + (valueWidth M : ℝ) * (X_cell.card : ℝ) := by
-      calc (U.card : ℝ) ≤ (valueWidth M : ℝ) * ((B ∪ X_cell).card : ℝ) := hbits
-        _ ≤ (valueWidth M : ℝ) * ((B.card : ℝ) + (X_cell.card : ℝ)) :=
-            mul_le_mul_of_nonneg_left hunion_r hvw_pos.le
-        _ = (valueWidth M : ℝ) * (B.card : ℝ) + (valueWidth M : ℝ) * (X_cell.card : ℝ) :=
-            mul_add _ _ _
-    have hvw_B : (1 / 2 : ℝ) * ρ' * (V₀.card : ℝ) ≤ (valueWidth M : ℝ) * (B.card : ℝ) := by
-      linarith
-    unfold cE_menger_tight
-    change (ρ' / (2 * (valueWidth M : ℝ))) * (V₀.card : ℝ) ≤ (B.card : ℝ)
-    rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
-    linarith
+  have hL_pos : (0 : ℝ) < ((d * d * b : ℕ) : ℝ) := by
+    exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) hb
+  have hV_le : (V₀.card : ℝ) ≤ ((d * d * b : ℕ) : ℝ) := by
+    exact_mod_cast (card_le_card (subset_univ V₀)).trans_eq (by simp)
+  have hα1 : α ≤ 1 := by nlinarith
+  have hρ_pos := tightBridgeRho0_pos M.k C ((19 / 20) * α)
+  have hρ_le : tightBridgeRho0 M.k C ((19 / 20) * α) ≤ 2 / 15 :=
+    tightBridgeRho0_le_two_fifteenths_of_le_one M.k hC (by positivity) (by linarith)
+  have hvw : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
+  have hδ : 0 ≤ δ := by simpa using hdef ∅ ∅ (isAcyclicIn_empty_of _)
+  rcases le_or_gt ((1 / 20 : ℝ) * (V₀.card : ℝ)) (B.card : ℝ) with hB | hB
+  · nlinarith
+  have h1920 : (1 - 1 / 20 : ℝ) = 19 / 20 := by norm_num
+  obtain ⟨X, U, hX, -, -, hacyc, hU⟩ :=
+    linearTimeTrace_crossingLowerGT2H_cone_menger_implication_tight τ₀ hb hH hC hα0
+      (by norm_num) (by rw [h1920]; exact (le_max_right _ _).trans hd) hlen hT V₀ hV₀ B hmenger hB.le
+  rw [h1920] at hU
+  have hdefBX := hdef (B ∪ X) U hacyc
+  have hunion : (valueWidth M : ℝ) * ((B ∪ X).card : ℝ) ≤
+      (valueWidth M : ℝ) * ((B.card : ℝ) + (X.card : ℝ)) :=
+    mul_le_mul_of_nonneg_left (by exact_mod_cast card_union_le B X) (by linarith)
+  have hsh : (0 : ℝ) < (sharpCellGuardThresh M.k : ℝ) := by
+    exact_mod_cast sharpCellGuardThresh_pos M.k
+  have hX_r : (X.card : ℝ) ≤
+      (sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) * (H : ℝ) := by
+    have hc' : (X.card : ℝ) ≤ ((sharpCellGuardThresh M.k * (5 * M.k + 1) * H : ℕ) : ℝ) := by
+      exact_mod_cast hX
+    simpa [Nat.cast_mul, mul_assoc] using hc'
+  have hwX : (valueWidth M : ℝ) * (X.card : ℝ) ≤
+      (9 / 20 : ℝ) * tightBridgeRho0 M.k C ((19 / 20) * α) * (V₀.card : ℝ) := by
+    calc (valueWidth M : ℝ) * (X.card : ℝ)
+        ≤ (valueWidth M : ℝ) * ((sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) *
+            (thetaMacro_tight M C α * ((d * d * b : ℕ) : ℝ))) := by
+          gcongr
+          exact hX_r.trans (by gcongr)
+      _ = (9 / 20 : ℝ) * tightBridgeRho0 M.k C ((19 / 20) * α) *
+            (α * ((d * d * b : ℕ) : ℝ)) := by
+          unfold thetaMacro_tight; field_simp
+      _ ≤ (9 / 20 : ℝ) * tightBridgeRho0 M.k C ((19 / 20) * α) * (V₀.card : ℝ) := by gcongr
+  linarith
 
-/-- **Tightened Zero-Clause Uncapped `> 2H` Menger Expansion Theorem (`S1` All-Thresholds Tight):** -/
+/-- **Tightened Zero-Clause Uncapped `> 2H` Menger Expansion Theorem (`S1` All-Thresholds Tight):**
+`linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight` with deficit `δ = 0` from the
+index code of Lemma 3.5(b) (`obliviousLinTime_coneSystem_isAcyclicIn_card_le`). -/
 theorem obliviousLinTime_crossingLowerGT2H_menger_lb_tight
     {M : TM} {d T H : ℕ} {C α : ℝ}
     (hC : 1 ≤ C) (hα0 : 0 < α) (hH : 1 ≤ H)
@@ -2396,9 +2500,17 @@ theorem obliviousLinTime_crossingLowerGT2H_menger_lb_tight
       (V₀.image fun q => appendTime (traceAt M (d * d * entryBits d)) T
         (tposOf d (entryBits d) q).1)
       (crossingLowerEtaSteps (traceAt M (d * d * entryBits d)) T H 1 T) B) :
-    cE_menger_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) :=
-  clauseE1H_menger_lb_tight hC hα0 hH hd hobl_lt V₀ B hV₀ hH_le
-    hmenger (clauseE1H_uncapped _ T T d (entryBits d) H _ B)
+    cE_menger_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
+  obtain ⟨hobl, hT, htr⟩ := hobl_lt
+  have h := linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight (δ := 0) _ hd
+    (one_le_entryBits d) hH hC hα0 (obliviousTransposer_of_transposes hobl htr (fun _ => false)).2
+    hT hH_le (fun Γ U hU => by
+      linarith [obliviousLinTime_coneSystem_isAcyclicIn_card_le ⟨hobl, hT, htr⟩ Γ U hU])
+    V₀ hV₀ B hmenger
+  have hvw : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
+  unfold cE_menger_tight
+  rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+  linarith
 
 /-- **Tightened Zero-Clause Row-Width `> 2W` Crossing-Lowers Menger Theorem (Theorem X Tight):** -/
 theorem obliviousLinTime_crossingLowerGT2W_menger_lb_tight
@@ -2414,26 +2526,10 @@ theorem obliviousLinTime_crossingLowerGT2W_menger_lb_tight
       (crossingLowerEtaSteps (traceAt M (d * d * entryBits d)) T (d * entryBits d) 1 T) B) :
     cE_menger_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   have hd_menger : bridgeMenger_d0_tight M.k C α ≤ d := (le_max_left _ _).trans hd
-  have hd_1θ : ⌈1 / thetaMacro_tight M C α⌉₊ ≤ d := (le_max_right _ _).trans hd
-  have hd1 : 1 ≤ d := (le_max_left _ _).trans hd_menger
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hθ_pos : 0 < thetaMacro_tight M C α := thetaMacro_tight_pos M C hα0
-  have h1_le_θd : 1 ≤ thetaMacro_tight M C α * (d : ℝ) := by
-    have hge : 1 / thetaMacro_tight M C α ≤ (d : ℝ) :=
-      (Nat.le_ceil _).trans (by exact_mod_cast hd_1θ)
-    have hmul := (div_le_iff₀ hθ_pos).mp hge
-    linarith
-  have hW_le_θL : ((d * entryBits d : ℕ) : ℝ) ≤
-      thetaMacro_tight M C α * ((d * d * entryBits d : ℕ) : ℝ) := by
-    have hW_nn : (0 : ℝ) ≤ ((d * entryBits d : ℕ) : ℝ) := by positivity
-    calc ((d * entryBits d : ℕ) : ℝ)
-        = 1 * ((d * entryBits d : ℕ) : ℝ) := (one_mul _).symm
-      _ ≤ (thetaMacro_tight M C α * (d : ℝ)) * ((d * entryBits d : ℕ) : ℝ) :=
-          mul_le_mul_of_nonneg_right h1_le_θd hW_nn
-      _ = thetaMacro_tight M C α * ((d * d * entryBits d : ℕ) : ℝ) := by
-          push_cast; ring
   exact obliviousLinTime_crossingLowerGT2H_menger_lb_tight hC hα0
-    (Nat.mul_pos hd1 hb1) hd_menger hobl_lt V₀ B hV₀ hW_le_θL hmenger
+    (Nat.mul_pos ((le_max_left _ _).trans hd_menger) (one_le_entryBits d)) hd_menger hobl_lt V₀ B
+    hV₀ (rowWidth_le_mul_of_ceil_inv_le (thetaMacro_tight_pos M C hα0) ((le_max_right _ _).trans hd))
+    hmenger
 
 /-- **Tightened Zero-Clause `Mix_{>2W}` Menger Expansion Theorem (Theorem X Main Corollary Tight):** -/
 theorem obliviousLinTime_mixGT2W_menger_lb_tight
@@ -2452,9 +2548,9 @@ theorem obliviousLinTime_mixGT2W_menger_lb_tight
     (isMengerVertexCut_mono_dst (crossingLowerEtaSteps_subset_mixEtaSteps _ T _ 1 T) hmenger)
 
 /-- **Tightened Theorem X (Strictly Macroscopic Crossing Expansion, Zero `genieDepth`!):**
-For **every** oblivious linear-time transposer `(M, C)` and **every** `d ≥ d0Macro_tight M C α`,
-setting `H_* := ⌊thetaMacro_tight M C α * L⌋₊` simultaneously satisfies:
-1. `d * entryBits d ≤ H_*`,
+For **every** oblivious linear-time transposer `(M, C)` and **every** `d ≥ d0Macro_tight M C α`
+(`θ L ≥ 1`), setting `H_* := ⌊thetaMacro_tight M C α * L⌋₊`:
+1. `d * entryBits d ≤ H_*` whenever moreover `d ≥ ⌈1 / thetaMacro_tight M C α⌉₊`,
 2. `thetaMacro_tight M C α * L ≤ 2 * H_*`, and
 3. **every** Menger vertex cut `B` from `u₀(V₀)` (`|V₀| ≥ α * L`) to
    `crossingLowerEtaSteps (traceAt M L) T H_* 1 T` satisfies `cE_menger_tight M C α * |V₀| ≤ |B|`! -/
@@ -2467,7 +2563,7 @@ theorem obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight
     (hV₀ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤ (V₀.card : ℝ)) :
     let L := d * d * entryBits d
     let H_star := ⌊thetaMacro_tight M C α * (L : ℝ)⌋₊
-    d * entryBits d ≤ H_star ∧
+    (⌈1 / thetaMacro_tight M C α⌉₊ ≤ d → d * entryBits d ≤ H_star) ∧
       thetaMacro_tight M C α * (L : ℝ) ≤ (2 * H_star : ℕ) ∧
       ∀ B : Finset ℕ,
         IsMengerVertexCut (traceAt M L).work T
@@ -2475,49 +2571,17 @@ theorem obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight
           (crossingLowerEtaSteps (traceAt M L) T H_star 1 T) B →
         cE_menger_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   intro L H_star
-  have hd_menger : bridgeMenger_d0_tight M.k C α ≤ d := (le_max_left _ _).trans hd
-  have hd_2θ : ⌈2 / thetaMacro_tight M C α⌉₊ ≤ d := (le_max_right _ _).trans hd
-  have hd1 : 1 ≤ d := (le_max_left _ _).trans hd_menger
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hθ_pos : 0 < thetaMacro_tight M C α := thetaMacro_tight_pos M C hα0
-  have hW_pos : 1 ≤ d * entryBits d := Nat.mul_pos hd1 hb1
-  have h2_le_θd : (2 : ℝ) ≤ thetaMacro_tight M C α * (d : ℝ) := by
-    have hge : 2 / thetaMacro_tight M C α ≤ (d : ℝ) :=
-      (Nat.le_ceil _).trans (by exact_mod_cast hd_2θ)
-    have hmul := (div_le_iff₀ hθ_pos).mp hge
-    linarith
-  have hW_le_θL : ((d * entryBits d : ℕ) : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) := by
-    have hW_nn : (0 : ℝ) ≤ ((d * entryBits d : ℕ) : ℝ) := by positivity
-    have h1_le : (1 : ℝ) ≤ thetaMacro_tight M C α * (d : ℝ) := by linarith
-    calc ((d * entryBits d : ℕ) : ℝ)
-        = 1 * ((d * entryBits d : ℕ) : ℝ) := (one_mul _).symm
-      _ ≤ (thetaMacro_tight M C α * (d : ℝ)) * ((d * entryBits d : ℕ) : ℝ) :=
-          mul_le_mul_of_nonneg_right h1_le hW_nn
-      _ = thetaMacro_tight M C α * (L : ℝ) := by dsimp [L]; push_cast; ring
-  have hW_le_H : d * entryBits d ≤ H_star := Nat.le_floor hW_le_θL
-  have hH_pos : 1 ≤ H_star := hW_pos.trans hW_le_H
-  have hH_le_θL : (H_star : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) :=
-    Nat.floor_le (by positivity)
-  have h2_le_θL : (2 : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) := by
-    have hd_le_L : (d : ℝ) ≤ (L : ℝ) := by
-      have : d ≤ d * d * entryBits d := by
-        calc d = d * 1 * 1 := by ring
-          _ ≤ d * d * entryBits d := Nat.mul_le_mul (Nat.mul_le_mul le_rfl hd1) hb1
-      exact_mod_cast this
-    exact h2_le_θd.trans (mul_le_mul_of_nonneg_left hd_le_L hθ_pos.le)
-  have hθL_le_2H : thetaMacro_tight M C α * (L : ℝ) ≤ ((2 * H_star : ℕ) : ℝ) := by
-    have hlt_succ : thetaMacro_tight M C α * (L : ℝ) < (H_star : ℝ) + 1 :=
-      Nat.lt_floor_add_one _
-    have hH1 : (1 : ℝ) ≤ (H_star : ℝ) := by exact_mod_cast hH_pos
-    push_cast
-    linarith
-  refine ⟨hW_le_H, hθL_le_2H, fun B hmenger => ?_⟩
-  exact obliviousLinTime_crossingLowerGT2H_menger_lb_tight hC hα0 hH_pos
-    hd_menger hobl_lt V₀ B hV₀ hH_le_θL hmenger
+  have hθ := thetaMacro_tight_pos M C hα0
+  obtain ⟨hH1, hH_le, h2H⟩ := floor_bounds_of_one_le
+    (le_mul_of_ceil_sqrt_div_le hθ zero_le_one (one_le_entryBits d) ((le_max_right _ _).trans hd))
+  exact ⟨fun h1θ => Nat.le_floor (rowWidth_le_mul_of_ceil_inv_le hθ h1θ), h2H, fun B hmenger =>
+    obliviousLinTime_crossingLowerGT2H_menger_lb_tight hC hα0 hH1 ((le_max_left _ _).trans hd)
+      hobl_lt V₀ B hV₀ hH_le hmenger⟩
 
 /-- **Tightened `Theorem S(b)` (`Finite Crossing-Capable Skeleton & Single-Leg Localization`, Tower-Free `M_max`!):**
 Replaces tower-type `skeletonMachineMaxLen` by polynomial `skeletonMachineMaxLen_tight M C α =
-⌊16 * C / thetaMacro_tight M C α⌋₊` (`9.00 × 10⁹` at `k = 2, C = α = 1, w_val = 8`). -/
+⌊16 * C / thetaMacro_tight M C α⌋₊` (`9.00 × 10⁹` at `k = 2, C = α = 1, w_val = 8`): the trace form
+`linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg` applied to Theorem X. -/
 theorem obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
     {M : TM} {d T : ℕ} {C α : ℝ}
     (hC : 1 ≤ C) (hα0 : 0 < α)
@@ -2538,125 +2602,25 @@ theorem obliviousLinTime_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
         2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
         9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
         r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-        r_star ≤ M_max ∧
+        r_star < M_max ∧
         ∀ B : Finset ℕ,
           IsMengerVertexCut τ₀.work T
             (V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1)
             (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
-          (cE_menger_tight M C α / ((M.k : ℝ) * ((M_max : ℝ) + 1))) *
+          (cE_menger_tight M C α / ((M.k : ℝ) * (M_max : ℝ))) *
             (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   intro L θ_star H_star Λ_star M_max τ₀
+  have hθ := thetaMacro_tight_pos M C hα0
   have hd_d0 : d0Macro_tight M C α ≤ d := (le_max_left _ _).trans hd
-  have hd_8θ : ⌈8 / θ_star⌉₊ ≤ d := (le_max_right _ _).trans hd
   have hd1 : 1 ≤ d := (le_max_left _ _).trans ((le_max_left _ _).trans hd_d0)
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hθ_pos : 0 < θ_star := thetaMacro_tight_pos M C hα0
+  have hL_pos : (0 : ℝ) < (L : ℝ) := by
+    exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
   obtain ⟨_, _, hmenger_tot⟩ :=
     obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight hC hα0 hd_d0 hobl_lt V₀ hV₀
-  obtain ⟨_, hT, _⟩ := hobl_lt
-  obtain ⟨hΛ1, hturns_le, hmem_bdd⟩ :=
-    traceSkeletonTuple_mem_boundedSkeletonTuple τ₀ hd1 hb1 hC hθ_pos hd_8θ hT
-  have h2Λ_le_H : 2 * Λ_star ≤ H_star := by
-    apply Nat.le_floor
-    have hΛ_le : (Λ_star : ℝ) ≤ (θ_star / 4) * (L : ℝ) := Nat.floor_le (by positivity)
-    push_cast; linarith
-  set Src := V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1
-  set c_tot : ℝ := cE_menger_tight M C α
-  have hc_tot_pos : 0 < c_tot := cE_menger_tight_pos M C α
-  have hV₀_pos : (0 : ℝ) < (V₀.card : ℝ) := by
-    have hL_pos : (0 : ℝ) < (L : ℝ) := by exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) hb1
-    linarith [mul_pos hα0 hL_pos]
-  let Slots : Finset (Fin M.k × ℕ) :=
-    ((univ : Finset (Fin M.k)) ×ˢ range (M_max + 1)).filter fun jr =>
-      IsScaleFreeCrossingCapable (traceSkeletonTuple τ₀ T Λ_star jr.1) ∧
-      jr.2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star jr.1)
-  have hcover : crossingLowerEtaSteps τ₀ T H_star 1 T ⊆
-      Slots.biUnion (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) := by
-    intro v hv
-    rw [crossingLowerEtaSteps_eq_biUnion_tapeCrossingLowers] at hv
-    obtain ⟨j, _, hv_tape⟩ := mem_biUnion.mp hv
-    have hcap_j : IsCrossingCapableSkeleton H_star Λ_star (tapeSkeleton (τ₀.work j) T Λ_star) :=
-      isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty (τ₀.work_isWalk j)
-        (τ₀.work_zero j) hΛ1 ⟨v, hv_tape⟩
-    obtain ⟨hsf_j, _⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_j
-    let r := legOfEpoch (tapeSkeleton (τ₀.work j) T Λ_star) (epochIdx (τ₀.work j) Λ_star v)
-    have hr_turns : r ≤ macroTurns (tapeSkeleton (τ₀.work j) T Λ_star) :=
-      legOfEpoch_le_macroTurns _ _
-    have hr_max : r < M_max + 1 := Nat.lt_succ_of_le (hr_turns.trans (hturns_le j))
-    refine mem_biUnion.mpr ⟨(j, r), ?_, mem_filter.mpr ⟨hv_tape, rfl⟩⟩
-    exact mem_filter.mpr ⟨mem_product.mpr ⟨mem_univ j, mem_range.mpr hr_max⟩, hsf_j, hr_turns⟩
-  have hSlots_ne : Slots.Nonempty := by
-    by_contra hemp
-    rw [Finset.not_nonempty_iff_eq_empty] at hemp
-    have hdst_empty : crossingLowerEtaSteps τ₀ T H_star 1 T = ∅ := by
-      rw [← subset_empty]; exact hcover.trans (by simp [hemp])
-    have h0 := hmenger_tot ∅ (by rw [hdst_empty]; exact isMengerVertexCut_dst_self _ _ ∅)
-    simp only [card_empty, Nat.cast_zero] at h0
-    linarith [mul_pos hc_tot_pos hV₀_pos]
-  obtain ⟨⟨j₀, _⟩, hj₀_mem⟩ := hSlots_ne
-  have hmem_cap : traceSkeletonTuple τ₀ T Λ_star ∈ CrossingCapableSkeletonTuple M.k M_max :=
-    mem_filter.mpr ⟨hmem_bdd, j₀, (mem_filter.mp hj₀_mem).2.1⟩
-  have hk_pos : 0 < M.k := Fin.pos j₀
-  have hSlots_card : (Slots.card : ℝ) ≤ (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-    have hle : Slots.card ≤ M.k * (M_max + 1) :=
-      (card_le_card (filter_subset _ _)).trans (by simp [card_product])
-    exact_mod_cast hle
-  have hexists_slot : ∃ jr ∈ Slots, ∀ B : Finset ℕ,
-      IsMengerVertexCut τ₀.work T Src (legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) B →
-      (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
-    by_contra hall_cheap
-    push Not at hall_cheap
-    choose B_of hB_cut hB_lt using fun jr : {x // x ∈ Slots} => hall_cheap jr.1 jr.2
-    let B_u := Slots.attach.biUnion fun jr => B_of jr
-    have hcut_bu : IsMengerVertexCut τ₀.work T Src
-        (Slots.attach.biUnion fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_u :=
-      isMengerVertexCut_biUnion Slots.attach Src
-        (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_of
-        (fun jr _ => hB_cut jr)
-    have hcut_tot : IsMengerVertexCut τ₀.work T Src (crossingLowerEtaSteps τ₀ T H_star 1 T) B_u := by
-      intro π t₀ hsrc hdep hlast
-      have hcov_last := hcover hlast
-      obtain ⟨jr, hjrS, hmem_jr⟩ := mem_biUnion.mp hcov_last
-      exact hcut_bu π t₀ hsrc hdep (mem_biUnion.mpr ⟨⟨jr, hjrS⟩, mem_attach _ _, hmem_jr⟩)
-    have hbu_card_nat : B_u.card ≤ ∑ jr ∈ Slots.attach, (B_of jr).card := card_biUnion_le
-    have hbu_card_r : (B_u.card : ℝ) ≤ ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) := by
-      exact_mod_cast hbu_card_nat
-    have hsum_lt : ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) <
-        ∑ _jr ∈ Slots.attach, (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) :=
-      sum_lt_sum_of_nonempty (Slots.attach_nonempty_iff.mpr ⟨⟨j₀, _⟩, hj₀_mem⟩)
-        (fun jr _ => hB_lt jr)
-    have hconst_sum : (∑ _jr ∈ Slots.attach,
-        (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ)) ≤
-        c_tot * (V₀.card : ℝ) := by
-      rw [sum_const, card_attach, nsmul_eq_mul]
-      have hdenom_pos : (0 : ℝ) < (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-        have : (0 : ℝ) < (M.k : ℝ) := by exact_mod_cast hk_pos
-        positivity
-      calc (Slots.card : ℝ) * ((c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ))
-          ≤ ((M.k : ℝ) * ((M_max : ℝ) + 1)) *
-              ((c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ)) :=
-            mul_le_mul_of_nonneg_right hSlots_card (by positivity)
-        _ = c_tot * (V₀.card : ℝ) := by field_simp
-    have htot_lb := hmenger_tot B_u hcut_tot
-    linarith
-  obtain ⟨⟨j_star, r_star⟩, hjr_mem, hjr_exp⟩ := hexists_slot
-  obtain ⟨hprod_mem, hsf_star, hr_turns⟩ := mem_filter.mp hjr_mem
-  have hr_max : r_star ≤ M_max := Nat.le_of_lt_succ (mem_range.mp (mem_product.mp hprod_mem).2)
-  have hleg_ne : (legCrossingLowers τ₀ T H_star Λ_star j_star r_star).Nonempty := by
-    by_contra hemp
-    rw [Finset.not_nonempty_iff_eq_empty] at hemp
-    have h0 := hjr_exp ∅ (by rw [hemp]; exact isMengerVertexCut_dst_self _ _ ∅)
-    simp only [card_empty, Nat.cast_zero] at h0
-    have hdenom_pos : (0 : ℝ) < (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-      have : (0 : ℝ) < (M.k : ℝ) := by exact_mod_cast hk_pos
-      positivity
-    linarith [mul_pos (div_pos hc_tot_pos hdenom_pos) hV₀_pos]
-  obtain ⟨v_w, hv_w⟩ := hleg_ne
-  have hcap_star := isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty
-    (τ₀.work_isWalk j_star) (τ₀.work_zero j_star) hΛ1 ⟨v_w, (mem_filter.mp hv_w).1⟩
-  obtain ⟨_, hlen9⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_star
-  exact ⟨hΛ1, h2Λ_le_H, hmem_cap, j_star, r_star, hsf_star,
-    two_le_macroTurns_of_isScaleFreeCrossingCapable hsf_star, hlen9, hr_turns, hr_max, hjr_exp⟩
+  exact linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg τ₀ hC hθ
+    (le_mul_of_ceil_sqrt_div_le hθ (by norm_num) (one_le_entryBits d) ((le_max_right _ _).trans hd))
+    hobl_lt.2.1 V₀ (mul_pos (cE_menger_tight_pos M C α) ((mul_pos hα0 hL_pos).trans_le hV₀))
+    hmenger_tot
 
 /-- **Tightened `Theorem S(c)` (`Infinite-Dimension Pinned-Skeleton & Pinned-Leg Reduction`, Tower-Free!):** -/
 theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : ℝ} (hC : 1 ≤ C)
@@ -2669,7 +2633,7 @@ theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : �
       2 ≤ macroTurns (sk_star j_star) ∧
       9 ≤ (sk_star j_star).length ∧
       r_star ≤ macroTurns (sk_star j_star) ∧
-      r_star ≤ M_max ∧
+      r_star < M_max ∧
       {d : ℕ | d ∈ S ∧ skeleton_d0Macro_tight M C 1 ≤ d ∧
         let L := d * d * entryBits d
         let θ_star := thetaMacro_tight M C 1
@@ -2681,7 +2645,7 @@ theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : �
           IsMengerVertexCut τ₀.work (T_of d)
             ((univ : Finset (Fin L)).image fun q => appendTime τ₀ (T_of d) (tposOf d (entryBits d) q).1)
             (legCrossingLowers τ₀ (T_of d) H_star Λ_star j_star r_star) B →
-          (cE_menger_tight M C 1 / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (L : ℝ) ≤ (B.card : ℝ)}.Infinite := by
+          (cE_menger_tight M C 1 / ((M.k : ℝ) * (M_max : ℝ))) * (L : ℝ) ≤ (B.card : ℝ)}.Infinite := by
   intro M_max
   set d₀ := skeleton_d0Macro_tight M C 1
   have hS_high : (S \ (Finset.range d₀ : Set ℕ)).Infinite :=
@@ -2698,12 +2662,12 @@ theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : �
         2 ≤ macroTurns (traceSkeletonTuple τ₀ (T_of d) Λ_star j_star) ∧
         9 ≤ (traceSkeletonTuple τ₀ (T_of d) Λ_star j_star).length ∧
         r_star ≤ macroTurns (traceSkeletonTuple τ₀ (T_of d) Λ_star j_star) ∧
-        r_star ≤ M_max ∧
+        r_star < M_max ∧
         ∀ B : Finset ℕ,
           IsMengerVertexCut τ₀.work (T_of d)
             ((univ : Finset (Fin L)).image fun q => appendTime τ₀ (T_of d) (tposOf d (entryBits d) q).1)
             (legCrossingLowers τ₀ (T_of d) H_star Λ_star j_star r_star) B →
-          (cE_menger_tight M C 1 / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (L : ℝ) ≤ (B.card : ℝ) := by
+          (cE_menger_tight M C 1 / ((M.k : ℝ) * (M_max : ℝ))) * (L : ℝ) ≤ (B.card : ℝ) := by
     intro d hd
     obtain ⟨hdS, hd_not⟩ := hd
     have hd_ge : d₀ ≤ d := by
@@ -2722,7 +2686,7 @@ theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : �
   let dflt_j := j_of ⟨d_wit, hd_wit⟩
   let dflt_r := r_of ⟨d_wit, hd_wit⟩
   let F_comb : Finset ((Fin M.k → List Bool) × Fin M.k × ℕ) :=
-    CrossingCapableSkeletonTuple M.k M_max ×ˢ ((univ : Finset (Fin M.k)) ×ˢ range (M_max + 1))
+    CrossingCapableSkeletonTuple M.k M_max ×ˢ ((univ : Finset (Fin M.k)) ×ˢ range M_max)
   let tag : ℕ → (Fin M.k → List Bool) × Fin M.k × ℕ := fun d =>
     if hd : d ∈ S \ (Finset.range d₀ : Set ℕ) then
       let L := d * d * entryBits d
@@ -2739,7 +2703,7 @@ theorem obliviousLinTime_infinite_pinned_skeleton_and_leg_tight {M : TM} {C : �
     intro d hd
     rw [htag_of hd]
     simp only [F_comb, mem_product, mem_univ, true_and, mem_range]
-    exact ⟨(step_at d hd).1, Nat.lt_succ_of_le (hrm_of ⟨d, hd⟩)⟩
+    exact ⟨(step_at d hd).1, hrm_of ⟨d, hd⟩⟩
   obtain ⟨⟨sk_star, j_star, r_star⟩, hmem_F, hinf_fib⟩ :=
     exists_infinite_fiber_of_mapsTo_finset hS_high F_comb tag htag_mem
   obtain ⟨d_p, hd_p_high, htag_p⟩ := hinf_fib.nonempty
@@ -2781,15 +2745,36 @@ theorem cE_frozen_tight_pos (M : TM) (C α : ℝ) : 0 < cE_frozen_tight M C α :
   have hrho := tightBridgeRho0_pos M.k C ((19 / 20) * α)
   positivity
 
-theorem cE_frozen_tight_le_one_fortieth (M : TM) {C α : ℝ}
-    (hC : 1 ≤ C) (hα0 : 0 < α) (hα1 : α ≤ 1) :
-    cE_frozen_tight M C α ≤ 1 / 40 := by
-  unfold cE_frozen_tight
-  have hρ : tightBridgeRho0 M.k C ((19 / 20) * α) ≤ 2 / 15 :=
-    tightBridgeRho0_le_two_fifteenths_of_le_one M.k hC (by positivity) (by linarith)
-  have hvw : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
-  rw [div_le_iff₀ (by linarith)]
+/-- Heavy-trace Menger expansion constant at heaviness `η`:
+`cE_frozen_eta_tight M C α η = (ρ₀ / 2 - η / α) / valueWidth M` with
+`ρ₀ = tightBridgeRho0 M.k C ((19 / 20) * α)`. At `η = 0` it is `cE_menger_tight M C α`
+(`cE_frozen_eta_tight_zero`), and for `η ≤ (α / 8) ρ₀` it is at least `cE_frozen_tight M C α`. -/
+noncomputable def cE_frozen_eta_tight (M : TM) (C α η : ℝ) : ℝ :=
+  (tightBridgeRho0 M.k C ((19 / 20) * α) / 2 - η / α) / (valueWidth M : ℝ)
+
+theorem cE_frozen_eta_tight_zero (M : TM) (C α : ℝ) :
+    cE_frozen_eta_tight M C α 0 = cE_menger_tight M C α := by
+  unfold cE_frozen_eta_tight cE_menger_tight
+  rw [zero_div, sub_zero, div_div]
+
+theorem cE_frozen_tight_le_cE_frozen_eta_tight (M : TM) {C α η : ℝ} (hα0 : 0 < α)
+    (hη_le : η ≤ (α / 8) * tightBridgeRho0 M.k C ((19 / 20) * α)) :
+    cE_frozen_tight M C α ≤ cE_frozen_eta_tight M C α η := by
+  unfold cE_frozen_tight cE_frozen_eta_tight
+  have hvw : (0 : ℝ) < (valueWidth M : ℝ) := by
+    have := two_le_valueWidth M
+    exact_mod_cast (by omega : 0 < valueWidth M)
+  have hηα : η / α ≤ tightBridgeRho0 M.k C ((19 / 20) * α) / 8 := by
+    rw [div_le_iff₀ hα0]; linarith
+  gcongr
   linarith
+
+/-- `TransposesAt` is monotone in the time constant. -/
+private theorem transposesAt_mono {M : TM} {d : ℕ} {c C : ℝ} (htr : TransposesAt M d c)
+    (hcC : c ≤ C) : TransposesAt M d C := by
+  intro A
+  obtain ⟨s, hs, hrest⟩ := htr A
+  exact ⟨s, hs.trans (Nat.floor_mono (mul_le_mul_of_nonneg_right hcC (by positivity))), hrest⟩
 
 /-- Tightened `(k, c, α)`-only simulator trace-entropy threshold
 `η_*(k, c, α) = (α / 16) * tightBridgeRho0 k (11 * c + 1) ((19 / 20) * α)` (`4.88 × 10⁻⁷` at
@@ -2802,9 +2787,77 @@ theorem adaptiveBridge_etaStar_tight_pos (k : ℕ) {c α : ℝ} (_hc : 0 ≤ c) 
   unfold adaptiveBridge_etaStar_tight
   exact mul_pos (by positivity) (tightBridgeRho0_pos k (adaptiveBridge_cSim c) ((19 / 20) * α))
 
+/-- **Theorem E(a) for approximate transposers, every threshold `1 ≤ H ≤ θ L`:**
+Let `τ₀` be a trace of **any** machine `M` at size `d ≥ bridgeMenger_d0_tight`, and let
+`S ⊆ fibre M L τ₀` be a set of `|S| ≥ 2 ^ ((1 - η) L)` inputs that `M` transposes within time `C`
+(no other input need be transposed). Then every Menger vertex cut `B` from `u₀(V₀)`
+(`|V₀| ≥ α L`) to `crossingLowerEtaSteps τ₀ T H 1 T` satisfies
+`cE_frozen_eta_tight M C α η * |V₀| ≤ |B|`:
+`linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight` with the deficit
+`δ = η L ≤ (η / α) |V₀|` of `correctSubset_isAcyclicIn_coneSystem_deficit_le`. -/
+theorem correctSubset_crossingLowerGT2H_menger_lb_tight {M : TM} {d H : ℕ} {C α η : ℝ}
+    (hC : 1 ≤ C) (hα0 : 0 < α) (hH : 1 ≤ H)
+    (hd : bridgeMenger_d0_tight M.k C α ≤ d) {τ₀ : Trace M.k}
+    {S : Finset (Fin (d * d * entryBits d) → Bool)}
+    (hS_fib : S ⊆ fibre M (d * d * entryBits d) τ₀)
+    (hS_tr : ∀ X ∈ S, TransposesInput M d (entryBits d) C X)
+    (hS_card : (2 : ℝ) ^ ((1 - η) * ((d * d * entryBits d : ℕ) : ℝ)) ≤ (S.card : ℝ))
+    (hH_le : (H : ℝ) ≤ thetaMacro_tight M C α * ((d * d * entryBits d : ℕ) : ℝ))
+    (V₀ : Finset (Fin (d * d * entryBits d)))
+    (hV₀ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤ (V₀.card : ℝ)) (B : Finset ℕ)
+    (hmenger : IsMengerVertexCut τ₀.work τ₀.haltTime
+      (V₀.image fun q => appendTime τ₀ τ₀.haltTime (tposOf d (entryBits d) q).1)
+      (crossingLowerEtaSteps τ₀ τ₀.haltTime H 1 τ₀.haltTime) B) :
+    cE_frozen_eta_tight M C α η * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
+  have hd1 : 1 ≤ d := (le_max_left _ _).trans hd
+  have hL_pos : (0 : ℝ) < ((d * d * entryBits d : ℕ) : ℝ) := by
+    exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
+  obtain ⟨hT_floor, -, -, hlen, hdef⟩ :=
+    correctSubset_isAcyclicIn_coneSystem_deficit_le hd1 le_rfl hS_fib hS_tr hS_card
+  have hT : (τ₀.haltTime : ℝ) ≤ C * (((d * d * entryBits d : ℕ) : ℝ) + 1) :=
+    (Nat.cast_le.mpr hT_floor).trans (Nat.floor_le (by positivity))
+  have h := linearTimeTrace_crossingLowerGT2H_menger_lb_of_coneDeficit_tight τ₀ hd
+    (one_le_entryBits d) hH hC hα0 hlen hT hH_le hdef V₀ hV₀ B hmenger
+  have hη : 0 ≤ η := by
+    have h0 := hdef ∅ ∅ (isAcyclicIn_empty_of _)
+    simp only [card_empty, Nat.cast_zero, mul_zero, sub_zero] at h0
+    nlinarith
+  have hηL : η * ((d * d * entryBits d : ℕ) : ℝ) ≤ η / α * (V₀.card : ℝ) :=
+    calc η * ((d * d * entryBits d : ℕ) : ℝ)
+        = η / α * (α * ((d * d * entryBits d : ℕ) : ℝ)) := by field_simp
+      _ ≤ η / α * (V₀.card : ℝ) := mul_le_mul_of_nonneg_left hV₀ (div_nonneg hη hα0.le)
+  have hvw : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
+  unfold cE_frozen_eta_tight
+  rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+  linarith
+
+/-- **Theorem E(a) at every heaviness `η` and every threshold `1 ≤ H ≤ θ L`:**
+On an `η`-heavy trace `τ₀` of **any** machine `M` transposing at size `d ≥ bridgeMenger_d0_tight`
+within time `C` (`traceProb M L τ₀ ≥ 2 ^ (-η * L)`, no cap on `η`), every Menger vertex cut `B` from
+`u₀(V₀)` (`|V₀| ≥ α L`) to `crossingLowerEtaSteps τ₀ T H 1 T` satisfies
+`w_val |B| ≥ (ρ₀ / 2 - η / α) |V₀|`, that is `cE_frozen_eta_tight M C α η * |V₀| ≤ |B|`:
+`correctSubset_crossingLowerGT2H_menger_lb_tight` with `S = fibre M L τ₀`, whose deficit
+`δ = η L ≤ (η / α) |V₀|` is that of Lemma 3.6. At `η = 0` the constant is `cE_menger_tight M C α`. -/
+theorem frozenTrace_crossingLowerGT2H_menger_lb_tight {M : TM} {d H : ℕ} {C α η : ℝ}
+    (hC : 1 ≤ C) (hα0 : 0 < α) (hH : 1 ≤ H)
+    (hd : bridgeMenger_d0_tight M.k C α ≤ d)
+    (htr : TransposesAt M d C) {τ₀ : Trace M.k}
+    (hprob : (2 : ℝ) ^ (-η * ((d * d * entryBits d : ℕ) : ℝ)) ≤
+      traceProb M (d * d * entryBits d) τ₀)
+    (hH_le : (H : ℝ) ≤ thetaMacro_tight M C α * ((d * d * entryBits d : ℕ) : ℝ))
+    (V₀ : Finset (Fin (d * d * entryBits d)))
+    (hV₀ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤ (V₀.card : ℝ)) (B : Finset ℕ)
+    (hmenger : IsMengerVertexCut τ₀.work τ₀.haltTime
+      (V₀.image fun q => appendTime τ₀ τ₀.haltTime (tposOf d (entryBits d) q).1)
+      (crossingLowerEtaSteps τ₀ τ₀.haltTime H 1 τ₀.haltTime) B) :
+    cE_frozen_eta_tight M C α η * (V₀.card : ℝ) ≤ (B.card : ℝ) :=
+  correctSubset_crossingLowerGT2H_menger_lb_tight hC hα0 hH hd subset_rfl
+    (fun X _ => htr.transposesInput X) (two_rpow_le_card_fibre hprob) hH_le V₀ hV₀ B hmenger
+
 /-- **Tightened Theorem E(a) (`Heavy-Trace Macroscopic Crossing-Lower Menger Expansion`, Zero `genieDepth`!):**
 On `M`'s own heavy traces (`traceProb M L τ₀ ≥ 2 ^ (-η * L)` with `η ≤ (α / 8) * tightBridgeRho0 M.k C ((19 / 20) * α)`),
-directly applies `frozenTrace_isAcyclicIn_coneSystem_deficit_le` to `B ∪ X_cell` with **zero `genie_cost`**! -/
+at `H_* = ⌊θ L⌋₊`: `frozenTrace_crossingLowerGT2H_menger_lb_tight`, whose constant
+`cE_frozen_eta_tight M C α η` is at least `cE_frozen_tight M C α` under this cap. -/
 theorem frozenTrace_macroscopicCrossingLowers_menger_lb_tight {M : TM} {d : ℕ} {c C α η : ℝ}
     (hc_le : c ≤ C) (hC1 : 1 ≤ C) (hα0 : 0 < α)
     (hd : d0Macro_tight M C α ≤ d)
@@ -2815,7 +2868,7 @@ theorem frozenTrace_macroscopicCrossingLowers_menger_lb_tight {M : TM} {d : ℕ}
     let L := d * d * entryBits d
     let T := τ₀.haltTime
     let H_star := ⌊thetaMacro_tight M C α * (L : ℝ)⌋₊
-    d * entryBits d ≤ H_star ∧
+    (⌈1 / thetaMacro_tight M C α⌉₊ ≤ d → d * entryBits d ≤ H_star) ∧
       thetaMacro_tight M C α * (L : ℝ) ≤ ((2 * H_star : ℕ) : ℝ) ∧
       ∀ V₀ : Finset (Fin L), α * (L : ℝ) ≤ (V₀.card : ℝ) →
         ∀ B : Finset ℕ,
@@ -2824,138 +2877,67 @@ theorem frozenTrace_macroscopicCrossingLowers_menger_lb_tight {M : TM} {d : ℕ}
             (crossingLowerEtaSteps τ₀ T H_star 1 T) B →
           cE_frozen_tight M C α * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   intro L T H_star
-  have hd_menger : bridgeMenger_d0_tight M.k C α ≤ d := (le_max_left _ _).trans hd
-  have hd_2θ : ⌈2 / thetaMacro_tight M C α⌉₊ ≤ d := (le_max_right _ _).trans hd
-  have hd1 : 1 ≤ d := (le_max_left _ _).trans hd_menger
-  have hd0 : tightBridge_d0 M.k C ((19 / 20) * α) ≤ d := (le_max_right _ _).trans hd_menger
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hθ_pos : 0 < thetaMacro_tight M C α := thetaMacro_tight_pos M C hα0
-  have hW_pos : 1 ≤ d * entryBits d := Nat.mul_pos hd1 hb1
-  have h2_le_θd : (2 : ℝ) ≤ thetaMacro_tight M C α * (d : ℝ) := by
-    have hge : 2 / thetaMacro_tight M C α ≤ (d : ℝ) :=
-      (Nat.le_ceil _).trans (by exact_mod_cast hd_2θ)
-    have hmul := (div_le_iff₀ hθ_pos).mp hge
-    linarith
-  have hW_le_θL : ((d * entryBits d : ℕ) : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) := by
-    have hW_nn : (0 : ℝ) ≤ ((d * entryBits d : ℕ) : ℝ) := by positivity
-    have h1_le : (1 : ℝ) ≤ thetaMacro_tight M C α * (d : ℝ) := by linarith
-    calc ((d * entryBits d : ℕ) : ℝ)
-        = 1 * ((d * entryBits d : ℕ) : ℝ) := (one_mul _).symm
-      _ ≤ (thetaMacro_tight M C α * (d : ℝ)) * ((d * entryBits d : ℕ) : ℝ) :=
-          mul_le_mul_of_nonneg_right h1_le hW_nn
-      _ = thetaMacro_tight M C α * (L : ℝ) := by dsimp [L]; push_cast; ring
-  have hW_le_H : d * entryBits d ≤ H_star := Nat.le_floor hW_le_θL
-  have hH_pos : 1 ≤ H_star := hW_pos.trans hW_le_H
-  have hH_le_θL : (H_star : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) :=
-    Nat.floor_le (by positivity)
-  have h2_le_θL : (2 : ℝ) ≤ thetaMacro_tight M C α * (L : ℝ) := by
-    have hd_le_L : (d : ℝ) ≤ (L : ℝ) := by
-      have : d ≤ d * d * entryBits d := by
-        calc d = d * 1 * 1 := by ring
-          _ ≤ d * d * entryBits d := Nat.mul_le_mul (Nat.mul_le_mul le_rfl hd1) hb1
-      exact_mod_cast this
-    exact h2_le_θd.trans (mul_le_mul_of_nonneg_left hd_le_L hθ_pos.le)
-  have hθL_le_2H : thetaMacro_tight M C α * (L : ℝ) ≤ ((2 * H_star : ℕ) : ℝ) := by
-    have hlt_succ : thetaMacro_tight M C α * (L : ℝ) < (H_star : ℝ) + 1 :=
-      Nat.lt_floor_add_one _
-    have hH1 : (1 : ℝ) ≤ (H_star : ℝ) := by exact_mod_cast hH_pos
-    push_cast
-    linarith
-  obtain ⟨hT_floor, hT_pos, _, happ_eq, hdef⟩ :=
-    frozenTrace_isAcyclicIn_coneSystem_deficit_le hd1 le_rfl htr hprob
-  have hT_le_C : (T : ℝ) ≤ C * ((L : ℝ) + 1) := by
-    have hc_nn : 0 ≤ c * ((L : ℝ) + 1) := by
-      by_cases hc0 : 0 ≤ c
-      · positivity
-      · exfalso
-        have hneg : c * ((L : ℝ) + 1) < 0 := mul_neg_of_neg_of_pos (lt_of_not_ge hc0) (by positivity)
-        have hfl0 : ⌊c * (((d * d * entryBits d : ℕ) : ℝ) + 1)⌋₊ = 0 :=
-          Nat.floor_of_nonpos hneg.le
-        have hle0 : T ≤ 0 := hT_floor.trans_eq hfl0
-        exact absurd (Nat.lt_of_lt_of_le hT_pos hle0) (lt_irrefl 0)
-    calc (T : ℝ)
-        ≤ (⌊c * ((L : ℝ) + 1)⌋₊ : ℝ) := by exact_mod_cast hT_floor
-      _ ≤ c * ((L : ℝ) + 1) := Nat.floor_le hc_nn
-      _ ≤ C * ((L : ℝ) + 1) := mul_le_mul_of_nonneg_right hc_le (by positivity)
-  refine ⟨hW_le_H, hθL_le_2H, fun V₀ hV₀ B hmenger => ?_⟩
-  have hL_pos : (0 : ℝ) < (L : ℝ) := by exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) hb1
-  have hα_le_1 : α ≤ 1 := by
-    have hV_le : (V₀.card : ℝ) ≤ (L : ℝ) := by
-      exact_mod_cast (card_le_card (subset_univ V₀)).trans_eq (by simp [L])
-    have h1 : α * (L : ℝ) ≤ 1 * (L : ℝ) := by linarith
-    exact le_of_mul_le_mul_right h1 hL_pos
-  have hc_le_tw : cE_frozen_tight M C α ≤ 1 / 20 :=
-    (cE_frozen_tight_le_one_fortieth M hC1 hα0 hα_le_1).trans (by norm_num)
-  rcases le_or_gt ((1 / 20 : ℝ) * (V₀.card : ℝ)) (B.card : ℝ) with hB_big | hB_small
-  · calc cE_frozen_tight M C α * (V₀.card : ℝ)
-        ≤ (1 / 20 : ℝ) * (V₀.card : ℝ) := mul_le_mul_of_nonneg_right hc_le_tw (by positivity)
-      _ ≤ (B.card : ℝ) := hB_big
-  · let V₀' := V₀.filter fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1 ∉ B
-    obtain ⟨hcard_split, hsep'⟩ :=
-      isBallPathSeparator_of_isMengerVertexCut (D := T) τ₀ happ_eq V₀ _ B hmenger
-    have hcard_r : (V₀.card : ℝ) ≤ (V₀'.card : ℝ) + (B.card : ℝ) := by
-      have hr : (V₀.card : ℝ) ≤ ((V₀'.card + B.card : ℕ) : ℝ) := by exact_mod_cast hcard_split
-      simpa [Nat.cast_add] using hr
-    have hV₀'_ge : (19 / 20 : ℝ) * (V₀.card : ℝ) ≤ (V₀'.card : ℝ) := by linarith
-    have hV₀'_dens : ((19 / 20) * α) * (L : ℝ) ≤ (V₀'.card : ℝ) := by nlinarith
-    obtain ⟨X_cell, U, hX_card, _, _, hacyc_cone, hU_ge⟩ :=
-      exists_singleCell_guard_coneSystem_isIndependent_crossingLowerGT2H τ₀ hd1 hb1 hH_pos hC1
-        (by positivity) happ_eq hT_le_C V₀' B hV₀'_dens hd0 hsep'
-    have hdef_BX := hdef (B ∪ X_cell) U hacyc_cone
-    have hunion_r : ((B ∪ X_cell).card : ℝ) ≤ (B.card : ℝ) + (X_cell.card : ℝ) := by
-      exact_mod_cast card_union_le B X_cell
-    have hvw_ge2 : (2 : ℝ) ≤ (valueWidth M : ℝ) := by exact_mod_cast two_le_valueWidth M
-    have hvw_pos : (0 : ℝ) < (valueWidth M : ℝ) := by linarith
-    have hsh_pos : (0 : ℝ) < (sharpCellGuardThresh M.k : ℝ) := by
-      exact_mod_cast sharpCellGuardThresh_pos M.k
-    have h5k_pos : (0 : ℝ) < ((5 * M.k + 1 : ℕ) : ℝ) := by positivity
-    let ρ' := tightBridgeRho0 M.k C ((19 / 20) * α)
-    have hρ'_pos : 0 < ρ' := tightBridgeRho0_pos M.k C ((19 / 20) * α)
-    have hX_r : (X_cell.card : ℝ) ≤
-        (sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) * (H_star : ℝ) := by
-      have hc : (X_cell.card : ℝ) ≤
-          ((sharpCellGuardThresh M.k * (5 * M.k + 1) * H_star : ℕ) : ℝ) := by
-        exact_mod_cast hX_card
-      simpa [Nat.cast_mul, mul_assoc] using hc
-    have hvw_X : (valueWidth M : ℝ) * (X_cell.card : ℝ) ≤ (9 / 20 : ℝ) * ρ' * (V₀.card : ℝ) := by
-      calc (valueWidth M : ℝ) * (X_cell.card : ℝ)
-          ≤ (valueWidth M : ℝ) *
-              ((sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) * (H_star : ℝ)) :=
-            mul_le_mul_of_nonneg_left hX_r hvw_pos.le
-        _ ≤ (valueWidth M : ℝ) *
-              ((sharpCellGuardThresh M.k : ℝ) * ((5 * M.k + 1 : ℕ) : ℝ) *
-                (thetaMacro_tight M C α * (L : ℝ))) :=
-            mul_le_mul_of_nonneg_left
-              (mul_le_mul_of_nonneg_left hH_le_θL (by positivity)) hvw_pos.le
-        _ = (9 / 20 : ℝ) * ρ' * (α * (L : ℝ)) := by
-            dsimp [ρ']; unfold thetaMacro_tight; field_simp
-        _ ≤ (9 / 20 : ℝ) * ρ' * (V₀.card : ℝ) :=
-            mul_le_mul_of_nonneg_left hV₀ (by positivity)
-    have hηL_le : η * (L : ℝ) ≤ (1 / 8 : ℝ) * ρ' * (V₀.card : ℝ) := by
-      calc η * (L : ℝ)
-          ≤ ((α / 8) * ρ') * (L : ℝ) := mul_le_mul_of_nonneg_right hη_le hL_pos.le
-        _ = (1 / 8 : ℝ) * ρ' * (α * (L : ℝ)) := by ring
-        _ ≤ (1 / 8 : ℝ) * ρ' * (V₀.card : ℝ) :=
-            mul_le_mul_of_nonneg_left hV₀ (by positivity)
-    have hU_lb : (19 / 20 : ℝ) * ρ' * (V₀.card : ℝ) ≤ (U.card : ℝ) := by
-      calc (19 / 20 : ℝ) * ρ' * (V₀.card : ℝ)
-          = ρ' * ((19 / 20 : ℝ) * (V₀.card : ℝ)) := by ring
-        _ ≤ ρ' * (V₀'.card : ℝ) := mul_le_mul_of_nonneg_left hV₀'_ge hρ'_pos.le
-        _ ≤ (U.card : ℝ) := hU_ge
-    have htot_def : (U.card : ℝ) - η * (L : ℝ) ≤
-        (valueWidth M : ℝ) * (B.card : ℝ) + (valueWidth M : ℝ) * (X_cell.card : ℝ) := by
-      calc (U.card : ℝ) - η * (L : ℝ)
-          ≤ (valueWidth M : ℝ) * ((B ∪ X_cell).card : ℝ) := by dsimp [L]; linarith [hdef_BX]
-        _ ≤ (valueWidth M : ℝ) * ((B.card : ℝ) + (X_cell.card : ℝ)) :=
-            mul_le_mul_of_nonneg_left hunion_r hvw_pos.le
-        _ = (valueWidth M : ℝ) * (B.card : ℝ) + (valueWidth M : ℝ) * (X_cell.card : ℝ) :=
-            mul_add _ _ _
-    have hvw_B : (3 / 8 : ℝ) * ρ' * (V₀.card : ℝ) ≤ (valueWidth M : ℝ) * (B.card : ℝ) := by
-      linarith
-    unfold cE_frozen_tight
-    change ((3 / 8) * ρ' / (valueWidth M : ℝ)) * (V₀.card : ℝ) ≤ (B.card : ℝ)
-    rw [div_mul_eq_mul_div, div_le_iff₀ hvw_pos]
-    linarith
+  have hθ := thetaMacro_tight_pos M C hα0
+  obtain ⟨hH1, hH_le, h2H⟩ := floor_bounds_of_one_le
+    (le_mul_of_ceil_sqrt_div_le hθ zero_le_one (one_le_entryBits d) ((le_max_right _ _).trans hd))
+  refine ⟨fun h1θ => Nat.le_floor (rowWidth_le_mul_of_ceil_inv_le hθ h1θ), h2H,
+    fun V₀ hV₀ B hmenger => ?_⟩
+  exact (mul_le_mul_of_nonneg_right (cE_frozen_tight_le_cE_frozen_eta_tight M hα0 hη_le)
+    (Nat.cast_nonneg _)).trans (frozenTrace_crossingLowerGT2H_menger_lb_tight hC1 hα0 hH1
+      ((le_max_left _ _).trans hd) (transposesAt_mono htr hc_le) hprob hH_le V₀ hV₀ B hmenger)
+
+/-- On a machine oblivious at length `L` with halting time `T`, every input of length `L` has the
+trace `traceAt M L`, and that trace halts at `T`. -/
+private theorem mem_fibre_traceAt_of_obliviousOn {M : TM} {L T : ℕ}
+    (hobl : ObliviousOn M (inputsOfLength L) T) :
+    (∀ X : Fin L → Bool, X ∈ fibre M L (traceAt M L)) ∧ (traceAt M L).haltTime = T := by
+  have hhalt_zero : HaltsAt M (List.ofFn fun _ : Fin L => false) T := hobl.1 _ List.length_ofFn
+  have hτ₀_halts : (traceAt M L).HaltsAt T := (haltsAt_iff_trace T).mp hhalt_zero
+  refine ⟨fun X => mem_fibre.mpr (funext fun t => ?_),
+    ((traceAt M L).haltsAt_haltTime ⟨T, hτ₀_halts.2⟩).unique hτ₀_halts⟩
+  rcases lt_or_ge t T with ht | ht
+  · exact followsTrace_of_obliviousOn hobl (fun _ : Fin L => false) X t ht
+  · show trace M (List.ofFn X) t = trace M (List.ofFn fun _ : Fin L => false) t
+    rw [(trace_eq_none_iff t).mpr (transAt_of_le_of_none (hobl.1 _ List.length_ofFn).2 ht),
+      (trace_eq_none_iff t).mpr (transAt_of_le_of_none hhalt_zero.2 ht)]
+
+/-- **Theorem X for approximate oblivious transposers:**
+Let `M` be oblivious at length `L = d * d * entryBits d` with halting time `T` (`ObliviousOn`, the
+first clause of `ObliviousLinTime`, whose clause `Transposes` is dropped and whose time bound is
+derived), and let `M` transpose within time `C` every input of a set `S` with
+`|S| ≥ 2 ^ ((1 - η) L)`. For every `d ≥ d0Macro_tight M C α`, with `H_* := ⌊θ L⌋₊`, the conclusions
+of `obliviousLinTime_macroscopicCrossingLowers_menger_lb_tight` hold in the common trace
+`traceAt M L` with `cE_frozen_eta_tight M C α η` in place of `cE_menger_tight M C α` (equal at
+`η = 0`): `correctSubset_crossingLowerGT2H_menger_lb_tight` on the one trace of `M`. -/
+theorem obliviousOn_correctSubset_macroscopicCrossingLowers_menger_lb_tight
+    {M : TM} {d T : ℕ} {C α η : ℝ}
+    (hC : 1 ≤ C) (hα0 : 0 < α)
+    (hd : d0Macro_tight M C α ≤ d)
+    (hobl : ObliviousOn M (inputsOfLength (d * d * entryBits d)) T)
+    {S : Finset (Fin (d * d * entryBits d) → Bool)}
+    (hS_tr : ∀ X ∈ S, TransposesInput M d (entryBits d) C X)
+    (hS_card : (2 : ℝ) ^ ((1 - η) * ((d * d * entryBits d : ℕ) : ℝ)) ≤ (S.card : ℝ))
+    (V₀ : Finset (Fin (d * d * entryBits d)))
+    (hV₀ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤ (V₀.card : ℝ)) :
+    let L := d * d * entryBits d
+    let H_star := ⌊thetaMacro_tight M C α * (L : ℝ)⌋₊
+    (⌈1 / thetaMacro_tight M C α⌉₊ ≤ d → d * entryBits d ≤ H_star) ∧
+      thetaMacro_tight M C α * (L : ℝ) ≤ (2 * H_star : ℕ) ∧
+      ∀ B : Finset ℕ,
+        IsMengerVertexCut (traceAt M L).work T
+          (V₀.image fun q => appendTime (traceAt M L) T (tposOf d (entryBits d) q).1)
+          (crossingLowerEtaSteps (traceAt M L) T H_star 1 T) B →
+        cE_frozen_eta_tight M C α η * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
+  intro L H_star
+  obtain ⟨hfib, hT_eq⟩ := mem_fibre_traceAt_of_obliviousOn hobl
+  have hθ := thetaMacro_tight_pos M C hα0
+  obtain ⟨hH1, hH_le, h2H⟩ := floor_bounds_of_one_le
+    (le_mul_of_ceil_sqrt_div_le hθ zero_le_one (one_le_entryBits d) ((le_max_right _ _).trans hd))
+  refine ⟨fun h1θ => Nat.le_floor (rowWidth_le_mul_of_ceil_inv_le hθ h1θ), h2H,
+    fun B hmenger => ?_⟩
+  subst hT_eq
+  exact correctSubset_crossingLowerGT2H_menger_lb_tight hC hα0 hH1 ((le_max_left _ _).trans hd)
+    (fun X _ => hfib X) hS_tr hS_card hH_le V₀ hV₀ B hmenger
 
 /-- **Tightened Statement of Theorem E(b) (`Explicitly Scoped to Paper 15's Simulator N_s`):** -/
 def SimulatorHeavyTraceExpansionStatement_Tight : Prop :=
@@ -3095,7 +3077,9 @@ theorem adaptive_simulator_heavyTrace_macroscopicExpansion_tight :
       hprob_τ h2η_le
   exact ⟨hθ_2H, hmenger_lb⟩
 
-/-- **Tightened Heavy-Trace `Theorem S(b)` (`Finite Crossing-Capable Skeleton & Single Leg`):** -/
+/-- **Tightened Heavy-Trace `Theorem S(b)` (`Finite Crossing-Capable Skeleton & Single Leg`):**
+the trace form `linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg` applied to
+Theorem E(a). -/
 theorem frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
     {M : TM} {d : ℕ} {c C α η : ℝ}
     (hc_le : c ≤ C) (hC1 : 1 ≤ C) (hα0 : 0 < α)
@@ -3119,196 +3103,28 @@ theorem frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
         2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
         9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
         r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-        r_star ≤ M_max ∧
+        r_star < M_max ∧
         ∀ B : Finset ℕ,
           IsMengerVertexCut τ₀.work T
             (V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1)
             (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
-          (cE_frozen_tight M C α / ((M.k : ℝ) * ((M_max : ℝ) + 1))) *
+          (cE_frozen_tight M C α / ((M.k : ℝ) * (M_max : ℝ))) *
             (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   intro L T θ_star H_star Λ_star M_max
+  have hθ := thetaMacro_tight_pos M C hα0
   have hd_d0 : d0Macro_tight M C α ≤ d := (le_max_left _ _).trans hd
-  have hd_8θ : ⌈8 / θ_star⌉₊ ≤ d := (le_max_right _ _).trans hd
   have hd1 : 1 ≤ d := (le_max_left _ _).trans ((le_max_left _ _).trans hd_d0)
-  have hb1 : 1 ≤ entryBits d := one_le_entryBits d
-  have hθ_pos : 0 < θ_star := thetaMacro_tight_pos M C hα0
+  have hL_pos : (0 : ℝ) < (L : ℝ) := by
+    exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) (one_le_entryBits d)
   obtain ⟨_, _, hmenger_all⟩ :=
     frozenTrace_macroscopicCrossingLowers_menger_lb_tight hc_le hC1 hα0 hd_d0 htr hprob hη_le
-  have hmenger_tot := hmenger_all V₀ hV₀
-  obtain ⟨hT_floor, hT_pos, _, _, _⟩ :=
-    frozenTrace_isAcyclicIn_coneSystem_deficit_le hd1 le_rfl htr hprob
-  have hT_le_C : (T : ℝ) ≤ C * ((L : ℝ) + 1) := by
-    have hc_nn : 0 ≤ c * ((L : ℝ) + 1) := by
-      by_cases hc0 : 0 ≤ c
-      · positivity
-      · exfalso
-        have hneg : c * ((L : ℝ) + 1) < 0 := mul_neg_of_neg_of_pos (lt_of_not_ge hc0) (by positivity)
-        have hfl0 : ⌊c * (((d * d * entryBits d : ℕ) : ℝ) + 1)⌋₊ = 0 :=
-          Nat.floor_of_nonpos hneg.le
-        have hle0 : T ≤ 0 := hT_floor.trans_eq hfl0
-        exact absurd (Nat.lt_of_lt_of_le hT_pos hle0) (lt_irrefl 0)
-    calc (T : ℝ)
-        ≤ (⌊c * ((L : ℝ) + 1)⌋₊ : ℝ) := by exact_mod_cast hT_floor
-      _ ≤ c * ((L : ℝ) + 1) := Nat.floor_le hc_nn
-      _ ≤ C * ((L : ℝ) + 1) := mul_le_mul_of_nonneg_right hc_le (by positivity)
-  obtain ⟨hΛ1, hturns_le, hmem_bdd⟩ :=
-    traceSkeletonTuple_mem_boundedSkeletonTuple τ₀ hd1 hb1 hC1 hθ_pos hd_8θ hT_le_C
-  have h2Λ_le_H : 2 * Λ_star ≤ H_star := by
-    apply Nat.le_floor
-    have hΛ_le : (Λ_star : ℝ) ≤ (θ_star / 4) * (L : ℝ) := Nat.floor_le (by positivity)
-    push_cast; linarith
-  set Src := V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1
-  set c_tot : ℝ := cE_frozen_tight M C α
-  have hc_tot_pos : 0 < c_tot := cE_frozen_tight_pos M C α
-  have hV₀_pos : (0 : ℝ) < (V₀.card : ℝ) := by
-    have hL_pos : (0 : ℝ) < (L : ℝ) := by exact_mod_cast Nat.mul_pos (Nat.mul_pos hd1 hd1) hb1
-    linarith [mul_pos hα0 hL_pos]
-  let Slots : Finset (Fin M.k × ℕ) :=
-    ((univ : Finset (Fin M.k)) ×ˢ range (M_max + 1)).filter fun jr =>
-      IsScaleFreeCrossingCapable (traceSkeletonTuple τ₀ T Λ_star jr.1) ∧
-      jr.2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star jr.1)
-  have hcover : crossingLowerEtaSteps τ₀ T H_star 1 T ⊆
-      Slots.biUnion (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) := by
-    intro v hv
-    rw [crossingLowerEtaSteps_eq_biUnion_tapeCrossingLowers] at hv
-    obtain ⟨j, _, hv_tape⟩ := mem_biUnion.mp hv
-    have hcap_j : IsCrossingCapableSkeleton H_star Λ_star (tapeSkeleton (τ₀.work j) T Λ_star) :=
-      isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty (τ₀.work_isWalk j)
-        (τ₀.work_zero j) hΛ1 ⟨v, hv_tape⟩
-    obtain ⟨hsf_j, _⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_j
-    let r := legOfEpoch (tapeSkeleton (τ₀.work j) T Λ_star) (epochIdx (τ₀.work j) Λ_star v)
-    have hr_turns : r ≤ macroTurns (tapeSkeleton (τ₀.work j) T Λ_star) :=
-      legOfEpoch_le_macroTurns _ _
-    have hr_max : r < M_max + 1 := Nat.lt_succ_of_le (hr_turns.trans (hturns_le j))
-    refine mem_biUnion.mpr ⟨(j, r), ?_, mem_filter.mpr ⟨hv_tape, rfl⟩⟩
-    exact mem_filter.mpr ⟨mem_product.mpr ⟨mem_univ j, mem_range.mpr hr_max⟩, hsf_j, hr_turns⟩
-  have hSlots_ne : Slots.Nonempty := by
-    by_contra hemp
-    rw [Finset.not_nonempty_iff_eq_empty] at hemp
-    have hdst_empty : crossingLowerEtaSteps τ₀ T H_star 1 T = ∅ := by
-      rw [← subset_empty]; exact hcover.trans (by simp [hemp])
-    have h0 := hmenger_tot ∅ (by rw [hdst_empty]; exact isMengerVertexCut_dst_self _ _ ∅)
-    simp only [card_empty, Nat.cast_zero] at h0
-    linarith [mul_pos hc_tot_pos hV₀_pos]
-  obtain ⟨⟨j₀, _⟩, hj₀_mem⟩ := hSlots_ne
-  have hmem_cap : traceSkeletonTuple τ₀ T Λ_star ∈ CrossingCapableSkeletonTuple M.k M_max :=
-    mem_filter.mpr ⟨hmem_bdd, j₀, (mem_filter.mp hj₀_mem).2.1⟩
-  have hk_pos : 0 < M.k := Fin.pos j₀
-  have hSlots_card : (Slots.card : ℝ) ≤ (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-    have hle : Slots.card ≤ M.k * (M_max + 1) :=
-      (card_le_card (filter_subset _ _)).trans (by simp [card_product])
-    exact_mod_cast hle
-  have hexists_slot : ∃ jr ∈ Slots, ∀ B : Finset ℕ,
-      IsMengerVertexCut τ₀.work T Src (legCrossingLowers τ₀ T H_star Λ_star jr.1 jr.2) B →
-      (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
-    by_contra hall_cheap
-    push Not at hall_cheap
-    choose B_of hB_cut hB_lt using fun jr : {x // x ∈ Slots} => hall_cheap jr.1 jr.2
-    let B_u := Slots.attach.biUnion fun jr => B_of jr
-    have hcut_bu : IsMengerVertexCut τ₀.work T Src
-        (Slots.attach.biUnion fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_u :=
-      isMengerVertexCut_biUnion Slots.attach Src
-        (fun jr => legCrossingLowers τ₀ T H_star Λ_star jr.1.1 jr.1.2) B_of
-        (fun jr _ => hB_cut jr)
-    have hcut_tot : IsMengerVertexCut τ₀.work T Src (crossingLowerEtaSteps τ₀ T H_star 1 T) B_u := by
-      intro π t₀ hsrc hdep hlast
-      have hcov_last := hcover hlast
-      obtain ⟨jr, hjrS, hmem_jr⟩ := mem_biUnion.mp hcov_last
-      exact hcut_bu π t₀ hsrc hdep (mem_biUnion.mpr ⟨⟨jr, hjrS⟩, mem_attach _ _, hmem_jr⟩)
-    have hbu_card_nat : B_u.card ≤ ∑ jr ∈ Slots.attach, (B_of jr).card := card_biUnion_le
-    have hbu_card_r : (B_u.card : ℝ) ≤ ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) := by
-      exact_mod_cast hbu_card_nat
-    have hsum_lt : ∑ jr ∈ Slots.attach, ((B_of jr).card : ℝ) <
-        ∑ _jr ∈ Slots.attach, (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) :=
-      sum_lt_sum_of_nonempty (Slots.attach_nonempty_iff.mpr ⟨⟨j₀, _⟩, hj₀_mem⟩)
-        (fun jr _ => hB_lt jr)
-    have hconst_sum : (∑ _jr ∈ Slots.attach,
-        (c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ)) ≤
-        c_tot * (V₀.card : ℝ) := by
-      rw [sum_const, card_attach, nsmul_eq_mul]
-      have hdenom_pos : (0 : ℝ) < (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-        have : (0 : ℝ) < (M.k : ℝ) := by exact_mod_cast hk_pos
-        positivity
-      calc (Slots.card : ℝ) * ((c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ))
-          ≤ ((M.k : ℝ) * ((M_max : ℝ) + 1)) *
-              ((c_tot / ((M.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ)) :=
-            mul_le_mul_of_nonneg_right hSlots_card (by positivity)
-        _ = c_tot * (V₀.card : ℝ) := by field_simp
-    have htot_lb := hmenger_tot B_u hcut_tot
-    linarith
-  obtain ⟨⟨j_star, r_star⟩, hjr_mem, hjr_exp⟩ := hexists_slot
-  obtain ⟨hprod_mem, hsf_star, hr_turns⟩ := mem_filter.mp hjr_mem
-  have hr_max : r_star ≤ M_max := Nat.le_of_lt_succ (mem_range.mp (mem_product.mp hprod_mem).2)
-  have hleg_ne : (legCrossingLowers τ₀ T H_star Λ_star j_star r_star).Nonempty := by
-    by_contra hemp
-    rw [Finset.not_nonempty_iff_eq_empty] at hemp
-    have h0 := hjr_exp ∅ (by rw [hemp]; exact isMengerVertexCut_dst_self _ _ ∅)
-    simp only [card_empty, Nat.cast_zero] at h0
-    have hdenom_pos : (0 : ℝ) < (M.k : ℝ) * ((M_max : ℝ) + 1) := by
-      have : (0 : ℝ) < (M.k : ℝ) := by exact_mod_cast hk_pos
-      positivity
-    linarith [mul_pos (div_pos hc_tot_pos hdenom_pos) hV₀_pos]
-  obtain ⟨v_w, hv_w⟩ := hleg_ne
-  have hcap_star := isCrossingCapableSkeleton_of_tapeCrossingLowers_nonempty
-    (τ₀.work_isWalk j_star) (τ₀.work_zero j_star) hΛ1 ⟨v_w, (mem_filter.mp hv_w).1⟩
-  obtain ⟨_, hlen9⟩ := isScaleFreeCrossingCapable_of_two_mul_le hΛ1 h2Λ_le_H hcap_star
-  exact ⟨hΛ1, h2Λ_le_H, hmem_cap, j_star, r_star, hsf_star,
-    two_le_macroTurns_of_isScaleFreeCrossingCapable hsf_star, hlen9, hr_turns, hr_max, hjr_exp⟩
-
-/-- **Tightened Heavy-Trace Lift of Theorem S to Paper 15's Aligned Simulator `N_s = Native.machine M hs`:** -/
-theorem simulator_heavyTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight
-    (M : TM) {c α : ℝ} (hc : 0 < c) (hα : 0 < α) :
-    let C_sim := adaptiveBridge_cSim c
-    let η_star := adaptiveBridge_etaStar_tight M.k c α
-    ∃ (s : ℕ) (hs : 0 < s) (d_skel_sim : ℕ),
-      let N_s := TapeStorageRates.Native.machine M hs
-      let M_max := skeletonMachineMaxLen_tight N_s C_sim α
-      ∀ d : ℕ, d_skel_sim ≤ d → TransposesAt M d c →
-        let L := d * d * entryBits d
-        let 𝒯_heavy := SimulatorHeavyTraces N_s d (2 * η_star)
-        TransposesAt N_s d C_sim ∧
-        𝒯_heavy.Nonempty ∧
-        (1 - (2 : ℝ) ^ (-η_star * (L : ℝ))) * (2 : ℝ) ^ L <
-          (∑ τ₀ ∈ 𝒯_heavy, ((fibre N_s L τ₀).card : ℝ)) ∧
-        ∀ τ₀ ∈ 𝒯_heavy, ∀ V₀ : Finset (Fin L), α * (L : ℝ) ≤ (V₀.card : ℝ) →
-          let T := τ₀.haltTime
-          let θ_star := thetaMacro_tight N_s C_sim α
-          let H_star := ⌊θ_star * (L : ℝ)⌋₊
-          let Λ_star := ⌊(θ_star / 4) * (L : ℝ)⌋₊
-          1 ≤ Λ_star ∧ 2 * Λ_star ≤ H_star ∧
-            traceSkeletonTuple τ₀ T Λ_star ∈ CrossingCapableSkeletonTuple N_s.k M_max ∧
-            ∃ (j_star : Fin N_s.k) (r_star : ℕ),
-              IsScaleFreeCrossingCapable (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-              2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-              9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
-              r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-              r_star ≤ M_max ∧
-              ∀ B : Finset ℕ,
-                IsMengerVertexCut τ₀.work T
-                  (V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1)
-                  (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
-                (cE_frozen_tight N_s C_sim α /
-                    ((N_s.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) ≤ (B.card : ℝ) := by
-  intro C_sim η_star
-  obtain ⟨s, hs, d_sim, hsim⟩ :=
-    adaptive_simulator_heavyTrace_macroscopicExpansion_tight M c α hc hα
-  let N_s := TapeStorageRates.Native.machine M hs
-  have hC_sim_ge1 : 1 ≤ C_sim := by dsimp [C_sim, adaptiveBridge_cSim]; linarith
-  refine ⟨s, hs, max d_sim (skeleton_d0Macro_tight N_s C_sim α), fun d hd htrM => ?_⟩
-  have hd_sim : d_sim ≤ d := (le_max_left _ _).trans hd
-  have hd_skel : skeleton_d0Macro_tight N_s C_sim α ≤ d := (le_max_right _ _).trans hd
-  obtain ⟨htrN, _, hne, hmass, _⟩ := hsim d hd_sim htrM
-  refine ⟨htrN, hne, hmass, fun τ₀ hτ V₀ hV₀ => ?_⟩
-  have hprob_τ : (2 : ℝ) ^ (-(2 * η_star) * ((d * d * entryBits d : ℕ) : ℝ)) ≤
-      traceProb N_s (d * d * entryBits d) τ₀ :=
-    (mem_filter.mp hτ).2
-  have hNk : N_s.k = M.k := Native.machine_tapes M hs
-  have h2η_le : 2 * η_star ≤ (α / 8) * tightBridgeRho0 N_s.k C_sim ((19 / 20) * α) := by
-    rw [hNk]
-    dsimp [η_star, adaptiveBridge_etaStar_tight, C_sim]
-    linarith [tightBridgeRho0_pos M.k (adaptiveBridge_cSim c) ((19 / 20) * α)]
-  exact frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight le_rfl hC_sim_ge1 hα
-    hd_skel htrN hprob_τ h2η_le V₀ hV₀
+  obtain ⟨hT_floor, -, -, -, -⟩ :=
+    frozenTrace_isAcyclicIn_coneSystem_deficit_le hd1 le_rfl (transposesAt_mono htr hc_le) hprob
+  exact linearTimeTrace_reduces_to_crossingCapableSkeleton_and_singleLeg τ₀ hC1 hθ
+    (le_mul_of_ceil_sqrt_div_le hθ (by norm_num) (one_le_entryBits d) ((le_max_right _ _).trans hd))
+    ((Nat.cast_le.mpr hT_floor).trans (Nat.floor_le (by positivity))) V₀
+    (mul_pos (cE_frozen_tight_pos M C α) ((mul_pos hα0 hL_pos).trans_le hV₀))
+    (hmenger_all V₀ hV₀)
 
 end TightenedFrozenAndSimulatorHeadlines
 
@@ -3327,7 +3143,7 @@ theorem obliviousLinTime_macroscopicCrossingLowers_card_and_menger_tight
     (hobl_lt : ObliviousLinTime M d (entryBits d) C T) :
     let L := d * d * entryBits d
     let H_star := ⌊thetaMacro_tight M C α * (L : ℝ)⌋₊
-    d * entryBits d ≤ H_star ∧
+    (⌈1 / thetaMacro_tight M C α⌉₊ ≤ d → d * entryBits d ≤ H_star) ∧
       thetaMacro_tight M C α * (L : ℝ) ≤ ((2 * H_star : ℕ) : ℝ) ∧
       cE_menger_tight M C α * (L : ℝ) ≤
         ((crossingLowerEtaSteps (traceAt M L) T H_star 1 T).card : ℝ) ∧
@@ -3377,12 +3193,12 @@ theorem obliviousLinTime_crossingCapableSkeleton_and_singleLeg_of_le_one_tight
           2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
           9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
           r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-          r_star ≤ M_max ∧
+          r_star < M_max ∧
           ∀ B : Finset ℕ,
             IsMengerVertexCut τ₀.work T
               (V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1)
               (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
-            (cE_menger_tight M C α / ((M.k : ℝ) * ((M_max : ℝ) + 1))) *
+            (cE_menger_tight M C α / ((M.k : ℝ) * (M_max : ℝ))) *
               (V₀.card : ℝ) ≤ (B.card : ℝ) := by
   intro L θ_star H_star Λ_star M_max τ₀
   have hV_univ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤
@@ -3437,21 +3253,25 @@ theorem simulator_heavyTrace_expansion_and_skeleton_tight
               2 ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
               9 ≤ (traceSkeletonTuple τ₀ T Λ_star j_star).length ∧
               r_star ≤ macroTurns (traceSkeletonTuple τ₀ T Λ_star j_star) ∧
-              r_star ≤ M_max ∧
+              r_star < M_max ∧
               ∀ B : Finset ℕ,
                 IsMengerVertexCut τ₀.work T
                   (V₀.image fun q => appendTime τ₀ T (tposOf d (entryBits d) q).1)
                   (legCrossingLowers τ₀ T H_star Λ_star j_star r_star) B →
                 (cE_frozen_tight N_s C_sim α /
-                    ((N_s.k : ℝ) * ((M_max : ℝ) + 1))) * (V₀.card : ℝ) ≤ (B.card : ℝ))) := by
+                    ((N_s.k : ℝ) * (M_max : ℝ))) * (V₀.card : ℝ) ≤ (B.card : ℝ))) := by
   intro C_sim η_star
   obtain ⟨s, hs, d_sim₀, hsim⟩ :=
     adaptive_simulator_heavyTrace_macroscopicExpansion_tight M c α hc hα0
   let N_s := TapeStorageRates.Native.machine M hs
   have hC_sim_ge1 : 1 ≤ C_sim := by dsimp [C_sim, adaptiveBridge_cSim]; linarith
-  refine ⟨s, hs, max d_sim₀ (skeleton_d0Macro_tight N_s C_sim α), fun d hd htrM => ?_⟩
+  refine ⟨s, hs, max d_sim₀ (max (skeleton_d0Macro_tight N_s C_sim α)
+    ⌈1 / thetaMacro_tight N_s C_sim α⌉₊), fun d hd htrM => ?_⟩
   have hd_sim₀ : d_sim₀ ≤ d := (le_max_left _ _).trans hd
-  have hd_skel : skeleton_d0Macro_tight N_s C_sim α ≤ d := (le_max_right _ _).trans hd
+  have hd_skel : skeleton_d0Macro_tight N_s C_sim α ≤ d :=
+    (le_max_left _ _).trans ((le_max_right _ _).trans hd)
+  have hd_1θ : ⌈1 / thetaMacro_tight N_s C_sim α⌉₊ ≤ d :=
+    (le_max_right _ _).trans ((le_max_right _ _).trans hd)
   have hd_d0 : d0Macro_tight N_s C_sim α ≤ d := (le_max_left _ _).trans hd_skel
   obtain ⟨htrN, hsup, hne, hmass, hheavy_exp⟩ := hsim d hd_sim₀ htrM
   have hV_univ : α * ((d * d * entryBits d : ℕ) : ℝ) ≤
@@ -3475,7 +3295,7 @@ theorem simulator_heavyTrace_expansion_and_skeleton_tight
   obtain ⟨hΛ1, h2Λ_le_H, hmem_cap, _⟩ :=
     frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight le_rfl hC_sim_ge1 hα0
       hd_skel htrN hprob_τ h2η_le univ hV_univ
-  refine ⟨hW_le_H, hθ_2H, hΛ1, h2Λ_le_H, hmem_cap, fun V₀ hV₀ => ⟨hmenger_X V₀ hV₀, ?_⟩⟩
+  refine ⟨hW_le_H hd_1θ, hθ_2H, hΛ1, h2Λ_le_H, hmem_cap, fun V₀ hV₀ => ⟨hmenger_X V₀ hV₀, ?_⟩⟩
   exact (frozenTrace_reduces_to_crossingCapableSkeleton_and_singleLeg_tight le_rfl hC_sim_ge1 hα0
     hd_skel htrN hprob_τ h2η_le V₀ hV₀).2.2.2
 

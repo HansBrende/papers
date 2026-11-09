@@ -1,11 +1,13 @@
 import NativeRelations.MacroBankCrux
 
 /-!
-# Suffix Macro-Phase Bank Schedules (Theorem 9.3)
+# Suffix Macro-Phase Bank Schedules (Theorem B)
 
-Extends Theorem B to oblivious runs that satisfy the bounded macro-phase condition on a final
-interval containing all appends while leaving a positive fraction of input rows unread before it
-(`suffixMacroBank_has_crux`, `suffixMacroBank_excludes`).
+Proves Theorem B in its suffix form, for oblivious runs that satisfy the bounded macro-phase
+condition on a final interval containing all appends while leaving a positive fraction of input rows
+unread before it (`suffixMacroBank_has_crux`, `suffixMacroBank_excludes`), and deduces the
+whole-run form (`boundedMacroBank_has_crux`, `boundedMacroBank_excludes`) as the `δ₀ = 1`
+specialization (`boundedSuffixMacroBank_of_boundedMacroBank`).
 -/
 
 set_option autoImplicit false
@@ -16,14 +18,14 @@ open Filter Finset Transpose Transpose.Tape BoundedNesting MergeDepth BoundedSta
   TapeStorageRates
 open scoped BigOperators Topology
 
-/-! ## §1. Suffix Macro-Bank Class (`BoundedSuffixMacroBank`, Theorem 9.3) -/
+/-! ## §1. Suffix Macro-Bank Class (`BoundedSuffixMacroBank`, Theorem B, suffix form) -/
 
 /-- Raw-row index `u = p / b / d : Fin d` of a flat matrix bit coordinate `p : Fin (d * d * b)`. -/
 def rawRowOf {d b : ℕ} (p : Fin (d * d * b)) : Fin d :=
   ⟨p.1 / b / d, (Transpose.Tape.Impl.pos_decomp p.2).1⟩
 
-/-- **Suffix Macro-Bank with Raw-Row Input Mass (`BoundedSuffixMacroBank`)**, matching Theorem 9.3
-of: for all `d ≥ d_suf` and every halting horizon `T ≤ C (L + 1)` at which `M` is
+/-- **Suffix Macro-Bank with Raw-Row Input Mass (`BoundedSuffixMacroBank`)**, matching the suffix
+form of Theorem B: for all `d ≥ d_suf` and every halting horizon `T ≤ C (L + 1)` at which `M` is
 oblivious on `inputsOfLength L` (`L = d² entryBits(d)`), there exist a suffix start time
 `t_suf ≤ T` and a raw-row set `R_suf ⊆ Fin d` such that:
 1. every output append before `T` occurs during `[t_suf, T)`, `[t_suf, T)` partitions into `M_ph`
@@ -50,10 +52,23 @@ def BoundedSuffixMacroBank (M : TM) (C : ℝ) (M_ph : ℕ) (δ₀ : ℝ)
       δ₀ * (d : ℝ) ≤ (R_suf.card : ℝ) ∧
       (∀ t < t_suf, ∀ p : Fin L, τ₀.input t = (p.1 : ℤ) → rawRowOf p ∉ R_suf)
 
+/-- `BoundedMacroBank` is the `δ₀ = 1` specialization of `BoundedSuffixMacroBank`: take
+`t_suf = 0` and `R_suf = univ`. -/
+theorem boundedSuffixMacroBank_of_boundedMacroBank {M : TM} {C : ℝ} {M_ph : ℕ}
+    {B_bank : Finset (Fin M.k)} {S : ℕ → ℕ} (hBM : BoundedMacroBank M C M_ph B_bank S) :
+    BoundedSuffixMacroBank M C M_ph 1 B_bank S := by
+  obtain ⟨d_BM, hd_BM⟩ := hBM
+  refine ⟨d_BM, fun d hd T hobl hT => ?_⟩
+  obtain ⟨hph, hwork⟩ := hd_BM d hd T hobl hT
+  refine ⟨0, Finset.univ, Nat.zero_le T, fun _ _ => Nat.zero_le _, hph, fun w hw => ?_, by simp,
+    fun t ht => absurd ht (Nat.not_lt_zero t)⟩
+  simpa [Nat.Ico_zero_eq_range] using hwork w hw
+
 /-! ## §2. Backward time-monotonicity and suffix phase helpers -/
 
-/-- Step 1 of Theorem 9.3: every `DepDag` edge strictly decreases time (`depStep_lt`), so the final
-vertex `(t₀ :: ρ).getLastD t₀` of any dependency path is `≤ x` for every vertex `x ∈ t₀ :: ρ`. -/
+/-- Step 1 of the suffix form of Theorem B: every `DepDag` edge strictly decreases time
+(`depStep_lt`), so the final vertex `(t₀ :: ρ).getLastD t₀` of any dependency path is `≤ x` for
+every vertex `x ∈ t₀ :: ρ`. -/
 theorem getLastD_le_of_mem_depPath {k : ℕ} {xs : Fin k → ℕ → ℤ} {T : ℕ} :
     ∀ (ρ : List ℕ) (t₀ : ℕ), IsDepPath xs T (t₀ :: ρ) →
       ∀ {x : ℕ}, x ∈ t₀ :: ρ → (t₀ :: ρ).getLastD t₀ ≤ x
@@ -68,7 +83,7 @@ theorem getLastD_le_of_mem_depPath {k : ℕ} {xs : Fin k → ℕ → ℤ} {T : �
     · exact (getLastD_le_of_mem_depPath ρ₁ t₁ htail List.mem_cons_self).trans hlt.le
     · exact getLastD_le_of_mem_depPath ρ₁ t₁ htail hx_tail
 
-/-- Suffix generalization of `exists_phase_of_lt` when `a 0` need not be `0`. -/
+/-- Every step `t ∈ [a 0, a m)` lies in some phase `[a α, a (α + 1))` with `α < m`. -/
 theorem exists_phase_of_le_lt {m : ℕ} {a : ℕ → ℕ} {t : ℕ} (hlo : a 0 ≤ t) (ht : t < a m) :
     ∃ α < m, a α ≤ t ∧ t < a (α + 1) := by
   induction m with
@@ -163,7 +178,7 @@ theorem card_longWorkHopsSuffix_le {k : ℕ} (xs : Fin k → ℕ → ℤ) (B_ban
 
 /-! ## §3. Suffix phase-splitting and signature existence -/
 
-/-- Suffix version of `depPath_phase_split`: any dependency path in `[a 0, T)` avoiding
+/-- Step 2 (phase splitting): any dependency path in `[a 0, T)` avoiding
 `longWorkHopsSuffix ∪ phaseStartGuard` either remains inside `phaseOf M_ph a t₀` with drop at most
 `ρ.length * τ_cut` or first exits below `a α` via an inter-phase bank hop `j ∈ B_bank`. -/
 theorem depPath_phase_split_suffix {k : ℕ} {τ₀ : Trace k} {T M_ph τ_cut : ℕ} (hτ : 1 ≤ τ_cut)
@@ -258,8 +273,10 @@ theorem depPath_phase_split_suffix {k : ℕ} {τ₀ : Trace k} {T M_ph τ_cut : 
           unfold longWorkHopsSuffix
           exact Finset.mem_filter.mpr ⟨Finset.mem_Ico.mpr ⟨ht₀_ge, ht₀⟩, w, hw, t₁, hhop, hgap⟩
 
-/-- Suffix version of `depPath_signature_exists`: reuses `cutOf`, `windowsOf`, `cutOf_none`, and
-`cutOf_consSig` from `MacroBankCrux` directly on the suffix phase partition `a 0 ≤ … ≤ a M_ph = T`. -/
+/-- Step 3 (signatures): every short dependency path avoiding `longWorkHopsSuffix ∪ phaseStartGuard`
+and ending at a read has a single signature pulling back every raw threshold whose windows it
+avoids; uses `cutOf`, `windowsOf`, `cutOf_none` and `cutOf_consSig` from `MacroBankCrux` on the
+suffix phase partition `a 0 ≤ … ≤ a M_ph = T`. -/
 theorem depPath_signature_exists_suffix {k : ℕ} {τ₀ : Trace k} {L T M_ph τ_cut Δ : ℕ}
     (hτ : 1 ≤ τ_cut) {B_bank : Finset (Fin k)} {a : ℕ → ℕ}
     (haM : a M_ph = T) (ha : ∀ α < M_ph, a α ≤ a (α + 1))
@@ -353,9 +370,10 @@ theorem depPath_signature_exists_suffix {k : ℕ} {τ₀ : Trace k} {L T M_ph τ
 
 /-! ## §4. Order-quantile raw-row bucketing on `R_suf` and main theorems -/
 
-/-- Finite quantitative core of Theorem 9.3: slices `R_suf` into `B = 2 K₀` order-separated
-sub-buckets via `Finset.orderIsoOfFin` and extracts an independent rectangle `S_ind` in the full
-demand-labelled cone relation `q ↦ coneSystem τ₀ T Γ d b (tposOf d b q)`. -/
+/-- Finite quantitative core of Theorem B (suffix form): slices `R_suf` into `B = 2 K₀`
+order-separated sub-buckets via `Finset.orderIsoOfFin` and extracts an independent rectangle `S_ind`
+in the full demand-labelled cone relation `q ↦ coneSystem τ₀ T Γ d b (tposOf d b q)`. At
+`t_suf = 0` and `R_suf = univ` this is the whole-run core of Theorem B. -/
 theorem suffixMacroBank_independent_exists {M : TM} {M_ph D d b T t_suf S_val : ℕ}
     (hMph : 1 ≤ M_ph) (hd : 1 ≤ d) (hb : 1 ≤ b)
     {B_bank : Finset (Fin M.k)} {Γ : Finset ℕ} {R_suf : Finset (Fin d)}
@@ -1061,7 +1079,7 @@ private theorem crux_bound_of_suffix_card_bound (K₀ C_split C_cone : ℕ) (hK�
     exact_mod_cast hcard_nat
   linarith only [hrect_r, hcard_r, hcone_err, hm_ge]
 
-/-- **Theorem 9.3 (`suffixMacroBank_has_crux`)**: every machine satisfying
+/-- **Theorem B, suffix form (`suffixMacroBank_has_crux`)**: every machine satisfying
 `BoundedSuffixMacroBank M C M_ph δ₀ B_bank S` with `δ₀ > 0` and sublinear suffix workspace bound
 `S(d) / (d² entryBits(d)) → 0` satisfies the depth-independent machine crux
 `MachineCrux M C (δ₀ / (4 * K₀))`, where `K₀ = (B_bank.card + 1) ^ (M_ph - 1)`. -/
@@ -1094,7 +1112,7 @@ theorem suffixMacroBank_has_crux {M : TM} {C δ₀ : ℝ} {M_ph : ℕ}
   exact hd_asymp d hd_ge_asymp T R_suf.card S_ind.card m hT hR_card hcard_nat
     (indexCode_length_ge_of_independent hE hInd)
 
-/-- **Corollary of Theorem 9.3 (`suffixMacroBank_excludes`)**: no machine satisfying
+/-- **Theorem B, suffix form (`suffixMacroBank_excludes`)**: no machine satisfying
 `BoundedSuffixMacroBank` with `δ₀ > 0` and `S(d) / (d² entryBits(d)) → 0` can transpose in
 oblivious linear time. -/
 theorem suffixMacroBank_excludes {M : TM} {C δ₀ : ℝ} {M_ph : ℕ}
@@ -1110,5 +1128,28 @@ theorem suffixMacroBank_excludes {M : TM} {C δ₀ : ℝ} {M_ph : ℕ}
     (hcrux _)
   rw [div_lt_div_iff₀ (by positivity) (by positivity)]
   nlinarith
+
+/-! ## §5. Whole-Run `BoundedMacroBank` Corollaries (`δ₀ = 1` Specialization) -/
+
+/-- **Theorem B (`boundedMacroBank_has_crux`)**: every machine in Class BM with sublinear workspace
+cell bound `S(d) / (d² entryBits(d)) → 0` satisfies the depth-independent machine crux
+`MachineCrux M C (1 / (4 * K₀))`, where `K₀ = (B_bank.card + 1) ^ (M_ph - 1)`: the `δ₀ = 1` case of
+`suffixMacroBank_has_crux`. -/
+theorem boundedMacroBank_has_crux {M : TM} {C : ℝ} {M_ph : ℕ} {B_bank : Finset (Fin M.k)}
+    {S : ℕ → ℕ} (hC : 1 ≤ C) (hMph : 1 ≤ M_ph)
+    (hBM : BoundedMacroBank M C M_ph B_bank S)
+    (hS : Tendsto (fun d : ℕ => (S d : ℝ) / ((d * d * entryBits d : ℕ) : ℝ)) atTop (nhds 0)) :
+    MachineCrux M C (1 / (4 * (((B_bank.card + 1) ^ (M_ph - 1) : ℕ) : ℝ))) :=
+  suffixMacroBank_has_crux hC hMph one_pos (boundedSuffixMacroBank_of_boundedMacroBank hBM) hS
+
+/-- **Theorem B (`boundedMacroBank_excludes`)**: no machine in Class BM with sublinear workspace
+cell bound `S(d) / (d² entryBits(d)) → 0` can transpose in oblivious linear time: the `δ₀ = 1` case
+of `suffixMacroBank_excludes`. -/
+theorem boundedMacroBank_excludes {M : TM} {C : ℝ} {M_ph : ℕ} {B_bank : Finset (Fin M.k)}
+    {S : ℕ → ℕ} (hC : 1 ≤ C) (hMph : 1 ≤ M_ph)
+    (hBM : BoundedMacroBank M C M_ph B_bank S)
+    (hS : Tendsto (fun d : ℕ => (S d : ℝ) / ((d * d * entryBits d : ℕ) : ℝ)) atTop (nhds 0)) :
+    ∃ d₀ : ℕ, ∀ d ≥ d₀, ∀ T : ℕ, ¬ ObliviousLinTime M d (entryBits d) C T :=
+  suffixMacroBank_excludes hC hMph one_pos (boundedSuffixMacroBank_of_boundedMacroBank hBM) hS
 
 end NativeRelations

@@ -14,7 +14,7 @@ Uses only the Python standard library (`fractions`, `math`). Reproduces:
     k = 2, C = alpha = 1, w_val = 8 (Sections 5.1 and 6.3);
   * the first-form uniform-block-cut bridge density rho_{0,first}(2, 1, 1) and genie-depth tower
     scale (Section 5.1 and paragraph after Theorem 5.3);
-  * the Theorem H slab-autonomy constants N, eps_*, eps_sm and d_H at c = 1, beta = 2, k = 2
+  * the Theorem H slab-autonomy constants N, eps_*, eps_sm and d_H at c = 1, beta = 8, k = 2
     (Section 4).
 """
 from fractions import Fraction
@@ -27,6 +27,17 @@ def ceil_frac(x: Fraction) -> int:
 
 def floor_frac(x: Fraction) -> int:
     return x.numerator // x.denominator
+
+
+def ceil_sqrt_frac(x: Fraction) -> int:
+    """Smallest integer n >= 0 with n^2 >= x, for a rational x >= 0 (exact)."""
+    p, q = x.numerator, x.denominator
+    n = math.isqrt(p // q)
+    while n * n * q < p:
+        n += 1
+    while n > 0 and (n - 1) * (n - 1) * q >= p:
+        n -= 1
+    return n
 
 
 def chi_nu_tables(k: int, n_max: int) -> tuple[list[int], list[int]]:
@@ -81,7 +92,8 @@ def theorem_x_constants(
     r0 = rho0(k, C, alpha_eff)
     c_e = r0 / (2 * w_val)
     theta_mac = (Fraction(9, 20) * alpha * r0) / (w_val * (5 * k + 1) * g)
-    d0 = max(1, d_br(k, C, alpha_eff), ceil_frac(Fraction(2) / theta_mac))
+    # d0Macro_tight: max(1, d_br(k, C, 19/20 alpha), ceil(theta^(-1/2))); the clause W <= H* needs ceil(1/theta) in addition.
+    d0 = max(1, d_br(k, C, alpha_eff), ceil_sqrt_frac(1 / theta_mac))
     m_max = floor_frac(Fraction(16) * C / theta_mac)
     return c_e, theta_mac, d0, m_max
 
@@ -92,12 +104,8 @@ def theorem_h_constants(
     n_cap = floor_frac(Fraction(160) * beta * c * c)
     eps_star = Fraction(1, 8 * (n_cap + 1))
     eps_sm = eps_star / (4 * beta * (n_cap + 2) * max(1, 2 * k))
-    d_h = max(
-        ceil_frac(Fraction(80) * beta * c),
-        ceil_frac(Fraction(20 * (n_cap + 2)) / eps_star),
-        ceil_frac(Fraction(16) * beta * (n_cap + 2) * k / eps_star),
-        10,
-    )
+    # slabDimThreshold c beta = 20 (N + 2) / eps_* = 160 (N + 1) (N + 2); it does not depend on k.
+    d_h = 160 * (n_cap + 1) * (n_cap + 2)
     return n_cap, eps_star, eps_sm, d_h
 
 
@@ -119,7 +127,9 @@ def main() -> None:
     print(f"  d_br(2, 1, 19/20) = {dbr_19_20}")
     print(f"  c_E       = {c_e} (~ {float(c_e):.3e})")
     print(f"  theta_mac = {theta_mac} (~ {float(theta_mac):.3e})")
-    print(f"  d_0       = {d0} (~ {d0:.3e})")
+    print(f"  d_0       = {d0} (~ {d0:.3e}); ceil(theta^(-1/2)) = {ceil_sqrt_frac(1 / theta_mac)}")
+    print(f"  ceil(1/theta) = {ceil_frac(1 / theta_mac)} (~ {float(ceil_frac(1 / theta_mac)):.3e}), needed only for W <= H*")
+    print(f"  Theorem S threshold max(d_0, ceil((8/theta)^(1/2))) = {max(d0, ceil_sqrt_frac(8 / theta_mac))}")
     print(f"  M_max     = {m_max} (~ {m_max:.3e})")
 
     print("\n=== Section 5.1: First-form constants at k = 2, C = alpha = 1 ===")
@@ -149,8 +159,8 @@ def main() -> None:
         f"so D_E > 4^{{10^{{{log10_d_e_lb:.1f}}}}} >> 10^{{107}} and theta_first < 4^{{-10^{{107}}}}"
     )
 
-    print("\n=== Section 4: Theorem H constants at c = 1, beta = 2, k = 2 ===")
-    n_cap, eps_star, eps_sm, d_h = theorem_h_constants(2, Fraction(2), Fraction(1))
+    print("\n=== Section 4: Theorem H constants at c = 1, beta = 8, k = 2 ===")
+    n_cap, eps_star, eps_sm, d_h = theorem_h_constants(2, Fraction(8), Fraction(1))
     print(f"  N      = {n_cap}")
     print(f"  eps_*  = {eps_star} (~ {float(eps_star):.3e})")
     print(f"  eps_sm = {eps_sm} (~ {float(eps_sm):.3e})")

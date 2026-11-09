@@ -19,7 +19,7 @@ open Filter Finset Transpose Transpose.Tape BoundedNesting MergeDepth MotionDept
   BoundedStackDepth TapeStorageRates
 open scoped BigOperators Topology
 
-/-! ## §1. Suffix Jitter-BM Predicates (Theorem 9.4 / Theorem J) -/
+/-! ## §1. Suffix Jitter-BM Predicates (Theorem J) -/
 
 /-- **Single-trace suffix + jittered-BM predicate (`TraceHasSuffixJitterBM`)**:
 on `[0, T)`, no output occurs before `t_suf` (`z (some none) t_suf ≤ 0`), the suffix `[t_suf, T)`
@@ -86,8 +86,9 @@ theorem adaptiveSuffixJitterBM_of_adaptiveJitterBM {M : TM} {C : ℝ} {M_ph : �
 
 /-! ## §2. Suffix-Confined Intra-Phase Invariance & Coarse Signature Pullback -/
 
-/-- Suffix version of `tcut_eq_of_intra_step`: replaces `longWorkHops` with
-`longWorkHopsSuffix xs B_bank t_suf T τ_cut` whenever `t_suf ≤ lo ≤ v < u < hi`. -/
+/-- Intra-phase `tcut` invariance on the suffix: a dependency step `u → v` with
+`t_suf ≤ lo ≤ v < u < hi` that avoids `longWorkHopsSuffix xs B_bank t_suf T τ_cut`, the window
+`[θ, θ + τ_cut]` and the bank straddle guards preserves `tcut pos θ`. -/
 theorem tcut_eq_of_intra_step_suffix {k : ℕ} {xs : Fin k → ℕ → ℤ} {B_bank : Finset (Fin k)}
     {t_suf T τ_cut lo hi u v : ℕ} (hτ : 1 ≤ τ_cut) (pos : Bool) (θ : ℕ)
     (hstep : DepStep xs T u v) (ht_suf_lo : t_suf ≤ lo) (hv_lo : lo ≤ v) (hu_hi : u < hi)
@@ -1300,7 +1301,8 @@ if `M` halts on `w` at time `T_M` with
 (`1 ≤ M_ph`), then `N := Native.machine M hs` (`hs : 0 < s`) halts on `w` at
 `U := (10 * s + 1) * (T_M / s + 1) + s` and satisfies `TraceHasSuffixJitterBM` at
 `U_suf := (10 * s + 1) * (t_suf / s)` with row-interior halo `E_pad + 12 * s + 1`, coarse
-amplitude `A_val + 26 * s + 2`, and workspace cell bound `(26 * s + 3) * (S_val + 1)`. -/
+amplitude `A_val + 26 * s + 2`, and workspace cell bound `(26 * s + 3) * (S_val + 1)`. At
+`t_suf = 0` (so `U_suf = 0`) this is the preservation of whole-run jittered macro-phases. -/
 theorem native_machine_preserves_suffixJitterBM (M : TM) {s : ℕ} (hs : 0 < s) (w : List Bool)
     {d b T_M t_suf M_ph E_pad A_val S_val : ℕ} (hMph : 1 ≤ M_ph)
     {B_bank : Finset (Fin M.k)} {R_suf : Finset (Fin d)}
@@ -1682,9 +1684,9 @@ theorem native_machine_preserves_suffixJitterBM (M : TM) {s : ℕ} (hs : 0 < s) 
           _ ≤ S_val * (26 * s + 3) := Nat.mul_le_mul_right _ hCM
           _ ≤ (26 * s + 3) * (S_val + 1) := by nlinarith
 
-/-! ## §5. Unconditional Exclusion of Adaptive Suffix-BM Linear-Time Transposers (Theorem 9.4 / Theorem J) -/
+/-! ## §5. Unconditional Exclusion of Adaptive Suffix-BM Linear-Time Transposers (Theorem J) -/
 
-/-- **Theorem 9.4 Native-Gap Bound (`nativeGapBound_of_adaptiveSuffixJitterBM`)**:
+/-- **Theorem J Native-Gap Bound (`nativeGapBound_of_adaptiveSuffixJitterBM`)**:
 if `M` satisfies `AdaptiveSuffixJitterBM M c M_ph δ₀ B_bank A S` (`0 < δ₀`) with `A = o(L)` and
 `S = o(L)`, then for every batch size `s > 0` and genie depth `D`, `Native.machine M hs` satisfies
 `NativeGapBound (δ₀ / (4 * K₀))` at scale `1` and physical time constant `11 * c + 1` on
@@ -1774,42 +1776,24 @@ theorem nativeGapBound_of_adaptiveSuffixJitterBM {M : TM} {c : ℝ} (hc : 0 < c)
   exact hd_code d hd_ge_code (runWalks N (List.ofFn X)) _ _ R_suf Γ ot hTN hR_ge
     (fun t₁ t₂ hle => runWalks_out_mono N (List.ofFn X) hle) hdepth hot hBM_N' Code hCode
 
-/-- **Theorem 9.4 Single-Constant Exclusion (`adaptiveSuffixJitterBM_excludes_transposesAt`)**:
+/-- **Theorem J Single-Constant Exclusion (`adaptiveSuffixJitterBM_excludes_transposesAt`)**:
 if every halting run of `M` within `c (L + 1)` steps admits a suffix `[t_suf, T)` of jittered BM
 shape (`A(d) = o(L)`, `S(d) = o(L)`) leaving `≥ δ₀ d` raw rows untouched in `[0, t_suf)`, then `M`
-fails to transpose at width `entryBits d` within `c (L + 1)` steps for all sufficiently large `d`. -/
+fails to transpose at width `entryBits d` within `c (L + 1)` steps for all sufficiently large `d`:
+Theorem G (`native_gap_excludes_transposesAt`) applied to the native gap bound of the aligned
+simulators (`nativeGapBound_of_adaptiveSuffixJitterBM`). -/
 theorem adaptiveSuffixJitterBM_excludes_transposesAt {M : TM} {c : ℝ} (hc : 0 < c)
     {M_ph : ℕ} (hMph : 1 ≤ M_ph) {δ₀ : ℝ} (hδ₀ : 0 < δ₀)
     {B_bank : Finset (Fin M.k)} {A S : ℕ → ℕ}
     (hBM : AdaptiveSuffixJitterBM M c M_ph δ₀ B_bank A S)
     (hA : Tendsto (fun d : ℕ => (A d : ℝ) / ((d * d * entryBits d : ℕ) : ℝ)) atTop (nhds 0))
     (hS : Tendsto (fun d : ℕ => (S d : ℝ) / ((d * d * entryBits d : ℕ) : ℝ)) atTop (nhds 0)) :
-    ∀ᶠ d in atTop, ¬ TransposesAt M d c := by
-  set K₀ : ℝ := (((B_bank.card + 1) ^ (M_ph - 1) : ℕ) : ℝ)
-  have hK₀_pos : (0 : ℝ) < K₀ := by dsimp [K₀]; positivity
-  set ρ : ℝ := δ₀ / (4 * K₀)
-  have hρ : 0 < ρ := by positivity
-  set η : ℝ := ρ / 2
-  have hη0 : 0 < η := by positivity
-  have hηρ : η < ρ := by dsimp [η]; linarith
-  obtain ⟨s, hs, hlow⟩ := aligned_low_trace_dimensions M hc.le hη0
-  set N := Native.machine M hs
-  set c' : ℝ := 11 * c + 1
-  have hc' : 0 < c' := by dsimp [c']; linarith
-  let D_genie := genieDepth N.k (blockWidth N 1) (max c' 1) ((ρ - η) / 2)
-  have hnat := nativeGapBound_of_adaptiveSuffixJitterBM hc hMph hδ₀ hBM hA hS hs D_genie
-  obtain ⟨d₀, hd₀⟩ := fSecond_native_gap (ρ := ρ)
-    (B := fun d b => b = entryBits d ∧ TransposesAt M d c)
-    (M := N) (c := c') (η := η) hc' hηρ hnat
-  filter_upwards [eventually_ge_atTop d₀, hlow] with d hd htr_low
-  intro htrM
-  obtain ⟨htrN, hsize⟩ := htr_low (entryBits d) (one_le_entryBits d) htrM
-  have hent_le := (skeleton_entropy_le_trace_support N 1
-    (fun x : Fin (d * d * entryBits d) → Bool => List.ofFn x)).trans hsize
-  have hent_gt := hd₀ d hd (entryBits d) ⟨rfl, htrM⟩ (one_le_entryBits d) htrN.transposesInput
-  exact (not_lt_of_ge hent_le) hent_gt
+    ∀ᶠ d in atTop, ¬ TransposesAt M d c :=
+  native_gap_excludes_transposesAt M hc
+    (ρ := δ₀ / (4 * (((B_bank.card + 1) ^ (M_ph - 1) : ℕ) : ℝ))) (by positivity)
+    fun _ hs D => nativeGapBound_of_adaptiveSuffixJitterBM hc hMph hδ₀ hBM hA hS hs D
 
-/-- **Theorem 9.4 Fixed-Slope Exclusion (`adaptiveSuffixJitterBM_excludes_transposesWithin`)**:
+/-- **Theorem J Fixed-Slope Exclusion (`adaptiveSuffixJitterBM_excludes_transposesWithin`)**:
 excludes `TransposesWithin M (fun L => c * (L + 1))` for any adaptive machine `M` satisfying
 `AdaptiveSuffixJitterBM M (max (c : ℝ) 1) M_ph δ₀ B_bank A S` (`1 ≤ M_ph`, `0 < δ₀`, `A = o(L)`,
 `S = o(L)`). -/
@@ -1835,7 +1819,7 @@ theorem adaptiveSuffixJitterBM_excludes_transposesWithin {M : TM} {c : ℕ}
     exact Nat.floor_mono (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
   exact hd₀ d hd_ge htr_max
 
-/-- **Theorem 9.4 Linear-Time Exclusion (`adaptiveSuffixJitterBM_not_linearTimeTransposer`)**:
+/-- **Theorem J Linear-Time Exclusion (`adaptiveSuffixJitterBM_not_linearTimeTransposer`)**:
 if for every runtime constant `C ≥ 1`, all halting runs of `M` within `C (L + 1)` steps have a
 suffix `[t_suf, T)` of jittered BM shape (`1 ≤ M_ph`, `0 < δ₀`, `A = o(L)`, `S = o(L)`), then `M`
 is not a linear-time matrix transposer (`¬ ∃ c : ℕ, TransposesWithin M (fun L => c * (L + 1))`). -/

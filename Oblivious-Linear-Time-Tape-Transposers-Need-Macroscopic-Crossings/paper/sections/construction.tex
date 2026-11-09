@@ -40,8 +40,8 @@ of $L$ is excluded by \cref{thm:H}, whatever the input head does.
 \item \emph{Boundedly many macroscopic phases.} Schedules in which the input head and some bank heads are weakly monotone on boundedly many
 phases while the other heads move inside sublinear workspaces are excluded by \cref{thm:BM}; with sublinear jitter on the bank heads, and
 for adaptive machines, by \cref{thm:J}. Imposed on whole runs, these shapes are excluded by \cref{thm:coarsepass} at any running time for
-oblivious machines and at any polynomial running time for adaptive ones, and so are phase profiles that grow too slowly across scales
-(\cref{cor:subcritical}).
+oblivious machines and at any polynomial running time for adaptive ones, even with jitter and workspaces up to a small fixed fraction of
+$L$ (\cref{cor:boundedpasses}), and so are phase profiles that grow too slowly across scales (\cref{cor:subcritical}).
 \item \emph{Cheap row-to-column cuts.} A schedule with a set of fewer than $\abs{A_0}\abs{A_1}b/(\wval+1)$ steps separating the reads
 of some rows $A_0$ from their outputs in output rows $A_1$ is excluded by \cref{lem:R}; \cref{thm:colouring} gives a convenient
 way to exhibit such cuts.
@@ -140,8 +140,7 @@ workspace offsets and the step structure are recorded as well, which is $\sigma'
 \end{outline}
 
 At $A_{\mathrm{in}}=A=0$, with every work tape in the bank, part (a) is the first paper's grouped bound (\lean{oblEntryBits_zero_univ_eq}).
-Choosing $\gamma$ near $\sqrt{\sigma_{A,S}/b}$ shows that boundedly many coarse passes over the whole run, with amplitudes and workspaces
-of size $o(L)$, cannot transpose at any running time, obliviously, nor at any polynomial running time, adaptively. Across scales it gives the following.
+Across scales it gives the following.
 
 \begin{corollary}[Phase profiles below a threshold]\label{cor:subcritical}
 \formal{CoarseGroupedPass.lean}{subcriticalPhaseProfile_oblivious_excludes, subcriticalDimPhaseProfile_oblivious_excludes, subcriticalPhaseProfile_adaptive_polyTime_excludes}
@@ -153,17 +152,56 @@ natural numbers. For all large $d$,
 $A_{\mathrm{slope}}\log_2(1/\eps_d)+C_0$ passes, amplitudes $A_{\mathrm{in}}\le C_{\mathrm{in}}\eps_dL$ and $A\le C_{\mathrm{amp}}\eps_dL$, and
 workspaces with $S_{\mathrm{tot}}\le C_{\mathrm{ws}}\eps_dL$;
 \item $M$ does not transpose every input at size $d$ within $C_TL^\kappa$ steps if the run on each input has such a partition up to the
-step at which its output is complete.
+step at which its output is complete, with $A_{\mathrm{in}}$, $A$ and the workspaces $S_w$ the same for all inputs (the passes may
+depend on the input).
 \end{enumerate}
 \end{corollary}
 
-At $\theta=2$ the threshold $\frac12$ is where the grouped inequality stops excluding: with $d=f^P$, $k_b=2f$ and $r=P+1$ passes, the
-inequality of \cref{thm:coarsepass}(a) holds for every machine, and the slope products $\log_2(2f+1)/(2\log_2f)$ of these parameters
-tend to $\frac12$ (\lean{groupedBound_thetaTwo_not_excluded_above_half}, \lean{perfectUnshuffleSlopeProduct_tendsto_half}). Proof sketch
-only: these parameters are realized by an $f$-way perfect-unshuffle transposer, which deals the entries round-robin onto $f$ tapes, reads
-the other $f$ tapes backward, repeats this $P$ times, and finds entry boundaries with a counter of $O(b)$ cells; the index identity of its
-rounds is \lean{unshuffleStep_iter_transpose}. So at $\theta=2$ no constant above $\frac12$ works for every $k_b$. For a fixed $k_b$, and
-for $\theta<2$, we do not know whether transposers with slope products close to $\frac12$ exist.
+Measured against the scale $\sqrt{\eps_d}=d^{-\theta/2}$ of the matrix dimension, the condition of (a) reads $A_{\mathrm{dim}}\log_2(k_b+1)<1$
+for at most $A_{\mathrm{dim}}\log_2(1/\sqrt{\eps_d})+C_0$ passes (\lean{subcriticalDimPhaseProfile_oblivious_excludes}).
+
+The threshold $\frac12$ is the limit of the grouped inequality at every $0<\theta\le2$ and every $k_b\ge1$, once workspaces of order
+$\eps_dL$ are allowed: \cref{cor:subcritical} excludes every slope product below $\frac12$, and at no $\theta>0$ is one above $\frac12$
+excluded. (For $\theta>2$ the limit is $1/\theta$.) If $\psi=A_{\mathrm{slope}}\log_2(k_b+1)>\frac12$ and $C_{\mathrm{ws}}>0$, then for all large $d$, with
+$r=\lfloor A_{\mathrm{slope}}\log_2(1/\eps_d)+C_0\rfloor$ passes and $S_{\mathrm{tot}}=\lfloor C_{\mathrm{ws}}\eps_dL\rfloor$, the largest values
+that \cref{cor:subcritical} admits, the inequality of \cref{thm:coarsepass}(a) holds for every $\gamma\ge1$, every $A_{\mathrm{in}}$ and $A$,
+every bank of $k_b$ tapes and every machine with at least two work symbols (\lean{groupedBound_not_excluded_above_half}). Indeed
+$H(k_b,r)\ge(k_b+1)^{C_0-2}d^{\theta\psi}$, and $\sigma_{A,S}\ge S_{\mathrm{tot}}$ gives
+$(\gamma+1)db+\lceil d/\gamma\rceil\sigma_{A,S}\ge2\sqrt{C_{\mathrm{ws}}}\,d^{2-\theta/2}b$, so the right-hand side is at least
+$2\sqrt{C_{\mathrm{ws}}}\,(k_b+1)^{C_0-2}d^{2+\theta(\psi-1/2)}b$. Without such workspaces the limit is different: at $C_{\mathrm{ws}}=C_{\mathrm{amp}}=0$
+and $\theta<2$, taking $\gamma=1$ makes the grouped inequality exclude slope products up to $\min(1,1/\theta)$, and up to $1/\theta$
+if moreover $C_{\mathrm{in}}=0$, by a direct computation that is not formalized. At $\theta=2$ no workspace is
+needed: with $d=f^P$, $k_b=2f$ and $r=P+1$ passes, the inequality of \cref{thm:coarsepass}(a) holds for every machine and every $P\ge1$,
+and the slope products $\log_2(2f+1)/(2\log_2f)$ of these parameters tend to $\frac12$ (\lean{groupedBound_thetaTwo_not_excluded_above_half},
+\lean{perfectUnshuffleSlopeProduct_tendsto_half}). Proof sketch only: these parameters are realized by an $f$-way perfect-unshuffle
+transposer, which deals the entries round-robin onto $f$ tapes, reads the other $f$ tapes backward, repeats this $P$ times, and finds entry
+boundaries with a counter of $O(b)$ cells; the index identity of its rounds is \lean{unshuffleStep_iter_transpose}. So at $\theta=2$ no
+constant above $\frac12$ works for every $k_b$. For a fixed $k_b$, and for $\theta<2$, we do not know whether transposers with slope products
+close to $\frac12$ exist.
+
+Over whole runs, boundedly many passes are excluded even with amplitudes and workspaces up to a small fixed fraction of $L$; choosing
+$\gamma$ as a fixed fraction of $d$ gives the following.
+
+\begin{corollary}[Boundedly many coarse passes]\label{cor:boundedpasses}
+\formal{CoarseGroupedPass.lean}{boundedCoarsePasses_oblivious_excludes, boundedCoarsePasses_adaptive_polyTime_excludes, boundedCoarsePasses_sublinear_oblivious_excludes, boundedCoarsePasses_sublinear_adaptive_polyTime_excludes}
+Let $M$ be a machine, $B$ a bank of its work tapes and $r_0$ a natural number.
+\begin{enumerate}[label=(\alph*)]
+\item There is $\eps>0$ such that for all large $d$, $M$ is not, at any running time, an oblivious transposer at size $d$ whose run has a
+coarse pass partition with at most $r_0$ passes, amplitudes $A_{\mathrm{in}},A\le\eps L$ and workspaces with $S_{\mathrm{tot}}\le\eps L$.
+\item There is $\eps>0$ such that for all natural numbers $C_T$ and $\kappa$ and all large $d$, $M$ does not transpose every input at size
+$d$ within $C_TL^\kappa$ steps if the run on each input has such a partition up to the step at which its output is complete, with
+$A_{\mathrm{in}}$, $A$ and the workspaces $S_w$ the same for all inputs (the passes may depend on the input).
+\end{enumerate}
+In particular, (a) and (b) hold with $A_{\mathrm{in}},A,S_{\mathrm{tot}}\le\omega(d)$ in place of $\eps L$, for every function $\omega(d)=o(L)$.
+\end{corollary}
+
+\begin{outline}
+Let $H_0=H(k_b,r_0)$, $N=4(H_0+1)$, $\gamma=\lfloor d/N\rfloor+1$, $c=(3k_b+1)\lceil\log_2(g+1)\rceil$ and $\eps=1/\bigl(N(2+Nc)\bigr)$, so that
+$\lceil d/\gamma\rceil\le N$. If $A_{\mathrm{in}},A,S_{\mathrm{tot}}\le\eps L$, then $\sigma_{A,S}\le c\eps L+O(1)$, and the right-hand side of
+\cref{thm:coarsepass}(a) is at most $(2H_0/N)L+O(H_0db)<L$ for large $d$. In (b) the extra terms of $\sigma'_{A,S}$ are $O(b)$, because
+$T\le C_TL^\kappa$, $S_w\le L$ and $L\le2^{3b}$, so the same $\eps$ serves every $C_T$ and $\kappa$. The $o(L)$ forms follow, since
+$\omega(d)\le\eps L$ for large $d$.
+\end{outline}
 
 A linear-time run may have up to about $4kC/\eps$ legs at scale $\eps L$ (\cref{lem:finite}), and the cascades of \cref{sec:cascades},
 whose number of phases at scale $2^{-s}L$ grows linearly in $s$, lie above the threshold of \cref{cor:subcritical} at every scale

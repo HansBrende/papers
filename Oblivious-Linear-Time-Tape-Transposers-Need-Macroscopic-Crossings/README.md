@@ -8,6 +8,9 @@ Hans Brende, Claude Opus 5.5 (Anthropic) and Gemini 4 Argon (Google DeepMind), N
   ([`lean/LICENSE`](lean/LICENSE)). It requires the fifteenth paper's library by a relative path, and through it the fourteenth
   paper's library, the earlier libraries of the series it builds on and [`lean-machine/`](../lean-machine/), so the sibling
   directories of this repository must be in place. [`lean/README.md`](lean/README.md) is a guide to its modules.
+- [`experiments/`](experiments/): self-contained Rust reproduction package (`std` only, [`experiments/LICENSE`](experiments/LICENSE),
+  Apache 2.0) for the schedule generators, time-indexed trace exports, exact dependency DAGs, and finite-size ($d \le 128$) numerical
+  checks (`Remark 5.8`, `Remarks 6.8` and `10.1`, `Section 10.4`, `Problem 11.1`, and `Appendix A`).
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean` from the paper's
   LaTeX sources; [`tools/print_constants.py`](tools/print_constants.py) prints the explicit constants of Sections 4, 5.1 and 6.3.
 
@@ -90,8 +93,8 @@ declarations and file; declarations below are in the namespace `NativeRelations`
 
 Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets) and Corollary 7.3 (scale-separated
 traces). Remark 8.2, the perfect-unshuffle transposer realizing the θ = 2 parameters after Corollary 10.4, and the exclusions of the
-individual schedule families of Appendix A are given as proof sketches. Exploratory measurement scripts behind the labelled numerical
-remarks (d ≤ 128) are not shipped, and no proof depends on them.
+individual schedule families of Appendix A are given as proof sketches. The labelled numerical remarks ($d \le 128$) are reproduced by
+[`experiments/`](experiments/), and no proof depends on them.
 
 ## What is open
 
@@ -112,11 +115,13 @@ lake build
 lake env lean PaperAxioms.lean
 ```
 
-From this directory, verify the Lean index and `PaperAxioms.lean` against the LaTeX sources and print the numerical constants:
+From this directory, verify the Lean index and `PaperAxioms.lean` against the LaTeX sources, print the numerical constants, and run the
+finite-size numerical reproduction suite:
 
 ```bash
 python3 tools/lean_index.py --check
 python3 tools/print_constants.py
+(cd experiments && cargo run --release -- check)
 ```
 
 To build the PDF, run `latexmk -pdf main.tex` in `paper/`.

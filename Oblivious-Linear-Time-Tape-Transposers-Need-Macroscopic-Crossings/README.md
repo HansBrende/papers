@@ -10,7 +10,7 @@ Hans Brende, Claude Opus 5.5 (Anthropic) and Gemini 4 Argon (Google DeepMind), N
   directories of this repository must be in place. [`lean/README.md`](lean/README.md) is a guide to its modules.
 - [`experiments/`](experiments/): self-contained Rust reproduction package (`std` only, [`experiments/LICENSE`](experiments/LICENSE),
   Apache 2.0) for the schedule generators, time-indexed trace exports, exact dependency DAGs, and finite-size ($d \le 128$) numerical
-  checks (`Remark 5.8`, `Remarks 6.8` and `10.1`, `Section 10.4`, `Problem 11.1`, and `Appendix A`).
+  checks (`Remark 5.8`, `Remarks 6.8` and `10.1` apart from the rows 1–2 Lemma R minimum cuts, `Section 10.4`, `Problem 11.1`, and `Appendix A`).
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean` from the paper's
   LaTeX sources; [`tools/print_constants.py`](tools/print_constants.py) prints the explicit constants of Sections 4, 5.1 and 6.3.
 
@@ -92,20 +92,25 @@ declarations and file; declarations below are in the namespace `NativeRelations`
   `perfectUnshuffleSlopeProduct_tendsto_half`, `unshuffleStep_iter_transpose`).
 
 Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets) and Corollary 7.3 (scale-separated
-traces). Remark 8.2, the perfect-unshuffle transposer realizing the θ = 2 parameters after Corollary 10.4, and the exclusions of the
+traces). Remark 8.2, the perfect-unshuffle transposer realizing the θ = 2 parameters
+after Corollary 10.4, and the exclusions of the
 individual schedule families of Appendix A are given as proof sketches. The labelled numerical remarks ($d \le 128$) are reproduced by
-[`experiments/`](experiments/), and no proof depends on them.
+[`experiments/`](experiments/), apart from the rows 1–2 Lemma R minimum-cut costs of Remark 10.1 (computed by max-flow on the dependency
+DAGs of the traces exported by its schedule constructors), and no proof depends on them.
 
 ## What is open
 
-The paper ends with four problems: a pass bound that counts phases across all scales; transferring the simulator results back to the
-machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules that met
-every condition tested in our numerical suite (d ≤ 128).
+The paper ends with four problems (Problem 11.4 answered negatively as posed for fixed work alphabets, as noted below): a pass bound that
+counts phases across all scales; transferring the simulator results back to the
+machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules of
+Section 10.3. On 0-indexed rows 1–2, Lemma R already excludes the third and fourth cascades, while excluding nothing on the
+first, second and fifth at w_val ≥ 2 in our finite-size tests ($d \le 64$, Remark 10.1).
 
 **Subsequent memo:** [Regular-Recursion Obstructions for the Five Cascade Schedules](memo-cascade-obstruction/)
-answers the last question for the five exact implemented families, at fixed work
+answers Problem 11.4 negatively for all five exact implemented families, at fixed work
 alphabet, both bit and canonical logarithmic entry width, and sufficiently large
-dyadic dimensions. It applies Paper 2's Theorem 7.5 with complete written source
+dyadic dimensions. It applies the [second paper](../Local-Coding-Barriers-and-the-Limits-of-Tape-Geometry-for-Matrix-Transposition/)'s
+Theorem 7.5 with complete written source
 proofs and reproduction scripts. The canonical-width C5 exclusion is also
 Lean-verified for its declarative tick word, with the Rust correspondence source-audited
 and finitely compared. The finite measurements above remain valid; the memo supplies

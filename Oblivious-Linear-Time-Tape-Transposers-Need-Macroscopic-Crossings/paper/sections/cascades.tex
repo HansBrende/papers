@@ -1,4 +1,5 @@
-Five explicit oblivious schedules, which we call \emph{two-sided cascades}, meet every condition of this paper that we tested. Each loads
+Five explicit oblivious schedules, which we call \emph{two-sided cascades}, meet the crossing and skeleton conditions of this paper that we
+tested. Each loads
 the input onto one, two or three work tapes and then runs a cascade over the scales $M_r=L/2^r$, $1\le r<\log_2d$. A forward
 stage folds the data at each scale: one half by a transfer at varying relative speed, the other merged in with a cyclic shift of about
 $M_r/3$. A backward stage unfolds it by $1$-to-$2$ doublings with an unshifted and a shifted half. A final sweep emits the $L$ output bits.
@@ -16,16 +17,26 @@ moves through them monotonically in each stage.
 other waits.
 \end{enumerate}
 They are specified in our experiments as oblivious traces (head motion and append steps); whether some machine with one of these oblivious
-traces transposes is \cref{prob:cascades}.
+traces transposes is \cref{prob:cascades}, answered negatively for fixed work alphabets in~\cite{CascadeObstructionMemo2026}.
 
 \begin{remark}[Numerical]\label{rem:cascades}
 At $d\in\{32,64,128\}$ and $b=1$ the measured running times of the five schedules lay between about $17L$ and $90L$ ($17.46L$ to $89.19L$).
 On all five, the minimum set separating a large output set from the earlier ends of crossing revisits of excursion greater than $E$ had
 exactly as many elements as the output set, for every tested $E\le L/2$. Their work-tape skeletons at scale about $L/6$ changed little with
 $d$---identical across $d=32,64,128$ on the fifth schedule, and varying by at most $8$ legs (about $12\%$) on the first four---with a single
-leg carrying linear expansion. Conditions (iii) and~(iv) of the specification were not measured. So, as far as these measurements go,
-conditions~(i) and~(ii) of the specification do not distinguish these schedules from a transposer. A one-pass shear, excluded along even $d$
-via \cref{thm:J}, and a multi-scale stack schedule, excluded by a certificate (both as proof sketches in \cref{app:catalogue}), also make
-macroscopic crossings with linear expansion on a single leg in these measurements, which suggests that (i) and~(ii) are not sufficient for
+leg carrying linear expansion. Condition~(iii) of the specification was not measured. Condition~(iv), via the bound
+$\wval\abs\Gamma+\abs{\Gamma\cap\Out(\Qstar(A_0,A_1))}\ge\abs{A_0}\abs{A_1}b$ of \cref{lem:R} on whole rows $A_0=\{1,2\}$ and
+$A_1=\Range d$ (demand $2db$; literal rows $\{0,1\}$ include the initialization park on cell~$0$, giving minimum cost $608>320$ at
+$\wval=1$ on the third schedule at $(32,5)$), fails on the third and fourth schedules (violating \cref{lem:R} for $\wval\le2,3,4,6$ on the
+third schedule with minimum costs $104,284,646,1608$ at $\wval=2,3,4,6$ and for $\wval\le2,3,3,5$ on the fourth with minimum costs
+$104,306,628,1690$ at $\wval=2,3,3,5$ at
+$(d,b)=(16,4),(32,5),(64,6),(128,7)$, and for every fixed $\wval$ at large dyadic $d$ in \cref{sec:cascade-cuts}) and holds on the first,
+second and fifth at every $\wval\ge2$ at $(16,4),(32,5),(64,6)$ (the minimum cost already equals $2db$ at $\wval=1$ on the first and second,
+and on the fifth equals $2db$ at $(16,4)$ and $(32,5)$ at $\wval=1$ and is $735<768$ at $\wval=1$ but $1449>768$ at $\wval=2$ at $(64,6)$;
+recall $\wval\ge2$). Thus conditions~(i), (ii) and, on
+$A_0=\{1,2\}$, (iv) do not distinguish the first, second and fifth schedules from a transposer in these measurements; all five fail
+condition~(vi) asymptotically~\cite[Theorem~1.1]{CascadeObstructionMemo2026}. A one-pass shear, excluded along even $d$ via \cref{thm:J},
+and a multi-scale stack schedule, excluded by a certificate (both as proof sketches in \cref{app:catalogue}), also make macroscopic
+crossings with linear expansion on a single leg in these measurements, which suggests that (i) and~(ii) are not sufficient for
 transposition.
 \end{remark}

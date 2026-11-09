@@ -87,9 +87,12 @@ boundedly many scales are excluded by a scale-gap pigeonhole (Theorem~Q). \Cref{
 by these theorems and by certificates, with proof sketches.
 \end{itemize}
 
-\paragraph{What remains.} Explicit oblivious linear-time schedules, specified in our experiments as oblivious traces (head motion and append
-steps), meet the conditions we tested (numerically, at $d\le128$; \cref{sec:construction}). So these conditions
-are not known to decide the question. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
+\paragraph{What remains.} Explicit oblivious linear-time cascade schedules, specified in our experiments as oblivious traces (head motion
+and append steps), meet the crossing and skeleton conditions we tested (numerically, at $d\le128$; \cref{sec:construction}); \cref{lem:R} on
+$0$-indexed rows $1$ and $2$ excludes two of the five, while the other three pass those cuts for $\wval\ge2$ (numerically, at $d\le64$;
+\cref{rem:cascades}) and are excluded for fixed work alphabets via the
+regular-recursion obstruction of the second paper~\cite[Theorem~7.5]{SecondPaper2026} (\cite[Theorem~1.1]{CascadeObstructionMemo2026};
+\cref{prob:cascades}). Whether the combined conditions decide the general question remains open. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
 together with the earlier output steps, separates the inputs from the outputs for every pair of row sets at once (\cref{prop:onecut}).
 Outside restricted schedule classes (\cref{cor:scale-separated}), the only coding-proof logarithmic factor known on tapes comes from counting
 passes (Theorem~P of the first paper). We extend it to passes that are monotone only up to a fixed amplitude (\cref{thm:coarsepass}), which
@@ -118,7 +121,8 @@ only in remarks or parentheses labelled as numerical and are never used in proof
 The formalization is in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, dependency DAGs
 and index codes of the eleventh paper~\cite{MergeDepth2026}, the genies of the fourteenth~\cite{BoundedStack2026} and the
 simulator of the fifteenth~\cite{HighRate2026}. Not formalized: \cref{prop:onecut} and \cref{cor:scale-separated}, which
-have complete proofs in the text; the remarks marked as proof sketches; and the exclusions of the individual schedule families of
+have complete proofs in the text; the remarks marked as proof sketches (together with the perfect-unshuffle realization in
+\cref{sec:construction}); and the exclusions of the individual schedule families of
 \cref{app:catalogue}, which are not numbered results and are given as proof sketches over the formal class theorems and certificate
 lemmas.
 
@@ -141,7 +145,9 @@ scales, so pass and reversal bounds apply to it only after its small-scale motio
 
 \emph{Macroscopic motion.} The first paper's Theorem~M*~\cite[Theorems~7.8 and~7.9]{FirstPaper2026} passes to the limit of rescaled head
 trajectories and shows that the heads of any linear-time transposer, oblivious or adaptive, satisfy an integral inequality forcing
-returns to macroscopically earlier positions. The fourth paper deduced, by a written proof, that in every macroscopic limit of a linear-time
+returns to macroscopically earlier positions; the second paper strengthens this to a lower bound on physical time outside locally affine
+open sets and excludes all-regular contracting recursions~\cite[Theorems~6.3 and~7.5]{SecondPaper2026} while supplying a data-free prefix
+that satisfies the pure motion bound~\cite[Theorem~8.1]{SecondPaper2026}. The fourth paper deduced, by a written proof, that in every macroscopic limit of a linear-time
 transposer at least two work-head limits are non-monotone~\cite[Corollaries~3.18 and~3.24]{FourthPaper2026}. Theorem~H(b) is a
 quantitative form of this at a single size, with explicit constants and on heavy traces. Theorem~X asks for more than non-monotone motion: a
 run whose heads reuse their tapes only like stacks has no macroscopic crossing steps, so Theorem~X excludes it whatever its macroscopic limit.
@@ -163,6 +169,6 @@ gives the certificate method: an acyclic set of linear size in a cone relation, 
 transposition. \Cref{sec:heads} proves Theorem~H, \cref{sec:crossings} Theorems~D and~X, and \cref{sec:skeletons} Theorem~S.
 \Cref{sec:demand} proves Lemma~R and the colouring criterion built on it. \Cref{sec:adaptive} treats adaptive machines,
 \cref{sec:classes} the class exclusions. \Cref{sec:construction} turns the results around into a specification for a linear-time
-transposer and describes the schedules that meet it, and \cref{sec:open} lists the open problems that would decide the question.
+transposer and examines two-sided cascade schedules against it, and \cref{sec:open} lists the open problems that remain.
 \Cref{app:catalogue} catalogues the excluded schedule families, \cref{app:leanindex} indexes the Lean declarations, and
 \cref{app:verification} explains how to build and check the formalization.

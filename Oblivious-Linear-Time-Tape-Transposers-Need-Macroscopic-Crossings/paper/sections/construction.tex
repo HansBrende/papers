@@ -17,14 +17,27 @@ of one tape already carry a linear fraction of them; the tape and the leg may de
 infinitely many sizes for the set of all outputs (\cref{thm:S}).
 \item \emph{Two long-range heads.} At least two work heads revisit cells after moving a fixed fraction of $L$ away, and for each work head
 some set containing a fixed fraction of the outputs reaches long revisits off that head with linear expansion (\cref{thm:H}).
-\item \emph{Rows to columns.} For every two sets of rows $A_0,A_1$, every set of steps separating the reads of rows $A_0$ from
-the outputs that rows $A_0$ feed into output rows $A_1$ has at least $\abs{A_0}\abs{A_1}b/(\wval+1)$ elements (\cref{lem:R}).
+\item \emph{Rows to columns.} For every two sets of rows $A_0,A_1$, every set $\Gamma$ of steps separating the output steps
+$\Out(\Qstar(A_0,A_1))$ of the entries that rows $A_0$ feed into output rows $A_1$ from the reads $\Lin(A_0)$ of rows $A_0$ satisfies
+$\wval\abs\Gamma+\abs{\Gamma\cap\Out(\Qstar(A_0,A_1))}\ge\abs{A_0}\abs{A_1}b$, and in particular
+$\abs\Gamma\ge\abs{A_0}\abs{A_1}b/(\wval+1)$ (\cref{lem:R}).
 \item \emph{Codes.} After a genie of cost $\eps L$ and bounded depth, the cone relations of the schedule carry an index code of at most
 $\eps L$ bits, one of whose fibres is a storage code of rate at least $1-\eps$~\cite[Corollary~O]{BoundedStack2026}; by (i)--(iii), the
 relations involved are those of macroscopic queue-like reuse.
+\item \emph{Non-regular motion.} With $G=\max(1,\clog{(g+1)})$, in every uniform subsequential limit of the work-head trajectories rescaled
+in time and space by $L$, any open subsets $R_1,\dots,R_k\subseteq[0,C+1/G]$ on which the respective limits are locally affine have
+complements in $[0,C+1/G]$ whose measures sum to at least $1/(2G)$ (hence omit measure at least $1/(2kG)$ when one common open subset
+serves all work heads)~\cite[Theorem~6.3, Lean-verified]{SecondPaper2026}. In particular, under any contracting stage clock
+(\cite[Definitions~7.2 and~7.4]{SecondPaper2026}), stages at which every eligible subsequence of rescaled head profiles has a further
+uniform limit with a finite affine interval cover must leave an exceptional-time allowance of at least $1/(2kG)$ of $L$, so the trace is not
+an all-regular contracting recursion~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026}. A data-free prefix of expanding excursions that
+clears its workspace and resets to blank tapes can already satisfy the pure motion bounds~\cite[Theorem~8.1,
+Lean-verified]{SecondPaper2026}, whereas the computation after such a reset is a standalone run to which~\cite[Theorem~7.5]{SecondPaper2026}
+still applies; useful bent motion cannot be confined to a data-free prefix.
 \end{enumerate}
-Conditions (i)--(iv) are proved here without any coding hypothesis. Condition (v) is the coding question itself: a linear-time
-oblivious transposer is a code of rate close to $1$ on the cone relations of a schedule meeting (i)--(iv). Machine-free relations carry
+Conditions (i)--(iv) are proved here, and (vi) in~\cite{SecondPaper2026}, without any coding hypothesis. Condition (v) is the coding
+question itself: a linear-time oblivious transposer is a code of rate close to $1$ on the cone relations of a schedule meeting (i)--(iv)
+and~(vi). Machine-free relations carry
 storage codes above rate one half~\cite{StorageCodes2026}, and binary codes of rate approaching one exist on suitable separated
 relations~\cite{HighRate2026}.
 
@@ -42,9 +55,23 @@ phases while the other heads move inside sublinear workspaces are excluded by \c
 for adaptive machines, by \cref{thm:J}. Imposed on whole runs, these shapes are excluded by \cref{thm:coarsepass} at any running time for
 oblivious machines and at any polynomial running time for adaptive ones, even with jitter and workspaces up to a small fixed fraction of
 $L$ (\cref{cor:boundedpasses}), and so are phase profiles that grow too slowly across scales (\cref{cor:subcritical}).
-\item \emph{Cheap row-to-column cuts.} A schedule with a set of fewer than $\abs{A_0}\abs{A_1}b/(\wval+1)$ steps separating the reads
-of some rows $A_0$ from their outputs in output rows $A_1$ is excluded by \cref{lem:R}; \cref{thm:colouring} gives a convenient
-way to exhibit such cuts.
+\item \emph{Cheap row-to-column cuts.} A schedule with a set $\Gamma$ of steps separating the output steps $\Out(\Qstar(A_0,A_1))$ of some
+rows $A_0$ in output rows $A_1$ from the reads $\Lin(A_0)$ of rows $A_0$ and satisfying
+$\wval\abs\Gamma+\abs{\Gamma\cap\Out(\Qstar(A_0,A_1))}<\abs{A_0}\abs{A_1}b$ is excluded by \cref{lem:R};
+\cref{thm:colouring} gives a convenient way to exhibit such cuts.
+\item \emph{Regular contracting recursions.} A schedule whose steps admit a contracting stage clock in which, at every fixed stage, every
+eligible subsequence of rescaled work-head profiles has a further uniform limit with a finite affine interval cover, with zero
+exceptional-time allowance, is excluded for fixed work alphabets (even with $o(L)$ state bits and correctness on at least a $2^{-o(L)}$
+fraction of inputs) by~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026}. The companion memo~\cite[Theorem~1.1]{CascadeObstructionMemo2026}
+verifies this clock-regularity hypothesis on all five cascade schedules of \cref{sec:cascades} and excludes them along large dyadic $d$ both
+at $b=\max(1,\clog d)$ and (via an oblivious bit-lane lift) at $b=1$, with the canonical-width fifth cascade formalized in Lean for its
+declarative tick word.
+\item \emph{Trapped fold cascades.} In two-sided fold cascades without a pre-cascade fan-out shuffle, such as the third and fourth
+cascades of \cref{sec:cascades}, a contiguous pair of input rows avoiding the initialization cell stays trapped in a narrowing interval
+across successive half-speed folds, yielding both cell-level cuts that allow growing alphabets and a sublinear step cut for \cref{lem:R} on
+rows~$1$ and~$2$ (\cref{sec:cascade-cuts}). Prepending the two-dimensional shifts or butterfly passes of the first and second cascades spreads each
+row's reach across multiple intervals before the first fold and defeats the rows $1$--$2$ cut in our tests (numerically, for $\wval\ge2$ at
+$d\le64$; \cref{rem:cascades}), though not~\cite[Theorem~7.5]{SecondPaper2026}.
 \item \emph{The explicit families of \cref{app:catalogue}}, each excluded by a class theorem of \cref{sec:classes} or a certificate of
 \cref{sec:certificates} (in proof sketches). Several of them make macroscopic crossings with linear expansion (numerically, at $d\le128$), so
 \cref{thm:X} alone does not exclude them.

@@ -18,9 +18,11 @@ The schedules with $r_j=O(j)$ include, as far as we can tell, the cascades of \c
 transposer whose motion looks like a cascade at all scales. A negative answer would give machines of this class with bounded normalized
 running time along an unbounded sequence of dimensions (since the class is finite, one machine along a subsequence); turning this into a
 transposer of that shape that is correct at every size and faster than $O(L\log d)$ would require a further argument. The interval forests of Theorem~P do not obviously help: in our tests (numerically, at $d\le128$), the smallest charge of such forests
-over all the group widths we tried was at least $L$ on every transposer, as the cut lemma of the first paper requires, and about $2L$ and
-$3L$ on the two cascades we tested, whereas an exclusion needs a charge below $L$; localizing the forests to windows in which tapes overlap
-at two scales did not bring any charge below~$L$.
+over all the group widths we tried was at least $L$ on every transposer, as the cut lemma of the first paper requires, and at least $1.6L$ on
+the three cascades we tested---about $2L$, $2.5L$ and $4L$ on the first, third and fourth cascades at the dyadic scales with
+$b=\lceil\log_2 d\rceil$, and $1.63L$ and $1.64L$ on the first and third cascades ($4L$ on the fourth) with scales down to single cells
+($d=64$, $b=1$)---whereas an exclusion needs a charge below $L$; localizing the forests to windows in which tapes overlap at two scales did
+not bring any charge below~$L$.
 
 \begin{problem}[From the simulator back to the machine]\label{prob:pullback}
 Let $M$ transpose in linear time, and let $\Ns$ be its bit simulator. Does the conclusion of \cref{thm:X} hold in $M$'s own dependency
@@ -40,7 +42,7 @@ thresholds of order $1/C$.
 
 \begin{problem}[The cascades]\label{prob:cascades}
 For each of the five cascade schedules of \cref{sec:cascades}, decide whether some machine with that oblivious trace transposes. Each is a
-linear-time schedule that met every necessary condition of this paper in our tests (\cref{rem:cascades}). A transposer with one of these
+linear-time schedule that met every condition we tested (\cref{rem:cascades}). A transposer with one of these
 traces would prove~(T); an exclusion of one of them would, as far as our tests indicate, need an argument that uses more than
 Theorems~D, X, S and Lemma~R.
 \end{problem}

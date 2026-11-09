@@ -17,7 +17,8 @@ proof sketch only. \emph{None of these exclusions is a numbered result of this p
 
 \paragraph{Crossings (numerical).} The last column records whether \cref{thm:X} alone could exclude the family. ``Yes'' means that the
 schedule's work heads stay within $O(b)$ cells, so it has no crossing revisits of linear excursion at all. The other entries are
-numerical, from exact computations at $d\le128$: ``no'' when the minimum set separating a large output set from the crossing steps of
+numerical, from exact computations at $d=64$, $b=1$ (row~16: $d=16$, $b=4$): ``no'' when the minimum set separating a large output set from
+the crossing steps of
 revisits of excursion more than $2W$ had at least $0.25$ times as many elements as the output set; ``small'' when that ratio was at most
 $0.07$, which suggests, as a heuristic, that \cref{thm:X} applies; and ``---'' when nothing was measured.
 
@@ -33,8 +34,8 @@ $0.07$, which suggests, as a heuristic, that \cref{thm:X} applies; and ``---'' w
 4 & Ruler schedule: two banks moving one row per episode, a third head making excursions of $2$-adic lengths inside one row & 3 & \cref{thm:J} & --- \\
 5 & Row expander: rows mixed in a two-head deep-nesting workspace of width $W$, two banks, four monotone phases ($d$ even) & 4 & \cref{thm:BM} & --- \\
 6 & Fan-out cascade fed by fresh input slices at each scale ($d=2^m$) & 2 & \cref{thm:J} (suffix form) & --- \\
-7 & Unit-slope passes: load, reflection, shifted sweep, emit; at most three constant-velocity segments per pass & 2 & \cref{thm:J} & small \\
-8 & Bounce: zig-zag input, one tape sweeping $[0,L)$, nested excursions of height at most $L/(4d)$ on the other & 2 & \cref{thm:J}, \cref{cor:H} & small \\
+7 & Unit-slope passes: load, reflection, shifted sweep, emit; at most three constant-velocity segments per pass & 2 & \cref{thm:J} & no \\
+8 & Bounce: zig-zag input, one tape sweeping $[0,L)$, nested excursions of height at most $L/(4d)$ on the other & 2 & \cref{thm:J}, \cref{cor:H} & no \\
 9 & Sublinear stack: blocks of $L/(4d)$ outputs pushed and popped on fresh cells while the other tape sweeps & 2 & \cref{thm:J}, \cref{cor:H} & --- \\
 10--11 & Free pseudo-random Dyck walk of length $L$ on one tape while the other sweeps the tape six times (two variants) & 2 & \cref{thm:J}, \cref{cor:H} & --- \\
 12 & One push and one pop of height $2L$ on a stack tape while the other tape bounces & 2 & \cref{thm:J} & --- \\
@@ -45,7 +46,7 @@ $0.07$, which suggests, as a heuristic, that \cref{thm:X} applies; and ``---'' w
 25--26 & Two push--pop excursions on a stack tape, with a mandatory cut at the second excursion (two variants) & 2 & block cut & --- \\
 27 & Two-exception inverse-square geometry, swept variant~\cite{GapAreaMemo2026} ($d\ge64$) & 10 & closed post-region, $O(d^{1/3})$ boundary steps & no \\
 28--29 & Two-exception inverse-square geometries~\cite{GapAreaMemo2026} ($d\ge64$) & 9, 11 & window lemma after two cut steps & small \\
-30 & Mirrored dyadic fold cascade & 2 & window lemma (\cref{lem:stepinv}), uncut & small \\
+30 & Mirrored dyadic fold cascade & 2 & window lemma (\cref{lem:stepinv}), uncut & no \\
 31 & Unit-slope dyadic cascade ($d=2^m$) & 2 & sub-row window, uncut & --- \\
 32 & Dyadic fold cascade with row blocks of doubling width & 2 & window lemma, uncut & no \\
 33--34 & Two stack excursions with the free tape in a hub of width $L/2^s$ ($s$ fixed) or $d$ & 2 & block cut; space--time potential & --- \\
@@ -75,5 +76,8 @@ steps and a window potential instead. Row 34 uses a space--time potential, row 3
 segments, row 36 a bounded-level laminar cut, row 37 a meso-scale hub cut, and row 38 the formal closed-post-region criterion
 (\lean{isAcyclicIn_ballAvoidSystem_of_closedPostRegion}).
 
-As a numerical check on the method, the same classification was run on explicit transposers that run in time $\omega(L)$ (shuffle and
-butterfly transposers, a radix transposer on a stack, and one-tape transposers); none of the exclusions was triggered by them.
+As a numerical check, the seven explicit $\omega(L)$ transposers in \leanfile{experiments/} (six radix and butterfly transposers of time
+$\Theta(L\log d)$ and a one-excursion stack transposer of time $\Theta(d^{1/3}L)$, all verified on the unit-vector basis) were tested on
+the numerical quantities of this paper: all seven had crossing separator ratio $1$ at threshold $2W$ ($d=32$, $b=1$; the
+$\Theta(d^{1/3}L)$ transposer also lies outside the linear-time hypothesis of \cref{thm:X,cor:H}), and every tested coarse-pass slope
+product and closed interval-forest charge met the proved lower bounds.

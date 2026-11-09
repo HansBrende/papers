@@ -6,14 +6,14 @@
 //!   list                                     List all schedule generators and computation kinds
 //!   export <id> <d> <b> <csv|json> [path]    Export full time-indexed schedule (stdout or file)
 //!   crossings                                Run Remark 5.8 crossing min-cut & E=L suite
-//!   skeletons                                Run Remarks 6.8 & 10.1 skeleton/wave/leg suite
+//!   skeletons                                Run Remarks 6.8 & 10.1 skeleton & single-leg suite
 //!   phases                                   Run Section 10.4 coarse phase-profile suite
 //!   forests                                  Run Problem 11.1 1-scale & 2-scale forest suite
-//!   catalogue                                Run Appendix A "Crossings" column comparison suite
+//!   catalogue                                Run Appendix A "Crossings" column & control suite
 
-pub mod checkers;
-pub mod model;
-pub mod schedules;
+mod checkers;
+mod model;
+mod schedules;
 
 use std::env;
 use std::fs::File;
@@ -23,12 +23,11 @@ use std::time::Instant;
 
 use checkers::{
     analyze_skeleton_and_single_leg_expansion, best_interval_forest_charges,
-    best_paper_dyadic_interval_forest_charges, certified_acyclic_upper_bound,
-    chronological_expanding_chunks, coarse_phase_profile, count_skeleton_legs,
+    best_paper_dyadic_interval_forest_charges, certified_acyclic_upper_bound, coarse_phase_profile,
     crossing_lower_steps, crossing_lower_steps_bruteforce, extract_ball_avoid_relation,
-    extract_tape_skeleton, legacy_nonroot_separator_cut,
-    legacy_sprint43_mix_band, legacy_sprint43_mix_gt2w, max_disjoint_expanding_waves,
-    menger_min_vertex_cut, skeleton_legs_profile, standard_subpopulations,
+    extract_tape_skeleton, legacy_banded_mix_steps, legacy_mix_gt2w_steps,
+    legacy_nonroot_separator_cut, menger_min_vertex_cut, skeleton_legs_profile,
+    standard_subpopulations,
 };
 use model::{entry_bits, ComputationKind, DepGraph};
 use schedules::{build_by_id, ALL_SPECS};
@@ -36,7 +35,6 @@ use schedules::{build_by_id, ALL_SPECS};
 #[derive(Default)]
 struct CheckReport {
     failures: Vec<String>,
-    notes: Vec<String>,
 }
 
 impl CheckReport {
@@ -46,10 +44,6 @@ impl CheckReport {
             eprintln!("  [FAIL] {s}");
             self.failures.push(s);
         }
-    }
-
-    fn note(&mut self, msg: impl Into<String>) {
-        self.notes.push(msg.into());
     }
 }
 
@@ -69,18 +63,19 @@ fn print_usage() {
 
 fn cmd_list() {
     println!(
-        "{:<28} {:<4} {:<31} {:<8} {}",
-        "SCHEDULE_ID", "k", "COMPUTATION_KIND", "MIN_d", "PAPER_REF"
+        "{:<28} {:<4} {:<31} {:<12} {}",
+        "SCHEDULE_ID", "k", "COMPUTATION_KIND", "DOMAIN", "PAPER_REF"
     );
-    println!("{}", "-".repeat(118));
+    println!("{}", "-".repeat(122));
     for s in ALL_SPECS {
         println!(
-            "{:<28} {:<4} {:<31} {:<8} {}",
+            "{:<28} {:<4} {:<31} {:<12} {}\n    {}",
             s.id,
             s.k_tapes,
             s.kind.as_str(),
-            s.min_d,
-            s.paper_ref
+            s.domain.label(s.min_d),
+            s.paper_ref,
+            s.title
         );
     }
 }
@@ -124,18 +119,18 @@ fn cmd_export(args: &[String]) -> Result<(), String> {
 }
 
 // ============================================================================
-// Suite 0: Exact DepStep Quantifier, Bit-Verified Transposers & Entry/Write Caps
+// Suite 0: Exact DepStep Check, Exact-Basis Bit-Verified Transposers & Cell Caps
 // ============================================================================
 
 fn run_suite_0_foundations(rep: &mut CheckReport) {
-    println!("=== [Suite 0] Exact DepStep Model, Bit-Verified Controls & Cascade Write/Entry Caps ===");
+    println!("=== [Suite 0] Exact DepStep Model, Unit-Basis Transposers & Cascade Cell Caps ===");
 
-    // 0a. Brute-force `MergeDepth.DepStep` & `crossing_lower_steps` equivalence at small `d`.
+    // 0a. Nested-loop reference check of `DepGraph::from_schedule` & `crossing_lower_steps` at d = 4.
     let bf_ids_d4 = [
         "c2_bfly_cascade",
         "c3_ten_entry_cascade",
         "c4_no_overwrite_cascade",
-        "c4_probe_s6_disjoint",
+        "c4_shared_w01_probe",
         "c5_comb_fanout",
         "ctrl_lsb_radix",
         "ctrl_localized_msb_bfly",
@@ -152,24 +147,24 @@ fn run_suite_0_foundations(rep: &mut CheckReport) {
             let slow = crossing_lower_steps_bruteforce(&dag, thresh);
             rep.require(
                 fast == slow,
-                format!("CL_H mismatch vs brute force on {id} at thresh={thresh}"),
+                format!("CL_H mismatch vs reference check on {id} at thresh={thresh}"),
             );
         }
     }
     println!(
-        "  [OK] DepGraph::from_schedule & crossing_lower_steps match literal DepStep/IsHop quantifier on {} schedules.",
+        "  [OK] DepGraph::from_schedule & crossing_lower_steps match reference nested-loop checks on {} schedules.",
         bf_ids_d4.len()
     );
 
-    // 0b. Bit-level verification on all 7 actual transpose controls.
+    // 0b. Exact F_2-basis verification (zero vector + all L unit vectors) on all 7 transpose controls.
     for spec in ALL_SPECS {
         if spec.kind == ComputationKind::BitVerifiedTransposer {
             for &(d, b) in &[(16usize, 4usize), (32, 1)] {
                 let sc = build_by_id(spec.id, d, b).unwrap();
-                sc.verify_transposer(8);
+                sc.verify_transposer_exact_basis();
             }
             println!(
-                "  [OK] Bit-verified transposer {:<26} passed 8x2 random matrix trials at (16,4) & (32,1).",
+                "  [OK] Bit-verified transposer {:<26} exact on 0 and all L unit vectors at (16,4) & (32,1).",
                 spec.id
             );
         }
@@ -196,22 +191,14 @@ fn run_suite_0_foundations(rep: &mut CheckReport) {
             format!("c4_no_overwrite_cascade exceeded 9 entries/cell at d={d}: got {ent4}"),
         );
 
-        let sc4_pr = build_by_id("c4_probe_s6_disjoint", d, 1).unwrap();
+        let sc4_pr = build_by_id("c4_shared_w01_probe", d, 1).unwrap();
         let ent4_pr = sc4_pr.max_work_cell_entries();
         if d == 64 {
             println!(
                 "  [OK] Cascade cell caps at d=64, b=1: c3_ten_entry_cascade max_entries={ent3} (<=10); \
                  c4_no_overwrite_cascade max_writes={wr4} (==1), max_entries={ent4}; \
-                 c4_probe_s6_disjoint max_entries={ent4_pr} (w_2 disjoint, w_0/w_1 shared)."
+                 c4_shared_w01_probe (historical comparator) max_entries={ent4_pr}."
             );
-            rep.note(format!(
-                "Cascade 3 & 4 (`Section 10.3(3)-(4)`): `c3_ten_entry_cascade` (`S6_fresh`) has `max_entries = {ent3} <= 10` \
-                 at all tested d; `c4_no_overwrite_cascade` uses strictly disjoint zones across both stages on all 3 tapes \
-                 (`max_active_writes_per_cell = {wr4}`, `max_entries = {ent4}`, `T/L = 57.28` at d=128). \
-                 The historical 4th probe schedule `c4_probe_s6_disjoint` (`S6_disjoint_curved`, `T/L = 29.70` at d=128) \
-                 kept disjoint un-overwritten zones `Z_r` on `w_2` (`0` crossings at `E = L` in `Remark 5.8`) while sharing \
-                 `[L, 2L)` across scales on `w_0, w_1` (`max_entries = {ent4_pr}` at d=64)."
-            ));
         }
     }
     println!();
@@ -229,16 +216,17 @@ fn run_suite_1_crossings(rep: &mut CheckReport) {
     );
     println!("{}", "-".repeat(94));
 
-    let cascades = [
+    let cascades_and_comparator = [
         "c1_torus_cascade",
         "c2_bfly_cascade",
         "c3_ten_entry_cascade",
         "c4_no_overwrite_cascade",
-        "c4_probe_s6_disjoint",
         "c5_comb_fanout",
+        "c4_shared_w01_probe",
     ];
 
-    for id in cascades {
+    for id in cascades_and_comparator {
+        let is_five_cascade = id != "c4_shared_w01_probe";
         for &d in &[32usize, 64, 128] {
             let b = 1usize;
             let l = d * d * b;
@@ -247,7 +235,6 @@ fn run_suite_1_crossings(rep: &mut CheckReport) {
             let dag = DepGraph::from_schedule(&sc);
             let subpops = standard_subpopulations(d, b);
 
-            // Unclamped thresholds `E in {2W, L/64, L/16, L/4, L/2}` (`exc_thresh = E`).
             let thresholds = [
                 ("2W", (2 * w) as i64),
                 ("L/64", (l / 64).max(1) as i64),
@@ -262,10 +249,6 @@ fn run_suite_1_crossings(rep: &mut CheckReport) {
                 let full_cut = menger_min_vertex_cut(&sc, &dag, &subpops[0].1, &mask).cut_size;
                 let mut worst = full_cut as f64 / (l as f64);
 
-                // Even when `full_cut == L` (which by Menger's L vertex-disjoint paths already
-                // forces `cut(V_0) == |V_0|` for EVERY `V_0 subset [0, L)`), explicitly verify
-                // representative subsets (`first_half`, `mid_half`, `q0`, `even_rows`, `even_cols`,
-                // `diag_band_q`), and check all subsets whenever `full_cut < L` or `d <= 64`.
                 let check_indices: Vec<usize> = if full_cut < l || d <= 64 {
                     (1..subpops.len()).collect()
                 } else {
@@ -308,39 +291,51 @@ fn run_suite_1_crossings(rep: &mut CheckReport) {
                 cl_l_cnt
             );
 
-            // At d = 64, verify the 3 historical probe cascades where E = L empties CL_{L/2}
-            // (`c3_ten_entry_cascade`, `c4_probe_s6_disjoint`, `c5_comb_fanout`) and check D = 4..32 MAIS bounds.
-            if d == 64 && id != "c4_no_overwrite_cascade" {
-                let expect_empty = matches!(
-                    id,
-                    "c3_ten_entry_cascade" | "c4_probe_s6_disjoint" | "c5_comb_fanout"
+            // Remark 5.8: among the five cascades of Section 10.3, exactly two (Cascades 3 and 5)
+            // make no crossings of excursion > L; the historical comparator `c4_shared_w01_probe`
+            // also makes none because it shares `[L, 2L)` on `w_0, w_1`.
+            let expect_empty_at_l = matches!(
+                id,
+                "c3_ten_entry_cascade" | "c5_comb_fanout" | "c4_shared_w01_probe"
+            );
+            rep.require(
+                (cl_l_cnt == 0) == expect_empty_at_l,
+                format!(
+                    "Remark 5.8 E=L crossing-emptiness mismatch on {id} at d={d}: |CL_{{L/2}}|={cl_l_cnt}"
+                ),
+            );
+
+            if d == 64 && cl_l_cnt == 0 {
+                let zero_cut = vec![false; dag.t_len];
+                let mut ubs = Vec::new();
+                for &rad in &[4usize, 8, 16, 32] {
+                    let rel = extract_ball_avoid_relation(&sc, &dag, rad, &zero_cut);
+                    let ub = certified_acyclic_upper_bound(&rel);
+                    ubs.push((rad, ub as f64 / (l as f64)));
+                }
+                println!(
+                    "    -> E=L empty crossing set on {id} (d=64): certified acyclic UB/L \
+                     D=4:{:.3}, D=8:{:.3}, D=16:{:.3}, D=32:{:.3}",
+                    ubs[0].1, ubs[1].1, ubs[2].1, ubs[3].1
                 );
-                rep.require(
-                    (cl_l_cnt == 0) == expect_empty,
-                    format!(
-                        "Remark 5.8 E=L emptiness mismatch on {id} at d=64: |CL_{{L/2}}|={cl_l_cnt}"
-                    ),
-                );
-                if cl_l_cnt == 0 {
-                    let zero_cut = vec![false; dag.t_len];
-                    let mut ubs = Vec::new();
-                    for &rad in &[4usize, 8, 16, 32] {
-                        let rel = extract_ball_avoid_relation(&sc, &dag, rad, &zero_cut);
-                        let ub = certified_acyclic_upper_bound(&rel);
-                        ubs.push((rad, ub as f64 / (l as f64)));
+                if is_five_cascade {
+                    if id == "c3_ten_entry_cascade" {
+                        rep.require(
+                            (0.24..=0.26).contains(&ubs[3].1),
+                            format!(
+                                "Remark 5.8 Cascade 3 D=32 acyclic UB expected ~0.25L at d=64, got {:.4}",
+                                ubs[3].1
+                            ),
+                        );
+                    } else if id == "c5_comb_fanout" {
+                        rep.require(
+                            (0.07..=0.09).contains(&ubs[3].1),
+                            format!(
+                                "Remark 5.8 Cascade 5 D=32 acyclic UB expected ~0.08L at d=64, got {:.4}",
+                                ubs[3].1
+                            ),
+                        );
                     }
-                    println!(
-                        "    -> E=L empty crossing set on {id} (d=64): certified acyclic UB/L \
-                         D=4:{:.3}, D=8:{:.3}, D=16:{:.3}, D=32:{:.3}",
-                        ubs[0].1, ubs[1].1, ubs[2].1, ubs[3].1
-                    );
-                    rep.require(
-                        ubs[3].1 < 0.50,
-                        format!(
-                            "Remark 5.8 E=L acyclic UB did not fall below L/2 by D=32 on {id}: {:.4}",
-                            ubs[3].1
-                        ),
-                    );
                 }
             }
         }
@@ -393,11 +388,11 @@ fn run_suite_1_crossings(rep: &mut CheckReport) {
 }
 
 // ============================================================================
-// Suite 2: Running Times, Skeletons, Single-Leg Expansion & Waves (`Remarks 6.8 & 10.1`)
+// Suite 2: Running Times, Skeletons & Single-Leg Expansion (`Remarks 6.8 & 10.1`)
 // ============================================================================
 
-fn run_suite_2_skeletons_and_waves(rep: &mut CheckReport) {
-    println!("=== [Suite 2] Skeletons, Single-Leg Expansion & Disjoint Expanding Waves (Remarks 6.8 & 10.1) ===");
+fn run_suite_2_skeletons(rep: &mut CheckReport) {
+    println!("=== [Suite 2] Running Times, Skeletons & Single-Leg Expansion (Remarks 6.8 & 10.1) ===");
 
     // 2a. Running times `T/L` of the 5 cascades at `d in {32, 64, 128}, b = 1` (`Remark 10.1`).
     let five_cascades = [
@@ -417,35 +412,36 @@ fn run_suite_2_skeletons_and_waves(rep: &mut CheckReport) {
             max_tl = max_tl.max(tl);
         }
     }
-    println!("  Measured T/L across Cascades 1-5 for d in {{32,64,128}}, b=1: min={min_tl:.2}, max={max_tl:.2}");
-    if min_tl < 18.0 {
-        rep.note(format!(
-            "Remark 10.1 says cascade running times at d <= 128, b = 1 lay 'between 18L and 90L': \
-             exact range is [{min_tl:.2}L, {max_tl:.2}L] (Cascade 5 has T/L = 17.46 at d=32, 17.98 at d=64, \
-             and 18.24 at d=128, rounding to 18L as d grows)."
-        ));
-    }
-
-    // 2b. Skeleton d-independence, single-leg expansion & bounded expanding waves/chunks.
     println!(
-        "\n  {:<25} {:>4} {:<24} {:>13} {:>13} {:>11} {:>10}",
+        "  Measured T/L across Cascades 1-5 for d in {{32,64,128}}, b=1: min={min_tl:.2}, max={max_tl:.2}"
+    );
+    rep.require(
+        (17.0..18.0).contains(&min_tl) && (89.0..90.0).contains(&max_tl),
+        format!(
+            "Remark 10.1 cascade running-time span expected between about 17L and 90L, got [{min_tl:.2}L, {max_tl:.2}L]"
+        ),
+    );
+
+    // 2b. Skeleton stability at `Lambda_* = floor(L/6) + 1` and single-leg expansion.
+    println!(
+        "\n  {:<25} {:>4} {:<24} {:>8} {:>15} {:>13} {:>13}",
         "SCHEDULE",
         "d",
         "SKEL_W0(L/6+1)",
-        "1LEG(L/16,L/8)",
+        "TOT_LEGS",
+        "1LEG(L/6+1,2L*)",
         "1LEG(L/6+1,W)",
-        "CHKS(L,.25)",
-        "WAVES(.25)"
+        "1LEG(L/16,L/8)"
     );
-    println!("  {}", "-".repeat(107));
+    println!("  {}", "-".repeat(109));
 
     let skel_targets = [
         "c1_torus_cascade",
         "c2_bfly_cascade",
         "c3_ten_entry_cascade",
         "c4_no_overwrite_cascade",
-        "c4_probe_s6_disjoint",
         "c5_comb_fanout",
+        "c4_shared_w01_probe",
         "cat_row03_one_pass_shear",
         "cat_row24_dyck_mscale",
         "ctrl_lsb_radix",
@@ -454,195 +450,131 @@ fn run_suite_2_skeletons_and_waves(rep: &mut CheckReport) {
     ];
 
     for id in skel_targets {
-        let mut skel16_by_d: Vec<Vec<Vec<bool>>> = Vec::new();
         let mut skel6_by_d: Vec<Vec<Vec<bool>>> = Vec::new();
-        let mut legs16_by_d: Vec<usize> = Vec::new();
         let mut legs6_by_d: Vec<usize> = Vec::new();
-        let mut chunks_by_d: Vec<usize> = Vec::new();
-        let mut waves_16_32_64: Vec<usize> = Vec::new();
-        let mut tl_64 = 0.0f64;
-
-        // Compute d = 16 chunk & wave counts up front (`c = 0.25`, `Table F-37b / F-39b`) for `[16, 32, 64]`.
-        {
-            let sc16 = build_by_id(id, 16, 1).unwrap();
-            let dag16 = DepGraph::from_schedule(&sc16);
-            let l16 = sc16.len_bits();
-            let v16: Vec<usize> = (0..l16).collect();
-            let cl16 = crossing_lower_steps(&dag16, (2 * 16) as i64);
-            let (chk16, _) =
-                chronological_expanding_chunks(&sc16, &dag16, &v16, &cl16, l16.max(1), 0.25);
-            chunks_by_d.push(chk16);
-            let (nw16, _) = max_disjoint_expanding_waves(&sc16, &dag16, &v16, &cl16, 0.25);
-            waves_16_32_64.push(nw16);
-        }
 
         for &d in &[32usize, 64, 128] {
             let sc = build_by_id(id, d, 1).unwrap();
             let dag = DepGraph::from_schedule(&sc);
             let l = sc.len_bits();
             let w = d;
-            let v_all: Vec<usize> = (0..l).collect();
-            if d == 64 {
-                tl_64 = sc.horizon() as f64 / (l as f64);
-            }
 
-            // Dyadic Theorem-S ratio `(Lambda = L/16, H = L/8)` (`2*Lambda = H`, `Table F-38b`).
             let lam16 = (l / 16) as i64;
             let h8 = (l / 8) as i64;
             let s16 = analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam16, h8);
 
-            // `Lambda_* = floor(L/6) + 1` ("scale about L/6", `Table F-39a/b`) partitioned over `CL_W`.
+            // `Lambda_* = floor(L/6) + 1` ("scale about L/6") at both Theorem S's exact
+            // `H = 2 * Lambda_*` and row-scale `H = W`.
             let lam6 = (l / 6 + 1) as i64;
-            let s6 = analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam6, w as i64);
+            let s6_2lam = analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam6, 2 * lam6);
+            let s6_w = analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam6, w as i64);
 
-            let sk16_tapes: Vec<Vec<bool>> = (0..sc.k)
-                .map(|j| extract_tape_skeleton(&sc.work_pos[j], lam16).steps)
-                .collect();
             let sk6_tapes: Vec<Vec<bool>> = (0..sc.k)
                 .map(|j| extract_tape_skeleton(&sc.work_pos[j], lam6).steps)
                 .collect();
-            legs16_by_d.push(sk16_tapes.iter().map(|st| count_skeleton_legs(st)).sum());
-            legs6_by_d.push(sk6_tapes.iter().map(|st| count_skeleton_legs(st)).sum());
-            skel16_by_d.push(sk16_tapes);
+            let tot_legs6 = s6_w.total_legs;
+            let (win_j, _win_leg) = s6_w.best_tape_and_leg;
+            rep.require(win_j < sc.k, format!("Invalid winning tape index on {id}"));
+            legs6_by_d.push(tot_legs6);
             skel6_by_d.push(sk6_tapes);
 
-            let (chk_str, wave_str) = if d <= 64 {
-                let cl_w = crossing_lower_steps(&dag, (2 * w) as i64);
-                let (chk_pass, _) =
-                    chronological_expanding_chunks(&sc, &dag, &v_all, &cl_w, l.max(1), 0.25);
-                chunks_by_d.push(chk_pass);
-                let (nw, _) = max_disjoint_expanding_waves(&sc, &dag, &v_all, &cl_w, 0.25);
-                waves_16_32_64.push(nw);
-                (format!("{chk_pass}"), format!("{nw}"))
-            } else {
-                ("--".to_string(), "--".to_string())
-            };
-
             println!(
-                "  {:<25} {:>4} {:<24} {:>13.4} {:>13.4} {:>11} {:>10}",
+                "  {:<25} {:>4} {:<24} {:>8} {:>15.4} {:>13.4} {:>13.4}",
                 id,
                 d,
-                s6.per_tape_legs[0],
-                s16.max_single_leg_cut_ratio,
-                s6.max_single_leg_cut_ratio,
-                chk_str,
-                wave_str
+                s6_w.per_tape_legs[0],
+                tot_legs6,
+                s6_2lam.max_single_leg_cut_ratio,
+                s6_w.max_single_leg_cut_ratio,
+                s16.max_single_leg_cut_ratio
             );
 
-            // Check Remarks 6.8 & 10.1: both the one-pass shear (`cat_row03_one_pass_shear`) and the
-            // multi-scale Dyck stack (`cat_row24_dyck_mscale`) exhibit single-leg linear expansion!
+            // Remarks 6.8 & 10.1: single-leg linear expansion on Cascades 1-5 (`== 1.0` at
+            // `H = W`, and linear `>= 2/3 - o(1)` at Theorem S's exact `H = 2*Lambda_*` where
+            // `2H = 4*Lambda_* ~ 2L/3`), and linear expansion on `cat_row03_one_pass_shear` and
+            // `cat_row24_dyck_mscale`.
+            if five_cascades.contains(&id) || id == "c4_shared_w01_probe" {
+                let ok_2lam = match id {
+                    "c3_ten_entry_cascade" => s6_2lam.max_single_leg_cut_ratio >= 0.999,
+                    "c5_comb_fanout" => (0.66..=0.67).contains(&s6_2lam.max_single_leg_cut_ratio),
+                    _ => (s6_2lam.max_single_leg_cut_ratio - 1.0).abs() < 1e-9,
+                };
+                rep.require(
+                    ok_2lam
+                        && (s6_w.max_single_leg_cut_ratio - 1.0).abs() < 1e-9
+                        && s16.max_single_leg_cut_ratio >= 0.85,
+                    format!(
+                        "Cascade {id} failed single-leg linear expansion at d={d}: \
+                         (L/6+1,2L*)={:.4}, (L/6+1,W)={:.4}, (L/16,L/8)={:.4}",
+                        s6_2lam.max_single_leg_cut_ratio,
+                        s6_w.max_single_leg_cut_ratio,
+                        s16.max_single_leg_cut_ratio
+                    ),
+                );
+            }
             if id == "cat_row03_one_pass_shear" || id == "cat_row24_dyck_mscale" {
                 rep.require(
                     s16.any_crossing_capable
-                        && s16.max_single_leg_cut_ratio >= 0.25
-                        && s6.max_single_leg_cut_ratio >= 0.25,
+                        && s16.max_single_leg_cut_ratio >= 0.35
+                        && s6_w.max_single_leg_cut_ratio >= 0.50,
                     format!(
-                        "Remarks 6.8/10.1 single-leg expansion check failed on {id} at d={d}: {:.4}, {:.4}",
-                        s16.max_single_leg_cut_ratio, s6.max_single_leg_cut_ratio
+                        "Remarks 6.8/10.1 single-leg expansion check failed on {id} at d={d}: \
+                         (L/16,L/8)={:.4}, (L/6+1,W)={:.4}",
+                        s16.max_single_leg_cut_ratio, s6_w.max_single_leg_cut_ratio
                     ),
                 );
-            }
-            // Check Remark 10.1: every cascade has single-leg linear expansion at `(L/16, L/8)` and `(L/6+1, W)`.
-            if id.starts_with("c1_")
-                || id.starts_with("c2_")
-                || id.starts_with("c3_")
-                || id.starts_with("c4_")
-                || id.starts_with("c5_")
-            {
-                rep.require(
-                    s16.max_single_leg_cut_ratio >= 0.25 && s6.max_single_leg_cut_ratio >= 0.25,
-                    format!(
-                        "Cascade {id} failed single-leg linear expansion at d={d}: (L/16,L/8)={:.4}, (L/6+1,W)={:.4}",
-                        s16.max_single_leg_cut_ratio, s6.max_single_leg_cut_ratio
-                    ),
-                );
-                if d == 64 {
-                    let s6_2lam =
-                        analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam6, 2 * lam6);
-                    if s6_2lam.max_single_leg_cut_ratio < 0.25 {
-                        rep.note(format!(
-                            "Remark 10.1 threshold note on `{id}` (d=64): at `Lambda = floor(L/6)+1` with `CL_W` \
-                             single-leg expansion is {:.4} (and at `Lambda = L/16, H = L/8` with `2*Lambda = H` it is {:.4}), \
-                             whereas plugging `H = 2*Lambda ~ L/3` (`2H ~ 2L/3`) exceeds its `L/2`-scale excursions \
-                             (giving {:.4}).",
-                            s6.max_single_leg_cut_ratio,
-                            s16.max_single_leg_cut_ratio,
-                            s6_2lam.max_single_leg_cut_ratio
-                        ));
-                    }
-                }
             }
             if id == "ctrl_pinned_dfs_bfly" {
-                let s_pin = analyze_skeleton_and_single_leg_expansion(&sc, &dag, lam6, 2 * lam6);
                 rep.require(
-                    s_pin.max_single_leg_cut_ratio >= 0.50,
+                    (0.66..=0.67).contains(&s6_2lam.max_single_leg_cut_ratio)
+                        && (s6_w.max_single_leg_cut_ratio - 1.0).abs() < 1e-9,
                     format!(
-                        "Pinned DFS butterfly failed single-leg expansion at Lambda=L/6+1, H=2*Lambda d={d}: {:.4}",
-                        s_pin.max_single_leg_cut_ratio
+                        "Pinned DFS butterfly failed single-leg expansion at Lambda=L/6+1 d={d}: \
+                         2*Lambda={:.4}, W={:.4}",
+                        s6_2lam.max_single_leg_cut_ratio, s6_w.max_single_leg_cut_ratio
                     ),
                 );
             }
         }
 
-        if id == "cat_row03_one_pass_shear" || id == "c5_comb_fanout" {
-            rep.require(
-                skel16_by_d[0] == skel16_by_d[1] && skel16_by_d[1] == skel16_by_d[2],
-                format!("{id} Lambda=L/16 skeleton was not byte-identical across d=32,64,128"),
-            );
-        }
-        if id == "ctrl_pinned_dfs_bfly" {
-            rep.require(
-                skel6_by_d[0] == skel6_by_d[1] && skel6_by_d[1] == skel6_by_d[2],
-                "ctrl_pinned_dfs_bfly Lambda=L/6+1 skeleton varied across d=32,64,128",
-            );
-        }
-        if id.starts_with("c1_")
-            || id.starts_with("c2_")
-            || id.starts_with("c3_")
-            || id.starts_with("c4_")
-            || id.starts_with("c5_")
+        // Strict skeleton stability assertions matching Remarks 6.8 & 10.1:
+        // - Identical across d = 32, 64, 128 on Cascade 5, `cat_row03_one_pass_shear`, and `ctrl_pinned_dfs_bfly`.
+        // - Within 8 legs and <= 13% ("within 8 legs (about 12%)") across d = 32, 64, 128 on Cascades 1-4.
+        if id == "c5_comb_fanout"
+            || id == "cat_row03_one_pass_shear"
+            || id == "ctrl_pinned_dfs_bfly"
         {
             rep.require(
-                legs16_by_d[2] <= legs16_by_d[1] + 6 && legs6_by_d[2] <= legs6_by_d[1] + 8,
+                skel6_by_d[0] == skel6_by_d[1] && skel6_by_d[1] == skel6_by_d[2],
                 format!(
-                    "Cascade {id} skeleton leg count grew unboundedly across d=32,64,128: L/16={legs16_by_d:?}, L/6+1={legs6_by_d:?}"
+                    "{id} skeleton at Lambda=floor(L/6)+1 was not identical across d=32,64,128: legs={legs6_by_d:?}"
                 ),
             );
-            let same_l16 = skel16_by_d[0] == skel16_by_d[1] && skel16_by_d[1] == skel16_by_d[2];
-            let same_l6 = skel6_by_d[0] == skel6_by_d[1] && skel6_by_d[1] == skel6_by_d[2];
-            if !same_l16 || !same_l6 {
-                rep.note(format!(
-                    "Skeleton finite-d grid-rounding note on `{id}`: total legs across d=[32,64,128] stabilize at \
-                     {legs16_by_d:?} (`Lambda=L/16`, exact_word_eq={same_l16}) and {legs6_by_d:?} (`Lambda=floor(L/6)+1`, \
-                     exact_word_eq={same_l6}), with `+-1..2` milestone-step boundary shifts where shift offsets like `M_r/3` \
-                     or `(d-1)` round to integers."
-                ));
-            }
-            let wave_cap = (8.0 * tl_64).ceil() as usize + 2;
+        }
+        if matches!(
+            id,
+            "c1_torus_cascade"
+                | "c2_bfly_cascade"
+                | "c3_ten_entry_cascade"
+                | "c4_no_overwrite_cascade"
+        ) {
+            let min_legs = *legs6_by_d.iter().min().unwrap();
+            let max_legs = *legs6_by_d.iter().max().unwrap();
+            let diff = max_legs - min_legs;
+            let rel = diff as f64 / (min_legs.max(1) as f64);
             rep.require(
-                waves_16_32_64[2] <= waves_16_32_64[1] + 16
-                    && waves_16_32_64[2] <= wave_cap
-                    && chunks_by_d[2] <= chunks_by_d[1] + 6,
+                diff <= 8 && rel <= 0.13,
                 format!(
-                    "Cascade {id} disjoint expanding waves/chunks grew unboundedly: waves={waves_16_32_64:?}, chunks={chunks_by_d:?}"
+                    "Cascade {id} skeleton legs at Lambda=floor(L/6)+1 varied by more than 8 legs / 13%: \
+                     legs={legs6_by_d:?} (diff={diff}, rel={:.3})",
+                    rel
                 ),
             );
         }
         if id == "ctrl_lsb_radix" {
             rep.require(
-                legs16_by_d[0] < legs16_by_d[1] && legs16_by_d[1] < legs16_by_d[2],
-                format!("ctrl_lsb_radix skeleton legs did not grow with log d: {legs16_by_d:?}"),
-            );
-        }
-        if id == "ctrl_lsb_radix" || id == "ctrl_localized_msb_bfly" {
-            rep.require(
-                waves_16_32_64[0] < waves_16_32_64[1]
-                    && waves_16_32_64[1] < waves_16_32_64[2]
-                    && chunks_by_d[0] < chunks_by_d[1]
-                    && chunks_by_d[1] < chunks_by_d[2],
-                format!(
-                    "Superlinear control {id} waves/chunks did not grow with log d: waves={waves_16_32_64:?}, chunks={chunks_by_d:?}"
-                ),
+                legs6_by_d[0] < legs6_by_d[1] && legs6_by_d[1] < legs6_by_d[2],
+                format!("ctrl_lsb_radix skeleton legs did not grow with log d: {legs6_by_d:?}"),
             );
         }
     }
@@ -668,9 +600,7 @@ fn run_suite_3_phase_profiles(rep: &mut CheckReport) {
         "ctrl_u1_unitslope_bfly",
     ];
 
-    println!(
-        "  Coarse joint pass counts M_ph(2^{{-s}} L) at d={d}, b={b} (s = 0..7):"
-    );
+    println!("  Coarse joint pass counts M_ph(2^{{-s}} L) at d={d}, b={b} (s = 0..7):");
     println!(
         "  {:<25} {:>4} {:>6} {:>6} {:>6} {:>6} {:>6} {:>6} {:>6} {:>6} {:>12}",
         "SCHEDULE", "k", "s=0", "s=1", "s=2", "s=3", "s=4", "s=5", "s=6", "s=7", "slope*lg(k+1)"
@@ -699,13 +629,23 @@ fn run_suite_3_phase_profiles(rep: &mut CheckReport) {
             counts[7],
             crit_prod
         );
-        if id == "c1_torus_cascade"
-            || id == "c3_ten_entry_cascade"
-            || id == "c4_no_overwrite_cascade"
-        {
+        if matches!(
+            id,
+            "c1_torus_cascade" | "c3_ten_entry_cascade" | "c4_no_overwrite_cascade"
+        ) {
+            rep.require(
+                (25.0..=40.0).contains(&crit_prod),
+                format!(
+                    "Section 10.4 cascade {id} slope product expected in [25, 40] at (d=128,b=7), got {crit_prod:.3}"
+                ),
+            );
+        }
+        if sc.kind == ComputationKind::BitVerifiedTransposer {
             rep.require(
                 crit_prod > 0.5,
-                format!("Section 10.4 cascade {id} did not sit above 1/2 slope threshold: {crit_prod:.3}"),
+                format!(
+                    "Section 10.4 superlinear transposer {id} violated > 0.5 slope bound: {crit_prod:.3}"
+                ),
             );
         }
     }
@@ -729,6 +669,26 @@ fn run_suite_3_phase_profiles(rep: &mut CheckReport) {
             "  {:<25} {:>6} {:>6} {:>6} {:>6} {:>6} {:>6} {:>6}",
             id, legs[0].2, legs[1].2, legs[2].2, legs[3].2, legs[4].2, legs[5].2, legs[6].2
         );
+        if sc.kind == ComputationKind::BitVerifiedTransposer {
+            rep.require(
+                legs[6].2 >= 700 && legs[6].2 >= (legs[5].2 * 19) / 10,
+                format!(
+                    "Localized butterfly {id} did not exhibit exponential r_j doubling: j=6 got {}, j=7 got {}",
+                    legs[5].2, legs[6].2
+                ),
+            );
+        } else {
+            let linear_steps = legs
+                .windows(2)
+                .all(|w| w[1].2 >= w[0].2 && w[1].2 - w[0].2 <= 40);
+            rep.require(
+                linear_steps && legs[6].2 <= 240,
+                format!(
+                    "Cascade {id} r_j violated linear O(j) leg growth: {:?}",
+                    legs.iter().map(|x| x.2).collect::<Vec<_>>()
+                ),
+            );
+        }
     }
     println!();
 }
@@ -808,31 +768,35 @@ fn run_suite_4_interval_forests(rep: &mut CheckReport) {
                     ),
                 );
             }
-            if d == 64 && id == "c1_torus_cascade" {
+            if id == "c1_torus_cascade" {
                 rep.require(
-                    (1.90..=2.15).contains(&fs.best_2scale_opt_exact),
+                    (1.95..=2.05).contains(&fs.best_1scale_exact)
+                        && (1.95..=2.05).contains(&fs.best_2scale_opt_exact),
                     format!(
-                        "Problem 11.1 Cascade 1 forest charge expected ~2L at (d=64,b=6), got {:.4}",
-                        fs.best_2scale_opt_exact
+                        "Problem 11.1 Cascade 1 dyadic forest charge expected ~2L at (d={d},b={b}), got 1S={:.4}, 2S_Opt={:.4}",
+                        fs.best_1scale_exact, fs.best_2scale_opt_exact
                     ),
                 );
             }
-            if d == 64 && id == "c3_ten_entry_cascade" {
+            if id == "c3_ten_entry_cascade" {
                 rep.require(
-                    (2.60..=3.15).contains(&fs.best_2scale_opt_exact),
+                    (2.45..=2.60).contains(&fs.best_1scale_exact)
+                        && (2.55..=3.05).contains(&fs.best_2scale_opt_exact)
+                        && (2.90..=3.05).contains(&fs.best_2scale_loc_exact),
                     format!(
-                        "Problem 11.1 Cascade 3 (`c3_ten_entry_cascade`) forest charge expected ~2.6-3.0L at (d=64,b=6), got {:.4}",
-                        fs.best_2scale_opt_exact
+                        "Problem 11.1 Cascade 3 dyadic forest charge expected ~2.5L (1S) and 2.6-3.0L (2S) at (d={d},b={b}), \
+                         got 1S={:.4}, 2S_Loc={:.4}, 2S_Opt={:.4}",
+                        fs.best_1scale_exact, fs.best_2scale_loc_exact, fs.best_2scale_opt_exact
                     ),
                 );
             }
-            if d == 128 && id == "c3_ten_entry_cascade" {
+            if id == "c4_no_overwrite_cascade" {
                 rep.require(
-                    (2.85..=3.15).contains(&fs.best_2scale_loc_exact)
-                        && (2.55..=3.15).contains(&fs.best_2scale_opt_exact),
+                    (3.99..=4.01).contains(&fs.best_1scale_exact)
+                        && (3.99..=4.01).contains(&fs.best_2scale_opt_exact),
                     format!(
-                        "Problem 11.1 Cascade 3 (`c3_ten_entry_cascade`) forest charge expected ~3L loc / ~2.6-3.0L opt at (d=128,b=7), got loc={:.4}, opt={:.4}",
-                        fs.best_2scale_loc_exact, fs.best_2scale_opt_exact
+                        "Problem 11.1 Cascade 4 dyadic forest charge expected 4L at (d={d},b={b}), got 1S={:.4}, 2S_Opt={:.4}",
+                        fs.best_1scale_exact, fs.best_2scale_opt_exact
                     ),
                 );
             }
@@ -840,7 +804,7 @@ fn run_suite_4_interval_forests(rep: &mut CheckReport) {
     }
 
     println!(
-        "\n  Part 4b: Extended sub-row sweep down to `A_1 = 1` at `d = 64, b = 1` (`still >> L` on all cascades):"
+        "\n  Part 4b: Extended sub-row sweep down to single cells (`A_1 = 1`) at `d = 64, b = 1`:"
     );
     for id in [
         "ctrl_localized_msb_bfly",
@@ -856,61 +820,68 @@ fn run_suite_4_interval_forests(rep: &mut CheckReport) {
         );
         if id == "ctrl_localized_msb_bfly" {
             rep.require(
-                fs.best_2scale_opt_exact >= 1.0 - 1e-9,
+                fs.best_1scale_exact >= 1.0 - 1e-9 && fs.best_2scale_opt_exact >= 1.0 - 1e-9,
                 "Extended sweep violated >= L soundness on ctrl_localized_msb_bfly",
             );
-        } else {
+        } else if id == "c1_torus_cascade" {
             rep.require(
-                fs.best_2scale_opt_exact >= 1.80,
+                (1.62..=1.64).contains(&fs.best_1scale_exact) && fs.best_2scale_opt_exact >= 1.62,
                 format!(
-                    "Extended sweep on cascade {id} fell below 1.80L: {:.4}",
-                    fs.best_2scale_opt_exact
+                    "Problem 11.1 Cascade 1 single-cell sweep expected ~1.63L (1S), got 1S={:.4}, 2S_Opt={:.4}",
+                    fs.best_1scale_exact, fs.best_2scale_opt_exact
                 ),
             );
-            if id == "c3_ten_entry_cascade" {
-                rep.note(format!(
-                    "Problem 11.1 forest scale-grid note: on the paper's dyadic scale pairs `(2^-3,2^-6)..(2^-5,2^-8)` \
-                     at `b = ceil(log_2 d)`, `c1_torus_cascade` charges ~2.00L and `c3_ten_entry_cascade` charges \
-                     2.62L..2.98L (~3L); extending the sweep down to single-cell `A_1 = 1` at `b = 1` lowers \
-                     `c3_ten_entry_cascade` to {:.4}L (still well above the `< 1.00L` threshold needed for an exclusion).",
-                    fs.best_2scale_opt_exact
-                ));
-            }
+        } else if id == "c3_ten_entry_cascade" {
+            rep.require(
+                (1.63..=1.65).contains(&fs.best_1scale_exact) && fs.best_2scale_opt_exact >= 1.63,
+                format!(
+                    "Problem 11.1 Cascade 3 single-cell sweep expected ~1.64L (1S), got 1S={:.4}, 2S_Opt={:.4}",
+                    fs.best_1scale_exact, fs.best_2scale_opt_exact
+                ),
+            );
+        } else if id == "c4_no_overwrite_cascade" {
+            rep.require(
+                (3.99..=4.01).contains(&fs.best_1scale_exact)
+                    && (3.99..=4.01).contains(&fs.best_2scale_opt_exact),
+                format!(
+                    "Problem 11.1 Cascade 4 single-cell sweep expected 4.00L, got 1S={:.4}, 2S_Opt={:.4}",
+                    fs.best_1scale_exact, fs.best_2scale_opt_exact
+                ),
+            );
         }
     }
     println!();
 }
 
 // ============================================================================
-// Suite 5: Appendix A `"Crossings"` Column Audit (`Exact CL_W` vs `Sprint 43 Mix`)
+// Suite 5: Appendix A `"Crossings"` Column & Superlinear Control Audit
 // ============================================================================
 
 fn run_suite_5_catalogue(rep: &mut CheckReport) {
-    println!("=== [Suite 5] Appendix A 'Crossings' Column Audit (d=64, b=1; Row 16 also at d=16, b=4) ===");
+    println!("=== [Suite 5] Appendix A 'Crossings' Column Audit (d=64, b=1; Row 16 at d=16, b=4) ===");
     println!(
-        "  {:<28} {:<11} {:>10} {:>10} {:>11} {:<12} {:<12}",
+        "  {:<28} {:<11} {:>10} {:>12} {:>12} {:<12}",
         "SCHEDULE_ID",
         "PAPER_COL",
         "CL_W_Min",
-        "MixGT2W",
-        "MixBandMin",
-        "CL_W_LABEL",
-        "MIXGT2W_LBL"
+        "DiagMixGT2W",
+        "DiagMixBand",
+        "CL_W_LABEL"
     );
-    println!("  {}", "-".repeat(102));
+    println!("  {}", "-".repeat(91));
 
     let rows: &[(&str, &str)] = &[
         ("cat_row01_direct_copy", "yes"),
         ("cat_row02_persistent_triangles", "yes"),
         ("cat_row03_one_pass_shear", "no"),
-        ("cat_row07_unitslope", "small"),
-        ("cat_row08_bounce", "small"),
+        ("cat_row07_unitslope", "no"),
+        ("cat_row08_bounce", "no"),
         ("cat_row16_one_free_wave", "small (16)"),
         ("cat_row24_dyck_mscale", "no"),
         ("cat_row27_gis2_swept", "no"),
         ("cat_row28_gis2", "small"),
         ("cat_row29_gis2_gap", "small"),
-        ("cat_row30_mirrored_dyadic", "small"),
+        ("cat_row30_mirrored_dyadic", "no"),
         ("cat_row32_dyadic_fold", "no"),
         ("cat_row36_lifo_fanout", "no"),
         ("cat_row37_tapped_cascade", "no"),
@@ -940,9 +911,8 @@ fn run_suite_5_catalogue(rep: &mut CheckReport) {
         let two_w = (2 * d * b) as i64;
         let subpops = standard_subpopulations(d, b);
 
-        // Theorem X quantifies over EVERY large output set `V_0`: a schedule is excluded (`"small"`)
-        // iff `min_{V_0} |B_min(Out(V_0) -> crossings)| / |V_0| <= 0.07`, and survives (`"no"`) iff
-        // that minimum is `>= 0.25`. Following `sprint43.rs`, evaluate `V_0` with `|V_0| <= L/2`.
+        // Exact paper definition (`Definition 2.2` + `Definition 2.4`): minimum vertex cut
+        // `|B_min(Out(V_0) -> CL_W)| / |V_0|` across tested output sets `V_0` with `|V_0| <= L/2`.
         let cl_mask = crossing_lower_steps(&dag, two_w);
         let cl_empty = !cl_mask.iter().any(|&x| x);
         let mut min_cl_ratio = if cl_empty { 0.0 } else { 1.0f64 };
@@ -959,9 +929,10 @@ fn run_suite_5_catalogue(rep: &mut CheckReport) {
             }
         }
 
-        let mix_mask = legacy_sprint43_mix_gt2w(&sc, &dag);
+        // Labelled legacy diagnostics only (NOT used as pass criteria).
+        let mix_mask = legacy_mix_gt2w_steps(&sc, &dag);
         let mix_empty = !mix_mask.iter().any(|&x| x);
-        let mut min_mix_gt2w = if mix_empty { 0.0 } else { 1.0f64 };
+        let mut diag_mix_gt2w = if mix_empty { 0.0 } else { 1.0f64 };
         if !mix_empty {
             for (_name, v0) in &subpops {
                 if v0.is_empty() || v0.len() > l / 2 {
@@ -971,16 +942,16 @@ fn run_suite_5_catalogue(rep: &mut CheckReport) {
                     Some(cut) => cut as f64 / (v0.len() as f64),
                     None => 1.0,
                 };
-                if r < min_mix_gt2w {
-                    min_mix_gt2w = r;
+                if r < diag_mix_gt2w {
+                    diag_mix_gt2w = r;
                 }
             }
         }
 
-        let mut min_mix_band = if mix_empty { 0.0 } else { 1.0f64 };
+        let mut diag_mix_band = if mix_empty { 0.0 } else { 1.0f64 };
         for div in [2usize, 4, 8] {
             let cap_v0 = l / div;
-            let bmask = legacy_sprint43_mix_band(&sc, &dag, cap_v0 as i64);
+            let bmask = legacy_banded_mix_steps(&sc, &dag, cap_v0 as i64);
             for (_name, v0) in &subpops {
                 if v0.is_empty() || v0.len() > cap_v0 {
                     continue;
@@ -989,13 +960,12 @@ fn run_suite_5_catalogue(rep: &mut CheckReport) {
                     Some(cut) => cut as f64 / (v0.len() as f64),
                     None => 1.0,
                 };
-                if r < min_mix_band {
-                    min_mix_band = r;
+                if r < diag_mix_band {
+                    diag_mix_band = r;
                 }
             }
         }
 
-        // `"yes"` in Appendix A specifically means work heads stay within `O(b)` cells (0 >2W hops at all).
         let any_gt2w_hop = (0..sc.k).any(|j| {
             dag.revisits_by_tape[j]
                 .iter()
@@ -1006,54 +976,62 @@ fn run_suite_5_catalogue(rep: &mut CheckReport) {
         } else {
             classify_ratio(!any_gt2w_hop && cl_empty, min_cl_ratio)
         };
-        let mix_label =
-            if id == "cat_row16_one_free_wave" && min_mix_gt2w <= 0.07 && any_gt2w_hop {
-                "small (16)"
-            } else {
-                classify_ratio(!any_gt2w_hop && mix_empty, min_mix_gt2w)
-            };
 
         println!(
-            "  {:<28} {:<11} {:>10.4} {:>10.4} {:>11.4} {:<12} {:<12}",
-            id, expected_col, min_cl_ratio, min_mix_gt2w, min_mix_band, cl_label, mix_label
+            "  {:<28} {:<11} {:>10.4} {:>12.4} {:>12.4} {:<12}",
+            id, expected_col, min_cl_ratio, diag_mix_gt2w, diag_mix_band, cl_label
         );
 
-        match expected_col {
-            "yes" => {
-                rep.require(
-                    !any_gt2w_hop && cl_empty && mix_empty,
-                    format!("Appendix A 'yes' row {id} made >2W revisits"),
-                );
-            }
-            "no" => {
-                rep.require(
-                    min_cl_ratio >= 0.25 && min_mix_gt2w >= 0.25,
-                    format!(
-                        "Appendix A 'no' row {id} fell below 0.25: cl={min_cl_ratio:.4}, mix_gt2w={min_mix_gt2w:.4}"
-                    ),
-                );
-            }
-            "small" | "small (16)" => {
-                rep.require(
-                    min_cl_ratio <= 0.07 || min_mix_gt2w <= 0.07 || min_mix_band <= 0.07,
-                    format!(
-                        "Appendix A '{expected_col}' row {id} exceeded 0.07 on all three variants: \
-                         cl={min_cl_ratio:.4}, mix_gt2w={min_mix_gt2w:.4}, mix_band={min_mix_band:.4}"
-                    ),
-                );
-            }
-            _ => unreachable!(),
-        }
+        // Strict assertion: `CL_W` + `IsMengerVertexCut` ALONE must match the paper's column!
+        rep.require(
+            cl_label == expected_col,
+            format!(
+                "Appendix A 'Crossings' mismatch on {id}: expected '{expected_col}', \
+                 exact CL_W gave '{cl_label}' (min_cl_ratio={min_cl_ratio:.4}, any_gt2w_hop={any_gt2w_hop})"
+            ),
+        );
+    }
 
-        if cl_label != expected_col || mix_label != expected_col || (expected_col == "no" && min_mix_band <= 0.07) {
-            rep.note(format!(
-                "Appendix A `{id}` (`{expected_col}`): exact `CL_W` + `IsMengerVertexCut` gives min ratio \
-                 {min_cl_ratio:.4} (`{cl_label}`, `|CL_W| = {}`), uncapped Sprint 43 `Mix_{{>2W}}` gives \
-                 {min_mix_gt2w:.4} (`{mix_label}`), and banded Sprint 43 `Mix_eta` (`eta in {{1/2,1/4,1/8}}`) \
-                 gives {min_mix_band:.4}.",
-                cl_mask.iter().filter(|&&x| x).count()
-            ));
+    // Part 5b: Crossing separator check on all 7 explicit omega(L) transposers (`Appendix A` final paragraph).
+    println!("\n  Part 5b: Crossing separator check on all 7 bit-verified omega(L) transposers (d=32, b=1):");
+    for spec in ALL_SPECS {
+        if spec.kind != ComputationKind::BitVerifiedTransposer {
+            continue;
         }
+        let sc = build_by_id(spec.id, 32, 1).unwrap();
+        let dag = DepGraph::from_schedule(&sc);
+        let l = sc.len_bits();
+        let two_w = (2 * 32) as i64;
+        let subpops = standard_subpopulations(32, 1);
+        let cl_mask = crossing_lower_steps(&dag, two_w);
+        let cl_cnt = cl_mask.iter().filter(|&&x| x).count();
+        let mut min_cl_ratio = if cl_cnt == 0 { 0.0 } else { 1.0f64 };
+        if cl_cnt > 0 {
+            for (_name, v0) in &subpops {
+                if v0.is_empty() || v0.len() > l / 2 {
+                    continue;
+                }
+                let cut = menger_min_vertex_cut(&sc, &dag, v0, &cl_mask).cut_size;
+                let r = cut as f64 / (v0.len() as f64);
+                if r < min_cl_ratio {
+                    min_cl_ratio = r;
+                }
+            }
+        }
+        println!(
+            "    {:<28} T/L={:>6.2}  |CL_W|={:>7}  CL_W_Min={:.4}",
+            spec.id,
+            sc.horizon() as f64 / (l as f64),
+            cl_cnt,
+            min_cl_ratio
+        );
+        rep.require(
+            (min_cl_ratio - 1.0).abs() < 1e-9,
+            format!(
+                "Expected CL_W separator ratio 1.0 on omega(L) transposer {}, got {:.4}",
+                spec.id, min_cl_ratio
+            ),
+        );
     }
     println!();
 }
@@ -1064,21 +1042,13 @@ fn run_all_checks() -> Result<(), String> {
 
     run_suite_0_foundations(&mut rep);
     run_suite_1_crossings(&mut rep);
-    run_suite_2_skeletons_and_waves(&mut rep);
+    run_suite_2_skeletons(&mut rep);
     run_suite_3_phase_profiles(&mut rep);
     run_suite_4_interval_forests(&mut rep);
     run_suite_5_catalogue(&mut rep);
 
-    println!("=== Probe-Simplification & Boundary Audit Notes ===");
-    if rep.notes.is_empty() {
-        println!("  (none)");
-    } else {
-        for (i, n) in rep.notes.iter().enumerate() {
-            println!("  {}. {}", i + 1, n);
-        }
-    }
     println!(
-        "\nCompleted full verification suite in {:.2}s ({} failures).",
+        "Completed full verification suite in {:.2}s ({} failures).",
         t0.elapsed().as_secs_f64(),
         rep.failures.len()
     );
@@ -1115,7 +1085,7 @@ fn main() {
         }
         "skeletons" => {
             let mut rep = CheckReport::default();
-            run_suite_2_skeletons_and_waves(&mut rep);
+            run_suite_2_skeletons(&mut rep);
             if rep.failures.is_empty() {
                 Ok(())
             } else {
@@ -1168,11 +1138,11 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{ScheduleBuilder, StepOp};
+    use crate::model::{tpos, ScheduleBuilder, StepOp};
+    use crate::schedules::DomainRule;
 
     #[test]
     fn waiting_on_cell_makes_no_revisit() {
-        // d = 2, b = 1 -> L = 4. Work head stays on cell 0 for 3 steps, moves to 1, stays on 1, returns to 0.
         let mut sb = ScheduleBuilder::new(
             "test_wait",
             "Wait test",
@@ -1182,19 +1152,97 @@ mod tests {
             ComputationKind::ExplicitNonTransposer,
         );
         sb.step_with_op(1, &[0], true, StepOp::EmitInput); // t=0: y=0 -> y=0
-        sb.step_with_op(1, &[0], true, StepOp::EmitInput); // t=1: y=0 -> y=0 (wait!)
+        sb.step_with_op(1, &[0], true, StepOp::EmitInput); // t=1: y=0 -> y=0 (wait)
         sb.step_with_op(1, &[1], true, StepOp::EmitInput); // t=2: y=0 -> y=1 (leave 0 after t=2)
-        sb.step_with_op(0, &[0], false, StepOp::PassThrough); // t=3: y=1 -> y=1 (wait!)
+        sb.step_with_op(0, &[0], false, StepOp::PassThrough); // t=3: y=1 -> y=1 (wait)
         sb.step_with_op(0, &[-1], false, StepOp::PassThrough); // t=4: y=1 -> y=0
-        sb.step_with_op(0, &[0], true, StepOp::EmitInput); // t=5: y=0 (return to 0 at t=5? No, returned at t=5!)
+        sb.step_with_op(0, &[0], true, StepOp::EmitInput); // t=5: y=0 (return to 0 at t=5)
         let sched = sb.finish();
         let dag = DepGraph::from_schedule(&sched);
         dag.verify_against_bruteforce(&sched);
 
-        // Only ONE true revisit exists: leaving cell 0 after p=2 and returning at u=5!
         assert_eq!(dag.revisits_by_tape[0].len(), 1);
         let rev = dag.revisits_by_tape[0][0];
         assert_eq!((rev.p, rev.u, rev.cell, rev.excursion), (2, 5, 0, 1));
+    }
+
+    #[test]
+    fn ball_relation_exempts_root_even_when_root_in_cut() {
+        // Output r=0 (target p = tpos(2,1,0) = 0) is emitted at t=1 while scanning input cell 0,
+        // and state edge 1 -> 0 reaches t=0 scanning input cell 0.
+        // If t=1 lies in `cut_mask` while t=0 does not, `GFree` (`Definition 2.5`) exempts the
+        // root `t_r = 1`, so both t=1 and t=0 remain reachable within radius 1!
+        let sc = build_by_id("cat_row01_direct_copy", 2, 1).unwrap();
+        let dag = DepGraph::from_schedule(&sc);
+        let mut cut = vec![false; dag.t_len];
+        let root0 = sc.append_times[0];
+        let root1 = sc.append_times[1];
+        cut[root0] = true;
+        cut[root1] = true;
+
+        let rel_d0 = extract_ball_avoid_relation(&sc, &dag, 0, &cut);
+        // At radius 0, root `t_r` itself is reached (exempt from `cut`), scanning input cell `r`.
+        assert_eq!(rel_d0[tpos(2, 1, 0)], vec![0]);
+        assert_eq!(rel_d0[tpos(2, 1, 1)], vec![1]);
+
+        // Blocking an interior non-root step DOES cut paths through it:
+        let mut cut_interior = vec![false; dag.t_len];
+        cut_interior[root0] = true; // root0 is interior on the path from root1 = root0 + 1 to root0!
+        let rel_d1 = extract_ball_avoid_relation(&sc, &dag, 1, &cut_interior);
+        // From root1 (`r = 1`, `p = tpos(2,1,1) = 2`), `root1` is exempt so cell `1` is reached,
+        // while `root0` is NOT the root for `r = 1` and lies in `cut_interior`, so cell `0` is blocked!
+        assert_eq!(rel_d1[tpos(2, 1, 1)], vec![1]);
+    }
+
+    #[test]
+    fn all_schedule_specs_match_domain_without_panicking() {
+        for spec in ALL_SPECS {
+            for d in [1usize, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 64] {
+                if spec.k_tapes >= 9 && d == 64 {
+                    // Tested at d=64 below once; skip nothing — 64 is fast (~5ms).
+                }
+                let in_domain = d >= spec.min_d
+                    && match spec.domain {
+                        DomainRule::Any => true,
+                        DomainRule::EvenOnly => d % 2 == 0,
+                        DomainRule::PowerOfTwo => d.is_power_of_two(),
+                    };
+                let res = build_by_id(spec.id, d, 1);
+                assert_eq!(
+                    res.is_ok(),
+                    in_domain,
+                    "Domain mismatch for {} at d={d}: in_domain={in_domain}, err={:?}",
+                    spec.id,
+                    res.err()
+                );
+                if let Ok(sc) = res {
+                    assert_eq!(sc.title, spec.title);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn exact_basis_verifier_and_u64_simulator_match_scalar() {
+        let sc = build_by_id("ctrl_xor_butterfly", 4, 2).unwrap();
+        sc.verify_transposer_exact_basis();
+        let l = sc.len_bits();
+        let mut x_lanes = vec![0u64; l];
+        for lane in 0..64usize {
+            for p in 0..l {
+                if ((p * 37 + lane * 13 + 5) & 1) == 1 {
+                    x_lanes[p] |= 1u64 << lane;
+                }
+            }
+        }
+        let y_lanes = sc.simulate_bits_u64(&x_lanes);
+        for lane in 0..64usize {
+            let x_scalar: Vec<u8> = (0..l).map(|p| ((x_lanes[p] >> lane) & 1) as u8).collect();
+            let y_scalar = sc.simulate_bits(&x_scalar);
+            for r in 0..l {
+                assert_eq!(((y_lanes[r] >> lane) & 1) as u8, y_scalar[r]);
+            }
+        }
     }
 
     #[test]

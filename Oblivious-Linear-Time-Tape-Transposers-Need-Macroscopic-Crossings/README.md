@@ -100,7 +100,7 @@ individual schedule families of Appendix A are given as proof sketches. The labe
 
 The paper ends with four problems: a pass bound that counts phases across all scales; transferring the simulator results back to the
 machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules that met
-every necessary condition proved here in our numerical tests (d ≤ 128).
+every condition tested in our numerical suite (d ≤ 128).
 
 ## Building and verifying
 

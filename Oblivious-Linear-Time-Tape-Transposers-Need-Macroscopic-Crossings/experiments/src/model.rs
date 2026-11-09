@@ -27,11 +27,11 @@ pub fn tpos(d: usize, b: usize, addr: usize) -> usize {
     (j * d + i) * b + s
 }
 
-/// Computational nature of an oblivious schedule generator (`README` & `R-52` item 6).
+/// Computational nature of an oblivious schedule generator.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ComputationKind {
-    /// Carries explicit per-step bit operations that compute `Y[r] = X[tpos(d, b, r)]`
-    /// for every `X in {0, 1}^L`; verified on randomized bit matrices.
+    /// Carries explicit per-step `F_2`-linear bit operations whose time-indexed data flow computes
+    /// `Y[r] = X[tpos(d, b, r)]` on the zero input and all `L` unit vectors (hence every `X in {0, 1}^L`).
     BitVerifiedTransposer,
     /// Carries explicit per-step bit operations that compute a specific non-transpose
     /// function (e.g. identity, persistent triangles, or `F_2` XOR cascade).
@@ -67,12 +67,6 @@ pub enum StepOp {
     CopyWork { src_tape: u8, dst_tape: u8 },
     /// Updates `work[dst_tape] ^= work[src_tape]` over `F_2`.
     XorWork { src_tape: u8, dst_tape: u8 },
-    /// Updates `work[dst_tape] = work[src_a] ^ work[src_b]` over `F_2` in a single write.
-    WriteXor2 {
-        src_a: u8,
-        src_b: u8,
-        dst_tape: u8,
-    },
     /// Emits `work[src_tape]` without modifying any work cell.
     EmitWork { src_tape: u8 },
     /// Emits `work[0] ^ work[1] ^ work[2]` without modifying any work cell.
@@ -109,7 +103,6 @@ impl StepOp {
                 }
             }
             Self::XorWork { dst_tape, .. } => 1u16 << dst_tape,
-            Self::WriteXor2 { dst_tape, .. } => 1u16 << dst_tape,
             Self::StageWrite { write_mask } => write_mask,
         }
     }
@@ -130,13 +123,6 @@ impl StepOp {
             }
             Self::XorWork { src_tape, dst_tape } if dst_tape as usize == j => {
                 format!("xor_w{}", src_tape)
-            }
-            Self::WriteXor2 {
-                src_a,
-                src_b,
-                dst_tape,
-            } if dst_tape as usize == j => {
-                format!("write_w{}_xor_w{}", src_a, src_b)
             }
             Self::StageWrite { write_mask } if (write_mask & bit) != 0 => {
                 "stage_write".to_string()
@@ -302,20 +288,6 @@ impl Schedule {
                     tapes[d_t][d_idx] ^= val;
                     emitted_bit = tapes[d_t][d_idx];
                 }
-                StepOp::WriteXor2 {
-                    src_a,
-                    src_b,
-                    dst_tape,
-                } => {
-                    let sa = src_a as usize;
-                    let sb = src_b as usize;
-                    let dt = dst_tape as usize;
-                    let va = tapes[sa][(self.work_pos[sa][t] - min_p[sa]) as usize];
-                    let vb = tapes[sb][(self.work_pos[sb][t] - min_p[sb]) as usize];
-                    let didx = (self.work_pos[dt][t] - min_p[dt]) as usize;
-                    tapes[dt][didx] = va ^ vb;
-                    emitted_bit = tapes[dt][didx];
-                }
                 StepOp::EmitWork { src_tape } => {
                     let s = src_tape as usize;
                     let s_idx = (self.work_pos[s][t] - min_p[s]) as usize;
@@ -342,38 +314,140 @@ impl Schedule {
         out
     }
 
-    /// Verify on `trials` deterministic pseudo-random matrices `X in {0, 1}^L` that
-    /// `self.simulate_bits(X)[r] == X[tpos(d, b, r)]` for all `r in 0..L`.
-    pub fn verify_transposer(&self, trials: usize) {
+    /// Simulate 64 bit-parallel inputs packed into `u64` lanes (`lane m` holds input `X^{(m)}`).
+    pub fn simulate_bits_u64(&self, x_lanes: &[u64]) -> Vec<u64> {
+        assert_ne!(
+            self.kind,
+            ComputationKind::GeometryOnly,
+            "Cannot bit-simulate geometry-only schedule {}",
+            self.id
+        );
+        let l = self.len_bits();
+        assert_eq!(x_lanes.len(), l);
+
+        let mut min_p = vec![0i64; self.k];
+        let mut tapes: Vec<Vec<u64>> = Vec::with_capacity(self.k);
+        for j in 0..self.k {
+            let mn = self.work_pos[j].iter().copied().min().unwrap_or(0);
+            let mx = self.work_pos[j].iter().copied().max().unwrap_or(0);
+            min_p[j] = mn;
+            tapes.push(vec![0u64; (mx - mn + 1) as usize]);
+        }
+
+        let mut out = Vec::with_capacity(l);
+        for (t, &op) in self.ops.iter().enumerate() {
+            let mut emitted_word = 0u64;
+            match op {
+                StepOp::PassThrough => {}
+                StepOp::LoadInput { dst_tape } => {
+                    let j = dst_tape as usize;
+                    let val = self.scanned_input_cell(t).map(|p| x_lanes[p]).unwrap_or(0);
+                    let idx = (self.work_pos[j][t] - min_p[j]) as usize;
+                    tapes[j][idx] = val;
+                    emitted_word = val;
+                }
+                StepOp::LoadInputMask { dst_mask } => {
+                    let val = self.scanned_input_cell(t).map(|p| x_lanes[p]).unwrap_or(0);
+                    for j in 0..self.k {
+                        if (dst_mask & (1u16 << j)) != 0 {
+                            let idx = (self.work_pos[j][t] - min_p[j]) as usize;
+                            tapes[j][idx] = val;
+                        }
+                    }
+                    emitted_word = val;
+                }
+                StepOp::CopyWork { src_tape, dst_tape } => {
+                    let s = src_tape as usize;
+                    let d_t = dst_tape as usize;
+                    let s_idx = (self.work_pos[s][t] - min_p[s]) as usize;
+                    let val = tapes[s][s_idx];
+                    let d_idx = (self.work_pos[d_t][t] - min_p[d_t]) as usize;
+                    tapes[d_t][d_idx] = val;
+                    emitted_word = val;
+                }
+                StepOp::XorWork { src_tape, dst_tape } => {
+                    let s = src_tape as usize;
+                    let d_t = dst_tape as usize;
+                    let s_idx = (self.work_pos[s][t] - min_p[s]) as usize;
+                    let val = tapes[s][s_idx];
+                    let d_idx = (self.work_pos[d_t][t] - min_p[d_t]) as usize;
+                    tapes[d_t][d_idx] ^= val;
+                    emitted_word = tapes[d_t][d_idx];
+                }
+                StepOp::EmitWork { src_tape } => {
+                    let s = src_tape as usize;
+                    let s_idx = (self.work_pos[s][t] - min_p[s]) as usize;
+                    emitted_word = tapes[s][s_idx];
+                }
+                StepOp::EmitXor3 => {
+                    let v0 = tapes[0][(self.work_pos[0][t] - min_p[0]) as usize];
+                    let v1 = tapes[1][(self.work_pos[1][t] - min_p[1]) as usize];
+                    let v2 = tapes[2][(self.work_pos[2][t] - min_p[2]) as usize];
+                    emitted_word = v0 ^ v1 ^ v2;
+                }
+                StepOp::EmitInput => {
+                    emitted_word = self.scanned_input_cell(t).map(|p| x_lanes[p]).unwrap_or(0);
+                }
+                StepOp::StageWrite { .. } => {
+                    panic!("StageWrite cannot be bit-simulated on {}", self.id);
+                }
+            }
+            if self.append_at_step[t].is_some() {
+                out.push(emitted_word);
+            }
+        }
+        assert_eq!(out.len(), l);
+        out
+    }
+
+    /// Exact verification of the schedule's `F_2`-linear `StepOp` list on the zero input `0 in {0, 1}^L`
+    /// and all `L` unit vectors `e_0, ..., e_{L - 1} in {0, 1}^L` (packed 64 per `u64` batch).
+    /// Because every non-`StageWrite` `StepOp` is `F_2`-linear, passing on `0` and all `L` unit
+    /// vectors establishes `simulate_bits(X)[r] == X[tpos(d, b, r)]` for EVERY `X in {0, 1}^L`.
+    pub fn verify_transposer_exact_basis(&self) {
         assert_eq!(self.kind, ComputationKind::BitVerifiedTransposer);
         let l = self.len_bits();
-        let mut rng: u64 =
-            0x9E37_79B9_7F4A_7C15 ^ ((self.d as u64) << 24) ^ ((self.b as u64) << 8);
-        for tr in 0..trials {
-            let mut x = vec![0u8; l];
-            for bit in &mut x {
-                rng ^= rng << 13;
-                rng ^= rng >> 7;
-                rng ^= rng << 17;
-                *bit = (rng & 1) as u8;
+        let mut x_lanes = vec![0u64; l];
+
+        // 1. All-zero input vector.
+        let y_zero = self.simulate_bits_u64(&x_lanes);
+        for (r, &w) in y_zero.iter().enumerate() {
+            assert_eq!(
+                w, 0,
+                "Transposer {} failed all-zero check at d={} b={} r={}",
+                self.id, self.d, self.b, r
+            );
+        }
+
+        // 2. All `L` unit vectors `e_0, ..., e_{L-1}` in batches of 64 lanes.
+        let mut base = 0usize;
+        while base < l {
+            let batch = (l - base).min(64);
+            for lane in 0..batch {
+                x_lanes[base + lane] = 1u64 << lane;
             }
-            let y = self.simulate_bits(&x);
+            let y_lanes = self.simulate_bits_u64(&x_lanes);
             for r in 0..l {
+                let p = tpos(self.d, self.b, r);
+                let expected = if p >= base && p < base + batch {
+                    1u64 << (p - base)
+                } else {
+                    0u64
+                };
                 assert_eq!(
-                    y[r],
-                    x[tpos(self.d, self.b, r)],
-                    "Transposer {} failed bit check at d={} b={} trial={} r={}",
-                    self.id,
-                    self.d,
-                    self.b,
-                    tr,
-                    r
+                    y_lanes[r], expected,
+                    "Transposer {} failed exact unit-vector check at d={} b={} batch_base={} r={} (got {:#x}, expected {:#x})",
+                    self.id, self.d, self.b, base, r, y_lanes[r], expected
                 );
             }
+            for lane in 0..batch {
+                x_lanes[base + lane] = 0;
+            }
+            base += batch;
         }
     }
 
-    /// Export full time-indexed schedule as CSV (`R-52` item 2).
+    /// Export full time-indexed schedule as CSV.
     pub fn write_csv<W: Write>(&self, mut out: W) -> io::Result<()> {
         write!(
             out,
@@ -416,7 +490,7 @@ impl Schedule {
         Ok(())
     }
 
-    /// Export full time-indexed schedule as JSON (`R-52` item 2).
+    /// Export full time-indexed schedule as JSON.
     pub fn write_json<W: Write>(&self, mut out: W) -> io::Result<()> {
         let l = self.len_bits();
         writeln!(out, "{{")?;
@@ -528,11 +602,6 @@ impl ScheduleBuilder {
             append_times: Vec::new(),
             append_at_step: Vec::new(),
         }
-    }
-
-    #[inline]
-    pub fn cur_step(&self) -> usize {
-        self.in_pos.len()
     }
 
     /// Record one step with explicit `StepOp`.
@@ -842,7 +911,7 @@ impl DepGraph {
         }
     }
 
-    /// Brute-force `O(k * T^2)` reference check against Lean's literal quantifier definition
+    /// Direct nested-loop `O(k * T^3)` reference check against Lean's definition
     /// `MergeDepth.DepStep xs T a b <-> (b + 1 = a /\ a < T) \/ exists h, IsHop (xs h) T b a`.
     pub fn verify_against_bruteforce(&self, sched: &Schedule) {
         let t_len = sched.horizon();

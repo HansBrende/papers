@@ -59,8 +59,12 @@ families in \cref{app:catalogue} (built on the formal class theorems of \cref{se
 
 \paragraph{Constants and numerical remarks.} The script \leanfile{tools/print_constants.py} (Python~3 standard library only)
 reproduces the exact rational values and scientific approximations of the constants in \cref{sec:heads,sec:constants,sec:skeletons}.
-The self-contained Rust crate \leanfile{experiments/} (standard library only; \texttt{cargo run --release -- check} in
-\leanfile{experiments/}) generates the schedules, builds their exact dependency DAGs, exports time-indexed traces, and reproduces the
-numerical observations in \cref{rem:numerics-crossings,rem:skeleton-limits,rem:cascades}, the numerical sentence after
-\cref{prob:multiscale}, and the numerical entries of \cref{app:catalogue}; those observations are labelled as numerical throughout
-and no proof in the paper or the formal library depends on them.
+The self-contained Rust crate \leanfile{experiments/} (standard library only; \texttt{cargo run --release --offline --locked -- check} in
+\leanfile{experiments/}) generates the thirty schedules, exports complete time-indexed traces, builds their exact dependency DAGs, verifies
+the seven $\omega(L)$ transpose controls on the unit-vector basis and the cell-entry and write caps of the third and fourth cascades
+(\cref{sec:cascades}), and reproduces every numerical observation reported in the text: the crossing separator ratios and $E=L$
+cycle-packing acyclic bounds of \cref{rem:numerics-crossings}, the running times, $\Lambda^*$-skeleton leg counts and single-leg crossing
+expansion of \cref{rem:skeleton-limits,rem:cascades}, the coarse-pass slope products after \cref{cor:boundedpasses} (and in
+\cref{sec:intro}), the multi-scale leg counts and the one-scale and two-scale closed interval-forest charges of and after
+\cref{prob:multiscale}, and the fourteen numerical ``Crossings'' entries and $\omega(L)$ control checks of \cref{app:catalogue}. Those
+observations are labelled as numerical throughout and no proof in the paper or the formal library depends on them.

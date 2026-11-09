@@ -1,8 +1,8 @@
 //! Schedule generators for Paper 16's finite experiments:
 //! - Five two-sided linear-time cascades (`Section 10.3`: `c1_torus_cascade`, `c2_bfly_cascade`,
-//!   `c3_ten_entry_cascade`, `c4_no_overwrite_cascade` + historical probe `c4_probe_s6_disjoint`,
+//!   `c3_ten_entry_cascade`, `c4_no_overwrite_cascade` + historical comparator `c4_shared_w01_probe`,
 //!   and `c5_comb_fanout`);
-//! - Seven bit-verified superlinear transpose controls (`O(L log d)` and `O(d^{1/3} L)`);
+//! - Seven bit-verified superlinear transpose controls (`Theta(L log d)` and `Theta(d^{1/3} L)`);
 //! - Three padded / `F_2`-algebraic non-transpose comparison controls;
 //! - Fourteen excluded linear-time comparison schedules (`Remark 6.8`, `Remark 10.1`,
 //!   and every numerical row of `Appendix A`'s `"Crossings"` column).
@@ -11,322 +11,309 @@ use std::collections::{HashMap, HashSet};
 
 use crate::model::{tpos, ComputationKind, Schedule, ScheduleBuilder, StepOp};
 
+/// Allowed matrix-dimension domain for a schedule generator.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DomainRule {
+    Any,
+    EvenOnly,
+    PowerOfTwo,
+}
+
+impl DomainRule {
+    pub fn label(self, min_d: usize) -> String {
+        match self {
+            Self::Any => format!("d>={min_d}"),
+            Self::EvenOnly => format!("d>={min_d},even"),
+            Self::PowerOfTwo => format!("d>={min_d},2^m"),
+        }
+    }
+}
+
 /// Metadata entry for a schedule generator in the curated suite.
 #[derive(Clone, Copy, Debug)]
 pub struct ScheduleSpec {
     pub id: &'static str,
     pub title: &'static str,
-    pub group: &'static str,
     pub k_tapes: usize,
     pub kind: ComputationKind,
     pub min_d: usize,
-    pub power_of_two_only: bool,
+    pub domain: DomainRule,
     pub paper_ref: &'static str,
 }
 
 pub const ALL_SPECS: &[ScheduleSpec] = &[
-    // --- Section 10.3: Five Two-Sided Linear-Time Cascades (+ strict no-overwrite Cascade 4) ---
+    // --- Section 10.3: Five Two-Sided Linear-Time Cascades (+ historical comparator) ---
     ScheduleSpec {
         id: "c1_torus_cascade",
-        title: "Cascade 1: Two-tape 2D torus-shift + global frame cascade (Adv2b)",
-        group: "cascade",
+        title: "Cascade 1: Two-tape 2D torus-shift + two-sided cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 16,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.3 (1), Remarks 5.8 & 10.1, Section 10.4, Problem 11.1",
     },
     ScheduleSpec {
         id: "c2_bfly_cascade",
-        title: "Cascade 2: Two-tape reflection/butterfly + global frame cascade (Adv1)",
-        group: "cascade",
+        title: "Cascade 2: Two-tape full reversal, butterfly shifts, and two-sided cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.3 (2), Remarks 5.8 & 10.1",
     },
     ScheduleSpec {
         id: "c3_ten_entry_cascade",
-        title: "Cascade 3: Three-tape <=10-entry cascade with monotone w_2 zones (S6_fresh)",
-        group: "cascade",
+        title: "Cascade 3: Three-tape <=10-entry cascade with monotone w_2 zones",
         k_tapes: 3,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.3 (3), Remarks 5.8 & 10.1, Section 10.4, Problem 11.1",
     },
     ScheduleSpec {
         id: "c4_no_overwrite_cascade",
         title: "Cascade 4: Three-tape strict no-overwrite cascade (disjoint zones, <=1 write/cell)",
-        group: "cascade",
         k_tapes: 3,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.3 (4), Remarks 5.8 & 10.1, Section 10.4, Problem 11.1",
     },
     ScheduleSpec {
-        id: "c4_probe_s6_disjoint",
-        title: "Cascade 4 (historical probe): Three-tape disjoint-pyramid on w_2 (S6_disjoint_curved)",
-        group: "cascade",
+        id: "c4_shared_w01_probe",
+        title: "Cascade 4 (historical comparator): Disjoint w_2 zones, shared [L, 2L) on w_0/w_1",
         k_tapes: 3,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Section 10.3 (4) historical probe, Remark 5.8 E=L row",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Section 10.3 (4) historical comparator",
     },
     ScheduleSpec {
         id: "c5_comb_fanout",
-        title: "Cascade 5: Two-tape multi-scale comb + 1-to-2 fan-out cascade (S5_fanout_rawrow)",
-        group: "cascade",
+        title: "Cascade 5: Two-tape multi-scale 2-to-1 compressions + 2^r-tooth comb cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.3 (5), Remarks 5.8 & 10.1",
     },
     // --- Superlinear Bit-Verified Transpose Controls ---
     ScheduleSpec {
         id: "ctrl_lsb_radix",
-        title: "Control: Global LSB pure-stack binary-radix transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Global LSB pure-stack binary-radix transposer, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Remark 10.1, Section 10.4, Problem 11.1",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Remark 5.8, Section 10.4, Problem 11.1, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_localized_msb_bfly",
-        title: "Control: Block-localized MSB butterfly transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Block-localized MSB butterfly transposer, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Remark 5.8, Remark 10.1, Section 10.4, Problem 11.1",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Remark 5.8, Section 10.4, Problem 11.1, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_pinned_dfs_bfly",
-        title: "Control: Pinned-skeleton single-leg DFS butterfly transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Pinned-skeleton single-leg DFS butterfly transposer, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 16,
-        power_of_two_only: true,
-        paper_ref: "Remark 6.8, Remark 10.1, Problem 11.1",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Remark 6.8, Problem 11.1, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_xor_butterfly",
-        title: "Control: Global 3-XOR F_2 butterfly transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Global 3-XOR F_2 butterfly transposer, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Problem 11.1",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Problem 11.1, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_xor_pinned_dfs",
-        title: "Control: Pinned-skeleton single-leg 3-XOR F_2 transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Pinned-skeleton single-leg 3-XOR F_2 transposer, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 16,
-        power_of_two_only: true,
-        paper_ref: "Problem 11.1",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Problem 11.1, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_u1_unitslope_bfly",
-        title: "Control: Three-tape unit-slope 3-shift butterfly transposer, O(L log d)",
-        group: "transposer_control",
+        title: "Control: Three-tape unit-slope 3-shift butterfly transposer, Theta(L log d)",
         k_tapes: 3,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Section 10.4",
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Section 10.4, Appendix A check",
     },
     ScheduleSpec {
         id: "ctrl_d13_one_excursion",
-        title: "Control: One-excursion pure-stack transposer, O(d^{1/3} L)",
-        group: "transposer_control",
+        title: "Control: One-excursion pure-stack transposer, Theta(d^{1/3} L)",
         k_tapes: 2,
         kind: ComputationKind::BitVerifiedTransposer,
         min_d: 4,
-        power_of_two_only: false,
-        paper_ref: "Remark 10.1, Appendix A Row 23 note",
+        domain: DomainRule::Any,
+        paper_ref: "Appendix A superlinear stack check",
     },
     // --- Padded & Explicit Non-Transpose Controls ---
     ScheduleSpec {
         id: "ctrl_padded_c1",
-        title: "Control: Cascade 1 padded with log_2(d) full-bank sweeps, O(L log d)",
-        group: "padded_or_algebraic_control",
+        title: "Control: Cascade 1 padded with ceil(log_2 d) full-bank sweeps, Theta(L log d)",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 16,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.4",
     },
     ScheduleSpec {
         id: "ctrl_padded_c3",
-        title: "Control: Cascade 3 padded with log_2(d) full-bank sweeps, O(L log d)",
-        group: "padded_or_algebraic_control",
+        title: "Control: Cascade 3 padded with ceil(log_2 d) full-bank sweeps, Theta(L log d)",
         k_tapes: 3,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Section 10.4",
     },
     ScheduleSpec {
         id: "ctrl_xor_cascade_lintime",
         title: "Control: Explicit F_2 linear-time multi-scale XOR-mixing cascade (non-transpose)",
-        group: "padded_or_algebraic_control",
         k_tapes: 3,
         kind: ComputationKind::ExplicitNonTransposer,
-        min_d: 4,
-        power_of_two_only: true,
-        paper_ref: "Problem 11.1 / Section 10.3 F_2 control",
+        min_d: 8,
+        domain: DomainRule::PowerOfTwo,
+        paper_ref: "Problem 11.1 F_2 control",
     },
     // --- Excluded Linear-Time Schedules (Remarks 6.8 & 10.1, Appendix A "Crossings" rows) ---
     ScheduleSpec {
         id: "cat_row01_direct_copy",
-        title: "Catalogue Row 1: Direct input-to-output identity copy (C1_identity)",
-        group: "catalogue",
+        title: "Catalogue Row 1: Direct input-to-output identity copy",
         k_tapes: 1,
         kind: ComputationKind::ExplicitNonTransposer,
         min_d: 2,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 1",
     },
     ScheduleSpec {
         id: "cat_row02_persistent_triangles",
-        title: "Catalogue Row 2: Persistent-triangle schedule Y[j,i]=X[j,-j-i] (C2_triangles)",
-        group: "catalogue",
+        title: "Catalogue Row 2: Persistent-triangle schedule Y[j,i]=X[j,-j-i]",
         k_tapes: 1,
         kind: ComputationKind::ExplicitNonTransposer,
         min_d: 2,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 2",
     },
     ScheduleSpec {
         id: "cat_row03_one_pass_shear",
-        title: "Catalogue Row 3: One-pass rotated row-shear schedule (S1_shear)",
-        group: "catalogue",
+        title: "Catalogue Row 3: One-pass rotated row-shear schedule (even d)",
         k_tapes: 3,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: false,
+        domain: DomainRule::EvenOnly,
         paper_ref: "Remark 6.8, Remark 10.1, Appendix A Row 3",
     },
     ScheduleSpec {
         id: "cat_row07_unitslope",
-        title: "Catalogue Row 7: Constant-phase unit-slope reflection+shift (B1_unitslope_const)",
-        group: "catalogue",
+        title: "Catalogue Row 7: Constant-phase unit-slope reflection and shift",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 7",
     },
     ScheduleSpec {
         id: "cat_row08_bounce",
-        title: "Catalogue Row 8: Sub-row fresh-slot bounce + multi-pass input (Adv_IC2_bounce)",
-        group: "catalogue",
+        title: "Catalogue Row 8: Sub-row fresh-slot bounce + multi-pass input",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 8",
     },
     ScheduleSpec {
         id: "cat_row16_one_free_wave",
-        title: "Catalogue Row 16: One free tape + sub-row strip wavefront (S6_1free_wave_sublinear)",
-        group: "catalogue",
+        title: "Catalogue Row 16: One free tape + sub-row strip wavefront",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Appendix A Row 16",
     },
     ScheduleSpec {
         id: "cat_row24_dyck_mscale",
-        title: "Catalogue Row 24: Multi-scale free tape + sawtooth Dyck LIFO stack (Adv_Leaf1_dyck)",
-        group: "catalogue",
+        title: "Catalogue Row 24: Multi-scale free tape + sawtooth Dyck LIFO stack",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Remark 10.1, Appendix A Row 24",
     },
     ScheduleSpec {
         id: "cat_row27_gis2_swept",
-        title: "Catalogue Row 27: Swept inverse-square two-exception geometry (G_IS2_swept)",
-        group: "catalogue",
+        title: "Catalogue Row 27: Swept inverse-square two-exception geometry",
         k_tapes: 10,
         kind: ComputationKind::GeometryOnly,
         min_d: 64,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 27",
     },
     ScheduleSpec {
         id: "cat_row28_gis2",
-        title: "Catalogue Row 28: Nine-head inverse-square two-exception geometry (G_IS2)",
-        group: "catalogue",
+        title: "Catalogue Row 28: Nine-head inverse-square two-exception geometry",
         k_tapes: 9,
         kind: ComputationKind::GeometryOnly,
         min_d: 64,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 28",
     },
     ScheduleSpec {
         id: "cat_row29_gis2_gap",
-        title: "Catalogue Row 29: Eleven-head small-gap inverse-square geometry (G_IS2_gap)",
-        group: "catalogue",
+        title: "Catalogue Row 29: Eleven-head small-gap inverse-square geometry",
         k_tapes: 11,
         kind: ComputationKind::GeometryOnly,
         min_d: 64,
-        power_of_two_only: false,
+        domain: DomainRule::Any,
         paper_ref: "Appendix A Row 29",
     },
     ScheduleSpec {
         id: "cat_row30_mirrored_dyadic",
-        title: "Catalogue Row 30: Mirrored dyadic fold-back cascade (S2b_dyadic_fold)",
-        group: "catalogue",
+        title: "Catalogue Row 30: Mirrored dyadic fold-back cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Appendix A Row 30",
     },
     ScheduleSpec {
         id: "cat_row32_dyadic_fold",
-        title: "Catalogue Row 32: Dyadic geometric + sub-row butterfly fold (S2_dyadic_fold)",
-        group: "catalogue",
+        title: "Catalogue Row 32: Dyadic geometric + sub-row butterfly fold",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Appendix A Row 32",
     },
     ScheduleSpec {
         id: "cat_row36_lifo_fanout",
-        title: "Catalogue Row 36: Binary-tree LIFO pushdown fan-out cascade (Adv_Leaf1_lifo_fanout)",
-        group: "catalogue",
+        title: "Catalogue Row 36: Binary-tree LIFO pushdown fan-out cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 8,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Appendix A Row 36",
     },
     ScheduleSpec {
         id: "cat_row37_tapped_cascade",
-        title: "Catalogue Row 37: Equal-volume tapped mesoscopic cascade (Adv_BTL5_tapped)",
-        group: "catalogue",
+        title: "Catalogue Row 37: Equal-volume tapped mesoscopic cascade",
         k_tapes: 2,
         kind: ComputationKind::GeometryOnly,
         min_d: 4,
-        power_of_two_only: true,
+        domain: DomainRule::PowerOfTwo,
         paper_ref: "Appendix A Row 37",
     },
 ];
@@ -343,11 +330,22 @@ pub fn build_by_id(id: &str, d: usize, b: usize) -> Result<Schedule, String> {
             id, spec.min_d, d
         ));
     }
-    if spec.power_of_two_only && !d.is_power_of_two() {
-        return Err(format!(
-            "Schedule '{}' requires d to be a power of two (got d = {})",
-            id, d
-        ));
+    match spec.domain {
+        DomainRule::Any => {}
+        DomainRule::EvenOnly if d % 2 != 0 => {
+            return Err(format!(
+                "Schedule '{}' requires d to be even (got d = {})",
+                id, d
+            ));
+        }
+        DomainRule::EvenOnly => {}
+        DomainRule::PowerOfTwo if !d.is_power_of_two() => {
+            return Err(format!(
+                "Schedule '{}' requires d to be a power of two (got d = {})",
+                id, d
+            ));
+        }
+        DomainRule::PowerOfTwo => {}
     }
     if b == 0 {
         return Err("Entry bit-width b must be >= 1".to_string());
@@ -357,7 +355,7 @@ pub fn build_by_id(id: &str, d: usize, b: usize) -> Result<Schedule, String> {
         "c2_bfly_cascade" => build_c2_bfly_cascade(d, b),
         "c3_ten_entry_cascade" => build_c3_ten_entry_cascade(d, b),
         "c4_no_overwrite_cascade" => build_c4_no_overwrite_cascade(d, b),
-        "c4_probe_s6_disjoint" => build_c4_probe_s6_disjoint(d, b),
+        "c4_shared_w01_probe" => build_c4_shared_w01_probe(d, b),
         "c5_comb_fanout" => build_c5_comb_fanout(d, b),
         "ctrl_lsb_radix" => build_ctrl_lsb_radix(d, b),
         "ctrl_localized_msb_bfly" => build_ctrl_localized_msb_bfly(d, b),
@@ -371,7 +369,7 @@ pub fn build_by_id(id: &str, d: usize, b: usize) -> Result<Schedule, String> {
             build_padded_cascade(
                 &base,
                 "ctrl_padded_c1",
-                "Control: Cascade 1 padded with log_2(d) full-bank sweeps, O(L log d)",
+                "Control: Cascade 1 padded with ceil(log_2 d) full-bank sweeps, Theta(L log d)",
             )
         }
         "ctrl_padded_c3" => {
@@ -379,7 +377,7 @@ pub fn build_by_id(id: &str, d: usize, b: usize) -> Result<Schedule, String> {
             build_padded_cascade(
                 &base,
                 "ctrl_padded_c3",
-                "Control: Cascade 3 padded with log_2(d) full-bank sweeps, O(L log d)",
+                "Control: Cascade 3 padded with ceil(log_2 d) full-bank sweeps, Theta(L log d)",
             )
         }
         "ctrl_xor_cascade_lintime" => build_ctrl_xor_cascade_lintime(d, b),
@@ -632,13 +630,13 @@ fn add_k2_torus_shift_to_bank1(
     }
 }
 
-/// Cascade 1 (`Section 10.3 (1)` / `Adv2b_k2_torus_cascade`, `k = 2`).
+/// Cascade 1 (`Section 10.3 (1)`, `k = 2`).
 pub fn build_c1_torus_cascade(d: usize, b: usize) -> Schedule {
     assert!(d.is_power_of_two() && d >= 16);
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "c1_torus_cascade",
-        "Cascade 1: Two-tape 2D torus-shift + global frame cascade (Adv2b)",
+        "Cascade 1: Two-tape 2D torus-shift + two-sided cascade",
         d,
         b,
         2,
@@ -696,14 +694,14 @@ pub fn build_c1_torus_cascade(d: usize, b: usize) -> Schedule {
     sb.finish()
 }
 
-/// Cascade 2 (`Section 10.3 (2)` / `Adv1_k2_bfly_sym`, `k = 2`).
+/// Cascade 2 (`Section 10.3 (2)`, `k = 2`).
 pub fn build_c2_bfly_cascade(d: usize, b: usize) -> Schedule {
     assert!(d.is_power_of_two() && d >= 4);
     let m_log = d.trailing_zeros() as usize;
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "c2_bfly_cascade",
-        "Cascade 2: Two-tape reflection/butterfly + global frame cascade (Adv1)",
+        "Cascade 2: Two-tape full reversal, butterfly shifts, and two-sided cascade",
         d,
         b,
         2,
@@ -767,16 +765,16 @@ pub fn build_c2_bfly_cascade(d: usize, b: usize) -> Schedule {
     sb.finish()
 }
 
-/// Historical 4th probe cascade (`S6_disjoint_curved`, `k = 3`, disjoint un-overwritten `Z_r` on `w_2`,
-/// shared `[L, 2L)` arena on `w_0, w_1`, `0` crossings at `E = L` in `Remark 5.8`).
-pub fn build_c4_probe_s6_disjoint(d: usize, b: usize) -> Schedule {
+/// Historical 4th cascade comparator (`k = 3`, disjoint un-overwritten `Z_r` on `w_2`,
+/// shared `[L, 2L)` arena on `w_0, w_1`, `0` crossings at `E = L`).
+pub fn build_c4_shared_w01_probe(d: usize, b: usize) -> Schedule {
     assert!(d.is_power_of_two() && d >= 4);
     let m_log = d.trailing_zeros() as usize;
     let r_max = (m_log - 1).max(1);
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
-        "c4_probe_s6_disjoint",
-        "Cascade 4 (historical probe): Three-tape disjoint-pyramid on w_2 (S6_disjoint_curved)",
+        "c4_shared_w01_probe",
+        "Cascade 4 (historical comparator): Disjoint w_2 zones, shared [L, 2L) on w_0/w_1",
         d,
         b,
         3,
@@ -951,7 +949,7 @@ pub fn build_c4_probe_s6_disjoint(d: usize, b: usize) -> Schedule {
     sb.finish()
 }
 
-/// Cascade 3 (`Section 10.3 (3)` / `S6_fresh`, `k = 3`, every cell entered `<= 10` times,
+/// Cascade 3 (`Section 10.3 (3)`, `k = 3`, every cell entered `<= 10` times,
 /// disjoint scale zones `Z_r` on `w_2` traversed monotonically in each stage).
 pub fn build_c3_ten_entry_cascade(d: usize, b: usize) -> Schedule {
     assert!(d.is_power_of_two() && d >= 4);
@@ -960,7 +958,7 @@ pub fn build_c3_ten_entry_cascade(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "c3_ten_entry_cascade",
-        "Cascade 3: Three-tape <=10-entry cascade with monotone w_2 zones (S6_fresh)",
+        "Cascade 3: Three-tape <=10-entry cascade with monotone w_2 zones",
         d,
         b,
         3,
@@ -1533,7 +1531,7 @@ pub fn build_c4_no_overwrite_cascade(d: usize, b: usize) -> Schedule {
     sched
 }
 
-/// Cascade 5 (`Section 10.3 (5)` / `S5_fanout_rawrow`, `k = 2`).
+/// Cascade 5 (`Section 10.3 (5)`, `k = 2`).
 pub fn build_c5_comb_fanout(d: usize, b: usize) -> Schedule {
     assert!(d.is_power_of_two() && d >= 4);
     let m_log = d.trailing_zeros() as usize;
@@ -1541,7 +1539,7 @@ pub fn build_c5_comb_fanout(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "c5_comb_fanout",
-        "Cascade 5: Two-tape multi-scale comb + 1-to-2 fan-out cascade (S5_fanout_rawrow)",
+        "Cascade 5: Two-tape multi-scale 2-to-1 compressions + 2^r-tooth comb cascade",
         d,
         b,
         2,
@@ -1641,7 +1639,7 @@ pub fn build_ctrl_lsb_radix(d: usize, b: usize) -> Schedule {
     let k_passes = (d.ilog2() as usize).max(1);
     let mut sb = ScheduleBuilder::new(
         "ctrl_lsb_radix",
-        "Control: Global LSB pure-stack binary-radix transposer, O(L log d)",
+        "Control: Global LSB pure-stack binary-radix transposer, Theta(L log d)",
         d,
         b,
         2,
@@ -1791,7 +1789,7 @@ pub fn build_ctrl_localized_msb_bfly(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "ctrl_localized_msb_bfly",
-        "Control: Block-localized MSB butterfly transposer, O(L log d)",
+        "Control: Block-localized MSB butterfly transposer, Theta(L log d)",
         d,
         b,
         2,
@@ -1865,7 +1863,7 @@ pub fn build_ctrl_pinned_dfs_bfly(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "ctrl_pinned_dfs_bfly",
-        "Control: Pinned-skeleton single-leg DFS butterfly transposer, O(L log d)",
+        "Control: Pinned-skeleton single-leg DFS butterfly transposer, Theta(L log d)",
         d,
         b,
         2,
@@ -2041,7 +2039,7 @@ pub fn build_ctrl_xor_butterfly(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "ctrl_xor_butterfly",
-        "Control: Global 3-XOR F_2 butterfly transposer, O(L log d)",
+        "Control: Global 3-XOR F_2 butterfly transposer, Theta(L log d)",
         d,
         b,
         2,
@@ -2069,7 +2067,7 @@ pub fn build_ctrl_xor_pinned_dfs(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "ctrl_xor_pinned_dfs",
-        "Control: Pinned-skeleton single-leg 3-XOR F_2 transposer, O(L log d)",
+        "Control: Pinned-skeleton single-leg 3-XOR F_2 transposer, Theta(L log d)",
         d,
         b,
         2,
@@ -2117,7 +2115,7 @@ pub fn build_ctrl_u1_unitslope_bfly(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "ctrl_u1_unitslope_bfly",
-        "Control: Three-tape unit-slope 3-shift butterfly transposer, O(L log d)",
+        "Control: Three-tape unit-slope 3-shift butterfly transposer, Theta(L log d)",
         d,
         b,
         3,
@@ -2214,7 +2212,7 @@ pub fn build_ctrl_d13_one_excursion(d: usize, b: usize) -> Schedule {
 
     let mut sb = ScheduleBuilder::new(
         "ctrl_d13_one_excursion",
-        "Control: One-excursion pure-stack transposer, O(d^{1/3} L)",
+        "Control: One-excursion pure-stack transposer, Theta(d^{1/3} L)",
         d,
         b,
         2,
@@ -2457,7 +2455,7 @@ pub fn build_padded_cascade(
 }
 
 pub fn build_ctrl_xor_cascade_lintime(d: usize, b: usize) -> Schedule {
-    assert!(d.is_power_of_two() && d >= 4);
+    assert!(d.is_power_of_two() && d >= 8);
     let m_log = d.trailing_zeros() as usize;
     let r_max = (m_log - 1).max(1);
     let l = d * d * b;
@@ -2679,7 +2677,7 @@ pub fn build_cat_row01_direct_copy(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "cat_row01_direct_copy",
-        "Catalogue Row 1: Direct input-to-output identity copy (C1_identity)",
+        "Catalogue Row 1: Direct input-to-output identity copy",
         d,
         b,
         1,
@@ -2695,7 +2693,7 @@ pub fn build_cat_row01_direct_copy(d: usize, b: usize) -> Schedule {
 pub fn build_cat_row02_persistent_triangles(d: usize, b: usize) -> Schedule {
     let mut sb = ScheduleBuilder::new(
         "cat_row02_persistent_triangles",
-        "Catalogue Row 2: Persistent-triangle schedule Y[j,i]=X[j,-j-i] (C2_triangles)",
+        "Catalogue Row 2: Persistent-triangle schedule Y[j,i]=X[j,-j-i]",
         d,
         b,
         1,
@@ -2726,7 +2724,7 @@ pub fn build_cat_row03_one_pass_shear(d: usize, b: usize) -> Schedule {
     let h = m * w;
     let mut sb = ScheduleBuilder::new(
         "cat_row03_one_pass_shear",
-        "Catalogue Row 3: One-pass rotated row-shear schedule (S1_shear)",
+        "Catalogue Row 3: One-pass rotated row-shear schedule (even d)",
         d,
         b,
         3,
@@ -2837,7 +2835,7 @@ pub fn build_cat_row07_unitslope(d: usize, b: usize) -> Schedule {
     let shift = (d * b / 2).max(1).min(l - 1);
     let mut sb = ScheduleBuilder::new(
         "cat_row07_unitslope",
-        "Catalogue Row 7: Constant-phase unit-slope reflection+shift (B1_unitslope_const)",
+        "Catalogue Row 7: Constant-phase unit-slope reflection and shift",
         d,
         b,
         2,
@@ -2876,7 +2874,7 @@ pub fn build_cat_row08_bounce(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "cat_row08_bounce",
-        "Catalogue Row 8: Sub-row fresh-slot bounce + multi-pass input (Adv_IC2_bounce)",
+        "Catalogue Row 8: Sub-row fresh-slot bounce + multi-pass input",
         d,
         b,
         2,
@@ -2957,7 +2955,7 @@ pub fn build_cat_row16_one_free_wave(d: usize, b: usize) -> Schedule {
     let h_slot = h_sub.max(2) as i64;
     let mut sb = ScheduleBuilder::new(
         "cat_row16_one_free_wave",
-        "Catalogue Row 16: One free tape + sub-row strip wavefront (S6_1free_wave_sublinear)",
+        "Catalogue Row 16: One free tape + sub-row strip wavefront",
         d,
         b,
         2,
@@ -3047,7 +3045,7 @@ pub fn build_cat_row24_dyck_mscale(d: usize, b: usize) -> Schedule {
     let w0_mscale = gen_multiscale_w0_deltas(d, b);
     let mut sb = ScheduleBuilder::new(
         "cat_row24_dyck_mscale",
-        "Catalogue Row 24: Multi-scale free tape + sawtooth Dyck LIFO stack (Adv_Leaf1_dyck)",
+        "Catalogue Row 24: Multi-scale free tape + sawtooth Dyck LIFO stack",
         d,
         b,
         2,
@@ -3259,7 +3257,7 @@ fn build_two_head_unit_banks(
     (integrate(&h0_delta), integrate(&h1_delta), a)
 }
 
-fn build_lemma_a_walk(t_horizon: usize, hops: &[(usize, usize)]) -> Vec<i64> {
+fn build_prescribed_hop_walk(t_horizon: usize, hops: &[(usize, usize)]) -> Vec<i64> {
     let mut delta = vec![0i64; t_horizon];
     for &(p, u) in hops {
         delta[p] = 1;
@@ -3408,7 +3406,7 @@ pub fn build_cat_row28_gis2(d: usize, b: usize) -> Schedule {
         .enumerate()
         .map(|(idx, &uz)| (2 * l + 2 + (q_cnt - idx), uz))
         .collect();
-    let hold_walk = build_lemma_a_walk(t_horizon, &old_hops);
+    let hold_walk = build_prescribed_hop_walk(t_horizon, &old_hops);
 
     let mut v_late: Vec<usize> = (1..=(2 * n))
         .map(|step_m| {
@@ -3430,11 +3428,11 @@ pub fn build_cat_row28_gis2(d: usize, b: usize) -> Schedule {
         new_hops.push((7 * l + 4 * (m_raw - r), out_times[4 * r]));
     }
     new_hops.push((7 * l + 1, out_times[4 * (m_raw - 1)] + 1));
-    let hnew_walk = build_lemma_a_walk(t_horizon, &new_hops);
+    let hnew_walk = build_prescribed_hop_walk(t_horizon, &new_hops);
 
     schedule_from_position_traces(
         "cat_row28_gis2",
-        "Catalogue Row 28: Nine-head inverse-square two-exception geometry (G_IS2)",
+        "Catalogue Row 28: Nine-head inverse-square two-exception geometry",
         d,
         b,
         &x,
@@ -3637,7 +3635,7 @@ pub fn build_cat_row29_gis2_gap(d: usize, b: usize) -> Schedule {
     let hfun = integrate(&hfun_delta);
 
     let old_pairs = select_dyadic_old_pairs(n, l, &tb, &a_early, &chain_fams, &x);
-    let hold_walk = build_lemma_a_walk(t_horizon, &old_pairs);
+    let hold_walk = build_prescribed_hop_walk(t_horizon, &old_pairs);
 
     let mut v_late: Vec<usize> = (1..=(2 * n))
         .map(|step_m| {
@@ -3658,11 +3656,11 @@ pub fn build_cat_row29_gis2_gap(d: usize, b: usize) -> Schedule {
         new_hops.push((9 * l + 4 * (m_raw - r), out_times[4 * r]));
     }
     new_hops.push((9 * l + 1, out_times[4 * (m_raw - 1)] + 1));
-    let hnew_walk = build_lemma_a_walk(t_horizon, &new_hops);
+    let hnew_walk = build_prescribed_hop_walk(t_horizon, &new_hops);
 
     schedule_from_position_traces(
         "cat_row29_gis2_gap",
-        "Catalogue Row 29: Eleven-head small-gap inverse-square geometry (G_IS2_gap)",
+        "Catalogue Row 29: Eleven-head small-gap inverse-square geometry",
         d,
         b,
         &x,
@@ -3795,7 +3793,7 @@ pub fn build_cat_row27_gis2_swept(d: usize, b: usize) -> Schedule {
     }
 
     let old_pairs = select_dyadic_old_pairs(n, l, &tb, &a_early, &chain_fams, &x);
-    let hold_walk = build_lemma_a_walk(t_horizon, &old_pairs);
+    let hold_walk = build_prescribed_hop_walk(t_horizon, &old_pairs);
 
     let mut new_pairs: Vec<(usize, usize)> = Vec::new();
     for idx in 0..(2 * n) {
@@ -3810,11 +3808,11 @@ pub fn build_cat_row27_gis2_swept(d: usize, b: usize) -> Schedule {
     }
     let u_outer = new_pairs.last().unwrap().1 + 1;
     new_pairs.push((10 * l + 1, u_outer));
-    let hnew_walk = build_lemma_a_walk(t_horizon, &new_pairs);
+    let hnew_walk = build_prescribed_hop_walk(t_horizon, &new_pairs);
 
     schedule_from_position_traces(
         "cat_row27_gis2_swept",
-        "Catalogue Row 27: Swept inverse-square two-exception geometry (G_IS2_swept)",
+        "Catalogue Row 27: Swept inverse-square two-exception geometry",
         d,
         b,
         &x,
@@ -3827,7 +3825,7 @@ pub fn build_cat_row30_mirrored_dyadic(d: usize, b: usize) -> Schedule {
     let l = d * d * b;
     let mut sb = ScheduleBuilder::new(
         "cat_row30_mirrored_dyadic",
-        "Catalogue Row 30: Mirrored dyadic fold-back cascade (S2b_dyadic_fold)",
+        "Catalogue Row 30: Mirrored dyadic fold-back cascade",
         d,
         b,
         2,
@@ -3866,7 +3864,7 @@ pub fn build_cat_row32_dyadic_fold(d: usize, b: usize) -> Schedule {
     let scales = (d.ilog2() as usize).max(1);
     let mut sb = ScheduleBuilder::new(
         "cat_row32_dyadic_fold",
-        "Catalogue Row 32: Dyadic geometric + sub-row butterfly fold (S2_dyadic_fold)",
+        "Catalogue Row 32: Dyadic geometric + sub-row butterfly fold",
         d,
         b,
         2,
@@ -4034,7 +4032,7 @@ pub fn build_cat_row36_lifo_fanout(d: usize, b: usize) -> Schedule {
     let r_max = (d.trailing_zeros() as usize).saturating_sub(2).max(1);
     let mut sb = ScheduleBuilder::new(
         "cat_row36_lifo_fanout",
-        "Catalogue Row 36: Binary-tree LIFO pushdown fan-out cascade (Adv_Leaf1_lifo_fanout)",
+        "Catalogue Row 36: Binary-tree LIFO pushdown fan-out cascade",
         d,
         b,
         2,
@@ -4139,7 +4137,7 @@ pub fn build_cat_row37_tapped_cascade(d: usize, b: usize) -> Schedule {
     let m_meso = (l / s_taps).max(2 * b);
     let mut sb = ScheduleBuilder::new(
         "cat_row37_tapped_cascade",
-        "Catalogue Row 37: Equal-volume tapped mesoscopic cascade (Adv_BTL5_tapped)",
+        "Catalogue Row 37: Equal-volume tapped mesoscopic cascade",
         d,
         b,
         2,

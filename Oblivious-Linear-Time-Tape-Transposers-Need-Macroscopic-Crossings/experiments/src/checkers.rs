@@ -1,12 +1,13 @@
-//! Exact dependency-graph checkers reproducing every numerical figure quoted in Paper 16:
-//! - Crossing lower steps `CL_H` (`Definition 2.1` / `crossingLowerH`) and exact unit-capacity
-//!   vertex-split Dinic minimum vertex cuts (`IsMengerVertexCut`, `Section 5`);
-//! - Labeled comparison with Sprint 43's historical `Mix_{>2W}` + non-root separator on Appendix A;
-//! - Radius-`D` ball-avoidance relations and certified cycle-packing upper bounds on acyclic sets
-//!   at `E = L` (`Remark 5.8`);
-//! - Chronologically disjoint expanding waves (`Remark 10.1` / `Proposition 8.3`);
-//! - Macroscopic `Lambda`-skeletons, `d`-independence, and single-leg crossing expansion
-//!   (`Section 6`, `Remark 6.8`, `Remark 10.1`);
+//! Exact dependency-graph checkers reproducing every numerical figure quoted in the paper:
+//! - Crossing lower steps `CL_H` (`Definition 2.2` / `CrossingBridge.crossingLowerEtaSteps`) and
+//!   exact unit-capacity vertex-split Dinic minimum vertex cuts (`Definition 2.4` /
+//!   `OneFreeHeadSmallExcursion.IsMengerVertexCut`, `Section 5`);
+//! - Labelled diagnostic comparison with the earlier exploratory `Mix_{>2W}` and banded `Mix_eta`
+//!   non-root separator measures on Appendix A;
+//! - Radius-`D` ball-avoidance relations (`Definition 2.5` / `ballAvoidSystem`) and certified
+//!   cycle-packing upper bounds on acyclic sets at `E = L` (`Remark 5.8`);
+//! - Macroscopic `Lambda`-skeletons (`Definition 6.2`), `d`-dependence checks, and single-leg
+//!   crossing expansion (`Section 6`, `Remark 6.8`, `Remark 10.1`);
 //! - Coarse joint phase profiles `M_ph(floor(2^{-s} L))` (`Section 10.4`) and multi-scale leg counts
 //!   (`Problem 11.1`);
 //! - One-scale and localized/span-weighted two-scale closed interval-forest charges (`Problem 11.1`).
@@ -16,11 +17,11 @@ use std::collections::{HashMap, VecDeque};
 use crate::model::{tpos, DepGraph, Revisit, Schedule};
 
 // ============================================================================
-// 1. Crossing Lower Steps `CL_H` & Legacy Sprint 43 `Mix_{>2W}` Comparison
+// 1. Crossing Lower Steps `CL_H` & Legacy Exploratory `Mix` Diagnostics
 // ============================================================================
 
 /// Exact crossing lower-step mask `CL_H` at excursion threshold `exc_thresh = 2 * H`
-/// (`Definition 2.1` / `MacroscopicThreshold.crossingLowerH`):
+/// (`Definition 2.2` / `CrossingBridge.crossingLowerEtaSteps`):
 /// `mask[t] == true` iff `t == p` is the earlier endpoint of a revisit `(p, u)` on some work tape `j`
 /// with `excursion > exc_thresh` that strictly crosses (`p < p' < u < u'` or `p' < p < u' < u`)
 /// another revisit `(p', u')` on the SAME work tape `j` with `excursion > exc_thresh`.
@@ -134,10 +135,10 @@ pub fn crossing_lower_steps_bruteforce(dag: &DepGraph, exc_thresh: i64) -> Vec<b
     mask
 }
 
-/// Labeled legacy Sprint 43 `Mix_η` step mask (`NonLifoInBandPU` when `exc_hi < i64::MAX`,
-/// `NonLifoGt2WPU` when `exc_hi == i64::MAX`, excluding output-append steps), retained strictly
-/// to compare Appendix A's historical probe column against exact `CL_W`.
-pub fn legacy_sprint43_mix_band(sched: &Schedule, dag: &DepGraph, exc_hi: i64) -> Vec<bool> {
+/// Labelled historical `Mix_eta` step mask (both endpoints `p` and `u` of non-LIFO or multi-load
+/// turnaround families with `2W < excursion <= exc_hi`, excluding output-append steps), retained
+/// strictly as a diagnostic comparison alongside exact `CL_W` in Suite 5.
+pub fn legacy_banded_mix_steps(sched: &Schedule, dag: &DepGraph, exc_hi: i64) -> Vec<bool> {
     let two_w = (2 * sched.d * sched.b) as i64;
     let mut mask = vec![false; dag.t_len];
 
@@ -223,8 +224,8 @@ pub fn legacy_sprint43_mix_band(sched: &Schedule, dag: &DepGraph, exc_hi: i64) -
     mask
 }
 
-pub fn legacy_sprint43_mix_gt2w(sched: &Schedule, dag: &DepGraph) -> Vec<bool> {
-    legacy_sprint43_mix_band(sched, dag, i64::MAX)
+pub fn legacy_mix_gt2w_steps(sched: &Schedule, dag: &DepGraph) -> Vec<bool> {
+    legacy_banded_mix_steps(sched, dag, i64::MAX)
 }
 
 // ============================================================================
@@ -403,11 +404,9 @@ impl Dinic {
 
 pub struct MengerCutResult {
     pub cut_size: usize,
-    pub target_count: usize,
-    pub cut_vertices: Vec<usize>,
 }
 
-/// Exact minimum Menger vertex cut (`IsMengerVertexCut` in `PathSeparation.lean`, `Section 5`)
+/// Exact minimum Menger vertex cut (`OneFreeHeadSmallExcursion.IsMengerVertexCut`, `Definition 2.4`)
 /// separating `Out(v0_outputs)` from `target_mask` in `dag`, certified by an independent
 /// reachability check on `dag \ B_min`.
 pub fn menger_min_vertex_cut(
@@ -420,11 +419,7 @@ pub fn menger_min_vertex_cut(
     assert_eq!(target_mask.len(), t_len);
     let target_count = target_mask.iter().filter(|&&b| b).count();
     if v0_outputs.is_empty() || target_count == 0 {
-        return MengerCutResult {
-            cut_size: 0,
-            target_count,
-            cut_vertices: Vec::new(),
-        };
+        return MengerCutResult { cut_size: 0 };
     }
 
     // Restrict Dinic network to `Cone(Out(V_0)) intersect Anc(target_mask)`. Every edge `t -> w`
@@ -452,11 +447,7 @@ pub fn menger_min_vertex_cut(
         }
     }
     if min_target == usize::MAX {
-        return MengerCutResult {
-            cut_size: 0,
-            target_count,
-            cut_vertices: Vec::new(),
-        };
+        return MengerCutResult { cut_size: 0 };
     }
 
     let mut active = vec![false; t_len];
@@ -541,11 +532,7 @@ pub fn menger_min_vertex_cut(
         }
     }
 
-    MengerCutResult {
-        cut_size: flow,
-        target_count,
-        cut_vertices,
-    }
+    MengerCutResult { cut_size: flow }
 }
 
 /// Labeled legacy non-root vertex separator (`IsBallPathSeparator`, forbidding root deletion),
@@ -629,9 +616,11 @@ pub fn legacy_nonroot_separator_cut(
     }
 }
 
-/// Standard deterministic output subpopulations `V_0 subset [0, L)` tested in `Remark 5.8`,
-/// `Remark 10.1`, and `Appendix A`: full output, halves, quarters, middle eighth, parity-striped
-/// rows/columns/checkerboard, and the window-potential / off-diagonal quarters from `Sprint 43`.
+/// Standard deterministic output-position sets `V_0 subset [0, L)` (`append_times[r]` for `r in V_0`,
+/// corresponding via the involution `q = tpos(d, b, r)` to input-position sets `tpos(V_0)` in
+/// `Section 2.2`) tested in `Remark 5.8`, `Remark 10.1`, and `Appendix A`: full output, halves,
+/// quarters, middle eighth, parity-striped rows/columns/checkerboard, and window-potential /
+/// off-diagonal subsets.
 pub fn standard_subpopulations(d: usize, b: usize) -> Vec<(&'static str, Vec<usize>)> {
     let l = d * d * b;
     let w = d * b;
@@ -702,9 +691,11 @@ pub fn standard_subpopulations(d: usize, b: usize) -> Vec<(&'static str, Vec<usi
 // 3. Radius-`D` Ball System & Cycle-Packing Acyclic-Set Upper Bound (`Remark 5.8`)
 // ============================================================================
 
-/// Extract the exact radius-`D` ball-avoidance relation `ballAvoidSystem(cut_mask, D)` on `[0, L)`:
-/// for each output index `r in 0..L` with target input bit `p = tpos(d, b, r)`, `rel[p]` is the
-/// sorted list of scanned input positions `{ scanned_input_cell(s) : dist_{dag \ cut_mask}(t_r, s) <= D }`.
+/// Extract the exact radius-`D` ball-avoidance relation `ballAvoidSystem(cut_mask, D)` on `[0, L)`
+/// (`Definition 2.5` / `EnvelopeCrux.ballAvoidSystem`):
+/// for each output index `r in 0..L` with target input bit `p = tpos(d, b, r)` and root `t_r = append_times[r]`,
+/// `rel[p]` is the sorted list of scanned input positions on dependency paths `t_r -> t_1 -> ... -> t_m`
+/// (`0 <= m <= D`) with `t_1, ..., t_m notin cut_mask` (the root `t_r` itself is exempt from `cut_mask`).
 pub fn extract_ball_avoid_relation(
     sched: &Schedule,
     dag: &DepGraph,
@@ -721,9 +712,6 @@ pub fn extract_ball_avoid_relation(
     for r in 0..l {
         let target_p = tpos(sched.d, sched.b, r);
         let root = sched.append_times[r];
-        if cut_mask[root] {
-            continue;
-        }
         touched.clear();
         q.clear();
         dist[root] = 0;
@@ -850,7 +838,7 @@ pub fn certified_acyclic_upper_bound(cone_rel: &[Vec<usize>]) -> usize {
 }
 
 // ============================================================================
-// 4. Disjoint Expanding Waves (`Remark 10.1` / `Proposition 8.3`)
+// 4. Macroscopic Skeletons & Single-Leg Crossing Expansion (`Section 6`, `Remarks 6.8 & 10.1`)
 // ============================================================================
 
 /// Reusable cone max-flow workspace for evaluating many subsets of `cand_steps` against a fixed
@@ -933,23 +921,6 @@ impl ConeFlowWorkspace {
         }
     }
 
-    fn query_range(&mut self, lo: usize, hi_incl: usize, limit: u32) -> usize {
-        for (e, &bc) in self.dinic.edges.iter_mut().zip(self.base_caps.iter()) {
-            e.cap = bc;
-        }
-        let mut any = false;
-        for opt_ei in &self.sink_edge_of_cand[lo..=hi_incl] {
-            if let Some(ei) = *opt_ei {
-                self.dinic.edges[ei as usize].cap = self.inf;
-                any = true;
-            }
-        }
-        if !any {
-            return 0;
-        }
-        self.dinic.max_flow(self.src, self.snk, limit) as usize
-    }
-
     fn query_cand_indices(&mut self, cand_idxs: &[usize], limit: u32) -> usize {
         for (e, &bc) in self.dinic.edges.iter_mut().zip(self.base_caps.iter()) {
             e.cap = bc;
@@ -968,107 +939,6 @@ impl ConeFlowWorkspace {
     }
 }
 
-/// Exact maximum number of chronologically separated (`max W_r < min W_{r+1}`) subsets of
-/// `all_mask` that each achieve `|B_min(Out(v0) -> W_r)| >= ceil(c_thresh * |v0|)`, computed by
-/// earliest-deadline galloping binary search (`optimal by Menger monotonicity`).
-pub fn max_disjoint_expanding_waves(
-    sched: &Schedule,
-    dag: &DepGraph,
-    v0: &[usize],
-    all_mask: &[bool],
-    c_thresh: f64,
-) -> (usize, usize) {
-    let steps: Vec<usize> = (0..all_mask.len()).filter(|&t| all_mask[t]).collect();
-    let req_flow = ((c_thresh * (v0.len() as f64)).ceil() as usize).max(1);
-    let n = steps.len();
-    if n < req_flow {
-        return (0, n);
-    }
-
-    let req_u32 = req_flow as u32;
-    let mut ws = ConeFlowWorkspace::new(sched, dag, v0, &steps);
-    let mut n_waves = 0usize;
-    let mut cur_lo = 0usize;
-    while cur_lo + req_flow <= n {
-        if ws.query_range(cur_lo, n - 1, req_u32) < req_flow {
-            break;
-        }
-
-        let mut lo_fail = cur_lo + req_flow - 1;
-        let f0 = ws.query_range(cur_lo, lo_fail, req_u32);
-
-        let best_hi = if f0 >= req_flow {
-            lo_fail
-        } else {
-            let mut step_sz = req_flow.max(16);
-            let hi_pass = loop {
-                let cand = (lo_fail + step_sz).min(n - 1);
-                if cand >= n - 1 {
-                    break n - 1;
-                }
-                if ws.query_range(cur_lo, cand, req_u32) >= req_flow {
-                    break cand;
-                }
-                lo_fail = cand;
-                step_sz *= 2;
-            };
-            let mut l = lo_fail;
-            let mut r = hi_pass;
-            while l + 1 < r {
-                let mid = l + (r - l) / 2;
-                if ws.query_range(cur_lo, mid, req_u32) >= req_flow {
-                    r = mid;
-                } else {
-                    l = mid;
-                }
-            }
-            r
-        };
-
-        n_waves += 1;
-        cur_lo = best_hi + 1;
-    }
-    assert!(n_waves * req_flow <= n);
-    (n_waves, n)
-}
-
-/// Count how many fixed-size chronological chunks (`chunk_size` steps of `all_mask`) independently
-/// expand by `>= ceil(c_thresh * |v0|)` (`Proposition 8.3` / `Sprint 46` scaling check up to `d = 128`).
-pub fn chronological_expanding_chunks(
-    sched: &Schedule,
-    dag: &DepGraph,
-    v0: &[usize],
-    all_mask: &[bool],
-    chunk_size: usize,
-    c_thresh: f64,
-) -> (usize, usize) {
-    let steps: Vec<usize> = (0..all_mask.len()).filter(|&t| all_mask[t]).collect();
-    let req_flow = ((c_thresh * (v0.len() as f64)).ceil() as usize).max(1);
-    let n = steps.len();
-    if n < req_flow || chunk_size == 0 {
-        return (0, 0);
-    }
-    let req_u32 = req_flow as u32;
-    let mut ws = ConeFlowWorkspace::new(sched, dag, v0, &steps);
-    let mut pass = 0usize;
-    let mut tot = 0usize;
-    let mut lo = 0usize;
-    while lo < n {
-        let hi = (lo + chunk_size).min(n) - 1;
-        tot += 1;
-        if hi + 1 - lo >= req_flow && ws.query_range(lo, hi, req_u32) >= req_flow {
-            pass += 1;
-        }
-        lo = hi + 1;
-    }
-    assert!(pass * req_flow <= n);
-    (pass, tot)
-}
-
-// ============================================================================
-// 5. Macroscopic Skeletons & Single-Leg Crossing Expansion (`Section 6`, `Remarks 6.8 & 10.1`)
-// ============================================================================
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct TapeSkeleton {
     pub lambda: i64,
@@ -1078,7 +948,7 @@ pub struct TapeSkeleton {
     pub epoch_of: Vec<usize>,
 }
 
-/// Exact greedy `Lambda`-milestone skeleton (`Definition 6.1` / `MacroscopicSkeleton.tapeSkeleton`).
+/// Exact greedy `Lambda`-milestone skeleton (`Definition 6.2` / `MacroscopicSkeleton.tapeSkeleton`).
 pub fn extract_tape_skeleton(walk: &[i64], lambda: i64) -> TapeSkeleton {
     assert!(lambda >= 1);
     let t_len = walk.len();
@@ -1470,7 +1340,7 @@ pub fn coarse_phase_profile(sched: &Schedule, max_s: usize) -> Vec<(usize, i64, 
 }
 
 /// Total skeleton legs `r_j = legs(tapeSkeleton(in_pos, lam)) + sum_h legs(tapeSkeleton(y_h, lam))`
-/// across all heads (input head included, matching revised `Problem 11.1`) at `lam = floor(2^{-j} L)`.
+/// across all heads (input head included, `Problem 11.1`) at `lam = floor(2^{-j} L)`.
 pub fn skeleton_legs_profile(sched: &Schedule, max_j: usize) -> Vec<(usize, i64, usize)> {
     let l = sched.len_bits();
     let mut out = Vec::with_capacity(max_j);
@@ -1570,18 +1440,6 @@ fn build_sub_boundaries_and_map(sched: &Schedule, mode: ForestMode) -> (usize, V
         }
     }
     (n_sub, step_to_sub)
-}
-
-/// Evaluate the closed dependency interval-forest charge (`ExactCut` and schedule-geometric
-/// `TraceOnly` residue upper bound) for column-group width `gamma` and hierarchy `mode`.
-pub fn evaluate_interval_forest(
-    sched: &Schedule,
-    prev_visits: &[Vec<Option<u32>>],
-    gamma: usize,
-    mode: ForestMode,
-) -> ForestChargeResult {
-    let (n_sub, step_to_sub) = build_sub_boundaries_and_map(sched, mode);
-    evaluate_interval_forest_with_map(sched, prev_visits, gamma, mode, n_sub, &step_to_sub)
 }
 
 fn evaluate_interval_forest_with_map(
@@ -1791,7 +1649,7 @@ pub struct BestForestSummary {
     pub best_2scale_opt_trace: f64,
 }
 
-/// Reproduce Sprint 50 (`Problem 11.1`) dyadic interval-forest charges across
+/// Evaluate dyadic closed interval-forest charges (`Problem 11.1`) across
 /// `gamma in {1, 2, 4, 8, 16, 32, 64, 128}` (`<= d`), 1-scales `2^{-3} L .. 2^{-8} L`, and
 /// 2-scale pairs `(2^{-3} L, 2^{-6} L)`, `(2^{-4} L, 2^{-7} L)`, `(2^{-5} L, 2^{-8} L)`.
 pub fn best_paper_dyadic_interval_forest_charges(sched: &Schedule) -> BestForestSummary {

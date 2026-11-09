@@ -1,0 +1,137 @@
+\section{The existing obstruction and the reusable schedule test}
+\label{sec:criterion}
+
+We state the hypotheses needed from Paper~2 explicitly. Its native machines
+have a read-only input, finitely many initially blank work tapes with
+unit-speed heads, and append-only unreadable output. A tick reads the
+complete old tuple before writing at the old positions and moving the
+heads. Head trajectories are frozen after halting.
+
+\subsection{Native resource and correctness assumptions}
+
+Let $d_i\to\infty$, put
+$b_i=\max(1,\lceil\log_2d_i\rceil)$ and $L_i=d_i^2b_i$.
+Machines may vary with $i$. Their number $k$ of work tapes and cell charge
+$G=\operatorname{cellBits}(M_i)\ge1$ are fixed. Their state counts satisfy
+$\lceil\log_2|Q_i|\rceil/L_i\to0$.
+For correct sets $W_i$ there are integers $e_i\ge0$ with
+\begin{equation}
+\label{eq:nearfull}
+ 2^{L_i}\le 2^{e_i}|W_i|,\qquad e_i/L_i\longrightarrow0.
+\end{equation}
+Eventually every $w\in W_i$ is a correctly encoded matrix on which the
+machine halts with its exact transpose. When a time bound is assumed, it
+is $cL_i$ for one fixed $c$. There is no correctness premise outside
+$W_i$. A real deficit can be rounded up to obtain $e_i$.
+
+\subsection{Charged stages and their actual limiting profiles}
+
+A \emph{contracting stage clock} is Paper~2's Definition~7.2. Fix branching
+$B$, stages per node $J$, and constants $0\le\rho<1$, $a\ge0$, $C$.
+At each word $w$ over $B$ symbols, a nonnegative volume $V(w)$ satisfies
+\[
+ V(\varnothing)\le CL,\qquad \sum_{c<B}V(wc)\le\rho V(w).
+\]
+Each stage $(w,j)$ owns an integer interval $[A(w,j),E(w,j))$ of ticks.
+These intervals partition \emph{all} ticks exactly, and
+\[
+ \sum_{j<J}(E(w,j)-A(w,j))\le aV(w).
+\]
+Empty stages are allowed. The stages owned by one node need not be
+adjacent; in particular a forward stage and a backward stage may surround
+descendant work. The clock's volume is an accounting quantity, not a
+free random-access memory bank.
+
+For one fixed node and stage across a sequence, write $V_i,A_i,\ell_i$
+for its volume, actual start and duration, and $h_i$ for one head path.
+Paper~2's Definition~7.4 requires that every subsequence with
+$V_i\to\infty$ and $\ell_i>0$ have a further subsequence on which
+\begin{equation}
+\label{eq:profile}
+ \frac{h_i(A_i+\min\{\lfloor V_i s\rfloor,\ell_i\})-h_i(A_i)}{V_i}
+ \longrightarrow v(s)\quad\text{uniformly on }[0,a],
+\end{equation}
+where $v$ has a finite affine interval cover. The number of pieces may
+depend on the head and the fixed stage. It need not be bounded across
+all depths. Bounded-volume or empty occurrences impose no diverging-stage
+requirement. The profile freezes at its \emph{actual} end.
+
+For flagged clocks, good stages obey this requirement and other stages are
+exceptional. The family-level hypothesis quantifies over every sufficiently
+late dimension subsequence, every choice of correct inputs on it and their
+actual halting times: one can choose clocks and flags, with fixed parameters,
+for which the good-stage regularity holds and
+$E_{\rm bad}/L_i\le\eta+\varepsilon_i$, where $\varepsilon_i\to0$ is fixed
+for the family. The clocks may depend on that execution sequence.
+
+\begin{theorem}[Paper 2, Theorem 7.5]
+\label{thm:imported}
+Under the native resource and correctness assumptions above, suppose every
+correct input eventually admits an actual halting execution with a
+contracting stage clock, and the family has flagged clocks with the stated
+regularity and exceptional allowance $(\eta,\varepsilon_i)$. Then
+\[
+                  \frac1{2G}\le k\eta.
+\]
+In particular, all-regular clocks with zero exceptional work are impossible.
+If linear running time is already assumed, the first conclusion holds
+without separately postulating clock existence for each correct execution.
+\end{theorem}
+\cited{\cite[Theorem~7.5]{SecondPaper2026}; Lean-verified in
+\lean{TransposeFollowup.RegularMotion.native_flagged_recursion_budget},
+\lean{native_fast_flagged_recursion_budget} and
+\lean{no_native_regular_recursion}. The latter two shortened names use the
+same namespace.}
+
+The proof uses Paper~2's Theorems~6.2 and~6.3. For suitable physical head
+limits on $[0,c+1/G]$, every choice of open locally affine regions $R_h$
+satisfies
+\begin{equation}
+\label{eq:affine-toll}
+ \sum_{h<k}\lambda([0,c+1/G]\setminus R_h)\ge\frac1{2G}.
+\end{equation}
+An all-regular contracting clock supplies locally affine regions whose
+complements have measure zero, contradicting this inequality. The
+obstruction is to locally affine motion outside a null set, not merely
+to a fixed finite number of affine pieces.
+
+\subsection{The test used here}
+
+It suffices to verify the following facts about a complete size-indexed
+schedule family:
+\begin{enumerate}
+\item Every tick belongs to a charged stage of a fixed contracting clock.
+      Include all preparation, positioning, wraps, rewinds and output.
+\item At each fixed stage, every work head has the regularity
+      \eqref{eq:profile}. A growing global number of turns is allowed.
+\item The alphabet and tape count are fixed, and the time-dependent local
+      gates can be compiled into native transitions with only $o(L)$
+      additional controller bits.
+\end{enumerate}
+These are schedule and model conditions. They do not depend on which
+nonlinear local functions are chosen. Merely having a contracting clock
+is insufficient: any linear-time run can be put in one root stage, but
+that stage need not have a finite-affine limiting profile.
+
+For our unary clocks, $J=2$, $V_r=L/2^r$, $\rho=1/2$ and $C=1$.
+The following specialization also allows any volumes satisfying the clock's
+inequalities, without requiring equality in the contraction.
+
+\begin{lemma}[Dyadic clock accounting]
+\label{lem:dyadic-budget}
+Any contracting stage clock with $B=1$, $J=2$, $\rho=1/2$, $C=1$ and
+$a\ge0$ satisfies
+\begin{equation}
+\label{eq:tail}
+ T\le2aL,\qquad
+ \#\{\text{ticks at depths }r\ge h\}\le2a\,2^{-h}L.
+\end{equation}
+\end{lemma}
+\formal{CascadeObstruction/ClockBudget.lean}{CascadeObstruction.DyadicClock.total_time_le,CascadeObstruction.DyadicClock.deep_time_le}
+\begin{outline}
+Apply Paper~2's geometric clock sums with contraction $1/2$, then use the
+root bound $V(\varnothing)\le L$ and $1/(1-1/2)=2$.
+\end{outline}
+After keeping finitely many depths, the remaining physical
+duration can be made arbitrarily small. This is why finitely many affine
+pieces \emph{at each fixed depth} suffice.

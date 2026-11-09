@@ -1,0 +1,308 @@
+\section{Verification for the five complete schedules}
+\label{sec:schedules}
+
+The C1--C4 applications below have written source proofs; C5's clock and
+regularity are also formalized for its declarative Lean schedule. No
+application is inferred from numerical tests. We use the pinned
+\texttt{schedules.rs} constructors and
+\texttt{model.rs} movement convention. A positioning call takes the maximum
+absolute displacement of the participating heads; a head that arrives
+early stays at its target. Every tick is charged, including ticks whose
+annotated data operation is a no-op.
+
+Set
+\[
+ K=m-1,\quad M_r=L/2^r\ (1\le r\le K),\quad
+ M_K=2db\ge8,\quad \sum_{r=1}^K M_r=L-2db.
+\]
+The root owns preparation and final positioning/output. Depth $r$ owns
+the complete forward block $F_r$ and backward block $B_r$, including their
+entry moves and internal wraps. Deeper stages are empty. These intervals
+partition the actual timeline. Take $V_r=L/2^r$ at every depth, even after
+the last nonempty stage. Within a depth-$r$ stage, abbreviate $M=M_r$.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+Constructor & tapes & legal dyadic $d$ & $|F_r|+|B_r|$ & $a$ \\
+\midrule
+\texttt{c1\_torus\_cascade} & 2 & $\ge16$ & $\le128M_r$ & 128 \\
+\texttt{c2\_bfly\_cascade} & 2 & $\ge4$ & $\le128M_r$ & 128 \\
+\texttt{c3\_ten\_entry\_cascade} & 3 & $\ge4$ & $\le80M_r$ & 80 \\
+\texttt{c4\_no\_overwrite\_cascade} & 3 & $\ge4$ & $\le128M_r$ & 128 \\
+\texttt{c5\_comb\_fanout} & 2 & $\ge4$ & $\le18M_r$ & 18 \\
+\bottomrule
+\end{tabular}
+\caption{Safe all-tick budgets. Root work is also at most $aL$.
+All geometric bounds hold for integer $b\ge1$. The legal sizes are
+\emph{not} numerical exclusion thresholds.}
+\label{tab:bounds}
+\end{table}
+
+\subsection{The common variable-speed loop}
+\label{sec:variable}
+
+The forward loops in C1--C4 use counters $c_0,c_1$, with cap $M-1$.
+Put $u=\lfloor M/3\rfloor$. At local pre-step time $t$, their exact
+positions relative to the starting cells are
+\begin{equation}
+\label{eq:variable}
+ c_0(t)=\min(t,M-1),\qquad
+ c_1(t)=\min\bigl(M-1,\max(\lceil t/2\rceil,t-u+1)\bigr).
+\end{equation}
+For C1--C3 the loop has $M+u-2$ transitions and this formula includes
+its final configuration. C4 adds one terminal stationary event, giving
+$M+u-1$ transitions.
+
+Here is a direct verification of the source recurrence. Maintain
+$c_1\le c_0$. While $c_0\le M-2$, write $M=3u+v$, $0\le v\le2$.
+Then $c_0\le3u$ and
+\[
+ \lfloor2c_0/3\rfloor+u-c_0
+   =u-\lceil c_0/3\rceil\ge0.
+\]
+The source's condition for advancing head~0 is therefore true whenever
+it is unfinished. Before $c_1$ reaches $u$, head~1 advances precisely
+when $c_0\ge2c_1$; its successive values are $\lceil t/2\rceil$.
+At $t=2u-1$ it reaches $u$, then advances every tick until capped,
+giving $t-u+1$. The caps preserve $c_1\le c_0$, and some unfinished
+head always moves, so the fallback is unused. Both caps are first
+reached at $t=M+u-2$. This proves the formula and endpoint counts.
+
+After scaling time and space by $M$, the frozen profiles converge
+uniformly, with error $O(1/M)$, to
+\begin{equation}
+\label{eq:variable-limit}
+ x(s)=\min(s,1),\qquad y(s)=\min(1,\max(s/2,s-1/3)).
+\end{equation}
+The breaks are $2/3,1,4/3$. Monotonicity alone would not establish this
+finite-affine limit; the recurrence does.
+
+\subsection{C1 and C2: preparation and the shared two-tape core}
+
+\paragraph{C1's growing row loop.}
+One torus-shift helper first rotates columns within rows. Put $w=db$,
+$\ell_1=(d-v)b$, $\ell_2=vb$ for $0<v<d$. A nonfinal row costs
+\[
+ \ell_1+(w-1)+\ell_2+(w+1)=3w:
+\]
+two scans, the within-row rewind, and the positioning for the next row.
+The final row costs $2w-1$. The whole phase therefore costs exactly
+$3L-w-1$. At the nonfinal row-boundary times $3iw$, both heads have
+advanced $iw$ relative to their initial positions. Between boundaries,
+their distances from the speed-$1/3$ profile are at most $2w+2$ and
+$w+2$, respectively; these bounds also cover the frozen final extension
+to $3L$. Since $w/L=1/d$, both scaled paths converge uniformly to
+$s\mapsto\min(s/3,1)$.
+
+The following temporary-bank copy is a straight $L$-tick scan. The row
+rotation has two straight portions of total length $L$ and a rewind of
+length $L-1$. Its entry moves are paid. For $v=0$, the column rotation
+is instead one straight scan. Each helper has a finite-affine limit
+whenever its row-rotation fraction converges.
+For dyadic $d\ge256$ the four actual parameter pairs $(u,v)$ are
+\[
+ (3d/16+1,16),\ (d-16,13d/16-1),\
+ (7d/16+2,22),\ (d-22,9d/16-2).
+\]
+Their fractions $u/d$ converge. The near-full rotations retain their
+macroscopic rewinds; a small complementary segment does not make the
+whole helper negligible.
+
+Helper $j\in\{1,2,3,4\}$ uses temporary bases $j(L+4)$.
+Its three large positionings cost at most $3(j+1)(L+4)$; its loops
+cost at most $6L$. All four helpers therefore cost at most $66L+168$.
+Loading, seed positioning and seed copy bring preparation to at most
+$69L+173\le70L$. The shared core starts at work positions
+$(5(L+4)+L-1,L-1)$, with frame base $5(L+4)$.
+The eventual parameter formula $d\ge256$ is used for convergence only;
+it is not an exclusion cutoff.
+
+\paragraph{C2's fixed prelude.}
+After loading and full reversal, C2 has two shifted forward/reverse
+pairs with shifts
+\[
+ \Delta_{\rm M}=(d/2)(d-1)b,\qquad \Delta_{\rm L}=(d-1)b.
+\]
+Their ratios to $L$ tend to $1/2$ and $0$. Each pair has two scans of
+length $L-\Delta$. In particular, the two small-shift positionings vanish
+after scaling, but their two scans each still have limiting duration~1.
+Loading, reversal and the four scans cost at most $6L$; their five
+positionings at most $5L$; seed positioning and copy at most $2L+4$.
+Thus preparation costs at most $14L$ and has finitely many affine
+limiting pieces. Core entry is $(L+4+L-1,L-1)$, with frame base $L+4$.
+
+\paragraph{The complete shared stages.}
+At depth $r$, the second tape allocates
+\[
+ Z_r=\mathrm{scr}_r+M_r+2,\quad
+ \mathrm{comb}_r=\mathrm{scr}_r+2M_r+4,\quad
+ \mathrm{scr}_{r+1}=\mathrm{scr}_r+3M_r+6.
+\]
+Allocating a name takes no tick, but all moves to these addresses do.
+In $F_r$, tape~0 stays in a range $3M+3$. Tape~1's range is at most
+$4M+6$ except at the first depth, where the C1 prelude requires the safe
+bound $10M+22$ (C2 is smaller). There are at most five positioning calls
+and at most $5M$ loop events. Hence
+\[
+ |F_r|\le55M+110.
+\]
+In $B_r$, tape~0's range is at most $3M+3$. At a nondeepest entry,
+tape~1 is at
+$\mathrm{scr}_r+4M+9+\mathrm{shift}_{r+1}$, with
+$1\le\mathrm{shift}_{r+1}<M/2$; its subsequent positions are between
+$Z_r$ and $\mathrm{comb}_r+M-1$. A range $4M+10$ covers the whole
+stage, also at the deepest entry. At most six positionings and $8M$
+loop events give
+\[
+ |B_r|\le32M+60,\qquad |F_r|+|B_r|\le87M+170\le128M.
+\]
+Here $M\ge8$. The shared routine's variable named \texttt{comb} is a
+straight $M$-cell copy, not a growing tooth loop.
+
+At core exit tape~1 is at $\mathrm{frame\_base}+L+\mathrm{shift}_1+3$;
+tape~0 is at the last cell of its final source. The final positioning
+and output cost at most $9L$ for C1 and $5L$ for C2. Root work is thus
+at most $79L$ and $19L$, below $128L$ in both cases.
+
+For each fixed $r$, the source shifts
+$\mathrm{shift}_r=(\lfloor M_r/3\rfloor+b)\bmod M_r$ have ratio
+$\mathrm{shift}_r/M_r\to1/3$, since $b/M_r=2^r/d^2\to0$.
+Normalized entry offsets and durations converge. All ordinary copies,
+reversals and positionings have finite-affine limits; doubling has at most
+one cell of two-tick raster error from its affine profiles.
+Equation~\eqref{eq:variable-limit}
+handles the remaining loop. Finite concatenation, including freezing at
+the stage end, proves \eqref{eq:profile} at every fixed depth and at
+the root.
+
+\subsection{C3: bounded-entry geometry still has regular stages}
+
+For $F_r$, write $A_0$ for the current tape-0 base, $H$ for the scratch
+base and $Z$ for the tape-2 frame. The full coordinate ranges are
+\[
+ [A_0,A_0+3M-1],\quad[H-2M-5,H+M-1],\quad[Z,Z+M].
+\]
+The wider tape-1 range includes its incoming position at every depth.
+At most six positionings cost $4M+6$ each. The variable loop, the two
+shifted-copy pieces, their possible joining event, and copy-back cost
+at most $4M+1$. Thus $|F_r|\le28M+37\le40M$.
+
+For $B_r$, write $A_0$ for the current tape-0 base and $H$ for the comb
+base. The full ranges are
+\[
+ [A_0,A_0+4M+1],\quad[H-M-5,H+M-1],\quad[Z,Z+M].
+\]
+There are $2^r$ teeth, each of length $M/2^r=d^2b/4^r\ge4b$.
+The comb has $3M-2\cdot2^r-1$ ticks: its last tooth has no final join.
+It returns the three heads to $(A_0,H,Z)$. Doubling and the two reversed
+pieces cost $4M$ and return tape~0 to its new base $A_0+2M+2$.
+At most five positionings therefore give
+$|B_r|\le5(4M+6)+7M\le40M$. The last shifted reverse can leave
+tape~1 at a nonzero comb offset; the next stage's range above includes it.
+
+Preparation costs $5L$: initial tape-2 positioning, load, tape-0
+positioning, reverse copy, and tape-2 return. The loading seed has speed
+$1/2$ during the first third and then speed~1, up to bounded raster error.
+At final core exit, tape~1 is at most $4L+6K$; tape~0 is at its final
+base and tape~2 at zero. Since $K\le L/6$, positioning and output cost
+at most $6L$. Root work is at most $11L$.
+The clock uses $a=80$. At fixed $r$, its $2^r$ teeth are finite, every
+other loop was covered above, and allocation offsets are geometric sums
+plus $O(K)$ endpoint terms. Division by $L$ makes the latter vanish.
+This proves regularity of every fixed stage and both root stages.
+
+\subsection{C4: disjoint zones, including all transits}
+
+Let $X,Y$ be the fresh tape-0 and tape-1 allocation cursors at a forward
+stage, and $Z$ its tape-2 frame. The source base is $X-2M-2$.
+The complete stage ranges have lengths at most $4M+3$, $4M+6$ and
+$3M+4$. At most seven positionings, and at most $6M$ active events,
+give
+\[
+ |F_r|\le34M+42.
+\]
+In $B_r$, the tape-0 and tape-1 ranges have lengths at most $6M+5$
+and $6M+8$. Tape~2 starts at $Z$ at the deepest stage and at
+$Z+(7/2)M+6$ otherwise; its entire range is covered by $6M+8$ too.
+There are at most eight positionings. Its comb has exactly $2^r$ teeth
+of length $M/2^r$, with $3M-2\cdot2^r$ ticks in total. Initial combine,
+both doublings, reverse, merge and copy-back together with the comb
+cost at most $14M$. Therefore
+\[
+ |B_r|\le62M+64,\qquad |F_r|+|B_r|\le96M+106\le128M.
+\]
+These bounds include cyclic wraps, the moving side heads and their
+parked tails. No preservation annotation is used.
+
+Put $S_M=L-2db$. The seed base is $3S_M+4K+2$; complete preparation
+has duration $9L-12db+8K+6\le10L$. Before the final positioning,
+tape~0 is already at the final base, tape~1 is at $7S_M+10K-3$, and
+tape~2 is at $L/2+2$. Positioning plus the $3L$-tick output sweep
+costs $10L-14db+10K-3\le10L$. Root work is at most $20L$.
+
+At fixed depth, the comb has a fixed finite number $2^r$ of teeth.
+Each tooth has three monotone legs. Positionings are finite unit/stay
+pieces, ordinary loops are affine, doubling has bounded raster error,
+and the variable loop satisfies \eqref{eq:variable-limit}. All normalized
+allocation offsets and shifts converge: they are geometric sums,
+$\mathrm{shift}_r/M_r\to1/3$, and endpoint errors $O(K)/L\to0$.
+The seed load and reverse copy have finitely affine limits, as does
+the final sweep (tapes~0 and~1 have speed $1/3$; tape~2 has speed~1
+then parks). Thus all actual fixed stages are regular. The unbounded
+\emph{total} number of comb teeth does not violate the theorem's local
+fixed-stage hypothesis.
+
+\subsection{C5: comb fanout}
+
+Loading costs $L$ and leaves the work heads at $(L-1,0)$. Assign the
+following $L-1$-tick reset to root preparation. This changes only clock
+ownership. Every forward and backward recursive stage now starts and ends
+at $(0,0)$; subsequent initial resets take no ticks. Root preparation
+costs $2L-1$, and the final output sweep costs $L$.
+
+Write $H=M/2$, $N=2^r$, and $h=M/N$. Expanding the literal loops and
+positioning calls into constant-move blocks and two-tick repeated blocks
+gives
+\[
+ |F_r|=11H-2,\qquad |B_r|=20H-2N-2.
+\]
+The backward count includes all $N$ comb teeth, their last stationary
+event, both reverse half-loops and the final reset. Thus
+$|F_r|+|B_r|\le18M$, and root work $3L-1$ is also at most $18L$.
+The forward stage uses 13 blocks; the backward stage uses $4N+10$.
+These counts, endpoints and the complete clock partition are proved in
+Lean. Their identification with the Rust loops is a source audit, not a
+formal semantics for Rust.
+
+For each fixed depth, replace each repeated block by the straight path
+with the same average velocity and duration. A block has period one or
+two, so its sampled path differs from this ramp by at most two cells.
+At most $J_r=4\cdot2^r+13$ blocks suffice for either stage, including
+zero-duration padding. The normalized error is at most $2J_r/V_r$,
+which tends to zero whenever that stage's charged volume diverges.
+Normalized block starts and durations lie in $[0,18]$ and slopes in
+$[-1,1]$. Compactness of this finite parameter space supplies a uniform
+subsequential limit that is a finite sum of affine ramps.
+Consequently every actual fixed stage is regular, for every sequence of
+positive entry widths. The unbounded number of stages is paid by
+the geometric tail.
+
+\subsection{From the bounds to the clock hypothesis}
+
+The stage ranges above follow inductively from the allocation bases and
+the actual last position of each preceding loop. They include the deepest
+stage and the first forward entry; these are the endpoints at which an
+unpaid reset would otherwise be easy to introduce. With the root budgets,
+\cref{tab:bounds} proves a complete clock and \eqref{eq:tail}.
+
+For finite concatenation of stage profiles, convergent normalized endpoints
+and durations suffice: all head paths are unit-Lipschitz, so perturbing a
+junction time by $\epsilon$ changes a position by at most $\epsilon$.
+Each raster error tends to zero, and a fixed stage has only finitely many
+pieces. The frozen terminal piece is included. Thus the fixed-stage
+regularity requirement holds on every diverging sequence of admitted
+dimensions and on every further subsequence. Since the schedules do not depend on the input,
+this supplies the complete correct-input quantifiers of
+\cref{thm:imported}, with all stages good and no exceptional work.

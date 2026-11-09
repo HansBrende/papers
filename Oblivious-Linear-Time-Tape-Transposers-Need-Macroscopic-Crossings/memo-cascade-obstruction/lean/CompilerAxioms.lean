@@ -1,0 +1,33 @@
+import CascadeObstruction.CompilerListSchedule
+
+#print axioms CascadeObstruction.Compiler.encoding_zero
+#print axioms CascadeObstruction.Compiler.denote_initial
+#print axioms CascadeObstruction.Compiler.step_denote_of_lt
+#print axioms CascadeObstruction.Compiler.step_denote_of_ge
+#print axioms CascadeObstruction.Compiler.denote_succ_of_ge
+#print axioms CascadeObstruction.Compiler.run_denote
+#print axioms CascadeObstruction.Compiler.haltsAt
+#print axioms CascadeObstruction.Compiler.haltsAt_iff
+#print axioms CascadeObstruction.Compiler.stepN_eq
+#print axioms CascadeObstruction.Compiler.input_trajectory
+#print axioms CascadeObstruction.Compiler.work_trajectory
+#print axioms CascadeObstruction.Compiler.work_contents
+#print axioms CascadeObstruction.Compiler.output_word
+#print axioms CascadeObstruction.Compiler.outBit_eq
+#print axioms CascadeObstruction.Compiler.computesWithin
+#print axioms CascadeObstruction.Compiler.tape_count
+#print axioms CascadeObstruction.Compiler.alphabet_size
+#print axioms CascadeObstruction.Compiler.cell_bits
+#print axioms CascadeObstruction.Compiler.state_count
+#print axioms CascadeObstruction.Compiler.state_bits_le
+#print axioms CascadeObstruction.Compiler.shift_eq_add
+#print axioms CascadeObstruction.Compiler.position_eq_sum
+#print axioms CascadeObstruction.Compiler.source_input_position
+#print axioms CascadeObstruction.Compiler.source_work_position
+#print axioms CascadeObstruction.Compiler.scheduled_input_trajectory
+#print axioms CascadeObstruction.Compiler.scheduled_work_trajectory
+#print axioms CascadeObstruction.Compiler.scheduled_append
+#print axioms CascadeObstruction.Compiler.scheduled_oblivious
+#print axioms CascadeObstruction.Compiler.position_of_list
+#print axioms CascadeObstruction.Compiler.list_input_trajectory
+#print axioms CascadeObstruction.Compiler.list_work_trajectory

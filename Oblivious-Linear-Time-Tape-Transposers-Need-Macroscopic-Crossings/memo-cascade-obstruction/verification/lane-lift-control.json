@@ -1,0 +1,169 @@
+{
+  "status": "PASS",
+  "scope": "Finite lane-lift calibration; no cascade computation is simulated",
+  "script_sha256": "208f6a20ad1630be804ce67ea4f51a054e8c0f5bed1d4a6a7a620e22cbd25772",
+  "tests": [
+    {
+      "program": "literal_d2_transpose",
+      "lane_width": 2,
+      "source_length": 4,
+      "canonical_length": 8,
+      "exhaustive_inputs": 256,
+      "macro_steps": 13,
+      "unit_steps_per_input": 78,
+      "work_tapes": 1,
+      "work_alphabet_size": 2,
+      "original_controller_values": 1,
+      "lifted_state_count_bound": 79,
+      "lifted_controller_bit_bound": 7,
+      "motion_error_numerator_max": 5,
+      "motion_error_numerator_bound": 18,
+      "all_macro_boundaries_match": true,
+      "all_unit_moves_and_simultaneous_fields_checked": true,
+      "output_and_final_controller_digest": "4f4b89d4a34ae900368a65a546d6578730bbf961ce72713a4e319b2f96c65f69",
+      "aggregate_actual_read_counts": {
+        "processing_ticks": 6656,
+        "reposition_ticks": 13312,
+        "negative_raw_reads": 0,
+        "right_exterior_raw_reads": 14592,
+        "reposition_raw_ones": 1664,
+        "reposition_work_ones": 5504
+      },
+      "public_clock_sha256": "95c2d8acf711825197775c87c5975cba91aff3ac3036ba4ec6de451edd0b95c7"
+    },
+    {
+      "program": "literal_d2_transpose",
+      "lane_width": 3,
+      "source_length": 4,
+      "canonical_length": 12,
+      "exhaustive_inputs": 4096,
+      "macro_steps": 13,
+      "unit_steps_per_input": 117,
+      "work_tapes": 1,
+      "work_alphabet_size": 2,
+      "original_controller_values": 1,
+      "lifted_state_count_bound": 118,
+      "lifted_controller_bit_bound": 7,
+      "motion_error_numerator_max": 9,
+      "motion_error_numerator_bound": 27,
+      "all_macro_boundaries_match": true,
+      "all_unit_moves_and_simultaneous_fields_checked": true,
+      "output_and_final_controller_digest": "1f7c3661e3209487f46d49e49c005252539f18b4636f2d3abd335d6c11157b29",
+      "aggregate_actual_read_counts": {
+        "processing_ticks": 159744,
+        "reposition_ticks": 319488,
+        "negative_raw_reads": 0,
+        "right_exterior_raw_reads": 352256,
+        "reposition_raw_ones": 38912,
+        "reposition_work_ones": 129024
+      },
+      "public_clock_sha256": "46ee227cd2958cf46b5f6065d9f60e1014ed7226beb9f34d488c97dc94da203c"
+    },
+    {
+      "program": "stateful_nonlinear_exterior_reads",
+      "lane_width": 2,
+      "source_length": 3,
+      "canonical_length": 6,
+      "exhaustive_inputs": 64,
+      "macro_steps": 14,
+      "unit_steps_per_input": 84,
+      "work_tapes": 2,
+      "work_alphabet_size": 2,
+      "original_controller_values": 4,
+      "lifted_state_count_bound": 1360,
+      "lifted_controller_bit_bound": 11,
+      "motion_error_numerator_max": 5,
+      "motion_error_numerator_bound": 18,
+      "all_macro_boundaries_match": true,
+      "all_unit_moves_and_simultaneous_fields_checked": true,
+      "output_and_final_controller_digest": "f2335ae6fbf5484c7fd7ece3e8cf8da6cafee1770b75c88e19f1da1c09226a63",
+      "aggregate_actual_read_counts": {
+        "processing_ticks": 1792,
+        "reposition_ticks": 3584,
+        "negative_raw_reads": 1024,
+        "right_exterior_raw_reads": 1216,
+        "reposition_raw_ones": 1056,
+        "reposition_work_ones": 2600
+      },
+      "public_clock_sha256": "b185eeae3e67248a2921f177f0e06140b497dab6a825cfd24a1641b8c91d3977"
+    },
+    {
+      "program": "stateful_nonlinear_exterior_reads",
+      "lane_width": 3,
+      "source_length": 3,
+      "canonical_length": 9,
+      "exhaustive_inputs": 512,
+      "macro_steps": 14,
+      "unit_steps_per_input": 126,
+      "work_tapes": 2,
+      "work_alphabet_size": 2,
+      "original_controller_values": 4,
+      "lifted_state_count_bound": 8128,
+      "lifted_controller_bit_bound": 13,
+      "motion_error_numerator_max": 9,
+      "motion_error_numerator_bound": 27,
+      "all_macro_boundaries_match": true,
+      "all_unit_moves_and_simultaneous_fields_checked": true,
+      "output_and_final_controller_digest": "8a6ea47c06da972b951ec7b236491431c8c6fe3e14d3f24ea324b5a3c8a08eaa",
+      "aggregate_actual_read_counts": {
+        "processing_ticks": 21504,
+        "reposition_ticks": 43008,
+        "negative_raw_reads": 11776,
+        "right_exterior_raw_reads": 14848,
+        "reposition_raw_ones": 12800,
+        "reposition_work_ones": 31104
+      },
+      "public_clock_sha256": "6f056ba058273c2e005d44ea91b20c4cd327c24db82398e5c0627f33f49be22e"
+    }
+  ],
+  "mutation_controls": [
+    {
+      "mutant": "shared_controller",
+      "rejected": true,
+      "input": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "lane controller mismatch"
+    },
+    {
+      "mutant": "sequential_work_writes",
+      "rejected": true,
+      "input": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reason": "expanded work tape mismatch"
+    },
+    {
+      "mutant": "reposition_read_feedback",
+      "rejected": true,
+      "input": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "reason": "lane controller mismatch"
+    }
+  ],
+  "total_exhaustive_inputs": 4928,
+  "total_executed_unit_steps": 569088,
+  "limits": [
+    "Finite tests support the implementation, not a uniform proof.",
+    "Lane widths 2 and 3 at d=2 are controls, not the canonical b=log2(d).",
+    "The literal transpose control is exact on all inputs.",
+    "The nonlinear control checks simulation, not transposition.",
+    "No new reduction or novelty claim; no solver or schedule-size screen."
+  ]
+}

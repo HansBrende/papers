@@ -102,6 +102,15 @@ The paper ends with four problems: a pass bound that counts phases across all sc
 machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules that met
 every condition tested in our numerical suite (d ≤ 128).
 
+**Subsequent memo:** [Regular-Recursion Obstructions for the Five Cascade Schedules](memo-cascade-obstruction/)
+answers the last question for the five exact implemented families, at fixed work
+alphabet, both bit and canonical logarithmic entry width, and sufficiently large
+dyadic dimensions. It applies Paper 2's Theorem 7.5 with complete written source
+proofs and reproduction scripts. The canonical-width C5 exclusion is also
+Lean-verified for its declarative tick word, with the Rust correspondence source-audited
+and finitely compared. The finite measurements above remain valid; the memo supplies
+no numerical exclusion threshold.
+
 ## Building and verifying
 
 Clone the whole `papers` repository so that the sibling libraries and [`lean-machine/`](../lean-machine/) stay in place, and fetch the

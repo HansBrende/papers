@@ -1,0 +1,284 @@
+\section{Native compilation, bit entries and the quantitative bound}
+\label{sec:bridges}
+
+This section assembles \cref{thm:cascades}. The native compiler and the
+canonical-width C5 assembly are formalized; the bit-to-word bridge below
+has a written proof.
+The bit-to-word construction is the parallel oblivious simulation already
+described by Harvey and van der Hoeven \cite[Section~7.6]{HarveyHoeven2025}.
+We check its motion and correctness-set accounting because a time bound
+alone would not transfer the affine-motion obstruction.
+
+\subsection{Time-dependent gates cost only logarithmically many clock bits}
+
+The exact compiler is formalized independently of C5.
+\formal{CascadeObstruction/CompilerCore.lean}{CascadeObstruction.Compiler.run_denote,
+CascadeObstruction.Compiler.stepN_eq,CascadeObstruction.Compiler.haltsAt_iff,
+CascadeObstruction.Compiler.state_count,CascadeObstruction.Compiler.state_bits_le}
+\begin{outline}
+For a completion of duration $T$, form a native finite controller with
+states $(t,s)$, $0\le t\le T$, $s\in Q$. At $t<T$, use the prescribed
+local rule, movements and append event, then increment $t$. At $t=T$,
+halt. This has at most $(T+1)|Q|$ states and hence at most
+\[
+ q+\lceil\log_2(T+1)\rceil
+\]
+controller bits. Each source tick is one actual native transition; the
+old tuple is read before any of its work symbols is overwritten. The
+input, work tapes, output and their positions agree step by step. There
+is no oracle for time and no free access. The native transition table
+may depend on $d$, exactly as allowed by Paper~2's nonuniform theorem.
+Since $T=O(L)$, the added bit cost is $O(\log L)=o(L)$.
+\end{outline}
+\begin{samepage}
+Prescribed head moves and append times are preserved on every input,
+with arbitrary simultaneous local data updates.
+\formal{CascadeObstruction/CompilerSchedule.lean}{CascadeObstruction.Compiler.scheduled_work_trajectory,
+CascadeObstruction.Compiler.scheduled_input_trajectory,CascadeObstruction.Compiler.scheduled_append,
+CascadeObstruction.Compiler.scheduled_oblivious}
+\end{samepage}
+\begin{outline}
+Induct on the public tick index. Each input and work position changes by
+the prescribed unit move, independently of the data rule. The append
+decision is the prescribed Boolean. After tick $T$, the native machine
+halts and its trajectories freeze.
+\end{outline}
+
+At canonical width, suppose along some $d_i\to\infty$ both
+$q_i/L_i\to0$ and $\deficit_i/L_i\to0$. Compile these completions, set
+$e_i=\lceil\deficit_i\rceil$, and apply \cref{thm:imported} to the
+all-regular clocks of \cref{sec:schedules}. Its conclusion would be
+$1/(2G)\le0$, a contradiction. Padding a smaller alphabet into one
+fixed alphabet, if necessary, fixes its cell charge $G$.
+
+\subsection{An oblivious bit-to-word lift preserving the limiting motion}
+
+Let $N=d^2$. Consider a bit-entry completion taking $T=O(N)$ ticks,
+with $k$ fixed work tapes, alphabet $\Gamma$, controller $Q$, and
+correctness set $S\subseteq\{0,1\}^N$. Put $b=\log_2d$ and $L=bN$.
+The canonical word input already consists of interleaved bit planes:
+coordinate $p$ of plane $\ell$ is at raw address $bp+\ell$.
+Replace every old work cell $p$ by its block of $b$ cells
+$bp,\ldots,bp+b-1$, on the same work tape over the same alphabet.
+Keep $b$ old controllers in the new finite control, plus a public clock.
+
+An old tick is simulated in exactly $3b$ native ticks. Initially every
+head is at the left endpoint $bp$ of its old cell's block. In the first
+$b$ ticks, visit lanes $\ell=0,\ldots,b-1$ from left to right. Read lane
+$\ell$'s controller, its raw bit and all its old work symbols, apply the
+old local rule, and update that lane only. Emit its bit if this old tick
+is an append event. Advance all heads after the first $b-1$ lane ticks
+and stay after the last. Every old read tuple is obtained before that
+lane's simultaneous writes.
+
+Every head is now at $bp+b-1$. If its old prescribed move was
+$\Delta\in\{-1,0,1\}$, its next target is $b(p+\Delta)$, at distance
+at most $2b-1$. Use the next $2b$ ticks to reach it, parking when it
+arrives. These transit ticks preserve every scanned work symbol and
+all lane controllers and emit nothing. Thus all heads reach the next
+block's left endpoint together. Intermediate reads grant no additional
+data access: they are ignored except for preserving the symbol read.
+Negative and right-exterior old raw cells expand to entirely exterior
+blocks. Induction proves exact simulation of every lane.
+
+The resulting native program has unchanged alphabet and tape count,
+time $3bT$, and at most
+\[
+ (3bT+1)|Q|^b\quad\text{states},\qquad
+ bq+\lceil\log_2(3bT+1)\rceil\quad\text{controller bits}.
+\]
+Each old output coordinate emits all $b$ lanes consecutively in their
+correct order. The lift is correct on the interleavings of the product
+set $S^b$; there are $|S|^b$ of them.
+Their deficit is $b(N-\log_2|S|)$. No preliminary bit-plane rearrangement
+is used.
+
+Let $h$ be one original trajectory, linearly interpolated between ticks,
+and $h'$ its lifted trajectory. Within the block for old tick $t$,
+$h'$ stays within $2b$ of $bh(t)$. The original interpolation changes
+by at most one cell over that tick. Thus, with frozen continuations,
+\begin{equation}
+\label{eq:lift-error}
+ \left|\frac{h'(\tau)}{bN}
+        -\frac{h(\tau/(3b))}{N}\right|\le\frac3N
+ \qquad(\tau\ge0).
+\end{equation}
+If the original physical paths converge to $f(s)$, the lifted physical
+paths converge to $f(s/3)$. A locally affine limit outside a null set
+retains that property under this dilation.
+
+The geometric clock proof in \cref{sec:schedules} holds at $b=1$.
+For any finite retained depth, its stage endpoints and profiles converge.
+The deep middle interval has duration tending to zero uniformly as the
+retained depth increases, by \eqref{eq:tail}. Unit-Lipschitz continuity
+controls the displacement it can contribute. Consequently the complete
+original paths have locally affine limits outside their countable piece
+endpoints and the recursive accumulation time. The frozen halt tail is
+constant. Equation~\eqref{eq:lift-error} gives the same property to the
+lifted limits.
+If the original bit completions had $q+\deficit=o(N)$, their lifts
+would satisfy the canonical resource and near-full correctness
+assumptions. Paper~2's native affine-time bound
+\eqref{eq:affine-toll} is then contradicted. The lifted trace need
+\emph{not} equal the canonical-width cascade constructor. It only needs
+the already established limiting-motion property. Oblivious head and
+append schedules are essential to this simulation.
+
+\subsection{A positive uniform deficit}
+
+\begin{lemma}[Sequential uniform-gap criterion]
+\label{lem:uniform-gap}
+For each natural size $n$, let $\mathcal A_n$ be any type of admissible
+objects and let $c_n:\mathcal A_n\to[0,\infty)$ be a cost. Suppose that
+for every sequence $n_i\to\infty$ and $x_i\in\mathcal A_{n_i}$, the costs
+$c_{n_i}(x_i)$ do not converge to zero. Then there are $\delta>0$ and $N$
+such that $c_n(x)\ge\delta$ for all $n\ge N$ and all $x\in\mathcal A_n$.
+\end{lemma}
+\formal{CascadeObstruction/UniformGap.lean}{CascadeObstruction.exists_uniform_positive_gap}
+\begin{outline}
+Failure supplies $n_i\ge i$ and $x_i$ with
+$0\le c_{n_i}(x_i)<1/(i+1)$. The sizes diverge and the costs tend to zero
+by squeezing. No compactness of the object types is required.
+\end{outline}
+
+\begin{corollary}[Native regular-clock classes]
+\label{cor:native-gap}
+Consider a size-indexed class of native machines with canonical input
+length $L(n)$, fixed work-tape count and cell charge, and fixed $a\ge0$.
+Each instance supplies a correct-input set $W$, an integer deficit $e$
+with $2^{L(n)}\le2^e|W|$, and a complete unary two-stage clock with
+parameters $(\rho,C)=(1/2,1)$ for each of its correct halting executions.
+Suppose every diverging sequence chosen from the class has the full
+family-level regularity of \cref{sec:criterion}. Then, for one $\delta>0$
+and all sufficiently large $n$, every instance in the class satisfies
+\[
+ \frac{\lceil\log_2 Q_{\rm native}\rceil+e}{L(n)}\ge\delta,
+\]
+where $Q_{\rm native}$ is its number of controller states.
+\end{corollary}
+\formal{CascadeObstruction/NativeObstruction.lean}{CascadeObstruction.no_vanishing_native_dyadic_cost,CascadeObstruction.uniform_native_dyadic_gap}
+\begin{outline}
+Vanishing combined cost forces both nonnegative summands to vanish.
+Paper~2's \lean{no_native_regular_recursion} rules out that sequence.
+Apply \cref{lem:uniform-gap}. In Lean, the machine has
+$\texttt{TM.q}+1$ states and the bit count is
+$\texttt{Nat.clog 2 (TM.q+1)}$. The integer deficit and clock witnesses
+are fields of \lean{CascadeObstruction.NativeDyadicInstance}; regularity
+remains an explicit hypothesis on the class. ``Dyadic'' here describes
+the clock contraction, not a restriction on the native matrix dimension.
+\end{outline}
+
+\begin{informalproof}
+To finish the proof of \cref{thm:cascades}, fix an alphabet, one constructor
+and one of the two widths. The preceding arguments rule out every
+diverging sequence of completions with $(q+\deficit)/L\to0$.
+If no positive uniform gap held eventually, one could choose strictly
+increasing legal dyadic dimensions $d_j$ and completions with
+\[
+                       0\le\frac{q_j+\deficit_j}{L_j}<\frac1{j+1}.
+\]
+Both nonnegative summands would tend to zero. Rounding the deficit and
+adding the public clock preserve this convergence, giving the forbidden
+sequence. Hence some positive gap and finite threshold exist for this
+constructor and width. Take the minimum of the ten positive gaps and
+the maximum of their thresholds. This proves \cref{eq:main} simultaneously.
+The sequential-to-uniform step is also checked in the new Lean library;
+the remaining schedule and simulation premises are supplied by the written
+proofs. For C5 at canonical width, all these premises are also discharged
+in Lean below.
+\end{informalproof}
+
+This argument does not estimate the gap or threshold. Finite experiments
+cannot turn its existential constants into certified numerical ones.
+
+\subsection{The complete canonical-width C5 formalization}
+\label{sec:c5-formal}
+
+The C5 part of \cref{thm:cascades}, at canonical width, is checked as a
+theorem about a specified finite tick word, not about a supplied
+regularity certificate.
+\formal{CascadeObstruction/C5Exclusion.lean}{CascadeObstruction.C5.uniform_c5_gap,
+CascadeObstruction.C5.completion_family_regular}
+\begin{outline}
+The type \lean{CascadeObstruction.C5.CorrectCompletion} contains a legal
+dimension $d=2^{K+1}$ with $K\ge1$, a finite controller, arbitrary local
+data rules attached to the C5 tick word, and a nonempty set of correctly
+transposed inputs. It contains no clock, approximation or regularity
+hypothesis.
+
+The tick word concatenates root preparation, forward stages $1,\ldots,K$,
+backward stages $K,\ldots,1$, and root output. Distinct stage labels and
+prefix sums construct a complete partition of the actual tick indices.
+The exact bounds in \cref{sec:schedules} give the clock with $a=18$.
+Extracting each contiguous stage from the full word identifies its
+frozen displacement with the block sequence used in the ramp argument.
+The resulting regularity theorem applies to all positive widths and all
+eligible subsequences of actual stages.
+
+The compiler then supplies a native machine with the same work alphabet,
+two work tapes, the same symbols and output, and precisely the prescribed
+head paths. Its additional controller cost is at most
+$\lceil\log_2(36L+1)\rceil$, uniformly over the local rules.
+For $D=L-\log_2|S|$, rounding to $e=\lceil D\rceil$ gives
+$2^L\le2^e|S|$ and $e<D+1$. Apply the native uniform-gap theorem and
+absorb the clock cost and this one-bit rounding error into a smaller
+positive gap. This proves the real-deficit conclusion with all model
+and schedule obligations discharged.
+\end{outline}
+
+The reusable clock, regularity and deficit-transfer interfaces are recorded
+by the following declarations.
+\formal{CascadeObstruction/C5Clock.lean}{CascadeObstruction.C5.clock,
+CascadeObstruction.C5.trace_time_bound}
+\formal{CascadeObstruction/C5Regularity.lean}{CascadeObstruction.C5.clock_regular}
+\formal{CascadeObstruction/RasterRegularity.lean}{CascadeObstruction.Raster.curve_subsequence,
+CascadeObstruction.Raster.regular_of_ramp_approximation}
+\formal{CascadeObstruction/GapTransfer.lean}{CascadeObstruction.uniform_native_real_deficit_gap}
+\begin{outline}
+The clock declaration packages the proved partition and budgets. The
+regularity proof combines finite-product compactness for ramp parameters
+with a vanishing-error estimate. The deficit-transfer theorem rounds
+the correctness deficit internally and removes any uniformly sublinear
+compiler overhead. These interfaces reuse Paper~2's obstruction.
+\end{outline}
+
+\subsection{Public initial words and paid entry information}
+
+\begin{proposition}[Complete entry information]
+\label{prop:entry}
+The same five-schedule bound holds, with possibly smaller $\delta>0$,
+if arbitrary public initial work words are allowed. More generally, let
+$Z(X)$ specify the entire initial work contents at all visited cells and
+the initial controller, with the same zero starting head positions, empty output and one
+common set of later rules. Under the uniform law on a nonempty correctness
+set $S$,
+\begin{equation}
+\label{eq:entry}
+                 q+L-\log_2|S|+H(Z)\ge\delta L.
+\end{equation}
+\end{proposition}
+\notformalized
+\begin{informalproof}
+The complete schedule visits only an $O(L)$ coordinate range on each
+tape. A constant number of outward and return scans installs any public
+initial word and restores all starting heads. Hardwire the public symbols
+in the nonuniform transition table, ignore the raw input during these
+scans, and install the prescribed initial controller. The time is $O(L)$,
+the additional clock has $O(\log L)$ bits, and the extra profiles are
+finitely affine. The preceding obstruction and sequential argument apply
+uniformly over all public words. The bit case uses the same lane lift.
+
+For input-dependent entry information, fix each nonempty fibre $S_z$.
+Its complete entry is now public, so
+$\log_2|S_z|\le(1-\delta)L+q$ with the same constants. Averaging under
+uniform $X\in S$ gives $H(X\mid Z)\le(1-\delta)L+q$.
+As $Z$ is a deterministic function of $X$,
+$\log_2|S|=H(X)=H(X\mid Z)+H(Z)$, proving \eqref{eq:entry}.
+\end{informalproof}
+
+Thus public setup or sublinear joint entry information cannot rescue the
+same core. A precomputed transpose supplies $L$ bits of entry information
+and is not excluded by this statement. It still needs a paid producer.
+An output prefix, input-dependent starting heads, or an input-dependent
+choice of later rules is not part of this interface; none may be omitted
+from the information bill by calling it preparation.

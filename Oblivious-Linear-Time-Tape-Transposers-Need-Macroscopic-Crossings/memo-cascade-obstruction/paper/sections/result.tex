@@ -1,0 +1,82 @@
+\section{Result and scope}
+\label{sec:result}
+
+Paper~16's five cascade schedules pass several of its finite necessary-condition
+tests. That does not establish compatibility with earlier necessary
+conditions. Here the relevant earlier result is Paper~2, Theorem~7.5
+\cite{SecondPaper2026}: a contracting recursion with regular fixed-stage
+motion cannot perform near-full-entropy transposition with sublinear
+finite-control bits. The application requires the complete trace, not just
+the stage that appears most complicated.
+
+Throughout, $d=2^m$ is the matrix dimension, $b$ the entry width and
+$L=d^2b$ the number of input bits. The two width regimes in our conclusion
+are $b=1$ and $b=\max(1,\lceil\log_2d\rceil)=m$. All logarithms in
+information quantities are base two. The five constructors are exactly
+those of the published Rust crate at the revision recorded in
+\cref{sec:verification}; their names are given in \cref{tab:bounds}.
+For asymptotic statements, their loops and coordinate formulas are read
+with exact integer arithmetic. The Rust executable realizes finite
+representable instances; fixed-width integer overflow is not part of the
+mathematical schedule family.
+
+A \emph{completion} fixes the input-head moves, work-head moves, append
+times and total duration to those of the constructor. Work tapes start
+blank, all heads start at zero, and the output starts empty. At each tick,
+an arbitrary deterministic local rule reads the old controller, raw input
+symbol and all old scanned work symbols, then updates the controller,
+writes the work symbols, and emits a bit when prescribed. Rules may depend
+on $d$ and the public tick index. They may rewrite at \emph{every} visit,
+including positioning steps marked \texttt{PassThrough} in the crate.
+This is the unrestricted local-update interpretation of the schedule.
+It includes completions that respect
+the crate's more restrictive active-write annotations.
+
+Fix a finite work alphabet $\Gamma$, of cardinality $A$, containing a
+blank symbol. A completion has a nonempty finite controller set $Q$;
+write $q=\lceil\log_2|Q|\rceil$. The initial controller value is public.
+If the output equals raw row-major transpose on a nonempty set
+$S\subseteq\{0,1\}^L$, write
+\[
+ \deficit=L-\log_2|S|.
+\]
+No assumption is made about correctness outside $S$, linearity of the
+rules, independence of stored symbols, or uniform generation of the rules.
+
+\begin{theorem}[C: exclusion of all five exact schedules]
+\label{thm:cascades}
+For every fixed finite work alphabet there exist $\delta>0$ and $d_0$
+such that, for each of the five constructors, every dyadic $d\ge d_0$,
+each of the two width regimes $b=1$ and $b=\max(1,\lceil\log_2d\rceil)$,
+and every completion and nonempty correctness set $S$ as above,
+\begin{equation}
+\label{eq:main}
+                 q+L-\log_2|S|\ge\delta L.
+\end{equation}
+The constants can be chosen simultaneously for all five constructors and
+both widths. They are not evaluated numerically here.
+\end{theorem}
+\partformal{CascadeObstruction/C5Exclusion.lean}{CascadeObstruction.C5.uniform_c5_gap}{The
+canonical-width C5 case is formalized for the declarative schedule in Lean.
+Its Rust correspondence, the other four schedules, all bit-width cases and
+the finite minimum across cases remain written proofs.}
+The complete written proof is assembled in \cref{sec:bridges}, using the
+source proofs in \cref{sec:schedules} and the cited Lean-verified obstruction
+in \cref{sec:criterion}. For C5 at canonical width, the Lean theorem
+discharges the compiler, clock and regularity obligations; its proof is
+outlined in \cref{sec:c5-formal}. The verification boundary is recorded in
+\cref{sec:verification}.
+
+Full correctness gives $q\ge\delta L$. If $q=o(L)$, the ambient success
+fraction is at most $2^{-(\delta-o(1))L}$. Thus fixed-state machines are
+covered, but fixing the number of states is unnecessary. The number of
+work tapes and alphabet are fixed; for these constructors there are two
+or three work tapes. The complete schedule is oblivious even though its
+data updates may be nonlinear and depend on previous data.
+
+The statement is asymptotic along dyadic dimensions. Neither the smallest
+legal constructor size nor a tested experimental size is an exclusion
+threshold. The geometric estimates below hold for every positive integer
+$b$, but the transposition conclusion is proved only in the two stated
+width regimes. It does not decide unrestricted linear-time transposition,
+question (T) of the series \cite{FirstPaper2026}.

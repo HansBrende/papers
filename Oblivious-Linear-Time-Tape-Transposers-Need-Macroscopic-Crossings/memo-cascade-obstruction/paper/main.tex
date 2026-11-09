@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\ifdefined\pdftrailerid\pdftrailerid{}\fi
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,longtable,needspace}
+\usepackage{xcolor,microtype,etoolbox,xurl}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=green!35!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\hypersetup{pdftitle={Regular-Recursion Obstructions for the Five Cascade Schedules},pdfauthor={Hans Brende and GPT-6 Astra (OpenAI)}}
+\numberwithin{equation}{section}
+\input{macros}
+\newcommand{\deficit}{D}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\emergencystretch}{2em}
+\title{Regular-Recursion Obstructions for the Five Cascade Schedules}
+\author{Hans Brende \and GPT-6 Astra (OpenAI)}
+\date{November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The five implemented cascade schedules accompanying \emph{Oblivious
+Linear-Time Tape Transposers Need Macroscopic Crossings} satisfy the
+regular-recursion obstruction of \emph{Local Coding Barriers and the Limits
+of Tape Geometry for Matrix Transposition}, Theorem~7.5. We verify its
+hypotheses on the complete published schedules, including preparation,
+positioning, recursive stages and output. For each fixed work alphabet,
+every sufficiently large dyadic instance has controller-bit cost plus
+correctness deficit at least a positive constant times its input length.
+The conclusion allows arbitrary nonlinear updates at every visit and holds
+both for bit entries and for canonical logarithmic entries. The proof is
+asymptotic; it gives no numerical exclusion threshold. The imported
+obstruction is Lean-verified. The canonical-width C5 exclusion is also
+formalized, including its complete stage clock, arbitrary local-rule
+compiler, regularity and real-deficit bound. Its declarative Lean schedule
+is matched to the Rust source by a written audit and finite trace
+comparisons. The other four schedule applications, the bit-to-word
+simulation and the entry-information extension have written proofs.
+\end{abstract}
+\begin{quote}\small
+\textbf{Contributions.} Hans Brende directed the research. GPT-6 Astra
+(OpenAI) developed the applications, formalization and text. This memo
+applies an existing obstruction to the exact cascade sources; it does not
+claim a new general transposition lower bound.
+\end{quote}
+\setcounter{tocdepth}{1}
+\begingroup\small\tableofcontents\endgroup
+\clearpage
+\input{sections/result}
+\input{sections/criterion}
+\input{sections/schedules}
+\input{sections/bridges}
+\input{sections/scope}
+\appendix
+\input{sections/verification}
+\begingroup\small\raggedright
+\bibliographystyle{plainurl}
+\bibliography{references}
+\endgroup
+\end{document}

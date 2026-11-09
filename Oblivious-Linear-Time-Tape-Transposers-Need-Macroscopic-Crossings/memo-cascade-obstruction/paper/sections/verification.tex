@@ -1,0 +1,104 @@
+\section{Source provenance, formal status and reproduction}
+\label{sec:verification}
+
+All five source applications are checked against the original published
+experiments crate at repository revision
+\begin{center}\small\texttt{9ffa8f2e5494988731a37c0bed8b0be6a046e5e8}.\end{center}
+The exact source ranges in \texttt{experiments/src/schedules.rs} are:
+shared C1/C2 core 405--559; C1 helper and constructor 562--695; C2
+698--779; C3 954--1141; C4 1144--1532; C5 1535--1654.
+The movement convention is in \texttt{experiments/src/model.rs},
+585--715. The manifest in \texttt{verification/source-pins.json} gives
+SHA-256 hashes for the complete Rust code and Cargo files and the principal
+imported Lean interfaces. It is a targeted provenance manifest, not a
+replacement for the transitive Lean package pins.
+C5 additionally has a declarative Lean tick word. Its correspondence with
+the exact-integer Rust constructor is established by the source audit and
+the finite comparison below, not by a formal semantics for Rust.
+
+\subsection{What Lean verifies}
+
+The imported obstruction and clock machinery are verified in Paper~2.
+The new library verifies \cref{lem:dyadic-budget,lem:uniform-gap,cor:native-gap},
+the arbitrary local-rule compiler, and the complete canonical-width C5
+exclusion described in \cref{sec:c5-formal}. Its final theorem has no
+simulation, clock or regularity hypothesis. Those Lean statements are authoritative; the
+outlines explain them. The declarations depend only on
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+The generated declaration index follows this section, and
+\texttt{lean/PaperAxioms.lean} audits every new declaration cited with
+a formal-status line.
+
+The following remain complete \emph{written} proofs, not Lean proofs:
+\begin{itemize}
+\item the C1--C4 source-to-clock, endpoint and limiting-profile applications;
+\item the all-instance correspondence between the Rust C5 constructor
+      and its declarative Lean tick word;
+\item the $3b$ bit-lane simulator, its product correctness set and
+      motion estimate \eqref{eq:lift-error};
+\item the remaining cases of \cref{thm:cascades} and the ten-family
+      finite minimum; real-deficit rounding and compiler-overhead removal
+      are already formalized in the reusable transfer theorem;
+\item the public-initialization and joint-entry-information extension
+      in \cref{prop:entry}.
+\end{itemize}
+In particular, a successful build verifies the specified Lean C5 word,
+not the Rust compiler or all five source bindings. The source-specific
+proofs were separately reviewed against the pinned sources.
+
+Readers need a full repository clone with sibling papers in place.
+From the memo's \texttt{lean/} directory run
+\begin{verbatim}
+lake build
+lake env lean PaperAxioms.lean
+\end{verbatim}
+Dependency setup follows the second paper's README; the memo reuses its
+library through a relative path and keeps its Lean and Mathlib pins.
+From the memo directory, regenerate or check the formal index with
+\begin{verbatim}
+python3 tools/lean_index.py
+python3 tools/lean_index.py --check
+\end{verbatim}
+Build this document from \texttt{paper/} with
+\texttt{latexmk -pdf -interaction=nonstopmode main.tex}.
+
+\subsection{Finite implementation controls}
+
+From the memo directory, run
+\begin{verbatim}
+python3 tools/check_source_pins.py
+python3 tools/lane_lift_control.py
+python3 -B tools/check_geometry.py
+python3 tools/check_c5_lean_trace.py
+\end{verbatim}
+The scripts use the Python standard library; the geometry and C5 comparison
+also invoke the unchanged original Rust crate with \texttt{--offline --locked}.
+The C5 comparison needs the current Lean library built first. Do not
+disable Python assertions with \texttt{-O}. Optional output flags and
+receipt-comparison commands are documented in \texttt{tools/README.md}.
+The saved receipts are deterministic and use no machine-specific paths.
+
+The lane control compares independent ordinary-machine and lifted-machine
+interpreters on 4,928 inputs, executing 569,088 physical transitions. It
+checks controllers, full work contents, positions, outputs and motion
+error, and rejects three deliberately incorrect simulators. It includes
+a tiny true transpose and a nonlinear two-tape computation; it is not a
+cascade completion.
+
+The geometry control uses ten original crate exports: each C1--C5 at
+$d=16$, $b=1$ and $b=4$. It checks 273,065 original steps, append ordinals
+and targets, safe total-time bounds, 24 variable-loop profiles, and C1's
+row timing and affine shadow. At $d=16$, C1's eventual parameter formula
+for $d\ge256$ has not stabilized. No finite test establishes the
+asymptotic threshold, proves convergence, verifies all stage budgets,
+or supplies a data program that transposes.
+
+The C5 comparison exports the actual Lean tick word and compares every
+input/work move, append flag and resulting head position with the original
+Rust export. Eight cases at $d=4,8,16$ and widths among $1,3,\log_2d$
+check 38,504 ticks; three deliberate mutations are rejected. The receipt
+pins the Lean source and compiled objects. This is a finite transcription
+check, not an all-instance equivalence proof. The asymptotic C5 theorem
+comes from Lean's checked clock, regularity and native-obstruction proof.
+
+\input{sections/leanindex}

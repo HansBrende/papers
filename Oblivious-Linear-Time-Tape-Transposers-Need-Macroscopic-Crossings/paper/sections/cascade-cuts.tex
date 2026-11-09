@@ -1,0 +1,102 @@
+\subsection{Cascades 3 and 4 fail the rows-to-columns condition}\label{sec:cascade-cuts}
+
+All five cascades are excluded by the regular-recursion obstruction of the second paper~\cite[Theorem~7.5]{SecondPaper2026}, as Astra's
+memo~\cite{CascadeObstructionMemo2026} verifies (\cref{prob:cascades}). For every fixed work alphabet there are $\delta>0$ and $d_0$ such that, at
+every dyadic $d\ge d_0$, a machine with one of the five traces and states $\{0,\dots,q\}$ that transposes the inputs of a set $S$
+satisfies $\clog{(q+1)}+L-\log_2\abs S\ge\delta L$. That argument concerns the motion of the heads and gives no numerical threshold.
+
+For Cascades~3 and~4 a cut does more. Condition~(iv) of the specification already fails for the rows $A_0=\{1,2\}$: an explicit set
+of $o(db)$ steps separates their reads from the outputs they feed. Counting single cells instead of whole steps then bounds the work
+alphabet and the number of states separately, and both may grow with~$d$. The cut also locates the loss of information.
+
+\begin{definition}[Cell network]\label{def:cellnet}
+Let a trace have horizon $T$. For a work tape $j$ and a step $t<T$, let $\mathrm{next}_j(t)$ be the next step after $t$ at which head
+$j$ scans the cell it scans at step~$t$, if there is one. The \emph{cell network} of the trace has the vertices $0,\dots,T-1$, a
+\emph{state edge} $t\to t+1$ for every $t+1<T$, and a \emph{cell edge} $t\to\mathrm{next}_j(t)$ of tape $j$ for every $j$ and $t$ for which
+$\mathrm{next}_j(t)$ exists. A cell edge $t\to t+1$ is a \emph{wait}.
+\end{definition}
+
+The cell network runs forward in time and keeps waits as edges of their own. Reversing every edge of the dependency DAG gives edges of
+the cell network: a state edge $t\to t-1$ becomes the state edge $t-1\to t$, and the revisit edge of a revisit $(p,u)$ becomes the cell
+edge $p\to\mathrm{next}_j(p)=u$.
+
+\begin{lemma}[Cell-level cut-set bound]\label{lem:cellcut}
+\notformalized
+Let $M$ be oblivious with trace $\tau$, work alphabet $\{0,\dots,g\}$ and states $\{0,\dots,q\}$, and let it transpose at size $d$.
+Let $A$ be a set of input positions, $V\subseteq A$, and $C$ a set of edges of the cell network of $\tau$, consisting of $C_{\mathrm{cell}}$
+cell edges and $C_{\mathrm{state}}$ state edges, such that every path from a step that reads a position of $A$ to a step of $\Out(V)$
+uses an edge of $C$. Then
+\[
+  \abs V\ \le\ \abs{C_{\mathrm{cell}}}\log_2(g+1)+\abs{C_{\mathrm{state}}}\log_2(q+1).
+\]
+\end{lemma}
+
+\begin{informalproof}
+Fix the input bits outside $A$. Let $U$ be the set of steps reachable by a path that avoids $C$ from a step that reads a position of
+$A$. Every edge from a step of $U$ to a step outside $U$ lies in $C$. A step reads the state left by the step before it and the
+symbols last written on the cells it scans (the blank on a first visit), so the state it enters, the symbols it writes and the bit it
+appends are a function of the values carried by its incoming edges and of the input bit it reads. By induction on $t$, everything a
+step $t\notin U$ computes is a function of the values carried by the edges of $C$: such a step reads no position of $A$, and each of
+its incoming edges starts outside $U$ or lies in $C$. The steps of $\Out(V)$ lie outside $U$, and at $\Out(v)$ the machine appends
+the input bit $v$. So the bits $(x_v)_{v\in V}$ are a function of the values on $C$. They take all $2^{\abs V}$ values as the bits of
+$A$ vary, and the values on $C$ take at most $(g+1)^{\abs{C_{\mathrm{cell}}}}(q+1)^{\abs{C_{\mathrm{state}}}}$.
+\end{informalproof}
+
+\begin{theorem}[Cascades 3 and 4]\label{thm:cascade-cuts}
+\notformalized
+There are absolute constants $c$ and $d_0$ with the following property. Let $d=2^k\ge d_0$, let $\tau$ be the trace of Cascade~3 or
+of Cascade~4 at size $d$, and put $A_0=\{1,2\}$, $A_1=\{0,\dots,d-1\}$, and $\nu=(db)^{1/5}$ for Cascade~3 and $\nu=(db)^{1/6}$ for
+Cascade~4.
+\begin{enumerate}[label=(\alph*)]
+\item Some set of at most $c\,db/\nu$ steps separates $\Out(\Qstar(A_0,A_1))$ from $\Lin(A_0)$. Hence, by \cref{lem:R}, no oblivious
+machine with trace $\tau$ and $\wval+1<\nu/c$ transposes at size~$d$.
+\item No oblivious machine with trace $\tau$, work alphabet $\{0,\dots,g\}$ and states $\{0,\dots,q\}$ with
+$\log_2(g+1)+\log_2(q+1)<\nu/c$ transposes at size~$d$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof outline]
+The proof is in \cref{app:cascade-cuts}. Both schedules read rows~$1$ and~$2$ only while loading the input, at the $2db$ load steps
+that read the positions $db,\dots,3db-1$. Call a step tainted if it is reachable from these reads in the cell network, with three
+exceptions: taint never passes along a state edge; it passes along a wait only within one step (two steps on Cascade~4) of the head's
+arrival on the cell; and a set $C_0$ of cell edges is cut, namely the tape-$1$ edges that leave tainted steps of the transfer at one level
+$\rho$ and next visit their cell after it. Every edge from a tainted step to an untainted step then lies in $C_0$, or
+leaves the last step of a maximal interval of tainted steps, a \emph{run} (\cref{lem:closure}). So the cut costs $\abs{C_0}$ plus a
+bounded number of edges per run, and the tainted steps of $\Out(\Qstar)$ are the outputs given up.
+
+Each fold of these schedules starts with a transfer of half of its source, in which tape~$1$ moves at half speed while tape~$0$ crosses
+the first two thirds of that half. Rows~$1$ and~$2$ stay in that part at every level, so their window halves at each level: at level
+$\rho$ it has at most $db/2^{\rho-1}+O(1)$ cells, and the transfer squeezes it into $db/2^\rho+O(1)$ cells of tape~$1$. Cutting the edges
+out of these cells leaves every deeper level untainted. Below $\rho$, the backward stage
+spreads the window again, by a bounded factor per level. At the level we choose it has $O(6^\rho)$ runs on Cascade~3 and $O(11^\rho)$
+on Cascade~4, and the final sweep gives up $O(6^\rho b)$, respectively $O(11^\rho b)$, outputs. It also gives up the $4b$ outputs of
+the entries $(1,1)$, $(1,2)$, $(2,1)$ and $(2,2)$, at whose append steps it reads the loaded copy of rows~$1$ and~$2$. Choosing $2^\rho$
+near $\nu$ makes the cut and the outputs given up both $o(db)$. For~(a), the tails of the cut edges together with the roots given up
+separate in the dependency DAG; for~(b), \cref{lem:cellcut} applies to the at least $db$ outputs that the cut separates.
+\end{proof}
+
+\begin{remark}[Other entry widths]\label{rem:cascade-widths}
+The geometric part of the proof holds for every $b\ge1$ once $d\ge32$. Choosing $2^\rho$ near $d^{1/5}$ (Cascade~3) or $d^{1/6}$
+(Cascade~4) instead, the count of \cref{lem:cellcut} excludes the two traces, for $d\times d$ matrices with $b$-bit entries and any
+$b\ge1$, once $\log_2(g+1)+\log_2(q+1)$ is below $d^{1/5}/c$, respectively $d^{1/6}/c$. In particular it excludes them for matrices of
+bits.
+\end{remark}
+
+\begin{remark}[Rows~0 and~1]\label{rem:cascade-rows}
+\Cref{lem:R} counts every step at which the input head is in rows $A_0$. Both schedules keep the input head on bit~$0$ throughout their
+initial positioning, a linear number of steps whose writes later steps revisit, so with $A_0=\{0,1\}$ these steps join $\Lin(A_0)$.
+The choice of rows in \cref{lem:R} is free, and rows~$1$ and~$2$ avoid them.
+\end{remark}
+
+The two exclusions of Cascades~3 and~4 differ in scope. The memo~\cite{CascadeObstructionMemo2026} covers all five cascades, and it excludes every
+machine with $\clog{(q+1)}<\delta L$ that is correct on more than a $2^{\clog{(q+1)}-\delta L}$ fraction of the inputs; but it needs a
+fixed work alphabet, and its $\delta$ and $d_0$ depend on the alphabet and are obtained by contradiction. \Cref{thm:cascade-cuts}
+covers two cascades and machines that transpose every input, but it allows alphabets and controllers of up to about $\nu$ bits, with
+absolute constants.
+
+It also names the mechanism that fails. The half-speed transfer squeezes the data of rows~$1$ and~$2$ into half as many cells at
+each level. On Cascade~3, after about $\frac15\log_2(db)$ levels these data pass through about $(db)^{4/5}$ cells, where the backward
+stage is still cheap to cut. Cascades~1 and~2 use the same transfer, but before their cascade a shuffle, in which both work heads read
+and write at every step, spreads each row over several distant intervals of the tape, so that the data of a pair of rows is no longer
+confined to the squeezed part. We
+know no cut that excludes Cascades~1, 2 or~5.

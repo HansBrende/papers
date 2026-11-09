@@ -42,16 +42,14 @@ thresholds of order $1/C$.
 
 \begin{problem}[The cascades]\label{prob:cascades}
 For each of the five cascade schedules of \cref{sec:cascades}, decide whether some machine with that oblivious trace transposes.
-\emph{Update:} as posed (for a fixed work alphabet along large dyadic $d$, at $b=\max(1,\clog d)$ and also at $b=1$), and even with public
-initial work words, $o(L)$ state bits, and correctness on at least a $2^{-\eta L}$ fraction of inputs for small $\eta>0$ (precisely,
-$q+L-\log_2\abs S+H(Z)\ge\delta L$ for some $\delta>0$), this problem is answered negatively for all five schedules by the companion
-memo~\cite[Theorem~1.1 and Proposition~4.3]{CascadeObstructionMemo2026}, which verifies the all-regular contracting-recursion hypotheses
-of~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026} (with Theorem~1.1's blank-tape, canonical-width fifth cascade formalized in Lean for
-its declarative tick word; the remaining schedules, bit-width lift, Rust correspondence and Proposition~4.3 have written proofs). For the third and fourth cascades, \cref{lem:R} already suffices on whole rows $A_0=\{1,2\}$ and $A_1=\Range d$ (excluding
-$\wval\le2,3,4,6$ on the third cascade and $\wval\le2,3,3,5$ on the fourth at $(d,b)=(16,4),(32,5),(64,6),(128,7)$, and every fixed $\wval$
-at large dyadic $d$, alongside cell-level cuts that allow growing alphabets; \cref{rem:cascades,sec:cascade-cuts}). For the first, second and fifth cascades, where \cref{lem:R} on
-$A_0=\{1,2\}$ excludes nothing at any $\wval\ge2$ at $(16,4),(32,5),(64,6)$ (\cref{rem:cascades}), the exclusion does require more than
-Theorems~D, X, S and \cref{lem:R}, namely~\cite[Theorem~7.5]{SecondPaper2026}.
+\emph{Update:} answered negatively for all five schedules, for every fixed work alphabet at all large dyadic $d$, at
+$b=\max(1,\clog d)$ and at $b=1$, by the companion memo~\cite[Theorem~1.1]{CascadeObstructionMemo2026}, which verifies on each
+complete schedule the hypotheses of the regular-recursion obstruction of the second paper~\cite[Theorem~7.5]{SecondPaper2026}. The memo's
+bound tolerates controllers of $o(L)$ bits, correctness on only part of the inputs, and public initial work
+contents~\cite[Proposition~4.3]{CascadeObstructionMemo2026}; for the fifth schedule at $b=\max(1,\clog d)$ it is formalized in Lean, and the
+other cases have written proofs. For the third and fourth schedules, condition~(iv) of the specification already fails: an explicit
+separator on rows~$1$ and~$2$ violates \cref{lem:R}, and a count on single cells also allows work alphabets that grow with~$d$
+(\cref{thm:cascade-cuts}). We know no cut that excludes the first, second or fifth schedule.
 \end{problem}
 
 A linear-time transposer, if one exists, must solve a coding problem on its own schedule: codes of rate approaching one on the cone

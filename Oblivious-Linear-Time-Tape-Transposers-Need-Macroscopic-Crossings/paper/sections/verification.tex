@@ -52,7 +52,7 @@ bridge, the constants of \cref{sec:constants}, and the main forms of \cref{lem:a
 \end{itemize}
 
 \paragraph{What is not formalized.} Complete written proofs in the text, not formalized in Lean, are given for
-\cref{cor:scale-separated} and \cref{prop:onecut}. Proof sketches only are given for \cref{rem:rare}, for the perfect-unshuffle
+\cref{cor:scale-separated}, \cref{prop:onecut}, \cref{lem:cellcut} and \cref{thm:cascade-cuts} (with \cref{app:cascade-cuts}). Proof sketches only are given for \cref{rem:rare}, for the perfect-unshuffle
 transposer realizing the $\theta=2$ parameters after \cref{cor:subcritical}, and for the exclusions of the individual schedule
 families in \cref{app:catalogue} (built on the formal class theorems of \cref{sec:classes} and certificate lemmas of
 \cref{sec:certificates}).
@@ -62,9 +62,7 @@ reproduces the exact rational values and scientific approximations of the consta
 The self-contained Rust crate \leanfile{experiments/} (standard library only; \texttt{cargo run --release --offline --locked -- check} in
 \leanfile{experiments/}) generates the thirty schedules, exports complete time-indexed traces, builds their exact dependency DAGs, verifies
 the seven $\omega(L)$ transpose controls on the unit-vector basis and the cell-entry and write caps of the third and fourth cascades
-(\cref{sec:cascades}), and reproduces the finite-size observations reported in the text, apart from the \cref{lem:R} minimum-cut costs on
-rows~$1$ and~$2$ in \cref{rem:cascades} (computed by max-flow on the dependency DAGs of the traces exported by those same schedule
-constructors): the crossing separator ratios and $E=L$
+(\cref{sec:cascades}), and reproduces every numerical observation reported in the text: the crossing separator ratios and $E=L$
 cycle-packing acyclic bounds of \cref{rem:numerics-crossings}, the running times, $\Lambda^*$-skeleton leg counts and single-leg crossing
 expansion of \cref{rem:skeleton-limits,rem:cascades}, the coarse-pass slope products after \cref{cor:boundedpasses} (and in
 \cref{sec:intro}), the multi-scale leg counts and the one-scale and two-scale closed interval-forest charges of and after

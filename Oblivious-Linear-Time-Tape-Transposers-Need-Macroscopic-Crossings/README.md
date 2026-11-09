@@ -10,7 +10,7 @@ Hans Brende, Claude Opus 5.5 (Anthropic) and Gemini 4 Argon (Google DeepMind), N
   directories of this repository must be in place. [`lean/README.md`](lean/README.md) is a guide to its modules.
 - [`experiments/`](experiments/): self-contained Rust reproduction package (`std` only, [`experiments/LICENSE`](experiments/LICENSE),
   Apache 2.0) for the schedule generators, time-indexed trace exports, exact dependency DAGs, and finite-size ($d \le 128$) numerical
-  checks (`Remark 5.8`, `Remarks 6.8` and `10.1` apart from the rows 1–2 Lemma R minimum cuts, `Section 10.4`, `Problem 11.1`, and `Appendix A`).
+  checks (`Remark 5.8`, `Remarks 6.8` and `10.1`, `Section 10.4`, `Problem 11.1`, and `Appendix A`).
 - [`tools/lean_index.py`](tools/lean_index.py) generates the index of Lean declarations and `lean/PaperAxioms.lean` from the paper's
   LaTeX sources; [`tools/print_constants.py`](tools/print_constants.py) prints the explicit constants of Sections 4, 5.1 and 6.3.
 
@@ -91,20 +91,18 @@ declarations and file; declarations below are in the namespace `NativeRelations`
   (`groupedBound_not_excluded_above_half`, and at θ = 2 `groupedBound_thetaTwo_not_excluded_above_half`,
   `perfectUnshuffleSlopeProduct_tendsto_half`, `unshuffleStep_iter_transpose`).
 
-Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets) and Corollary 7.3 (scale-separated
-traces). Remark 8.2, the perfect-unshuffle transposer realizing the θ = 2 parameters
-after Corollary 10.4, and the exclusions of the
+Proved in the paper but not formalized: Proposition 10.2 (one cut serves every pair of row sets), Corollary 7.3 (scale-separated
+traces), and Lemma 10.7 and Theorem 10.8 with their proofs in Appendix D (a cut-set bound on single cells, and the exclusion of Cascades 3
+and 4: condition (iv) fails on rows 1 and 2, with absolute constants and alphabets that may grow with d). Remark 8.2, the perfect-unshuffle
+transposer realizing the θ = 2 parameters after Corollary 10.4, and the exclusions of the
 individual schedule families of Appendix A are given as proof sketches. The labelled numerical remarks ($d \le 128$) are reproduced by
-[`experiments/`](experiments/), apart from the rows 1–2 Lemma R minimum-cut costs of Remark 10.1 (computed by max-flow on the dependency
-DAGs of the traces exported by its schedule constructors), and no proof depends on them.
+[`experiments/`](experiments/), and no proof depends on them.
 
 ## What is open
 
-The paper ends with four problems (Problem 11.4 answered negatively as posed for fixed work alphabets, as noted below): a pass bound that
-counts phases across all scales; transferring the simulator results back to the
+The paper ends with four problems: a pass bound that counts phases across all scales; transferring the simulator results back to the
 machine's own dependency DAG; constants polynomial in the number of tapes; and the five explicit linear-time cascade schedules of
-Section 10.3. On 0-indexed rows 1–2, Lemma R already excludes the third and fourth cascades, while excluding nothing on the
-first, second and fifth at w_val ≥ 2 in our finite-size tests ($d \le 64$, Remark 10.1).
+Section 10.3, which have since been excluded (below).
 
 **Subsequent memo:** [Regular-Recursion Obstructions for the Five Cascade Schedules](memo-cascade-obstruction/)
 answers Problem 11.4 negatively for all five exact implemented families, at fixed work
@@ -115,6 +113,11 @@ proofs and reproduction scripts. The canonical-width C5 exclusion is also
 Lean-verified for its declarative tick word, with the Rust correspondence source-audited
 and finitely compared. The finite measurements above remain valid; the memo supplies
 no numerical exclusion threshold.
+
+**Cascades 3 and 4 by a cut (Section 10.5).** Theorem 10.8 excludes these two schedules a second way, by an
+explicit separator in the paper's own Lemma R and by a cut-set count on single cells. Its constants are absolute,
+not dependent on the machine, and it allows work alphabets and controllers of up to about (db)^(1/5) bits
+(Cascade 3) or (db)^(1/6) bits (Cascade 4). It needs correctness on every input and covers only these two schedules.
 
 ## Building and verifying
 

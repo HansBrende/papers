@@ -1,0 +1,460 @@
+\section{Proofs for Cascades 3 and 4}\label{app:cascade-cuts}
+
+This appendix proves \cref{thm:cascade-cuts} and \cref{rem:cascade-widths}. Throughout, $d=2^k\ge32$, $b\ge1$, $L=d^2b$,
+$m_r=L/2^r$, $\mathrm{sh}_r=\lfloor m_r/3\rfloor+b$ and $r_{\max}=k-1$, so that $m_r\ge m_{r_{\max}}=2db\ge64$ for $r\le r_{\max}$. Let
+$A=[db,3db)$ be the set of input positions of rows~$1$ and~$2$. As $A_1$ is the set of all rows, $\Qstar(\{1,2\},A_1)=A$, and
+$\Lin(\{1,2\})$ is the set of steps at which the input head reads a position of $A$. The traces are those of the constructors
+\texttt{build\_c3\_ten\_entry\_cascade} and \texttt{build\_c4\_no\_overwrite\_cascade} in \texttt{experiments/src/schedules.rs}; the head
+motions below are read off their loops, and we also checked them on the exported traces for $d\le128$. A \emph{region} is an interval
+of cells of one tape, and the \emph{offset} of a cell in a region is its position minus the first position of the region.
+
+\subsection{Taint closures}
+
+For a work tape $j$ and a step $t$, let $\prev_j(t)$ be the last step before $t$ at which head $j$ scans the cell it scans at step $t$,
+if there is one; the cell edge into $t$ of tape $j$ is then $\prev_j(t)\to t$. The \emph{wait age} $\omega_j(t)$ is $0$ if $t=0$ or
+head $j$ scans different cells at steps $t-1$ and $t$, and $\omega_j(t-1)+1$ otherwise.
+
+\begin{definition}[Taint closure]\label{def:taint}
+Fix a set $C_0$ of cell edges and an order $h\in\{1,2\}$. A step $t$ is \emph{tainted} if it reads a position of $A$, or if for some
+tape $j$ the cell edge $p\to t$ with $p=\prev_j(t)$ is not in $C_0$, the step $p$ is tainted, and either $p\le t-2$ or $\omega_j(t)\le h$.
+A \emph{run} is a maximal interval of consecutive tainted steps. The \emph{cut} $C$ consists of $C_0$ and of the state edge and the
+waits that leave the last step of each run. A cell of tape $j$ is \emph{live tainted} at step $t$ if its last visit $p<t$ is tainted and
+the edge $p\to\mathrm{next}_j(p)$ is not in $C_0$.
+\end{definition}
+
+A step $t$ with $p=\prev_j(t)=t-1$ is a \emph{short wait} if $\omega_j(t)\le h$. For $h=1$ this means that head $j$ arrived on the cell at
+step $t-1$.
+
+\begin{lemma}[The closure is cut by $C$]\label{lem:closure}
+\notformalized
+Every edge of the cell network from a tainted step to an untainted step lies in $C$. Let $N_{\mathrm{run}}$ be the number of runs and
+$N_{\mathrm{up}}$ the number of tainted steps of $\Out(A)$. Then:
+\begin{enumerate}[label=(\alph*)]
+\item every path in the cell network from a step that reads a position of $A$ to an untainted step uses an edge of $C$;
+\item the set $\Gamma$ of the tails of the edges of $C$ and the tainted steps of $\Out(A)$ separates $\Out(A)$ from $\Lin(\{1,2\})$
+in the dependency DAG;
+\item $C$ has at most $\abs{C_0}+3N_{\mathrm{run}}$ cell edges and at most $N_{\mathrm{run}}$ state edges, and
+$\abs\Gamma\le\abs{C_0}+N_{\mathrm{run}}+N_{\mathrm{up}}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{informalproof}
+Let $p\to v$ be an edge with $p$ tainted and $v$ untainted. A state edge has $v=p+1$, so $p$ ends a run and the edge is in $C$. A cell
+edge with $v\ge p+2$ is in $C_0$, since otherwise $v$ would be tainted. A wait of tape $j$ that is not in $C_0$ has $\omega_j(v)>h$,
+since otherwise $v$ would be tainted; so $p$ ends a run, and the wait is in $C$. This proves the first claim, and (a): a path from a
+tainted step to an untainted one has a first untainted vertex, and the edge into it leaves a tainted vertex.
+
+For (b), take a dependency path from $\Out(v)$, $v\in A$, to a step that reads a position of $A$. If $\Out(v)$ is tainted it lies in
+$\Gamma$. Otherwise the reversed path is a path in the cell network (\cref{def:cellnet}) from a tainted step to an untainted one, and
+the edge into its first untainted vertex lies in $C$ and leaves a vertex of the path, which is a tail of $C$. For (c), $C_0$ has
+$\abs{C_0}$ edges and tails, and every other edge of $C$ leaves the last step of a run: one state edge, none after the last step of
+the trace, and at most one wait per work tape; both schedules have three.
+\end{informalproof}
+
+So it suffices to choose $C_0$ so that $\abs{C_0}$, $N_{\mathrm{run}}$ and $N_{\mathrm{up}}$ are small.
+
+\subsection{Cascade 3}\label{app:cascade3}
+
+Cascade~3 uses the closure of order $h=1$. Its regions are as follows. On tape~$0$, $R_r$ starts at $a_r$, with $a_1=L$ and
+$a_{r+1}=a_r+2m_r$; for the backward stage, $\mathrm{IN}_r$ has size $m_r$ and $\mathrm{OUT}_r$ has size $2m_r$, with
+$\mathrm{IN}_{r-1}=\mathrm{OUT}_r$. On tape~$1$, the level-$r$ scratch starts at some $s_r$, and the backward stage uses fresh regions
+$\mathrm{CB}_r$ of size $m_r$. On tape~$2$, $Z_r=[z_r,z_r+m_r)$ with $z_r=L-2m_r$. Put $\Delta=\lfloor\lfloor L/3\rfloor/2\rfloor-1$. The
+phases that matter are the following.
+
+\begin{center}\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.74\textwidth}}
+\toprule
+phase & head motion \\
+\midrule
+\endhead
+load, step $u<L$ & input head on $u$; tapes $0$ and $1$ on cell $u$; tape~$2$ on cell $L+\lceil u/2\rceil$ while $u\le\lfloor L/3\rfloor$,
+then at speed~$1$ \\
+rev & tape~$0$ down $[L,2L)$ and tape~$2$ down to cell $L$, tape-$2$ cell $x$ aligned with tape-$0$ cell $x+\Delta$; then tape~$2$
+parks on cell~$L$; tape~$1$ idle \\
+fwd $r$.transfer, step $s$ & tape~$0$ on $R_r$ offset $\min(s,m_r-1)$; tape~$1$ on scratch offset $\lceil s/2\rceil$ for
+$s<2\lfloor m_r/3\rfloor$, then at speed~$1$; tape~$2$ idle \\
+fwd $r$.move2 & tape~$0$ up to $R_r$ offset $2m_r-\mathrm{sh}_r$, then idle; tape~$1$ down the scratch from offset $m_r-1$ to $0$ \\
+fwd $r$.copyS & tapes $0,1,2$ on $R_r$ offset $2m_r-\mathrm{sh}_r+u$, scratch offset $u$, $Z_r$ offset $u$, for $0\le u<\mathrm{sh}_r$ \\
+fwd $r$.move3, copyR, move4 & tape~$0$ down to $R_r$ offset $m_r$; then $R_r$ offset $m_r+u$, scratch offset $\mathrm{sh}_r+u$, $Z_r$
+offset $\mathrm{sh}_r+u$; then tape~$0$ up to $R_{r+1}$ offset $m_r-1$ \\
+fwd $r$.back, move5 & tape~$0$ down $R_{r+1}$ and tape~$2$ down $Z_r$, offset aligned with offset; then tape~$2$ up through $Z_r$ to
+$z_{r+1}$ \\
+comb $r$.move & tape~$0$ up $\mathrm{IN}_r$ from offset~$0$; tape~$1$ up from $\mathrm{CB}_{r+1}$ offset $\mathrm{sh}_{r+1}$ (from the
+end of the scratch if $r=r_{\max}$) to $\mathrm{CB}_r$ offset $m_r-1$; $\mathrm{IN}_r$ offset $s$ is aligned with $\mathrm{CB}_{r+1}$
+offset $\mathrm{sh}_{r+1}+s$ while $s<m_{r+1}-\mathrm{sh}_{r+1}$, and with $\mathrm{CB}_r$ offset $s-c_r$, where
+$c_r=m_{r+1}+2-\mathrm{sh}_{r+1}$, once $s\ge c_r$; then tape~$2$ moves to $z_r+m_r-1$: one step from $z_{r+1}$ if $r<r_{\max}$, and up
+through the offsets $0,\dots,m_r-2$ of $Z_{r_{\max}}$ if $r=r_{\max}$ \\
+comb $r$.blocks & $2^r$ blocks of $m_r/2^r$ offsets, from the top: all three heads down together over $\mathrm{IN}_r$, $\mathrm{CB}_r$
+and $Z_r$ at equal offsets; then tape~$1$ up and down across the block while tapes $0$ and $2$ wait \\
+comb $r$.move2 & tape~$0$ up through $\mathrm{IN}_r$ to $\mathrm{OUT}_r$; tapes $1$ and $2$ idle \\
+comb $r$.dbl & $\mathrm{CB}_r$ offset $z$ aligned with $\mathrm{OUT}_r$ offsets $2z$ and $2z+1$ \\
+comb $r$.move3, shift, move4, rem & tape~$1$ alone down to offset $\mathrm{sh}_r-1$; then $\mathrm{OUT}_r$ offset $y$ aligned with
+$\mathrm{CB}_r$ offset $(\lfloor y/2\rfloor+\mathrm{sh}_r)\bmod m_r$, both moving down, with tape~$1$ alone moving up between the two parts \\
+rewind & tape~$1$ down from $\mathrm{CB}_1$ offset $\mathrm{sh}_1$ to cell~$0$; tapes $0$ and $2$ idle \\
+emit, step $u$ & tape~$0$ on $\mathrm{OUT}_1$ offset $u$; tape~$1$ on cell $u$; tape~$2$ on cell $\min(u,\sum_rm_r-1)$; output bit $u$
+appended \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+The positioning phases omitted from the table (the initial positioning, the moves into and out of rev, and the move that starts each
+forward level) read no live tainted cell. We use three properties of the trace.
+\begin{enumerate}[label=(\roman*)]
+\item Every phase is a \emph{segment}, or a few of them: an interval of steps in which every head is either idle throughout, or
+monotone and waiting at most one step at a time. To get segments, cut rev, transfer, move2, comb move and emit where a head stops early,
+cut each block into its sweeps, and make the last step of copyS, at which all three heads wait, a segment of its own.
+\item After the current level, the regions of tape~$0$ below the current one, the scratch regions, and $\mathrm{CB}_{r'}$ for
+$r'>r+1$ are not visited again, except by tape~$1$ in the rewind. $Z_r$ is visited after move5 only in comb $r$.blocks and in the emit.
+The exceptions are single idle cells: offset~$0$ of $Z_r$ while comb $r$.move2 to rem run and again in comb $(r-1)$.move, and offset~$0$
+of $Z_1$ and of $\mathrm{OUT}_1$ during the rewind. Each adds at most one run of at most two steps.
+\item In every segment at most one head moves at half speed (in load, transfer, dbl, shift and rem).
+\end{enumerate}
+
+\begin{lemma}[Segments]\label{lem:c3-segments}
+\notformalized
+In a segment of Cascade~3, every tainted step is (1) a step at which a head that is not idle scans a live tainted cell, (2) one of the
+first two steps of an idle head on a live tainted cell, (3) a step that reads a position of $A$, or (4) the step right after one of
+these, or the step after that when the first is a short wait of an idle head. Hence the number of runs in a segment is at most the
+number of maximal intervals of live tainted cells that it reads, over all tapes, plus the number of runs of reads of $A$; and each run
+writes one interval of cells on each tape whose head moves.
+\end{lemma}
+
+\begin{informalproof}
+A monotone head stays on an interval of cells during an interval of steps. Its first step on a cell is a revisit, or at the start of
+the segment a wait of either kind, and its second step there, if any, is a short wait. A short wait at the first step $t_0$ of the
+segment from a tainted step $t_0-1$ reads a cell that is live tainted at $t_0$, so $t_0$ is of kind~(1). An idle head's first two steps
+are a revisit and a short wait, and the rest are waits that are not short. Cells written inside the segment are revisited inside it only
+by waits. So a tainted step of none of the kinds (1)--(3) is tainted through a short wait from the tainted step before it. By~(iii), all
+short waits of moving heads in the segment belong to one head $j$. After its wait at step $t$, head $j$ moves, so step $t+1$ is no wait
+of $j$, and no wait of any other moving head either; so the extension stops after one step. An idle head's short wait at $t_0+1$ can hand
+over to a short wait of $j$ at $t_0+2$, so the extension stops after at most two steps. It is adjacent to its run, so it adds no run and
+extends each written interval by at most two cells.
+\end{informalproof}
+
+The cut is placed at a level $\rho$ with $1\le\rho\le r_{\max}$: $C_0$ is the set of tape-$1$ edges that leave tainted steps of
+fwd $\rho$.transfer and whose next visit lies after the transfer. The waits of tape~$1$ inside the transfer are not cut. This is well
+defined: no edge of $C_0$ ends at or before the end of the transfer, so the taint up to that point does not depend on $C_0$.
+
+\begin{lemma}[Forward windows]\label{lem:c3-forward}
+\notformalized
+For $1\le r\le\rho$ let $W_r$ be the set of offsets of $R_r$ that are live tainted when fwd $r$.transfer starts. Then
+$W_1=\{\lceil u/2\rceil+\Delta:u\in A\}$ and $W_{r+1}=\{\lceil s/2\rceil:s\in W_r\}$ for $r<\rho$. Each $W_r$ is an interval with
+\[
+  \abs{W_r}\le\frac{db}{2^{r-1}}+2,\qquad \frac{m_r}3-2<\min W_r\le\max W_r\le\frac{m_r}3+\frac{3db}{2^r}+1 .
+\]
+Moreover $\abs{C_0}\le db/2^\rho+2$, and the forward stage up to the end of fwd $\rho$.transfer has $O(\rho)$ runs.
+\end{lemma}
+
+\begin{informalproof}
+The bounds hold for $W_1$: the interval $\{\lceil u/2\rceil:u\in A\}$ has at most $db+1$ elements, from $\lceil db/2\rceil$ to
+$\lceil(3db-1)/2\rceil$, and $m_1/3-2\le\Delta\le m_1/3-1$. They pass from $W_r$ to $W_{r+1}$, because $\lceil s/2\rceil\in[s/2,(s+1)/2]$
+and the image of an interval of $n$ integers has at most $n/2+1$ elements. Since $3db/2^r=3m_r/d\le3m_r/32$ and $m_r\ge64$,
+\begin{equation}\label{eq:c3-window}
+  \max W_r\le\tfrac{41}{96}m_r+1<2\lfloor m_r/3\rfloor,\qquad \max\{\lceil s/2\rceil:s\in W_r\}\le\tfrac{41}{192}m_r+1<\mathrm{sh}_r-2 .
+\end{equation}
+
+Load: the tainted steps are the reads of $A$ and, at most, the step after the last one, a short wait of tape~$2$. They write tape-$0$
+cells, which are not visited again; the loaded copy of rows~$1$ and~$2$ on tape~$1$, cells $[db,3db]$, which is live until the rewind;
+and the tape-$2$ cells $L+\lceil u/2\rceil$, $u\in A$, as $3db<\lfloor L/3\rfloor$. Rev reads these tape-$2$ cells and writes the tape-$0$
+cells $L+\lceil u/2\rceil+\Delta$, that is, $W_1$; tape~$1$ is idle, so its wait is cut, and the tape-$2$ cells above $L$ are not
+visited again.
+
+In fwd $r$.transfer the steps $s\in W_r$ are tainted, and so is $s+1$ for odd $s$, by a short wait of tape~$1$. By \eqref{eq:c3-window}
+tape~$1$ is in its half-speed part, and the scratch cells it writes are the offsets $S_r=\{\lceil s/2\rceil:s\in W_r\}$. For $r=\rho$ the
+edges leaving them are $C_0$, so $\abs{C_0}\le\abs{S_\rho}\le\abs{W_\rho}/2+1$. For $r<\rho$, the scratch window $S_r$ lies in
+$[0,\mathrm{sh}_r-2)$. It is read in move2, where tape~$0$ is already idle because $m_r-1-\max S_r>m_r-\mathrm{sh}_r+1$; in copyS, aligned
+with $Z_r$ offset $u$ and with $R_r$ offset $2m_r-\mathrm{sh}_r+u$; and next in the rewind. The copy on $R_r$ is read in move3 and move4
+and then never again. The copy on $Z_r$ is read in back, which writes the offsets $S_r$ of $R_{r+1}$, so $W_{r+1}=S_r$, and in move5.
+CopyR touches only scratch and $Z_r$ offsets at least $\mathrm{sh}_r$ and $R_r$ offsets below $2m_r-\mathrm{sh}_r$, none of them tainted.
+Each of transfer, move2, copyS, move3, move4, back and move5 reads at most two intervals of live tainted cells, so it has at most two
+runs (\cref{lem:c3-segments}).
+\end{informalproof}
+
+\begin{lemma}[Clean middle]\label{lem:c3-middle}
+\notformalized
+No step of fwd $r$ for $r>\rho$, of fwd $\rho$ after its transfer, or of comb $r$ for $r\ge\rho$ is tainted.
+\end{lemma}
+
+\begin{informalproof}
+The cut $C_0$ blocks the scratch window of level $\rho$, so the steps of move2 that read it are untainted and rewrite it with
+untainted contents. $Z_\rho$ and $R_{\rho+1}$ are therefore written by untainted steps, and so is everything built from them. These
+phases visit only regions of levels at least $\rho$, by~(ii), and the tainted windows of lower levels ($Z_{r'}$, the scratch regions,
+$\mathrm{CB}_{r'}$ and the loaded copy) lie in regions they do not visit. The one tainted window of level $\rho$ is
+$W_\rho\subseteq R_\rho$; after the transfer, tape~$0$ visits only offsets of $R_\rho$ at least $m_\rho-1$, and $W_\rho\subseteq[0,m_\rho-1)$.
+\end{informalproof}
+
+For $r<\rho$ let $U_r$ be the set of offsets $y\in[0,m_r)$ at which $\mathrm{IN}_r$, $Z_r$ or $\mathrm{CB}_r$ is live tainted when
+comb $r$.blocks starts, $u_r$ its number of maximal intervals and $\mu_r=\abs{U_r}$; let $h_r=m_r/2^r$.
+
+\begin{lemma}[Backward stage]\label{lem:c3-backward}
+\notformalized
+We have $u_{\rho-1}\le1$ and $\mu_{\rho-1}\le db/2^{\rho-1}+2$, and for $r<\rho-1$
+\[
+  u_r\le6u_{r+1}+8,\qquad \mu_r\le10\mu_{r+1}+\frac{db}{2^r}+O(u_{r+1}).
+\]
+Comb $r$ has at most $c\,(u_r+u_{r+1}+\mu_r/h_r+1)$ runs, for an absolute constant $c$.
+\end{lemma}
+
+\begin{informalproof}
+Comb $\rho-1$ reads $\mathrm{IN}_{\rho-1}$ and the comb region of level $\rho$, which come from comb $\rho$ and are clean
+(\cref{lem:c3-middle}); so $U_{\rho-1}$ is the window $S_{\rho-1}$ of $Z_{\rho-1}$, one interval with at most $db/2^{\rho-1}+2$ cells.
+
+In comb $r$, blocks moves the three heads in alignment, so afterwards all three regions are tainted exactly on $U_r$, together with
+one cell at the bottom of a block, where the waiting heads pass taint into the first two steps of the excursion; the excursions only
+reread tape-$1$ cells of the same block. Move2 rereads $\mathrm{IN}_r$, which is not visited afterwards. Dbl taints $\mathrm{OUT}_r$ on
+$2U_r$; shift and rem, through $y\mapsto(\lfloor y/2\rfloor+\mathrm{sh}_r)\bmod m_r$, add $2(U_r-\mathrm{sh}_r)$ to $\mathrm{OUT}_r$
+and $U_r+\mathrm{sh}_r$ to $\mathrm{CB}_r$. So $\mathrm{IN}_{r-1}=\mathrm{OUT}_r$ and $\mathrm{CB}_r$ each have at most $2u_r+2$
+intervals, of total size at most $4\mu_r$ and $2\mu_r$.
+
+In comb $(r-1)$.move the alignments of the table add to $\mathrm{IN}_{r-1}$ the image of the comb region of level $r$ (its offsets at
+least $\mathrm{sh}_r$, shifted by $\mathrm{sh}_r$), and to $\mathrm{CB}_{r-1}$ the image of the offsets of $\mathrm{IN}_{r-1}$ at least
+$c_{r-1}$. The image of $\mathrm{CB}_r$ lands at offsets of $\mathrm{IN}_{r-1}$ below $m_r-\mathrm{sh}_r<c_{r-1}$, where tape~$1$ is still
+in the old comb region, so the steps that read it write no cell of $\mathrm{CB}_{r-1}$, and $\mathrm{CB}_{r-1}$ receives at most the
+$2u_r+2$ intervals of $\mathrm{OUT}_r$. Hence $u_{r-1}\le(2u_r+2)+(2u_r+2)+2+(2u_r+2)$ and
+$\mu_{r-1}\le4\mu_r+2\mu_r+\abs{S_{r-1}}+4\mu_r$, up to $O(1)$ per interval.
+
+Runs: each segment of comb $r$ has at most as many runs as intervals it reads (\cref{lem:c3-segments}). In blocks an interval is read
+in every block it meets, and the $u_r$ intervals meet at most $\mu_r/h_r+2u_r$ blocks, three sweeps each. Comb $r$.move reads
+$\mathrm{OUT}_{r+1}$ and $\mathrm{CB}_{r+1}$, which gives the term $u_{r+1}$.
+\end{informalproof}
+
+Solving the recurrences gives $u_r\le4\cdot6^{\rho-1-r}$. For the sizes, $\kappa_r=\mu_r/(db)$ satisfies $\kappa_{r-1}\le10\kappa_r+2^{1-r}$
+up to the terms per interval, so
+\[
+  \kappa_r\le\sum_{j=r}^{\rho-1}10^{j-r}2^{1-j}=2^{1-r}\sum_{j=r}^{\rho-1}5^{j-r}\le\tfrac54\,2^{1-r}\,5^{\rho-r},
+\]
+a bound geometric in $r$; the terms per interval add $O(\sum_j10^{j-r}6^{\rho-j})=O(10^{\rho-r})$ cells at level $r$. Hence
+$\sum_{r<\rho}\mu_r\le c\,(5^\rho db+10^\rho)$, $\sum_{r<\rho}\mu_r/h_r=\sum_r\mu_r4^r/L\le c\,(5^\rho/d+40^\rho/L)$, and the backward
+stage has at most $c\,(6^\rho+5^\rho/d+40^\rho/L)$ runs.
+
+\paragraph{Rewind and emit.} The rewind moves only tape~$1$, down from $\mathrm{CB}_1$ offset $\mathrm{sh}_1$. It reads the live tainted
+intervals of tape~$1$: the comb regions and the scratch windows of levels below $\rho$, and the loaded copy $[db,3db]$; so it has at most
+$c\,6^\rho+2\rho+2$ runs. Afterwards only the loaded copy among them is visited again. The emit's step $u$ reads $\mathrm{OUT}_1$
+offset $u$, tape-$1$ cell $u$ and tape-$2$ cell $\min(u,\sum_rm_r-1)$, and appends output bit $u$. A tainted step of the emit reads a
+tainted cell of the loaded copy, at $u\in[db,3db]$; of $\mathrm{OUT}_1$, which has at most $2u_1+2$ intervals and size at most $4\mu_1$;
+or of $Z_r$ for $r<\rho$, which is tainted on $U_r$. Among the outputs $u\in[db,3db]$, those of $\Out(A)$ are the $4b$ bits of the
+entries $(1,1)$, $(1,2)$, $(2,1)$ and $(2,2)$. Elsewhere, the outputs of $\Out(A)$ form one run of $2b$ positions in each block of $db$
+output positions, so an interval of length $\lambda$ contains at most $2b(\lambda/(db)+2)$ of them. The other tainted intervals of the
+emit number at most $c\,6^\rho$ and have total length at most $4\mu_1+\sum_r\mu_r\le c\,(5^\rho db+10^\rho)$. Hence
+\[
+  N_{\mathrm{up}}\le4b+2b\bigl(c\,5^\rho+c\,10^\rho/(db)+2c\,6^\rho\bigr)\le4b+c'\,6^\rho b\qquad\text{once }(5/3)^\rho\le db .
+\]
+Altogether, for every $1\le\rho\le r_{\max}$,
+\begin{equation}\label{eq:c3-total}
+  \abs{C_0}\le\frac{db}{2^\rho}+2,\qquad N_{\mathrm{run}}\le c''\Bigl(6^\rho+\frac{5^\rho}d+\frac{40^\rho}L+\rho\Bigr),\qquad
+  N_{\mathrm{up}}\le4b+c'\,6^\rho b .
+\end{equation}
+
+\subsection{Cascade 4}\label{app:cascade4}
+
+Cascade~4 uses the closure of order $h=2$, because its final sweep moves tapes~$0$ and~$1$ once every three steps. All its regions are
+disjoint, separated by two buffer cells. On tape~$2$: the frames $Z_r=[z_r,z_r+m_r)$ and $\mathrm{BS}_r=[z_r+m_r+2,z_r+3m_r+2)$ for
+$r=1,\dots,r_{\max}$, with $z_1=0$ and $z_{r+1}=z_r+3m_r+4$, ending at $E_2=\sum_{r\le r_{\max}}(3m_r+4)<3L$; then the seed region
+$\mathrm{SD}=[E_2+2,E_2+2+L)$. On tape~$0$: the loaded copy $\mathrm{LD}_0=[0,L)$; $X_1=[L+2,2L+2)$; for $r=1,\dots,r_{\max}$, a region
+$\mathrm{H2R}_r$ of size $m_r$ and the region $X_{r+1}$ of size $m_r=2m_{r+1}$, the input of level $r+1$; then, for $r=r_{\max}$ down to
+$1$, regions $\mathrm{CM}_r$ of size $m_r$, $\mathrm{U2R}_r$ of size $2m_r$ and $B_{r-1}$ of size $2m_r$, with $B_{r_{\max}}=X_{r_{\max}+1}$
+and $B_0$ of size $L$. On tape~$1$: the loaded copy $\mathrm{LD}_1=[0,L)$; for $r=1,\dots,r_{\max}$, regions $\mathrm{H1}_r$ and
+$\mathrm{H2}_r$ of size $m_r$; then, for $r=r_{\max}$ down to $1$, regions $\mathrm{MZ}_r$ of size $m_r$ and $\mathrm{U1}_r$, $\mathrm{U2}_r$
+of size $2m_r$. In the table, $Y[x]$ is offset $x$ of region $Y$.
+
+\begin{center}\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.2\textwidth}>{\raggedright\arraybackslash}p{0.74\textwidth}}
+\toprule
+phase & head motion \\
+\midrule
+\endhead
+initial positioning, load, rev & tape~$2$ up from $0$ to $\mathrm{SD}[0]$ while the input head stays on bit~$0$; load, step $u<L$:
+input head on $u$, tapes $0$ and $1$ on $\mathrm{LD}_0[u]$ and $\mathrm{LD}_1[u]$, tape~$2$ on $\mathrm{SD}[\lceil u/2\rceil]$ while
+$u\le\lfloor L/3\rfloor$, then at speed~$1$; tape~$0$ up to $X_1[L-1]$; rev: $X_1[x+\Delta]$ aligned with $\mathrm{SD}[x]$, then tape~$2$
+parks on $\mathrm{SD}[0]$; tape~$2$ down to $z_1=0$ \\
+fwd $r$.move, transfer & tape~$0$ idle on $X_r[0]$, tape~$1$ up to $\mathrm{H1}_r[0]$; transfer, step $s$: $X_r[\min(s,m_r-1)]$ aligned
+with $\mathrm{H1}_r[\lceil s/2\rceil]$ for $s<2\lfloor m_r/3\rfloor$, then at speed~$1$, ending with one step at which no head moves \\
+fwd $r$.shift, rev2 & tape~$0$ reads $X_r[m_r],\dots,X_r[2m_r-1]$, cyclically shifted by $\mathrm{sh}_r$, into the fresh $\mathrm{H2}_r$;
+then $\mathrm{H2}_r$ is reversed into the fresh $\mathrm{H2R}_r$; tape~$2$ idle on $z_r$ \\
+fwd $r$.merge.move, merge, back, move5 & merge.move, $m_r+2$ steps: tape~$0$ down $\mathrm{H2R}_r$ from offset $m_r-1$ to $0$ ($m_r-1$
+steps, then it parks), tape~$1$ down from $\mathrm{H2}_r[0]$ to $\mathrm{H1}_r[0]$, so that $\mathrm{H1}_r[x]$ is aligned with
+$\mathrm{H2R}_r[x-3]$, tape~$2$ idle on $z_r$; merge: $\mathrm{H2R}_r[u]$ and $\mathrm{H1}_r[u]$ into $Z_r[u]$; back: $Z_r[u]$ into
+$X_{r+1}[u]$, downwards; move5 ($r<r_{\max}$): tape~$2$ up from $z_r$ to $z_{r+1}$ across $Z_r$ and the clean $\mathrm{BS}_r$ \\
+comb $r$.1a.move, 1a & 1a.move: tape~$0$ up $B_r[0..m_r-1]$; tape~$1$ up across $\mathrm{U2}_{r+1}$ (or $\mathrm{H2}_{r_{\max}}$) and
+the fresh $\mathrm{MZ}_r$; tape~$2$ down from $\mathrm{BS}_{r+1}[0]$ across $Z_{r+1}$ and $\mathrm{BS}_r$ to $Z_r[m_r-1]$ (up from
+$Z_{r_{\max}}[0]$ if $r=r_{\max}$); 1a: $B_r[u]$ and $Z_r[u]$ into $\mathrm{MZ}_r[u]$, downwards \\
+comb $r$.blocks.move, blocks & blocks.move: tape~$0$ up across $B_r$ into the fresh $\mathrm{CM}_r[m_r-1]$, tape~$1$ up $\mathrm{MZ}_r$;
+blocks: $2^r$ blocks of height $h_r=m_r/2^r$, from the top; in each, tape~$1$ down $h_r-1$ cells, up $h_r-1$ cells, then tapes $0$
+and $1$ down $h_r$ cells together \\
+comb $r$.dbl, shift, rev2 & dbl: $\mathrm{CM}_r[z]$ into $\mathrm{U1}_r[2z]$ and $\mathrm{U1}_r[2z+1]$; shift:
+$\mathrm{CM}_r[(z+\mathrm{sh}_r)\bmod m_r]$ into $\mathrm{U2}_r[2z]$ and $\mathrm{U2}_r[2z+1]$; rev2: $\mathrm{U2}_r$ reversed into
+$\mathrm{U2R}_r$; tape~$2$ idle on $z_r$ \\
+comb $r$.merge.move, merge, out & merge.move, $2m_r+2$ steps: tape~$0$ down $\mathrm{U2R}_r$, tape~$1$ down from $\mathrm{U2}_r[0]$ to
+$\mathrm{U1}_r[0]$, tape~$2$ up from $Z_r[0]$ to $\mathrm{BS}_r[0]$ ($m_r+2$ steps); merge: $\mathrm{U2R}_r[u]$ and $\mathrm{U1}_r[u]$ into
+$\mathrm{BS}_r[u]$; out: $\mathrm{BS}_r[u]$ into $B_{r-1}[u]$, downwards \\
+rewind, emit & rewind: tape~$0$ idle on $B_0[0]$, tape~$1$ down from $\mathrm{U1}_1[L-1]$ to cell~$0$, tape~$2$ down from
+$\mathrm{BS}_1[0]$ to cell~$0$; emit, steps $3u+i$ for $u<L$ and $i=0,1,2$: tape~$0$ on $B_0[u]$ and tape~$1$ on $\mathrm{LD}_1[u]$, both
+moving at $i=2$, tape~$2$ on cell $\min(3u+i,E_2-1)$, output bit $u$ appended at $i=2$ \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+Split each phase into segments at the steps where a head stops early or where no head moves, and each block into its sweeps; in
+particular split fwd $r$.transfer where tape~$0$ stops while tape~$1$ still moves, and the emit where tape~$2$ parks on cell
+$E_2-1$. Then in every segment each head is idle or monotone, waiting at most two consecutive steps on a cell, and whenever more than one
+moving head waits, which happens only in the emit, the moving heads that wait all wait at the same steps.
+
+\begin{lemma}[Segments of Cascade~4]\label{lem:c4-segments}
+\notformalized
+In a segment $[t_0,t_1)$ of Cascade~4, the number of runs is at most the number of maximal intervals of live tainted cells read by the
+moving heads, plus the number of idle heads on a live tainted cell that arrived there at most two steps before $t_0$, plus the number
+of runs of reads of $A$; and each run writes at most one interval of cells on each tape whose head moves.
+\end{lemma}
+
+\begin{informalproof}
+As in \cref{lem:c3-segments}, a tainted step that neither reads a live tainted cell with a moving head nor is one of the first steps
+of an idle head on a live tainted cell nor reads $A$ is tainted through a short wait from the step before it. An idle head that parked
+three or more steps before $t_0$ has wait age at least $3$ throughout the segment and passes no taint. The moving heads that wait do so
+at the same steps, at most two in a row, and then all advance together with the heads that do not wait; so a chain of short waits ends
+within two steps. The one longer chain, of at most five tainted steps, occurs when an idle head's short waits at $t_0+1,t_0+2$ hand over
+to a moving head's waits at $t_0+3,t_0+4$, at the step where tape~$2$ parks in the emit; it stays adjacent to its run. So each extension
+adds no run and only boundedly many written cells.
+\end{informalproof}
+
+The cut is placed at a level $\rho$ with $1\le\rho\le r_{\max}$: $C_0$ is the set of tape-$1$ edges that leave tainted steps of
+fwd $\rho$.transfer and whose next visit lies after the transfer; as for Cascade~3, this is well defined.
+
+\begin{lemma}[Forward windows of Cascade~4]\label{lem:c4-forward}
+\notformalized
+For $1\le r\le\rho$ let $W_r$ be the set of offsets of $X_r$ that are live tainted when fwd $r$.transfer starts, and put
+$S_r=\{\lceil s/2\rceil:s\in W_r\}$. Then $W_1=\{\lceil u/2\rceil+\Delta:u\in A\}$ and $W_{r+1}=S_r\cup(S_r-3)$ for $r<\rho$. Each $W_r$
+is an interval of at least $6$ offsets with
+\[
+  \abs{W_r}\le\frac{db}{2^{r-1}}+8,\qquad \frac{m_r}3-6\le\min W_r\le\max W_r\le\frac{m_r}3+\frac{3db}{2^r}+1\le2\lfloor m_r/3\rfloor-3 ,
+\]
+and $S_r\subseteq[7,\mathrm{sh}_r-3]$. Moreover $\abs{C_0}=\abs{S_\rho}\le db/2^\rho+5$, and the forward stage up to the end of
+fwd $\rho$.transfer has $O(\rho)$ runs.
+\end{lemma}
+
+\begin{informalproof}
+Load writes the tainted cells $\mathrm{SD}[\lceil u/2\rceil]$, $u\in A$, since $3db\le\lfloor L/3\rfloor$, together with the loaded
+copy $\mathrm{LD}_1[db..3db]$; rev aligns $\mathrm{SD}[x]$ with $X_1[x+\Delta]$, with no waits of the moving heads and tape~$1$ parked for
+more than two steps, which gives $W_1$. The bounds pass from $W_r$ to $W_{r+1}$ as in \cref{lem:c3-forward}. If $K$ is an interval of
+at least $3$ offsets, $(K-3)\cup K$ is the interval $[\min K-3,\max K]$; since $\abs{S_r}\ge\abs{W_r}/2\ge3$, each $W_{r+1}$ is again one
+interval, of at least $6$ offsets, with $\abs{W_{r+1}}\le\abs{W_r}/2+4$, $\min W_{r+1}=\min S_r-3\ge m_{r+1}/3-6$ and
+$\max W_{r+1}=\max S_r\le m_{r+1}/3+3db/2^{r+1}+1$. As in \eqref{eq:c3-window}, $\max W_r\le\frac{41}{96}m_r+1\le2\lfloor m_r/3\rfloor-3$,
+and $S_r\subseteq[\frac{m_r}6-3,\frac{41}{192}m_r+1]\subseteq[7,\mathrm{sh}_r-3]$, since $m_r\ge64$.
+
+So fwd $r$.transfer stays in its half-speed part on $W_r$ and writes the tainted offsets $S_r$ of $\mathrm{H1}_r$; for $r=\rho$ the
+edges leaving them are $C_0$. As $W_r\subseteq[0,m_r-2]$, the second half of $X_r$ is untainted, so shift and rev2 have no tainted step,
+and $\mathrm{H2}_r$ and $\mathrm{H2R}_r$ are clean. In fwd $r$.merge.move, tape~$1$ visits $\mathrm{H1}_r[x]$, $x\in S_r$, at the same
+step at which tape~$0$ visits $\mathrm{H2R}_r[x-3]$, with no waits of either: tape~$0$ parks on $\mathrm{H2R}_r[0]$ only at
+step $m_r-1$ of merge.move, when tape~$1$ is at offset $3$ of $\mathrm{H1}_r$, below $\min S_r\ge7$. Tape~$2$ has been parked on $z_r$ since
+before the transfer. So merge taints $Z_r$ exactly at the offsets $S_r\cup(S_r-3)$, and back copies $Z_r$ onto $X_{r+1}$, which gives $W_{r+1}$;
+move5 crosses this window and leaves $\mathrm{BS}_r$ untainted. Each forward level has a bounded number of segments, each reading at
+most two intervals, which gives the $O(\rho)$ runs.
+\end{informalproof}
+
+\begin{lemma}[Clean middle of Cascade~4]\label{lem:c4-middle}
+\notformalized
+No step of fwd $\rho$ after its transfer, of fwd $r$ for $r>\rho$, or of comb $r$ for $r\ge\rho$ is tainted.
+\end{lemma}
+
+\begin{informalproof}
+By \cref{lem:c4-forward} the second half of $X_\rho$ and $\mathrm{H1}_\rho[m_\rho-1]$ are untainted, and $C_0$ cuts every tape-$1$ edge
+from a tainted step of fwd $\rho$.transfer to the later phases. From the end of that transfer to the end of comb $\rho$.out, tape~$0$
+visits only cells at or beyond $X_\rho[m_\rho-1]$, tape~$1$ only cells at or beyond $\mathrm{H1}_\rho$, and tape~$2$ only cells of
+$[z_\rho,E_2)$. The live tainted regions of levels at most $\rho$ (on tape~$0$, $\mathrm{LD}_0$, the first halves of $X_{r'}$ for
+$r'\le\rho$ and $\mathrm{H2R}_{r'}$ for $r'<\rho$; on tape~$1$, $\mathrm{LD}_1$, $\mathrm{H1}_{r'}$ for $r'<\rho$ and the cut cells of
+$\mathrm{H1}_\rho$; on tape~$2$, $\mathrm{SD}$ and $Z_{r'}$ for $r'<\rho$) are not reached by an uncut edge in these phases.
+\end{informalproof}
+
+For $1\le r\le\rho-1$ let $U_r\subseteq[0,m_r)$ be the set of offsets at which $B_r$ or $Z_r$ is live tainted when comb $r$.1a starts,
+with $u_r$ maximal intervals and $\mu_r=\abs{U_r}$, and let $V_r\subseteq[0,2m_r)$ be the set of live tainted offsets of $\mathrm{BS}_r$
+at that moment, with $v_r$ maximal intervals and $\eta_r=\abs{V_r}$. For $r\le\rho-1\le k-2$ the block height is
+$h_r=m_r/2^r=d^2b/4^r\ge16b\ge16$.
+
+\begin{lemma}[Backward stage of Cascade~4]\label{lem:c4-backward}
+\notformalized
+Let $\rho\ge2$. For $1\le r\le\rho-1$, $V_r\subseteq[\frac32m_r+2,2m_r)$; $u_{\rho-1}\le1$, $\mu_{\rho-1}\le db/2^{\rho-1}+8$ and
+$V_{\rho-1}=\varnothing$; and for $1<r\le\rho-1$
+\begin{gather*}
+  u_{r-1}\le10u_r+v_r+19,\qquad v_{r-1}\le7u_r+v_r+13,\\
+  \mu_{r-1}\le17\mu_r+\eta_r+\frac{db}{2^{r-1}}+28u_r+30,\qquad \eta_{r-1}\le12\mu_r+\eta_r+20u_r+12 .
+\end{gather*}
+Comb $r$ has $O(u_r+v_r+u_{r+1}+v_{r+1}+\mu_r/h_r+1)$ runs, with $u_\rho=v_\rho=0$, and leaves $Z_r$ and $\mathrm{BS}_r$ with
+$O(u_r+v_r+1)$ tainted intervals and $O(\mu_r+\eta_r+u_r+1)$ tainted cells.
+\end{lemma}
+
+\begin{informalproof}
+At $r=\rho-1$, comb $\rho$ is clean (\cref{lem:c4-middle}), so comb $(\rho-1)$.1a.move crosses only clean cells and has no tainted step;
+$U_{\rho-1}$ is the window $W_\rho$ that merge wrote on $Z_{\rho-1}$, and $V_{\rho-1}=\varnothing$. Now follow comb $r$ for $r\le\rho-1$,
+assuming $V_r\subseteq[\frac32m_r+2,2m_r)$.
+\begin{enumerate}[label=(\arabic*)]
+\item 1a writes a subset of $U_r$ onto the fresh $\mathrm{MZ}_r$. In blocks.move tape~$0$ crosses $B_r$ and tape~$1$ crosses
+$\mathrm{MZ}_r$; a short wait of tape~$2$ on $Z_r[0]$ adds at most offset $1$. Tape~$0$ then crosses two clean cells into the fresh
+$\mathrm{CM}_r$ while tapes $1$ and~$2$ have wait age at least $3$, so $\mathrm{CM}_r$ enters blocks clean.
+\item In each block $[B,B+h_r)$ tape~$1$ turns on $B$ without waiting, and the third sweep ends by stepping onto the next block with
+wait age $0$ on both moving heads, so no taint spills across blocks. If $B+h_r-1\in U_r$, the two-step short wait of tape~$0$ at the top
+of the block taints at most $\mathrm{MZ}_r[B+h_r-2]$ and $\mathrm{MZ}_r[B+h_r-3]$; otherwise tape~$0$ reaches the third sweep with wait
+age $2h_r-2>2$. So the tainted cells of $\mathrm{CM}_r$ form at most $u_r$ intervals with at most $\mu_r+2u_r$ cells, and blocks has
+$O(\mu_r/h_r+u_r)$ runs.
+\item Dbl writes $\mathrm{U1}_r$ with at most $u_r$ intervals and $2\mu_r+4u_r$ cells; shift and rev2 write $\mathrm{U2}_r$ and
+$\mathrm{U2R}_r$ with at most $u_r+3$ intervals and $2\mu_r+4u_r+2$ cells.
+\item In merge.move, tapes $0$, $1$ and $2$ cross $\mathrm{U2R}_r$, $\mathrm{U1}_r$ and $Z_r$ together, and tape~$2$ then parks on the
+clean $\mathrm{BS}_r[0]$, as $0\notin V_r$. Afterwards $Z_r$ has at most $3u_r+4$ tainted intervals and $5\mu_r+8u_r+3$ tainted cells.
+Merge unites $\mathrm{U2R}_r$, $\mathrm{U1}_r$ and $V_r$ on $\mathrm{BS}_r$, and out copies $\mathrm{BS}_r$ onto $B_{r-1}$: at most
+$6u_r+v_r+9$ intervals and $10\mu_r+\eta_r+16u_r+8$ cells on each.
+\item For $r>1$, in comb $(r-1)$.1a.move, $5m_r+7$ steps, tape~$0$ crosses $B_{r-1}[0..2m_r-1]$, tape~$1$ crosses $\mathrm{U2}_r$ and
+enters the fresh $\mathrm{MZ}_{r-1}$, and tape~$2$ crosses two buffer cells, then $Z_r$, and enters the clean $\mathrm{BS}_{r-1}$ at step
+$m_r+5$. The buffer cells $z_r+m_r$ and $z_r+m_r+1$ were also crossed by tape~$2$ in comb $r$.merge.move, so they may be tainted; they
+meet $B_{r-1}[1..2]$ and add at most one interval and two cells, which the constants $19$ and $30$ of the lemma absorb. From step $2m_r+3$ on, tape~$0$ has wait age at least $4$, and tapes $1$ and $2$ scan only clean cells. So $\mathrm{MZ}_{r-1}$
+stays clean, and $\mathrm{BS}_{r-1}$ is tainted only during the steps $[m_r+5,2m_r+2]$, which reach its offsets in
+$[3m_r+2,4m_r)=[\frac32m_{r-1}+2,2m_{r-1})$. Counting the intervals and cells read in these steps gives the bounds on $v_{r-1}$ and
+$\eta_{r-1}$; counting those read in the steps $[0,2m_r-1]$, together with the window $W_r$ of $Z_{r-1}$ (one interval, at most
+$db/2^{r-1}+8$ cells), gives the bounds on $u_{r-1}$ and $\mu_{r-1}$.\qedhere
+\end{enumerate}
+\end{informalproof}
+
+To solve the recurrences, put $\hat u_r=7u_r+v_r$ and $\hat\mu_r=12\mu_r+\eta_r$. Then $\hat u_{\rho-1}\le7$ and
+$\hat u_{r-1}\le77u_r+8v_r+146\le11\hat u_r+146$, so $\hat u_r+14.6\le21.6\cdot11^{\rho-1-r}$ by induction, and
+$\hat u_r\le22\cdot11^{\rho-1-r}$. Likewise $\hat\mu_{\rho-1}\le12db/2^{\rho-1}+96$ and
+$\hat\mu_{r-1}\le216\mu_r+13\eta_r+12db/2^{r-1}+356u_r+372\le18\hat\mu_r+12db/2^{r-1}+51\hat u_r+372$, whence
+\[
+  \hat\mu_r\le c\,\bigl(2^{-r}9^{\rho-r}db+18^{\rho-r}\bigr),\qquad \sum_{r<\rho}(\mu_r+\eta_r)\le c\,(9^\rho db+18^\rho),\qquad
+  \sum_{r<\rho}\frac{\mu_r}{h_r}\le c\,\Bigl(\frac{9^\rho}d+\frac{18^\rho}{d^2b}\Bigr),
+\]
+and the backward stage has $O(11^\rho+9^\rho/d+18^\rho/L)$ runs.
+
+\paragraph{Rewind and emit.} In the rewind, tape~$0$ stays on $B_0[0]$ while tapes $1$ and $2$ move down to cell $0$, in two segments
+with $O(11^\rho+\rho)$ runs. Tape~$1$ crosses $\mathrm{U1}_1$ first; when it later reaches $\mathrm{LD}_1$, tapes $0$ and $2$ have wait age
+far above $2$, so the taint of $\mathrm{LD}_1$ stays in $[db,3db]$. In the emit, the step that appends output $u$ is tainted only if
+$B_0[u]$ or $\mathrm{LD}_1[u]$ is live tainted, if one of the tape-$2$ cells $3u,3u+1,3u+2$ below $E_2$ is live tainted, or if
+$u=\lceil E_2/3\rceil$ and $B_0[u-1]$ is live tainted (the park of tape~$2$ can extend the tainted interval of $u-1$ by one output).
+Within $[db,3db]$ the outputs of $\Out(A)$ are the $4b$ bits of the entries $(1,1)$, $(1,2)$, $(2,1)$ and $(2,2)$. Elsewhere, $B_0$ and the
+tape-$2$ frames $Z_r$, $\mathrm{BS}_r$ of levels $r<\rho$ give $O(11^\rho)$ tainted intervals of outputs, of total length
+$O(9^\rho db+18^\rho)$, each block of $db$ output positions contains at most $2b$ outputs of $\Out(A)$, and $(18/11)^\rho<2^\rho\le db$.
+So
+\begin{equation}\label{eq:c4-total}
+  \abs{C_0}\le\frac{db}{2^\rho}+5,\qquad N_{\mathrm{run}}\le c''\Bigl(11^\rho+\frac{9^\rho}d+\frac{18^\rho}L+\rho\Bigr),\qquad
+  N_{\mathrm{up}}\le4b+c'\,11^\rho b .
+\end{equation}
+
+\subsection{Proof of \texorpdfstring{\cref{thm:cascade-cuts}}{the theorem} and \texorpdfstring{\cref{rem:cascade-widths}}{the remark}}
+
+Let $b=b(d)=k$, let $\nu$ be as in \cref{thm:cascade-cuts}, and choose $\rho$ with $\nu\le2^\rho<2\nu$; for $d\ge d_0$ this gives
+$1\le\rho\le r_{\max}$ and $(5/3)^\rho\le db$. For Cascade~3, $6^\rho<6\nu^{\log_26}\le6(db)^{0.52}$,
+$5^\rho/d\le5(db)^{0.47}/d$ and $40^\rho/L\le40(db)^{1.07}/(d^2b)$, and the last two tend to $0$. For Cascade~4,
+$11^\rho<11\nu^{\log_211}\le11(db)^{0.58}$, $9^\rho/d\le9(db)^{0.53}/d$ and $18^\rho/L\le18(db)^{0.7}/(d^2b)$, and again the last two
+tend to $0$. Since $b=\log_2d$, \eqref{eq:c3-total} and \eqref{eq:c4-total} give $\abs{C_0}$, $N_{\mathrm{run}}$, $N_{\mathrm{up}}\le c_1\,db/\nu$
+for $d\ge d_0$, with an absolute constant $c_1$.
+
+(a) By \cref{lem:closure}(b), $\Gamma$ separates $\Out(\Qstar)=\Out(A)$ from $\Lin(\{1,2\})$, and $\abs\Gamma\le3c_1\,db/\nu$. \Cref{lem:R}
+for the oblivious machine ($\eta=0$) gives $(\wval+1)\abs\Gamma\ge\wval\abs\Gamma+\abs{\Gamma\cap\Out(\Qstar)}\ge2db$, so
+$\wval+1\ge2\nu/(3c_1)$.
+
+(b) Let $V$ be the set of $v\in A$ whose root $\Out(v)$ is untainted, so $\abs V\ge2db-N_{\mathrm{up}}\ge db$ for $d\ge d_0$. By
+\cref{lem:closure}(a), every path from a read of $A$ to a step of $\Out(V)$ uses an edge of $C$, which has at most $\abs{C_0}+3N_{\mathrm{run}}$
+cell edges and at most $N_{\mathrm{run}}$ state edges. \Cref{lem:cellcut} gives
+$db\le4c_1(db/\nu)\bigl(\log_2(g+1)+\log_2(q+1)\bigr)$, so $\log_2(g+1)+\log_2(q+1)\ge\nu/(4c_1)$.
+
+For \cref{rem:cascade-widths}, let $b\ge1$ be arbitrary and choose $d^{1/5}\le2^\rho<2d^{1/5}$ (Cascade~3) or $d^{1/6}\le2^\rho<2d^{1/6}$
+(Cascade~4). The same estimates give $N_{\mathrm{run}}=O(d^{0.52})$, respectively $O(d^{0.58})$, and $N_{\mathrm{up}}\le4b+O(d^{0.52}b)$,
+respectively $4b+O(d^{0.58}b)$, uniformly in $b$, while $\abs{C_0}\le d^{4/5}b+2$, respectively $d^{5/6}b+5$. So $\abs V\ge db$ for $d\ge d_0$,
+and the proof of \cref{lem:cellcut}, which uses nothing about the entry width, excludes the trace once $\log_2(g+1)+\log_2(q+1)$ is below
+$d^{1/5}/c$, respectively $d^{1/6}/c$.

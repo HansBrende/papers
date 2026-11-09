@@ -88,11 +88,10 @@ by these theorems and by certificates, with proof sketches.
 \end{itemize}
 
 \paragraph{What remains.} Explicit oblivious linear-time cascade schedules, specified in our experiments as oblivious traces (head motion
-and append steps), meet the crossing and skeleton conditions we tested (numerically, at $d\le128$; \cref{sec:construction}); \cref{lem:R} on
-$0$-indexed rows $1$ and $2$ excludes two of the five, while the other three pass those cuts for $\wval\ge2$ (numerically, at $d\le64$;
-\cref{rem:cascades}) and are excluded for fixed work alphabets via the
-regular-recursion obstruction of the second paper~\cite[Theorem~7.5]{SecondPaper2026} (\cite[Theorem~1.1]{CascadeObstructionMemo2026};
-\cref{prob:cascades}). Whether the combined conditions decide the general question remains open. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
+and append steps), meet the crossing and skeleton conditions we tested (numerically, at $d\le128$; \cref{sec:construction}). All five are
+excluded for fixed work alphabets by the regular-recursion obstruction of the second paper~\cite[Theorem~7.5]{SecondPaper2026}, as the
+companion memo~\cite[Theorem~1.1]{CascadeObstructionMemo2026} verifies, and two of them already fail the row-to-column condition
+(\cref{thm:cascade-cuts}). Whether the combined conditions decide the general question remains open. Counting cuts alone cannot go further: one set of steps, the storage live across the last input read
 together with the earlier output steps, separates the inputs from the outputs for every pair of row sets at once (\cref{prop:onecut}).
 Outside restricted schedule classes (\cref{cor:scale-separated}), the only coding-proof logarithmic factor known on tapes comes from counting
 passes (Theorem~P of the first paper). We extend it to passes that are monotone only up to a fixed amplitude (\cref{thm:coarsepass}), which
@@ -120,8 +119,8 @@ only in remarks or parentheses labelled as numerical and are never used in proof
 
 The formalization is in the frozen machine model of the first paper~\cite{FirstPaper2026}, through the traces, dependency DAGs
 and index codes of the eleventh paper~\cite{MergeDepth2026}, the genies of the fourteenth~\cite{BoundedStack2026} and the
-simulator of the fifteenth~\cite{HighRate2026}. Not formalized: \cref{prop:onecut} and \cref{cor:scale-separated}, which
-have complete proofs in the text; the remarks marked as proof sketches (together with the perfect-unshuffle realization in
+simulator of the fifteenth~\cite{HighRate2026}. Not formalized: \cref{prop:onecut}, \cref{cor:scale-separated}, \cref{lem:cellcut} and \cref{thm:cascade-cuts}, which
+have complete proofs in the text (the last two in \cref{app:cascade-cuts}); the remarks marked as proof sketches (together with the perfect-unshuffle realization in
 \cref{sec:construction}); and the exclusions of the individual schedule families of
 \cref{app:catalogue}, which are not numbered results and are given as proof sketches over the formal class theorems and certificate
 lemmas.
@@ -169,6 +168,7 @@ gives the certificate method: an acyclic set of linear size in a cone relation, 
 transposition. \Cref{sec:heads} proves Theorem~H, \cref{sec:crossings} Theorems~D and~X, and \cref{sec:skeletons} Theorem~S.
 \Cref{sec:demand} proves Lemma~R and the colouring criterion built on it. \Cref{sec:adaptive} treats adaptive machines,
 \cref{sec:classes} the class exclusions. \Cref{sec:construction} turns the results around into a specification for a linear-time
-transposer and examines two-sided cascade schedules against it, and \cref{sec:open} lists the open problems that remain.
-\Cref{app:catalogue} catalogues the excluded schedule families, \cref{app:leanindex} indexes the Lean declarations, and
-\cref{app:verification} explains how to build and check the formalization.
+transposer and examines two-sided cascade schedules against it, proving that two of them fail the row-to-column condition, and
+\cref{sec:open} lists the open problems that remain. \Cref{app:catalogue} catalogues the excluded schedule families,
+\cref{app:leanindex} indexes the Lean declarations, \cref{app:verification} explains how to build and check the formalization, and
+\cref{app:cascade-cuts} proves the exclusion of the two cascades.

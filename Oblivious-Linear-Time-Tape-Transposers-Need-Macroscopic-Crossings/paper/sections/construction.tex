@@ -27,13 +27,12 @@ relations involved are those of macroscopic queue-like reuse.
 \item \emph{Non-regular motion.} With $G=\max(1,\clog{(g+1)})$, in every uniform subsequential limit of the work-head trajectories rescaled
 in time and space by $L$, any open subsets $R_1,\dots,R_k\subseteq[0,C+1/G]$ on which the respective limits are locally affine have
 complements in $[0,C+1/G]$ whose measures sum to at least $1/(2G)$ (hence omit measure at least $1/(2kG)$ when one common open subset
-serves all work heads)~\cite[Theorem~6.3, Lean-verified]{SecondPaper2026}. In particular, under any contracting stage clock
-(\cite[Definitions~7.2 and~7.4]{SecondPaper2026}), stages at which every eligible subsequence of rescaled head profiles has a further
-uniform limit with a finite affine interval cover must leave an exceptional-time allowance of at least $1/(2kG)$ of $L$, so the trace is not
-an all-regular contracting recursion~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026}. A data-free prefix of expanding excursions that
-clears its workspace and resets to blank tapes can already satisfy the pure motion bounds~\cite[Theorem~8.1,
-Lean-verified]{SecondPaper2026}, whereas the computation after such a reset is a standalone run to which~\cite[Theorem~7.5]{SecondPaper2026}
-still applies; useful bent motion cannot be confined to a data-free prefix.
+serves all work heads)~\cite[Theorem~6.3, Lean-verified]{SecondPaper2026}. In particular, in every contracting stage
+clock~\cite[Definition~7.2]{SecondPaper2026}, the stages whose rescaled head profiles do not tend to paths with finitely many affine
+pieces~\cite[Definition~7.4]{SecondPaper2026} take at least $L/(2kG)$ steps up to $o(L)$, so the trace is not an all-regular contracting
+recursion~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026}. A data-free prefix of expanding excursions that clears its workspace before
+the computation starts already satisfies the pure motion bounds~\cite[Theorem~8.1, Lean-verified]{SecondPaper2026}; the computation after
+it is a run of its own, to which~\cite[Theorem~7.5]{SecondPaper2026} still applies, so bent motion helps only if it carries data.
 \end{enumerate}
 Conditions (i)--(iv) are proved here, and (vi) in~\cite{SecondPaper2026}, without any coding hypothesis. Condition (v) is the coding
 question itself: a linear-time oblivious transposer is a code of rate close to $1$ on the cone relations of a schedule meeting (i)--(iv)
@@ -66,18 +65,17 @@ fraction of inputs) by~\cite[Theorem~7.5, Lean-verified]{SecondPaper2026}. The c
 verifies this clock-regularity hypothesis on all five cascade schedules of \cref{sec:cascades} and excludes them along large dyadic $d$ both
 at $b=\max(1,\clog d)$ and (via an oblivious bit-lane lift) at $b=1$, with the canonical-width fifth cascade formalized in Lean for its
 declarative tick word.
-\item \emph{Trapped fold cascades.} In two-sided fold cascades without a pre-cascade fan-out shuffle, such as the third and fourth
-cascades of \cref{sec:cascades}, a contiguous pair of input rows avoiding the initialization cell stays trapped in a narrowing interval
-across successive half-speed folds, yielding both cell-level cuts that allow growing alphabets and a sublinear step cut for \cref{lem:R} on
-rows~$1$ and~$2$ (\cref{sec:cascade-cuts}). Prepending the two-dimensional shifts or butterfly passes of the first and second cascades spreads each
-row's reach across multiple intervals before the first fold and defeats the rows $1$--$2$ cut in our tests (numerically, for $\wval\ge2$ at
-$d\le64$; \cref{rem:cascades}), though not~\cite[Theorem~7.5]{SecondPaper2026}.
+\item \emph{The trapped folds of the third and fourth cascades.} Each fold of these schedules starts with a transfer at half speed,
+and the data of rows~$1$ and~$2$ stay in its squeezed part at every level. The narrowing window gives a sublinear separator for
+\cref{lem:R} on these rows and cell-level cuts that allow work alphabets growing with~$d$ (\cref{thm:cascade-cuts}). The first and
+second cascades fold the same way, but a shuffle first spreads each row over several distant intervals of the tape, and we know no
+cut that excludes them.
 \item \emph{The explicit families of \cref{app:catalogue}}, each excluded by a class theorem of \cref{sec:classes} or a certificate of
 \cref{sec:certificates} (in proof sketches). Several of them make macroscopic crossings with linear expansion (numerically, at $d\le128$), so
 \cref{thm:X} alone does not exclude them.
 \end{itemize}
 
-\subsection{Schedules that meet every condition we tested}\label{sec:cascades}
+\subsection{Two-sided cascade schedules}\label{sec:cascades}
 
 \input{sections/cascades}
 
@@ -235,3 +233,5 @@ A linear-time run may have up to about $4kC/\eps$ legs at scale $\eps L$ (\cref{
 between $25$ and $40$, far above the threshold of \cref{cor:subcritical} (numerically, at $d=128$, $b=7$). So pass counting, like cut
 counting, cannot exclude linear time one scale at a time. \Cref{prob:multiscale}
 asks for a pass bound that counts phases across all scales at once.
+
+\input{sections/cascade-cuts}

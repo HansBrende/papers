@@ -15,8 +15,9 @@ that involves all the $r_j$ at once and fails for every linear-time run.
 \end{problem}
 
 The schedules with $r_j=O(j)$ include, as far as we can tell, the cascades of \cref{sec:cascades}. A positive answer would exclude every
-transposer whose motion looks like a cascade at all scales; a negative answer would be a transposer of that shape, faster than
-$O(L\log d)$. The interval forests of Theorem~P do not obviously help: in our tests (numerically, at $d\le128$), the smallest charge of such forests
+transposer whose motion looks like a cascade at all scales. A negative answer would give machines of this class with bounded normalized
+running time along an unbounded sequence of dimensions (since the class is finite, one machine along a subsequence); turning this into a
+transposer of that shape that is correct at every size and faster than $O(L\log d)$ would require a further argument. The interval forests of Theorem~P do not obviously help: in our tests (numerically, at $d\le128$), the smallest charge of such forests
 over all the group widths we tried was at least $L$ on every transposer, as the cut lemma of the first paper requires, and about $2L$ and
 $3L$ on the two cascades we tested, whereas an exclusion needs a charge below $L$; localizing the forests to windows in which tapes overlap
 at two scales did not bring any charge below~$L$.
@@ -46,8 +47,10 @@ Theorems~D, X, S and Lemma~R.
 
 A linear-time transposer, if one exists, must solve a coding problem on its own schedule: codes of rate approaching one on the cone
 relations of macroscopic queue-like reuse~\cite[Corollary~O]{BoundedStack2026}. The fifteenth paper shows that binary storage codes of
-rate approaching one exist on suitable separated relations~\cite{HighRate2026}; realizing such codes on the relations of a schedule that
-meets conditions (i)--(iv) of \cref{sec:construction} would be a construction. In the other direction, showing that the cone relations of
+rate approaching one exist on suitable separated relations~\cite{HighRate2026}. A construction would need a single uniform tape machine
+that computes and uses such codes on the relations of a schedule meeting conditions (i)--(iv) of \cref{sec:construction}, with all
+computation and head movement charged, and emits the transpose in the required order; exhibiting storage codes on those relations would
+not suffice by itself. In the other direction, showing that the cone relations of
 every such schedule, after a cheap genie, have a fixed rate deficit would exclude oblivious linear-time transposers
 (\cref{thm:crux-excludes};~\cite[Corollary~O]{BoundedStack2026}); along this route, deciding (T) itself would follow from the native form of \cref{thm:G},
 machine by machine: a fixed deficit on the cone relations, with arbitrary roots, of the runs of each machine's simulators.

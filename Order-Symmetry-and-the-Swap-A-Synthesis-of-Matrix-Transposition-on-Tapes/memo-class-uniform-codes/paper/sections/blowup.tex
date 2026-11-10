@@ -1,0 +1,93 @@
+\section{Blow-ups}\label{sec:blowup}
+
+Fix $k\ge1$. Every $c\in\Z/dk$ is $c=ka+u$ for a unique \emph{block} $a=\lfloor c/k\rfloor\in\Z/d$ and \emph{position}
+$u=c\bmod k\in\{0,\dots,k-1\}$, where $c$ is read as an integer in $[0,dk)$.
+
+\begin{definition}[Blocks and blow-ups]\label{def:blowup}
+\formal{BlowUp.lean}{emb,hi,lo,block,blowUp,blowCls}
+For $X\in\Mat_{dk}(F)$ and positions $u,v$, the \emph{block} $X^{(u,v)}\in\Mat_d(F)$ is
+$X^{(u,v)}_{a,t}=X_{ka+u,\,kt+v}$. The \emph{blow-up} of a subspace $\X\subseteq\Mat_d(F)$ is
+\[
+  \X^{(k)}=\{X\in\Mat_{dk}(F):X^{(u,v)}\in\X\text{ for all positions }u,v\}.
+\]
+The \emph{blow-up} of a colouring of $\Z/d$ is the colouring of $\Z/dk$ that gives $c=ka+u$ the class of $a$ together
+with the position $u$.
+\end{definition}
+
+Up to the reindexing $c\leftrightarrow(a,u)$ of rows and of columns, $\X^{(k)}$ is the tensor product
+$\X\otimes\Mat_k(F)$. A colouring with $M$ classes blows up to one with $kM$ classes.
+
+\begin{theorem}[Theorem~B, blow-ups]\label{thm:blowup}
+\formal{BlowUp.lean}{isClassUniformCode_blowUp,finrank_blowUp,blowDec,readBlock,rot_block,blowUpEquiv}
+If $\X$ is a code of a class-uniform rule for a colouring of $\Z/d$, then $\X^{(k)}$ is a code of a class-uniform rule
+for the blown-up colouring of $\Z/dk$, and $\dim\X^{(k)}=k^2\dim\X$.
+\end{theorem}
+
+\begin{outline}
+Let $c=ka'+u$. Rotating the columns of $X$ by $c$ moves column $kt+v$ to column $kt+v-c$, and
+$(kt+v)-u+(ka'+u)=k(t+a')+v$ in $\Z/dk$ (\lean{emb_sub_add_emb}). Hence the block $(u,v)$ of $X$, rotated by the block
+$a'$ of $c$, is read from $\sigma^cX$ in place: $(\sigma^{a'}X^{(u,v)})_{a,t}=(\sigma^cX)_{ka+u,\,kt+v-u}$
+(\lean{rot_block}; the right side is \lean{readBlock}). This depends on $u$ but not on $a'$, so the decoder of the class
+$(J,u)$ can compute it: it applies $\cA_J$ to these blocks of $\sigma^cX$, one for each $v$ (\lean{blowDec}). Since
+$X^{(u,v)}\in\X$, row $a'$ of $X^{(u,v)}$, which is the part of row $c$ of $X$ in the columns at position $v$, equals
+$\cA_J(\sigma^{a'}X^{(u,v)})$ (\lean{isClassUniformCode_blowUp}). For the dimension, $X\mapsto(X^{(u,v)})_{u,v}$ is an
+isomorphism of $\X^{(k)}$ onto $\X^{k\times k}$ (\lean{blowUpEquiv}, \lean{finrank_blowUp}).
+\end{outline}
+
+\begin{corollary}[The excess scales]\label{cor:excess}
+\formal{BlowUp.lean}{two_mul_finrank_blowUp_sub}
+For every subspace $\X\subseteq\Mat_d(F)$ and every $M$,
+\[
+  2\dim\X^{(k)}-\bigl((dk)^2+(dk)(kM)\bigr)=k^2\bigl(2\dim\X-(d^2+dM)\bigr),
+\]
+with subtraction truncated at zero, as in Lean. So blowing up multiplies the excess over the interval value by $k^2$.
+It also multiplies $dM$ by $k^2$, since $(dk)(kM)=k^2dM$: the ratio of the excess to $dM$ is unchanged.
+\end{corollary}
+
+\begin{outline}
+Substitute $\dim\X^{(k)}=k^2\dim\X$ and distribute $k^2$ over the truncated difference.
+\end{outline}
+
+\begin{corollary}[A family with growing excess]\label{cor:family}
+\formal{Excess.lean}{exists_blowUp_code,two_mul_finrank_blowUp_code,blowCls_surjective,card_blowClasses}
+Let $F$ be a field in which $3\ne0$, and $k\ge1$. The blow-up of the colouring $\{0,1,3\},\{2,4,5\}$ of $\Z/6$ is a
+colouring of $\Z/6k$ with $2k$ classes, and it carries a code of a class-uniform rule of dimension $25k^2$. So
+\[
+  2\dim\X=(6k)^2+(6k)(2k)+2k^2 ,
+\]
+and the excess over $(d^2+Md)/2=24k^2$ is $k^2=dM/12$, for $d=6k$ and $M=2k$.
+\end{corollary}
+
+\begin{outline}
+Blow up the code of \cref{thm:fields} with \cref{thm:blowup} (\lean{exists_blowUp_code}), and count
+(\lean{two_mul_finrank_blowUp_code}). The blown-up colouring takes all $2k$ values (\lean{blowCls_surjective},
+\lean{card_blowClasses}).
+\end{outline}
+
+\begin{proposition}[The decoders cannot ignore the position]\label{prop:merged}
+\formal{Excess.lean}{mergedCls,mergedChanges,mergedCls_sub_one,two_mul_finrank_le_merged,finrank_lt_of_mergedCls}
+Merging the classes $(J,u)$ of \cref{cor:family} over $u$ gives the colouring $c\mapsto J(\lfloor c/k\rfloor)$ of
+$\Z/6k$, with two classes. Every code of a class-uniform rule for it has $2\dim\X\le(6k)^2+6k\cdot4$, and so, for
+$k\ge2$, dimension less than $25k^2$.
+\end{proposition}
+
+\begin{outline}
+The merged colouring changes class only at $0$, $2k$, $3k$ and $4k$, the first rows of the blocks $0,2,3,4$
+(\lean{mergedChanges}, \lean{mergedCls_sub_one}): inside a block the class is constant, and from block $1$ to block $0$
+and from block $5$ to block $4$ it does not change (\lean{hi_sub_one_of_lo_ne_zero}, \lean{hi_sub_one_of_lo_eq_zero}).
+\Cref{thm:TP} with these four rows gives the bound (\lean{two_mul_finrank_le_merged}), and $36k^2+24k<50k^2$ for
+$k\ge2$ (\lean{finrank_lt_of_mergedCls}).
+\end{outline}
+
+So for $k\ge2$ the codes of \cref{cor:family} are not codes of any rule for the two merged classes: their decoders cannot
+ignore the position~$u$.
+
+\Cref{cor:family} answers Problem~9.1(c) of the parent paper as worded: it is a family of partitions and codes, with a
+description that can be analysed given its base code (which a solver found), in which the excess grows. It answers it
+only because the number of classes grows with $d$. The excess of these codes, $dM/12$, is of the same order as the term
+$dM/2$ that intervals give, and \cref{cor:excess} shows that blow-ups cannot change the ratio of the two: a single code
+with excess $e$ at $(d,M)$ yields codes with excess $ek^2$ at $(dk,kM)$, and nothing at a fixed number of classes.
+Problem~9.1(a) is untouched. A negative answer to it needs an excess of order $d^2$ with $M=o(d)$ classes, so the ratio
+of the excess to $dM$ must be unbounded, which no blow-up of a finite example provides. We read Problem~9.1(c), with
+the parent paper's Section~7.3 and Remark~8.1(d), as asking whether the gain stays bounded at a fixed number of
+classes; \cref{prob:bounded} states that.

@@ -1,0 +1,68 @@
+\section{Every characteristic but three}\label{sec:fields}
+
+A code is described by finite data over a commutative ring, and the data are moved to a field by a ring homomorphism.
+
+\begin{proposition}[Certificates]\label{prop:certificate}
+\formal{Transfer.lean}{Certificate,Certificate.RowsHold,Certificate.PivotsHold,Certificate.code,Certificate.dec,Certificate.row_eq_dec_of_mem,Certificate.isClassUniformCode,Certificate.finrank_code}
+Let $R$ be a commutative ring and $\varphi\colon R\to F$ a ring homomorphism to a field. Fix a colouring of $\Z/d$,
+matrices $G_1,\dots,G_m\in\Mat_d(R)$, for every class $J$ and every $r\in\Z/d$ coefficients $a_{J,r}(i,j)\in R$,
+elements $N,P\in R$, and positions $p_1,\dots,p_m$, such that
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item $N\,(G_k)_{c,r}=\sum_{i,j}a_{J,r}(i,j)\,(G_k)_{i,j+c}$ for every $k$, every $r$, and every $c$ in a class $J$;
+\item $(G_k)_{p_l}=P$ if $k=l$ and $(G_k)_{p_l}=0$ otherwise.
+\end{enumerate}
+If $\varphi(N)\ne0$, the span of the matrices $\varphi(G_k)$ is a code of the class-uniform rule
+$\cA_J(Y)_r=\varphi(N)^{-1}\sum_{i,j}\varphi(a_{J,r}(i,j))\,Y_{i,j}$. If moreover $\varphi(P)\ne0$, it has
+dimension~$m$.
+\end{proposition}
+
+\begin{outline}
+Applying $\varphi$ to~(i) and dividing by $\varphi(N)$ shows that each $\varphi(G_k)$ satisfies the rule
+(\lean{Certificate.genMap_row}); the rule is linear, so the span satisfies it (\lean{Certificate.row_eq_dec_of_mem}).
+The map $Y\mapsto(\varphi(P)^{-1}Y_{p_l})_l$ sends $\varphi(G_k)$ to the $k$-th standard basis vector, so the
+$\varphi(G_k)$ are linearly independent (\lean{Certificate.linearIndependent_genMap}).
+\end{outline}
+
+\begin{theorem}[Theorem~A, every characteristic but three]\label{thm:fields}
+\formal{Fields.lean}{exists_code_of_three_ne_zero,exists_classUniformCode_gt_of_three_ne_zero,exists_code_of_charZero,exists_code_zmod}
+Let $F$ be a field in which $3\ne0$. Then the classes $\{0,1,3\}$ and $\{2,4,5\}$ of $\Z/6$ carry a code of a
+class-uniform rule of dimension $25$ over $F$, so that $2\dim\X=50>48=6^2+2\cdot6$. In particular this holds over
+every field of characteristic zero and over $\F_p$ for every prime $p\ne3$.
+\end{theorem}
+
+\begin{outline}
+Three certificates in the sense of \cref{prop:certificate}, all for the parent paper's colouring
+\lean{SwapRigidity.aperiodicCls}, cover the fields.
+\begin{itemize}[leftmargin=1.5em]
+\item \lean{rationalA}, over $R=\Z$ with $\varphi$ the canonical map, has $N=1008=2^4\cdot3^2\cdot7$ and $P=3$. It serves
+every field in which $2$, $3$ and $7$ are nonzero.
+\item \lean{rationalB}, over $\Z$, has $N=187200=2^6\cdot3^2\cdot5^2\cdot13$ and $P=15$. In characteristic $7$ its scales
+are $187200=6$ and $15=1$, both nonzero; it serves characteristic~$7$.
+\item \lean{binary}, over $R=\F_2$, is the parent paper's code with $N=P=1$ (\lean{binary_rowsHold},
+\lean{binary_pivotsHold}); with $\varphi$ the map $\F_2\to F$ it serves characteristic~$2$.
+\end{itemize}
+The conditions (i) and~(ii) for the two rational certificates, $900$ identities between integers and $625$ entries each,
+are proved by \texttt{decide} (\lean{rationalA_rowsHold}, \lean{rationalA_pivotsHold}, \lean{rationalB_rowsHold},
+\lean{rationalB_pivotsHold}). The proof of \lean{exists_code_of_three_ne_zero} splits on whether $2=0$ in $F$, then on
+whether $7=0$; in the remaining case $1008=2^4\cdot3^2\cdot7\ne0$. For $\F_p$, $3=0$ only when $p$ divides~$3$.
+\end{outline}
+
+\begin{remark}[Numerical: the certificates]\label{rem:certificates}
+The data are in \leanfile{tools/data/rational_a.json} and \leanfile{tools/data/rational_b.json}, each a class-uniform
+rule over $\Q$. The generator \leanfile{tools/gen_rational_data.py} brings the $36\times36$ system of the rule to
+reduced echelon form, takes the standard basis of its solution space (equal to $1$ at one free position and $0$ at the
+others), clears the denominators of the basis and of the decoders, and writes the integer data to
+\leanfile{RationalData.lean}. Lean does not trust the generator: the kernel checks the identities (i) and (ii), and the
+proofs use nothing else. Two further facts are checked by exact computation only, by the generator and by an
+independent recomputation, and no proof uses them: the solution space of each rule has dimension exactly $25$, so the
+span of the generators is the whole code of the rule, and the two codes are different subspaces of $\Mat_6(\Q)$,
+meeting in dimension $20$. Between them the two rational certificates serve every characteristic except $2$ and~$3$.
+\end{remark}
+
+The parent paper records that on cone relations, linear recovery with bounded complex coefficients and bounded width
+stays at the pairing rate, so that a linear construction needs positive characteristic or coefficients that cannot be
+rescaled to be bounded \cite[Section~4.5]{SeventeenthPaper2026}. A reader could take the gain of \cref{prop:F2}, the one
+gain over the interval value that the parent paper proves, for a phenomenon of characteristic~$2$ of the same kind.
+\Cref{thm:fields} shows that it is not. It concerns a single size and says nothing about rates, so it does not bear on
+that statement; it removes the only reason the examples gave to restrict a search for larger gains to positive
+characteristic. Characteristic~$3$ is open (\cref{prob:char3}).

@@ -86,6 +86,13 @@ both indices; a version of Theorem TP for the cone systems of oblivious schedule
 large for the swap at every scale separately and is not raised at all scales by one linear-time operation. The paper's
 last section states these precisely.
 
+**Subsequent memo:** [Class-Uniform Codes in Every Characteristic but Three, Their Blow-ups, and the Price of Advice](memo-class-uniform-codes/)
+shows that the code of dimension 25 of the section on small sizes exists over every field in which 3 ≠ 0, answers
+Problem 9.1(c) as worded by blowing that code up (the number of classes grows with d) and restates it for a bounded
+number of classes, and proves, in the one-hop model over finite fields, an exchange rate for the depth-reduction step:
+one dimension per symbol of advice plus half a row for each class change the advice induces. The paper and its
+formalization are unchanged.
+
 ## Building and verifying
 
 With `elan` installed, in `lean/`:

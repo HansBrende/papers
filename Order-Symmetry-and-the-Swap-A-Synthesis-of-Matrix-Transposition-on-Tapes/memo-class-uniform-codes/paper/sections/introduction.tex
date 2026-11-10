@@ -1,0 +1,79 @@
+\section{Introduction}\label{sec:intro}
+
+The series asks whether a multitape Turing machine can transpose a $d\times d$ matrix of $b(d)$-bit entries in time
+linear in its length $L=d^2b(d)$; this is statement~(T) of the first paper~\cite{FirstPaper2026}. The parent
+paper~\cite{SeventeenthPaper2026} isolates a linear one-hop model, which it reads as what one pass over a tape can
+decode, and proves two rigidity theorems in it. One of them, Theorem~TP~\cite[Theorem~6.4]{SeventeenthPaper2026},
+concerns \emph{class-uniform rules}: row $c$ of a matrix $X$ is a fixed linear function of $X$ with its columns rotated
+by $c$, and the function depends only on the class of $c$ in a partition of $\Z/d$
+\cite[Definition~6.3]{SeventeenthPaper2026}. If the $M$ classes are cyclic intervals, every code of such a rule has
+dimension at most $(d^2+Md)/2$: half the matrix space, plus half a row for each interval. For classes with no
+almost-period the bound can fail: at $d=6$ the classes $\{0,1,3\}$ and $\{2,4,5\}$ carry a code of dimension $25>24$
+over $\F_2$ \cite[Proposition~8.2]{SeventeenthPaper2026}. The parent paper asks how large such gains can be
+\cite[Problem~9.1]{SeventeenthPaper2026}, and lists three steps that separate Theorem~TP from a statement about
+oblivious machines \cite[Section~7.4]{SeventeenthPaper2026}. The second, depth reduction, needs a version of
+Theorem~TP in which values revealed at chosen steps of the computation enter as advice.
+
+\subsection{Results}
+
+\paragraph{Every characteristic but three.} The code of dimension $25$ is not an artefact of characteristic~$2$
+(\cref{thm:fields}): for the classes $\{0,1,3\}$ and $\{2,4,5\}$ of $\Z/6$ there is a code of dimension $25$ over every
+field $F$ in which $3\ne0$. The proof transfers three explicit certificates along ring homomorphisms
+(\cref{prop:certificate}): two codes over $\Q$, whose denominators involve the primes $2,3,7$ and $2,3,5,13$
+respectively, and the parent paper's code over $\F_2$. So the gain of the parent paper's Proposition~8.2 exists over
+$\Q$, $\R$ and $\C$. It is the one gain over the interval value that the parent paper proves; its table of small sizes
+also reports gains for three classes, numerically and over~$\F_2$. Characteristic $3$ is open (\cref{prob:char3}).
+
+\paragraph{Blow-ups.} Write a point of $\Z/(dk)$ as $c=ka+u$ with $a\in\Z/d$ and $0\le u<k$. The blow-up of a code
+$\X$ of $d\times d$ matrices consists of the $dk\times dk$ matrices all of whose $k^2$ blocks
+$\bigl(X_{ka+u,\,kt+v}\bigr)_{a,t}$ lie in $\X$. It is a tensor product $\X\otimes\Mat_k(F)$ up to a reindexing.
+\Cref{thm:blowup} shows that the blow-up of a class-uniform code is class-uniform for the colouring
+$c\mapsto(\text{class of }a,\,u)$, which has $k$ times as many classes, and that its dimension is $k^2\dim\X$. So the
+excess $\dim\X-(d^2+Md)/2$ of a code over the interval value is multiplied by $k^2$, and so is $dM$
+(\cref{cor:excess}). Applied to the code at $d=6$, this gives for every $k$ a code of dimension $25k^2$ for $2k$
+classes on $\Z/6k$, with excess $k^2$ (\cref{cor:family}). That answers Problem~9.1(c) of the parent paper as worded,
+which asks for a family, with a description that can be analysed, in which the excess grows; the family can be
+analysed given its base code, which a solver found. We read (c), with the parent paper's Section~7.3 and
+Remark~8.1(d), as asking whether the gain stays bounded at a fixed number of classes, and the family does not touch
+that: its excess is $dM/12$, the same order as the term $dM/2$ that intervals already give, and the ratio of the excess
+to $dM$ is invariant under blow-ups. The two merged classes form four intervals, and for $k\ge2$ Theorem~TP excludes
+the same dimension for them (\cref{prop:merged}). We restate the problem for a bounded number of classes
+(\cref{prob:bounded}).
+
+\paragraph{The price of advice.} A class-uniform rule with linear advice $\alpha$ lets row $c$ depend, besides the
+class-uniform term, on $\alpha(X)$ through a linear map that may differ from row to row. The advice costs at most its
+rank (\cref{thm:linear-advice}): the matrices of the code on which $\alpha$ vanishes form a code of a class-uniform
+rule for the same colouring. And every code extends by exactly $q$ dimensions with suitable advice of rank $q$, for
+every $q\le d^2-\dim\X$ (\cref{prop:sharp}). Over a finite field the advice may be of any kind (\cref{thm:any-advice}):
+an arbitrary map to a finite set $\Omega$, on each of whose fibres the rows obey a class-uniform rule, with offsets, for
+a colouring that may depend on the advice value. Then $\abs{F}^{\dim\X}\le\abs{\Omega}\cdot\abs{F}^{D}$, where $D$
+bounds the codes of the colourings that the advice selects. With Theorem~TP, if the class changes of every selected
+colouring lie in a non-empty set of at most $s$ rows, this gives $2\dim\X\le d^2+ds+2q$ for $q$ symbols of advice. So
+each symbol of advice costs one dimension, and each class change it induces costs half a row. The parent paper suggests
+charging each revealed bit as a regime change, at half a row, and proves nothing about it
+\cite[Section~7.4]{SeventeenthPaper2026}. In the one-hop model that charge is pessimistic: advice that enters linearly
+induces no class change and costs one dimension per symbol. \Cref{rem:depth} says what remains for machines.
+
+\subsection{How to read this memo}
+
+Every theorem, proposition, corollary and definition carries a status line in the style of the parent paper.
+\textsf{Lean:} names the declarations and the file of the formal proof, and an \emph{outline of the formal proof}
+follows; the Lean statement is authoritative. Declarations are relative to the namespace \texttt{ClassUniformMemo}
+unless they carry the prefix \texttt{SwapRigidity}, the parent paper's namespace; the files are in
+\leanfile{lean/ClassUniformMemo/}. Every theorem, proposition and corollary is formalized, except for arithmetic
+restatements inside a statement, such as the form of a bound for $M$ intervals, which follow from the formal statement
+at once. \Cref{rem:certificates} records facts about the data that the data generator checks and that no proof uses.
+The two results of the parent paper that we use are formalized there. The Lean library builds on the parent paper's
+library, which it requires through a relative path, and uses no axioms beyond \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verification}). The Lean statements index rows and
+columns by \texttt{ZMod n}; the text writes $d$ for the side length, as the parent paper does.
+
+All results are about the linear one-hop model. None of them is a statement about machines, and none of them changes
+the status of~(T).
+
+\subsection{Organization}
+
+\Cref{sec:prelim} recalls the model. \Cref{sec:fields} proves the code of dimension $25$ in every characteristic but
+three, \cref{sec:blowup} constructs the blow-ups, and \cref{sec:advice} prices advice. \Cref{sec:open} states what
+remains. \Cref{app:leanindex} indexes the Lean declarations, and \cref{app:verification} says how to build and check
+them.

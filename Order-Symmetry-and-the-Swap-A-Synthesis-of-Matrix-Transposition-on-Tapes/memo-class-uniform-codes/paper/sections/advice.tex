@@ -1,0 +1,112 @@
+\section{The price of advice}\label{sec:advice}
+
+The parent paper's second step from the one-hop model to machines is depth reduction
+\cite[Section~7.4]{SeventeenthPaper2026}: a genie reveals values at chosen steps, and the revealed word is advice that
+depends on position, so it breaks uniformity wherever it is used. The parent paper suggests that a version of
+Theorem~TP with advice would charge each revealed bit as a regime change, at half a row per change, and proves nothing
+about it. This section prices advice in the one-hop model: at most one dimension per symbol, and exactly that for
+suitable advice, when it enters linearly; and over a finite field at most one dimension per symbol plus half a row for
+each class change it induces.
+
+\begin{definition}[Linear advice]\label{def:linear-advice}
+\formal{Advice.lean}{IsClassUniformCodeWithAdvice}
+Let $\alpha\colon\Mat_d(F)\to W$ be a linear map to any vector space. A subspace $\X$ is a \emph{code of a
+class-uniform rule with linear advice $\alpha$} if there are decoders $\cA_J$, one for each class, and linear maps
+$B_c\colon W\to F^{\Z/d}$, one for each row, such that $x_c=\cA_J(\sigma^cX)+B_c(\alpha(X))$ for every $X\in\X$, every
+class $J$ and every $c\in J$.
+\end{definition}
+
+The maps $B_c$ may differ from row to row, so each row may use the advice in its own way.
+
+\begin{theorem}[Theorem~C, linear advice costs its rank]\label{thm:linear-advice}
+\formal{Advice.lean}{IsClassUniformCodeWithAdvice.inf_ker,finrank_le_finrank_inf_ker_add,IsClassUniformCodeWithAdvice.two_mul_finrank_le}
+Let $\X$ be a code of a class-uniform rule with linear advice $\alpha$. Then $\X\cap\ker\alpha$ is a code of a
+class-uniform rule for the same colouring, and $\dim\X\le\dim(\X\cap\ker\alpha)+\rank\alpha$. Consequently, if $S$ is as in
+\cref{thm:TP}, then $2\dim\X\le d^2+d\card S+2\rank\alpha$; for $M\ge2$ interval classes,
+$\dim\X\le(d^2+Md)/2+\rank\alpha$.
+\end{theorem}
+
+\begin{outline}
+On $\X\cap\ker\alpha$ the advice term vanishes, so the same decoders work (\lean{IsClassUniformCodeWithAdvice.inf_ker}).
+By rank and nullity for the restriction of $\alpha$ to $\X$, with values in the range of $\alpha$, the kernel of the
+restriction, which is $\X\cap\ker\alpha$, has codimension at most $\rank\alpha$ in $\X$
+(\lean{finrank_le_finrank_inf_ker_add}). The last statement adds \cref{thm:TP}
+(\lean{IsClassUniformCodeWithAdvice.two_mul_finrank_le}).
+\end{outline}
+
+\begin{proposition}[The price is exact]\label{prop:sharp}
+\formal{Advice.lean}{isClassUniformCodeWithAdvice_sup_range,finrank_sup_range}
+Let $\X_0$ be a code of a class-uniform rule, and $p$ a linear projection of $\Mat_d(F)$ ($p^2=p$) that vanishes on
+$\X_0$. Then $\X_0+\im p$ is a code of a class-uniform rule for the same colouring, with linear advice $p$, and
+$\dim(\X_0+\im p)=\dim\X_0+\rank p$.
+\end{proposition}
+
+\begin{outline}
+Take $B_c(w)=w_c-\cA_J(\sigma^cw)$ for $c\in J$. For $X=x+p(z)$ with $x\in\X_0$ we have $p(X)=p(z)$, and
+$\cA_J(\sigma^cX)+B_c(p(X))=x_c+p(z)_c=X_c$ (\lean{isClassUniformCodeWithAdvice_sup_range}). The sum is direct, because
+$y\in\X_0\cap\im p$ gives $y=p(y)=0$ (\lean{finrank_sup_range}).
+\end{outline}
+
+A projection of any rank $q\le d^2-\dim\X_0$ vanishing on $\X_0$ exists (project onto a $q$-dimensional subspace that
+meets $\X_0$ only in $0$, along a complement containing $\X_0$). So every code of every class-uniform rule extends, with
+linear advice of rank $q$, by exactly $q$ dimensions, for every $q\le d^2-\dim\X_0$: the inequality
+$\dim\X\le\dim(\X\cap\ker\alpha)+\rank\alpha$ of \cref{thm:linear-advice} is sharp for every code. Its form with
+\cref{thm:TP} is attained only from codes that attain \cref{thm:TP}.
+
+Advice that is not linear may also change the decoders of the rows that use it. Over a finite field we can price that
+as well.
+
+\begin{definition}[Advice of any kind]\label{def:any-advice}
+\formal{Advice.lean}{IsCodeWithAnyAdvice,ruleSpace}
+Let $\Omega$ be a finite set, $w\colon\Mat_d(F)\to\Omega$ any map, and $\mathcal P_\omega$, for $\omega\in\Omega$,
+colourings of $\Z/d$. A subspace $\X$ is a \emph{code with advice $w$} for the colourings $\mathcal P_\omega$ if for every
+$\omega$ there are decoders $\cA^\omega_J$, one for each class $J$ of $\mathcal P_\omega$, and offsets
+$b^\omega_c\in F^{\Z/d}$, one for each row, such that $x_c=\cA^\omega_J(\sigma^cX)+b^\omega_c$ for every $X\in\X$ with
+$w(X)=\omega$, every class $J$ of $\mathcal P_\omega$ and every $c\in J$.
+\end{definition}
+
+The offsets let the advice enter every row in its own way, and the colouring $\mathcal P_\omega$ lets it change the
+decoders of the rows that use it. A code of a class-uniform rule with linear advice $\alpha$ of rank $q$, over a finite
+field, is a code with advice $w=\alpha$, $\abs{\Omega}=\abs F^q$ after restricting the values to the range of $\alpha$,
+and $\mathcal P_\omega=\mathcal P$ for all~$\omega$.
+
+\begin{theorem}[Theorem~D, the price of advice]\label{thm:any-advice}
+\formal{Advice.lean}{IsCodeWithAnyAdvice.natCard_pow_finrank_le,IsCodeWithAnyAdvice.natCard_pow_two_mul_finrank_le,natCard_submodule}
+Let $F$ be a finite field and $\X$ a code with advice $w\colon\Mat_d(F)\to\Omega$ for colourings $\mathcal P_\omega$.
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item If every code of a class-uniform rule for every $\mathcal P_\omega$ has dimension at most $D$, then
+$\abs F^{\dim\X}\le\abs\Omega\cdot\abs F^{D}$.
+\item If for every $\omega$ some non-empty set of at most $s$ rows contains every row whose class under
+$\mathcal P_\omega$ differs from that of the row before it, then $\abs F^{2\dim\X}\le\abs\Omega^2\cdot\abs F^{d^2+ds}$.
+\end{enumerate}
+In particular, with $\abs\Omega=\abs F^q$, that is, $q$ symbols of advice, $2\dim\X\le d^2+ds+2q$.
+\end{theorem}
+
+\begin{outline}
+Fix $\omega$ and a matrix $X_\omega$ of $\X$ with $w(X_\omega)=\omega$, if there is one. For every other such $X$, the
+difference $X-X_\omega$ lies in $\X$ and satisfies the rule of $\omega$ without offsets, so it lies in the code
+$\X\cap\{Y:y_c=\cA^\omega_J(\sigma^cY)\}$ (\lean{ruleSpace}), which has at most $\abs F^D$ elements
+(\lean{natCard_submodule}). The fibres of $w$ partition $\X$, so $\abs\X\le\abs\Omega\cdot\abs F^D$
+(\lean{IsCodeWithAnyAdvice.natCard_pow_finrank_le}). For (ii), \cref{thm:TP} gives $D=\lfloor(d^2+ds)/2\rfloor$;
+square (\lean{IsCodeWithAnyAdvice.natCard_pow_two_mul_finrank_le}).
+\end{outline}
+
+\begin{remark}[What this says about depth reduction]\label{rem:depth}
+\Cref{thm:any-advice} is a version of \cref{thm:TP} with advice, in the one-hop model over a finite field. Every symbol
+of advice costs one dimension, and the advice costs more only through the class changes it induces, at half a row
+each. The parent paper suggests charging each revealed bit as a regime change, at half a row. Advice that enters
+linearly, as it does when the revealed values are linear in the input and enter the rows additively, induces no class
+change, and its price is one dimension per symbol (\cref{thm:linear-advice,prop:sharp}). Advice that changes the
+decoder of a single row inside an interval induces two class changes, a full row. In the regime of depth reduction,
+$q\approx\eps d^2$ symbols, part (ii) is informative only if $s<d(1-2\eps)$: the revealed values may induce fewer than
+$d$ class changes in all. The count agrees with the parent paper's charge for a state of $q$ symbols carried across a
+regime change, of order $qd$ when each of the $d$ output rows carries its own state
+\cite[Section~7.2]{SeventeenthPaper2026}.
+
+For machines the step remains open. \Cref{thm:linear-advice} uses that $\X\cap\ker\alpha$ is a code, and the proof of
+\cref{thm:any-advice} cancels the offsets by subtracting a matrix of the fibre, so that each fibre lies in a coset of a
+code. With nonlinear decoders an offset that depends on the row is itself a break of uniformity. So the second step of
+\cite[Section~7.4]{SeventeenthPaper2026} needs, for machines, a version of \cref{thm:TP} for the cone systems of real
+schedules, whose decoders are compositions of the transition function and need not be linear; a form of it that
+tolerates offsets depending on the row; and a bound on the class changes that a genie induces.
+\end{remark}

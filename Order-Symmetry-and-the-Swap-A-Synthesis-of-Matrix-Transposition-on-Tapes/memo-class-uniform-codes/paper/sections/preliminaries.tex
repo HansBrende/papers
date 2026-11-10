@@ -1,0 +1,42 @@
+\section{The model}\label{sec:prelim}
+
+Let $F$ be a field and $d\ge1$. Rows and columns of a matrix $X\in\Mat_d(F)$ are indexed by $\Z/d$, and $x_c\in F^{\Z/d}$
+is row~$c$. The rotation $\sigma^c$ moves the columns: $(\sigma^cX)_{i,j}=X_{i,j+c}$ (\lean{SwapRigidity.rot}). We use
+the parent paper's definitions.
+
+\begin{definition}[Class-uniform rules {\cite[Definition~6.3]{SeventeenthPaper2026}}]\label{def:class-uniform}
+\formal{ClassUniform.lean}{SwapRigidity.rot,SwapRigidity.IsClassUniformCode}
+Fix a colouring of $\Z/d$, that is, a partition $\mathcal P$ into classes. A \emph{class-uniform rule} is a family of
+linear maps $\cA_J\colon\Mat_d(F)\to F^{\Z/d}$, one for each class $J$. A subspace $\X\subseteq\Mat_d(F)$ is a
+\emph{code} of the rule if $x_c=\cA_J(\sigma^cX)$ for every $X\in\X$, every class $J$ and every $c\in J$. We write
+$D(\mathcal P)$ for the largest dimension of a code of a class-uniform rule for $\mathcal P$, over the field at hand.
+\end{definition}
+
+The file named in the status line is the parent paper's \leanfile{ClassUniform.lean}. In Lean the colouring is a map
+\texttt{cls} from $\Z/d$ to a type of classes, and \lean{SwapRigidity.IsClassUniformCode} asserts that decoders exist.
+
+\begin{theorem}[Theorem~TP {\cite[Theorem~6.4]{SeventeenthPaper2026}}]\label{thm:TP}
+\cited{the parent paper, Theorem~6.4, Lean-verified there (\lean{SwapRigidity.IsClassUniformCode.two_mul_finrank_le});
+we use its form for the unit shift, as in that Lean statement.}
+Let $\X$ be a code of a class-uniform rule, and let $S\subseteq\Z/d$ be a non-empty set that contains every $c$ whose
+class differs from that of $c-1$. Then $2\dim\X\le d^2+d\card S$. In particular, if the classes are $M\ge2$ cyclic
+intervals, then $\dim\X\le(d^2+Md)/2$.
+\end{theorem}
+
+For the parent paper a partition into $M$ classes has an \emph{almost-period} if a single shift leaves only $M$
+components in the graph of its Theorem~6.4; intervals have the almost-period $1$. The classes $\{0,1,3\}$ and
+$\{2,4,5\}$ of $\Z/6$ have none: every nonzero shift leaves four components
+\cite[Remark~8.1(c)]{SeventeenthPaper2026}.
+
+\begin{proposition}[{\cite[Proposition~8.2]{SeventeenthPaper2026}}]\label{prop:F2}
+\cited{the parent paper, Proposition~8.2, Lean-verified there (\lean{SwapRigidity.isClassUniformCode_aperiodicCode},
+\lean{SwapRigidity.finrank_aperiodicCode}, \lean{SwapRigidity.aperiodicCls_eq_true_iff}).}
+Over $\F_2$ the classes $\{0,1,3\}$ and $\{2,4,5\}$ of $\Z/6$ carry a code of a class-uniform rule of dimension $25$,
+while $(d^2+Md)/2=24$.
+\end{proposition}
+
+The parent paper asks~\cite[Problem~9.1]{SeventeenthPaper2026}: (a) whether $D(\mathcal P)\le(\frac12+o(1))d^2$ for two
+classes, or for $o(d)$ classes; (b) the value of $D$ for these two classes over $\F_2$, which is between $25$ and $28$;
+and (c) for a family of partitions and codes, with a description that can be analysed, in which the \emph{excess}
+$D(\mathcal P)-(d^2+Md)/2$ grows. We call $\dim\X-(d^2+Md)/2$ the excess of a code $\X$; the excess of a partition is at
+least that of each of its codes.

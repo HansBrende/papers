@@ -1,0 +1,62 @@
+\section{Open problems}\label{sec:open}
+
+The question~(T) is open. For oblivious machines it is the question about the function $r(\eps)$ of
+\cref{sec:one-function}. The problems below are the precise points at which this paper stops; the first three are finite
+or algebraic and can be attacked directly.
+
+\begin{problem}[Classes with no almost-period]\label{prob:aperiodic}
+For a partition $\mathcal P$ of $\Z/d$ into $M$ classes let $D(\mathcal P)$ be the largest dimension of a code of a
+class-uniform rule (\cref{def:class-uniform}), over a given field. \Cref{thm:TP} gives $D(\mathcal P)\le(d^2+Md)/2$ when
+the classes are intervals, and \cref{prop:aperiodic} shows that this fails for general classes.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item For two classes, is $D(\mathcal P)\le(\tfrac12+o(1))d^2$? More generally, is this so for $o(d)$ classes?
+The known upper bounds for two classes of any shape are $\tfrac34d^2+O(d)$, from \cref{thm:FL}, and what \cref{thm:TP}
+gives for the best shift set.
+\item Determine $D$ for the classes $\{0,1,3\},\{2,4,5\}$ of $\Z/6$ over $\F_2$; it is at least $25$ and at most $28$.
+\item Find a family of partitions and codes, with a description that can be analysed, in which
+$D(\mathcal P)-(d^2+Md)/2$ grows.
+\end{enumerate}
+\end{problem}
+
+A positive answer to (a) would be the half bound for all piecewise-uniform decoders in the one-hop model; it needs a
+count sharper than the union bound of \cref{thm:TP}, which loses a factor $s/(s+1)$ for $s+1$ translates. A negative
+answer would be a coding gain of positive rate native to masks and rotations, the first of its kind, and its cost on a
+tape would become the question. \Cref{sec:small} records what exact computation says for small~$d$.
+
+\begin{problem}[Unequal pieces]\label{prob:unequal}
+For which partitions of $\Z/d$ into $M$ intervals, and over which fields, is the bound $\lfloor(d^2+Md)/2\rfloor$ of
+\cref{thm:TP} attained? It is attained for equal pieces (\cref{prop:block-symmetric}). Over $\F_2$ it is attained in
+every case computed in \cref{sec:small} except one, the pieces $\{0\},\{1\},\{2,3,4\}$ at $d=5$, where the largest code
+has dimension $19<20$ on the word of a solver. Some of the codes that attain it are not codes of copy rules.
+\end{problem}
+
+\begin{problem}[Both sides, all scales]\label{prob:both}
+Let both the $A_a$ and the $B_a$ lie in the span of masks of dyadic intervals composed with rotations, with at most $M_j$
+intervals of length $d/2^j$ in use at scale~$j$. Bound $\dim\ker(\sw-K)$ in terms of the profile $(M_j)_j$. The folklore
+recursion shows that the full profile suffices for dimension $d^2$; \cref{thm:TP} and \cref{cor:digit} treat one side
+and one scale at a time.
+\end{problem}
+
+\begin{problem}[Shared decoders on cone systems]\label{prob:machines}
+State and prove a version of \cref{thm:TP} for the cone systems of oblivious linear-time schedules: on a stretch of
+periodic head motion the outputs share their decoder, and a genie that reveals $\eps L$ bits changes the regime at most
+$\eps L$ times. Does a bound of the form $r(\eps)\le\tfrac12+C(\eps+\eta)$ hold for schedules whose motion is periodic
+outside a set of steps of density~$\eta$? (\Cref{sec:to-machines}.)
+\end{problem}
+
+\begin{problem}[What an unshuffle does not supply]\label{prob:scales}
+\Cref{cor:digit} requires a transposer to break the symmetry of every address digit, and \cref{rem:compose-TP} shows
+that commutator rank cannot turn this into a factor $\log d$, because one unshuffle breaks all digits at once. Find a
+quantity that is subadditive over the steps of a machine, is large for the swap at every scale separately, and is not
+raised at all scales by a single linear-time operation. This is the operator form of the multi-scale problem of the
+sixteenth paper~\cite[Problem~11.1]{SixteenthPaper2026}.
+\end{problem}
+
+\begin{problem}[Relative rigidity on ball patterns]\label{prob:rigidity}
+The eighth paper asks whether there is $\rho>0$ such that, for every linear-time schedule, every fixed $D$ and all
+large~$d$, the transposition matrix is not the sum of a matrix of rank below $\rho L$ and a matrix supported on the
+depth-$D$ ball pattern of the schedule~\cite[Problem~10.6]{EighthPaper2026}; a positive answer alone would exclude
+oblivious linear-time transposers with linear data paths~\cite[Corollary~9.3]{BoundedStack2026}. The classes of this
+paper are defined by structure on one tensor side. Which ball patterns of schedules are contained in such a class,
+after a change of bases on one side? For those, \cref{thm:FL,thm:TP} give $\rho=\tfrac12-o(1)$.
+\end{problem}

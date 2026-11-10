@@ -1,0 +1,263 @@
+\section{The series in one place}\label{sec:series}
+
+This section states the main results of the sixteen earlier papers and their eight memos, grouped by what they are about
+and not by when they appeared. Nothing is reproved. Each statement carries its citation and its main hypotheses; the
+cited theorems have further parameters (the number of tapes, the alphabet, the time constant), which we suppress.
+\Cref{tab:series} at the end lists the papers in order. A reader who wants only the conclusion can skip to
+\cref{sec:wall}.
+
+\subsection{The question, passes and the coding formulation}\label{sec:first}
+
+The first paper~\cite{FirstPaper2026} fixes the formal statement of~(T), shows that for linear time it agrees with the
+simplest case of the formulation of Harvey and van der Hoeven~\cite[Proposition~11.1, a written proof]{FirstPaper2026},
+and proves the following.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Passes.} A transposer with at least one work tape makes $\Omega(\log d)$ passes, whatever it does with its
+data: for oblivious machines with no premise on the running time, and for all machines that run in time polynomial
+in~$L$~\cite[Theorems~5.9 and~5.12]{FirstPaper2026}. A memo removes the runtime premise for halting machines that are
+correct on all inputs~\cite{PassesMemo2026}. This is the only logarithmic lower bound on a resource of the machine itself
+that the series proves for all machines. It counts passes, not steps, and it is tight: the folklore algorithm uses
+$O(\log d)$ passes.
+\item \emph{Folding.} Along its popular traces, every limit of the rescaled work-head motion of a linear-time
+transposer satisfies an isoperimetric inequality that forces the heads to fold back
+(Theorem~M*,~\cite[Theorems~7.8 and~7.9]{FirstPaper2026}). The proof is a cut argument: the information that crosses a
+cut of the time--space diagram is bounded by the states and the work-tape cells that enter across the cut.
+\item \emph{Coding.} Every linear-time transposer yields a causal network code for complete exchange on the block
+network of a time--space diagram of linear length, correct on a $2^{-O(d\log d)}$ fraction of the inputs, and on all
+inputs if the machine is oblivious~\cite[Theorems~8.10 and~9.9]{FirstPaper2026}. The \emph{Tape Coding Conjecture} says
+that for large $d$ no causal code solves complete exchange on such a fraction of the inputs on the block network of any
+diagram of linear length; it implies that (T) fails~\cite[Conjecture~9.1, Theorem~9.2]{FirstPaper2026}. Its plain form,
+for codes correct on all inputs, excludes oblivious linear-time transposers~\cite[Theorem~9.9]{FirstPaper2026}. On
+these networks every routing has rate $O(1/\log d)$, so a solving code beats routing by a factor $\Omega(\log d)$, and
+the conjecture is equivalent to saying that coding beats routing by only $o(\log d)$ on tape
+networks~\cite[Theorems~8.8 and~9.4]{FirstPaper2026}.
+\end{itemize}
+The pass bound at polynomial running time, Theorem~M* and the reduction to codes survive when the machine is correct
+on only a $2^{-O(d\log d)}$ fraction of the inputs. The same paper studies an abstract model of the one technique claimed
+to beat $O(L\log d)$, recursion on XOR-mixed address frames: there every gadget costs at least its number of wires,
+whereas linear time would need less~\cite[Theorem~12.4 and Proposition~12.9]{FirstPaper2026}; the correspondence between
+the model and the preprint's recursion is informal. It also records why a proof must use the shape of tapes: a bound
+$o(\log n)$ on coding gains for bounded-degree graphs in general would give superlinear circuit lower bounds for cyclic
+shifts and multiplication~\cite[Proposition~11.2]{FirstPaper2026}.
+
+The third paper~\cite{ThirdPaper2026} shows that the bit case is at least as hard: linear-time transposition of bit
+squares of dyadic side implies~(T), by one fixed wrapper. The converse is open, and the paper proves barriers for
+restricted compilers in that direction; one of them is a multiscale obstruction for compilers with boundedly many
+stages.
+
+\subsection{What head motion must do}\label{sec:motion}
+
+A second line asks what the heads of a linear-time transposer must do.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Not affine.} Along the popular traces, the limits of the rescaled work-head paths of a linear-time
+transposer fail to be locally affine on sets of times of total measure at least $\tfrac12$, summed over the heads and
+measured in blocks. Bounded-length words over three explicit palettes of scan operations are excluded, and so are
+contracting recursions all of whose stages have regular limiting
+motion~\cite[Theorems~6.3, 7.1 and~7.5]{SecondPaper2026}. No machine whose work heads are home-based with legs made of
+boundedly many constant-rate runs transposes in linear time, and in every rescaled limit a linear-time transposer has
+a linear amount of curved travel~\cite[Theorems~3.10 and~3.12]{FourthPaper2026}.
+\item \emph{Macroscopic crossings.} An oblivious linear-time transposer routes a linear amount of information through
+pairs of interleaved revisits whose excursions are a fixed fraction of~$L$: for every set of at least $\alpha L$ output
+bits, every set of steps separating them from the earlier ends of such crossings has at least $c$ times as many
+elements~\cite[Theorem~5.5]{SixteenthPaper2026}. A fixed fraction of this expansion sits on one coarsely monotone leg of
+one tape, in a skeleton from a finite family independent of~$d$, and two work heads must each make linearly many long
+revisits~\cite[Theorems~6.7 and~4.1]{SixteenthPaper2026}. The crossing and skeleton statements hold on heavy traces of
+adaptive machines and of a bit simulator~\cite[Theorem~8.1]{SixteenthPaper2026}.
+\item \emph{Rows to columns.} In the diagram of an oblivious transposer, every set of steps that separates the inputs
+of a set of rows from the outputs they feed into a set of output rows carries the corresponding information, whatever
+the coding~\cite[Lemma~7.1]{SixteenthPaper2026}. When the cuts for different address bits are disjoint this gives a
+time bound $\Omega(L\log d)$ that no coding can evade~\cite[Corollary~7.3]{SixteenthPaper2026}.
+\item \emph{Source covers.} For one fixed geometry of returns, a certificate that retains every input on which an
+output can depend, and charges the information used to simplify the dependence, gives a correctness deficit of at
+least $\eps L$ when the return families consist of a two-class core, at most one arbitrary exceptional family and
+families of at most $\eps L$ hops, for fixed bounds on the running time, the capacity and the number of span
+classes~\cite[Corollary~4.3]{SourceCovers2026}. A memo excludes funnels and single-sweep terminal landings and shows
+where the certificate stops~\cite{GapAreaMemo2026}. These hypotheses on the geometry are not derived for arbitrary
+machines.
+\end{itemize}
+
+Three results mark the limits of this line.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Padding.} For every machine there is a wrapper, with more tapes and states and additive overhead
+$O(d^2b)$, whose complete runs satisfy the cut inequality behind Theorem~M* with zero slack, and whose normalized head
+limits satisfy all the conclusions of Theorem~M* under a linear time bound. The wrapper's motion is independent of the
+computation that follows~\cite[Theorem~8.1]{SecondPaper2026}. It needs no idle tapes, and it also meets the finer
+entry-cell form of the inequality at every slot length from one cell up to a constant number of
+rows~\cite{PaddingMemo2026}. So these conditions on motion can be met by a machine that transposes nothing; they do not
+see which information reaches the outputs.
+\item \emph{One cut for all pairs.} In the diagram of any run, one set of steps separates the inputs from the outputs
+for every pair of row sets at once~\cite[Proposition~10.2]{SixteenthPaper2026}. So counting the cuts of the
+rows-to-columns inequality cannot by itself go beyond linear time: the disjointness that
+\cite[Corollary~7.3]{SixteenthPaper2026} needs is not automatic.
+\item \emph{The candidates.} Five explicit linear-time cascade schedules meet the crossing and skeleton conditions
+at the sizes tested. All five are excluded, for fixed work alphabets, by the regular-recursion obstruction of the second
+paper~\cite{CascadeObstructionMemo2026}, and two of them also by explicit cuts of the rows-to-columns
+inequality~\cite[Theorem~10.8]{SixteenthPaper2026}. Whether the combined conditions on motion decide the oblivious case
+is open.
+\end{itemize}
+
+\subsection{Depth reduction}\label{sec:depth}
+
+The fourth paper~\cite{FourthPaper2026} splits the oblivious case of~(T) into two statements.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Depth reduction} (the trajectory cut problem $\TCP(k)$): for every $\eps>0$, deleting $\eps T$ edges from
+the dependency graph of $k$ head walks of length~$T$ leaves no path with more than a bounded number of long hops, and
+then, after periodic steps are also revealed, paths of bounded length.
+\item \emph{The crux}: an index-coding lower bound on the resulting bounded cones, strong enough to exceed the cost of
+the revealed steps.
+\end{itemize}
+Together they would exclude oblivious linear-time
+transposers~\cite[Theorem~4.10 and Corollary~4.11]{FourthPaper2026}. Depth reduction is now a theorem. It was proved
+for home-based walks~\cite[Theorem~4.20]{FourthPaper2026}; then for walks of bounded nesting load, and for one arbitrary
+head together with heads of bounded nesting load at boundedly many
+scales~\cite[Theorems~3.6 and~4.2]{EighthPaper2026}; and finally for every number of walks, with a depth $D(k,\eps)$
+such that $\log\log D=O(k^2\log(k/\eps))$~\cite[Theorem~7.5]{BoundedStack2026}. A memo shows that $\TCP(k)$ for all~$k$
+is equivalent to constant-depth revelation of arbitrarily small entropy per input bit, for all linear-time oblivious
+computations~\cite{InfoDepthMemo2026}. The fourteenth paper also refutes Conjectures~A$'$ and~A$''$ of the fourth and
+eighth papers, which would have made the deep-nesting pairs
+depth-robust~\cite[Corollary~9.1]{BoundedStack2026}: walks nested at $m$ scales are cut to a depth independent of~$m$.
+It draws the conclusion that matters here~\cite[Corollary~9.3]{BoundedStack2026}:
+\begin{quote}
+\emph{for oblivious machines, the crux alone would exclude linear-time transposers.}
+\end{quote}
+In the language of \cref{sec:storage}: for an oblivious linear-time transposer and every $\eps>0$, revealing $\eps L$
+bits at suitable steps leaves every output bit a function of the revealed word and of boundedly many input bits, and
+for some value of the revealed word the inputs compatible with it form a binary storage code of rate at least $1-\eps$
+on the machine's own cone relation. The same genies give depth reduction at the level of
+codes~\cite[Corollary~9.6]{BoundedStack2026}, as conjectured in the eleventh paper. And, given the \emph{native half
+bound} (every binary storage code on the cone relations of the machine's own traces has rate at most
+$\tfrac12+o(1)$, which is open), they exclude every linear-time transposer, adaptive or not, whose trace has entropy at
+most $\eta L$ for a fixed $\eta<\tfrac12$~\cite[Corollary~9.7]{BoundedStack2026}.
+
+For machines whose data path is linear over a field, linear depth reduction together with a \emph{linear crux}, a
+min-rank bound for the ball systems of schedules, excludes oblivious linear-time
+transposers~\cite[Theorem~7.5]{EighthPaper2026}. The linear crux is exactly the relative rigidity of the transposition
+matrix described in \cref{sec:onehop}~\cite[Problem~10.6]{EighthPaper2026}, and since the fourteenth paper it alone
+suffices~\cite[Corollary~9.3(c)]{BoundedStack2026}.
+
+\subsection{Storage codes: what is proved}\label{sec:proved}
+
+The crux needs an upper bound on the rate of storage codes on cone relations. The series proved such bounds, at the
+pairing rate, for many classes of relations.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Homomorphisms and small degree.} Rate bounds pull back along homomorphisms, so every storage code on a
+graph that maps to $C_5$, to $K_{14/5}$ or to the Petersen graph has rate at most
+$\tfrac12$~\cite[Theorem~6.5 and Corollary~6.9]{FourthPaper2026}. On triangle-free graphs of maximum degree three no
+scalar linear code over any field beats~$\tfrac12$~\cite[Theorem~6.13]{FourthPaper2026}. The Clebsch graph, of degree
+five, has guessing number~$10$ on $16$ vertices~\cite[Corollary~6.11]{FourthPaper2026}, so bounded degree alone is not
+enough.
+\item \emph{Bounded complex coefficients.} On locally bipartite graphs of bounded degree, linear codes with bounded
+complex coefficients have rate at most $\tfrac12+o(1)$~\cite[Theorem~6.17]{FourthPaper2026}. The same holds for complex
+linear recovery with bounded coefficients and fixed block width on directed relations of bounded incidence degree that
+are separated, hence on cone relations after a paid trimming of
+degrees~\cite[Theorem~4.5 and Corollary~4.7]{DirectedRecovery2026}. On such relations a gain by linear codes with
+boundedly many symbols per vertex therefore needs positive characteristic, or complex coefficients that no diagonal
+rescaling makes bounded.
+\item \emph{Hyperfinite relations.} Every code over every finite alphabet on relations whose incidence graphs are
+uniformly hyperfinite and separated has rate at most $\tfrac12+o(1)$; no degree bound is
+needed~\cite[Corollary~4.4]{DirectedRecovery2026}.
+\item \emph{Nested elimination.} The exact bound $\card C^2\le\card\alpha^{\card V}$ holds for all codes, linear or not,
+on large classes of relations without transitive triangles: triangle-free graphs of maximum degree three; loopless
+relations whose underlying graph has maximum degree three; relations whose vertices of in-degree at least three induce
+an acyclic sub-relation; relations partitioned into blocks with private outside parents, each block chordless
+subcubic, a chorded digon path or internally certified; and Cayley relations $\mathrm{Cay}(G,\{s,s^{-1},t\})$ of every
+finite group~\cite[Theorems~4.3, 5.2, 5.3 and~5.10, Corollary~5.12]{SeventhPaper2026}. It also holds on the class of
+the fourth paper's Theorem~S, for all codes~\cite[Theorem~3.6]{DirectedReciprocity2026}. The degree bound cannot be
+raised: a $4$-regular triangle-free graph on $13$ vertices carries a linear code over $\F_4$ with
+$\card C^2=4^{14}$~\cite[Example~7.8]{SeventhPaper2026}.
+\item \emph{Covers and towers.} For the binary adjacency code of the Clebsch graph, every connected tower of binary
+lifts has kernel dimension at most $N/2+2$~\cite[Theorem~9.2]{Covers2026}; lifting a binary linear code with a
+unit-diagonal check along a tower of double covers never raises its rate~\cite[Theorem~8.1]{EighthPaper2026}.
+\item \emph{Memos.} The half bound for circular cliques $K_{p/q}$ extends to every $p/q<3$~\cite{CircularMemo2026};
+nested elimination extends to soft recovery with record capacities~\cite{SoftRecovery2026}; and the bounds for supports
+of maximum degree three extend beyond scalar linear codes, to reversible rules over any alphabet and to linear codes
+whose rows have at most one port of rank above one~\cite{SubcubicMemo2026}.
+\end{itemize}
+
+One result of this group is about the relations of machines themselves. For cones of fixed depth in linear-time
+schedules, after a paid trimming of degrees, only $O(L/\log d)$ matched pairs of an input port and the output that
+demands it lie within any fixed incidence
+distance~\cite[Theorem~3.3, Corollaries~3.7 and~3.8]{DirectedRecovery2026}. So cone relations are separated in the
+sense of \cref{sec:storage}, and almost no output is within bounded distance of its own input bit. No gadget of bounded
+size can then lift a code above the pairing rate: a gain above $\tfrac12$ on boundedly many coordinates needs a short
+path between the two ports of one of them~\cite[Lemma~4.1 and Theorem~4.2]{DirectedRecovery2026}. The $L/\log d$ comes
+from a bound in steps for transport at bounded occupancy, which charges every transported label the $\log d$ bits of
+its row address~\cite[Lemma~3.4]{DirectedRecovery2026}: for uncoded movement the logarithm is proved, and what the
+bound does not cover is a cell that carries a combination of many labels.
+
+This led to the \emph{all-code question}~\cite[Question~9.1]{DirectedRecovery2026}: does every storage code on
+separated relations of bounded incidence degree have rate at most $\tfrac12+o(1)$?
+
+\subsection{Storage codes: what is false}\label{sec:false}
+
+The answer is no.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Above the pairing rate.} There are relations of bounded (astronomically large) incidence degree in which
+every paired distance tends to infinity, with $\F_{127^2}$-linear storage codes of rate above $0.5021$, and binary
+codes of rate above $0.5013$; for large primes inert in $\Q(\sqrt5)$ the rates approach
+$4-2\sqrt3\approx0.536$~\cite[Theorems~7.1 and~7.3, Corollary~8.2]{StorageCodes2026}. The relations are twisted
+quotients of a Bruhat--Tits tree, the codes are Tanner codes with Reed--Solomon local codes, and their dimension comes
+from Riemann--Roch on Hilbert modular surfaces in characteristic~$p$. The undirected form of the question, on graphs of
+bounded degree with long odd cycles, has a negative answer as well~\cite[Corollary~9.3]{StorageCodes2026}. Tanner operators of the same
+kind, at $p=3$, refute the independence of the chain in Jaikin-Zapirain's arbitrary-field form of the L\"uck
+approximation conjecture~\cite[Theorem~5.6]{Luck2026}.
+\item \emph{Rates approaching one.} A linear-time transposer, even an adaptive one, would yield binary storage codes
+of this kind at every large degree cap~$\Delta$, with rates tending to one as $\Delta$
+grows~\cite[Theorem~3.1]{HighRate2026}; and such codes exist abstractly, with rate at least
+$1-C\Delta^{-\alpha}$~\cite[Theorem~5.5]{HighRate2026}. So, at the scale of that transfer theorem, no rate bound for
+separated relations of bounded degree in general can exclude a transposer~\cite[Corollary~6.2]{HighRate2026}: a lower
+bound must use a further restriction imposed by the physical computation.
+\end{itemize}
+No tape process is known that realizes the recoveries of either family.
+
+\subsection{Adaptive machines}\label{sec:adaptive}
+
+Much of the above already covers adaptive machines: the pass bound (at polynomial running time, or by the memo),
+Theorem~M* along popular traces, and the reduction of~(T) to the Tape Coding Conjecture. Beyond that the series has the
+following.
+\begin{itemize}[leftmargin=1.5em]
+\item Every linear-time transposer yields an external-memory transposition with $O(d)$ I/Os on blocks of one row that
+is oblivious on $2^{L-O(d)}$ inputs, so an external-memory lower bound without the indivisibility assumption would
+refute~(T)~\cite[Theorem~6.4 and Corollary~6.5]{MergeDepth2026}.
+\item The source-cover exclusions extend to machines of sufficiently low
+adaptivity~\cite[Theorem~6.1]{MergeDepth2026}.
+\item Given the native half bound for the relations of skeleton classes, which is open, a linear-time transposer whose
+work heads enter every cell boundedly often must carry about $L/2$ bits in its coarse skeleton, hence in the coarse
+motion of its input head~\cite[Theorem~4.13 and Corollary~4.16]{MergeDepth2026}; the fourteenth paper removes the
+hypothesis on the work heads from the skeleton statement~\cite[Corollary~9.7]{BoundedStack2026}.
+\item The fifteenth paper extracts its codes from any linear-time transposer through a packet
+compilation~\cite[Theorem~3.1]{HighRate2026} and, at the original bit positions, from the traces of a bit simulator
+with few traces~\cite[Theorems~8.1 and~9.2]{HighRate2026}. The crossing theorems hold on heavy traces of the machine and
+of that simulator~\cite[Theorem~8.1]{SixteenthPaper2026}; whether they hold in the machine's own diagram on traces that
+carry almost all inputs is open~\cite[Problem~11.2]{SixteenthPaper2026}.
+\end{itemize}
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}r>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}p{0.62\textwidth}@{}}
+\toprule
+ & Paper & Main contribution to the question \\
+\midrule
+1 & Tape Coding Conjecture~\cite{FirstPaper2026} & Formal statement; $\Omega(\log d)$ passes; Theorem~M*; transposers
+are network codes \\
+2 & Local Coding Barriers~\cite{SecondPaper2026} & Local coding bounds; affine and regular motion excluded; padding \\
+3 & Bit and Word~\cite{ThirdPaper2026} & Transposition of dyadic bit squares implies~(T) \\
+4 & Curved Motion~\cite{FourthPaper2026} & Curved motion; depth reduction plus crux; storage codes at rate $\tfrac12$ \\
+5 & Directed Recovery~\cite{DirectedRecovery2026} & Paired-distance separation of cones; half bounds; the all-code
+question \\
+6 & Covers~\cite{Covers2026} & Half bounds along covers and for locally generated codes \\
+7 & Nested Elimination~\cite{SeventhPaper2026} & Exact all-code half bounds by elimination \\
+8 & Bounded Nesting~\cite{EighthPaper2026} & Depth reduction at bounded nesting; the linear crux as rigidity \\
+9 & Source Covers~\cite{SourceCovers2026} & Source-cover certificates and exclusions \\
+10 & Directed Reciprocity~\cite{DirectedReciprocity2026} & All-code bound on the class of Theorem~S; deep nesting \\
+11 & Merge Depth~\cite{MergeDepth2026} & Merge depth; adaptive machines; external memory \\
+12 & L\"uck Approximation~\cite{Luck2026} & A Tanner operator whose kernel survives along a congruence tower and dies
+along pro-$3$ towers \\
+13 & Above Half Rate~\cite{StorageCodes2026} & The all-code question has a negative answer \\
+14 & Bounded-Stack DAGs~\cite{BoundedStack2026} & Depth reduction for every number of walks \\
+15 & High-Rate Codes~\cite{HighRate2026} & A transposer needs rates tending to one; such codes exist abstractly \\
+16 & Macroscopic Crossings~\cite{SixteenthPaper2026} & Crossings, skeletons, rows to columns, one cut for all pairs \\
+\bottomrule
+\end{tabular}
+\caption{The earlier papers of the series.}\label{tab:series}
+\end{table}

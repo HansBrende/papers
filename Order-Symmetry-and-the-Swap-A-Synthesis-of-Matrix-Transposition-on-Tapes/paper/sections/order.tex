@@ -1,0 +1,242 @@
+\section{Order: the flag bound}\label{sec:order}
+
+Notation is that of \cref{sec:onehop}: $F$ is a field, $V=F^d$, $\sw$ is the swap, $K=\sum_aA_a\otimes B_a$ with finitely
+many terms, and the swap code is $\ker(\sw-K)=\{X:X^{\tr}=\sum_aA_aXB_a^{\tr}\}$. A \emph{complete flag} is a chain of
+subspaces $W_1\subset W_2\subset\dots\subset W_d=V$ with $\dim W_i=i$.
+
+\subsection{The theorem}
+
+\begin{theorem}[Theorem~FL, the flag bound]\label{thm:FL}
+\partformal{Flag.lean}{finrank_swapCode_le_of_flag,finrank_swapCode_le_of_staircase,finrank_swapCode_le_of_flag_left,finrank_swapCode_swap}{the
+choice of bases adapted to the two flags (step~1 of the proof). The Lean statement is the resulting coordinate form:
+if $P,Q$ are invertible and every $P^{-1}B_aQ$ has its column $b'$ supported on the first $g(b'+1)$ rows, the bound
+holds.}
+Let $W_1\subset\dots\subset W_d=V$ be a complete flag and put $g(i)=\dim\sum_aB_a(W_i)$. Then, whatever the $A_a$ are,
+\[
+  \dim\ker(\sw-K)\ \le\ \sum_{i=1}^{d}g(i).
+\]
+The same holds with the roles of the $A_a$ and the $B_a$ exchanged.
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1: bases.} The subspaces $U_i=\sum_aB_a(W_i)$ are nested and $\dim U_i=g(i)$. Choose a basis
+$f_0,\dots,f_{d-1}$ of $V$ with $W_i=\spn(f_0,\dots,f_{i-1})$, and a basis $f'_0,\dots,f'_{d-1}$ with
+$U_i\subseteq\spn(f'_0,\dots,f'_{g(i)-1})$ for every~$i$; such a basis exists because the $U_i$ are nested: extend a
+basis of $U_1$ through $U_2,\dots,U_d$ and then to~$V$. For a term $A\otimes B$ of $K$ write $[B]_{b,b'}$ for the
+coefficient of $f'_b$ in $Bf_{b'}$ and $[A]_{a,a'}$ for the coefficient of $f_a$ in $Af'_{a'}$. Since
+$Bf_{b'}\in U_{b'+1}$, the coefficient $[B]_{b,b'}$ vanishes unless $b<g(b'+1)$.
+
+\emph{Step 2: the equations.} Write $X=\sum_{a,b}p_{ab}\,f'_a\otimes f_b$. Then $\sw X=\sum p_{ab}\,f_b\otimes f'_a$, whose
+coefficient at $f_a\otimes f'_b$ is $p_{ba}$, and the coefficient of $KX$ at $f_a\otimes f'_b$ is
+$\sum_{\text{terms}}\sum_{a',b'}[A]_{a,a'}[B]_{b,b'}\,p_{a'b'}$. So $\sw X=KX$ says, for all $a,b$:
+\begin{equation}\label{eq:FL}
+  p_{ba}\ =\ \text{a linear combination of the }p_{a'b'}\text{ with }g(b'+1)>b .
+\end{equation}
+
+\emph{Step 3: elimination.} Let $I=\{(a',b'):a'<g(b'+1)\}$, so $\card I=\sum_ig(i)$. We claim that a solution $p$ that
+vanishes on $I$ is zero; then restriction to $I$ is injective on the code and the bound follows. Suppose $p$ vanishes on
+$I$, and prove that row $b$ of $p$ vanishes, by downward induction on $b=d-1,\dots,0$. By \eqref{eq:FL}, $p_{ba}$ is a
+combination of entries $p_{a'b'}$ with $g(b'+1)>b$. If $a'>b$, row $a'$ vanishes by induction. If $a'\le b$, then
+$a'\le b<g(b'+1)$, so $(a',b')\in I$ and $p_{a'b'}=0$. Hence $p_{ba}=0$.
+
+\emph{Step 4: exchange.} Since $\sw(\sw-\sum_aA_a\otimes B_a)\sw=\sw-\sum_aB_a\otimes A_a$, the two kernels have the same
+dimension.
+\end{proof}
+
+\begin{outline}[Outline of the formal proof of the coordinate form]
+In Lean the columns are numbered from~$0$ and the function $g$ is shifted accordingly: Lean's $g(b')$ is the $g(b'+1)$
+of the statement above. Let $Q$ be the matrix whose columns are the $f_j$ and $P$ the matrix whose columns are the
+$f'_j$; then $(P^{-1}B_aQ)_{b,b'}$ is the coefficient $[B_a]_{b,b'}$. The map $X\mapsto P^{-1}X(Q^{-1})^{\tr}$ is an
+isomorphism from the code of $(A_a,B_a)$ onto the code of $(Q^{-1}A_aP,\,P^{-1}B_aQ)$ (\lean{swapCodeEquiv},
+\lean{finrank_swapCode_conj}), which reduces the statement to matrices $B_a$ whose column $b'$ vanishes from row
+$g(b')$ on. For these, a solution that vanishes on $\{(a',b'):a'<g(b')\}$ is zero, by strong induction on $d-1-b$
+(\lean{eq_zero_of_mem_swapCode_of_staircase}), so restriction to that set is injective
+(\lean{staircaseRestrict_injective}), and the set has $\sum_{b'}\min(g(b'),d)$ elements (\lean{card_staircase}). The
+exchange of sides is \lean{finrank_swapCode_swap}. No monotonicity of $g$ is used.
+\end{outline}
+
+The bound depends on one tensor side only, and on that side only through how fast the images of a flag grow: we call
+$g$ the \emph{expansion profile} of the $B_a$ along the flag. The transposed profiles are also available, because
+$\rank(\sw-K)=\rank(\sw-K^{\tr})$ and $K^{\tr}=\sum_aA_a^{\tr}\otimes B_a^{\tr}$.
+
+\begin{proposition}[The bound is attained for every profile]\label{prop:attained}
+\formal{Flag.lean}{finrank_swapCode_staircase,exists_staircase_finrank_eq,mem_swapCode_staircase_iff}
+Let $g\colon\{1,\dots,d\}\to\{0,\dots,d\}$ be any function. Take one term for every pair $(i,k)$ with $k<g(i+1)$,
+namely $A=E_{ik}$ and $B=E_{ki}$, where $E_{ik}$ is the matrix unit. Then column $i$ of every $B_a$ is supported on
+the first $g(i+1)$ rows, and the swap code is $\{X:X_{ki}=0\text{ unless }k<g(i+1)\}$, of dimension exactly
+$\sum_ig(i)$.
+\end{proposition}
+
+\begin{outline}
+Here $KX=\sum X_{ki}E_{ik}$ over the chosen pairs, so $X^{\tr}=KX$ holds at an entry $(i,k)$ with $k<g(i+1)$ and forces
+$X_{ki}=0$ at the others (\lean{mem_swapCode_staircase_iff}).
+\end{outline}
+
+\begin{remark}[Numerical: the bound is not always tight]\label{rem:not-tight}
+For a fixed span of second factors the best flag need not give the true maximum over the first factors. In an
+exhaustive computation over $\F_2$ at $d=3$, for $4$ of the $20$ orbits of spans of at most two second factors the
+maximum is $4$ while the best flag, over $\F_2$, $\F_4$ or $\F_8$, gives $5$ or $6$.
+\end{remark}
+
+\subsection{Corollaries}
+
+Write $h=d(d-1)/2$, so that $\dim\ker(\sw-K)\le d(d+1)/2$ is the same as $\rank(\sw-K)\ge h$.
+
+\begin{corollary}[A pair of flags]\label{cor:triangular}
+\partformal{Flag.lean}{two_mul_finrank_swapCode_le_of_triangular,two_mul_finrank_swapCode_le_of_triangular_left}{the
+passage from a pair of flags to bases in which the $B_a$ are upper triangular, as in step~1 of the proof of
+\cref{thm:FL}. The Lean statement is the matrix form.}
+If $P^{-1}B_aQ$ is upper triangular for all $a$, for some invertible $P$ and~$Q$, then $\dim\ker(\sw-K)\le d(d+1)/2$,
+for arbitrary $A_a$. In terms of flags: this holds if there are complete flags $W$ and $W'$ with
+$B_a(W_i)\subseteq W'_i$ for all $a$ and~$i$.
+\end{corollary}
+
+\begin{outline}
+This is \cref{thm:FL} with $g(i)\le i$, and $\sum_{i\le d}i=d(d+1)/2$ (\lean{two_mul_sum_fin_succ}). Bases adapted to
+$W$ and $W'$ make the $B_a$ upper triangular, and conversely.
+\end{outline}
+
+So the pairing value is the value of a hidden order: a pair of flags is an order in which the $t$-th generalized column
+is computed from the first $t$ generalized rows.
+
+\begin{corollary}[At most two terms, every field]\label{cor:two-terms}
+\notformalized
+For all $A_1,A_2,B_1,B_2\in\Mat_d(F)$,
+\[
+  \dim\{X:X^{\tr}=A_1XB_1^{\tr}+A_2XB_2^{\tr}\}\ \le\ \frac{d(d+1)}2 .
+\]
+\end{corollary}
+
+\begin{informalproof}
+The dimension of a kernel does not change under extension of the field, so let $F$ be algebraically closed. We show
+that any two linear maps $B_1,B_2\colon V\to V'$ between spaces of the same dimension $d$ admit complete flags with
+$B_j(W_i)\subseteq W'_i$; \cref{cor:triangular} then applies. The determinant $\det(\alpha B_1+\beta B_2)$, in any bases,
+is a binary form of degree~$d$, so it vanishes at some $(\alpha,\beta)\ne0$ (at every $(\alpha,\beta)$ if it is
+identically zero). Take $v\ne0$ with $(\alpha B_1+\beta B_2)v=0$. Then $B_1v$ and $B_2v$ are proportional; let
+$W_1=\langle v\rangle$ and let $W'_1$ be a line containing both. The maps induced on $V/W_1\to V'/W'_1$ are again two
+maps between spaces of equal dimension, and induction on~$d$ gives the flags.
+\end{informalproof}
+
+\begin{remark}[Two is sharp]\label{rem:three}
+Three terms can exceed the pairing value. For every $d$, the operator $\Pi=\sum_{i,j}E_{ij}\otimes E_{ij}$ is
+$X\mapsto\operatorname{tr}(X)\cdot1$, of rank one, and
+\[
+  \sw-\Pi\ =\ \sum_{i<j}(E_{ij}-E_{ji})\otimes(E_{ji}-E_{ij})
+\]
+has $h$ terms. So $K=\sw-\Pi$ has $h$ terms and its code $\ker\Pi$, the matrices of trace zero, has dimension $d^2-1$,
+in every characteristic. At $d=3$ that is three terms and dimension $8>6$. At $d=4$, adding $E_{33}$ to both factors
+of the third term of the $d=3$ example, with indices $0,\dots,3$, gives three terms and a code of dimension $11>10$
+(numerical: checked over $\F_2,\F_3,\F_5,\F_7$). We have no three-term example for $d\ge5$.
+\end{remark}
+
+\begin{corollary}[One triangularizable side]\label{cor:commutative}
+\notformalized
+Suppose that, over the algebraic closure of $F$, the $B_a$ have a common invariant complete flag. Then
+$\dim\ker(\sw-K)\le d(d+1)/2$ for any number of terms and arbitrary $A_a$. This holds in particular when
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item the $B_a$ commute pairwise, for example when all are circulant;
+\item $\chr F=p$ and all $B_a$ lie in the linear span of one finite $p$-group of matrices.
+\end{enumerate}
+\end{corollary}
+
+\begin{informalproof}
+An invariant flag gives \cref{cor:triangular} with $W'=W$, over the closure, and the dimension does not depend on the
+field. (a) Commuting matrices over an algebraically closed field have a common eigenvector: an eigenspace of one of them
+is invariant under the others, and one inducts on the dimension. Passing to the quotient by that eigenvector and
+inducting again gives a common invariant flag. (b) Let $G$ be a finite $p$-group of invertible matrices in
+characteristic~$p$ and $z\ne1$ a central element of order~$p$. Then $(z-1)^p=z^p-1=0$, so $\ker(z-1)$ is a nonzero
+$G$-invariant subspace on which $G/\langle z\rangle$ acts; by induction on the order of the group, $G$ fixes a nonzero
+vector. Passing to the quotient by that vector and inducting on the dimension gives a complete flag invariant under
+$G$, hence under its span.
+\end{informalproof}
+
+For circulant $B_a$ the statement reads: \emph{if every column of $X$ is a linear function of the rows of $X$ that
+commutes with cyclic rotation of the rows' coordinates (any number of rows, each rotated and convolved with kernels that
+may depend on the column), then $X$ ranges over a space of dimension at most $d(d+1)/2$.} Reading any number of source
+rows in step with the output cannot beat the symmetric matrices.
+
+In (b) the group must be the same for all $B_a$. For $p=2$ and $d=2^m$ two natural examples are the automorphisms of
+the hierarchy of dyadic intervals (block swaps, block reversals, XOR translations) and the affine group
+$\{i\mapsto ui+t:u\text{ odd}\}$ of $\Z/2^m$. They are different subgroups of the symmetric group, and mixing them
+is not covered: at $d=4$ a rotation and the transposition $(0\;1)$, which swaps the halves of one dyadic block of length
+two, generate the whole symmetric group. The next corollary
+covers more of the second example.
+
+\begin{corollary}[All affine index maps in characteristic $p$]\label{cor:affine}
+\notformalized
+Let $\chr F=p$ and $d=p^m$. For $u,t\in\Z/d$ let $\varphi_{u,t}$ be the linear map on $F^{\Z/d}$ with
+$(\varphi_{u,t}x)_i=x_{ui+t}$; here $u$ need not be a unit. If every $B_a$ lies in the span of the $\varphi_{u,t}$, then
+$\dim\ker(\sw-K)\le d(d+1)/2$.
+\end{corollary}
+
+\begin{informalproof}
+Let $R=\varphi_{1,1}$ be the rotation. Then $R\varphi_{u,t}=\varphi_{u,t}R^u$, since both send $x$ to
+$(x_{ui+t+u})_i$. Hence $(R-1)^i\varphi_{u,t}=\varphi_{u,t}(R^u-1)^i$, and $R^u-1$ is a multiple of $R-1$ in the
+commutative algebra $F[R]$, so $\varphi_{u,t}$ maps $\ker(R-1)^i$ into itself. As $R$ is a single cycle of length
+$p^m$ in characteristic~$p$, $R-1$ is nilpotent with a one-dimensional kernel, and the subspaces $\ker(R-1)^i$,
+$1\le i\le d$, form a complete flag. Apply \cref{cor:triangular} with $W'=W$.
+\end{informalproof}
+
+So over $\F_2$, on rows of length $2^m$, rotations, reflections, dilations, wrap-around decimations and convolutions
+all preserve one flag, in any combination and at any depth (\cref{rem:composition}). What leaves that world is a
+projection: a mask that selects part of a row.
+
+\begin{corollary}[Blocks and expansion]\label{cor:expansion}
+\notformalized
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item If, for suitable invertible $P,Q$, all $P^{-1}B_aQ$ are block upper triangular with diagonal blocks of sizes
+$d_1,\dots,d_m$, then $\dim\ker(\sw-K)\le(d^2+\sum_sd_s^2)/2$.
+\item If some flag has $g(i)\le ci+c_0$ with $c\ge1$ and $c_0\ge0$, then
+$\dim\ker(\sw-K)\le\bigl(1-\frac1{2c}\bigr)d^2+\bigl(\frac{c_0}c+\frac12\bigr)d$.
+\item A sum of $k$ terms has $\dim\ker(\sw-K)\le\sum_{i\le d}\min(d,ki)\le\bigl(1-\frac1{2k}\bigr)d^2+\frac d2$.
+\item Let $d$ be prime to $\chr F$ and $s\ge1$. If every $B_a$ lies in the span of the maps $\varphi_{u,t}$ of
+\cref{cor:affine} with $u\in\{-s,\dots,s\}$, then $\dim\ker(\sw-K)\le\bigl(1-\frac1{2s}\bigr)d^2+\bigl(\frac1s+\frac12\bigr)d$.
+\end{enumerate}
+\end{corollary}
+
+\begin{informalproof}
+(a) Take $g(i)=d_1+\dots+d_s$ for $i$ in block~$s$; then $\sum_ig(i)=\sum_sd_s(d_1+\dots+d_s)=(d^2+\sum_sd_s^2)/2$.
+(b) If $d<c_0$ the right side exceeds $d^2$. Otherwise put $u=(d-c_0)/c$. Then
+$\sum_i\min(d,ci+c_0)=d^2-\sum_{i\le u}c(u-i)\le d^2-\frac c2(u^2-u)$, because
+$\sum_{i\le\lfloor u\rfloor}(u-i)\ge(u^2-u)/2$, and $d^2-\frac{(d-c_0)^2}{2c}+\frac{d-c_0}2$ is at most the claimed
+bound. (c) Any flag has $g(i)\le ki$; apply~(b). (d) Extend the field so that it contains a primitive $d$-th root of
+unity, and let $\chi_k$ be the characters of $\Z/d$. Then $\varphi_{u,t}\chi_k$ is a multiple of $\chi_{uk}$. Order the
+frequencies $0,1,-1,2,-2,\dots$ and let $W_i$ be spanned by the first $i$ characters. The frequencies $uk$ with
+$\abs u\le s$ and $\chi_k\in W_i$ lie in an interval of at most $si+1$ residues, so $g(i)\le si+1$; apply~(b).
+\end{informalproof}
+
+The hypothesis $c\ge1$ in (b) is needed: for $B=\mathrm{diag}(1_{d/2},0)$, $A=1$ and a flag that alternates kernel
+and non-kernel vectors, $g(i)=\lfloor i/2\rfloor$ and the code has dimension $d(d+2)/8$.
+
+\begin{remark}[Entries of $b$ bits]\label{rem:entries}
+For $K=\sum_a\tilde A_a\otimes B_a$ on $V\otimes V\otimes F^b$ with $\tilde A_a\in\operatorname{End}(V\otimes F^b)$
+arbitrary and $B_a\in\operatorname{End}(V)$, the proof of \cref{thm:FL} gives
+$\dim\ker(\sw\otimes1-K)\le b\sum_ig(i)$, with coefficients $p_{ab}\in F^b$. Operators that mix the column index
+with the position inside an entry are covered as well: every operator on $V\otimes F^b$ is a sum $\sum_jB_j\otimes C_j$,
+the $C_j$ can be absorbed into the first factors, and the profile is that of the $B_j$. For a cyclic shift of the bit
+string of a row by a number of bits that is not a multiple of~$b$, the $B_j$ are two rotations.
+\end{remark}
+
+\begin{remark}[Composition]\label{rem:composition}
+If the second factors of $K_1,\dots,K_t$ all lie in one algebra $\mathfrak B\subseteq\Mat_d(F)$, so do those of the
+product $K_t\cdots K_1$, because $(A\otimes B)(A'\otimes B')=AA'\otimes BB'$. So \cref{cor:commutative,cor:affine} are
+statements about linear data paths of any depth: a path that acts on one index through a commutative algebra, or through
+the affine maps of \cref{cor:affine}, and on the other index in any way at all, is correct on at most the pairing value.
+\end{remark}
+
+\subsection{What the theorem says}\label{sec:order-says}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Only the weaker side counts.} The bound uses the expansion of the $A_a$ or of the $B_a$, whichever is
+smaller. Arbitrary mixing on one index buys nothing while the other index has a flag.
+\item \emph{A code above the pairing value needs expansion on both sides}: for every flag on either side, the images of
+the flag must grow faster than the flag. By \cref{cor:expansion}(b), a profile $g(i)\le ci$ with $c\ge1$ gives rate at
+most $1-1/(2c)+O(1/d)$, so rate $1-\eps$ needs expansion factor about $1/(2\eps)$ along every flag, on both sides.
+\item \emph{Expansion is cheap on a tape.} Over the algebraic closure, rotations of a row have an invariant flag, and
+so do masks by intervals, but the two flags are incompatible: rotations together with the mask of one proper interval
+generate the full matrix algebra. For rotations with the masks of $M$ intervals $J_l$, a rotation-invariant flag has
+$g(i)=\sum_l\min(i,\card{J_l})\le Mi$, and no flag does better, because the rotations of $W_i$ span a
+rotation-invariant space of dimension at least~$i$, and such a space of dimension $h$ restricts to an interval of
+length $m$ in dimension $\min(h,m)$. For $M$ equal intervals this gives rate $1-1/(2M)$ and no more. So the flag
+bound cannot hold that family to the pairing rate. The next section does.
+\end{itemize}

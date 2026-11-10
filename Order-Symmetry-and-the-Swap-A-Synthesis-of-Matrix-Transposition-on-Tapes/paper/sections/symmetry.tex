@@ -1,0 +1,331 @@
+\section{Symmetry: the translate pigeonhole}\label{sec:symmetry}
+
+The flag bound cannot hold rotations with interval masks to the pairing rate (\cref{sec:order-says}). This section
+does, by a different argument: a code larger than half the space meets its own translate, and on the intersection a
+shared decoder forces the data to be translation-covariant.
+
+\subsection{The lemma}
+
+For operators $S,T$ write $[S,T]=ST-TS$.
+
+\begin{lemma}[Pigeonhole against a translate]\label{lem:pigeonhole}
+\formal{Pigeonhole.lean}{two_mul_finrank_ker_sub_le_ker,finrank_ker_commutator_sub_le,two_mul_finrank_ker_sub_le,two_mul_finrank_ker_sub_le_of_commute,finrank_range_commutator_le}
+Let $\sw,K,T$ be linear operators on a space of finite dimension $N$ over a field. Then
+\[
+  \dim\ker(\sw-K)\ \le\ \tfrac12\bigl(N+\dim\ker[\sw-K,T]\bigr)\ \le\ \tfrac12\bigl(N+\dim\ker[\sw,T]+\rank[K,T]\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $\X=\ker(\sw-K)$, $D=\dim\X$ and $\X_T=\{X\in\X:TX\in\X\}$. The map $\X\to F^N/\X$, $X\mapsto TX+\X$, has kernel
+$\X_T$ and a target of dimension $N-D$, so $\dim\X_T\ge2D-N$; $T$ need not be invertible. For $X\in\X_T$,
+$(\sw-K)TX=0=T(\sw-K)X$, so $\X_T\subseteq\ker[\sw-K,T]$. That is the first inequality. For the second, $[\sw-K,T]X=0$
+means $[\sw,T]X=[K,T]X\in\im[K,T]$, and the preimage of a subspace $W$ under a map has dimension at most that of its
+kernel plus $\dim W$.
+\end{proof}
+
+With $S=\sw-K$ the first inequality says $\rank[S,T]\le2\rank S$: a commutator has rank at most twice the rank of
+either factor. The Lean proof takes this route, from $\rank[S,T]\le\rank(ST)+\rank(TS)$ and rank--nullity
+(\lean{finrank_range_commutator_le}). The lemma is elementary, and we claim no novelty for it. What is used below is the form with $\sw$ and $K$ separated: $K$
+may nearly commute with a $T$ with which $\sw$ does not.
+
+\begin{proposition}[For the swap, the best case is the pairing value]\label{prop:swap-floor}
+\partformal{Swap.lean}{card_le_finrank_ker_swap_commutator,two_mul_finrank_ker_swap_sub_one,two_mul_finrank_range_swap_sub_one}{the
+equality case for $T=1\otimes G$.}
+On $V\otimes V$ with $\dim V=d$, every operator $T$ has $\dim\ker[\sw,T]\ge d$, in every characteristic. Equality holds
+for $T=1\otimes G$, that is $X\mapsto XG^{\tr}$, when $G$ is non-derogatory.
+\end{proposition}
+
+\begin{proof}
+The kernel of $\sw-1$ is the space of symmetric matrices, of dimension $d(d+1)/2$ in every characteristic, so
+$\rank(\sw-1)=d(d-1)/2$, and $[\sw,T]=[\sw-1,T]$ has rank at most $d(d-1)$ by \cref{lem:pigeonhole}. For $T=1\otimes G$,
+$[\sw,T]X=GX^{\tr}-X^{\tr}G^{\tr}$, so the kernel is the space of $Y=X^{\tr}$ with $GY=YG^{\tr}$. As $G^{\tr}$ is
+similar to $G$, this space is isomorphic to the centralizer of $G$, whose dimension is $d$ exactly when $G$ is
+non-derogatory.
+\end{proof}
+
+So \cref{lem:pigeonhole} never gives less than $(d^2+d)/2$ for the swap, and it gives exactly the pairing value when
+$K$ commutes with a suitable~$T$. The rest of the section is about $K$ that commute with a translation up to a
+boundary.
+
+\subsection{Class-uniform rules}
+
+Let $\sigma$ be the cyclic rotation of $F^{\Z/d}$, $(\sigma x)_j=x_{j+1}$. For a matrix $X$ with rows
+$x_c\in F^{\Z/d}$, $c\in\Z/d$, write $\sigma^\delta X$ for the matrix with rows $\sigma^\delta x_c$.
+
+\begin{definition}[Class-uniform rules]\label{def:class-uniform}
+\formal{ClassUniform.lean}{rot,IsClassUniformCode}
+Fix a partition of the row index $\Z/d$ into non-empty classes. A \emph{class-uniform rule} is a family of linear maps
+$\cA_J\colon\Mat_d(F)\to F^{\Z/d}$, one for each class~$J$. A subspace $\X\subseteq\Mat_d(F)$ is a \emph{code} of the
+rule if
+\[
+  x_c=\cA_J(\sigma^cX)\qquad\text{for every }X\in\X,\text{ every class }J\text{ and every }c\in J .
+\]
+\end{definition}
+
+In words: row $c$ of $X$ is a fixed linear function of the whole matrix with its columns rotated by~$c$, and the function
+depends only on the class of~$c$. The receiver of row $c$ looks at the stored word from its own position, through a
+window of any size, and receivers in one class use the same decoder.
+
+In the notation of \cref{sec:onehop} (this translation is not formalized): let $K=\sum_aA_a\otimes B_a$ have second
+factors in the span of the matrices $P_J\sigma^e$, a rotation followed by the mask $P_J$ of a class, and arbitrary first
+factors, say $K=\sum_{J,e}A_{J,e}\otimes P_J\sigma^e$. Then $(KX)_{r,c}=\sum_{i,e}(A_{J,e})_{r,i}X_{i,c+e}$ for $c\in J$,
+so the swap code of $K$ is the largest code of the rule $\cA_J(Y)_r=\sum_{i,e}(A_{J,e})_{r,i}Y_{i,e}$, and every rule
+arises in this way. This is the family of \cref{sec:order-says}. For a single class the $B_a$ are circulant and
+\cref{cor:commutative} applies. If the mask is applied before the rotation, $K^{\tr}$ has second factors
+$P_J\sigma^{-e}$, and since $\rank(\sw-K)=\rank(\sw-K^{\tr})$ the bounds below hold for that family as well.
+
+\begin{theorem}[Theorem~TP, the translate pigeonhole]\label{thm:TP}
+\formal{ClassUniform.lean}{IsClassUniformCode.finrank_le,Link,IsClassUniformCode.two_mul_finrank_le,IsClassUniformCode.two_mul_finrank_le_of_const}
+Let $\X$ be a code of a class-uniform rule. Let $\Delta_0\subseteq\Z/d$ be a set of $s+1\ge2$ shifts, and let $\chi$
+be the number of connected components of the graph on $\Z/d$ in which $c\sim c'$ when $c$ and $c'$ lie in one class and
+$c'-c\in\Delta_0-\Delta_0$. Then
+\[
+  \dim\X\ \le\ \frac{s\,d^2+d\,\chi}{s+1}.
+\]
+In particular, if the classes are $M$ cyclic intervals, then $\dim\X\le(d^2+Md)/2$.
+\end{theorem}
+
+\begin{outline}
+Let $\X'=\{X:\sigma^\delta X\in\X\text{ for all }\delta\in\Delta_0\}$, an intersection of $s+1$ preimages of~$\X$;
+each has codimension at most $d^2-\dim\X$, so $\dim\X'\ge(s+1)\dim\X-s\,d^2$
+(\lean{card_mul_finrank_add_le_iInf_comap}, \lean{mul_finrank_le_add_finrank_iInf_comap}, in
+\leanfile{Pigeonhole.lean}). Let $X\in\X'$, $\delta,\delta'\in\Delta_0$ and $c,c'$ in one class $J$
+with $c+\delta=c'+\delta'$. The rule applied to $\sigma^\delta X$ at row $c$ gives
+$\sigma^\delta x_c=\cA_J(\sigma^{c+\delta}X)$, and applied to $\sigma^{\delta'}X$ at row $c'$ it gives
+$\sigma^{\delta'}x_{c'}=\cA_J(\sigma^{c'+\delta'}X)$. The right sides agree, so $x_{c'}=\sigma^{c'-c}x_c$
+(\lean{IsClassUniformCode.row_eq_of_rot_mem}). Hence each row of $X$ determines the rows in its component, restriction
+to one row per component is injective on $\X'$, and $\dim\X'\le d\chi$. The Lean statement takes any set $S$ of rows
+that meets every component and gives $(s+1)\dim\X\le s\,d^2+d\card S$. For $M$ cyclic intervals and $\Delta_0=\{0,1\}$ the components are the intervals. In Lean this case
+(\lean{IsClassUniformCode.two_mul_finrank_le}) takes a non-empty set $S$ containing every row whose class differs from
+that of the row before it, so that $\card S=M$ for $M\ge2$ intervals and $S$ is any single row for one class
+(\lean{IsClassUniformCode.two_mul_finrank_le_of_const}).
+\end{outline}
+
+The space on which the proof lands is worth naming. For one unit shift it is
+$\Hk=\{X:x_{c+1}=\sigma x_c\text{ whenever }c,c+1\text{ lie in one class}\}$: inside each interval the matrix is constant
+along anti-diagonals. It has $d$ free parameters per interval, whatever the length of the interval.
+
+We say that a partition into $M$ classes has an \emph{almost-period} if some single shift $\delta$ leaves only $M$
+components in the graph of \cref{thm:TP} with $\Delta_0=\{0,\delta\}$, so that the bound is $(d^2+Md)/2$. Intervals have
+the almost-period~$1$, and residue classes modulo $M$ have the almost-period~$M$.
+
+\begin{lemma}[Extremal codes contain $\Hk$]\label{lem:extremal}
+\notformalized
+Let the classes be $M$ cyclic intervals and let $\X$ be a code of a class-uniform rule with $2\dim\X=d^2+Md$. Then
+$\X\cap\sigma^{-1}\X=\Hk$; in particular $\Hk\subseteq\X$.
+\end{lemma}
+
+\begin{informalproof}
+By the proof of \cref{thm:TP}, $\X'=\X\cap\sigma^{-1}\X$ lies in $\Hk$ and has dimension at least
+$2\dim\X-d^2=Md=\dim\Hk$.
+\end{informalproof}
+
+\begin{proposition}[Equal pieces: the bound is attained]\label{prop:block-symmetric}
+\formal{BlockSymmetric.lean}{blockSymmetric,isClassUniformCode_blockSymmetric,two_mul_finrank_blockSymmetric,blockSymmetric_attains_bound}
+Let $d=Mm$ with $M,m\ge1$ and let the classes be the $M$ intervals of length~$m$. The \emph{block-symmetric} matrices,
+those whose $m\times m$ blocks in the $M\times M$ grid are all symmetric, are a code of a class-uniform rule, of
+dimension $(d^2+Md)/2$.
+\end{proposition}
+
+\begin{outline}
+Write a row index as $c=sm+k$ and a column index as $r=tm+l$ with $0\le k,l<m$. Block symmetry says
+$X_{sm+k,\,tm+l}=X_{sm+l,\,tm+k}$. The right side is the entry of $\sigma^cX$ in row $sm+l$ and column
+$tm+k-c=(t-s)m$, which depends on $c$ only through its block~$s$. So $x_c=\cA_s(\sigma^cX)$ with
+$\cA_s(Y)_{tm+l}=Y_{sm+l,\,(t-s)m}$ (\lean{isClassUniformCode_blockSymmetric}). There are $M^2$ blocks, each with
+$m(m+1)/2$ free entries, and $M^2m(m+1)/2=(d^2+Md)/2$ (\lean{two_mul_finrank_blockSymmetric}); the set of the $M$
+first rows of the blocks satisfies the hypothesis of \cref{thm:TP} for the unit shift
+(\lean{blockSymmetric_attains_bound}).
+\end{outline}
+
+The operator $K$ of this rule is the coarse transposition of the grid: $X\mapsto(\cA_{s(c)}(\sigma^cX))_c$, read as a
+matrix with these columns, has the entry $X_{sm+l,\,tm+k}$ in position $(tm+l,\,sm+k)$, so block $(s,t)$ is moved to
+position $(t,s)$ with its inner coordinates kept.
+
+So the largest code of a class-uniform rule with $M$ equal interval pieces has dimension exactly $(d^2+Md)/2$, the
+value of the $M\times M$ coarse transposition, against the bound $1-1/(2M)$ that flags give for the same family. For
+$M=d$ the pieces are single rows, the rule is unrestricted and the code is everything. In between, each additional
+piece raises the bound by $d/2$.
+
+\begin{remark}[Numerical: what the exact value does not say]\label{rem:extremal}
+Exhaustive computations over $\F_2$ show the following.
+(a) Extremal codes are far from unique: for $d=4$ and classes $\{0,1\},\{2,3\}$ there are $59\,392$ codes of
+dimension~$12$, in $327$ orbits under the evident symmetries, and the block-symmetric code is one orbit.
+(b) Coding beats copying inside the bound: for $d=4$ and pieces $\{0\},\{1,2,3\}$ the bound $12$ is attained, but no
+rule that copies one stored entry to each output entry exceeds~$11$.
+(c) The bound is not attained for every partition into unequal intervals: by \cref{lem:extremal} and a solver, the
+pieces $\{0\},\{1\},\{2,3,4\}$ at $d=5$ have largest code $19<20$ (\cref{rem:small}).
+\end{remark}
+
+\begin{proposition}[Copy rules, every partition]\label{prop:copy}
+\notformalized
+Call a class-uniform rule a \emph{copy rule} if every output entry is a multiple of one stored entry:
+$X_{c,r}=\lambda_{J,r}\,X_{\pi_J(r),\,\rho_J(r)+c}$ for $c\in J$. A code of a copy rule with $M$ classes, of any shape,
+has dimension at most $(d^2+Md)/2$.
+\end{proposition}
+
+\begin{informalproof}
+Let $f(c,r)=(\pi_J(r),\rho_J(r)+c)$ for $c\in J$, a map on the $d^2$ positions. A matrix in the code is determined, on
+each component of the functional graph of $f$, by its value at one position on the cycle of that component, so the
+dimension is at most the number of cycles. A fixed point $(c,r)$ has $\pi_J(r)=c$ with $J$ the class of $c$, so for each
+$r$ there is at most one fixed point per class: at most $Md$ in all. Every other cycle has at least two positions.
+\end{informalproof}
+
+So for copy rules the shape of the classes does not matter, while for coded rules \cref{thm:TP} needs the classes to
+have an almost-period. The difference is real: \cref{prop:aperiodic} exhibits two classes with no almost-period and a
+coded rule whose code has dimension greater than $(d^2+Md)/2$. How far coded rules on such classes can go is
+\cref{prob:aperiodic}.
+
+\subsection{On a line}
+
+A tape is a line, not a cycle. Let rows and columns be indexed by $\{0,\dots,d-1\}$ and let the classes be intervals. A
+\emph{two-sided rule on a line} is given by coefficients $\cA_{J,i}[r][e]$, $-d<e<d$, with
+\[
+  X_{c,r}=\sum_{i}\sum_{j=0}^{d-1}\cA_{J,i}[r][j-c]\,X_{i,j}\qquad(c\in J).
+\]
+The decoder of row $c$ again sees the stored word from position $c$, through a window that is cut off at the ends
+instead of wrapping around. Every class-uniform rule is of this form, with the same classes: take
+$\cA_{J,i}[r][e]$ to depend on $e$ modulo~$d$ (this remark is not formalized). On a line, an interval is a set of
+consecutive rows that does not wrap around.
+
+\begin{theorem}[The line form of Theorem~TP]\label{thm:line}
+\formal{Line.lean}{IsLineUniformCode,IsLineUniformCode.two_mul_finrank_le,isLineUniformCode_of_coeff,lineView,truncShift}
+A code of a two-sided rule on a line with $M$ interval classes has dimension at most $(d^2+Md)/2$.
+\end{theorem}
+
+\begin{outline}
+Let $(TX)_{i,j}=X_{i,j+1}$ for $j<d-1$ and $(TX)_{i,d-1}=0$, and $\X'=\{X\in\X:TX\in\X\}$, so that
+$\dim\X'\ge2\dim\X-d^2$. Let $X\in\X'$ and let $c,c+1$ lie in one class~$J$. The rule for $TX$ at row $c$ reads
+$X_{c,r+1}=\sum_i\sum_{j\ge1}\cA_{J,i}[r][j-(c+1)]X_{i,j}$, with $X_{c,d}$ read as~$0$, and the rule for $X$ at row
+$c+1$ has the same sum with $j\ge0$. So
+\[
+  X_{c+1,r}-X_{c,r+1}=\sum_i\cA_{J,i}[r][-(c+1)]\,X_{i,0}.
+\]
+Suppose that column $0$ of $X$ vanishes. Then inside each class, with rows $a,\dots,a+m_J-1$, the matrix is constant
+along anti-diagonals. An anti-diagonal that meets column~$0$ inside the class is zero, and so is one whose first
+position in the class is in the last column below row~$a$, because $X_{c,d}=0$. The remaining anti-diagonals start in
+row~$a$ at a column $r\ge m_J$: there are $d-m_J$ of them. So
+$\dim\X'\le d+\sum_J(d-m_J)=Md$. In Lean the decoder of a class is an arbitrary linear function of the zero-padded
+window $(X_{i,e+c})_{i,e}$ (\lean{lineView}); the coefficient form above is an instance
+(\lean{isLineUniformCode_of_coeff}). The classes need not be intervals there: the bound is $(d^2+d\card S)/2$ for any
+set $S$ of rows that contains row~$0$ and every row whose class differs from that of the row before it. The key step is
+\lean{IsLineUniformCode.row_succ_eq}.
+\end{outline}
+
+With one class this gives the pairing value for second factors in the span of the truncated shifts, the Toeplitz
+matrices, which do not commute and are not covered by \cref{cor:commutative}; the symmetric matrices attain it
+(\lean{isLineUniformCode_symmetric}). For $M$ equal intervals the block-symmetric matrices attain the bound on a line
+as well, by the remark above; this is not formalized.
+
+\begin{remark}[Numerical: on a line, other shifts fail]\label{rem:line-fails}
+For $d=3$ and classes $\{0,2\},\{1\}$, \cref{thm:TP} with $\Delta_0=\{0,2\}$ gives $7$ on a cycle. On a line the largest
+code of a two-sided rule has dimension~$8$ (exhaustive over $\F_2$); one such code is $\{X:X_{0,0}=X_{2,2}\}$. So
+\cref{thm:line} does not extend to shift sets other than $\{0,1\}$.
+\end{remark}
+
+\subsection{Twists, digits and composition}
+
+A rule need not commute with a translation to be caught; it is enough that it intertwines it with boundedly many others.
+
+\begin{theorem}[Twist classes]\label{thm:twist}
+\formal{Twist.lean}{succ_mul_finrank_swapCode_le_of_twist_classes,two_mul_finrank_swapCode_le_of_twist,twistSpace,succ_mul_finrank_swapCode_le,finrank_le_sum_finrank_twistSpace}
+Let $G\in\Mat_d(F)$, let the terms of $K=\sum_aA_a\otimes B_a$ fall into classes $1,\dots,s$, and let
+$G'_1,\dots,G'_s$ commute pairwise, with $GB_a^{\tr}=B_a^{\tr}G'_\kappa$ for every $a$ in class~$\kappa$. Then
+\[
+  \dim\ker(\sw-K)\ \le\ \frac{s\,d^2+\sum_\kappa h_\kappa}{s+1},\qquad h_\kappa=\dim\{P:G^{\tr}P=PG'_\kappa\}.
+\]
+\end{theorem}
+
+\begin{outline}
+Let $\X'=\{X:XG^t\in\ker(\sw-K),\ 0\le t\le s\}$, of dimension at least $(s+1)\dim\ker(\sw-K)-s\,d^2$
+(\lean{succ_mul_finrank_swapCode_le}). For $X\in\X'$ and $P=X^{\tr}$ the hypothesis gives
+$(G^{\tr})^tP=\sum_\kappa T_\kappa G_\kappa'^{\,t}$ for $0\le t\le s$, with $T_\kappa=\sum_{a\in\kappa}A_aXB_a^{\tr}$. Applying
+$P\mapsto G^{\tr}P-PG'_\kappa$ removes class~$\kappa$ from such a system and lowers $s$ by one, and its kernel is the
+space counted by $h_\kappa$; induction on the number of classes gives $\dim\X'\le\sum_\kappa h_\kappa$
+(\lean{finrank_le_sum_finrank_twistSpace}). This is the statement that $\prod_\kappa(L-R_\kappa)P=0$ for the commuting
+operators $L$, left multiplication by $G^{\tr}$, and $R_\kappa$, right multiplication by $G'_\kappa$.
+\end{outline}
+
+\begin{corollary}[Modulation frequencies]\label{cor:weyl}
+\notformalized
+Let $F$ contain a primitive $d$-th root of unity $\omega$ and let $Z=\mathrm{diag}(1,\omega,\dots,\omega^{d-1})$. If
+every $B_a^{\tr}$ is a product $Z^kC$ with $C$ circulant and $k$ in a fixed set of $s$ frequencies, then
+$\dim\ker(\sw-K)\le\frac s{s+1}(d^2+d)$.
+\end{corollary}
+
+\begin{informalproof}
+$\sigma Z=\omega Z\sigma$, so $\sigma Z^kC=Z^kC\,(\omega^k\sigma)$: take $G=\sigma$ and $G'_k=\omega^k\sigma$, which
+commute. The matrices $\sigma^{\tr}=\sigma^{-1}$ and $\omega^k\sigma$ are diagonalizable with the same simple spectrum,
+the $d$-th roots of unity, so $h_k=d$.
+\end{informalproof}
+
+One frequency is the pairing rate, and all $d$ frequencies span the full matrix algebra. The mask of an interval
+contains many frequencies (all of them when its length is prime to~$d$), which is why interval masks needed
+\cref{thm:TP}.
+
+\begin{corollary}[Every address digit must be broken]\label{cor:digit}
+\partformal{Pigeonhole.lean}{two_mul_finrank_ker_sub_le_of_commute}{everything specific to the statement: that $K$
+commutes with~$T$, the dimension count $\dim\ker[\sw,T]=d^2/q$, and the sharpness. Lean has only the abstract
+lemma.}
+Write the index set as $\Z/m\times\Z/q$, $d=mq$, so that the second coordinate is one digit of the address. Suppose
+every $B_a$ has the form $B'_a\otimes C_a$ with all $C_a$ in $F[G]$ for one non-derogatory $q\times q$ matrix $G$, for
+example with all $C_a$ circulant. Then
+\[
+  \dim\ker(\sw-K)\ \le\ \tfrac12\Bigl(d^2+\frac{d^2}q\Bigr),
+\]
+with equality for the partial transpose that exchanges the first digits of the two indices and leaves the second
+digits in place.
+\end{corollary}
+
+\begin{informalproof}
+$K$ commutes with $T=1\otimes(1_m\otimes G)$, and as in \cref{prop:swap-floor} $\ker[\sw,T]$ is isomorphic to the
+centralizer of $1_m\otimes G$, which is $\Mat_m(F)\otimes F[G]$, of dimension $m^2q=d^2/q$. Apply
+\cref{lem:pigeonhole}. The partial transpose is $\sw_m\otimes1$ on $(F^m\otimes F^m)\otimes(F^q\otimes F^q)$; its second
+factors are $E_{u'u}\otimes1_q$, and its swap code is $\Mat_m(F)\otimes\{\text{symmetric }q\times q\text{ matrices}\}$,
+of dimension $m^2q(q+1)/2$.
+\end{informalproof}
+
+The transposition is the product of the commuting exchanges of the digits of the two addresses
+(\cref{sec:saturation}). \Cref{cor:digit} says that a data path which treats any one digit of one address uniformly
+is at rate $\tfrac12+\tfrac1{2q}$, however it treats the others; by \cref{lem:pigeonhole}, rate $1-\eps$ needs
+$\rank[K,T]\ge(1-2\eps-\tfrac1q)d^2$ for the rotation $T$ of every digit of either index. This is a requirement at
+every scale.
+
+\begin{remark}[Composition, and why this gives no logarithm]\label{rem:compose-TP}
+\Cref{thm:TP} is a statement about one hop: the class-uniform rules with $M$ classes are not closed under
+composition, and two of them compose to a rule with up to $d$ classes. \Cref{lem:pigeonhole} does compose. Since
+$[K_2K_1,T]=K_2[K_1,T]+[K_2,T]K_1$, $\rank[K_2K_1,T]\le\rank[K_1,T]+\rank[K_2,T]$
+(\lean{finrank_range_commutator_comp_le}), and by induction
+\[
+  \rank[K_t\cdots K_1,T]\ \le\ \sum_i\rank[K_i,T].
+\]
+For $T=1\otimes\sigma$ and a hop whose second factors lie in the span of the $P_J\sigma^e$ with $M$ interval classes,
+$[K_i,T]X$ is supported on the $M$ columns at which the class changes, so $\rank[K_i,T]\le Md$ and $t$ such hops give
+$\dim\ker(\sw-K_t\cdots K_1)\le(d^2+d+tMd)/2$.
+
+The same subadditivity shows why \cref{cor:digit} does not produce a factor $\log d$. An exact transposer needs
+$\sum_i\rank[K_i,T]\ge d^2-d^2/q$ for the rotation $T$ of every digit. But let $U$ be the perfect unshuffle in base~$q$
+on one index, which moves every digit to the next position and is a linear-time operation on tapes, and let $G_j$ be
+the rotation of digit~$j$ of that index. Then $UG_j=G_{j+1}U$, so $[U,G_j]=(G_{j+1}-G_j)U$ has rank $d-d/q$, and
+$\rank[1\otimes U,1\otimes G_j]=d^2-d^2/q$ for every~$j$ at once: one operation supplies the whole requirement for all
+digits of that index. The requirement is real at every scale and can be met at all scales together.
+\end{remark}
+
+\subsection{What the theorem says}\label{sec:symmetry-says}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{For translation-covariant rules, the half in the half bound is a pigeonhole.} A code larger than half the
+space meets its translate in at least $2D-d^2$ dimensions, and translation-covariant data has $d$ dimensions per uniform
+piece. The argument does not depend on the characteristic, on the degree, on the window of the decoder, or on the other
+tensor side. It does depend on exact covariance under a unit shift inside each class, on the classes being the same for
+every output row, on linearity, and on there being one hop. The flag bounds of \cref{sec:order} are not shown to be
+instances of it.
+\item \emph{No symmetry that the swap lacks.} By \cref{lem:pigeonhole}, a code that exceeds the pairing value by
+$\eps d^2$ needs $\rank[K,T]+\dim\ker[\sw,T]\ge d+2\eps d^2$ for every operator~$T$. Together with \cref{sec:order}:
+to beat the pairing rate, the decoder may have neither a hidden order nor a symmetry, on either index, that the swap
+does not share.
+\item \emph{It uses the rule, not the relation.} The hypothesis of \cref{thm:TP} is that translated receivers share a
+decoder. That is the feature of machines singled out in \cref{sec:rule}, and it is invisible in the cone relation.
+\item \emph{The folklore step is optimal in dimension.} With $M$ equal pieces, nothing beats the $M\times M$ coarse
+transposition by even one dimension, although many other codes equal it (\cref{rem:extremal}).
+\end{itemize}

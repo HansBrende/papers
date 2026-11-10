@@ -1,0 +1,9 @@
+import SwapRigidity.Pigeonhole
+import SwapRigidity.ClassUniform
+import SwapRigidity.Swap
+import SwapRigidity.BlockSymmetric
+import SwapRigidity.Line
+import SwapRigidity.Flag
+import SwapRigidity.Twist
+import SwapRigidity.AperiodicExampleData
+import SwapRigidity.AperiodicExample

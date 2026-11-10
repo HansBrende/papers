@@ -1,0 +1,95 @@
+\section{The construction side}\label{sec:construction}
+
+This section says what the two theorems exclude, what they leave, and what would have to be added to make them
+statements about machines. Readings of the one-hop model as statements about tapes are labelled as readings.
+
+\subsection{Mechanisms that fail}\label{sec:fail}
+
+\Cref{tab:fail} lists upper bounds on the code dimension for decoders with structure on one index, in the linear
+one-hop model, whatever is done on the other index. Each row is a theorem of \cref{sec:order,sec:symmetry}.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.47\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}l@{}}
+\toprule
+Structure on one index & Upper bound & By \\
+\midrule
+At most two Kronecker terms & $d(d+1)/2$ & \cref{cor:two-terms} \\
+Commuting maps: any convolutions of any number of rows read in step & $d(d+1)/2$ & \cref{cor:commutative} \\
+One $p$-group in characteristic~$p$: one dyadic hierarchy over $\F_2$ & $d(d+1)/2$ & \cref{cor:commutative} \\
+All affine index maps, $d=p^m$, characteristic $p$ & $d(d+1)/2$ & \cref{cor:affine} \\
+Expansion factor $c$ along some flag & $(1-\frac1{2c})d^2+O(d)$ & \cref{cor:expansion} \\
+Uniform decoders with $M$ interval pieces, cycle or line & $(d^2+Md)/2$ & \cref{thm:TP,thm:line} \\
+Copy rules with $M$ decoder classes of any shape & $(d^2+Md)/2$ & \cref{prop:copy} \\
+$s$ modulation frequencies & $\frac s{s+1}(d^2+d)$ & \cref{cor:weyl} \\
+One address digit of size $q$ treated uniformly & $\frac12(d^2+d^2/q)$ & \cref{cor:digit} \\
+\bottomrule
+\end{tabular}
+\caption{Upper bounds on the code dimension in the linear one-hop model. The other index is arbitrary.}
+\label{tab:fail}
+\end{table}
+
+Two design rules follow, for the one-hop model.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Synchronous access is the pairing.} Reading any number of source rows in step with the output, at any
+offsets and through any convolution, gives the symmetric matrices and no more.
+\item \emph{Uniform passes are the pairing.} A stretch on which translated outputs share their decoder gains nothing,
+whatever its window. The bound rises only with changes of regime, by $d/2$ symbols for each.
+\end{itemize}
+
+\subsection{A reading for tapes}\label{sec:reading}
+
+The following is a reading, not a theorem about machines. A pass in which the position read and the position written
+advance at the same speed, by a linear finite-state rule, computes a convolution with an unbounded window. On a line
+this is a two-sided rule in the sense of \cref{thm:line}, with one class per stretch of unchanged regime, under two
+provisos: the regime changes at the same positions for every output row (change points that depend on the row need
+their common refinement), and the rule of each regime is applied to the whole stored word, with no state carried
+across a change. A state of $q$ symbols carried across a change alters $K$ by a rank of at most $q$ per output row, so
+by \cref{lem:pigeonhole} it costs a further term of order $qd$ per change. Under the provisos, \cref{thm:line} bounds
+the gain over the pairing value by $d/2$ symbols per regime change, so rate $\tfrac12+\delta$ needs at least $2\delta d$
+regime changes, and for equal pieces the bound is attained by the block-symmetric matrices, that is, by the coarse step
+of the folklore recursion. Other speed ratios are decimations. On a cycle a single ratio is one twist class of
+\cref{thm:twist}; mixtures of ratios fall under \cref{cor:expansion} or \cref{cor:affine}.
+
+This reading matches what the series proved about motion (\cref{sec:motion}): locally affine motion is excluded on the
+geometric side by the second and fourth papers, and here uniform decoding is excluded on the coding side, in a model
+that has no geometry at all. The seventh paper has a statement of the same kind for storage codes on relations: Cayley
+relations $\mathrm{Cay}(G,\{s,s^{-1},t\})$ without transitive triangles give no gain over the pairing rate, for every
+finite group~\cite[Corollary~5.12]{SeventhPaper2026}. \Cref{thm:TP} allows any degree and any window, but only one hop and only linear
+decoders.
+
+\subsection{What a linear-time machine would need}\label{sec:would-need}
+
+Combining \cref{sec:needs} with \cref{tab:fail}: in addition to positive characteristic, curved motion, expanding cone
+relations and growing paired distance, a linear-time transposer, read in the one-hop model, needs on \emph{both}
+indices a family of maps that
+\begin{itemize}[leftmargin=1.5em]
+\item has no invariant flag and no pair of flags with bounded expansion (\cref{thm:FL});
+\item commutes with no non-derogatory translation up to $o(d)$ boundary columns, and intertwines none with boundedly
+many pairwise commuting others (\cref{thm:TP,thm:twist});
+\item treats no address digit uniformly (\cref{cor:digit}).
+\end{itemize}
+The digit masks at every scale, which the folklore recursion uses, have these properties: their number grows with
+$d$, and no shift respects them. A bounded number of classes is not enough for rate near one, whatever their shape,
+because $M$ classes leave a flag with $g(i)\le Mi$ and hence rate at most $1-1/(2M)+O(1/d)$. What the theorems leave
+open is how large a code a given number of classes can carry when the classes have no almost-period. It can exceed the
+value $(d^2+Md)/2$ of every copy rule and of every interval rule, at $d=6$ though not at $d=5$
+(\cref{prop:aperiodic,rem:small}); whether a gain survives in rate is \cref{prob:aperiodic}.
+
+\subsection{From the one-hop model to machines}\label{sec:to-machines}
+
+Three steps separate \cref{thm:TP} from a statement about oblivious machines.
+\begin{enumerate}[leftmargin=2em]
+\item \emph{A hypothesis on cone systems.} The coding bounds of the series use properties of the cone relation, and
+\cref{sec:false} shows that the relation-level properties proved so far cannot carry the conclusion. ``Translated receivers share their
+decoder on every stretch of periodic head motion'' is a property of the rule. It has to be stated for the cone systems
+of real schedules, where the receivers are output bits and the decoders are compositions of the transition function.
+\item \emph{Depth reduction.} The genie of \cref{sec:depth} reveals values at chosen steps. The revealed word is advice
+that depends on position, so it breaks uniformity wherever it is used. A version of \cref{thm:TP} with advice would have
+to charge each revealed bit as a regime change; \cref{thm:TP} suggests the exchange rate, half a row per change, but
+proves nothing about it.
+\item \emph{Many hops.} \Cref{rem:compose-TP} bounds $t$ uniform hops by a loss that grows linearly in $t$. A machine
+that runs for $cL$ steps has unboundedly many hops, and \cref{rem:compose-TP} shows that one cheap operation can break
+every digit symmetry at once. So an argument for machines has to count something that an unshuffle does not supply for free.
+\end{enumerate}
+We do not know how to take any of these steps.

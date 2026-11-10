@@ -1,0 +1,122 @@
+\section{Small sizes}\label{sec:small}
+
+This section is numerical, except for \cref{prop:aperiodic}, which is a formal statement about one explicit code. It
+reports exact computations over $\F_2$ for class-uniform rules (\cref{def:class-uniform}) on a cycle. No proof in this
+paper uses them.
+
+\subsection{Method}
+
+For a partition of $\Z/d$ and a target dimension $D$, the existence of a class-uniform rule with a code of dimension at
+least $D$ is a rank condition: the $d^2\times d^2$ matrix of $\sw-K$, whose row $(c,r)$ is determined by the functional
+of the class of $c$ for the coordinate~$r$, must have rank at most $d^2-D$. We decide it in two ways.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Exhaustively}, for $d\le4$, by enumerating subspaces and testing the criterion that a subspace $\X$ is a code
+if and only if, for every class $J$, $\sum_{c\in J}\sigma^cX_c=0$ with $X_c\in\X$ implies
+$\sum_{c\in J}(\text{row }c\text{ of }X_c)=0$ (\leanfile{tools/exhaustive_pigeonhole_checks.py}).
+\item \emph{By a SAT solver}, for $d=5,6$: the rank condition is written as a factorization of the matrix through
+$\F_2^{d^2-D}$, with the second factor in reduced echelon form, and given to
+CryptoMiniSat (\leanfile{tools/class_uniform_sat.py}). A satisfying assignment is a rule together with its code; the
+script rebuilds the matrix from the rule, recomputes its kernel, and \leanfile{tools/verify_class_uniform_code.py}
+checks the saved code against the definition, sharing no code with the search. An answer ``unsatisfiable'' rests on the
+solver, and we say so wherever we report one; as controls, the solver confirms the bound of \cref{thm:TP} for $d=4$ and
+for $\{0,1\},\{2,3\},\{4\}$ at $d=5$. A time-out says nothing: the solver also times out on instances that are known to
+be satisfiable. Some searches were restricted to codes that contain the space $\Hk^*$ of matrices with
+$x_{c'}=\sigma^{c'-c}x_c$ for all $c,c'$ in one class, which is itself a code of dimension $Md$ and, for interval
+classes, is the space $\Hk$ of \cref{sec:symmetry}. This makes the search faster and can only lower the result. The
+code of \cref{prop:aperiodic} was found without the restriction and contains $\Hk^*$.
+\end{itemize}
+
+\subsection{Results}
+
+\Cref{tab:small} lists the largest dimension of a code for partitions of $\Z/d$, up to the affine maps
+$c\mapsto uc+t$ of the index. For $d\le5$ every partition with $1<M<d$ classes is listed; for $d=6$, the partitions
+into two classes and the nine partitions into three classes for which the bound exceeds $(d^2+Md)/2$. ``Bound'' is the best value of \cref{thm:TP} over shift sets
+of at most four elements, rounded down. Every code counted in the last column for $d\ge5$ is saved in
+\leanfile{tools/data/}.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}cllccl@{}}
+\toprule
+$d$ & classes & pairing & $\lfloor(d^2+Md)/2\rfloor$ & bound & largest code \\
+\midrule
+3 & $\{0\},\{1,2\}$ & 6 & 7 & 7 & $=7$ \\
+\midrule
+4 & $\{0\},\{1,2,3\}$ & 10 & 12 & 12 & $=12$ \\
+  & $\{0,1\},\{2,3\}$ & 10 & 12 & 12 & $=12$ \\
+  & $\{0,2\},\{1,3\}$ & 10 & 12 & 12 & $=12$ \\
+  & $\{0\},\{1\},\{2,3\}$ & 10 & 14 & 14 & $=14$ \\
+  & $\{0\},\{2\},\{1,3\}$ & 10 & 14 & 14 & $=14$ \\
+\midrule
+5 & $\{0\},\{1,2,3,4\}$ & 15 & 17 & 17 & $=17$ \\
+  & $\{0,1\},\{2,3,4\}$ & 15 & 17 & 17 & $=17$ \\
+  & $\{0\},\{1,2\},\{3,4\}$ & 15 & 20 & 20 & $=20$ \\
+  & $\{0\},\{1\},\{2,3,4\}$ & 15 & 20 & 20 & $19^{*}$ \\
+  & $\{0\},\{1,4\},\{2,3\}$ & 15 & 20 & 21 & $20^{*}$ \\
+  & $\{0\},\{1\},\{2\},\{3,4\}$ & 15 & 22 & 22 & $=22$ \\
+\midrule
+6 & $\{0\},\{1,\dots,5\}$ & 21 & 24 & 24 & $=24$ \\
+  & $\{0,1\},\{2,\dots,5\}$ & 21 & 24 & 24 & $=24$ \\
+  & $\{0,1,2\},\{3,4,5\}$ & 21 & 24 & 24 & $=24$ \\
+  & $\{0,2,4\},\{1,3,5\}$ & 21 & 24 & 24 & $=24$ \\
+  & $\{0,2\},\{1,3,4,5\}$ & 21 & 24 & 27 & $\ge24$ \\
+  & $\{0,3\},\{1,2,4,5\}$ & 21 & 24 & 27 & $\ge23$ \\
+  & $\{0,1,3\},\{2,4,5\}$ & 21 & 24 & 28 & $\ge25$ \\
+  & $\{0,1\},\{2,4\},\{3,5\}$ & 21 & 27 & 30 & $\ge28$ \\
+  & $\{0,1\},\{2,5\},\{3,4\}$ & 21 & 27 & 30 & $\ge28$ \\
+  & $\{0,2\},\{1,4\},\{3,5\}$ & 21 & 27 & 30 & $\ge28$ \\
+  & $\{0\},\{1,2,4\},\{3,5\}$ & 21 & 27 & 30 & $\ge28$ \\
+  & $\{0\},\{1,5\},\{2,3,4\}$ & 21 & 27 & 30 & $\ge27$ \\
+  & $\{0\},\{1,2,5\},\{3,4\}$ & 21 & 27 & 30 & $\ge27$ \\
+  & $\{0\},\{1,3,4\},\{2,5\}$ & 21 & 27 & 30 & $\ge27$ \\
+  & $\{0\},\{4\},\{1,2,3,5\}$ & 21 & 27 & 30 & $\ge27$ \\
+  & $\{0\},\{3\},\{1,2,4,5\}$ & 21 & 27 & 30 & $\ge26$ \\
+\bottomrule
+\end{tabular}
+\caption{Largest codes of class-uniform rules over $\F_2$. ``$=$'' marks an exact value: a code of that dimension
+was found, and it equals the bound of \cref{thm:TP}. ``$\ge$'' marks the largest code found. A star marks a value that
+was found and whose optimality rests on the solver (\cref{rem:small}).}\label{tab:small}
+\end{table}
+
+\begin{remark}[Numerical: what the table shows]\label{rem:small}
+(a) \emph{Intervals.} For interval classes the bound $\lfloor(d^2+Md)/2\rfloor$ of \cref{thm:TP} is attained in every
+case computed but one. For unequal pieces the codes that attain it are not block-symmetric, and at $d=4$ with pieces
+$\{0\},\{1,2,3\}$ no copy rule attains it (\cref{rem:extremal}). The exception is $\{0\},\{1\},\{2,3,4\}$ at $d=5$: a
+code of dimension $19$ exists; by \cref{lem:extremal} a code of dimension $20$ would contain $\Hk$; and the solver
+reports that no code of dimension $20$ contains~$\Hk$. So the largest code has dimension $19$, on the word of the
+solver, and the bound of \cref{thm:TP} is not attained for every partition into intervals.
+(b) \emph{No almost-period, $d=5$.} For $\{0\},\{1,4\},\{2,3\}$ every single shift leaves four components, and the
+bound of \cref{thm:TP} is $21$, from a set of three shifts. A code of dimension $20=(d^2+Md)/2$ exists, and the solver reports that
+none of dimension $21$ does.
+(c) \emph{No almost-period, $d=6$.} For $\{0,1,3\},\{2,4,5\}$ every nonzero shift leaves four components, and the best
+bound of \cref{thm:TP} is $28$, from a set of three shifts. A code of dimension $25$ exists, one more than
+$(d^2+Md)/2=24$
+(\cref{prop:aperiodic}); searches for dimension $26$ timed out. Four partitions into three classes have codes of
+dimension $28$, one more than $(d^2+Md)/2=27$.
+(d) The gain over $(d^2+Md)/2$ in (c) is one dimension in each case. The data do not distinguish a gain of bounded
+size from one that grows.
+\end{remark}
+
+\begin{proposition}[Two classes with no almost-period beat every interval rule]\label{prop:aperiodic}
+\formal{AperiodicExample.lean}{exists_classUniformCode_gt,isClassUniformCode_aperiodicCode,finrank_aperiodicCode,aperiodicCode,aperiodicCls_eq_true_iff}
+For $d=6$ over $\F_2$ and the classes $\{0,1,3\}$ and $\{2,4,5\}$ of $\Z/6$ there is a code of a class-uniform rule of
+dimension $25$. In particular the bound $(d^2+Md)/2$ of \cref{thm:TP} for $M$ interval classes, and of \cref{prop:copy}
+for copy rules with $M$ classes of any shape, does not hold for coded rules on arbitrary classes.
+\end{proposition}
+
+\begin{outline}
+The code is the span of $25$ explicit matrices, and the two decoders are explicit
+(\leanfile{AperiodicExampleData.lean}, generated from a certificate by \leanfile{tools/gen_aperiodic_example.py}). That
+every generator satisfies the rule at every row, $900$ equations over $\F_2$, is checked by the kernel
+(\lean{aperiodicGen_row}); by linearity the span is a code (\lean{isClassUniformCode_aperiodicCode}). Each generator has
+an entry equal to~$1$ where all the others vanish (\lean{aperiodicGen_pivot}), so the generators are independent and
+the dimension is~$25$ (\lean{finrank_aperiodicCode}). Then $2\cdot25=50>48=6^2+2\cdot6$
+(\lean{exists_classUniformCode_gt}). The certificate is used only as data.
+\end{outline}
+
+The code of \cref{prop:aperiodic} was found by the solver. It contains the $12$-dimensional space $\Hk^*$, it meets its translate by one column in exactly $2\cdot25-36=14$
+dimensions, the least that \cref{lem:pigeonhole} allows, and it meets its translates by two and three columns in $18$
+and $17$ dimensions. We do not have a description of it that generalizes, and one example at $d=6$ says nothing about
+rates: the term $Md/2$ is a quarter of $(d^2+Md)/2$ at this size. What the example does show is that the union bound in
+\cref{thm:TP} is not an artefact, and that masks without an almost-period carry a coding gain that no copy rule and no
+interval rule has. \Cref{prob:aperiodic} asks how large it can be.

@@ -1,0 +1,133 @@
+\section{Where the wall is}\label{sec:wall}
+
+This section is a diagnosis. It contains no new mathematics. Its claims are consequences of the results cited in
+\cref{sec:series}, and where it gives a reading instead of a consequence it says so.
+
+\subsection{What is left is one function}\label{sec:one-function}
+
+For oblivious machines the series has reduced~(T) to a question about codes (\cref{sec:depth}). Fix the number of
+tapes, the alphabet and the time constant, and let $\eps>0$. Depth reduction gives, for every linear-time schedule, a
+genie that reveals at most $\eps L$ bits and leaves cones of depth at most $D_\eps$, a bound that depends on $\eps$ and
+on the fixed parameters but not on~$d$. Write $r(\eps)$ for the best rate, in the limit of large~$d$, of a binary
+storage code on the cone relations that such genies leave on such schedules. Then:
+\begin{itemize}[leftmargin=1.5em]
+\item an oblivious linear-time transposer needs $r(\eps)\ge1-\eps$ for every $\eps>0$;
+\item a proof that $r(\eps)<1-\eps$ for one $\eps$, for each choice of the fixed parameters, would exclude oblivious
+linear-time transposers~\cite[Corollary~9.3]{BoundedStack2026};
+\item the pairing gives $r(\eps)\ge\tfrac12$, and whether $r(\eps)>\tfrac12$ for any~$\eps$ is open in both directions.
+\end{itemize}
+The depth bound matters: without it the cone of an output is everything read before it, and the question is empty.
+The only general upper bound is the elementary one for relations of degree at most~$\Delta$, a rate of
+$1-1/(\Delta+1)$~\cite[Proposition~4.14]{FourthPaper2026}, which is useless at the depths in question. For machines with linear data paths the same reduction
+ends in the relative rigidity of the transposition matrix on ball patterns (\cref{sec:depth}). For adaptive machines
+the question arises in two forms: the Tape Coding Conjecture of the first paper, which needs no simulator, and
+the storage-code criteria on the traces of a bit simulator (\cref{sec:adaptive}).
+
+For particular classes of schedules the exclusion is proved. The sixteenth paper proves it for schedules whose
+large output sets can be cut cheaply from the macroscopic crossings, and for schedules with boundedly many macroscopic
+phases~\cite[Theorems~5.4, 9.2 and~9.3]{SixteenthPaper2026}; the source covers of the ninth paper exclude restricted
+geometries for all codes. What is missing is a statement for all schedules.
+
+\subsection{Three kinds of argument and their limits}\label{sec:exhaustions}
+
+\paragraph{Motion without data.} The cut inequality behind Theorem~M*, its entry-cell refinement and every conclusion
+of Theorem~M* are satisfied by the padded machine of the second paper, which transposes nothing (\cref{sec:motion}).
+So conditions on head motion that do not refer to the outputs are necessary and cannot be decisive. Conditions that
+do refer to them go further: the rows-to-columns inequality of the sixteenth paper excludes two of the five candidate
+schedules. But one cut serves every pair of row sets, so this inequality gives a logarithm only when the cuts for
+different address bits are disjoint, which is a hypothesis and not a theorem; and what excludes all five candidates is
+the regular-recursion obstruction, which applies only to schedules all of whose stages have regular limiting motion.
+Whether conditions of this kind decide the oblivious case is open.
+
+\paragraph{Codes without machines.} On abstract separated relations of bounded degree, storage codes exceed the pairing
+rate, and their rates tend to one polynomially fast as the degree cap grows (\cref{sec:false}). A transposer is only
+shown to need rates that tend to one very slowly, and the cap grows as $\eps$ falls because a genie of cost $\eps L$
+has depth at least of order $1/\eps$~\cite[Proposition~4.13]{FourthPaper2026}. So no rate bound for separated relations of bounded
+degree in general can separate a transposer from an abstract code. The two properties of cone relations that the
+series' coding bounds use, bounded degree after trimming and paired-distance separation, are shared by the
+counterexamples.
+
+\paragraph{Counting passes.} The pass bound of the first paper is the one logarithm proved for a resource of every
+machine. It saturates one scale at a time: a linear-time run has room for about $2^j$ legs at scale $2^{-j}L$, while
+counting at a single scale asks for only $O(j)$ of them, and the threshold of the coarse-pass bound of the sixteenth
+paper is tight~\cite[Theorem~10.3 and Corollary~10.4]{SixteenthPaper2026}. That paper states the problem of an
+inequality in the numbers of legs at all scales at once~\cite[Problem~11.1]{SixteenthPaper2026}; nothing in the series
+proves one.
+
+\subsection{Why every general tool saturates}\label{sec:saturation}
+
+The $\log d$ of the folklore algorithm is a sum over $\log_2d$ address digits. Exchanging one digit of the row address
+with one digit of the column address costs $O(L)$, and the transposition is the product of these $\log_2d$ commuting
+exchanges. Linear time pays for any one of them in full, and for any bounded number.
+
+Every tool of the series \emph{that applies to all machines} is single-scale or scale-free. Cut arguments, macroscopic
+limits and coarse passes look at one scale at a time, and a linear-time machine has enough steps to satisfy any
+single-scale requirement. Storage-code bounds are scale-free: they see a relation, not the scale of the addresses that
+produced it. The one attempt to make a geometric quantity grow with the number of scales failed: walks nested at $m$
+scales are cut to a depth independent of~$m$ (\cref{sec:depth}).
+
+The series does charge scales separately in restricted settings, and they show what the general case lacks.
+\begin{itemize}[leftmargin=1.5em]
+\item For transport at bounded occupancy, each moved label is charged its $\log d$ address bits, in
+steps~\cite[Lemma~3.4]{DirectedRecovery2026}. What the bound does not cover is coding.
+\item For traces whose cuts for different address bits are disjoint, the rows-to-columns inequality gives
+$\Omega(L\log d)$ against every code~\cite[Corollary~7.3]{SixteenthPaper2026}. What is not available is the
+disjointness.
+\item In the abstract model of XOR-frame recursion every level is charged~\cite{FirstPaper2026}, and compilers with
+boundedly many stages meet a multiscale obstruction~\cite{ThirdPaper2026}. Both are restricted models.
+\end{itemize}
+So the logarithm is proved wherever either the coding or the geometry is tied down, and nowhere else.
+\Cref{cor:digit,rem:compose-TP} below make one half of this precise in the linear one-hop model: every address digit
+must be treated asymmetrically, but one cheap tape operation does that for all digits at once.
+
+\subsection{What the missing statement must be}\label{sec:missing}
+
+The limits above describe the statement that would decide the oblivious case. It must
+\begin{itemize}[leftmargin=1.5em]
+\item tie what is known to where it can be, for all schedules: the class results of \cref{sec:one-function} do this
+for restricted geometries;
+\item fail for abstract separated relations, where codes of rate tending to one exist;
+\item fail for motion that ignores the data, which padding supplies;
+\item constrain all scales at once;
+\item and use the shape of tapes, since a bound on coding gains for bounded-degree graphs in general would be a circuit
+lower bound (\cref{sec:first}).
+\end{itemize}
+Since a linear-time multiplier gives a linear-time transposer~\cite{HvdH2025}, a proof of such a statement for all
+machines would also be the first superlinear lower bound for off-line multiplication on multitape machines.
+
+\subsection{What a construction cannot avoid}\label{sec:needs}
+
+The same results say what a linear-time machine would have to use.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{No bounded complex coefficients.} Linear recovery with bounded complex coefficients and bounded width
+stays at the pairing rate on cone relations (\cref{sec:proved}). A linear code would need positive characteristic or
+coefficients that cannot be rescaled to be bounded; nonlinear codes are not covered.
+\item \emph{Curved motion.} In the limit, head motion must fail to be locally affine on a positive fraction of the
+time (\cref{sec:motion}), and a recursive schedule must have a stage whose limiting motion is not regular.
+\item \emph{Expanding relations.} The trimmed incidence graphs of the cone relations must not be uniformly hyperfinite
+(\cref{sec:proved}). This is necessary and cheap: a fixed linear-time machine has such cones and still obeys the
+all-code half bound~\cite[Corollary~7.9]{DirectedRecovery2026}.
+\item \emph{No gadgets.} After trimming, almost no output is within bounded distance of its own input bit, so no gain
+above the pairing rate can come from gadgets of bounded size (\cref{sec:proved}). The pairing itself is not excluded;
+it stops at~$\tfrac12$.
+\end{itemize}
+Above the pairing rate, at a degree cap that is fixed before the length and the paired distances grow, the only codes
+known come from one source: sections of line bundles on the supersingular loci of Hilbert modular
+surfaces~\cite{StorageCodes2026}, by a method that originates in~\cite{Luck2026}, together with their
+amplifications~\cite{HighRate2026}. At degrees that grow with the length other examples exist.
+
+\subsection{The rule and the relation}\label{sec:rule}
+
+One feature of machines is absent from the coding statements above. A storage code on a relation lets each receiver
+choose its own decoding function. A Turing machine has one finite transition table, and on a stretch of time during
+which its heads move in step, the function that produces the output at one position is the function that produces the
+output at the next position, translated. The cone relation records which inputs each output can depend on. It does not
+record that neighbouring outputs depend on them \emph{in the same way}.
+
+Sharing decoders is not by itself an obstruction to rate above one half: by their construction, the linear codes of
+the thirteenth paper are equivariant under large groups with boundedly many orbits of coordinates. But transposition has a feature that an
+abstract relation lacks: its demand is not invariant under translating one index. Shifting the columns of a matrix
+shifts the rows of its transpose. The two theorems of this paper are the two cleanest ways in which structure of the
+decoder on one index side is incompatible with the swap: \emph{order} (\cref{sec:order}) and \emph{symmetry}
+(\cref{sec:symmetry}). They are proved in the linear one-hop model of \cref{sec:onehop}. They are not theorems about
+machines, and \cref{sec:construction} says what would be needed to make them so.

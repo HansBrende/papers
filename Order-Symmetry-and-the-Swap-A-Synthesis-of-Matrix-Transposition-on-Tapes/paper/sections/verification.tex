@@ -1,0 +1,60 @@
+\section{Building and verifying the formalization}\label{app:verification}
+
+The Lean project is the directory \leanfile{lean/} next to this paper. It uses Lean and Mathlib, both at version v4.34.1
+(\leanfile{lean-toolchain}, \leanfile{lakefile.toml}, \leanfile{lake-manifest.json}), and requires the shared
+\leanfile{lean-machine/} library of the repository through a relative path, which supplies Mathlib at the pinned
+revision. It uses no library of an earlier paper. Keep the repository's directory layout so that
+\leanfile{lean-machine/} stays in place.
+
+\paragraph{Build.} With \texttt{elan} installed, run in \leanfile{lean/}:
+\begin{center}
+\texttt{lake exe cache get \&\& lake build}
+\end{center}
+The first command downloads the compiled Mathlib cache; the second compiles \leanfile{SwapRigidity}.
+
+\paragraph{Axioms and index.} The file \leanfile{lean/PaperAxioms.lean}, generated from the \LaTeX{} sources of this paper
+by \leanfile{tools/lean_index.py}, runs \texttt{\#print axioms} on every declaration cited in this paper
+(\cref{app:leanindex}):
+\begin{center}
+\texttt{lake env lean PaperAxioms.lean}
+\end{center}
+Every declaration depends at most on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. No Lean file
+of this library uses \texttt{sorry}, \texttt{admit} or \texttt{native\_decide}, declares an \texttt{axiom}, bypasses the
+kernel via \texttt{unsafe}, \texttt{implemented\_by} or \texttt{extern}, or raises \texttt{maxHeartbeats}. Running
+\texttt{python3 tools/lean\_index.py} from the paper's root directory regenerates both
+\leanfile{paper/sections/leanindex.tex} and \leanfile{lean/PaperAxioms.lean} (\texttt{--index-only} writes only the
+index; \texttt{--check} verifies that every cited name resolves and that both generated files are current).
+
+\paragraph{Where things are.} The library \leanfile{lean/SwapRigidity/} has the following modules, all imported by the
+root module \leanfile{lean/SwapRigidity.lean}.
+\begin{itemize}[leftmargin=1.5em]\raggedright
+\item \leanfile{Flag.lean} (\cref{sec:order}): the swap code, the elimination on staircase patterns, invariance under
+changes of bases, the coordinate form of Theorem~FL, the corollary for a pair of flags, the exchange of sides, and
+attainment.
+\item \leanfile{Pigeonhole.lean} (\cref{sec:symmetry}): the pigeonhole lemma in its three forms, the rank bound for
+commutators and its subadditivity under composition, and the dimension count for an intersection of preimages.
+\item \leanfile{Swap.lean}: the dimensions of the kernel and image of $\sw-1$ and the bound $\dim\ker[\sw,T]\ge d$.
+\item \leanfile{ClassUniform.lean}: class-uniform codes and Theorem~TP on a cycle.
+\item \leanfile{BlockSymmetric.lean}: the block-symmetric code, its dimension, and attainment of the bound.
+\item \leanfile{Line.lean}: two-sided rules on a line and the line form of Theorem~TP.
+\item \leanfile{Twist.lean}: the twist-class theorem.
+\item \leanfile{AperiodicExample.lean} and the generated \leanfile{AperiodicExampleData.lean} (\cref{prop:aperiodic}):
+an explicit class-uniform code of dimension $25$ for $d=6$ over $\F_2$. The data file contains definitions only. The
+finite facts about the data are proved by \texttt{decide}, which the kernel checks; nothing is taken on trust from the
+certificate \leanfile{tools/data/aperiodic_d6_dim25.json} or from the generator
+\leanfile{tools/gen_aperiodic_example.py} (run it with \texttt{--check} to confirm that the data file is current).
+
+\end{itemize}
+
+\paragraph{Computations.} The numerical remarks and \cref{sec:small} are reproduced by the scripts in
+\leanfile{tools/}; each script documents its usage at its top.
+\begin{itemize}[leftmargin=1.5em]\raggedright
+\item \leanfile{tools/exhaustive_flag_checks.py} and \leanfile{tools/exhaustive_pigeonhole_checks.py} (Python with
+NumPy): the exhaustive and randomized checks behind the numerical remarks of \cref{sec:order,sec:symmetry} and the
+entries for $d\le4$ of \cref{tab:small}.
+\item \leanfile{tools/class_uniform_sat.py} (needs the package \texttt{pycryptosat}): the search for $d=5,6$.
+\item \leanfile{tools/verify_class_uniform_code.py}: checks every saved code in \leanfile{tools/data/} against the
+definition.
+\end{itemize}
+Apart from the certificate of \cref{prop:aperiodic}, which Lean checks, these computations are not part of the formal
+development, and no proof depends on them.

@@ -1,0 +1,130 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{The problem}
+
+Can a deterministic multitape Turing machine transpose a $d\times d$ matrix with $\clog d$-bit entries in time linear
+in the input length $L=d^2\clog d$? We call the affirmative statement~(T); \cref{sec:question} states it precisely. The
+folklore algorithm takes $O(L\log d)$ steps. Transposition is the data-movement step of fast integer multiplication on
+tapes, and by a reduction of Harvey and van der Hoeven~\cite{HvdH2025} a linear-time multiplier would give~(T). So a
+proof that (T) fails would be the first superlinear lower bound for off-line multiplication on multitape machines, and a
+proof that it holds would be a new way of moving data.
+
+Sixteen papers and eight memos of this series have studied the question since October~2026. They contain reductions,
+restricted impossibility theorems, constructions of codes and many formal proofs. They do not contain the answer, and a
+reader who starts today has to read all of them to learn where the difficulty is. This paper is written for that reader.
+
+\subsection{What this paper does}
+
+It does three things.
+
+\paragraph{A synthesis (\cref{sec:series}).} We state the main results of the series in one place, by theme: the
+reductions, what head motion must do, depth reduction, what is proved about storage codes, what is false about them, and
+adaptive machines. Nothing is reproved. Every statement is cited, with its main hypotheses.
+
+\paragraph{A diagnosis (\cref{sec:wall}).} For oblivious machines the series has reduced~(T) to one function: the best
+rate $r(\eps)$ of a storage code on the bounded-depth cone relations that remain of linear-time schedules when a genie
+reveals $\eps L$ bits. A transposer needs $r(\eps)\ge1-\eps$ for every~$\eps$. The matching of each stored symbol with
+one partner gives $r\ge\tfrac12$, and whether $r$ exceeds $\tfrac12$ at all on the relations of real machines is open in
+both directions. Three kinds of argument have reached known limits:
+\begin{itemize}[leftmargin=1.5em]
+\item conditions on motion that ignore the data, because a machine that transposes nothing satisfies the cut
+inequalities behind them; conditions that do see the outputs are single-scale, and one cut serves every pair of row
+sets;
+\item bounds for codes that ignore the machine, because abstract relations with the two properties used so far,
+bounded degree and paired-distance separation, carry codes of rate tending to one;
+\item counting passes, because it saturates one scale at a time.
+\end{itemize}
+They stop for one reason. The logarithm of the folklore bound is a sum over $\log_2d$ address scales, each costing $L$,
+and every tool of the series that applies to all machines looks at one scale or at none; the logarithm is proved only
+where the coding or the geometry is tied down. The missing statement has to tie what is known to where it can be, for
+all schedules, and the coding properties proved so far are properties of the cone \emph{relation}, which forgets that
+neighbouring outputs of a machine are produced by the same rule.
+
+\paragraph{Two theorems (\cref{sec:order,sec:symmetry}).} We prove two rigidity theorems for the swap in a model where
+the code and its decoder are visible together. Let $V=F^d$ over any field, let $\sw$ be the swap on $V\otimes V$, that
+is, $X\mapsto X^{\tr}$ on matrices, and let $K=\sum_aA_a\otimes B_a$ act by $X\mapsto\sum_aA_aXB_a^{\tr}$. The code
+$\ker(\sw-K)$ is the set of matrices that $K$ transposes correctly. The symmetric matrices, for $K=1$, have dimension
+$d(d+1)/2$.
+
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Order (Theorem~FL, \cref{thm:FL}).} For every complete flag $W_1\subset\dots\subset W_d$ of $V$, with
+$g(i)=\dim\sum_aB_a(W_i)$,
+\[
+  \dim\ker(\sw-K)\le\sum_{i=1}^dg(i),
+\]
+whatever the $A_a$ are. So two Kronecker terms never beat the symmetric matrices, over any field; neither do commuting
+$B_a$, for instance any convolutions of any number of rows; and neither does any combination of rotations, reflections,
+dilations and decimations when $d=p^m$ in characteristic~$p$. The bound is attained for every profile~$g$.
+\item \emph{Symmetry (Theorem~TP, \cref{thm:TP}).} For any three operators on an $N$-dimensional space,
+$\dim\ker(\sw-K)\le\frac12(N+\dim\ker[\sw,T]+\rank[K,T])$, an elementary lemma. For the swap, $\dim\ker[\sw,T]\ge d$
+always. If row $c$ of $X$ is a fixed linear function of $X$ with its columns rotated by $c$, the same function for all
+$c$ in each of $M$ intervals, then
+\[
+  \dim\{X\}\le\frac{d^2+Md}2 ,
+\]
+on a cycle and on a line, with equality for equal intervals: there the largest code has the dimension of the coarse
+$M\times M$ block transposition. For $M$ equal intervals flags give only rate $1-1/(2M)$. Variants bound decoders with $s$
+modulation frequencies by rate $s/(s+1)$ and show that every address digit must be treated asymmetrically. The
+hypothesis on the classes is needed: for $d=6$, two classes with no almost-period carry a code of dimension $25>24$
+(\cref{prop:aperiodic}), found by a SAT solver and checked in Lean.
+\end{itemize}
+
+In words: to beat the pairing value, the decoder may have neither a hidden order nor a symmetry, on either index, that
+the swap does not share. The second theorem uses exactly the feature of machines that cone relations forget.
+
+\paragraph{What the theorems are not.} They are statements about the linear one-hop model. They are not lower bounds
+for machines, and (T) remains open. \Cref{sec:construction} lists what they exclude and the three steps that would be
+needed to carry them to machines; \cref{sec:small} gives exact values at small sizes; \cref{sec:open} states the
+problems.
+
+\subsection{How to read this paper and its formal proofs}
+
+The synthesis and the diagnosis contain no numbered results; they cite. The numbered results of
+\cref{sec:order,sec:symmetry} each carry a status line.
+\begin{itemize}[leftmargin=1.5em]
+\item ``Lean:'' names the formal counterpart in the library \leanfile{lean/SwapRigidity/}; the Lean statement is
+authoritative, and the text gives an outline.
+\item ``Lean (partial):'' names what is formalized and says what is not.
+\item ``Not formalized'' is followed by a complete proof.
+\end{itemize}
+Formalized in Lean~4 with Mathlib, on the standard axioms only: the coordinate form of Theorem~FL, its attainment and
+the corollary for a pair of flags; the pigeonhole lemma, its composition property and the lower bound
+$\dim\ker[\sw,T]\ge d$; Theorem~TP on a cycle with an arbitrary shift set, its attainment for equal pieces, and its
+line form; and the twist-class theorem. Not formalized, and proved in the text: the passage from flags to adapted
+bases; the corollaries of Theorem~FL that need an algebraically closed field, the structure of $p$-groups or an
+arithmetic estimate (\cref{cor:two-terms,cor:commutative,cor:affine,cor:expansion}); the equality case of
+\cref{prop:swap-floor}; the copy-rule bound; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it rests
+on; and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
+labelled as numerical and in \cref{sec:small}, and no proof uses them. \Cref{app:leanindex} indexes the declarations and
+\cref{app:verification} explains how to check them.
+
+\subsection{Related work}
+
+\paragraph{The series.} \Cref{sec:series} is the account of the earlier papers. The closest of them to the new theorems
+are the eighth, which states the coding problem for linear machines as relative rigidity of the transposition
+matrix~\cite{EighthPaper2026}; the second and fourth, which exclude locally affine head
+motion~\cite{SecondPaper2026,FourthPaper2026}; and the seventh, whose elimination lemmas and Cayley corollary are the
+storage-code relatives of \cref{thm:FL,thm:TP}~\cite{SeventhPaper2026}.
+
+\paragraph{Matrix equations with a transpose.} Equations in which $X$ and $X^{\tr}$ both occur have been studied
+as $\star$-Sylvester and $\top$-Stein equations. The solution space of $AX+X^{\star}B=0$ is described through the
+Kronecker canonical form of a pencil~\cite{DeTeranDopicoGuilleryMontealegreReyes2013}; that of $XA+AX^{\tr}=0$ is
+found in~\cite{DeTeranDopico2011} and applied to congruence orbits; unique solvability of $AXB+CX^{\star}D=E$ is
+characterized in~\cite{DeTeranIannazzoPoloniRobol2018}, and of $X=AX^{\tr}B+C$ in~\cite{Chiang2013}. Generalized Schur
+decompositions are used for solvability and numerical solution~\cite{ChiangChuLin2012}. \Cref{thm:FL} uses
+triangular forms for a different purpose, a dimension bound in the singular case with one side unconstrained. We found no statement of \cref{cor:two-terms}, of the
+bound for an arbitrary number of terms with one triangularizable side, or of any bound on the rank of the commutation
+matrix~\cite{MagnusNeudecker1979} minus a structured sum of Kronecker products. Our search was limited to abstracts and
+indexes, and we claim no priority for statements that specialists may regard as folklore.
+
+\paragraph{Commutators and network codes.} \Cref{lem:pigeonhole} is the fact that a commutator has rank at most twice
+the rank of either factor; we know no source that states it in the form used here and we give its proof. Transposition
+as a multi-commodity network-coding instance goes back to~\cite{AHJKL2006}. Network codes whose local kernels are sums
+of cyclic shifts have been studied for multicast~\cite{TangSunLiYangLong2019}; we found nothing on shift-covariant
+decoders for transposition.
+
+\subsection{Organization}
+
+\Cref{sec:prelim} fixes the problem and the two models. \Cref{sec:series} is the synthesis and \cref{sec:wall} the
+diagnosis. \Cref{sec:order,sec:symmetry} prove the two theorems. \Cref{sec:construction} is the construction side,
+\cref{sec:small} the exact computations and \cref{sec:open} the open problems.

@@ -1,0 +1,99 @@
+\section{The problem and two models}\label{sec:prelim}
+
+\subsection{The question}\label{sec:question}
+
+Throughout, $d\ge1$ is the side length of a square matrix, $b(d)=\max(1,\clog d)$ is the entry width, and $L=d^2b(d)$ is
+the input length. A machine is a deterministic multitape Turing machine with a read-only input tape, a fixed number~$k$ of
+work tapes, a write-only output tape and a fixed finite alphabet. The input is a $d\times d$ matrix with entries in
+$\{0,1\}^{b(d)}$, written row by row without delimiters; the output is its transpose in the same encoding.
+
+\begin{quote}
+\textbf{(T)} There are a machine $M$ and a constant $c$ such that, for every $d$ and every input matrix, $M$ halts with
+the transpose on its output tape within $c(L+1)$ steps.
+\end{quote}
+
+The authoritative statement is the Lean definition \texttt{Transpose.LinearTimeTransposable} of the first
+paper~\cite{FirstPaper2026}, which the series keeps frozen. A machine is \emph{oblivious} if its head positions at each
+step, the steps at which it writes output and its halting time depend only on the input length; otherwise it is
+\emph{adaptive}. A \emph{pass} is a maximal stretch of steps on
+which every head moves monotonically.
+
+The folklore algorithm transposes in $O(L\log d)$ steps by a recursion on address digits: write the row address and the
+column address of an entry in binary, and exchange them one digit at a time, each exchange costing $O(L)$. An unrefereed
+preprint~\cite{OpenAI2026mult} claims $O(L(\log d)^{1-\kappa})$ for a small $\kappa>0$. Harvey and van der
+Hoeven~\cite{HvdH2025} reduce transposition to integer multiplication on multitape machines, so a linear-time multiplier
+would give~(T), and a proof that (T) fails would be a superlinear lower bound for off-line multiplication on these
+machines. No superlinear lower bound is known for transposition, nor for off-line multiplication, sorting or the
+discrete Fourier transform, on machines with two or more work tapes. The known bounds are for one work
+tape~\cite{DMS1991,DietzfelbingerMaass1993}, for machines that only move data~\cite{Stoss1973}, and for
+reversal-bounded conservative machines~\cite{Kirchherr1988}; the superlinear bounds that follow from the separation of
+deterministic and nondeterministic linear time~\cite{PPST1983} concern problems that are hard for nondeterministic
+linear time~\cite{Grandjean1988}.
+
+\subsection{Storage codes on recovery relations}\label{sec:storage}
+
+Most of the series is written in the following language, which we use in \cref{sec:series,sec:wall}.
+
+\begin{definition}[Storage codes]\label{def:storage}
+A \emph{recovery relation} on a finite set $V$ assigns to every $v\in V$ a set $N(v)\subseteq V$; it is
+\emph{loopless} if $v\notin N(v)$ for all~$v$. A
+\emph{storage code} on it, over an alphabet $\alpha$, is a set $C\subseteq\alpha^V$ such that for every $v$ the coordinate
+$w_v$ of a codeword $w\in C$ is a function of $(w_u)_{u\in N(v)}$. Its \emph{rate} is $\log\card C/(\card V\log\card\alpha)$.
+\end{definition}
+
+A relation in which $u\in N(v)$ exactly when $v\in N(u)$ is a graph, and the largest $\log_{\card\alpha}\card C$ is then the
+guessing number of Riis~\cite{Riis2007}; storage codes are dual to index codes with side information~$N$. On a perfect
+matching the rate is exactly $\tfrac12$: each vertex copies its partner. We call $\tfrac12$ the \emph{pairing rate}.
+
+The \emph{incidence graph} of a relation has two vertices $L_p$ and $R_p$ for every coordinate~$p$, its port as a
+helper and its port as a receiver, and an edge $L_pR_q$ whenever $p\in N(q)$. The \emph{paired distance} of $p$ is the
+distance between $L_p$ and $R_p$ in this graph; for a graph it is the length of the shortest odd closed walk through~$p$.
+Following the fifth paper~\cite[Definition~2.3]{DirectedRecovery2026}, we call a sequence of relations \emph{separated}
+if, for every fixed~$r$, all but $o(\card V)$ coordinates have paired distance greater than~$r$. A perfect matching has
+all paired distances infinite, so separation does not exclude the pairing; it excludes gains that come from short
+cycles.
+
+For an oblivious machine and a set of steps whose values are revealed (a \emph{genie}), the \emph{cone} of an output
+bit is the set of input bits on which it can still depend through the time--space dependency graph. The \emph{cone
+relation} assigns to an input coordinate $q$ the cone of the output bit that must equal it. If the machine transposes,
+then for some value of the revealed word the inputs that agree with it form a storage code on the cone relation, of
+high rate when the genie reveals few bits (\cref{sec:depth}). The \emph{depth-$D$ ball} of an output bit is the set of
+input positions read at steps within $D$ dependency steps of the step that writes it, with no genie.
+
+\subsection{The linear one-hop model}\label{sec:onehop}
+
+The two theorems of this paper live in a smaller model, in which the code and the geometry are visible at once. Let $F$
+be a field, $V=F^d$, and let $\sw$ be the swap $u\otimes w\mapsto w\otimes u$ on $V\otimes V$. Under the identification
+of $V\otimes V$ with the $d\times d$ matrices $\Mat_d(F)$, $\sw$ is transposition, $X\mapsto X^{\tr}$, and an operator
+\[
+  K=\sum_{a}A_a\otimes B_a,\qquad A_a,B_a\in\Mat_d(F),
+\]
+acts by $X\mapsto\sum_aA_aXB_a^{\tr}$. Every operator on $V\otimes V$ has this form for some finite family of terms.
+
+\begin{definition}[Swap code]\label{def:swapcode}
+\formal{Flag.lean}{swapCode,mem_swapCode}
+The \emph{swap code} of $K=\sum_aA_a\otimes B_a$ is
+\[
+  \ker(\sw-K)=\Bigl\{X\in\Mat_d(F): X^{\tr}=\sum_aA_aXB_a^{\tr}\Bigr\}.
+\]
+Its \emph{rate} is $\dim\ker(\sw-K)/d^2$. (The Lean definition is the set of matrices on the right; its identification
+with the kernel of an operator is not used in the formal proofs.)
+\end{definition}
+
+The code is the set of matrices that $K$ transposes correctly. Read row by row, the equation says that every column
+of~$X$ is a fixed linear function of the rows of~$X$: the stored word is $X$ in row-major order, the receivers want it in
+column-major order, and $K$ is the decoder. For $K=1\otimes1$ the code is the space of symmetric matrices, of dimension
+$d(d+1)/2$. We call this the \emph{pairing value}; its rate tends to the pairing rate~$\tfrac12$. For $K=\sw$ the code
+is everything.
+
+Entries of $b$ bits are handled by replacing $V\otimes V$ with $V\otimes V\otimes F^b$ and $\sw$ with $\sw\otimes1$; the
+flag bounds below then hold with an extra factor~$b$ (\cref{rem:entries}), and \cref{thm:TP} likewise.
+
+\paragraph{Relative rigidity.} A bound $\dim\ker(\sw-K)\le(1-\rho)d^2$ for all $K$ in a class says that the transposition
+matrix is $\rho d^2$-rigid relative to that class: $\sw$ is not the sum of a member of the class and a matrix of rank
+below $\rho d^2$. The eighth paper shows that, for machines with linear data paths, the coding half of the series'
+programme is exactly such a statement, for the bit-level transposition matrix and the class of matrices whose row
+for each output bit is supported on its depth-$D$ ball in a
+schedule~\cite[Theorem~7.5 and Problem~10.6]{EighthPaper2026}; this is a relative form of Valiant's
+rigidity~\cite{Valiant1977}. The classes of this paper are defined by algebraic structure on one tensor side instead of
+by a sparsity pattern. The other side is arbitrary.

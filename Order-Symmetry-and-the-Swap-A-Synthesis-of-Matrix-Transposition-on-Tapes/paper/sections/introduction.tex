@@ -77,6 +77,23 @@ for machines, and (T) remains open. \Cref{sec:construction} lists what they excl
 needed to carry them to machines; \cref{sec:small} gives exact values at small sizes; \cref{sec:open} states the
 problems.
 
+\paragraph{A subsequent memo, and this revision.} After revision \texttt{b2c389a} of this paper in its repository, a
+memo~\cite{ClassUniformMemo2026} proved, in Lean, that the two classes of \cref{prop:aperiodic} carry a code of
+dimension $25$ over every field in which $3\ne0$; that class-uniform codes can be blown up, which gives gains that
+grow with the number of classes; and bounds for the cost of advice in the one-hop model. The present revision cites
+the memo where it bears on the text, and it corrects three passages:
+\begin{itemize}[leftmargin=1.5em]
+\item the charge for a bit that a genie reveals (\cref{sec:to-machines,prob:machines}): the earlier text charged every
+revealed bit as a change of regime, at half a row, where advice that enters additively changes no decoder and half a
+row is the price of a change that affects a whole row;
+\item \cref{prob:aperiodic}(c), which the memo answers as it was worded and which is now stated for a fixed number of
+classes;
+\item the first sentence of \cref{sec:would-need}, which had dropped a hypothesis of the result it summarizes.
+\end{itemize}
+It adds \cref{prop:entry,cor:entry-advice}, which state the corrected charge, with formal proofs of their bounds in
+terms of the number of changes, and it updates \cref{rem:small}(d) and \cref{prob:aperiodic}(b). The other results of
+this paper and their formal proofs are unchanged.
+
 \subsection{How to read this paper and its formal proofs}
 
 The synthesis and the diagnosis contain no numbered results; they cite. The numbered results of
@@ -90,11 +107,12 @@ authoritative, and the text gives an outline.
 Formalized in Lean~4 with Mathlib, on the standard axioms only: the coordinate form of Theorem~FL, its attainment and
 the corollary for a pair of flags; the pigeonhole lemma, its composition property and the lower bound
 $\dim\ker[\sw,T]\ge d$; Theorem~TP on a cycle with an arbitrary shift set, its attainment for equal pieces, and its
-line form; and the twist-class theorem. Not formalized, and proved in the text: the passage from flags to adapted
-bases; the corollaries of Theorem~FL that need an algebraically closed field, the structure of $p$-groups or an
-arithmetic estimate (\cref{cor:two-terms,cor:commutative,cor:affine,cor:expansion}); the equality case of
-\cref{prop:swap-floor}; the copy-rule bound; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it rests
-on; and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
+line form; the bound for decoders that change at single entries (\cref{prop:entry}), apart from a count, and its form
+with advice (\cref{cor:entry-advice}); and the twist-class theorem. Not formalized, and proved in the text: the passage from flags to adapted bases; the corollaries
+of Theorem~FL that need an algebraically closed field, the structure of $p$-groups or an arithmetic estimate
+(\cref{cor:two-terms,cor:commutative,cor:affine,cor:expansion}); the equality case of \cref{prop:swap-floor}; the
+copy-rule bound; the count in \cref{prop:entry}; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it
+rests on; and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
 labelled as numerical and in \cref{sec:small}, and no proof uses them. \Cref{app:leanindex} indexes the declarations and
 \cref{app:verification} explains how to check them.
 

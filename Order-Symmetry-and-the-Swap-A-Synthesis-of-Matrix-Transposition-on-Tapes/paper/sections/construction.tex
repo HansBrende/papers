@@ -34,7 +34,10 @@ Two design rules follow, for the one-hop model.
 \item \emph{Synchronous access is the pairing.} Reading any number of source rows in step with the output, at any
 offsets and through any convolution, gives the symmetric matrices and no more.
 \item \emph{Uniform passes are the pairing.} A stretch on which translated outputs share their decoder gains nothing,
-whatever its window. The bound rises only with changes of regime, by $d/2$ symbols for each.
+whatever its window. The bound rises only with changes of regime, by $d/2$ symbols for each. On a cycle, a change
+that does not affect a whole row is charged by the entry: half a symbol for each output entry whose decoder changes
+from one row to the next (\cref{prop:entry}), which is not a bound for structure on one index and is not in
+\cref{tab:fail}.
 \end{itemize}
 
 \subsection{A reading for tapes}\label{sec:reading}
@@ -44,7 +47,8 @@ advance at the same speed, by a linear finite-state rule, computes a convolution
 this is a two-sided rule in the sense of \cref{thm:line}, with one class per stretch of unchanged regime, under two
 provisos: the regime changes at the same positions for every output row (change points that depend on the row need
 their common refinement), and the rule of each regime is applied to the whole stored word, with no state carried
-across a change. A state of $q$ symbols carried across a change alters $K$ by a rank of at most $q$ per output row, so
+across a change. On a cycle the common refinement is not needed: \cref{prop:entry} lets every output row have its own
+change points and charges half a symbol for each. We have not proved a form of \cref{prop:entry} on a line. A state of $q$ symbols carried across a change alters $K$ by a rank of at most $q$ per output row, so
 by \cref{lem:pigeonhole} it costs a further term of order $qd$ per change. Under the provisos, \cref{thm:line} bounds
 the gain over the pairing value by $d/2$ symbols per regime change, so rate $\tfrac12+\delta$ needs at least $2\delta d$
 regime changes, and for equal pieces the bound is attained by the block-symmetric matrices, that is, by the coarse step
@@ -60,9 +64,10 @@ decoders.
 
 \subsection{What a linear-time machine would need}\label{sec:would-need}
 
-Combining \cref{sec:needs} with \cref{tab:fail}: in addition to positive characteristic, curved motion, expanding cone
-relations and growing paired distance, a linear-time transposer, read in the one-hop model, needs on \emph{both}
-indices a family of maps that
+Combining \cref{sec:needs} with \cref{tab:fail}: in addition to what \cref{sec:needs} lists (for a linear code,
+positive characteristic or coefficients that cannot be rescaled to be bounded; curved motion; expanding cone relations;
+growing paired distance), a linear-time transposer, read in the one-hop model, needs on \emph{both} indices a family of
+maps that
 \begin{itemize}[leftmargin=1.5em]
 \item has no invariant flag and no pair of flags with bounded expansion (\cref{thm:FL});
 \item commutes with no non-derogatory translation up to $o(d)$ boundary columns, and intertwines none with boundedly
@@ -73,8 +78,12 @@ The digit masks at every scale, which the folklore recursion uses, have these pr
 $d$, and no shift respects them. A bounded number of classes is not enough for rate near one, whatever their shape,
 because $M$ classes leave a flag with $g(i)\le Mi$ and hence rate at most $1-1/(2M)+O(1/d)$. What the theorems leave
 open is how large a code a given number of classes can carry when the classes have no almost-period. It can exceed the
-value $(d^2+Md)/2$ of every copy rule and of every interval rule, at $d=6$ though not at $d=5$
-(\cref{prop:aperiodic,rem:small}); whether a gain survives in rate is \cref{prob:aperiodic}.
+value $(d^2+Md)/2$ of every copy rule and of every interval rule at $d=6$ (\cref{prop:aperiodic}); at $d=5$ over
+$\F_2$ it does not, on the word of a solver for one partition (\cref{rem:small}). A gain of one dimension at $d=6$
+exists over every field in which $3\ne0$, and it persists in proportion when the number of classes grows with~$d$: for
+$d=6k$ and $2k$ classes there are codes of dimension $25k^2$, against
+$24k^2$~\cite[Theorem~3.2 and Corollary~4.4]{ClassUniformMemo2026}. Whether a gain survives in rate for $o(d)$ classes,
+and whether it grows at all for a fixed number of classes, is \cref{prob:aperiodic}.
 
 \subsection{From the one-hop model to machines}\label{sec:to-machines}
 
@@ -85,11 +94,35 @@ Three steps separate \cref{thm:TP} from a statement about oblivious machines.
 decoder on every stretch of periodic head motion'' is a property of the rule. It has to be stated for the cone systems
 of real schedules, where the receivers are output bits and the decoders are compositions of the transition function.
 \item \emph{Depth reduction.} The genie of \cref{sec:depth} reveals values at chosen steps. The revealed word is advice
-that depends on position, so it breaks uniformity wherever it is used. A version of \cref{thm:TP} with advice would have
-to charge each revealed bit as a regime change; \cref{thm:TP} suggests the exchange rate, half a row per change, but
-proves nothing about it.
+that depends on position, and \cref{thm:TP} has no place for it. Revision \texttt{b2c389a} of this paper said that a
+version of \cref{thm:TP} with advice would have to charge each revealed bit as a regime change, at half a row per
+change. Both halves of that sentence need correction, already in the one-hop model.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Advice need not change the regime.} The subsequent memo~\cite{ClassUniformMemo2026} bounds the cost of
+advice in the one-hop model, in theorems proved in Lean. If every row may add to its class-uniform term a linear
+function of its own of $\alpha(X)$, for a linear map $\alpha$ of rank $q$, the bound of \cref{thm:TP} rises by at most
+$q$ dimensions~\cite[Theorem~5.2]{ClassUniformMemo2026}. And every code can gain the full rank: a code
+together with the image of a projection $p$ that vanishes on it is a code with advice $p$, of dimension larger by the
+rank of~$p$~\cite[Proposition~5.3]{ClassUniformMemo2026}. Over a finite field the advice may be any map to a set of
+$\abs F^q$ values, and its value may select the colouring and the decoders and add an offset to every row: if every
+colouring that it selects has at most $s\ge1$ class changes, the code has dimension at most
+$(d^2+ds)/2+q$~\cite[Theorem~5.5]{ClassUniformMemo2026}. So advice that enters the rows additively induces no change
+of class.
+\item \emph{Half a row is the price of a change of class.} A change of class changes the decoders of all $d$ entries of
+a row. Each place where the decoder of a single output entry changes from one row to the next raises the bound by at
+most half a symbol (\cref{prop:entry}); altering the decoder of one entry at one row is two such changes. Charged at
+half a row each, $\eps d^2$ revealed symbols would cost $\eps d^3/2$, more than the whole space once $d>2/\eps$.
+\end{itemize}
+\Cref{cor:entry-advice} combines the two corrections, over a finite field. If the advice has $q$ symbols and every
+rule that it selects changes, from one row to the next, at no more than $E$ entries, then $2\dim\X\le d^2+d+E+2q$,
+and the matrices of the code that share a value of the advice number at most $\abs F^{(d^2+d+E)/2}$. The rate of such
+a set is the analogue, in this model, of the function $r(\eps)$ of \cref{sec:one-function}: in it the advice costs
+nothing, and only the changes count. So what remains to be bounded in this model is $E$, the number of changes of
+decoders in the rules that the advice selects, whether the advice induces them or not. For machines the step is open: there the decoders are compositions of the transition
+function and need not be linear, and for a decoder that is not linear an offset that depends on the row is itself a
+break of uniformity~\cite[Remark~5.6]{ClassUniformMemo2026}.
 \item \emph{Many hops.} \Cref{rem:compose-TP} bounds $t$ uniform hops by a loss that grows linearly in $t$. A machine
 that runs for $cL$ steps has unboundedly many hops, and \cref{rem:compose-TP} shows that one cheap operation can break
 every digit symmetry at once. So an argument for machines has to count something that an unshuffle does not supply for free.
 \end{enumerate}
-We do not know how to take any of these steps.
+We do not know how to take any of these steps for machines.

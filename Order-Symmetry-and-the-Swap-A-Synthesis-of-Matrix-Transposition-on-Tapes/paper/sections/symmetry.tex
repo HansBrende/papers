@@ -311,6 +311,85 @@ $\rank[1\otimes U,1\otimes G_j]=d^2-d^2/q$ for every~$j$ at once: one operation 
 digits of that index. The requirement is real at every scale and can be met at all scales together.
 \end{remark}
 
+In a class-uniform rule a change of class changes the decoders of all $d$ entries of a row at once. The argument of
+\cref{thm:TP} for the unit shift also prices a change that affects a single entry.
+
+\begin{proposition}[Changes that affect single entries]\label{prop:entry}
+\partformal{Entry.lean}{IsEntryRuleCode,IsEntryRuleCode.apply_succ_eq,IsEntryRuleCode.two_mul_finrank_le,IsEntryRuleCode.two_mul_finrank_le_of_changes}{the
+count in the first inequality. The Lean statement takes any set $P$ of positions that contains $(c+1,r)$ whenever
+$a_{c,r}\ne a_{c+1,r}$ and that meets every anti-diagonal, and gives $2\dim\X\le d^2+\card P$; the proof below
+exhibits such a set with $\sum_t\max(1,m_t)$ elements. The bound $d^2+d+E$ is formalized, for any set of pairs that
+contains those counted by~$E$.}
+Let $a_{c,r}$, for $c,r\in\Z/d$, be linear functionals on $\Mat_d(F)$, and let $\X\subseteq\Mat_d(F)$ be a subspace
+with $X_{c,r}=a_{c,r}(\sigma^cX)$ for all $X\in\X$ and all $c,r$. For $t\in\Z/d$ let $m_t$ be the number of
+$c\in\Z/d$ with $a_{c,r}\ne a_{c+1,r}$ for $r=t-1-c$, and let $E=\sum_tm_t$ be the number of pairs $(c,r)$ with
+$a_{c,r}\ne a_{c+1,r}$. Then
+\[
+  2\dim\X\ \le\ d^2+\sum_{t\in\Z/d}\max(1,m_t)\ \le\ d^2+d+E .
+\]
+\end{proposition}
+
+\begin{proof}
+Let $\X'=\{X\in\X:\sigma X\in\X\}$. As in the proof of \cref{thm:TP}, $\dim\X'\ge2\dim\X-d^2$. Let $X\in\X'$. The rule
+applied to $X$ at the entry $(c+1,r)$ gives $X_{c+1,r}=a_{c+1,r}(\sigma^{c+1}X)$, and applied to $\sigma X$ at the
+entry $(c,r)$ it gives $X_{c,r+1}=(\sigma X)_{c,r}=a_{c,r}(\sigma^{c+1}X)$. So $X_{c+1,r}=X_{c,r+1}$ whenever
+$a_{c,r}=a_{c+1,r}$ (\lean{IsEntryRuleCode.apply_succ_eq}). Both entries lie on the anti-diagonal $\{(i,j):i+j=t\}$
+with $t=c+r+1$. Join the positions $(c,t-c)$ and $(c+1,t-1-c)$ of this anti-diagonal by an edge, for each $c\in\Z/d$:
+the $d$ positions and $d$ edges form a cycle, $X$ takes equal values at the two ends of every edge with
+$a_{c,t-1-c}=a_{c+1,t-1-c}$, and $m_t$ of the edges fail this condition. Let $P$ consist of the end $(c+1,t-1-c)$ of
+every failing edge, and of one position on every anti-diagonal that has no failing edge; it has
+$\sum_t\max(1,m_t)$ elements, since the ends of distinct failing edges are distinct. A position $(i,j)$ outside $P$ is
+not the end $(c+1,t-1-c)$ of a failing edge, so $X_{i,j}=X_{i-1,j+1}$. Walking from any position in the direction of
+decreasing row index one therefore stays on one anti-diagonal, on which $X$ is constant along the walk, and reaches
+a position of~$P$, because $P$ meets every anti-diagonal. So an element of $\X'$ that vanishes on
+$P$ is zero, $\dim\X'\le\card P$ (\lean{IsEntryRuleCode.two_mul_finrank_le}), and
+$2\dim\X-d^2\le\sum_t\max(1,m_t)\le d+E$ (\lean{IsEntryRuleCode.two_mul_finrank_le_of_changes}).
+\end{proof}
+
+A class-uniform rule is the case in which $a_{c,r}$ depends on $c$ only through the class $J$ of~$c$, with
+$a_{c,r}=\cA_J(\,\cdot\,)_r$ (in Lean, \lean{IsClassUniformCode.exists_isEntryRuleCode}).
+If its decoders change only at the rows of a non-empty set $S$, then $m_t\le\card S$ for every $t$, and
+\cref{prop:entry} gives $2\dim\X\le d^2+d\card S$ (\lean{IsEntryRuleCode.two_mul_finrank_le_of_rows}); for $M$ cyclic
+intervals this is the bound $(d^2+Md)/2$ of \cref{thm:TP} again. The use of \cref{prop:entry} is for rules that are not
+class-uniform. Each place where the decoder of an output entry changes from one row to the next raises the bound by at
+most half a symbol; a change of class is $d$ such changes and raises it by half a row, and altering the decoder of one
+entry at one row is two of them. The script \leanfile{tools/entry_form_check.py} checks the inequality for every rule
+at $d=2$ over $\F_2$ and for random and structured rules up to $d=5$; on the structured rules the bound is often
+attained, and the same inequality with the changes grouped by diagonals or by rows fails for some of them.
+
+Over a finite field the argument of the memo~\cite{ClassUniformMemo2026} for advice applies to these rules as well.
+
+\begin{corollary}[Advice and changes at single entries]\label{cor:entry-advice}
+\formal{EntryAdvice.lean}{IsEntryRuleCodeWithAdvice,entryRuleSpace,IsEntryRuleCodeWithAdvice.natCard_fiber_le,IsEntryRuleCodeWithAdvice.natCard_pow_two_mul_finrank_le}
+Let $F$ be a finite field, $\Omega$ a finite set and $w\colon\Mat_d(F)\to\Omega$ any map. For every $\omega\in\Omega$
+let $a^\omega_{c,r}$ be linear functionals on $\Mat_d(F)$ and $b^\omega_{c,r}$ elements of $F$, for $c,r\in\Z/d$. Let
+$\X\subseteq\Mat_d(F)$ be a subspace such that $X_{c,r}=a^\omega_{c,r}(\sigma^cX)+b^\omega_{c,r}$ for all $c,r$ and
+every $X\in\X$ with $w(X)=\omega$. Suppose that for every $\omega$ at most $E$ pairs $(c,r)$ have
+$a^\omega_{c,r}\ne a^\omega_{c+1,r}$. Then for every $\omega$ at most $\abs F^{\lfloor(d^2+d+E)/2\rfloor}$ matrices
+$X\in\X$ have $w(X)=\omega$, and
+\[
+  \abs F^{2\dim\X}\ \le\ \abs\Omega^2\cdot\abs F^{d^2+d+E} .
+\]
+In particular $2\dim\X\le d^2+d+E+2q$ when $\abs\Omega=\abs F^q$.
+\end{corollary}
+
+\begin{outline}
+Fix $\omega$ and a matrix $X_0\in\X$ with $w(X_0)=\omega$, if there is one. For every $X\in\X$ with $w(X)=\omega$ the
+offsets cancel in $X-X_0$, which lies in $\X$ and satisfies the rule $a^\omega$ without offsets. So it lies in a code
+of that rule (\lean{entryRuleSpace}), of dimension at most $(d^2+d+E)/2$ by \cref{prop:entry}
+(\lean{IsEntryRuleCodeWithAdvice.natCard_fiber_le}). The sets $\{X\in\X:w(X)=\omega\}$ partition $\X$, so
+$\abs F^{\dim\X}\le\abs\Omega\cdot\abs F^{\lfloor(d^2+d+E)/2\rfloor}$; square
+(\lean{IsEntryRuleCodeWithAdvice.natCard_pow_two_mul_finrank_le}). The last statement follows because
+$\abs F\ge2$. The counting is that
+of~\cite[Theorem~5.5]{ClassUniformMemo2026}, which has class-uniform rules and \cref{thm:TP} where this proof has entry
+rules and \cref{prop:entry}.
+\end{outline}
+
+Here the advice $w$ is any function of the matrix, and its value may select the functionals of all entries and add a
+constant to each. The corollary separates two prices. The advice itself costs at most its $q$ symbols in the whole
+code, and nothing among the matrices that share one of its values. Each change of a decoder from one row to the next
+costs at most half a symbol in both counts.
+
 \subsection{What the theorem says}\label{sec:symmetry-says}
 
 \begin{itemize}[leftmargin=1.5em]
@@ -318,8 +397,9 @@ digits of that index. The requirement is real at every scale and can be met at a
 space meets its translate in at least $2D-d^2$ dimensions, and translation-covariant data has $d$ dimensions per uniform
 piece. The argument does not depend on the characteristic, on the degree, on the window of the decoder, or on the other
 tensor side. It does depend on exact covariance under a unit shift inside each class, on the classes being the same for
-every output row, on linearity, and on there being one hop. The flag bounds of \cref{sec:order} are not shown to be
-instances of it.
+every output row, on linearity, and on there being one hop. \Cref{prop:entry} relaxes the second of these: every output
+row, that is, every coordinate $r$ of the rows of $X$, may have its own change points, at half a symbol for each.
+The flag bounds of \cref{sec:order} are not shown to be instances of it.
 \item \emph{No symmetry that the swap lacks.} By \cref{lem:pigeonhole}, a code that exceeds the pairing value by
 $\eps d^2$ needs $\rank[K,T]+\dim\ker[\sw,T]\ge d+2\eps d^2$ for every operator~$T$. Together with \cref{sec:order}:
 to beat the pairing rate, the decoder may have neither a hidden order nor a symmetry, on either index, that the swap

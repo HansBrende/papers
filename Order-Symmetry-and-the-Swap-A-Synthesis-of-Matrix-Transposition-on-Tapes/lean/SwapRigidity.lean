@@ -1,5 +1,7 @@
 import SwapRigidity.Pigeonhole
 import SwapRigidity.ClassUniform
+import SwapRigidity.Entry
+import SwapRigidity.EntryAdvice
 import SwapRigidity.Swap
 import SwapRigidity.BlockSymmetric
 import SwapRigidity.Line

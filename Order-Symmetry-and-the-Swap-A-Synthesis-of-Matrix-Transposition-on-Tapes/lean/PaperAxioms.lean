@@ -1,6 +1,8 @@
 import SwapRigidity.AperiodicExample
 import SwapRigidity.BlockSymmetric
 import SwapRigidity.ClassUniform
+import SwapRigidity.Entry
+import SwapRigidity.EntryAdvice
 import SwapRigidity.Flag
 import SwapRigidity.Line
 import SwapRigidity.Pigeonhole
@@ -32,6 +34,18 @@ and `Quot.sound`. -/
 #print axioms SwapRigidity.IsClassUniformCode.two_mul_finrank_le_of_const
 #print axioms SwapRigidity.Link
 #print axioms SwapRigidity.rot
+-- Entry.lean
+#print axioms SwapRigidity.IsClassUniformCode.exists_isEntryRuleCode
+#print axioms SwapRigidity.IsEntryRuleCode
+#print axioms SwapRigidity.IsEntryRuleCode.apply_succ_eq
+#print axioms SwapRigidity.IsEntryRuleCode.two_mul_finrank_le
+#print axioms SwapRigidity.IsEntryRuleCode.two_mul_finrank_le_of_changes
+#print axioms SwapRigidity.IsEntryRuleCode.two_mul_finrank_le_of_rows
+-- EntryAdvice.lean
+#print axioms SwapRigidity.IsEntryRuleCodeWithAdvice
+#print axioms SwapRigidity.IsEntryRuleCodeWithAdvice.natCard_fiber_le
+#print axioms SwapRigidity.IsEntryRuleCodeWithAdvice.natCard_pow_two_mul_finrank_le
+#print axioms SwapRigidity.entryRuleSpace
 -- Flag.lean
 #print axioms SwapRigidity.card_staircase
 #print axioms SwapRigidity.eq_zero_of_mem_swapCode_of_staircase

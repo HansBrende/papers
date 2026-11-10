@@ -58,6 +58,20 @@ Lean declarations and file; declarations below are in the namespace `SwapRigidit
 - **The line form (`Line.lean`):** `IsLineUniformCode.two_mul_finrank_le`: the same bound for windows on a line, without
   wrap-around.
 - **Twist classes (`Twist.lean`):** `succ_mul_finrank_swapCode_le_of_twist_classes`.
+- **Changes that affect single entries (`Entry.lean`; Proposition 6.15, added in the revision that follows the memo
+  below):** `IsEntryRuleCode.two_mul_finrank_le`, `IsEntryRuleCode.two_mul_finrank_le_of_changes`. Let entry (c, r) of
+  a matrix be a linear functional a(c, r) of the matrix with its columns rotated by c. If a set P of positions contains
+  (c + 1, r) whenever a(c, r) ≠ a(c + 1, r), and meets every anti-diagonal, then 2·dim ≤ d² + |P|; in particular
+  2·dim ≤ d² + d + E when the functional changes from one row to the next at E pairs (c, r) in all. So each place
+  where the decoder of an output entry changes from one row to the next costs at most half a symbol, where a change of
+  class costs half a row (`IsEntryRuleCode.two_mul_finrank_le_of_rows` gives the bound of Theorem TP for the unit
+  shift again).
+- **Advice and changes at single entries (`EntryAdvice.lean`; Corollary 6.16, added in the same revision):**
+  `IsEntryRuleCodeWithAdvice.natCard_fiber_le`, `IsEntryRuleCodeWithAdvice.natCard_pow_two_mul_finrank_le`. Over a
+  finite field F, let the advice be any map to a finite set Ω, whose value may select the functionals of all entries
+  and add a constant to each. If every selected rule changes from one row to the next at no more than E pairs, then
+  at most |F|^⌊(d² + d + E)/2⌋ matrices of the code share a value of the advice, and
+  |F|^(2·dim) ≤ |Ω|²·|F|^(d² + d + E). The counting follows the memo's Theorem 5.5.
 - **Classes with no almost-period (`AperiodicExample.lean`):** `exists_classUniformCode_gt`. For d = 6 over GF(2) and the
   classes {0,1,3}, {2,4,5} there is a class-uniform code of dimension 25 > 24 = (d² + Md)/2
   (`finrank_aperiodicCode`, `isClassUniformCode_aperiodicCode`). The code was found by a SAT solver; Lean checks it from
@@ -70,7 +84,9 @@ Proved in the paper but not formalized:
 - the corollaries of Theorem FL for two Kronecker terms, for commuting or triangularizable families, for p-groups, for
   all affine index maps when d = p^m in characteristic p, and the expansion estimates;
 - the equality case of dim ker[τ,T] ≥ d, the bound for copy rules, the bound for decoders with s modulation frequencies,
-  and the dimension count and sharpness in the corollary that every address digit must be treated asymmetrically.
+  and the dimension count and sharpness in the corollary that every address digit must be treated asymmetrically;
+- in Proposition 6.15, the size Σ_t max(1, m_t) of the set P that the proof exhibits for the Lean statement, where m_t
+  is the number of changes on the anti-diagonal t.
 
 Numerical remarks (exact computations over GF(2), reproduced by the scripts in `tools/`, not used in any proof) are
 labelled as numerical in the paper and collected in its section on small sizes.
@@ -80,18 +96,32 @@ Both theorems are statements about a linear one-hop model. They are not lower bo
 ## What is open
 
 Statement (T). For oblivious machines: whether storage codes on the cone relations of real schedules exceed rate ½. In the
-one-hop model of this paper: the largest code of a class-uniform rule whose classes have no almost-period; whether the
-bound (d² + Md)/2 is attained for every partition into intervals; a bound for rules that use masks at all dyadic scales on
-both indices; a version of Theorem TP for the cone systems of oblivious schedules; and a subadditive quantity that is
-large for the swap at every scale separately and is not raised at all scales by one linear-time operation. The paper's
-last section states these precisely.
+one-hop model of this paper: the largest code of a class-uniform rule whose classes have no almost-period, for a fixed
+number of classes or for o(d) of them; for which partitions into intervals the bound (d² + Md)/2 is attained; a
+bound for rules that use masks at all dyadic scales on both indices; a version of Theorem TP for the cone systems of
+oblivious schedules; and a subadditive quantity that is large for the swap at every scale separately and is not raised
+at all scales by one linear-time operation. The paper's last section states these precisely.
 
 **Subsequent memo:** [Class-Uniform Codes in Every Characteristic but Three, Their Blow-ups, and the Price of Advice](memo-class-uniform-codes/)
-shows that the code of dimension 25 of the section on small sizes exists over every field in which 3 ≠ 0, answers
-Problem 9.1(c) as worded by blowing that code up (the number of classes grows with d) and restates it for a bounded
-number of classes, and proves, in the one-hop model over finite fields, an exchange rate for the depth-reduction step:
-one dimension per symbol of advice plus half a row for each class change the advice induces. The paper and its
-formalization are unchanged.
+shows that the two classes of the paper's Proposition 8.2 carry a code of dimension 25 over every field in which
+3 ≠ 0, answers Problem 9.1(c) as first worded by blowing such a code up (the number of classes grows with d) and
+restates it for a bounded number of classes, and proves, in the one-hop model over finite fields, an exchange rate for
+the depth-reduction step: at most one dimension per symbol of advice plus half a row for each class change the advice
+induces.
+
+The memo left the paper unchanged. The revision of the paper that follows it cites the memo and corrects three
+passages:
+
+- Section 7.4 and Problem 9.4 no longer charge each bit revealed by a genie as a change of regime at half a row. Half
+  a row is the price of a change that affects a whole row. Each place where the decoder of one output entry changes
+  from one row to the next costs at most half a symbol, and advice that enters additively changes no decoder (the
+  memo). The new Proposition 6.15 and Corollary 6.16 state this; their bounds in terms of the number E of changes are
+  proved in Lean, and one count in the sharper form of Proposition 6.15 is proved in the text.
+- Problem 9.1(c) is stated for a fixed number of classes.
+- The first sentence of Section 7.3 states the hypothesis it had dropped: for a linear code, positive characteristic
+  or coefficients that cannot be rescaled to be bounded.
+
+Remark 8.1(d) and Problem 9.1(b) are updated. The other results of the paper and their formal proofs are unchanged.
 
 ## Building and verifying
 
@@ -126,6 +156,7 @@ python3 tools/exhaustive_flag_checks.py          # needs numpy; about 90 s
 python3 tools/exhaustive_pigeonhole_checks.py    # needs numpy; about 45 s
 python3 tools/three_term_example.py              # the three-term examples
 python3 tools/digit_and_composition_checks.py    # the digit corollary and the composition remark on small instances
+python3 tools/entry_form_check.py                # Proposition 6.15 on small instances
 python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
 python3 tools/analyse_code.py                    # the code of dimension 25 and its translates

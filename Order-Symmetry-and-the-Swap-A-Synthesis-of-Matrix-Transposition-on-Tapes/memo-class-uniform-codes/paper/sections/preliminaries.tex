@@ -12,19 +12,28 @@ linear maps $\cA_J\colon\Mat_d(F)\to F^{\Z/d}$, one for each class $J$. A subspa
 $D(\mathcal P)$ for the largest dimension of a code of a class-uniform rule for $\mathcal P$, over the field at hand.
 \end{definition}
 
-The file named in the status line is the parent paper's \leanfile{ClassUniform.lean}. In Lean the colouring is a map
+The \emph{code of} a rule, as opposed to a code of it, is the space of all matrices that satisfy its equations, its
+largest code. The file named in the status line is the parent paper's \leanfile{ClassUniform.lean}. In Lean the colouring is a map
 \texttt{cls} from $\Z/d$ to a type of classes, and \lean{SwapRigidity.IsClassUniformCode} asserts that decoders exist.
 
 \begin{theorem}[Theorem~TP {\cite[Theorem~6.4]{SeventeenthPaper2026}}]\label{thm:TP}
-\cited{the parent paper, Theorem~6.4, Lean-verified there (\lean{SwapRigidity.IsClassUniformCode.two_mul_finrank_le});
-we use its form for the unit shift, as in that Lean statement.}
-Let $\X$ be a code of a class-uniform rule, and let $S\subseteq\Z/d$ be a non-empty set that contains every $c$ whose
-class differs from that of $c-1$. Then $2\dim\X\le d^2+d\card S$. In particular, if the classes are $M\ge2$ cyclic
-intervals, then $\dim\X\le(d^2+Md)/2$.
+\cited{the parent paper, Theorem~6.4, Lean-verified there (\lean{SwapRigidity.IsClassUniformCode.finrank_le},
+\lean{SwapRigidity.IsClassUniformCode.two_mul_finrank_le}).}
+Let $\X$ be a code of a class-uniform rule.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item Let $\Delta_0\subseteq\Z/d$ be a set of $s+1\ge2$ shifts, and let $\chi$ be the number of components of the graph
+on $\Z/d$ in which $c\sim c'$ when $c$ and $c'$ lie in one class and $c'-c\in\Delta_0-\Delta_0$. Then
+$(s+1)\dim\X\le s\,d^2+d\chi$.
+\item Let $S\subseteq\Z/d$ be a non-empty set that contains every $c$ whose class differs from that of $c-1$. Then
+$2\dim\X\le d^2+d\card S$. In particular, if the classes are $M\ge2$ cyclic intervals, then $\dim\X\le(d^2+Md)/2$.
+\end{enumerate}
 \end{theorem}
 
-For the parent paper a partition into $M$ classes has an \emph{almost-period} if a single shift leaves only $M$
-components in the graph of its Theorem~6.4; intervals have the almost-period $1$. The classes $\{0,1,3\}$ and
+For $d\ge2$, part~(b) follows from~(a) with $\Delta_0=\{0,1\}$, whose components are the maximal runs of one class.
+In Lean, (a) takes in place of $\chi$ the size of any set of rows that meets every component, and (b) a non-empty set of
+rows that contains every class change. For the parent paper a
+partition into $M$ classes has an \emph{almost-period} if some pair of shifts $\Delta_0=\{0,\delta\}$ leaves only $M$
+components in the graph of~(a); intervals have the almost-period $1$. The classes $\{0,1,3\}$ and
 $\{2,4,5\}$ of $\Z/6$ have none: every nonzero shift leaves four components
 \cite[Remark~8.1(c)]{SeventeenthPaper2026}.
 
@@ -38,5 +47,6 @@ while $(d^2+Md)/2=24$.
 The parent paper asks~\cite[Problem~9.1]{SeventeenthPaper2026}: (a) whether $D(\mathcal P)\le(\frac12+o(1))d^2$ for two
 classes, or for $o(d)$ classes; (b) the value of $D$ for these two classes over $\F_2$, which is between $25$ and $28$;
 and (c) for a family of partitions and codes, with a description that can be analysed, in which the \emph{excess}
-$D(\mathcal P)-(d^2+Md)/2$ grows. We call $\dim\X-(d^2+Md)/2$ the excess of a code $\X$; the excess of a partition is at
+$D(\mathcal P)-(d^2+Md)/2$ grows; its later revision~\cite{SeventeenthPaperRevised2026} states~(c) for a fixed
+number of classes, as \cref{prob:bounded} does. We call $\dim\X-(d^2+Md)/2$ the excess of a code $\X$; the excess of a partition is at
 least that of each of its codes.

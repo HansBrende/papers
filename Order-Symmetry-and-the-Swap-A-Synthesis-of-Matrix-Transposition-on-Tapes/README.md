@@ -107,7 +107,9 @@ shows that the two classes of the paper's Proposition 8.2 carry a code of dimens
 3 ≠ 0, answers Problem 9.1(c) as first worded by blowing such a code up (the number of classes grows with d) and
 restates it for a bounded number of classes, and proves, in the one-hop model over finite fields, an exchange rate for
 the depth-reduction step: at most one dimension per symbol of advice plus half a row for each class change the advice
-induces.
+induces. An update of the memo adds explicit two-class rules whose codes have excess d/4 − 1 over (d² + 2d)/2 for
+every d = 4k ≥ 8, over every field in which 2 ≠ 0 (proof in the memo; Lean at d = 8, 12 and 16). So the excess of two
+classes is unbounded, and Problem 9.1(c), as now stated, has a negative answer for two classes over these fields.
 
 The memo left the paper unchanged. The revision of the paper that follows it cites the memo and corrects three
 passages:

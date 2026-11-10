@@ -7,19 +7,22 @@ $\{2,4,5\}$ carry a code of dimension $25>24$ over $\F_2$. This memo adds three 
 First, this gain does not come from characteristic~$2$: the same classes carry a code of dimension~$25$ over every
 field in which $3\ne0$, in particular over $\Q$, $\R$ and~$\C$.
 
-Second, blowing up a class-uniform code by a factor $k$ multiplies its dimension by $k^2$ and its number of classes by
-$k$, so it multiplies the code's excess over the interval value by $k^2$. Applied to the code at $d=6$ it gives, for
-$d=6k$ and $2k$ classes, codes whose excess is $k^2$. This answers the parent paper's Problem~9.1(c) as worded, but only
-because the number of classes grows: the excess is $dM/12$, of the order of the interval term $dM/2$, and blow-ups
-leave the ratio of the excess to $dM$ unchanged. We state the problem for a bounded number of classes.
+Second, larger gains. Blowing up a class-uniform code by a factor $k$ multiplies its dimension by $k^2$ and its number
+of classes by $k$, so it multiplies the code's excess over the interval value by $k^2$. Applied to the code at $d=6$,
+this answers the parent paper's Problem~9.1(c) as first worded, but only because the number of classes grows. At two
+classes, for every $d=4k\ge8$, the classes $\{0,2,\dots,d-4\}$ and the rest carry an explicit rule whose code has
+excess $d/4-1$ over every field in which $2\ne0$; Lean checks $d=8$, $12$ and $16$. So the excess of two classes is
+unbounded, which answers Problem~9.1(c) as the parent paper's later revision states it, for two classes. A negative
+answer to its Problem~9.1(a) would need an excess of order $d^2$; whether a two-class excess can grow faster than $d$ is
+open.
 
 Third, we price advice in the one-hop model. Advice that is a linear map of rank $q$ costs at most $q$ dimensions,
 however each row uses it, and every code extends by exactly $q$ dimensions with suitable advice of rank~$q$. Over a
 finite field, advice of any kind with $q$ symbols costs at most $q$ dimensions plus half a row for each class change it
-induces. The parent paper suggests charging each bit revealed by a depth reduction as a regime change, at half a row.
+induces. The parent paper suggested charging each bit revealed by a depth reduction as a regime change, at half a row.
 In the one-hop model the advice itself costs one dimension per symbol, and only the class changes it induces cost half
-a row each.
+a row each; a later revision of the parent paper corrects that charge and cites this memo.
 
-Every theorem, proposition and corollary is proved in Lean, on top of the parent paper's library; one remark records
-computations that the data generator checks. All results concern the linear one-hop model of the parent paper, not
-machines.
+Every theorem, proposition and corollary is proved in Lean, on top of the parent paper's library, except the
+two-class theorem for general $d$ and its corollary, which are proved in the text. Two remarks record exact
+computations. All results concern the linear one-hop model of the parent paper, not machines.

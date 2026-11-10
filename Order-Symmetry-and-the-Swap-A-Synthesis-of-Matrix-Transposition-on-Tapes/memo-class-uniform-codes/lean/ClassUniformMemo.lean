@@ -4,3 +4,5 @@ import ClassUniformMemo.Fields
 import ClassUniformMemo.BlowUp
 import ClassUniformMemo.Excess
 import ClassUniformMemo.Advice
+import ClassUniformMemo.ParityCosetData
+import ClassUniformMemo.ParityCoset

@@ -31,14 +31,27 @@ $\bigl(X_{ka+u,\,kt+v}\bigr)_{a,t}$ lie in $\X$. It is a tensor product $\X\otim
 $c\mapsto(\text{class of }a,\,u)$, which has $k$ times as many classes, and that its dimension is $k^2\dim\X$. So the
 excess $\dim\X-(d^2+Md)/2$ of a code over the interval value is multiplied by $k^2$, and so is $dM$
 (\cref{cor:excess}). Applied to the code at $d=6$, this gives for every $k$ a code of dimension $25k^2$ for $2k$
-classes on $\Z/6k$, with excess $k^2$ (\cref{cor:family}). That answers Problem~9.1(c) of the parent paper as worded,
+classes on $\Z/6k$, with excess $k^2$ (\cref{cor:family}). That answers Problem~9.1(c) of the parent paper as first worded,
 which asks for a family, with a description that can be analysed, in which the excess grows; the family can be
 analysed given its base code, which a solver found. We read (c), with the parent paper's Section~7.3 and
-Remark~8.1(d), as asking whether the gain stays bounded at a fixed number of classes, and the family does not touch
-that: its excess is $dM/12$, the same order as the term $dM/2$ that intervals already give, and the ratio of the excess
+Remark~8.1(d), as asking whether the gain stays bounded at a fixed number of classes, as \cref{prob:bounded} and the
+parent's later revision state it, and the family does not touch that: its excess is $dM/12$, the same order as the term $dM/2$ that intervals already give, and the ratio of the excess
 to $dM$ is invariant under blow-ups. The two merged classes form four intervals, and for $k\ge2$ Theorem~TP excludes
-the same dimension for them (\cref{prop:merged}). We restate the problem for a bounded number of classes
-(\cref{prob:bounded}).
+the same dimension for them (\cref{prop:merged}).
+
+\paragraph{Two classes.} For $d=4k\ge8$, let $J_0$ be the even residues other than $d-2$, and $J_1$ the rest
+(\cref{def:parity}). This partition has no almost-period, and Theorem~TP with the shifts $\{0,2\}$ bounds the excess of
+its codes by $d/2$. We give an explicit rule for it (\cref{def:parity-rule}), each of whose decoders reads one
+anti-diagonal, and prove that over every field in which $2\ne0$ its code has excess $d/4-1$ (\cref{thm:parity-all}).
+The proof, written in the text, is a rank count on each anti-diagonal. Lean checks the cases $d=8$, $12$ and $16$
+(\cref{thm:parity}), with certificates whose decoders a script compares with the rule. So the excess of two classes is
+unbounded (\cref{cor:unbounded}), which answers \cref{prob:bounded}, Problem~9.1(c) of the parent paper for a fixed
+number of classes, for $M=2$ over these fields. A balanced partition at $d=12$ and its periodic lift to $d=24$ carry
+codes with excess $2$ and $4$. For the parity-coset codes at every $d=4k\le36$, the first step of the proof of
+Theorem~TP, which bounds the intersection of a code with a translate from below, is exact at the shifts where that
+intersection is smallest; the gap between the excess $d/4-1$ and the bound $d/2$ lies in the second step, the count of
+components (\cref{rem:parity-numerical}). Problem~9.1(a) stays open, since an excess of order $d$ is still
+$(\frac12+o(1))d^2$; \cref{prob:twoclass} asks whether order $d$ is the limit.
 
 \paragraph{The price of advice.} A class-uniform rule with linear advice $\alpha$ lets row $c$ depend, besides the
 class-uniform term, on $\alpha(X)$ through a linear map that may differ from row to row. The advice costs at most its
@@ -62,11 +75,19 @@ follows; the Lean statement is authoritative. Declarations are relative to the n
 unless they carry the prefix \texttt{SwapRigidity}, the parent paper's namespace; the files are in
 \leanfile{lean/ClassUniformMemo/}. Every theorem, proposition and corollary is formalized, except for arithmetic
 restatements inside a statement, such as the form of a bound for $M$ intervals, which follow from the formal statement
-at once. \Cref{rem:certificates} records facts about the data that the data generator checks and that no proof uses.
+at once, and except \cref{thm:parity-all,cor:unbounded}, whose proofs are given in full in the text;
+\cref{thm:parity} formalizes the cases $d=8$, $12$ and $16$ of the first. \Cref{rem:certificates} records facts about
+the data that the data generator checks, and \cref{rem:parity-numerical} records exact computations; no proof uses
+them.
 The two results of the parent paper that we use are formalized there. The Lean library builds on the parent paper's
 library, which it requires through a relative path, and uses no axioms beyond \texttt{propext},
 \texttt{Classical.choice} and \texttt{Quot.sound} (\cref{app:verification}). The Lean statements index rows and
 columns by \texttt{ZMod n}; the text writes $d$ for the side length, as the parent paper does.
+
+We cite the parent paper at revision \texttt{b2c389a}, the one this memo first extended. A later revision,
+\texttt{14b157a}~\cite{SeventeenthPaperRevised2026}, cites this memo: it corrects the charge for revealed bits in its
+Section~7.4, which \cref{sec:advice} discusses, and states Problem~9.1(c) for a fixed number of classes, as
+\cref{prob:bounded} does. The numbers of the results we cite are the same in both revisions.
 
 All results are about the linear one-hop model. None of them is a statement about machines, and none of them changes
 the status of~(T).
@@ -74,6 +95,6 @@ the status of~(T).
 \subsection{Organization}
 
 \Cref{sec:prelim} recalls the model. \Cref{sec:fields} proves the code of dimension $25$ in every characteristic but
-three, \cref{sec:blowup} constructs the blow-ups, and \cref{sec:advice} prices advice. \Cref{sec:open} states what
-remains. \Cref{app:leanindex} indexes the Lean declarations, and \cref{app:verification} says how to build and check
+three, \cref{sec:gains} constructs larger gains, by blow-ups and at two classes, and \cref{sec:advice}
+prices advice. \Cref{sec:open} states what remains. \Cref{app:leanindex} indexes the Lean declarations, and \cref{app:verification} says how to build and check
 them.

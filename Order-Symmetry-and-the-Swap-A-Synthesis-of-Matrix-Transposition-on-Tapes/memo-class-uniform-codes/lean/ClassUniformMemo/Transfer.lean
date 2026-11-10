@@ -11,7 +11,7 @@ the decoders, and for every generator a private position where it equals `pivotS
 other generator vanishes.  Two finite facts make a certificate valid: the rule holds for every
 generator after multiplying by `scale` (`Certificate.RowsHold`), and the private positions behave as
 stated (`Certificate.PivotsHold`).  Both are checked by `decide` for the concrete certificates of
-`ClassUniformMemo.RationalData`.
+`ClassUniformMemo.RationalData` and `ClassUniformMemo.ParityCosetData`.
 
 A valid certificate gives a code over every field `F` reached by a ring homomorphism `φ : R →+* F`
 in which the two scales do not vanish: the span of the images of the generators is a class-uniform

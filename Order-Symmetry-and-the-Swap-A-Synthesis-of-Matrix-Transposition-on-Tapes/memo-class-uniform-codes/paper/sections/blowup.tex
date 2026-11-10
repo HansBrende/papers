@@ -1,4 +1,9 @@
-\section{Blow-ups}\label{sec:blowup}
+\section{Larger gains}\label{sec:gains}
+
+This section enlarges the excess in two ways: by blowing a code up, which multiplies its number of classes
+(\cref{sec:blowup}), and at two classes (\cref{sec:twoclass}).
+
+\subsection{Blow-ups}\label{sec:blowup}
 
 Fix $k\ge1$. Every $c\in\Z/dk$ is $c=ka+u$ for a unique \emph{block} $a=\lfloor c/k\rfloor\in\Z/d$ and \emph{position}
 $u=c\bmod k\in\{0,\dots,k-1\}$, where $c$ is read as an integer in $[0,dk)$.
@@ -75,14 +80,14 @@ $k\ge2$, dimension less than $25k^2$.
 The merged colouring changes class only at $0$, $2k$, $3k$ and $4k$, the first rows of the blocks $0,2,3,4$
 (\lean{mergedChanges}, \lean{mergedCls_sub_one}): inside a block the class is constant, and from block $1$ to block $0$
 and from block $5$ to block $4$ it does not change (\lean{hi_sub_one_of_lo_ne_zero}, \lean{hi_sub_one_of_lo_eq_zero}).
-\Cref{thm:TP} with these four rows gives the bound (\lean{two_mul_finrank_le_merged}), and $36k^2+24k<50k^2$ for
+\Cref{thm:TP}(b) with these four rows gives the bound (\lean{two_mul_finrank_le_merged}), and $36k^2+24k<50k^2$ for
 $k\ge2$ (\lean{finrank_lt_of_mergedCls}).
 \end{outline}
 
 So for $k\ge2$ the codes of \cref{cor:family} are not codes of any rule for the two merged classes: their decoders cannot
 ignore the position~$u$.
 
-\Cref{cor:family} answers Problem~9.1(c) of the parent paper as worded: it is a family of partitions and codes, with a
+\Cref{cor:family} answers Problem~9.1(c) of the parent paper as first worded: it is a family of partitions and codes, with a
 description that can be analysed given its base code (which a solver found), in which the excess grows. It answers it
 only because the number of classes grows with $d$. The excess of these codes, $dM/12$, is of the same order as the term
 $dM/2$ that intervals give, and \cref{cor:excess} shows that blow-ups cannot change the ratio of the two: a single code
@@ -90,4 +95,5 @@ with excess $e$ at $(d,M)$ yields codes with excess $ek^2$ at $(dk,kM)$, and not
 Problem~9.1(a) is untouched. A negative answer to it needs an excess of order $d^2$ with $M=o(d)$ classes, so the ratio
 of the excess to $dM$ must be unbounded, which no blow-up of a finite example provides. We read Problem~9.1(c), with
 the parent paper's Section~7.3 and Remark~8.1(d), as asking whether the gain stays bounded at a fixed number of
-classes; \cref{prob:bounded} states that.
+classes, as \cref{prob:bounded} and the parent's later revision state it; \cref{sec:twoclass} gives evidence that at
+two classes it does not.

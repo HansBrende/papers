@@ -1,0 +1,183 @@
+\subsection{Two classes}\label{sec:twoclass}
+
+The blow-ups make the excess grow only by adding classes, and the examples of the parent paper have an excess of one.
+This subsection gives, for every $d=4k\ge8$, an explicit rule for two classes whose code has excess $d/4-1$ over every
+field in which $2\ne0$ (\cref{thm:parity-all}). So the excess of two classes is unbounded over these fields
+(\cref{cor:unbounded}), which answers \cref{prob:bounded}, Problem~9.1(c) of the parent paper for a fixed number of
+classes, for $M=2$. The proof is given in the text; Lean checks the cases $d=8$, $12$ and $16$ (\cref{thm:parity}).
+
+\begin{definition}[The parity-coset colouring]\label{def:parity}
+\formal{ParityCoset.lean}{parityCosetCls,parityCosetCls_eq_true_iff}
+For $d=4k\ge8$, the \emph{parity-coset colouring} of $\Z/d$ has the two classes $J_0=\{0,2,\dots,d-4\}$, the even
+residues other than $d-2$, and $J_1$, the rest. So $\card{J_0}=2k-1$ and $\card{J_1}=2k+1$.
+\end{definition}
+
+The colouring has no almost-period. Write $\chi_\delta$ for the number of components of the graph of
+\cref{thm:TP}(a) with the two shifts $\Delta_0=\{0,\delta\}$, in which $c\sim c+\delta$ when $c$ and $c+\delta$ lie in
+one class. For odd $\delta$, the neighbours $c\pm\delta$ of each $c\in J_0$ are odd, so they lie in $J_1$: each element of
+$J_0$ is a component by itself, and so is each of the $2k-1$ arcs of $J_1$ between consecutive ones along the cycles of
+$c\mapsto c+\delta$ (every cycle has at least two even residues, so it meets $J_0$). So $\chi_\delta=4k-2$. For even $\delta$,
+let $g=\gcd(\delta,d)$. The cycles of $c\mapsto c+\delta$ are $g/2$ cycles of odd residues, all in $J_1$, and $g/2$
+cycles of even residues, of which only the one through $d-2$ meets $J_1$, in one point; so
+$\chi_\delta=g/2+(g/2-1)+2=g+1$. The smallest value is $3$, at every $\delta$ with $\gcd(\delta,d)=2$, such as
+$\delta=2$; it exceeds the number of classes. \Cref{thm:TP}(a) with the shifts $\{0,2\}$ gives $D\le(d^2+3d)/2$, an
+excess of at most $d/2$ over the interval value $(d^2+2d)/2$. Three or more shifts do no better: with
+$\card{\Delta_0}\ge3$ and $\chi\ge2$ the bound is at least $(2d^2+2d)/3$, which exceeds $(d^2+3d)/2$ for $d\ge5$.
+
+Write $\mathcal N=\Z/d\setminus\{0,d-2\}$ for the residues other than the representatives $0\in J_0$ and $d-2\in J_1$,
+and for $j\in\Z/d$ let $e_j\in F^{\Z/d}$ be the indicator vector of $j$ if $j\in\mathcal N$, and $0$ if
+$j\notin\mathcal N$.
+
+\begin{definition}[The parity-coset rule]\label{def:parity-rule}
+\par\noindent{\small\upshape\textsf{Not formalized as a definition;} at $d=8$, $12$ and $16$ the certificates of
+\cref{thm:parity} have these decoders, multiplied by $2$ (\leanfile{tools/parity_coset_rule.py} compares them).}\par
+\smallskip\noindent\ignorespaces
+Let $d=4k\ge8$, with the classes of \cref{def:parity}, and let $F$ be a field in which $2\ne0$. For $m\in\{0,1\}$ and
+$r\in\Z/d$ let $w^{(m)}_r\in F^{\Z/d}$ be, for even $r$,
+\[
+  w^{(0)}_r=2e_{r+3},\qquad w^{(1)}_r=e_{r+1},
+\]
+and for odd $r$,
+\begin{align*}
+  w^{(0)}_r&=e_{r+5}\quad(r\ne d-7), & w^{(0)}_{d-7}&=\alpha=\textstyle\sum_i(-1)^{i/2}e_i,\\
+  w^{(1)}_r&=\tfrac12e_{r+3}\quad(r\ne d-5), & w^{(1)}_{d-5}&=\beta=\textstyle\sum_{i\text{ odd}}e_i-\frac12\sum_ie_i,
+\end{align*}
+where the sums over $i$ without a condition run over the even $i\in\mathcal N$. Since $4$ divides $d$, the sign
+$(-1)^{i/2}$ depends only on $i$ modulo $4$, so any integer representative of $i$ may be used, here and below. Let
+$a^{(m)}_r$ agree with $w^{(m)}_r$ on $\mathcal N$, with $a^{(m)}_r(0)=[m=0]-\sum_{i\in\mathcal N\cap J_0}w^{(m)}_r(i)$
+and $a^{(m)}_r(d-2)=[m=1]-\sum_{i\in\mathcal N\cap J_1}w^{(m)}_r(i)$, where $[\cdot]$ is $1$ if the condition holds
+and $0$ otherwise. The \emph{parity-coset rule} has the decoders $\cA_{J_m}(Y)_r=\sum_{i\in\Z/d}a^{(m)}_r(i)\,Y_{i,r-i}$.
+\end{definition}
+
+The decoder at row $c$ and output coordinate $r$ reads the anti-diagonal $\{(i,r-i)\}$ of $\sigma^cX$, which is the
+anti-diagonal $\{(i,c+r-i)\}$ of $X$, the one through the output entry $(c,r)$. So the code $\X$ of the rule (\cref{sec:prelim})
+is the direct sum of its parts $\X_s$ on the anti-diagonals $\{(i,s-i)\}$ of $X$, and $\X_s$ is the solution space of $d$
+equations, one for each row, in the $d$ entries of the anti-diagonal, which we index by their rows: the equation of row
+$c$ is $\sum_ia^{(m(c))}_{s-c}(i)\,z_i=z_c$, where $J_{m(c)}$ is the class of $c$. The values at the representatives make
+the indicator of each class a solution on every anti-diagonal. So $\X$ contains the $2d$-dimensional space $\Hk^*$ of
+the parent paper for the two classes, the matrices with $x_{c'}=\sigma^{c'-c}x_c$ whenever $c$ and $c'$ lie in one
+class, which are constant on each class along every anti-diagonal.
+
+\begin{theorem}[The parity-coset codes]\label{thm:parity-all}
+\notformalized
+Let $d=4k\ge8$ and let $F$ be a field in which $2\ne0$. The code of the parity-coset rule has dimension
+$(d^2+2d)/2+d/4-1$, an excess of $d/4-1$ over the interval value of two classes.
+\end{theorem}
+
+\begin{informalproof}
+Fix an anti-diagonal $s$. The indicators of $J_0$ and $J_1$ lie in $\X_s$ and take the values $(1,0)$ and $(0,1)$ at the
+representatives $(0,d-2)$, so $\X_s$ is spanned by them and by its solutions that vanish at $0$ and $d-2$. Hence
+$\dim\X_s=2+(d-2-r_s)$, where $r_s$ is the rank of the vectors
+\[
+  R_c=w^{(m(c))}_{s-c}-e_c\in F^{\mathcal N}\qquad(c\in\Z/d),
+\]
+the equations restricted to the unknowns in $\mathcal N$; recall that $a=w$ on $\mathcal N$, and that $e_0=e_{d-2}=0$.
+We show that $r_s=2k-2$ if $s\equiv1\pmod4$ and $s\ne d-7$, and $r_s=2k-1$ for the other $s$. Since $d-7\equiv1\pmod4$
+and $k$ residues $s$ satisfy $s\equiv1\pmod4$, this gives
+$\dim\X=2d+\sum_s(d-2-r_s)=2d+d(2k-1)+(k-1)=(d^2+2d)/2+k-1$. In each case we read $R_c$ off
+\cref{def:parity-rule}: the class of $c$ gives $m(c)$, and the parity of $s-c$ gives the line of the definition.
+
+\emph{Even $s$.} The map $\tau(c)=s+3-c$ is a bijection from the even residues to the odd ones, with $\tau(0)=s+3$ and
+$\tau(d-2)=s+5$, so it maps the even residues of $\mathcal N$ onto the odd residues other than $s+3$ and $s+5$. For
+even $c\in\mathcal N$, row $c$ uses $w^{(0)}_{s-c}$, and row $\tau(c)$ uses $w^{(1)}_{c-3}$, where $c-3\ne d-5$; rows
+$0$, $d-2$ and $s+3$ use $w^{(0)}_s$, $w^{(1)}_{s+2}$ and $w^{(1)}_{d-3}$:
+\begin{align*}
+  R_c&=2e_{\tau(c)}-e_c, & R_{\tau(c)}&=\tfrac12e_c-e_{\tau(c)}=-\tfrac12R_c,\\
+  R_0&=2e_{s+3}, & R_{d-2}&=e_{s+3},\qquad R_{s+3}=\tfrac12e_0-e_{s+3}=-e_{s+3}.
+\end{align*}
+The last row, $R_{s+5}=\beta-e_{s+5}$, uses $w^{(1)}_{d-5}$. With the sums over the even $c\in\mathcal N$, the vector
+$\frac12\sum_cR_c=\sum_ce_{\tau(c)}-\frac12\sum_ce_c$ is the sum of the $e_i$ over the odd $i\ne s+3,s+5$ minus half the
+sum over the even $i\in\mathcal N$, so $R_{s+5}=e_{s+3}+\frac12\sum_cR_c$. Hence every row lies in the span of
+$e_{s+3}=R_{d-2}$ and of the $2k-2$ vectors $R_c$, $c\in\mathcal N$ even. These are nonzero, and their supports
+$\{c,\tau(c)\}$ are disjoint and avoid $s+3$. So $r_s=2k-1$.
+
+\emph{Odd $s$, odd rows.} For odd $c$ the class is $J_1$ and $s-c$ is even, so $R_c=e_{T(c)}-e_c$ with $T(c)=s+1-c$, an
+involution of the odd residues. These vectors span the vectors on the odd residues that vanish at the fixed points of
+$T$ and sum to zero on each of its $2$-cycles, a space of dimension $k$ minus half the number of fixed points. The fixed
+points solve $2c\equiv s+1\pmod{4k}$, that is, $c\equiv(s+1)/2\pmod{2k}$, and they are odd if and only if
+$s\equiv1\pmod4$. So the odd rows have rank $k-1$ if $s\equiv1\pmod4$, and $k$ if $s\equiv3\pmod4$.
+
+\emph{Odd $s\ne d-7$, even rows.} Let $U(c)=s+5-c$, an involution of the even residues, and $v_c=e_{U(c)}-e_c$. Then
+$R_c=v_c$ for $c\in J_0$ with $c\ne s+7$, including $R_0=e_{s+5}$; further $R_{d-2}=\frac12e_{s+5}=\frac12R_0$, and
+$R_{s+7}=\alpha-e_{s+7}$ if $s+7\in J_0$. These rows have no odd coordinates, so $r_s$ is the rank of the odd rows plus
+that of the even rows. The orbits of $U$ are pairs, except for two fixed points when $s\equiv3\pmod4$, since
+$2c\equiv s+5\pmod{4k}$ has even solutions exactly then. A pair $\{c,U(c)\}$ gives the direction $v_c=-v_{U(c)}$, which
+is nonzero because no pair is $\{0,d-2\}$ ($U(0)=s+5\ne d-2$), and a fixed point gives $v_c=0$. The orbit of $d-2$ is
+$\{d-2,s+7\}$, and it contributes no row of the form $v_c$.
+\begin{itemize}[leftmargin=1.5em]
+\item If $s=d-9$, which is $3$ modulo $4$, the fixed points of $U$ are $2k-2$ and $s+7=d-2$, and no row involves
+$\alpha$. The other $2k-2$ even residues form $k-1$ pairs, all in $J_0$, so the even rows, among them
+$R_{d-2}=\frac12R_0$, span the directions of these pairs, which have disjoint supports: rank $k-1$.
+\item Otherwise $\{d-2,s+7\}$ is a pair and $s+7\in J_0$. The even rows other than $R_{s+7}$ span the space $W$ of
+vectors on the even residues of $\mathcal N$ that vanish at $s+7$ and at the fixed points of $U$ in $\mathcal N$, and sum
+to zero on each pair inside $\mathcal N$; the pair $\{0,s+5\}$, when it is one, leaves the coordinate $s+5$ free. (At
+$s=d-5$, which is $3$ modulo $4$, $0$ is a fixed point and $R_0=R_{d-2}=0$.) The dimension of $W$ is the number of pairs
+other than $\{d-2,s+7\}$: $k-1$ if $s\equiv1\pmod4$, and $k-2$ if $s\equiv3\pmod4$. The coordinate of
+$\alpha-e_{s+7}$ at $s+7$ is $(-1)^{(s+7)/2}-1$. If $s\equiv3\pmod4$ it is $-2\ne0$, so $\alpha-e_{s+7}\notin W$ and the
+rank is $k-1$. If $s\equiv1\pmod4$ it is $0$, $U$ has no fixed points, and $\alpha$ sums to zero on each pair inside
+$\mathcal N$: $c+U(c)\equiv s+5\equiv2\pmod4$, so the signs $(-1)^{c/2}$ and $(-1)^{U(c)/2}$ are opposite. Then
+$\alpha-e_{s+7}\in W$, and the rank is $k-1$.
+\end{itemize}
+So $r_s=(k-1)+(k-1)$ if $s\equiv1\pmod4$, and $r_s=k+(k-1)$ if $s\equiv3\pmod4$.
+
+\emph{$s=d-7$.} Here $s\equiv1\pmod4$, so the odd rows span a space $O$ of dimension $k-1$, all of whose vectors vanish at
+the two fixed points $2k-3$ and $d-3$ of $T$. The rows of $J_0$ are $R_0=\alpha$ and $R_c=e_{d-2-c}-e_c$ for
+$c\in J_0\setminus\{0\}$; the second span the $(k-1)$-dimensional space $E$ of vectors on the even residues of $\mathcal N$ that sum to zero on each
+pair $\{c,d-2-c\}$, and $\alpha\in E$, since $(d-2-c)/2=2k-1-c/2$ and $c/2$ have opposite parities. The remaining row
+is $R_{d-2}=\beta$, whose odd part, the sum of all $e_i$ with $i$ odd, does not vanish at the fixed points of $T$. So
+$\beta\notin O\oplus E$, and $r_{d-7}=(k-1)+(k-1)+1=2k-1$.
+\end{informalproof}
+
+\begin{theorem}[The cases $d=8$, $12$ and $16$ in Lean]\label{thm:parity}
+\formal{ParityCoset.lean}{exists_parityCoset_code_d8,exists_parityCoset_code_d12,exists_parityCoset_code_d16,parityCosetD8,parityCosetD12,parityCosetD16}
+Let $F$ be a field in which $2\ne0$. For $d=8$, $12$ and $16$, the parity-coset colouring of $\Z/d$ carries a code of a
+class-uniform rule of dimension $(d^2+2d)/2+d/4-1$, that is, $41$, $86$ and $147$: an excess of $1$, $2$ and $3$ over
+the interval value of two classes.
+\end{theorem}
+
+\begin{outline}
+Each code is given by a certificate in the sense of \cref{prop:certificate}, over $\Z$ with $N=P=2$ (\lean{parityCosetD8},
+\lean{parityCosetD12}, \lean{parityCosetD16}), and $\varphi$ is the canonical map $\Z\to F$. The decoders of the
+certificates are those of the parity-coset rule, multiplied by $N$ (\leanfile{tools/parity_coset_rule.py} compares them),
+and the generators span the code of the rule over $\Q$. To keep the denominators of the kernel basis powers of $2$, the
+generator \leanfile{tools/gen_parity_coset_data.py} orders the variables with the entries of the two representative
+rows $0$ and $d-2$ last; with the natural order a factor $3$ appears at $d=16$. The identities (i) and (ii) of
+\cref{prop:certificate} are proved by \texttt{decide}, evaluated by the kernel (\lean{parityCosetD16_rowsHold},
+\lean{parityCosetD16_pivotsHold}, and likewise for $d=8$ and $12$).
+\end{outline}
+
+\begin{corollary}[The excess of two classes is unbounded]\label{cor:unbounded}
+\par\noindent{\small\upshape\textsf{Not formalized;} it follows from \cref{thm:parity-all}.}\par
+\smallskip\noindent\ignorespaces
+Over every field in which $2\ne0$, the excess $D(\mathcal P)-(d^2+2d)/2$ of the partitions $\mathcal P$ of $\Z/d$ into
+two classes is unbounded as $d$ grows: for the parity-coset colouring of $\Z/4k$ it lies between $k-1$ and $2k$. So
+\cref{prob:bounded} has a negative answer for $M=2$ over these fields.
+\end{corollary}
+
+\begin{remark}[Numerical: checks and other partitions]\label{rem:parity-numerical}
+Exact computation over $\Q$ gives:
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item the code of the parity-coset rule has dimension $(d^2+2d)/2+d/4-1$ for every $d=4k$ with $8\le d\le100$, and
+for $8\le d\le64$ the values of $r_s$ in the proof of \cref{thm:parity-all}, the splitting at odd $s\ne d-7$, and the
+ranks of the odd and of the even rows are as stated there (\leanfile{tools/parity_coset_rule.py}); the certificates in \leanfile{tools/data/numerical/} at $d=20$, $24$, $28$,
+$32$ and $36$ are these rules, with codes of dimension $224$, $317$, $426$, $551$ and $692$
+(\leanfile{tools/check_certificates.py});
+\item for the balanced classes $\{0,2,5,6,8,11\}$ and the rest of $\Z/12$, a code of dimension $86$, an excess of $2$;
+and for their $12$-periodic lift to $\Z/24$, a code of dimension $316$, an excess of $4$;
+\item for $\{0,1,3,6\}$ and the rest of $\Z/9$, a code of dimension $50=\lfloor(d^2+2d)/2\rfloor+1$, an excess
+of~$\frac12$.
+\end{enumerate}
+In (b) and (c) too every decoder reads one anti-diagonal. For the parity-coset codes at every $d=4k\le36$, those of
+\cref{thm:parity} included, the intersection of the code with a translate $\sigma^\delta\X$, over $\delta\ne0$, is
+smallest exactly at the shifts with $\gcd(\delta,d)\le2$, where its dimension is $2d+d/2-2=2\dim\X-d^2$
+(\texttt{check\_certificates.py -{}-translates}). So $\X+\sigma^\delta\X=\Mat_d(F)$ at those shifts. In the proof of
+\cref{thm:TP}(a) with the shifts $\{0,\delta\}$, the first step bounds the intersection from below by $2\dim\X-d^2$,
+and it is exact there, as the parent paper observes for its code at $d=6$~\cite[Section~8]{SeventeenthPaper2026}. At
+$\gcd(\delta,d)=2$ the second step bounds the intersection by $d\chi_\delta=3d$, while it has dimension $2d+d/2-2$; the
+whole gap between the excess $d/4-1$ and the bound $d/2$ lies there. The balanced codes of~(b) meet some translates in
+exactly $2\dim\X-d^2$ dimensions as well ($28$ and $56$); the code of~(c) does not ($20$ against $19$).
+\end{remark}
+
+\Cref{cor:unbounded} leaves Problem~9.1(a) of the parent paper open, since an excess of order $d$ is still
+$(\frac12+o(1))d^2$, and the parity-coset colouring leaves room up to $d/2$. \Cref{prob:twoclass} asks whether order
+$d$ is the limit for two classes.

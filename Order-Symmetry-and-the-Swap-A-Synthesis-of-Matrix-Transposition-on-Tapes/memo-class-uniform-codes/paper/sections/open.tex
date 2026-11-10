@@ -1,6 +1,7 @@
 \section{What remains}\label{sec:open}
 
-Two questions remain open after this memo: one about the field, and the parent paper's Problem~9.1(c) in a sharper form.
+Three questions remain open after this memo: one about the field, the parent paper's Problem~9.1(c) beyond two classes
+and in characteristic~$2$, and how large the excess of two classes can be.
 
 \begin{problem}[Characteristic three]\label{prob:char3}
 Over a field of characteristic~$3$, do the classes $\{0,1,3\}$ and $\{2,4,5\}$ of $\Z/6$ carry a code of a
@@ -17,10 +18,29 @@ $\mathcal P$ of $\Z/d$ into $M$ classes? If not, find a family of such partition
 can be analysed, in which it grows.
 \end{problem}
 
-By \cref{cor:excess}, blow-ups trade a growing number of classes for a growing excess at a fixed ratio, so they do not
-bear on \cref{prob:bounded}. A growing excess at a fixed number of classes would be a coding gain that grows with $d$ and
-is native to masks without an almost-period, the first of its kind in the one-hop model; it would still be consistent
-with a positive answer to Problem~9.1(a), which concerns gains of order~$d^2$.
+The parent paper's later revision~\cite{SeventeenthPaperRevised2026} states its Problem~9.1(c) in this form. By
+\cref{cor:excess}, blow-ups trade a growing number of classes for a growing excess at a fixed ratio, so they do not
+bear on \cref{prob:bounded}. \Cref{cor:unbounded} answers it for $M=2$ over every field in which $2\ne0$: the
+parity-coset rules (\cref{def:parity-rule}) are a family with a description that can be analysed, and the excess of
+their codes is $d/4-1$. This is a coding gain that grows with $d$ and is native to masks without an almost-period, the
+first of its kind in the one-hop model; it is still consistent with a positive answer to Problem~9.1(a), which
+concerns gains of order~$d^2$. Two cases remain open: two classes over fields of characteristic~$2$, where the
+parity-coset rule is not defined, and every fixed $M\ge3$, since refining a class keeps every code of a rule but raises
+the interval value by $d/2$.
+
+\begin{problem}[Two classes: an excess of order $d$?]\label{prob:twoclass}
+Is there a constant $C$ such that $D(\mathcal P)\le(d^2+2d)/2+Cd$ for every $d$ and every partition $\mathcal P$ of $\Z/d$
+into two classes? Or is there a family of two-class partitions whose excess grows faster than $d$?
+\end{problem}
+
+By \cref{thm:parity-all}, such a constant is at least $\frac14$, over every field in which $2\ne0$. With the shifts
+$\{0,\delta\}$, \cref{thm:TP}(a) bounds the excess of a two-class partition by $(\chi-2)d/2$, with $\chi$ the smallest
+number of components over these shifts, and $\chi$ is of order $d$ for most partitions; three or more shifts give
+bounds on $D$ of at least $2d^2/3$. So \cref{thm:TP} does not settle the question. A positive answer would prove Problem~9.1(a) of the parent
+paper for two classes: $D(\mathcal P)\le(\frac12+o(1))d^2$, the half bound for two-class piecewise-uniform decoders in
+the one-hop model. A family with an excess of order $d^2$ would be a coding gain at positive rate native to masks and
+rotations, the first of its kind. The codes of \cref{rem:parity-numerical} suggest where to look: classes aligned with
+cosets of subgroups, whose involutions on the anti-diagonals have fixed points.
 
 The steps from the one-hop model to machines \cite[Section~7.4]{SeventeenthPaper2026} change as follows. Depth
 reduction, the second step, is priced in the one-hop model over finite fields by \cref{thm:any-advice}; for machines it

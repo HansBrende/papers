@@ -32,7 +32,9 @@ code of \cref{prop:aperiodic} was found without the restriction and contains $\H
 $c\mapsto uc+t$ of the index. For $d\le5$ every partition with $1<M<d$ classes is listed; for $d=6$, the partitions
 into two classes and the nine partitions into three classes for which the bound exceeds $(d^2+Md)/2$. ``Bound'' is the best value of \cref{thm:TP} over shift sets
 of at most four elements, rounded down. Every code counted in the last column for $d\ge5$ is saved in
-\leanfile{tools/data/}.
+\leanfile{tools/data/}. The script \leanfile{tools/small_sizes.py} prints the table from these files, with the bounds
+recomputed and every saved code checked again, and lists the partitions; \leanfile{tools/README.md} records the runs
+of the solver, including those that timed out.
 
 \begin{table}[ht]
 \centering\small
@@ -116,7 +118,7 @@ the dimension is~$25$ (\lean{finrank_aperiodicCode}). Then $2\cdot25=50>48=6^2+2
 
 The code of \cref{prop:aperiodic} was found by the solver. It contains the $12$-dimensional space $\Hk^*$, it meets its translate by one column in exactly $2\cdot25-36=14$
 dimensions, the least that \cref{lem:pigeonhole} allows, and it meets its translates by two and three columns in $18$
-and $17$ dimensions. We do not have a description of it that generalizes, and one example at $d=6$ says nothing about
+and $17$ dimensions (\leanfile{tools/analyse_code.py}). We do not have a description of it that generalizes, and one example at $d=6$ says nothing about
 rates: the term $Md/2$ is a quarter of $(d^2+Md)/2$ at this size. What the example does show is that the union bound in
 \cref{thm:TP} is not an artefact, and that masks without an almost-period carry a coding gain that no copy rule and no
 interval rule has. \Cref{prob:aperiodic} asks how large it can be.

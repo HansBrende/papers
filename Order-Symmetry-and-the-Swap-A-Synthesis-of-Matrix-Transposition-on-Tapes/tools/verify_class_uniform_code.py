@@ -21,7 +21,8 @@ import json
 import sys
 
 
-def check(path):
+def verified_dimension(path, quiet=False):
+    """Return (n, classes, dimension) if the file passes both checks, and None otherwise."""
     with open(path) as f:
         data = json.load(f)
     n = data["n"]
@@ -30,7 +31,6 @@ def check(path):
     basis = data["kernel_basis"]
     assert sorted(c for J in classes for c in J) == list(range(n))
     cls = {c: k for k, J in enumerate(classes) for c in J}
-    M = len(classes)
     for X in basis:
         x = [[(X >> (i * n + j)) & 1 for j in range(n)] for i in range(n)]
         for c in range(n):
@@ -42,8 +42,9 @@ def check(path):
                         if coeff[i * n + j]:
                             s ^= x[i][(j + c) % n]
                 if s != x[c][r]:
-                    print(f"{path}: FAILED at basis vector {X}, row {c}, coordinate {r}")
-                    return False
+                    if not quiet:
+                        print(f"{path}: FAILED at basis vector {X}, row {c}, coordinate {r}")
+                    return None
     # independence: Gaussian elimination on the bitmasks
     piv = {}
     rank = 0
@@ -57,8 +58,18 @@ def check(path):
                 rank += 1
                 break
     if rank != len(basis):
-        print(f"{path}: FAILED, the listed matrices are dependent (rank {rank} of {len(basis)})")
+        if not quiet:
+            print(f"{path}: FAILED, the listed matrices are dependent (rank {rank} of {len(basis)})")
+        return None
+    return n, classes, rank
+
+
+def check(path):
+    res = verified_dimension(path)
+    if res is None:
         return False
+    n, classes, rank = res
+    M = len(classes)
     print(f"{path}: n = {n}, classes {classes}: {rank} independent matrices satisfy the rule; "
           f"pairing value {n*(n+1)//2}; (n^2 + M n)/2 = {(n*n + M*n)/2:g}")
     return True

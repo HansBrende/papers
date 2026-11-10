@@ -46,15 +46,26 @@ certificate \leanfile{tools/data/aperiodic_d6_dim25.json} or from the generator
 
 \end{itemize}
 
-\paragraph{Computations.} The numerical remarks and \cref{sec:small} are reproduced by the scripts in
-\leanfile{tools/}; each script documents its usage at its top.
+\paragraph{Computations.} Every script that was used for this paper is in \leanfile{tools/}, and the saved codes are
+in \leanfile{tools/data/}. The file \leanfile{tools/README.md} lists the scripts with their commands and the versions
+used, and records the solver runs behind \cref{tab:small}, including those that timed out. Each script documents its
+usage at its top.
 \begin{itemize}[leftmargin=1.5em]\raggedright
 \item \leanfile{tools/exhaustive_flag_checks.py} and \leanfile{tools/exhaustive_pigeonhole_checks.py} (Python with
 NumPy): the exhaustive and randomized checks behind the numerical remarks of \cref{sec:order,sec:symmetry} and the
 entries for $d\le4$ of \cref{tab:small}.
-\item \leanfile{tools/class_uniform_sat.py} (needs the package \texttt{pycryptosat}): the search for $d=5,6$.
+\item \leanfile{tools/three_term_example.py}: the examples of \cref{rem:three}.
+\item \leanfile{tools/digit_and_composition_checks.py}: small instances of \cref{cor:digit} and of
+\cref{rem:compose-TP}, both of which are proved in the text.
+\item \leanfile{tools/class_uniform_sat.py} (needs the package \texttt{pycryptosat}): one run of the solver, for a
+partition and a target dimension.
+\item \leanfile{tools/small_sizes.py}: \cref{tab:small} with its bounds, recomputed, and with every saved code checked
+again; the list of partitions up to affine maps; the search that raises the target dimension, which produced the saved
+codes; and controls that repeat the answers of the solver quoted in \cref{rem:small}.
 \item \leanfile{tools/verify_class_uniform_code.py}: checks every saved code in \leanfile{tools/data/} against the
 definition.
+\item \leanfile{tools/analyse_code.py}: the intersections of the code of \cref{prop:aperiodic} with its translates,
+quoted after that proposition.
 \end{itemize}
 Apart from the certificate of \cref{prop:aperiodic}, which Lean checks, these computations are not part of the formal
 development, and no proof depends on them.

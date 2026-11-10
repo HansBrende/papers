@@ -7,8 +7,11 @@ Hans Brende and Claude Fable 5.2 (Anthropic), November 2026.
 - [`lean/`](lean/): the Lean 4 formalization (`SwapRigidity`, Lean and Mathlib v4.34.1). License: Apache 2.0
   ([`lean/LICENSE`](lean/LICENSE)). It requires [`lean-machine/`](../lean-machine/) by a relative path, for the pinned
   Mathlib, so that sibling directory of this repository must be in place. It uses no library of an earlier paper.
-- [`tools/`](tools/): scripts for the index of Lean declarations and for the exact computations of the paper's numerical
-  remarks and of its section on small sizes. Each script documents its usage at its top.
+- [`tools/`](tools/): every script that was used for the paper, and the saved codes of its section on small sizes:
+  the generators of the index of Lean declarations and of the data of the explicit example, the exact computations of
+  the numerical remarks, and the searches and controls behind the table of small sizes.
+  [`tools/README.md`](tools/README.md) lists them, with the versions used and a record of the solver runs. Each script
+  documents its usage at its top.
 
 ## The question
 
@@ -108,12 +111,18 @@ The data of the explicit example are generated, and checked to be current, by
 python3 tools/gen_aperiodic_example.py --check
 ```
 
-The computations of the numerical remarks:
+The computations of the numerical remarks and of the section on small sizes ([`tools/README.md`](tools/README.md) has
+the full list and the record of the solver runs):
 
 ```sh
 python3 tools/exhaustive_flag_checks.py          # needs numpy; about 90 s
 python3 tools/exhaustive_pigeonhole_checks.py    # needs numpy; about 45 s
+python3 tools/three_term_example.py              # the three-term examples
+python3 tools/digit_and_composition_checks.py    # the digit corollary and the composition remark on small instances
+python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
+python3 tools/analyse_code.py                    # the code of dimension 25 and its translates
+python3 tools/small_sizes.py controls            # needs pycryptosat; the solver answers quoted in the paper, about three minutes
 python3 tools/class_uniform_sat.py 6 "0,1,3|2,4,5" 25 --rref   # needs pycryptosat; about three minutes
 ```
 

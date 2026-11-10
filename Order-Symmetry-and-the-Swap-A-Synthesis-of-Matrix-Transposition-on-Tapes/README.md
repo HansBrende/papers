@@ -7,7 +7,7 @@ Hans Brende and Claude Fable 5.2 (Anthropic), November 2026.
 - [`lean/`](lean/): the Lean 4 formalization (`SwapRigidity`, Lean and Mathlib v4.34.1). License: Apache 2.0
   ([`lean/LICENSE`](lean/LICENSE)). It requires [`lean-machine/`](../lean-machine/) by a relative path, for the pinned
   Mathlib, so that sibling directory of this repository must be in place. It uses no library of an earlier paper.
-- [`tools/`](tools/): every script that was used for the paper, and the saved codes of its section on small sizes:
+- [`tools/`](tools/): every script that was used for the paper, and the saved codes of its numerical remarks:
   the generators of the index of Lean declarations and of the data of the explicit example, the exact computations of
   the numerical remarks, and the searches and controls behind the table of small sizes.
   [`tools/README.md`](tools/README.md) lists them, with the versions used and a record of the solver runs. Each script
@@ -86,18 +86,32 @@ Proved in the paper but not formalized:
 - the equality case of dim ker[τ,T] ≥ d, the bound for copy rules, the bound for decoders with s modulation frequencies,
   and the dimension count and sharpness in the corollary that every address digit must be treated asymmetrically;
 - in Proposition 6.15, the size Σ_t max(1, m_t) of the set P that the proof exhibits for the Lean statement, where m_t
-  is the number of changes on the anti-diagonal t.
+  is the number of changes on the anti-diagonal t;
+- Proposition 6.17, added after the memo's update (see below): for every d ≥ 8 divisible by 4, over every field and
+  for every nonzero λ, an explicit class-uniform rule for the two classes {0, 2, ..., d − 4} and the rest has a largest
+  code of dimension (d² + 2d)/2 + d/4 − 1. So these two classes carry a code that exceeds (d² + 2d)/2 by d/4 − 1, over every
+  field, including GF(2). For λ = 2 over fields in which 2 ≠ 0 this is the memo's Theorem 4.8; in Lean the memo
+  proves, at d = 8, 12 and 16, that the two classes carry a code of that dimension. The codes over GF(2) at d = 8, 12
+  and 16 are saved in `tools/data/`, and `tools/two_class_family.py` checks every rank stated in the proof for d ≤ 48
+  over five small fields.
+- Lemma 6.18 and Corollary 6.19, added with it: a blow-up may use a different code at each position (for equal codes
+  this is the memo's blow-up theorem, proved in Lean there). With the code of Proposition 6.17 at ⌊M/2⌋ of the
+  k = ⌈M/2⌉ positions and, for odd M, the symmetric matrices at the last, there is for every M ≥ 2 a partition of
+  Z/kd into M classes with a code of dimension (n² + Mn)/2 + ⌊M/2⌋(n/4 − k), n = kd. So for every fixed number
+  M ≥ 2 of classes the gain over (n² + Mn)/2 is unbounded, over every field. The script checks instances for M = 3, ..., 7.
 
-Numerical remarks (exact computations over GF(2), reproduced by the scripts in `tools/`, not used in any proof) are
-labelled as numerical in the paper and collected in its section on small sizes.
+Numerical remarks (exact computations, reproduced by the scripts in `tools/`, not used in any proof) are labelled as
+numerical in the paper. Those over GF(2) at sizes up to six are collected in its section on small sizes; the remark on
+the two-class rule also uses GF(3), GF(5), GF(7) and GF(11).
 
 Both theorems are statements about a linear one-hop model. They are not lower bounds for machines.
 
 ## What is open
 
 Statement (T). For oblivious machines: whether storage codes on the cone relations of real schedules exceed rate ½. In the
-one-hop model of this paper: the largest code of a class-uniform rule whose classes have no almost-period, for a fixed
-number of classes or for o(d) of them; for which partitions into intervals the bound (d² + Md)/2 is attained; a
+one-hop model of this paper: for classes with no almost-period, whether a fixed number M of classes can gain more than
+a multiple of d over (d² + Md)/2, and whether o(d) classes can gain at positive rate; for which partitions into
+intervals the bound (d² + Md)/2 is attained; a
 bound for rules that use masks at all dyadic scales on both indices; a version of Theorem TP for the cone systems of
 oblivious schedules; and a subadditive quantity that is large for the swap at every scale separately and is not raised
 at all scales by one linear-time operation. The paper's last section states these precisely.
@@ -109,7 +123,8 @@ restates it for a bounded number of classes, and proves, in the one-hop model ov
 the depth-reduction step: at most one dimension per symbol of advice plus half a row for each class change the advice
 induces. An update of the memo adds explicit two-class rules whose codes have excess d/4 − 1 over (d² + 2d)/2 for
 every d = 4k ≥ 8, over every field in which 2 ≠ 0 (proof in the memo; Lean at d = 8, 12 and 16). So the excess of two
-classes is unbounded, and Problem 9.1(c), as now stated, has a negative answer for two classes over these fields.
+classes is unbounded, and Problem 9.1(c), as revision 14b157a of the paper stated it, has a negative answer for two
+classes over these fields.
 
 The memo left the paper unchanged. The revision of the paper that follows it cites the memo and corrects three
 passages:
@@ -123,7 +138,19 @@ passages:
 - The first sentence of Section 7.3 states the hypothesis it had dropped: for a linear code, positive characteristic
   or coefficients that cannot be rescaled to be bounded.
 
-Remark 8.1(d) and Problem 9.1(b) are updated. The other results of the paper and their formal proofs are unchanged.
+Remark 8.1(d) and Problem 9.1(b) are updated.
+
+After the memo's update, a further revision of the paper cites the two-class rules and adds Section 6.6, which settles
+the two cases that the memo's update leaves open.
+
+- Characteristic 2 (Proposition 6.17, above): the memo's rule, with its coefficients 2 and 1/2 replaced by λ and 1/λ,
+  has a code with the same gain d/4 − 1 over every field.
+- Three or more classes (Lemma 6.18 and Corollary 6.19, above): for every fixed number M ≥ 2 of classes the gain over
+  (d² + Md)/2 is unbounded, over every field.
+
+Problem 9.1(c) therefore no longer asks whether the gain of a fixed number of classes is bounded. It asks whether the
+gain is O(d). These results are proved in the text and are not formalized. The other results of the paper and their
+formal proofs are unchanged.
 
 ## Building and verifying
 
@@ -159,6 +186,7 @@ python3 tools/exhaustive_pigeonhole_checks.py    # needs numpy; about 45 s
 python3 tools/three_term_example.py              # the three-term examples
 python3 tools/digit_and_composition_checks.py    # the digit corollary and the composition remark on small instances
 python3 tools/entry_form_check.py                # Proposition 6.15 on small instances
+python3 tools/two_class_family.py                # Proposition 6.17 and Corollary 6.19 over small fields
 python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
 python3 tools/analyse_code.py                    # the code of dimension 25 and its translates

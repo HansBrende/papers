@@ -173,7 +173,8 @@ $r$ there is at most one fixed point per class: at most $Md$ in all. Every other
 
 So for copy rules the shape of the classes does not matter, while for coded rules \cref{thm:TP} needs the classes to
 have an almost-period. The difference is real: \cref{prop:aperiodic} exhibits two classes with no almost-period and a
-coded rule whose code has dimension greater than $(d^2+Md)/2$. How far coded rules on such classes can go is
+coded rule whose code has dimension greater than $(d^2+Md)/2$, and \cref{sec:two-class} gives, for every fixed number
+of classes, partitions whose codes exceed it by an unbounded amount. How far coded rules on such classes can go is
 \cref{prob:aperiodic}.
 
 \subsection{On a line}
@@ -409,3 +410,240 @@ decoder. That is the feature of machines singled out in \cref{sec:rule}, and it 
 \item \emph{The folklore step is optimal in dimension.} With $M$ equal pieces, nothing beats the $M\times M$ coarse
 transposition by even one dimension, although many other codes equal it (\cref{rem:extremal}).
 \end{itemize}
+
+\subsection{Without an almost-period: an unbounded gain at every fixed number of classes}\label{sec:two-class}
+
+\Cref{thm:TP} gives the bound $(d^2+Md)/2$ only for classes with an almost-period, and \cref{prop:aperiodic} shows that
+without one a code can be larger, by one dimension at $d=6$. The subsequent memo~\cite{ClassUniformMemo2026} shows that
+for two classes the difference is unbounded. For every $d=4k\ge8$ it gives an explicit rule, over fields in which
+$2\ne0$, whose code exceeds $(d^2+2d)/2$ by
+$d/4-1$~\cite[Definition~4.7 and Theorem~4.8]{ClassUniformMemo2026}. The proof is written in the memo; in Lean the
+memo proves, for $d=8$, $12$ and~$16$, that the two classes carry a code of that
+dimension~\cite[Theorem~4.9]{ClassUniformMemo2026}. The memo's rule has the coefficients $2$
+and $\tfrac12$, and the memo leaves characteristic~$2$ open. Here we observe that these two coefficients can be any
+nonzero $\lambda$ and its inverse, and that the proof then holds over every field (\cref{prop:two-class}). With
+$\lambda=1$ in characteristic~$2$, every coefficient of the rule is $0$ or~$1$. A blow-up that treats the positions
+differently then gives an unbounded gain for every fixed number $M\ge2$ of classes
+(\cref{lem:mixed-blowup,cor:every-M}),
+which the memo also leaves open for three or more classes.
+
+Let $d=4k\ge8$. The two classes are $J_0=\{0,2,\dots,d-4\}$, the even residues other than $d-2$, and
+$J_1=\Z/d\setminus J_0$, the odd residues together with $d-2$. Write $\mathcal N=\Z/d\setminus\{0,d-2\}$, and for
+$j\in\Z/d$ let $e_j\in F^{\Z/d}$ be the indicator vector of $j$ if $j\in\mathcal N$, and $e_j=0$ if $j\in\{0,d-2\}$. Fix
+a nonzero $\lambda\in F$. For $m\in\{0,1\}$ and $r\in\Z/d$ define $w^{(m)}_r\in F^{\Z/d}$ by
+\[
+  w^{(0)}_r=\lambda e_{r+3},\qquad w^{(1)}_r=e_{r+1}\qquad\text{for even }r,
+\]
+and for odd $r$ by
+\begin{align*}
+  w^{(0)}_r&=e_{r+5}\quad(r\ne d-7), & w^{(0)}_{d-7}&=\alpha=\sum_{i\in\mathcal N\text{ even}}(-1)^{i/2}e_i,\\
+  w^{(1)}_r&=\lambda^{-1}e_{r+3}\quad(r\ne d-5), &
+  w^{(1)}_{d-5}&=\beta=\sum_{i\text{ odd}}e_i-\lambda^{-1}\sum_{i\in\mathcal N\text{ even}}e_i .
+\end{align*}
+Since $4$ divides $d$, the sign $(-1)^{i/2}$ of an even residue $i$ is well defined. Let $a^{(m)}_r\in F^{\Z/d}$ agree
+with $w^{(m)}_r$ on $\mathcal N$, and at the two remaining residues let
+\[
+  a^{(m)}_r(0)=[m=0]-\sum_{i\in\mathcal N\cap J_0}w^{(m)}_r(i),\qquad
+  a^{(m)}_r(d-2)=[m=1]-\sum_{i\in\mathcal N\cap J_1}w^{(m)}_r(i),
+\]
+where $[\,\cdot\,]$ is $1$ if the condition holds and $0$ otherwise. The rule has the decoders
+\[
+  \cA_{J_m}(Y)_r=\sum_{i\in\Z/d}a^{(m)}_r(i)\,Y_{i,\,r-i}\qquad(m\in\{0,1\},\ r\in\Z/d).
+\]
+For $\lambda=2$ this is the parity-coset rule of~\cite[Definition~4.7]{ClassUniformMemo2026}.
+
+\begin{proposition}[Two classes: a gain of $d/4-1$ over every field]\label{prop:two-class}
+\notformalized
+Let $F$ be a field, $\lambda\in F$ nonzero, and $d=4k\ge8$. The largest code of the class-uniform rule above, for the
+classes $J_0$ and $J_1$ of $\Z/d$, has dimension
+\[
+  \frac{d^2+2d}2+\frac d4-1 .
+\]
+So over every field, including $\F_2$, and for every $d=4k\ge8$, the classes $J_0$ and $J_1$ of $\Z/d$ carry a code
+of a class-uniform rule that exceeds $(d^2+2d)/2$ by $d/4-1$.
+\end{proposition}
+
+\begin{informalproof}
+The proof is that of~\cite[Theorem~4.8]{ClassUniformMemo2026}, which is the case $\lambda=2$ over a field in which
+$2\ne0$. We give it in full, because the statement is more general and one step is different: for
+$s\equiv3\pmod4$ the memo uses that a certain coordinate equals $-2\ne0$, and we use a fixed point instead.
+
+\emph{The code splits into anti-diagonals.} Write $J_{m(c)}$ for the class of~$c$. Since
+$(\sigma^cX)_{i,r-i}=X_{i,c+r-i}$, the equation of the rule at row $c$ and coordinate $r$ is
+$X_{c,r}=\sum_ia^{(m(c))}_r(i)\,X_{i,c+r-i}$, and all its entries lie on the anti-diagonal $\{(i,j):i+j=c+r\}$. So the
+largest code $\X$ is the direct sum, over $s\in\Z/d$, of the spaces $\X_s$ of the vectors $z\in F^{\Z/d}$, with
+$z_i=X_{i,s-i}$, that satisfy the $d$ equations
+\[
+  z_c=\sum_{i\in\Z/d}a^{(m(c))}_{s-c}(i)\,z_i\qquad(c\in\Z/d).
+\]
+
+\emph{Reduction to a rank.} By the choice of $a^{(m)}_r$ at $0$ and $d-2$, $\sum_{i\in J_0}a^{(m)}_r(i)=[m=0]$ and
+$\sum_{i\in J_1}a^{(m)}_r(i)=[m=1]$. So the indicator vectors of $J_0$ and of $J_1$ lie in $\X_s$. They take the values
+$(1,0)$ and $(0,1)$ at the residues $(0,d-2)$, so $\X_s$ is the direct sum of their span and of the space of solutions
+with $z_0=z_{d-2}=0$. For such $z$ the equation of row $c$ says that $z$ is orthogonal to
+\[
+  R_c=w^{(m(c))}_{s-c}-e_c ,
+\]
+a vector supported on $\mathcal N$ (recall $e_0=e_{d-2}=0$). Hence $\dim\X_s=2+(d-2-r_s)=d-r_s$, where $r_s$ is the rank
+of the vectors $R_c$, $c\in\Z/d$. We show that
+\[
+  r_s=2k-2\ \text{ if }s\equiv1\!\!\pmod4\text{ and }s\ne d-7,\qquad r_s=2k-1\ \text{ otherwise}.
+\]
+Since $d-7\equiv1\pmod4$, the first case holds for $k-1$ residues $s$, and
+$\dim\X=\sum_s(d-r_s)=d(d-2k+1)+(k-1)=(d^2+2d)/2+k-1$. In what follows the rows $c\in J_0$ use $w^{(0)}_{s-c}$ and the
+rows $c\in J_1$ use $w^{(1)}_{s-c}$; all odd residues lie in $\mathcal N$.
+
+\emph{Even $s$.} For even $c\in\mathcal N$ let $\tau(c)=s+3-c$, which is odd. Row $c$ lies in $J_0$ and $s-c$ is even, so
+$R_c=\lambda e_{\tau(c)}-e_c$. Row $\tau(c)$ lies in $J_1$, and $s-\tau(c)=c-3$ is odd and different from $d-5$, so
+$R_{\tau(c)}=\lambda^{-1}e_c-e_{\tau(c)}=-\lambda^{-1}R_c$. As $c$ runs over the even residues of $\mathcal N$,
+$\tau(c)$ runs over the odd residues other than $s+3$ and $s+5$. Three of the four remaining rows are
+\[
+  R_0=\lambda e_{s+3},\qquad R_{d-2}=e_{s+3},\qquad R_{s+3}=\lambda^{-1}e_0-e_{s+3}=-e_{s+3},
+\]
+the last because $s-(s+3)=d-3\ne d-5$. The fourth is row $s+5$, with $s-(s+5)=d-5$: $R_{s+5}=\beta-e_{s+5}$. Now
+\[
+  \beta-e_{s+5}=e_{s+3}+\sum_c\bigl(e_{\tau(c)}-\lambda^{-1}e_c\bigr)=e_{s+3}+\lambda^{-1}\sum_cR_c ,
+\]
+with the sums over the even $c\in\mathcal N$. So the rows span the same space as $e_{s+3}$ and the $2k-2$ vectors
+$R_c$, $c\in\mathcal N$ even. These $2k-1$ vectors are independent: the supports $\{c,\tau(c)\}$ are pairwise disjoint
+and do not contain $s+3$. So $r_s=2k-1$.
+
+\emph{Odd $s$: the odd rows.} An odd row $c$ lies in $J_1$ and $s-c$ is even, so $R_c=e_{T(c)}-e_c$ with $T(c)=s+1-c$,
+an involution of the odd residues. Then $R_{T(c)}=-R_c$, and $R_c=0$ at a fixed point. So the odd rows span a space
+$O$, supported on the odd residues, whose dimension is the number of $2$-cycles of $T$ and all of whose vectors
+vanish at the fixed points of $T$. The fixed points are the solutions of $2c\equiv s+1\pmod{4k}$, that is,
+$c\equiv(s+1)/2\pmod{2k}$: two residues, which are odd if and only if $s\equiv1\pmod4$. So
+$\dim O=k-1$ if $s\equiv1\pmod4$, and $\dim O=k$ if $s\equiv3\pmod4$.
+
+\emph{Odd $s\ne d-7$: the even rows.} Let $U(c)=s+5-c$, an involution of the even residues, with $U(0)=s+5$ and
+$U(d-2)=s+7$. The even rows are supported on the even residues, so $r_s$ is $\dim O$ plus the rank of the even rows.
+They are the following.
+\begin{itemize}[leftmargin=1.5em]
+\item For $c\in J_0$ with $c\ne s+7$, $s-c$ is odd and different from $d-7$, so $R_c=e_{U(c)}-e_c$. In particular
+$R_0=e_{s+5}$.
+\item Row $d-2$ lies in $J_1$, and $s-(d-2)=s+2$ is odd and different from $d-5$, so
+$R_{d-2}=\lambda^{-1}e_{s+5}=\lambda^{-1}R_0$.
+\item Row $s+7$, if it lies in $J_0$, that is, if $s\ne d-9$, has $s-(s+7)=d-7$, so $R_{s+7}=\alpha-e_{s+7}$.
+\end{itemize}
+Let $W$ be the span of the rows of the first kind. If $c$ is a fixed point of $U$, then $R_c=0$. If $c\in\{0,s+5\}$ and
+$s+5\ne0$, the two rows are $R_0=e_{s+5}$ and $R_{s+5}=e_0-e_{s+5}=-e_{s+5}$; row $s+5$ is of the first kind because
+$s+5\ne d-2$. For every other $c\in J_0\setminus\{s+7\}$, both $c$ and $U(c)$ lie in $\mathcal N\setminus\{s+7\}$ and
+$R_{U(c)}=-R_c$: indeed $U(c)$ equals $0$, $d-2$ or $s+7$ only for $c=s+5$, $c=s+7$ or $c=d-2$, and $d-2\notin J_0$.
+So $W$ has a basis consisting of $e_{s+5}$,
+if $s\ne d-5$, and of one vector $e_{U(c)}-e_c$ for each $2$-cycle of $U$ inside $\mathcal N\setminus\{s+7\}$; and every
+vector of $W$ vanishes at $s+7$ and at the fixed points of $U$. The fixed points of $U$ are the solutions of
+$2c\equiv s+5\pmod{4k}$: two even residues if $s\equiv3\pmod4$, and none if $s\equiv1\pmod4$.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{$s\equiv1\pmod4$.} The $2k$ even residues form $k$ two-cycles of $U$. Two of them are $\{0,s+5\}$ and
+$\{d-2,s+7\}$, which are distinct because $s\ne d-7$, so $k-2$ lie inside $\mathcal N\setminus\{s+7\}$ and
+$\dim W=k-1$. The row $\alpha-e_{s+7}$ lies in $W$: its coordinate at $s+7$ is $(-1)^{(s+7)/2}-1=0$, because
+$s+7\equiv0\pmod4$; on a $2$-cycle $\{c,U(c)\}$ inside $\mathcal N$ we have $c+U(c)=s+5\equiv2\pmod4$, so $c/2$ and
+$U(c)/2$ have different parities and the two coordinates of $\alpha$ are opposite; and its coordinate at $s+5$ is
+matched by a multiple of $e_{s+5}$. So the even rows have rank $k-1$, and $r_s=(k-1)+(k-1)=2k-2$.
+\item \emph{$s\equiv3\pmod4$.} Now $U$ has two fixed points and $k-1$ two-cycles. If $s=d-9$, then $s+7=d-2$ is a
+fixed point, there is no row of the third kind, and the two-cycles are $\{0,d-4\}$ and $k-2$ others inside
+$\mathcal N$; so the even rows span $W$, of dimension $k-1$. If $s=d-5$, then $0$ and $2k$ are the fixed points,
+$R_0=R_{d-2}=0$, and the two-cycles are $\{d-2,2\}$ and $k-2$ others inside $\mathcal N\setminus\{2\}$, so
+$\dim W=k-2$; here $s+7=2$, and the fixed point $2k$ lies in $\mathcal N\setminus\{2\}$ because $k\ge2$. For every
+other $s$, which occurs only when $k\ge3$, the two fixed points lie in $\mathcal N\setminus\{s+7\}$, and the two-cycles
+are $\{0,s+5\}$, $\{d-2,s+7\}$ and $k-3$ others, so again $\dim W=1+(k-3)=k-2$. In the last two cases the row
+$\alpha-e_{s+7}$ is not in $W$: its coordinate at a fixed point of $U$ in $\mathcal N$, namely at $2k$ or at either of
+the two, is $\pm1$, and every vector of $W$ vanishes there. So in all three cases the even rows have rank $k-1$, and
+$r_s=k+(k-1)=2k-1$.
+\end{itemize}
+
+\emph{$s=d-7$.} Here $s\equiv1\pmod4$, so $\dim O=k-1$, and the vectors of $O$ vanish at the two fixed points of $T$.
+Now $U(c)=d-2-c$, which exchanges $0$ and $d-2$ and has no even fixed point. Row $0$ has $s-0=d-7$, so $R_0=\alpha$.
+For $c\in J_0\setminus\{0\}$, $R_c=e_{d-2-c}-e_c$ with $c$ and $d-2-c$ in $\mathcal N$; these rows span the space $E$ of
+the vectors on the even residues of $\mathcal N$ that sum to zero on each of the $k-1$ pairs $\{c,d-2-c\}$, of
+dimension $k-1$. The row $\alpha$ lies in $E$, because $(d-2-c)/2=2k-1-c/2$ and $c/2$ have different parities. The
+remaining row is $d-2$, with $s-(d-2)=d-5$: $R_{d-2}=\beta$. Its part on the odd residues is $\sum_{i\text{ odd}}e_i$,
+which does not vanish at the fixed points of $T$, while the part on the odd residues of every vector of $O\oplus E$
+lies in $O$ and vanishes there. So $\beta\notin O\oplus E$, and $r_{d-7}=(k-1)+(k-1)+1=2k-1$.
+\end{informalproof}
+
+The two classes have no almost-period~\cite[Section~4.2]{ClassUniformMemo2026}, and the gain is at most $d/2$. For the
+shifts $\{0,2\}$ the graph of \cref{thm:TP} has three components: the odd residues, the set $J_0$, and the single
+residue $d-2$, whose neighbours $d-4$ and $0$ lie in the other class. So every code for these classes has dimension at
+most $(d^2+3d)/2$. The largest code of a rule for them therefore exceeds $(d^2+2d)/2$ by at least $d/4-1$ and at most
+$d/2$, over every field.
+
+An unbounded gain also exists for every fixed number $M\ge2$ of classes. The memo blows a code up by a factor $k$,
+which multiplies the
+number of classes by~$k$~\cite[Theorem~4.2]{ClassUniformMemo2026}. Its proof decodes a row from the blocks at the
+position of that row alone, so each position may carry its own code. From here on $k$ denotes the factor of a
+blow-up, and no longer $d/4$. Fix $k\ge1$. Every $c\in\Z/dk$ is $c=ka+u$ for a
+unique $a\in\Z/d$ and a unique \emph{position} $u\in\{0,\dots,k-1\}$, where $c$ is read as an integer in $[0,dk)$. For
+$X\in\Mat_{dk}(F)$ and positions $u,v$, the \emph{block} $X^{(u,v)}\in\Mat_d(F)$ is $X^{(u,v)}_{a,t}=X_{ka+u,\,kt+v}$.
+
+\begin{lemma}[Blow-ups with a code for each position]\label{lem:mixed-blowup}
+\notformalized
+For each position $u$ let $\X_u\subseteq\Mat_d(F)$ be a code of a class-uniform rule for a partition $\mathcal P_u$
+of~$\Z/d$. Then
+\[
+  \mathcal Y=\{X\in\Mat_{dk}(F):X^{(u,v)}\in\X_u\text{ for all positions }u,v\}
+\]
+is a code of a class-uniform rule for the partition of $\Z/dk$ into the classes $\{ka+u:a\in J\}$, for
+$J\in\mathcal P_u$ and $0\le u<k$, and $\dim\mathcal Y=k\sum_u\dim\X_u$.
+\end{lemma}
+
+\begin{informalproof}
+For equal codes $\X_u$ and equal partitions this is~\cite[Theorem~4.2]{ClassUniformMemo2026}, which is proved in Lean
+there, and the
+argument is the same. Let $\cA^u_J$ be decoders of $\X_u$. For positions $u,v$ let
+$B_{u,v}\colon\Mat_{dk}(F)\to\Mat_d(F)$ be the linear map $B_{u,v}(Y)_{a,t}=Y_{ka+u,\,kt+v-u}$. Let $X\in\mathcal Y$
+and $c=ka'+u$ with $a'\in J\in\mathcal P_u$. For all $a,t\in\Z/d$,
+\[
+  (\sigma^{a'}X^{(u,v)})_{a,t}=X_{ka+u,\,k(t+a')+v}=(\sigma^cX)_{ka+u,\,kt+v-u}=B_{u,v}(\sigma^cX)_{a,t},
+\]
+where $k(t+a')$ is well defined in $\Z/dk$ for $t+a'\in\Z/d$: the first equality is the definition of the block, and
+the second holds because $(kt+v-u)+c=k(t+a')+v$ in $\Z/dk$. Since $X^{(u,v)}\in\X_u$, its row $a'$ is $\cA^u_J(\sigma^{a'}X^{(u,v)})$.
+Hence $X_{c,\,kt+v}=\cA^u_J\bigl(B_{u,v}(\sigma^cX)\bigr)_t$ for all $t$ and $v$. The right side is a linear function
+of $\sigma^cX$ that depends on $c$ only through $J$ and $u$, that is, through the class of~$c$. So $\mathcal Y$ is a
+code of the rule with the decoders $\mathcal B_{J,u}(Y)_{kt+v}=\cA^u_J(B_{u,v}(Y))_t$. The map
+$X\mapsto(X^{(u,v)})_{u,v}$ is a linear isomorphism of $\Mat_{dk}(F)$ onto $\Mat_d(F)^{k\times k}$, and it maps
+$\mathcal Y$ onto $\prod_{u,v}\X_u$, which gives the dimension.
+\end{informalproof}
+
+\begin{corollary}[Every fixed number of classes]\label{cor:every-M}
+\notformalized
+Let $M\ge2$, $k=\lceil M/2\rceil$ and $p=\lfloor M/2\rfloor$, let $d\ge8$ be divisible by~$4$, and $n=kd$. Over every
+field there is a partition of $\Z/n$ into $M$ classes that carries a code of a class-uniform rule of dimension
+\[
+  \frac{n^2+Mn}2+kp\Bigl(\frac d4-1\Bigr)=\frac{n^2+Mn}2+p\Bigl(\frac n4-k\Bigr).
+\]
+So for every fixed $M\ge2$, over every field including $\F_2$, the amount by which a code of a class-uniform rule for
+$M$ classes of $\Z/n$ can exceed $(n^2+Mn)/2$ is unbounded as $n$ grows.
+\end{corollary}
+
+\begin{informalproof}
+Apply \cref{lem:mixed-blowup} with the code of \cref{prop:two-class}, for the two classes $J_0,J_1$, at the positions
+$u<p$, and, if $M$ is odd, with the symmetric matrices at the last position $u=p=k-1$. The symmetric matrices are a
+code of a class-uniform rule with one class: $X_{a,t}=X_{t,a}=(\sigma^aX)_{t,0}$, so the decoder $\cA(Y)_t=Y_{t,0}$
+serves every row; their dimension is $(d^2+d)/2$. The number of classes is $2p+(k-p)=M$, and
+\[
+  \dim\mathcal Y=k\Bigl(p\Bigl(\frac{d^2+2d}2+\frac d4-1\Bigr)+(k-p)\frac{d^2+d}2\Bigr)
+  =\frac{k^2d^2}2+\frac{(2p+k-p)\,kd}2+kp\Bigl(\frac d4-1\Bigr),
+\]
+which is the stated value because $n=kd$ and $2p+k-p=M$.
+\end{informalproof}
+
+For even $M$ all positions carry the code of \cref{prop:two-class}, and the corollary is the memo's blow-up theorem
+applied to it. The gain $p(n/4-k)$ is of order $Mn/8$, which is the order of $nM$ again
+(\cref{sec:would-need}). So a bounded number of classes with no almost-period gains over the interval value by an
+amount that is unbounded but, in these examples, linear in the side length. Whether it can grow faster is
+\cref{prob:aperiodic}(c).
+
+\begin{remark}[Numerical: the rules over small fields]\label{rem:two-class}
+The script \leanfile{tools/two_class_family.py} builds the rule of \cref{prop:two-class} from its formulas and checks,
+by exact elimination, the dimension of its code and every rank stated in the proof: for $d=8,12,\dots,48$ over $\F_2$
+with $\lambda=1$, over $\F_3$ and $\F_5$ with several $\lambda$, and over $\F_7$ and $\F_{11}$; and the dimension alone
+for every $d=4k\le100$ over $\F_2$. For $d=8$ and $12$ it also solves the whole system of the rule, without the
+splitting into anti-diagonals. The codes over $\F_2$ at $d=8$, $12$ and $16$, of dimension $41>40$, $86>84$ and
+$147>144$, are saved in \leanfile{tools/data/} and checked against the definition by
+\leanfile{tools/verify_class_uniform_code.py}. For \cref{cor:every-M} the script builds the rule of the blow-up for
+$M=3,\dots,7$ at sizes up to $n=32$ over $\F_2$, and for $M=3,4$ at $n=16$ over $\F_3$, and solves its whole system: in
+every case the largest code of that rule has exactly the dimension of the corollary. The memo reports exact checks of
+its rule over $\Q$ for every $d=4k\le100$, and further two-class codes, among them one with a gain of $2$ for two
+classes of six elements at $d=12$~\cite[Remark~4.11]{ClassUniformMemo2026}.
+\end{remark}

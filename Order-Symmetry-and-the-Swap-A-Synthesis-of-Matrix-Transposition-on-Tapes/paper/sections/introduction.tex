@@ -66,7 +66,8 @@ on a cycle and on a line, with equality for equal intervals: there the largest c
 $M\times M$ block transposition. For $M$ equal intervals flags give only rate $1-1/(2M)$. Variants bound decoders with $s$
 modulation frequencies by rate $s/(s+1)$ and show that every address digit must be treated asymmetrically. The
 hypothesis on the classes is needed: for $d=6$, two classes with no almost-period carry a code of dimension $25>24$
-(\cref{prop:aperiodic}), found by a SAT solver and checked in Lean.
+(\cref{prop:aperiodic}), found by a SAT solver and checked in Lean, and for every fixed number $M\ge2$ of classes the gain over
+the bound is unbounded (\cref{sec:two-class}, added after a memo to this paper).
 \end{itemize}
 
 In words: to beat the pairing value, the decoder may have neither a hidden order nor a symmetry, on either index, that
@@ -77,22 +78,36 @@ for machines, and (T) remains open. \Cref{sec:construction} lists what they excl
 needed to carry them to machines; \cref{sec:small} gives exact values at small sizes; \cref{sec:open} states the
 problems.
 
-\paragraph{A subsequent memo, and this revision.} After revision \texttt{b2c389a} of this paper in its repository, a
-memo~\cite{ClassUniformMemo2026} proved, in Lean, that the two classes of \cref{prop:aperiodic} carry a code of
-dimension $25$ over every field in which $3\ne0$; that class-uniform codes can be blown up, which gives gains that
-grow with the number of classes; and bounds for the cost of advice in the one-hop model. The present revision cites
-the memo where it bears on the text, and it corrects three passages:
+\paragraph{A subsequent memo, and the revisions of this paper.} After revision \texttt{b2c389a} of this paper in its
+repository, a memo~\cite{ClassUniformMemo2026} proved, in Lean, that the two classes of \cref{prop:aperiodic} carry a
+code of dimension $25$ over every field in which $3\ne0$; that class-uniform codes can be blown up, which gives gains
+that grow with the number of classes; and bounds for the cost of advice in the one-hop model. Revision
+\texttt{14b157a} of this paper cited the memo where it bears on the text, and corrected three passages:
 \begin{itemize}[leftmargin=1.5em]
 \item the charge for a bit that a genie reveals (\cref{sec:to-machines,prob:machines}): the earlier text charged every
 revealed bit as a change of regime, at half a row, where advice that enters additively changes no decoder and half a
 row is the price of a change that affects a whole row;
-\item \cref{prob:aperiodic}(c), which the memo answers as it was worded and which is now stated for a fixed number of
-classes;
+\item \cref{prob:aperiodic}(c), which the memo answered as it was worded and which was then stated for a fixed number
+of classes;
 \item the first sentence of \cref{sec:would-need}, which had dropped a hypothesis of the result it summarizes.
 \end{itemize}
-It adds \cref{prop:entry,cor:entry-advice}, which state the corrected charge, with formal proofs of their bounds in
-terms of the number of changes, and it updates \cref{rem:small}(d) and \cref{prob:aperiodic}(b). The other results of
-this paper and their formal proofs are unchanged.
+It added \cref{prop:entry,cor:entry-advice}, which state the corrected charge, with formal proofs of their bounds in
+terms of the number of changes, and it updated \cref{rem:small}(d) and \cref{prob:aperiodic}(b).
+
+An update of the memo then answered that form of \cref{prob:aperiodic}(c) for two classes: for every $d=4k\ge8$ it
+gives an explicit rule, over fields in which $2\ne0$, whose code exceeds $(d^2+2d)/2$ by $d/4-1$, so that the gain of
+two classes is unbounded. Its proof is written in the memo, which also proves in Lean, for $d=8$, $12$ and~$16$, that
+the two classes carry a code of that dimension. It leaves open characteristic~$2$ and three or more classes. The
+present revision cites that update and adds \cref{sec:two-class}, which settles both.
+\begin{itemize}[leftmargin=1.5em]
+\item \Cref{prop:two-class}: the memo's rule works over every field, $\F_2$ included, once its coefficients $2$ and
+$\tfrac12$ are replaced by a nonzero $\lambda$ and its inverse.
+\item \Cref{lem:mixed-blowup,cor:every-M}: a blow-up with a code of its own at each position turns the two-class codes
+into codes for any fixed number $M\ge2$ of classes, with a gain of order $Md/8$ over $(d^2+Md)/2$. So the gain is
+unbounded for every fixed number $M\ge2$ of classes, over every field.
+\end{itemize}
+These three results are proved in the text and are not formalized. \Cref{prob:aperiodic}(c) now asks for the rate of
+growth. The other results of this paper and their formal proofs are unchanged.
 
 \subsection{How to read this paper and its formal proofs}
 
@@ -112,7 +127,8 @@ with advice (\cref{cor:entry-advice}); and the twist-class theorem. Not formaliz
 of Theorem~FL that need an algebraically closed field, the structure of $p$-groups or an arithmetic estimate
 (\cref{cor:two-terms,cor:commutative,cor:affine,cor:expansion}); the equality case of \cref{prop:swap-floor}; the
 copy-rule bound; the count in \cref{prop:entry}; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it
-rests on; and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
+rests on; the gains for a fixed number of classes over every field
+(\cref{prop:two-class,lem:mixed-blowup,cor:every-M}); and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
 labelled as numerical and in \cref{sec:small}, and no proof uses them. \Cref{app:leanindex} indexes the declarations and
 \cref{app:verification} explains how to check them.
 

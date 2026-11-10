@@ -22,6 +22,7 @@ with Python 3.12.10, NumPy 2.5.4 and pycryptosat 5.18.0.
 | `exhaustive_pigeonhole_checks.py` | Section "Symmetry": the pigeonhole lemma, Theorem TP, the line form and twist classes on small instances; the numbers of Remark (numerical: what the exact value does not say) and Remark (numerical: on a line, other shifts fail); the rows d ≤ 4 of the table of small sizes | NumPy | about 45 s |
 | `digit_and_composition_checks.py` | Corollary (every address digit must be broken) and Remark (composition), including the unshuffle | — | seconds |
 | `entry_form_check.py` | Proposition (changes that affect single entries): every rule at d = 2 over GF(2), random rules and rules with free entries up to d = 5, and the rules of the saved codes; with controls that group the changes differently and must fail | — | seconds |
+| `two_class_family.py` | Proposition (two classes: a gain of d/4 − 1 over every field): the rule in closed form with a general coefficient, every rank stated in the proof for d ≤ 48 over GF(2), GF(3), GF(5), GF(7), GF(11), the dimension over GF(2) for d ≤ 100, and the saved codes `data/two_class_d8.json`, `_d12.json`, `_d16.json`. Corollary (every fixed number of classes): the blow-up rule for M = 3, ..., 7 and its largest code | — | seconds |
 | `small_sizes.py` | Section "Small sizes": the table with its bounds, the list of partitions, the solver runs and the controls | pycryptosat for `climb`, `controls` | see below |
 | `class_uniform_sat.py` | One solver run: is there a class-uniform rule over GF(2) with a code of dimension ≥ D? | pycryptosat | see below |
 | `verify_class_uniform_code.py` | Checks a saved code in `data/` against the definition; shares no code with the search | — | seconds |
@@ -44,6 +45,7 @@ python3 tools/three_term_example.py
 python3 tools/exhaustive_pigeonhole_checks.py
 python3 tools/digit_and_composition_checks.py
 python3 tools/entry_form_check.py
+python3 tools/two_class_family.py
 ```
 
 Each ends with a summary line and stops, or exits with a nonzero status, if a statement of the paper fails on an
@@ -63,12 +65,14 @@ python3 tools/small_sizes.py controls --long        # also the codes of dimensio
 ```
 
 `data/` holds one saved code for every row of the table with d ≥ 5 (22 files): the rule and a basis of its code over
-GF(2), in the format described at the top of `verify_class_uniform_code.py`. `aperiodic_d6_dim25.json` is the
+GF(2), in the format described at the top of `verify_class_uniform_code.py`. It also holds the three codes of the
+two-class rule over GF(2) at d = 8, 12 and 16 (`two_class_d*.json`), which `two_class_family.py --write-data` writes
+from the closed form and which no search produced. `aperiodic_d6_dim25.json` is the
 certificate of the Lean-verified proposition.
 
 ### How the saved codes were found
 
-Every code was found by `class_uniform_sat.py`, driven by the `climb` subcommand of `small_sizes.py`: for one
+Every code of the table was found by `class_uniform_sat.py`, driven by the `climb` subcommand of `small_sizes.py`: for one
 partition, raise the target dimension D while the solver answers "satisfiable" within a time cap, and stop at the
 first "unsatisfiable", at the first time-out, or at the bound of Theorem TP. All runs used `--rref`, one thread unless
 stated, and no random seed other than the solver's default. Three points matter when reading the record below.

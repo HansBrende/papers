@@ -1,8 +1,8 @@
 \section{Small sizes}\label{sec:small}
 
 This section is numerical, except for \cref{prop:aperiodic}, which is a formal statement about one explicit code, and
-for the results of the subsequent memo~\cite{ClassUniformMemo2026} that are cited at the end of \cref{rem:small} and
-at the end of the section. It reports exact computations over $\F_2$ for class-uniform rules
+for the results of \cref{sec:two-class} and of the subsequent memo~\cite{ClassUniformMemo2026} that are cited at the
+end of \cref{rem:small} and at the end of the section. It reports exact computations over $\F_2$ for class-uniform rules
 (\cref{def:class-uniform}) on a cycle. No proof in this paper uses them.
 
 \subsection{Method}
@@ -96,10 +96,14 @@ bound of \cref{thm:TP} is $28$, from a set of three shifts. A code of dimension 
 $(d^2+Md)/2=24$
 (\cref{prop:aperiodic}); searches for dimension $26$ timed out. Four partitions into three classes have codes of
 dimension $28$, one more than $(d^2+Md)/2=27$.
-(d) The gain over $(d^2+Md)/2$ in (c) is one dimension in each case. For a fixed number of classes the data do not
-distinguish a gain of bounded size from one that grows with~$d$. When the number of classes grows in proportion to $d$
-the gain does grow, and this is proved, not numerical: the blow-ups of the code of \cref{prop:aperiodic} are codes of
-dimension $25k^2$ for $2k$ classes on $\Z/6k$, a gain
+(d) The gain over $(d^2+Md)/2$ in (c) is one dimension in each case. The data, at $d\le6$, do not distinguish a gain
+of bounded size from one that grows with~$d$. For every fixed number $M\ge2$ of classes it can grow, and this is proved, not
+numerical, though for other partitions than those of the table. For two classes the gain is at least $d/4-1$ at every
+$d=4k\ge8$, over every field (\cref{prop:two-class}, which extends \cite[Theorem~4.8]{ClassUniformMemo2026} to
+characteristic~$2$); the codes over $\F_2$ at $d=8$, $12$ and $16$ are saved with those of \cref{tab:small}
+(\cref{rem:two-class}). For every $M\ge2$ there are partitions into $M$ classes with a gain of order $Md/8$
+(\cref{cor:every-M}). And when the number of classes grows in proportion to $d$, the blow-ups of the code of
+\cref{prop:aperiodic} are codes of dimension $25k^2$ for $2k$ classes on $\Z/6k$, a gain
 of~$k^2$~\cite[Theorem~4.2 and Corollary~4.4]{ClassUniformMemo2026}.
 \end{remark}
 
@@ -128,7 +132,8 @@ rates: the term $Md/2$ is a quarter of $(d^2+Md)/2$ at this size. What the examp
 \cref{thm:TP} is not an artefact, and that masks without an almost-period carry a coding gain that no copy rule and no
 interval rule has. \Cref{prob:aperiodic} asks how large it can be.
 
-The subsequent memo~\cite{ClassUniformMemo2026} proves two further facts about this example, in Lean.
+The subsequent memo~\cite{ClassUniformMemo2026} proves two further facts about this example, in Lean, and it finds
+larger gains of a different kind.
 \begin{itemize}[leftmargin=1.5em]
 \item \emph{The gain does not come from characteristic~$2$.} The same two classes carry a code of dimension $25$ over
 every field in which $3\ne0$, in particular over $\Q$~\cite[Theorem~3.2]{ClassUniformMemo2026}. Whether they do in
@@ -136,6 +141,13 @@ characteristic~$3$ is open.
 \item \emph{The example can be blown up.} If a colouring of $\Z/d$ with $M$ classes carries a code of dimension $D$,
 then a colouring of $\Z/dk$ with $kM$ classes carries a code of dimension
 $k^2D$~\cite[Theorem~4.2]{ClassUniformMemo2026}. Blowing up multiplies the gain over $(d^2+Md)/2$ and the product $dM$
-by the same factor $k^2$, so it gives growing gains only together with a growing number of classes, and it says
-nothing about a fixed number of classes.
+by the same factor $k^2$, so blowing up this one example gives growing gains only together with a growing number of
+classes. Blowing up a family by a fixed factor is another matter (\cref{cor:every-M}).
+\item \emph{Two classes can gain more than one dimension.} For $d=4k\ge8$ the classes $\{0,2,\dots,d-4\}$ and the rest
+carry an explicit rule, each of whose decoders reads one anti-diagonal, with a code of dimension
+$(d^2+2d)/2+d/4-1$. The memo proves this over fields in which $2\ne0$, in its text, and proves in Lean at $d=8$, $12$
+and~$16$ that the classes carry a code of this dimension~\cite[Theorems~4.8 and~4.9]{ClassUniformMemo2026};
+\cref{prop:two-class} proves it over every field, and \cref{cor:every-M} derives from it an unbounded gain for every
+fixed number of classes. Unlike the code of \cref{prop:aperiodic}, these codes have a description, and it is one that
+can be analysed.
 \end{itemize}

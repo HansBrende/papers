@@ -311,8 +311,12 @@ one-head island.
     labelled Theorem 6.3 as assembled from Lean declarations.
 - 9 November 2026. Theorem 7.1's bounded palette words joined the ruled-out strategies below the frame.
   Paper 3's barriers to reversing its bit-to-word reduction were considered and left off: they limit
-  compilers that build a bit transposer from word-transposer calls, not constructions of a word
+    compilers that build a bit transposer from word-transposer calls, not constructions of a word
   transposer.
+- 9 November 2026. A check of all sixteen papers and eight memos against the page found two gaps: the
+  half-bound card listed χc < 3 without its source, now paper 7's Theorem 4.2 for symmetric relations,
+  and the motion card did not cite the padding memo, which proves the padding theorem without idle
+  tapes and with the finer entry-cell inequality (Lean).
 - 9 November 2026. The cascade text said that Problem 11.4 was open and that the rows-to-columns condition
   was not measured. All five cascades are now excluded (cascade memo), and the third and fourth also fail
   rows to columns (paper 16, Theorem 10.8). Paper 16's Corollary 7.3, a time bound for traces that keep the

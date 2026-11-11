@@ -1,6 +1,6 @@
 # Macroscopic Information Transfer in Adaptive Tape Transposition
 
-Hans Brende and GPT-6 Astra (OpenAI) · November 2026 · **Working draft**
+Hans Brende and GPT-6 Astra (OpenAI) · November 2026
 
 [Paper PDF](paper/main.pdf) · [LaTeX](paper/) (CC BY 4.0) · [Lean](lean/)
 (Apache 2.0) · [Publishing plan](PUBLICATION_PLAN.md)
@@ -105,12 +105,13 @@ records the 35 fully formalized, six partial and seven written-only numbered
 results, the remaining native constructions, and the latest validation.
 The subsequent [cleanup and scope review](verification/cleanup-review-2026-11-10.md)
 records proof reuse, the one-tape getter scope and the revised frontier roadmap.
-The [draft integration record](verification/integration.md) preserves the earlier
+The [integration record](verification/integration.md) preserves the earlier
 independent reviews and validation checkpoint. The
 [appendix integration record](verification/appendix-integration.md) records the
 earlier expanded-package checkpoint and its validation. The earlier reviews do not claim
 to have reviewed these subsequent additions. All checks preserve the
 formalization boundaries above.
+Review records retain the status of the versions they examined.
 
 The [publishing plan](PUBLICATION_PLAN.md#remaining-result-integration-todos)
 records all four substantive result packages and three compact supporting

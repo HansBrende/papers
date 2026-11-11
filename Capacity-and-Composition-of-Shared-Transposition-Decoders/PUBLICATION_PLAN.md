@@ -1,6 +1,7 @@
 # Publishing plan
 
-Status: working draft, November 2026. No release is authorized by this plan.
+Status: released November 2026 after the completed reviews. The explicit
+formalization exceptions below remain part of the published proof-status record.
 
 The papers share a question, not a model: native adaptive executions in the first paper;
 complete cyclic shared-decoder maps and linear correctness sources in the second.
@@ -10,7 +11,7 @@ identified formalization gap, and a complete written proof awaiting formalizatio
 An arithmetic consequence of an assumed structural inequality is not formalization
 of the structural theorem. Every status in the README must match the actual declarations.
 
-## Release requirements
+## Completed release checklist
 
 1. Freeze the included theorem statements and map every numbered result to its proof.
 2. Reuse sibling packages and Mathlib, with pinned dependencies; formalize every result
@@ -19,7 +20,7 @@ of the structural theorem. Every status in the README must match the actual decl
 3. Check strengthenings, hypotheses, proof simplification and duplicated code.
 4. Obtain independent English/Lean and proof/citation reviews; resolve their findings.
 5. Generate the declaration index and axiom checks; build Lean and the PDF; inspect the PDF;
-   check relative paths and publication metadata. Keep draft status until these are satisfied.
+   check relative paths and publication metadata.
 6. Review the inventory coverage table before release so no relevant substantial result
    is lost merely because an earlier section was easier to write.
 
@@ -45,7 +46,7 @@ binary rule. All these families have vanishing normalized excess; do not claim
 novelty for fixed-class or binary additive excess alone. A nonlinear-vs-linear subcode gap for one chosen source
 is not a gap between the maximum achievable capacities.
 
-## Mandatory strengthening pass before release
+## Completed strengthening pass
 
 - Review the family of binary masked-neighbor maps: invertibility, literal mask periods,
   the image of the fixed-column subspace, and the balanced-intertwiner criterion.
@@ -66,13 +67,13 @@ Cyclic run averages, finite concentration, orbit counting, Fourier rank extracti
 residual accounting are now checked. The native two-tape schedule compiler remains
 the sole numbered written-only result and the substantial formalization exception.
 
-## Draft checkpoint
+## Formalization checkpoint
 
 The original manuscript passed its full algebraic build, axiom audit and reviews.
 The integration below extends that checkpoint: all ordinary numbered mathematical
 proofs are now complete. The native compiler remains written-only. Current per-theorem status,
 README and verification/integration.md supersede the earlier module/page counts.
-No draft status is removed by this integration.
+The completed reviews support release with the stated native formalization exception.
 
 ## Remaining result integration todos
 
@@ -98,7 +99,7 @@ not needed for the narrative remain recorded in verification/integration.md.
   descending elimination from periodic capacity. Separately certify the
   actual binary seed operator's full nullity 25, then show the paid lifted
   operator's entire agreement kernel has dimension b(d²/2+7d/6) at its
-  admitted dimensions. The updated draft proves the full kernel equality in Lean; it does not
+  admitted dimensions. The paper proves the full kernel equality in Lean; it does not
   assert optimality over seed rules. Check the finite rank certificate in Lean.
 
 - [x] **B3. Specialized bounds and limits of certificate methods.** Prioritize

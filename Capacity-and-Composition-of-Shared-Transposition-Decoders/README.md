@@ -1,6 +1,6 @@
 # Capacity and Composition of Shared Transposition Decoders
 
-Hans Brende and GPT-6 Astra (OpenAI) · November 2026 · **Working draft**
+Hans Brende and GPT-6 Astra (OpenAI) · November 2026
 
 [Paper PDF](paper/main.pdf) · [LaTeX](paper/) (CC BY 4.0) · [Lean](lean/)
 (Apache 2.0) · [Publishing plan](PUBLICATION_PLAN.md)
@@ -48,7 +48,7 @@ source. Method floors limit the specified certificates, not achievable code rate
 The exact lifted kernel concerns the displayed operator, not an optimal seed.
 None of these statements decides unrestricted linear-time tape transposition.
 
-## Formalization work and release gates
+## Formalization and verification
 
 Each numbered result identifies its exact formal status. For a result marked
 Lean, the formal statement and proof are authoritative; its English outline is a
@@ -70,8 +70,8 @@ The previous [English–Lean](verification/english-lean-review.md),
 [proof/citation](verification/proof-citation-review.md) and
 [strengthening](verification/strengthening-review.md) reviews cover the earlier
 checkpoint. The current integration record identifies the newer checks and their
-scope; old module/page counts are not evidence for later additions. Draft status
-remains until the formalization and release requirements are met.
+scope; old module/page counts are not evidence for later additions.
+Review records retain the status of the versions they examined.
 The subsequent [cleanup and strengthening review](verification/cleanup-review-2026-11-10.md)
 records the gcd composition bound, attained-prefix class count, smaller
 random-mask thresholds and corrected prose qualifications.

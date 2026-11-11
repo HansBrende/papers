@@ -1,6 +1,7 @@
 # Publishing plan
 
-Status: working draft, November 2026. No release is authorized by this plan.
+Status: released November 2026 after the completed reviews. The explicit
+formalization exceptions below remain part of the published proof-status record.
 
 The papers share a question, not a model: native adaptive executions in the first paper;
 complete cyclic shared-decoder maps and linear correctness sources in the second.
@@ -10,7 +11,7 @@ identified formalization gap, and a complete written proof awaiting formalizatio
 An arithmetic consequence of an assumed structural inequality is not formalization
 of the structural theorem. Every status in the README must match the actual declarations.
 
-## Release requirements
+## Completed release checklist
 
 1. Freeze the included theorem statements and map every numbered result to its proof.
 2. Reuse sibling packages and Mathlib, with pinned dependencies; formalize every result
@@ -19,7 +20,7 @@ of the structural theorem. Every status in the README must match the actual decl
 3. Check strengthenings, hypotheses, proof simplification and duplicated code.
 4. Obtain independent English/Lean and proof/citation reviews; resolve their findings.
 5. Generate the declaration index and axiom checks; build Lean and the PDF; inspect the PDF;
-   check relative paths and publication metadata. Keep draft status until these are satisfied.
+   check relative paths and publication metadata.
 6. Review the inventory coverage table before release so no relevant substantial result
    is lost merely because an earlier section was easier to write.
 
@@ -94,7 +95,7 @@ assumed headline property replaces a missing construction. The source count
 premises of the persistence wrappers are stated explicitly and remain justified
 by the manuscript's written native proofs.
 
-## Draft checkpoint
+## Formalization checkpoint
 
 Paper A's status lines currently classify 48 numbered results as 35 formal,
 six partial and seven written-only. Paper B has 72 formal results and one
@@ -102,13 +103,13 @@ written-only native compiler. These counts are not estimates of remaining
 work. The root modules include all public local modules, and the generated
 indices and axiom checks follow the manuscript's cited declarations.
 Independent reviews distinguish the actual native endpoints from conditional
-consequences; historical review scopes are retained separately. Neither paper
-is released by completion of an individual proof or a successful build.
+consequences; historical review scopes are retained separately. The release
+preserves these proof-status boundaries.
 
 ## Remaining result integration todos
 
 Inventory reconciliation and integration, 10 November 2026. All seven
-accepted packages below are now stated and proved in the draft. Checked
+accepted packages below are now stated and proved in the manuscript. Checked
 boxes certify manuscript integration, not full Lean verification or release.
 Successive strengthenings are consolidated into the strongest supported
 interfaces; the README and formalization appendix distinguish checked

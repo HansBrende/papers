@@ -13,15 +13,18 @@ Breakthrough 2, Theorem 2A:
 * `Lemma_AffineCubeCommonMessageGrowthSpec`: over every field `F`,
   `(k + 1) * finrank F W ≤ finrank F A + ∑ t, finrank F (ker (R_t - id))`.
 * `Control_D13TwoCubeAPFreeSharpnessSpec`: at prime `d = 13`, `q = 2` (`dim A = 26`), the
-  2-cube `J = {0, 1, 4, 5}` contains no non-constant 3-term arithmetic progression mod `13`,
-  forces `finrank W ≤ 10`, and admits an exact `(W, L)` of dimension `D = 9` (refuting the
-  `2^k D ≤ dim A + (2^k - 1) q` strengthening `D ≤ 8`).
+  2-cube `J = {0, 1, 4, 5}` contains no non-constant 3-term arithmetic progression mod `13`
+  (so Paper 19's progression bound sees at most `ℓ = 2` points and yields only `D ≤ 14`),
+  forces `3 * finrank F W ≤ 30` (`finrank F W ≤ 10`), and admits an exact `(W, L)` over `ℝ` of
+  dimension `D = 9` (refuting the `2^k D ≤ dim A + (2^k - 1) q` strengthening `D ≤ 8`).
 * `Control_D4SameIntervalCodedFactorizationSpec`: at `d = 4` with identical interval partitions
-  `p₁ = p₂ = [0, 0, 1, 1]`, uncoded entry-copying two-stage rules cannot realize `swap`, whereas
-  coded linear `ClassUniform` maps `K₁, K₂` satisfy `K₂ ∘ K₁ = swapLinear`.
+  `p₁ = p₂ = [0, 0, 1, 1]`, uncoded entry-copying two-stage rules over any alphabet `|Σ| ≥ 2`
+  cannot realize `swap`, whereas coded linear `ClassUniform` maps `K₁, K₂` over `ℝ` satisfy
+  `K₂ ∘ K₁ = swapLinear ℝ`.
 * `CauchySchwarzAffineCubeExtractionSpec` & `Theorem2A_TwoStageRamseyFreeCutoffSpec`:
-  elementary Cauchy–Schwarz cube extraction and the Hales–Jewett-free cutoff
-  `d ≤ max (8 * M₁ * M₂^2) ((2 * M₁)^(2^M₂))` over every field `F` and lane width `b ≥ 1`.
+  elementary Cauchy–Schwarz cube extraction with steps in `[1, ⌊d / (2 M₂^2)⌋]` and the
+  Hales–Jewett-free cutoff `d ≤ max (8 * M₁ * M₂^2) ((2 * M₁)^(2^M₂))` over every field `F`
+  and lane width `b ≥ 1`.
 -/
 
 namespace BoundedArityDecoders
@@ -84,21 +87,26 @@ def Lemma_AffineCubeCommonMessageGrowthSpec : Prop :=
 
 /-- **Sharpness & AP-Free Control (`README.md` §II.2 Theorem 2A Bullet 1 — `d = 13, J = {0,1,4,5}`).**
 1. `J = {0, 1, 4, 5} ⊆ ZMod 13` is an affine 2-cube `{0, 1} + {0, 4}` with no non-constant
-   3-term arithmetic progression modulo `13`.
+   3-term arithmetic progression modulo `13`, so every non-constant progression in `J` has length
+   `ℓ ≤ 2`, for which Paper 19's progression formula `(26 + (ℓ - 1) * 2) / ℓ` gives only `D ≤ 14`
+   (attained on any `2`-point progression `{0, 1}`).
 2. Over every field `F`, for `A = ZMod 13 → Fin 2 → F` (`dim A = 26`), any subspace `W ≤ A` and
    linear `L : A →ₗ[F] Z` injective on `W` with `L (T_c x) = L x` for all `c ∈ {0, 1, 4, 5}`
-   satisfies `finrank F W ≤ 10` (`< 13`).
+   satisfies `3 * finrank F W ≤ 26 + 2 + 2` and `finrank F W ≤ 10` (`< 13`).
 3. Conversely, over `ℝ`, there exists such a pair `(W, L)` of exact dimension `finrank ℝ W = 9`
-   (`> 8`), refuting the naive `2^k D ≤ dim A + (2^k - 1) q` strengthening. -/
+   (`4 * 9 = 36 > 26 + 6 = 32`, refuting `D ≤ 8`). -/
 def Control_D13TwoCubeAPFreeSharpnessSpec : Prop :=
   let J13 : Finset (ZMod 13) := {0, 1, 4, 5}
   ThreeAPFreeMod J13 ∧
+  (∀ (ℓ : ℕ) (c₀ s : ZMod 13), s ≠ 0 →
+    (∀ j < ℓ, c₀ + (j : ZMod 13) * s ∈ J13) →
+    ℓ ≤ 2 ∧ (1 ≤ ℓ → (26 + (ℓ - 1) * 2) / ℓ ≥ 14)) ∧
   (∀ (F Z : Type*) [Field F] [AddCommGroup Z] [Module F Z]
     (W : Submodule F (ZMod 13 → Fin 2 → F))
     (L : (ZMod 13 → Fin 2 → F) →ₗ[F] Z),
     (∀ x ∈ W, L x = 0 → x = 0) →
     (∀ x ∈ W, ∀ c ∈ J13, L (cyclicChannelShift F 13 2 c x) = L x) →
-    finrank F W ≤ 10) ∧
+    3 * finrank F W ≤ 26 + 2 + 2 ∧ finrank F W ≤ 10) ∧
   (∃ (W : Submodule ℝ (ZMod 13 → Fin 2 → ℝ))
       (L : (ZMod 13 → Fin 2 → ℝ) →ₗ[ℝ] (Fin 9 → ℝ)),
     finrank ℝ W = 9 ∧
@@ -107,15 +115,16 @@ def Control_D13TwoCubeAPFreeSharpnessSpec : Prop :=
 
 /-- **Same-Interval Coded Factorization Control (`README.md` §II.2 Theorem 2A Bullet 2 — `d = 4`).**
 At `d = 4 = M₁ M₂` with identical two-interval partitions `p₁ = p₂ = [0, 0, 1, 1]`:
-1. No pair of entry-copying two-stage rules `K₁, K₂` with `p₁ = p₂ = [0, 0, 1, 1]` satisfies
-   `K₂ ∘ K₁ = swap` on `State 4 Bool`;
+1. Over **every** finite alphabet `Σ` with `|Σ| ≥ 2`, no pair of uncoded entry-copying two-stage
+   rules `K₁, K₂` with `p₁ = p₂ = [0, 0, 1, 1]` satisfies `K₂ ∘ K₁ = swap` on `State 4 Sigma`;
 2. Yet over `ℝ`, there exist linear class-uniform maps `K₁, K₂ : State 4 ℝ →ₗ[ℝ] State 4 ℝ`
    for `p₁ = p₂ = [0, 0, 1, 1]` satisfying `K₂.comp K₁ = swapLinear ℝ`. -/
 def Control_D4SameIntervalCodedFactorizationSpec : Prop :=
-  (¬ ∃ K₁ K₂ : State 4 Bool → State 4 Bool,
-      IsEntryCopyClassRule halfIntervalPartition4 K₁ ∧
-      IsEntryCopyClassRule halfIntervalPartition4 K₂ ∧
-      K₂ ∘ K₁ = swap) ∧
+  (∀ (Sigma : Type*) [Fintype Sigma], 2 ≤ Fintype.card Sigma →
+    ¬ ∃ K₁ K₂ : State 4 Sigma → State 4 Sigma,
+        IsEntryCopyClassRule halfIntervalPartition4 K₁ ∧
+        IsEntryCopyClassRule halfIntervalPartition4 K₂ ∧
+        K₂ ∘ K₁ = swap) ∧
   (∃ K₁ K₂ : State 4 ℝ →ₗ[ℝ] State 4 ℝ,
       ClassUniform halfIntervalPartition4 K₁ ∧
       ClassUniform halfIntervalPartition4 K₂ ∧
@@ -123,8 +132,8 @@ def Control_D4SameIntervalCodedFactorizationSpec : Prop :=
 
 /-- **Claim (Elementary Cauchy–Schwarz Cube Extraction, `README.md` §II.2 Theorem 2A Bullet 3).**
 Whenever `d > max (8 * M₁ * M₂^2) ((2 * M₁)^(2^M₂))` (`M₁, M₂ ≥ 1`), every `M₁`-coloring
-`p₁ : ZMod d → Fin M₁` admits a base point `c₀ : ZMod d` and steps `s : Fin M₂ → ℕ` with
-`1 ≤ s t` and `M₂^2 * s t < d` for all `t`, such that all `2^M₂` affine cube vertices
+`p₁ : ZMod d → Fin M₁` admits a base point `c₀ : ZMod d` and steps `s : Fin M₂ → ℕ` in
+`[1, d / (2 * M₂^2)]` (`L₀ = ⌊d / (2 M₂^2)⌋`) such that all `2^M₂` affine cube vertices
 `c₀ + ∑_{t : ε t = true} s t` lie in the same `p₁`-class. -/
 def CauchySchwarzAffineCubeExtractionSpec : Prop :=
   ∀ (d M₁ M₂ : ℕ) [NeZero d] (p₁ : ZMod d → Fin M₁),
@@ -132,7 +141,7 @@ def CauchySchwarzAffineCubeExtractionSpec : Prop :=
     1 ≤ M₂ →
     max (8 * M₁ * M₂ ^ 2) ((2 * M₁) ^ (2 ^ M₂)) < d →
     ∃ (c₀ : ZMod d) (s : Fin M₂ → ℕ),
-      (∀ t : Fin M₂, 1 ≤ s t ∧ M₂ ^ 2 * s t < d) ∧
+      (∀ t : Fin M₂, 1 ≤ s t ∧ s t ≤ d / (2 * M₂ ^ 2)) ∧
       ∀ ε : Fin M₂ → Bool,
         p₁ (c₀ + ∑ t : Fin M₂, if ε t then (s t : ZMod d) else 0) = p₁ c₀
 

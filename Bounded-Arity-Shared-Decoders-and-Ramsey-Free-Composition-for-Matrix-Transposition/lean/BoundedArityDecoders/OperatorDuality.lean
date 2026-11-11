@@ -16,9 +16,9 @@ Breakthrough 3 (`Problem 9.1` & `Problem 9.5`) and Blueprint Part III:
    * `antiDiagLinear` / `fromAntiDiagLinear` (`Z_{c, a} = X_{c, a - c}`) and
      `AntiDiagonalTensorSeparationSpec`: `antiDiagLinear` is a linear isomorphism that
      intertwines every column rotation `rotLinear F t` with the pure right-factor shift
-     `I_d ⊗ σ^{-t}` (`(Z c) (a + t)`) and maps general shift-set covariance `H_E(p)` onto
-     matrices whose column profile at each anti-diagonal `a` is constant on the connected
-     components of `SwapRigidity.Link p E`.
+     `I_d ⊗ σ^t` (`(Z c) (a + t)`, under `(σ v)_a = v_{a + 1}` so `(σ^t v)_a = v_{a + t}`)
+     and maps general shift-set covariance `H_E(p)` onto matrices whose column profile at each
+     anti-diagonal `a` is constant on the connected components of `SwapRigidity.Link p E`.
 
 2. **First-Quantized Operator Schmidt Rank (`Problem 9.5`)**:
    * `HasOperatorSchmidtRankLe` & `HasExactOperatorSchmidtRank` across
@@ -26,14 +26,15 @@ Breakthrough 3 (`Problem 9.1` & `Problem 9.5`) and Blueprint Part III:
    * `OperatorSchmidtRankSubmultiplicativeSpec`: submultiplicativity under composition and
      `rk_⊗ ≤ 1` for row-uniform column operators and column-uniform row operators.
    * `OperatorSchmidtRankSwapSpec`: `rk_⊗(swap) = d^2` (`d ≥ 1, b ≥ 1`).
-   * `OperatorSchmidtRankStoneShuffleSpec`: `rk_⊗(S) = 4` and `rk_⊗(S⁻¹) = 4` on `d = 2^(m + 1)`
-     (`b ≥ 1`).
+   * `OperatorSchmidtRankStoneShuffleSpec`: `S` and `S⁻¹` are mutual inverses on `d = 2^m`, with
+     `rk_⊗ ≤ 4` for all `m ≥ 0` and exact `rk_⊗(S) = rk_⊗(S⁻¹) = 4` for all `m ≥ 1` (`d ≥ 2`, `b ≥ 1`).
    * `StoneShufflePipelinePassLowerBoundSpec`: any pipeline with `t` Stone shuffle/unshuffle
      passes and unlimited row-uniform column / column-uniform row passes realizing `swap` on
-     `d = 2^m` satisfies `d^2 ≤ 4^t` and `m ≤ t`.
+     `d = 2^m` (`m ≥ 0`) satisfies `d^2 ≤ 4^t` and `m ≤ t`.
    * Adversarial controls:
      - `Control_RowShearAndRowDiagonalAlternationSpec` (`rk_⊗(K_shear) = d` inside `D_row ⊗ End`,
-       and `D_s U_s D_{s-1} ⋯ U_1 D_0 = swap` still forces `2^m ≤ 2^s` and `m ≤ s`),
+       every alternating product `D_s U_s D_{s-1} ⋯ U_1 D_0` sends at most `2^s` source rows to
+       each output row, and `D_s U_s D_{s-1} ⋯ U_1 D_0 = swap` forces `2^m ≤ 2^s` and `m ≤ s`),
      - `Control_SkewOneTimePadInformationTrapSpec` (`W = Xᵀ ⊕ X` satisfies `W ⊕ X = Xᵀ` while
        every single cell `W_{r, c}` is statistically independent of every target column `X_{:, c'}`).
 -/
@@ -75,7 +76,9 @@ def fromAntiDiagLinear (F : Type*) [Semiring F] (d : ℕ) (A : Type*)
     (LinearMap.proj (R := F) (φ := fun _ : ZMod d => A) (j + c)).comp
       (LinearMap.proj (R := F) (φ := fun _ : ZMod d => ZMod d → A) c)
 
-/-- Pure right-factor shift `(I_d ⊗ σ^{-t}) Z c a = Z c (a + t)` in anti-diagonal coordinates. -/
+/-- Pure right-factor shift `(I_d ⊗ σ^t) Z c a = Z c (a + t)` in anti-diagonal coordinates
+(with standard left-shift convention `(σ v)_a = v_{a + 1}`, so `(σ^t v)_a = v_{a + t}`, matching
+`(antiDiagLinear (rot t X)) c a = X c (a - c + t) = Z c (a + t)`). -/
 def antiDiagRightShiftLinear (F : Type*) [Semiring F] (d : ℕ) (A : Type*)
     [AddCommMonoid A] [Module F A] (t : ZMod d) : State d A →ₗ[F] State d A :=
   LinearMap.pi fun c => LinearMap.pi fun a =>
@@ -123,6 +126,15 @@ def IsRowDiagonalOp {F : Type*} [Semiring F] {d b : ℕ}
   ∃ B : Fin d → ((Fin d → Fin b → F) →ₗ[F] (Fin d → Fin b → F)),
     ∀ X r, K X r = B r (X r)
 
+/-- Output row `r` of `K : GridState F d b →ₗ[F] GridState F d b` depends on at most `R` source
+rows of `X`. -/
+def HasOutputRowSourceArityLe {F : Type*} [Semiring F] {d b : ℕ}
+    (K : GridState F d b →ₗ[F] GridState F d b) (R : ℕ) : Prop :=
+  ∃ srcRows : Fin d → Finset (Fin d),
+    (∀ r : Fin d, (srcRows r).card ≤ R) ∧
+    ∀ (r : Fin d) (X₁ X₂ : GridState F d b),
+      (∀ r' ∈ srcRows r, X₁ r' = X₂ r') → K X₁ r = K X₂ r
+
 /-- Matrix transpose `τ` on `GridState F d b`: `(gridSwapLinear X) r c ℓ = X c r ℓ`. -/
 def gridSwapLinear (F : Type*) [Semiring F] (d b : ℕ) :
     GridState F d b →ₗ[F] GridState F d b :=
@@ -141,33 +153,38 @@ def rowShearLinear (F : Type*) [Semiring F] (d b : ℕ) [NeZero d] :
       ((LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin b → F) cShift).comp
         (LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin d → Fin b → F) r))
 
-/-- Stone's 1-bit cyclic shuffle pass `S` on `d = 2^(m + 1)` (`m ≥ 0`, so `d ≥ 2` is a power of 2):
-rotates the `2(m + 1)`-bit cell address `p = r * d + c` left by 1 bit, so output `(r', c')`
-receives cell `(r, c)` with `r = (c' % 2) * 2^m + r' / 2` and `c = (r' % 2) * 2^m + c' / 2`. -/
-def stoneShuffleGridLinear (F : Type*) [Semiring F] (m b : ℕ) :
-    GridState F (2 ^ (m + 1)) b →ₗ[F] GridState F (2 ^ (m + 1)) b :=
-  let d := 2 ^ (m + 1)
-  let hd := Nat.two_pow_pos (m + 1)
-  LinearMap.pi fun r' => LinearMap.pi fun c' => LinearMap.pi fun ℓ =>
-    let srcR : Fin d := ⟨((c'.val % 2) * (2 ^ m) + r'.val / 2) % d, Nat.mod_lt _ hd⟩
-    let srcC : Fin d := ⟨((r'.val % 2) * (2 ^ m) + c'.val / 2) % d, Nat.mod_lt _ hd⟩
-    (LinearMap.proj (R := F) (φ := fun _ : Fin b => F) ℓ).comp
-      ((LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin b → F) srcC).comp
-        (LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin d → Fin b → F) srcR))
+/-- Stone's 1-bit cyclic shuffle pass `S` on `d = 2^m` (`m : ℕ`):
+for `m = 0` (`d = 1`), the `0`-bit address rotation is `id`; for `m ≥ 1` (`d = 2^m ≥ 2`), rotates
+the `2 m`-bit cell address `p = r * d + c` left by 1 bit, so output `(r', c')` receives cell
+`(r, c)` with `r = (c' % 2) * 2^(m - 1) + r' / 2` and `c = (r' % 2) * 2^(m - 1) + c' / 2`. -/
+def stoneShuffleGridLinear (F : Type*) [Semiring F] :
+    (m b : ℕ) → GridState F (2 ^ m) b →ₗ[F] GridState F (2 ^ m) b
+  | 0, _ => LinearMap.id
+  | m + 1, b =>
+      let d := 2 ^ (m + 1)
+      let hd := Nat.two_pow_pos (m + 1)
+      LinearMap.pi fun r' => LinearMap.pi fun c' => LinearMap.pi fun ℓ =>
+        let srcR : Fin d := ⟨((c'.val % 2) * (2 ^ m) + r'.val / 2) % d, Nat.mod_lt _ hd⟩
+        let srcC : Fin d := ⟨((r'.val % 2) * (2 ^ m) + c'.val / 2) % d, Nat.mod_lt _ hd⟩
+        (LinearMap.proj (R := F) (φ := fun _ : Fin b => F) ℓ).comp
+          ((LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin b → F) srcC).comp
+            (LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin d → Fin b → F) srcR))
 
-/-- Stone's inverse 1-bit cyclic unshuffle pass `S⁻¹` on `d = 2^(m + 1)`:
-output `(r, c)` receives cell `(r', c')` with `r' = (2 * r + c / 2^m) % d` and
-`c' = (2 * c + r / 2^m) % d`. -/
-def stoneUnshuffleGridLinear (F : Type*) [Semiring F] (m b : ℕ) :
-    GridState F (2 ^ (m + 1)) b →ₗ[F] GridState F (2 ^ (m + 1)) b :=
-  let d := 2 ^ (m + 1)
-  let hd := Nat.two_pow_pos (m + 1)
-  LinearMap.pi fun r => LinearMap.pi fun c => LinearMap.pi fun ℓ =>
-    let srcR : Fin d := ⟨(2 * r.val + c.val / (2 ^ m)) % d, Nat.mod_lt _ hd⟩
-    let srcC : Fin d := ⟨(2 * c.val + r.val / (2 ^ m)) % d, Nat.mod_lt _ hd⟩
-    (LinearMap.proj (R := F) (φ := fun _ : Fin b => F) ℓ).comp
-      ((LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin b → F) srcC).comp
-        (LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin d → Fin b → F) srcR))
+/-- Stone's inverse 1-bit cyclic unshuffle pass `S⁻¹` on `d = 2^m` (`m : ℕ`):
+for `m = 0` (`d = 1`), `id`; for `m ≥ 1` (`d = 2^m ≥ 2`), output `(r, c)` receives cell `(r', c')`
+with `r' = (2 * r + c / 2^(m - 1)) % d` and `c' = (2 * c + r / 2^(m - 1)) % d`. -/
+def stoneUnshuffleGridLinear (F : Type*) [Semiring F] :
+    (m b : ℕ) → GridState F (2 ^ m) b →ₗ[F] GridState F (2 ^ m) b
+  | 0, _ => LinearMap.id
+  | m + 1, b =>
+      let d := 2 ^ (m + 1)
+      let hd := Nat.two_pow_pos (m + 1)
+      LinearMap.pi fun r => LinearMap.pi fun c => LinearMap.pi fun ℓ =>
+        let srcR : Fin d := ⟨(2 * r.val + c.val / (2 ^ m)) % d, Nat.mod_lt _ hd⟩
+        let srcC : Fin d := ⟨(2 * c.val + r.val / (2 ^ m)) % d, Nat.mod_lt _ hd⟩
+        (LinearMap.proj (R := F) (φ := fun _ : Fin b => F) ℓ).comp
+          ((LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin b → F) srcC).comp
+            (LinearMap.proj (R := F) (φ := fun _ : Fin d => Fin d → Fin b → F) srcR))
 
 /-- Ordered composition of a list of linear operators on `GridState F d b`:
 `composeGridOps [K_1, …, K_n] = K_n ∘ ⋯ ∘ K_1`. -/
@@ -200,8 +217,8 @@ end OperatorSchmidtDefs
 
 /-- **Claim (`README.md` §II.3.1 Bullet 1 — Exact Pairwise Shift-Collision Characterization).**
 For any linear source `C ≤ State d A` and receiver partition `p : ZMod d → κ`, `C` admits
-deterministic (possibly nonlinear) shared decoders (`SharedDecoders.IsSharedCode p C`) if and
-only if for every single shift `s : ZMod d`, every `Y ∈ C ⊓ C.comap (rotLinear F s)` satisfies
+deterministic (possibly nonlinear) shared decoders (`SharedDecoders.IsSharedCode F p C`) if and
+only if for every single shift `s : ZMod d`, every `Y ∈ C` with `rot s Y ∈ C` satisfies
 `InPairwiseShiftCovariance p s Y`. -/
 def PairwiseShiftCollisionCharacterizationSpec : Prop :=
   ∀ (F : Type*) [Field F] (d : ℕ) (κ A : Type*) [AddCommGroup A] [Module F A]
@@ -254,23 +271,28 @@ def OperatorSchmidtRankSwapSpec : Prop :=
     HasExactOperatorSchmidtRank (gridSwapLinear F d b) (d ^ 2)
 
 /-- **Claim (`README.md` §II.3.2 Bullet 2 — Exact Operator Schmidt Rank of Stone's Shuffle `S`).**
-Over any field `F`, for all `m : ℕ` (`d = 2^(m + 1) ≥ 2`) and `b ≥ 1`, Stone's shuffle pass
-`stoneShuffleGridLinear F m b` and its inverse `stoneUnshuffleGridLinear F m b` are mutual
-inverses and each has exact Operator Schmidt Rank `4` (independent of `m` and `b`). -/
+Over any field `F` and `b ≥ 1`:
+1. For all `m : ℕ` (`d = 2^m`), `stoneShuffleGridLinear F m b` and `stoneUnshuffleGridLinear F m b`
+   are mutual inverses and have Operator Schmidt Rank at most `4`;
+2. For all `m ≥ 1` (`d = 2^m ≥ 2`), both have **exact** Operator Schmidt Rank `4` (independent of
+   `m` and `b`). -/
 def OperatorSchmidtRankStoneShuffleSpec : Prop :=
   ∀ (F : Type*) [Field F] (m b : ℕ), 1 ≤ b →
     (stoneShuffleGridLinear F m b).comp (stoneUnshuffleGridLinear F m b) = LinearMap.id ∧
     (stoneUnshuffleGridLinear F m b).comp (stoneShuffleGridLinear F m b) = LinearMap.id ∧
-    HasExactOperatorSchmidtRank (stoneShuffleGridLinear F m b) 4 ∧
-    HasExactOperatorSchmidtRank (stoneUnshuffleGridLinear F m b) 4
+    HasOperatorSchmidtRankLe (stoneShuffleGridLinear F m b) 4 ∧
+    HasOperatorSchmidtRankLe (stoneUnshuffleGridLinear F m b) 4 ∧
+    (1 ≤ m →
+      HasExactOperatorSchmidtRank (stoneShuffleGridLinear F m b) 4 ∧
+      HasExactOperatorSchmidtRank (stoneUnshuffleGridLinear F m b) 4)
 
 /-- **Claim (`README.md` §II.3.2 Bullet 3 — Tight `log₂ d` Pass Lower Bound for Shuffle Pipelines).**
-Over any field `F`, for `d = 2^(m + 1)` and `b ≥ 1`, if a pipeline `Ks` consisting of `t`
-shuffle/unshuffle passes interleaved with any number of row-uniform column operators and
-column-uniform row operators realizes `gridSwapLinear F d b`, then `d^2 ≤ 4^t` and `m + 1 ≤ t`. -/
+Over any field `F`, for **all** `m : ℕ` (`d = 2^m ≥ 1`) and `b ≥ 1`, if a pipeline `Ks` consisting
+of `t` shuffle/unshuffle passes interleaved with any number of row-uniform column operators and
+column-uniform row operators realizes `gridSwapLinear F (2^m) b`, then `(2^m)^2 ≤ 4^t` and `m ≤ t`. -/
 def StoneShufflePipelinePassLowerBoundSpec : Prop :=
   ∀ (F : Type*) [Field F] (m b : ℕ)
-    (Ks : List (GridState F (2 ^ (m + 1)) b →ₗ[F] GridState F (2 ^ (m + 1)) b))
+    (Ks : List (GridState F (2 ^ m) b →ₗ[F] GridState F (2 ^ m) b))
     (shuffleIndices : Finset (Fin Ks.length)),
     1 ≤ b →
     (∀ i : Fin Ks.length,
@@ -278,29 +300,32 @@ def StoneShufflePipelinePassLowerBoundSpec : Prop :=
         Ks.get i = stoneShuffleGridLinear F m b ∨ Ks.get i = stoneUnshuffleGridLinear F m b
       else
         IsRowUniformColOp (Ks.get i) ∨ IsColUniformRowOp (Ks.get i)) →
-    composeGridOps Ks = gridSwapLinear F (2 ^ (m + 1)) b →
-    (2 ^ (m + 1)) ^ 2 ≤ 4 ^ shuffleIndices.card ∧ m + 1 ≤ shuffleIndices.card
+    composeGridOps Ks = gridSwapLinear F (2 ^ m) b →
+    (2 ^ m) ^ 2 ≤ 4 ^ shuffleIndices.card ∧ m ≤ shuffleIndices.card
 
 /-- **Adversarial Control 1 (`README.md` §II.3.2 Bullet 4a — Row Shear & Row-Diagonal Alternation).**
 1. Over any field `F`, for `d ≥ 1` and `b ≥ 1`, `rowShearLinear F d b` lies inside the
    zero-inter-row-communication subalgebra `IsRowDiagonalOp` yet has exact Operator Schmidt
    Rank `d`.
-2. Alternating `s + 1` arbitrary row-diagonal operators `D_0, …, D_s` (`IsRowDiagonalOp (D i)`)
-   with `s` Stone shuffles/unshuffles `U_1, …, U_s` on `d = 2^(m + 1)` (`b ≥ 1`) cannot equal
-   `gridSwapLinear` unless `2^(m + 1) ≤ 2^s` (`m + 1 ≤ s`). -/
+2. For all `m, s : ℕ` (`d = 2^m ≥ 1`) and `b ≥ 1`, any alternating product
+   `D_s U_s D_{s-1} ⋯ U_1 D_0` of `(s + 1)` arbitrary row-diagonal operators `D_i` with `s` Stone
+   shuffles/unshuffles `U_j` sends at most `2^s` source rows to each output row
+   (`HasOutputRowSourceArityLe ... (2 ^ s)`), and therefore cannot equal `gridSwapLinear F (2^m) b`
+   unless `2^m ≤ 2^s` and `m ≤ s`. -/
 def Control_RowShearAndRowDiagonalAlternationSpec : Prop :=
   (∀ (F : Type*) [Field F] (d b : ℕ) [NeZero d], 1 ≤ b →
     IsRowDiagonalOp (rowShearLinear F d b) ∧
     HasExactOperatorSchmidtRank (rowShearLinear F d b) d) ∧
   (∀ (F : Type*) [Field F] (m b s : ℕ)
-    (D : Fin (s + 1) → (GridState F (2 ^ (m + 1)) b →ₗ[F] GridState F (2 ^ (m + 1)) b))
-    (U : Fin s → (GridState F (2 ^ (m + 1)) b →ₗ[F] GridState F (2 ^ (m + 1)) b)),
+    (D : Fin (s + 1) → (GridState F (2 ^ m) b →ₗ[F] GridState F (2 ^ m) b))
+    (U : Fin s → (GridState F (2 ^ m) b →ₗ[F] GridState F (2 ^ m) b)),
     1 ≤ b →
     (∀ i : Fin (s + 1), IsRowDiagonalOp (D i)) →
     (∀ j : Fin s,
       U j = stoneShuffleGridLinear F m b ∨ U j = stoneUnshuffleGridLinear F m b) →
-    alternatingRowDiagProduct D U = gridSwapLinear F (2 ^ (m + 1)) b →
-    2 ^ (m + 1) ≤ 2 ^ s ∧ m + 1 ≤ s)
+    HasOutputRowSourceArityLe (alternatingRowDiagProduct D U) (2 ^ s) ∧
+    (alternatingRowDiagProduct D U = gridSwapLinear F (2 ^ m) b →
+      2 ^ m ≤ 2 ^ s ∧ m ≤ s))
 
 /-- **Adversarial Control 2 (`README.md` §II.3.2 Bullet 4b — Skew One-Time-Pad Information Trap).**
 For every `d ≥ 1` and `b ≥ 1`, `W = skewXorPad X` (`W = Xᵀ ⊕ X`) satisfies:

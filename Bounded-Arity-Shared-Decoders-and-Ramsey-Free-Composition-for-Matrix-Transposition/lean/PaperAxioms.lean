@@ -4,7 +4,9 @@ import BoundedArityDecoders
 # Formal Specification & Axiom Audit (`PaperAxioms.lean`)
 
 Typechecks and prints axiom dependencies of every formal specification declaration (51 `: Prop`
-declarations total) across all seven modules of `BoundedArityDecoders`.
+declarations total), every primary proof declaration (47 theorems), and every structural,
+asymptotic, representation-bridge, and conditional consequence theorem across all 20 modules of
+`BoundedArityDecoders`.
 -/
 
 namespace BoundedArityDecoders
@@ -247,6 +249,7 @@ namespace BoundedArityDecoders
 #check (diagnosis_RamseyHalesJewettTwoStage : Diagnosis_RamseyHalesJewettTwoStageSpec)
 #check (diagnosis_BehrendAndRandomAPBound : Diagnosis_BehrendAndRandomAPBoundSpec)
 #check (diagnosis_StoneShuffleAndRowShearMachineComplexity : Diagnosis_StoneShuffleAndRowShearMachineComplexitySpec)
+#check @stoneUnshuffleTM_twoTape_linear
 
 #print axioms diagnosis_TCPAndAdaptiveConeReduction
 #print axioms diagnosis_AbstractSeparatedHighRateCode
@@ -255,5 +258,144 @@ namespace BoundedArityDecoders
 #print axioms diagnosis_RamseyHalesJewettTwoStage
 #print axioms diagnosis_BehrendAndRandomAPBound
 #print axioms diagnosis_StoneShuffleAndRowShearMachineComplexity
+#print axioms stoneUnshuffleTM_twoTape_linear
+
+-- ============================================================================
+-- Structural, Asymptotic, Bridge & Conditional Consequence Theorems (6 Modules)
+-- ============================================================================
+
+-- Consequence Module 1 (`SetCapacityConsequences.lean`)
+#check @canonicalWordAlphabet_card_and_ge_two
+#check @pMin_two_sided_theta_inv_arity
+#check @theorem1_BoundedAritySetCapacity_unconditional
+#check @theorem1_CanonicalWordSetCapacity
+#check @growingClasses_strict_inv_exp_deficit
+#check @corollary_OneClassArityOneThreeQuarters
+#check @corollary_OneClassArityTwoTwentyThreeTwentySevenths
+#check @oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier
+#check @wall1_UnrestrictedArityRateLowerBoundAndTendstoOne
+#check @wall1_ExactLogarithmicAsymptoticAllDimensions
+#check @asymptotic_SublinearClassesBrokenFractionRefutesRateOne
+
+#print axioms canonicalWordAlphabet_card_and_ge_two
+#print axioms pMin_two_sided_theta_inv_arity
+#print axioms theorem1_BoundedAritySetCapacity_unconditional
+#print axioms theorem1_CanonicalWordSetCapacity
+#print axioms growingClasses_strict_inv_exp_deficit
+#print axioms corollary_OneClassArityOneThreeQuarters
+#print axioms corollary_OneClassArityTwoTwentyThreeTwentySevenths
+#print axioms oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier
+#print axioms wall1_UnrestrictedArityRateLowerBoundAndTendstoOne
+#print axioms wall1_ExactLogarithmicAsymptoticAllDimensions
+#print axioms asymptotic_SublinearClassesBrokenFractionRefutesRateOne
+
+-- Consequence Module 2 (`AffineCubeConsequences.lean`)
+#check @singleSubset_CauchySchwarzAffineCubeExtraction
+#check @denseSubset_AffineCubeCommonMessageBound
+#check @theorem2A_GrowingClassesNonFactorization
+#check @control_D13_GeneralFieldAndProgressionBridge
+#check @control_D4_AllWidthsAndBinaryFields
+
+#print axioms singleSubset_CauchySchwarzAffineCubeExtraction
+#print axioms denseSubset_AffineCubeCommonMessageBound
+#print axioms theorem2A_GrowingClassesNonFactorization
+#print axioms control_D13_GeneralFieldAndProgressionBridge
+#print axioms control_D4_AllWidthsAndBinaryFields
+
+-- Consequence Module 3 (`SumsetRankConsequences.lean`)
+#check @finsetNatDiam_shift_min
+#check @unshiftedToShiftedSumset_intrinsicDiam
+#check @sumsetAnnihilatingPolynomial_bandRowSpace
+#check @theorem2B_OneSecondStage_OmegaLog
+#check @theorem2BExplicitConst_pos
+#check @theorem2B_ExplicitConstant
+#check @exists_primitive_twelfth_root_complex
+#check @d12AddChar_injective_and_primitive
+#check @control_D12_UnconditionalExists
+#check @control_D12_BandRowSpaceChannelEquiv
+
+#print axioms finsetNatDiam_shift_min
+#print axioms unshiftedToShiftedSumset_intrinsicDiam
+#print axioms sumsetAnnihilatingPolynomial_bandRowSpace
+#print axioms theorem2B_OneSecondStage_OmegaLog
+#print axioms theorem2BExplicitConst_pos
+#print axioms theorem2B_ExplicitConstant
+#print axioms exists_primitive_twelfth_root_complex
+#print axioms d12AddChar_injective_and_primitive
+#print axioms control_D12_UnconditionalExists
+#print axioms control_D12_BandRowSpaceChannelEquiv
+
+-- Consequence Module 4 (`DualityAndSwapConsequences.lean`)
+#check @antiDiagTensorEquiv_intertwines_rot
+#check @shiftSetCovariance_tensor_finrank
+#check @maskFloor_GenericSubspaceRealization
+#check @isRowOrColUniform_rankLe_one
+#check @boundedOSRPipelinePassLowerBound
+#check @uniformShannonMI_eq_zero_of_indep
+#check @skewOneTimePad_ShannonMutualInfoZero
+#check @rowDiagonal_SourceArityGaugeInvariance
+#check @bonus1_UnifiedThreeTermExceedsPairingBound
+#check @bonus2_SublinearProfileAndTendstoHalf
+#check @walshBitSet_cyclicBoundaryCount
+#check @isCyclicInterval_cyclicBoundaryCount_le_two
+#check @isPeriodicScaleDyadicMask_cyclicBoundaryCount
+#check @walshBitSet_joint_separates_points
+#check @walshDigitMaskRotSpan_finrank_le
+#check @bonus2_WalshDichotomyStructuralProperties
+
+#print axioms antiDiagTensorEquiv_intertwines_rot
+#print axioms shiftSetCovariance_tensor_finrank
+#print axioms maskFloor_GenericSubspaceRealization
+#print axioms isRowOrColUniform_rankLe_one
+#print axioms boundedOSRPipelinePassLowerBound
+#print axioms uniformShannonMI_eq_zero_of_indep
+#print axioms skewOneTimePad_ShannonMutualInfoZero
+#print axioms rowDiagonal_SourceArityGaugeInvariance
+#print axioms bonus1_UnifiedThreeTermExceedsPairingBound
+#print axioms bonus2_SublinearProfileAndTendstoHalf
+#print axioms walshBitSet_cyclicBoundaryCount
+#print axioms isCyclicInterval_cyclicBoundaryCount_le_two
+#print axioms isPeriodicScaleDyadicMask_cyclicBoundaryCount
+#print axioms walshBitSet_joint_separates_points
+#print axioms walshDigitMaskRotSpan_finrank_le
+#print axioms bonus2_WalshDichotomyStructuralProperties
+
+-- Consequence Module 5 (`MachineSweepConsequences.lean`)
+#check @evalConeTree_traceConeTree_eq
+#check @tmPeriodicSweepExtraction_cutAbsorbed
+#check @tmPeriodicSweepExtraction_cutLabelRefined
+#check @padDummyWorkTape_transposesWithin
+#check @conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis
+#check @conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre
+#check @conditional_NoLowErrorTwoStageLinear_of_MacroscopicTarget
+
+#print axioms evalConeTree_traceConeTree_eq
+#print axioms tmPeriodicSweepExtraction_cutAbsorbed
+#print axioms tmPeriodicSweepExtraction_cutLabelRefined
+#print axioms padDummyWorkTape_transposesWithin
+#print axioms conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis
+#print axioms conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre
+#print axioms conditional_NoLowErrorTwoStageLinear_of_MacroscopicTarget
+
+-- Consequence Module 6 (`DiagnosisAndBridgesConsequences.lean`)
+#check @tmWholeCellCutConeBound
+#check @wordStepTrace_TCPCellConeReduction
+#check @diagnosis_Paper18AdaptiveOriginalEntryPullback
+#check @diagnosis2_HighRateTendstoOne
+#check @diagnosis3_MultiBitBlockEdgeShiftBarrier
+#check @diagnosis4_ExplicitSquareCoverAndMaskCertificateBridge
+#check @diagnosis5_CombinatorialInvVdWTendstoAndRankBound
+#check @diagnosis6_ModularBehrendAndRandomZModProgression
+#check @tmMatrix_gridLinear_bridges
+
+#print axioms tmWholeCellCutConeBound
+#print axioms wordStepTrace_TCPCellConeReduction
+#print axioms diagnosis_Paper18AdaptiveOriginalEntryPullback
+#print axioms diagnosis2_HighRateTendstoOne
+#print axioms diagnosis3_MultiBitBlockEdgeShiftBarrier
+#print axioms diagnosis4_ExplicitSquareCoverAndMaskCertificateBridge
+#print axioms diagnosis5_CombinatorialInvVdWTendstoAndRankBound
+#print axioms diagnosis6_ModularBehrendAndRandomZModProgression
+#print axioms tmMatrix_gridLinear_bridges
 
 end BoundedArityDecoders

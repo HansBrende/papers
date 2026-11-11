@@ -1,0 +1,392 @@
+import SharedDecoders
+import SharedDecoders.CapacityAmbient
+import SharedDecoders.CapacityClosureAsymptotic
+import SharedDecoders.CapacityClosureControl
+import SharedDecoders.CapacityCompletion
+import SharedDecoders.CapacityControls
+import SharedDecoders.CapacityDifferenceCover
+import SharedDecoders.CapacityDigitParityEnvelope
+import SharedDecoders.CapacityFieldLinearComponents
+import SharedDecoders.CapacityFieldLinearCorollaries
+import SharedDecoders.CapacityFieldLinearResidual
+import SharedDecoders.CapacityIntervals
+import SharedDecoders.CapacityIteration
+import SharedDecoders.CapacityLineDeterministic
+import SharedDecoders.CapacityLineMarker
+import SharedDecoders.CapacityLineMarkerRate
+import SharedDecoders.CapacityLinearization
+import SharedDecoders.CapacityMarker
+import SharedDecoders.CapacityMaskComparisonProbability
+import SharedDecoders.CapacityMaskFinite
+import SharedDecoders.CapacityMaskMethodEndpoints
+import SharedDecoders.CapacityMaskRunProbability
+import SharedDecoders.CapacityMaskRunSpectrum
+import SharedDecoders.CapacityMaskStructured
+import SharedDecoders.CapacityOptimization
+import SharedDecoders.CapacityReflectionBarrier
+import SharedDecoders.CapacityReflectionSource
+import SharedDecoders.CapacityRetentionAverage
+import SharedDecoders.CapacityRetentionControl
+import SharedDecoders.CapacityRetentionCoprime
+import SharedDecoders.CapacityRetentionFinite
+import SharedDecoders.CapacityRetentionStability
+import SharedDecoders.CapacityRuns
+import SharedDecoders.CapacityRunsComponents
+import SharedDecoders.CapacitySetCounting
+import SharedDecoders.CapacitySetOrbit
+import SharedDecoders.CapacitySetRate
+import SharedDecoders.CapacitySubcodeBarrier
+import SharedDecoders.CapacitySubcodeMixture
+import SharedDecoders.CapacityTripleBinary
+import SharedDecoders.CapacityUniversal
+import SharedDecoders.CompositionAgreement
+import SharedDecoders.CompositionAnchoredEndpoint
+import SharedDecoders.CompositionChannels
+import SharedDecoders.CompositionEndpointBlowup
+import SharedDecoders.CompositionLinear
+import SharedDecoders.CompositionMultiplierClasses
+import SharedDecoders.CompositionMultiplierGetters
+import SharedDecoders.CompositionOrbitAssignment
+import SharedDecoders.CompositionOrbitResidues
+import SharedDecoders.CompositionOrderFive
+import SharedDecoders.CompositionProgression
+import SharedDecoders.CompositionRankField
+import SharedDecoders.CompositionRatio
+import SharedDecoders.CompositionRecurrence
+import SharedDecoders.CompositionRobustAgreement
+import SharedDecoders.CompositionScatteredCompletion
+import SharedDecoders.CompositionScatteredSource
+import SharedDecoders.CompositionSingleSiteEndpoint
+import SharedDecoders.CompositionSparseObstruction
+import SharedDecoders.CompositionSparsePatch
+import SharedDecoders.CompositionWordAction
+import SharedDecoders.ConstructionBlockDefects
+import SharedDecoders.ConstructionCapacity
+import SharedDecoders.ConstructionCyclicExact
+import SharedDecoders.ConstructionLinearLift
+import SharedDecoders.ConstructionSeed
+import SharedDecoders.Model
+import SharedDecoders.PeriodTransport
+import SharedDecoders.ResidualEntropy
+import SharedDecoders.ResidualOutputSpan
+import SharedDecoders.ResidualPropagation
+import SharedDecoders.ResidualRowColumn
+import SharedDecoders.ResidualRowColumnSharp
+import SharedDecoders.ResidualSeparable
+import SharedDecoders.ResidualSeparableSharp
+import SharedDecoders.ResidualSpan
+import SharedDecoders.SubgroupClasses
+import SharedDecoders.UniformSandwich
+
+-- Generated from formal-status lines in paper/sections/*.tex.
+
+-- CapacityAmbient.lean
+#print axioms SharedDecoders.IsSharedCode.component_finrank_le
+#print axioms SharedDecoders.covarianceSpace_rot
+#print axioms SharedDecoders.finrank_covarianceSpace
+-- CapacityClosureAsymptotic.lean
+#print axioms SharedDecoders.CapacityClosure.capacity_bound
+#print axioms SharedDecoders.CapacityClosure.error_ratio_tendsto
+#print axioms SharedDecoders.CapacityClosure.residual_finite_bound
+#print axioms SharedDecoders.CapacityClosure.rounds_eq_floor
+#print axioms SharedDecoders.CapacityClosure.uniform_eventual_bound
+-- CapacityClosureControl.lean
+#print axioms SharedDecoders.CapacityClosure.scalarHull_supportedSymmetric
+#print axioms SharedDecoders.CapacityClosure.symmetric_copy_defect
+#print axioms SharedDecoders.CapacityClosure.symmetric_isSharedCode
+-- CapacityCompletion.lean
+#print axioms SharedDecoders.IsSharedCode.completedCode
+#print axioms SharedDecoders.completedCode_eq_of_range_le
+#print axioms SharedDecoders.finrank_completedCode_add_rank
+#print axioms SharedDecoders.finrank_le_completedCode
+-- CapacityControls.lean
+#print axioms SharedDecoders.CapacityControls.exists_deterministic_not_linear
+-- CapacityDifferenceCover.lean
+#print axioms SharedDecoders.IsSharedCode.difference_cover_real_bound
+#print axioms SharedDecoders.IsSharedCode.saturated_cover_bound
+#print axioms SharedDecoders.IsSharedCode.square_cover_bound
+-- CapacityDigitParityEnvelope.lean
+#print axioms SharedDecoders.CapacityDigitParity.digit_parity_envelope
+#print axioms SharedDecoders.CapacityDigitParity.digit_parity_floor_envelope
+-- CapacityFieldLinearComponents.lean
+#print axioms SharedDecoders.CapacityFieldLinear.component_of_scalarTest
+#print axioms SharedDecoders.CapacityFieldLinear.component_zero_of_scalarTest_zero
+#print axioms SharedDecoders.CapacityFieldLinear.components_unique
+#print axioms SharedDecoders.CapacityFieldLinear.phaseBasis
+#print axioms SharedDecoders.CapacityFieldLinear.sum_components
+-- CapacityFieldLinearCorollaries.lean
+#print axioms SharedDecoders.CapacityFieldLinear.one_class_original_bound
+#print axioms SharedDecoders.CapacityFieldLinear.one_class_residual_eq_bot
+#print axioms SharedDecoders.CapacityFieldLinear.two_class_half_bound
+#print axioms SharedDecoders.CapacityFieldLinear.two_class_original_bound
+-- CapacityFieldLinearResidual.lean
+#print axioms SharedDecoders.CapacityFieldLinear.active_class_residual_bound
+#print axioms SharedDecoders.CapacityFieldLinear.finrank_encodedResidual
+#print axioms SharedDecoders.CapacityFieldLinear.original_source_class_bound
+-- CapacityIntervals.lean
+#print axioms SharedDecoders.CapacityIntervals.exists_binary_code_dimension
+#print axioms SharedDecoders.CapacityIntervals.exists_optimal_interval_code
+#print axioms SharedDecoders.IsSharedCode.two_mul_finrank_le_interval
+-- CapacityIteration.lean
+#print axioms SharedDecoders.IsSharedCode.iterated_finrank_le
+#print axioms SharedDecoders.componentCount_zero
+-- CapacityLineDeterministic.lean
+#print axioms SharedDecoders.IsDeterministicLineCode.affine_two_mul_finrank_le
+#print axioms SharedDecoders.IsDeterministicLineCode.two_mul_finrank_le
+-- CapacityLineMarker.lean
+#print axioms SharedDecoders.LineMarker.affineMarker_finrank
+#print axioms SharedDecoders.LineMarker.code_card
+#print axioms SharedDecoders.LineMarker.exists_decoder
+-- CapacityLineMarkerRate.lean
+#print axioms SharedDecoders.LineMarker.code_density
+#print axioms SharedDecoders.LineMarker.code_density_tendsto
+-- CapacityLinearization.lean
+#print axioms SharedDecoders.IsLinearSharedCode.inr_comap
+#print axioms SharedDecoders.linear_subcode_lane_bound
+-- CapacityMarker.lean
+#print axioms SharedDecoders.CapacityMarker.exists_affine_source_decoder
+-- CapacityMaskComparisonProbability.lean
+#print axioms SharedDecoders.CapacityMaskProbability.ChangeGood.certificate_floor
+#print axioms SharedDecoders.CapacityMaskProbability.EqualityGood.direct_gain_inverse_sqrt
+#print axioms SharedDecoders.CapacityMaskProbability.component_floor_probability
+#print axioms SharedDecoders.CapacityMaskProbability.direct_floor_probability
+-- CapacityMaskFinite.lean
+#print axioms SharedDecoders.IsSharedCode.four_mul_finrank_le
+#print axioms SharedDecoders.IsSharedCode.six_mul_finrank_le
+#print axioms SharedDecoders.finite_weighted_run_budget
+-- CapacityMaskMethodEndpoints.lean
+#print axioms SharedDecoders.CapacityMaskProbability.IsolationGood.rounded_floor
+#print axioms SharedDecoders.CapacityMaskProbability.isolation_rate_probability
+-- CapacityMaskRunProbability.lean
+#print axioms SharedDecoders.CapacityMaskProbability.SpectrumGood.source_bound
+#print axioms SharedDecoders.CapacityMaskProbability.spectrum_bad_probability
+-- CapacityMaskRunSpectrum.lean
+#print axioms SharedDecoders.IsSharedCode.run_spectrum_three
+-- CapacityMaskStructured.lean
+#print axioms SharedDecoders.CapacityMaskStructured.first_component_count
+#print axioms SharedDecoders.CapacityMaskStructured.second_component_count
+#print axioms SharedDecoders.CapacityMaskStructured.structured_finrank_le
+-- CapacityOptimization.lean
+#print axioms SharedDecoders.capacity_transversal_deficiency
+#print axioms SharedDecoders.linear_capacity_eq_residual
+#print axioms SharedDecoders.optimal_transversal_full_rank
+#print axioms SharedDecoders.shared_capacity_eq_residual
+-- CapacityReflectionBarrier.lean
+#print axioms SharedDecoders.CapacityReflection.deletion_rate_limit
+#print axioms SharedDecoders.CapacityReflection.one_class_finrank_le
+#print axioms SharedDecoders.CapacityReflection.two_class_codimension_lower
+#print axioms SharedDecoders.CapacityReflection.two_class_finrank_le
+#print axioms SharedDecoders.CapacityReflection.two_class_positive_deletion
+-- CapacityReflectionSource.lean
+#print axioms SharedDecoders.CapacityReflection.finrank_rowSpace
+#print axioms SharedDecoders.CapacityReflection.finrank_source
+#print axioms SharedDecoders.CapacityReflection.source_disjoint_views
+#print axioms SharedDecoders.CapacityReflection.source_shared
+-- CapacityRetentionAverage.lean
+#print axioms SharedDecoders.IsSharedCode.retention_average
+#print axioms SharedDecoders.IsSharedCode.retention_normalized
+-- CapacityRetentionControl.lean
+#print axioms SharedDecoders.RetentionControl.laneSwap_eq_transpose_iff
+#print axioms SharedDecoders.RetentionControl.paired_source_rate_and_loss
+-- CapacityRetentionCoprime.lean
+#print axioms SharedDecoders.IsSharedCode.eq_symmetric_of_at_most_one_exception
+#print axioms SharedDecoders.IsSharedCode.full_symmetric_retention
+#print axioms SharedDecoders.IsSharedCode.prime_full_symmetric_retention
+-- CapacityRetentionFinite.lean
+#print axioms SharedDecoders.IsSharedCode.retention_bound
+-- CapacityRetentionStability.lean
+#print axioms SharedDecoders.RetentionAverage.fixed_gain_requires_loss
+#print axioms SharedDecoders.RetentionAverage.stability
+#print axioms SharedDecoders.RetentionAverage.stability_bounded_classes
+-- CapacityRuns.lean
+#print axioms SharedDecoders.CapacityRuns.changeCount_double
+#print axioms SharedDecoders.CapacityRuns.weighted_run_budget
+-- CapacityRunsComponents.lean
+#print axioms SharedDecoders.componentCount_le_changes_add_gcd
+#print axioms SharedDecoders.componentCount_le_runs_add_two_gcd
+-- CapacitySetCounting.lean
+#print axioms SharedDecoders.SetCapacity.fixed_H_card
+#print axioms SharedDecoders.SetCapacity.fixed_K_card
+#print axioms SharedDecoders.SetCapacity.prime_capacity
+-- CapacitySetOrbit.lean
+#print axioms SharedDecoders.SetCapacity.capacity_average_formula
+#print axioms SharedDecoders.SetCapacity.capacity_orbit_formula
+#print axioms SharedDecoders.SetCapacity.exact_capacity
+-- CapacitySetRate.lean
+#print axioms SharedDecoders.SetCapacity.capacity_lower
+#print axioms SharedDecoders.SetCapacity.logarithmic_rate_tendsto
+#print axioms SharedDecoders.SetCapacity.relative_error
+-- CapacitySubcodeBarrier.lean
+#print axioms SharedDecoders.CapacitySubcode.above_half_seed_barrier
+-- CapacitySubcodeMixture.lean
+#print axioms SharedDecoders.CapacitySubcode.exists_above_half_barrier
+-- CapacityTripleBinary.lean
+#print axioms SharedDecoders.CapacityTriple.exists_width_stable_hard_source
+-- CapacityUniversal.lean
+#print axioms SharedDecoders.IsSharedCode.two_class_capacity_bound
+-- CompositionAgreement.lean
+#print axioms SharedDecoders.full_input_agreement_probability
+#print axioms SharedDecoders.repeated_class_agreement_probability
+-- CompositionAnchoredEndpoint.lean
+#print axioms SharedDecoders.anchored_adjacent_classes_distinct
+#print axioms SharedDecoders.anchored_at_most_two_classes_impossible
+-- CompositionChannels.lean
+#print axioms SharedDecoders.commonMessage_interval_bound
+-- CompositionEndpointBlowup.lean
+#print axioms SharedDecoders.endpointFirst_classUniform
+#print axioms SharedDecoders.endpointFirst_involutive
+#print axioms SharedDecoders.endpointSecond_equivariant
+#print axioms SharedDecoders.endpointSecond_involutive
+#print axioms SharedDecoders.endpoint_composite_getter
+#print axioms SharedDecoders.endpoint_composite_requires_singletons
+-- CompositionLinear.lean
+#print axioms SharedDecoders.exists_twoHop_cutoff
+#print axioms SharedDecoders.twoHop_coprime_progression_dimension_le
+#print axioms SharedDecoders.twoHop_dimension_le
+#print axioms SharedDecoders.twoHop_progression_gcd
+#print axioms SharedDecoders.twoHop_two_classes_le_sixteen
+-- CompositionMultiplierClasses.lean
+#print axioms SharedDecoders.fieldMultiplierConjugate_eq
+#print axioms SharedDecoders.multiplier_class_count
+#print axioms SharedDecoders.multiplier_class_count_prefix
+#print axioms SharedDecoders.multiplier_class_residue
+#print axioms SharedDecoders.ratio_multiplier_conjugate_covariance
+-- CompositionMultiplierGetters.lean
+#print axioms SharedDecoders.actual_multiplier_getters_card
+#print axioms SharedDecoders.multiplier_binary_degree_eq
+#print axioms SharedDecoders.multiplier_degree_le
+-- CompositionOrbitAssignment.lean
+#print axioms SharedDecoders.OrbitAssignment.allowed_iff_divides
+#print axioms SharedDecoders.OrbitAssignment.cyclic_balanced_map_iff_orbit_assignment
+#print axioms SharedDecoders.OrbitAssignment.orbit_map_exists_iff
+-- CompositionOrbitResidues.lean
+#print axioms SharedDecoders.balanced_fixed_word_residue
+#print axioms SharedDecoders.balanced_fixed_word_small_impossible
+#print axioms SharedDecoders.fixedTupleEquiv
+#print axioms SharedDecoders.invariant_fiber_fixed_residue
+#print axioms SharedDecoders.no_balanced_free_off_zero
+#print axioms SharedDecoders.no_balanced_semiregular
+#print axioms SharedDecoders.tuple_orbit_divisor
+-- CompositionOrderFive.lean
+#print axioms SharedDecoders.orderFivePerm_fixed
+#print axioms SharedDecoders.orderFivePerm_order
+#print axioms SharedDecoders.orderFivePerm_zero
+#print axioms SharedDecoders.orderFive_adjacent_class_impossible
+#print axioms SharedDecoders.orderFive_conjugate_difference
+#print axioms SharedDecoders.orderFive_no_balanced_covariance
+#print axioms SharedDecoders.orderFive_pair_nontransitive
+-- CompositionProgression.lean
+#print axioms SharedDecoders.commonMessage_finrank_le
+-- CompositionRankField.lean
+#print axioms SharedDecoders.exists_twoHop_rank_threshold
+#print axioms SharedDecoders.twoHop_rank_interval_any_field
+#print axioms SharedDecoders.twoHop_rank_superlinear
+-- CompositionRatio.lean
+#print axioms SharedDecoders.ratioDecoder_surjective
+#print axioms SharedDecoders.ratio_eight_fiber_cards
+#print axioms SharedDecoders.ratio_nonzero_fiber_card
+#print axioms SharedDecoders.ratio_zero_fiber_card
+-- CompositionRecurrence.lean
+#print axioms SharedDecoders.recurrence_finrank_le
+-- CompositionRobustAgreement.lean
+#print axioms SharedDecoders.agreement_error_cover
+#print axioms SharedDecoders.robust_full_input_count
+#print axioms SharedDecoders.robust_repeated_class_count
+-- CompositionScatteredCompletion.lean
+#print axioms SharedDecoders.scatteredCompletion_equivariant
+#print axioms SharedDecoders.scatteredFirstFactor_classUniform
+#print axioms SharedDecoders.scatteredFirstFactor_fixed_preimage
+#print axioms SharedDecoders.scatteredFirstFactor_source
+#print axioms SharedDecoders.scattered_one_class_impossible
+-- CompositionScatteredSource.lean
+#print axioms SharedDecoders.scatteredSource_finrank
+#print axioms SharedDecoders.scattered_orbit_injective
+#print axioms SharedDecoders.scattered_punctured_orbits_disjoint
+-- CompositionSingleSiteEndpoint.lean
+#print axioms SharedDecoders.single_at_most_two_classes_impossible
+-- CompositionSparseObstruction.lean
+#print axioms SharedDecoders.scatteredFirstFactor_disagreement
+#print axioms SharedDecoders.scattered_remaining_factor_singletons
+-- CompositionSparsePatch.lean
+#print axioms SharedDecoders.columnPatch_involutive
+#print axioms SharedDecoders.columnPatch_nonzero_column
+#print axioms SharedDecoders.columnPatch_support_card
+-- CompositionWordAction.lean
+#print axioms SharedDecoders.transitive_pair_impossible
+-- ConstructionBlockDefects.lean
+#print axioms SharedDecoders.finrank_upperBlockAgreement_le
+#print axioms SharedDecoders.upperBlockDescriptor_injective
+-- ConstructionCapacity.lean
+#print axioms SharedDecoders.periodic_linear_capacity_algebraicClosure_upper
+#print axioms SharedDecoders.periodic_linear_capacity_lower
+#print axioms SharedDecoders.periodic_linear_capacity_split
+-- ConstructionCyclicExact.lean
+#print axioms SharedDecoders.binaryCyclicDefect_ker
+#print axioms SharedDecoders.binarySeed_full_rule
+#print axioms SharedDecoders.finrank_binaryCyclicLaneDefect_ker
+#print axioms SharedDecoders.mem_cyclicLiftCode_iff_full_rule
+-- ConstructionLinearLift.lean
+#print axioms SharedDecoders.cyclic_lift
+-- ConstructionSeed.lean
+#print axioms SharedDecoders.binaryCyclicCode_interval_excess
+#print axioms SharedDecoders.binaryCyclicCode_linear
+#print axioms SharedDecoders.binaryCyclicPartition_surjective
+#print axioms SharedDecoders.finrank_binaryCyclicCode
+-- Model.lean
+#print axioms SharedDecoders.ClassUniform
+#print axioms SharedDecoders.IsSharedCode
+-- PeriodTransport.lean
+#print axioms SharedDecoders.fixed_conjugate_iff
+#print axioms SharedDecoders.fixed_image_preserved
+#print axioms SharedDecoders.literal_period_complete
+-- ResidualEntropy.lean
+#print axioms SharedDecoders.actual_correct_entropy_lower
+#print axioms SharedDecoders.residual_entropy_lower
+#print axioms SharedDecoders.residual_span_information
+#print axioms SharedDecoders.residual_uniform_entropy_lower
+-- ResidualOutputSpan.lean
+#print axioms SharedDecoders.actual_correct_span_card_le
+-- ResidualPropagation.lean
+#print axioms SharedDecoders.actual_readout_insertions
+#print axioms SharedDecoders.actual_readout_sum
+#print axioms SharedDecoders.residual_readout_sum
+-- ResidualRowColumn.lean
+#print axioms SharedDecoders.RowColumn.agreement_card_le
+#print axioms SharedDecoders.RowColumn.helper_agreement_card_le
+#print axioms SharedDecoders.RowColumn.identity_agreement_card
+-- ResidualRowColumnSharp.lean
+#print axioms SharedDecoders.RowColumn.exists_sharp_helper
+#print axioms SharedDecoders.RowColumn.helper_bound_attained
+-- ResidualSeparable.lean
+#print axioms SharedDecoders.Separable.rank_defect_lower
+-- ResidualSeparableSharp.lean
+#print axioms SharedDecoders.Separable.initialProjection_rank
+#print axioms SharedDecoders.Separable.rank_defect_sharp
+-- ResidualSpan.lean
+#print axioms SharedDecoders.finrank_preimage_le_kernel_add_intersection
+#print axioms SharedDecoders.residualSpanDescriptor_injective
+#print axioms SharedDecoders.residual_span_card_le
+-- SubgroupClasses.lean
+#print axioms SharedDecoders.covariance_no_class_collision
+#print axioms SharedDecoders.exact_periodic_first_class_bound
+#print axioms SharedDecoders.exact_periodic_first_class_size_bound
+#print axioms SharedDecoders.orbit_classes_injective
+-- UniformSandwich.lean
+#print axioms SharedDecoders.uniform_sandwich_finite
+#print axioms SharedDecoders.uniform_sandwich_injective_classes
+
+-- Other declarations named in the text.
+#print axioms SharedDecoders.CapacityTernarySpectrum.Good.source_bound
+#print axioms SharedDecoders.CapacityTernarySpectrum.bad_probability
+#print axioms SharedDecoders.IsSharedCode.intrinsic_retention_bound
+#print axioms SharedDecoders.LineMarker.affineMarker_exceeds_half
+#print axioms SharedDecoders.actual_correct_card_le
+#print axioms SharedDecoders.actual_sparse_card_le
+#print axioms SharedDecoders.binary_progression_nine_finite
+#print axioms SharedDecoders.exists_progression_bound
+#print axioms SharedDecoders.mem_liftedCode_iff_full_rule
+#print axioms SharedDecoders.residual_branch_card_le
+#print axioms SharedDecoders.residual_branch_entropy_lower
+
+-- Imported declarations cited in the text.
+#print axioms LeanMachine.sparseMenu_log_div_tendsto_zero

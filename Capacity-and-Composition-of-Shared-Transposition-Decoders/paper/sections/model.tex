@@ -1,0 +1,46 @@
+\section{The shared-decoder model}\label{sec:model}
+Let $d\ge1$ and write $I=\Z/d\Z$. For an entry alphabet $A$, the complete
+state space is $\mathcal X=A^{I\times I}$. In the linear setting $A=F^b$,
+where $F$ is a field and $b\ge1$; thus $N=bd^2$ is the dimension over $F$.
+For binary tape inputs the bit length is $L=d^2b$. The canonical width in
+\textup{(T)} is $b(d)=\max(1,\lceil\log_2d\rceil)$, but algebraic statements
+will quantify over every positive $b$.
+
+Define the column and row shifts and the transpose by
+\[
+ (T^sX)_{i,j}=X_{i,j+s},\qquad
+ (R^sX)_{i,j}=X_{i+s,j},\qquad
+ (\tau X)_{i,j}=X_{j,i}.
+\]
+On a row or column word, $\sigma^s$ shifts its single cyclic index in the same
+orientation. Thus $\tau T^s=R^s\tau$, $\tau R^s=T^s\tau$, and $T^sR^t=R^tT^s$.
+
+\begin{definition}[A shared rule and its correctness source]\label{def:shared-rule}
+\formal{Model.lean}{ClassUniform,IsSharedCode}
+A receiver partition $p:I\to\{1,\ldots,M\}$ uses every label.
+A complete shared rule $K:\mathcal X\to\mathcal X$ has total functions
+$f_J:\mathcal X\to A^I$ such that
+\[
+ \operatorname{col}_c K(X)=f_{p(c)}(T^cX).
+\]
+The decoder has no additional receiver-index argument. In the linear setting,
+a subspace $C\le\mathcal X$ is a correctness source if
+$f_{p(c)}(T^cX)=\operatorname{row}_cX$ for every $X\in C$ and every $c$.
+Its dimension is denoted $D$.
+\end{definition}
+
+The predicates are distinct: a correctness source need not contain arbitrary
+intermediate states of a composition. A linear source does not imply that its
+decoders are linear. A \emph{linear complete rule} means that $K$ itself is
+$F$-linear on all of $\mathcal X$. All definitions permit mixing between lanes.
+A map $H$ is column-equivariant if $HT^s=T^sH$ for every $s$; one-class
+complete rules are exactly these maps. Equivariance does not assert that the
+map is cheap to compute on tapes.
+
+All complete factorizations in Part II act on this same state space and use
+this same column-view action, unless a theorem explicitly says otherwise.
+For a finite alphabet, exact factorization of the bijection $\tau$ by total
+square maps forces every factor to be bijective. Correctness on a proper
+source, or a larger workspace with a promised initialization, does not imply
+this conclusion. Algebraic row or column operations incur no native time
+charge until a separately stated implementation supplies it.

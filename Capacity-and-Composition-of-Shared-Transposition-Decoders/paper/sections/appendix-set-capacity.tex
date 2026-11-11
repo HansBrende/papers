@@ -1,0 +1,203 @@
+\section{Exact capacity for arbitrary correctness sets}\label{sec:set-capacity}
+
+The linear-source premise in the capacity theorems cannot be replaced by a
+large correctness set. Here the alphabet $\Sigma$ need only be finite and
+nonempty, with $q$ symbols. Let $d\ge1$, let $\sigma$ rotate columns as in
+\cref{sec:model}, and write $x_c$ for row $c$ of $X$. A single total
+deterministic decoder $f$ validates a set $C$ when
+\[
+ f(\sigma^cX)=x_c\qquad(X\in C,\ c\in\Z/d\Z).
+\]
+Let $M(d,q)$ be the largest possible $|C|$. There is no linearity or
+evaluation-cost restriction on $f$.
+
+For each matrix define subgroups
+\[
+ H_X=\{h:\sigma^hX=X\},\qquad
+ K_X=\{a:x_{c+a}=\sigma^a x_c\text{ for every }c\}.
+\]
+The second rotation acts on a row word. Call the column-rotation orbit of
+$X$ eligible if $H_X\subseteq K_X$. Both groups are unchanged when $X$ is
+replaced by $\sigma^tX$.
+
+\begin{theorem}[Exact one-class set capacity]\label{thm:set-capacity}
+\formal{CapacitySetOrbit.lean}{SetCapacity.exact_capacity,SetCapacity.capacity_orbit_formula,SetCapacity.capacity_average_formula}
+With the preceding conventions,
+\begin{equation}\label{eq:set-capacity}
+ M(d,q)=\sum_{\text{eligible orbits }O}\frac{|K_O|}{|H_O|}
+       =\frac1d\sum_X\mathbf 1_{H_X\subseteq K_X}|K_X|.
+\end{equation}
+One total decoder attains the bound simultaneously on all orbits.
+\end{theorem}
+
+\begin{outline}
+$H_X$ is a stabilizer. The covariance defining $K_X$ is preserved under
+addition and negation of shifts, so $K_X$ is also a subgroup. Column
+rotations commute, proving invariance of both groups along an orbit.
+
+A single matrix $X$ is admissible exactly when repeated views prescribe
+the same output. Repetition at rows $c,c+h$ means $h\in H_X$, and then
+the two demanded rows must agree. Since such $h$ fixes every row word,
+this is exactly $H_X\subseteq K_X$.
+
+In an eligible orbit write $Y_a=\sigma^aX$, with $a$ taken modulo $H_X$.
+Two orbit words $Y_a,Y_b$ are compatible exactly when $a-b\in K_X$.
+Indeed their views at $c,c'=c+a-b$ coincide. Equality of the required
+outputs is
+$\sigma^a x_c=\sigma^b x_{c+a-b}$, precisely the covariance for $a-b$.
+Conversely, any equality of views has $c'=c+a-b+h$ with $h\in H_X$;
+membership of $a-b,h$ in $K_X$ makes the outputs agree. Thus all collisions,
+including collisions within one word, are accounted for.
+
+A nonempty compatible subset of the orbit lies in one coset of $K_X/H_X$,
+and the whole coset is compatible. Its maximum size is $|K_X|/|H_X|$.
+Choose one such coset in every eligible orbit. Views from different orbits
+cannot collide, so all their output requirements define one partial
+function. Extend it arbitrarily to a total decoder. This proves the first
+formula and attainment. Each orbit has $d/|H_X|$ elements; summing the
+constant value $|K_X|$ on it gives the second formula. For $d=1$ the value
+is $q$, and for $q=1$ it is $1$, as the same formula asserts.
+\end{outline}
+
+The formal construction chooses an actual representative in every rotation orbit,
+takes its entire covariance coset when eligible, and proves all its view
+requirements consistent before totalization. Its cardinal and the universal
+upper bound are both obtained from actual finite fibres.
+The proof uses consistency of deterministic function values. It supplies
+neither the additional additive consistency needed for a linear decoder
+nor a small description or cheap evaluator for the attaining function.
+
+\begin{corollary}[Prime dimensions and the all-dimension rate]\label{cor:set-capacity-rate}
+\formal{CapacitySetCounting.lean}{SetCapacity.prime_capacity,SetCapacity.fixed_H_card,SetCapacity.fixed_K_card}
+\formal{CapacitySetRate.lean}{SetCapacity.relative_error,SetCapacity.capacity_lower,SetCapacity.logarithmic_rate_tendsto}
+For prime $d$,
+\[
+ M(d,q)=\frac{q^{d^2}+(d-2)q^d+q}{d}.
+\]
+For all $d\ge2,q\ge2$,
+\[
+ \left|\frac{dM(d,q)}{q^{d^2}}-1\right|
+ \le(d-1)q^{-d\lceil d/2\rceil},\qquad
+ M(d,q)\ge\frac{q^{d^2}}{2d}.
+\]
+Consequently, at fixed $q\ge2$ along all integer dimensions,
+$\log_q M(d,q)=d^2-\log_q d+o(1)$.
+\end{corollary}
+
+\begin{outline}
+For prime $d$, each subgroup is either trivial or the whole group. There
+are $q^d$ matrices with full $H$ (constant rows), $q^d$ with full $K$
+(choose $x_0$ and set $x_c=\sigma^cx_0$), and $q$ with both full. The
+four cases $(H,K)$ therefore contribute: $q$ words when both are full;
+$q^d-q$ when only $K$ is full; zero when only $H$ is full; and
+$(q^{d^2}-2q^d+q)/d$ when both are trivial. Their sum is the formula.
+
+For a nonzero shift $h$, put $g=\gcd(d,h)$. The condition $h\in H_X$
+permits $g$ free symbols in each row, hence $q^{dg}$ matrices. The
+condition $h\in K_X$ has the same count: choose one whole row in each of
+the $g$ row cycles and propagate by rotation. On returning around a cycle
+the total rotation is a multiple of $d$, so there is no extra constraint.
+Put $S=\sum_{h\ne0}q^{d\gcd(d,h)}$. A union bound leaves at least
+$q^{d^2}-S$ matrices with trivial $H$; each contributes at least one to
+the second sum in \cref{eq:set-capacity}. Dropping eligibility and summing
+$|K_X|$ gives the upper bound $dM(d,q)\le q^{d^2}+S$.
+Since $\gcd(d,h)\le\lfloor d/2\rfloor$,
+$S\le(d-1)q^{d\lfloor d/2\rfloor}$. Division gives the displayed relative
+error. It is at most $1/2$ and is bounded by $d/2^d$, which tends to zero.
+The lower bound follows, and continuity of $\log_q$ at $1$ gives the
+logarithmic remainder. The formal limit runs through dimensions $n+1$,
+so it covers every positive integer dimension. No extrapolation from
+small dimensions is used.
+\end{outline}
+
+\subsection{Line views, linear sources and affine repairs}
+
+For a line, rows and columns are $0,\ldots,d-1$ and the full view is
+\[
+ \operatorname{view}_c(X)_{i,e}=
+ \begin{cases}X_{i,e+c}&0\le e+c<d,\\0&\text{otherwise},\end{cases}
+ \qquad -d<e<d.
+\]
+Fix a distinguished alphabet symbol $0$. The Lean line view uses every
+integer offset; for a legal receiver all offsets outside the displayed
+window are identically zero. Restriction and zero extension therefore
+give the same decoder interface.
+
+\begin{proposition}[High-density line marker]\label{prop:line-marker}
+\formal{CapacityLineMarker.lean}{LineMarker.exists_decoder,LineMarker.code_card,LineMarker.affineMarker_finrank}
+\formal{CapacityLineMarkerRate.lean}{LineMarker.code_density,LineMarker.code_density_tendsto}
+One total deterministic line decoder works on
+$C=\{X:\text{the first column is nonzero}\}\cup\{0\}$, whose size is
+\[
+ |C|=(q^d-1)q^{d(d-1)}+1.
+\]
+Over a field, its affine subset $X_{0,0}=1$ has dimension $d^2-1$.
+No optimality claim for this line construction is made.
+\end{proposition}
+
+\begin{outline}
+In the view of a matrix with nonzero first column, the leftmost offset
+with any nonzero symbol is exactly $-c$. If two such views agree, applying
+this boundary test in both directions proves that their receivers agree;
+evaluating at offsets $j-c$ then proves their matrices agree. A view
+equal to the all-zero view comes only from the zero matrix. Thus all
+required outputs are consistent, and one total decoder follows. A nonzero first column
+has $q^d-1$ choices; all other columns are free. Fixing one entry to $1$
+leaves an affine space of the asserted dimension. Its dimension exceeds
+the one-class half bound for $d\ge3$, as checked by
+\lean{LineMarker.affineMarker_exceeds_half}; the arbitrary set has density
+$1-q^{-d}+q^{-d^2}$, tending to one.
+\end{outline}
+
+\begin{theorem}[Deterministic line rules on linear sources]\label{thm:line-deterministic}
+\formal{CapacityLineDeterministic.lean}{IsDeterministicLineCode.two_mul_finrank_le,IsDeterministicLineCode.affine_two_mul_finrank_le}
+Let $C\subseteq F^{d\times d}$ be a linear subspace of dimension $D$.
+Suppose fixed deterministic decoders, constant on each of $M$ nonempty
+consecutive row intervals, recover every demanded row from its line view.
+The labels may repeat on different intervals. Then
+\[
+ 2D\le d^2+Md.
+\]
+\end{theorem}
+
+\begin{outline}
+Let $T$ shift columns left with a zero final column, and let $Z$ be the
+subspace with zero first column. Set $I=C\cap T^{-1}C\cap Z$.
+If $\rank T=r$, then
+$\dim T^{-1}C=d^2-r+\dim(C\cap\operatorname{im}T)\ge D$.
+Hence $\dim I\ge2D-d^2-d$. For $X\in I$ the zero first column gives
+the exact view identity
+$\operatorname{view}_c(TX)=\operatorname{view}_{c+1}(X)$.
+Within one interval, identical arguments to the same decoder imply
+$x_{c+1}=Tx_c$. In an interval of length $\ell$, all rows are shifts of
+its first row, and their zero first entries force its first $\ell$ entries
+to vanish. At most $d-\ell$ entries remain free. Thus
+$\dim I\le\sum(d-\ell)=Md-d$, giving the bound. Only equality of decoder
+values, not their linearity, was used.
+\end{outline}
+
+This extends the linear-decoder line proof of
+\cite[theorem ``The line form of Theorem TP'']{SeventeenthPaper2026}; the source remains linear.
+On a cycle an affine source $x_0+V$ obeys the corresponding translate
+intersection bound whenever the \emph{joint} intersection of the selected
+rotated sources is nonempty. Choose a point of that intersection; its
+direction is the intersection of the rotated copies of $V$, and the
+same codimension and homogeneous covariance bounds apply. Pairwise
+intersection does not suffice for three or more shifts. The affine line counterpart is also formalized by
+\lean{IsDeterministicLineCode.affine_two_mul_finrank_le}. Its
+sufficient affine premise is instead the nonempty threefold slice
+$C\cap T^{-1}C\cap Z$, because the view identity needs the boundary zero.
+The marker $X_{0,0}=1$ has $C\cap T^{-1}C\ne\varnothing$ for $d\ge2$
+but cannot meet $Z$, demonstrating the missing premise.
+
+If the decoders themselves are affine, subtracting their equations at
+$x_0+v$ and $x_0$ produces a linear shared rule on $V$. That separate
+argument needs no affine-intersection premise; it is invalid for arbitrary
+deterministic decoders. The revised affine-entry advice theorem in
+\cite[Corollary~6.16]{SeventeenthPaper2026} uses precisely such cancellation.
+Our arbitrary-set constructions therefore do not contradict it.
+
+These results sharpen the model boundary relevant to native extraction:
+high entropy alone does not provide a linear source or the required affine
+intersection. Conversely, recognizing the receiver from an entire static
+view does not provide a paid native operation that reads that view.

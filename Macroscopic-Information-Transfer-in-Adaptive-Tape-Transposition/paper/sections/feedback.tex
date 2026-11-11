@@ -1,0 +1,301 @@
+\section{Historical feedback through actual halt}\label{sec:feedback}
+
+This appendix measures a different property of an original execution.
+Let $B=db$ and $P=dB$. Fix the native machine, a linear budget $C(P+1)$,
+and work-window widths $w_h\ge2$, independent of $d,b$. Fix also an
+enlarged finite alphabet containing the source symbols and distinct spool
+markers and bits, with one $\kappa$-bit encoding taking blank to zero.
+Use this \emph{same} encoding throughout. Each encoded $B$-cell work block
+has $\kappa$ binary planes of declared capacity $B$ bits, even when a
+plane happens to be constant.
+
+The raw monitor initially retains blocks $-1,0$; work monitor $h$ retains
+blocks $-(w_h-1),\ldots,0$. Admit raw row zero initially. After each native
+step process a raw exit first, then work exits in fixed tape order. An
+exit shifts that window by one block. A raw shift admits the valid entering
+row or synthesizes exterior markers. A work shift writes every plane of
+the leaving block before reading every plane of the entering block.
+Overlapping blocks and partial writes remain in the resident window. Include
+pending exits after the successful transition entering the halting
+configuration; there is no terminal flush in the original statistic.
+
+A write creates a new \emph{date} at its fixed address (tape, block, plane),
+even when it repeats the same value. A read sees the latest preceding date,
+or its initial constant. The current raw-row context starts at zero and
+changes only when a valid raw row is admitted; exterior shifts retain it.
+For each produced date imported at least once before the original run ends,
+let $\ell_v$ be the maximum minus minimum of the contexts at its writer
+and all its importing readers. Keep dates subsequently overwritten. Set
+\[
+ \Phi(X)=\sum_v B\ell_v,\qquad W(X)=\sum_v B.
+\]
+Repeated readers of one date share its span; a copy write creates another
+date. This is a statistic of the specified monitor and encoding, not a
+minimum over recodings or an entropy of its values.
+
+We first prove the block-information estimate needed for the native adapter.
+All entropy in this appendix is in bits.
+
+\begin{lemma}[One partition for a complete producer and consumer]\label{lem:feedback-product}
+\formal{FeedbackGlobalProduct.lean}{feedback_global_matrix_bound,feedback_global_product_bound}
+Consider a fixed finite word of block operations. A producer begins with
+constant memory, has at most $S$ bits of complete resident state, reads
+raw rows and previously written block versions, and emits no transpose
+output. Every local map has one deterministic completion on its entire
+available-data domain. A subsequent read-only consumer starts at the true
+handoff, has at most $M$ bits of complete state, reads only raw rows and
+surviving final archive blocks, and emits all $d$ correct columns in a fixed
+order at designated positions of the operation word, on one law of input
+entropy $P-\Delta$. It has no readable scratch
+or output readback. Let $Q_r$ count all consumer reads, $V$ be the total
+variation of the producer's raw-row admission sequence, and
+$\Phi=\sum_v c_v\ell_v$, where $c_v$ is the declared capacity of each
+produced version read during production and its span uses the writer and
+all those readers. Then for every integer $1\le g,w\le d$,
+\[
+ P\le\frac{SV+\Phi}{g}+\lceil d/w\rceil(M+\Delta)+Q_r gwb,
+\]
+and consequently
+\[
+ \max(1,Q_r/d)\left(1+\frac{SV+\Phi}{P}\right)
+              \left(1+\frac{M+\Delta}{B}\right)\ge d/72.
+\]
+All controller, address, clock, buffer and pending fields belong to the
+stated resident capacities.
+\end{lemma}
+\begin{outline}
+Partition raw row indices into shifted width-$g$ intervals. Assign every
+producer operation the group of its current context, updating the context
+before a raw admission. For a uniformly chosen shift, two integer contexts
+at distance $h$ have different groups with probability $\min(1,h/g)$:
+if $h<g$ exactly $h$ residues place a boundary between them, and otherwise
+every residue does. A produced version is read by an owner different from
+its writer precisely when its extreme participating contexts have different
+groups. Thus one shift simultaneously gives
+\[
+ S s+\sum_{v\in E}c_v
+ \le S\sum_j\min(1,|i_{j+1}-i_j|/g)
+       +\sum_vc_v\min(1,\ell_v/g)
+ \le(SV+\Phi)/g,
+\]
+where $s$ is the number of owner switches and $E$ the distinct produced
+versions used by a foreign owner. Both charges use the same shift.
+
+Let $Z$ contain all complete switch states and those literal foreign
+versions. Its full-cube fibres are Cartesian products over owner groups.
+Here is the precise reconstruction proving that assertion. For an attained
+$z$, replay all segments owned by a group in chronological order from its
+own raw rows and $z$. Start the first global segment in constant state;
+other segments use their prescribed entrance state. A read uses its own
+raw row, an initial constant, a foreign version in $z$, or an earlier
+own version retained in this mathematical replay. Require each segment's
+exit state to match the prescribed switch state, and each exported version
+to match its entry in $z$. These are tests only on that group's raw rows.
+Every actual input with transcript $z$ passes them. Conversely, if every
+group passes, induction through the fixed global word shows that raw,
+own-version and foreign-version reads all agree: a foreign writer has
+already passed its export test. Hence the actual transcript is $z$.
+This proves the product-fibre assertion. The same replay gives one
+group-local function for each surviving final version, common to all its
+later reads. The proof-side retention of old versions adds no runtime state.
+
+On the one actual law let
+$\mathcal T=\sum_j H(X_{I_j}\mid Z)-H(X\mid Z)$.
+Then $0\le\mathcal T\le\Delta$. Indeed the uniform full-cube law,
+conditioned on $z$, is the product of uniform laws on the just-proved
+group fibres. Decomposing relative entropy with respect to that law gives
+\[
+ \Delta=D(\mu_Z\Vert U_Z)+\mathcal T+
+  \sum_j\mathbb E_z D(\mu_{I_j\mid z}\Vert U_{I_j,z})\ge\mathcal T.
+\]
+All reference laws are positive on the actual support. This neither assumes
+the actual conditional law is a product nor asserts correctness of mixed
+inputs. Also $H(Z)\le Ss+\sum_{v\in E}c_v$.
+
+Divide the $d$ designated final column writes into
+$m=\lceil d/w\rceil$ chronological windows of at most $w$ columns, the
+first starting at actual consumer entry. In window $a$, let $J_a$ be its
+columns and $q_a$ its reads, and let $H_a$ be the owner groups of queried
+records. There are at most $q_a$ such groups. Given $Z$, their complete
+raw rows and the actual $M$-bit entry state, replay recovers every window
+output, because every queried version has the same group-local function.
+The entropy of the unqueried groups' output rectangle conditional on those
+raw rows and $Z$ is therefore at most $M$. Total correlation cannot increase
+under separate projections of the groups; subtracting the nonnegative
+correlation of the queried groups gives
+\[
+ \sum_jH(X_{I_j\times J_a}\mid Z)
+       \le M+\mathcal T+g|J_a|bq_a.
+\]
+Summing over windows and using conditional subadditivity on each group's
+partition into output columns gives
+\[
+ gb\sum_a|J_a|q_a
+ \ge P-\Delta-H(Z)-mM-(m-1)\mathcal T.
+\]
+Now $|J_a|\le w$, $\sum_aq_a\le Q_r$ and $\mathcal T\le\Delta$
+prove the finite inequality. The transcript is paid once, each real
+window-entry state separately, and the law never changes.
+
+For the product put $a=(SV+\Phi)/P$, $y=(M+\Delta)/B$, $z=1+y$ and
+$q_0=\max(1,Q_r/d)$. Choose $g=\max(1,\lceil4a\rceil)$ and
+$w=\lceil8z\rceil$. If $g>d$ then $4a>d$, and if $w>d$ then
+$8z>d$; either already gives the product bound. Otherwise division by
+$B$ yields $d\le ad/g+\lceil d/w\rceil y+(Q_r/d)gw$.
+The first term is at most $d/4$ (zero if $a=0$). The second is at most
+$d/8+z\le d/4$, since $w\le d$ implies $z\le d/8$.
+Thus $d/2\le q_0gw\le36q_0(1+a)z$, as required.
+The formal proof starts from one producer and one complete consumer word.
+It constructs the common shifted partition, actual transcript, window-entry
+states, slices of the consumer execution, and total read count. The final
+integer optimization retains the constant $72$. Lean allows any bounded
+handoff-state map and any dated producer version in the consumer's queries,
+so the stated true-handoff and surviving-version restrictions are special
+cases. Retaining old versions in the proof does not assert a free physical
+archive.
+\end{outline}
+
+\begin{theorem}[Whole-run historical feedback]\label{thm:whole-feedback}
+\notformalized
+For the fixed native machine, linear budget and monitor there is $c_*>0$
+such that, for every $d,b\ge1$, $\varphi\ge0$ and nonempty set $F$ of
+inputs correctly transposed within the budget with $\Phi\le\varphi$,
+\[
+ \left(1+\frac\varphi P\right)
+ \left(1+\frac{P-\log_2|F|}{B}\right)\ge c_*d.
+\]
+There is no original phase, read-only-work or alignment assumption.
+\end{theorem}
+\begin{informalproof}
+First postpone the complete output by a paid spool. Add one initially blank
+tape with a width-two monitor. Write a start marker, then simulate the
+original machine, writing each appended bit to the next spool cell instead
+of real output. Preserve all original heads and symbols in any extra spool
+microstep. Continue through the actual original halt, including original
+work after its last output and pending monitor events. Write an end marker,
+then declare a phase change and flush every retained work window. Only
+after this phase rewind and read the spool, appending its bits to real output.
+Original tapes remain parked. A conservative step bound is
+\[
+ T_{\rm wrap}\le2T+4P+10\le\overline C(P+1),\qquad
+ \overline C=2C+10.
+\]
+Markers avoid an uncharged length scan or counter.
+
+On original tapes the extra steps only insert pauses. Their raw/work shift
+order, per-address dates, values, partial writes and raw contexts agree
+exactly with the original monitor. The spool moves only right or stays in
+production, so its entering blocks are virgin and none of its produced
+versions is read in production. The terminal flush likewise has no later
+production reader. The old participating dates and spans therefore agree
+exactly: $\Phi_{\rm wrap}=\Phi$. The artificial phase is before rewind;
+spool rereads are consumer reads, not missing feedback.
+
+The monitor realizes a complete block program. Outside each retained window
+the block store equals the native tape; inside it the resident window is
+authoritative. Write-before-load in either direction, retaining overlap,
+preserves this invariant even with partial overwrites. Serialize all
+$\kappa$ outgoing planes before incoming ones. At phase change the flush
+makes the whole final archive exact; recovery is read-only. Count all
+windows, incoming plane tuples, unfinished payload, source control, positions,
+offsets, clock, pending exits and an output-column buffer. Fixed constants
+$p_0,m_0$ bound complete producer and consumer state by $p_0B,m_0B$:
+there are fixed many $B$-cell buffers and integer registers of
+$O(\log(2P))$ bits, and $\log_2(2P)\le3B$ for $d,b\ge1$.
+There is no free state reset at the phase.
+
+A width-at-least-two monitor needs at least $B$ head moves before its first
+exit and between successive exits, in either direction. With $K=k+1$
+work tapes including the spool, valid raw admissions have total row variation
+$V\le v_0d$, $v_0=4\overline C$, and all recovery reads obey
+$Q_r\le q_0d$, $q_0=2\overline C(1+\kappa K)$. To see the former,
+entering raw blocks change their valid indices by at most two per raw shift;
+exterior shifts cannot increase the variation of the valid subsequence.
+The latter follows by bounding every raw/work exit by
+$\lfloor T_{\rm wrap}/B\rfloor\le2\overline C d$, counting all planes.
+Likewise original participating capacity satisfies
+$W\le u_0P$, $u_0=\max(1,2\overline C\kappa k)$, since every such
+date is exported at an original work shift. Terminal flush versions and
+initial constants do not participate.
+
+Fix a coarse event word recording raw/work shifts with tape and direction,
+the phase, and complete output-column flushes. Its alphabet has $2K+4$
+letters; its length is at most
+$[(2\overline C(K+1)+2)d]$. Such a word fixes all addresses, latest-date
+ties, raw contexts and phase labels; flushes expand into fixed lists of
+planes. Thus there are at most $2^{C_ed}$ words, where
+\[
+ C_e=[2\overline C(K+1)+2]\log_2(2K+5).
+\]
+One nonempty fibre $F_0\subseteq F$ has
+$|F_0|\ge|F|2^{-C_ed}$, hence
+$\Delta=P-\log_2|F_0|\le P-\log_2|F|+C_ed$.
+Use its one uniform law throughout.
+
+The fixed-word block maps have common local full-cube completions. Between
+prescribed I/Os simulate from the complete resident tuple with the bounded
+clock, stopping before any unexpected external observation. Invalid local
+codes, wrong events, premature halt or timeout give fixed local defaults
+for the remaining prescribed stages. Previously imported values are
+resident data; the next prescribed read is the only new external value.
+All guards and clocks are already charged. On $F_0$ every guard follows
+the actual wrapped computation; off it, correctness and native validity
+are unnecessary. No support-membership or global input test is used.
+
+Apply \cref{lem:feedback-product}. It gives
+\[
+ \max(1,q_0)(1+p_0v_0+\varphi/P)
+ (1+m_0+(P-\log_2|F|+C_ed)/B)\ge d/72.
+\]
+Since $d/B=1/b\le1$, take
+\[
+ c_*=[72\max(1,q_0)(1+p_0v_0)(1+m_0+C_e)]^{-1}.
+\]
+The displayed inequality implies the result by bounding each parenthesis
+above by its constant factor times the corresponding parenthesis in the
+statement. This proves the claim for every nonempty $F$ and every width.
+\end{informalproof}
+
+\begin{corollary}[Success tails and many long-span dates]\label{cor:feedback-tail}
+\partformal{FeedbackTail.lean}{FeedbackTail.success_count,FeedbackTail.fixed_linear_count,FeedbackTail.linear_in_dimension_probability,FeedbackTail.many_long_span_dates}{the native monitor/spool theorem and its declared-capacity budget. Given those inequalities, Lean proves the exact counts, the ambient probability bound and the finite dated-plane conclusion.}
+Let $E_\varphi$ be the timely correct inputs with $\Phi\le\varphi$.
+Then, including the empty case,
+\[
+ |E_\varphi|\le2^{P-B[c_*d/(1+\varphi/P)-1]_+}.
+\]
+For every fixed $s\ge0$, $|E_{sP}|\le2^{(1-\eta_s)P}$ at large $d$,
+with $\eta_s=c_*/[2(1+s)]$. For $\alpha=c_*/4$,
+$|E_{\alpha Pd}|/2^P\le2^{-B}$ at large $d$.
+Every other timely correct execution has more than $\alpha d/2$ dated
+$B$-bit planes spanning at least $\alpha d/(2u_0)$ raw-row contexts.
+\end{corollary}
+\begin{informalproof}
+Rearrange \cref{thm:whole-feedback} and use nonnegative source deficit.
+For $\varphi=sP$, take $d\ge2(1+s)/c_*$. For
+$\varphi=\alpha Pd$ and $d\ge1/\alpha$, the quotient
+$c_*d/(1+\alpha d)$ is at least two, giving deficit at least $B$.
+For an execution with $\Phi>\alpha Pd$, let $H_*$ be the total declared
+capacity of dates with span at least $\beta d$, $\beta=\alpha/(2u_0)$.
+Since all spans are at most $d-1$ and $W\le u_0P$,
+$\Phi\le\beta dW+dH_*\le(\alpha/2)Pd+dH_*$.
+Thus $H_*>(\alpha/2)P$, which is more than $\alpha d/2$ planes.
+\end{informalproof}
+
+The probability statement is an ambient joint success/low-feedback bound;
+under full correctness it is a probability over the whole input cube.
+Different dates at the same cell may contribute separately. Large feedback
+is itself cheap: copy the raw rows in order, park the raw context at $d-1$,
+then rescan the copy. On a tape with fixed window width $w$, block $j$
+is exported when the aligned copying heads first enter block $j+w$.
+For $0\le j\le d-w-2$, its produced date has writer context $j+w$ and
+is imported during the rescan at context $d-1$. All $\kappa$ planes
+count, including constant ones. Consequently, for $d>w+1$,
+\[
+ \Phi\ge\kappa B\sum_{j=0}^{d-w-2}(d-1-j-w)
+       =\frac{\kappa B(d-w-1)(d-w)}2.
+\]
+The declared capacity of all participating dates is $O(P)$ and every span
+is at most $d-1$, so $\Phi=\Theta(Pd)$ in $O(P)$ native time.
+The reads may feed a parity accumulator without changing this statistic.
+Hence neither the feedback nor its long dates are a time bill or independent
+useful information.

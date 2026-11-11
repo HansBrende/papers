@@ -1,0 +1,367 @@
+\section{Mask-sensitive bounds and limits of the certificate methods}
+\label{sec:mask-methods}
+
+Throughout this section $C$ is a linear source of dimension $D$ over an
+arbitrary field, entries have dimension $b$, and the fixed shared decoders
+may be nonlinear. Write $N=bd^2$. Probabilities sample receiver labels,
+never inputs to a machine or native algorithms. A \emph{certificate} below
+is the numerical right side of a specified upper-bound inequality. Lower
+bounds on these numbers are not lower bounds on achievable code dimension.
+
+\subsection{Finite and structured masks}
+
+For a binary mask $p$ let $R_r(s)$ count starts of monochromatic runs of
+length at least $r$ along addition by $s$: a start $c$ satisfies
+$p(c-s)\ne p(c)=p(c+s)=\cdots=p(c+(r-1)s)$. Constant translation orbits
+have no such starts. Put $Q_s=R_1(s)$, the number of directed color changes.
+
+\begin{proposition}[A finite alternative]\label{prop:finite-two-thirds}
+\formal{CapacityMaskFinite.lean}{finite_weighted_run_budget,IsSharedCode.four_mul_finrank_le,IsSharedCode.six_mul_finrank_le}
+For a binary partition and $d>8$,
+\[
+ 6D\le4bd^2+5bd.
+\]
+\end{proposition}
+
+\begin{outline}
+The two-stage nested inequality with shifts $(1,3)$ gives
+$4D\le2N+bd(R_1+R_4+3)$. With shifts $(2,1)$ it gives
+$4D\le2N+bd(2R_2+R_3+4)$: use $Q_2=2R_2$, and retain the possible
+two translation orbits of the step $2$. The run counts here have step $1$.
+Two copies of the first inequality plus one of the second use the budget
+\[
+ 2R_1+2R_2+R_3+2R_4\le2d.
+\]
+For completeness, charge the two length-one tickets of a run to offset
+$0$ in lanes $0,1$, its two length-two tickets to offset $1$ in those
+lanes, its length-three ticket to offset $2$ in lane $0$, and its two
+length-four tickets to offsets $2,3$ in lanes $1,0$. Tickets occur only
+when the charged offset is within that run. Distinct runs cannot collide,
+and tickets within one run have distinct position--lane pairs. Thus they
+inject into two copies of the cycle. Substitution gives
+$12D\le8N+10bd$.
+\end{outline}
+
+\begin{theorem}[An explicit family of masks]\label{thm:structured-mask}
+\formal{CapacityMaskStructured.lean}{CapacityMaskStructured.first_component_count,CapacityMaskStructured.second_component_count,CapacityMaskStructured.structured_finrank_le}
+Let $d=8\ell$, $\ell\ge1$, write $c=a+\ell r$ with $0\le a<\ell$ and
+$r\in\mathbb Z/8$, and let
+\[
+ p(c)=v(a)\mathbin{\mathrm{xor}}u(r),\qquad
+ u=(0,1,1,0,1,0,0,1),
+\]
+where $v$ is arbitrary. Then
+\[
+ D\le\frac9{16}bd^2+\frac12bd.
+\]
+\end{theorem}
+
+\begin{outline}
+Use nested shifts $3\ell$ and $1$. The first graph has exactly $2\ell$
+components. For each fixed $a$, its cyclic order of high indices is
+$0,3,6,1,4,7,2,5$, whose labels are $0,0,0,1,1,1,1,0$ up to a common
+complement. Each color therefore induces one four-vertex path.
+
+The second shift set is $\{0,3\ell,1,3\ell+1\}$. Its differences retain
+the first graph and include $3\ell+1$. For $a<\ell-1$, that step sends
+$(a,r)$ to $(a+1,r+3)$. For every $z,\delta\in\{0,1\}$ there is an $r$
+with $u(r)=z$ and $u(r+3)=z\mathbin{\mathrm{xor}}\delta$: use
+$r=0,6,1,2$ for $(z,\delta)=(0,0),(0,1),(1,0),(1,1)$, respectively.
+Taking $z$ to be the desired global color xor $v(a)$ and
+$\delta=v(a)\mathbin{\mathrm{xor}}v(a+1)$ connects that color's two
+neighboring low-index components. All low indices are thereby connected
+within each color. No edge joins colors, so the final graph has exactly
+two components. When $\ell=1$ this was already true of the first graph.
+
+The nested bound is $D\le N/2+n_1/4+n_2/4$, with
+$n_1=bd^2/4$ and $n_2=2bd$. Substitution proves the claim. In particular,
+binary digit parity at $d=2^h$, $h\ge3$, belongs to this family: $u$ is
+the parity of the three high bits and $v$ the parity of the remaining bits.
+The formal proof constructs classifiers of the actual graph quotients,
+using the displayed paths and bridges to prove their fibers are exactly
+the connected components.
+\end{outline}
+
+\begin{proposition}[Exact direct envelope for digit parity]
+\label{prop:digit-parity-envelope}
+\formal{CapacityDigitParityEnvelope.lean}{CapacityDigitParity.digit_parity_envelope,CapacityDigitParity.digit_parity_floor_envelope}
+For cyclic binary digit parity at $d=2^h$, $h\ge3$, the minimum over all
+nonempty shift sets $\Delta$ of the original direct translate certificate
+is exactly $5bd^2/8$. This is the numerical envelope of that formula, not
+the capacity of the mask.
+\end{proposition}
+
+\begin{outline}
+Put $s_h(c)=(-1)^{p(c)}$ and
+$\eta_h(k)=d^{-1}\sum_c s_h(c)s_h(c+k)$. The formal mask is the literal
+parity of the lowest $h$ binary digits, defined by repeated division by
+two. Its periodicity identifies the finite correlation with the cyclic
+mask statistic. Splitting the average into even and odd positions gives
+\[
+ \eta_h(2k)=\eta_{h-1}(k),\qquad
+ \eta_h(2k+1)=-\tfrac12\bigl(\eta_{h-1}(k)+\eta_{h-1}(k+1)\bigr).
+\]
+Every correlation lies in $[-1,1]$, since its summands are signs. The
+recurrences show that each adjacent sum at level $h\ge1$ is either
+$(\eta_{h-1}(k)-\eta_{h-1}(k+1))/2$ or its negative. It therefore lies in
+$[-1,1]$. Every odd-index correlation at level $h\ge2$ lies in
+$[-1/2,1/2]$. Even indices reduce to the preceding level, and the
+nonzero correlations at $h=2$ are $0,-1,0$. Induction gives
+$\eta_h(t)\le1/2$ for every nonzero cyclic shift. Consequently
+\[
+ Q_t=\tfrac d2(1-\eta_h(t))\ge d/4.
+\]
+The actual first-graph inequality $\chi(\{0,t\})\ge Q_t$ suffices for
+the lower bound. Translating a shift set leaves its link relation
+unchanged, so every two-element set has certificate at least $5N/8$.
+For $q=|\Delta|\ge3$, the ambient term alone gives $2N/3$; a singleton
+set gives $N$.
+
+For attainment, set $\ell=d/8$ and split the three high bits from the
+remaining bits. The literal parity mask is exactly the preceding
+structured family, with $u$ the three-bit parity word. Its actual first
+graph for $t=3\ell$ has $2\ell=d/4$ components. This two-element shift
+set therefore attains $5N/8$. The value is integral, so flooring any
+other certificate cannot improve it. The structured nested bound improves
+this entire envelope by $bd(d-8)/16$ when $d>8$.
+\end{outline}
+
+\subsection{Run spectra and random masks}
+
+We use the bounded-differences inequality in its following precise form.
+For independent coordinates, changing coordinate $i$ changes a real function
+$f$ by at most $c_i$; then either tail at distance $t\ge0$ from its mean
+has probability at most $\exp(-2t^2/\sum_i c_i^2)$ when $\sum_i c_i^2>0$.
+This is McDiarmid's inequality\cite{McDiarmid1989}; the displayed form and
+the lower-tail reduction by $-f$ are stated in
+\cite[Theorem~1, equation~(2)]{Warnke2012}. No independence between the
+individual summands of $f$ is required. For the finite uniform product laws
+used here, the shared \texttt{lean-machine} modules
+\texttt{FiniteUniformProbability}, \texttt{FiniteBoundedDifferences}, and
+\texttt{FiniteUniformWindows} prove the needed inequality and restriction
+identities. The exponential-moment proof applies the bounded-interval
+estimate successively to actual finite conditional averages; it retains
+the full interval length $c_i$ at each coordinate.
+
+\begin{proposition}[The three-stage spectrum]\label{prop:run-spectrum-three}
+\formal{CapacityMaskRunSpectrum.lean}{IsSharedCode.run_spectrum_three}
+For $d>1$, putting $R_r=R_r(1)$ gives
+\[
+ D\le \frac N2+bd\left(\frac{R_1}{4}+\frac{R_4}{8}
+                                  +\frac{R_{13}}8\right)+\frac{3bd}4.
+\]
+\end{proposition}
+
+\begin{outline}
+Use the actual shifts $1,3,9$ in the three-stage inequality. Their
+successive difference sets cover radii $1,4,13$. The corresponding
+component counts are at most $R_1+1,R_4+2,R_{13}+2$, respectively;
+the first step has a single translation orbit. Their weights are
+$1/4,1/8,1/8$, so the additive error is $3bd/4$.
+\end{outline}
+
+\begin{theorem}[Almost every binary mask]\label{thm:random-mask-spectrum}
+\formal{CapacityMaskRunProbability.lean}{CapacityMaskProbability.spectrum_bad_probability,CapacityMaskProbability.SpectrumGood.source_bound}
+Let $d>13$, $\varepsilon\ge0$, and sample the $d$ mask bits independently
+and fairly. Except on probability at most
+$\exp(-128\varepsilon^2d/529)$, simultaneously every valid source and
+decoder family for the sampled mask satisfy
+\[
+ D\le\left(\frac{41473}{65536}+\varepsilon\right)bd^2+\frac{3bd}4.
+\]
+\end{theorem}
+
+\begin{outline}
+A run-start indicator of length $r<d$ examines $r+1$ distinct bits, with
+exactly two favorable assignments. Thus $\mathbb E R_r=d/2^r$.
+Changing one bit affects at most $r+1$ of these indicators. For
+$F=R_1/4+R_4/8+R_{13}/8$, the coordinate-change constant is therefore
+$2/4+5/8+14/8=23/8$, while
+$1/2+\mathbb EF/d=41473/65536$. Apply bounded differences with
+$t=\varepsilon d$ and then the preceding deterministic inequality.
+The event depends only on the mask, so there is no union over fields,
+widths, codes or decoders. Conditioning on both colors occurring divides
+the failure bound by $1-2^{1-d}$; identifying complementary labelings
+does not change any statistic.
+\end{outline}
+
+The same reasoning gives the full fixed-depth spectrum. For $k\ge2$,
+$d>(3^k-1)/2$, set $r_j=(3^j-1)/2$ and use shifts $3^{j-1}$. Balanced-ternary
+digits show by induction that their difference set covers every integer
+from $-r_j$ to $r_j$: the preceding interval and its translates by
+$\pm3^{j-1}$ are consecutive and exhaustive. Each difference digit is
+the difference of two digits in $\{0,1\}$. For a color in cyclic order,
+a gap greater than $r$ corresponds to an intervening opposite-color run
+of length at least $r$; its components number the larger of one and its
+number of long gaps. Summing both colors gives $\chi_r\le R_r+2$;
+at radius one the sharper $R_1+1$ also covers constant masks. Consequently
+\[
+ D\le\frac N2+bd\left(\sum_{j=1}^{k-1}\frac{R_{r_j}}{2^{j+1}}
+                  +\frac{R_{r_k}}{2^k}\right)+\frac{3bd}4.
+\]
+Replace each run count by its mean to obtain the constant
+$c_k=1/2+\sum_{j=1}^{k-1}2^{-r_j-j-1}+2^{-r_k-k}$. The coordinate-change
+constant is $L_k=\sum_{j=1}^{k-1}(r_j+1)/2^{j+1}+(r_k+1)/2^k$, so for
+$\varepsilon\ge0$ the upper tail at $\varepsilon d$ is at most
+$\exp(-2\varepsilon^2d/L_k^2)$. The formal endpoints are
+\lean{CapacityTernarySpectrum.Good.source_bound} for the source inequality
+and \lean{CapacityTernarySpectrum.bad_probability} for its probability bound.
+Their proofs compute graph counts, means and sensitivities on the actual
+recursively generated translate sets.
+
+\subsection{What the numerical methods cannot certify}
+
+For nonnegative ambient sizes $n_j$ define the exact nested certificate
+\[
+ B_k(n)=\sum_{j=0}^{k-1}\frac{n_j}{2^{j+1}}+\frac{n_k}{2^k},
+ \qquad B_0(n)=n_0.
+\]
+If $n_1\le n_0$, every $k\ge0$ satisfies
+$B_k(n)\ge n_0/2+n_1/4$. For $k\ge2$ these are the first two terms;
+for $k=1$ the first ambient has weight $1/2$; for $k=0$ use $n_1\le n_0$.
+
+\begin{theorem}[The nested-component floor]\label{thm:component-method-floor}
+\formal{CapacityMaskComparisonProbability.lean}{CapacityMaskProbability.component_floor_probability,CapacityMaskProbability.ChangeGood.certificate_floor}
+For $\eta>0$, outside probability
+$(d-1)\exp(-\eta^2d/2)$ under independent fair binary labels, every
+nested component certificate starting from $n_0=N$ is at least
+$(5/8-\eta/4)N$. Shifts and chain lengths may depend on the whole mask.
+Taking $\eta=\sqrt{6\log d/d}$ gives failure probability less than $d^{-2}$
+for $d>1$.
+\end{theorem}
+
+\begin{outline}
+For every nonzero $s$, $\mathbb E Q_s=d/2$. A bit change affects at most
+the two directed comparisons at that bit and its predecessor, so the
+coordinate-change constant is $2$, even for a step of order two.
+Bounded differences and a union over the $d-1$ nonzero steps give one
+event on which all $Q_s\ge(1/2-\eta)d$. Every first graph has
+$\chi(\{0,s\})\ge Q_s$: on a nonconstant translation cycle its
+monochromatic components equal its directed changes; a constant cycle
+adds a component and no change. The formal proof obtains the same
+inequality by counting the actual retained step edges. Thus
+$n_1\ge(1/2-\eta)N$; for a zero shift $n_1=N$ instead. Apply the first-term
+bound for every chain. Finally
+$(d-1)e^{-\eta^2d/2}=(d-1)d^{-3}<d^{-2}$ for the stated $\eta$.
+\end{outline}
+
+\begin{theorem}[The full-ambient isolation floor]\label{thm:isolation-method-floor}
+\formal{CapacityMaskMethodEndpoints.lean}{CapacityMaskProbability.isolation_rate_probability,CapacityMaskProbability.IsolationGood.rounded_floor}
+For $\eta\ge0$, start the isolation recurrence from \emph{all} $d-2$ nonrepresentative
+rows of a nonempty binary partition. Write $n_j$ for the number of these
+rows isolated in the graph of the $j$th nested shift set, in row units,
+and use precisely $B_k(n)$ with this terminal ambient. Outside probability
+$(d-1)\exp(-2\eta^2d/9)$ under independent fair labels, every resulting
+completed numerical bound $D_{\rm cert}=bd(2+B_k(n))$ satisfies
+\[
+ \frac{D_{\rm cert}}{N}\ge\frac9{16}-\frac\eta4+\frac1{2d}.
+\]
+Final integer flooring preserves the safe bound
+$9/16-\eta/4-1/(2d)$ for every $b\ge1$. With
+$\eta=\sqrt{(27/2)\log d/d}$ the unconditional failure probability is
+less than $d^{-2}$. Conditioning on both classes being nonempty divides
+it by $1-2^{1-d}$.
+\end{theorem}
+
+\begin{outline}
+For $s\ne0$, a vertex is isolated in $G_{\{0,s\}}$ precisely when its
+label differs from both neighbors at $\pm s$. If $s$ has order two the
+neighbors coincide and its probability is $1/2$; otherwise three distinct
+fair bits give probability $1/4$. Hence the total $I_s$ has mean at least
+$d/4$. A bit change affects at most the indicators centered at that bit
+and its two neighbors, so its coordinate-change constant is $3$.
+Bounded differences and a union over shifts give, simultaneously,
+$I_s\ge d/4-\eta d$. Deleting any two representatives loses at most two
+isolated vertices. Thus $n_1\ge d/4-\eta d-2$, independently of how the
+representatives were selected. The zero shift has $n_1=d-2$ and also
+satisfies this inequality. Since $n_0=d-2$ and all later sizes are
+nonnegative, the first-term bound gives
+$B_k\ge9d/16-\eta d/4-3/2$. Add the baseline $2$, multiply by $bd$, and
+divide by $N$. Final integer flooring of $D_{\rm cert}$ reduces its normalized value
+by less than $1/N\le1/d$. The stated logarithmic choice gives
+$(d-1)e^{-2\eta^2d/9}=(d-1)d^{-3}<d^{-2}$.
+\end{outline}
+
+Both floors are preserved under minima, infima over nonempty families,
+convex averages, and pointwise limits of these same certificates. Replacing
+counts by upper estimates only raises their right sides. Neither theorem
+covers a smaller actual starting support, a sharper terminal estimate,
+additional compatibility equations, or signed combinations of inequalities.
+
+\begin{theorem}[The direct method with many classes]\label{thm:direct-method-floor}
+\formal{CapacityMaskComparisonProbability.lean}{CapacityMaskProbability.direct_floor_probability,CapacityMaskProbability.EqualityGood.direct_gain_inverse_sqrt}
+Let $d\ge2$, $1\le M\le d$, and give the $d$ positions independent uniform
+labels in $\{1,\ldots,M\}$. For a nonempty shift set $\Delta$, put
+\[
+ g_\Delta=\frac{d-\chi(\Delta)}{|\Delta|d},\qquad
+ g_{\rm direct}=\max_{\varnothing\ne\Delta\subseteq\mathbb Z/d}g_\Delta.
+\]
+For $\eta>0$, except on probability at most
+$(d-1)e^{-\eta^2d/2}$,
+\[
+ g_{\rm direct}\le\sqrt{\frac{1/M+\eta}{2}},\qquad
+ \min_\Delta N(1-g_\Delta)
+       \ge N\left(1-\sqrt{\frac{1/M+\eta}{2}}\right).
+\]
+In particular, for $\eta_d=\sqrt{6\log d/d}$, the failure probability is
+less than $d^{-2}$. If $M\eta_d\le1$, then $g_{\rm direct}\le1/\sqrt M$.
+\end{theorem}
+
+\begin{outline}
+For each nonzero $s$, let $A_s=|\{c:p(c+s)=p(c)\}|$. The endpoints
+are distinct, so $\mathbb EA_s=d/M$. A coordinate change affects at most
+two comparisons, even for an order-two step. Bounded differences and a
+union over nonzero steps give one event on which
+$A_s\le d(1/M+\eta)$ for all of them.
+
+Fix any mask on this event, then any shift set of size $q$. Choose one
+orientation for each of its $\binom q2$ unordered distinct pairs. All
+graph edges generated by that pair number at most $A_s$ for the chosen
+difference $s$. An order-two step double-counts an edge and repeated
+differences may count it again; both only increase this upper bound.
+Every graph component admits a spanning tree, so
+\[
+ d-\chi(\Delta)\le |E(G_\Delta)|
+       \le\binom q2 d(1/M+\eta).
+\]
+The formal proof gives the same deficit inequality by the rank of the
+edge-incidence map: its kernel is exactly the functions constant on the
+actual translate-link quotient. Put $a=1/M+\eta$. Dividing and also using
+$d-\chi\le d$ gives
+$g_\Delta\le\min((q-1)a/2,1/q)\le\sqrt{a/2}$. The last step follows
+from $g_\Delta^2\le(q a/2)g_\Delta\le a/2$; the gain is nonnegative.
+This controls all sets from one event, even when chosen after inspecting
+the labels. Substitute $\eta_d$, and use $a\le2/M$ when $M\eta_d\le1$.
+\end{outline}
+
+An absent label must not be counted as a nonempty class. If $B$ is the event
+that every label occurs, the union bound gives
+$\Pr(B^c)\le M(1-1/M)^d\le M e^{-d/M}=:q_{\rm empty}$ (at $M=1$ the
+first value is zero). Thus the last theorem and $B$ hold simultaneously
+with probability at least $1-d^{-2}-q_{\rm empty}$. When
+$q_{\rm empty}<1$, its conditional failure probability is at most
+$d^{-2}/(1-q_{\rm empty})$; otherwise use the exact positive $\Pr(B)$
+as denominator. In the growing range $M\eta_d\le1$, the empty-label bound
+tends to zero, since $M\le\sqrt{d/(6\log d)}$ and hence
+$M e^{-d/M}\le\sqrt d\,e^{-\sqrt{6d\log d}}$ eventually. Every unlabeled
+nonempty partition has exactly $M!$ labelings, so the same conditional
+fraction holds for uniform unlabeled partitions. The formal quotient uses
+equality of label fibers; it constructs the unique relabeling permutation
+and proves the uniform-fiber identity. The conditioning statements and
+the growing-range limit are formalized in
+\texttt{CapacityMaskUnlabeled.lean} and \texttt{CapacityMaskGrowth.lean}. Together with the
+universal difference-cover guarantee, this makes the order $M^{-1/2}$
+sharp for that direct certificate method in the stated growing range.
+It is not an optimal constant, an attained code rate, or a restriction on
+the stronger nested methods. Final flooring changes a normalized direct
+certificate by less than $1/N$.
+
+As another comparison, putting $\eta=1/6$ in the binary change-count event
+makes every direct two-shift certificate at least $2N/3$, outside
+probability $(d-1)e^{-d/72}$. Every direct set of at least three shifts
+already has that lower bound from its ambient term. For any fixed
+$0<\varepsilon<2/3-41473/65536$ and sufficiently large $d$, the run-spectrum
+bound is strictly below this entire direct envelope, except on probability
+at most $e^{-128\varepsilon^2d/529}+(d-1)e^{-d/72}$. For rounded bounds
+choose $d$ large enough that the difference exceeds one dimension.
+No comparison here extracts a shared code from a native computation.

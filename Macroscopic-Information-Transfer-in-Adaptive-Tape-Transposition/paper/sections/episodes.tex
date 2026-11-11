@@ -1,0 +1,179 @@
+\section{Secondary modification episodes}\label{sec:episodes}
+
+Keep the reference and observer interface of \cref{sec:references}. A tape
+is \emph{matched} when its current whole word differs in at most $s$ cells
+from some current reference. Define a canonical carrier on the original run:
+initially choose the first unmatched tape, or tape zero if all match;
+subsequently retain the carrier if it is unmatched, otherwise choose the
+first unmatched tape, retaining the old carrier if all match. This rule is
+independent of the hash used in the analysis. Whenever any tape is unmatched,
+the carrier is unmatched.
+
+On a run with $\tau$ successful transitions, an inactive unmatched episode
+of tape $h$ is a maximal interval $I=[u,v)$ of reached configuration indices
+$0,\ldots,\tau$ on which $h$ is unmatched and is not the carrier. Define
+\[
+ D_h(I)=\{y_h(t):t\in I,\ t<\tau,\text{ the old-position write at }t
+                   \text{ changes the symbol}\}.
+\]
+Addresses, not write occurrences, are counted. A restore still counts its
+address. A successful exit transition is included, the entering transition
+$u-1$ is excluded, and the halting configuration contributes no write.
+
+\begin{lemma}[Changed cells and a frozen word]\label{lem:changed-cell-support}
+\formal{HistoricalCache.lean}{ExecutionPrefix.unchanged_outside_changedCells,ExecutionPrefix.residual_card_le,ExecutionPrefix.residual_card_le_entering_add_episode,ExecutionPrefix.changedCells_card_le_duration}
+In an actual successful execution prefix, let $D(u,v)$ be the distinct
+old addresses changed on one tape in steps $[u,v)$. Outside $D(u,v)$
+its value at $v$ equals its value at $u$. In any finite address window,
+the number of cells differing from a fixed word at $v$ is at most their
+number at $u$ plus $|D(u,v)|$. In particular, an initial residual of at
+most $s$ cells followed by one entering step and at most $m$ distinct
+changed addresses in $[u+1,v)$ leaves at most $s+m+1$ residual cells.
+Also $|D(u,v)|\le v-u$.
+\end{lemma}
+\begin{outline}
+Induct through actual successful transitions. A cell different from the
+old head position is preserved; at that position it is preserved unless
+the step belongs to the changed-cell set. The final residual is contained
+in the union of its initial residual and this set. Split off the first
+old position and use finite union cardinality. Finally the changed-cell
+set is the image of a subset of $[u,v)$, giving the duration bound.
+The set records actual symbol changes, so identity writes are excluded
+and repeated changes or restores use only one address.
+\end{outline}
+
+\begin{theorem}[Historical reference caches]\label{thm:historical-cache}
+\notformalized
+Let $G$ satisfy the source/observer, halt and output-length promises of
+\cref{thm:reference-carrier}, replacing its one-exception promise by
+$|D_h(I)|\le m$ for every episode. Put $M=s+m+1$, retain $K_j,r,p$
+from that theorem, and set
+\[
+ B_{\rm cache}=k(T+1)n^{k+2}(4T+1)(1+n^2)
+                  [1+(T+1)(P+1)^2\ell]^k.
+\]
+An analysis system exact on at least half of $G$ has the same time, input
+trajectory and append times/bits, with
+\[
+ Q_*\le2+QU B_{\rm cache}K_M^k2^{k(\ell+1)r},\qquad
+ z\le Z_0+k\ell r.
+\]
+It uses one blank physical work tape and the same continuous ports and
+radius as before. There is no restriction on episode length or count,
+or on the number of simultaneous unmatched tapes.
+\end{theorem}
+\begin{informalproof}
+Choose the same common hash event as in \cref{thm:reference-carrier}:
+compare only current actual words with current radius-$s$ candidates on
+original trajectories. It gives the true matching decisions on at least
+half the inputs. No historical radius-$M$ search is included in the event.
+
+Give every tape a cache consisting of a frozen base, either BLANK or
+$(e,o,b,i)$, and an explicit error $\epsilon\in\operatorname{Err}_M$.
+At current prefix $Y$, the latter base denotes
+\[
+ \mathbf1_{[0,b)}\gamma_{hi}(\,\cdot\,,\operatorname{window}_X,
+                 \lambda_0)+D_{hi}(e,Y[0:o),\lambda_0).
+\]
+The inactive caches describe current words; the active cache describes its
+frozen phase-entry word, with subsequent active writes represented physically.
+An inactive matched tape is refreshed from its first current matching pair
+at every positive time. Initially every cache is BLANK with zero error.
+An inactive write $u\to v$ at $y$ changes its error by
+$\mathbf1_{\{y\}}(u+v)$, leaving its base fixed.
+
+We verify the support bound at the episode boundary. If an episode starts
+at $u>0$, its tape was not active at $u-1$: an unmatched old carrier at
+$u$ would have been retained. Maximality therefore says it was inactive
+and matched at $u-1$. Its radius-$s$ refreshed error (or exact blank error
+if $u-1=0$) acquires at most the one entering address. Subsequently its
+support is contained in those old error addresses, that entering address,
+and $D_h(I)$. Thus it is at most $s+1+m$, through every successful exit
+write as well. An episode starting at zero needs only $D_h(I)$. A matched
+inactive tape promoted immediately after one write needs at most $s+1$.
+These cases cover every inactive cache before refresh or promotion.
+
+Retain the lazy physical invariant, logical positions, current hashes and
+continuous ports from \cref{thm:reference-carrier}. Reconstruct inactive
+symbols directly from their caches, even when currently unmatched. The
+active symbol comes from the physical tape on its visited interval and
+from its frozen cache elsewhere. All queries use the current logical-head
+raw ports and the same old windows/seed. Reconstruct the complete old tuple,
+then compute the source rule, observer/hash updates and tentative error
+updates for every old inactive tape. Keep the old active cache frozen.
+
+After computing the optional append, test current matches and choose the
+new carrier by the canonical policy. If it stays, extend the visited
+interval. If it changes to $g$, freeze $g$'s exact tentative POST-write
+cache, set the new offset, and reset the visited interval. The previous
+carrier must now be matched, so refresh its inactive cache from its new
+matching pair; refresh all other matched inactive tapes, and preserve the
+remaining updated historical caches. Only the old carrier makes the one
+physical write and move. The support argument proves that every cache
+needed at a switch is legal, including a blank base with nonzero error.
+
+INIT installs public original data, zero actual hashes and blank caches,
+and obtains initial raw hashes from the one joint seed/hash label, within
+the first transition evaluation. Multiple unmatched tapes at time zero
+cause no problem because all actual words are blank. On invalid branches
+finite range/support checks can halt. The invariant proves actual source
+semantics through halt on the good inputs without testing the promise.
+No episode counter, old-reference search, fresh label, clearing or seek is
+needed. Each of the $k$ caches has
+$[1+(T+1)(P+1)^2\ell]K_M$ descriptions. Multiply by the same state,
+observer, head, interval and hash fields as before to obtain the claimed
+product, including the active frozen slot. The label bill is unchanged.
+\end{informalproof}
+
+\begin{corollary}[Many distinct secondary modifications]\label{cor:secondary-modifications}
+\partformal{ReferenceTail.lean}{cache_tail_of_half_simulation,reference_cache_sparse_reserves}{The exact budgets and success tail are checked from one common native-prefix half-set simulation with the stated cardinality bills. The historical-cache compiler and its canonical-episode invariant remain unformalized.}
+Put $N=\lfloor640apC^2\rfloor+1$ and $A_0=k(\ell+2)$. Assume
+\[
+ q_{\rm src}+q_{\rm obs}\le P/(128N^2),\quad
+ \lceil\log_2K_M\rceil\le P/(256A_0N^2),\quad
+ Z_0\le P/(128N),\quad r_0+1\le\lfloor P/(8pN)\rfloor.
+\]
+Uniformly for every $b\ge1$ at sufficiently large $d$, fewer than
+$2^{1+(1-1/(8N))P}$ inputs both transpose by $T$ and satisfy every episode
+bound $|D_h(I)|\le m$. There is a fixed $\delta>0$ for which one may
+take $s\le\delta P$, $m=\lfloor\delta P\rfloor$. Outside that exception,
+some secondary episode has at least $\lfloor\delta P\rfloor+1$ distinct
+actual modifications, more than $\delta P$ successful steps, and work-head
+span at least $\lfloor\delta P\rfloor$.
+\end{corollary}
+\begin{informalproof}
+Write $\lambda_M=\lceil\log_2K_M\rceil$ and
+$L_0=\lceil\log_2(2k(T+1)\ell)\rceil$. Since $K_s\le K_M$,
+the compiler's bit bill is at most
+\[
+ q_{\rm src}+q_{\rm obs}+A_0\lambda_M+
+       k(\ell+1)L_0+\lceil\log_2B_{\rm cache}\rceil+2.
+\]
+The last three terms are $O(\log(P+1))$, so the supplied reserves imply
+$q_*\le P/(64N^2)$ and $k\ell r\le P/(128N^2)$ uniformly at large $d$.
+Together with $Z_0$ this gives the label bound of
+\cref{lem:multiport-transition}. Apply it and retain the half-set factor.
+For the quantitative choice it suffices to take $\delta\le1/6$ and
+\[
+ 3\delta\log_2\frac{e\lceil4C+1\rceil(2^a-1)}{3\delta}
+       \le\frac1{512A_0N^2}.
+\]
+Eventually $M\le3\delta P$ and the sparse binomial bound, with its ceiling,
+fits the reserve. Such $\delta>0$ exists. Negation of the episode promise
+gives the distinct-address count. One successful step changes at most one
+address on this tape, and $j$ distinct integer addresses have span at least
+$j-1$, proving the remaining claims.
+The checked \lean{ExecutionPrefix.many_episode_changes_duration_span} counts
+actual changed addresses only before halt. It proves the strict duration
+bound and the span bound even when the declared episode contains the halting
+configuration; that configuration contributes no successful write.
+\end{informalproof}
+
+Throughout the episode its tape and the current carrier are two different
+unmatched tapes; when $k>2$ the other identity may vary. This is not an
+independence or output-usefulness conclusion. The shared static scan seed
+conditions from \cref{sec:references} carry over without a seed per episode.
+For static reference families the cache reduces to a larger-radius case;
+for public or prefix-only historical bases, a polynomial catalogue enlargement
+already suffices. The added interface here permits raw-dependent historical
+bases while current masks and cutoffs evolve.

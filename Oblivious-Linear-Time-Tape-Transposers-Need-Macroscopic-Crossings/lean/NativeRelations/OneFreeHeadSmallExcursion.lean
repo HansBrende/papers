@@ -400,7 +400,7 @@ def slabSteps (m : ℕ → ℤ) (T : ℕ) (m₀ : ℤ) : Finset ℕ :=
 /-- Chronological partitioning of a single long slab `S ⊆ range T` (`H < S.card`, `1 ≤ H`) into
 `q_cnt = (S.card + H - 1) / H` half-open time slices `S ∩ [t_lo, t_hi)` of size `≤ H`, with
 `q_cnt * H ≤ 2 * S.card`. -/
-private theorem long_slab_chunks {m : ℕ → ℤ} {T H : ℕ} (hH : 1 ≤ H) (m₀ : ℤ)
+theorem long_slab_chunks {m : ℕ → ℤ} {T H : ℕ} (hH : 1 ≤ H) (m₀ : ℤ)
     (hlong : H < (slabSteps m T m₀).card) {L : ℕ} (ot : Fin L → ℕ) :
     let S := slabSteps m T m₀
     let q_cnt := (S.card + H - 1) / H

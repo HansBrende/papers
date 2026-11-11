@@ -36,4 +36,24 @@ theorem mono {f g : ℕ → ℝ} {a b : ℝ} (hf : ∀ n, a ≤ f n) (hg : ∀ n
     (isBoundedUnder_of_eventually_ge (Eventually.of_forall hf))
     (IsCoboundedUnder.of_frequently_le (Frequently.of_forall hg))
 
+/-- A pointwise affine upper bound with a vanishing error passes to lower
+limits, by taking a subsequence attaining the right-hand lower limit. -/
+theorem affine_upper {f g e : ℕ → ℝ} {a b c lo hi : ℝ}
+    (hf : ∀ n, a ≤ f n) (hg : ∀ n, lo ≤ g n ∧ g n ≤ hi)
+    (he : Tendsto e atTop (𝓝 0)) (hfg : ∀ n, f n ≤ b+c*g n+e n) :
+    liminf f atTop ≤ b+c*liminf g atTop := by
+  obtain ⟨v, hgv, hv⟩ := exists_seq_tendsto_liminf (f := atTop) (u := g)
+    (IsCoboundedUnder.of_frequently_le (Frequently.of_forall fun n => (hg n).2))
+    (isBoundedUnder_of_eventually_ge (Eventually.of_forall fun n => (hg n).1))
+  have ht : Tendsto (fun n => b+c*g (v n)+e (v n)) atTop
+      (𝓝 (b+c*liminf g atTop)) := by
+    simpa only [add_zero,Function.comp_apply] using (tendsto_const_nhds.add
+      (tendsto_const_nhds.mul hgv)).add (he.comp hv)
+  apply le_of_forall_lt_imp_le_of_dense
+  intro z hz
+  have hz' := eventually_lt_of_lt_liminf hz
+    (isBoundedUnder_of_eventually_ge (Eventually.of_forall hf))
+  apply ge_of_tendsto ht
+  exact (hv.eventually hz').mono (fun n hn => hn.le.trans (hfg (v n)))
+
 end LeanMachine.BoundedLiminf

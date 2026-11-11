@@ -1,0 +1,264 @@
+\section{Balanced fibres beyond transitivity}
+\label{sec:orbit-residues}
+
+Transitivity in \cref{thm:balanced-pair} is a sufficient way to obtain
+an orbit divisor.  It is not necessary.  The statements below use an
+actual invariant scalar-word action and derive the tuple counts through
+stabilizers.  They do not assume transitivity on tuples or independent
+behaviour of the row and lane actions.
+
+\subsection{The fixed-word residue test}
+
+Let a group $U$ act on a finite scalar-word set $\Omega$, and let $I$
+be a finite index set.  The action on $\Omega^I$ is diagonal.  Write
+$h=|\operatorname{Fix}_U(\Omega)|$ and $r=|I|$.
+
+\begin{theorem}[Fixed-word residues]
+\label{thm:fixed-word-residue}
+\formal{CompositionOrbitResidues.lean}{tuple_orbit_divisor,fixedTupleEquiv,invariant_fiber_fixed_residue,balanced_fixed_word_residue}
+Suppose $m$ divides the cardinality of every non-singleton $U$-orbit
+in $\Omega$.  Let $f\colon\Omega^I\to Z$ be $U$-invariant, where
+$Z$ is finite, and suppose every fibre has the same cardinality $F$.
+Then
+\[
+ |Z|\,(F\bmod m)\le h^r.
+\]
+In particular, in the complete matrix interface over a scalar alphabet
+of size $a$, with $r=db$, $|Z|=a^{db}$ and
+$F=a^{db(d-1)}$, any such invariant action satisfies
+\begin{equation}\label{eq:fixed-word-residue}
+ h^{db}\ \ge\ a^{db}\bigl(a^{db(d-1)}\bmod m\bigr).
+\end{equation}
+The integer $m$ need not be prime.
+\end{theorem}
+\begin{outline}
+If a tuple $x$ is not fixed, some coordinate $x_i$ is not fixed.
+The stabilizer containment $U_x\le U_{x_i}$ shows that
+$|U\cdot x_i|$ divides $|U\cdot x|$.  Therefore every non-singleton
+tuple orbit has size divisible by $m$.
+
+An invariant fibre is a union of tuple orbits.  Its cardinality modulo
+$m$ equals the number of its fixed tuples modulo $m$.  Consequently
+each fibre contains at least $F\bmod m$ fixed tuples.  Fixed tuples
+are precisely tuples of fixed scalar words, of which there are $h^r$.
+Summing over the disjoint fibres proves the inequality.  In the complete
+matrix setting, bijectivity gives the stated fibre size, as in the proof
+of \cref{thm:balanced-pair}.
+The formal argument proves the class equation for an arbitrary common
+orbit divisor and constructs the equivalence between fixed tuples and
+tuples of fixed words.
+\end{outline}
+
+\begin{corollary}[Too few fixed words]
+\label{cor:few-fixed-words}
+\formal{CompositionOrbitResidues.lean}{balanced_fixed_word_small_impossible}
+Under the preceding hypotheses, suppose $r>0$, $m>1$,
+$\gcd(m,a)=1$, $|Z|=a^r$, and $F=a^n$ for some $n\ge0$.
+If $h<a$, no such invariant balanced function exists.
+In particular this applies to any prime divisor $m$ coprime to $a$.
+\end{corollary}
+\begin{outline}
+Coprimality implies $m\nmid a^n$, so $a^n\bmod m\ge1$.
+The residue inequality gives $a^r\le h^r$, whereas $h<a$ and
+$r>0$ give the strict reverse inequality.
+\end{outline}
+
+There is a useful version requiring only one fibre, without counting
+the fixed set.
+
+\begin{proposition}[A semiregular divisor]
+\label{prop:semiregular-balance}
+\formal{CompositionOrbitResidues.lean}{no_balanced_semiregular,no_balanced_free_off_zero}
+Suppose $U$ fixes $0\in\Omega$ and every orbit of a word other than
+zero has cardinality divisible by $m>1$, with $\gcd(m,a)=1$.
+If $f\colon\Omega^I\to Z$ is invariant, no fibre avoiding the
+all-zero tuple has cardinality $a^n$, for any $n\ge0$.
+In particular, a cyclic action of order $m$ that is free away from zero
+has this obstruction.  Hence it cannot be an invariance subgroup of a
+nonconstant balanced decoder whose fibre sizes are powers of $a$.
+\end{proposition}
+\begin{outline}
+Every tuple in the selected fibre has a nonzero coordinate.  Its
+stabilizer is contained in that coordinate's stabilizer, so its orbit
+size is a multiple of $m$.  The invariant fibre is a disjoint union of
+these orbits and also has size divisible by $m$.  This contradicts
+$\gcd(m,a^n)=1$.  For a free action of a finite cyclic group of order
+$m$, each nonzero scalar orbit has size exactly $m$, giving the stated
+specialization.  The proof uses this orbit-size condition directly; it
+does not assume that all nonzero scalar words belong to one orbit.
+\end{outline}
+
+\subsection{An actual nontransitive order-five example}
+
+Set $d=4$ and $\Omega=\F_2^4$, with cyclic shift
+$(Tx)_i=x_{i+1}$.  Define the literal word operation
+\[
+ L(x_0,x_1,x_2,x_3)
+   =(x_2,\ x_2+x_3,\ x_1+x_2,\ x_0+x_2),
+ \qquad Q_c=T^cLTL^{-1}T^{-c}.
+\]
+All equalities in the next result concern these displayed operations;
+no assumed scalar-group identification is used.
+
+\begin{theorem}[Balance excludes a nontransitive adjacent pair]
+\label{thm:order-five-example}
+\formal{CompositionOrderFive.lean}{orderFivePerm_zero,orderFivePerm_fixed,orderFivePerm_order,orderFive_conjugate_difference,orderFive_pair_nontransitive,orderFive_no_balanced_covariance,orderFive_adjacent_class_impossible}
+The operation $L$ is a zero-fixing permutation of order five, and fixes
+no other word.  The group $\langle Q_0,Q_1\rangle$ is not transitive
+on the fifteen nonzero words.
+Nevertheless, for every $b\ge1$, a complete factorization
+$KLH=\tau$ on $\F_2^{4\times4\times b}$, with $H$ equivariant and
+$K$ class-uniform, must satisfy $p(0)\ne p(1)$.
+The same scalar $L$ is applied independently to every row and lane;
+$H$ and $K$ may be nonlinear and may mix all lanes.
+\end{theorem}
+\begin{outline}
+Substitution gives
+\[
+ L^4x=(x_0+x_3,\ x_0+x_2,\ x_0,\ x_0+x_1),
+ \qquad L(L^4x)=L^4(Lx)=x.
+\]
+The fixed-point equations give successively $x_0=x_2$, $x_1=0$,
+$x_3=0$, and $x_2=0$.  Thus $L$ fixes only zero, and since
+$L^5=I$ and $L\ne I$, its order is five.  The actual conjugates are
+\[
+ \begin{aligned}
+ Q_0x&=(x_0+x_1,\ x_1+x_3,\ x_1,\ x_1+x_2),\\
+ Q_1x&=(x_0+x_2,\ x_0,\ x_0+x_1,\ x_0+x_3).
+ \end{aligned}
+\]
+They satisfy
+\[
+ Q_0Q_1^{-1}=L.
+\]
+Write $e_i$ for the coordinate unit words and $v=(1,1,1,1)$.
+On $\{e_0,e_1,e_2,e_3,v\}$, the first conjugate fixes $e_0$
+and cycles $(e_1,v,e_2,e_3)$; the second fixes $e_3$ and cycles
+$(e_0,v,e_1,e_2)$.  Thus both preserve this five-word set.  In particular no group element sends
+a unit word to a word with exactly two nonzero coordinates, so the pair
+group is not transitive on the nonzero words.  Lean checks these finite
+identities on the sixteen literal words in its kernel.
+
+If $p(0)=p(1)$, the common shared decoder $f$ has
+$f(Q_0Y)=\sigma f(Y)=f(Q_1Y)$.  Substitute $Q_1^{-1}Y$ to obtain
+$f(LY)=f(Y)$, and hence invariance under the cyclic group generated by
+$L$.  Because $L$ has prime order five and fixes only zero, every
+nonzero scalar orbit has size five.  Stabilizer containment therefore
+makes every nonzero tuple orbit size divisible by five.
+
+Exactness on the complete finite space makes $H$ and $K$ bijective.
+The column decoder is balanced: each value has exactly
+$2^{12b}$ preimages in the $4b$-tuple domain.
+Choose an output value different from $f(0)$; it exists because the
+column alphabet has $2^{4b}>1$ values.  Its fibre avoids zero and is
+invariant under $L$, so the semiregular-divisor proposition says its
+size is divisible by five.  The power $2^{12b}$ is not, a contradiction.
+The formal endpoint derives covariance and balance from the full product
+identity; neither property is supplied as a separate certificate.
+\end{outline}
+
+These tests are necessary conditions for an actual complete factorization.
+Passing an orbit-assignment test for one shared function does not produce
+jointly independent output columns or a bijective whole-matrix map.
+The arguments also impose no cost bound on evaluating a scalar-word
+permutation or an orbit representative.
+
+\subsection{Field multipliers and two scope checks}
+
+\begin{proposition}[Multiplier class costs]\label{prop:multiplier-classes}
+\formal{CompositionMultiplierClasses.lean}{fieldMultiplierConjugate_eq,multiplier_class_residue,multiplier_class_count,multiplier_class_count_prefix}
+\formal{CompositionMultiplierGetters.lean}{actual_multiplier_getters_card,multiplier_degree_le,multiplier_binary_degree_eq}
+In the balanced-intertwiner interface, identify scalar words over $\F_q$
+with $E=\F_{q^d}$ in a reversed normal basis, so rotation is
+$\Phi(x)=x^q$. Let $L(x)=\lambda x$, $\lambda\ne0$, on each row and lane.
+Put $\kappa=\lambda^{1-q}$, $h=[\F_q(\kappa):\F_q]$ and
+$h_0=[\F_q(\lambda):\F_q]$. Every second-layer class is contained in
+one residue class modulo $h$, so it requires at least $h$ classes.
+More generally, among the first $n$ receivers there are at least
+$\min(n,h)$ distinct class labels, for every $0\le n\le d$.
+The complete operation $L$ itself requires exactly $h_0$ distinct class
+getters, and $h\le h_0$. For $q=2$, $h=h_0$.
+\end{proposition}
+\begin{outline}
+Writing $m_z$ for scalar multiplication, direct composition gives
+\[
+ Q_c=m_{\Phi^c(\kappa)}\Phi,\qquad
+ Q_cQ_e^{-1}=m_{\Phi^c(\kappa)/\Phi^e(\kappa)}.
+\]
+If $c,e$ share a decoder, its covariance makes it invariant under the
+second map. A multiplier $\mu\ne1$ has order $t>1$ dividing $q^d-1$;
+its cyclic action is free away from zero. Since $\gcd(t,q)=1$,
+\cref{prop:semiregular-balance} contradicts the required balance. Thus
+$\Phi^c(\kappa)=\Phi^e(\kappa)$, equivalent to $c\equiv e\pmod h$.
+The first $\min(n,h)$ receivers have distinct residues, proving the prefix
+bound without requiring a full extension-degree set of receivers.
+
+Let $\ell_0:E\to\F_q$ extract coordinate zero. The unique full-domain
+getter for $L$ at receiver $c$ is, on each row and lane,
+$x\mapsto\ell_0(\Phi^c(\lambda)x)$: rotate the received word back,
+apply $L$, then rotate its demanded coordinate to zero. Two such maps
+agree exactly when their scalar multipliers agree, since a nonzero
+scalar difference is invertible and $\ell_0\ne0$. There are $h_0$
+conjugates, giving both necessity and sufficiency. The inclusion
+$\kappa\in\F_q(\lambda)$ gives $h\le h_0$; for $q=2$,
+$\kappa=\lambda^{-1}$ gives equality. Thus this family does not hide a
+new small-first-layer exclusion. For odd $q$, a nonzero trace-zero
+$\lambda\in\F_{q^2}$ has $h_0=2$ but $\kappa=-1$ and $h=1$,
+so the distinction is necessary.
+\end{outline}
+
+\begin{example}[Surjectivity is weaker than balance]\label{ex:ratio-unbalanced}
+\formal{CompositionRatio.lean}{ratioDecoder_surjective,ratio_nonzero_fiber_card,ratio_zero_fiber_card,ratio_eight_fiber_cards}
+\formal{CompositionMultiplierClasses.lean}{ratio_multiplier_conjugate_covariance}
+For $E=\F_8$, $d=3$, $b=1$ and any $\lambda\ne0$, use the preceding
+actual conjugates. On the complete row-word input $E^3$, the total map
+\[
+ f(x_0,x_1,x_2)=
+ \begin{cases}x_1/x_0&x_0\ne0,\\0&x_0=0\end{cases}
+\]
+is surjective and satisfies $f(Q_cX)=\Phi(f(X))$ for every receiver.
+Its seven nonzero fibres have size $56$ and its zero fibre has size $120$,
+rather than the required common size $64$. More generally, over a field
+of size $Q$, the corresponding fibre sizes are $(Q-1)Q$ and
+$Q^2+(Q-1)Q$.
+\end{example}
+\begin{outline}
+Each $Q_c$ applies Frobenius and the same nonzero multiplier to all three
+rows, so the common multiplier cancels in the quotient; the zero branch
+is preserved. The input $(1,z,0)$ attains any $z$. For nonzero $z$ there
+are seven choices of $x_0$ and eight of $x_2$, with $x_1=zx_0$ fixed.
+For $z=0$, add the $64$ inputs with $x_0=0$ to the $56$ with
+$x_0\ne0,x_1=0$. These sum to $512$. No complete bijective transposer
+or balanced decoder is constructed by this example.
+\end{outline}
+
+\begin{proposition}[Exact orbit-assignment criterion]\label{prop:orbit-assignment}
+\formal{CompositionOrbitAssignment.lean}{OrbitAssignment.orbit_map_exists_iff,OrbitAssignment.allowed_iff_divides,OrbitAssignment.cyclic_balanced_map_iff_orbit_assignment}
+Let a finite group $G$ act on a finite source set and let
+$\theta:G\twoheadrightarrow\mathbb Z/d$ specify the cyclic action on a
+finite target set. For each source orbit $O$, choose $x\in O$ and put
+$n_O=|O|$ and $t_O=[\mathbb Z/d:\theta(G_x)]$.
+For each individual target orbit $D$, put $\ell_D=|D|$.
+An equivariant map with every target fibre of size $F$ exists if and only
+if the whole source orbits can be assigned to individual target orbits,
+with $\ell_D\mid t_O$ for every assignment and
+\[
+ \sum_{O\ \mathrm{assigned\ to}\ D}\frac{n_O}{\ell_D}=F
+ \quad\text{for each }D.
+\]
+\end{proposition}
+\begin{outline}
+A map from the transitive orbit $O$ to $D$ is determined by the image $z$
+of $x$. It is well defined precisely when
+$\theta(G_x)\subseteq(\mathbb Z/d)_z$, equivalently
+$\ell_D\mid t_O$ by the subgroup structure of a finite cyclic group.
+When it exists, the map $gx\mapsto\theta(g)z$ is onto $D$ and every
+fibre has size $n_O/\ell_D$: group translation bijects any two fibres,
+and counting their disjoint union gives the quotient. The phase
+stabilizer is independent of the source representative because the
+phase group is abelian. Restricting a balanced map to each source
+orbit proves necessity. Conversely choose one such orbit map for every
+assignment; their disjoint union has the stipulated fibre sizes.
+Whole source orbits cannot be split fractionally. This is an exact test
+for one class function, not for joint bijectivity of all output columns.
+\end{outline}

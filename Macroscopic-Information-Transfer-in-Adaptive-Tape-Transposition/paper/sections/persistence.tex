@@ -1,0 +1,232 @@
+\section{Persistent marginal information}\label{sec:persistence}
+
+All logarithms are base two. For a finite random variable $W$,
+$H_\infty(W)=-\log_2\max_w\Pr(W=w)$. A worst-case conditional bound
+ranges over attained conditioning values of positive probability. It is
+stronger than a bound on the average guessing probability. Neither notion
+implies independence of two work words.
+
+\begin{lemma}[One subset for every context]\label{lem:context-pruning}
+\formal{ContextPruning.lean}{context_subset,context_half_mass,context_conditional_bound}
+Let $(\Omega,\mu)$ be a finite probability space, $\mu(B)=p>0$, and let $Z_1,\ldots,Z_\ell$
+be context variables. For $\theta>0$ there is $D\subseteq B$ with
+$\mu(D)\ge p-\ell\theta$ and
+\[
+ \mu(D\cap\{Z_i=z\})\ge\theta\mu(Z_i=z)
+\]
+for every context attained on $D$. If, for every $i,v,w,z$,
+$\mu(B,W_{v,i}=w,Z_i=z)\le c\mu(Z_i=z)$, with $c\ge0$ and $\ell\ge1$, choosing
+$\theta=p/(2\ell)$ gives on this one $D$ of mass at least $p/2$
+\[
+ \Pr_D(W_{v,i}=w\mid Z_i=z)\le 2c\ell/p.
+\]
+\end{lemma}
+\begin{outline}
+For $E\subseteq B$, let $S_i(E)$ be the union in $\Omega$ of all $i$-context
+fibres meeting $E$. Maximize the finite potential
+$\Phi(E)=\mu(E)-\theta\sum_i\mu(S_i(E))$. For a maximizer $D$,
+$\mu(D)\ge\Phi(D)\ge\Phi(B)\ge p-\ell\theta$. If an attained fibre
+$F=D\cap\{Z_i=z\}$ violated the asserted lower bound, removing $F$ would
+lose $\mu(F)$ but remove the whole penalty $\theta\mu(Z_i=z)$ for this
+context. All other penalties can only decrease, contradicting maximality.
+Finally divide the joint envelope by this fibre lower bound. The global
+conditioning factor $\mu(D)$ cancels. There is no extra factor for the
+number of word variables sharing each context partition.
+\end{outline}
+
+\begin{theorem}[Persistent information beyond the strict output prefix]\label{thm:conditional-information}
+\partformal{PersistenceSource.lean}{ConditionalPersistence.of_small_thin_source}{the native catalogue counting theorem. Given its exact thin-source cardinality bound, including its factor two, Lean constructs the original uniform law, escaping set, common live interval, retained set, conditional whole-word bound and uniform threshold.}
+Fix $k\ge2,a,C$ and the constants $\rho,\eta$ of \cref{thm:catalogue}.
+There are constants $\alpha,\beta,p_0>0$ such that, for every sufficiently
+large $d$, every $b\ge1$ and machine with $q\le\rho P/2$, the following
+holds. If $S$ is a timely correct set of size at least
+$2^{(1-\eta/2)P}$, there are two fixed tapes, one fixed interval of at least
+$\beta P/4$ live configuration times, and one $D\subseteq S$ with
+$|D|/|S|\ge p_0/2$, such that at every time of the interval both whole
+work words have worst-case min-entropy at least $\alpha P/2$ conditional
+on the strict output prefix, under the uniform law on $D$. On every selected
+input, at least $\alpha P$ output bits remain undelivered throughout.
+\end{theorem}
+\begin{informalproof}
+Set $h_0=\rho/[4(k+1)]$, $A_0=2^a$,
+$\alpha=h_0/4$, $\beta=h_0/[4\log_2(6A_0)]$,
+$R=\lfloor\beta P\rfloor$, $\ell=\lfloor R/2\rfloor$ and
+$K_0=\lceil2^{\alpha P}\rceil$. Fix the original uniform law $\mu$ on $S$.
+A one-tape vertex is its entire word on $[-T_*,T_*]$ and its head position.
+Writing one symbol and making one unit move gives at most $3A_0$ outgoing
+and $3A_0$ incoming neighbours. Hence an undirected radius-$R$ ball has
+at most $(6A_0)^{R+1}$ vertices.
+
+For each time $t$, prefix $z$ and tape, take its $K_0$ most probable positive
+conditional vertices, or all if fewer exist. Outside this set each conditional
+atom has mass at most $1/(K_0+1)$. Define a public catalogue at $(t,y)$ by thickening the top sets at
+$u=(t-l)_+$ and prefixes $y[0:(|y|-r)_+)$ for $0\le l,r\le R$.
+Use radius-$R$ balls and map each vertex to its whole word, blank outside
+$[-T_*,T_*]$. This square overcount includes every actual historical
+prefix: at lag $l$, the prefix loses at most $l$ bits. Forgetting the head
+cannot increase the catalogue size, so its size is at most
+\[
+ K=(R+1)^2K_0(6A_0)^{R+1}.
+\]
+Every actual historical prefix occurs among these candidates because at most
+one bit is appended per transition. Its logarithm, including the ceiling,
+is at most $(h_0/2)P+O(\log P)\le h_0P$ eventually. The catalogues are
+fixed from the original law before applying \cref{thm:catalogue}.
+
+That theorem implies that more than half of $S$ have a reached time $t$ and
+two words escaping their current catalogues. Every vertex of both tapes in
+the preceding $R$ steps then avoids its corresponding conditional top set.
+The witness time exceeds $R$: otherwise the certain initial blank vertex
+and its actual path put every word in its catalogue. Choose
+$I_j=\{j\ell,\ldots,(j+1)\ell-1\}$ with $j=\lfloor t/\ell\rfloor-1$.
+It lies in $[t-R,t)$ and is strictly before halt, even if $t$ itself is the
+halting configuration. There are at most
+$M_0=\binom k2(\lceil8C/\beta\rceil+1)$ pair/grid choices. One cell $B$
+of this partition has mass $p\ge p_0=1/(2M_0)$.
+
+At each time in this fixed interval, both tapes avoid their conditional top
+sets throughout $B$. Forgetting the head position costs at most
+$n=2T_*+1$ atoms, giving the original-law envelope
+\[
+ \mu(B,W_{v,t}=w,Z_t=z)\le \frac{n}{K_0+1}\mu(Z_t=z).
+\]
+Apply \cref{lem:context-pruning} to the $\ell$ time-prefix partitions. One
+$D$ of mass at least $p_0/2$ has every conditional word atom at most
+$2n\ell/[(K_0+1)p_0]$. Its negative logarithm is
+$\alpha P-O(\log P)\ge\alpha P/2$. A positive attained vertex outside
+the top set also witnesses at least $K_0+1$ inputs in its original
+time/prefix fibre. Correctness fixes $|z|$ distinct raw bits, so that actual
+fibre has size at most $2^{P-|z|}$. Thus $P-|z|\ge\log_2(K_0+1)\ge\alpha P$.
+Adaptive output timing can further shrink the fibre; equality with
+$2^{P-|z|}$ is not assumed. All bounds are uniform for $P\ge d^2$.
+
+The formal endpoint retains the native catalogue bound
+$2^{1+(1-\eta)P}$ as its sole unproved input. The source-size bound and
+$\eta P/2\ge2$ leave at least half the original uniform source outside
+that thin set. The shared
+\lean{LeanMachine.FiniteSourceEscape.half_mass_pair_escape} constructs
+that event and its actual two-tape witnesses. The remaining selection,
+probability and rate estimates are formalized, with the dimension threshold
+preceding the width, machine and source quantifiers.
+\lean{ConditionalPersistence.of_half_mass_escapes} also works under any
+strictly positive finite source law satisfying the literal escape condition.
+The context-pruning step uses one retained set for every selected time and
+tape. The prefix-fibre bound follows from actual native correctness; no
+full-size fibre, independent tape words or entropy lower bound is assumed.
+\end{informalproof}
+
+Taking no prefix condition in the same argument gives the ordinary
+persistent-marginal theorem. The stronger conditional result still permits
+the two words to be identical. It cannot be summed over times as repeated
+fresh information.
+
+\subsection{Future successful reads and remote returns}
+
+Define the future-readable word at source time $t$ by retaining the current
+symbol exactly at cells visited in successful steps $u\ge t$ before halt;
+at and after halt it is blank. Call it $L_h(t)$. The unused halt-test tuple
+does not count as a future read. Its nonempty future address set is an integer
+interval, by unit motion.
+
+\begin{theorem}[Source future-readable catalogue bound]\label{thm:live-catalogue}
+\notformalized
+For fixed $k,a,C$ there are $h,e,\rho'>0$ such that, uniformly in $b$ at
+large $d$, every public time-indexed family of catalogues of size at most
+$K$ with $\lceil\log_2K\rceil\le hP$ has fewer than $2^{(1-e)P}$ timely
+correct inputs for which at every source time at most one $L_h(t)$ lies
+outside its catalogue. One may allow $q\le\rho'P$. No online access to
+future information is given to the source.
+\end{theorem}
+\begin{informalproof}
+Use the aligned bit simulator of \cite{HighRateStorage2026} with block size
+$s\ge1$ and physical batch length $B=10s+1$. Its literal tape word at
+time $Bj$ equals the source word at time $js$. Each batch reads/writes a
+public $3s$-cell window around its anchor; outside that window the word remains
+the source boundary word throughout the batch. Its positions at successful
+time $u$ differ by at most $2s$ from the source at
+$\min(s\lfloor u/B\rfloor,t_X-1)$, including the final batch and stationary
+drain. These identities follow from the simulator's boundary invariant and
+its actual sweep/carry rule, with source offset in $[0,s-1]$ and physical
+offset in $[-s,2s-1]$. The possible terminal replacement $t_X\mapsto t_X-1$
+costs one unit.
+
+Fix one full simulator trace of successful horizon $U$. Hardwire its last
+successful visit flags and clock in a native eraser: simulate each old tuple,
+but replace a work write by blank at the last visit to that cell. Force halt
+at $U$, because the erased final tuple need not itself trigger the source
+halt rule. On this trace fibre, induction shows its word is exactly the
+simulator word masked to future successful visits, with unchanged output and
+transition count. It has at most $1+Q_{\mathrm{sim}}(U+1)$ states.
+
+For an ordinary batch $j<\lfloor t_X/s\rfloor$, let $J$ be this trace's
+public future simulator interval and $I_X$ the source future interval at $js$.
+The shadow gives $J\subseteq I_X+[-2s,2s]$. Remove the first and last $2s$
+cells of $J$. The remainder is in $I_X$. Outside these at most $4s$ cells
+and the current $3s$ write window, the eraser word is exactly the source
+future-readable word masked to $J$. Thus a source catalogue induces one of
+size at most $KA^{7s}$. All heads use the same source time $js$. In the final
+batch and drain the entire future word is supported in the public $3s$
+window; at halt it is blank. This covers divisible source runtimes and $s=1$.
+No source future-interval endpoints are supplied as free metadata.
+
+Set $C_N=11C+1$ and first choose the catalogue constants of
+\cref{thm:catalogue} for $(k,a,C_N)$, independently of $s$. Write them
+$\rho_N,\eta_N$ and $h_N=\rho_N/[4(k+1)]$. The published successful-input
+simulator bound gives at most $2^{a_0P/s}$ full traces, where
+$a_0=(2C+1)\log_2(1+2\cdot3^{k+1})$, for large $P$. Choose fixed $s$ with
+$a_0/s\le\eta_N/4$. Its control cardinality is at most $QD_s$, with
+\[
+ D_s=(11s+2)s^{k+2}3^{3s+k+1}(2^a)^{3sk}2^{2s+2}.
+\]
+This counts the actual phase, offsets, raw/work windows, carry directions,
+pending/scheduled bits and stopped flag. The eraser consequently costs only
+$q+\lceil\log_2D_s\rceil+\lceil\log_2(U+1)\rceil+1$ bits. Take
+$\rho'=\rho_N/4$ and $h=h_N/2$; fixed and logarithmic overhead eventually
+fit the remaining reserves. Apply the ordinary time-indexed catalogue bound
+separately on every trace fibre and sum, retaining its factor two. The total
+is less than $2^{1+(1-\eta_N+a_0/s)P}<2^{(1-\eta_N/2)P}$ eventually.
+Thus $e=\eta_N/2$ works. No largest-fibre selection loses the original set.
+\end{informalproof}
+
+\begin{corollary}[Persistent information on original remote returns]\label{cor:remote-information}
+\partformal{PersistenceFutureSource.lean}{PersistenceFutureSource.of_thin_source_bound}{the source future-readable catalogue counting theorem. From its explicit thin-source bound, Lean derives the original uniform law, one common event and live interval, whole-word and remote-word atom bounds, actual successful returns and a threshold uniform over positive widths.}
+For fixed $k\ge2$ and resource-dependent $\alpha,\beta,p_0>0$, every sufficiently large timely
+correct set $S$ of size at least $2^{(1-e/2)P}$ contains a subset of relative
+size at least $p_0$, two fixed tapes and a common interval of at least
+$\beta P$ live times on which both future-readable words have min-entropy
+at least $\alpha P$. The same holds, with smaller constants, after blanking
+a fixed radius-$\alpha'P$ window about each current head. Every nonblank
+cell of the latter word lies on an actual macroscopic return straddling
+that checkpoint. These are marginal, not prefix-conditioned, claims.
+\end{corollary}
+\begin{informalproof}
+The pair $(L_h(t),y_h(t))$ follows the same bounded-degree one-tape graph used
+above: only the old scanned cell changes, retaining its write if revisited
+later and otherwise becoming blank. Thicken the $K_0$ most likely vertices
+at all nearby times under the original uniform law on $S$, now without prefix
+indices. At radius $R=\Theta(P)$ the catalogue size is
+$(2R+1)K_0(6A_0)^{R+1}$, which fits \cref{thm:live-catalogue} by choosing
+small exponential rate and radius. Escape on more than half of $S$ gives a
+fixed pair/grid interval of constant relative mass, exactly as in the preceding
+proof. Full vertex atoms there are at most $1/(K_0p_0)$; forgetting the head
+costs at most $\log_2(2T_*+1)$ bits.
+
+Masking a radius-$H$ window has fibres of size at most
+$(2T_*+1)A_0^{2H+1}$ on full vertices. Choose a sufficiently small fixed
+$H/P>0$; linear min-entropy survives. A nonblank retained cell was written
+at some previous visit and has a future successful visit. Its last past and
+next future visits are consecutive and its distance from the current head
+exceeds $H$, so the checkpoint witnesses the claimed return. All selected
+times are before halt. Neither this graph argument nor the eraser gives the
+original source a future-read oracle or proves that its later read matters
+semantically to the output.
+
+The formal proof uses one finite observation window $[-T_*,T_*]$ for the
+whole source law, while retaining each input's own first halt time in its
+future-readable word. Frozen steps after that halt are never future reads.
+\lean{PersistenceFutureRates.of_half_mass_escapes_all_widths} proves the
+selection and quantitative bounds under arbitrary finite laws; the stated
+uniform-source result derives its half-mass escape event from the thin-source
+count. The native eraser and source-catalogue theorem remain the only
+unformalized dependency of this consequence.
+\end{informalproof}

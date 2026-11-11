@@ -1,0 +1,30 @@
+\section{Building and verifying}\label{sec:verification}
+The repository must be cloned with its sibling paper directories. The Lean
+package pins Lean and Mathlib to version 4.34.1 and imports earlier libraries
+through relative paths. From the paper directory, run
+\begin{verbatim}
+python3 tools/lean_index.py
+cd lean
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+cd ../paper
+latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+\end{verbatim}
+The generator also rewrites the root imports to include every public local
+module. The generated index and axiom file list every declaration cited by a
+formal-status line and every Lean declaration explicitly named in the text.
+The permitted axioms are \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}. There are no admitted proofs, extra axioms or native
+computation shortcuts. Build products under \texttt{.lake/} are local and are
+not part of the published sources. The README records the remaining formalization
+obligations; a successful build does not certify the written-only parts.
+The current status lines classify the 48 numbered results as 35 fully
+formalized, six partially formalized and seven with complete written proofs
+not yet formalized. The generated index records the cited declarations;
+the library root includes every public local module. The verification records
+preserve the scope of earlier reviews separately from later formalization.
+
+The geometric slab-selection lemma uses a local \texttt{maxHeartbeats}
+limit of 800000. This changes only the elaboration allowance; kernel checking
+and the permitted axioms are unchanged.

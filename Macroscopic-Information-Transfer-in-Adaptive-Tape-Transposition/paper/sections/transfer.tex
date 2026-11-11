@@ -1,0 +1,394 @@
+\section{Transporting certificates to original executions}\label{sec:transfer}
+
+The direct replay arguments cover every positive width, but they do not
+subsume two other conclusions: expansion from \emph{every} large output set
+to the original crossing set, and storage capacity on an original run's entry
+quotient. This appendix retains those conclusions. Their finite interfaces
+use the actual aligned simulator of~\cite{HighRateStorage2026}; none identifies
+its dependency graph with the original graph.
+
+\subsection{A guarded projection}
+
+Fix a halting source execution with $t\ge1$ transitions and an integer $s\ge1$.
+The aligned simulator has $k$ corresponding work heads and halts after
+\[
+ B_0=10s+1,\qquad U=B_0(\lfloor t/s\rfloor+1)+s
+\]
+transitions. The extra complete terminal batch is present even when $s\mid t$.
+Its final $s$ steps form a stationary drain. Define
+\[
+ q(u)=\min\bigl((\lfloor u/B_0\rfloor+1)s,t-1\bigr),\qquad 0\le u<U.
+\]
+Write $x_h$ for source positions and $y_h$ for physical simulator positions.
+At batch $j$ the common anchor is
+$s\lfloor x_h(js)/s\rfloor$, and both the physical batch and the corresponding
+closed source interval lie in the anchor window $[-s,2s-1]$.
+At the terminal plateau the preceding source step adds at most one unit.
+These are consequences of the actual simulation invariant in
+\cite{HighRateStorage2026}, not of an idealized rescaled schedule.
+
+\begin{lemma}[Guarded path projection]\label{lem:guarded-projection}
+\formal{TransferNativeProjection.lean}{TransferGuards.native_guarded_projection}
+For every source vertex set $B$, there is a simulator set $E$ with
+\[
+ |E|\le [4B_0+k(6s+1)]|B|
+\]
+such that every surviving simulator dependency path projects to a source
+path with endpoints $q(u),q(v)$ avoiding $B$, endpoints included.
+Moreover $|y_h(u)-x_h(q(u))|\le3s$ for every corresponding head, including
+the input head.
+\end{lemma}
+\begin{outline}
+The checked execution invariant of the actual compiler proves the position
+bound, including the terminal batch and drain. Any two time-ordered source
+visits in a closed band admit a backward dependency path within that band,
+even if the source walk leaves both sides between them. Follow the state
+edge when its predecessor stays in the band; otherwise jump to the actual
+last prior visit to the current boundary. Unit speed supplies that visit.
+Time decreases at each step. Thus endpoint shadow alone projects a simulator
+work hop at cell $z$ to a source path in $[z-3s,z+3s]$. Equal projected
+endpoints require only a singleton path.
+
+Mark every whole physical batch whose closed projected source interval meets
+$B$. A source cut time belongs to at most four such batches, including the
+extra terminal batch and drain. Each costs at most $B_0$. Also mark the later
+endpoint of a simulator work hop whenever its projected interval strictly
+straddles a cut time $b$ and its cell is within $3s$ of $x_h(b)$. For each
+$(b,h,z)$ at most one consecutive-visit interval straddles $b$: such intervals
+have disjoint interiors and $q$ is nondecreasing. This costs at most
+$k(6s+1)|B|$. These are the sets whose union is $E$.
+
+A surviving state edge projects either to a singleton or to a source spine
+interval disjoint from $B$. A surviving work edge has the band path just
+constructed. A cut vertex on that path would either be a projected endpoint,
+contradicting the whole-batch guard, or lie strictly between them, contradicting
+the hop guard. Concatenation proves the path statement. This uses every actual
+work last-visit edge and does not introduce input-revisit edges.
+\end{outline}
+
+Let $\alpha_i,u_i$ be the actual source and simulator append times for output
+ordinal $i$. Ordinals are zero-based and matched even when output bit values
+repeat. Let $O(v)$ count source appends strictly before time $v$.
+
+\begin{lemma}[Output look-ahead and cones]\label{lem:cone-transport}
+\formal{TransferNativeCones.lean}{TransferCones.native_cone_transport_interior,TransferCones.native_cone_transport}
+For every existing ordinal, $\alpha_i\le q(u_i)$ and
+$O(q(u_i)+1)\le i+2s$. Put
+\[
+ G_s=4B_0+k(6s+1)+2s+1.
+\]
+For every $B$ there is a guard $\Gamma$ of size at most $G_s|B|+2s$.
+Every append root $u_i\notin\Gamma$ has $i+2s$ defined, and its root-exempt
+input cone satisfies
+\[
+ \operatorname{Cone}_{N_s}(\Gamma,i)
+ \subseteq \operatorname{Dil}_{3s}\bigl(\operatorname{Cone}_M(B,i+2s)\bigr)
+          \cup\operatorname{Boundary}_{3s}(P).
+\]
+The dilation is in valid raw coordinates; the boundary comprises the first
+and last $3s$ positions, with overlap allowed.
+\end{lemma}
+\begin{outline}
+At physical batch start $j$, the emitted output count is
+$E_j=s\lfloor O(js)/s\rfloor$ and fewer than $s$ source outputs are pending.
+The compiler emits a prefix of length either zero or $s$ and retains the
+suffix. Thus its FIFO order gives $\alpha_i\le q(u_i)$. Through the source
+step $q(u_i)$, inclusive, at most $s+1$ new outputs follow $O(js)$.
+For a batch emission $i\ge E_j$, this gives
+$O(q(u_i)+1)\le E_j+(s-1)+(s+1)\le i+2s$.
+The drain has fewer than $s$ residual outputs and satisfies the same bound.
+These actual append-order facts are checked in
+\lean{TransferFIFO.actual_sourceRoot_le_clock} and
+\lean{TransferFIFO.actual_ordinal_lookahead}.
+Hence $q(u_i)<\alpha_{i+2s}$ when that future ordinal exists.
+
+Take the guard of \cref{lem:guarded-projection}. Add the last at most $2s$
+append roots and every root $u_i$ whose closed interval
+$[\alpha_i,\alpha_{i+2s}]$ meets $B$. A cut time belongs to at most $2s+1$
+these intervals: their smallest and largest indices differ by at most $2s$,
+since append times increase strictly. This proves the guard bill. For a
+surviving root, prepend the $B$-free source spine from $\alpha_{i+2s}$ to
+$q(u_i)$ to the projected path. At a raw endpoint, the input-head shadow
+places the simulator raw address within $3s$ of the source address. If that
+source address is valid it belongs to the source cone. Otherwise the original
+valid simulator address is in the displayed boundary. Singleton paths and
+endpoints in cuts are included. The look-ahead bounds output counts, not the
+physical waiting time of a pending output bit.
+The formalization also gives the version before adding the terminal roots:
+the guard costs at most $G_s|B|$, and the inclusion holds whenever the
+future ordinal exists. This is the version used for interior entry lanes.
+Every constructed guard consists of actual simulator vertices.
+\end{outline}
+
+\subsection{Finite raw-input cuts and erosion}
+
+For $U\subseteq[0,P)\cap\Z$, regard $U$ as a subset of the entire integer
+line and define
+\[
+ E_s(U)=\{z\in\Z:[z-3s,z+3s]\cap\Z\subseteq U\},\qquad
+ C_s=4B_0+k(6s+1)+2s-1.
+\]
+Thus erosion pays the physical input boundaries as well as internal gaps.
+
+\begin{lemma}[Finite interval erosion]\label{lem:input-erosion}
+\formal{InputErosion.lean}{interval_union_erosion_loss,demanded_erosion_loss}
+If a finite integer set $U$ is a union of $r$ integer intervals, then
+$|U\setminus E_s(U)|\le6sr$. Consequently, for every $V\subseteq U$,
+$|V|\le |V\cap E_s(U)|+6sr$. The intervals need not be disjoint.
+\end{lemma}
+\begin{outline}
+Every point of an interval outside its two end strips of width $3s$ has
+its whole radius-$3s$ neighborhood in that interval, hence in $U$.
+Therefore $U\setminus E_s(U)$ lies in the union of the $2r$ end strips,
+whose total cardinality is at most $6sr$. The second inequality partitions
+$V$ into its eroded and noneroded parts. The Lean statement allows an
+arbitrary nonnegative integer radius and a finite interval cover.
+\end{outline}
+
+\begin{proposition}[Finite eroded-input transfer]\label{prop:eroded-input-transfer}
+\formal{TransferErodedInvoice.lean}{TransferEroded.native_eroded_fibre_invoice,TransferEroded.native_eroded_fibre_invoice_cover}
+On an actual source run and its aligned simulator, a source cut $B$ from
+any set of existing append ordinals to all source reads of $U$ lifts to
+a simulator cut $\Gamma$ from the matched append roots to all simulator
+reads of $E_s(U)$, with
+\[
+ |\Gamma|\le C_s|B|+2s-1.
+\]
+This finite geometric assertion needs no correctness or common source trace.
+On a nonempty common simulator trace fibre $S$ of correctly transposed inputs,
+put $D_S=P-\log_2|S|$ and let $v_s$ be the simulator's complete
+step-value width, including its output field. For every $X\in S$,
+every $V\subseteq U\subseteq\{0,\ldots,P-1\}$ and every original cut $B$ separating the demanded
+roots for $V$ from all original reads of $U$,
+\[
+|V\cap E_s(U)|\le D_S+v_s(C_s|B|+2s-1).
+\]
+If $U$ is a union of $r$ integer intervals, then
+$|U\setminus E_s(U)|\le6sr$; in particular the left side can be replaced
+by $|V|-6sr$. These finite assertions hold at every positive entry width.
+\end{proposition}
+\begin{outline}
+The physical input head satisfies the same shadow estimate
+$|y_0(u)-x_0(q(u))|\le3s$ used in \cref{lem:guarded-projection}.
+In an ordinary core both positions lie in the aligned anchor plus
+$[-s,2s-1]$; the terminal replacement by the last live source step costs
+at most one unit, and the stationary drain has error at most $s$.
+These estimates apply to the actual input-head coordinate, including the
+terminal core. Therefore a simulator read at a point of $E_s(U)$ projects
+to an actual source read in $U$. Its connector is the singleton source
+vertex $q(u)$; no input-revisit edge is introduced.
+
+Use the edge guards of \cref{lem:guarded-projection}, costing at most
+$[4B_0+k(6s+1)]|B|$. In the source graph with $B$ deleted, let $R_U$
+be the vertices reaching a read of $U$. Its intersection with a $B$-free
+state-spine interval is an upper terminal segment, so there are at most
+$|B|+1$ positive activations. At an activation time $c$, the FIFO invariant
+in \cref{lem:cone-transport} leaves at most $2s-1$ output ordinals whose
+actual source root precedes $c$ but whose simulator shadow is at least $c$.
+Delete those matched simulator roots. This costs
+$(2s-1)(|B|+1)$. Every surviving simulator path to an eroded read projects
+to a source path avoiding $B$ and ending at a read of $U$. Its projected
+root lies in $R_U$, whereas its actual source root lies outside $R_U$ by
+separation; the activation guard forbids this. Singleton paths and cut
+roots are covered by the endpoint-inclusive guards. If the source has no
+successful step there are no append ordinals and the assertion is vacuous.
+The complete geometric lift, including this zero-time case, is
+\lean{TransferEroded.native_eroded_cut_lift}.
+
+Restrict the demanded source coordinates to $V\cap E_s(U)$ and apply
+the lift. Its resulting separator is on the one simulator trace shared
+by $S$. The frozen-trace injection of \cref{prop:frozen-invoice} gives
+$|V\cap E_s(U)|\le D_S+v_s|\Gamma|$, proving the displayed bound.
+The weaker coefficient $v_s+1$ is an immediate consequence; a full step
+record already includes the output field and needs no further root surcharge.
+This direct injection also explains the all-width finite
+claim; no canonical-width asymptotic theorem is used. The cut can depend
+on $X,U,V$ because the frozen-trace assertion holds for every cut on that
+fixed fibre, with no restriction to inputs sharing the original trace.
+
+Apply \cref{lem:input-erosion} to the given interval cover. The maximal
+interval components are one such cover.
+Highly fragmented sets may have empty erosion; this cost is not discarded.
+\end{outline}
+
+\subsection{An original entry quotient carries a large storage code}
+
+For one reference source run $X$ and cut $B$, let $Q_X^B(e)$ contain entry $f$
+if any bit of $f$ belongs to the source root-exempt cone of any of the $b$
+output bits of entry $e$. This is the full quotient: all lanes and self-edges
+are retained. For a relation $Q$ on $J$, let $\operatorname{Cap}_m(Q)$ be the
+base-two logarithm of the largest storage-code cardinality over $m$-bit symbols.
+Recovery means that agreement on all helpers in $Q(e)$ forces agreement at $e$.
+Write $\Delta_m(Q)=m|J|-\operatorname{Cap}_m(Q)$; both are zero for $m=0$.
+
+\begin{theorem}[Theorem Q: capacity of original entry relations]\label{thm:original-entry-capacity}
+\formal{TransferEntryNative.lean}{TransferEntry.native_original_entry_capacity}
+Let $S$ be a nonempty set of correctly transposed inputs with one common complete
+simulator trace. Set $m=(b-6s)_+$, $D_S=P-\log_2|S|$, and let $v_s$ be the
+complete step-value width of the simulator. For every reference $X\in S$,
+every source vertex set $B$ on that run and every entry set $J$,
+\[
+ \Delta_m(Q_X^B[J])\le D_S+v_sG_s|B|.
+\]
+The extracted code need not contain $X$, and its members need not have the same
+original trace. The finite statement holds at every $b\ge1$.
+\end{theorem}
+\begin{outline}
+If $m=0$ the conclusion is immediate. Otherwise use the guard in
+\cref{lem:cone-transport} without the final-output tail, of size at most
+$G_s|B|$. An interior lane $3s\le\gamma<b-3s$ is never in that tail. Partition
+$S$ by the joint complete guard values and every raw bit outside the interior
+lanes of $J$. There are at most $2^{v_sG_s|B|+P-m|J|}$ labels. A largest cell,
+projected to the remaining lanes, is an injective image and has logarithmic
+cardinality at least $m|J|-D_S-v_sG_s|B|$.
+
+For a guarded interior root its output bit is fixed by the complete guard
+value. For another root, the output look-ahead stays within entry $e$. If an
+interior raw helper survives the fixed exterior, its distance-$3s$ source
+neighbor stays within the same helper entry. Thus every nonconstant helper
+is in $Q_X^B(e)\cap J$. The fixed-trace cone-determination theorem of
+\cite{MacroscopicCrossings2026} gives recovery of each bit throughout this
+cell. The checked cone-determination step is
+\lean{nativeInputCone_determines}; guarded roots use the output field already
+present in the complete record. Boundary helpers are fixed. The reference run fixes $B,Q_X^B$ and the
+simulator guard, whereas only the simulator trace is required to be common.
+This proves the storage-code property and the capacity inequality.
+\end{outline}
+
+\begin{corollary}[One event for all original capacity certificates]\label{cor:entry-success-tail}
+\formal{TransferEntryNative.lean}{TransferEntry.uniform_entry_success_tail,TransferEntry.certified_original_cut_lower_bound}
+Fix a machine, a linear time constant, canonical width $b(d)$, and
+$0<\delta<1$. Some fixed $s$ and all sufficiently large $d$ have the following
+property: fewer than $2^{(1-\delta/2)P}$ timely correct inputs violate any of
+\[
+ \Delta_{b-6s}(Q_X^B[J])\le\delta P+v_sG_s|B|,
+ \qquad\text{for all }B,J.
+\]
+If $0<\alpha,\rho\le1$, $|J|\ge\alpha d^2$ and
+$\operatorname{Cap}_{b-6s}(Q_X^B[J])\le(1-\rho)(b-6s)|J|$, choosing
+$\delta=\rho\alpha/4$ gives, on the good event at large $d$,
+$|B|\ge\rho b|J|/(2v_sG_s)$.
+\end{corollary}
+\begin{outline}
+The successful-subset simulator resource theorem of~\cite{HighRateStorage2026}
+bounds the number of attained simulator traces by $2^{aP/s}$ for a fixed
+$a$. Choose $s$ with $a/s\le\delta/2$ before dimension grows. Fibres of size
+at least $2^{(1-\delta)P}$ satisfy every finite inequality above. The total
+number of successful inputs in smaller attained fibres is strictly below
+$2^{(1-\delta/2)P}$. There is no union bound over $B,J$ or reference inputs.
+For the final assertion take $b\ge24s$: the deficit is at least
+$3\rho b|J|/4$, whereas $\delta P\le\rho b|J|/4$, and rearrange.
+\end{outline}
+
+Acyclic entry relations have singleton storage codes and are a special case.
+Bit-level acyclicity is insufficient: shifting a target by $2s$ can introduce
+self-dependence within an entry. No separation, degree or missing-self-edge
+hypothesis is supplied automatically. A capacity theorem is useful here only
+after its own premises have been established on the actual quotient.
+
+\subsection{Expansion from every large output set to original crossings}
+
+Let $\mathrm{CL}_h$ be the earlier endpoints of same-tape crossing consecutive
+revisits whose two excursions exceed $2h$, with the strict crossing order of
+\cite{MacroscopicCrossings2026}.
+
+\begin{theorem}[Theorem E: original adaptive crossing expansion]\label{thm:original-crossing-expansion}
+\formal{TransferCrossingTail.lean}{TransferCrossing.uniform_original_crossing_expansion}
+Fix a native machine, $C\ge0$ and $\alpha>0$.
+At canonical width there are $\eta,\lambda,\beta>0$ such that, at every
+sufficiently large $d$, fewer than $2^{(1-\eta)P}$ timely correct inputs fail
+the following simultaneous statement about their original execution:
+for every $|V|\ge\alpha P$, every vertex cut from the actual append roots
+$\operatorname{Out}_M(V)$ to $\mathrm{CL}_{\lfloor\lambda P\rfloor}$ has
+size at least $\beta|V|$. No original-trace heaviness assumption is imposed.
+\end{theorem}
+\begin{outline}
+We first give the finite crossing-target addition to
+\cref{lem:guarded-projection}. Let $H\ge h\ge1$, and let $K_0$ bound the
+number of grid-$H$ epochs of each simulator head. Each epoch has diameter
+less than $2H$. A crossing pair $p<p'<u<u'$ has opposite polarities after
+one choice of sign: its first hop is above base $a$, and its second below
+base $b>a$. Choose an epoch containing a maximum of the first hop and one
+containing a minimum of the second. Their fixed signed extremizers $t_1,t_2$
+satisfy $p<t_1\le p'<u\le t_2<u'$. Let $t_0$ minimize the signed walk before
+$t_1$, and $t_3$ maximize it after $t_2$. The resulting zigzag has overlap
+\[
+ [L_0,U_0]=[\max(y(t_0),y(t_2)),\min(y(t_1),y(t_3))]
+\]
+containing both bases. For fixed sign, ordered epoch pair and endpoint role,
+each base level determines at most one endpoint: distinct consecutive-visit
+hop interiors at one level cannot both contain the fixed extremizer.
+
+Put $R=3s$ and $w=2h+2R+2$. Discard targets whose assigned level is within
+$w$ of either end of the overlap. The preceding injection bounds their number
+by $4kK_0^2(w+1)$. Indeed the two extremizer epochs are distinct: their
+values differ by more than $2H$, whereas one epoch has diameter less than
+$2H$. The checked label records the sign, endpoint role, two epoch indices
+and a level offset at most $w$. Reversing the strictly ordered epoch pair
+encodes the upper end strip, so no extra strip bit is needed. The label
+space has size $4K_0^2(w+1)$ per tape, and actual consecutive-visit
+uniqueness makes the encoding injective.
+At a remaining first-role target of level $a$, take
+$\ell=a-R-1$ and $c=\ell+2h+1$. The shadowed zigzag visits below $\ell$,
+above $c$, below $\ell$, then above $c$. The last $\ell$ visit before
+$q(v)$ and first after it form a genuine upper hop; the neighboring $c$ visits
+supply a crossing lower hop. Both excursions exceed $2h$.
+For a second-role target at $b$, reflect the construction with
+$\ell=b+R+1$, $c=\ell-2h-1$; the crossing partner occurs \emph{before} the
+chosen lower hop. In either case the checked band-path argument connects
+$q(v)$ backward to the appropriate source endpoint within the common band
+$[y(v)-R-1,y(v)+R+1]$ in the unsigned coordinates.
+
+Guard a good target whenever its connector band contains a cut position.
+At a fixed cell, a hop of excursion $>2H$ uses at least $4H+2$ transitions;
+their interiors are disjoint. This guard therefore costs at most
+$k(6s+3)\lfloor(U-1)/(4H+2)\rfloor|B|$.
+
+There is one further root bill. Let $R_B$ be the source vertices reaching
+$\mathrm{CL}_h$ while avoiding $B$. On each $B$-free spine interval it is an
+upper terminal segment, so it has at most $|B|+1$ positive activations.
+At an activation $c$, a delayed ordinal satisfies
+$\alpha_i<c\le q(u_i)$. Thus $i<O(c)$, while the checked pre-step FIFO
+bound gives $O(c)\le O(q(u_i))\le i+2s-1$.
+There are at most $2s-1$ such ordinals. Delete their matched simulator roots.
+Any remaining simulator path to a surviving crossing target projects to a
+source path avoiding $B$ and continues along its connector. Its projected
+root is in $R_B$, whereas its separated actual source root is outside $R_B$;
+the activation guard forbids this mismatch. Thus a source separator lifts to
+one of size at most $A|B|+F$, where
+\[
+\begin{split}
+ A&=4B_0+k(6s+1)+k(6s+3)\lfloor(U-1)/(4H+2)\rfloor+2s-1,\\
+ F&=4kK_0^2(2h+6s+3)+2s-1.
+\end{split}
+\]
+This exact finite lift is \lean{TransferCrossing.native_crossing_cut_lift}.
+
+Finally use the successful-subset trace bound of~\cite{HighRateStorage2026}
+and the correct-subset expansion theorem of~\cite{MacroscopicCrossings2026}.
+Its permitted entropy budget depends only on tape count, the simulator time
+coefficient and $\alpha$, so it can be chosen before the fixed block size.
+On every
+remaining heavy successful fibre, the latter theorem gives a fixed
+$H=\lfloor\theta P\rfloor$ and cut lower bound $e|V|$ simultaneously for
+all $|V|\ge\alpha P$, as checked in
+\lean{TransferCrossing.native_crossing_fibre_bound}.
+Since $U=O(P)$ and $\theta P\le2H$ at large $P$, one fixed $K_0$ bounds
+the epoch counts and one fixed $\overline A$ bounds $A$.
+Choose $h=\lfloor\lambda P\rfloor$ with $0<\lambda\le\theta$ sufficiently small that
+$F\le e\alpha P/2$ at large $d$. Then
+$e|V|\le A|B|+F$ gives $|B|\ge e|V|/(2\overline A)$.
+The simultaneous choices and bounds are proved in
+\lean{TransferCrossing.exists_uniform_crossing_budgets}.
+The simulator has at most $2^{\eta P}$ attained successful traces after
+choosing its fixed block size, and the fibres below the required
+$2^{(1-2\eta)P}$ threshold together contain fewer than
+$2^{(1-\eta)P}$ inputs. Every cut and output set is covered on the same
+remaining event. This proves the asserted quantifiers and the ambient bound.
+\end{outline}
+
+Theorem E concerns arbitrary macroscopic output sets at canonical widths;
+the direct off-carrier theorem concerns its selected slab demands at all
+widths. Neither subsumes the other. Theorem Q adds a different certificate:
+a cheap cut would need an original entry relation with almost full storage
+capacity. Finding a cut and a nonvacuous deficit together remains open.

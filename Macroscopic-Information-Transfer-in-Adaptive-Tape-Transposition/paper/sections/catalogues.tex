@@ -1,0 +1,116 @@
+\section{Dynamic catalogues and prior-output assistance}\label{sec:catalogues}
+
+A whole-word catalogue is a public finite set of possible tape words. It
+may depend on the machine, length and an entire prescribed input set, but
+not additionally on its individual input. The following stronger version
+allows indexing by the strict output prefix. Omitting that index gives the
+ordinary time-indexed catalogue theorem.
+
+First enlarge the \emph{analysis} model to a one-work-tape transition system
+whose rule receives the strict prior output string, with its length, in
+addition to its old native tuple. It receives no append timestamps, future
+bits, uncharged clock or mutable advice. This is not an output-reading native
+machine asserted to exist in the original model.
+
+\begin{lemma}[Prefix-assisted one-head bound]\label{lem:prefix-replay}
+\formal{PrefixFinite.lean}{Enlarged.prefix_finite_bound}
+The uniform tail is \lean{Enlarged.prefix_macroscopic_tail} in
+\texttt{PrefixTail.lean}.
+The one-head case of \cref{eq:finite-returns}, with no windows or imports,
+and its small-controller exponential success bound remain valid for this
+prefix-assisted analysis model.
+\end{lemma}
+\begin{outline}
+Keep the same slab, geometry, exterior of $U=\pi(O)\setminus I$, entry
+states and optional initial slab snapshot. Cache each replayed output by its
+ordinal. Immediately before a retained transition with output count $o$,
+every ordinal $j<o$ outside $O$ is supplied by the exterior bit
+$X_{\pi(j)}$, because $\pi(j)\notin U$. Every $j<o$ inside $O$ occurred
+at an earlier retained step and is in the cache. Chronological run order
+and paid entry/exit counters guarantee that no such ordinal belongs only
+to a future run. Thus the entire strict prefix is known \emph{before}
+applying the rule. The free slab still persists, raw reads are exterior,
+and the common-old-tuple induction in \cref{thm:replay} applies to the
+enlarged rule. No new message field is required. The geometric saving and
+state budget therefore give the identical finite and asymptotic bounds.
+The formal rule also permits public time and head coordinates, so it covers
+the stated interface as a special case without changing the message.
+\end{outline}
+
+\begin{theorem}[Dynamic prefix-catalogue handoff]\label{thm:catalogue}
+\notformalized
+Fix a cap $T$, $n=2T+1$, and public catalogues
+$\mathcal F_{h,t,y}\subseteq\Gamma^{[-T,T]}$ of size at most $K\ge1$,
+for every head, reached time and possible strict prefix of length at most
+$P$. Let $G$ be any input set whose source runs halt by $T$ with at most
+$P$ appends and have at most one tape outside its current catalogue at every
+reached configuration, including halt. Put
+\[
+ r=\lceil\log_2(2k(T+1)K)\rceil,\qquad
+ B_y=k(T+1)n^{k+1}(4T+1)(1+n^2)(1+T(P+1)KnA).
+\]
+One prefix-assisted one-head system is exact on at least $|G|/2$ inputs,
+with at most $1+QB_y2^{kr}$ states and the same alphabet, transition count,
+raw moves and append times/bits. For fixed $k,a,C$, with
+$N_1=\lfloor160aC^2\rfloor+1$, $\rho=1/(64N_1^2)$ and
+$\eta=1/(8N_1)$, if
+\[
+ q\le\rho P/2,\qquad \lceil\log_2 K\rceil\le \rho P/[4(k+1)],
+\]
+then at large $d$, uniformly over $b\ge1$, fewer than
+$2^{1+(1-\eta)P}$ timely transpose-correct inputs satisfy the promise.
+\end{theorem}
+\begin{informalproof}
+Choose a binary linear hash with $r$ output bits. For a fixed original input,
+compare each actual word at each reached $(h,t)$ with each different member
+of its current catalogue, using the actual original strict prefix. There
+are at most $k(T+1)K$ comparisons, each colliding with probability $2^{-r}$.
+The entire original run is independent of the hash. Averaging selects one
+hash collision-free on at least half of $G$. No union over hypothetical
+prefixes is involved. On these good inputs a matching hash identifies exactly
+the actual current catalogue word; aliases among unattained words are harmless.
+The common hash and surviving input set are checked by
+\lean{exists_binary_common_half}; its comparison families are fixed before
+the hash is chosen. The native catalogue handoff remains written-only.
+
+Maintain $k$ live hashes with the local update rule from \cref{thm:carrier}.
+Use the same active physical tape, translated coordinates and visited interval.
+Inactive words are decoded from their current catalogues. The active frozen
+word is initially blank, or is described by
+\[
+ (e,o_e,i,z,v),\quad 0\le e<T,
+\]
+meaning member $i$ of $\mathcal F_{f,e,y[0:o_e)}$ with cell $z$ replaced by
+$v$. Here $o_e$ is the \emph{pre-append} ordinal. The current strict prefix
+always contains that old prefix as a slice. There are at most
+$1+T(P+1)KnA$ such frozen codes.
+
+Initialize the active index to the unique catalogue excluding blank at time
+zero, or any index if none does; if two exclude blank the promise set is
+empty. Reconstruct the complete old tuple, apply the source rule, update all
+hashes and compute the newly appended bit. Only then test membership in the
+time-$t+1$ catalogues at the resulting prefix. If the active index changes
+to $g$, that tape was inactive before the step, so its postword is its known
+pre-catalogue member plus the single old-position write. Freeze this code
+with $(e,o_e)=(t,|y|)$ and reset the visited interval. This remains exact for
+a time-driven membership change, a preserving write or disjoint successive
+catalogues. There is one physical old-active write/move, as before.
+
+Invalid table indices, ambiguous required decodes and out-of-range fields may
+halt. Good original runs establish the invariant, not a test for membership
+in $G$. Counting the displayed finite fields proves the state product.
+If $\lambda=\lceil\log_2K\rceil$, its bit cost is
+$q+(k+1)\lambda+O_{k,a,C}(\log(P+1))$. The stated reserves fit $\rho P$.
+Apply \cref{lem:prefix-replay} to the one-head analysis system and retain the
+factor two from hash selection. The original source still cannot read output;
+only the intermediate counting model has prefix assistance.
+\end{informalproof}
+
+Time-indexed catalogues give an ordinary native one-head simulator because
+its table need not consult a prefix. In either version the conclusion is
+per declared public catalogue system. It is not a union over all possible
+descriptions or an assertion that sparse Shannon entropy supplies a small
+support. Hamming balls about public templates are direct applications: on
+$2T+1$ cells their size is at most
+$\sum_{j\le m}\binom{2T+1}{j}(A-1)^j$. Sufficiently small fixed linear
+$m$ fits the rate budget, as does $m=o(P)$.

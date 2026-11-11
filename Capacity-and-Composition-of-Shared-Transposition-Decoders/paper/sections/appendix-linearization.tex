@@ -1,0 +1,112 @@
+\section{Why a large linearly decoded subcode is not free}\label{sec:linearization}
+
+The source remains a binary linear subspace throughout this appendix.
+Only decoder linearity changes. The bounds allow a candidate subcode
+and its decoder to mix all lanes; lane-wise upper bounds are not summed
+without a joint argument.
+
+\begin{lemma}[Projection with coupled lanes]\label{lem:lane-projection}
+\formal{CapacityLinearization.lean}{IsLinearSharedCode.inr_comap,linear_subcode_lane_bound}
+Let $G,H$ occupy disjoint lane groups with the same receiver partition.
+Suppose every linearly decoded subcode of $H$ has dimension at most $L_H$.
+Every linearly decoded subcode $C'\le G\oplus H$ has dimension at most
+$\dim G+L_H$, even with arbitrary cross-lane linear decoding.
+\end{lemma}
+\begin{outline}
+Project $C'$ onto the $G$ coordinates. Its image has dimension at most
+$\dim G$. Its kernel is a subcode of $H$; restrict each full linear
+decoder to zero $G$ input and project its output to the $H$ coordinates.
+This is a legal linear shared decoder on the kernel. Rank-nullity gives
+the assertion. No decoder on the projected $G$ image is needed.
+\end{outline}
+
+\begin{lemma}[A width-stable triple obstruction]\label{lem:triple-obstruction}
+\formal{CapacityTripleBinary.lean}{CapacityTriple.exists_width_stable_hard_source}
+Let $d=3s$ be odd. Partition $\{0,\ldots,s-1\}$ and enlarge each class
+by its translates by $s$ and $2s$. There is a positive integer $\ell$
+such that, for every width $B$ divisible by $\ell$, a binary linear source
+$H_B$ of dimension $Bd^2/3$ has deterministic shared decoding, while
+every binary-linearly decoded subcode has dimension at most $2Bd^2/9$.
+\end{lemma}
+\begin{outline}
+Choose $E=\F_{2^\ell}$ containing a primitive $d$-th root $\zeta$;
+such an extension exists since $d$ is odd. Write
+$e_k(t)=\zeta^{kt}$, and let the allowed row space be
+\[
+ R=\operatorname{span}_E\{e_{3j+1}+e_{3j+2}:0\le j<s\}.
+\]
+All $d$ rows vary independently in $R$. The resulting binary source has
+dimension $\ell ds=\ell d^2/3$. For distinct phases $c,e$, equality
+between a vector in $\sigma^cR$ and one in $\sigma^eR$ compares the two
+coefficients in each disjoint frequency pair. Their ratio is respectively
+$\zeta^c$ and $\zeta^e$. Thus every pair coefficient is zero, and the two
+row spaces intersect only in zero. The entire nonzero matrix views are
+therefore disjoint, and the total phase-identifying decoder from the proof
+of Theorem \ref{thm:interval-attainment} returns the actual demanded row.
+
+Every row in $R$ satisfies $(I+\sigma^s+\sigma^{2s})x=0$, because the
+two frequencies in each pair are nonzero modulo three. Thus every
+source matrix satisfies $(I+T^s+T^{2s})X=0$. If a subcode has binary-linear
+shared decoders, applying one decoder at a view $T^aX$, using the three
+same-class receivers, forces
+\[
+ \operatorname{row}_aX+\operatorname{row}_{a+s}X+
+ \operatorname{row}_{a+2s}X=0\qquad(0\le a<s).
+\]
+The joint row-sum map on the whole hard source is surjective onto $s$
+independent copies of $R$: set just the first row of each triple to any
+chosen vector. Its binary rank is $\ell s^2$, giving the claimed
+$2\ell d^2/9$ upper bound. Repeat the field-coordinate blocks to width
+$B$. The same joint map is surjective onto all repeated blocks, so its
+rank scales by $B/\ell$ even when the subcode and decoders mix those
+blocks arbitrarily.
+\end{outline}
+
+\begin{theorem}[Above-half sources can resist subcode promotion]\label{thm:subcode-barrier}
+\formal{CapacitySubcodeMixture.lean}{CapacitySubcode.exists_above_half_barrier}
+\formal{CapacitySubcodeBarrier.lean}{CapacitySubcode.above_half_seed_barrier}
+For every odd $d\ge9$ divisible by three, at suitable binary widths and
+a two-class partition there is a deterministically decoded linear source
+of rate
+\[
+ \frac12+\frac1{8d+18}
+\]
+whose every linearly decoded subcode has rate at most
+$\frac12-\frac1{8d+18}$.
+More generally, a two-class seed at odd $s$ coprime to three with rate
+$1/2+\varepsilon$, $\varepsilon>0$, gives at $d=3s$, after a width
+enlargement, a source of rate $1/2+\delta$ whose every linearly decoded
+subcode has rate at most $1/2-\delta$, where
+\[
+ \delta=\frac{\varepsilon}{18\varepsilon+12}.
+\]
+\end{theorem}
+\begin{outline}
+For the second statement apply Theorem \ref{thm:cyclic-lift} with $m=3$.
+The good source has rate $\alpha=1/2+e$, $e=\varepsilon/3$, on the same
+tripled partition used in Lemma \ref{lem:triple-obstruction}.
+Repeat binary lane blocks to put it and the hard source at a common width
+$B$; this repeats codes, and does not extend a nonlinear decoder's field.
+Choose positive integers $g,h$ with
+$h/(g+h)=e/(e+2/9)$, possible since all seed rates are rational.
+Take $g$ good blocks and $h$ hard blocks. Their concatenated deterministic
+decoders work on the direct sum. Its rate is
+$(1-t)\alpha+t/3$; by the joint-width hard bound and Lemma
+\ref{lem:lane-projection}, every linearly decoded subcode has rate at
+most $(1-t)\alpha+2t/9$. Substitution of $t=e/(e+2/9)$ gives the stated
+symmetric offsets $\delta=e/[18(e+2/9)]$.
+
+For the unconditional statement use the symmetric good source, of rate
+$1/2+1/(2d)$, at the tripled two-class partition. Take $g=4d$ good blocks
+and $h=9$ hard blocks. The two rates are respectively
+$(2d+5)/(4d+9)$ and at most $(2d+4)/(4d+9)$, which are the displayed
+offsets from one half.
+\end{outline}
+
+The unconditional excess tends to zero. A family with a fixed positive
+excess in the second statement is conditional on such a seed family;
+it is not supplied here. Nor does the theorem separate the maximum
+capacities over unrelated codes: its conclusion concerns subcodes of
+one actual source. The enlarged widths can exceed both one and the
+canonical logarithmic width, so neither restricted-width conclusion is
+inferred.

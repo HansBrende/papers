@@ -1,0 +1,306 @@
+\section{Measured structural restrictions}\label{sec:structural-bounds}
+
+The parameters in this appendix describe an actual source subspace.
+They are not running-time invoices. Neither result supplies its own
+small-parameter hypothesis for an arbitrary tape computation.
+
+\subsection{A robust bound for almost field-linear residuals}
+
+Fix the reversed normal-basis identification of each binary row with
+$E=\F_{2^d}$. Thus column rotation is coordinatewise Frobenius $\Phi$ on
+the $d$ row vectors in $E^b$. For a two-class code $C$, let $P$ be the
+representative-row projection of Section \ref{sec:structure}, and put
+\[
+ L=C\cap\ker P,\quad H=\operatorname{span}_E L,\quad
+ \rho=\dim_{\F_2}H-\dim_{\F_2}L.
+\]
+The common $E$ scalar acts on all rows and lanes; no independent-lane
+decomposition is assumed. Let $a$ be the number of potentially nonzero
+residual rows, so $a\le d-2$.
+
+\begin{theorem}[Scalar-closure defect]\label{thm:closure-defect}
+\formal{CapacityClosureAsymptotic.lean}{CapacityClosure.residual_finite_bound, CapacityClosure.capacity_bound, CapacityClosure.rounds_eq_floor, CapacityClosure.error_ratio_tendsto, CapacityClosure.uniform_eventual_bound}
+For $d\ge2$, $b\ge1$, arbitrary deterministic shared decoders, and every
+integer $R\ge1$, set
+\[
+ \mathcal E_R(d)=\frac{d}{10R}+
+ \frac{7\sqrt d}{5R}\frac{2^{R/2}-1}{\sqrt2-1}.
+\]
+Then
+\begin{align*}
+ \dim_{\F_2}L&\le bd\left(\frac a2+\frac d{10}+\mathcal E_R(d)\right)
+                       +\frac{13}5\rho,\\
+ \dim_{\F_2}C&\le\frac35N+bd+bd\mathcal E_R(d)+\frac{13}5\rho.
+\end{align*}
+Taking $R=\lfloor\tfrac12\log_2d\rfloor$ for $d\ge4$ gives
+$\mathcal E_R(d)=o(d)$. In particular $\rho=o(N)$ implies rate at most
+$3/5+o(1)$, uniformly over all widths and all lane coupling.
+\end{theorem}
+\begin{outline}
+For a shift set $F$ containing zero write
+$H_F=\bigcap_{e\in F}\Phi^{-e}H$ and
+$L_F=\bigcap_{e\in F}\Phi^{-e}L$. The first is $E$-linear. The binary
+map from $H_F$ to the direct sum of the quotients
+$\Phi^{-e}H/\Phi^{-e}L$ has kernel $L_F$, so
+\begin{equation}\label{eq:hull-intersection-defect}
+ \operatorname{codim}_{\F_2}(L_F,H_F)\le |F|\rho.
+\end{equation}
+Delete loops from the same-class link graph for $F$. One joint
+binary-linear covariance map is
+\[
+ B_F(X)=(X_v-\Phi^{v-u}X_u)_{u\to v},
+\]
+with one orientation for each edge. Actual decoder equality makes this
+map zero on $L_F$. Hence its rank on $H_F$ is at most $|F|\rho$.
+
+Choose a normal element $\lambda\in E$, so
+$\lambda\ne\Phi^\delta\lambda$ for every nonzero $\delta\in\Z/d$.
+Multiplication by $\lambda$ permutes $H_F$, so $B_F(\lambda X)$ has the
+same rank on that space. For an edge of displacement $\delta$, the two
+observations $A=X_v-\Phi^\delta X_u$ and
+$A'=\lambda X_v-\Phi^\delta(\lambda)\Phi^\delta X_u$ give
+\[
+ A'-\lambda A=(\lambda-\Phi^\delta\lambda)\Phi^\delta X_u.
+\]
+They recover both entire endpoint vectors. Therefore the projection onto
+all nonisolated rows has binary rank $t_F$ satisfying
+\begin{equation}\label{eq:joint-hull-rank}
+ t_F\le2|F|\rho.
+\end{equation}
+This uses one pair of joint maps, not a sum of edge ranks. It does not
+assert decoder correctness on $H_F\setminus L_F$.
+
+Let $n_F=bd|S\cap\operatorname{Iso}(F)|$, where $S$ is the active row set.
+Projection gives $\dim_{\F_2}H_F\le n_F+t_F$ and, for any shift $s$,
+\[
+ \dim_{\F_2}(H_F+\Phi^{-s}H_F)\le n_F+2t_F.
+\]
+The two error images have separately paid dimensions $t_F$; neither need
+be invariant. For a nested chain $F_i=F_{i-1}\cup(F_{i-1}+s_i)$,
+$F_0=\{0\}$, Grassmann and this inequality yield
+\[
+ \dim_{\F_2}L\le \sum_{i<j}\frac{n_{F_i}}{2^{i+1}}
+                         +\frac{n_{F_j}}{2^j}+(2j-1)\rho.
+\]
+Indeed unrolling contributes $\sum_{i=1}^jt_{F_i}/2^i\le2j\rho$
+by \eqref{eq:joint-hull-rank}, and
+$\dim_{\F_2}L=\dim_{\F_2}H-\rho$ subtracts the original defect once.
+
+For $F_1=\{0,s\}$ and $F_2=\{0,s,3s,4s\}$ the full isolation counts obey
+\[
+ I_1\le Q_s-\tfrac12Q_{2s}+g_s,\qquad
+ I_4\le R_4(s)+2g_s.
+\]
+For the first assertion, on a nonconstant $s$-cycle the isolated vertices
+are precisely singleton runs, counted by $Q_s-R_2(s)$; constant or
+one-point cycles are covered by $g_s$. For the second, a vertex isolated
+in the radius-four graph must be a singleton run whose following
+opposite-color run has length at least four; these following runs are
+distinct. Cycles of length at most eight have at most two isolated
+vertices, paid by $2g_s$. Use Lemma \ref{lem:binary-runs} and its weaker
+budget $Q_s+R_2+2R_4\le d$. The one- and two-stage inequalities become
+\begin{align*}
+ \dim L&\le bd(a/2+Q_s/2-Q_{2s}/4+g_s/2)+\rho,\\
+ \dim L&\le bd(a/2+d/8+Q_s/8-3Q_{2s}/16+3g_s/4)+3\rho.
+\end{align*}
+Their convex combination with weights $1/5,4/5$ is
+\[
+ \dim L\le bd\left(a/2+d/10+(Q_s-Q_{2s})/5+7g_s/10\right)+13\rho/5.
+\]
+Average $s=2^ru$ for uniform $u\in\Z/d$ and $0\le r<R$.
+The $Q$ terms telescope; the initial average is at most $d/2$ and the
+terminal average is nonnegative. The gcd estimate proved in Section
+\ref{sec:capacity}, $\mathbb E\,g_{2^ru}\le2\sqrt d\,2^{r/2}$,
+gives exactly $\mathcal E_R(d)$. Finally
+$\dim C\le\dim L+2bd$ and $a\le d-2$ prove the second bound.
+For the stated $R$, both terms of $\mathcal E_R(d)/d$ tend to zero.
+\end{outline}
+
+At $\rho=0$ the theorem covers genuinely $E$-linear residuals with
+arbitrary deterministic decoders. It improves the general $41/64$
+asymptotic bound whenever $\rho/N<1/64$ by a fixed margin. The parameter
+can nevertheless be extensive for the cheapest partial transposer.
+
+\begin{proposition}[Symmetric-copy control]\label{prop:symmetric-closure}
+\formal{CapacityClosureControl.lean}{CapacityClosure.symmetric_isSharedCode, CapacityClosure.scalarHull_supportedSymmetric, CapacityClosure.symmetric_copy_defect}
+On the lane-wise symmetric source, the identity output is correct for every
+receiver partition. For two distinct representative rows its residual satisfies
+\[
+ \dim L=\frac{b(d-2)(d-1)}2,\qquad
+ \dim_{\F_2}H=bd(d-2),\qquad
+ \rho=\frac{b(d-2)(d+1)}2.
+\]
+Thus $\rho\sim N/2$, although straight streaming copy realizes this
+partial correctness set.
+\end{proposition}
+\begin{outline}
+Zeroing representative rows of a symmetric matrix also zeroes their columns.
+Restriction to the remaining rows identifies the residual with symmetric
+matrices of side $d-2$. Each remaining diagonal unit has a nonzero
+normal-basis coordinate. Extension-field multiples of these units span every
+row and lane of the zero-representative ambient. The dimension difference
+gives the displayed defect. The native realization is the literal streaming
+copy operation; the formal statements establish its symmetric correctness
+set and the exact algebraic dimensions.
+\end{outline}
+
+\subsection{Retaining symmetric directions}
+
+Let $\mathcal S=\operatorname{Fix}\tau$, put
+$\mathcal S_0=C\cap\mathcal S$, and write
+\[
+ s_0=\dim\mathcal S=bd(d+1)/2,\qquad
+ \eta=s_0-\dim\mathcal S_0.
+\]
+The following restriction uses actual demanded rows and no field-extension
+structure. In particular it holds over every field and for nonlinear
+decoders.
+
+\begin{theorem}[Symmetric-retention bound]\label{thm:pairing-retention}
+\formal{CapacityRetentionFinite.lean}{IsSharedCode.retention_bound}
+Choose $k\ge0$ shifts $t_i$, let $g_i=\gcd(d,t_i)$, and let
+$U=\{c:p(c)\ne p(c+t_i)\text{ for every }i\}$, $u=|U|$. Then
+\begin{equation}\label{eq:pairing-finite}
+ D\le s_0+(2k-1)\eta+\frac{bd}{2}\sum_i(g_i-1)
+                         +\frac b2u(u-1).
+\end{equation}
+\end{theorem}
+\begin{outline}
+Put $A(X)=X-X^{\mathsf T}$ and $Z_t=\{c:p(c)=p(c+t)\}$.
+If $X=T^tY\in C$ with $Y\in\mathcal S_0$, the same-view equations give
+$\operatorname{row}_cX=\operatorname{row}_{c+t}Y$ for $c\in Z_t$.
+Symmetry of $Y$ then gives $X_{c,j}=X_{j,c}$ in every lane. The restriction
+of $A$ to rows $Z_t$ therefore vanishes on both $\mathcal S_0$ and
+$C\cap T^t\mathcal S_0$. Grassmann and rank--nullity bound its rank by
+$N-\dim(\mathcal S_0+T^t\mathcal S_0)$.
+
+Stacking the $k$ row maps costs at most the sum of their ranks; no
+independence is assumed. An antisymmetric image with all covered rows zero
+is supported on $U\times U$, has zero diagonal, and is determined by
+$bu(u-1)/2$ coordinates in every characteristic. Since $\ker(A|_C)=\mathcal S_0$,
+this proves the stronger exact inequality
+\begin{equation}\label{eq:retained-space-exact}
+ D\le\dim\mathcal S_0+
+ \sum_i\bigl[N-\dim(\mathcal S_0+T^{t_i}\mathcal S_0)\bigr]
+ +\frac b2u(u-1).
+\end{equation}
+It is formalized as \lean{IsSharedCode.intrinsic_retention_bound}.
+
+The remaining estimate uses the actual symmetric spaces. For
+$g=\gcd(d,t)$, the two coordinate symmetries generate the dihedral action
+whose rotations send $(i,j)$ to $(i+at,j-at)$ and whose reflections send
+it to $(j-at,i+at)$. Exactly $g$ rotations fix all $d^2$ coordinates;
+the other rotations fix none. Each of the $d$ reflections fixes $d$
+coordinates. The space of invariant coordinate functions is the function
+space on the orbits, so Burnside's formula gives
+\[
+ \dim(\mathcal S\cap T^t\mathcal S)=bd(g+1)/2.
+\]
+This counting proof does not divide by the group order in the field and
+remains valid in characteristic two. Grassmann, and replacing each
+symmetric summand by its codimension-$\eta$ subspace, give
+\[
+ N-\dim(\mathcal S_0+T^t\mathcal S_0)\le2\eta+bd(g-1)/2.
+\]
+Substitution in \eqref{eq:retained-space-exact} proves the theorem.
+\end{outline}
+
+\begin{corollary}[Averaged retention]\label{cor:pairing-average}
+\formal{CapacityRetentionAverage.lean}{IsSharedCode.retention_average,IsSharedCode.retention_normalized}
+Let the class sizes be $n_J$, put $a_d=d^{-1}\sum_t\gcd(d,t)$,
+and let $k\ge1$. Then
+\begin{equation}\label{eq:pairing-average}
+ D\le s_0+(2k-1)\eta+\frac{bdk}{2}(a_d-1)
+       +\frac b2\left[\sum_Jn_J(1-n_J/d)^{k/2}\right]^2.
+\end{equation}
+Consequently, with $h=\eta/N$ and $\delta=D/N-(d+1)/(2d)$,
+\begin{equation}\label{eq:pairing-normalized}
+ \delta\le(2k-1)h+\frac{k(a_d-1)}{2d}+\frac{2M^2}{(k+2)^2}.
+\end{equation}
+\end{corollary}
+\begin{outline}
+Average over the full set of $k$-tuples of shifts. A row in a class of
+size $n_J$ is uncovered for exactly $(d-n_J)^k$ tuples. The finite
+Cauchy--Schwarz inequality bounds the sum of squared uncovered-row counts
+by the square of the sum of square roots of these marginal counts.
+Grouping rows by their classes and using $u(u-1)\le u^2$ gives the
+last term of \eqref{eq:pairing-average}; no independence between row
+events is assumed. Each shift coordinate has the uniform marginal, so
+its mean gcd cost is exactly $a_d-1$.
+For $0\le x\le1$, Bernoulli's inequality gives
+$x(1-x)^{k/2}\le2/(k+2)$. Applying it to every class and dividing by
+$N$ proves \eqref{eq:pairing-normalized}.
+\end{outline}
+
+\begin{corollary}[A fixed rate gain requires a fixed loss]\label{cor:pairing-loss}
+\formal{CapacityRetentionStability.lean}{RetentionAverage.stability,RetentionAverage.stability_bounded_classes,RetentionAverage.fixed_gain_requires_loss}
+For fixed $M$, $\eta=o(N)$ implies $D\le(1/2+o(1))N$ as $d\to\infty$,
+uniformly in the field and width. More generally this holds when
+$M\eta/N\to0$ and $M(a_d-1)/d\to0$. For fixed $M$ and
+$0<\varepsilon\le1/2$, if $\liminf D/N\ge1/2+\varepsilon$, then
+\[
+ \liminf\eta/N\ge\varepsilon^{3/2}/(12M).
+\]
+\end{corollary}
+\begin{outline}
+The divisor bound $a_d\le2\sqrt d$ makes the gcd term vanish for fixed
+$k$. The formalization permits the field, lane space, dimension and
+class set to vary along the sequence, retaining an actual shared code
+at every index. For growing $M$, take $k=\lceil Mt\rceil$ with a fixed
+real $t\ge1$. The normalized upper bound is at most
+\[
+ \frac1{2d}+4tM\left[\frac\eta N+\frac{a_d-1}{2d}\right]+\frac2{t^2}
+\]
+above one half. First let $d\to\infty$ and then let $t\to\infty$.
+For the quantitative statement take $k=\lceil2M/\sqrt\varepsilon\rceil$.
+The last term is at most $\varepsilon/2$, and
+$k\le3M/\sqrt\varepsilon$. Take a subsequence attaining the lower limit
+of $\eta/N$ and pass the finite bound to the limit; the rate lower limit
+still applies on that subsequence. This gives the stated constant.
+Both rates lie in $[0,1]$, so all lower limits used here have explicit
+boundedness hypotheses in Lean.
+\end{outline}
+
+\begin{corollary}[Coprime partners and exact retention]\label{cor:coprime-retention}
+\formal{CapacityRetentionCoprime.lean}{IsSharedCode.full_symmetric_retention,IsSharedCode.eq_symmetric_of_at_most_one_exception,IsSharedCode.prime_full_symmetric_retention}
+Suppose $C\supseteq\mathcal S$. Let $V$ be the rows $c$ with no
+same-class partner $c+t$ for which $\gcd(d,t)=1$, and put $v=|V|$.
+Then, in every positive dimension,
+\[
+ D\le s_0+b\binom v2.
+\]
+In particular $v\le1$ implies $C=\mathcal S$. If $d$ is prime, $V$
+is exactly the set of rows in singleton classes. Thus a partition into two
+nonsingleton classes forces $C=\mathcal S$.
+\end{corollary}
+\begin{outline}
+Use all coprime shifts in \cref{thm:pairing-retention}. Then $\eta=0$,
+every gcd cost is zero, and the uncovered rows are exactly $V$. For
+$v\le1$ the dimension bound and $\mathcal S\subseteq C$ give equality.
+In prime dimension the nonzero shifts are precisely the coprime shifts.
+\end{outline}
+
+\begin{proposition}[Paired-lane control]\label{prop:paired-lane-control}
+\formal{CapacityRetentionControl.lean}{RetentionControl.laneSwap_eq_transpose_iff,RetentionControl.paired_source_rate_and_loss}
+For any field and even entry width $b$, swapping each paired group of
+lanes entrywise is transpose-correct exactly on the source consisting of
+lane pairs $(A,A^{\mathsf T})$. This source has
+\[
+ D=N/2,\qquad \eta=bd(d+1)/4.
+\]
+\end{proposition}
+\begin{outline}
+The source is the graph of transposition on one member of each lane pair,
+so it is linearly equivalent to an arbitrary matrix with $b/2$ lanes.
+Its intersection with the symmetric space consists of pairs $(A,A)$
+with $A$ symmetric. The two explicit linear equivalences give the
+dimensions. The formalization allows vector-valued lane groups.
+\end{outline}
+
+Over the binary alphabet, one fixed finite-state stream transducer realizes
+the adjacent-pair interchange by buffering two input bits and emitting them
+in reverse order. It repeats without computing the entry width. For every
+even width its correctness source is \cref{prop:paired-lane-control}, with
+$\eta/N=(d+1)/(4d)\to1/4$; infinitely many canonical widths are even.
+This written implementation refutes an unqualified small-loss time supplier.
+It does not address a supplier restricted to fixed excess above one half.

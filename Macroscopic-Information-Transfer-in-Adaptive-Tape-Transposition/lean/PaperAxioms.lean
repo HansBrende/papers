@@ -1,0 +1,240 @@
+import AdaptiveTransfer
+import AdaptiveTransfer.ClusterExpansion
+import AdaptiveTransfer.ContextPruning
+import AdaptiveTransfer.CurrentVersion
+import AdaptiveTransfer.EnlargedFinite
+import AdaptiveTransfer.FeedbackGlobalProduct
+import AdaptiveTransfer.FeedbackTail
+import AdaptiveTransfer.Fragments
+import AdaptiveTransfer.FrozenCutInvoice
+import AdaptiveTransfer.GetterFinite
+import AdaptiveTransfer.GetterGeometry
+import AdaptiveTransfer.HistoricalCache
+import AdaptiveTransfer.IncomingReturns
+import AdaptiveTransfer.InformationAccounting
+import AdaptiveTransfer.InputCutTail
+import AdaptiveTransfer.InputErosion
+import AdaptiveTransfer.NativeImportInformation
+import AdaptiveTransfer.NativeInputCutEndpoint
+import AdaptiveTransfer.NativeReturnCounting
+import AdaptiveTransfer.NativeWrites
+import AdaptiveTransfer.OffCarrierExpansion
+import AdaptiveTransfer.OrderChart
+import AdaptiveTransfer.PersistenceFutureSource
+import AdaptiveTransfer.PersistenceSource
+import AdaptiveTransfer.PrefixFinite
+import AdaptiveTransfer.ProtectedCores
+import AdaptiveTransfer.RecordCounts
+import AdaptiveTransfer.ReferenceTail
+import AdaptiveTransfer.ReplayGeometry
+import AdaptiveTransfer.ReturnTail
+import AdaptiveTransfer.ScanCheckpoints
+import AdaptiveTransfer.ScanLoader
+import AdaptiveTransfer.SlabGeometry
+import AdaptiveTransfer.Storage
+import AdaptiveTransfer.StoresFromCarrier
+import AdaptiveTransfer.TransferCrossingTail
+import AdaptiveTransfer.TransferEntryNative
+import AdaptiveTransfer.TransferErodedInvoice
+import AdaptiveTransfer.TransferNativeCones
+import AdaptiveTransfer.TransferNativeProjection
+import NativeRelations.OneFreeHeadSmallExcursion
+
+-- Generated from formal-status lines in paper/sections/*.tex.
+
+-- ClusterExpansion.lean
+#print axioms AdaptiveTransfer.native_coherent_cluster_expansion
+#print axioms AdaptiveTransfer.native_coherent_cluster_returns
+-- ContextPruning.lean
+#print axioms AdaptiveTransfer.context_conditional_bound
+#print axioms AdaptiveTransfer.context_half_mass
+#print axioms AdaptiveTransfer.context_subset
+-- CurrentVersion.lean
+#print axioms AdaptiveTransfer.ExecutionPrefix.filtered_native_read
+#print axioms AdaptiveTransfer.filtered_read_correct
+-- EnlargedFinite.lean
+#print axioms AdaptiveTransfer.Enlarged.finite_bound
+-- FeedbackGlobalProduct.lean
+#print axioms AdaptiveTransfer.feedback_global_matrix_bound
+#print axioms AdaptiveTransfer.feedback_global_product_bound
+-- FeedbackTail.lean
+#print axioms AdaptiveTransfer.FeedbackTail.fixed_linear_count
+#print axioms AdaptiveTransfer.FeedbackTail.linear_in_dimension_probability
+#print axioms AdaptiveTransfer.FeedbackTail.many_long_span_dates
+#print axioms AdaptiveTransfer.FeedbackTail.success_count
+-- Fragments.lean
+#print axioms AdaptiveTransfer.fragment_count_le
+#print axioms AdaptiveTransfer.localized_fragment_count_le
+-- FrozenCutInvoice.lean
+#print axioms AdaptiveTransfer.native_cut_recovers
+#print axioms AdaptiveTransfer.native_frozen_cut_entropy_lower
+#print axioms AdaptiveTransfer.native_frozen_field_invoice
+#print axioms AdaptiveTransfer.native_frozen_full_invoice
+-- GetterFinite.lean
+#print axioms AdaptiveTransfer.Getter.native_finite_getter_bound
+-- GetterGeometry.lean
+#print axioms AdaptiveTransfer.Getter.native_fixed_geometry_bits_bound
+-- HistoricalCache.lean
+#print axioms AdaptiveTransfer.ExecutionPrefix.changedCells_card_le_duration
+#print axioms AdaptiveTransfer.ExecutionPrefix.residual_card_le
+#print axioms AdaptiveTransfer.ExecutionPrefix.residual_card_le_entering_add_episode
+#print axioms AdaptiveTransfer.ExecutionPrefix.unchanged_outside_changedCells
+-- IncomingReturns.lean
+#print axioms AdaptiveTransfer.outside_first_read_is_long_return
+-- InformationAccounting.lean
+#print axioms AdaptiveTransfer.joint_record_card_bound
+#print axioms AdaptiveTransfer.joint_record_entropy_identity
+#print axioms AdaptiveTransfer.joint_record_information_lower
+-- InputCutTail.lean
+#print axioms AdaptiveTransfer.native_input_cut_tail
+#print axioms AdaptiveTransfer.native_input_cut_tail_all_width
+-- InputErosion.lean
+#print axioms AdaptiveTransfer.demanded_erosion_loss
+#print axioms AdaptiveTransfer.interval_union_erosion_loss
+-- NativeImportInformation.lean
+#print axioms AdaptiveTransfer.NativeReplayClass.code_injective
+#print axioms AdaptiveTransfer.NativeReplayFamily.native_import_information_saving
+-- NativeInputCutEndpoint.lean
+#print axioms AdaptiveTransfer.mem_nativeBadInputCuts_iff
+#print axioms AdaptiveTransfer.native_bad_input_cut_bound
+-- NativeReturnCounting.lean
+#print axioms AdaptiveTransfer.native_finite_return_bound
+#print axioms AdaptiveTransfer.native_positive_saving_observation
+-- NativeWrites.lean
+#print axioms AdaptiveTransfer.instruction_eq_of_old_tuple
+#print axioms AdaptiveTransfer.step_preserves_unscanned
+#print axioms AdaptiveTransfer.step_scanned_write
+#print axioms AdaptiveTransfer.step_work_update
+-- OffCarrierExpansion.lean
+#print axioms AdaptiveTransfer.native_off_carrier_expansion
+-- OrderChart.lean
+#print axioms AdaptiveTransfer.finite_order_chart
+#print axioms AdaptiveTransfer.order_conflict_le_two_error
+-- PersistenceFutureSource.lean
+#print axioms AdaptiveTransfer.PersistenceFutureSource.of_thin_source_bound
+-- PersistenceSource.lean
+#print axioms AdaptiveTransfer.ConditionalPersistence.of_small_thin_source
+-- PrefixFinite.lean
+#print axioms AdaptiveTransfer.Enlarged.prefix_finite_bound
+-- ProtectedCores.lean
+#print axioms AdaptiveTransfer.normalized_chart_core_fringe_counts
+#print axioms AdaptiveTransfer.outside_avoids_core
+#print axioms AdaptiveTransfer.protected_core_disjoint_fringe
+#print axioms AdaptiveTransfer.selected_in_core_or_fringe
+-- RecordCounts.lean
+#print axioms AdaptiveTransfer.replay_message_bound
+#print axioms AdaptiveTransfer.sizedImports_card
+#print axioms AdaptiveTransfer.sparseImports_card
+-- ReferenceTail.lean
+#print axioms AdaptiveTransfer.cache_tail_of_half_simulation
+#print axioms AdaptiveTransfer.reference_cache_sparse_reserves
+#print axioms AdaptiveTransfer.reference_tail_of_half_simulation
+-- ReplayGeometry.lean
+#print axioms AdaptiveTransfer.integerSlab_card
+#print axioms AdaptiveTransfer.native_fixed_geometry_replay_bound
+-- ReturnTail.lean
+#print axioms AdaptiveTransfer.native_macroscopic_return_tail
+#print axioms AdaptiveTransfer.returnTailEpsilon_pos
+#print axioms AdaptiveTransfer.returnTailEta_pos
+-- ScanCheckpoints.lean
+#print axioms AdaptiveTransfer.checkpointLabel_card
+#print axioms AdaptiveTransfer.checkpoint_image_card_le
+#print axioms AdaptiveTransfer.checkpoint_residue_average
+#print axioms AdaptiveTransfer.preceding_residue_anchor
+#print axioms AdaptiveTransfer.scanState_window
+-- ScanLoader.lean
+#print axioms AdaptiveTransfer.ScanLoader.native_load
+#print axioms AdaptiveTransfer.ScanLoader.native_ready_properties
+#print axioms AdaptiveTransfer.ScanLoader.native_resources
+-- SlabGeometry.lean
+#print axioms AdaptiveTransfer.exists_slab_geometry
+#print axioms AdaptiveTransfer.native_slab_geometry
+-- Storage.lean
+#print axioms AdaptiveTransfer.ExecutionPrefix.persistent_cells
+#print axioms AdaptiveTransfer.ExecutionPrefix.untouched_cell_constant
+#print axioms AdaptiveTransfer.native_support_growth_le_one
+#print axioms AdaptiveTransfer.native_support_shrink_le_one
+-- StoresFromCarrier.lean
+#print axioms AdaptiveTransfer.native_support_window_complete
+#print axioms AdaptiveTransfer.native_two_dense_heads
+#print axioms AdaptiveTransfer.stores_tail_of_carrier
+-- TransferCrossingTail.lean
+#print axioms AdaptiveTransfer.TransferCrossing.uniform_original_crossing_expansion
+-- TransferEntryNative.lean
+#print axioms AdaptiveTransfer.TransferEntry.certified_original_cut_lower_bound
+#print axioms AdaptiveTransfer.TransferEntry.native_original_entry_capacity
+#print axioms AdaptiveTransfer.TransferEntry.uniform_entry_success_tail
+-- TransferErodedInvoice.lean
+#print axioms AdaptiveTransfer.TransferEroded.native_eroded_fibre_invoice
+#print axioms AdaptiveTransfer.TransferEroded.native_eroded_fibre_invoice_cover
+-- TransferNativeCones.lean
+#print axioms AdaptiveTransfer.TransferCones.native_cone_transport
+#print axioms AdaptiveTransfer.TransferCones.native_cone_transport_interior
+-- TransferNativeProjection.lean
+#print axioms AdaptiveTransfer.TransferGuards.native_guarded_projection
+
+-- Other declarations named in the text.
+#print axioms AdaptiveTransfer.ConditionalPersistence.of_half_mass_escapes
+#print axioms AdaptiveTransfer.Enlarged.macroscopic_tail
+#print axioms AdaptiveTransfer.Enlarged.prefix_macroscopic_tail
+#print axioms AdaptiveTransfer.ExecutionPrefix.adaptive_replay_agreement
+#print axioms AdaptiveTransfer.ExecutionPrefix.dense_persistent_interval
+#print axioms AdaptiveTransfer.ExecutionPrefix.many_episode_changes_duration_span
+#print axioms AdaptiveTransfer.ExecutionPrefix.replay_output_count_agreement
+#print axioms AdaptiveTransfer.Getter.error_support_le_returns
+#print axioms AdaptiveTransfer.Getter.exists_getter_density
+#print axioms AdaptiveTransfer.Getter.native_macroscopic_getter_tail
+#print axioms AdaptiveTransfer.NativeReplayClass.LocalCut.records_recover
+#print axioms AdaptiveTransfer.PersistenceFutureRates.of_half_mass_escapes_all_widths
+#print axioms AdaptiveTransfer.ScanLoader.nativeArchiveGetters_zero_errors
+#print axioms AdaptiveTransfer.ScanLoader.native_consumer_halt
+#print axioms AdaptiveTransfer.ScanLoader.native_prepare_then_consume
+#print axioms AdaptiveTransfer.ScanLoader.native_scan_loader_exponential
+#print axioms AdaptiveTransfer.ScanLoader.native_scan_loader_tail
+#print axioms AdaptiveTransfer.SlabObservation.encode_times
+#print axioms AdaptiveTransfer.TransferCrossing.exists_uniform_crossing_budgets
+#print axioms AdaptiveTransfer.TransferCrossing.native_crossing_cut_lift
+#print axioms AdaptiveTransfer.TransferCrossing.native_crossing_fibre_bound
+#print axioms AdaptiveTransfer.TransferEroded.native_eroded_cut_lift
+#print axioms AdaptiveTransfer.TransferFIFO.actual_ordinal_lookahead
+#print axioms AdaptiveTransfer.TransferFIFO.actual_sourceRoot_le_clock
+#print axioms AdaptiveTransfer.binary_hash_bits_eq_ceiling
+#print axioms AdaptiveTransfer.binary_matrix_collision_card
+#print axioms AdaptiveTransfer.carrier_state_bits_small
+#print axioms AdaptiveTransfer.cluster_cut_rates
+#print axioms AdaptiveTransfer.cluster_return_rates
+#print axioms AdaptiveTransfer.conditional_entropy_le_mean_log_support
+#print axioms AdaptiveTransfer.constantSlabClass
+#print axioms AdaptiveTransfer.encodeReplay_injective
+#print axioms AdaptiveTransfer.exists_binary_common_half
+#print axioms AdaptiveTransfer.exists_sparse_injective_hash
+#print axioms AdaptiveTransfer.geometry_cut_menus_logb_small
+#print axioms AdaptiveTransfer.globalGeometryMenu_card
+#print axioms AdaptiveTransfer.headDescription_injective
+#print axioms AdaptiveTransfer.incoming_support_le_returns
+#print axioms AdaptiveTransfer.joint_import_information_from_support
+#print axioms AdaptiveTransfer.localGeometryMenu_card
+#print axioms AdaptiveTransfer.nativeInputCone_determines
+#print axioms AdaptiveTransfer.native_bad_cluster_cut_bound
+#print axioms AdaptiveTransfer.native_bad_cluster_return_bound
+#print axioms AdaptiveTransfer.native_bad_slab_cut_bound
+#print axioms AdaptiveTransfer.native_cluster_one_head_bad
+#print axioms AdaptiveTransfer.native_cluster_slab_geometry
+#print axioms AdaptiveTransfer.native_cluster_two_return_heads
+#print axioms AdaptiveTransfer.native_local_cut_tail
+#print axioms AdaptiveTransfer.native_metadata_logb_small
+#print axioms AdaptiveTransfer.native_one_head_bad
+#print axioms AdaptiveTransfer.native_sparse_logb_small
+#print axioms AdaptiveTransfer.native_two_return_heads
+#print axioms AdaptiveTransfer.offCarrierReturns_card_eq_sum
+#print axioms AdaptiveTransfer.replayImports_card_le
+#print axioms AdaptiveTransfer.replayMetadata_card
+#print axioms AdaptiveTransfer.sampledWalk
+#print axioms AdaptiveTransfer.totalFragmentRecord_card
+
+-- Imported declarations cited in the text.
+#print axioms LeanMachine.FiniteSourceEscape.half_mass_pair_escape
+#print axioms LeanMachine.linearHash_update
+#print axioms NativeRelations.exists_offset_slabTransitions_le
+#print axioms NativeRelations.exists_slab_chunk_dichotomy
+#print axioms NativeRelations.outIn_card_le_two_indep_add_six_runs

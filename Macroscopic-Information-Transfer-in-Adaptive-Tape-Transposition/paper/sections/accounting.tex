@@ -1,0 +1,137 @@
+\section{Joint information and exact cut records}\label{sec:accounting}
+
+The following consequences make explicit what is counted jointly. They
+do not justify adding the information of a reused record across times,
+rectangles or scales. All entropies in this section are in bits.
+
+\begin{lemma}[Finite joint invoices]\label{lem:joint-invoices}
+\formal{InformationAccounting.lean}{joint_record_entropy_identity,joint_record_information_lower,joint_record_card_bound}
+On any finite probability space, if $x\mapsto(M(x),E(x),R(x),Z(x))$
+is injective, then
+\[
+ H(Z\mid M,E,R)=H(x)-H(M)-H(E\mid M)-H(R\mid M,E).
+\]
+Upper bounds on the last two conditional terms give the corresponding
+lower bound on the import term. Separately, an injective map from a finite
+set $S$ to an $e$-bit exterior and a record $C$ satisfies
+$|S|\le2^e|\operatorname{range}_S C|$; only the attained joint range is
+paid.
+\end{lemma}
+\begin{outline}
+An injective deterministic observation has the entropy of its source.
+Expand conditional entropy and telescope the three nested pair entropies.
+The imported library uses natural logarithms; division by $\log 2$ gives
+the displayed bit convention. For cardinality, pair the exterior with
+the record viewed in the finite type of its attained image, and apply
+cardinality monotonicity to this injection. Constructing a native record
+with that injectivity property remains a separate obligation.
+The metadata-dependent support form is also checked in
+\lean{conditional_entropy_le_mean_log_support} and
+\lean{joint_import_information_from_support}: a menu of possible record
+values at each metadata value costs the expected logarithm of that menu's
+cardinality. Empty and zero-mass metadata fibres contribute zero. This
+proves the variable-length entropy step without assuming every metadata
+fibre has positive mass.
+\end{outline}
+
+\begin{corollary}[Conditional information in the import record]\label{cor:import-information}
+\formal{NativeImportInformation.lean}{NativeReplayClass.code_injective,NativeReplayFamily.native_import_information_saving}
+Give a nonempty timely correct set $S$ its uniform law and make the choices
+of \cref{thm:replay} deterministically. Let $Z_0$ be its geometry metadata,
+$E$ the exterior raw word, $R_0$ the ordinary state/window/slab records,
+and $Z$ the single tagged import record. Put $D=P-\log_2|S|$. Then
+\begin{align*}
+ H(Z\mid Z_0,E,R_0)
+ &\ge\mathbb E|U|-D-H(Z_0)-H(R_0\mid Z_0,E)\\
+ &\ge\mathbb E[|U|-b_0]-D-H(Z_0),\\
+ b_0&=a\mathbf1_{a_0>0}W+a(k-1)r(2H+1)+rq.
+\end{align*}
+Here $r,U,a_0$ are the selected input-dependent geometric quantities.
+More generally the same two bounds hold under any one probability law on
+$S$, with $D=P-H(X)$.
+\end{corollary}
+\begin{outline}
+For each metadata value the checked class contains actual execution prefixes,
+entry observations, extrema, output counters and the computed import record.
+The canonical run decomposition and counter intervals give the replay
+hypotheses. The native replay theorem therefore proves the record injection;
+injectivity is not a field assumed by the class interface.
+
+Apply the finite entropy identity to the metadata-indexed family of these
+actual records. Conditional on $Z_0$, the exterior has a fixed coordinate
+set and at most $P-|U|$ bits, so
+$H(E\mid Z_0)\le P-\mathbb E|U|$. Rearranging gives the first inequality.
+At each fixed metadata value the ordinary record has support at most
+$2^{b_0}$, yielding the second after conditioning on $E$ and averaging.
+Finite dependent record types are tagged by the metadata already in the
+conditioning variables; they incur no extra choice cost. All terms use the
+same law, and $Z$ includes tags as well as values. The formal statement uses
+natural logarithms and permits arbitrary finite free cell sets and demand
+maps. Dividing by $\log 2$, specializing to the slab, and using
+$H(X)=\log_2|S|$ for the uniform law gives the displayed version.
+\end{outline}
+
+\begin{proposition}[Exact frozen-trace cut invoice]\label{prop:frozen-invoice}
+\formal{FrozenCutInvoice.lean}{native_cut_recovers,native_frozen_full_invoice,native_frozen_field_invoice,native_frozen_cut_entropy_lower}
+Let a nonempty correct set $S$ share one complete head/append trace through
+the relevant halt horizon. Let $Q_0$ be $D_0$ distinct demanded raw
+coordinates, $R$ their designated correct append roots, and let $\Gamma$
+be an endpoint-inclusive cut from $R$ to every actual read of $Q_0$.
+If $C_\Gamma$ is the joint full step-value record at the cut, then
+\[
+ D_0-(P-\log_2|S|)
+ \le\log_2|\operatorname{range}_S C_\Gamma|
+ \le(q+ka+2)|\Gamma|.
+\]
+If only post-state and written work symbols are retained at every cut
+step, together with the emitted bit at roots in $\Gamma$, the sharper
+field bill is
+\[
+ D_0-(P-\log_2|S|)\le(q+ka)|\Gamma|+|\Gamma\cap R|.
+\]
+The statement holds for any fixed output permutation and any entry width.
+Moreover, under any one probability law on $S$, the same joint full record
+satisfies
+\[
+ H(C_\Gamma\mid X|_{[0,P)\setminus Q_0})
+ \ge H(X)-(P-D_0).
+\]
+\end{proposition}
+\begin{outline}
+Give the decoder $X$ outside $Q_0$ and the cut record. A cut root's bit
+is in its full value. For any uncut root, follow all its uncut ancestors
+in the fixed dependency graph. Every such vertex reads outside $Q_0$,
+since otherwise its ancestor path contradicts separation. Reconstruct
+these vertices in increasing time. Each earlier state/work parent is
+either retained and already reconstructed, cut and supplied, or initial
+and known. The complete common old tuple determines the instruction and
+output. Latest work visits, and all physical positions and append ordinals,
+are fixed by the trace. Hence all demanded output bits, and therefore
+$X$ on $Q_0$, are recovered. This proves an injection into the exterior
+bits and the \emph{joint range} of the cut record, giving the first bound.
+Its product alphabet gives the second.
+
+For the field version, retained descendants need only a cut predecessor's
+post-state and work writes. They never read its output. Only a cut desired
+root needs its own emitted bit; its append flag is already fixed by the
+trace. Count those fields to obtain the sharper formula. Its root term
+cannot be discarded: a cut root can emit its raw input bit while keeping
+all state and work fields constant. A single encoder pooling different
+privately selected traces or cuts across inputs must charge those choices;
+this formula does not remove the geometry menu from \cref{thm:input-cut}.
+Applying the universal frozen-fibre inequality separately to each fixed
+cut needs no additional cut-choice bill, as in
+\cref{prop:eroded-input-transfer}.
+
+The checked statement uses arbitrary input length and designated roots
+whose actual native output bits equal the demanded coordinates. It proves
+the reconstruction from the actual field-level transition recursion and
+the literal endpoint-inclusive dependency-path separator. Its trace
+agreement is required only through the horizon, so the complete common
+trace in the proposition is sufficient. Neither injectivity nor cone
+determination is an additional premise.
+For the arbitrary-law statement, the proved exterior/record injection
+identifies their joint entropy with $H(X)$. Subtract the exterior's entropy,
+which is at most $P-D_0$ bits. This uses the native reconstruction just
+proved, not a further hypothesis of injectivity.
+\end{outline}

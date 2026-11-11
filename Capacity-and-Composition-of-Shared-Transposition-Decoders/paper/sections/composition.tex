@@ -1,0 +1,318 @@
+\section{Two linear stages}
+\label{sec:composition}
+
+A class bound for one stage is not closed under composition: even two
+small-class maps can have many different endpoint rules.  We therefore
+keep both complete operators.  Their exact composition forces a
+\emph{common message} on a small rotation-invariant space.  Arithmetic
+progressions then force this message space to grow.
+
+\subsection{One message on several translates}
+
+\begin{lemma}[Common-message growth]\label{lem:common-message}
+\formal{CompositionProgression.lean}{commonMessage_finrank_le}
+Let $A$ be a finite-dimensional vector space over any field, let
+$R\colon A\to A$ be linear, and let $W\le A$ have dimension $D$.
+Suppose that a linear map $L\colon A\to Z$ is injective on $W$ and
+\[
+ L(R^jx)=L(x)\qquad(x\in W,\ 0\le j<\ell),
+\]
+where $\ell\ge1$.  If $f=\dim\ker(R-I)$, then
+\begin{equation}\label{eq:message-growth}
+ \ell D\le \dim A+(\ell-1)f.
+\end{equation}
+Invertibility of $R$ is not required.
+\end{lemma}
+\begin{outline}
+Put $V_t=W+RW+\cdots+R^{t-1}W$ and $V_0=0$.
+For $t\le\ell$, the map $L$ vanishes on $(R-I)V_{t-1}$.
+This image is disjoint from $W$, because $L$ is injective on $W$,
+and their sum lies in $V_t$.  Rank--nullity therefore gives
+\[
+ \dim V_t\ge D+\dim V_{t-1}-f.
+\]
+Starting with $V_1=W$ and using $\dim V_\ell\le\dim A$ proves the
+claim.  In fact telescoping gives
+$V_t=W\oplus(R-I)V_{t-1}$, but the formal proof only needs inclusion.
+\end{outline}
+
+The correction $f$ matters.  Over $\F_2$, take a three-coordinate
+rotation and $W=\operatorname{span}\{(1,1,1),e_0\}$.  Projection along
+$\operatorname{span}\{(R-I)e_0\}$ identifies $W$ and $RW$ with the same
+two-dimensional message.  Thus $\ell D=4=3+1$ for $\ell=2$; a bound
+without the fixed-space term would be false.
+
+For positive integers $M,\ell$, write $\mathsf W(M,\ell)$ for any
+finite interval length such that every $M$-coloring of
+$\{0,\ldots,\mathsf W(M,\ell)-1\}$ has a monochromatic ordinary
+$\ell$-term arithmetic progression with positive step.
+Existence is the finite van der Waerden theorem.  Our formal library
+derives this version from Mathlib's finite Hales--Jewett theorem
+\cite{HalesJewett1963}:
+summing the symbols of a combinatorial line gives an ordinary progression
+in a fixed bounded interval
+(\lean{exists_progression_bound}).  We use no numerical estimate for
+$\mathsf W$.
+
+\begin{theorem}[Vanishing common-message rate]\label{thm:message-rate}
+\formal{CompositionChannels.lean}{commonMessage_interval_bound}
+Let $A=(F^q)^{\Z/d}$, with simultaneous cyclic rotation $T$, where
+$q,d\ge1$ and $F$ is any field.  Let $W\le A$, and let
+$B\colon W\to Z$ be linear and injective.  Suppose the $d$ positions
+have $M$ nonempty classes and each class $J$ has a linear map
+$L_J\colon A\to Z$ such that
+\[
+ L_J(T^cx)=B(x)\qquad(c\in J,\ x\in W).
+\]
+For $\ell\ge2$, put $N_0=\mathsf W(M,\ell)$.  If $d\ge N_0$, then
+\begin{equation}\label{eq:message-rate}
+ \dim W\le \frac{q(d+N_0-1)}{\ell}.
+\end{equation}
+\end{theorem}
+\begin{outline}
+Choose a monochromatic progression
+$c_0,c_0+s,\ldots,c_0+(\ell-1)s$ among the first $N_0$ positions.
+Here $s\ge1$ and $(\ell-1)s\le N_0-1$.
+Apply \cref{lem:common-message} with $R=T^s$ and
+$L=L_JT^{c_0}$.  A word fixed by $T^s$ is determined by its first
+$s$ coordinates, by repeatedly reducing a natural-number index by $s$.
+Thus the fixed space in $A$ has dimension at most $qs$ over every field.
+No diagonalization is used.
+Thus
+\[
+ \ell\dim W\le qd+(\ell-1)qs
+ \le q(d+N_0-1).
+\]
+\end{outline}
+
+For fixed $M$, this implies $\dim W/(qd)\to0$ uniformly in $F$, $q$,
+the partition and the linear maps: choose $\ell$ first, then take
+$d\ge\mathsf W(M,\ell)$, so the ratio is less than $2/\ell$.
+
+Linearity here concerns the decoder, not merely the source.  To see the
+distinction, identify binary words of length $d$ with $E=\F_{2^d}$ in a
+normal basis, so rotation is Frobenius $\Phi$ \cite{Milne2022}.  Choose $\beta$ with
+$d$ distinct conjugates.  The binary-linear two-channel space
+$W=\{(x,\beta x):x\in E\}$ has dimension $d$, and its distinct rotated
+views intersect only at zero.  A single total nonlinear decoder sends
+$(u,\Phi^c(\beta)u)$, for $u\ne0$, to $\Phi^{-c}u$ and sends all other
+points to zero.  It recovers the same original $x$ at every view with
+rate $1/2$.  This is a source-level counterexample to removing decoder
+linearity; it is not a two-stage transpose factorization.
+
+\subsection{The complete two-stage reduction}
+
+We now use the matrix model with $b$ coordinates per entry, allowing
+arbitrary mixing of rows and lanes by every linear decoder.  Both stages
+use the same column rotation.  Their partitions need not agree.
+
+\begin{theorem}[Two linear stages]\label{thm:two-linear-stages}
+\formal{CompositionLinear.lean}{twoHop_progression_gcd,twoHop_coprime_progression_dimension_le,twoHop_dimension_le,exists_twoHop_cutoff}
+Let $K_1,K_2$ be linear class-uniform maps on $F^{d\times d\times b}$,
+with $M_1,M_2$ nonempty classes, and suppose $K_2K_1=\tau$ on the
+whole space.  If a first-stage class contains
+$c_0,c_0+s,\ldots,c_0+(\ell-1)s$, with $\ell\ge1$, integer $s\ge0$
+and indices read modulo $d$, then
+\begin{equation}\label{eq:two-stage-ap}
+ \ell d\le M_2d+(\ell-1)M_2\gcd(d,s).
+\end{equation}
+In particular, a progression of length $M_2+1$ with $\gcd(d,s)=1$
+forces $d\le M_2^2$. Without the coprimality premise,
+\begin{equation}\label{eq:two-stage-cutoff}
+ d\le M_2\bigl(\mathsf W(M_1,M_2+1)-1\bigr).
+\end{equation}
+Thus fixed bounds on both class counts exclude exact two-stage
+transposition at all sufficiently large $d$, over every field and
+uniformly over every positive width $b$.
+\end{theorem}
+\begin{outline}
+Both square factors are invertible, and $K_1^{-1}=\tau K_2$.
+Let $S_0=\operatorname{Fix}(T)$, of dimension $bd$, and let $P_2\le F^d$
+be the span of the second-class indicator vectors.  Their disjoint
+nonempty supports give $\dim P_2=M_2$ over every field.
+For $X\in S_0$, all views $T^cX$ coincide.  Hence $K_2X$ is constant
+on each second receiver class.  It follows that
+\[
+ W:=K_1^{-1}S_0\ \le\
+ A:=P_{2,\mathrm{row}}\otimes F^d_{\mathrm{column}}\otimes F^b,
+ \qquad \dim W=bd,
+ \qquad \dim A=bM_2d.
+\]
+This is an actual consequence of the global product identity, not an
+independently chosen source.  The ambient $A$ is $T$-invariant and consists
+of $bM_2$ cyclic channels.
+
+The common column of $K_1X$, for $X\in W$, defines one injective linear
+message $B(X)$.  At every receiver $c$ in a first class $J$,
+$f_{1,J}(T^cX)=B(X)$.  Apply \cref{lem:common-message} on $A$ to the
+specified progression. A word fixed by the $s$-step rotation is constant
+on its $\gcd(d,s)$ position orbits. Restriction to one representative per
+orbit is injective, so the fixed-space term is at most
+$bM_2\gcd(d,s)$. The formal proof uses the actual translation-orbit quotient.
+Canceling $b>0$ gives \cref{eq:two-stage-ap}; putting $\ell=M_2+1$ and
+$\gcd(d,s)=1$ gives $d\le M_2^2$.
+
+Put $N_0=\mathsf W(M_1,M_2+1)$.  If $d>M_2(N_0-1)$, then
+$d\ge N_0$.  A monochromatic $(M_2+1)$-term progression in the first
+$N_0$ positions has positive step $s$ with $M_2s\le N_0-1$.
+Since $\gcd(d,s)\le s$ for this positive step,
+\eqref{eq:two-stage-ap} would imply
+\[
+ d\le M_2^2s\le M_2(N_0-1),
+\]
+a contradiction.  This proves the finite cutoff.  Using fixed upper
+bounds for the numbers of colors gives one cutoff for all the stated
+parameters.
+\end{outline}
+
+The orbit correction can exclude particular masks before the general
+Ramsey threshold applies. For example, with two second-stage classes,
+a monochromatic three-term progression with step coprime to $d$ already
+forces $d\le4$. The global two-class cutoff below remains $16$, since
+Ramsey extraction does not require its progression step to be coprime.
+
+The theorem concerns two complete maps on the same state space and
+tensor side.  It neither multiplies endpoint class counts nor excludes
+additional uniform postprocessing.  The familiar two partial-digit
+swaps at $d=M_1M_2$ remain valid controls.  The bound does not prove
+that their product condition is necessary for arbitrary coded factors.
+
+\begin{corollary}[Two classes at each stage]\label{cor:two-binary-classes}
+\formal{CompositionLinear.lean}{twoHop_two_classes_le_sixteen}
+If each of the two linear stages uses at most two classes, exact
+transposition requires $d\le16$, over every field and every positive width.
+\end{corollary}
+\begin{outline}
+The finite statement $\mathsf W(2,3)\le9$ is checked by Lean's kernel
+over all colorings of nine positions.  Its declaration is
+\lean{binary_progression_nine_finite}; no minimality assertion is needed.
+Substitute this bound in \cref{eq:two-stage-cutoff}.
+\end{outline}
+
+\subsection{One global rank error}
+
+The preceding witness has dimension only $bd$.  To obtain more than a
+row-scale obstruction, retain a whole band of frequencies and charge the
+same global error only once.
+
+\begin{lemma}[Recurrence growth]\label{lem:recurrence-growth}
+\formal{CompositionRecurrence.lean}{recurrence_finrank_le}
+Let $R\colon A\to A$ and $L\colon A\to Z$ be linear on a
+finite-dimensional space, let $W\le A$ have dimension $D$, and let
+$k,m\ge1$.  Let $p(z)=\sum_{i=0}^k a_i z^i$.
+Suppose $(L,LR,\ldots,LR^{k-1})$ is injective on $W$ and
+\[
+ LR^jp(R)w=0\qquad(w\in W,\ j\ge0,\ j+2\le mk).
+\]
+Then, with $f=\dim\ker p(R)$,
+\begin{equation}\label{eq:recurrence-growth}
+ mD\le\dim A+(m-1)f.
+\end{equation}
+\end{lemma}
+\begin{outline}
+Set $V_t=\sum_{0\le j<t}R^jW$ and $G=(L,\ldots,LR^{k-1})$.
+For $0\le t\le(m-1)k$, every component of $G$ vanishes on
+$p(R)V_t$: its generator exponent is at most $t+k-2\le mk-2$.
+Consequently $W\cap p(R)V_t=0$.
+The degree bound gives $W+p(R)V_t\subseteq V_{t+k}$, so
+\[
+ \dim V_{t+k}\ge D+\dim V_t-f.
+\]
+Start with $\dim V_k\ge D$ and use $t=k,2k,\ldots,(m-1)k$.
+Then $\dim V_{mk}\ge mD-(m-1)f$, proving the result.  When $m=k=1$
+the displayed annihilation range is empty, as required.
+\end{outline}
+
+\begin{theorem}[Growing two-stage rank deficit]\label{thm:two-stage-rank}
+\formal{CompositionRankField.lean}{twoHop_rank_interval_any_field,exists_twoHop_rank_threshold,twoHop_rank_superlinear}
+Let the characteristic of $F$ not divide $d$, and let $K_1,K_2$ be
+linear shared-decoder maps with $M_1,M_2$ classes on
+$F^{d\times d\times b}$.  They need not be invertible.  Put
+$r=\rank(\tau-K_2K_1)$.
+For $k\ge1$, set
+\[
+ \ell=(2M_2+1)k-1,\qquad N_0=\mathsf W(M_1,\ell).
+\]
+If $d\ge N_0$, then
+\begin{equation}\label{eq:rank-deficit}
+ r\ge \frac{bk(d-N_0+1)}2.
+\end{equation}
+For fixed class bounds, $r/(bd)\to\infty$ uniformly in the field,
+width, partitions and maps within this characteristic regime.
+\end{theorem}
+\begin{outline}
+Extend scalars to a cyclotomic field with a primitive $d$th root
+$\zeta$.  The complete maps and their receiver classes extend, and the
+error rank does not increase: its extension factors through the scalar
+extension of its original range.  It therefore suffices to prove the bound
+there.  The characteristic hypothesis makes the roots distinct.  Let $C=\ker(\tau-K_2K_1)$ and $Y=K_1C$.
+The restriction of $K_1$ to $C$ is injective, since $K_1x=0$ there
+implies $\tau x=0$.  Thus $\dim Y\ge bd^2-r$, with $r$ denoting the
+original error rank.
+
+Let $S$ be the band of $k$ consecutive frequencies, consisting of
+\[
+ y_{:,c,:}=\sum_{\nu=0}^{k-1}\zeta^{\nu c}a_\nu.
+\]
+Its dimension is $bdk$, because $d\ge N_0\ge\ell\ge k$.
+Pull $Y\cap S$ back through the injective restriction of $K_1$, obtaining
+$W\le C$ of dimension $D\ge bdk-r$.  This intersection charges the
+single global error $r$ once.
+
+Let $H\le E^d$ be spanned by
+$c\mapsto1_{p_2(c)=J}\zeta^{\nu c}$, over second classes $J$ and
+$0\le\nu<k$, and put $h=\dim H\le M_2k$.
+On $S$, the second operator produces columns of the form
+$\sum_\nu\zeta^{\nu c}a_{p_2(c),\nu}$.
+Since $w=\tau K_2K_1w$ on $W$, we have
+\[
+ W\le A:=H_{\mathrm{row}}\otimes E^d_{\mathrm{column}}\otimes E^b,
+ \qquad \dim A=bhd.
+\]
+This ambient is invariant under column rotation.
+
+Choose a monochromatic $\ell$-term progression with step $s\ge1$
+among the first $N_0$ positions.  On $A$, put
+$R=T^s$ and $L=f_{1,J}T^{c_0}$.  For $w\in W$,
+\[
+ LR^jw=\sum_{\nu=0}^{k-1}\zeta^{\nu c_0}
+             (\zeta^{\nu s})^j a_\nu\qquad(0\le j<\ell).
+\]
+The numbers $\lambda_\nu=\zeta^{\nu s}$ are distinct:
+for $\nu<\nu'$,
+$0<(\nu'-\nu)s\le(k-1)s<d$.
+The first $k$ displayed observations recover the $a_\nu$ by a
+Vandermonde inverse, so their stacked map is injective on $W$.
+The polynomial $p(z)=\prod_{\nu<k}(z-\lambda_\nu)$ annihilates these
+sequences wherever all $k+1$ successive observations occur.  Taking
+$m=2M_2$, the available exponents are exactly $j+2\le mk$.
+
+The monic recurrence $p(R)x=0$ determines each cyclic channel from
+its first $ks$ positions: its leading term recovers position $n$ from
+positions $n-ks,n-(k-1)s,\ldots,n-s$.  Thus
+$\dim\ker p(R)\le bhks$ on $A$.  This coordinate proof works without
+diagonalizing the cyclic operator.
+Apply \cref{lem:recurrence-growth} and $D\ge bdk-r$:
+\[
+ m(bdk-r)\le bhd+(m-1)bhks
+ \le bM_2kd+(m-1)bM_2k^2s.
+\]
+Consequently
+\[
+ r\ge\frac{bkd}2-\frac{b(2M_2-1)k^2s}2.
+\]
+Now $(\ell-1)s\le N_0-1$ and
+$(2M_2-1)k\le\ell-1$.  The subtracted term is at most
+$bk(N_0-1)/2$, proving \cref{eq:rank-deficit}.
+
+For each fixed $k$, once $d\ge\max\{N_0,2(N_0-1)\}$ the bound is
+$r\ge bkd/4$.  Choosing $k$ arbitrarily large before $d$ proves the
+uniform divergence of $r/(bd)$.
+\end{outline}
+
+This excludes repairs of uniformly $O(bd)$ rank, including all odd
+binary dimensions.  It does not give $r\ge\epsilon bd^2$ for any fixed
+$\epsilon>0$.  The arithmetic-progression cutoff grows with $k$, and
+the proof does not permit $k$ to be a fixed positive fraction of $d$.
+Nor is rank automatically a physical time charge.  Additional stages,
+nonlinear factors and paid native realization require separate arguments.

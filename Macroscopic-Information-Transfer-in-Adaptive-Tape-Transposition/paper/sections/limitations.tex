@@ -1,0 +1,90 @@
+\section{Construction side: redundant archives}\label{sec:limitations}
+
+The necessary conditions above do not imply that two tapes contain independent
+information. The following paid normalization rules out that interpretation,
+even when the selected words are future-readable and far from the heads.
+
+\begin{theorem}[Redundant-store normalization]\label{thm:redundant}
+\notformalized
+For every fixed native machine $M$ with $k\ge1$ work tapes there is a
+blank-started native machine $\widehat M$ with the same tape count and fixed
+enlarged alphabet/control that has the same output on every halting nonempty
+input and halts there within $8T_M(X)+20|X|+40$ steps. It halts iff $M$ does.
+Fix an input length $P$, any probability law on its halting inputs, and any
+absolute configuration time, padding after halt. For any two tapes, their
+whole words mutually determine one another. The same is true of their
+future-readable words, and of their future-readable words with a common
+closed radius-$H$ head window blanked, whenever $2H\le P$.
+Head positions are not included in these word variables.
+\end{theorem}
+\begin{informalproof}
+Use fixed product tracks for the original payload, tagged raw archives,
+an origin marker, an end marker and a visited flag. Tagged zero differs from
+blank. All heads prepare synchronously. Copy the raw input into tagged cells
+$[0,P-1]$ on every tape, marking the origin at zero. At the right raw marker
+move raw left and work heads right, then continue while raw scans bits. A
+turn moves raw from $-1$ to zero while work heads stay at $2P+1$. Copy the
+input again into $[2P+1,3P]$. Mark the end at $3P+1$, then return all work
+heads to the origin and independently return raw to zero. Counting the bit,
+turn and phase transitions gives $6P+4$ preparation steps. There is no length
+counter, extra metadata head or preloaded tape. Payload is still blank.
+
+Simulate each original transition on its complete old payload tuple in one
+step, preserving the archival tracks. Maintain one optional pending output
+bit: on an original append, emit the old pending bit if present and replace
+it with the new bit. Otherwise emit nothing. The emitted word followed by
+the pending bit equals the original output. This uses three pending states
+and never reads output. Mark every old scanned cell as visited, including
+each preparation/core step and the stationary wrapper transition detecting
+the original halt. Seen cells on each tape form one interval $[l_h,r_h]$
+containing $[0,3P+1]$, and every nonblank payload cell is inside it.
+
+At halt, independently on each head, sweep left through visited cells while
+blanking payload but retaining the visited flag. At the first unvisited
+guard turn right. Sweep right through the whole visited interval, blanking
+payload and clearing its visited flag behind the head. At the right unvisited
+guard turn left and return to the unique origin. Park completed heads. These
+are finite local modes; all heads work in parallel. Archives and markers are
+preserved. The seen interval has left endpoint at least $-T_M(X)$ and right
+endpoint at most $\max(3P+1,T_M(X))$. A safe joint cleanup cost is
+$5T_M(X)+6P+10$. At its end every tape has exactly the same word: the two
+archives, public markers and blanks elsewhere. A final synchronized scan
+from origin through end successfully reads both archives, then appends the
+pending bit and halts. Together these costs are below the stated bound.
+
+Before the public end of preparation, all tape words and heads are identical.
+Every then-nonblank cell is an archive or public marker visited by the final
+successful scan, so the future-readable words are identical as well.
+During the unsynchronized core and cleanup, both tagged archives remain in
+each future-readable word because of the final scan. A window of diameter
+$2H\le P$ cannot meet both archives, whose nearest cells are distance $P+2$
+apart. Thus each whole, future-readable or remote word contains an intact
+copy of $X$. During the synchronized tail and after halt, all same-type words
+are equal across tapes, since both contents and remaining trajectories agree.
+
+This is also valid for a law mixing inputs in different phases at one absolute
+time. A same-type word containing an intact tagged copy determines $X$, hence
+the deterministic run and the desired other-tape word at that time. If it
+contains no intact copy, it cannot be in the unsynchronized core/cleanup, so
+return that same word: the tapes are then synchronized. The public preparation
+case is equality as well. These are mathematical decoders, not uncharged
+native access routines. Mutual deterministic dependence follows for every
+common input law. Divergent output prefixes need not be identical because a
+final bit can remain pending; only halting partial-function preservation and
+equivalent halting are asserted.
+\end{informalproof}
+
+On every timely transpose-correct input the source has at least $P$ successful
+steps. During the common first $P$ simulated steps each archived word is an
+injective function of the input, yet its conditional information given any
+other archived word is zero. The output is still incomplete because of the
+pending-bit delay. Ignored future rereads can therefore satisfy large live
+marginal-information requirements. Excluding every such normalized transposer
+would already settle the fixed-tape-count existence question itself.
+
+An affirmative construction must deliver the required output order through
+actual local reads while meeting the return, cut and storage conditions.
+Neither large joint support nor a globally available mathematical decoder
+pays those accesses. Conversely, an impossibility proof needs a physical
+supplier of a small cut, a cheap joint record or another output-sensitive
+deficit. None is supplied for unrestricted coupled mutable tapes here.

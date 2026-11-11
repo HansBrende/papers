@@ -112,3 +112,54 @@ import LeanMachine.OddPowerChoice
 import LeanMachine.SlowIndex
 import LeanMachine.BlockRanking
 import LeanMachine.ThresholdRefinement
+import LeanMachine.ContextPruning
+
+import LeanMachine.FiniteCodimension
+import LeanMachine.PermutationFixedSpace
+import LeanMachine.IncidenceSecondMoment
+import LeanMachine.MonotoneNormalization
+import LeanMachine.ProtectedIntervals
+
+import LeanMachine.MonotoneChainEnvelope
+
+import LeanMachine.OrderConflictChart
+
+import LeanMachine.BoundedTuples
+
+import LeanMachine.SparseRecords
+
+import LeanMachine.SparseBinomial
+
+import LeanMachine.FiniteFieldOrbit
+
+import LeanMachine.FiniteLinearHash
+import LeanMachine.OwnerProgram
+import LeanMachine.BlockProgram
+import LeanMachine.BlockProgramExports
+import LeanMachine.BlockProgramCoarsen
+import LeanMachine.BlockSpan
+import LeanMachine.WeightedGrid
+import LeanMachine.GridPartition
+import LeanMachine.ReadOnlyProgram
+import LeanMachine.PolynomialMenus
+import LeanMachine.MonotoneSamples
+import LeanMachine.FiniteUniformProbability
+import LeanMachine.FiniteBoundedDifferences
+import LeanMachine.FiniteUniformWindows
+import LeanMachine.ReadOnlyWindows
+import LeanMachine.OrderedEmissionWindows
+import LeanMachine.OptionalReadSlices
+import LeanMachine.FiniteTopSets
+import LeanMachine.FiniteObservationTopSets
+import LeanMachine.FiniteTimeGrid
+import LeanMachine.FiniteTapeGraph
+import LeanMachine.FiniteMaskFibres
+import LeanMachine.FiniteSmallFibres
+import LeanMachine.FiniteWeightedPigeonhole
+import LeanMachine.FiniteCoordinateFibres
+import LeanMachine.BoundedTuplePadding
+import LeanMachine.LogarithmicDensity
+import LeanMachine.FiniteIntervalSelection
+import LeanMachine.FiniteSourceEscape
+import LeanMachine.BinaryBudgets
+import LeanMachine.FiniteOrdinalGuards

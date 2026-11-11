@@ -1,0 +1,162 @@
+\section{A reflection barrier at every binary word width}
+\label{sec:prime-reflection}
+
+The triple-relation family gives a direct linearization obstruction at its
+specified cyclic dimensions and extension-compatible widths. The following
+family has a different scope: every binary width $b\ge1$, odd prime side
+length, and source rate tending to one half. It does not replace either the
+above-half subcode construction or the triple relation-rank diagnostic.
+
+Let $d=2m+1$ be an odd prime, and put
+\[
+ W_b=\{x\in(\mathbb F_2^b)^d:x_0=0,\ x_j=x_{-j}\ \forall j\},\qquad
+ C_b=\{X:\text{every row of }X\text{ belongs to }W_b\}.
+\]
+All rotations act on entry columns and leave lane indices fixed.
+
+\begin{theorem}[The reflection source]\label{thm:reflection-source}
+\formal{CapacityReflectionSource.lean}{CapacityReflection.finrank_rowSpace,CapacityReflection.finrank_source,CapacityReflection.source_disjoint_views,CapacityReflection.source_shared}
+The source $C_b$ has binary dimension $bdm$. Its distinct rotated views
+$T^cC_b$, $T^eC_b$ intersect only in zero. It therefore admits one total
+deterministic shared decoder for every receiver, and in particular the same
+function can serve the two nonempty classes $\{0\}$ and
+$\mathbb Z/d\setminus\{0\}$.
+\end{theorem}
+
+\begin{outline}
+The $m$ pairs $\{j,-j\}$ of nonzero coordinates are free $b$-vectors, so
+$\dim W_b=bm$ and $\dim C_b=dbm$. The formal equivalence chooses the
+smaller positive representative of each pair and treats coordinate zero
+separately.
+
+A vector in $\sigma^cW_b$ is invariant under reflection
+$j\mapsto-j-2c$ and vanishes at $-c$. Two such symmetries with distinct
+centers give invariance under translation by $2(e-c)\ne0$. Because $d$ is
+prime, this translation generates the whole cycle. Thus a vector in two
+distinct translates is constant, and its zero coordinate forces it to be
+zero. Apply this independently to every row and all its lanes. The formal
+proof obtains any displacement as a multiple of the nonzero step in the
+field $\mathbb Z/d$.
+
+For a nonzero received view, disjointness makes its receiver phase and
+underlying source matrix unique. Return that source's requested row.
+Return zero at the zero view and choose arbitrary values off the union of
+the views. This is one well-defined total function. It is not asserted
+linear or efficiently computable.
+\end{outline}
+
+\begin{theorem}[Every-width linear subcode barrier]\label{thm:reflection-linear-barrier}
+\formal{CapacityReflectionBarrier.lean}{CapacityReflection.one_class_finrank_le,CapacityReflection.two_class_finrank_le,CapacityReflection.two_class_codimension_lower,CapacityReflection.two_class_positive_deletion,CapacityReflection.deletion_rate_limit}
+Let $C'\le C_b$ be any binary-linear subcode; it may couple every row and
+every lane. If it has a single binary-linear shared decoder, then
+\[
+ \dim_{\mathbb F_2}C'\le b m(m+1).
+\]
+If instead it has two binary-linear shared decoders for the original
+classes $\{0\}$ and $\mathbb Z/d\setminus\{0\}$, then
+\begin{equation}\label{eq:reflection-two-class}
+ \dim C'\le b\bigl(m(m+1)+d\bigr),\qquad
+ \operatorname{codim}_{C_b}C'\ge b(m^2-d).
+\end{equation}
+The deletion bound is positive for odd primes $d\ge7$ and is asymptotic
+to $bd^2/4$.
+More generally, these linear-subcode bounds hold over every field of
+characteristic two and at every odd side length $d=2m+1$. Primeness is
+needed for the preceding deterministic-decoder construction.
+\end{theorem}
+
+\begin{outline}
+First suppose there is one linear decoder $L$. Extend the coefficient
+field to a splitting field $E$ for a primitive $d$th root of unity.
+The formal construction takes the $E$-span of the embedded original basis
+of $C'$ and proves that basis remains independent. The extended code
+therefore has the same dimension. Extending the actual coordinate
+coefficients of $L$ preserves its shared-decoder equations, and span
+induction preserves the literal reflection and zero-coordinate equations
+defining $C_b$. All row and lane coordinates are included. This step
+extends only linear equations;
+it makes no scalar-extension claim about the deterministic decoder of
+\cref{thm:reflection-source}.
+
+Since $d$ is odd, its image in the characteristic-two field is nonzero;
+the formal primitive-character construction supplies the required
+extension. Choose the Fourier basis $e_a(j)=\zeta^{aj}$,
+$a\in\mathbb Z/d$. Its Vandermonde matrix is invertible. Apply this
+\emph{same} change of basis to both physical indices, preserving the
+transpose swap, and leave the lanes unchanged. Let $\mathcal F$ be the
+one-index synthesis and define the column mode
+$M_j(v)_{r,c,\ell}=\zeta^{jc}(\mathcal Fv)_{r,\ell}$.
+Writing $X$ as the two-index synthesis of $Z$, its actual rotated view is
+\[
+ T^cX=\sum_j\zeta^{jc}M_j(\operatorname{col}_jZ).
+\]
+Apply $L$ and compare the independent characters in the receiver $c$
+with the demanded row of $X$. This gives
+$\mathcal F(\operatorname{row}_jZ)=L(M_j(\operatorname{col}_jZ))$.
+Consequently, with the fixed linear maps
+$B_j=\mathcal F^{-1}LM_j$, agreement takes the form
+\begin{equation}\label{eq:reflection-frequency-equations}
+ \operatorname{row}_j(Z)^{\mathsf T}
+       =B_j\operatorname{col}_j(Z),\qquad j\in\mathbb Z/d,
+\end{equation}
+where $B_j:E^{db}\to E^{db}$ may mix every row and lane. No frequency
+equation or dimension certificate is supplied as a premise: the formal
+proof derives these equations from the original decoder.
+
+In the Fourier basis a reflected row has equal coefficients at $a,-a$:
+reflection exchanges those characters, and their independence forces
+coefficient equality. Evaluating the row at physical coordinate zero sums
+all coefficients. Equal nonzero pairs cancel in characteristic two, so
+the zero-coordinate condition forces coefficient zero to vanish.
+Conversely these coefficient conditions imply both original conditions.
+Consequently
+\[
+ \operatorname{col}_0(Z)=0,\qquad
+ \operatorname{col}_a(Z)=\operatorname{col}_{-a}(Z).
+\]
+The further Fourier change on the row index preserves these column
+identities. Equation~\eqref{eq:reflection-frequency-equations} at zero now
+forces $\operatorname{row}_0(Z)=0$ as well.
+
+Choose representatives $1,\ldots,m$ of the nonzero frequency pairs.
+Group the remaining rows and columns into those pairs. A $2$-by-$2$
+block has duplicate columns and is specified by
+$v_{a,b}\in E^{2b}$, its two entries in column $b$. The equations for
+frequencies $a$ and $-a$ use the same input column, and show that the
+whole compressed row $(v_{a,b})_b$ is a fixed linear function of the
+compressed column $(v_{c,a})_c$. Equivalently, for fixed linear maps
+$L_{a,b,c}:E^{2b}\to E^{2b}$,
+\[
+ v_{a,b}=\sum_c L_{a,b,c}(v_{c,a}).
+\]
+All cross-lane coefficients remain in these maps.
+
+Supply the strict upper blocks $v_{a,b}$, $a<b$, and all diagonal blocks.
+There are $\binom m2+m$ blocks, hence $bm(m+1)$ field coordinates.
+Recover rows in descending order. In column $a$, the entries above the
+diagonal were supplied, the diagonal was supplied, and those below it
+belong to already recovered rows. The whole column is known and its fixed
+linear maps determine row $a$. Thus the supplied-coordinate projection is
+injective on the agreement space, proving its dimension bound. The formal
+proof reuses the stronger descending block-recovery theorem, charging each
+diagonal kernel by at most $2b$.
+
+Finally suppose $C'$ has decoders $L_0,L_1$ for the two original classes.
+In the \emph{original binary coordinates} impose
+$L_1(X)=\operatorname{row}_0(X)$. This is one linear map to a $bd$-dimensional
+row, so its kernel cuts $C'$ by at most $bd$ dimensions. On the resulting
+subcode $C''$, the single decoder $L_1$ works also at receiver zero; it
+already works at every nonzero receiver. The one-class bound gives
+$\dim C'\le\dim C''+bd\le bm(m+1)+bd$. Subtract from
+$\dim C_b=bdm$ and use $d=2m+1$ to get the stated deletion bound.
+At $m\ge3$, $m^2-(2m+1)>0$, which covers the odd primes $d\ge7$.
+\end{outline}
+
+The source rate is $(d-1)/(2d)$, approaching one half from below, and the
+statement covers every $b$ including $b=1$ and the canonical width $b(d)$.
+Prime side length is used for the disjointness of rotated source views;
+characteristic two is used for the Fourier zero coefficient. The
+two-class partition in the linear bound is specifically singleton versus
+complement. The linear bound itself needs only odd side length. The
+result supplies neither a paid implementation of the nonlinear decoder
+nor a full-cube or native impossibility theorem.

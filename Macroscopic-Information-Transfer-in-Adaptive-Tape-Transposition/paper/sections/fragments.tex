@@ -1,0 +1,220 @@
+\section{Causal fragments and original cuts}\label{sec:fragments}
+
+\begin{lemma}[Fragment starts]\label{lem:fragments}
+\formal{Fragments.lean}{fragment_count_le,localized_fragment_count_le}
+If a finite retained set $K$ is closed under state predecessors except at a
+cut $B$, it has at most $|B|+1$ nonempty runs. If closure is required only
+inside a selected set $C$ and $K\subseteq C$, it has at most
+$|B|+r(C)$ runs, where $r(C)$ is the number of runs of $C$.
+\end{lemma}
+\begin{outline}
+A noninitial run start must immediately follow a cut. In the localized
+case it may instead be a run start of $C$. Map the other starts injectively
+to their preceding cut times.
+\end{outline}
+
+\begin{lemma}[Current versions suffice]\label{lem:current-version}
+\formal{CurrentVersion.lean}{filtered_read_correct,ExecutionPrefix.filtered_native_read}
+Process an actual native execution's chosen writes in chronological order,
+starting with blanks. At a requested read the resulting dictionary gives
+the actual symbol if the actual last prior visit to that cell is processed,
+or if no prior visit exists. No equality on other cells is required.
+\end{lemma}
+\begin{outline}
+The recursive dictionary is unchanged on an interval with no write to the
+queried cell. If a last visit exists, both the full and filtered dictionaries
+therefore equal its written value. Otherwise both equal the initial value.
+The native statement follows by induction from \cref{lem:old-write}.
+\end{outline}
+
+Let $\beta=q+ka+2$ encode the complete step value: poststate, all work writes
+and optional output bit. Old positions and move trits are paid separately.
+For $s\ge0$ put $n=s+1$ and
+\begin{equation}\label{eq:global-menu}
+ \mathcal J_s=(T_*+1)\binom{T_*}{s}\binom{T_*+n}{n}
+ \left[6^s\binom{T_*+s}{s}\right]^{k+1}
+ \binom{T_*+2n}{2n}\binom{P+4s+2}{4s+2}.
+\end{equation}
+The exact menu in \cref{eq:global-menu} is checked by
+\lean{globalGeometryMenu_card}.
+The declarations \lean{sampledWalk} and \lean{headDescription_injective}
+construct the signed-increment description from chronological samples of a
+unit walk. Monotone counters are encoded by their multiset, whose sorted
+order recovers every sample. The actual native encoder and its raw-coordinate
+and counter recovery are checked in \leanfile{FragmentGeometry.lean};
+\lean{totalFragmentRecord_card} in \leanfile{FragmentMenuCount.lean}
+combines them with the literal cut set and complete cut payload.
+
+\begin{theorem}[Finite adaptive input-cut bound]\label{thm:input-cut}
+\formal{NativeInputCutEndpoint.lean}{mem_nativeBadInputCuts_iff,native_bad_input_cut_bound}
+For any fixed output permutation $\pi$, let $\operatorname{BadInput}(D,r)$
+be the timely correct inputs admitting sets $V\subseteq U$ with $|V|\ge D$
+and a vertex cut $B$, $|B|\le r$, from $\operatorname{Out}_X(V)$ to all of
+$\operatorname{Read}_X(U)$. Then
+\begin{equation}\label{eq:input-cut-count}
+ |\operatorname{BadInput}(D,r)|\le
+ 2^{P-D}\sum_{s=0}^{\min(r,T_*)}\mathcal J_s2^{\beta s}.
+\end{equation}
+The sets and cut may depend on the input and are not separately encoded.
+\end{theorem}
+\begin{outline}
+Retain the ancestors $K$ of the noncut desired roots in the graph with $B$
+deleted. In each $B$-free gap the state spine makes $K$ a prefix. Every work
+parent of a retained step belongs to $K\cup B$, unless the cell is virgin.
+Record every cut value, old position and move, and the retained prefix lengths.
+At a retained interval entry the state and heads are initial, or are obtained
+from the immediately preceding cut step. Process retained transitions and
+recorded cut writes in time order. By \cref{lem:current-version}, an omitted
+overwrite cannot remain the latest parent of a retained read; closure would
+have retained or cut it. A simultaneous induction compares two actual executions with the same
+record. Their retained instructions agree because their old tuples agree;
+no common detailed trace is assumed.
+
+Record raw extrema for each retained interval and the before/after output
+counters for every retained interval and every cut step. Let $I$ be the raw
+coordinates read in $K$, and $O$ \emph{all} output ordinals at $K\cup B$.
+The paid record determines both, including append flags at cut steps
+through their two counters. Record the exterior of $W=\pi(O)\setminus I$. Retained
+raw reads are known. Cut outputs are paid directly. Replay recovers the
+outputs $O$ and therefore $W$, hence the entire input. The separator gives
+$I\cap U=\varnothing$ and $V\subseteq\pi(O)$, so $V\subseteq W$.
+Full correctness at all of $O$ is essential to this description-free step.
+The formal event is expanded into an actual first halt, the complete output,
+and the literal endpoint-inclusive separator by
+\lean{mem_nativeBadInputCuts_iff}.
+
+Here is the exact menu count. The horizon and cut set cost
+$(T_*+1)\binom{T_*}{s}$. The $n$ prefix lengths have total at most $T_*$,
+giving $\binom{T_*+n}{n}$. For each head, successive sampled cut positions
+have total absolute variation at most $T_*$, giving
+$2^s\binom{T_*+s}{s}$ signed-increment descriptions; moves add $3^s$.
+The $2n$ nonnegative raw-extremum offsets have total at most $T_*$, giving
+$\binom{T_*+2n}{2n}$. Finally the $4s+2$ chronological output-counter
+samples are weakly increasing in $[0,P]$, giving
+$\binom{P+4s+2}{4s+2}$. Empty intervals and invalid descriptions only
+overcount. These factors are \cref{eq:global-menu}. The cut payload costs
+$\beta s$ bits, and the exterior at most $P-D$ bits. Replay proves the
+injection separately for every actual execution sharing the message; it
+does not fix one input's query set for all other inputs. Sum over $s$.
+\end{outline}
+
+\begin{corollary}[Theorem I: simultaneous source-input expansion]\label{cor:input-expansion}
+\formal{InputCutTail.lean}{native_input_cut_tail,native_input_cut_tail_all_width}
+Fix $k,\beta$, a runtime constant $C\ge0$, and $\alpha>0$. There is
+$\lambda>0$ such that at all sufficiently large lengths fewer than
+$2^{(1-\alpha/3)P}$ timely correct inputs admit any cut in
+\cref{thm:input-cut} with $|V|\ge\alpha P$ and $|B|\le\lambda P$.
+For transposition the threshold is uniform over all $b\ge1$ as $d\to\infty$.
+\end{corollary}
+\begin{outline}
+Put $r=\lfloor\lambda P\rfloor$. Bound every binomial factor in the exact
+menu by the common sparse sum with $4r+2$ chosen positions out of
+$P+T_*+4r+2$. The full cut menu is at most
+\[
+ (r+1)(T_*+1)\bigl[6^{k+1}2^\beta\bigr]^r
+ \left[\sum_{j=0}^{4r+2}\binom{P+T_*+4r+2}{j}\right]^{k+5}.
+\]
+The generating-function sparse estimate and the polynomial logarithm bound
+make its base-two logarithm at most $\alpha P/2$ after choosing one positive
+$\lambda$ and then a length threshold. This is checked by
+\lean{geometry_cut_menus_logb_small} in \leanfile{GeometryMenuRates.lean};
+it requires no $r\le T_*/2$ restriction. The finite native bound gives
+$2^{(1-\alpha/2)P}<2^{(1-\alpha/3)P}$ for $P>0$. The proof uses
+$T_*\le\max(1,\lceil C\rceil)(P+1)$ and $P=d^2b\ge d^2$, so one threshold
+works for every positive block width. No union over $U,V$ is needed.
+\end{outline}
+
+\subsection{Localizing the same decoder}
+
+For a selected slab chunk $C$ from \cref{lem:slab-geometry}, keep its geometry
+and ordinary entry records. Put $U=\pi(O(C))\setminus I(C)$. Let $Y_H$ be
+\emph{all earlier endpoints} of off-carrier returns of excursion greater
+than $H$, including endpoints outside $C$. Suppose $B$ separates
+$\operatorname{Out}(U)$ from $Y_H$ in the full original graph. Retain the
+ancestors $K$ of the noncut roots in the graph induced on $C\setminus B$.
+There are at most $N+|B|$ retained fragments. A parent in $C$ is in $K\cup B$;
+any parent in $Y_H$ is in $B$, even when it is outside $C$, by the full
+separator property.
+
+Process ordinary snapshots as pre-step overlays, and retained/cut writes as
+step events. At the outer start install the free-slab snapshot or blanks. At
+each original $C$-run entry overlay the actual nonfree windows. Do not erase
+dictionary cells outside these windows. At ties perform overlays before the
+cut or retained write. Fragment entry states and heads come from an original
+run entry or the preceding cut step; record their output counters separately.
+
+For a retained read on the free tape, its last visit after the outer start
+belongs to $C$, hence to $K\cup B$; an older version is covered by the initial
+slab snapshot. On a nonfree tape, a last visit in the current $C$-run is in
+$K\cup B$. An earlier last visit is covered by the entry window, or lies in
+$Y_H$ by \cref{lem:first-read} and is therefore in $B$. A virgin cell is
+blank. These cases supply the correct current version. Later true snapshots
+cannot spoil it: after the last visit and before this read every actual
+snapshot of that cell has the same value. This also handles cut steps before
+the outer start, cut roots and snapshot/cut ties. It would be false to claim
+that a whole core dictionary remains correct after skipping $C\setminus K$.
+
+The raw exterior is determined by the original $C$, so no new extrema for
+the smaller fragments are required. With $s=|B|$, their extra geometry has
+the safe menu
+\begin{equation}\label{eq:local-menu}
+ \mathcal L_s=(T_*+1)\binom{T_*}{s}\binom{T_*+N+s}{N+s}
+ \left[6^s\binom{T_*+s}{s}\right]^{k+1}
+ \binom{P+4s+2N}{4s+2N}.
+\end{equation}
+Its exact finite product cardinality is
+\lean{localGeometryMenu_card}. The actual native local record and its
+recovery are checked in \leanfile{LocalGeometry.lean}.
+The bound \lean{native_bad_slab_cut_bound} combines the derived native
+injection with the original slab metadata.
+The factors count cut times, the $N+s$ prefix lengths, sampled positions and
+moves, and $2(N+s)+2s$ output-counter samples. The proof is the same joint
+sparse count as above. Replacing the import menu in \cref{eq:finite-returns}
+by $\sum_{s\le r}\mathcal L_s2^{\beta s}$ therefore bounds the inputs with
+such a cut of size at most $r$.
+
+\begin{theorem}[Theorem H: original off-carrier expansion]\label{thm:off-carrier}
+\formal{OffCarrierExpansion.lean}{native_off_carrier_expansion}
+For fixed $k,a,q,C$ there are $\varepsilon,\lambda,\eta>0$ and a threshold
+uniform over all $b\ge1$ such that, outside fewer than $2^{(1-\eta)P}$
+timely correct inputs, every choice of free head admits a demanded raw set
+$U$ with $P/(8N)\le|U|\le P/2$ whose original minimum vertex cut to all
+off-carrier $\lfloor\varepsilon P\rfloor$-long return lower endpoints is
+greater than $\lambda P$. In fact every valid chunk of
+\cref{lem:slab-geometry} has this property on the same good-input event.
+\end{theorem}
+\begin{outline}
+The exhaustive current-version induction above gives the actual native
+pairwise injection in \lean{NativeReplayClass.LocalCut.records_recover}
+of \leanfile{NativeLocalCuts.lean}. Its last-parent and desired-output
+coverage are derived from the original full separator and actual counters.
+Inputs sharing computed slab metadata have the same omitted set, even when
+they halt at different later times. Group those actual inputs into metadata
+fibres, pay the ordinary snapshots once, and sum their local-record bounds.
+No common detailed trace or import bound is imposed.
+
+Take $H=\lfloor\varepsilon P\rfloor$ with the explicit
+$\varepsilon$ of \cref{thm:returns}. The common sparse envelope from
+\lean{geometry_cut_menus_logb_small} makes the exact local cut menu's
+logarithm at most $P/(32N)$ after choosing one positive $\lambda$ and a
+length threshold. The windows cost at most $P/(32N)$ apart from fixed
+terms. The metadata, the $3Ndb$ term, and all fixed terms including $Nq$
+each cost at most $P/(96N)$ beyond a single dimension threshold.
+The margin $P/(4N)$ therefore leaves exponent at most $1-5/(32N)$,
+strictly below $1-\eta$ for $\eta=1/(8N)$.
+This is \lean{native_local_cut_tail} in \leanfile{LocalCutTail.lean}.
+
+The one bad event ranges over every valid actual chunk, so it already
+includes all free-head and chunk choices. At the enlarged threshold the
+geometric saving is at least $P/(8N)>0$; the proved slab-selection theorem
+therefore supplies a nonempty valid chunk for every specified free head.
+Its margin gives $|U|\ge P/(8N)$, and injectivity of actual append times
+gives $|U|\le|O(C)|\le|C|\le P/2$. Decreasing $H$ only adds original targets,
+so the same $U$ works for every smaller nonnegative integer threshold.
+All length thresholds use $P=d^2b\ge d$, uniformly for $b\ge1$.
+\end{outline}
+
+The cut-density constant depends on the whole value width $\beta$, hence on
+the controller. Unlike \cref{thm:returns}, this fixed positive cut-density
+consequence does not automatically extend to arbitrary $o(P)$-bit controllers.
+No result here supplies a small separator for every linear-time execution.

@@ -1,0 +1,114 @@
+\section{Diagonal defects and exact displayed kernels}\label{sec:block-defects}
+
+The block flag bound can retain the actual defect on each diagonal block.
+This is useful when a proposed column algebra has small invariant blocks,
+but its diagonal compressions admit fewer transpose agreements than their
+full dimensions would allow.
+
+\begin{theorem}[Unequal block defects]\label{thm:block-defects}
+\formal{ConstructionBlockDefects.lean}{upperBlockDescriptor_injective,finrank_upperBlockAgreement_le}
+Let $V=\bigoplus_{j=1}^m V_j$, with $\dim V_j=s_j$, and use compatible
+bases on the two tensor factors. In these coordinates suppose the linear
+operator $K$ has block coefficients
+\[
+ (KX)_{ij}=\sum_{a,b}L^{ij}_{ab}(X_{ab}),\qquad
+ L^{ij}_{ab}=0\quad\text{when }b<j.
+\]
+Write $K_j=L^{jj}_{jj}$ for its actual diagonal compression and put
+$\delta_j=\dim\ker(\tau_{s_j}-K_j)$. Then
+\[
+ \dim\ker(\tau-K)\le \sum_{i<j}s_i s_j+\sum_j\delta_j.
+\]
+In particular this applies when the column factors preserve the prefix flag:
+that hypothesis gives exactly the displayed coefficient vanishing.
+For $b$ coupled lanes the first summand becomes $b\sum_{i<j}s_i s_j$;
+each $\delta_j$ is the full diagonal-block defect including its lanes.
+\end{theorem}
+
+\begin{outline}
+Retain the blocks strictly above the diagonal. On each diagonal block
+retain a linear projection onto the kernel of its actual diagonal
+compression. We show that this descriptor is injective on the agreement
+space. Subtract two inputs with the same descriptor. Their upper blocks
+vanish. Descend through the remaining block rows. The flag property
+eliminates earlier columns; every other term is already zero by the
+upper-block condition or the induction. The diagonal equation therefore
+puts the current diagonal block in its diagonal kernel. Its retained
+projection is zero, so the block itself is zero. The remaining equations
+then set the entire current block row to zero. The descriptor has the
+stated dimension.
+
+The Lean statement allows different vector spaces on each rectangle,
+explicit transpose equivalences, and all coefficients from later block
+columns. It thus includes the tensor formulation and upper-triangular
+coupling. The weaker block flag bound follows by replacing each
+$\delta_j$ by $s_j^2$ (or $bs_j^2$).
+\end{outline}
+
+\subsection{The full kernel of the two-class cyclic lift}
+
+The exhibited seed and lift also admit an exactness statement, stronger
+than the existence of a subcode of the same dimension. It concerns these
+particular operators; it does not optimize over seed decoders.
+
+\begin{theorem}[Exact displayed cyclic-lift kernel]\label{thm:exact-lift-kernel}
+\formal{ConstructionCyclicExact.lean}{binarySeed_full_rule,mem_cyclicLiftCode_iff_full_rule,binaryCyclicDefect_ker,finrank_binaryCyclicLaneDefect_ker}
+For the published binary $6\times6$, two-class seed, the full
+correctness set of its displayed linear decoders is its $25$-dimensional
+code. For $d=6m$, $\gcd(m,6)=1$, and every width $b$, the entire agreement
+kernel of the displayed cyclic lift, applied independently to the $b$
+lanes, has dimension
+\[
+ b(18m^2+7m)=b\left(\frac{d^2}{2}+\frac{7d}{6}\right).
+\]
+More generally, the cyclic lifting construction preserves equality between
+a seed code and the full correctness set of its deterministic decoders,
+whenever its averaging scalar is invertible. This generic statement is
+\lean{mem_liftedCode_iff_full_rule}; the cyclic-index counterpart cited above
+uses linear seed decoders.
+\end{theorem}
+
+\begin{outline}
+Let $A_6$ be the defect map whose $(c,r)$ coordinate is the demanded seed
+entry minus the displayed decoder entry. The published generators already
+provide a $25$-dimensional subspace of $\ker A_6$. Their private pivot
+coordinates define a linear expansion $P$ into that subspace. A sparse
+linear certificate $R$ satisfies
+\[
+ P+RA_6=I.
+\]
+Lean checks this identity on the $36$ standard basis matrices using
+ordinary kernel evaluation. Hence $A_6X=0$ implies $X=PX$ and supplies the
+reverse inclusion. The certificate generator does not belong to the
+trusted proof; its output is checked again by Lean. The declarations
+\texttt{binarySeed\_recovery\_identity} and
+\texttt{finrank\_binarySeedDefect\_ker} record this step.
+
+For the lift, let $E$ be the anti-diagonal averaging projector used in
+\cref{sec:constructions}. The displayed rule writes a correct input as
+\[
+ X=\tau(I-E)X+\operatorname{inflate}(R(\operatorname{average}X)),
+\]
+where $R$ applies the displayed seed rules to every averaged slice.
+Average this identity. The first term averages to zero, and averaging
+undoes inflation. Every averaged slice therefore satisfies all seed
+rules and belongs to the seed code. Subtract its inflation: $(I-E)X$
+is symmetric and has zero average. These are precisely the two summands
+of the constructed lifted code. The converse is the existing decoder
+correctness proof. The Chinese remainder equivalence transfers both
+directions to literal cyclic indices. The previous dimension theorem
+therefore computes the full kernel, and independent lanes multiply its
+dimension by $b$.
+\end{outline}
+
+For example, at $d=30,b=1$ the full kernel has dimension $485$,
+compared with the two-interval ceiling $480$ and the identity kernel
+dimension $465$. These are consequences of the general theorem, not
+separate numerical evidence for it.
+
+Reproduce the finite certificate with
+\texttt{python3 tools/seed\_recovery\_certificate.py} from this paper's
+directory, then run \texttt{lake build} from \texttt{lean/}.
+The seed data are read from the sibling Paper~17 tools directory.
+The paid native schedule in \cref{thm:paid-lift} is unchanged: exact
+kernel equality adds no new operation or hidden decoder oracle.

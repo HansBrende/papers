@@ -1,0 +1,104 @@
+\section{Introduction}\label{sec:introduction}
+
+The question (T) asks whether one fixed deterministic multitape Turing machine
+can transpose all square matrices in time linear in their row-major encoding
+length. The input is read-only; work tapes are read/write; output is append-only
+and cannot be read. A mathematical decoder may inspect records in any order,
+whereas the machine must obtain its operands with the actual tape heads.
+
+The seventeenth paper identifies a gap between restrictions on decoding
+rules and restrictions on complete tape computations
+\cite[Sections~3 and~7.4]{SeventeenthPaper2026}. Its order and symmetry
+theorems apply to structured one-hop decoders. Obtaining such structure,
+with its advice and intermediate states paid for, from arbitrary native
+executions remains open. We work on the execution side of this gap:
+which records must carry information, where must that information pass,
+and how much can fixed local descriptions explain?
+
+\paragraph{Original adaptive executions.}
+Earlier macroscopic-crossing results constrain oblivious executions and
+sufficiently heavy original traces. Their general adaptive application uses
+a low-trace simulator whose dependency graph differs from the original
+machine's graph \cite{MacroscopicCrossings2026}. Our direct replay instead
+pays for selected intervals of the original execution.
+
+Fix the number of work tapes, the alphabet and a linear time constant.
+There are positive constants $\varepsilon,\gamma,\eta$ such that fewer than
+$2^{(1-\eta)P}$ length-$P$ inputs are both timely and correctly transposed
+and admit a free work head leaving at most $\gamma P$ returns of excursion
+greater than $\varepsilon P$ on the other heads. The threshold is uniform
+over all positive entry widths. Consequently two heads make linearly many
+macroscopic returns on every other timely correct input. The exception
+count is relative to the ambient cube; it is not a conditional proportion
+of an arbitrarily small success set.
+
+The proof retains every visit to a spatial slab of the free head. Its
+memory persists through gaps between retained runs. On another tape, a
+first read outside the paid entry window either reads a virgin cell or has
+an actual long-return predecessor. One joint sparse event/value record
+supplies these symbols. The replayed correct outputs recover raw bits
+omitted from the message.
+
+A second replay retains causal fragments rather than every step in a slab.
+It pays complete cut values and processes intervening writes chronologically.
+This gives simultaneous expansion for arbitrary macroscopic raw demand sets
+and, after localization, expansion to off-carrier long-return predecessors.
+The localized result concerns the output sets supplied by the slab geometry.
+
+Two further conclusions use the existing aligned simulator of
+\cite{HighRateStorage2026}. We prove an actual path and cone correspondence,
+paying guards for the changed clock, head positions and delayed outputs.
+It transfers expansion from \emph{every} large output set to original
+crossings and gives storage-capacity certificates on the original entry
+relation. Their asymptotic statements use canonical widths. The finite
+eroded-input cut invoice and the direct replay results hold at every
+positive width. No common original trace is assumed in either route.
+
+\paragraph{What stored data must do.}
+A one-work-tape simulation handles runs in which at every configuration
+at most one work tape has more than $m$ nonblank cells. The carrier may
+change arbitrarily often: sparse sketches and a lazily reset visited
+interval preserve the computation through a handoff. Combining the
+simulation with the one-head bound forces two simultaneous large stores.
+A linear-overhead redundant-archive wrapper shows why this conclusion
+does not imply independence of their contents.
+
+The extensions then test more informative descriptions of those stores.
+Fixed getters reconstruct incoming values from continuous raw windows,
+paid observer state, one shared label and the strictly prior correct-output
+string. Shared spatial checkpoints supply such getters for deterministic
+scans. Changing-carrier and historical-cache arguments compare whole words
+with fixed locally readable reference families and force long secondary
+modification episodes. Persistence estimates quantify marginal uncertainty,
+including uncertainty after conditioning on the emitted prefix.
+The historical-feedback appendix measures dated work-block reuse through
+actual halt. A cheap copying control bounds its interpretation: a large
+historical statistic alone does not account for the cost of transposition.
+
+\paragraph{Proofs and formal status.}
+Each numbered result identifies its formal status. The replay, original
+return and cut bounds, coherent-cluster extension, getters, paid loader,
+complete block-program lemma and actual simulator transport are proved
+in Lean. The carrier, catalogue, eraser, archive and physical monitor
+constructions have complete written proofs but retain native formalization
+obligations. Their checked consequences explicitly assume the missing
+construction bounds. No additional axiom supplies them.
+The Lean declarations are authoritative; the English outlines are reading
+aids. \Cref{sec:formalization} states the precise boundary.
+
+\paragraph{Relation to earlier work and reading order.}
+The native locality mechanism comes from \cite{FirstPaper2026}, and the
+finite arbitrary-width slab geometry from \cite{MacroscopicCrossings2026}.
+The additional work is the paid replay across different original executions,
+the actual simulator pullback, and the carrier and reference constructions.
+We reuse standard counting and entropy inequalities. External priority for
+the combined statements remains to be assessed before publication.
+
+For the direct native bounds, read \cref{sec:replay,sec:returns,sec:fragments}.
+For the every-output crossing and entry-capacity route, read
+\cref{sec:accounting,sec:transfer}. \Cref{sec:storage,sec:limitations}
+give the simultaneous-store condition and its redundancy control.
+The other appendices develop coherent clusters, catalogues, local getters,
+reference changes, persistence and feedback. \Cref{sec:open} specifies
+which additional statements would turn these requirements into an
+impossibility proof.

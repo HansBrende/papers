@@ -1,0 +1,43 @@
+\section{Formalization boundary}\label{sec:formalization}
+
+The library uses the earlier shared-decoder models and Mathlib, with the
+repository's existing pins. Its entry type is a module, so vector lanes may
+be mixed unless a theorem explicitly imposes additional structure. Arbitrary
+deterministic shared rules and linear shared rules are separate predicates.
+Complete factorization theorems quantify over total maps on the full state
+space. Bijectivity follows from exactness and finite dimension for linear
+factors, and from exactness and a finite state space for nonlinear factors.
+
+The finite capacity proof proceeds through actual translated source spaces,
+their component quotient, and cyclic run counts. Its arithmetic averaging
+lemma is separate from those structural statements. The composition proof
+similarly derives its forced row-class subspace from an actual factorization;
+the common-message inequality is not an assumed surrogate for that step.
+Finite progression extraction reuses Mathlib's Hales--Jewett theorem. The
+small two-color certificate is evaluated by the kernel, without native
+evaluation. Some finite checks use a larger heartbeat allowance.
+
+All numbered mathematical statements, except the native implementation theorem,
+are now checked. This includes exact arbitrary-set capacities and their cyclic
+quotient counts, line-marker constructions, every structured and probabilistic
+mask estimate, the actual scalar-extension/Fourier bridge for the reflection
+barrier, multiplier and whole-orbit diagnostics, and sharp separable and nonlinear
+row-then-column examples. The reflected linear-subcode bound holds at every odd
+dimension; primality is retained only where the separate construction needs it.
+
+The finite probability library constructs the actual uniform source law, proves
+its bounded-differences inequalities and computes the required event expectations
+and coordinate sensitivities. Conditioning, unlabelled partitions and simultaneous
+run-spectrum events are included. The residual library evaluates the complete
+chronological program, propagates its literal deviations, and proves joint
+record, entropy, span and input-dependent sparse-support bounds. These statements
+retain correlation between records and do not assume that a correctness source
+is a subspace. The generated index lists the exact endpoints. Finite seed
+coefficients are checked by the Lean kernel; the external generator is not trusted.
+
+The native implementation has a distinct large obligation: implementing the
+two-tape protocol as a transition table in the frozen model, with a complete
+execution invariant and uniform time and state accounting. Its mathematical
+protocol is proved in the text, but is not certified by an algebraic code or a
+finite dimension calculation. That compiler is recorded as a substantial
+formalization todo in the README. No additional axiom stands in for it.

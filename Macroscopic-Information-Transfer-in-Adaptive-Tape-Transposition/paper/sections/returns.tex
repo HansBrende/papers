@@ -1,0 +1,137 @@
+\section{Macroscopic returns on original adaptive runs}\label{sec:returns}
+
+Fix $k,a\ge1$ and $C\ge1$, and put
+\[
+ T_* =\lfloor C(P+1)\rfloor,\qquad W=\lceil P/(80aC)\rceil,
+ \qquad N=\lfloor160aC^2\rfloor+1.
+\]
+Let $\operatorname{Bad}(H,J)$ consist of timely correct inputs for which some
+free head leaves at most $J$ returns of excursion greater than $H$ on the
+other heads.
+
+\begin{lemma}[Finite geometry]\label{lem:slab-geometry}
+\formal{SlabGeometry.lean}{exists_slab_geometry,native_slab_geometry}
+For $P\ge2$, every timely correct run and chosen free head has a slab chunk $C$
+of at most $\lfloor P/2\rfloor$ steps and at most $N$ runs. With $U$ from
+\cref{eq:omitted}, it satisfies
+\begin{equation}\label{eq:slab-margin}
+ |U|-a\iota W\ge P/(4N)-3Ndb-a.
+\end{equation}
+\end{lemma}
+\begin{outline}
+We use the arbitrary-width slab and stripe lemmas of
+\cite{MacroscopicCrossings2026}, Lean-verified there as
+\begin{itemize}[nosep]
+\item \lean{NativeRelations.exists_offset_slabTransitions_le};
+\item \lean{NativeRelations.exists_slab_chunk_dichotomy};
+\item \lean{NativeRelations.outIn_card_le_two_indep_add_six_runs}.
+\end{itemize}
+The actual-input adapter obtains the halting time and all $P$ append events
+from timely transposition of that input. Its own raw and work paths are unit
+walks, and its actual append times are strictly increasing. No other input
+is required to share this trace. The finite theorem constructs literal slab
+intervals from these walks and times; it does not assume a suitable chunk.
+Their finite statements imply this particular margin as follows.
+An averaged grid offset has at most $(T-1)/W<N$ wall crossings. The short
+case takes all visits to its slab from time zero, has at least $P/(2N)$
+outputs and pays no snapshot. The long case takes a time slice and has
+$P\lfloor P/2\rfloor<4T|O|$. In either case the stripe estimate is
+$|O|\le2|U|+6Ndb$. Since $P\ge2$, $T\le2CP$ and
+$\lfloor P/2\rfloor\ge P/3$, the long case gives
+\[
+ |U|-aW>P/(48C)-P/(80C)-3Ndb-a
+       =P/(120C)-3Ndb-a.
+\]
+Now $N>160aC^2\ge160C$ implies \cref{eq:slab-margin}. The short and long
+cases must be distinguished: charging a snapshot against the short-case
+output bound would not justify this margin.
+\end{outline}
+
+\begin{theorem}[Finite original-run bound]\label{thm:finite-returns}
+\formal{NativeReturnCounting.lean}{native_positive_saving_observation,native_finite_return_bound}
+For $P\ge2$, using \cref{eq:metadata} and $A\le2^a$,
+\begin{align}\label{eq:finite-returns}
+ |\operatorname{Bad}(H,J)|\le
+ 2^{P-P/(4N)+E},\qquad
+ E={}&3Ndb+a+a(k-1)N(2H+1)+Nq\\
+ &+\log_2\mathcal M+\log_2\mathcal S(kT_*,J,A).\nonumber
+\end{align}
+There is no all-input correctness or common-trace assumption.
+\end{theorem}
+\begin{outline}
+When the snapshot-adjusted margin is positive, the native slab theorem
+selects a nonempty slab observation for each input and qualifying free head.
+The encoder constructs its bounded metadata from the actual maximal runs,
+head positions, raw extrema and append counters. Equal metadata determines
+the retained time set and all these observations, while allowing different
+detailed native traces. Unit-path continuity identifies the raw-extrema
+union with the actually read cells; the output-counter intervals identify
+exactly the actual appends.
+
+The checked \lean{constantSlabClass} constructs the replay class on every
+metadata fibre. Its successful prefixes and correct final words come from
+the inputs' own native runs. The actual typed import support injects into
+completed off-carrier long returns, so at most $J$ imports are paid.
+The snapshot-adjusted saving is \cref{eq:slab-margin}; the remaining windows
+and states cost at most $a(k-1)N(2H+1)+Nq$. Sum the class bounds over the
+explicit menu of cardinality $\mathcal M$. Each finite menu contributes one
+logarithm. If the geometric margin is nonpositive, the full $2^P$ input
+bound already implies the claimed inequality. The formal endpoint applies
+to any set of timely correct inputs satisfying the stated return condition,
+without all-input correctness or a common detailed trace.
+\end{outline}
+
+\begin{theorem}[Theorem R: two macroscopic return heads]\label{thm:returns}
+\formal{ReturnTail.lean}{returnTailEpsilon_pos,returnTailEta_pos,native_macroscopic_return_tail}
+For fixed $k,a,C$ there are $\varepsilon,\gamma,\eta>0$ and a dimension
+threshold uniform in all $b\ge1$ such that fewer than $2^{(1-\eta)P}$
+timely correct inputs admit a free head with at most $\gamma P$ off-carrier
+returns of excursion greater than $\lfloor\varepsilon P\rfloor$.
+This holds for each individual machine with
+$q\le P/(64N^2)$. In particular, for $k\ge2$, every other timely correct
+input has two distinct heads each making more than $\gamma P/(k-1)$ such
+returns. For $k=1$ the bound applies to the entire timely success set.
+\end{theorem}
+\begin{outline}
+Take $\varepsilon=[64a\max(1,k-1)N^2]^{-1}$ and $\eta=1/(8N)$.
+The checked sparse-record estimate \lean{native_sparse_logb_small}, applied
+to the alphabet bound $2^a$, gives one $\delta>0$ such that
+$J\le\delta P$ implies $\log_2\mathcal S(kT_*,J,A)\le P/(32N)$.
+Choose $\gamma=\min(\delta,1/2)$ and $J=\lfloor\gamma P\rfloor$.
+This includes $J=0$. The floor bound and the stated $\varepsilon$ give
+\[
+ a(k-1)N(2\lfloor\varepsilon P\rfloor+1)
+ \le P/(32N)+a(k-1)N.
+\]
+
+The actual metadata menu satisfies the checked polynomial bound
+\[
+ \mathcal M\le k(N+1)
+ \bigl[(2\lceil C\rceil+3)(P+1)\bigr]^{3+(k+7)N}.
+\]
+Thus \lean{native_metadata_logb_small} supplies a length threshold $P_0$
+with $\log_2\mathcal M\le P/(192N)$ for $P\ge P_0$.
+One valid dimension threshold is
+\[
+ d_0=2+576N^2+P_0+192N\bigl[a+a(k-1)N\bigr].
+\]
+For $d\ge d_0$ and every $b\ge1$, $P=d^2b\ge d$; the three terms
+$3Ndb$, $a+a(k-1)N$ and $\log_2\mathcal M$ are each at most
+$P/(192N)$. Their sum is at most $P/(64N)$.
+The controller budget contributes another $P/(64N)$, and the proportional
+window and sparse costs each contribute $P/(32N)$. The exact finite bound
+therefore has exponent at most $(1-5/(32N))P<(1-\eta)P$.
+Every threshold is independent of $b$ and of the individual machine within
+the stated resource budgets.
+
+For a good input, deleting any one head leaves more than $\gamma P$ returns;
+the strict inequality follows from the integer floor cutoff. Partition the
+actual return triples by head and choose a head of maximum count. Among the
+other $k-1$ heads one has more than $\gamma P/(k-1)$ returns, and the maximum
+head has at least that many. These are the checked declarations
+\lean{offCarrierReturns_card_eq_sum}, \lean{native_two_return_heads} and
+\lean{native_one_head_bad}. In the one-head case the off-carrier set is empty,
+so every timely correct input belongs to the bad set.
+\end{outline}
+Fixed controllers, and uniformly $o(P)$-bit controllers, eventually meet the
+displayed controller budget.

@@ -1,0 +1,307 @@
+\section{Complete nonlinear maps: symmetry, balance and periods}
+\label{sec:nonlinear}
+
+The arguments in this section use exactness on the complete finite state
+space.  They do not linearize a decoder on a correctness source.  A complete
+bijection has balanced column outputs; an arbitrary function agreeing with
+transpose on a subspace need not have them.  This distinction supplies an
+additional obstruction beyond the source-dimension bounds of Part I.
+
+\subsection{One nonuniform layer and periodic first maps}
+
+\begin{theorem}[An equivariant sandwich]\label{thm:uniform-sandwich}
+\formal{UniformSandwich.lean}{uniform_sandwich_injective_classes,uniform_sandwich_finite}
+Let the entry alphabet have at least two elements.  Suppose $U,V$ commute
+with every column rotation, $U$ is injective, $K$ is class-uniform, and
+$UKV=\tau$ on the complete state space.  Then every receiver class of $K$
+is a singleton.  If the alphabet is finite, the injectivity of $U$ follows
+from the factorization and need not be assumed.
+\end{theorem}
+\begin{outline}
+Put $S=\operatorname{Fix}(T)$ and $W=KV(S)$.  The set $\tau S$ consists
+of matrices with all rows equal, so it is invariant under column rotation.
+Since $UW=\tau S$, equivariance and injectivity of $U$ imply that $W$ is
+column-rotation invariant.  On each input in $V(S)\subseteq S$, the columns
+of $K$ agree at any two receivers $c,e$ in the same class.  Applying this
+fact to every rotation of every element of $W$ shows that $T^{e-c}$ fixes
+all of $W$.  Equivariance of $U$ would then make $T^{e-c}$ fix all of
+$\tau S$.  An arbitrary repeated row word disproves this when $c\ne e$.
+For a finite alphabet, $U$ is surjective because the composite is, and
+therefore injective.
+\end{outline}
+
+The following quantitative class count concerns an actual periodic first
+map, and permits that map to be nonlinear.
+
+\begin{theorem}[A periodic first factor]\label{thm:periodic-first}
+\formal{SubgroupClasses.lean}{covariance_no_class_collision,orbit_classes_injective,exact_periodic_first_class_bound,exact_periodic_first_class_size_bound}
+Let $A$ be a finite alphabet with at least two elements and let
+$\tau=KF$ on $A^{d\times d}$, where $F$ is any total map commuting
+with $T^r$ and $K$ is class-uniform with $M$ classes.  Put
+$g=\gcd(d,r)$.  Every class meets each orbit of addition by $r$ in at
+most one receiver.  Consequently each class has at most $g$ receivers and
+\begin{equation}\label{eq:periodic-class-bound}
+ M\ge d/g.
+\end{equation}
+The conclusion includes $r=0$, when it says only $M\ge1$.
+\end{theorem}
+\begin{outline}
+Both factors are bijective.  From $FT^r=T^rF$ and $KF=\tau$ we obtain
+$KT^r=R^rK$, hence the same covariance for every $s\in\langle r\rangle$.
+If $e=c+s$ lies in the same class as $c$, the shared rule and this covariance
+give, for every input $X$,
+\[
+ \operatorname{col}_eK(X)
+ =\operatorname{col}_cK(T^sX)
+ =\sigma^s\operatorname{col}_cK(X).
+\]
+Surjectivity of $K$ rules out this fixed relation between two distinct
+output columns.  The $g$ cyclic orbits give the asserted class-size and
+class-count bounds.  The formal proof derives the numerical bound through
+the order of $r$ in $\Z/d\Z$.
+\end{outline}
+
+The bound is sharp for every divisor $g\mid d$.  Here is the explicit
+partial-digit-swap construction, a reuse of the composition examples in
+\cite{SeventeenthPaper2026}.  Write $d=gh$, $i=gw+z$ and $c=gu+v$, with
+$0\le z,v<g$ and $0\le w,u<h$.  Define
+\[
+ (FX)_{gw+z,gu+v}=X_{gw+v,gu+z},\qquad
+ (KY)_{gw+z,gu+v}=Y_{gu+z,gw+v}.
+\]
+Both are coordinate permutations, $F$ commutes with $T^g$, and direct
+substitution gives $KF=\tau$.  The second map has the $h$ interval classes
+$p(gu+v)=u$, with
+\[
+ f_u(Z)_{gw+z}=Z_{gu+z,\,g(w-u)\bmod d}.
+\]
+Indeed $Z=T^{gu+v}Y$ turns the column index in this formula into $gw+v$.
+If $\gcd(r,d)=g$, then $\langle r\rangle=\langle g\rangle$, so this
+also realizes equality for the prescribed subgroup.  The construction
+is algebraic; a coordinate permutation is not a free tape operation.
+
+\subsection{Agreement distance from equivariance}
+
+The one-layer obstruction has a simple probabilistic form on an arbitrary
+correctness set.  This form uses no linear-source assumption.
+
+\begin{proposition}[Full-input agreement bound]\label{prop:agreement}
+\formal{CompositionAgreement.lean}{full_input_agreement_probability,repeated_class_agreement_probability}
+Let $A$ be finite, $|A|\ge2$, and put $q=|A|^d$, the cardinality of one
+whole column.  If $K$ is class-uniform, with class sizes $n_J$, then
+\begin{equation}\label{eq:agreement-bound}
+ \Pr_X[KX=\tau X]
+ \le \frac{M}{d}+
+       \frac{\sum_J n_J(n_J-1)}{2dq},
+\end{equation}
+where $X$ is uniform on the complete state space.  If some class has two
+distinct receivers, the separate bound
+\begin{equation}\label{eq:agreement-pair}
+ \Pr_X[KX=\tau X]\le\frac{1+q^{-1}}2
+\end{equation}
+also holds.
+\end{proposition}
+\begin{outline}
+For a fixed $X$, consider all $d$ rotated inputs $T^sX$ and count the
+phases on which $K$ is correct.  At receiver $c=-s$, its view is $X$.
+Correctness there requires
+\[
+ f_{p(c)}(X)=z_c(X),\qquad
+ z_c(X):=\sigma^{-c}\operatorname{row}_cX.
+\]
+The $z_c$ are independent uniform words from a set of cardinality $q$.
+In one class, the number of correct phases is at most the largest
+multiplicity of these words, hence at most one plus the number of equal
+unordered pairs in that class.  Taking expectations and using rotation
+invariance of the uniform input law proves \cref{eq:agreement-bound}.
+
+For the second bound, take distinct same-class receivers $c,e$, set
+$s=e-c$, and let $G=\{X:KX=\tau X\}$.  If both $X$ and $T^sX$ lie in
+$G$, sharedness gives
+$\operatorname{row}_eX=\sigma^s\operatorname{row}_cX$.
+This event has probability $1/q$, since the two rows are independent.
+Thus $\Pr(G\cap T^{-s}G)\le1/q$.  Inclusion--exclusion and equality of
+the two marginal probabilities give $2\Pr(G)-1\le1/q$.
+\end{outline}
+
+For example, let $F$ be any first map, let $H$ be equivariant, and let
+$\gamma=\Pr[KF\ne\tau]$ and $\epsilon=\Pr[F\ne H]$.  The composite
+$KH$ has the same class partition as $K$, and is correct on every input
+where $KF$ is correct and $F=H$.  Therefore
+$\gamma+\epsilon$ is at least one minus either applicable bound above.
+This measures equality of entire maps on an input.  It does not measure
+the number of output coordinates changed by the first map.
+
+\subsection{Balanced intertwiners}
+
+We now allow a second nonuniform layer, but retain a concrete property
+of its first nonuniform operator.  Let $\Sigma$ be a finite alphabet of
+size $a\ge2$ with a distinguished symbol $0$.  For width $b\ge1$, regard
+a state as a tuple of $db$ words in $\Sigma^d$, one for each row and lane.
+Let $L$ be a zero-fixing permutation of $\Sigma^d$, applied identically
+to all these words.  Define
+\[
+ Q=LTL^{-1},\qquad Q_c=T^cQT^{-c}.
+\]
+In the next statement the group acts on scalar words; the remaining
+maps may mix all rows and lanes.
+
+\begin{theorem}[Transitive pairs obstruct balanced outputs]
+\label{thm:balanced-pair}
+\formal{CompositionWordAction.lean}{transitive_pair_impossible}
+Suppose $H$ is a total column-equivariant map and $K$ is a total
+class-uniform map on $\Sigma^{d\times d\times b}$, where $d\ge2$.
+If $KLH=\tau$ everywhere and $p(c)=p(e)$, the group
+$\langle Q_c,Q_e\rangle$ cannot act transitively on
+$\Sigma^d\setminus\{0\}$.
+\end{theorem}
+\begin{outline}
+Exactness on the finite complete domain makes $H$ and $K$ bijective.
+Writing $q=a^{db}$ for the whole-column alphabet, each column of $K$
+has exactly $q^{d-1}$ preimages for each value.  Since input rotation is
+bijective, every shared decoder $f_J$ has these same balanced fibres.
+
+Equivariance of $H$ gives $KQ=RK$.  Evaluating at a receiver in $J$ and
+changing its view yields
+\begin{equation}\label{eq:decoder-covariance}
+ f_J(Q_cY)=\sigma f_J(Y)\qquad(c\in J).
+\end{equation}
+The corresponding inverse identities also hold.  A word in $Q_c,Q_e$
+and their inverses therefore rotates $f_J$ by its signed exponent sum.
+If the word represents the identity in the actual scalar-word group
+$G=\langle Q_c,Q_e\rangle$, it fixes every matrix.  Surjectivity of
+$f_J$ and the exact order $d$ of $\sigma$ imply that its exponent sum
+is zero modulo $d$.  Consequently there is a surjective homomorphism
+\[
+ \theta:G\longrightarrow\Z/d\Z,
+ \qquad\theta(Q_c)=\theta(Q_e)=1.
+\]
+Let $N=\ker\theta$.  Equation~\eqref{eq:decoder-covariance} makes $f_J$
+constant on all $N$-orbits of matrices.
+
+Suppose $G$ were transitive on the nonzero words.  Normality of $N$
+makes all its orbits there have one size $\lambda$, and $G/N$ acts
+transitively on the set of these orbits.  Its cardinality $t$ divides
+$d$, so
+\[
+ \lambda=(a^d-1)/t>1,\qquad \gcd(\lambda,a)=1.
+\]
+The strict inequality follows from $t\le d<a^d-1$ for $a,d\ge2$.
+If a matrix $Y$ is nonzero, choose one nonzero row/lane word $y$.
+The stabilizers satisfy $N_Y\le N_y$, hence
+\[
+ |N\cdot Y|=[N:N_Y]=[N:N_y][N_y:N_Y]
+            =\lambda[N_y:N_Y].
+\]
+This uses no transitivity on tuples of words.  Choose a column value
+different from $f_J(0)$.  Its fibre excludes the zero matrix and is a
+union of $N$-orbits, so its size is divisible by $\lambda$.  But its
+balanced size $q^{d-1}$ is a power of $a$, a contradiction.
+\end{outline}
+
+Surjectivity alone would give the cyclic quotient but would not give
+the last divisibility contradiction.  Likewise, a code decoder defined
+on a proper correctness source need not have balanced fibres.
+
+\begin{proposition}[Anchored binary differences]\label{prop:anchored}
+\formal{CompositionAnchoredEndpoint.lean}{anchored_adjacent_classes_distinct}
+For $d\ge3$, define the binary word permutation
+\[
+ (Lx)_0=x_0,\qquad (Lx)_i=x_i+x_{i+1}\quad(1\le i<d),
+\]
+with cyclic indices.  In any complete factorization $KLH=\tau$, with
+$H$ equivariant, the partition of $K$ satisfies $p(c)\ne p(c+1)$ for
+every receiver $c$.  This holds at every positive width, even when
+$H$ and $K$ are nonlinear and mix lanes.
+\end{proposition}
+\begin{outline}
+The inverse is $x_0=y_0$ and
+$x_i=y_0+\sum_{j=i}^{d-1}y_j$ for $1\le i<d$.
+For $S=\sum_i y_i$, this gives
+$Qy=(S,y_2,\ldots,y_{d-1},S+y_0)$.
+Conjugating $\langle Q,TQT^{-1}\rangle$ by $L^{-1}$ gives
+$\langle T,A\rangle$, where direct substitution in this inverse yields
+\[
+ Ax=(x_2,x_1+x_2,x_0+x_1,x_3+\eta,\ldots,x_{d-1}+\eta),
+ \qquad\eta=x_0+x_1+x_2.
+\]
+On its first triple, $A$ has the cycle
+\[
+ 100\to001\to110\to010\to011\to101\to111\to100.
+\]
+Moreover $(Ax)_j+(Ax)_2=x_j+x_2$ for every $j\ge3$.
+Thus a power taking a nonzero triple to another with the same third
+bit fixes every outside coordinate, regardless of its value.  In
+particular the following are local moves in the group:
+\[
+ 100\to010,\quad110\to010,\quad101\to001,
+ \quad011\to001,\quad111\to001.
+\]
+They use powers $3,1,3,4,2$, respectively.  Conjugation by rotations
+places them on any cyclic triple.
+
+For a word with at least two ones, choose consecutive ones in cyclic
+order.  If their intervening zero gap has length at least two, use
+$100\to010$ to shorten it.  A gap of length zero or one then permits
+one of the other moves to lower the weight.  Iteration reaches a unit
+vector, which a rotation sends to coordinate zero.  Reversing such
+paths proves transitivity on all nonzero words, including when $d=3$.
+Conjugacy gives the same transitivity for every adjacent pair
+$\langle Q_c,Q_{c+1}\rangle$.  Apply \cref{thm:balanced-pair}.
+\end{outline}
+
+\subsection{A joint-output period constraint}
+
+Balance examines a shared output column.  A literal period of the final
+mask supplies a separate constraint on the complete output map.
+
+\begin{theorem}[Transport of a mask period]\label{thm:period-transport}
+\formal{PeriodTransport.lean}{literal_period_complete,fixed_conjugate_iff,fixed_image_preserved}
+Let the entry alphabet be finite.  Suppose $U,B,H$ are total
+column-equivariant maps, $L$ is any total map, $K$ is class-uniform,
+and
+\[
+ \tau=UKBLH
+\]
+on the complete state space.  Exactness makes $L$ bijective.  If
+$p(c+s)=p(c)$ for every $c$, then its actual conjugated shift
+$Q=LTL^{-1}$ commutes with $T^s$.
+\end{theorem}
+\begin{outline}
+All five factors are bijective.  Put $F=UKB$.  Sharedness and the
+literal mask period give $KT^s=T^sK$, hence $FT^s=T^sF$.
+Equivariance of $H$ gives $FQ=RF$.  As $R$ commutes with $T^s$,
+\[
+ FQT^s=RFT^s=RT^sF=T^sRF=T^sFQ=FT^sQ.
+\]
+Cancel the injective map $F$.  The formal proof derives the required
+equivalences and injectivity from the total factorization.
+\end{outline}
+
+In particular, $T^s$ must preserve
+$\operatorname{Fix}(Q)=L\operatorname{Fix}(T)$.
+For the anchored binary map of \cref{prop:anchored}, this is the space
+of matrices supported on column zero: $L(1,\ldots,1)=e_0$ on each
+row/lane word.  No nonzero column rotation preserves this space.
+
+\begin{corollary}[The anchored two-class architecture]\label{cor:anchored-all}
+\formal{CompositionAnchoredEndpoint.lean}{anchored_at_most_two_classes_impossible}
+For every $d\ge3$ and every positive binary width, there is no complete
+factorization $\tau=KBLH$ in which $L$ is the anchored difference,
+$B,H$ are arbitrary equivariant total maps, and $K$ uses at most two
+receiver classes.
+\end{corollary}
+\begin{outline}
+Absorb $B$ into $K$; this preserves its shared partition.
+By \cref{prop:anchored}, that partition is a proper coloring of the
+cycle.  An odd cycle has no proper two-coloring.  On an even cycle,
+every proper two-coloring alternates and has period two.  This is a
+nonzero period for even $d\ge4$, contradicting
+\cref{thm:period-transport} and the preceding fixed-space calculation.
+\end{outline}
+
+The period theorem permits an arbitrary equivariant outer $U$.  The
+combined anchored corollary does not: its balance step concerns $K$
+itself.  Neither result excludes two arbitrary nonlinear nonuniform
+layers, gives a positive agreement-rate deficit for the anchored
+architecture, or supplies a native running-time bound.

@@ -1,0 +1,84 @@
+\section{A bounded extension to a single-site update}
+\label{sec:single-site}
+
+The balance argument also handles the other single-site endpoint of
+the masked-neighbor family.  This extension is included to specify what
+the pre-release strengthening check establishes and what it leaves open.
+
+\begin{proposition}[One binary neighbor update]\label{prop:single-site}
+\formal{CompositionSingleSiteEndpoint.lean}{single_at_most_two_classes_impossible}
+Let $d\ge3$ and let $L=I+E_{0,1}$ act on every binary row/lane word,
+where $E_{i,j}x$ has its only possibly nonzero coordinate, $x_j$, at $i$.
+For every positive width, there is no complete factorization
+$\tau=KBLH$ in which $B,H$ are column-equivariant total maps and $K$
+has at most two receiver classes.
+\end{proposition}
+\begin{outline}
+Absorb $B$ into $K$.  We prove adjacent-pair transitivity for
+$Q=LTL^{-1}$ and then apply \cref{thm:balanced-pair}.
+Put $U_i=I+E_{i,i+1}$, with cyclic indices.  Since $L=U_0=L^{-1}$,
+conjugating $\langle Q,TQT^{-1}\rangle$ by $L^{-1}$ gives
+$\langle T,A\rangle$, where
+\[
+ A=U_1U_0U_{-1}U_0.
+\]
+For $d\ge4$, direct multiplication gives $A=I+N$, with
+\[
+ N=E_{1,2}+E_{-1,0}+E_{-1,1},\qquad
+ N^2=E_{-1,2},\qquad N^3=0.
+\]
+In characteristic two, $A^2=I+E_{-1,2}$.  Conjugating by rotations
+therefore gives every transvection $I+E_{i,i+3}$.
+
+If $d=4$, the directed step-three edges form one cycle.  The elementary
+identity
+\[
+ [I+E_{i,j},I+E_{j,k}]=I+E_{i,k}
+ \qquad(i,j,k\text{ distinct})
+\]
+along simple directed paths yields every $I+E_{i,j}$ with $i\ne j$.
+For $d\ge5$, use the already obtained $E=I+E_{0,3}$.
+Here $Ae_0=e_0+e_{-1}$, while $e_3^*A^{-1}=e_3^*$, because row three
+is unchanged by $A$ and its inverse.  Thus
+\[
+ (AEA^{-1})E=I+E_{-1,3}.
+\]
+Rotations also give every step-four transvection.  Within each orbit of
+the step-three rotation, a simple directed path from $i$ to $i-3$
+gives the reverse step-three transvection by repeated commutators.
+If that orbit has two vertices, the reverse edge is already a generator.
+Since $d\ge5$, the indices $i,i+4,i+1$ are distinct, and
+\[
+ [I+E_{i,i+4},I+E_{i+4,i+1}]=I+E_{i,i+1}.
+\]
+The resulting step-one cycle gives every elementary transvection by
+the same chain argument.  Such transvections
+act transitively on nonzero binary words: preserve one nonzero coordinate
+and add it to clear every other nonzero coordinate, then rotate.
+
+When $d=3$, the coincident indices require a separate calculation.
+The same product is
+$A(a,b,c)=(a,a+c,a+b+c)$.  It sends $100$ to $111$ and then to $101$.
+Their rotations include the three unit vectors, the three weight-two
+vectors and the all-one vector, proving transitivity on all seven
+nonzero words.  This completes the adjacent-pair argument for every
+$d\ge3$.
+
+Hence the partition of $K$ must properly color the cycle.  Odd $d$
+is impossible with two colors.  For even $d\ge4$ a proper two-coloring
+has period two.  But $L(1,\ldots,1)=(0,1,\ldots,1)$, so no nonzero
+column rotation preserves $L\operatorname{Fix}(T)$.  The period
+constraint in \cref{thm:period-transport} rules out this last case.
+\end{outline}
+
+For clarity, this does not settle the family
+$L_m=I+\operatorname{diag}(m)T$ with an arbitrary binary mask $m$.
+If $m$ has at least one zero, the weighted shift is nilpotent and
+$L_m^{-1}=\sum_{j=0}^{d-1}(\operatorname{diag}(m)T)^j$.
+The all-one mask is singular.  A period $r$ of $m$ makes $L_m$ commute
+with $T^r$ and gives the class bound of \cref{thm:periodic-first}.
+The masks with exactly one zero and exactly one one are covered by
+\cref{cor:anchored-all,prop:single-site}, respectively.  The remaining
+aperiodic masks, and half-period masks with two final classes, are not
+excluded by these arguments.  All statements concern complete algebraic
+maps; no native implementation or physical cost bound is asserted.

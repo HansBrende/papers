@@ -1,0 +1,123 @@
+\section{Replay without a common trace}\label{sec:replay}
+
+Fix public integers $T_*\ge P$, $W\ge1$ and $H\ge0$. On a timely correct
+input choose a free head $f$, a slab $S=[\ell,\ell+W)\cap\Z$, and an outer
+interval $[a_0,b_0)\subseteq[0,T)$. Retain
+\[
+ C=\{t\in[a_0,b_0):y_f(t)\in S\},
+\]
+whose nonempty maximal runs are $[a_i,e_i)$, $1\le i\le r$. The choices may
+depend on the input.
+
+The geometry message records $f,\ell,a_0,b_0,r$ and, for each run, its time
+endpoints, all entry head positions, the raw-head minimum and maximum, and
+$o(a_i),o(e_i)$. Unit motion implies that the raw positions visited in a run
+are exactly the integer interval between its extrema. Consequently the message
+determines the raw coordinate set $I$ read in $C$, the output ordinals $O$
+appended in $C$, and
+\begin{equation}\label{eq:omitted}
+ U=\pi(O)\setminus I.
+\end{equation}
+The detailed paths and append flags inside the runs are not recorded.
+
+\begin{lemma}[Incoming first reads]\label{lem:first-read}
+\formal{IncomingReturns.lean}{outside_first_read_is_long_return}
+Suppose $t$ is the first visit during $[a,e)$ to a cell outside the radius-$H$
+window about $y_h(a)$. If the cell has a previous global visit $p$, its last
+such visit satisfies $p<a<t$, and $(p,t)$ is a return with excursion greater
+than $H$, witnessed by the entry time $a$.
+\end{lemma}
+\begin{outline}
+A first run-visit cannot have its last predecessor inside the run. The entry
+time itself cannot be the read because it lies at the window center. These
+strict inequalities produce a genuine nonadjacent return; no $H+1$ loss is
+needed.
+\end{outline}
+
+For every nonfree head, tag precisely the first reads in each run that are
+outside the entry window and have a previous global visit. Attach their old
+symbols to their typed slots $(t,h)$. There are at most as many tags as actual
+off-carrier long returns, by \cref{lem:first-read}; the actual typed-slot
+injection is checked as \lean{incoming_support_le_returns}. If at most $J$ tags are
+used, one joint event/value menu has size
+\begin{equation}\label{eq:sparse}
+ \mathcal S(n,J,A)=\sum_{j=0}^{\min(J,n)}\binom nj A^j,
+ \qquad n=(k-1)T_*,\quad A=|\Gamma|.
+\end{equation}
+One may enlarge $n$ to $kT_*$. Repeated consumers of different versions are
+different events. There is no independent $J\log P$ address payment.
+
+\begin{lemma}[Joint sparse records]\label{lem:sparse-menu}
+\formal{RecordCounts.lean}{sizedImports_card,sparseImports_card,replay_message_bound}
+The finite type choosing at most $J$ of $n$ typed slots and one of $A$ values
+for each chosen slot has the cardinality in \cref{eq:sparse}. An injective
+encoding into this type, $M$ metadata choices, $e$ exterior bits and $p$ payload
+bits bounds its input set by $M2^{e+p}\mathcal S(n,J,A)$.
+\end{lemma}
+\begin{outline}
+For exactly $j$ slots choose their subset and list the values in increasing
+slot order. The respective cardinalities are $\binom nj$ and $A^j$. Sum over
+$j$; terms with $j>n$ vanish. The second claim is the cardinality inequality
+for an injection into the explicit product type. Construction of the native
+encoding is proved next from the actual successful executions.
+\end{outline}
+
+\begin{theorem}[Finite adaptive replay]\label{thm:replay}
+\formal{ReplayGeometry.lean}{native_fixed_geometry_replay_bound,integerSlab_card}
+For fixed geometry with $r$ runs, let $\iota=1$ if $a_0>0$ and $0$ otherwise.
+The number of timely correct inputs represented by that geometry and at most
+$J$ tagged imports is at most
+\begin{equation}\label{eq:replay-bound}
+ 2^{P-|U|}Q^r A^{\iota W+(k-1)r(2H+1)}\mathcal S((k-1)T_*,J,A).
+\end{equation}
+This statement permits different original traces within the same message class.
+\end{theorem}
+\begin{outline}
+The encoder records the input outside $U$, each run-entry state, the nonfree
+radius-$H$ entry windows, the free slab at $a_0>0$, and the actual joint
+typed import record. A tagged blank is a present value, distinct from an
+absent tag. At $a_0=0$ the slab record has an empty domain.
+
+Compare two actual successful executions with equal records. A simultaneous
+induction proves equality of their retained control and instructions, and
+of every free-slab cell throughout the outer interval. An omitted step
+writes outside the slab in both executions. At a retained step, a nonfree
+read agrees by its last in-run write, its paid entry window, or its equal
+incoming tag. For a first outside-window read with no tag, the actual cell
+is virgin and blank. The raw symbols agree by the exterior record and the
+recorded extrema, with public endmarkers outside the input. Equality of the
+complete old tuple determines the simultaneous native transition. These
+are the checked declarations
+\lean{ExecutionPrefix.adaptive_replay_agreement} and
+\lean{ExecutionPrefix.replay_output_count_agreement}.
+
+The maximal-run decomposition supplies the entry map and every retained
+prefix. The native output counter increases by zero or one, so every ordinal
+between a run's recorded entry and exit counters has an actual append in
+that run. This derives output coverage from the geometry itself. Equal
+instructions and entry counters then give equal retained append ordinals and
+bits. Actual final-output correctness recovers $U$; the exterior gives the
+other coordinates. The resulting \lean{encodeReplay_injective} compares
+actual runs directly and assumes no common detailed trace or decoder.
+
+The state, window and slab products have exactly the displayed sizes.
+\lean{replayImports_card_le} bounds the actual Option-valued sparse tuple
+by the joint support/value menu, including its event positions. Terms above
+the number of typed slots vanish. The formal theorem allows any finite free
+cell set and any demand map $\pi$; a width-$W$ integer slab has exactly $W$
+cells and gives \cref{eq:replay-bound}.
+\end{outline}
+
+If $r\le N$, the following safe metadata menu will be used:
+\begin{equation}\label{eq:metadata}
+ \mathcal M=k(N+1)(2T_*+W+2)(T_*+1)^2
+ \bigl[(T_*+1)^4(2T_*+1)^{k+3}\bigr]^N.
+\end{equation}
+A nonempty slab has $-T_*-W+1\le\ell\le T_*$. Every head coordinate and
+raw extremum lies in $[-T_*,T_*]$; every time and output counter is in
+$[0,T_*]$. There are two outer endpoints, and per run two time endpoints,
+two output counters, $k+1$ entry positions and two extrema. Padding to $N$
+runs gives \cref{eq:metadata}. The actual bounded encoder and exact
+cardinality are checked as \lean{SlabObservation.encode_times} and
+\lean{replayMetadata_card}. All correlations only reduce this product
+bound. At fixed $k,N$ and $T_*,W=O(P)$ its logarithm is $O(\log(P+1))$.

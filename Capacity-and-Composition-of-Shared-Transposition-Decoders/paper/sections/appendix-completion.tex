@@ -1,0 +1,219 @@
+\section{A complete scattered first factor and its failure to compose}
+\label{sec:completion}
+
+A source decoder does not automatically extend to a bijection on all
+matrices.  For the scattered normal-basis source, such an extension does
+exist.  The particular extension below nevertheless forces every receiver
+of the remaining factor to have its own class.  Both assertions concern
+the complete finite state space; neither supplies an efficient evaluator
+for the orbit permutation.
+
+\subsection{The source and a total permutation}
+
+Let $d\ge2$ and $b\ge1$, put
+$V=(\F_2^b)^{d\times d}$, and let
+$B=(\F_2^b)^d$ be the whole-column alphabet, of cardinality
+$q=2^{db}$.  Use the reversed normal-basis identification
+$\F_2^d\cong E=\F_{2^d}$ underlying
+\cref{thm:interval-attainment}; a column rotation by $s$ acts on a row
+as $\Phi^s$, where $\Phi(x)=x^2$.
+Let $\beta$ be its normal element.  Its $d$ conjugates are distinct,
+and none equals $0$ or $1$.
+For $u\in B$, write $a_\ell\in E$ for the field encoding of
+$(u_{j,\ell})_{j\in\Z/d}$ and define $w(u)$ by its encoded rows:
+\[
+ w(u)_{0,\cdot,\ell}=a_\ell,\qquad
+ w(u)_{i,\cdot,\ell}=\beta a_\ell\quad(i\ne0).
+\]
+Set $W=\{w(u):u\in B\}$.  Also write $\bar u$ for the matrix whose
+every column is $u$, and let $z(u)$ have column zero equal to zero and
+all other columns equal to $u$.
+
+\begin{theorem}[A complete scattered first factor]
+\label{thm:scattered-completion}
+\formal{CompositionScatteredSource.lean}{scatteredSource_finrank,scattered_orbit_injective,scattered_punctured_orbits_disjoint}
+\formal{CompositionScatteredCompletion.lean}{scatteredCompletion_equivariant,scatteredFirstFactor_classUniform,scatteredFirstFactor_source,scatteredFirstFactor_fixed_preimage}
+\formal{CompositionSparsePatch.lean}{columnPatch_involutive,columnPatch_nonzero_column}
+The binary-linear source $W$ has dimension $db$.  There are total
+permutations $H,R,K_1$ of $V$ such that $H$ commutes with column
+rotation, $R$ changes only column zero, and $K_1=RH$ is class-uniform
+for the two classes $\{0\}$ and $(\Z/d)\setminus\{0\}$.
+They satisfy
+\[
+ H(w(u))=z(u),\qquad K_1(w(u))=\bar u\quad(u\in B),\qquad
+ K_1^{-1}(\operatorname{Fix}(T))=W.
+\]
+Here $R$ is an involution defined on every input.
+\end{theorem}
+\begin{outline}
+The row-zero projection recovers $u$, so $w$ is an injective binary-linear
+map and $\dim W=db$.  If
+$T^sw(u)=T^tw(v)$ with $u,v\ne0$, choose a nonzero lane parameter.
+The two row types give
+\[
+ \Phi^s(a)=\Phi^t(a')\ne0,\qquad
+ \Phi^s(\beta)\Phi^s(a)=\Phi^t(\beta)\Phi^t(a').
+\]
+Cancellation and the distinct conjugates of $\beta$ give $s=t$, then
+all lane parameters agree.  Thus $(s,u)\mapsto T^sw(u)$ is injective
+for $u\ne0$.  Similarly $(s,u)\mapsto T^sz(u)$ is injective: its
+unique zero column determines $s$, and any other column determines $u$.
+
+These two orbit families are disjoint.  Suppose a rotated $w(u)$ equals
+a rotated $z(v)$.  Choose a lane whose row-zero field parameter is
+nonzero.  On the punctured side, a row in this lane is either zero or
+the common punctured binary word, according as the corresponding bit of
+$v$ is zero or one.  Both rows zero and one on the scattered side are
+nonzero.  They must therefore be equal on the punctured side.  In field
+coordinates this would give
+$\Phi^s(\beta)\Phi^s(a)=\Phi^s(a)$ with $a\ne0$, contradicting
+$\Phi^s(\beta)\ne1$.
+
+Define $H$ to exchange $T^sw(u)$ and $T^sz(u)$ for every $s$ and
+every $u\ne0$, and fix every remaining state.  Injectivity and
+disjointness make these disjoint pairs, so this is an actual total
+involution.  Rotation permutes the pairs with their orientation
+preserved, hence $HT=TH$.  Zero lies outside both families and is fixed.
+This specializes the completion to the present source and needs no
+assumed equivariant extension.
+
+Define $R$ to exchange $z(u)$ and $\bar u$ for each $u\ne0$, fixing
+all other inputs.  Each pair agrees outside column zero, so $R$ leaves
+those columns unchanged.  The pairs are disjoint: a punctured state has
+zero column zero, whereas a nonzero constant state does not.  Thus $R$
+is again a total involution and $Rz(u)=\bar u$, including $u=0$.
+
+For the exceptional class use the decoder
+$Y\mapsto\operatorname{col}_0(RH(Y))$; for the other class use
+$Y\mapsto\operatorname{col}_0H(Y)$.
+If $c\ne0$, equivariance gives
+$\operatorname{col}_0H(T^cX)=\operatorname{col}_cH(X)
+ =\operatorname{col}_cK_1(X)$.
+The exceptional decoder gives column zero by definition.  This proves
+sharedness on every input.  Finally the $q$ matrices $\bar u$ exhaust
+$\operatorname{Fix}(T)$, and bijectivity of $K_1$ gives the stated
+preimage equality.
+\end{outline}
+
+\begin{corollary}[The exceptional class is necessary]
+\label{cor:scattered-one-class}
+\formal{CompositionScatteredCompletion.lean}{scattered_one_class_impossible}
+No injective equivariant map sends all of $W$ into
+$\operatorname{Fix}(T)$.
+\end{corollary}
+\begin{outline}
+Choose $u\ne0$. Equivariance and the fixed image imply
+\[K(Tw(u))=TK(w(u))=K(w(u)).\]  Injectivity forces $Tw(u)=w(u)$,
+contradicting the free-orbit calculation above.  A one-class complete
+map is equivariant, so it is excluded as well.
+\end{outline}
+
+\subsection{Complete-input disagreement}
+
+The agreement estimates in \cref{prop:agreement} have the following
+robust form.  The comparison need not be a permutation.
+
+\begin{proposition}[Robust comparison with an equivariant map]
+\label{prop:robust-equivariant-comparison}
+\formal{CompositionRobustAgreement.lean}{agreement_error_cover,robust_full_input_count,robust_repeated_class_count}
+Let $A$ be any finite alphabet with at least two elements and put
+$q=|A|^d$.  Let $K_1,H\colon A^{d\times d}\to A^{d\times d}$ be
+total maps, with $H$ equivariant, and let $K_2$ be class-uniform for a
+partition $p$ with $M$ nonempty classes of sizes $n_J$.  Under the
+uniform law on the complete input space, put
+\[
+ \gamma=\Pr[K_2K_1(X)\ne\tau X],\qquad
+ \epsilon=\Pr[K_1(X)\ne H(X)].
+\]
+Then
+\[
+ \gamma+\epsilon\ \ge\
+ 1-\frac Md-\frac{\sum_Jn_J(n_J-1)}{2dq}.
+\]
+If a receiver class is repeated, also
+$\gamma+\epsilon\ge(1-q^{-1})/2$.
+\end{proposition}
+\begin{outline}
+The map $K_2H$ has the same receiver partition, with decoder
+$f_J\circ H$.  If $K_2K_1$ is correct at $X$ and $K_1(X)=H(X)$,
+then $K_2H$ is correct there.  The entire input space is therefore
+covered by the correct inputs of $K_2H$, the failures of $K_2K_1$,
+and the disagreements between $K_1$ and $H$.  Sum their cardinalities
+and apply the two bounds of \cref{prop:agreement} to $K_2H$.
+The formal statements retain the integer counts and multiply through
+by the positive denominators.  They use no injectivity of $H$ or $K_1$.
+\end{outline}
+
+\begin{theorem}[Sparse completion forces a fully separated second factor]
+\label{thm:scattered-second-factor}
+\formal{CompositionSparsePatch.lean}{columnPatch_support_card}
+\formal{CompositionSparseObstruction.lean}{scatteredFirstFactor_disagreement,scattered_remaining_factor_singletons}
+For the binary construction of \cref{thm:scattered-completion},
+\[
+ |\{X:R(X)\ne X\}|=2(q-1),\qquad
+ \Pr[K_1(X)\ne H(X)]=\frac{2(q-1)}{q^d}.
+\]
+If $d\ge3$ and a class-uniform total map $K_2$ satisfies
+$K_2K_1=\tau$ on all inputs, every receiver class of $K_2$ is a
+singleton.  Thus its uniquely required remaining factor
+$\tau K_1^{-1}$ needs $d$ classes.
+\end{theorem}
+\begin{outline}
+The support of $R$ consists exactly of the two states $z(u),\bar u$
+for every $u\ne0$.  Bijectivity of $H$ transports this support count
+to the disagreement count for $RH$ and $H$.
+If $K_2$ had a repeated class, the previous proposition with
+$\gamma=0$ would force
+\[
+ \frac{2(q-1)}{q^d}\ge\frac{q-1}{2q},
+ \qquad\text{hence}\qquad q^{d-1}\le4.
+\]
+But $q=2^{db}\ge8$ when $d\ge3$ and $b\ge1$.
+The formal proof uses the equivalent integer inequalities, avoiding
+subtraction or division of probabilities.  No exclusion at $d=2$ is
+asserted.
+\end{outline}
+
+This disagreement counts complete input states.  It is different from
+the number of output columns modified by a map, a linear error rank,
+or a time charge.  A change confined to one output column can affect
+almost every input.
+
+\subsection{Endpoint classes are not multiplicative}
+
+The need to retain actual factors is already visible in a short
+bijective control.  For binary matrices define rowwise maps
+\[
+ (B_1X)_{i,c}=\begin{cases}X_{i,0}+X_{i,1},&c=0,\\X_{i,c},&c\ne0,\end{cases}
+ \qquad
+ (B_2X)_{i,c}=X_{i,c}+\sum_jX_{i,j}.
+\]
+
+\begin{proposition}[Two classes followed by one can require all classes]
+\label{prop:endpoint-class-blowup}
+\formal{CompositionEndpointBlowup.lean}{endpointFirst_involutive,endpointSecond_involutive,endpointFirst_classUniform,endpointSecond_equivariant,endpoint_composite_getter,endpoint_composite_requires_singletons}
+For every even $d\ge2$, the maps $B_1,B_2$ are total involutions.
+The first uses the singleton/rest partition and the second is equivariant.
+Nevertheless every class-uniform representation of $B_2B_1$ has $d$
+singleton classes.
+\end{proposition}
+\begin{outline}
+The first map adds the unchanged column one twice when squared.
+For the second, let $s_i=\sum_jX_{i,j}$.  The row sum after the map
+is $s_i+d s_i=s_i$ because $d$ is even in $\F_2$, so its square is
+also the identity.  The sum is rotation-invariant, proving that $B_2$
+is equivariant; the two stated decoders for $B_1$ are
+$Y\mapsto Y_{\cdot,0}+Y_{\cdot,1}$ and $Y\mapsto Y_{\cdot,0}$.
+
+The normalized getter of the composite at receiver $c$ is
+\[
+ g_c(Y)_i=Y_{i,0}+\sum_jY_{i,j}
+   +\begin{cases}0,&c=0,\\Y_{i,1-c},&c\ne0.\end{cases}
+\]
+These functions are pairwise distinct.  Comparing $c=0$ with $e\ne0$,
+use a row supported at $1-e$.  Comparing nonzero distinct $c,e$, use
+a row supported at $1-c$; the extra term at $1-e$ vanishes.
+A shared class would make the corresponding normalized getters equal
+on every input, a contradiction.  The formal proof derives this getter
+equality from the complete class-uniform interface.
+\end{outline}

@@ -212,4 +212,37 @@ theorem sum_helperMass_mul_entropy_deficit [Fintype H] (p : Ω → ℝ) (hp : �
     sum_helperMass, hp1, one_mul, sum_helperMass_mul_entropy p hp]
   ring
 
+/-- A deterministic record must retain input entropy beyond a bound on every
+record fibre. Empty and zero-mass fibres are allowed. -/
+theorem entropy_sub_mean_log_fiber_card_le_observationEntropy [Fintype H]
+    (p : Ω → ℝ) (hp : ∀ x, 0 ≤ p x)
+    (h : Ω → H) (B : H → ℕ)
+    (hcard : ∀ a, Fintype.card (HelperFiber h a) ≤ B a) :
+    entropy p - (∑ a, helperMass p h a * Real.log (B a)) ≤ observationEntropy p h := by
+  have hf (a : H) : helperMass p h a * entropy (helperConditionalWeight p h a) ≤
+      helperMass p h a * Real.log (B a) := by
+    by_cases ha : helperMass p h a = 0
+    · simp only [ha, zero_mul, le_refl]
+    · have hm := helperMass_nonneg p hp h a
+      let := helperFiber_nonempty_of_mass_pos p h a (lt_of_le_of_ne hm (Ne.symm ha))
+      apply mul_le_mul_of_nonneg_left _ hm
+      apply (entropy_le_log_card _ (helperConditionalWeight_nonneg p hp h a)
+        (sum_helperConditionalWeight p h a ha)).trans
+      apply Real.log_le_log
+      · exact_mod_cast Fintype.card_pos (α := HelperFiber h a)
+      · exact_mod_cast hcard a
+  have hs := Finset.sum_le_sum (fun a (_ : a ∈ Finset.univ) => hf a)
+  rw [sum_helperMass_mul_entropy p hp] at hs
+  linarith
+
+
+/-- Constant fibre budgets specialize the metadata-dependent bound. -/
+theorem entropy_sub_log_fiber_card_le_observationEntropy [Fintype H]
+    (p : Ω → ℝ) (hp : ∀ x, 0 ≤ p x) (hp1 : ∑ x, p x = 1)
+    (h : Ω → H) (B : ℕ)
+    (hcard : ∀ a, Fintype.card (HelperFiber h a) ≤ B) :
+    entropy p - Real.log B ≤ observationEntropy p h := by
+  have he := entropy_sub_mean_log_fiber_card_le_observationEntropy p hp h (fun _ => B) hcard
+  simpa only [← Finset.sum_mul, sum_helperMass, hp1, one_mul] using he
+
 end TransposeFollowup

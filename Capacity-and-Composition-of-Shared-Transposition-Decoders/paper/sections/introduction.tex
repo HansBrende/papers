@@ -1,0 +1,86 @@
+\section{Introduction}\label{sec:introduction}
+Matrix transposition exchanges row and column addresses while preserving every
+entry. The series studies whether a fixed deterministic multitape Turing machine
+can perform this operation in time linear in the bit length, the question
+\textup{(T)} of~\cite{FirstPaper2026}. A candidate computation must both move
+information and organize the local rules that use it. This paper isolates the
+second obligation in the cyclic shared-decoder model introduced
+in~\cite{SeventeenthPaper2026}.
+
+One rule can be correct on a large source without being correct everywhere.
+Nor does a large source for each stage guarantee that the stages compose to
+transposition. We therefore keep two questions separate. Part I bounds and
+constructs linear correctness sources for a single rule, allowing its decoders
+to be arbitrary deterministic functions. Part II studies exact complete-map
+factorizations, distinguishing linear factors from the nonlinear architectures
+for which additional symmetry arguments apply.
+
+\paragraph{Results and their use.}
+The two-class ceiling improves the earlier $3/4+o(1)$ bound for linear
+decoders to $41/64+o(1)$, now allowing arbitrary deterministic decoders.
+The proof intersects translated sources inside the smaller invariant spaces
+created by earlier intersections and retains a negative doubled-step term
+before averaging. For $M\le d/2$, the many-class estimate gives an
+inverse-square-root deficit. These are quantitative advances on the arbitrary-class
+capacity question in \cite[Problem~9.1(a)]{SeventeenthPaper2026}; the half-rate
+target remains open. Both bounds restrict the linear sources a construction
+may use; neither is a native time lower bound.
+
+On the construction side, a cyclic lift retains the number of receiver classes.
+It gives a growing additive advantage over the interval bound with two classes,
+while its normalized advantage tends to zero. The revised seventeenth paper
+already gives unbounded additive excess for every fixed number of classes,
+over every field, including $\F_2$\cite{SeventeenthPaper2026}.
+Our contribution here is the general lift preserving the seed classes,
+its exact periodic-capacity formula, and the full rule kernel of its binary
+specialization; binary fixed-class excess itself is already known.
+A paid realization also separates a finite algebraic description from a native
+implementation. It remains correct only on its specified source.
+
+The principal composition obstruction addresses the many-hop gap identified in
+\cite[Section~7.4]{SeventeenthPaper2026}. It excludes exact products of two complete
+linear rules with fixed class counts for all sufficiently large dimensions,
+over every field and with coupled lanes. Its common-message lemma and the
+rank-deficit extension explain the additional obligation imposed by a complete
+intermediate state. Nonlinear statements require different hypotheses:
+equivariant surrounding maps, actual commutation identities, or a specified
+first factor. No unrestricted nonlinear two-stage exclusion is claimed.
+
+The extensions test which premises a native reduction must preserve.
+Even one shared decoder can work on an arbitrary correctness set with only
+logarithmic entropy deficit, while deterministic line rules with a fixed
+number of classes have asymptotic rate at most one half on linear sources.
+Thus extracting a large fibre does not
+by itself make the capacity theorem applicable. The exhibited cyclic lift's dimension is
+now its entire agreement-kernel dimension. An all-width reflection family
+and a sharper extension-linear residual theorem separate two different
+linearity obligations. A complete nonlinear first factor can satisfy the
+one-stage requirements yet force every class of its remaining factor to be
+a singleton. These statements narrow specific interfaces; none identifies
+the algebraic model with every native tape execution.
+
+\paragraph{Proofs and formal status.}
+A line marked \textsf{Lean} names the authoritative formal statement and proof;
+the English outline is a reading aid. A partial line identifies the exact missing
+step, and a written-only result has a complete written proof. Every numbered
+mathematical result is formalized except the native two-work-tape implementation
+in \cref{thm:paid-lift}; its transition-level execution proof remains a formalization
+todo. The checked results include orbit enumeration, finite probability estimates, the actual
+reflection/Fourier adapter, and complete residual accounting. All formal files use the shared
+libraries of this repository and Mathlib~\cite{Mathlib2026}; standard algebra,
+finite-field and Ramsey theorems are credited where used. Draft status remains
+until the stated formalization and independent review requirements are met.
+
+\paragraph{Organization.}
+We first fix the common model and its two correctness notions. Part I develops
+capacity bounds, structural reductions and constructions. Part II turns to
+linear composition and nonlinear balance and period constraints. The final
+main section states the remaining mathematical and native-machine interfaces.
+For the source-linearity premise, read \cref{sec:set-capacity}; for decoder
+linearity, read \cref{sec:field-linear-residual,sec:linearization,sec:prime-reflection}.
+The actual diagonal defects and mask-method limits refine the capacity search
+in \cref{sec:block-defects,sec:mask-methods,sec:structural-bounds}.
+The remaining appendices test complete first factors and balanced nonlinear
+maps. Finally \cref{sec:residuals} gives a conditional operational route:
+an exhibited complete affine baseline turns its operator defect into a
+lower bound on the joint nonlinear correction record.

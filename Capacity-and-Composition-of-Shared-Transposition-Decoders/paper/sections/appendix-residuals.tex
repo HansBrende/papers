@@ -1,0 +1,235 @@
+\section{Nonlinear corrections to a complete affine baseline}\label{sec:residuals}
+
+An operator bound becomes useful for a computation only after its
+\emph{complete} baseline is exhibited. This appendix gives that conditional
+interface. It allows arbitrary nonlinear corrections and arbitrary correctness
+sets, but supplies no cheap affine approximation to an arbitrary machine.
+Fixed-advice fibre counting is already explicit in
+\cite[Theorem~5.5]{ClassUniformMemo2026} and
+\cite[Corollary~6.16]{SeventeenthPaper2026}. We use the same counting principle
+with a chronological computation and retain the actual propagated correction
+span. The distinction prevents charging one correction again at each consumer.
+
+\subsection{The complete baseline and its joint record}
+
+Let $F$ be a finite field of size $q$, and let $X\in F^N$ be the raw input.
+All current payload, retained control and earlier output coordinates belong
+to the state. A finite sequence of state spaces can be embedded in their
+direct sum, so we use one finite-dimensional state space $V$. The baseline
+initialization, updates and readout are global affine maps
+\[
+ v_0=JX+j,\qquad G_i(v)=L_i v+g_i,\qquad \operatorname{out}=Ov_m+o.
+\]
+Let the complete baseline output be
+$K_0X+c_0$. At a marked update the actual map may be arbitrary. Its residual
+on the actual old state is $E_i u_i(X)$, where $E_i$ is a fixed linear
+insertion map. At other updates the residual is zero. The initialization must
+also agree with the baseline, or its departure must be included as a marked
+initial residual. All unmarked maps, including final readout, remain the same
+\emph{global} affine maps on every reached state.
+
+Choose one preimage $u_i(X)$ in a fixed linear section of $\operatorname{im}E_i$.
+These values need not be independent or linear in $X$. Write $Z(X)$ for their
+one joint tuple, and put
+\[
+ A=\tau-K_0,\qquad D=\dim\ker A,\qquad
+ W=\sum_i\operatorname{im}(OL_{m-1}\cdots L_{i+1}E_i),
+\]
+where the empty product is the identity. These are comparison records and
+subspaces; the definition does not give a native machine free access to them.
+
+\begin{theorem}[Joint residual replay]\label{thm:residual-replay}
+\formal{ResidualPropagation.lean}{residual_readout_sum,actual_readout_sum,actual_readout_insertions}
+The complete-program counting endpoint is
+\lean{actual_correct_card_le} in \texttt{ResidualProgram.lean}.
+For every fixed tuple $z=(u_i)$, replay gives
+\[
+ \operatorname{out}_z(X)=K_0X+c_0+
+       \sum_i OL_{m-1}\cdots L_{i+1}E_i u_i.
+\]
+On an arbitrary correctness set $C$, the actual tuple $Z(X)$ reproduces the
+actual computation. Consequently
+\begin{equation}\label{eq:residual-record}
+ |C|\le |Z(C)|q^D.
+\end{equation}
+\end{theorem}
+
+\begin{outline}
+Induct in the original update order. After fixing the residual values, each
+update is $v\mapsto L_iv+g_i+E_i u_i$, so its linear part is still $L_i$.
+Expanding the recurrence propagates each inserted residual through exactly
+the subsequent linear maps and then through $O$. With $z=Z(X)$ the
+recurrence agrees with every actual update on $X$, including retained
+outputs. On a fixed record fibre, correctness is the affine equation
+$AX=c(z)$. Subtract one solution, if there is one, to inject the fibre into
+$\ker A$. It therefore contains at most $q^D$ elements. Sum over the
+\emph{attained} joint records. The formal proofs perform this recurrence and
+translate-to-kernel injection; they do not assume that $C$ is a subspace.
+\end{outline}
+
+\begin{theorem}[Joint output-span bound]\label{thm:residual-span}
+\formal{ResidualSpan.lean}{residualSpanDescriptor_injective,finrank_preimage_le_kernel_add_intersection,residual_span_card_le}
+\formal{ResidualOutputSpan.lean}{actual_correct_span_card_le}
+For the actual program, and more generally, if $C\subseteq F^N$ satisfies $AX-c\in W$ for every $X\in C$,
+then
+\begin{equation}\label{eq:residual-span}
+ |C|\le q^{D+\dim(W\cap\operatorname{im}A)}
+       \le q^{D+\dim W}.
+\end{equation}
+For the replay above, take $c=c_0$ and the displayed propagated span $W$.
+\end{theorem}
+
+\begin{outline}
+Subtract one point of $C$ to inject it into $A^{-1}(W)$. Choose a linear
+projection onto $\ker A$ that is the identity on that kernel. The map sending
+$x\in A^{-1}(W)$ to its projection and $Ax$ is injective, with values in
+$\ker A\times(W\cap\operatorname{im}A)$. This proves the dimension bound
+and then the finite-field cardinality bound. In particular, the invoice
+uses the joint propagated span, not a sum that charges dependent copies
+repeatedly. Its dimension is at most the sum of the insertion ranks.
+\end{outline}
+
+\begin{corollary}[Information and sparse corrections]\label{cor:residual-information}
+\formal{ResidualEntropy.lean}{residual_entropy_lower,residual_uniform_entropy_lower,actual_correct_entropy_lower,residual_span_information}
+The sparse-count endpoint is \lean{actual_sparse_card_le} in
+\texttt{ResidualSparse.lean}.
+For any law supported on $C$, with entropy in base $q$,
+\[
+ H_q(Z)\ge H_q(X)-D.
+\]
+If $C$ is uniform and $\Delta=N-\log_q|C|$, this gives
+$H_q(Z)\ge N-D-\Delta$ and $\dim W\ge N-D-\Delta$.
+If each of $m$ public insertion ports has rank at most $r$, the correctly
+handled inputs on which at most $s$ residuals are nonzero number at most
+\begin{equation}\label{eq:sparse-residual-menu}
+ q^D\sum_{j=0}^{\min(s,m)}\binom mj(q^r-1)^j.
+\end{equation}
+\end{corollary}
+
+\begin{outline}
+Each conditional input fibre has at most $q^D$ points, so
+$H_q(X\mid Z)\le D$. Since $Z$ is a function of $X$, the entropy chain rule
+gives the first inequality. The span bound gives the second assertion for
+uniform $C$. For the sparse count, choose coordinates in each insertion
+image, with the zero residual represented uniquely by zero. A support of
+$j$ positions allows at most $(q^r-1)^j$ nonzero value tuples. Sum over
+supports and apply \cref{eq:residual-record}. The locations may depend
+arbitrarily on $X$; their support count is already included. The formal
+count records each actual residual as a value in its insertion image,
+so it charges the insertion rank and does not assume a particular
+preimage selection. The shared support/value encoding also permits
+different alphabets at different ports.
+\end{outline}
+
+For fixed $q,r$, $m=O(N)$ and $s=o(N)$, the logarithm of the sum in
+\cref{eq:sparse-residual-menu} is $o(N)$. The formal endpoint is
+\lean{LeanMachine.sparseMenu_log_div_tendsto_zero}. Its finite proof multiplies
+the sum by $x^s$ and bounds the result by $(1+Ax)^m$ for $0<x\le1$,
+where $A=q^r-1$.
+Choose $x$ small enough that $m\log(1+Ax)$ costs at most half the desired
+linear budget, then bound $s\log(1/x)$ by the other half. This treats
+$s=0$ directly and requires no lower bound on $m/N$.
+
+\subsection{What can be substituted, and what remains missing}
+
+Suppose $N=bd^2$ and the \emph{complete} baseline has its column factors in
+one common triangularizable algebra. The flag bound and its entry-width
+extension give $D\le bd(d+1)/2$\cite[corollary ``One triangularizable side''
+and remark ``Entries of $b$ bits'']{SeventeenthPaper2026}.
+Thus correct inputs of deficit $\Delta$ require
+\[
+ H_q(Z)\ge \frac{bd(d-1)}2-\Delta,\qquad
+ \dim W\ge \frac{bd(d-1)}2-\Delta.
+\]
+An independently established sharper operator bound may replace this $D$.
+With fixed-width insertion events, sublinear nonzero corrections therefore
+cover at most $q^{(1/2+o(1))N}$ inputs. A whole-row correction of rank $O(db)$
+is not a fixed-width event.
+
+The revised entry-rule bound of
+\cite[Proposition~6.15 and Corollary~6.16]{SeventeenthPaper2026} is another
+available specialization when its actual entry functionals are supplied.
+It prices advice by its support and changes of an entry decoder by half a
+symbol. A change of a whole row is $d$ entry changes. Additive advice alone
+need not change any decoder. Our rank invoice and that change count are
+different statistics; neither may be substituted for the other without
+checking the complete rule.
+
+An input-dependent branch or schema can be included in the joint record.
+Then each branch has its own complete baseline and kernel bound $D_\theta$;
+the support estimate sums the corresponding $q^{D_\theta}$ fibre bounds,
+and entropy gives $H_q(Z)\ge H_q(X)-\mathbb E D_\theta$.
+These attained-branch and entropy bounds are
+\lean{residual_branch_card_le} and
+\lean{residual_branch_entropy_lower} in \texttt{ResidualBranches.lean}. Unknown earlier
+encodings, address histories, mutable flags or nonlinear unmarked readout
+must be included in such a proved interface. They cannot be omitted by
+checking only the zero-residual trajectory.
+
+These statements exclude sparse corrections to an \emph{exhibited}
+structured computation. They do not show that every fast transposer is
+close to one, or that producing a correction of large rank costs superlinear
+time. Supplying that structural comparison with a small joint record
+remains the construction/impossibility bridge.
+
+\subsection{Two sharp complete-baseline examples}
+
+\begin{proposition}[Separable baseline defect]\label{prop:separable-defect}
+\formal{ResidualSeparable.lean}{Separable.rank_defect_lower}
+\formal{ResidualSeparableSharp.lean}{Separable.initialProjection_rank,Separable.rank_defect_sharp}
+For $L(X)=AXB^{\mathsf T}$ over any field, put
+$r=\min(\rank A,\rank B)$. Then
+\[
+ \rank(\tau-L)\ge d^2-\frac{r(r+1)}2.
+\]
+Equality is attained for $A=B=\operatorname{diag}(I_r,0)$ in every
+characteristic. Thus this is a sharp bound for one separable baseline,
+not for a sum of arbitrary tensor terms.
+\end{proposition}
+\begin{outline}
+Writing $Z=X^{\mathsf T}$ turns agreement into $Z=AZ^{\mathsf T}B^{\mathsf T}$.
+If $a=\rank A$, choose invertible $U,V$ with $UAV^{-1}=E_a$.
+For $Y=UZV^{\mathsf T}$ and $D=VBU^{-1}$ the equation is
+$Y=E_aY^{\mathsf T}D^{\mathsf T}$. The last $d-a$ rows vanish, and the
+upper-left $a$-square block $Q$ determines the others and satisfies
+$Q=Q^{\mathsf T}D_{11}^{\mathsf T}$. Its lower triangle, including the
+diagonal, determines $Q$: it gives column zero and therefore row zero;
+the recovered rows and the lower triangle then give the next column and
+row, successively. The formal proof obtains the invertible factors and
+the active coordinate reindexing from the actual matrix rank normal form.
+The resulting restriction is a linear injection into the unordered-pair
+coordinates of the active block, so the kernel has dimension at most
+$a(a+1)/2$. Transposing the
+agreement equation exchanges $A,B$ and gives the same bound with
+$a=\rank B$. Rank--nullity proves the claim. For $A=B=E_r$, agreement
+is exactly symmetry inside the leading $r$-square block and zero outside,
+with $r(r+1)/2$ independent entries.
+\end{outline}
+
+\begin{proposition}[Nonlinear row-then-column agreement]\label{prop:row-column-agreement}
+\formal{ResidualRowColumn.lean}{RowColumn.agreement_card_le,RowColumn.helper_agreement_card_le,RowColumn.identity_agreement_card}
+\formal{ResidualRowColumnSharp.lean}{RowColumn.exists_sharp_helper,RowColumn.helper_bound_attained}
+Over an alphabet of size $q\ge2$, first apply an arbitrary fixed map to
+each row, then an arbitrary fixed map to each column. The resulting
+complete map agrees with transpose on at most $q^{d(d+1)/2}$ inputs.
+If one joint helper chooses all these maps, at most
+$|\operatorname{range}H|q^{d(d+1)/2}$ inputs can be correct.
+Both bounds are sharp as abstract counting statements.
+\end{proposition}
+\begin{outline}
+Write the intermediate matrix as $Y_{j,:}=R_j(X_{j,:})$ and the output
+column as $C_j(Y_{:,j})$. On agreement inputs,
+$X_{j,:}=C_j(Y_{:,j})$ and therefore
+$Y_{j,:}=R_j(C_j(Y_{:,j}))$. The lower triangle of $Y$ determines column
+zero, hence row zero; then column one, hence row one; continue in order.
+It determines all of $Y$, which in turn determines $X$. This injection
+proves the first count without assuming either family is linear or
+injective. Fix the helper and sum to prove the second count. Identity
+row/column maps attain the first bound on symmetric inputs. For the
+second, identify the alphabet with the cyclic group of order $q$ and
+let the helper give $X_{ij}-X_{ji}$ for $i<j$. Identity row maps followed
+by column maps adding or subtracting the corresponding differences
+transpose every input. Every helper tuple is attained and there are
+$q^{d(d-1)/2}$ tuples. Computing and delivering this helper is not free
+in a native model.
+\end{outline}

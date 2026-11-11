@@ -1,0 +1,249 @@
+\section{Cyclic lifts with the same classes}\label{sec:constructions}
+
+The original blow-up construction in \cite{ClassUniformMemo2026} gives
+unbounded absolute excess over the interval bound with a growing number
+of classes. Its revised memo also gives a two-class parity-coset family
+for every $d=4k\ge8$ over fields where $2\ne0$
+\cite[Theorem~4.8]{ClassUniformMemo2026}. The revised seventeenth paper
+extends that rule to every field, including characteristic two, and uses
+mixed blow-ups to obtain unbounded excess for every fixed number of
+classes\cite{SeventeenthPaper2026}.
+The construction below instead gives a lift for an arbitrary seed with
+the same number of classes, an exact periodic-capacity formula, and a
+paid realization of its exhibited binary rule. These fixed-class families
+all have vanishing normalized excess; fixed-class or binary additive
+excess alone is not a new conclusion here.
+
+\begin{theorem}[Deterministic cyclic lift]\label{thm:cyclic-lift}
+\formal{ConstructionLinearLift.lean}{cyclic_lift}
+Let a linear source $C_s\le(F^b)^{s\times s}$ have dimension $D$ and
+deterministic shared decoders for an $M$-class partition $p$ of $\Z/s$.
+Let $m\ge1$ be coprime to $s$, with $m\ne0$ in $F$, and put $d=ms$.
+The lifted partition $p^\uparrow(c)=p(c\bmod s)$ admits a linear source
+of dimension
+\begin{equation}\label{eq:cyclic-lift-dimension}
+ D^\uparrow=\frac{b(d^2-ms^2)}2+mD
+\end{equation}
+with deterministic shared decoders. Linear seed decoders give linear
+lifted decoders.
+\end{theorem}
+\begin{outline}
+Use Chinese-remainder coordinates $(a,r)\in\Z/m\times\Z/s$ for both
+rows and columns. For $z\in\Z/m$ define
+\[
+ Z_z(X)_{r,c}=\frac1m\sum_{a\in\Z/m}X_{(a,r),(z-a,c)},\qquad
+ (EX)_{(a,r),(h,c)}=Z_{a+h}(X)_{r,c}.
+\]
+The map $E$ is an idempotent. Its image consists of arrays whose outer
+indices enter only through their sum, and is parametrized by the $m$
+independent seed matrices $Z_z$. Thus $\rank E=mbs^2$.
+It commutes with column rotation and transpose. On its image transpose
+acts as the inner $s\times s$ transpose on each $Z_z$.
+
+Take the direct sum
+\[
+ C^\uparrow=(\ker E\cap\operatorname{Fix}\tau)\oplus
+ \{X\in\operatorname{im}E:Z_z(X)\in C_s\text{ for every }z\}.
+\]
+The second summand has dimension $mD$. The symmetric space has dimension
+$bd(d+1)/2$ in every characteristic. Its image under $E$ is exactly the
+space of $m$ symmetric seed matrices, of dimension $mbs(s+1)/2$:
+commutation proves inclusion, and every such image vector is already
+symmetric and fixed by $E$. Rank-nullity gives the first summand's
+dimension $b(d^2-ms^2)/2$.
+
+For an arbitrary full view $Y$, define one decoder per original class by
+\begin{equation}\label{eq:lifted-deterministic-decoder}
+ F_J(Y)_{a,r}=(Y-EY)_{(a,r),(0,0)}+f_J(Z_a(Y))_r.
+\end{equation}
+At a receiver with CRT index $(u,v)$, literal rotation satisfies
+$Z_a(T^{(u,v)}X)=T_s^vZ_{a+u}(X)$. Thus the complete induced map is
+\[
+ K^\uparrow(X)_{(a,r),(u,v)}
+ =(X-EX)_{(a,r),(u,v)}+f_{p(v)}(T_s^vZ_{a+u}(X))_r.
+\]
+For a codeword, the first term is its symmetric part, and the second
+transposes its projected part. This proves correctness. The receiver
+index is not an extra argument to \eqref{eq:lifted-deterministic-decoder};
+only its seed class selects the function. In particular a nonlinear
+decoder is applied after averaging the seed matrix, never distributed
+through that average. All displayed operations are linear when the
+seed decoder is linear.
+\end{outline}
+
+For linear rules there is also an operator description. On the outer
+tensor square put
+$E=m^{-1}\sum_{t\in\Z/m}G^t\otimes G^{-t}$, where $G$ is rotation.
+After regrouping outer and inner factors, the complete lifted rule is
+\begin{equation}\label{eq:lift-operator}
+ K^\uparrow=(I-E)\otimes I+E\otimes K_s.
+\end{equation}
+If a seed term has column factor $P_JS^e$, its lifted column factor is
+$G^{-t}\otimes P_JS^e=P_{J^\uparrow}\sigma_d^u$, where CRT gives
+$u\equiv-t\pmod m$ and $u\equiv e\pmod s$. Hence this is one allowed
+same-class operator, not a composition with a free coordinate permutation.
+If the seed code is the entire agreement kernel, the displayed lifted
+code is the entire kernel of \eqref{eq:lift-operator}.
+
+\begin{corollary}[A fixed two-class excess]\label{cor:fixed-two-excess}
+\formal{ConstructionSeed.lean}{binaryCyclicCode_linear, binaryCyclicPartition_surjective, finrank_binaryCyclicCode, binaryCyclicCode_interval_excess}
+For every $m\ge1$ coprime to six, $d=6m$ admits a binary two-class
+linear rule and a linear source of dimension
+\[
+ \frac{d^2}{2}+\frac{7d}{6}.
+\]
+Its excess over the two-interval bound is $d/6$.
+\end{corollary}
+\begin{outline}
+Use the published six-dimensional seed with classes
+$\{0,1,3\},\{2,4,5\}$ and its verified $25$-dimensional code
+from \cite{SeventeenthPaper2026,ClassUniformMemo2026}.
+Denote the complete rule induced by these seed decoders by $K_6$.
+Since $m$ is odd, it is invertible in $\F_2$.
+Equation \eqref{eq:cyclic-lift-dimension} gives
+$18m^2+7m=d^2/2+7d/6$; subtract $d^2/2+d$.
+The conclusion needs a seed subcode of dimension $25$, not a proof that
+$25$ is the seed's maximum capacity.
+\end{outline}
+
+\subsection{The exact linear capacity of a periodic lift}
+
+Write $\operatorname{Cap}^{\mathrm{lin}}_F(p)$ for capacity with linear
+decoders over $F$.
+
+\begin{theorem}[Periodic capacity reduction]\label{thm:periodic-capacity}
+\formal{ConstructionCapacity.lean}{periodic_linear_capacity_split, periodic_linear_capacity_lower, periodic_linear_capacity_algebraicClosure_upper}
+In the scalar case $b=1$, suppose additionally that $F$ contains all
+$m$-th roots of unity. Then
+\[
+ \operatorname{Cap}^{\mathrm{lin}}_F(p^\uparrow)
+ =\frac{d^2-ms^2}{2}+m\operatorname{Cap}^{\mathrm{lin}}_F(p).
+\]
+Without the splitting assumption, the same expression with $F$ is a lower
+bound, and the expression with its algebraic closure $\overline F$ is an
+upper bound.
+\end{theorem}
+\begin{outline}
+The lower bound is Theorem \ref{thm:cyclic-lift}. For the upper bound,
+the allowed column space in CRT coordinates is
+$\operatorname{Circ}_m\otimes\operatorname{span}\{P_JS^e\}$.
+Simultaneously diagonalize the outer circulants, using the same basis
+on both tensor factors so that the demand remains swap. This is valid
+because $m$ is invertible and its roots split. Write the input as an
+$m\times m$ array of $s\times s$ blocks $X_{ij}$. Correctness has the form
+\[
+ X_{ji}^{\mathsf T}=\sum_a L_{ia}^j(X_{aj}),
+\]
+where each $L_{ia}^j$ is an allowed seed rule. In particular
+$\delta_j=\dim\ker(\tau_s-L_{jj}^j)\le
+\operatorname{Cap}^{\mathrm{lin}}_F(p)$.
+
+Supply all upper-triangular blocks $X_{ij}$, $i<j$, and process $j$ in
+decreasing order. All off-diagonal blocks of column $j$ are known: those
+above were supplied, those below belong to recovered rows. The equation
+with $i=j$ determines $X_{jj}$ up to a vector in a fixed $\delta_j$-
+dimensional kernel. Supply $\delta_j$ linear coordinates injective on
+that kernel; this determines $X_{jj}$ uniquely even on an affine fibre.
+The other equations now recover row $j$. This is an injective linear
+description of size $s^2m(m-1)/2+\sum_j\delta_j$, proving the bound.
+For nonsplitting $F$, embed a basis of a maximizing source into
+$\overline F$ and take its $\overline F$-span. Scalar extension preserves
+the basis's independence and extends every class rule by its coordinate
+coefficients. The extended source has the same dimension and the same
+receiver classes. Apply the split result over $\overline F$.
+\end{outline}
+
+Thus every rule on a fixed periodic seed partition has rate
+$1/2+O(1/d)$, even if it is not the exhibited lift. The qualitative limit
+already follows from the period obstruction in \cite{SeventeenthPaper2026};
+the equality records the exact finite seed-capacity contribution.
+
+\subsection{A paid implementation of the exhibited binary lift}
+
+\begin{theorem}[Two-tape implementation]\label{thm:paid-lift}
+\notformalized
+There is a fixed finite-alphabet, finite-control machine with two initially
+blank work tapes, read-only input and append-only unreadable output that
+computes the binary operator in Corollary \ref{cor:fixed-two-excess}
+lane by lane in $O(P)$ time, $P=d^2b$, on admitted dimensions $d=6m$,
+$\gcd(m,6)=1$. There are separate machines for $b=1$ and for
+$b=\max(1,\lceil\log_2d\rceil)$. Each has a transpose-correct subcode of
+dimension $b(d^2/2+7d/6)$.
+\end{theorem}
+\begin{informalproof}
+Here is a complete bounded-state schedule, including preparation. Put
+$\mu=mb$. The first work tape has $m$ consecutive $b$-cell words and
+$36$ binary payload tracks per physical cell. For $z\in\Z/m$ their
+intended contents are
+\[
+ H_z[i,j]=\bigoplus_{r\equiv i\ (6),\ c\equiv j\ (6),\ r+c\equiv z\ (m)}X_{r,c},
+ \qquad 0\le i,j<6.
+\]
+Each word has independent FIRST/LAST marker bits; HOME is at cell zero,
+END at $\mu$, and START at one word's first cell. Coincident markers
+when $b=1$ or $m=1$ are distinct alphabet tracks. All payload starts zero.
+After preparation the second work head parks throughout both data passes.
+
+At the start of input row $r$, START and the bank head are at word
+$r\bmod m$, with finite registers $i=r\bmod6$, $j=0$, and lap count zero.
+A DATA step reads the old raw bit and old bank symbol, advances both heads
+right, and either toggles $H[i,j]$ by that bit (pass one) or appends
+$x+H[i,j]+(K_6H)[i,j]$ (pass two), preserving the bank. The last expression
+is a fixed Boolean function of $36$ old bits. An OLD LAST marker increments
+$j$ modulo six and enters LAND. LAND at END rewinds physically to HOME;
+else it is at a FIRST marker. Returning to START counts a completed lap.
+Six laps finish one row. Importantly $j$ is not reset at a lap boundary:
+$m$ need not be divisible by six. At row end clear START, physically advance
+one whole word, wrapping at END if necessary, and set START there; then
+increment $i$ modulo six and reset $j$ and the lap counter. Perform this
+offset after the last row too. Only the row-start mode tests the raw
+endmarker; housekeeping preserves payload, holds raw still, and emits
+nothing.
+
+Induction gives bank address $((r+c)\bmod m)b+t$ at lane $t$ of entry
+$(r,c)$, with $j=c\bmod6$. Thus pass one computes exactly $H$. After
+$d$ rows its START is HOME. Rewind raw across its entire input, preserving
+the bank, and run the same schedule in emission mode. There are exactly
+$P$ appends in ordinary row-major order. Because $m$ is odd, the sum in
+$H$ is precisely the binary averaging projector $E$; the emitted formula
+is \eqref{eq:lift-operator}. All reads are pretransition reads, and all
+writes are at the old head locations.
+
+For completeness one pass has $P$ DATA steps, $d^2$ ordinary LAND steps,
+and six physical END wraps per row, costing $6d(\mu+1)$ extra steps.
+Row offsets cost $db+d+6(\mu+1)$, and row-start branches cost $d$.
+The total is
+\[
+ 2P+d^2+2db+8d+6\le5P\qquad(d\ge6,b\ge1).
+\]
+The between-pass raw rewind costs $P+2$; the final absent transition halts.
+
+It remains to establish this bank from blanks without size advice. Count
+the raw length on the second tape using a little-endian binary counter
+and a marked least-significant cell. A carry through $k$ ones and return
+costs $O(k+1)$, whose total over $P$ increments is $O(P)$; hold raw fixed
+during each carry, then advance it. Rewind raw. Fixed schoolbook arithmetic
+on a constant number of delimited $O(\log(P+2))$-bit registers verifies
+$P=d^2$ or $P=d^2\max(1,\lceil\log_2d\rceil)$ by binary search, and
+checks $d=6m$, $\gcd(m,6)=1$. These functions are strictly increasing in
+$d$, and all arithmetic takes $\operatorname{polylog}(P+2)$ time.
+Reject other lengths before output.
+
+The first head now writes the bank sequentially while the second head
+maintains counters for $m$ words and $b$ cells. Binary decrement and return
+has aggregate $O(b+\log(P+2))$ cost per word; no full-width zero test is
+performed per cell. Setup, copying and register trips cost at most
+$\operatorname{polylog}(P+2)$ per word. Install all markers, write END,
+return to HOME, and erase the second tape's delimited scratch frame.
+This costs
+$O(P+m\log^c(P+2)+mb+\log^c(P+2))=O(P)$ for a fixed exponent $c$,
+since $m=d/6$ and $d\log^c(d+2)=O(d^2b)$ in both width regimes.
+Every unbounded counter was tape data, and all other registers range over
+fixed finite sets. This establishes the promised initial boundary with
+exactly two work heads and proves the uniform time bound.
+\end{informalproof}
+
+This is an implementation of one displayed operator on all inputs of its
+admitted lengths. Its transpose-correct source has rate tending to one
+half, so it is not a full-input transposer or a lower bound against native
+machines. No general class-uniform operator is assigned a free implementation.

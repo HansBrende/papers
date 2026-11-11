@@ -1,0 +1,250 @@
+\section{Changing carriers relative to input-dependent references}\label{sec:references}
+
+Public catalogues need not contain all raw-dependent words, even when each
+word has a simple local description. We therefore use a counted analysis
+model with one physical work tape, $p$ continuous raw-window ports, the
+strict prior output, and one immutable input-dependent label. Its whole
+transition may use these arguments. Its finite control has $2^{q_*}$ states;
+time, positions and the append ordinal are explicit arguments, and every
+other evolving register is charged. It starts in a public state with blank
+work tape and public port origins. Every work write is at its old position,
+all heads and ports move by at most one, and at most one bit is appended.
+This model is only an intermediate counting device.
+
+\begin{lemma}[Counting the entire enlarged transition]\label{lem:multiport-transition}
+\formal{EnlargedFinite.lean}{Enlarged.finite_bound}
+The uniform tail is \lean{Enlarged.macroscopic_tail} in
+\texttt{EnlargedTail.lean}.
+Let $P=d^2b\ge4p$, $T=\lfloor C(P+1)\rfloor$,
+$N=\lfloor640apC^2\rfloor+1$, $W=\lceil P/(320apC)\rceil$, and
+$R\le\lfloor P/(8pN)\rfloor$. A fixed system of the preceding kind with
+alphabet $\F_2^a$ and label support at most $2^z$ correctly transposes, for
+some label, at most
+\[
+ 2^{P-P/(4N)+3Ndb+a+Nq_*+z+\log_2\mathcal M_1}
+\]
+inputs, where
+\[
+ \mathcal M_1=(N+1)(2T+W+2)(T+1)^2
+       [(T+1)^4(2T+1)^{1+3p}]^N.
+\]
+If $q_*\le P/(64N^2)$ and $z\le P/(64N)$, this is less than
+$2^{(1-1/(8N))P}$ uniformly in $b\ge1$ at sufficiently large $d$.
+\end{lemma}
+\begin{outline}
+Apply the slab selection and raw-footprint calculation in
+\cref{thm:getter-tail} to the physical work head. The selected chunk
+has at most $N$ runs and saves $P/(4N)-3Ndb-a$ bits after its complete
+initial slab is paid. There are no noncarrier symbols or error tags.
+Record run-entry control, port positions/extrema, physical work position,
+times and append counters, and one label. This is $\mathcal M_1$.
+Replay the entire transition from the persistent work slab and the known
+raw windows. Assemble its strict prior output exactly as in
+\cref{thm:getter-replay}; this occurs before applying the transition, so
+no current output bit is assumed. The same induction applies to the
+whole enlarged rule, including its port updates. Correctness recovers the
+omitted input. The label is paid once and run-entry controls at most $N$
+times, giving the stated finite bound. The two linear budgets and
+$3Ndb+a+\log_2\mathcal M_1=o(P)$ leave the claimed slack uniformly in $b$.
+\end{outline}
+
+Fix $k\ge2$ native work tapes, $\ell\ge1$ references per tape, and an
+embedding of the source alphabet in $V=\F_2^a$ with blank zero. Put
+$E=[-T,T]\cap\Z$, $n=2T+1$. Each reference uses a public $1$-Lipschitz
+map $\phi_{hi}:\Z\to\Z$ and a public local function $\gamma_{hi}$ of
+the coordinate and the radius-$r_0$ raw window centered at $\phi_{hi}(z)$.
+One optional immutable seed $\lambda_0=f(X)$ is fixed before the hash used
+below. Its joint support on the fixed promise set is at most $2^{Z_0}$.
+An observer with $U$ states contains all cutoffs $b_{hi}\in[0,P]$ and
+auxiliary storage, starts publicly, and changes each cutoff by at most one.
+Its updates may use the seed, old source/observer context, strict output,
+actual old source symbols and the declared old raw windows, but no other
+individual raw data. Initial cutoffs and port origins are public, independent
+of the seed. All rules are independent of the later hash choice.
+
+Let $D_{hi}(t,Y,\lambda_0)\in V^E$ be any public dense mask. At reached
+time $t$ define
+\[
+ F_{hi}(t,X)(z)=\mathbf1_{[0,b_{hi}(t))}(z)
+   \gamma_{hi}(z,\operatorname{window}_X(\phi_{hi}(z)),\lambda_0)
+      +D_{hi}(t,Y_t,\lambda_0)(z),
+\]
+where $Y_t$ is strictly prior output. Words are zero outside $E$.
+Write
+\[
+ K_s=\sum_{j=0}^{\min(s,n)}\binom nj(2^a-1)^j,
+ \quad r=\lceil\log_2(2k(T+1)\ell K_s)\rceil,
+ \quad p=1+2k\ell.
+\]
+
+\begin{theorem}[Raw-relative carrier handoff]\label{thm:reference-carrier}
+\notformalized
+Let $G$ be any promise set of source inputs whose runs halt by $T$, append
+at most $P$ bits, obey the observer promises, and at every reached
+configuration, including halt, have at most one work word farther than
+$s$ cells from every current reference on its tape. One common analysis
+system of \cref{lem:multiport-transition}, with $p$ ports and radius
+$r_0+1$, reproduces the source exactly on at least $|G|/2$ inputs, with
+the same transition count, raw input trajectory and append times/bits.
+Its state and label bills are
+\[
+ Q_*\le2+QU B_{\rm ref}2^{k(\ell+1)r},\qquad
+ z\le Z_0+k\ell r,
+\]
+where $Q$ is the number of source states and
+\[
+ B_{\rm ref}=k(T+1)n^{k+2}(4T+1)(1+n^2)
+             (1+T(P+1)^2\ell K_s n2^a).
+\]
+No ordinary native one-tape simulation is asserted.
+\end{theorem}
+\begin{informalproof}
+Choose a binary linear hash $H:V^E\to\F_2^r$. For fixed $X\in G$, its
+original augmented run and seed are determined independently of $H$.
+Compare each actual word $w_h(t)$ with every different candidate
+$F_{hi}(t,X)+e$, where $e$ has at most $s$ nonzero cells. Each nonzero
+difference hashes to zero with probability $2^{-r}$: in each independently
+chosen binary row of $H$, one nonzero coordinate determines a fair bit.
+There are at most $k(T+1)\ell K_s$ comparisons, so a union bound followed
+by averaging supplies one $H$ good on at least half of $G$.
+This event refers only to original trajectories. Empty $G$ is immediate.
+The same finite selection theorem \lean{exists_binary_common_half} applies
+with $B=k(T+1)\ell K_s$. It proves the single-hash half-set claim, including
+empty comparison families; the native reference-system construction below
+remains unformalized.
+
+Maintain $k$ actual-word hashes $Z_h=H(w_h)$ and $k\ell$ raw-prefix
+hashes $L_{hi}=H(\mathbf1_{[0,b_{hi})}\gamma_{hi})$. Supply their initial
+raw values by one label together with $\lambda_0$; this costs at most
+$Z_0+k\ell r$, and their evolving copies are separately in the controller.
+The actual hashes initially vanish. An old-symbol change $u\to v$ at $y$
+updates $Z_h$ by $H(\mathbf1_{\{y\}}(u+v))$, even for dense words.
+A cutoff increment adds the hash contribution at its old boundary $b$;
+a decrement removes the contribution at $b-1$. Contributions outside $E$
+are zero. Use continuous ports for the source input, every $\phi_{hi}(y_h)$
+and every $\phi_{hi}(b_{hi})$. Their unit motion follows from the
+$1$-Lipschitz maps. The old radius-$(r_0+1)$ boundary window contains the
+decrement's required radius-$r_0$ window. No port jumps at handoff.
+
+Test, in a public fixed order, the finite equations
+\[
+ H(e)=Z_h+L_{hi}+H(D_{hi}(t,Y_t,\lambda_0)).
+\]
+On a good original run every matching pair describes the actual word and
+an unmatched word has none. Several pairs describing the same word are
+allowed; choose the first. Candidate words outside the source alphabet may
+be included in this test, so no global raw-word legality query is needed.
+Only the reconstructed scanned symbols need belong to the source alphabet.
+
+Keep the active index $f$, logical source positions, physical position $p_0$,
+offset $u$ with $y_f=p_0+u$, and an empty or integer interval $I$ of physical
+positions scanned in previous transitions of this carrier phase. Its frozen
+entry word is initially blank, or is encoded by
+\[
+ (e,o_e,b,i,e_s,z,v),\quad e<T,\quad o_e,b\in[0,P],
+ \quad e_s\in\operatorname{Err}_s,
+\]
+meaning the old reference with cutoff $b$, mask
+$D_{fi}(e,Y_t[0:o_e),\lambda_0)$ and error $e_s$, with cell $z$
+\emph{overwritten} by $v$. For $j\in I$ the physical symbol is the current
+logical symbol at $j+u$; outside $I$ the logical word still equals this
+frozen entry word. Its fresh symbol uses the logical-head raw port and
+the historical prefix slice, never the current cutoff or mask.
+
+In a public INIT state install the public source/observer data, initialize
+hash registers from the label and choose the unique unmatched tape, or any
+tape if all match. This initialization is part of evaluating the first
+ordinary transition, with no extra step or free tape write. Initially all
+logical words are blank, $u=0$ and $I$ is empty. Invalid data can halt.
+
+At a represented step decode every inactive scanned symbol from a matching
+pair. Decode the active symbol physically when $p_0\in I$, and from its
+frozen code otherwise. Having the entire old tuple, apply the source rule,
+observer update and the local hash updates. A source halt causes no write
+or append. Otherwise the sole physical action writes the old active tape's
+new symbol at $p_0$ and follows that tape's chosen move. All logical positions
+and raw ports make their unit moves, and the same bit is appended at the
+same step. Only now test the post-step references using the new prefix.
+
+If the active tape stays selected, extend $I$ by the old physical position;
+unit motion keeps it an interval. If a new carrier $g$ is selected, it was
+inactive before this transition. Freeze its PRE matching pair, old cutoff,
+time and output ordinal, together with its one actual old-position write.
+This describes its exact POST word. Set the new offset from its new logical
+position and the already moved physical head, and reset only $I$ to empty.
+The former carrier is now matched. Stale physical cells are ignored on first
+visit and overwritten with their correct next values; no clearing or seek
+is performed. These statements establish the invariant by induction through
+arbitrary switches, including changes caused solely by masks or cutoffs.
+
+Malformed fields, nonunit moves or unavailable matches can halt; no branch
+tests membership in the good set. The invariant proves exactness on that
+set with its true label. Count source/observer state, active index, time,
+$k+2$ positions in $[-T,T]$, offset in $[-2T,2T]$, interval, the
+$k(\ell+1)$ hashes and the frozen code. Their product is the displayed
+bound, with INIT and a rejecting state added. Port positions are derived
+from counted logical positions/observer state; the strict prefix itself is
+an analysis argument. The immutable seed support can be counted on the fixed
+$G$ before choosing $H$, with no second largest-fibre loss.
+\end{informalproof}
+
+\begin{corollary}[Two words far from all current references]\label{cor:reference-tail}
+\partformal{ReferenceTail.lean}{reference_tail_of_half_simulation,reference_cache_sparse_reserves}{Lean derives the complete state and label budgets, output correctness and success tail from one common native-prefix simulation on at least half the promise set, with the literal cardinality bills. The reference-carrier construction supplying that simulation remains unformalized.}
+Fix the above resources, set $N=\lfloor640apC^2\rfloor+1$ and
+$D_0=k(\ell+1)+1$. If
+\[
+ q_{\rm src}+q_{\rm obs}\le\frac P{128N^2},\quad
+ \lceil\log_2 K_s\rceil\le\frac P{256D_0N^2},\quad
+ Z_0\le\frac P{128N},\quad r_0+1\le\left\lfloor\frac P{8pN}\right\rfloor,
+\]
+then fewer than $2^{1+(1-1/(8N))P}$ timely correct inputs satisfy the
+one-exception promise, uniformly for all $b\ge1$ at large $d$.
+For a sufficiently small fixed $\delta>0$, $s=\lfloor\delta P\rfloor$
+meets the sparse budget. Outside that exception, a reached configuration
+has two distinct words each farther than $s$ cells from every current
+reference for its tape.
+\end{corollary}
+\begin{informalproof}
+Put $\lambda_s=\lceil\log_2K_s\rceil$ and
+$L_0=\lceil\log_2(2k(T+1)\ell)\rceil$. Then $r\le\lambda_s+L_0$,
+and $B_{\rm ref}\le K_s B_0$ for the same polynomial factor with
+$K_s$ removed. The compiler therefore has
+\[
+ q_*\le q_{\rm src}+q_{\rm obs}+D_0\lambda_s+O(\log(P+1))
+       \le P/(64N^2)
+\]
+eventually, uniformly in $b$. The same estimates give
+$k\ell r\le P/(128N^2)$, hence $z\le P/(64N)$ including $Z_0$.
+Apply \cref{lem:multiport-transition} and retain the factor two from the
+common-hash half-set. For the last assertion use
+$n\le\lceil4C+1\rceil P$ and
+$\log_2K_s\le s\log_2(en(2^a-1)/s)$ for sufficiently small $s/n$.
+Its ratio to $P$ tends to zero with $s/P$; choose a fixed positive
+$\delta$ with enough slack for the ceiling. Negating the one-exception
+promise gives the stated simultaneous witness. This is per declared system,
+not a union over input-selected reference rules.
+The checked budget includes both administrative states and every integer
+ceiling. It uses a single dimension threshold before the width, source,
+observer and enlarged transition table are chosen.
+\end{informalproof}
+
+\subsection{Static scans as input-dependent references}
+
+Take $L=\lfloor P/(8pN)\rfloor$. The checkpoint construction of
+\cref{lem:scan-checkpoints} with gaps at most $L$ evaluates each static
+original-raw scan using radius $L-1$; cutoff decrements then use total radius
+$L$. Its one joint seed is reused at every handoff. It fits the preceding
+corollary when its support charge is at most $P/(128N)$. In particular,
+for $P\ge(8pN)^2$ the number of equal-grid internal anchors is
+$\lfloor(P-1)/L\rfloor\le8pN$: writing $P=8pN L+r$, $0\le r<8pN$
+and $L\ge8pN$ proves the inequality. Thus common state bits
+$w\le P/(1024pN^2)$ suffice. Public offset averaging also gives the
+sufficient profile condition $\sum_i w_i\le LP/(128N)$.
+
+The scan descriptions remain functions of the original raw input; the
+current cutoffs, masks and sparse deviations may evolve. A large offline
+scan table has no native production guarantee. Public catalogues with a
+growing number of references retain their separate scope, as do fixed-carrier
+local discrepancies. Neither conclusion supplies independence, persistence
+or output usefulness of the deviations. A raw-copy track alongside an
+arbitrary payload does not make that payload a small residual.

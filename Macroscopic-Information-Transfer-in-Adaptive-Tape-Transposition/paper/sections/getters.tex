@@ -1,0 +1,307 @@
+\section{Locally reconstructible incoming values}\label{sec:getters}
+
+The incoming record can pay only for failed predictions. The prediction
+interface must be fixed before selecting a slab, and must reconstruct the
+actual old value rather than a final version of the cell.
+Fix $p\ge1$ integer raw ports $v_j(t)$, each moving by at most one per
+successful source transition and starting at a public position. One is the
+actual input head. A virtual port has a public update rule using the old
+source state, positions, complete old native tuple, the declared raw windows
+and the resulting native transition. All its auxiliary storage belongs to
+an augmented state set of size at most $2^q$. It has no other raw query or
+hidden history. Public time and the current append ordinal are available.
+
+Fix one carrier $f$ for the entire execution, a radius $R$, a finite label
+alphabet $\Lambda$ of size at most $2^z$, and public getters $G_{f,h}$ for
+$h\ne f$. A getter receives one whole-run label, the known old augmented
+state and positions, time and output ordinal, the carrier's old symbol,
+all radius-$R$ raw windows, and the entire \emph{strictly prior} output
+string. It receives no unknown sibling old symbol. These are offline
+analysis arguments, not additional native source instructions. In particular,
+the source still cannot read output, and the virtual-port update contract
+does not acquire output-prefix access. Getters may be nonlinear.
+
+For a chosen carrier and label, count an error at every actual noncarrier
+consecutive-return endpoint whose excursion exceeds $H$ and whose old symbol
+differs from the getter on its actual old context. This statistic is fixed
+on the whole run before choosing its replay region.
+
+\begin{theorem}[Replay with local getters]\label{thm:getter-replay}
+\formal{GetterGeometry.lean}{Getter.native_fixed_geometry_bits_bound}
+Fix a public output permutation $\pi$ and a selected slab as in
+\cref{sec:replay}, with $r$ retained runs. Record, additionally, each port's
+entry position and run extrema, and each noncarrier head's global successful
+visit interval strictly before each run. Let $I$ be the union of the port
+extremum intervals enlarged by $R$, restricted to $[0,P)$; let $O$ be the
+retained append ordinals and $U=\pi(O)\setminus I$. For fixed geometry and
+at most $J$ selected getter errors the number of represented correct inputs
+is at most
+\[
+ 2^{P-|U|+z+rq}A^{\iota W+(k-1)r(2H+1)}
+ \mathcal S((k-1)T_*,J,A),\qquad \iota=\mathbf1_{a_0>0}.
+\]
+If there are at most $J$ whole-run errors on off-carrier returns of excursion
+greater than $H$, the selected errors number at most $J$.
+\end{theorem}
+\begin{outline}
+The error bound is \lean{Getter.error_support_le_returns}.
+A successful unit walk visits every integer between its extrema. Thus its
+global pre-entry visit set is empty or one integer interval; record an empty
+flag or its endpoints, excluding the arrival position unless previously
+scanned. The enlarged port extrema cover every raw value used in a retained
+transition, including the native read and the virtual-port update.
+
+Use the message of \cref{thm:replay}, with one label and complete augmented
+entry states. At a first in-run read outside the entry window, first test
+the recorded past interval. Outside it the cell is virgin and blank.
+Inside it use a tag carrying the actual old symbol exactly when the getter
+is wrong, and the getter otherwise. A tag is a genuine long return:
+its last global visit precedes the run, whereas the run's entry time lies
+strictly between that visit and the read and is farther than $H$ from
+the cell. The correspondence preserves the typed pair $(t,h)$ and is
+injective. Virgin cells need no tag even when their getters are wrong.
+
+Keep the carrier slab dictionary across all retained runs, as before,
+and keep a second dictionary of already replayed output bits by ordinal.
+Just before a retained step with ordinal $o$, every earlier ordinal $j<o$
+outside $O$ has $\pi(j)\notin U$, so its bit is supplied by the exterior
+input. Every $j\in O$ with $j<o$ was appended at a strictly earlier
+retained step and is in the second dictionary. This supplies the strict
+prefix before any unknown sibling symbol is reconstructed. Outputs in a
+skipped gap have ordinals outside $O$; their timestamps need not be known.
+
+At each run install the paid state, positions, counter and entry windows.
+For each noncarrier read use, in order, its most recent in-run write, its
+entry-window value, virgin blank, or its tag/getter. In the last case the
+getter's arguments are already determined from the common old context,
+carrier dictionary, exterior raw bits and prior-output dictionary. A missing
+tag therefore certifies the correct prediction on this actual input.
+Only after reconstructing the whole old tuple apply simultaneous old-position
+writes, moves, the optional append and the declared port updates. The usual
+induction reproduces every retained transition. Unretained carrier writes
+cannot touch the slab; skipped noncarrier history is paid at the next entry.
+
+Correctness recovers $X$ on $\pi(O)$ and hence $U$. Together with the
+exterior, comparing two actual runs with the same message gives equal inputs,
+even across different fine traces. No decoder on invalid records is needed.
+Count the same joint typed tag/value menu as in
+\cref{lem:sparse-menu}; the label is paid once. No independence is used.
+\end{outline}
+
+\begin{theorem}[Macroscopic local discrepancies]\label{thm:getter-tail}
+\formal{GetterFinite.lean}{Getter.native_finite_getter_bound}
+The uniform tail is \lean{Getter.native_macroscopic_getter_tail} in
+\texttt{GetterTail.lean}; existence of the stated density is
+\lean{Getter.exists_getter_density} in \texttt{GetterDensityExistence.lean}.
+Fix $k,p,a,C\ge1$, $A\le2^a$, and one declared getter system.
+Put $T=\lfloor C(P+1)\rfloor$ and
+\[
+ N=\lfloor640apC^2\rfloor+1,\quad W=\lceil P/(320apC)\rceil,
+ \quad R\le\lfloor P/(8pN)\rfloor.
+\]
+For $P\ge4p$, the inputs transposed by $T$ for which some fixed carrier
+and some label have at most $L$ errors on returns of excursion greater
+than $H$ number at most
+\begin{align*}
+ 2^{P-P/(4N)+E},\qquad
+ E={}&3Ndb+a+a(k-1)N(2H+1)+Nq+z\\
+     &+\log_2\mathcal M_p+\log_2\mathcal S(kT,L,A),\\
+ \mathcal M_p={}&k(N+1)(2T+W+2)(T+1)^2\\
+ &\quad\cdot[(T+1)^4(2T+1)^{k+3p}
+                  (1+(2T+1)^2)^{k-1}]^N.
+\end{align*}
+Set $\varepsilon=[128a\max(1,k-1)N^2]^{-1}$, $\eta=(8N)^{-1}$,
+and choose $0<\gamma\le1/2$ with
+$\gamma[a+\log_2(2ekC/\gamma)]\le1/(64N)$.
+If $q\le P/(64N^2)$ and $z\le P/(64N)$, then, uniformly over every
+$b\ge1$ at sufficiently large $d$, fewer than $2^{(1-\eta)P}$ timely
+correct inputs have at most $\lfloor\gamma P\rfloor$ such errors at
+$H=\lfloor\varepsilon P\rfloor$.
+\end{theorem}
+\begin{outline}
+Offset averaging gives a width-$W$ grid with fewer than $N$ slab changes,
+since $T/W\le640apC^2<N$. Apply the chronological slab dichotomy with
+cap $B=\lfloor P/(4p)\rfloor$. For completeness, if at least half the
+outputs lie in slabs with at most $B$ visits, one of at most $N$ slabs
+has at least $P/(2N)$ outputs and starts blank. Otherwise split each long
+slab's $n_s>B$ visits into $q_s=\lceil n_s/B\rceil$ consecutive groups.
+Each is the slab intersected with a time interval, and
+$q_sB\le n_s+B-1<2n_s$. Thus $B\sum_s q_s\le2T$; some chunk has
+$PB<4T|O|$. Both branches have at most $B$ selected times and $N$ runs.
+
+The sum of lengths of all enlarged port intervals is at most
+$p|C|+2pRr\le P/2$. Their $pr$ intervals meet at most
+$P/(2db)+2pr$ raw rows. At least $F\ge d/2-2pr$ rows are untouched.
+Each of the $r$ output intervals demands at least its length divided by
+$d$, less $2b$, from each such row. Consequently
+\[
+ |U|\ge F|O|/d-2rbF
+ \ge |O|/2-2pr|O|/d-2rdb\ge |O|/2-3rdb,
+\]
+using $F\le d$ and $|O|\le B\le P/(4p)$; the inequality also holds
+when a displayed lower bound is negative. The short branch saves at least
+$P/(4N)-3Ndb$ bits and pays no slab. In the long branch,
+$B\ge P/(8p)$ and $T\le2CP$ give $|O|>P/(64pC)$, while
+$aW\le P/(320pC)+a$. Hence in both branches
+\[
+ |U|-a\iota W\ge P/(4N)-3Ndb-a.
+\]
+
+The geometry menu records the carrier, slab endpoint, two outer times and
+run count. Each run pays four times/counters, $k$ work entries, $p$ port
+entries, $2p$ port extrema and the $k-1$ past intervals. Port positions
+are encoded relative to their public origins, with $2T+1$ choices each;
+absolute origins need not be bounded. This gives $\mathcal M_p$ exactly
+as a safe overcount. Choose one admissible witness by a fixed finite rule,
+apply \cref{thm:getter-replay}, and sum over the menu to obtain the finite
+bound.
+
+For $L\le\gamma P$, put $x=\gamma/(2kC2^a)\in(0,1]$.
+The binomial identity gives
+$x^L\mathcal S(kT,L,A)\le(1+Ax)^{kT}$.
+Taking logarithms, using $\log(1+Ax)\le Ax$ and $kT\le2kCP$,
+bounds the bit cost by
+$\gamma[a+\log_2(2ekC/\gamma)]P\le P/(64N)$.
+This argument includes $L=0$ without dividing by $L$.
+The $H$-dependent part, state and label each cost at most $P/(64N)$.
+Finally $3Ndb+a+a(k-1)N+\log_2\mathcal M_p=o(P)$ uniformly in
+$b\ge1$, since $db=P/d$ and $P\ge d^2$; take it at most $P/(64N)$.
+The exponent is at most $(1-11/(64N))P<(1-\eta)P$.
+The threshold is uniform in transition tables and public getters with the
+declared resources, but the event is per fixed system, not their union.
+\end{outline}
+
+\subsection{One shared set of spatial checkpoints}
+
+Let a public finite family of deterministic scans have finite state spaces
+$S_{\nu,i}$, public initial states, and updates
+$s_{\nu,i+1}=F_{\nu,i,X_i}(s_{\nu,i})$. No invertibility is required.
+For a public partition $0=a_0<\cdots<a_K=P$ with gaps at most $R+1$,
+record the states at internal anchors. Their joint support is at most
+\[
+ 2^Z,\qquad Z=\sum_\nu\sum_{0<j<K}\log_2|S_{\nu,a_j}|.
+\]
+Its actual joint image can replace this product. Input-dependent initial
+states, terminal states exposed outside the valid domain, and selectors
+must also be included in the complete label.
+
+\begin{lemma}[Shared scan checkpoints]\label{lem:scan-checkpoints}
+\formal{ScanCheckpoints.lean}{scanState_window,preceding_residue_anchor,checkpoint_residue_average,checkpointLabel_card,checkpoint_image_card_le}
+Equal anchor states and equal raw radius-$R$ windows at $i$, where the
+preceding anchor is at most $R$ positions earlier, give equal states at
+$i$ and $i+1$, including position-dependent state types. The joint label
+alphabet has cardinality $\prod_\nu\prod_{0<j<K}|S_{\nu,a_j}|$, and its
+attained image is no larger. For any public real weights $w_i$ there is a
+residue partition with gaps at most $R+1$ whose internal anchors satisfy
+\[
+ (R+1)\sum_{i\text{ internal anchor}}w_i\le\sum_{i=1}^{P-1}w_i.
+\]
+\end{lemma}
+\begin{outline}
+For the preceding anchor $a_j\le i<a_{j+1}$, start at its recorded state
+(the public initial state when $j=0$) and apply the original scan updates
+at $a_j,\ldots,i-1$. These coordinates lie in $[i-R,i)$, and induction
+recovers the actual state. The update using $X_i$ gives the next state.
+Thus the same label works under arbitrary later port reversals, without
+an inverse or a source scan observer. Position-dependent state types cause
+no difficulty: each update has its declared source and target type.
+
+Partition at $0,P$ and at internal positions in one residue class modulo
+$R+1$. All gaps are at most $R+1$. Every internal position appears in
+exactly one of these $R+1$ menus, so a minimum-weight residue has at most
+their average weight. Its choice uses only public state cardinalities.
+The formal preceding-anchor construction is zero when $i$ precedes the
+chosen residue $r$, and otherwise $r+(R+1)\lfloor(i-r)/(R+1)\rfloor$.
+The dependent-function cardinality formula gives the label product; image
+cardinality is bounded by its ambient finite type.
+\end{outline}
+
+For $w_i=\sum_\nu\log_2|S_{\nu,i}|$, the inequality gives
+$Z\le\sum_iw_i/(R+1)$. At $R=\lfloor P/(8pN)\rfloor$, equal-length
+blocks have $\lfloor(P-1)/(R+1)\rfloor<8pN$ internal anchors. Hence a
+common state-bit bound $\sum_\nu\log_2|S_\nu|\le P/(512pN^2)$ fits
+$Z\le P/(64N)$. The alternative profile bound
+$\sum_iw_i\le P^2/(512pN^2)$ fits by $R+1>P/(8pN)$ and averaging.
+
+Substitution in \cref{thm:getter-tail} gives the same discrepancy tail with
+$z=Z$. The description must hold throughout the actual run, including
+preparation, or preparation errors must be counted. An offline scan getter
+does not itself supply a fast native producer. A reversible scan has the
+simpler radius-one implementation: retain its prefix state at each port,
+apply the update on a forward move and its inverse on a backward move,
+charging those observer states to $q$. This includes noncommutative finite
+group prefix products.
+
+\begin{proposition}[Paid finite-state archive preparation]\label{prop:scan-loader}
+\formal{ScanLoader.lean}{ScanLoader.native_load,ScanLoader.native_resources,ScanLoader.native_ready_properties}
+The complete success bound is
+\lean{ScanLoader.native_scan_loader_tail} and
+\lean{ScanLoader.native_scan_loader_exponential}
+in \texttt{ScanLoaderTail.lean}.
+Fix $r$ finite-state scan codes with updates $F_j:S_j\times\{0,1\}\to S_j$
+and symbol rules $D_j:S_j\times\{0,1\}\to A_j$. A uniform native producer
+loads their aligned code words on $r$ blank archive tapes, resets all heads
+to zero, leaves a further carrier tape blank and output empty, in exactly
+$2P+4$ steps. With a consumer having $Q_C$ states, the composed controller
+has at most $Q_C+\prod_j|S_j|+3$ states over one fixed enlarged alphabet.
+If every consumer instruction repeats each archive's old scanned symbol in
+that archive's write, but otherwise has arbitrary adaptive head motion and
+an unrestricted carrier, its complete linear-time
+transposition success set has the exponential bound of
+\cref{thm:getter-tail}, uniformly over all positive widths.
+\end{proposition}
+\begin{outline}
+Choose distinct blank, left marker, right marker and data encodings. In one
+START step move archive heads from $0$ to $-1$, preserving blank. In MARK
+write left markers at the old positions and return to $0$. Keep raw and
+carrier heads at $0$. In LOAD, the $i$th raw bit and all archive heads
+are at $i$; their scanned cells are virgin. Write $D_j(s_j(i),X_i)$,
+update all $s_j$ from the same old bit and move raw/archive heads right.
+At raw EOF at $P$, write right markers and move left, discarding the scan
+state. REWIND preserves the $P$ data cells and moves left to $-1$; at
+that raw endmarker it preserves the markers, moves right and enters the consumer.
+The count is $2+P+1+P+1$. No length counter is used. The disjoint control
+sets are the consumer states, the product of scan states, and START, MARK,
+REWIND. All writes occur at old positions. The formal partial-archive
+invariant proves the exact contents and coordinates after each loaded bit;
+the rewind induction preserves the completed words. It includes empty
+inputs and zero archives. Fixed finite enumerations compile this table to
+the frozen native machine with exactly one native step per transition.
+The arbitrary consumer continues with no linking step, including its outputs
+and halting behavior, by \lean{ScanLoader.native_prepare_then_consume} and
+\lean{ScanLoader.native_consumer_halt} in \texttt{ScanLoaderConsumer.lean}.
+
+Use the raw head and archive-head coordinates as $p=r+1$ ports. During
+START, MARK and LOAD the getter returns blank at the actual scanned cells,
+including the EOF step. During REWIND and consumption it evaluates the
+completed marked code word using the shared checkpoints. Define a total
+public decoder by choosing any length-$P$ word compatible with its label and
+local window, or returning blank when none exists. Scan locality proves that
+all compatible words give the same archive symbol, and the actual input is
+compatible. Thus this selection defines the getter; its correctness is a
+conclusion, not an additional hypothesis.
+
+The reached-configuration invariant derives every archive old read,
+including markers and blank exterior. Each consumer archive write repeats
+the old symbol, so induction preserves the completed words. A one-state
+observer follows the actual archive-head moves. Consequently
+\lean{ScanLoader.nativeArchiveGetters_zero_errors} in
+\texttt{ScanLoaderGetters.lean} proves that the original whole-run
+discrepancy set is empty, including preparation.
+
+Put $K=8pN$ and $R=\lfloor P/K\rfloor$. Since $P\le(R+1)K$, at most
+$K$ checkpoint slots suffice; padding is included in the finite label.
+Their product alphabet has size $(\prod_j|S_j|)^K$, independent of $P$.
+Both its bit bill and the fixed controller's bill therefore meet the stated
+budgets beyond one dimension threshold, uniformly over all positive widths.
+Apply \cref{thm:getter-tail}, with preparation included in the total linear
+cap. Its formal bound also includes $k=1$, which covers $r=0$ directly.
+\end{outline}
+
+Small scan state is compatible with a full-support nonlinear archive:
+$Y_i=X_i\mathbin{\mathrm{xor}}s_i$, $s_{i+1}=s_i\lor X_i$, $s_0=0$,
+is bijective by successive recovery of $X_i$ from $Y_i,s_i$, even though
+the state update at input $1$ is noninvertible. This example supplies no
+transpose decoder. Nor does a final scan-code identity justify intermediate
+versions: overwrite an archive temporarily, read it, and restore it by
+another paid scan. Those intermediate reads need their own getter or tags.

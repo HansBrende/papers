@@ -1,0 +1,122 @@
+\section{Extension-linear residuals with binary-linear decoders}
+\label{sec:field-linear-residual}
+
+This section concerns scalar binary entries, so $b=1$. Put
+$E=\mathbb F_{2^d}$ and $\Phi(x)=x^2$. Use the reversed normal basis from
+the interval construction to identify a binary row with $E$; literal column
+rotation then acts on every row by $\Phi$. No prime or coprimality
+hypothesis on $d\ge1$ is needed. Linearity of a decoder below means
+$\mathbb F_2$-linearity on the complete binary view, not $E$-linearity.
+
+Fix a partition $p:\mathbb Z/d\to\mathcal J$ into $M$ nonempty classes,
+and a representative $r_J$ in every class. For a binary linear source $C$,
+let $C_0=C\cap\ker P$, where $P$ is the actual class projection from the
+completion theorem. Thus every representative row vanishes on $C_0$.
+The additional hypothesis is that the image $K\subseteq E^d$ of
+\emph{this intersection}, in the fixed normal basis, is an $E$-subspace.
+It is not a hypothesis on the image $(I-P)C$, nor on $C$ or the baseline
+separately. Define
+\[
+ S=\{c:\exists x\in K,\ x_c\ne0\},\qquad
+ a=|S|,\quad a_J=|S\cap p^{-1}(J)|,\quad k=\dim_E K.
+\]
+
+\begin{lemma}[Frobenius components]\label{lem:frobenius-components}
+\formal{CapacityFieldLinearComponents.lean}{CapacityFieldLinear.phaseBasis,CapacityFieldLinear.sum_components,CapacityFieldLinear.components_unique,CapacityFieldLinear.component_of_scalarTest,CapacityFieldLinear.component_zero_of_scalarTest_zero}
+For every binary-linear map $f:E^S\to E$ there are unique $E$-linear
+functionals $\ell_t:E^S\to E$, indexed by $t\in\mathbb Z/d$, such that
+\[
+ f(y)=\sum_t\Phi^t(\ell_t(y)).
+\]
+If $K\le E^S$, $c\in S$, and $f(\Phi^c x)=x_c$ for all $x\in K$, then on
+$V_c=\Phi^cK$ the functional $\ell_{-c}$ is the coordinate $y\mapsto y_c$
+and all other components vanish. For any phase $c\in\mathbb Z/d$,
+if $f(\Phi^cx)=0$ for every $x\in K$, all components vanish on that view.
+\end{lemma}
+
+\begin{outline}
+The $d$ distinct automorphisms $\Phi^t$ are linearly independent over $E$.
+The space $\operatorname{Hom}_{\mathbb F_2}(E,E)$ has $E$-dimension $d$,
+so they form a basis. Expand the binary-linear map
+$\lambda\mapsto f(\lambda y)$ in this basis. Its coefficient at $t$,
+followed by $\Phi^{-t}$, is $\ell_t(y)$. Uniqueness of coordinates proves
+additivity and
+$\ell_t(\lambda y)=\lambda\ell_t(y)$, hence $E$-linearity. Evaluating
+at $\lambda=1$ gives the displayed decomposition and its uniqueness.
+
+For $y=\Phi^c x\in V_c$, every $\lambda y$ is still in $V_c$ because
+$K$ is $E$-linear. The decoder identity therefore gives
+\[
+ \sum_t\Phi^t(\lambda)\Phi^t(\ell_t(y))
+       =\Phi^{-c}(\lambda)\Phi^{-c}(y_c).
+\]
+Independence of the automorphisms as functions of $\lambda$ forces the
+claimed coefficient identities. This argument uses the actual row demand;
+it supplies no receiver index to the decoder.
+\end{outline}
+
+\begin{theorem}[Active-row bound]\label{thm:field-linear-active}
+\formal{CapacityFieldLinearResidual.lean}{CapacityFieldLinear.active_class_residual_bound,CapacityFieldLinear.original_source_class_bound,CapacityFieldLinear.finrank_encodedResidual}
+Suppose $C$ has total binary-linear shared decoders and its actual residual
+$K$ is $E$-linear as above. Then, for every class $J$,
+\begin{equation}\label{eq:field-linear-class}
+ a_J+k\le a,\qquad
+ D+d a_J\le Md+da,\qquad D=\dim_{\mathbb F_2}C.
+\end{equation}
+Consequently
+\[
+ D\le Md+d\bigl(a-\max_J a_J\bigr)
+       \le Md+d(1-1/M)a.
+\]
+\end{theorem}
+
+\begin{outline}
+Restrict inputs to their active rows $S$, extending by zero elsewhere.
+This gives an $E$-linear isomorphism between $K$ and an $E$-subspace of
+$E^S$. Restrict each actual decoder by this zero extension and the normal
+basis identification. For $c\in S\cap p^{-1}(J)$ take its component
+$L_c=\ell_{J,-c}$. By \cref{lem:frobenius-components}, $L_c$ equals the
+$c$th coordinate on $V_c$ and vanishes on every $V_e$ with
+$e\in p^{-1}(J)$, $e\ne c$. The coordinate is nonzero on $V_c$ because
+$c$ is active. A relation $\sum_c u_cL_c=0$, restricted successively to
+these views, therefore has every $u_c=0$.
+
+The representative row is zero, so all $L_c$ annihilate $V_{r_J}$.
+The latter has $E$-dimension $k$ in an ambient of dimension $a$; its
+annihilator has dimension $a-k$. The independent family has size $a_J$,
+giving the first inequality. In Lean the annihilating functionals are
+conjugated by the representative Frobenius automorphism, so they all lie
+in the annihilator of $K$ itself.
+
+The normal-basis equivalence and the field tower give
+$\dim_{\mathbb F_2}C_0=dk$. Rank--nullity for $P|_C$, whose image has
+dimension at most $Md$, gives $D\le Md+dk$. This proves the second
+inequality without assuming that the baseline is contained in $C$.
+Take the largest $a_J$ for the first consequence; since
+$\sum_J a_J=a$, its largest term is at least $a/M$.
+\end{outline}
+
+\begin{corollary}[One and two classes]\label{cor:field-linear-half}
+\formal{CapacityFieldLinearCorollaries.lean}{CapacityFieldLinear.one_class_residual_eq_bot,CapacityFieldLinear.one_class_original_bound,CapacityFieldLinear.two_class_original_bound,CapacityFieldLinear.two_class_half_bound}
+Under the same hypotheses, one class gives $K=0$ and $D\le d$.
+For two nonempty classes $J_0,J_1$,
+\[
+ D\le d\bigl(1+\min(|J_0|,|J_1|)\bigr),\qquad
+ 2D\le d^2+2d.
+\]
+\end{corollary}
+
+\begin{outline}
+For one class $a_J=a$, so $k=0$. For two classes
+$a=a_{J_0}+a_{J_1}$, and the active-row bound gives
+$k\le\min(a_{J_0},a_{J_1})$. Each class contains its zero representative,
+so $a_J\le |J|-1$. Substitute this into $D\le2d+dk$ and then use
+$|J_0|+|J_1|=d$.
+\end{outline}
+
+This excludes above-half asymptotic rates in this construction class with
+binary-linear decoders. Deterministic decoders for extension-linear graph
+codes can be nonlinear, so those constructions do not contradict the
+one-class conclusion. The theorem does not cover arbitrary binary sources,
+alternative row identifications, or $b>1$, and it supplies no native
+extraction or implementation claim.

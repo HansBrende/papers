@@ -1,0 +1,54 @@
+\section{Native executions and records}\label{sec:model}
+
+We use the frozen native model of \cite{FirstPaper2026}. A machine has $k$
+two-way work tapes, alphabet $\Gamma$ containing blank $0$, and $Q$ states.
+Thus $Q=\texttt{native.q}+1$, not $\texttt{native.q}$. Put
+$a=\max(1,\lceil\log_2|\Gamma|\rceil)$ and
+$q=\lceil\log_2 Q\rceil$. Every head starts at $0$ and every work tape is
+blank. In a successful transition the machine reads the complete old tuple,
+writes at the old work-head positions, moves each head by $-1,0$ or $1$, and
+appends at most one bit. A halt test is not a successful transition.
+
+We allow arbitrary integers $d,b\ge1$ and write $P=d^2b$. The canonical-width
+length is $L=d^2b(d)$, where $b(d)=\max(1,\lceil\log_2d\rceil)$.
+Let $\pi$ send an output ordinal to its demanded raw coordinate; for
+transposition it exchanges the row and column indices and preserves the bit
+lane. Some replay statements hold for any fixed permutation $\pi$.
+
+For an input $X$, write $x(t),y_h(t),w_h(t,z),s(t)$ for the input position,
+work positions, work symbols and state just before successful step $t<T$.
+Let $o(t)$ be the number of bits appended strictly before $t$. A return
+$(p,t)$ of head $h$ has $p+2\le t<T$, $y_h(p)=y_h(t)$, and no intermediate
+visit to that cell. Its excursion is
+\[
+ \max_{p<u<t}|y_h(u)-y_h(p)|.
+\]
+Adjacent repeated visits cannot be long returns.
+
+The backward dependency graph has a state edge $t\to t-1$ for $t>0$ and a
+work edge from $t$ to each actual last prior visit to its scanned work cell.
+A preserving write is still a visit and a version parent. Raw observations
+are attached to their read steps; there is no mutable input-tape edge.
+Cuts delete whole vertices, including roots and targets. Write
+$\operatorname{Read}_X(U)$ for every successful raw read in $U$, and
+$\operatorname{Out}_X(V)$ for the actual append steps demanding coordinates
+in $V$. Paths of length zero count, so a root that is also a target must be
+deleted to separate it.
+
+\begin{lemma}[Old-position writes]\label{lem:old-write}
+\formal{NativeWrites.lean}{step_work_update,step_scanned_write,step_preserves_unscanned,instruction_eq_of_old_tuple}
+After a successful native step, every unscanned cell is unchanged. At the
+scanned cell the new symbol is the instruction's write. Equal old state,
+raw symbol and scanned work tuple give the same instruction, regardless of
+unobserved tape contents and previously emitted output.
+\end{lemma}
+\begin{outline}
+Unfold the frozen transition definition. It replaces the work symbol exactly
+when the queried address equals the old head position. The transition table
+does not receive the output history.
+\end{outline}
+
+All counts below concern one fixed transition table at each length. Uniform
+resource statements allow a nonuniform table only where explicitly stated;
+they never take a union over all tables. Correctness means the complete
+$P$-bit output, not merely agreement on a selected collection of outputs.

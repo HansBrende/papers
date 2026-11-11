@@ -1,0 +1,146 @@
+\section{Coherent clusters of work heads}\label{sec:clusters}
+
+Several physical heads can share the protected-slab argument. Let
+$\varnothing\ne F\subseteq\{1,\ldots,k\}$, $m=|F|$, choose fixed signs
+$\sigma_h\in\{-1,1\}$, and put $u_h(t)=\sigma_hy_h(t)$ and
+$z(t)=\sum_{h\in F}u_h(t)$. A normalized chart consists of nondecreasing
+$1$-Lipschitz maps $f_h:\R\to\R$ with $\sum_h f_h(v)=v$ for every real
+$v$. Its error is at most $J$ if $|u_h(t)-f_h(z(t))|\le J$ at every live
+step. The cluster, signs and maps may depend on the input, but remain fixed
+through that execution.
+
+\begin{lemma}[Protected cores and paid fringes]\label{lem:cores}
+\formal{ProtectedCores.lean}{selected_in_core_or_fringe,outside_avoids_core,protected_core_disjoint_fringe,normalized_chart_core_fringe_counts}
+For $J\ge0$, let $j=\lceil J\rceil$ and select a carrier slab $[\ell,\ell+W)$, and put
+$A_h=f_h(\ell)$, $B_h=f_h(\ell+W)$. On oriented tape $h$ define
+\[
+ C_h=(A_h+j,B_h-j)\cap\Z,\qquad
+ F_h=([A_h-j,A_h+j]\cup[B_h-j,B_h+j])\cap\Z.
+\]
+Every selected read lies in $C_h\cup F_h$; every outside-slab step avoids
+$C_h$; $C_h\cap F_h=\varnothing$; and
+$\sum_h|C_h|\le W+m$, $\sum_h|F_h|\le m(4j+2)$.
+Only four rounded endpoints per head are needed to encode these sets.
+\end{lemma}
+\begin{outline}
+Inside the carrier slab monotonicity places $f_h(z)$ between $A_h$ and
+$B_h$, and the error places the physical position in $[A_h-j,B_h+j]$.
+Its complement to the strict core lies in the two closed fringes, including
+when they overlap or the core is empty. If $z<\ell$, the position is at
+most $A_h+j$; if $z\ge\ell+W$, it is at least $B_h-j$. Thus no outside
+old position writes a core. A real interval of length $B_h-A_h$ contains
+at most that length plus one integer. Sum and use
+$\sum_h(B_h-A_h)=W$. Each closed fringe interval contains at most $2j+1$
+integers. Rounding by floor and ceiling determines all endpoints exactly;
+reflection by $\sigma_h$ preserves the counts and ownership. Equality at a
+core boundary is deliberately assigned to the fringe. The checked bound also
+allows individual errors $j_h$, with total fringe bill $\sum_h(4j_h+2)$.
+\end{outline}
+
+\begin{theorem}[Coherent-cluster extension]\label{thm:clusters}
+\formal{ClusterExpansion.lean}{native_coherent_cluster_returns,native_coherent_cluster_expansion}
+The conclusions of \cref{thm:returns,thm:off-carrier} extend to every
+$\varepsilon P$-coherent cluster, with returns and target lower endpoints on
+its complement. In the return statement one may take
+\[
+ N_c=\lfloor160akC^2\rfloor+1,\quad
+ \varepsilon=(128akN_c^2)^{-1},\quad \eta=(8N_c)^{-1},
+\]
+and sufficiently small $\gamma>0$, with the controller budget
+$q\le P/(64N_c^2)$. For cut expansion fix $q$ and choose a sufficiently small
+positive cut-density constant. The exceptional count covers all clusters,
+signs and charts simultaneously, uniformly over $b\ge1$.
+\end{theorem}
+\begin{outline}
+The checked \lean{native_cluster_slab_geometry} applies the bounded-speed
+slab selection to the actual append times and native head walks. The carrier
+is an integer walk of speed at most $m$. A displacement of size
+$v$ crosses slab walls for at most $v$ offsets, so offset averaging bounds
+the number of changes by $m(T-1)/W<N_c$. The published short/long slab
+dichotomy depends on this change count, not unit speed of the carrier, and
+the raw-head stripe estimate is unchanged.
+
+Preserve all protected cores between selected runs and refresh all fringes
+at their entries. In the short case all cores start blank. In the long case
+pay at most $a(W+m)$ symbols' bits at the outer start. The same calculation
+as \cref{eq:slab-margin} gives saving at least
+$P/(4N_c)-3N_cdb-a(k+1)$. Each run additionally pays at most
+$ak\max(4j+2,2H+1)$ bits for clustered fringes and noncluster windows,
+plus its controller. The native replay induction preserves every core together with the selected
+control states; matching paid records then recover each demanded output bit.
+The typed noncluster imports inject into original completed complementary
+returns. Thus \lean{native_bad_cluster_return_bound} derives the finite
+input count from the actual source records. Core ownership and current-version replay also prove the localized
+cut variant: a latest core writer after the outer start is in the selected
+region, and a fringe version is supplied by its current entry snapshot unless
+its last visit lies in the current run. Other cases are those in
+\cref{sec:fragments}. The checked
+\lean{native_bad_cluster_cut_bound} charges the complete local cut record
+and omits the import fields entirely; no small-return premise is needed for
+this cut variant.
+
+There is no description of the real functions. A visited carrier slab has
+$|\ell|\le kT_*+W+1$. At a selected time, chart endpoints differ from the
+corresponding oriented head position by at most $j+W$, so their integer
+roundings lie within $B_*=kT_*+W+2j+2$. A safe base geometry menu is
+\[
+ 3^k(N_c+1)(2kT_*+W+2)(2B_*+1)^{4k}(T_*+1)^2
+ [(T_*+1)^4(2T_*+1)^{k+3}]^{N_c}.
+\]
+The $3^k$ choices encode exclusion or either orientation of each head.
+Consequently its logarithm is $O(\log P)$ at the chosen scale, despite
+input-dependent charts. The complete finite exponent is
+\[
+ P-P/(4N_c)+3N_cdb+a(k+1)
+ +aN_ck\max(4j+2,2H+1)+N_cq
+ +\log_2\mathcal M_c+\log_2\mathcal S(kT_*,J_0,A).
+\]
+Put $j=\lceil\varepsilon P\rceil$, $H=\lfloor\varepsilon P\rfloor$,
+$J_0=\lfloor\gamma P\rfloor$. Windows/fringes and imports each cost at
+most $P/(32N_c)$, apart from constants, and the remaining terms cost at most
+$P/(32N_c)$ at large $d$ under the stated state budget. For cuts replace the
+sparse-import term by the menu in \cref{eq:local-menu} with $N_c$ in place
+of $N$ and choose its cost below $P/(32N_c)$. The checked \lean{cluster_return_rates} and \lean{cluster_cut_rates}
+choose one dimension threshold before all positive widths; the resulting
+finite exponent is strictly below $(1-\eta)P$. The demand upper bound
+uses injectivity of actual append times, and the lower bound uses the
+snapshot-adjusted geometric margin. The expansion endpoint covers every
+valid actual chart slab and all $H'\le H$ simultaneously, with cuts in the
+full original execution graph, including target lower endpoints outside the
+selected chunk. An all-head cluster has empty complement and is excluded
+on the same return good-input event. The checked singleton chart specializes
+the event to every free head; \lean{native_cluster_two_return_heads} and
+\lean{native_cluster_one_head_bad} recover the two-head and one-head
+consequences of \cref{thm:returns} at these cluster constants.
+\end{outline}
+
+\begin{lemma}[Finite order-conflict chart]\label{lem:order-chart}
+\formal{OrderChart.lean}{finite_order_chart,order_conflict_le_two_error}
+For $m\ge1$ and a nonempty finite family of vectors $v(t)\in\R^m$, put $z(t)=\sum_hv_h(t)$ and
+$D=\max_{z(t)\le z(u),h}(v_h(t)-v_h(u))_+$. There is a normalized chart
+with $-(m-1)D\le f_h(z(t))-v_h(t)\le D$. Conversely a chart of error $J$
+implies $D\le2J$.
+\end{lemma}
+\begin{outline}
+Take coordinatewise prefix maxima over all vectors of sum at most $z(t)$.
+These vectors $g(t)$ form a coordinatewise chain, even when sums tie, and
+$v_h(t)\le g_h(t)\le v_h(t)+D$. Put $\Gamma_t=\sum_hg_h(t)$.
+The formal construction interpolates this chain by a continuous monotone
+max-envelope curve. Its $h$th coordinate is
+\[
+ G_h(x)=\max_t\bigl[g_h(t)-(\Gamma_t-x)_+\bigr]
+       +\mathbf 1_{h=h_0}(x-\max_t\Gamma_t)_+,
+\]
+where $h_0$ is any fixed coordinate. It passes through $g(t)$ at
+$x=\Gamma_t$, and its coordinate sum is surjective onto $\R$.
+Reparametrize by that sum. Monotonicity makes the reparametrization
+well-defined even on constant intervals, and the normalized coordinate sum
+makes every coordinate $1$-Lipschitz. Since $z(t)\le\Gamma_t$, the error at
+$z(t)$ is at most $D$ in each coordinate. The errors sum to zero, giving the
+lower bound. Conversely monotonicity and two error allowances bound every
+ordered conflict by $2J$.
+\end{outline}
+For two work heads, \cref{thm:clusters,lem:order-chart} require macroscopic
+same-direction and macroscopic opposite-direction displacements, possibly
+on different time intervals: use orientations $(+,-)$ and $(+,+)$. They do
+not assert that every two-head path has a small-conflict cluster.

@@ -42,12 +42,14 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`LeanMachine/HomogeneousInflation.lean`](LeanMachine/HomogeneousInflation.lean) | Exact homogenization over arbitrary sheet groups, kernel equivalence, and finite-dimensional rate preservation | this repository |
 | [`LeanMachine/FiniteProjection.lean`](LeanMachine/FiniteProjection.lean) | Restriction kernels, coordinate capacity, and single-coordinate nullity costs for arbitrary-field linear codes | this repository |
 | [`SubspaceDefect`](LeanMachine/SubspaceDefect.lean), [`SubspaceFamilies`](LeanMachine/SubspaceFamilies.lean), [`SubspaceGrowth`](LeanMachine/SubspaceGrowth.lean), [`SubspaceGains`](LeanMachine/SubspaceGains.lean) | Exact subspace deficits, quotient dimensions, tight intersections, and coordinate-gain budgets | this repository |
+| [`FiniteCodimension`](LeanMachine/FiniteCodimension.lean) | Relative codimension bounds for finite intersections and sums, and separately charged images of two joint observations | this repository |
 | [`SubspaceRecovery`](LeanMachine/SubspaceRecovery.lean), [`LinearCodeRecovery`](LeanMachine/LinearCodeRecovery.lean) | Explicit recovery maps on images and closed restrictions; intrinsic coordinate-dual recovery preserving port ranks | this repository |
 | [`SparseProjection`](LeanMachine/SparseProjection.lean), [`BlockRankSparsity`](LeanMachine/BlockRankSparsity.lean) | Actual-generator support counting and block-column rank payment from sparse block rows | this repository |
 | [`CoordinateSplitting`](LeanMachine/CoordinateSplitting.lean), [`ProjectionFamilies`](LeanMachine/ProjectionFamilies.lean) | Exact coordinate capacity splitting for orthogonal idempotents and a weighted residual bound | this repository |
 | [`InvariantKernel`](LeanMachine/InvariantKernel.lean) | Kernel-dimension transport through an injective intertwiner covering the entire kernel | this repository |
 | [`IntervalCover`](LeanMachine/IntervalCover.lean) | Equal-size subcover and packing certificates for order-connected sets, and lossless fractional-cover rounding | this repository |
 | [`FiniteIncidence`](LeanMachine/FiniteIncidence.lean) | Exact weighted multiplicity sums for indexed families and overlap bounds from disjoint color classes | this repository |
+| [`IncidenceSecondMoment`](LeanMachine/IncidenceSecondMoment.lean) | Finite occupancy second moments from marginal counts, and a real-exponent weight bound | this repository |
 | [`MonotonePatches`](LeanMachine/MonotonePatches.lean) | Metric path variation from threshold crossings; sharp factor-three bounds for successful words and disjoint interval patches | this repository |
 | [`ScheduledExcursion`](LeanMachine/ScheduledExcursion.lean) | Constructed unit-step excursions with arbitrary pauses, exhaustive nonadjacent returns, and the canonical first peak | this repository |
 | [`ThinIntervals`](LeanMachine/ThinIntervals.lean) | Triangle-free interval forests, nonleaf component ranks, and periodic cuts bounding every surviving simple path | this repository |
@@ -100,7 +102,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`ContinuationSuppliers`](LeanMachine/ContinuationSuppliers.lean) | Ordered-extension decompositions, actual supplier counts and maximal remaining landings | this repository |
 | [`IntervalClusterErosion`](LeanMachine/IntervalClusterErosion.lean) | Anchored observable ranges over overlapping intervals, with a quadratic movement penalty | this repository |
 | [`FiniteHullVariation`](LeanMachine/FiniteHullVariation.lean) | Finite time hulls, degenerate empty sets and complete-bank movement accounting | this repository |
-| [`BoundedLiminf`](LeanMachine/BoundedLiminf.lean) | Explicit real lower-limit bounds, comparisons and converging lower bounds | this repository |
+| [`BoundedLiminf`](LeanMachine/BoundedLiminf.lean) | Explicit real lower-limit bounds, comparisons, converging lower bounds and affine upper bounds with vanishing errors | this repository |
 | [`VanishingTradeoff`](LeanMachine/VanishingTradeoff.lean) | Quadratic credit bounds and vanishing two-term tradeoffs on arbitrarily late good indices, including zero cost coefficients | this repository |
 | [`ExtendedTradeoff`](LeanMachine/ExtendedTradeoff.lean) | Quantitative tradeoffs with unbounded nonnegative observables, extended lower limits, rate normalization and zero-cost divergence | this repository |
 | [`RawIntervalCover`](LeanMachine/RawIntervalCover.lean) | Attained minimum closed-real-interval covers of finite raw coordinates; sharp two-block payment per short interval at every grid shift | this repository |
@@ -125,6 +127,39 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`SlowIndex`](LeanMachine/SlowIndex.lean) | Diverging family indices with square-root size budgets, without monotone sizes; vanishing padding costs | this repository |
 | [`BlockRanking`](LeanMachine/BlockRanking.lean) | Exact permutation counts for ranking disjoint block sets and LYM-type separation lower bounds | this repository |
 | [`ThresholdRefinement`](LeanMachine/ThresholdRefinement.lean) | Common refinement of finite threshold sets into elementary intervals on which clamped comparisons are constant | this repository |
+| [`PermutationFixedSpace`](LeanMachine/PermutationFixedSpace.lean) | Permutation-invariant coordinate spaces as functions on orbits, with a characteristic-free Burnside dimension formula | this repository |
+| [`MonotoneNormalization`](LeanMachine/MonotoneNormalization.lean) | Reparametrization of a coordinatewise monotone real curve by its surjective coordinate sum, yielding normalized 1-Lipschitz coordinates and preserving every curve point | this repository |
+| [`MonotoneChainEnvelope`](LeanMachine/MonotoneChainEnvelope.lean) | Continuous monotone interpolation of finite coordinatewise chains, with surjective coordinate sum and exact normalized knots | this repository |
+| [`OrderConflictChart`](LeanMachine/OrderConflictChart.lean) | Exact finite order-conflict charts, coordinate-specific error allowances, and the converse twice-error bound | this repository |
+| [`ProtectedIntervals`](LeanMachine/ProtectedIntervals.lean) | Strict integer cores, closed error fringes, coverage and disjointness, with exact cardinality bounds from floor and ceiling endpoints | this repository |
+| [`BoundedTuples`](LeanMachine/BoundedTuples.lean) | Exact bounded-sum tuple counts, monotone counter menus, and signed sampled unit-path encodings | this repository |
+| [`SparseRecords`](LeanMachine/SparseRecords.lean) | Exact support/value records and sparse dependent-tuple bounds, including input-dependent supports | this repository |
+| [`SparseBinomial`](LeanMachine/SparseBinomial.lean) | Weighted sparse binomial menus, uniform small-density estimates and sublinear logarithmic rates | this repository |
+| [`FiniteFieldOrbit`](LeanMachine/FiniteFieldOrbit.lean) | Generated-field degree as the actual Frobenius period, with exact conjugate counts | this repository |
+| [`FiniteLinearHash`](LeanMachine/FiniteLinearHash.lean) | Exact collision fibres for finite-field linear hashes, common-input-set selection and local syndrome updates | this repository |
+| [`OwnerProgram`](LeanMachine/OwnerProgram.lean), [`BlockProgram`](LeanMachine/BlockProgram.lean), [`BlockProgramExports`](LeanMachine/BlockProgramExports.lean) | Actual causal programs, full product transcript fibres, and exact switch-state/version records | this repository |
+| [`BlockProgramCoarsen`](LeanMachine/BlockProgramCoarsen.lean), [`BlockSpan`](LeanMachine/BlockSpan.lean) | Evaluation-preserving owner grouping and one common grid paying actual state variation and writer/reader spans | this repository |
+| [`ReadOnlyProgram`](LeanMachine/ReadOnlyProgram.lean) | Literal read-only state transitions and query-local recovery, with no transition access to emitted output | this repository |
+| [`WeightedGrid`](LeanMachine/WeightedGrid.lean), [`GridPartition`](LeanMachine/GridPartition.lean) | Simultaneous nonnegative grid charges and exact finite row/column width bounds | this repository |
+| [`PolynomialMenus`](LeanMachine/PolynomialMenus.lean), [`MonotoneSamples`](LeanMachine/MonotoneSamples.lean) | Uniform small polynomial-menu costs and exact recovery of monotone samples from their multiset | this repository |
+| [`FiniteUniformProbability`](LeanMachine/FiniteUniformProbability.lean), [`FiniteBoundedDifferences`](LeanMachine/FiniteBoundedDifferences.lean), [`FiniteUniformWindows`](LeanMachine/FiniteUniformWindows.lean) | Actual finite-product averages/probabilities, bounded-differences tails and cyclic-window locality | this repository |
+| [`ReadOnlyWindows`](LeanMachine/ReadOnlyWindows.lean), [`OrderedEmissionWindows`](LeanMachine/OrderedEmissionWindows.lean), [`OptionalReadSlices`](LeanMachine/OptionalReadSlices.lean) | Actual execution slices, designated output windows, and telescoping optional-read counts | this repository |
+| [`FiniteTopSets`](LeanMachine/FiniteTopSets.lean), [`FiniteObservationTopSets`](LeanMachine/FiniteObservationTopSets.lean) | Actual largest atoms and one retained event controlling every attained conditional observation | this repository |
+| [`FiniteTimeGrid`](LeanMachine/FiniteTimeGrid.lean), [`FiniteWeightedPigeonhole`](LeanMachine/FiniteWeightedPigeonhole.lean) | Exact preceding intervals and a heavy attained cell under an arbitrary finite law | this repository |
+| [`FiniteTapeGraph`](LeanMachine/FiniteTapeGraph.lean), [`FiniteMaskFibres`](LeanMachine/FiniteMaskFibres.lean) | Literal one-write/unit-move tape graphs, bounded balls, and exact head/erasure fibre costs | this repository |
+| [`FiniteSmallFibres`](LeanMachine/FiniteSmallFibres.lean), [`FiniteCoordinateFibres`](LeanMachine/FiniteCoordinateFibres.lean) | Strict small-fibre bounds and coordinate-agreement injections | this repository |
+| [`BoundedTuplePadding`](LeanMachine/BoundedTuplePadding.lean) | Sum-preserving zero padding and recovery of bounded tuples | this repository |
+| [`LogarithmicDensity`](LeanMachine/LogarithmicDensity.lean) | Positive densities meeting any explicit small logarithmic information budget, via Mathlib continuity | this repository |
+| [`FiniteIntervalSelection`](LeanMachine/FiniteIntervalSelection.lean) | One common preceding interval and unordered coordinate set, selected under the original finite law | this repository |
+| [`FiniteSourceEscape`](LeanMachine/FiniteSourceEscape.lean) | Exact uniform-source masses and the half-mass complement of an exponentially smaller bad set | this repository |
+| [`BinaryBudgets`](LeanMachine/BinaryBudgets.lean) | Exact integer bit budgets for finite-state products, default states and polynomial record menus | this repository |
+| [`FiniteOrdinalGuards`](LeanMachine/FiniteOrdinalGuards.lean) | Exact finite counts for delayed outputs, closed look-ahead intervals and terminal ordinals | this repository |
+
+The shared module [`ContextPruning`](LeanMachine/ContextPruning.lean) supplies finite
+weighted context pruning: one subset retains density in every attained context,
+with a half-mass conditional bound independent of how many observed variables
+share those contexts. It originates in *Macroscopic Information Transfer in
+Adaptive Tape Transposition*.
 
 ## External code
 

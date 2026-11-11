@@ -1,0 +1,179 @@
+\section{Completion and exact interval capacity}\label{sec:structure}
+
+\subsection{A normal form without loss of dimension}
+
+Choose a representative $r_J$ from each class $J$. Define
+\begin{align*}
+ (PX)_c&=\sigma^{c-r_J}\operatorname{row}_{r_J}X\quad(c\in J),\\
+ H_*&=\operatorname{im}P,
+ &W&=\ker P=\{X:\operatorname{row}_{r_J}X=0\text{ for every }J\}.
+\end{align*}
+Here $P$ acts on rows, and each row has $bd$ scalar coordinates.
+The class-covariant space $H_*$ was already used in the small-code
+constructions of \cite{SeventeenthPaper2026}. What matters here is that
+one may require its inclusion when maximizing capacity.
+
+\begin{theorem}[No-loss completion]\label{thm:completion}
+\formal{CapacityCompletion.lean}{IsSharedCode.completedCode, finrank_completedCode_add_rank, finrank_le_completedCode, completedCode_eq_of_range_le}
+The map $P$ is an idempotent linear map commuting with every $T^t$, and
+$\dim H_*=Mbd$. If $C$ is a linearly supported code with deterministic
+shared decoders, then
+\[
+ C^+=(C\cap W)\oplus H_*
+\]
+has deterministic shared decoders for the same partition and
+\[
+ \dim C^+=\dim C-\rank(P|_C)+Mbd\ge\dim C.
+\]
+If $H_*\subseteq C$, then $C^+=C$ as subspaces.
+\end{theorem}
+\begin{outline}
+The representative rows are unchanged by $P$, freely parametrize its
+range, and vanish exactly on its kernel. These facts prove idempotence,
+the range dimension, and the direct decomposition. Row rotations commute,
+so $PT^t=T^tP$. Given original decoders $f_J$, use
+\begin{equation}\label{eq:completed-decoder}
+ f_J^+(Y)=f_J((I-P)Y)+\sigma^{-r_J}\operatorname{row}_{r_J}Y.
+\end{equation}
+For $X_0\in C\cap W$, $H\in H_*$ and $c\in J$, the first argument
+in \eqref{eq:completed-decoder} at $T^c(X_0+H)$ is $T^cX_0$.
+The second term is $\operatorname{row}_cH$, because the representative
+rows of $X_0$ vanish. Thus the output is the demanded row of $X_0+H$.
+Rank-nullity for $P|_C$ gives the exact dimension. If $H_*\subseteq C$,
+then $PX\in C$ for $X\in C$, giving $C=(C\cap W)\oplus H_*$.
+\end{outline}
+
+The completion need not contain the original code: it replaces it, and
+may change every decoder away from required views. The residual is
+$C\cap\ker P$, not $(I-P)C$. If the original decoders are linear,
+\eqref{eq:completed-decoder} is linear as well.
+
+\begin{corollary}[Residual capacity and transversal rank]\label{cor:residual-capacity}
+\formal{CapacityOptimization.lean}{shared_capacity_eq_residual, linear_capacity_eq_residual, capacity_transversal_deficiency, optimal_transversal_full_rank}
+In either the deterministic-decoder or linear-decoder model, let
+$\operatorname{Cap}(p)$ be the maximum code dimension, and let
+$\operatorname{Cap}_W(p)$ be the maximum among codes contained in $W$.
+Then
+\[
+ \operatorname{Cap}(p)=Mbd+\operatorname{Cap}_W(p).
+\]
+For every code $C$ and every representative transversal,
+\[
+ \operatorname{Cap}(p)-\dim C\ge Mbd-\rank(P|_C).
+\]
+In particular every dimension-optimal code projects onto the entire tuple
+of representative rows, for every such transversal.
+\end{corollary}
+\begin{outline}
+Attainable dimensions form nonempty subsets of $\{0,\ldots,N\}$, so
+the maxima exist. For any $C$, rank-nullity gives
+$\dim C\le Mbd+\dim(C\cap W)\le Mbd+\operatorname{Cap}_W(p)$.
+Conversely, complete a residual maximizer. Completion preserves linearity
+when required, so both models obey the same equality. Applying maximality
+to the exact dimension of $C^+$ proves the displayed inequality. Row
+evaluation on the transversal has the same rank as $P|_C$; at a maximum
+that rank must be $Mbd$.
+\end{outline}
+
+\subsection{Normal bases and disjoint residual views}
+
+We describe a cyclic-interval partition by a transversal containing every
+class boundary: there is one representative $r_J\in J$ per class, and
+every $c$ with $p(c-1)\ne p(c)$ is one of these representatives.
+For a single class any representative may be used. This formulation
+includes intervals that cross the chosen coordinate origin.
+
+\begin{theorem}[Extremal interval codes]\label{thm:interval-attainment}
+\formal{CapacityIntervals.lean}{CapacityIntervals.exists_binary_code_dimension, CapacityIntervals.exists_optimal_interval_code, IsSharedCode.two_mul_finrank_le_interval}
+Let a partition of $\Z/d$ have $M$ nonempty classes and let $d-M$ be even.
+There is a binary linear source of dimension
+\[
+ \frac{d^2+Md}{2}
+\]
+with deterministic shared decoding for this partition. For cyclic-interval
+classes this dimension is optimal. Repeating the construction in $b$ lanes
+gives the corresponding dimension $b(d^2+Md)/2$ for every $b\ge1$.
+\end{theorem}
+\begin{outline}
+Let $E=\F_{2^d}$ and $\Phi(x)=x^2$. By the normal-basis theorem
+\cite[Theorem~5.18]{Milne2022}, choose
+$\alpha$ whose conjugates form a binary basis, and use its reversed order:
+$e_j=\Phi^{-j}\alpha$. The identification
+$\iota(x)=\sum_jx_je_j$ satisfies
+\[
+ \iota(\sigma x)=\Phi(\iota(x)).
+\]
+Indeed replacing $j$ by $j+1$ in the sum proves this identity with the
+stated rotation convention. Put $\beta=\alpha$. Its $d$ Frobenius
+conjugates are distinct, since the basis elements are distinct.
+
+Write $d-M=2s$ and pair the nonrepresentative rows as $(a_i,b_i)$.
+Define a residual source $C_0$ by assigning to each pair the rows
+$\iota^{-1}(x_i),\iota^{-1}(\beta x_i)$, with independent $x_i\in E$;
+set every representative row to zero. Then $\dim C_0=sd$. In $T^cC_0$
+the same pair has the form $(u_i,\Phi^c(\beta)u_i)$. If a matrix belongs
+to both $T^cC_0$ and $T^eC_0$, $c\ne e$, equality of the two rows gives
+$(\Phi^c\beta-\Phi^e\beta)u_i=0$ for every $i$. Thus all $u_i=0$.
+
+Consequently the nonzero translated views of $C_0$ are disjoint. Define
+one total function $f$ on full matrices by $f(0)=0$ and
+$f(Y)=\operatorname{row}_c(T^{-c}Y)$ if $0\ne Y\in T^cC_0$; set it to
+zero outside these views. The phase $c$ is unique, so this is well-defined
+and decodes all residual receivers. Complete $C_0$ by Theorem
+\ref{thm:completion}. Its dimension becomes $Md+sd=(d^2+Md)/2$.
+This also covers $s=0$, when the residual is zero.
+
+For an interval partition, the graph in Lemma \ref{lem:deterministic-tp}
+with $E=\{0,1\}$ has one component per interval. Hence
+$2\dim C\le d^2+Md$. The case $d=1$ is immediate. Independent lane
+copies give the asserted all-width construction, while the same
+deterministic translate bound gives its all-width interval upper bound.
+\end{outline}
+
+The normal-basis input is classical; it holds in even and composite
+degrees too. No primitive normal basis, root of unity, or diagonalization
+of the binary rotation is needed. The decoder identifies a phase by
+examining a full residual view. This is a construction in the shared-view
+model, without a tape implementation of that access.
+
+At $d=5$, classes $\{0\},\{1\},\{2,3,4\}$ have deterministic capacity
+$20$. The comparison with the reported linear-decoder maximum $19$
+in \cite{SeventeenthPaper2026} retains that source's solver qualification.
+The theorem proves the deterministic side and its upper bound, not a new
+formal proof of the reported linear nonexistence.
+
+\subsection{Why the hypotheses stay separate}
+
+\begin{proposition}[Deterministic decoding need not linearize]\label{prop:strict-decoder}
+\formal{CapacityControls.lean}{CapacityControls.exists_deterministic_not_linear}
+There is a one-class binary linear source with deterministic shared
+decoding and no globally linear shared decoder.
+\end{proposition}
+\begin{outline}
+At $d=3$ let $X$ have row zero $(1,1,0)$ and its other rows zero, and take
+$C=\operatorname{span}_{\F_2}\{X\}$. The three nonzero views
+$X,TX,T^2X$ are distinct, so a deterministic map may send them respectively
+to $(1,1,0),0,0$, and send zero to zero. Those are exactly the demanded
+rows. But $X+TX+T^2X=0$, while the required outputs have nonzero sum.
+No linear function has these values.
+\end{outline}
+
+\begin{proposition}[A high-dimensional affine marker]\label{prop:affine-marker}
+\formal{CapacityMarker.lean}{CapacityMarker.exists_affine_source_decoder}
+Over every field and for every $d\ge1$, a one-class deterministic shared
+decoder transposes an affine source of dimension $d^2-d$.
+\end{proposition}
+\begin{outline}
+Require row zero to be the coordinate word $e_0$ and leave all other
+entries free. The first row of $T^cX$ is $\sigma^ce_0$, which identifies
+$c$ uniquely. A total decoder reads that marker, applies $T^{-c}$, and
+returns row $c$; define it arbitrarily on other full views. This proves
+correctness on all matrices in the affine source and its dimension.
+For $d>3$ this exceeds the one-class linear-source bound
+$(d^2+d)/2$, so a linear-source hypothesis cannot be replaced by an
+affine-dimension assertion for arbitrary deterministic decoders.
+\end{outline}
+
+Both controls concern complete shared views. The marker is not an
+unpaid row-addressing operation for a tape machine, and the strictness
+example does not compare the maximum capacities of two decoder models.

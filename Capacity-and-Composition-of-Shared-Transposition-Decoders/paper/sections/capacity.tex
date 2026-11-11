@@ -1,0 +1,247 @@
+\section{Capacity of deterministic shared decoders}\label{sec:capacity}
+
+Throughout this section $F$ is a field, $d,b\ge1$, and
+$V=(F^b)^{(\Z/d)\times(\Z/d)}$ has dimension $N=bd^2$.
+A partition $p$ of the receiver indices has $M$ nonempty classes.
+The source $C\le V$ is linear, of dimension $D$; the shared decoders
+$f_J:V\to(F^b)^d$ are arbitrary total functions satisfying
+$f_{p(c)}(T^cX)=\operatorname{row}_cX$ for $X\in C$.
+All lanes may be coupled. This distinction between a linear source and a
+linear decoder will remain explicit.
+
+\subsection{Intersect inside the covariance space}
+
+For a nonempty set $E\subseteq\Z/d$, put
+\[
+ C_E=\bigcap_{e\in E}T^{-e}C.
+\]
+Join distinct indices $c,c'$ when $p(c)=p(c')$ and $c'-c\in E-E$;
+write $\chi(E)$ for the number of components. Let $H_E$ be the subspace
+defined by
+\[
+ \operatorname{row}_{c'}X=\sigma^{c'-c}\operatorname{row}_cX
+ \quad\text{on every edge}.
+\]
+
+\begin{lemma}[Deterministic translate pigeonhole]\label{lem:deterministic-tp}
+\formal{CapacityAmbient.lean}{IsSharedCode.component_finrank_le, finrank_covarianceSpace, covarianceSpace_rot}
+For every nonempty $E$, $C_E\subseteq H_E$, and
+$\dim H_E=bd\chi(E)$. Consequently
+\[
+ |E|D\le (|E|-1)N+bd\chi(E).
+\]
+Every $H_E$ is invariant under every column rotation $T^t$.
+\end{lemma}
+\begin{outline}
+If $c+e=c'+e'$ with $e,e'\in E$ and $p(c)=p(c')$, apply the two
+correct decoder equations to $T^eX,T^{e'}X\in C$. Their arguments are
+the same full matrix, so
+$\sigma^e\operatorname{row}_cX=\sigma^{e'}\operatorname{row}_{c'}X$.
+This gives the edge equation without using linearity of the decoder.
+After replacing row $c$ by $\sigma^{-c}\operatorname{row}_cX$, the
+equations say simply that normalized rows are constant on each component.
+One arbitrary vector of dimension $bd$ per component gives all solutions;
+there is no further condition around a cycle. This proves the dimension.
+Codimension is subadditive under intersection, and each $T^e$ is invertible,
+so $\dim C_E\ge |E|D-(|E|-1)N$. Finally, applying the same rotation
+$\sigma^t$ to all rows preserves every edge equation because the rotations
+commute. This proves invariance.
+\end{outline}
+
+The covariance argument is that of the translate-pigeonhole theorem in
+\cite{SeventeenthPaper2026}. Its use of decoder values does not require those
+decoders to be linear. The smaller invariant ambient in the next theorem
+is the additional resource.
+
+\begin{theorem}[Iterated translate bound]\label{thm:iterated-tp}
+\formal{CapacityIteration.lean}{IsSharedCode.iterated_finrank_le, componentCount_zero}
+Choose shifts $t_1,\ldots,t_k$, allowing repetitions, and set
+\[
+ E_0=\{0\},\qquad E_j=E_{j-1}\cup(E_{j-1}+t_j),\qquad
+ n_j=bd\chi(E_j).
+\]
+Then $n_0=N$ and
+\begin{equation}\label{eq:iterated-tp}
+ D\le\sum_{j=0}^{k-1}\frac{n_j}{2^{j+1}}+\frac{n_k}{2^k}.
+\end{equation}
+\end{theorem}
+\begin{outline}
+Write $C_j=C_{E_j}$. The set identity gives
+$C_j=C_{j-1}\cap T^{-t_j}C_{j-1}$. Both spaces on the right lie in
+$H_{E_{j-1}}$, by the preceding lemma and rotation invariance. They have
+the same dimension. Grassmann's formula inside this ambient gives
+$2\dim C_{j-1}\le n_{j-1}+\dim C_j$. Iterate these inequalities and
+use $\dim C_k\le n_k$. Repeated subset sums are counted once in $E_j$;
+their collisions do not affect either the set identity or the argument.
+\end{outline}
+
+The theorem bounds actual simultaneous intersections. It assumes neither
+independence of the constraints nor correctness of $H_E$ itself. It can
+be combined with every applicable direct translate bound.
+
+\subsection{A uniform bound for two classes}
+
+Suppose now that $p$ has at most two labels. For $s\in\Z/d$, let
+$g_s=\gcd(d,s)$, where $g_0=d$, and
+$Q_s=|\{c:p(c)\ne p(c+s)\}|$.
+On the cycles of addition by $s$, let $R_j(s)$ count proper monochromatic
+runs of length at least $j$. A proper run is preceded by a color change;
+a monochromatic cycle contributes no runs. Thus $R_1(s)=Q_s$.
+
+\begin{lemma}[Run components and doubled steps]\label{lem:binary-runs}
+\formal{CapacityRunsComponents.lean}{componentCount_le_runs_add_two_gcd, componentCount_le_changes_add_gcd}
+\formal{CapacityRuns.lean}{CapacityRuns.changeCount_double, CapacityRuns.weighted_run_budget}
+For every integer $r\ge1$, the same-color graph with edges at $s$-cycle distance at most $r$ has
+at most $R_r(s)+2g_s$ components. At radius one it has at most $Q_s+g_s$.
+For every $s$, including zero and steps with short cycles,
+\begin{align}
+ Q_{2s}&=2R_2(s),\label{eq:doubled-runs}\\
+ Q_s+R_2(s)+2R_4(s)+2R_{13}(s)&\le d.\label{eq:run-budget}
+\end{align}
+\end{lemma}
+\begin{outline}
+Work on one $s$-cycle. If its length is at most $2r$, the radius-$r$
+graph is complete within each color and has at most two components.
+Otherwise list the positions of one occurring color cyclically. Consecutive
+positions are connected when their intervening gap is at most $r$.
+Every other short edge is a path of these consecutive short edges, so it
+adds no component merger. If $B>0$ gaps are longer than $r$, there are
+$B$ components; if no gap is long, there is one. A singleton has its
+one long cyclic gap and one component. For a nonconstant binary cycle,
+these long gaps are exactly the opposite-color runs of length at least
+$r$. Summing the two colors proves the first estimate. At radius one a
+nonconstant cycle has exactly one component per run; a monochromatic
+cycle adds one component and no change. Summing cycles proves both claims.
+
+For the identity, write $z_c=1_{p(c)\ne p(c+s)}$.
+Then $1_{p(c)\ne p(c+2s)}=z_c\mathbin{\mathrm{xor}}z_{c+s}$.
+In a nonconstant, nonalternating cycle, the changes of $z$ number twice
+its nonempty runs of ones, each ending at the start of a $p$-run of length
+at least two. Constant and alternating cycles give zero on both sides.
+This also handles cycles of lengths one and two. Finally a proper run
+of length $L$ contributes
+$1+1_{L\ge2}+2\,1_{L\ge4}+2\,1_{L\ge13}$ to the left of
+\eqref{eq:run-budget}. Its values are $1,2,4,6$ on the successive
+ranges $L=1$, $2\le L\le3$, $4\le L\le12$, $L\ge13$; each is at most
+$L$. Monochromatic cycles contribute zero. Sum the run lengths.
+\end{outline}
+
+\begin{theorem}[Theorem C: the universal two-class ceiling]\label{thm:universal-capacity}
+\formal{CapacityUniversal.lean}{IsSharedCode.two_class_capacity_bound}
+For every field, every $d,b\ge1$, every partition into at most two classes,
+and every linear source with deterministic shared decoders,
+\begin{equation}\label{eq:universal-capacity}
+ D\le\frac{41}{64}bd^2+\frac53 b d^{3/2}.
+\end{equation}
+In particular the normalized dimension is at most $41/64+o(1)$,
+uniformly in the partition, field, word width and decoders.
+\end{theorem}
+\begin{outline}
+Apply \cref{thm:iterated-tp} with successive shifts $s,3s,9s$.
+The three difference sets contain every multiple of $s$ with coefficient
+in $[-1,1]$, $[-4,4]$, and $[-13,13]$, respectively: this follows by
+choosing difference digits from $\{-1,0,1\}$ in bases $1,3,9$.
+Reduction modulo $d$ may identify elements, which causes no problem.
+The component estimates give
+\[
+ D\le\frac12bd^2+\frac14bdQ_s+
+ \frac18bd\bigl(R_4(s)+R_{13}(s)\bigr)+\frac34bdg_s.
+\]
+Use \eqref{eq:run-budget} and \eqref{eq:doubled-runs} to obtain
+\begin{equation}\label{eq:one-step-universal}
+ D\le\frac9{16}bd^2+\frac3{16}bdQ_s-\frac1{32}bdQ_{2s}
+       +\frac34bdg_s.
+\end{equation}
+The negative term is retained before averaging.
+
+Choose $a$ uniformly from all $d$ residues and put
+$A_r=\mathbb E_a Q_{2^ra}$ and $B_r=\mathbb E_a\gcd(d,2^ra)$.
+If the label sizes are $n_0,n_1$, ordered-pair counting gives
+$A_0=2n_0n_1/d\le d/2$. Average \eqref{eq:one-step-universal} at
+$s=2^ra$, then weight these inequalities by $w_r=(5/6)6^{-r}$ for
+$r\ge0$. The weights sum to one and all terms are bounded for fixed
+$d$. Since $(3/16)w_r=(1/32)w_{r-1}$ for $r\ge1$, the internal
+$A_r$ terms cancel, leaving
+\[
+ D\le\frac{41}{64}bd^2+\frac34bd\sum_{r\ge0}w_r B_r.
+\]
+Equivalently, sum through a finite index and then let the index grow;
+the terminal term has absolute value at most $bd^2w_r/32$ and tends to zero.
+No uniformity of $2^ra$ on the whole cycle is assumed.
+
+Let $a_r=\gcd(d,2^r)$ and $n=d/a_r$. Its actual distribution is uniform
+on the multiples of $a_r$, so
+$B_r=a_r\mathbb E_{u\in\Z/n}\gcd(n,u)$.
+For each divisor $e$ of $n$, at most $n/e$ residues have gcd equal to
+$e$. Thus the mean gcd is at most the number of divisors of $n$,
+which is at most $2\sqrt n$ by pairing divisors across $\sqrt n$.
+This includes $u=0$ and $n=1$. Consequently
+\[
+ B_r\le2\sqrt d\,2^{r/2},\qquad
+ \sum_{r\ge0}w_rB_r\le
+ \frac{5\sqrt d}{3(1-\sqrt2/6)}\le\frac{20}{9}\sqrt d.
+\]
+Substitution proves \eqref{eq:universal-capacity}. The proof works with
+rows in $(F^b)^d$ throughout; no lane decomposition of $C$ was used.
+\end{outline}
+
+The bound improves the general two-class $3/4+o(1)$ ceiling for linear
+decoders stated in \cite[Open problems]{SeventeenthPaper2026}, and allows
+arbitrary deterministic decoders. It leaves the conjectured
+$1/2+o(1)$ ceiling open. The parameter being bounded is the dimension of
+a linear correctness source, not the density of native algorithms.
+
+\subsection{Arbitrarily many classes}
+
+\begin{theorem}[Theorem M: a square-root class deficit]\label{thm:many-classes}
+\formal{CapacityDifferenceCover.lean}{IsSharedCode.difference_cover_real_bound, IsSharedCode.square_cover_bound, IsSharedCode.saturated_cover_bound}
+For positive integers $u,v$, set
+$R=\min(uv,d-1)$ and $U=\min(d,M\lfloor d/(R+1)\rfloor)$.
+Then
+\begin{equation}\label{eq:many-classes}
+ D\le N-\frac{bd(d-U)}{u+v}.
+\end{equation}
+If $M\le d/2$ and $t=\lceil\sqrt{2M}\rceil$, then
+\begin{equation}\label{eq:sqrt-classes}
+ D\le\left(1-\frac1{4t}\right)N.
+\end{equation}
+For every $d\ge2$ and every $M$, writing $t_d=\lceil\sqrt{d-1}\rceil$,
+$D\le N-bd(d-M)/(2t_d)$.
+\end{theorem}
+\begin{outline}
+Use the shift set
+$E=\{0,1,\ldots,u-1\}\cup\{u,2u,\ldots,vu\}$, reduced modulo $d$.
+Its size is at most $u+v$. Every integer $1\le h\le uv$ equals $ju-i$
+with $j=\lceil h/u\rceil\le v$ and $0\le i<u$. Thus $E-E$ contains
+every signed difference through $R$.
+
+For one class, list its vertices cyclically. The positive gaps sum to
+$d$, including the sole gap $d$ for a singleton. Keep consecutive edges
+whose gap is at most $R$. If there are $\ell\ge1$ larger gaps, there
+are at most $\ell$ components and $\ell(R+1)\le d$. If there is no
+large gap, there is one component, also at most $\lfloor d/(R+1)\rfloor$
+because $R\le d-1$. Hence $\chi(E)\le U$.
+The translate bound gives $D\le N-bd(d-\chi(E))/|E|$.
+Both numerators are nonnegative; replacing $\chi(E)$ by $U$ and
+$|E|$ by its upper bound proves \eqref{eq:many-classes}.
+
+For $u=v=t$, either $t^2\ge d-1$, giving $U=M\le d/2$, or
+$U\le Md/(t^2+1)<d/2$. Equation \eqref{eq:sqrt-classes} follows.
+For $u=v=t_d$ the radius is $d-1$ and $U=M$, giving the last claim.
+Reduction of the shift set may create repetitions; the proof uses only
+its upper cardinality bound. It includes $d=1$ in the first inequality.
+\end{outline}
+
+This application uses the elementary sparse difference cover above, not a
+new difference-cover theorem. It changes the general deficit order from
+$1/M$ to $1/\sqrt M$, while stronger fixed-$M$ bounds remain available.
+For example, if $D\ge(1-\eps)N$ and $0<\eps\le1/8$, then
+\eqref{eq:sqrt-classes} gives the precise dichotomy
+\[
+ M>d/2\quad\text{or}\quad M>1/(128\eps^2).
+\]
+Indeed $\lceil\sqrt{2M}\rceil\ge1/(4\eps)$ forces
+$\sqrt{2M}>1/(4\eps)-1\ge1/(8\eps)$.
+The saturation at $d$ is necessary because singleton classes can decode
+the full source. Nothing here extracts these decoder interfaces from a
+native tape execution or closes them under composition.

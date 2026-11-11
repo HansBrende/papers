@@ -797,6 +797,7 @@ import LeanMachine
 #print axioms LeanMachine.BoundedLiminf.bounds
 #print axioms LeanMachine.BoundedLiminf.le_of_tendsto
 #print axioms LeanMachine.BoundedLiminf.mono
+#print axioms LeanMachine.BoundedLiminf.affine_upper
 
 -- ShiftedGridUnion.lean
 #print axioms LeanMachine.ShiftedGrid.blockUnion
@@ -1199,3 +1200,314 @@ import LeanMachine
 -- ThresholdRefinement.lean
 #print axioms LeanMachine.ThresholdRefinement.exists_strictMono_equiv_of_finset
 #print axioms LeanMachine.ThresholdRefinement.exists_refinement_cell
+
+-- ContextPruning.lean
+#print axioms LeanMachine.ContextPruning.mass_nonneg
+#print axioms LeanMachine.ContextPruning.mass_mono
+#print axioms LeanMachine.ContextPruning.cover_mono
+#print axioms LeanMachine.ContextPruning.cover_remove_fibre
+#print axioms LeanMachine.ContextPruning.fibre_subset_cover
+#print axioms LeanMachine.ContextPruning.exists_dense_context_subset
+#print axioms LeanMachine.ContextPruning.exists_probability_context_subset
+#print axioms LeanMachine.ContextPruning.conditional_mass_bound
+#print axioms LeanMachine.ContextPruning.exists_half_mass_context_subset
+
+#print axioms LeanMachine.FiniteCodimension.finrank_comap_equiv
+
+#print axioms LeanMachine.FiniteCodimension.finrank_inf_defect
+
+#print axioms LeanMachine.FiniteCodimension.finrank_sup_defect
+
+#print axioms LeanMachine.FiniteCodimension.finrank_finite_inf_defect
+
+#print axioms LeanMachine.FiniteCodimension.finrank_double_kernel_support
+
+#print axioms LeanMachine.FiniteCodimension.finrank_sup_comap_support
+
+-- PermutationFixedSpace.lean
+#print axioms LeanMachine.PermutationFixedSpace.orbitEquiv
+#print axioms LeanMachine.PermutationFixedSpace.finrank_invariants
+#print axioms LeanMachine.PermutationFixedSpace.card_mul_finrank_invariants
+
+-- IncidenceSecondMoment.lean
+#print axioms LeanMachine.IncidenceSecondMoment.squared_sum_le
+#print axioms LeanMachine.IncidenceSecondMoment.incidence_squared_sum_le
+#print axioms LeanMachine.IncidenceSecondMoment.power_weight_le
+
+-- MonotoneNormalization.lean
+#print axioms LeanMachine.MonotoneNormalization.coordinate_le_of_sum_le
+#print axioms LeanMachine.MonotoneNormalization.sum_normalize
+#print axioms LeanMachine.MonotoneNormalization.monotone_normalize
+#print axioms LeanMachine.MonotoneNormalization.normalize_sum
+#print axioms LeanMachine.MonotoneNormalization.increment_le
+#print axioms LeanMachine.MonotoneNormalization.lipschitz_normalize
+#print axioms LeanMachine.MonotoneNormalization.exists_normalized_curve
+
+-- ProtectedIntervals.lean
+#print axioms LeanMachine.ProtectedIntervals.mem_closed
+#print axioms LeanMachine.ProtectedIntervals.mem_core
+#print axioms LeanMachine.ProtectedIntervals.mem_fringe
+#print axioms LeanMachine.ProtectedIntervals.covered
+#print axioms LeanMachine.ProtectedIntervals.outside_core
+#print axioms LeanMachine.ProtectedIntervals.core_disjoint_fringe
+#print axioms LeanMachine.ProtectedIntervals.card_closed_le
+#print axioms LeanMachine.ProtectedIntervals.card_core_le
+#print axioms LeanMachine.ProtectedIntervals.card_fringe_le
+
+-- MonotoneChainEnvelope.lean
+#print axioms LeanMachine.MonotoneChain.envelope_continuous
+#print axioms LeanMachine.MonotoneChain.curve_continuous
+#print axioms LeanMachine.MonotoneChain.envelope_monotone
+#print axioms LeanMachine.MonotoneChain.curve_monotone
+#print axioms LeanMachine.MonotoneChain.envelope_knot
+#print axioms LeanMachine.MonotoneChain.curve_knot
+#print axioms LeanMachine.MonotoneChain.sum_curve_surjective
+#print axioms LeanMachine.MonotoneChain.exists_normalized_chain
+
+-- OrderConflictChart.lean
+#print axioms LeanMachine.OrderConflictChart.le_prefixMaximum
+#print axioms LeanMachine.OrderConflictChart.prefixMaximum_le
+#print axioms LeanMachine.OrderConflictChart.prefixMaximum_mono
+#print axioms LeanMachine.OrderConflictChart.prefixMaximum_chain
+#print axioms LeanMachine.OrderConflictChart.exists_coordinate_chart
+#print axioms LeanMachine.OrderConflictChart.exists_chart
+#print axioms LeanMachine.OrderConflictChart.conflict_le_two_error
+#print axioms LeanMachine.OrderConflictChart.conflict_le_orderConflict
+#print axioms LeanMachine.OrderConflictChart.exists_order_conflict_chart
+#print axioms LeanMachine.OrderConflictChart.orderConflict_le_two_error
+
+-- BoundedTuples.lean
+#print axioms LeanMachine.boundedTuple_card
+#print axioms LeanMachine.monotoneCounterMultiset_injective
+#print axioms LeanMachine.monotoneCounters_card_le
+#print axioms LeanMachine.signedTupleEncode_injective
+#print axioms LeanMachine.signedTuple_card_le
+#print axioms LeanMachine.sampledPositionIncrements_injective
+#print axioms LeanMachine.sampledPositions_card_le
+#print axioms LeanMachine.sum_monotone_gaps
+
+-- SparseRecords.lean
+#print axioms LeanMachine.sizedImports_card
+#print axioms LeanMachine.sparseImports_card
+#print axioms LeanMachine.sizedSupportRecord_card
+#print axioms LeanMachine.sparseSupportRecord_card
+#print axioms LeanMachine.mem_recordSupport
+#print axioms LeanMachine.encodeSparseRecord_injective
+#print axioms LeanMachine.sparse_record_card_le
+#print axioms LeanMachine.recordSupport_sub_subset
+#print axioms LeanMachine.recordSupport_sub_card_le
+
+-- SparseBinomial.lean
+#print axioms LeanMachine.sparseMenu_truncate
+#print axioms LeanMachine.one_le_weightedSparseMenu
+#print axioms LeanMachine.weightedSparseMenu_generating
+#print axioms LeanMachine.weightedSparseMenu_log_le
+#print axioms LeanMachine.weightedSparseMenu_log_small_density
+#print axioms LeanMachine.sparseMenu_log_small_density
+#print axioms LeanMachine.sparseMenu_log_div_tendsto_zero
+
+-- FiniteFieldOrbit.lean
+#print axioms LeanMachine.frobenius_pow_apply
+#print axioms LeanMachine.frobenius_fixes_iff_degree_dvd
+#print axioms LeanMachine.frobenius_minimalPeriod
+#print axioms LeanMachine.frobenius_powers_equal_iff
+#print axioms LeanMachine.frobenius_conjugates_card
+
+-- FiniteLinearHash.lean
+#print axioms LeanMachine.linearHash_eval_surjective
+#print axioms LeanMachine.linearHash_collision_finrank
+#print axioms LeanMachine.linearHash_collision_card
+#print axioms LeanMachine.linearHash_collision_mul_card
+#print axioms LeanMachine.linearHash_bad_card_le
+#print axioms LeanMachine.exists_linearHash_avoiding
+#print axioms LeanMachine.exists_linearHash_few_bad
+#print axioms LeanMachine.exists_linearHash_common_half
+#print axioms LeanMachine.exists_linearHash_common_subset
+#print axioms LeanMachine.linearHash_update
+
+-- OwnerProgram.lean
+#print axioms LeanMachine.OwnerProgram.eval_eq
+#print axioms LeanMachine.OwnerProgram.mem_exports
+#print axioms LeanMachine.OwnerProgram.eval_mix
+#print axioms LeanMachine.OwnerProgram.transcript_mix
+#print axioms LeanMachine.OwnerProgram.eval_eq_of_owner_transcript
+#print axioms LeanMachine.OwnerProgram.eval_factorsThrough
+
+-- BlockProgram.lean
+#print axioms LeanMachine.BlockProgram.eval_eq
+#print axioms LeanMachine.BlockProgram.state_parent_mem
+#print axioms LeanMachine.BlockProgram.read_parent_mem
+#print axioms LeanMachine.BlockProgram.field_parent_earlier
+#print axioms LeanMachine.BlockProgram.fields_eval
+
+-- BlockProgramExports.lean
+#print axioms LeanMachine.BlockProgram.even_export_iff
+#print axioms LeanMachine.BlockProgram.odd_export_iff
+#print axioms LeanMachine.BlockProgram.transcript_eq_iff_fields
+#print axioms LeanMachine.BlockProgram.transcript_mix
+
+-- BlockProgramCoarsen.lean
+#print axioms LeanMachine.BlockProgram.coarsen_eval
+
+-- BlockSpan.lean
+#print axioms LeanMachine.BlockProgram.participants_nonempty
+#print axioms LeanMachine.BlockProgram.foreign_iff_extrema
+#print axioms LeanMachine.BlockProgram.exists_coarsened_cost_le
+
+-- WeightedGrid.lean
+#print axioms LeanMachine.ShiftedGrid.sum_weightedCharge
+#print axioms LeanMachine.ShiftedGrid.exists_weightedCharge_le
+
+-- GridPartition.lean
+#print axioms LeanMachine.ShiftedGrid.label_le_self
+#print axioms LeanMachine.ShiftedGrid.labelFiber_card_le
+#print axioms LeanMachine.ShiftedGrid.finiteLabel_fiber_card_le
+#print axioms LeanMachine.ShiftedGrid.windowLabel_fiber_card_le
+
+-- ReadOnlyProgram.lean
+#print axioms LeanMachine.ReadOnlyStep.output_eq
+#print axioms LeanMachine.ReadOnlyStep.queried_result_factorsThrough
+#print axioms LeanMachine.ReadOnlyStep.queried_output_factorsThrough
+
+-- PolynomialMenus.lean
+#print axioms LeanMachine.polynomial_menu_log_small
+#print axioms LeanMachine.polynomial_menu_logb_small
+
+-- MonotoneSamples.lean
+#print axioms LeanMachine.sampledCounterMultiset_recovers
+
+-- FiniteUniformProbability.lean
+#print axioms LeanMachine.FiniteProbability.avg_eq_sum_div_card
+#print axioms LeanMachine.FiniteProbability.avg_const
+#print axioms LeanMachine.FiniteProbability.avg_add
+#print axioms LeanMachine.FiniteProbability.avg_sub
+#print axioms LeanMachine.FiniteProbability.avg_const_mul
+#print axioms LeanMachine.FiniteProbability.avg_mul_const
+#print axioms LeanMachine.FiniteProbability.avg_neg
+#print axioms LeanMachine.FiniteProbability.avg_sum
+#print axioms LeanMachine.FiniteProbability.avg_mono
+#print axioms LeanMachine.FiniteProbability.avg_nonneg
+#print axioms LeanMachine.FiniteProbability.avg_le
+#print axioms LeanMachine.FiniteProbability.le_avg
+#print axioms LeanMachine.FiniteProbability.avg_equiv
+#print axioms LeanMachine.FiniteProbability.avg_product
+#print axioms LeanMachine.FiniteProbability.avg_cons
+#print axioms LeanMachine.FiniteProbability.uniform_integral_eq_avg
+#print axioms LeanMachine.FiniteProbability.avg_exp_centered_le
+#print axioms LeanMachine.FiniteProbability.prob_nonneg
+#print axioms LeanMachine.FiniteProbability.prob_le_one
+#print axioms LeanMachine.FiniteProbability.prob_mono
+#print axioms LeanMachine.FiniteProbability.prob_eq_card
+#print axioms LeanMachine.FiniteProbability.prob_exists_le_sum
+#print axioms LeanMachine.FiniteProbability.avg_div
+#print axioms LeanMachine.FiniteProbability.avg_finset_sum
+
+-- FiniteBoundedDifferences.lean
+#print axioms LeanMachine.FiniteProbability.boundedChanges_cons_tail
+#print axioms LeanMachine.FiniteProbability.boundedChanges_cons_head
+#print axioms LeanMachine.FiniteProbability.avg_exp_boundedChanges_fin
+#print axioms LeanMachine.FiniteProbability.avg_exp_boundedChanges
+#print axioms LeanMachine.FiniteProbability.prob_upper_of_mgf
+#print axioms LeanMachine.FiniteProbability.boundedDifferences_upper
+#print axioms LeanMachine.FiniteProbability.boundedDifferences_lower
+#print axioms LeanMachine.FiniteProbability.BoundedChanges.add
+#print axioms LeanMachine.FiniteProbability.BoundedChanges.const_mul
+#print axioms LeanMachine.FiniteProbability.BoundedChanges.finset_sum
+#print axioms LeanMachine.FiniteProbability.BoundedChanges.div_const
+
+-- FiniteUniformWindows.lean
+#print axioms LeanMachine.FiniteProbability.avg_restrict
+#print axioms LeanMachine.FiniteProbability.prob_restrict
+#print axioms LeanMachine.FiniteProbability.prob_eq_value
+#print axioms LeanMachine.FiniteProbability.prob_pattern
+#print axioms LeanMachine.FiniteProbability.prob_or_of_disjoint
+#print axioms LeanMachine.FiniteProbability.windowSum_mean
+#print axioms LeanMachine.FiniteProbability.windowSum_boundedChanges
+
+-- Finite persistence selection and complete consumer windows
+#print axioms LeanMachine.FiniteTopSets.exists_largest
+#print axioms LeanMachine.FiniteTopSets.top_spec
+#print axioms LeanMachine.FiniteTopSets.card_top_le
+#print axioms LeanMachine.FiniteTopSets.top_positive
+#print axioms LeanMachine.FiniteTopSets.top_eq_support
+#print axioms LeanMachine.FiniteTopSets.top_contains_constant
+#print axioms LeanMachine.FiniteTopSets.support_large_of_outside
+#print axioms LeanMachine.FiniteTopSets.outside_mul_le_total
+#print axioms LeanMachine.FiniteTopSets.outside_le_total_div
+#print axioms LeanMachine.FiniteTimeGrid.card_interval
+#print axioms LeanMachine.FiniteTimeGrid.previous_interval
+#print axioms LeanMachine.FiniteTimeGrid.half_radius_interval
+#print axioms LeanMachine.FiniteTimeGrid.previousIndex_mem
+#print axioms LeanMachine.FiniteTimeGrid.half_radius_length
+#print axioms LeanMachine.FiniteTimeGrid.floor_half_length
+#print axioms LeanMachine.FiniteTimeGrid.grid_count_le
+#print axioms LeanMachine.FiniteTapeGraph.card_headNeighbors
+#print axioms LeanMachine.FiniteTapeGraph.outgoing_card
+#print axioms LeanMachine.FiniteTapeGraph.incoming_card
+#print axioms LeanMachine.FiniteTapeGraph.step_mem_outgoing
+#print axioms LeanMachine.FiniteTapeGraph.step_mem_incoming
+#print axioms LeanMachine.FiniteTapeGraph.degree_le
+#print axioms LeanMachine.FiniteTapeGraph.step_edist_le
+#print axioms LeanMachine.FiniteTapeGraph.path_edist_le
+#print axioms LeanMachine.FiniteTapeGraph.card_ball_le
+#print axioms LeanMachine.FiniteObservationTopSets.atom_nonneg
+#print axioms LeanMachine.FiniteObservationTopSets.sum_atom
+#print axioms LeanMachine.FiniteObservationTopSets.card_top_le
+#print axioms LeanMachine.FiniteObservationTopSets.outside_atom
+#print axioms LeanMachine.FiniteObservationTopSets.atom_mono
+#print axioms LeanMachine.FiniteObservationTopSets.coarsen_atom
+#print axioms LeanMachine.FiniteObservationTopSets.coarsened_avoid_top
+#print axioms LeanMachine.FiniteObservationTopSets.context_card_of_outside
+#print axioms LeanMachine.FiniteObservationTopSets.atom_eq_mass
+#print axioms LeanMachine.FiniteObservationTopSets.context_eq_mass
+#print axioms LeanMachine.FiniteObservationTopSets.exists_half_mass_avoid_top
+#print axioms LeanMachine.FiniteMaskFibres.forget_head_fiber
+#print axioms LeanMachine.FiniteMaskFibres.masked_fiber_sum
+#print axioms LeanMachine.FiniteMaskFibres.masked_fiber_le
+#print axioms LeanMachine.FiniteMaskFibres.card_headWindow
+#print axioms LeanMachine.FiniteMaskFibres.masked_headWindow_fiber_le
+#print axioms LeanMachine.FiniteSmallFibres.small_card_lt
+#print axioms LeanMachine.FiniteSmallFibres.small_exponential_card
+#print axioms LeanMachine.FiniteSmallFibres.good_all
+#print axioms LeanMachine.FiniteWeightedPigeonhole.exists_heavy_cell
+#print axioms LeanMachine.FiniteCoordinateFibres.card_le_complement
+#print axioms LeanMachine.OrderedEmissionWindows.cut_zero
+#print axioms LeanMachine.OrderedEmissionWindows.cut_le_length
+#print axioms LeanMachine.OrderedEmissionWindows.cut_mono
+#print axioms LeanMachine.OrderedEmissionWindows.cut_before_write
+#print axioms LeanMachine.OrderedEmissionWindows.write_before_cut
+#print axioms LeanMachine.OrderedEmissionWindows.record_length
+#print axioms LeanMachine.OrderedEmissionWindows.record_get_write
+#print axioms LeanMachine.OrderedEmissionWindows.slice_get_write
+#print axioms LeanMachine.OrderedEmissionWindows.run_window_get_write
+#print axioms LeanMachine.OptionalReadSlices.reads_append
+#print axioms LeanMachine.OptionalReadSlices.reads_take_le
+#print axioms LeanMachine.OptionalReadSlices.reads_slice_add
+#print axioms LeanMachine.OptionalReadSlices.sum_reads_slices
+#print axioms LeanMachine.OptionalReadSlices.sum_reads_slices_le
+#print axioms LeanMachine.FiniteObservationTopSets.attained_atom_pos
+#print axioms LeanMachine.ReadOnlyStep.run_append
+#print axioms LeanMachine.ReadOnlyStep.run_output_length
+#print axioms LeanMachine.ReadOnlyStep.run_slice_output
+#print axioms LeanMachine.sum_paddedTupleFunction
+#print axioms LeanMachine.padBoundedTuple_apply
+#print axioms LeanMachine.padBoundedTuple_injective
+
+#print axioms LeanMachine.exists_logarithmic_density
+#print axioms LeanMachine.FiniteIntervalSelection.exists_fixed_interval
+#print axioms LeanMachine.FiniteSourceEscape.weight_pos
+#print axioms LeanMachine.FiniteSourceEscape.mass_eq_card
+#print axioms LeanMachine.FiniteSourceEscape.weight_sum
+#print axioms LeanMachine.FiniteSourceEscape.half_mass_complement
+#print axioms LeanMachine.FiniteSourceEscape.twice_bad_le_card
+#print axioms LeanMachine.FiniteSourceEscape.half_mass_complement_of_exponents
+#print axioms LeanMachine.FiniteSourceEscape.complement_thin_pair
+#print axioms LeanMachine.FiniteSourceEscape.half_mass_pair_escape
+#print axioms LeanMachine.FiniteOrdinalGuards.delayed_card_le
+#print axioms LeanMachine.FiniteOrdinalGuards.delayedUnion_card_le
+#print axioms LeanMachine.FiniteOrdinalGuards.lookahead_card_le
+#print axioms LeanMachine.FiniteOrdinalGuards.lookaheadUnion_card_le
+#print axioms LeanMachine.FiniteOrdinalGuards.terminal_card_le
+#print axioms LeanMachine.clog_two_le_logb_add_one
+#print axioms LeanMachine.clog_state_product
+#print axioms LeanMachine.polynomial_menu_clog_small

@@ -1,0 +1,144 @@
+\section{A dynamically changing sparse carrier}\label{sec:storage}
+
+The previous theorems constrain motion and communication. We next obtain a
+simultaneous storage condition with no assumption that the exceptional tape
+has a fixed identity.
+
+\begin{theorem}[Exact dynamic-carrier simulation]\label{thm:carrier}
+\notformalized
+Fix a native machine with $k\ge1$ tapes, $Q$ states and alphabet
+$A\le2^a$. Fix integers $T,m\ge0$, put $n=2T+1$, and define
+\begin{align*}
+ V&=\sum_{j=1}^{\min(n,2m+2)}\binom nj(2^a-1)^j,
+ &r&=\lceil\log_2(V+1)\rceil,\\
+ B_0&=k(T+1)n^{k+1}(n+1)^k(4T+1)(1+n^2).
+\end{align*}
+There is one native machine with one work tape and the same alphabet that,
+on every source input halting within $T$ for which every reached configuration
+has at most one tape with more than $m$ nonblank cells, reproduces exactly the
+source's successful-transition count, raw-head moves and append times/bits.
+It has at most $1+QB_0 2^{(k+1)r}$ states. It may fail or halt off the promise.
+The table depends on the source machine, $T,m$, not on the individual input.
+\end{theorem}
+\begin{informalproof}
+Embed the alphabet in $\F_2^a$, with blank zero. A tape supported in
+$[-T,T]$ is a vector with $n$ blocks. There are at most $V$ nonzero vectors of block
+weight at most $2m+2$. A uniformly chosen binary $r\times an$ matrix kills
+each with probability $2^{-r}$, so some matrix $H$ kills none. Fix it.
+Its syndrome is injective on legal tape words of weight at most $m+1$.
+The partial inverse is a finite transition-table function; it does not
+assert that a dense tape can be decoded. This finite selection is checked in
+\lean{binary_matrix_collision_card} and \lean{exists_sparse_injective_hash};
+\lean{binary_hash_bits_eq_ceiling} identifies the bit-length convention.
+The remaining native transition table and handoff invariant below are not
+yet formalized.
+
+Maintain all $k$ full-tape syndromes and exact nonblank counts in control.
+Replacing old symbol $u$ by $v$ at address $z$ updates the syndrome by
+$H(e_z\otimes(\operatorname{enc}(u)+\operatorname{enc}(v)))$ and the count
+by $1_{v\ne0}-1_{u\ne0}$. The syndrome identity is the specialization of
+\lean{LeanMachine.linearHash_update} to the alphabet embedding.
+Store all logical positions, the source state and
+time, an active tape $f$, physical position $p$, offset $u_0$ with
+$p+u_0=y_f$, a frozen phase-entry syndrome, and an initially empty interval
+$I$ of physical cells previously scanned in this phase.
+
+The invariant before a source step is: every inactive tape is $m$-sparse;
+the physical symbol at $j\in I$ is the current logical symbol of $f$ at
+$j+u_0$; outside $I$ the logical symbol is given by the frozen phase-entry
+word, whose weight is at most $m+1$. The syndrome registers always encode
+the current whole logical tapes, including a dense active tape. Initially
+all words and registers are zero, $f=0$, $u_0=0$ and $I=\varnothing$.
+
+Read the old inactive symbols by sparse decoding. Read the active symbol
+physically if $p\in I$; otherwise ignore the stale physical symbol and use
+the frozen snapshot. This gives the entire original old tuple. Apply the
+source transition once. If it halts, halt without a successful step. Otherwise
+update every logical syndrome, count and position. Physically write the old
+active tape's prescribed new symbol at $p$ and take its prescribed unit move.
+Take the original raw move and optional append in this same transition.
+
+If the updated configuration has no dense tape, or its dense tape is still
+$f$, retain the carrier, offset and snapshot, and replace $I$ by $I\cup\{p\}$.
+Unit motion makes this a single interval; its new cell was just written to
+the correct value. If a different tape $g$ has become the unique dense tape,
+it was inactive and $m$-sparse before the transition. One write raises its
+count by at most one, so its new count is exactly $m+1$. Decode its updated
+syndrome as the new frozen snapshot, choose the new offset
+$u_0'=y_g'-p'$, and reset $I$ to empty. The old active tape is now sparse
+and can be decoded from its updated live syndrome. The physical move was
+still the old carrier's move; the new offset requires no second move, seek,
+clearing scan or copy. Stale physical cells are ignored until first visited
+and overwritten. This proves the invariant through arbitrary handoffs,
+including simultaneous changes on both involved tapes.
+
+All choices are finite table operations. Illegal decodes, multiple dense
+updated counters and out-of-range fields may halt; promised executions never
+take these branches. Force a halt when the stored time is $T$. A promised
+source already halts there or earlier. The physical and logical positions
+are bounded by $T$, the offset by $2T$, and $I$ has at most $1+n^2$ possible
+empty/endpoint descriptions. Time, carrier, positions, counts and offset
+have exactly the factors overcounted in $B_0$. There are $k$ live syndromes
+and one frozen syndrome. Multiplying by $Q$ and adding a default state gives
+the stated bound. This is an actual finite native table with one physical
+work head; it is nonuniform in $T,m$, and no small table-description claim
+is needed.
+\end{informalproof}
+
+\begin{theorem}[Theorem S: simultaneous large stores]\label{thm:stores}
+\partformal{StoresFromCarrier.lean}{stores_tail_of_carrier,native_two_dense_heads,native_support_window_complete}{The exact state-bit budget and success tail are checked for one common native carrier simulator with the stated state count and halt/output correspondence. Constructing that simulator, as in \cref{thm:carrier}, remains unformalized.}
+Fix $k,a,C$. There are $\delta,\eta>0$ and $d_0$, uniform over all $b\ge1$,
+such that fewer than $2^{(1-\eta)P}$ timely correct inputs fail to reach a
+configuration with two distinct tapes each containing more than $\delta P$
+nonblank cells. This holds for fixed controllers and, more generally, for
+$q\le P/(128N_1^2)$, where $N_1=\lfloor160aC^2\rfloor+1$.
+\end{theorem}
+\begin{informalproof}
+Apply \cref{thm:carrier} to precisely the successful inputs satisfying the
+one-dense-tape promise, with $T=\lfloor C(P+1)\rfloor$ and
+$m=\lfloor\delta P\rfloor$. The one-head case of \cref{thm:returns} applies
+to each nonuniform simulator if its state-bit cost is at most
+$\rho P$, $\rho=1/(64N_1^2)$. Write $K=4C+1$. At large $P$,
+$2m+2\le4\delta P\le n/2$ and
+\[
+ r\le1+4\delta P\log_2\frac{eK(2^a-1)}{4\delta}.
+\]
+Choose $0<\delta\le1/8$ so that the last coefficient multiplied by $k+1$
+is at most $\rho/4$. The logarithm of $B_0$ is $O(\log(P+1))$. The source
+state cost is at most $\rho P/2$, leaving sufficient room for this overhead
+and ceilings. The checked \lean{carrier_state_bits_small} proves the complete
+integer bit budget directly from the sparse-menu generating-function bound,
+including the default state and every syndrome. Thus the simulator satisfies
+the one-head budget and has fewer
+than $2^{(1-1/(8N_1))P}$ timely correct inputs. Every promised successful
+source input is among them, with no loss and no per-input simulator choice.
+All thresholds depend only on the stated resources, because $P\ge d^2$.
+The checked complement lemma converts the floor cutoff to the strict real
+threshold at one common reached configuration, including the halt configuration.
+The finite window $[-T,T]$ contains the entire native nonblank support.
+\end{informalproof}
+
+\begin{lemma}[Persistent unchanged cells]\label{lem:persistent-cells}
+\formal{Storage.lean}{native_support_growth_le_one,native_support_shrink_le_one,ExecutionPrefix.untouched_cell_constant,ExecutionPrefix.persistent_cells}
+For any fixed finite window on a tape, one native transition changes its
+nonblank-cell count by at most one. In an interval of $\ell$ successful steps,
+at most $\ell$ terminal nonblank cell addresses in that window were scanned
+in the interval; every other terminal nonblank cell in the window keeps its
+symbol throughout the interval.
+\end{lemma}
+\begin{outline}
+Outside the old scanned address, \cref{lem:old-write} preserves the symbol.
+The touched set is the image of the interval's times under the head-position
+map and has cardinality at most its duration. Remove it from the terminal
+support. The formal statement uses any finite window containing the cells;
+all live cells are in $[-T,T]$ on a $T$-step run.
+\end{outline}
+
+At the witness time of \cref{thm:stores}, both counts exceed $\delta P$.
+They started at zero, so the time exceeds $\delta P$. Throughout the preceding
+$\lfloor\delta P/2\rfloor$ steps both counts exceed $\delta P/2$.
+Deleting the addresses written in that interval leaves more than
+$\delta P/2$ fixed nonblank cells on each tape. Their values need not be
+independent, unknown, necessary for output, or even read again.
+The checked \lean{ExecutionPrefix.dense_persistent_interval} gives the more
+general exact loss of $\ell$ cells over a preceding interval of $\ell$ steps.

@@ -1,15 +1,23 @@
 import BoundedArityDecoders.BoundedAritySetCapacity
+import BoundedArityDecoders.BoundedAritySetCapacityProofs
 import BoundedArityDecoders.AffineCubeComposition
+import BoundedArityDecoders.AffineCubeCompositionProofs
 import BoundedArityDecoders.SumsetRankDeficit
+import BoundedArityDecoders.SumsetRankDeficitProofs
 import BoundedArityDecoders.OperatorDuality
+import BoundedArityDecoders.OperatorDualityProofs
 import BoundedArityDecoders.SwapCodeAnswers
+import BoundedArityDecoders.SwapCodeAnswersProofs
 import BoundedArityDecoders.NativeSweepInterface
+import BoundedArityDecoders.NativeSweepInterfaceProofs
 import BoundedArityDecoders.DiagnosisAndBarriers
+import BoundedArityDecoders.DiagnosisAndBarriersProofs
 
 /-!
 # Bounded-Arity Shared Decoders and Ramsey-Free Composition for Matrix Transposition
 
-Root module importing all formal claim specifications for Paper 20 (`README.md`):
+Root module importing all formal claim specifications and kernel-verified proofs for Paper 20
+(`README.md`):
 
 * `BoundedArityDecoders.BoundedAritySetCapacity` — Breakthrough 1 & Blueprint Part I:
   bounded-arity nonlinear shared-decoder capacity (`Theorem 1`), boundary controls, growing

@@ -1,401 +1,278 @@
 import BoundedArityDecoders
+import BoundedArityDecoders.AffineCubeComposition
+import BoundedArityDecoders.AffineCubeCompositionProofs
+import BoundedArityDecoders.AffineCubeConsequences
+import BoundedArityDecoders.BoundedAritySetCapacity
+import BoundedArityDecoders.BoundedAritySetCapacityProofs
+import BoundedArityDecoders.DiagnosisAndBarriers
+import BoundedArityDecoders.DiagnosisAndBarriersProofs
+import BoundedArityDecoders.DiagnosisAndBridgesConsequences
+import BoundedArityDecoders.DualityAndSwapConsequences
+import BoundedArityDecoders.MachineSweepConsequences
+import BoundedArityDecoders.NativeSweepInterface
+import BoundedArityDecoders.NativeSweepInterfaceProofs
+import BoundedArityDecoders.OperatorDuality
+import BoundedArityDecoders.OperatorDualityProofs
+import BoundedArityDecoders.SetCapacityConsequences
+import BoundedArityDecoders.SumsetRankConsequences
+import BoundedArityDecoders.SumsetRankDeficit
+import BoundedArityDecoders.SumsetRankDeficitProofs
+import BoundedArityDecoders.SwapCodeAnswers
+import BoundedArityDecoders.SwapCodeAnswersProofs
 
-/-!
-# Formal Specification & Axiom Audit (`PaperAxioms.lean`)
+-- Generated from formal-status lines in paper/sections/*.tex.
 
-Typechecks and prints axiom dependencies of every formal specification declaration (51 `: Prop`
-declarations total), every primary proof declaration (47 theorems), and every structural,
-asymptotic, representation-bridge, and conditional consequence theorem across all 20 modules of
-`BoundedArityDecoders`.
--/
+-- AffineCubeComposition.lean
+#print axioms BoundedArityDecoders.CauchySchwarzAffineCubeExtractionSpec
+#print axioms BoundedArityDecoders.Control_D13TwoCubeAPFreeSharpnessSpec
+#print axioms BoundedArityDecoders.Control_D4SameIntervalCodedFactorizationSpec
+#print axioms BoundedArityDecoders.Lemma_AffineCubeCommonMessageGrowthSpec
+#print axioms BoundedArityDecoders.Theorem2A_TwoStageRamseyFreeCutoffSpec
+-- AffineCubeCompositionProofs.lean
+#print axioms BoundedArityDecoders.cauchySchwarzAffineCubeExtraction
+#print axioms BoundedArityDecoders.control_D13TwoCubeAPFreeSharpness
+#print axioms BoundedArityDecoders.control_D4SameIntervalCodedFactorization
+#print axioms BoundedArityDecoders.lemma_AffineCubeCommonMessageGrowth
+#print axioms BoundedArityDecoders.theorem2A_TwoStageRamseyFreeCutoff
+-- AffineCubeConsequences.lean
+#print axioms BoundedArityDecoders.control_D13_GeneralFieldAndProgressionBridge
+#print axioms BoundedArityDecoders.control_D4_AllWidthsAndBinaryFields
+#print axioms BoundedArityDecoders.denseSubset_AffineCubeCommonMessageBound
+#print axioms BoundedArityDecoders.singleSubset_CauchySchwarzAffineCubeExtraction
+#print axioms BoundedArityDecoders.theorem2A_GrowingClassesNonFactorization
+-- BoundedAritySetCapacity.lean
+#print axioms BoundedArityDecoders.BoundaryControl_DeficitVanishesAtDeltaEqDSpec
+#print axioms BoundedArityDecoders.ExistsRecoverableSubsetBoundSpec
+#print axioms BoundedArityDecoders.GrowingClassesPositiveDeficitSpec
+#print axioms BoundedArityDecoders.OneClassArityTwoHalfBarrierQuestion
+#print axioms BoundedArityDecoders.OneClassBoundedArityCodingGainAboveHalfQuestion
+#print axioms BoundedArityDecoders.OneClassBoundedArityHalfBarrierQuestion
+#print axioms BoundedArityDecoders.OneClassBoundedArityInverseArityScalingQuestion
+#print axioms BoundedArityDecoders.OneHopRecoverableInjectiveSpec
+#print axioms BoundedArityDecoders.SelfReferentialAndCleanCountSpec
+#print axioms BoundedArityDecoders.Theorem1_BoundedAritySetCapacitySpec
+-- BoundedAritySetCapacityProofs.lean
+#print axioms BoundedArityDecoders.boundaryControl_DeficitVanishesAtDeltaEqD
+#print axioms BoundedArityDecoders.existsRecoverableSubsetBound
+#print axioms BoundedArityDecoders.growingClassesPositiveDeficit
+#print axioms BoundedArityDecoders.oneClassBoundedArityCodingGainAboveHalf_iff_not_halfBarrier
+#print axioms BoundedArityDecoders.oneClassCodingGain_of_inverseArityScaling
+#print axioms BoundedArityDecoders.oneHopRecoverableInjective
+#print axioms BoundedArityDecoders.selfReferentialAndCleanCount
+#print axioms BoundedArityDecoders.theorem1_BoundedAritySetCapacity
+-- DiagnosisAndBarriers.lean
+#print axioms BoundedArityDecoders.Diagnosis_AbstractSeparatedHighRateCodeSpec
+#print axioms BoundedArityDecoders.Diagnosis_BehrendAndRandomAPBoundSpec
+#print axioms BoundedArityDecoders.Diagnosis_LinearSharedDecoderBoundsAndMaskFloorsSpec
+#print axioms BoundedArityDecoders.Diagnosis_RamseyHalesJewettTwoStageSpec
+#print axioms BoundedArityDecoders.Diagnosis_ShiftAndRotationCodingGainBarrierSpec
+#print axioms BoundedArityDecoders.Diagnosis_StoneShuffleAndRowShearMachineComplexitySpec
+#print axioms BoundedArityDecoders.Diagnosis_TCPAndAdaptiveConeReductionSpec
+-- DiagnosisAndBarriersProofs.lean
+#print axioms BoundedArityDecoders.diagnosis_AbstractSeparatedHighRateCode
+#print axioms BoundedArityDecoders.diagnosis_BehrendAndRandomAPBound
+#print axioms BoundedArityDecoders.diagnosis_LinearSharedDecoderBoundsAndMaskFloors
+#print axioms BoundedArityDecoders.diagnosis_RamseyHalesJewettTwoStage
+#print axioms BoundedArityDecoders.diagnosis_ShiftAndRotationCodingGainBarrier
+#print axioms BoundedArityDecoders.diagnosis_StoneShuffleAndRowShearMachineComplexity
+#print axioms BoundedArityDecoders.diagnosis_TCPAndAdaptiveConeReduction
+#print axioms BoundedArityDecoders.stoneUnshuffleTM_twoTape_linear
+-- DiagnosisAndBridgesConsequences.lean
+#print axioms BoundedArityDecoders.diagnosis2_HighRateTendstoOne
+#print axioms BoundedArityDecoders.diagnosis3_MultiBitBlockEdgeShiftBarrier
+#print axioms BoundedArityDecoders.diagnosis4_ExplicitSquareCoverAndMaskCertificateBridge
+#print axioms BoundedArityDecoders.diagnosis5_CombinatorialInvVdWTendstoAndRankBound
+#print axioms BoundedArityDecoders.diagnosis6_ModularBehrendAndRandomZModProgression
+#print axioms BoundedArityDecoders.diagnosis_Paper18AdaptiveOriginalEntryPullback
+#print axioms BoundedArityDecoders.tmMatrix_gridLinear_bridges
+#print axioms BoundedArityDecoders.tmWholeCellCutConeBound
+#print axioms BoundedArityDecoders.wordStepTrace_TCPCellConeReduction
+-- DualityAndSwapConsequences.lean
+#print axioms BoundedArityDecoders.antiDiagTensorEquiv_intertwines_rot
+#print axioms BoundedArityDecoders.bonus1_UnifiedThreeTermExceedsPairingBound
+#print axioms BoundedArityDecoders.bonus2_SublinearProfileAndTendstoHalf
+#print axioms BoundedArityDecoders.bonus2_WalshDichotomyStructuralProperties
+#print axioms BoundedArityDecoders.boundedOSRPipelinePassLowerBound
+#print axioms BoundedArityDecoders.isCyclicInterval_cyclicBoundaryCount_le_two
+#print axioms BoundedArityDecoders.isPeriodicScaleDyadicMask_cyclicBoundaryCount
+#print axioms BoundedArityDecoders.isRowOrColUniform_rankLe_one
+#print axioms BoundedArityDecoders.maskFloor_GenericSubspaceRealization
+#print axioms BoundedArityDecoders.rowDiagonal_SourceArityGaugeInvariance
+#print axioms BoundedArityDecoders.shiftSetCovariance_tensor_finrank
+#print axioms BoundedArityDecoders.skewOneTimePad_ShannonMutualInfoZero
+#print axioms BoundedArityDecoders.uniformShannonMI_eq_zero_of_indep
+#print axioms BoundedArityDecoders.walshBitSet_cyclicBoundaryCount
+#print axioms BoundedArityDecoders.walshBitSet_joint_separates_points
+#print axioms BoundedArityDecoders.walshDigitMaskRotSpan_finrank_le
+-- MachineSweepConsequences.lean
+#print axioms BoundedArityDecoders.conditional_NoLowErrorTwoStageLinear_of_MacroscopicTarget
+#print axioms BoundedArityDecoders.conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre
+#print axioms BoundedArityDecoders.conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis
+#print axioms BoundedArityDecoders.evalConeTree_traceConeTree_eq
+#print axioms BoundedArityDecoders.padDummyWorkTape_transposesWithin
+#print axioms BoundedArityDecoders.tmPeriodicSweepExtraction_cutAbsorbed
+#print axioms BoundedArityDecoders.tmPeriodicSweepExtraction_cutLabelRefined
+-- NativeSweepInterface.lean
+#print axioms BoundedArityDecoders.PeriodicSweepInducesBoundedAritySharedCodeSpec
+#print axioms BoundedArityDecoders.PeriodicSweepNonlinearFibreDeficitSpec
+#print axioms BoundedArityDecoders.TMTraceCutConeDeterminationSpec
+#print axioms BoundedArityDecoders.TapeCodingConjectureNegationSpec
+-- NativeSweepInterfaceProofs.lean
+#print axioms BoundedArityDecoders.entryBits_eq_clog
+#print axioms BoundedArityDecoders.periodicSweepInducesBoundedAritySharedCode
+#print axioms BoundedArityDecoders.periodicSweepNonlinearFibreDeficit
+#print axioms BoundedArityDecoders.tmTraceCutConeDetermination
+-- OperatorDuality.lean
+#print axioms BoundedArityDecoders.AntiDiagonalTensorSeparationSpec
+#print axioms BoundedArityDecoders.Control_RowShearAndRowDiagonalAlternationSpec
+#print axioms BoundedArityDecoders.Control_SkewOneTimePadInformationTrapSpec
+#print axioms BoundedArityDecoders.OperatorSchmidtRankStoneShuffleSpec
+#print axioms BoundedArityDecoders.OperatorSchmidtRankSubmultiplicativeSpec
+#print axioms BoundedArityDecoders.OperatorSchmidtRankSwapSpec
+#print axioms BoundedArityDecoders.PairwiseShiftCollisionCharacterizationSpec
+#print axioms BoundedArityDecoders.StoneShufflePipelinePassLowerBoundSpec
+-- OperatorDualityProofs.lean
+#print axioms BoundedArityDecoders.antiDiagonalTensorSeparation
+#print axioms BoundedArityDecoders.control_RowShearAndRowDiagonalAlternation
+#print axioms BoundedArityDecoders.control_SkewOneTimePadInformationTrap
+#print axioms BoundedArityDecoders.operatorSchmidtRankStoneShuffle
+#print axioms BoundedArityDecoders.operatorSchmidtRankSubmultiplicative
+#print axioms BoundedArityDecoders.operatorSchmidtRankSwap
+#print axioms BoundedArityDecoders.pairwiseShiftCollisionCharacterization
+#print axioms BoundedArityDecoders.stoneShufflePipelinePassLowerBound
+-- SetCapacityConsequences.lean
+#print axioms BoundedArityDecoders.asymptotic_SublinearClassesBrokenFractionRefutesRateOne
+#print axioms BoundedArityDecoders.canonicalWordAlphabet_card_and_ge_two
+#print axioms BoundedArityDecoders.corollary_OneClassArityOneThreeQuarters
+#print axioms BoundedArityDecoders.corollary_OneClassArityTwoTwentyThreeTwentySevenths
+#print axioms BoundedArityDecoders.growingClasses_strict_inv_exp_deficit
+#print axioms BoundedArityDecoders.oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier
+#print axioms BoundedArityDecoders.pMin_two_sided_theta_inv_arity
+#print axioms BoundedArityDecoders.theorem1_BoundedAritySetCapacity_unconditional
+#print axioms BoundedArityDecoders.theorem1_CanonicalWordSetCapacity
+#print axioms BoundedArityDecoders.wall1_ExactLogarithmicAsymptoticAllDimensions
+#print axioms BoundedArityDecoders.wall1_UnrestrictedArityRateLowerBoundAndTendstoOne
+-- SumsetRankConsequences.lean
+#print axioms BoundedArityDecoders.control_D12_BandRowSpaceChannelEquiv
+#print axioms BoundedArityDecoders.control_D12_UnconditionalExists
+#print axioms BoundedArityDecoders.d12AddChar_injective_and_primitive
+#print axioms BoundedArityDecoders.exists_primitive_twelfth_root_complex
+#print axioms BoundedArityDecoders.finsetNatDiam_shift_min
+#print axioms BoundedArityDecoders.sumsetAnnihilatingPolynomial_bandRowSpace
+#print axioms BoundedArityDecoders.theorem2BExplicitConst_pos
+#print axioms BoundedArityDecoders.theorem2B_ExplicitConstant
+#print axioms BoundedArityDecoders.theorem2B_OneSecondStage_OmegaLog
+#print axioms BoundedArityDecoders.unshiftedToShiftedSumset_intrinsicDiam
+-- SumsetRankDeficit.lean
+#print axioms BoundedArityDecoders.Control_D12SingleClassAbstractBandSpec
+#print axioms BoundedArityDecoders.IteratedKovariSosTuranSumsetSpec
+#print axioms BoundedArityDecoders.OpenTarget_MacroscopicTwoStageRankDeficitAdmissibleFieldSpec
+#print axioms BoundedArityDecoders.OpenTarget_MacroscopicTwoStageRankDeficitSpec
+#print axioms BoundedArityDecoders.StackedBandPullbackInjectiveSpec
+#print axioms BoundedArityDecoders.SumsetAnnihilatingPolynomialSpec
+#print axioms BoundedArityDecoders.SumsetTwoHopRankBoundSpec
+#print axioms BoundedArityDecoders.Theorem2B_TwoStageLogPowerRankDeficitSpec
+#print axioms BoundedArityDecoders.UnshiftedToShiftedSumsetSpec
+#print axioms BoundedArityDecoders.VandermondeArbitrarySubsetInjectiveSpec
+-- SumsetRankDeficitProofs.lean
+#print axioms BoundedArityDecoders.control_D12SingleClassAbstractBand
+#print axioms BoundedArityDecoders.iteratedKovariSosTuranSumset
+#print axioms BoundedArityDecoders.openTarget_admissible_of_unrestricted
+#print axioms BoundedArityDecoders.stackedBandPullbackInjective
+#print axioms BoundedArityDecoders.sumsetAnnihilatingPolynomial
+#print axioms BoundedArityDecoders.sumsetTwoHopRankBound
+#print axioms BoundedArityDecoders.theorem2B_TwoStageLogPowerRankDeficit
+#print axioms BoundedArityDecoders.unshiftedToShiftedSumset
+#print axioms BoundedArityDecoders.vandermondeArbitrarySubsetInjective
+-- SwapCodeAnswers.lean
+#print axioms BoundedArityDecoders.Bonus1_ThreeTermBlockSwapCodeDimSpec
+#print axioms BoundedArityDecoders.Bonus1_ThreeTermPaddedSevenAndFiveSpec
+#print axioms BoundedArityDecoders.Bonus2_MultiscaleFullProfileAttainsFullSwapSpec
+#print axioms BoundedArityDecoders.Bonus2_MultiscaleIntervalBothSidesSpec
+#print axioms BoundedArityDecoders.OpenQuestion_ThreeTermDimFiveExceedsPairingSpec
+#print axioms BoundedArityDecoders.OpenTarget_MultiscalePeriodicWalshProfileSpec
+#print axioms BoundedArityDecoders.OpenTarget_MultiscalePeriodicWalshSwapCodeSpec
+-- SwapCodeAnswersProofs.lean
+#print axioms BoundedArityDecoders.bonus1_ThreeTermBlockSwapCodeDim
+#print axioms BoundedArityDecoders.bonus1_ThreeTermPaddedSevenAndFive
+#print axioms BoundedArityDecoders.bonus2_MultiscaleFullProfileAttainsFullSwap
+#print axioms BoundedArityDecoders.bonus2_MultiscaleIntervalBothSides
+#print axioms BoundedArityDecoders.openTarget_walsh_of_periodicProfile
+#print axioms BoundedArityDecoders.walshDigitMask_in_periodicDyadicSpan
 
-namespace BoundedArityDecoders
-
--- Module 1: Bounded-Arity Arbitrary-Set Shared-Decoder Capacity (10 specs)
-#check @SelfReferentialAndCleanCountSpec
-#check @OneHopRecoverableInjectiveSpec
-#check @ExistsRecoverableSubsetBoundSpec
-#check @Theorem1_BoundedAritySetCapacitySpec
-#check @BoundaryControl_DeficitVanishesAtDeltaEqDSpec
-#check @GrowingClassesPositiveDeficitSpec
-#check @OneClassArityTwoHalfBarrierQuestion
-#check @OneClassBoundedArityHalfBarrierQuestion
-#check @OneClassBoundedArityCodingGainAboveHalfQuestion
-#check @OneClassBoundedArityInverseArityScalingQuestion
-
-#print axioms SelfReferentialAndCleanCountSpec
-#print axioms OneHopRecoverableInjectiveSpec
-#print axioms ExistsRecoverableSubsetBoundSpec
-#print axioms Theorem1_BoundedAritySetCapacitySpec
-#print axioms BoundaryControl_DeficitVanishesAtDeltaEqDSpec
-#print axioms GrowingClassesPositiveDeficitSpec
-#print axioms OneClassArityTwoHalfBarrierQuestion
-#print axioms OneClassBoundedArityHalfBarrierQuestion
-#print axioms OneClassBoundedArityCodingGainAboveHalfQuestion
-#print axioms OneClassBoundedArityInverseArityScalingQuestion
-
--- Module 2: Affine k-Cube Growth & Hales-Jewett-Free Two-Stage Cutoff (5 specs)
-#check @Lemma_AffineCubeCommonMessageGrowthSpec
-#check @Control_D13TwoCubeAPFreeSharpnessSpec
-#check @Control_D4SameIntervalCodedFactorizationSpec
-#check @CauchySchwarzAffineCubeExtractionSpec
-#check @Theorem2A_TwoStageRamseyFreeCutoffSpec
-
-#print axioms Lemma_AffineCubeCommonMessageGrowthSpec
-#print axioms Control_D13TwoCubeAPFreeSharpnessSpec
-#print axioms Control_D4SameIntervalCodedFactorizationSpec
-#print axioms CauchySchwarzAffineCubeExtractionSpec
-#print axioms Theorem2A_TwoStageRamseyFreeCutoffSpec
-
--- Module 3: Sumset Polynomial Recurrence & Log-Power Rank Deficit (10 specs)
-#check @UnshiftedToShiftedSumsetSpec
-#check @VandermondeArbitrarySubsetInjectiveSpec
-#check @StackedBandPullbackInjectiveSpec
-#check @SumsetAnnihilatingPolynomialSpec
-#check @SumsetTwoHopRankBoundSpec
-#check @IteratedKovariSosTuranSumsetSpec
-#check @Theorem2B_TwoStageLogPowerRankDeficitSpec
-#check @Control_D12SingleClassAbstractBandSpec
-#check @OpenTarget_MacroscopicTwoStageRankDeficitAdmissibleFieldSpec
-#check @OpenTarget_MacroscopicTwoStageRankDeficitSpec
-
-#print axioms UnshiftedToShiftedSumsetSpec
-#print axioms VandermondeArbitrarySubsetInjectiveSpec
-#print axioms StackedBandPullbackInjectiveSpec
-#print axioms SumsetAnnihilatingPolynomialSpec
-#print axioms SumsetTwoHopRankBoundSpec
-#print axioms IteratedKovariSosTuranSumsetSpec
-#print axioms Theorem2B_TwoStageLogPowerRankDeficitSpec
-#print axioms Control_D12SingleClassAbstractBandSpec
-#print axioms OpenTarget_MacroscopicTwoStageRankDeficitAdmissibleFieldSpec
-#print axioms OpenTarget_MacroscopicTwoStageRankDeficitSpec
-
--- Module 4: Anti-Diagonal Untwisting & Operator Entanglement Duality (8 specs)
-#check @PairwiseShiftCollisionCharacterizationSpec
-#check @AntiDiagonalTensorSeparationSpec
-#check @OperatorSchmidtRankSubmultiplicativeSpec
-#check @OperatorSchmidtRankSwapSpec
-#check @OperatorSchmidtRankStoneShuffleSpec
-#check @StoneShufflePipelinePassLowerBoundSpec
-#check @Control_RowShearAndRowDiagonalAlternationSpec
-#check @Control_SkewOneTimePadInformationTrapSpec
-
-#print axioms PairwiseShiftCollisionCharacterizationSpec
-#print axioms AntiDiagonalTensorSeparationSpec
-#print axioms OperatorSchmidtRankSubmultiplicativeSpec
-#print axioms OperatorSchmidtRankSwapSpec
-#print axioms OperatorSchmidtRankStoneShuffleSpec
-#print axioms StoneShufflePipelinePassLowerBoundSpec
-#print axioms Control_RowShearAndRowDiagonalAlternationSpec
-#print axioms Control_SkewOneTimePadInformationTrapSpec
-
--- Module 5: Bonus Answers to Paper 17 (7 specs)
-#check @Bonus1_ThreeTermBlockSwapCodeDimSpec
-#check @Bonus1_ThreeTermPaddedSevenAndFiveSpec
-#check @OpenQuestion_ThreeTermDimFiveExceedsPairingSpec
-#check @Bonus2_MultiscaleIntervalBothSidesSpec
-#check @Bonus2_MultiscaleFullProfileAttainsFullSwapSpec
-#check @OpenTarget_MultiscalePeriodicWalshSwapCodeSpec
-#check @OpenTarget_MultiscalePeriodicWalshProfileSpec
-
-#print axioms Bonus1_ThreeTermBlockSwapCodeDimSpec
-#print axioms Bonus1_ThreeTermPaddedSevenAndFiveSpec
-#print axioms OpenQuestion_ThreeTermDimFiveExceedsPairingSpec
-#print axioms Bonus2_MultiscaleIntervalBothSidesSpec
-#print axioms Bonus2_MultiscaleFullProfileAttainsFullSwapSpec
-#print axioms OpenTarget_MultiscalePeriodicWalshSwapCodeSpec
-#print axioms OpenTarget_MultiscalePeriodicWalshProfileSpec
-
--- Module 6: Native Sweep-Cone Interface to (T) & Problem 9.4 (4 specs)
-#check @TapeCodingConjectureNegationSpec
-#check @TMTraceCutConeDeterminationSpec
-#check @PeriodicSweepInducesBoundedAritySharedCodeSpec
-#check @PeriodicSweepNonlinearFibreDeficitSpec
-
-#print axioms TapeCodingConjectureNegationSpec
-#print axioms TMTraceCutConeDeterminationSpec
-#print axioms PeriodicSweepInducesBoundedAritySharedCodeSpec
-#print axioms PeriodicSweepNonlinearFibreDeficitSpec
-
--- Module 7: Diagnosis, Prior Spine Benchmarks & Machine-Level Controls (7 specs)
-#check @Diagnosis_TCPAndAdaptiveConeReductionSpec
-#check @Diagnosis_AbstractSeparatedHighRateCodeSpec
-#check @Diagnosis_ShiftAndRotationCodingGainBarrierSpec
-#check @Diagnosis_LinearSharedDecoderBoundsAndMaskFloorsSpec
-#check @Diagnosis_RamseyHalesJewettTwoStageSpec
-#check @Diagnosis_BehrendAndRandomAPBoundSpec
-#check @Diagnosis_StoneShuffleAndRowShearMachineComplexitySpec
-
-#print axioms Diagnosis_TCPAndAdaptiveConeReductionSpec
-#print axioms Diagnosis_AbstractSeparatedHighRateCodeSpec
-#print axioms Diagnosis_ShiftAndRotationCodingGainBarrierSpec
-#print axioms Diagnosis_LinearSharedDecoderBoundsAndMaskFloorsSpec
-#print axioms Diagnosis_RamseyHalesJewettTwoStageSpec
-#print axioms Diagnosis_BehrendAndRandomAPBoundSpec
-#print axioms Diagnosis_StoneShuffleAndRowShearMachineComplexitySpec
-
--- ============================================================================
--- Kernel-Verified Proof Declarations & Axiom Audits (All 7 Proof Modules)
--- ============================================================================
-
--- Module 1 Proofs (`BoundedAritySetCapacityProofs.lean`: 6 proved specs + 2 dichotomy bridges)
-#check (selfReferentialAndCleanCount : SelfReferentialAndCleanCountSpec)
-#check (oneHopRecoverableInjective : OneHopRecoverableInjectiveSpec)
-#check (existsRecoverableSubsetBound : ExistsRecoverableSubsetBoundSpec)
-#check (theorem1_BoundedAritySetCapacity : Theorem1_BoundedAritySetCapacitySpec)
-#check (boundaryControl_DeficitVanishesAtDeltaEqD : BoundaryControl_DeficitVanishesAtDeltaEqDSpec)
-#check (growingClassesPositiveDeficit : GrowingClassesPositiveDeficitSpec)
-#check (oneClassBoundedArityCodingGainAboveHalf_iff_not_halfBarrier :
-  OneClassBoundedArityCodingGainAboveHalfQuestion ↔ ¬ OneClassBoundedArityHalfBarrierQuestion)
-#check (oneClassCodingGain_of_inverseArityScaling :
-  OneClassBoundedArityInverseArityScalingQuestion → OneClassBoundedArityCodingGainAboveHalfQuestion)
-
-#print axioms selfReferentialAndCleanCount
-#print axioms oneHopRecoverableInjective
-#print axioms existsRecoverableSubsetBound
-#print axioms theorem1_BoundedAritySetCapacity
-#print axioms boundaryControl_DeficitVanishesAtDeltaEqD
-#print axioms growingClassesPositiveDeficit
-#print axioms oneClassBoundedArityCodingGainAboveHalf_iff_not_halfBarrier
-#print axioms oneClassCodingGain_of_inverseArityScaling
-
--- Module 2 Proofs (`AffineCubeCompositionProofs.lean`: all 5 specs proved)
-#check (lemma_AffineCubeCommonMessageGrowth : Lemma_AffineCubeCommonMessageGrowthSpec)
-#check (control_D13TwoCubeAPFreeSharpness : Control_D13TwoCubeAPFreeSharpnessSpec)
-#check (control_D4SameIntervalCodedFactorization : Control_D4SameIntervalCodedFactorizationSpec)
-#check (cauchySchwarzAffineCubeExtraction : CauchySchwarzAffineCubeExtractionSpec)
-#check (theorem2A_TwoStageRamseyFreeCutoff : Theorem2A_TwoStageRamseyFreeCutoffSpec)
-
-#print axioms lemma_AffineCubeCommonMessageGrowth
-#print axioms control_D13TwoCubeAPFreeSharpness
-#print axioms control_D4SameIntervalCodedFactorization
-#print axioms cauchySchwarzAffineCubeExtraction
-#print axioms theorem2A_TwoStageRamseyFreeCutoff
-
--- Module 3 Proofs (`SumsetRankDeficitProofs.lean`: 8 proved specs + 1 open-target bridge)
-#check (unshiftedToShiftedSumset : UnshiftedToShiftedSumsetSpec)
-#check (vandermondeArbitrarySubsetInjective : VandermondeArbitrarySubsetInjectiveSpec)
-#check (stackedBandPullbackInjective : StackedBandPullbackInjectiveSpec)
-#check (sumsetAnnihilatingPolynomial : SumsetAnnihilatingPolynomialSpec)
-#check (sumsetTwoHopRankBound : SumsetTwoHopRankBoundSpec)
-#check (iteratedKovariSosTuranSumset : IteratedKovariSosTuranSumsetSpec)
-#check (theorem2B_TwoStageLogPowerRankDeficit : Theorem2B_TwoStageLogPowerRankDeficitSpec)
-#check (control_D12SingleClassAbstractBand : Control_D12SingleClassAbstractBandSpec)
-#check (openTarget_admissible_of_unrestricted :
-  OpenTarget_MacroscopicTwoStageRankDeficitSpec →
-    OpenTarget_MacroscopicTwoStageRankDeficitAdmissibleFieldSpec)
-
-#print axioms unshiftedToShiftedSumset
-#print axioms vandermondeArbitrarySubsetInjective
-#print axioms stackedBandPullbackInjective
-#print axioms sumsetAnnihilatingPolynomial
-#print axioms sumsetTwoHopRankBound
-#print axioms iteratedKovariSosTuranSumset
-#print axioms theorem2B_TwoStageLogPowerRankDeficit
-#print axioms control_D12SingleClassAbstractBand
-#print axioms openTarget_admissible_of_unrestricted
-
--- Module 4 Proofs (`OperatorDualityProofs.lean`: all 8 specs proved)
-#check (pairwiseShiftCollisionCharacterization : PairwiseShiftCollisionCharacterizationSpec)
-#check (antiDiagonalTensorSeparation : AntiDiagonalTensorSeparationSpec)
-#check (operatorSchmidtRankSubmultiplicative : OperatorSchmidtRankSubmultiplicativeSpec)
-#check (operatorSchmidtRankSwap : OperatorSchmidtRankSwapSpec)
-#check (operatorSchmidtRankStoneShuffle : OperatorSchmidtRankStoneShuffleSpec)
-#check (stoneShufflePipelinePassLowerBound : StoneShufflePipelinePassLowerBoundSpec)
-#check (control_RowShearAndRowDiagonalAlternation : Control_RowShearAndRowDiagonalAlternationSpec)
-#check (control_SkewOneTimePadInformationTrap : Control_SkewOneTimePadInformationTrapSpec)
-
-#print axioms pairwiseShiftCollisionCharacterization
-#print axioms antiDiagonalTensorSeparation
-#print axioms operatorSchmidtRankSubmultiplicative
-#print axioms operatorSchmidtRankSwap
-#print axioms operatorSchmidtRankStoneShuffle
-#print axioms stoneShufflePipelinePassLowerBound
-#print axioms control_RowShearAndRowDiagonalAlternation
-#print axioms control_SkewOneTimePadInformationTrap
-
--- Module 5 Proofs (`SwapCodeAnswersProofs.lean`: 4 proved specs + 1 open-target bridge)
-#check (bonus1_ThreeTermBlockSwapCodeDim : Bonus1_ThreeTermBlockSwapCodeDimSpec)
-#check (bonus1_ThreeTermPaddedSevenAndFive : Bonus1_ThreeTermPaddedSevenAndFiveSpec)
-#check (bonus2_MultiscaleIntervalBothSides : Bonus2_MultiscaleIntervalBothSidesSpec)
-#check (bonus2_MultiscaleFullProfileAttainsFullSwap : Bonus2_MultiscaleFullProfileAttainsFullSwapSpec)
-#check (openTarget_walsh_of_periodicProfile :
-  OpenTarget_MultiscalePeriodicWalshProfileSpec →
-    OpenTarget_MultiscalePeriodicWalshSwapCodeSpec)
-
-#print axioms bonus1_ThreeTermBlockSwapCodeDim
-#print axioms bonus1_ThreeTermPaddedSevenAndFive
-#print axioms bonus2_MultiscaleIntervalBothSides
-#print axioms bonus2_MultiscaleFullProfileAttainsFullSwap
-#print axioms walshDigitMask_in_periodicDyadicSpan
-#print axioms openTarget_walsh_of_periodicProfile
-
--- Module 6 Proofs (`NativeSweepInterfaceProofs.lean`: 3 proved specs + `entryBits` identity)
-#check (entryBits_eq_clog : ∀ d : ℕ, 2 ≤ d → Transpose.entryBits d = Nat.clog 2 d)
-#check (tmTraceCutConeDetermination : TMTraceCutConeDeterminationSpec)
-#check (periodicSweepInducesBoundedAritySharedCode : PeriodicSweepInducesBoundedAritySharedCodeSpec)
-#check (periodicSweepNonlinearFibreDeficit : PeriodicSweepNonlinearFibreDeficitSpec)
-
-#print axioms entryBits_eq_clog
-#print axioms tmTraceCutConeDetermination
-#print axioms periodicSweepInducesBoundedAritySharedCode
-#print axioms periodicSweepNonlinearFibreDeficit
-
--- Module 7 Proofs (`DiagnosisAndBarriersProofs.lean`: all 7 specs proved)
-#check (diagnosis_TCPAndAdaptiveConeReduction : Diagnosis_TCPAndAdaptiveConeReductionSpec)
-#check (diagnosis_AbstractSeparatedHighRateCode : Diagnosis_AbstractSeparatedHighRateCodeSpec)
-#check (diagnosis_ShiftAndRotationCodingGainBarrier : Diagnosis_ShiftAndRotationCodingGainBarrierSpec)
-#check (diagnosis_LinearSharedDecoderBoundsAndMaskFloors : Diagnosis_LinearSharedDecoderBoundsAndMaskFloorsSpec)
-#check (diagnosis_RamseyHalesJewettTwoStage : Diagnosis_RamseyHalesJewettTwoStageSpec)
-#check (diagnosis_BehrendAndRandomAPBound : Diagnosis_BehrendAndRandomAPBoundSpec)
-#check (diagnosis_StoneShuffleAndRowShearMachineComplexity : Diagnosis_StoneShuffleAndRowShearMachineComplexitySpec)
-#check @stoneUnshuffleTM_twoTape_linear
-
-#print axioms diagnosis_TCPAndAdaptiveConeReduction
-#print axioms diagnosis_AbstractSeparatedHighRateCode
-#print axioms diagnosis_ShiftAndRotationCodingGainBarrier
-#print axioms diagnosis_LinearSharedDecoderBoundsAndMaskFloors
-#print axioms diagnosis_RamseyHalesJewettTwoStage
-#print axioms diagnosis_BehrendAndRandomAPBound
-#print axioms diagnosis_StoneShuffleAndRowShearMachineComplexity
-#print axioms stoneUnshuffleTM_twoTape_linear
-
--- ============================================================================
--- Structural, Asymptotic, Bridge & Conditional Consequence Theorems (6 Modules)
--- ============================================================================
-
--- Consequence Module 1 (`SetCapacityConsequences.lean`)
-#check @canonicalWordAlphabet_card_and_ge_two
-#check @pMin_two_sided_theta_inv_arity
-#check @theorem1_BoundedAritySetCapacity_unconditional
-#check @theorem1_CanonicalWordSetCapacity
-#check @growingClasses_strict_inv_exp_deficit
-#check @corollary_OneClassArityOneThreeQuarters
-#check @corollary_OneClassArityTwoTwentyThreeTwentySevenths
-#check @oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier
-#check @wall1_UnrestrictedArityRateLowerBoundAndTendstoOne
-#check @wall1_ExactLogarithmicAsymptoticAllDimensions
-#check @asymptotic_SublinearClassesBrokenFractionRefutesRateOne
-
-#print axioms canonicalWordAlphabet_card_and_ge_two
-#print axioms pMin_two_sided_theta_inv_arity
-#print axioms theorem1_BoundedAritySetCapacity_unconditional
-#print axioms theorem1_CanonicalWordSetCapacity
-#print axioms growingClasses_strict_inv_exp_deficit
-#print axioms corollary_OneClassArityOneThreeQuarters
-#print axioms corollary_OneClassArityTwoTwentyThreeTwentySevenths
-#print axioms oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier
-#print axioms wall1_UnrestrictedArityRateLowerBoundAndTendstoOne
-#print axioms wall1_ExactLogarithmicAsymptoticAllDimensions
-#print axioms asymptotic_SublinearClassesBrokenFractionRefutesRateOne
-
--- Consequence Module 2 (`AffineCubeConsequences.lean`)
-#check @singleSubset_CauchySchwarzAffineCubeExtraction
-#check @denseSubset_AffineCubeCommonMessageBound
-#check @theorem2A_GrowingClassesNonFactorization
-#check @control_D13_GeneralFieldAndProgressionBridge
-#check @control_D4_AllWidthsAndBinaryFields
-
-#print axioms singleSubset_CauchySchwarzAffineCubeExtraction
-#print axioms denseSubset_AffineCubeCommonMessageBound
-#print axioms theorem2A_GrowingClassesNonFactorization
-#print axioms control_D13_GeneralFieldAndProgressionBridge
-#print axioms control_D4_AllWidthsAndBinaryFields
-
--- Consequence Module 3 (`SumsetRankConsequences.lean`)
-#check @finsetNatDiam_shift_min
-#check @unshiftedToShiftedSumset_intrinsicDiam
-#check @sumsetAnnihilatingPolynomial_bandRowSpace
-#check @theorem2B_OneSecondStage_OmegaLog
-#check @theorem2BExplicitConst_pos
-#check @theorem2B_ExplicitConstant
-#check @exists_primitive_twelfth_root_complex
-#check @d12AddChar_injective_and_primitive
-#check @control_D12_UnconditionalExists
-#check @control_D12_BandRowSpaceChannelEquiv
-
-#print axioms finsetNatDiam_shift_min
-#print axioms unshiftedToShiftedSumset_intrinsicDiam
-#print axioms sumsetAnnihilatingPolynomial_bandRowSpace
-#print axioms theorem2B_OneSecondStage_OmegaLog
-#print axioms theorem2BExplicitConst_pos
-#print axioms theorem2B_ExplicitConstant
-#print axioms exists_primitive_twelfth_root_complex
-#print axioms d12AddChar_injective_and_primitive
-#print axioms control_D12_UnconditionalExists
-#print axioms control_D12_BandRowSpaceChannelEquiv
-
--- Consequence Module 4 (`DualityAndSwapConsequences.lean`)
-#check @antiDiagTensorEquiv_intertwines_rot
-#check @shiftSetCovariance_tensor_finrank
-#check @maskFloor_GenericSubspaceRealization
-#check @isRowOrColUniform_rankLe_one
-#check @boundedOSRPipelinePassLowerBound
-#check @uniformShannonMI_eq_zero_of_indep
-#check @skewOneTimePad_ShannonMutualInfoZero
-#check @rowDiagonal_SourceArityGaugeInvariance
-#check @bonus1_UnifiedThreeTermExceedsPairingBound
-#check @bonus2_SublinearProfileAndTendstoHalf
-#check @walshBitSet_cyclicBoundaryCount
-#check @isCyclicInterval_cyclicBoundaryCount_le_two
-#check @isPeriodicScaleDyadicMask_cyclicBoundaryCount
-#check @walshBitSet_joint_separates_points
-#check @walshDigitMaskRotSpan_finrank_le
-#check @bonus2_WalshDichotomyStructuralProperties
-
-#print axioms antiDiagTensorEquiv_intertwines_rot
-#print axioms shiftSetCovariance_tensor_finrank
-#print axioms maskFloor_GenericSubspaceRealization
-#print axioms isRowOrColUniform_rankLe_one
-#print axioms boundedOSRPipelinePassLowerBound
-#print axioms uniformShannonMI_eq_zero_of_indep
-#print axioms skewOneTimePad_ShannonMutualInfoZero
-#print axioms rowDiagonal_SourceArityGaugeInvariance
-#print axioms bonus1_UnifiedThreeTermExceedsPairingBound
-#print axioms bonus2_SublinearProfileAndTendstoHalf
-#print axioms walshBitSet_cyclicBoundaryCount
-#print axioms isCyclicInterval_cyclicBoundaryCount_le_two
-#print axioms isPeriodicScaleDyadicMask_cyclicBoundaryCount
-#print axioms walshBitSet_joint_separates_points
-#print axioms walshDigitMaskRotSpan_finrank_le
-#print axioms bonus2_WalshDichotomyStructuralProperties
-
--- Consequence Module 5 (`MachineSweepConsequences.lean`)
-#check @evalConeTree_traceConeTree_eq
-#check @tmPeriodicSweepExtraction_cutAbsorbed
-#check @tmPeriodicSweepExtraction_cutLabelRefined
-#check @padDummyWorkTape_transposesWithin
-#check @conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis
-#check @conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre
-#check @conditional_NoLowErrorTwoStageLinear_of_MacroscopicTarget
-
-#print axioms evalConeTree_traceConeTree_eq
-#print axioms tmPeriodicSweepExtraction_cutAbsorbed
-#print axioms tmPeriodicSweepExtraction_cutLabelRefined
-#print axioms padDummyWorkTape_transposesWithin
-#print axioms conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis
-#print axioms conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre
-#print axioms conditional_NoLowErrorTwoStageLinear_of_MacroscopicTarget
-
--- Consequence Module 6 (`DiagnosisAndBridgesConsequences.lean`)
-#check @tmWholeCellCutConeBound
-#check @wordStepTrace_TCPCellConeReduction
-#check @diagnosis_Paper18AdaptiveOriginalEntryPullback
-#check @diagnosis2_HighRateTendstoOne
-#check @diagnosis3_MultiBitBlockEdgeShiftBarrier
-#check @diagnosis4_ExplicitSquareCoverAndMaskCertificateBridge
-#check @diagnosis5_CombinatorialInvVdWTendstoAndRankBound
-#check @diagnosis6_ModularBehrendAndRandomZModProgression
-#check @tmMatrix_gridLinear_bridges
-
-#print axioms tmWholeCellCutConeBound
-#print axioms wordStepTrace_TCPCellConeReduction
-#print axioms diagnosis_Paper18AdaptiveOriginalEntryPullback
-#print axioms diagnosis2_HighRateTendstoOne
-#print axioms diagnosis3_MultiBitBlockEdgeShiftBarrier
-#print axioms diagnosis4_ExplicitSquareCoverAndMaskCertificateBridge
-#print axioms diagnosis5_CombinatorialInvVdWTendstoAndRankBound
-#print axioms diagnosis6_ModularBehrendAndRandomZModProgression
-#print axioms tmMatrix_gridLinear_bridges
-
-end BoundedArityDecoders
+-- Other declarations named in the text.
+#print axioms BoundedArityDecoders.CanonicalWordAlphabet
+#print axioms BoundedArityDecoders.CausalConeTree
+#print axioms BoundedArityDecoders.GridState
+#print axioms BoundedArityDecoders.HasBarrelShiftCircuit
+#print axioms BoundedArityDecoders.HasCausalCompleteExchangeCode
+#print axioms BoundedArityDecoders.HasExactOperatorSchmidtRank
+#print axioms BoundedArityDecoders.HasOddGirthLinearSeed
+#print axioms BoundedArityDecoders.HasOperatorSchmidtRankLe
+#print axioms BoundedArityDecoders.HasOutputRowSourceArityLe
+#print axioms BoundedArityDecoders.InAlignedDyadicIntervalRotSpan
+#print axioms BoundedArityDecoders.InCutCausalCone
+#print axioms BoundedArityDecoders.InMultiscaleIntervalRotSpan
+#print axioms BoundedArityDecoders.InMultiscalePeriodicDyadicRotSpan
+#print axioms BoundedArityDecoders.InPairwiseShiftCovariance
+#print axioms BoundedArityDecoders.IsAlignedDyadicInterval
+#print axioms BoundedArityDecoders.IsBoundedAritySetCode
+#print axioms BoundedArityDecoders.IsColUniformRowOp
+#print axioms BoundedArityDecoders.IsCyclicInterval
+#print axioms BoundedArityDecoders.IsFrozenTraceCutFibre
+#print axioms BoundedArityDecoders.IsPeriodicScaleDyadicMask
+#print axioms BoundedArityDecoders.IsRowDiagonalOp
+#print axioms BoundedArityDecoders.IsRowUniformColOp
+#print axioms BoundedArityDecoders.IsThreeByThreeSymmetricZeroTraceBlocks
+#print axioms BoundedArityDecoders.OneClassSweepFibreReductionHypothesis
+#print axioms BoundedArityDecoders.PeriodicCellSweepReductionHypothesis
+#print axioms BoundedArityDecoders.SlotConeTree
+#print axioms BoundedArityDecoders.SyntacticCellSupport
+#print axioms BoundedArityDecoders.SyntacticColumnSupport
+#print axioms BoundedArityDecoders.ThreeAPFreeMod
+#print axioms BoundedArityDecoders.WordStepFrozenTrace
+#print axioms BoundedArityDecoders.alternatingRowDiagProduct
+#print axioms BoundedArityDecoders.antiDiagLinear
+#print axioms BoundedArityDecoders.antiDiagTensorEquiv
+#print axioms BoundedArityDecoders.arityGainFactor
+#print axioms BoundedArityDecoders.bernoulliSubsetWeight
+#print axioms BoundedArityDecoders.ceilSqrtTwoMul
+#print axioms BoundedArityDecoders.charBandEval
+#print axioms BoundedArityDecoders.cleanEntries
+#print axioms BoundedArityDecoders.colBitFlipGridLinear
+#print axioms BoundedArityDecoders.composeGridOps
+#print axioms BoundedArityDecoders.cutFreeTraceConeTree
+#print axioms BoundedArityDecoders.cutTouchingOutputCells
+#print axioms BoundedArityDecoders.cyclicBoundaryCount
+#print axioms BoundedArityDecoders.cyclicChannelShift
+#print axioms BoundedArityDecoders.encodeTMMatrixToGrid
+#print axioms BoundedArityDecoders.evalConeTree
+#print axioms BoundedArityDecoders.finsetNatDiam
+#print axioms BoundedArityDecoders.fromAntiDiagLinear
+#print axioms BoundedArityDecoders.gridSwapLinear
+#print axioms BoundedArityDecoders.halfIntervalPartition4
+#print axioms BoundedArityDecoders.leftComponentSubmodule
+#print axioms BoundedArityDecoders.orderedCubeMap
+#print axioms BoundedArityDecoders.outputBitIdx
+#print axioms BoundedArityDecoders.recoverableCells
+#print axioms BoundedArityDecoders.rowShearLinear
+#print axioms BoundedArityDecoders.rowShearTMMatrix
+#print axioms BoundedArityDecoders.shiftSetCovarianceSubmodule
+#print axioms BoundedArityDecoders.shiftedFootprint
+#print axioms BoundedArityDecoders.skewXorPad
+#print axioms BoundedArityDecoders.stoneShuffleGridLinear
+#print axioms BoundedArityDecoders.stoneShuffleTMMatrix
+#print axioms BoundedArityDecoders.stoneUnshuffleGridLinear
+#print axioms BoundedArityDecoders.stoneUnshuffleTMMatrix
+#print axioms BoundedArityDecoders.theorem2BExplicitConst
+#print axioms BoundedArityDecoders.theorem2BExplicitThreshold
+#print axioms BoundedArityDecoders.threeTermBlockA
+#print axioms BoundedArityDecoders.threeTermBlockB
+#print axioms BoundedArityDecoders.threeTermPaddedA
+#print axioms BoundedArityDecoders.threeTermPaddedB
+#print axioms BoundedArityDecoders.traceConeTree
+#print axioms BoundedArityDecoders.traceSlotConeTree
+#print axioms BoundedArityDecoders.uniformShannonMI
+#print axioms BoundedArityDecoders.walshBitSet
+#print axioms BoundedArityDecoders.walshDigitMaskRotMatrix
+#print axioms BoundedArityDecoders.wordStepTCPDepth

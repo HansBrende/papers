@@ -1,0 +1,179 @@
+\section{Native periodic sweep extraction and the frontier toward \texorpdfstring{$(\T)$}{(T)}}\label{sec:sweep}
+
+\subsection{Cut-cone determination and symbolic transition-table trees}\label{sec:sweep-trees}
+
+Problem~9.4 of \cite{SeventeenthPaper2026} asks how a real Turing machine's finite transition table
+$M.\delta$ turns bounded-depth trace cuts into shared bounded-arity decoders on nonlinear input
+fibres. In \leanfile{NativeSweepInterface.lean} and \leanfile{MachineSweepConsequences.lean}, we
+formalize both the abstract cut-cone determination principle and two concrete symbolic tree
+extraction theorems directly from the step function of \leanname{Transpose.TM}.
+
+Let $M$ be a native \leanname{Transpose.TM} with $1 \le M.k$ (available without loss of generality
+for any transposer via \Cref{lem:pad-dummy-tape}), and let $C \subseteq \Sigma_d^{d\times d}$ be a
+frozen trace/cut fibre (\lean{IsFrozenTraceCutFibre}) over horizon $T$ with head trajectories
+$(\mathrm{inPos}, \mathrm{workPos})$, emission schedule $\mathrm{emitStep}$, and cut step set
+$\Gamma \subseteq \{0,\dots,T-1\}$.
+
+\begin{lemma}[Cut-causal cone determination on frozen fibres]\label{lem:tm-cut-cone}
+\formal{NativeSweepInterfaceProofs.lean}{tmTraceCutConeDetermination}
+\formal{MachineSweepConsequences.lean}{evalConeTree_traceConeTree_eq}
+\formal{NativeSweepInterface.lean}{TMTraceCutConeDeterminationSpec}
+\begin{enumerate}[label=(\alph*)]
+\item On \lean{IsFrozenTraceCutFibre}, for every step $v < T$, the control state and scanned
+  work-tape symbols of $M$ at step $v$ on $X \in C$ are uniquely determined by the input bits read
+  at steps $w$ in the $\Gamma$-stopped causal cone of $v$ (\lean{InCutCausalCone}).
+\item When every $\Gamma$-free causal path in $\{0,\dots,T-1\}$ has length $\le D$ ($1 \le D$),
+  evaluating the symbolic depth-$D$ \lean{CausalConeTree} extracted relative to column $c$
+  (\lean{traceConeTree}) on $\rot_c(X)$ via $M.\delta$ (\lean{evalConeTree}) reproduces the exact
+  machine state, scanned work symbols, and emitted output bit $X_{c,r,\ell}$ for every $X \in C$,
+  while reading at most $(M.k + 1)^D$ input cells per bit and at most
+  $\Delta = b(M.k + 1)^D$ input cells per $b$-bit output word.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Induct on the depth budget $m \le D$. At any step $w < T$, the control state comes either from step
+$0$ (initial state $0$), from $w - 1 \in \Gamma$ (frozen across $C$), or recursively from $w - 1
+\notin \Gamma$; similarly, scanned work-tape cell $h \in \mathrm{Fin}(M.k)$ comes either from blank
+initial tape ($0$), from its most recent visit $u < w$ if $u \in \Gamma$ (frozen across $C$), or
+recursively from $u \notin \Gamma$. Since any path not hitting $\Gamma$ terminates within $D$ steps,
+depth $D$ reaches a leaf on every branch, and each internal node branches $(M.k + 1)$-ways while
+performing one relative input-bit read on $\rot_c(X)$.
+\end{outline}
+
+\subsection{Two native periodic sweep extraction theorems}\label{sec:sweep-theorems}
+
+When head sweeps over columns $c$ in the same schedule class $p_0(c) \in \mathrm{Fin}\,M_0$ execute
+isomorphic relative causal trees outside an irregular schedule set $\mathcal{E}_{\mathrm{sched}}$,
+cut steps $u \in \Gamma$ touched by an output cone can be handled in two complementary ways:
+either (A)~absorb cut-touching output cells into $\mathcal{E}$ while keeping exact class count
+$M_0$, or (B)~keep \emph{zero} extra broken cells ($\mathcal{E} = \mathcal{E}_{\mathrm{sched}}$) by
+recording at most $L_{\mathrm{cut}}$ frozen cut-slot labels per column in the refined class index!
+
+\begin{theorem}[Cut-absorbed native periodic sweep extraction]\label{thm:sweep-cut-absorbed}
+\formal{MachineSweepConsequences.lean}{tmPeriodicSweepExtraction_cutAbsorbed}
+\formal{NativeSweepInterfaceProofs.lean}{periodicSweepInducesBoundedAritySharedCode,periodicSweepNonlinearFibreDeficit}
+\formal{NativeSweepInterface.lean}{PeriodicSweepInducesBoundedAritySharedCodeSpec,PeriodicSweepNonlinearFibreDeficitSpec}
+Let $M$ be a \leanname{Transpose.TM} with $1 \le M.k$, let $d \ge 1$ and $D \ge 1$, and let
+$C \subseteq \Sigma_d^{d\times d}$ satisfy \lean{IsFrozenTraceCutFibre} with $\Gamma$-free causal
+path length $\le D$. Suppose outside $\mathcal{E} := \mathcal{E}_{\mathrm{sched}} \cup
+\lean{cutTouchingOutputCells}(d, T, \mathrm{workPos}, \mathrm{emitStep}, \Gamma)$, output cones in
+class $p_0(c) \in \mathrm{Fin}\,M_0$ share cut-free relative tree templates
+$\mathrm{template}(p_0(c), r, \ell)$. Then with $\Delta := b(M.k + 1)^D$, evaluating
+$\mathrm{template}$ via $M.\delta$ induces an $M_0$-class \lean{IsBoundedAritySetCode} on $C$ with
+broken set $\mathcal{E}$, and whenever $1 \le M_0$ and $C \ne \emptyset$,
+\[
+  \frac{\log\abs{C}}{\log\abs{\Sigma_d}}
+  \;\le\;
+  d^2 - \bigl(d^2 - \abs{\mathcal{E}} - d M_0 \Delta\bigr)
+  \frac{\Delta^\Delta}{(\Delta+1)^{\Delta+1}}.
+\]
+\end{theorem}
+\begin{outline}
+For $(r,c) \notin \mathcal{E}$, no bit cone of $(r,c)$ touches $\Gamma$, so \lean{traceConeTree}
+coincides with \lean{cutFreeTraceConeTree}, which equals $\mathrm{template}(p_0(c), r, \ell)$ by
+periodicity. \Cref{lem:tm-cut-cone}(b) verifies the \lean{IsBoundedAritySetCode} recovery identity
+and support bound $\Delta = b(M.k+1)^D$, and \Cref{thm:set-capacity} gives the capacity bound.
+\end{outline}
+
+\begin{theorem}[Cut-label-refined native periodic sweep extraction]\label{thm:sweep-cut-refined}
+\formal{MachineSweepConsequences.lean}{tmPeriodicSweepExtraction_cutLabelRefined}
+Under the hypotheses of \Cref{thm:sweep-cut-absorbed}, suppose instead that for $(r,c) \notin
+\mathcal{E}_{\mathrm{sched}}$, every cut step $u \in \Gamma$ touched by a bit cone of $(r,c)$ lies
+among $L_{\mathrm{cut}}$ column-indexed cut slots $\mathrm{colCutStep}(c) :
+\mathrm{Fin}\,L_{\mathrm{cut}} \to \N$, and the symbolic slot trees \lean{traceSlotConeTree} equal
+$\mathrm{slotTemplate}(p_0(c), r, \ell)$. Refining $p_0$ by column $c$'s tuple of $L_{\mathrm{cut}}$
+frozen cut labels in $\mathrm{Fin}(M.q + 1) \times \mathrm{Fin}(M.g + 1)^{M.k}$ yields
+\[
+  M_{\mathrm{cls}} \;:=\; M_0 \cdot \bigl((M.q + 1)(M.g + 1)^{M.k}\bigr)^{L_{\mathrm{cut}}}
+\]
+classes and an explicit $(\Delta, p_{\mathrm{ref}}, \mathcal{E}_{\mathrm{sched}})$-bounded-arity set
+code on $C$ ($\Delta = b(M.k+1)^D$, with \emph{zero} extra broken cells beyond
+$\mathcal{E}_{\mathrm{sched}}$) satisfying
+\[
+  \frac{\log\abs{C}}{\log\abs{\Sigma_d}}
+  \;\le\;
+  d^2 - \bigl(d^2 - \abs{\mathcal{E}_{\mathrm{sched}}} - d M_{\mathrm{cls}} \Delta\bigr)
+  \frac{\Delta^\Delta}{(\Delta+1)^{\Delta+1}}
+\]
+whenever $1 \le M_0$ and $C \ne \emptyset$.
+\end{theorem}
+\begin{outline}
+Substituting the fibre's constant cut labels $\mathrm{cutVal}(\mathrm{colCutStep}(c, s))$ into the
+leaves of $\mathrm{slotTemplate}(p_0(c), r, \ell)$ reconstructs $\lean{traceConeTree}$ for every
+$(r,c) \notin \mathcal{E}_{\mathrm{sched}}$. Encoding the pair
+$\bigl(p_0(c),\, s \mapsto \mathrm{cutVal}(\mathrm{colCutStep}(c,s))\bigr)$ into
+$\mathrm{Fin}\,M_{\mathrm{cls}}$ produces $p_{\mathrm{ref}}$ and invokes \Cref{thm:set-capacity}.
+\end{outline}
+
+\subsection{Conditional closures and the open frontier toward \texorpdfstring{$(\T)$}{(T)}}\label{sec:frontier}
+
+Question $(\T)$---formalized in its negated linear-time form as
+\lean{TapeCodingConjectureNegationSpec} ($\neg\,\leanname{Transpose.LinearTimeTransposable}$, paired
+with $\leanname{Transpose.entryBits}(d) = \clog{d}$ for $d \ge 2$)---remains open. What our theorems
+change is that the artificial nonlinear-set, Hales--Jewett, and Stone-shuffle walls identified in
+\cite{SeventeenthPaper2026,SharedDecoders2026} are gone: \Cref{thm:set-capacity} already forces a
+strictly positive rate deficit $\Omega(1/\Delta)$ on nonlinear frozen-cut fibres whenever a trace
+cut yields sublinearly many periodic cone classes $M_{\mathrm{cls}} = o(d/\Delta)$ and advice budget
+smaller than that deficit! We formalize two clean conditional closures of $(\T)$ capturing the two
+main routes forward:
+
+\begin{theorem}[Conditional closures of $(\T)$ from periodic sweep extraction or the $M=1$ half-barrier]\label{thm:conditional-tcc}
+\formal{MachineSweepConsequences.lean}{conditional_TapeCodingConjecture_of_PeriodicCellSweepHypothesis,conditional_TapeCodingConjecture_of_HalfBarrierAndOneClassFibre}
+\formal{NativeSweepInterface.lean}{TapeCodingConjectureNegationSpec}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Direct $\Theta(1/\Delta)$-deficit route}: under
+  \lean{PeriodicCellSweepReductionHypothesis}---asserting that every $1 \le k$-work-tape $c(L+1)$-step
+  transposer admits a constant cone arity $\Delta \ge 1$, an unbroken output fraction
+  $\delta \in (0,1]$, a sublinear class count $M_{\mathrm{cls}}(d) = o(d/\Delta)$, and a trace/cut
+  advice budget $B_{\mathrm{adv}}(d) \le \eps c (L + 1)$ with
+  $\eps < \frac{\delta}{8c}\,p_{\min}(\Delta)$ whose pigeonhole fibre $C_d \subseteq \Sigma_d^{d\times d}$
+  is a $(\Delta, p_d, \mathcal{E}_d)$-bounded-arity set code for infinitely many $d$---the negation
+  of linear-time transposability (\lean{TapeCodingConjectureNegationSpec}) holds unconditionally
+  (including for $0$-work-tape machines via \Cref{lem:pad-dummy-tape}).
+\item \emph{$M = 1$ half-barrier route}: if $1$-class constant-arity set codes obey the
+  $\frac{1}{2} + o(1)$ pairing rate (\lean{OneClassBoundedArityHalfBarrierQuestion}) and every
+  $1 \le k$-work-tape $O(L)$ transposer admits $1$-class ($\mathcal{E} = \emptyset$) constant-arity
+  fibres of rate $\ge 3/4$ infinitely often (\lean{OneClassSweepFibreReductionHypothesis}), then
+  \lean{TapeCodingConjectureNegationSpec} holds.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+In~(a), dummy-tape padding (\Cref{lem:pad-dummy-tape}) upgrades any $M_0$ with $c_0(L+1)$ runtime to
+$1 \le M.k$ and $1 \le c$. Choosing $d$ large enough that $M_{\mathrm{cls}}(d)\Delta/d < \delta/2$,
+\Cref{thm:growing-deficit}(a) caps $\log_2\abs{C_d} \le \bigl(1 - \frac{\delta}{2}p_{\min}(\Delta)\bigr)L$,
+whereas pigeonholing $2^L \le 2^{B_{\mathrm{adv}}(d)}\abs{C_d}$ gives
+$\log_2\abs{C_d} \ge (1 - 2c\eps)L$, contradicting $4c\eps < \frac{\delta}{2}p_{\min}(\Delta)$.
+In~(b), instantiate $\eps = 1/8$ in \lean{OneClassBoundedArityHalfBarrierQuestion} to contradict
+rate $\ge 3/4 > 5/8$.
+\end{outline}
+
+We close by recording the four sharp open problems to which this paper reduces the gap around $(\T)$:
+\begin{enumerate}[label=\textbf{Open Target \arabic*.},leftmargin=*]
+\item \textbf{The $M = 1, \Delta \ge 3$ arbitrary-set half-barrier}
+  (\lean{OneClassBoundedArityHalfBarrierQuestion}, \Cref{prop:half-barrier-dichotomy}; cf.\
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026}): for windows $\Delta \ge 3$ on spread relations over
+  $\Sigma_d$, does a single shared deterministic rule obey rate $\frac{1}{2} + o(1)$, or does
+  nonlinear bounded-arity coding beat $\frac{1}{2}$ below $1 - p_{\min}(\Delta)$ (e.g.\ below
+  $\frac{229}{256}$ at $\Delta = 3$)? (At $\Delta \le 2$ with $\mathcal{E} = \emptyset$, a written
+  proof of $\frac{1}{2} + \frac{3}{2d}$ over all alphabets was given in
+  \cite[Proposition~6.22(b)]{SeventeenthPaper2026}, leaving the Lean verification of
+  \lean{OneClassArityTwoHalfBarrierQuestion} and extension to $\mathcal{E} \ne \emptyset, M = o(d)$.)
+\item \textbf{Macroscopic $\eps(M_1,M_2) b d^2$ two-stage linear rank deficit}
+  (\lean{OpenTarget_MacroscopicTwoStageRankDeficitSpec}, \Cref{prop:macroscopic-target}): can
+  multi-class / multi-band coupling overcome the single-class $d = 12$ obstruction
+  (\Cref{ex:d12-band}) and upgrade \Cref{thm:2b}'s $\Omega\bigl(bd(\log d)^{1/(2M_2-1)}\bigr)$
+  error rank to $\Omega_{M_1,M_2}(b d^2)$ (including over $\F_2$ at $d = 2^m$)?
+\item \textbf{All-scale periodic Rademacher/Walsh swap codes}
+  (\lean{OpenTarget_MultiscalePeriodicWalshSwapCodeSpec}, \Cref{thm:walsh-dichotomy}; cf.\
+  \cite[Problem~9.3]{SeventeenthPaper2026}): on $d = 2^m$, when both sides lie in the
+  $(m+1)2^m$-dimensional span of Walsh digit masks and rotations, is
+  $\dim_F\leanname{SwapRigidity.swapCode}(A,B) \le c_{\mathrm{walsh}}\,4^m$ for a uniform constant
+  $c_{\mathrm{walsh}} < 1$?
+\item \textbf{Sub-deficit advice compression for adaptive/periodic trace cuts}
+  (\lean{PeriodicCellSweepReductionHypothesis}, \Cref{thm:conditional-tcc}(a); cf.\
+  \cite[Problem~9.4]{SeventeenthPaper2026}): in \Cref{thm:sweep-cut-absorbed,thm:sweep-cut-refined},
+  arbitrary adaptive head trajectories on an $O(L)$-step machine have $2^{\Theta(L)}$ naive step-by-step
+  schedules, exceeding the $\Theta(L/\Delta)$ bit deficit of \Cref{thm:set-capacity} when $\Delta =
+  (k+1)^D$ is large. Compressing coarse sweep schedules and cut-slot templates below
+  $\frac{\delta}{8c}\,p_{\min}(\Delta)\,L$ bits would trigger \Cref{thm:conditional-tcc}(a) directly.
+\end{enumerate}

@@ -1,0 +1,295 @@
+\section{Bounded-arity shared decoders on arbitrary sets}\label{sec:capacity}
+
+\subsection{Shifted footprints, self-reference, and one-hop acyclic recovery}\label{sec:capacity-mechanism}
+
+In \cite[Appendix~A, Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}, an arbitrary nonlinear
+subset $C \subseteq \Sigma^{d\times d}$ validated by a single shared decoder ($M = 1$) of
+unrestricted read arity ($\Delta = d^2$) reaches rate $1 - \frac{\log_{\abs{\Sigma}} d}{d^2} \to 1$
+via cyclic-orbit markers. In \cite[Section~6.7, Propositions~6.21--6.23, and
+Problem~9.4(b)]{SeventeenthPaper2026}, acyclic-subgraph index-coding bounds
+(\cite[Theorem~3]{BBJK2011}) were used to give written proofs for bounded offsets
+(\cite[Proposition~6.21(a)]{SeventeenthPaper2026}), window one ($\Delta = 1$,
+\cite[Proposition~6.21(b)]{SeventeenthPaper2026}), exact $1$-class window two
+($M = 1, \Delta \le 2, \mathcal{E} = \emptyset$, \cite[Proposition~6.22(b)]{SeventeenthPaper2026}),
+and bounded-value offsets or mutual helpers (\cite[Proposition~6.22(c)--(d) and
+Proposition~6.23]{SeventeenthPaper2026}), leaving windows $\Delta \ge 3$ with spread rows and
+offsets, growing class counts $M = o(d/\Delta)$, and broken outputs $\mathcal{E} \ne \emptyset$
+open at rate $1$. Over the canonical word alphabet
+$\Sigma_d = \{0,1\}^{\clog{d}}$ ($\abs{\Sigma_d} \ge d$), a single entry $(\rot_c X)_{0,0} = c$ can
+already reveal the shift index $c$ to a nonlinear rule, blocking any naive reduction to fixed-alphabet
+function counting.
+
+The mechanism that defeats arbitrary nonlinear coding at every bounded arity $\Delta \ge 1$ is
+geometric rather than alphabet-dependent. Suppose $(\Delta, p, \mathcal{E}, f, Q)$ is a
+bounded-arity shared set code on $C \subseteq \Sigma^{d\times d}$ (\Cref{def:bounded-arity-set-code}).
+When class $m = p(c)$ computes transposed output $(r,c)$---whose required value on $X \in C$ is
+matrix entry $X_{c,r}$ whenever $(r,c) \notin \mathcal{E}$---it evaluates $f_{p(c)}(\rot_c(X))_r$,
+which depends only on the shifted read footprint (\lean{shiftedFootprint})
+\[
+  F_{c,r} \;:=\; \bigl\{\,(i,\, c + u) \in \Z_d \times \Z_d \;:\; (i, u) \in Q_{p(c),\,r}\,\bigr\}
+\]
+of cardinality $\abs{F_{c,r}} \le \Delta$. Crucially, $(c,r)$ lies in its own footprint $F_{c,r}$
+if and only if $(c,\, r - c) \in Q_{p(c),r}$. For each fixed class $m$ and output coordinate $r$,
+the map $c \mapsto (c, r - c)$ is injective on $\Z_d$, so a fixed set $Q_{m,r}$ of size at most
+$\Delta$ can contain $(c, r - c)$ for at most $\Delta$ columns $c$!
+
+\begin{lemma}[Self-referential characterization and clean-entry count]\label{lem:clean-count}
+\formal{BoundedAritySetCapacityProofs.lean}{selfReferentialAndCleanCount}
+\formal{BoundedAritySetCapacity.lean}{SelfReferentialAndCleanCountSpec}
+Let $d \ge 1$, $M, \Delta \in \N$, $p : \Z_d \to \mathrm{Fin}\,M$,
+$Q : \mathrm{Fin}\,M \to \Z_d \to \mathrm{Finset}(\Z_d \times \Z_d)$, and
+$\mathcal{E} \subseteq \Z_d \times \Z_d$.
+\begin{enumerate}[label=(\alph*)]
+\item For all $c, r \in \Z_d$, $(c,r) \in F_{c,r}$ holds if and only if $(c, r - c) \in Q_{p(c),r}$.
+\item Define the set of \emph{clean matrix entries} (\lean{cleanEntries}) by
+  \[
+    \mathcal{G} \;:=\; \bigl\{\,(c,r) \in \Z_d \times \Z_d \;:\;
+      (r,c) \notin \mathcal{E} \;\text{and}\; (c,r) \notin F_{c,r}\,\bigr\}.
+  \]
+  If $\abs{Q_{m,r}} \le \Delta$ for all $(m,r)$, then every $(c,r) \in \mathcal{G}$ satisfies
+  $\abs{F_{c,r}} \le \Delta$, and
+  \[
+    \abs{\mathcal{G}} \;\ge\; d^2 - \abs{\mathcal{E}} - d M \Delta.
+  \]
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Part~(a) follows immediately from $(i, c + u) = (c, r) \iff (i, u) = (c, r - c)$. For part~(b),
+summing over $r \in \Z_d$ and $m \in \mathrm{Fin}\,M$, the set of columns $c$ with $p(c) = m$ and
+$(c, r-c) \in Q_{m,r}$ injects into $Q_{m,r}$ via $c \mapsto (c, r-c)$, contributing at most
+$\Delta$ self-referential pairs per $(r,m)$ and hence at most $d M \Delta$ overall; removing those
+and the $\abs{\mathcal{E}}$ transposed broken positions $(c,r)$ with $(r,c) \in \mathcal{E}$ leaves
+at least $d^2 - \abs{\mathcal{E}} - d M \Delta$ clean entries, each with
+$\abs{F_{c,r}} \le \abs{Q_{p(c),r}} \le \Delta$.
+\end{outline}
+
+For any seed set $\Omega \subseteq \Z_d \times \Z_d$ of revealed matrix coordinates, define the
+one-hop recoverable set (\lean{recoverableCells})
+\[
+  \Rec(\Omega) \;:=\;
+  \bigl\{\,(c,r) \in \Z_d \times \Z_d \;:\;
+    (c,r) \notin \Omega,\; (r,c) \notin \mathcal{E},\;\text{and}\; F_{c,r} \subseteq \Omega\,\bigr\}.
+\]
+
+\begin{lemma}[One-hop acyclic determination]\label{lem:one-hop-injective}
+\formal{BoundedAritySetCapacityProofs.lean}{oneHopRecoverableInjective}
+\formal{BoundedAritySetCapacity.lean}{OneHopRecoverableInjectiveSpec}
+If $(\Delta, p, \mathcal{E}, f, Q)$ is a bounded-arity shared set code on $C \subseteq
+\Sigma^{d\times d}$, then for every $\Omega \subseteq \Z_d \times \Z_d$, restricting codewords
+$X \in C$ to $(\Z_d \times \Z_d) \setminus \Rec(\Omega)$ is injective, and hence
+\[
+  \abs{C} \;\le\; \abs{\Sigma}^{\,d^2 - \abs{\Rec(\Omega)}}.
+\]
+\end{lemma}
+\begin{outline}
+Suppose $X_1, X_2 \in C$ agree on $(\Z_d \times \Z_d) \setminus \Rec(\Omega)$. Since
+$\Omega \cap \Rec(\Omega) = \emptyset$, they agree on all of $\Omega$. For every $(c,r) \in
+\Rec(\Omega)$, $F_{c,r} \subseteq \Omega$ means $\rot_c(X_1)$ and $\rot_c(X_2)$ agree on
+$Q_{p(c),r}$; because $(r,c) \notin \mathcal{E}$, syntactic cell support gives
+$X_1(c,r) = f_{p(c)}(\rot_c X_1)_r = f_{p(c)}(\rot_c X_2)_r = X_2(c,r)$. Injection into functions
+$(\Z_d \times \Z_d) \setminus \Rec(\Omega) \to \Sigma$ yields the cardinality bound.
+\end{outline}
+
+\subsection{Theorem 1: alphabet-independent capacity of bounded-arity set codes}\label{sec:thm1}
+
+To maximize $\abs{\Rec(\Omega)}$ simultaneously across arbitrary footprints of size $\le \Delta$,
+we sample $\Omega \subseteq \Z_d \times \Z_d$ by including each cell independently with probability
+$\theta = \frac{\Delta}{\Delta+1}$ (\lean{bernoulliSubsetWeight}). Write
+\[
+  p_{\min}(\Delta) \;:=\; \frac{\Delta^\Delta}{(\Delta+1)^{\Delta+1}}
+  \qquad (\lean{arityGainFactor}).
+\]
+
+\begin{lemma}[First-moment recoverable subset and $\Theta(1/\Delta)$ scaling]\label{lem:first-moment}
+\formal{BoundedAritySetCapacityProofs.lean}{existsRecoverableSubsetBound}
+\formal{SetCapacityConsequences.lean}{pMin_two_sided_theta_inv_arity}
+\formal{BoundedAritySetCapacity.lean}{ExistsRecoverableSubsetBoundSpec}
+Let $d \ge 1$, $M \ge 1$, $\Delta \ge 1$, $p : \Z_d \to \mathrm{Fin}\,M$,
+$\mathcal{E} \subseteq \Z_d \times \Z_d$, and $\abs{Q_{m,r}} \le \Delta$ for all $(m,r)$.
+\begin{enumerate}[label=(\alph*)]
+\item Under product $\mathrm{Bernoulli}\bigl(\frac{\Delta}{\Delta+1}\bigr)$ measure on
+  $\Omega \subseteq \Z_d \times \Z_d$, every clean entry $(c,r) \in \mathcal{G}$ falls into
+  $\Rec(\Omega)$ with probability
+  $\bigl(\frac{\Delta}{\Delta+1}\bigr)^{\abs{F_{c,r}}} \frac{1}{\Delta+1} \ge p_{\min}(\Delta)$,
+  and there exists a deterministic subset $\Omega_* \subseteq \Z_d \times \Z_d$ satisfying
+  \[
+    \abs{\Rec(\Omega_*)} \;\ge\; \abs{\mathcal{G}}\,p_{\min}(\Delta)
+    \;\ge\; \bigl(d^2 - \abs{\mathcal{E}} - d M \Delta\bigr)\,p_{\min}(\Delta).
+  \]
+\item For every integer $\Delta \ge 1$,
+  \[
+    \frac{1}{e(\Delta+1)} \;<\; p_{\min}(\Delta) \;\le\; \frac{1}{2(\Delta+1)} \;\le\; \frac{1}{4}.
+  \]
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+For $(c,r) \in \mathcal{G}$, $(c,r) \notin F_{c,r}$, so the events $\{(c,r) \notin \Omega\}$ and
+$\{F_{c,r} \subseteq \Omega\}$ depend on disjoint coordinate sets and have product probability
+$(1 - \theta)\theta^{\abs{F_{c,r}}} \ge (1 - \theta)\theta^\Delta = p_{\min}(\Delta)$ since
+$\abs{F_{c,r}} \le \Delta$ and $\theta = \frac{\Delta}{\Delta+1} \in (0,1)$. Linearity of
+expectation over finite subsets of $\Z_d \times \Z_d$ yields $\Omega_*$ achieving at least the
+expectation. In part~(b), $\bigl(1 + \frac{1}{\Delta}\bigr)^\Delta < e$ gives the strict lower
+bound, while binomial induction proves $2\Delta^\Delta \le (\Delta+1)^\Delta$, whence
+$p_{\min}(\Delta) \le \frac{1}{2(\Delta+1)} \le \frac{1}{4}$.
+\end{outline}
+
+Combining \Cref{lem:clean-count,lem:one-hop-injective,lem:first-moment} yields our first main
+theorem, in both exponential and unconditional logarithmic forms (including empty or nonempty $C$
+and the growing canonical word alphabet $\Sigma_d$).
+
+\begin{theorem}[Bounded-arity arbitrary-set shared-decoder capacity]\label{thm:set-capacity}
+\formal{BoundedAritySetCapacityProofs.lean}{theorem1_BoundedAritySetCapacity}
+\formal{SetCapacityConsequences.lean}{theorem1_BoundedAritySetCapacity_unconditional,theorem1_CanonicalWordSetCapacity,canonicalWordAlphabet_card_and_ge_two}
+\formal{BoundedAritySetCapacity.lean}{Theorem1_BoundedAritySetCapacitySpec}
+Let $d \ge 1$, $M \in \N$, $\Delta \ge 1$, and let $\Sigma$ be any finite alphabet with
+$\abs{\Sigma} \ge 2$. For every column-class map $p : \Z_d \to \mathrm{Fin}\,M$, broken-output set
+$\mathcal{E} \subseteq \Z_d \times \Z_d$, footprint-bounded decoders $(f, Q)$, and arbitrary
+(possibly nonlinear, empty or nonempty) subset $C \subseteq \Sigma^{d\times d}$ satisfying
+\lean{IsBoundedAritySetCode} $(\Delta, p, \mathcal{E}, f, Q, C)$,
+\[
+  \abs{C} \;\le\; \abs{\Sigma}^{\,d^2 - (d^2 - \abs{\mathcal{E}} - d M \Delta)\,p_{\min}(\Delta)}
+  \quad\text{and}\quad
+  \frac{\log\abs{C}}{\log\abs{\Sigma}}
+  \;\le\; d^2 - \bigl(d^2 - \abs{\mathcal{E}} - d M \Delta\bigr)
+  \frac{\Delta^\Delta}{(\Delta+1)^{\Delta+1}}.
+\]
+In particular, both bounds hold unconditionally on the canonical word alphabet
+$\Sigma_d = \{0,1\}^{\clog{d}}$ ($\abs{\Sigma_d} = 2^{\clog{d}}$ for $d \ge 2$).
+\end{theorem}
+\begin{outline}
+When $C \ne \emptyset$ (which also forces $M \ge 1$ via $p(0) \in \mathrm{Fin}\,M$), choosing
+$\Omega_*$ from \Cref{lem:first-moment}(a) inside \Cref{lem:one-hop-injective} gives
+$\abs{C} \le \abs{\Sigma}^{d^2 - \abs{\Rec(\Omega_*)}} \le \abs{\Sigma}^{d^2 - (d^2 - \abs{\mathcal{E}} - dM\Delta)p_{\min}(\Delta)}$;
+taking real logarithms and dividing by $\log\abs{\Sigma} > 0$ proves the logarithmic inequality.
+When $C = \emptyset$, $\mathrm{Nat.card}\,C = 0$ makes the left-hand side $0$ under Lean's
+convention $\log 0 = 0$, while $p_{\min}(\Delta) \le 1/4$ (\Cref{lem:first-moment}(b)) ensures the
+right-hand side is at least $\frac{3}{4}d^2 \ge 0$.
+\end{outline}
+
+\begin{corollary}[Finite-$d$ one-class ceilings at $\Delta = 1$ and $\Delta = 2$]\label{cor:arity-two}
+\formal{SetCapacityConsequences.lean}{corollary_OneClassArityOneThreeQuarters,corollary_OneClassArityTwoTwentyThreeTwentySevenths}
+Let $d \ge 1$, $\abs{\Sigma} \ge 2$, $p : \Z_d \to \mathrm{Fin}\,1$, and $\mathcal{E} = \emptyset$.
+For every subset $C \subseteq \Sigma^{d\times d}$ validated by a $1$-class shared decoder of cell
+arity $\Delta$:
+\begin{enumerate}[label=(\alph*)]
+\item if $\Delta = 1$, then $\dfrac{\log\abs{C}}{d^2\log\abs{\Sigma}} \;\le\; \dfrac{3}{4} + \dfrac{1}{4d}$;
+\item if $\Delta = 2$, then $\dfrac{\log\abs{C}}{d^2\log\abs{\Sigma}} \;\le\; \dfrac{23}{27} + \dfrac{8}{27d}$.
+\end{enumerate}
+\end{corollary}
+\begin{outline}
+Substitute $M = 1$, $\abs{\mathcal{E}} = 0$, and $p_{\min}(1) = 1/4$ or $p_{\min}(2) = 4/27$ into
+\Cref{thm:set-capacity} and divide by $d^2 > 0$.
+\end{outline}
+
+\begin{remark}[Comparison with Section~6.7 of Paper 17]\label{rem:compare-prop-621}
+At $\mathcal{E} = \emptyset$, the written (unformalized) bounds of
+\cite[Proposition~6.21(b) and Proposition~6.22(b)]{SeventeenthPaper2026} give rate
+$\frac{1}{2} + \frac{M}{2d}$ at $\Delta = 1$ (by cycle counting) and rate
+$\frac{1}{2} + \frac{3}{2d}$ at $M = 1, \Delta \le 2$ (by a multigraph vertex-ranking argument on
+row indices), whereas one-hop Bernoulli sampling gives the Lean-verified bounds
+$\frac{3}{4} + \frac{M}{4d}$ at $\Delta = 1$ and $\frac{23}{27} + \frac{8}{27d}$ at $M = 1,
+\Delta = 2$ (along with handling $M = o(d)$ and $\mathcal{E} \ne \emptyset$). Once $\Delta \ge 3$ and
+both rows and offsets are spread, however, row rankings no longer force half-space acyclic sets, and
+\cite[Section~6.7 and Problem~9.4(b)]{SeventeenthPaper2026} had no bound below rate $1$.
+\Cref{thm:set-capacity} supplies an unconditional, Lean-verified strictly-below-$1$ barrier at
+\emph{every} finite arity $\Delta \ge 1$ (e.g.\ $\le \frac{229}{256} + \frac{81}{256 d}$ at
+$M = 1, \Delta = 3$), uniformly over fixed and growing alphabets, sublinear class counts, and
+broken-output sets.
+\end{remark}
+
+\begin{theorem}[Positive rate deficit for sublinear classes and broken-output fractions]\label{thm:growing-deficit}
+\formal{BoundedAritySetCapacityProofs.lean}{growingClassesPositiveDeficit}
+\formal{SetCapacityConsequences.lean}{growingClasses_strict_inv_exp_deficit,asymptotic_SublinearClassesBrokenFractionRefutesRateOne}
+\formal{BoundedAritySetCapacity.lean}{GrowingClassesPositiveDeficitSpec}
+\begin{enumerate}[label=(\alph*)]
+\item Let $d \ge 1$, $\Delta \ge 1$, $\abs{\Sigma} \ge 2$, and $\delta, \eta \ge 0$ with
+  $\delta + \eta < 1$. Whenever $\abs{\mathcal{E}} \le \delta d^2$ and $M \le \eta d/\Delta$, every
+  $(\Delta, p, \mathcal{E})$-bounded-arity set code $C \subseteq \Sigma^{d\times d}$ satisfies the
+  strict inequality
+  \[
+    \frac{\log\abs{C}}{d^2\log\abs{\Sigma}}
+    \;<\; 1 - \frac{1 - \delta - \eta}{e(\Delta+1)}.
+  \]
+\item Asymptotically, for any fixed arity $\Delta \ge 1$, unbroken output fraction
+  $\delta_{\mathrm{ok}} \in (0,1]$ ($\abs{\mathcal{E}_d} \le (1 - \delta_{\mathrm{ok}})d^2$), and
+  class count $M_d = o(d/\Delta)$, the normalized rate is eventually bounded by
+  $1 - \frac{\delta_{\mathrm{ok}}}{2}\,p_{\min}(\Delta) < 1$, refuting convergence of the rate to $1$.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+Under $\abs{\mathcal{E}} \le \delta d^2$ and $d M \Delta \le \eta d^2$, the clean fraction satisfies
+$(d^2 - \abs{\mathcal{E}} - dM\Delta)/d^2 \ge 1 - \delta - \eta > 0$; multiplying by
+$p_{\min}(\Delta) > \frac{1}{e(\Delta+1)}$ (\Cref{lem:first-moment}(b)) proves~(a) for nonempty $C$,
+and the empty-set check uses $\frac{1-\delta-\eta}{e(\Delta+1)} < \frac{1}{4}$. Part~(b) chooses
+$d$ large enough that $M_d \Delta / d \le \delta_{\mathrm{ok}}/2$ and applies \Cref{thm:set-capacity}.
+\end{outline}
+
+\subsection{Boundary sharpness at \texorpdfstring{$\Delta \ge d$}{Delta >= d} and the \texorpdfstring{$M=1, \Delta=O(1)$}{M=1, Delta=O(1)} dichotomy}\label{sec:capacity-boundary}
+
+Next we verify that the $d M \Delta$ subtraction in \Cref{thm:set-capacity} marks a genuine phase
+transition at $\Delta = \Theta(d)$ rather than an artifact of the proof, and we formalize the exact
+logical relationship between the remaining $M = 1, \Delta = O(1)$ rate questions.
+
+\begin{proposition}[Sharpness at $\Delta \ge d$ and exact all-dimension Wall~1 asymptotic]\label{prop:boundary-wall1}
+\formal{BoundedAritySetCapacityProofs.lean}{boundaryControl_DeficitVanishesAtDeltaEqD}
+\formal{SetCapacityConsequences.lean}{wall1_UnrestrictedArityRateLowerBoundAndTendstoOne,wall1_ExactLogarithmicAsymptoticAllDimensions}
+\formal{BoundedAritySetCapacity.lean}{BoundaryControl_DeficitVanishesAtDeltaEqDSpec}
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Threshold at $\Delta = d$ and row-$0$ beacon codes}: at $M = 1, \mathcal{E} = \emptyset$,
+  the clean-entry term $d^2 - d\Delta$ vanishes at $\Delta = d$. Moreover, for $d \ge 2$ and
+  \emph{every} finite alphabet $\abs{\Sigma} \ge 2$, there exist an explicit $1$-class zero-error
+  shared set code at exact cell support $\Delta = d$ of size $\lfloor \abs{\Sigma}^d / d \rfloor^d$,
+  and an explicit $1$-class zero-error shared set code using column support $d$ and cell support at
+  most $2d - 1$ of size $\abs{\Sigma}^{d(d-1)}$ (rate $1 - 1/d \to 1$).
+\item \emph{Unrestricted-arity orbit code for all dimensions}: at $M = 1, \mathcal{E} = \emptyset,
+  \Delta = d^2$, for every fixed $\abs{\Sigma} \ge 2$, choosing one representative per free
+  $\rot$-orbit achieves rate $\ge 1 - \frac{\log_{\abs{\Sigma}}(2d)}{d^2}$ for all $d \ge 2$
+  (and $= 1 - \frac{\log_{\abs{\Sigma}} d}{d^2}$ for prime $d$), with exact all-dimension remainder
+  \[
+    \lim_{d\to\infty}\Bigl(\log_{\abs{\Sigma}}\abs{C_d} - \bigl(d^2 - \log_{\abs{\Sigma}} d\bigr)\Bigr) = 0.
+  \]
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+In~(a), at exact cell arity $\Delta = d$, partitioning $\Sigma^d$ into $d$-tuples of cyclic-shift
+representatives gives $\lfloor \abs{\Sigma}^d / d \rfloor$ choices per row and size
+$\lfloor \abs{\Sigma}^d / d \rfloor^d$; for the $(2d-1)$-cell code over any $\abs{\Sigma} \ge 2$,
+fixing row~$0$ to a two-symbol beacon $(s_1, s_0, \dots, s_0)$ ($s_1 \ne s_0$) lets coordinate $r$
+read all $d$ cells of row~$0$ (recovering $-c$ from the unique position $v$ where
+$(\rot_c X)_{0,v} = s_1$) together with the anti-diagonal $\{(u, r - u) : u \in \Z_d\}$ (whose union
+with row~$0$ has size at most $2d - 1$, containing $(c, r-c)$ where $(\rot_c X)_{c,r-c} = X_{c,r}$),
+leaving all $d(d-1)$ entries outside row~$0$ free. Part~(b) combines Burnside/M\"obius counting of
+aperiodic $\rot$-orbits from \cite[Appendix~A]{SharedDecoders2026} with divisor bounds showing that
+the non-free matrices occupy at most $d\,\abs{\Sigma}^{d^2/2}$ states out of $\abs{\Sigma}^{d^2}$, so
+$\abs{C_d} / (\abs{\Sigma}^{d^2}/d) \to 1$ along all $d \to \infty$ (prime or composite).
+\end{outline}
+
+Finally, at $M = 1$ and constant $\Delta \ge 3$ (\cite[Problem~9.4(b)]{SeventeenthPaper2026}), it
+remains open whether the pairing rate $\frac{1}{2} + o(1)$ holds or whether nonlinear bounded-arity
+shared codes beat $\frac{1}{2}$ between $\frac{1}{2}$ and $1 - p_{\min}(\Delta)$. In
+\leanfile{BoundedAritySetCapacity.lean} we formalize the all-alphabet $\Delta = 2$ half-barrier
+question (\lean{OneClassArityTwoHalfBarrierQuestion}, settled on paper for $\mathcal{E} = \emptyset$
+in \cite[Proposition~6.22(b)]{SeventeenthPaper2026}) together with three canonical-alphabet
+($\Sigma_d$) questions: the all-$\Delta$ half-barrier (\lean{OneClassBoundedArityHalfBarrierQuestion}),
+bounded-arity coding gain above $\frac{1}{2}$
+(\lean{OneClassBoundedArityCodingGainAboveHalfQuestion}), and $1 - O(1/\Delta)$ inverse-arity scaling
+(\lean{OneClassBoundedArityInverseArityScalingQuestion}).
+
+\begin{proposition}[Logical dichotomy for $M = 1, \Delta = O(1)$ capacity]\label{prop:half-barrier-dichotomy}
+\formal{BoundedAritySetCapacityProofs.lean}{oneClassBoundedArityCodingGainAboveHalf_iff_not_halfBarrier,oneClassCodingGain_of_inverseArityScaling}
+\formal{SetCapacityConsequences.lean}{oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier}
+\formal{BoundedAritySetCapacity.lean}{OneClassArityTwoHalfBarrierQuestion,OneClassBoundedArityHalfBarrierQuestion,OneClassBoundedArityCodingGainAboveHalfQuestion,OneClassBoundedArityInverseArityScalingQuestion}
+Over the canonical word alphabet $\Sigma_d = \{0,1\}^{\clog{d}}$,
+\lean{OneClassBoundedArityCodingGainAboveHalfQuestion} holds if and only if
+\lean{OneClassBoundedArityHalfBarrierQuestion} fails,
+\lean{OneClassBoundedArityInverseArityScalingQuestion} implies
+\lean{OneClassBoundedArityCodingGainAboveHalfQuestion}, and the all-alphabet $\Delta = 2$ statement
+\lean{OneClassArityTwoHalfBarrierQuestion} implies its $\Sigma_d$ specialization
+(\lean{oneClassCanonicalArityTwo_of_allAlphabetHalfBarrier}).
+\end{proposition}
+\begin{outline}
+The equivalence follows by quantifier negation between universal $\frac{1}{2} + \eps$ upper bounds
+for all fixed $\Delta \ge 1$ and existence of $\Delta \ge 1, \eps > 0$ exceeding rate
+$\frac{1}{2} + \eps$ infinitely often; inverse-arity scaling $1 - C/\Delta$ exceeds $\frac{1}{2} +
+\frac{1}{4}$ once $\Delta > 4C$.
+\end{outline}

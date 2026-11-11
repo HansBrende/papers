@@ -1,0 +1,92 @@
+% ---------------------------------------------------------------------------
+% Theorem environments
+% ---------------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% Keep a theorem heading, formal-status line and opening statement together.
+\AtBeginEnvironment{theorem}{\Needspace{8\baselineskip}}
+\AtBeginEnvironment{lemma}{\Needspace{8\baselineskip}}
+\AtBeginEnvironment{corollary}{\Needspace{8\baselineskip}}
+\AtBeginEnvironment{proposition}{\Needspace{8\baselineskip}}
+\AtBeginEnvironment{example}{\Needspace{8\baselineskip}}
+
+% The Lean proof is the proof; the text gives a faithful outline of it.
+\newenvironment{outline}[1][Outline of the formal proof]{\begin{proof}[#1]}{\end{proof}}
+% Results that are not formalized get complete proofs, labelled as such.
+\newenvironment{informalproof}{\begin{proof}[Proof (not formalized)]}{\end{proof}}
+
+% ---------------------------------------------------------------------------
+% Lean references
+%   \lean{name}            a declaration, relative to the namespace BoundedArityDecoders
+%   \leanname{name}        typeset an upstream or qualified Lean identifier without indexing it
+%   \formal{file}{names}   the formal counterpart of a numbered result: a file relative to
+%                          lean/BoundedArityDecoders/ and a comma-separated list of declarations
+%   \partformal{file}{names}{gap}
+%                          a numbered result whose formal counterpart covers all but the
+%                          part described in {gap}; the gap is proved or cited in the text
+%   \notformalized         a numbered result that has no formal counterpart
+%   \cited{where}          a result of an earlier paper used without proof: where it is proved,
+%                          and whether it is Lean-verified there
+% ---------------------------------------------------------------------------
+% Lean names are typeset like paths, with line breaks allowed after "_", ".", "/", "-" and camelCase transitions.
+\emergencystretch=1.5em
+\DeclareUrlCommand\leannameraw{%
+  \def\UrlFont{\ttfamily\upshape}%
+  \Urlmuskip=0mu\relax
+  \def\UrlBreakPenalty{500}%
+  \def\UrlBreaks{\do\_\do\.\do\/\do\-\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z}%
+}
+\renewcommand{\UrlBreaks}{\do\_\do\.\do\/\do\-}
+\newcommand{\leanname}[1]{\ifmmode\text{\leannameraw{#1}}\else\leannameraw{#1}\fi}
+\newcommand{\lean}[1]{\leanname{#1}}
+\newcommand{\leanfile}[1]{\leanname{#1}}
+\newcommand{\leanlist}[1]{\begingroup\def\leansep{}%
+  \renewcommand*{\do}[1]{\leansep\leannameraw{##1}\def\leansep{, }}\docsvlist{#1}\endgroup}
+\newcommand{\formal}[2]{\par\noindent{\small\upshape\raggedright\textsf{Lean:} \leanlist{#2}\unskip
+  \nobreak\hfil\penalty50\hskip1em\hbox{}\nobreak\hfill[\leanfile{#1}]\parfillskip=0pt\par}%
+  \smallskip\noindent\ignorespaces}
+\newcommand{\partformal}[3]{\par\noindent{\small\upshape\raggedright\textsf{Lean (partial):} \leanlist{#2}\unskip
+  \nobreak\hfil\penalty50\hskip1em\hbox{}\nobreak\hfill[\leanfile{#1}]\parfillskip=0pt\par}%
+  \par\noindent{\small\upshape\textsf{Not formalized:} #3}\par\smallskip\noindent\ignorespaces}
+\newcommand{\notformalized}{\par\noindent{\small\upshape\textsf{Not formalized;} a complete proof is given
+  below.}\par\smallskip\noindent\ignorespaces}
+\newcommand{\cited}[1]{\par\noindent{\small\upshape\textsf{Cited:} #1}\par\smallskip\noindent\ignorespaces}
+
+% ---------------------------------------------------------------------------
+% Notation
+% ---------------------------------------------------------------------------
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\clog}[1]{\lceil \log_2 #1 \rceil}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\card}[1]{\lvert #1 \rvert}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\TCP}{\mathrm{TCP}}
+\newcommand{\TM}{\mathrm{TM}}
+\newcommand{\rot}{\operatorname{rot}}
+\newcommand{\Mat}{\operatorname{Mat}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Rec}{\operatorname{Rec}}
+\newcommand{\sw}{\operatorname{sw}}
+\newcommand{\diam}{\operatorname{diam}}
+\newcommand{\OSR}{\operatorname{rk}_{\otimes}}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\poly}{poly}

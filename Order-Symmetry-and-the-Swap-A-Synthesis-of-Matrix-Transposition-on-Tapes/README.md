@@ -100,6 +100,14 @@ Proved in the paper but not formalized:
   Z/kd into M classes with a code of dimension (n² + Mn)/2 + ⌊M/2⌋(n/4 − k), n = kd. So for every fixed number
   M ≥ 2 of classes the gain over (n² + Mn)/2 is unbounded, over every field. The script checks instances for M = 3, ..., 7.
 
+- Proposition 6.21, added after two later papers of the series (see below): two bounds for sets of matrices over
+  any alphabet and for decoding functions that are not linear. (a) If every entry of row c is a function of entries in
+  columns j with g(j) > c, the set has at most q^(Σ g(j)) matrices; this is the elimination step of Theorem FL, and it
+  holds with rows and columns exchanged. (b) If every entry is a function of one entry (possibly itself), the set
+  has at most q^z matrices, z the number of cycles of the map between positions; for M classes of copy positions that
+  is at most q^((d² + Md)/2). Both are instances of the acyclic-subgraph bound of Bar-Yossef, Birk, Jayram and Kol;
+  what the proposition supplies is the two sets of positions. `tools/set_bounds_check.py` checks small instances.
+
 Numerical remarks (exact computations, reproduced by the scripts in `tools/`, not used in any proof) are labelled as
 numerical in the paper. Those over GF(2) at sizes up to six are collected in its section on small sizes; the remark on
 the two-class rule also uses GF(3), GF(5), GF(7) and GF(11).
@@ -110,11 +118,15 @@ Both theorems are statements about a linear one-hop model. They are not lower bo
 
 Statement (T). For oblivious machines: whether storage codes on the cone relations of real schedules exceed rate ½. In the
 one-hop model of this paper: for classes with no almost-period, whether a fixed number M of classes can gain more than
-a multiple of d over (d² + Md)/2, and whether o(d) classes can gain at positive rate; for which partitions into
-intervals the bound (d² + Md)/2 is attained; a
+a multiple of d over (d² + Md)/2, and whether o(d) classes can gain at positive rate (the best bound for two classes
+is now 41/64, from a later paper); for which partitions into intervals the bound (d² + Md)/2 is attained with linear
+decoders; a
 bound for rules that use masks at all dyadic scales on both indices; a version of Theorem TP for the cone systems of
-oblivious schedules; and a subadditive quantity that is large for the swap at every scale separately and is not raised
-at all scales by one linear-time operation. The paper's last section states these precisely.
+oblivious schedules, and, in the one-hop model over a fixed alphabet, whether sets of matrices whose entries are
+functions of boundedly many entries at positions that move with the row stay at rate ½, with one function for all
+rows or with a function for each position (Problem 9.4(b)); and a subadditive quantity that is
+large for the swap at every scale separately and is not raised at all scales by one linear-time operation. The
+paper's last section states these precisely.
 
 **Subsequent memo:** [Class-Uniform Codes in Every Characteristic but Three, Their Blow-ups, and the Price of Advice](memo-class-uniform-codes/)
 shows that the two classes of the paper's Proposition 8.2 carry a code of dimension 25 over every field in which
@@ -152,6 +164,29 @@ Problem 9.1(c) therefore no longer asks whether the gain of a fixed number of cl
 gain is O(d). These results are proved in the text and are not formalized. The other results of the paper and their
 formal proofs are unchanged.
 
+**Two later papers of the series** followed revision ac70dc4:
+[Macroscopic Information Transfer in Adaptive Tape Transposition](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)
+and [Capacity and Composition of Shared Transposition Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/).
+The present revision of this paper cites them and changes the following; no earlier result or number of the paper
+changes.
+
+- Problem 9.1(a) and Section 7.3 quote the second paper's bounds for classes of any shape: (41/64)d² + O(d^(3/2)) for
+  two classes, where this paper had (3/4)d² + O(d), and a deficit of order M^(−1/2) for M classes. Problem 9.1(c)
+  quotes its exact value for the lifts of a partition, and Problem 9.2 is said to be about linear decoders.
+- The new Section 6.7 records which linearity Theorem TP needs: the code must be a subspace, the decoders may be
+  arbitrary maps, and for sets that are not subspaces one decoder for all rows is correct on a fraction 1/(2d) of all
+  matrices (all from the second paper). It adds Proposition 6.21 (above) and a remark on marker rows: a set of
+  matrices with one decoding function for all rows can exceed the value (d² + d)/2 of subspaces by a multiple of d
+  that grows with the window. One sentence of Section 6.5 and one of Section 7.2, which said that Theorem TP needs
+  linear decoders, are corrected, and a sentence is added to Section 6.5.
+- Section 7.4 and Problem 9.4 are restated. The earlier text took the form of its question from a count for affine
+  rules, and for decoders that are not affine and see the whole matrix there is no such count. Problem 9.4(b) is new:
+  it asks whether shared decoders of bounded window bound a set of matrices. Section 7.4 also cites the second
+  paper's bound for two hops and notes that a perfect shuffle of the columns has d − 1 classes; Section 7.1 notes
+  what Proposition 6.21 gives for synchronous access.
+- Sections 3.6, 4.1 and 4.2 cite the first paper: on the machine's own runs it proves a statement of the form that
+  Section 3.6 reported as open, and it gives the function of Section 4.1 a form on those runs.
+
 ## Building and verifying
 
 With `elan` installed, in `lean/`:
@@ -187,6 +222,7 @@ python3 tools/three_term_example.py              # the three-term examples
 python3 tools/digit_and_composition_checks.py    # the digit corollary and the composition remark on small instances
 python3 tools/entry_form_check.py                # Proposition 6.15 on small instances
 python3 tools/two_class_family.py                # Proposition 6.17 and Corollary 6.19 over small fields
+python3 tools/set_bounds_check.py                # Proposition 6.21 on small instances; about 20 s
 python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
 python3 tools/analyse_code.py                    # the code of dimension 25 and its translates

@@ -97,8 +97,8 @@ terms of the number of changes, and it updated \cref{rem:small}(d) and \cref{pro
 An update of the memo then answered that form of \cref{prob:aperiodic}(c) for two classes: for every $d=4k\ge8$ it
 gives an explicit rule, over fields in which $2\ne0$, whose code exceeds $(d^2+2d)/2$ by $d/4-1$, so that the gain of
 two classes is unbounded. Its proof is written in the memo, which also proves in Lean, for $d=8$, $12$ and~$16$, that
-the two classes carry a code of that dimension. It leaves open characteristic~$2$ and three or more classes. The
-present revision cites that update and adds \cref{sec:two-class}, which settles both.
+the two classes carry a code of that dimension. It leaves open characteristic~$2$ and three or more classes.
+Revision \texttt{ac70dc4} of this paper cited that update and added \cref{sec:two-class}, which settles both.
 \begin{itemize}[leftmargin=1.5em]
 \item \Cref{prop:two-class}: the memo's rule works over every field, $\F_2$ included, once its coefficients $2$ and
 $\tfrac12$ are replaced by a nonzero $\lambda$ and its inverse.
@@ -107,7 +107,39 @@ into codes for any fixed number $M\ge2$ of classes, with a gain of order $Md/8$ 
 unbounded for every fixed number $M\ge2$ of classes, over every field.
 \end{itemize}
 These three results are proved in the text and are not formalized. \Cref{prob:aperiodic}(c) now asks for the rate of
-growth. The other results of this paper and their formal proofs are unchanged.
+growth.
+
+Two papers of the series followed revision \texttt{ac70dc4}. One is about the original runs of adaptive
+machines~\cite{AdaptiveTransfer2026}. The other is about the class-uniform rules of \cref{sec:symmetry}, their
+codes and their composition~\cite{SharedDecoders2026}. The present revision cites both where they bear on the text,
+and changes the following.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Bounds for classes of any shape} (\cref{prob:aperiodic}(a), \cref{sec:would-need}). For two classes the
+second of these papers proves $\tfrac{41}{64}d^2+O(d^{3/2})$, where this paper had $\tfrac34d^2+O(d)$, and for $M$
+classes a deficit of order $M^{-1/2}$, where this paper had $1/(2M)$. For partitions with a period, for which
+\cref{thm:TP} shows that the gain is at most linear in~$d$, it determines the largest code of a lift under
+hypotheses that are stated with \cref{prob:aperiodic}(c).
+\item \emph{Which linearity the bounds need} (\cref{sec:sets}, new). Theorem~TP needs the code to be a subspace, but
+not the decoders to be linear. For sets of matrices that are not subspaces it fails completely: one decoder for all
+rows is correct on a fraction $1/(2d)$ of all matrices. Both facts are from that paper. This revision adds
+\cref{prop:sets}: the elimination step of Theorem~FL and the bound for rules that copy one entry hold for sets and
+arbitrary functions, as instances of the acyclic-subgraph bound of Bar-Yossef, Birk, Jayram and
+Kol~\cite{BBJK2011}; and a remark on marker rows, by which a set of matrices with one function for all rows exceeds
+the value $(d^2+d)/2$ of subspaces. One sentence of \cref{sec:symmetry-says} and one of \cref{sec:reading}, which said that
+Theorem~TP needs linear decoders, are corrected, and a sentence is added to \cref{sec:symmetry-says}.
+\item \emph{The step to machines} (\cref{sec:to-machines}, \cref{prob:machines}). The earlier text took the form of
+its question from a count for affine rules. For decoders that are not affine and see the whole matrix there is no such
+count. What machines add is that the cones a genie leaves are of bounded size, and whether shared decoders of
+bounded window bound a set of matrices is the new \cref{prob:machines}(b). \Cref{sec:to-machines} also cites the
+first bound for two hops, and notes that a perfect shuffle of the columns has $d-1$ classes; \cref{sec:fail} notes
+what \cref{prop:sets} gives for synchronous access.
+\item \emph{Adaptive machines} (\cref{sec:adaptive}, \cref{sec:one-function}, \cref{sec:exhaustions}). The first of
+the two papers proves on the machine's own runs a statement of the form that \cref{sec:adaptive} reported as open,
+and gives the function of \cref{sec:one-function} a form on those runs.
+\item \Cref{prob:unequal} is now said to be about linear decoders.
+\end{itemize}
+\Cref{prop:sets} is proved in the text and is not formalized. The other results of this paper and their formal proofs
+are unchanged, and so are their numbers.
 
 \subsection{How to read this paper and its formal proofs}
 
@@ -128,7 +160,7 @@ of Theorem~FL that need an algebraically closed field, the structure of $p$-grou
 (\cref{cor:two-terms,cor:commutative,cor:affine,cor:expansion}); the equality case of \cref{prop:swap-floor}; the
 copy-rule bound; the count in \cref{prop:entry}; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it
 rests on; the gains for a fixed number of classes over every field
-(\cref{prop:two-class,lem:mixed-blowup,cor:every-M}); and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
+(\cref{prop:two-class,lem:mixed-blowup,cor:every-M}); the two bounds for sets (\cref{prop:sets}); and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
 labelled as numerical and in \cref{sec:small}, and no proof uses them. \Cref{app:leanindex} indexes the declarations and
 \cref{app:verification} explains how to check them.
 

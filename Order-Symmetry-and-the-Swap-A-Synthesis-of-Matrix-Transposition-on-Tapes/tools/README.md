@@ -23,6 +23,7 @@ with Python 3.12.10, NumPy 2.5.4 and pycryptosat 5.18.0.
 | `digit_and_composition_checks.py` | Corollary (every address digit must be broken) and Remark (composition), including the unshuffle | — | seconds |
 | `entry_form_check.py` | Proposition (changes that affect single entries): every rule at d = 2 over GF(2), random rules and rules with free entries up to d = 5, and the rules of the saved codes; with controls that group the changes differently and must fail | — | seconds |
 | `two_class_family.py` | Proposition (two classes: a gain of d/4 − 1 over every field): the rule in closed form with a general coefficient, every rank stated in the proof for d ≤ 48 over GF(2), GF(3), GF(5), GF(7), GF(11), the dimension over GF(2) for d ≤ 100, and the saved codes `data/two_class_d8.json`, `_d12.json`, `_d16.json`. Corollary (every fixed number of classes): the blow-up rule for M = 3, ..., 7 and its largest code | — | seconds |
+| `set_bounds_check.py` | Proposition (two bounds for sets): the exact largest code of every recovery relation at d = 2 over two symbols, against the acyclic-subgraph bound and both parts of the proposition; the step of both proofs over all pairs of matrices, for 40 random relations at d = 3 over two symbols and 60 at d = 2 over three, and that it holds exactly when the relation has no cycle outside the supplied set; for the cyclic instance at d ≤ 12, its hypothesis, its exponent and the absence of cycles on random relations; the count of cycles of part (b) on random class maps at d ≤ 8; the remark on marker rows (every matrix of the set at d = 4, a sample at d = 16 with eight classes); three controls that must fail. Also the count of classes of the perfect shuffle in the section "From the one-hop model to machines" | — | about 20 s |
 | `small_sizes.py` | Section "Small sizes": the table with its bounds, the list of partitions, the solver runs and the controls | pycryptosat for `climb`, `controls` | see below |
 | `class_uniform_sat.py` | One solver run: is there a class-uniform rule over GF(2) with a code of dimension ≥ D? | pycryptosat | see below |
 | `verify_class_uniform_code.py` | Checks a saved code in `data/` against the definition; shares no code with the search | — | seconds |
@@ -46,6 +47,7 @@ python3 tools/exhaustive_pigeonhole_checks.py
 python3 tools/digit_and_composition_checks.py
 python3 tools/entry_form_check.py
 python3 tools/two_class_family.py
+python3 tools/set_bounds_check.py
 ```
 
 Each ends with a summary line and stops, or exits with a nonzero status, if a statement of the paper fails on an

@@ -32,7 +32,9 @@ One address digit of size $q$ treated uniformly & $\frac12(d^2+d^2/q)$ & \cref{c
 Two design rules follow, for the one-hop model.
 \begin{itemize}[leftmargin=1.5em]
 \item \emph{Synchronous access is the pairing.} Reading any number of source rows in step with the output, at any
-offsets and through any convolution, gives the symmetric matrices and no more.
+offsets and through any convolution, gives the symmetric matrices and no more. With offsets of at most $B$ the same
+holds, up to a term of order $Bd$, for sets of matrices and for functions that are not linear
+(\cref{prop:sets}(a)).
 \item \emph{Uniform passes are the pairing.} A stretch on which translated outputs share their decoder gains nothing,
 whatever its window. The bound rises only with changes of regime, by $d/2$ symbols for each. On a cycle, a change
 that does not affect a whole row is charged by the entry: half a symbol for each output entry whose decoder changes
@@ -59,8 +61,8 @@ This reading matches what the series proved about motion (\cref{sec:motion}): lo
 geometric side by the second and fourth papers, and here uniform decoding is excluded on the coding side, in a model
 that has no geometry at all. The seventh paper has a statement of the same kind for storage codes on relations: Cayley
 relations $\mathrm{Cay}(G,\{s,s^{-1},t\})$ without transitive triangles give no gain over the pairing rate, for every
-finite group~\cite[Corollary~5.12]{SeventhPaper2026}. \Cref{thm:TP} allows any degree and any window, but only one hop and only linear
-decoders.
+finite group~\cite[Corollary~5.12]{SeventhPaper2026}. \Cref{thm:TP} allows any degree and any window, but only one hop and only codes
+that are subspaces; the decoders may be arbitrary maps (\cref{sec:sets}).
 
 \subsection{What a linear-time machine would need}\label{sec:would-need}
 
@@ -76,7 +78,11 @@ many pairwise commuting others (\cref{thm:TP,thm:twist});
 \end{itemize}
 The digit masks at every scale, which the folklore recursion uses, have these properties: their number grows with
 $d$, and no shift respects them. A bounded number of classes is not enough for rate near one, whatever their shape,
-because $M$ classes leave a flag with $g(i)\le Mi$ and hence rate at most $1-1/(2M)+O(1/d)$. What the theorems leave
+because $M$ classes leave a flag with $g(i)\le Mi$ and hence rate at most $1-1/(2M)+O(1/d)$. A later paper of the
+series sharpens this, for decoders that need not be linear: two classes of any shape have rate at most
+$\tfrac{41}{64}+O(d^{-1/2})$, and $M\le d/2$ classes at most $1-1/(4\lceil\sqrt{2M}\,\rceil)$, so that rate
+$1-\eps$, for $\eps\le\tfrac18$, needs more than $d/2$ classes or more than
+$1/(128\eps^2)$~\cite[Theorems~3.4 and~3.5]{SharedDecoders2026}. What the theorems leave
 open is how large a code a given number of classes can carry when the classes have no almost-period. It can exceed the
 value $(d^2+Md)/2$ of every copy rule and of every interval rule at $d=6$ (\cref{prop:aperiodic}); at $d=5$ over
 $\F_2$ it does not, on the word of a solver for one partition (\cref{rem:small}). A gain of one dimension at $d=6$
@@ -96,6 +102,12 @@ Three steps separate \cref{thm:TP} from a statement about oblivious machines.
 \cref{sec:false} shows that the relation-level properties proved so far cannot carry the conclusion. ``Translated receivers share their
 decoder on every stretch of periodic head motion'' is a property of the rule. It has to be stated for the cone systems
 of real schedules, where the receivers are output bits and the decoders are compositions of the transition function.
+For such decoders, which are not linear, and for the inputs that share a value of advice, which do not form a
+subspace, the sharing of a decoder is not enough when the decoder sees the whole stored word
+(\cref{sec:sets}). Whether it is enough for decoders that read boundedly many bits, as the decoders of bounded cones
+do, is open already in the one-hop model. So is the stronger statement in which the decoders may differ and only the
+positions read by translated receivers are translates; that is a property of the relation after all, though not one
+of those that \cref{sec:false} shows to be insufficient (\cref{prob:machines}(b)).
 \item \emph{Depth reduction.} The genie of \cref{sec:depth} reveals values at chosen steps. The revealed word is advice
 that depends on position, and \cref{thm:TP} has no place for it. Revision \texttt{b2c389a} of this paper said that a
 version of \cref{thm:TP} with advice would have to charge each revealed bit as a regime change, at half a row per
@@ -123,9 +135,26 @@ a set is the analogue, in this model, of the function $r(\eps)$ of \cref{sec:one
 nothing, and only the changes count. So what remains to be bounded in this model is $E$, the number of changes of
 decoders in the rules that the advice selects, whether the advice induces them or not. For machines the step is open: there the decoders are compositions of the transition
 function and need not be linear, and for a decoder that is not linear an offset that depends on the row is itself a
-break of uniformity~\cite[Remark~5.6]{ClassUniformMemo2026}.
+break of uniformity~\cite[Remark~5.6]{ClassUniformMemo2026}. A later paper makes this exact: with decoders that are
+arbitrary maps, one decoder for all rows is correct on a set of at least $q^{d^2}/(2d)$ matrices over an alphabet of
+$q$ symbols, and on the affine space of the matrices with a given unit vector as row~$0$~\cite[Theorem~A.1,
+Corollary~A.2 and Proposition~4.5]{SharedDecoders2026}. So \cref{cor:entry-advice} has no counterpart for such
+decoders when they see the whole matrix, and a statement for machines has to use that the cones a genie leaves are of
+bounded size (\cref{sec:sets,prob:machines}).
 \item \emph{Many hops.} \Cref{rem:compose-TP} bounds $t$ uniform hops by a loss that grows linearly in $t$. A machine
 that runs for $cL$ steps has unboundedly many hops, and \cref{rem:compose-TP} shows that one cheap operation can break
 every digit symmetry at once. So an argument for machines has to count something that an unshuffle does not supply for free.
+The first bound for two hops that is not of this additive kind is in a later paper of the series. Let $K_1$ and $K_2$
+be linear maps of $\Mat_d(F)$ such that column $c$ of $K_iX$ is a function of $\sigma^cX$ that depends only on the
+class of~$c$, each map with its own partition, into $M_1$ and $M_2$ classes, and with decoders of any window. If
+$K_2K_1$ is the transposition on all of $\Mat_d(F)$, then $M_1$ and $M_2$ cannot both stay bounded as $d$ grows; with
+two classes each, $d\le16$; and for bounded $M_1,M_2$ the rank of the difference between the transposition and
+$K_2K_1$ is not $O(d)$, when the characteristic does not divide~$d$~\cite[Theorem~6.3, Corollary~6.4 and
+Theorem~6.6]{SharedDecoders2026}. Both maps act on the $d^2$ entries with no further storage, and the argument is for
+two of them. The number of classes is again not something that a machine pays for. Let $d$ be even and let $\pi$ be
+the perfect unshuffle, $\pi(c)=\lfloor c/2\rfloor$ for even $c$ and $\pi(c)=\lfloor c/2\rfloor+d/2$ for odd~$c$.
+The map that puts column $\pi(c)$ of $X$ in column~$c$, a perfect shuffle of the columns and a linear-time operation
+on tapes, is of this kind. Two columns $c$ and $e$ can share a decoder only if $\pi(c)-c=\pi(e)-e$ in $\Z/d$, and
+these differences take $d-1$ values.
 \end{enumerate}
 We do not know how to take any of these steps for machines.

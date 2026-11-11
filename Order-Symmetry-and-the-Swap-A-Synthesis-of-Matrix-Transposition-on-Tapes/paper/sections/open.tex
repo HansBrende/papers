@@ -11,8 +11,13 @@ the classes are intervals. For general classes this fails (\cref{prop:aperiodic}
 of classes it fails by an amount that grows with $d$ (\cref{prop:two-class,cor:every-M}).
 \begin{enumerate}[label=(\alph*),leftmargin=2em]
 \item For two classes, is $D(\mathcal P)\le(\tfrac12+o(1))d^2$? More generally, is this so for $o(d)$ classes?
-The known upper bounds for two classes of any shape are $\tfrac34d^2+O(d)$, from \cref{thm:FL}, and what \cref{thm:TP}
-gives for the best shift set. The largest gains known for a fixed number of classes are of order~$d$.
+For two classes of any shape the best upper bound known is
+$\tfrac{41}{64}d^2+\tfrac53d^{3/2}$~\cite[Theorem~3.4]{SharedDecoders2026}; before that paper it was
+$\tfrac34d^2+O(d)$, from \cref{thm:FL}, together with what \cref{thm:TP} gives for the best shift set. For $M\le d/2$
+classes that paper proves the bound
+$\bigl(1-1/(4\lceil\sqrt{2M}\,\rceil)\bigr)d^2$~\cite[Theorem~3.5]{SharedDecoders2026}, which is below the value
+$(1-\tfrac1{2M})d^2+O(d)$ of \cref{thm:FL} when $M\ge11$. The largest gains known for a fixed number of
+classes are of order~$d$.
 \item Determine $D$ for the classes $\{0,1,3\},\{2,4,5\}$ of $\Z/6$. By \cref{thm:TP} it is at most $28$ over every
 field. It is at least $25$ over every field in which $3\ne0$: over $\F_2$ by \cref{prop:aperiodic}, and in general
 by~\cite[Theorem~3.2]{ClassUniformMemo2026}. In characteristic~$3$ no code of dimension $25$ is known.
@@ -28,6 +33,20 @@ count sharper than the union bound of \cref{thm:TP}, which loses a factor $s/(s+
 answer would be a coding gain of positive rate over the pairing value from $o(d)$ classes, native to masks and
 rotations, the first of its kind, and its cost on a tape would become the question. \Cref{sec:small} records what exact
 computation says for small~$d$.
+
+The two bounds quoted in~(a) come from a later paper of the series~\cite{SharedDecoders2026}, which proves them in
+Lean, over every field, for codes that are subspaces and decoders that are arbitrary maps (\cref{sec:sets}). Its count
+is sharper than the union bound in the way asked for above. The code is intersected with one translate, the
+intersection lies in the space of matrices that are covariant on the components of that shift, this space is
+invariant under rotation, and the next intersection is taken inside it; so with shift sets $E_0=\{0\}$ and
+$E_j=E_{j-1}\cup(E_{j-1}+t_j)$ for $1\le j\le k$, a code has dimension at most
+$\sum_{j<k}n_j/2^{j+1}+n_k/2^k$, where $n_j$ is $d$ times the number of components for
+$E_j$~\cite[Theorem~3.2]{SharedDecoders2026}. When $E_2$ has four elements, \cref{thm:TP} for $E_2$ gives
+$\tfrac34n_0+\tfrac14n_2$ where this gives $\tfrac12n_0+\tfrac14n_1+\tfrac14n_2$, and $n_0=d^2$. The value $\tfrac{41}{64}$ comes from the shifts $s,3s,9s$ and an average over~$s$. For
+almost every partition into two classes the same paper has a slightly smaller constant, and it proves that the
+certificates of this method cannot go below $(\tfrac58-o(1))d^2$, and those of a variant not below
+$(\tfrac9{16}-o(1))d^2$, for almost every such partition~\cite[Theorems~C.5, C.6 and~C.7]{SharedDecoders2026}. So (a) is open, and going below
+these values needs more than the certificates of that method.
 
 Part~(c) has a history. Revision \texttt{b2c389a} of this paper asked only for a family of partitions and codes, with
 a description that can be analysed, in which $D(\mathcal P)-(d^2+Md)/2$ grows, without fixing the number of classes.
@@ -55,12 +74,34 @@ $D(\mathcal P)$ is at least $2d^2/3$~\cite[Section~6]{ClassUniformMemo2026}. A p
 prove (a) for two classes. A family of two-class partitions with a gain of order $d^2$ would be a negative answer
 to~(a).
 
+For partitions with a bounded period the answer to~(c) is positive, and for some of them the constant is known. Let a
+partition $p$ of $\Z/s$ be lifted to the partition $p^\uparrow$ of $\Z/d$, $d=ms$, in which $c$ has the class of
+$c\bmod s$. \Cref{thm:TP} with the shifts $0$ and $s$ bounds its largest code by $(d^2+sd)/2$. If $m$ is prime to $s$
+and not divisible by the characteristic, and the field contains the $m$-th roots of unity, the exact value is
+\[
+  D(p^\uparrow)=\frac{d^2-ms^2}2+m\,D(p)=\frac{d^2}2+\frac ds\Bigl(D(p)-\frac{s^2}2\Bigr);
+\]
+over a field without these roots of unity the right side is a lower bound, and it is an upper bound when $D(p)$ is
+taken over the algebraic closure~\cite[Theorems~5.1 and~5.3]{SharedDecoders2026}. So the gain of a partition with
+period $s$ is at most $(s-M)d/2$, for these lifts it is a fixed multiple of~$d$, which is zero when $D(p)$ is the
+value $(s^2+Ms)/2$ of intervals, and a gain that grows faster than $d$ needs partitions without a bounded period; the
+classes of \cref{prop:two-class} have no period smaller than~$d$. From the classes of \cref{prop:aperiodic} the lift
+gives two classes on $\Z/6m$, for $m$ prime to~$6$, with a binary code of dimension $d^2/2+7d/6$, and this is the
+whole code of the lifted rule~\cite[Corollary~5.2 and Theorem~B.2]{SharedDecoders2026}. Its gain over $(d^2+2d)/2$
+is $d/6$; the rule of \cref{prop:two-class} gains $d/4-1$, at the sizes divisible by four.
+
 \begin{problem}[Unequal pieces]\label{prob:unequal}
 For which partitions of $\Z/d$ into $M$ intervals, and over which fields, is the bound $\lfloor(d^2+Md)/2\rfloor$ of
 \cref{thm:TP} attained? It is attained for equal pieces (\cref{prop:block-symmetric}). Over $\F_2$ it is attained in
 every case computed in \cref{sec:small} except one, the pieces $\{0\},\{1\},\{2,3,4\}$ at $d=5$, where the largest code
 has dimension $19<20$ on the word of a solver. Some of the codes that attain it are not codes of copy rules.
 \end{problem}
+
+The question is about linear decoders. If the decoders may be arbitrary maps and the code is still a subspace, the
+bound is attained over $\F_2$ for every partition into $M$ intervals with $d-M$ even, and the same construction gives
+a code of dimension $(d^2+Md)/2$ for every partition into $M$ classes of any shape with $d-M$
+even~\cite[Theorem~4.3]{SharedDecoders2026}. For the pieces $\{0\},\{1\},\{2,3,4\}$ at $d=5$ this is a code of
+dimension $20$ with decoders that are not linear, where linear decoders reach $19$ on the word of a solver.
 
 \begin{problem}[Both sides, all scales]\label{prob:both}
 Let both the $A_a$ and the $B_a$ lie in the span of masks of dyadic intervals composed with rotations, with at most $M_j$
@@ -70,13 +111,20 @@ and one scale at a time.
 \end{problem}
 
 \begin{problem}[Shared decoders on cone systems]\label{prob:machines}
-State and prove a version of \cref{thm:TP} for the cone systems of oblivious linear-time schedules: on a stretch of
-periodic head motion the outputs share their decoder, and a revealed bit or an irregular step changes the decoders of
-some outputs. Does a bound of the form $r(\eps)\le\tfrac12+C(\eps+\eta)$ hold for schedules whose motion is periodic
-outside a set of steps of density~$\eta$? (\Cref{sec:to-machines}.)
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item State and prove a version of \cref{thm:TP} for the cone systems of oblivious linear-time schedules: on a stretch
+of periodic head motion the outputs share their decoder, and a revealed bit or an irregular step changes the decoders
+of some outputs. Does a bound of the form $r(\eps)\le\tfrac12+C(\eps+\eta)$ hold for schedules whose motion is
+periodic outside a set of steps of density~$\eta$? (\Cref{sec:to-machines}.)
+\item Fix a window $w$ and an alphabet of $q$ symbols. Does every storage code on a one-class relation of window~$w$
+(\cref{sec:sets}) have at most $q^{(1/2+o(1))d^2}$ elements as $d$ grows, or even at most $q^{d^2/2+Cd}$ with a
+constant $C$ that depends on $w$ and~$q$? And is this so at least when one function serves all rows, that is, when the
+function for the position $(c,r)$ does not depend on~$c$?
+\end{enumerate}
 \end{problem}
 
-The form of the bound comes from the one-hop model. By \cref{cor:entry-advice}, over a finite field, if every rule
+Part~(a) is the problem as the earlier revisions stated it; part~(b) is new in the present one. The form of the bound
+in~(a) comes from the one-hop model with affine rules. By \cref{cor:entry-advice}, over a finite field, if every rule
 that the advice selects changes, from one row to the next, at no more than $E$ entries, then the matrices of a code
 that share a value of the advice number at most $\abs F^{(d^2+d+E)/2}$, whatever the advice is. The rate of such a
 set, the analogue of $r(\eps)$, is therefore at most $\tfrac12+(d+E)/(2d^2)$, and $E=O((\eps+\eta)d^2)$ gives a bound
@@ -86,6 +134,55 @@ compositions of a transition function. Revision \texttt{b2c389a} of this paper s
 reveals $\eps L$ bits changes the regime at most $\eps L$ times'', and its \cref{sec:to-machines} priced a change of
 regime at half a row. Half a row is the price of a change that affects all $d$ entries of a row, and at that price the
 count gives nothing.
+
+For decoders that are not affine the count of \cref{cor:entry-advice} is not available at all, and this is the
+reason for part~(b). With a view of the whole matrix, one decoder for all rows, with no change of any kind, is correct
+on a set of at least $q^{d^2}/(2d)$ matrices~\cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}
+(\cref{sec:sets}). The inputs that share a value of advice form a set and not a subspace. So for them, and for
+decoders that are compositions of a transition function, the sharing of a decoder bounds nothing when the decoder
+sees the whole stored word. What that example uses, and the decoders of a machine do not have, is the size of the
+view. The cones that a genie leaves have bounded size, so a decoder reads boundedly many bits, and with them it can
+tell apart only boundedly many positions (\cref{sec:sets}). Whether the sharing of a decoder bounds a set of matrices
+when the decoders read boundedly many symbols of a fixed alphabet is not known, and part~(b) asks it in the one-hop
+model, in two forms. In the weaker form one function serves all rows and reads translated positions, which is what a
+stretch of periodic motion gives. Since a set of matrices can contain marker rows, one function can then imitate
+boundedly many classes of rows, where the marker rows are free: with markers the value $(d^2+d)/2$ of subspaces is
+exceeded by a multiple of $d$ that grows with the window, over every finite field (\cref{sec:sets}), so the constant
+$C$ of~(b) has to grow with~$w$. In the stronger form only
+the positions are translates, and every position may have its own function. Over a fixed alphabet there are boundedly many functions of $w$ symbols, so the stronger form
+is the question for boundedly many classes of any shape, drawn entry by entry. It contains what is left of the weaker
+form among the inputs that share a revealed word: there the outputs of a periodic stretch whose cones meet the same
+pattern of revealed bits, with the same values, compute the same function of the input bits that they read, so that
+the revealed word divides the outputs into boundedly many classes of a shape that the advice chooses. The hypothesis
+of the stronger form is a property of the relation alone, and so of the head motion. What is proved is
+\cref{prop:sets} and the list after it: window one, offsets or row differences that are bounded, and, for the weaker
+form, subspaces.
+
+The conclusion asked for in~(b) is that of the all-code question of the fifth
+paper~\cite[Question~9.1]{DirectedRecovery2026}, with other hypotheses. That question is about relations of bounded
+incidence degree that are separated, and for those the answer is no (\cref{sec:false}). A one-class relation has
+the symmetry of its positions instead; it may have loops and cycles of length two, and one position may help $d$
+others. We have not determined whether relations like those of the counterexamples of \cref{sec:false} can be
+one-class relations. A rule with $M$ classes of any shape whose decoders have window $w$ gives a relation that is
+contained in a one-class relation of window $Mw$. So a positive answer to the stronger form of~(b) would give the
+half bound of \cref{prob:aperiodic}(a) for every fixed number of classes and decoders of bounded window over a fixed
+finite field, for sets as well as subspaces. For subspaces the weaker form is enough. A code of a rule with $M$
+classes whose decoders have window $w$ can be replaced by a code of at least the same dimension in which one row of
+each class is free, with decoders of window at most
+$2w+1$~\cite[Theorem~4.1]{SharedDecoders2026}; fixing $k=\lceil\log_qM\rceil$ of these rows as markers
+(\cref{sec:sets}) gives a storage code with one function for all rows, on a one-class relation of window
+$M(2w+1)+k$, with $q^{-kd}$ times as many elements. So a positive answer to the weaker form, for every window, gives
+\cref{prob:aperiodic}(a) for rules with a fixed number of classes and decoders of bounded window over a fixed finite
+field. A negative answer to either form would be a code above the pairing rate, with bounded windows, on positions
+that move with the output row.
+
+For adaptive machines a later paper of the series puts the function $r(\eps)$ on the machine's own runs. At the
+canonical entry width, for all but an exponentially small share of the inputs that a linear-time transposer handles,
+and for every set $B$ of steps of the run on such an input, the relation between entries that is left when $B$ is cut
+out carries storage codes whose deficit is at most a small multiple of the input length plus a constant times
+$\card B$~\cite[Theorem~H.5 and Corollary~H.6]{AdaptiveTransfer2026}. So a bound on storage codes that is stated for
+relations, as part~(b) is, can be applied to a single run of an adaptive machine wherever the relation of that run
+satisfies its hypothesis.
 
 \begin{problem}[What an unshuffle does not supply]\label{prob:scales}
 \Cref{cor:digit} requires a transposer to break the symmetry of every address digit, and \cref{rem:compose-TP} shows

@@ -398,7 +398,8 @@ costs at most half a symbol in both counts.
 space meets its translate in at least $2D-d^2$ dimensions, and translation-covariant data has $d$ dimensions per uniform
 piece. The argument does not depend on the characteristic, on the degree, on the window of the decoder, or on the other
 tensor side. It does depend on exact covariance under a unit shift inside each class, on the classes being the same for
-every output row, on linearity, and on there being one hop. \Cref{prop:entry} relaxes the second of these: every output
+every output row, on the code being a subspace, and on there being one hop. It does not depend on the decoders being
+linear (\cref{sec:sets}). \Cref{prop:entry} relaxes the second of these: every output
 row, that is, every coordinate $r$ of the rows of $X$, may have its own change points, at half a symbol for each.
 The flag bounds of \cref{sec:order} are not shown to be instances of it.
 \item \emph{No symmetry that the swap lacks.} By \cref{lem:pigeonhole}, a code that exceeds the pairing value by
@@ -407,6 +408,8 @@ to beat the pairing rate, the decoder may have neither a hidden order nor a symm
 does not share.
 \item \emph{It uses the rule, not the relation.} The hypothesis of \cref{thm:TP} is that translated receivers share a
 decoder. That is the feature of machines singled out in \cref{sec:rule}, and it is invisible in the cone relation.
+For sets that are not subspaces the hypothesis loses its force when a decoder sees the whole matrix; what it gives
+for decoders that read boundedly many entries is open (\cref{sec:sets}, \cref{prob:machines}(b)).
 \item \emph{The folklore step is optimal in dimension.} With $M$ equal pieces, nothing beats the $M\times M$ coarse
 transposition by even one dimension, although many other codes equal it (\cref{rem:extremal}).
 \end{itemize}
@@ -647,3 +650,152 @@ every case the largest code of that rule has exactly the dimension of the coroll
 its rule over $\Q$ for every $d=4k\le100$, and further two-class codes, among them one with a gain of $2$ for two
 classes of six elements at $d=12$~\cite[Remark~4.11]{ClassUniformMemo2026}.
 \end{remark}
+
+\subsection{Decoders that are not linear, and sets that are not subspaces}\label{sec:sets}
+
+The decoders of a machine are compositions of its transition function, and they are not linear. The inputs that share
+a value of a genie's advice form a set, not a subspace. A paper that followed revision \texttt{ac70dc4} of this
+one~\cite{SharedDecoders2026} separates the two kinds of linearity in the bounds of this section. This subsection
+records what it shows, and states two bounds that need neither kind.
+
+\paragraph{The decoders may be arbitrary maps.} The proof of \cref{thm:TP} uses the rule in one way: two decoders of one
+class, applied to the same matrix, return the same row. It uses no other property of the maps $\cA_J$. So
+\cref{thm:TP} holds, with the same proof, for arbitrary maps $\cA_J\colon\Mat_d(F)\to F^{\Z/d}$ and a subspace $\X$
+that satisfies the equations of \cref{def:class-uniform}~\cite[Lemma~3.1]{SharedDecoders2026}. \Cref{thm:line}
+holds for arbitrary decoders of the zero-padded window as well. The outline given for it above first derives a linear
+identity and then sets column~$0$ to zero; for arbitrary maps one restricts to the matrices with zero column~$0$
+first, and then the two windows that are compared are equal~\cite[Theorem~A.4]{SharedDecoders2026}. Both forms are
+proved in Lean there. The proof of
+\cref{prop:entry} is of the same kind: it compares the values of $a_{c,r}$ and of $a_{c+1,r}$ at one matrix. So that
+proposition holds for arbitrary maps $a_{c,r}\colon\Mat_d(F)\to F$ as well; this form of it is not formalized. With
+the pigeonhole in this form, and with each further intersection taken inside the space that the earlier ones leave,
+the same paper improves the bounds for classes of arbitrary shape (\cref{prob:aperiodic}).
+
+\paragraph{The code may not be an arbitrary set.} The count of dimensions in these proofs needs $\X$ to be a subspace,
+and without that hypothesis nothing remains of them. Over an alphabet of $q\ge2$ symbols, and for every $d\ge2$, there
+are a single map $\cA$ and a set of at least $q^{d^2}/(2d)$ matrices $X$ with $x_c=\cA(\sigma^cX)$ for
+every~$c$~\cite[Theorem~A.1 and Corollary~A.2]{SharedDecoders2026}: in the main case the decoder, shown
+$\sigma^cX$, recognises which matrix of the set this is a rotation of, and with it~$c$. The same happens on an affine subspace: one map $\cA$ serves
+all matrices whose row~$0$ is a given unit vector, an affine space of dimension
+$d^2-d$~\cite[Proposition~4.5]{SharedDecoders2026}. So in \cref{thm:TP} the subspace cannot be replaced by a set, or by
+an affine subspace. For the same reason \cref{cor:entry-advice} has no counterpart for decoders that are not affine:
+its proof subtracts two matrices that share a value of the advice, and a set of matrices that satisfies one rule with
+one class, with no change of decoder at all, can have $q^{d^2}/(2d)$ elements.
+
+These decoders use the whole of the matrix that they are shown: a marker row, or enough of the matrix to tell its
+rotations apart. A decoder that reads $w$ entries over an alphabet of $q$ symbols can tell apart at most $q^w$ rows in
+this way, a bounded number when the alphabet and the window are fixed. (The alphabet has to be fixed: over $d$
+symbols, on the matrices with $X_{0,j}=j$ for all $j$, the single entry $(\sigma^cX)_{0,0}$ is~$c$.) The two bounds
+that follow are for sets and arbitrary functions, and they are stated for the positions that the decoders read. In the
+language of \cref{def:storage}, a recovery relation on the $d^2$ positions of a matrix assigns to every position
+$(c,r)$ a set $N(c,r)$ of positions, its \emph{helpers}, and a storage code on it is a set $S$ of $d\times d$ matrices
+over an alphabet such that the entry $X_{c,r}$ of a matrix $X\in S$ is a function of the entries of $X$ at the helpers
+of $(c,r)$; the function may depend on $(c,r)$. If the decoder $\cA_J$ of a class-uniform rule computes its
+coordinate~$r$ from the entries of its argument at the positions of a set $W_{J,r}$, then every code of the rule is a
+storage code on the relation with $N(c,r)=\{(i,e+c):(i,e)\in W_{J,r}\}$ for $c\in J$. The relation keeps the positions
+and forgets the decoders, and with them the fact that the decoders of one class are equal.
+
+Both bounds are instances of one elementary fact: a storage code over $q$ symbols has at most $q^{\card I}$ elements
+whenever every directed cycle of the relation, loops included, passes through the set $I$ of coordinates. This is
+the form for storage codes of the acyclic-subgraph bound for index codes~\cite[Theorem~3]{BBJK2011}, which the series
+has used before~\cite[Proposition~4.14(a)]{FourthPaper2026}. What the proposition adds is the choice of~$I$: the two
+sets are those of the proofs of \cref{thm:FL} and of \cref{prop:copy}, so that these two bounds of this paper hold
+for sets and for functions that are not linear. We give the short proofs.
+
+\begin{proposition}[Two bounds for sets]\label{prop:sets}
+\notformalized
+Let $S$ be a storage code, over an alphabet of $q$ symbols, on a recovery relation $N$ on the positions of a
+$d\times d$ matrix.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{Order.} Number the rows and the columns $0,\dots,d-1$, and let $g\colon\{0,\dots,d-1\}\to\{0,\dots,d\}$ be
+any function. If, for every~$c$, every helper of a position in row $c$ lies in a column $j$ with $g(j)>c$, then
+$\card S\le q^{\sum_jg(j)}$. The same holds with rows and columns exchanged: if, for every~$r$, every helper of a
+position in column $r$ lies in a row $i$ with $g(i)>r$, then $\card S\le q^{\sum_ig(i)}$.
+\item \emph{One helper.} If every position has exactly one helper, $N(c,r)=\{f(c,r)\}$, then $\card S\le q^{z}$, where
+$z$ is the number of cycles of the map $f$ on the positions. If moreover there are a partition of $\Z/d$ into $M$
+classes and maps $\pi_J,\rho_J\colon\Z/d\to\Z/d$ with $f(c,r)=(\pi_J(r),\rho_J(r)+c)$ for $c$ in the class~$J$,
+then $\card S\le q^{(d^2+Md)/2}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) Let $I=\{(i,j):i<g(j)\}$, a set of $\sum_jg(j)$ positions. We show that two matrices $X,X'\in S$ that agree on
+$I$ are equal; then restriction to $I$ is injective on $S$. Suppose they agree on $I$, and prove that they agree on
+row~$c$ by downward induction on $c=d-1,\dots,0$. Let $(i,j)$ be a helper of a position $(c,r)$, so that $g(j)>c$. If
+$i>c$, the two matrices agree on row $i$ by induction. If $i\le c$, then $i<g(j)$, so $(i,j)\in I$. Hence $X$ and $X'$
+agree at all helpers of $(c,r)$, and so at $(c,r)$. For the second statement apply the first to the set of the
+transposes of the matrices in $S$, which is a storage code on the relation with all positions transposed.
+
+(b) Every position leads into a cycle of $f$ under iteration of~$f$. Choose one position on every cycle, and let
+$X,X'\in S$ agree at the chosen positions. If they agree at $f(p)$, they agree at~$p$. Going around a cycle against
+the direction of $f$, from its chosen position, they agree on the whole cycle; and by induction on the number of steps
+that a position needs to reach a cycle, they agree everywhere. So $\card S\le q^z$. For the second statement, a fixed
+point $(c,r)$ of $f$ has $\pi_J(r)=c$ with $J$ the class of~$c$, so for every $r$ there is at most one fixed point in
+each class: at most $Md$ in all. Every other cycle has at least two positions, so $z\le Md+(d^2-Md)/2$.
+\end{informalproof}
+
+Part~(a) is the elimination step of \cref{thm:FL}: read in coordinates, \eqref{eq:FL} says that an entry of row $b$ is
+a combination of entries in the columns $b'$ with $g(b'+1)>b$. Step~3 of that proof shows that a solution which
+vanishes on $I$ is zero; the same induction, applied to two solutions that agree on~$I$, uses neither that the
+entries are linear combinations nor that the solutions form a subspace. What does not carry over to sets is step~1,
+the choice of bases: part~(a) is about an order of the coordinates as they are given. Part~(b) is \cref{prop:copy} for sets, with
+functions of one stored entry in place of its multiples.
+
+Two instances of part~(a). With $g(j)=j+1$ the helpers of row $c$ lie in the columns $c,\dots,d-1$ and the bound is
+$q^{d(d+1)/2}$, the number of symmetric matrices: if row $c$ is computed, by any functions, from any number of entries
+in the columns $c,\dots,d-1$, for every~$c$, the set stays at the pairing value. The bound
+of~\cite[Proposition~K.5]{SharedDecoders2026}, for a map of the rows followed by a map of the columns, is proved
+there by a recovery of this kind. On a
+cycle, let every helper of a position in row $c$ lie in a column $c+e$ with $-B\le e\le B$, read modulo~$d$, where
+$2B\le d$. Take $g(j)=d$ for $j<B$ and $g(j)=\min(d,j+B+1)$ for $j\ge B$; then
+\[
+  \card S\ \le\ q^{\,d(d+1)/2+2Bd-B(2B+1)} .
+\]
+The rows of the helpers and their number are arbitrary here. So what \cref{sec:fail} calls synchronous access, the
+reading of source rows in step with the output, gives no more than the pairing value up to a term of order $Bd$ when
+the offsets are at most~$B$, for sets and for functions that are not linear. For offsets of any size we have a
+bound only for subspaces and one decoder for all rows (\cref{cor:commutative,thm:TP}).
+
+Call a recovery relation on the positions a \emph{one-class relation of window~$w$} if there are maps
+$i_m,j_m\colon\Z/d\to\Z/d$, $1\le m\le w$, with
+\[
+  N(c,r)=\{(i_m(r),\,j_m(r)+c):1\le m\le w\}\qquad\text{for all }c,r .
+\]
+These are the relations of rules with one class whose decoders read at most $w$ entries for each coordinate of the
+output row. The relation of a rule with $M$ classes of any shape whose decoders read at most $w$ entries for each
+coordinate is contained in a one-class relation of window $Mw$, with the helpers of all classes together, and a
+storage code on a relation is a storage code on every relation with more helpers. For storage codes on one-class
+relations, the results above give the following.
+\begin{itemize}[leftmargin=1.5em]
+\item For $w=1$, at most $q^{(d^2+d)/2}$ elements, by part~(b).
+\item If all offsets $j_m(r)$ lie in $\{-B,\dots,B\}$ modulo $d$, with $2B\le d$: at most $q^{d(d+1)/2+2Bd}$
+elements, for every~$w$, by part~(a).
+\item If all differences $i_m(r)-r$ lie in $\{-B,\dots,B\}$ modulo $d$, with $2B\le d$: the same bound, for
+every~$w$ and all offsets, by part~(a) with rows and columns exchanged.
+\item If the code is a subspace and the function for the position $(c,r)$ does not depend on~$c$, dimension at most
+$(d^2+d)/2$, for every~$w$, by \cref{thm:TP} in the form for arbitrary decoders.
+\end{itemize}
+The last case differs from the general one in two ways: the code is a subspace, and one function serves all rows.
+We do not know whether storage codes on one-class relations of bounded window, over a fixed alphabet, stay at the
+pairing rate when either of these hypotheses is dropped, or both: this is \cref{prob:machines}(b). A subspace with a
+function for each position, which may then be taken linear, is the case of rules with boundedly many classes drawn
+entry by entry. A set with one function for all rows can already exceed the value $(d^2+d)/2$ of the last item, as
+follows.
+
+\paragraph{Marker rows.} A set of matrices can carry markers that tell a decoder the class of its row. Let $\X$ be a
+code of a class-uniform rule with $M$ classes over a field of $q$ elements, let the decoders read at most $w$ entries
+for each coordinate, and let $k=\lceil\log_qM\rceil$. Choose $k$ rows $t_1,\dots,t_k$ and pairwise distinct words
+of $k$ symbols, one for each class, and let $S$ be the set of the matrices $X\in\X$ in which, for every~$c$, the entries
+$X_{t_1,c},\dots,X_{t_k,c}$ spell the word of the class of~$c$. On $S$ one function serves all rows: it reads the $k$
+entries of $\sigma^cX$ at the positions $(t_a,0)$, which are the entries $X_{t_a,c}$, learns the class of~$c$, and
+applies the decoder of that class. So $S$ is a storage code, with one function for all rows, on a one-class relation
+of window $Mw+k$. If $\X$ is a subspace in which the rows $t_1,\dots,t_k$ are free, $S$ has $q^{\dim\X-kd}$
+elements. For the block-symmetric matrices of \cref{prop:block-symmetric} over $\F_2$, with $M\ge2$ blocks of side
+$m$ and the marker rows $0,m,\dots,(k-1)m$, these rows are free, because block symmetry ties an entry of row $am$ only
+to entries of the other rows of its block. Then $S$ has $2^{(d^2+Md)/2-kd}$ elements and the window is $M+k$. For
+$M=8$ that is $2^{d^2/2+d}$ matrices with window $11$, where a subspace with one function for all rows has at most
+$2^{(d^2+d)/2}$. So for sets the bound of the last item fails by a multiple of $d$ that grows with the window, and
+the two cases do not differ as one class and many: one function for all rows can imitate boundedly many classes of
+rows, where the marker rows are free, and a function for each position gives boundedly many classes drawn entry by
+entry. The same example over a field of $q$ elements, with $\lceil\log_qM\rceil$ marker rows, has
+$q^{(d^2+Md)/2-kd}$ matrices.

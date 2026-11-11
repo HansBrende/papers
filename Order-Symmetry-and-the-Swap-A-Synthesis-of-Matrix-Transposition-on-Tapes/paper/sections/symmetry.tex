@@ -774,12 +774,15 @@ elements, for every~$w$, by part~(a).
 every~$w$ and all offsets, by part~(a) with rows and columns exchanged.
 \item If the code is a subspace and the function for the position $(c,r)$ does not depend on~$c$, dimension at most
 $(d^2+d)/2$, for every~$w$, by \cref{thm:TP} in the form for arbitrary decoders.
+\item For $w\le2$, at most $q^{d(d+1)/2+d-1}$ elements, by \cref{prop:order}(b) below.
+\item If the offsets $j_m(r)$ take at most $s+1$ values, or the differences $i_m(r)-\pi(r)$ do for some permutation
+$\pi$: at most $q^{d^2/2+6d^{2-1/(s+1)}}$ elements, for every~$w$, by \cref{prop:order}(c) and~(d).
 \end{itemize}
-The last case differs from the general one in two ways: the code is a subspace, and one function serves all rows.
-We do not know whether storage codes on one-class relations of bounded window, over a fixed alphabet, stay at the
-pairing rate when either of these hypotheses is dropped, or both: this is \cref{prob:machines}(b). A subspace with a
+The fourth case differs from the general one in two ways: the code is a subspace, and one function serves all rows.
+For $w\ge3$ we do not know whether storage codes on one-class relations of window~$w$, over a fixed alphabet, stay at
+the pairing rate when either of these hypotheses is dropped, or both: this is \cref{prob:machines}(b). A subspace with a
 function for each position, which may then be taken linear, is the case of rules with boundedly many classes drawn
-entry by entry. A set with one function for all rows can already exceed the value $(d^2+d)/2$ of the last item, as
+entry by entry. A set with one function for all rows can already exceed the value $(d^2+d)/2$ of the fourth item, as
 follows.
 
 \paragraph{Marker rows.} A set of matrices can carry markers that tell a decoder the class of its row. Let $\X$ be a
@@ -794,8 +797,252 @@ elements. For the block-symmetric matrices of \cref{prop:block-symmetric} over $
 $m$ and the marker rows $0,m,\dots,(k-1)m$, these rows are free, because block symmetry ties an entry of row $am$ only
 to entries of the other rows of its block. Then $S$ has $2^{(d^2+Md)/2-kd}$ elements and the window is $M+k$. For
 $M=8$ that is $2^{d^2/2+d}$ matrices with window $11$, where a subspace with one function for all rows has at most
-$2^{(d^2+d)/2}$. So for sets the bound of the last item fails by a multiple of $d$ that grows with the window, and
+$2^{(d^2+d)/2}$. So for sets the bound of the fourth item fails by a multiple of $d$ that grows with the window, and
 the two cases do not differ as one class and many: one function for all rows can imitate boundedly many classes of
 rows, where the marker rows are free, and a function for each position gives boundedly many classes drawn entry by
 entry. The same example over a field of $q$ elements, with $\lceil\log_qM\rceil$ marker rows, has
 $q^{(d^2+Md)/2-kd}$ matrices.
+
+\paragraph{Order bounds for one-class relations.} The acyclic-subgraph bound can be applied to a one-class relation
+through an order of the rows alone, or of the columns alone. The first settles window two, and the second every
+relation whose offsets take boundedly many values; with a count of the pairs of positions that help each other, it
+also shows that a code which uses only such pairs stays at the pairing rate. Call a set of positions \emph{acyclic}
+if the relation has no directed cycle inside it, a position that is its own helper being a cycle; a storage code
+over $q$ symbols has at most $q^{d^2-\card A}$ elements for every acyclic set~$A$. We use this in the following form:
+if $H$ is a function from the positions to a totally ordered set, then the set $A$ of the positions $p$ with
+$H(p')<H(p)$ for every helper $p'$ of~$p$ is acyclic. (Two elements of the code that agree outside $A$ agree at the
+position of $A$ with the least value of $H$ at which they could differ, since all its helpers lie outside $A$ or
+have a smaller value.)
+
+\begin{proposition}[Order bounds for one-class relations]\label{prop:order}
+\notformalized
+Let $S$ be a storage code, over an alphabet of $q$ symbols, on a one-class relation with the maps
+$i_m,j_m\colon\Z/d\to\Z/d$, $1\le m\le w$.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{Rows.} For every bijection $\varphi\colon\Z/d\to\{1,\dots,d\}$,
+\[
+  \card S\ \le\ q^{\,\sum_r\max_m\varphi(i_m(r))} .
+\]
+\item \emph{Window two.} If $w\le2$, then $\card S\le q^{\,d(d+1)/2+d-1}$.
+\item \emph{Offsets.} Let $1\le u\le d-1$, $g=\gcd(u,d)$, $j_0\in\Z/d$ and $B\ge0$ be such that, for all $m$ and $r$,
+the residue $u\,(j_m(r)-j_0)$ is that of an integer of absolute value at most~$B$. Then
+$\card S\le q^{\,d^2/2+2(B+g)d}$. In particular, if the offsets $j_m(r)$, over all $m$ and $r$, take at most $s+1$
+values, where $s\ge1$, then $\card S\le q^{\,d^2/2+6d^{2-1/(s+1)}}$.
+\item \emph{Rows, in the form of (c).} Let $\pi$ be a permutation of $\Z/d$, and let $u$, $g$, $B$ be as in~(c) and
+$b_0\in\Z/d$ be such that, for all $m$ and $r$, the residue $u\,(i_m(r)-\pi(r)-b_0)$ is that of an integer of absolute
+value at most~$B$. Then $\card S\le q^{\,d^2/2+2(B+g)d}$; and if the differences $i_m(r)-\pi(r)$ take at most $s+1$
+values, then $\card S\le q^{\,d^2/2+6d^{2-1/(s+1)}}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) Take $H(i,e)=\varphi(i)$ and $\Phi(r)=\max_m\varphi(i_m(r))$. A position $(c,r)$ with $\varphi(c)>\Phi(r)$ has
+all its helpers in rows $i_m(r)$ with $\varphi(i_m(r))\le\Phi(r)<\varphi(c)$, so it lies in~$A$. The other positions
+number $\sum_r\card{\{c:\varphi(c)\le\Phi(r)\}}=\sum_r\Phi(r)$.
+
+(b) We use a lemma on rankings. \emph{Let $G$ be a multigraph with $n$ vertices and at most $n$ edges, in which the
+two ends of an edge may coincide. Then the vertices can be numbered $1,\dots,n$ so that the sum, over the edges, of
+the larger of the numbers of the two ends is at most $n(n+1)/2+n-1$.} Number from the top: for $k=n,n-1,\dots,1$,
+among the $k$ vertices that have no number yet, give the number $k$ to a vertex $v_k$ that lies on the fewest edges of
+the graph $G_k$ induced on them. Let $m_k$ be the number of edges of $G_k$, let $\delta_k$ be the number of those at
+$v_k$, and put $\eps_k=m_k-k$, so that $\eps_{k-1}=\eps_k+1-\delta_k$ and $\eps_0=0$. An edge has larger number $k$
+exactly if it is an edge of $G_k$ at $v_k$, so the sum of the lemma is
+\[
+  \sum_{k=1}^nk\,\delta_k=\sum_{k=1}^nk\,(1+\eps_k-\eps_{k-1})=\frac{n(n+1)}2+n\,\eps_n-\sum_{k=1}^{n-1}\eps_k .
+\]
+The numbers of edges at the vertices of $G_k$ sum to at most $2m_k$, so $\delta_k\le\lfloor2m_k/k\rfloor$. Hence
+$\eps_k\ge\min(\eps_n,-1)$ for all $k\ge1$, by induction downwards: if $\eps_k\le-1$ then $2m_k/k<2$, so
+$\delta_k\le1$ and $\eps_{k-1}\ge\eps_k$; and if $\eps_k\ge0$ then $\delta_k\le2+2\eps_k/k$, so
+$\eps_{k-1}\ge\eps_k(1-2/k)-1\ge-1$ for $k\ge2$. With $\eps_n=0$ the sum is at most $n(n+1)/2+n-1$, and with
+$\eps_n=-s<0$ it is at most $n(n+1)/2-ns+(n-1)s$, which is smaller. This proves the lemma. Now let $G$ be the
+multigraph on $\Z/d$ with the $d$ edges $\{i_1(r),i_2(r)\}$, $r\in\Z/d$, where the two ends coincide if the two rows do
+or if $w=1$. The lemma gives a bijection $\varphi$ with $\sum_r\max_m\varphi(i_m(r))\le d(d+1)/2+d-1$, and (a)
+applies.
+
+(c) Put $\psi(e)=u\,(e-j_0)\bmod d$, a multiple of $g$ in $\{0,\dots,d-g\}$, and $H(i,e)=\psi(e)$; every such
+multiple is the value of $\psi$ at exactly $g$ columns. Write $a(c)=uc\bmod d$. A helper of $(c,r)$ lies in a column
+$c+j$ with $\psi(c+j)=(a(c)+b)\bmod d$, where $b$ is the integer with $\abs b\le B$ in the residue class of
+$u\,(j-j_0)$. If $B\le a(c)<d-B$ this value is $a(c)+b\le a(c)+B$. So $A$ contains every position $(c,r)$ with
+$B\le a(c)<d-B-g$ and $\psi(r)>a(c)+B$. For such a $c$, the number of $r$ with $\psi(r)>a(c)+B$ is
+$g\,(d/g-1-\lfloor(a(c)+B)/g\rfloor)\ge d-g-B-a(c)>0$. The function $f(x)=d-g-B-x$ is decreasing, and $a$ takes every
+multiple of $g$ exactly $g$ times, so
+\[
+  \card A\ \ge\ g\sum_{t:\ B\le gt<d-B-g}f(gt)\ \ge\ \int_{B+g}^{d-B-g}f(x)\,dx-\frac{g^2}2=\frac{(d-2B-2g)^2-g^2}2
+\]
+when $d\ge2B+2g$: each term $g\,f(gt)$ is at least the integral of $f$ over $[gt,gt+g]$, these intervals cover
+$[B+g,d-B-g]$, on what they cover before $B+g$ the function is nonnegative, and what they cover after $d-B-g$ has
+length less than $g$, where $f>-g$. So $\card A\ge d^2/2-2(B+g)d$, which is trivial when $d<2B+2g$.
+
+For the second statement let $j_0$ be one of the values and $t_1,\dots,t_s$ the differences of the others from it,
+and let $N=\lfloor d^{1/(s+1)}\rfloor$. By Dirichlet's theorem on simultaneous approximation there are integers
+$1\le u\le N^s$ and $p_1,\dots,p_s$ with $\abs{ut_k/d-p_k}\le1/N$ for all~$k$. Then $u\le N^s<d$ (we may take
+$d\ge2$), every $ut_k$ is
+congruent to an integer of absolute value at most $B=\lfloor d/N\rfloor\le2d^{s/(s+1)}$, and
+$g\le u\le d^{s/(s+1)}$. The first statement gives the exponent $d^2/2+6d^{s/(s+1)}\cdot d$.
+
+(d) Take $H(i,e)=\varphi(i)$ with $\varphi(x)=u\,(x-b_0)\bmod d$, and $a'(r)=u\pi(r)\bmod d$. Every helper of
+$(c,r)$ lies in a row $i$ with $\varphi(i)=(a'(r)+b)\bmod d$ and $\abs b\le B$, so $A$ contains every position with
+$B\le a'(r)<d-B-g$ and $\varphi(c)>a'(r)+B$. Since $\pi$ is a bijection, $a'$ takes every multiple of $g$ exactly
+$g$ times, and the count of~(c) applies with the roles of $c$ and $r$ exchanged. The second statement follows as
+in~(c).
+\end{informalproof}
+
+Parts (a) and (b) use only that every helper of a position in column $r$ lies in one of the rows $i_m(r)$, and
+part~(c) only that every helper of a position in row $c$ lies in one of the columns $c+j_m(r)$. So they hold for
+functions of whole rows and of whole columns. \emph{If every column of a matrix of $S$ is a function of at most two
+rows of it, the two rows depending on the column, then $\card S\le q^{d(d+1)/2+d-1}$. If every row $c$ is a function
+of the columns $c+j$, for $j$ in a fixed set of $s+1$ offsets, then $\card S\le q^{d^2/2+6d^{2-1/(s+1)}}$.} In the
+language of \cref{def:class-uniform}, the second statement is about one decoder for all rows that reads $s+1$ whole
+columns of its argument, by any map; with a view of the whole matrix the rate tends to one, as recalled above. With
+$\varphi(i)=i+1$ for $0\le i<d$, part~(a) contains the third item of the list above. When $u$ is prime to~$d$,
+the first statements of (c) and~(d) follow from the cyclic instance of \cref{prop:sets}(a) after the rows and the
+columns have been renumbered (by $uc \bmod d$ and $\psi$ in~(c)), with a slightly better exponent; what the two
+parts add is the case $g>1$, which the statements about $s+1$ values need. Those two
+statements say something only when $d>12^{s+1}$. In terms of the sets $R_k=\varphi^{-1}\{1,\dots,k\}$ and the
+numbers $m_k$ of columns $r$ with $\{i_m(r)\}_m\subseteq R_k$, the exponent of~(a) is
+$d(d+1)/2+\sum_{k=1}^{d-1}(k-m_k)$: the pairing value plus the sum of the amounts, of either sign, by which the
+sets of $k$ rows of the chain $R_1\subset R_2\subset\cdots$ fall short of containing the rows of $k$ columns. We
+call this sum the \emph{deficiency} of the chain.
+
+Part~(b) is close to the truth. The ranking lemma is sharp for every~$n$: in a cycle on $n$ vertices any $k<n$
+vertices span at most $k-1$ edges, so $\eps_k\le-1$ for $1\le k<n$ in every numbering, and the identity displayed in
+the proof gives a sum of at least $n(n+1)/2+n-1$. The bound of~(b) itself is attained at $d=3$: with
+$(i_1,j_1)=(1,2),(0,1),(0,2)$ and $(i_2,j_2)=(2,1),(1,0),(2,0)$ at $r=0,1,2$, six positions are their own helpers
+and the other three help one another, so the matrices whose entries at those three positions sum to zero form a
+storage code with $q^8$ elements over $\Z/q$. For even $d$, the matrices with $X_{c,r}=X_{r,c}$ whenever $c-r$ is
+even and $X_{c,r}=X_{r-1,c+1}$ whenever $c-r$ is odd form a storage code on the relation with the helpers $(r,c)$ and
+$(r-1,c+1)$, with $q^{d^2/2+d}$ elements. Both examples have a function for each position. So for window two and
+a function for each position the constant $C$ of \cref{prob:machines}(b) lies between $1$ and~$\tfrac32$; with one
+function for all rows we only know that it lies between $\tfrac12$ and~$\tfrac32$. For functions of whole rows the
+acyclic-subgraph bound cannot always give a smaller exponent than~(b): when every column $r$ is a function of the rows
+$r$ and $r+1$, at $d=4$ the least number of positions that meets every cycle is $13=d(d+1)/2+d-1$
+(\cref{app:verification}).
+
+Call $p'$ a \emph{mutual helper} of $p$ if each of the two positions is a helper of the other.
+
+\begin{proposition}[Mutual helpers and transitive triangles]\label{prop:mutual}
+\notformalized
+Fix $w$, and let $N$ be a one-class relation of window~$w$ on the positions of a $d\times d$ matrix.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item For every $\eps>0$ there is a set $T\subseteq(\Z/d)^2$ of at most $2w^2/\eps$ pairs such that, for all but at
+most $\eps d^2$ of the ordered pairs $(p,p')$ of mutual helpers, $p'=(r-u,c+v)$ for $p=(c,r)$ and some $(u,v)\in T$.
+\item Let $S$ be a set of matrices over $q$ symbols in which every entry is a function of the entries at the mutual
+helpers of its position. Then, for every $\eps>0$,
+$\card S\le q^{\,d^2/2+\eps d^2+6d^{2-\eps/(2w^2)}}$. So $\card S\le q^{(1/2+o(1))d^2}$ as $d\to\infty$, uniformly in
+the relation.
+\item At most $wd$ positions are their own helpers. For every $\eps>0$ there is a set of at most
+$\eps d^2+2w^6d/\eps$ positions that meets every \emph{transitive triangle}: three distinct positions $x$, $y$, $z$
+such that $x$ is a helper of $y$ and of $z$, and $y$ is a helper of~$z$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) Call $(r-i_m(r),\,j_m(r))\in(\Z/d)^2$ the \emph{type} of the pair $(r,m)$, and let $n(u,v)$ be the number of
+pairs $(r,m)$ of type $(u,v)$; these numbers sum to $wd$. Let $p=(c,r)$ and $p'=(c',r')$, let $p'$ be the helper of
+$p$ that belongs to $m$, and $p$ the helper of $p'$ that belongs to $m'$: $c'=i_m(r)$, $r'=c+j_m(r)$, $c=i_{m'}(r')$,
+$r=c'+j_{m'}(r')$. Then $(r,m)$ has the type $(r-c',r'-c)$ and $(r',m')$ has the type $(r'-c,r-c')$, its transpose,
+and $p'=(r-u,c+v)$ for the type $(u,v)$ of $(r,m)$. The pairs $(r,m)$ and $(r',m')$ determine $p$ and~$p'$. So the
+number of quadruples $(p,p',m,m')$ of this kind is at most $\sum_{(u,v)}n(u,v)\,n(v,u)$. Let $\theta=\eps/(2w)$, and
+let $T$ be the set of the types $(u,v)$ with $n(u,v)\ge\theta d$ and $n(v,u)\ge\theta d$; it has at most
+$w/\theta$ elements. The terms with $n(v,u)<\theta d$ sum to less than $\theta d\cdot wd$, and so do the terms with
+$n(u,v)<\theta d$. So fewer than $\eps d^2$ quadruples have a type outside~$T$.
+
+(b) For $\eps\ge\tfrac12$ the bound is trivial, so let $\eps<\tfrac12$; then $2w^2/\eps>2$. Take $T$ from (a), and let $E$ be the set of the positions that have a mutual helper not of the form given
+there; $\card E\le\eps d^2$. The matrices of $S$ with given entries on $E$ form a storage code on the relation in
+which a position of $E$ has no helper and every other position $(c,r)$ has its mutual helpers outside $E$ as
+helpers, all of the form $(r-u,c+v)$ with $(u,v)\in T$: entries on $E$ are constants. This relation is contained in
+the one-class relation with the maps $i(r)=r-u$, $j(r)=v$ for $(u,v)\in T$, whose row differences take at most
+$\card T$ values. By \cref{prop:order}(d), with $\pi$ the identity, such a set has at most
+$q^{d^2/2+6d^{2-1/K}}$ elements, where $K=\max(\card T,2)\le2w^2/\eps$. There are at most $q^{\eps d^2}$ choices of
+the entries on~$E$.
+
+(c) The position $(c,r)$ is its own helper through $m$ exactly if $c=i_m(r)$ and $j_m(r)=r-c$, which holds for at
+most one $c$ for each pair $(r,m)$. For the second statement let $z=(c,r)$, let $y$ be the helper of $z$ that belongs
+to $m$, and $x$ the one that belongs to $m'$, and let $x$ be the helper of $y$ that belongs to~$m''$. With
+$r'=c+j_m(r)$, the column of~$y$, this says $i_{m''}(r')=i_{m'}(r)$ and
+$i_m(r)+j_{m''}(r')=c+j_{m'}(r)=r'-j_m(r)+j_{m'}(r)$, that is, $\alpha(r)=\beta(r')$ for the maps
+\[
+  \alpha(r)=\bigl(i_{m'}(r),\ j_{m'}(r)-j_m(r)-i_m(r)\bigr),\qquad
+  \beta(r')=\bigl(i_{m''}(r'),\ j_{m''}(r')-r'\bigr)
+\]
+from $\Z/d$ to $(\Z/d)^2$. The pair $(r,r')$ determines $z$, and $x$ lies in the row that is the first coordinate of
+the common value. So, for fixed $(m,m',m'')$, the number of such configurations is
+$\sum_\xi\card{\alpha^{-1}(\xi)}\,\card{\beta^{-1}(\xi)}$. Let $\theta=\eps/(2w^3)$. At most $1/\theta$ values $\xi$
+have $\card{\alpha^{-1}(\xi)}\ge\theta d$ and $\card{\beta^{-1}(\xi)}\ge\theta d$, and the other values contribute fewer than
+$2\theta d^2$ configurations. Over the $w^3$ triples $(m,m',m'')$: in all but fewer than $\eps d^2$ configurations $x$
+lies in one of at most $w^3/\theta=2w^6/\eps$ rows. Take these rows, and the position $z$ of every other
+configuration.
+\end{informalproof}
+
+So a code that uses only helpers in both directions, as the storage codes of an undirected graph do, cannot exceed
+the pairing rate on a one-class relation of bounded window; the explicit bound of~(b) says something only for very
+large~$d$, and the statement is about the rate. The relation of the code of rate $7/13$ on a graph of
+degree four~\cite[Example~7.8]{SeventhPaper2026} is of this kind, and so is every other undirected construction; the
+relations of \cref{sec:false} other than its undirected graphs are directed, and \cref{prop:mutual} does not decide
+whether relations like them can be one-class relations. In an affine relation, with $i_m(r)=a_mr+b_m$, $j_m(r)=\alpha_mr+\beta_m$ and every $a_m$
+invertible modulo~$d$, part~(c) can be read off, and for prime $d$ part~(a) as well: the helper maps are the
+invertible affine maps whose linear part sends the first basis vector to the second, the composition of two of them is never one of them, and one of them has an inverse of this kind only if its
+linear part is the swap. The parity code on a triangle and the Hamming code of length seven on a tournament, two
+local codes of rate above one half, both contain transitive triangles; so by~(c) copies of them can cover only
+$o(d^2)$ positions of a one-class relation of bounded window: every copy contains a position of the set of~(c), and
+all positions of a copy are reached from any one of them along helpers, of which a position has at most~$w$.
+
+Part~(c) also connects one-class relations with the seventh paper, whose theorems are about relations in which no
+position is its own helper and there is no transitive triangle. When the entries at the positions of~(c) are fixed,
+the other entries form a storage code on a relation of that kind. So, for instance, a storage code on a one-class
+relation of bounded window in which, outside the positions of~(c), the positions with three or more helpers form an
+acyclic set has at most
+$q^{(1/2+o(1))d^2}$ elements~\cite[Theorem~5.3]{SeventhPaper2026}; for $w\le2$ this is weaker than
+\cref{prop:order}(b), which has an error term linear in~$d$ and needs no positions fixed. And the conjecture of that
+paper for relations with at most three helpers at each position~\cite[Conjecture~9.1]{SeventhPaper2026} would give
+window three in the form $(\tfrac12+o(1))d^2$. With four helpers no statement of this kind holds for relations in
+general, by the example just cited; that example has mutual helpers only, and these are excluded here by~(b).
+
+\paragraph{What the order argument does not reach.} \Cref{prop:order} answers \cref{prob:machines}(b) for window
+two, and for every window when the rows $i_m(r)$ have a chain of small deficiency or the offsets are made short by a
+multiplier. We say that the rows and the offsets of a relation are both \emph{spread} when neither is the case. It
+cannot be expected to answer the question for such relations in general. For relations with random maps we
+searched for large acyclic sets, with a solver under a time limit (\cref{app:verification}). The table below gives
+the sizes of the sets found for four families of one-class relations and for a digraph without any structure, in
+which every position has $w$ helpers at random. In the first family, with zero offsets, an acyclic set of $d(d-1)/2$
+positions exists by \cref{prop:sets}(a) with $g(j)=j+1$, and the search finds larger ones; on a second control, the
+pairing together with eleven permutations at zero offsets, where the largest acyclic set has exactly $d(d-1)/2$
+positions, it returns that value at $d=17$, $23$ and~$29$. In the three families whose rows and offsets are both
+spread the sets found have about $0.4\,d^2$ positions at window twelve for every $d$ in the table, as in the digraph
+without structure, and the distance to $d(d-1)/2$ grows with~$d$; at window twenty-four they have between
+$0.25\,d^2$ and $0.32\,d^2$. These are results of a search and not bounds: they indicate, and do not prove, that
+for such relations and large windows every set that meets all cycles has more than $(\tfrac12+c)d^2$ positions, for
+some $c>0$. For one instance the computation gives a proof: in the relation of the family of permutations and
+offsets at $d=13$ and $w=12$, every set of positions that meets all cycles has at least $99$ elements, where
+$d(d+1)/2=91$; there the window is almost as large as~$d$.
+
+\begin{center}\small
+\begin{tabular}{@{}rrrrrrrr@{}}
+\toprule
+$d$ & $w$ & zero offsets & permutations & affine & random & no structure & $d(d-1)/2$ \\
+ & & (control) & and offsets & & & & \\
+\midrule
+13 & 12 & 99 & 69 & 64 & 70 & 72 & 78 \\
+17 & 12 & 176 & 118 & 111 & 118 & 121 & 136 \\
+23 & 12 & 327 & 211 & 202 & 223 & 219 & 253 \\
+29 & 12 & 515 & 339 & 323 & 353 & 349 & 406 \\
+17 & 24 & 160 & 92 & 74 & 73 & 77 & 136 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent{\small Numerical: sizes of the largest acyclic sets found by a search under a time limit (60 seconds for
+$d\le17$, 120 seconds otherwise; one run each, and a rerun differs by a few positions) in relations on the $d^2$
+positions. Zero offsets: random permutations as row maps. Permutations and offsets: alternately a random permutation
+with zero offset and the identity with random offsets. Affine: maps $(ar+b,\,c+\alpha r+\beta)$ with random
+coefficients. Random: random maps $i_m$, $j_m$.}
+
+\medskip
+With the pairing and two, three or five further helpers, whose row maps are random permutations and whose offsets
+are random, the least number of positions that meets every cycle is exactly $d(d+1)/2$ in all eleven instances that
+we computed, for $9\le d\le17$; there the lower and the upper bound of the computation coincide. So for small windows
+the acyclic-subgraph bound may still settle the question, and for large windows, where a relation with random maps
+behaves like a random digraph, it very likely cannot. There a bound would need an argument of another kind. A code
+above the pairing rate would have to use helpers in one direction, by \cref{prop:mutual}(b), on a relation whose rows
+and offsets are both spread, by \cref{prop:order}, and it could not consist of copies of a code on boundedly many
+positions that contains a transitive triangle and in which every position is reached from every other along helpers,
+by \cref{prop:mutual}(c).

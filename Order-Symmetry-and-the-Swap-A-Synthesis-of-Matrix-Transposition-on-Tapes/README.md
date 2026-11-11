@@ -107,6 +107,24 @@ Proved in the paper but not formalized:
   has at most q^z matrices, z the number of cycles of the map between positions; for M classes of copy positions that
   is at most q^((d² + Md)/2). Both are instances of the acyclic-subgraph bound of Bar-Yossef, Birk, Jayram and Kol;
   what the proposition supplies is the two sets of positions. `tools/set_bounds_check.py` checks small instances.
+- Propositions 6.22 and 6.23, added in the revision after that, on Problem 9.4(b). A *one-class relation of window w*
+  lets the entry at (c, r) depend on the w entries at (i_m(r), c + j_m(r)), for arbitrary maps i_m, j_m of Z/d.
+  - 6.22(a): for every ranking φ of the rows, a set of matrices on such a relation has at most
+    q^(Σ_r max_m φ(i_m(r))) elements. (b): for w ≤ 2 that is at most q^(d(d+1)/2 + d − 1), for all maps, all functions
+    and all sets; it holds whenever every column is a function of at most two rows. The bound is attained at d = 3,
+    and for even d there are sets with q^(d²/2 + d) matrices, so the constant C of Problem 9.4(b) at window two,
+    with a function for each position, lies between 1 and 3/2. (c), (d): if the offsets, or the
+    differences of the rows from a permutation, take at most s + 1 values, at most q^(d²/2 + 6 d^(2 − 1/(s+1))),
+    for every window.
+  - 6.23: for every ε > 0, all but ε d² of the pairs of positions that help each other are related by one of at
+    most 2w²/ε translates of the swap, so a code that uses only such pairs has at most q^((1/2 + o(1)) d²)
+    elements; and o(d²) positions meet all loops and transitive triangles, so the theorems of the seventh paper for
+    relations without them apply.
+  - The bounds are the acyclic-subgraph bound with suitable orders; the two statements of 6.23 about pairs and
+    triangles are counts. Problem 9.4(b) is now asked for w ≥ 3. Searches reported in Section 6.7 indicate that for
+    large windows the acyclic-subgraph bound cannot answer it; for one instance this is proved.
+  - `tools/order_bounds_check.py` checks the lemmas and small instances; `tools/acyclic_set_search.py` reproduces
+    the searches.
 
 Numerical remarks (exact computations, reproduced by the scripts in `tools/`, not used in any proof) are labelled as
 numerical in the paper. Those over GF(2) at sizes up to six are collected in its section on small sizes; the remark on
@@ -123,8 +141,9 @@ is now 41/64, from a later paper); for which partitions into intervals the bound
 decoders; a
 bound for rules that use masks at all dyadic scales on both indices; a version of Theorem TP for the cone systems of
 oblivious schedules, and, in the one-hop model over a fixed alphabet, whether sets of matrices whose entries are
-functions of boundedly many entries at positions that move with the row stay at rate ½, with one function for all
-rows or with a function for each position (Problem 9.4(b)); and a subadditive quantity that is
+functions of three or more entries, boundedly many, at positions that move with the row stay at rate ½, with one
+function for all rows or with a function for each position (Problem 9.4(b); for two entries they do, by
+Proposition 6.22); and a subadditive quantity that is
 large for the swap at every scale separately and is not raised at all scales by one linear-time operation. The
 paper's last section states these precisely.
 
@@ -167,7 +186,7 @@ formal proofs are unchanged.
 **Two later papers of the series** followed revision ac70dc4:
 [Macroscopic Information Transfer in Adaptive Tape Transposition](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)
 and [Capacity and Composition of Shared Transposition Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/).
-The present revision of this paper cites them and changes the following; no earlier result or number of the paper
+Revision 3911d87 of this paper cites them and changes the following; no earlier result or number of the paper
 changes.
 
 - Problem 9.1(a) and Section 7.3 quote the second paper's bounds for classes of any shape: (41/64)d² + O(d^(3/2)) for
@@ -186,6 +205,14 @@ changes.
   what Proposition 6.21 gives for synchronous access.
 - Sections 3.6, 4.1 and 4.2 cite the first paper: on the machine's own runs it proves a statement of the form that
   Section 3.6 reported as open, and it gives the function of Section 4.1 a form on those runs.
+
+**The revision after 3911d87** is about Problem 9.4(b), which that revision asked for every window. It adds
+Propositions 6.22 and 6.23 (above) at the end of Section 6.7, with a paragraph on what the acyclic-subgraph bound
+does not reach; restricts Problem 9.4(b) to windows of at least three and rewrites the list of what is proved in
+its commentary; and adds two rows to the table of Section 7.1, a sentence each to Sections 7.1 and 7.4, a paragraph
+to the introduction, a sentence to the abstract, two items to the appendix on verification and a sentence to the
+statement of contributions. The two
+propositions are proved in the text and are not formalized. No earlier result or number changes.
 
 ## Building and verifying
 
@@ -223,6 +250,8 @@ python3 tools/digit_and_composition_checks.py    # the digit corollary and the c
 python3 tools/entry_form_check.py                # Proposition 6.15 on small instances
 python3 tools/two_class_family.py                # Proposition 6.17 and Corollary 6.19 over small fields
 python3 tools/set_bounds_check.py                # Proposition 6.21 on small instances; about 20 s
+python3 tools/order_bounds_check.py              # Propositions 6.22 and 6.23: lemmas and small instances; about 15 s
+python3 tools/acyclic_set_search.py pairing 60 9 2 9 3 9 5   # needs OR-tools; the searches of Section 6.7 (see tools/README.md)
 python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
 python3 tools/analyse_code.py                    # the code of dimension 25 and its translates

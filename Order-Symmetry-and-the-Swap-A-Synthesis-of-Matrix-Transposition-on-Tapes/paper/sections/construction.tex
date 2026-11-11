@@ -23,9 +23,15 @@ Uniform decoders with $M$ interval pieces, cycle or line & $(d^2+Md)/2$ & \cref{
 Copy rules with $M$ decoder classes of any shape & $(d^2+Md)/2$ & \cref{prop:copy} \\
 $s$ modulation frequencies & $\frac s{s+1}(d^2+d)$ & \cref{cor:weyl} \\
 One address digit of size $q$ treated uniformly & $\frac12(d^2+d^2/q)$ & \cref{cor:digit} \\
+Sets: every column a function of at most two rows, by any map & $d(d+1)/2+d-1$ &
+\cref{prop:order}(b) \\
+Sets: every entry a function of entries at $s+1$ offsets from its row, in any rows & $d^2/2+6d^{2-1/(s+1)}$ &
+\cref{prop:order}(c) \\
 \bottomrule
 \end{tabular}
-\caption{Upper bounds on the code dimension in the linear one-hop model. The other index is arbitrary.}
+\caption{Upper bounds on the code dimension in the linear one-hop model. The other index is arbitrary. The last two
+rows bound the logarithm, to the base of the alphabet size, of the number of matrices of a set, for arbitrary
+functions.}
 \label{tab:fail}
 \end{table}
 
@@ -34,7 +40,8 @@ Two design rules follow, for the one-hop model.
 \item \emph{Synchronous access is the pairing.} Reading any number of source rows in step with the output, at any
 offsets and through any convolution, gives the symmetric matrices and no more. With offsets of at most $B$ the same
 holds, up to a term of order $Bd$, for sets of matrices and for functions that are not linear
-(\cref{prop:sets}(a)).
+(\cref{prop:sets}(a)); and with offsets of any size that take boundedly many values it holds up to a term
+$o(d^2)$, whatever rows are read (\cref{prop:order}(c)).
 \item \emph{Uniform passes are the pairing.} A stretch on which translated outputs share their decoder gains nothing,
 whatever its window. The bound rises only with changes of regime, by $d/2$ symbols for each. On a cycle, a change
 that does not affect a whole row is charged by the entry: half a symbol for each output entry whose decoder changes
@@ -107,7 +114,9 @@ subspace, the sharing of a decoder is not enough when the decoder sees the whole
 (\cref{sec:sets}). Whether it is enough for decoders that read boundedly many bits, as the decoders of bounded cones
 do, is open already in the one-hop model. So is the stronger statement in which the decoders may differ and only the
 positions read by translated receivers are translates; that is a property of the relation after all, though not one
-of those that \cref{sec:false} shows to be insufficient (\cref{prob:machines}(b)).
+of those that \cref{sec:false} shows to be insufficient (\cref{prob:machines}(b)). The stronger statement is proved
+when every output entry reads at most two stored entries, and for every window when the offsets of the entries read
+take boundedly many values (\cref{prop:order}).
 \item \emph{Depth reduction.} The genie of \cref{sec:depth} reveals values at chosen steps. The revealed word is advice
 that depends on position, and \cref{thm:TP} has no place for it. Revision \texttt{b2c389a} of this paper said that a
 version of \cref{thm:TP} with advice would have to charge each revealed bit as a regime change, at half a row per

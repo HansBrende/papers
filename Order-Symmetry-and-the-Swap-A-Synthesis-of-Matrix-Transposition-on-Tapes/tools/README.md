@@ -10,8 +10,9 @@ The side length is `d` in the paper and `n` in most scripts. A partition of Z_n 
 
 **Requirements.** Python 3. `exhaustive_flag_checks.py` and `exhaustive_pigeonhole_checks.py` need NumPy;
 `class_uniform_sat.py`, and the subcommands `climb` and `controls` of `small_sizes.py`, need the package
-`pycryptosat` (CryptoMiniSat). Everything else uses the standard library only. The results in the paper were obtained
-with Python 3.12.10, NumPy 2.5.4 and pycryptosat 5.18.0.
+`pycryptosat` (CryptoMiniSat); `acyclic_set_search.py` needs OR-tools (`pip install ortools`). Everything else uses
+the standard library only. The results in the paper were obtained with Python 3.12.10, NumPy 2.5.4, pycryptosat
+5.18.0 and OR-tools 9.15.
 
 | Script | What it reproduces | Needs | Time |
 |---|---|---|---|
@@ -24,6 +25,8 @@ with Python 3.12.10, NumPy 2.5.4 and pycryptosat 5.18.0.
 | `entry_form_check.py` | Proposition (changes that affect single entries): every rule at d = 2 over GF(2), random rules and rules with free entries up to d = 5, and the rules of the saved codes; with controls that group the changes differently and must fail | — | seconds |
 | `two_class_family.py` | Proposition (two classes: a gain of d/4 − 1 over every field): the rule in closed form with a general coefficient, every rank stated in the proof for d ≤ 48 over GF(2), GF(3), GF(5), GF(7), GF(11), the dimension over GF(2) for d ≤ 100, and the saved codes `data/two_class_d8.json`, `_d12.json`, `_d16.json`. Corollary (every fixed number of classes): the blow-up rule for M = 3, ..., 7 and its largest code | — | seconds |
 | `set_bounds_check.py` | Proposition (two bounds for sets): the exact largest code of every recovery relation at d = 2 over two symbols, against the acyclic-subgraph bound and both parts of the proposition; the step of both proofs over all pairs of matrices, for 40 random relations at d = 3 over two symbols and 60 at d = 2 over three, and that it holds exactly when the relation has no cycle outside the supplied set; for the cyclic instance at d ≤ 12, its hypothesis, its exponent and the absence of cycles on random relations; the count of cycles of part (b) on random class maps at d ≤ 8; the remark on marker rows (every matrix of the set at d = 4, a sample at d = 16 with eight classes); three controls that must fail. Also the count of classes of the perfect shuffle in the section "From the one-hop model to machines" | — | about 20 s |
+| `order_bounds_check.py` | Propositions (order bounds for one-class relations) and (mutual helpers and transitive triangles): the ranking lemma on every multigraph with at most five vertices and as many edges, and its sharpness for at most four; the row and column sets on random relations; exact least hitting sets of the cycles at d = 3, 4 for window two; the count of part (c) and the Dirichlet multiplier on random instances; the two counts of the second proposition against enumeration; the two local codes named after it; the examples after the first proposition (the cycle for the ranking lemma, the relation at d = 3 that attains the bound of window two, the codes with d²/2 + d free entries at d = 4 and 6, whole rows at d = 4); two controls | — | about 15 s |
+| `acyclic_set_search.py` | The searches reported at the end of the section on sets: large acyclic sets in one-class relations with random maps and in an unstructured digraph, with a control family; exact least hitting sets for the pairing plus random helpers | OR-tools | see below |
 | `small_sizes.py` | Section "Small sizes": the table with its bounds, the list of partitions, the solver runs and the controls | pycryptosat for `climb`, `controls` | see below |
 | `class_uniform_sat.py` | One solver run: is there a class-uniform rule over GF(2) with a code of dimension ≥ D? | pycryptosat | see below |
 | `verify_class_uniform_code.py` | Checks a saved code in `data/` against the definition; shares no code with the search | — | seconds |
@@ -48,6 +51,7 @@ python3 tools/digit_and_composition_checks.py
 python3 tools/entry_form_check.py
 python3 tools/two_class_family.py
 python3 tools/set_bounds_check.py
+python3 tools/order_bounds_check.py
 ```
 
 Each ends with a summary line and stops, or exits with a nonzero status, if a statement of the paper fails on an
@@ -132,3 +136,41 @@ and vary between runs and machines. "TP" is the best bound of Theorem TP over sh
 Runs that the paper does not report: at d = 7 the same method is out of reach. For the intervals `0,1,2|3,4,5,6`
 it found a code of dimension 29 and timed out at 30 (900 s, `--hankel`), where the bound of Theorem TP is 31; for
 `0,1,2,4|3,5,6` it timed out at 29, one above the pairing value 28. Neither says anything about the true values.
+
+## Searches for acyclic sets (end of the section on sets)
+
+```sh
+python3 tools/acyclic_set_search.py large 60 13 12 17 12 17 24
+python3 tools/acyclic_set_search.py large 120 23 12 29 12
+python3 tools/acyclic_set_search.py pairing 60 9 2 9 3 9 5 11 2 11 3 11 5 13 2 13 3 13 5 17 3 17 5
+python3 tools/acyclic_set_search.py calibrate 120 17 12 23 12 29 12
+python3 tools/acyclic_set_search.py lower 200 13 12
+```
+
+`large` reports the size of the largest acyclic set that the solver finds within the time limit (seconds, first
+argument) for each pair (d, window). The sizes are results of a search: they are lower bounds on the largest
+acyclic set, and say nothing certain about its true size. A rerun can give slightly different numbers, because the
+solver runs four workers under a time limit. The output that the paper quotes:
+
+| d | window | zero offsets (control) | permutations and offsets | affine | random | unstructured digraph | d(d−1)/2 |
+|---|---|---|---|---|---|---|---|
+| 13 | 12 | 99 | 69 | 64 | 70 | 72 | 78 |
+| 17 | 12 | 176 | 118 | 111 | 118 | 121 | 136 |
+| 23 | 12 | 327 | 211 | 202 | 223 | 219 | 253 |
+| 29 | 12 | 515 | 339 | 323 | 353 | 349 | 406 |
+| 17 | 24 | 160 | 92 | 74 | 73 | 77 | 136 |
+
+In the control family an acyclic set of d(d−1)/2 positions exists by the order of the columns (Proposition (two
+bounds for sets), part (a)), and the search exceeds that size. On a second control (`calibrate`), the pairing with eleven zero-offset permutations, where the
+largest acyclic set has exactly d(d−1)/2 positions, the same search returned 136, 253 and 406 at d = 17, 23, 29.
+
+`lower` gives proved lower bounds on the least number of positions that meets every cycle, for the three spread
+families at the first pair of the first `large` run. With 200 seconds for each it printed 99 for permutations and
+offsets at d = 13, window 12 (above d(d+1)/2 = 91; the largest acyclic set there has 69 or 70 positions), and
+88 and 84 for the affine and the random family, which are below 91 and decide nothing. These are the solver's bounds
+after 200 seconds; a slower machine may print smaller numbers, which are still valid lower bounds.
+
+`pairing` reports a lower and an upper bound on the least number of positions that meets every cycle. In the eleven
+runs listed above the two bounds were equal, and equal to d(d+1)/2 (45, 66, 91, 153 for d = 9, 11, 13, 17), within
+60 seconds each.
+

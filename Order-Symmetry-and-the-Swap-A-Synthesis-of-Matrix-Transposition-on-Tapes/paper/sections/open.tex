@@ -116,14 +116,17 @@ and one scale at a time.
 of periodic head motion the outputs share their decoder, and a revealed bit or an irregular step changes the decoders
 of some outputs. Does a bound of the form $r(\eps)\le\tfrac12+C(\eps+\eta)$ hold for schedules whose motion is
 periodic outside a set of steps of density~$\eta$? (\Cref{sec:to-machines}.)
-\item Fix a window $w$ and an alphabet of $q$ symbols. Does every storage code on a one-class relation of window~$w$
-(\cref{sec:sets}) have at most $q^{(1/2+o(1))d^2}$ elements as $d$ grows, or even at most $q^{d^2/2+Cd}$ with a
-constant $C$ that depends on $w$ and~$q$? And is this so at least when one function serves all rows, that is, when the
-function for the position $(c,r)$ does not depend on~$c$?
+\item Fix a window $w\ge3$ and an alphabet of $q$ symbols. Does every storage code on a one-class relation of
+window~$w$ (\cref{sec:sets}) have at most $q^{(1/2+o(1))d^2}$ elements as $d$ grows, or even at most $q^{d^2/2+Cd}$
+with a constant $C$ that depends on $w$ and~$q$? And is this so at least when one function serves all rows, that is,
+when the function for the position $(c,r)$ does not depend on~$c$? (For $w\le2$ the answer to both is yes, with
+$C=\tfrac32$: \cref{prop:order}(b). For $w=2$ and a function for each position the least constant lies between $1$
+and $\tfrac32$, by the examples after that proposition; for $w=1$ it is $\tfrac12$.)
 \end{enumerate}
 \end{problem}
 
-Part~(a) is the problem as the earlier revisions stated it; part~(b) is new in the present one. The form of the bound
+Part~(a) is the problem as the earlier revisions stated it; part~(b) was added in revision \texttt{3911d87}, for
+every window, and is restricted here to the windows that remain open. The form of the bound
 in~(a) comes from the one-hop model with affine rules. By \cref{cor:entry-advice}, over a finite field, if every rule
 that the advice selects changes, from one row to the next, at no more than $E$ entries, then the matrices of a code
 that share a value of the advice number at most $\abs F^{(d^2+d+E)/2}$, whatever the advice is. The rate of such a
@@ -154,16 +157,23 @@ is the question for boundedly many classes of any shape, drawn entry by entry. I
 form among the inputs that share a revealed word: there the outputs of a periodic stretch whose cones meet the same
 pattern of revealed bits, with the same values, compute the same function of the input bits that they read, so that
 the revealed word divides the outputs into boundedly many classes of a shape that the advice chooses. The hypothesis
-of the stronger form is a property of the relation alone, and so of the head motion. What is proved is
-\cref{prop:sets} and the list after it: window one, offsets or row differences that are bounded, and, for the weaker
-form, subspaces.
+of the stronger form is a property of the relation alone, and so of the head motion. What is proved is in
+\cref{prop:sets,prop:order,prop:mutual}: windows one and two; every window when the offsets, or the differences of
+the rows from a permutation, are bounded or take boundedly many values; codes that use only helpers in both
+directions; and, for the weaker form, subspaces. What these
+results leave is a window of at least three on a relation whose rows and offsets are both spread. For small windows
+the acyclic-subgraph bound, which gives all of them but the last, may still be enough; for large windows the computations
+reported at the end of \cref{sec:sets} indicate that it is not. A code above the pairing rate would have to use
+helpers in one direction, on a relation of that kind.
 
 The conclusion asked for in~(b) is that of the all-code question of the fifth
 paper~\cite[Question~9.1]{DirectedRecovery2026}, with other hypotheses. That question is about relations of bounded
 incidence degree that are separated, and for those the answer is no (\cref{sec:false}). A one-class relation has
 the symmetry of its positions instead; it may have loops and cycles of length two, and one position may help $d$
 others. We have not determined whether relations like those of the counterexamples of \cref{sec:false} can be
-one-class relations. A rule with $M$ classes of any shape whose decoders have window $w$ gives a relation that is
+one-class relations; the undirected ones cannot, in the sense of \cref{prop:mutual}(b). In every one-class
+relation of bounded window few positions are their own helpers, and $o(d^2)$ positions meet all transitive triangles
+(\cref{prop:mutual}(c)). A rule with $M$ classes of any shape whose decoders have window $w$ gives a relation that is
 contained in a one-class relation of window $Mw$. So a positive answer to the stronger form of~(b) would give the
 half bound of \cref{prob:aperiodic}(a) for every fixed number of classes and decoders of bounded window over a fixed
 finite field, for sets as well as subspaces. For subspaces the weaker form is enough. A code of a rule with $M$

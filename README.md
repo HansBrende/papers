@@ -45,4 +45,6 @@ Each memo extends one paper and is kept in that paper's folder.
 Shared Lean machinery used by the papers, including ported external formalizations, is in
 [`lean-machine/`](lean-machine/).
 
+Statements with written proofs that await formalization are in [`lean-backlog/`](lean-backlog/).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution and publishing guidance.

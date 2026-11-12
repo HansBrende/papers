@@ -1,0 +1,185 @@
+\section{Affine Hilbert cubes and Ramsey-free two-stage cutoffs}\label{sec:cubes}
+
+\subsection{Common-message growth on ordered operator cubes}\label{sec:cube-lemma}
+
+Suppose two $F$-linear class-uniform operators
+$K_1, K_2 : \Mat_{d\times d}(F^b) \to \Mat_{d\times d}(F^b)$ with class partitions
+$p_1 : \Z_d \to \mathrm{Fin}\,M_1$ and $p_2 : \Z_d \to \mathrm{Fin}\,M_2$ satisfy
+$K_2 \circ K_1 = \tau$. By the common-message reduction of
+\cite[Lemma~6.1 and Theorem~6.3]{SharedDecoders2026}, any such factorization produces a subspace
+$W \le A$ of dimension $\dim_F W = bd$ inside a $q$-channel cyclic shift module
+$A = (\Z_d \to F^q)$ with $q \le b M_2$ ($\dim_F A = qd \le b M_2 d$), together with a linear
+readout $L : A \to Z$ injective on $W$ such that $L(T_c w) = L(w)$ for all $w \in W$ and all $c$ in
+a single $p_1$-class $J = p_1^{-1}(m_1)$ (where $(T_s w)_u = w_{u+s}$, formalized as
+\lean{cyclicChannelShift}). In \cite[Theorem~6.3]{SharedDecoders2026}, choosing a monochromatic
+arithmetic progression $\{c_0 + j s : 0 \le j < \ell\} \subseteq J$ gave
+$\ell \dim_F W \le \dim_F A + (\ell - 1)\dim_F\ker(T_s - \mathrm{id})$, yielding
+$d \le M_2(\mathsf{W}(M_1, M_2 + 1) - 1)$.
+
+To dispense with arithmetic progressions over an arbitrary field $F$, consider any $k$ linear
+endomorphisms $R_0, \dots, R_{k-1} \in \End_F(A)$ (not required to commute) and define for each
+$\eps \in \{0,1\}^k$ the ordered operator cube product (\lean{orderedCubeMap})
+\[
+  R^\eps \;:=\; R_{k-1}^{\eps_{k-1}} \cdots R_0^{\eps_0} \in \End_F(A).
+\]
+
+\begin{lemma}[Affine $k$-cube common-message growth]\label{lem:affine-cube}
+\formal{AffineCubeCompositionProofs.lean}{lemma_AffineCubeCommonMessageGrowth}
+Let $F$ be any field, $A$ a finite-dimensional $F$-vector space, $Z$ an $F$-vector space,
+$R_0, \dots, R_{k-1} \in \End_F(A)$, $W \le A$ a subspace, and $L : A \to Z$ an $F$-linear map
+injective on $W$. If $L(R^\eps x) = L(x)$ for all $x \in W$ and all $\eps \in \{0,1\}^k$, then
+\[
+  (k + 1)\dim_F W \;\le\; \dim_F A \;+\; \sum_{t=0}^{k-1} \dim_F \ker(R_t - \mathrm{id}_A).
+\]
+\end{lemma}
+\begin{outline}
+Define the nested cube-orbit subspaces $S_0 := W$ and $S_{t+1} := S_t + R_t(S_t)$ for
+$0 \le t < k$. By induction on $t$, every $u \in S_t$ is a linear combination of elements
+$R^\eps x$ with $x \in W$ and $\eps_s = 0$ for $s \ge t$. Comparing $\eps_t = 1$ with
+$\eps_t = 0$ in the cube invariance $L(R^\eps x) = L(x)$ shows that $P_t := R_t - \mathrm{id}_A$
+maps $S_t$ into $S_{t+1} \cap \ker L$. Since $W \subseteq S_t \subseteq S_{t+1}$ and $L$ is
+injective on $W$, we have $W \cap P_t(S_t) \subseteq W \cap \ker L = \{0\}$, so
+\[
+  \dim_F S_{t+1} \;\ge\; \dim_F W + \dim_F P_t(S_t)
+  \;\ge\; \dim_F W + \dim_F S_t - \dim_F \ker(R_t - \mathrm{id}_A).
+\]
+Summing from $t = 0$ to $k - 1$ gives $(k+1)\dim_F W \le \dim_F S_k + \sum_{t=0}^{k-1}
+\dim_F\ker(R_t - \mathrm{id}_A) \le \dim_F A + \sum_{t=0}^{k-1} \dim_F\ker(R_t - \mathrm{id}_A)$.
+\end{outline}
+
+\subsection{Iterated Cauchy--Schwarz cube extraction and Theorem 2A}\label{sec:thm2a}
+
+Unlike arithmetic progressions, affine $k$-cubes exist in every dense subset $J \subseteq \Z_d$
+(including $3$-AP-free sets) by elementary bucket pigeonholing and Cauchy--Schwarz, with explicit
+step bounds $1 \le s_t \le \lfloor d / (2 k^2)\rfloor$ keeping $\dim_F\ker(T_{s_t} - \mathrm{id})$
+small.
+
+\begin{lemma}[Cauchy--Schwarz affine $k$-cube extraction and dense-class bound]\label{lem:cs-cube}
+\formal{AffineCubeCompositionProofs.lean}{cauchySchwarzAffineCubeExtraction}
+\formal{AffineCubeConsequences.lean}{singleSubset_CauchySchwarzAffineCubeExtraction,denseSubset_AffineCubeCommonMessageBound}
+Let $d, M_{\mathrm{eff}}, k \ge 1$ satisfy $\max\bigl(8 M_{\mathrm{eff}} k^2,\;
+(2 M_{\mathrm{eff}})^{2^k}\bigr) < d$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Single-subset form}: for every subset $J \subseteq \Z_d$ of size $\abs{J} \ge
+  d / M_{\mathrm{eff}}$, there exist $c_0 \in J$ and steps
+  $s_0, \dots, s_{k-1} \in \{1, \dots, \lfloor d/(2k^2)\rfloor\}$ such that
+  $c_0 + \sum_{t : \eps_t = 1} s_t \in J$ for all $\eps \in \{0,1\}^k$. Over any field $F$, any
+  subspace $W \le (\Z_d \to F^q)$ admitting a linear readout $L$ and a reference shift
+  $c_{\mathrm{ref}} \in J$ such that $w \mapsto L(T_{c_{\mathrm{ref}}} w)$ is injective on $W$ and
+  $L(T_c w) = L(T_{c_{\mathrm{ref}}} w)$ for all $c \in J$ satisfies
+  $(k + 1)\dim_F W \le q d + q k \lfloor d / (2 k^2)\rfloor$, ruling out exact two-stage linear
+  factorizations whenever one stage-1 class has size $\ge d / M_{\mathrm{eff}}$ at $k = M_2$ and
+  $b \ge 1$.
+\item \emph{Coloring form}: setting $M_{\mathrm{eff}} = M_1$ and $k = M_2$, every $M_1$-coloring
+  $p_1 : \Z_d \to \mathrm{Fin}\,M_1$ admits a monochromatic affine $M_2$-cube with steps in
+  $\{1, \dots, \lfloor d/(2 M_2^2)\rfloor\}$.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Lift $J$ to $S \subseteq \{0,\dots,d-1\}$. Partitioning $\{0,\dots,d-1\}$ into $Q = 2k^2$ intervals
+of length $\le \lfloor d/Q\rfloor + 1$ and applying Cauchy--Schwarz to the bucket sizes shows that
+some step $s \in \{1, \dots, \lfloor d/Q\rfloor\}$ satisfies
+$\abs{S}(\abs{S} - Q) \le 2d\,\abs{\{x \in S : x + s \in S\}}$. Iterating $k$ times evolves the
+density denominator by $D_{t+1} = 2 D_t^2$ ($D_0 = M_{\mathrm{eff}}$, so
+$D_k = \frac{1}{2}(2 M_{\mathrm{eff}})^{2^k}$); the condition $d > \max(8 M_{\mathrm{eff}} k^2,
+(2M_{\mathrm{eff}})^{2^k})$ keeps every iterate nonempty and prevents wraparound modulo $d$ since
+$\sum_{t=0}^{k-1} s_t \le k \lfloor d/(2k^2)\rfloor < d$. Feeding the extracted cube into
+\Cref{lem:affine-cube} with $\dim_F\ker(T_{s_t} - \mathrm{id}) \le q s_t \le q\lfloor d/(2k^2)\rfloor$
+gives the dimension bound.
+\end{outline}
+
+\begin{theorem}[Theorem 2A: Ramsey-free two-stage exact factorization cutoff]\label{thm:2a}
+\formal{AffineCubeCompositionProofs.lean}{theorem2A_TwoStageRamseyFreeCutoff}
+\formal{AffineCubeConsequences.lean}{theorem2A_GrowingClassesNonFactorization}
+Let $F$ be any field, let $d, b, M_1, M_2 \ge 1$, and let $p_1 : \Z_d \to \mathrm{Fin}\,M_1$ and
+$p_2 : \Z_d \to \mathrm{Fin}\,M_2$. If two $F$-linear class-uniform maps $K_1, K_2$ on
+$\Mat_{d\times d}(F^b)$ satisfy $K_2 \circ K_1 = \tau$, then
+\[
+  d \;\le\; \max\!\Bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\Bigr).
+\]
+Consequently, for any class schedules $M_1(d), M_2(d)$ eventually satisfying both
+$8 M_1(d) M_2(d)^2 < d$ and $(2 M_1(d))^{2^{M_2(d)}} < d$ (for instance, fixed $M_2$
+with $M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$, covering $3$-AP-free Behrend partitions
+\cite{Behrend1946} with $M_1(d) = 2^{O(\sqrt{\log d})}$, or fixed $M_1$ with
+$M_2(d) \le (1 - \eps)\log_2\log_2 d$), no exact two-stage linear factorization
+$K_2 \circ K_1 = \tau$ exists over any field $F$.
+\end{theorem}
+\begin{outline}
+Assume for contradiction that $\max(8M_1 M_2^2, (2M_1)^{2^{M_2}}) < d$ and $K_2 \circ K_1 = \tau$.
+By \Cref{lem:cs-cube}(b), some $p_1$-class contains an affine $M_2$-cube with steps
+$1 \le s_t \le \lfloor d/(2M_2^2)\rfloor$. On the $q$-channel common-message module
+$A = (\Z_d \to F^q)$ ($q \le b M_2$, $\dim_F A = qd \le b M_2 d$),
+\cite[Lemma~6.1 and Theorem~6.3]{SharedDecoders2026} supplies a subspace $W \le A$ of dimension
+$\dim_F W = bd$ while $\dim_F\ker(T_{s_t} - \mathrm{id}) \le q s_t \le b M_2 \lfloor d/(2M_2^2)\rfloor$.
+Applying \Cref{lem:affine-cube} with $k = M_2$ gives
+\[
+  (M_2 + 1) bd \;\le\; b M_2 d + \sum_{t=0}^{M_2 - 1} b M_2 \lfloor d/(2 M_2^2)\rfloor
+  \;\le\; b M_2 d + \frac{1}{2} bd,
+\]
+contradicting $bd > 0$.
+\end{outline}
+
+\begin{remark}[Comparison with van der Waerden cutoffs at small parameters]\label{rem:2a-vs-p19}
+\Cref{thm:2a} trades small-parameter tightness for elementary dependence on $M_1$. At $M_1 = M_2 = 2$,
+\Cref{thm:2a} gives $d \le \max(64, 4^4) = 256$, which is substantially weaker than the bound
+$d \le 2(\mathsf{W}(2,3) - 1) = 16$ of \cite[Corollary~6.4]{SharedDecoders2026}. Conversely, once
+$M_1 \ge 3$ and $M_2 \ge 3$ grow or $p_1$ is chosen without $3$-term progressions, the van der
+Waerden bound $M_2(\mathsf{W}(M_1, M_2+1) - 1)$ grows as Hales--Jewett numbers in $M_1, M_2$,
+whereas \Cref{thm:2a} remains polynomial in $M_1$ for every fixed $M_2$.
+\end{remark}
+
+\subsection{Finite controls at \texorpdfstring{$d = 13$}{d = 13} and \texorpdfstring{$d = 4$}{d = 4}}\label{sec:cube-controls}
+
+Two finite-dimensional examples test the linear-growth multiplier $(k+1)$ in \Cref{lem:affine-cube}
+and the coded-versus-copy distinction at $d = 4 = M_1 M_2$.
+
+\begin{example}[$3$-AP-free $2$-cube witness at $d = 13$]\label{ex:d13-sharpness}
+\formal{AffineCubeCompositionProofs.lean}{control_D13TwoCubeAPFreeSharpness}
+\formal{AffineCubeConsequences.lean}{control_D13_GeneralFieldAndProgressionBridge}
+Let $d = 13$, $q = 2$ ($\dim_F A = 26$), and consider the $2$-cube
+$J_{13} = \{0, 1, 4, 5\} = \{0,1\} + \{0,4\} \subseteq \Z_{13}$.
+\begin{enumerate}[label=(\alph*)]
+\item $J_{13}$ is $3$-AP-free modulo $13$ (\lean{ThreeAPFreeMod}), so every non-constant progression
+  in $J_{13}$ has length $\ell \le 2$, where the single-step progression bound gives only
+  $\dim_F W \le 14$ (attained on $\{0,1\}$ over every field).
+\item Over every field $F$, \Cref{lem:affine-cube} with $k = 2$ and
+  $\dim_F\ker(T_s - \mathrm{id}) = 2$ ($s \in \{1,4\}$) gives $3\dim_F W \le 26 + 2 + 2 = 30$, hence
+  $\dim_F W \le 10$.
+\item Over $\R$, and over every field $F$ with $(13 : F) \ne 0$, there exists an explicit $(W, L)$
+  shift-invariant on $J_{13}$ of dimension $\dim_F W = 9$. Thus the maximum invariant dimension on
+  $J_{13}$ over such fields lies in $\{9, 10\}$; since $4 \cdot 9 = 36 > 26 + 3 \cdot 2 = 32$, a
+  naive $2^k$-multiplier inequality $2^k \dim_F W \le \dim_F A + (2^k - 1)q$ ($\dim_F W \le 8$)
+  does not hold.
+\end{enumerate}
+\end{example}
+\begin{outline}
+Residue inspection verifies that $J_{13}$ has no non-constant $3$-term progression modulo~$13$, and
+cyclic shift periodicity gives $\dim_F\ker(T_s - \mathrm{id}) = 2$ for $s \in \{1,4\}$. For the
+$9$-dimensional witness, the constant mode contributes $2$ dimensions and $7$ non-zero Fourier modes
+each satisfy a rank-$3$ alignment system inside a $4$-dimensional mode space, contributing
+$2 + 7 = 9$ independent dimensions.
+\end{outline}
+
+\begin{example}[Same-interval coded factorizations at $d = 4 = M_1 M_2$ when $(5 : F) \ne 0$]\label{ex:d4-coded}
+\formal{AffineCubeCompositionProofs.lean}{control_D4SameIntervalCodedFactorization}
+\formal{AffineCubeConsequences.lean}{control_D4_AllWidthsAndBinaryFields}
+Let $d = 4$ and let both stages use the same two-interval partition
+$p_1 = p_2 = [0, 0, 1, 1]$ (\lean{halfIntervalPartition4}, $M_1 = M_2 = 2$).
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Uncoded impossibility}: for every lane width $b \ge 1$ and finite alphabet
+  $\abs{\Sigma} \ge 2$, neither entry-copy rules nor bit-lane-copy rules $K_1, K_2$ with
+  $p_1 = p_2 = [0,0,1,1]$ can satisfy $K_2 \circ K_1 = \tau$.
+\item \emph{Coded factorization for $(5 : F) \ne 0$}: over every field $F$ with $(5 : F) \ne 0$
+  (combining an explicit rational table valid whenever $(20 : F) \ne 0$ with a separate binary $0/1$
+  table valid whenever $(2 : F) = 0$, including $\F_2$ at $b = 1$), and for every lane width
+  $b \ge 0$, there exist $F$-linear class-uniform maps $K_1, K_2$ on $\Mat_{4\times 4}(F^b)$ with
+  $p_1 = p_2 = [0,0,1,1]$ satisfying $K_2 \circ K_1 = \tau$. (Whether such a factorization exists in
+  characteristic~$5$ is not decided here.)
+\end{enumerate}
+\end{example}
+\begin{outline}
+In~(a), projecting onto lane~$0$ reduces bit-lane copy to scalar entry copy, where routing $4$
+entries through $2$-element interval classes forces a collision. In~(b), separate explicit linear
+tables verify $K_2 \circ K_1 = \tau$ lane-by-lane when $(20 : F) \ne 0$ and when $(2 : F) = 0$;
+every field with $(5 : F) \ne 0$ satisfies one of the two conditions.
+\end{outline}

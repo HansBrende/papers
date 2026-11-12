@@ -1511,3 +1511,33 @@ import LeanMachine
 #print axioms LeanMachine.clog_two_le_logb_add_one
 #print axioms LeanMachine.clog_state_product
 #print axioms LeanMachine.polynomial_menu_clog_small
+
+-- ShuffleShear/
+#print axioms LeanMachine.ShuffleShear.encode_len_get
+#print axioms LeanMachine.ShuffleShear.encode_entry_bit
+#print axioms LeanMachine.ShuffleShear.entryBits_pos_tm
+#print axioms LeanMachine.ShuffleShear.inputLength_pos
+#print axioms LeanMachine.ShuffleShear.entryBits_quad_upper
+#print axioms LeanMachine.ShuffleShear.entryBits_quad_lower
+#print axioms LeanMachine.ShuffleShear.entryBits_quad_le_four_L
+#print axioms LeanMachine.ShuffleShear.entryBits_two_pow
+#print axioms LeanMachine.ShuffleShear.Runs.of_le
+#print axioms LeanMachine.ShuffleShear.Runs.act
+#print axioms LeanMachine.ShuffleShear.Runs.seq
+#print axioms LeanMachine.ShuffleShear.Runs.while1
+#print axioms LeanMachine.ShuffleShear.Runs.loop
+#print axioms LeanMachine.ShuffleShear.Runs.loop_sum
+#print axioms LeanMachine.ShuffleShear.Runs.branch_true
+#print axioms LeanMachine.ShuffleShear.Runs.branch_false
+#print axioms LeanMachine.ShuffleShear.Block.computesWithin
+#print axioms LeanMachine.ShuffleShear.Runs_rewindFromEnd
+#print axioms LeanMachine.ShuffleShear.Runs_eraseFromEnd
+#print axioms LeanMachine.ShuffleShear.Runs_rewindInputFromPos
+#print axioms LeanMachine.ShuffleShear.Runs_appendOneUnary
+#print axioms LeanMachine.ShuffleShear.Runs_advanceClampedByPair
+#print axioms LeanMachine.ShuffleShear.Runs_quadrupleUnary
+#print axioms LeanMachine.ShuffleShear.Runs_discoverEntryBits
+#print axioms LeanMachine.ShuffleShear.Runs_clearUnary
+#print axioms LeanMachine.ShuffleShear.stoneShuffleTM_threeTape_linear
+#print axioms LeanMachine.ShuffleShear.stoneUnshuffleTM_twoTape_linear
+#print axioms LeanMachine.ShuffleShear.rowShearTM_twoTape_linear

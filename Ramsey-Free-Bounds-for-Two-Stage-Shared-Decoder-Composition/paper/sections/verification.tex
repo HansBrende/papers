@@ -1,0 +1,34 @@
+\section{Building and verifying}\label{sec:verification}
+
+The repository must be cloned together with its sibling directories (\texttt{lean-machine} and the
+earlier papers of the series) so that relative Lake path dependencies resolve. Both
+\texttt{lean-machine} and \texttt{BoundedArityDecoders} pin Lean~4 and Mathlib to version
+\texttt{v4.34.1}.
+
+To verify the shared shuffle, unshuffle, and row-shear machines in \texttt{../lean-machine}, run from
+the repository root:
+\begin{verbatim}
+cd lean-machine
+lake exe cache get
+lake build
+lake env lean Axioms.lean
+\end{verbatim}
+To regenerate the declaration index and axiom audit, verify all proofs in \texttt{lean/}, and build
+the manuscript PDF from this paper's directory, run:
+\begin{verbatim}
+python3 tools/lean_index.py
+cd lean
+lake exe cache get
+lake build
+lake env lean PaperAxioms.lean
+cd ../paper
+latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+\end{verbatim}
+Running \leanfile{python3} \leanfile{tools/lean_index.py} regenerates
+\leanfile{lean/BoundedArityDecoders.lean}, \leanfile{lean/PaperAxioms.lean}, and
+\Cref{sec:leanindex} (\leanfile{paper/sections/leanindex.tex}) directly from the \verb|\formal| and
+\verb|\lean| commands in \leanfile{paper/sections/*.tex}. Every proved declaration audited in
+\leanfile{Axioms.lean} and \leanfile{PaperAxioms.lean} depends at most on Lean's three standard
+axioms \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}, with no \texttt{sorry},
+\texttt{admit}, \texttt{native\_decide}, \texttt{unsafe}, \texttt{implemented\_by},
+\texttt{extern}, or custom \texttt{axiom} declarations.

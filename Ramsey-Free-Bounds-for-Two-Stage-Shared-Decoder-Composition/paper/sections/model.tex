@@ -1,0 +1,94 @@
+\section{Model and preliminaries}\label{sec:model}
+
+\subsection{Matrix states, class-uniform operators, and bounded-arity set codes}\label{sec:defs-shared}
+
+For $d \ge 1$, write $\Z_d = \Z/d\Z$ (formalized as \leanname{ZMod d}). Given an entry alphabet or
+module $A$, a $d \times d$ matrix state is a map $X : \Z_d \to \Z_d \to A$, written
+$X \in \Mat_{d\times d}(A)$ or $A^{d\times d}$ (\leanname{SharedDecoders.State}). Its transpose
+$\tau(X) = X^{\T}$ (\leanname{SharedDecoders.swap}, or \leanname{SharedDecoders.swapLinear} when $A$
+is an $F$-module) and column-cyclic shift $\rot_c(X)$ for $c \in \Z_d$
+(\leanname{SharedDecoders.rot}) are defined by
+\[
+  \tau(X)_{i,j} \;=\; X_{j,i},
+  \qquad
+  \rot_c(X)_{i,j} \;=\; X_{i,\,j+c}
+  \qquad (i, j \in \Z_d).
+\]
+Thus column $0$ of $\rot_c(X)$ is column $c$ of $X$, whereas column $c$ of $\tau(X)$ is the vector
+$r \mapsto X_{c,r}$ (row $c$ of $X$).
+
+When $A = F^b$ (\leanname{Fin b -> F}) over a field $F$, a linear operator
+$K : \Mat_{d\times d}(F^b) \to \Mat_{d\times d}(F^b)$ is \emph{class-uniform} for a column
+partition $p : \Z_d \to \kappa$ (\leanname{SharedDecoders.ClassUniform}; cf.\
+\cite[Definition~6.3]{SeventeenthPaper2026} and \cite[Section~2]{SharedDecoders2026}) if there exist
+$F$-linear class decoders $f_m : \Mat_{d\times d}(F^b) \to (F^b)^{\Z_d}$ ($m \in \kappa$) such that
+column $c$ of $K(X)$ equals $f_{p(c)}(\rot_c(X))$ for every $X$ and every $c \in \Z_d$. More
+generally, \leanname{SharedDecoders.IsSharedCode} (\cite[Definition~2.1]{SharedDecoders2026})
+restricts the code $C \le \Mat_{d\times d}(A)$ to an $F$-linear submodule while allowing arbitrary
+deterministic maps $f_m$.
+
+For arbitrary subsets $C \subseteq \Sigma^{d\times d}$ over a finite alphabet $\Sigma$ (used in
+\Cref{sec:sweep}), we also record syntactic cell footprints:
+
+\begin{definition}[Syntactic read footprints and bounded-arity shared set codes]\label{def:bounded-arity-set-code}
+Let $d \ge 1$, let $M, \Delta \in \N$, and let $\Sigma$ be a finite alphabet.
+\begin{enumerate}[label=(\alph*)]
+\item A family of class decoders $f : \mathrm{Fin}\,M \to \Sigma^{d\times d} \to \Sigma^{\Z_d}$ has
+  \emph{syntactic cell support $\le \Delta$} with footprint table
+  $Q : \mathrm{Fin}\,M \to \Z_d \to \mathrm{Finset}(\Z_d \times \Z_d)$
+  (\lean{SyntacticCellSupport}) if $\abs{Q_{m,r}} \le \Delta$ for all $(m,r)$, and whenever
+  $Y_1, Y_2 \in \Sigma^{d\times d}$ agree on every cell $q \in Q_{m,r}$, one has
+  $f_m(Y_1)_r = f_m(Y_2)_r$. (Its whole-column analogue is \lean{SyntacticColumnSupport}.)
+\item Given $p : \Z_d \to \mathrm{Fin}\,M$, a broken-output set
+  $\mathcal{E} \subseteq \Z_d \times \Z_d$, and $C \subseteq \Sigma^{d\times d}$, the data
+  $(\Delta, p, \mathcal{E}, f, Q)$ form a \emph{bounded-arity shared set code on $C$}
+  (\lean{IsBoundedAritySetCode}) if $(f, Q)$ has syntactic cell support $\le \Delta$ and
+  \[
+    f_{p(c)}\bigl(\rot_c(X)\bigr)_r \;=\; X_{c,r}
+    \qquad
+    \text{for all } X \in C \text{ and all } (r,c) \notin \mathcal{E}.
+  \]
+\end{enumerate}
+\end{definition}
+
+\subsection{Multitape Turing machines, canonical words, and grid bridges}\label{sec:defs-tm}
+
+In \Cref{sec:duality,sec:sweep} we interface with the multitape Turing machine model
+\leanname{Transpose.TM} imported unchanged from \cite[Definition~2.1]{FirstPaper2026}: a machine $M$
+has state set $\mathrm{Fin}(M.q + 1)$, work alphabet $\mathrm{Fin}(M.g + 1)$, $M.k$ two-way
+read-write work tapes, one two-way read-only binary input tape of length $L = d^2 b$ where
+$b = \leanname{Transpose.entryBits}(d)$, and one one-way write-only binary output tape. The canonical
+word alphabet (\lean{CanonicalWordAlphabet}) is $\Sigma_d := \{0,1\}^b$
+(\leanname{Fin (Transpose.entryBits d) -> Bool}).
+
+\begin{lemma}[Canonical word width and dummy-tape padding]\label{lem:pad-dummy-tape}
+\formal{NativeSweepInterfaceProofs.lean}{entryBits_eq_clog}
+\formal{SetCapacityConsequences.lean}{canonicalWordAlphabet_card_and_ge_two}
+\formal{MachineSweepConsequences.lean}{padDummyWorkTape_transposesWithin}
+For every $d \ge 0$, $2 \le \abs{\Sigma_d}$, and for every $d \ge 2$,
+$\leanname{Transpose.entryBits}(d) = \clog{d}$ and $\abs{\Sigma_d} = 2^{\clog{d}}$. Moreover, for
+every time bound $T : \N \to \N$ and every machine $M$ satisfying
+\leanname{Transpose.TransposesWithin} $M$ $T$, there exists a machine $M^+$ with $1 \le M^+.k$ that
+also satisfies \leanname{Transpose.TransposesWithin} $M^+$ $T$.
+\end{lemma}
+\begin{outline}
+Since $1 \le \leanname{Transpose.entryBits}(d)$ for all $d$, $\abs{\Sigma_d} = 2^b \ge 2$, and for
+$d \ge 2$ the definition $\lfloor\log_2(d-1)\rfloor + 1$ agrees with $\leanname{Nat.clog}\;2\;d$.
+When $M.k = 0$, adjoining a single blank work tape whose head never moves preserves states,
+input-head positions, and emitted output bits step for step.
+\end{outline}
+
+To connect Boolean tape matrices $A \in \leanname{Transpose.Matrix}$ with the linear operators of
+\Cref{sec:duality}, \lean{encodeTMMatrixToGrid} maps each bit $A(r,c,\ell) \in \{0,1\}$ to $0,1 \in F$
+in $\lean{GridState}\;F\;d\;b = (\mathrm{Fin}\,d \to \mathrm{Fin}\,d \to \mathrm{Fin}\,b \to F)$.
+
+\begin{proposition}[Equivariance of the matrix-to-grid bridge]\label{prop:tm-grid-bridge}
+\formal{ShuffleShearBridge.lean}{tmMatrix_gridLinear_bridges}
+For every ring $F$, \lean{encodeTMMatrixToGrid} intertwines \lean{stoneShuffleTMMatrix} with
+\lean{stoneShuffleGridLinear} (for $d = 2^m$), \lean{stoneUnshuffleTMMatrix} with
+\lean{stoneUnshuffleGridLinear} (for $d = 2^m$), \lean{rowShearTMMatrix} with \lean{rowShearLinear}
+(for $d \ge 1$), and \leanname{Transpose.transpose} with \lean{gridSwapLinear}.
+\end{proposition}
+\begin{outline}
+Verified directly by unfolding \lean{encodeTMMatrixToGrid} on each coordinate permutation.
+\end{outline}

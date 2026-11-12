@@ -1,0 +1,251 @@
+\section{Restricted shuffle-and-local operator pipelines and anti-diagonal untwisting}\label{sec:duality}
+
+We state the scope of this section up front. In \Cref{sec:osr} we analyze Operator Schmidt Rank
+($\OSR$) across the row/column tensor cut $F_{\mathrm{row}}^d \otimes_F (F_{\mathrm{col}}^d \otimes_F F^b)$
+for linear pipelines built from Stone's shuffle and unshuffle \cite{Stone1971} together with
+row-uniform operators $I_d \otimes B$ and column-uniform operators $A \otimes I_{db}$. This invariant
+applies \emph{only} to that restricted operator pipeline: it \emph{does not} answer
+\cite[Problem~9.5]{SeventeenthPaper2026} and \emph{does not} yield a lower bound for Turing machines.
+Indeed, \cite[Problem~9.5]{SeventeenthPaper2026} asks for a functional that is subadditive over
+machine steps, large for the swap at every scale, and \emph{``not raised at all scales by a single
+linear-time operation''}, whereas within-row cyclic shear has $\OSR = d$ (\Cref{prop:shear-control}(a))
+yet is computed in $O(L)$ steps on a $2$-work-tape Turing machine (\Cref{prop:stone-tm}). Nor do we
+formalize a converse decomposition of $\tau$ into $m$ shuffle passes here; \Cref{thm:osr-pass} is a
+pass lower bound for the specified operator class.
+
+\subsection{Operator Schmidt Rank on restricted shuffle pipelines and linear-time machines}\label{sec:osr}
+
+Write $\lean{GridState}(F, d, b) := (\mathrm{Fin}\,d \to \mathrm{Fin}\,d \to \mathrm{Fin}\,b \to F)$,
+separating the row index $r \in \mathrm{Fin}\,d$ from the within-row column-and-lane index
+$(c, \ell) \in \mathrm{Fin}\,d \times \mathrm{Fin}\,b$. An $F$-linear operator $K$ on
+$\lean{GridState}(F, d, b)$ has \emph{Operator Schmidt Rank at most $R$}, written $\OSR(K) \le R$
+(\lean{HasOperatorSchmidtRankLe}), if there exist $R$ row matrices $A_i \in \Mat_{d\times d}(F)$ and
+$R$ within-row linear maps $B_i \in \End_F(F^d \otimes_F F^b)$ such that
+\[
+  (K X)_{r,c,\ell}
+  \;=\;
+  \sum_{i=0}^{R-1} \sum_{r'=0}^{d-1} (A_i)_{r,r'}\,\bigl(B_i(X_{r'})\bigr)_{c,\ell},
+\]
+and we write $\OSR(K) = R$ (\lean{HasExactOperatorSchmidtRank}) when $\OSR(K) \le R$ and no
+$R' < R$ suffices.
+
+\begin{lemma}[Submultiplicativity and unit-rank operators]\label{lem:osr-submult}
+\formal{OperatorDualityProofs.lean}{operatorSchmidtRankSubmultiplicative}
+\formal{DualityAndSwapConsequences.lean}{isRowOrColUniform_rankLe_one}
+Over any field $F$:
+\begin{enumerate}[label=(\alph*)]
+\item If $\OSR(K_1) \le R_1$ and $\OSR(K_2) \le R_2$, then $\OSR(K_2 \circ K_1) \le R_2 R_1$.
+\item Every row-uniform column operator $I_d \otimes B$ (\lean{IsRowUniformColOp}, $(KX)_r = B(X_r)$)
+  and every column-uniform row operator $A \otimes I_{db}$ (\lean{IsColUniformRowOp},
+  $(KX)_{r,c,\ell} = \sum_{r'} A_{r,r'} X_{r',c,\ell}$) satisfies $\OSR(K) \le 1$.
+\end{enumerate}
+\end{lemma}
+\begin{outline}
+Expanding $K_2 \circ K_1$ over $(i_2, i_1) \in \mathrm{Fin}\,R_2 \times \mathrm{Fin}\,R_1$ multiplies
+the row matrices $A_{2,i_2} A_{1,i_1}$ and composes the within-row maps $B_{2,i_2} \circ B_{1,i_1}$
+using $R_2 R_1$ terms; $I_d \otimes B$ and $A \otimes I_{db}$ are single elementary tensors.
+\end{outline}
+
+\begin{theorem}[Operator Schmidt Rank of transpose and Stone's shuffle]\label{thm:osr-swap}
+\label{thm:osr-shuffle}
+\formal{OperatorDualityProofs.lean}{operatorSchmidtRankSwap,operatorSchmidtRankStoneShuffle}
+Let $F$ be any field and let $b \ge 1$.
+\begin{enumerate}[label=(\alph*)]
+\item For every $d \ge 1$, the matrix transpose $\tau = \lean{gridSwapLinear}(F, d, b)$ satisfies
+  $\OSR(\tau) = d^2$.
+\item On $d = 2^m$, Stone's $1$-bit cyclic shuffle $S = \lean{stoneShuffleGridLinear}(F, m, b)$ and
+  unshuffle $S^{-1} = \lean{stoneUnshuffleGridLinear}(F, m, b)$ are mutual inverses with
+  $\OSR(S) \le 4$ and $\OSR(S^{-1}) \le 4$ for all $m \ge 0$, and for every $m \ge 1$ ($d = 2^m \ge 2$),
+  \[
+    \OSR(S) \;=\; \OSR(S^{-1}) \;=\; 4.
+  \]
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+In~(a), decomposing $\tau$ by source/target row pairs uses $d^2$ terms, and evaluating any $R$-term
+decomposition on row-localized lane-$0$ basis inputs produces $R$ matrices spanning $\Mat_{d\times d}(F)$,
+forcing $R \ge d^2$. In~(b), for $m \ge 1$, Stone's shuffle sends $(r, c)$ to $(r', c')$ by moving
+the top bit of $r$ into the low bit of $c'$ and the top bit of $c$ into the low bit of $r'$;
+splitting on $(\text{low bit of } c',\, \text{low bit of } r') \in \{0,1\}^2$ gives a $4$-term
+decomposition whose four non-zero quadrant blocks are linearly independent once $2^m \ge 2$ (and
+symmetrically for $S^{-1}$).
+\end{outline}
+
+\begin{theorem}[Pass lower bounds for restricted shuffle-and-local pipelines]\label{thm:osr-pass}
+\label{cor:general-osr-pass}
+\formal{OperatorDualityProofs.lean}{stoneShufflePipelinePassLowerBound}
+\formal{DualityAndSwapConsequences.lean}{boundedOSRPipelinePassLowerBound}
+Let $F$ be any field and let $b \ge 1$.
+\begin{enumerate}[label=(\alph*)]
+\item On $d = 2^m$ ($m \ge 0$), if an operator list $K_1, \dots, K_n$ has composition
+  \lean{composeGridOps} equal to $\tau$, where $t$ indices are equal to $S$ or $S^{-1}$
+  and every remaining operator satisfies \lean{IsRowUniformColOp} or \lean{IsColUniformRowOp}
+  (of the form $I_d \otimes B$ or $A \otimes I_{db}$), then $(2^m)^2 \le 4^t$ and $t \ge m$.
+\item More generally, for any $d \ge 1$ and $R \ge 1$, if a composed pipeline equals $\tau$ with $t$
+  operators satisfying $\OSR \le R$ and all remaining operators satisfying $\OSR \le 1$, then
+  $d^2 \le R^t$, and for $R \ge 2$ one has $t \ge \dfrac{2\log d}{\log R}$.
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+By \Cref{lem:osr-submult} and \Cref{thm:osr-shuffle}(b), the composed pipeline has $\OSR \le 4^t$
+(respectively $\OSR \le R^t$), whereas $\OSR(\tau) = d^2$ by \Cref{thm:osr-swap}(a). Taking real
+logarithms when $R \ge 2$ gives $2\log d \le t\log R$.
+\end{outline}
+
+In the shared library \texttt{lean-machine} (\leanname{LeanMachine.ShuffleShear}), we construct
+explicit transition tables for one Stone shuffle pass, one Stone unshuffle pass, and within-row
+cyclic shear, and transport them into \leanname{Transpose.TM} in \leanfile{ShuffleShearBridge.lean}:
+
+\begin{proposition}[Verified $O(L)$-time multitape Turing machines for shuffle, unshuffle, and row shear]\label{prop:stone-tm}
+\formal{ShuffleShearBridge.lean}{stoneShuffleTM_threeTape_linear,stoneUnshuffleTM_twoTape_linear,rowShearTM_twoTape_linear}
+With $b = \mathrm{entryBits}(d)$ (\leanname{Transpose.entryBits}) and
+$L = \mathrm{inputLength}(d) = d^2 b$ (\leanname{Transpose.inputLength}):
+\begin{enumerate}[label=(\alph*)]
+\item \lean{stoneShuffleTransposeTM} has $3$ work tapes ($k = 3$) and, for every $m \ge 1$ ($d = 2^m$)
+  and every matrix $A$ (\leanname{Transpose.Matrix}), computes \lean{stoneShuffleTMMatrix} on $(m, A)$
+  within $150 L$ steps.
+\item \lean{stoneUnshuffleTransposeTM} has $2$ work tapes ($k = 2$) and, for every $m \ge 1$ ($d = 2^m$)
+  and every matrix $A$ (\leanname{Transpose.Matrix}), computes \lean{stoneUnshuffleTMMatrix} on $(m, A)$
+  within $150 L$ steps.
+\item \lean{rowShearTransposeTM} has $2$ work tapes ($k = 2$) and, for every $d \ge 1$ and every matrix
+  $A$ (\leanname{Transpose.Matrix}), computes within-row cyclic shear \lean{rowShearTMMatrix} on
+  $(d, A)$ (sending entry $(r, c, \ell)$ to $A_{r, (c+r)\bmod d, \ell}$) within $200 L$ steps.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+Because $d$ and $b$ are not hardcoded in the finite control, the machines in
+\leanname{LeanMachine.ShuffleShear} first determine unary counters for $b$ and $d$ (or $H = d^2/2$)
+from the input length $L = d^2 b$ in $O(L)$ steps. The $3$-work-tape shuffle machine stores unary
+counters for $b$ and $H$ on two work tapes, buffers the first $H$ words on a third work tape, and
+interleaves $b$-bit words from the buffer and the second half of the input tape. The $2$-work-tape
+unshuffle machine emits even-indexed $b$-bit words directly from the input tape while buffering
+odd-indexed words on tape~$0$ using a unary $b$-counter on tape~$1$, then replays tape~$0$. The
+$2$-work-tape row-shear machine copies each $db$-bit row to tape~$0$ and emits it cyclically shifted
+by $rb$ bits. \lean{computesWithin_toTransposeTM} transports each proof identically to
+\leanname{Transpose.ComputesWithin}.
+\end{outline}
+
+Two controls clarify the boundary of $\OSR$ and of single-cell information measures:
+
+\begin{proposition}[Within-row shear $\OSR = d$ and row-diagonal source-arity gauge invariance]\label{prop:shear-control}
+\formal{OperatorDualityProofs.lean}{control_RowShearAndRowDiagonalAlternation}
+\formal{DualityAndSwapConsequences.lean}{rowDiagonal_SourceArityGaugeInvariance}
+Let $F$ be any field, $d \ge 1$, and $b \ge 1$.
+\begin{enumerate}[label=(\alph*)]
+\item Within-row cyclic shear \lean{rowShearLinear} on $(F, d, b)$ lies in the row-diagonal subalgebra
+  \lean{IsRowDiagonalOp} ($(KX)_r = B_r(X_r)$) yet has operator Schmidt rank~$d$.
+\item Output-row source arity (\lean{HasOutputRowSourceArityLe}) is invariant under two-sided
+  composition $D_1 \circ K \circ D_0$ with arbitrary row-diagonal operators $D_0, D_1$.
+\item On $d = 2^m$ ($m \ge 0$), every alternating product $D_s U_s D_{s-1} \cdots U_1 D_0$
+  (\lean{alternatingRowDiagProduct}) of $s + 1$ row-diagonal operators $D_i$ and $s$ shuffle or
+  unshuffle passes $U_j \in \{S, S^{-1}\}$ has output-row source arity at most $2^s$; if it equals
+  $\tau$, then $2^m \le 2^s$ and $s \ge m$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+In~(a), $\lean{rowShearLinear} = \sum_{r=0}^{d-1} E_{r,r} \otimes \sigma^r$, and linear independence
+of the $d$ cyclic column shifts $\sigma^0, \dots, \sigma^{d-1}$ forces $\OSR = d$. In~(b) and~(c),
+row-diagonal operators act within each row without mixing source rows, while each $S$ or $S^{-1}$
+combines at most two source rows into each output row; since row~$0$ of $\tau(X)$ depends on all
+$2^m$ input rows when $b \ge 1$, equality with $\tau$ forces $2^m \le 2^s$.
+\end{outline}
+
+\begin{proposition}[Skew one-time-pad zero-mutual-information control]\label{prop:otp-control}
+\formal{OperatorDualityProofs.lean}{control_SkewOneTimePadInformationTrap}
+\formal{DualityAndSwapConsequences.lean}{uniformShannonMI_eq_zero_of_indep,skewOneTimePad_ShannonMutualInfoZero}
+For $d \ge 1$ and $b \ge 1$, define $W(X) := X^{\T} \oplus X$ on $\{0,1\}^{d\times d\times b}$
+(\lean{skewXorPad}). Then $W(X) \oplus X = X^{\T}$ for every $X$, and under uniformly random $X$,
+every single entry $W_{r,c}$ is statistically independent of every target column $X_{:, c'}$, so its
+discrete Shannon mutual information (\lean{uniformShannonMI}) satisfies
+\[
+  I\bigl(W_{r,c}\;;\; X_{:,c'}\bigr) \;=\; 0
+  \qquad
+  \text{for all } r, c, c' \in \Z_d.
+\]
+\end{proposition}
+\begin{outline}
+When $r = c$, $W_{r,r} = 0$ is constant. When $r \ne c$, the two entries $X_{c,r}$ and $X_{r,c}$ lie
+in distinct columns $r \ne c$, so at least one lies outside column $c'$ and acts as an independent
+uniform pad on the other, giving exact product-count independence and zero Shannon mutual
+information.
+\end{outline}
+
+\subsection{Anti-diagonal untwisting of shift-collision equations}\label{sec:antidiag}
+
+We close this section with a coordinate observation on linear codes with deterministic shared
+decoders (\leanname{SharedDecoders.IsSharedCode}, \cite[Section~2]{SharedDecoders2026}) and the
+shift-link covariance spaces of \cite[Section~6]{SeventeenthPaper2026}. Untwisting matrix coordinates
+along anti-diagonals $a = c + j \in \Z_d$ via the mutually inverse $F$-linear maps
+(\lean{antiDiagLinear}, \lean{fromAntiDiagLinear})
+\[
+  Z_{c,a} \;:=\; X_{c,\,a - c},
+  \qquad
+  X_{c,j} \;=\; Z_{c,\,j + c}
+  \qquad (c, a, j \in \Z_d)
+\]
+induces for $d \ge 1$ the linear tensor isomorphism
+$\Psi = \lean{antiDiagTensorEquiv} : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\;\sim\;}
+\Mat_{d\times d}(A)$ sending $u \otimes v$ to $(c, j) \mapsto u_c\,v_{j+c}$.
+
+\begin{theorem}[Pairwise shift-collision characterization and anti-diagonal tensor separation]\label{thm:anti-diagonal}
+\formal{OperatorDualityProofs.lean}{pairwiseShiftCollisionCharacterization,antiDiagonalTensorSeparation}
+\formal{DualityAndSwapConsequences.lean}{antiDiagTensorEquiv_intertwines_rot,shiftSetCovariance_tensor_finrank}
+Let $F$ be a field, $d \ge 1$, $A$ an $F$-vector space, and $p : \Z_d \to \kappa$.
+\begin{enumerate}[label=(\alph*)]
+\item A linear subspace $C \le \Mat_{d\times d}(A)$ satisfies \leanname{SharedDecoders.IsSharedCode}
+  for $p$ if and only if for every shift $s \in \Z_d$ and every $Y \in C$ with $\rot_s(Y) \in C$,
+  $Y$ lies in \lean{InPairwiseShiftCovariance}: whenever $p(c) = p(c+s)$, one has
+  $Y_{c+s,\,j} = Y_{c,\,j+s}$ for all $j \in \Z_d$.
+\item Under $\Psi : (\Z_d \to F) \otimes_F (\Z_d \to A) \xrightarrow{\sim} \Mat_{d\times d}(A)$,
+  column rotation $\rot_t$ intertwines with the pure right-factor coordinate shift
+  $\mathrm{id} \otimes \sigma^t$ (\lean{coordShiftLinear}, $(\sigma^t v)_a = v_{a+t}$).
+\item For any shift set $E \subseteq \Z_d$, a matrix $X \in \Mat_{d\times d}(A)$ lies in the
+  shift-set covariance subspace $H_E(p)$ (\lean{shiftSetCovarianceSubmodule}) if and only if its
+  anti-diagonal coordinates $Z_{c,a} = X_{c, a - c}$ are constant in $c$ on every connected component
+  of \leanname{SwapRigidity.Link} $p$ $E$ (\lean{antiDiagonalTensorSeparation}). When
+  $\dim_F A < \infty$, writing $U_E(p) \le (\Z_d \to F)$ for the subspace of vectors constant on
+  those components (\lean{leftComponentSubmodule}), $\Psi$ maps $U_E(p) \otimes_F (\Z_d \to A)$ onto
+  $H_E(p)$ and
+  \[
+    \dim_F H_E(p) \;=\; \dim_F U_E(p) \cdot d \cdot \dim_F A.
+  \]
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+In~(a), determinism of $f_{p(c)}$ on a linear subspace $C$ means that whenever $X_1, X_2 \in C$
+satisfy $p(c_1) = p(c_2)$ and $\rot_{c_1}(X_1) = \rot_{c_2}(X_2)$, row $c_1$ of $X_1$ equals row
+$c_2$ of $X_2$; setting $s = c_2 - c_1$ and $Y = X_1 - \rot_{-s}(X_2) \in C$ gives
+$\rot_s(Y) = \rot_s(X_1) - X_2 \in C$ and the pairwise identity. In~(b),
+$\Psi(\mathrm{id} \otimes \sigma^t(u \otimes v))_{c,j} = u_c v_{j+c+t} = \rot_t(\Psi(u\otimes v))_{c,j}$.
+In~(c), substituting $X_{c,j} = Z_{c, j+c}$ turns $X_{c', j+\delta'} = X_{c, j+\delta}$ under
+$c + \delta = c' + \delta'$ into $Z_{c', a} = Z_{c, a}$ independently for each anti-diagonal
+$a = c + \delta + j$.
+\end{outline}
+
+\begin{proposition}[Two-subspace Grassmann relaxation and alternating-mask shift separation]\label{prop:mask-floors}
+\formal{DualityAndSwapConsequences.lean}{maskFloor_GenericSubspaceRealization}
+Let $F$ be a field, $d \ge 1$, and $A$ a finite-dimensional $F$-vector space.
+\begin{enumerate}[label=(\alph*)]
+\item For any $p : \Z_d \to \kappa$, any shift $s \in \Z_d$, and any subspaces
+  $C_0, C_s \le \Mat_{d\times d}(A)$ with $\dim_F C_0 = \dim_F C_s$ and
+  $C_0 \cap C_s \le H_{\{0,s\}}(p)$, Grassmann modularity gives
+  $2\dim_F C_0 \le d^2\dim_F A + \dim_F H_{\{0,s\}}(p)$. Conversely, once the right-factor shift
+  coupling $C_s = \rot_{-s}(C_0)$ is dropped, splitting a complement of $U_{\{0,s\}}(p)$ in
+  $(\Z_d \to F)$ into two equal-sized subspaces constructs $C_0 = \Psi(V_0 \otimes \top)$ and
+  $C_s = \Psi(V_s \otimes \top)$ with $C_0 \cap C_s = H_{\{0,s\}}(p)$, $\dim_F C_0 = \dim_F C_s$, and
+  \[
+    d^2\dim_F A + \dim_F H_{\{0,s\}}(p) \;\le\; 2\dim_F C_0 + d\dim_F A.
+  \]
+\item On even $d = 2m$ ($m \ge 2$) with alternating partition $p(c) = (c \bmod 2 == 1)$, shift
+  $s = 1$ satisfies $p(c) \ne p(c+1)$ everywhere so $U_{\{0,1\}}(p) = \top$ and
+  $H_{\{0,1\}}(p) = \top$, whereas shift $s = 2$ has $\dim_F U_{\{0,2\}}(p) = 2$ and forces
+  $2\dim_F C \le ((2m)^2 + 4m)\dim_F A$ for every shared code $C$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+Part~(a) applies $\dim(C_0 + C_s) + \dim(C_0 \cap C_s) = 2\dim C_0$ for the upper bound, and chooses
+disjoint sets of $\lfloor(d - \dim U_{\{0,s\}}(p))/2\rfloor$ non-representative indices on the left
+tensor factor for the converse construction. Part~(b) checks that shift~$1$ has no monochromatic
+links on the alternating coloring while shift~$2$ connects all even indices and all odd indices into
+two components.
+\end{outline}

@@ -1,0 +1,46 @@
+Section~6 of \cite{SharedDecoders2026} studied two-stage compositions $K_2 \circ K_1$ of linear
+class-uniform shared decoders on $\Mat_{d\times d}(F^b)$ with $M_1$ and $M_2$ column classes, using
+van der Waerden and Hales--Jewett arithmetic progressions to bound $d$ when $K_2 \circ K_1 = \tau$
+and to show that $\rank_F(\tau - K_2 \circ K_1)/(bd) \to \infty$ as $d \to \infty$ at fixed
+$M_1, M_2$ when $(d : F) \ne 0$. No multitape Turing machine is known to induce such a two-stage
+linear class-uniform
+factorization; working within the same algebraic model, this paper replaces arithmetic progressions
+by Ramsey-free additive structures and proves two main composition bounds in Lean~4.
+
+First (\Cref{thm:2a}), over any field $F$, replacing progressions by affine Hilbert cubes extracted
+via iterated Cauchy--Schwarz proves that $K_2 \circ K_1 = \tau$ forces
+\[
+  d \;\le\; \max\bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\bigr).
+\]
+This rules out exact two-stage linear factorizations for growing class schedules up to
+$M_1 = o\bigl(d^{1/2^{M_2}}\bigr)$ at fixed $M_2$ (including $3$-AP-free Behrend partitions with
+$M_1 = 2^{O(\sqrt{\log d})}$) and $M_2 \le (1-\eps)\log_2\log_2 d$ at fixed $M_1$, though at small
+constant class counts such as $M_1 = M_2 = 2$ it gives $d \le 256$ where
+\cite[Corollary~6.4]{SharedDecoders2026} gives $d \le 16$. Second (\Cref{thm:2b}), over any field
+$F$ with $(d : F) \ne 0$, combining shifted $(2M_2)$-fold monochromatic sumsets, arbitrary-subset
+Vandermonde pullbacks, sparse annihilating polynomials, and iterated K\H{o}v\'ari--S\'os--Tur\'an
+extraction proves that for all $M_1, M_2 \ge 1$ and all $d \ge D_0(M_1, M_2)$,
+\[
+  \rank_F(\tau - K_2 \circ K_1)
+  \;\ge\;
+  c(M_1, M_2)\,b\,d\,(\log d)^{\frac{1}{2M_2 - 1}},
+\]
+giving $\Omega(b\,d\log d)$ when $M_2 = 1$ (\Cref{cor:2b-m2-one}), with explicit constants where
+$D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$. Finite-dimensional controls at $d = 13$,
+$d = 4$, and $d = 12$ test the hypotheses of both bounds.
+
+Three shorter sections record companion results around \cite{SeventeenthPaper2026}:
+(i)~explicit three-term swap codes $\sum_{t=0}^2 A_t X B_t^{\T} = X^{\T}$ over every field
+exceeding $d(d+1)/2$ at $d \in \{6, 7, 9, 12\}$ together with an all-field proof at $d = 4$,
+answering \cite[Remark~5.6]{SeventeenthPaper2026} at those dimensions (while $d = 5$ and every
+$d \ge 8$ outside $\{9, 12\}$ remain open), plus an observation on
+\cite[Problem~9.3]{SeventeenthPaper2026};
+(ii)~an Operator Schmidt Rank pass lower bound ($t \ge \log_2 d$) for a restricted pipeline of
+Stone's shuffle/unshuffle with row-local and column-local operators, paired with verified $O(L)$-time
+multitape Turing machines for shuffle, unshuffle, and within-row shear showing why $\OSR$ does not
+answer \cite[Problem~9.5]{SeventeenthPaper2026}, alongside anti-diagonal tensor untwisting of
+shift-collision equations; and
+(iii)~cut-causal cone evaluation on frozen \leanname{Transpose.TM} fibres, a Lean formalization of
+the $1/(\Delta+1)$ random-order bound of \cite[Proposition~4.14(a)--(b)]{FourthPaper2026}, and a
+negative observation explaining why column classes cannot absorb per-entry cut labels
+(\cite[Problem~9.4(b)]{SeventeenthPaper2026}). Question~$(\T)$ remains open.

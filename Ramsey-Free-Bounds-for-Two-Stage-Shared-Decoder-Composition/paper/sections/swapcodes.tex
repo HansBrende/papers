@@ -1,0 +1,203 @@
+\section{Three-term swap codes and multi-scale interval masks}\label{sec:swapcodes}
+
+\subsection{Three-term swap codes exceeding \texorpdfstring{$d(d+1)/2$}{d(d+1)/2} at \texorpdfstring{$d \in \{6, 7, 9, 12\}$}{d in \{6, 7, 9, 12\}} and over all fields at \texorpdfstring{$d = 4$}{d = 4}}\label{sec:remark-5-6}
+
+For finite matrix families $A, B : \alpha \to \Mat_{d\times d}(F)$ over a field $F$, the swap code
+(\leanname{SwapRigidity.swapCode}) is the solution space
+\[
+  \leanname{SwapRigidity.swapCode}(A, B)
+  \;:=\;
+  \Bigl\{X \in \Mat_{d\times d}(F) \;:\; \sum_{a \in \alpha} A_a X B_a^{\T} = X^{\T}\Bigr\}.
+\]
+In \cite[Theorem~5.1 and Corollary~5.5]{SeventeenthPaper2026} (where the coordinate form of
+Theorem~5.1 is Lean-verified and Corollary~5.5 is proved in text), any two-term
+swap code ($\abs{\alpha} = 2$) has dimension at most the symmetric pairing value $d(d+1)/2$, proved
+by triangularizing a matrix pencil over an algebraic closure. Immediately afterward,
+\cite[Remark~5.6]{SeventeenthPaper2026} noted that three terms can exceed $d(d+1)/2$, giving an
+explicit three-term family of dimension $8 > 6$ at $d = 3$ over every field and an example of
+dimension $11 > 10$ at $d = 4$ (checked numerically there over $\F_2, \F_3, \F_5, \F_7$),
+and remarked: \emph{``We have no three-term example for $d \ge 5$.''}
+
+Here we give explicit three-term examples above $d(d+1)/2$ at $d \in \{6, 7, 9, 12\}$ over every
+field $F$, together with a uniform proof over every field at $d = 4$, by lifting the $3 \times 3$
+skew-pair construction into $m \times m$ blocks (\lean{threeTermBlockA}, \lean{threeTermBlockB}) and
+adjoining a diagonal tail (\lean{threeTermPaddedA}, \lean{threeTermPaddedB}). Write the three
+off-diagonal pairs of $\{0,1,2\}$ as $(i_0,j_0) = (0,1)$, $(i_1,j_1) = (0,2)$, and
+$(i_2,j_2) = (1,2)$, and set
+\[
+  A_t \;:=\; (E_{i_t, j_t} - E_{j_t, i_t}) \otimes I_m,
+  \qquad
+  B_t \;:=\; -A_t \;=\; (E_{j_t, i_t} - E_{i_t, j_t}) \otimes I_m
+  \qquad (t \in \{0,1,2\}).
+\]
+Because $E_{j_t, i_t}^{\T} - E_{i_t, j_t}^{\T} = E_{i_t, j_t} - E_{j_t, i_t}$, we have
+$B_t^{\T} = A_t$, so the swap-code equation $\sum_{t=0}^2 A_t X B_t^{\T} = X^{\T}$ is
+\[
+  \sum_{t=0}^2 \bigl((E_{i_t, j_t} - E_{j_t, i_t}) \otimes I_m\bigr)\,X\,
+    \bigl((E_{i_t, j_t} - E_{j_t, i_t}) \otimes I_m\bigr)
+  \;=\;
+  X^{\T}.
+\]
+
+\begin{theorem}[Dimension $4m(m+1)$ of the three-term block family on $d = 3m$]\label{thm:three-term-kronecker}
+\formal{SwapCodeAnswersProofs.lean}{bonus1_ThreeTermBlockSwapCodeDim}
+Let $F$ be any field and let $m \ge 1$. Partition $X \in \Mat_{3m\times 3m}(F)$ into a $3 \times 3$
+grid of $m \times m$ blocks $(X_{i,j})_{0 \le i,j < 3}$.
+\begin{enumerate}[label=(\alph*)]
+\item $X$ lies in $\leanname{SwapRigidity.swapCode}(A, B) = \{X : \sum_{t=0}^2 A_t X B_t^{\T} = X^{\T}\}$
+  if and only if every block $X_{i,j}$ is symmetric ($X_{i,j}^{\T} = X_{i,j}$ for all
+  $0 \le i, j < 3$) and the three diagonal blocks sum to zero ($X_{0,0} + X_{1,1} + X_{2,2} = 0$;
+  \lean{IsThreeByThreeSymmetricZeroTraceBlocks}).
+\item Consequently, over every field $F$,
+  \[
+    \dim_F \leanname{SwapRigidity.swapCode}(A, B) \;=\; 8 \cdot \frac{m(m+1)}{2} \;=\; 4m(m+1).
+  \]
+  Since $4m(m+1) - \frac{3m(3m+1)}{2} = \frac{m(5 - m)}{2}$, this exceeds the pairing value
+  $d(d+1)/2$ ($d = 3m$) for $m \in \{1, 2, 3, 4\}$ ($d = 3: 8 > 6$, matching
+  \cite[Remark~5.6]{SeventeenthPaper2026}; $d = 6: 24 > 21$; $d = 9: 48 > 45$; and
+  $d = 12: 80 > 78$).
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+For each $t \in \{0,1,2\}$, multiplying on both sides by $(E_{i_t,j_t} - E_{j_t,i_t}) \otimes I_m$
+places $+X_{j_t, i_t}$ in block $(i_t, j_t)$, $+X_{i_t, j_t}$ in block $(j_t, i_t)$, $-X_{j_t, j_t}$
+in block $(i_t, i_t)$, and $-X_{i_t, i_t}$ in block $(j_t, j_t)$. Summing over the three pairs sends
+each off-diagonal block $(i, j)$ ($i \ne j$) to $+X_{j,i}$ and each diagonal block $(i, i)$ to
+$-\sum_{j \ne i} X_{j,j}$. Equating with $(X_{j,i}^{\T})_{i,j}$ gives $X_{j,i} = X_{j,i}^{\T}$ for
+$i \ne j$ together with $-X_{1,1} - X_{2,2} = X_{0,0}^{\T}$, $-X_{0,0} - X_{2,2} = X_{1,1}^{\T}$,
+and $-X_{0,0} - X_{1,1} = X_{2,2}^{\T}$. Over every ring (including characteristic~$2$), subtracting
+pairs of diagonal equations yields $X_{0,0}^{\T} - X_{1,1}^{\T} = X_{1,1} - X_{0,0}$ and cyclic
+analogues, which together with $X_{2,2} = -X_{0,0}^{\T} - X_{1,1}$ is equivalent to
+$X_{i,i}^{\T} = X_{i,i}$ for $i \in \{0,1,2\}$ and $X_{0,0} + X_{1,1} + X_{2,2} = 0$. Eight
+independent symmetric $m \times m$ blocks ($6$ off-diagonal and $2$ free diagonal blocks) each have
+dimension $m(m+1)/2$, giving $4m(m+1)$.
+\end{outline}
+
+Embedding the $3m \times 3m$ family in the top-left corner of $\Mat_{d\times d}(F)$ ($d = 3m + s$)
+and setting both $A_2$ and $B_2$ equal to $I_s$ on the trailing $s \times s$ diagonal block extends
+the construction to $d = 4$ and $d = 7$.
+
+\begin{theorem}[Padded three-term swap codes across $d \in \{3, 4, 6, 7, 9, 12\}$]\label{thm:three-term-unified}
+\formal{SwapCodeAnswersProofs.lean}{bonus1_ThreeTermPaddedSevenAndFive}
+\formal{DualityAndSwapConsequences.lean}{bonus1_UnifiedThreeTermExceedsPairingBound}
+Over every field $F$:
+\begin{enumerate}[label=(\alph*)]
+\item Padding $m = 2$ ($3m = 6$) to $d = 7$ achieves dimension $29 > 28 = \frac{7 \cdot 8}{2}$;
+  padding $m = 1$ ($3m = 3$) to $d = 4$ achieves $11 > 10 = \frac{4 \cdot 5}{2}$; and padding
+  $m = 1$ to $d = 5$ achieves $15 = \frac{5 \cdot 6}{2}$.
+\item Consequently, for every field $F$ and every $d \in \{3, 4, 6, 7, 9, 12\}$, there exist
+  $A, B : \mathrm{Fin}\,3 \to \Mat_{d\times d}(F)$ with
+  \[
+    \dim_F \leanname{SwapRigidity.swapCode}(A, B) \;>\; \frac{d(d+1)}{2}.
+  \]
+\end{enumerate}
+\end{theorem}
+\begin{outline}
+On the trailing $s = d - 3m$ coordinates, $A_2$ and $B_2^{\T}$ both act as $+I_s$, while $A_0, B_0,
+A_1, B_1$ vanish outside the top-left $3m \times 3m$ block. Inspecting the coupled cross-blocks
+between the active $(1,2)$ pair and the $s$-coordinate tail yields $24 + 5 = 29$ dimensions at
+$(m, d) = (2, 7)$, $8 + 3 = 11$ at $(1, 4)$, and $8 + 7 = 15$ at $(1, 5)$. Combining $(1,4)$ and
+$(2,7)$ with $m \in \{1, 2, 3, 4\}$ in \Cref{thm:three-term-kronecker} covers
+$d \in \{3, 4, 6, 7, 9, 12\}$.
+\end{outline}
+
+More generally, at $d = 3m + s$ this block-and-tail construction achieves dimension
+$4m(m+1) + \frac{s(s+1)}{2} + 2ms$, which is at most $d(d+1)/2$ for every other $d \ge 5$ (giving
+$15 = 15$ at $d = 5$, $35 < 36$ at $d = 8$, $55 = 55$ at $d = 10$, $63 < 66$ at $d = 11$,
+$120 = 120$ at $d = 15$, and strictly less than $d(d+1)/2$ once $m \ge 6$). Thus whether a
+three-term swap code can exceed $d(d+1)/2$ remains open for $d = 5$ and for every $d \ge 8$ outside
+$\{9, 12\}$.
+
+\subsection{An observation on multi-scale interval masks and Walsh digit masks (Problem~9.3)}\label{sec:problem-9-3}
+
+\cite[Problem~9.3]{SeventeenthPaper2026} asks for upper bounds on $\dim_F \leanname{SwapRigidity.swapCode}(A, B)$
+when $d = 2^m$ and both $A_a$ and $B_a$ lie in the span of dyadic masks across all scales composed
+with cyclic rotations (\cite[Corollary~6.13]{SeventeenthPaper2026} covers one-sided tensor-factor
+rules commuting with a single non-derogatory matrix on one address digit). We record a simple
+observation separating contiguous interval masks from periodic Walsh digit masks.
+
+For contiguous cyclic or aligned dyadic intervals (\lean{IsCyclicInterval},
+\lean{IsAlignedDyadicInterval}; spans \lean{InMultiscaleIntervalRotSpan},
+\lean{InAlignedDyadicIntervalRotSpan}), each interval mask introduces at most two boundary
+transitions around $\Z_d$, so applying Theorem~TP (\cite[Theorem~6.4]{SeventeenthPaper2026}) to the
+common refinement of the interval endpoints on one side at a time gives a nontrivial upper bound
+whenever at least one side uses $o(d)$ intervals in total:
+
+\begin{proposition}[One-sided endpoint-refinement bound for multi-scale interval masks]\label{prop:multiscale-interval}
+\formal{SwapCodeAnswersProofs.lean}{bonus2_MultiscaleIntervalBothSides,bonus2_MultiscaleFullProfileAttainsFullSwap}
+\formal{DualityAndSwapConsequences.lean}{bonus2_SublinearProfileAndTendstoHalf}
+Let $F$ be any field, $m \ge 0$, and $d = 2^m$.
+\begin{enumerate}[label=(\alph*)]
+\item Every \lean{InAlignedDyadicIntervalRotSpan} family lies in \lean{InMultiscaleIntervalRotSpan},
+  and whenever finite families $A, B : \alpha \to \Mat_{d\times d}(F)$ lie in
+  \lean{InMultiscaleIntervalRotSpan} with per-scale interval counts $M_A, M_B : \mathrm{Fin}\,m \to \N$,
+  setting $\beta_A := \max\bigl(1,\, 2\sum_j M_A(j)\bigr)$ and
+  $\beta_B := \max\bigl(1,\, 2\sum_j M_B(j)\bigr)$,
+  \[
+    2\dim_F \leanname{SwapRigidity.swapCode}(A, B)
+    \;\le\;
+    d^2 + d\min(\beta_A, \beta_B).
+  \]
+\item Along any sequence of families with
+  $\min\bigl(\sum_j M_{A,m}(j),\, \sum_j M_{B,m}(j)\bigr) / 2^m \to 0$ as $m \to \infty$, for every
+  $\eps > 0$ one eventually has $\dim_{F_m}\leanname{SwapRigidity.swapCode}(A_m, B_m) \le
+  (\frac{1}{2} + \eps)d^2$.
+\item At the full aligned dyadic profile $M_{\mathrm{full}}(j) = 2^{j+1}$ (where
+  $\sum_{j=0}^{m-1} 2^{j+1} = 2d - 2 \ge d$ for $m \ge 1$), aligned dyadic interval-rotation families
+  realize all matrix units and attain $\dim_F \leanname{SwapRigidity.swapCode}(A, B) = d^2$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+In~(a), the intervals used in $A$ create at most $2\sum_j M_A(j)$ endpoint cuts around $\Z_d$,
+partitioning $\mathrm{Fin}\,d$ into at most $\beta_A$ contiguous classes on each of which every $A_a$
+acts as a fixed linear combination of rotations. Hence $\sum_a A_a X B_a^{\T} = X^{\T}$ defines a
+$\beta_A$-class-uniform code, giving $2\dim_F \le d^2 + d\beta_A$ by
+\cite[Theorem~6.4]{SeventeenthPaper2026}. Passing to $Y = X^{\T}$ exchanges $A$ and $B$ via
+$Y^{\T} = \sum_a B_a Y A_a^{\T}$, giving $2\dim_F \le d^2 + d\beta_B$ as well. Part~(b) divides by
+$2d^2$. In~(c), aligned dyadic intervals down to length $2^0 = 1$ span all diagonal projectors
+$E_{r,r}$ and hence all matrix units $E_{r,c} = E_{r,r}\sigma^{c-r}$.
+\end{outline}
+
+Note the scope of \Cref{prop:multiscale-interval}: the bound uses only the sparser of the two sides
+rather than any two-sided interaction between $A$ and $B$, carries no matching sparse lower bound,
+and becomes vacuous ($\ge d^2$) as soon as $\min(\beta_A, \beta_B) \ge d$---in particular at the full
+profile $M_{\mathrm{full}}(j) = 2^{j+1}$ for $m \ge 2$, where $\beta = 4d - 4 > d$.
+
+By contrast, if ``scale-$j$ dyadic mask'' means the periodic Walsh/Rademacher bit projector
+$P_{W_j, b}$ onto $\{r \in \mathrm{Fin}(2^m) : \mathrm{bit}_j(r) = b\}$ (\lean{walshBitSet},
+\lean{walshDigitMaskRotMatrix}, \lean{IsPeriodicScaleDyadicMask}), then a single mask per scale has
+exponentially many boundaries at fine scales, so one-sided endpoint refinement becomes vacuous even
+though only two periodic masks per scale are used:
+
+\begin{proposition}[Cyclic boundaries and operator-span dimension for periodic Walsh masks]\label{prop:walsh-dichotomy}
+\formal{SwapCodeAnswersProofs.lean}{walshDigitMask_in_periodicDyadicSpan}
+\formal{DualityAndSwapConsequences.lean}{walshBitSet_cyclicBoundaryCount,isCyclicInterval_cyclicBoundaryCount_le_two,isPeriodicScaleDyadicMask_cyclicBoundaryCount,walshBitSet_joint_separates_points,walshDigitMaskRotSpan_finrank_le,bonus2_WalshDichotomyStructuralProperties}
+Let $m \ge 0$ and $d = 2^m$.
+\begin{enumerate}[label=(\alph*)]
+\item Every cyclic interval $I \subseteq \mathrm{Fin}\,d$ ($d \ge 1$) satisfies
+  $\lean{cyclicBoundaryCount}(I) \le 2$, whereas for each $j \in \mathrm{Fin}\,m$, both
+  $W_j = \lean{walshBitSet}(m, j)$ and every periodic scale-$j$ mask
+  (\lean{IsPeriodicScaleDyadicMask}) have $\lean{cyclicBoundaryCount} = 2^{j+1}$ (at least $4$ once
+  $j \ge 1$).
+\item Across $j \in \mathrm{Fin}\,m$, the $m$ Walsh bit sets $W_0, \dots, W_{m-1}$ jointly separate
+  $\mathrm{Fin}(2^m)$ into $2^m$ singleton atoms.
+\item Over every field $F$, every family in the span of
+  $\{\lean{walshDigitMaskRotMatrix}(F, j, \mathrm{bit}, s) : j \in \mathrm{Fin}\,m,\;
+  \mathrm{bit} \in \{0,1\},\; s \in \mathrm{Fin}(2^m)\}$ belongs to
+  \lean{InMultiscalePeriodicDyadicRotSpan} with constant profile $M(j) = 2$ per scale
+  ($\sum_{j=0}^{m-1} M(j) = 2m = 2\log_2 d$), and the entire Walsh-masked rotation span has dimension
+  at most $(m + 1)2^m$ over $F$.
+\end{enumerate}
+\end{proposition}
+\begin{outline}
+In~(a), $W_j$ alternates blocks of $2^{m-1-j}$ zeros and $2^{m-1-j}$ ones $2^j$ times around
+$\mathrm{Fin}(2^m)$, producing $2^{j+1}$ boundary transitions, and any periodic scale-$j$ mask is a
+cyclic translate of $W_j$ or its complement. Part~(b) recovers $r \in \mathrm{Fin}(2^m)$ from its
+$m$ binary digits. In~(c), the two bit values $\mathrm{bit} \in \{0,1\}$ at scale $j$ give two
+periodic scale-$j$ masks ($M(j) = 2$), while $P_{W_j, 0}\sigma^s + P_{W_j, 1}\sigma^s = \sigma^s$
+shows that the span is generated by the $2^m$ pure rotations together with the $m \cdot 2^m$
+operators $P_{W_j, 1}\sigma^s$.
+\end{outline}
+
+Whether $\dim_F \leanname{SwapRigidity.swapCode}(A, B)$ is bounded away from $d^2$ when both $A$ and
+$B$ lie in the $(m+1)2^m$-dimensional Walsh-masked rotation span remains open.

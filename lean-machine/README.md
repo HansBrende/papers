@@ -154,6 +154,7 @@ use, and external Lean code we have pulled in. Results specific to one paper sta
 | [`FiniteSourceEscape`](LeanMachine/FiniteSourceEscape.lean) | Exact uniform-source masses and the half-mass complement of an exponentially smaller bad set | this repository |
 | [`BinaryBudgets`](LeanMachine/BinaryBudgets.lean) | Exact integer bit budgets for finite-state products, default states and polynomial record menus | this repository |
 | [`FiniteOrdinalGuards`](LeanMachine/FiniteOrdinalGuards.lean) | Exact finite counts for delayed outputs, closed look-ahead intervals and terminal ordinals | this repository |
+| [`LeanMachine/ShuffleShear/`](LeanMachine/ShuffleShear/) | Finite transition tables and `O(L)`-time execution proofs for Stone's `3`-work-tape perfect shuffle, `2`-work-tape inverse unshuffle, and `2`-work-tape within-row cyclic shear under row-major binary matrix encoding | this repository |
 
 The shared module [`ContextPruning`](LeanMachine/ContextPruning.lean) supplies finite
 weighted context pruning: one subset retains density in every attained context,

@@ -1,0 +1,172 @@
+\section{Introduction}\label{sec:intro}
+
+\subsection{Context and scope}\label{sec:context}
+
+Let $d \ge 2$, let $b = \clog{d}$ be the canonical entry bit-width, and let
+$L = d^2 b = \Theta(d^2\log d)$ be the bit-length of a $d \times d$ matrix of $b$-bit entries laid
+out row by row on the read-only input tape of a deterministic multitape Turing machine with $k$
+read-write work tapes and a one-way write-only output tape
+(\cite[Section~2.1 and Definition~2.1]{FirstPaper2026}).
+Question~$(\T)$ asks whether every such machine that outputs the transposed matrix $X^{\T}$ for all
+inputs $X$ requires $\omega(L)$ steps; \cite[Conjecture~9.1]{FirstPaper2026} formulates a stronger
+asymmetric bipartite storage-coding conjecture (the Tape Coding Conjecture) that implies a negative
+answer to~$(\T)$, and by Harvey and van der Hoeven \cite[Corollary~6.9]{HvdH2025}, if no linear-time
+multitape transposer exists then no linear-time multitape integer multiplier exists either.
+
+The synthesis paper \emph{Order, Symmetry and the Swap} \cite{SeventeenthPaper2026} organized the
+algebraic obstacles studied across the series into two one-stage mechanisms on $\Mat_{d\times d}(F)$:
+an order bound for two-term operators $A_1 X B_1^{\T} + A_2 X B_2^{\T} = X^{\T}$ giving dimension at
+most $d(d+1)/2$ (\cite[Theorem~5.1 and Corollary~5.5]{SeventeenthPaper2026}), and a
+translate-pigeonhole bound (Theorem~TP, \cite[Definition~6.3 and Theorem~6.4]{SeventeenthPaper2026})
+for class-uniform rules in which column $c$ of the output is computed by applying one of $M$ shared
+linear decoders to the column-rotated matrix $\rot_c(X)_{i,j} = X_{i, j+c}$. As emphasized in
+\cite[Sections~4.2 and~4.6]{SeventeenthPaper2026}, abstract storage-code models without shared rules
+admit high-rate network coding, whereas the class-uniform model captures translation covariance along
+a single regular sweep.
+
+In the sequel \emph{Capacity and Composition of Shared Transposition Decoders}
+\cite[Section~6]{SharedDecoders2026}, Brende and GPT-6 Astra initiated the study of \emph{two-stage
+compositions} $K_2 \circ K_1$ of linear class-uniform operators on $\Mat_{d\times d}(F^b)$, where
+$K_1$ has $M_1$ column classes and $K_2$ has $M_2$ column classes:
+\begin{itemize}[leftmargin=1.5em]
+\item For exact factorizations $K_2 \circ K_1 = \tau$ over any field $F$,
+  \cite[Theorem~6.3]{SharedDecoders2026} reduced two-stage composition to a common-message subspace
+  inside a cyclic channel module and extracted a monochromatic arithmetic progression in the stage-1
+  partition, proving $d \le M_2\bigl(\mathsf{W}(M_1, M_2 + 1) - 1\bigr)$, where $\mathsf{W}$ denotes
+  the van der Waerden number; at $M_1, M_2 \le 2$, \cite[Corollary~6.4]{SharedDecoders2026} used
+  $\mathsf{W}(2,3) \le 9$ to obtain the small-parameter bound $d \le 16$.
+\item For approximate factorizations over any field $F$ with $(d : F) \ne 0$,
+  \cite[Theorem~6.6]{SharedDecoders2026}
+  proved that $r := \rank_F(\tau - K_2 \circ K_1)$ satisfies
+  \[
+    r \;\ge\; \frac{b k (d - N_0 + 1)}{2},
+    \qquad
+    \ell = (2M_2 + 1)k - 1,\quad N_0 = \mathsf{W}(M_1, \ell),
+  \]
+  showing that $r / (bd) \to \infty$ as $d \to \infty$ for every fixed pair $(M_1, M_2)$, using qualitative finiteness of van der Waerden numbers via the Hales--Jewett theorem \cite{HalesJewett1963} without substituting a numerical upper bound for $\mathsf{W}(M_1, \ell)$.
+\end{itemize}
+
+This paper is primarily a sequel to \cite[Section~6]{SharedDecoders2026} in that same algebraic
+model. We state the model boundary up front: \emph{no multitape Turing machine is known to decompose
+into linear class-uniform stages}, and none of the results of this paper closes Question~$(\T)$ or
+bridges general adaptive or oblivious machines to two-stage linear shared decoders. Within the
+two-stage linear class-uniform model, however, arithmetic progressions carry an inherent limitation:
+Behrend's construction \cite{Behrend1946} produces subsets of $\Z_d$ of size $d / 2^{O(\sqrt{\log d})}$
+containing no non-trivial $3$-term progression, so $M_1$-colorings with $M_1 = 2^{O(\sqrt{\log d})}$
+can avoid even length-$3$ monochromatic progressions, while even for $M_1 = 2$ monochromatic
+progressions have length at most $O(\log d)$. Our main results show that replacing arithmetic
+progressions by \emph{affine Hilbert cubes} (over every field) and by \emph{shifted monochromatic
+sumsets} (over fields in which $d$ is invertible) removes Ramsey numbers from two-stage linear
+shared-decoder composition and yields explicit exponential-cutoff and logarithmic-power rank bounds.
+
+\subsection{Summary of results}\label{sec:results-overview}
+
+\begin{enumerate}[label=\arabic*.]
+\item \textbf{Ramsey-free cutoff for exact two-stage linear composition (\Cref{sec:cubes}).}
+  Over an \emph{arbitrary} field $F$, \Cref{lem:affine-cube} proves that if a subspace $W \le A$
+  admits an injective linear readout invariant under the $2^k$ ordered products
+  $R_{k-1}^{\eps_{k-1}} \cdots R_0^{\eps_0}$ of $k$ endomorphisms $R_0, \dots, R_{k-1} \in \End_F(A)$,
+  then
+  \[
+    (k + 1)\dim_F W \;\le\; \dim_F A \;+\; \sum_{t=0}^{k-1} \dim_F\ker(R_t - \mathrm{id}_A).
+  \]
+  Extracting a monochromatic affine $M_2$-cube with small steps $1 \le s_t \le \lfloor d/(2M_2^2)\rfloor$
+  by iterated Cauchy--Schwarz (\Cref{lem:cs-cube}) yields \Cref{thm:2a}: whenever two $F$-linear
+  class-uniform stages $K_1, K_2$ on $\Mat_{d\times d}(F^b)$ with $M_1$ and $M_2$ classes satisfy
+  $K_2 \circ K_1 = \tau$, one has
+  \[
+    d \;\le\; \max\!\Bigl(8 M_1 M_2^2,\; (2 M_1)^{2^{M_2}}\Bigr).
+  \]
+  For fixed $M_2$, this rules out exact factorizations for growing $M_1(d) = o\bigl(d^{1/2^{M_2}}\bigr)$,
+  including $3$-AP-free Behrend partitions with $M_1(d) = 2^{O(\sqrt{\log d})}$. At small constant
+  class counts, however, \Cref{thm:2a} is weaker than van der Waerden extraction: at $M_1 = M_2 = 2$,
+  \Cref{thm:2a} gives $d \le 256$, whereas \cite[Corollary~6.4]{SharedDecoders2026} gives $d \le 16$.
+  Two finite controls accompany \Cref{thm:2a}: at $d = 13, q = 2$ on the $3$-AP-free $2$-cube
+  $J_{13} = \{0,1,4,5\} \subseteq \Z_{13}$, \Cref{ex:d13-sharpness} shows
+  $9 \le \max\dim_F W \le 10$ over fields with $(13 : F) \ne 0$ (refuting a naive $2^k$-multiplier
+  bound $\dim_F W \le 8$); and at $d = 4 = M_1 M_2$ on the identical two-interval partition
+  $p_1 = p_2 = [0,0,1,1]$, \Cref{ex:d4-coded} constructs exact linear coded factorizations
+  $K_2 \circ K_1 = \tau$ for all lane widths $b$ over every field with $(5 : F) \ne 0$ (leaving
+  characteristic~$5$ open), while showing that entry-copy and bit-lane-copy factorizations fail.
+
+\item \textbf{Log-power error-rank lower bound for approximate two-stage composition (\Cref{sec:sumsets}).}
+  Over any field $F$ with $(d : F) \ne 0$, we pass to a splitting field carrying an injective
+  additive character $\chi : \Z_d \to E^\times$ and replace progressions of length $(2M_2 + 1)k - 1$
+  by $(2M_2)$-fold monochromatic sumsets $\widetilde{J}_0 + \widetilde{B}_1 + \cdots +
+  \widetilde{B}_{2M_2 - 1}$ with $\abs{\widetilde{J}_0} = k$, $0 \in \widetilde{B}_t$, and
+  $\abs{\widetilde{B}_t} = k + 1$. Because $\bigl(\chi(\nu c)\bigr)_{c \in \widetilde{J}_0, 0 \le \nu < k}$
+  is a Vandermonde matrix in the distinct scalars $\chi(c)$ ($c \in \widetilde{J}_0$), stacked
+  evaluation over any $k$-element set $\widetilde{J}_0$ is injective on the frequency-$< k$ band
+  (\Cref{lem:vandermonde-subset}), while each $(k+1)$-element summand $\widetilde{B}_t$ supports a
+  nonzero polynomial $P_t$ of degree at most $\diam_{\N}(\widetilde{B}_t)$ annihilating the band
+  (\Cref{lem:sumset-poly}). Combining the resulting rank inequality
+  $2\rank_F(\tau - K_2 \circ K_1) \ge bk\bigl(d - \sum_t \diam_{\N}(\widetilde{B}_t)\bigr)$
+  (\Cref{thm:sumset-rank}) with iterated K\H{o}v\'ari--S\'os--Tur\'an sumset extraction
+  (\Cref{lem:kst-sumset}) yields \Cref{thm:2b}: for all $M_1, M_2 \ge 1$ and all
+  $d \ge D_0(M_1, M_2)$ with $(d : F) \ne 0$,
+  \[
+    \rank_F(\tau - K_2 \circ K_1)
+    \;\ge\;
+    c(M_1, M_2)\,b\,d\,(\log d)^{\frac{1}{2M_2 - 1}},
+  \]
+  and in particular $\Omega(b\,d\log d)$ when $M_2 = 1$ (\Cref{cor:2b-m2-one}). The bound is
+  asymptotic: the formalized threshold $D_0(M_1, M_2)$ printed in \Cref{thm:2b} satisfies
+  $D_0(1,1) = 16^{36} + 2 \approx 2.23 \times 10^{43}$. \Cref{ex:d12-band} constructs an explicit
+  $24$-dimensional $4$-channel band witness over $\C$ at $d = 12$ showing that stage-1 shift
+  invariance cannot be relaxed to an abstract linear readout on a single $k = 2$ band space.
+
+\item \textbf{Three-term swap codes and multi-scale interval masks (\Cref{sec:swapcodes}).}
+  In \cite[Remark~5.6]{SeventeenthPaper2026}, examples of three-term swap codes
+  $\{X \in \Mat_{d\times d}(F) : \sum_{t=0}^2 A_t X B_t^{\T} = X^{\T}\}$ exceeding $d(d+1)/2$ were
+  given at $d = 3$ ($8 > 6$, over every field) and $d = 4$ ($11 > 10$, checked numerically over
+  $\F_2, \F_3, \F_5, \F_7$), with no example known for $d \ge 5$. In
+  \Cref{thm:three-term-kronecker,thm:three-term-unified}, we construct a $3 \times 3$ block family
+  on $d = 3m$ achieving exact dimension $4m(m+1)$ over every field---exceeding $d(d+1)/2$ at
+  $d \in \{3, 6, 9, 12\}$---and pad it to obtain $29 > 28$ at $d = 7$ and $11 > 10$ at $d = 4$ over
+  every field; $d = 5$ and every $d \ge 8$ outside $\{9, 12\}$ remain open. On
+  \cite[Problem~9.3]{SeventeenthPaper2026}, \Cref{prop:multiscale-interval} records the upper bound
+  $(d^2 + d\min(\beta_A, \beta_B))/2$ obtained by applying \cite[Theorem~6.4]{SeventeenthPaper2026}
+  to the common interval-endpoint refinement on one side (which uses only one side's sparsity and is
+  vacuous once $\min(\beta_A, \beta_B) \ge d$), while \Cref{prop:walsh-dichotomy} contrasts interval
+  boundaries ($\le 2$) with periodic Walsh digit masks ($2^{j+1}$ boundaries, profile $2$ per scale,
+  and operator span dimension $\le (m+1)2^m$).
+
+\item \textbf{Restricted shuffle-and-local operator pipelines and anti-diagonal untwisting (\Cref{sec:duality}).}
+  Across the row/column tensor cut $F_{\mathrm{row}}^d \otimes_F (F_{\mathrm{col}}^d \otimes_F F^b)$,
+  Operator Schmidt Rank satisfies $\OSR(\tau) = d^2$ and $\OSR(S) = \OSR(S^{-1}) = 4$ for Stone's
+  perfect shuffle and unshuffle \cite{Stone1971} on $d = 2^m \ge 2$ (\Cref{thm:osr-swap}), forcing
+  $t \ge m = \log_2 d$ shuffle/unshuffle passes in any pipeline composed solely of $S, S^{-1}$,
+  row-uniform operators $I_d \otimes B$, and column-uniform operators $A \otimes I_{db}$
+  (\Cref{thm:osr-pass}). As we emphasize at the start of \Cref{sec:duality}, this applies only to
+  that restricted operator pipeline and \emph{does not} answer \cite[Problem~9.5]{SeventeenthPaper2026}:
+  within-row cyclic shear $X_{r,c} \mapsto X_{r, (c+r)\bmod d}$ has $\OSR = d$
+  (\Cref{prop:shear-control}) yet runs in $O(L)$ time on a $2$-work-tape Turing machine
+  (\Cref{prop:stone-tm}, proved in the shared library \texttt{lean-machine} alongside $3$-tape
+  shuffle and $2$-tape unshuffle). \Cref{sec:antidiag} also records the anti-diagonal coordinate
+  isomorphism intertwining $\rot_t$ with $\mathrm{id} \otimes \sigma^t$ (\Cref{thm:anti-diagonal})
+  and the two-subspace Grassmann relaxation (\Cref{prop:mask-floors}).
+
+\item \textbf{Cut-cone evaluation, random-order set capacity, and why column classes cannot absorb per-entry cut labels (\Cref{sec:sweep}).}
+  On frozen trace/cut fibres of \leanname{Transpose.TM}, \Cref{lem:tm-cut-cone} constructs depth-$D$
+  symbolic \lean{CausalConeTree}s directly from $M.\delta$ whose syntactic input-cell support has
+  size at most $b(M.k+1)^D$. \Cref{thm:random-order-capacity} formalizes in Lean the
+  $1/(\Delta+1)$ random-order acyclic-subgraph bound of
+  \cite[Proposition~4.14(a)--(b)]{FourthPaper2026} (after \cite[Theorem~3]{BBJK2011}) in the
+  column-class setting. Finally, \Cref{rem:sweep-negative} and \Cref{prop:negative-brackets} explain
+  why neither discarding cut-touching outputs nor refining column classes by per-column cut slots
+  yields a non-vacuous sweep bound: causal spine edges $u \to u+1$ force at least $d^2 - D$ outputs
+  to touch the cut, while column-level cut slots multiply the class count exponentially, showing why
+  bridging periodic stretches requires the per-position fixed-alphabet form of
+  \cite[Problem~9.4(b)]{SeventeenthPaper2026}.
+\end{enumerate}
+
+\subsection{Formalization conventions}\label{sec:conventions}
+
+Every numbered theorem, lemma, proposition, corollary, and example in this paper is completely
+proved and kernel-verified in Lean~4 (version \texttt{v4.34.1} with Mathlib \cite{Mathlib2026})
+across the \texttt{BoundedArityDecoders} package and the shared \texttt{LeanMachine.ShuffleShear}
+modules in \texttt{lean-machine}, depending solely on Lean's three standard axioms
+(\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}), with zero \texttt{sorry},
+\texttt{admit}, \texttt{native\_decide}, or custom axioms. Each numbered result carries a
+\textsf{Lean:} status line citing proved \texttt{theorem} declarations, followed by an outline of
+the formal proof.

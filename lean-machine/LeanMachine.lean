@@ -163,3 +163,7 @@ import LeanMachine.FiniteIntervalSelection
 import LeanMachine.FiniteSourceEscape
 import LeanMachine.BinaryBudgets
 import LeanMachine.FiniteOrdinalGuards
+import LeanMachine.ShuffleShear.Model
+import LeanMachine.ShuffleShear.StoneShuffle
+import LeanMachine.ShuffleShear.StoneUnshuffle
+import LeanMachine.ShuffleShear.RowShear

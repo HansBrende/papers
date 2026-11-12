@@ -122,6 +122,11 @@ with a constant $C$ that depends on $w$ and~$q$? And is this so at least when on
 when the function for the position $(c,r)$ does not depend on~$c$? (For $w\le2$ the answer to both is yes, with
 $C=\tfrac32$: \cref{prop:order}(b). For $w=2$ and a function for each position the least constant lies between $1$
 and $\tfrac32$, by the examples after that proposition; for $w=1$ it is $\tfrac12$.)
+\item Fix $w\ge3$ and an alphabet of $q$ symbols, and let $\rho$ assign to every column index at most $w$ rows. Does
+every $\rho$-code (\cref{sec:sets}), that is, every set of matrices in which each column is a function of its $w$
+rows, whole, have at most $q^{(1/2+o(1))d^2}$ elements as $d$ grows? (For $w\le2$ it has at most
+$q^{d(d+1)/2+d-1}$, by the proof of \cref{prop:order}(b); in general at most $q^{wd(d+1)/(w+1)}$, by
+\cref{prop:rows}(d).)
 \end{enumerate}
 \end{problem}
 
@@ -163,7 +168,7 @@ the rows from a permutation, are bounded or take boundedly many values; codes th
 directions; and, for the weaker form, subspaces. What these
 results leave is a window of at least three on a relation whose rows and offsets are both spread. For small windows
 the acyclic-subgraph bound, which gives all of them but the last, may still be enough; for large windows the computations
-reported at the end of \cref{sec:sets} indicate that it is not. A code above the pairing rate would have to use
+reported in \cref{sec:sets}, in the paragraph on what the order argument does not reach, indicate that it is not. A code above the pairing rate would have to use
 helpers in one direction, on a relation of that kind.
 
 The conclusion asked for in~(b) is that of the all-code question of the fifth
@@ -186,6 +191,26 @@ $M(2w+1)+k$, with $q^{-kd}$ times as many elements. So a positive answer to the 
 field. A negative answer to either form would be a code above the pairing rate, with bounded windows, on positions
 that move with the output row.
 
+Part~(c) was added with \cref{prop:rows,prop:stages,prop:expanding,prop:pieces}. A storage code on a one-class
+relation of window $w$ is a $\rho$-code with at most $w$ rows for each column, whatever its offsets, so a positive
+answer to~(c) for every $w$ gives the bound $q^{(1/2+o(1))d^2}$ of~(b) for every window; it does not give the form
+$d^2/2+Cd$. In the other direction (c) allows more than (b): an entry may depend on all entries of its rows. What is
+proved is the case in which the rows of each column lie in a small block, and with it pipelines of stages that read
+rows inside address cosets, where $t$ moved digits give exactly $(d^2+2^td)/2$; pipelines with buffered scans and
+with differently arranged copies, more weakly (\cref{prop:stages}); and products of codes on boundedly many positions
+(\cref{prop:pieces}). What is left are the relations on which the acyclic-subgraph bound stays a constant above one
+half whatever order is used, among them those that expand and contain a bijection. There are such relations that are
+unions of the identity and three increasing maps, so that an operator with these rows takes boundedly many forward
+passes, given the strings that mark the maps (\cref{prop:expanding} and the paragraph after it). A positive answer
+to~(c) for $w\ge4$ therefore needs an argument that is
+not an order argument, and a negative answer on increasing maps, with functions computable in linear time, would be
+an operator of boundedly many passes that transposes more than the pairing rate. By \cref{prop:pieces} a code above
+the pairing rate cannot be a product of local codes. One family in which to look for either answer: for a group
+$\Gamma$ of order $d$ and a bounded set $\Sigma\subseteq\Gamma$, index the rows and columns by $\Gamma$ and let the
+helpers of $(c,r)$ be the positions $(rs,ct)$ for boundedly many pairs $(s,t)$ with $s\in\Sigma$; these relations
+are contained in the relation of $\rho(r)=r\Sigma$, and for $\Gamma=\Z/d$ they are the one-class relations with
+constant offsets and constant row differences, which \cref{prop:order}(d) settles.
+
 For adaptive machines a later paper of the series puts the function $r(\eps)$ on the machine's own runs. At the
 canonical entry width, for all but an exponentially small share of the inputs that a linear-time transposer handles,
 and for every set $B$ of steps of the run on such an input, the relation between entries that is left when $B$ is cut
@@ -201,6 +226,15 @@ quantity that is subadditive over the steps of a machine, is large for the swap 
 raised at all scales by a single linear-time operation. This is the operator form of the multi-scale problem of the
 sixteenth paper~\cite[Problem~11.1]{SixteenthPaper2026}.
 \end{problem}
+
+For pipelines whose stages read rows inside cosets of the address space, the dimension of the coset adds up over
+the stages and bounds the set that is transposed, for all codes: one for each digit moved, and $\log_2d$ for the
+swap (\cref{prop:stages}(a)). This is not the quantity asked for. It does not look at scales separately, and a
+single linear-time operation can raise it to its maximum: a scan with a buffer of one row, or a stage that reads a
+row $r$ together with its shuffle parents $\lfloor r/2\rfloor$ and $\lfloor r/2\rfloor+d/2$ (the remarks after
+\cref{prop:stages}). For the
+first the proposition has a price in advice, and for the second only the weaker count by the number of ones of the
+address.
 
 \begin{problem}[Relative rigidity on ball patterns]\label{prob:rigidity}
 The eighth paper asks whether there is $\rho>0$ such that, for every linear-time schedule, every fixed $D$ and all

@@ -8,7 +8,8 @@ does not depend on any of them.
 
 The side length is `d` in the paper and `n` in most scripts. A partition of Z_n is written `"0,1,3|2,4,5"`.
 
-**Requirements.** Python 3. `exhaustive_flag_checks.py` and `exhaustive_pigeonhole_checks.py` need NumPy;
+**Requirements.** Python 3. `exhaustive_flag_checks.py`, `exhaustive_pigeonhole_checks.py` and
+`row_spread_check.py` need NumPy;
 `class_uniform_sat.py`, and the subcommands `climb` and `controls` of `small_sizes.py`, need the package
 `pycryptosat` (CryptoMiniSat); `acyclic_set_search.py` needs OR-tools (`pip install ortools`). Everything else uses
 the standard library only. The results in the paper were obtained with Python 3.12.10, NumPy 2.5.4, pycryptosat
@@ -26,7 +27,8 @@ the standard library only. The results in the paper were obtained with Python 3.
 | `two_class_family.py` | Proposition (two classes: a gain of d/4 − 1 over every field): the rule in closed form with a general coefficient, every rank stated in the proof for d ≤ 48 over GF(2), GF(3), GF(5), GF(7), GF(11), the dimension over GF(2) for d ≤ 100, and the saved codes `data/two_class_d8.json`, `_d12.json`, `_d16.json`. Corollary (every fixed number of classes): the blow-up rule for M = 3, ..., 7 and its largest code | — | seconds |
 | `set_bounds_check.py` | Proposition (two bounds for sets): the exact largest code of every recovery relation at d = 2 over two symbols, against the acyclic-subgraph bound and both parts of the proposition; the step of both proofs over all pairs of matrices, for 40 random relations at d = 3 over two symbols and 60 at d = 2 over three, and that it holds exactly when the relation has no cycle outside the supplied set; for the cyclic instance at d ≤ 12, its hypothesis, its exponent and the absence of cycles on random relations; the count of cycles of part (b) on random class maps at d ≤ 8; the remark on marker rows (every matrix of the set at d = 4, a sample at d = 16 with eight classes); three controls that must fail. Also the count of classes of the perfect shuffle in the section "From the one-hop model to machines" | — | about 20 s |
 | `order_bounds_check.py` | Propositions (order bounds for one-class relations) and (mutual helpers and transitive triangles): the ranking lemma on every multigraph with at most five vertices and as many edges, and its sharpness for at most four; the row and column sets on random relations; exact least hitting sets of the cycles at d = 3, 4 for window two; the count of part (c) and the Dirichlet multiplier on random instances; the two counts of the second proposition against enumeration; the two local codes named after it; the examples after the first proposition (the cycle for the ranking lemma, the relation at d = 3 that attains the bound of window two, the codes with d²/2 + d free entries at d = 4 and 6, whole rows at d = 4); two controls | — | about 15 s |
-| `acyclic_set_search.py` | The searches reported at the end of the section on sets: large acyclic sets in one-class relations with random maps and in an unstructured digraph, with a control family; exact least hitting sets for the pairing plus random helpers | OR-tools | see below |
+| `acyclic_set_search.py` | The searches reported in the section on sets (the paragraph on what the order argument does not reach): large acyclic sets in one-class relations with random maps and in an unstructured digraph, with a control family; exact least hitting sets for the pairing plus random helpers | OR-tools | see below |
+| `row_spread_check.py` | Propositions (the order bound for whole rows), (stages) and (expanding row relations): σ by dynamic programming against all orders; the largest acyclic set against d² − σ, exhaustively for d ≤ 4; the block formula, the bound for rows inside blocks and the two codes; pipelines of affine coset stages, also singular; for scans, that equal advice and equal coset rows give equal output rows, with a control; the height bound on pipelines over two copies; the expansion inequality with exact constants; the numbers for the shuffle parents; the gather passes from marking strings, rows as units. Not checked: the bound for scans itself, the cited part on expanders, the proposition on products of pieces | NumPy | about 10 s |
 | `small_sizes.py` | Section "Small sizes": the table with its bounds, the list of partitions, the solver runs and the controls | pycryptosat for `climb`, `controls` | see below |
 | `class_uniform_sat.py` | One solver run: is there a class-uniform rule over GF(2) with a code of dimension ≥ D? | pycryptosat | see below |
 | `verify_class_uniform_code.py` | Checks a saved code in `data/` against the definition; shares no code with the search | — | seconds |
@@ -52,6 +54,7 @@ python3 tools/entry_form_check.py
 python3 tools/two_class_family.py
 python3 tools/set_bounds_check.py
 python3 tools/order_bounds_check.py
+python3 tools/row_spread_check.py
 ```
 
 Each ends with a summary line and stops, or exits with a nonzero status, if a statement of the paper fails on an
@@ -137,7 +140,7 @@ Runs that the paper does not report: at d = 7 the same method is out of reach. F
 it found a code of dimension 29 and timed out at 30 (900 s, `--hankel`), where the bound of Theorem TP is 31; for
 `0,1,2,4|3,5,6` it timed out at 29, one above the pairing value 28. Neither says anything about the true values.
 
-## Searches for acyclic sets (end of the section on sets)
+## Searches for acyclic sets (the section on sets, the paragraph on what the order argument does not reach)
 
 ```sh
 python3 tools/acyclic_set_search.py large 60 13 12 17 12 17 24

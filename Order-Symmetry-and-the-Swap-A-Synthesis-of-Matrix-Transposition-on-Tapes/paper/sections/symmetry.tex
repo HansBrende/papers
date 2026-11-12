@@ -1041,8 +1041,243 @@ With the pairing and two, three or five further helpers, whose row maps are rand
 are random, the least number of positions that meets every cycle is exactly $d(d+1)/2$ in all eleven instances that
 we computed, for $9\le d\le17$; there the lower and the upper bound of the computation coincide. So for small windows
 the acyclic-subgraph bound may still settle the question, and for large windows, where a relation with random maps
-behaves like a random digraph, it very likely cannot. There a bound would need an argument of another kind. A code
+behaves like a random digraph, it very likely cannot; for relations in which whole rows may be read this is proved
+for degree four (\cref{prop:expanding}). There a bound would need an argument of another kind. A code
 above the pairing rate would have to use helpers in one direction, by \cref{prop:mutual}(b), on a relation whose rows
 and offsets are both spread, by \cref{prop:order}, and it could not consist of copies of a code on boundedly many
 positions that contains a transitive triangle and in which every position is reached from every other along helpers,
 by \cref{prop:mutual}(c).
+
+\paragraph{Whole rows, and stages.} The order of the rows in \cref{prop:order}(a) uses only the rows that a position
+reads, not the entries. Stated for whole rows it bounds what an operator can transpose when its output rows are
+arbitrary functions of few input rows, and it adds up over the stages of a pipeline. A \emph{row relation} $\rho$
+assigns to every $r\in\Z/d$ a set $\rho(r)\subseteq\Z/d$. A set $S$ of $d\times d$ matrices over an alphabet is a
+\emph{$\rho$-code} if, for every~$r$, the column $r$ of a matrix of $S$ is a function of its rows in $\rho(r)$; this is
+a storage code on the relation in which the helpers of $(c,r)$ are all positions of the rows in~$\rho(r)$. A storage
+code on a one-class relation with the row maps $i_m$ is a $\rho$-code for $\rho(r)=\{i_m(r):m\le w\}$, whatever its
+offsets. And if $K$ is a map of the $d\times d$ matrices over the alphabet to themselves whose row $r$ depends only on
+the rows $\rho(r)$ of its argument, then the set $\{X:K(X)=X^\T\}$ of the matrices that $K$ transposes is a $\rho$-code,
+and every $\rho$-code is contained in such a set. Put
+\[
+  \sigma(\rho)=\min_\varphi\ \sum_r\ \max\varphi(\rho(r)),
+\]
+the minimum over the bijections $\varphi\colon\Z/d\to\{1,\dots,d\}$, with $\max\emptyset=0$.
+
+\begin{proposition}[The order bound for whole rows]\label{prop:rows}
+\notformalized
+Let $\rho$ be a row relation and $S$ a $\rho$-code over an alphabet of $q$ symbols.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item $\card S\le q^{\sigma(\rho)}$. More generally, if every column $r$ is, on~$S$, a function of the rows in
+$\rho(r)$ and of a quantity $\alpha(X)$ that is the same for all $r$ and takes at most $N$ values, then
+$\card S\le N\,q^{\sigma(\rho)}$.
+\item \emph{Exactness.} The largest acyclic set of the relation in which the helpers of $(c,r)$ are all positions
+of the rows in $\rho(r)$ has exactly $d^2-\sigma(\rho)$ positions. So (a) is the acyclic-subgraph bound of that
+relation, and no order of the positions gives more than an order of the rows.
+\item \emph{Blocks.} If the rows are partitioned into blocks of at most $s$ rows and every $\rho(r)$ lies inside one
+block, then $\sigma(\rho)\le(d^2+sd)/2$. If the blocks have $s_1,\dots,s_b$ rows, $\pi$ is a bijection of $\Z/d$ and
+$\rho(r)$ is the whole block of $\pi(r)$, then $\sigma(\rho)=(d^2+\sum_\kappa s_\kappa^2)/2$, and there is a
+$\rho$-code with exactly $q^{\sigma(\rho)}$ elements.
+\item \emph{Degree.} If $\card{\rho(r)}\le w$ for all $r$, then $\sigma(\rho)\le w\,d(d+1)/(w+1)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) Fix $\varphi$ and put $m_r=\max\varphi(\rho(r))$. Take $H(c,r)=\varphi(c)$ in the form of the acyclic-subgraph
+bound stated before \cref{prop:order}: the positions $(c,r)$ with $\varphi(c)>m_r$ form an acyclic set, and the
+others number $\sum_rm_r$. For the second statement apply the first to each of the sets on which $\alpha$ is constant.
+
+(b) Let $A$ be an acyclic set, and number its positions so that helpers come first. Let $\tau(i)$ be the largest
+number of a position of $A$ in row~$i$, and $\tau(i)=-\infty$ if there is none, and let $\varphi$ order the rows by
+$\tau$. If $(c,r)\in A$ and $i\in\rho(r)$, then $i\ne c$, since a position that is its own helper is a cycle, and
+every position of $A$ in row $i$ is a helper of $(c,r)$; so $\tau(i)$ is less than the number of $(c,r)$, which is at
+most $\tau(c)$. Hence $\varphi(c)>m_r$ for every position of $A$, and $\card A\le\sum_r(d-m_r)$.
+
+(c) Order the blocks at random and the rows inside a block arbitrarily. If $\rho(r)$ lies in a block of $s'$ rows,
+then $m_r$ is at most the place of the last row of that block, whose mean is $s'+(d-s')/2\le(d+s)/2$. For full
+blocks and any order $\varphi$, let $\ell_\kappa$ be the place of the last row of the block $B_\kappa$, and number
+the blocks so that $\ell_1<\ell_2<\cdots$. Then $m_r=\ell_\kappa$ for the $s_\kappa$ indices $r$ with
+$\pi(r)\in B_\kappa$, and $\ell_\kappa\ge s_1+\dots+s_\kappa$, so
+$\sum_rm_r\ge\sum_\kappa s_\kappa(s_1+\dots+s_\kappa)=(d^2+\sum_\kappa s_\kappa^2)/2$, with equality when the
+blocks follow one another. For the code let $B_\kappa$ be the blocks and $\Gamma_\kappa=\pi^{-1}(B_\kappa)$.
+Leave the entries at $(c,r)$ with $c\in B_\kappa$, $r\in\Gamma_\lambda$ free for $\kappa\le\lambda$, and put
+$X_{c,r}=X_{\pi(r),\pi^{-1}(c)}$ for $c\in B_\lambda$, $r\in\Gamma_\kappa$, $\kappa<\lambda$. For $r\in\Gamma_\kappa$ and
+any $c$, either $c\in B_\kappa=\rho(r)$, or $X_{c,r}=X_{\pi(r),\pi^{-1}(c)}$ holds on the set and
+$\pi(r)\in\rho(r)$. The free entries number $\sum_{\kappa\le\lambda}s_\kappa s_\lambda$.
+
+(d) For a bijection $\varphi$ chosen uniformly at random the largest of $k$ distinct places has mean
+$k(d+1)/(k+1)$, which increases with~$k$.
+\end{informalproof}
+
+Part~(d) is the bound $1-1/(\Delta+1)$ of the fourth paper~\cite[Proposition~4.14(b)]{FourthPaper2026} with rows
+as units: an operator whose rows each read at most $w$ rows transposes at most $q^{wd(d+1)/(w+1)}$ matrices,
+although each of its entries may depend on $wd$ entries. For $w=1$ this is the half bound. For $w=2$ and $d\ge4$ it
+is not sharp: the ranking lemma in the proof of \cref{prop:order}(b) gives $\sigma(\rho)\le d(d+1)/2+d-1$. For
+$\rho(r)=\Z/d\setminus\{r\}$ it is sharp: $\sigma(\rho)=d^2-1$, and over a group the matrices whose diagonal sums to
+zero are a $\rho$-code.
+
+\begin{proposition}[Stages]\label{prop:stages}
+\notformalized
+Let $d=2^n$ and identify the row indices with $\F_2^n$. Let $K=K_T\circ\dots\circ K_1$, where $K_s$ maps arrays of
+rows indexed by a set $I_{s-1}$ to arrays of rows indexed by $I_s$, the rows of the arrays between the stages being
+elements of arbitrary sets, and the arrays at the two ends being the $d\times d$ matrices over an alphabet of $q$
+symbols, with $I_0=I_T=\F_2^n$.
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item \emph{Cosets.} Let $I_s=\F_2^n$ for all $s$, and let the row $r$ of the output of $K_s$ depend only on the
+input rows in $\pi_s(r)+V_s$, where $\pi_s(x)=P_sx+a_s$ is an affine map of $\F_2^n$, not necessarily invertible, and
+$V_s$ is a subspace. Put $t=\sum_s\dim V_s$. Then $K$ transposes at most $q^{(d^2+2^td)/2}$ matrices. For every
+$t\le n$ this is attained, with $\dim V_s=1$ for $t$ stages: the partial transpose that exchanges $t$ digits of the
+row address with the same digits of the column address transposes exactly the $q^{(d^2+2^td)/2}$ matrices that are
+symmetric in the other $n-t$ digits.
+\item \emph{Scans.} In (a), let $u$ of the stages be \emph{scans} instead: a scan has an affine bijection $\lambda$
+of $\F_2^n$, the \emph{place} of the row $r$ being the integer whose binary digits are those of $\lambda(r)$, a set
+of at most $q^m$ buffer states with a fixed
+first state $\beta_0$, and maps $f_j,g_j$; its output row at the $j$-th place is $f_j(\beta_j,x_j)$, where $x_j$ is
+the input row at that place, and $\beta_{j+1}=g_j(\beta_j,x_j)$. Let $t$ be the sum of $\dim V_s$ over the other
+stages. Then for every integer $0\le k\le n$ the number of matrices that $K$ transposes is at most
+$q^{(d^2+2^{t+uk}d)/2+umd/2^k}$. If $m\le d$ and $K$ transposes at least $q^{(1/2+\delta)d^2}$ matrices, then
+$t+(u+1)\log_2\bigl((1+4u)/(2\delta)\bigr)\ge\log_2d$.
+\item \emph{Heights.} Let $h_s\colon I_s\to\Z$ be functions with $h_0=h_T=h$, and let $\omega_s\ge0$ be such that the
+row $r$ of the output of $K_s$ depends only on the input rows $i$ with $h_{s-1}(i)\le h_s(r)+\omega_s$. Put
+$\Omega=\sum_s\omega_s$, and let $W$ be the largest number of elements of $\F_2^n$ on $\Omega+1$ consecutive levels
+of~$h$. Then $K$ transposes at most $q^{d(d+1)/2+(W-1)d}$ matrices. If $h$ is the number of ones of the address,
+then $W\le(\Omega+1)\sqrt{2/(\pi n)}\,d$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) The row $r$ of $K_2(K_1(X))$ depends on the rows of $K_1(X)$ in $\pi_2(r)+V_2$, hence on the rows of $X$ in
+$\pi_1(\pi_2(r))+P_1V_2+V_1$. By induction the row $r$ of $K(X)$ depends on the rows of $X$ in a coset of a subspace
+of dimension at most~$t$; these cosets are blocks of at most $2^t$ rows, and \cref{prop:rows}(a) and~(c) apply. For
+the partial transpose write a row index as $(a,v)$ with $v$ the $t$ digits. It sends $X$ to the matrix with the
+entry $X_{(a,v'),(b,v)}$ at $((a,v),(b,v'))$, one digit at a time; the exchange of one digit reads, for the output
+row~$r$, the two rows that agree with $r$ outside that digit. The matrices that it transposes are those with
+$X_{(b,v'),(a,v)}=X_{(a,v'),(b,v)}$, and there are $q^{2^{2t}d'(d'+1)/2}$ of them, $d'=d/2^t$.
+
+(b) Let the advice $\alpha(X)$ consist, for every scan, of its buffer states at the places $j$ that are multiples
+of $2^k$, $0<j<d$, when the pipeline runs on~$X$; it takes at most $q^{umd/2^k}$ values. For a fixed value of the
+advice, the output row of a scan at the place $j$ is a function of the input rows at the places from
+$2^k\lfloor j/2^k\rfloor$ to~$j$. The rows at these places lie in the coset $r+L^{-1}E_k$, where $r$ is the row at the
+place~$j$, $L$ is the linear part of $\lambda$ and $E_k$ is the span of the $k$ lowest digits. So for a fixed value of
+the advice the pipeline is of the kind of~(a) with $t+uk$ in place of~$t$, and \cref{prop:rows}(a), in its second
+form, gives the bound. For the last statement let $u\ge1$ and $k=\lfloor(n-t)/(u+1)\rfloor$, there being nothing to
+prove if $t\ge n$. Then $2^{t+uk}d\le d^2(2^t/d)^{1/(u+1)}$ and $umd/2^k<2ud^2(2^t/d)^{1/(u+1)}$, so
+$\delta<(\tfrac12+2u)(2^t/d)^{1/(u+1)}$. For $u=0$ it is~(a).
+
+(c) By induction over the stages, every row $i$ of $X$ that the row $r$ of $K(X)$ depends on has
+$h(i)\le h(r)+\Omega$. Let $\varphi$ order $\F_2^n$ by~$h$. Then $\varphi(i)$ is at most the number of $x$ with
+$h(x)\le h(r)+\Omega$, and $\varphi(r)$ is more than the number of $x$ with $h(x)<h(r)$, so the largest place of a
+row read for $r$ is at most $\varphi(r)+W-1$; sum over $r$ and apply \cref{prop:rows}(a). The central binomial
+coefficient is at most $2^n\sqrt{2/(\pi n)}$.
+\end{informalproof}
+
+\emph{What the parts cover.} A map that acts on each row separately, by any code, has $\dim V=0$ in~(a), and so has
+every permutation of the rows that is affine on addresses: the permutations of the address digits, which are the
+perfect shuffles and unshuffles of the rows at every scale, and the complements of digits. A tape shuffle that moves
+one digit between the row address and the column address has $\dim V=1$ (the new row agrees with two old rows outside
+one digit), and so has a stage in which the row $r$ is any function of the rows $r$ and $r+v$. So by~(a) a pipeline
+that transforms one array through stages of these kinds, with arbitrary codes between them, transposes a set of rate
+$\tfrac12+\delta$ only if it moves at least $\log_2d-\log_2(1/(2\delta))$ digits, as the recursion by digit exchanges
+does. \Cref{cor:digit} gives the same number for one digit and for linear codes and decoders, and
+\cref{rem:compose-TP} explains why commutator rank cannot add the digits up; here the dimensions add up, for all
+codes. A scan with a buffer of one row, forward or backward, reads all earlier rows, and (b) charges it through
+advice: scans alone, in any address-affine orders, need about $\log d/\log\log d$ stages. (For scans in one order far
+more is true: scans in one direction never exceed $d(d+1)/2$, by \cref{prop:rows}(a) with the order of the scan.)
+
+Part~(a) requires that a stage reads rows of one array inside one coset. A stage that combines an array with a
+differently arranged copy of it does so only with a large coset: for the shuffle parents
+$\rho(r)=\{\lfloor r/2\rfloor,\lfloor r/2\rfloor+d/2\}$ the $T$-fold composition reads cosets of dimension~$T$, with
+$\sigma=144,160,192,256$ at $d=16$ for $T=1,\dots,4$, and with the row $r$ itself added to $\rho(r)$ the only coset
+is the whole space already for $T=1$, and $\sigma=161,192,221$ for $T=1,2,3$. Such stages are covered by~(c),
+more weakly. With the number of ones of the address as the height, on every copy, a permutation of the address
+digits of any copy costs nothing, nor does a stage that combines, row by row, any number of copies arranged by
+different permutations of the digits; a stage that moves one digit, flips one, or adds one digit to another costs
+one; and a scan cut every $2^k$ rows, in an order by permuted digits, costs $k$, with the advice of~(b). So for
+pipelines without scans that carry copies and mix them the total cost satisfies
+$\Omega\ge(\delta+1/(2d))\sqrt{\pi\log_2d/2}-1$ at rate $\tfrac12+\delta$: at least that many stages can raise
+the number of ones, if each raises it by at most one. A height that is invariant under all permutations of the
+digits has levels that are unions of those of the number of ones, so its $W$ is at least the central binomial
+coefficient and the bound of~(c) is never below $d^2/2+d^2/\sqrt{2\log_2d}-d$; whether pipelines of this kind need
+$\log d$ such stages is open. The least
+dimension of a coset that contains the rows read is not the quantity that \cref{prob:scales} asks for: it is
+subadditive over stages by~(a), but a scan, and a stage that reads a row together with its shuffle parents, each
+raise it to $n$ in one linear-time operation (for the second, the differences $r+\lfloor r/2\rfloor$ in $\F_2^n$
+span the whole space).
+
+\begin{proposition}[Expanding row relations]\label{prop:expanding}
+\cited{part~(b) applies~\cite[Theorems~1 and~2]{DujmovicSidiropoulosWood2016}, the second of which rests
+on~\cite{BourgainYehudayoff2013}; we use the statements and have not checked their proofs. Part~(a) is proved below
+and is not formalized.}
+\begin{enumerate}[label=(\alph*),leftmargin=2em]
+\item Let $\rho$ be a row relation such that $\pi(r)\in\rho(r)$ for a bijection $\pi$ and
+$\card{\bigcup_{r\in R}\rho(r)}\ge(1+\eps)\card R$ for every set $R$ of at most $d/2$ indices. Then
+\[
+  \sigma(\rho)\ \ge\ \frac{d(d+1)}2+\sum_{j=0}^{\lfloor d/2\rfloor}\Bigl(j-\Bigl\lfloor\frac j{1+\eps}\Bigr\rfloor\Bigr)
+  \ \ge\ \frac{d(d+1)}2+\frac\eps{1+\eps}\cdot\frac{\lfloor d/2\rfloor(\lfloor d/2\rfloor+1)}2 .
+\]
+\item There are $\eps>0$ and, for infinitely many $d$, three partial maps $f_1,f_2,f_3$ of $\{0,\dots,d-1\}$ to
+itself, each increasing and injective where it is defined, such that $\rho(r)=\{r,f_1(r),f_2(r),f_3(r)\}$ satisfies
+the hypothesis of~(a). For these, $\sigma(\rho)\ge(\tfrac12+\tfrac\eps{8(1+\eps)}-o(1))d^2$.
+\end{enumerate}
+\end{proposition}
+
+\begin{informalproof}
+(a) For a set $A$ of rows let $n(A)$ be the number of $r$ with $\rho(r)\subseteq A$. With
+$A_j=\varphi^{-1}\{1,\dots,j\}$ one has $\max\varphi(\rho(r))>j$ exactly if $\rho(r)\not\subseteq A_j$, so
+$\sum_r\max\varphi(\rho(r))=\sum_{j=0}^{d-1}(d-n(A_j))$. Since $\pi$ is injective, $n(A)\le\card A$. If
+$\card A=j\le d/2$, the set $R$ of the $r$ with $\rho(r)\subseteq A$ has at most $d/2$ elements and its rows lie
+in~$A$, so $n(A)\le j/(1+\eps)$.
+
+(b) By the theorem of Bourgain and Yehudayoff on monotone expanders~\cite{BourgainYehudayoff2013}, in the form with
+three monotone matchings of Dujmovi\'c, Sidiropoulos and Wood~\cite[Theorems~1 and~2]{DujmovicSidiropoulosWood2016},
+there is an infinite family of bipartite graphs on two ordered classes of equal size $d$, each the union of three
+matchings without crossing edges, in which every set $R$ of at most $d/2$ vertices of the first class has at least
+$(1+\eps)\card R$ neighbours. A matching without crossing edges is an increasing partial injection. Adding the
+identity keeps the expansion and gives the bijection.
+\end{informalproof}
+
+A map $K$ whose row $r$ is a function of the rows $r,f_1(r),f_2(r),f_3(r)$ takes three \emph{gather passes} and a
+pass that acts on each row together with the three rows gathered next to it: in a gather pass the head on the array and the head on the work tape both
+move forward only, and the row $f_m(r)$ is copied next to the place of the row~$r$, because $f_m$ is increasing. The
+passes need, for each $m$, the two strings of $d$ bits that mark where $f_m$ is defined and which values it takes;
+we have not checked that a machine can produce these strings for the maps of~(b) in linear time. With that
+reservation, \cref{prop:expanding} shows that the acyclic-subgraph bound, in any form by \cref{prop:rows}(b), cannot
+show that operators made of boundedly many linear-time passes transpose at most $q^{(1/2+o(1))d^2}$ matrices, even
+with whole rows as units. That such expanders exist answered a question of Galil, Kannan and Szemer\'edi on the
+modelling of multitape machines~\cite{GalilKannanSzemeredi1989,DujmovicSidiropoulosWood2016}; what is added here is
+their use as row relations. The shuffle parents belong to the same family of unions of monotone maps and do not
+expand.
+
+\begin{proposition}[Products of bounded pieces]\label{prop:pieces}
+\notformalized
+Let $\rho$ be a row relation such that every $\rho(r)$ has at most $w$ elements and every row lies in $\rho(r)$ for
+at most $w$ indices~$r$. Let the positions be partitioned into pieces of at most $m$ positions, and let $S$ be a
+product of sets $S_Q$, one for each piece $Q$, of assignments of symbols to the positions of $Q$, such that in $S_Q$
+every position of $Q$ is a function of those positions of $Q$ that lie in the rows of $\rho$ of its column. Then
+$\card S\le q^{(d^2+mw^{2m-1}d)/2}$.
+\end{proposition}
+
+\begin{informalproof}
+Fix a piece $Q$ and let $B$ be the bipartite graph on the column indices and the row indices that occur in $Q$, as two
+disjoint classes, in which $r$ is adjacent to $i$ when $i\in\rho(r)$. For $p=(c,r)\in Q$ let the tail of $p$ be the
+component of the column index $r$ and its head the component of the row index~$c$. If $p'=(i,c')\in Q$ is a helper
+of $p$, then $i\in\rho(r)$, so the head of $p'$ is the tail of~$p$. Number the components, and call $p$ forward if
+its tail has the smaller number, backward if its head has, and a loop if they are equal. Given the values at the
+loops and at the backward positions, the forward positions are determined in the order of their tails, since the
+helpers of a forward position with tail $\beta$ have head $\beta$ and are loops, backward positions, or forward
+positions with a smaller tail. The same holds with forward and backward exchanged, so
+$\log_q\card{S_Q}\le(\card Q+\ell_Q)/2$ with $\ell_Q$ the number of loops. A loop is a position $(c,r)$ whose row
+index and column index are joined in $B$, hence by a path of odd length at most $2m-1$ in the bipartite graph
+of~$\rho$, and there are at most $dw^\ell$ paths of length $\ell$ that start at a column index; so at most
+$mw^{2m-1}d$ positions of the matrix are loops of their pieces.
+\end{informalproof}
+
+So no tiling by codes on boundedly many positions (a triangle with a parity, a Hamming code on a tournament) exceeds
+the pairing rate on such a relation; if only $\card{\rho(r)}\le w$ is assumed, the same argument gives
+$q^{(1/2+o(1))d^2}$, since at most $wd/D$ rows lie in more than $D$ of the sets $\rho(r)$ and the pieces that
+meet them cover at most $mwd^2/D$ positions. The statement is about products. It says nothing about intersections
+of local codes whose checks depend on each other across pieces, which is how the codes of the thirteenth
+paper exceed one half on relations that are locally bipartite~\cite{StorageCodes2026} (\cref{sec:false}). What these four
+propositions leave is \cref{prob:machines}(c): whether operators whose rows read boundedly many rows transpose more
+than the pairing rate. By \cref{prop:order}(b) they do not for two rows, by \cref{prop:rows}(c) and
+\cref{prop:stages} not when the rows read lie in small blocks or change the height by little, and by
+\cref{prop:expanding} the order argument does not decide it for three increasing maps and the identity.

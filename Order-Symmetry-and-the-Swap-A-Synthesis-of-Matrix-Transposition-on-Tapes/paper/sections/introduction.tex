@@ -141,8 +141,8 @@ and gives the function of \cref{sec:one-function} a form on those runs.
 \Cref{prop:sets} is proved in the text and is not formalized. The other results of this paper and their formal proofs
 are unchanged, and so are their numbers.
 
-That revision, \texttt{3911d87}, asked \cref{prob:machines}(b) for every window. The present one answers part of it,
-in two propositions added at the end of \cref{sec:sets}.
+That revision, \texttt{3911d87}, asked \cref{prob:machines}(b) for every window. The revision after it,
+\texttt{a445cd8}, answered part of it, in two propositions added to \cref{sec:sets}.
 \begin{itemize}[leftmargin=1.5em]
 \item \Cref{prop:order}: the acyclic-subgraph bound, applied through an order of the rows or of the columns of the
 matrix. For window two it gives at most $q^{d(d+1)/2+d-1}$ matrices, for all maps, all functions and all sets,
@@ -158,6 +158,31 @@ which indicate that for large windows the acyclic-subgraph bound cannot answer i
 \end{itemize}
 The two propositions are proved in the text and are not formalized. No earlier result changes, and no number of a
 result or of a table.
+
+A further revision adds four propositions after them, on operators whose rows are arbitrary functions of whole rows
+of their argument, and \cref{prob:machines}(c).
+\begin{itemize}[leftmargin=1.5em]
+\item \Cref{prop:rows}: such an operator transposes at most $q^{\sigma}$ matrices, where $\sigma$ is the least sum,
+over the orders of the rows, of the place of the last row that each row of the output reads; this is exactly the
+acyclic-subgraph bound of the relation, it equals $(d^2+sd)/2$ when each row of the output reads the block of $s$
+rows that contains its image under a bijection, and it is at most $wd(d+1)/(w+1)$ when $w$ rows are read.
+\item \Cref{prop:stages}: in a pipeline of stages that read rows inside cosets of the address space, with arbitrary
+functions and alphabets between the stages, the dimensions of the cosets add up, and $t$ moved digits give at most
+$q^{(d^2+2^td)/2}$ transposed matrices, which partial transposes attain. So a set of rate $\tfrac12+\delta$ needs
+$\log_2d-\log_2(1/(2\delta))$ moved digits, for every code. Scans with a buffer of one row enter through advice,
+and pipelines that mix differently arranged copies of the array through the number of ones of the address, with
+$\sqrt{\log d}$ in place of $\log d$.
+\item \Cref{prop:expanding}: if the rows read expand, the bound of \cref{prop:rows} is at least
+$(\tfrac12+c)d^2$, and by the monotone expanders of Bourgain and Yehudayoff, in the form with three matchings of
+Dujmovi\'c, Sidiropoulos and Wood, there are such relations made of the identity and three increasing maps, which
+three forward passes gather when the strings that mark the maps are given. So the acyclic-subgraph bound cannot show
+that operators of boundedly many such passes transpose only $q^{(1/2+o(1))d^2}$ matrices.
+\item \Cref{prop:pieces}: products of codes on boundedly many positions stay at the pairing rate on every such
+relation of bounded degree.
+\end{itemize}
+These are proved in the text and are not formalized, except that \cref{prop:expanding}(b) applies a cited theorem,
+of which we use the statement and have not checked the proof. No earlier result changes, and no number of a result
+or of a table.
 
 \subsection{How to read this paper and its formal proofs}
 
@@ -179,7 +204,8 @@ of Theorem~FL that need an algebraically closed field, the structure of $p$-grou
 copy-rule bound; the count in \cref{prop:entry}; \cref{cor:weyl}; \cref{cor:digit} apart from the abstract lemma it
 rests on; the gains for a fixed number of classes over every field
 (\cref{prop:two-class,lem:mixed-blowup,cor:every-M}); the bounds for sets
-(\cref{prop:sets,prop:order,prop:mutual}); and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
+(\cref{prop:sets,prop:order,prop:mutual}) and for whole rows and stages
+(\cref{prop:rows,prop:stages,prop:pieces} and \cref{prop:expanding}(a)); and the translation between class-uniform rules and operators $\sum_aA_a\otimes B_a$. Numerical observations appear only in remarks
 labelled as numerical and in \cref{sec:small}, and no proof uses them. \Cref{app:leanindex} indexes the declarations and
 \cref{app:verification} explains how to check them.
 

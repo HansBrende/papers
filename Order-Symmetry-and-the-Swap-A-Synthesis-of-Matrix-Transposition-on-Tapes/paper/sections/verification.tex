@@ -81,8 +81,20 @@ least number of positions that meets every cycle, for random relations at $d=3$ 
 of \cref{prop:mutual} against enumeration; the two local codes named after \cref{prop:mutual}; and the examples
 after \cref{prop:order}: the cycle for the ranking lemma up to seven vertices, the relation at $d=3$ with its code,
 the codes with $d^2/2+d$ free entries at $d=4$ and~$6$, and the relation of whole rows at $d=4$. With two controls.
-\item \leanfile{tools/acyclic_set_search.py}: the searches for acyclic sets that are quoted at the end of
-\cref{sec:sets}. It needs a solver (OR-tools). The searches for large sets run under a time limit, so their results
+\item \leanfile{tools/row_spread_check.py} (needs NumPy): \cref{prop:rows,prop:stages} and
+\cref{prop:expanding}(a), which are proved in the text. The quantity $\sigma$ by dynamic programming over sets of rows against all orders; the largest
+acyclic set against $d^2-\sigma$, exhaustively over sets of positions for $d\le4$; the exact value for blocks, the
+bound for rows inside blocks, and the two codes named in and after \cref{prop:rows}; pipelines of affine stages,
+also with singular linear parts, against the coset of \cref{prop:stages}(a); for scans, that inputs with the same
+advice that agree on the coset give the same output row, with a control; for heights, the bound of part~(c) on
+pipelines over two copies; the inequality of \cref{prop:expanding}(a) with the exact expansion constant; the
+numbers quoted for the shuffle parents; and a simulation, with rows as units, of the gather passes from the marking
+strings. Not checked by the script: the bound of \cref{prop:stages}(b) itself and its last inequality (at sizes
+where all inputs can be enumerated the bound is weaker than \cref{prop:rows}(a)), and \cref{prop:expanding}(b),
+which is cited. \Cref{prop:pieces} and the count in \cref{prop:stages}(a) for partial transposes were checked by
+the referees' own programs, which are not shipped.
+\item \leanfile{tools/acyclic_set_search.py}: the searches for acyclic sets that are quoted in \cref{sec:sets}, in
+the paragraph on what the order argument does not reach. It needs a solver (OR-tools). The searches for large sets run under a time limit, so their results
 are sizes of sets that were found, a rerun can give slightly different ones, and \leanfile{tools/README.md} records
 the output that is quoted.
 \item \leanfile{tools/class_uniform_sat.py} (needs the package \texttt{pycryptosat}): one run of the solver, for a

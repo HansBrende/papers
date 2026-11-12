@@ -125,6 +125,27 @@ Proved in the paper but not formalized:
     large windows the acyclic-subgraph bound cannot answer it; for one instance this is proved.
   - `tools/order_bounds_check.py` checks the lemmas and small instances; `tools/acyclic_set_search.py` reproduces
     the searches.
+- **Revision on whole rows and stages** (Propositions 6.24 to 6.27 and Problem 9.4(c); proofs written, not
+  formalized; no earlier number changes).
+  - 6.24: an operator whose output row r is any function of the input rows in a set ρ(r) transposes at most q^σ
+    matrices, σ the least sum over the orders of the rows of the place of the last row read. This is exactly the
+    acyclic-subgraph bound of the relation. It is (d² + s d)/2 when every output row reads the block of s rows
+    that contains its image under a bijection, and this is attained; it is at most w d (d+1)/(w+1) when w rows are
+    read.
+  - 6.25: in a pipeline whose stages read rows inside cosets of the address space, with any functions and alphabets
+    between the stages, t moved digits give at most q^((d² + 2^t d)/2) transposed matrices, attained by partial
+    transposes; so rate 1/2 + δ needs log₂ d − log₂(1/(2δ)) moved digits. Scans with a buffer of one row are charged
+    through advice. Pipelines that mix differently arranged copies of the array are bounded through the number of
+    ones of the address, with √(log d) in place of log d.
+  - 6.26: if the rows read expand, σ is at least (1/2 + c) d². By the monotone expanders of Bourgain and
+    Yehudayoff, in the form with three matchings of Dujmović, Sidiropoulos and Wood (cited; statements used, proofs
+    not checked), such relations exist as unions of the identity and three increasing maps, which forward passes
+    gather when the strings that mark the maps are given; that a machine can produce them in linear time was not
+    checked. So the acyclic-subgraph bound cannot give the pairing rate for operators of boundedly many such
+    passes.
+  - 6.27: products of codes on boundedly many positions stay at the pairing rate.
+  - Problem 9.4(c) asks whether operators whose rows read boundedly many rows transpose at most q^((1/2 + o(1)) d²)
+    matrices. `tools/row_spread_check.py` checks Propositions 6.24, 6.25 and 6.26(a) on small instances.
 
 Numerical remarks (exact computations, reproduced by the scripts in `tools/`, not used in any proof) are labelled as
 numerical in the paper. Those over GF(2) at sizes up to six are collected in its section on small sizes; the remark on
@@ -207,7 +228,7 @@ changes.
   Section 3.6 reported as open, and it gives the function of Section 4.1 a form on those runs.
 
 **The revision after 3911d87** is about Problem 9.4(b), which that revision asked for every window. It adds
-Propositions 6.22 and 6.23 (above) at the end of Section 6.7, with a paragraph on what the acyclic-subgraph bound
+Propositions 6.22 and 6.23 (above) in Section 6.7, with a paragraph on what the acyclic-subgraph bound
 does not reach; restricts Problem 9.4(b) to windows of at least three and rewrites the list of what is proved in
 its commentary; and adds two rows to the table of Section 7.1, a sentence each to Sections 7.1 and 7.4, a paragraph
 to the introduction, a sentence to the abstract, two items to the appendix on verification and a sentence to the
@@ -252,6 +273,7 @@ python3 tools/two_class_family.py                # Proposition 6.17 and Corollar
 python3 tools/set_bounds_check.py                # Proposition 6.21 on small instances; about 20 s
 python3 tools/order_bounds_check.py              # Propositions 6.22 and 6.23: lemmas and small instances; about 15 s
 python3 tools/acyclic_set_search.py pairing 60 9 2 9 3 9 5   # needs OR-tools; the searches of Section 6.7 (see tools/README.md)
+python3 tools/row_spread_check.py                # needs NumPy; Propositions 6.24, 6.25, 6.26(a) on small instances; about 10 s
 python3 tools/small_sizes.py table               # the table of small sizes; re-verifies every saved code
 python3 tools/verify_class_uniform_code.py tools/data/*.json
 python3 tools/analyse_code.py                    # the code of dimension 25 and its translates

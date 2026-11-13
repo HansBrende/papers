@@ -16,7 +16,7 @@ import sys
 import numpy as np
 
 
-def instance(n, w, d, rng, orth=False):
+def instance(n, w, d, rng, orth=False, toral=False, paired=True):
     assert d % 2 == 0
     iota = np.arange(d) ^ 1                       # pairs (0,1), (2,3), ...
     U = np.zeros((d, n, n))
@@ -25,8 +25,11 @@ def instance(n, w, d, rng, orth=False):
         if orth:
             A, _ = np.linalg.qr(A)
         U[g] = A
-        U[g + 1] = np.linalg.inv(A)
-    Ws = [np.eye(n)] + [rng.standard_normal((n, n)) for _ in range(w - 1)]
+        U[g + 1] = np.linalg.inv(A) if paired else rng.standard_normal((n, n))
+    if toral:      # W inside the diagonal matrices (commutative)
+        Ws = [np.eye(n)] + [np.diag(rng.standard_normal(n)) for _ in range(w - 1)]
+    else:
+        Ws = [np.eye(n)] + [rng.standard_normal((n, n)) for _ in range(w - 1)]
     # orthonormal basis of W for the Frobenius inner product
     Q, _ = np.linalg.qr(np.stack([x.ravel() for x in Ws], axis=1))
     return iota, U, Q                              # Q: n*n x w

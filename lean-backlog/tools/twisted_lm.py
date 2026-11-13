@@ -7,7 +7,8 @@ dimension at tolerance 1e-8) and the size of kappa is printed, because codes
 found only with exploding coefficients are artefacts (valleys to infinity).
 Numerical over the reals; a failure to find D proves nothing.
 
-Usage: uv run python lean-backlog/tools/twisted_lm.py n w d [restarts] [Dmin]
+Usage: uv run python lean-backlog/tools/twisted_lm.py n w d [restarts] [Dmin] [generic|toral|unpaired]
+(toral: W inside the diagonal matrices; unpaired: independent U_g, so no pairing solution)
 """
 import sys
 import numpy as np
@@ -65,9 +66,12 @@ def main():
     restarts = int(sys.argv[4]) if len(sys.argv) > 4 else 6
     N = d * n
     Dmin = int(sys.argv[5]) if len(sys.argv) > 5 else N // 2
+    mode = sys.argv[6] if len(sys.argv) > 6 else "generic"   # generic | toral | unpaired
     rng = np.random.default_rng(20261113)
-    inst = instance(n, w, d, rng)
+    inst = instance(n, w, d, rng, toral=(mode == "toral"), paired=(mode != "unpaired"))
     tau, Wb = build(n, w, d, inst)
+    if mode != "generic":
+        print(f"mode: {mode}", flush=True)
     print(f"n={n} w={w} d={d}: dn={N}, pairing {N//2}, flag bound "
           f"{N - d*(n//(w+1))}, parameter count about {d*np.sqrt(w):.1f}", flush=True)
     for D in range(Dmin, N + 1):

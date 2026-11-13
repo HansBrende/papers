@@ -643,3 +643,43 @@ mechanism is not new.
   depend on the window; no threshold uniform along a growing $w(d)$ is
   required. The simplex construction leaves that common-deficit question
   open.
+
+## 10. After the random-incidence code: where the excess sits (Fable, 13 November 2026)
+
+Status: a reassessment. The count in 10.1 is a first-moment computation, not a proof for m ≥ 4. 10.2 and 10.3
+are a principle and a conjecture; nothing in this section is a bound.
+
+**10.1 The corners.** Astra's random-incidence code (triangles at density d^{−2/3}) has rate 2/3 at window
+exponent 1/3, above the projective curve of Section 9, which is therefore not an upper envelope. The same
+count for m-cliques: a cell (c_1, r_1) lies in about (dp)^{2(m−1)} p^{(m−1)(m−2)} = d^{2(m−1)} p^{m(m−1)} of them, so they
+appear at p = d^{−2/m}, that is at window exponent α = 1 − 2/m, with rate 1 − 1/m = (1 + α)/2. For m = 2 this is
+pairing at bounded window. So the clique codes sit at the corners of a staircase under the line (1 + α)/2,
+and a bound of the form ½ + C log w / log d needs C ≥ ½, as Astra says.
+
+**10.2 Patterns.** A finite incidence pattern with v rows and columns together and e incidences has about
+d^{v−2} p^e copies through a given cell, so it is available from window exponent 1 − (v − 2)/e on (for balanced
+patterns). Dense patterns need large windows. At small exponents only patterns with e close to v occur,
+which are trees with few extra incidences.
+
+**10.3 Every code known gains on near cells only.** Call a cell *near* if its row and column are within
+distance three in the incidence graph of ρ, and *far* otherwise. Loops, mutual pairs with a common witness,
+polygons, cliques (projective or random) and the lane codes all take their gain over one half from near
+cells: the cells of a clique are pairwise at distance three. The number of near cells is about d·w³, which
+is all of the array exactly from exponent 1/3 on. That is where the first step of the staircase is.
+
+**Conjecture (near cells carry the excess).** There is a constant C such that every whole-row code for ρ,
+over every alphabet, has at most q^{d²/2 + C·N₃} elements, N₃ the number of near cells.
+
+- At fixed window N₃ = O(d), so this is Problem 9.4(c) in its strong form d²/2 + O(d), and it gives everything
+  the machines need.
+- From exponent 1/3 on it says nothing, which is consistent with the staircase.
+- Known special cases point the same way. Astra's bound for small components charges only the coordinates
+  whose two ports are joined by a short path. For linear codes that contain a pairing code the gain is at
+  most the number of mutual pairs with a common witness column, which are near cells (a bound of Fable's whose
+  proof is not yet in this repository).
+
+**The gate.** A *far gadget* is a finite relation with a whole-row code whose far cells carry more than
+half of their number. No example is known. One far gadget with cells at distance five would give rate above
+one half below exponent 1/3 and would refute the conjecture; the absence of far gadgets at every distance
+is the conjecture restricted to bounded patterns. The smallest natural host is the generalized hexagon of
+order 2 (d = 63, w = 3: per column 3 loops, 12 near cells and 48 far cells).

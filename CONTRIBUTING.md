@@ -188,6 +188,9 @@ The checks cover publishable files, including PDF contents and archives; the
 second checks the exact staged versions. This policy applies to current files
 and future commits; existing Git history is retained.
 
+For chat-only commits, `chat/send.py` checks the complete updated transcript
+with the same path rules; unchanged paper artifacts need not be rescanned.
+
 ## Historical verification records
 
 The follow-up's historical records are sanitized views, not fresh verification

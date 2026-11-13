@@ -1,21 +1,27 @@
-"""Integration checks with two disposable clones and a local bare remote.
+"""Chat integration tests using disposable clones and a local bare remote.
 
-Run from the repository root:
-    python3 -m unittest discover -s chat -p 'test_watch.py'
+Run: python3 -m unittest discover -s chat -p 'test_watch.py'
+No GitHub access or real messages. Includes actual rejected pushes.
 """
 
+from dataclasses import replace
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
+from unittest.mock import patch
+
+from chatlib import ChatError, check_history, new_message, parse_chat
+import send
+from watch import listen
 
 
-SCRIPT = Path(__file__).with_name("watch.py")
+SOURCE = Path(__file__).parent
 CHAT = "chat/fable-astra.md"
 INITIAL = "# Discussion\n\nAstra: initial message.\n"
-REPLY = "\nFable: a new proposal.\n"
 
 
 def git(root, *args):
@@ -23,9 +29,9 @@ def git(root, *args):
                           capture_output=True, text=True).stdout.strip()
 
 
-class WatchIntegrationTests(unittest.TestCase):
+class RepoCase(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="chat-watch-")
+        self.temp = tempfile.TemporaryDirectory(prefix="chat-test-")
         self.addCleanup(self.temp.cleanup)
         base = Path(self.temp.name)
         self.remote = base / "remote.git"
@@ -36,9 +42,14 @@ class WatchIntegrationTests(unittest.TestCase):
         self.writer.mkdir()
         git(self.writer, "init")
         git(self.writer, "symbolic-ref", "HEAD", "refs/heads/master")
-        self.configure(self.writer)
+        self.configure(self.writer, "fable")
         (self.writer / "chat").mkdir()
-        shutil.copyfile(SCRIPT, self.writer / "chat/watch.py")
+        for name in ("watch.py", "send.py", "chatlib.py"):
+            shutil.copyfile(SOURCE / name, self.writer / "chat" / name)
+        (self.writer / "tools").mkdir()
+        shutil.copyfile(SOURCE.parent / "tools/check_public_paths.py",
+                        self.writer / "tools/check_public_paths.py")
+        shutil.copyfile(SOURCE.parent / ".gitignore", self.writer / ".gitignore")
         (self.writer / CHAT).write_text(INITIAL)
         (self.writer / "work.txt").write_text("published work\n")
         git(self.writer, "add", ".")
@@ -46,147 +57,308 @@ class WatchIntegrationTests(unittest.TestCase):
         git(self.writer, "remote", "add", "origin", str(self.remote))
         git(self.writer, "push", "-u", "origin", "master")
         git(base, "clone", str(self.remote), str(self.reader))
-        self.configure(self.reader)
+        self.configure(self.reader, "astra")
         self.before = git(self.reader, "rev-parse", "HEAD")
 
-    def configure(self, root):
-        git(root, "config", "user.name", "Watcher Test")
-        git(root, "config", "user.email", "watcher@example.invalid")
+    def configure(self, root, actor):
+        git(root, "config", "user.name", "Chat Test")
+        git(root, "config", "user.email", "chat@example.invalid")
         git(root, "config", "commit.gpgsign", "false")
-        empty_hooks = root / ".git/empty-hooks"
-        empty_hooks.mkdir()
-        git(root, "config", "core.hooksPath", str(empty_hooks))
+        git(root, "config", "chat.agent", actor)
+        hooks = root / ".git/empty-hooks"
+        hooks.mkdir()
+        git(root, "config", "core.hooksPath", str(hooks))
 
-    def publish(self, name=CHAT, text=INITIAL + REPLY):
+    def publish_file(self, name, text):
         (self.writer / name).write_text(text)
         git(self.writer, "add", name)
         git(self.writer, "commit", "-m", "Remote update")
         git(self.writer, "push")
         return git(self.writer, "rev-parse", "HEAD")
 
-    def watch(self, *args):
-        return subprocess.run(
-            [sys.executable, str(self.reader / "chat/watch.py"), "--once", *args],
-            cwd=self.temp.name, capture_output=True, text=True, timeout=10,
-        )
+    def append(self, body="Please review this proposal.", wake=True, actor="fable"):
+        message = new_message(actor, body, wake)
+        text = (self.writer / CHAT).read_text() + "\n" + message.render() + "\n"
+        return self.publish_file(CHAT, text)
 
-    def test_no_change_and_unrelated_commit(self):
-        self.assertEqual(self.watch().returncode, 1)
-        head = self.publish("work.txt", "new published work\n")
+    def watch(self, *args, baseline=True):
+        command = [sys.executable, str(self.reader / "chat/watch.py"), "--once"]
+        if baseline:
+            command += ["--since", self.before]
+        return subprocess.run(command + list(args), cwd=self.temp.name,
+                              capture_output=True, text=True, timeout=10)
+
+    def send_cli(self, *args, root=None, data=None):
+        root = root or self.reader
+        return subprocess.run([sys.executable, str(root / "chat/send.py"),
+                               "--no-wait", *args], input=data, capture_output=True,
+                              text=True, timeout=15)
+
+    def remote_chat(self):
+        return git(self.remote, "show", "master:" + CHAT)
+
+
+class WatchTests(RepoCase):
+    def test_no_worktree_updates_on_unrelated_commits(self):
+        self.publish_file("work.txt", "remote update\n")
         result = self.watch()
         self.assertEqual(result.returncode, 1, result.stderr)
-        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
-        self.assertIn("No new chat text", result.stdout)
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
+        self.assertEqual((self.reader / "work.txt").read_text(), "published work\n")
 
-    def test_reply_already_waiting_before_start(self):
-        head = self.publish()
+    def test_startup_snapshot_and_explicit_unread_baseline(self):
+        head = self.append()
+        self.assertEqual(self.watch(baseline=False).returncode, 1)
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(REPLY.strip(), result.stdout)
-        self.assertNotIn("Astra: initial", result.stdout)
+        self.assertIn("Please review", result.stdout)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
+
+    def test_quiet_updates_are_batched_until_wake(self):
+        self.append("Quiet experiment result", wake=False)
         self.assertEqual(self.watch().returncode, 1)
-
-    def test_dirty_work_is_preserved_and_since_avoids_redelivery(self):
-        work = self.reader / "work.txt"
-        work.write_text("unfinished local proof\n")
-        head = self.publish()
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
+        self.append("Now please review the batch")
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(REPLY.strip(), result.stdout)
-        self.assertEqual(work.read_text(), "unfinished local proof\n")
+        self.assertIn("Quiet experiment result", result.stdout)
+        self.assertIn("Now please review", result.stdout)
+
+    def test_own_request_does_not_wake_self(self):
+        self.append("Astra's outbound request", actor="astra")
+        self.assertEqual(self.watch().returncode, 1)
+        self.assertEqual(self.watch("--as", "fable").returncode, 0)
+
+    def test_dirty_work_and_staging_are_preserved(self):
+        work = self.reader / "work.txt"
+        work.write_text("staged proof\n")
+        git(self.reader, "add", "work.txt")
+        work.write_text("more unfinished proof\n")
+        stage = git(self.reader, "write-tree")
+        head = self.append()
+        result = self.watch()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(git(self.reader, "write-tree"), stage)
+        self.assertEqual(work.read_text(), "more unfinished proof\n")
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         self.assertEqual(self.watch("--since", head).returncode, 1)
 
     def test_unpushed_chat_is_not_a_notification(self):
-        chat = self.reader / CHAT
-        draft = INITIAL + "\nAstra: local unsent draft.\n"
-        chat.write_text(draft)
+        draft = INITIAL + "\nAstra: unsent draft.\n"
+        (self.reader / CHAT).write_text(draft)
         self.assertEqual(self.watch().returncode, 1)
-        self.publish()
-        result = self.watch()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(REPLY.strip(), result.stdout)
-        self.assertNotIn("local unsent draft", result.stdout)
-        self.assertEqual(chat.read_text(), draft)
+        self.append()
+        self.assertEqual(self.watch().returncode, 0)
+        self.assertEqual((self.reader / CHAT).read_text(), draft)
 
     def test_untracked_file_is_not_overwritten(self):
         local = self.reader / "new-file.txt"
         local.write_text("local data\n")
-        self.publish("new-file.txt", "remote data\n")
-        self.publish()
-        result = self.watch()
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.publish_file("new-file.txt", "remote data\n")
+        self.append()
+        self.assertEqual(self.watch().returncode, 0)
         self.assertEqual(local.read_text(), "local data\n")
-        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
 
     def test_diverged_branch_is_not_merged(self):
         (self.reader / "work.txt").write_text("local committed proof\n")
         git(self.reader, "add", "work.txt")
         git(self.reader, "commit", "-m", "Local work")
         head = git(self.reader, "rev-parse", "HEAD")
-        self.publish()
+        self.append()
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("manual reconciliation", result.stdout)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
-        self.assertEqual(git(self.reader, "status", "--porcelain"), "")
 
-    def test_other_branch_is_not_updated(self):
+    def test_other_branch_and_no_pull(self):
+        self.append()
+        self.assertEqual(self.watch("--no-pull").returncode, 0)
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
         git(self.reader, "checkout", "-b", "research")
-        self.publish()
-        result = self.watch()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("not on the watched tracking branch", result.stdout)
+        self.assertEqual(self.watch().returncode, 0)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
 
-    def test_rewritten_chat_stops_without_pulling(self):
-        self.publish(text="# Replaced history\n")
-        result = self.watch()
-        self.assertEqual(result.returncode, 2, result.stderr)
-        self.assertIn("reconcile both histories", result.stdout)
+    def test_rewritten_and_deleted_chat_stop(self):
+        self.publish_file(CHAT, "# Changed history\n")
+        self.assertEqual(self.watch().returncode, 2)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
-
-    def test_deleted_chat_stops_without_pulling(self):
         git(self.writer, "rm", CHAT)
         git(self.writer, "commit", "-m", "Delete chat")
         git(self.writer, "push")
-        result = self.watch()
-        self.assertEqual(result.returncode, 2)
-        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
-
-    def test_explicit_baseline_after_an_external_pull(self):
-        self.publish()
-        git(self.reader, "pull", "--ff-only")
-        self.assertEqual(self.watch().returncode, 1)
-        result = self.watch("--since", self.before)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(REPLY.strip(), result.stdout)
+        self.assertEqual(self.watch().returncode, 2)
 
     def test_fetch_failure_is_not_a_reply(self):
         git(self.reader, "remote", "set-url", "origin", str(self.remote / "missing"))
         result = self.watch()
         self.assertEqual(result.returncode, 2)
         self.assertIn("Fetch failed", result.stderr)
-        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
 
-    def test_listening_process_exits_on_later_reply(self):
+    def test_running_listener_waits_for_peer_request(self):
         process = subprocess.Popen(
             [sys.executable, str(self.reader / "chat/watch.py"), "--interval", "0.05"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         )
         try:
-            self.assertIn("Watching", process.stdout.readline())
-            self.assertIn("Working files already", process.stdout.readline())
+            self.assertIn("Listening", process.stdout.readline())
+            self.assertIn("Startup baseline", process.stdout.readline())
+            self.append("Quiet progress", wake=False)
+            time.sleep(0.2)
             self.assertIsNone(process.poll())
-            self.publish()
+            self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
+            self.append("Review the result")
             output, errors = process.communicate(timeout=10)
             self.assertEqual(process.returncode, 0, errors)
-            self.assertIn(REPLY.strip(), output)
+            self.assertIn("Quiet progress", output)
+            self.assertIn("Review the result", output)
         finally:
             if process.poll() is None:
                 process.kill()
             process.communicate()
+
+
+class SendTests(RepoCase):
+    def test_sender_preserves_index_head_and_unrelated_local_commits(self):
+        (self.reader / "work.txt").write_text("unpublished local theorem\n")
+        git(self.reader, "add", "work.txt")
+        git(self.reader, "commit", "-m", "Local theorem")
+        head = git(self.reader, "rev-parse", "HEAD")
+        (self.reader / "work.txt").write_text("staged changes\n")
+        git(self.reader, "add", "work.txt")
+        (self.reader / "work.txt").write_text("unstaged changes\n")
+        index = (self.reader / ".git/index").read_bytes()
+        result = self.send_cli("--wake", "Please check my argument")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
+        self.assertEqual((self.reader / ".git/index").read_bytes(), index)
+        self.assertEqual((self.reader / "work.txt").read_text(), "unstaged changes\n")
+        self.assertEqual(git(self.remote, "diff", "--name-only", self.before, "master"), CHAT)
+        self.assertEqual(git(self.remote, "show", "master:work.txt"), "published work")
+        self.assertIn("Co-authored-by: GPT-6 Astra <noreply@openai.com>",
+                      git(self.remote, "log", "-1", "--format=%B"))
+
+    def test_fable_identity_stdin_and_quiet_default(self):
+        result = self.send_cli("--as", "fable", data="A multiline message\n\nWith a proof.")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        messages = list(parse_chat(self.remote_chat()).messages.values())
+        self.assertEqual(len(messages), 1)
+        self.assertFalse(messages[0].wake)
+        self.assertEqual(messages[0].recipient, "astra")
+        self.assertEqual(messages[0].body, "A multiline message\n\nWith a proof.")
+        self.assertIn("Co-authored-by: Claude Fable 5.2 <noreply@anthropic.com>",
+                      git(self.remote, "log", "-1", "--format=%B"))
+
+    def test_message_id_retry_is_idempotent_and_content_checked(self):
+        key = "a" * 32
+        self.assertEqual(self.send_cli("--id", key, "One message").returncode, 0)
+        head = git(self.remote, "rev-parse", "master")
+        self.assertEqual(self.send_cli("--id", key, "One message").returncode, 0)
+        self.assertEqual(git(self.remote, "rev-parse", "master"), head)
+        self.assertEqual(self.send_cli("--id", key, "Different message").returncode, 2)
+        self.assertEqual(len(parse_chat(self.remote_chat()).messages), 1)
+
+    def test_push_race_stops_for_review_without_publishing_or_reordering(self):
+        own = new_message("astra", "My result\n\nShared paragraph\n\nEnd.", True)
+        peer = new_message("fable", "My alternative\n\nShared paragraph\n\nEnd.", True)
+        original = send.message_commit
+        raced = False
+
+        def race(root, base, text, actor):
+            nonlocal raced
+            commit = original(root, base, text, actor)
+            if not raced:
+                raced = True
+                send.publish(self.writer, peer)
+            return commit
+
+        with patch.object(send, "message_commit", side_effect=race):
+            with self.assertRaisesRegex(ChatError, "new incoming message.*not sent.*Review"):
+                send.publish(self.reader, own)
+        messages = parse_chat(self.remote_chat()).messages
+        self.assertEqual(messages, {peer.id: peer})
+        self.assertEqual(git(self.remote, "rev-list", "--count", self.before + "..master"), "1")
+        self.assertEqual(git(self.reader, "rev-parse", "HEAD"), self.before)
+        # Only an explicit later send, after review, appends our message.
+        send.publish(self.reader, own)
+        self.assertEqual(list(parse_chat(self.remote_chat()).messages), [peer.id, own.id])
+        self.assertEqual(git(self.remote, "rev-list", "--count", self.before + "..master"), "2")
+
+    def test_unrelated_push_race_also_stops_without_automatic_retry(self):
+        message = new_message("astra", "An outgoing message", False)
+        original = send.message_commit
+
+        def race(root, base, text, actor):
+            commit = original(root, base, text, actor)
+            self.publish_file("work.txt", "A competing published result\n")
+            return commit
+
+        with patch.object(send, "message_commit", side_effect=race):
+            with self.assertRaisesRegex(ChatError, "no new chat text.*not sent"):
+                send.publish(self.reader, message)
+        self.assertEqual(parse_chat(self.remote_chat()).messages, {})
+
+    def test_lost_push_acknowledgement_does_not_duplicate_message(self):
+        message = new_message("astra", "Delivered despite lost acknowledgement", True)
+        original = send.git
+
+        def lost_ack(root, *args, **kwargs):
+            result = original(root, *args, **kwargs)
+            if args[0] == "push" and result.returncode == 0:
+                return subprocess.CompletedProcess(result.args, 1, b"", b"lost response")
+            return result
+
+        with patch.object(send, "git", side_effect=lost_ack):
+            send.publish(self.reader, message)
+        self.assertEqual(list(parse_chat(self.remote_chat()).messages), [message.id])
+
+    def test_send_rearms_before_send_baseline_and_catches_immediate_reply(self):
+        def immediate_reply(root, actor, **options):
+            self.assertEqual(options["since"], self.before)
+            send.publish(self.writer, new_message("fable", "Immediate response", True))
+            return listen(root, actor, once=True, **options)
+
+        with patch.object(send, "ROOT", self.reader), patch.object(send, "listen", immediate_reply), \
+                patch.object(sys, "argv", ["send.py", "--wake", "Please review"]):
+            self.assertEqual(send.main(), 0)
+        self.assertEqual(len(parse_chat(self.remote_chat()).messages), 2)
+
+    def test_public_paths_and_reserved_markers_are_rejected_before_push(self):
+        path = "/".join(("", "Users", "Example", "private-file"))
+        result = self.send_cli("See " + path)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("public-path policy", result.stderr)
+        self.assertEqual(self.send_cli("<!-- chat-message invalid -->").returncode, 2)
+        self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
+
+    def test_no_union_merge_rule(self):
+        self.assertEqual(git(self.reader, "check-attr", "merge", "--", CHAT),
+                         CHAT + ": merge: unspecified")
+
+
+class EnvelopeTests(unittest.TestCase):
+    def test_append_requires_exact_prefix_without_reordering(self):
+        a = new_message("astra", "First claim", False)
+        b = new_message("fable", "Second claim", True)
+        before = parse_chat(INITIAL + a.render())
+        after = parse_chat(INITIAL + a.render() + "\n\n" + b.render())
+        check_history(before, after)
+        with self.assertRaises(ChatError):
+            check_history(before, parse_chat(INITIAL + b.render() + "\n\n" + a.render()))
+        with self.assertRaises(ChatError):
+            check_history(before, parse_chat(INITIAL + b.render()))
+        with self.assertRaises(ChatError):
+            changed = replace(a, body="A changed claim")
+            check_history(before, parse_chat(INITIAL + changed.render()))
+
+    def test_duplicate_and_interleaved_envelopes_are_rejected(self):
+        a = new_message("astra", "First claim", False)
+        b = new_message("fable", "Second claim", True)
+        with self.assertRaises(ChatError):
+            parse_chat(INITIAL + a.render() + "\n" + a.render())
+        with self.assertRaises(ChatError):
+            parse_chat(INITIAL + a.render().replace("First claim", b.render()))
+        with self.assertRaises(ChatError):
+            parse_chat(INITIAL + a.render().replace("First claim", "Truncated claim"))
 
 
 if __name__ == "__main__":

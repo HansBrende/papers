@@ -1,126 +1,71 @@
 #!/usr/bin/env python3
-"""Wait for a committed change to chat/fable-astra.md on origin/master.
+"""Fetch every 15 seconds; exit only for a peer message marked --wake.
 
-Run from anywhere: python3 path/to/clone/chat/watch.py
-Standard library only. Fetch every 15 seconds; fast-forward a clean tracking
-branch. Print incoming text and exit. Never stash, reset, rebase, commit or push.
+Run: python3 chat/watch.py --as fable
+No working-tree changes while waiting. On notification, fast-forward only a
+clean tracking branch (disable with --no-pull). Standard library only.
 """
 
 from __future__ import annotations
 
 import argparse
-import math
-import os
-from pathlib import Path
-import subprocess
 import sys
 import time
 
-
-CHAT = "chat/fable-astra.md"
-
-
-class GitError(RuntimeError):
-    pass
+from chatlib import (ROOT, ChatError, GitError, actor_for, add_options, check_history,
+                     fetch, parse_chat, read_chat, revision, sync_if_safe)
 
 
-def git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    env = os.environ.copy()
-    env["GIT_TERMINAL_PROMPT"] = "0"
-    try:
-        result = subprocess.run(
-            ["git", *args], cwd=root, env=env, capture_output=True, timeout=30,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise GitError("Git command timed out after 30 seconds") from exc
-    if check and result.returncode:
-        raise GitError(result.stderr.decode("utf-8", errors="replace").strip())
-    return result
-
-
-def revision(root: Path, ref: str) -> str:
-    return git(root, "rev-parse", "--verify", ref + "^{commit}").stdout.decode().strip()
-
-
-def sync_if_safe(root: Path, commit: str, remote: str, branch: str) -> str:
-    current = git(root, "symbolic-ref", "--quiet", "--short", "HEAD", check=False)
-    upstream = git(root, "rev-parse", "--abbrev-ref", "--symbolic-full-name",
-                   "@{upstream}", check=False)
-    if (current.stdout.decode().strip() != branch or
-            upstream.stdout.decode().strip() != f"{remote}/{branch}"):
-        return "Working files unchanged: not on the watched tracking branch."
-    if revision(root, "HEAD") == commit:
-        return "Working files already at the fetched commit."
-    if git(root, "status", "--porcelain", "--untracked-files=normal").stdout:
-        return "Working files unchanged: uncommitted or untracked files are present."
-    if git(root, "merge-base", "--is-ancestor", "HEAD", commit, check=False).returncode:
-        return "Working files unchanged: local commits need manual reconciliation."
-    git(root, "merge", "--ff-only", "--quiet", commit)
-    return "Fast-forwarded the working branch."
-
-
-def positive_seconds(value: str) -> float:
-    seconds = float(value)
-    if not math.isfinite(seconds) or seconds <= 0:
-        raise argparse.ArgumentTypeError("interval must be finite and greater than zero")
-    return seconds
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--interval", type=positive_seconds, default=15,
-                        help="seconds between checks (default: 15)")
-    parser.add_argument("--since", default="HEAD",
-                        help="last-read commit (default: local HEAD at startup)")
-    parser.add_argument("--remote", default="origin")
-    parser.add_argument("--branch", default="master")
-    parser.add_argument("--once", action="store_true", help="check once without waiting")
-    args = parser.parse_args()
-    root = Path(__file__).resolve().parent.parent
-    remote_ref = f"refs/remotes/{args.remote}/{args.branch}"
-    git(root, "check-ref-format", remote_ref)
-    git(root, "check-ref-format", f"refs/heads/{args.branch}")
-    baseline_commit = revision(root, args.since)
-    baseline = git(root, "show", f"{baseline_commit}:{CHAT}").stdout
-    print(f"Watching {args.remote}/{args.branch}:{CHAT} from {baseline_commit}; "
-          f"checking every {args.interval:g}s. Ctrl-C stops the watcher.", flush=True)
-    previous_status = None
+def listen(root, actor, *, remote="origin", branch="master", interval=15,
+           since=None, once=False, no_pull=False):
+    baseline = previous = None
+    if since:
+        since = revision(root, since)
+        baseline = previous = parse_chat(read_chat(root, since))
+    print(f"Listening as {actor} on {remote}/{branch}; fetch-only polling every "
+          f"{interval:g}s. Only peer REVIEW REQUEST messages wake this listener.", flush=True)
     while True:
         try:
-            git(root, "fetch", "--quiet", "--no-tags", "--", args.remote,
-                f"refs/heads/{args.branch}:{remote_ref}")
+            commit = fetch(root, remote, branch)
         except GitError as exc:
             print(f"Fetch failed: {exc}", file=sys.stderr, flush=True)
-            if args.once:
+            if once:
                 return 2
-            time.sleep(args.interval)
+            time.sleep(interval)
             continue
-        commit = revision(root, remote_ref)
-        incoming = git(root, "show", f"{commit}:{CHAT}").stdout
-        changed = incoming != baseline
-        if changed and not incoming.startswith(baseline):
-            print("Chat histories differ before the append point. Working files unchanged; "
-                  "reconcile both histories manually. Fetched chat follows:", flush=True)
-            print(incoming.decode("utf-8"), end="", flush=True)
-            print(f"\nFetched commit: {commit}", flush=True)
-            return 2
-        try:
-            status = sync_if_safe(root, commit, args.remote, args.branch)
-        except GitError as exc:
-            status = f"Could not fast-forward; no automatic conflict resolution: {exc}"
-        if changed or status != previous_status:
-            print(status, flush=True)
-            previous_status = status
-        if changed:
-            print(f"\nNew chat text at {commit}:\n", flush=True)
-            print(incoming[len(baseline):].decode("utf-8"), end="", flush=True)
-            print(f"\nAfter reading, use --since {commit} if your local HEAD is still older.",
-                  flush=True)
+        current = parse_chat(read_chat(root, commit))
+        if baseline is None:
+            baseline = previous = current
+            print(f"Startup baseline: {commit}. Existing messages are treated as read; "
+                  "use --since to include earlier unread messages.", flush=True)
+        check_history(previous, current)
+        previous = current
+        incoming = [message for key, message in current.messages.items()
+                    if key not in baseline.messages and message.recipient == actor]
+        if any(message.wake for message in incoming):
+            if not no_pull:
+                try:
+                    print(sync_if_safe(root, commit, remote, branch), flush=True)
+                except GitError as exc:
+                    print(f"Could not fast-forward; message is still available: {exc}", flush=True)
+            print(f"\nNew messages for {actor} at {commit}:\n", flush=True)
+            for message in incoming:
+                print(message.heading + "\n\n" + message.body + "\n", flush=True)
+            print(f"Last-read commit: {commit}", flush=True)
             return 0
-        if args.once:
-            print("No new chat text.", flush=True)
+        if once:
+            print(f"No new wake request for {actor}.", flush=True)
             return 1
-        time.sleep(args.interval)
+        time.sleep(interval)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    add_options(parser)
+    parser.add_argument("--once", action="store_true", help="check once without waiting")
+    args = parser.parse_args()
+    return listen(ROOT, actor_for(ROOT, args.actor), remote=args.remote, branch=args.branch,
+                  interval=args.interval, since=args.since, once=args.once, no_pull=args.no_pull)
 
 
 if __name__ == "__main__":
@@ -129,6 +74,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nStopped.", flush=True)
         sys.exit(130)
-    except (GitError, OSError, UnicodeError) as exc:
+    except (ChatError, OSError, UnicodeError) as exc:
         print(f"Watcher stopped: {exc}", file=sys.stderr, flush=True)
         sys.exit(2)

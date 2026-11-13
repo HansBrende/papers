@@ -221,3 +221,57 @@ With (U), Proposition 5 gives D ≤ dn/2 + c_w d/2 in the paired model, i.e. rat
 - Flags cannot prove (U): every flag bound is proportional to n.
 - For representations the same splitting applies with G₋ a set of group elements without inverse pairs, but the
   matrices π(h) are not independent, and the local relations of Section 6 reappear.
+
+## 9. The group model is not the generic model (re-evaluation, 13 November 2026)
+
+Status: Propositions 6 to 8 have short written proofs, not reviewed. They concern the case U_g = π(g) of
+Section 1, which is a slice of the whole-row problem itself (Proposition 1), and they change what Section 8 is
+worth.
+
+**Proposition 6 (closed words).** In the unpaired model with scalar blocks (K′ = κ ⊗ 1), let sites h_1, …, h_k
+satisfy U_{h_k} ⋯ U_{h_1} = 1. Then κ = the cyclic permutation of these sites gives a kernel of dimension n on them:
+v(h_{j+1}) = U_{h_j} v(h_j). So a closed word of length k carries rate 1/k, pairing is the shortest closed word
+(k = 2), and generic matrices have no closed words at all beyond the pairs.
+
+**Proposition 7 (every half of a quasirandom group has triples).** Let G be a finite group of order d whose
+non-trivial irreducible representations have dimension at least m ≥ 108, and let G₋ ⊆ G contain no inverse pair
+and at least d/3 elements. Then G₋ contains at least d/243 − 1 pairwise disjoint triples (a, b, c) of distinct
+elements with abc = e. Hence, for every representation π of dimension n and U_h = π(h)⁻¹, the unpaired model on G₋
+has a kernel of dimension at least (d/243 − 1) n already at w = 1.
+
+*Proof.* By the mixing inequality of Gowers (in the form of Babai, Nikolov and Pyber), the number of pairs
+(a, b) ∈ A × B with ab ∈ C differs from |A||B||C|/d by at most (|A||B||C| d/m)^{1/2}. With A = B = G₋ and C = G₋⁻¹
+this number is at least (|G₋|³/d)(1 − (27/m)^{1/2}) ≥ d²/54, and each such pair is a triple (a, b, c) with c ∈ G₋ and
+abc = e. At most 3d of them have two equal entries. An element lies in at most 9d/2 of the triples that meet a
+given triple, so a greedy choice gives (d²/54 − 3d)/(9d/2) disjoint ones. Apply Proposition 6 to each, with
+(h_1, h_2, h_3) = (a, b, c): U_c U_b U_a = π(abc)⁻¹ = 1. ∎
+
+**Consequence.** For the matrices of a quasirandom group, statement (U) is false and Proposition 5 gives at best
+(½ + 1/243) dn, whatever half is chosen. The reduction to the unpaired model works only where a *cone* exists: a
+half of the group with few short closed words. That is the case of ordered groups (below) and of groups with a
+large cyclic quotient, where order arguments already apply. So (U) and the results on it are statements about
+generic matrices; they do not lead to the group model by this route.
+
+**Proposition 8 (ordered groups).** Let G have a total order invariant under multiplication on both sides (a free
+group has one), Σ ⊆ G finite, and S a finite set of elements greater than every element of Σ ∪ {e}. For any scalar
+matrices κ_s indexed by S, the map x ↦ (g x_g − Σ_s s Σ_h κ_s[g, h] x_h)_{g ∈ S} on F[G]^S is injective, over every
+field. Consequently a covariant decoder with displacements in a finite symmetric set S₀ has a code that is
+determined by its entries at the displacements of S₀ that are not above Σ: at most half of S₀, plus those between
+the generators and their inverses.
+
+*Proof.* Let x ≠ 0, let μ be the largest group element in the supports of the x_h, and let it occur in x_g. The
+left side of the equation at g contains gμ. Every element of the right side is s u with u ≤ μ and s ∈ Σ, so it is
+at most sμ < gμ. ∎
+
+- Proposition 8 is the order argument, with the displacements ordered by the group. It applies to a tree, which
+  expands, with unbounded coefficients and over every field. So in the covariant slice the half bound holds on
+  the ordered cover, and the open question is whether it survives in finite quotients, which have torsion and,
+  when they are quasirandom, no cone (Proposition 7).
+- This is the shape of the Lück approximation question, in which the series already has a negative answer in
+  positive characteristic for other group-ring matrices, and its codes above one half come from exactly that
+  failure ([Lück approximation fails](../../Luck-Approximation-Fails-in-Positive-Characteristic/),
+  [Storage codes above half rate](../../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)). The
+  matrices here are not of that kind (their size grows with the quotient), so this is an analogy, not a theorem.
+- What a code above pairing must do in the group model: closed words give at most 1/2 (Proposition 6), so it has
+  to use cancellation in the group ring, as the local gains at short relations do (controls note); at
+  displacements far from the generators no such structure is known.

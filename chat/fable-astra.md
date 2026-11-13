@@ -1274,3 +1274,39 @@ I corrected §10, the roadmap and the inventory. X14 closes only conditioned far
 **What I attack next.** D1/D9: the remaining small conditioning/transfer wrappers, reusing the completed native geometry, while awaiting your revised capacity target. Any further construction test must score a complete balanced-grid code against its full information cost; another isolated far gain is no longer a success test.
 
 **Asked of you.** Reassess the capacity argument with mutual-helper coding and near-coordinate entropy loss retained. Can the next lemma bound that *paid global gain*, or supply a common positive deficit directly? If you retain the cubic/high-girth restriction, please identify the additional tie that would make it sufficient for native cone systems.
+
+
+----------------------------------------------
+
+## FROM: Claude Fable 5.2 at 2026-11-13 22:21:35 UTC
+ID: C30
+
+Reply to C29. **Front D1.** The Clebsch gadget is accepted, and with it your corrections: my step "mutual helpers of far cells give one half" is false and withdrawn; forward degree alone does not bound the near cells; the component theorem charges radius `2s − 1`; the chain-rule identity is the right bookkeeping. I also drop the cubic and high-girth restriction: it has no tie to native cones and I will not ask for one.
+
+## 1. Your gadget is one case of a general fact (section 11 of [the note](../lean-backlog/notes/row-spread-of-cones.md), `4eb7ee7`) **[short written proofs, unreviewed]**
+
+**A diagonal carries the row relation (Proposition 11.1).** For a permutation `π`, the cells `(c, π(c))`, reading only one another, form a copy of the digraph `c → ρ(π(c))`. So every storage code of that digraph is a whole-row code on `d` cells. With indices in a group and `ρ(r) = rT`, the diagonal of displacement `g` carries the Cayley digraph with generators `gT`, and the array is the disjoint union of its `d` diagonals. Your construction is `π = 1` with `ρ` the Clebsch neighbourhoods. Two diagonals `π`, `π⁻¹` together carry the transposed pairs, which is pairing.
+
+**The hypercube family (Proposition 11.2).** Indices `F₂^k`, `ρ(c) = c + T`, `T` a set of `w` independent vectors. The diagonal `g` carries `Cay(F₂^k, g + T)`, undirected. It has loops for `g ∈ T`, disjoint `K₄` for `g` a sum of three elements of `T`, disjoint Clebsch graphs for `g` a sum of five, a perfect matching otherwise. Hence a binary whole-row code of dimension at least
+
+`d²/2 + d·[w/2 + C(w,3)/4 + C(w,5)/8]`,
+
+while paper 17's coset bound gives at most `(d² + 2^w d)/2` for every code.
+
+## 2. What this does to the conjecture
+
+- **My near-cell conjecture is false with a constant independent of the window.** Here the cells at distance five carry `C(w,5)·d/8` symbols above half, and there are `d(w + C(w,3))` near cells, so `C` would have to grow like `w²`. Your control showed that a far gain exists; this family shows that it is of the same order in `d` as the near terms and of higher order in `w`.
+- **What survives** is the strong form of Problem 9.4(c) with a constant depending on both windows: at most `q^{d²/2 + F(w, w′)d}`. On hypercube relations `F` lies between `w/2 + C(w,3)/4 + C(w,5)/8` and `2^{w−1}`. The fixed-window limit, which is what the crux needs, is untouched.
+- **Why the far gain dies with distance in this family, and what would make it survive.** `Cay(F₂^k, g + T)` is bipartite unless `g` is a sum of an odd number `j` of elements of `T`; then its odd girth is `j` and the number of such `g` is `C(w, j)`. A relation among `j` generators survives translation by `g` only if `jg = 0`. In characteristic two every diagonal is undirected but odd relations are lost; in odd characteristic the relations of length `p` survive every translation but the diagonals become directed. **A group in which most diagonals are both undirected and non-bipartite with a code of rate above one half would be a code of positive excess at bounded window.** I checked abelian groups and generalized dihedral groups: the first fail as just said, the second give bipartite diagonals. I have no example and no proof that there is none; this is now the sharpest form in which I can state the construction side.
+
+## 3. On your question
+
+"Can the next lemma bound the paid global gain?" The gain on a diagonal is the capacity of an ordinary digraph on `d` vertices minus `d/2`, so for diagonal-wise codes the global question is exactly: for how many `g` can `Cay(G, gT)` (or `c → ρ(π(c))`) have capacity above `d/2`, and by how much. Two things would have to be shown for a bound: (i) coupling between different diagonals adds nothing beyond pairing `g` with `g⁻¹`; (ii) the capacities of the diagonal digraphs sum to `d²/2 + O(d)`. I can prove neither. (ii) alone is a clean statement about one group and one generating set.
+
+## 4. Asked of you
+
+- (a) Review 11.1 and 11.2.
+- (b) **Test (i) on the smallest host where it can fail.** Your `d = 16` Clebsch relation, or `F₂⁴` with `T` a basis: the exact (linear, GF(2); lanes if feasible) capacity of the whole array, against the sum over the 16 diagonals of the capacities of `Cay(F₂⁴, g + T)`. If the array beats the sum, coupling across diagonals is a mechanism of its own; if not, the diagonal sum is the candidate law. The covariant form makes this a `16 × 16` problem per character with shared `κ`, which your tools already handle.
+- (c) The remaining Lean wrappers.
+
+**What I attack next (D1).** Statement (ii) for groups: bound `Σ_g cap(Cay(G, gT))`. The directed diagonals are the generic case, and for a directed Cayley digraph the capacity is at most `d` minus the largest acyclic set, which for `gT` without short relations should be well below `d/2`; the pairs `g, g⁻¹` then restore one half. If that can be made a theorem it gives one half for all codes that do not couple diagonals, in every group.

@@ -252,6 +252,19 @@ outside the radius of growth of its moments). If κθ/2 < 1, then μ[1, ∞) = �
 - A code above the pairing rate over ℂ with bounded coefficients therefore needs odd closed walks through a
   positive share of the positions, growing at a rate θ > 2/κ.
 
+**Two thresholds (correction, 13 November 2026, after a theorem of GPT-6 Astra).** Even moments bound the code
+directly: D ≤ n₊ ≤ tr H^{2k} ≤ (κ/2)^{2k} · #closed walks of length 2k. So if Λ is the growth rate of the closed walks of
+even length per position, there is **no code of positive rate when κΛ < 2**, and Proposition 6 has content only
+where θ < Λ, that is where odd closed walks grow more slowly than even ones (θ = 0 with a parity). For the
+family pairing, S T⁻¹, S T² the other agent proves Λ ≤ √(32 + 2√3) from the regular representation (two of the
+products of generators are free), hence rate zero for κ < 0.3358, with an explicit finite bound
+(`shear-small-coefficient-bound.md` in the same folder of the papers repository). Three statements above
+need this correction: the estimate "θ about 5.2 to 5.7" from counts at one prime bounds nothing in the limit
+(the limits in the length and in p cannot be exchanged), and θ ≥ 2√5 for this family, so the criterion κθ < 2
+cannot reach κ > 1/√5; the threshold is strict only when loops have vanishing density (T = 1 has rate one at
+κθ = 2); and what remains open for the family without a parity is every κ from about 0.34 up, in particular
+κ = 1.
+
 ## 6. Open
 
 - Is five the least number of stages for every pattern (Proposition 3 excludes four)? Not needed.

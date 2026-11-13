@@ -47,7 +47,12 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
 - [`WindowAmortization.lean`](WindowAmortization.lean) proves the literal interval-overwrite
   potential inequality and the bound of three encountered labels per update on average,
   starting from a constant nonempty labeling.
-  Its adapter from native unit-speed visits and last-visit labels remains pending.
+- [`WindowLabels.lean`](WindowLabels.lean) proves that native unit-speed visits form an
+  integer interval, last-window labels undergo the exact pointwise overwrite, and the
+  first visit in a window has the stated earlier visit as a genuine dependency predecessor.
+  Finite-list packing and predecessor-label count transport into `WindowAmortization`
+  remain pending, as does the full cut-and-row assembly. Check it from the Paper 15
+  package with `lake env lean ../../lean-backlog/WindowLabels.lean`.
 - [`WindowPages.lean`](WindowPages.lean) reuses the existing walk-stack theorem to prove
   that chronological contraction preserves noncrossing pages, including the exact native
   dependency quotient. It does not assert the endpoint uniqueness of `StackDag` after
@@ -110,6 +115,16 @@ Native extraction and source audit:
   geometric control showing why work-window planarity alone is insufficient. The
   control does not claim a fixed one-work-tape compiler. Exact page controls run with
   `python3 lean-backlog/tools/window_page_controls.py`.
+- [Grid labellings and amplified storage codes](notes/grid-labellings-and-amplified-codes.md):
+  a written quantitative half-rate bound for fixed-window grid codes with coordinate
+  components of size `o(log d)`, extended to every recovery rule of a product code with
+  blocks of that size. It excludes slowly padded high-rate fibres from Paper 15 under
+  every balanced grid labelling. A separate argument excludes the standard contiguous
+  layouts of its original displayed decoder at canonical entry width. The original growing-block construction
+  remains open under arbitrary labellings. The row-spread note's §8 records the paid
+  reverse-degree normalization and exact coset-index criterion; their incidence controls
+  run with `python3 lean-backlog/tools/grid_labelling_controls.py`. These grid results
+  are not yet Lean-verified and give no new native-machine exclusion.
 
 - [Native cone properties and the remaining extraction problem](notes/native-cone-property-audit.md):
   the D4 comparison table against Papers 13 and 15, exact theorem scopes, remaining schedule classes,

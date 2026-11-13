@@ -61,8 +61,10 @@ The finite interval-overwrite inequality and this endpoint-potential
 telescoping are now Lean-verified in
 [WindowAmortization.lean](../WindowAmortization.lean). Overwrite labels need
 not be fresh, and any subset of the encountered old labels can be charged.
-The adapter from native unit-speed visits and last-visit labels to this
-finite-list formulation remains unformalized.
+[WindowLabels.lean](../WindowLabels.lean) proves the native visited
+interval and exact last-window-label overwrite. Enumerating its fixed
+integer span as a list and transporting the predecessor-label count
+into the finite-list formulation remain unformalized.
 
 This is interval bookkeeping related to the block computation graphs in
 [Hopcroft, Paul and Valiant, *On Time Versus Space*, JACM 24(2), 332–337
@@ -340,8 +342,12 @@ is already `BoundedNesting.walkDag_isStack`, recalled in
 [Paper 14, §2](../../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/paper/sections/preliminaries.tex).
 Strictly crossing coarse endpoints would force strictly crossing fine
 endpoints. The Lean proof reuses the fine theorem and proves the quotient
-step. Identifying the label description with the exact `DepStep` quotient
-by the first-visit argument remains a written adapter.
+step. [WindowLabels.lean](../WindowLabels.lean) now proves that a last
+pre-window visit is an actual `DepStep` predecessor at the first visit
+inside the window, including pauses. It also proves interval visitation
+and exact last-window-label overwrites. Packing these labels into the
+finite-list amortization and transporting the predecessor-label count
+remain pending; the complete extraction is not yet Lean-verified.
 
 The initial classification by strict left/right of the head at the window
 start omitted equality. For example, windows $0^h,1^h,0^h,1^h$ have
@@ -370,49 +376,112 @@ explains why work planarity alone does not supply the separator hypothesis
 on the helper relation, and states a correct row-level sufficient criterion.
 The common whole-row deficit remains open.
 
-## 8. Grid labellings: what separates a native code from an abstract one (Fable, 13 November 2026)
+## 8. Grid labellings and their scope
 
-Status: definitions and short written proofs, **not reviewed**. No bound and no code is claimed.
+Fable's formulation, audited and strengthened by Astra, 13 November 2026.
+The results in this section have **written proofs only**. They do not give
+a general coding deficit or a tape implementation.
 
-A native fibre is more than a whole-row code: every output bit reads at most B_D input bits, and these lie
-in the w rows of its column. So the object is a storage code of bounded degree on a relation that carries
-a grid.
+**Definition.** Let $G$ have $L=d^2b$ vertices, with $d,b\ge1$ and arcs
+$p\to q$ meaning that $q$ is a helper of $p$. A *grid labelling* consists
+of maps $f,g:V\to[d]$ (row and column) with exactly $b$ vertices in every
+joint fibre. Its row helper graph has an edge $g(p)\to f(q)$ for every
+arc. Its forward and reverse degrees are bounded by $w,w'$ respectively.
+A forward-window labelling imposes only the bound $w$.
 
-**Definition.** Let G be a digraph on d²b vertices (an arc p → q means that q is a helper of p). A *grid
-labelling* of G of window (w, w′) is a pair of maps f, g from the vertices to [d] (row and column) such that
-every pair (c, r) has exactly b preimages under (f, g), and the bipartite graph with an edge from the column
-g(p) to the row f(q) for every arc p → q has column degrees at most w and row degrees at most w′.
+Enumerating each joint fibre identifies a code over an alphabet $A$ with
+a matrix code over $A^b$. A forward-window labelling gives whole-row
+recovery of window $w$. No reverse degree bound is needed for this
+implication. Conversely, whole-row recovery supplies a grid-labelled
+relation, but its vertex degree may be as large as $wdb$. Bounded **bit**
+degree is extra native structure.
 
-A storage code on G with a grid labelling of window w is a whole-row code of window w with entries of b
-symbols, and conversely the fibres of Proposition 2 are storage codes of degree at most B_D with a grid
-labelling. So the abstract high-rate families refute a common whole-row deficit exactly if their relations
-have grid labellings of bounded window, and a machine needs such labelled codes with rates tending to 1.
+Proposition 2 supplies forward row spread outside at most $\varepsilon d$
+exceptional columns. Freeze them first, paying at most $\varepsilon L$
+bits in addition to the cut. A native full-depth cone bound controls vertex
+outdegree by $B_D$, not vertex indegree or reverse row degree. The following
+paid reduction supplies the latter bounds while retaining the grid.
 
-**Proposition 8.1 (necessary conditions).** In a grid labelling of window (w, w′):
-- (a) for any two columns r, r′, at most wb helpers of the vertices of column r lie in column r′;
-- (b) the vertices that share a helper with some vertex of column r lie in at most ww′ columns.
+**Proposition 8.0 (conditioning without deleting grid vertices).** Let $C$
+be a nonempty storage code over $q\ge2$ symbols on a forward-window grid.
+For any set $Q$, some fibre obtained by fixing $Q$ has size at least
+$|C|/q^{|Q|}$. On this fibre use no helpers for $p\in Q$, and replace
+$N(p)$ by $N(p)\setminus Q$ otherwise. Keep all vertices and both labels.
+This is a storage code on the same balanced grid, and no degree increases.
 
-*Proof.* (a) The helpers lie in at most w rows, and a row meets column r′ in b vertices. (b) A helper of a
-vertex of column r lies in one of the w rows of that column, and every vertex that uses a vertex of a given
-row lies in one of at most w′ columns. ∎
+For integer thresholds $W,V\ge0$, freezing every row used by more than
+$W$ columns costs at most $wL/(W+1)$ coordinates and leaves reverse row
+degree at most $W$. If vertex outdegree was at most $B$, additionally
+freezing vertices of indegree greater than $V$ costs at most $BL/(V+1)$
+and leaves vertex indegree at most $V$.
 
-By (a) the helpers of a column are spread thinly over at least (out-degree)·d/w columns, while by (b) the
-vertices that compete for them are concentrated in boundedly many columns.
+*Proof.* Partition by the values on $Q$ and choose a largest fibre.
+Its frozen arguments are constants in the old recovery functions. The
+row helper graph has at most $wd$ edges, so at most $wd/(W+1)$ rows
+have reverse degree greater than $W$; each contains $db$ coordinates.
+The vertex relation has at most $BL$ arcs, giving the second count.
+Take the union of the frozen sets. Every removed helper is constant;
+keeping its vertex preserves exactly $b$ coordinates in each grid cell. ∎
 
-**Proposition 8.2 (labellings by cosets fail unless twisted).** Let G be the Cayley digraph of a group with
-arcs x → xs, s in a finite set, and let the columns be the right cosets Kx of a subgroup K of index d.
-- (i) If the rows are the right cosets of a subgroup K′ and every row meets every column, the window is d.
-- (ii) If the rows are the left cosets xK′ and every row meets every column in b elements, the window is at
-  least d.
-- (iii) If the arcs are instead x → θ(x)s for an automorphism θ with θ(K) = K′, K ∩ K′ of order b and KK′ the
-  whole group, and the rows are the right cosets of K′, the window is at most the number of generators.
+**Proposition 8.1 (necessary conditions).** Write $C_r=g^{-1}(r)$ and
+$H_r=\bigcup_{p\in C_r}N(p)$, a set of distinct helpers. Then:
 
-*Proof.* (i) The helpers of the column Kx_0 through s are the elements kx_0s, whose rows K′kx_0s run over
-K′Kx_0s, which is everything when rows meet columns. (ii) Their rows kx_0sK′ number [K : K ∩ yK′y⁻¹] with
-y = x_0s, and the hypothesis says that K ∩ yK′y⁻¹ has order b, so this index is d. (iii) The helper of kx_0
-through s is θ(k)θ(x_0)s, in the row K′θ(x_0)s. ∎
+- $|H_r\cap C_{r'}|\le wb$ for every $r,r'$;
+- vertices sharing a helper with a vertex in $C_r$ lie in at most $ww'$
+  columns.
 
-Case (iii) is the pattern of paper 17's group family (positions Γ × Γ, the swap as θ, helpers (rs, ct)). So a
-relation that comes from a group gets a bounded window from cosets only when every arc is twisted by an
-automorphism that exchanges the two subgroups. The relations of the thirteenth and fifteenth papers are not
-presented in that form; whether they can be is the question that decides the construction side.
+*Proof.* The helpers lie in at most $w$ rows, each meeting $C_{r'}$ in
+$b$ vertices. Each of these helper rows is used by at most $w'$ columns. ∎
+
+Thus $H_r$ meets at least $|H_r|/(wb)$ columns when $w>0$. With minimum
+vertex outdegree $a>0$ and maximum indegree $\Delta_{\rm in}$, this is at
+least $ad/(w\Delta_{\rm in})$. The initial claim $ad/w$ omitted shared
+helpers. For example, on $\mathbb Z_d^2$ the loopless rules
+$(i,j)\to(j,i+t)$, $1\le t\le a<d$, have in- and outdegree $a$ and grid
+window $(1,1)$, but each column's helper union meets exactly $d$ columns.
+
+**Proposition 8.2 (exact coset windows).**
+
+(a) Any helper permutation taking a complete column onto another complete
+column forces forward window $d$ in a balanced grid. In particular this
+holds for ordinary right-Cayley arrows $x\to xs$ with right-coset columns
+$Kx$ and a nonempty generator set, for **any** balanced row labelling.
+
+(b) Let a finite group have order $d^2b$, and let $K,K'$ have index $d$
+with $KK'=G$ and $|K\cap K'|=b$. Use columns $Kx$, rows $K'y$, and helpers
+$x\to\theta(x)s$, where $\theta$ is an automorphism and $s$ ranges over
+a nonempty set $S$. Put $t=[\theta(K):\theta(K)\cap K']$. The actual
+forward and reverse windows both lie between $t$ and $|S|t$. A single
+generator gives exactly $(t,t)$.
+
+*Proof.* (a) Every complete column meets every row. (b) The image of $Kx$
+is $\theta(K)\theta(x)s$, meeting exactly $t$ right cosets of $K'$.
+The preimage of $K'y$ is
+$\theta^{-1}(K')\theta^{-1}(ys^{-1})$, meeting exactly $t$ right cosets
+of $K$, since $|K|=|K'|$. Take the union over generators. ∎
+
+The case $\theta(K)=K'$ gives both windows at most $|S|$. It is sufficient,
+not necessary: bounded index $t$ is the exact criterion in this model
+when $|S|$ is bounded. For $d=2^m$, $b=m$, take
+$G=\mathbb F_2^m\times\mathbb F_2^m\times C_m$ with the two coordinate
+subgroups including the common factor $C_m$. Swapping only $m-1$ of the
+$m$ pairs of binary axes gives $t=2$ for every $m\ge2$, although
+$\theta(K)\ne K'$. These are incidence examples, not high-rate codes.
+
+**What this tests.** Labelling a displayed recovery graph is sufficient;
+failure does not exclude other recovery rules for the same code. An
+asymptotic half-rate counterexample needs one fixed window and rates at
+least $1/2+c$, for some fixed $c>0$, along an unbounded sequence of
+dimensions. Refuting a common positive deficit
+requires rates arbitrarily close to one, with a window fixed separately
+for each desired rate. The native alphabet is $\{0,1\}^{b(d)}$.
+A single finite labelled block establishes neither asymptotic conclusion.
+Even a successful abstract family still needs a paid tape implementation.
+
+[Grid labellings and amplified codes](grid-labellings-and-amplified-codes.md)
+tests Paper 15's constructions against these obligations, including
+layout and small-component obstructions. Arbitrary grid labellings of its
+growing seed blocks remain unresolved. The input-attachment control does
+not prove that every whole-row relation is a native relation, and the
+separator criterion remains a sufficient target without a known native
+extraction mechanism; only the work-planarity inference is refuted (X13).

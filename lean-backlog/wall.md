@@ -83,6 +83,7 @@ remains a test case, while a common positive deficit for every fixed w is the su
 | Two shared blocks | at most d(d+1)/2, with equality only for G ⊗ G⁻¹; every field | written | [two-term-equality](notes/two-term-equality.md) |
 | Three shared blocks, special shapes | compatible assemblies: at most pairing + 3; locally unitary over ℂ, or one factor space of slow growth: at most pairing | written | [assemblies](notes/three-term-seed-assemblies.md), [product spaces](notes/involutive-product-spaces.md) |
 | Repeating one seed | identity lifts of a fixed decoder exceed pairing by O(d) only | written | [identity lifts](notes/identity-lift-comparison.md) |
+| Product codes on sublogarithmic blocks | any recovery rules and balanced grid labels at fixed forward window: rate at most 1/2 + o(1) when block size is o(log d), uniformly in entry width and alphabet | written, reusing Paper 5 Lemma 4.1 | [grid bound](notes/grid-labellings-and-amplified-codes.md) |
 | Helper maps with a parity | affine helper families on which a sign character is −1: half bound over ℂ, bounded coefficients | written | [pass-calculus §5](notes/pass-calculus.md) |
 | Small coefficients | rate zero below one threshold, at most ½ below a second, for any helper family over ℂ | written | [pass-calculus §5.1](notes/pass-calculus.md), [shear bound](notes/shear-small-coefficient-bound.md) |
 | Loops | the baseline is pairing plus loops; 29 of 30 small relations sit exactly on it | exact computation | [loop controls](notes/shear-loop-controls.md) |
@@ -114,6 +115,17 @@ remains a test case, while a common positive deficit for every fixed w is the su
   geometric control has an expanding row helper graph through its input attachments.
   A row-level separator would give a half-rate bound; it is not supplied by work planarity
   alone ([calibration](notes/window-pages-and-input-attachments.md), X13).
+- *Grid compatibility is an additional construction obligation.* After paying for
+  exceptional columns and reverse-degree trimming, fixed-depth native fibres retain a balanced grid
+  with bounded forward and reverse row windows. Ordinary right-Cayley maps preserve
+  coset columns and force window d; affine-coset windows are instead governed by an
+  exact subgroup index, not necessarily by exchange of subgroups ([grid audit](notes/row-spread-of-cones.md#8-grid-labellings-and-their-scope)).
+  These are necessary tests, not a characterization of native codes.
+- *Some high-rate abstract fibres fail every fixed window.* Slow padding of Paper 15's
+  blocks to size o(log d) retains its abstract degree, separation and common-partition
+  conclusions but, by the product-code bound, has no bounded-window whole-row presentation
+  at rates at least 1/2 + c for fixed c>0. The original growing-block tower and its maximal-square-root
+  assembly remain unresolved under arbitrary grids ([proof](notes/grid-labellings-and-amplified-codes.md)).
 
 **The wall today.** A code above the pairing rate at bounded window, or a proof that none exists,
 has to deal with all of this at once:
@@ -156,12 +168,18 @@ implementation before it becomes a machine construction.
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Requires an actual bounded-class extraction. Revealed bits do not automatically give boundedly many column classes; Paper 20 Proposition 9.6 defeats two naive cut-label absorptions. | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
 
-Current effort (13 November): the D4 audit, raw-boundary transfer and C22 calibration are
-recorded. Fable's main target is D1 at arbitrary fixed windows, seeking a common positive
-deficit or rates tending to one; any page-structured restriction must retain raw attachments
-and distinguish geometric schedules from fixed native programs. Astra has formalized the
-finite interval-overwrite core and the exact dependency-page quotient. The native walk/label
-adapter and the rest of the geometric cut-and-row assembly remain to be formalized.
+Current effort (13 November): the D4 audit, raw-boundary transfer and grid calibration are
+recorded. Fable's main target is a D1 deficit on expanding grid-labelled relations.
+Astra's audit rules out sublogarithmic product blocks and the standard contiguous
+placements of Paper 15's displayed decoder at canonical entry width; it leaves arbitrary grids of growing
+majority blocks open. Astra has formalized the finite interval-overwrite core, the exact
+dependency-page quotient, native interval visitation, pointwise last-window-label updates
+and the first-visit predecessor witness. Finite-list packing/count transport and the rest
+of the geometric cut-and-row assembly remain to be formalized.
+The general separator target is parked without an extraction mechanism, not refuted:
+that such an extraction would prove exclusion is not an impossibility-of-method argument.
+The input-attachment control includes some expanders, but does not prove that arbitrary
+whole-row relations are native cone systems.
 Do not assume bounded global monotone row words (X12), or transfer work planarity to the
 helper graph without paying for its attachments (X13).
 D8's next search must use one shared decoder and the full regular representation, but remains
@@ -230,3 +248,10 @@ direct front.
   label adapter remains open. The one-work-tape calibration supplies a written row-separator
   criterion and identifies the missing raw-attachment layer (X13). It does not reprove the
   existing one-work-tape exclusion or yield a new capacity bound.
+- C24 review, 13 November: the grid necessary conditions survive after counting distinct
+  helpers and paying for reverse degrees; exact subgroup exchange is replaced by a
+  bounded-index criterion. A written grid/component bound extends to every recovery
+  rule of a Cartesian-product code and excludes slow-padded Paper 15 full-cube fibres,
+  even after arbitrary balanced relabelling. The original growing blocks remain open.
+  Native interval/label semantics are now Lean-verified; finite-list count transport
+  and the full extraction remain pending. No new native-machine class is excluded.

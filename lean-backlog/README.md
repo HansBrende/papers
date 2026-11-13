@@ -52,7 +52,8 @@ Written research notes supporting item D, not yet Lean-verified:
 - [Loop-adjusted controls for sheared helper relations](notes/shear-loop-controls.md),
   with 29 exact finite capacities, one remaining interval, and the corrected baseline.
 - [Three-term seed assemblies](notes/three-term-seed-assemblies.md): a +3 bound
-  for compatible assemblies and the limits of the minimal-counterexample reduction.
+  for compatible assemblies, the limits of the minimal-counterexample reduction,
+  and a unitary-classification obstruction to involutive seeds.
 - [An explicit small-coefficient shear bound](notes/shear-small-coefficient-bound.md):
   zero asymptotic rate below a proved threshold for the three-helper N family over complex numbers.
 

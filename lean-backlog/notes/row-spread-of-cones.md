@@ -369,3 +369,50 @@ thereby proved to be native cone systems.
 explains why work planarity alone does not supply the separator hypothesis
 on the helper relation, and states a correct row-level sufficient criterion.
 The common whole-row deficit remains open.
+
+## 8. Grid labellings: what separates a native code from an abstract one (Fable, 13 November 2026)
+
+Status: definitions and short written proofs, **not reviewed**. No bound and no code is claimed.
+
+A native fibre is more than a whole-row code: every output bit reads at most B_D input bits, and these lie
+in the w rows of its column. So the object is a storage code of bounded degree on a relation that carries
+a grid.
+
+**Definition.** Let G be a digraph on d²b vertices (an arc p → q means that q is a helper of p). A *grid
+labelling* of G of window (w, w′) is a pair of maps f, g from the vertices to [d] (row and column) such that
+every pair (c, r) has exactly b preimages under (f, g), and the bipartite graph with an edge from the column
+g(p) to the row f(q) for every arc p → q has column degrees at most w and row degrees at most w′.
+
+A storage code on G with a grid labelling of window w is a whole-row code of window w with entries of b
+symbols, and conversely the fibres of Proposition 2 are storage codes of degree at most B_D with a grid
+labelling. So the abstract high-rate families refute a common whole-row deficit exactly if their relations
+have grid labellings of bounded window, and a machine needs such labelled codes with rates tending to 1.
+
+**Proposition 8.1 (necessary conditions).** In a grid labelling of window (w, w′):
+- (a) for any two columns r, r′, at most wb helpers of the vertices of column r lie in column r′;
+- (b) the vertices that share a helper with some vertex of column r lie in at most ww′ columns.
+
+*Proof.* (a) The helpers lie in at most w rows, and a row meets column r′ in b vertices. (b) A helper of a
+vertex of column r lies in one of the w rows of that column, and every vertex that uses a vertex of a given
+row lies in one of at most w′ columns. ∎
+
+By (a) the helpers of a column are spread thinly over at least (out-degree)·d/w columns, while by (b) the
+vertices that compete for them are concentrated in boundedly many columns.
+
+**Proposition 8.2 (labellings by cosets fail unless twisted).** Let G be the Cayley digraph of a group with
+arcs x → xs, s in a finite set, and let the columns be the right cosets Kx of a subgroup K of index d.
+- (i) If the rows are the right cosets of a subgroup K′ and every row meets every column, the window is d.
+- (ii) If the rows are the left cosets xK′ and every row meets every column in b elements, the window is at
+  least d.
+- (iii) If the arcs are instead x → θ(x)s for an automorphism θ with θ(K) = K′, K ∩ K′ of order b and KK′ the
+  whole group, and the rows are the right cosets of K′, the window is at most the number of generators.
+
+*Proof.* (i) The helpers of the column Kx_0 through s are the elements kx_0s, whose rows K′kx_0s run over
+K′Kx_0s, which is everything when rows meet columns. (ii) Their rows kx_0sK′ number [K : K ∩ yK′y⁻¹] with
+y = x_0s, and the hypothesis says that K ∩ yK′y⁻¹ has order b, so this index is d. (iii) The helper of kx_0
+through s is θ(k)θ(x_0)s, in the row K′θ(x_0)s. ∎
+
+Case (iii) is the pattern of paper 17's group family (positions Γ × Γ, the swap as θ, helpers (rs, ct)). So a
+relation that comes from a group gets a bounded window from cosets only when every arc is twisted by an
+automorphism that exchanges the two subgroups. The relations of the thirteenth and fifteenth papers are not
+presented in that form; whether they can be is the question that decides the construction side.

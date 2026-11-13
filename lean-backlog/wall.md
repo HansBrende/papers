@@ -1,0 +1,137 @@
+# The wall: where it stands and how we are attacking it
+
+A roadmap, kept by Claude Fable. It is the first file to read before choosing work and the file to
+update when a result lands. Last full review: 13 November 2026.
+
+**Rules of the file.**
+- Section 1 states the wall as it is *today*. When a chunk is removed it leaves the statement and
+  goes to the table of removed chunks, so the statement gets weaker over time.
+- A front is **direct** if its target is a statement about the machines, or a stated problem of
+  paper 17 whose link to the machines is proved. Everything else is **indirect**: it is worth
+  time only as far as it can be tied back, and each indirect front names the tie that is missing.
+- Front names (D1, I2, X3, …) are permanent. A closed front moves to Section 4 with the reason, so
+  that it can be reopened when the reason no longer holds.
+- Status words: *Lean* (kernel-checked), *written* (proof in the linked file), *numerical*,
+  *conjecture*. A conjecture on a direct front should get a Lean statement; where none exists
+  the entry says so.
+
+Paper 17 is [Order, Symmetry and the Swap](../Order-Symmetry-and-the-Swap-A-Synthesis-of-Matrix-Transposition-on-Tapes/)
+(Sections 8 and 9 for the diagnosis and the open problems).
+
+## 1. The wall
+
+**The objective.** Decide (T): is there a multitape Turing machine that transposes an n × n matrix
+of log n-bit entries in linear time? We hope for the machine.
+
+**Machine form** (paper 17, Section 8). For oblivious machines everything known reduces (T) to one
+function. Let r(ε) be the best rate, for large d, of a storage code on the relations that are left
+when a genie reveals εL bits of a linear-time schedule.
+- A linear-time oblivious transposer needs r(ε) ≥ 1 − ε for every ε.
+- Pairing gives r(ε) ≥ ½.
+- **Nothing moves r(ε) off ½ in either direction, for all schedules.** That is the wall.
+
+A proof that no machine exists must hold for all schedules, fail for abstract relations (codes of
+rate near 1 exist there), fail for motion that ignores the data (padding), constrain all address
+scales at once, and use the shape of tapes. A machine, for its part, cannot avoid curved head
+motion, expanding relations, and codes that are neither gadgets of bounded size nor linear with
+bounded complex coefficients (paper 17, Section 8.5). For adaptive machines the same question sits on the machine's
+own runs ([Macroscopic Information Transfer](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)).
+
+**One-hop form** (paper 17, Sections 5 to 7; this is where we work). A d × d matrix X; a decoder
+computes each entry of Xᵀ from a bounded window of X; the *code* is the set of X it transposes.
+Symmetric matrices give rate ½ (the *pairing value* d(d+1)/2).
+
+> **Is there a code of rate ½ + δ at a bounded window w ≥ 3, or is every such code at most
+> (½ + o(1)) d²?**
+
+Known in general: window ≤ 2 gives at most d(d+1)/2 + d − 1; window w gives at most w d(d+1)/(w+1).
+
+**Why it is a wall.** Each of the three kinds of argument stops for a reason that machines meet:
+
+| Argument | Where it stops |
+|---|---|
+| Order (flags, acyclic sets) | stays a constant above ½ on expanding row relations, and boundedly many forward passes realise such relations |
+| Traces and moments | need bounded coefficients over ℂ; nothing over finite fields |
+| Symmetry (shared blocks, small algebras, interval classes) | a row shear uses d different blocks, and a shear is one linear-time pass |
+
+**Removed since paper 17** (no longer part of the wall):
+
+| Chunk | What is proved | Status | Where |
+|---|---|---|---|
+| Bounded weight over ℂ | any number of Kronecker terms with bounded Σ‖A‖‖B‖: rate ½ + o(1) | Lean | [A](A-bounded-weight.md) |
+| Contracting recovery | recovery matrix of norm ≤ 1: at most half plus half its trace; with a sign symmetry (two-coloured support): at most half, every field of characteristic ≠ 2 | Lean | [B](B-recovery-matrix.md) |
+| Whole rows, second rule | a bound through the ranks of the decoder's blocks; for blocks that are invertible or zero it falls below pairing-and-loops in the computed cases | Lean | [C](C-second-rule.md) |
+| Two shared blocks | at most d(d+1)/2, with equality only for G ⊗ G⁻¹; every field | written | [two-term-equality](notes/two-term-equality.md) |
+| Three shared blocks, special shapes | compatible assemblies: at most pairing + 3; locally unitary over ℂ, or one factor space of slow growth: at most pairing | written | [assemblies](notes/three-term-seed-assemblies.md), [product spaces](notes/involutive-product-spaces.md) |
+| Repeating one seed | identity lifts of a fixed decoder exceed pairing by O(d) only | written | [identity lifts](notes/identity-lift-comparison.md) |
+| Helper maps with a parity | affine helper families on which a sign character is −1: half bound over ℂ, bounded coefficients | written | [pass-calculus §5](notes/pass-calculus.md) |
+| Small coefficients | rate zero below one threshold, at most ½ below a second, for any helper family over ℂ | written | [pass-calculus §5.1](notes/pass-calculus.md), [shear bound](notes/shear-small-coefficient-bound.md) |
+| Loops | the baseline is pairing plus loops; 29 of 30 small relations sit exactly on it | exact computation | [loop controls](notes/shear-loop-controls.md) |
+
+**Shifts** (the wall moved, nothing was removed):
+- *Bounded repertoire does not reach machines.* The swap is five stages of two cheap kinds, and one
+  of them (a row shear) uses d different blocks ([pass-calculus §§1–4](notes/pass-calculus.md)).
+  So every "shared blocks" result above bounds a slice that a machine can leave.
+- *Sector baselines on groups* include short relations among the generators, not only pairing and
+  loops ([twisted-swap-controls](notes/twisted-swap-controls.md)).
+
+**The wall today.** A code above the pairing rate at bounded window, or a proof that none exists,
+has to deal with all of this at once:
+1. a row relation of window ≥ 3 that expands (for window ≥ 4 an order argument provably fails);
+2. decoders that change from row to row beyond any bounded list of blocks;
+3. over ℂ, coefficients above the thresholds and helper maps with odd relations (no parity);
+   over a finite field, nothing beyond order arguments is known at any size of coefficient;
+4. no pairing code inside, no product of local codes, no gadget of bounded size
+   (each of these gains only O(d));
+5. and, to reach machines, decoders that are compositions of one transition function on the
+   cones of a schedule, not a free choice per position.
+
+## 2. Direct fronts
+
+| | Target | Tie to the machines | State | Lean statement |
+|---|---|---|---|---|
+| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | Not written. Definitions exist in `LeanMachine.WholeRow`. |
+| **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
+| **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Revealed bits split the outputs of a periodic stretch into boundedly many classes | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
+| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open; untouched since paper 17 except the scoping in [pass-calculus](notes/pass-calculus.md) | Not written |
+| **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
+| **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
+| **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". | — |
+
+Current effort: D1, through the indirect fronts I1 and I2. D4 to D6 have no one on them.
+
+## 3. Indirect fronts
+
+Each is a model problem. The last column is what must be proved before a result here counts on a
+direct front.
+
+| | Model problem | State | Missing tie |
+|---|---|---|---|
+| **I1** | *Boundedly many shared blocks* K = Σ_{a<M} A_a ⊗ B_a: at most (½ + o(1)) d² for fixed M? (Problems R, S of [item D](D-comparison.md); "three blocks never exceed pairing + 3") | Two blocks done. Three: special shapes done, general open; Astra is on involutive decoders. Lean: `ProblemR`, `ProblemS`, `problemR_of_problemS` in [StatementsD.lean](StatementsD.lean) (open). | Machines are not confined to bounded repertoire (shift above). Needs a version in which the blocks vary with the row, which is D1. |
+| **I2** | *The twisted swap* ([note](notes/twisted-swap.md), [controls](notes/twisted-swap-controls.md)): decoders on a group-indexed array that respect the group; per representation, least rank of ⊕ U_g − K′ with K′ ∈ M_d ⊗ W | Commuting W: pairing optimal (written). Generic W: flags stop above ½; searches give max(pairing, about d√w). Reduced to **(U)**: for unrelated generic U_g the kernel is at most c_w d, independent of the block size n (conjecture; open at w = 1). | (i) generic U_g → the matrices π(g) of a group; (ii) covariant decoders → arbitrary blocks; then it is the linear case of D1 on Cayley relations. Lean statement of (U): not written. |
+| **I3** | *Affine helper families over ℂ* ([pass-calculus §5](notes/pass-calculus.md)): half bound without a parity, or a code on odd relations | Bounded-coefficient thresholds proved; coefficients near 1 without a parity open | Bounded complex coefficients are already excluded for machines (paper 17, Section 8.5): needs finite fields or unbounded coefficients |
+| **I4** | *Comparison bounds* ([item D](D-comparison.md), D0–D6): D(K) ≤ d(d+1)/2 + dim ker(K + G ⊗ G⁻¹) and relatives | Written; Lean obligations open | A reformulation: settles no class until Problem S is known for it |
+| **I5** | *Minimal counterexamples expand* ([finite fields](notes/finite-field-expansion.md), [involutive](notes/involutive-product-spaces.md)) | Surgery reduces to cores that expand on all four sides (involutive case; outside characteristic 2 with equality) | Only for shared blocks, so the tie is that of I1 |
+
+## 4. Closed fronts
+
+| | Front | Why closed | Reopen if |
+|---|---|---|---|
+| **X1** | Order arguments (row orders, flags, acyclic sets) for the half bound | On expanding relations the acyclic bound stays ≥ (½ + c) d² (paper 17, Problem 9.4(c) discussion). In the model I2 the best flag bound found is (1 − 1/w) dn, and no flag bound can prove (U). | The relations of real schedules are shown not to expand (they do expand for a fixed machine) |
+| **X2** | Trace and moment arguments past bounded coefficients | Need a norm bound over ℂ. Over a finite field traces do not count eigenvalues; an exact parity (two-coloured support, item B) gives the half bound, an approximate one gives nothing. | A characteristic-free substitute for "few odd closed walks ⇒ symmetric spectrum" |
+| **X3** | Bounded repertoire as the bridge to machines | A row shear has repertoire d ([pass-calculus](notes/pass-calculus.md)) | A count that charges shears |
+| **X4** | A stage quantity that vanishes on row-controlled and on uniform stages | The swap is five such stages, so it vanishes on the swap | — (refuted) |
+| **X5** | Small exhaustive searches for a separating instance in the array itself | At the sizes that can be searched every position is near the diagonal and local gains dominate; 29 of 30 relations sit on the baseline. Silence there proves nothing. | A family whose regime is set by a parameter other than d (I2 is one) |
+| **X6** | Gains from loops, polygons, witness pairs, products of local codes, repeated seeds | Each adds O(d) at bounded degrees (products: paper 17; seeds: [identity lifts](notes/identity-lift-comparison.md); polygons and witness pairs: proofs not yet in this repository) | — |
+| **X7** | Rate bounds for separated relations of bounded degree in general | False: codes of rate → 1 exist ([paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/), [paper 15](../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/)) | — (refuted). The open part is whether such codes fit an array with bounded windows, which is D7. |
+| **X8** | Conditions on head motion that do not look at the data | The padded machine satisfies them and transposes nothing (paper 17, Section 8.2) | — (refuted) |
+| **X9** | Compressions that annihilate the decoder, in I2 | At n = 3, w = 2 they give at most d, where the truth is 3d/2 ([twisted-swap §7](notes/twisted-swap.md)) | — ; the two-subcode step replaced them |
+
+## Maintenance
+
+- Fable re-reads this file at the start of a work session and before proposing a change of target,
+  and checks that the work in hand names a front. Work that names none is added here first or dropped.
+- A result changes the file in the same commit that publishes it: a removed chunk goes to the table
+  in Section 1, a proved tie moves an indirect front to Section 2, a dead idea goes to Section 4.
+- Lean statements wanted next, in order: (U) at w = 1 and in general (I2); the linear form of D1
+  on `LeanMachine.WholeRow`; "three blocks never exceed pairing + 3" (I1).

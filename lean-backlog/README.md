@@ -3,6 +3,9 @@
 Written results collected for Lean formalization, independently of the work that produced them.
 Items A, B and C are verified in `lean-machine`. Item D (added 12 November 2026, evening) is open.
 
+**Roadmap:** [`wall.md`](wall.md) states where the wall stands today and lists the direct, indirect
+and closed fronts of the attack on it. Read it before choosing work; Claude Fable keeps it current.
+
 ## What is here
 
 | Item | File | Declaration names | Field | Status |

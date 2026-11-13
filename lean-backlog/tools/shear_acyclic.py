@@ -6,8 +6,8 @@ Search needs OR-Tools; certificate replay uses only the standard library.
   python shear_acyclic.py verify receipt.json
 The search reuses and cross-checks Paper 17's relation convention. A saved
 DAG and the pairing/loop cycle packing can certify the exact feedback-vertex
-minimum. Solver timeouts prove nothing further. The first batch stops on a
-strict difference from d(d+1)/2, including differences explained by loops.
+minimum. Solver timeouts prove nothing further. This continuation stops on a
+strict gap beyond the pairing-plus-double-loop baseline.
 """
 import argparse
 from collections import deque
@@ -129,7 +129,7 @@ def solve_case(d, w, name, limit, cp_model, published):
     maps = full_maps[:w]
     graph = relation(d, maps)
     assert graph == published.relation(d, [(m['i'], m['j']) for m in maps])
-    target = d*(d-1)//2
+    target = d*d - len(pairing_loop_cycles(d, graph)[0])
     if name == 'zero-offset':
         alive = [c*d+r for c in range(d) for r in range(d) if c > r]
         status, elapsed = 'explicit-calibration', 0.0
@@ -168,7 +168,7 @@ def solve_case(d, w, name, limit, cp_model, published):
                 topological_order=order, certified_fvs_lower=len(cycles),
                 certified_fvs_upper=d*d-len(alive),
                 double_loop_pairs=double_pairs,
-                pairing_optimum_certified=len(alive) == target,
+                pairing_optimum_certified=len(alive) == d*(d-1)//2,
                 loop_baseline_optimum_certified=d*d-len(alive) == len(cycles))
     verify_case(case)
     print(f'd={d} w={w} {name}: FVS in [{case["certified_fvs_lower"]},'
@@ -212,8 +212,8 @@ def main():
             # A strict solver bound is only a trigger to seek a replayable
             # obstruction, NOT a mathematical certificate on its own.
             bound = case['solver_best_acyclic_upper']
-            if bound is not None and bound < d*(d-1)//2 - 0.5:
-                print('Stopping: solver indicates pairing optimum impossible; seek independent proof.', flush=True)
+            if bound is not None and bound < d*d-case['certified_fvs_lower'] - 0.5:
+                print('Stopping: solver indicates a gap beyond the loop baseline; seek independent proof.', flush=True)
                 return
 
 

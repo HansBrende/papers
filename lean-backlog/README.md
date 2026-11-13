@@ -50,7 +50,11 @@ Written research notes supporting item D, not yet Lean-verified:
 - [Linear comparison kernels for fixed-seed identity lifts](notes/identity-lift-comparison.md),
   including a characteristic-two refinement and exact finite comparison certificates.
 - [Loop-adjusted controls for sheared helper relations](notes/shear-loop-controls.md),
-  with seven exact finite capacities and the corrected experimental baseline.
+  with 29 exact finite capacities, one remaining interval, and the corrected baseline.
+- [Three-term seed assemblies](notes/three-term-seed-assemblies.md): a +3 bound
+  for compatible assemblies and the limits of the minimal-counterexample reduction.
+- [An explicit small-coefficient shear bound](notes/shear-small-coefficient-bound.md):
+  zero asymptotic rate below a proved threshold for the three-helper N family over complex numbers.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

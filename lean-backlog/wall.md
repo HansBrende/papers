@@ -20,8 +20,8 @@ Paper 17 is [Order, Symmetry and the Swap](../Order-Symmetry-and-the-Swap-A-Synt
 
 ## 1. The wall
 
-**The objective.** Decide (T): is there a multitape Turing machine that transposes an n × n matrix
-of log n-bit entries in linear time? We hope for the machine.
+**The objective.** Decide (T): is there a multitape Turing machine that transposes a d × d matrix
+of logarithmic-size entries in linear time? We hope for the machine.
 
 **Machine form** (paper 17, Section 8). For oblivious machines everything known reduces (T) to one
 function. Let r(ε) be the best rate, for large d, of a storage code on the relations that are left
@@ -107,8 +107,8 @@ direct front.
 
 | | Model problem | State | Missing tie |
 |---|---|---|---|
-| **I1** | *Boundedly many shared blocks* K = Σ_{a<M} A_a ⊗ B_a: at most (½ + o(1)) d² for fixed M? (Problems R, S of [item D](D-comparison.md); "three blocks never exceed pairing + 3") | Two blocks done. Three: special shapes done, general open; Astra is on involutive decoders. Lean: `ProblemR`, `ProblemS`, `problemR_of_problemS` in [StatementsD.lean](StatementsD.lean) (open). | Machines are not confined to bounded repertoire (shift above). Needs a version in which the blocks vary with the row, which is D1. |
-| **I2** | *The twisted swap* ([note](notes/twisted-swap.md), [controls](notes/twisted-swap-controls.md)): decoders on a group-indexed array that respect the group; per representation, least rank of ⊕ U_g − K′ with K′ ∈ M_d ⊗ W | Commuting W: pairing optimal (written). Generic W: flags stop above ½; searches give max(pairing, about d√w). Reduced to **(U)**: for unrelated generic U_g the kernel is at most c_w d, independent of the block size n (conjecture; open at w = 1). | (i) generic U_g → the matrices π(g) of a group; (ii) covariant decoders → arbitrary blocks; then it is the linear case of D1 on Cayley relations. Lean statement of (U): not written. |
+| **I1** | *Boundedly many shared blocks* K = Σ_{a<M} A_a ⊗ B_a: at most (½ + o(1)) d² for fixed M? (Problems R, S of [item D](D-comparison.md); "three blocks never exceed pairing + 3") | Two blocks done. Three: special shapes done, general open; the involutive slice is parked while Astra works on I2. Lean: `ProblemR`, `ProblemS`, `problemR_of_problemS` in [StatementsD.lean](StatementsD.lean) (open). | Machines are not confined to bounded repertoire (shift above). Needs a version in which the blocks vary with the row, which is D1. |
+| **I2** | *The twisted swap* ([note](notes/twisted-swap.md), [controls](notes/twisted-swap-controls.md), [unpaired scalar theorem](notes/unpaired-scalar-decoding.md)): covariant decoders; per representation, least rank of ⊕ U_g − K′ with K′ ∈ M_d ⊗ W | Generic inverse-paired U and fixed simultaneously diagonalizable W, n ≥ 2: pairing optimal (written). **(U)** asks for kernel ≤ c_w d for independent generic U, uniformly in n. At w = 1 it is proved with exact complex/algebraically closed maximum d when n ≤ 2 or n ≥ (d−1)(d−2)−1; first remaining cases d = 4, n = 3,4. Numerical w = 3 counts 13 and 20 reproduced with saved witnesses; no general square-root theorem. | (i) generic U_g → π(g); (ii) covariant → arbitrary blocks. The new large-n range misses full-group irreducible dimensions n² ≤ d. Inversion fixed points have an explicit conditional correction. No direct-front chunk removed. Lean statement of (U): not written. |
 | **I3** | *Affine helper families over ℂ* ([pass-calculus §5](notes/pass-calculus.md)): half bound without a parity, or a code on odd relations | Bounded-coefficient thresholds proved; coefficients near 1 without a parity open | Bounded complex coefficients are already excluded for machines (paper 17, Section 8.5): needs finite fields or unbounded coefficients |
 | **I4** | *Comparison bounds* ([item D](D-comparison.md), D0–D6): D(K) ≤ d(d+1)/2 + dim ker(K + G ⊗ G⁻¹) and relatives | Written; Lean obligations open | A reformulation: settles no class until Problem S is known for it |
 | **I5** | *Minimal counterexamples expand* ([finite fields](notes/finite-field-expansion.md), [involutive](notes/involutive-product-spaces.md)) | Surgery reduces to cores that expand on all four sides (involutive case; outside characteristic 2 with equality) | Only for shared blocks, so the tie is that of I1 |
@@ -117,7 +117,7 @@ direct front.
 
 | | Front | Why closed | Reopen if |
 |---|---|---|---|
-| **X1** | Order arguments (row orders, flags, acyclic sets) for the half bound | On expanding relations the acyclic bound stays ≥ (½ + c) d² (paper 17, Problem 9.4(c) discussion). In the model I2 the best flag bound found is (1 − 1/w) dn, and no flag bound can prove (U). | The relations of real schedules are shown not to expand (they do expand for a fixed machine) |
+| **X1** | Order arguments (row orders, flags, acyclic sets) for the half bound | On expanding relations the acyclic bound stays ≥ (½ + c) d² (paper 17, Problem 9.4(c) discussion). In I2 the common-subspace certificate gives d(n−⌊n/w⌋); this is not a proved ceiling for every possible flag method. A single such compression cannot prove (U) uniformly in n. | A stronger precisely defined certificate, or an additional restriction on actual schedule relations |
 | **X2** | Trace and moment arguments past bounded coefficients | Need a norm bound over ℂ. Over a finite field traces do not count eigenvalues; an exact parity (two-coloured support, item B) gives the half bound, an approximate one gives nothing. | A characteristic-free substitute for "few odd closed walks ⇒ symmetric spectrum" |
 | **X3** | Bounded repertoire as the bridge to machines | A row shear has repertoire d ([pass-calculus](notes/pass-calculus.md)) | A count that charges shears |
 | **X4** | A stage quantity that vanishes on row-controlled and on uniform stages | The swap is five such stages, so it vanishes on the swap | — (refuted) |
@@ -125,7 +125,7 @@ direct front.
 | **X6** | Gains from loops, polygons, witness pairs, products of local codes, repeated seeds | Each adds O(d) at bounded degrees (products: paper 17; seeds: [identity lifts](notes/identity-lift-comparison.md); polygons and witness pairs: proofs not yet in this repository) | — |
 | **X7** | Rate bounds for separated relations of bounded degree in general | False: codes of rate → 1 exist ([paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/), [paper 15](../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/)) | — (refuted). The open part is whether such codes fit an array with bounded windows, which is D7. |
 | **X8** | Conditions on head motion that do not look at the data | The padded machine satisfies them and transposes nothing (paper 17, Section 8.2) | — (refuted) |
-| **X9** | Compressions that annihilate the decoder, in I2 | At n = 3, w = 2 they give at most d, where the truth is 3d/2 ([twisted-swap §7](notes/twisted-swap.md)) | — ; the two-subcode step replaced them |
+| **X9** | A single common-subspace compression that annihilates the decoder, in I2 | At n = 3, w = 2 its certified rank is at most d, while the generic paired minimum rank is 3d/2 ([twisted-swap §7](notes/twisted-swap.md)) | Combine constraints from multiple subcodes; the two-subcode step already does this |
 
 ## Maintenance
 

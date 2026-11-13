@@ -54,6 +54,8 @@ import LeanMachine
 #print axioms LeanMachine.MatrixRankCertificate.matrix_label_certificate
 #print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate
 #print axioms LeanMachine.MatrixRankCertificate.rank_map_field
+#print axioms LeanMachine.MatrixRankCertificate.finrank_ker_map_field
+#print axioms LeanMachine.MatrixRankCertificate.finrank_fixed_map_field
 #print axioms LeanMachine.MatrixRankCertificate.supported_matrix_label_certificate_extension
 
 -- LinearRecovery.lean
@@ -1541,3 +1543,122 @@ import LeanMachine
 #print axioms LeanMachine.ShuffleShear.stoneShuffleTM_threeTape_linear
 #print axioms LeanMachine.ShuffleShear.stoneUnshuffleTM_twoTape_linear
 #print axioms LeanMachine.ShuffleShear.rowShearTM_twoTape_linear
+
+-- Recovery-matrix bounds (backlog B1–B3).
+#print axioms LeanMachine.RecoveryTrace.norm_trace_le
+#print axioms LeanMachine.RecoveryTrace.norm_trace_sub_finrank_le
+#print axioms LeanMachine.RecoveryTrace.weighted_finrank_le
+#print axioms LeanMachine.RecoveryTrace.finrank_ker_toEuclideanLin
+#print axioms LeanMachine.RecoveryTrace.weighted_finrank_fixed_le
+#print axioms LeanMachine.RecoveryTrace.norm_toEuclideanLin_le
+#print axioms LeanMachine.RecoveryTrace.two_mul_finrank_fixed_le_of_contraction
+#print axioms LeanMachine.RecoveryFrobenius.norm_trace_mul_sq_le
+#print axioms LeanMachine.RecoveryFrobenius.sum_norm_sq_eq_re_trace
+#print axioms LeanMachine.RecoveryFrobenius.norm_trace_sq_le_rank_mul
+#print axioms LeanMachine.RecoveryFrobenius.norm_trace_sub_sq_add_finrank_mul_le
+#print axioms LeanMachine.RecoveryFrobenius.finrank_fixed_le_sub_div
+#print axioms LeanMachine.RecoverySign.finrank_eigenspace_le_neg
+#print axioms LeanMachine.RecoverySign.finrank_eigenspace_eq_neg
+#print axioms LeanMachine.RecoverySign.two_mul_finrank_eigenspace_le
+#print axioms LeanMachine.RecoverySign.two_mul_finrank_fixed_le_of_sign
+#print axioms LeanMachine.RecoveryAlgebra.two_mul_finrank_add_rank_le
+#print axioms LeanMachine.RecoveryAlgebra.two_mul_finrank_le_of_isUnit
+#print axioms LeanMachine.RecoveryAlgebra.finrank_le_of_zero_square
+#print axioms LeanMachine.RecoveryAlgebra.finrank_le_min_of_bipartite
+#print axioms LeanMachine.RecoveryAlgebra.trace_identity_pow_eq_zero
+#print axioms LeanMachine.RecoveryAlgebra.finrank_fixed_identity
+#print axioms LeanMachine.RecoveryTransfer.weighted_finrank_fixed_le
+#print axioms LeanMachine.RecoveryTransfer.two_mul_finrank_fixed_le_of_contraction
+#print axioms LeanMachine.RecoveryTransfer.norm_trace_sq_le_rank_mul
+#print axioms LeanMachine.RecoveryTransfer.norm_trace_sub_sq_add_finrank_mul_le
+
+-- Bounded-weight transposition decoders (backlog A2).
+#print axioms LeanMachine.BoundedWeight.IsContraction.kronecker
+#print axioms LeanMachine.BoundedWeight.swapMat_mulVec
+#print axioms LeanMachine.BoundedWeight.swapMat_mul_apply
+#print axioms LeanMachine.BoundedWeight.swapMat_mul_self
+#print axioms LeanMachine.BoundedWeight.norm_swapMat_apply
+#print axioms LeanMachine.BoundedWeight.code_eq_ker
+#print axioms LeanMachine.BoundedWeight.trace_swapMat_kronecker
+#print axioms LeanMachine.BoundedWeight.HasWeight.nonneg
+#print axioms LeanMachine.BoundedWeight.HasWeight.norm_apply_le
+#print axioms LeanMachine.BoundedWeight.HasWeight.norm_T_apply_le
+#print axioms LeanMachine.BoundedWeight.norm_trace_swapMat_kronecker_le
+#print axioms LeanMachine.BoundedWeight.HasWeight.norm_trace_T_le
+#print axioms LeanMachine.BoundedWeight.finrank_code_le_trace
+#print axioms LeanMachine.BoundedWeight.finrank_code_le
+#print axioms LeanMachine.BoundedWeight.two_mul_finrank_code_le_of_le_one
+#print axioms LeanMachine.BoundedWeight.code_eq_bot_of_lt_one
+
+-- Bounded-weight odd words and mixed decoders (backlog A1).
+#print axioms LeanMachine.BoundedWeight.isContraction_iff_l2_opNorm_le
+#print axioms LeanMachine.BoundedWeight.IsContraction.mul
+#print axioms LeanMachine.BoundedWeight.IsContraction.conjTranspose
+#print axioms LeanMachine.BoundedWeight.HasWeight.of_fintype
+#print axioms LeanMachine.BoundedWeight.HasWeight.mul
+#print axioms LeanMachine.BoundedWeight.HasWeight.conjTranspose
+#print axioms LeanMachine.BoundedWeight.mul_swapMat_apply
+#print axioms LeanMachine.BoundedWeight.conjTranspose_swapMat
+#print axioms LeanMachine.BoundedWeight.swapMat_kronecker_swapMat
+#print axioms LeanMachine.BoundedWeight.HasWeight.swap_conj
+#print axioms LeanMachine.BoundedWeight.exists_odd_product_core
+#print axioms LeanMachine.BoundedWeight.norm_trace_odd_product_le
+#print axioms LeanMachine.BoundedWeight.HasWeight.letterCore
+#print axioms LeanMachine.BoundedWeight.T_letterCore
+#print axioms LeanMachine.BoundedWeight.mixedWord_eq_prod
+#print axioms LeanMachine.BoundedWeight.norm_trace_mixedWord_le
+#print axioms LeanMachine.BoundedWeight.word_eq_mixedWord
+#print axioms LeanMachine.BoundedWeight.norm_trace_word_le
+
+-- Hermitian spectral dimension and polynomial certificates (backlog A3).
+#print axioms LeanMachine.BoundedWeight.HasWeight.add
+#print axioms LeanMachine.BoundedWeight.HasWeight.smul_nonneg
+#print axioms LeanMachine.HermitianSpectrum.apply_eigenvector
+#print axioms LeanMachine.HermitianSpectrum.repr_apply
+#print axioms LeanMachine.HermitianSpectrum.re_inner_eq_sum
+#print axioms LeanMachine.HermitianSpectrum.eigenvalues_abs_le
+#print axioms LeanMachine.HermitianSpectrum.trace_pow_eq_sum
+#print axioms LeanMachine.HermitianSpectrum.finrank_le_card_eigenvalues_ge
+#print axioms LeanMachine.SpectralCounting.odd_of_coeff_ne_zero
+#print axioms LeanMachine.SpectralCounting.two_mul_card_ge_one_le
+#print axioms LeanMachine.SpectralCounting.abs_sum_eval_le_of_odd_moments
+#print axioms LeanMachine.BoundedWeight.hermPart_isHermitian
+#print axioms LeanMachine.BoundedWeight.hermPart_eq_T_hermCore
+#print axioms LeanMachine.BoundedWeight.HasWeight.hermCore
+#print axioms LeanMachine.BoundedWeight.HasWeight.norm_hermPart_apply_le
+#print axioms LeanMachine.BoundedWeight.word_replicate_true
+#print axioms LeanMachine.BoundedWeight.norm_trace_hermPart_pow_le
+#print axioms LeanMachine.BoundedWeight.HasWeight.abs_eigenvalues_hermPart_le
+#print axioms LeanMachine.BoundedWeight.abs_sum_eigenvalues_pow_le
+#print axioms LeanMachine.BoundedWeight.re_inner_hermPart_eq
+#print axioms LeanMachine.BoundedWeight.finrank_code_le_nPlus
+#print axioms LeanMachine.BoundedWeight.two_mul_nPlus_le_of_lower_bound
+#print axioms LeanMachine.BoundedWeight.two_mul_nPlus_le
+#print axioms LeanMachine.BoundedWeight.two_mul_finrank_code_le_polynomial
+
+-- Uniform asymptotic half-rate bound (backlog A4).
+#print axioms LeanMachine.BoundedWeight.HasWeight.zero
+#print axioms LeanMachine.BoundedWeight.HasWeight.mono
+#print axioms LeanMachine.exists_odd_polynomial_near
+#print axioms LeanMachine.BoundedWeight.continuous_clip
+#print axioms LeanMachine.BoundedWeight.clip_neg
+#print axioms LeanMachine.BoundedWeight.exists_uniform_spectral_excess
+#print axioms LeanMachine.BoundedWeight.exists_linear_excess
+
+-- Ordered whole-row recovery, joint frontier ranks, and the second rule (backlog C).
+#print axioms LeanMachine.SequentialDimension.finrank_le_sum_of_prefix
+#print axioms LeanMachine.FiniteProjection.finrank_le_compl_of_injective
+#print axioms LeanMachine.WholeRow.mem_rowCode
+#print axioms LeanMachine.WholeRow.mem_rowSpace
+#print axioms LeanMachine.WholeRow.column_zero_of_known
+#print axioms LeanMachine.WholeRow.column_eq_single_of_known
+#print axioms LeanMachine.WholeRow.row_mem_stepSpace
+#print axioms LeanMachine.WholeRow.finrank_rowSpace_le_completed
+#print axioms LeanMachine.WholeRow.finrank_rowSpace_le_frontier
+#print axioms LeanMachine.WholeRow.finrank_rowCode_le_sum_stepSpace
+#print axioms LeanMachine.WholeRow.finrank_rowCode_le_local
+#print axioms LeanMachine.WholeRow.known_card
+#print axioms LeanMachine.WholeRow.finrank_rowCode_le
+#print axioms LeanMachine.WholeRow.restrict_mem_constraint_ker
+#print axioms LeanMachine.WholeRow.finrank_rowSpace_add_rank_le
+#print axioms LeanMachine.WholeRow.finrank_rowCode_le_rank

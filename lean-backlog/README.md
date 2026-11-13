@@ -1,32 +1,33 @@
 # lean-backlog
 
-Statements that have a written proof but no Lean proof yet, set out so that they can be formalized
-independently of the work that produced them. Nothing in this folder is verified.
+Written results collected for Lean formalization, independently of the work that produced them.
+All items below are now verified in `lean-machine`.
 
 ## What is here
 
-| Item | File | Statements in `Statements.lean` | Field | Status |
+| Item | File | Declaration names | Field | Status |
 |---|---|---|---|---|
-| A. Decoders of bounded weight: odd words have single traces; the half bound | [`A-bounded-weight.md`](A-bounded-weight.md) | `norm_trace_word_le`, `finrank_code_le`, `two_mul_finrank_code_le_of_le_one`, `finrank_code_le_nPlus`, `two_mul_nPlus_le`, `exists_linear_excess` | ℂ | open |
-| B. Codes with a recovery matrix: trace bound, rank bound, sign change | [`B-recovery-matrix.md`](B-recovery-matrix.md) | `two_mul_finrank_fixed_le_of_contraction`, `norm_trace_sq_le_rank_mul`, `two_mul_finrank_fixed_le_of_sign` | ℂ; any field for the last | open |
-| C. The second rule for whole-row decoders with invertible blocks | [`C-second-rule.md`](C-second-rule.md) | `finrank_rowCode_le` | any field | open |
+| A. Decoders of bounded weight: odd words have single traces; the half bound | [`A-bounded-weight.md`](A-bounded-weight.md) | `norm_trace_word_le`, `finrank_code_le`, `two_mul_finrank_code_le_of_le_one`, `finrank_code_le_nPlus`, `two_mul_nPlus_le`, `exists_linear_excess` | ℂ | **A1–A4 proved**, with strengthenings |
+| B. Codes with a recovery matrix: trace bound, rank bound, sign change | [`B-recovery-matrix.md`](B-recovery-matrix.md) | `two_mul_finrank_fixed_le_of_contraction`, `norm_trace_sq_le_rank_mul`, `two_mul_finrank_fixed_le_of_sign` | ℝ/ℂ and embedded fields for B1–B2; characteristic not two for the sign equation; every field for the bipartite and rank-defect certificates | **proved**, with strengthenings; declarations linked in the item file |
+| C. Whole-row decoders: joint frontier rank and the second rule | [`C-second-rule.md`](C-second-rule.md) | `finrank_rowCode_le_rank`, `finrank_rowCode_le_local`, `finrank_rowCode_le` | any field | **C1–C2 proved**, with a local-invertibility refinement |
 
-All statements date from 12 November 2026. Their proofs are written out in the Markdown files. They were
-checked numerically on small instances but have not been refereed.
+All original statements date from 12 November 2026. Their written proofs are in the Markdown files.
+A1–A4, B1–B3 and C1–C2 are now kernel-checked in Lean. Formalization
+does not by itself assess novelty or the adequacy of hypotheses for a particular machine model.
 
 ## How the files fit together
 
-- Each Markdown file has the statements in ordinary notation, a complete informal proof, a suggested
-  route in Lean, and what the result is for.
-- [`Statements.lean`](Statements.lean) has the same statements in Lean, each with `sorry` as its
-  proof. It typechecks against Lean and Mathlib v4.34.1:
+- Each Markdown file has the statements in ordinary notation, proof outlines, a map to the verified
+  declarations, and what the result is for.
+- [`Statements.lean`](Statements.lean) now imports the completed libraries without redeclaring their
+  results. It contains no proof placeholders. Check it against Lean and Mathlib v4.34.1:
   ```
   cd lean-machine && lake env lean ../lean-backlog/Statements.lean
   ```
   It belongs to no Lake package and is not built with the papers.
-- The Lean statements were written by the author of the informal ones and have not been reviewed
-  by anyone else. If a statement turns out to be wrong, awkward or weaker than it should be, change
-  it and say what changed and why in the item's Markdown file.
+- The original statements remain in Git history. Compatibility checks verified them against the
+  shared declarations with no weakened hypotheses. The item files describe the generalizations
+  and refinements; their Lean declarations are authoritative.
 
 ## What "done" means
 
@@ -38,7 +39,13 @@ checked numerically on small instances but have not been refereed.
 - Update the status column above, and remove the item's statements from `Statements.lean` once they
   are proved elsewhere.
 
-## Order of work
+## Completion status
 
-B is the shortest and A uses B1, so B first, then A (A2 and A1 before A3), then C. The items are
-otherwise independent.
+A, B and C are complete, including the originally optional C1 rank bound. No original proof
+obligations remain. The shared library also supplies reusable spectral, approximation,
+coordinate-capacity and sequential-dimension lemmas.
+
+The field-scope review adds verified scalar-extension transfers and arbitrary-field
+rank-defect and bipartite certificates. It does not prove a finite-field counterpart of A4.
+B's item file also records a written, not yet Lean-verified, extension of B2 to arbitrary
+ordered fields; this is an additional result, not an unfinished original backlog item.

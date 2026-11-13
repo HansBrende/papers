@@ -1,5 +1,9 @@
 # C. The second rule for whole-row decoders
 
+**Status:** C1 and C2 are proved in Lean, together with a local-invertibility refinement of C2.
+The definitions and proofs are in `LeanMachine.WholeRow`. The original C2 statement follows
+directly, without weakened hypotheses; the formalization also includes d = 0.
+
 ## Setting
 
 F is any field, d ≥ 1. A *row relation* ρ assigns to every column index r a set ρ(r) of row
@@ -23,41 +27,76 @@ dim C ≤ Σ_t (d − |B_t| − rank Y_t).
 **Corollary C2 (invertible blocks).** If every M_{rs} with s ∈ ρ(r) is invertible, then
 dim C ≤ Σ_t (d − max(|B_t|, |A_t| · [F_t ≠ ∅])).
 
-Only C2 is in `Statements.lean` (`finrank_rowCode_le`); there the order is a permutation σ of
-`Fin d`, s_t = σ t and |A_t| = t.
+C2 originally appeared in `Statements.lean` as `finrank_rowCode_le`; C1 was an optional written
+target. Both are now verified. The order is a permutation σ of `Fin d`, s_t = σ t and |A_t| = t.
 
-## Proofs
+**Formalized refinement of C2 (local invertibility).** Put
+F_t^× = {r ∈ F_t : M_{r s_t} is invertible}. Without any global invertibility assumption,
 
-*C1.* Let C_t = {X ∈ C : the rows in A_t of X vanish}. Then C_0 = C, C_d = 0, C_{t+1} ⊆ C_t, and
-C_t / C_{t+1} embeds in F^d by X ↦ row s_t of X. So dim C = Σ_t δ_t with
-δ_t = dim{row s_t of X : X ∈ C_t}.
-Let X ∈ C_t and x = row s_t of X.
-- For r ∈ B_t all rows of ρ(r) vanish, so column r of X vanishes; in particular x_r = 0.
-- For r ∈ F_t the other rows of ρ(r) vanish, so column r of X equals M_{r s_t} x; its entries in the
-  rows of A_t vanish, because those rows of X vanish. Together with the first point,
-  Σ_{j ∉ B_t} (M_{r s_t})_{ij} x_j = 0 for every i ∈ A_t.
-So x lies in the space of vectors supported outside B_t that Y_t annihilates, of dimension
-d − |B_t| − rank Y_t. ∎
+$$
+\dim C\le\sum_t\left(d-\max\left(|B_t|,\ |A_t|\,[F_t^\times\ne\varnothing]\right)\right).
+$$
 
-*C2.* If F_t is empty, C1 gives d − |B_t| and |B_t| is the maximum. Otherwise take one r ∈ F_t and
-M = M_{r s_t}. The rows of M with index in A_t are linearly independent, so the submatrix with
-these rows has rank |A_t|, and deleting the |B_t| columns of B_t lowers the rank by at most |B_t|.
-So rank Y_t ≥ max(0, |A_t| − |B_t|) and d − |B_t| − rank Y_t ≤ d − max(|B_t|, |A_t|). ∎
+Only one invertible frontier block is needed to apply the second rule at a step; all other
+blocks may be singular. If every incident block is invertible, F_t^× = F_t and this gives C2
+exactly. The shared statements also allow arbitrary finite ordered index types.
 
-## Suggested route in Lean
+## Outlines of the formal proofs
 
-- The filtration C_t and the identity dim C = Σ_t δ_t: a chain of submodules with
-  `Submodule.finrank_quotient_add_finrank` or `LinearMap.finrank_range_add_finrank_ker` applied to
-  X ↦ row s_t of X on C_t.
-- For C2 one can skip Y_t: for X ∈ C_t and r ∈ F_t the vector x satisfies x_j = 0 for j ∈ B_t and
-  (M x)_i = 0 for i ∈ A_t, and M is invertible, so x is determined by the coordinates of M x
-  outside A_t; this gives δ_t ≤ d − |A_t| directly, and δ_t ≤ d − |B_t| from the first point.
-- C1 with the rank of a stacked submatrix is heavier to state; it is optional.
+*Common dimension argument.* Let U_t be the subspace of row vectors x satisfying
+x_j = 0 for j ∈ B_t and (M_{r s_t} x)_i = 0 for every r ∈ F_t and i ∈ A_t.
+If X ∈ C has all earlier rows zero, its current row lies in U_t:
+
+- A completed column has only vanishing helper rows, so that entire column vanishes.
+- A frontier column has only one potentially nonzero helper row, so it equals M_{r s_t} x.
+  Its entries in the earlier rows vanish.
+
+For each t choose a linear retraction p_t from F^d to U_t, using Mathlib's left-inverse theorem
+for the subspace inclusion. The map X ↦ (p_t(row s_t of X))_t is injective on C. Indeed, if all
+these records vanish, induction in t shows each row vanishes: after the earlier rows vanish,
+the current row lies in U_t, where p_t is the identity. Hence dim C ≤ Σ_t dim U_t.
+The reusable theorem `SequentialDimension.finrank_le_sum_of_prefix` proves this for arbitrary
+finite-dimensional coordinate spaces and conditional subspaces. This avoids a separate
+quotient-filtration formalization.
+
+*C1.* Restrict a vector in U_t to coordinates outside B_t. This restriction is injective,
+since its coordinates in B_t already vanish. The restricted vector lies in ker Y_t by the
+frontier constraints. Mathlib's rank–nullity identity gives
+dim U_t ≤ d − |B_t| − rank Y_t. Summing proves C1. The matrix `stepMatrix` has entries
+Y_t((r,i),j) = (M_{r s_t})_{ij}, with r ∈ F_t, i ∈ A_t and j ∉ B_t, exactly as in the statement.
+
+*C2 and the local refinement.* Restriction outside B_t first gives dim U_t ≤ d − |B_t|.
+If r ∈ F_t^×, the map x ↦ M_{r s_t}x is injective and its entries on A_t vanish for x ∈ U_t.
+Therefore its coordinates outside A_t still distinguish vectors of U_t, giving
+dim U_t ≤ d − |A_t|. Combine the two bounds, then sum. This proves the local version directly;
+the global invertibility hypothesis makes every frontier block usable and yields C2. ∎
+
+## Verified declarations
+
+Names in this table have prefix `LeanMachine.WholeRow`.
+
+| Statement | Declaration | Module |
+|---|---|---|
+| Code, known rows, completed columns, frontier | `rowCode`, `known`, `complete`, `frontier` | [`Basic`](../lean-machine/LeanMachine/WholeRow/Basic.lean) |
+| Necessary per-step constraints | `row_mem_stepSpace` | `Basic` |
+| Common ordered dimension bound | `finrank_rowCode_le_sum_stepSpace` | [`Bounds`](../lean-machine/LeanMachine/WholeRow/Bounds.lean) |
+| Local invertibility refinement | `finrank_rowCode_le_local` | `Bounds` |
+| C2, original invertible-block bound | `finrank_rowCode_le` | `Bounds` |
+| The stacked matrix Y_t | `stepMatrix` | [`Rank`](../lean-machine/LeanMachine/WholeRow/Rank.lean) |
+| Per-step joint-rank bound | `finrank_rowSpace_add_rank_le` | `Rank` |
+| C1, arbitrary blocks | `finrank_rowCode_le_rank` | `Rank` |
+
+The proofs use only `propext`, `Classical.choice` and `Quot.sound`. See the
+[module guide](../lean-machine/LeanMachine/WholeRow/README.md) for shared dependencies and
+build commands. No C1 or C2 formalization obligations remain.
 
 ## What it is for
 
-With Y_t omitted this is the known bound from an order of the rows. The second rule (a column and
-all but one of its rows give the last row when the block is invertible) improves it on every
-relation: on small instances the right side of C2, minimised over orders, is below the dimension
-of the codes that pair positions, so decoders with invertible blocks cannot reach the best codes
-known. It holds over every field.
+Ignoring the frontier gives the ordered bound Σ_t (d − |B_t|). C2 and its local refinement are
+never worse than that bound; strict improvement depends on the relation and order. C1 additionally
+retains the joint rank of all frontier constraints, which can be useful even when every block is
+singular. These are obstructions for linear whole-row decoders over every field, independent of
+the norm assumptions used in item A.
+
+The original notes also report small-instance numerical comparisons with codes built by pairing
+positions. Those comparisons are not used in these proofs and have not been formalized here.

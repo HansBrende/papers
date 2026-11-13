@@ -90,4 +90,27 @@ theorem step_bound (C : Submodule K (V → A)) (S : Finset V) (x : V) (B : A →
   change finrank K Z ≤ _
   omega
 
+variable {F ι : Type*} [Field F] [Fintype ι] [DecidableEq ι]
+
+/-- An injective linear observation which is zero on `S` needs only its
+coordinates outside `S` to distinguish vectors in `U`. -/
+theorem finrank_le_compl_of_injective (U : Submodule F (ι → F))
+    (f : (ι → F) →ₗ[F] (ι → F)) (S : Finset ι)
+    (hinj : Function.Injective (f.domRestrict U))
+    (hzero : ∀ x : U, ∀ i ∈ S, f x.val i = 0) :
+    finrank F U ≤ Fintype.card ι - S.card := by
+  let g : U →ₗ[F] ((Sᶜ : Finset ι) → F) :=
+    { toFun := fun x i => f x.val i
+      map_add' := by intro x y; funext i; exact congrFun (map_add f x.val y.val) i
+      map_smul' := by intro a x; funext i; exact congrFun (map_smul f a x.val) i }
+  have hg : Function.Injective g := by
+    intro x y hxy
+    apply hinj
+    funext i
+    by_cases hi : i ∈ S
+    · exact (hzero x i hi).trans (hzero y i hi).symm
+    · exact congrFun hxy ⟨i, Finset.mem_compl.mpr hi⟩
+  simpa [Module.finrank_pi, Finset.card_compl] using
+    LinearMap.finrank_le_finrank_of_injective (f := g) hg
+
 end LeanMachine.FiniteProjection

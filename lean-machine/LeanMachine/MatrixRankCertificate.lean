@@ -353,6 +353,29 @@ theorem rank_map_field {K I : Type*} [Field K] [Fintype I]
       rw [Matrix.rank_mul_eq_left_of_isUnit_det _ _ ((Matrix.isUnit_iff_isUnit_det _).mp hU),
         Matrix.rank_mul_eq_right_of_isUnit_det _ _ ((Matrix.isUnit_iff_isUnit_det _).mp hV)]
 
+/-- Nullity, like rank, is unchanged under any embedding of fields. -/
+theorem finrank_ker_map_field {K I : Type*} [Field K] [Fintype I]
+    [DecidableEq I] (f : F →+* K) (A : Matrix I I F) :
+    finrank K (LinearMap.ker (A.map f).mulVecLin) =
+      finrank F (LinearMap.ker A.mulVecLin) := by
+  have hF := A.mulVecLin.finrank_range_add_finrank_ker
+  have hK := (A.map f).mulVecLin.finrank_range_add_finrank_ker
+  simp only [Module.finrank_pi] at hF hK
+  change A.rank + _ = _ at hF
+  change (A.map f).rank + _ = _ at hK
+  rw [rank_map_field] at hK
+  omega
+
+/-- The dimension of a fixed space is unchanged under a field embedding. -/
+theorem finrank_fixed_map_field {K I : Type*} [Field K] [Fintype I]
+    [DecidableEq I] (f : F →+* K) (A : Matrix I I F) :
+    finrank K (LinearMap.ker (1 - A.map f).mulVecLin) =
+      finrank F (LinearMap.ker (1 - A).mulVecLin) := by
+  have heq : (1 - A).map f = 1 - A.map f := by
+    change f.mapMatrix (1 - A) = 1 - f.mapMatrix A
+    rw [map_sub, map_one]
+  rw [← heq, finrank_ker_map_field]
+
 /-- Extension-field matrix labels give the same certificate for matrices over the
 original field. All ranks involving the original matrix are taken over that field. -/
 theorem supported_matrix_label_certificate_extension {K C T M : Type*}

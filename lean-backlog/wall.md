@@ -37,14 +37,15 @@ when a genie reveals εL bits of a linear-time schedule.
   half is the conjectured truth, not the requirement. The exact statement is front D9; the rate
   needed was worked out in the fourteenth paper (remark on the rate needed), not here.
 
-A proof that no machine exists must hold for all schedules, fail for abstract relations (codes of
+A proof that no machine exists must cover every hypothetical correct machine and its relevant traces,
+fail for unrestricted abstract relations (codes of
 rate near 1 exist there), fail for motion that ignores the data (padding), constrain all address
 scales at once, and use the shape of tapes. A machine, for its part, cannot avoid curved head
 motion, expanding relations, and codes that are neither gadgets of bounded size nor linear with
 bounded complex coefficients (paper 17, Section 4.5). For adaptive machines the same question sits on the machine's
 own runs ([Macroscopic Information Transfer](../Macroscopic-Information-Transfer-in-Adaptive-Tape-Transposition/)).
 
-**One-hop form** (paper 17, Sections 5 to 7; this is where we work). A d × d matrix X; a decoder
+**One-hop form** (paper 17, Sections 5 to 7; these model fronts are currently parked). A d × d matrix X; a decoder
 computes each entry of Xᵀ from a bounded window of X; the *code* is the set of X it transposes.
 Symmetric matrices give rate ½ (the *pairing value* d(d+1)/2).
 
@@ -90,6 +91,11 @@ is a test case; uniform control for growing windows is a stronger target motivat
 - *Distant sector gains need not help the array.* Helper-relative loops can beat an exact scalar-monomial
   baseline arbitrarily far from the helpers, yet the same patch gives zero regular-representation gain.
   The next D8 test must keep one common decoder across sectors ([closed-word controls](notes/covariant-word-baselines.md)).
+- *The native bridge is stronger than the one-hop bridge.* Paper 14 already pays advice and
+  causal depth for actual cone systems. It does not put them in a bounded-row or bounded-class
+  model. The [native comparison table](notes/native-cone-property-audit.md) finds no proved universal
+  separator from the abstract high-rate families. It also records a sufficient target on one
+  selected cheap-genie fibre, using Paper 15's existing patch inequalities.
 
 **The wall today.** A code above the pairing rate at bounded window, or a proof that none exists,
 has to deal with all of this at once:
@@ -109,31 +115,33 @@ has to deal with all of this at once:
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
 | **D0** | *Standing front*: brainstorm a new front, re-evaluate the wall, or turn an indirect front into a direct one by proving its tie | Every other front came from here | Permanent. Last used 13 November 2026 (see Maintenance) | — |
-| **D9** | *The native crux*: every index code for the cone systems of k-tape oblivious linear-time schedules, at cone depth D, needs at least ρ(D)·L bits. Needed: ρ(D) ≥ kβC (log D)^{−c/k²}. Conjectured: ρ = ½ (the native half bound). | Proved: it excludes oblivious linear-time transposers ([Bounded-Stack DAGs](../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/), Corollary O(b) and the remark on the rate needed). Advice and many hops are already inside this statement: the index code is the advice, and depth reduction has collapsed the hops into cones. | Open. Known only for restricted classes of schedules. The relation-level properties proved so far (bounded degree after trimming, paired-distance separation) do not imply it: abstract relations with those properties carry codes of rate near 1. | Exists: `Crux`, `crux_excludes` in that paper's library |
-| **D4** | *A class property of cone systems*: a property that the cone systems of all linear-time schedules have, that the abstract high-rate relations lack, and that forces a deficit (paper 17, Section 7.4, step 1, and Problem 9.4(a)) | With it D9 follows. It is also what would make a front of 2b count for the machines. | Open. One candidate is known: regularity along each output row, so that translated outputs read translated positions (this is D2; it is compatible with the curved motion that every transposer must have). Nothing proved forces it: the pattern of reads may change inside rows, and then the cones of one output row need not lie in few input rows. Next: a table of every proved property of cone systems against the abstract families, and the smallest class of schedules that nothing excludes. | Not written |
+| **D9** | *The native crux*: every index code for the cone systems of k-tape oblivious linear-time schedules, at cone depth D, asymptotically needs at least (ρ(D)−o(1))·L bits. Exact useful test: ρ(Dε) > ε for one ε. A sufficient envelope is ρ(D) ≥ kβC (log D)^{−c/k²}, for the small c in Remark 9.4; this is not a necessary or sharp threshold. Conjectured: ρ = ½. | Proved: it excludes oblivious linear-time transposers ([Bounded-Stack DAGs](../Bounded-Stack-DAGs-Reduce-to-Constant-Depth/), Corollary 9.3 O(b)). Advice and many hops are already included. The asymptotic rate envelopes of Remarks 9.4–9.5 are labelled proof sketches. | Open. `SCone` itself assumes neither correctness nor a cheap genie. Correctness-dependent crossing/curvature theorems cannot be imposed on every class member. Restricted native coding bounds are known; degree and paired separation alone are insufficient. | Exists: `Crux`, `crux_excludes` in that paper's library |
+| **D4** | *A native extraction property*: find a certificate that excludes the abstract high-rate mechanisms at sufficient paid deficit. A universal class property could prove D9; a certificate on one suitable correct-source, cheap-cut fibre can already contradict the machine. | It would also make a front of 2b count for the machines if it supplied that model's shape and paid losses. | Open. The [comparison table and selected-fibre criterion](notes/native-cone-property-audit.md) are complete. No universal distinguishing property was found. Next: a complete row-word or useful patch certificate whose credit exceeds the source/trace/revelation invoice, tested against reuse and archive controls. No smallest surviving schedule class is established. | The bookkeeping criterion is written; its missing native extraction premise has no proved Lean theorem. |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
 | **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". | — |
 
 ### 2b. The one-hop form (paper 17's problems)
 
-These are the wall as paper 17 states it in its model. A bound here decides the crux for cone systems that have the
-model's shape (the helpers of a whole output row lie in few rows, or translated outputs read translated
-positions). That the cone systems of real machines have this shape is not proved. It holds where the motion is
-regular along each output row. That is a condition on the scale of one row, so it allows the curved motion that
-every linear-time transposer must have (curvature is measured on the scale of the whole tape; paper 17, Section 3.2).
-It can fail where the pattern of reads changes inside rows. Whether it must hold is part of D4.
-A code above the rate here would be a real operator of boundedly many passes.
+These are paper 17's model problems. A bound here applies to native cones only after their actual
+shape, alphabet and paid losses meet its hypotheses. Restricted periodic/finite-phase traces admit
+some such extractions; the general periodic-stretch bridge of Problem 9.4(a) is itself open.
+Regularity along one output row is compatible with macroscopic curved motion: the two
+conditions concern different scales (paper 17, Section 3.2). What can fail is regularity of
+the read pattern inside rows. No bounded-row normal form for all native cone systems is proved.
+A model code still needs a paid tape implementation before it becomes a machine construction.
 
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
-| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition, reusing `LeanMachine.WholeRow`; separate uniform-in-field variant. |
+| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | With increasing maps, supplied marking strings and recovery functions computable in linear time, such a code has a bounded-pass implementation. These costs are additional to a capacity example. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition, reusing `LeanMachine.WholeRow`; separate uniform-in-field variant. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
-| **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Revealed bits split the outputs of a periodic stretch into boundedly many classes | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
+| **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Requires an actual bounded-class extraction. Revealed bits do not automatically give boundedly many column classes; Paper 20 Proposition 9.6 defeats two naive cut-label absorptions. | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
 | **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
 
-Current effort (13 November): Fable on D4 and D9 (the class property); Astra on D8 and, at Fable's request,
-the table of proved properties of cone systems. I1 and I2 are parked. D5 and D6 have no one on them.
+Current effort (13 November): Fable and Astra on D4/D9. Astra completed the comparison table and
+is testing the selected-fibre certificate target against the published controls. D8's next search
+must use one shared decoder and the full regular representation, but is parked behind the native
+extraction question. I1 and I2 are parked. D5 and D6 have no one on them.
 
 ## 3. Indirect fronts
 
@@ -178,3 +186,8 @@ direct front.
 - Linear D1 and D8 now have checked Lean proposition definitions and helper lemmas, not proofs of the
   conjectures. Statements still wanted when their parked fronts resume: (U) at w = 1 (I2, generic only)
   and "three blocks never exceed pairing + 3" (I1).
+- D4 source audit, 13 November 2026: [table and criterion](notes/native-cone-property-audit.md).
+  Native provenance remains unknown for the abstract families, not disproved. The table separates
+  all-native geometry from correct-source necessities, records which old claims retain the false
+  Q9.1 premise, and replaces the universal-genie research target by a sufficient selected-fibre
+  target where appropriate. This is an accounting and strategy clarification; no new class is excluded.

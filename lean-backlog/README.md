@@ -76,6 +76,13 @@ Written notes for the covariant whole-row front D8:
   Run `python3 lean-backlog/tools/covariant_word_controls.py` from the repository root for the exact
   finite checks; the mathematical results in this note are not yet Lean-verified.
 
+Native-front source audit:
+
+- [Native cone properties and the remaining extraction problem](notes/native-cone-property-audit.md):
+  the D4 comparison table against Papers 13 and 15, exact theorem scopes, remaining schedule classes,
+  and a written selected-fibre success test using Paper 15's existing patch bounds. No new
+  transposer class is excluded; useful native certificate extraction remains open.
+
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,
 coordinate-capacity and sequential-dimension lemmas.

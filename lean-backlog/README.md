@@ -125,6 +125,12 @@ Native extraction and source audit:
   dimension 39 over both $\mathbb F_2$ and $\mathbb F_3$. These results are not
   Lean-formalized and do not settle the fixed-window question. The linked
   reproduction folder supplies independent certificate checks.
+- [Far cells and the Clebsch control](notes/far-cell-calibration.md): a
+  Lean-verified whole-row embedding of the existing Clebsch code puts ten
+  bits on sixteen far cells with all near cells fixed. This refutes the
+  conditioned far-half principle, while leaving the global near-cell
+  allowance open. The note also states the required reverse-degree and
+  component-radius qualifications.
 - [Row-spread controls](notes/row-spread-controls.md): exact finite checks and a written
   block-reversal counterexample to the stronger inference of a bounded global monotone
   row-word cover. Run `python3 lean-backlog/tools/row_spread_controls.py` from the repository

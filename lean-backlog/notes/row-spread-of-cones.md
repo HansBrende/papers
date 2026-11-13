@@ -644,42 +644,72 @@ mechanism is not new.
   required. The simplex construction leaves that common-deficit question
   open.
 
-## 10. After the random-incidence code: where the excess sits (Fable, 13 November 2026)
+## 10. After the random-incidence code: global and conditional excess
 
-Status: a reassessment. The count in 10.1 is a first-moment computation, not a proof for m ≥ 4. 10.2 and 10.3
-are a principle and a conjecture; nothing in this section is a bound.
+Fable's proposal of 13 November 2026, with Astra's scope audit and Clebsch
+countercontrol. The global conjecture below is open. Its stronger
+conditioned-far version is false.
 
-**10.1 The corners.** Astra's random-incidence code (triangles at density d^{−2/3}) has rate 2/3 at window
-exponent 1/3, above the projective curve of Section 9, which is therefore not an upper envelope. The same
-count for m-cliques: a cell (c_1, r_1) lies in about (dp)^{2(m−1)} p^{(m−1)(m−2)} = d^{2(m−1)} p^{m(m−1)} of them, so they
-appear at p = d^{−2/m}, that is at window exponent α = 1 − 2/m, with rate 1 − 1/m = (1 + α)/2. For m = 2 this is
-pairing at bounded window. So the clique codes sit at the corners of a staircase under the line (1 + α)/2,
-and a bound of the form ½ + C log w / log d needs C ≥ ½, as Astra says.
+**10.1 The proposed staircase.** The proved random triangle code has rate
+$2/3-o(1)$ at $w=(1+o(1))d^{1/3}\log d$. For a fixed $m$, the expected
+number of $m$-cliques through a cell in random incidence of density $p$
+is, up to a fixed symmetry factor and missing-diagonal factors,
 
-**10.2 Patterns.** A finite incidence pattern with v rows and columns together and e incidences has about
-d^{v−2} p^e copies through a given cell, so it is available from window exponent 1 − (v − 2)/e on (for balanced
-patterns). Dense patterns need large windows. At small exponents only patterns with e close to v occur,
-which are trees with few extra incidences.
+$$d^{2(m-1)}p^{m(m-1)}.$$
 
-**10.3 Every code known gains on near cells only.** Call a cell *near* if its row and column are within
-distance three in the incidence graph of ρ, and *far* otherwise. Loops, mutual pairs with a common witness,
-polygons, cliques (projective or random) and the lane codes all take their gain over one half from near
-cells: the cells of a clique are pairwise at distance three. The number of near cells is about d·w³, which
-is all of the array exactly from exponent 1/3 on. That is where the first step of the staircase is.
+This suggests density $p=d^{-2/m}$, window exponent $1-2/m$, and clique
+rate $1-1/m$. For $m\ge4$ this remains a first-moment calculation, not
+an existence or packing theorem. The deterministic pairing relation gives
+the $m=2$ endpoint; a random graph of mean degree one does not automatically
+supply it. A bound $1/2+C\log w/\log d+o(1)$ applicable to the proved
+triangle family would require $C\ge1/2$.
 
-**Conjecture (near cells carry the excess).** There is a constant C such that every whole-row code for ρ,
-over every alphabet, has at most q^{d²/2 + C·N₃} elements, N₃ the number of near cells.
+More general rooted-pattern counts depend on all their incidences and on
+dense subpatterns. A finite pattern with a gain is not by itself a
+positive-density construction at a specified window exponent.
 
-- At fixed window N₃ = O(d), so this is Problem 9.4(c) in its strong form d²/2 + O(d), and it gives everything
-  the machines need.
-- From exponent 1/3 on it says nothing, which is consistent with the staircase.
-- Known special cases point the same way. Astra's bound for small components charges only the coordinates
-  whose two ports are joined by a short path. For linear codes that contain a pairing code the gain is at
-  most the number of mutual pairs with a common witness column, which are near cells (a bound of Fable's whose
-  proof is not yet in this repository).
+**10.2 Near cells.** Call $(i,c)$ near when row $i$ and column $c$ have
+distance at most three in the bipartite incidence graph of $\rho$; all
+other pairs are far, including disconnected pairs. If forward and reverse
+degrees are bounded by $w,w'\ge1$, then
 
-**The gate.** A *far gadget* is a finite relation with a whole-row code whose far cells carry more than
-half of their number. No example is known. One far gadget with cells at distance five would give rate above
-one half below exponent 1/3 and would refute the conjecture; the absence of far gadgets at every distance
-is the conjecture restricted to bounded patterns. The smallest natural host is the generalized hexagon of
-order 2 (d = 63, w = 3: per column 3 loops, 12 near cells and 48 far cells).
+$$N_3\le\min\{d^2,\;dw[1+(w'-1)(w-1)]\}.$$
+
+This is an upper bound, not an equality. Forward degree alone does not
+imply $N_3=O(d)$: $\rho(c)=\{0,c\}$ has window two and every cell near.
+The paid reverse-degree reduction in Section 8 is needed before using
+such a count on arbitrary native row-spread relations.
+
+**Global conjecture (near-cell allowance).** There is an absolute constant
+$C_0\ge0$ such that every whole-row code over $q\ge2$ symbols satisfies
+
+$$\log_q|C|\le d^2/2+C_0N_3.$$
+
+At bounded forward and reverse degrees this would give an additive $O(d)$
+error. With only the forward bound, paid reverse-degree trimming would
+still give limiting half rate, but not the same additive error. The proof
+of that implication is in the [far-cell calibration](far-cell-calibration.md).
+
+**10.3 The stronger gate is refuted.** It was proposed that fixing the near
+cells leaves at most half of the far coordinates free. The existing
+Clebsch code refutes this: use $d=16$, $\rho(c)=N_{\rm Clebsch}(c)$ and
+put the ten-dimensional binary code on the diagonal. Exactly those
+sixteen diagonal cells are far, all at distance five; all 240 near cells
+are fixed to zero. Every active helper is mutual. This whole-row
+counterexample is Lean-verified in [FarClebsch.lean](../FarClebsch.lean).
+It does not show an advantage from adding one-way helpers to the full
+mutual-helper graph.
+
+The global conjecture is not refuted: the example's full-array dimension
+is ten, far below $d^2/2=128$. A finite far-only excess does not provide the
+amplification or density needed to contradict that bound. Likewise, the
+small-component theorem charges port distances up to $2s-1$ for components
+of size $s$, not just distance three. Its proof is consistent with Clebsch.
+
+The next argument must bound global information, accounting for the
+entropy lost on the near coordinates as well as any gain on the far ones.
+The separately restricted cubic incidence/girth-ten-or-twelve question
+remains open; Clebsch has degree five and incidence girth four. That
+restriction needs its own justification as a route to the unrestricted
+fixed-window deficit. No larger-host search was required to settle the
+unrestricted conditioned-far claim.

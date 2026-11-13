@@ -352,3 +352,9 @@ that every counterexample must have that form. Over complex numbers its
 positive-excess examples, if any, must also escape the local-unitary class
 above. No completeness claim is made for searches over small dimensions
 or any chosen parameterization.
+
+The subsequent [paired-cut and product-space note](involutive-product-spaces.md)
+uses involutivity to preserve the target under block cuts, and supplies
+a characteristic-free exclusion when the two factor spaces coincide and
+contain the identity. It also incorporates the now-proved two-term
+equality classification, closing the dimension-three seed case.

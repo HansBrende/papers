@@ -54,6 +54,9 @@ Written research notes supporting item D, not yet Lean-verified:
 - [Three-term seed assemblies](notes/three-term-seed-assemblies.md): a +3 bound
   for compatible assemblies, the limits of the minimal-counterexample reduction,
   and a unitary-classification obstruction to involutive seeds.
+- [Involutive decoders: paired cuts and product spaces](notes/involutive-product-spaces.md):
+  a reduction to strictly expanding cores and a characteristic-free quadratic-growth
+  exclusion, covering the common unital factor-space case.
 - [An explicit small-coefficient shear bound](notes/shear-small-coefficient-bound.md):
   zero asymptotic rate below a proved threshold for the three-helper N family over complex numbers.
 

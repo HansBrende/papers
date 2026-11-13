@@ -794,3 +794,49 @@ See [the complete proof](diagonal-code-calibration.md#5-most-translated-mutual-h
 This closes the proposed positive-density undirected/non-bipartite route.
 One-way helpers and cross-diagonal recovery remain possible; no native
 normal form has been proved.
+
+## 12. The mutual-helper graph of an arbitrary row relation: two tokens (Fable, 13 November 2026)
+
+Status: Proposition 12.1 has the short written proof below, **not reviewed**. The rest is reading. This
+section is for an arbitrary row relation ρ, not only for groups.
+
+Let B be the incidence graph of ρ: a row vertex i and a column vertex r are adjacent when i ∈ ρ(r). Two cells
+(c, r) and (c′, r′) are *mutual helpers* when c′ ∈ ρ(r) and c ∈ ρ(r′); let M be the graph they form on the
+d² cells. A cell with c ∈ ρ(r) has a loop in M.
+
+**Proposition 12.1 (two tokens).** Put a token on the row vertex c and a token on the column vertex r of B.
+A step of M from the cell (c, r) moves both tokens to neighbours in B, and the new cell is (the token now on
+the row side, the token now on the column side). Consequently:
+- (a) M is the quotient, by the exchange of the two coordinates, of the graph of ordered pairs of vertices
+  of B on opposite sides, in which both coordinates move along edges; that graph is bipartite.
+- (b) The shortest closed walk of odd length in M through the cell (c, r) has length exactly the distance
+  between the row vertex c and the column vertex r in B. A connected component of M is bipartite exactly
+  when no cell of it has its row and its column in the same component of B.
+
+*Proof.* (c, r) and (c′, r′) are adjacent in M exactly when c – r′ and r – c′ are edges of B: the token at c goes
+to r′ and the token at r goes to c′. (a) follows by keeping the tokens distinguishable; each step exchanges
+the sides. (b) After an odd number k of steps the token that started at c is on the column side. The walk
+is closed exactly when it is at r and the other token is at c, that is when both have walked k steps
+between c and r. Such walks exist exactly when k is at least the distance. ∎
+
+**What follows.**
+- *A mutual gain at a cell needs an odd cycle through at least dist(c, r) cells.* In the group model the
+  cells of such a cycle lie in the diagonals g, s⁻¹g⁻¹s′⁻¹, …, so a gain from mutual helpers at a far displacement
+  involves an odd closed chain of that many diagonals, or one diagonal with an odd relation of that length
+  (the hypercube family, Astra's Clebsch code). Any test with boundedly many coupled sectors is bipartite
+  at displacements farther than its length. That is why the two-sector test finds nothing, and what a
+  mechanism outside it has to be.
+- *Mutual-only linear codes are the kernels of τ − K with K = Σ A_k ⊗ B_k, any number of terms, every A_k
+  supported on the pattern of ρ⁻¹ and every B_k on the pattern of ρ.* Decoders that are sparse on both sides.
+  Over ℂ with bounded coefficients and at fixed windows they are at one half by the fourth paper's theorem
+  for locally bipartite graphs of bounded degree. Over finite fields nothing is known.
+- *M at far cells is a graph of bounded degree ww′ in which every odd cycle is long.* That is exactly the
+  class in which the thirteenth paper's codes above one half live. So the mutual-only question for general
+  ρ has two possible answers, and both would be results: a code of that kind on a two-token graph is a
+  whole-row code above one half at bounded window, with mutual helpers only; a proof that two-token graphs
+  cannot carry one must use their product structure, since long odd cycles alone do not prevent it.
+- *Untwisting costs the excess.* A relation in which the helpers of a cell lie near its own row and near its
+  own column (both projections are graph maps, as for a product) becomes a whole-row relation when the two
+  coordinates are exchanged on one class of a 2-colouring that every arc respects. Such a colouring exists
+  only for bipartite relations, and those have capacity at most one half. So this way of importing a
+  product-shaped code of rate above one half cannot work.

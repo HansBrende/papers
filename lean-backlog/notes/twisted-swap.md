@@ -2,10 +2,12 @@
 
 Status (2026-11-13, Hans Brende and Claude Fable 5.2): Propositions 1 to 3 have short written proofs, reviewed
 by GPT-6 Astra ([twisted-swap-controls.md](twisted-swap-controls.md); its corrections are
-in Section 6). Theorem 4 and
-Proposition 5 (Sections 7, 8) are new and not reviewed. Sections 4 and 8 contain numerics: real field, searches by
+in Section 6). Theorem 4 and Proposition 5 were reviewed in
+[the unpaired scalar note](unpaired-scalar-decoding.md); Propositions 6–8 are reviewed and qualified in
+[the closed-word note](covariant-word-baselines.md). Sections 4 and 8 contain numerics: real field, searches by
 a local optimizer, so a value "found" is a verified kernel dimension at tolerance 1e-8 and a value "not found"
-proves nothing. Nothing here is in Lean.
+proves nothing. The new [D1/D8 Lean file](../StatementsWholeRow.lean) states the open targets and checks
+their basic conventions; it does not formalize this note's substantive results.
 
 ## 1. Covariant decoders on a Cayley relation
 
@@ -224,54 +226,62 @@ With (U), Proposition 5 gives D ≤ dn/2 + c_w d/2 in the paired model, i.e. rat
 
 ## 9. The group model is not the generic model (re-evaluation, 13 November 2026)
 
-Status: Propositions 6 to 8 have short written proofs, not reviewed. They concern the case U_g = π(g) of
+Status: written proofs, reviewed by GPT-6 Astra with the qualifications below and in
+[the closed-word note](covariant-word-baselines.md). They concern the case U_g = π(g) of
 Section 1, which is a slice of the whole-row problem itself (Proposition 1), and they change what Section 8 is
 worth.
 
-**Proposition 6 (closed words).** In the unpaired model with scalar blocks (K′ = κ ⊗ 1), let sites h_1, …, h_k
+**Proposition 6 (closed words).** In the unpaired model with scalar blocks (K′ = κ ⊗ 1), let pairwise distinct sites h_1, …, h_k
 satisfy U_{h_k} ⋯ U_{h_1} = 1. Then κ = the cyclic permutation of these sites gives a kernel of dimension n on them:
-v(h_{j+1}) = U_{h_j} v(h_j). So a closed word of length k carries rate 1/k, pairing is the shortest closed word
-(k = 2), and generic matrices have no closed words at all beyond the pairs.
+v(h_{j+1}) = U_{h_j} v(h_j). More generally its kernel is the fixed space of the ordered product.
+Cycles of length at least two carry rate at most 1/2; singleton loops must be counted separately.
+Independent generic matrices avoid any fixed finite list of such product identities; inverse-paired
+tuples also have forced longer cancellation words, not only two-cycles.
 
 **Proposition 7 (every half of a quasirandom group has triples).** Let G be a finite group of order d whose
-non-trivial irreducible representations have dimension at least m ≥ 108, and let G₋ ⊆ G contain no inverse pair
+non-trivial complex irreducible representations have dimension at least m ≥ 108, and let G₋ ⊆ G satisfy G₋ ∩ G₋⁻¹ = ∅
 and at least d/3 elements. Then G₋ contains at least d/243 − 1 pairwise disjoint triples (a, b, c) of distinct
 elements with abc = e. Hence, for every representation π of dimension n and U_h = π(h)⁻¹, the unpaired model on G₋
 has a kernel of dimension at least (d/243 − 1) n already at w = 1.
 
-*Proof.* By the mixing inequality of Gowers (in the form of Babai, Nikolov and Pyber), the number of pairs
+*Proof.* By the counting estimate in the proof of [Gowers, Theorem 3.3](https://arxiv.org/pdf/0710.3877v1), the number of pairs
 (a, b) ∈ A × B with ab ∈ C differs from |A||B||C|/d by at most (|A||B||C| d/m)^{1/2}. With A = B = G₋ and C = G₋⁻¹
 this number is at least (|G₋|³/d)(1 − (27/m)^{1/2}) ≥ d²/54, and each such pair is a triple (a, b, c) with c ∈ G₋ and
-abc = e. At most 3d of them have two equal entries. An element lies in at most 9d/2 of the triples that meet a
-given triple, so a greedy choice gives (d²/54 − 3d)/(9d/2) disjoint ones. Apply Proposition 6 to each, with
+abc = e. At most 3d of them have two equal entries. A selected three-element triple meets at most 9d/2
+ordered triples, so a greedy choice gives (d²/54 − 3d)/(9d/2) disjoint ones. Apply Proposition 6 to each, with
 (h_1, h_2, h_3) = (a, b, c): U_c U_b U_a = π(abc)⁻¹ = 1. ∎
 
-**Consequence.** For the matrices of a quasirandom group, statement (U) is false and Proposition 5 gives at best
-(½ + 1/243) dn, whatever half is chosen. The reduction to the unpaired model works only where a *cone* exists: a
-half of the group with few short closed words. That is the case of ordered groups (below) and of groups with a
-large cyclic quotient, where order arguments already apply. So (U) and the results on it are statements about
-generic matrices; they do not lead to the group model by this route.
+**Consequence.** The uniform extension of (U) to representation tuples is false on increasingly quasirandom
+groups. For a maximal inverse-free half and i inversion-fixed elements, the unrestricted one-sided
+certificate has right-hand side at least (1/2 + 1/243 + i/(2d) − 1/d)dn whenever Proposition 7 applies.
+A stronger maximal-packing argument gives a **(2/3 − o(1))dn floor** as the minimum nontrivial complex
+representation dimension tends to infinity; see [the proof](covariant-word-baselines.md#1-distinct-site-cycles-and-a-stronger-packing-bound).
+This is a limitation of that upper-bound expression, not an achieved paired-code rate. It does not disprove
+the generic-matrix statement (U), nor exclude a reduction retaining compatibility with the discarded half.
 
 **Proposition 8 (ordered groups).** Let G have a total order invariant under multiplication on both sides (a free
 group has one), Σ ⊆ G finite, and S a finite set of elements greater than every element of Σ ∪ {e}. For any scalar
 matrices κ_s indexed by S, the map x ↦ (g x_g − Σ_s s Σ_h κ_s[g, h] x_h)_{g ∈ S} on F[G]^S is injective, over every
-field. Consequently a covariant decoder with displacements in a finite symmetric set S₀ has a code that is
-determined by its entries at the displacements of S₀ that are not above Σ: at most half of S₀, plus those between
-the generators and their inverses.
+field. For a covariant decoder, first change coordinates to y_g = x_{g⁻¹}. On a finite symmetric displacement
+set S₀, projection to the y-coordinates g ≤ a = max(Σ ∪ {e}) is injective. If every group-algebra coordinate
+has support in the same finite set B, the code dimension is at most
+|B| (|S₀| + |S₀ ∩ [a⁻¹,a]|)/2. A half-rate consequence needs the interval term to be o(|S₀|).
 
 *Proof.* Let x ≠ 0, let μ be the largest group element in the supports of the x_h, and let it occur in x_g. The
 left side of the equation at g contains gμ. Every element of the right side is s u with u ≤ μ and s ∈ Σ, so it is
 at most sμ < gμ. ∎
 
-- Proposition 8 is the order argument, with the displacements ordered by the group. It applies to a tree, which
-  expands, with unbounded coefficients and over every field. So in the covariant slice the half bound holds on
-  the ordered cover, and the open question is whether it survives in finite quotients, which have torsion and,
-  when they are quasirandom, no cone (Proposition 7).
+- Proposition 8 works with unbounded coefficients and over every field, but bi-orderability alone does not
+  make the interval term small. It proves no unconditional half-rate theorem on ordered covers or finite
+  quotients; [the boundary examples](covariant-word-baselines.md#2-what-the-ordered-group-argument-actually-proves)
+  specify both limitations.
 - This is the shape of the Lück approximation question, in which the series already has a negative answer in
   positive characteristic for other group-ring matrices, and its codes above one half come from exactly that
   failure ([Lück approximation fails](../../Luck-Approximation-Fails-in-Positive-Characteristic/),
   [Storage codes above half rate](../../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/)). The
   matrices here are not of that kind (their size grows with the quotient), so this is an analogy, not a theorem.
-- What a code above pairing must do in the group model: closed words give at most 1/2 (Proposition 6), so it has
-  to use cancellation in the group ring, as the local gains at short relations do (controls note); at
-  displacements far from the generators no such structure is known.
+- Disjoint closed-word cycles of lengths at least two give at most 1/2. That observation does not classify
+  helper-relative loops or general coupled decoders. [Exact distant helper-loop examples](covariant-word-baselines.md#4-helper-relative-loops-far-from-the-helpers)
+  beat the scalar-monomial baseline in individual sectors, even in a growing simple-group family; the
+  same patches give no gain on the regular representation. Distance and sector gains alone are therefore
+  insufficient success criteria for the next construction search.

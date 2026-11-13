@@ -51,10 +51,11 @@ Symmetric matrices give rate ½ (the *pairing value* d(d+1)/2).
 
 Known in general: window ≤ 2 gives at most d(d+1)/2 + d − 1; window w gives at most w d(d+1)/(w+1).
 
-Write R(w) for the best rate at window w as d grows, so ½ ≤ R(w) ≤ w/(w+1). Read in this model,
-a machine needs R(w) → 1, and an exclusion needs only that R(w) stays away from 1 (or approaches
-it very slowly). **No construction gives R(w) > ½ for any w, and no bound stays away from 1 as w
-grows.** The value at w = 3 is a test case; what the machines ask about is large w.
+Write R(w) for the best rate in the one-hop whole-row model at window w as d grows, so
+½ ≤ R(w) ≤ w/(w+1). A uniform deficit for R(w) would suffice if D4 transfers it to schedule-cone
+rates with controlled advice and composition losses; that bridge remains open. **No construction
+gives R(w) > ½ for any fixed w, and no bound stays away from 1 as w grows.** The value at w = 3
+is a test case; uniform control for growing windows is a stronger target motivated by the machines.
 
 **Why it is a wall.** Each of the three kinds of argument stops for a reason that machines meet:
 
@@ -84,6 +85,9 @@ grows.** The value at w = 3 is a test case; what the machines ask about is large
   So every "shared blocks" result above bounds a slice that a machine can leave.
 - *Sector baselines on groups* include short relations among the generators, not only pairing and
   loops ([twisted-swap-controls](notes/twisted-swap-controls.md)).
+- *Distant sector gains need not help the array.* Helper-relative loops can beat an exact scalar-monomial
+  baseline arbitrarily far from the helpers, yet the same patch gives zero regular-representation gain.
+  The next D8 test must keep one common decoder across sectors ([closed-word controls](notes/covariant-word-baselines.md)).
 
 **The wall today.** A code above the pairing rate at bounded window, or a proof that none exists,
 has to deal with all of this at once:
@@ -101,18 +105,19 @@ has to deal with all of this at once:
 | | Target | Tie to the machines | State | Lean statement |
 |---|---|---|---|---|
 | **D0** | *Standing front*: brainstorm a new front, re-evaluate the wall, or turn an indirect front into a direct one by proving its tie | Every other front came from here | Permanent. Last used 13 November 2026 (see Maintenance) | — |
-| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | Not written. Definitions exist in `LeanMachine.WholeRow`. |
+| **D1** | *Whole rows* (paper 17, Problem 9.4(c)): each column is a function of ≤ w rows; at most q^{(½+o(1))d²} matrices? | A code above the rate on increasing maps is an operator of boundedly many passes that transposes more than pairing. A bound gives D2 for every window. | Open for w ≥ 3. Linear case open even with one decoder for all columns. | `LinearWholeRowHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition, reusing `LeanMachine.WholeRow`; separate uniform-in-field variant. |
 | **D2** | *One-class relations* (Problem 9.4(b)): entry (c, r) from the w entries (i_m(r), c + j_m(r)) | Hypothesis on head motion alone; applies to single runs of adaptive machines; gives D3 for bounded windows | Open when rows and offsets are both spread, window ≥ 3 | Not written |
 | **D3** | *Classes of any shape* (Problem 9.1(a), (c)): two classes, at most (½ + o(1)) d²? | Revealed bits split the outputs of a periodic stretch into boundedly many classes | Best bound 41/64 ([Shared Decoders](../Capacity-and-Composition-of-Shared-Transposition-Decoders/)); gains known are O(d) | In that paper's library (bounds); conjecture not written |
-| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open. First step done (13 November): the requirement is uniformity in the window, not the value ½ (Section 1). The three steps that paper 17, Section 7.4, lists (a hypothesis on cone systems, advice, many hops) are untouched. Scoping of stages in [pass-calculus](notes/pass-calculus.md). | Not written |
+| **D4** | *From one hop to schedules* (Problem 9.4(a)): r(ε) ≤ ½ + C(ε + η) for motion periodic outside density η | This is the bridge itself | Open. Quantitative scoping (13 November): a uniform deficit could suffice without reaching ½, conditional on the bridge in Section 1; no transfer theorem is proved. The three steps that paper 17, Section 7.4, lists (a hypothesis on cone systems, advice, many hops) are untouched. Scoping of stages in [pass-calculus](notes/pass-calculus.md). | Not written |
 | **D5** | *All scales at once* (Problems 9.3, 9.5): a quantity subadditive over steps, large for the swap at every scale, not raised everywhere by one pass | Would turn "every digit must be broken" into a factor log d | Open. No such quantity vanishes on both kinds of stage; the cut-rank profile fails on a shear ([pass-calculus §§2–3](notes/pass-calculus.md)) | Not written |
 | **D6** | *Relative rigidity on ball patterns* (Problem 9.6) | A positive answer excludes oblivious linear-time transposers with linear data paths | Open; not worked on | Not written |
-| **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by a group G, row relation rΣ, decoders that commute with the diagonal translations; equivalently the rank over F[G] of (inversion with entries g) − (a matrix with entries in the span of Σ) ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; the blocks vary with the row and the relation expands | Half on ordered groups, by leading terms, every field. Open on finite quasirandom groups, which have no cone. Closed words give at most ½; anything above needs cancellation in the group ring. | Not written |
+| **D8** | *Covariant decoders on a group* (slice of D1, linear): rows and columns indexed by G, relation rΣ, decoders commuting with diagonal translations; ordinary **field rank** of the group-algebra residual acting on F[G]^G ([twisted-swap §1, §9](notes/twisted-swap.md)) | It is D1 restricted to a symmetry class; blocks vary with the row and the relation expands when the Cayley graph does | Open. Ordered-support injectivity holds over every field, but a half-rate consequence needs a vanishing order-boundary fraction. Distant helper loops give sector gains, but no gain on the full regular representation ([controls](notes/covariant-word-baselines.md)). | `CovariantGroupHalfRate` in [StatementsWholeRow.lean](StatementsWholeRow.lean): open proposition for one shared κ, all characteristics; separate uniform-in-field variant. |
 | **D7** | *The construction*: a code above the pairing rate that tape passes can compute | It would be the machine's core | No candidate. It must have every feature of "the wall today". | — |
 
 Current effort (13 November): Fable on D4 (what exactly the machine form needs from the one-hop
-form, and the smallest class of schedules not yet excluded); Astra finishing a bounded pass on I2,
-then D8. I1 is parked. D5 and D6 have no one on them.
+form, and the smallest class of schedules not yet excluded); Astra on D0/D8 (audited method barriers,
+exact baselines, and the shared-decoder test). The proposed remaining d = 4 generic pass was not
+near completion and is parked with I2. I1 is also parked. D5 and D6 have no one on them.
 
 ## 3. Indirect fronts
 
@@ -140,7 +145,7 @@ direct front.
 | **X7** | Rate bounds for separated relations of bounded degree in general | False: codes of rate → 1 exist ([paper 13](../Storage-Codes-above-Half-Rate-under-Paired-Distance-Separation/), [paper 15](../High-Rate-Separated-Storage-Codes-and-Tape-Transposition/)) | — (refuted). The open part is whether such codes fit an array with bounded windows, which is D7. |
 | **X8** | Conditions on head motion that do not look at the data | The padded machine satisfies them and transposes nothing (paper 17, Section 4.2) | — (refuted) |
 | **X9** | A single common-subspace compression that annihilates the decoder, in I2 | At n = 3, w = 2 its certified rank is at most d, while the generic paired minimum rank is 3d/2 ([twisted-swap §7](notes/twisted-swap.md)) | Combine constraints from multiple subcodes; the two-subcode step already does this |
-| **X10** | Reducing the group model to the unpaired model (bound the paired kernel by dn/2 plus an unpaired kernel) | On a quasirandom group the unpaired kernel is of order dn for every choice of half, by mixing ([twisted-swap §9](notes/twisted-swap.md)) | A group with a cone (a half with few short closed words): but there order arguments already work |
+| **X10** | Paying for a full half and bounding the **unrestricted** unpaired remainder to prove half rate | On increasingly quasirandom groups, every maximal inverse-free half contains d/6 − o(d) disjoint product-one triples. This upper-bound expression has a (2/3 − o(1))dn floor ([proof](notes/covariant-word-baselines.md#1-distinct-site-cycles-and-a-stronger-packing-bound)). This is not an attained paired rate. | Retain compatibility with the discarded equations, charge less than the full projection dimension, or use a weaker bound if D4 permits it. A suitable ordered-support certificate is another possibility, with its boundary paid explicitly. |
 | **X11** | Amplifying a small gain to rate near 1 by the sum of two tensor codes, S₁ ⊗ M + M ⊗ S₂ (deficiencies multiply) | Its decoder is τ₁ ⊗ K₂ + K₁ ⊗ τ₂ − K₁ ⊗ K₂, which contains full partial transposes, so the window is not bounded | A product whose decoder is built from K₁ and K₂ alone |
 
 ## Maintenance
@@ -149,9 +154,11 @@ direct front.
   and checks that the work in hand names a front. Work that names none is added here first or dropped.
 - A result changes the file in the same commit that publishes it: a removed chunk goes to the table
   in Section 1, a proved tie moves an indirect front to Section 2, a dead idea goes to Section 4.
-- Last re-evaluation (D0), 13 November 2026: the generic model of I2 has only pairs as closed
-  words, the group model has all of them, so results on (U) do not transfer (X10); the group model
-  became the direct front D8; the requirement on r(ε) is weaker than one half (Section 1); D4 has
-  been neglected and is Fable's next target.
-- Lean statements wanted next, in order: the linear form of D1 on `LeanMachine.WholeRow`; D8 as a
-  statement about ranks over a group algebra; (U) at w = 1 (I2, generic only); "three blocks never exceed pairing + 3" (I1).
+- Last re-evaluation (D0), 13 November 2026: independent generic tuples avoid prescribed product
+  identities, while representation tuples have many, so the route through (U) fails (X10).
+  The group model is the direct front D8; the requirement on r(ε) is weaker than one half, making
+  D4 Fable's target. Astra's audit strengthens X10, qualifies the ordered-cover claim, and shows
+  why distant sector gains alone do not identify a new mechanism. No new transposer class is excluded.
+- Linear D1 and D8 now have checked Lean proposition definitions and helper lemmas, not proofs of the
+  conjectures. Statements still wanted when their parked fronts resume: (U) at w = 1 (I2, generic only)
+  and "three blocks never exceed pairing + 3" (I1).

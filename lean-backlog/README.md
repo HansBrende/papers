@@ -31,6 +31,11 @@ does not by itself assess novelty or the adequacy of hypotheses for a particular
   It belongs to no Lake package and is not built with the papers.
 - [`StatementsD.lean`](StatementsD.lean) holds the open obligations of item D, each with `sorry`. It
   needs `lake build LeanMachine.BoundedWeight.Asymptotic` first and is checked the same way.
+- [`StatementsWholeRow.lean`](StatementsWholeRow.lean) defines the open linear D1 and covariant-group
+  D8 conjectures as `Prop`s, with separate fixed-field and uniform-in-field variants. It asserts neither
+  conjecture. Its helper lemmas check covariance, group-algebra conventions, ambient dimension, and
+  rank-nullity, using only standard Lean axioms. Check it from `lean-machine/` with
+  `lake env lean ../lean-backlog/StatementsWholeRow.lean`.
 - The original statements remain in Git history. Compatibility checks verified them against the
   shared declarations with no weakened hypotheses. The item files describe the generalizations
   and refinements; their Lean declarations are authoritative.
@@ -62,6 +67,14 @@ Written research notes supporting item D, not yet Lean-verified:
   exclusion, covering the common unital factor-space case.
 - [An explicit small-coefficient shear bound](notes/shear-small-coefficient-bound.md):
   zero asymptotic rate below a proved threshold for the three-helper N family over complex numbers.
+
+Written notes for the covariant whole-row front D8:
+
+- [Closed words, one-sided certificates, and distant helper loops](notes/covariant-word-baselines.md):
+  a `(2/3 − o(1))` floor on a particular upper-bound expression, the ordered-support boundary correction,
+  an exact scalar-monomial baseline, and distant sector gains with zero regular-representation gain.
+  Run `python3 lean-backlog/tools/covariant_word_controls.py` from the repository root for the exact
+  finite checks; the mathematical results in this note are not yet Lean-verified.
 
 Item D is open (see its file). A, B and C are complete, including the originally optional C1 rank bound. No original proof
 obligations remain. The shared library also supplies reusable spectral, approximation,

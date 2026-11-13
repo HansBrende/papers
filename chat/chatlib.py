@@ -1,4 +1,4 @@
-"""Shared Git and message-envelope helpers for the chat commands."""
+"""Shared Git and Markdown message helpers for the chat commands."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import argparse
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
-import json
 import math
 import os
 from pathlib import Path
@@ -15,7 +14,6 @@ import shlex
 import subprocess
 import sys
 import time
-import uuid
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,9 +22,9 @@ AGENTS = {
     "astra": ("GPT-6 Astra", "noreply@openai.com"),
     "fable": ("Claude Fable 5.2", "noreply@anthropic.com"),
 }
-START = "<!-- chat-message "
-END = "<!-- /chat-message "
-ID_PATTERN = re.compile(r"[0-9a-f]{32}")
+SEPARATOR = "-" * 46
+DELIMITER = "\n" + SEPARATOR + "\n"
+HEADER_PATTERN = re.compile(r"\n## FROM: ([^\n]+) at ([^\n]+)\nID: ([0-9a-f]{8})\n\n")
 
 
 class ChatError(RuntimeError):
@@ -90,43 +88,41 @@ def positive_seconds(value: str) -> float:
 class Message:
     id: str
     sender: str
-    recipient: str
-    wake: bool  # Retained for old transcripts/readers; new messages always set it true.
     timestamp: str
     body: str
+
+    @property
+    def recipient(self):
+        return "fable" if self.sender == "astra" else "astra"
 
     @property
     def heading(self):
         return f"## FROM: {AGENTS[self.sender][0]} at {self.timestamp}"
 
-    @property
-    def legacy_heading(self):
-        label = "REVIEW REQUEST" if self.wake else "FYI — no wake-up"
-        return (f"## {self.timestamp} — {AGENTS[self.sender][0]} → "
-                f"{AGENTS[self.recipient][0]} — {label}")
+    def display(self):
+        return self.heading + "\nID: " + self.id + "\n\n" + self.body
 
     def render(self):
-        metadata = dict(id=self.id, sender=self.sender, recipient=self.recipient,
-                        wake=self.wake, timestamp=self.timestamp,
-                        sha256=hashlib.sha256(self.body.encode()).hexdigest())
-        return (START + json.dumps(metadata, ensure_ascii=False, sort_keys=True) + " -->\n"
-                + "\n---\n\n" + self.heading + "\n\n" + self.body + "\n" + END + self.id + " -->")
+        return DELIMITER + "\n" + self.display()
 
     def same_request(self, other):
-        return (self.id, self.sender, self.recipient, self.wake, self.body) == (
-            other.id, other.sender, other.recipient, other.wake, other.body)
+        return (self.id, self.sender, self.body) == (other.id, other.sender, other.body)
 
 
-def new_message(actor: str, body: str, message_id=None) -> Message:
+def body_id(body: str) -> str:
+    return hashlib.sha256(body.encode("utf-8")).hexdigest()[:8]
+
+
+def new_message(actor: str, body: str) -> Message:
     body = body.rstrip("\n")
-    if not body.strip() or START in body or END in body:
-        raise ChatError("Message must be nonempty and cannot contain chat envelope markers")
-    message_id = message_id or uuid.uuid4().hex
-    if not ID_PATTERN.fullmatch(message_id):
-        raise ChatError("Message ID must contain exactly 32 lowercase hexadecimal characters")
+    if actor not in AGENTS:
+        raise ChatError("Unknown sender")
+    if not body.strip():
+        raise ChatError("Message must be nonempty")
+    if DELIMITER in "\n" + body + "\n":
+        raise ChatError("Message body contains the reserved 46-dash separator; use a different rule")
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    peer = "fable" if actor == "astra" else "astra"
-    return Message(message_id, actor, peer, True, timestamp, body)
+    return Message(body_id(body), actor, timestamp, body)
 
 
 @dataclass
@@ -138,34 +134,20 @@ class Transcript:
 
 def parse_chat(text: str) -> Transcript:
     """Parse complete, immutable message blocks in their recorded order."""
-    parts = text.split(START)
-    if END in parts[0]:
-        raise ChatError("Unmatched chat envelope terminator")
+    parts = text.split(DELIMITER)
     messages = {}
     for part in parts[1:]:
-        metadata, separator, rest = part.partition(" -->\n")
-        try:
-            meta = json.loads(metadata)
-            if (not separator or set(meta) != {"id", "sender", "recipient", "wake", "timestamp", "sha256"}
-                    or not isinstance(meta["id"], str) or not ID_PATTERN.fullmatch(meta["id"])
-                    or meta["sender"] not in AGENTS or meta["recipient"] not in AGENTS
-                    or meta["sender"] == meta["recipient"] or type(meta["wake"]) is not bool
-                    or not isinstance(meta["timestamp"], str) or "\n" in meta["timestamp"]):
-                raise ValueError("invalid metadata")
-            visible, terminator, after = rest.partition("\n" + END + meta["id"] + " -->")
-            separated = visible.startswith("\n---\n\n")
-            if separated:
-                visible = visible[len("\n---\n\n"):]
-            heading, blank, body = visible.partition("\n\n")
-            digest = meta.pop("sha256")
-            message = Message(**meta, body=body)
-            expected_heading = message.heading if separated else message.legacy_heading
-            if (not terminator or after.strip() or not blank or heading != expected_heading
-                    or not body.strip() or END in body or meta["id"] in messages
-                    or digest != hashlib.sha256(body.encode()).hexdigest()):
-                raise ValueError("incomplete, interleaved, or duplicate message")
-        except (ValueError, KeyError, TypeError) as exc:
-            raise ChatError("Malformed chat envelope; inspect the message history") from exc
+        header = HEADER_PATTERN.match(part)
+        if not header:
+            raise ChatError("Malformed chat header; inspect the message history")
+        name, timestamp, message_id = header.groups()
+        sender = next((actor for actor, (display_name, _) in AGENTS.items()
+                       if display_name == name), None)
+        body = part[header.end():].rstrip("\n")
+        if (sender is None or not body.strip() or message_id in messages
+                or message_id != body_id(body)):
+            raise ChatError("Unknown sender, duplicate ID or damaged message; inspect the message history")
+        message = Message(message_id, sender, timestamp, body)
         messages[message.id] = message
     return Transcript(text, parts[0].rstrip("\n"), messages)
 
@@ -230,9 +212,9 @@ def listen(root, actor, *, since, remote="origin", branch="master", interval=15,
                 except GitError as exc:
                     print(f"Could not fast-forward; message is still available: {exc}", flush=True)
             print(f"\nNew messages for {actor} at {commit}:\n", flush=True)
+            print(f"Last-read commit: {commit}\n", flush=True)
             for message in incoming:
-                print(message.heading + "\n\n" + message.body + "\n", flush=True)
-            print(f"Last-read commit: {commit}", flush=True)
+                print(message.display() + "\n", flush=True)
             return 0
         if once:
             print(f"No new peer message for {actor}.", flush=True)

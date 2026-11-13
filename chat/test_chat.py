@@ -5,6 +5,7 @@ No GitHub access or real messages. Includes actual rejected pushes.
 """
 
 from dataclasses import replace
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -15,7 +16,8 @@ import time
 import unittest
 from unittest.mock import patch
 
-from chatlib import ChatError, check_history, listen, new_message, parse_chat
+from chatlib import (DELIMITER, SEPARATOR, ChatError, check_history, listen,
+                     new_message, parse_chat)
 import send
 
 
@@ -91,10 +93,8 @@ class RepoCase(unittest.TestCase):
         git(self.writer, "push")
         return git(self.writer, "rev-parse", "HEAD")
 
-    def append(self, body="Please review this proposal.", actor="fable", legacy_quiet=False):
+    def append(self, body="Please review this proposal.", actor="fable"):
         message = new_message(actor, body)
-        if legacy_quiet:
-            message = replace(message, wake=False)
         text = (self.writer / CHAT).read_text() + "\n" + message.render() + "\n"
         return self.publish_file(CHAT, text)
 
@@ -128,11 +128,18 @@ class ListenTests(RepoCase):
         self.assertIn("Please review", result.stdout)
         self.assertEqual(git(self.reader, "rev-parse", "HEAD"), head)
 
-    def test_every_peer_message_notifies_including_legacy_envelopes(self):
-        self.append("A message in the older envelope format", legacy_quiet=True)
+    def test_reply_output_contains_all_bodies_without_separators_or_footer(self):
+        self.append("First response.")
+        self.append("Second **response**.\n\n---\n\nMore detail.")
         result = self.watch()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("older envelope format", result.stdout)
+        self.assertLess(result.stdout.index("First response."), result.stdout.index("Second **response**."))
+        self.assertNotIn(DELIMITER, result.stdout)
+        self.assertNotIn("<!-- chat-message", result.stdout)
+        for message in parse_chat(self.remote_chat()).messages.values():
+            self.assertIn(message.heading + "\nID: " + message.id + "\n\n", result.stdout)
+        self.assertTrue(result.stdout.endswith("More detail.\n\n"))
+        self.assertLess(result.stdout.index("Last-read commit:"), result.stdout.index("## FROM:"))
 
     def test_own_request_does_not_wake_self(self):
         self.append("Astra's outbound request", actor="astra")
@@ -268,20 +275,31 @@ class SendTests(RepoCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         messages = list(parse_chat(self.remote_chat()).messages.values())
         self.assertEqual(len(messages), 1)
-        self.assertTrue(messages[0].wake)
         self.assertEqual(messages[0].recipient, "astra")
         self.assertEqual(messages[0].body, "A multiline message\n\nWith a proof.")
         self.assertIn("Co-authored-by: Claude Fable 5.2 <noreply@anthropic.com>",
                       git(self.remote, "log", "-1", "--format=%B"))
 
-    def test_message_id_retry_is_idempotent_and_content_checked(self):
-        key = "a" * 32
-        self.assertEqual(self.send_cli("--id", key, "One message").returncode, 0)
+    def test_identical_body_retry_is_idempotent_and_sender_checked(self):
+        self.assertEqual(self.send_cli("One message").returncode, 0)
         head = git(self.remote, "rev-parse", "master")
-        self.assertEqual(self.send_cli("--id", key, "One message").returncode, 0)
+        self.assertEqual(self.send_cli("One message\n\n").returncode, 0)
         self.assertEqual(git(self.remote, "rev-parse", "master"), head)
-        self.assertEqual(self.send_cli("--id", key, "Different message").returncode, 2)
+        result = self.send_cli("--as", "fable", "One message")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("Short message ID collision", result.stderr)
+        self.assertEqual(git(self.remote, "rev-parse", "master"), head)
         self.assertEqual(len(parse_chat(self.remote_chat()).messages), 1)
+
+    def test_short_hash_collision_is_not_treated_as_a_retry(self):
+        first = new_message("astra", "First result")
+        send.publish(self.reader, first)
+        head = git(self.remote, "rev-parse", "master")
+        # Simulate two different bodies receiving the same short hash.
+        second = replace(new_message("astra", "Different result"), id=first.id)
+        with self.assertRaisesRegex(ChatError, "Short message ID collision"):
+            send.publish(self.reader, second)
+        self.assertEqual(git(self.remote, "rev-parse", "master"), head)
 
     def test_push_race_stops_for_review_without_publishing_or_reordering(self):
         own = new_message("astra", "My result\n\nShared paragraph\n\nEnd.")
@@ -348,12 +366,14 @@ class SendTests(RepoCase):
             self.assertEqual(send.main(), 0)
         self.assertEqual(len(parse_chat(self.remote_chat()).messages), 2)
 
-    def test_public_paths_and_reserved_markers_are_rejected_before_push(self):
+    def test_public_paths_and_reserved_separator_are_rejected_before_push(self):
         path = "/".join(("", "Users", "Example", "private-file"))
         result = self.send_cli("See " + path)
         self.assertEqual(result.returncode, 2)
         self.assertIn("public-path policy", result.stderr)
-        self.assertEqual(self.send_cli("<!-- chat-message invalid -->").returncode, 2)
+        result = self.send_cli("Beginning" + DELIMITER + "End")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("reserved 46-dash separator", result.stderr)
         self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
 
     def test_no_union_merge_rule(self):
@@ -382,26 +402,42 @@ class SendTests(RepoCase):
             process.communicate()
 
     def test_obsolete_flags_are_removed(self):
-        for flag in ("--wake", "--no-wait"):
+        for flag in ("--wake", "--no-wait", "--id"):
             self.assertEqual(self.send_cli(flag, "Do not post").returncode, 2)
         self.assertEqual(git(self.remote, "rev-parse", "master"), self.before)
 
 
-class EnvelopeTests(unittest.TestCase):
-    def test_markdown_layout_and_mixed_old_new_history(self):
+class MessageTests(unittest.TestCase):
+    def test_visible_layout_hash_and_original_preamble(self):
         a = new_message("astra", "A **proof**, with code:\n\n```lean\nexample : True := trivial\n```")
         rendered = a.render()
-        self.assertIn("\n\n---\n\n## FROM: GPT-6 Astra at " + a.timestamp + "\n\n", rendered)
-        self.assertEqual(parse_chat(INITIAL + rendered).messages[a.id], a)
-        # A literal older envelope must still parse without rewriting it.
-        legacy = (rendered.splitlines()[0] + "\n## " + a.timestamp
-                  + " — GPT-6 Astra → Claude Fable 5.2 — REVIEW REQUEST\n\n"
-                  + a.body + "\n<!-- /chat-message " + a.id + " -->")
-        old = INITIAL + legacy
+        self.assertEqual(a.id, hashlib.sha256(a.body.encode("utf-8")).hexdigest()[:8])
+        self.assertEqual(rendered, DELIMITER + "\n## FROM: GPT-6 Astra at "
+                         + a.timestamp + "\nID: " + a.id + "\n\n" + a.body)
+        self.assertNotIn("<!--", rendered)
+        old = INITIAL + rendered
         b = new_message("fable", "My response.")
         combined = old + "\n\n" + b.render()
         self.assertEqual(parse_chat(combined).messages, {a.id: a, b.id: b})
+        self.assertEqual(parse_chat(combined).preamble, INITIAL.rstrip("\n"))
         check_history(parse_chat(old), parse_chat(combined))
+
+    def test_body_hash_preserves_unicode_and_internal_markdown(self):
+        body = "\nAstra–Fable: π\n\n---\n\n<!-- a normal Markdown comment -->\n\nEnd."
+        a = new_message("astra", body + "\n\n")
+        self.assertEqual(a.body, body)
+        self.assertEqual(a.id, hashlib.sha256(body.encode("utf-8")).hexdigest()[:8])
+        self.assertEqual(new_message("astra", body).id, a.id)
+        self.assertEqual(parse_chat(INITIAL + a.render() + "\n").messages[a.id], a)
+
+    def test_reserved_separator_boundaries_and_ordinary_rules(self):
+        for body in (SEPARATOR, SEPARATOR + "\nafter", "before\n" + SEPARATOR,
+                     "before" + DELIMITER + "after", "```" + DELIMITER + "```"):
+            with self.subTest(body=body), self.assertRaisesRegex(ChatError, "46-dash"):
+                new_message("astra", body)
+        for body in ("---", "-" * 45, "-" * 47, "inline " + SEPARATOR + " text"):
+            message = new_message("astra", body)
+            self.assertEqual(parse_chat(INITIAL + message.render()).messages[message.id], message)
 
     def test_append_requires_exact_prefix_without_reordering(self):
         a = new_message("astra", "First claim")
@@ -417,7 +453,7 @@ class EnvelopeTests(unittest.TestCase):
             changed = replace(a, body="A changed claim")
             check_history(before, parse_chat(INITIAL + changed.render()))
 
-    def test_duplicate_and_interleaved_envelopes_are_rejected(self):
+    def test_duplicate_interleaved_and_damaged_messages_are_rejected(self):
         a = new_message("astra", "First claim")
         b = new_message("fable", "Second claim")
         with self.assertRaises(ChatError):

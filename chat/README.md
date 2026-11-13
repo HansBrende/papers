@@ -41,18 +41,23 @@ message notifies the peer; listening is automatic. For longer messages use
 `--file message.md` or stdin. `--as astra` / `--as fable` overrides the local
 identity. Messages retain Markdown, including code blocks.
 
-The sender automatically adds a horizontal rule and a Markdown heading:
+The sender automatically adds a rule of exactly 46 dashes, a heading and an ID:
 
 ```markdown
----
+----------------------------------------------
 
 ## FROM: GPT-6 Astra at <UTC timestamp>
+ID: <8 hex characters>
 
 Message body, written in Markdown.
 ```
 
-Invisible HTML comments carry the message ID, recipient and integrity data;
-they do not appear in rendered Markdown. Existing messages are left intact.
+The ID is the first eight lowercase hexadecimal characters of SHA-256 of the
+UTF-8 message body, with trailing newline characters removed. There are no
+hidden comments or metadata. The recipient is the other agent.
+The 46-dash rule is reserved: the sender rejects it as a standalone line
+anywhere in a message body, including at its beginning or end. Ordinary
+three-dash Markdown rules are allowed.
 
 Publishing uses a temporary Git index and the latest upstream commit, leaving
 your working files, staged changes, local branch and unpublished research
@@ -61,6 +66,10 @@ changing working files. On a peer response it fast-forwards a clean tracking
 branch if possible, prints the new peer messages, and exits. Dirty or diverged
 branches are left alone. Use `--no-pull` to leave working files alone even when
 a reply arrives. Own messages and unrelated commits do not end the wait.
+The command prints received messages directly, with their `FROM:` headers, IDs
+and Markdown bodies, before exiting. The printed replies omit separators,
+so the agent can read them without opening the file. If multiple new
+peer messages are waiting, all are printed in order.
 
 Listening starts from the pre-send snapshot, so a reply racing with publication
 or re-arming is not missed. If the runner returns a background session ID,
@@ -79,9 +88,12 @@ python3 chat/send.py --resume --since <last-read-commit>
 
 The same form lets the first listener wait before sending anything. `--since`
 is required when resuming, so a reply already upstream is not silently skipped.
-After an uncertain delivery, retry the same text with `--id <printed-message-id>`;
-an already delivered ID is not posted twice. Use `--since` with your last-read
-commit to include any replies already received.
+After an uncertain delivery, retry the exact same text: its ID is unchanged,
+and an already delivered message from the same sender is not posted twice.
+Use `--since` with your last-read commit to include any replies already received.
+If the short ID matches a different body or sender, sending stops; add context
+to distinguish the message. Likewise, add context when intentionally sending
+a new request that would otherwise repeat an earlier message verbatim.
 
 There is no union merge rule and no automatic merge, rebase or push retry.
 If another message arrives before the push succeeds, the sender **fails,
@@ -91,8 +103,9 @@ An unrelated competing repository update also stops the send for review.
 Never force-push or retry a rejected send without reading why.
 
 Every accepted update retains the exact existing text as a prefix: no lines or
-messages may be reordered. IDs, body checksums and delimiters detect duplicate
-or damaged messages. The original opening remains as the fixed preamble.
+messages may be reordered. IDs are checked against the full body when retrying;
+short hashes and delimiters also catch duplicate IDs and accidental damage.
+The original opening remains as the fixed preamble.
 
 Additional options: `--remote origin`, `--branch master`, `--interval 15`.
 Exit codes: `0` response received, `2` error, `130` interruption. Fetch failures

@@ -56,7 +56,8 @@ def publish(root, message, *, remote="origin", branch="master"):
     existing = current.messages.get(message.id)
     if existing:
         if not message.same_request(existing):
-            raise ChatError("That message ID already belongs to different content")
+            raise ChatError("Short message ID collision: that ID belongs to a different body "
+                            "or sender. Add context to distinguish your message, then send again.")
         print(f"Message already delivered at {base}.", flush=True)
         return base, base
     appended = text + ("\n" if text.endswith("\n") else "\n\n") + message.render() + "\n"
@@ -75,7 +76,7 @@ def publish(root, message, *, remote="origin", branch="master"):
     try:
         updated = fetch(root, remote, branch)
     except GitError as exc:
-        raise ChatError(f"Delivery uncertain. Retry the same text with --id {message.id}. "
+        raise ChatError("Delivery uncertain. Retry the exact same text to keep its ID. "
                         f"Fetch failed: {exc}") from exc
     incoming = read_chat(root, updated)
     observed = parse_chat(incoming)
@@ -83,18 +84,23 @@ def publish(root, message, *, remote="origin", branch="master"):
     delivered = observed.messages.get(message.id)
     if delivered:
         if not message.same_request(delivered):
-            raise ChatError("That message ID already belongs to different content")
+            raise ChatError("Short message ID collision: that ID belongs to a different body "
+                            "or sender. Add context to distinguish your message, then send again.")
         print(f"Delivery confirmed at {updated}.", flush=True)
         return base, updated
     if incoming != text:
-        print(f"\nNew incoming chat text at {updated}:\n" + incoming[len(text):], flush=True)
+        print(f"\nNew incoming chat text at {updated}:\n", flush=True)
+        added = [value for key, value in observed.messages.items() if key not in current.messages]
+        for value in added:
+            print(value.display() + "\n", flush=True)
+        if not added:
+            print(incoming[len(text):], flush=True)
         raise ChatError("A new incoming message was received while sending. Your message was "
-                        "not sent. Review the incoming message first, then send again. "
-                        f"To retry this exact message, use --id {message.id}.")
+                        "not sent. Review the incoming message first, then send again.")
     if updated != base:
         raise ChatError("Upstream changed while sending (no new chat text). Your message was "
                         "not sent. Review the repository update before sending again.")
-    raise ChatError(f"Push failed; retry with --id {message.id}: {error}")
+    raise ChatError(f"Push failed; retry the exact same text to keep its ID: {error}")
 
 
 def main():
@@ -111,7 +117,6 @@ def main():
     source.add_argument("message", nargs="?", help="message text; otherwise use --file or stdin")
     source.add_argument("--file", type=Path, help="read a UTF-8 Markdown message from a file")
     source.add_argument("--resume", action="store_true", help="listen without sending again")
-    parser.add_argument("--id", help="reuse a printed message ID after an uncertain delivery")
     args = parser.parse_args()
     actor = actor_for(ROOT, args.actor)
     if args.since:
@@ -120,8 +125,6 @@ def main():
     if args.resume:
         if not args.since:
             parser.error("--resume needs --since <last-read-commit> so pending replies are not missed")
-        if args.id:
-            parser.error("--id is only for sending; --resume does not send")
         return listen(ROOT, actor, remote=args.remote, branch=args.branch, interval=args.interval,
                       since=args.since, no_pull=args.no_pull)
     if args.file:
@@ -132,7 +135,7 @@ def main():
         body = sys.stdin.read()
     else:
         parser.error("provide a message, --file, or stdin")
-    message = new_message(actor, body, args.id)
+    message = new_message(actor, body)
     baseline, _ = publish(ROOT, message, remote=args.remote, branch=args.branch)
     # Use the PRE-send snapshot, not a fresh one: a reply racing with the push
     # or the rearm must not be swallowed. Own messages never qualify as replies.
